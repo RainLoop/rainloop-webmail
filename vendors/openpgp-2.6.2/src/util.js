@@ -486,70 +486,10 @@ export default {
   },
 
   /**
-   * Wraps a generic synchronous function in an ES6 Promise.
-   * @param  {Function} fn  The function to be wrapped
-   * @return {Function}     The function wrapped in a Promise
-   */
-  promisify: function(fn) {
-    return function() {
-      var args = arguments;
-      return new Promise(function(resolve) {
-        var result = fn.apply(null, args);
-        resolve(result);
-      });
-    };
-  },
-
-  /**
-   * Converts an IE11 web crypro api result to a promise.
-   *   This is required since IE11 implements an old version of the
-   *   Web Crypto specification that does not use promises.
-   * @param  {Object} cryptoOp The return value of an IE11 web cryptro api call
-   * @param  {String} errmsg   An error message for a specific operation
-   * @return {Promise}         The resulting Promise
-   */
-  promisifyIE11Op: function(cryptoOp, errmsg) {
-    return new Promise(function(resolve, reject) {
-      cryptoOp.onerror = function () {
-        reject(new Error(errmsg));
-      };
-      cryptoOp.oncomplete = function (e) {
-        resolve(e.target.result);
-      };
-    });
-  },
-
-  /**
    * Detect Node.js runtime.
    */
   detectNode: function() {
     return typeof window === 'undefined';
-  },
-
-  /**
-   * Get native Node.js crypto api. The default configuration is to use
-   * the api when available. But it can also be deactivated with config.use_native
-   * @return {Object}   The crypto module or 'undefined'
-   */
-  getNodeCrypto: function() {
-    if (!this.detectNode() || !config.use_native) {
-      return;
-    }
-
-    return require('crypto');
-  },
-
-  /**
-   * Get native Node.js Buffer constructor. This should be used since
-   * Buffer is not available under browserify.
-   * @return {Function}   The Buffer constructor or 'undefined'
-   */
-  getNodeBuffer: function() {
-    if (!this.detectNode()) {
-      return;
-    }
-
-    return require('buffer').Buffer;
   }
 
 };

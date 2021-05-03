@@ -1,4 +1,5 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.openpgp = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.openpgp = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({
+1:[function(_dereq_,module,exports){
 /*! asmCrypto Lite v1.1.0, (c) 2013 Artem S Vybornov, opensource.org/licenses/MIT */
 (function ( exports, global ) {
 
@@ -2940,1354 +2941,8 @@ exports.SHA256 = sha256_constructor;
 
 return exports;
 })( {}, function(){return this}() );
-},{}],2:[function(_dereq_,module,exports){
-(function (process,global){
-/*!
- * @overview es6-promise - a tiny implementation of Promises/A+.
- * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
- * @license   Licensed under MIT license
- *            See https://raw.githubusercontent.com/stefanpenner/es6-promise/master/LICENSE
- * @version   4.1.1
- */
-
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.ES6Promise = factory());
-}(this, (function () { 'use strict';
-
-function objectOrFunction(x) {
-  var type = typeof x;
-  return x !== null && (type === 'object' || type === 'function');
-}
-
-function isFunction(x) {
-  return typeof x === 'function';
-}
-
-var _isArray = undefined;
-if (Array.isArray) {
-  _isArray = Array.isArray;
-} else {
-  _isArray = function (x) {
-    return Object.prototype.toString.call(x) === '[object Array]';
-  };
-}
-
-var isArray = _isArray;
-
-var len = 0;
-var vertxNext = undefined;
-var customSchedulerFn = undefined;
-
-var asap = function asap(callback, arg) {
-  queue[len] = callback;
-  queue[len + 1] = arg;
-  len += 2;
-  if (len === 2) {
-    // If len is 2, that means that we need to schedule an async flush.
-    // If additional callbacks are queued before the queue is flushed, they
-    // will be processed by this flush that we are scheduling.
-    if (customSchedulerFn) {
-      customSchedulerFn(flush);
-    } else {
-      scheduleFlush();
-    }
-  }
-};
-
-function setScheduler(scheduleFn) {
-  customSchedulerFn = scheduleFn;
-}
-
-function setAsap(asapFn) {
-  asap = asapFn;
-}
-
-var browserWindow = typeof window !== 'undefined' ? window : undefined;
-var browserGlobal = browserWindow || {};
-var BrowserMutationObserver = browserGlobal.MutationObserver || browserGlobal.WebKitMutationObserver;
-var isNode = typeof self === 'undefined' && typeof process !== 'undefined' && ({}).toString.call(process) === '[object process]';
-
-// test for web worker but not in IE10
-var isWorker = typeof Uint8ClampedArray !== 'undefined' && typeof importScripts !== 'undefined' && typeof MessageChannel !== 'undefined';
-
-// node
-function useNextTick() {
-  // node version 0.10.x displays a deprecation warning when nextTick is used recursively
-  // see https://github.com/cujojs/when/issues/410 for details
-  return function () {
-    return process.nextTick(flush);
-  };
-}
-
-// vertx
-function useVertxTimer() {
-  if (typeof vertxNext !== 'undefined') {
-    return function () {
-      vertxNext(flush);
-    };
-  }
-
-  return useSetTimeout();
-}
-
-function useMutationObserver() {
-  var iterations = 0;
-  var observer = new BrowserMutationObserver(flush);
-  var node = document.createTextNode('');
-  observer.observe(node, { characterData: true });
-
-  return function () {
-    node.data = iterations = ++iterations % 2;
-  };
-}
-
-// web worker
-function useMessageChannel() {
-  var channel = new MessageChannel();
-  channel.port1.onmessage = flush;
-  return function () {
-    return channel.port2.postMessage(0);
-  };
-}
-
-function useSetTimeout() {
-  // Store setTimeout reference so es6-promise will be unaffected by
-  // other code modifying setTimeout (like sinon.useFakeTimers())
-  var globalSetTimeout = setTimeout;
-  return function () {
-    return globalSetTimeout(flush, 1);
-  };
-}
-
-var queue = new Array(1000);
-function flush() {
-  for (var i = 0; i < len; i += 2) {
-    var callback = queue[i];
-    var arg = queue[i + 1];
-
-    callback(arg);
-
-    queue[i] = undefined;
-    queue[i + 1] = undefined;
-  }
-
-  len = 0;
-}
-
-function attemptVertx() {
-  try {
-    var r = _dereq_;
-    var vertx = r('vertx');
-    vertxNext = vertx.runOnLoop || vertx.runOnContext;
-    return useVertxTimer();
-  } catch (e) {
-    return useSetTimeout();
-  }
-}
-
-var scheduleFlush = undefined;
-// Decide what async method to use to triggering processing of queued callbacks:
-if (isNode) {
-  scheduleFlush = useNextTick();
-} else if (BrowserMutationObserver) {
-  scheduleFlush = useMutationObserver();
-} else if (isWorker) {
-  scheduleFlush = useMessageChannel();
-} else if (browserWindow === undefined && typeof _dereq_ === 'function') {
-  scheduleFlush = attemptVertx();
-} else {
-  scheduleFlush = useSetTimeout();
-}
-
-function then(onFulfillment, onRejection) {
-  var _arguments = arguments;
-
-  var parent = this;
-
-  var child = new this.constructor(noop);
-
-  if (child[PROMISE_ID] === undefined) {
-    makePromise(child);
-  }
-
-  var _state = parent._state;
-
-  if (_state) {
-    (function () {
-      var callback = _arguments[_state - 1];
-      asap(function () {
-        return invokeCallback(_state, child, callback, parent._result);
-      });
-    })();
-  } else {
-    subscribe(parent, child, onFulfillment, onRejection);
-  }
-
-  return child;
-}
-
-/**
-  `Promise.resolve` returns a promise that will become resolved with the
-  passed `value`. It is shorthand for the following:
-
-  ```javascript
-  let promise = new Promise(function(resolve, reject){
-    resolve(1);
-  });
-
-  promise.then(function(value){
-    // value === 1
-  });
-  ```
-
-  Instead of writing the above, your code now simply becomes the following:
-
-  ```javascript
-  let promise = Promise.resolve(1);
-
-  promise.then(function(value){
-    // value === 1
-  });
-  ```
-
-  @method resolve
-  @static
-  @param {Any} value value that the returned promise will be resolved with
-  Useful for tooling.
-  @return {Promise} a promise that will become fulfilled with the given
-  `value`
-*/
-function resolve$1(object) {
-  /*jshint validthis:true */
-  var Constructor = this;
-
-  if (object && typeof object === 'object' && object.constructor === Constructor) {
-    return object;
-  }
-
-  var promise = new Constructor(noop);
-  resolve(promise, object);
-  return promise;
-}
-
-var PROMISE_ID = Math.random().toString(36).substring(16);
-
-function noop() {}
-
-var PENDING = void 0;
-var FULFILLED = 1;
-var REJECTED = 2;
-
-var GET_THEN_ERROR = new ErrorObject();
-
-function selfFulfillment() {
-  return new TypeError("You cannot resolve a promise with itself");
-}
-
-function cannotReturnOwn() {
-  return new TypeError('A promises callback cannot return that same promise.');
-}
-
-function getThen(promise) {
-  try {
-    return promise.then;
-  } catch (error) {
-    GET_THEN_ERROR.error = error;
-    return GET_THEN_ERROR;
-  }
-}
-
-function tryThen(then$$1, value, fulfillmentHandler, rejectionHandler) {
-  try {
-    then$$1.call(value, fulfillmentHandler, rejectionHandler);
-  } catch (e) {
-    return e;
-  }
-}
-
-function handleForeignThenable(promise, thenable, then$$1) {
-  asap(function (promise) {
-    var sealed = false;
-    var error = tryThen(then$$1, thenable, function (value) {
-      if (sealed) {
-        return;
-      }
-      sealed = true;
-      if (thenable !== value) {
-        resolve(promise, value);
-      } else {
-        fulfill(promise, value);
-      }
-    }, function (reason) {
-      if (sealed) {
-        return;
-      }
-      sealed = true;
-
-      reject(promise, reason);
-    }, 'Settle: ' + (promise._label || ' unknown promise'));
-
-    if (!sealed && error) {
-      sealed = true;
-      reject(promise, error);
-    }
-  }, promise);
-}
-
-function handleOwnThenable(promise, thenable) {
-  if (thenable._state === FULFILLED) {
-    fulfill(promise, thenable._result);
-  } else if (thenable._state === REJECTED) {
-    reject(promise, thenable._result);
-  } else {
-    subscribe(thenable, undefined, function (value) {
-      return resolve(promise, value);
-    }, function (reason) {
-      return reject(promise, reason);
-    });
-  }
-}
-
-function handleMaybeThenable(promise, maybeThenable, then$$1) {
-  if (maybeThenable.constructor === promise.constructor && then$$1 === then && maybeThenable.constructor.resolve === resolve$1) {
-    handleOwnThenable(promise, maybeThenable);
-  } else {
-    if (then$$1 === GET_THEN_ERROR) {
-      reject(promise, GET_THEN_ERROR.error);
-      GET_THEN_ERROR.error = null;
-    } else if (then$$1 === undefined) {
-      fulfill(promise, maybeThenable);
-    } else if (isFunction(then$$1)) {
-      handleForeignThenable(promise, maybeThenable, then$$1);
-    } else {
-      fulfill(promise, maybeThenable);
-    }
-  }
-}
-
-function resolve(promise, value) {
-  if (promise === value) {
-    reject(promise, selfFulfillment());
-  } else if (objectOrFunction(value)) {
-    handleMaybeThenable(promise, value, getThen(value));
-  } else {
-    fulfill(promise, value);
-  }
-}
-
-function publishRejection(promise) {
-  if (promise._onerror) {
-    promise._onerror(promise._result);
-  }
-
-  publish(promise);
-}
-
-function fulfill(promise, value) {
-  if (promise._state !== PENDING) {
-    return;
-  }
-
-  promise._result = value;
-  promise._state = FULFILLED;
-
-  if (promise._subscribers.length !== 0) {
-    asap(publish, promise);
-  }
-}
-
-function reject(promise, reason) {
-  if (promise._state !== PENDING) {
-    return;
-  }
-  promise._state = REJECTED;
-  promise._result = reason;
-
-  asap(publishRejection, promise);
-}
-
-function subscribe(parent, child, onFulfillment, onRejection) {
-  var _subscribers = parent._subscribers;
-  var length = _subscribers.length;
-
-  parent._onerror = null;
-
-  _subscribers[length] = child;
-  _subscribers[length + FULFILLED] = onFulfillment;
-  _subscribers[length + REJECTED] = onRejection;
-
-  if (length === 0 && parent._state) {
-    asap(publish, parent);
-  }
-}
-
-function publish(promise) {
-  var subscribers = promise._subscribers;
-  var settled = promise._state;
-
-  if (subscribers.length === 0) {
-    return;
-  }
-
-  var child = undefined,
-      callback = undefined,
-      detail = promise._result;
-
-  for (var i = 0; i < subscribers.length; i += 3) {
-    child = subscribers[i];
-    callback = subscribers[i + settled];
-
-    if (child) {
-      invokeCallback(settled, child, callback, detail);
-    } else {
-      callback(detail);
-    }
-  }
-
-  promise._subscribers.length = 0;
-}
-
-function ErrorObject() {
-  this.error = null;
-}
-
-var TRY_CATCH_ERROR = new ErrorObject();
-
-function tryCatch(callback, detail) {
-  try {
-    return callback(detail);
-  } catch (e) {
-    TRY_CATCH_ERROR.error = e;
-    return TRY_CATCH_ERROR;
-  }
-}
-
-function invokeCallback(settled, promise, callback, detail) {
-  var hasCallback = isFunction(callback),
-      value = undefined,
-      error = undefined,
-      succeeded = undefined,
-      failed = undefined;
-
-  if (hasCallback) {
-    value = tryCatch(callback, detail);
-
-    if (value === TRY_CATCH_ERROR) {
-      failed = true;
-      error = value.error;
-      value.error = null;
-    } else {
-      succeeded = true;
-    }
-
-    if (promise === value) {
-      reject(promise, cannotReturnOwn());
-      return;
-    }
-  } else {
-    value = detail;
-    succeeded = true;
-  }
-
-  if (promise._state !== PENDING) {
-    // noop
-  } else if (hasCallback && succeeded) {
-      resolve(promise, value);
-    } else if (failed) {
-      reject(promise, error);
-    } else if (settled === FULFILLED) {
-      fulfill(promise, value);
-    } else if (settled === REJECTED) {
-      reject(promise, value);
-    }
-}
-
-function initializePromise(promise, resolver) {
-  try {
-    resolver(function resolvePromise(value) {
-      resolve(promise, value);
-    }, function rejectPromise(reason) {
-      reject(promise, reason);
-    });
-  } catch (e) {
-    reject(promise, e);
-  }
-}
-
-var id = 0;
-function nextId() {
-  return id++;
-}
-
-function makePromise(promise) {
-  promise[PROMISE_ID] = id++;
-  promise._state = undefined;
-  promise._result = undefined;
-  promise._subscribers = [];
-}
-
-function Enumerator$1(Constructor, input) {
-  this._instanceConstructor = Constructor;
-  this.promise = new Constructor(noop);
-
-  if (!this.promise[PROMISE_ID]) {
-    makePromise(this.promise);
-  }
-
-  if (isArray(input)) {
-    this.length = input.length;
-    this._remaining = input.length;
-
-    this._result = new Array(this.length);
-
-    if (this.length === 0) {
-      fulfill(this.promise, this._result);
-    } else {
-      this.length = this.length || 0;
-      this._enumerate(input);
-      if (this._remaining === 0) {
-        fulfill(this.promise, this._result);
-      }
-    }
-  } else {
-    reject(this.promise, validationError());
-  }
-}
-
-function validationError() {
-  return new Error('Array Methods must be provided an Array');
-}
-
-Enumerator$1.prototype._enumerate = function (input) {
-  for (var i = 0; this._state === PENDING && i < input.length; i++) {
-    this._eachEntry(input[i], i);
-  }
-};
-
-Enumerator$1.prototype._eachEntry = function (entry, i) {
-  var c = this._instanceConstructor;
-  var resolve$$1 = c.resolve;
-
-  if (resolve$$1 === resolve$1) {
-    var _then = getThen(entry);
-
-    if (_then === then && entry._state !== PENDING) {
-      this._settledAt(entry._state, i, entry._result);
-    } else if (typeof _then !== 'function') {
-      this._remaining--;
-      this._result[i] = entry;
-    } else if (c === Promise$2) {
-      var promise = new c(noop);
-      handleMaybeThenable(promise, entry, _then);
-      this._willSettleAt(promise, i);
-    } else {
-      this._willSettleAt(new c(function (resolve$$1) {
-        return resolve$$1(entry);
-      }), i);
-    }
-  } else {
-    this._willSettleAt(resolve$$1(entry), i);
-  }
-};
-
-Enumerator$1.prototype._settledAt = function (state, i, value) {
-  var promise = this.promise;
-
-  if (promise._state === PENDING) {
-    this._remaining--;
-
-    if (state === REJECTED) {
-      reject(promise, value);
-    } else {
-      this._result[i] = value;
-    }
-  }
-
-  if (this._remaining === 0) {
-    fulfill(promise, this._result);
-  }
-};
-
-Enumerator$1.prototype._willSettleAt = function (promise, i) {
-  var enumerator = this;
-
-  subscribe(promise, undefined, function (value) {
-    return enumerator._settledAt(FULFILLED, i, value);
-  }, function (reason) {
-    return enumerator._settledAt(REJECTED, i, reason);
-  });
-};
-
-/**
-  `Promise.all` accepts an array of promises, and returns a new promise which
-  is fulfilled with an array of fulfillment values for the passed promises, or
-  rejected with the reason of the first passed promise to be rejected. It casts all
-  elements of the passed iterable to promises as it runs this algorithm.
-
-  Example:
-
-  ```javascript
-  let promise1 = resolve(1);
-  let promise2 = resolve(2);
-  let promise3 = resolve(3);
-  let promises = [ promise1, promise2, promise3 ];
-
-  Promise.all(promises).then(function(array){
-    // The array here would be [ 1, 2, 3 ];
-  });
-  ```
-
-  If any of the `promises` given to `all` are rejected, the first promise
-  that is rejected will be given as an argument to the returned promises's
-  rejection handler. For example:
-
-  Example:
-
-  ```javascript
-  let promise1 = resolve(1);
-  let promise2 = reject(new Error("2"));
-  let promise3 = reject(new Error("3"));
-  let promises = [ promise1, promise2, promise3 ];
-
-  Promise.all(promises).then(function(array){
-    // Code here never runs because there are rejected promises!
-  }, function(error) {
-    // error.message === "2"
-  });
-  ```
-
-  @method all
-  @static
-  @param {Array} entries array of promises
-  @param {String} label optional string for labeling the promise.
-  Useful for tooling.
-  @return {Promise} promise that is fulfilled when all `promises` have been
-  fulfilled, or rejected if any of them become rejected.
-  @static
-*/
-function all$1(entries) {
-  return new Enumerator$1(this, entries).promise;
-}
-
-/**
-  `Promise.race` returns a new promise which is settled in the same way as the
-  first passed promise to settle.
-
-  Example:
-
-  ```javascript
-  let promise1 = new Promise(function(resolve, reject){
-    setTimeout(function(){
-      resolve('promise 1');
-    }, 200);
-  });
-
-  let promise2 = new Promise(function(resolve, reject){
-    setTimeout(function(){
-      resolve('promise 2');
-    }, 100);
-  });
-
-  Promise.race([promise1, promise2]).then(function(result){
-    // result === 'promise 2' because it was resolved before promise1
-    // was resolved.
-  });
-  ```
-
-  `Promise.race` is deterministic in that only the state of the first
-  settled promise matters. For example, even if other promises given to the
-  `promises` array argument are resolved, but the first settled promise has
-  become rejected before the other promises became fulfilled, the returned
-  promise will become rejected:
-
-  ```javascript
-  let promise1 = new Promise(function(resolve, reject){
-    setTimeout(function(){
-      resolve('promise 1');
-    }, 200);
-  });
-
-  let promise2 = new Promise(function(resolve, reject){
-    setTimeout(function(){
-      reject(new Error('promise 2'));
-    }, 100);
-  });
-
-  Promise.race([promise1, promise2]).then(function(result){
-    // Code here never runs
-  }, function(reason){
-    // reason.message === 'promise 2' because promise 2 became rejected before
-    // promise 1 became fulfilled
-  });
-  ```
-
-  An example real-world use case is implementing timeouts:
-
-  ```javascript
-  Promise.race([ajax('foo.json'), timeout(5000)])
-  ```
-
-  @method race
-  @static
-  @param {Array} promises array of promises to observe
-  Useful for tooling.
-  @return {Promise} a promise which settles in the same way as the first passed
-  promise to settle.
-*/
-function race$1(entries) {
-  /*jshint validthis:true */
-  var Constructor = this;
-
-  if (!isArray(entries)) {
-    return new Constructor(function (_, reject) {
-      return reject(new TypeError('You must pass an array to race.'));
-    });
-  } else {
-    return new Constructor(function (resolve, reject) {
-      var length = entries.length;
-      for (var i = 0; i < length; i++) {
-        Constructor.resolve(entries[i]).then(resolve, reject);
-      }
-    });
-  }
-}
-
-/**
-  `Promise.reject` returns a promise rejected with the passed `reason`.
-  It is shorthand for the following:
-
-  ```javascript
-  let promise = new Promise(function(resolve, reject){
-    reject(new Error('WHOOPS'));
-  });
-
-  promise.then(function(value){
-    // Code here doesn't run because the promise is rejected!
-  }, function(reason){
-    // reason.message === 'WHOOPS'
-  });
-  ```
-
-  Instead of writing the above, your code now simply becomes the following:
-
-  ```javascript
-  let promise = Promise.reject(new Error('WHOOPS'));
-
-  promise.then(function(value){
-    // Code here doesn't run because the promise is rejected!
-  }, function(reason){
-    // reason.message === 'WHOOPS'
-  });
-  ```
-
-  @method reject
-  @static
-  @param {Any} reason value that the returned promise will be rejected with.
-  Useful for tooling.
-  @return {Promise} a promise rejected with the given `reason`.
-*/
-function reject$1(reason) {
-  /*jshint validthis:true */
-  var Constructor = this;
-  var promise = new Constructor(noop);
-  reject(promise, reason);
-  return promise;
-}
-
-function needsResolver() {
-  throw new TypeError('You must pass a resolver function as the first argument to the promise constructor');
-}
-
-function needsNew() {
-  throw new TypeError("Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.");
-}
-
-/**
-  Promise objects represent the eventual result of an asynchronous operation. The
-  primary way of interacting with a promise is through its `then` method, which
-  registers callbacks to receive either a promise's eventual value or the reason
-  why the promise cannot be fulfilled.
-
-  Terminology
-  -----------
-
-  - `promise` is an object or function with a `then` method whose behavior conforms to this specification.
-  - `thenable` is an object or function that defines a `then` method.
-  - `value` is any legal JavaScript value (including undefined, a thenable, or a promise).
-  - `exception` is a value that is thrown using the throw statement.
-  - `reason` is a value that indicates why a promise was rejected.
-  - `settled` the final resting state of a promise, fulfilled or rejected.
-
-  A promise can be in one of three states: pending, fulfilled, or rejected.
-
-  Promises that are fulfilled have a fulfillment value and are in the fulfilled
-  state.  Promises that are rejected have a rejection reason and are in the
-  rejected state.  A fulfillment value is never a thenable.
-
-  Promises can also be said to *resolve* a value.  If this value is also a
-  promise, then the original promise's settled state will match the value's
-  settled state.  So a promise that *resolves* a promise that rejects will
-  itself reject, and a promise that *resolves* a promise that fulfills will
-  itself fulfill.
-
-
-  Basic Usage:
-  ------------
-
-  ```js
-  let promise = new Promise(function(resolve, reject) {
-    // on success
-    resolve(value);
-
-    // on failure
-    reject(reason);
-  });
-
-  promise.then(function(value) {
-    // on fulfillment
-  }, function(reason) {
-    // on rejection
-  });
-  ```
-
-  Advanced Usage:
-  ---------------
-
-  Promises shine when abstracting away asynchronous interactions such as
-  `XMLHttpRequest`s.
-
-  ```js
-  function getJSON(url) {
-    return new Promise(function(resolve, reject){
-      let xhr = new XMLHttpRequest();
-
-      xhr.open('GET', url);
-      xhr.onreadystatechange = handler;
-      xhr.responseType = 'json';
-      xhr.setRequestHeader('Accept', 'application/json');
-      xhr.send();
-
-      function handler() {
-        if (this.readyState === this.DONE) {
-          if (this.status === 200) {
-            resolve(this.response);
-          } else {
-            reject(new Error('getJSON: `' + url + '` failed with status: [' + this.status + ']'));
-          }
-        }
-      };
-    });
-  }
-
-  getJSON('/posts.json').then(function(json) {
-    // on fulfillment
-  }, function(reason) {
-    // on rejection
-  });
-  ```
-
-  Unlike callbacks, promises are great composable primitives.
-
-  ```js
-  Promise.all([
-    getJSON('/posts'),
-    getJSON('/comments')
-  ]).then(function(values){
-    values[0] // => postsJSON
-    values[1] // => commentsJSON
-
-    return values;
-  });
-  ```
-
-  @class Promise
-  @param {function} resolver
-  Useful for tooling.
-  @constructor
-*/
-function Promise$2(resolver) {
-  this[PROMISE_ID] = nextId();
-  this._result = this._state = undefined;
-  this._subscribers = [];
-
-  if (noop !== resolver) {
-    typeof resolver !== 'function' && needsResolver();
-    this instanceof Promise$2 ? initializePromise(this, resolver) : needsNew();
-  }
-}
-
-Promise$2.all = all$1;
-Promise$2.race = race$1;
-Promise$2.resolve = resolve$1;
-Promise$2.reject = reject$1;
-Promise$2._setScheduler = setScheduler;
-Promise$2._setAsap = setAsap;
-Promise$2._asap = asap;
-
-Promise$2.prototype = {
-  constructor: Promise$2,
-
-  /**
-    The primary way of interacting with a promise is through its `then` method,
-    which registers callbacks to receive either a promise's eventual value or the
-    reason why the promise cannot be fulfilled.
-  
-    ```js
-    findUser().then(function(user){
-      // user is available
-    }, function(reason){
-      // user is unavailable, and you are given the reason why
-    });
-    ```
-  
-    Chaining
-    --------
-  
-    The return value of `then` is itself a promise.  This second, 'downstream'
-    promise is resolved with the return value of the first promise's fulfillment
-    or rejection handler, or rejected if the handler throws an exception.
-  
-    ```js
-    findUser().then(function (user) {
-      return user.name;
-    }, function (reason) {
-      return 'default name';
-    }).then(function (userName) {
-      // If `findUser` fulfilled, `userName` will be the user's name, otherwise it
-      // will be `'default name'`
-    });
-  
-    findUser().then(function (user) {
-      throw new Error('Found user, but still unhappy');
-    }, function (reason) {
-      throw new Error('`findUser` rejected and we're unhappy');
-    }).then(function (value) {
-      // never reached
-    }, function (reason) {
-      // if `findUser` fulfilled, `reason` will be 'Found user, but still unhappy'.
-      // If `findUser` rejected, `reason` will be '`findUser` rejected and we're unhappy'.
-    });
-    ```
-    If the downstream promise does not specify a rejection handler, rejection reasons will be propagated further downstream.
-  
-    ```js
-    findUser().then(function (user) {
-      throw new PedagogicalException('Upstream error');
-    }).then(function (value) {
-      // never reached
-    }).then(function (value) {
-      // never reached
-    }, function (reason) {
-      // The `PedgagocialException` is propagated all the way down to here
-    });
-    ```
-  
-    Assimilation
-    ------------
-  
-    Sometimes the value you want to propagate to a downstream promise can only be
-    retrieved asynchronously. This can be achieved by returning a promise in the
-    fulfillment or rejection handler. The downstream promise will then be pending
-    until the returned promise is settled. This is called *assimilation*.
-  
-    ```js
-    findUser().then(function (user) {
-      return findCommentsByAuthor(user);
-    }).then(function (comments) {
-      // The user's comments are now available
-    });
-    ```
-  
-    If the assimliated promise rejects, then the downstream promise will also reject.
-  
-    ```js
-    findUser().then(function (user) {
-      return findCommentsByAuthor(user);
-    }).then(function (comments) {
-      // If `findCommentsByAuthor` fulfills, we'll have the value here
-    }, function (reason) {
-      // If `findCommentsByAuthor` rejects, we'll have the reason here
-    });
-    ```
-  
-    Simple Example
-    --------------
-  
-    Synchronous Example
-  
-    ```javascript
-    let result;
-  
-    try {
-      result = findResult();
-      // success
-    } catch(reason) {
-      // failure
-    }
-    ```
-  
-    Errback Example
-  
-    ```js
-    findResult(function(result, err){
-      if (err) {
-        // failure
-      } else {
-        // success
-      }
-    });
-    ```
-  
-    Promise Example;
-  
-    ```javascript
-    findResult().then(function(result){
-      // success
-    }, function(reason){
-      // failure
-    });
-    ```
-  
-    Advanced Example
-    --------------
-  
-    Synchronous Example
-  
-    ```javascript
-    let author, books;
-  
-    try {
-      author = findAuthor();
-      books  = findBooksByAuthor(author);
-      // success
-    } catch(reason) {
-      // failure
-    }
-    ```
-  
-    Errback Example
-  
-    ```js
-  
-    function foundBooks(books) {
-  
-    }
-  
-    function failure(reason) {
-  
-    }
-  
-    findAuthor(function(author, err){
-      if (err) {
-        failure(err);
-        // failure
-      } else {
-        try {
-          findBoooksByAuthor(author, function(books, err) {
-            if (err) {
-              failure(err);
-            } else {
-              try {
-                foundBooks(books);
-              } catch(reason) {
-                failure(reason);
-              }
-            }
-          });
-        } catch(error) {
-          failure(err);
-        }
-        // success
-      }
-    });
-    ```
-  
-    Promise Example;
-  
-    ```javascript
-    findAuthor().
-      then(findBooksByAuthor).
-      then(function(books){
-        // found books
-    }).catch(function(reason){
-      // something went wrong
-    });
-    ```
-  
-    @method then
-    @param {Function} onFulfilled
-    @param {Function} onRejected
-    Useful for tooling.
-    @return {Promise}
-  */
-  then: then,
-
-  /**
-    `catch` is simply sugar for `then(undefined, onRejection)` which makes it the same
-    as the catch block of a try/catch statement.
-  
-    ```js
-    function findAuthor(){
-      throw new Error('couldn't find that author');
-    }
-  
-    // synchronous
-    try {
-      findAuthor();
-    } catch(reason) {
-      // something went wrong
-    }
-  
-    // async with promises
-    findAuthor().catch(function(reason){
-      // something went wrong
-    });
-    ```
-  
-    @method catch
-    @param {Function} onRejection
-    Useful for tooling.
-    @return {Promise}
-  */
-  'catch': function _catch(onRejection) {
-    return this.then(null, onRejection);
-  }
-};
-
-/*global self*/
-function polyfill$1() {
-    var local = undefined;
-
-    if (typeof global !== 'undefined') {
-        local = global;
-    } else if (typeof self !== 'undefined') {
-        local = self;
-    } else {
-        try {
-            local = Function('return this')();
-        } catch (e) {
-            throw new Error('polyfill failed because global object is unavailable in this environment');
-        }
-    }
-
-    var P = local.Promise;
-
-    if (P) {
-        var promiseToString = null;
-        try {
-            promiseToString = Object.prototype.toString.call(P.resolve());
-        } catch (e) {
-            // silently ignored
-        }
-
-        if (promiseToString === '[object Promise]' && !P.cast) {
-            return;
-        }
-    }
-
-    local.Promise = Promise$2;
-}
-
-// Strange compat..
-Promise$2.polyfill = polyfill$1;
-Promise$2.Promise = Promise$2;
-
-return Promise$2;
-
-})));
-
-
-
-}).call(this,_dereq_('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":3}],3:[function(_dereq_,module,exports){
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],4:[function(_dereq_,module,exports){
+},{}],
+4:[function(_dereq_,module,exports){
 (function (global){
 (function () {
     function Rusha(chunkSize) {
@@ -4794,7 +3449,8 @@ process.umask = function() { return 0; };
     }
 }());
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],5:[function(_dereq_,module,exports){
+},{}],
+5:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -5054,7 +3710,8 @@ function verifyHeaders(headers, packetlist) {
   }
 }
 
-},{"./config":10,"./encoding/armor.js":33,"./enums.js":35,"./packet":47,"./signature.js":66}],6:[function(_dereq_,module,exports){
+},{"./config":10,"./encoding/armor.js":33,"./enums.js":35,"./packet":47,"./signature.js":66}],
+6:[function(_dereq_,module,exports){
 /** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */(function() {'use strict';var n=void 0,u=!0,aa=this;function ba(e,d){var c=e.split("."),f=aa;!(c[0]in f)&&f.execScript&&f.execScript("var "+c[0]);for(var a;c.length&&(a=c.shift());)!c.length&&d!==n?f[a]=d:f=f[a]?f[a]:f[a]={}};var C="undefined"!==typeof Uint8Array&&"undefined"!==typeof Uint16Array&&"undefined"!==typeof Uint32Array&&"undefined"!==typeof DataView;function K(e,d){this.index="number"===typeof d?d:0;this.d=0;this.buffer=e instanceof(C?Uint8Array:Array)?e:new (C?Uint8Array:Array)(32768);if(2*this.buffer.length<=this.index)throw Error("invalid index");this.buffer.length<=this.index&&ca(this)}function ca(e){var d=e.buffer,c,f=d.length,a=new (C?Uint8Array:Array)(f<<1);if(C)a.set(d);else for(c=0;c<f;++c)a[c]=d[c];return e.buffer=a}
 K.prototype.a=function(e,d,c){var f=this.buffer,a=this.index,b=this.d,k=f[a],m;c&&1<d&&(e=8<d?(L[e&255]<<24|L[e>>>8&255]<<16|L[e>>>16&255]<<8|L[e>>>24&255])>>32-d:L[e]>>8-d);if(8>d+b)k=k<<d|e,b+=d;else for(m=0;m<d;++m)k=k<<1|e>>d-m-1&1,8===++b&&(b=0,f[a++]=L[k],k=0,a===f.length&&(f=ca(this)));f[a]=k;this.buffer=f;this.d=b;this.index=a};K.prototype.finish=function(){var e=this.buffer,d=this.index,c;0<this.d&&(e[d]<<=8-this.d,e[d]=L[e[d]],d++);C?c=e.subarray(0,d):(e.length=d,c=e);return c};
 var ga=new (C?Uint8Array:Array)(256),M;for(M=0;256>M;++M){for(var R=M,S=R,ha=7,R=R>>>1;R;R>>>=1)S<<=1,S|=R&1,--ha;ga[M]=(S<<ha&255)>>>0}var L=ga;function ja(e){this.buffer=new (C?Uint16Array:Array)(2*e);this.length=0}ja.prototype.getParent=function(e){return 2*((e-2)/4|0)};ja.prototype.push=function(e,d){var c,f,a=this.buffer,b;c=this.length;a[this.length++]=d;for(a[this.length++]=e;0<c;)if(f=this.getParent(c),a[c]>a[f])b=a[c],a[c]=a[f],a[f]=b,b=a[c+1],a[c+1]=a[f+1],a[f+1]=b,c=f;else break;return this.length};
@@ -5079,7 +3736,8 @@ function Ja(e,d,c){function f(a){var b=g[a][p[a]];b===d?(f(a+1),f(a+1)):--k[b];+
 1][q]=e[q],g[c-1][q]=q;for(l=0;l<c;++l)p[l]=0;1===b[c-1]&&(--k[0],++p[c-1]);for(h=c-2;0<=h;--h){t=l=0;w=p[h+1];for(q=0;q<a[h];q++)t=m[h+1][w]+m[h+1][w+1],t>e[l]?(m[h][q]=t,g[h][q]=d,w+=2):(m[h][q]=e[l],g[h][q]=l,++l);p[h]=0;1===b[h]&&f(h)}return k}
 function pa(e){var d=new (C?Uint16Array:Array)(e.length),c=[],f=[],a=0,b,k,m,g;b=0;for(k=e.length;b<k;b++)c[e[b]]=(c[e[b]]|0)+1;b=1;for(k=16;b<=k;b++)f[b]=a,a+=c[b]|0,a<<=1;b=0;for(k=e.length;b<k;b++){a=f[e[b]];f[e[b]]+=1;m=d[b]=0;for(g=e[b];m<g;m++)d[b]=d[b]<<1|a&1,a>>>=1}return d};ba("Zlib.RawDeflate",ka);ba("Zlib.RawDeflate.prototype.compress",ka.prototype.h);var Ka={NONE:0,FIXED:1,DYNAMIC:ma},V,La,$,Ma;if(Object.keys)V=Object.keys(Ka);else for(La in V=[],$=0,Ka)V[$++]=La;$=0;for(Ma=V.length;$<Ma;++$)La=V[$],ba("Zlib.RawDeflate.CompressionType."+La,Ka[La]);}).call(this);
 
-},{}],7:[function(_dereq_,module,exports){
+},{}],
+7:[function(_dereq_,module,exports){
 /** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */(function() {'use strict';var k=void 0,aa=this;function r(c,d){var a=c.split("."),b=aa;!(a[0]in b)&&b.execScript&&b.execScript("var "+a[0]);for(var e;a.length&&(e=a.shift());)!a.length&&d!==k?b[e]=d:b=b[e]?b[e]:b[e]={}};var t="undefined"!==typeof Uint8Array&&"undefined"!==typeof Uint16Array&&"undefined"!==typeof Uint32Array&&"undefined"!==typeof DataView;function u(c){var d=c.length,a=0,b=Number.POSITIVE_INFINITY,e,f,g,h,l,n,m,p,s,x;for(p=0;p<d;++p)c[p]>a&&(a=c[p]),c[p]<b&&(b=c[p]);e=1<<a;f=new (t?Uint32Array:Array)(e);g=1;h=0;for(l=2;g<=a;){for(p=0;p<d;++p)if(c[p]===g){n=0;m=h;for(s=0;s<g;++s)n=n<<1|m&1,m>>=1;x=g<<16|p;for(s=n;s<e;s+=l)f[s]=x;++h}++g;h<<=1;l<<=1}return[f,a,b]};function w(c,d){this.g=[];this.h=32768;this.c=this.f=this.d=this.k=0;this.input=t?new Uint8Array(c):c;this.l=!1;this.i=y;this.p=!1;if(d||!(d={}))d.index&&(this.d=d.index),d.bufferSize&&(this.h=d.bufferSize),d.bufferType&&(this.i=d.bufferType),d.resize&&(this.p=d.resize);switch(this.i){case A:this.a=32768;this.b=new (t?Uint8Array:Array)(32768+this.h+258);break;case y:this.a=0;this.b=new (t?Uint8Array:Array)(this.h);this.e=this.u;this.m=this.r;this.j=this.s;break;default:throw Error("invalid inflate mode");
 }}var A=0,y=1;
 w.prototype.t=function(){for(;!this.l;){var c=B(this,3);c&1&&(this.l=!0);c>>>=1;switch(c){case 0:var d=this.input,a=this.d,b=this.b,e=this.a,f=d.length,g=k,h=k,l=b.length,n=k;this.c=this.f=0;if(a+1>=f)throw Error("invalid uncompressed block header: LEN");g=d[a++]|d[a++]<<8;if(a+1>=f)throw Error("invalid uncompressed block header: NLEN");h=d[a++]|d[a++]<<8;if(g===~h)throw Error("invalid uncompressed block header: length verify");if(a+g>d.length)throw Error("input buffer is broken");switch(this.i){case A:for(;e+g>
@@ -5095,7 +3753,8 @@ w.prototype.u=function(c){var d,a=this.input.length/this.d+1|0,b,e,f,g=this.inpu
 w.prototype.m=function(){var c=0,d=this.b,a=this.g,b,e=new (t?Uint8Array:Array)(this.k+(this.a-32768)),f,g,h,l;if(0===a.length)return t?this.b.subarray(32768,this.a):this.b.slice(32768,this.a);f=0;for(g=a.length;f<g;++f){b=a[f];h=0;for(l=b.length;h<l;++h)e[c++]=b[h]}f=32768;for(g=this.a;f<g;++f)e[c++]=d[f];this.g=[];return this.buffer=e};
 w.prototype.r=function(){var c,d=this.a;t?this.p?(c=new Uint8Array(d),c.set(this.b.subarray(0,d))):c=this.b.subarray(0,d):(this.b.length>d&&(this.b.length=d),c=this.b);return this.buffer=c};r("Zlib.RawInflate",w);r("Zlib.RawInflate.prototype.decompress",w.prototype.t);var X={ADAPTIVE:y,BLOCK:A},Y,Z,$,fa;if(Object.keys)Y=Object.keys(X);else for(Z in Y=[],$=0,X)Y[$++]=Z;$=0;for(fa=Y.length;$<fa;++$)Z=Y[$],r("Zlib.RawInflate.BufferType."+Z,X[Z]);}).call(this);
 
-},{}],8:[function(_dereq_,module,exports){
+},{}],
+8:[function(_dereq_,module,exports){
 /** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */(function() {'use strict';function m(d){throw d;}var w=void 0,z=!0,aa=this;function A(d,a){var c=d.split("."),e=aa;!(c[0]in e)&&e.execScript&&e.execScript("var "+c[0]);for(var b;c.length&&(b=c.shift());)!c.length&&a!==w?e[b]=a:e=e[b]?e[b]:e[b]={}};var G="undefined"!==typeof Uint8Array&&"undefined"!==typeof Uint16Array&&"undefined"!==typeof Uint32Array&&"undefined"!==typeof DataView;function I(d,a){this.index="number"===typeof a?a:0;this.i=0;this.buffer=d instanceof(G?Uint8Array:Array)?d:new (G?Uint8Array:Array)(32768);2*this.buffer.length<=this.index&&m(Error("invalid index"));this.buffer.length<=this.index&&this.f()}I.prototype.f=function(){var d=this.buffer,a,c=d.length,e=new (G?Uint8Array:Array)(c<<1);if(G)e.set(d);else for(a=0;a<c;++a)e[a]=d[a];return this.buffer=e};
 I.prototype.d=function(d,a,c){var e=this.buffer,b=this.index,f=this.i,g=e[b],h;c&&1<a&&(d=8<a?(Q[d&255]<<24|Q[d>>>8&255]<<16|Q[d>>>16&255]<<8|Q[d>>>24&255])>>32-a:Q[d]>>8-a);if(8>a+f)g=g<<a|d,f+=a;else for(h=0;h<a;++h)g=g<<1|d>>a-h-1&1,8===++f&&(f=0,e[b++]=Q[g],g=0,b===e.length&&(e=this.f()));e[b]=g;this.buffer=e;this.i=f;this.index=b};I.prototype.finish=function(){var d=this.buffer,a=this.index,c;0<this.i&&(d[a]<<=8-this.i,d[a]=Q[d[a]],a++);G?c=d.subarray(0,a):(d.length=a,c=d);return c};
 var ba=new (G?Uint8Array:Array)(256),ca;for(ca=0;256>ca;++ca){for(var R=ca,ha=R,ia=7,R=R>>>1;R;R>>>=1)ha<<=1,ha|=R&1,--ia;ba[ca]=(ha<<ia&255)>>>0}var Q=ba;function ja(d){this.buffer=new (G?Uint16Array:Array)(2*d);this.length=0}ja.prototype.getParent=function(d){return 2*((d-2)/4|0)};ja.prototype.push=function(d,a){var c,e,b=this.buffer,f;c=this.length;b[this.length++]=a;for(b[this.length++]=d;0<c;)if(e=this.getParent(c),b[c]>b[e])f=b[c],b[c]=b[e],b[e]=f,f=b[c+1],b[c+1]=b[e+1],b[e+1]=f,c=e;else break;return this.length};
@@ -5136,7 +3795,8 @@ jb.prototype.p=function(){var d=this.input,a,c;a=this.A.p();this.c=this.A.c;this
 lb.prototype.j=function(){var d,a,c,e,b,f,g,h=0;g=this.a;d=kb;switch(d){case kb:a=Math.LOG2E*Math.log(32768)-8;break;default:m(Error("invalid compression method"))}c=a<<4|d;g[h++]=c;switch(d){case kb:switch(this.h){case X.NONE:b=0;break;case X.r:b=1;break;case X.k:b=2;break;default:m(Error("unsupported compression type"))}break;default:m(Error("invalid compression method"))}e=b<<6|0;g[h++]=e|31-(256*c+e)%31;f=ib(this.input);this.z.b=h;g=this.z.j();h=g.length;G&&(g=new Uint8Array(g.buffer),g.length<=
 h+4&&(this.a=new Uint8Array(g.length+4),this.a.set(g),g=this.a),g=g.subarray(0,h+4));g[h++]=f>>24&255;g[h++]=f>>16&255;g[h++]=f>>8&255;g[h++]=f&255;return g};function mb(d,a){var c,e,b,f;if(Object.keys)c=Object.keys(a);else for(e in c=[],b=0,a)c[b++]=e;b=0;for(f=c.length;b<f;++b)e=c[b],A(d+"."+e,a[e])};A("Zlib.Inflate",jb);A("Zlib.Inflate.prototype.decompress",jb.prototype.p);mb("Zlib.Inflate.BufferType",{ADAPTIVE:Ca.C,BLOCK:Ca.D});A("Zlib.Deflate",lb);A("Zlib.Deflate.compress",function(d,a){return(new lb(d,a)).j()});A("Zlib.Deflate.prototype.compress",lb.prototype.j);mb("Zlib.Deflate.CompressionType",{NONE:X.NONE,FIXED:X.r,DYNAMIC:X.k});}).call(this);
 
-},{}],9:[function(_dereq_,module,exports){
+},{}],
+9:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -5202,7 +3862,8 @@ exports.default = {
   node_store: './openpgp.store'
 };
 
-},{"../enums.js":35}],10:[function(_dereq_,module,exports){
+},{"../enums.js":35}],
+10:[function(_dereq_,module,exports){
 /**
  * @see module:config/config
  * @module config
@@ -5225,7 +3886,8 @@ Object.defineProperty(exports, 'default', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./config.js":9}],11:[function(_dereq_,module,exports){
+},{"./config.js":9}],
+11:[function(_dereq_,module,exports){
 // Modified by ProtonTech AG
 
 // Modified by Recurity Labs GmbH
@@ -5550,7 +4212,8 @@ exports.default = {
   }
 };
 
-},{"./cipher":16}],12:[function(_dereq_,module,exports){
+},{"./cipher":16}],
+12:[function(_dereq_,module,exports){
 /* Rijndael (AES) Encryption
  * Copyright 2005 Herbert Hanewinkel, www.haneWIN.de
  * version 1.1, check www.haneWIN.de for the latest version
@@ -5787,7 +4450,8 @@ exports.default = {
   256: makeClass(256)
 };
 
-},{}],13:[function(_dereq_,module,exports){
+},{}],
+13:[function(_dereq_,module,exports){
 /* Modified by Recurity Labs GmbH
  *
  * Originally written by nklein software (nklein.com)
@@ -6016,7 +4680,8 @@ function BF(key) {
 BF.keySize = BF.prototype.keySize = 16;
 BF.blockSize = BF.prototype.blockSize = 16;
 
-},{}],14:[function(_dereq_,module,exports){
+},{}],
+14:[function(_dereq_,module,exports){
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -6367,7 +5032,8 @@ function Cast5(key) {
 Cast5.blockSize = Cast5.prototype.blockSize = 8;
 Cast5.keySize = Cast5.prototype.keySize = 16;
 
-},{}],15:[function(_dereq_,module,exports){
+},{}],
+15:[function(_dereq_,module,exports){
 //Paul Tero, July 2001
 //http://www.tero.co.uk/des/
 //
@@ -6753,7 +5419,8 @@ exports.default = {
   originalDes: OriginalDes
 };
 
-},{}],16:[function(_dereq_,module,exports){
+},{}],
+16:[function(_dereq_,module,exports){
 /**
  * @requires crypto/cipher/aes
  * @requires crypto/cipher/blowfish
@@ -6811,7 +5478,8 @@ exports.default = {
   }
 };
 
-},{"./aes.js":12,"./blowfish.js":13,"./cast5.js":14,"./des.js":15,"./twofish.js":17}],17:[function(_dereq_,module,exports){
+},{"./aes.js":12,"./blowfish.js":13,"./cast5.js":14,"./des.js":15,"./twofish.js":17}],
+17:[function(_dereq_,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7137,7 +5805,8 @@ function toArray(typedArray) {
 TF.keySize = TF.prototype.keySize = 32;
 TF.blockSize = TF.prototype.blockSize = 16;
 
-},{}],18:[function(_dereq_,module,exports){
+},{}],
+18:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -7387,7 +6056,8 @@ exports.default = {
   }
 };
 
-},{"../type/mpi.js":68,"./cipher":16,"./public_key":28,"./random.js":31}],19:[function(_dereq_,module,exports){
+},{"../type/mpi.js":68,"./cipher":16,"./public_key":28,"./random.js":31}],
+19:[function(_dereq_,module,exports){
 // OpenPGP.js - An OpenPGP implementation in javascript
 // Copyright (C) 2016 Tankred Hase
 //
@@ -7434,8 +6104,6 @@ var _asmcryptoLite2 = _interopRequireDefault(_asmcryptoLite);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var webCrypto = _util2.default.getWebCrypto(); // no GCM support in IE11, Safari 9
-var nodeCrypto = _util2.default.getNodeCrypto();
-var Buffer = _util2.default.getNodeBuffer();
 
 var ivLength = exports.ivLength = 12; // size of the IV in bytes
 var TAG_LEN = 16; // size of the tag in bytes
@@ -7457,13 +6125,9 @@ function encrypt(cipher, plaintext, key, iv) {
   if (webCrypto && _config2.default.use_native && key.length !== 24) {
     // WebCrypto (no 192 bit support) see: https://www.chromium.org/blink/webcrypto#TOC-AES-support
     return webEncrypt(plaintext, key, iv);
-  } else if (nodeCrypto && _config2.default.use_native) {
-    // Node crypto library
-    return nodeEncrypt(plaintext, key, iv);
-  } else {
-    // asm.js fallback
-    return Promise.resolve(_asmcryptoLite2.default.AES_GCM.encrypt(plaintext, key, iv));
   }
+  // asm.js fallback
+  return Promise.resolve(_asmcryptoLite2.default.AES_GCM.encrypt(plaintext, key, iv));
 }
 
 /**
@@ -7482,13 +6146,9 @@ function decrypt(cipher, ciphertext, key, iv) {
   if (webCrypto && _config2.default.use_native && key.length !== 24) {
     // WebCrypto (no 192 bit support) see: https://www.chromium.org/blink/webcrypto#TOC-AES-support
     return webDecrypt(ciphertext, key, iv);
-  } else if (nodeCrypto && _config2.default.use_native) {
-    // Node crypto library
-    return nodeDecrypt(ciphertext, key, iv);
-  } else {
-    // asm.js fallback
-    return Promise.resolve(_asmcryptoLite2.default.AES_GCM.decrypt(ciphertext, key, iv));
   }
+  // asm.js fallback
+  return Promise.resolve(_asmcryptoLite2.default.AES_GCM.decrypt(ciphertext, key, iv));
 }
 
 //////////////////////////
@@ -7514,26 +6174,8 @@ function webDecrypt(ct, key, iv) {
   });
 }
 
-function nodeEncrypt(pt, key, iv) {
-  pt = new Buffer(pt);
-  key = new Buffer(key);
-  iv = new Buffer(iv);
-  var en = new nodeCrypto.createCipheriv('aes-' + key.length * 8 + '-gcm', key, iv);
-  var ct = Buffer.concat([en.update(pt), en.final(), en.getAuthTag()]); // append auth tag to ciphertext
-  return Promise.resolve(new Uint8Array(ct));
-}
-
-function nodeDecrypt(ct, key, iv) {
-  ct = new Buffer(ct);
-  key = new Buffer(key);
-  iv = new Buffer(iv);
-  var de = new nodeCrypto.createDecipheriv('aes-' + key.length * 8 + '-gcm', key, iv);
-  de.setAuthTag(ct.slice(ct.length - TAG_LEN, ct.length)); // read auth tag at end of ciphertext
-  var pt = Buffer.concat([de.update(ct.slice(0, ct.length - TAG_LEN)), de.final()]);
-  return Promise.resolve(new Uint8Array(pt));
-}
-
-},{"../config":10,"../util.js":70,"asmcrypto-lite":1}],20:[function(_dereq_,module,exports){
+},{"../config":10,"../util.js":70,"asmcrypto-lite":1}],
+20:[function(_dereq_,module,exports){
 /**
  * @requires crypto/hash/sha
  * @requires crypto/hash/md5
@@ -7574,63 +6216,26 @@ var _util2 = _interopRequireDefault(_util);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var rusha = new _rusha2.default(),
-    nodeCrypto = _util2.default.getNodeCrypto(),
-    Buffer = _util2.default.getNodeBuffer();
-
-function node_hash(type) {
-  return function (data) {
-    var shasum = nodeCrypto.createHash(type);
-    shasum.update(new Buffer(data));
-    return new Uint8Array(shasum.digest());
-  };
-}
-
-var hash_fns;
-if (nodeCrypto) {
-  // Use Node native crypto for all hash functions
-
-  hash_fns = {
-    md5: node_hash('md5'),
-    sha1: node_hash('sha1'),
-    sha224: node_hash('sha224'),
-    sha256: node_hash('sha256'),
-    sha384: node_hash('sha384'),
-    sha512: node_hash('sha512'),
-    ripemd: node_hash('ripemd160')
-  };
-} else {
-  // Use JS fallbacks
-
-  hash_fns = {
-    /** @see module:crypto/hash/md5 */
-    md5: _md2.default,
-    /** @see module:rusha */
-    sha1: function sha1(data) {
-      return _util2.default.str2Uint8Array(_util2.default.hex2bin(rusha.digest(data)));
-    },
-    /** @see module:crypto/hash/sha.sha224 */
-    sha224: _sha2.default.sha224,
-    /** @see module:asmcrypto */
-    sha256: _asmcryptoLite2.default.SHA256.bytes,
-    /** @see module:crypto/hash/sha.sha384 */
-    sha384: _sha2.default.sha384,
-    /** @see module:crypto/hash/sha.sha512 */
-    sha512: _sha2.default.sha512,
-    /** @see module:crypto/hash/ripe-md */
-    ripemd: _ripeMd2.default
-  };
-}
+var rusha = new _rusha2.default();
 
 exports.default = {
 
-  md5: hash_fns.md5,
-  sha1: hash_fns.sha1,
-  sha224: hash_fns.sha224,
-  sha256: hash_fns.sha256,
-  sha384: hash_fns.sha384,
-  sha512: hash_fns.sha512,
-  ripemd: hash_fns.ripemd,
+  /** @see module:crypto/hash/md5 */
+  md5: _md2.default,
+  /** @see module:rusha */
+  sha1: function sha1(data) {
+    return _util2.default.str2Uint8Array(_util2.default.hex2bin(rusha.digest(data)));
+  },
+  /** @see module:crypto/hash/sha.sha224 */
+  sha224: _sha2.default.sha224,
+  /** @see module:asmcrypto */
+  sha256: _asmcryptoLite2.default.SHA256.bytes,
+  /** @see module:crypto/hash/sha.sha384 */
+  sha384: _sha2.default.sha384,
+  /** @see module:crypto/hash/sha.sha512 */
+  sha512: _sha2.default.sha512,
+  /** @see module:crypto/hash/ripe-md */
+  ripemd: _ripeMd2.default,
 
   /**
    * Create a hash on the specified data using the specified algorithm
@@ -7699,7 +6304,8 @@ exports.default = {
   }
 };
 
-},{"../../util.js":70,"./md5.js":21,"./ripe-md.js":22,"./sha.js":23,"asmcrypto-lite":1,"rusha":4}],21:[function(_dereq_,module,exports){
+},{"../../util.js":70,"./md5.js":21,"./ripe-md.js":22,"./sha.js":23,"asmcrypto-lite":1,"rusha":4}],
+21:[function(_dereq_,module,exports){
 /**
  * A fast MD5 JavaScript implementation
  * Copyright (c) 2012 Joseph Myers
@@ -7925,7 +6531,8 @@ function add32(a, b) {
   return a + b & 0xFFFFFFFF;
 }
 
-},{"../../util.js":70}],22:[function(_dereq_,module,exports){
+},{"../../util.js":70}],
+22:[function(_dereq_,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8200,7 +6807,8 @@ function RMDstring(message) {
   return _util2.default.str2Uint8Array(retString);
 }
 
-},{"../../util.js":70}],23:[function(_dereq_,module,exports){
+},{"../../util.js":70}],
+23:[function(_dereq_,module,exports){
 /**
  * @preserve A JavaScript implementation of the SHA family of hashes, as
  * defined in FIPS PUB 180-2 as well as the corresponding HMAC implementation
@@ -9534,7 +8142,8 @@ exports.default = {
   }
 };
 
-},{}],24:[function(_dereq_,module,exports){
+},{}],
+24:[function(_dereq_,module,exports){
 /**
  * @see module:crypto/crypto
  * @module crypto
@@ -9611,7 +8220,8 @@ for (var i in _crypto2.default) {
 
 exports.default = mod;
 
-},{"./cfb":11,"./cipher":16,"./crypto.js":18,"./gcm":19,"./hash":20,"./pkcs1":25,"./public_key":28,"./random":31,"./signature":32}],25:[function(_dereq_,module,exports){
+},{"./cfb":11,"./cipher":16,"./crypto.js":18,"./gcm":19,"./hash":20,"./pkcs1":25,"./public_key":28,"./random":31,"./signature":32}],
+25:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -9783,7 +8393,8 @@ exports.default = {
   }
 };
 
-},{"../util.js":70,"./hash":20,"./public_key/jsbn.js":29,"./random.js":31}],26:[function(_dereq_,module,exports){
+},{"../util.js":70,"./hash":20,"./public_key/jsbn.js":29,"./random.js":31}],
+26:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -9926,7 +8537,8 @@ function DSA() {
   this.verify = verify;
 }
 
-},{"../../config":10,"../../util.js":70,"../hash":20,"../random.js":31,"./jsbn.js":29}],27:[function(_dereq_,module,exports){
+},{"../../config":10,"../../util.js":70,"../hash":20,"../random.js":31,"./jsbn.js":29}],
+27:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -9999,7 +8611,8 @@ function Elgamal() {
   this.decrypt = decrypt;
 }
 
-},{"../../util.js":70,"../random.js":31,"./jsbn.js":29}],28:[function(_dereq_,module,exports){
+},{"../../util.js":70,"../random.js":31,"./jsbn.js":29}],
+28:[function(_dereq_,module,exports){
 /**
  * @requires crypto/public_key/dsa
  * @requires crypto/public_key/elgamal
@@ -10037,7 +8650,8 @@ exports.default = {
 };
 /** @see module:crypto/public_key/dsa */
 
-},{"./dsa.js":26,"./elgamal.js":27,"./rsa.js":30}],29:[function(_dereq_,module,exports){
+},{"./dsa.js":26,"./elgamal.js":27,"./rsa.js":30}],
+29:[function(_dereq_,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11723,7 +10337,8 @@ BigInteger.prototype.toMPI = bnToMPI;
 // JSBN-specific extension
 BigInteger.prototype.square = bnSquare;
 
-},{"../../util.js":70}],30:[function(_dereq_,module,exports){
+},{"../../util.js":70}],
+30:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -11915,10 +10530,6 @@ function RSA() {
         };
 
         keys = webCrypto.generateKey(keyGenOpt, true, ['sign', 'verify']);
-        if (typeof keys.then !== 'function') {
-          // IE11 KeyOperation
-          keys = _util2.default.promisifyIE11Op(keys, 'Error generating RSA key pair.');
-        }
       }
 
       return keys.then(exportKey).then(function (key) {
@@ -11933,12 +10544,7 @@ function RSA() {
     function exportKey(keypair) {
       // export the generated keys as JsonWebKey (JWK)
       // https://tools.ietf.org/html/draft-ietf-jose-json-web-key-33
-      var key = webCrypto.exportKey('jwk', keypair.privateKey);
-      if (typeof key.then !== 'function') {
-        // IE11 KeyOperation
-        key = _util2.default.promisifyIE11Op(key, 'Error exporting RSA key pair.');
-      }
-      return key;
+      return webCrypto.exportKey('jwk', keypair.privateKey);
     }
 
     function decodeKey(jwk) {
@@ -12014,7 +10620,8 @@ function RSA() {
   this.keyObject = KeyObject;
 }
 
-},{"../../config":10,"../../util.js":70,"../random.js":31,"./jsbn.js":29}],31:[function(_dereq_,module,exports){
+},{"../../config":10,"../../util.js":70,"../random.js":31,"./jsbn.js":29}],
+31:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -12057,8 +10664,6 @@ var _util = _dereq_('../util.js');
 var _util2 = _interopRequireDefault(_util);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var nodeCrypto = _util2.default.detectNode() && _dereq_('crypto');
 
 exports.default = {
   /**
@@ -12114,9 +10719,6 @@ exports.default = {
       window.crypto.getRandomValues(buf);
     } else if (typeof window !== 'undefined' && _typeof(window.msCrypto) === 'object' && typeof window.msCrypto.getRandomValues === 'function') {
       window.msCrypto.getRandomValues(buf);
-    } else if (nodeCrypto) {
-      var bytes = nodeCrypto.randomBytes(buf.length);
-      buf.set(bytes);
     } else if (this.randomBuffer.buffer) {
       this.randomBuffer.get(buf);
     } else {
@@ -12222,7 +10824,8 @@ RandomBuffer.prototype.get = function (buf) {
   }
 };
 
-},{"../type/mpi.js":68,"../util.js":70,"crypto":"crypto"}],32:[function(_dereq_,module,exports){
+},{"../type/mpi.js":68,"../util.js":70,"crypto":"crypto"}],
+32:[function(_dereq_,module,exports){
 /**
  * @requires util
  * @requires crypto/hash
@@ -12351,7 +10954,8 @@ exports.default = {
   }
 };
 
-},{"../util":70,"./pkcs1.js":25,"./public_key":28}],33:[function(_dereq_,module,exports){
+},{"../util":70,"./pkcs1.js":25,"./public_key":28}],
+33:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -12725,7 +11329,8 @@ exports.default = {
   decode: dearmor
 };
 
-},{"../config":10,"../enums.js":35,"./base64.js":34}],34:[function(_dereq_,module,exports){
+},{"../config":10,"../enums.js":35,"./base64.js":34}],
+34:[function(_dereq_,module,exports){
 /* OpenPGP radix-64/base64 string encoding/decoding
  * Copyright 2005 Herbert Hanewinkel, www.haneWIN.de
  * version 1.0, check www.haneWIN.de for the latest version
@@ -12843,7 +11448,8 @@ exports.default = {
   decode: r2s
 };
 
-},{}],35:[function(_dereq_,module,exports){
+},{}],
+35:[function(_dereq_,module,exports){
 'use strict';
 
 /**
@@ -13175,7 +11781,8 @@ exports.default = {
 
 };
 
-},{}],36:[function(_dereq_,module,exports){
+},{}],
+36:[function(_dereq_,module,exports){
 // OpenPGP.js - An OpenPGP implementation in javascript
 // Copyright (C) 2015 Tankred Hase
 //
@@ -13219,7 +11826,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 function HKP(keyServerBaseUrl) {
   this._baseUrl = keyServerBaseUrl ? keyServerBaseUrl : _config2.default.keyserver;
-  this._fetch = typeof window !== 'undefined' ? window.fetch : _dereq_('node-fetch');
+  this._fetch = window.fetch;
 }
 
 /**
@@ -13271,7 +11878,8 @@ HKP.prototype.upload = function (publicKeyArmored) {
   });
 };
 
-},{"./config":10,"node-fetch":"node-fetch"}],37:[function(_dereq_,module,exports){
+},{"./config":10,"node-fetch":"node-fetch"}],
+37:[function(_dereq_,module,exports){
 'use strict';
 
 /**
@@ -13470,7 +12078,8 @@ var cleartext = exports.cleartext = cleartextMod;
  * @name module:openpgp.util
  */
 
-},{"./cleartext":5,"./config/config":9,"./crypto":24,"./encoding/armor":33,"./enums":35,"./hkp":36,"./key":38,"./keyring":39,"./message":42,"./openpgp":43,"./packet":47,"./signature":66,"./type/keyid":67,"./type/mpi":68,"./type/s2k":69,"./util":70,"./worker/async_proxy":71}],38:[function(_dereq_,module,exports){
+},{"./cleartext":5,"./config/config":9,"./crypto":24,"./encoding/armor":33,"./enums":35,"./hkp":36,"./key":38,"./keyring":39,"./message":42,"./openpgp":43,"./packet":47,"./signature":66,"./type/keyid":67,"./type/mpi":68,"./type/s2k":69,"./util":70,"./worker/async_proxy":71}],
+38:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -14792,7 +13401,8 @@ function getPreferredSymAlgo(keys) {
   return prefAlgo.algo;
 }
 
-},{"./config":10,"./encoding/armor.js":33,"./enums.js":35,"./packet":47,"./util":70}],39:[function(_dereq_,module,exports){
+},{"./config":10,"./encoding/armor.js":33,"./enums.js":35,"./packet":47,"./util":70}],
+39:[function(_dereq_,module,exports){
 'use strict';
 
 /**
@@ -14818,7 +13428,8 @@ _keyring2.default.localstore = _localstore2.default;
 
 exports.default = _keyring2.default;
 
-},{"./keyring.js":40,"./localstore.js":41}],40:[function(_dereq_,module,exports){
+},{"./keyring.js":40,"./localstore.js":41}],
+40:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -15055,7 +13666,8 @@ KeyArray.prototype.removeForId = function (keyId) {
   return null;
 };
 
-},{"../key.js":38,"./localstore.js":41}],41:[function(_dereq_,module,exports){
+},{"../key.js":38,"./localstore.js":41}],
+41:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -15107,11 +13719,7 @@ function LocalStore(prefix) {
   prefix = prefix || 'openpgp-';
   this.publicKeysItem = prefix + this.publicKeysItem;
   this.privateKeysItem = prefix + this.privateKeysItem;
-  if (typeof window !== 'undefined' && window.localStorage) {
-    this.storage = window.localStorage;
-  } else {
-    this.storage = new (_dereq_('node-localstorage').LocalStorage)(_config2.default.node_store);
-  }
+  this.storage = window.localStorage;
 }
 
 /*
@@ -15183,7 +13791,8 @@ function storeKeys(storage, itemname, keys) {
   }
 }
 
-},{"../config":10,"../key.js":38,"../util.js":70,"node-localstorage":"node-localstorage"}],42:[function(_dereq_,module,exports){
+},{"../config":10,"../key.js":38,"../util.js":70,"node-localstorage":"node-localstorage"}],
+42:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -15822,7 +14431,8 @@ function fromBinary(bytes, filename) {
   return new Message(literalDataPacketlist);
 }
 
-},{"./config":10,"./crypto":24,"./encoding/armor.js":33,"./enums.js":35,"./key.js":38,"./packet":47,"./signature.js":66,"./util.js":70}],43:[function(_dereq_,module,exports){
+},{"./config":10,"./crypto":24,"./encoding/armor.js":33,"./enums.js":35,"./key.js":38,"./packet":47,"./signature.js":66,"./util.js":70}],
+43:[function(_dereq_,module,exports){
 // OpenPGP.js - An OpenPGP implementation in javascript
 // Copyright (C) 2016 Tankred Hase
 //
@@ -15897,15 +14507,9 @@ var _async_proxy = _dereq_('./worker/async_proxy.js');
 
 var _async_proxy2 = _interopRequireDefault(_async_proxy);
 
-var _es6Promise = _dereq_('es6-promise');
-
-var _es6Promise2 = _interopRequireDefault(_es6Promise);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-_es6Promise2.default.polyfill(); // load ES6 Promises polyfill
 
 
 //////////////////////////
@@ -16524,7 +15128,8 @@ function nativeAEAD() {
   return _util2.default.getWebCrypto() && _config2.default.aead_protect;
 }
 
-},{"./cleartext.js":5,"./config/config.js":9,"./key.js":38,"./message.js":42,"./util":70,"./worker/async_proxy.js":71,"es6-promise":2}],44:[function(_dereq_,module,exports){
+},{"./cleartext.js":5,"./config/config.js":9,"./key.js":38,"./message.js":42,"./util":70,"./worker/async_proxy.js":71,"es6-promise":2}],
+44:[function(_dereq_,module,exports){
 /**
  * @requires enums
  * @module packet
@@ -16742,7 +15347,8 @@ function packetClassFromTagName(tag) {
   return tag.substr(0, 1).toUpperCase() + tag.substr(1);
 }
 
-},{"../enums.js":35,"./all_packets.js":44,"./compressed.js":46,"./literal.js":48,"./marker.js":49,"./one_pass_signature.js":50,"./public_key.js":53,"./public_key_encrypted_session_key.js":54,"./public_subkey.js":55,"./secret_key.js":56,"./secret_subkey.js":57,"./signature.js":58,"./sym_encrypted_aead_protected.js":59,"./sym_encrypted_integrity_protected.js":60,"./sym_encrypted_session_key.js":61,"./symmetrically_encrypted.js":62,"./trust.js":63,"./user_attribute.js":64,"./userid.js":65}],45:[function(_dereq_,module,exports){
+},{"../enums.js":35,"./all_packets.js":44,"./compressed.js":46,"./literal.js":48,"./marker.js":49,"./one_pass_signature.js":50,"./public_key.js":53,"./public_key_encrypted_session_key.js":54,"./public_subkey.js":55,"./secret_key.js":56,"./secret_subkey.js":57,"./signature.js":58,"./sym_encrypted_aead_protected.js":59,"./sym_encrypted_integrity_protected.js":60,"./sym_encrypted_session_key.js":61,"./symmetrically_encrypted.js":62,"./trust.js":63,"./user_attribute.js":64,"./userid.js":65}],
+45:[function(_dereq_,module,exports){
 // OpenPGP.js - An OpenPGP implementation in javascript
 // Copyright (C) 2015 Tankred Hase
 //
@@ -16926,7 +15532,8 @@ function packetlistCloneToSignature(clone) {
   return new signature.Signature(packetlist);
 }
 
-},{"../cleartext.js":5,"../key.js":38,"../message.js":42,"../signature.js":66,"../type/keyid.js":67,"./packetlist.js":52}],46:[function(_dereq_,module,exports){
+},{"../cleartext.js":5,"../key.js":38,"../message.js":42,"../signature.js":66,"../type/keyid.js":67,"./packetlist.js":52}],
+46:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -17109,7 +15716,8 @@ Compressed.prototype.compress = function () {
   }
 };
 
-},{"../compression/rawdeflate.min.js":6,"../compression/rawinflate.min.js":7,"../compression/zlib.min.js":8,"../enums.js":35,"../util.js":70}],47:[function(_dereq_,module,exports){
+},{"../compression/rawdeflate.min.js":6,"../compression/rawinflate.min.js":7,"../compression/zlib.min.js":8,"../enums.js":35,"../util.js":70}],
+47:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17145,7 +15753,8 @@ for (var i in packets) {
 
 exports.default = mod;
 
-},{"./all_packets.js":44,"./clone.js":45,"./packetlist.js":52}],48:[function(_dereq_,module,exports){
+},{"./all_packets.js":44,"./clone.js":45,"./packetlist.js":52}],
+48:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -17295,7 +15904,8 @@ Literal.prototype.write = function () {
   return _util2.default.concatUint8Array([format, filename_length, filename, date, data]);
 };
 
-},{"../enums.js":35,"../util.js":70}],49:[function(_dereq_,module,exports){
+},{"../enums.js":35,"../util.js":70}],
+49:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -17369,7 +15979,8 @@ Marker.prototype.read = function (bytes) {
   return false;
 };
 
-},{"../enums.js":35}],50:[function(_dereq_,module,exports){
+},{"../enums.js":35}],
+50:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -17488,7 +16099,8 @@ OnePassSignature.prototype.postCloneTypeFix = function () {
   this.signingKeyId = _keyid2.default.fromClone(this.signingKeyId);
 };
 
-},{"../enums.js":35,"../type/keyid.js":67,"../util.js":70}],51:[function(_dereq_,module,exports){
+},{"../enums.js":35,"../type/keyid.js":67,"../util.js":70}],
+51:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -17748,7 +16360,8 @@ exports.default = {
   }
 };
 
-},{"../util.js":70}],52:[function(_dereq_,module,exports){
+},{"../util.js":70}],
+52:[function(_dereq_,module,exports){
 /**
  * This class represents a list of openpgp packets.
  * Take care when iterating over it - the packets themselves
@@ -18008,7 +16621,8 @@ Packetlist.fromStructuredClone = function (packetlistClone) {
   return packetlist;
 };
 
-},{"../config":10,"../enums.js":35,"../util":70,"./all_packets.js":44,"./packet.js":51}],53:[function(_dereq_,module,exports){
+},{"../config":10,"../enums.js":35,"../util":70,"./all_packets.js":44,"./packet.js":51}],
+53:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -18255,7 +16869,8 @@ PublicKey.prototype.postCloneTypeFix = function () {
   }
 };
 
-},{"../crypto":24,"../enums.js":35,"../type/keyid.js":67,"../type/mpi.js":68,"../util.js":70}],54:[function(_dereq_,module,exports){
+},{"../crypto":24,"../enums.js":35,"../type/keyid.js":67,"../type/mpi.js":68,"../util.js":70}],
+54:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -18445,7 +17060,8 @@ PublicKeyEncryptedSessionKey.prototype.postCloneTypeFix = function () {
   }
 };
 
-},{"../crypto":24,"../enums.js":35,"../type/keyid.js":67,"../type/mpi.js":68,"../util.js":70}],55:[function(_dereq_,module,exports){
+},{"../crypto":24,"../enums.js":35,"../type/keyid.js":67,"../type/mpi.js":68,"../util.js":70}],
+55:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -18498,7 +17114,8 @@ function PublicSubkey() {
 PublicSubkey.prototype = new _public_key2.default();
 PublicSubkey.prototype.constructor = PublicSubkey;
 
-},{"../enums.js":35,"./public_key.js":53}],56:[function(_dereq_,module,exports){
+},{"../enums.js":35,"./public_key.js":53}],
+56:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -18808,7 +17425,8 @@ SecretKey.prototype.clearPrivateMPIs = function () {
   this.isDecrypted = false;
 };
 
-},{"../crypto":24,"../enums.js":35,"../type/mpi.js":68,"../type/s2k.js":69,"../util.js":70,"./public_key.js":53}],57:[function(_dereq_,module,exports){
+},{"../crypto":24,"../enums.js":35,"../type/mpi.js":68,"../type/s2k.js":69,"../util.js":70,"./public_key.js":53}],
+57:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -18861,7 +17479,8 @@ function SecretSubkey() {
 SecretSubkey.prototype = new _secret_key2.default();
 SecretSubkey.prototype.constructor = SecretSubkey;
 
-},{"../enums.js":35,"./secret_key.js":56}],58:[function(_dereq_,module,exports){
+},{"../enums.js":35,"./secret_key.js":56}],
+58:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -19544,7 +18163,8 @@ Signature.prototype.postCloneTypeFix = function () {
   this.issuerKeyId = _keyid2.default.fromClone(this.issuerKeyId);
 };
 
-},{"../crypto":24,"../enums.js":35,"../type/keyid.js":67,"../type/mpi.js":68,"../util.js":70,"./packet.js":51}],59:[function(_dereq_,module,exports){
+},{"../crypto":24,"../enums.js":35,"../type/keyid.js":67,"../type/mpi.js":68,"../util.js":70,"./packet.js":51}],
+59:[function(_dereq_,module,exports){
 // OpenPGP.js - An OpenPGP implementation in javascript
 // Copyright (C) 2016 Tankred Hase
 //
@@ -19654,7 +18274,8 @@ SymEncryptedAEADProtected.prototype.encrypt = function (sessionKeyAlgorithm, key
   });
 };
 
-},{"../crypto":24,"../enums.js":35,"../util.js":70}],60:[function(_dereq_,module,exports){
+},{"../crypto":24,"../enums.js":35,"../util.js":70}],
+60:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -19713,9 +18334,6 @@ var _asmcryptoLite = _dereq_('asmcrypto-lite');
 var _asmcryptoLite2 = _interopRequireDefault(_asmcryptoLite);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var nodeCrypto = _util2.default.getNodeCrypto();
-var Buffer = _util2.default.getNodeBuffer();
 
 var VERSION = 1; // A one-octet version number of the data packet.
 
@@ -19821,45 +18439,17 @@ SymEncryptedIntegrityProtected.prototype.decrypt = function (sessionKeyAlgorithm
 
 
 function aesEncrypt(algo, prefix, pt, key) {
-  if (nodeCrypto) {
-    // Node crypto library.
-    return nodeEncrypt(algo, prefix, pt, key);
-  } else {
-    // asm.js fallback
-    return _asmcryptoLite2.default.AES_CFB.encrypt(_util2.default.concatUint8Array([prefix, pt]), key);
-  }
+  // asm.js fallback
+  return _asmcryptoLite2.default.AES_CFB.encrypt(_util2.default.concatUint8Array([prefix, pt]), key);
 }
 
 function aesDecrypt(algo, ct, key) {
-  var pt = void 0;
-  if (nodeCrypto) {
-    // Node crypto library.
-    pt = nodeDecrypt(algo, ct, key);
-  } else {
-    // asm.js fallback
-    pt = _asmcryptoLite2.default.AES_CFB.decrypt(ct, key);
-  }
-  return pt.subarray(_crypto2.default.cipher[algo].blockSize + 2, pt.length); // Remove random prefix
+  // asm.js fallback
+  return _asmcryptoLite2.default.AES_CFB.decrypt(ct, key).subarray(_crypto2.default.cipher[algo].blockSize + 2, pt.length); // Remove random prefix
 }
 
-function nodeEncrypt(algo, prefix, pt, key) {
-  key = new Buffer(key);
-  var iv = new Buffer(new Uint8Array(_crypto2.default.cipher[algo].blockSize));
-  var cipherObj = new nodeCrypto.createCipheriv('aes-' + algo.substr(3, 3) + '-cfb', key, iv);
-  var ct = cipherObj.update(new Buffer(_util2.default.concatUint8Array([prefix, pt])));
-  return new Uint8Array(ct);
-}
-
-function nodeDecrypt(algo, ct, key) {
-  ct = new Buffer(ct);
-  key = new Buffer(key);
-  var iv = new Buffer(new Uint8Array(_crypto2.default.cipher[algo].blockSize));
-  var decipherObj = new nodeCrypto.createDecipheriv('aes-' + algo.substr(3, 3) + '-cfb', key, iv);
-  var pt = decipherObj.update(ct);
-  return new Uint8Array(pt);
-}
-
-},{"../crypto":24,"../enums.js":35,"../util.js":70,"asmcrypto-lite":1}],61:[function(_dereq_,module,exports){
+},{"../crypto":24,"../enums.js":35,"../util.js":70,"asmcrypto-lite":1}],
+61:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -20028,7 +18618,8 @@ SymEncryptedSessionKey.prototype.postCloneTypeFix = function () {
   this.s2k = _s2k2.default.fromClone(this.s2k);
 };
 
-},{"../crypto":24,"../enums.js":35,"../type/s2k.js":69,"../util.js":70}],62:[function(_dereq_,module,exports){
+},{"../crypto":24,"../enums.js":35,"../type/s2k.js":69,"../util.js":70}],
+62:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -20128,7 +18719,8 @@ SymmetricallyEncrypted.prototype.encrypt = function (algo, key) {
   return Promise.resolve();
 };
 
-},{"../config":10,"../crypto":24,"../enums.js":35}],63:[function(_dereq_,module,exports){
+},{"../config":10,"../crypto":24,"../enums.js":35}],
+63:[function(_dereq_,module,exports){
 /**
  * @requires enums
  * @module packet/trust
@@ -20161,7 +18753,8 @@ function Trust() {
  */
 Trust.prototype.read = function () {};
 
-},{"../enums.js":35}],64:[function(_dereq_,module,exports){
+},{"../enums.js":35}],
+64:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -20271,7 +18864,8 @@ UserAttribute.prototype.equals = function (usrAttr) {
   });
 };
 
-},{"../enums.js":35,"../util.js":70,"./packet.js":51}],65:[function(_dereq_,module,exports){
+},{"../enums.js":35,"../util.js":70,"./packet.js":51}],
+65:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -20347,7 +18941,8 @@ Userid.prototype.write = function () {
   return _util2.default.str2Uint8Array(_util2.default.encode_utf8(this.userid));
 };
 
-},{"../enums.js":35,"../util.js":70}],66:[function(_dereq_,module,exports){
+},{"../enums.js":35,"../util.js":70}],
+66:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -20441,7 +19036,8 @@ function read(input) {
   return new Signature(packetlist);
 }
 
-},{"./encoding/armor.js":33,"./enums.js":35,"./packet":47}],67:[function(_dereq_,module,exports){
+},{"./encoding/armor.js":33,"./enums.js":35,"./packet":47}],
+67:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -20530,7 +19126,8 @@ Keyid.fromId = function (hex) {
   return keyid;
 };
 
-},{"../util.js":70}],68:[function(_dereq_,module,exports){
+},{"../util.js":70}],
+68:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -20661,7 +19258,8 @@ MPI.fromClone = function (clone) {
   return mpi;
 };
 
-},{"../crypto/public_key/jsbn.js":29,"../util.js":70}],69:[function(_dereq_,module,exports){
+},{"../crypto/public_key/jsbn.js":29,"../util.js":70}],
+69:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -20885,7 +19483,8 @@ S2K.fromClone = function (clone) {
   return s2k;
 };
 
-},{"../crypto":24,"../enums.js":35,"../util.js":70}],70:[function(_dereq_,module,exports){
+},{"../crypto":24,"../enums.js":35,"../util.js":70}],
+70:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -21382,75 +19981,16 @@ exports.default = {
   },
 
   /**
-   * Wraps a generic synchronous function in an ES6 Promise.
-   * @param  {Function} fn  The function to be wrapped
-   * @return {Function}     The function wrapped in a Promise
-   */
-  promisify: function promisify(fn) {
-    return function () {
-      var args = arguments;
-      return new Promise(function (resolve) {
-        var result = fn.apply(null, args);
-        resolve(result);
-      });
-    };
-  },
-
-  /**
-   * Converts an IE11 web crypro api result to a promise.
-   *   This is required since IE11 implements an old version of the
-   *   Web Crypto specification that does not use promises.
-   * @param  {Object} cryptoOp The return value of an IE11 web cryptro api call
-   * @param  {String} errmsg   An error message for a specific operation
-   * @return {Promise}         The resulting Promise
-   */
-  promisifyIE11Op: function promisifyIE11Op(cryptoOp, errmsg) {
-    return new Promise(function (resolve, reject) {
-      cryptoOp.onerror = function () {
-        reject(new Error(errmsg));
-      };
-      cryptoOp.oncomplete = function (e) {
-        resolve(e.target.result);
-      };
-    });
-  },
-
-  /**
    * Detect Node.js runtime.
    */
   detectNode: function detectNode() {
     return typeof window === 'undefined';
-  },
-
-  /**
-   * Get native Node.js crypto api. The default configuration is to use
-   * the api when available. But it can also be deactivated with config.use_native
-   * @return {Object}   The crypto module or 'undefined'
-   */
-  getNodeCrypto: function getNodeCrypto() {
-    if (!this.detectNode() || !_config2.default.use_native) {
-      return;
-    }
-
-    return _dereq_('crypto');
-  },
-
-  /**
-   * Get native Node.js Buffer constructor. This should be used since
-   * Buffer is not available under browserify.
-   * @return {Function}   The Buffer constructor or 'undefined'
-   */
-  getNodeBuffer: function getNodeBuffer() {
-    if (!this.detectNode()) {
-      return;
-    }
-
-    return _dereq_('buffer').Buffer;
   }
 
 };
 
-},{"./config":10,"buffer":"buffer","crypto":"crypto"}],71:[function(_dereq_,module,exports){
+},{"./config":10,"buffer":"buffer","crypto":"crypto"}],
+71:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -21611,5 +20151,5 @@ AsyncProxy.prototype.delegate = function (method, options) {
   });
 };
 
-},{"../crypto":24,"../packet":47,"../util.js":70}]},{},[37])(37)
-});
+},{"../crypto":24,"../packet":47,"../util.js":70}]
+},{},[37])(37)});

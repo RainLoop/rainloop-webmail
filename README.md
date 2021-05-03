@@ -139,7 +139,7 @@ RainLoop 1.15 vs SnappyMail
 
 |OpenPGP        	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
-|openpgp.min.js 	|  330.742	|  330.300	|102.388	|102.388	| 84.241  	| 84.121	|
+|openpgp.min.js 	|  330.742	|  320.189	|102.388	| 98.725	| 84.241  	| 81.253	|
 |openpgp.worker 	|    1.499	|    1.125	|    824	|    567	|    695 	|    467	|
 
 For a user its around 66% smaller and faster than traditional RainLoop.

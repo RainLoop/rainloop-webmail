@@ -15,62 +15,26 @@ import md5 from './md5.js';
 import ripemd from './ripe-md.js';
 import util from '../../util.js';
 
-const rusha = new Rusha(),
-  nodeCrypto = util.getNodeCrypto(),
-  Buffer = util.getNodeBuffer();
-
-function node_hash(type) {
-  return function (data) {
-    var shasum = nodeCrypto.createHash(type);
-    shasum.update(new Buffer(data));
-    return new Uint8Array(shasum.digest());
-  };
-}
-
-var hash_fns;
-if(nodeCrypto) { // Use Node native crypto for all hash functions
-
-  hash_fns = {
-    md5: node_hash('md5'),
-    sha1: node_hash('sha1'),
-    sha224: node_hash('sha224'),
-    sha256: node_hash('sha256'),
-    sha384: node_hash('sha384'),
-    sha512: node_hash('sha512'),
-    ripemd: node_hash('ripemd160')
-  };
-
-} else { // Use JS fallbacks
-
-  hash_fns = {
-    /** @see module:crypto/hash/md5 */
-    md5: md5,
-    /** @see module:rusha */
-    sha1: function(data) {
-      return util.str2Uint8Array(util.hex2bin(rusha.digest(data)));
-    },
-    /** @see module:crypto/hash/sha.sha224 */
-    sha224: sha.sha224,
-    /** @see module:asmcrypto */
-    sha256: asmCrypto.SHA256.bytes,
-    /** @see module:crypto/hash/sha.sha384 */
-    sha384: sha.sha384,
-    /** @see module:crypto/hash/sha.sha512 */
-    sha512: sha.sha512,
-    /** @see module:crypto/hash/ripe-md */
-    ripemd: ripemd
-  };
-}
+const rusha = new Rusha();
 
 export default {
 
-  md5: hash_fns.md5,
-  sha1: hash_fns.sha1,
-  sha224: hash_fns.sha224,
-  sha256: hash_fns.sha256,
-  sha384: hash_fns.sha384,
-  sha512: hash_fns.sha512,
-  ripemd: hash_fns.ripemd,
+  /** @see module:crypto/hash/md5 */
+  md5: md5,
+  /** @see module:rusha */
+  sha1: function(data) {
+    return util.str2Uint8Array(util.hex2bin(rusha.digest(data)));
+  },
+  /** @see module:crypto/hash/sha.sha224 */
+  sha224: sha.sha224,
+  /** @see module:asmcrypto */
+  sha256: asmCrypto.SHA256.bytes,
+  /** @see module:crypto/hash/sha.sha384 */
+  sha384: sha.sha384,
+  /** @see module:crypto/hash/sha.sha512 */
+  sha512: sha.sha512,
+  /** @see module:crypto/hash/ripe-md */
+  ripemd: ripemd,
 
   /**
    * Create a hash on the specified data using the specified algorithm

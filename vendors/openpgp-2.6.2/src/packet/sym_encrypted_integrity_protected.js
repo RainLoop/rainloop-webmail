@@ -38,8 +38,6 @@ import util from '../util.js';
 import crypto from '../crypto';
 import enums from '../enums.js';
 import asmCrypto from 'asmcrypto-lite';
-const nodeCrypto = util.getNodeCrypto();
-const Buffer = util.getNodeBuffer();
 
 const VERSION = 1; // A one-octet version number of the data packet.
 
@@ -144,36 +142,9 @@ SymEncryptedIntegrityProtected.prototype.decrypt = function (sessionKeyAlgorithm
 
 
 function aesEncrypt(algo, prefix, pt, key) {
-  if(nodeCrypto) { // Node crypto library.
-    return nodeEncrypt(algo, prefix, pt, key);
-  } else { // asm.js fallback
-    return asmCrypto.AES_CFB.encrypt(util.concatUint8Array([prefix, pt]), key);
-  }
+  return asmCrypto.AES_CFB.encrypt(util.concatUint8Array([prefix, pt]), key);
 }
 
 function aesDecrypt(algo, ct, key) {
-  let pt;
-  if(nodeCrypto) { // Node crypto library.
-    pt = nodeDecrypt(algo, ct, key);
-  } else { // asm.js fallback
-    pt = asmCrypto.AES_CFB.decrypt(ct, key);
-  }
-  return pt.subarray(crypto.cipher[algo].blockSize + 2, pt.length); // Remove random prefix
-}
-
-function nodeEncrypt(algo, prefix, pt, key) {
-  key = new Buffer(key);
-  const iv = new Buffer(new Uint8Array(crypto.cipher[algo].blockSize));
-  const cipherObj = new nodeCrypto.createCipheriv('aes-' + algo.substr(3,3) + '-cfb', key, iv);
-  const ct = cipherObj.update(new Buffer(util.concatUint8Array([prefix, pt])));
-  return new Uint8Array(ct);
-}
-
-function nodeDecrypt(algo, ct, key) {
-  ct = new Buffer(ct);
-  key = new Buffer(key);
-  const iv = new Buffer(new Uint8Array(crypto.cipher[algo].blockSize));
-  const decipherObj = new nodeCrypto.createDecipheriv('aes-' + algo.substr(3,3) + '-cfb', key, iv);
-  const pt = decipherObj.update(ct);
-  return new Uint8Array(pt);
+  return asmCrypto.AES_CFB.decrypt(ct, key).subarray(crypto.cipher[algo].blockSize + 2, pt.length); // Remove random prefix
 }

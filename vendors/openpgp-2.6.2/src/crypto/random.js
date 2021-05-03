@@ -27,7 +27,6 @@
 
 import type_mpi from '../type/mpi.js';
 import util from '../util.js';
-const nodeCrypto = util.detectNode() && require('crypto');
 
 export default {
   /**
@@ -83,9 +82,6 @@ export default {
       window.crypto.getRandomValues(buf);
     } else if (typeof window !== 'undefined' && typeof window.msCrypto === 'object' && typeof window.msCrypto.getRandomValues === 'function') {
       window.msCrypto.getRandomValues(buf);
-    } else if (nodeCrypto) {
-      var bytes = nodeCrypto.randomBytes(buf.length);
-      buf.set(bytes);
     } else if (this.randomBuffer.buffer) {
       this.randomBuffer.get(buf);
     } else {

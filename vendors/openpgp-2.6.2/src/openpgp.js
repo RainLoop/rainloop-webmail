@@ -38,8 +38,6 @@ import * as key from './key.js';
 import config from './config/config.js';
 import util from './util';
 import AsyncProxy from './worker/async_proxy.js';
-import es6Promise from 'es6-promise';
-es6Promise.polyfill(); // load ES6 Promises polyfill
 
 
 //////////////////////////

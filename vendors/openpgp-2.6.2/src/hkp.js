@@ -32,7 +32,7 @@ import config from './config';
  */
 export default function HKP(keyServerBaseUrl) {
   this._baseUrl = keyServerBaseUrl ? keyServerBaseUrl : config.keyserver;
-  this._fetch = typeof window !== 'undefined' ? window.fetch : require('node-fetch');
+  this._fetch = window.fetch;
 }
 
 /**
