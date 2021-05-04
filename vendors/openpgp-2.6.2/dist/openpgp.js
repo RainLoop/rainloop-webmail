@@ -12,8 +12,6 @@ IllegalArgumentError.prototype = Object.create( Error.prototype, { name: { value
 function SecurityError () { var err = Error.apply( this, arguments ); this.message = err.message, this.stack = err.stack; }
 SecurityError.prototype = Object.create( Error.prototype, { name: { value: 'SecurityError' } } );
 
-var FloatArray = global.Float64Array || global.Float32Array; // make PhantomJS happy
-
 function string_to_bytes ( str, utf8 ) {
     utf8 = !!utf8;
 
@@ -127,17 +125,6 @@ function bytes_to_base64 ( arr ) {
     return btoa( bytes_to_string(arr) );
 }
 
-function pow2_ceil ( a ) {
-    a -= 1;
-    a |= a >>> 1;
-    a |= a >>> 2;
-    a |= a >>> 4;
-    a |= a >>> 8;
-    a |= a >>> 16;
-    a += 1;
-    return a;
-}
-
 function is_number ( a ) {
     return ( typeof a === 'number' );
 }
@@ -152,14 +139,6 @@ function is_buffer ( a ) {
 
 function is_bytes ( a ) {
     return ( a instanceof Uint8Array );
-}
-
-function is_typed_array ( a ) {
-    return ( a instanceof Int8Array ) || ( a instanceof Uint8Array )
-        || ( a instanceof Int16Array ) || ( a instanceof Uint16Array )
-        || ( a instanceof Int32Array ) || ( a instanceof Uint32Array )
-        || ( a instanceof Float32Array )
-        || ( a instanceof Float64Array );
 }
 
 function _heap_init ( constructor, options ) {
@@ -1859,8 +1838,7 @@ function AES_GCM_Decrypt_finish () {
         counter = this.counter,
         pos = this.pos,
         len = this.len,
-        rlen = len - tagSize,
-        wlen = 0;
+        rlen = len - tagSize;
 
     if ( len < tagSize )
         throw new IllegalStateError("authentication tag not found");
@@ -1870,8 +1848,6 @@ function AES_GCM_Decrypt_finish () {
 
     for ( var i = rlen; i & 15; i++ ) heap[ pos + i ] = 0;
 
-    wlen = asm.mac( AES_asm.MAC.GCM, AES_asm.HEAP_DATA + pos, i );
-    wlen = asm.cipher( AES_asm.DEC.CTR, AES_asm.HEAP_DATA + pos, i );
     if ( rlen ) result.set( heap.subarray( pos, pos+rlen ) );
 
     var alen = ( adata !== null ) ? adata.length : 0,
@@ -3103,20 +3079,6 @@ return exports;
                 return convBlob.bind(data);
             }
         };
-        var slice = function (data, offset) {
-            switch (util.getDataType(data)) {
-            case 'string':
-                return data.slice(offset);
-            case 'array':
-                return data.slice(offset);
-            case 'buffer':
-                return data.slice(offset);
-            case 'arraybuffer':
-                return data.slice(offset);
-            case 'view':
-                return data.buffer.slice(offset);
-            }
-        };
         var // Precompute 00 - ff strings
         precomputedHex = new Array(256);
         for (var i = 0; i < 256; i++) {
@@ -3290,7 +3252,7 @@ return exports;
             return hex(rawEnd().buffer);
         };
     }
-    ;
+
     // The low-level RushCore module provides the heart of Rusha,
     // a high-speed sha1 implementation working on an Int32Array heap.
     // At first glance, the implementation seems complicated, however
@@ -5541,13 +5503,6 @@ function createTwofish() {
   var keyBytes = null;
   var dataBytes = null;
   var dataOffset = -1;
-  // var dataLength = -1;
-  var algorithmName = null;
-  // var idx2 = -1;
-  //
-
-  algorithmName = "twofish";
-
   var tfsKey = [];
   var tfsM = [[], [], [], []];
 
@@ -6085,7 +6040,7 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ivLength = undefined;
+exports.ivLength = 12; // size of the IV in bytes
 exports.encrypt = encrypt;
 exports.decrypt = decrypt;
 
@@ -6105,7 +6060,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var webCrypto = _util2.default.getWebCrypto(); // no GCM support in IE11, Safari 9
 
-var ivLength = exports.ivLength = 12; // size of the IV in bytes
 var TAG_LEN = 16; // size of the tag in bytes
 var ALGO = 'AES-GCM';
 
@@ -6576,8 +6530,6 @@ var RMDsize = 160; /*
  * @module crypto/hash/ripe-md
  */
 
-var X = [];
-
 function ROL(x, n) {
   return new Number(x << n | x >>> 32 - n);
 }
@@ -6637,7 +6589,6 @@ function mixOneRound(a, b, c, d, e, x, s, roundNumber) {
 
     default:
       throw new Error("Bogus round number");
-      break;
   }
 
   a = ROL(a, s) + e;
@@ -7139,7 +7090,7 @@ function binb2b64(binarray, formatOpts) {
  * @return {string} Raw bytes representation of the parameter in string
  *   form
  */
-function binb2bytes(binarray, formatOpts) {
+function binb2bytes(binarray) {
   var str = "",
       length = binarray.length * 4,
       i,
@@ -7162,7 +7113,7 @@ function binb2bytes(binarray, formatOpts) {
  * @param {!Object} formatOpts Unused Hash list
  * @return {Uint8Array} Raw bytes representation of the parameter
  */
-function binb2typed(binarray, formatOpts) {
+function binb2typed(binarray) {
   var length = binarray.length * 4;
   var arr = new Uint8Array(length),
       i;
@@ -8709,9 +8660,6 @@ var dbits;
  * @module crypto/public_key/jsbn
  */
 
-var canary = 0xdeadbeefcafe;
-var j_lm = (canary & 0xffffff) == 0xefcafe;
-
 // (public) Constructor
 
 function BigInteger(a, b, c) {
@@ -8741,52 +8689,9 @@ function am1(i, x, w, j, c, n) {
   }
   return c;
 }
-// am2 avoids a big mult-and-extract completely.
-// Max digit bits should be <= 30 because we do bitwise ops
-// on values up to 2*hdvalue^2-hdvalue-1 (< 2^31)
 
-function am2(i, x, w, j, c, n) {
-  var xl = x & 0x7fff,
-      xh = x >> 15;
-  while (--n >= 0) {
-    var l = this[i] & 0x7fff;
-    var h = this[i++] >> 15;
-    var m = xh * l + h * xl;
-    l = xl * l + ((m & 0x7fff) << 15) + w[j] + (c & 0x3fffffff);
-    c = (l >>> 30) + (m >>> 15) + xh * h + (c >>> 30);
-    w[j++] = l & 0x3fffffff;
-  }
-  return c;
-}
-// Alternately, set max digit bits to 28 since some
-// browsers slow down when dealing with 32-bit numbers.
-
-function am3(i, x, w, j, c, n) {
-  var xl = x & 0x3fff,
-      xh = x >> 14;
-  while (--n >= 0) {
-    var l = this[i] & 0x3fff;
-    var h = this[i++] >> 14;
-    var m = xh * l + h * xl;
-    l = xl * l + ((m & 0x3fff) << 14) + w[j] + c;
-    c = (l >> 28) + (m >> 14) + xh * h;
-    w[j++] = l & 0xfffffff;
-  }
-  return c;
-}
-/*if(j_lm && (navigator != undefined &&
-	navigator.appName == "Microsoft Internet Explorer")) {
-  BigInteger.prototype.am = am2;
-  dbits = 30;
-}
-else if(j_lm && (navigator != undefined && navigator.appName != "Netscape")) {*/
 BigInteger.prototype.am = am1;
 dbits = 26;
-/*}
-else { // Mozilla/Netscape seems to prefer am3
-  BigInteger.prototype.am = am3;
-  dbits = 28;
-}*/
 
 BigInteger.prototype.DB = dbits;
 BigInteger.prototype.DM = (1 << dbits) - 1;
@@ -10213,32 +10118,6 @@ function bnIsProbablePrime(t) {
 }
 
 /* added by Recurity Labs */
-
-function nbits(x) {
-  var n = 1,
-      t;
-  if ((t = x >>> 16) != 0) {
-    x = t;
-    n += 16;
-  }
-  if ((t = x >> 8) != 0) {
-    x = t;
-    n += 8;
-  }
-  if ((t = x >> 4) != 0) {
-    x = t;
-    n += 4;
-  }
-  if ((t = x >> 2) != 0) {
-    x = t;
-    n += 2;
-  }
-  if ((t = x >> 1) != 0) {
-    x = t;
-    n += 1;
-  }
-  return n;
-}
 
 function bnToMPI() {
   var ba = this.toByteArray();
@@ -12053,25 +11932,25 @@ exports.default = openpgp;
  * @name module:openpgp.key
  */
 
-var key = exports.key = keyMod;
+exports.key = keyMod;
 
 /**
  * @see module:signature
  * @name module:openpgp.signature
  */
-var signature = exports.signature = signatureMod;
+exports.signature = signatureMod;
 
 /**
  * @see module:message
  * @name module:openpgp.message
  */
-var message = exports.message = messageMod;
+exports.message = messageMod;
 
 /**
  * @see module:cleartext
  * @name module:openpgp.cleartext
  */
-var cleartext = exports.cleartext = cleartextMod;
+exports.cleartext = cleartextMod;
 
 /**
  * @see module:util
@@ -15474,7 +15353,7 @@ function verificationObjectToClone(verObject) {
  * @param  {String} method    the public api function name to be delegated to the worker
  * @return {Object}           a mutated version of the options optject
  */
-function parseClonedPackets(options, method) {
+function parseClonedPackets(options) {
   if (options.publicKeys) {
     options.publicKeys = options.publicKeys.map(packetlistCloneToKey);
   }
@@ -19978,13 +19857,6 @@ exports.default = {
         return window.msCrypto.subtle;
       }
     }
-  },
-
-  /**
-   * Detect Node.js runtime.
-   */
-  detectNode: function detectNode() {
-    return typeof window === 'undefined';
   }
 
 };
