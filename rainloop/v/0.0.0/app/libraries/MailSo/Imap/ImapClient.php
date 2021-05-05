@@ -647,6 +647,36 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
+	 * @param array|string $mName
+	 *
+	 * @return string
+	 */
+	private function getArrayNameToStringName($mName)
+	{
+		if (\is_string($mName))
+		{
+			return $mName;
+		}
+
+		if (\is_array($mName))
+		{
+			if (0 === \count($mName))
+			{
+				return '[]';
+			}
+
+			foreach ($mName as &$mSubName)
+			{
+				$mSubName = "[{$this->getArrayNameToStringName($mSubName)}]";
+			}
+	
+			return \implode('', $mName);
+		}
+
+		return '';
+	}
+
+	/**
 	 * @param array $aResult
 	 * @param string $sStatus
 	 * @param bool $bUseListStatus = false
@@ -670,20 +700,18 @@ class ImapClient extends \MailSo\Net\NetClient
 				{
 					/**
 					 * A bug in the parser converts folder names that start with '[' into arrays,
-					 * and subfolders are in $oResponse->ResponseList[5+]
+					 * and subfolders are in $oImapResponse->ResponseList[5+]
 					 * https://github.com/the-djmaze/snappymail/issues/1
 					 * https://github.com/the-djmaze/snappymail/issues/70
 					 * https://github.com/RainLoop/rainloop-webmail/issues/2037
 					 */
-					$sFullNameRaw = \array_slice($oImapResponse->ResponseList, 4);
-					foreach ($sFullNameRaw as &$name) {
-						if (\is_array($name)) {
-							$name = "[{$name[0]}]";
-						} else if (!\is_string($name)) {
-							$name = '';
-						}
+					$aFullNameRawList = \array_slice($oImapResponse->ResponseList, 4);
+					foreach ($aFullNameRawList as &$sName)
+					{
+						$sName = $this->getArrayNameToStringName($sName);
 					}
-					$sFullNameRaw = \implode('', $sFullNameRaw);
+
+					$sFullNameRaw = \implode('', $aFullNameRawList);
 
 					$oFolder = Folder::NewInstance($sFullNameRaw,
 						$oImapResponse->ResponseList[3], $oImapResponse->ResponseList[2]);
