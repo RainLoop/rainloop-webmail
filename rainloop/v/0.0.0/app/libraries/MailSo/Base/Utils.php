@@ -2509,14 +2509,22 @@ END;
 	 */
 	public static function PasswordWeaknessCheck($sPassword)
 	{
-		$sPassword = \trim($sPassword);
+                $sPassword = \trim($sPassword);
+                if (12 > \strlen($sPassword))
+                {
+                        return false;
+                }
+
                 $uppercase = preg_match('@[A-Z]@', $sPassword);
                 $lowercase = preg_match('@[a-z]@', $sPassword);
                 $number    = preg_match('@[0-9]@', $sPassword);
                 $specialChars = preg_match('@[^\w]@', $sPassword);
-		
-                if(!$uppercase || !$lowercase || !$number || !$specialChars || strlen($sPassword) < 12) {
+
+                if(!$uppercase || !$lowercase || !$number || !$specialChars) {
                         return false;
+                }
+                else {
+                        return true;
                 }
 
 	}
