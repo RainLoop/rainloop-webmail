@@ -3,7 +3,7 @@
   "title": "RainLoop Webmail",
   "description": "Simple, modern & fast web-based email client",
   "private": true,
-  "version": "1.15.0",
+  "version": "1.16.0",
   "ownCloudVersion": "5.4.0",
   "homepage": "https://www.rainloop.net",
   "author": {

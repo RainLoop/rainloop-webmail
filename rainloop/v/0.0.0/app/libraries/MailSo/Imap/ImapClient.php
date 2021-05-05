@@ -2028,22 +2028,37 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 	}
 
+	
+
+	/**
+	 * @return bool
+	 */
+	private function skipBracketParse($oImapResponse)
+	{
+		return $oImapResponse &&
+			$oImapResponse->ResponseType === \MailSo\Imap\Enumerations\ResponseType::UNTAGGED &&
+			(
+				($oImapResponse->StatusOrIndex === 'STATUS' && 2 === \count($oImapResponse->ResponseList)) ||
+				($oImapResponse->StatusOrIndex === 'LIST' && 4 === \count($oImapResponse->ResponseList)) ||
+				($oImapResponse->StatusOrIndex === 'LSUB' && 4 === \count($oImapResponse->ResponseList))
+			);
+	}
+
 	/**
 	 * @return array|string
 	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
-	private function partialParseResponseBranch(&$oImapResponse, $iStackIndex = -1,
+	private function partialParseResponseBranch(&$oImapResponse,
 		$bTreatAsAtom = false, $sParentToken = '', $sOpenBracket = '')
 	{
 		$mNull = null;
 
-		$iStackIndex++;
 		$iPos = $this->iResponseBufParsedPos;
+		$sClosingBracket = '';
 
 		$sPreviousAtomUpperCase = null;
 		$bIsEndOfList = false;
-		$bIsClosingBracketSquare = false;
 		$iLiteralLen = 0;
 		$iBufferEndIndex = 0;
 		$iDebugCount = 0;
@@ -2164,12 +2179,12 @@ class ImapClient extends \MailSo\Net\NetClient
 			{
 				if ($bTreatAsAtom)
 				{
-					$sAtomBlock = $this->partialParseResponseBranch($mNull, $iStackIndex, true,
+					$sAtomBlock = $this->partialParseResponseBranch($mNull, true,
 						null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase), $sOpenBracket);
 
 					$sAtomBuilder .= $sAtomBlock;
 					$iPos = $this->iResponseBufParsedPos;
-					$sAtomBuilder .= ($bIsClosingBracketSquare) ? ']' : ')';
+					$sAtomBuilder .= $sClosingBracket;
 				}
 
 				$sPreviousAtomUpperCase = null;
@@ -2179,7 +2194,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 			else if ($bIsGotoNotAtomBracket)
 			{
-				$aSubItems = $this->partialParseResponseBranch($mNull, $iStackIndex, false,
+				$aSubItems = $this->partialParseResponseBranch($mNull, false,
 					null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase), $sOpenBracket);
 
 				$aList[] = $aSubItems;
@@ -2213,14 +2228,18 @@ class ImapClient extends \MailSo\Net\NetClient
 			switch (true)
 			{
 				case ']' === $sChar:
-					$iPos++;
-					$sPreviousAtomUpperCase = null;
-					$bIsEndOfList = true;
-					break;
 				case ')' === $sChar:
-					$iPos++;
-					$sPreviousAtomUpperCase = null;
-					$bIsEndOfList = true;
+					if ($this->skipBracketParse($oImapResponse))
+					{
+						$bIsGotoDefault = true;
+						$bIsGotoNotAtomBracket = false;
+					}
+					else
+					{
+						$iPos++;
+						$sPreviousAtomUpperCase = null;
+						$bIsEndOfList = true;
+					}
 					break;
 				case ' ' === $sChar:
 					if ($bTreatAsAtom)
@@ -2230,29 +2249,27 @@ class ImapClient extends \MailSo\Net\NetClient
 					$iPos++;
 					break;
 				case '[' === $sChar:
-					$bIsClosingBracketSquare = true;
 				case '(' === $sChar:
-					if ('(' === $sChar)
-					{
-						$bIsClosingBracketSquare = false;
-					}
+					$sClosingBracket = '[' === $sChar ? ']' : ')';
+					$sOpenBracket = $sChar;
 
 					if ($bTreatAsAtom)
 					{
-						$sAtomBuilder .= $bIsClosingBracketSquare ? '[' : '(';
-					}
-					$iPos++;
-
-					$this->iResponseBufParsedPos = $iPos;
-					if ($bTreatAsAtom)
-					{
+						$sAtomBuilder .= $sChar;
 						$bIsGotoAtomBracket = true;
-						$sOpenBracket = $bIsClosingBracketSquare ? '[' : '(';
+						$this->iResponseBufParsedPos = ++$iPos;
+					}
+					else if ($this->skipBracketParse($oImapResponse))
+					{
+						$sOpenBracket = '';
+						$sClosingBracket = '';
+						$bIsGotoDefault = true;
+						$bIsGotoNotAtomBracket = false;
 					}
 					else
 					{
 						$bIsGotoNotAtomBracket = true;
-						$sOpenBracket = $bIsClosingBracketSquare ? '[' : '(';
+						$this->iResponseBufParsedPos = ++$iPos;
 					}
 					break;
 				case '{' === $sChar:
@@ -2382,6 +2399,10 @@ class ImapClient extends \MailSo\Net\NetClient
 						$sCharDef = $this->sResponseBuffer[$iPos];
 						switch (true)
 						{
+							case ('[' === $sCharDef || ']' === $sCharDef || '(' === $sCharDef || ')' === $sCharDef) &&
+								$this->skipBracketParse($oImapResponse):
+								$iPos++;
+								break;
 							case '[' === $sCharDef:
 								if (null === $sAtomBuilder)
 								{
@@ -2393,13 +2414,15 @@ class ImapClient extends \MailSo\Net\NetClient
 								$iPos++;
 								$this->iResponseBufParsedPos = $iPos;
 
-								$sListBlock = $this->partialParseResponseBranch($mNull, $iStackIndex, true,
+								$sListBlock = $this->partialParseResponseBranch($mNull, true,
 									null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase), '[');
 
 								if (null !== $sListBlock)
 								{
 									$sAtomBuilder .= $sListBlock.']';
 								}
+
+								$this->Logger()->Write('$sAtomBuilder='.$sAtomBuilder);
 
 								$iPos = $this->iResponseBufParsedPos;
 								$iCharBlockStartPos = $iPos;
