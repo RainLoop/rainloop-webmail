@@ -470,7 +470,7 @@ de_DE:
   SETTINGS_GENERAL:
     LEGEND_GENERAL: "Allgemein"
     LABEL_LANGUAGE: "Sprache"
-    LABEL_IDENTITY: "Identity"
+    LABEL_IDENTITY: "Identität"
     LABEL_LAYOUT: "Layout"
     LABEL_LAYOUT_NO_SPLIT: "Keine Aufteilung"
     LABEL_LAYOUT_VERTICAL_SPLIT: "Vertikale Aufteilung"
