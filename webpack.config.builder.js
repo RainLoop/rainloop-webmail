@@ -33,16 +33,23 @@ const babelLoaderOptions = function() {
 				'@babel/plugin-transform-runtime',
 				{
 					corejs: 3,
+					loose: loose,
 					useESModules: true
 				}
 			],
 			[
 				'@babel/plugin-proposal-decorators',
 				{
-					legacy: true
+					legacy: true,
+					loose: loose
 				}
 			],
-			'@babel/plugin-proposal-class-properties'
+			[
+				'@babel/plugin-proposal-class-properties',
+				{
+					loose: loose
+				}
+			]
 		]
 	};
 };

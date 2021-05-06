@@ -1,4 +1,4 @@
-FROM node:10.16.0-alpine
+FROM node:14-alpine
 
 RUN apk add --no-cache git
 RUN yarn global add gulp
