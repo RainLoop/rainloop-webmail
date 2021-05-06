@@ -26,6 +26,7 @@ zh_CN:
     LABEL_ALLOW_LANGUAGES_ON_SETTINGS: "允许在设置界面中选择语言"
     LABEL_ALLOW_THEMES_ON_SETTINGS: "允许在设置界面中选择主题"
     LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "允许在设置界面中选择背景"
+    LABEL_NEW_FOLDER_MOVE: "新的“移动到文件夹”按钮"
     LABEL_SHOW_THUMBNAILS: "显示缩略图(附件)"
     LABEL_ALLOW_GRAVATAR: "允许使用头像"
     LEGEND_MAIN: "主"
@@ -33,6 +34,7 @@ zh_CN:
     LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "允许额外的账户"
     LABEL_ALLOW_IDENTITIES: "允许多重身份"
     LABEL_ALLOW_TEMPLATES: "允许使用模板"
+    ALERT_DATA_ACCESS: "RainLoop 数据文件夹可被访问。请配置您的 Web 服务器来阻止数据文件夹的外部访问。在这里查看更多："
     ALERT_WARNING: "警告"
     HTML_ALERT_WEAK_PASSWORD: |
         您正在使用默认的管理员密码

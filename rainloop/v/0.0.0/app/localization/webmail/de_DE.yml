@@ -151,6 +151,7 @@ de_DE:
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP-verschlüsselte Nachricht (klicken, um zu entschlüsseln)"
     LINK_DOWNLOAD_AS_ZIP: "Als ZIP-Datei herunterladen"
     LINK_SAVE_TO_OWNCLOUD: "In ownCloud speichern"
+    LINK_SAVE_TO_CLOUD: "In der Cloud speichern"
     LINK_SAVE_TO_DROPBOX: "In Dropbox speichern"
   READ_RECEIPT:
     SUBJECT: "Empfangsbestätigung (angezeigt) - %SUBJECT%"
@@ -582,6 +583,7 @@ de_DE:
     TITLE_PUBLIC: "Öffentlich"
     DELETING_ASK: "Sind Sie sicher?"
     GENERATE_ONLY_HTTPS: "Nur HTTPS"
+    LABEL_ALLOW_DRAFT_AUTOSAVE: "Automatisch Entwurf speichern"
   SHORTCUTS_HELP:
     LEGEND_SHORTCUTS_HELP: "Tastaturkürzel-Hilfe"
     TAB_MAILBOX: "Postfach"

@@ -9157,6 +9157,37 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 
 	/**
 	 * @param string $sLanguage
+	 * @param array $aLang
+	 *
+	 * @return string
+	 */
+	public function normalizeLanguage($sLanguage, array $aLang)
+	{
+		if (\in_array($sLanguage, array('ca', 'eu')))
+		{
+			return $sLanguage;
+		}
+
+		$aHelper = array('en' => 'en_us', 'ar' => 'ar_sa', 'cs' => 'cs_cz', 'no' => 'nb_no', 'ua' => 'uk_ua',
+			'cn' => 'zh_cn', 'zh' => 'zh_cn', 'tw' => 'zh_tw', 'fa' => 'fa_ir');
+
+		$sLanguage = isset($aHelper[$sLanguage]) ? $aHelper[$sLanguage] : $sLanguage;
+		$sLanguage = \strtolower(\str_replace('-', '_', $sLanguage));
+
+		if (2 === strlen($sLanguage))
+		{
+			$sLanguage = $sLanguage.'_'.$sLanguage;
+		}
+
+		$sLanguage = \preg_replace_callback('/_([a-zA-Z0-9]{2})$/', function ($aData) {
+			return \strtoupper($aData[0]);
+		}, $sLanguage);
+
+		return $sLanguage;
+	}
+
+	/**
+	 * @param string $sLanguage
 	 * @param string  $sDefault = ''
 	 * @param bool $bAdmin = false
 	 * @param bool $bAllowEmptyResult = false
@@ -9170,31 +9201,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 
 		if (\is_array($aLang))
 		{
-			$aHelper = array('en' => 'en_us', 'ar' => 'ar_sa', 'cs' => 'cs_cz', 'no' => 'nb_no', 'ua' => 'uk_ua',
-				'cn' => 'zh_cn', 'zh' => 'zh_cn', 'tw' => 'zh_tw', 'fa' => 'fa_ir');
-
-			$sLanguage = isset($aHelper[$sLanguage]) ? $aHelper[$sLanguage] : $sLanguage;
-			$sDefault = isset($aHelper[$sDefault]) ? $aHelper[$sDefault] : $sDefault;
-
-			$sLanguage = \strtolower(\str_replace('-', '_', $sLanguage));
-			if (2 === strlen($sLanguage))
-			{
-				$sLanguage = $sLanguage.'_'.$sLanguage;
-			}
-
-			$sDefault = \strtolower(\str_replace('-', '_', $sDefault));
-			if (2 === strlen($sDefault))
-			{
-				$sDefault = $sDefault.'_'.$sDefault;
-			}
-
-			$sLanguage = \preg_replace_callback('/_([a-zA-Z0-9]{2})$/', function ($aData) {
-				return \strtoupper($aData[0]);
-			}, $sLanguage);
-
-			$sDefault = \preg_replace_callback('/_([a-zA-Z0-9]{2})$/', function ($aData) {
-				return \strtoupper($aData[0]);
-			}, $sDefault);
+			$sLanguage = $this->normalizeLanguage($sLanguage, $aLang);
+			$sDefault = $this->normalizeLanguage($sDefault, $aLang);
 
 			if (\in_array($sLanguage, $aLang))
 			{

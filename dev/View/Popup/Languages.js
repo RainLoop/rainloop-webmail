@@ -36,8 +36,7 @@ class LanguagesPopupView extends AbstractViewNext {
 	}
 
 	languageTooltipName(language) {
-		const result = convertLangName(language, true);
-		return convertLangName(language, false) === result ? '' : result;
+		return convertLangName(language, true);
 	}
 
 	setLanguageSelection() {

@@ -151,6 +151,7 @@ nl_NL:
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP versleuteld bericht (klik om te ontsleutelen)"
     LINK_DOWNLOAD_AS_ZIP: "Download als zip"
     LINK_SAVE_TO_OWNCLOUD: "Sla op in ownCloud"
+    LINK_SAVE_TO_CLOUD: "Sla op in de cloud"
     LINK_SAVE_TO_DROPBOX: "Sla op in Dropbox"
   READ_RECEIPT:
     SUBJECT: "Ontvangstbevestiging (weergegeven) - %SUBJECT%"
@@ -581,6 +582,7 @@ nl_NL:
     TITLE_PUBLIC: "Publieke sleutel"
     DELETING_ASK: "Weet u het zeker?"
     GENERATE_ONLY_HTTPS: "Alleen HTTPS"
+    LABEL_ALLOW_DRAFT_AUTOSAVE: "Concept automatisch opslaan"
   SHORTCUTS_HELP:
     LEGEND_SHORTCUTS_HELP: "Hulp bij toetsenbord sneltoetsen"
     TAB_MAILBOX: "Mailbox"

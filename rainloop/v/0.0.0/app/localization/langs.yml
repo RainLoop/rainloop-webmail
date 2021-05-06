@@ -44,6 +44,9 @@ Common:
         LANG_AR_SA: ‏العربية‏
         LANG_DA_DK: Dansk
         LANG_ID_ID: Bahasa Indonesia
+        LANG_CA: Catalan
+        LANG_CA_ES: Catalan (Spain)
+        LANG_EU: Basque
 
     LANGS_NAMES_EN:
         LANG_EN: English
@@ -89,3 +92,6 @@ Common:
         LANG_AR_SA: Arabic
         LANG_DA_DK: Danish
         LANG_ID_ID: Indonesian
+        LANG_CA: Catalan
+        LANG_CA_ES: Catalan (Spain)
+        LANG_EU: Basque

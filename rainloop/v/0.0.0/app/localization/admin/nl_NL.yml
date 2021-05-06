@@ -34,6 +34,7 @@ nl_NL:
     LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "Sta extra accounts toe"
     LABEL_ALLOW_IDENTITIES: "Meerdere identiteiten toestaan"
     LABEL_ALLOW_TEMPLATES: "Sta templates toe"
+    ALERT_DATA_ACCESS: "De RainLoop data map is toegankelijk. Configureer je web server of de folder te verbergen voor externe toegang. Lees hier meer:"
     ALERT_WARNING: "Waarschuwing!"
     HTML_ALERT_WEAK_PASSWORD: |
         U gebruikt het standaard beheer wachtwoord.

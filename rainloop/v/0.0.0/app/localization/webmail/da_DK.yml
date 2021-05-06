@@ -151,6 +151,7 @@ da_DK:
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP krypteret meddelelse (tryk for at dekryptere)"
     LINK_DOWNLOAD_AS_ZIP: "Hent som zip-fil"
     LINK_SAVE_TO_OWNCLOUD: "Gem til ownCloud"
+    LINK_SAVE_TO_CLOUD: "Gem i skyen"
     LINK_SAVE_TO_DROPBOX: "Gem til Dropbox"
   READ_RECEIPT:
     SUBJECT: "Kvittering for læsning af - %SUBJECT%"
@@ -223,7 +224,7 @@ da_DK:
     ATTACH_ITEM_CANCEL: "Annuller"
     DROPBOX: "Dropbox"
     GOOGLE_DRIVE: "Google Drev"
-    REPLY_MESSAGE_TITLE: "Den %DATE% klokken %TIME%, skrev %EMAIL%:"
+    REPLY_MESSAGE_TITLE: "Den %DATETIME%, skrev %EMAIL%:"
     FORWARD_MESSAGE_TOP_TITLE: "-------- Videresendt meddelelse -------"
     FORWARD_MESSAGE_TOP_FROM: "Fra"
     FORWARD_MESSAGE_TOP_TO: "Til"

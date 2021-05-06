@@ -188,7 +188,7 @@ class Pop3Client extends \MailSo\Net\NetClient
 		{
 			$this->sendRequestWithCheck('CAPA');
 
-			$this->aCapa = array_filter(explode("\n", $this->readMultilineResponse()), function (&$sCapa) {
+			$this->aCapa = array_filter(explode("\n", $this->readMultilineResponse()), function ($sCapa) {
 				return 0 < strlen(trim($sCapa));
 			});
 

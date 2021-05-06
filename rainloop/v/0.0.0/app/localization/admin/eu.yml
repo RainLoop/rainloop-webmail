@@ -1,0 +1,324 @@
+eu:
+  LOGIN:
+    LABEL_LOGIN: "Hasi saioa"
+    LABEL_PASSWORD: "Pasahitza"
+    BUTTON_LOGIN: "Hasi saioa administrazio panelean"
+  TOP_PANEL:
+    LABEL_PREMIUM: "Premium"
+    LABEL_ADMIN_PANEL: "Administrazio panela"
+  TABS_LABELS:
+    LABEL_GENERAL_NAME: "Orokorra"
+    LABEL_LOGIN_NAME: "Hasi saioa"
+    LABEL_BRANDING_NAME: "Branding (marka zabaltzea)"
+    LABEL_CONTACTS_NAME: "Kontaktuak"
+    LABEL_DOMAINS_NAME: "Domeinuak"
+    LABEL_SECURITY_NAME: "Segurtasuna"
+    LABEL_INTEGRATION_NAME: "Integrazioak"
+    LABEL_PLUGINS_NAME: "Pluginak"
+    LABEL_PACKAGES_NAME: "Paketeak"
+    LABEL_LICENSING_NAME: "Lizentziak"
+    LABEL_ABOUT_NAME: "Honi buruz"
+  TAB_GENERAL:
+    LEGEND_INTERFACE: "Interfazea"
+    LABEL_LANGUAGE: "Hizkuntza"
+    LABEL_LANGUAGE_ADMIN: "Hizkuntza (administrazioa)"
+    LABEL_THEME: "Itxura"
+    LABEL_ALLOW_LANGUAGES_ON_SETTINGS: "Aktibatu hizkuntzaren hautapena ezarpenen pantailan"
+    LABEL_ALLOW_THEMES_ON_SETTINGS: "Aktibatu itxuraren hautapena ezarpenen pantailan"
+    LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "Aktibatu atzeko planoaren hautapena ezarpenen pantailan"
+    LABEL_NEW_FOLDER_MOVE: "\"mugitu karpetara\" botoi berria"
+    LABEL_SHOW_THUMBNAILS: "Erakutsi miniaturak (eranskinak)"
+    LABEL_ALLOW_GRAVATAR: "Onartu Gravatar"
+    LEGEND_MAIN: "Nagusia"
+    LABEL_ATTACHMENT_SIZE_LIMIT: "Mugatu eranskinen tamaina"
+    LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "Aktibatu kontu gehigarriak"
+    LABEL_ALLOW_IDENTITIES: "Aktibatu identitate anitzak"
+    LABEL_ALLOW_TEMPLATES: "Aktibatu txantiloiak"
+    ALERT_DATA_ACCESS: "RainLoop karpeta eskuragarri dago. Konfiguratu zure web zerbitzaria kanpokoei datuen karpeta ezkutatzeko. Informazio gehiago hemen:"
+    ALERT_WARNING: "Kontuz!"
+    HTML_ALERT_WEAK_PASSWORD: |
+        Administratzailearen berezko pasahitza erabiltzen ari zara.
+        <br />
+        Segurtasun arrazoiengatik
+        <strong><a href="#/security">aldatu</a></strong>
+        pasahitza orain.
+  TAB_LOGIN:
+    LEGEND_LOGIN_SCREEN: "Saioa hasteko pantaila"
+    LABEL_DEFAULT_DOMAIN: "Berezko domeinua"
+    LABEL_DETERMINE_USER_DOMAIN: "Saiatu erabiltzailearen domeinua zehazten"
+    LABEL_ALLOW_LANGUAGES_ON_LOGIN: "Onartu hizkuntzaren hautapena saioa hasteko pantailan"
+    LABEL_DETERMINE_USER_LANGUAGE: "Saiatu erabiltzailearen hizkuntza zehazten"
+  TAB_BRANDING:
+    LEGEND_BRANDING: "Branding (marka zabaltzea)"
+    LABEL_PAGE_TITLE: "Orriaren izenburua"
+    LABEL_LOADING_DESCRIPTION: "Deskribapena kargatzen"
+    LABEL_FAVICON_URL: "Favikonoa"
+    LEGEND_LOGIN: "Hasi saioa"
+    LABEL_LOGIN_LOGO: "Logoa"
+    LABEL_LOGIN_DESCRIPTION: "Deskribapena"
+    LABEL_LOGIN_BACKGROUND: "Atzeko planoa"
+    LABEL_LOGIN_CUSTOM_CSS: "Pertsonalizatu CSSa"
+    LABEL_LOGIN_SHOW_POWERED_LINK: "Erakutsi \"Powered by RainLoop\" esteka"
+    LEGEND_USER: "Erabiltzailea"
+    LABEL_USER_LOGO: "Logoa"
+    LABEL_USER_LOGO_TITLE: "Logoaren titulua"
+    LABEL_USER_LOGO_MESSAGE: "Logoa (mezuaren ikuspegia)"
+    LABEL_USER_CUSTOM_CSS: "Pertsonalizatu CSSa"
+    LEGEND_WELCOME_PAGE: "Ongietorri orria"
+    LABEL_WELCOME_PAGE_TITLE: "Izenburua"
+    LABEL_WELCOME_PAGE_URL: "URLa"
+    LABEL_WELCOME_PAGE_DISPLAY: "Erakutsi"
+    OPTION_WELCOME_PAGE_DISPLAY_NONE: "Bat ere ez"
+    OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Behin"
+    OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Beti"
+    HTML_ALERT_PREMIUM: "Funtzionalitate hau <strong><a href=\"#/licensing\">Premium</a></strong> erabiltzaileentzat soilik dago eskuragarri."
+  TAB_CONTACTS:
+    LEGEND_CONTACTS: "Kontaktuak"
+    LEGEND_STORAGE: "Biltegiratzea (PDO)"
+    LABEL_ENABLE_CONTACTS: "Aktibatu kontaktuak"
+    LABEL_ALLOW_SYNC: "Onartu kontaktuen sinkronizazioa (kanpoko CardDAV zerbitzariarekin)"
+    LABEL_STORAGE_TYPE: "Mota"
+    LABEL_STORAGE_DSN: "Dsn"
+    LABEL_STORAGE_USER: "Erabiltzailea"
+    LABEL_STORAGE_PASSWORD: "Pasahitza"
+    BUTTON_TEST: "Froga"
+    ALERT_NOTICE: "Oharra!"
+    HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "Ez erabili datu-base mota hau erabiltzaile aktibo askorekin"
+    HTML_ALERT_DOES_NOT_SUPPORTED: |
+        Zure sistemak ez du kontakturik onartzen.
+        <br />
+        Instalatu edo aktibatu behar duzu <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> gehigarria zure zerbitzarian.
+  TAB_DOMAINS:
+    LEGEND_DOMAINS: "Domeinuak"
+    BUTTON_ADD_DOMAIN: "Gehitu domeinua"
+    BUTTON_ADD_ALIAS: "Gehitu ezizena"
+    DELETE_ARE_YOU_SURE: "Ziur zaude?"
+    HTML_DOMAINS_HELPER: |
+        Web-posta sarbidea baimendu daitekeen domeinuen zerrenda.
+        <br />
+        Egin klik domeinuaren izenean konfiguratzeko.
+  TAB_SECURITY:
+    LEGEND_SECURITY: "Segurtasuna"
+    LABEL_ALLOW_TWO_STEP: "Baimendu 2-urratsetako autentifikazioa"
+    LABEL_FORCE_TWO_STEP: "Behartu 2-urratsetako autentifikazioa"
+    LABEL_USE_IMAGE_PROXY: "Erabili proxy lokala kanpoko irudientzat"
+    LABEL_ALLOW_OPEN_PGP: "Baimendu OpenPGP"
+    LABEL_SHOW_PHP_INFO: "Erakutsi PHP informazioa"
+    LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS: "Administrazio panelaren sarbide kredentzialak"
+    LABEL_CURRENT_PASSWORD: "Uneko pasahitza"
+    LABEL_NEW_LOGIN: "Saio hasiera berria"
+    LABEL_NEW_PASSWORD: "Pasahitz berria"
+    LABEL_REPEAT_PASSWORD: "Errepikatu"
+    BUTTON_UPDATE_PASSWORD: "Eguneratu pasahitza"
+    LEGEND_SSL: "SSL"
+    LABEL_REQUIRE_VERIFICATION: "Eskatu erabilitako SSL ziurtagiria egiaztatzea (IMAP/SMTP)"
+    LABEL_ALLOW_SELF_SIGNED: "Baimendu auto-sinatutako egiaztagiriak"
+  TAB_INTEGRATIONS:
+    LEGEND_GOOGLE: "Google"
+    LABEL_ENABLE_GOOGLE: "Gaitu Google integrazioa"
+    LABEL_GOOGLE_AUTH: "Baimena"
+    LABEL_GOOGLE_DRIVE: "Google Drive integrazioa (ikuspegia osatu)"
+    LABEL_GOOGLE_PREVIEW: "Google Viewer integrazioa (Microsoft Word, Excel eta PowerPoint fitxategien aurrebista)"
+    LABEL_GOOGLE_CLIENT_ID: "Bezeroaren IDa"
+    LABEL_GOOGLE_CLIENT_SECRET: "Bezeroaren gako sekretua"
+    LABEL_GOOGLE_API_KEY: "Api Key"
+    HINT_GOOGLE_API_KEY: "Beharrezkoa da Google Drive fitxategi hautatzailearentzat"
+    LEGEND_FACEBOOK: "Facebook"
+    LABEL_ENABLE_FACEBOOK: "Gaitu Facebook integrazioa (baimena)"
+    LABEL_FACEBOOK_APP_ID: "Aplikazioaren IDa"
+    LABEL_FACEBOOK_APP_SECRET: "Aplikazioaren gako sekretua"
+    LEGEND_TWITTER: "Twitter"
+    LABEL_ENABLE_TWITTER: "Gaitu Twitter integrazioa (baimena)"
+    LABEL_TWITTER_CONSUMER_KEY: "Kontsumitzailearen gakoa"
+    LABEL_TWITTER_CONSUMER_SECRET: "Kontsumitzailearen gako sekretua"
+    LEGEND_DROPBOX: "Dropbox"
+    LABEL_ENABLE_DROPBOX: "Gaitu Dropbox integrazioa "
+    LABEL_DROPBOX_API_KEY: "Api Key"
+    TOP_ALERT: "Integrazioari sozialari buruzko informazio zehatza aurki daiteke"
+  TAB_PLUGINS:
+    LEGEND_PLUGINS: "Pluginak"
+    LABEL_ENABLE_PLUGINS: "Gaitu pluginak"
+    ALERT_NO_PLUGINS: "Oraindik ez da pluginik instalatu"
+    LINK_INSTALL_NEW: "Egin klik hemen berria instalatzeko!"
+    HINT_CLICK_NAME: "Egin klik izenean plugina konfiguratzeko"
+  TAB_PACKAGES:
+    LEGEND_AVAILABLE_FOR_UPDATE: "Eguneratzeko erabilgarri"
+    LEGEND_AVAILABLE_FOR_INSTALLATION: "Instalatzeko erabilgarri"
+    LEGEND_INSTALLED_PACKAGES: "Instalatutako paketeak"
+    ALERT_CANNOT_ACCESS_REPOSITORY: "Une honetan ezin da sartu errepositorioan "
+  TAB_LICENSING:
+    LABEL_YOUR_DOMAIN: "Zure domeinua"
+    LABEL_VERSION: "Bertsioa"
+    LABEL_CHECKING: "Frogatzen"
+    TYPE_BASIC_HINT: "Domeinu honek ez dauka lizentziarik erabilera komertzialerako (eginbide gehigarriekin)"
+    TYPE_BASIC_HINT_2: "Domeinu hau ezin da lizentziatu"
+    HTML_ALERT_TOP_1: "RainLoop Webmail-ek honako lizentzia dauka"
+    HTML_ALERT_TOP_2: "<b>Erabili</b> dezakezu zure proiektu <b>pertsonaletarako</b>."
+    HTML_ALERT_TOP_3: |
+        <b>RainLoop Webmail</b>-aren erabilera komertzialak
+        (eginbide gehigarriekin) <a href="http://www.rainloop.net/purchase/" target="_blank">harpidetza</a> behar du.
+    TYPE_PREMIUM_LIFETIME: "Iraupena"
+    LABEL_SUB_EXPIRES: "Harpidetza iraungitzen da"
+    BUTTON_ACTIVATE: "Aktibatu harpidetza domeinu honetarako"
+    BUTTON_PURCHASE: "Erosketa"
+    BUTTON_TRIAL: "Proba"
+  TAB_ABOUT:
+    LEGEND_ABOUT: "Honi buruz"
+    LABEL_TAG_HINT: "Web-posta bezero sinple, moderno eta azkarra"
+    LABEL_ALL_RIGHTS_RESERVED: "Eskubide guztiak erreserbatuak."
+    HINT_READ_CHANGE_LOG: "Irakurri aldaketen erregistroa eguneratu aurretik."
+    HINT_IS_UP_TO_DATE: "RainLoop eguneratuta dago."
+    HTML_NEW_VERSION: " <b>%VERSION%</b> bertsio berria eskuragarri dago."
+    LABEL_UPDATING: "Eguneratzen"
+    LABEL_CHECKING: "Eguneraketa bilatzen"
+    BUTTON_UPDATE: "Eguneratu"
+    BUTTON_DOWNLOAD: "Deskargatu"
+    BUTTON_CHANGELOG: "Aldaketen erregistroa"
+  POPUPS_ACTIVATE:
+    TITLE_ACTIVATE: "Aktibatu harpidetza gakoa?"
+    TITLE_ACTIVATION: "Aktibatzioa..."
+    LABEL_DOMAIN: "Domeinua"
+    LABEL_SUB_KEY: "Harpidetza gakoa"
+    BUTTON_ACTIVATE: "Aktibatu"
+    LABEL_ACTIVATED: "Aktibatuta"
+    ERROR_INVALID_SUBS_KEY: "Harpidetza gako baliogabea"
+    SUBS_KEY_ACTIVATED: "Harpidetza gakoa behar bezala aktibatu da"
+    HTML_DESC: |
+        Aktibazioaren ondoren, <b>%DOMAIN%</b> domeinurako premium harpdetza
+        zabalduko da.
+        <br />
+        Kontuan izan  harpidetza gakoa domeinu bakarrarentzat balio duela.
+        <br /><br />
+        Behin hasita, aktibazio prozesua ezin da gelditu edo bertan behera utzi.
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "Gehitu ezizena"
+    LABEL_ALIAS: "Ezizena"
+    LABEL_DOMAIN: "Domeinua"
+    BUTTON_CLOSE: "Itxi"
+    BUTTON_ADD: "Gehitu"
+  POPUPS_DOMAIN:
+    TITLE_ADD_DOMAIN: "Gehitu domeinua"
+    TITLE_ADD_DOMAIN_WITH_NAME: "Gehitu \"%NAME%\" domeinua"
+    TITLE_EDIT_DOMAIN: "Editatu \"%NAME%\" domeinua"
+    LABEL_NAME: "Izena"
+    NAME_HELPER: "komodina onartzen da"
+    LABEL_IMAP: "IMAP"
+    LABEL_SMTP: "SMTP"
+    LABEL_SIEVE: "SIEVE"
+    LABEL_SERVER: "Zerbitzaria"
+    LABEL_PORT: "Ataka"
+    LABEL_SECURE: "Segurua"
+    LABEL_WHITE_LIST: "Zerrenda zuria"
+    SECURE_OPTION_NONE: "Bat ere ez"
+    SECURE_OPTION_SSL: "SSL/TLS"
+    SECURE_OPTION_STARTTLS: "STARTTLS"
+    LABEL_ALLOW_SIEVE_SCRIPTS: "Baimendu sieve scriptak"
+    LABEL_ALLOW_USER_SCRIPT: "Baimendu erabiltzailearen script pertsonalak"
+    LABEL_USE_SHORT_LOGIN: "Erabili saio hasiera laburra"
+    LABEL_USE_AUTH: "Erabili autentifikazioa"
+    LABEL_USE_PHP_MAIL: "Erabili php mail() funtzioa"
+    BUTTON_TEST: "Froga"
+    BUTTON_WHITE_LIST: "Zerrenda zuria"
+    BUTTON_SIEVE_CONFIGURATION: "Sieve konfigurazioa"
+    BUTTON_BACK_TO_IMAP: "Atzera IMAP ezarpenetara"
+    BUTTON_BACK: "Atzera"
+    BUTTON_CLOSE: "Itxi"
+    BUTTON_ADD: "Gehitu"
+    BUTTON_UPDATE: "Eguneratu"
+    NEW_DOMAIN_DESC: "Domeinu honen konfigurazioak aukera ematen dizu lan egiteko  %NAME% helbide elektronikoarekin."
+    WHITE_LIST_ALERT: |
+        Web-postan sartzeko baimena duten domeinuen zerrenda.
+        Erabili zuriunea mugatzaile gisa.
+  POPUPS_PLUGIN:
+    TITLE_PLUGIN: "Plugina"
+    DESC_NOTHING_TO_CONFIGURE: "Ez dago ezer konfiguratzeko"
+    BUTTON_CLOSE: "Itxi"
+    BUTTON_SAVE: "Gorde"
+    TOOLTIP_ABOUT_TITLE: "Honi buruz"
+  POPUPS_ASK:
+    DESC_WANT_CLOSE_THIS_WINDOW: "Ziur zaude leiho hau itxi nahi duzula?"
+  POPUPS_LANGUAGES:
+    TITLE_LANGUAGES: "Aukeratu zure hizkuntza"
+  HINTS:
+    BETA: "beta"
+    UNSTABLE: "ezegonkorra"
+    WARNING: "Kontuz!"
+    NOT_SUPPORTED: "ez da onartzen"
+    REQUIRES_PHP_54: "behar du PHP 5.4 edo altuagoa"
+  ERRORS:
+    DOMAIN_ALREADY_EXISTS: "Domeinu hori dagoeneko badago"
+    UNKNOWN_ERROR: "Errore ezezaguna"
+  NOTIFICATIONS:
+    INVALID_TOKEN: "Token baliogabea"
+    AUTH_ERROR: "Autentifikazioak huts egin du"
+    ACCESS_ERROR: "Sarbide errorea"
+    CONNECTION_ERROR: "Ezin konektatu zerbitzariarekin"
+    CAPTCHA_ERROR: "CAPTCHA okerra."
+    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
+        ID sozial hau ez zaio ezein posta elektronikoko kontuari esleitu. Hasi saioa
+        posta elektronikoko kredentzialak erabiliz eta gaitu funtzio hau kontu ezarpenetan.
+    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
+        ID sozial hau ez zaio ezein posta elektronikoko kontuari esleitu. Hasi saioa
+        posta elektronikoko kredentzialak erabiliz eta gaitu funtzio hau kontu ezarpenetan.
+    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
+        ID sozial hau ez zaio ezein posta elektronikoko kontuari esleitu. Hasi saioa
+        posta elektronikoko kredentzialak erabiliz eta gaitu funtzio hau kontu ezarpenetan.
+    DOMAIN_NOT_ALLOWED: "Domeinua ez da onartzen"
+    ACCOUNT_NOT_ALLOWED: "Kontua ez da onartzen"
+    ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Bi faktoreen autentifikazioa behar da."
+    ACCOUNT_TWO_FACTOR_AUTH_ERROR: "Bi faktoreen autentifikazioaren errorea"
+    COULD_NOT_SAVE_NEW_PASSWORD: "Ezin da gorde pasahitz berria"
+    CURRENT_PASSWORD_INCORRECT: "Uneko pasahitza ez da zuzena"
+    NEW_PASSWORD_SHORT: "Pasahitza laburregia da"
+    NEW_PASSWORD_WEAK: "Pasahitza errazegia da"
+    NEW_PASSWORD_FORBIDDENT: "Pasahitzak debekatutako karaktereak ditu"
+    CONTACTS_SYNC_ERROR: "Kontaktuen sinkronizazio errorea"
+    CANT_GET_MESSAGE_LIST: "Ezin da eskuratu mezuen zerrenda"
+    CANT_GET_MESSAGE: "Ezin da eskuratu mezua"
+    CANT_DELETE_MESSAGE: "Ezin da ezabatu mezua"
+    CANT_MOVE_MESSAGE: "Ezin da mugitu mezua"
+    CANT_SAVE_MESSAGE: "Ezin da gorde mezua"
+    CANT_SEND_MESSAGE: "Ezin da bidali mezua"
+    INVALID_RECIPIENTS: "Ontzi baliogabeak"
+    CANT_SAVE_FILTERS: "Ezin dira gorde iragazkiak"
+    CANT_GET_FILTERS: "Ezin dira eskuratu iragazkiak"
+    FILTERS_ARE_NOT_CORRECT: "Iragazkiak ez dira zuzenak"
+    CANT_CREATE_FOLDER: "Ezin da sortu karpeta"
+    CANT_RENAME_FOLDER: "Ezin da berrizendatu karpeta"
+    CANT_DELETE_FOLDER: "Ezin da ezabatu karpeta"
+    CANT_DELETE_NON_EMPTY_FOLDER: "Ezin da hutsik ez dagoen direktorioa ezabatu"
+    CANT_SUBSCRIBE_FOLDER: "Ezin da harpidetu karpeta"
+    CANT_UNSUBSCRIBE_FOLDER: "Ezin da karpetaren harpidetza kendu"
+    CANT_SAVE_SETTINGS: "Ezin dira gorde ezarpenak"
+    CANT_SAVE_PLUGIN_SETTINGS: "Ezin dira gorde ezarpenak"
+    DOMAIN_ALREADY_EXISTS: "Domeinu hori dagoeneko badago"
+    CANT_INSTALL_PACKAGE: "Huts egin du paketearen instalazioak"
+    CANT_DELETE_PACKAGE: "Huts egin du paketearen desintalazioak"
+    INVALID_PLUGIN_PACKAGE: "Plugin pakete baliogabea"
+    UNSUPPORTED_PLUGIN_PACKAGE: "Onarpenik gabeko plugin paketea"
+    LICENSING_SERVER_IS_UNAVAILABLE: "Harpidetza zerbitzaria ez dago eskuragarri"
+    LICENSING_DOMAIN_EXPIRED: "Domeinu honen harpidetza iraungi da."
+    LICENSING_DOMAIN_BANNED: "Domeinu honen harpidetza debekatuta dago."
+    DEMO_SEND_MESSAGE_ERROR: "Segurtasun arrazoiengatik, kontu honi ez zaio onartzen kanpoko helbide elektronikoei mezuak bidaltzea!"
+    DEMO_ACCOUNT_ERROR: "Segurtasun arrazoiengatik, kontu honi ez zaio onartzen ekintza hau!"
+    ACCOUNT_ALREADY_EXISTS: "Kontua dagoeneko badago"
+    ACCOUNT_DOES_NOT_EXIST: "Kontua ez da existitzen"
+    MAIL_SERVER_ERROR: "Errore bat gertatu da posta zerbitzarian sartzean"
+    INVALID_INPUT_ARGUMENT: "Sarrera argumentu baliogabea"
+    UNKNOWN_ERROR: "Errore ezezaguna"
+  STATIC:
+    BACK_LINK: "Birkargatu"
+    DOMAIN_LIST_DESC: "Web-postan sartzeko baimena duten domeinuen zerrenda."
+    PHP_EXSTENSIONS_ERROR_DESC: "Behar den PHP luzapena ez dago eskuragarri zure PHP konfigurazioan!"
+    PHP_VERSION_ERROR_DESC: "Zure PHP bertsioa (%VERSION%) 5.3.0-k eskatzen duen minimo baino baxuagoa da!"
+    NO_SCRIPT_TITLE: "Aplikazio honek JavaScript behar du."
+    NO_SCRIPT_DESC: |
+        JavaScritp ez dago eskuragarri zure nabigatzailean.
+        Aktibatu JavaScript zure nabigatzailearen ezarpenetan eta saiatu berriro.
+    NO_COOKIE_TITLE: "Aplikazio honek cookieak onartu behar ditu."
+    NO_COOKIE_DESC: |
+        Zure nabigatzaileak ez du cookierik onartzen.
+        Aktibatu cookieak zure nabigatzailearen ezarpenetan eta saiatu berriro.
+    BAD_BROWSER_TITLE: "Zure nabigatzailea zaharkituta dago."
+    BAD_BROWSER_DESC: |
+        Aplikazioaren funtzionalitate guztiak erabili ahal izateko deskargatu eta instalatu hauetako nabigatzaile bat.

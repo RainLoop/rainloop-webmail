@@ -34,6 +34,7 @@ de_DE:
     LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "Zusätzliche Konten erlauben"
     LABEL_ALLOW_IDENTITIES: "Mehrere Identitäten erlauben"
     LABEL_ALLOW_TEMPLATES: "Vorlagen erlauben"
+    ALERT_DATA_ACCESS: "Der RainLoop-Datenordner ist zugreifbar. Bitte konfiguriere den Webserver so, dass der Datenordner vor externen Anfragen versteckt wird. Weitere Infos hier:"
     ALERT_WARNING: "Warnung!"
     HTML_ALERT_WEAK_PASSWORD: |
         Sie verwenden das Standard-Admin-Passwort.

@@ -145,11 +145,13 @@ zh_CN:
     PRINT_LABEL_ATTACHMENTS: "附件"
     MESSAGE_LOADING: "加载中"
     MESSAGE_VIEW_DESC: "在此查看列表中选中的邮件。"
+    MESSAGE_VIEW_MOVE_DESC: "点击左侧面板的文件夹名称来选择目的地"
     PGP_PASSWORD_INPUT_PLACEHOLDER: "密码"
     PGP_SIGNED_MESSAGE_DESC: "OpenPGP signed message (click to verify)"
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP encrypted message (click to decrypt)"
     LINK_DOWNLOAD_AS_ZIP: "下载为zip压缩包"
     LINK_SAVE_TO_OWNCLOUD: "保存到ownCloud"
+    LINK_SAVE_TO_CLOUD: "保存到云端"
     LINK_SAVE_TO_DROPBOX: "保存到Dropbox"
   READ_RECEIPT:
     SUBJECT: "妥投回执 - %SUBJECT%"
@@ -578,6 +580,7 @@ zh_CN:
     TITLE_PUBLIC: "公开"
     DELETING_ASK: "你确定吗?"
     GENERATE_ONLY_HTTPS: "仅限HTTPS"
+    LABEL_ALLOW_DRAFT_AUTOSAVE: "自动保存草稿"
   SHORTCUTS_HELP:
     LEGEND_SHORTCUTS_HELP: "快捷键说明"
     TAB_MAILBOX: "邮箱目录"

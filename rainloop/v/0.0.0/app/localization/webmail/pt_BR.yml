@@ -237,7 +237,7 @@ pt_BR:
     ATTACHMENTS_UPLOAD_ERROR_DESC: "Alguns anexos ainda não foram completamente enviados"
     BUTTON_REQUEST_READ_RECEIPT: "Pedir recibo de leitura"
     BUTTON_MARK_AS_IMPORTANT: "Marcar como importante"
-    BUTTON_OPEN_PGP: "OpenPGP (Somente Texto)"
+    BUTTON_OPEN_PGP: "OpenPGP (Somente texto simples)"
     BUTTON_REQUEST_DSN: "Pedir recibo de entrega"
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "Fechar"
@@ -290,7 +290,7 @@ pt_BR:
     BUTTON_SELECT: "Selecionar"
     BUTTON_CLOSE: "Fechar"
   POPUPS_GENERATE_OPEN_PGP_KEYS:
-    TITLE_GENERATE_OPEN_PGP_KEYS: "Gerar chave OpenPGP"
+    TITLE_GENERATE_OPEN_PGP_KEYS: "Gerar chaves OpenPGP"
     LABEL_EMAIL: "E-mail"
     LABEL_NAME: "Nome"
     LABEL_PASSWORD: "Senha"
@@ -576,7 +576,7 @@ pt_BR:
     ERROR_PASSWORD_MISMATCH: "As senhas não conferem, por favor tente novamente"
   SETTINGS_OPEN_PGP:
     LEGEND_OPEN_PGP: "OpenPGP"
-    BUTTON_ADD_OPEN_PGP_KEY: "Importa chave OpenPGP"
+    BUTTON_ADD_OPEN_PGP_KEY: "Importar chave OpenPGP"
     BUTTON_GENERATE_OPEN_PGP_KEYS: "Gerar chave OpenPGP"
     TITLE_PRIVATE: "Privado"
     TITLE_PUBLIC: "Público"
@@ -631,7 +631,7 @@ pt_BR:
     ADD_A_PUBLICK_KEY: "Adicionar uma chave pública"
     SELECT_A_PRIVATE_KEY: "Selecione a chave privada"
     UNVERIFIRED_SIGNATURE: "Assinatura não verificada"
-    DECRYPTION_ERROR: "Erro de decripitação de OpenPGP"
+    DECRYPTION_ERROR: "Erro de descriptografia de OpenPGP"
     GOOD_SIGNATURE: "Boa assinatura de %USER%"
     PGP_ERROR: "Erro OpenPGP: %ERROR%"
     SPECIFY_FROM_EMAIL: "Por favor, especifique endereço de e-mail remetente"
