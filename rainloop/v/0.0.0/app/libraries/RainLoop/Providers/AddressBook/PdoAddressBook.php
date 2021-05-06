@@ -996,11 +996,8 @@ class PdoAddressBook
 		}
 
 		$iUserID = $this->getUserId($sEmail);
-
-		$aContactIds = \array_filter($aContactIds, function (&$mItem) {
-			$mItem = (int) \trim($mItem);
-			return 0 < $mItem;
-		});
+		$aContactIds = \array_map('intval', $aContactIds);
+		$aContactIds = \array_filter($aContactIds);
 
 		if (0 === \count($aContactIds))
 		{

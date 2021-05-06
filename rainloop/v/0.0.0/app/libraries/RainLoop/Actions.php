@@ -5718,11 +5718,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 		$aFlagsFilteredUids = array();
 		if (0 < strlen($sFlagsUids))
 		{
-			$aFlagsUids = explode(',', $sFlagsUids);
-			$aFlagsFilteredUids = array_filter($aFlagsUids, function (&$sUid) {
-				$sUid = (int) trim($sUid);
-				return 0 < (int) trim($sUid);
-			});
+			$aFlagsUids = \explode(',', $sFlagsUids);
+			$aFlagsUids = \array_map('intval', $aFlagsUids);
+			$aFlagsFilteredUids = \array_filter($aFlagsUids);
 		}
 
 		$this->initMailClientConnection();
@@ -7067,11 +7065,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 	{
 		$oAccount = $this->getAccountFromToken();
 		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
-
-		$aFilteredUids = \array_filter($aUids, function (&$mUid) {
-			$mUid = (int) \trim($mUid);
-			return 0 < $mUid;
-		});
+		$aUids = \array_map('intval', $aUids);
+		$aFilteredUids = \array_filter($aUids);
 
 		$bResult = false;
 		if (0 < \count($aFilteredUids) && $this->AddressBookProvider($oAccount)->IsActive())
@@ -7235,10 +7230,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 		$sFolder = $this->GetActionParam('Folder', '');
 		$bSetAction = '1' === (string) $this->GetActionParam('SetAction', '0');
 		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
-		$aFilteredUids = \array_filter($aUids, function (&$sUid) {
-			$sUid = (int) \trim($sUid);
-			return 0 < $sUid;
-		});
+		$aUids = \array_map('intval', $aUids);
+		$aFilteredUids = \array_filter($aUids);
 
 		try
 		{
@@ -7356,11 +7349,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 
 		$sFolder = $this->GetActionParam('Folder', '');
 		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
-
-		$aFilteredUids = \array_filter($aUids, function (&$sUid) {
-			$sUid = (int) \trim($sUid);
-			return 0 < $sUid;
-		});
+		$aUids = \array_map('intval', $aUids);
+		$aFilteredUids = \array_filter($aUids);
 
 		try
 		{
@@ -7409,13 +7399,10 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 
 		$sFromFolder = $this->GetActionParam('FromFolder', '');
 		$sToFolder = $this->GetActionParam('ToFolder', '');
-		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
 		$bMarkAsRead = '1' === (string) $this->GetActionParam('MarkAsRead', '0');
-
-		$aFilteredUids = \array_filter($aUids, function (&$mUid) {
-			$mUid = (int) \trim($mUid);
-			return 0 < $mUid;
-		});
+		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
+		$aUids = \array_map('intval', $aUids);
+		$aFilteredUids = \array_filter($aUids);
 
 		if ($bMarkAsRead)
 		{
@@ -7479,11 +7466,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 		$sFromFolder = $this->GetActionParam('FromFolder', '');
 		$sToFolder = $this->GetActionParam('ToFolder', '');
 		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
-
-		$aFilteredUids = \array_filter($aUids, function (&$mUid) {
-			$mUid = (int) \trim($mUid);
-			return 0 < $mUid;
-		});
+		$aUids = \array_map('intval', $aUids);
+		$aFilteredUids = \array_filter($aUids);
 
 		try
 		{
@@ -8462,7 +8446,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 
 		$sResultHash = '';
 
-		$mResult = $this->MailClient()->MessageMimeStream(function($rResource, $sContentType, $sFileName, $sMimeIndex = '')
+		$mResult = $this->MailClient()->MessageMimeStream(function ($rResource, $sContentType, $sFileName, $sMimeIndex = '')
 			use ($oAccount, $oFileProvider, $sFileNameIn, $sContentTypeIn, &$sResultHash) {
 
 				unset($sContentType, $sFileName, $sMimeIndex);

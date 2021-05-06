@@ -119,7 +119,7 @@ class Api
 
 			if (!empty($sSslCafile) || !empty($sSslCapath))
 			{
-				\MailSo\Hooks::Add('Net.NetClient.StreamContextSettings/Filter', function (&$aStreamContextSettings) use ($sSslCafile, $sSslCapath) {
+				\MailSo\Hooks::Add('Net.NetClient.StreamContextSettings/Filter', function ($aStreamContextSettings) use ($sSslCafile, $sSslCapath) {
 					if (isset($aStreamContextSettings['ssl']) && \is_array($aStreamContextSettings['ssl']))
 					{
 						if (empty($aStreamContextSettings['ssl']['cafile']) && !empty($sSslCafile))
