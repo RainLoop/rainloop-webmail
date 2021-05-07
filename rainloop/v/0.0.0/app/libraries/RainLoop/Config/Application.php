@@ -216,11 +216,11 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'custom_server_signature'	=> array('RainLoop'),
 				'x_frame_options_header'	=> array(''),
 				'x_xss_protection_header'	=> array('1; mode=block'),
-				
+
 				'openpgp'					=> array(false),
 
 				'admin_login'				=> array('admin', 'Login and password for web admin panel'),
-				'admin_password'			=> array('12345'),
+				'admin_password'			=> array(''),
 				'allow_admin_panel'			=> array(true, 'Access settings'),
 				'allow_two_factor_auth'		=> array(false),
 				'force_two_factor_auth'		=> array(false),
