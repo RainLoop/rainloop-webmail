@@ -34,7 +34,7 @@ pl_PL:
     LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "Zezwól na dodatkowe konta"
     LABEL_ALLOW_IDENTITIES: "Zezwól na posiadanie wielu tożsamości"
     LABEL_ALLOW_TEMPLATES: "Zezwól na używanie szablonów"
-    ALERT_DATA_ACCESS: "Folder data jest osiągalny z poziomu przeglądarki WWW. Zmień konfigurację serwera www, aby ukryć ten folder z zewnątrz. Więcej informacji tutaj: "
+    ALERT_DATA_ACCESS: "Katalog „data” jest osiągalny z poziomu przeglądarki WWW. Zmień konfigurację serwera www, aby ukryć ten katalog z zewnątrz. Więcej informacji tutaj: "
     ALERT_WARNING: "Ostrzeżenie!"
     HTML_ALERT_WEAK_PASSWORD: |
         Korzystasz z domyślnego hasła administratora.
