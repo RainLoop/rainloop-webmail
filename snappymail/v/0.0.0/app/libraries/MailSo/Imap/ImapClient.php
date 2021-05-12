@@ -1093,6 +1093,17 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $oResult;
 	}
 
+	private function skipBracketParse(?Response $oImapResponse) : bool
+	{
+		return $oImapResponse &&
+			$oImapResponse->ResponseType === \MailSo\Imap\Enumerations\ResponseType::UNTAGGED &&
+			(
+				($oImapResponse->StatusOrIndex === 'STATUS' && 2 === \count($oImapResponse->ResponseList)) ||
+				($oImapResponse->StatusOrIndex === 'LIST' && 4 === \count($oImapResponse->ResponseList)) ||
+				($oImapResponse->StatusOrIndex === 'LSUB' && 4 === \count($oImapResponse->ResponseList))
+			);
+	}
+
 	/**
 	 * @return array|string
 	 * @throws \MailSo\Net\Exceptions\Exception
@@ -1276,8 +1287,16 @@ class ImapClient extends \MailSo\Net\NetClient
 			{
 				case ']' === $sChar:
 				case ')' === $sChar:
-					++$iPos;
-					$sPreviousAtomUpperCase = null;
+					if ($this->skipBracketParse($oImapResponse))
+					{
+						$bIsGotoDefault = true;
+						$bIsGotoNotAtomBracket = false;
+					}
+					else
+					{
+						++$iPos;
+						$sPreviousAtomUpperCase = null;
+					}
 					break 2;
 				case ' ' === $sChar:
 					if ($bTreatAsAtom)
@@ -1294,12 +1313,20 @@ class ImapClient extends \MailSo\Net\NetClient
 					{
 						$sAtomBuilder .= $sChar;
 						$bIsGotoAtomBracket = true;
+						$this->iResponseBufParsedPos = ++$iPos;
+					}
+					else if ($this->skipBracketParse($oImapResponse))
+					{
+						$sOpenBracket = '';
+						$sClosingBracket = '';
+						$bIsGotoDefault = true;
+						$bIsGotoNotAtomBracket = false;
 					}
 					else
 					{
 						$bIsGotoNotAtomBracket = true;
+						$this->iResponseBufParsedPos = ++$iPos;
 					}
-					$this->iResponseBufParsedPos = ++$iPos;
 					break;
 				case '{' === $sChar:
 					$bIsLiteralParsed = false;
@@ -1427,6 +1454,10 @@ class ImapClient extends \MailSo\Net\NetClient
 						$sCharDef = $this->sResponseBuffer[$iPos];
 						switch (true)
 						{
+							case ('[' === $sCharDef || ']' === $sCharDef || '(' === $sCharDef || ')' === $sCharDef) &&
+								$this->skipBracketParse($oImapResponse):
+								++$iPos;
+								break;
 							case '[' === $sCharDef:
 								if (null === $sAtomBuilder)
 								{
