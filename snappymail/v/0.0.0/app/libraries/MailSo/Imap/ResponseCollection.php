@@ -91,6 +91,34 @@ class ResponseCollection extends \MailSo\Base\Collection
 		return $aReturn;
 	}
 
+	/**
+	 * @param array|string $mName
+	 */
+	private function getArrayNameToStringName($mName) : string
+	{
+		if (\is_string($mName))
+		{
+			return $mName;
+		}
+
+		if (\is_array($mName))
+		{
+			if (0 === \count($mName))
+			{
+				return '[]';
+			}
+
+			foreach ($mName as &$mSubName)
+			{
+				$mSubName = "[{$this->getArrayNameToStringName($mSubName)}]";
+			}
+
+			return \implode('', $mName);
+		}
+
+		return '';
+	}
+
 	public function getFoldersResult(string $sStatus, bool $bUseListStatus = false) : array
 	{
 		$aReturn = array();
@@ -110,15 +138,12 @@ class ResponseCollection extends \MailSo\Base\Collection
 					 * https://github.com/the-djmaze/snappymail/issues/1
 					 * https://github.com/the-djmaze/snappymail/issues/70
 					 */
-					$sFullNameRaw = \array_slice($oResponse->ResponseList, 4);
-					foreach ($sFullNameRaw as &$name) {
-						if (\is_array($name)) {
-							$name = "[{$name[0]}]";
-						} else if (!\is_string($name)) {
-							$name = '';
-						}
+					$aFullNameRawList = \array_slice($oResponse->ResponseList, 4);
+					foreach ($aFullNameRawList as &$sName) {
+						$sName = $this->getArrayNameToStringName($sName);
 					}
-					$sFullNameRaw = \implode('', $sFullNameRaw);
+
+					$sFullNameRaw = \implode('', $aFullNameRawList);
 
 					$oFolder = new Folder($sFullNameRaw,
 						$oResponse->ResponseList[3], $oResponse->ResponseList[2]);
