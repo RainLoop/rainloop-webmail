@@ -44,10 +44,6 @@ import util from '../../util.js';
 // Bits per digit
 var dbits;
 
-// JavaScript engine analysis
-var canary = 0xdeadbeefcafe;
-var j_lm = ((canary & 0xffffff) == 0xefcafe);
-
 // (public) Constructor
 
 export default function BigInteger(a, b, c) {
@@ -80,52 +76,9 @@ function am1(i, x, w, j, c, n) {
   }
   return c;
 }
-// am2 avoids a big mult-and-extract completely.
-// Max digit bits should be <= 30 because we do bitwise ops
-// on values up to 2*hdvalue^2-hdvalue-1 (< 2^31)
 
-function am2(i, x, w, j, c, n) {
-  var xl = x & 0x7fff,
-    xh = x >> 15;
-  while (--n >= 0) {
-    var l = this[i] & 0x7fff;
-    var h = this[i++] >> 15;
-    var m = xh * l + h * xl;
-    l = xl * l + ((m & 0x7fff) << 15) + w[j] + (c & 0x3fffffff);
-    c = (l >>> 30) + (m >>> 15) + xh * h + (c >>> 30);
-    w[j++] = l & 0x3fffffff;
-  }
-  return c;
-}
-// Alternately, set max digit bits to 28 since some
-// browsers slow down when dealing with 32-bit numbers.
-
-function am3(i, x, w, j, c, n) {
-  var xl = x & 0x3fff,
-    xh = x >> 14;
-  while (--n >= 0) {
-    var l = this[i] & 0x3fff;
-    var h = this[i++] >> 14;
-    var m = xh * l + h * xl;
-    l = xl * l + ((m & 0x3fff) << 14) + w[j] + c;
-    c = (l >> 28) + (m >> 14) + xh * h;
-    w[j++] = l & 0xfffffff;
-  }
-  return c;
-}
-/*if(j_lm && (navigator != undefined &&
-	navigator.appName == "Microsoft Internet Explorer")) {
-  BigInteger.prototype.am = am2;
-  dbits = 30;
-}
-else if(j_lm && (navigator != undefined && navigator.appName != "Netscape")) {*/
 BigInteger.prototype.am = am1;
 dbits = 26;
-/*}
-else { // Mozilla/Netscape seems to prefer am3
-  BigInteger.prototype.am = am3;
-  dbits = 28;
-}*/
 
 BigInteger.prototype.DB = dbits;
 BigInteger.prototype.DM = ((1 << dbits) - 1);
@@ -1583,32 +1536,6 @@ function bnIsProbablePrime(t) {
 }
 
 /* added by Recurity Labs */
-
-function nbits(x) {
-  var n = 1,
-    t;
-  if ((t = x >>> 16) != 0) {
-    x = t;
-    n += 16;
-  }
-  if ((t = x >> 8) != 0) {
-    x = t;
-    n += 8;
-  }
-  if ((t = x >> 4) != 0) {
-    x = t;
-    n += 4;
-  }
-  if ((t = x >> 2) != 0) {
-    x = t;
-    n += 2;
-  }
-  if ((t = x >> 1) != 0) {
-    x = t;
-    n += 1;
-  }
-  return n;
-}
 
 function bnToMPI() {
   var ba = this.toByteArray();

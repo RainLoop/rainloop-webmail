@@ -37,7 +37,7 @@
 import util from '../util.js';
 import crypto from '../crypto';
 import enums from '../enums.js';
-import asmCrypto from 'asmcrypto-lite';
+import asmCrypto from '../asmcrypto.js';
 
 const VERSION = 1; // A one-octet version number of the data packet.
 
@@ -146,5 +146,6 @@ function aesEncrypt(algo, prefix, pt, key) {
 }
 
 function aesDecrypt(algo, ct, key) {
-  return asmCrypto.AES_CFB.decrypt(ct, key).subarray(crypto.cipher[algo].blockSize + 2, pt.length); // Remove random prefix
+  var pt = asmCrypto.AES_CFB.decrypt(ct, key);
+  return pt.subarray(crypto.cipher[algo].blockSize + 2, pt.length); // Remove random prefix
 }

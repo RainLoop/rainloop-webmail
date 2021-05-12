@@ -52,23 +52,6 @@ function string_to_bytes ( str, utf8 ) {
     return bytes.subarray(0, j);
 }
 
-function hex_to_bytes ( str ) {
-    var len = str.length;
-    if ( len & 1 ) {
-        str = '0'+str;
-        len++;
-    }
-    var bytes = new Uint8Array(len>>1);
-    for ( var i = 0; i < len; i += 2 ) {
-        bytes[i>>1] = parseInt( str.substr( i, 2), 16 );
-    }
-    return bytes;
-}
-
-function base64_to_bytes ( str ) {
-    return string_to_bytes( atob( str ) );
-}
-
 function bytes_to_string ( bytes, utf8 ) {
     utf8 = !!utf8;
 
@@ -1848,6 +1831,8 @@ function AES_GCM_Decrypt_finish () {
 
     for ( var i = rlen; i & 15; i++ ) heap[ pos + i ] = 0;
 
+    asm.mac( AES_asm.MAC.GCM, AES_asm.HEAP_DATA + pos, i );
+    asm.cipher( AES_asm.DEC.CTR, AES_asm.HEAP_DATA + pos, i );
     if ( rlen ) result.set( heap.subarray( pos, pos+rlen ) );
 
     var alen = ( adata !== null ) ? adata.length : 0,
@@ -6040,7 +6025,7 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ivLength = 12; // size of the IV in bytes
+exports.ivLength = undefined;
 exports.encrypt = encrypt;
 exports.decrypt = decrypt;
 
@@ -6060,6 +6045,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var webCrypto = _util2.default.getWebCrypto(); // no GCM support in IE11, Safari 9
 
+var ivLength = exports.ivLength = 12; // size of the IV in bytes
 var TAG_LEN = 16; // size of the tag in bytes
 var ALGO = 'AES-GCM';
 
@@ -7086,7 +7072,6 @@ function binb2b64(binarray, formatOpts) {
  * @private
  * @param {Array.<number>} binarray Array of integers to be converted to
  *   a raw bytes string representation
- * @param {!Object} formatOpts Unused Hash list
  * @return {string} Raw bytes representation of the parameter in string
  *   form
  */
@@ -7110,7 +7095,6 @@ function binb2bytes(binarray) {
  * @private
  * @param {Array.<number>} binarray Array of integers to be converted to
  *   a raw bytes string representation
- * @param {!Object} formatOpts Unused Hash list
  * @return {Uint8Array} Raw bytes representation of the parameter
  */
 function binb2typed(binarray) {
@@ -13578,10 +13562,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = LocalStore;
 
-var _config = _dereq_('../config');
-
-var _config2 = _interopRequireDefault(_config);
-
 var _key = _dereq_('../key.js');
 
 var keyModule = _interopRequireWildcard(_key);
@@ -15007,7 +14987,7 @@ function nativeAEAD() {
   return _util2.default.getWebCrypto() && _config2.default.aead_protect;
 }
 
-},{"./cleartext.js":5,"./config/config.js":9,"./key.js":38,"./message.js":42,"./util":70,"./worker/async_proxy.js":71,"es6-promise":2}],
+},{"./cleartext.js":5,"./config/config.js":9,"./key.js":38,"./message.js":42,"./util":70,"./worker/async_proxy.js":71}],
 44:[function(_dereq_,module,exports){
 /**
  * @requires enums
@@ -18324,7 +18304,8 @@ function aesEncrypt(algo, prefix, pt, key) {
 
 function aesDecrypt(algo, ct, key) {
   // asm.js fallback
-  return _asmcryptoLite2.default.AES_CFB.decrypt(ct, key).subarray(_crypto2.default.cipher[algo].blockSize + 2, pt.length); // Remove random prefix
+  var pt = _asmcryptoLite2.default.AES_CFB.decrypt(ct, key);
+  return pt.subarray(_crypto2.default.cipher[algo].blockSize + 2, pt.length); // Remove random prefix
 }
 
 },{"../crypto":24,"../enums.js":35,"../util.js":70,"asmcrypto-lite":1}],
@@ -19401,17 +19382,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = {
 
-  isString: function isString(data) {
-    return typeof data === 'string' || String.prototype.isPrototypeOf(data);
-  },
+  isString: data => typeof data === 'string' || String.prototype.isPrototypeOf(data),
 
-  isArray: function isArray(data) {
-    return Array.prototype.isPrototypeOf(data);
-  },
+  isArray: data => Array.isArray(data),
 
-  isUint8Array: function isUint8Array(data) {
-    return Uint8Array.prototype.isPrototypeOf(data);
-  },
+  isUint8Array: data => Uint8Array.prototype.isPrototypeOf(data),
 
   isEmailAddress: function isEmailAddress(data) {
     if (!this.isString(data)) {
@@ -19422,11 +19397,7 @@ exports.default = {
   },
 
   isUserId: function isUserId(data) {
-    if (!this.isString(data)) {
-      return false;
-    }
-    return (/</.test(data) && />$/.test(data)
-    );
+    return this.isString(data) ? /<.+>$/.test(data) : false;
   },
 
   /**

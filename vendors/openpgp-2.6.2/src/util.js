@@ -25,19 +25,15 @@
 
 import config from './config';
 
+var browser = window || self;
+
 export default {
 
-  isString: function(data) {
-    return typeof data === 'string' || String.prototype.isPrototypeOf(data);
-  },
+  isString: data => typeof data === 'string' || String.prototype.isPrototypeOf(data),
 
-  isArray: function(data) {
-    return Array.prototype.isPrototypeOf(data);
-  },
+  isArray: data => Array.isArray(data),
 
-  isUint8Array: function(data) {
-    return Uint8Array.prototype.isPrototypeOf(data);
-  },
+  isUint8Array: data => Uint8Array.prototype.isPrototypeOf(data),
 
   isEmailAddress: function(data) {
     if (!this.isString(data)) {
@@ -48,10 +44,7 @@ export default {
   },
 
   isUserId: function(data) {
-    if (!this.isString(data)) {
-      return false;
-    }
-    return /</.test(data) && />$/.test(data);
+    return this.isString(data) ? /</.test(data) && />$/.test(data) : false;
   },
 
   /**
@@ -455,13 +448,7 @@ export default {
    * be deactivated with config.use_native
    * @return {Object}   The SubtleCrypto api or 'undefined'
    */
-  getWebCrypto: function() {
-    if (!config.use_native) {
-      return;
-    }
-
-    return typeof window !== 'undefined' && window.crypto && window.crypto.subtle;
-  },
+  getWebCrypto: () => config.use_native && browser && browser.crypto && browser.crypto.subtle,
 
   /**
    * Get native Web Cryptography api for all browsers, including legacy
@@ -475,21 +462,14 @@ export default {
       return;
     }
 
-    if (typeof window !== 'undefined') {
-      if (window.crypto) {
-        return window.crypto.subtle || window.crypto.webkitSubtle;
+    if (browser) {
+      if (browser.crypto) {
+        return browser.crypto.subtle || browser.crypto.webkitSubtle;
       }
-      if (window.msCrypto) {
-        return window.msCrypto.subtle;
+      if (browser.msCrypto) {
+        return browser.msCrypto.subtle;
       }
     }
-  },
-
-  /**
-   * Detect Node.js runtime.
-   */
-  detectNode: function() {
-    return typeof window === 'undefined';
   }
 
 };
