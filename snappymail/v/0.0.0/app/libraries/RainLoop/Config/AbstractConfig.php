@@ -257,7 +257,7 @@ abstract class AbstractConfig
 						{
 							$sDesk = \str_replace("\r", '', $mParamValue[1]);
 							$aDesk = \explode("\n", $sDesk);
-							$aDesk = \array_map(function (&$sLine) {
+							$aDesk = \array_map(function ($sLine) {
 								return '; '.$sLine;
 							}, $aDesk);
 

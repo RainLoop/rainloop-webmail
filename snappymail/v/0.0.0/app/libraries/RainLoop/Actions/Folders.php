@@ -351,7 +351,7 @@ trait Folders
 		$aFlagsFilteredUids = array();
 		if (0 < strlen($sFlagsUids))
 		{
-			$aFlagsUids = explode(',', $sFlagsUids);
+			$aFlagsUids = \explode(',', $sFlagsUids);
 			$aFlagsFilteredUids = \array_filter(\array_map('intval', $aFlagsUids));
 		}
 
