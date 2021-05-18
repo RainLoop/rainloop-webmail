@@ -394,7 +394,7 @@
 		"LABEL_USE_THREADS": "Als Unterhaltungen anzeigen",
 		"LABEL_REPLY_SAME_FOLDER": "Antworten im gleichen Ordner wie die Nachricht, auf die geantwortet wurde, abspeichern",
 		"LABEL_SHOW_IMAGES": "In der Nachricht enthaltene Bilder immer anzeigen",
-		"LABEL_REMOVE_COLORS": "Entfern Hintergrund- und Textfarben aus der Nachricht",
+		"LABEL_REMOVE_COLORS": "Entferne Hintergrund- und Textfarben aus der Nachricht",
 		"LABEL_MESSAGE_PER_PAGE": "Nachrichten pro Seite",
 		"LABEL_NOTIFICATIONS": "Benachrichtigungen",
 		"LABEL_SOUND_NOTIFICATION": "Benachrichtigungston",
