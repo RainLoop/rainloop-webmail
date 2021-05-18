@@ -1,4 +1,3 @@
-
 .g-ui-min-height-300 {
 	min-height: 300px;
 }
@@ -24,9 +23,9 @@
 		right: @rlLowMargin;
 		left: -2px;
 		/*overflow: hidden;*/
-		border: @rlLowBorderSize solid @rlMainDarkColor;
+		border: 1px solid @rlMainDarkColor;
 
-		border-radius: @rlLowBorderRadius;
+		border-radius: @rlMainBorderRadius;
 
 		background-color: #fff;
 
@@ -92,11 +91,8 @@
 
 		padding: 10px;
 		background-color: #f8f8f8;
-		border-top: 0;
 		border-bottom: 1px solid #ddd;
-		border-top-right-radius: 5px;
-		border-top-left-radius: 5px;
-		z-index: 1;
+		border-radius: @rlMainBorderRadius @rlMainBorderRadius 0 0;
 
 		.subjectParent {
 			font-size: 18px;
@@ -105,9 +101,6 @@
 			overflow: hidden;
 			white-space: nowrap;
 			margin-bottom: 8px;
-			line-height: 100%;
-			height: 22px;
-			vertical-align: middle;
 		}
 
 		.messageButtons {
@@ -186,7 +179,6 @@
 		left: 0;
 		right: 0;
 		overflow: auto;
-		border-radius: @rlLowBorderRadius;
 		scroll-behavior: smooth;
 
 		.buttonFull {
@@ -289,13 +281,10 @@
 		}
 
 		.rlBlockquoteSwitcher {
-
-			background-color: #eee;
 			border: 1px solid #999;
 			display: block;
-			width: 30px;
-			height: 14px;
-			line-height: 14px;
+			width: 3em;
+			line-height: 1em;
 			text-align: center;
 			cursor: pointer;
 			margin: 2em 0 10px;
@@ -304,10 +293,6 @@
 			&:hover {
 				opacity: 1;
 			}
-		}
-
-		.bodySubHeader {
-			z-index: 2;
 		}
 
 		.b-text-part {
@@ -474,7 +459,6 @@
 	&.message-focused .b-content {
 		z-index: 101;
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-		border-radius: @rlLowBorderRadius;
 		border-color: darken(@rlMainDarkColor, 5%);
 	}
 
@@ -523,7 +507,7 @@ html.rl-no-preview-pane .messageView {
 	}
 
 	.toolbar {
-		padding-left: @rlMainBorderSize;
+		padding-left: 1px;
 	}
 
 	.b-content {
@@ -531,9 +515,8 @@ html.rl-no-preview-pane .messageView {
 		left: 0;
 		bottom: @rlBottomMargin;
 		right: @rlBottomMargin;
-		border: @rlMainBorderSize solid @rlMainDarkColor;
+		border: 1px solid @rlMainDarkColor;
 		box-shadow: @rlMainShadow;
-		border-radius: @rlMainBorderRadius;
 	}
 }
 
@@ -572,8 +555,7 @@ html.rl-message-fullscreen {
 		right: 0 !important;
 		bottom: 0 !important;
 		z-index: 10000 !important;
-		border: @rlLowBorderSize solid @rlMainDarkColor  !important;
-		border-radius: @rlLowBorderRadius  !important;
+		border: 1px solid @rlMainDarkColor  !important;
 	}
 }
 
