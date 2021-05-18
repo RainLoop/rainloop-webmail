@@ -36,8 +36,6 @@ function loadKeys(storage, itemname) {
       key = keyModule.readArmored(armoredKeys[i]);
       if (!key.err) {
         keys.push(key.keys[0]);
-      } else {
-        util.print_debug("Error reading armored key from keyring index: " + i);
       }
     }
   }

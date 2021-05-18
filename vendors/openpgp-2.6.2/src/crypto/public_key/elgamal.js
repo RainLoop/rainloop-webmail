@@ -44,10 +44,6 @@ export default function Elgamal() {
   }
 
   function decrypt(c1, c2, p, x) {
-    util.print_debug("Elgamal Decrypt:\nc1:" + util.hexstrdump(c1.toMPI()) + "\n" +
-      "c2:" + util.hexstrdump(c2.toMPI()) + "\n" +
-      "p:" + util.hexstrdump(p.toMPI()) + "\n" +
-      "x:" + util.hexstrdump(x.toMPI()));
     return (c1.modPow(x, p).modInverse(p)).multiply(c2).mod(p);
     //var c = c1.pow(x).modInverse(p); // c0^-a mod p
     //return c.multiply(c2).mod(p);

@@ -551,9 +551,6 @@ function execute(cmd, message) {
  * @param {Error} error      The internal error that caused the failure
  */
 function onError(message, error) {
-  // log the stack trace
-  if (config.debug) { console.error(error.stack); }
-
   // update error message
   error.message = message + ': ' + error.message;
 

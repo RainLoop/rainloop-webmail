@@ -37,7 +37,7 @@
 import util from '../util.js';
 import crypto from '../crypto';
 import enums from '../enums.js';
-import asmCrypto from '../asmcrypto.js';
+import '../asmcrypto.js';
 
 const VERSION = 1; // A one-octet version number of the data packet.
 

@@ -9,8 +9,8 @@
 'use strict';
 
 import sha from './sha.js';
-import asmCrypto from '../../asmcrypto.js';
-import Rusha from '../../rusha.js';
+import '../../asmcrypto.js';
+import '../../rusha.js';
 import md5 from './md5.js';
 import ripemd from './ripe-md.js';
 import util from '../../util.js';

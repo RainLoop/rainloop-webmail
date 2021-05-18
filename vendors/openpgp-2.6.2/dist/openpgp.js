@@ -1,16 +1,42 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.openpgp = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({
-1:[function(_dereq_,module,exports){
+/* eslint max-len: 0 */
+(f=>{
+	if (typeof exports === "object" && typeof module !== "undefined") {
+		module.exports = f()
+	} else {
+		(window||global||self||this).openpgp = f()
+	}
+})(() => {
+	return (function e(t, n, r) {
+		function s(o, u) {
+			if (!n[o]) {
+				if (!t[o]) {
+					var a = typeof require == "function" && require;
+					if (!u && a) return a(o, !0);
+					if (i) return i(o, !0);
+					var f = new Error("Cannot find module '" + o + "'");
+					throw f.code = "MODULE_NOT_FOUND", f
+				}
+				var l = n[o] = {
+					exports: {}
+				};
+				t[o][0].call(l.exports, function (e) {
+					var n = t[o][1][e];
+					return s(n ? n : e)
+				}, l, l.exports, e, t, n, r)
+			}
+			return n[o].exports
+		}
+		var i = typeof require == "function" && require;
+		for (var o = 0; o < r.length; o++) s(r[o]);
+		return s
+	})({
+1:[function(_dereq_,module){
 /*! asmCrypto Lite v1.1.0, (c) 2013 Artem S Vybornov, opensource.org/licenses/MIT */
 (function ( exports, global ) {
 
-function IllegalStateError () { var err = Error.apply( this, arguments ); this.message = err.message, this.stack = err.stack; }
-IllegalStateError.prototype = Object.create( Error.prototype, { name: { value: 'IllegalStateError' } } );
-
-function IllegalArgumentError () { var err = Error.apply( this, arguments ); this.message = err.message, this.stack = err.stack; }
-IllegalArgumentError.prototype = Object.create( Error.prototype, { name: { value: 'IllegalArgumentError' } } );
-
-function SecurityError () { var err = Error.apply( this, arguments ); this.message = err.message, this.stack = err.stack; }
-SecurityError.prototype = Object.create( Error.prototype, { name: { value: 'SecurityError' } } );
+class IllegalStateError extends Error {}
+class IllegalArgumentError extends Error {}
+class SecurityError extends Error {}
 
 function string_to_bytes ( str, utf8 ) {
     utf8 = !!utf8;
@@ -55,10 +81,11 @@ function string_to_bytes ( str, utf8 ) {
 function bytes_to_string ( bytes, utf8 ) {
     utf8 = !!utf8;
 
-    var len = bytes.length,
+    var i, j = 0,
+        len = bytes.length,
         chars = new Array(len);
 
-    for ( var i = 0, j = 0; i < len; i++ ) {
+    for ( i = 0; i < len; i++ ) {
         var b = bytes[i];
         if ( !utf8 || b < 128 ) {
             chars[j++] = b;
@@ -87,7 +114,7 @@ function bytes_to_string ( bytes, utf8 ) {
 
     var str = '',
         bs = 16384;
-    for ( var i = 0; i < j; i += bs ) {
+    for ( i = 0; i < j; i += bs ) {
         str += String.fromCharCode.apply( String, chars.slice( i, i+bs <= j ? i+bs : j ) );
     }
 
@@ -316,13 +343,14 @@ var AES_asm = function () {
          * @param {int} k0..k7 - key vector components
          */
         function set_key ( ks, k0, k1, k2, k3, k4, k5, k6, k7 ) {
-            var ekeys = heap.subarray( 0x000, 60 ),
+            var k,
+                ekeys = heap.subarray( 0x000, 60 ),
                 dkeys = heap.subarray( 0x100, 0x100+60 );
 
             // Encryption key schedule
             ekeys.set( [ k0, k1, k2, k3, k4, k5, k6, k7 ] );
             for ( var i = ks, rcon = 1; i < 4*ks+28; i++ ) {
-                var k = ekeys[i-1];
+                k = ekeys[i-1];
                 if ( ( i % ks === 0 ) || ( ks === 8 && i % ks === 4 ) ) {
                     k = aes_sbox[k>>>24]<<24 ^ aes_sbox[k>>>16&255]<<16 ^ aes_sbox[k>>>8&255]<<8 ^ aes_sbox[k&255];
                 }
@@ -336,7 +364,7 @@ var AES_asm = function () {
             // Decryption key schedule
             for ( var j = 0; j < i; j += 4 ) {
                 for ( var jj = 0; jj < 4; jj++ ) {
-                    var k = ekeys[i-(4+j)+(4-jj)%4];
+                    k = ekeys[i-(4+j)+(4-jj)%4];
                     if ( j < 4 || j >= i-4 ) {
                         dkeys[j+jj] = k;
                     } else {
@@ -1856,7 +1884,7 @@ function AES_GCM_Decrypt_finish () {
     asm.cipher( AES_asm.ENC.CTR, AES_asm.HEAP_DATA, 16 );
 
     var acheck = 0;
-    for ( var i = 0; i < tagSize; ++i ) acheck |= atag[i] ^ heap[i];
+    for ( i = 0; i < tagSize; ++i ) acheck |= atag[i] ^ heap[i];
     if ( acheck )
         throw new SecurityError("data integrity check failed");
 
@@ -2898,12 +2926,12 @@ sha256_constructor.base64 = sha256_base64;
 exports.SHA256 = sha256_constructor;
 
 
-'function'==typeof define&&define.amd?define([],function(){return exports}):'object'==typeof module&&module.exports?module.exports=exports:global.asmCrypto=exports;
+'object'==typeof module&&module.exports?module.exports=exports:global.asmCrypto=exports;
 
 return exports;
 })( {}, function(){return this}() );
 },{}],
-4:[function(_dereq_,module,exports){
+4:[function(_dereq_,module){
 (function (global){
 (function () {
     function Rusha(chunkSize) {
@@ -3658,89 +3686,986 @@ function verifyHeaders(headers, packetlist) {
 }
 
 },{"./config":10,"./encoding/armor.js":33,"./enums.js":35,"./packet":47,"./signature.js":66}],
-6:[function(_dereq_,module,exports){
-/** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */(function() {'use strict';var n=void 0,u=!0,aa=this;function ba(e,d){var c=e.split("."),f=aa;!(c[0]in f)&&f.execScript&&f.execScript("var "+c[0]);for(var a;c.length&&(a=c.shift());)!c.length&&d!==n?f[a]=d:f=f[a]?f[a]:f[a]={}};var C="undefined"!==typeof Uint8Array&&"undefined"!==typeof Uint16Array&&"undefined"!==typeof Uint32Array&&"undefined"!==typeof DataView;function K(e,d){this.index="number"===typeof d?d:0;this.d=0;this.buffer=e instanceof(C?Uint8Array:Array)?e:new (C?Uint8Array:Array)(32768);if(2*this.buffer.length<=this.index)throw Error("invalid index");this.buffer.length<=this.index&&ca(this)}function ca(e){var d=e.buffer,c,f=d.length,a=new (C?Uint8Array:Array)(f<<1);if(C)a.set(d);else for(c=0;c<f;++c)a[c]=d[c];return e.buffer=a}
-K.prototype.a=function(e,d,c){var f=this.buffer,a=this.index,b=this.d,k=f[a],m;c&&1<d&&(e=8<d?(L[e&255]<<24|L[e>>>8&255]<<16|L[e>>>16&255]<<8|L[e>>>24&255])>>32-d:L[e]>>8-d);if(8>d+b)k=k<<d|e,b+=d;else for(m=0;m<d;++m)k=k<<1|e>>d-m-1&1,8===++b&&(b=0,f[a++]=L[k],k=0,a===f.length&&(f=ca(this)));f[a]=k;this.buffer=f;this.d=b;this.index=a};K.prototype.finish=function(){var e=this.buffer,d=this.index,c;0<this.d&&(e[d]<<=8-this.d,e[d]=L[e[d]],d++);C?c=e.subarray(0,d):(e.length=d,c=e);return c};
-var ga=new (C?Uint8Array:Array)(256),M;for(M=0;256>M;++M){for(var R=M,S=R,ha=7,R=R>>>1;R;R>>>=1)S<<=1,S|=R&1,--ha;ga[M]=(S<<ha&255)>>>0}var L=ga;function ja(e){this.buffer=new (C?Uint16Array:Array)(2*e);this.length=0}ja.prototype.getParent=function(e){return 2*((e-2)/4|0)};ja.prototype.push=function(e,d){var c,f,a=this.buffer,b;c=this.length;a[this.length++]=d;for(a[this.length++]=e;0<c;)if(f=this.getParent(c),a[c]>a[f])b=a[c],a[c]=a[f],a[f]=b,b=a[c+1],a[c+1]=a[f+1],a[f+1]=b,c=f;else break;return this.length};
-ja.prototype.pop=function(){var e,d,c=this.buffer,f,a,b;d=c[0];e=c[1];this.length-=2;c[0]=c[this.length];c[1]=c[this.length+1];for(b=0;;){a=2*b+2;if(a>=this.length)break;a+2<this.length&&c[a+2]>c[a]&&(a+=2);if(c[a]>c[b])f=c[b],c[b]=c[a],c[a]=f,f=c[b+1],c[b+1]=c[a+1],c[a+1]=f;else break;b=a}return{index:e,value:d,length:this.length}};function ka(e,d){this.e=ma;this.f=0;this.input=C&&e instanceof Array?new Uint8Array(e):e;this.c=0;d&&(d.lazy&&(this.f=d.lazy),"number"===typeof d.compressionType&&(this.e=d.compressionType),d.outputBuffer&&(this.b=C&&d.outputBuffer instanceof Array?new Uint8Array(d.outputBuffer):d.outputBuffer),"number"===typeof d.outputIndex&&(this.c=d.outputIndex));this.b||(this.b=new (C?Uint8Array:Array)(32768))}var ma=2,T=[],U;
-for(U=0;288>U;U++)switch(u){case 143>=U:T.push([U+48,8]);break;case 255>=U:T.push([U-144+400,9]);break;case 279>=U:T.push([U-256+0,7]);break;case 287>=U:T.push([U-280+192,8]);break;default:throw"invalid literal: "+U;}
-ka.prototype.h=function(){var e,d,c,f,a=this.input;switch(this.e){case 0:c=0;for(f=a.length;c<f;){d=C?a.subarray(c,c+65535):a.slice(c,c+65535);c+=d.length;var b=d,k=c===f,m=n,g=n,p=n,v=n,x=n,l=this.b,h=this.c;if(C){for(l=new Uint8Array(this.b.buffer);l.length<=h+b.length+5;)l=new Uint8Array(l.length<<1);l.set(this.b)}m=k?1:0;l[h++]=m|0;g=b.length;p=~g+65536&65535;l[h++]=g&255;l[h++]=g>>>8&255;l[h++]=p&255;l[h++]=p>>>8&255;if(C)l.set(b,h),h+=b.length,l=l.subarray(0,h);else{v=0;for(x=b.length;v<x;++v)l[h++]=
-b[v];l.length=h}this.c=h;this.b=l}break;case 1:var q=new K(C?new Uint8Array(this.b.buffer):this.b,this.c);q.a(1,1,u);q.a(1,2,u);var t=na(this,a),w,da,z;w=0;for(da=t.length;w<da;w++)if(z=t[w],K.prototype.a.apply(q,T[z]),256<z)q.a(t[++w],t[++w],u),q.a(t[++w],5),q.a(t[++w],t[++w],u);else if(256===z)break;this.b=q.finish();this.c=this.b.length;break;case ma:var B=new K(C?new Uint8Array(this.b.buffer):this.b,this.c),ra,J,N,O,P,Ia=[16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15],W,sa,X,ta,ea,ia=Array(19),
-ua,Q,fa,y,va;ra=ma;B.a(1,1,u);B.a(ra,2,u);J=na(this,a);W=oa(this.j,15);sa=pa(W);X=oa(this.i,7);ta=pa(X);for(N=286;257<N&&0===W[N-1];N--);for(O=30;1<O&&0===X[O-1];O--);var wa=N,xa=O,F=new (C?Uint32Array:Array)(wa+xa),r,G,s,Y,E=new (C?Uint32Array:Array)(316),D,A,H=new (C?Uint8Array:Array)(19);for(r=G=0;r<wa;r++)F[G++]=W[r];for(r=0;r<xa;r++)F[G++]=X[r];if(!C){r=0;for(Y=H.length;r<Y;++r)H[r]=0}r=D=0;for(Y=F.length;r<Y;r+=G){for(G=1;r+G<Y&&F[r+G]===F[r];++G);s=G;if(0===F[r])if(3>s)for(;0<s--;)E[D++]=0,
-H[0]++;else for(;0<s;)A=138>s?s:138,A>s-3&&A<s&&(A=s-3),10>=A?(E[D++]=17,E[D++]=A-3,H[17]++):(E[D++]=18,E[D++]=A-11,H[18]++),s-=A;else if(E[D++]=F[r],H[F[r]]++,s--,3>s)for(;0<s--;)E[D++]=F[r],H[F[r]]++;else for(;0<s;)A=6>s?s:6,A>s-3&&A<s&&(A=s-3),E[D++]=16,E[D++]=A-3,H[16]++,s-=A}e=C?E.subarray(0,D):E.slice(0,D);ea=oa(H,7);for(y=0;19>y;y++)ia[y]=ea[Ia[y]];for(P=19;4<P&&0===ia[P-1];P--);ua=pa(ea);B.a(N-257,5,u);B.a(O-1,5,u);B.a(P-4,4,u);for(y=0;y<P;y++)B.a(ia[y],3,u);y=0;for(va=e.length;y<va;y++)if(Q=
-e[y],B.a(ua[Q],ea[Q],u),16<=Q){y++;switch(Q){case 16:fa=2;break;case 17:fa=3;break;case 18:fa=7;break;default:throw"invalid code: "+Q;}B.a(e[y],fa,u)}var ya=[sa,W],za=[ta,X],I,Aa,Z,la,Ba,Ca,Da,Ea;Ba=ya[0];Ca=ya[1];Da=za[0];Ea=za[1];I=0;for(Aa=J.length;I<Aa;++I)if(Z=J[I],B.a(Ba[Z],Ca[Z],u),256<Z)B.a(J[++I],J[++I],u),la=J[++I],B.a(Da[la],Ea[la],u),B.a(J[++I],J[++I],u);else if(256===Z)break;this.b=B.finish();this.c=this.b.length;break;default:throw"invalid compression type";}return this.b};
-function qa(e,d){this.length=e;this.g=d}
-var Fa=function(){function e(a){switch(u){case 3===a:return[257,a-3,0];case 4===a:return[258,a-4,0];case 5===a:return[259,a-5,0];case 6===a:return[260,a-6,0];case 7===a:return[261,a-7,0];case 8===a:return[262,a-8,0];case 9===a:return[263,a-9,0];case 10===a:return[264,a-10,0];case 12>=a:return[265,a-11,1];case 14>=a:return[266,a-13,1];case 16>=a:return[267,a-15,1];case 18>=a:return[268,a-17,1];case 22>=a:return[269,a-19,2];case 26>=a:return[270,a-23,2];case 30>=a:return[271,a-27,2];case 34>=a:return[272,
-a-31,2];case 42>=a:return[273,a-35,3];case 50>=a:return[274,a-43,3];case 58>=a:return[275,a-51,3];case 66>=a:return[276,a-59,3];case 82>=a:return[277,a-67,4];case 98>=a:return[278,a-83,4];case 114>=a:return[279,a-99,4];case 130>=a:return[280,a-115,4];case 162>=a:return[281,a-131,5];case 194>=a:return[282,a-163,5];case 226>=a:return[283,a-195,5];case 257>=a:return[284,a-227,5];case 258===a:return[285,a-258,0];default:throw"invalid length: "+a;}}var d=[],c,f;for(c=3;258>=c;c++)f=e(c),d[c]=f[2]<<24|
-f[1]<<16|f[0];return d}(),Ga=C?new Uint32Array(Fa):Fa;
-function na(e,d){function c(a,c){var b=a.g,d=[],f=0,e;e=Ga[a.length];d[f++]=e&65535;d[f++]=e>>16&255;d[f++]=e>>24;var g;switch(u){case 1===b:g=[0,b-1,0];break;case 2===b:g=[1,b-2,0];break;case 3===b:g=[2,b-3,0];break;case 4===b:g=[3,b-4,0];break;case 6>=b:g=[4,b-5,1];break;case 8>=b:g=[5,b-7,1];break;case 12>=b:g=[6,b-9,2];break;case 16>=b:g=[7,b-13,2];break;case 24>=b:g=[8,b-17,3];break;case 32>=b:g=[9,b-25,3];break;case 48>=b:g=[10,b-33,4];break;case 64>=b:g=[11,b-49,4];break;case 96>=b:g=[12,b-
-65,5];break;case 128>=b:g=[13,b-97,5];break;case 192>=b:g=[14,b-129,6];break;case 256>=b:g=[15,b-193,6];break;case 384>=b:g=[16,b-257,7];break;case 512>=b:g=[17,b-385,7];break;case 768>=b:g=[18,b-513,8];break;case 1024>=b:g=[19,b-769,8];break;case 1536>=b:g=[20,b-1025,9];break;case 2048>=b:g=[21,b-1537,9];break;case 3072>=b:g=[22,b-2049,10];break;case 4096>=b:g=[23,b-3073,10];break;case 6144>=b:g=[24,b-4097,11];break;case 8192>=b:g=[25,b-6145,11];break;case 12288>=b:g=[26,b-8193,12];break;case 16384>=
-b:g=[27,b-12289,12];break;case 24576>=b:g=[28,b-16385,13];break;case 32768>=b:g=[29,b-24577,13];break;default:throw"invalid distance";}e=g;d[f++]=e[0];d[f++]=e[1];d[f++]=e[2];var k,m;k=0;for(m=d.length;k<m;++k)l[h++]=d[k];t[d[0]]++;w[d[3]]++;q=a.length+c-1;x=null}var f,a,b,k,m,g={},p,v,x,l=C?new Uint16Array(2*d.length):[],h=0,q=0,t=new (C?Uint32Array:Array)(286),w=new (C?Uint32Array:Array)(30),da=e.f,z;if(!C){for(b=0;285>=b;)t[b++]=0;for(b=0;29>=b;)w[b++]=0}t[256]=1;f=0;for(a=d.length;f<a;++f){b=
-m=0;for(k=3;b<k&&f+b!==a;++b)m=m<<8|d[f+b];g[m]===n&&(g[m]=[]);p=g[m];if(!(0<q--)){for(;0<p.length&&32768<f-p[0];)p.shift();if(f+3>=a){x&&c(x,-1);b=0;for(k=a-f;b<k;++b)z=d[f+b],l[h++]=z,++t[z];break}0<p.length?(v=Ha(d,f,p),x?x.length<v.length?(z=d[f-1],l[h++]=z,++t[z],c(v,0)):c(x,-1):v.length<da?x=v:c(v,0)):x?c(x,-1):(z=d[f],l[h++]=z,++t[z])}p.push(f)}l[h++]=256;t[256]++;e.j=t;e.i=w;return C?l.subarray(0,h):l}
-function Ha(e,d,c){var f,a,b=0,k,m,g,p,v=e.length;m=0;p=c.length;a:for(;m<p;m++){f=c[p-m-1];k=3;if(3<b){for(g=b;3<g;g--)if(e[f+g-1]!==e[d+g-1])continue a;k=b}for(;258>k&&d+k<v&&e[f+k]===e[d+k];)++k;k>b&&(a=f,b=k);if(258===k)break}return new qa(b,d-a)}
-function oa(e,d){var c=e.length,f=new ja(572),a=new (C?Uint8Array:Array)(c),b,k,m,g,p;if(!C)for(g=0;g<c;g++)a[g]=0;for(g=0;g<c;++g)0<e[g]&&f.push(g,e[g]);b=Array(f.length/2);k=new (C?Uint32Array:Array)(f.length/2);if(1===b.length)return a[f.pop().index]=1,a;g=0;for(p=f.length/2;g<p;++g)b[g]=f.pop(),k[g]=b[g].value;m=Ja(k,k.length,d);g=0;for(p=b.length;g<p;++g)a[b[g].index]=m[g];return a}
-function Ja(e,d,c){function f(a){var b=g[a][p[a]];b===d?(f(a+1),f(a+1)):--k[b];++p[a]}var a=new (C?Uint16Array:Array)(c),b=new (C?Uint8Array:Array)(c),k=new (C?Uint8Array:Array)(d),m=Array(c),g=Array(c),p=Array(c),v=(1<<c)-d,x=1<<c-1,l,h,q,t,w;a[c-1]=d;for(h=0;h<c;++h)v<x?b[h]=0:(b[h]=1,v-=x),v<<=1,a[c-2-h]=(a[c-1-h]/2|0)+d;a[0]=b[0];m[0]=Array(a[0]);g[0]=Array(a[0]);for(h=1;h<c;++h)a[h]>2*a[h-1]+b[h]&&(a[h]=2*a[h-1]+b[h]),m[h]=Array(a[h]),g[h]=Array(a[h]);for(l=0;l<d;++l)k[l]=c;for(q=0;q<a[c-1];++q)m[c-
-1][q]=e[q],g[c-1][q]=q;for(l=0;l<c;++l)p[l]=0;1===b[c-1]&&(--k[0],++p[c-1]);for(h=c-2;0<=h;--h){t=l=0;w=p[h+1];for(q=0;q<a[h];q++)t=m[h+1][w]+m[h+1][w+1],t>e[l]?(m[h][q]=t,g[h][q]=d,w+=2):(m[h][q]=e[l],g[h][q]=l,++l);p[h]=0;1===b[h]&&f(h)}return k}
-function pa(e){var d=new (C?Uint16Array:Array)(e.length),c=[],f=[],a=0,b,k,m,g;b=0;for(k=e.length;b<k;b++)c[e[b]]=(c[e[b]]|0)+1;b=1;for(k=16;b<=k;b++)f[b]=a,a+=c[b]|0,a<<=1;b=0;for(k=e.length;b<k;b++){a=f[e[b]];f[e[b]]+=1;m=d[b]=0;for(g=e[b];m<g;m++)d[b]=d[b]<<1|a&1,a>>>=1}return d};ba("Zlib.RawDeflate",ka);ba("Zlib.RawDeflate.prototype.compress",ka.prototype.h);var Ka={NONE:0,FIXED:1,DYNAMIC:ma},V,La,$,Ma;if(Object.keys)V=Object.keys(Ka);else for(La in V=[],$=0,Ka)V[$++]=La;$=0;for(Ma=V.length;$<Ma;++$)La=V[$],ba("Zlib.RawDeflate.CompressionType."+La,Ka[La]);}).call(this);
+8:[function(){
+/** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */
+(aa => {
+	'use strict';
+	function m(d) {
+		throw d;
+	}
+	var w = void 0,
+		z = !0,
+		Q = new Uint8Array(256),
+		T = 0,
+		ca,
+		pa = [],
 
-},{}],
-7:[function(_dereq_,module,exports){
-/** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */(function() {'use strict';var k=void 0,aa=this;function r(c,d){var a=c.split("."),b=aa;!(a[0]in b)&&b.execScript&&b.execScript("var "+a[0]);for(var e;a.length&&(e=a.shift());)!a.length&&d!==k?b[e]=d:b=b[e]?b[e]:b[e]={}};var t="undefined"!==typeof Uint8Array&&"undefined"!==typeof Uint16Array&&"undefined"!==typeof Uint32Array&&"undefined"!==typeof DataView;function u(c){var d=c.length,a=0,b=Number.POSITIVE_INFINITY,e,f,g,h,l,n,m,p,s,x;for(p=0;p<d;++p)c[p]>a&&(a=c[p]),c[p]<b&&(b=c[p]);e=1<<a;f=new (t?Uint32Array:Array)(e);g=1;h=0;for(l=2;g<=a;){for(p=0;p<d;++p)if(c[p]===g){n=0;m=h;for(s=0;s<g;++s)n=n<<1|m&1,m>>=1;x=g<<16|p;for(s=n;s<e;s+=l)f[s]=x;++h}++g;h<<=1;l<<=1}return[f,a,b]};function w(c,d){this.g=[];this.h=32768;this.c=this.f=this.d=this.k=0;this.input=t?new Uint8Array(c):c;this.l=!1;this.i=y;this.p=!1;if(d||!(d={}))d.index&&(this.d=d.index),d.bufferSize&&(this.h=d.bufferSize),d.bufferType&&(this.i=d.bufferType),d.resize&&(this.p=d.resize);switch(this.i){case A:this.a=32768;this.b=new (t?Uint8Array:Array)(32768+this.h+258);break;case y:this.a=0;this.b=new (t?Uint8Array:Array)(this.h);this.e=this.u;this.m=this.r;this.j=this.s;break;default:throw Error("invalid inflate mode");
-}}var A=0,y=1;
-w.prototype.t=function(){for(;!this.l;){var c=B(this,3);c&1&&(this.l=!0);c>>>=1;switch(c){case 0:var d=this.input,a=this.d,b=this.b,e=this.a,f=d.length,g=k,h=k,l=b.length,n=k;this.c=this.f=0;if(a+1>=f)throw Error("invalid uncompressed block header: LEN");g=d[a++]|d[a++]<<8;if(a+1>=f)throw Error("invalid uncompressed block header: NLEN");h=d[a++]|d[a++]<<8;if(g===~h)throw Error("invalid uncompressed block header: length verify");if(a+g>d.length)throw Error("input buffer is broken");switch(this.i){case A:for(;e+g>
-b.length;){n=l-e;g-=n;if(t)b.set(d.subarray(a,a+n),e),e+=n,a+=n;else for(;n--;)b[e++]=d[a++];this.a=e;b=this.e();e=this.a}break;case y:for(;e+g>b.length;)b=this.e({o:2});break;default:throw Error("invalid inflate mode");}if(t)b.set(d.subarray(a,a+g),e),e+=g,a+=g;else for(;g--;)b[e++]=d[a++];this.d=a;this.a=e;this.b=b;break;case 1:this.j(ba,ca);break;case 2:for(var m=B(this,5)+257,p=B(this,5)+1,s=B(this,4)+4,x=new (t?Uint8Array:Array)(C.length),Q=k,R=k,S=k,v=k,M=k,F=k,z=k,q=k,T=k,q=0;q<s;++q)x[C[q]]=
-B(this,3);if(!t){q=s;for(s=x.length;q<s;++q)x[C[q]]=0}Q=u(x);v=new (t?Uint8Array:Array)(m+p);q=0;for(T=m+p;q<T;)switch(M=D(this,Q),M){case 16:for(z=3+B(this,2);z--;)v[q++]=F;break;case 17:for(z=3+B(this,3);z--;)v[q++]=0;F=0;break;case 18:for(z=11+B(this,7);z--;)v[q++]=0;F=0;break;default:F=v[q++]=M}R=t?u(v.subarray(0,m)):u(v.slice(0,m));S=t?u(v.subarray(m)):u(v.slice(m));this.j(R,S);break;default:throw Error("unknown BTYPE: "+c);}}return this.m()};
-var E=[16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15],C=t?new Uint16Array(E):E,G=[3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258,258,258],H=t?new Uint16Array(G):G,I=[0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0,0,0],J=t?new Uint8Array(I):I,K=[1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577],L=t?new Uint16Array(K):K,N=[0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,
-13],O=t?new Uint8Array(N):N,P=new (t?Uint8Array:Array)(288),U,da;U=0;for(da=P.length;U<da;++U)P[U]=143>=U?8:255>=U?9:279>=U?7:8;var ba=u(P),V=new (t?Uint8Array:Array)(30),W,ea;W=0;for(ea=V.length;W<ea;++W)V[W]=5;var ca=u(V);function B(c,d){for(var a=c.f,b=c.c,e=c.input,f=c.d,g=e.length,h;b<d;){if(f>=g)throw Error("input buffer is broken");a|=e[f++]<<b;b+=8}h=a&(1<<d)-1;c.f=a>>>d;c.c=b-d;c.d=f;return h}
-function D(c,d){for(var a=c.f,b=c.c,e=c.input,f=c.d,g=e.length,h=d[0],l=d[1],n,m;b<l&&!(f>=g);)a|=e[f++]<<b,b+=8;n=h[a&(1<<l)-1];m=n>>>16;if(m>b)throw Error("invalid code length: "+m);c.f=a>>m;c.c=b-m;c.d=f;return n&65535}
-w.prototype.j=function(c,d){var a=this.b,b=this.a;this.n=c;for(var e=a.length-258,f,g,h,l;256!==(f=D(this,c));)if(256>f)b>=e&&(this.a=b,a=this.e(),b=this.a),a[b++]=f;else{g=f-257;l=H[g];0<J[g]&&(l+=B(this,J[g]));f=D(this,d);h=L[f];0<O[f]&&(h+=B(this,O[f]));b>=e&&(this.a=b,a=this.e(),b=this.a);for(;l--;)a[b]=a[b++-h]}for(;8<=this.c;)this.c-=8,this.d--;this.a=b};
-w.prototype.s=function(c,d){var a=this.b,b=this.a;this.n=c;for(var e=a.length,f,g,h,l;256!==(f=D(this,c));)if(256>f)b>=e&&(a=this.e(),e=a.length),a[b++]=f;else{g=f-257;l=H[g];0<J[g]&&(l+=B(this,J[g]));f=D(this,d);h=L[f];0<O[f]&&(h+=B(this,O[f]));b+l>e&&(a=this.e(),e=a.length);for(;l--;)a[b]=a[b++-h]}for(;8<=this.c;)this.c-=8,this.d--;this.a=b};
-w.prototype.e=function(){var c=new (t?Uint8Array:Array)(this.a-32768),d=this.a-32768,a,b,e=this.b;if(t)c.set(e.subarray(32768,c.length));else{a=0;for(b=c.length;a<b;++a)c[a]=e[a+32768]}this.g.push(c);this.k+=c.length;if(t)e.set(e.subarray(d,d+32768));else for(a=0;32768>a;++a)e[a]=e[d+a];this.a=32768;return e};
-w.prototype.u=function(c){var d,a=this.input.length/this.d+1|0,b,e,f,g=this.input,h=this.b;c&&("number"===typeof c.o&&(a=c.o),"number"===typeof c.q&&(a+=c.q));2>a?(b=(g.length-this.d)/this.n[2],f=258*(b/2)|0,e=f<h.length?h.length+f:h.length<<1):e=h.length*a;t?(d=new Uint8Array(e),d.set(h)):d=h;return this.b=d};
-w.prototype.m=function(){var c=0,d=this.b,a=this.g,b,e=new (t?Uint8Array:Array)(this.k+(this.a-32768)),f,g,h,l;if(0===a.length)return t?this.b.subarray(32768,this.a):this.b.slice(32768,this.a);f=0;for(g=a.length;f<g;++f){b=a[f];h=0;for(l=b.length;h<l;++h)e[c++]=b[h]}f=32768;for(g=this.a;f<g;++f)e[c++]=d[f];this.g=[];return this.buffer=e};
-w.prototype.r=function(){var c,d=this.a;t?this.p?(c=new Uint8Array(d),c.set(this.b.subarray(0,d))):c=this.b.subarray(0,d):(this.b.length>d&&(this.b.length=d),c=this.b);return this.buffer=c};r("Zlib.RawInflate",w);r("Zlib.RawInflate.prototype.decompress",w.prototype.t);var X={ADAPTIVE:y,BLOCK:A},Y,Z,$,fa;if(Object.keys)Y=Object.keys(X);else for(Z in Y=[],$=0,X)Y[$++]=Z;$=0;for(fa=Y.length;$<fa;++$)Z=Y[$],r("Zlib.RawInflate.BufferType."+Z,X[Z]);}).call(this);
+	d = b => {
+		switch (z) {
+			case 3 === b:
+				return [257, b - 3, 0];
+			case 4 === b:
+				return [258, b - 4, 0];
+			case 5 === b:
+				return [259, b - 5, 0];
+			case 6 === b:
+				return [260, b - 6, 0];
+			case 7 === b:
+				return [261, b - 7, 0];
+			case 8 === b:
+				return [262, b - 8, 0];
+			case 9 === b:
+				return [263, b - 9, 0];
+			case 10 === b:
+				return [264, b - 10, 0];
+			case 12 >= b:
+				return [265, b - 11, 1];
+			case 14 >= b:
+				return [266, b - 13, 1];
+			case 16 >= b:
+				return [267, b - 15, 1];
+			case 18 >= b:
+				return [268, b - 17, 1];
+			case 22 >= b:
+				return [269, b - 19, 2];
+			case 26 >= b:
+				return [270, b - 23, 2];
+			case 30 >= b:
+				return [271, b - 27, 2];
+			case 34 >= b:
+				return [272, b - 31, 2];
+			case 42 >= b:
+				return [273, b - 35, 3];
+			case 50 >= b:
+				return [274, b - 43, 3];
+			case 58 >= b:
+				return [275, b - 51, 3];
+			case 66 >= b:
+				return [276, b - 59, 3];
+			case 82 >= b:
+				return [277, b - 67, 4];
+			case 98 >= b:
+				return [278, b - 83, 4];
+			case 114 >= b:
+				return [279, b - 99, 4];
+			case 130 >= b:
+				return [280, b - 115, 4];
+			case 162 >= b:
+				return [281, b - 131, 5];
+			case 194 >= b:
+				return [282, b - 163, 5];
+			case 226 >= b:
+				return [283, b - 195, 5];
+			case 257 >= b:
+				return [284, b - 227, 5];
+			case 258 === b:
+				return [285, b - 258, 0];
+			default:
+				m("invalid length: " + b)
+		}
+	},
 
-},{}],
-8:[function(_dereq_,module,exports){
-/** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */(function() {'use strict';function m(d){throw d;}var w=void 0,z=!0,aa=this;function A(d,a){var c=d.split("."),e=aa;!(c[0]in e)&&e.execScript&&e.execScript("var "+c[0]);for(var b;c.length&&(b=c.shift());)!c.length&&a!==w?e[b]=a:e=e[b]?e[b]:e[b]={}};var G="undefined"!==typeof Uint8Array&&"undefined"!==typeof Uint16Array&&"undefined"!==typeof Uint32Array&&"undefined"!==typeof DataView;function I(d,a){this.index="number"===typeof a?a:0;this.i=0;this.buffer=d instanceof(G?Uint8Array:Array)?d:new (G?Uint8Array:Array)(32768);2*this.buffer.length<=this.index&&m(Error("invalid index"));this.buffer.length<=this.index&&this.f()}I.prototype.f=function(){var d=this.buffer,a,c=d.length,e=new (G?Uint8Array:Array)(c<<1);if(G)e.set(d);else for(a=0;a<c;++a)e[a]=d[a];return this.buffer=e};
-I.prototype.d=function(d,a,c){var e=this.buffer,b=this.index,f=this.i,g=e[b],h;c&&1<a&&(d=8<a?(Q[d&255]<<24|Q[d>>>8&255]<<16|Q[d>>>16&255]<<8|Q[d>>>24&255])>>32-a:Q[d]>>8-a);if(8>a+f)g=g<<a|d,f+=a;else for(h=0;h<a;++h)g=g<<1|d>>a-h-1&1,8===++f&&(f=0,e[b++]=Q[g],g=0,b===e.length&&(e=this.f()));e[b]=g;this.buffer=e;this.i=f;this.index=b};I.prototype.finish=function(){var d=this.buffer,a=this.index,c;0<this.i&&(d[a]<<=8-this.i,d[a]=Q[d[a]],a++);G?c=d.subarray(0,a):(d.length=a,c=d);return c};
-var ba=new (G?Uint8Array:Array)(256),ca;for(ca=0;256>ca;++ca){for(var R=ca,ha=R,ia=7,R=R>>>1;R;R>>>=1)ha<<=1,ha|=R&1,--ia;ba[ca]=(ha<<ia&255)>>>0}var Q=ba;function ja(d){this.buffer=new (G?Uint16Array:Array)(2*d);this.length=0}ja.prototype.getParent=function(d){return 2*((d-2)/4|0)};ja.prototype.push=function(d,a){var c,e,b=this.buffer,f;c=this.length;b[this.length++]=a;for(b[this.length++]=d;0<c;)if(e=this.getParent(c),b[c]>b[e])f=b[c],b[c]=b[e],b[e]=f,f=b[c+1],b[c+1]=b[e+1],b[e+1]=f,c=e;else break;return this.length};
-ja.prototype.pop=function(){var d,a,c=this.buffer,e,b,f;a=c[0];d=c[1];this.length-=2;c[0]=c[this.length];c[1]=c[this.length+1];for(f=0;;){b=2*f+2;if(b>=this.length)break;b+2<this.length&&c[b+2]>c[b]&&(b+=2);if(c[b]>c[f])e=c[f],c[f]=c[b],c[b]=e,e=c[f+1],c[f+1]=c[b+1],c[b+1]=e;else break;f=b}return{index:d,value:a,length:this.length}};function S(d){var a=d.length,c=0,e=Number.POSITIVE_INFINITY,b,f,g,h,k,p,q,r,n,l;for(r=0;r<a;++r)d[r]>c&&(c=d[r]),d[r]<e&&(e=d[r]);b=1<<c;f=new (G?Uint32Array:Array)(b);g=1;h=0;for(k=2;g<=c;){for(r=0;r<a;++r)if(d[r]===g){p=0;q=h;for(n=0;n<g;++n)p=p<<1|q&1,q>>=1;l=g<<16|r;for(n=p;n<b;n+=k)f[n]=l;++h}++g;h<<=1;k<<=1}return[f,c,e]};function ka(d,a){this.h=na;this.w=0;this.input=G&&d instanceof Array?new Uint8Array(d):d;this.b=0;a&&(a.lazy&&(this.w=a.lazy),"number"===typeof a.compressionType&&(this.h=a.compressionType),a.outputBuffer&&(this.a=G&&a.outputBuffer instanceof Array?new Uint8Array(a.outputBuffer):a.outputBuffer),"number"===typeof a.outputIndex&&(this.b=a.outputIndex));this.a||(this.a=new (G?Uint8Array:Array)(32768))}var na=2,oa={NONE:0,r:1,k:na,N:3},pa=[],T;
-for(T=0;288>T;T++)switch(z){case 143>=T:pa.push([T+48,8]);break;case 255>=T:pa.push([T-144+400,9]);break;case 279>=T:pa.push([T-256+0,7]);break;case 287>=T:pa.push([T-280+192,8]);break;default:m("invalid literal: "+T)}
-ka.prototype.j=function(){var d,a,c,e,b=this.input;switch(this.h){case 0:c=0;for(e=b.length;c<e;){a=G?b.subarray(c,c+65535):b.slice(c,c+65535);c+=a.length;var f=a,g=c===e,h=w,k=w,p=w,q=w,r=w,n=this.a,l=this.b;if(G){for(n=new Uint8Array(this.a.buffer);n.length<=l+f.length+5;)n=new Uint8Array(n.length<<1);n.set(this.a)}h=g?1:0;n[l++]=h|0;k=f.length;p=~k+65536&65535;n[l++]=k&255;n[l++]=k>>>8&255;n[l++]=p&255;n[l++]=p>>>8&255;if(G)n.set(f,l),l+=f.length,n=n.subarray(0,l);else{q=0;for(r=f.length;q<r;++q)n[l++]=
-f[q];n.length=l}this.b=l;this.a=n}break;case 1:var s=new I(G?new Uint8Array(this.a.buffer):this.a,this.b);s.d(1,1,z);s.d(1,2,z);var t=qa(this,b),x,E,B;x=0;for(E=t.length;x<E;x++)if(B=t[x],I.prototype.d.apply(s,pa[B]),256<B)s.d(t[++x],t[++x],z),s.d(t[++x],5),s.d(t[++x],t[++x],z);else if(256===B)break;this.a=s.finish();this.b=this.a.length;break;case na:var C=new I(G?new Uint8Array(this.a.buffer):this.a,this.b),L,v,M,Y,Z,gb=[16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15],da,Fa,ea,Ga,la,sa=Array(19),
-Ha,$,ma,D,Ia;L=na;C.d(1,1,z);C.d(L,2,z);v=qa(this,b);da=ra(this.L,15);Fa=ta(da);ea=ra(this.K,7);Ga=ta(ea);for(M=286;257<M&&0===da[M-1];M--);for(Y=30;1<Y&&0===ea[Y-1];Y--);var Ja=M,Ka=Y,K=new (G?Uint32Array:Array)(Ja+Ka),u,N,y,fa,J=new (G?Uint32Array:Array)(316),H,F,O=new (G?Uint8Array:Array)(19);for(u=N=0;u<Ja;u++)K[N++]=da[u];for(u=0;u<Ka;u++)K[N++]=ea[u];if(!G){u=0;for(fa=O.length;u<fa;++u)O[u]=0}u=H=0;for(fa=K.length;u<fa;u+=N){for(N=1;u+N<fa&&K[u+N]===K[u];++N);y=N;if(0===K[u])if(3>y)for(;0<y--;)J[H++]=
-0,O[0]++;else for(;0<y;)F=138>y?y:138,F>y-3&&F<y&&(F=y-3),10>=F?(J[H++]=17,J[H++]=F-3,O[17]++):(J[H++]=18,J[H++]=F-11,O[18]++),y-=F;else if(J[H++]=K[u],O[K[u]]++,y--,3>y)for(;0<y--;)J[H++]=K[u],O[K[u]]++;else for(;0<y;)F=6>y?y:6,F>y-3&&F<y&&(F=y-3),J[H++]=16,J[H++]=F-3,O[16]++,y-=F}d=G?J.subarray(0,H):J.slice(0,H);la=ra(O,7);for(D=0;19>D;D++)sa[D]=la[gb[D]];for(Z=19;4<Z&&0===sa[Z-1];Z--);Ha=ta(la);C.d(M-257,5,z);C.d(Y-1,5,z);C.d(Z-4,4,z);for(D=0;D<Z;D++)C.d(sa[D],3,z);D=0;for(Ia=d.length;D<Ia;D++)if($=
-d[D],C.d(Ha[$],la[$],z),16<=$){D++;switch($){case 16:ma=2;break;case 17:ma=3;break;case 18:ma=7;break;default:m("invalid code: "+$)}C.d(d[D],ma,z)}var La=[Fa,da],Ma=[Ga,ea],P,Na,ga,va,Oa,Pa,Qa,Ra;Oa=La[0];Pa=La[1];Qa=Ma[0];Ra=Ma[1];P=0;for(Na=v.length;P<Na;++P)if(ga=v[P],C.d(Oa[ga],Pa[ga],z),256<ga)C.d(v[++P],v[++P],z),va=v[++P],C.d(Qa[va],Ra[va],z),C.d(v[++P],v[++P],z);else if(256===ga)break;this.a=C.finish();this.b=this.a.length;break;default:m("invalid compression type")}return this.a};
-function ua(d,a){this.length=d;this.G=a}
-var wa=function(){function d(b){switch(z){case 3===b:return[257,b-3,0];case 4===b:return[258,b-4,0];case 5===b:return[259,b-5,0];case 6===b:return[260,b-6,0];case 7===b:return[261,b-7,0];case 8===b:return[262,b-8,0];case 9===b:return[263,b-9,0];case 10===b:return[264,b-10,0];case 12>=b:return[265,b-11,1];case 14>=b:return[266,b-13,1];case 16>=b:return[267,b-15,1];case 18>=b:return[268,b-17,1];case 22>=b:return[269,b-19,2];case 26>=b:return[270,b-23,2];case 30>=b:return[271,b-27,2];case 34>=b:return[272,
-b-31,2];case 42>=b:return[273,b-35,3];case 50>=b:return[274,b-43,3];case 58>=b:return[275,b-51,3];case 66>=b:return[276,b-59,3];case 82>=b:return[277,b-67,4];case 98>=b:return[278,b-83,4];case 114>=b:return[279,b-99,4];case 130>=b:return[280,b-115,4];case 162>=b:return[281,b-131,5];case 194>=b:return[282,b-163,5];case 226>=b:return[283,b-195,5];case 257>=b:return[284,b-227,5];case 258===b:return[285,b-258,0];default:m("invalid length: "+b)}}var a=[],c,e;for(c=3;258>=c;c++)e=d(c),a[c]=e[2]<<24|e[1]<<
-16|e[0];return a}(),xa=G?new Uint32Array(wa):wa;
-function qa(d,a){function c(b,c){var a=b.G,d=[],e=0,f;f=xa[b.length];d[e++]=f&65535;d[e++]=f>>16&255;d[e++]=f>>24;var g;switch(z){case 1===a:g=[0,a-1,0];break;case 2===a:g=[1,a-2,0];break;case 3===a:g=[2,a-3,0];break;case 4===a:g=[3,a-4,0];break;case 6>=a:g=[4,a-5,1];break;case 8>=a:g=[5,a-7,1];break;case 12>=a:g=[6,a-9,2];break;case 16>=a:g=[7,a-13,2];break;case 24>=a:g=[8,a-17,3];break;case 32>=a:g=[9,a-25,3];break;case 48>=a:g=[10,a-33,4];break;case 64>=a:g=[11,a-49,4];break;case 96>=a:g=[12,a-
-65,5];break;case 128>=a:g=[13,a-97,5];break;case 192>=a:g=[14,a-129,6];break;case 256>=a:g=[15,a-193,6];break;case 384>=a:g=[16,a-257,7];break;case 512>=a:g=[17,a-385,7];break;case 768>=a:g=[18,a-513,8];break;case 1024>=a:g=[19,a-769,8];break;case 1536>=a:g=[20,a-1025,9];break;case 2048>=a:g=[21,a-1537,9];break;case 3072>=a:g=[22,a-2049,10];break;case 4096>=a:g=[23,a-3073,10];break;case 6144>=a:g=[24,a-4097,11];break;case 8192>=a:g=[25,a-6145,11];break;case 12288>=a:g=[26,a-8193,12];break;case 16384>=
-a:g=[27,a-12289,12];break;case 24576>=a:g=[28,a-16385,13];break;case 32768>=a:g=[29,a-24577,13];break;default:m("invalid distance")}f=g;d[e++]=f[0];d[e++]=f[1];d[e++]=f[2];var h,k;h=0;for(k=d.length;h<k;++h)n[l++]=d[h];t[d[0]]++;x[d[3]]++;s=b.length+c-1;r=null}var e,b,f,g,h,k={},p,q,r,n=G?new Uint16Array(2*a.length):[],l=0,s=0,t=new (G?Uint32Array:Array)(286),x=new (G?Uint32Array:Array)(30),E=d.w,B;if(!G){for(f=0;285>=f;)t[f++]=0;for(f=0;29>=f;)x[f++]=0}t[256]=1;e=0;for(b=a.length;e<b;++e){f=h=0;
-for(g=3;f<g&&e+f!==b;++f)h=h<<8|a[e+f];k[h]===w&&(k[h]=[]);p=k[h];if(!(0<s--)){for(;0<p.length&&32768<e-p[0];)p.shift();if(e+3>=b){r&&c(r,-1);f=0;for(g=b-e;f<g;++f)B=a[e+f],n[l++]=B,++t[B];break}0<p.length?(q=ya(a,e,p),r?r.length<q.length?(B=a[e-1],n[l++]=B,++t[B],c(q,0)):c(r,-1):q.length<E?r=q:c(q,0)):r?c(r,-1):(B=a[e],n[l++]=B,++t[B])}p.push(e)}n[l++]=256;t[256]++;d.L=t;d.K=x;return G?n.subarray(0,l):n}
-function ya(d,a,c){var e,b,f=0,g,h,k,p,q=d.length;h=0;p=c.length;a:for(;h<p;h++){e=c[p-h-1];g=3;if(3<f){for(k=f;3<k;k--)if(d[e+k-1]!==d[a+k-1])continue a;g=f}for(;258>g&&a+g<q&&d[e+g]===d[a+g];)++g;g>f&&(b=e,f=g);if(258===g)break}return new ua(f,a-b)}
-function ra(d,a){var c=d.length,e=new ja(572),b=new (G?Uint8Array:Array)(c),f,g,h,k,p;if(!G)for(k=0;k<c;k++)b[k]=0;for(k=0;k<c;++k)0<d[k]&&e.push(k,d[k]);f=Array(e.length/2);g=new (G?Uint32Array:Array)(e.length/2);if(1===f.length)return b[e.pop().index]=1,b;k=0;for(p=e.length/2;k<p;++k)f[k]=e.pop(),g[k]=f[k].value;h=za(g,g.length,a);k=0;for(p=f.length;k<p;++k)b[f[k].index]=h[k];return b}
-function za(d,a,c){function e(b){var c=k[b][p[b]];c===a?(e(b+1),e(b+1)):--g[c];++p[b]}var b=new (G?Uint16Array:Array)(c),f=new (G?Uint8Array:Array)(c),g=new (G?Uint8Array:Array)(a),h=Array(c),k=Array(c),p=Array(c),q=(1<<c)-a,r=1<<c-1,n,l,s,t,x;b[c-1]=a;for(l=0;l<c;++l)q<r?f[l]=0:(f[l]=1,q-=r),q<<=1,b[c-2-l]=(b[c-1-l]/2|0)+a;b[0]=f[0];h[0]=Array(b[0]);k[0]=Array(b[0]);for(l=1;l<c;++l)b[l]>2*b[l-1]+f[l]&&(b[l]=2*b[l-1]+f[l]),h[l]=Array(b[l]),k[l]=Array(b[l]);for(n=0;n<a;++n)g[n]=c;for(s=0;s<b[c-1];++s)h[c-
-1][s]=d[s],k[c-1][s]=s;for(n=0;n<c;++n)p[n]=0;1===f[c-1]&&(--g[0],++p[c-1]);for(l=c-2;0<=l;--l){t=n=0;x=p[l+1];for(s=0;s<b[l];s++)t=h[l+1][x]+h[l+1][x+1],t>d[n]?(h[l][s]=t,k[l][s]=a,x+=2):(h[l][s]=d[n],k[l][s]=n,++n);p[l]=0;1===f[l]&&e(l)}return g}
-function ta(d){var a=new (G?Uint16Array:Array)(d.length),c=[],e=[],b=0,f,g,h,k;f=0;for(g=d.length;f<g;f++)c[d[f]]=(c[d[f]]|0)+1;f=1;for(g=16;f<=g;f++)e[f]=b,b+=c[f]|0,b<<=1;f=0;for(g=d.length;f<g;f++){b=e[d[f]];e[d[f]]+=1;h=a[f]=0;for(k=d[f];h<k;h++)a[f]=a[f]<<1|b&1,b>>>=1}return a};function U(d,a){this.l=[];this.m=32768;this.e=this.g=this.c=this.q=0;this.input=G?new Uint8Array(d):d;this.s=!1;this.n=Aa;this.B=!1;if(a||!(a={}))a.index&&(this.c=a.index),a.bufferSize&&(this.m=a.bufferSize),a.bufferType&&(this.n=a.bufferType),a.resize&&(this.B=a.resize);switch(this.n){case Ba:this.b=32768;this.a=new (G?Uint8Array:Array)(32768+this.m+258);break;case Aa:this.b=0;this.a=new (G?Uint8Array:Array)(this.m);this.f=this.J;this.t=this.H;this.o=this.I;break;default:m(Error("invalid inflate mode"))}}
-var Ba=0,Aa=1,Ca={D:Ba,C:Aa};
-U.prototype.p=function(){for(;!this.s;){var d=V(this,3);d&1&&(this.s=z);d>>>=1;switch(d){case 0:var a=this.input,c=this.c,e=this.a,b=this.b,f=a.length,g=w,h=w,k=e.length,p=w;this.e=this.g=0;c+1>=f&&m(Error("invalid uncompressed block header: LEN"));g=a[c++]|a[c++]<<8;c+1>=f&&m(Error("invalid uncompressed block header: NLEN"));h=a[c++]|a[c++]<<8;g===~h&&m(Error("invalid uncompressed block header: length verify"));c+g>a.length&&m(Error("input buffer is broken"));switch(this.n){case Ba:for(;b+g>e.length;){p=
-k-b;g-=p;if(G)e.set(a.subarray(c,c+p),b),b+=p,c+=p;else for(;p--;)e[b++]=a[c++];this.b=b;e=this.f();b=this.b}break;case Aa:for(;b+g>e.length;)e=this.f({v:2});break;default:m(Error("invalid inflate mode"))}if(G)e.set(a.subarray(c,c+g),b),b+=g,c+=g;else for(;g--;)e[b++]=a[c++];this.c=c;this.b=b;this.a=e;break;case 1:this.o(Da,Ea);break;case 2:for(var q=V(this,5)+257,r=V(this,5)+1,n=V(this,4)+4,l=new (G?Uint8Array:Array)(Sa.length),s=w,t=w,x=w,E=w,B=w,C=w,L=w,v=w,M=w,v=0;v<n;++v)l[Sa[v]]=V(this,3);if(!G){v=
-n;for(n=l.length;v<n;++v)l[Sa[v]]=0}s=S(l);E=new (G?Uint8Array:Array)(q+r);v=0;for(M=q+r;v<M;)switch(B=Ta(this,s),B){case 16:for(L=3+V(this,2);L--;)E[v++]=C;break;case 17:for(L=3+V(this,3);L--;)E[v++]=0;C=0;break;case 18:for(L=11+V(this,7);L--;)E[v++]=0;C=0;break;default:C=E[v++]=B}t=G?S(E.subarray(0,q)):S(E.slice(0,q));x=G?S(E.subarray(q)):S(E.slice(q));this.o(t,x);break;default:m(Error("unknown BTYPE: "+d))}}return this.t()};
-var Ua=[16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15],Sa=G?new Uint16Array(Ua):Ua,Va=[3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258,258,258],Wa=G?new Uint16Array(Va):Va,Xa=[0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0,0,0],Ya=G?new Uint8Array(Xa):Xa,Za=[1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577],$a=G?new Uint16Array(Za):Za,ab=[0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,
-10,11,11,12,12,13,13],bb=G?new Uint8Array(ab):ab,cb=new (G?Uint8Array:Array)(288),W,db;W=0;for(db=cb.length;W<db;++W)cb[W]=143>=W?8:255>=W?9:279>=W?7:8;var Da=S(cb),eb=new (G?Uint8Array:Array)(30),fb,hb;fb=0;for(hb=eb.length;fb<hb;++fb)eb[fb]=5;var Ea=S(eb);function V(d,a){for(var c=d.g,e=d.e,b=d.input,f=d.c,g=b.length,h;e<a;)f>=g&&m(Error("input buffer is broken")),c|=b[f++]<<e,e+=8;h=c&(1<<a)-1;d.g=c>>>a;d.e=e-a;d.c=f;return h}
-function Ta(d,a){for(var c=d.g,e=d.e,b=d.input,f=d.c,g=b.length,h=a[0],k=a[1],p,q;e<k&&!(f>=g);)c|=b[f++]<<e,e+=8;p=h[c&(1<<k)-1];q=p>>>16;q>e&&m(Error("invalid code length: "+q));d.g=c>>q;d.e=e-q;d.c=f;return p&65535}
-U.prototype.o=function(d,a){var c=this.a,e=this.b;this.u=d;for(var b=c.length-258,f,g,h,k;256!==(f=Ta(this,d));)if(256>f)e>=b&&(this.b=e,c=this.f(),e=this.b),c[e++]=f;else{g=f-257;k=Wa[g];0<Ya[g]&&(k+=V(this,Ya[g]));f=Ta(this,a);h=$a[f];0<bb[f]&&(h+=V(this,bb[f]));e>=b&&(this.b=e,c=this.f(),e=this.b);for(;k--;)c[e]=c[e++-h]}for(;8<=this.e;)this.e-=8,this.c--;this.b=e};
-U.prototype.I=function(d,a){var c=this.a,e=this.b;this.u=d;for(var b=c.length,f,g,h,k;256!==(f=Ta(this,d));)if(256>f)e>=b&&(c=this.f(),b=c.length),c[e++]=f;else{g=f-257;k=Wa[g];0<Ya[g]&&(k+=V(this,Ya[g]));f=Ta(this,a);h=$a[f];0<bb[f]&&(h+=V(this,bb[f]));e+k>b&&(c=this.f(),b=c.length);for(;k--;)c[e]=c[e++-h]}for(;8<=this.e;)this.e-=8,this.c--;this.b=e};
-U.prototype.f=function(){var d=new (G?Uint8Array:Array)(this.b-32768),a=this.b-32768,c,e,b=this.a;if(G)d.set(b.subarray(32768,d.length));else{c=0;for(e=d.length;c<e;++c)d[c]=b[c+32768]}this.l.push(d);this.q+=d.length;if(G)b.set(b.subarray(a,a+32768));else for(c=0;32768>c;++c)b[c]=b[a+c];this.b=32768;return b};
-U.prototype.J=function(d){var a,c=this.input.length/this.c+1|0,e,b,f,g=this.input,h=this.a;d&&("number"===typeof d.v&&(c=d.v),"number"===typeof d.F&&(c+=d.F));2>c?(e=(g.length-this.c)/this.u[2],f=258*(e/2)|0,b=f<h.length?h.length+f:h.length<<1):b=h.length*c;G?(a=new Uint8Array(b),a.set(h)):a=h;return this.a=a};
-U.prototype.t=function(){var d=0,a=this.a,c=this.l,e,b=new (G?Uint8Array:Array)(this.q+(this.b-32768)),f,g,h,k;if(0===c.length)return G?this.a.subarray(32768,this.b):this.a.slice(32768,this.b);f=0;for(g=c.length;f<g;++f){e=c[f];h=0;for(k=e.length;h<k;++h)b[d++]=e[h]}f=32768;for(g=this.b;f<g;++f)b[d++]=a[f];this.l=[];return this.buffer=b};
-U.prototype.H=function(){var d,a=this.b;G?this.B?(d=new Uint8Array(a),d.set(this.a.subarray(0,a))):d=this.a.subarray(0,a):(this.a.length>a&&(this.a.length=a),d=this.a);return this.buffer=d};function ib(d){if("string"===typeof d){var a=d.split(""),c,e;c=0;for(e=a.length;c<e;c++)a[c]=(a[c].charCodeAt(0)&255)>>>0;d=a}for(var b=1,f=0,g=d.length,h,k=0;0<g;){h=1024<g?1024:g;g-=h;do b+=d[k++],f+=b;while(--h);b%=65521;f%=65521}return(f<<16|b)>>>0};function jb(d,a){var c,e;this.input=d;this.c=0;if(a||!(a={}))a.index&&(this.c=a.index),a.verify&&(this.M=a.verify);c=d[this.c++];e=d[this.c++];switch(c&15){case kb:this.method=kb;break;default:m(Error("unsupported compression method"))}0!==((c<<8)+e)%31&&m(Error("invalid fcheck flag:"+((c<<8)+e)%31));e&32&&m(Error("fdict flag is not supported"));this.A=new U(d,{index:this.c,bufferSize:a.bufferSize,bufferType:a.bufferType,resize:a.resize})}
-jb.prototype.p=function(){var d=this.input,a,c;a=this.A.p();this.c=this.A.c;this.M&&(c=(d[this.c++]<<24|d[this.c++]<<16|d[this.c++]<<8|d[this.c++])>>>0,c!==ib(a)&&m(Error("invalid adler-32 checksum")));return a};var kb=8;function lb(d,a){this.input=d;this.a=new (G?Uint8Array:Array)(32768);this.h=X.k;var c={},e;if((a||!(a={}))&&"number"===typeof a.compressionType)this.h=a.compressionType;for(e in a)c[e]=a[e];c.outputBuffer=this.a;this.z=new ka(this.input,c)}var X=oa;
-lb.prototype.j=function(){var d,a,c,e,b,f,g,h=0;g=this.a;d=kb;switch(d){case kb:a=Math.LOG2E*Math.log(32768)-8;break;default:m(Error("invalid compression method"))}c=a<<4|d;g[h++]=c;switch(d){case kb:switch(this.h){case X.NONE:b=0;break;case X.r:b=1;break;case X.k:b=2;break;default:m(Error("unsupported compression type"))}break;default:m(Error("invalid compression method"))}e=b<<6|0;g[h++]=e|31-(256*c+e)%31;f=ib(this.input);this.z.b=h;g=this.z.j();h=g.length;G&&(g=new Uint8Array(g.buffer),g.length<=
-h+4&&(this.a=new Uint8Array(g.length+4),this.a.set(g),g=this.a),g=g.subarray(0,h+4));g[h++]=f>>24&255;g[h++]=f>>16&255;g[h++]=f>>8&255;g[h++]=f&255;return g};function mb(d,a){var c,e,b,f;if(Object.keys)c=Object.keys(a);else for(e in c=[],b=0,a)c[b++]=e;b=0;for(f=c.length;b<f;++b)e=c[b],A(d+"."+e,a[e])};A("Zlib.Inflate",jb);A("Zlib.Inflate.prototype.decompress",jb.prototype.p);mb("Zlib.Inflate.BufferType",{ADAPTIVE:Ca.C,BLOCK:Ca.D});A("Zlib.Deflate",lb);A("Zlib.Deflate.compress",function(d,a){return(new lb(d,a)).j()});A("Zlib.Deflate.prototype.compress",lb.prototype.j);mb("Zlib.Deflate.CompressionType",{NONE:X.NONE,FIXED:X.r,DYNAMIC:X.k});}).call(this);
+	xa = (() => {
+		var a = new Uint32Array(),
+			c, e;
+		for (c = 3; 258 >= c; c++) e = d(c), a[c] = e[2] << 24 | e[1] << 16 | e[0];
+		return a
+	})(),
+
+	qa = (d, a) => {
+		function c(b, c) {
+			var a = b.G,
+				d = [],
+				e = 0,
+				f = xa[b.length];
+			d[e++] = f & 65535;
+			d[e++] = f >> 16 & 255;
+			d[e++] = f >> 24;
+			var g;
+			switch (z) {
+				case 1 === a:
+					g = [0, a - 1, 0];
+					break;
+				case 2 === a:
+					g = [1, a - 2, 0];
+					break;
+				case 3 === a:
+					g = [2, a - 3, 0];
+					break;
+				case 4 === a:
+					g = [3, a - 4, 0];
+					break;
+				case 6 >= a:
+					g = [4, a - 5, 1];
+					break;
+				case 8 >= a:
+					g = [5, a - 7, 1];
+					break;
+				case 12 >= a:
+					g = [6, a - 9, 2];
+					break;
+				case 16 >= a:
+					g = [7, a - 13, 2];
+					break;
+				case 24 >= a:
+					g = [8, a - 17, 3];
+					break;
+				case 32 >= a:
+					g = [9, a - 25, 3];
+					break;
+				case 48 >= a:
+					g = [10, a - 33, 4];
+					break;
+				case 64 >= a:
+					g = [11, a - 49, 4];
+					break;
+				case 96 >= a:
+					g = [12, a - 65, 5];
+					break;
+				case 128 >= a:
+					g = [13, a - 97, 5];
+					break;
+				case 192 >= a:
+					g = [14, a - 129, 6];
+					break;
+				case 256 >= a:
+					g = [15, a - 193, 6];
+					break;
+				case 384 >= a:
+					g = [16, a - 257, 7];
+					break;
+				case 512 >= a:
+					g = [17, a - 385, 7];
+					break;
+				case 768 >= a:
+					g = [18, a - 513, 8];
+					break;
+				case 1024 >= a:
+					g = [19, a - 769, 8];
+					break;
+				case 1536 >= a:
+					g = [20, a - 1025, 9];
+					break;
+				case 2048 >= a:
+					g = [21, a - 1537, 9];
+					break;
+				case 3072 >= a:
+					g = [22, a - 2049, 10];
+					break;
+				case 4096 >= a:
+					g = [23, a - 3073, 10];
+					break;
+				case 6144 >= a:
+					g = [24, a - 4097, 11];
+					break;
+				case 8192 >= a:
+					g = [25, a - 6145, 11];
+					break;
+				case 12288 >= a:
+					g = [26, a - 8193, 12];
+					break;
+				case 16384 >= a:
+					g = [27, a - 12289, 12];
+					break;
+				case 24576 >= a:
+					g = [28, a - 16385, 13];
+					break;
+				case 32768 >= a:
+					g = [29, a - 24577, 13];
+					break;
+				default:
+					m("invalid distance")
+			}
+			f = g;
+			d[e++] = f[0];
+			d[e++] = f[1];
+			d[e++] = f[2];
+			var h, k;
+			h = 0;
+			for (k = d.length; h < k; ++h) n[l++] = d[h];
+			t[d[0]]++;
+			x[d[3]]++;
+			s = b.length + c - 1;
+			r = null
+		}
+		var e, b, f, g, h, k = {},
+			p, q, r, n = new Uint16Array(2 * a.length),
+			l = 0,
+			s = 0,
+			t = new Uint32Array(286),
+			x = new Uint32Array(30),
+			E = d.w,
+			B;
+		t[256] = 1;
+		e = 0;
+		for (b = a.length; e < b; ++e) {
+			f = h = 0;
+			for (g = 3; f < g && e + f !== b; ++f) h = h << 8 | a[e + f];
+			k[h] === w && (k[h] = []);
+			p = k[h];
+			if (!(0 < s--)) {
+				for (; 0 < p.length && 32768 < e - p[0];) p.shift();
+				if (e + 3 >= b) {
+					r && c(r, -1);
+					f = 0;
+					for (g = b - e; f < g; ++f) B = a[e + f], n[l++] = B, ++t[B];
+					break
+				}
+				0 < p.length ? (q = ya(a, e, p), r ? r.length < q.length ? (B = a[e - 1], n[l++] = B, ++t[B], c(q, 0)) : c(r, -1) : q.length < E ? r = q : c(q, 0)) : r ? c(r, -1) : (B = a[e], n[l++] = B, ++t[B])
+			}
+			p.push(e)
+		}
+		n[l++] = 256;
+		t[256]++;
+		d.L = t;
+		d.K = x;
+		return n.subarray(0, l)
+	},
+
+	ya = (d, a, c) => {
+		var e, b, f = 0,
+			g, h, k, p, q = d.length;
+		h = 0;
+		p = c.length;
+		a: for (; h < p; h++) {
+			e = c[p - h - 1];
+			g = 3;
+			if (3 < f) {
+				for (k = f; 3 < k; k--)
+					if (d[e + k - 1] !== d[a + k - 1]) continue a;
+				g = f
+			}
+			for (; 258 > g && a + g < q && d[e + g] === d[a + g];) ++g;
+			g > f && (b = e, f = g);
+			if (258 === g) break
+		}
+		return {length: f, G: a - b}
+	},
+
+	ra = (d, a) => {
+		var c = d.length,
+			e = new ja(572),
+			b = new Uint8Array(c),
+			f, g, h, k, p;
+		for (k = 0; k < c; ++k) 0 < d[k] && e.push(k, d[k]);
+		f = Array(e.length / 2);
+		g = new Uint32Array(e.length / 2);
+		if (1 === f.length) return b[e.pop().index] = 1, b;
+		k = 0;
+		for (p = e.length / 2; k < p; ++k) f[k] = e.pop(), g[k] = f[k].value;
+		h = za(g, g.length, a);
+		k = 0;
+		for (p = f.length; k < p; ++k) b[f[k].index] = h[k];
+		return b
+	},
+
+	za = (d, a, c) => {
+		function e(b) {
+			var c = k[b][p[b]];
+			c === a ? (e(b + 1), e(b + 1)) : --g[c];
+			++p[b]
+		}
+		var b = new Uint16Array(c),
+			f = new Uint8Array(c),
+			g = new Uint8Array(a),
+			h = Array(c),
+			k = Array(c),
+			p = Array(c),
+			q = (1 << c) - a,
+			r = 1 << c - 1,
+			n, l, s, t, x;
+		b[c - 1] = a;
+		for (l = 0; l < c; ++l) q < r ? f[l] = 0 : (f[l] = 1, q -= r), q <<= 1, b[c - 2 - l] = (b[c - 1 - l] / 2 | 0) + a;
+		b[0] = f[0];
+		h[0] = Array(b[0]);
+		k[0] = Array(b[0]);
+		for (l = 1; l < c; ++l) b[l] > 2 * b[l - 1] + f[l] && (b[l] = 2 * b[l - 1] + f[l]), h[l] = Array(b[l]), k[l] = Array(b[l]);
+		for (n = 0; n < a; ++n) g[n] = c;
+		for (s = 0; s < b[c - 1]; ++s) h[c -
+			1][s] = d[s], k[c - 1][s] = s;
+		for (n = 0; n < c; ++n) p[n] = 0;
+		1 === f[c - 1] && (--g[0], ++p[c - 1]);
+		for (l = c - 2; 0 <= l; --l) {
+			t = n = 0;
+			x = p[l + 1];
+			for (s = 0; s < b[l]; s++) t = h[l + 1][x] + h[l + 1][x + 1], t > d[n] ? (h[l][s] = t, k[l][s] = a, x += 2) : (h[l][s] = d[n], k[l][s] = n, ++n);
+			p[l] = 0;
+			1 === f[l] && e(l)
+		}
+		return g
+	},
+
+	ta = d => {
+		var a = new Uint16Array(d.length),
+			c = [],
+			e = [],
+			b = 0,
+			f, g, h, k;
+		f = 0;
+		for (g = d.length; f < g; f++) c[d[f]] = (c[d[f]] | 0) + 1;
+		f = 1;
+		for (g = 16; f <= g; f++) e[f] = b, b += c[f] | 0, b <<= 1;
+		f = 0;
+		for (g = d.length; f < g; f++) {
+			b = e[d[f]];
+			e[d[f]] += 1;
+			h = a[f] = 0;
+			for (k = d[f]; h < k; h++) a[f] = a[f] << 1 | b & 1, b >>>= 1
+		}
+		return a
+	};
+
+	for (; 288 > T; T++) switch (z) {
+		case 143 >= T:
+			pa.push([T + 48, 8]);
+			break;
+		case 255 >= T:
+			pa.push([T - 144 + 400, 9]);
+			break;
+		case 279 >= T:
+			pa.push([T - 256 + 0, 7]);
+			break;
+		case 287 >= T:
+			pa.push([T - 280 + 192, 8]);
+			break;
+		default:
+			m("invalid literal: " + T)
+	}
+
+	for (ca = 0; 256 > ca; ++ca) {
+		for (var R = ca, ha = R, ia = 7, R = R >>> 1; R; R >>>= 1) ha <<= 1, ha |= R & 1, --ia;
+		Q[ca] = (ha << ia & 255) >>> 0
+	}
+
+	class I
+	{
+		constructor(d, a) {
+			this.index = "number" === typeof a ? a : 0;
+			this.i = 0;
+			this.buffer = d instanceof Uint8Array ? d : new Uint8Array(32768);
+			2 * this.buffer.length <= this.index && m(Error("invalid index"));
+			this.buffer.length <= this.index && this.f()
+		}
+
+		f() {
+			var d = this.buffer,
+				c = d.length,
+				e = new Uint8Array(c << 1);
+			e.set(d);
+			return this.buffer = e
+		}
+
+		d(d, a, c) {
+			var e = this.buffer,
+				b = this.index,
+				f = this.i,
+				g = e[b],
+				h;
+			c && 1 < a && (d = 8 < a ? (Q[d & 255] << 24 | Q[d >>> 8 & 255] << 16 | Q[d >>> 16 & 255] << 8 | Q[d >>> 24 & 255]) >> 32 - a : Q[d] >> 8 - a);
+			if (8 > a + f) g = g << a | d, f += a;
+			else
+				for (h = 0; h < a; ++h) g = g << 1 | d >> a - h - 1 & 1, 8 === ++f && (f = 0, e[b++] = Q[g], g = 0, b === e.length && (e = this.f()));
+			e[b] = g;
+			this.buffer = e;
+			this.i = f;
+			this.index = b
+		}
+
+		finish() {
+			var d = this.buffer,
+				a = this.index,
+				c;
+			0 < this.i && (d[a] <<= 8 - this.i, d[a] = Q[d[a]], a++);
+			c = d.subarray(0, a);
+			return c
+		}
+	}
+
+	class ja
+	{
+		constructor(d) {
+			this.buffer = new Uint16Array(2 * d);
+			this.length = 0
+		}
+
+		getParent(d) {
+			return 2 * ((d - 2) / 4 | 0)
+		}
+
+		push(d, a) {
+			var c, e, b = this.buffer,
+				f;
+			c = this.length;
+			b[this.length++] = a;
+			for (b[this.length++] = d; 0 < c;)
+				if (e = this.getParent(c), b[c] > b[e]) f = b[c], b[c] = b[e], b[e] = f, f = b[c + 1], b[c + 1] = b[e + 1], b[e + 1] = f, c = e;
+				else break;
+			return this.length
+		}
+
+		pop() {
+			var d, a, c = this.buffer,
+				e, b, f;
+			a = c[0];
+			d = c[1];
+			this.length -= 2;
+			c[0] = c[this.length];
+			c[1] = c[this.length + 1];
+			for (f = 0;;) {
+				b = 2 * f + 2;
+				if (b >= this.length) break;
+				b + 2 < this.length && c[b + 2] > c[b] && (b += 2);
+				if (c[b] > c[f]) e = c[f], c[f] = c[b], c[b] = e, e = c[f + 1], c[f + 1] = c[b + 1], c[b + 1] = e;
+				else break;
+				f = b
+			}
+			return {
+				index: d,
+				value: a,
+				length: this.length
+			}
+		}
+	}
+
+	class ka
+	{
+		constructor(d, a) {
+			this.h = 2;
+			this.w = 0;
+			this.input = d instanceof Array ? new Uint8Array(d) : d;
+			this.b = 0;
+			a && (a.lazy && (this.w = a.lazy), "number" === typeof a.compressionType && (this.h = a.compressionType), a.outputBuffer && (this.a = a.outputBuffer instanceof Array ? new Uint8Array(a.outputBuffer) : a.outputBuffer), "number" === typeof a.outputIndex && (this.b = a.outputIndex));
+			this.a || (this.a = new Uint8Array(32768))
+		}
+
+		compress() {
+			this.j();
+		}
+		j() {
+			var d, a, c, e, b = this.input;
+			switch (this.h) {
+				case 0:
+					c = 0;
+					for (e = b.length; c < e;) {
+						a = b.subarray(c, c + 65535);
+						c += a.length;
+						var f = a,
+							g = c === e,
+							h = w,
+							k = w,
+							p = w,
+							n = this.a,
+							l = this.b;
+						for (n = new Uint8Array(this.a.buffer); n.length <= l + f.length + 5;) n = new Uint8Array(n.length << 1);
+						n.set(this.a)
+						h = g ? 1 : 0;
+						n[l++] = h | 0;
+						k = f.length;
+						p = ~k + 65536 & 65535;
+						n[l++] = k & 255;
+						n[l++] = k >>> 8 & 255;
+						n[l++] = p & 255;
+						n[l++] = p >>> 8 & 255;
+						n.set(f, l), l += f.length, n = n.subarray(0, l);
+						this.b = l;
+						this.a = n
+					}
+					break;
+				case 1:
+					var s = new I(new Uint8Array(this.a.buffer), this.b);
+					s.d(1, 1, z);
+					s.d(1, 2, z);
+					var t = qa(this, b),
+						x, E, B;
+					x = 0;
+					for (E = t.length; x < E; x++)
+						if (B = t[x], I.prototype.d.apply(s, pa[B]), 256 < B) s.d(t[++x], t[++x], z), s.d(t[++x], 5), s.d(t[++x], t[++x], z);
+						else if (256 === B) break;
+					this.a = s.finish();
+					this.b = this.a.length;
+					break;
+				case 2:
+					var C = new I(new Uint8Array(this.a.buffer), this.b),
+						L, v, M, Y, Z, gb = [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15],
+						da, Fa, ea, Ga, la, sa = Array(19),
+						Ha, $, ma, D, Ia;
+					L = 2;
+					C.d(1, 1, z);
+					C.d(L, 2, z);
+					v = qa(this, b);
+					da = ra(this.L, 15);
+					Fa = ta(da);
+					ea = ra(this.K, 7);
+					Ga = ta(ea);
+					for (M = 286; 257 < M && 0 === da[M - 1]; M--);
+					for (Y = 30; 1 < Y && 0 === ea[Y - 1]; Y--);
+					var Ja = M,
+						Ka = Y,
+						K = new Uint32Array(Ja + Ka),
+						u, N, y, fa, J = new Uint32Array(316),
+						H, F, O = new Uint8Array(19);
+					for (u = N = 0; u < Ja; u++) K[N++] = da[u];
+					for (u = 0; u < Ka; u++) K[N++] = ea[u];
+					u = H = 0;
+					for (fa = K.length; u < fa; u += N) {
+						for (N = 1; u + N < fa && K[u + N] === K[u]; ++N);
+						y = N;
+						if (0 === K[u])
+							if (3 > y)
+								for (; 0 < y--;) J[H++] =
+									0, O[0]++;
+							else
+								for (; 0 < y;) F = 138 > y ? y : 138, F > y - 3 && F < y && (F = y - 3), 10 >= F ? (J[H++] = 17, J[H++] = F - 3, O[17]++) : (J[H++] = 18, J[H++] = F - 11, O[18]++), y -= F;
+						else if (J[H++] = K[u], O[K[u]]++, y--, 3 > y)
+							for (; 0 < y--;) J[H++] = K[u], O[K[u]]++;
+						else
+							for (; 0 < y;) F = 6 > y ? y : 6, F > y - 3 && F < y && (F = y - 3), J[H++] = 16, J[H++] = F - 3, O[16]++, y -= F
+					}
+					d = J.subarray(0, H);
+					la = ra(O, 7);
+					for (D = 0; 19 > D; D++) sa[D] = la[gb[D]];
+					for (Z = 19; 4 < Z && 0 === sa[Z - 1]; Z--);
+					Ha = ta(la);
+					C.d(M - 257, 5, z);
+					C.d(Y - 1, 5, z);
+					C.d(Z - 4, 4, z);
+					for (D = 0; D < Z; D++) C.d(sa[D], 3, z);
+					D = 0;
+					for (Ia = d.length; D < Ia; D++)
+						if ($ =
+							d[D], C.d(Ha[$], la[$], z), 16 <= $) {
+							D++;
+							switch ($) {
+								case 16:
+									ma = 2;
+									break;
+								case 17:
+									ma = 3;
+									break;
+								case 18:
+									ma = 7;
+									break;
+								default:
+									m("invalid code: " + $)
+							}
+							C.d(d[D], ma, z)
+						}
+					var La = [Fa, da],
+						Ma = [Ga, ea],
+						P, Na, ga, va, Oa, Pa, Qa, Ra;
+					Oa = La[0];
+					Pa = La[1];
+					Qa = Ma[0];
+					Ra = Ma[1];
+					P = 0;
+					for (Na = v.length; P < Na; ++P)
+						if (ga = v[P], C.d(Oa[ga], Pa[ga], z), 256 < ga) C.d(v[++P], v[++P], z), va = v[++P], C.d(Qa[va], Ra[va], z), C.d(v[++P], v[++P], z);
+						else if (256 === ga) break;
+					this.a = C.finish();
+					this.b = this.a.length;
+					break;
+				default:
+					m("invalid compression type")
+			}
+			return this.a
+		}
+	}
+
+	var S = d => {
+		var a = d.length,
+			c = 0,
+			e = Number.POSITIVE_INFINITY,
+			b, f, g, h, k, p, q, r, n, l;
+		for (r = 0; r < a; ++r) d[r] > c && (c = d[r]), d[r] < e && (e = d[r]);
+		b = 1 << c;
+		f = new Uint32Array(b);
+		g = 1;
+		h = 0;
+		for (k = 2; g <= c;) {
+			for (r = 0; r < a; ++r)
+				if (d[r] === g) {
+					p = 0;
+					q = h;
+					for (n = 0; n < g; ++n) p = p << 1 | q & 1, q >>= 1;
+					l = g << 16 | r;
+					for (n = p; n < b; n += k) f[n] = l;
+					++h
+				}++g;
+			h <<= 1;
+			k <<= 1
+		}
+		return [f, c, e]
+	},
+
+	Sa = new Uint16Array([16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]),
+	Wa = new Uint16Array([3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258, 258, 258]),
+	Ya = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0, 0, 0]),
+	$a = new Uint16Array([1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577]),
+	bb = new Uint8Array([0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13]),
+	W = 288,
+	cb = new Uint8Array(W),
+	Ea = S((new Uint8Array(30)).fill(5)),
+
+	V = (d, a) => {
+		for (var c = d.g, e = d.e, b = d.input, f = d.c, g = b.length, h; e < a;) f >= g && m(Error("input buffer is broken")), c |= b[f++] << e, e += 8;
+		h = c & (1 << a) - 1;
+		d.g = c >>> a;
+		d.e = e - a;
+		d.c = f;
+		return h
+	},
+
+	Ta = (d, a) => {
+		for (var c = d.g, e = d.e, b = d.input, f = d.c, g = b.length, h = a[0], k = a[1], p, q; e < k && !(f >= g);) c |= b[f++] << e, e += 8;
+		p = h[c & (1 << k) - 1];
+		q = p >>> 16;
+		q > e && m(Error("invalid code length: " + q));
+		d.g = c >> q;
+		d.e = e - q;
+		d.c = f;
+		return p & 65535
+	};
+
+	while (W--) cb[W] = 143 >= W ? 8 : 255 >= W ? 9 : 279 >= W ? 7 : 8;
+	var Da = S(cb);
+
+	class U
+	{
+		constructor(d, a) {
+			this.l = [];
+			this.m = 32768;
+			this.e = this.g = this.c = this.q = 0;
+			this.input = new Uint8Array(d);
+			this.s = !1;
+			this.n = 1;
+			this.B = !1;
+			if (a || !(a = {})) a.index && (this.c = a.index), a.bufferSize && (this.m = a.bufferSize), a.bufferType && (this.n = a.bufferType), a.resize && (this.B = a.resize);
+			switch (this.n) {
+				case 0:
+					this.b = 32768;
+					this.a = new Uint8Array(32768 + this.m + 258);
+					break;
+				case 1:
+					this.b = 0;
+					this.a = new Uint8Array(this.m);
+					this.f = this.J;
+					this.t = this.H;
+					this.o = this.I;
+					break;
+				default:
+					m(Error("invalid inflate mode"))
+			}
+		}
+
+		decompress() {
+			this.p();
+		}
+		p() {
+			for (; !this.s;) {
+				var d = V(this, 3);
+				d & 1 && (this.s = z);
+				d >>>= 1;
+				switch (d) {
+					case 0:
+						var a = this.input,
+							c = this.c,
+							e = this.a,
+							b = this.b,
+							f = a.length,
+							g = w,
+							h = w,
+							k = e.length,
+							p = w;
+						this.e = this.g = 0;
+						c + 1 >= f && m(Error("invalid uncompressed block header: LEN"));
+						g = a[c++] | a[c++] << 8;
+						c + 1 >= f && m(Error("invalid uncompressed block header: NLEN"));
+						h = a[c++] | a[c++] << 8;
+						g === ~h && m(Error("invalid uncompressed block header: length verify"));
+						c + g > a.length && m(Error("input buffer is broken"));
+						switch (this.n) {
+							case 0:
+								for (; b + g > e.length;) {
+									p =
+										k - b;
+									g -= p;
+									e.set(a.subarray(c, c + p), b), b += p, c += p;
+									this.b = b;
+									e = this.f();
+									b = this.b
+								}
+								break;
+							case 1:
+								for (; b + g > e.length;) e = this.f({
+									v: 2
+								});
+								break;
+							default:
+								m(Error("invalid inflate mode"))
+						}
+						e.set(a.subarray(c, c + g), b), b += g, c += g;
+						this.c = c;
+						this.b = b;
+						this.a = e;
+						break;
+					case 1:
+						this.o(Da, Ea);
+						break;
+					case 2:
+						for (var q = V(this, 5) + 257, r = V(this, 5) + 1, n = V(this, 4) + 4, l = new Uint8Array(Sa.length), s = w, t = w, x = w, E = w, B = w, C = w, L = w, v = w, M = w, v = 0; v < n; ++v) l[Sa[v]] = V(this, 3);
+						s = S(l);
+						E = new Uint8Array(q + r);
+						v = 0;
+						for (M = q + r; v < M;) switch (B = Ta(this, s), B) {
+							case 16:
+								for (L = 3 + V(this, 2); L--;) E[v++] = C;
+								break;
+							case 17:
+								for (L = 3 + V(this, 3); L--;) E[v++] = 0;
+								C = 0;
+								break;
+							case 18:
+								for (L = 11 + V(this, 7); L--;) E[v++] = 0;
+								C = 0;
+								break;
+							default:
+								C = E[v++] = B
+						}
+						t = S(E.subarray(0, q));
+						x = S(E.subarray(q));
+						this.o(t, x);
+						break;
+					default:
+						m(Error("unknown BTYPE: " + d))
+				}
+			}
+			return this.t()
+		}
+
+		o(d, a) {
+			var c = this.a,
+				e = this.b;
+			this.u = d;
+			for (var b = c.length - 258, f, g, h, k; 256 !== (f = Ta(this, d));)
+				if (256 > f) e >= b && (this.b = e, c = this.f(), e = this.b), c[e++] = f;
+				else {
+					g = f - 257;
+					k = Wa[g];
+					0 < Ya[g] && (k += V(this, Ya[g]));
+					f = Ta(this, a);
+					h = $a[f];
+					0 < bb[f] && (h += V(this, bb[f]));
+					e >= b && (this.b = e, c = this.f(), e = this.b);
+					for (; k--;) c[e] = c[e++ - h]
+				}
+			for (; 8 <= this.e;) this.e -= 8, this.c--;
+			this.b = e
+		}
+
+		I(d, a) {
+			var c = this.a,
+				e = this.b;
+			this.u = d;
+			for (var b = c.length, f, g, h, k; 256 !== (f = Ta(this, d));)
+				if (256 > f) e >= b && (c = this.f(), b = c.length), c[e++] = f;
+				else {
+					g = f - 257;
+					k = Wa[g];
+					0 < Ya[g] && (k += V(this, Ya[g]));
+					f = Ta(this, a);
+					h = $a[f];
+					0 < bb[f] && (h += V(this, bb[f]));
+					e + k > b && (c = this.f(), b = c.length);
+					for (; k--;) c[e] = c[e++ - h]
+				}
+			for (; 8 <= this.e;) this.e -= 8, this.c--;
+			this.b = e
+		}
+
+		f() {
+			var d = new Uint8Array(this.b - 32768),
+				a = this.b - 32768,
+				b = this.a;
+			d.set(b.subarray(32768, d.length));
+			this.l.push(d);
+			this.q += d.length;
+			b.set(b.subarray(a, a + 32768));
+			this.b = 32768;
+			return b
+		}
+
+		J(d) {
+			var a, c = this.input.length / this.c + 1 | 0,
+				e, b, f, g = this.input,
+				h = this.a;
+			d && ("number" === typeof d.v && (c = d.v), "number" === typeof d.F && (c += d.F));
+			2 > c ? (e = (g.length - this.c) / this.u[2], f = 258 * (e / 2) | 0, b = f < h.length ? h.length + f : h.length << 1) : b = h.length * c;
+			a = new Uint8Array(b), a.set(h);
+			return this.a = a
+		}
+
+		t() {
+			var d = 0,
+				a = this.a,
+				c = this.l,
+				e, b = new Uint8Array(this.q + (this.b - 32768)),
+				f, g, h, k;
+			if (0 === c.length) return this.a.subarray(32768, this.b);
+			f = 0;
+			for (g = c.length; f < g; ++f) {
+				e = c[f];
+				h = 0;
+				for (k = e.length; h < k; ++h) b[d++] = e[h]
+			}
+			f = 32768;
+			for (g = this.b; f < g; ++f) b[d++] = a[f];
+			this.l = [];
+			return this.buffer = b
+		}
+
+		H() {
+			var d, a = this.b;
+			this.B ? (d = new Uint8Array(a), d.set(this.a.subarray(0, a))) : d = this.a.subarray(0, a);
+			return this.buffer = d
+		}
+	}
+
+	function ib(d) {
+		if ("string" === typeof d) {
+			var a = d.split(""),
+				c, e;
+			c = 0;
+			for (e = a.length; c < e; c++) a[c] = (a[c].charCodeAt(0) & 255) >>> 0;
+			d = a
+		}
+		for (var b = 1, f = 0, g = d.length, h, k = 0; 0 < g;) {
+			h = 1024 < g ? 1024 : g;
+			g -= h;
+			do b += d[k++], f += b; while (--h);
+			b %= 65521;
+			f %= 65521
+		}
+		return (f << 16 | b) >>> 0
+	}
+
+	class jb
+	{
+		constructor(d, a) {
+			var c, e;
+			this.input = d;
+			this.c = 0;
+			if (a || !(a = {})) a.index && (this.c = a.index), a.verify && (this.M = a.verify);
+			c = d[this.c++];
+			e = d[this.c++];
+			switch (c & 15) {
+				case 8:
+					this.method = 8;
+					break;
+				default:
+					m(Error("unsupported compression method"))
+			}
+			0 !== ((c << 8) + e) % 31 && m(Error("invalid fcheck flag:" + ((c << 8) + e) % 31));
+			e & 32 && m(Error("fdict flag is not supported"));
+			this.A = new U(d, {
+				index: this.c,
+				bufferSize: a.bufferSize,
+				bufferType: a.bufferType,
+				resize: a.resize
+			})
+		}
+
+		decompress() {
+			var d = this.input,
+				a, c;
+			a = this.A.p();
+			this.c = this.A.c;
+			this.M && (c = (d[this.c++] << 24 | d[this.c++] << 16 | d[this.c++] << 8 | d[this.c++]) >>> 0, c !== ib(a) && m(Error("invalid adler-32 checksum")));
+			return a
+		}
+	}
+
+	class lb
+	{
+		constructor(d, a) {
+			this.input = d;
+			this.a = new Uint8Array(32768);
+			this.h = 2;
+			var c = {},
+				e;
+			if ((a || !(a = {})) && "number" === typeof a.compressionType) this.h = a.compressionType;
+			for (e in a) c[e] = a[e];
+			c.outputBuffer = this.a;
+			this.z = new ka(this.input, c)
+		}
+
+		compress = function () {
+			var d, a, c, e, b, f, g, h = 0;
+			g = this.a;
+			d = 8;
+			switch (d) {
+				case 8:
+					a = Math.LOG2E * Math.log(32768) - 8;
+					break;
+				default:
+					m(Error("invalid compression method"))
+			}
+			c = a << 4 | d;
+			g[h++] = c;
+			switch (d) {
+				case 8:
+					switch (this.h) {
+						case 0:
+							b = 0;
+							break;
+						case 1:
+							b = 1;
+							break;
+						case 2:
+							b = 2;
+							break;
+						default:
+							m(Error("unsupported compression type"))
+					}
+					break;
+				default:
+					m(Error("invalid compression method"))
+			}
+			e = b << 6 | 0;
+			g[h++] = e | 31 - (256 * c + e) % 31;
+			f = ib(this.input);
+			this.z.b = h;
+			g = this.z.j();
+			h = g.length;
+			(g = new Uint8Array(g.buffer), g.length <=
+				h + 4 && (this.a = new Uint8Array(g.length + 4), this.a.set(g), g = this.a), g = g.subarray(0, h + 4));
+			g[h++] = f >> 24 & 255;
+			g[h++] = f >> 16 & 255;
+			g[h++] = f >> 8 & 255;
+			g[h++] = f & 255;
+			return g
+		}
+	}
+
+	U.BufferType = jb.BufferType = {
+		ADAPTIVE: 1,
+		BLOCK: 0
+	};
+
+	ka.CompressionType = lb.CompressionType = {
+		NONE: 0,
+		FIXED: 1,
+		DYNAMIC: 2
+	};
+	lb.compress = (d, a) => (new lb(d, a)).compress();
+
+	aa.Zlib = {
+		Inflate: jb,
+		Deflate: lb,
+		RawDeflate: ka,
+		RawInflate: U
+	};
+
+})(this);
 
 },{}],
 9:[function(_dereq_,module,exports){
@@ -3767,11 +4692,8 @@ h+4&&(this.a=new Uint8Array(g.length+4),this.a.set(g),g=this.a),g=g.subarray(0,h
  * @property {Integer} prefer_hash_algorithm
  * @property {Integer} encryption_cipher
  * @property {Integer} compression
- * @property {Boolean} show_version
- * @property {Boolean} show_comment
  * @property {Boolean} integrity_protect
  * @property {String} keyserver
- * @property {Boolean} debug If enabled, debug messages will be printed
  * @module config/config
  */
 
@@ -3796,17 +4718,9 @@ exports.default = {
   ignore_mdc_error: false, // fail on decrypt if message is not integrity protected
   checksum_required: false, // do not throw error when armor is missing a checksum
   verify_expired_keys: true, // allow signature verification with expired keys
-  rsa_blinding: true,
-  use_native: true, // use native node.js crypto and Web Crypto apis (if available)
   zero_copy: false, // use transferable objects between the Web Worker and main thread
-  debug: false,
   tolerant: true, // ignore unsupported/unrecognizable packets instead of throwing an error
-  show_version: true,
-  show_comment: true,
-  versionstring: "OpenPGP.js v2.6.2",
-  commentstring: "https://openpgpjs.org",
-  keyserver: "https://keyserver.ubuntu.com",
-  node_store: './openpgp.store'
+  keyserver: "https://keyserver.ubuntu.com"
 };
 
 },{"../enums.js":35}],
@@ -6025,17 +6939,13 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ivLength = undefined;
+exports.ivLength = 12;
 exports.encrypt = encrypt;
 exports.decrypt = decrypt;
 
 var _util = _dereq_('../util.js');
 
 var _util2 = _interopRequireDefault(_util);
-
-var _config = _dereq_('../config');
-
-var _config2 = _interopRequireDefault(_config);
 
 var _asmcryptoLite = _dereq_('asmcrypto-lite');
 
@@ -6045,8 +6955,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var webCrypto = _util2.default.getWebCrypto(); // no GCM support in IE11, Safari 9
 
-var ivLength = exports.ivLength = 12; // size of the IV in bytes
-var TAG_LEN = 16; // size of the tag in bytes
 var ALGO = 'AES-GCM';
 
 /**
@@ -6062,7 +6970,7 @@ function encrypt(cipher, plaintext, key, iv) {
     return Promise.reject(new Error('GCM mode supports only AES cipher'));
   }
 
-  if (webCrypto && _config2.default.use_native && key.length !== 24) {
+  if (webCrypto && key.length !== 24) {
     // WebCrypto (no 192 bit support) see: https://www.chromium.org/blink/webcrypto#TOC-AES-support
     return webEncrypt(plaintext, key, iv);
   }
@@ -6083,7 +6991,7 @@ function decrypt(cipher, ciphertext, key, iv) {
     return Promise.reject(new Error('GCM mode supports only AES cipher'));
   }
 
-  if (webCrypto && _config2.default.use_native && key.length !== 24) {
+  if (webCrypto && key.length !== 24) {
     // WebCrypto (no 192 bit support) see: https://www.chromium.org/blink/webcrypto#TOC-AES-support
     return webDecrypt(ciphertext, key, iv);
   }
@@ -6969,11 +7877,11 @@ function b642binb(str) {
       offset,
       b64Tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-  if (-1 === str.search(/^[a-zA-Z0-9=+\/]+$/)) {
+  if (-1 === str.search(/^[a-zA-Z0-9=+/]+$/)) {
     throw "Invalid character in base-64 string";
   }
   firstEqual = str.indexOf('=');
-  str = str.replace(/\=/g, '');
+  str = str.replace(/=/g, '');
   if (-1 !== firstEqual && firstEqual < str.length) {
     throw "Invalid '=' found in base-64 string";
   }
@@ -8445,7 +9353,6 @@ function DSA() {
         }
         return usersetting;
       default:
-        _util2.default.print_debug("DSA select hash algorithm: returning null for an unknown length of q");
         return null;
     }
   }
@@ -8455,12 +9362,10 @@ function DSA() {
     var hashed_data = _util2.default.getLeftNBits(_util2.default.Uint8Array2str(_hash2.default.digest(hashalgo, _util2.default.str2Uint8Array(m))), q.bitLength());
     var hash = new _jsbn2.default(_util2.default.hexstrdump(hashed_data), 16);
     if (_jsbn2.default.ZERO.compareTo(s1) >= 0 || s1.compareTo(q) >= 0 || _jsbn2.default.ZERO.compareTo(s2) >= 0 || s2.compareTo(q) >= 0) {
-      _util2.default.print_debug("invalid DSA Signature");
       return null;
     }
     var w = s2.modInverse(q);
     if (_jsbn2.default.ZERO.compareTo(w) === 0) {
-      _util2.default.print_debug("invalid DSA Signature");
       return null;
     }
     var u1 = hash.multiply(w).mod(q);
@@ -8515,10 +9420,6 @@ var _random = _dereq_('../random.js');
 
 var _random2 = _interopRequireDefault(_random);
 
-var _util = _dereq_('../../util.js');
-
-var _util2 = _interopRequireDefault(_util);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function Elgamal() {
@@ -8535,7 +9436,6 @@ function Elgamal() {
   }
 
   function decrypt(c1, c2, p, x) {
-    _util2.default.print_debug("Elgamal Decrypt:\nc1:" + _util2.default.hexstrdump(c1.toMPI()) + "\n" + "c2:" + _util2.default.hexstrdump(c2.toMPI()) + "\n" + "p:" + _util2.default.hexstrdump(p.toMPI()) + "\n" + "x:" + _util2.default.hexstrdump(x.toMPI()));
     return c1.modPow(x, p).modInverse(p).multiply(c2).mod(p);
     //var c = c1.pow(x).modInverse(p); // c0^-a mod p
     //return c.multiply(c2).mod(p);
@@ -10135,7 +11035,7 @@ function bnpMillerRabin(t) {
     a.fromInt(j);
     var y = a.modPow(r, this);
     if (y.compareTo(BigInteger.ONE) != 0 && y.compareTo(n1) != 0) {
-      var j = 1;
+      j = 1;
       while (j++ < k && y.compareTo(n1) != 0) {
         y = y.modPowInt(2, this);
         if (y.compareTo(BigInteger.ONE) == 0) return false;
@@ -10247,10 +11147,6 @@ var _random = _dereq_('../random.js');
 
 var _random2 = _interopRequireDefault(_random);
 
-var _config = _dereq_('../../config');
-
-var _config2 = _interopRequireDefault(_config);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function SecureRandom() {
@@ -10299,12 +11195,9 @@ function RSA() {
    * @return {BigInteger} The decrypted value of the message
    */
   function decrypt(m, n, e, d, p, q, u) {
-    if (_config2.default.rsa_blinding) {
-      m = blind(m, n, e);
-    }
+    m = blind(m, n, e);
     var xp = m.mod(p).modPow(d.mod(p.subtract(_jsbn2.default.ONE)), p);
     var xq = m.mod(q).modPow(d.mod(q.subtract(_jsbn2.default.ONE)), q);
-    _util2.default.print_debug("rsa.js decrypt\nxpn:" + _util2.default.hexstrdump(xp.toMPI()) + "\nxqn:" + _util2.default.hexstrdump(xq.toMPI()));
 
     var t = xq.subtract(xp);
     if (t[0] === 0) {
@@ -10314,11 +11207,7 @@ function RSA() {
     } else {
       t = t.multiply(u).mod(q);
     }
-    t = t.multiply(p).add(xp);
-    if (_config2.default.rsa_blinding) {
-      t = unblind(t, n);
-    }
-    return t;
+    return unblind(t.multiply(p).add(xp), n);
   }
 
   /**
@@ -10421,7 +11310,7 @@ function RSA() {
       key.u = key.p.modInverse(key.q);
 
       function toBigInteger(base64url) {
-        var base64 = base64url.replace(/\-/g, '+').replace(/_/g, '/');
+        var base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
         var hex = _util2.default.hexstrdump(atob(base64));
         return new _jsbn2.default(hex, 16);
       }
@@ -10926,25 +11815,6 @@ function getType(text) {
 }
 
 /**
- * Add additional information to the armor version of an OpenPGP binary
- * packet block.
- * @author  Alex
- * @version 2011-12-16
- * @returns {String} The header information
- */
-function addheader() {
-  var result = "";
-  if (_config2.default.show_version) {
-    result += "Version: " + _config2.default.versionstring + '\r\n';
-  }
-  if (_config2.default.show_comment) {
-    result += "Comment: " + _config2.default.commentstring + '\r\n';
-  }
-  result += '\r\n';
-  return result;
-}
-
-/**
  * Calculates a checksum over the given data and returns it base64 encoded
  * @param {String} data Data to create a CRC-24 checksum for
  * @return {String} Base64 encoded checksum
@@ -11021,9 +11891,6 @@ function verifyHeaders(headers) {
   for (var i = 0; i < headers.length; i++) {
     if (!/^([^\s:]|[^\s:][^:]*[^\s:]): .+$/.test(headers[i])) {
       throw new Error('Improperly formatted armor header: ' + headers[i]);
-    }
-    if (_config2.default.debug && !/^(Version|Comment|MessageID|Hash|Charset): .+$/.test(headers[i])) {
-      console.log('Unknown header: ' + headers[i]);
     }
   }
 }
@@ -11131,15 +11998,13 @@ function armor(messagetype, body, partindex, parttotal) {
   var result = [];
   switch (messagetype) {
     case _enums2.default.armor.multipart_section:
-      result.push("-----BEGIN PGP MESSAGE, PART " + partindex + "/" + parttotal + "-----\r\n");
-      result.push(addheader());
+      result.push("-----BEGIN PGP MESSAGE, PART " + partindex + "/" + parttotal + "-----\r\n\r\n");
       result.push(_base2.default.encode(body));
       result.push("\r\n=" + getCheckSum(body) + "\r\n");
       result.push("-----END PGP MESSAGE, PART " + partindex + "/" + parttotal + "-----\r\n");
       break;
     case _enums2.default.armor.multipart_last:
-      result.push("-----BEGIN PGP MESSAGE, PART " + partindex + "-----\r\n");
-      result.push(addheader());
+      result.push("-----BEGIN PGP MESSAGE, PART " + partindex + "-----\r\n\r\n");
       result.push(_base2.default.encode(body));
       result.push("\r\n=" + getCheckSum(body) + "\r\n");
       result.push("-----END PGP MESSAGE, PART " + partindex + "-----\r\n");
@@ -11148,36 +12013,31 @@ function armor(messagetype, body, partindex, parttotal) {
       result.push("\r\n-----BEGIN PGP SIGNED MESSAGE-----\r\n");
       result.push("Hash: " + body.hash + "\r\n\r\n");
       result.push(body.text.replace(/\n-/g, "\n- -"));
-      result.push("\r\n-----BEGIN PGP SIGNATURE-----\r\n");
-      result.push(addheader());
+      result.push("\r\n-----BEGIN PGP SIGNATURE-----\r\n\r\n");
       result.push(_base2.default.encode(body.data));
       result.push("\r\n=" + getCheckSum(body.data) + "\r\n");
       result.push("-----END PGP SIGNATURE-----\r\n");
       break;
     case _enums2.default.armor.message:
-      result.push("-----BEGIN PGP MESSAGE-----\r\n");
-      result.push(addheader());
+      result.push("-----BEGIN PGP MESSAGE-----\r\n\r\n");
       result.push(_base2.default.encode(body));
       result.push("\r\n=" + getCheckSum(body) + "\r\n");
       result.push("-----END PGP MESSAGE-----\r\n");
       break;
     case _enums2.default.armor.public_key:
-      result.push("-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n");
-      result.push(addheader());
+      result.push("-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\n");
       result.push(_base2.default.encode(body));
       result.push("\r\n=" + getCheckSum(body) + "\r\n");
       result.push("-----END PGP PUBLIC KEY BLOCK-----\r\n\r\n");
       break;
     case _enums2.default.armor.private_key:
-      result.push("-----BEGIN PGP PRIVATE KEY BLOCK-----\r\n");
-      result.push(addheader());
+      result.push("-----BEGIN PGP PRIVATE KEY BLOCK-----\r\n\r\n");
       result.push(_base2.default.encode(body));
       result.push("\r\n=" + getCheckSum(body) + "\r\n");
       result.push("-----END PGP PRIVATE KEY BLOCK-----\r\n");
       break;
     case _enums2.default.armor.signature:
-      result.push("-----BEGIN PGP SIGNATURE-----\r\n");
-      result.push(addheader());
+      result.push("-----BEGIN PGP SIGNATURE-----\r\n\r\n");
       result.push(_base2.default.encode(body));
       result.push("\r\n=" + getCheckSum(body) + "\r\n");
       result.push("-----END PGP SIGNATURE-----\r\n");
@@ -12062,7 +12922,6 @@ Key.prototype.packetlist2structure = function (packetlist) {
           case _enums2.default.signature.cert_casual:
           case _enums2.default.signature.cert_positive:
             if (!user) {
-              _util2.default.print_debug('Dropping certification signatures without preceding user packet');
               continue;
             }
             if (packetlist[i].issuerKeyId.equals(primaryKeyId)) {
@@ -12098,7 +12957,6 @@ Key.prototype.packetlist2structure = function (packetlist) {
             break;
           case _enums2.default.signature.subkey_binding:
             if (!subKey) {
-              _util2.default.print_debug('Dropping subkey binding signature without preceding subkey packet');
               continue;
             }
             subKey.bindingSignatures.push(packetlist[i]);
@@ -12108,7 +12966,6 @@ Key.prototype.packetlist2structure = function (packetlist) {
             break;
           case _enums2.default.signature.subkey_revocation:
             if (!subKey) {
-              _util2.default.print_debug('Dropping subkey revocation signature without preceding subkey packet');
               continue;
             }
             subKey.revocationSignature = packetlist[i];
@@ -13566,13 +14423,7 @@ var _key = _dereq_('../key.js');
 
 var keyModule = _interopRequireWildcard(_key);
 
-var _util = _dereq_('../util.js');
-
-var _util2 = _interopRequireDefault(_util);
-
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function LocalStore(prefix) {
   prefix = prefix || 'openpgp-';
@@ -13612,8 +14463,6 @@ function loadKeys(storage, itemname) {
       key = keyModule.readArmored(armoredKeys[i]);
       if (!key.err) {
         keys.push(key.keys[0]);
-      } else {
-        _util2.default.print_debug("Error reading armored key from keyring index: " + i);
       }
     }
   }
@@ -14444,11 +15293,6 @@ function generateKey() {
 
   var options = formatUserIds({ userIds: userIds, passphrase: passphrase, numBits: numBits, unlocked: unlocked, keyExpirationTime: keyExpirationTime });
 
-  if (!_util2.default.getWebCryptoAll() && asyncProxy) {
-    // use web worker if web crypto apis are not supported
-    return asyncProxy.delegate('generateKey', options);
-  }
-
   return key.generate(options).then(function (newKey) {
     return {
 
@@ -14967,13 +15811,10 @@ function execute(cmd, message) {
  * @param {Error} error      The internal error that caused the failure
  */
 function onError(message, error) {
-  // log the stack trace
-  if (_config2.default.debug) {
-    console.error(error.stack);
-  }
-
+  console.error(message + ': ' + error.message);
   // update error message
-  error.message = message + ': ' + error.message;
+  // setting getter-only property "message"
+//  error.message = message + ': ' + error.message;
 
   throw error;
 }
@@ -15417,8 +16258,6 @@ function packetlistCloneToSignature(clone) {
  * this packet is found as the contents of an encrypted packet, or following
  * a Signature or One-Pass Signature packet, and contains a literal data packet.
  * @requires compression/zlib
- * @requires compression/rawinflate
- * @requires compression/rawdeflate
  * @requires enums
  * @requires util
  * @module packet/compressed
@@ -15442,14 +16281,6 @@ var _util2 = _interopRequireDefault(_util);
 var _zlibMin = _dereq_('../compression/zlib.min.js');
 
 var _zlibMin2 = _interopRequireDefault(_zlibMin);
-
-var _rawinflateMin = _dereq_('../compression/rawinflate.min.js');
-
-var _rawinflateMin2 = _interopRequireDefault(_rawinflateMin);
-
-var _rawdeflateMin = _dereq_('../compression/rawdeflate.min.js');
-
-var _rawdeflateMin2 = _interopRequireDefault(_rawdeflateMin);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15519,7 +16350,7 @@ Compressed.prototype.decompress = function () {
       break;
 
     case 'zip':
-      inflate = new _rawinflateMin2.default.Zlib.RawInflate(this.compressed);
+      inflate = new _zlibMin2.default.Zlib.RawInflate(this.compressed);
       decompressed = inflate.decompress();
       break;
 
@@ -15555,7 +16386,7 @@ Compressed.prototype.compress = function () {
 
     case 'zip':
       // - ZIP [RFC1951]
-      deflate = new _rawdeflateMin2.default.Zlib.RawDeflate(uncompressed);
+      deflate = new _zlibMin2.default.Zlib.RawDeflate(uncompressed);
       this.compressed = deflate.compress();
       break;
 
@@ -15575,7 +16406,7 @@ Compressed.prototype.compress = function () {
   }
 };
 
-},{"../compression/rawdeflate.min.js":6,"../compression/rawinflate.min.js":7,"../compression/zlib.min.js":8,"../enums.js":35,"../util.js":70}],
+},{"../compression/zlib.min.js":8,"../enums.js":35,"../util.js":70}],
 47:[function(_dereq_,module,exports){
 'use strict';
 
@@ -16151,15 +16982,12 @@ exports.default = {
         // 4.2.2.1. One-Octet Lengths
         if (input[mypos] < 192) {
           packet_length = input[mypos++];
-          _util2.default.print_debug("1 byte length:" + packet_length);
           // 4.2.2.2. Two-Octet Lengths
         } else if (input[mypos] >= 192 && input[mypos] < 224) {
           packet_length = (input[mypos++] - 192 << 8) + input[mypos++] + 192;
-          _util2.default.print_debug("2 byte length:" + packet_length);
           // 4.2.2.4. Partial Body Lengths
         } else if (input[mypos] > 223 && input[mypos] < 255) {
           packet_length = 1 << (input[mypos++] & 0x1F);
-          _util2.default.print_debug("4 byte length:" + packet_length);
           // EEEK, we're reading the full data here...
           var mypos2 = mypos + packet_length;
           bodydata = [input.subarray(mypos, mypos + packet_length)];
@@ -17468,11 +18296,6 @@ Signature.prototype.read = function (bytes) {
   // switch on version (3 and 4)
   switch (this.version) {
     case 3:
-      // One-octet length of following hashed material. MUST be 5.
-      if (bytes[i++] !== 5) {
-        _util2.default.print_debug("packet/signature.js\n" + 'invalid One-octet length of following hashed material.' + 'MUST be 5. @:' + (i - 1));
-      }
-
       var sigpos = i;
       // One-octet signature type.
       this.signatureType = bytes[i++];
@@ -17827,8 +18650,6 @@ Signature.prototype.read_sub_packet = function (bytes) {
 
         this.notation = this.notation || {};
         this.notation[name] = value;
-      } else {
-        _util2.default.print_debug("Unsupported notation flag " + bytes[mypos]);
       }
       break;
     case 21:
@@ -17887,8 +18708,6 @@ Signature.prototype.read_sub_packet = function (bytes) {
       this.embeddedSignature = new Signature();
       this.embeddedSignature.read(bytes.subarray(mypos, bytes.length));
       break;
-    default:
-      _util2.default.print_debug("Unknown signature subpacket type " + type + " @:" + mypos);
   }
 };
 
@@ -19392,7 +20211,7 @@ exports.default = {
     if (!this.isString(data)) {
       return false;
     }
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(data);
   },
 
@@ -19712,32 +20531,6 @@ exports.default = {
     return checksum.s;
   },
 
-  /**
-   * Helper function to print a debug message. Debug
-   * messages are only printed if
-   * @link module:config/config.debug is set to true.
-   * @param {String} str String of the debug message
-   */
-  print_debug: function print_debug(str) {
-    if (_config2.default.debug) {
-      console.log(str);
-    }
-  },
-
-  /**
-   * Helper function to print a debug message. Debug
-   * messages are only printed if
-   * @link module:config/config.debug is set to true.
-   * Different than print_debug because will call hexstrdump iff necessary.
-   * @param {String} str String of the debug message
-   */
-  print_debug_hexstr_dump: function print_debug_hexstr_dump(str, strToHex) {
-    if (_config2.default.debug) {
-      str = str + this.hexstrdump(strToHex);
-      console.log(str);
-    }
-  },
-
   getLeftNBits: function getLeftNBits(string, bitcount) {
     var rest = bitcount % 8;
     if (rest === 0) {
@@ -19796,30 +20589,20 @@ exports.default = {
 
   /**
    * Get native Web Cryptography api, only the current version of the spec.
-   * The default configuration is to use the api when available. But it can
-   * be deactivated with config.use_native
+   * The default configuration is to use the api when available.
    * @return {Object}   The SubtleCrypto api or 'undefined'
    */
   getWebCrypto: function getWebCrypto() {
-    if (!_config2.default.use_native) {
-      return;
-    }
-
     return typeof window !== 'undefined' && window.crypto && window.crypto.subtle;
   },
 
   /**
    * Get native Web Cryptography api for all browsers, including legacy
    * implementations of the spec e.g IE11 and Safari 8/9. The default
-   * configuration is to use the api when available. But it can be deactivated
-   * with config.use_native
+   * configuration is to use the api when available.
    * @return {Object}   The SubtleCrypto api or 'undefined'
    */
   getWebCryptoAll: function getWebCryptoAll() {
-    if (!_config2.default.use_native) {
-      return;
-    }
-
     if (typeof window !== 'undefined') {
       if (window.crypto) {
         return window.crypto.subtle || window.crypto.webkitSubtle;

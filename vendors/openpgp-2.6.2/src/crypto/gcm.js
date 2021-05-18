@@ -24,7 +24,7 @@
 
 import util from '../util.js';
 import config from '../config';
-import asmCrypto from '../asmcrypto.js';
+import '../asmcrypto.js';
 const webCrypto = util.getWebCrypto(); // no GCM support in IE11, Safari 9
 
 export const ivLength = 12; // size of the IV in bytes
@@ -43,7 +43,7 @@ export function encrypt(cipher, plaintext, key, iv) {
     return Promise.reject(new Error('GCM mode supports only AES cipher'));
   }
 
-  if (webCrypto && config.use_native && key.length !== 24) { // WebCrypto (no 192 bit support) see: https://www.chromium.org/blink/webcrypto#TOC-AES-support
+  if (webCrypto && key.length !== 24) { // WebCrypto (no 192 bit support) see: https://www.chromium.org/blink/webcrypto#TOC-AES-support
     return webEncrypt(plaintext, key, iv);
   }
   // asm.js fallback
@@ -63,7 +63,7 @@ export function decrypt(cipher, ciphertext, key, iv) {
     return Promise.reject(new Error('GCM mode supports only AES cipher'));
   }
 
-  if (webCrypto && config.use_native && key.length !== 24) { // WebCrypto (no 192 bit support) see: https://www.chromium.org/blink/webcrypto#TOC-AES-support
+  if (webCrypto && key.length !== 24) { // WebCrypto (no 192 bit support) see: https://www.chromium.org/blink/webcrypto#TOC-AES-support
     return webDecrypt(ciphertext, key, iv);
   }
   // asm.js fallback

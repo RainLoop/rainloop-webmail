@@ -97,7 +97,6 @@ export default function DSA() {
         }
         return usersetting;
       default:
-        util.print_debug("DSA select hash algorithm: returning null for an unknown length of q");
         return null;
     }
   }
@@ -110,12 +109,10 @@ export default function DSA() {
       s1.compareTo(q) >= 0 ||
       BigInteger.ZERO.compareTo(s2) >= 0 ||
       s2.compareTo(q) >= 0) {
-      util.print_debug("invalid DSA Signature");
       return null;
     }
     var w = s2.modInverse(q);
     if (BigInteger.ZERO.compareTo(w) === 0) {
-      util.print_debug("invalid DSA Signature");
       return null;
     }
     var u1 = hash.multiply(w).mod(q);

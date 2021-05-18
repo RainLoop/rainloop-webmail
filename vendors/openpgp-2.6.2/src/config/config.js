@@ -25,7 +25,6 @@
  * @property {Boolean} show_comment
  * @property {Boolean} integrity_protect
  * @property {String} keyserver
- * @property {Boolean} debug If enabled, debug messages will be printed
  * @module config/config
  */
 
@@ -42,15 +41,7 @@ export default {
   ignore_mdc_error: false, // fail on decrypt if message is not integrity protected
   checksum_required: false, // do not throw error when armor is missing a checksum
   verify_expired_keys: true, // allow signature verification with expired keys
-  rsa_blinding: true,
-  use_native: true, // use native node.js crypto and Web Crypto apis (if available)
   zero_copy: false, // use transferable objects between the Web Worker and main thread
-  debug: false,
   tolerant: true, // ignore unsupported/unrecognizable packets instead of throwing an error
-  show_version: true,
-  show_comment: true,
-  versionstring: "OpenPGP.js VERSION",
-  commentstring: "https://openpgpjs.org",
-  keyserver: "https://keyserver.ubuntu.com",
-  node_store: './openpgp.store'
+  keyserver: "https://keyserver.ubuntu.com"
 };

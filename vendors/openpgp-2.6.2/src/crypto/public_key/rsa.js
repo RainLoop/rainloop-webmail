@@ -77,12 +77,9 @@ export default function RSA() {
    * @return {BigInteger} The decrypted value of the message
    */
   function decrypt(m, n, e, d, p, q, u) {
-    if (config.rsa_blinding) {
-      m = blind(m, n, e);
-    }
+    m = blind(m, n, e);
     var xp = m.mod(p).modPow(d.mod(p.subtract(BigInteger.ONE)), p);
     var xq = m.mod(q).modPow(d.mod(q.subtract(BigInteger.ONE)), q);
-    util.print_debug("rsa.js decrypt\nxpn:" + util.hexstrdump(xp.toMPI()) + "\nxqn:" + util.hexstrdump(xq.toMPI()));
 
     var t = xq.subtract(xp);
     if (t[0] === 0) {
@@ -93,9 +90,7 @@ export default function RSA() {
       t = t.multiply(u).mod(q);
     }
     t = t.multiply(p).add(xp);
-    if (config.rsa_blinding) {
-      t = unblind(t, n);
-    }
+    t = unblind(t, n);
     return t;
   }
 

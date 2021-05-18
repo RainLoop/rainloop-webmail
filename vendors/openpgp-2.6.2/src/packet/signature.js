@@ -100,13 +100,6 @@ Signature.prototype.read = function (bytes) {
   // switch on version (3 and 4)
   switch (this.version) {
     case 3:
-      // One-octet length of following hashed material. MUST be 5.
-      if (bytes[i++] !== 5) {
-        util.print_debug("packet/signature.js\n" +
-          'invalid One-octet length of following hashed material.' +
-          'MUST be 5. @:' + (i - 1));
-      }
-
       var sigpos = i;
       // One-octet signature type.
       this.signatureType = bytes[i++];
@@ -463,8 +456,6 @@ Signature.prototype.read_sub_packet = function (bytes) {
 
         this.notation = this.notation || {};
         this.notation[name] = value;
-      } else {
-        util.print_debug("Unsupported notation flag "+bytes[mypos]);
       }
       break;
     case 21:
@@ -523,8 +514,6 @@ Signature.prototype.read_sub_packet = function (bytes) {
       this.embeddedSignature = new Signature();
       this.embeddedSignature.read(bytes.subarray(mypos, bytes.length));
       break;
-    default:
-      util.print_debug("Unknown signature subpacket type " + type + " @:" + mypos);
   }
 };
 

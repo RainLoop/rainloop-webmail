@@ -360,32 +360,6 @@ export default {
     return checksum.s;
   },
 
-  /**
-   * Helper function to print a debug message. Debug
-   * messages are only printed if
-   * @link module:config/config.debug is set to true.
-   * @param {String} str String of the debug message
-   */
-  print_debug: function (str) {
-    if (config.debug) {
-      console.log(str);
-    }
-  },
-
-  /**
-   * Helper function to print a debug message. Debug
-   * messages are only printed if
-   * @link module:config/config.debug is set to true.
-   * Different than print_debug because will call hexstrdump iff necessary.
-   * @param {String} str String of the debug message
-   */
-  print_debug_hexstr_dump: function (str, strToHex) {
-    if (config.debug) {
-      str = str + this.hexstrdump(strToHex);
-      console.log(str);
-    }
-  },
-
   getLeftNBits: function (string, bitcount) {
     var rest = bitcount % 8;
     if (rest === 0) {
@@ -444,24 +418,18 @@ export default {
 
   /**
    * Get native Web Cryptography api, only the current version of the spec.
-   * The default configuration is to use the api when available. But it can
-   * be deactivated with config.use_native
+   * The default configuration is to use the api when available.
    * @return {Object}   The SubtleCrypto api or 'undefined'
    */
-  getWebCrypto: () => config.use_native && browser && browser.crypto && browser.crypto.subtle,
+  getWebCrypto: () => browser && browser.crypto && browser.crypto.subtle,
 
   /**
    * Get native Web Cryptography api for all browsers, including legacy
    * implementations of the spec e.g IE11 and Safari 8/9. The default
-   * configuration is to use the api when available. But it can be deactivated
-   * with config.use_native
+   * configuration is to use the api when available.
    * @return {Object}   The SubtleCrypto api or 'undefined'
    */
   getWebCryptoAll: function() {
-    if (!config.use_native) {
-      return;
-    }
-
     if (browser) {
       if (browser.crypto) {
         return browser.crypto.subtle || browser.crypto.webkitSubtle;
