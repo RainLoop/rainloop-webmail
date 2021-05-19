@@ -1,4 +1,7 @@
 /* eslint max-len: 0 */
+(()=>{
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 (f=>{
 	if (typeof exports === "object" && typeof module !== "undefined") {
 		module.exports = f()
@@ -30,7 +33,7 @@
 		for (var o = 0; o < r.length; o++) s(r[o]);
 		return s
 	})({
-1:[function(_dereq_,module){
+1:[(_dereq_,module)=>{
 /*! asmCrypto Lite v1.1.0, (c) 2013 Artem S Vybornov, opensource.org/licenses/MIT */
 (function ( exports, global ) {
 
@@ -2931,7 +2934,7 @@ exports.SHA256 = sha256_constructor;
 return exports;
 })( {}, function(){return this}() );
 },{}],
-4:[function(_dereq_,module){
+4:[(_dereq_,module)=>{
 (function (global){
 (function () {
     function Rusha(chunkSize) {
@@ -3478,10 +3481,6 @@ var _armor2 = _interopRequireDefault(_armor);
 var _signature = _dereq_('./signature.js');
 
 var sigModule = _interopRequireWildcard(_signature);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @class
@@ -4412,7 +4411,7 @@ function verifyHeaders(headers, packetlist) {
 						this.o(Da, Ea);
 						break;
 					case 2:
-						for (var q = V(this, 5) + 257, r = V(this, 5) + 1, n = V(this, 4) + 4, l = new Uint8Array(Sa.length), s = w, t = w, x = w, E = w, B = w, C = w, L = w, v = w, M = w, v = 0; v < n; ++v) l[Sa[v]] = V(this, 3);
+						for (var q = V(this, 5) + 257, r = V(this, 5) + 1, n = V(this, 4) + 4, l = new Uint8Array(Sa.length), s = w, t = w, x = w, E = w, B = w, C = w, L = w, M = w, v = 0; v < n; ++v) l[Sa[v]] = V(this, 3);
 						s = S(l);
 						E = new Uint8Array(q + r);
 						v = 0;
@@ -4707,8 +4706,6 @@ var _enums = _dereq_('../enums.js');
 
 var _enums2 = _interopRequireDefault(_enums);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 exports.default = {
   prefer_hash_algorithm: _enums2.default.hash.sha256,
   encryption_cipher: _enums2.default.symmetric.aes256,
@@ -4745,8 +4742,6 @@ Object.defineProperty(exports, 'default', {
   }
 });
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 },{"./config.js":9}],
 11:[function(_dereq_,module,exports){
 // Modified by ProtonTech AG
@@ -4782,8 +4777,6 @@ Object.defineProperty(exports, "__esModule", {
 var _cipher = _dereq_('./cipher');
 
 var _cipher2 = _interopRequireDefault(_cipher);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
 
@@ -6316,8 +6309,6 @@ var _blowfish = _dereq_('./blowfish.js');
 
 var _blowfish2 = _interopRequireDefault(_blowfish);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 exports.default = {
   /** @see module:crypto/cipher/aes */
   aes128: _aes2.default[128],
@@ -6710,8 +6701,6 @@ var _mpi = _dereq_('../type/mpi.js');
 
 var _mpi2 = _interopRequireDefault(_mpi);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 exports.default = {
   /**
    * Encrypts data using the specified public key multiprecision integers
@@ -6951,8 +6940,6 @@ var _asmcryptoLite = _dereq_('asmcrypto-lite');
 
 var _asmcryptoLite2 = _interopRequireDefault(_asmcryptoLite);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 var webCrypto = _util2.default.getWebCrypto(); // no GCM support in IE11, Safari 9
 
 var ALGO = 'AES-GCM';
@@ -7061,8 +7048,6 @@ var _ripeMd2 = _interopRequireDefault(_ripeMd);
 var _util = _dereq_('../../util.js');
 
 var _util2 = _interopRequireDefault(_util);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var rusha = new _rusha2.default();
 
@@ -7188,8 +7173,6 @@ exports.default = function (entree) {
 var _util = _dereq_('../../util.js');
 
 var _util2 = _interopRequireDefault(_util);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function md5cycle(x, k) {
   var a = x[0],
@@ -7392,8 +7375,6 @@ var _util = _dereq_("../../util.js");
 
 var _util2 = _interopRequireDefault(_util);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 var RMDsize = 160; /*
                     * CryptoMX Tools
                     * Copyright (C) 2004 - 2006 Derek Buitenhuis
@@ -7579,8 +7560,8 @@ function MDfinish(MDbuf, strptr, lswlen, mswlen) {
   var X = new Array(16);
   zeroX(X);
 
-  var j = 0;
-  for (var i = 0; i < (lswlen & 63); i++) {
+  var i = 0, j = 0;
+  for (; i < (lswlen & 63); i++) {
     X[i >>> 2] ^= (strptr.charCodeAt(j++) & 255) << 8 * (i & 3);
   }
 
@@ -7599,12 +7580,10 @@ function MDfinish(MDbuf, strptr, lswlen, mswlen) {
 }
 
 function BYTES_TO_DWORD(fourChars) {
-  var tmp = (fourChars.charCodeAt(3) & 255) << 24;
-  tmp |= (fourChars.charCodeAt(2) & 255) << 16;
-  tmp |= (fourChars.charCodeAt(1) & 255) << 8;
-  tmp |= fourChars.charCodeAt(0) & 255;
-
-  return tmp;
+  return (fourChars.charCodeAt(3) & 255) << 24
+   | (fourChars.charCodeAt(2) & 255) << 16
+   | (fourChars.charCodeAt(1) & 255) << 8
+   | fourChars.charCodeAt(0) & 255;
 }
 
 function RMD(message) {
@@ -9034,10 +9013,6 @@ var _crypto = _dereq_('./crypto.js');
 
 var _crypto2 = _interopRequireDefault(_crypto);
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 var mod = {
   /** @see module:crypto/cipher */
   cipher: _cipher2.default,
@@ -9113,8 +9088,6 @@ var _jsbn2 = _interopRequireDefault(_jsbn);
 var _hash = _dereq_('./hash');
 
 var _hash2 = _interopRequireDefault(_hash);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * ASN1 object identifiers for hashes (See {@link http://tools.ietf.org/html/rfc4880#section-5.2.2})
@@ -9292,8 +9265,6 @@ var _config = _dereq_('../../config');
 
 var _config2 = _interopRequireDefault(_config);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function DSA() {
   // s1 = ((g**s) mod p) mod q
   // s1 = ((s**-1)*(sha-1(m)+(s1*x) mod q)
@@ -9420,8 +9391,6 @@ var _random = _dereq_('../random.js');
 
 var _random2 = _interopRequireDefault(_random);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function Elgamal() {
 
   function encrypt(m, g, p, y) {
@@ -9475,8 +9444,6 @@ var _dsa = _dereq_('./dsa.js');
 
 var _dsa2 = _interopRequireDefault(_dsa);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /** @see module:crypto/public_key/elgamal */
 exports.default = {
   rsa: _rsa2.default,
@@ -9497,8 +9464,6 @@ exports.default = BigInteger;
 var _util = _dereq_("../../util.js");
 
 var _util2 = _interopRequireDefault(_util);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Basic JavaScript BN library - subset useful for RSA encryption.
 
@@ -11147,8 +11112,6 @@ var _random = _dereq_('../random.js');
 
 var _random2 = _interopRequireDefault(_random);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function SecureRandom() {
   function nextBytes(byteArray) {
     for (var n = 0; n < byteArray.length; n++) {
@@ -11415,8 +11378,6 @@ var _util = _dereq_('../util.js');
 
 var _util2 = _interopRequireDefault(_util);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 exports.default = {
   /**
    * Retrieve secure random byte array of the specified length
@@ -11576,7 +11537,7 @@ RandomBuffer.prototype.get = function (buf) {
   }
 };
 
-},{"../type/mpi.js":68,"../util.js":70,"crypto":"crypto"}],
+},{"../type/mpi.js":68,"../util.js":70}],
 32:[function(_dereq_,module,exports){
 /**
  * @requires util
@@ -11602,8 +11563,6 @@ var _public_key2 = _interopRequireDefault(_public_key);
 var _pkcs = _dereq_('./pkcs1.js');
 
 var _pkcs2 = _interopRequireDefault(_pkcs);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
   /**
@@ -11749,8 +11708,6 @@ var _enums2 = _interopRequireDefault(_enums);
 var _config = _dereq_('../config');
 
 var _config2 = _interopRequireDefault(_config);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Finds out which Ascii Armoring type is used. Throws error if unknown type.
@@ -12539,8 +12496,6 @@ var _config = _dereq_('./config');
 
 var _config2 = _interopRequireDefault(_config);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /**
  * Initialize the HKP client and configure it with the key server url and fetch function.
  * @constructor
@@ -12601,7 +12556,7 @@ HKP.prototype.upload = function (publicKeyArmored) {
   });
 };
 
-},{"./config":10,"node-fetch":"node-fetch"}],
+},{"./config":10}],
 37:[function(_dereq_,module,exports){
 'use strict';
 
@@ -12756,10 +12711,6 @@ var _cleartext = _dereq_('./cleartext');
 
 var cleartextMod = _interopRequireWildcard(_cleartext);
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 exports.default = openpgp;
 
 /**
@@ -12859,8 +12810,6 @@ var _config2 = _interopRequireDefault(_config);
 var _util = _dereq_('./util');
 
 var _util2 = _interopRequireDefault(_util);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @class
@@ -14142,8 +14091,6 @@ var _localstore = _dereq_('./localstore.js');
 
 var _localstore2 = _interopRequireDefault(_localstore);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 _keyring2.default.localstore = _localstore2.default;
 
 exports.default = _keyring2.default;
@@ -14189,10 +14136,6 @@ var keyModule = _interopRequireWildcard(_key);
 var _localstore = _dereq_('./localstore.js');
 
 var _localstore2 = _interopRequireDefault(_localstore);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 /**
  * Initialization routine for the keyring. This method reads the
@@ -14423,8 +14366,6 @@ var _key = _dereq_('../key.js');
 
 var keyModule = _interopRequireWildcard(_key);
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
 function LocalStore(prefix) {
   prefix = prefix || 'openpgp-';
   this.publicKeysItem = prefix + this.publicKeysItem;
@@ -14499,7 +14440,7 @@ function storeKeys(storage, itemname, keys) {
   }
 }
 
-},{"../config":10,"../key.js":38,"../util.js":70,"node-localstorage":"node-localstorage"}],
+},{"../config":10,"../key.js":38,"../util.js":70}],
 42:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
@@ -14571,10 +14512,6 @@ var sigModule = _interopRequireWildcard(_signature);
 var _key = _dereq_('./key.js');
 
 var keyModule = _interopRequireWildcard(_key);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @class
@@ -15214,10 +15151,6 @@ var _util2 = _interopRequireDefault(_util);
 var _async_proxy = _dereq_('./worker/async_proxy.js');
 
 var _async_proxy2 = _interopRequireDefault(_async_proxy);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 
 //////////////////////////
@@ -16005,10 +15938,6 @@ var _all_packets = _dereq_('./all_packets.js');
 
 var packets = _interopRequireWildcard(_all_packets);
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /**
  * Allocate a new packet
  * @param {String} tag property name from {@link module:enums.packet}
@@ -16103,10 +16032,6 @@ var _packetlist2 = _interopRequireDefault(_packetlist);
 var _keyid = _dereq_('../type/keyid.js');
 
 var _keyid2 = _interopRequireDefault(_keyid);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 //////////////////////////////
 //                          //
@@ -16282,8 +16207,6 @@ var _zlibMin = _dereq_('../compression/zlib.min.js');
 
 var _zlibMin2 = _interopRequireDefault(_zlibMin);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /**
  * @constructor
  */
@@ -16426,10 +16349,6 @@ var _packetlist = _dereq_('./packetlist.js');
 
 var _packetlist2 = _interopRequireDefault(_packetlist);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
 var mod = {
   /** @see module:packet/packetlist */
   List: _packetlist2.default,
@@ -16486,8 +16405,6 @@ var _util2 = _interopRequireDefault(_util);
 var _enums = _dereq_('../enums.js');
 
 var _enums2 = _interopRequireDefault(_enums);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @constructor
@@ -16638,8 +16555,6 @@ var _enums = _dereq_('../enums.js');
 
 var _enums2 = _interopRequireDefault(_enums);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /**
  * @constructor
  */
@@ -16720,8 +16635,6 @@ var _enums2 = _interopRequireDefault(_enums);
 var _keyid = _dereq_('../type/keyid.js');
 
 var _keyid2 = _interopRequireDefault(_keyid);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @constructor
@@ -16823,8 +16736,6 @@ Object.defineProperty(exports, "__esModule", {
 var _util = _dereq_('../util.js');
 
 var _util2 = _interopRequireDefault(_util);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
   readSimpleLength: function readSimpleLength(bytes) {
@@ -17086,10 +16997,6 @@ var _enums2 = _interopRequireDefault(_enums);
 var _config = _dereq_('../config');
 
 var _config2 = _interopRequireDefault(_config);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @constructor
@@ -17369,8 +17276,6 @@ var _crypto = _dereq_('../crypto');
 
 var _crypto2 = _interopRequireDefault(_crypto);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /**
  * @constructor
  */
@@ -17624,8 +17529,6 @@ var _crypto = _dereq_('../crypto');
 
 var _crypto2 = _interopRequireDefault(_crypto);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /**
  * @constructor
  */
@@ -17787,8 +17690,6 @@ var _enums = _dereq_('../enums.js');
 
 var _enums2 = _interopRequireDefault(_enums);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /**
  * @constructor
  * @extends module:packet/public_key
@@ -17866,8 +17767,6 @@ var _mpi2 = _interopRequireDefault(_mpi);
 var _s2k = _dereq_('../type/s2k.js');
 
 var _s2k2 = _interopRequireDefault(_s2k);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @constructor
@@ -18152,8 +18051,6 @@ var _enums = _dereq_('../enums.js');
 
 var _enums2 = _interopRequireDefault(_enums);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /**
  * @constructor
  * @extends module:packet/secret_key
@@ -18198,8 +18095,6 @@ var _mpi2 = _interopRequireDefault(_mpi);
 var _keyid = _dereq_('../type/keyid.js');
 
 var _keyid2 = _interopRequireDefault(_keyid);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @constructor
@@ -18884,8 +18779,6 @@ var _enums = _dereq_('../enums.js');
 
 var _enums2 = _interopRequireDefault(_enums);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 var VERSION = 1; // A one-octet version number of the data packet.
 var IV_LEN = _crypto2.default.gcm.ivLength; // currently only AES-GCM is supported
 
@@ -19010,8 +18903,6 @@ var _enums2 = _interopRequireDefault(_enums);
 var _asmcryptoLite = _dereq_('asmcrypto-lite');
 
 var _asmcryptoLite2 = _interopRequireDefault(_asmcryptoLite);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var VERSION = 1; // A one-octet version number of the data packet.
 
@@ -19190,8 +19081,6 @@ var _crypto = _dereq_('../crypto');
 
 var _crypto2 = _interopRequireDefault(_crypto);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /**
  * @constructor
  */
@@ -19348,8 +19237,6 @@ var _config = _dereq_('../config');
 
 var _config2 = _interopRequireDefault(_config);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /**
  * @constructor
  */
@@ -19415,8 +19302,6 @@ exports.default = Trust;
 var _enums = _dereq_('../enums.js');
 
 var _enums2 = _interopRequireDefault(_enums);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @constructor
@@ -19490,8 +19375,6 @@ var _packet2 = _interopRequireDefault(_packet);
 var _enums = _dereq_('../enums.js');
 
 var _enums2 = _interopRequireDefault(_enums);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @constructor
@@ -19590,8 +19473,6 @@ var _enums = _dereq_('../enums.js');
 
 var _enums2 = _interopRequireDefault(_enums);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /**
  * @constructor
  */
@@ -19668,8 +19549,6 @@ var _enums2 = _interopRequireDefault(_enums);
 var _armor = _dereq_('./encoding/armor.js');
 
 var _armor2 = _interopRequireDefault(_armor);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @class
@@ -19755,8 +19634,6 @@ exports.default = Keyid;
 var _util = _dereq_('../util.js');
 
 var _util2 = _interopRequireDefault(_util);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @constructor
@@ -19857,8 +19734,6 @@ var _jsbn2 = _interopRequireDefault(_jsbn);
 var _util = _dereq_('../util.js');
 
 var _util2 = _interopRequireDefault(_util);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @constructor
@@ -19988,8 +19863,6 @@ var _util2 = _interopRequireDefault(_util);
 var _crypto = _dereq_('../crypto');
 
 var _crypto2 = _interopRequireDefault(_crypto);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @constructor
@@ -20163,7 +20036,7 @@ S2K.fromClone = function (clone) {
 };
 
 },{"../crypto":24,"../enums.js":35,"../util.js":70}],
-70:[function(_dereq_,module,exports){
+70:[(_dereq_,module,exports)=>{
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -20197,17 +20070,15 @@ var _config = _dereq_('./config');
 
 var _config2 = _interopRequireDefault(_config);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 exports.default = {
 
   isString: data => typeof data === 'string' || String.prototype.isPrototypeOf(data),
 
   isArray: data => Array.isArray(data),
 
-  isUint8Array: data => Uint8Array.prototype.isPrototypeOf(data),
+  isUint8Array: data => data instanceof Uint8Array,
 
-  isEmailAddress: function isEmailAddress(data) {
+  isEmailAddress: function (data) {
     if (!this.isString(data)) {
       return false;
     }
@@ -20225,7 +20096,7 @@ exports.default = {
    * @param  {Object} obj           the options object to be passed to the web worker
    * @return {Array<ArrayBuffer>}   an array of binary data to be passed
    */
-  getTransferables: function getTransferables(obj) {
+  getTransferables: function (obj) {
     if (_config2.default.zero_copy && Object.prototype.isPrototypeOf(obj)) {
       var transferables = [];
       this.collectBuffers(obj, transferables);
@@ -20233,7 +20104,7 @@ exports.default = {
     }
   },
 
-  collectBuffers: function collectBuffers(obj, collection) {
+  collectBuffers: function (obj, collection) {
     if (!obj) {
       return;
     }
@@ -20249,7 +20120,7 @@ exports.default = {
     }
   },
 
-  readNumber: function readNumber(bytes) {
+  readNumber: bytes => {
     var n = 0;
     for (var i = 0; i < bytes.length; i++) {
       n += Math.pow(256, i) * bytes[bytes.length - 1 - i];
@@ -20257,7 +20128,7 @@ exports.default = {
     return n;
   },
 
-  writeNumber: function writeNumber(n, bytes) {
+  writeNumber: (n, bytes) => {
     var b = new Uint8Array(bytes);
     for (var i = 0; i < bytes; i++) {
       b[i] = n >> 8 * (bytes - i - 1) & 0xFF;
@@ -20279,7 +20150,7 @@ exports.default = {
     return this.writeNumber(numeric, 4);
   },
 
-  hexdump: function hexdump(str) {
+  hexdump: str => {
     var r = [];
     var e = str.length;
     var c = 0;
@@ -20304,7 +20175,7 @@ exports.default = {
    * @param {String} str String to convert
    * @return {String} String containing the hexadecimal values
    */
-  hexstrdump: function hexstrdump(str) {
+  hexstrdump: str => {
     if (str === null) {
       return "";
     }
@@ -20327,7 +20198,7 @@ exports.default = {
    * @param {String} str Hex string to convert
    * @return {String} String containing the binary values
    */
-  hex2bin: function hex2bin(hex) {
+  hex2bin: hex => {
     var str = '';
     for (var i = 0; i < hex.length; i += 2) {
       str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
@@ -20340,7 +20211,7 @@ exports.default = {
    * @param {String} str Array of bytes to convert
    * @return {String} Hexadecimal representation of the array
    */
-  hexidump: function hexidump(str) {
+  hexidump: str => {
     var r = [];
     var e = str.length;
     var c = 0;
@@ -20360,7 +20231,7 @@ exports.default = {
    * @param {String} str The string to convert
    * @return {String} A valid squence of utf8 bytes
    */
-  encode_utf8: function encode_utf8(str) {
+  encode_utf8: str => {
     return unescape(encodeURIComponent(str));
   },
 
@@ -20369,7 +20240,7 @@ exports.default = {
    * @param {String} utf8 A valid squence of utf8 bytes
    * @return {String} A native javascript string
    */
-  decode_utf8: function decode_utf8(utf8) {
+  decode_utf8: utf8 => {
     if (typeof utf8 !== 'string') {
       throw new Error('Parameter "utf8" is not of type string');
     }
@@ -20385,7 +20256,7 @@ exports.default = {
    * @param {Array<Integer>} bin An array of (binary) integers to convert
    * @return {String} The string representation of the array
    */
-  bin2str: function bin2str(bin) {
+  bin2str: bin => {
     var result = [];
     for (var i = 0; i < bin.length; i++) {
       result[i] = String.fromCharCode(bin[i]);
@@ -20394,33 +20265,20 @@ exports.default = {
   },
 
   /**
-   * Convert a string to an array of integers(0.255)
-   * @param {String} str String to convert
-   * @return {Array<Integer>} An array of (binary) integers
-   */
-  str2bin: function str2bin(str) {
-    var result = [];
-    for (var i = 0; i < str.length; i++) {
-      result[i] = str.charCodeAt(i);
-    }
-    return result;
-  },
-
-  /**
    * Convert a string to a Uint8Array
    * @param {String} str String to convert
    * @return {Uint8Array} The array of (binary) integers
    */
-  str2Uint8Array: function str2Uint8Array(str) {
-    if (typeof str !== 'string' && !String.prototype.isPrototypeOf(str)) {
+  str2Uint8Array: str => {
+    if (typeof str !== 'string' && !(str instanceof String)) {
       throw new Error('str2Uint8Array: Data must be in the form of a string');
     }
-
     var result = new Uint8Array(str.length);
     for (var i = 0; i < str.length; i++) {
       result[i] = str.charCodeAt(i);
     }
     return result;
+//    return Uint8Array.from(str, c => c.charCodeAt(0));
   },
 
   /**
@@ -20430,11 +20288,10 @@ exports.default = {
    * @param {Uint8Array} bin An array of (binary) integers to convert
    * @return {String} String representation of the array
    */
-  Uint8Array2str: function Uint8Array2str(bin) {
-    if (!Uint8Array.prototype.isPrototypeOf(bin)) {
+  Uint8Array2str: bin => {
+    if (!(bin instanceof Uint8Array)) {
       throw new Error('Uint8Array2str: Data must be in the form of a Uint8Array');
     }
-
     var result = [],
         bs = 16384,
         j = bin.length;
@@ -20443,6 +20300,7 @@ exports.default = {
       result.push(String.fromCharCode.apply(String, bin.subarray(i, i + bs < j ? i + bs : j)));
     }
     return result.join('');
+//    return new TextDecoder().decode(bin);
   },
 
   /**
@@ -20451,10 +20309,10 @@ exports.default = {
    * @param {Array<Uint8array>} Array of Uint8Arrays to concatenate
    * @return {Uint8array} Concatenated array
    */
-  concatUint8Array: function concatUint8Array(arrays) {
+  concatUint8Array: arrays => {
     var totalLength = 0;
-    arrays.forEach(function (element) {
-      if (!Uint8Array.prototype.isPrototypeOf(element)) {
+    arrays.forEach(element => {
+      if (!(element instanceof Uint8Array)) {
         throw new Error('concatUint8Array: Data must be in the form of a Uint8Array');
       }
 
@@ -20463,28 +20321,12 @@ exports.default = {
 
     var result = new Uint8Array(totalLength);
     var pos = 0;
-    arrays.forEach(function (element) {
+    arrays.forEach(element => {
       result.set(element, pos);
       pos += element.length;
     });
 
     return result;
-  },
-
-  /**
-   * Deep copy Uint8Array
-   * @function module:util.copyUint8Array
-   * @param {Uint8Array} Array to copy
-   * @return {Uint8Array} new Uint8Array
-   */
-  copyUint8Array: function copyUint8Array(array) {
-    if (!Uint8Array.prototype.isPrototypeOf(array)) {
-      throw new Error('Data must be in the form of a Uint8Array');
-    }
-
-    var copy = new Uint8Array(array.length);
-    copy.set(array);
-    return copy;
   },
 
   /**
@@ -20494,8 +20336,8 @@ exports.default = {
    * @param {Uint8Array} second array
    * @return {Boolean} equality
    */
-  equalsUint8Array: function equalsUint8Array(array1, array2) {
-    if (!Uint8Array.prototype.isPrototypeOf(array1) || !Uint8Array.prototype.isPrototypeOf(array2)) {
+  equalsUint8Array: (array1, array2) => {
+    if (!(array1 instanceof Uint8Array) || !(array2 instanceof Uint8Array)) {
       throw new Error('Data must be in the form of a Uint8Array');
     }
 
@@ -20518,20 +20360,15 @@ exports.default = {
    * @return {Integer} An integer containing the sum of all character
    * codes % 65535
    */
-  calc_checksum: function calc_checksum(text) {
-    var checksum = {
-      s: 0,
-      add: function add(sadd) {
-        this.s = (this.s + sadd) % 65536;
-      }
-    };
-    for (var i = 0; i < text.length; i++) {
-      checksum.add(text[i]);
+  calc_checksum: text => {
+    var checksum = 0, i = 0;
+    for (; i < text.length; ++i) {
+      checksum = (checksum + text[i]) % 65536;
     }
-    return checksum.s;
+    return checksum;
   },
 
-  getLeftNBits: function getLeftNBits(string, bitcount) {
+  getLeftNBits: function (string, bitcount) {
     var rest = bitcount % 8;
     if (rest === 0) {
       return string.substring(0, bitcount / 8);
@@ -20548,17 +20385,21 @@ exports.default = {
    * than 9)
    * @return {String} Resulting string.
    */
-  shiftRight: function shiftRight(value, bitcount) {
-    var temp = this.str2bin(value);
-    if (bitcount % 8 !== 0) {
-      for (var i = temp.length - 1; i >= 0; i--) {
-        temp[i] >>= bitcount % 8;
-        if (i > 0) {
-          temp[i] |= temp[i - 1] << 8 - bitcount % 8 & 0xFF;
-        }
-      }
-    } else {
+  shiftRight: function (value, bitcount) {
+    if (bitcount % 8 === 0) {
       return value;
+    }
+
+    var i = 0, temp = [];
+//    temp = Array.from(value, c => c.charCodeAt(0));
+    for (; i < value.length; i++) {
+      temp[i] = value.charCodeAt(i);
+    }
+    for (i = temp.length - 1; i >= 0; i--) {
+      temp[i] >>= bitcount % 8;
+      if (i > 0) {
+        temp[i] |= temp[i - 1] << 8 - bitcount % 8 & 0xFF;
+      }
     }
     return this.bin2str(temp);
   },
@@ -20567,7 +20408,7 @@ exports.default = {
    * Return the algorithm type as string
    * @return {String} String representing the message type
    */
-  get_hashAlgorithmString: function get_hashAlgorithmString(algo) {
+  get_hashAlgorithmString: algo => {
     switch (algo) {
       case 1:
         return "MD5";
@@ -20592,7 +20433,7 @@ exports.default = {
    * The default configuration is to use the api when available.
    * @return {Object}   The SubtleCrypto api or 'undefined'
    */
-  getWebCrypto: function getWebCrypto() {
+  getWebCrypto: () => {
     return typeof window !== 'undefined' && window.crypto && window.crypto.subtle;
   },
 
@@ -20602,7 +20443,7 @@ exports.default = {
    * configuration is to use the api when available.
    * @return {Object}   The SubtleCrypto api or 'undefined'
    */
-  getWebCryptoAll: function getWebCryptoAll() {
+  getWebCryptoAll: () => {
     if (typeof window !== 'undefined') {
       if (window.crypto) {
         return window.crypto.subtle || window.crypto.webkitSubtle;
@@ -20615,7 +20456,7 @@ exports.default = {
 
 };
 
-},{"./config":10,"buffer":"buffer","crypto":"crypto"}],
+},{"./config":10}],
 71:[function(_dereq_,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
@@ -20653,8 +20494,6 @@ var _packet = _dereq_('../packet');
 
 var _packet2 = _interopRequireDefault(_packet);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 var INITIAL_RANDOM_SEED = 50000,
     // random bytes seeded to worker
 RANDOM_SEED_REQUEST = 20000; // random bytes seeded after worker request
@@ -20667,115 +20506,114 @@ RANDOM_SEED_REQUEST = 20000; // random bytes seeded after worker request
  * @param {Object} worker   alternative to path parameter: web worker initialized with 'openpgp.worker.js'
  * @return {Promise}
  */
-function AsyncProxy() {
-  var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-      _ref$path = _ref.path,
-      path = _ref$path === undefined ? 'openpgp.worker.js' : _ref$path,
-      worker = _ref.worker,
-      config = _ref.config;
+class AsyncProxy
+{
+  constructor({ path='openpgp.worker.js', worker, config } = {}) {
+    this.worker = worker || new Worker(path);
+    this.worker.onmessage = this.onMessage.bind(this);
+    this.worker.onerror = e => {
+      throw new Error('Unhandled error in openpgp worker: ' + e.message + ' (' + e.filename + ':' + e.lineno + ')');
+    };
+    this.seedRandom(INITIAL_RANDOM_SEED);
 
-  this.worker = worker || new Worker(path);
-  this.worker.onmessage = this.onMessage.bind(this);
-  this.worker.onerror = function (e) {
-    throw new Error('Unhandled error in openpgp worker: ' + e.message + ' (' + e.filename + ':' + e.lineno + ')');
-  };
-  this.seedRandom(INITIAL_RANDOM_SEED);
+    if (config) {
+      this.worker.postMessage({ event: 'configure', config: config });
+    }
 
-  if (config) {
-    this.worker.postMessage({ event: 'configure', config: config });
+    // Cannot rely on task order being maintained, use object keyed by request ID to track tasks
+    this.tasks = {};
+    this.currentID = 0;
   }
 
-  // Cannot rely on task order being maintained, use object keyed by request ID to track tasks
-  this.tasks = {};
-  this.currentID = 0;
+  /**
+   * Get new request ID
+   * @return {integer}          New unique request ID
+  */
+  getID() {
+    return this.currentID++;
+  }
+
+  /**
+   * Message handling
+   */
+  onMessage(event) {
+    var msg = event.data;
+    switch (msg.event) {
+      case 'method-return':
+        if (msg.err) {
+          // fail
+          var err = new Error(msg.err);
+          // add worker stack
+          err.workerStack = msg.stack;
+          this.tasks[msg.id].reject(err);
+        } else {
+          // success
+          this.tasks[msg.id].resolve(msg.data);
+        }
+        delete this.tasks[msg.id];
+        break;
+      case 'request-seed':
+        this.seedRandom(RANDOM_SEED_REQUEST);
+        break;
+      default:
+        throw new Error('Unknown Worker Event.');
+    }
+  }
+
+  /**
+   * Send message to worker with random data
+   * @param  {Integer} size Number of bytes to send
+   */
+  seedRandom(size) {
+    var buf = this.getRandomBuffer(size);
+    this.worker.postMessage({ event: 'seed-random', buf: buf }, _util2.default.getTransferables.call(_util2.default, buf));
+  }
+
+  /**
+   * Get Uint8Array with random numbers
+   * @param  {Integer} size Length of buffer
+   * @return {Uint8Array}
+   */
+  getRandomBuffer(size) {
+    if (!size) {
+      return null;
+    }
+    var buf = new Uint8Array(size);
+    _crypto2.default.random.getRandomValues(buf);
+    return buf;
+  }
+
+  /**
+   * Terminates the worker
+   */
+  terminate() {
+    this.worker.terminate();
+  }
+
+  /**
+   * Generic proxy function that handles all commands from the public api.
+   * @param  {String} method    the public api function to be delegated to the worker thread
+   * @param  {Object} options   the api function's options
+   * @return {Promise}          see the corresponding public api functions for their return types
+   */
+  delegate(method, options) {
+    var _this = this;
+
+    var id = this.getID();
+
+    return new Promise(function (_resolve, reject) {
+      // clone packets (for web worker structured cloning algorithm)
+      _this.worker.postMessage({ id: id, event: method, options: _packet2.default.clone.clonePackets(options) }, _util2.default.getTransferables.call(_util2.default, options));
+
+      // remember to handle parsing cloned packets from worker
+      _this.tasks[id] = { resolve: function resolve(data) {
+          return _resolve(_packet2.default.clone.parseClonedPackets(data, method));
+        }, reject: reject };
+    });
+  }
 }
-
-/**
- * Get new request ID
- * @return {integer}          New unique request ID
-*/
-AsyncProxy.prototype.getID = function () {
-  return this.currentID++;
-};
-
-/**
- * Message handling
- */
-AsyncProxy.prototype.onMessage = function (event) {
-  var msg = event.data;
-  switch (msg.event) {
-    case 'method-return':
-      if (msg.err) {
-        // fail
-        var err = new Error(msg.err);
-        // add worker stack
-        err.workerStack = msg.stack;
-        this.tasks[msg.id].reject(err);
-      } else {
-        // success
-        this.tasks[msg.id].resolve(msg.data);
-      }
-      delete this.tasks[msg.id];
-      break;
-    case 'request-seed':
-      this.seedRandom(RANDOM_SEED_REQUEST);
-      break;
-    default:
-      throw new Error('Unknown Worker Event.');
-  }
-};
-
-/**
- * Send message to worker with random data
- * @param  {Integer} size Number of bytes to send
- */
-AsyncProxy.prototype.seedRandom = function (size) {
-  var buf = this.getRandomBuffer(size);
-  this.worker.postMessage({ event: 'seed-random', buf: buf }, _util2.default.getTransferables.call(_util2.default, buf));
-};
-
-/**
- * Get Uint8Array with random numbers
- * @param  {Integer} size Length of buffer
- * @return {Uint8Array}
- */
-AsyncProxy.prototype.getRandomBuffer = function (size) {
-  if (!size) {
-    return null;
-  }
-  var buf = new Uint8Array(size);
-  _crypto2.default.random.getRandomValues(buf);
-  return buf;
-};
-
-/**
- * Terminates the worker
- */
-AsyncProxy.prototype.terminate = function () {
-  this.worker.terminate();
-};
-
-/**
- * Generic proxy function that handles all commands from the public api.
- * @param  {String} method    the public api function to be delegated to the worker thread
- * @param  {Object} options   the api function's options
- * @return {Promise}          see the corresponding public api functions for their return types
- */
-AsyncProxy.prototype.delegate = function (method, options) {
-  var _this = this;
-
-  var id = this.getID();
-
-  return new Promise(function (_resolve, reject) {
-    // clone packets (for web worker structured cloning algorithm)
-    _this.worker.postMessage({ id: id, event: method, options: _packet2.default.clone.clonePackets(options) }, _util2.default.getTransferables.call(_util2.default, options));
-
-    // remember to handle parsing cloned packets from worker
-    _this.tasks[id] = { resolve: function resolve(data) {
-        return _resolve(_packet2.default.clone.parseClonedPackets(data, method));
-      }, reject: reject };
-  });
-};
 
 },{"../crypto":24,"../packet":47,"../util.js":70}]
 },{},[37])(37)});
+
+})();
