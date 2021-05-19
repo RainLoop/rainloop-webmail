@@ -340,11 +340,11 @@ export const PgpUserStore = new class {
 	 */
 	initMessageBodyControls(dom, rainLoopMessage) {
 		const cl = dom && dom.classList;
-		if (!cl.has('inited')) {
+		if (!cl.contains('inited')) {
 			cl.add('inited');
 
-			const encrypted = cl.has('encrypted'),
-				signed = cl.has('signed'),
+			const encrypted = cl.contains('encrypted'),
+				signed = cl.contains('signed'),
 				recipients = rainLoopMessage ? rainLoopMessage.getEmails(['from', 'to', 'cc']) : [];
 
 			let verControl = null;
