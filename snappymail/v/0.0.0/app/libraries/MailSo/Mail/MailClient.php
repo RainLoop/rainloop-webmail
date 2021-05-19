@@ -281,31 +281,6 @@ class MailClient
 		$oBodyStructure = null;
 		$oMessage = null;
 
-		$aBodyPeekMimeIndexes = array();
-		$aSignatureMimeIndexes = array();
-
-		$aFetchResponse = $this->oImapClient->Fetch(array(\MailSo\Imap\Enumerations\FetchType::BODYSTRUCTURE), $iIndex, $bIndexIsUid);
-		if (0 < \count($aFetchResponse) && isset($aFetchResponse[0]))
-		{
-			$oBodyStructure = $aFetchResponse[0]->GetFetchBodyStructure();
-			if ($oBodyStructure)
-			{
-				foreach ($oBodyStructure->SearchHtmlOrPlainParts() as $oPart)
-				{
-					$aBodyPeekMimeIndexes[] = array($oPart->PartID(), $oPart->Size());
-				}
-
-				$aSignatureParts = $oBodyStructure->SearchByContentType('application/pgp-signature');
-				if (is_array($aSignatureParts) && 0 < \count($aSignatureParts))
-				{
-					foreach ($aSignatureParts as $oPart)
-					{
-						$aSignatureMimeIndexes[] = $oPart->PartID();
-					}
-				}
-			}
-		}
-
 		$aFetchItems = array(
 			\MailSo\Imap\Enumerations\FetchType::INDEX,
 			\MailSo\Imap\Enumerations\FetchType::UID,
@@ -315,25 +290,31 @@ class MailClient
 			$this->getEnvelopeOrHeadersRequestString()
 		);
 
-		if (0 < \count($aBodyPeekMimeIndexes))
+		$aFetchResponse = $this->oImapClient->Fetch(array(\MailSo\Imap\Enumerations\FetchType::BODYSTRUCTURE), $iIndex, $bIndexIsUid);
+		if (0 < \count($aFetchResponse) && isset($aFetchResponse[0]))
 		{
-			foreach ($aBodyPeekMimeIndexes as $aTextMimeData)
+			$oBodyStructure = $aFetchResponse[0]->GetFetchBodyStructure();
+			if ($oBodyStructure)
 			{
-				$sLine = \MailSo\Imap\Enumerations\FetchType::BODY_PEEK.'['.$aTextMimeData[0].']';
-				if (0 < $iBodyTextLimit && $iBodyTextLimit < $aTextMimeData[1])
+				foreach ($oBodyStructure->SearchHtmlOrPlainParts() as $oPart)
 				{
-					$sLine .= "<0.{$iBodyTextLimit}>";
+					$sLine = \MailSo\Imap\Enumerations\FetchType::BODY_PEEK.'['.$oPart->PartID().']';
+					if (0 < $iBodyTextLimit && $iBodyTextLimit < $oPart->Size())
+					{
+						$sLine .= "<0.{$iBodyTextLimit}>";
+					}
+
+					$aFetchItems[] = $sLine;
 				}
 
-				$aFetchItems[] = $sLine;
-			}
-		}
-
-		if (0 < \count($aSignatureMimeIndexes))
-		{
-			foreach ($aSignatureMimeIndexes as $sTextMimeIndex)
-			{
-				$aFetchItems[] = \MailSo\Imap\Enumerations\FetchType::BODY_PEEK.'['.$sTextMimeIndex.']';
+				$aSignatureParts = $oBodyStructure->SearchByContentType('application/pgp-signature');
+				if (is_array($aSignatureParts) && 0 < \count($aSignatureParts))
+				{
+					foreach ($aSignatureParts as $oPart)
+					{
+						$aFetchItems[] = \MailSo\Imap\Enumerations\FetchType::BODY_PEEK.'['.$oPart->PartID().']';
+					}
+				}
 			}
 		}
 

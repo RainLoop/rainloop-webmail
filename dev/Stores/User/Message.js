@@ -435,7 +435,6 @@ export const MessageUserStore = new class {
 			id = '',
 			plain = '',
 			resultHtml = '',
-			pgpSigned = false,
 			messagesDom = this.messagesBodiesDom(),
 			selectedMessage = this.selectorMessageSelected(),
 			message = this.message();
@@ -495,27 +494,17 @@ export const MessageUserStore = new class {
 
 							if ((message.isPgpSigned() || message.isPgpEncrypted()) && PgpUserStore.capaOpenPGP()) {
 								plain = pString(json.Plain);
-
-								const isPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(plain);
-								if (!isPgpEncrypted) {
-									pgpSigned =
-										/-----BEGIN PGP SIGNED MESSAGE-----/.test(plain) && /-----BEGIN PGP SIGNATURE-----/.test(plain);
-								}
-
 								const pre = createElement('pre');
-								if (pgpSigned && message.isPgpSigned()) {
+								if (message.isPgpSigned()) {
 									pre.className = 'b-plain-openpgp signed';
 									pre.textContent = plain;
-								} else if (isPgpEncrypted && message.isPgpEncrypted()) {
+								} else if (message.isPgpEncrypted()) {
 									pre.className = 'b-plain-openpgp encrypted';
 									pre.textContent = plain;
 								} else {
 									pre.innerHTML = resultHtml;
 								}
 								resultHtml = pre.outerHTML;
-
-								message.isPgpSigned(pgpSigned);
-								message.isPgpEncrypted(isPgpEncrypted);
 							} else {
 								resultHtml = '<pre>' + resultHtml + '</pre>';
 							}
