@@ -234,7 +234,7 @@
 	},
 	"POPUPS_CREATE_FOLDER": {
 		"TITLE_CREATE_FOLDER": "Map aanmaken?",
-		"LABEL_PARENT": "Onderliggende map",
+		"LABEL_PARENT": "Bovenliggende map",
 		"BUTTON_CREATE": "Maken",
 		"TITLE_CREATING_PROCESS": "Maak een nieuwe map"
 	},
