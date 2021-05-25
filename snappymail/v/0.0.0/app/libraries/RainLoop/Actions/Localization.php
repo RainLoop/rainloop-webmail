@@ -46,6 +46,8 @@ trait Localization
 			return $sLanguage;
 		}
 
+		$sLanguage = \preg_replace('/^([a-zA-Z]{2})$/', '\1-\1', $sLanguage);
+
 		$sLangCountry = \preg_replace_callback('/-([a-zA-Z]{2})$/', function ($aData) {
 			return \strtoupper($aData[0]);
 		}, $sLanguage);
