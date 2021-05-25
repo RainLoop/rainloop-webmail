@@ -301,9 +301,9 @@ class Message
 		return $this;
 	}
 
-	public function SetSender(EmailCollection $oEmails) : self
+	public function SetSender(Email $oEmail) : self
 	{
-		$this->aHeadersValue[Enumerations\Header::SENDER] = $oEmails;
+		$this->aHeadersValue[Enumerations\Header::SENDER] = $oEmail;
 
 		return $this;
 	}
