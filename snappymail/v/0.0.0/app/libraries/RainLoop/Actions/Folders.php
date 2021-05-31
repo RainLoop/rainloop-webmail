@@ -30,17 +30,6 @@ trait Folders
 		{
 			$this->Plugins()->RunHook('filter.folders-post', array($oAccount, $oFolderCollection));
 
-/*
-			// https://github.com/the-djmaze/snappymail/issues/94#issuecomment-850806845
-			$aFolders = $oFolderCollection->getArrayCopy();
-			foreach ($aFolders as $i => $oFolder) {
-				if (!$oFolder->IsSelectable()) {
-					unset($aFolders[$i]);
-				}
-			}
-			$oFolderCollection->exchangeArray(\array_values($aFolders));
-*/
-
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
 			$aSystemFolders = array();
