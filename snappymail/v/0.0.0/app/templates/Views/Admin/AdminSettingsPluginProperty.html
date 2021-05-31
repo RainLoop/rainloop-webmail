@@ -28,6 +28,10 @@
 				params: { value: value, label: Label }
 			}"></div>
 		<!-- /ko -->
+		<!-- ko if: 6 === Type -->
+			<input type="url"
+				data-bind="value: value, attr: {placeholder: placeholder}" />
+		<!-- /ko -->
 		<span class="help-block" data-bind="text: Desc, visible: '' !== Desc"></span>
 	</div>
 	<br />

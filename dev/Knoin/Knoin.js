@@ -145,6 +145,8 @@ function buildViewModel(ViewModelClass, vmScreen) {
 			if (vm && ViewType.Popup === position) {
 				vm.registerPopupKeyDown();
 			}
+
+			dispatchEvent(new CustomEvent('rl-view-model', {detail:vm}));
 		} else {
 			console.log('Cannot find view model position: ' + position);
 		}
