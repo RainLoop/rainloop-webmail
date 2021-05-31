@@ -169,7 +169,8 @@ class Folder implements \JsonSerializable
 
 	public function IsSelectable() : bool
 	{
-		return $this->bExists && $this->oImapFolder->IsSelectable();
+		// https://github.com/the-djmaze/snappymail/issues/94#issuecomment-850806845
+		return $this->bExists /* && $this->oImapFolder->IsSelectable()*/;
 	}
 
 	/**
