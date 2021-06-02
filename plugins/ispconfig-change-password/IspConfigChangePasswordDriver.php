@@ -70,7 +70,7 @@ class IspConfigChangePasswordDriver implements \RainLoop\Providers\ChangePasswor
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account $oAccount
+	 * @param \RainLoop\Account $oAccount
 	 *
 	 * @return bool
 	 */
@@ -81,7 +81,7 @@ class IspConfigChangePasswordDriver implements \RainLoop\Providers\ChangePasswor
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account $oAccount
+	 * @param \RainLoop\Account $oAccount
 	 * @param string $sPrevPassword
 	 * @param string $sNewPassword
 	 *
@@ -89,30 +89,73 @@ class IspConfigChangePasswordDriver implements \RainLoop\Providers\ChangePasswor
 	 */
 	public function ChangePassword(\RainLoop\Account $oAccount, $sPrevPassword, $sNewPassword)
 	{
+	
+	
 		if ($this->oLogger)
 		{
 			$this->oLogger->Write('ISP: Try to change password for '.$oAccount->Email());
+
+
 		}
 
 		$bResult = false;
 		if (!empty($this->sDsn) && 0 < \strlen($this->sUser) && 0 < \strlen($this->sPassword) && $oAccount)
 		{
+
+
+
 			try
 			{
+
+
 				$oPdo = new \PDO($this->sDsn, $this->sUser, $this->sPassword);
 				$oPdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
 				$oStmt = $oPdo->prepare('SELECT password, mailuser_id FROM mail_user WHERE login = ? LIMIT 1');
 				if ($oStmt->execute(array($oAccount->IncLogin())))
 				{
+
+
 					$aFetchResult = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
 					if (\is_array($aFetchResult) && isset($aFetchResult[0]['password'], $aFetchResult[0]['mailuser_id']))
 					{
-						$sDbPassword = \stripslashes($aFetchResult[0]['password']);
-						$sDbSalt = '$1$'.\substr($sDbPassword, 3, 8).'$';
+
+					$sDbPassword = \stripslashes($aFetchResult[0]['password']);
+
+
+					//////////////////////////////////
+					//////////////////////////////////
+					
+					$arr2 = substr($sDbPassword, 0, 3);
+		
+					if ($arr2 == "$1$") {
+					$sDbSalt = '$1$'.\substr($sDbPassword, 3, 8).'$';
+					}
+					
+					if ($arr2 == "$6$") {
+					
+					$arr1 = explode("$",$sDbPassword);
+					$arr3 = substr($sDbPassword, 3, 6);
+					
+						if ($arr3 == "rounds") {
+						$sDbSalt = '$6$'.$arr1[2].'$'.$arr1[3].'$';
+						}
+						else { 
+						$sDbSalt = '$6$'.$arr1[2].'$';
+						}
+					
+					}
+					
+					echo "$sNewPassword - $sDbPassword - $arr2 - $sDbSalt - $arr1[2]";
+					
+					//////////////////////////////////
+					//////////////////////////////////
+
 
 						if (\crypt(\stripslashes($sPrevPassword), $sDbSalt) === $sDbPassword)
 						{
+
+
 							$oStmt = $oPdo->prepare('UPDATE mail_user SET password = ? WHERE mailuser_id = ?');
 							$bResult = (bool) $oStmt->execute(
 								array($this->cryptPassword($sNewPassword), $aFetchResult[0]['mailuser_id']));
@@ -141,11 +184,11 @@ class IspConfigChangePasswordDriver implements \RainLoop\Providers\ChangePasswor
 		$sSalt = '';
 		$sBase64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
-		for ($iIndex = 0; $iIndex < 8; $iIndex++)
+		for ($iIndex = 0; $iIndex < 16; $iIndex++) // 8 changed to 16
 		{
 			$sSalt .= $sBase64[\rand(0, 63)];
 		}
 
-		return \crypt($sPassword, '$1$'.$sSalt.'$');
+		return \crypt($sPassword, '$6$rounds=5000$'.$sSalt.'$'); // $1$ changed to $6$rounds=5000$
 	}
 }
