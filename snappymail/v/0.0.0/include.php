@@ -235,8 +235,19 @@
 		}
 
 		// See https://github.com/kjdev/php-ext-brotli
-		if (defined('USE_GZIP') && !ini_get('zlib.output_compression') && !ini_get('brotli.output_compression')) {
-			ob_start('ob_gzhandler');
+		if (!ini_get('zlib.output_compression') && !ini_get('brotli.output_compression')) {
+			if (defined('USE_GZIP')) {
+				ob_start('ob_gzhandler');
+			} else if (defined('USE_BROTLI') && is_callable('brotli_compress_add') && false !== stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'br')) {
+				ob_start(function(string $buffer, int $phase){
+					static $resource;
+					if ($phase & PHP_OUTPUT_HANDLER_START) {
+						header('Content-Encoding: br');
+						$resource = brotli_compress_init(/*int $quality = 11, int $mode = BROTLI_GENERIC*/);
+					}
+					return brotli_compress_add($resource, $buffer, ($phase & PHP_OUTPUT_HANDLER_FINAL) ? BROTLI_FINISH : BROTLI_PROCESS);
+				});
+			}
 		}
 
 		include APP_VERSION_ROOT_PATH.'app/handle.php';
