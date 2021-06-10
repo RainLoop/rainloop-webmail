@@ -145,6 +145,10 @@ if ($brotli = trim(`which brotli`)) {
 	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/min/boot.min.js.br');
 }
 
+unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/openpgp.js');
+unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/openpgp.js.br');
+unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/openpgp.js.gz');
+
 // Temporary rename folder to speed up PharData
 //if (!rename('snappymail/v/0.0.0', "snappymail/v/{$package->version}")){
 if (!rename('snappymail/v/0.0.0', "snappymail/v/{$package->version}")) {
