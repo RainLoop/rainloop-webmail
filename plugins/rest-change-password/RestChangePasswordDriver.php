@@ -38,8 +38,8 @@ class RestChangePasswordDriver implements \RainLoop\Providers\ChangePassword\Cha
     private $oLogger = null;
 
     /**
-     * @param string $sHost
-     * @param int $iPort
+     * @param string $sUrl
+     * @param string $sKey
      *
      * @return \RestChangePasswordDriver
      */
@@ -50,8 +50,6 @@ class RestChangePasswordDriver implements \RainLoop\Providers\ChangePassword\Cha
 
         return $this;
     }
-
-    $oProvider->SetFieldNames($sFieldEmail, $sFieldOldpassword, $sFieldNewpassword);
 
     /**
      * @param string $sFieldEmail
@@ -120,12 +118,16 @@ class RestChangePasswordDriver implements \RainLoop\Providers\ChangePassword\Cha
         }
 
         $bResult = false;
-        if (!empty($this->sHost) && 0 < $this->iPort && $oAccount)
+        if (!empty($this->sUrl) && $oAccount)
         {
             $sEmail = \trim(\strtolower($oAccount->Email()));
 
+            $sUrl = $this->sUrl;
             # Adding  the REST Api key to the url, try to use always https
-            $sUrl = str_replace('://', '://'+$this->sKey+"@", $this->sUrl);
+            if (!empty($this->sKey))
+            {
+                $sUrl = str_replace('://', '://'+$this->sKey+"@", $this->sUrl);
+            }
 
             $iCode = 0;
             $oHttp = \MailSo\Base\Http::SingletonInstance();

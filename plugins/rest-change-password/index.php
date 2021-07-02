@@ -24,7 +24,7 @@ class RestChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
                 $sFieldOldpassword = \trim($this->Config()->Get('plugin', 'rest_field_oldpassword', ''));
                 $sFieldNewpassword = \trim($this->Config()->Get('plugin', 'rest_field_newpassword', ''));
 
-                if (!empty($sHost) && (!empty($sKey)))
+                if (!empty($sUrl))
                 {
                     include_once __DIR__.'/RestChangePasswordDriver.php';
 
