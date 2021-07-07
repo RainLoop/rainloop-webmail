@@ -71,7 +71,7 @@ pl_PL:
     BUTTON_NOT_SPAM: "Oznacz jako pożądane"
     BUTTON_EMPTY_FOLDER: "Usuń zawartość folderu"
     BUTTON_MULTY_FORWARD: "Przekaż dalej jako załącznik(i)"
-    BUTTON_DELETE_WITHOUT_MOVE: "Usuń permanentnie"
+    BUTTON_DELETE_WITHOUT_MOVE: "Usuń trwale"
     BUTTON_MORE: "Więcej"
     MENU_SET_SEEN: "Oznacz jako przeczytane"
     MENU_SET_ALL_SEEN: "Oznacz wszystkie jako przeczytane"
@@ -143,7 +143,7 @@ pl_PL:
     PRINT_LABEL_DATE: "Data"
     PRINT_LABEL_SUBJECT: "Temat"
     PRINT_LABEL_ATTACHMENTS: "Załączniki"
-    MESSAGE_LOADING: "Ładowanie wiadomości..."
+    MESSAGE_LOADING: "Ładowanie"
     MESSAGE_VIEW_DESC: "Wybierz wiadomość do wyświetlenia."
     MESSAGE_VIEW_MOVE_DESC: "Kliknij nazwę folderu w lewym panelu, aby wybrać folder docelowy."
     PGP_PASSWORD_INPUT_PLACEHOLDER: "Hasło"
@@ -371,10 +371,10 @@ pl_PL:
     NOTIFICATION_DRAFTS: "Nie wybrano folderu \"Wersje robocze\", do którego są zapisywane wiadomości w trakcie ich tworzenia."
     NOTIFICATION_SPAM: |
         Nie wybrano folderu "Spam", do którego przenoszone są niepożądane wiadomości.
-        Jeżeli niechciane wiadomości mają być usuwane na stałe, proszę o zaznaczenie opcji "Nie używaj".
+        Jeżeli niechciane wiadomości mają być usuwane trwale, proszę o zaznaczenie opcji "Nie używaj".
     NOTIFICATION_TRASH: |
         Nie wybrano folderu "Kosz", do którego przenoszone są wszystkie usunięte wiadomości.
-        Jeżeli wiadomości mają być usuwane na stałe, proszę o zaznaczenie opcji "Nie używaj".
+        Jeżeli wiadomości mają być usuwane trwale, proszę o zaznaczenie opcji "Nie używaj".
     NOTIFICATION_ARCHIVE: "Nie został wybrany folder \"Archiwum\", zostanie użyty systemowy folder archiwizacji wiadomości."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "Autoryzacja 2-etapowa (TOTP)"
