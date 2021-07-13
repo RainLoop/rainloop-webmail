@@ -368,6 +368,7 @@ Enables caching in the system'),
 				'replace_env_in_configuration' => array(''),
 				'startup_url' => array(''),
 				'strict_html_parser' => array(false),
+				'boundary_prefix' => array(''),
 				'dev_email' => array(''),
 				'dev_password' => array('')
 			),
