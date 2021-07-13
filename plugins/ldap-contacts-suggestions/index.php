@@ -2,7 +2,13 @@
 
 class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
-	public function Init()
+	const
+		NAME = 'Contacts suggestions (LDAP)',
+		VERSION = '2.0',
+		CATEGORY = 'Security',
+		DESCRIPTION = 'Plugin that adds functionality to get contacts from LDAP on compose page.';
+
+	public function Init() : void
 	{
 		$this->addHook('main.fabrica', 'MainFabrica');
 	}
@@ -10,7 +16,7 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * @return string
 	 */
-	public function Supported()
+	public function Supported() : string
 	{
 		if (!\function_exists('ldap_connect'))
 		{
@@ -62,7 +68,7 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * @return array
 	 */
-	public function configMapping()
+	protected function configMapping() : array
 	{
 		return array(
 			\RainLoop\Plugins\Property::NewInstance('hostname')->SetLabel('LDAP hostname')

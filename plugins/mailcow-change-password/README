@@ -1,5 +1,0 @@
-Plugin that adds functionality to change the email account password with the email frontend [mailcow](https://github.com/andryyy/mailcow).
-
-Changes the SQL password (for the default ui for users), the dovecot password, and the SabreDAV password. Essentially does what their own PHP script does. It also ensures the old password matches the actual old password (something their Roundcube plugin does not do).
-
-This plugin is a modification of the [ispconfig-change-password](https://github.com/RainLoop/rainloop-webmail/tree/master/plugins/ipsconfig-change-password) plugin.

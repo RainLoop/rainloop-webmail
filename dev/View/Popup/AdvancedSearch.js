@@ -1,54 +1,51 @@
-import _ from '_';
 import ko from 'ko';
 
-import { trim } from 'Common/Utils';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
-import { searchSubtractFormatDateHelper } from 'Common/Momentor';
 
-import MessageStore from 'Stores/User/Message';
+import { MessageUserStore } from 'Stores/User/Message';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { decorateKoCommands } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/AdvancedSearch',
-	templateID: 'PopupsAdvancedSearch'
-})
-class AdvancedSearchPopupView extends AbstractViewNext {
+class AdvancedSearchPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('AdvancedSearch');
 
-		this.fromFocus = ko.observable(false);
+		this.addObservables({
+			from: '',
+			to: '',
+			subject: '',
+			text: '',
+			selectedDateValue: -1,
 
-		this.from = ko.observable('');
-		this.to = ko.observable('');
-		this.subject = ko.observable('');
-		this.text = ko.observable('');
-		this.selectedDateValue = ko.observable(-1);
+			hasAttachment: false,
+			starred: false,
+			unseen: false
+		});
 
-		this.hasAttachment = ko.observable(false);
-		this.starred = ko.observable(false);
-		this.unseen = ko.observable(false);
-
+		let prefix = 'SEARCH/LABEL_ADV_DATE_';
 		this.selectedDates = ko.computed(() => {
 			translatorTrigger();
 			return [
-				{ id: -1, name: i18n('SEARCH/LABEL_ADV_DATE_ALL') },
-				{ id: 3, name: i18n('SEARCH/LABEL_ADV_DATE_3_DAYS') },
-				{ id: 7, name: i18n('SEARCH/LABEL_ADV_DATE_7_DAYS') },
-				{ id: 30, name: i18n('SEARCH/LABEL_ADV_DATE_MONTH') },
-				{ id: 90, name: i18n('SEARCH/LABEL_ADV_DATE_3_MONTHS') },
-				{ id: 180, name: i18n('SEARCH/LABEL_ADV_DATE_6_MONTHS') },
-				{ id: 365, name: i18n('SEARCH/LABEL_ADV_DATE_YEAR') }
+				{ id: -1, name: i18n(prefix + 'ALL') },
+				{ id: 3, name: i18n(prefix + '3_DAYS') },
+				{ id: 7, name: i18n(prefix + '7_DAYS') },
+				{ id: 30, name: i18n(prefix + 'MONTH') },
+				{ id: 90, name: i18n(prefix + '3_MONTHS') },
+				{ id: 180, name: i18n(prefix + '6_MONTHS') },
+				{ id: 365, name: i18n(prefix + 'YEAR') }
 			];
+		});
+
+		decorateKoCommands(this, {
+			searchCommand: 1
 		});
 	}
 
-	@command()
 	searchCommand() {
 		const search = this.buildSearchString();
-		if ('' !== search) {
-			MessageStore.mainMessageListSearch(search);
+		if (search) {
+			MessageUserStore.mainMessageListSearch(search);
 		}
 
 		this.cancelCommand();
@@ -56,7 +53,7 @@ class AdvancedSearchPopupView extends AbstractViewNext {
 
 	parseSearchStringValue(search) {
 		const parts = (search || '').split(/[\s]+/g);
-		_.each(parts, (part) => {
+		parts.forEach(part => {
 			switch (part) {
 				case 'has:attachment':
 					this.hasAttachment(true);
@@ -73,7 +70,7 @@ class AdvancedSearchPopupView extends AbstractViewNext {
 	}
 
 	buildSearchStringValue(value) {
-		if (-1 < value.indexOf(' ')) {
+		if (value.includes(' ')) {
 			value = '"' + value + '"';
 		}
 		return value;
@@ -81,22 +78,22 @@ class AdvancedSearchPopupView extends AbstractViewNext {
 
 	buildSearchString() {
 		const result = [],
-			from_ = trim(this.from()),
-			to = trim(this.to()),
-			subject = trim(this.subject()),
-			text = trim(this.text()),
+			from_ = this.from().trim(),
+			to = this.to().trim(),
+			subject = this.subject().trim(),
+			text = this.text().trim(),
 			isPart = [],
 			hasPart = [];
 
-		if (from_ && '' !== from_) {
+		if (from_) {
 			result.push('from:' + this.buildSearchStringValue(from_));
 		}
 
-		if (to && '' !== to) {
+		if (to) {
 			result.push('to:' + this.buildSearchStringValue(to));
 		}
 
-		if (subject && '' !== subject) {
+		if (subject) {
 			result.push('subject:' + this.buildSearchStringValue(subject));
 		}
 
@@ -112,23 +109,25 @@ class AdvancedSearchPopupView extends AbstractViewNext {
 			isPart.push('flagged');
 		}
 
-		if (0 < hasPart.length) {
+		if (hasPart.length) {
 			result.push('has:' + hasPart.join(','));
 		}
 
-		if (0 < isPart.length) {
+		if (isPart.length) {
 			result.push('is:' + isPart.join(','));
 		}
 
 		if (-1 < this.selectedDateValue()) {
-			result.push('date:' + searchSubtractFormatDateHelper(this.selectedDateValue()) + '/');
+			let d = new Date();
+			d.setDate(d.getDate() - this.selectedDateValue());
+			result.push('date:' + d.format('Y.m.d') + '/');
 		}
 
-		if (text && '' !== text) {
+		if (text) {
 			result.push('text:' + this.buildSearchStringValue(text));
 		}
 
-		return trim(result.join(' '));
+		return result.join(' ').trim();
 	}
 
 	clearPopup() {
@@ -141,17 +140,11 @@ class AdvancedSearchPopupView extends AbstractViewNext {
 		this.hasAttachment(false);
 		this.starred(false);
 		this.unseen(false);
-
-		this.fromFocus(true);
 	}
 
 	onShow(search) {
 		this.clearPopup();
 		this.parseSearchStringValue(search);
-	}
-
-	onShowWithDelay() {
-		this.fromFocus(true);
 	}
 }
 

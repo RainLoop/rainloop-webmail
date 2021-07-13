@@ -1,41 +1,12 @@
-import $ from '$';
-import _ from '_';
-import key from 'key';
 import ko from 'ko';
-import { EventKeyCode } from 'Common/Enums';
-import { isArray, inArray, noop, noopTrue } from 'Common/Utils';
+import { isArray } from 'Common/Utils';
 
-class Selector {
-	list;
-	listChecked;
-	isListChecked;
-
-	focusedItem;
-	selectedItem;
-
-	itemSelectedThrottle;
-
-	selectedItemUseCallback = true;
-
-	iSelectNextHelper = 0;
-	iFocusedNextHelper = 0;
-	oContentVisible;
-	oContentScrollable;
-
-	sItemSelector;
-	sItemSelectedSelector;
-	sItemCheckedSelector;
-	sItemFocusedSelector;
-
-	sLastUid = '';
-	oCallbacks = {};
-
+export class Selector {
 	/**
 	 * @param {koProperty} koList
 	 * @param {koProperty} koSelectedItem
 	 * @param {koProperty} koFocusedItem
 	 * @param {string} sItemSelector
-	 * @param {string} sItemSelectedSelector
 	 * @param {string} sItemCheckedSelector
 	 * @param {string} sItemFocusedSelector
 	 */
@@ -44,22 +15,33 @@ class Selector {
 		koSelectedItem,
 		koFocusedItem,
 		sItemSelector,
-		sItemSelectedSelector,
 		sItemCheckedSelector,
 		sItemFocusedSelector
 	) {
 		this.list = koList;
-
-		this.listChecked = ko.computed(() => _.filter(this.list(), (item) => item.checked())).extend({ rateLimit: 0 });
+		this.listChecked = ko.computed(() => this.list.filter(item => item.checked())).extend({ rateLimit: 0 });
 		this.isListChecked = ko.computed(() => 0 < this.listChecked().length);
 
 		this.focusedItem = koFocusedItem || ko.observable(null);
 		this.selectedItem = koSelectedItem || ko.observable(null);
 
-		this.itemSelectedThrottle = _.debounce(_.bind(this.itemSelected, this), 300);
+		this.selectedItemUseCallback = true;
+
+		this.iSelectNextHelper = 0;
+		this.iFocusedNextHelper = 0;
+		this.oContentScrollable;
+
+		this.sItemSelector = sItemSelector;
+		this.sItemCheckedSelector = sItemCheckedSelector;
+		this.sItemFocusedSelector = sItemFocusedSelector;
+
+		this.sLastUid = '';
+		this.oCallbacks = {};
+
+		const itemSelectedThrottle = (item => this.itemSelected(item)).debounce(300);
 
 		this.listChecked.subscribe((items) => {
-			if (0 < items.length) {
+			if (items.length) {
 				if (null === this.selectedItem()) {
 					if (this.selectedItem.valueHasMutated) {
 						this.selectedItem.valueHasMutated();
@@ -75,13 +57,11 @@ class Selector {
 		this.selectedItem.subscribe((item) => {
 			if (item) {
 				if (this.isListChecked()) {
-					_.each(this.listChecked(), (subItem) => {
-						subItem.checked(false);
-					});
+					this.listChecked().forEach(subItem => subItem.checked(false));
 				}
 
 				if (this.selectedItemUseCallback) {
-					this.itemSelectedThrottle(item);
+					itemSelectedThrottle(item);
 				}
 			} else if (this.selectedItemUseCallback) {
 				this.itemSelected(null);
@@ -91,16 +71,7 @@ class Selector {
 		this.selectedItem = this.selectedItem.extend({ toggleSubscribeProperty: [this, 'selected'] });
 		this.focusedItem = this.focusedItem.extend({ toggleSubscribeProperty: [null, 'focused'] });
 
-		this.sItemSelector = sItemSelector;
-		this.sItemSelectedSelector = sItemSelectedSelector;
-		this.sItemCheckedSelector = sItemCheckedSelector;
-		this.sItemFocusedSelector = sItemFocusedSelector;
-
-		this.focusedItem.subscribe((item) => {
-			if (item) {
-				this.sLastUid = this.getItemUid(item);
-			}
-		}, this);
+		this.focusedItem.subscribe(item => item && (this.sLastUid = this.getItemUid(item)), this);
 
 		let aCache = [],
 			aCheckedCache = [],
@@ -108,16 +79,14 @@ class Selector {
 			mSelected = null;
 
 		this.list.subscribe(
-			(items) => {
+			items => {
 				if (isArray(items)) {
-					_.each(items, (item) => {
+					items.forEach(item => {
 						if (item) {
 							const uid = this.getItemUid(item);
 
 							aCache.push(uid);
-							if (item.checked()) {
-								aCheckedCache.push(uid);
-							}
+							item.checked() && aCheckedCache.push(uid);
 							if (null === mFocused && item.focused()) {
 								mFocused = uid;
 							}
@@ -150,7 +119,7 @@ class Selector {
 			if (isArray(aItems)) {
 				len = aCheckedCache.length;
 
-				_.each(aItems, (item) => {
+				aItems.forEach(item => {
 					const uid = this.getItemUid(item);
 					uids.push(uid);
 
@@ -159,10 +128,10 @@ class Selector {
 						mFocused = null;
 					}
 
-					if (0 < len && -1 < inArray(uid, aCheckedCache)) {
+					if (0 < len && aCheckedCache.includes(uid)) {
 						isChecked = true;
 						item.checked(true);
-						len -= 1;
+						--len;
 					}
 
 					if (!isChecked && null !== mSelected && mSelected === uid) {
@@ -177,20 +146,21 @@ class Selector {
 				if (!isChecked && !isSelected && this.autoSelect()) {
 					if (this.focusedItem()) {
 						this.selectedItem(this.focusedItem());
-					} else if (0 < aItems.length) {
+					} else if (aItems.length) {
 						if (null !== isNextFocused) {
 							getNext = false;
-							isNextFocused = _.find(aCache, (sUid) => {
-								if (getNext && -1 < inArray(sUid, uids)) {
+							isNextFocused = aCache.find(sUid => {
+								if (getNext && uids.includes(sUid)) {
 									return sUid;
-								} else if (isNextFocused === sUid) {
+								}
+								if (isNextFocused === sUid) {
 									getNext = true;
 								}
 								return false;
 							});
 
 							if (isNextFocused) {
-								temp = _.find(aItems, (oItem) => isNextFocused === this.getItemUid(oItem));
+								temp = aItems.find(oItem => isNextFocused === this.getItemUid(oItem));
 							}
 						}
 
@@ -201,7 +171,7 @@ class Selector {
 
 				if (
 					(0 !== this.iSelectNextHelper || 0 !== this.iFocusedNextHelper) &&
-					0 < aItems.length &&
+					aItems.length &&
 					!this.focusedItem()
 				) {
 					temp = null;
@@ -222,7 +192,7 @@ class Selector {
 
 						this.scrollToFocused();
 
-						_.delay(() => this.scrollToFocused(), 100);
+						setTimeout(this.scrollToFocused, 100);
 					}
 
 					this.iSelectNextHelper = 0;
@@ -240,25 +210,11 @@ class Selector {
 	itemSelected(item) {
 		if (this.isListChecked()) {
 			if (!item) {
-				(this.oCallbacks.onItemSelect || noop)(item || null);
+				(this.oCallbacks.onItemSelect || (()=>{}))(item || null);
 			}
 		} else if (item) {
-			(this.oCallbacks.onItemSelect || noop)(item);
+			(this.oCallbacks.onItemSelect || (()=>{}))(item);
 		}
-	}
-
-	/**
-	 * @param {boolean} forceSelect
-	 */
-	goDown(forceSelect) {
-		this.newSelectPosition(EventKeyCode.Down, false, forceSelect);
-	}
-
-	/**
-	 * @param {boolean} forceSelect
-	 */
-	goUp(forceSelect) {
-		this.newSelectPosition(EventKeyCode.Up, false, forceSelect);
 	}
 
 	unselect() {
@@ -266,83 +222,47 @@ class Selector {
 		this.focusedItem(null);
 	}
 
-	init(contentVisible, contentScrollable, keyScope = 'all') {
-		this.oContentVisible = contentVisible;
+	init(contentScrollable, keyScope = 'all') {
 		this.oContentScrollable = contentScrollable;
 
-		if (this.oContentVisible && this.oContentScrollable) {
-			$(this.oContentVisible)
-				.on('selectstart', (event) => {
-					if (event && event.preventDefault) {
-						event.preventDefault();
-					}
-				})
-				.on('click', this.sItemSelector, (event) => {
-					this.actionClick(ko.dataFor(event.currentTarget), event);
-				})
-				.on('click', this.sItemCheckedSelector, (event) => {
-					const item = ko.dataFor(event.currentTarget);
+		if (contentScrollable) {
+			contentScrollable.addEventListener('click', event => {
+				let el = event.target.closestWithin(this.sItemSelector, contentScrollable);
+				el && this.actionClick(ko.dataFor(el), event);
+
+				el = event.target.closestWithin(this.sItemCheckedSelector, contentScrollable);
+				if (el) {
+					const item = ko.dataFor(el);
 					if (item) {
-						if (event && event.shiftKey) {
+						if (event.shiftKey) {
 							this.actionClick(item, event);
 						} else {
 							this.focusedItem(item);
 							item.checked(!item.checked());
 						}
 					}
-				});
+				}
+			});
 
-			key('enter', keyScope, () => {
-				if (this.focusedItem() && !this.focusedItem().selected()) {
-					this.actionClick(this.focusedItem());
+			shortcuts.add('enter,open', '', keyScope, () => {
+				const focused = this.focusedItem();
+				if (focused && !focused.selected()) {
+					this.actionClick(focused);
 					return false;
 				}
 
 				return true;
 			});
 
-			key('ctrl+up, command+up, ctrl+down, command+down', keyScope, () => false);
+			shortcuts.add('arrowup,arrowdown', 'meta', keyScope, () => false);
 
-			key('up, shift+up, down, shift+down, home, end, pageup, pagedown, insert, space', keyScope, (event, handler) => {
-				if (event && handler && handler.shortcut) {
-					let eventKey = 0;
-					switch (handler.shortcut) {
-						case 'up':
-						case 'shift+up':
-							eventKey = EventKeyCode.Up;
-							break;
-						case 'down':
-						case 'shift+down':
-							eventKey = EventKeyCode.Down;
-							break;
-						case 'insert':
-							eventKey = EventKeyCode.Insert;
-							break;
-						case 'space':
-							eventKey = EventKeyCode.Space;
-							break;
-						case 'home':
-							eventKey = EventKeyCode.Home;
-							break;
-						case 'end':
-							eventKey = EventKeyCode.End;
-							break;
-						case 'pageup':
-							eventKey = EventKeyCode.PageUp;
-							break;
-						case 'pagedown':
-							eventKey = EventKeyCode.PageDown;
-							break;
-						// no default
-					}
-
-					if (0 < eventKey) {
-						this.newSelectPosition(eventKey, key.shift);
-						return false;
-					}
-				}
-
-				return true;
+			shortcuts.add('arrowup,arrowdown', 'shift', keyScope, event => {
+				this.newSelectPosition(event.key, true);
+				return false;
+			});
+			shortcuts.add('arrowup,arrowdown,home,end,pageup,pagedown,space', '', keyScope, event => {
+				this.newSelectPosition(event.key, false);
+				return false;
 			});
 		}
 	}
@@ -351,14 +271,7 @@ class Selector {
 	 * @returns {boolean}
 	 */
 	autoSelect() {
-		return !!(this.oCallbacks.onAutoSelect || noopTrue)();
-	}
-
-	/**
-	 * @param {boolean} up
-	 */
-	doUpUpOrDownDown(up) {
-		(this.oCallbacks.onUpUpOrDownDown || noopTrue)(!!up);
+		return !!(this.oCallbacks.onAutoSelect || (()=>true))();
 	}
 
 	/**
@@ -377,122 +290,71 @@ class Selector {
 	}
 
 	/**
-	 * @param {number} iEventKeyCode
+	 * @param {string} sEventKey
 	 * @param {boolean} bShiftKey
 	 * @param {boolean=} bForceSelect = false
 	 */
-	newSelectPosition(iEventKeyCode, bShiftKey, bForceSelect) {
-		let index = 0,
-			isNext = false,
-			isStop = false,
+	newSelectPosition(sEventKey, bShiftKey, bForceSelect) {
+		let isArrow = 'ArrowUp' === sEventKey || 'ArrowDown' === sEventKey,
 			result = null;
 
 		const pageStep = 10,
 			list = this.list(),
-			listLen = list ? list.length : 0,
+			listLen = list.length,
 			focused = this.focusedItem();
 
-		if (0 < listLen) {
-			if (!focused) {
-				if (
-					EventKeyCode.Down === iEventKeyCode ||
-					EventKeyCode.Insert === iEventKeyCode ||
-					EventKeyCode.Space === iEventKeyCode ||
-					EventKeyCode.Home === iEventKeyCode ||
-					EventKeyCode.PageUp === iEventKeyCode
-				) {
+		if (listLen) {
+			if (focused) {
+				if (isArrow) {
+					let i = list.indexOf(focused);
+					if ('ArrowUp' == sEventKey) {
+						i > 0 && (result = list[i-1]);
+					} else if (++i < listLen) {
+						result = list[i];
+					}
+					result || (this.oCallbacks.onUpUpOrDownDown || (()=>true))('ArrowUp' === sEventKey);
+				} else if ('Home' === sEventKey) {
 					result = list[0];
-				} else if (
-					EventKeyCode.Up === iEventKeyCode ||
-					EventKeyCode.End === iEventKeyCode ||
-					EventKeyCode.PageDown === iEventKeyCode
-				) {
+				} else if ('End' === sEventKey) {
 					result = list[list.length - 1];
-				}
-			} else if (focused) {
-				if (
-					EventKeyCode.Down === iEventKeyCode ||
-					EventKeyCode.Up === iEventKeyCode ||
-					EventKeyCode.Insert === iEventKeyCode ||
-					EventKeyCode.Space === iEventKeyCode
-				) {
-					_.each(list, (item) => {
-						if (!isStop) {
-							switch (iEventKeyCode) {
-								case EventKeyCode.Up:
-									if (focused === item) {
-										isStop = true;
-									} else {
-										result = item;
-									}
-									break;
-								case EventKeyCode.Down:
-								case EventKeyCode.Insert:
-									if (isNext) {
-										result = item;
-										isStop = true;
-									} else if (focused === item) {
-										isNext = true;
-									}
-									break;
-								// no default
-							}
-						}
-					});
-
-					if (!result && (EventKeyCode.Down === iEventKeyCode || EventKeyCode.Up === iEventKeyCode)) {
-						this.doUpUpOrDownDown(EventKeyCode.Up === iEventKeyCode);
+				} else if ('PageDown' === sEventKey) {
+					let i = list.indexOf(focused);
+					if (i < listLen - 1) {
+						result = list[Math.min(i + pageStep, listLen - 1)];
 					}
-				} else if (EventKeyCode.Home === iEventKeyCode || EventKeyCode.End === iEventKeyCode) {
-					if (EventKeyCode.Home === iEventKeyCode) {
-						result = list[0];
-					} else if (EventKeyCode.End === iEventKeyCode) {
-						result = list[list.length - 1];
-					}
-				} else if (EventKeyCode.PageDown === iEventKeyCode) {
-					for (; index < listLen; index++) {
-						if (focused === list[index]) {
-							index += pageStep;
-							index = listLen - 1 < index ? listLen - 1 : index;
-							result = list[index];
-							break;
-						}
-					}
-				} else if (EventKeyCode.PageUp === iEventKeyCode) {
-					for (index = listLen; 0 <= index; index--) {
-						if (focused === list[index]) {
-							index -= pageStep;
-							index = 0 > index ? 0 : index;
-							result = list[index];
-							break;
-						}
+				} else if ('PageUp' === sEventKey) {
+					let i = list.indexOf(focused);
+					if (i > 0) {
+						result = list[Math.max(0, i - pageStep)];
 					}
 				}
+			} else if (
+				'Home' == sEventKey ||
+				'PageUp' == sEventKey
+			) {
+				result = list[0];
+			} else if (
+				'End' === sEventKey ||
+				'PageDown' === sEventKey
+			) {
+				result = list[list.length - 1];
 			}
 		}
 
 		if (result) {
 			this.focusedItem(result);
 
-			if (focused) {
-				if (bShiftKey) {
-					if (EventKeyCode.Up === iEventKeyCode || EventKeyCode.Down === iEventKeyCode) {
-						focused.checked(!focused.checked());
-					}
-				} else if (EventKeyCode.Insert === iEventKeyCode || EventKeyCode.Space === iEventKeyCode) {
-					focused.checked(!focused.checked());
-				}
+			if (focused && ((bShiftKey && isArrow) || ' ' === sEventKey)) {
+				focused.checked(!focused.checked());
 			}
 
-			if ((this.autoSelect() || !!bForceSelect) && !this.isListChecked() && EventKeyCode.Space !== iEventKeyCode) {
+			if (' ' !== sEventKey && (this.autoSelect() || bForceSelect) && !this.isListChecked()) {
 				this.selectedItem(result);
 			}
 
 			this.scrollToFocused();
 		} else if (focused) {
-			if (bShiftKey && (EventKeyCode.Up === iEventKeyCode || EventKeyCode.Down === iEventKeyCode)) {
-				focused.checked(!focused.checked());
-			} else if (EventKeyCode.Insert === iEventKeyCode || EventKeyCode.Space === iEventKeyCode) {
+			if ((bShiftKey && isArrow) || ' ' === sEventKey) {
 				focused.checked(!focused.checked());
 			}
 
@@ -504,49 +366,29 @@ class Selector {
 	 * @returns {boolean}
 	 */
 	scrollToFocused() {
-		if (!this.oContentVisible || !this.oContentScrollable) {
-			return false;
+		const scrollable = this.oContentScrollable;
+		if (scrollable) {
+			let block, focused = scrollable.querySelector(this.sItemFocusedSelector);
+			if (focused) {
+				const fRect = focused.getBoundingClientRect(),
+					sRect = scrollable.getBoundingClientRect();
+				if (fRect.top < sRect.top) {
+					block = 'start';
+				} else if (fRect.bottom > sRect.bottom) {
+					block = 'end';
+				}
+				block && focused.scrollIntoView(block === 'start');
+			} else {
+				scrollable.scrollTop = 0;
+			}
 		}
-
-		const offset = 20,
-			list = this.list(),
-			$focused = $(this.sItemFocusedSelector, this.oContentScrollable),
-			pos = $focused.position(),
-			visibleHeight = this.oContentVisible.height(),
-			focusedHeight = $focused.outerHeight();
-
-		if (list && list[0] && list[0].focused()) {
-			this.oContentScrollable.scrollTop(0);
-			return true;
-		} else if (pos && (0 > pos.top || pos.top + focusedHeight > visibleHeight)) {
-			this.oContentScrollable.scrollTop(
-				0 > pos.top
-					? this.oContentScrollable.scrollTop() + pos.top - offset
-					: this.oContentScrollable.scrollTop() + pos.top - visibleHeight + focusedHeight + offset
-			);
-
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
-	 * @param {boolean=} fast = false
 	 * @returns {boolean}
 	 */
-	scrollToTop(fast = false) {
-		if (!this.oContentVisible || !this.oContentScrollable) {
-			return false;
-		}
-
-		if (fast || 50 > this.oContentScrollable.scrollTop()) {
-			this.oContentScrollable.scrollTop(0);
-		} else {
-			this.oContentScrollable.stop().animate({ scrollTop: 0 }, 200);
-		}
-
-		return true;
+	scrollToTop() {
+		this.oContentScrollable && (this.oContentScrollable.scrollTop = 0);
 	}
 
 	eventClickFunction(item, event) {
@@ -561,7 +403,7 @@ class Selector {
 
 		const uid = this.getItemUid(item);
 		if (event && event.shiftKey) {
-			if ('' !== uid && '' !== this.sLastUid && uid !== this.sLastUid) {
+			if (uid && this.sLastUid && uid !== this.sLastUid) {
 				list = this.list();
 				checked = item.checked();
 
@@ -585,7 +427,7 @@ class Selector {
 			}
 		}
 
-		this.sLastUid = '' === uid ? '' : uid;
+		this.sLastUid = uid || '';
 	}
 
 	/**
@@ -598,7 +440,7 @@ class Selector {
 			if (event) {
 				if (event.shiftKey && !(event.ctrlKey || event.metaKey) && !event.altKey) {
 					click = false;
-					if ('' === this.sLastUid) {
+					if (!this.sLastUid) {
 						this.sLastUid = this.getItemUid(item);
 					}
 
@@ -634,5 +476,3 @@ class Selector {
 		this.scrollToFocused();
 	}
 }
-
-export { Selector, Selector as default };

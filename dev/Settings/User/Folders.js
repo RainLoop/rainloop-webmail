@@ -1,35 +1,37 @@
 import ko from 'ko';
 
-import { ClientSideKeyName, Notification, Magics } from 'Common/Enums';
-import { trim, noop } from 'Common/Utils';
-import { getNotification, i18n } from 'Common/Translator';
+import { Notification } from 'Common/Enums';
+import { ClientSideKeyName } from 'Common/EnumsUser';
+import { Settings } from 'Common/Globals';
+import { getNotification } from 'Common/Translator';
 
 import { removeFolderFromCacheList } from 'Common/Cache';
 
-import { appSettingsGet } from 'Storage/Settings';
 import * as Local from 'Storage/Client';
 
-import FolderStore from 'Stores/User/Folder';
+import { FolderUserStore } from 'Stores/User/Folder';
+import { SettingsUserStore } from 'Stores/User/Settings';
 
-import Promises from 'Promises/User/Ajax';
-import Remote from 'Remote/User/Ajax';
-
-import { getApp } from 'Helper/Apps/User';
+import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
-class FoldersUserSettings {
-	constructor() {
-		this.displaySpecSetting = FolderStore.displaySpecSetting;
-		this.folderList = FolderStore.folderList;
+import { FolderCreatePopupView } from 'View/Popup/FolderCreate';
+import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
 
-		this.folderListHelp = ko.observable('').extend({ throttle: Magics.Time100ms });
+export class FoldersUserSettings {
+	constructor() {
+		this.displaySpecSetting = FolderUserStore.displaySpecSetting;
+		this.folderList = FolderUserStore.folderList;
+		this.folderListOptimized = FolderUserStore.folderListOptimized;
+		this.folderListError = FolderUserStore.folderListError;
+		this.hideUnsubscribed = SettingsUserStore.hideUnsubscribed;
 
 		this.loading = ko.computed(() => {
-			const loading = FolderStore.foldersLoading(),
-				creating = FolderStore.foldersCreating(),
-				deleting = FolderStore.foldersDeleting(),
-				renaming = FolderStore.foldersRenaming();
+			const loading = FolderUserStore.foldersLoading(),
+				creating = FolderUserStore.foldersCreating(),
+				deleting = FolderUserStore.foldersDeleting(),
+				renaming = FolderUserStore.foldersRenaming();
 
 			return loading || creating || deleting || renaming;
 		});
@@ -38,17 +40,18 @@ class FoldersUserSettings {
 
 		this.folderForEdit = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'edited'] });
 
-		this.useImapSubscribe = !!appSettingsGet('useImapSubscribe');
+		this.useImapSubscribe = Settings.app('useImapSubscribe');
+		this.hideUnsubscribed.subscribe(value => Remote.saveSetting('HideUnsubscribed', value ? 1 : 0));
 	}
 
 	folderEditOnEnter(folder) {
-		const nameToEdit = folder ? trim(folder.nameForEdit()) : '';
+		const nameToEdit = folder ? folder.nameForEdit().trim() : '';
 
-		if ('' !== nameToEdit && folder.name() !== nameToEdit) {
+		if (nameToEdit && folder.name() !== nameToEdit) {
 			Local.set(ClientSideKeyName.FoldersLashHash, '');
 
-			getApp().foldersPromisesActionHelper(
-				Promises.folderRename(folder.fullNameRaw, nameToEdit, FolderStore.foldersRenaming),
+			rl.app.foldersPromisesActionHelper(
+				Remote.folderRename(folder.fullNameRaw, nameToEdit),
 				Notification.CantRenameFolder
 			);
 
@@ -67,31 +70,18 @@ class FoldersUserSettings {
 	}
 
 	onShow() {
-		FolderStore.folderList.error('');
+		FolderUserStore.folderListError('');
 	}
-
+/*
 	onBuild(oDom) {
-		oDom
-			.on('mouseover', '.delete-folder-parent', () => {
-				this.folderListHelp(i18n('SETTINGS_FOLDERS/HELP_DELETE_FOLDER'));
-			})
-			.on('mouseover', '.subscribe-folder-parent', () => {
-				this.folderListHelp(i18n('SETTINGS_FOLDERS/HELP_SHOW_HIDE_FOLDER'));
-			})
-			.on('mouseover', '.check-folder-parent', () => {
-				this.folderListHelp(i18n('SETTINGS_FOLDERS/HELP_CHECK_FOR_NEW_MESSAGES'));
-			})
-			.on('mouseout', '.subscribe-folder-parent, .check-folder-parent, .delete-folder-parent', () => {
-				this.folderListHelp('');
-			});
 	}
-
+*/
 	createFolder() {
-		showScreenPopup(require('View/Popup/FolderCreate'));
+		showScreenPopup(FolderCreatePopupView);
 	}
 
 	systemFolder() {
-		showScreenPopup(require('View/Popup/FolderSystem'));
+		showScreenPopup(FolderSystemPopupView);
 	}
 
 	deleteFolder(folderToRemove) {
@@ -114,41 +104,39 @@ class FoldersUserSettings {
 
 				Local.set(ClientSideKeyName.FoldersLashHash, '');
 
-				FolderStore.folderList.remove(fRemoveFolder);
+				FolderUserStore.folderList.remove(fRemoveFolder);
 
-				getApp().foldersPromisesActionHelper(
-					Promises.folderDelete(folderToRemove.fullNameRaw, FolderStore.foldersDeleting),
+				rl.app.foldersPromisesActionHelper(
+					Remote.folderDelete(folderToRemove.fullNameRaw),
 					Notification.CantDeleteFolder
 				);
 
 				removeFolderFromCacheList(folderToRemove.fullNameRaw);
 			}
 		} else if (0 < folderToRemove.privateMessageCountAll()) {
-			FolderStore.folderList.error(getNotification(Notification.CantDeleteNonEmptyFolder));
+			FolderUserStore.folderListError(getNotification(Notification.CantDeleteNonEmptyFolder));
 		}
 	}
 
 	subscribeFolder(folder) {
 		Local.set(ClientSideKeyName.FoldersLashHash, '');
-		Remote.folderSetSubscribe(noop, folder.fullNameRaw, true);
-		folder.subScribed(true);
+		Remote.folderSetSubscribe(()=>{}, folder.fullNameRaw, true);
+		folder.subscribed(true);
 	}
 
 	unSubscribeFolder(folder) {
 		Local.set(ClientSideKeyName.FoldersLashHash, '');
-		Remote.folderSetSubscribe(noop, folder.fullNameRaw, false);
-		folder.subScribed(false);
+		Remote.folderSetSubscribe(()=>{}, folder.fullNameRaw, false);
+		folder.subscribed(false);
 	}
 
 	checkableTrueFolder(folder) {
-		Remote.folderSetCheckable(noop, folder.fullNameRaw, true);
+		Remote.folderSetCheckable(()=>{}, folder.fullNameRaw, true);
 		folder.checkable(true);
 	}
 
 	checkableFalseFolder(folder) {
-		Remote.folderSetCheckable(noop, folder.fullNameRaw, false);
+		Remote.folderSetCheckable(()=>{}, folder.fullNameRaw, false);
 		folder.checkable(false);
 	}
 }
-
-export { FoldersUserSettings, FoldersUserSettings as default };

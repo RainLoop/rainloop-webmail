@@ -2,9 +2,17 @@
 
 class OverrideSmtpCredentialsPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
-	public function Init()
+	const
+		NAME = 'Override Smtp Credentials',
+		VERSION = '2.1',
+		RELEASE = '2021-04-21',
+		REQUIRED = '2.5.0',
+		CATEGORY = 'Filters',
+		DESCRIPTION = 'Plugin which allows you to override smtp credentials specified users.';
+
+	public function Init() : void
 	{
-		$this->addHook('filter.smtp-credentials', 'FilterSmtpCredentials');
+		$this->addHook('smtp.credentials', 'FilterSmtpCredentials');
 	}
 
 	/**
@@ -49,7 +57,7 @@ class OverrideSmtpCredentialsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * @return array
 	 */
-	public function configMapping()
+	protected function configMapping() : array
 	{
 		return array(
 			\RainLoop\Plugins\Property::NewInstance('smtp_host')->SetLabel('SMTP Host')

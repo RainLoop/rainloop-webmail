@@ -1,53 +1,46 @@
-import _ from '_';
 import ko from 'ko';
 
-import { settingsSaveHelperSimpleFunction, boolToAjax, trim } from 'Common/Utils';
-import { settingsGet } from 'Storage/Settings';
+import { Settings, SettingsGet } from 'Common/Globals';
+import { settingsSaveHelperSimpleFunction, addObservablesTo, addSubscribablesTo } from 'Common/Utils';
 
-import AppStore from 'Stores/Admin/App';
+import Remote from 'Remote/Admin/Fetch';
 
-import Remote from 'Remote/Admin/Ajax';
-
-class LoginAdminSettings {
+export class LoginAdminSettings {
 	constructor() {
-		this.determineUserLanguage = AppStore.determineUserLanguage;
-		this.determineUserDomain = AppStore.determineUserDomain;
+		addObservablesTo(this, {
+			determineUserLanguage: !!SettingsGet('DetermineUserLanguage'),
+			determineUserDomain: !!SettingsGet('DetermineUserDomain'),
+			allowLanguagesOnLogin: !!SettingsGet('AllowLanguagesOnLogin'),
+			hideSubmitButton: !!Settings.app('hideSubmitButton')
+		});
 
-		this.defaultDomain = ko.observable(settingsGet('LoginDefaultDomain')).idleTrigger();
-		this.allowLanguagesOnLogin = AppStore.allowLanguagesOnLogin;
+		this.defaultDomain = ko.observable(SettingsGet('LoginDefaultDomain')).idleTrigger();
 
-		this.dummy = ko.observable(false);
-	}
-
-	onBuild() {
-		_.delay(() => {
-			const f1 = settingsSaveHelperSimpleFunction(this.defaultDomain.trigger, this);
-
-			this.determineUserLanguage.subscribe((value) => {
+		addSubscribablesTo(this, {
+			determineUserLanguage: value =>
 				Remote.saveAdminConfig(null, {
-					'DetermineUserLanguage': boolToAjax(value)
-				});
-			});
+					DetermineUserLanguage: value ? 1 : 0
+				}),
 
-			this.determineUserDomain.subscribe((value) => {
+			determineUserDomain: value =>
 				Remote.saveAdminConfig(null, {
-					'DetermineUserDomain': boolToAjax(value)
-				});
-			});
+					DetermineUserDomain: value ? 1 : 0
+				}),
 
-			this.allowLanguagesOnLogin.subscribe((value) => {
+			allowLanguagesOnLogin: value =>
 				Remote.saveAdminConfig(null, {
-					'AllowLanguagesOnLogin': boolToAjax(value)
-				});
-			});
+					AllowLanguagesOnLogin: value ? 1 : 0
+				}),
 
-			this.defaultDomain.subscribe((value) => {
-				Remote.saveAdminConfig(f1, {
-					'LoginDefaultDomain': trim(value)
-				});
-			});
-		}, 50);
+			hideSubmitButton: value =>
+				Remote.saveAdminConfig(null, {
+					hideSubmitButton: value ? 1 : 0
+				}),
+
+			defaultDomain: value =>
+				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.defaultDomain.trigger, this), {
+					LoginDefaultDomain: value.trim()
+				})
+		});
 	}
 }
-
-export { LoginAdminSettings, LoginAdminSettings as default };

@@ -9,7 +9,7 @@ class ContactsExampleSuggestions implements \RainLoop\Providers\Suggestions\ISug
 	 *
 	 * @return array
 	 */
-	public function Process($oAccount, $sQuery, $iLimit = 20)
+	public function Process(RainLoop\Model\Account $oAccount, string $sQuery, int $iLimit = 20): array
 	{
 		$aResult = array(
 			array($oAccount->Email(), ''),

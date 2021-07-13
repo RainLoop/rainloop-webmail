@@ -1,5 +1,5 @@
 
-**RainLoop version, browser, OS:**
+**SnappyMail version, browser, browser version:**
 
 **Expected behavior and actual behavior:**
 

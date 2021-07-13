@@ -1,34 +1,28 @@
-import window from 'window';
-import _ from '_';
 import ko from 'ko';
 
-import { StorageResultType, Notification } from 'Common/Enums';
+import { Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
-import PackageStore from 'Stores/Admin/Package';
-import Remote from 'Remote/Admin/Ajax';
+import { PackageAdminStore } from 'Stores/Admin/Package';
+import Remote from 'Remote/Admin/Fetch';
 
-import { getApp } from 'Helper/Apps/Admin';
-
-class PackagesAdminSettings {
+export class PackagesAdminSettings {
 	constructor() {
 		this.packagesError = ko.observable('');
 
-		this.packages = PackageStore.packages;
-		this.packagesReal = PackageStore.packagesReal;
-		this.packagesMainUpdatable = PackageStore.packagesMainUpdatable;
+		this.packages = PackageAdminStore;
 
 		this.packagesCurrent = ko.computed(() =>
-			_.filter(this.packages(), (item) => item && '' !== item.installed && !item.compare)
+			PackageAdminStore.filter(item => item && item.installed && !item.compare)
 		);
 		this.packagesAvailableForUpdate = ko.computed(() =>
-			_.filter(this.packages(), (item) => item && '' !== item.installed && !!item.compare)
+			PackageAdminStore.filter(item => item && item.installed && !!item.compare)
 		);
 		this.packagesAvailableForInstallation = ko.computed(() =>
-			_.filter(this.packages(), (item) => item && '' === item.installed)
+			PackageAdminStore.filter(item => item && !item.installed)
 		);
 
-		this.visibility = ko.computed(() => (PackageStore.packages.loading() ? 'visible' : 'hidden'));
+		this.visibility = ko.computed(() => (PackageAdminStore.loading() ? 'visible' : 'hidden'));
 	}
 
 	onShow() {
@@ -36,32 +30,29 @@ class PackagesAdminSettings {
 	}
 
 	onBuild() {
-		getApp().reloadPackagesList();
+		PackageAdminStore.fetch();
 	}
 
 	requestHelper(packageToRequest, install) {
-		return (result, data) => {
-			if (StorageResultType.Success !== result || !data || !data.Result) {
-				if (data && data.ErrorCode) {
-					this.packagesError(getNotification(data.ErrorCode));
-				} else {
-					this.packagesError(
-						getNotification(install ? Notification.CantInstallPackage : Notification.CantDeletePackage)
-					);
-				}
+		return (iError, data) => {
+			if (iError) {
+				this.packagesError(
+					getNotification(install ? Notification.CantInstallPackage : Notification.CantDeletePackage)
+//					':\n' + getNotification(iError);
+				);
 			}
 
-			_.each(this.packages(), (item) => {
+			PackageAdminStore.forEach(item => {
 				if (item && packageToRequest && item.loading && item.loading() && packageToRequest.file === item.file) {
 					packageToRequest.loading(false);
 					item.loading(false);
 				}
 			});
 
-			if (StorageResultType.Success === result && data && data.Result && data.Result.Reload) {
-				window.location.reload();
+			if (!iError && data.Result.Reload) {
+				location.reload();
 			} else {
-				getApp().reloadPackagesList();
+				PackageAdminStore.fetch();
 			}
 		};
 	}
@@ -80,5 +71,3 @@ class PackagesAdminSettings {
 		}
 	}
 }
-
-export { PackagesAdminSettings, PackagesAdminSettings as default };

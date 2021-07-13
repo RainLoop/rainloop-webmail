@@ -2,37 +2,31 @@
 .b-compose {
 
 	&.modal {
+		width: 98%;
+		max-width: 1000px;
+		min-height: calc(100% - 52px);
+	}
 
-		width: 850px;
-		margin: 10px auto;
-
-		.modal-body {
-			overflow: auto;
-			padding: 0px;
-		}
+	.modal-body {
+		padding: 0;
 	}
 
 	.textAreaParent, .attachmentAreaParent {
-		overflow: hidden;
+		box-sizing: border-box;
+		min-height: 200px;
 		position: relative;
 	}
 
 	.attachmentAreaParent {
-		padding: 10px 10px 6px 10px;
-		background: #ddd;
 		border-top: 1px solid #ccc;
-
 		overflow-y: auto;
-	}
-
-	.attachmentAreaParent {
+		padding: 10px;
 
 		.no-attachments-desc {
-			padding: 50px 10px;
+			padding-top: 50px;
 			text-align: center;
 			font-size: 24px;
 			color: #666;
-			text-shadow: 0 1px 0 #fff;
 			text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 		}
 
@@ -44,15 +38,9 @@
 
 	.b-header-toolbar {
 
-		height: 40px;
+		background-color: rgba(0,0,0,0.8);
 
-		color: #fff;
-		background-color: @rlMainDarkColor;
-
-		background-color: #333;
-		background-color: rgba(0,0,0,0.8) !important;
-
-		.close, .close-custom, .minimize-custom {
+		.close, .minimize-custom {
 			opacity: 1;
 			color: #fff;
 			border-color: #eee;
@@ -76,34 +64,24 @@
 		}
 
 		.disabled.button-delete {
-			margin-left: 0px;
+			margin-left: 0;
 		}
 	}
 
 	.b-header {
 
 		padding: 10px;
-		background-color: #eee;
-		color: #333;
-
-		html.rl-mobile &{
-			overflow: scroll;
-		}
+		background-color: rgba(128,128,128,0.2);;
 
 		.e-identity {
 
-			color: #333;
+			color: var(--main-color);
 			text-decoration: none;
 			font-weight: bold;
 
-			&:hover {
-				color: #333;
-				text-decoration: none;
-			}
-
 			&.multiply {
 				cursor: pointer;
-				border-bottom: 1px dashed #555;
+				border-bottom: 1px dashed var(--main-color);
 			}
 		}
 
@@ -113,22 +91,15 @@
 
 		.e-label {
 			text-align: right;
-			width: 1%;
-			min-width: 70px;
 			padding: 6px 10px;
-
-			html.rl-mobile &{
-				min-width: 50px;
-				padding: 6px 10px 6px 0px;
-			}
 		}
 
 		.e-value {
 
-			padding: 2px 0px;
+			padding: 2px 0;
 
 			textarea, input[type="text"] {
-				width: 98%;
+				width: 100%;
 			}
 			textarea {
 				height: 40px;
@@ -143,50 +114,6 @@
 			color: red;
 			font-weight: bold;
 		}
-
-		.b-appachments {
-
-			.b-attacment {
-				line-height: 20px;
-				padding-bottom: 10px;
-			}
-
-			.b-attacment-in-process {
-
-				line-height: 20px;
-				padding-bottom: 10px;
-
-				.uploading {
-					display: none;
-					padding-right: 5px;
-				}
-
-				&.uploading .uploading {
-					display: inline;
-				}
-
-				.upload-progress {
-					font-weight: bold;
-				}
-
-				&.error .namedStr {
-					color: #888;
-				}
-				.error {
-					color: red;
-				}
-				.close, .close-custom {
-					float: left;
-					padding-right: 13px;
-				}
-			}
-		}
-	}
-
-	.cke_chrome {
-		border-left-width: 0 !important;
-		border-right-width: 0 !important;
-		border-bottom-width: 0 !important;
 	}
 
 	.b-attachment-button {
@@ -214,5 +141,25 @@
 		&.dragAndDropOver {
 			background-color: #fff;
 		}
+	}
+}
+
+.minimize-custom {
+	border: 0 solid #333;
+	border-bottom-width: 3px;
+	display: inline-block;
+	float: right;
+	height: 20px;
+	width: 16px;
+	font-size: 20px;
+	font-weight: bold;
+	line-height: 20px;
+	margin-right: 15px;
+	cursor: pointer;
+}
+
+@media screen and (max-width: 700px) {
+	.b-compose .b-header .e-label {
+		padding-left: 0;
 	}
 }

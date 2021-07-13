@@ -22,7 +22,7 @@
 		}, this);
 	}
 
-	CustomUserSettings.prototype.customAjaxSaveData = function ()
+	CustomUserSettings.prototype.customJsonSaveData = function ()
 	{
 		var self = this;
 
@@ -33,20 +33,23 @@
 
 		this.saving(true);
 
-		window.rl.pluginRemoteRequest(function (sResult, oData) {
+		rl.pluginRemoteRequest((iError, oData) => {
 
 			self.saving(false);
 
-			if (window.rl.Enums.StorageResultType.Success === sResult && oData && oData.Result)
+			if (!iError)
 			{
 				// true
+			}
+			else if (rl.Enums.StorageResultType.Abort === iError) {
+				// show abort
 			}
 			else
 			{
 				// false
 			}
 
-		}, 'AjaxSaveCustomUserData', {
+		}, 'JsonSaveCustomUserData', {
 			'UserSkype': this.userSkype(),
 			'UserFacebook': this.userFacebook()
 		});
@@ -58,21 +61,21 @@
 
 		this.loading(true);
 
-		window.rl.pluginRemoteRequest(function (sResult, oData) {
+		rl.pluginRemoteRequest((iError, oData) => {
 
 			self.loading(false);
 
-			if (window.rl.Enums.StorageResultType.Success === sResult && oData && oData.Result)
+			if (!iError)
 			{
 				self.userSkype(oData.Result.UserSkype || '');
 				self.userFacebook(oData.Result.UserFacebook || '');
 			}
 
-		}, 'AjaxGetCustomUserData');
+		}, 'JsonGetCustomUserData');
 
 	};
 
-	window.rl.addSettingsViewModel(CustomUserSettings, 'PluginCustomSettingsTab',
+	rl.addSettingsViewModel(CustomUserSettings, 'PluginCustomSettingsTab',
 		'SETTINGS_CUSTOM_PLUGIN/TAB_NAME', 'custom');
 
 }());

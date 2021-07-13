@@ -1,4 +1,15 @@
 
+#top-system-dropdown-id {
+	overflow: hidden;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.rl-left-panel-disabled #more-list-dropdown-id + .dropdown-menu {
+	position: fixed;
+	top: 40px;
+}
+
 .b-system-drop-down {
 
 	.b-toolbar {
@@ -10,23 +21,9 @@
 		z-index: 103;
 	}
 
-	.e-facebook-name {
-		display: inline-block;
-		padding-top: 4px;
-	}
-
-	.btn.system-dropdown {
-		padding-left: 10px;
-		padding-right: 10px;
-	}
-
-	.button-fb-logout {
-		margin: 5px;
-	}
-
 	.email-title {
 		display: inline-block;
-		max-width: 200px;
+		max-width: 50vw;
 		text-align: left;
 		text-overflow: ellipsis;
 		overflow: hidden;
@@ -34,35 +31,17 @@
 		vertical-align: middle;
 	}
 
-	.logoPlace {
-		margin: -5px 10px 0 0;
-		font-size: 25px;
-		line-height: 30px;
-		height: 40px;
-	}
-
 	.audioPlace {
-
-		font-size: 25px;
-		line-height: 30px;
+		display: inline-block;
+		font-size: 30px;
+		height: 30px;
 		margin-right: 10px;
-		width: 25px;
+		width: 1em;
 
 		.playIcon, .stopIcon {
 			cursor: pointer;
 			color: orange;
 			text-shadow: 0 1px 0 #555;
-			float: right;
-		}
-
-		.playIcon {
-			margin-top: 5px;
-		}
-
-		.stopIcon {
-			font-size: 30px;
-			line-height: 30px;
-			margin-right: 10px;
 		}
 
 		.stopIcon {
@@ -82,41 +61,26 @@
 	}
 
 	.accountPlace {
-		background-color: #000;
 		background-color: rgba(0, 0, 0, 0.5);
-
+		border-radius: 4px;
 		color: #fff;
-		text-shadow: 0 1px 0 #000;
-
 		display: inline-block;
-		height: 29px;
-		max-width: 250px;
-		border-radius: 4px;
-		font-size: 16px;
-		line-height: 30px;
-		padding: 1px 8px;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		border-radius: 4px;
 		font-weight: bold;
-		margin-right: 5px;
-
+		font-size: 16px;
+		height: 29px;
+		line-height: 30px;
+		max-width: 25vw;
+		overflow: hidden;
+		padding: 1px 8px;
+		text-overflow: ellipsis;
+		text-shadow: 0 1px 0 #000;
 		white-space: nowrap;
 	}
 
 	.account-item {
-
-		.icon-ok {
+		&:not(.current) i:first-child,
+		&.current i + i {
 			display: none;
-		}
-
-		&.current {
-			.icon-ok {
-				display: inline-block;
-			}
-			.icon-user {
-				display: none;
-			}
 		}
 	}
 
@@ -127,10 +91,6 @@
 	.g-ui-menu .e-link.account-item {
 		padding-right: 5px;
 	}
-}
-
-html.ssm-state-mobile .accountPlace {
-	max-width: 150px !important;
 }
 
 @keyframes firstBar {
@@ -154,31 +114,28 @@ html.ssm-state-mobile .accountPlace {
 
 .equaliser {
 
-	width: 20px;
+	margin-top: 5px;
+	width: 30px;
 	height: 20px;
 	position: relative;
 
 	.bar {
-		float:left;
 		width: 5px;
 		height: 5px;
 		background: orange;
 		position: absolute;
 		bottom:0;
+		animation: none;
 	}
-
 
 	.first {
-		left: 0px;
-		animation: none;
+		left: calc(1em / 2 - 10px);
 	}
 	.second {
-		left: 7px;
-		animation: none;
+		left: calc(1em / 2 - 2px);
 	}
 	.third {
-		left: 14px;
-		animation: none;
+		left: calc(1em / 2 + 6px);
 	}
 
 	&.animated {

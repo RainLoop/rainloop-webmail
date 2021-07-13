@@ -1,54 +1,40 @@
-import window from 'window';
-import _ from '_';
-import $ from '$';
-import progressJs from 'progressJs';
+import 'External/User/ko';
+
+import { isArray, isNonEmptyArray, pInt, pString } from 'Common/Utils';
+import { isPosNumeric, delegateRunOnDestroy, mailToHelper } from 'Common/UtilsUser';
 
 import {
-	noop,
-	trim,
-	log,
-	has,
-	isArray,
-	inArray,
-	isUnd,
-	isNormal,
-	isPosNumeric,
-	isNonEmptyArray,
-	pInt,
-	pString,
-	delegateRunOnDestroy,
-	mailToHelper,
-	windowResize,
-	jassl
-} from 'Common/Utils';
+	Capa,
+	Notification,
+	Scope
+} from 'Common/Enums';
 
 import {
 	Layout,
-	Capa,
-	StorageResultType,
-	Notification,
 	FolderType,
 	SetSystemFoldersNotification,
 	MessageSetAction,
-	ClientSideKeyName,
-	Magics
-} from 'Common/Enums';
-
-import { $html, leftPanelWidth, leftPanelDisabled, bAnimationSupported, bMobileDevice } from 'Common/Globals';
-
-import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { runHook } from 'Common/Plugins';
-import { momentNowUnix, reload as momentReload } from 'Common/Momentor';
+	ClientSideKeyName
+} from 'Common/EnumsUser';
 
 import {
-	initMessageFlagsFromCache,
+	doc,
+	elementById,
+	createElement,
+	$htmlCL,
+	Settings,
+	SettingsGet,
+	leftPanelDisabled
+} from 'Common/Globals';
+
+import { UNUSED_OPTION_VALUE } from 'Common/Consts';
+
+import {
+	MessageFlagsCache,
 	setFolderHash,
 	getFolderHash,
 	getFolderInboxName,
-	getFolderFromCacheList,
-	clearMessageFlagsFromCacheByFolder,
-	storeMessageFlagsToCacheBySetAction,
-	storeMessageFlagsToCacheByFolderAndUid
+	getFolderFromCacheList
 } from 'Common/Cache';
 
 import {
@@ -56,35 +42,26 @@ import {
 	mailBox,
 	root,
 	openPgpWorkerJs,
-	openPgpJs,
-	socialGoogle,
-	socialTwitter,
-	socialFacebook
+	openPgpJs
 } from 'Common/Links';
-
-import * as Events from 'Common/Events';
 
 import { getNotification, i18n } from 'Common/Translator';
 
-import SocialStore from 'Stores/Social';
-import AppStore from 'Stores/User/App';
-import SettingsStore from 'Stores/User/Settings';
-import NotificationStore from 'Stores/User/Notification';
-import AccountStore from 'Stores/User/Account';
-import ContactStore from 'Stores/User/Contact';
-import IdentityStore from 'Stores/User/Identity';
-import TemplateStore from 'Stores/User/Template';
-import FolderStore from 'Stores/User/Folder';
-import PgpStore from 'Stores/User/Pgp';
-import MessageStore from 'Stores/User/Message';
-import QuotaStore from 'Stores/User/Quota';
+import { SettingsUserStore } from 'Stores/User/Settings';
+import { NotificationUserStore } from 'Stores/User/Notification';
+import { AccountUserStore } from 'Stores/User/Account';
+import { ContactUserStore } from 'Stores/User/Contact';
+import { IdentityUserStore } from 'Stores/User/Identity';
+import { TemplateUserStore } from 'Stores/User/Template';
+import { FolderUserStore } from 'Stores/User/Folder';
+import { PgpUserStore } from 'Stores/User/Pgp';
+import { MessageUserStore } from 'Stores/User/Message';
+import { QuotaUserStore } from 'Stores/User/Quota';
+import { ThemeStore } from 'Stores/Theme';
 
 import * as Local from 'Storage/Client';
-import * as Settings from 'Storage/Settings';
-import { checkTimestamp } from 'Storage/RainLoop';
 
-import Remote from 'Remote/User/Ajax';
-import Promises from 'Promises/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { EmailModel } from 'Model/Email';
 import { AccountModel } from 'Model/Account';
@@ -92,14 +69,20 @@ import { IdentityModel } from 'Model/Identity';
 import { TemplateModel } from 'Model/Template';
 import { OpenPgpKeyModel } from 'Model/OpenPgpKey';
 
-// import {AboutUserScreen} from 'Screen/User/About';
 import { LoginUserScreen } from 'Screen/User/Login';
 import { MailBoxUserScreen } from 'Screen/User/MailBox';
 import { SettingsUserScreen } from 'Screen/User/Settings';
 
-import { hideLoading, routeOff, routeOn, setHash, startScreens, showScreenPopup } from 'Knoin/Knoin';
+import { startScreens, showScreenPopup } from 'Knoin/Knoin';
 
 import { AbstractApp } from 'App/Abstract';
+
+import { ComposePopupView } from 'View/Popup/Compose';
+import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
+import { AskPopupView } from 'View/Popup/Ask';
+
+// Every 5 minutes
+const refreshFolders = 300000;
 
 class AppUser extends AbstractApp {
 	constructor() {
@@ -107,80 +90,52 @@ class AppUser extends AbstractApp {
 
 		this.moveCache = {};
 
-		this.quotaDebounce = _.debounce(this.quota, Magics.Time30s);
-		this.moveOrDeleteResponseHelper = _.bind(this.moveOrDeleteResponseHelper, this);
+		this.quotaDebounce = this.quota.debounce(30000);
+		this.moveOrDeleteResponseHelper = this.moveOrDeleteResponseHelper.bind(this);
 
-		this.messagesMoveTrigger = _.debounce(this.messagesMoveTrigger, 500);
+		this.messagesMoveTrigger = this.messagesMoveTrigger.debounce(500);
 
-		window.setInterval(() => Events.pub('interval.30s'), Magics.Time30s);
-		window.setInterval(() => Events.pub('interval.1m'), Magics.Time1m);
-		window.setInterval(() => Events.pub('interval.2m'), Magics.Time2m);
-		window.setInterval(() => Events.pub('interval.3m'), Magics.Time3m);
-		window.setInterval(() => Events.pub('interval.5m'), Magics.Time5m);
-		window.setInterval(() => Events.pub('interval.10m'), Magics.Time10m);
-		window.setInterval(() => Events.pub('interval.15m'), Magics.Time15m);
-		window.setInterval(() => Events.pub('interval.20m'), Magics.Time20m);
-
-		window.setTimeout(() => window.setInterval(() => Events.pub('interval.2m-after5m'), Magics.Time2m), Magics.Time5m);
-		window.setTimeout(() => window.setInterval(() => Events.pub('interval.5m-after5m'), Magics.Time5m), Magics.Time5m);
-		window.setTimeout(
-			() => window.setInterval(() => Events.pub('interval.10m-after5m'), Magics.Time10m),
-			Magics.Time5m
-		);
-
-		$.wakeUp(
-			() => {
-				if (checkTimestamp()) {
-					this.reload();
-				}
-
-				Remote.jsVersion((sResult, oData) => {
-					if (StorageResultType.Success === sResult && oData && !oData.Result) {
+		// wakeUp
+		const interval = 3600000; // 60m
+		var lastTime = Date.now();
+		setInterval(() => {
+			const currentTime = Date.now();
+			if (currentTime > (lastTime + interval + 1000)) {
+				Remote.jsVersion(iError => {
+					if (100 < iError) {
 						this.reload();
 					}
-				}, Settings.appSettingsGet('version'));
-			},
-			{},
-			Magics.Time60m
-		);
+				}, Settings.app('version'));
+			}
+			lastTime = currentTime;
+		}, interval);
 
-		if (checkTimestamp()) {
-			this.reload();
+		if (SettingsGet('UserBackgroundHash')) {
+			setTimeout(() => {
+				const img = userBackground(SettingsGet('UserBackgroundHash'));
+				if (img) {
+					$htmlCL.add('UserBackground');
+					doc.body.style.backgroundImage = "url("+img+")";
+				}
+			}, 1000);
 		}
 
-		if (Settings.settingsGet('UserBackgroundHash')) {
-			_.delay(() => {
-				$('#rl-bg')
-					.attr('style', 'background-image: none !important;')
-					.backstretch(userBackground(Settings.settingsGet('UserBackgroundHash')), {
-						fade: bAnimationSupported ? Magics.Time1s : 0,
-						centeredX: true,
-						centeredY: true
-					})
-					.removeAttr('style');
-			}, Magics.Time1s);
-		}
+		const fn = (ev=>$htmlCL.toggle('rl-ctrl-key-pressed', ev.ctrlKey)).debounce(500);
+		['keydown','keyup'].forEach(t => doc.addEventListener(t, fn));
 
-		this.socialUsers = _.bind(this.socialUsers, this);
-	}
-
-	remote() {
-		return Remote;
+		shortcuts.add('escape,enter', '', Scope.All, () => rl.Dropdowns.detectVisibility());
 	}
 
 	reload() {
-		if (window.parent && !!Settings.appSettingsGet('inIframe')) {
-			window.parent.location.reload();
-		} else {
-			window.location.reload();
-		}
+		(Settings.app('inIframe') ? parent : window).location.reload();
 	}
 
 	reloadFlagsCurrentMessageListAndMessageFromCache() {
-		_.each(MessageStore.messageList(), (message) => {
-			initMessageFlagsFromCache(message);
-		});
-		initMessageFlagsFromCache(MessageStore.message());
+		MessageUserStore.list.forEach(message =>
+			MessageFlagsCache.initMessage(message)
+		);
+		MessageFlagsCache.initMessage(MessageUserStore.message());
+		MessageUserStore.messageViewTrigger(!MessageUserStore.messageViewTrigger());
 	}
 
 	/**
@@ -188,58 +143,55 @@ class AppUser extends AbstractApp {
 	 * @param {boolean=} bDropCurrenFolderCache = false
 	 */
 	reloadMessageList(bDropPagePosition = false, bDropCurrenFolderCache = false) {
-		let iOffset = (MessageStore.messageListPage() - 1) * SettingsStore.messagesPerPage();
+		let iOffset = (MessageUserStore.listPage() - 1) * SettingsUserStore.messagesPerPage();
 
 		if (bDropCurrenFolderCache) {
-			setFolderHash(FolderStore.currentFolderFullNameRaw(), '');
+			setFolderHash(FolderUserStore.currentFolderFullNameRaw(), '');
 		}
 
 		if (bDropPagePosition) {
-			MessageStore.messageListPage(1);
-			MessageStore.messageListPageBeforeThread(1);
+			MessageUserStore.listPage(1);
+			MessageUserStore.listPageBeforeThread(1);
 			iOffset = 0;
 
-			setHash(
+			rl.route.setHash(
 				mailBox(
-					FolderStore.currentFolderFullNameHash(),
-					MessageStore.messageListPage(),
-					MessageStore.messageListSearch(),
-					MessageStore.messageListThreadUid()
+					FolderUserStore.currentFolderFullNameHash(),
+					MessageUserStore.listPage(),
+					MessageUserStore.listSearch(),
+					MessageUserStore.listThreadUid()
 				),
 				true,
 				true
 			);
 		}
 
-		MessageStore.messageListLoading(true);
+		MessageUserStore.listLoading(true);
+		MessageUserStore.listError('');
 		Remote.messageList(
-			(sResult, oData, bCached) => {
-				if (StorageResultType.Success === sResult && oData && oData.Result) {
-					MessageStore.messageListError('');
-					MessageStore.messageListLoading(false);
-
-					MessageStore.setMessageList(oData, bCached);
-				} else if (StorageResultType.Unload === sResult) {
-					MessageStore.messageListError('');
-					MessageStore.messageListLoading(false);
-				} else if (StorageResultType.Abort !== sResult) {
-					MessageStore.messageList([]);
-					MessageStore.messageListLoading(false);
-					MessageStore.messageListError(
-						oData && oData.ErrorCode ? getNotification(oData.ErrorCode) : i18n('NOTIFICATIONS/CANT_GET_MESSAGE_LIST')
-					);
+			(iError, oData, bCached) => {
+				if (iError) {
+					if (Notification.RequestAborted !== iError) {
+						MessageUserStore.list([]);
+						MessageUserStore.listError(getNotification(iError));
+					}
+				} else {
+					MessageUserStore.setMessageList(oData, bCached);
 				}
+				MessageUserStore.listLoading(false);
 			},
-			FolderStore.currentFolderFullNameRaw(),
-			iOffset,
-			SettingsStore.messagesPerPage(),
-			MessageStore.messageListSearch(),
-			MessageStore.messageListThreadUid()
+			{
+				Folder: FolderUserStore.currentFolderFullNameRaw(),
+				Offset: iOffset,
+				Limit: SettingsUserStore.messagesPerPage(),
+				Search: MessageUserStore.listSearch(),
+				ThreadUid: MessageUserStore.listThreadUid()
+			}
 		);
 	}
 
 	recacheInboxMessageList() {
-		Remote.messageList(noop, getFolderInboxName(), 0, SettingsStore.messagesPerPage(), '', '', true);
+		Remote.messageList(null, {Folder: getFolderInboxName()}, true);
 	}
 
 	/**
@@ -247,20 +199,19 @@ class AppUser extends AbstractApp {
 	 * @returns {boolean}
 	 */
 	contactsSync(fResultFunc) {
-		const oContacts = ContactStore.contacts;
 		if (
-			oContacts.importing() ||
-			oContacts.syncing() ||
-			!ContactStore.enableContactsSync() ||
-			!ContactStore.allowContactsSync()
+			ContactUserStore.importing() ||
+			ContactUserStore.syncing() ||
+			!ContactUserStore.enableSync() ||
+			!ContactUserStore.allowSync()
 		) {
 			return false;
 		}
 
-		oContacts.syncing(true);
+		ContactUserStore.syncing(true);
 
 		Remote.contactsSync((sResult, oData) => {
-			oContacts.syncing(false);
+			ContactUserStore.syncing(false);
 
 			if (fResultFunc) {
 				fResultFunc(sResult, oData);
@@ -271,10 +222,10 @@ class AppUser extends AbstractApp {
 	}
 
 	messagesMoveTrigger() {
-		const sTrashFolder = FolderStore.trashFolder(),
-			sSpamFolder = FolderStore.spamFolder();
+		const sTrashFolder = FolderUserStore.trashFolder(),
+			sSpamFolder = FolderUserStore.spamFolder();
 
-		_.each(this.moveCache, (item) => {
+		Object.values(this.moveCache).forEach(item => {
 			const isSpam = sSpamFolder === item.To,
 				isTrash = sTrashFolder === item.To,
 				isHam = !isSpam && sSpamFolder === item.From && getFolderInboxName() === item.To;
@@ -302,7 +253,7 @@ class AppUser extends AbstractApp {
 			};
 		}
 
-		this.moveCache[hash].Uid = _.union(this.moveCache[hash].Uid, uidsForMove);
+		this.moveCache[hash].Uid = this.moveCache[hash].Uid.concat(uidsForMove).unique();
 		this.messagesMoveTrigger();
 	}
 
@@ -314,19 +265,17 @@ class AppUser extends AbstractApp {
 		Remote.messagesDelete(this.moveOrDeleteResponseHelper, sFromFolderFullNameRaw, aUidForRemove);
 	}
 
-	moveOrDeleteResponseHelper(sResult, oData) {
-		if (StorageResultType.Success === sResult && FolderStore.currentFolder()) {
-			if (oData && isArray(oData.Result) && 2 === oData.Result.length) {
+	moveOrDeleteResponseHelper(iError, oData) {
+		if (iError) {
+			setFolderHash(FolderUserStore.currentFolderFullNameRaw(), '');
+			alert(getNotification(iError));
+		} else if (FolderUserStore.currentFolder()) {
+			if (isArray(oData.Result) && 2 === oData.Result.length) {
 				setFolderHash(oData.Result[0], oData.Result[1]);
 			} else {
-				setFolderHash(FolderStore.currentFolderFullNameRaw(), '');
-
-				if (oData && -1 < inArray(oData.ErrorCode, [Notification.CantMoveMessage, Notification.CantCopyMessage])) {
-					window.alert(getNotification(oData.ErrorCode));
-				}
+				setFolderHash(FolderUserStore.currentFolderFullNameRaw(), '');
 			}
-
-			this.reloadMessageList(0 === MessageStore.messageList().length);
+			this.reloadMessageList(!MessageUserStore.list.length);
 			this.quotaDebounce();
 		}
 	}
@@ -337,7 +286,7 @@ class AppUser extends AbstractApp {
 	 */
 	deleteMessagesFromFolderWithoutCheck(sFromFolderFullNameRaw, aUidForRemove) {
 		this.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
-		MessageStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
+		MessageUserStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
 	}
 
 	/**
@@ -352,51 +301,52 @@ class AppUser extends AbstractApp {
 
 		switch (iDeleteType) {
 			case FolderType.Spam:
-				oMoveFolder = getFolderFromCacheList(FolderStore.spamFolder());
+				oMoveFolder = getFolderFromCacheList(FolderUserStore.spamFolder());
 				nSetSystemFoldersNotification = SetSystemFoldersNotification.Spam;
 				break;
 			case FolderType.NotSpam:
 				oMoveFolder = getFolderFromCacheList(getFolderInboxName());
 				break;
 			case FolderType.Trash:
-				oMoveFolder = getFolderFromCacheList(FolderStore.trashFolder());
+				oMoveFolder = getFolderFromCacheList(FolderUserStore.trashFolder());
 				nSetSystemFoldersNotification = SetSystemFoldersNotification.Trash;
 				break;
 			case FolderType.Archive:
-				oMoveFolder = getFolderFromCacheList(FolderStore.archiveFolder());
+				oMoveFolder = getFolderFromCacheList(FolderUserStore.archiveFolder());
 				nSetSystemFoldersNotification = SetSystemFoldersNotification.Archive;
 				break;
 			// no default
 		}
 
-		bUseFolder = isUnd(bUseFolder) ? true : !!bUseFolder;
+		bUseFolder = undefined === bUseFolder ? true : !!bUseFolder;
 		if (bUseFolder) {
 			if (
-				(FolderType.Spam === iDeleteType && UNUSED_OPTION_VALUE === FolderStore.spamFolder()) ||
-				(FolderType.Trash === iDeleteType && UNUSED_OPTION_VALUE === FolderStore.trashFolder()) ||
-				(FolderType.Archive === iDeleteType && UNUSED_OPTION_VALUE === FolderStore.archiveFolder())
+				(FolderType.Spam === iDeleteType && UNUSED_OPTION_VALUE === FolderUserStore.spamFolder()) ||
+				(FolderType.Trash === iDeleteType && UNUSED_OPTION_VALUE === FolderUserStore.trashFolder()) ||
+				(FolderType.Archive === iDeleteType && UNUSED_OPTION_VALUE === FolderUserStore.archiveFolder())
 			) {
 				bUseFolder = false;
 			}
 		}
 
 		if (!oMoveFolder && bUseFolder) {
-			showScreenPopup(require('View/Popup/FolderSystem'), [nSetSystemFoldersNotification]);
+			showScreenPopup(FolderSystemPopupView, [nSetSystemFoldersNotification]);
 		} else if (
 			!bUseFolder ||
 			(FolderType.Trash === iDeleteType &&
-				(sFromFolderFullNameRaw === FolderStore.spamFolder() || sFromFolderFullNameRaw === FolderStore.trashFolder()))
+				(sFromFolderFullNameRaw === FolderUserStore.spamFolder()
+				 || sFromFolderFullNameRaw === FolderUserStore.trashFolder()))
 		) {
-			showScreenPopup(require('View/Popup/Ask'), [
+			showScreenPopup(AskPopupView, [
 				i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'),
 				() => {
 					this.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
-					MessageStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
+					MessageUserStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
 				}
 			]);
 		} else if (oMoveFolder) {
 			this.messagesMoveHelper(sFromFolderFullNameRaw, oMoveFolder.fullNameRaw, aUidForRemove);
-			MessageStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, oMoveFolder.fullNameRaw);
+			MessageUserStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, oMoveFolder.fullNameRaw);
 		}
 	}
 
@@ -407,18 +357,18 @@ class AppUser extends AbstractApp {
 	 * @param {boolean=} bCopy = false
 	 */
 	moveMessagesToFolder(sFromFolderFullNameRaw, aUidForMove, sToFolderFullNameRaw, bCopy) {
-		if (sFromFolderFullNameRaw !== sToFolderFullNameRaw && isArray(aUidForMove) && 0 < aUidForMove.length) {
+		if (sFromFolderFullNameRaw !== sToFolderFullNameRaw && isArray(aUidForMove) && aUidForMove.length) {
 			const oFromFolder = getFolderFromCacheList(sFromFolderFullNameRaw),
 				oToFolder = getFolderFromCacheList(sToFolderFullNameRaw);
 
 			if (oFromFolder && oToFolder) {
-				if (isUnd(bCopy) ? false : !!bCopy) {
+				if (undefined === bCopy ? false : !!bCopy) {
 					this.messagesCopyHelper(oFromFolder.fullNameRaw, oToFolder.fullNameRaw, aUidForMove);
 				} else {
 					this.messagesMoveHelper(oFromFolder.fullNameRaw, oToFolder.fullNameRaw, aUidForMove);
 				}
 
-				MessageStore.removeMessagesFromList(oFromFolder.fullNameRaw, aUidForMove, oToFolder.fullNameRaw, bCopy);
+				MessageUserStore.removeMessagesFromList(oFromFolder.fullNameRaw, aUidForMove, oToFolder.fullNameRaw, bCopy);
 				return true;
 			}
 		}
@@ -430,44 +380,30 @@ class AppUser extends AbstractApp {
 	 * @param {Function=} callback = null
 	 */
 	foldersReload(callback = null) {
-		const prom = Promises.foldersReload(FolderStore.foldersLoading);
-		if (callback) {
-			prom
-				.then((value) => !!value)
-				.then(callback)
-				.catch(() => {
-					_.delay(() => {
-						if (callback) {
-							callback(false); // eslint-disable-line callback-return
-						}
-					}, 1);
-				});
-		}
+		Remote.foldersReload(callback);
 	}
 
 	foldersPromisesActionHelper(promise, errorDefCode) {
-		Promises.abort('Folders')
+		Remote.abort('Folders')
 			.fastResolve(true)
 			.then(() => promise)
 			.then(
-				() => {
-					Promises.foldersReloadWithTimeout(FolderStore.foldersLoading);
-				},
-				(errorCode) => {
-					FolderStore.folderList.error(getNotification(errorCode, '', errorDefCode));
-					Promises.foldersReloadWithTimeout(FolderStore.foldersLoading);
+				() => Remote.foldersReloadWithTimeout(),
+				errorCode => {
+					FolderUserStore.folderListError(getNotification(errorCode, '', errorDefCode));
+					Remote.foldersReloadWithTimeout();
 				}
 			);
 	}
 
 	reloadOpenPgpKeys() {
-		if (PgpStore.capaOpenPGP()) {
+		if (PgpUserStore.capaOpenPGP()) {
 			const keys = [],
 				email = new EmailModel(),
-				openpgpKeyring = PgpStore.openpgpKeyring,
+				openpgpKeyring = PgpUserStore.openpgpKeyring,
 				openpgpKeys = openpgpKeyring ? openpgpKeyring.getAllKeys() : [];
 
-			_.each(openpgpKeys, (oItem, iIndex) => {
+			openpgpKeys.forEach((oItem, iIndex) => {
 				if (oItem && oItem.primaryKey) {
 					const aEmails = [],
 						aUsers = [],
@@ -480,7 +416,7 @@ class AppUser extends AbstractApp {
 								: '';
 
 					if (oItem.users) {
-						_.each(oItem.users, (item) => {
+						oItem.users.forEach(item => {
 							if (item.userId) {
 								email.clear();
 								email.parse(item.userId.userid);
@@ -501,7 +437,9 @@ class AppUser extends AbstractApp {
 									.getKeyId()
 									.toHex()
 									.toLowerCase(),
-								_.uniq(_.compact(_.map(oItem.getKeyIds(), (item) => (item && item.toHex ? item.toHex() : null)))),
+								oItem.getKeyIds()
+									.map(item => (item && item.toHex ? item.toHex() : null))
+									.validUnique(),
 								aUsers,
 								aEmails,
 								oItem.isPrivate(),
@@ -513,81 +451,43 @@ class AppUser extends AbstractApp {
 				}
 			});
 
-			delegateRunOnDestroy(PgpStore.openpgpkeys());
-			PgpStore.openpgpkeys(keys);
+			delegateRunOnDestroy(PgpUserStore.openpgpkeys());
+			PgpUserStore.openpgpkeys(keys);
 		}
 	}
 
-	accountsCounts() {
-		return false;
-		// AccountStore.accounts.loading(true);
-		//
-		// Remote.accountsCounts((sResult, oData) => {
-		//
-		// 	AccountStore.accounts.loading(false);
-		//
-		// 	if (StorageResultType.Success === sResult && oData.Result && oData.Result['Counts'])
-		// 	{
-		// 		var
-		// 			sEmail = AccountStore.email(),
-		// 			aAcounts = AccountStore.accounts()
-		// 		;
-		//
-		// 		_.each(oData.Result['Counts'], (oItem) => {
-		//
-		// 			var oAccount = _.find(aAcounts, (oAccount) => {
-		// 				return oAccount && oItem[0] === oAccount.email && sEmail !== oAccount.email;
-		// 			});
-		//
-		// 			if (oAccount)
-		// 			{
-		// 				oAccount.count(pInt(oItem[1]));
-		// 			}
-		// 		});
-		// 	}
-		// });
-	}
+	accountsAndIdentities() {
+		AccountUserStore.loading(true);
+		IdentityUserStore.loading(true);
 
-	accountsAndIdentities(bBoot) {
-		AccountStore.accounts.loading(true);
-		IdentityStore.identities.loading(true);
+		Remote.accountsAndIdentities((iError, oData) => {
+			AccountUserStore.loading(false);
+			IdentityUserStore.loading(false);
 
-		Remote.accountsAndIdentities((sResult, oData) => {
-			AccountStore.accounts.loading(false);
-			IdentityStore.identities.loading(false);
-
-			if (StorageResultType.Success === sResult && oData.Result) {
+			if (!iError) {
 				const counts = {},
-					sAccountEmail = AccountStore.email();
-				let parentEmail = Settings.settingsGet('ParentEmail');
-
-				parentEmail = '' === parentEmail ? sAccountEmail : parentEmail;
+					sAccountEmail = AccountUserStore.email();
+				let parentEmail = SettingsGet('ParentEmail') || sAccountEmail;
 
 				if (isArray(oData.Result.Accounts)) {
-					_.each(AccountStore.accounts(), (oAccount) => {
-						counts[oAccount.email] = oAccount.count();
-					});
+					AccountUserStore.accounts.forEach(oAccount =>
+						counts[oAccount.email] = oAccount.count()
+					);
 
-					delegateRunOnDestroy(AccountStore.accounts());
+					delegateRunOnDestroy(AccountUserStore.accounts());
 
-					AccountStore.accounts(
-						_.map(
-							oData.Result.Accounts,
-							(sValue) => new AccountModel(sValue, sValue !== parentEmail, counts[sValue] || 0)
+					AccountUserStore.accounts(
+						oData.Result.Accounts.map(
+							sValue => new AccountModel(sValue, sValue !== parentEmail, counts[sValue] || 0)
 						)
 					);
 				}
 
-				if (isUnd(bBoot) ? false : !!bBoot) {
-					_.delay(() => this.accountsCounts(), 1000 * 5);
-					Events.sub('interval.10m-after5m', () => this.accountsCounts());
-				}
-
 				if (isArray(oData.Result.Identities)) {
-					delegateRunOnDestroy(IdentityStore.identities());
+					delegateRunOnDestroy(IdentityUserStore());
 
-					IdentityStore.identities(
-						_.map(oData.Result.Identities, (identityData) => {
+					IdentityUserStore(
+						oData.Result.Identities.map(identityData => {
 							const id = pString(identityData.Id),
 								email = pString(identityData.Email),
 								identity = new IdentityModel(id, email);
@@ -607,38 +507,33 @@ class AppUser extends AbstractApp {
 	}
 
 	templates() {
-		TemplateStore.templates.loading(true);
+		TemplateUserStore.templates.loading(true);
 
-		Remote.templates((result, data) => {
-			TemplateStore.templates.loading(false);
+		Remote.templates((iError, data) => {
+			TemplateUserStore.templates.loading(false);
 
-			if (StorageResultType.Success === result && data.Result && isArray(data.Result.Templates)) {
-				delegateRunOnDestroy(TemplateStore.templates());
+			if (!iError && isArray(data.Result.Templates)) {
+				delegateRunOnDestroy(TemplateUserStore.templates());
 
-				TemplateStore.templates(
-					_.compact(
-						_.map(data.Result.Templates, (templateData) => {
-							const template = new TemplateModel();
-							return template.parse(templateData) ? template : null;
-						})
-					)
+				TemplateUserStore.templates(
+					data.Result.Templates.map(templateData =>
+						TemplateModel.reviveFromJson(templateData)
+					).filter(v => v)
 				);
 			}
 		});
 	}
 
 	quota() {
-		Remote.quota((result, data) => {
+		Remote.quota((iError, data) => {
 			if (
-				StorageResultType.Success === result &&
-				data &&
-				data.Result &&
+				!iError &&
 				isArray(data.Result) &&
 				1 < data.Result.length &&
 				isPosNumeric(data.Result[0], true) &&
 				isPosNumeric(data.Result[1], true)
 			) {
-				QuotaStore.populateData(pInt(data.Result[1]), pInt(data.Result[0]));
+				QuotaUserStore.populateData(pInt(data.Result[1]), pInt(data.Result[0]));
 			}
 		});
 	}
@@ -648,72 +543,70 @@ class AppUser extends AbstractApp {
 	 * @param {Array=} list = []
 	 */
 	folderInformation(folder, list) {
-		if ('' !== trim(folder)) {
+		if (folder && folder.trim()) {
 			Remote.folderInformation(
-				(result, data) => {
-					if (StorageResultType.Success === result) {
-						if (data && data.Result && data.Result.Hash && data.Result.Folder) {
-							let uid = '',
-								check = false,
-								unreadCountChange = false;
+				(iError, data) => {
+					if (!iError && data.Result.Hash && data.Result.Folder) {
+						let uid = '',
+							check = false,
+							unreadCountChange = false;
 
-							const folderFromCache = getFolderFromCacheList(data.Result.Folder);
-							if (folderFromCache) {
-								folderFromCache.interval = momentNowUnix();
+						const folderFromCache = getFolderFromCacheList(data.Result.Folder);
+						if (folderFromCache) {
+							folderFromCache.expires = Date.now();
 
-								if (data.Result.Hash) {
-									setFolderHash(data.Result.Folder, data.Result.Hash);
+							if (data.Result.Hash) {
+								setFolderHash(data.Result.Folder, data.Result.Hash);
+							}
+
+							if (null != data.Result.MessageCount) {
+								folderFromCache.messageCountAll(data.Result.MessageCount);
+							}
+
+							if (null != data.Result.MessageUnseenCount) {
+								if (pInt(folderFromCache.messageCountUnread()) !== pInt(data.Result.MessageUnseenCount)) {
+									unreadCountChange = true;
 								}
 
-								if (isNormal(data.Result.MessageCount)) {
-									folderFromCache.messageCountAll(data.Result.MessageCount);
-								}
+								folderFromCache.messageCountUnread(data.Result.MessageUnseenCount);
+							}
 
-								if (isNormal(data.Result.MessageUnseenCount)) {
-									if (pInt(folderFromCache.messageCountUnread()) !== pInt(data.Result.MessageUnseenCount)) {
-										unreadCountChange = true;
-									}
+							if (unreadCountChange) {
+								MessageFlagsCache.clearFolder(folderFromCache.fullNameRaw);
+							}
 
-									folderFromCache.messageCountUnread(data.Result.MessageUnseenCount);
-								}
-
-								if (unreadCountChange) {
-									clearMessageFlagsFromCacheByFolder(folderFromCache.fullNameRaw);
-								}
-
-								if (data.Result.Flags) {
-									for (uid in data.Result.Flags) {
-										if (has(data.Result.Flags, uid)) {
-											check = true;
-											const flags = data.Result.Flags[uid];
-											storeMessageFlagsToCacheByFolderAndUid(folderFromCache.fullNameRaw, uid.toString(), [
-												!flags.IsSeen,
-												!!flags.IsFlagged,
-												!!flags.IsAnswered,
-												!!flags.IsForwarded,
-												!!flags.IsReadReceipt
-											]);
-										}
-									}
-
-									if (check) {
-										this.reloadFlagsCurrentMessageListAndMessageFromCache();
+							if (data.Result.Flags) {
+								for (uid in data.Result.Flags) {
+									if (Object.prototype.hasOwnProperty.call(data.Result.Flags, uid)) {
+										check = true;
+										const flags = data.Result.Flags[uid];
+										MessageFlagsCache.storeByFolderAndUid(folderFromCache.fullNameRaw, uid.toString(), [
+											!!flags.IsUnseen,
+											!!flags.IsFlagged,
+											!!flags.IsAnswered,
+											!!flags.IsForwarded,
+											!!flags.IsReadReceipt
+										]);
 									}
 								}
 
-								MessageStore.initUidNextAndNewMessages(
-									folderFromCache.fullNameRaw,
-									data.Result.UidNext,
-									data.Result.NewMessages
-								);
+								if (check) {
+									this.reloadFlagsCurrentMessageListAndMessageFromCache();
+								}
+							}
 
-								const hash = getFolderHash(data.Result.Folder);
-								if (data.Result.Hash !== hash || '' === hash || unreadCountChange) {
-									if (folderFromCache.fullNameRaw === FolderStore.currentFolderFullNameRaw()) {
-										this.reloadMessageList();
-									} else if (getFolderInboxName() === folderFromCache.fullNameRaw) {
-										this.recacheInboxMessageList();
-									}
+							MessageUserStore.initUidNextAndNewMessages(
+								folderFromCache.fullNameRaw,
+								data.Result.UidNext,
+								data.Result.NewMessages
+							);
+
+							const hash = getFolderHash(data.Result.Folder);
+							if (!hash || unreadCountChange || data.Result.Hash !== hash) {
+								if (folderFromCache.fullNameRaw === FolderUserStore.currentFolderFullNameRaw()) {
+									this.reloadMessageList();
+								} else if (getFolderInboxName() === folderFromCache.fullNameRaw) {
+									this.recacheInboxMessageList();
 								}
 							}
 						}
@@ -729,58 +622,53 @@ class AppUser extends AbstractApp {
 	 * @param {boolean=} boot = false
 	 */
 	folderInformationMultiply(boot = false) {
-		const folders = FolderStore.getNextFolderNames();
+		const folders = FolderUserStore.getNextFolderNames(refreshFolders);
 		if (isNonEmptyArray(folders)) {
-			Remote.folderInformationMultiply((sResult, oData) => {
-				if (StorageResultType.Success === sResult) {
-					if (oData && oData.Result && oData.Result.List && isNonEmptyArray(oData.Result.List)) {
-						const utc = momentNowUnix();
-						_.each(oData.Result.List, (item) => {
-							const hash = getFolderHash(item.Folder),
-								folder = getFolderFromCacheList(item.Folder);
-							let unreadCountChange = false;
+			Remote.folderInformationMultiply((iError, oData) => {
+				if (!iError && isNonEmptyArray(oData.Result.List)) {
+					const utc = Date.now();
+					oData.Result.List.forEach(item => {
+						const hash = getFolderHash(item.Folder),
+							folder = getFolderFromCacheList(item.Folder);
+						let unreadCountChange = false;
 
-							if (folder) {
-								folder.interval = utc;
+						if (folder) {
+							folder.expires = utc;
 
-								if (item.Hash) {
-									setFolderHash(item.Folder, item.Hash);
-								}
-
-								if (isNormal(item.MessageCount)) {
-									folder.messageCountAll(item.MessageCount);
-								}
-
-								if (isNormal(item.MessageUnseenCount)) {
-									if (pInt(folder.messageCountUnread()) !== pInt(item.MessageUnseenCount)) {
-										unreadCountChange = true;
-									}
-
-									folder.messageCountUnread(item.MessageUnseenCount);
-								}
-
-								if (unreadCountChange) {
-									clearMessageFlagsFromCacheByFolder(folder.fullNameRaw);
-								}
-
-								if (item.Hash !== hash || '' === hash) {
-									if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw()) {
-										this.reloadMessageList();
-									}
-								} else if (unreadCountChange) {
-									if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw()) {
-										const list = MessageStore.messageList();
-										if (isNonEmptyArray(list)) {
-											this.folderInformation(folder.fullNameRaw, list);
-										}
-									}
-								}
+							if (item.Hash) {
+								setFolderHash(item.Folder, item.Hash);
 							}
-						});
 
-						if (boot) {
-							_.delay(() => this.folderInformationMultiply(true), 2000);
+							if (null != item.MessageCount) {
+								folder.messageCountAll(item.MessageCount);
+							}
+
+							if (null != item.MessageUnseenCount) {
+								if (pInt(folder.messageCountUnread()) !== pInt(item.MessageUnseenCount)) {
+									unreadCountChange = true;
+								}
+
+								folder.messageCountUnread(item.MessageUnseenCount);
+							}
+
+							if (unreadCountChange) {
+								MessageFlagsCache.clearFolder(folder.fullNameRaw);
+							}
+
+							if (!hash || item.Hash !== hash) {
+								if (folder.fullNameRaw === FolderUserStore.currentFolderFullNameRaw()) {
+									this.reloadMessageList();
+								}
+							} else if (unreadCountChange
+							 && folder.fullNameRaw === FolderUserStore.currentFolderFullNameRaw()
+							 && MessageUserStore.list.length) {
+								this.folderInformation(folder.fullNameRaw, MessageUserStore.list());
+							}
 						}
+					});
+
+					if (boot) {
+						setTimeout(() => this.folderInformationMultiply(true), 2000);
 					}
 				}
 			}, folders);
@@ -797,127 +685,61 @@ class AppUser extends AbstractApp {
 			alreadyUnread = 0,
 			rootUids = [];
 
-		if (isUnd(messages) || !messages) {
-			messages = MessageStore.messageListChecked();
+		if (undefined === messages || !messages) {
+			messages = MessageUserStore.listChecked();
 		}
 
-		rootUids = _.uniq(_.compact(_.map(messages, (oMessage) => (oMessage && oMessage.uid ? oMessage.uid : null))));
+		rootUids = messages.map(oMessage => oMessage && oMessage.uid ? oMessage.uid : null)
+			.validUnique();
 
-		if ('' !== sFolderFullNameRaw && 0 < rootUids.length) {
+		if (sFolderFullNameRaw && rootUids.length) {
 			switch (iSetAction) {
 				case MessageSetAction.SetSeen:
-					_.each(rootUids, (sSubUid) => {
-						alreadyUnread += storeMessageFlagsToCacheBySetAction(sFolderFullNameRaw, sSubUid, iSetAction);
-					});
+					rootUids.forEach(sSubUid =>
+						alreadyUnread += MessageFlagsCache.storeBySetAction(sFolderFullNameRaw, sSubUid, iSetAction)
+					);
 
 					folder = getFolderFromCacheList(sFolderFullNameRaw);
 					if (folder) {
 						folder.messageCountUnread(folder.messageCountUnread() - alreadyUnread);
 					}
 
-					Remote.messageSetSeen(noop, sFolderFullNameRaw, rootUids, true);
+					Remote.messageSetSeen(()=>{}, sFolderFullNameRaw, rootUids, true);
 					break;
 
 				case MessageSetAction.UnsetSeen:
-					_.each(rootUids, (sSubUid) => {
-						alreadyUnread += storeMessageFlagsToCacheBySetAction(sFolderFullNameRaw, sSubUid, iSetAction);
-					});
+					rootUids.forEach(sSubUid =>
+						alreadyUnread += MessageFlagsCache.storeBySetAction(sFolderFullNameRaw, sSubUid, iSetAction)
+					);
 
 					folder = getFolderFromCacheList(sFolderFullNameRaw);
 					if (folder) {
 						folder.messageCountUnread(folder.messageCountUnread() - alreadyUnread + rootUids.length);
 					}
 
-					Remote.messageSetSeen(noop, sFolderFullNameRaw, rootUids, false);
+					Remote.messageSetSeen(()=>{}, sFolderFullNameRaw, rootUids, false);
 					break;
 
 				case MessageSetAction.SetFlag:
-					_.each(rootUids, (sSubUid) => {
-						storeMessageFlagsToCacheBySetAction(sFolderFullNameRaw, sSubUid, iSetAction);
-					});
+					rootUids.forEach(sSubUid =>
+						MessageFlagsCache.storeBySetAction(sFolderFullNameRaw, sSubUid, iSetAction)
+					);
 
-					Remote.messageSetFlagged(noop, sFolderFullNameRaw, rootUids, true);
+					Remote.messageSetFlagged(()=>{}, sFolderFullNameRaw, rootUids, true);
 					break;
 
 				case MessageSetAction.UnsetFlag:
-					_.each(rootUids, (sSubUid) => {
-						storeMessageFlagsToCacheBySetAction(sFolderFullNameRaw, sSubUid, iSetAction);
-					});
+					rootUids.forEach(sSubUid =>
+						MessageFlagsCache.storeBySetAction(sFolderFullNameRaw, sSubUid, iSetAction)
+					);
 
-					Remote.messageSetFlagged(noop, sFolderFullNameRaw, rootUids, false);
+					Remote.messageSetFlagged(()=>{}, sFolderFullNameRaw, rootUids, false);
 					break;
 				// no default
 			}
 
 			this.reloadFlagsCurrentMessageListAndMessageFromCache();
-			MessageStore.message.viewTrigger(!MessageStore.message.viewTrigger());
 		}
-	}
-
-	googleConnect() {
-		window.open(
-			socialGoogle(),
-			'Google',
-			'left=200,top=100,width=650,height=600,menubar=no,status=no,resizable=yes,scrollbars=yes'
-		);
-	}
-
-	twitterConnect() {
-		window.open(
-			socialTwitter(),
-			'Twitter',
-			'left=200,top=100,width=650,height=350,menubar=no,status=no,resizable=yes,scrollbars=yes'
-		);
-	}
-
-	facebookConnect() {
-		window.open(
-			socialFacebook(),
-			'Facebook',
-			'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes'
-		);
-	}
-
-	/**
-	 * @param {boolean=} fireAllActions = false
-	 */
-	socialUsers(fireAllActions = false) {
-		if (true === fireAllActions) {
-			SocialStore.google.loading(true);
-			SocialStore.facebook.loading(true);
-			SocialStore.twitter.loading(true);
-		}
-
-		Remote.socialUsers((result, data) => {
-			if (StorageResultType.Success === result && data && data.Result) {
-				SocialStore.google.userName(data.Result.Google || '');
-				SocialStore.facebook.userName(data.Result.Facebook || '');
-				SocialStore.twitter.userName(data.Result.Twitter || '');
-			} else {
-				SocialStore.google.userName('');
-				SocialStore.facebook.userName('');
-				SocialStore.twitter.userName('');
-			}
-
-			SocialStore.google.loading(false);
-			SocialStore.facebook.loading(false);
-			SocialStore.twitter.loading(false);
-		});
-	}
-
-	googleDisconnect() {
-		SocialStore.google.loading(true);
-		Remote.googleDisconnect(this.socialUsers);
-	}
-
-	facebookDisconnect() {
-		SocialStore.facebook.loading(true);
-		Remote.facebookDisconnect(this.socialUsers);
-	}
-
-	twitterDisconnect() {
-		SocialStore.twitter.loading(true);
-		Remote.twitterDisconnect(this.socialUsers);
 	}
 
 	/**
@@ -925,12 +747,12 @@ class AppUser extends AbstractApp {
 	 * @param {Function} autocompleteCallback
 	 */
 	getAutocomplete(query, autocompleteCallback) {
-		Remote.suggestions((result, data) => {
-			if (StorageResultType.Success === result && data && isArray(data.Result)) {
+		Remote.suggestions((iError, data) => {
+			if (!iError && isArray(data.Result)) {
 				autocompleteCallback(
-					_.compact(_.map(data.Result, (item) => (item && item[0] ? new EmailModel(item[0], item[1]) : null)))
+					data.Result.map(item => (item && item[0] ? new EmailModel(item[0], item[1]) : null)).filter(v => v)
 				);
-			} else if (StorageResultType.Abort !== result) {
+			} else if (Notification.RequestAborted !== iError) {
 				autocompleteCallback([]);
 			}
 		}, query);
@@ -947,327 +769,175 @@ class AppUser extends AbstractApp {
 		}
 
 		if (bExpanded) {
-			aExpandedList.push(sFullNameHash);
-			aExpandedList = _.uniq(aExpandedList);
+			if (!aExpandedList.includes(sFullNameHash))
+				aExpandedList.push(sFullNameHash);
 		} else {
-			aExpandedList = _.without(aExpandedList, sFullNameHash);
+			aExpandedList = aExpandedList.filter(value => value !== sFullNameHash);
 		}
 
 		Local.set(ClientSideKeyName.ExpandedFolders, aExpandedList);
 	}
 
-	initHorizontalLayoutResizer(sClientSideKeyName) {
-		let top = null,
-			bottom = null;
-
-		const minHeight = 200,
-			maxHeight = 500,
-			fSetHeight = (height) => {
-				if (height) {
-					if (top) {
-						top.attr('style', 'height:' + height + 'px');
+	setLayoutResizer(source, target, sClientSideKeyName, mode) {
+		if (mode) {
+			source.classList.add('resizable');
+			if (!source.querySelector('.resizer')) {
+				const resizer = createElement('div', {'class':'resizer'}),
+					cssint = s => parseFloat(getComputedStyle(source, null).getPropertyValue(s).replace('px', ''));
+				source.append(resizer);
+				resizer.addEventListener('mousedown', {
+					source: source,
+					mode: mode,
+					handleEvent: function(e) {
+						if ('mousedown' == e.type) {
+							e.preventDefault();
+							this.pos = ('width' == this.mode) ? e.pageX : e.pageY;
+							this.min = cssint('min-'+this.mode);
+							this.max = cssint('max-'+this.mode);
+							this.org = cssint(this.mode);
+							addEventListener('mousemove', this);
+							addEventListener('mouseup', this);
+						} else if ('mousemove' == e.type) {
+							const length = this.org + (('width' == this.mode ? e.pageX : e.pageY) - this.pos);
+							if (length >= this.min && length <= this.max ) {
+								this.source.style[this.mode] = length + 'px';
+							}
+						} else if ('mouseup' == e.type) {
+							removeEventListener('mousemove', this);
+							removeEventListener('mouseup', this);
+						}
 					}
-
-					if (bottom) {
-						bottom.attr('style', 'top:' + (55 /* top toolbar */ + height) + 'px');
-					}
+				});
+				if ('width' == mode) {
+					source.observer = new ResizeObserver(() => {
+						target.style.left = source.offsetWidth + 'px';
+						Local.set(sClientSideKeyName, source.offsetWidth);
+					});
+				} else {
+					source.observer = new ResizeObserver(() => {
+						target.style.top = (4 + source.offsetTop + source.offsetHeight) + 'px';
+						Local.set(sClientSideKeyName, source.offsetHeight);
+					});
 				}
-			},
-			fResizeCreateFunction = (event) => {
-				if (event && event.target) {
-					$(event.target)
-						.find('.ui-resizable-handle')
-						.on('mousedown', () => {
-							$html.addClass('rl-resizer');
-						})
-						.on('mouseup', () => {
-							$html.removeClass('rl-resizer');
-						});
+			}
+			source.observer.observe(source, { box: 'border-box' });
+			const length = Local.get(sClientSideKeyName);
+			if (length) {
+				if ('width' == mode) {
+					source.style.width = length + 'px';
+				} else {
+					source.style.height = length + 'px';
 				}
-			},
-			fResizeStartFunction = () => {
-				$html.addClass('rl-resizer');
-			},
-			fResizeResizeFunction = _.debounce(
-				() => {
-					$html.addClass('rl-resizer');
-				},
-				500,
-				true
-			),
-			fResizeStopFunction = (oEvent, oObject) => {
-				$html.removeClass('rl-resizer');
-				if (oObject && oObject.size && oObject.size.height) {
-					Local.set(sClientSideKeyName, oObject.size.height);
-
-					fSetHeight(oObject.size.height);
-
-					windowResize();
-				}
-			},
-			oOptions = {
-				helper: 'ui-resizable-helper-h',
-				minHeight: minHeight,
-				maxHeight: maxHeight,
-				handles: 's',
-				create: fResizeCreateFunction,
-				resize: fResizeResizeFunction,
-				start: fResizeStartFunction,
-				stop: fResizeStopFunction
-			},
-			fDisable = (bDisable) => {
-				if (bDisable) {
-					if (top && top.hasClass('ui-resizable')) {
-						top.resizable('destroy').removeAttr('style');
-					}
-
-					if (bottom) {
-						bottom.removeAttr('style');
-					}
-				} else if ($html.hasClass('rl-bottom-preview-pane')) {
-					top = $('.b-message-list-wrapper');
-					bottom = $('.b-message-view-wrapper');
-
-					if (!top.hasClass('ui-resizable')) {
-						top.resizable(oOptions);
-					}
-
-					const iHeight = pInt(Local.get(sClientSideKeyName)) || 300;
-					fSetHeight(iHeight > minHeight ? iHeight : minHeight);
-				}
-			};
-
-		fDisable(false);
-
-		Events.sub('layout', (layout) => {
-			fDisable(Layout.BottomPreview !== layout);
-		});
+			}
+		} else {
+			source.observer && source.observer.disconnect();
+			source.classList.remove('resizable');
+			target.removeAttribute('style');
+			source.removeAttribute('style');
+		}
 	}
 
-	initVerticalLayoutResizer(sClientSideKeyName) {
-		const disabledWidth = 60,
-			minWidth = 155,
-			lLeft = $('#rl-left'),
-			right = $('#rl-right'),
-			mLeftWidth = Local.get(sClientSideKeyName) || null,
-			fSetWidth = (iWidth) => {
-				if (iWidth) {
-					leftPanelWidth(iWidth);
-
-					$html.removeClass('rl-resizer');
-
-					lLeft.css({
-						width: '' + iWidth + 'px'
-					});
-
-					right.css({
-						left: '' + iWidth + 'px'
-					});
-				}
-			},
-			fDisable = (bDisable) => {
-				if (bDisable) {
-					lLeft.resizable('disable');
-					fSetWidth(disabledWidth);
-				} else {
-					lLeft.resizable('enable');
-					const width = pInt(Local.get(sClientSideKeyName)) || minWidth;
-					fSetWidth(width > minWidth ? width : minWidth);
-				}
-			},
-			fResizeCreateFunction = (event) => {
-				if (event && event.target) {
-					$(event.target)
-						.find('.ui-resizable-handle')
-						.on('mousedown', () => {
-							$html.addClass('rl-resizer');
-						})
-						.on('mouseup', () => {
-							$html.removeClass('rl-resizer');
-						});
-				}
-			},
-			fResizeResizeFunction = _.debounce(
-				() => {
-					$html.addClass('rl-resizer');
-				},
-				500,
-				true
-			),
-			fResizeStartFunction = () => {
-				$html.addClass('rl-resizer');
-			},
-			fResizeStopFunction = (event, obj) => {
-				$html.removeClass('rl-resizer');
-				if (obj && obj.size && obj.size.width) {
-					Local.set(sClientSideKeyName, obj.size.width);
-
-					leftPanelWidth(obj.size.width);
-
-					right.css({
-						left: '' + obj.size.width + 'px'
-					});
-
-					lLeft.css({
-						position: '',
-						top: '',
-						left: '',
-						height: ''
-					});
-				}
+	initHorizontalLayoutResizer() {
+		const top = doc.querySelector('.b-message-list-wrapper'),
+			bottom = doc.querySelector('.b-message-view-wrapper'),
+			fToggle = () => {
+				this.setLayoutResizer(top, bottom, ClientSideKeyName.MessageListSize,
+					(ThemeStore.isMobile() || Layout.BottomPreview !== SettingsUserStore.layout()) ? null : 'height');
 			};
-
-		if (null !== mLeftWidth) {
-			fSetWidth(mLeftWidth > minWidth ? mLeftWidth : minWidth);
+		if (top && bottom) {
+			fToggle();
+			addEventListener('rl-layout', fToggle);
 		}
+	}
 
-		lLeft.resizable({
-			helper: 'ui-resizable-helper-w',
-			minWidth: minWidth,
-			maxWidth: Magics.Size350px,
-			handles: 'e',
-			create: fResizeCreateFunction,
-			resize: fResizeResizeFunction,
-			start: fResizeStartFunction,
-			stop: fResizeStopFunction
-		});
+	initVerticalLayoutResizer() {
+		const left = elementById('rl-left'),
+			right = elementById('rl-right'),
+			fToggle = () =>
+				this.setLayoutResizer(left, right, ClientSideKeyName.FolderListSize,
+					(ThemeStore.isMobile() || leftPanelDisabled()) ? null : 'width');
+		if (left && right) {
+			fToggle();
+			leftPanelDisabled.subscribe(fToggle);
+		}
+	}
 
-		Events.sub('left-panel.off', () => {
-			fDisable(true);
-		});
-
-		Events.sub('left-panel.on', () => {
-			fDisable(false);
-		});
+	/**
+	 * @param {string} link
+	 * @returns {boolean}
+	 */
+	download(link) {
+		if (ThemeStore.isMobile()) {
+			open(link, '_self');
+			focus();
+		} else {
+			const oLink = createElement('a');
+			oLink.href = link;
+			doc.body.appendChild(oLink).click();
+			oLink.remove();
+		}
+		return true;
 	}
 
 	logout() {
-		Remote.logout(() => {
-			this.loginAndLogoutReload(
-				false,
-				true,
-				Settings.settingsGet('ParentEmail') && 0 < Settings.settingsGet('ParentEmail').length
-			);
-		});
-	}
-
-	bootstartTwoFactorScreen() {
-		showScreenPopup(require('View/Popup/TwoFactorConfiguration'), [true]);
-	}
-
-	bootstartWelcomePopup(url) {
-		showScreenPopup(require('View/Popup/WelcomePage'), [url]);
-	}
-
-	bootstartLoginScreen() {
-		$html.removeClass('rl-user-auth').addClass('rl-user-no-auth');
-
-		const customLoginLink = pString(Settings.appSettingsGet('customLoginLink'));
-		if (!customLoginLink) {
-			startScreens([LoginUserScreen]);
-
-			runHook('rl-start-login-screens');
-			Events.pub('rl.bootstart-login-screens');
-		} else {
-			routeOff();
-			setHash(root(), true);
-			routeOff();
-
-			_.defer(() => {
-				window.location.href = customLoginLink;
-			});
-		}
-	}
-
-	bootend() {
-		if (progressJs) {
-			progressJs.set(100).end();
-		}
-		hideLoading();
+		Remote.logout(() => rl.logoutReload((SettingsGet('ParentEmail')||{length:0}).length));
 	}
 
 	bootstart() {
 		super.bootstart();
 
-		AppStore.populate();
-		SettingsStore.populate();
-		NotificationStore.populate();
-		AccountStore.populate();
-		ContactStore.populate();
+		addEventListener('resize', () => leftPanelDisabled(ThemeStore.isMobile() || 1000 > innerWidth));
 
-		let contactsSyncInterval = pInt(Settings.settingsGet('ContactsSyncInterval'));
+		NotificationUserStore.populate();
+		AccountUserStore.populate();
+		ContactUserStore.populate();
 
-		const jsHash = Settings.appSettingsGet('jsHash'),
-			startupUrl = pString(Settings.settingsGet('StartupUrl')),
-			allowGoogle = Settings.settingsGet('AllowGoogleSocial'),
-			allowFacebook = Settings.settingsGet('AllowFacebookSocial'),
-			allowTwitter = Settings.settingsGet('AllowTwitterSocial');
+		let contactsSyncInterval = pInt(SettingsGet('ContactsSyncInterval'));
 
-		if (progressJs) {
-			progressJs.set(90);
-		}
+		const startupUrl = pString(SettingsGet('StartupUrl'));
 
-		leftPanelDisabled.subscribe((value) => {
-			Events.pub('left-panel.' + (value ? 'off' : 'on'));
-		});
+		rl.setWindowTitle();
+		if (SettingsGet('Auth')) {
+			rl.setWindowTitle(i18n('GLOBAL/LOADING'));
 
-		this.setWindowTitle('');
-		if (Settings.settingsGet('Auth')) {
-			$html.addClass('rl-user-auth');
-
-			if (
-				Settings.capa(Capa.TwoFactor) &&
-				Settings.capa(Capa.TwoFactorForce) &&
-				Settings.settingsGet('RequireTwoFactor')
-			) {
-				this.bootend();
-				this.bootstartTwoFactorScreen();
-			} else {
-				this.setWindowTitle(i18n('TITLES/LOADING'));
-
-				// require.ensure([], function() { // require code splitting
-
-				this.foldersReload((value) => {
-					this.bootend();
-
+			this.foldersReload(value => {
+				try {
 					if (value) {
-						if ('' !== startupUrl) {
-							routeOff();
-							setHash(root(startupUrl), true);
-							routeOn();
+						if (startupUrl) {
+							rl.route.setHash(root(startupUrl), true);
 						}
 
-						if (jassl && window.crypto && window.crypto.getRandomValues && Settings.capa(Capa.OpenPGP)) {
-							const openpgpCallback = (openpgp) => {
-								PgpStore.openpgp = openpgp;
+						if (window.crypto && crypto.getRandomValues && Settings.capa(Capa.OpenPGP)) {
+							const openpgpCallback = () => {
+								if (!window.openpgp) {
+									return false;
+								}
+								PgpUserStore.openpgp = openpgp;
 
 								if (window.Worker) {
 									try {
-										PgpStore.openpgp.initWorker({ path: openPgpWorkerJs() });
+										PgpUserStore.openpgp.initWorker({ path: openPgpWorkerJs() });
 									} catch (e) {
-										log(e);
+										console.error(e);
 									}
 								}
 
-								PgpStore.openpgpKeyring = new openpgp.Keyring();
-								PgpStore.capaOpenPGP(true);
-
-								Events.pub('openpgp.init');
+								PgpUserStore.openpgpKeyring = new openpgp.Keyring();
+								PgpUserStore.capaOpenPGP(true);
 
 								this.reloadOpenPgpKeys();
+
+								return true;
 							};
 
-							if (window.openpgp) {
-								openpgpCallback(window.openpgp);
-							} else {
-								jassl(openPgpJs()).then(() => {
-									if (window.openpgp) {
-										openpgpCallback(window.openpgp);
-									}
-								});
+							if (!openpgpCallback()) {
+								const script = createElement('script', {src:openPgpJs()});
+								script.onload = openpgpCallback;
+								script.onerror = () => console.error(script.src);
+								doc.head.append(script);
 							}
 						} else {
-							PgpStore.capaOpenPGP(false);
+							PgpUserStore.capaOpenPGP(false);
 						}
 
 						startScreens([
@@ -1275,112 +945,87 @@ class AppUser extends AbstractApp {
 							Settings.capa(Capa.Settings) ? SettingsUserScreen : null
 							// false ? AboutUserScreen : null
 						]);
+						this.hideLoading();
 
-						if (allowGoogle || allowFacebook || allowTwitter) {
-							this.socialUsers(true);
-						}
-
-						Events.sub('interval.2m', () => this.folderInformation(getFolderInboxName()));
-						Events.sub('interval.3m', () => {
-							const sF = FolderStore.currentFolderFullNameRaw();
-							if (getFolderInboxName() !== sF) {
-								this.folderInformation(sF);
+						setInterval(() => {
+							const cF = FolderUserStore.currentFolderFullNameRaw(),
+								iF = getFolderInboxName();
+							this.folderInformation(iF);
+							if (iF !== cF) {
+								this.folderInformation(cF);
 							}
-						});
+							this.folderInformationMultiply();
+						}, refreshFolders);
 
-						Events.sub('interval.2m-after5m', () => this.folderInformationMultiply());
-						Events.sub('interval.15m', () => this.quota());
-						Events.sub('interval.20m', () => this.foldersReload());
+						// Every 15 minutes
+						setInterval(this.quota, 900000);
+						// Every 20 minutes
+						setInterval(this.foldersReload, 1200000);
 
+						setTimeout(this.contactsSync, 10000);
 						contactsSyncInterval = 5 <= contactsSyncInterval ? contactsSyncInterval : 20;
 						contactsSyncInterval = 320 >= contactsSyncInterval ? contactsSyncInterval : 320;
-
-						_.delay(() => this.contactsSync(), Magics.Time10s);
-						_.delay(() => this.folderInformationMultiply(true), Magics.Time2s);
-
-						window.setInterval(() => this.contactsSync(), contactsSyncInterval * 60000 + 5000);
+						setInterval(this.contactsSync, contactsSyncInterval * 60000 + 5000);
 
 						this.accountsAndIdentities(true);
 
-						_.delay(() => {
-							const sF = FolderStore.currentFolderFullNameRaw();
-							if (getFolderInboxName() !== sF) {
-								this.folderInformation(sF);
+						setTimeout(() => {
+							const cF = FolderUserStore.currentFolderFullNameRaw();
+							if (getFolderInboxName() !== cF) {
+								this.folderInformation(cF);
 							}
+							this.folderInformationMultiply(true);
 						}, 1000);
 
-						_.delay(() => this.quota(), 5000);
-						_.delay(() => Remote.appDelayStart(noop), 35000);
+						setTimeout(this.quota, 5000);
+						setTimeout(() => Remote.appDelayStart(()=>{}), 35000);
 
-						Events.sub('rl.auto-logout', () => this.logout());
-
-						runHook('rl-start-user-screens');
-						Events.pub('rl.bootstart-user-screens');
-
-						if (Settings.settingsGet('WelcomePageUrl')) {
-							_.delay(() => this.bootstartWelcomePopup(Settings.settingsGet('WelcomePageUrl')), 1000);
-						}
-
+						// When auto-login is active
 						if (
-							!!Settings.settingsGet('AccountSignMe') &&
-							window.navigator.registerProtocolHandler &&
+							!!SettingsGet('AccountSignMe') &&
+							navigator.registerProtocolHandler &&
 							Settings.capa(Capa.Composer)
 						) {
-							_.delay(() => {
+							setTimeout(() => {
 								try {
-									window.navigator.registerProtocolHandler(
+									navigator.registerProtocolHandler(
 										'mailto',
-										window.location.protocol + '//' + window.location.host + window.location.pathname + '?mailto&to=%s',
-										'' + (Settings.settingsGet('Title') || 'RainLoop')
+										location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
+										(SettingsGet('Title') || 'SnappyMail')
 									);
 								} catch (e) {} // eslint-disable-line no-empty
 
-								if (Settings.settingsGet('MailToEmail')) {
-									mailToHelper(Settings.settingsGet('MailToEmail'), require('View/Popup/Compose'));
+								if (SettingsGet('MailToEmail')) {
+									mailToHelper(SettingsGet('MailToEmail'));
 								}
 							}, 500);
 						}
 
-						if (!bMobileDevice) {
-							_.defer(() => this.initVerticalLayoutResizer(ClientSideKeyName.FolderListSize));
-						}
+						['touchstart','mousedown','mousemove','keydown'].forEach(
+							t => doc.addEventListener(t, SettingsUserStore.delayLogout, {passive:true})
+						);
+						SettingsUserStore.delayLogout();
+
+						setTimeout(() => this.initVerticalLayoutResizer(), 1);
 					} else {
 						this.logout();
 					}
-				});
+				} catch (e) {
+					console.error(e);
+				}
+			});
 
-				// }); // require code splitting
-			}
 		} else {
-			this.bootend();
-			this.bootstartLoginScreen();
+			startScreens([LoginUserScreen]);
+			this.hideLoading();
 		}
 
-		if (allowGoogle) {
-			window['rl_' + jsHash + '_google_service'] = () => {
-				SocialStore.google.loading(true);
-				this.socialUsers();
-			};
-		}
+		setInterval(() => dispatchEvent(new CustomEvent('reload-time')), 60000);
+	}
 
-		if (allowFacebook) {
-			window['rl_' + jsHash + '_facebook_service'] = () => {
-				SocialStore.facebook.loading(true);
-				this.socialUsers();
-			};
-		}
-
-		if (allowTwitter) {
-			window['rl_' + jsHash + '_twitter_service'] = () => {
-				SocialStore.twitter.loading(true);
-				this.socialUsers();
-			};
-		}
-
-		Events.sub('interval.1m', () => momentReload());
-
-		runHook('rl-start-screens');
-		Events.pub('rl.bootstart-end');
+	showMessageComposer(params = [])
+	{
+		Settings.capa(Capa.Composer) && showScreenPopup(ComposePopupView, params);
 	}
 }
 

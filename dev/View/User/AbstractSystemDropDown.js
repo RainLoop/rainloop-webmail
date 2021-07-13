@@ -1,108 +1,115 @@
-import _ from '_';
-import ko from 'ko';
-import key from 'key';
+import { AppUserStore } from 'Stores/User/App';
+import { AccountUserStore } from 'Stores/User/Account';
+import { MessageUserStore } from 'Stores/User/Message';
 
-import AppStore from 'Stores/User/App';
-import AccountStore from 'Stores/User/Account';
-import MessageStore from 'Stores/User/Message';
-
-import { Capa, Magics, KeyState } from 'Common/Enums';
-import { trim, isUnd } from 'Common/Utils';
+import { Capa, Scope } from 'Common/Enums';
 import { settings } from 'Common/Links';
 
-import * as Events from 'Common/Events';
-import * as Settings from 'Storage/Settings';
+import { showScreenPopup } from 'Knoin/Knoin';
+import { AbstractViewRight } from 'Knoin/AbstractViews';
 
-import { getApp } from 'Helper/Apps/User';
+import { KeyboardShortcutsHelpPopupView } from 'View/Popup/KeyboardShortcutsHelp';
+import { AccountPopupView } from 'View/Popup/Account';
+import { ContactsPopupView } from 'View/Popup/Contacts';
 
-import { showScreenPopup, setHash } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { doc, Settings, leftPanelDisabled } from 'Common/Globals';
 
-class AbstractSystemDropDownUserView extends AbstractViewNext {
-	constructor() {
-		super();
+import { ThemeStore } from 'Stores/Theme';
 
-		this.logoImg = trim(Settings.settingsGet('UserLogo'));
-		this.logoTitle = trim(Settings.settingsGet('UserLogoTitle'));
+export class AbstractSystemDropDownUserView extends AbstractViewRight {
+	constructor(name) {
+		super(name, 'SystemDropDown');
 
-		this.mobile = !!Settings.appSettingsGet('mobile');
-		this.mobileDevice = !!Settings.appSettingsGet('mobileDevice');
+		this.allowAccounts = Settings.capa(Capa.AdditionalAccounts);
+		this.allowSettings = Settings.capa(Capa.Settings);
+		this.allowHelp = Settings.capa(Capa.Help);
 
-		this.allowSettings = !!Settings.capa(Capa.Settings);
-		this.allowHelp = !!Settings.capa(Capa.Help);
+		this.accountEmail = AccountUserStore.email;
 
-		this.currentAudio = AppStore.currentAudio;
+		this.accounts = AccountUserStore.accounts;
+		this.accountsLoading = AccountUserStore.loading;
+		this.accountsUnreadCount = AccountUserStore.accountsUnreadCount;
 
-		this.accountEmail = AccountStore.email;
+		this.addObservables({
+			currentAudio: '',
+			accountMenuDropdownTrigger: false
+		});
 
-		this.accounts = AccountStore.accounts;
-		this.accountsUnreadCount = AccountStore.accountsUnreadCount;
+		this.allowContacts = AppUserStore.allowContacts();
 
-		this.accountMenuDropdownTrigger = ko.observable(false);
-		this.capaAdditionalAccounts = ko.observable(Settings.capa(Capa.AdditionalAccounts));
-
-		this.addAccountClick = _.bind(this.addAccountClick, this);
-
-		Events.sub('audio.stop', () => AppStore.currentAudio(''));
-		Events.sub('audio.start', (name) => AppStore.currentAudio(name));
+		addEventListener('audio.stop', () => this.currentAudio(''));
+		addEventListener('audio.start', e => this.currentAudio(e.detail));
 	}
 
 	stopPlay() {
-		Events.pub('audio.api.stop');
+		dispatchEvent(new CustomEvent('audio.api.stop'));
 	}
 
 	accountClick(account, event) {
-		if (account && event && !isUnd(event.which) && 1 === event.which) {
-			AccountStore.accounts.loading(true);
-			_.delay(() => AccountStore.accounts.loading(false), Magics.Time1s);
+		if (account && 0 === event.button) {
+			AccountUserStore.loading(true);
+			setTimeout(() => AccountUserStore.loading(false), 1000);
 		}
 
 		return true;
 	}
 
 	emailTitle() {
-		return AccountStore.email();
+		return AccountUserStore.email();
 	}
 
 	settingsClick() {
-		if (Settings.capa(Capa.Settings)) {
-			setHash(settings());
-		}
+		this.allowSettings && rl.route.setHash(settings());
 	}
 
 	settingsHelp() {
-		if (Settings.capa(Capa.Help)) {
-			showScreenPopup(require('View/Popup/KeyboardShortcutsHelp'));
-		}
+		this.allowHelp && showScreenPopup(KeyboardShortcutsHelpPopupView);
 	}
 
 	addAccountClick() {
-		if (this.capaAdditionalAccounts()) {
-			showScreenPopup(require('View/Popup/Account'));
-		}
+		this.allowAccounts && showScreenPopup(AccountPopupView);
+	}
+
+	contactsClick() {
+		this.allowContacts && showScreenPopup(ContactsPopupView);
+	}
+
+	layoutDesktop()
+	{
+		doc.cookie = 'rllayout=desktop';
+		ThemeStore.isMobile(false);
+		leftPanelDisabled(false);
+//		location.reload();
+	}
+
+	layoutMobile()
+	{
+		doc.cookie = 'rllayout=mobile';
+		ThemeStore.isMobile(true);
+		leftPanelDisabled(true);
+//		location.reload();
 	}
 
 	logoutClick() {
-		getApp().logout();
+		rl.app.logout();
 	}
 
 	onBuild() {
-		key('`', [KeyState.MessageList, KeyState.MessageView, KeyState.Settings], () => {
-			if (this.viewModelVisibility()) {
-				MessageStore.messageFullScreenMode(false);
+		shortcuts.add('m,contextmenu', '', [Scope.MessageList, Scope.MessageView, Scope.Settings], () => {
+			if (this.viewModelVisible) {
+				MessageUserStore.messageFullScreenMode(false);
 				this.accountMenuDropdownTrigger(true);
+				return false;
 			}
 		});
 
 		// shortcuts help
-		key('shift+/', [KeyState.MessageList, KeyState.MessageView, KeyState.Settings], () => {
-			if (this.viewModelVisibility()) {
-				showScreenPopup(require('View/Popup/KeyboardShortcutsHelp'));
+		shortcuts.add('?,f1,help', '', [Scope.MessageList, Scope.MessageView, Scope.Settings], () => {
+			if (this.viewModelVisible) {
+				showScreenPopup(KeyboardShortcutsHelpPopupView);
 				return false;
 			}
 			return true;
 		});
 	}
 }
-
-export { AbstractSystemDropDownUserView, AbstractSystemDropDownUserView as default };

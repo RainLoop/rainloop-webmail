@@ -1,233 +1,182 @@
-import _ from '_';
-import ko from 'ko';
+import { pInt, pString } from 'Common/Utils';
+import { i18n, getNotification } from 'Common/Translator';
 
-import { StorageResultType, ServerSecure, Ports, Notification } from 'Common/Enums';
-import { IMAP_DEFAULT_PORT, SIEVE_DEFAULT_PORT, SMTP_DEFAULT_PORT } from 'Common/Consts';
-import { bMobileDevice } from 'Common/Globals';
-import { trim, pInt, pString } from 'Common/Utils';
-import { i18n } from 'Common/Translator';
+import Remote from 'Remote/Admin/Fetch';
 
-import CapaAdminStore from 'Stores/Admin/Capa';
+import { decorateKoCommands } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-import Remote from 'Remote/Admin/Ajax';
+import { DomainAdminStore } from 'Stores/Admin/Domain';
 
-import { getApp } from 'Helper/Apps/Admin';
-
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
-
-@popup({
-	name: 'View/Popup/Domain',
-	templateID: 'PopupsDomain'
-})
-class DomainPopupView extends AbstractViewNext {
+class DomainPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('Domain');
 
-		this.edit = ko.observable(false);
-		this.saving = ko.observable(false);
-		this.savingError = ko.observable('');
-		this.page = ko.observable('main');
-		this.sieveSettings = ko.observable(false);
+		this.addObservables({
+			edit: false,
+			saving: false,
+			savingError: '',
+			page: 'main',
+			sieveSettings: false,
 
-		this.testing = ko.observable(false);
-		this.testingDone = ko.observable(false);
-		this.testingImapError = ko.observable(false);
-		this.testingSieveError = ko.observable(false);
-		this.testingSmtpError = ko.observable(false);
-		this.testingImapErrorDesc = ko.observable('');
-		this.testingSieveErrorDesc = ko.observable('');
-		this.testingSmtpErrorDesc = ko.observable('');
+			testing: false,
+			testingDone: false,
+			testingImapError: false,
+			testingSieveError: false,
+			testingSmtpError: false,
+			testingImapErrorDesc: '',
+			testingSieveErrorDesc: '',
+			testingSmtpErrorDesc: '',
 
-		this.testingImapError.subscribe((value) => {
-			if (!value) {
-				this.testingImapErrorDesc('');
-			}
+			imapServerFocus: false,
+			sieveServerFocus: false,
+			smtpServerFocus: false,
+
+			name: '',
+
+			imapServer: '',
+			imapPort: '143',
+			imapSecure: 0,
+			imapShortLogin: false,
+			useSieve: false,
+			sieveServer: '',
+			sievePort: '4190',
+			sieveSecure: 0,
+			smtpServer: '',
+			smtpPort: '25',
+			smtpSecure: 0,
+			smtpShortLogin: false,
+			smtpAuth: true,
+			smtpSetSender: false,
+			smtpPhpMail: false,
+			whiteList: '',
+			aliasName: '',
+
+			enableSmartPorts: false
 		});
 
-		this.testingSieveError.subscribe((value) => {
-			if (!value) {
-				this.testingSieveErrorDesc('');
-			}
-		});
+		this.addComputables({
+			headerText: () => {
+				const name = this.name(),
+					aliasName = this.aliasName();
 
-		this.testingSmtpError.subscribe((value) => {
-			if (!value) {
-				this.testingSmtpErrorDesc('');
-			}
-		});
+				let result = '';
 
-		this.imapServerFocus = ko.observable(false);
-		this.sieveServerFocus = ko.observable(false);
-		this.smtpServerFocus = ko.observable(false);
-
-		this.name = ko.observable('');
-		this.name.focused = ko.observable(false);
-
-		this.imapServer = ko.observable('');
-		this.imapPort = ko.observable('' + IMAP_DEFAULT_PORT);
-		this.imapSecure = ko.observable(ServerSecure.None);
-		this.imapShortLogin = ko.observable(false);
-		this.useSieve = ko.observable(false);
-		this.sieveAllowRaw = ko.observable(false);
-		this.sieveServer = ko.observable('');
-		this.sievePort = ko.observable('' + SIEVE_DEFAULT_PORT);
-		this.sieveSecure = ko.observable(ServerSecure.None);
-		this.smtpServer = ko.observable('');
-		this.smtpPort = ko.observable('' + SMTP_DEFAULT_PORT);
-		this.smtpSecure = ko.observable(ServerSecure.None);
-		this.smtpShortLogin = ko.observable(false);
-		this.smtpAuth = ko.observable(true);
-		this.smtpPhpMail = ko.observable(false);
-		this.whiteList = ko.observable('');
-		this.aliasName = ko.observable('');
-
-		this.enableSmartPorts = ko.observable(false);
-
-		this.allowSieve = ko.computed(() => CapaAdminStore.filters() && CapaAdminStore.sieve());
-
-		this.headerText = ko.computed(() => {
-			const name = this.name(),
-				aliasName = this.aliasName();
-
-			let result = '';
-
-			if (this.edit()) {
-				result = i18n('POPUPS_DOMAIN/TITLE_EDIT_DOMAIN', { 'NAME': name });
-				if (aliasName) {
-					result += ' ← ' + aliasName;
+				if (this.edit()) {
+					result = i18n('POPUPS_DOMAIN/TITLE_EDIT_DOMAIN', { NAME: name });
+					if (aliasName) {
+						result += ' ← ' + aliasName;
+					}
+				} else {
+					result = name
+							? i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN_WITH_NAME', { NAME: name })
+							: i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN');
 				}
-			} else {
-				result =
-					'' === name
-						? i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN')
-						: i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN_WITH_NAME', { 'NAME': name });
-			}
 
-			return result;
+				return result;
+			},
+
+			domainDesc: () => {
+				const name = this.name();
+				return !this.edit() && name ? i18n('POPUPS_DOMAIN/NEW_DOMAIN_DESC', { NAME: '*@' + name }) : '';
+			},
+
+			domainIsComputed: () => {
+				const usePhpMail = this.smtpPhpMail(),
+					useSieve = this.useSieve();
+
+				return (
+					this.name() &&
+					this.imapServer() &&
+					this.imapPort() &&
+					(useSieve ? this.sieveServer() && this.sievePort() : true) &&
+					((this.smtpServer() && this.smtpPort()) || usePhpMail)
+				);
+			},
+
+			canBeTested: () => !this.testing() && this.domainIsComputed(),
+			canBeSaved: () => !this.saving() && this.domainIsComputed()
 		});
 
-		this.domainDesc = ko.computed(() => {
-			const name = this.name();
-			return !this.edit() && name ? i18n('POPUPS_DOMAIN/NEW_DOMAIN_DESC', { 'NAME': '*@' + name }) : '';
-		});
+		this.addSubscribables({
+			testingImapError: value => value || this.testingImapErrorDesc(''),
+			testingSieveError: value => value || this.testingSieveErrorDesc(''),
+			testingSmtpError: value => value || this.testingSmtpErrorDesc(''),
 
-		this.domainIsComputed = ko.computed(() => {
-			const usePhpMail = this.smtpPhpMail(),
-				allowSieve = this.allowSieve(),
-				useSieve = this.useSieve();
+			page: () => this.sieveSettings(false),
 
-			return (
-				'' !== this.name() &&
-				'' !== this.imapServer() &&
-				'' !== this.imapPort() &&
-				(allowSieve && useSieve ? '' !== this.sieveServer() && '' !== this.sievePort() : true) &&
-				(('' !== this.smtpServer() && '' !== this.smtpPort()) || usePhpMail)
-			);
-		});
+			// smart form improvements
+			imapServerFocus: value =>
+				value && this.name() && !this.imapServer() && this.imapServer(this.name().replace(/[.]?[*][.]?/g, '')),
 
-		this.canBeTested = ko.computed(() => !this.testing() && this.domainIsComputed());
-		this.canBeSaved = ko.computed(() => !this.saving() && this.domainIsComputed());
+			sieveServerFocus: value =>
+				value && this.imapServer() && !this.sieveServer() && this.sieveServer(this.imapServer()),
 
-		this.page.subscribe(() => {
-			this.sieveSettings(false);
-		});
+			smtpServerFocus: value => value && this.imapServer() && !this.smtpServer()
+				&& this.smtpServer(this.imapServer().replace(/imap/gi, 'smtp')),
 
-		// smart form improvements
-		this.imapServerFocus.subscribe((value) => {
-			if (value && '' !== this.name() && '' === this.imapServer()) {
-				this.imapServer(this.name().replace(/[.]?[*][.]?/g, ''));
-			}
-		});
-
-		this.sieveServerFocus.subscribe((value) => {
-			if (value && '' !== this.imapServer() && '' === this.sieveServer()) {
-				this.sieveServer(this.imapServer());
-			}
-		});
-
-		this.smtpServerFocus.subscribe((value) => {
-			if (value && '' !== this.imapServer() && '' === this.smtpServer()) {
-				this.smtpServer(this.imapServer().replace(/imap/gi, 'smtp'));
-			}
-		});
-
-		this.imapSecure.subscribe((value) => {
-			if (this.enableSmartPorts()) {
-				const port = pInt(this.imapPort());
-				switch (pString(value)) {
-					case '0':
-					case '2':
-						if (Ports.ImapSsl === port) {
-							this.imapPort(pString(Ports.Imap));
-						}
-						break;
-					case '1':
-						if (Ports.Imap === port) {
-							this.imapPort(pString(Ports.ImapSsl));
-						}
-						break;
-					// no default
+			imapSecure: value => {
+				if (this.enableSmartPorts()) {
+					const port = pInt(this.imapPort());
+					switch (pString(value)) {
+						case '0':
+						case '2':
+							if (993 === port) {
+								this.imapPort('143');
+							}
+							break;
+						case '1':
+							if (143 === port) {
+								this.imapPort('993');
+							}
+							break;
+						// no default
+					}
 				}
-			}
-		});
+			},
 
-		this.smtpSecure.subscribe((value) => {
-			if (this.enableSmartPorts()) {
-				const port = pInt(this.smtpPort());
-				switch (pString(value)) {
-					case '0':
-						if (Ports.SmtpSsl === port || Ports.SmtpStartTls === port) {
-							this.smtpPort(pString(Ports.Smtp));
-						}
-						break;
-					case '1':
-						if (Ports.Smtp === port || Ports.SmtpStartTls === port) {
-							this.smtpPort(pString(Ports.SmtpSsl));
-						}
-						break;
-					case '2':
-						if (Ports.Smtp === port || Ports.SmtpSsl === port) {
-							this.smtpPort(pString(Ports.SmtpStartTls));
-						}
-						break;
-					// no default
+			smtpSecure: value => {
+				if (this.enableSmartPorts()) {
+					const port = pInt(this.smtpPort());
+					switch (pString(value)) {
+						case '0':
+							if (465 === port || 587 === port) {
+								this.smtpPort('25');
+							}
+							break;
+						case '1':
+							if (25 === port || 587 === port) {
+								this.smtpPort('465');
+							}
+							break;
+						case '2':
+							if (25 === port || 465 === port) {
+								this.smtpPort('587');
+							}
+							break;
+						// no default
+					}
 				}
 			}
+		});
+
+		decorateKoCommands(this, {
+			createOrAddCommand: self => self.canBeSaved(),
+			testConnectionCommand: self => self.canBeTested(),
+			whiteListCommand: 1,
+			backCommand: 1,
+			sieveCommand: 1
 		});
 	}
 
-	@command((self) => self.canBeSaved())
 	createOrAddCommand() {
 		this.saving(true);
 		Remote.createOrUpdateDomain(
-			_.bind(this.onDomainCreateOrSaveResponse, this),
-			!this.edit(),
-			this.name(),
-
-			this.imapServer(),
-			pInt(this.imapPort()),
-			this.imapSecure(),
-			this.imapShortLogin(),
-
-			this.useSieve(),
-			this.sieveAllowRaw(),
-			this.sieveServer(),
-			pInt(this.sievePort()),
-			this.sieveSecure(),
-
-			this.smtpServer(),
-			pInt(this.smtpPort()),
-			this.smtpSecure(),
-			this.smtpShortLogin(),
-			this.smtpAuth(),
-			this.smtpPhpMail(),
-
-			this.whiteList()
+			this.onDomainCreateOrSaveResponse.bind(this),
+			this
 		);
 	}
 
-	@command((self) => self.canBeTested())
 	testConnectionCommand() {
 		this.page('main');
 
@@ -238,96 +187,72 @@ class DomainPopupView extends AbstractViewNext {
 		this.testing(true);
 
 		Remote.testConnectionForDomain(
-			_.bind(this.onTestConnectionResponse, this),
-			this.name(),
+			(iError, oData) => {
+				this.testing(false);
+				if (iError) {
+					this.testingImapError(true);
+					this.testingSieveError(true);
+					this.testingSmtpError(true);
+					this.sieveSettings(false);
+				} else {
+					let bImap = false,
+						bSieve = false;
 
-			this.imapServer(),
-			pInt(this.imapPort()),
-			this.imapSecure(),
+					this.testingDone(true);
+					this.testingImapError(true !== oData.Result.Imap);
+					this.testingSieveError(true !== oData.Result.Sieve);
+					this.testingSmtpError(true !== oData.Result.Smtp);
 
-			this.useSieve(),
-			this.sieveServer(),
-			pInt(this.sievePort()),
-			this.sieveSecure(),
+					if (this.testingImapError() && oData.Result.Imap) {
+						bImap = true;
+						this.testingImapErrorDesc('');
+						this.testingImapErrorDesc(oData.Result.Imap);
+					}
 
-			this.smtpServer(),
-			pInt(this.smtpPort()),
-			this.smtpSecure(),
-			this.smtpAuth(),
-			this.smtpPhpMail()
+					if (this.testingSieveError() && oData.Result.Sieve) {
+						bSieve = true;
+						this.testingSieveErrorDesc('');
+						this.testingSieveErrorDesc(oData.Result.Sieve);
+					}
+
+					if (this.testingSmtpError() && oData.Result.Smtp) {
+						this.testingSmtpErrorDesc('');
+						this.testingSmtpErrorDesc(oData.Result.Smtp);
+					}
+
+					if (this.sieveSettings()) {
+						if (!bSieve && bImap) {
+							this.sieveSettings(false);
+						}
+					} else if (bSieve && !bImap) {
+						this.sieveSettings(true);
+					}
+				}
+			},
+			this
 		);
 	}
 
-	@command()
 	whiteListCommand() {
 		this.page('white-list');
 	}
 
-	@command()
 	backCommand() {
 		this.page('main');
 	}
 
-	@command()
 	sieveCommand() {
 		this.sieveSettings(!this.sieveSettings());
 		this.clearTesting();
 	}
 
-	onTestConnectionResponse(sResult, oData) {
-		this.testing(false);
-		if (StorageResultType.Success === sResult && oData.Result) {
-			let bImap = false,
-				bSieve = false;
-
-			this.testingDone(true);
-			this.testingImapError(true !== oData.Result.Imap);
-			this.testingSieveError(true !== oData.Result.Sieve);
-			this.testingSmtpError(true !== oData.Result.Smtp);
-
-			if (this.testingImapError() && oData.Result.Imap) {
-				bImap = true;
-				this.testingImapErrorDesc('');
-				this.testingImapErrorDesc(oData.Result.Imap);
-			}
-
-			if (this.testingSieveError() && oData.Result.Sieve) {
-				bSieve = true;
-				this.testingSieveErrorDesc('');
-				this.testingSieveErrorDesc(oData.Result.Sieve);
-			}
-
-			if (this.testingSmtpError() && oData.Result.Smtp) {
-				this.testingSmtpErrorDesc('');
-				this.testingSmtpErrorDesc(oData.Result.Smtp);
-			}
-
-			if (this.sieveSettings()) {
-				if (!bSieve && bImap) {
-					this.sieveSettings(false);
-				}
-			} else if (bSieve && !bImap) {
-				this.sieveSettings(true);
-			}
-		} else {
-			this.testingImapError(true);
-			this.testingSieveError(true);
-			this.testingSmtpError(true);
-			this.sieveSettings(false);
-		}
-	}
-
-	onDomainCreateOrSaveResponse(sResult, oData) {
+	onDomainCreateOrSaveResponse(iError) {
 		this.saving(false);
-		if (StorageResultType.Success === sResult && oData) {
-			if (oData.Result) {
-				getApp().reloadDomainList();
-				this.closeCommand();
-			} else if (Notification.DomainAlreadyExists === oData.ErrorCode) {
-				this.savingError(i18n('ERRORS/DOMAIN_ALREADY_EXISTS'));
-			}
+		if (iError) {
+			this.savingError(getNotification(iError));
 		} else {
-			this.savingError(i18n('ERRORS/UNKNOWN_ERROR'));
+			DomainAdminStore.fetch();
+			this.closeCommand();
 		}
 	}
 
@@ -358,32 +283,26 @@ class DomainPopupView extends AbstractViewNext {
 
 			this.edit(true);
 
-			this.name(trim(oDomain.Name));
-			this.imapServer(trim(oDomain.IncHost));
+			this.name(oDomain.Name);
+			this.imapServer(oDomain.IncHost);
 			this.imapPort('' + pInt(oDomain.IncPort));
-			this.imapSecure(trim(oDomain.IncSecure));
+			this.imapSecure(oDomain.IncSecure);
 			this.imapShortLogin(!!oDomain.IncShortLogin);
 			this.useSieve(!!oDomain.UseSieve);
-			this.sieveAllowRaw(!!oDomain.SieveAllowRaw);
-			this.sieveServer(trim(oDomain.SieveHost));
+			this.sieveServer(oDomain.SieveHost);
 			this.sievePort('' + pInt(oDomain.SievePort));
-			this.sieveSecure(trim(oDomain.SieveSecure));
-			this.smtpServer(trim(oDomain.OutHost));
+			this.sieveSecure(oDomain.SieveSecure);
+			this.smtpServer(oDomain.OutHost);
 			this.smtpPort('' + pInt(oDomain.OutPort));
-			this.smtpSecure(trim(oDomain.OutSecure));
+			this.smtpSecure(oDomain.OutSecure);
 			this.smtpShortLogin(!!oDomain.OutShortLogin);
 			this.smtpAuth(!!oDomain.OutAuth);
+			this.smtpSetSender(!!oDomain.OutSetSender);
 			this.smtpPhpMail(!!oDomain.OutUsePhpMail);
-			this.whiteList(trim(oDomain.WhiteList));
-			this.aliasName(trim(oDomain.AliasName));
+			this.whiteList(oDomain.WhiteList);
+			this.aliasName(oDomain.AliasName);
 
 			this.enableSmartPorts(true);
-		}
-	}
-
-	onShowWithDelay() {
-		if ('' === this.name() && !bMobileDevice) {
-			this.name.focused(true);
 		}
 	}
 
@@ -398,24 +317,23 @@ class DomainPopupView extends AbstractViewNext {
 		this.savingError('');
 
 		this.name('');
-		this.name.focused(false);
 
 		this.imapServer('');
-		this.imapPort('' + IMAP_DEFAULT_PORT);
-		this.imapSecure(ServerSecure.None);
+		this.imapPort('143');
+		this.imapSecure(0);
 		this.imapShortLogin(false);
 
 		this.useSieve(false);
-		this.sieveAllowRaw(false);
 		this.sieveServer('');
-		this.sievePort('' + SIEVE_DEFAULT_PORT);
-		this.sieveSecure(ServerSecure.None);
+		this.sievePort('4190');
+		this.sieveSecure(0);
 
 		this.smtpServer('');
-		this.smtpPort('' + SMTP_DEFAULT_PORT);
-		this.smtpSecure(ServerSecure.None);
+		this.smtpPort('25');
+		this.smtpSecure(0);
 		this.smtpShortLogin(false);
 		this.smtpAuth(true);
+		this.smtpSetSender(true);
 		this.smtpPhpMail(false);
 
 		this.whiteList('');

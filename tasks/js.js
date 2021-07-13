@@ -6,22 +6,47 @@ const concat = require('gulp-concat-util'),
 	rename = require('gulp-rename'),
 	replace = require('gulp-replace'),
 	terser = require('gulp-terser'),
-	plumber = require('gulp-plumber'),
-	gulpif = require('gulp-if'),
 	eol = require('gulp-eol'),
 	eslint = require('gulp-eslint'),
 	cache = require('gulp-cached'),
 	expect = require('gulp-expect-file'),
 	size = require('gulp-size'),
-	sourcemaps = require('gulp-sourcemaps'),
 	gutil = require('gulp-util');
 
 const { config } = require('./config');
 const { del, getHead } = require('./common');
 
-const { webpack } = require('./webpack');
+const { rollupJS } = require('./rollup');
 
 const jsClean = () => del(config.paths.staticJS + '/**/*.{js,map}');
+
+// boot
+const jsBoot = () => {
+	return gulp
+		.src('dev/boot.js')
+		.pipe(gulp.dest(config.paths.staticJS));
+};
+
+// ServiceWorker
+const jsServiceWorker = () => {
+	return gulp
+		.src('dev/serviceworker.js')
+		.pipe(gulp.dest(config.paths.staticJS));
+};
+
+// OpenPGP
+const jsOpenPGP = () => {
+	return gulp
+		.src('vendors/openpgp-2.6.2/dist/openpgp.js')
+		.pipe(gulp.dest(config.paths.staticJS));
+};
+
+// OpenPGP Worker
+const jsOpenPGPWorker = () => {
+	return gulp
+		.src('vendors/openpgp-2.6.2/dist/openpgp.worker.min.js')
+		.pipe(gulp.dest(config.paths.staticMinJS));
+};
 
 // libs
 const jsLibs = () => {
@@ -36,17 +61,17 @@ const jsLibs = () => {
 };
 
 // app
-const jsApp = () =>
-	gulp
-		.src(config.paths.staticJS + config.paths.js.app.name)
+const jsApp = async () =>
+	(await rollupJS(config.paths.js.app.name))
+//		.pipe(sourcemaps.write('.'))
 		.pipe(header(getHead() + '\n'))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(config.paths.staticJS))
 		.on('error', gutil.log);
 
-const jsAdmin = () =>
-	gulp
-		.src(config.paths.staticJS + config.paths.js.admin.name)
+const jsAdmin = async () =>
+	(await rollupJS(config.paths.js.admin.name))
+//		.pipe(sourcemaps.write('.'))
 		.pipe(header(getHead() + '\n'))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(config.paths.staticJS))
@@ -61,18 +86,30 @@ const jsMin = () =>
 				showTotal: false
 			})
 		)
-		.pipe(gulpif(config.source, sourcemaps.init({ loadMaps: true })))
-		.pipe(replace(/"rainloop\/v\/([^/]+)\/static\/js\/"/g, '"rainloop/v/$1/static/js/min/"'))
+		.pipe(replace(/"snappymail\/v\/([^/]+)\/static\/js\/"/g, '"snappymail/v/$1/static/js/min/"'))
 		.pipe(rename({ suffix: '.min' }))
 		.pipe(
 			terser({
 				output: {
 					comments: false
+				},
+				keep_classnames: true, // Required for AbstractModel and AbstractCollectionModel
+				compress:{
+					ecma: 6,
+					drop_console: true
+/*
+					,hoist_props: false
+					,keep_fargs: false
+					,toplevel: true
+					,unsafe_arrows: true // Issue with knockoutjs
+					,unsafe_methods: true
+					,unsafe_proto: true
+*/
 				}
+//				,mangle: {reserved:['SendMessage']}
 			})
 		)
 		.pipe(eol('\n', true))
-		.pipe(gulpif(config.source, sourcemaps.write('./')))
 		.pipe(
 			size({
 				showFiles: true,
@@ -87,13 +124,12 @@ const jsLint = () =>
 		.src(config.paths.globjs)
 		.pipe(cache('eslint'))
 		.pipe(eslint())
-		.pipe(gulpif(config.watch, plumber()))
 		.pipe(eslint.format())
 		.pipe(eslint.failAfterError());
 
 const jsState1 = gulp.series(jsLint);
-const jsState3 = gulp.parallel(jsLibs, jsApp, jsAdmin);
-const jsState2 = gulp.series(jsClean, webpack, jsState3, jsMin);
+const jsState3 = gulp.parallel(jsBoot, jsServiceWorker, jsOpenPGP, jsOpenPGPWorker, jsLibs, jsApp, jsAdmin);
+const jsState2 = gulp.series(jsClean, jsState3, jsMin);
 
 exports.jsLint = jsLint;
 exports.js = gulp.parallel(jsState1, jsState2);

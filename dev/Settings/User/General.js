@@ -1,65 +1,63 @@
-import _ from '_';
 import ko from 'ko';
 
 import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
-import { bAnimationSupported } from 'Common/Globals';
-
-import { SaveSettingsStep, Magics, EditorDefaultType, Layout } from 'Common/Enums';
-
-import { settingsSaveHelperSimpleFunction, convertLangName, isArray, timeOutAction, boolToAjax } from 'Common/Utils';
-
-import { i18n, trigger as translatorTrigger, reload as translatorReload } from 'Common/Translator';
+import { SaveSettingsStep } from 'Common/Enums';
+import { EditorDefaultType, Layout } from 'Common/EnumsUser';
+import { SettingsGet } from 'Common/Globals';
+import { isArray, settingsSaveHelperSimpleFunction, addObservablesTo, addSubscribablesTo } from 'Common/Utils';
+import { i18n, trigger as translatorTrigger, reload as translatorReload, convertLangName } from 'Common/Translator';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
-import AppStore from 'Stores/User/App';
-import LanguageStore from 'Stores/Language';
-import SettingsStore from 'Stores/User/Settings';
-import IdentityStore from 'Stores/User/Identity';
-import NotificationStore from 'Stores/User/Notification';
-import MessageStore from 'Stores/User/Message';
+import { AppUserStore } from 'Stores/User/App';
+import { LanguageStore } from 'Stores/Language';
+import { SettingsUserStore } from 'Stores/User/Settings';
+import { IdentityUserStore } from 'Stores/User/Identity';
+import { NotificationUserStore } from 'Stores/User/Notification';
+import { MessageUserStore } from 'Stores/User/Message';
 
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
-class GeneralUserSettings {
+import { IdentityPopupView } from 'View/Popup/Identity';
+import { LanguagesPopupView } from 'View/Popup/Languages';
+
+export class GeneralUserSettings {
 	constructor() {
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
-		this.messagesPerPage = SettingsStore.messagesPerPage;
+		this.messagesPerPage = SettingsUserStore.messagesPerPage;
 		this.messagesPerPageArray = MESSAGES_PER_PAGE_VALUES;
 
-		this.editorDefaultType = SettingsStore.editorDefaultType;
-		this.layout = SettingsStore.layout;
-		this.usePreviewPane = SettingsStore.usePreviewPane;
+		this.editorDefaultType = SettingsUserStore.editorDefaultType;
+		this.layout = SettingsUserStore.layout;
 
-		this.soundNotificationIsSupported = NotificationStore.soundNotificationIsSupported;
-		this.enableSoundNotification = NotificationStore.enableSoundNotification;
+		this.enableSoundNotification = NotificationUserStore.enableSoundNotification;
 
-		this.enableDesktopNotification = NotificationStore.enableDesktopNotification;
-		this.isDesktopNotificationSupported = NotificationStore.isDesktopNotificationSupported;
-		this.isDesktopNotificationDenied = NotificationStore.isDesktopNotificationDenied;
+		this.enableDesktopNotification = NotificationUserStore.enableDesktopNotification;
+		this.isDesktopNotificationDenied = NotificationUserStore.isDesktopNotificationDenied;
 
-		this.showImages = SettingsStore.showImages;
-		this.useCheckboxesInList = SettingsStore.useCheckboxesInList;
-		this.threadsAllowed = AppStore.threadsAllowed;
-		this.useThreads = SettingsStore.useThreads;
-		this.replySameFolder = SettingsStore.replySameFolder;
-		this.allowLanguagesOnSettings = AppStore.allowLanguagesOnSettings;
+		this.showImages = SettingsUserStore.showImages;
+		this.removeColors = SettingsUserStore.removeColors;
+		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
+		this.threadsAllowed = AppUserStore.threadsAllowed;
+		this.useThreads = SettingsUserStore.useThreads;
+		this.replySameFolder = SettingsUserStore.replySameFolder;
+		this.allowLanguagesOnSettings = !!SettingsGet('AllowLanguagesOnSettings');
 
 		this.languageFullName = ko.computed(() => convertLangName(this.language()));
-		this.languageTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: Magics.Time100ms });
+		this.languageTrigger = ko.observable(SaveSettingsStep.Idle).extend({ debounce: 100 });
 
-		this.mppTrigger = ko.observable(SaveSettingsStep.Idle);
-		this.editorDefaultTypeTrigger = ko.observable(SaveSettingsStep.Idle);
-		this.layoutTrigger = ko.observable(SaveSettingsStep.Idle);
+		addObservablesTo(this, {
+			mppTrigger: SaveSettingsStep.Idle,
+			editorDefaultTypeTrigger: SaveSettingsStep.Idle,
+			layoutTrigger: SaveSettingsStep.Idle
+		});
 
-		this.isAnimationSupported = bAnimationSupported;
-
-		this.identities = IdentityStore.identities;
+		this.identities = IdentityUserStore;
 
 		this.identityMain = ko.computed(() => {
 			const list = this.identities();
-			return isArray(list) ? _.find(list, (item) => item && '' === item.id()) : null;
+			return isArray(list) ? list.find(item => item && !item.id()) : null;
 		});
 
 		this.identityMainDesc = ko.computed(() => {
@@ -70,120 +68,84 @@ class GeneralUserSettings {
 		this.editorDefaultTypes = ko.computed(() => {
 			translatorTrigger();
 			return [
-				{ 'id': EditorDefaultType.Html, 'name': i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML') },
-				{ 'id': EditorDefaultType.Plain, 'name': i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN') },
-				{ 'id': EditorDefaultType.HtmlForced, 'name': i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML_FORCED') },
-				{ 'id': EditorDefaultType.PlainForced, 'name': i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN_FORCED') }
+				{ id: EditorDefaultType.Html, name: i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML') },
+				{ id: EditorDefaultType.Plain, name: i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN') },
+				{ id: EditorDefaultType.HtmlForced, name: i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML_FORCED') },
+				{ id: EditorDefaultType.PlainForced, name: i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN_FORCED') }
 			];
 		});
 
 		this.layoutTypes = ko.computed(() => {
 			translatorTrigger();
 			return [
-				{ 'id': Layout.NoPreview, 'name': i18n('SETTINGS_GENERAL/LABEL_LAYOUT_NO_SPLIT') },
-				{ 'id': Layout.SidePreview, 'name': i18n('SETTINGS_GENERAL/LABEL_LAYOUT_VERTICAL_SPLIT') },
-				{ 'id': Layout.BottomPreview, 'name': i18n('SETTINGS_GENERAL/LABEL_LAYOUT_HORIZONTAL_SPLIT') }
+				{ id: Layout.NoPreview, name: i18n('SETTINGS_GENERAL/LABEL_LAYOUT_NO_SPLIT') },
+				{ id: Layout.SidePreview, name: i18n('SETTINGS_GENERAL/LABEL_LAYOUT_VERTICAL_SPLIT') },
+				{ id: Layout.BottomPreview, name: i18n('SETTINGS_GENERAL/LABEL_LAYOUT_HORIZONTAL_SPLIT') }
 			];
+		});
+
+		const fReloadLanguageHelper = (saveSettingsStep) => () => {
+				this.languageTrigger(saveSettingsStep);
+				setTimeout(() => this.languageTrigger(SaveSettingsStep.Idle), 1000);
+			};
+		addSubscribablesTo(this, {
+			language: value => {
+				this.languageTrigger(SaveSettingsStep.Animate);
+				translatorReload(false, value)
+					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult),
+						fReloadLanguageHelper(SaveSettingsStep.FalseResult))
+					.then(() => Remote.saveSetting('Language', value));
+			},
+
+			editorDefaultType: value => Remote.saveSetting('EditorDefaultType', value,
+				settingsSaveHelperSimpleFunction(this.editorDefaultTypeTrigger, this)),
+
+			messagesPerPage: value => Remote.saveSetting('MPP', value,
+				settingsSaveHelperSimpleFunction(this.mppTrigger, this)),
+
+			showImages: value => Remote.saveSetting('ShowImages', value ? 1 : 0),
+
+			removeColors: value => {
+				MessageUserStore.messagesBodiesDom().innerHTML = '';
+				Remote.saveSetting('RemoveColors', value ? 1 : 0);
+			},
+
+			useCheckboxesInList: value => Remote.saveSetting('UseCheckboxesInList', value ? 1 : 0),
+
+			enableDesktopNotification: value => Remote.saveSetting('DesktopNotifications', value ? 1 : 0),
+
+			enableSoundNotification: value => Remote.saveSetting('SoundNotification', value ? 1 : 0),
+
+			replySameFolder: value => Remote.saveSetting('ReplySameFolder', value ? 1 : 0),
+
+			useThreads: value => {
+				MessageUserStore.list([]);
+				Remote.saveSetting('UseThreads', value ? 1 : 0);
+			},
+
+			layout: value => {
+				MessageUserStore.list([]);
+				Remote.saveSetting('Layout', value, settingsSaveHelperSimpleFunction(this.layoutTrigger, this));
+			}
 		});
 	}
 
 	editMainIdentity() {
 		const identity = this.identityMain();
 		if (identity) {
-			showScreenPopup(require('View/Popup/Identity'), [identity]);
+			showScreenPopup(IdentityPopupView, [identity]);
 		}
 	}
 
 	testSoundNotification() {
-		NotificationStore.playSoundNotification(true);
+		NotificationUserStore.playSoundNotification(true);
 	}
 
-	onBuild() {
-		_.delay(() => {
-			const f0 = settingsSaveHelperSimpleFunction(this.editorDefaultTypeTrigger, this),
-				f1 = settingsSaveHelperSimpleFunction(this.mppTrigger, this),
-				f2 = settingsSaveHelperSimpleFunction(this.layoutTrigger, this),
-				fReloadLanguageHelper = (saveSettingsStep) => () => {
-					this.languageTrigger(saveSettingsStep);
-					_.delay(() => this.languageTrigger(SaveSettingsStep.Idle), Magics.Time1s);
-				};
-
-			this.language.subscribe((value) => {
-				this.languageTrigger(SaveSettingsStep.Animate);
-				translatorReload(false, value)
-					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult), fReloadLanguageHelper(SaveSettingsStep.FalseResult))
-					.then(() => {
-						Remote.saveSettings(null, {
-							'Language': value
-						});
-					});
-			});
-
-			this.editorDefaultType.subscribe(Remote.saveSettingsHelper('EditorDefaultType', null, f0));
-			this.messagesPerPage.subscribe(Remote.saveSettingsHelper('MPP', null, f1));
-			this.showImages.subscribe(Remote.saveSettingsHelper('ShowImages', boolToAjax));
-
-			this.useCheckboxesInList.subscribe(Remote.saveSettingsHelper('UseCheckboxesInList', boolToAjax));
-
-			this.enableDesktopNotification.subscribe((value) => {
-				timeOutAction(
-					'SaveDesktopNotifications',
-					() => {
-						Remote.saveSettings(null, {
-							'DesktopNotifications': boolToAjax(value)
-						});
-					},
-					Magics.Time3s
-				);
-			});
-
-			this.enableSoundNotification.subscribe((value) => {
-				timeOutAction(
-					'SaveSoundNotification',
-					() => {
-						Remote.saveSettings(null, {
-							'SoundNotification': boolToAjax(value)
-						});
-					},
-					Magics.Time3s
-				);
-			});
-
-			this.replySameFolder.subscribe((value) => {
-				timeOutAction(
-					'SaveReplySameFolder',
-					() => {
-						Remote.saveSettings(null, {
-							'ReplySameFolder': boolToAjax(value)
-						});
-					},
-					Magics.Time3s
-				);
-			});
-
-			this.useThreads.subscribe((value) => {
-				MessageStore.messageList([]);
-				Remote.saveSettings(null, {
-					'UseThreads': boolToAjax(value)
-				});
-			});
-
-			this.layout.subscribe((value) => {
-				MessageStore.messageList([]);
-				Remote.saveSettings(f2, {
-					'Layout': value
-				});
-			});
-		}, Magics.Time50ms);
-	}
-
-	onShow() {
-		this.enableDesktopNotification.valueHasMutated();
+	testSystemNotification() {
+		NotificationUserStore.displayDesktopNotification('SnappyMail', 'Test notification');
 	}
 
 	selectLanguage() {
-		showScreenPopup(require('View/Popup/Languages'), [this.language, this.languages(), LanguageStore.userLanguage()]);
+		showScreenPopup(LanguagesPopupView, [this.language, this.languages(), LanguageStore.userLanguage()]);
 	}
 }
-
-export { GeneralUserSettings, GeneralUserSettings as default };

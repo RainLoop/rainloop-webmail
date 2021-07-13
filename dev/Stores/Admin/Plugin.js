@@ -1,11 +1,24 @@
 import ko from 'ko';
+import Remote from 'Remote/Admin/Fetch';
 
-class PluginAdminStore {
-	constructor() {
-		this.plugins = ko.observableArray([]);
-		this.plugins.loading = ko.observable(false).extend({ throttle: 100 });
-		this.plugins.error = ko.observable('');
-	}
-}
+export const PluginAdminStore = ko.observableArray();
 
-export default new PluginAdminStore();
+PluginAdminStore.loading = ko.observable(false);
+
+PluginAdminStore.error = ko.observable('');
+
+PluginAdminStore.fetch = () => {
+	PluginAdminStore.loading(true);
+	Remote.pluginList((iError, data) => {
+		PluginAdminStore.loading(false);
+		if (!iError) {
+			PluginAdminStore(
+				data.Result.map(item => ({
+					name: item.Name,
+					disabled: ko.observable(!item.Enabled),
+					configured: ko.observable(!!item.Configured)
+				}))
+			);
+		}
+	});
+};

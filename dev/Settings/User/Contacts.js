@@ -1,51 +1,44 @@
 import ko from 'ko';
 
-import { Magics } from 'Common/Enums';
-import { boolToAjax } from 'Common/Utils';
+import { SettingsGet } from 'Common/Globals';
+import { ContactUserStore } from 'Stores/User/Contact';
+import Remote from 'Remote/User/Fetch';
 
-import AppStore from 'Stores/User/App';
-import ContactStore from 'Stores/User/Contact';
-import Remote from 'Remote/User/Ajax';
-
-class ContactsUserSettings {
+export class ContactsUserSettings {
 	constructor() {
-		this.contactsAutosave = AppStore.contactsAutosave;
+		this.contactsAutosave = ko.observable(!!SettingsGet('ContactsAutosave'));
 
-		this.allowContactsSync = ContactStore.allowContactsSync;
-		this.enableContactsSync = ContactStore.enableContactsSync;
-		this.contactsSyncUrl = ContactStore.contactsSyncUrl;
-		this.contactsSyncUser = ContactStore.contactsSyncUser;
-		this.contactsSyncPass = ContactStore.contactsSyncPass;
+		this.allowContactsSync = ContactUserStore.allowSync;
+		this.enableContactsSync = ContactUserStore.enableSync;
+		this.contactsSyncUrl = ContactUserStore.syncUrl;
+		this.contactsSyncUser = ContactUserStore.syncUser;
+		this.contactsSyncPass = ContactUserStore.syncPass;
 
 		this.saveTrigger = ko
 			.computed(() =>
 				[
-					this.enableContactsSync() ? '1' : '0',
-					this.contactsSyncUrl(),
-					this.contactsSyncUser(),
-					this.contactsSyncPass()
+					ContactUserStore.enableSync() ? '1' : '0',
+					ContactUserStore.syncUrl(),
+					ContactUserStore.syncUser(),
+					ContactUserStore.syncPass()
 				].join('|')
 			)
-			.extend({ throttle: Magics.Time500ms });
-	}
+			.extend({ debounce: 500 });
 
-	onBuild() {
-		this.contactsAutosave.subscribe((value) => {
+		this.contactsAutosave.subscribe(value =>
 			Remote.saveSettings(null, {
-				'ContactsAutosave': boolToAjax(value)
-			});
-		});
+				ContactsAutosave: value ? 1 : 0
+			})
+		);
 
-		this.saveTrigger.subscribe(() => {
+		this.saveTrigger.subscribe(() =>
 			Remote.saveContactsSyncData(
 				null,
-				this.enableContactsSync(),
-				this.contactsSyncUrl(),
-				this.contactsSyncUser(),
-				this.contactsSyncPass()
-			);
-		});
+				ContactUserStore.enableSync(),
+				ContactUserStore.syncUrl(),
+				ContactUserStore.syncUser(),
+				ContactUserStore.syncPass()
+			)
+		);
 	}
 }
-
-export { ContactsUserSettings, ContactsUserSettings as default };

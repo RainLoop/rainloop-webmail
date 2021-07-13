@@ -10,7 +10,7 @@
 	list-style: none;
 	line-height: 24px;
 	border: 0;
-	background-color: #fff;
+	background-color: rgba(128, 128, 128, 0.1);
 
 	box-shadow: 0 1px 4px #ccc;
 	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
@@ -28,41 +28,35 @@
 		box-shadow: 0 0 0 1px rgba(0, 0, 255, 0.1), 0 1px 5px rgba(0, 0, 255, 0.2);
 	}
 
-	.checkedParent {
+	.checkboxAttachment {
+		bottom: 6px;
+		cursor: pointer;
 		position: absolute;
-		top: 0;
-		right: 0;
-		padding: 1px 4px 0px 5px;
-		background: #FAFAFA;
-		border: 0px solid #CCC;
+		right: 6px;
 	}
 
 	.attachmentSize {
 		font-size: 12px;
-		color: #999;
+		opacity: 0.5;
 	}
 
 	&.error {
-		.attachmentIcon, .attachmentSize, .attachmentName {
+		.iconMain, .iconPreview, .attachmentSize, .attachmentName {
 			color: red;
 		}
 	}
 
 	.attachmentIconParent {
 
-		position: relative;
-
+		position: absolute;
 		height: 56px;
 		width: 60px;
-
-		background: none;
+		text-align: center;
 
 		.iconPreview, .iconBG, .iconMain, .iconProgress {
 			position: absolute;
 			top: 0;
 			left: 0;
-
-			display: inline-block;
 			width: 100%;
 			height: 100%;
 		}
@@ -74,25 +68,13 @@
 
 		.iconBG {
 			font-size: 18px;
-			text-align: center;
-			color: #999;
 			font-weight: bold;
 			line-height: 55px;
-			text-shadow: 0 1px 0 #fff;
 			text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 		}
 
 		.iconPreview {
 			display: none;
-
-			background: #555;
-			background-image: none;
-			background: rgba(0, 0, 0, .5) !important;
-
-			.attachmentIcon {
-				color: #fff;
-				text-shadow: 0 1px 0 #000;
-			}
 		}
 	}
 
@@ -106,37 +88,18 @@
 
 		cursor: pointer;
 
-		color: #333;
-		background: #fafafa;
 		border-left: 1px solid #ddd;
 	}
 
-	.attachmentIcon {
-		margin: 6px 0 0 13px;
+	.iconMain, .iconPreview {
+		box-sizing: border-box;
+		padding: 6px 0 0;
 		font-size: 36px;
-		width: 36px;
-		height: 36px;
 		color: #aaa;
-	}
 
-	.attachmentIcon  {
 		&.icon-none {
 			display: none;
 		}
-		&.icon-file-certificate {
-			margin-left: 15px;
-		}
-	}
-
-	.attachmentIconText {
-		display: inline-block;
-		font-size: 28px;
-		width: 60px;
-		height: 56px;
-		color: #aaa;
-		line-height: 56px;
-		text-align: center;
-		font-style: normal;
 	}
 
 /*
@@ -147,45 +110,22 @@
 	}
 */
 
-	.attachmentIconParent.hasPreview:hover {
-		.iconPreview {
-			display: inline-block;
-		}
-		.iconMain {
-			display: none;
-		}
-	}
-
-	.attachmentIconParent.hasPreplay:hover {
-		.iconPreview {
-			display: inline-block;
-		}
-		.iconMain {
-			display: none;
-		}
-	}
-
-	.showPreview, .showPreplay {
+	.showPreview, .showPreplay,
+	.attachmentIconParent.hasPreview:hover .iconMain,
+	.attachmentIconParent.hasPreplay:hover .iconMain,
+	.attachmentIconParent.hasPreview .hidePreview,
+	.attachmentIconParent.hasPreplay .hidePreview {
 		display: none;
+	}
+
+	.attachmentIconParent.hasPreview:hover .iconPreview,
+	.attachmentIconParent.hasPreplay:hover .iconPreview {
+		display: inline-block;
+	}
+
+	.attachmentIconParent.hasPreview .showPreview,
+	.attachmentIconParent.hasPreplay .showPreplay {
+		display: inline;
 		cursor: pointer;
-	}
-
-	.attachmentIconParent.hasPreview {
-		.showPreview {
-			display: inline;
-		}
-
-		.hidePreview {
-			display: none;
-		}
-	}
-	.attachmentIconParent.hasPreplay {
-		.showPreplay {
-			display: inline;
-		}
-
-		.hidePreview {
-			display: none;
-		}
 	}
 }

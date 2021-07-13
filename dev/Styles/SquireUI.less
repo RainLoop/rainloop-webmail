@@ -1,0 +1,177 @@
+
+.squire-toolbar {
+	padding: 2px;
+	border-bottom: 1px solid #b6b6b6;
+	overflow-x: auto;
+	overflow-y: hidden;
+	white-space: nowrap;
+}
+
+.squire-toolbar select {
+	font-size: 12px;
+	padding: 4px 1.5em 4px 6px;
+	text-align: left;
+	vertical-align: middle;
+	width: 7em;
+}
+.squire-toolbar select[data-action="fontSize"] {
+	width: 5em;
+}
+.squire-toolbar button {
+	font-family: snappymail, var(--fontSans)
+}
+.squire-toolbar button[data-action="bold"] {
+	font-weight: bold;
+}
+.squire-toolbar button[data-action="italic"] {
+	font-style: italic;
+}
+/*
+.squire-toolbar button[data-action="underline"] {
+	text-decoration: underline;
+}
+.squire-toolbar button[data-action="strikethrough"] {
+	text-decoration: line-through;
+}
+*/
+
+.squire-wysiwyg, .squire-plain {
+	box-sizing: border-box;
+	font-size: 13px;
+	line-height: 16px;
+	min-height: 200px;
+	overflow: auto;
+	padding: 10px;
+}
+
+.squire-wysiwyg {
+	font-family: var(--fontSans);
+
+	ul {
+		padding-left: 40px;
+		li {
+			list-style-type: disc !important;
+		}
+	}
+
+	ol {
+		padding-left: 40px;
+		li {
+			list-style-type: decimal !important;
+		}
+	}
+
+	pre, code {
+		margin: 0;
+		padding: 0;
+		background: #fff;
+		border: none;
+		border-radius: 0;
+		font-family: var(--fontMono);
+		display: block;
+		word-break: normal;
+		word-wrap: break-word;
+		background-color: #f9f9f9;
+	}
+
+	code {
+		display: inline;
+		padding: 2px 5px;
+	}
+
+	pre {
+		padding: 5px 10px;
+		border-radius: 5px;
+		background-color: #f9f9f9;
+	}
+
+	pre > code {
+		padding: 0;
+	}
+
+	blockquote {
+		border: 0;
+		border-left: solid 2px #444;
+		margin: 5px 0 5px 5px;
+		padding-left: 5px;
+	}
+
+	blockquote p {
+		margin: 0 0 10px;
+		font-size: 14px;
+		line-height: 20px;
+	}
+
+	img {
+		vertical-align: bottom;
+	}
+
+	a {
+		color: blue;
+		text-decoration: underline;
+
+		&:visited {
+			color: #609;
+		}
+		&:active {
+			color: red;
+		}
+	}
+}
+
+/* This does make the block element focusable with mouse in Gecko and Webkit so we don't need a <BR>.
+However, arrow up/down still not working.
+Secondly, we can't rely on MUA's what to do with :empty
+.squire-wysiwyg div:empty,
+.squire-wysiwyg div:-moz-only-whitespace {
+	min-height: 16px;
+}
+/* This "placeholder" doesn't work good in Gecko
+.squire-wysiwyg div:empty::before,
+.squire-wysiwyg div:-moz-only-whitespace::before {
+	content: "Start writing here…";
+	opacity: 0.5;
+	user-select: text;
+	-moz-user-select: text;
+}
+*/
+
+.squire-plain {
+	background-color: #fff;
+	border: 0;
+	border-radius: 0;
+	display: none;
+	font-family: var(--fontMono);
+	margin: 0;
+	resize: none;
+	white-space: pre-wrap;
+	width: 100%;
+}
+.squire-mode-plain .squire-wysiwyg,
+.squire-mode-plain .btn-group:not(#squire-toolgroup-mode) {
+	display: none;
+}
+.squire-mode-plain .squire-plain {
+	display: block;
+}
+
+/* @media (hover: none) */
+.rl-mobile .textAreaParent:not(:focus-within) .squire-toolbar {
+	display: none;
+}
+.rl-mobile .squire-toolbar {
+	background: #EEE;
+	padding: 1px;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.rl-mobile .b-compose.modal,
+.rl-mobile .b-identity-content.modal {
+	margin-bottom: 50px;
+}
+.rl-mobile .b-compose.modal {
+	min-height: calc(100% - 62px);
+}

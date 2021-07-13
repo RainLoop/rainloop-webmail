@@ -1,43 +1,30 @@
-import ko from 'ko';
-import key from 'key';
-
-import { KeyState } from 'Common/Enums';
-import { isFunc } from 'Common/Utils';
+import { Scope } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
+import { isFunction } from 'Common/Utils';
 
-import { popup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/Ask',
-	templateID: 'PopupsAsk'
-})
-class AskPopupView extends AbstractViewNext {
+class AskPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('Ask');
 
-		this.askDesc = ko.observable('');
-		this.yesButton = ko.observable('');
-		this.noButton = ko.observable('');
-
-		this.yesFocus = ko.observable(false);
-		this.noFocus = ko.observable(false);
+		this.addObservables({
+			askDesc: '',
+			yesButton: '',
+			noButton: ''
+		});
 
 		this.fYesAction = null;
 		this.fNoAction = null;
 
 		this.bFocusYesOnShow = true;
 		this.bDisabeCloseOnEsc = true;
-		this.sDefaultKeyScope = KeyState.PopupAsk;
 	}
 
 	clearPopup() {
 		this.askDesc('');
 		this.yesButton(i18n('POPUPS_ASK/BUTTON_YES'));
 		this.noButton(i18n('POPUPS_ASK/BUTTON_NO'));
-
-		this.yesFocus(false);
-		this.noFocus(false);
 
 		this.fYesAction = null;
 		this.fNoAction = null;
@@ -46,17 +33,13 @@ class AskPopupView extends AbstractViewNext {
 	yesClick() {
 		this.cancelCommand();
 
-		if (isFunc(this.fYesAction)) {
-			this.fYesAction.call(null);
-		}
+		isFunction(this.fYesAction) && this.fYesAction.call(null);
 	}
 
 	noClick() {
 		this.cancelCommand();
 
-		if (isFunc(this.fNoAction)) {
-			this.fNoAction.call(null);
-		}
+		isFunction(this.fNoAction) && this.fNoAction.call(null);
 	}
 
 	/**
@@ -89,21 +72,22 @@ class AskPopupView extends AbstractViewNext {
 
 	onShowWithDelay() {
 		if (this.bFocusYesOnShow) {
-			this.yesFocus(true);
+			this.querySelector('.buttonYes').focus();
 		}
 	}
 
 	onBuild() {
-		key('tab, shift+tab, right, left', KeyState.PopupAsk, () => {
-			if (this.yesFocus()) {
-				this.noFocus(true);
-			} else {
-				this.yesFocus(true);
+//		shortcuts.add('tab', 'shift', Scope.Ask, () => {
+		shortcuts.add('tab,arrowright,arrowleft', '', Scope.Ask, () => {
+			let btn = this.querySelector('.buttonYes');
+			if (btn.matches(':focus')) {
+				btn = this.querySelector('.buttonNo');
 			}
+			btn.focus();
 			return false;
 		});
 
-		key('esc', KeyState.PopupAsk, () => {
+		shortcuts.add('escape', '', Scope.Ask, () => {
 			this.noClick();
 			return false;
 		});

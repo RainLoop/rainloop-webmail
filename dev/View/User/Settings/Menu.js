@@ -1,43 +1,29 @@
-import $ from '$';
-import key from 'key';
-
-import { KeyState } from 'Common/Enums';
 import { leftPanelDisabled } from 'Common/Globals';
-import { settings, inbox } from 'Common/Links';
+import { settings, mailbox } from 'Common/Links';
 import { getFolderInboxName } from 'Common/Cache';
 
-import * as Settings from 'Storage/Settings';
+import { AbstractViewLeft } from 'Knoin/AbstractViews';
 
-import { view, ViewType, setHash, settingsMenuKeysHandler } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { ThemeStore } from 'Stores/Theme';
 
-@view({
-	name: 'View/User/Settings/Menu',
-	type: ViewType.Left,
-	templateID: 'SettingsMenu'
-})
-class MenuSettingsUserView extends AbstractViewNext {
+export class MenuSettingsUserView extends AbstractViewLeft {
 	/**
 	 * @param {Object} screen
 	 */
 	constructor(screen) {
-		super();
+		super('User/Settings/Menu', 'SettingsMenu');
 
 		this.leftPanelDisabled = leftPanelDisabled;
-
-		this.mobile = Settings.appSettingsGet('mobile');
 
 		this.menu = screen.menu;
 	}
 
 	onBuild(dom) {
-		if (this.mobile) {
-			dom.on('click', '.b-settings-menu .e-item.selectable', () => {
-				leftPanelDisabled(true);
-			});
-		}
-
-		key('up, down', KeyState.Settings, settingsMenuKeysHandler($('.b-settings-menu .e-item', dom)));
+		dom.addEventListener('click', event =>
+			ThemeStore.isMobile()
+			&& event.target.closestWithin('.b-settins-left nav a', dom)
+			&& leftPanelDisabled(true)
+		);
 	}
 
 	link(route) {
@@ -45,8 +31,6 @@ class MenuSettingsUserView extends AbstractViewNext {
 	}
 
 	backToMailBoxClick() {
-		setHash(inbox(getFolderInboxName()));
+		rl.route.setHash(mailbox(getFolderInboxName()));
 	}
 }
-
-export { MenuSettingsUserView, MenuSettingsUserView as default };

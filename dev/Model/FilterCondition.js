@@ -1,76 +1,89 @@
 import ko from 'ko';
 
-import { FilterConditionField, FilterConditionType } from 'Common/Enums';
-import { pString } from 'Common/Utils';
-
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-class FilterConditionModel extends AbstractModel {
+/**
+ * @enum {string}
+ */
+export const FilterConditionField = {
+	From: 'From',
+	Recipient: 'Recipient',
+	Subject: 'Subject',
+	Header: 'Header',
+	Body: 'Body',
+	Size: 'Size'
+};
+
+/**
+ * @enum {string}
+ */
+export const FilterConditionType = {
+	Contains: 'Contains',
+	NotContains: 'NotContains',
+	EqualTo: 'EqualTo',
+	NotEqualTo: 'NotEqualTo',
+	Regex: 'Regex',
+	Over: 'Over',
+	Under: 'Under',
+	Text: 'Text',
+	Raw: 'Raw'
+};
+
+export class FilterConditionModel extends AbstractModel {
 	constructor() {
-		super('FilterConditionModel');
+		super();
 
-		this.field = ko.observable(FilterConditionField.From);
-		this.type = ko.observable(FilterConditionType.Contains);
-		this.value = ko.observable('');
-		this.value.error = ko.observable(false);
+		this.addObservables({
+			field: FilterConditionField.From,
+			type: FilterConditionType.Contains,
+			value: '',
+			valueError: false,
 
-		this.valueSecond = ko.observable('');
-		this.valueSecond.error = ko.observable(false);
-
-		this.template = ko.computed(() => {
-			let template = '';
-			switch (this.field()) {
-				case FilterConditionField.Size:
-					template = 'SettingsFiltersConditionSize';
-					break;
-				case FilterConditionField.Header:
-					template = 'SettingsFiltersConditionMore';
-					break;
-				default:
-					template = 'SettingsFiltersConditionDefault';
-					break;
-			}
-
-			return template;
-		}, this);
-
-		this.field.subscribe(() => {
-			this.value('');
-			this.valueSecond('');
+			valueSecond: '',
+			valueSecondError: false
 		});
 
-		this.regDisposables([this.template]);
+		this.template = ko.computed(() => {
+			const template = 'SettingsFiltersCondition';
+			switch (this.field()) {
+				case FilterConditionField.Body:
+					return template + 'Body';
+				case FilterConditionField.Size:
+					return template + 'Size';
+				case FilterConditionField.Header:
+					return template + 'More';
+				default:
+					return template + 'Default';
+			}
+		});
+
+		this.addSubscribables({
+			field: () => {
+				this.value('');
+				this.valueSecond('');
+			}
+		});
 	}
 
 	verify() {
-		if ('' === this.value()) {
-			this.value.error(true);
+		if (!this.value()) {
+			this.valueError(true);
 			return false;
 		}
 
-		if (FilterConditionField.Header === this.field() && '' === this.valueSecond()) {
-			this.valueSecond.error(true);
+		if (FilterConditionField.Header === this.field() && !this.valueSecond()) {
+			this.valueSecondError(true);
 			return false;
 		}
 
 		return true;
 	}
 
-	parse(json) {
-		if (json && json.Field && json.Type) {
-			this.field(pString(json.Field));
-			this.type(pString(json.Type));
-			this.value(pString(json.Value));
-			this.valueSecond(pString(json.ValueSecond));
-
-			return true;
-		}
-
-		return false;
-	}
+//	static reviveFromJson(json) {}
 
 	toJson() {
 		return {
+//			'@Object': 'Object/FilterCondition',
 			Field: this.field(),
 			Type: this.type(),
 			Value: this.value(),
@@ -89,5 +102,3 @@ class FilterConditionModel extends AbstractModel {
 		return filterCond;
 	}
 }
-
-export { FilterConditionModel, FilterConditionModel as default };

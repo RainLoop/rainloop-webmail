@@ -2,26 +2,29 @@ import ko from 'ko';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-class IdentityModel extends AbstractModel {
+export class IdentityModel extends AbstractModel {
 	/**
 	 * @param {string} id
 	 * @param {string} email
 	 */
 	constructor(id, email) {
-		super('IdentityModel');
+		super();
 
-		this.id = ko.observable(id || '');
-		this.email = ko.observable(email);
-		this.name = ko.observable('');
+		this.addObservables({
+			id: id || '',
+			email: email,
+			name: '',
 
-		this.replyTo = ko.observable('');
-		this.bcc = ko.observable('');
+			replyTo: '',
+			bcc: '',
 
-		this.signature = ko.observable('');
-		this.signatureInsertBefore = ko.observable(false);
+			signature: '',
+			signatureInsertBefore: false,
 
-		this.deleteAccess = ko.observable(false);
-		this.canBeDeleted = ko.computed(() => '' !== this.id());
+			deleteAccess: false
+		});
+
+		this.canBeDeleted = ko.computed(() => !!this.id());
 	}
 
 	/**
@@ -31,8 +34,6 @@ class IdentityModel extends AbstractModel {
 		const name = this.name(),
 			email = this.email();
 
-		return '' !== name ? name + ' (' + email + ')' : email;
+		return name ? name + ' (' + email + ')' : email;
 	}
 }
-
-export { IdentityModel, IdentityModel as default };

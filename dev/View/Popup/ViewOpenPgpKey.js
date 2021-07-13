@@ -1,24 +1,15 @@
-import ko from 'ko';
-import key from 'key';
+import { Scope } from 'Common/Enums';
+import { doc } from 'Common/Globals';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-import { KeyState } from 'Common/Enums';
-import { selectElement } from 'Common/Utils';
-
-import { popup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
-
-@popup({
-	name: 'View/Popup/ViewOpenPgpKey',
-	templateID: 'PopupsViewOpenPgpKey'
-})
-class ViewOpenPgpKeyPopupView extends AbstractViewNext {
+class ViewOpenPgpKeyPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('ViewOpenPgpKey');
 
-		this.key = ko.observable('');
-		this.keyDom = ko.observable(null);
-
-		this.sDefaultKeyScope = KeyState.PopupViewOpenPGP;
+		this.addObservables({
+			key: '',
+			keyDom: null
+		});
 	}
 
 	clearPopup() {
@@ -28,7 +19,11 @@ class ViewOpenPgpKeyPopupView extends AbstractViewNext {
 	selectKey() {
 		const el = this.keyDom();
 		if (el) {
-			selectElement(el);
+			let sel = getSelection(),
+				range = doc.createRange();
+			sel.removeAllRanges();
+			range.selectNodeContents(el);
+			sel.addRange(range);
 		}
 	}
 
@@ -41,7 +36,7 @@ class ViewOpenPgpKeyPopupView extends AbstractViewNext {
 	}
 
 	onBuild() {
-		key('ctrl+a, command+a', KeyState.PopupViewOpenPGP, () => {
+		shortcuts.add('a', 'meta', Scope.ViewOpenPgpKey, () => {
 			this.selectKey();
 			return false;
 		});

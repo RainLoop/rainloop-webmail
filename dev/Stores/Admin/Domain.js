@@ -1,12 +1,23 @@
-import _ from '_';
 import ko from 'ko';
+import Remote from 'Remote/Admin/Fetch';
 
-class DomainAdminStore {
-	constructor() {
-		this.domains = ko.observableArray([]);
-		this.domains.loading = ko.observable(false).extend({ 'throttle': 100 });
-		this.domainsWithoutAliases = ko.computed(() => _.filter(this.domains(), (item) => item && !item.alias));
-	}
-}
+export const DomainAdminStore = ko.observableArray();
 
-export default new DomainAdminStore();
+DomainAdminStore.loading = ko.observable(false);
+
+DomainAdminStore.fetch = () => {
+	DomainAdminStore.loading(true);
+	Remote.domainList((iError, data) => {
+		DomainAdminStore.loading(false);
+		if (!iError) {
+			DomainAdminStore(
+				Object.entries(data.Result).map(([name, [enabled, alias]]) => ({
+					name: name,
+					disabled: ko.observable(!enabled),
+					alias: alias,
+					deleteAccess: ko.observable(false)
+				}))
+			);
+		}
+	});
+};

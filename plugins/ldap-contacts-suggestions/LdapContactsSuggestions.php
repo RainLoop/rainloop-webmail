@@ -106,7 +106,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	 *
 	 * @return array
 	 */
-	public function Process($oAccount, $sQuery, $iLimit = 20)
+	public function Process(RainLoop\Model\Account $oAccount, string $sQuery, int $iLimit = 20): array
 	{
 		$sQuery = \trim($sQuery);
 

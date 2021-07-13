@@ -1,0 +1,12 @@
+:(t=!!k[n],"br"!=n||!e.data("cke-eol")
+:(t=!k||!!k[n],"br"!=n||!e.data("cke-eol")
+
+---
+
+for(F=null;y&&!p[y.getName()][L.name];){
+for(F=null;y&&(!p||!p[y.getName()]||!p[y.getName()][L.name]);){
+
+---
+
+a.window.$.getSelection().removeAllRanges()
+a.window&&a.window.$&&a.window.$.getSelection().removeAllRanges()

@@ -1,6 +1,6 @@
 {
-	"name": "RainLoop Webmail",
-	"short_name": "RainLoop",
+	"name": "SnappyMail Webmail",
+	"short_name": "SnappyMail",
 	"description": "Simple, modern & fast web-based email client",
 	"display": "standalone",
 	"icons": [{

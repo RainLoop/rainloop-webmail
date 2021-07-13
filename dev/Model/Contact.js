@@ -1,25 +1,22 @@
-import _ from '_';
-import ko from 'ko';
-
-import { ContactPropertyType } from 'Common/Enums';
-import { trim, isNonEmptyArray, isNormal, pInt, pString } from 'Common/Utils';
-import { emptyContactPic } from 'Common/Links';
-
+import { isNonEmptyArray } from 'Common/Utils';
+import { ContactPropertyModel, ContactPropertyType } from 'Model/ContactProperty';
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-class ContactModel extends AbstractModel {
+export class ContactModel extends AbstractModel {
 	constructor() {
-		super('ContactModel');
+		super();
 
-		this.idContact = 0;
+		this.id = 0;
 		this.display = '';
 		this.properties = [];
 		this.readOnly = false;
 
-		this.focused = ko.observable(false);
-		this.selected = ko.observable(false);
-		this.checked = ko.observable(false);
-		this.deleted = ko.observable(false);
+		this.addObservables({
+			focused: false,
+			selected: false,
+			checked: false,
+			deleted: false
+		});
 	}
 
 	/**
@@ -30,59 +27,77 @@ class ContactModel extends AbstractModel {
 			email = '';
 
 		if (isNonEmptyArray(this.properties)) {
-			_.each(this.properties, (property) => {
+			this.properties.forEach(property => {
 				if (property) {
-					if (ContactPropertyType.FirstName === property[0]) {
-						name = trim(property[1] + ' ' + name);
-					} else if (ContactPropertyType.LastName === property[0]) {
-						name = trim(name + ' ' + property[1]);
-					} else if ('' === email && ContactPropertyType.Email === property[0]) {
-						email = property[1];
+					if (ContactPropertyType.FirstName === property.type()) {
+						name = (property.value() + ' ' + name).trim();
+					} else if (ContactPropertyType.LastName === property.type()) {
+						name = (name + ' ' + property.value()).trim();
+					} else if (!email && ContactPropertyType.Email === property.type()) {
+						email = property.value();
 					}
 				}
 			});
 		}
 
-		return '' === email ? null : [email, name];
+		return email ? [email, name] : null;
 	}
 
 	/**
-	 * @param {Object} oItem
-	 * @returns {boolean}
+	 * @static
+	 * @param {FetchJsonContact} json
+	 * @returns {?ContactModel}
 	 */
-	parse(json) {
-		let result = false;
-		if (json && 'Object/Contact' === json['@Object']) {
-			this.idContact = pInt(json.IdContact);
-			this.display = pString(json.Display);
-			this.readOnly = !!json.ReadOnly;
-
-			if (isNonEmptyArray(json.Properties)) {
-				_.each(json.Properties, (property) => {
-					if (property && property.Type && isNormal(property.Value) && isNormal(property.TypeStr)) {
-						this.properties.push([pInt(property.Type), pString(property.Value), pString(property.TypeStr)]);
-					}
+	static reviveFromJson(json) {
+		const contact = super.reviveFromJson(json);
+		if (contact) {
+			let list = [];
+			if (isNonEmptyArray(json.properties)) {
+				json.properties.forEach(property => {
+					property = ContactPropertyModel.reviveFromJson(property);
+					property && list.push(property);
 				});
 			}
-
-			result = true;
+			contact.properties = list;
+			contact.initDefaultProperties();
 		}
-
-		return result;
+		return contact;
 	}
 
-	/**
-	 * @returns {string}
-	 */
-	srcAttr() {
-		return emptyContactPic();
+	initDefaultProperties() {
+		let list = this.properties;
+		list.sort((p1,p2) =>{
+			if (p2.type() == ContactPropertyType.FirstName) {
+				return 1;
+			}
+			if (p1.type() == ContactPropertyType.FirstName || p1.type() == ContactPropertyType.LastName) {
+				return -1;
+			}
+			if (p2.type() == ContactPropertyType.LastName) {
+				return 1;
+			}
+			return 0;
+		});
+		let found = list.find(prop => prop.type() == ContactPropertyType.LastName);
+		if (!found) {
+			found = new ContactPropertyModel(ContactPropertyType.LastName);
+			list.unshift(found);
+		}
+		found.placeholder('CONTACTS/PLACEHOLDER_ENTER_LAST_NAME');
+		found = list.find(prop => prop.type() == ContactPropertyType.FirstName);
+		if (!found) {
+			found = new ContactPropertyModel(ContactPropertyType.FirstName);
+			list.unshift(found);
+		}
+		found.placeholder('CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME');
+		this.properties = list;
 	}
 
 	/**
 	 * @returns {string}
 	 */
 	generateUid() {
-		return pString(this.idContact);
+		return ''+this.id;
 	}
 
 	/**
@@ -106,5 +121,3 @@ class ContactModel extends AbstractModel {
 		return result.join(' ');
 	}
 }
-
-export { ContactModel, ContactModel as default };

@@ -1,28 +1,21 @@
-import _ from '_';
 import ko from 'ko';
 
-import { convertLangName } from 'Common/Utils';
+import { convertLangName } from 'Common/Translator';
 
-// import {view, ViewType} from 'Knoin/Knoin';
-import { popup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/Languages',
-	templateID: 'PopupsLanguages'
-})
-class LanguagesPopupView extends AbstractViewNext {
+class LanguagesPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('Languages');
 
 		this.fLang = null;
 		this.userLanguage = ko.observable('');
 
-		this.langs = ko.observableArray([]);
+		this.langs = ko.observableArray();
 
 		this.languages = ko.computed(() => {
 			const userLanguage = this.userLanguage();
-			return _.map(this.langs(), (language) => ({
+			return this.langs.map(language => ({
 				key: language,
 				user: language === userLanguage,
 				selected: ko.observable(false),
@@ -30,9 +23,7 @@ class LanguagesPopupView extends AbstractViewNext {
 			}));
 		});
 
-		this.langs.subscribe(() => {
-			this.setLanguageSelection();
-		});
+		this.langs.subscribe(() => this.setLanguageSelection());
 	}
 
 	languageTooltipName(language) {
@@ -41,9 +32,7 @@ class LanguagesPopupView extends AbstractViewNext {
 
 	setLanguageSelection() {
 		const currentLang = this.fLang ? ko.unwrap(this.fLang) : '';
-		_.each(this.languages(), (item) => {
-			item.selected(item.key === currentLang);
-		});
+		this.languages().forEach(item => item.selected(item.key === currentLang));
 	}
 
 	onBeforeShow() {
@@ -61,10 +50,7 @@ class LanguagesPopupView extends AbstractViewNext {
 	}
 
 	changeLanguage(lang) {
-		if (this.fLang) {
-			this.fLang(lang);
-		}
-
+		this.fLang && this.fLang(lang);
 		this.cancelCommand();
 	}
 }

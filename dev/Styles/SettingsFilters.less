@@ -1,105 +1,37 @@
 
-.b-settings-filters {
+.b-filter-script {
+	width: auto;
+	max-width: 720px;
+}
 
-	html.rl-mobile &{
-		margin-right: 15px;
-	}
+.filter-item td.drag-wrapper {
+	padding: 4px 0;
+}
 
-	.process-place {
-		text-align: center;
-		width: 600px;
-		padding: 14px 0;
-	}
+.b-filter-script .filter-item,
+.b-settings-filters .script-item {
+	white-space: nowrap;
+}
 
-	.list-table {
+.filter-item .delete-filter {
+	cursor: pointer;
+	opacity: 0.5;
+}
 
-		width: 600px;
+.filter-item .filter-name,
+.filter-item .filter-sub-name {
+	display: inline-block;
+	word-break: break-all;
+	box-sizing: border-box;
+	line-height: 22px;
+	cursor: pointer;
+}
 
-		td {
-			padding: 4px 8px;
-			line-height: 30px;
+.filter-item .filter-sub-name {
+	color: #aaa;
+}
 
-			&.drag-wrapper {
-				padding: 4px 0;
-			}
-		}
-
-		.drag-handle {
-			color: #eee;
-		}
-
-		tr:hover .drag-handle {
-			color: #aaa;
-		}
-
-		.filter-img {
-			font-size: 12px;
-			margin-right: 5px;
-		}
-
-		.filter-name, .filter-sub-name {
-			display: inline-block;
-			word-break: break-all;
-			box-sizing: border-box;
-			line-height: 22px;
-			cursor: pointer;
-		}
-
-		.filter-sub-name {
-			color: #aaa;
-		}
-	}
-
-	.filters-list-top-padding {
-		display: inline-block;
-		height: 5px;
-		width: 5px;
-	}
-
-	.filter-item {
-
-		white-space: nowrap;
-
-		.e-action {
-			cursor: pointer;
-		}
-
-		.drag-handle {
-			cursor: pointer;
-			cursor: all-scroll;
-		}
-
-		.button-delete {
-			margin-right: 15px;
-			margin-top: 5px;
-			visibility: hidden;
-			opacity: 0;
-		}
-
-		.delete-access {
-			&.button-delete {
-				visibility: visible;
-				margin-right: 0;
-				opacity: 1;
-			}
-		}
-
-		.delete-filter {
-			cursor: pointer;
-			opacity: 0.5;
-		}
-
-		&.ui-sortable-helper {
-			background: #F5F5F5;
-			border: 1px solid #DDD;
-
-			.button-delete, .delete-filter {
-				display: none;
-			}
-
-			td {
-				border-width: 0px;
-			}
-		}
-	}
+.b-filter-script textarea {
+	height: 300px;
+	font-family: var(--fontMono);
 }

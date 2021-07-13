@@ -1,31 +1,26 @@
 import ko from 'ko';
-import { Magics } from 'Common/Enums';
-import * as Settings from 'Storage/Settings';
+import { SettingsGet } from 'Common/Globals';
+import { addObservablesTo } from 'Common/Utils';
 
-class ContactUserStore {
-	constructor() {
-		this.contacts = ko.observableArray([]);
-		this.contacts.loading = ko.observable(false).extend({ throttle: Magics.Time200ms });
-		this.contacts.importing = ko.observable(false).extend({ throttle: Magics.Time200ms });
-		this.contacts.syncing = ko.observable(false).extend({ throttle: Magics.Time200ms });
-		this.contacts.exportingVcf = ko.observable(false).extend({ throttle: Magics.Time200ms });
-		this.contacts.exportingCsv = ko.observable(false).extend({ throttle: Magics.Time200ms });
+export const ContactUserStore = ko.observableArray();
 
-		this.allowContactsSync = ko.observable(false);
-		this.enableContactsSync = ko.observable(false);
-		this.contactsSyncUrl = ko.observable('');
-		this.contactsSyncUser = ko.observable('');
-		this.contactsSyncPass = ko.observable('');
-	}
+ContactUserStore.loading = ko.observable(false).extend({ debounce: 200 });
+ContactUserStore.importing = ko.observable(false).extend({ debounce: 200 });
+ContactUserStore.syncing = ko.observable(false).extend({ debounce: 200 });
 
-	populate() {
-		this.allowContactsSync(!!Settings.settingsGet('ContactsSyncIsAllowed'));
-		this.enableContactsSync(!!Settings.settingsGet('EnableContactsSync'));
+addObservablesTo(ContactUserStore, {
+	allowSync: false,
+	enableSync: false,
+	syncUrl: '',
+	syncUser: '',
+	syncPass: ''
+});
 
-		this.contactsSyncUrl(Settings.settingsGet('ContactsSyncUrl'));
-		this.contactsSyncUser(Settings.settingsGet('ContactsSyncUser'));
-		this.contactsSyncPass(Settings.settingsGet('ContactsSyncPassword'));
-	}
-}
+ContactUserStore.populate = function() {
+	this.allowSync(!!SettingsGet('ContactsSyncIsAllowed'));
+	this.enableSync(!!SettingsGet('EnableContactsSync'));
 
-export default new ContactUserStore();
+	this.syncUrl(SettingsGet('ContactsSyncUrl'));
+	this.syncUser(SettingsGet('ContactsSyncUser'));
+	this.syncPass(SettingsGet('ContactsSyncPassword'));
+};

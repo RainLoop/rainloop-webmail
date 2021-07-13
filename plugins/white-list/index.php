@@ -2,9 +2,17 @@
 
 class WhiteListPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
-	public function Init()
+	const
+		NAME = 'White list',
+		VERSION = '2.1',
+		RELEASE = '2021-04-21',
+		REQUIRED = '2.5.0',
+		CATEGORY = 'Login',
+		DESCRIPTION = 'Simple white list plugin (with wildcard and exceptions functionality).';
+
+	public function Init() : void
 	{
-		$this->addHook('filter.login-credentials', 'FilterLoginCredentials');
+		$this->addHook('login.credentials', 'FilterLoginCredentials');
 	}
 
 	/**
@@ -32,7 +40,7 @@ class WhiteListPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * @return array
 	 */
-	public function configMapping()
+	protected function configMapping() : array
 	{
 		return array(
 			\RainLoop\Plugins\Property::NewInstance('auth_error')->SetLabel('Auth Error')

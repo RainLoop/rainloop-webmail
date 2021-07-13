@@ -1,53 +1,34 @@
 import ko from 'ko';
 
-import * as Settings from 'Storage/Settings';
+import Remote from 'Remote/Admin/Fetch';
 
-import Remote from 'Remote/Admin/Ajax';
+import { PackageAdminStore } from 'Stores/Admin/Package';
 
-import DomainStore from 'Stores/Admin/Domain';
-import PluginStore from 'Stores/Admin/Plugin';
-import PackageStore from 'Stores/Admin/Package';
+import { AbstractViewRight } from 'Knoin/AbstractViews';
 
-import { getApp } from 'Helper/Apps/Admin';
+import { leftPanelDisabled, Settings } from 'Common/Globals';
 
-import { view, ViewType } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
-
-@view({
-	name: 'View/Admin/Settings/Pane',
-	type: ViewType.Right,
-	templateID: 'AdminPane'
-})
-class PaneSettingsAdminView extends AbstractViewNext {
+class PaneSettingsAdminView extends AbstractViewRight {
 	constructor() {
-		super();
+		super('Admin/Settings/Pane', 'AdminPane');
 
-		this.adminDomain = ko.observable(Settings.settingsGet('AdminDomain'));
-		this.version = ko.observable(Settings.appSettingsGet('version'));
+		this.version = ko.observable(Settings.app('version'));
 
-		this.capa = !!Settings.settingsGet('PremType');
-		this.community = RL_COMMUNITY;
-
-		this.adminManLoading = ko.computed(
-			() =>
-				'000' !==
-				[
-					DomainStore.domains.loading() ? '1' : '0',
-					PluginStore.plugins.loading() ? '1' : '0',
-					PackageStore.packages.loading() ? '1' : '0'
-				].join('')
-		);
+		this.leftPanelDisabled = leftPanelDisabled;
 
 		this.adminManLoadingVisibility = ko
-			.computed(() => (this.adminManLoading() ? 'visible' : 'hidden'))
-			.extend({ rateLimit: 300 });
+			.computed(() => PackageAdminStore.loading() ? 'visible' : 'hidden');
+	}
+
+	toggleLeft(item, event) {
+		event.preventDefault();
+		event.stopPropagation();
+		leftPanelDisabled(!leftPanelDisabled());
 	}
 
 	logoutClick() {
-		Remote.adminLogout(() => {
-			getApp().loginAndLogoutReload(true, true);
-		});
+		Remote.adminLogout(() => rl.logoutReload());
 	}
 }
 
-export { PaneSettingsAdminView, PaneSettingsAdminView as default };
+export { PaneSettingsAdminView };

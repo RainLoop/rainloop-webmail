@@ -1,12 +1,42 @@
-import ko from 'ko';
-
-import { ContactPropertyType } from 'Common/Enums';
 import { pInt, pString } from 'Common/Utils';
 import { i18n } from 'Common/Translator';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-class ContactPropertyModel extends AbstractModel {
+const trim = text => null == text ? "" : (text + "").trim();
+
+/**
+ * @enum {number}
+ */
+export const ContactPropertyType = {
+	Unknown: 0,
+
+	FullName: 10,
+
+	FirstName: 15,
+	LastName: 16,
+	MiddleName: 17,
+	Nick: 18,
+
+	NamePrefix: 20,
+	NameSuffix: 21,
+
+	Email: 30,
+	Phone: 31,
+	Web: 32,
+
+	Birthday: 40,
+
+	Facebook: 90,
+	Skype: 91,
+	GitHub: 92,
+
+	Note: 110,
+
+	Custom: 250
+};
+
+export class ContactPropertyModel extends AbstractModel {
 	/**
 	 * @param {number=} type = Enums.ContactPropertyType.Unknown
 	 * @param {string=} typeStr = ''
@@ -15,24 +45,42 @@ class ContactPropertyModel extends AbstractModel {
 	 * @param {string=} placeholder = ''
 	 */
 	constructor(type = ContactPropertyType.Unknown, typeStr = '', value = '', focused = false, placeholder = '') {
-		super('ContactPropertyModel');
+		super();
 
-		this.type = ko.observable(pInt(type));
-		this.typeStr = ko.observable(pString(typeStr));
-		this.focused = ko.observable(!!focused);
-		this.value = ko.observable(pString(value));
+		this.addObservables({
+			type: pInt(type),
+			typeStr: pString(typeStr),
+			focused: !!focused,
+			value: pString(value),
 
-		this.placeholder = ko.observable(placeholder);
-
-		this.placeholderValue = ko.computed(() => {
-			const v = this.placeholder();
-			return v ? i18n(v) : '';
+			placeholder: placeholder
 		});
 
-		this.largeValue = ko.computed(() => ContactPropertyType.Note === this.type());
+		this.addComputables({
+			placeholderValue: () => {
+				const v = this.placeholder();
+				return v ? i18n(v) : '';
+			},
 
-		this.regDisposables([this.placeholderValue, this.largeValue]);
+			largeValue: () => ContactPropertyType.Note === this.type()
+		});
 	}
-}
 
-export { ContactPropertyModel, ContactPropertyModel as default };
+	isType(type) {
+		return this.type && type === this.type();
+	}
+
+	isValid() {
+		return this.value && !!trim(this.value());
+	}
+
+	toJSON() {
+		return {
+			type: this.type(),
+			typeStr: this.typeStr(),
+			value: this.value()
+		};
+	}
+
+//	static reviveFromJson(json) {}
+}

@@ -1,24 +1,27 @@
 import ko from 'ko';
+import { $htmlCL, leftPanelDisabled, Settings, SettingsGet } from 'Common/Globals';
 import { isArray } from 'Common/Utils';
-import * as Settings from 'Storage/Settings';
 
-class ThemeStore {
-	constructor() {
-		this.themes = ko.observableArray([]);
-		this.themeBackgroundName = ko.observable('');
-		this.themeBackgroundHash = ko.observable('');
+export const ThemeStore = {
+	themes: ko.observableArray(),
+	userBackgroundName: ko.observable(''),
+	userBackgroundHash: ko.observable(''),
+	isMobile: ko.observable($htmlCL.contains('rl-mobile')),
 
-		this.theme = ko.observable('').extend({ limitedList: this.themes });
-	}
-
-	populate() {
-		const themes = Settings.appSettingsGet('themes');
+	populate: function(){
+		const themes = Settings.app('themes');
 
 		this.themes(isArray(themes) ? themes : []);
-		this.theme(Settings.settingsGet('Theme'));
-		this.themeBackgroundName(Settings.settingsGet('UserBackgroundName'));
-		this.themeBackgroundHash(Settings.settingsGet('UserBackgroundHash'));
-	}
-}
+		this.theme(SettingsGet('Theme'));
+		if (!this.isMobile()) {
+			this.userBackgroundName(SettingsGet('UserBackgroundName'));
+			this.userBackgroundHash(SettingsGet('UserBackgroundHash'));
+		}
 
-export default new ThemeStore();
+		leftPanelDisabled(this.isMobile());
+	}
+};
+
+ThemeStore.theme = ko.observable('').extend({ limitedList: ThemeStore.themes });
+
+ThemeStore.isMobile.subscribe(value => $htmlCL.toggle('rl-mobile', value));

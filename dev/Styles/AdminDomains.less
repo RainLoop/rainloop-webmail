@@ -1,69 +1,51 @@
 
-.b-admin-domains {
-	.process-place {
-		width: 600px;
-		padding: 14px 0;
-		text-align: center;
-		visibility: hidden;
-	}
-}
-
 .b-admin-domains-list-table {
 
 	width: 600px;
 
-	.e-item {
+	.domain-name {
+		display: inline-block;
+		word-break: break-all;
+		box-sizing: border-box;
+	}
 
-		.e-action {
-			cursor: pointer;
+	.domain-alias {
+		display: inline-block;
+		box-sizing: border-box;
+		color: #bbb;
+		padding-left: 5px;
+	}
+
+	.button-delete {
+		position: relative;
+		right: 0;
+		visibility: hidden;
+		opacity: 0;
+		white-space: nowrap;
+
+		&.delete-access {
+			visibility: visible;
+			right: -15px;
+			opacity: 1;
 		}
+	}
 
-		.domain-name {
-			display: inline-block;
-			word-break: break-all;
-			box-sizing: border-box;
+	.delete-domain, .disabled-domain {
+		cursor: pointer;
+		opacity: 0.5;
+
+		&:hover {
+			opacity: 1;
 		}
+	}
 
-		.domain-alias {
-			display: inline-block;
-			box-sizing: border-box;
+	&.disabled {
+		.domain-name, .domain-alias {
 			color: #bbb;
-			padding-left: 5px;
 		}
 
-		&.disabled {
-			.domain-name, .domain-alias {
-				color: #bbb;
-			}
-		}
-
-		.button-delete {
-			margin-right: 15px;
-			visibility: hidden;
-			opacity: 0;
-		}
-
-		.delete-access {
-			&.button-delete {
-				visibility: visible;
-				margin-right: 0;
-				opacity: 1;
-			}
-		}
-
-		.delete-domain, .disabled-domain {
-			cursor: pointer;
+		.disabled-domain {
 			opacity: 0.5;
-		}
-
-		&.disabled .disabled-domain {
-			opacity: 0.5;
-		}
-
-		.delete-domain, .disabled-domain {
-			&:hover {
-				opacity: 1;
-			}
 		}
 	}
 }

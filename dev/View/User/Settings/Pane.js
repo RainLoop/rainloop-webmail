@@ -1,30 +1,21 @@
-import { inbox } from 'Common/Links';
+import { mailbox } from 'Common/Links';
 import { getFolderInboxName } from 'Common/Cache';
 import { leftPanelDisabled } from 'Common/Globals';
 
-import * as Settings from 'Storage/Settings';
+import { MessageUserStore } from 'Stores/User/Message';
+import { ThemeStore } from 'Stores/Theme';
 
-import MessageStore from 'Stores/User/Message';
+import { AbstractViewRight } from 'Knoin/AbstractViews';
 
-import { view, ViewType, setHash } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
-
-@view({
-	name: 'View/User/Settings/Pane',
-	type: ViewType.Right,
-	templateID: 'SettingsPane'
-})
-class PaneSettingsUserView extends AbstractViewNext {
+export class PaneSettingsUserView extends AbstractViewRight {
 	constructor() {
-		super();
-
-		this.mobile = Settings.appSettingsGet('mobile');
+		super('User/Settings/Pane', 'SettingsPane');
 
 		this.leftPanelDisabled = leftPanelDisabled;
 	}
 
 	onShow() {
-		MessageStore.message(null);
+		MessageUserStore.message(null);
 	}
 
 	hideLeft(item, event) {
@@ -42,16 +33,10 @@ class PaneSettingsUserView extends AbstractViewNext {
 	}
 
 	onBuild(dom) {
-		if (this.mobile) {
-			dom.on('click', () => {
-				leftPanelDisabled(true);
-			});
-		}
+		dom.addEventListener('click', () => ThemeStore.isMobile() && leftPanelDisabled(true));
 	}
 
 	backToMailBoxClick() {
-		setHash(inbox(getFolderInboxName()));
+		rl.route.setHash(mailbox(getFolderInboxName()));
 	}
 }
-
-export { PaneSettingsUserView, PaneSettingsUserView as default };

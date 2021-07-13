@@ -1,40 +1,24 @@
 
-.b-admin-plugins {
-	.process-place {
-		visibility: hidden;
-	}
-}
-
 .b-admin-plugins-list-table {
+	max-width: 620px; /* span8 */
 
 	&.disabled {
 		opacity: 0.5;
-		background-color: #eee;
 	}
 
-	.e-item {
-		.e-action {
-			cursor: pointer;
-		}
-
-		.plugin-img {
-			font-size: 12px;
-			margin-right: 2px;
-		}
-
-		&.disabled {
-			.plugin-img, .plugin-name {
-				color: #bbb;
-			}
-			.disabled-plugin {
-				opacity: 0.5;
-			}
-		}
+	.disabled {
+		opacity: 0.5;
 	}
 }
 
 .b-admin-plugin-property {
 	.help-block {
+		display: block; // account for any element using help-block
+		font-style: italic;
+		opacity: 0.5;
 		margin-bottom: 5px;
+	}
+	.controls {
+		width: 470px;
 	}
 }

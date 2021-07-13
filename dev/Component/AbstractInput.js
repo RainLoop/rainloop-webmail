@@ -1,5 +1,5 @@
 import ko from 'ko';
-import { isUnd, trim, pInt } from 'Common/Utils';
+import { pInt } from 'Common/Utils';
 import { SaveSettingsStep } from 'Common/Enums';
 import { AbstractComponent } from 'Component/Abstract';
 
@@ -14,24 +14,24 @@ class AbstractInput extends AbstractComponent {
 		this.size = params.size || 0;
 		this.label = params.label || '';
 		this.preLabel = params.preLabel || '';
-		this.enable = isUnd(params.enable) ? true : params.enable;
+		this.enable = undefined === params.enable ? true : params.enable;
 		this.trigger = params.trigger && params.trigger.subscribe ? params.trigger : null;
 		this.placeholder = params.placeholder || '';
 
-		this.labeled = !isUnd(params.label);
-		this.preLabeled = !isUnd(params.preLabel);
-		this.triggered = !isUnd(params.trigger) && !!this.trigger;
+		this.labeled = undefined !== params.label;
+		this.preLabeled = undefined !== params.preLabel;
+		this.triggered = undefined !== params.trigger && !!this.trigger;
 
 		this.classForTrigger = ko.observable('');
 
 		this.className = ko.computed(() => {
 			const size = ko.unwrap(this.size),
-				suffixValue = this.trigger ? ' ' + trim('settings-saved-trigger-input ' + this.classForTrigger()) : '';
+				suffixValue = this.trigger ? ' ' + ('settings-saved-trigger-input ' + this.classForTrigger()).trim() : '';
 			return (0 < size ? 'span' + size : '') + suffixValue;
 		});
 
-		if (!isUnd(params.width) && params.element) {
-			params.element.find('input,select,textarea').css('width', params.width);
+		if (undefined !== params.width && params.element) {
+			params.element.querySelectorAll('input,select,textarea').forEach(node => node.style.width = params.width);
 		}
 
 		this.disposable.push(this.className);
@@ -58,4 +58,4 @@ class AbstractInput extends AbstractComponent {
 	}
 }
 
-export { AbstractInput, AbstractInput as default };
+export { AbstractInput };

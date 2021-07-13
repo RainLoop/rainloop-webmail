@@ -1,4 +1,4 @@
-**Thanks for contributing to RainLoop Webmail!**
+**Thanks for contributing to SnappyMail Webmail!**
 
 1. Fork the repo, do work in a feature branch.
 2. Issue a pull request.
@@ -10,9 +10,9 @@
 1. Install node.js - `https://nodejs.org/download/`
 2. Install yarn - `https://yarnpkg.com/en/docs/install`
 3. Install gulp - `npm install gulp -g`
-4. Fork rainloop - `https://github.com/RainLoop/rainloop-webmail/issues/new#fork-destination-box`
-5. Clone rainloop - `git clone git@github.com:USERNAME/rainloop-webmail.git rainloop`
-6. `cd rainloop`
+4. Fork snappymail - `https://github.com/the-djmaze/snappymail/issues/new#fork-destination-box`
+5. Clone snappymail - `git clone git@github.com:USERNAME/snappymail.git snappymail`
+6. `cd snappymail`
 7. Install install all dependencies - `yarn install`
 8. Run gulp - `gulp`
 
@@ -32,4 +32,4 @@
 
 ---
 
-If you have any questions, open an issue or email support@rainloop.net.
+If you have any questions, open an issue or email support@snappymail.eu.

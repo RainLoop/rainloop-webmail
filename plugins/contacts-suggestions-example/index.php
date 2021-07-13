@@ -2,7 +2,12 @@
 
 class ContactsSuggestionsExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 {
-	public function Init()
+	const
+		NAME     = '',
+		CATEGORY = 'General',
+		DESCRIPTION = '';
+
+	public function Init() : void
 	{
 		$this->addHook('main.fabrica', 'MainFabrica');
 	}

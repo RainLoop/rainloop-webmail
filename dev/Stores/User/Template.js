@@ -1,22 +1,17 @@
 import ko from 'ko';
-import _ from '_';
 
-// import Remote from 'Remote/User/Ajax';
+// import Remote from 'Remote/User/Fetch';
 
-class TemplateUserStore {
+export const TemplateUserStore = new class {
 	constructor() {
-		this.templates = ko.observableArray([]);
-		this.templates.loading = ko.observable(false).extend({ throttle: 100 });
+		this.templates = ko.observableArray();
+		this.templates.loading = ko.observable(false).extend({ debounce: 100 });
 
-		this.templatesNames = ko.observableArray([]).extend({ throttle: 1000 });
+		this.templatesNames = ko.observableArray().extend({ debounce: 1000 });
 		this.templatesNames.skipFirst = true;
 
-		this.subscribers();
-	}
-
-	subscribers() {
 		this.templates.subscribe((list) => {
-			this.templatesNames(_.compact(_.map(list, (item) => (item ? item.name : null))));
+			this.templatesNames(list.map(item => (item ? item.name : null)).filter(v => v));
 		});
 
 		// this.templatesNames.subscribe((aList) => {
@@ -24,12 +19,10 @@ class TemplateUserStore {
 		// 	{
 		// 		this.templatesNames.skipFirst = false;
 		// 	}
-		// 	else if (aList && 1 < aList.length)
+		// 	else if (aList && aList.length)
 		// 	{
 		// 		Remote.templatesSortOrder(null, aList);
 		// 	}
 		// });
 	}
-}
-
-export default new TemplateUserStore();
+};

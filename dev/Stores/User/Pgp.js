@@ -1,25 +1,148 @@
 import ko from 'ko';
-import _ from '_';
-import $ from '$';
 
 import { i18n } from 'Common/Translator';
-import { log, isArray, isNonEmptyArray, pString, isUnd, trim } from 'Common/Utils';
+import { isArray, isNonEmptyArray, pString } from 'Common/Utils';
+import { createElement } from 'Common/Globals';
 
-import AccountStore from 'Stores/User/Account';
+import { AccountUserStore } from 'Stores/User/Account';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
-class PgpUserStore {
+import { MessageOpenPgpPopupView } from 'View/Popup/MessageOpenPgp';
+
+function controlsHelper(dom, verControl, success, title, text)
+{
+	dom.classList.toggle('error', !success);
+	dom.classList.toggle('success', success);
+	verControl.classList.toggle('error', !success);
+	verControl.classList.toggle('success', success);
+	dom.title = verControl.title = title;
+
+	if (undefined !== text) {
+		dom.textContent = text.trim();
+	}
+}
+
+function domControlEncryptedClickHelper(store, dom, armoredMessage, recipients) {
+	return function() {
+		let message = null;
+
+		if (this.classList.contains('success')) {
+			return false;
+		}
+
+		try {
+			message = store.openpgp.message.readArmored(armoredMessage);
+		} catch (e) {
+			console.log(e);
+		}
+
+		if (message && message.getText && message.verify && message.decrypt) {
+			store.decryptMessage(
+				message,
+				recipients,
+				(validPrivateKey, decryptedMessage, validPublicKey, signingKeyIds) => {
+					if (decryptedMessage) {
+						if (validPublicKey) {
+							controlsHelper(
+								dom,
+								this,
+								true,
+								i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
+									USER: validPublicKey.user + ' (' + validPublicKey.id + ')'
+								}),
+								decryptedMessage.getText()
+							);
+						} else if (validPrivateKey) {
+							const keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
+								additional = keyIds
+									? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(v => v).join(', ')
+									: '';
+
+							controlsHelper(
+								dom,
+								this,
+								false,
+								i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') + (additional ? ' (' + additional + ')' : ''),
+								decryptedMessage.getText()
+							);
+						} else {
+							controlsHelper(dom, this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
+						}
+					} else {
+						controlsHelper(dom, this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
+					}
+				}
+			);
+
+			return false;
+		}
+
+		controlsHelper(dom, this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
+		return false;
+	};
+}
+
+function domControlSignedClickHelper(store, dom, armoredMessage) {
+	return function() {
+		let message = null;
+
+		if (this.classList.contains('success') || this.classList.contains('error')) {
+			return false;
+		}
+
+		try {
+			message = store.openpgp.cleartext.readArmored(armoredMessage);
+		} catch (e) {
+			console.log(e);
+		}
+
+		if (message && message.getText && message.verify) {
+			store.verifyMessage(message, (validKey, signingKeyIds) => {
+				if (validKey) {
+					controlsHelper(
+						dom,
+						this,
+						true,
+						i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
+							USER: validKey.user + ' (' + validKey.id + ')'
+						}),
+						message.getText()
+					);
+				} else {
+					const keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
+						additional = keyIds
+							? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(v => v).join(', ')
+							: '';
+
+					controlsHelper(
+						dom,
+						this,
+						false,
+						i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') + (additional ? ' (' + additional + ')' : '')
+					);
+				}
+			});
+
+			return false;
+		}
+
+		controlsHelper(dom, this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
+		return false;
+	};
+}
+
+export const PgpUserStore = new class {
 	constructor() {
 		this.capaOpenPGP = ko.observable(false);
 
 		this.openpgp = null;
 
-		this.openpgpkeys = ko.observableArray([]);
+		this.openpgpkeys = ko.observableArray();
 		this.openpgpKeyring = null;
 
-		this.openpgpkeysPublic = ko.computed(() => _.filter(this.openpgpkeys(), (item) => !!(item && !item.isPrivate)));
-		this.openpgpkeysPrivate = ko.computed(() => _.filter(this.openpgpkeys(), (item) => !!(item && item.isPrivate)));
+		this.openpgpkeysPublic = ko.computed(() => this.openpgpkeys.filter(item => item && !item.isPrivate));
+		this.openpgpkeysPrivate = ko.computed(() => this.openpgpkeys.filter(item => item && item.isPrivate));
 	}
 
 	/**
@@ -30,7 +153,7 @@ class PgpUserStore {
 	}
 
 	findKeyByHex(keys, hash) {
-		return _.find(keys, (item) => hash && item && (hash === item.id || -1 < item.ids.indexOf(hash)));
+		return keys.find(item => hash && item && (hash === item.id || item.ids.includes(hash)));
 	}
 
 	findPublicKeyByHex(hash) {
@@ -42,62 +165,36 @@ class PgpUserStore {
 	}
 
 	findPublicKeysByEmail(email) {
-		return _.compact(
-			_.flatten(
-				_.map(this.openpgpkeysPublic(), (item) => {
-					const key = item && -1 < item.emails.indexOf(email) ? item : null;
-					return key ? key.getNativeKeys() : [null];
-				}),
-				true
-			)
-		);
+		return this.openpgpkeysPublic().map(item => {
+			const key = item && item.emails.includes(email) ? item : null;
+			return key ? key.getNativeKeys() : [null];
+		}).flat().filter(v => v);
 	}
 
 	findPublicKeysBySigningKeyIds(signingKeyIds) {
-		return _.compact(
-			_.flatten(
-				_.map(signingKeyIds, (id) => {
-					const key = id && id.toHex ? this.findPublicKeyByHex(id.toHex()) : null;
-					return key ? key.getNativeKeys() : [null];
-				}),
-				true
-			)
-		);
+		return signingKeyIds.map(id => {
+			const key = id && id.toHex ? this.findPublicKeyByHex(id.toHex()) : null;
+			return key ? key.getNativeKeys() : [null];
+		}).flat().filter(v => v);
 	}
 
 	findPrivateKeysByEncryptionKeyIds(encryptionKeyIds, recipients, returnWrapKeys) {
 		let result = isArray(encryptionKeyIds)
-			? _.compact(
-					_.flatten(
-						_.map(encryptionKeyIds, (id) => {
-							const key = id && id.toHex ? this.findPrivateKeyByHex(id.toHex()) : null;
-							return key ? (returnWrapKeys ? [key] : key.getNativeKeys()) : [null];
-						}),
-						true
-					)
-			  )
+			? encryptionKeyIds.map(id => {
+					const key = id && id.toHex ? this.findPrivateKeyByHex(id.toHex()) : null;
+					return key ? (returnWrapKeys ? [key] : key.getNativeKeys()) : [null];
+				}).flat().filter(v => v)
 			: [];
 
-		if (0 === result.length && isNonEmptyArray(recipients)) {
-			result = _.uniq(
-				_.compact(
-					_.flatten(
-						_.map(recipients, (sEmail) => {
-							const keys = sEmail ? this.findAllPrivateKeysByEmailNotNative(sEmail) : null;
-							return keys
-								? returnWrapKeys
-									? keys
-									: _.flatten(
-											_.map(keys, (key) => key.getNativeKeys()),
-											true
-									  )
-								: [null];
-						}),
-						true
-					)
-				),
-				(key) => key.id
-			);
+		if (!result.length && isNonEmptyArray(recipients)) {
+			result = recipients.map(sEmail => {
+				const keys = sEmail ? this.findAllPrivateKeysByEmailNotNative(sEmail) : null;
+				return keys
+					? returnWrapKeys
+						? keys
+						: keys.map(key => key.getNativeKeys()).flat()
+					: [null];
+			}).flat().validUnique(key => key.id);
 		}
 
 		return result;
@@ -108,7 +205,7 @@ class PgpUserStore {
 	 * @returns {?}
 	 */
 	findPublicKeyByEmailNotNative(email) {
-		return _.find(this.openpgpkeysPublic(), (item) => item && -1 < item.emails.indexOf(email)) || null;
+		return this.openpgpkeysPublic().find(item => item && item.emails.includes(email)) || null;
 	}
 
 	/**
@@ -116,7 +213,7 @@ class PgpUserStore {
 	 * @returns {?}
 	 */
 	findPrivateKeyByEmailNotNative(email) {
-		return _.find(this.openpgpkeysPrivate(), (item) => item && -1 < item.emails.indexOf(email)) || null;
+		return this.openpgpkeysPrivate().find(item => item && item.emails.includes(email)) || null;
 	}
 
 	/**
@@ -124,7 +221,7 @@ class PgpUserStore {
 	 * @returns {?}
 	 */
 	findAllPublicKeysByEmailNotNative(email) {
-		return _.filter(this.openpgpkeysPublic(), (item) => item && -1 < item.emails.indexOf(email)) || null;
+		return this.openpgpkeysPublic().filter(item => item && item.emails.includes(email)) || null;
 	}
 
 	/**
@@ -132,7 +229,7 @@ class PgpUserStore {
 	 * @returns {?}
 	 */
 	findAllPrivateKeysByEmailNotNative(email) {
-		return _.filter(this.openpgpkeysPrivate(), (item) => item && -1 < item.emails.indexOf(email)) || null;
+		return this.openpgpkeysPrivate().filter(item => item && item.emails.includes(email)) || null;
 	}
 
 	/**
@@ -142,7 +239,7 @@ class PgpUserStore {
 	 */
 	findPrivateKeyByEmail(email, password) {
 		let privateKey = null;
-		const key = _.find(this.openpgpkeysPrivate(), (item) => item && -1 < item.emails.indexOf(email));
+		const key = this.openpgpkeysPrivate().find(item => item && item.emails.includes(email));
 
 		if (key) {
 			try {
@@ -163,14 +260,14 @@ class PgpUserStore {
 	 * @returns {?}
 	 */
 	findSelfPrivateKey(password) {
-		return this.findPrivateKeyByEmail(AccountStore.email(), password);
+		return this.findPrivateKeyByEmail(AccountUserStore.email(), password);
 	}
 
 	decryptMessage(message, recipients, fCallback) {
 		if (message && message.getEncryptionKeyIds) {
 			const privateKeys = this.findPrivateKeysByEncryptionKeyIds(message.getEncryptionKeyIds(), recipients, true);
-			if (privateKeys && 0 < privateKeys.length) {
-				showScreenPopup(require('View/Popup/MessageOpenPgp'), [
+			if (privateKeys && privateKeys.length) {
+				showScreenPopup(MessageOpenPgpPopupView, [
 					(decryptedKey) => {
 						if (decryptedKey) {
 							message.decrypt(decryptedKey).then(
@@ -212,19 +309,19 @@ class PgpUserStore {
 	verifyMessage(message, fCallback) {
 		if (message && message.getSigningKeyIds) {
 			const signingKeyIds = message.getSigningKeyIds();
-			if (signingKeyIds && 0 < signingKeyIds.length) {
+			if (signingKeyIds && signingKeyIds.length) {
 				const publicKeys = this.findPublicKeysBySigningKeyIds(signingKeyIds);
-				if (publicKeys && 0 < publicKeys.length) {
+				if (publicKeys && publicKeys.length) {
 					try {
 						const result = message.verify(publicKeys),
-							valid = _.find(_.isArray(result) ? result : [], (item) => item && item.valid && item.keyid);
+							valid = (isArray(result) ? result : []).find(item => item && item.valid && item.keyid);
 
 						if (valid && valid.keyid && valid.keyid && valid.keyid.toHex) {
 							fCallback(this.findPublicKeyByHex(valid.keyid.toHex()));
 							return true;
 						}
 					} catch (e) {
-						log(e);
+						console.log(e);
 					}
 				}
 
@@ -237,177 +334,35 @@ class PgpUserStore {
 		return false;
 	}
 
-	controlsHelper(dom, verControl, success, title, text) {
-		if (success) {
-			dom
-				.removeClass('error')
-				.addClass('success')
-				.attr('title', title);
-			verControl
-				.removeClass('error')
-				.addClass('success')
-				.attr('title', title);
-		} else {
-			dom
-				.removeClass('success')
-				.addClass('error')
-				.attr('title', title);
-			verControl
-				.removeClass('success')
-				.addClass('error')
-				.attr('title', title);
-		}
-
-		if (!isUnd(text)) {
-			dom.text(trim(text));
-		}
-	}
-
-	static domControlEncryptedClickHelper(store, dom, armoredMessage, recipients) {
-		return function() {
-			let message = null;
-			const $this = $(this); // eslint-disable-line no-invalid-this
-
-			if ($this.hasClass('success')) {
-				return false;
-			}
-
-			try {
-				message = store.openpgp.message.readArmored(armoredMessage);
-			} catch (e) {
-				log(e);
-			}
-
-			if (message && message.getText && message.verify && message.decrypt) {
-				store.decryptMessage(
-					message,
-					recipients,
-					(validPrivateKey, decryptedMessage, validPublicKey, signingKeyIds) => {
-						if (decryptedMessage) {
-							if (validPublicKey) {
-								store.controlsHelper(
-									dom,
-									$this,
-									true,
-									i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
-										'USER': validPublicKey.user + ' (' + validPublicKey.id + ')'
-									}),
-									decryptedMessage.getText()
-								);
-							} else if (validPrivateKey) {
-								const keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
-									additional = keyIds
-										? _.compact(_.map(keyIds, (item) => (item && item.toHex ? item.toHex() : null))).join(', ')
-										: '';
-
-								store.controlsHelper(
-									dom,
-									$this,
-									false,
-									i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') + (additional ? ' (' + additional + ')' : ''),
-									decryptedMessage.getText()
-								);
-							} else {
-								store.controlsHelper(dom, $this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
-							}
-						} else {
-							store.controlsHelper(dom, $this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
-						}
-					}
-				);
-
-				return false;
-			}
-
-			store.controlsHelper(dom, $this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
-			return false;
-		};
-	}
-
-	static domControlSignedClickHelper(store, dom, armoredMessage) {
-		return function() {
-			let message = null;
-			const $this = $(this); // eslint-disable-line no-invalid-this
-
-			if ($this.hasClass('success') || $this.hasClass('error')) {
-				return false;
-			}
-
-			try {
-				message = store.openpgp.cleartext.readArmored(armoredMessage);
-			} catch (e) {
-				log(e);
-			}
-
-			if (message && message.getText && message.verify) {
-				store.verifyMessage(message, (validKey, signingKeyIds) => {
-					if (validKey) {
-						store.controlsHelper(
-							dom,
-							$this,
-							true,
-							i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
-								'USER': validKey.user + ' (' + validKey.id + ')'
-							}),
-							message.getText()
-						);
-					} else {
-						const keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
-							additional = keyIds
-								? _.compact(_.map(keyIds, (item) => (item && item.toHex ? item.toHex() : null))).join(', ')
-								: '';
-
-						store.controlsHelper(
-							dom,
-							$this,
-							false,
-							i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') + (additional ? ' (' + additional + ')' : '')
-						);
-					}
-				});
-
-				return false;
-			}
-
-			store.controlsHelper(dom, $this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
-			return false;
-		};
-	}
-
 	/**
 	 * @param {*} dom
 	 * @param {MessageModel} rainLoopMessage
 	 */
 	initMessageBodyControls(dom, rainLoopMessage) {
-		if (dom && !dom.hasClass('inited')) {
-			dom.addClass('inited');
+		const cl = dom && dom.classList;
+		if (!cl.contains('inited')) {
+			cl.add('inited');
 
-			const encrypted = dom.hasClass('encrypted'),
-				signed = dom.hasClass('signed'),
+			const encrypted = cl.contains('encrypted'),
+				signed = cl.contains('signed'),
 				recipients = rainLoopMessage ? rainLoopMessage.getEmails(['from', 'to', 'cc']) : [];
 
 			let verControl = null;
 
 			if (encrypted || signed) {
-				const domText = dom.text();
-				dom.data('openpgp-original', domText);
+				const domText = dom.textContent;
 
+				verControl = Element.fromHTML('<div class="b-openpgp-control"><i class="fontastic">🔒</i></div>');
 				if (encrypted) {
-					verControl = $('<div class="b-openpgp-control"><i class="icon-lock"></i></div>')
-						.attr('title', i18n('MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC'))
-						.on('click', PgpUserStore.domControlEncryptedClickHelper(this, dom, domText, recipients));
-				} else if (signed) {
-					verControl = $('<div class="b-openpgp-control"><i class="icon-lock"></i></div>')
-						.attr('title', i18n('MESSAGE/PGP_SIGNED_MESSAGE_DESC'))
-						.on('click', PgpUserStore.domControlSignedClickHelper(this, dom, domText));
+					verControl.title = i18n('MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC');
+					verControl.addEventListener('click', domControlEncryptedClickHelper(this, dom, domText, recipients));
+				} else {
+					verControl.title = i18n('MESSAGE/PGP_SIGNED_MESSAGE_DESC');
+					verControl.addEventListener('click', domControlSignedClickHelper(this, dom, domText));
 				}
 
-				if (verControl) {
-					dom.before(verControl).before('<div></div>');
-				}
+				dom.before(verControl, createElement('div'));
 			}
 		}
 	}
-}
-
-export default new PgpUserStore();
+};

@@ -1,51 +1,40 @@
-import ko from 'ko';
-
-import { StorageResultType, Notification } from 'Common/Enums';
-import { trim } from 'Common/Utils';
 import { getNotification } from 'Common/Translator';
 
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
-import { getApp } from 'Helper/Apps/User';
+import { decorateKoCommands } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
-
-@popup({
-	name: 'View/Popup/Account',
-	templateID: 'PopupsAccount'
-})
-class AccountPopupView extends AbstractViewNext {
+class AccountPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('Account');
 
-		this.isNew = ko.observable(true);
+		this.addObservables({
+			isNew: true,
 
-		this.email = ko.observable('');
-		this.password = ko.observable('');
+			email: '',
+			password: '',
 
-		this.emailError = ko.observable(false);
-		this.passwordError = ko.observable(false);
+			emailError: false,
+			passwordError: false,
 
-		this.email.subscribe(() => {
-			this.emailError(false);
+			submitRequest: false,
+			submitError: '',
+			submitErrorAdditional: ''
 		});
 
-		this.password.subscribe(() => {
-			this.passwordError(false);
+		this.email.subscribe(() => this.emailError(false));
+
+		this.password.subscribe(() => this.passwordError(false));
+
+		decorateKoCommands(this, {
+			addAccountCommand: self => !self.submitRequest()
 		});
-
-		this.submitRequest = ko.observable(false);
-		this.submitError = ko.observable('');
-		this.submitErrorAdditional = ko.observable('');
-
-		this.emailFocus = ko.observable(false);
 	}
 
-	@command((self) => !self.submitRequest())
 	addAccountCommand() {
-		this.emailError('' === trim(this.email()));
-		this.passwordError('' === trim(this.password()));
+		this.emailError(!this.email().trim());
+		this.passwordError(!this.password().trim());
 
 		if (this.emailError() || this.passwordError()) {
 			return false;
@@ -54,24 +43,14 @@ class AccountPopupView extends AbstractViewNext {
 		this.submitRequest(true);
 
 		Remote.accountSetup(
-			(result, data) => {
+			(iError, data) => {
 				this.submitRequest(false);
-				if (StorageResultType.Success === result && data) {
-					if (data.Result) {
-						getApp().accountsAndIdentities();
-						this.cancelCommand();
-					} else {
-						this.submitError(
-							data.ErrorCode ? getNotification(data.ErrorCode) : getNotification(Notification.UnknownError)
-						);
-
-						if (data.ErrorMessageAdditional) {
-							this.submitErrorAdditional(data.ErrorMessageAdditional);
-						}
-					}
+				if (iError) {
+					this.submitError(getNotification(iError));
+					this.submitErrorAdditional((data && data.ErrorMessageAdditional) || '');
 				} else {
-					this.submitError(getNotification(Notification.UnknownError));
-					this.submitErrorAdditional('');
+					rl.app.accountsAndIdentities();
+					this.cancelCommand();
 				}
 			},
 			this.email(),
@@ -102,10 +81,6 @@ class AccountPopupView extends AbstractViewNext {
 			this.isNew(false);
 			this.email(account.email);
 		}
-	}
-
-	onShowWithDelay() {
-		this.emailFocus(true);
 	}
 }
 

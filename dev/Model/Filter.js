@@ -1,208 +1,207 @@
-import _ from '_';
 import ko from 'ko';
 
-import { FilterRulesType, FiltersAction } from 'Common/Enums';
-import { pString, inArray, isNonEmptyArray, fakeMd5, delegateRunOnDestroy, windowResizeCallback } from 'Common/Utils';
+import { isNonEmptyArray, pString } from 'Common/Utils';
+import { delegateRunOnDestroy } from 'Common/UtilsUser';
 import { i18n } from 'Common/Translator';
 import { getFolderFromCacheList } from 'Common/Cache';
 
-import AccountStore from 'Stores/User/Account';
+import { AccountUserStore } from 'Stores/User/Account';
 
 import { FilterConditionModel } from 'Model/FilterCondition';
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-class FilterModel extends AbstractModel {
-	constructor() {
-		super('FilterModel');
+/**
+ * @enum {string}
+ */
+export const FilterAction = {
+	None: 'None',
+	MoveTo: 'MoveTo',
+	Discard: 'Discard',
+	Vacation: 'Vacation',
+	Reject: 'Reject',
+	Forward: 'Forward'
+};
 
-		this.enabled = ko.observable(true);
+/**
+ * @enum {string}
+ */
+const FilterRulesType = {
+	All: 'All',
+	Any: 'Any'
+};
+
+export class FilterModel extends AbstractModel {
+	constructor() {
+		super();
 
 		this.id = '';
 
-		this.name = ko.observable('');
-		this.name.error = ko.observable(false);
-		this.name.focused = ko.observable(false);
+		this.addObservables({
+			enabled: true,
+			deleteAccess: false,
+			canBeDeleted: true,
 
-		this.conditions = ko.observableArray([]);
-		this.conditionsType = ko.observable(FilterRulesType.Any);
+			name: '',
+			nameError: false,
+			nameFocused: false,
 
-		// Actions
-		this.actionValue = ko.observable('');
-		this.actionValue.error = ko.observable(false);
+			conditionsType: FilterRulesType.Any,
 
-		this.actionValueSecond = ko.observable('');
-		this.actionValueThird = ko.observable('');
+			// Actions
+			actionValue: '',
+			actionValueError: false,
 
-		this.actionValueFourth = ko.observable('');
-		this.actionValueFourth.error = ko.observable(false);
+			actionValueSecond: '',
+			actionValueThird: '',
 
-		this.actionMarkAsRead = ko.observable(false);
+			actionValueFourth: '',
+			actionValueFourthError: false,
 
-		this.actionKeep = ko.observable(true);
-		this.actionNoStop = ko.observable(false);
+			actionMarkAsRead: false,
 
-		this.actionType = ko.observable(FiltersAction.MoveTo);
+			actionKeep: true,
+			actionNoStop: false,
 
-		this.actionType.subscribe(() => {
-			this.actionValue('');
-			this.actionValue.error(false);
-			this.actionValueSecond('');
-			this.actionValueThird('');
-			this.actionValueFourth('');
-			this.actionValueFourth.error(false);
+			actionType: FilterAction.MoveTo
 		});
+
+		this.conditions = ko.observableArray();
 
 		const fGetRealFolderName = (folderFullNameRaw) => {
 			const folder = getFolderFromCacheList(folderFullNameRaw);
 			return folder ? folder.fullName.replace('.' === folder.delimiter ? /\./ : /[\\/]+/, ' / ') : folderFullNameRaw;
 		};
 
-		this.nameSub = ko.computed(() => {
-			let result = '';
-			const actionValue = this.actionValue();
+		this.addComputables({
+			nameSub: () => {
+				let result = '';
+				const actionValue = this.actionValue(), root = 'SETTINGS_FILTERS/SUBNAME_';
 
-			switch (this.actionType()) {
-				case FiltersAction.MoveTo:
-					result = i18n('SETTINGS_FILTERS/SUBNAME_MOVE_TO', {
-						FOLDER: fGetRealFolderName(actionValue)
-					});
-					break;
-				case FiltersAction.Forward:
-					result = i18n('SETTINGS_FILTERS/SUBNAME_FORWARD_TO', {
-						EMAIL: actionValue
-					});
-					break;
-				case FiltersAction.Vacation:
-					result = i18n('SETTINGS_FILTERS/SUBNAME_VACATION_MESSAGE');
-					break;
-				case FiltersAction.Reject:
-					result = i18n('SETTINGS_FILTERS/SUBNAME_REJECT');
-					break;
-				case FiltersAction.Discard:
-					result = i18n('SETTINGS_FILTERS/SUBNAME_DISCARD');
-					break;
-				// no default
+				switch (this.actionType()) {
+					case FilterAction.MoveTo:
+						result = i18n(root + 'MOVE_TO', {
+							FOLDER: fGetRealFolderName(actionValue)
+						});
+						break;
+					case FilterAction.Forward:
+						result = i18n(root + 'FORWARD_TO', {
+							EMAIL: actionValue
+						});
+						break;
+					case FilterAction.Vacation:
+						result = i18n(root + 'VACATION_MESSAGE');
+						break;
+					case FilterAction.Reject:
+						result = i18n(root + 'REJECT');
+						break;
+					case FilterAction.Discard:
+						result = i18n(root + 'DISCARD');
+						break;
+					// no default
+				}
+
+				return result ? '(' + result + ')' : '';
+			},
+
+			actionTemplate: () => {
+				const result = 'SettingsFiltersAction';
+				switch (this.actionType()) {
+					case FilterAction.Forward:
+						return result + 'Forward';
+					case FilterAction.Vacation:
+						return result + 'Vacation';
+					case FilterAction.Reject:
+						return result + 'Reject';
+					case FilterAction.None:
+						return result + 'None';
+					case FilterAction.Discard:
+						return result + 'Discard';
+					case FilterAction.MoveTo:
+					default:
+						return result + 'MoveToFolder';
+				}
 			}
-
-			return result ? '(' + result + ')' : '';
 		});
 
-		this.actionTemplate = ko.computed(() => {
-			let result = '';
-
-			switch (this.actionType()) {
-				case FiltersAction.Forward:
-					result = 'SettingsFiltersActionForward';
-					break;
-				case FiltersAction.Vacation:
-					result = 'SettingsFiltersActionVacation';
-					break;
-				case FiltersAction.Reject:
-					result = 'SettingsFiltersActionReject';
-					break;
-				case FiltersAction.None:
-					result = 'SettingsFiltersActionNone';
-					break;
-				case FiltersAction.Discard:
-					result = 'SettingsFiltersActionDiscard';
-					break;
-				case FiltersAction.MoveTo:
-				default:
-					result = 'SettingsFiltersActionMoveToFolder';
-					break;
+		this.addSubscribables({
+			name: sValue => this.nameError(!sValue),
+			actionValue: sValue => this.actionValueError(!sValue),
+			actionType: () => {
+				this.actionValue('');
+				this.actionValueError(false);
+				this.actionValueSecond('');
+				this.actionValueThird('');
+				this.actionValueFourth('');
+				this.actionValueFourthError(false);
 			}
-
-			return result;
 		});
-
-		this.regDisposables(this.conditions.subscribe(windowResizeCallback));
-
-		this.regDisposables(
-			this.name.subscribe((sValue) => {
-				this.name.error('' === sValue);
-			})
-		);
-
-		this.regDisposables(
-			this.actionValue.subscribe((sValue) => {
-				this.actionValue.error('' === sValue);
-			})
-		);
-
-		this.regDisposables([this.actionNoStop, this.actionTemplate]);
-
-		this.deleteAccess = ko.observable(false);
-		this.canBeDeleted = ko.observable(true);
 	}
 
 	generateID() {
-		this.id = fakeMd5();
+		this.id = Jua.randomId();
 	}
 
 	verify() {
-		if ('' === this.name()) {
-			this.name.error(true);
+		if (!this.name()) {
+			this.nameError(true);
 			return false;
 		}
 
-		if (0 < this.conditions().length) {
-			if (_.find(this.conditions(), (cond) => cond && !cond.verify())) {
-				return false;
-			}
+		if (this.conditions.length && this.conditions.find(cond => cond && !cond.verify())) {
+			return false;
 		}
 
-		if ('' === this.actionValue()) {
-			if (
-				-1 <
-				inArray(this.actionType(), [
-					FiltersAction.MoveTo,
-					FiltersAction.Forward,
-					FiltersAction.Reject,
-					FiltersAction.Vacation
-				])
+		if (!this.actionValue()) {
+			if ([
+					FilterAction.MoveTo,
+					FilterAction.Forward,
+					FilterAction.Reject,
+					FilterAction.Vacation
+				].includes(this.actionType())
 			) {
-				this.actionValue.error(true);
+				this.actionValueError(true);
 				return false;
 			}
 		}
 
-		if (FiltersAction.Forward === this.actionType() && -1 === this.actionValue().indexOf('@')) {
-			this.actionValue.error(true);
+		if (FilterAction.Forward === this.actionType() && !this.actionValue().includes('@')) {
+			this.actionValueError(true);
 			return false;
 		}
 
 		if (
-			FiltersAction.Vacation === this.actionType() &&
-			'' !== this.actionValueFourth() &&
-			-1 === this.actionValueFourth().indexOf('@')
+			FilterAction.Vacation === this.actionType() &&
+			this.actionValueFourth() &&
+			!this.actionValueFourth().includes('@')
 		) {
-			this.actionValueFourth.error(true);
+			this.actionValueFourthError(true);
 			return false;
 		}
 
-		this.name.error(false);
-		this.actionValue.error(false);
+		this.nameError(false);
+		this.actionValueError(false);
 
 		return true;
 	}
 
 	toJson() {
 		return {
+//			'@Object': 'Object/Filter',
 			ID: this.id,
-			Enabled: this.enabled() ? '1' : '0',
+			Enabled: this.enabled() ? 1 : 0,
 			Name: this.name(),
+			Conditions: this.conditions.map(item => item.toJson()),
 			ConditionsType: this.conditionsType(),
-			Conditions: _.map(this.conditions(), (item) => item.toJson()),
 
+			ActionType: this.actionType(),
 			ActionValue: this.actionValue(),
 			ActionValueSecond: this.actionValueSecond(),
 			ActionValueThird: this.actionValueThird(),
 			ActionValueFourth: this.actionValueFourth(),
-			ActionType: this.actionType(),
 
-			Stop: this.actionNoStop() ? '0' : '1',
-			Keep: this.actionKeep() ? '1' : '0',
-			MarkAsRead: this.actionMarkAsRead() ? '1' : '0'
+			Keep: this.actionKeep() ? 1 : 0,
+			Stop: this.actionNoStop() ? 0 : 1,
+			MarkAsRead: this.actionMarkAsRead() ? 1 : 0
 		};
 	}
 
@@ -216,46 +215,32 @@ class FilterModel extends AbstractModel {
 	}
 
 	setRecipients() {
-		this.actionValueFourth(AccountStore.accountsEmails().join(', '));
+		this.actionValueFourth(AccountUserStore.getEmailAddresses().join(', '));
 	}
 
-	parse(json) {
-		let result = false;
-		if (json && 'Object/Filter' === json['@Object']) {
-			this.id = pString(json.ID);
-			this.name(pString(json.Name));
-			this.enabled(!!json.Enabled);
+	/**
+	 * @static
+	 * @param {FetchJsonFilter} json
+	 * @returns {?FilterModel}
+	 */
+	static reviveFromJson(json) {
+		const filter = super.reviveFromJson(json);
+		if (filter) {
+			filter.id = pString(json.ID);
 
-			this.conditionsType(pString(json.ConditionsType));
-
-			this.conditions([]);
+			filter.conditions([]);
 
 			if (isNonEmptyArray(json.Conditions)) {
-				this.conditions(
-					_.compact(
-						_.map(json.Conditions, (aData) => {
-							const filterCondition = new FilterConditionModel();
-							return filterCondition && filterCondition.parse(aData) ? filterCondition : null;
-						})
-					)
+				filter.conditions(
+					json.Conditions.map(aData => FilterConditionModel.reviveFromJson(aData)).filter(v => v)
 				);
 			}
 
-			this.actionType(pString(json.ActionType));
-
-			this.actionValue(pString(json.ActionValue));
-			this.actionValueSecond(pString(json.ActionValueSecond));
-			this.actionValueThird(pString(json.ActionValueThird));
-			this.actionValueFourth(pString(json.ActionValueFourth));
-
-			this.actionNoStop(!json.Stop);
-			this.actionKeep(!!json.Keep);
-			this.actionMarkAsRead(!!json.MarkAsRead);
-
-			result = true;
+			filter.actionKeep(0 != json.Keep);
+			filter.actionNoStop(0 == json.Stop);
+			filter.actionMarkAsRead(1 == json.MarkAsRead);
 		}
-
-		return result;
+		return filter;
 	}
 
 	cloneSelf() {
@@ -266,7 +251,7 @@ class FilterModel extends AbstractModel {
 		filter.enabled(this.enabled());
 
 		filter.name(this.name());
-		filter.name.error(this.name.error());
+		filter.nameError(this.nameError());
 
 		filter.conditionsType(this.conditionsType());
 
@@ -275,7 +260,7 @@ class FilterModel extends AbstractModel {
 		filter.actionType(this.actionType());
 
 		filter.actionValue(this.actionValue());
-		filter.actionValue.error(this.actionValue.error());
+		filter.actionValueError(this.actionValueError());
 
 		filter.actionValueSecond(this.actionValueSecond());
 		filter.actionValueThird(this.actionValueThird());
@@ -284,10 +269,8 @@ class FilterModel extends AbstractModel {
 		filter.actionKeep(this.actionKeep());
 		filter.actionNoStop(this.actionNoStop());
 
-		filter.conditions(_.map(this.conditions(), (item) => item.cloneSelf()));
+		filter.conditions(this.conditions.map(item => item.cloneSelf()));
 
 		return filter;
 	}
 }
-
-export { FilterModel, FilterModel as default };

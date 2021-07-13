@@ -1,13 +1,8 @@
-import _ from '_';
-import crossroads from 'crossroads';
-import { isArray, isNonEmptyArray, noop } from 'Common/Utils';
+import { isArray, isNonEmptyArray } from 'Common/Utils';
 
 export class AbstractScreen {
-	oCross = null;
-	sScreenName;
-	aViewModels;
-
 	constructor(screenName, viewModels = []) {
+		this.oCross = null;
 		this.sScreenName = screenName;
 		this.aViewModels = isArray(viewModels) ? viewModels : [];
 	}
@@ -15,7 +10,7 @@ export class AbstractScreen {
 	/**
 	 * @returns {Array}
 	 */
-	viewModels() {
+	get viewModels() {
 		return this.aViewModels;
 	}
 
@@ -36,29 +31,25 @@ export class AbstractScreen {
 	/**
 	 * @returns {?Object}
 	 */
-	__cross() {
+	get __cross() {
 		return this.oCross;
 	}
 
 	/**
 	 * @returns {void}
 	 */
-	__start() {
-		let route = null,
-			fMatcher = null;
-		const routes = this.routes();
+	onStart() {
+		if (!this.__started) {
+			this.__started = true;
+			const routes = this.routes();
+			if (isNonEmptyArray(routes)) {
+				let route = new Crossroads(),
+					fMatcher = (this.onRoute || (()=>{})).bind(this);
 
-		if (isNonEmptyArray(routes)) {
-			fMatcher = _.bind(this.onRoute || noop, this);
-			route = crossroads.create();
+				routes.forEach(item => item && route && (route.addRoute(item[0], fMatcher).rules = item[1]));
 
-			routes.forEach((item) => {
-				if (item && route) {
-					route.addRoute(item[0], fMatcher).rules = item[1];
-				}
-			});
-
-			this.oCross = route;
+				this.oCross = route;
+			}
 		}
 	}
 }

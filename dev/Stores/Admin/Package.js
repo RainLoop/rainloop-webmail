@@ -1,13 +1,42 @@
 import ko from 'ko';
+import { isArray } from 'Common/Utils';
+import Remote from 'Remote/Admin/Fetch';
 
-class PackageAdminStore {
-	constructor() {
-		this.packages = ko.observableArray([]);
-		this.packages.loading = ko.observable(false).extend({ throttle: 100 });
+export const PackageAdminStore = ko.observableArray();
 
-		this.packagesReal = ko.observable(true);
-		this.packagesMainUpdatable = ko.observable(true);
-	}
-}
+PackageAdminStore.real = ko.observable(true);
 
-export default new PackageAdminStore();
+PackageAdminStore.loading = ko.observable(false);
+
+PackageAdminStore.fetch = () => {
+	PackageAdminStore.loading(true);
+	Remote.packagesList((iError, data) => {
+		PackageAdminStore.loading(false);
+		if (!iError) {
+			PackageAdminStore.real(!!data.Result.Real);
+
+			let list = [];
+			const loading = {};
+
+			PackageAdminStore.forEach(item => {
+				if (item && item.loading()) {
+					loading[item.file] = item;
+				}
+			});
+
+			if (isArray(data.Result.List)) {
+				list = data.Result.List.map(item => {
+					if (item) {
+						item.loading = ko.observable(loading[item.file] !== undefined);
+						return 'core' === item.type && !item.canBeInstalled ? null : item;
+					}
+					return null;
+				}).filter(v => v);
+			}
+
+			PackageAdminStore(list);
+		} else {
+			PackageAdminStore.real(false);
+		}
+	});
+};

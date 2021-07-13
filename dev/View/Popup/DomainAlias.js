@@ -1,74 +1,53 @@
-import _ from '_';
 import ko from 'ko';
 
-import { StorageResultType, Notification } from 'Common/Enums';
-import { bMobileDevice } from 'Common/Globals';
-import { i18n } from 'Common/Translator';
+import { getNotification } from 'Common/Translator';
 
-import DomainStore from 'Stores/Admin/Domain';
+import { DomainAdminStore } from 'Stores/Admin/Domain';
 
-import Remote from 'Remote/Admin/Ajax';
+import Remote from 'Remote/Admin/Fetch';
 
-import { getApp } from 'Helper/Apps/Admin';
+import { decorateKoCommands } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
-
-@popup({
-	name: 'View/Popup/DomainAlias',
-	templateID: 'PopupsDomainAlias'
-})
-class DomainAliasPopupView extends AbstractViewNext {
+class DomainAliasPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('DomainAlias');
 
-		this.saving = ko.observable(false);
-		this.savingError = ko.observable('');
+		this.addObservables({
+			saving: false,
+			savingError: '',
 
-		this.name = ko.observable('');
-		this.name.focused = ko.observable(false);
+			name: '',
 
-		this.alias = ko.observable('');
+			alias: ''
+		});
 
-		this.domains = DomainStore.domainsWithoutAliases;
+		this.domains = ko.computed(() => DomainAdminStore.filter(item => item && !item.alias));
 
-		this.domainsOptions = ko.computed(() =>
-			_.map(this.domains(), (item) => ({ optValue: item.name, optText: item.name }))
-		);
+		this.domainsOptions = ko.computed(() => this.domains().map(item => ({ optValue: item.name, optText: item.name })));
 
-		this.canBeSaved = ko.computed(() => !this.saving() && '' !== this.name() && '' !== this.alias());
+		this.canBeSaved = ko.computed(() => !this.saving() && this.name() && this.alias());
 
-		this.onDomainAliasCreateOrSaveResponse = _.bind(this.onDomainAliasCreateOrSaveResponse, this);
+		decorateKoCommands(this, {
+			createCommand: self => self.canBeSaved()
+		});
 	}
 
-	@command((self) => self.canBeSaved())
 	createCommand() {
 		this.saving(true);
-		Remote.createDomainAlias(this.onDomainAliasCreateOrSaveResponse, this.name(), this.alias());
-	}
-
-	onDomainAliasCreateOrSaveResponse(result, data) {
-		this.saving(false);
-		if (StorageResultType.Success === result && data) {
-			if (data.Result) {
-				getApp().reloadDomainList();
+		Remote.createDomainAlias(iError => {
+			this.saving(false);
+			if (iError) {
+				this.savingError(getNotification(iError));
+			} else {
+				DomainAdminStore.fetch();
 				this.closeCommand();
-			} else if (Notification.DomainAlreadyExists === data.ErrorCode) {
-				this.savingError(i18n('ERRORS/DOMAIN_ALREADY_EXISTS'));
 			}
-		} else {
-			this.savingError(i18n('ERRORS/UNKNOWN_ERROR'));
-		}
+		}, this.name(), this.alias());
 	}
 
 	onShow() {
 		this.clearForm();
-	}
-
-	onShowWithDelay() {
-		if ('' === this.name() && !bMobileDevice) {
-			this.name.focused(true);
-		}
 	}
 
 	clearForm() {
@@ -76,7 +55,6 @@ class DomainAliasPopupView extends AbstractViewNext {
 		this.savingError('');
 
 		this.name('');
-		this.name.focused(false);
 
 		this.alias('');
 	}

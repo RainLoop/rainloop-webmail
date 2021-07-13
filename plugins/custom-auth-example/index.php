@@ -2,9 +2,16 @@
 
 class CustomAuthExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 {
-	public function Init()
+	const
+		NAME     = '',
+		VERSION = '2.1',
+		REQUIRED = '2.5.0',
+		CATEGORY = 'Login',
+		DESCRIPTION = '';
+
+	public function Init() : void
 	{
-		$this->addHook('filter.login-credentials', 'FilterLoginСredentials');
+		$this->addHook('login.credentials', 'FilterLoginCredentials');
 	}
 
 	/**
@@ -14,14 +21,14 @@ class CustomAuthExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 	 *
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function FilterLoginСredentials(&$sEmail, &$sLogin, &$sPassword)
+	public function FilterLoginCredentials(&$sEmail, &$sLogin, &$sPassword)
 	{
 		// Your custom php logic
 		// You may change login credentials
-		if ('demo@rainloop.net' === $sEmail)
+		if ('demo@snappymail.eu' === $sEmail)
 		{
-			$sEmail = 'user@rainloop.net';
-			$sLogin = 'user@rainloop.net';
+			$sEmail = 'user@snappymail.eu';
+			$sLogin = 'user@snappymail.eu';
 			$sPassword = 'super-puper-password';
 		}
 		else

@@ -6,20 +6,26 @@
  * This plugin sets the IMAP and SMTP host to "example.com" upon login, and then connects to it.
  *
  * Based on:
- * https://github.com/RainLoop/rainloop-webmail/blob/master/plugins/override-smtp-credentials/index.php
- * 
+ * https://github.com/the-djmaze/snappymail/blob/master/plugins/override-smtp-credentials/index.php
+ *
  */
 
 class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
-	
+	const
+		NAME     = '',
+		VERSION = '2.1',
+		REQUIRED = '2.5.0',
+		CATEGORY = 'General',
+		DESCRIPTION = '';
+
 	private $imap_prefix = "mail.";
 	private $smtp_prefix = "mail.";
-	
-	public function Init()
+
+	public function Init() : void
 	{
-		$this->addHook('filter.smtp-credentials', 'FilterSmtpCredentials');
-		$this->addHook('filter.imap-credentials', 'FilterImapCredentials');
+		$this->addHook('smtp.credentials', 'FilterSmtpCredentials');
+		$this->addHook('imap.credentials', 'FilterImapCredentials');
 	}
 
 	/**
@@ -41,7 +47,7 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 				{
 					$aImapCredentials['Host'] = $mxhosts[0];
 				}
-				else 
+				else
 				{
 					$aImapCredentials['Host'] = $this->imap_prefix.$domain;
 				}
@@ -67,8 +73,8 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 				if(getmxrr($domain, $mxhosts) && sizeof($mxhosts) > 0)
 				{
 					$aSmtpCredentials['Host'] = $mxhosts[0];
-				} 
-				else 
+				}
+				else
 				{
 					$aSmtpCredentials['Host'] = $this->smtp_prefix.$domain;
 				}

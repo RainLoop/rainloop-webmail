@@ -1,198 +1,107 @@
-import _ from '_';
 import ko from 'ko';
 
-import { windowResizeCallback, isArray, trim, delegateRunOnDestroy } from 'Common/Utils';
-import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
+import { addObservablesTo } from 'Common/Utils';
+import { delegateRunOnDestroy } from 'Common/UtilsUser';
 
-import FilterStore from 'Stores/User/Filter';
-import Remote from 'Remote/User/Ajax';
+import { SieveUserStore } from 'Stores/User/Sieve';
+import Remote from 'Remote/User/Fetch';
 
-import { FilterModel } from 'Model/Filter';
+import { SieveScriptModel } from 'Model/SieveScript';
 
-import { showScreenPopup, command } from 'Knoin/Knoin';
+import { showScreenPopup } from 'Knoin/Knoin';
 
-class FiltersUserSettings {
+import { SieveScriptPopupView } from 'View/Popup/SieveScript';
+
+export class FiltersUserSettings {
 	constructor() {
-		this.modules = FilterStore.modules;
-		this.filters = FilterStore.filters;
+		this.scripts = SieveUserStore.scripts;
+		this.loading = ko.observable(false).extend({ debounce: 200 });
 
-		this.inited = ko.observable(false);
-		this.serverError = ko.observable(false);
-		this.serverErrorDesc = ko.observable('');
-		this.haveChanges = ko.observable(false);
-
-		this.saveErrorText = ko.observable('');
-
-		this.filters.subscribe(windowResizeCallback);
-
-		this.serverError.subscribe((value) => {
-			if (!value) {
-				this.serverErrorDesc('');
-			}
-		}, this);
-
-		this.filterRaw = FilterStore.raw;
-		this.filterRaw.capa = FilterStore.capa;
-		this.filterRaw.active = ko.observable(false);
-		this.filterRaw.allow = ko.observable(false);
-		this.filterRaw.error = ko.observable(false);
-
-		this.filterForDeletion = ko.observable(null).deleteAccessHelper();
-
-		this.filters.subscribe(() => {
-			this.haveChanges(true);
+		addObservablesTo(this, {
+			serverError: false,
+			serverErrorDesc: ''
 		});
 
-		this.filterRaw.subscribe(() => {
-			this.haveChanges(true);
-			this.filterRaw.error(false);
-		});
-
-		this.haveChanges.subscribe(() => {
-			this.saveErrorText('');
-		});
-
-		this.filterRaw.active.subscribe(() => {
-			this.haveChanges(true);
-			this.filterRaw.error(false);
-		});
+		this.scriptForDeletion = ko.observable(null).deleteAccessHelper();
 	}
 
-	@command((self) => self.haveChanges())
-	saveChangesCommand() {
-		if (!this.filters.saving()) {
-			if (this.filterRaw.active() && '' === trim(this.filterRaw())) {
-				this.filterRaw.error(true);
-				return false;
-			}
-
-			this.filters.saving(true);
-			this.saveErrorText('');
-
-			Remote.filtersSave(
-				(result, data) => {
-					this.filters.saving(false);
-
-					if (StorageResultType.Success === result && data && data.Result) {
-						this.haveChanges(false);
-						this.updateList();
-					} else if (data && data.ErrorCode) {
-						this.saveErrorText(data.ErrorMessageAdditional || getNotification(data.ErrorCode));
-					} else {
-						this.saveErrorText(getNotification(Notification.CantSaveFilters));
-					}
-				},
-				this.filters(),
-				this.filterRaw(),
-				this.filterRaw.active()
-			);
-		}
-
-		return true;
-	}
-
-	scrollableOptions(wrapper) {
-		return {
-			handle: '.drag-handle',
-			containment: wrapper || 'parent',
-			axis: 'y'
-		};
+	setError(text) {
+		this.serverError(true);
+		this.serverErrorDesc(text);
 	}
 
 	updateList() {
-		if (!this.filters.loading()) {
-			this.filters.loading(true);
+		if (!this.loading()) {
+			this.loading(true);
+			this.serverError(false);
 
-			Remote.filtersGet((result, data) => {
-				this.filters.loading(false);
-				this.serverError(false);
+			Remote.filtersGet((iError, data) => {
+				this.loading(false);
+				this.scripts([]);
 
-				if (StorageResultType.Success === result && data && data.Result && isArray(data.Result.Filters)) {
-					this.inited(true);
-					this.serverError(false);
-
-					this.filters(
-						_.compact(
-							_.map(data.Result.Filters, (aItem) => {
-								const filter = new FilterModel();
-								return filter && filter.parse(aItem) ? filter : null;
-							})
-						)
-					);
-
-					this.modules(data.Result.Modules ? data.Result.Modules : {});
-
-					this.filterRaw(data.Result.Raw || '');
-					this.filterRaw.capa(isArray(data.Result.Capa) ? data.Result.Capa.join(' ') : '');
-					this.filterRaw.active(!!data.Result.RawIsActive);
-					this.filterRaw.allow(!!data.Result.RawIsAllow);
+				if (iError) {
+					SieveUserStore.capa([]);
+					this.setError(getNotification(iError));
 				} else {
-					this.filters([]);
-					this.modules({});
-					this.filterRaw('');
-					this.filterRaw.capa({});
-
-					this.serverError(true);
-					this.serverErrorDesc(
-						data && data.ErrorCode ? getNotification(data.ErrorCode) : getNotification(Notification.CantGetFilters)
+					SieveUserStore.capa(data.Result.Capa);
+/*
+					this.scripts(
+						data.Result.Scripts.map(aItem => SieveScriptModel.reviveFromJson(aItem)).filter(v => v)
 					);
+*/
+					Object.values(data.Result.Scripts).forEach(value => {
+						value = SieveScriptModel.reviveFromJson(value);
+						value && this.scripts.push(value)
+					});
 				}
-
-				this.haveChanges(false);
 			});
 		}
 	}
 
-	deleteFilter(filter) {
-		this.filters.remove(filter);
-		delegateRunOnDestroy(filter);
+	addScript() {
+		showScreenPopup(SieveScriptPopupView, [new SieveScriptModel()]);
 	}
 
-	addFilter() {
-		const filter = new FilterModel();
-
-		filter.generateID();
-		showScreenPopup(require('View/Popup/Filter'), [
-			filter,
-			() => {
-				this.filters.push(filter);
-				this.filterRaw.active(false);
-			},
-			false
-		]);
+	editScript(script) {
+		showScreenPopup(SieveScriptPopupView, [script]);
 	}
 
-	editFilter(filter) {
-		const clonedFilter = filter.cloneSelf();
-
-		showScreenPopup(require('View/Popup/Filter'), [
-			clonedFilter,
-			() => {
-				const filters = this.filters(),
-					index = filters.indexOf(filter);
-
-				if (-1 < index && filters[index]) {
-					delegateRunOnDestroy(filters[index]);
-					filters[index] = clonedFilter;
-
-					this.filters(filters);
-					this.haveChanges(true);
+	deleteScript(script) {
+		this.serverError(false);
+		Remote.filtersScriptDelete(
+			(iError, data) => {
+				if (iError) {
+					this.setError((data && data.ErrorMessageAdditional) || getNotification(iError));
+				} else {
+					this.scripts.remove(script);
+					delegateRunOnDestroy(script);
 				}
 			},
-			true
-		]);
+			script.name()
+		);
+	}
+
+	toggleScript(script) {
+		let name = script.active() ? '' : script.name();
+		this.serverError(false);
+		Remote.filtersScriptActivate(
+			(iError, data) => {
+				if (iError) {
+					this.setError((data && data.ErrorMessageAdditional) || iError)
+				} else {
+					this.scripts.forEach(script => script.active(script.name() === name));
+				}
+			},
+			name
+		);
 	}
 
 	onBuild(oDom) {
-		const self = this;
-
-		oDom.on('click', '.filter-item .e-action', function() {
-			// eslint-disable-line prefer-arrow-callback
-			const filter = ko.dataFor(this); // eslint-disable-line no-invalid-this
-			if (filter) {
-				self.editFilter(filter);
-			}
+		oDom.addEventListener('click', event => {
+			const el = event.target.closestWithin('.script-item .e-action', oDom),
+				script = el && ko.dataFor(el);
+			script && this.editScript(script);
 		});
 	}
 
@@ -200,5 +109,3 @@ class FiltersUserSettings {
 		this.updateList();
 	}
 }
-
-export { FiltersUserSettings, FiltersUserSettings as default };

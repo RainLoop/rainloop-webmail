@@ -1,67 +1,51 @@
-import _ from '_';
-import $ from '$';
 import ko from 'ko';
 
-import Jua from 'Jua';
-
-import { SaveSettingsStep, UploadErrorCode, Capa, Magics } from 'Common/Enums';
+import { SaveSettingsStep, UploadErrorCode, Capa } from 'Common/Enums';
 import { changeTheme, convertThemeName } from 'Common/Utils';
-import { userBackground, themePreviewLink, uploadBackground } from 'Common/Links';
+import { userBackground, themePreviewLink, serverRequest } from 'Common/Links';
 import { i18n } from 'Common/Translator';
+import { doc, $htmlCL, Settings } from 'Common/Globals';
 
-import { capa } from 'Storage/Settings';
+import { ThemeStore } from 'Stores/Theme';
 
-import ThemeStore from 'Stores/Theme';
+import Remote from 'Remote/User/Fetch';
 
-import Remote from 'Remote/User/Ajax';
-
-class ThemesUserSettings {
+export class ThemesUserSettings {
 	constructor() {
 		this.theme = ThemeStore.theme;
 		this.themes = ThemeStore.themes;
-		this.themesObjects = ko.observableArray([]);
+		this.themesObjects = ko.observableArray();
 
 		this.background = {};
-		this.background.name = ThemeStore.themeBackgroundName;
-		this.background.hash = ThemeStore.themeBackgroundHash;
+		this.background.name = ThemeStore.userBackgroundName;
+		this.background.hash = ThemeStore.userBackgroundHash;
 		this.background.uploaderButton = ko.observable(null);
 		this.background.loading = ko.observable(false);
 		this.background.error = ko.observable('');
 
-		this.capaUserBackground = ko.observable(capa(Capa.UserBackground));
+		this.capaUserBackground = ko.observable(Settings.capa(Capa.UserBackground));
 
-		this.themeTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: Magics.Time100ms });
-
-		this.iTimer = 0;
-		this.oThemeAjaxRequest = null;
+		this.themeTrigger = ko.observable(SaveSettingsStep.Idle).extend({ debounce: 100 });
 
 		this.theme.subscribe((value) => {
-			_.each(this.themesObjects(), (theme) => {
+			this.themesObjects.forEach(theme => {
 				theme.selected(value === theme.name);
 			});
 
 			changeTheme(value, this.themeTrigger);
 
 			Remote.saveSettings(null, {
-				'Theme': value
+				Theme: value
 			});
 		});
 
 		this.background.hash.subscribe((value) => {
-			const $bg = $('#rl-bg');
 			if (!value) {
-				if ($bg.data('backstretch')) {
-					$bg.backstretch('destroy').attr('style', '');
-				}
+				$htmlCL.remove('UserBackground');
+				doc.body.removeAttribute('style');
 			} else {
-				$bg
-					.attr('style', 'background-image: none !important;')
-					.backstretch(userBackground(value), {
-						fade: Magics.Time1s,
-						centeredX: true,
-						centeredY: true
-					})
-					.removeAttr('style');
+				$htmlCL.add('UserBackground');
+				doc.body.style.backgroundImage = "url("+userBackground(value)+")";
 			}
 		});
 	}
@@ -70,7 +54,7 @@ class ThemesUserSettings {
 		const currentTheme = this.theme();
 
 		this.themesObjects(
-			_.map(this.themes(), (theme) => ({
+			this.themes.map(theme => ({
 				name: theme,
 				nameDisplay: convertThemeName(theme),
 				selected: ko.observable(theme === currentTheme),
@@ -97,13 +81,12 @@ class ThemesUserSettings {
 	initUploader() {
 		if (this.background.uploaderButton() && this.capaUserBackground()) {
 			const oJua = new Jua({
-				'action': uploadBackground(),
-				'name': 'uploader',
-				'queueSize': 1,
-				'multipleSizeLimit': 1,
-				'disableDragAndDrop': true,
-				'disableMultiple': true,
-				'clickElement': this.background.uploaderButton()
+				action: serverRequest('UploadBackground'),
+				name: 'uploader',
+				queueSize: 1,
+				multipleSizeLimit: 1,
+				disableMultiple: true,
+				clickElement: this.background.uploaderButton()
 			});
 
 			oJua
@@ -147,5 +130,3 @@ class ThemesUserSettings {
 		}
 	}
 }
-
-export { ThemesUserSettings, ThemesUserSettings as default };

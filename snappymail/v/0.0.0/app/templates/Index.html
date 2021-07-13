@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html class="rl-started-trigger">
+
+<head>
+	<noscript>
+		<meta http-equiv="refresh" content="0; URL=./?/NoScript">
+	</noscript>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="google" content="notranslate">
+	<meta name="robots" content="noindex,nofollow,noodp">
+	<title></title>
+	<style id="app-boot-css">{{BaseAppBootCss}}</style>
+	<link type="text/css" rel="stylesheet" data-href="{{BaseAppMainCssLink}}" id="app-css" rel="preload">
+	<link rel="manifest" href="{{BaseAppManifestLink}}">
+	<style id="app-theme-style" data-href="{{BaseAppThemeCssLink}}">{{BaseAppThemeCss}}</style>
+	<script>document.append||document.location.replace('./?/BadBrowser');</script>
+	{{BaseAppFaviconPngLinkTag}}
+	{{BaseAppFaviconTouchLinkTag}}
+</head>
+
+<body>
+	<div id="rl-app" data-admin='{{BaseAppAdmin}}'>
+		<div id="rl-loading">
+			<div id="rl-loading-desc">{{LoadingDescriptionEsc}}</div>
+			<div class="e-spinner">
+				<div></div>
+				<div></div>
+				<div></div>
+			</div>
+		</div>
+		<div id="rl-loading-error" hidden="">An error occurred.<br>Please refresh the page and try again.</div>
+		<div id="rl-content" hidden="">
+			<div id="rl-popups"></div>
+			<div id="rl-left"></div>
+			<div id="rl-right"></div>
+		</div>
+	</div>
+	{{BaseTemplates}}
+	<script type="text/javascript">{{BaseAppBootScript}}{{BaseLanguage}}</script>
+</body>
+
+</html>

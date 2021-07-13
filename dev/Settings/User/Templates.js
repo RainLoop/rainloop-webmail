@@ -2,40 +2,32 @@ import ko from 'ko';
 
 import { i18n } from 'Common/Translator';
 
-import TemplateStore from 'Stores/User/Template';
-import Remote from 'Remote/User/Ajax';
-
-import { getApp } from 'Helper/Apps/User';
+import { TemplateUserStore } from 'Stores/User/Template';
+import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
-class TemplatesUserSettings {
+import { TemplatePopupView } from 'View/Popup/Template';
+
+export class TemplatesUserSettings {
 	constructor() {
-		this.templates = TemplateStore.templates;
+		this.templates = TemplateUserStore.templates;
 
 		this.processText = ko.computed(() =>
-			TemplateStore.templates.loading() ? i18n('SETTINGS_TEMPLETS/LOADING_PROCESS') : ''
+			TemplateUserStore.templates.loading() ? i18n('SETTINGS_TEMPLETS/LOADING_PROCESS') : ''
 		);
-		this.visibility = ko.computed(() => ('' === this.processText() ? 'hidden' : 'visible'));
+		this.visibility = ko.computed(() => this.processText() ? 'visible' : 'hidden');
 
 		this.templateForDeletion = ko.observable(null).deleteAccessHelper();
 	}
 
-	scrollableOptions(sWrapper) {
-		return {
-			handle: '.drag-handle',
-			containment: sWrapper || 'parent',
-			axis: 'y'
-		};
-	}
-
 	addNewTemplate() {
-		showScreenPopup(require('View/Popup/Template'));
+		showScreenPopup(TemplatePopupView);
 	}
 
 	editTemplate(oTemplateItem) {
 		if (oTemplateItem) {
-			showScreenPopup(require('View/Popup/Template'), [oTemplateItem]);
+			showScreenPopup(TemplatePopupView, [oTemplateItem]);
 		}
 	}
 
@@ -54,22 +46,15 @@ class TemplatesUserSettings {
 	}
 
 	reloadTemplates() {
-		getApp().templates();
+		rl.app.templates();
 	}
 
 	onBuild(oDom) {
-		const self = this;
-
-		oDom.on('click', '.templates-list .template-item .e-action', function() {
-			// eslint-disable-line prefer-arrow-callback
-			const template = ko.dataFor(this); // eslint-disable-line no-invalid-this
-			if (template) {
-				self.editTemplate(template);
-			}
+		oDom.addEventListener('click', event => {
+			const el = event.target.closestWithin('.templates-list .template-item .e-action', oDom);
+			el && ko.dataFor(el) && this.editTemplate(ko.dataFor(el));
 		});
 
 		this.reloadTemplates();
 	}
 }
-
-export { TemplatesUserSettings, TemplatesUserSettings as default };

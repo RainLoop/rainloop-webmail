@@ -1,58 +1,50 @@
-import _ from '_';
 import ko from 'ko';
 
-import { FiltersAction, FilterConditionField, FilterConditionType } from 'Common/Enums';
-import { bMobileDevice } from 'Common/Globals';
-import { defautOptionsAfterRender, delegateRun } from 'Common/Utils';
+import { FilterAction } from 'Model/Filter';
+import { FilterConditionField, FilterConditionType } from 'Model/FilterCondition';
+import { defaultOptionsAfterRender } from 'Common/Utils';
 import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 
-import FilterStore from 'Stores/User/Filter';
-import FolderStore from 'Stores/User/Folder';
+import { FolderUserStore } from 'Stores/User/Folder';
+import { SieveUserStore } from 'Stores/User/Sieve';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { decorateKoCommands } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/Filter',
-	templateID: 'PopupsFilter'
-})
-class FilterPopupView extends AbstractViewNext {
+class FilterPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('Filter');
 
-		this.isNew = ko.observable(true);
-
-		this.modules = FilterStore.modules;
-
-		this.fTrueCallback = null;
-		this.filter = ko.observable(null);
-
-		this.allowMarkAsRead = ko.observable(false);
-
-		this.defautOptionsAfterRender = defautOptionsAfterRender;
-		this.folderSelectList = FolderStore.folderMenuForFilters;
-		this.selectedFolderValue = ko.observable('');
-
-		this.selectedFolderValue.subscribe(() => {
-			if (this.filter()) {
-				this.filter().actionValue.error(false);
-			}
+		this.addObservables({
+			isNew: true,
+			filter: null,
+			allowMarkAsRead: false,
+			selectedFolderValue: ''
 		});
 
-		this.actionTypeOptions = ko.observableArray([]);
-		this.fieldOptions = ko.observableArray([]);
-		this.typeOptions = ko.observableArray([]);
-		this.typeOptionsSize = ko.observableArray([]);
+		this.fTrueCallback = null;
 
-		initOnStartOrLangChange(_.bind(this.populateOptions, this));
+		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
+		this.folderSelectList = FolderUserStore.folderMenuForFilters;
 
-		this.modules.subscribe(this.populateOptions, this);
+		this.selectedFolderValue.subscribe(() => this.filter() && this.filter().actionValueError(false));
+
+		['actionTypeOptions','fieldOptions','typeOptions','typeOptionsSize','typeOptionsBody'].forEach(
+			key => this[key] = ko.observableArray()
+		);
+
+		initOnStartOrLangChange(this.populateOptions.bind(this));
+
+		SieveUserStore.capa.subscribe(this.populateOptions, this);
+
+		decorateKoCommands(this, {
+			saveFilterCommand: 1
+		});
 	}
 
-	@command()
 	saveFilterCommand() {
 		if (this.filter()) {
-			if (FiltersAction.MoveTo === this.filter().actionType()) {
+			if (FilterAction.MoveTo === this.filter().actionType()) {
 				this.filter().actionValue(this.selectedFolderValue());
 			}
 
@@ -60,13 +52,9 @@ class FilterPopupView extends AbstractViewNext {
 				return false;
 			}
 
-			if (this.fTrueCallback) {
-				this.fTrueCallback(this.filter());
-			}
+			this.fTrueCallback && this.fTrueCallback(this.filter());
 
-			if (this.modalVisibility()) {
-				delegateRun(this, 'closeCommand');
-			}
+			this.modalVisibility() && this.closeCommand && this.closeCommand();
 		}
 
 		return true;
@@ -75,65 +63,72 @@ class FilterPopupView extends AbstractViewNext {
 	populateOptions() {
 		this.actionTypeOptions([]);
 
-		// this.actionTypeOptions.push({'id': FiltersAction.None,
-		// 'name': i18n('POPUPS_FILTER/SELECT_ACTION_NONE')});
-
-		const modules = this.modules();
-		if (modules) {
-			if (modules.markasread) {
-				this.allowMarkAsRead(true);
-			}
-
-			if (modules.moveto) {
-				this.actionTypeOptions.push({
-					'id': FiltersAction.MoveTo,
-					'name': i18n('POPUPS_FILTER/SELECT_ACTION_MOVE_TO')
-				});
-			}
-
-			if (modules.redirect) {
-				this.actionTypeOptions.push({
-					'id': FiltersAction.Forward,
-					'name': i18n('POPUPS_FILTER/SELECT_ACTION_FORWARD_TO')
-				});
-			}
-
-			if (modules.reject) {
-				this.actionTypeOptions.push({ 'id': FiltersAction.Reject, 'name': i18n('POPUPS_FILTER/SELECT_ACTION_REJECT') });
-			}
-
-			if (modules.vacation) {
-				this.actionTypeOptions.push({
-					'id': FiltersAction.Vacation,
-					'name': i18n('POPUPS_FILTER/SELECT_ACTION_VACATION_MESSAGE')
-				});
-			}
-		}
-
-		this.actionTypeOptions.push({ 'id': FiltersAction.Discard, 'name': i18n('POPUPS_FILTER/SELECT_ACTION_DISCARD') });
+		let i18nFilter = key => i18n('POPUPS_FILTER/SELECT_' + key);
 
 		this.fieldOptions([
-			{ 'id': FilterConditionField.From, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_FROM') },
-			{ 'id': FilterConditionField.Recipient, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_RECIPIENTS') },
-			{ 'id': FilterConditionField.Subject, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_SUBJECT') },
-			{ 'id': FilterConditionField.Size, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_SIZE') },
-			{ 'id': FilterConditionField.Header, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_HEADER') }
+			{ id: FilterConditionField.From, name: i18n('GLOBAL/FROM') },
+			{ id: FilterConditionField.Recipient, name: i18nFilter('FIELD_RECIPIENTS') },
+			{ id: FilterConditionField.Subject, name: i18n('GLOBAL/SUBJECT') },
+			{ id: FilterConditionField.Size, name: i18nFilter('FIELD_SIZE') },
+			{ id: FilterConditionField.Header, name: i18nFilter('FIELD_HEADER') }
 		]);
 
 		this.typeOptions([
-			{ 'id': FilterConditionType.Contains, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_CONTAINS') },
-			{ 'id': FilterConditionType.NotContains, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_NOT_CONTAINS') },
-			{ 'id': FilterConditionType.EqualTo, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_EQUAL_TO') },
-			{ 'id': FilterConditionType.NotEqualTo, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_NOT_EQUAL_TO') }
+			{ id: FilterConditionType.Contains, name: i18nFilter('TYPE_CONTAINS') },
+			{ id: FilterConditionType.NotContains, name: i18nFilter('TYPE_NOT_CONTAINS') },
+			{ id: FilterConditionType.EqualTo, name: i18nFilter('TYPE_EQUAL_TO') },
+			{ id: FilterConditionType.NotEqualTo, name: i18nFilter('TYPE_NOT_EQUAL_TO') }
 		]);
 
-		if (modules && modules.regex) {
-			this.typeOptions.push({ 'id': FilterConditionType.Regex, 'name': 'Regex' });
+		// this.actionTypeOptions.push({id: FilterAction.None,
+		// name: i18n('GLOBAL/NONE')});
+		const modules = SieveUserStore.capa;
+		if (modules) {
+			if (modules.includes('imap4flags')) {
+				this.allowMarkAsRead(true);
+			}
+
+			if (modules.includes('fileinto')) {
+				this.actionTypeOptions.push({
+					id: FilterAction.MoveTo,
+					name: i18nFilter('ACTION_MOVE_TO')
+				});
+				this.actionTypeOptions.push({
+					id: FilterAction.Forward,
+					name: i18nFilter('ACTION_FORWARD_TO')
+				});
+			}
+
+			if (modules.includes('reject')) {
+				this.actionTypeOptions.push({ id: FilterAction.Reject, name: i18nFilter('ACTION_REJECT') });
+			}
+
+			if (modules.includes('vacation')) {
+				this.actionTypeOptions.push({
+					id: FilterAction.Vacation,
+					name: i18nFilter('ACTION_VACATION_MESSAGE')
+				});
+			}
+
+			if (modules.includes('body')) {
+				this.fieldOptions.push({ id: FilterConditionField.Body, name: i18nFilter('FIELD_BODY') });
+			}
+
+			if (modules.includes('regex')) {
+				this.typeOptions.push({ id: FilterConditionType.Regex, name: 'Regex' });
+			}
 		}
 
+		this.actionTypeOptions.push({ id: FilterAction.Discard, name: i18nFilter('ACTION_DISCARD') });
+
 		this.typeOptionsSize([
-			{ 'id': FilterConditionType.Over, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_OVER') },
-			{ 'id': FilterConditionType.Under, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_UNDER') }
+			{ id: FilterConditionType.Over, name: i18nFilter('TYPE_OVER') },
+			{ id: FilterConditionType.Under, name: i18nFilter('TYPE_UNDER') }
+		]);
+
+		this.typeOptionsBody([
+			{ id: FilterConditionType.Text, name: i18nFilter('TYPE_TEXT') },
+			{ id: FilterConditionType.Raw, name: i18nFilter('TYPE_RAW') }
 		]);
 	}
 
@@ -163,14 +158,12 @@ class FilterPopupView extends AbstractViewNext {
 		this.isNew(!bEdit);
 
 		if (!bEdit && oFilter) {
-			oFilter.name.focused(true);
+			oFilter.nameFocused(true);
 		}
 	}
 
 	onShowWithDelay() {
-		if (this.isNew() && this.filter() && !bMobileDevice) {
-			this.filter().name.focused(true);
-		}
+		this.isNew() && this.filter() && this.filter().nameFocused(true);
 	}
 }
 

@@ -1,24 +1,23 @@
-import ko from 'ko';
-
 import { change } from 'Common/Links';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-class AccountModel extends AbstractModel {
+export class AccountModel extends AbstractModel {
 	/**
 	 * @param {string} email
 	 * @param {boolean=} canBeDelete = true
 	 * @param {number=} count = 0
 	 */
 	constructor(email, canBeDelete = true, count = 0) {
-		super('AccountModel');
+		super();
 
 		this.email = email;
 
-		this.count = ko.observable(count);
-
-		this.deleteAccess = ko.observable(false);
-		this.canBeDeleted = ko.observable(!!canBeDelete);
+		this.addObservables({
+			count: count,
+			deleteAccess: false,
+			canBeDeleted: !!canBeDelete
+		});
 		this.canBeEdit = this.canBeDeleted;
 	}
 
@@ -29,5 +28,3 @@ class AccountModel extends AbstractModel {
 		return change(this.email);
 	}
 }
-
-export { AccountModel, AccountModel as default };

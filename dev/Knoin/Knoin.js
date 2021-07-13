@@ -1,36 +1,25 @@
-import _ from '_';
-import $ from '$';
 import ko from 'ko';
-import hasher from 'hasher';
-import crossroads from 'crossroads';
 
-import { Magics } from 'Common/Enums';
-import { runHook } from 'Common/Plugins';
-import { $html, VIEW_MODELS, popupVisibilityNames } from 'Common/Globals';
-
-import { isArray, isUnd, pString, log, isFunc, createCommandLegacy, delegateRun, isNonEmptyArray } from 'Common/Utils';
+import { doc, $htmlCL } from 'Common/Globals';
+import { isNonEmptyArray, isFunction } from 'Common/Utils';
 
 let currentScreen = null,
 	defaultScreenName = '';
 
-const SCREENS = {};
+const SCREENS = {},
+	autofocus = dom => {
+		const af = dom.querySelector('[autofocus]');
+		af && af.focus();
+	};
+
+export const popupVisibilityNames = ko.observableArray([]);
 
 export const ViewType = {
 	Popup: 'Popups',
 	Left: 'Left',
 	Right: 'Right',
-	Center: 'Center'
+	Content: 'Content'
 };
-
-/**
- * @returns {void}
- */
-export function hideLoading() {
-	$('#rl-content').addClass('rl-content-show');
-	$('#rl-loading')
-		.hide()
-		.remove();
-}
 
 /**
  * @param {Function} fExecute
@@ -38,80 +27,33 @@ export function hideLoading() {
  * @returns {Function}
  */
 export function createCommand(fExecute, fCanExecute = true) {
-	return createCommandLegacy(null, fExecute, fCanExecute);
-}
+	let fResult = null;
 
-/**
- * @param {Function} SettingsViewModelClass
- * @param {string} template
- * @param {string} labelName
- * @param {string} route
- * @param {boolean=} isDefault = false
- * @returns {void}
- */
-export function addSettingsViewModel(SettingsViewModelClass, template, labelName, route, isDefault = false) {
-	SettingsViewModelClass.__rlSettingsData = {
-		Label: labelName,
-		Template: template,
-		Route: route,
-		IsDefault: !!isDefault
-	};
+	fResult = fExecute
+		? (...args) => {
+			if (fResult && fResult.canExecute && fResult.canExecute()) {
+				fExecute.apply(null, args);
+			}
+			return false;
+		} : ()=>{};
+	fResult.enabled = ko.observable(true);
+	fResult.isCommand = true;
 
-	VIEW_MODELS.settings.push(SettingsViewModelClass);
-}
+	if (isFunction(fCanExecute)) {
+		fResult.canExecute = ko.computed(() => fResult && fResult.enabled() && fCanExecute.call(null));
+	} else {
+		fResult.canExecute = ko.computed(() => fResult && fResult.enabled() && !!fCanExecute);
+	}
 
-/**
- * @param {Function} SettingsViewModelClass
- * @returns {void}
- */
-export function removeSettingsViewModel(SettingsViewModelClass) {
-	VIEW_MODELS['settings-removed'].push(SettingsViewModelClass);
-}
-
-/**
- * @param {Function} SettingsViewModelClass
- * @returns {void}
- */
-export function disableSettingsViewModel(SettingsViewModelClass) {
-	VIEW_MODELS['settings-disabled'].push(SettingsViewModelClass);
-}
-
-/**
- * @returns {void}
- */
-export function routeOff() {
-	hasher.changed.active = false;
-}
-
-/**
- * @returns {void}
- */
-export function routeOn() {
-	hasher.changed.active = true;
+	return fResult;
 }
 
 /**
  * @param {string} screenName
  * @returns {?Object}
  */
-export function screen(screenName) {
-	return '' !== screenName && !isUnd(SCREENS[screenName]) ? SCREENS[screenName] : null;
-}
-
-/**
- * @param {Function} ViewModelClassToShow
- * @returns {Function|null}
- */
-export function getScreenPopup(PopuViewModelClass) {
-	let result = null;
-	if (PopuViewModelClass) {
-		result = PopuViewModelClass;
-		if (PopuViewModelClass.default) {
-			result = PopuViewModelClass.default;
-		}
-	}
-
-	return result;
+function screen(screenName) {
+	return screenName && null != SCREENS[screenName] ? SCREENS[screenName] : null;
 }
 
 /**
@@ -119,21 +61,9 @@ export function getScreenPopup(PopuViewModelClass) {
  * @returns {void}
  */
 export function hideScreenPopup(ViewModelClassToHide) {
-	const ModalView = getScreenPopup(ViewModelClassToHide);
-	if (ModalView && ModalView.__vm && ModalView.__dom) {
-		ModalView.__vm.modalVisibility(false);
+	if (ViewModelClassToHide && ViewModelClassToHide.__vm && ViewModelClassToHide.__dom) {
+		ViewModelClassToHide.__vm.modalVisibility(false);
 	}
-}
-
-/**
- * @param {string} hookName
- * @param {Function} ViewModelClass
- * @param {mixed=} params = null
- */
-export function vmRunHook(hookName, ViewModelClass, params = null) {
-	_.each(ViewModelClass.__names, (name) => {
-		runHook(hookName, [name, ViewModelClass.__vm, params]);
-	});
 }
 
 /**
@@ -141,30 +71,19 @@ export function vmRunHook(hookName, ViewModelClass, params = null) {
  * @param {Object=} vmScreen
  * @returns {*}
  */
-export function buildViewModel(ViewModelClass, vmScreen) {
+function buildViewModel(ViewModelClass, vmScreen) {
 	if (ViewModelClass && !ViewModelClass.__builded) {
 		let vmDom = null;
 		const vm = new ViewModelClass(vmScreen),
-			position = ViewModelClass.__type || '',
-			vmPlace = position ? $('#rl-content #rl-' + position.toLowerCase()) : null;
+			position = vm.viewModelPosition || '',
+			vmPlace = position ? doc.getElementById('rl-' + position.toLowerCase()) : null;
 
 		ViewModelClass.__builded = true;
 		ViewModelClass.__vm = vm;
 
-		vm.onShowTrigger = ko.observable(false);
-		vm.onHideTrigger = ko.observable(false);
-
-		vm.viewModelName = ViewModelClass.__name;
-		vm.viewModelNames = ViewModelClass.__names;
-		vm.viewModelTemplateID = ViewModelClass.__templateID;
-		vm.viewModelPosition = ViewModelClass.__type;
-
-		if (vmPlace && 1 === vmPlace.length) {
-			vmDom = $('<div></div>')
-				.addClass('rl-view-model')
-				.addClass('RL-' + vm.viewModelTemplateID)
-				.hide();
-			vmDom.appendTo(vmPlace);
+		if (vmPlace) {
+			vmDom = Element.fromHTML('<div class="rl-view-model RL-' + vm.viewModelTemplateID + '" hidden=""></div>');
+			vmPlace.append(vmDom);
 
 			vm.viewModelDom = vmDom;
 			ViewModelClass.__dom = vmDom;
@@ -174,62 +93,70 @@ export function buildViewModel(ViewModelClass, vmScreen) {
 					hideScreenPopup(ViewModelClass);
 				});
 
-				vm.modalVisibility.subscribe((value) => {
-					if (value) {
-						vm.viewModelDom.show();
-						vm.storeAndSetKeyScope();
-
-						popupVisibilityNames.push(vm.viewModelName);
-						vm.viewModelDom.css('z-index', 3000 + popupVisibilityNames().length + 10);
-
-						if (vm.onShowTrigger) {
-							vm.onShowTrigger(!vm.onShowTrigger());
+				// show/hide popup/modal
+				const endShowHide = e => {
+					if (e.target === vmDom) {
+						if (vmDom.classList.contains('show')) {
+							autofocus(vmDom);
+							vm.onShowWithDelay && vm.onShowWithDelay();
+						} else {
+							vmDom.hidden = true;
+							vm.onHideWithDelay && vm.onHideWithDelay();
 						}
-
-						delegateRun(vm, 'onShowWithDelay', [], 500);
-					} else {
-						delegateRun(vm, 'onHide');
-						delegateRun(vm, 'onHideWithDelay', [], 500);
-
-						if (vm.onHideTrigger) {
-							vm.onHideTrigger(!vm.onHideTrigger());
-						}
-
-						vm.restoreKeyScope();
-
-						vmRunHook('view-model-on-hide', ViewModelClass);
-
-						popupVisibilityNames.remove(vm.viewModelName);
-						vm.viewModelDom.css('z-index', 2000);
-
-						_.delay(() => vm.viewModelDom.hide(), 300);
 					}
+				};
+
+				vm.modalVisibility.subscribe(value => {
+					if (value) {
+						vmDom.style.zIndex = 3000 + popupVisibilityNames().length + 10;
+						vmDom.hidden = false;
+						vm.storeAndSetScope();
+						popupVisibilityNames.push(vm.viewModelName);
+						requestAnimationFrame(() => { // wait just before the next paint
+							vmDom.offsetHeight; // force a reflow
+							vmDom.classList.add('show'); // trigger the transitions
+						});
+					} else {
+						vm.onHide && vm.onHide();
+						vmDom.classList.remove('show');
+						vm.restoreScope();
+						popupVisibilityNames(popupVisibilityNames.filter(v=>v!==vm.viewModelName));
+					}
+					vmDom.setAttribute('aria-hidden', !value);
 				});
+				if ('ontransitionend' in vmDom) {
+					vmDom.addEventListener('transitionend', endShowHide);
+				} else {
+					// For Edge < 79 and mobile browsers
+					vm.modalVisibility.subscribe(() => ()=>setTimeout(endShowHide({target:vmDom}), 500));
+				}
 			}
 
-			vmRunHook('view-model-pre-build', ViewModelClass, vmDom);
-
 			ko.applyBindingAccessorsToNode(
-				vmDom[0],
+				vmDom,
 				{
-					translatorInit: true,
+					i18nInit: true,
 					template: () => ({ name: vm.viewModelTemplateID })
 				},
 				vm
 			);
 
-			delegateRun(vm, 'onBuild', [vmDom]);
+			vm.onBuild && vm.onBuild(vmDom);
 			if (vm && ViewType.Popup === position) {
 				vm.registerPopupKeyDown();
 			}
 
-			vmRunHook('view-model-post-build', ViewModelClass, vmDom);
+			dispatchEvent(new CustomEvent('rl-view-model', {detail:vm}));
 		} else {
-			log('Cannot find view model position: ' + position);
+			console.log('Cannot find view model position: ' + position);
 		}
 	}
 
-	return ViewModelClass ? ViewModelClass.__vm : null;
+	return ViewModelClass && ViewModelClass.__vm;
+}
+
+export function getScreenPopupViewModel(ViewModelClassToShow) {
+	return (buildViewModel(ViewModelClassToShow) && ViewModelClassToShow.__dom) && ViewModelClassToShow.__vm;
 }
 
 /**
@@ -238,34 +165,15 @@ export function buildViewModel(ViewModelClass, vmScreen) {
  * @returns {void}
  */
 export function showScreenPopup(ViewModelClassToShow, params = []) {
-	const ModalView = getScreenPopup(ViewModelClassToShow);
-	if (ModalView) {
-		buildViewModel(ModalView);
+	const vm = getScreenPopupViewModel(ViewModelClassToShow);
+	if (vm) {
+		params = params || [];
 
-		if (ModalView.__vm && ModalView.__dom) {
-			delegateRun(ModalView.__vm, 'onBeforeShow', params || []);
+		vm.onBeforeShow && vm.onBeforeShow(...params);
 
-			ModalView.__vm.modalVisibility(true);
+		vm.modalVisibility(true);
 
-			delegateRun(ModalView.__vm, 'onShow', params || []);
-
-			vmRunHook('view-model-on-show', ModalView, params || []);
-		}
-	}
-}
-
-/**
- * @param {Function} ViewModelClassToShow
- * @returns {void}
- */
-export function warmUpScreenPopup(ViewModelClassToShow) {
-	const ModalView = getScreenPopup(ViewModelClassToShow);
-	if (ModalView) {
-		buildViewModel(ModalView);
-
-		if (ModalView.__vm && ModalView.__dom) {
-			delegateRun(ModalView.__vm, 'onWarmUp');
-		}
+		vm.onShow && vm.onShow(...params);
 	}
 }
 
@@ -274,8 +182,7 @@ export function warmUpScreenPopup(ViewModelClassToShow) {
  * @returns {boolean}
  */
 export function isPopupVisible(ViewModelClassToShow) {
-	const ModalView = getScreenPopup(ViewModelClassToShow);
-	return ModalView && ModalView.__vm ? ModalView.__vm.modalVisibility() : false;
+	return ViewModelClassToShow && ViewModelClassToShow.__vm && ViewModelClassToShow.__vm.modalVisibility();
 }
 
 /**
@@ -283,16 +190,15 @@ export function isPopupVisible(ViewModelClassToShow) {
  * @param {string} subPart
  * @returns {void}
  */
-export function screenOnRoute(screenName, subPart) {
+function screenOnRoute(screenName, subPart) {
 	let vmScreen = null,
-		isSameScreen = false,
-		cross = null;
+		isSameScreen = false;
 
-	if ('' === pString(screenName)) {
+	if (null == screenName || '' == screenName) {
 		screenName = defaultScreenName;
 	}
 
-	if ('' !== screenName) {
+	if (screenName) {
 		vmScreen = screen(screenName);
 		if (!vmScreen) {
 			vmScreen = screen(defaultScreenName);
@@ -308,41 +214,31 @@ export function screenOnRoute(screenName, subPart) {
 			if (!vmScreen.__builded) {
 				vmScreen.__builded = true;
 
-				if (isNonEmptyArray(vmScreen.viewModels())) {
-					_.each(vmScreen.viewModels(), (ViewModelClass) => {
-						buildViewModel(ViewModelClass, vmScreen);
-					});
-				}
+				vmScreen.viewModels.forEach(ViewModelClass =>
+					buildViewModel(ViewModelClass, vmScreen)
+				);
 
-				delegateRun(vmScreen, 'onBuild');
+				vmScreen.onBuild && vmScreen.onBuild();
 			}
 
-			_.defer(() => {
+			setTimeout(() => {
 				// hide screen
 				if (currentScreen && !isSameScreen) {
-					delegateRun(currentScreen, 'onHide');
-					delegateRun(currentScreen, 'onHideWithDelay', [], 500);
+					currentScreen.onHide && currentScreen.onHide();
+					currentScreen.onHideWithDelay && setTimeout(()=>currentScreen.onHideWithDelay(), 500);
 
-					if (currentScreen.onHideTrigger) {
-						currentScreen.onHideTrigger(!currentScreen.onHideTrigger());
-					}
-
-					if (isNonEmptyArray(currentScreen.viewModels())) {
-						_.each(currentScreen.viewModels(), (ViewModelClass) => {
+					if (isNonEmptyArray(currentScreen.viewModels)) {
+						currentScreen.viewModels.forEach(ViewModelClass => {
 							if (
 								ViewModelClass.__vm &&
 								ViewModelClass.__dom &&
 								ViewType.Popup !== ViewModelClass.__vm.viewModelPosition
 							) {
-								ViewModelClass.__dom.hide();
-								ViewModelClass.__vm.viewModelVisibility(false);
+								ViewModelClass.__dom.hidden = true;
+								ViewModelClass.__vm.viewModelVisible = false;
 
-								delegateRun(ViewModelClass.__vm, 'onHide');
-								delegateRun(ViewModelClass.__vm, 'onHideWithDelay', [], 500);
-
-								if (ViewModelClass.__vm.onHideTrigger) {
-									ViewModelClass.__vm.onHideTrigger(!ViewModelClass.__vm.onHideTrigger());
-								}
+								ViewModelClass.__vm.onHide && ViewModelClass.__vm.onHide();
+								ViewModelClass.__vm.onHideWithDelay && setTimeout(()=>ViewModelClass.__vm.onHideWithDelay(), 500);
 							}
 						});
 					}
@@ -353,43 +249,33 @@ export function screenOnRoute(screenName, subPart) {
 
 				// show screen
 				if (currentScreen && !isSameScreen) {
-					delegateRun(currentScreen, 'onShow');
-					if (currentScreen.onShowTrigger) {
-						currentScreen.onShowTrigger(!currentScreen.onShowTrigger());
-					}
+					currentScreen.onShow && currentScreen.onShow();
 
-					runHook('screen-on-show', [currentScreen.screenName(), currentScreen]);
-
-					if (isNonEmptyArray(currentScreen.viewModels())) {
-						_.each(currentScreen.viewModels(), (ViewModelClass) => {
+					if (isNonEmptyArray(currentScreen.viewModels)) {
+						currentScreen.viewModels.forEach(ViewModelClass => {
 							if (
 								ViewModelClass.__vm &&
 								ViewModelClass.__dom &&
 								ViewType.Popup !== ViewModelClass.__vm.viewModelPosition
 							) {
-								delegateRun(ViewModelClass.__vm, 'onBeforeShow');
+								ViewModelClass.__vm.onBeforeShow && ViewModelClass.__vm.onBeforeShow();
 
-								ViewModelClass.__dom.show();
-								ViewModelClass.__vm.viewModelVisibility(true);
+								ViewModelClass.__dom.hidden = false;
+								ViewModelClass.__vm.viewModelVisible = true;
 
-								delegateRun(ViewModelClass.__vm, 'onShow');
-								if (ViewModelClass.__vm.onShowTrigger) {
-									ViewModelClass.__vm.onShowTrigger(!ViewModelClass.__vm.onShowTrigger());
-								}
+								ViewModelClass.__vm.onShow && ViewModelClass.__vm.onShow();
 
-								delegateRun(ViewModelClass.__vm, 'onShowWithDelay', [], 200);
-								vmRunHook('view-model-on-show', ViewModelClass);
+								autofocus(ViewModelClass.__dom);
+
+								ViewModelClass.__vm.onShowWithDelay && setTimeout(()=>ViewModelClass.__vm.onShowWithDelay, 200);
 							}
 						});
 					}
 				}
 				// --
 
-				cross = vmScreen && vmScreen.__cross ? vmScreen.__cross() : null;
-				if (cross) {
-					cross.parse(subPart);
-				}
-			});
+				vmScreen && vmScreen.__cross && vmScreen.__cross.parse(subPart);
+			}, 1);
 		}
 	}
 }
@@ -399,161 +285,74 @@ export function screenOnRoute(screenName, subPart) {
  * @returns {void}
  */
 export function startScreens(screensClasses) {
-	_.each(screensClasses, (CScreen) => {
+	screensClasses.forEach(CScreen => {
 		if (CScreen) {
 			const vmScreen = new CScreen(),
-				screenName = vmScreen ? vmScreen.screenName() : '';
+				screenName = vmScreen && vmScreen.screenName();
 
-			if (vmScreen && '' !== screenName) {
-				if ('' === defaultScreenName) {
-					defaultScreenName = screenName;
-				}
+			if (screenName) {
+				defaultScreenName || (defaultScreenName = screenName);
 
 				SCREENS[screenName] = vmScreen;
 			}
 		}
 	});
 
-	_.each(SCREENS, (vmScreen) => {
-		if (vmScreen && !vmScreen.__started && vmScreen.__start) {
-			vmScreen.__started = true;
-			vmScreen.__start();
+	Object.values(SCREENS).forEach(vmScreen =>
+		vmScreen && vmScreen.onStart && vmScreen.onStart()
+	);
 
-			runHook('screen-pre-start', [vmScreen.screenName(), vmScreen]);
-			delegateRun(vmScreen, 'onStart');
-			runHook('screen-post-start', [vmScreen.screenName(), vmScreen]);
-		}
-	});
-
-	const cross = crossroads.create();
+	const cross = new Crossroads();
 	cross.addRoute(/^([a-zA-Z0-9-]*)\/?(.*)$/, screenOnRoute);
 
-	hasher.initialized.add(cross.parse, cross);
-	hasher.changed.add(cross.parse, cross);
+	hasher.changed.add(cross.parse.bind(cross));
 	hasher.init();
 
-	_.delay(() => $html.removeClass('rl-started-trigger').addClass('rl-started'), 100);
-	_.delay(() => $html.addClass('rl-started-delay'), 200);
+	setTimeout(() => $htmlCL.remove('rl-started-trigger'), 100);
+	setTimeout(() => $htmlCL.add('rl-started-delay'), 200);
 }
 
-/**
- * @param {string} sHash
- * @param {boolean=} silence = false
- * @param {boolean=} replace = false
- * @returns {void}
- */
-export function setHash(hash, silence = false, replace = false) {
-	hash = '#' === hash.substr(0, 1) ? hash.substr(1) : hash;
-	hash = '/' === hash.substr(0, 1) ? hash.substr(1) : hash;
+function decorateKoCommands(thisArg, commands) {
+	Object.entries(commands).forEach(([key, canExecute]) => {
+		let command = thisArg[key],
+			fn = (...args) => fn.enabled() && fn.canExecute() && command.apply(thisArg, args);
 
-	const cmd = replace ? 'replaceHash' : 'setHash';
+//		fn.__realCanExecute = canExecute;
+//		fn.isCommand = true;
 
-	if (silence) {
-		hasher.changed.active = false;
-		hasher[cmd](hash);
-		hasher.changed.active = true;
-	} else {
-		hasher.changed.active = true;
-		hasher[cmd](hash);
-		hasher.setHash(hash);
-	}
+		fn.enabled = ko.observable(true);
+
+		fn.canExecute = (typeof canExecute === 'function')
+			? ko.computed(() => fn.enabled() && canExecute.call(thisArg, thisArg))
+			: ko.computed(() => fn.enabled());
+
+		thisArg[key] = fn;
+	});
 }
-
-/**
- * @param {Object} params
- * @returns {Function}
- */
-function viewDecorator({ name, type, templateID }) {
-	return (target) => {
-		if (target) {
-			if (name) {
-				if (isArray(name)) {
-					target.__names = name;
-				} else {
-					target.__names = [name];
-				}
-
-				target.__name = target.__names[0];
-			}
-
-			if (type) {
-				target.__type = type;
-			}
-
-			if (templateID) {
-				target.__templateID = templateID;
-			}
-		}
-	};
-}
-
-/**
- * @param {Object} params
- * @returns {Function}
- */
-function popupDecorator({ name, templateID }) {
-	return viewDecorator({ name, type: ViewType.Popup, templateID });
-}
-
-/**
- * @param {Function} canExecute
- * @returns {Function}
- */
-function commandDecorator(canExecute = true) {
-	return (target, key, descriptor) => {
-		if (!key || !key.match(/Command$/)) {
-			throw new Error(`name "${key}" should end with Command suffix`);
-		}
-
-		const value = descriptor.value || descriptor.initializer(),
-			normCanExecute = isFunc(canExecute) ? canExecute : () => !!canExecute;
-
-		descriptor.value = function(...args) {
-			if (normCanExecute.call(this, this)) {
-				value.apply(this, args);
-			}
-
-			return false;
-		};
-
-		descriptor.value.__realCanExecute = normCanExecute;
-		descriptor.value.isCommand = true;
-
-		return descriptor;
-	};
-}
+ko.decorateCommands = decorateKoCommands;
 
 /**
  * @param {miced} $items
  * @returns {Function}
  */
-function settingsMenuKeysHandler($items) {
-	return _.throttle((event, handler) => {
-		const up = handler && 'up' === handler.shortcut;
-
-		if (event && $items.length) {
-			let index = $items.index($items.filter('.selected'));
-			if (up && 0 < index) {
-				index -= 1;
-			} else if (!up && index < $items.length - 1) {
-				index += 1;
+function settingsMenuKeysHandler(items) {
+	return ((event, handler)=>{
+		let index = items.length;
+		if (event && index) {
+			while (index-- && !items[index].matches('.selected'));
+			if (handler && 'arrowup' === handler.shortcut) {
+				index && --index;
+			} else if (index < items.length - 1) {
+				++index;
 			}
 
-			const resultHash = $items.eq(index).attr('href');
-			if (resultHash) {
-				setHash(resultHash, false, true);
-			}
+			const resultHash = items[index].href;
+			resultHash && rl.route.setHash(resultHash, false, true);
 		}
-	}, Magics.Time200ms);
+	}).throttle(200);
 }
 
 export {
-	commandDecorator,
-	commandDecorator as command,
-	viewDecorator,
-	viewDecorator as view,
-	viewDecorator as viewModel,
-	popupDecorator,
-	popupDecorator as popup,
+	decorateKoCommands,
 	settingsMenuKeysHandler
 };

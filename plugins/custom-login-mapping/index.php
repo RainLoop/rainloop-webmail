@@ -2,9 +2,17 @@
 
 class CustomLoginMappingPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
-	public function Init()
+	const
+		NAME = 'Custom Login Mapping',
+		VERSION = '2.1',
+		RELEASE = '2021-04-21',
+		REQUIRED = '2.5.0',
+		CATEGORY = 'Login',
+		DESCRIPTION = 'Plugin which allows you to set up custom username by email address.';
+
+	public function Init() : void
 	{
-		$this->addHook('filter.login-credentials', 'FilterLoginСredentials');
+		$this->addHook('login.credentials', 'FilterLoginCredentials');
 	}
 
 	/**
@@ -14,7 +22,7 @@ class CustomLoginMappingPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 *
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function FilterLoginСredentials(&$sEmail, &$sLogin, &$sPassword)
+	public function FilterLoginCredentials(&$sEmail, &$sLogin, &$sPassword)
 	{
 		$sMapping = \trim($this->Config()->Get('plugin', 'mapping', ''));
 		if (!empty($sMapping))
@@ -41,7 +49,7 @@ class CustomLoginMappingPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * @return array
 	 */
-	public function configMapping()
+	protected function configMapping() : array
 	{
 		return array(
 			\RainLoop\Plugins\Property::NewInstance('mapping')->SetLabel('Mapping')

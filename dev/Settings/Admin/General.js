@@ -1,59 +1,69 @@
-import _ from '_';
 import ko from 'ko';
 
 import {
-	trim,
+	isArray,
 	pInt,
-	boolToAjax,
 	settingsSaveHelperSimpleFunction,
 	changeTheme,
 	convertThemeName,
-	convertLangName
+	addObservablesTo,
+	addSubscribablesTo
 } from 'Common/Utils';
 
-import { SaveSettingsStep, Magics } from 'Common/Enums';
-import { reload as translatorReload } from 'Common/Translator';
-import { phpInfo } from 'Common/Links';
+import { Capa, SaveSettingsStep } from 'Common/Enums';
+import { Settings, SettingsGet } from 'Common/Globals';
+import { reload as translatorReload, convertLangName } from 'Common/Translator';
 
-import { settingsGet } from 'Storage/Settings';
 import { showScreenPopup } from 'Knoin/Knoin';
 
-import Remote from 'Remote/Admin/Ajax';
+import Remote from 'Remote/Admin/Fetch';
 
-import ThemeStore from 'Stores/Theme';
-import LanguageStore from 'Stores/Language';
-import AppAdminStore from 'Stores/Admin/App';
-import CapaAdminStore from 'Stores/Admin/Capa';
+import { ThemeStore } from 'Stores/Theme';
+import { LanguageStore } from 'Stores/Language';
+import LanguagesPopupView from 'View/Popup/Languages';
 
-class GeneralAdminSettings {
+export class GeneralAdminSettings {
 	constructor() {
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
-		this.languageAdmin = LanguageStore.languageAdmin;
-		this.languagesAdmin = LanguageStore.languagesAdmin;
+
+		const aLanguagesAdmin = Settings.app('languagesAdmin');
+		this.languagesAdmin = ko.observableArray(isArray(aLanguagesAdmin) ? aLanguagesAdmin : []);
+		this.languageAdmin = ko
+			.observable(SettingsGet('LanguageAdmin'))
+			.extend({ limitedList: this.languagesAdmin });
 
 		this.theme = ThemeStore.theme;
 		this.themes = ThemeStore.themes;
 
-		this.capaThemes = CapaAdminStore.themes;
-		this.capaUserBackground = CapaAdminStore.userBackground;
-		this.capaGravatar = CapaAdminStore.gravatar;
-		this.capaAdditionalAccounts = CapaAdminStore.additionalAccounts;
-		this.capaIdentities = CapaAdminStore.identities;
-		this.capaAttachmentThumbnails = CapaAdminStore.attachmentThumbnails;
-		this.capaTemplates = CapaAdminStore.templates;
+		addObservablesTo(this, {
+			allowLanguagesOnSettings: !!SettingsGet('AllowLanguagesOnSettings'),
+			newMoveToFolder: !!SettingsGet('NewMoveToFolder'),
+			attachmentLimitTrigger: SaveSettingsStep.Idle,
+			languageTrigger: SaveSettingsStep.Idle,
+			themeTrigger: SaveSettingsStep.Idle,
+			capaThemes: Settings.capa(Capa.Themes),
+			capaUserBackground: Settings.capa(Capa.UserBackground),
+			capaAdditionalAccounts: Settings.capa(Capa.AdditionalAccounts),
+			capaIdentities: Settings.capa(Capa.Identities),
+			capaAttachmentThumbnails: Settings.capa(Capa.AttachmentThumbnails),
+			capaTemplates: Settings.capa(Capa.Templates),
+			dataFolderAccess: false
+		});
 
-		this.allowLanguagesOnSettings = AppAdminStore.allowLanguagesOnSettings;
-		this.weakPassword = AppAdminStore.weakPassword;
-		this.newMoveToFolder = AppAdminStore.newMoveToFolder;
+		this.weakPassword = rl.app.weakPassword;
 
-		this.dataFolderAccess = AppAdminStore.dataFolderAccess;
+		/** https://github.com/RainLoop/rainloop-webmail/issues/1924
+		if (this.weakPassword) {
+			fetch('./data/VERSION?' + Math.random()).then(response => this.dataFolderAccess(response.ok));
+		}
+		*/
 
 		this.mainAttachmentLimit = ko
-			.observable(pInt(settingsGet('AttachmentLimit')) / (Magics.BitLength1024 * Magics.BitLength1024))
-			.extend({ posInterer: 25 });
+			.observable(pInt(SettingsGet('AttachmentLimit')) / (1024 * 1024))
+			.extend({ debounce: 500 });
 
-		this.uploadData = settingsGet('PhpUploadSizes');
+		this.uploadData = SettingsGet('PhpUploadSizes');
 		this.uploadDataDesc =
 			this.uploadData && (this.uploadData.upload_max_filesize || this.uploadData.post_max_size)
 				? [
@@ -65,132 +75,79 @@ class GeneralAdminSettings {
 				: '';
 
 		this.themesOptions = ko.computed(() =>
-			_.map(this.themes(), (theme) => ({ optValue: theme, optText: convertThemeName(theme) }))
+			this.themes.map(theme => ({ optValue: theme, optText: convertThemeName(theme) }))
 		);
 
 		this.languageFullName = ko.computed(() => convertLangName(this.language()));
 		this.languageAdminFullName = ko.computed(() => convertLangName(this.languageAdmin()));
 
-		this.attachmentLimitTrigger = ko.observable(SaveSettingsStep.Idle);
-		this.languageTrigger = ko.observable(SaveSettingsStep.Idle);
-		this.languageAdminTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: Magics.Time100ms });
-		this.themeTrigger = ko.observable(SaveSettingsStep.Idle);
-	}
+		this.languageAdminTrigger = ko.observable(SaveSettingsStep.Idle).extend({ debounce: 100 });
 
-	onBuild() {
-		_.delay(() => {
-			const f1 = settingsSaveHelperSimpleFunction(this.attachmentLimitTrigger, this),
-				f2 = settingsSaveHelperSimpleFunction(this.languageTrigger, this),
-				f3 = settingsSaveHelperSimpleFunction(this.themeTrigger, this),
-				fReloadLanguageHelper = (saveSettingsStep) => () => {
-					this.languageAdminTrigger(saveSettingsStep);
-					_.delay(() => this.languageAdminTrigger(SaveSettingsStep.Idle), Magics.Time1s);
-				};
+		const fReloadLanguageHelper = (saveSettingsStep) => () => {
+				this.languageAdminTrigger(saveSettingsStep);
+				setTimeout(() => this.languageAdminTrigger(SaveSettingsStep.Idle), 1000);
+			},
+		fSaveBoolHelper = (key, fn) =>
+			value => {
+				const data = {};
+				data[key] = value ? 1 : 0;
+				Remote.saveAdminConfig(fn, data);
+			};
 
-			this.mainAttachmentLimit.subscribe((value) => {
-				Remote.saveAdminConfig(f1, {
-					'AttachmentLimit': pInt(value)
-				});
-			});
+		addSubscribablesTo(this, {
+			mainAttachmentLimit: value =>
+				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.attachmentLimitTrigger, this), {
+					AttachmentLimit: pInt(value)
+				}),
 
-			this.language.subscribe((value) => {
-				Remote.saveAdminConfig(f2, {
-					'Language': trim(value)
-				});
-			});
+			language: value =>
+				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.languageTrigger, this), {
+					Language: value.trim()
+				}),
 
-			this.languageAdmin.subscribe((value) => {
+			languageAdmin: value => {
 				this.languageAdminTrigger(SaveSettingsStep.Animate);
 				translatorReload(true, value)
 					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult), fReloadLanguageHelper(SaveSettingsStep.FalseResult))
-					.then(() => {
-						Remote.saveAdminConfig(null, {
-							'LanguageAdmin': trim(value)
-						});
-					});
-			});
+					.then(() => Remote.saveAdminConfig(null, {
+						LanguageAdmin: value.trim()
+					}));
+			},
 
-			this.theme.subscribe((value) => {
+			theme: value => {
 				changeTheme(value, this.themeTrigger);
-				Remote.saveAdminConfig(f3, {
-					'Theme': trim(value)
+				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.themeTrigger, this), {
+					Theme: value.trim()
 				});
-			});
+			},
 
-			this.capaAdditionalAccounts.subscribe((value) => {
-				Remote.saveAdminConfig(null, {
-					'CapaAdditionalAccounts': boolToAjax(value)
-				});
-			});
+			capaAdditionalAccounts: fSaveBoolHelper('CapaAdditionalAccounts'),
 
-			this.capaIdentities.subscribe((value) => {
-				Remote.saveAdminConfig(null, {
-					'CapaIdentities': boolToAjax(value)
-				});
-			});
+			capaIdentities: fSaveBoolHelper('CapaIdentities'),
 
-			this.capaTemplates.subscribe((value) => {
-				Remote.saveAdminConfig(null, {
-					'CapaTemplates': boolToAjax(value)
-				});
-			});
+			capaTemplates: fSaveBoolHelper('CapaTemplates'),
 
-			this.capaGravatar.subscribe((value) => {
-				Remote.saveAdminConfig(null, {
-					'CapaGravatar': boolToAjax(value)
-				});
-			});
+			capaAttachmentThumbnails: fSaveBoolHelper('CapaAttachmentThumbnails'),
 
-			this.capaAttachmentThumbnails.subscribe((value) => {
-				Remote.saveAdminConfig(null, {
-					'CapaAttachmentThumbnails': boolToAjax(value)
-				});
-			});
+			capaThemes: fSaveBoolHelper('CapaThemes'),
 
-			this.capaThemes.subscribe((value) => {
-				Remote.saveAdminConfig(null, {
-					'CapaThemes': boolToAjax(value)
-				});
-			});
+			capaUserBackground: fSaveBoolHelper('CapaUserBackground'),
 
-			this.capaUserBackground.subscribe((value) => {
-				Remote.saveAdminConfig(null, {
-					'CapaUserBackground': boolToAjax(value)
-				});
-			});
+			allowLanguagesOnSettings: fSaveBoolHelper('AllowLanguagesOnSettings'),
 
-			this.allowLanguagesOnSettings.subscribe((value) => {
-				Remote.saveAdminConfig(null, {
-					'AllowLanguagesOnSettings': boolToAjax(value)
-				});
-			});
-
-			this.newMoveToFolder.subscribe((value) => {
-				Remote.saveAdminConfig(null, {
-					'NewMoveToFolder': boolToAjax(value)
-				});
-			});
-		}, Magics.Time50ms);
+			newMoveToFolder: fSaveBoolHelper('NewMoveToFolder')
+		});
 	}
 
 	selectLanguage() {
-		showScreenPopup(require('View/Popup/Languages'), [this.language, this.languages(), LanguageStore.userLanguage()]);
+		showScreenPopup(LanguagesPopupView, [this.language, this.languages(), LanguageStore.userLanguage()]);
 	}
 
 	selectLanguageAdmin() {
-		showScreenPopup(require('View/Popup/Languages'), [
+		showScreenPopup(LanguagesPopupView, [
 			this.languageAdmin,
 			this.languagesAdmin(),
-			LanguageStore.userLanguageAdmin()
+			SettingsGet('UserLanguageAdmin')
 		]);
 	}
-
-	/**
-	 * @returns {string}
-	 */
-	phpInfoLink() {
-		return phpInfo();
-	}
 }
-
-export { GeneralAdminSettings, GeneralAdminSettings as default };
