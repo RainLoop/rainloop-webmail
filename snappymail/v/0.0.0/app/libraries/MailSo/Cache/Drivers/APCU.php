@@ -16,7 +16,7 @@ namespace MailSo\Cache\Drivers;
  * @package Cache
  * @subpackage Drivers
  */
-class APC implements \MailSo\Cache\DriverInterface
+class APCU implements \MailSo\Cache\DriverInterface
 {
 	/**
 	 * @var string
@@ -35,25 +35,25 @@ class APC implements \MailSo\Cache\DriverInterface
 
 	public function Set(string $sKey, string $sValue) : bool
 	{
-		return \apc_store($this->generateCachedKey($sKey), (string) $sValue);
+		return \apcu_store($this->generateCachedKey($sKey), (string) $sValue);
 	}
 
 	public function Get(string $sKey) : string
 	{
-		$sValue = \apc_fetch($this->generateCachedKey($sKey));
+		$sValue = \apcu_fetch($this->generateCachedKey($sKey));
 		return \is_string($sValue) ? $sValue : '';
 	}
 
 	public function Delete(string $sKey) : void
 	{
-		\apc_delete($this->generateCachedKey($sKey));
+		\apcu_delete($this->generateCachedKey($sKey));
 	}
 
 	public function GC(int $iTimeToClearInHours = 24) : bool
 	{
 		if (0 === $iTimeToClearInHours)
 		{
-			return \apc_clear_cache('user');
+			return \apcu_clear_cache('user');
 		}
 
 		return false;

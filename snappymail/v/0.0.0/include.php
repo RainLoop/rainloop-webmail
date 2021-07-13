@@ -2,7 +2,7 @@
 
 	if (defined('APP_VERSION'))
 	{
-		if (!defined('APP_REQUEST_RND'))
+		if (!defined('APP_VERSION_ROOT_PATH'))
 		{
 			if (function_exists('sys_getloadavg')) {
 				$load = sys_getloadavg();
@@ -25,10 +25,7 @@
 			ini_set('register_globals', 0);
 			ini_set('zend.ze1_compatibility_mode', 0);
 
-			define('APP_REQUEST_RND', function_exists('uuid_create') ? md5(uuid_create(UUID_TYPE_DEFAULT)) : bin2hex(random_bytes(16)));
 			define('APP_VERSION_ROOT_PATH', APP_INDEX_ROOT_PATH.'snappymail/v/'.APP_VERSION.'/');
-
-			define('APP_USE_APC_CACHE', true);
 
 			// "img-src https:" is allowed due to remote images in e-mails
 			define('APP_DEFAULT_CSP', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https: http:; style-src 'self' 'unsafe-inline'");
@@ -56,6 +53,8 @@
 			{
 				include_once APP_INDEX_ROOT_PATH.'include.php';
 			}
+
+			defined('APP_USE_APCU_CACHE') || define('APP_USE_APCU_CACHE', true);
 
 			$sCustomDataPath = function_exists('__get_custom_data_full_path') ? rtrim(trim(__get_custom_data_full_path()), '\\/') : $sCustomDataPath;
 			define('APP_DATA_FOLDER_PATH', 0 === strlen($sCustomDataPath) ? APP_INDEX_ROOT_PATH.'data/' : $sCustomDataPath.'/');

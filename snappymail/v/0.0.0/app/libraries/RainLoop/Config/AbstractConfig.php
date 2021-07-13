@@ -42,7 +42,7 @@ abstract class AbstractConfig
 		$this->aData = $this->defaultValues();
 
 		$this->bUseApcCache = APP_USE_APC_CACHE &&
-			\MailSo\Base\Utils::FunctionExistsAndEnabled(array('apc_fetch', 'apc_store'));
+			\MailSo\Base\Utils::FunctionExistsAndEnabled(array('apcu_fetch', 'apcu_store'));
 	}
 
 	protected abstract function defaultValues() : array;
@@ -116,10 +116,10 @@ abstract class AbstractConfig
 			{
 				$sKey = $this->cacheKey();
 
-				$sTimeHash = \apc_fetch($sKey.'time');
+				$sTimeHash = \apcu_fetch($sKey.'time');
 				if ($sTimeHash && $sTimeHash === \md5($iMTime.'/'.$iATime))
 				{
-					$aFetchData = \apc_fetch($sKey.'data');
+					$aFetchData = \apcu_fetch($sKey.'data');
 					if (\is_array($aFetchData))
 					{
 						$this->aData = $aFetchData;
@@ -146,8 +146,8 @@ abstract class AbstractConfig
 			{
 				$sKey = $this->cacheKey();
 
-				\apc_store($sKey.'time', \md5($iMTime.'/'.$iATime));
-				\apc_store($sKey.'data', $this->aData);
+				\apcu_store($sKey.'time', \md5($iMTime.'/'.$iATime));
+				\apcu_store($sKey.'data', $this->aData);
 
 				return true;
 			}
@@ -162,8 +162,8 @@ abstract class AbstractConfig
 		{
 			$sKey = $this->cacheKey();
 
-			\apc_delete($sKey.'time');
-			\apc_delete($sKey.'data');
+			\apcu_delete($sKey.'time');
+			\apcu_delete($sKey.'data');
 
 			return true;
 		}

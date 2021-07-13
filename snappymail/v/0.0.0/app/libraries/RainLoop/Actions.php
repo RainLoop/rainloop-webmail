@@ -686,9 +686,9 @@ class Actions
 					$oDriver = new \MailSo\Cache\Drivers\File(APP_PRIVATE_DATA . 'cache', $sKey);
 					break;
 
-				case ('APC' === $sDriver || 'APCU' === $sDriver) &&
+				case ('APCU' === $sDriver) &&
 					\MailSo\Base\Utils::FunctionExistsAndEnabled(array(
-						'apc_store', 'apc_fetch', 'apc_delete', 'apc_clear_cache')):
+						'apcu_store', 'apcu_fetch', 'apcu_delete', 'apcu_clear_cache')):
 
 					$oDriver = new \MailSo\Cache\Drivers\APC($sKey);
 					break;
@@ -795,7 +795,7 @@ class Actions
 				);
 
 				$this->oLogger->Write(
-					'[APC:' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('apc_fetch') ? 'on' : 'off') .
+					'[APCU:' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('apcu_fetch') ? 'on' : 'off') .
 					'][MB:' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding') ? 'on' : 'off') .
 					'][PDO:' . (\class_exists('PDO') ? (\implode(',', \Pdo::getAvailableDrivers()) ?: '~') : 'off') .
 					'][Streams:' . \implode(',', \stream_get_transports()) .
