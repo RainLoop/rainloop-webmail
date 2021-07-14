@@ -50,7 +50,7 @@ abstract class SecFetch
 	 */
 	public static function dest(string $type) : bool
 	{
-		return $type == ($_SERVER['HTTP_SEC_FETCH_DEST'] ?? '');
+		return $type == ($_SERVER['HTTP_SEC_FETCH_DEST'] ?? 'document');
 	}
 
 	/**
@@ -67,7 +67,7 @@ abstract class SecFetch
 	 */
 	public static function mode(string $type) : bool
 	{
-		return $type == ($_SERVER['HTTP_SEC_FETCH_MODE'] ?? '');
+		return $type == ($_SERVER['HTTP_SEC_FETCH_MODE'] ?? 'navigate');
 	}
 
 	/**
@@ -92,4 +92,31 @@ abstract class SecFetch
 	{
 		return '?1' == ($_SERVER['HTTP_SEC_FETCH_USER'] ?? '');
 	}
+
+	public static function isSameOrigin() : bool
+	{
+		if (!isset($_SERVER['HTTP_SEC_FETCH_SITE'])) {
+			return true;
+		}
+
+		if ('none' == $_SERVER['HTTP_SEC_FETCH_SITE']) {
+			// sec-fetch-dest: document
+			// sec-fetch-mode: navigate
+			return static::user();
+		}
+
+		/**
+			<script>
+				sec-fetch-dest: script
+				sec-fetch-mode: no-cors
+			window.Fetch
+				sec-fetch-dest: empty
+				sec-fetch-mode: same-origin
+			reload:
+				sec-fetch-dest: document
+				sec-fetch-mode: navigate
+		 */
+		return 'same-origin' == $_SERVER['HTTP_SEC_FETCH_SITE'];
+	}
+
 }
