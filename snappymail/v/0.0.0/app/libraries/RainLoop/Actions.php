@@ -2004,13 +2004,13 @@ class Actions
 		if (!empty($sKey) && ($bForce || ($this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true)))) {
 			$iExpires = $this->Config()->Get('cache', 'http_expires', 3600);
 			if (0 < $iExpires) {
-				$this->oHttp->ServerUseCache($this->etag($sKey), 1382478804, \time() + $iExpires);
+				$this->Http()->ServerUseCache($this->etag($sKey), 1382478804, \time() + $iExpires);
 				$bResult = true;
 			}
 		}
 
 		if (!$bResult) {
-			$this->oHttp->ServerNoCache();
+			$this->Http()->ServerNoCache();
 		}
 
 		return $bResult;
