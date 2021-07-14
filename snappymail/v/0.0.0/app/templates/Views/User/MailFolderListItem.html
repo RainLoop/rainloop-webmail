@@ -1,9 +1,11 @@
 <div class="e-item" data-bind="visible: visible, css: { 'i-am-inbox-wrapper': isInbox }">
-	<a class="e-link" data-bind="dropmessages: $data,
+	<a data-bind="dropmessages: $data,
 	   css: { 'i-am-inbox': isInbox, 'selected': selected() && !isSystemFolder(), 'selectable': canBeSelected, 'hidden' : hidden, 'print-count': hasUnreadMessages, 'unread-sub': hasSubscribedUnreadMessagesSubfolders, 'system': isSystemFolder, 'anim-action-class': actionBlink }">
 		<span class="badge pull-right count" data-bind="text: printableUnreadCount"></span>
 		<i data-bind="css: collapsedCss()"></i>
 		<span class="name" data-bind="text: name"></span>
 	</a>
+	<!-- ko if: subFolders.length -->
 	<div class="b-sub-folders" data-bind="template: { name: 'MailFolderListItem', foreach: subFolders }, css: { 'collapsed': collapsed() }"></div>
+	<!-- /ko -->
 </div>

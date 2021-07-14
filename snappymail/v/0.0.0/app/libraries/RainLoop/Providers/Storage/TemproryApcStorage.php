@@ -9,7 +9,7 @@ class TemproryApcStorage extends \RainLoop\Providers\Storage\FileStorage
 	 */
 	public function Put($oAccount, int $iStorageType, string $sKey, string $sValue) : bool
 	{
-		return !!\apc_store($this->generateFileName($oAccount, $iStorageType, $sKey, true), $sValue);
+		return !!\apcu_store($this->generateFileName($oAccount, $iStorageType, $sKey, true), $sValue);
 	}
 
 	/**
@@ -21,7 +21,7 @@ class TemproryApcStorage extends \RainLoop\Providers\Storage\FileStorage
 	public function Get($oAccount, int $iStorageType, string $sKey, $mDefault = false)
 	{
 		$bValue = false;
-		$mValue = \apc_fetch($this->generateFileName($oAccount, $iStorageType, $sKey), $bValue);
+		$mValue = \apcu_fetch($this->generateFileName($oAccount, $iStorageType, $sKey), $bValue);
 		if (!$bValue)
 		{
 			$mValue = $mDefault;
@@ -35,7 +35,7 @@ class TemproryApcStorage extends \RainLoop\Providers\Storage\FileStorage
 	 */
 	public function Clear($oAccount, int $iStorageType, string $sKey) : bool
 	{
-		\apc_delete($this->generateFileName($oAccount, $iStorageType, $sKey));
+		\apcu_delete($this->generateFileName($oAccount, $iStorageType, $sKey));
 
 		return true;
 	}

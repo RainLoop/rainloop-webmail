@@ -23,7 +23,7 @@
 
 	.email-title {
 		display: inline-block;
-		max-width: 200px;
+		max-width: 50vw;
 		text-align: left;
 		text-overflow: ellipsis;
 		overflow: hidden;
@@ -61,40 +61,26 @@
 	}
 
 	.accountPlace {
-		background-color: #000;
 		background-color: rgba(0, 0, 0, 0.5);
-
+		border-radius: 4px;
 		color: #fff;
-		text-shadow: 0 1px 0 #000;
-
 		display: inline-block;
-		height: 29px;
-		max-width: 250px;
-		border-radius: 4px;
-		font-size: 16px;
-		line-height: 30px;
-		padding: 1px 8px;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		border-radius: 4px;
 		font-weight: bold;
-
+		font-size: 16px;
+		height: 29px;
+		line-height: 30px;
+		max-width: 25vw;
+		overflow: hidden;
+		padding: 1px 8px;
+		text-overflow: ellipsis;
+		text-shadow: 0 1px 0 #000;
 		white-space: nowrap;
 	}
 
 	.account-item {
-
-		.icon-ok {
+		&:not(.current) i:first-child,
+		&.current i + i {
 			display: none;
-		}
-
-		&.current {
-			.icon-ok {
-				display: inline-block;
-			}
-			.icon-user {
-				display: none;
-			}
 		}
 	}
 
@@ -104,13 +90,6 @@
 
 	.g-ui-menu .e-link.account-item {
 		padding-right: 5px;
-	}
-}
-
-/* mobile */
-@media screen and (max-width: 767px) {
-	.accountPlace {
-		max-width: 150px !important;
 	}
 }
 

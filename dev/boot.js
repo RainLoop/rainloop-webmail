@@ -38,17 +38,10 @@ const
 		}
 		return win[name];
 	},
-	STORAGE_KEY = '__rlA',
-	TIME_KEY = '__rlT',
-	AUTH_KEY = 'AuthAccountHash',
-	storage = Storage('session'),
-	timestamp = () => Math.round(Date.now() / 1000),
-	setTimestamp = () => storage.setItem(TIME_KEY, timestamp()),
 
 	showError = () => {
 		eId('rl-loading').hidden = true;
 		eId('rl-loading-error').hidden = false;
-		p.end();
 	},
 
 	loadScript = src => {
@@ -57,29 +50,12 @@ const
 		}
 		return new Promise((resolve, reject) => {
 			const script = doc.createElement('script');
-			script.onload = () => {
-				p.set(pStep += step);
-				resolve();
-			};
+			script.onload = () => resolve();
 			script.onerror = () => reject(new Error(src));
 			script.src = src;
 //			script.async = true;
 			doc.head.append(script);
 		});
-	},
-
-	step = 100 / 7,
-	p = win.progressJs = {
-		set: percent => progress.style.width = Math.min(percent, 100) + '%',
-		end: () => {
-			if (container) {
-				p.set(100);
-				setTimeout(() => {
-					container.remove();
-					container = progress = null;
-				}, 600);
-			}
-		}
 	};
 
 if (!navigator || !navigator.cookieEnabled) {
@@ -89,37 +65,15 @@ if (!navigator || !navigator.cookieEnabled) {
 const layout = getCookie('rllayout');
 doc.documentElement.classList.toggle('rl-mobile', 'mobile' === layout || (!layout && 1000 > innerWidth));
 
-let pStep = 0,
-	container = eId('progressjs'),
-	progress = container.querySelector('.progressjs-inner'),
-
+let progress = eId('progressjs'),
 	RL_APP_DATA = {};
 
+if (progress) {
+	progress.remove();
+	progress = null;
+}
+
 win.rl = {
-	hash: {
-		// getHash
-		get: () => storage.getItem(STORAGE_KEY) || null,
-		// setHash
-		set: () => {
-			storage.setItem(STORAGE_KEY, RL_APP_DATA && RL_APP_DATA[AUTH_KEY]
-				? RL_APP_DATA[AUTH_KEY] : '');
-			setTimestamp();
-		},
-		// clearHash
-		clear: () => {
-			storage.setItem(STORAGE_KEY, '');
-			setTimestamp();
-		},
-		// checkTimestamp
-		check: () => {
-			if (timestamp() > (parseInt(storage.getItem(TIME_KEY) || 0, 10) || 0) + 3600000) {
-				// 60m
-				rl.hash.clear();
-				return true;
-			}
-			return false;
-		}
-	},
 	data: () => RL_APP_DATA,
 	adminArea: () => admin,
 	settings: {
@@ -142,15 +96,8 @@ win.rl = {
 	initData: appData => {
 		RL_APP_DATA = appData;
 
-		rl.hash.set();
-
 		if (appData) {
-			if (appData.NewThemeLink) {
-				eId('app-theme-link').href = appData.NewThemeLink;
-			}
-
 			loadScript(appData.StaticLibJsLink)
-			.then(() => Promise.all([loadScript(appData.TemplatesLink), loadScript(appData.LangLink)]))
 			.then(() => loadScript(appData.StaticAppJsLink))
 			.then(() => appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve())
 			.then(() => win.__APP_BOOT ? win.__APP_BOOT(showError) : showError())
@@ -164,16 +111,11 @@ win.rl = {
 	}
 };
 
-p.set(1);
-
 Storage('local');
 
-// init section
-setInterval(setTimestamp, 60000); // 1m
+eId('app-css').href = eId('app-css').dataset.href;
 
-[eId('app-css'),eId('app-theme-link')].forEach(css => css.href = css.dataset.href);
-
-loadScript(`./?/${admin ? 'Admin' : ''}AppData/${rl.hash.get() || '0'}/${Math.random().toString().substr(2)}/`)
+loadScript(`./?/${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().substr(2)}/`)
 	.then(() => {});
 
 })(this);

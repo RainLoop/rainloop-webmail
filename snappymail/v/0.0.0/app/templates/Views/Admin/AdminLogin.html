@@ -1,42 +1,36 @@
 <div class="b-login-content">
-	<div class="loginFormWrapper" data-bind="css: {'afterLoginHide': formHidden}">
-		<div class="alert" data-bind="hidden: !submitError()">
-			<button type="button" class="close" data-bind="click: function () { submitError('') }">×</button>
-			<span data-bind="text: submitError"></span>
-		</div>
-		<div class="wrapper-parent">
-			<form class="wrapper submitting-pane loginForm" action="#/" data-bind="submit: submitForm, css: {'errorAnimated': formError, 'submitting': submitRequest()}">
-				<div class="controls" data-bind="css: {'error': loginError}">
-					<div class="input-append">
-						<input required="" type="text" class="input-block-level inputLogin"
-							autofocus="" autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="textInput: login, disable: submitRequest"
-							data-i18n="[placeholder]LOGIN/LABEL_LOGIN" />
-						<span class="add-on">
-							<i class="fontastic">👤</i>
-						</span>
-					</div>
-				</div>
-				<div class="controls" data-bind="css: {'error': passwordError}">
-					<div class="input-append">
-						<input required="" type="password" class="input-block-level inputPassword"
-							autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="textInput: password, disable: submitRequest"
-							data-i18n="[placeholder]LOGIN/LABEL_PASSWORD" />
-						<span class="add-on" tabindex="-1"
-							data-bind="command: submitCommand" data-i18n="[title]LOGIN/BUTTON_LOGIN">
-							<i class="fontastic" data-bind="visible: '' === password()">🔑</i>
-							<button type="submit" class="btn-submit-icon-wrp login-submit-icon fontastic" data-bind="visible: '' !== password()">❯</button>
-						</span>
-					</div>
-				</div>
-				<div id="plugin-Login-BottomControlGroup"></div>
-				<div class="controls" data-bind="hidden: hideSubmitButton">
-					<button type="submit" class="btn btn-large btn-block buttonLogin"
-						data-bind="command: submitCommand"
-						data-i18n="LOGIN/BUTTON_LOGIN"></button>
-				</div>
-			</form>
-		</div>
+	<div class="alert" data-bind="hidden: !submitError()">
+		<button type="button" class="close" data-bind="click: function () { submitError('') }">×</button>
+		<span data-bind="text: submitError"></span>
 	</div>
+	<form action="#/" data-bind="submit: submitForm, css: {'errorAnimated': formError, 'submitting': submitRequest()}">
+		<div class="controls" data-bind="css: {'error': loginError}">
+			<div class="input-append">
+				<input required="" type="text" class="input-block-level inputLogin"
+					autofocus="" autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false"
+					data-bind="textInput: login, disable: submitRequest"
+					data-i18n="[placeholder]LOGIN/LABEL_LOGIN" />
+				<span class="add-on fontastic">👤</span>
+			</div>
+		</div>
+		<div class="controls" data-bind="css: {'error': passwordError}">
+			<div class="input-append">
+				<input required="" type="password" class="input-block-level inputPassword"
+					autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+					data-bind="textInput: password, disable: submitRequest"
+					data-i18n="[placeholder]LOGIN/LABEL_PASSWORD" />
+				<span class="add-on" tabindex="-1"
+					data-bind="command: submitCommand" data-i18n="[title]LOGIN/BUTTON_LOGIN">
+					<i class="fontastic" data-bind="visible: '' === password()">🔑</i>
+					<button type="submit" class="btn-submit-icon-wrp login-submit-icon fontastic" data-bind="visible: '' !== password()">❯</button>
+				</span>
+			</div>
+		</div>
+		<div id="plugin-Login-BottomControlGroup"></div>
+		<div class="controls" data-bind="hidden: hideSubmitButton">
+			<button type="submit" class="btn btn-large btn-block buttonLogin"
+				data-bind="command: submitCommand"
+				data-i18n="LOGIN/BUTTON_LOGIN"></button>
+		</div>
+	</form>
 <div>

@@ -1,0 +1,10 @@
+{
+	"LOGIN": {
+		"LABEL_FORGOT_PASSWORD": "忘记密码",
+		"LABEL_REGISTRATION": "注册"
+	},
+	"TAB_LOGIN": {
+		"LABEL_FORGOT_PASSWORD_LINK_URL": "Forgot password url",
+		"LABEL_REGISTRATION_LINK_URL": "Register url"
+	}
+}

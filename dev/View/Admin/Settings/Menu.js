@@ -1,6 +1,3 @@
-import { Scope } from 'Common/Enums';
-
-import { settingsMenuKeysHandler } from 'Knoin/Knoin';
 import { AbstractViewLeft } from 'Knoin/AbstractViews';
 
 class MenuSettingsAdminView extends AbstractViewLeft {
@@ -15,11 +12,6 @@ class MenuSettingsAdminView extends AbstractViewLeft {
 
 	link(route) {
 		return '#/' + route;
-	}
-
-	onBuild(dom) {
-		shortcuts.add('arrowup,arrowdown', '', Scope.Settings,
-			settingsMenuKeysHandler(dom.querySelectorAll('.b-admin-menu .e-item')));
 	}
 }
 

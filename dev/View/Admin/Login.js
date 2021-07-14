@@ -21,8 +21,6 @@ class LoginAdminView extends AbstractViewCenter {
 			loginError: false,
 			passwordError: false,
 
-			formHidden: false,
-
 			submitRequest: false,
 			submitError: ''
 		});

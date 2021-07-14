@@ -1,5 +1,5 @@
 import { SaveSettingsStep } from 'Common/Enums';
-import { doc, createElement, elementById } from 'Common/Globals';
+import { doc, elementById } from 'Common/Globals';
 
 export const
 	isArray = Array.isArray,
@@ -84,14 +84,13 @@ let __themeTimer = 0,
  * @returns {void}
  */
 export function changeTheme(value, themeTrigger = ()=>{}) {
-	const themeLink = elementById('app-theme-link'),
+	const themeStyle = elementById('app-theme-style'),
 		clearTimer = () => {
 			__themeTimer = setTimeout(() => themeTrigger(SaveSettingsStep.Idle), 1000);
 			__themeJson = null;
 		};
 
-	let themeStyle = elementById('app-theme-style'),
-		url = (themeLink && themeLink.href) || (themeStyle && themeStyle.dataset.href);
+	let url = themeStyle.dataset.href;
 
 	if (url) {
 		url = url.toString()
@@ -118,19 +117,9 @@ export function changeTheme(value, themeTrigger = ()=>{}) {
 		rl.fetchJSON(url, init)
 			.then(data => {
 				if (data && isArray(data) && 2 === data.length) {
-					if (themeLink && !themeStyle) {
-						themeStyle = createElement('style');
-						themeStyle.id = 'app-theme-style';
-						themeLink.after(themeStyle);
-						themeLink.remove();
-					}
-
-					if (themeStyle) {
-						themeStyle.textContent = data[1];
-						themeStyle.dataset.href = url;
-						themeStyle.dataset.theme = data[0];
-					}
-
+					themeStyle.textContent = data[1];
+					themeStyle.dataset.href = url;
+					themeStyle.dataset.theme = data[0];
 					themeTrigger(SaveSettingsStep.TrueResult);
 				}
 			})

@@ -20,7 +20,7 @@
 	}
 
 	.b-folders-user {
-		.e-link.print-count.system .badge {
+		a.print-count.system .badge {
 			display: none !important;
 		}
 	}
@@ -58,10 +58,6 @@
 		overflow: hidden;
 		overflow-y: auto;
 		min-width: 100px;
-
-		.content {
-			-webkit-overflow-scrolling: touch;
-		}
 	}
 
 	hr {
@@ -75,7 +71,7 @@
 		overflow: hidden;
 		white-space: nowrap;
 
-		.e-link {
+		a {
 			display: block;
 			position: relative;
 			z-index: 1;
@@ -108,11 +104,8 @@
 				display: inline;
 			}
 
-			padding: 0;
-			padding-left: @folderItemPadding;
-			padding-right: @folderItemPadding;
+			padding: 0 @folderItemPadding;
 
-			outline: 0;
 			text-decoration: none;
 
 			&.selectable {
@@ -204,21 +197,21 @@
 		font-weight: bold;
 	}
 
-	.b-sub-folders .e-item .e-link {
+	.b-sub-folders .e-item a {
 		padding-left: @subPadding * 1 + @folderItemPadding;
 	}
-	.b-sub-folders .b-sub-folders .e-item .e-link {
+	.b-sub-folders .b-sub-folders .e-item a {
 		padding-left: @subPadding * 2 + @folderItemPadding;
 	}
-	.b-sub-folders .b-sub-folders .b-sub-folders .e-item .e-link {
+	.b-sub-folders .b-sub-folders .b-sub-folders .e-item a {
 		padding-left: @subPadding * 3 + @folderItemPadding;
 	}
-	.b-sub-folders .b-sub-folders .b-sub-folders .b-sub-folders .e-item .e-link {
+	.b-sub-folders .b-sub-folders .b-sub-folders .b-sub-folders .e-item a {
 		padding-left: @subPadding * 4 + @folderItemPadding;
 	}
 
 /**/
-	&.single-root-inbox .i-am-inbox.e-link {
+	&.single-root-inbox a.i-am-inbox {
 		display: none !important;
 	}
 
@@ -229,16 +222,16 @@
 	}
 
 	&.single-root-inbox .i-am-inbox-wrapper {
-		.b-sub-folders .e-item .e-link {
+		.b-sub-folders .e-item a {
 			padding-left: @folderItemPadding;
 		}
-		.b-sub-folders .b-sub-folders .e-item .e-link {
+		.b-sub-folders .b-sub-folders .e-item a {
 			padding-left: @subPadding * 1 + @folderItemPadding;
 		}
-		.b-sub-folders .b-sub-folders .b-sub-folders .e-item .e-link {
+		.b-sub-folders .b-sub-folders .b-sub-folders .e-item a {
 			padding-left: @subPadding * 2 + @folderItemPadding;
 		}
-		.b-sub-folders .b-sub-folders .b-sub-folders .b-sub-folders .e-item .e-link {
+		.b-sub-folders .b-sub-folders .b-sub-folders .b-sub-folders .e-item a {
 			padding-left: @subPadding * 3 + @folderItemPadding;
 		}
 	}

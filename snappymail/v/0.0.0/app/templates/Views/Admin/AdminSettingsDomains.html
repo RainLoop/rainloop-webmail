@@ -25,7 +25,22 @@
 				<col style="width: 1%" />
 				<col style="width: 1%" />
 			</colgroup>
-			<tbody data-bind="template: { name: 'AdminSettingsDomainListItem', foreach: domains }"></tbody>
+			<tbody data-bind="foreach: domains">
+				<tr data-bind="css: {'disabled': disabled }">
+					<td class="e-action">
+						<span class="domain-name" data-bind="text: name"></span>
+						<span class="domain-alias" data-bind="if: alias">(alias)</span>
+					</td>
+					<td>
+						<a class="btn btn-small btn-small-small btn-danger button-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function(oDomain) { $root.deleteDomain(oDomain); }"
+							data-i18n="TAB_DOMAINS/DELETE_ARE_YOU_SURE"></a>
+					</td>
+					<td>
+						<span class="delete-domain fontastic" data-bind="visible: !deleteAccess(), click: function (oDomain) { $root.domainForDeletion(oDomain); }">🗑</span>
+					</td>
+					<td class="disabled-domain fontastic" data-bind="click: function (oDomain) { $root.disableDomain(oDomain); }, text: disabled() ? '☐' : '☑'"></td>
+				</tr>
+			</tbody>
 		</table>
 	</div>
 </div>

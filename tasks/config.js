@@ -50,8 +50,7 @@ config.paths.css = {
 	boot: {
 		name: 'boot.css',
 		src: [
-			'dev/Styles/@Boot.css',
-			'dev/Styles/_progressjs.css'
+			'dev/Styles/@Boot.css'
 		]
 	}
 };

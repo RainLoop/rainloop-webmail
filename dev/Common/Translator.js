@@ -3,7 +3,7 @@ import { Notification, UploadErrorCode } from 'Common/Enums';
 import { langLink } from 'Common/Links';
 import { doc, createElement } from 'Common/Globals';
 
-let I18N_DATA = window.snappymailI18N || {};
+let I18N_DATA = {};
 
 export const trigger = ko.observable(false);
 
@@ -49,9 +49,20 @@ const i18nToNode = element => {
 	}
 },
 
+	init = () => {
+		if (rl.I18N) {
+			I18N_DATA = rl.I18N;
+			Date.defineRelativeTimeFormat(rl.relativeTime || {});
+			rl.I18N = null;
+			return 1;
+		}
+	},
+
 	i18nKey = key => key.replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase(),
 
 	getKeyByValue = (o, v) => Object.keys(o).find(key => o[key] === v);
+
+init();
 
 /**
  * @param {Object} elements
@@ -127,13 +138,11 @@ export function reload(admin, language) {
 		const script = createElement('script');
 		script.onload = () => {
 			// reload the data
-			if (window.snappymailI18N) {
-				I18N_DATA = window.snappymailI18N;
+			if (init()) {
 				i18nToNodes(doc);
 				dispatchEvent(new CustomEvent('reload-time'));
 				trigger(!trigger());
 			}
-			window.snappymailI18N = null;
 			script.remove();
 			resolve();
 		};

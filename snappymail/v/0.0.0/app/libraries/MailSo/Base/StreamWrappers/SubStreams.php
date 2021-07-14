@@ -65,7 +65,7 @@ class SubStreams
 
 		$sHashName = \MailSo\Base\Utils::Md5Rand();
 
-		self::$aStreams[$sHashName] = array_map(function($mItem) {
+		self::$aStreams[$sHashName] = \array_map(function ($mItem) {
 			return \is_resource($mItem) ? $mItem :
 				\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString($mItem);
 		}, $aSubStreams);

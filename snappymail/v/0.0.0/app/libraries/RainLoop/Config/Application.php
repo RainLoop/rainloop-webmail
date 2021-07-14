@@ -202,9 +202,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'hide_submit_button' => array(true),
 
-				'forgot_password_link_url' => array('', ''),
-				'registration_link_url' => array('', ''),
-
 				'login_lowercase' => array(true, ''),
 
 				'sign_me_auto' => array(\RainLoop\Enumerations\SignMeType::DEFAULT_OFF,
@@ -371,6 +368,7 @@ Enables caching in the system'),
 				'replace_env_in_configuration' => array(''),
 				'startup_url' => array(''),
 				'strict_html_parser' => array(false),
+				'boundary_prefix' => array(''),
 				'dev_email' => array(''),
 				'dev_password' => array('')
 			),

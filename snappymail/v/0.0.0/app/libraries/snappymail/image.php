@@ -4,7 +4,7 @@ namespace SnappyMail;
 
 interface Image
 {
-	public static function createFromString(string $data);
+	public static function createFromString(string &$data);
 
 	public function getOrientation() : int;
 

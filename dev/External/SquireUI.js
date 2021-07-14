@@ -412,6 +412,7 @@ class SquireUI
 					input.title = ctrlKey + cfg.key;
 				}
 				input.dataset.action = action;
+				input.tabIndex = -1;
 				cfg.input = input;
 				toolgroup.append(input);
 			}

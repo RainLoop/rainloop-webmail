@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/the-djmaze/snappymail">
-    <img width="200" heigth="200" src="https://snappymail.eu/static/img/logo-256x256.png">
+    <img src="https://snappymail.eu/static/img/logo-256x256.png">
   </a>
   <br>
   <h1>SnappyMail</h1>
@@ -71,6 +71,9 @@ This fork of RainLoop has the following changes:
 * Replaced webpack with rollup
 * No user-agent detection (use device width)
 * Added support to load plugins as .phar
+* Replaced old Sabre library
+* AddressBook Contacts support MySQL/MariaDB utf8mb4
+* Prevent Google FLoC
 
 ### Removal of old JavaScript
 
@@ -116,25 +119,30 @@ RainLoop 1.15 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.158.025	|   94.597	|
-|app.js          	|4.215.733	|  460.014	|
-|boot.js         	|  672.433	|    4.554	|
-|libs.js         	|  647.679	|  218.511	|
+|admin.js        	|2.158.025	|   91.664	|
+|app.js          	|4.215.733	|  453.928	|
+|boot.js         	|  672.433	|    3.147	|
+|libs.js         	|  647.679	|  218.466	|
 |polyfills.js    	|  325.908	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|8.019.778	|  777.961	|
+|TOTAL           	|8.019.778	|  767.490	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
-|admin.min.js    	|  255.514	|   49.908	| 73.899	| 14.781	| 60.674 	| 13.233	|
-|app.min.js      	|  516.000	|  236.129	|140.430	| 69.396	|110.657 	| 58.601	|
-|boot.min.js     	|   66.456	|    2.442	| 22.553	|  1.371	| 20.043 	|  1.178	|
-|libs.min.js     	|  574.626	|  106.574	|177.280	| 38.600	|151.855 	| 34.532	|
-|polyfills.min.js	|   32.608	|        0	| 11.315	|      0	| 10.072 	|      0	|
-|TOTAL           	|1.445.204	|  395.053	|425.477	|124.148	|353.301 	|107.544	|
-|TOTAL (no admin)	|1.189.690	|  345.145	|351.061	|109.367	|292.627 	| 94.311	|
+|admin.min.js    	|  255.514	|   47.908	| 73.899	| 14.313	| 60.674  	| 12.787	|
+|app.min.js      	|  516.000	|  233.532	|140.430	| 68.577	|110.657  	| 57.878	|
+|boot.min.js     	|   66.456	|    1.751	| 22.553	|  1.025	| 20.043  	|    858	|
+|libs.min.js     	|  574.626	|  106.529	|177.280	| 38.607	|151.855  	| 34.567	|
+|polyfills.min.js	|   32.608	|        0	| 11.315	|      0	| 10.072  	|      0	|
+|TOTAL           	|1.445.204	|  389.720	|425.477	|122.522	|353.301  	|106.090	|
+|TOTAL (no admin)	|1.189.690	|  341.812	|351.061	|108.209	|292.627  	| 93.303	|
 
-For a user its around 66% smaller and faster than traditional RainLoop.
+For a user its around 68% smaller and faster than traditional RainLoop.
+
+|OpenPGP        	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
+|---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
+|openpgp.min.js 	|  330.742	|  293.972	|102.388	| 93.030	| 84.241  	| 77.142	|
+|openpgp.worker 	|    1.499	|    1.125	|    824	|    567	|    695 	|    467	|
 
 ### CSS changes
 
@@ -166,12 +174,12 @@ For a user its around 66% smaller and faster than traditional RainLoop.
 
 |css/*       	|RainLoop	|Snappy   	|RL gzip	|SM gzip	|SM brotli	|
 |------------	|-------:	|-------:	|------:	|------:	|--------:	|
-|app.css     	| 340.334	| 107.026	| 46,959	| 18.779	| 16.133	|
-|app.min.css 	| 274.791	|  88.207	| 39.618	| 16.817	| 14.816	|
-|boot.css    	|       	|   2.066	|       	|    913	|    742	|
-|boot.min.css	|       	|   1.696	|       	|    818	|    664	|
-|admin.css    	|       	|  46.326	|       	|  9.219	|  8.067	|
-|admin.min.css	|       	|  37.240	|       	|  8.178	|  7.268	|
+|app.css     	| 340.334	| 100.825	| 46,959	| 18.002	| 15.540	|
+|app.min.css 	| 274.791	|  82.684	| 39.618	| 16.138	| 14.234	|
+|boot.css    	|       	|   1.326	|       	|    664	|    545	|
+|boot.min.css	|       	|   1.071	|       	|    590	|    474	|
+|admin.css    	|       	|  42.217	|       	|  8.714	|  7.602	|
+|admin.min.css	|       	|  33.576	|       	|  7.680	|  6.810	|
 
 
 ### Squire vs CKEditor

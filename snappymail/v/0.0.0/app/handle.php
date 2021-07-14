@@ -28,6 +28,11 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 
 if (\class_exists('RainLoop\Api'))
 {
+	if (!\SnappyMail\HTTP\SecFetch::isEntering() && !\SnappyMail\HTTP\SecFetch::isSameOrigin()) {
+		\MailSo\Base\Http::StatusHeader(403);
+		exit('Disallowed Sec-Fetch-Site: ' . ($_SERVER['HTTP_SEC_FETCH_SITE'] ?? ''));
+	}
+
 	\MailSo\Base\Loader::Init();
 
 	if (!empty($_ENV['RAINLOOP_INCLUDE_AS_API']))

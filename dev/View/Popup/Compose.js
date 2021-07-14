@@ -419,7 +419,24 @@ class ComposePopupView extends AbstractViewPopup {
 				setFolderHash(sSentFolder, '');
 
 				Remote.sendMessage(
-					this.sendMessageResponse.bind(this),
+					(iError, data) => {
+						this.sending(false);
+						if (this.modalVisibility()) {
+							if (iError) {
+								if (Notification.CantSaveMessage === iError) {
+									this.sendSuccessButSaveError(true);
+									this.savedErrorDesc(i18n('COMPOSE/SAVED_ERROR_ON_SEND').trim());
+								} else {
+									this.sendError(true);
+									this.sendErrorDesc(getNotification(iError, data && data.ErrorMessage)
+										|| getNotification(Notification.CantSendMessage));
+								}
+							} else {
+								this.closeCommand && this.closeCommand();
+							}
+						}
+						this.reloadDraftFolder();
+					},
 					this.getMessageRequestParams(sSentFolder)
 				);
 			}
@@ -438,7 +455,40 @@ class ComposePopupView extends AbstractViewPopup {
 			setFolderHash(FolderUserStore.draftFolder(), '');
 
 			Remote.saveMessage(
-				this.saveMessageResponse.bind(this),
+				(iError, oData) => {
+					let result = false;
+
+					this.saving(false);
+
+					if (!iError) {
+						if (oData.Result.NewFolder && oData.Result.NewUid) {
+							result = true;
+
+							if (this.bFromDraft) {
+								const message = MessageUserStore.message();
+								if (message && this.draftFolder() === message.folder && this.draftUid() === message.uid) {
+									MessageUserStore.message(null);
+								}
+							}
+
+							this.draftFolder(oData.Result.NewFolder);
+							this.draftUid(oData.Result.NewUid);
+
+							this.savedTime(new Date);
+
+							if (this.bFromDraft) {
+								setFolderHash(this.draftFolder(), '');
+							}
+						}
+					}
+
+					if (!result) {
+						this.savedError(true);
+						this.savedErrorDesc(getNotification(Notification.CantSaveMessage));
+					}
+
+					this.reloadDraftFolder();
+				},
 				this.getMessageRequestParams(FolderUserStore.draftFolder())
 			);
 		}
@@ -578,63 +628,6 @@ class ComposePopupView extends AbstractViewPopup {
 		}
 	}
 
-	sendMessageResponse(iError, data) {
-
-		this.sending(false);
-
-		if (this.modalVisibility()) {
-			if (iError) {
-				if (Notification.CantSaveMessage === iError) {
-					this.sendSuccessButSaveError(true);
-					this.savedErrorDesc(i18n('COMPOSE/SAVED_ERROR_ON_SEND').trim());
-				} else {
-					this.sendError(true);
-					this.sendErrorDesc(getNotification(iError, data && data.ErrorMessage)
-						|| getNotification(Notification.CantSendMessage));
-				}
-			} else {
-				this.closeCommand && this.closeCommand();
-			}
-		}
-
-		this.reloadDraftFolder();
-	}
-
-	saveMessageResponse(iError, oData) {
-		let result = false;
-
-		this.saving(false);
-
-		if (!iError) {
-			if (oData.Result.NewFolder && oData.Result.NewUid) {
-				result = true;
-
-				if (this.bFromDraft) {
-					const message = MessageUserStore.message();
-					if (message && this.draftFolder() === message.folder && this.draftUid() === message.uid) {
-						MessageUserStore.message(null);
-					}
-				}
-
-				this.draftFolder(oData.Result.NewFolder);
-				this.draftUid(oData.Result.NewUid);
-
-				this.savedTime(new Date);
-
-				if (this.bFromDraft) {
-					setFolderHash(this.draftFolder(), '');
-				}
-			}
-		}
-
-		if (!result) {
-			this.savedError(true);
-			this.savedErrorDesc(getNotification(Notification.CantSaveMessage));
-		}
-
-		this.reloadDraftFolder();
-	}
-
 	onHide() {
 		// Stop autosave
 		clearTimeout(this.iTimer);
@@ -745,12 +738,6 @@ class ComposePopupView extends AbstractViewPopup {
 			}
 		} else {
 			this.initOnShow(type, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText);
-		}
-	}
-
-	onWarmUp() {
-		if (this.modalVisibility && !this.modalVisibility()) {
-			this.editor(editor => editor.modeWysiwyg());
 		}
 	}
 
@@ -1146,6 +1133,8 @@ class ComposePopupView extends AbstractViewPopup {
 		ro.header = dom.querySelector('.b-header');
 		ro.toolbar = dom.querySelector('.b-header-toolbar');
 		ro.els = [dom.querySelector('.textAreaParent'), dom.querySelector('.attachmentAreaParent')];
+
+		this.editor(editor => editor.modeWysiwyg());
 	}
 
 	/**

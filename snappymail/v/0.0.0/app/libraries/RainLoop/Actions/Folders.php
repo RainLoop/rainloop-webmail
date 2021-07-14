@@ -30,14 +30,6 @@ trait Folders
 		{
 			$this->Plugins()->RunHook('filter.folders-post', array($oAccount, $oFolderCollection));
 
-			$aFolders = $oFolderCollection->getArrayCopy();
-			foreach ($aFolders as $i => $oFolder) {
-				if (!$oFolder->IsSelectable()) {
-					unset($aFolders[$i]);
-				}
-			}
-			$oFolderCollection->exchangeArray(\array_values($aFolders));
-
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
 			$aSystemFolders = array();
@@ -351,7 +343,7 @@ trait Folders
 		$aFlagsFilteredUids = array();
 		if (0 < strlen($sFlagsUids))
 		{
-			$aFlagsUids = explode(',', $sFlagsUids);
+			$aFlagsUids = \explode(',', $sFlagsUids);
 			$aFlagsFilteredUids = \array_filter(\array_map('intval', $aFlagsUids));
 		}
 

@@ -1,98 +1,92 @@
 <div class="modal fade b-compose-open-pgp-content g-ui-user-select-none" data-bind="modal: modalVisibility">
-	<div>
-		<div class="modal-header">
-			<button type="button" class="close" data-bind="command: cancelCommand">×</button>
-			<h3 data-i18n="POPUPS_COMPOSE_OPEN_PGP/TITLE_COMPOSE_OPEN_PGP"></h3>
+	<div class="modal-header">
+		<button type="button" class="close" data-bind="command: cancelCommand">×</button>
+		<h3 data-i18n="POPUPS_COMPOSE_OPEN_PGP/TITLE_COMPOSE_OPEN_PGP"></h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert" data-bind="visible: '' !== notification()">
+			<span data-bind="text: notification"></span>
 		</div>
-		<div class="modal-body">
-			<div class="alert" data-bind="visible: '' !== notification()">
-				<span data-bind="text: notification"></span>
-			</div>
+		<div>
 			<div>
-				<div>
-					<div data-bind="component: {
-							name: 'Checkbox',
-							params: {
-								label: 'POPUPS_COMPOSE_OPEN_PGP/LABEL_SIGN',
-								value: sign
-							}
-						}, click: updateCommand"></div>
+				<div data-bind="component: {
+						name: 'Checkbox',
+						params: {
+							label: 'POPUPS_COMPOSE_OPEN_PGP/LABEL_SIGN',
+							value: sign
+						}
+					}, click: updateCommand"></div>
 
-					<div class="key-list" data-bind="visible: sign">
-						<div class="key-list-wrp empty" data-bind="visible: !signKey()">
-							No private key found
-						</div>
-						<div class="key-list-wrp" data-bind="visible: signKey()">
-							<div class="key-list__item">
-								<div class="key-list__item-hash">
-									(<span data-bind="text: signKey() ? signKey().hash : ''"></span>)
-								</div>
-								<div class="key-list__item-names">
-								<!-- ko if: signKey() -->
-									<!-- ko foreach: signKey().users -->
-										<div class="key-list__item-name" data-bind="text: $data"></div>
-									<!-- /ko -->
+				<div class="key-list" data-bind="visible: sign">
+					<div class="key-list-wrp empty" data-bind="visible: !signKey()">
+						No private key found
+					</div>
+					<div class="key-list-wrp" data-bind="visible: signKey()">
+						<div class="key-list__item">
+							<div class="key-list__item-hash">
+								(<span data-bind="text: signKey() ? signKey().hash : ''"></span>)
+							</div>
+							<div class="key-list__item-names">
+							<!-- ko if: signKey() -->
+								<!-- ko foreach: signKey().users -->
+									<div class="key-list__item-name" data-bind="text: $data"></div>
 								<!-- /ko -->
-								</div>
+							<!-- /ko -->
 							</div>
 						</div>
 					</div>
 				</div>
-				<div>
-					<div data-bind="component: {
-							name: 'Checkbox',
-							params: {
-								label: 'POPUPS_COMPOSE_OPEN_PGP/LABEL_ENCRYPT',
-								value: encrypt
-							}
-						}"></div>
+			</div>
+			<div>
+				<div data-bind="component: {
+						name: 'Checkbox',
+						params: {
+							label: 'POPUPS_COMPOSE_OPEN_PGP/LABEL_ENCRYPT',
+							value: encrypt
+						}
+					}"></div>
 
-					<div class="key-list" data-bind="visible: encrypt">
-						<div class="key-list-wrp empty" data-bind="visible: !encryptKeys() || encryptKeys().length === 0">
-							No public keys selected
-						</div>
-						<div class="key-list-wrp" data-bind="visible: encryptKeys() && encryptKeys().length > 0">
-							<!-- ko foreach: encryptKeys -->
-								<div class="key-list__item">
-									<div class="key-list__item-hash" data-bind="visible: !empty">
-										(<span data-bind="text: hash"></span>)
-									</div>
-									<div class="key-list__item-names"  data-bind="css: {'empty': empty}">
-									<!-- ko foreach: users -->
-										<div class="key-list__item-name" data-bind="text: $data"></div>
-									<!-- /ko -->
-									</div>
-									<div class="key-list__item-error" data-bind="visible: empty">
-										(Public key not found)
-									</div>
-									<div class="key-list__item-delete fontastic" data-bind="click: removable() ? $parent.deletePublickKey : null, css: {'disabled': !removable()}">🗑</div>
-								</div>
-							<!-- /ko -->
+				<div class="key-list" data-bind="visible: encrypt">
+					<div class="key-list-wrp empty" data-bind="visible: encryptKeys().length === 0">
+						No public keys selected
+					</div>
+					<div class="key-list-wrp" data-bind="visible: encryptKeys().length > 0, foreach: encryptKeys">
+						<div class="key-list__item">
+							<div class="key-list__item-hash" data-bind="visible: !empty">
+								(<span data-bind="text: hash"></span>)
+							</div>
+							<div class="key-list__item-names"  data-bind="css: {'empty': empty}, foreach: users">
+								<div class="key-list__item-name" data-bind="text: $data"></div>
+							</div>
+							<div class="key-list__item-error" data-bind="visible: empty">
+								(Public key not found)
+							</div>
+							<div class="key-list__item-delete fontastic" data-bind="click: removable() ? $parent.deletePublickKey : null, css: {'disabled': !removable()}">🗑</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="key-actions">
-				<div data-bind="visible: sign()">
-					<input type="password" class="inputPassword input-block-level"
-						autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-						data-i18n="[placeholder]GLOBAL/PASSWORD"
-						data-bind="textInput: password, onEnter: doCommand" />
-					<select class="input-block-level" data-bind="visible: 0 < privateKeysOptions().length, options: privateKeysOptions, value: selectedPrivateKey,
-						optionsCaption: privateKeysOptionsCaption, optionsText: 'name', optionsValue: 'id'"></select>
-				</div>
-				<select class="input-block-level" data-bind="visible: encrypt() && 0 < publicKeysOptions().length, options: publicKeysOptions, value: selectedPublicKey,
-					optionsCaption: publicKeysOptionsCaption, optionsText: 'name', optionsValue: 'id'"></select>
+		</div>
+		<div class="key-actions">
+			<div data-bind="visible: sign()">
+				<input type="password" class="inputPassword input-block-level"
+					autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+					data-i18n="[placeholder]GLOBAL/PASSWORD"
+					data-bind="textInput: password, onEnter: doCommand" />
+				<select class="input-block-level" data-bind="visible: 0 < privateKeysOptions().length, options: privateKeysOptions, value: selectedPrivateKey,
+					optionsCaption: privateKeysOptionsCaption, optionsText: 'name', optionsValue: 'id'"></select>
 			</div>
+			<select class="input-block-level" data-bind="visible: encrypt() && 0 < publicKeysOptions().length, options: publicKeysOptions, value: selectedPublicKey,
+				optionsCaption: publicKeysOptionsCaption, optionsText: 'name', optionsValue: 'id'"></select>
 		</div>
-		<div class="modal-footer">
-			<button class="btn buttonDo" data-bind="command: doCommand,
-				enable: (sign() || encrypt()) && (!encrypt() || encrypt() && encryptKeys().length > 0)">
-				<i class="fontastic" data-bind="css: {'icon-spinner': submitRequest()}">🔑</i>
-				<span data-bind="visible: sign() && !encrypt()" data-i18n="POPUPS_COMPOSE_OPEN_PGP/BUTTON_SIGN"></span>
-				<span data-bind="visible: !sign() && encrypt()" data-i18n="POPUPS_COMPOSE_OPEN_PGP/BUTTON_ENCRYPT"></span>
-				<span data-bind="visible: (sign() && encrypt()) || (!sign() && !encrypt())" data-i18n="POPUPS_COMPOSE_OPEN_PGP/BUTTON_SIGN_AND_ENCRYPT"></span>
-			</button>
-		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn buttonDo" data-bind="command: doCommand,
+			enable: (sign() || encrypt()) && (!encrypt() || encrypt() && encryptKeys().length > 0)">
+			<i class="fontastic" data-bind="css: {'icon-spinner': submitRequest()}">🔑</i>
+			<span data-bind="visible: sign() && !encrypt()" data-i18n="POPUPS_COMPOSE_OPEN_PGP/BUTTON_SIGN"></span>
+			<span data-bind="visible: !sign() && encrypt()" data-i18n="POPUPS_COMPOSE_OPEN_PGP/BUTTON_ENCRYPT"></span>
+			<span data-bind="visible: (sign() && encrypt()) || (!sign() && !encrypt())" data-i18n="POPUPS_COMPOSE_OPEN_PGP/BUTTON_SIGN_AND_ENCRYPT"></span>
+		</button>
 	</div>
 </div>

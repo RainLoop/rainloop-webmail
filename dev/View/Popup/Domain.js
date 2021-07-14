@@ -187,7 +187,48 @@ class DomainPopupView extends AbstractViewPopup {
 		this.testing(true);
 
 		Remote.testConnectionForDomain(
-			this.onTestConnectionResponse.bind(this),
+			(iError, oData) => {
+				this.testing(false);
+				if (iError) {
+					this.testingImapError(true);
+					this.testingSieveError(true);
+					this.testingSmtpError(true);
+					this.sieveSettings(false);
+				} else {
+					let bImap = false,
+						bSieve = false;
+
+					this.testingDone(true);
+					this.testingImapError(true !== oData.Result.Imap);
+					this.testingSieveError(true !== oData.Result.Sieve);
+					this.testingSmtpError(true !== oData.Result.Smtp);
+
+					if (this.testingImapError() && oData.Result.Imap) {
+						bImap = true;
+						this.testingImapErrorDesc('');
+						this.testingImapErrorDesc(oData.Result.Imap);
+					}
+
+					if (this.testingSieveError() && oData.Result.Sieve) {
+						bSieve = true;
+						this.testingSieveErrorDesc('');
+						this.testingSieveErrorDesc(oData.Result.Sieve);
+					}
+
+					if (this.testingSmtpError() && oData.Result.Smtp) {
+						this.testingSmtpErrorDesc('');
+						this.testingSmtpErrorDesc(oData.Result.Smtp);
+					}
+
+					if (this.sieveSettings()) {
+						if (!bSieve && bImap) {
+							this.sieveSettings(false);
+						}
+					} else if (bSieve && !bImap) {
+						this.sieveSettings(true);
+					}
+				}
+			},
 			this
 		);
 	}
@@ -203,49 +244,6 @@ class DomainPopupView extends AbstractViewPopup {
 	sieveCommand() {
 		this.sieveSettings(!this.sieveSettings());
 		this.clearTesting();
-	}
-
-	onTestConnectionResponse(iError, oData) {
-		this.testing(false);
-		if (iError) {
-			this.testingImapError(true);
-			this.testingSieveError(true);
-			this.testingSmtpError(true);
-			this.sieveSettings(false);
-		} else {
-			let bImap = false,
-				bSieve = false;
-
-			this.testingDone(true);
-			this.testingImapError(true !== oData.Result.Imap);
-			this.testingSieveError(true !== oData.Result.Sieve);
-			this.testingSmtpError(true !== oData.Result.Smtp);
-
-			if (this.testingImapError() && oData.Result.Imap) {
-				bImap = true;
-				this.testingImapErrorDesc('');
-				this.testingImapErrorDesc(oData.Result.Imap);
-			}
-
-			if (this.testingSieveError() && oData.Result.Sieve) {
-				bSieve = true;
-				this.testingSieveErrorDesc('');
-				this.testingSieveErrorDesc(oData.Result.Sieve);
-			}
-
-			if (this.testingSmtpError() && oData.Result.Smtp) {
-				this.testingSmtpErrorDesc('');
-				this.testingSmtpErrorDesc(oData.Result.Smtp);
-			}
-
-			if (this.sieveSettings()) {
-				if (!bSieve && bImap) {
-					this.sieveSettings(false);
-				}
-			} else if (bSieve && !bImap) {
-				this.sieveSettings(true);
-			}
-		}
 	}
 
 	onDomainCreateOrSaveResponse(iError) {

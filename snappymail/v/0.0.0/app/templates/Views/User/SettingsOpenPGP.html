@@ -1,7 +1,5 @@
 <div class="b-settings-open-pgp g-ui-user-select-none">
-	<div class="form-horizontal">
-		<div class="legend">OpenPGP</div>
-	</div>
+	<div class="legend">OpenPGP</div>
 	<button class="btn" data-bind="click: addOpenPgpKey">
 		<i class="icon-list-add"></i>
 		<span data-i18n="SETTINGS_OPEN_PGP/BUTTON_ADD_OPEN_PGP_KEY"></span>
@@ -33,15 +31,12 @@
 			<col style="width: 1%" />
 			<col style="width: 1%" />
 		</colgroup>
-		<tbody>
-			<!-- ko foreach: openpgpkeysPrivate -->
+		<tbody data-bind="foreach: openpgpkeysPrivate">
 			<tr class="open-pgp-key-item">
 				<td>
 					<span class="open-pgp-key-img fontastic" data-i18n="[title]SETTINGS_OPEN_PGP/TITLE_PRIVATE">🔒</span>
-					<span class="open-pgp-key-user">
-					<!-- ko foreach: users -->
+					<span class="open-pgp-key-user" data-bind="foreach: users">
 						<div class="open-pgp-key-user-address" data-bind="text: $data"></div>
-					<!-- /ko -->
 					</span>
 					<a class="btn btn-small btn-small-small btn-danger pull-right button-confirm-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function(openPgpKey) { $root.deleteOpenPgpKey(openPgpKey); }"
 						data-i18n="GLOBAL/ARE_YOU_SURE"></a>
@@ -49,21 +44,16 @@
 				<td>
 					<span class="delete-open-pgp-key fontastic" data-bind="visible: !deleteAccess(), click: function (openPgpKey) { $root.openPgpKeyForDeletion(openPgpKey); }">🗑</span>
 				</td>
-				<td>
-					<span class="view-open-pgp-key fontastic" data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">👁</span>
-				</td>
+				<td class="view-open-pgp-key fontastic" data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">👁</td>
 			</tr>
-			<!-- /ko -->
-			<!-- ko foreach: openpgpkeysPublic -->
+		</tbody><tbody data-bind="foreach: openpgpkeysPublic">
 			<tr class="open-pgp-key-item">
 				<td>
 					<span class="open-pgp-key-img fontastic" data-i18n="[title]SETTINGS_OPEN_PGP/TITLE_PUBLIC">🔑</span>
-					<span class="open-pgp-key-user">
-					<!-- ko foreach: users -->
+					<span class="open-pgp-key-user" data-bind="foreach: users">
 						<div class="open-pgp-key-user-address">
 							<span data-bind="text: $data"></span> (<span class="open-pgp-key-id" data-bind="text: $parent.id"></span>)
 						</div>
-					<!-- /ko -->
 					</span>
 					<a class="btn btn-small btn-small-small btn-danger pull-right button-confirm-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function(oOpenPGP) { $root.deleteOpenPgpKey(oOpenPGP); }"
 						data-i18n="GLOBAL/ARE_YOU_SURE"></a>
@@ -71,11 +61,8 @@
 				<td>
 					<span class="delete-open-pgp-key fontastic" data-bind="visible: !deleteAccess(), click: function (openPgpKey) { $root.openPgpKeyForDeletion(openPgpKey); }">🗑</span>
 				</td>
-				<td>
-					<span class="view-open-pgp-key fontastic" data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">👁</span>
-				</td>
+				<td class="view-open-pgp-key fontastic" data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">👁</td>
 			</tr>
-			<!-- /ko -->
 		</tbody>
 	</table>
 </div>

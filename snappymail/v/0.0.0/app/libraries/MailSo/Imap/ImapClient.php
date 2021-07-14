@@ -184,7 +184,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			if (0 === \strpos($type, 'SCRAM-SHA-'))
 			{
 				$sAuthzid = $this->getResponseValue($this->SendRequestGetResponse('AUTHENTICATE', array($type)), Enumerations\ResponseType::CONTINUATION);
-				$this->sendRaw($SASL->authenticate($sLogin, $sPassword/*, $sAuthzid*/));
+				$this->sendRaw($SASL->authenticate($sLogin, $sPassword/*, $sAuthzid*/), true);
 				$sChallenge = $SASL->challenge($this->getResponseValue($this->getResponse(), Enumerations\ResponseType::CONTINUATION));
 				if ($this->oLogger) {
 					$this->oLogger->AddSecret($sChallenge);
@@ -211,12 +211,24 @@ class ImapClient extends \MailSo\Net\NetClient
 					$this->oLogger->AddSecret($sAuth);
 				}
 				if ($this->IsSupported('SASL-IR')) {
-					$this->SendRequestGetResponse('AUTHENTICATE', array('PLAIN', $sAuth));
+					$this->SendRequestGetResponse('AUTHENTICATE', array($type, $sAuth));
 				} else {
-					$this->SendRequestGetResponse('AUTHENTICATE', array('PLAIN'));
+					$this->SendRequestGetResponse('AUTHENTICATE', array($type));
 					$this->sendRaw($sAuth, true, '*******');
 					$this->getResponse();
 				}
+			}
+			else if ($this->IsSupported('LOGINDISABLED'))
+			{
+				$sB64 = $this->getResponseValue($this->SendRequestGetResponse('AUTHENTICATE', array($type)), Enumerations\ResponseType::CONTINUATION);
+				$this->sendRaw($SASL->authenticate($sLogin, $sPassword, $sB64), true);
+				$this->getResponse();
+				$sPass = $SASL->challenge(''/*UGFzc3dvcmQ6*/);
+				if ($this->oLogger) {
+					$this->oLogger->AddSecret($sPass);
+				}
+				$this->sendRaw($sPass, true, '*******');
+				$this->getResponse();
 			}
 			else
 			{
@@ -224,7 +236,6 @@ class ImapClient extends \MailSo\Net\NetClient
 				{
 					$this->oLogger->AddSecret($this->EscapeString($sPassword));
 				}
-
 				$this->SendRequestGetResponse('LOGIN',
 					array(
 						$this->EscapeString($sLogin),
@@ -1082,6 +1093,17 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $oResult;
 	}
 
+	private function skipBracketParse(?Response $oImapResponse) : bool
+	{
+		return $oImapResponse &&
+			$oImapResponse->ResponseType === \MailSo\Imap\Enumerations\ResponseType::UNTAGGED &&
+			(
+				($oImapResponse->StatusOrIndex === 'STATUS' && 2 === \count($oImapResponse->ResponseList)) ||
+				($oImapResponse->StatusOrIndex === 'LIST' && 4 === \count($oImapResponse->ResponseList)) ||
+				($oImapResponse->StatusOrIndex === 'LSUB' && 4 === \count($oImapResponse->ResponseList))
+			);
+	}
+
 	/**
 	 * @return array|string
 	 * @throws \MailSo\Net\Exceptions\Exception
@@ -1265,8 +1287,16 @@ class ImapClient extends \MailSo\Net\NetClient
 			{
 				case ']' === $sChar:
 				case ')' === $sChar:
-					++$iPos;
-					$sPreviousAtomUpperCase = null;
+					if ($this->skipBracketParse($oImapResponse))
+					{
+						$bIsGotoDefault = true;
+						$bIsGotoNotAtomBracket = false;
+					}
+					else
+					{
+						++$iPos;
+						$sPreviousAtomUpperCase = null;
+					}
 					break 2;
 				case ' ' === $sChar:
 					if ($bTreatAsAtom)
@@ -1283,12 +1313,20 @@ class ImapClient extends \MailSo\Net\NetClient
 					{
 						$sAtomBuilder .= $sChar;
 						$bIsGotoAtomBracket = true;
+						$this->iResponseBufParsedPos = ++$iPos;
+					}
+					else if ($this->skipBracketParse($oImapResponse))
+					{
+						$sOpenBracket = '';
+						$sClosingBracket = '';
+						$bIsGotoDefault = true;
+						$bIsGotoNotAtomBracket = false;
 					}
 					else
 					{
 						$bIsGotoNotAtomBracket = true;
+						$this->iResponseBufParsedPos = ++$iPos;
 					}
-					$this->iResponseBufParsedPos = ++$iPos;
 					break;
 				case '{' === $sChar:
 					$bIsLiteralParsed = false;
@@ -1416,6 +1454,10 @@ class ImapClient extends \MailSo\Net\NetClient
 						$sCharDef = $this->sResponseBuffer[$iPos];
 						switch (true)
 						{
+							case ('[' === $sCharDef || ']' === $sCharDef || '(' === $sCharDef || ')' === $sCharDef) &&
+								$this->skipBracketParse($oImapResponse):
+								++$iPos;
+								break;
 							case '[' === $sCharDef:
 								if (null === $sAtomBuilder)
 								{

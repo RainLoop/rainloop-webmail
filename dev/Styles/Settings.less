@@ -1,21 +1,11 @@
 
 .b-settins-left {
 
-	.b-toolbar {
-		position: absolute;
-		top: 0;
-		right: 0;
-		left: 0;
-		height: 34px;
-		padding: 8px 0 0 @rlLowMargin;
-	}
-
 	.b-footer {
 		position: absolute;
-		bottom: 20px;
+		bottom: 10px;
 		right: 0;
 		left: 0;
-		height: 20px;
 		padding: 0 10px 0 5px;
 		z-index: 101;
 	}
@@ -27,50 +17,29 @@
 		left: 0;
 		right: 0;
 		overflow: hidden;
+	}
 
-		.content {
-			-webkit-overflow-scrolling: touch;
+	nav {
+
+		a {
+			background-color: transparent;
+			color: var(--settings-menu-color, #333);
+			cursor: pointer;
+			display: block;
+			font-size: 18px;
+			height: 30px;
+			line-height: 29px;
+			overflow: hidden;
+			padding: 4px 10px;
+			text-decoration: none;
 		}
-	}
-}
 
-.b-settings-menu {
-
-	.e-item {
-		overflow: hidden;
-		text-decoration: none;
-		outline: 0;
-	}
-
-	.e-link {
-		position: relative;
-		display: block;
-		height: 30px;
-		line-height: 29px;
-		font-size: 18px;
-		z-index: 1;
-		cursor: default;
-
-		background-color: transparent;
-		color: var(--settings-menu-disabled-color, #666);
-
-		padding: 4px 10px;
-
-		outline: 0;
-		text-decoration: none;
-	}
-
-	.e-item.selectable .e-link {
-		cursor: pointer;
-		color: var(--settings-menu-color, #333);
-	}
-
-	.e-item.selectable {
-		&:hover .e-link{
+		a:focus, a:hover {
 			background-color: var(--settings-menu-hover-bg-color, #333);
 			color: var(--settings-menu-hover-color, #eee);
 		}
-		&.selected .e-link {
+
+		a.selected {
 			background-color: var(--settings-menu-selected-bg-color, #333);
 			color: var(--settings-menu-selected-color, #eee);
 		}
@@ -85,7 +54,7 @@
 		right: 0;
 		left: 0;
 		height: 34px;
-		padding: 8px 5px;
+		padding: 8px 0;
 		color: #fff;
 	}
 
@@ -100,13 +69,9 @@
 		scroll-behavior: smooth;
 
 		background-color: #fff;
-		border: @rlMainBorderSize solid @rlMainDarkColor;
+		border: 1px solid @rlMainDarkColor;
 		box-shadow: @rlMainShadow;
 		border-radius: @rlMainBorderRadius;
-
-		.content {
-			-webkit-overflow-scrolling: touch;
-		}
 	}
 
 	td {

@@ -1,5 +1,4 @@
 import { Notification } from 'Common/Enums';
-import { Settings } from 'Common/Globals';
 import { isArray, pInt, pString } from 'Common/Utils';
 import { serverRequest } from 'Common/Links';
 
@@ -7,13 +6,6 @@ let iJsonErrorCount = 0,
 	iTokenErrorCount = 0;
 
 const getURL = (add = '') => serverRequest('Json') + add,
-
-updateToken = data => {
-	if (data.UpdateToken) {
-		rl.hash.set();
-		Settings.set('AuthAccountHash', data.UpdateToken);
-	}
-},
 
 checkResponseError = data => {
 	const err = data ? data.ErrorCode : null;
@@ -32,9 +24,8 @@ checkResponseError = data => {
 		) {
 			++iJsonErrorCount;
 		}
-		if (data.ClearAuth || data.Logout || 7 < iJsonErrorCount) {
-			rl.hash.clear();
-			data.ClearAuth || rl.logoutReload();
+		if (data.Logout || 7 < iJsonErrorCount) {
+			rl.logoutReload();
 		}
 	}
 },
@@ -97,12 +88,8 @@ export class AbstractFetchRemote
 			undefined === iTimeout ? 30000 : pInt(iTimeout),
 			data => {
 				let cached = false;
-				if (data) {
-					if (data.Time) {
-						cached = pInt(data.Time) > Date.now() - start;
-					}
-
-					updateToken(data);
+				if (data && data.Time) {
+					cached = pInt(data.Time) > Date.now() - start;
 				}
 
 				let iError = 0;
@@ -188,8 +175,6 @@ export class AbstractFetchRemote
 				if (!data) {
 					return Promise.reject(Notification.JsonParse);
 				}
-
-				updateToken(data);
 /*
 				let isCached = false, type = '';
 				if (data && data.Time) {

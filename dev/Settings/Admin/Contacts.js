@@ -105,8 +105,6 @@ export class ContactsAdminSettings {
 				})
 		})
 
-		this.onTestContactsResponse = this.onTestContactsResponse.bind(this);
-
 		decorateKoCommands(this, {
 			testContactsCommand: self => self.pdoDsn() && self.pdoUser()
 		});
@@ -118,31 +116,29 @@ export class ContactsAdminSettings {
 		this.testContactsErrorMessage('');
 		this.testing(true);
 
-		Remote.testContacts(this.onTestContactsResponse, {
+		Remote.testContacts((iError, data) => {
+			this.testContactsSuccess(false);
+			this.testContactsError(false);
+			this.testContactsErrorMessage('');
+
+			if (!iError && data.Result.Result) {
+				this.testContactsSuccess(true);
+			} else {
+				this.testContactsError(true);
+				if (data && data.Result) {
+					this.testContactsErrorMessage(data.Result.Message || '');
+				} else {
+					this.testContactsErrorMessage('');
+				}
+			}
+
+			this.testing(false);
+		}, {
 			ContactsPdoType: this.contactsType(),
 			ContactsPdoDsn: this.pdoDsn(),
 			ContactsPdoUser: this.pdoUser(),
 			ContactsPdoPassword: this.pdoPassword()
 		});
-	}
-
-	onTestContactsResponse(iError, data) {
-		this.testContactsSuccess(false);
-		this.testContactsError(false);
-		this.testContactsErrorMessage('');
-
-		if (!iError && data.Result.Result) {
-			this.testContactsSuccess(true);
-		} else {
-			this.testContactsError(true);
-			if (data && data.Result) {
-				this.testContactsErrorMessage(data.Result.Message || '');
-			} else {
-				this.testContactsErrorMessage('');
-			}
-		}
-
-		this.testing(false);
 	}
 
 	onShow() {

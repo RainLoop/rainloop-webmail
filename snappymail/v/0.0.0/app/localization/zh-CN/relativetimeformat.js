@@ -71,6 +71,5 @@
 			}
 		}
 	},
-	// 'zero', 'one', 'two', 'few', 'many', 'other'
 	plural: n => 1 == n ? 'one' : 'other'
 }

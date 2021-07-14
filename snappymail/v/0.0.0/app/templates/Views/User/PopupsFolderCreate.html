@@ -1,34 +1,31 @@
 <div class="modal fade b-folder-create-content g-ui-user-select-none" data-bind="modal: modalVisibility">
-	<div>
-		<div class="modal-header">
-			<button type="button" class="close" data-bind="command: cancelCommand">×</button>
-			<h3 data-i18n="POPUPS_CREATE_FOLDER/TITLE_CREATE_FOLDER"></h3>
-		</div>
-		<div class="modal-body">
-			<div class="form-horizontal">
-				<br />
-				<div class="control-group">
-					<label class="control-label" data-i18n="GLOBAL/NAME"></label>
-					<div class="controls">
-						<input type="text" class="uiInput inputName"
-							autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="textInput: folderName, onEnter: createFolderCommand" />
-					</div>
+	<div class="modal-header">
+		<button type="button" class="close" data-bind="command: cancelCommand">×</button>
+		<h3 data-i18n="POPUPS_CREATE_FOLDER/TITLE_CREATE_FOLDER"></h3>
+	</div>
+	<div class="modal-body">
+		<div class="form-horizontal">
+			<div class="control-group">
+				<label class="control-label" data-i18n="POPUPS_CREATE_FOLDER/LABEL_PARENT"></label>
+				<div class="controls">
+					<select data-bind="options: parentFolderSelectList, value: selectedParentValue,
+						optionsText: 'name', optionsValue: 'id', optionsAfterRender: defaultOptionsAfterRender"></select>
 				</div>
-				<div class="control-group">
-					<label class="control-label" data-i18n="POPUPS_CREATE_FOLDER/LABEL_PARENT"></label>
-					<div class="controls">
-						<select data-bind="options: parentFolderSelectList, value: selectedParentValue,
-							optionsText: 'name', optionsValue: 'id', optionsAfterRender: defaultOptionsAfterRender"></select>
-					</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" data-i18n="GLOBAL/NAME"></label>
+				<div class="controls">
+					<input type="text" class="uiInput inputName"
+						autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						data-bind="textInput: folderName, onEnter: createFolderCommand" />
 				</div>
 			</div>
 		</div>
-		<div class="modal-footer">
-			<a class="btn buttonCreate" data-bind="command: createFolderCommand">
-				<i class="icon-folder-add"></i>
-				<span data-i18n="POPUPS_CREATE_FOLDER/BUTTON_CREATE"></span>
-			</a>
-		</div>
+	</div>
+	<div class="modal-footer">
+		<a class="btn buttonCreate" data-bind="command: createFolderCommand">
+			<i class="icon-folder-add"></i>
+			<span data-i18n="POPUPS_CREATE_FOLDER/BUTTON_CREATE"></span>
+		</a>
 	</div>
 </div>

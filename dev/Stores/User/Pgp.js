@@ -340,11 +340,11 @@ export const PgpUserStore = new class {
 	 */
 	initMessageBodyControls(dom, rainLoopMessage) {
 		const cl = dom && dom.classList;
-		if (!cl.has('inited')) {
+		if (!cl.contains('inited')) {
 			cl.add('inited');
 
-			const encrypted = cl.has('encrypted'),
-				signed = cl.has('signed'),
+			const encrypted = cl.contains('encrypted'),
+				signed = cl.contains('signed'),
 				recipients = rainLoopMessage ? rainLoopMessage.getEmails(['from', 'to', 'cc']) : [];
 
 			let verControl = null;
@@ -355,10 +355,10 @@ export const PgpUserStore = new class {
 				verControl = Element.fromHTML('<div class="b-openpgp-control"><i class="fontastic">🔒</i></div>');
 				if (encrypted) {
 					verControl.title = i18n('MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC');
-					verControl.addEventHandler('click', domControlEncryptedClickHelper(this, dom, domText, recipients));
+					verControl.addEventListener('click', domControlEncryptedClickHelper(this, dom, domText, recipients));
 				} else {
 					verControl.title = i18n('MESSAGE/PGP_SIGNED_MESSAGE_DESC');
-					verControl.addEventHandler('click', domControlSignedClickHelper(this, dom, domText));
+					verControl.addEventListener('click', domControlSignedClickHelper(this, dom, domText));
 				}
 
 				dom.before(verControl, createElement('div'));

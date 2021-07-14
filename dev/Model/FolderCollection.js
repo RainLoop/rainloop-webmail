@@ -100,10 +100,8 @@ export class FolderCollectionModel extends AbstractCollectionModel
 	storeIt() {
 		const cnt = pInt(this.CountRec);
 
-		let limit = pInt(Settings.app('folderSpecLimit'));
-		limit = 100 < limit ? 100 : 10 > limit ? 10 : limit;
-
-		FolderUserStore.displaySpecSetting(0 >= cnt || limit < cnt);
+		FolderUserStore.displaySpecSetting(0 >= cnt
+			|| Math.max(10, Math.min(100, pInt(Settings.app('folderSpecLimit')))) < cnt);
 
 		FolderUserStore.folderList(this);
 

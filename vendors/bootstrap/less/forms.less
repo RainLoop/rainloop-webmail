@@ -65,7 +65,7 @@ textarea {
 // Shared size and type resets
 select,
 textarea,
-input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]) {
+input {
   box-sizing: border-box;
   display: inline-block;
   height: @baseLineHeight + 10;
@@ -87,7 +87,7 @@ textarea {
 }
 // Everything else
 textarea,
-input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]) {
+input {
   background-color: @inputBackground;
   border: 1px solid @inputBorder;
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
@@ -98,7 +98,6 @@ input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]) {
     background-color: #fff;
     border-color: darken(@inputBorder, 20%);
     box-shadow: none;
-    outline: 0;
   }
 }
 
@@ -199,21 +198,6 @@ input[type="checkbox"][readonly] {
   .formFieldState(@errorText, @errorText, @errorBackground);
 }
 
-// HTML5 invalid states
-// Shares styles with the .control-group.error above
-input:focus:required:invalid,
-textarea:focus:required:invalid,
-select:focus:required:invalid {
-  color: #b94a48;
-  border-color: #ee5f5b;
-  &:focus {
-    border-color: darken(#ee5f5b, 10%);
-    box-shadow: 0 0 6px lighten(#ee5f5b, 20%);
-  }
-}
-
-
-
 // INPUT GROUPS
 // ------------
 
@@ -222,44 +206,20 @@ select:focus:required:invalid {
   margin-bottom: 5px;
   font-size: 0;
   white-space: nowrap; // Prevent span and input from separating
+  position: relative;
 
   input,
   select {
-    position: relative; // placed here by default so that on :focus we can place the input above the .add-on for full border and box-shadow goodness
     margin-bottom: 0; // prevent bottom margin from screwing up alignment in stacked forms
     font-size: @baseFontSize;
     vertical-align: top;
     border-radius: @inputBorderRadius;
-    // Make input on top when focused so blue border and shadow always show
-    &:focus {
-      z-index: 2;
-    }
   }
-  .add-on {
-    display: inline-block;
-    width: auto;
-    height: @baseLineHeight;
-    min-width: 16px;
-    padding: 4px 5px;
-    font-size: @baseFontSize;
-    font-weight: normal;
-    line-height: @baseLineHeight;
-    text-align: center;
-    text-shadow: 0 1px 0 @white;
-    background-color: @grayLighter;
-    border: 1px solid #ccc;
-  }
-  .add-on,
   .btn {
     margin-left: -1px;
     vertical-align: top;
     border-radius: 0;
   }
-  .active {
-    background-color: lighten(@green, 30);
-    border-color: @green;
-  }
-  .add-on:last-child,
   .btn:last-child {
     border-radius: 0 @inputBorderRadius @inputBorderRadius 0;
   }

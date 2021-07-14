@@ -104,31 +104,24 @@ class FetchResponse
 	 */
 	public function GetFetchValue(string $sFetchItemName)
 	{
-		$mReturn = null;
-		$bNextIsValue = false;
-
-		if (Enumerations\FetchType::INDEX === $sFetchItemName)
-		{
-			$mReturn = $this->oImapResponse->ResponseList[1];
+		if (Enumerations\FetchType::INDEX === $sFetchItemName) {
+			return $this->oImapResponse->ResponseList[1];
 		}
-		else if (isset($this->oImapResponse->ResponseList[3]) && \is_array($this->oImapResponse->ResponseList[3]))
-		{
-			foreach ($this->oImapResponse->ResponseList[3] as $mItem)
-			{
-				if ($bNextIsValue)
-				{
-					$mReturn = $mItem;
-					break;
+
+		if (isset($this->oImapResponse->ResponseList[3]) && \is_array($this->oImapResponse->ResponseList[3])) {
+			$bNextIsValue = false;
+			foreach ($this->oImapResponse->ResponseList[3] as $mItem) {
+				if ($bNextIsValue) {
+					return $mItem;
 				}
 
-				if ($sFetchItemName === $mItem)
-				{
+				if ($sFetchItemName === $mItem) {
 					$bNextIsValue = true;
 				}
 			}
 		}
 
-		return $mReturn;
+		return null;
 	}
 
 	public function GetHeaderFieldsValue(string $sRfc822SubMimeIndex = '') : string

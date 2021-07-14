@@ -5,6 +5,7 @@ import { isPosNumeric, delegateRunOnDestroy, mailToHelper } from 'Common/UtilsUs
 
 import {
 	Capa,
+	Notification,
 	Scope
 } from 'Common/Enums';
 
@@ -100,9 +101,6 @@ class AppUser extends AbstractApp {
 		setInterval(() => {
 			const currentTime = Date.now();
 			if (currentTime > (lastTime + interval + 1000)) {
-				if (rl.hash.check()) {
-					this.reload();
-				}
 				Remote.jsVersion(iError => {
 					if (100 < iError) {
 						this.reload();
@@ -111,10 +109,6 @@ class AppUser extends AbstractApp {
 			}
 			lastTime = currentTime;
 		}, interval);
-
-		if (rl.hash.check()) {
-			this.reload();
-		}
 
 		if (SettingsGet('UserBackgroundHash')) {
 			setTimeout(() => {
@@ -886,12 +880,7 @@ class AppUser extends AbstractApp {
 	}
 
 	logout() {
-		Remote.logout(() => this.logoutReload((SettingsGet('ParentEmail')||{length:0}).length));
-	}
-
-	bootend() {
-		progressJs.end();
-		this.hideLoading();
+		Remote.logout(() => rl.logoutReload((SettingsGet('ParentEmail')||{length:0}).length));
 	}
 
 	bootstart() {
@@ -907,16 +896,12 @@ class AppUser extends AbstractApp {
 
 		const startupUrl = pString(SettingsGet('StartupUrl'));
 
-		progressJs.set(90);
-
 		rl.setWindowTitle();
 		if (SettingsGet('Auth')) {
 			rl.setWindowTitle(i18n('GLOBAL/LOADING'));
 
 			this.foldersReload(value => {
 				try {
-					this.bootend();
-
 					if (value) {
 						if (startupUrl) {
 							rl.route.setHash(root(startupUrl), true);
@@ -960,6 +945,7 @@ class AppUser extends AbstractApp {
 							Settings.capa(Capa.Settings) ? SettingsUserScreen : null
 							// false ? AboutUserScreen : null
 						]);
+						this.hideLoading();
 
 						setInterval(() => {
 							const cF = FolderUserStore.currentFolderFullNameRaw(),
@@ -1030,8 +1016,8 @@ class AppUser extends AbstractApp {
 			});
 
 		} else {
-			this.bootend();
 			startScreens([LoginUserScreen]);
+			this.hideLoading();
 		}
 
 		setInterval(() => dispatchEvent(new CustomEvent('reload-time')), 60000);

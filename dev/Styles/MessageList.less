@@ -19,7 +19,7 @@ html.rl-no-preview-pane {
 		right: 0;
 		left: 0;
 		height: 30px;
-		padding: 10px @rlMainBorderSize;
+		padding: 10px 1px;
 		z-index: 102;
 		white-space: nowrap;
 	}
@@ -64,7 +64,7 @@ html.rl-no-preview-pane {
 		left: 0;
 		bottom: @rlBottomMargin;
 
-		border: @rlMainBorderSize solid @rlMainDarkColor;
+		border: 1px solid @rlMainDarkColor;
 
 		box-shadow: @rlMainShadow;
 		border-radius: @rlMainBorderRadius;
@@ -90,7 +90,7 @@ html.rl-no-preview-pane {
 
 		.checkboxCheckAll {
 			cursor: pointer;
-			line-height: 30px;
+			vertical-align: middle
 		}
 
 		.input-append {
@@ -133,10 +133,6 @@ html.rl-no-preview-pane {
 		box-sizing: border-box;
 
 		background-color: #fff;
-
-		.content {
-			-webkit-overflow-scrolling: touch;
-		}
 
 		.listClear {
 			text-align: center;

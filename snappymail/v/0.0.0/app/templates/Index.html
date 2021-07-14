@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="rl-started-trigger" dir="{{BaseDir}}">
+<html class="rl-started-trigger">
 
 <head>
 	<noscript>
@@ -13,8 +13,8 @@
 	<title></title>
 	<style id="app-boot-css">{{BaseAppBootCss}}</style>
 	<link type="text/css" rel="stylesheet" data-href="{{BaseAppMainCssLink}}" id="app-css" rel="preload">
-	<link type="text/css" rel="stylesheet" data-href="{{BaseAppThemeCssLink}}" id="app-theme-link" rel="preload">
 	<link rel="manifest" href="{{BaseAppManifestLink}}">
+	<style id="app-theme-style" data-href="{{BaseAppThemeCssLink}}">{{BaseAppThemeCss}}</style>
 	<script>document.append||document.location.replace('./?/BadBrowser');</script>
 	{{BaseAppFaviconPngLinkTag}}
 	{{BaseAppFaviconTouchLinkTag}}
@@ -25,24 +25,20 @@
 		<div id="rl-loading">
 			<div id="rl-loading-desc">{{LoadingDescriptionEsc}}</div>
 			<div class="e-spinner">
-				<div class="e-bounce bounce1"></div>
-				<div class="e-bounce bounce2"></div>
-				<div class="e-bounce bounce3"></div>
+				<div></div>
+				<div></div>
+				<div></div>
 			</div>
 		</div>
 		<div id="rl-loading-error" hidden="">An error occurred.<br>Please refresh the page and try again.</div>
 		<div id="rl-content" hidden="">
 			<div id="rl-popups"></div>
-			<div id="rl-center">
-				<div id="rl-top"></div>
-				<div id="rl-left"></div>
-				<div id="rl-right"></div>
-			</div>
+			<div id="rl-left"></div>
+			<div id="rl-right"></div>
 		</div>
-		<div id="rl-templates"></div>
 	</div>
-	<div id="progressjs"><div class="progressjs-inner"><div class="progressjs-percent"></div></div></div>
-	<script type="text/javascript">{{BaseAppBootScript}}</script>
+	{{BaseTemplates}}
+	<script type="text/javascript">{{BaseAppBootScript}}{{BaseLanguage}}</script>
 </body>
 
 </html>

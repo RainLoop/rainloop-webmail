@@ -1,53 +1,51 @@
 <div class="modal fade b-open-pgp-key-generate-content g-ui-user-select-none" data-bind="modal: modalVisibility">
-	<div>
-		<div class="modal-header">
-			<button type="button" class="close" data-bind="command: cancelCommand">×</button>
-			<h3 data-i18n="POPUPS_GENERATE_OPEN_PGP_KEYS/TITLE_GENERATE_OPEN_PGP_KEYS"></h3>
-		</div>
-		<div class="modal-body">
-			<div class="form-horizontal">
-				<div class="alert" data-bind="visible: '' !== submitError()">
-					<button type="button" class="close" data-bind="click: function () { submitError('') }">×</button>
-					<span data-bind="text: submitError"></span>
+	<div class="modal-header">
+		<button type="button" class="close" data-bind="command: cancelCommand">×</button>
+		<h3 data-i18n="POPUPS_GENERATE_OPEN_PGP_KEYS/TITLE_GENERATE_OPEN_PGP_KEYS"></h3>
+	</div>
+	<div class="modal-body">
+		<div class="form-horizontal">
+			<div class="alert" data-bind="visible: '' !== submitError()">
+				<button type="button" class="close" data-bind="click: function () { submitError('') }">×</button>
+				<span data-bind="text: submitError"></span>
+			</div>
+			<br />
+			<div class="control-group" data-bind="css: {'error': emailError}">
+				<label class="control-label" data-i18n="GLOBAL/EMAIL"></label>
+				<div class="controls">
+					<input type="email" class="input-large"
+						autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						data-bind="value: email" />
 				</div>
-				<br />
-				<div class="control-group" data-bind="css: {'error': emailError}">
-					<label class="control-label" data-i18n="GLOBAL/EMAIL"></label>
-					<div class="controls">
-						<input type="email" class="inputEmail input-large"
-							autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="value: email" />
-					</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" data-i18n="GLOBAL/NAME"></label>
+				<div class="controls">
+					<input type="text" class="inputName input-large"
+						autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						data-bind="value: name" />
 				</div>
-				<div class="control-group">
-					<label class="control-label" data-i18n="GLOBAL/NAME"></label>
-					<div class="controls">
-						<input type="text" class="inputName input-large"
-							autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="value: name" />
-					</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" data-i18n="GLOBAL/PASSWORD"></label>
+				<div class="controls">
+					<input type="password" class="inputPassword input-large"
+						autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+						data-bind="value: password" />
 				</div>
-				<div class="control-group">
-					<label class="control-label" data-i18n="GLOBAL/PASSWORD"></label>
-					<div class="controls">
-						<input type="password" class="inputPassword input-large"
-							autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="value: password" />
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" data-i18n="POPUPS_GENERATE_OPEN_PGP_KEYS/LABEL_KEY_BIT_LENGTH"></label>
-					<div class="controls">
-						<select data-bind="value: keyBitLength, options: [2048, 4096]"></select>
-					</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" data-i18n="POPUPS_GENERATE_OPEN_PGP_KEYS/LABEL_KEY_BIT_LENGTH"></label>
+				<div class="controls">
+					<select data-bind="value: keyBitLength, options: [2048, 4096]"></select>
 				</div>
 			</div>
 		</div>
-		<div class="modal-footer">
-			<a class="btn buttonHenerateOpenPgpKey" data-bind="command: generateOpenPgpKeyCommand">
-				<i class="fontastic" data-bind="css: {'icon-spinner': submitRequest()}">🔑</i>
-				<span data-i18n="POPUPS_GENERATE_OPEN_PGP_KEYS/BUTTON_GENERATE_OPEN_PGP_KEYS"></span>
-			</a>
-		</div>
+	</div>
+	<div class="modal-footer">
+		<a class="btn buttonHenerateOpenPgpKey" data-bind="command: generateOpenPgpKeyCommand">
+			<i class="fontastic" data-bind="css: {'icon-spinner': submitRequest()}">🔑</i>
+			<span data-i18n="POPUPS_GENERATE_OPEN_PGP_KEYS/BUTTON_GENERATE_OPEN_PGP_KEYS"></span>
+		</a>
 	</div>
 </div>

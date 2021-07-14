@@ -41,7 +41,7 @@
 	}
 
 	&.error {
-		.attachmentIcon, .attachmentSize, .attachmentName {
+		.iconMain, .iconPreview, .attachmentSize, .attachmentName {
 			color: red;
 		}
 	}
@@ -91,11 +91,10 @@
 		border-left: 1px solid #ddd;
 	}
 
-	.attachmentIcon {
-		margin: 6px 0 0;
+	.iconMain, .iconPreview {
+		box-sizing: border-box;
+		padding: 6px 0 0;
 		font-size: 36px;
-		width: 36px;
-		height: 36px;
 		color: #aaa;
 
 		&.icon-none {
@@ -125,7 +124,7 @@
 	}
 
 	.attachmentIconParent.hasPreview .showPreview,
-	.attachmentIconParent.hasPreplay .showPreview {
+	.attachmentIconParent.hasPreplay .showPreplay {
 		display: inline;
 		cursor: pointer;
 	}

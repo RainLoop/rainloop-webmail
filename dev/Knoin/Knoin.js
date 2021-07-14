@@ -18,7 +18,7 @@ export const ViewType = {
 	Popup: 'Popups',
 	Left: 'Left',
 	Right: 'Right',
-	Center: 'Center'
+	Content: 'Content'
 };
 
 /**
@@ -76,7 +76,7 @@ function buildViewModel(ViewModelClass, vmScreen) {
 		let vmDom = null;
 		const vm = new ViewModelClass(vmScreen),
 			position = vm.viewModelPosition || '',
-			vmPlace = position ? doc.querySelector('#rl-content #rl-' + position.toLowerCase()) : null;
+			vmPlace = position ? doc.getElementById('rl-' + position.toLowerCase()) : null;
 
 		ViewModelClass.__builded = true;
 		ViewModelClass.__vm = vm;
@@ -145,6 +145,8 @@ function buildViewModel(ViewModelClass, vmScreen) {
 			if (vm && ViewType.Popup === position) {
 				vm.registerPopupKeyDown();
 			}
+
+			dispatchEvent(new CustomEvent('rl-view-model', {detail:vm}));
 		} else {
 			console.log('Cannot find view model position: ' + position);
 		}
@@ -153,7 +155,7 @@ function buildViewModel(ViewModelClass, vmScreen) {
 	return ViewModelClass && ViewModelClass.__vm;
 }
 
-function getScreenPopupViewModel(ViewModelClassToShow) {
+export function getScreenPopupViewModel(ViewModelClassToShow) {
 	return (buildViewModel(ViewModelClassToShow) && ViewModelClassToShow.__dom) && ViewModelClassToShow.__vm;
 }
 
@@ -173,15 +175,6 @@ export function showScreenPopup(ViewModelClassToShow, params = []) {
 
 		vm.onShow && vm.onShow(...params);
 	}
-}
-
-/**
- * @param {Function} ViewModelClassToShow
- * @returns {void}
- */
-export function warmUpScreenPopup(ViewModelClassToShow) {
-	const vm = getScreenPopupViewModel(ViewModelClassToShow);
-	vm && vm.onWarmUp && vm.onWarmUp();
 }
 
 /**

@@ -25,7 +25,24 @@ class Service
 		$this->oActions = Api::Actions();
 
 		$this->oServiceActions = new ServiceActions($this->oHttp, $this->oActions);
+	}
 
+	/**
+	 * @staticvar bool $bOne
+	 */
+	public static function Handle() : bool
+	{
+		static $bOne = null;
+		if (null === $bOne)
+		{
+			$bOne = (new self)->RunResult();
+		}
+
+		return $bOne;
+	}
+
+	public function RunResult() : bool
+	{
 		if ($this->oActions->Config()->Get('debug', 'enable', false))
 		{
 			\error_reporting(E_ALL);
@@ -41,6 +58,9 @@ class Service
 
 		\header('Referrer-Policy: no-referrer');
 		\header('X-Content-Type-Options: nosniff');
+
+		// Google FLoC
+		\header('Permissions-Policy: interest-cohort=()');
 
 		$sContentSecurityPolicy = \trim($this->oActions->Config()->Get('security', 'content_security_policy', '')) ?: APP_DEFAULT_CSP;
 		if ($this->oActions->Config()->Get('security', 'use_local_proxy_for_external_images', '')) {
@@ -61,37 +81,11 @@ class Service
 			exit(0);
 		}
 
-		$this->localHandle();
-	}
-
-	public function RunResult() : bool
-	{
-		return true;
-	}
-
-	/**
-	 * @staticvar bool $bOne
-	 */
-	public static function Handle() : bool
-	{
-		static $bOne = null;
-		if (null === $bOne)
-		{
-			$bOne = (new self)->RunResult();
-		}
-
-		return $bOne;
-	}
-
-	private function localHandle() : self
-	{
-		$sResult = '';
-		$bCached = false;
-
-		$sQuery = $this->oActions->ParseQueryAuthString();
+		$sQuery = $this->oActions->ParseQueryString();
 
 		$this->oActions->Plugins()->RunHook('filter.http-query', array(&$sQuery));
 		$aPaths = \explode('/', $sQuery);
+//		unset($aPaths[1]); // was the rlspecauth/AuthAccountHash token
 		$this->oActions->Plugins()->RunHook('filter.http-paths', array(&$aPaths));
 
 		$bAdmin = false;
@@ -107,6 +101,8 @@ class Service
 			$bAdmin = true;
 		}
 
+		$bAdmin || $this->oActions->getAuthAccountHash();
+
 		if ($this->oHttp->IsPost())
 		{
 			$this->oHttp->ServerNoCache();
@@ -114,7 +110,7 @@ class Service
 
 		if ($bAdmin && !$this->oActions->Config()->Get('security', 'allow_admin_panel', true))
 		{
-			$this->oHttp->StatusHeader(403);
+			\MailSo\Base\Http::StatusHeader(403);
 			echo $this->oServiceActions->ErrorTemplates('Access Denied.',
 				'Access to the SnappyMail Admin Panel is not allowed!', true);
 
@@ -122,6 +118,7 @@ class Service
 		}
 
 		$bIndex = true;
+		$sResult = '';
 		if (0 < \count($aPaths) && !empty($aPaths[0]) && !$bAdmin && 'index' !== \strtolower($aPaths[0]))
 		{
 			$bIndex = false;
@@ -142,7 +139,7 @@ class Service
 
 		if ($bIndex)
 		{
-			header('Content-Type: text/html; charset=utf-8');
+			\header('Content-Type: text/html; charset=utf-8');
 			$this->oHttp->ServerNoCache();
 
 			if (!\is_dir(APP_DATA_FOLDER_PATH) || !\is_writable(APP_DATA_FOLDER_PATH))
@@ -155,40 +152,32 @@ class Service
 				return $this;
 			}
 
+			$sLanguage = $this->oActions->GetLanguage($bAdmin);
+
 			$aTemplateParameters = $this->indexTemplateParameters($bAdmin);
 
 			$sCacheFileName = '';
 			if ($this->oActions->Config()->Get('labs', 'cache_system_data', true) && !empty($aTemplateParameters['{{BaseHash}}']))
 			{
-				$sCacheFileName = 'TMPL:'.$aTemplateParameters['{{BaseHash}}'];
+				$sCacheFileName = 'TMPL:'.$sLanguage.$aTemplateParameters['{{BaseHash}}'];
 				$sResult = $this->oActions->Cacher()->Get($sCacheFileName);
 			}
 
-			if (0 === \strlen($sResult))
-			{
-//				$aTemplateParameters['{{BaseTemplates}}'] = $this->oServiceActions->compileTemplates($bAdmin, false);
+			if ($sResult) {
+				$sResult .= '<!--cached-->';
+			} else {
+				$aTemplateParameters['{{BaseAppThemeCss}}'] = $this->oActions->compileCss($this->oActions->GetTheme($bAdmin), $bAdmin);
+				$aTemplateParameters['{{BaseLanguage}}'] = $this->oActions->compileLanguage($sLanguage, $bAdmin);
+				$aTemplateParameters['{{BaseTemplates}}'] = $this->oServiceActions->compileTemplates($bAdmin, false);
 				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), $aTemplateParameters);
 
 				$sResult = Utils::ClearHtmlOutput($sResult);
-				if (0 < \strlen($sCacheFileName))
-				{
+				if ($sCacheFileName) {
 					$this->oActions->Cacher()->Set($sCacheFileName, $sResult);
 				}
 			}
-			else
-			{
-				$bCached = true;
-			}
-
-			$sResult .= '<!--';
-			$sResult .= '[time:'.\substr(\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 0, 6);
-			$sResult .= '][AGPLv3';
-			$sResult .= '][cached:'.($bCached ? 'true' : 'false');
-//			$sResult .= '][hash:'.$aTemplateParameters['{{BaseHash}}'];
-//			$sResult .= '][session:'.\md5(Utils::GetShortToken());
-			$sResult .= ']-->';
 		}
-		else if (!headers_sent())
+		else if (!\headers_sent())
 		{
 			\header('X-XSS-Protection: 1; mode=block');
 		}
@@ -198,7 +187,8 @@ class Service
 		unset($sResult);
 
 		$this->oActions->BootEnd();
-		return $this;
+
+		return true;
 	}
 
 	private function staticPath(string $sPath) : string
@@ -206,13 +196,8 @@ class Service
 		return $this->oActions->StaticPath($sPath);
 	}
 
-	private function indexTemplateParameters(bool $bAdmin = false) : array
+	private function indexTemplateParameters(bool $bAdmin) : array
 	{
-		$sLanguage = 'en';
-		$sTheme = 'Default';
-
-		list($sLanguage, $sTheme) = $this->oActions->GetLanguageAndTheme($bAdmin);
-
 		$oConfig = $this->oActions->Config();
 
 		$bAppJsDebug = !!$oConfig->Get('labs', 'use_app_debug_js', false);
@@ -229,10 +214,8 @@ class Service
 			'{{BaseAppFaviconPngLinkTag}}' => $sFaviconPngLink ? '<link type="image/png" rel="shortcut icon" href="'.$sFaviconPngLink.'" />' : '',
 			'{{BaseAppFaviconTouchLinkTag}}' => $sAppleTouchLink ? '<link type="image/png" rel="apple-touch-icon" href="'.$sAppleTouchLink.'" />' : '',
 			'{{BaseAppMainCssLink}}' => $this->staticPath('css/'.($bAdmin ? 'admin' : 'app').($bAppCssDebug ? '' : '.min').'.css'),
-			'{{BaseAppThemeCssLink}}' => $this->oActions->ThemeLink($sTheme, $bAdmin),
-			'{{BaseAppBootScriptLink}}' => $this->staticPath('js/'.($bAppJsDebug ? '' : 'min/').'boot'.($bAppJsDebug ? '' : '.min').'.js'),
+			'{{BaseAppThemeCssLink}}' => $this->oActions->ThemeLink($bAdmin),
 			'{{BaseAppBootScript}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/js/min/boot.min.js'),
-			'{{BaseDir}}' => false && \in_array($sLanguage, array('ar', 'he', 'ur')) ? 'rtl' : 'ltr',
 			'{{BaseAppManifestLink}}' => $this->staticPath('manifest.json'),
 			'{{BaseAppBootCss}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot.min.css'),
 			'{{LoadingDescriptionEsc}}' => \htmlspecialchars($LoadingDescription, ENT_QUOTES|ENT_IGNORE, 'UTF-8'),

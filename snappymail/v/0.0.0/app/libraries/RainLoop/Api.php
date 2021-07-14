@@ -74,7 +74,8 @@ class Api
 			\MailSo\Config::$ImapTimeout =
 				(int) static::Config()->Get('labs', 'imap_timeout', 300);
 
-			\MailSo\Config::$BoundaryPrefix = '_SnappyMail_';
+			\MailSo\Config::$BoundaryPrefix =
+				\trim(static::Config()->Get('labs', 'boundary_prefix', ''));
 
 			\MailSo\Config::$SystemLogger = static::Logger();
 
@@ -89,7 +90,7 @@ class Api
 
 			if (!empty($sSslCafile) || !empty($sSslCapath))
 			{
-				\MailSo\Hooks::Add('Net.NetClient.StreamContextSettings/Filter', function (&$aStreamContextSettings) use ($sSslCafile, $sSslCapath) {
+				\MailSo\Hooks::Add('Net.NetClient.StreamContextSettings/Filter', function ($aStreamContextSettings) use ($sSslCafile, $sSslCapath) {
 					if (isset($aStreamContextSettings['ssl']) && \is_array($aStreamContextSettings['ssl']))
 					{
 						if (empty($aStreamContextSettings['ssl']['cafile']) && !empty($sSslCafile))

@@ -1,6 +1,6 @@
 var computedState = Symbol('_state');
 
-ko.computed = function (evaluatorFunctionOrOptions, options) {
+ko.computed = (evaluatorFunctionOrOptions, options) => {
     if (typeof evaluatorFunctionOrOptions === "object") {
         // Single-parameter syntax - everything is on this "options" param
         options = evaluatorFunctionOrOptions;
@@ -71,11 +71,6 @@ ko.computed = function (evaluatorFunctionOrOptions, options) {
         ko.utils.extend(computedObservable, deferEvaluationOverrides);
     }
 
-    if (DEBUG) {
-        // #1731 - Aid debugging by exposing the computed's options
-        computedObservable["_options"] = options;
-    }
-
     if (state.disposeWhenNodeIsRemoved) {
         // Since this computed is associated with a DOM node, and we don't want to dispose the computed
         // until the DOM node is *removed* from the document (as opposed to never having been in the document),
@@ -99,7 +94,7 @@ ko.computed = function (evaluatorFunctionOrOptions, options) {
     // Attach a DOM node disposal callback so that the computed will be proactively disposed as soon as the node is
     // removed using ko.removeNode. But skip if isActive is false (there will never be any dependencies to dispose).
     if (state.disposeWhenNodeIsRemoved && computedObservable.isActive()) {
-        ko.utils.domNodeDisposal.addDisposeCallback(state.disposeWhenNodeIsRemoved, state.domNodeDisposalCallback = function () {
+        ko.utils.domNodeDisposal.addDisposeCallback(state.disposeWhenNodeIsRemoved, state.domNodeDisposalCallback = () => {
             computedObservable.dispose();
         });
     }
@@ -134,6 +129,26 @@ function computedBeginDependencyDetectionCallback(subscribable, id) {
             subscribable._notifyNextChangeIfValueIsDifferent();
         }
     }
+}
+
+function evaluateImmediate_CallReadThenEndDependencyDetection(state, dependencyDetectionContext) {
+	// This function is really part of the evaluateImmediate_CallReadWithDependencyDetection logic.
+	// You'd never call it from anywhere else. Factoring it out means that evaluateImmediate_CallReadWithDependencyDetection
+	// can be independent of try/finally blocks, which contributes to saving about 40% off the CPU
+	// overhead of computed evaluation (on V8 at least).
+
+	try {
+		return state.readFunction();
+	} finally {
+		ko.dependencyDetection.end();
+
+		// For each subscription no longer being used, remove it from the active subscriptions list and dispose it
+		if (dependencyDetectionContext.disposalCount && !state.isSleeping) {
+			ko.utils.objectForEach(dependencyDetectionContext.disposalCandidates, computedDisposeDependencyCallback);
+		}
+
+		state.isStale = state.isDirty = false;
+	}
 }
 
 var computedFn = {
@@ -284,7 +299,7 @@ var computedFn = {
         state.dependencyTracking = {};
         state.dependenciesCount = 0;
 
-        var newValue = this.evaluateImmediate_CallReadThenEndDependencyDetection(state, dependencyDetectionContext);
+        var newValue = evaluateImmediate_CallReadThenEndDependencyDetection(state, dependencyDetectionContext);
 
         if (!state.dependenciesCount) {
             computedObservable.dispose();
@@ -301,7 +316,6 @@ var computedFn = {
             }
 
             state.latestValue = newValue;
-            if (DEBUG) computedObservable._latestValue = newValue;
 
             computedObservable["notifySubscribers"](state.latestValue, "spectate");
 
@@ -318,25 +332,6 @@ var computedFn = {
         }
 
         return changed;
-    },
-    evaluateImmediate_CallReadThenEndDependencyDetection: (state, dependencyDetectionContext) => {
-        // This function is really part of the evaluateImmediate_CallReadWithDependencyDetection logic.
-        // You'd never call it from anywhere else. Factoring it out means that evaluateImmediate_CallReadWithDependencyDetection
-        // can be independent of try/finally blocks, which contributes to saving about 40% off the CPU
-        // overhead of computed evaluation (on V8 at least).
-
-        try {
-            return state.readFunction();
-        } finally {
-            ko.dependencyDetection.end();
-
-            // For each subscription no longer being used, remove it from the active subscriptions list and dispose it
-            if (dependencyDetectionContext.disposalCount && !state.isSleeping) {
-                ko.utils.objectForEach(dependencyDetectionContext.disposalCandidates, computedDisposeDependencyCallback);
-            }
-
-            state.isStale = state.isDirty = false;
-        }
     },
     peek: function (evaluate) {
         // By default, peek won't re-evaluate, except while the computed is sleeping or to get the initial value when "deferEvaluation" is set.

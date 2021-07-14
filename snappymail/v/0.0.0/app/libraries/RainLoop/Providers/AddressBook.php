@@ -223,7 +223,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	{
 		$iCount = 0;
 
-		if (\class_exists('Sabre\DAV\Client') && $this->IsActive() && \is_string($sVcfData))
+		if ($this->IsActive() && \is_string($sVcfData))
 		{
 			$sVcfData = \trim($sVcfData);
 			if ("\xef\xbb\xbf" === \substr($sVcfData, 0, 3))
@@ -253,12 +253,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 					{
 						\MailSo\Base\Utils::ResetTimeLimit();
 
-						if (empty($oVCard->UID))
-						{
-							$oVCard->UID = \SnappyMail\UUID::generate();
-						}
-
-						$oContact->PopulateByVCard($oVCard->UID, $oVCard->serialize());
+						$oContact->PopulateByVCard($oVCard);
 
 						if (0 < \count($oContact->Properties))
 						{

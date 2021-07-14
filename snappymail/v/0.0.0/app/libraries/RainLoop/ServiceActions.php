@@ -81,7 +81,7 @@ class ServiceActions
 		$aResponseItem = null;
 		$oException = null;
 
-		$sAction = $this->oHttp->GetPost('Action');
+		$sAction = $_POST['Action'] ?? null;
 		if (empty($sAction) && $this->oHttp->IsGet() && !empty($this->aPaths[2]))
 		{
 			$sAction = $this->aPaths[2];
@@ -93,7 +93,7 @@ class ServiceActions
 		{
 			if ($this->oHttp->IsPost() &&
 				$this->Config()->Get('security', 'csrf_protection', false) &&
-				$this->oHttp->GetPost('XToken', '') !== Utils::GetCsrfToken())
+				($_POST['XToken'] ?? '') !== Utils::GetCsrfToken())
 			{
 				throw new Exceptions\ClientException(Notifications::InvalidToken);
 			}
@@ -107,7 +107,7 @@ class ServiceActions
 
 				$this->Logger()->Write('Action: '.$sMethodName, \MailSo\Log\Enumerations\Type::NOTE, 'JSON');
 
-				$aPost = $this->oHttp->GetPostAsArray();
+				$aPost = $_POST ?? null;
 				if ($aPost)
 				{
 					$this->oActions->SetActionParams($aPost, $sMethodName);
@@ -168,11 +168,6 @@ class ServiceActions
 
 			if (\is_array($aResponseItem) && $oException instanceof Exceptions\ClientException)
 			{
-				if ('Folders' === $sAction)
-				{
-					$aResponseItem['ClearAuth'] = true;
-				}
-
 				if ($oException->getLogoutOnException())
 				{
 					$aResponseItem['Logout'] = true;
@@ -187,12 +182,6 @@ class ServiceActions
 		if (\is_array($aResponseItem))
 		{
 			$aResponseItem['Time'] = (int) ((\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000);
-
-			$sUpdateToken = $this->oActions->GetUpdateAuthToken();
-			if ($sUpdateToken)
-			{
-				$aResponseItem['UpdateToken'] = $sUpdateToken;
-			}
 		}
 
 		$this->Plugins()->RunHook('filter.json-response', array($sAction, &$aResponseItem));
@@ -233,7 +222,7 @@ class ServiceActions
 			if (\method_exists($this->oActions, 'Append') &&
 				\is_callable(array($this->oActions, 'Append')))
 			{
-				$this->oActions->SetActionParams($this->oHttp->GetPostAsArray(), 'Append');
+				isset($_POST) && $this->oActions->SetActionParams($_POST, 'Append');
 				$bResponse = \call_user_func(array($this->oActions, 'Append'));
 			}
 		}
@@ -302,7 +291,7 @@ class ServiceActions
 			if (\method_exists($this->oActions, $sAction) &&
 				\is_callable(array($this->oActions, $sAction)))
 			{
-				$aActionParams = $this->oHttp->GetQueryAsArray();
+				$aActionParams = isset($_GET) && \is_array($_GET) ? $_GET : null;
 
 				$aActionParams['File'] = $aFile;
 				$aActionParams['Error'] = $iError;
@@ -383,7 +372,7 @@ class ServiceActions
 
 		if (!$bResult)
 		{
-			$this->oHttp->StatusHeader(404);
+			\MailSo\Base\Http::StatusHeader(404);
 		}
 
 		return '';
@@ -489,7 +478,7 @@ class ServiceActions
 
 			if (0 === \strlen($sResult))
 			{
-				$sResult = $this->compileLanguage($sLanguage, $bAdmin);
+				$sResult = $this->oActions->compileLanguage($sLanguage, $bAdmin);
 				if ($bCacheEnabled && 0 < \strlen($sCacheFileName))
 				{
 					$this->Cacher()->Set($sCacheFileName, $sResult);
@@ -500,43 +489,6 @@ class ServiceActions
 			{
 				$this->oActions->cacheByKey($this->sQuery);
 			}
-		}
-
-		return $sResult;
-	}
-
-	public function ServiceTemplates() : string
-	{
-		$sResult = '';
-		\header('Content-Type: application/javascript; charset=utf-8');
-
-		$bCacheEnabled = $this->Config()->Get('labs', 'cache_system_data', true);
-		if ($bCacheEnabled)
-		{
-			$this->oActions->verifyCacheByKey($this->sQuery);
-		}
-
-		$bAdmin = false !== \strpos($this->sQuery, 'Admin');
-
-		$sCacheFileName = '';
-		if ($bCacheEnabled)
-		{
-			$sCacheFileName = KeyPathHelper::TemplatesCache($bAdmin, $this->oActions->Plugins()->Hash());
-			$sResult = $this->Cacher()->Get($sCacheFileName);
-		}
-
-		if (0 === \strlen($sResult))
-		{
-			$sResult = $this->compileTemplates($bAdmin);
-			if ($bCacheEnabled && 0 < \strlen($sCacheFileName))
-			{
-				$this->Cacher()->Set($sCacheFileName, $sResult);
-			}
-		}
-
-		if ($bCacheEnabled)
-		{
-			$this->oActions->cacheByKey($this->sQuery);
 		}
 
 		return $sResult;
@@ -599,13 +551,6 @@ class ServiceActions
 		if (!empty($this->aPaths[4]))
 		{
 			$sTheme = $this->oActions->ValidateTheme($this->aPaths[4]);
-			$sRealTheme = $sTheme;
-
-			$bCustomTheme = '@custom' === \substr($sTheme, -7);
-			if ($bCustomTheme)
-			{
-				$sRealTheme = \substr($sTheme, 0, -7);
-			}
 
 			$bCacheEnabled = $this->Config()->Get('labs', 'cache_system_data', true);
 			if ($bCacheEnabled)
@@ -620,36 +565,15 @@ class ServiceActions
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
 
-			if (0 === \strlen($sResult))
+			if (!$sResult)
 			{
 				try
 				{
-					$oLess = new \LessPHP\lessc();
-					$oLess->setFormatter('compressed');
+					$sResult = $this->oActions->compileCss($sTheme, $bAdmin);
 
-					$aResult = array();
-
-					$sThemeFile = ($bCustomTheme ? APP_INDEX_ROOT_PATH : APP_VERSION_ROOT_PATH).'themes/'.$sRealTheme.'/styles.less';
-
-					if (\is_file($sThemeFile))
+					if ($bCacheEnabled && $sCacheFileName)
 					{
-						$aResult[] = '@base: "'
-							. ($bCustomTheme ? Utils::WebPath() : Utils::WebVersionPath())
-							. 'themes/'.$sRealTheme.'/";';
-
-						$aResult[] = \file_get_contents($sThemeFile);
-					}
-
-					$aResult[] = $this->Plugins()->CompileCss($bAdmin);
-
-					$sResult = $oLess->compile(\implode("\n", $aResult));
-
-					if ($bCacheEnabled)
-					{
-						if (0 < \strlen($sCacheFileName))
-						{
-							$this->Cacher()->Set($sCacheFileName, $sResult);
-						}
+						$this->Cacher()->Set($sCacheFileName, $sResult);
 					}
 				}
 				catch (\Throwable $oException)
@@ -705,7 +629,7 @@ class ServiceActions
 	{
 		$this->oHttp->ServerNoCache();
 
-		$sTo = \trim($this->oHttp->GetQuery('to', ''));
+		$sTo = \trim($_GET['to'] ?? '');
 		if (!empty($sTo) && \preg_match('/^mailto:/i', $sTo))
 		{
 			$oAccount = $this->oActions->GetAccountFromSignMeToken();
@@ -736,7 +660,7 @@ class ServiceActions
 		$oAccount = null;
 		$bLogout = true;
 
-		$sSsoHash = $this->oHttp->GetRequest('hash', '');
+		$sSsoHash = $_REQUEST['hash'] ?? '';
 		if (!empty($sSsoHash))
 		{
 			$mData = null;
@@ -814,8 +738,8 @@ class ServiceActions
 		$oAccount = null;
 		$bLogout = true;
 
-		$sEmail = $this->oHttp->GetEnv('REMOTE_USER', '');
-		$sPassword = $this->oHttp->GetEnv('REMOTE_PASSWORD', '');
+		$sEmail = $_ENV['REMOTE_USER'] ?? '';
+		$sPassword = $_ENV['REMOTE_PASSWORD'] ?? '';
 
 		if (0 < \strlen($sEmail) && 0 < \strlen(\trim($sPassword)))
 		{
@@ -848,7 +772,7 @@ class ServiceActions
 		$oAccount = null;
 		$bLogout = true;
 
-		switch (\strtolower($this->oHttp->GetRequest('Output', 'Redirect')))
+		switch (\strtolower($_REQUEST['Output'] ?? 'Redirect'))
 		{
 			case 'json':
 
@@ -945,41 +869,8 @@ class ServiceActions
 		\header('Content-Type: application/javascript; charset=utf-8');
 		$this->oHttp->ServerNoCache();
 
-		$sAuthAccountHash = '';
-		if (!$bAdmin && 0 === \strlen($this->oActions->GetSpecAuthLogoutTokenWithDeletion()))
-		{
-			$sAuthAccountHash = $this->oActions->GetSpecAuthTokenWithDeletion();
-			if (empty($sAuthAccountHash))
-			{
-				$sAuthAccountHash = $this->oActions->GetSpecAuthToken();
-			}
-
-			if (empty($sAuthAccountHash))
-			{
-				$oAccount = $this->oActions->GetAccountFromSignMeToken();
-				if ($oAccount)
-				{
-					try
-					{
-						$this->oActions->CheckMailConnection($oAccount);
-
-						$this->oActions->AuthToken($oAccount);
-
-						$sAuthAccountHash = $this->oActions->GetSpecAuthToken();
-					}
-					catch (\Throwable $oException)
-					{
-						$oException = null;
-						$this->oActions->ClearSignMeData($oAccount);
-					}
-				}
-			}
-
-			$this->oActions->SetSpecAuthToken($sAuthAccountHash);
-		}
-
 		$sResult = 'rl.initData('
-			.\json_encode($this->oActions->AppData($bAdmin, $sAuthAccountHash))
+			.\json_encode($this->oActions->AppData($bAdmin))
 			.');';
 
 		$this->Logger()->Write($sResult, \MailSo\Log\Enumerations\Type::INFO, 'APPDATA');
@@ -1008,36 +899,5 @@ class ServiceActions
 		unset($aTemplates);
 
 		return $bJsOutput ? 'rl.TEMPLATES='.\MailSo\Base\Utils::Php2js($sHtml, $this->Logger()).';' : $sHtml;
-	}
-
-	private function compileLanguage(string $sLanguage, bool $bAdmin = false) : string
-	{
-		$sLanguage = \strtr($sLanguage, '_', '-');
-
-		$aResultLang = \json_decode(\file_get_contents(APP_VERSION_ROOT_PATH.'app/localization/langs.json'), true);
-		$langs = \array_flip(\SnappyMail\L10n::getLanguages($bAdmin));
-		$aResultLang['LANGS_NAMES'] = \array_intersect_key($aResultLang['LANGS_NAMES'], $langs);
-		$aResultLang['LANGS_NAMES_EN'] = \array_intersect_key($aResultLang['LANGS_NAMES_EN'], $langs);
-
-		$aResultLang = \array_replace_recursive(
-			$aResultLang,
-			\SnappyMail\L10n::load($sLanguage, ($bAdmin ? 'admin' : 'user'))
-		);
-
-		$this->Plugins()->ReadLang($sLanguage, $aResultLang);
-
-		$sResult = \json_encode($aResultLang, JSON_UNESCAPED_UNICODE);
-
-		$sTimeFormat = '';
-		$options = [$sLanguage, \substr($sLanguage, 0, 2), 'en'];
-		foreach ($options as $lang) {
-			$sFileName = APP_VERSION_ROOT_PATH.'app/localization/'.$lang.'/relativetimeformat.js';
-			if (\is_file($sFileName)) {
-				$sTimeFormat = \preg_replace('/^\\s+/', '', \file_get_contents($sFileName));
-				break;
-			}
-		}
-
-		return "document.documentElement.lang = '{$sLanguage}';\nwindow.snappymailI18N={$sResult};\nDate.defineRelativeTimeFormat({$sTimeFormat});";
 	}
 }

@@ -92,7 +92,7 @@ export class AbstractViewCenter extends AbstractView
 {
 	constructor(name, templateID)
 	{
-		super(name, templateID, ViewType.Center);
+		super(name, templateID, ViewType.Content);
 	}
 }
 

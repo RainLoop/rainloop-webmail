@@ -1,23 +1,15 @@
 <div class="b-settings b-settins-right">
-	<div class="b-toolbar" style="padding-left: 0">
-		<div class="btn-toolbar" style="margin-top: 2px;">
-			<div class="btn-group show-mobile" data-bind="visible: !leftPanelDisabled()" style="margin-left: -1px">
-				<a class="btn btn-thin-2 fontastic" data-bind="click: hideLeft">❮</a>
-			</div>
-			<div class="btn-group show-mobile" data-bind="visible: leftPanelDisabled()">
-				<a class="btn btn-thin-2 fontastic" data-bind="click: showLeft">❯</a>
-			</div>
-			<a class="btn button-back" data-bind="click: backToMailBoxClick">
-				<i class="fontastic">⬅</i>
-				<span data-i18n="GLOBAL/BACK"></span>
-			</a>
+	<div class="b-toolbar btn-toolbar" style="margin-top: 2px;">
+		<div class="btn-group show-mobile" data-bind="visible: !leftPanelDisabled()" style="margin-left: -1px">
+			<a class="btn btn-thin-2 fontastic" data-bind="click: hideLeft">❮</a>
 		</div>
-	</div>
-	<div class="b-content">
-		<div class="content">
-			<div class="content-wrapper">
-				<div id="rl-settings-subscreen" class="b-settings-content"></div>
-			</div>
+		<div class="btn-group show-mobile" data-bind="visible: leftPanelDisabled()">
+			<a class="btn btn-thin-2 fontastic" data-bind="click: showLeft">❯</a>
 		</div>
+		<a class="btn button-back" data-bind="click: backToMailBoxClick">
+			<i class="fontastic">⬅</i>
+			<span data-i18n="GLOBAL/BACK"></span>
+		</a>
 	</div>
+	<div class="b-content" id="rl-settings-subscreen"></div>
 </div>

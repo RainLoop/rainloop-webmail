@@ -323,6 +323,7 @@ trait Response
 				$mResult['isPgpSigned'] = $mResponse->isPgpSigned();
 				$mResult['isPgpEncrypted'] = $mResponse->isPgpEncrypted();
 				$mResult['PgpSignature'] = $mResponse->PgpSignature();
+				$mResult['PgpSignatureMicAlg'] = $mResponse->PgpSignatureMicAlg();
 
 				unset($sHtml, $sPlain);
 

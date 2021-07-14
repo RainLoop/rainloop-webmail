@@ -7,7 +7,7 @@ import * as Links from 'Common/Links';
 /**
  * Might not work due to the new ServiceWorkerRegistration.showNotification
  */
-const HTML5Notification = window.Notification ? Notification : null,
+const HTML5Notification = window.Notification,
 	HTML5NotificationStatus = () => (HTML5Notification && HTML5Notification.permission) || 'denied',
 	NotificationsDenied = () => 'denied' === HTML5NotificationStatus(),
 	NotificationsGranted = () => 'granted' === HTML5NotificationStatus(),

@@ -46,8 +46,6 @@ class LoginUserView extends AbstractViewCenter {
 			emailError: false,
 			passwordError: false,
 
-			formHidden: false,
-
 			submitRequest: false,
 			submitError: '',
 			submitErrorAddidional: '',
@@ -56,9 +54,6 @@ class LoginUserView extends AbstractViewCenter {
 
 			signMeType: LoginSignMeType.Unused
 		});
-
-		this.forgotPasswordLinkUrl = Settings.app('forgotPasswordLinkUrl');
-		this.registrationLinkUrl = Settings.app('registrationLinkUrl');
 
 		this.formError = ko.observable(false).extend({ falseTimeout: 500 });
 
@@ -127,7 +122,8 @@ class LoginUserView extends AbstractViewCenter {
 						if (Notification.InvalidInputArgument == iError) {
 							iError = Notification.AuthError;
 						}
-						this.submitError(getNotification(iError, oData.ErrorMessage, Notification.UnknownNotification));
+						this.submitError(getNotification(iError, (oData ? oData.ErrorMessage : ''),
+							Notification.UnknownNotification));
 						this.submitErrorAddidional((oData && oData.ErrorMessageAdditional) || '');
 					} else {
 						rl.route.reload();

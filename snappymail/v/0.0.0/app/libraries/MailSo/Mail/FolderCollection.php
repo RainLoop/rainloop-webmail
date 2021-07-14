@@ -20,44 +20,32 @@ class FolderCollection extends \MailSo\Base\Collection
 	/**
 	 * @var string
 	 */
-	public $Namespace;
+	public $Namespace = '';
 
 	/**
 	 * @var string
 	 */
-	public $FoldersHash;
+	public $FoldersHash = '';
 
 	/**
 	 * @var bool
 	 */
-	public $IsThreadsSupported;
+	public $IsThreadsSupported = false;
 
 	/**
 	 * @var bool
 	 */
-	public $IsSortSupported;
+	public $IsSortSupported = false;
 
 	/**
 	 * @var bool
 	 */
-	public $Optimized;
+	public $Optimized = false;
 
 	/**
 	 * @var array
 	 */
-	public $SystemFolders;
-
-	function __construct($input = array())
-	{
-		parent::__construct($input);
-
-		$this->Namespace = '';
-		$this->FoldersHash = '';
-		$this->SystemFolders = array();
-		$this->IsThreadsSupported = false;
-		$this->IsSortSupported = false;
-		$this->Optimized = false;
-	}
+	public $SystemFolders = array();
 
 	public function append($oFolder, bool $bToTop = false) : void
 	{
@@ -118,12 +106,7 @@ class FolderCollection extends \MailSo\Base\Collection
 			$oFolder = $this[0];
 		}
 
-		if ($oFolder)
-		{
-			$sDelimiter = $oFolder->Delimiter();
-		}
-
-		return $sDelimiter;
+		return $oFolder ? $oFolder->Delimiter() : '/';
 	}
 
 	public function SetNamespace(string $sNamespace) : self
@@ -133,92 +116,18 @@ class FolderCollection extends \MailSo\Base\Collection
 		return $this;
 	}
 
-	public function InitByUnsortedMailFolderArray(array $aUnsortedMailFolders) : void
+	public function AddWithPositionSearch(Folder $oMailFolder) : void
 	{
-		$this->Clear();
-
-		$aSortedByLenImapFolders = array();
-		foreach ($aUnsortedMailFolders as /* @var $oMailFolder Folder */ $oMailFolder)
-		{
-			$aSortedByLenImapFolders[$oMailFolder->FullNameRaw()] =& $oMailFolder;
-			unset($oMailFolder);
-		}
-		unset($aUnsortedMailFolders);
-
-		$aAddedFolders = array();
-		foreach ($aSortedByLenImapFolders as /* @var $oMailFolder Folder */ $oMailFolder)
-		{
-			$sDelimiter = $oMailFolder->Delimiter();
-			$aFolderExplode = \explode($sDelimiter, $oMailFolder->FullNameRaw());
-
-			if (1 < \count($aFolderExplode))
-			{
-				\array_pop($aFolderExplode);
-
-				$sNonExistenFolderFullNameRaw = '';
-				foreach ($aFolderExplode as $sFolderExplodeItem)
-				{
-					$sNonExistenFolderFullNameRaw .= (0 < \strlen($sNonExistenFolderFullNameRaw))
-						? $sDelimiter.$sFolderExplodeItem : $sFolderExplodeItem;
-
-					if (!isset($aSortedByLenImapFolders[$sNonExistenFolderFullNameRaw]))
-					{
-						try
-						{
-							$aAddedFolders[$sNonExistenFolderFullNameRaw] =
-								Folder::NewNonExistenInstance($sNonExistenFolderFullNameRaw, $sDelimiter);
-						}
-						catch (\Throwable $oExc)
-						{
-							unset($oExc);
-						}
-					}
-				}
-			}
-		}
-
-		$aSortedByLenImapFolders = \array_merge($aSortedByLenImapFolders, $aAddedFolders);
-		unset($aAddedFolders);
-
-		\uasort($aSortedByLenImapFolders, function ($oFolderA, $oFolderB) {
-			return \strnatcmp($oFolderA->FullNameRaw(), $oFolderB->FullNameRaw());
-		});
-
-		foreach ($aSortedByLenImapFolders as $oMailFolder)
-		{
-			$this->AddWithPositionSearch($oMailFolder);
-			unset($oMailFolder);
-		}
-
-		unset($aSortedByLenImapFolders);
-	}
-
-	public function AddWithPositionSearch(Folder $oMailFolder) : bool
-	{
-		$oItemFolder = null;
-		$bIsAdded = false;
-
 		foreach ($this as $oItemFolder)
 		{
-			if ($oMailFolder instanceof Folder &&
-				0 === \strpos($oMailFolder->FullNameRaw(), $oItemFolder->FullNameRaw().$oItemFolder->Delimiter()))
+			if (0 === \strpos($oMailFolder->FullNameRaw(), $oItemFolder->FullNameRaw().$oItemFolder->Delimiter()))
 			{
-				if ($oItemFolder->SubFolders(true)->AddWithPositionSearch($oMailFolder))
-				{
-					$bIsAdded = true;
-				}
-
-				break;
+				$oItemFolder->SubFolders(true)->AddWithPositionSearch($oMailFolder);
+				return;
 			}
 		}
 
-		if (!$bIsAdded && $oMailFolder instanceof Folder)
-		{
-			$bIsAdded = true;
-			$this->append($oMailFolder);
-		}
-
-		return $bIsAdded;
+		$this->append($oMailFolder);
 	}
 
 	public function SortByCallback(callable $fCallback) : void
@@ -241,7 +150,7 @@ class FolderCollection extends \MailSo\Base\Collection
 
 	public function jsonSerialize()
 	{
-		return array_merge(parent::jsonSerialize(), array(
+		return \array_merge(parent::jsonSerialize(), array(
 			'Namespace' => $this->GetNamespace(),
 			'FoldersHash' => $this->FoldersHash ?: '',
 			'IsThreadsSupported' => $this->IsThreadsSupported,

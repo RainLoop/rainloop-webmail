@@ -1,7 +1,5 @@
 <div class="b-admin-plugin-property">
-	<label class="control-label">
-		<span data-bind="text: Label, visible: 5 !== Type"></span>
-	</label>
+	<label class="control-label" data-bind="text: Label, visible: 5 !== Type"></label>
 	<div class="controls">
 		<!-- ko if: 0 === Type -->
 			<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
@@ -29,6 +27,10 @@
 				name: 'Checkbox',
 				params: { value: value, label: Label }
 			}"></div>
+		<!-- /ko -->
+		<!-- ko if: 6 === Type -->
+			<input type="url"
+				data-bind="value: value, attr: {placeholder: placeholder}" />
 		<!-- /ko -->
 		<span class="help-block" data-bind="text: Desc, visible: '' !== Desc"></span>
 	</div>

@@ -33,7 +33,7 @@ body {
 	text-align: center;
 }
 
-.e-spinner .e-bounce {
+.e-spinner div {
 	animation: bouncedelay 1.4s infinite ease-in-out;
 	background-color: var(--loading-color, #000);
 	border-radius: 100%;
@@ -46,12 +46,12 @@ body {
 	animation-fill-mode: both;
 }
 
-.e-spinner .bounce1 {
-	animation-delay: -0.32s;
+.e-spinner div + div {
+	animation-delay: 0.16s;
 }
 
-.e-spinner .bounce2 {
-	animation-delay: -0.16s;
+.e-spinner div + div + div {
+	animation-delay: 0.32s;
 }
 
 @keyframes bouncedelay {

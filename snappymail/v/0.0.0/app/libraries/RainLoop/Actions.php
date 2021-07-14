@@ -12,8 +12,9 @@ class Actions
 	use Actions\User;
 	use Actions\Raw;
 	use Actions\Response;
+	use Actions\Localization;
+	use Actions\Themes;
 
-	const AUTH_TFA_SIGN_ME_TOKEN_KEY = 'rltfasmauth';
 	const AUTH_SIGN_ME_TOKEN_KEY = 'rlsmauth';
 	const AUTH_MAILTO_TOKEN_KEY = 'rlmailtoauth';
 	const AUTH_SPEC_TOKEN_KEY = 'rlspecauth';
@@ -111,11 +112,6 @@ class Actions
 	private $sSpecAuthToken;
 
 	/**
-	 * @var string
-	 */
-	private $sUpdateAuthToken;
-
-	/**
 	 * @access private
 	 */
 	function __construct()
@@ -139,7 +135,6 @@ class Actions
 		$this->oSuggestionsProvider = null;
 
 		$this->sSpecAuthToken = '';
-		$this->sUpdateAuthToken = '';
 		$this->bIsJson = false;
 
 		$oConfig = $this->Config();
@@ -155,13 +150,6 @@ class Actions
 		return $this;
 	}
 
-	public function SetUpdateAuthToken(string $sUpdateAuthToken): self
-	{
-		$this->sUpdateAuthToken = $sUpdateAuthToken;
-
-		return $this;
-	}
-
 	public function SetIsJson(bool $bIsJson): self
 	{
 		$this->bIsJson = $bIsJson;
@@ -172,11 +160,6 @@ class Actions
 	public function GetSpecAuthToken(): string
 	{
 		return $this->sSpecAuthToken;
-	}
-
-	public function GetUpdateAuthToken(): string
-	{
-		return $this->sUpdateAuthToken;
 	}
 
 	public function GetIsJson(): bool
@@ -313,9 +296,9 @@ class Actions
 		}
 	}
 
-	public function ParseQueryAuthString(): string
+	public function ParseQueryString(): string
 	{
-		$sQuery = \trim($this->Http()->GetQueryString());
+		$sQuery = \trim($_SERVER['QUERY_STRING'] ?? '');
 
 		$iPos = \strpos($sQuery, '&');
 		if (0 < $iPos) {
@@ -324,7 +307,7 @@ class Actions
 
 		$sQuery = \trim(\trim($sQuery), ' /');
 
-		$aSubQuery = $this->Http()->GetQuery('q');
+		$aSubQuery = $_GET['q'] ?? null;
 		if (\is_array($aSubQuery)) {
 			$aSubQuery = \array_map(function ($sS) {
 				return \trim(\trim($sS), ' /');
@@ -335,14 +318,31 @@ class Actions
 			}
 		}
 
-		if ('' === $this->GetSpecAuthToken()) {
-			$aPaths = \explode('/', $sQuery);
-			if (!empty($aPaths[0]) && !empty($aPaths[1]) && '_' === substr($aPaths[1], 0, 1)) {
-				$this->SetSpecAuthToken($aPaths[1]);
-			}
-		}
-
 		return $sQuery;
+	}
+
+	// rlspecauth / AuthAccountHash
+	public function getAuthAccountHash() : string
+	{
+		if ('' === $this->sSpecAuthToken && !\strlen($this->GetSpecAuthLogoutTokenWithDeletion())) {
+			$sAuthAccountHash = $this->GetSpecAuthTokenCookie() ?: $this->GetSpecAuthToken();
+			if (empty($sAuthAccountHash)) {
+				$oAccount = $this->GetAccountFromSignMeToken();
+				if ($oAccount) try
+				{
+					$this->CheckMailConnection($oAccount);
+					$this->AuthToken($oAccount);
+					$sAuthAccountHash = $this->GetSpecAuthToken();
+				}
+				catch (\Throwable $oException)
+				{
+					$oException = null;
+					$this->ClearSignMeData($oAccount);
+				}
+			}
+			$this->SetSpecAuthToken($sAuthAccountHash);
+		}
+		return $this->GetSpecAuthToken();
 	}
 
 	private function compileLogParams(string $sLine, ?Model\Account $oAccount = null, bool $bUrlEncode = false, array $aAdditionalParams = array()): string
@@ -360,7 +360,7 @@ class Actions
 
 		if (false !== \strpos($sLine, '{imap:') || false !== \strpos($sLine, '{smtp:')) {
 			if (!$oAccount) {
-				$this->ParseQueryAuthString();
+				$this->getAuthAccountHash();
 				$oAccount = $this->getAccountFromToken(false);
 			}
 
@@ -414,7 +414,7 @@ class Actions
 
 			if (\preg_match('/\{user:(email|login|domain)\}/i', $sLine)) {
 				if (!$oAccount) {
-					$this->ParseQueryAuthString();
+					$this->getAuthAccountHash();
 					$oAccount = $this->getAccountFromToken(false);
 				}
 
@@ -505,14 +505,9 @@ class Actions
 		}
 	}
 
-	public function GetSpecAuthTokenWithDeletion(): string
+	public function GetSpecAuthTokenCookie(): string
 	{
-		$sResult = Utils::GetCookie(self::AUTH_SPEC_TOKEN_KEY, '');
-		if (0 < strlen($sResult)) {
-			Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
-		}
-
-		return $sResult;
+		return Utils::GetCookie(self::AUTH_SPEC_TOKEN_KEY, '');
 	}
 
 	public function GetSpecAuthLogoutTokenWithDeletion(): string
@@ -691,9 +686,9 @@ class Actions
 					$oDriver = new \MailSo\Cache\Drivers\File(APP_PRIVATE_DATA . 'cache', $sKey);
 					break;
 
-				case ('APC' === $sDriver || 'APCU' === $sDriver) &&
+				case ('APCU' === $sDriver) &&
 					\MailSo\Base\Utils::FunctionExistsAndEnabled(array(
-						'apc_store', 'apc_fetch', 'apc_delete', 'apc_clear_cache')):
+						'apcu_store', 'apcu_fetch', 'apcu_delete', 'apcu_clear_cache')):
 
 					$oDriver = new \MailSo\Cache\Drivers\APC($sKey);
 					break;
@@ -800,7 +795,7 @@ class Actions
 				);
 
 				$this->oLogger->Write(
-					'[APC:' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('apc_fetch') ? 'on' : 'off') .
+					'[APCU:' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('apcu_fetch') ? 'on' : 'off') .
 					'][MB:' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding') ? 'on' : 'off') .
 					'][PDO:' . (\class_exists('PDO') ? (\implode(',', \Pdo::getAvailableDrivers()) ?: '~') : 'off') .
 					'][Streams:' . \implode(',', \stream_get_transports()) .
@@ -995,8 +990,6 @@ class Actions
 			'allowHtmlEditorSourceButton' => (bool)$oConfig->Get('labs', 'allow_html_editor_source_button', false),
 			'allowHtmlEditorBitiButtons' => (bool)$oConfig->Get('labs', 'allow_html_editor_biti_buttons', false),
 			'allowCtrlEnterOnCompose' => (bool)$oConfig->Get('labs', 'allow_ctrl_enter_on_compose', false),
-			'forgotPasswordLinkUrl' => \trim($oConfig->Get('login', 'forgot_password_link_url', '')),
-			'registrationLinkUrl' => \trim($oConfig->Get('login', 'registration_link_url', '')),
 			'hideSubmitButton' => (bool)$oConfig->Get('login', 'hide_submit_button', true),
 			'useImapThread' => (bool)$oConfig->Get('labs', 'use_imap_thread', false),
 			'useImapSubscribe' => (bool)$oConfig->Get('labs', 'use_imap_list_subscribe', true),
@@ -1015,18 +1008,14 @@ class Actions
 		) : array());
 	}
 
-	public function AppData(bool $bAdmin, string $sAuthAccountHash = ''): array
+	public function AppData(bool $bAdmin): array
 	{
-		if (0 < \strlen($sAuthAccountHash) && \preg_match('/[^_\-\.a-zA-Z0-9]/', $sAuthAccountHash)) {
-			$sAuthAccountHash = '';
-		}
-
 		$oAccount = null;
 		$oConfig = $this->Config();
 
 		/*
 		required by Index.html and rl.js:
-		NewThemeLink TemplatesLink LangLink PluginsLink AuthAccountHash
+		PluginsLink
 		*/
 
 		$value = \ini_get('upload_max_filesize');
@@ -1041,7 +1030,6 @@ class Actions
 			'Auth' => false,
 			'AccountHash' => '',
 			'AccountSignMe' => false,
-			'AuthAccountHash' => '',
 			'MailToEmail' => '',
 			'Email' => '',
 			'DevEmail' => '',
@@ -1088,10 +1076,6 @@ class Actions
 			'UserBackgroundHash' => ''
 		);
 
-		if (0 < \strlen($sAuthAccountHash)) {
-			$aResult['AuthAccountHash'] = $sAuthAccountHash;
-		}
-
 		$oSettings = null;
 
 		$passfile = APP_PRIVATE_DATA.'admin_password.txt';
@@ -1103,6 +1087,9 @@ class Actions
 			$oConfig->SetPassword($sPassword);
 			$oConfig->Save();
 		}
+
+		$sLanguage = $oConfig->Get('webmail', 'language', 'en');
+		$UserLanguageRaw = $this->detectUserLanguage($bAdmin);
 
 		if (!$bAdmin) {
 			$oAccount = $this->getAccountFromToken(false);
@@ -1152,7 +1139,60 @@ class Actions
 				if (!empty($aResult['StartupUrl'])) {
 					$aResult['StartupUrl'] = $this->compileLogParams($aResult['StartupUrl'], $oAccount, true);
 				}
-			} else {
+
+				$aResult['ParentEmail'] = $oAccount->ParentEmail();
+
+				$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
+
+				if ($oSettingsLocal instanceof Settings) {
+					$aResult['SentFolder'] = (string)$oSettingsLocal->GetConf('SentFolder', '');
+					$aResult['DraftFolder'] = (string)$oSettingsLocal->GetConf('DraftFolder', '');
+					$aResult['SpamFolder'] = (string)$oSettingsLocal->GetConf('SpamFolder', '');
+					$aResult['TrashFolder'] = (string)$oSettingsLocal->GetConf('TrashFolder', '');
+					$aResult['ArchiveFolder'] = (string)$oSettingsLocal->GetConf('ArchiveFolder', '');
+					$aResult['HideUnsubscribed'] = (bool)$oSettingsLocal->GetConf('HideUnsubscribed', $aResult['HideUnsubscribed']);
+				}
+
+				if ($this->GetCapa(false, Enumerations\Capa::SETTINGS, $oAccount)) {
+					if ($oSettings instanceof Settings) {
+						if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
+							$sLanguage = (string)$oSettings->GetConf('Language', $sLanguage);
+						}
+
+						$aResult['EditorDefaultType'] = (string)$oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']);
+						$aResult['ShowImages'] = (bool)$oSettings->GetConf('ShowImages', $aResult['ShowImages']);
+						$aResult['RemoveColors'] = (bool)$oSettings->GetConf('RemoveColors', $aResult['RemoveColors']);
+						$aResult['ContactsAutosave'] = (bool)$oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
+						$aResult['MPP'] = (int)$oSettings->GetConf('MPP', $aResult['MPP']);
+						$aResult['SoundNotification'] = (bool)$oSettings->GetConf('SoundNotification', $aResult['SoundNotification']);
+						$aResult['DesktopNotifications'] = (bool)$oSettings->GetConf('DesktopNotifications', $aResult['DesktopNotifications']);
+						$aResult['UseCheckboxesInList'] = (bool)$oSettings->GetConf('UseCheckboxesInList', $aResult['UseCheckboxesInList']);
+						$aResult['AllowDraftAutosave'] = (bool)$oSettings->GetConf('AllowDraftAutosave', $aResult['AllowDraftAutosave']);
+						$aResult['AutoLogout'] = (int)$oSettings->GetConf('AutoLogout', $aResult['AutoLogout']);
+						$aResult['Layout'] = (int)$oSettings->GetConf('Layout', $aResult['Layout']);
+
+						if (!$this->GetCapa(false, Enumerations\Capa::AUTOLOGOUT, $oAccount)) {
+							$aResult['AutoLogout'] = 0;
+						}
+
+						if ($this->GetCapa(false, Enumerations\Capa::USER_BACKGROUND, $oAccount)) {
+							$aResult['UserBackgroundName'] = (string)$oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
+							$aResult['UserBackgroundHash'] = (string)$oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
+						}
+					}
+
+					if ($oSettingsLocal instanceof Settings) {
+						$aResult['UseThreads'] = (bool)$oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
+						$aResult['ReplySameFolder'] = (bool)$oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
+					}
+				}
+			}
+			else {
+				if ($oConfig->Get('login', 'allow_languages_on_login', true)
+					&& $oConfig->Get('login', 'determine_user_language', true)) {
+					$sLanguage = $this->ValidateLanguage($UserLanguageRaw, $sLanguage, false);
+				}
+
 				$aResult['DevEmail'] = $oConfig->Get('labs', 'dev_email', '');
 				$aResult['DevPassword'] = $oConfig->Get('labs', 'dev_password', '');
 
@@ -1198,97 +1238,21 @@ class Actions
 
 		$aResult['ProjectHash'] = \md5($aResult['AccountHash'] . APP_VERSION . $this->Plugins()->Hash());
 
-		$sLanguage = $oConfig->Get('webmail', 'language', 'en');
-		$sLanguageAdmin = $oConfig->Get('webmail', 'language_admin', 'en');
-		$sTheme = $oConfig->Get('webmail', 'theme', 'Default');
-
-		if (!$bAdmin && $oAccount) {
-			$aResult['ParentEmail'] = $oAccount->ParentEmail();
-
-			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
-
-			if ($oSettingsLocal instanceof Settings) {
-				$aResult['SentFolder'] = (string)$oSettingsLocal->GetConf('SentFolder', '');
-				$aResult['DraftFolder'] = (string)$oSettingsLocal->GetConf('DraftFolder', '');
-				$aResult['SpamFolder'] = (string)$oSettingsLocal->GetConf('SpamFolder', '');
-				$aResult['TrashFolder'] = (string)$oSettingsLocal->GetConf('TrashFolder', '');
-				$aResult['ArchiveFolder'] = (string)$oSettingsLocal->GetConf('ArchiveFolder', '');
-				$aResult['HideUnsubscribed'] = (bool)$oSettingsLocal->GetConf('HideUnsubscribed', $aResult['HideUnsubscribed']);
-			}
-
-			if ($this->GetCapa(false, Enumerations\Capa::SETTINGS, $oAccount)) {
-				if ($oSettings instanceof Settings) {
-					if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
-						$sLanguage = (string)$oSettings->GetConf('Language', $sLanguage);
-					}
-
-					$aResult['EditorDefaultType'] = (string)$oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']);
-					$aResult['ShowImages'] = (bool)$oSettings->GetConf('ShowImages', $aResult['ShowImages']);
-					$aResult['RemoveColors'] = (bool)$oSettings->GetConf('RemoveColors', $aResult['RemoveColors']);
-					$aResult['ContactsAutosave'] = (bool)$oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
-					$aResult['MPP'] = (int)$oSettings->GetConf('MPP', $aResult['MPP']);
-					$aResult['SoundNotification'] = (bool)$oSettings->GetConf('SoundNotification', $aResult['SoundNotification']);
-					$aResult['DesktopNotifications'] = (bool)$oSettings->GetConf('DesktopNotifications', $aResult['DesktopNotifications']);
-					$aResult['UseCheckboxesInList'] = (bool)$oSettings->GetConf('UseCheckboxesInList', $aResult['UseCheckboxesInList']);
-					$aResult['AllowDraftAutosave'] = (bool)$oSettings->GetConf('AllowDraftAutosave', $aResult['AllowDraftAutosave']);
-					$aResult['AutoLogout'] = (int)$oSettings->GetConf('AutoLogout', $aResult['AutoLogout']);
-					$aResult['Layout'] = (int)$oSettings->GetConf('Layout', $aResult['Layout']);
-
-					if (!$this->GetCapa(false, Enumerations\Capa::AUTOLOGOUT, $oAccount)) {
-						$aResult['AutoLogout'] = 0;
-					}
-
-					if ($this->GetCapa(false, Enumerations\Capa::USER_BACKGROUND, $oAccount)) {
-						$aResult['UserBackgroundName'] = (string)$oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
-						$aResult['UserBackgroundHash'] = (string)$oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
-					}
-				}
-
-				if ($oSettingsLocal instanceof Settings) {
-					$aResult['UseThreads'] = (bool)$oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
-					$aResult['ReplySameFolder'] = (bool)$oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
-
-					if ($this->GetCapa(false, Enumerations\Capa::THEMES, $oAccount)) {
-						$sTheme = (string)$oSettingsLocal->GetConf('Theme', $sTheme);
-					}
-				}
-			}
-		}
-
-		if (!$aResult['Auth']) {
-			if (!$bAdmin) {
-				if ($oConfig->Get('login', 'allow_languages_on_login', true) &&
-					$oConfig->Get('login', 'determine_user_language', true)) {
-					$sLanguage = $this->ValidateLanguage(
-						$this->detectUserLanguage($bAdmin), $sLanguage, false);
-				}
-			}
-		}
-
-		$sTheme = $this->ValidateTheme($sTheme);
 		$sStaticCache = $this->StaticCache();
 
-		$aResult['Theme'] = $sTheme;
-		$aResult['NewThemeLink'] = $this->ThemeLink($sTheme, $bAdmin);
+		$aResult['Theme'] = $this->GetTheme($bAdmin);
 
 		$aResult['Language'] = $this->ValidateLanguage($sLanguage, '', false);
-		$aResult['LanguageAdmin'] = $this->ValidateLanguage($sLanguageAdmin, '', true);
-
-		$aResult['UserLanguageRaw'] = $this->detectUserLanguage($bAdmin);
-
-		$aResult['UserLanguage'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], '', false, true);
-		$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], '', true, true);
+		$aResult['UserLanguage'] = $this->ValidateLanguage($UserLanguageRaw, '', false, true);
+		if ($bAdmin) {
+			$aResult['LanguageAdmin'] = $this->ValidateLanguage($oConfig->Get('webmail', 'language_admin', 'en'), '', true);
+			$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($UserLanguageRaw, '', true, true);
+		}
 
 		$aResult['PluginsLink'] = '';
 		if (0 < $this->Plugins()->Count() && $this->Plugins()->HaveJs($bAdmin)) {
 			$aResult['PluginsLink'] = './?/Plugins/0/' . ($bAdmin ? 'Admin' : 'User') . '/' . $sStaticCache . '/';
 		}
-
-		$aResult['LangLink'] = './?/Lang/0/' . ($bAdmin ? 'Admin' : 'App') . '/' .
-			($bAdmin ? $aResult['LanguageAdmin'] : $aResult['Language']) . '/' . $sStaticCache . '/';
-
-		// $aResult['TemplatesLink'] = './?/Templates/0/'.($bAdmin ? 'Admin' : 'App').'/'.$sStaticCache.'/';
-		$aResult['TemplatesLink'] = './?/Templates/0/' . ($bAdmin ? 'Admin' : 'App') . '/' . $sStaticCache . '/';
 
 		$bAppJsDebug = !!$this->Config()->Get('labs', 'use_app_debug_js', false);
 
@@ -1311,52 +1275,19 @@ class Actions
 		return $aResult;
 	}
 
-	private function getUserLanguagesFromHeader(): array
+	protected function requestSleep(int $iDelay = 1): void
 	{
-		$aResult = $aList = array();
-		$sAcceptLang = \strtolower($this->Http()->GetServer('HTTP_ACCEPT_LANGUAGE', 'en'));
-		if (!empty($sAcceptLang) && \preg_match_all('/([a-z]{1,8}(?:-[a-z]{1,8})?)(?:;q=([0-9.]+))?/', $sAcceptLang, $aList)) {
-			$aResult = \array_combine($aList[1], $aList[2]);
-			foreach ($aResult as $n => $v) {
-				$aResult[$n] = $v ? $v : 1;
-			}
-
-			\arsort($aResult, SORT_NUMERIC);
-		}
-
-		return $aResult;
-	}
-
-	public function detectUserLanguage(bool $bAdmin = false): string
-	{
-		$sResult = '';
-		$aLangs = $this->getUserLanguagesFromHeader();
-
-		foreach (\array_keys($aLangs) as $sLang) {
-			$sLang = $this->ValidateLanguage($sLang, '', $bAdmin, true);
-			if (!empty($sLang)) {
-				$sResult = $sLang;
-				break;
-			}
-		}
-
-		return $sResult;
-	}
-
-	private function requestSleep(int $iWait = 1, int $iDelay = 1): void
-	{
-		if (0 < $iDelay && 0 < $iWait) {
-			if ($iWait > \time() - $_SERVER['REQUEST_TIME_FLOAT']) {
-				\sleep($iDelay);
-			}
+		$time = \microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];
+		if ($iDelay > $time) {
+			\usleep(($iDelay - $time) * 1000000);
 		}
 	}
 
-	private function loginErrorDelay(): void
+	protected function loginErrorDelay(): void
 	{
 		$iDelay = (int)$this->Config()->Get('labs', 'login_fault_delay', 0);
 		if (0 < $iDelay) {
-			$this->requestSleep(1, $iDelay);
+			$this->requestSleep($iDelay);
 		}
 	}
 
@@ -2073,13 +2004,13 @@ class Actions
 		if (!empty($sKey) && ($bForce || ($this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true)))) {
 			$iExpires = $this->Config()->Get('cache', 'http_expires', 3600);
 			if (0 < $iExpires) {
-				$this->oHttp->ServerUseCache($this->etag($sKey), 1382478804, \time() + $iExpires);
+				$this->Http()->ServerUseCache($this->etag($sKey), 1382478804, \time() + $iExpires);
 				$bResult = true;
 			}
 		}
 
 		if (!$bResult) {
-			$this->oHttp->ServerNoCache();
+			$this->Http()->ServerNoCache();
 		}
 
 		return $bResult;
@@ -2090,7 +2021,7 @@ class Actions
 		if (!empty($sKey) && ($bForce || $this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true))) {
 			$sIfNoneMatch = $this->Http()->GetHeader('If-None-Match', '');
 			if ($this->etag($sKey) === $sIfNoneMatch) {
-				$this->Http()->StatusHeader(304);
+				\MailSo\Base\Http::StatusHeader(304);
 				$this->cacheByKey($sKey);
 				exit(0);
 			}
@@ -2132,121 +2063,9 @@ class Actions
 		return $sCache;
 	}
 
-	public function ThemeLink(string $sTheme, bool $bAdmin): string
-	{
-		return './?/Css/0/' . ($bAdmin ? 'Admin' : 'User') . '/-/' . $sTheme . '/-/' . $this->StaticCache() . '/Hash/-/';
-	}
-
-	public function ValidateTheme(string $sTheme): string
-	{
-		return \in_array($sTheme, $this->GetThemes()) ?
-			$sTheme : $this->Config()->Get('themes', 'default', 'Default');
-	}
-
-	public function ValidateLanguage(string $sLanguage, string $sDefault = '', bool $bAdmin = false, bool $bAllowEmptyResult = false): string
-	{
-		$aLang = \SnappyMail\L10n::getLanguages($bAdmin);
-
-		$aHelper = array(
-			'ar' => 'ar-SA',
-			'cs' => 'cs-CZ',
-			'no' => 'nb-NO',
-			'ua' => 'uk-UA',
-			'cn' => 'zh-CN',
-			'zh' => 'zh-CN',
-			'tw' => 'zh-TW',
-			'fa' => 'fa-IR'
-		);
-
-		$sLanguage = isset($aHelper[$sLanguage]) ? $aHelper[$sLanguage] : \strtr($sLanguage, '_', '-');
-		$sDefault  = isset($aHelper[$sDefault])  ? $aHelper[$sDefault]  : \strtr($sDefault, '_', '-');
-
-		if (\in_array($sLanguage, $aLang)) {
-			return $sLanguage;
-		}
-
-		$sLangCountry = \preg_replace_callback('/-([a-zA-Z]{2})$/', function ($aData) {
-			return \strtoupper($aData[0]);
-		}, $sLanguage);
-		if (\in_array($sLangCountry, $aLang)) {
-			return $sLangCountry;
-		}
-
-		if (\in_array($sDefault, $aLang)) {
-			return $sDefault;
-		}
-
-		if ($bAllowEmptyResult) {
-			return '';
-		}
-
-		$sResult = $this->Config()->Get('webmail', $bAdmin ? 'language_admin' : 'language', 'en');
-		return \in_array($sResult, $aLang) ? $sResult : 'en';
-	}
-
 	public function ValidateContactPdoType(string $sType): string
 	{
 		return \in_array($sType, \RainLoop\Common\PdoAbstract::getAvailableDrivers()) ? $sType : 'sqlite';
-	}
-
-	/**
-	 * @staticvar array $aCache
-	 */
-	public function GetThemes(): array
-	{
-		static $aCache = array();
-		if ($aCache) {
-			return $aCache;
-		}
-
-		$bClear = false;
-		$bDefault = false;
-		$aCache = array();
-		$sDir = APP_VERSION_ROOT_PATH . 'themes';
-		if (\is_dir($sDir)) {
-			$rDirH = \opendir($sDir);
-			if ($rDirH) {
-				while (($sFile = \readdir($rDirH)) !== false) {
-					if ('.' !== $sFile[0] && \is_dir($sDir . '/' . $sFile) && \file_exists($sDir . '/' . $sFile . '/styles.less')) {
-						if ('Default' === $sFile) {
-							$bDefault = true;
-						} else if ('Clear' === $sFile) {
-							$bClear = true;
-						} else {
-							$aCache[] = $sFile;
-						}
-					}
-				}
-				closedir($rDirH);
-			}
-		}
-
-		$sDir = APP_INDEX_ROOT_PATH . 'themes'; // custom user themes
-		if (\is_dir($sDir)) {
-			$rDirH = \opendir($sDir);
-			if ($rDirH) {
-				while (($sFile = \readdir($rDirH)) !== false) {
-					if ('.' !== $sFile[0] && \is_dir($sDir . '/' . $sFile) && \file_exists($sDir . '/' . $sFile . '/styles.less')) {
-						$aCache[] = $sFile . '@custom';
-					}
-				}
-
-				\closedir($rDirH);
-			}
-		}
-
-		$aCache = \array_unique($aCache);
-		\sort($aCache);
-
-		if ($bDefault) {
-			\array_unshift($aCache, 'Default');
-		}
-
-		if ($bClear) {
-			\array_push($aCache, 'Clear');
-		}
-
-		return $aCache;
 	}
 
 	public function ProcessTemplate(string $sName, string $sHtml): string
@@ -2294,55 +2113,6 @@ class Actions
 	{
 		$this->Logger()->Write('Location: ' . $sUrl);
 		\header('Location: ' . $sUrl);
-	}
-
-	public function GetLanguageAndTheme(bool $bAdmin = false): array
-	{
-		$sTheme = $this->Config()->Get('webmail', 'theme', 'Default');
-
-		if ($bAdmin) {
-			$sLanguage = $this->Config()->Get('webmail', 'language_admin', 'en');
-		} else {
-			$oAccount = $this->GetAccount();
-
-			$sLanguage = $this->Config()->Get('webmail', 'language', 'en');
-
-			if ($oAccount) {
-				$oSettings = $this->SettingsProvider()->Load($oAccount);
-				if ($oSettings instanceof Settings) {
-					$sLanguage = $oSettings->GetConf('Language', $sLanguage);
-				}
-
-				$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
-				if ($oSettingsLocal instanceof Settings) {
-					$sTheme = $oSettingsLocal->GetConf('Theme', $sTheme);
-				}
-			}
-		}
-
-		$sLanguage = $this->ValidateLanguage($sLanguage, '', $bAdmin);
-		$sTheme = $this->ValidateTheme($sTheme);
-
-		return array($sLanguage, $sTheme);
-	}
-
-	public function StaticI18N(string $sKey): string
-	{
-		static $sLang = null;
-		static $aLang = null;
-
-		if (null === $sLang) {
-			$aList = $this->GetLanguageAndTheme();
-			$sLang = $aList[0];
-		}
-
-		if (null === $aLang) {
-			$sLang = $this->ValidateLanguage($sLang, 'en');
-			$aLang = \SnappyMail\L10n::load($sLang, 'static');
-			$this->Plugins()->ReadLang($sLang, $aLang);
-		}
-
-		return $aLang[$aKey] ?? $sKey;
 	}
 
 	public function StaticPath(string $sPath): string

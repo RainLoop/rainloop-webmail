@@ -31,157 +31,61 @@ class Message implements \JsonSerializable
 		$iHeaderTimeStampInUTC = 0,
 		$sHeaderDate = '',
 		$aFlags = [],
-		$aFlagsLowerCase = [];
+		$aFlagsLowerCase = [],
 
-	/**
-	 * @var \MailSo\Mime\EmailCollection
-	 */
-	private $oFrom;
+		/**
+		 * @var \MailSo\Mime\EmailCollection
+		 */
+		$oFrom = null,
+		$oSender = null,
+		$oReplyTo = null,
+		$oDeliveredTo = null,
+		$oTo = null,
+		$oCc = null,
+		$oBcc = null,
 
-	/**
-	 * @var \MailSo\Mime\EmailCollection
-	 */
-	private $oSender;
+		$sInReplyTo = '',
 
-	/**
-	 * @var \MailSo\Mime\EmailCollection
-	 */
-	private $oReplyTo;
+		$sPlain = '',
+		$sHtml = '',
 
-	/**
-	 * @var \MailSo\Mime\EmailCollection
-	 */
-	private $oDeliveredTo;
+		/**
+		 * @var AttachmentCollection
+		 */
+		$oAttachments = null,
 
-	/**
-	 * @var \MailSo\Mime\EmailCollection
-	 */
-	private $oTo;
+		/**
+		 * @var array
+		 */
+		$aDraftInfo = null,
 
-	/**
-	 * @var \MailSo\Mime\EmailCollection
-	 */
-	private $oCc;
+		$sReferences = '',
 
-	/**
-	 * @var \MailSo\Mime\EmailCollection
-	 */
-	private $oBcc;
+		/**
+		 * @var int
+		 */
+		$iSensitivity,
+		$iPriority,
 
-	/**
-	 * @var string
-	 */
-	private $sInReplyTo;
+		$sDeliveryReceipt = '',
 
-	/**
-	 * @var string
-	 */
-	private $sPlain;
+		$sReadReceipt = '',
 
-	/**
-	 * @var string
-	 */
-	private $sHtml;
+		$aUnsubsribeLinks = array(),
 
-	/**
-	 * @var AttachmentCollection
-	 */
-	private $oAttachments;
+		$aThreads = array(),
 
-	/**
-	 * @var array
-	 */
-	private $aDraftInfo;
+		$bTextPartIsTrimmed = false,
 
-	/**
-	 * @var string
-	 */
-	private $sReferences;
-
-	/**
-	 * @var int
-	 */
-	private $iSensitivity;
-
-	/**
-	 * @var int
-	 */
-	private $iPriority;
-
-	/**
-	 * @var string
-	 */
-	private $sDeliveryReceipt;
-
-	/**
-	 * @var string
-	 */
-	private $sReadReceipt;
-
-	/**
-	 * @var array
-	 */
-	private $aUnsubsribeLinks;
-
-	/**
-	 * @var array
-	 */
-	private $aThreads;
-
-	/**
-	 * @var bool
-	 */
-	private $bTextPartIsTrimmed;
-
-	/**
-	 * @var string
-	 */
-	private $sPgpSignature;
-
-	/**
-	 * @var bool
-	 */
-	private $bPgpSigned;
-
-	/**
-	 * @var bool
-	 */
-	private $bPgpEncrypted;
+		$sPgpSignature = '',
+		$sPgpSignatureMicAlg = '',
+		$bPgpSigned = false,
+		$bPgpEncrypted = false;
 
 	function __construct()
 	{
-		$this->oFrom = null;
-		$this->oSender = null;
-		$this->oReplyTo = null;
-		$this->oDeliveredTo = null;
-		$this->oTo = null;
-		$this->oCc = null;
-		$this->oBcc = null;
-
-		$this->sPlain = '';
-		$this->sHtml = '';
-
-		$this->oAttachments = null;
-		$this->aDraftInfo = null;
-
-		$this->sInReplyTo = '';
-		$this->sReferences = '';
-		$this->aUnsubsribeLinks = array();
-
 		$this->iSensitivity = \MailSo\Mime\Enumerations\Sensitivity::NOTHING;
 		$this->iPriority = \MailSo\Mime\Enumerations\MessagePriority::NORMAL;
-		$this->sDeliveryReceipt = '';
-		$this->sReadReceipt = '';
-
-		$this->aThreads = array();
-
-		$this->bTextPartIsTrimmed = false;
-
-		$this->sPgpSignature = '';
-		$this->bPgpSigned = false;
-		$this->bPgpEncrypted = false;
-
-		return $this;
 	}
 
 	public function Plain() : string
@@ -197,6 +101,11 @@ class Message implements \JsonSerializable
 	public function PgpSignature() : string
 	{
 		return $this->sPgpSignature;
+	}
+
+	public function PgpSignatureMicAlg() : string
+	{
+		return $this->sPgpSignatureMicAlg;
 	}
 
 	public function isPgpSigned() : bool
@@ -611,6 +520,24 @@ class Message implements \JsonSerializable
 			$this->sInReplyTo = $oFetchResponse->GetFetchEnvelopeValue(8, '');
 		}
 
+		// Content-Type: multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"
+		if ('multipart/signed' === \strtolower($this->sContentType)
+		 && 'application/pgp-signature' === \strtolower($oHeaders->ParameterValue(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, \MailSo\Mime\Enumerations\Parameter::PROTOCOL)))
+		{
+			$aPgpSignatureParts = $oBodyStructure ? $oBodyStructure->SearchByContentType('application/pgp-signature') : null;
+			if ($this->bPgpSigned = !empty($aPgpSignatureParts)) {
+				$sPgpSignatureText = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::BODY.'['.$aPgpSignatureParts[0]->PartID().']');
+				if (\is_string($sPgpSignatureText) && 0 < \strlen($sPgpSignatureText) && 0 < \strpos($sPgpSignatureText, 'BEGIN PGP SIGNATURE')) {
+					$this->sPgpSignature = \trim($sPgpSignatureText);
+					$this->sPgpSignatureMicAlg = (string) $oHeaders->ParameterValue(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'micalg');
+				}
+			}
+		}
+
+		// Content-Type: multipart/encrypted; protocol="application/pgp-encrypted"
+		$this->bPgpEncrypted = ('multipart/encrypted' === \strtolower($this->sContentType)
+		 && 'application/pgp-encrypted' === \strtolower($oHeaders->ParameterValue(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, \MailSo\Mime\Enumerations\Parameter::PROTOCOL)));
+
 		$aTextParts = $oBodyStructure ? $oBodyStructure->SearchHtmlOrPlainParts() : null;
 		if ($aTextParts)
 		{
@@ -674,38 +601,16 @@ class Message implements \JsonSerializable
 			}
 
 			$aMatch = array();
-			if (\preg_match('/-----BEGIN PGP SIGNATURE-----(.+)-----END PGP SIGNATURE-----/ism', $this->sPlain, $aMatch) && !empty($aMatch[0]))
+			if (!$this->bPgpSigned && \preg_match('/-----BEGIN PGP SIGNATURE-----(.+)-----END PGP SIGNATURE-----/ism', $this->sPlain, $aMatch) && !empty($aMatch[0]))
 			{
 				$this->sPgpSignature = \trim($aMatch[0]);
 				$this->bPgpSigned = true;
 			}
 
-			$aMatch = array();
-			if (\preg_match('/-----BEGIN PGP MESSAGE-----/ism', $this->sPlain, $aMatch) && !empty($aMatch[0]))
-			{
-				$this->bPgpEncrypted = true;
-			}
+			$this->bPgpEncrypted = !$this->bPgpEncrypted && false !== \stripos($this->sPlain, '-----BEGIN PGP MESSAGE-----');
 
 			unset($aHtmlParts, $aPlainParts, $aMatch);
 		}
-
-//		if (empty($this->sPgpSignature) && 'multipart/signed' === \strtolower($this->sContentType) &&
-//			'application/pgp-signature' === \strtolower($oHeaders->ParameterValue(
-//				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-//				\MailSo\Mime\Enumerations\Parameter::PROTOCOL
-//			)))
-//		{
-//			$aPgpSignatureParts = $oBodyStructure ? $oBodyStructure->SearchByContentType('application/pgp-signature') : null;
-//			if (\is_array($aPgpSignatureParts) && 0 < \count($aPgpSignatureParts) && isset($aPgpSignatureParts[0]))
-//			{
-//				$sPgpSignatureText = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::BODY.'['.$aPgpSignatureParts[0]->PartID().']');
-//				if (\is_string($sPgpSignatureText) && 0 < \strlen($sPgpSignatureText) && 0 < \strpos($sPgpSignatureText, 'BEGIN PGP SIGNATURE'))
-//				{
-//					$this->sPgpSignature = \trim($sPgpSignatureText);
-//					$this->bPgpSigned = true;
-//				}
-//			}
-//		}
 
 		if ($oBodyStructure)
 		{

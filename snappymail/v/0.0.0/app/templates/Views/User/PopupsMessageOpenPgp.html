@@ -1,48 +1,46 @@
 <div class="modal fade b-message-open-pgp-content g-ui-user-select-none" data-bind="modal: modalVisibility">
-	<div>
-		<div class="modal-header">
-			<button type="button" class="close" data-bind="command: cancelCommand">×</button>
-			<h3 data-i18n="POPUPS_MESSAGE_OPEN_PGP/TITLE_MESSAGE_OPEN_PGP"></h3>
-		</div>
-		<div class="modal-body">
-			<div class="form-horizontal">
-				<div class="alert" data-bind="visible: '' !== notification()">
-					<span data-bind="text: notification"></span>
-				</div>
-				<br />
-				<div class="control-group">
-					<label class="control-label" data-i18n="POPUPS_MESSAGE_OPEN_PGP/LABEL_KEY"></label>
-					<div class="controls key-list" data-bind="foreach: privateKeys" style="margin-top: 5px">
-						<div class="key-list__item">
-							<i class="key-list__item__radio fontastic">○</i>
-							<div class="key-list__item__names">
-								<span data-bind="foreach: users">
-									<div>
-									<span class="key-list__item__name">
-										<span data-bind="text: $data"></span>
-										&nbsp;
-										<span>[<span data-bind="text: $parent.id"></span>]</span>
-									</span>
-									</div>
+	<div class="modal-header">
+		<button type="button" class="close" data-bind="command: cancelCommand">×</button>
+		<h3 data-i18n="POPUPS_MESSAGE_OPEN_PGP/TITLE_MESSAGE_OPEN_PGP"></h3>
+	</div>
+	<div class="modal-body">
+		<div class="form-horizontal">
+			<div class="alert" data-bind="visible: '' !== notification()">
+				<span data-bind="text: notification"></span>
+			</div>
+			<br />
+			<div class="control-group">
+				<label class="control-label" data-i18n="POPUPS_MESSAGE_OPEN_PGP/LABEL_KEY"></label>
+				<div class="controls key-list" data-bind="foreach: privateKeys" style="margin-top: 5px">
+					<div class="key-list__item">
+						<i class="key-list__item__radio fontastic">○</i>
+						<div class="key-list__item__names">
+							<span data-bind="foreach: users">
+								<div>
+								<span class="key-list__item__name">
+									<span data-bind="text: $data"></span>
+									&nbsp;
+									<span>[<span data-bind="text: $parent.id"></span>]</span>
 								</span>
-							</div>
+								</div>
+							</span>
 						</div>
 					</div>
 				</div>
-				<div class="control-group">
-					<label class="control-label" data-i18n="GLOBAL/PASSWORD"></label>
-					<div class="controls">
-						<input type="password" class="inputPassword input-xlarge" autofocus="" autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="textInput: password, onEnter: doCommand" />
-					</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" data-i18n="GLOBAL/PASSWORD"></label>
+				<div class="controls">
+					<input type="password" class="inputPassword input-xlarge" autofocus="" autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+						data-bind="textInput: password, onEnter: doCommand" />
 				</div>
 			</div>
 		</div>
-		<div class="modal-footer">
-			<button class="btn buttonDo" data-bind="command: doCommand">
-				<i class="fontastic" data-bind="css: {'icon-spinner': submitRequest()}">🔑</i>
-				<span data-i18n="POPUPS_MESSAGE_OPEN_PGP/BUTTON_DECRYPT"></span>
-			</button>
-		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn buttonDo" data-bind="command: doCommand">
+			<i class="fontastic" data-bind="css: {'icon-spinner': submitRequest()}">🔑</i>
+			<span data-i18n="POPUPS_MESSAGE_OPEN_PGP/BUTTON_DECRYPT"></span>
+		</button>
 	</div>
 </div>

@@ -163,7 +163,7 @@
 					<div class="input-append" data-bind="visible: allowSearch">
 						<div class="close-input-wrp">
 							<a class="close" data-bind="click: cancelSearch, visible: '' !== messageListSearchDesc()">×</a>
-							<input type="text" class="span4 inputSearch" tabindex="-1" placeholder="Search" autocorrect="off" autocapitalize="off" data-i18n="[placeholder]GLOBAL/SEARCH" data-bind="value: inputProxyMessageListSearch, onEnter: searchEnterAction, hasfocus: inputMessageListSearchFocus" />
+							<input type="search" class="span4 inputSearch" tabindex="-1" placeholder="Search" autocorrect="off" autocapitalize="off" data-i18n="[placeholder]GLOBAL/SEARCH" data-bind="value: inputProxyMessageListSearch, onEnter: searchEnterAction, hasfocus: inputMessageListSearchFocus" />
 						</div>
 						<a class="btn buttonMoreSearch" data-bind="visible: allowSearchAdv, click: advancedSearchClick">
 							<span class="caret"></span>
@@ -172,82 +172,78 @@
 				</div>
 			</div>
 			<div class="b-content" data-bind="initDom: dragOverBodyArea">
-				<div class="content">
-					<div class="content-wrapper">
-						<div class="listThreadUidDesc" data-bind="visible: '' !== messageListEndThreadUid(), click: cancelThreadUid">
-							<i class="fontastic" data-bind="click: cancelThreadUid">⬅</i>
-							<span data-i18n="MESSAGE_LIST/BACK_TO_MESSAGE_LIST"></span>
-						</div>
-						<div class="listSearchDesc" data-bind="visible: '' !== messageListSearchDesc(), text: messageListSearchDesc"></div>
-						<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && '' === messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea">
-							<i class="fontastic e-icon">⬇</i>
-							<span data-i18n="MESSAGE_LIST/PUT_MESSAGE_HERE"></span>
-						</div>
-						<div class="listClear" data-bind="visible: clearListIsVisible()">
-							<span class="g-ui-link" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER" data-bind="command: clearCommand"></span>
-						</div>
-						<div class="listError" data-bind="visible: !dragOver() && '' !== messageListError()">
-							<span class="error" data-bind="text: messageListError"></span>
-						</div>
-						<div class="listEmptyList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' === messageListSearch()"
-							data-i18n="MESSAGE_LIST/EMPTY_LIST"></div>
-						<div class="listEmptyListLoading" data-bind="visible: !dragOver() && 0 === messageList().length &&
-							messageListCompleteLoadingThrottle() && '' === messageListError()">
-							<span data-i18n="GLOBAL/LOADING"></span>
-							<span class="textLoadingAnimationD1">.</span>
-							<span class="textLoadingAnimationD2">.</span>
-							<span class="textLoadingAnimationD3">.</span>
-						</div>
-						<div class="listEmptySearchList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' !== messageListSearch()"
-							data-i18n="MESSAGE_LIST/EMPTY_SEARCH_LIST"></div>
-						<div data-bind="dragmessages: getDragData">
-							<div class="messageListPlace" data-bind="foreach: messageList">
+				<div class="listThreadUidDesc" data-bind="visible: '' !== messageListEndThreadUid(), click: cancelThreadUid">
+					<i class="fontastic" data-bind="click: cancelThreadUid">⬅</i>
+					<span data-i18n="MESSAGE_LIST/BACK_TO_MESSAGE_LIST"></span>
+				</div>
+				<div class="listSearchDesc" data-bind="visible: '' !== messageListSearchDesc(), text: messageListSearchDesc"></div>
+				<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && '' === messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea">
+					<i class="fontastic e-icon">⬇</i>
+					<span data-i18n="MESSAGE_LIST/PUT_MESSAGE_HERE"></span>
+				</div>
+				<div class="listClear" data-bind="visible: clearListIsVisible()">
+					<span class="g-ui-link" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER" data-bind="command: clearCommand"></span>
+				</div>
+				<div class="listError" data-bind="visible: !dragOver() && '' !== messageListError()">
+					<span class="error" data-bind="text: messageListError"></span>
+				</div>
+				<div class="listEmptyList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' === messageListSearch()"
+					data-i18n="MESSAGE_LIST/EMPTY_LIST"></div>
+				<div class="listEmptyListLoading" data-bind="visible: !dragOver() && 0 === messageList().length &&
+					messageListCompleteLoadingThrottle() && '' === messageListError()">
+					<span data-i18n="GLOBAL/LOADING"></span>
+					<span class="textLoadingAnimationD1">.</span>
+					<span class="textLoadingAnimationD2">.</span>
+					<span class="textLoadingAnimationD3">.</span>
+				</div>
+				<div class="listEmptySearchList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' !== messageListSearch()"
+					data-i18n="MESSAGE_LIST/EMPTY_SEARCH_LIST"></div>
+				<div data-bind="dragmessages: getDragData">
+					<div class="messageListPlace" data-bind="foreach: messageList">
 
-								<div class="messageListItem" data-bind="css: lineAsCss()">
-									<div class="checkboxMessage fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
+						<div class="messageListItem" data-bind="css: lineAsCss()">
+							<div class="checkboxMessage fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
 
-									<div class="flagParent">
-										<i class="flagOn fontastic">★</i>
-										<i class="flagOnHalf fontastic">☆</i>
-										<i class="flagOff fontastic">☆</i>
-										<!-- ⚐⚑ -->
-									</div>
-
-									<div class="senderParent actionHandle">
-										<i class="replyFlag fontastic">←</i>
-										<i class="forwardFlag fontastic">→</i>
-										<span class="sender" data-bind="text: senderEmailsString, attr: {'title': senderClearEmailsString}"></span>
-									</div>
-
-									<div class="attachmentParent actionHandle">
-										<i data-bind="css: attachmentIconClass"></i>
-									</div>
-
-									<div class="subjectParent actionHandle">
-										<b class="importantMark">!</b>
-										<span class="emptySubjectText" data-bind="text: $root.emptySubjectValue"></span>
-										<span class="subject" data-bind="text: subject"></span>
-									</div>
-
-									<div class="sizeParent actionHandle" data-bind="text: friendlySize()"></div>
-
-									<div class="threadsParent" data-bind="visible: 1 < threadsLen()">
-										<span class="threads-len">
-											<span class="threads-len-data">
-												<span data-bind="text: threadsLen"></span>
-												<i class="icon-right-mini"></i>
-											</span>
-										</span>
-									</div>
-
-									<time class="actionHandle" data-moment-format="SHORT" data-moment-format-title="FULL" data-bind="moment: dateTimeStampInUTC"></time>
-								</div>
-
+							<div class="flagParent">
+								<i class="flagOn fontastic">★</i>
+								<i class="flagOnHalf fontastic">☆</i>
+								<i class="flagOff fontastic">☆</i>
+								<!-- ⚐⚑ -->
 							</div>
+
+							<div class="senderParent actionHandle">
+								<i class="replyFlag fontastic">←</i>
+								<i class="forwardFlag fontastic">→</i>
+								<span class="sender" data-bind="text: senderEmailsString, attr: {'title': senderClearEmailsString}"></span>
+							</div>
+
+							<div class="attachmentParent actionHandle">
+								<i data-bind="css: attachmentIconClass"></i>
+							</div>
+
+							<div class="subjectParent actionHandle">
+								<b class="importantMark">!</b>
+								<span class="emptySubjectText" data-bind="text: $root.emptySubjectValue"></span>
+								<span class="subject" data-bind="text: subject"></span>
+							</div>
+
+							<div class="sizeParent actionHandle" data-bind="text: friendlySize()"></div>
+
+							<div class="threadsParent" data-bind="visible: 1 < threadsLen()">
+								<span class="threads-len">
+									<span class="threads-len-data">
+										<span data-bind="text: threadsLen"></span>
+										<i class="icon-right-mini"></i>
+									</span>
+								</span>
+							</div>
+
+							<time class="actionHandle" data-moment-format="SHORT" data-moment-format-title="FULL" data-bind="moment: dateTimeStampInUTC"></time>
 						</div>
-						<div id="messagesDragImage"><span class="text"></span>&nbsp;<i class="icon-mail"></i></div>
+
 					</div>
 				</div>
+				<div id="messagesDragImage"><span class="text"></span>&nbsp;<i class="icon-mail"></i></div>
 			</div>
 			<div class="b-footer thm-message-list-bottom-toolbar">
 				<span data-bind="visible: 0 < userUsageProc(), attr: { title: quotaTooltip() }" class="e-quota">

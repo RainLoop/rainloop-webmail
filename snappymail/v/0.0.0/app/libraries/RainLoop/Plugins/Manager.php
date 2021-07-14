@@ -540,7 +540,7 @@ class Manager
 		return $this;
 	}
 
-	public function bIsEnabled() : bool
+	public function IsEnabled() : bool
 	{
 		return $this->bIsEnabled;
 	}

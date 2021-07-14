@@ -1,9 +1,9 @@
-const storage = localStorage,
+const
 CLIENT_SIDE_STORAGE_INDEX_NAME = 'rlcsc',
 getStorage = () => {
 	try {
-		const value = storage.getItem(CLIENT_SIDE_STORAGE_INDEX_NAME) || null;
-		return null == value ? null : JSON.parse(value);
+		const value = localStorage.getItem(CLIENT_SIDE_STORAGE_INDEX_NAME);
+		return value ? JSON.parse(value) : null;
 	} catch (e) {
 		return null;
 	}
@@ -19,7 +19,7 @@ export function set(key, data) {
 	storageResult['p' + key] = data;
 
 	try {
-		storage.setItem(CLIENT_SIDE_STORAGE_INDEX_NAME, JSON.stringify(storageResult));
+		localStorage.setItem(CLIENT_SIDE_STORAGE_INDEX_NAME, JSON.stringify(storageResult));
 		return true;
 	} catch (e) {
 		return false;
@@ -32,10 +32,7 @@ export function set(key, data) {
  */
 export function get(key) {
 	try {
-		key = 'p' + key;
-		const storageResult = getStorage();
-
-		return storageResult && null != storageResult[key] ? storageResult[key] : null;
+		return (getStorage() || {})['p' + key];
 	} catch (e) {
 		return null;
 	}

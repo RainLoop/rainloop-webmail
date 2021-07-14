@@ -557,9 +557,9 @@ trait Messages
 
 		$sFromFolder = $this->GetActionParam('FromFolder', '');
 		$sToFolder = $this->GetActionParam('ToFolder', '');
-		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
 		$bMarkAsRead = !empty($this->GetActionParam('MarkAsRead', '0'));
 
+		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
 		$aFilteredUids = \array_filter(\array_map('intval', $aUids));
 
 		if ($bMarkAsRead)
@@ -621,8 +621,8 @@ trait Messages
 
 		$sFromFolder = $this->GetActionParam('FromFolder', '');
 		$sToFolder = $this->GetActionParam('ToFolder', '');
-		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
 
+		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
 		$aFilteredUids = \array_filter(\array_map('intval', $aUids));
 
 		try

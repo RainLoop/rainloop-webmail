@@ -72,8 +72,6 @@ export class SecurityAdminSettings {
 				})
 		});
 
-		this.onNewAdminPasswordResponse = this.onNewAdminPasswordResponse.bind(this);
-
 		decorateKoCommands(this, {
 			saveNewAdminPasswordCommand: self => self.adminLogin().trim() && self.adminPassword()
 		});
@@ -93,27 +91,25 @@ export class SecurityAdminSettings {
 		this.adminPasswordUpdateError(false);
 		this.adminPasswordUpdateSuccess(false);
 
-		Remote.saveNewAdminPassword(this.onNewAdminPasswordResponse, {
+		Remote.saveNewAdminPassword((iError, data) => {
+			if (iError) {
+				this.adminPasswordUpdateError(true);
+			} else {
+				this.adminPassword('');
+				this.adminPasswordNew('');
+				this.adminPasswordNew2('');
+
+				this.adminPasswordUpdateSuccess(true);
+
+				this.weakPassword(!!data.Result.Weak);
+			}
+		}, {
 			'Login': this.adminLogin(),
 			'Password': this.adminPassword(),
 			'NewPassword': this.adminPasswordNew()
 		});
 
 		return true;
-	}
-
-	onNewAdminPasswordResponse(iError, data) {
-		if (iError) {
-			this.adminPasswordUpdateError(true);
-		} else {
-			this.adminPassword('');
-			this.adminPasswordNew('');
-			this.adminPasswordNew2('');
-
-			this.adminPasswordUpdateSuccess(true);
-
-			this.weakPassword(!!data.Result.Weak);
-		}
 	}
 
 	onHide() {

@@ -11,14 +11,16 @@ class Socket extends \SnappyMail\HTTP\Request
 		return \function_exists('openssl_open');
 	}
 
+	private static $Authorization = [];
 	protected function __doRequest(string &$method, string &$request_url, &$body, array $extra_headers) : Response
 	{
 		$parts = \parse_url($request_url);
 
+		$host = $parts['host'];
+
 		// Set a default port.
-		$port = 0;
 		if (\array_key_exists('port', $parts)) {
-			$port = $parts['port'];
+			$host .= ":{$parts['port']}";
 		} else if ('http' === $parts['scheme'] || 'https' === $parts['scheme']) {
 			$parts['port'] = self::getSchemePort($parts['scheme']);
 		} else {
@@ -31,11 +33,15 @@ class Socket extends \SnappyMail\HTTP\Request
 
 		$headers = array(
 			"{$method} {$parts['path']}".(isset($parts['query']) ? "?{$parts['query']}" : '')." HTTP/1.1",
-			"Host: ".$parts['host'].($port ? ":".$port : ''),
+			"Host: {$host}",
 			"User-Agent: {$this->user_agent}",
 			'Connection: Close',
 		);
-
+		if (isset($extra_headers['Authorization'])) {
+			static::$Authorization[$host] = $extra_headers['Authorization'];
+		} else if (isset(static::$Authorization[$host])) {
+			$extra_headers['Authorization'] = static::$Authorization[$host];
+		}
 		if ($extra_headers) {
 			$headers = \array_merge($headers, $extra_headers);
 		}

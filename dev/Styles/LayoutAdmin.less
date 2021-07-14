@@ -5,7 +5,7 @@
 	background-position: center;
 }
 
-#rl-center, #rl-top, #rl-left, #rl-right {
+#rl-left, #rl-right {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -15,21 +15,6 @@
 	margin: 0;
 	border: 0;
 	z-index: 0;
-}
-
-#rl-content {
-	height: 100%;
-	width: 100%;
-}
-
-#rl-center {
-	min-width: 600px;
-	min-height: 400px;
-}
-
-#rl-top {
-	bottom: auto;
-	z-index: 2;
 }
 
 #rl-left {
@@ -50,11 +35,10 @@
 	z-index: 1100;
 	overflow: auto;
 	background-color: rgba(0,0,0,0.3);
-//	-webkit-overflow-scrolling: touch;
 }
 
-.b-settings-content {
-	padding:20px 20px 20px 30px;
+#rl-settings-subscreen {
+	padding: 20px;
 }
 
 /* desktop */
@@ -77,13 +61,8 @@
 
 /* mobile and tablet */
 @media screen and (max-width: 999px) {
-	.b-settings-content {
-		padding: 10px 10px 10px 20px;
-	}
-
-	#rl-center {
-		min-width: 250px;
-		min-height: 250px;
+	#rl-settings-subscreen {
+		padding: 10px;
 	}
 
 	html:not(.rl-left-panel-disabled) #rl-right {
@@ -92,11 +71,7 @@
 
 	html.rl-left-panel-disabled {
 		#rl-left {
-			width: 0px !important;
-
-			.opacity-on-panel-disabled {
-				opacity: 0.3;
-			}
+			width: 0 !important;
 		}
 		#rl-right {
 			left: 5px !important;

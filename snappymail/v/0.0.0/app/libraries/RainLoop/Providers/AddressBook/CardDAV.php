@@ -27,6 +27,9 @@ trait CardDAV
 			$this->oLogger->WriteException($oException);
 		}
 
+		/**
+		 * find every <response><href>*.vcf</href> with empty <resourcetype/>
+		 */
 		if (\is_array($aResponse))
 		{
 			$mResult = array();
@@ -35,7 +38,6 @@ trait CardDAV
 				$sKey = \rtrim(\trim($sKey), '\\/');
 				if (!empty($sKey) && is_array($aItem))
 				{
-					$aItem = \array_change_key_case($aItem, \CASE_LOWER);
 					if (isset($aItem['{DAV:}getetag']))
 					{
 						$aMatch = array();
@@ -77,7 +79,7 @@ trait CardDAV
 		return $mResult;
 	}
 
-	protected function davClientRequest(DAVClient $oClient, string $sCmd, string $sUrl, $mData = null) : ?array
+	protected function davClientRequest(DAVClient $oClient, string $sCmd, string $sUrl, $mData = null) : ?\SnappyMail\HTTP\Response
 	{
 		\MailSo\Base\Utils::ResetTimeLimit();
 
@@ -89,18 +91,17 @@ trait CardDAV
 //			$this->oLogger->Write($mData, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
 //		}
 
-		$aResponse = null;
 		try
 		{
 			if (('PUT' === $sCmd || 'POST' === $sCmd) && null !== $mData)
 			{
-				$aResponse = $oClient->request($sCmd, $sUrl, $mData, array(
+				return $oClient->request($sCmd, $sUrl, $mData, array(
 					'Content-Type' => 'text/vcard; charset=utf-8'
 				));
 			}
 			else
 			{
-				$aResponse = $oClient->request($sCmd, $sUrl);
+				return $oClient->request($sCmd, $sUrl);
 			}
 
 //			if ('GET' === $sCmd)
@@ -113,7 +114,7 @@ trait CardDAV
 			$this->oLogger->WriteException($oException);
 		}
 
-		return $aResponse;
+		return null;
 	}
 
 	private function detectionPropFind(DAVClient $oClient, string $sPath) : ?array

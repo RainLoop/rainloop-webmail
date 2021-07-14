@@ -155,15 +155,10 @@ class Contact implements \JsonSerializable
 	{
 		if (empty($this->IdContactStr))
 		{
-			$this->RegenerateContactStr();
+			$this->IdContactStr = \SnappyMail\UUID::generate();
 		}
 
 		$this->PopulateDisplayAndFullNameValue();
-	}
-
-	public function RegenerateContactStr() : void
-	{
-		$this->IdContactStr = \SnappyMail\UUID::generate();
 	}
 
 	public function GetEmails() : array
@@ -188,11 +183,6 @@ class Contact implements \JsonSerializable
 	public function ToVCard(string $sPreVCard = '', $oLogger = null) : string
 	{
 		$this->UpdateDependentValues();
-
-		if (!\class_exists('Sabre\DAV\Client'))
-		{
-			return '';
-		}
 
 		if ("\xef\xbb\xbf" === \substr($sPreVCard, 0, 3))
 		{
@@ -500,136 +490,98 @@ class Contact implements \JsonSerializable
 		}
 	}
 
-	public function PopulateByVCard(string $sUid, string $sVCard, string $sEtag = '', $oLogger = null) : bool
+	public function PopulateByVCard(\Sabre\VObject\Component\VCard $oVCard, string $sEtag = '') : bool
 	{
-		if ("\xef\xbb\xbf" === \substr($sVCard, 0, 3))
-		{
-			$sVCard = \substr($sVCard, 3);
-		}
-
 		$this->Properties = array();
-
-		if (!\class_exists('Sabre\DAV\Client'))
-		{
-			return false;
-		}
 
 		if (!empty($sEtag))
 		{
 			$this->Etag = $sEtag;
 		}
 
-		$this->IdContactStr = $sUid;
-
-		try
-		{
-			$oVCard = \Sabre\VObject\Reader::read($sVCard);
-		}
-		catch (\Throwable $oExc)
-		{
-			if ($oLogger)
-			{
-				$oLogger->WriteException($oExc);
-				$oLogger->WriteDump($sVCard);
-			}
-		}
-
-//		if ($oLogger)
-//		{
-//			$oLogger->WriteDump($sVCard);
-//		}
-
 		$aProperties = array();
 
-		if ($oVCard)
+		$bOldVersion = empty($oVCard->VERSION) ? false :
+			\in_array((string) $oVCard->VERSION, array('2.1', '2.0', '1.0'));
+
+		if (isset($oVCard->FN) && '' !== \trim($oVCard->FN))
 		{
-			$bOldVersion = empty($oVCard->VERSION) ? false :
-				\in_array((string) $oVCard->VERSION, array('2.1', '2.0', '1.0'));
+			$sValue = $this->getPropertyValueHelper($oVCard->FN, $bOldVersion);
+			$aProperties[] = new Property(PropertyType::FULLNAME, $sValue);
+		}
 
-			if (isset($oVCard->FN) && '' !== \trim($oVCard->FN))
-			{
-				$sValue = $this->getPropertyValueHelper($oVCard->FN, $bOldVersion);
-				$aProperties[] = new Property(PropertyType::FULLNAME, $sValue);
-			}
+		if (isset($oVCard->NICKNAME) && '' !== \trim($oVCard->NICKNAME))
+		{
+			$sValue = $sValue = $this->getPropertyValueHelper($oVCard->NICKNAME, $bOldVersion);
+			$aProperties[] = new Property(PropertyType::NICK_NAME, $sValue);
+		}
 
-			if (isset($oVCard->NICKNAME) && '' !== \trim($oVCard->NICKNAME))
-			{
-				$sValue = $sValue = $this->getPropertyValueHelper($oVCard->NICKNAME, $bOldVersion);
-				$aProperties[] = new Property(PropertyType::NICK_NAME, $sValue);
-			}
+		if (isset($oVCard->NOTE) && '' !== \trim($oVCard->NOTE))
+		{
+			$sValue = $this->getPropertyValueHelper($oVCard->NOTE, $bOldVersion);
+			$aProperties[] = new Property(PropertyType::NOTE, $sValue);
+		}
 
-			if (isset($oVCard->NOTE) && '' !== \trim($oVCard->NOTE))
+		if (isset($oVCard->N))
+		{
+			$aNames = $oVCard->N->getParts();
+			foreach ($aNames as $iIndex => $sValue)
 			{
-				$sValue = $this->getPropertyValueHelper($oVCard->NOTE, $bOldVersion);
-				$aProperties[] = new Property(PropertyType::NOTE, $sValue);
-			}
-
-			if (isset($oVCard->N))
-			{
-				$aNames = $oVCard->N->getParts();
-				foreach ($aNames as $iIndex => $sValue)
+				$sValue = \trim($sValue);
+				if ($bOldVersion && !isset($oVCard->N->parameters['CHARSET']))
 				{
-					$sValue = \trim($sValue);
-					if ($bOldVersion && !isset($oVCard->N->parameters['CHARSET']))
+					if (0 < \strlen($sValue))
 					{
-						if (0 < \strlen($sValue))
+						$sEncValue = \utf8_encode($sValue);
+						if (0 === \strlen($sEncValue))
 						{
-							$sEncValue = \utf8_encode($sValue);
-							if (0 === \strlen($sEncValue))
-							{
-								$sEncValue = $sValue;
-							}
-
-							$sValue = $sEncValue;
+							$sEncValue = $sValue;
 						}
-					}
 
-					$sValue = \MailSo\Base\Utils::Utf8Clear($sValue);
-					switch ($iIndex) {
-						case 0:
-							$aProperties[] = new Property(PropertyType::LAST_NAME, $sValue);
-							break;
-						case 1:
-							$aProperties[] = new Property(PropertyType::FIRST_NAME, $sValue);
-							break;
-						case 2:
-							$aProperties[] = new Property(PropertyType::MIDDLE_NAME, $sValue);
-							break;
-						case 3:
-							$aProperties[] = new Property(PropertyType::NAME_PREFIX, $sValue);
-							break;
-						case 4:
-							$aProperties[] = new Property(PropertyType::NAME_SUFFIX, $sValue);
-							break;
+						$sValue = $sEncValue;
 					}
 				}
+
+				$sValue = \MailSo\Base\Utils::Utf8Clear($sValue);
+				switch ($iIndex) {
+					case 0:
+						$aProperties[] = new Property(PropertyType::LAST_NAME, $sValue);
+						break;
+					case 1:
+						$aProperties[] = new Property(PropertyType::FIRST_NAME, $sValue);
+						break;
+					case 2:
+						$aProperties[] = new Property(PropertyType::MIDDLE_NAME, $sValue);
+						break;
+					case 3:
+						$aProperties[] = new Property(PropertyType::NAME_PREFIX, $sValue);
+						break;
+					case 4:
+						$aProperties[] = new Property(PropertyType::NAME_SUFFIX, $sValue);
+						break;
+				}
 			}
-
-			if (isset($oVCard->EMAIL))
-			{
-				$this->addArrayPropertyHelper($aProperties, $oVCard->EMAIL, PropertyType::EMAIl);
-			}
-
-			if (isset($oVCard->URL))
-			{
-				$this->addArrayPropertyHelper($aProperties, $oVCard->URL, PropertyType::WEB_PAGE);
-			}
-
-			if (isset($oVCard->TEL))
-			{
-				$this->addArrayPropertyHelper($aProperties, $oVCard->TEL, PropertyType::PHONE);
-			}
-
-			$sUidValue = $oVCard->UID ? (string) $oVCard->UID : \SnappyMail\UUID::generate();
-			$aProperties[] = new Property(PropertyType::UID, $sUidValue);
-
-			if (empty($this->IdContactStr))
-			{
-				$this->IdContactStr = $sUidValue;
-			}
-
-			$this->Properties = $aProperties;
 		}
+
+		if (isset($oVCard->EMAIL))
+		{
+			$this->addArrayPropertyHelper($aProperties, $oVCard->EMAIL, PropertyType::EMAIl);
+		}
+
+		if (isset($oVCard->URL))
+		{
+			$this->addArrayPropertyHelper($aProperties, $oVCard->URL, PropertyType::WEB_PAGE);
+		}
+
+		if (isset($oVCard->TEL))
+		{
+			$this->addArrayPropertyHelper($aProperties, $oVCard->TEL, PropertyType::PHONE);
+		}
+
+		$this->IdContactStr = $oVCard->UID ? (string) $oVCard->UID : \SnappyMail\UUID::generate();
+		$aProperties[] = new Property(PropertyType::UID, $this->IdContactStr);
+
+		$this->Properties = $aProperties;
 
 		$this->UpdateDependentValues();
 

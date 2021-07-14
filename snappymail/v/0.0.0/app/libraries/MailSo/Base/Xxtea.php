@@ -132,7 +132,7 @@ class Xxtea
 		return $aV;
 	}
 
-	private static function int32(int $iN) : int
+	private static function int32($iN) : int
 	{
 		return $iN & 0xffffffff;
 	}

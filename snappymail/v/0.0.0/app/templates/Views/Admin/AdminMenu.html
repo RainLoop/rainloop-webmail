@@ -1,17 +1,3 @@
-<div class="b-admin-left g-ui-user-select-none">
-	<div class="b-toolbar"></div>
-	<div class="b-content opacity-on-panel-disabled">
-		<div class="b-admin-menu" data-bind="foreach: menu">
-			<!-- ko if: disabled -->
-			<span class="e-item disabled">
-				<span class="e-link" data-bind="attr: { 'data-i18n': label }"></span>
-			</span>
-			<!-- /ko -->
-			<!-- ko ifnot: disabled -->
-			<a class="e-item selectable" href="#" data-bind="css: {'selected': selected }, attr: { 'href': $root.link(route) }">
-				<span class="e-link" data-bind="attr: { 'data-i18n': label }"></span>
-			</a>
-			<!-- /ko -->
-		</div>
-	</div>
-</div>
+<nav data-bind="foreach: menu">
+	<a data-bind="css: {'selected': selected }, attr: { 'href': $root.link(route), 'data-i18n': label }"></a>
+</nav>
