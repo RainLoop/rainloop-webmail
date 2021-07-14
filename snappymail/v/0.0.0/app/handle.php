@@ -28,9 +28,8 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 
 if (\class_exists('RainLoop\Api'))
 {
-	if (!\SnappyMail\HTTP\SecFetch::isSameOrigin()) {
-		\http_response_code(403);
-		\header($_SERVER['SERVER_PROTOCOL'].' 403 Forbidden', true, 403);
+	if (!\SnappyMail\HTTP\SecFetch::isEntering() && !\SnappyMail\HTTP\SecFetch::isSameOrigin()) {
+		\MailSo\Base\Http::StatusHeader(403);
 		exit('Disallowed Sec-Fetch-Site: ' . ($_SERVER['HTTP_SEC_FETCH_SITE'] ?? ''));
 	}
 

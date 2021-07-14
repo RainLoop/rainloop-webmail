@@ -93,30 +93,22 @@ abstract class SecFetch
 		return '?1' === ($_SERVER['HTTP_SEC_FETCH_USER'] ?? '');
 	}
 
-	public static function isSameOrigin() : bool
+	public static function isEntering() : bool
 	{
 		if (!isset($_SERVER['HTTP_SEC_FETCH_SITE'])) {
 			return true;
 		}
 
-		if (static::user()) {
-			return static::dest('document')
-				&& static::mode('navigate')
-				&& 'GET' === $_SERVER['REQUEST_METHOD'];
-		}
+		return static::user()
+			&& static::dest('document')
+			&& static::mode('navigate')
+			&& 'GET' === $_SERVER['REQUEST_METHOD'];
+	}
 
-		/**
-			<script>
-				sec-fetch-dest: script
-				sec-fetch-mode: no-cors
-			window.Fetch
-				sec-fetch-dest: empty
-				sec-fetch-mode: same-origin
-			reload:
-				sec-fetch-dest: document
-				sec-fetch-mode: navigate
-		 */
-		return 'same-origin' === $_SERVER['HTTP_SEC_FETCH_SITE'];
+	public static function isSameOrigin() : bool
+	{
+		return !isset($_SERVER['HTTP_SEC_FETCH_SITE'])
+			|| 'same-origin' === $_SERVER['HTTP_SEC_FETCH_SITE'];
 	}
 
 }
