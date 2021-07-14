@@ -303,7 +303,7 @@ trait Raw
 							{
 								$iFullContentLength = \strlen($sLoadedData);
 
-								$self->Http()->StatusHeader(206);
+								\MailSo\Base\Http::StatusHeader(206);
 
 								$iRangeStart = (int) $sRangeStart;
 								$iRangeEnd = (int) $sRangeEnd;

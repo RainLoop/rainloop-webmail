@@ -110,7 +110,7 @@ class Service
 
 		if ($bAdmin && !$this->oActions->Config()->Get('security', 'allow_admin_panel', true))
 		{
-			$this->oHttp->StatusHeader(403);
+			\MailSo\Base\Http::StatusHeader(403);
 			echo $this->oServiceActions->ErrorTemplates('Access Denied.',
 				'Access to the SnappyMail Admin Panel is not allowed!', true);
 

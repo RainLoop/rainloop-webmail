@@ -81,7 +81,7 @@ class ServiceActions
 		$aResponseItem = null;
 		$oException = null;
 
-		$sAction = $this->oHttp->GetPost('Action');
+		$sAction = $_POST['Action'] ?? null;
 		if (empty($sAction) && $this->oHttp->IsGet() && !empty($this->aPaths[2]))
 		{
 			$sAction = $this->aPaths[2];
@@ -93,7 +93,7 @@ class ServiceActions
 		{
 			if ($this->oHttp->IsPost() &&
 				$this->Config()->Get('security', 'csrf_protection', false) &&
-				$this->oHttp->GetPost('XToken', '') !== Utils::GetCsrfToken())
+				($_POST['XToken'] ?? '') !== Utils::GetCsrfToken())
 			{
 				throw new Exceptions\ClientException(Notifications::InvalidToken);
 			}
@@ -107,7 +107,7 @@ class ServiceActions
 
 				$this->Logger()->Write('Action: '.$sMethodName, \MailSo\Log\Enumerations\Type::NOTE, 'JSON');
 
-				$aPost = $this->oHttp->GetPostAsArray();
+				$aPost = $_POST ?? null;
 				if ($aPost)
 				{
 					$this->oActions->SetActionParams($aPost, $sMethodName);
@@ -222,7 +222,7 @@ class ServiceActions
 			if (\method_exists($this->oActions, 'Append') &&
 				\is_callable(array($this->oActions, 'Append')))
 			{
-				$this->oActions->SetActionParams($this->oHttp->GetPostAsArray(), 'Append');
+				isset($_POST) && $this->oActions->SetActionParams($_POST, 'Append');
 				$bResponse = \call_user_func(array($this->oActions, 'Append'));
 			}
 		}
@@ -291,7 +291,7 @@ class ServiceActions
 			if (\method_exists($this->oActions, $sAction) &&
 				\is_callable(array($this->oActions, $sAction)))
 			{
-				$aActionParams = $this->oHttp->GetQueryAsArray();
+				$aActionParams = isset($_GET) && \is_array($_GET) ? $_GET : null;
 
 				$aActionParams['File'] = $aFile;
 				$aActionParams['Error'] = $iError;
@@ -372,7 +372,7 @@ class ServiceActions
 
 		if (!$bResult)
 		{
-			$this->oHttp->StatusHeader(404);
+			\MailSo\Base\Http::StatusHeader(404);
 		}
 
 		return '';
@@ -629,7 +629,7 @@ class ServiceActions
 	{
 		$this->oHttp->ServerNoCache();
 
-		$sTo = \trim($this->oHttp->GetQuery('to', ''));
+		$sTo = \trim($_GET['to'] ?? '');
 		if (!empty($sTo) && \preg_match('/^mailto:/i', $sTo))
 		{
 			$oAccount = $this->oActions->GetAccountFromSignMeToken();
@@ -660,7 +660,7 @@ class ServiceActions
 		$oAccount = null;
 		$bLogout = true;
 
-		$sSsoHash = $this->oHttp->GetRequest('hash', '');
+		$sSsoHash = $_REQUEST['hash'] ?? '';
 		if (!empty($sSsoHash))
 		{
 			$mData = null;
@@ -738,8 +738,8 @@ class ServiceActions
 		$oAccount = null;
 		$bLogout = true;
 
-		$sEmail = $this->oHttp->GetEnv('REMOTE_USER', '');
-		$sPassword = $this->oHttp->GetEnv('REMOTE_PASSWORD', '');
+		$sEmail = $_ENV['REMOTE_USER'] ?? '';
+		$sPassword = $_ENV['REMOTE_PASSWORD'] ?? '';
 
 		if (0 < \strlen($sEmail) && 0 < \strlen(\trim($sPassword)))
 		{
@@ -772,7 +772,7 @@ class ServiceActions
 		$oAccount = null;
 		$bLogout = true;
 
-		switch (\strtolower($this->oHttp->GetRequest('Output', 'Redirect')))
+		switch (\strtolower($_REQUEST['Output'] ?? 'Redirect'))
 		{
 			case 'json':
 

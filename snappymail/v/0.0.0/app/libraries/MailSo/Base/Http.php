@@ -31,66 +31,6 @@ class Http
 		return $oInstance;
 	}
 
-	public function HasQuery(string $sKey) : bool
-	{
-		return isset($_GET[$sKey]);
-	}
-
-	/**
-	 * @param mixed $mDefault = null
-	 *
-	 * @return mixed
-	 */
-	public function GetQuery(string $sKey, $mDefault = null)
-	{
-		return isset($_GET[$sKey]) ? $_GET[$sKey] : $mDefault;
-	}
-
-	public function GetQueryAsArray() : ?array
-	{
-		return isset($_GET) && \is_array($_GET) ? $_GET : null;
-	}
-
-	public function HasPost(string $sKey) : bool
-	{
-		return isset($_POST[$sKey]);
-	}
-
-	/**
-	 * @param mixed $mDefault = null
-	 *
-	 * @return mixed
-	 */
-	public function GetPost(string $sKey, $mDefault = null)
-	{
-		return isset($_POST[$sKey]) ? $_POST[$sKey] : $mDefault;
-	}
-
-	public function GetPostAsArray() : ?array
-	{
-		return isset($_POST) && \is_array($_POST) ? $_POST : null;
-	}
-
-	public function HasRequest(string $sKey) : bool
-	{
-		return isset($_REQUEST[$sKey]);
-	}
-
-	/**
-	 * @param mixed $mDefault = null
-	 *
-	 * @return mixed
-	 */
-	public function GetRequest(string $sKey, $mDefault = null)
-	{
-		return isset($_REQUEST[$sKey]) ? $_REQUEST[$sKey] : $mDefault;
-	}
-
-	public function HasServer(string $sKey) : bool
-	{
-		return isset($_SERVER[$sKey]);
-	}
-
 	/**
 	 * @param mixed $mDefault = null
 	 *
@@ -99,26 +39,6 @@ class Http
 	public function GetServer(string $sKey, $mDefault = null)
 	{
 		return isset($_SERVER[$sKey]) ? $_SERVER[$sKey] : $mDefault;
-	}
-
-	public function HasEnv(string $sKey) : bool
-	{
-		return isset($_ENV[$sKey]);
-	}
-
-	/**
-	 * @param mixed $mDefault = null
-	 *
-	 * @return mixed
-	 */
-	public function GetEnv(string $sKey, $mDefault = null)
-	{
-		return isset($_ENV[$sKey]) ? $_ENV[$sKey] : $mDefault;
-	}
-
-	public function ServerProtocol() : string
-	{
-		return $this->GetServer('SERVER_PROTOCOL', 'HTTP/1.0');
 	}
 
 	public function GetMethod() : string
@@ -134,11 +54,6 @@ class Http
 	public function IsGet() : bool
 	{
 		return ('GET' === $this->GetMethod());
-	}
-
-	public function GetQueryString() : string
-	{
-		return $this->GetServer('QUERY_STRING', '');
 	}
 
 	public function CheckLocalhost(string $sServer) : bool
@@ -229,7 +144,7 @@ class Http
 
 		if ($bWithRemoteUserData)
 		{
-			$sUser = \trim($this->HasServer('REMOTE_USER') ? $this->GetServer('REMOTE_USER', '') : '');
+			$sUser = \trim($this->GetServer('REMOTE_USER', ''));
 			$sHost = (0 < \strlen($sUser) ? $sUser.'@' : '').$sHost;
 		}
 
@@ -529,7 +444,7 @@ class Http
 			}
 			else
 			{
-				$this->StatusHeader(304);
+				static::StatusHeader(304);
 				$bResult = true;
 			}
 		}
@@ -570,9 +485,8 @@ class Http
 		}
 	}
 
-	public function StatusHeader(int $iStatus, string $sCustomStatusText = '') : void
+	public static function StatusHeader(int $iStatus, string $sCustomStatusText = '') : void
 	{
-		$iStatus = (int) $iStatus;
 		if (99 < $iStatus)
 		{
 			$aStatus = array(
@@ -588,11 +502,15 @@ class Http
 				416 => 'Requested range not satisfiable'
 			);
 
-			$sCustomStatusText = \trim($sCustomStatusText);
-			$sHeaderHead = \ini_get('cgi.rfc2616_headers') && false !== \strpos(\strtolower(\php_sapi_name()), 'cgi') ? 'Status:' : $this->ServerProtocol();
 			$sHeaderText = (0 === \strlen($sCustomStatusText) && isset($aStatus[$iStatus]) ? $aStatus[$iStatus] : $sCustomStatusText);
 
-			\header(\trim($sHeaderHead.' '.$iStatus.' '.$sHeaderText), true, $iStatus);
+			\http_response_code($iStatus);
+			if (isset($_SERVER['SERVER_PROTOCOL'])) {
+				\header("{$_SERVER['SERVER_PROTOCOL']} {$iStatus} {$sHeaderText}", true, $iStatus);
+			}
+			if (\ini_get('cgi.rfc2616_headers') && false !== \strpos(\strtolower(\php_sapi_name()), 'cgi')) {
+				\header("Status: {$iStatus} {$sHeaderText}");
+			}
 		}
 	}
 
@@ -602,9 +520,9 @@ class Http
 		return '' === $sUrl ? '/' : '/'.$sUrl.'/';
 	}
 
-	public function GetUrl()
+	public function GetUrl() : string
 	{
-		return $this->GetServer('REQUEST_URI', '');
+		return $_SERVER['REQUEST_URI'] ?? '';
 	}
 
 	public function GetFullUrl() : string

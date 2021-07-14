@@ -298,7 +298,7 @@ class Actions
 
 	public function ParseQueryString(): string
 	{
-		$sQuery = \trim($this->Http()->GetQueryString());
+		$sQuery = \trim($_SERVER['QUERY_STRING'] ?? '');
 
 		$iPos = \strpos($sQuery, '&');
 		if (0 < $iPos) {
@@ -307,7 +307,7 @@ class Actions
 
 		$sQuery = \trim(\trim($sQuery), ' /');
 
-		$aSubQuery = $this->Http()->GetQuery('q');
+		$aSubQuery = $_GET['q'] ?? null;
 		if (\is_array($aSubQuery)) {
 			$aSubQuery = \array_map(function ($sS) {
 				return \trim(\trim($sS), ' /');
@@ -2021,7 +2021,7 @@ class Actions
 		if (!empty($sKey) && ($bForce || $this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true))) {
 			$sIfNoneMatch = $this->Http()->GetHeader('If-None-Match', '');
 			if ($this->etag($sKey) === $sIfNoneMatch) {
-				$this->Http()->StatusHeader(304);
+				\MailSo\Base\Http::StatusHeader(304);
 				$this->cacheByKey($sKey);
 				exit(0);
 			}
