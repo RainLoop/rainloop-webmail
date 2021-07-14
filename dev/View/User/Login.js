@@ -122,7 +122,8 @@ class LoginUserView extends AbstractViewCenter {
 						if (Notification.InvalidInputArgument == iError) {
 							iError = Notification.AuthError;
 						}
-						this.submitError(getNotification(iError, oData.ErrorMessage, Notification.UnknownNotification));
+						this.submitError(getNotification(iError, (oData ? oData.ErrorMessage : ''),
+							Notification.UnknownNotification));
 						this.submitErrorAddidional((oData && oData.ErrorMessageAdditional) || '');
 					} else {
 						rl.route.reload();
