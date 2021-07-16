@@ -7,13 +7,6 @@ class OwnCloudSuggestions implements \RainLoop\Providers\Suggestions\ISuggestion
 	 */
 	protected $oLogger;
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sQuery
-	 * @param int $iLimit = 20
-	 *
-	 * @return array
-	 */
 	public function Process(\RainLoop\Model\Account $oAccount, string $sQuery, int $iLimit = 20): array
 	{
 		$iInputLimit = $iLimit;
@@ -22,7 +15,7 @@ class OwnCloudSuggestions implements \RainLoop\Providers\Suggestions\ISuggestion
 
 		try
 		{
-			if ('' === $sQuery || !$oAccount || !\RainLoop\Utils::IsOwnCloudLoggedIn())
+			if ('' === $sQuery || !$oAccount || !OwnCloudPlugin::IsOwnCloudLoggedIn())
 			{
 				return $aResult;
 			}
