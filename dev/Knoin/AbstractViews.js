@@ -38,9 +38,6 @@ class AbstractView {
 		keyScope(this.sCurrentScope);
 	}
 
-	cancelCommand() {}
-	closeCommand() {}
-
 	querySelector(selectors) {
 		return this.viewModelDom.querySelector(selectors);
 	}
@@ -68,7 +65,10 @@ export class AbstractViewPopup extends AbstractView
 			this.sDefaultScope = Scope[name];
 		}
 	}
-
+/*
+	cancelCommand() {}
+	closeCommand() {}
+*/
 	/**
 	 * @returns {void}
 	 */
@@ -76,7 +76,7 @@ export class AbstractViewPopup extends AbstractView
 		addEventListener('keydown', event => {
 			if (event && this.modalVisibility && this.modalVisibility()) {
 				if (!this.bDisabeCloseOnEsc && 'Escape' == event.key) {
-					this.cancelCommand && this.cancelCommand();
+					this.cancelCommand();
 					return false;
 				} else if ('Backspace' == event.key && !inFocus()) {
 					return false;
