@@ -10,7 +10,7 @@
 1. Install node.js - `https://nodejs.org/download/`
 2. Install yarn - `https://yarnpkg.com/en/docs/install`
 3. Install gulp - `npm install gulp -g`
-4. Fork snappymail - `https://github.com/the-djmaze/snappymail/issues/new#fork-destination-box`
+4. Fork snappymail from https://github.com/the-djmaze/snappymail
 5. Clone snappymail - `git clone git@github.com:USERNAME/snappymail.git snappymail`
 6. `cd snappymail`
 7. Install install all dependencies - `yarn install`
