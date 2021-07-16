@@ -41,13 +41,6 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	/**
 	 * @param {?Function} fCallback
 	 */
-	pluginList(fCallback) {
-		this.defaultRequest(fCallback, 'AdminPluginList');
-	}
-
-	/**
-	 * @param {?Function} fCallback
-	 */
 	packagesList(fCallback) {
 		this.defaultRequest(fCallback, 'AdminPackagesList');
 	}

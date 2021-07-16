@@ -1,5 +1,10 @@
 <div class="b-admin-packages">
 
+	<div class="legend">
+		<span data-i18n="TABS_LABELS/LABEL_PACKAGES_NAME"></span>
+		<i class="icon-spinner" style="margin: 5px" data-bind="visible: packages.loading"></i>
+	</div>
+
 	<div class="alert" style="margin-top: 10px;" data-bind="visible: !packages.real() && !packages.loading()"
 		data-i18n="TAB_PACKAGES/ALERT_CANNOT_ACCESS_REPOSITORY"></div>
 
@@ -7,6 +12,13 @@
 		<button type="button" class="close" data-bind="click: function () { packagesError('') }">×</button>
 		<span data-bind="text: packagesError"></span>
 	</div>
+
+	<div data-bind="component: {
+		name: 'Checkbox',
+		params: { value: enabledPlugins, label: 'TAB_PACKAGES/LABEL_ENABLE_PLUGINS' }
+	}"></div>
+
+	<br />
 
 	<div data-bind="visible: 0 < packagesAvailableForUpdate().length">
 		<div class="legend">
@@ -17,7 +29,7 @@
 		<br />
 	</div>
 
-	<div data-bind="visible: 0 < packagesCurrent().length">
+	<div id="packages-installed" data-bind="visible: 0 < packagesCurrent().length, css: {'disabled': !enabledPlugins()}">
 		<div class="legend" data-i18n="TAB_PACKAGES/LEGEND_INSTALLED_PACKAGES"></div>
 		<div data-bind="template: { name: 'AdminSettingsPackagesTable', data: {f: packagesCurrent} }"></div>
 		<br />

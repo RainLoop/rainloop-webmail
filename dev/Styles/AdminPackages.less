@@ -5,6 +5,11 @@
 		width: 650px;
 	}
 
+	.disabled table,
+	table .disabled {
+		opacity: 0.5;
+	}
+
 }
 
 .b-admin-packages-list-table {
@@ -29,5 +34,10 @@
 	}
 	.package-actions {
 		vertical-align: middle;
+	}
+
+	.package-configure, .package-active {
+		cursor: pointer;
+		margin-right: 1em;
 	}
 }

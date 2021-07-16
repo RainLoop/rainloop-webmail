@@ -87,14 +87,8 @@
 		"LABEL_REQUIRE_VERIFICATION": "Requerir verificación del certificado SSL (IMAP \/ SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Permitir certificados auto-firmados"
 	},
-	"TAB_PLUGINS": {
-		"LEGEND_PLUGINS": "Complementos",
-		"LABEL_ENABLE_PLUGINS": "Activar Plugins",
-		"ALERT_NO_PLUGINS": "No hay plugins instalados.",
-		"LINK_INSTALL_NEW": "¡Haz click aquí para instalar uno nuevo!",
-		"HINT_CLICK_NAME": "Haz click en el nombre para configurar el plugin."
-	},
 	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Activar Plugins",
 		"LEGEND_AVAILABLE_FOR_UPDATE": "Actualización disponible",
 		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Instalación disponible",
 		"LEGEND_INSTALLED_PACKAGES": "Paquetes instalados",

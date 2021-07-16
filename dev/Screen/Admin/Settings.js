@@ -7,7 +7,6 @@ import { DomainsAdminSettings } from 'Settings/Admin/Domains';
 import { LoginAdminSettings } from 'Settings/Admin/Login';
 import { ContactsAdminSettings } from 'Settings/Admin/Contacts';
 import { SecurityAdminSettings } from 'Settings/Admin/Security';
-import { PluginsAdminSettings } from 'Settings/Admin/Plugins';
 import { PackagesAdminSettings } from 'Settings/Admin/Packages';
 import { AboutAdminSettings } from 'Settings/Admin/About';
 import { BrandingAdminSettings } from 'Settings/Admin/Branding';
@@ -38,7 +37,6 @@ export class SettingsAdminScreen extends AbstractSettingsScreen {
 			[BrandingAdminSettings, 'Branding'],
 			[ContactsAdminSettings, 'Contacts'],
 			[SecurityAdminSettings, 'Security'],
-			[PluginsAdminSettings, 'Plugins'],
 			[PackagesAdminSettings, 'Packages'],
 			[AboutAdminSettings, 'About'],
 		].forEach(item =>

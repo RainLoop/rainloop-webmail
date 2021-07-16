@@ -2,20 +2,18 @@
 	<colgroup>
 		<col />
 		<col style="width: 100px" />
-		<!-- <col style="width: 100px" /> -->
 		<col style="width: 80px" />
 	</colgroup>
 	<tbody data-bind="foreach: f">
-		<tr>
+		<tr data-bind="css: {'disabled': !enabled() }">
 			<td>
 				<span class="package-name" data-bind="text: name"></span>
 				<span class="package-installed pull-right" data-bind="text: installed"></span>
+				<span class="package-active pull-right fontastic" data-bind="visible: installed, text: enabled() ? '☑' : '☐'"></span>
+				<span class="package-configure pull-right fontastic" data-bind="visible: installed">⚙</span>
 				<div class="package-desc" data-bind="text: desc"></div>
 			</td>
 			<td class="package-version" data-bind="text: version"></td>
-			<!--
-			<td class="package-release" data-bind="text: release"></td>
-			-->
 			<td class="package-actions">
 				<i class="icon-download e-action button-download" data-bind="visible: !loading() && canBeUpdated, click: function () { $root.installPackage($data); }"></i>
 				&nbsp;

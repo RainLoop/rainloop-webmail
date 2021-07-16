@@ -87,14 +87,8 @@
 		"LABEL_REQUIRE_VERIFICATION": "要求验证 SSL 证书（IMAP\/SMTP）",
 		"LABEL_ALLOW_SELF_SIGNED": "允许自签名证书"
 	},
-	"TAB_PLUGINS": {
-		"LEGEND_PLUGINS": "插件",
-		"LABEL_ENABLE_PLUGINS": "启用插件",
-		"ALERT_NO_PLUGINS": "当前还未安装插件。",
-		"LINK_INSTALL_NEW": "点击此处安装新插件!",
-		"HINT_CLICK_NAME": "点击名称来配置插件。"
-	},
 	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "启用插件",
 		"LEGEND_AVAILABLE_FOR_UPDATE": "有更新可用",
 		"LEGEND_AVAILABLE_FOR_INSTALLATION": "可用于安装",
 		"LEGEND_INSTALLED_PACKAGES": "已安装的插件包",
