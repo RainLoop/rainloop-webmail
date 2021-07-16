@@ -74,6 +74,7 @@ This fork of RainLoop has the following changes:
 * Replaced old Sabre library
 * AddressBook Contacts support MySQL/MariaDB utf8mb4
 * Prevent Google FLoC
+* Added [Fetch Metadata Request Headers](https://www.w3.org/TR/fetch-metadata/) checks
 
 ### Removal of old JavaScript
 

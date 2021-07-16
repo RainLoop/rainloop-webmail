@@ -744,6 +744,7 @@ class ComposePopupView extends AbstractViewPopup {
 			this.initOnShow(type, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText);
 		}
 
+//		(navigator.standalone || matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches) &&
 		ThemeStore.isMobile() && this.oContent.requestFullscreen && this.oContent.requestFullscreen();
 	}
 

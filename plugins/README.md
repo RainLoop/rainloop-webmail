@@ -1,3 +1,4 @@
+PHP
 
 class Plugin extends \RainLoop\Plugins\AbstractPlugin
 
@@ -196,7 +197,7 @@ $Plugin->addHook('hook.name', 'functionName');
 		string $sAction
 		array &$aResponseItem
 
-### filter.message-html'
+### filter.message-html
 ### filter.message-plain
 	params:
 		\RainLoop\Model\Account $oAccount
