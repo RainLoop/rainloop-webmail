@@ -278,6 +278,10 @@ $Plugin->addHook('hook.name', 'functionName');
 	params:
 		string $sAction
 
+### json.attachments
+	params:
+		\SnappyMail\AttachmentsAction $oData
+
 ### json.suggestions-input-parameters
 	params:
 		string &$sQuery

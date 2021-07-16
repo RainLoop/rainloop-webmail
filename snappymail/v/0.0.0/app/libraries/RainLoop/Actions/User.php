@@ -186,6 +186,16 @@ trait User
 						}
 					}
 					break;
+
+				default:
+					$data = new \SnappyMail\AttachmentsAction;
+					$data->action = $sAction;
+					$data->items = $aData;
+					$data->filesProvider = $oFilesProvider;
+					$data->account = $oAccount;
+					$this->Plugins()->RunHook('json.attachments', array($data));
+					$mResult = $data->result;
+					break;
 			}
 		}
 		else
