@@ -1,26 +1,26 @@
 <?php
 
-class OwnCloudPlugin extends \RainLoop\Plugins\AbstractPlugin
+class NextCloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
-		NAME = 'OwnCloud',
+		NAME = 'NextCloud',
 		VERSION = '2.0',
 		CATEGORY = 'Integrations',
-		DESCRIPTION = 'Plugin that adds functionality to integrate with OwnCloud.';
+		DESCRIPTION = 'Plugin that adds functionality to integrate with NextCloud.';
 
-	private static function IsOwnCloud() : bool
+	private static function IsNextCloud() : bool
 	{
-		return !empty($_ENV['SNAPPYMAIL_OWNCLOUD']) && \class_exists('OC');
+		return !empty($_ENV['SNAPPYMAIL_NEXTCLOUD']) && \class_exists('OC');
 	}
 
-	private static function IsOwnCloudLoggedIn() : bool
+	private static function IsNextCloudLoggedIn() : bool
 	{
-		return static::IsOwnCloud() && \class_exists('OCP\User') && \OCP\User::isLoggedIn();
+		return static::IsNextCloud() && \class_exists('OCP\User') && \OCP\User::isLoggedIn();
 	}
 
 	public function Init() : void
 	{
-		if (static::IsOwnCloud()) {
+		if (static::IsNextCloud()) {
 			$this->addHook('main.fabrica', 'MainFabrica');
 			$this->addHook('filter.app-data', 'FilterAppData');
 			$this->addHook('json.attachments', 'DoAttachmentsActions');
@@ -42,8 +42,8 @@ class OwnCloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function Supported() : string
 	{
-		if (!static::IsOwnCloud()) {
-			return 'OwnCloud not found to use this plugin';
+		if (!static::IsNextCloud()) {
+			return 'NextCloud not found to use this plugin';
 		}
 		return '';
 	}
@@ -51,8 +51,8 @@ class OwnCloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	// DoAttachmentsActions
 	public function DoAttachmentsActions(\SnappyMail\AttachmentsAction $data)
 	{
-		if ('owncloud' === $data->action) {
-			if (static::IsOwnCloudLoggedIn() && \class_exists('OCP\Files')) {
+		if ('nextcloud' === $data->action) {
+			if (static::IsNextCloudLoggedIn() && \class_exists('OCP\Files')) {
 				$oFiles = \OCP\Files::getStorage('files');
 				if ($oFiles && $data->filesProvider->IsActive() && \method_exists($oFiles, 'file_put_contents')) {
 					$sSaveFolder = $this->Config()->Get('plugin', 'save_folder', '') ?: 'Attachments';
@@ -93,15 +93,15 @@ class OwnCloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * TODO: create pre-login auth hook
 	 */
-	public function ServiceOwnCloudAuth()
+	public function ServiceNextCloudAuth()
 	{
 /*
 		$this->oHttp->ServerNoCache();
 
-		if (!static::IsOwnCloud() ||
-			!isset($_ENV['___snappymail_owncloud_email']) ||
-			!isset($_ENV['___snappymail_owncloud_password']) ||
-			empty($_ENV['___snappymail_owncloud_email'])
+		if (!static::IsNextCloud() ||
+			!isset($_ENV['___snappymail_nextcloud_email']) ||
+			!isset($_ENV['___snappymail_nextcloud_password']) ||
+			empty($_ENV['___snappymail_nextcloud_email'])
 		)
 		{
 			$this->oActions->SetAuthLogoutToken();
@@ -111,8 +111,8 @@ class OwnCloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		$bLogout = true;
 
-		$sEmail = $_ENV['___snappymail_owncloud_email'];
-		$sPassword = $_ENV['___snappymail_owncloud_password'];
+		$sEmail = $_ENV['___snappymail_nextcloud_email'];
+		$sPassword = $_ENV['___snappymail_nextcloud_password'];
 
 		try
 		{
@@ -141,13 +141,13 @@ class OwnCloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 */
 	public function FilterAppData($bAdmin, &$aResult)
 	{
-		if (!$bAdmin && \is_array($aResult) && static::IsOwnCloud()) {
+		if (!$bAdmin && \is_array($aResult) && static::IsNextCloud()) {
 			$key = \array_search(\RainLoop\Enumerations\Capa::AUTOLOGOUT, $aResult['Capa']);
 			if (false !== $key) {
 				unset($aResult['Capa'][$key]);
 			}
-			if (static::IsOwnCloudLoggedIn() && \class_exists('OCP\Files')) {
-				$aResult['System']['attachmentsActions'][] = 'owncloud';
+			if (static::IsNextCloudLoggedIn() && \class_exists('OCP\Files')) {
+				$aResult['System']['attachmentsActions'][] = 'nextcloud';
 			}
 		}
 	}
@@ -158,12 +158,12 @@ class OwnCloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 */
 	public function MainFabrica($sName, &$mResult)
 	{
-		if ('suggestions' === $sName && static::IsOwnCloud() && $this->Config()->Get('plugin', 'suggestions', true)) {
-			include_once __DIR__.'/OwnCloudSuggestions.php';
+		if ('suggestions' === $sName && static::IsNextCloud() && $this->Config()->Get('plugin', 'suggestions', true)) {
+			include_once __DIR__.'/NextCloudSuggestions.php';
 			if (!\is_array($mResult)) {
 				$mResult = array();
 			}
-			$mResult[] = new OwnCloudSuggestions();
+			$mResult[] = new NextCloudSuggestions();
 		}
 	}
 
