@@ -106,6 +106,15 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 	protected function defaultValues() : array
 	{
+		$value = \ini_get('upload_max_filesize');
+		$upload_max_filesize = \intval($value);
+		switch (\strtoupper(\substr($value, -1))) {
+			case 'G': $upload_max_filesize *= 1024;
+			case 'M': $upload_max_filesize *= 1024;
+			case 'K': $upload_max_filesize *= 1024;
+		}
+		$upload_max_filesize = $upload_max_filesize / 1024 / 1024;
+
 		return array(
 
 			'webmail' => array(
@@ -127,7 +136,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'messages_per_page'           => array(20, 'Number of messages displayed on page by default'),
 
-				'attachment_size_limit'       => array(25, 'File size limit (MB) for file upload on compose screen
+				'attachment_size_limit'       => array(\min($upload_max_filesize, 25), 'File size limit (MB) for file upload on compose screen
 0 for unlimited.')
 			),
 
