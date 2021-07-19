@@ -79,14 +79,14 @@ class ContactsPopupView extends AbstractViewPopup {
 			'.e-contact-item.focused'
 		);
 
-		this.selector.on('onItemSelect', contact => {
-			this.populateViewContact(contact || null);
+		this.selector.on('ItemSelect', contact => {
+			this.populateViewContact(contact);
 			if (!contact) {
 				this.emptySelection(true);
 			}
 		});
 
-		this.selector.on('onItemGetUid', contact => contact ? contact.generateUid() : '');
+		this.selector.on('ItemGetUid', contact => contact ? contact.generateUid() : '');
 
 		this.bDropPageAfterDelete = false;
 

@@ -55,7 +55,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.bPrefetch = false;
 		this.emptySubjectValue = '';
 
-		this.iGoToUpUpOrDownDownTimeout = 0;
+		this.iGoToUpOrDownTimeout = 0;
 
 		this.newMoveToFolder = !!SettingsGet('NewMoveToFolder');
 
@@ -191,13 +191,15 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			'.messageListItem.focused'
 		);
 
-		this.selector.on('onItemSelect', message => MessageUserStore.selectMessage(message));
+		this.selector.on('ItemSelect', message => MessageUserStore.selectMessage(message));
 
-		this.selector.on('onItemGetUid', message => (message ? message.generateUid() : ''));
+		this.selector.on('MiddleClick', message => MessageUserStore.populateMessageBody(message, true));
 
-		this.selector.on('onAutoSelect', () => this.useAutoSelect());
+		this.selector.on('ItemGetUid', message => (message ? message.generateUid() : ''));
 
-		this.selector.on('onUpUpOrDownDown', v => this.goToUpUpOrDownDown(v));
+		this.selector.on('AutoSelect', () => this.useAutoSelect());
+
+		this.selector.on('UpOrDown', v => this.goToUpOrDown(v));
 
 		addEventListener('mailbox.message-list.selector.go-down',
 			e => this.selector.newSelectPosition('ArrowDown', false, e.detail)
@@ -351,13 +353,13 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		showMessageComposer();
 	}
 
-	goToUpUpOrDownDown(up) {
+	goToUpOrDown(up) {
 		if (MessageUserStore.listChecked().length) {
 			return false;
 		}
 
-		clearTimeout(this.iGoToUpUpOrDownDownTimeout);
-		this.iGoToUpUpOrDownDownTimeout = setTimeout(() => {
+		clearTimeout(this.iGoToUpOrDownTimeout);
+		this.iGoToUpOrDownTimeout = setTimeout(() => {
 			let prev, next, temp, current;
 
 			this.messageListPaginator().find(item => {
