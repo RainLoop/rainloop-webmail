@@ -1,4 +1,3 @@
-import { doc } from 'Common/Globals';
 import { i18n } from 'Common/Translator';
 
 export function timestampToString(timeStampInUTC, formatStr) {
@@ -53,8 +52,3 @@ export function timeToNode(element, time) {
 		console.error(e);
 	}
 }
-
-addEventListener('reload-time', () => setTimeout(() =>
-	doc.querySelectorAll('[data-bind*="moment:"]').forEach(element => timeToNode(element))
-	, 1)
-);
