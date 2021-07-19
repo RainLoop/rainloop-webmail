@@ -18,7 +18,6 @@
     <screenshot>https://raw.githubusercontent.com/pierre-alain-b/snappymail-nextcloud/master/screenshots/2016.10.20-screenshot.jpg</screenshot>
 	<website>https://github.com/pierre-alain-b/snappymail-nextcloud</website>
 	<bugs>https://github.com/pierre-alain-b/snappymail-nextcloud/issues</bugs>
-	<screenshot>https://raw.githubusercontent.com/pierre-alain-b/snappymail-nextcloud/master/screenshots/2016.10.20-screenshot.jpg</screenshot>
 	<dependencies>
     <php min-version="7.4" />
 		<owncloud min-version="6" max-version="9.2" />

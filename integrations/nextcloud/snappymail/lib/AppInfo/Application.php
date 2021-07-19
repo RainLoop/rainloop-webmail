@@ -73,7 +73,7 @@ class Application extends App {
 				'id' => 'snappymail',
 				'order' => 10,
 				'href' => $urlGenerator->linkToRoute('snappymail.page.index'),
-				'icon' => $urlGenerator->imagePath('snappymail', 'snappymail.svg'),
+				'icon' => $urlGenerator->imagePath('snappymail', 'logo-64x64.png'),
 				'name' => \OCP\Util::getL10N('snappymail')->t('Email')
 			];
 		});
