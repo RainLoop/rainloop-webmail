@@ -5,7 +5,7 @@
 
 // Base modal
 .modal {
-  position: relative;
+  position: absolute;
   z-index: @zindexModal;
   overflow: hidden;
   width: calc(100% - 20px);
@@ -17,6 +17,8 @@
   box-shadow: 0 5px 80px rgba(0,0,0,0.3);
   background-clip: padding-box;
   top: 0;
+  left: 0;
+  right: 0;
 }
 
 .modal-header {

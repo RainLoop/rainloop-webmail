@@ -12,7 +12,7 @@ label.inline, span.inline {
 	line-height: @baseLineHeight * 2;
 	color: @grayDark;
 	border: 0;
-	border-bottom: 1px solid #e5e5e5;
+	border-bottom: 1px solid @dropdownDividerTop;
 
 	small {
 		font-size: @baseLineHeight * .75;
@@ -40,15 +40,15 @@ label.inline, span.inline {
 
 .alert a {
 	text-decoration: underline;
-	color: #c09853;
+	color: @warningText;
 }
 
 .alert.alert-info a {
-	color: #3a87ad;
+	color: @infoText;
 }
 
 .alert.alert-error a {
-	color: #b94a48;
+	color: @errorText;
 }
 
 /* mobile and tablet */
