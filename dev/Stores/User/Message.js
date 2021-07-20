@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { Scope, Notification } from 'Common/Enums';
 import { MessageSetAction } from 'Common/EnumsUser';
-import { doc, createElement, elementById } from 'Common/Globals';
+import { doc, $htmlCL, createElement, elementById } from 'Common/Globals';
 import { isNonEmptyArray, pInt, pString, addObservablesTo, addSubscribablesTo } from 'Common/Utils';
 import { plainToHtml } from 'Common/UtilsUser';
 
@@ -185,6 +185,8 @@ export const MessageUserStore = new class {
 					fn(value);
 				}
 			},
+
+			listLoadingAnimation: value => $htmlCL.toggle('list-loading', value),
 
 			listLoading: value =>
 				this.listCompleteLoading(value || this.listIsNotCompleted()),

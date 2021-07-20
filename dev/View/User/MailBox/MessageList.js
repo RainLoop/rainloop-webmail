@@ -86,7 +86,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 		this.messageListCheckedOrSelected = MessageUserStore.listCheckedOrSelected;
 		this.messageListCompleteLoadingThrottle = MessageUserStore.listCompleteLoading;
-		this.messageListCompleteLoadingThrottleForAnimation = MessageUserStore.listLoadingAnimation;
 
 		initOnStartOrLangChange(() => this.emptySubjectValue = i18n('MESSAGE_LIST/EMPTY_SUBJECT_TEXT'));
 
@@ -670,31 +669,31 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 	}
 
 	onBuild(dom) {
-		const eqs = (ev, s) => ev.target.closestWithin(s, dom);
+		const eqs = (ev, s) => ev.target.closestWithin('.messageList '+s, dom);
 
 		this.selector.init(dom.querySelector('.b-content'), Scope.MessageList);
 
 		dom.addEventListener('click', event => {
 			ThemeStore.isMobile() && leftPanelDisabled(true);
 
-			if (eqs(event, '.messageList .b-message-list-wrapper') && Scope.MessageView === AppUserStore.focusedState()) {
+			if (eqs(event, '.b-message-list-wrapper') && Scope.MessageView === AppUserStore.focusedState()) {
 				AppUserStore.focusedState(Scope.MessageList);
 			}
 
 			let el = eqs(event, '.e-paginator .e-page');
 			el && this.gotoPage(ko.dataFor(el));
 
-			eqs(event, '.messageList .checkboxCheckAll') && this.checkAll(!this.checkAll());
+			eqs(event, '.checkboxCheckAll') && this.checkAll(!this.checkAll());
 
-			el = eqs(event, '.messageList .messageListItem .flagParent');
+			el = eqs(event, '.messageListItem .flagParent');
 			el && this.flagMessages(ko.dataFor(el));
 
-			el = eqs(event, '.messageList .messageListItem .threads-len');
+			el = eqs(event, '.messageListItem .threads-len');
 			el && this.gotoThread(ko.dataFor(el));
 		});
 
 		dom.addEventListener('dblclick', event => {
-			let  el = eqs(event, '.messageList .messageListItem .actionHandle');
+			let  el = eqs(event, '.messageListItem .actionHandle');
 			el && this.gotoThread(ko.dataFor(el));
 		});
 

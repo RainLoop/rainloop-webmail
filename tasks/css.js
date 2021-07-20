@@ -8,6 +8,7 @@ const eol = require('gulp-eol');
 const livereload = require('gulp-livereload');
 const filter = require('gulp-filter');
 const expect = require('gulp-expect-file');
+const gcmq = require('gulp-group-css-media-queries');
 
 const { config } = require('./config');
 const { del } = require('./common');
@@ -85,6 +86,7 @@ const cssBootMin = () => {
 const cssMainMin = () => {
 	return gulp
 		.src(config.paths.staticCSS + config.paths.css.main.name)
+		.pipe(gcmq())
 		.pipe(cleanCss())
 		.pipe(rename({ suffix: '.min' }))
 		.pipe(eol('\n', true))
@@ -94,6 +96,7 @@ const cssMainMin = () => {
 const cssAdminMin = () => {
 	return gulp
 		.src(config.paths.staticCSS + config.paths.css.admin.name)
+		.pipe(gcmq())
 		.pipe(cleanCss())
 		.pipe(rename({ suffix: '.min' }))
 		.pipe(eol('\n', true))

@@ -371,3 +371,24 @@ html:not(.rl-mobile) .show-mobile {
 html.rl-mobile .width100-on-mobile {
 	width: 100% !important;
 }
+
+.e-paginator {
+
+	.e-page {
+		opacity: 0.5;
+		text-decoration: none;
+		font-size: 22px;
+		padding: 3px;
+		cursor: pointer;
+
+		&:hover {
+			opacity: 0.8;
+		}
+
+		&.current {
+			opacity: 1;
+			font-size: 25px;
+			cursor: default;
+		}
+	}
+}

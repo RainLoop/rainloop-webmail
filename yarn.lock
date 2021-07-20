@@ -871,6 +871,30 @@ cross-spawn@^6.0.5:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
+css-parse@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/css-parse/-/css-parse-2.0.0.tgz#a468ee667c16d81ccf05c58c38d2a97c780dbfd4"
+  integrity sha1-pGjuZnwW2BzPBcWMONKpfHgNv9Q=
+  dependencies:
+    css "^2.0.0"
+
+css-stringify@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/css-stringify/-/css-stringify-2.0.0.tgz#2ef33dcf498c3d3ee82bd73d0a01ac28628cd0fa"
+  integrity sha1-LvM9z0mMPT7oK9c9CgGsKGKM0Po=
+  dependencies:
+    css "^2.0.0"
+
+css@^2.0.0:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/css/-/css-2.2.4.tgz#c646755c73971f2bba6a601e2cf2fd71b1298929"
+  integrity sha512-oUnjmWpy0niI3x/mPL8dVEI1l7MnG3+HHyRPHf+YFSbK+svOhXpmSOcDURUh2aOCgl2grzrOPt1nHLuCVFULLw==
+  dependencies:
+    inherits "^2.0.3"
+    source-map "^0.6.1"
+    source-map-resolve "^0.5.2"
+    urix "^0.1.0"
+
 d@1, d@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/d/-/d-1.0.1.tgz#8698095372d58dbee346ffd0c7093f99f8f9eb5a"
@@ -1603,6 +1627,14 @@ graceful-fs@^4.0.0, graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.6.tgz#ff040b2b0853b23c3d31027523706f1885d76bee"
   integrity sha512-nTnJ528pbqxYanhpDYsi4Rd8MAeaBA67+RZ10CM1m3bTAVFEDcd5AuA4a6W5YkGZ1iNXHzZz8T6TBKLeBuNriQ==
 
+group-css-media-queries@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/group-css-media-queries/-/group-css-media-queries-1.4.1.tgz#8e54cb31cc45a9c5e08eb838940b8a28038d7175"
+  integrity sha1-jlTLMcxFqcXgjrg4lAuKKAONcXU=
+  dependencies:
+    css-parse "^2.0.0"
+    css-stringify "^2.0.0"
+
 gulp-cached@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/gulp-cached/-/gulp-cached-1.1.1.tgz#fe7cd4f87f37601e6073cfedee5c2bdaf8b6acce"
@@ -1696,6 +1728,15 @@ gulp-filter@6.0.0:
     multimatch "^4.0.0"
     plugin-error "^1.0.1"
     streamfilter "^3.0.0"
+
+gulp-group-css-media-queries@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/gulp-group-css-media-queries/-/gulp-group-css-media-queries-1.2.2.tgz#c0436b9474086cbe1ab3eb5bc1a3afef4d6b37d6"
+  integrity sha512-uOs8aJ5TV12aRstfc6pn107edDT2XSY7KNAU721Dz+gKHu/AUIlAaOdFdo9n/eHWqfb9QWMArrM8fiPOCqZPGg==
+  dependencies:
+    group-css-media-queries "^1.4.1"
+    plugin-error "^1.0.1"
+    through2 "^2.0.3"
 
 gulp-header@2.0.9:
   version "2.0.9"
@@ -3695,7 +3736,7 @@ snapdragon@^0.8.1:
     source-map-resolve "^0.5.0"
     use "^3.1.0"
 
-source-map-resolve@^0.5.0:
+source-map-resolve@^0.5.0, source-map-resolve@^0.5.2:
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/source-map-resolve/-/source-map-resolve-0.5.3.tgz#190866bece7553e1f8f267a2ee82c606b5509a1a"
   integrity sha512-Htz+RnsXWk5+P2slx5Jh3Q66vhQj1Cllm0zvnaY98+NFx+Dv2CF/f5O/t8x+KaNdrdIAsruNzoh/KpialbqAnw==
