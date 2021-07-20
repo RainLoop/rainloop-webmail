@@ -1,6 +1,15 @@
 import ko from 'ko';
 import { isArray } from 'Common/Utils';
 
+/*
+	oCallbacks:
+		ItemSelect
+		MiddleClick
+		AutoSelect
+		ItemGetUid
+		UpOrDown
+*/
+
 export class Selector {
 	/**
 	 * @param {koProperty} koList
@@ -209,11 +218,9 @@ export class Selector {
 
 	itemSelected(item) {
 		if (this.isListChecked()) {
-			if (!item) {
-				(this.oCallbacks.onItemSelect || (()=>{}))(item || null);
-			}
+			item || (this.oCallbacks.ItemSelect || (()=>{}))(null);
 		} else if (item) {
-			(this.oCallbacks.onItemSelect || (()=>{}))(item);
+			(this.oCallbacks.ItemSelect || (()=>{}))(item);
 		}
 	}
 
@@ -226,20 +233,32 @@ export class Selector {
 		this.oContentScrollable = contentScrollable;
 
 		if (contentScrollable) {
+			let getItem = selector => {
+				let el = event.target.closestWithin(selector, contentScrollable);
+				return el ? ko.dataFor(el) : null;
+			};
+
 			contentScrollable.addEventListener('click', event => {
 				let el = event.target.closestWithin(this.sItemSelector, contentScrollable);
 				el && this.actionClick(ko.dataFor(el), event);
 
-				el = event.target.closestWithin(this.sItemCheckedSelector, contentScrollable);
-				if (el) {
-					const item = ko.dataFor(el);
+				const item = getItem(this.sItemCheckedSelector);
+				if (item) {
+					if (event.shiftKey) {
+						this.actionClick(item, event);
+					} else {
+						this.focusedItem(item);
+						item.checked(!item.checked());
+					}
+				}
+			});
+
+			contentScrollable.addEventListener('auxclick', event => {
+				if (1 == event.button) {
+					const item = getItem(this.sItemSelector);
 					if (item) {
-						if (event.shiftKey) {
-							this.actionClick(item, event);
-						} else {
-							this.focusedItem(item);
-							item.checked(!item.checked());
-						}
+						this.focusedItem(item);
+						(this.oCallbacks.MiddleClick || (()=>{}))(item);
 					}
 				}
 			});
@@ -271,7 +290,7 @@ export class Selector {
 	 * @returns {boolean}
 	 */
 	autoSelect() {
-		return !!(this.oCallbacks.onAutoSelect || (()=>true))();
+		return !!(this.oCallbacks.AutoSelect || (()=>true))();
 	}
 
 	/**
@@ -281,7 +300,7 @@ export class Selector {
 	getItemUid(item) {
 		let uid = '';
 
-		const getItemUidCallback = this.oCallbacks.onItemGetUid || null;
+		const getItemUidCallback = this.oCallbacks.ItemGetUid || null;
 		if (getItemUidCallback && item) {
 			uid = getItemUidCallback(item);
 		}
@@ -312,7 +331,7 @@ export class Selector {
 					} else if (++i < listLen) {
 						result = list[i];
 					}
-					result || (this.oCallbacks.onUpUpOrDownDown || (()=>true))('ArrowUp' === sEventKey);
+					result || (this.oCallbacks.UpOrDown || (()=>true))('ArrowUp' === sEventKey);
 				} else if ('Home' === sEventKey) {
 					result = list[0];
 				} else if ('End' === sEventKey) {

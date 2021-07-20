@@ -20,6 +20,11 @@ body {
 	right: 0;
 }
 
+html.list-loading body {
+/*	cursor: wait;*/
+	cursor: progress;
+}
+
 html:not(.rl-mobile) {
 	min-width: 700px;
 }
@@ -30,10 +35,6 @@ html:not(.rl-mobile) {
 		background-size: var(--main-bg-size);
 		background-repeat: var(--main-bg-repeat);
 	}
-}
-
-textarea {
-	resize: none;
 }
 
 option:disabled {

@@ -38,7 +38,6 @@ import {
 } from 'Common/Cache';
 
 import {
-	userBackground,
 	mailBox,
 	root,
 	openPgpWorkerJs,
@@ -81,6 +80,8 @@ import { ComposePopupView } from 'View/Popup/Compose';
 import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
 import { AskPopupView } from 'View/Popup/Ask';
 
+import { timeToNode } from 'Common/Momentor';
+
 // Every 5 minutes
 const refreshFolders = 300000;
 
@@ -109,16 +110,6 @@ class AppUser extends AbstractApp {
 			}
 			lastTime = currentTime;
 		}, interval);
-
-		if (SettingsGet('UserBackgroundHash')) {
-			setTimeout(() => {
-				const img = userBackground(SettingsGet('UserBackgroundHash'));
-				if (img) {
-					$htmlCL.add('UserBackground');
-					doc.body.style.backgroundImage = "url("+img+")";
-				}
-			}, 1000);
-		}
 
 		const fn = (ev=>$htmlCL.toggle('rl-ctrl-key-pressed', ev.ctrlKey)).debounce(500);
 		['keydown','keyup'].forEach(t => doc.addEventListener(t, fn));
@@ -1020,7 +1011,14 @@ class AppUser extends AbstractApp {
 			this.hideLoading();
 		}
 
-		setInterval(() => dispatchEvent(new CustomEvent('reload-time')), 60000);
+		setInterval(this.reloadTime(), 60000);
+	}
+
+	reloadTime()
+	{
+		setTimeout(() =>
+			doc.querySelectorAll('[data-bind*="moment:"]').forEach(element => timeToNode(element))
+			, 1)
 	}
 
 	showMessageComposer(params = [])
