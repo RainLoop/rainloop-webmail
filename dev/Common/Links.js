@@ -71,14 +71,6 @@ export function change(email) {
 }
 
 /**
- * @param {string} hash
- * @returns {string}
- */
-export function userBackground(hash) {
-	return serverRequestRaw('UserBackground', hash);
-}
-
-/**
  * @param {string} lang
  * @param {boolean} isAdmin
  * @returns {string}
