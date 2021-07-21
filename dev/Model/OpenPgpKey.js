@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { isNonEmptyArray } from 'Common/Utils';
+import { arrayLength } from 'Common/Utils';
 import { AbstractModel } from 'Knoin/AbstractModel';
 import { PgpUserStore } from 'Stores/User/Pgp';
 
@@ -21,7 +21,7 @@ export class OpenPgpKeyModel extends AbstractModel {
 
 		this.index = index;
 		this.id = ID;
-		this.ids = isNonEmptyArray(IDs) ? IDs : [ID];
+		this.ids = arrayLength(IDs) ? IDs : [ID];
 		this.guid = guID;
 		this.user = '';
 		this.users = userIDs;

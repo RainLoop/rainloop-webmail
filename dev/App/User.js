@@ -1,6 +1,6 @@
 import 'External/User/ko';
 
-import { isArray, isNonEmptyArray, pInt, pString } from 'Common/Utils';
+import { isArray, arrayLength, pInt, pString } from 'Common/Utils';
 import { isPosNumeric, delegateRunOnDestroy, mailToHelper } from 'Common/UtilsUser';
 
 import {
@@ -261,7 +261,7 @@ class AppUser extends AbstractApp {
 			setFolderHash(FolderUserStore.currentFolderFullNameRaw(), '');
 			alert(getNotification(iError));
 		} else if (FolderUserStore.currentFolder()) {
-			if (isArray(oData.Result) && 2 === oData.Result.length) {
+			if (2 === arrayLength(oData.Result)) {
 				setFolderHash(oData.Result[0], oData.Result[1]);
 			} else {
 				setFolderHash(FolderUserStore.currentFolderFullNameRaw(), '');
@@ -348,7 +348,7 @@ class AppUser extends AbstractApp {
 	 * @param {boolean=} bCopy = false
 	 */
 	moveMessagesToFolder(sFromFolderFullNameRaw, aUidForMove, sToFolderFullNameRaw, bCopy) {
-		if (sFromFolderFullNameRaw !== sToFolderFullNameRaw && isArray(aUidForMove) && aUidForMove.length) {
+		if (sFromFolderFullNameRaw !== sToFolderFullNameRaw && arrayLength(aUidForMove)) {
 			const oFromFolder = getFolderFromCacheList(sFromFolderFullNameRaw),
 				oToFolder = getFolderFromCacheList(sToFolderFullNameRaw);
 
@@ -519,8 +519,7 @@ class AppUser extends AbstractApp {
 		Remote.quota((iError, data) => {
 			if (
 				!iError &&
-				isArray(data.Result) &&
-				1 < data.Result.length &&
+				1 < arrayLength(data.Result) &&
 				isPosNumeric(data.Result[0], true) &&
 				isPosNumeric(data.Result[1], true)
 			) {
@@ -614,9 +613,9 @@ class AppUser extends AbstractApp {
 	 */
 	folderInformationMultiply(boot = false) {
 		const folders = FolderUserStore.getNextFolderNames(refreshFolders);
-		if (isNonEmptyArray(folders)) {
+		if (arrayLength(folders)) {
 			Remote.folderInformationMultiply((iError, oData) => {
-				if (!iError && isNonEmptyArray(oData.Result.List)) {
+				if (!iError && arrayLength(oData.Result.List)) {
 					const utc = Date.now();
 					oData.Result.List.forEach(item => {
 						const hash = getFolderHash(item.Folder),

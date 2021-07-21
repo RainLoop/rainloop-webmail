@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { doc, $htmlCL } from 'Common/Globals';
-import { isNonEmptyArray, isFunction } from 'Common/Utils';
+import { arrayLength, isFunction } from 'Common/Utils';
 
 let currentScreen = null,
 	defaultScreenName = '';
@@ -227,7 +227,7 @@ function screenOnRoute(screenName, subPart) {
 					currentScreen.onHide && currentScreen.onHide();
 					currentScreen.onHideWithDelay && setTimeout(()=>currentScreen.onHideWithDelay(), 500);
 
-					if (isNonEmptyArray(currentScreen.viewModels)) {
+					if (arrayLength(currentScreen.viewModels)) {
 						currentScreen.viewModels.forEach(ViewModelClass => {
 							if (
 								ViewModelClass.__vm &&
@@ -251,7 +251,7 @@ function screenOnRoute(screenName, subPart) {
 				if (currentScreen && !isSameScreen) {
 					currentScreen.onShow && currentScreen.onShow();
 
-					if (isNonEmptyArray(currentScreen.viewModels)) {
+					if (arrayLength(currentScreen.viewModels)) {
 						currentScreen.viewModels.forEach(ViewModelClass => {
 							if (
 								ViewModelClass.__vm &&
