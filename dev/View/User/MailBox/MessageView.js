@@ -541,8 +541,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 				return false;
 			}
 		});
-//		shortcuts.add('tab', 'shift', Scope.MessageView, (event, handler) => {
-		shortcuts.add('tab', '', Scope.MessageView, () => {
+		shortcuts.add('tab', 'shift', Scope.MessageView, () => {
 			if (!this.fullScreenMode() && this.message() && SettingsUserStore.usePreviewPane()) {
 				AppUserStore.focusedState(Scope.MessageList);
 			}
