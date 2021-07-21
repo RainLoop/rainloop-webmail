@@ -838,8 +838,10 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			return false;
 		});
 		shortcuts.add('tab,arrowright', '', Scope.MessageList, () => {
-			MessageUserStore.message() && AppUserStore.focusedState(Scope.MessageView);
-			return false;
+			if (MessageUserStore.message()){
+				AppUserStore.focusedState(Scope.MessageView);
+				return false;
+			}
 		});
 
 		shortcuts.add('arrowleft', 'meta', Scope.MessageView, ()=>false);
