@@ -1,5 +1,5 @@
 import * as Links from 'Common/Links';
-import { doc } from 'Common/Globals';
+import { doc, SettingsGet } from 'Common/Globals';
 
 let notificator = null,
 	player = null,
@@ -106,11 +106,11 @@ export const SMAudio = new class {
 
 	playNotification(silent) {
 		if ('running' == audioCtx.state && (this.supportedMp3 || this.supportedOgg)) {
-			if (!notificator) {
-				notificator = createNewObject();
-				notificator.src = Links.staticLink('sounds/new-mail.'+ (this.supportedMp3 ? 'mp3' : 'ogg'));
-			}
+			notificator = notificator || createNewObject();
 			if (notificator) {
+				notificator.src = Links.staticLink('sounds/'
+					+ SettingsGet('NotificationSound')
+					+ (this.supportedMp3 ? '.mp3' : '.ogg'));
 				notificator.volume = silent ? 0.01 : 1;
 				notificator.play();
 			}
