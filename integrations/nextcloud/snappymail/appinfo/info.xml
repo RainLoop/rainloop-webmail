@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<info xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+	<id>snappymail</id>
+	<name>SnappyMail</name>
+	<summary>SnappyMail Webmail</summary>
+	<description>Simple, modern and fast web-based email client. After enabling in Nextcloud, go to Nextcloud admin panel, "Additionnal settings" and you will see a "SnappyMail webmail" section. There, click on the link to go to the SnappyMail admin panel. The default user/password is admin/12345. This version is based on SnappyMail 2.5.3 (2021-07).</description>
+	<version>2.5.3</version>
+	<licence>agpl</licence>
+	<author>SnappyMail Team, Nextgen-Networks, Tab Fitts, Nathan Kinkade, Pierre-Alain Bandinelli</author>
+  <namespace>SnappyMail</namespace>
+	<documentation>
+		<user>https://github.com/pierre-alain-b/snappymail-nextcloud/blob/master/README.md</user>
+		<website>https://snappymail.eu/</website>
+	</documentation>
+	<category>social</category>
+    <category>tools</category>
+    <category>integration</category>
+    <screenshot>https://raw.githubusercontent.com/pierre-alain-b/snappymail-nextcloud/master/screenshots/2016.10.20-screenshot.jpg</screenshot>
+	<website>https://github.com/pierre-alain-b/snappymail-nextcloud</website>
+	<bugs>https://github.com/pierre-alain-b/snappymail-nextcloud/issues</bugs>
+	<dependencies>
+    <php min-version="7.4" />
+		<owncloud min-version="6" max-version="9.2" />
+		<nextcloud min-version="20" max-version="22" />
+  </dependencies>
+	<settings>
+		<admin>OCA\SnappyMail\Settings\AdminSettings</admin>
+	</settings>
+</info>

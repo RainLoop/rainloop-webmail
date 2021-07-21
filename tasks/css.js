@@ -1,13 +1,13 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL 3 */
 const gulp = require('gulp');
 
-const concat = require('gulp-concat-util');
+const concat = require('gulp-concat');
 const rename = require('gulp-rename');
 const replace = require('gulp-replace');
 const eol = require('gulp-eol');
-const livereload = require('gulp-livereload');
 const filter = require('gulp-filter');
 const expect = require('gulp-expect-file');
+const gcmq = require('gulp-group-css-media-queries');
 
 const { config } = require('./config');
 const { del } = require('./common');
@@ -46,8 +46,7 @@ const cssMainBuild = () => {
 		.pipe(concat(config.paths.css.main.name))
 		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
 		.pipe(eol('\n', true))
-		.pipe(gulp.dest(config.paths.staticCSS))
-		.pipe(livereload());
+		.pipe(gulp.dest(config.paths.staticCSS));
 };
 
 const cssAdminBuild = () => {
@@ -69,8 +68,7 @@ const cssAdminBuild = () => {
 		.pipe(concat(config.paths.css.admin.name))
 		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
 		.pipe(eol('\n', true))
-		.pipe(gulp.dest(config.paths.staticCSS))
-		.pipe(livereload());
+		.pipe(gulp.dest(config.paths.staticCSS));
 };
 
 const cssBootMin = () => {
@@ -85,6 +83,7 @@ const cssBootMin = () => {
 const cssMainMin = () => {
 	return gulp
 		.src(config.paths.staticCSS + config.paths.css.main.name)
+		.pipe(gcmq())
 		.pipe(cleanCss())
 		.pipe(rename({ suffix: '.min' }))
 		.pipe(eol('\n', true))
@@ -94,6 +93,7 @@ const cssMainMin = () => {
 const cssAdminMin = () => {
 	return gulp
 		.src(config.paths.staticCSS + config.paths.css.admin.name)
+		.pipe(gcmq())
 		.pipe(cleanCss())
 		.pipe(rename({ suffix: '.min' }))
 		.pipe(eol('\n', true))

@@ -1,11 +1,11 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL 3 */
 const gulp = require('gulp');
-const rimraf = require('gulp-rimraf');
+const del = require('del');
 const fs = require('node-fs');
 
 const { config } = require('./config');
 
-exports.del = (dir) => gulp.src(dir, { read: false, allowEmpty: true }).pipe(rimraf());
+exports.del = (dir) => del(dir);
 
 exports.copy = (sFile, sNewFile, done) => {
 	fs.writeFileSync(sNewFile, fs.readFileSync(sFile));
@@ -14,4 +14,4 @@ exports.copy = (sFile, sNewFile, done) => {
 
 exports.getHead = () => config.head.agpl;
 
-exports.cleanStatic = () => exports.del(config.paths.static);
+exports.cleanStatic = () => del(config.paths.static);

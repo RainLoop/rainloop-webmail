@@ -87,14 +87,8 @@
 		"LABEL_REQUIRE_VERIFICATION": "Verificatie van SSL certificaten (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Sta zelf ondertekende certificaten toe"
 	},
-	"TAB_PLUGINS": {
-		"LEGEND_PLUGINS": "Invoegtoepassingen",
-		"LABEL_ENABLE_PLUGINS": "Invoegtoepassingen inschakelen",
-		"ALERT_NO_PLUGINS": "Er zijn nog geen invoegtoepassingen geïnstalleerd",
-		"LINK_INSTALL_NEW": "Klik hier om een invoegtoepassing te installeren!",
-		"HINT_CLICK_NAME": "Klik op de naam om de invoegtoepassing te configuren."
-	},
 	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Invoegtoepassingen inschakelen",
 		"LEGEND_AVAILABLE_FOR_UPDATE": "Update beschikbaar",
 		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Gereed voor installatie",
 		"LEGEND_INSTALLED_PACKAGES": "Geïnstalleerde pakketten",

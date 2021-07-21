@@ -186,6 +186,16 @@ trait User
 						}
 					}
 					break;
+
+				default:
+					$data = new \SnappyMail\AttachmentsAction;
+					$data->action = $sAction;
+					$data->items = $aData;
+					$data->filesProvider = $oFilesProvider;
+					$data->account = $oAccount;
+					$this->Plugins()->RunHook('json.attachments', array($data));
+					$mResult = $data->result;
+					break;
 			}
 		}
 		else
@@ -337,6 +347,7 @@ trait User
 		$this->setSettingsFromParams($oSettings, 'ContactsAutosave', 'bool');
 		$this->setSettingsFromParams($oSettings, 'DesktopNotifications', 'bool');
 		$this->setSettingsFromParams($oSettings, 'SoundNotification', 'bool');
+		$this->setSettingsFromParams($oSettings, 'NotificationSound', 'string');
 		$this->setSettingsFromParams($oSettings, 'UseCheckboxesInList', 'bool');
 		$this->setSettingsFromParams($oSettings, 'AllowDraftAutosave', 'bool');
 		$this->setSettingsFromParams($oSettings, 'AutoLogout', 'int');

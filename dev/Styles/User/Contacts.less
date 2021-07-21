@@ -1,0 +1,267 @@
+
+@contacts-popup-left-width: 25%;
+
+.RL-PopupsContacts {
+
+	.control-group {
+		.control-label {
+			padding-top: 0;
+			width: 50px;
+		}
+	}
+
+	.modal {
+		bottom: 0;
+		width: auto;
+		min-width: 550px;
+		max-width: 900px;
+		min-height: 300px;
+		max-height: 700px;
+	}
+
+	.modal-body {
+		height: calc(100% - 49px);
+		padding: 0;
+		position: relative;
+	}
+
+	.b-list-toolbar {
+		padding: 0;
+		height: 44px;
+		text-align: center;
+		width: @contacts-popup-left-width;
+		border-bottom: 1px solid rgba(128,128,128,0.4);
+
+		.e-search {
+			margin: 7px 0 0;
+			width: calc(100% - 20px);
+		}
+	}
+
+	.b-list-footer-toolbar {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		height: 46px;
+		width: @contacts-popup-left-width;
+		background-color: var(--message-list-toolbar-bg-color,#eee);
+		box-shadow: inset 0 1px 0 #ccc;
+
+		.footer-pager {
+			padding: 8px 10px 0 0;
+			text-align: right;
+		}
+	}
+
+	.b-list-content {
+		position: absolute;
+		top: 45px;
+		bottom: 46px;
+		left: 0;
+		width: @contacts-popup-left-width;
+		overflow: hidden;
+		overflow-y: auto;
+		scroll-behavior: smooth;
+
+		.listClear {
+			text-align: center;
+			padding: 10px;
+			font-size: 14px;
+			line-height: 13px;
+			box-shadow: inset 0 -1px 0 #ccc;
+		}
+
+		.listEmptyList, .listEmptyListLoading, .listEmptySearchList {
+			color: #999;
+			text-align: center;
+			padding: 60px 10px;
+			font-size: 24px;
+			line-height: 30px;
+		}
+
+		&.hideContactListCheckbox {
+			.checkboxItem {
+				visibility: hidden;
+			}
+		}
+	}
+
+	.e-contact-item {
+		display: flex;
+		height: 55px;
+		max-height: 45px;
+		line-height: 45px;
+		overflow: hidden;
+		cursor: pointer;
+		position: relative;
+
+		margin: 0;
+		border: 0;
+		border-left: 6px solid #eee;
+		border-bottom: 1px solid rgba(128,128,128,0.25);
+
+		&.focused {
+			border-left-color: #bbb;
+		}
+
+		&.deleted {
+			max-height: 0;
+			border-color: transparent !important;
+		}
+
+		.checkboxItem {
+			line-height: 45px;
+			padding: 0 8px 0 6px;
+		}
+
+		.nameParent {
+			font-size: 16px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			width: 100%;
+		}
+
+		&.checked {
+			border-left-color: #69A8F5;
+
+			&.focused {
+				border-left-color: darken(#69A8F5, 5%);
+			}
+		}
+
+		&.selected {
+
+			background-color: rgba(140, 200, 255, 0.3);
+			border-left-color: #398CF2;
+
+			&.focused {
+				border-left-color: darken(#398CF2, 5%);
+			}
+		}
+	}
+
+	.b-view-content-toolbar {
+		padding: 7px;
+		position: absolute;
+		top: 0;
+		right: 0;
+		left: @contacts-popup-left-width;
+		height: 30px;
+		text-align: right;
+		border-bottom: 1px solid rgba(128,128,128,0.4);
+
+		.button-save-contact {
+			&.dirty:enabled {
+				color: #51a351;
+				font-weight: bold;
+			}
+		}
+
+		&.read-only .button-save-contact {
+			display: none;
+		}
+	}
+
+	.b-view-content {
+		position: absolute;
+		top: 45px;
+		bottom: 0;
+		left: @contacts-popup-left-width;
+		right: 0;
+		overflow: auto;
+		border-left: 1px solid rgba(128,128,128,0.25);
+
+		span {
+			height: 20px;
+			line-height: 20px;
+			display: none;
+			padding: 5px 7px;
+			font-size: 18px;
+			display: none;
+		}
+
+		.b-contact-view-desc {
+			text-align: center;
+			font-size: 24px;
+			line-height: 30px;
+			padding-top: 120px;
+			color: #999;
+		}
+
+		.top-part {
+			padding-top: 20px;
+		}
+
+		.property-line {
+			margin-bottom: 5px;
+		}
+
+		.top-row {
+			padding: 10px 0;
+			height: 30px;
+		}
+
+		.add-link {
+			margin-left: 2px;
+			padding: 5px;
+			font-size: 12px;
+			color: #aaa;
+		}
+
+		input, textarea {
+			box-shadow: none;
+			border-color: #fff;
+			font-size: 18px;
+			width: 70vw;
+			max-width: 400px;
+
+			&:hover {
+				box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+				border-color: #ccc;
+			}
+
+			&:focus {
+				box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+				border-color: #999;
+			}
+		}
+
+		.hasError {
+			input {
+				color: #ee5f5b;
+				border-color: #ee5f5b;
+			}
+		}
+
+		.e-save-trigger {
+			position: absolute;
+			top: 25px;
+			left: 10px;
+		}
+
+		.e-read-only-sign {
+			display: none;
+			position: absolute;
+			top: 20px;
+			right: 40px;
+		}
+
+		.e-share-sign {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			cursor: pointer;
+		}
+
+		&.read-only {
+			span, .e-read-only-sign {
+				display: inline-block;
+			}
+
+			input, textarea, .e-share-sign {
+				display: none;
+			}
+		}
+	}
+}

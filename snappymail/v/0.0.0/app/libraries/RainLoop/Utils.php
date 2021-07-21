@@ -238,7 +238,7 @@ class Utils
 	{
 		static $sAppPath;
 		if (!$sAppPath) {
-			$sAppPath = \preg_replace('#index\\.php.*$#D', '$1', $_SERVER['SCRIPT_NAME']);
+			$sAppPath = \preg_replace('#index\\.php.*$#D', '', $_SERVER['SCRIPT_NAME']);
 //			$sAppPath = Api::Config()->Get('labs', 'app_default_path', '');
 		}
 		return $sAppPath;

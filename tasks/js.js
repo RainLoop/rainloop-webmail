@@ -1,7 +1,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL 3 */
 const gulp = require('gulp');
 
-const concat = require('gulp-concat-util'),
+const concat = require('gulp-concat'),
 	header = require('gulp-header'),
 	rename = require('gulp-rename'),
 	replace = require('gulp-replace'),

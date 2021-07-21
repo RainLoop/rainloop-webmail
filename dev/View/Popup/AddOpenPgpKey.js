@@ -78,7 +78,7 @@ class AddOpenPgpKeyPopupView extends AbstractViewPopup {
 			return false;
 		}
 
-		this.cancelCommand && this.cancelCommand();
+		this.cancelCommand();
 		return true;
 	}
 

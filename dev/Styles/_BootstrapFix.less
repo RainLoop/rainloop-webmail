@@ -12,12 +12,7 @@ label.inline, span.inline {
 	line-height: @baseLineHeight * 2;
 	color: @grayDark;
 	border: 0;
-	border-bottom: 1px solid #e5e5e5;
-
-	small {
-		font-size: @baseLineHeight * .75;
-		color: @grayLight;
-	}
+	border-bottom: 1px solid @dropdownDividerTop;
 }
 
 .legend + .control-group {
@@ -40,30 +35,19 @@ label.inline, span.inline {
 
 .alert a {
 	text-decoration: underline;
-	color: #c09853;
+	color: @warningText;
 }
 
 .alert.alert-info a {
-	color: #3a87ad;
+	color: @infoText;
 }
 
 .alert.alert-error a {
-	color: #b94a48;
-}
-
-.form-horizontal.long-label .control-group {
-	.control-label {
-		width: 160px;
-	}
+	color: @errorText;
 }
 
 /* mobile and tablet */
 @media screen and (max-width: 999px) {
-
-	.modal {
-		width: calc(~'100% - 20px') !important;
-	}
-
 	.form-horizontal {
 		.control-group {
 			.control-label {

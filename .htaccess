@@ -1,6 +1,8 @@
-RewriteEngine On
-# Redirect cPanel
-RewriteRule cpsess.* https://%{HTTP_HOST}/ [L,R=301]
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	# Redirect cPanel
+	RewriteRule cpsess.* https://%{HTTP_HOST}/ [L,R=301]
+</IfModule>
 
 <IfModule mod_expires.c>
 	ExpiresActive On

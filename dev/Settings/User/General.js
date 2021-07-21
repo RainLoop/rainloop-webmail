@@ -32,6 +32,8 @@ export class GeneralUserSettings {
 		this.layout = SettingsUserStore.layout;
 
 		this.enableSoundNotification = NotificationUserStore.enableSoundNotification;
+		this.notificationSound = ko.observable(SettingsGet('NotificationSound'));
+		this.notificationSounds = ko.observableArray(SettingsGet('NewMailSounds'));
 
 		this.enableDesktopNotification = NotificationUserStore.enableDesktopNotification;
 		this.isDesktopNotificationDenied = NotificationUserStore.isDesktopNotificationDenied;
@@ -115,6 +117,10 @@ export class GeneralUserSettings {
 			enableDesktopNotification: value => Remote.saveSetting('DesktopNotifications', value ? 1 : 0),
 
 			enableSoundNotification: value => Remote.saveSetting('SoundNotification', value ? 1 : 0),
+			notificationSound: value => {
+				Remote.saveSetting('NotificationSound', value);
+				rl.settings.set('NotificationSound', value);
+			},
 
 			replySameFolder: value => Remote.saveSetting('ReplySameFolder', value ? 1 : 0),
 

@@ -524,13 +524,6 @@ export class MessageModel extends AbstractModel {
 		}
 	}
 
-	storeDataInDom() {
-		if (this.body) {
-			this.body.rlIsHtml = !!this.isHtml();
-			this.body.rlHasImages = !!this.hasImages();
-		}
-	}
-
 	fetchDataFromDom() {
 		if (this.body) {
 			this.isHtml(!!this.body.rlIsHtml);

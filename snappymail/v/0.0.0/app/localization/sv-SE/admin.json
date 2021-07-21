@@ -87,14 +87,8 @@
 		"LABEL_REQUIRE_VERIFICATION": "Kräver verifiering av SSL-certifikat som används (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Låt självsignerade certifikat"
 	},
-	"TAB_PLUGINS": {
-		"LEGEND_PLUGINS": "Plugin",
-		"LABEL_ENABLE_PLUGINS": "Aktivera Plugin",
-		"ALERT_NO_PLUGINS": "Inga plugin har ännu blivit installerade",
-		"LINK_INSTALL_NEW": "Klicka här för att installera nya",
-		"HINT_CLICK_NAME": "Klicka på namnet för att konfigurera pluginet"
-	},
 	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Aktivera Plugin",
 		"LEGEND_AVAILABLE_FOR_UPDATE": "Tillåt uppdateringar",
 		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Tillåt installation",
 		"LEGEND_INSTALLED_PACKAGES": "installerade paket",

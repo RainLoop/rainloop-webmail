@@ -54,7 +54,7 @@ class FilterPopupView extends AbstractViewPopup {
 
 			this.fTrueCallback && this.fTrueCallback(this.filter());
 
-			this.modalVisibility() && this.closeCommand && this.closeCommand();
+			this.modalVisibility() && this.closeCommand();
 		}
 
 		return true;

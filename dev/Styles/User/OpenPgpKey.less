@@ -1,0 +1,144 @@
+.b-open-pgp-key-view-content, .b-open-pgp-key-generate-content {
+	&.modal {
+		max-width: 570px;
+	}
+}
+
+.b-open-pgp-key-view-content {
+	.key-viewer {
+		max-height: 500px;
+		overflow: auto;
+	}
+}
+
+.b-compose-open-pgp-content {
+	&.modal {
+		max-width: 800px;
+	}
+
+	.key-list {
+
+		background-color: #f9f9f9;
+		border-radius: 5px;
+		padding: 10px 15px;
+
+		&-wrp {
+
+			&:hover {
+				overflow: auto;
+			}
+
+			&:hover .key-list__item-name {
+				overflow: visible;
+			}
+
+			&.empty {
+				text-align: center;
+				padding-top: 10px;
+				color: #aaa;
+				font-size: 16px;
+			}
+		}
+
+		&__item {
+
+			color: #333;
+			white-space: nowrap;
+			padding-bottom: 4px;
+			display: flex;
+
+			&:last-child {
+				padding-bottom: 0;
+			}
+
+			&-delete {
+				cursor: pointer;
+
+				&.disabled {
+					cursor: not-allowed;
+				}
+			}
+
+			&-names {
+				color: #333;
+				width: 80%;
+
+				&.empty {
+					color: red;
+				}
+			}
+
+			&-name {
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			&-error {
+				color: red;
+				width: 80%;
+			}
+
+			&-hash {
+				color: #aaa;
+				width: 20%;
+			}
+		}
+	}
+
+	.key-actions {
+		margin-top: 10px;
+		min-height: 40px;
+
+		select option:nth-child(even) {
+			background-color: rgba(128, 128, 128, 0.1);
+		}
+	}
+}
+
+.b-message-open-pgp-content {
+	&.modal {
+		max-width: 700px;
+	}
+
+	.key-list {
+
+		margin-top: 5px;
+		overflow: hidden;
+
+		&__item {
+
+			color: #555;
+			cursor: pointer;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+
+			&__radio {
+				padding: 3px 5px 0 0;
+				vertical-align: top;
+			}
+
+			&__name {
+				border-bottom: 1px solid transparent;
+			}
+
+			&__names {
+				display: inline-block;
+
+				&:hover .key-list__item__name {
+					border-bottom: 1px dashed #555;
+				}
+			}
+		}
+	}
+}
+
+.b-open-pgp-key-add-content {
+	&.modal {
+		max-width: 645px;
+	}
+	.inputKey {
+		font-family: var(--fontMono);
+		width: 600px;
+
+	}
+}

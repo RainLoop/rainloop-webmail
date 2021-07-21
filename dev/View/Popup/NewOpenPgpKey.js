@@ -63,7 +63,7 @@ class NewOpenPgpKeyPopupView extends AbstractViewPopup {
 							openpgpKeyring.store();
 
 							rl.app.reloadOpenPgpKeys();
-							this.cancelCommand && this.cancelCommand();
+							this.cancelCommand();
 						}
 					})
 					.catch((e) => {

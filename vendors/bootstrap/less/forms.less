@@ -29,12 +29,6 @@ legend {
   color: @grayDark;
   border: 0;
   border-bottom: 1px solid #e5e5e5;
-
-  // Small
-  small {
-    font-size: @baseLineHeight * .75;
-    color: @grayLight;
-  }
 }
 
 // Identify controls by their labels
@@ -84,6 +78,7 @@ textarea {
 // Reset height since textareas have rows
 textarea {
   height: auto;
+  resize: none;
 }
 // Everything else
 textarea,

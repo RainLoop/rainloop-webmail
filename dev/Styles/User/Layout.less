@@ -1,0 +1,394 @@
+
+.UserBackground body {
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#rl-left, #rl-right {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	z-index: 0;
+}
+
+html.rl-mobile {
+
+	&:not(.rl-left-panel-disabled) #rl-right {
+		right: -150px;
+	}
+
+	&.rl-left-panel-disabled #rl-right {
+		left: 5px !important;
+	}
+}
+
+#rl-left {
+	width: @rlLeftWidth;
+}
+
+/*
+.resizable::after {
+	background-color: #aaa;
+	bottom: 0;
+	content: '';
+	height: 22px;
+	pointer-events: none;
+	position: absolute;
+	right: 0;
+	text-align: center;
+	width: 20px;
+}
+.resizable::-webkit-resizer {
+	background: #aaa;
+	background: rgba(255,255,255,0.5);
+}
+*/
+
+.resizable > .resizer {
+	background: #aaa;
+	background: rgba(255,255,255,0.5);
+	display: none;
+	opacity: 0;
+	position: absolute;
+	z-index: 102;
+}
+.resizable > .resizer:hover {
+	opacity: 1;
+}
+
+html:not(.rl-left-panel-disabled) #rl-left.resizable {
+	resize: horizontal;
+	overflow: hidden;
+	min-width: 155px;
+	max-width: 350px;
+}
+#rl-left > .resizer {
+	cursor: ew-resize;
+	height: 100%;
+	right: 0;
+	top: 0;
+	width: 5px;
+}
+
+.g-ui-menu {
+	max-height: 60vh;
+	max-width: 90vw;
+	overflow: auto;
+
+	.e-link {
+		text-decoration: none;
+		cursor: pointer;
+		color: var(--dropdown-menu-color, #333);
+		background-color: var(--dropdown-menu-bg-color, #fff);
+	}
+
+	.e-item.selected > .e-link {
+		background-color: var(--dropdown-menu-selected-bg-color, #eee);
+	}
+
+	.e-item:not(.disabled) > .e-link:focus,
+	.e-item:not(.disabled) > .e-link:hover {
+		background-color: var(--dropdown-menu-hover-bg-color, #444);
+		background-image: none;
+		color: var(--dropdown-menu-hover-color, #eee);
+	}
+
+	.e-item.disabled > .e-link {
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
+}
+
+.g-ui-table {
+
+	display: table;
+	width: 100%;
+
+	.e-row {
+		display: table-row;
+	}
+
+	.e-cell {
+		display: table-cell;
+		vertical-align: top;
+		text-align: left;
+	}
+}
+
+.b-message-list-wrapper.resizable {
+	resize: vertical;
+	overflow: hidden;
+	min-height: 200px;
+	max-height: 500px;
+}
+.b-message-list-wrapper > .resizer {
+	cursor: ns-resize;
+	height: 5px;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+}
+
+html:not(.rl-left-panel-disabled) #rl-left.resizable > .resizer,
+.b-message-list-wrapper > .resizer {
+	display: block;
+}
+
+#rl-right {
+	z-index: 1;
+	left: @rlLeftWidth;
+}
+
+#rl-sub-left {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	width: 50%;
+}
+
+#rl-sub-right {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 50%;
+
+	.b-message-view-backdrop {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, .4);
+		z-index: 10;
+		text-align: center;
+
+		.backdrop-message {
+			position: relative;
+			display: inline-block;
+			color: white;
+			font-size: 20px;
+			line-height: 30px;
+			background: rgba(0, 0, 0, .6);
+			padding: 15px;
+			border-radius: 5px;
+			text-shadow: 0 1px 1px #000;
+			transform: translateY(-50%);
+			top: 50%;
+		}
+	}
+}
+
+/*
+	#rl-popups > dialog {
+		top: 0;
+		margin: 10px auto;
+		padding: 0;
+		border: 0;
+	}
+*/
+#rl-popups > .rl-view-model {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 1100;
+	overflow: auto;
+	background-color: rgba(0,0,0,0.3);
+}
+
+#rl-settings-subscreen {
+	padding:20px;
+}
+
+.dropdown-menu * + .dividerbar {
+	margin-top: 9px;
+	padding-top: 9px;
+	border-top: 1px solid #e5e5e5;
+}
+
+.dropdown.colored-toggle.open .btn.dropdown-toggle {
+	color: #BD362F;
+
+	.caret {
+		border-top-color: #BD362F;
+	}
+}
+
+.btn.btn-transparent {
+	background: none !important;
+	border-color: transparent !important;
+	text-shadow: none !important;
+	box-shadow: none !important;
+	opacity: .6;
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
+.btn-group.open .btn.btn-transparent.dropdown-toggle {
+	color: #BD362F;
+	.caret {
+		border-top-color: #BD362F;
+	}
+}
+
+.btn-group > .btn.single {
+	border-radius: 3px !important;
+}
+
+/* desktop */
+@media screen and (min-width: 1000px) {
+}
+
+/* desktop-large */
+@media screen and (min-width: 1401px) {
+	#rl-left {
+		width: @rlLeftWidth + 20;
+	}
+
+	#rl-right {
+		left: @rlLeftWidth + 20;
+	}
+
+	#rl-sub-left {
+		width: 40%;
+	}
+
+	#rl-sub-right {
+		left: 40%;
+	}
+}
+
+/* mobile and tablet */
+@media screen and (max-width: 999px) {
+	#rl-left {
+		width: 155px;
+	}
+
+	#rl-right {
+		left: 155px;
+	}
+
+	#rl-settings-subscreen {
+		padding: 10px;
+	}
+
+	.dropdown-menu a {
+		line-height: 2.5;
+	}
+}
+
+html:not(.rl-ctrl-key-pressed) .visible-on-ctrl-btn,
+html.rl-ctrl-key-pressed .hidden-on-ctrl-btn,
+.show-on-panel-disabled {
+	display: none;
+}
+
+html.rl-left-panel-disabled {
+
+	#rl-left {
+		width: 60px !important;
+
+		.show-on-panel-disabled {
+			display: block;
+		}
+
+		.b-content {
+			opacity: 0.3;
+		}
+
+		.hide-on-panel-disabled {
+			display: none;
+		}
+	}
+
+	#rl-right {
+		left: 60px !important;
+	}
+}
+
+html.rl-mobile,
+html.rl-no-preview-pane {
+
+	#rl-sub-left {
+		right: @rlBottomMargin !important;
+		width: inherit;
+	}
+
+	#rl-sub-right {
+		left: 0 !important;
+	}
+}
+
+html.rl-mobile #rl-left > .resizer,
+html.rl-side-preview-pane:not(.rl-mobile) #rl-right .resizer {
+	display: none !important;
+}
+
+html.rl-bottom-preview-pane:not(.rl-mobile) {
+
+	#rl-sub-left {
+		right: @rlBottomMargin !important;
+		width: inherit;
+
+		.b-message-list-wrapper {
+			bottom: inherit;
+			height: 300px;
+
+			box-shadow: none;
+		}
+	}
+
+	#rl-sub-right {
+
+		left: 0 !important;
+
+		.b-message-view-wrapper {
+			top: 356px;
+			left: 0;
+			right: 5px;
+			box-shadow: none;
+			background-color: var(--message-bg-color, #fff);
+		}
+	}
+}
+
+html.rl-mobile .hide-mobile,
+html:not(.rl-mobile) .show-mobile {
+	display: none !important;
+}
+
+html.rl-mobile .width100-on-mobile {
+	width: 100% !important;
+}
+
+.e-paginator {
+
+	.e-page {
+		opacity: 0.5;
+		text-decoration: none;
+		font-size: 22px;
+		padding: 3px;
+		cursor: pointer;
+
+		&:hover {
+			opacity: 0.8;
+		}
+
+		&.current {
+			opacity: 1;
+			font-size: 25px;
+			cursor: default;
+		}
+	}
+}

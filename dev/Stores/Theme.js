@@ -1,6 +1,7 @@
 import ko from 'ko';
-import { $htmlCL, leftPanelDisabled, Settings, SettingsGet } from 'Common/Globals';
+import { doc, $htmlCL, leftPanelDisabled, Settings, SettingsGet } from 'Common/Globals';
 import { isArray } from 'Common/Utils';
+import { serverRequestRaw } from 'Common/Links';
 
 export const ThemeStore = {
 	themes: ko.observableArray(),
@@ -25,3 +26,13 @@ export const ThemeStore = {
 ThemeStore.theme = ko.observable('').extend({ limitedList: ThemeStore.themes });
 
 ThemeStore.isMobile.subscribe(value => $htmlCL.toggle('rl-mobile', value));
+
+ThemeStore.userBackgroundHash.subscribe(value => {
+	if (value) {
+		$htmlCL.add('UserBackground');
+		doc.body.style.backgroundImage = "url("+serverRequestRaw('UserBackground', value)+")";
+	} else {
+		$htmlCL.remove('UserBackground');
+		doc.body.removeAttribute('style');
+	}
+});

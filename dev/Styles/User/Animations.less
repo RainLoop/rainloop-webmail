@@ -1,0 +1,71 @@
+
+@keyframes highlight-folder-row {
+	0% { transform: scale(1); }
+	50% { transform: scale(1.1); }
+	100% { transform: scale(1); }
+}
+
+@keyframes textLoadingAnimationKeyFrame {
+	0% { opacity: 1; }
+	33% { opacity: 0; }
+	100% { opacity: 1; }
+}
+
+@keyframes animate-stripes {
+	0% {background-position: 0 0;}
+	100% {background-position: 60px 0;}
+}
+
+.e-strip-animation {
+	background-size: 60px 60px;
+	background-image: linear-gradient(135deg, #000 25%, #fff 25%,
+		#fff 50%, #000 50%, #000 75%,
+		#fff 75%, #fff);
+	animation: animate-stripes 2s linear infinite;
+	opacity: 0.25;
+}
+
+@media screen and (min-width: 1000px) {
+
+	.button-delete-transitions {
+		transition: all 0.2s linear;
+	}
+
+	.b-folders .e-item .anim-action-class {
+		animation: highlight-folder-row 0.5s linear;
+	}
+
+	.b-folders .btn.buttonContacts {
+		transition: margin 0.3s linear;
+	}
+
+	#rl-left .b-content {
+		transition: opacity 0.3s linear;
+	}
+
+	.b-list-content {
+		.e-contact-item {
+			transition: max-height 400ms ease;
+		}
+	}
+
+	.b-compose.loading .b-header-toolbar {
+		background-size: 60px 60px;
+		background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%,
+			transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%,
+			transparent 75%, transparent);
+		animation: animate-stripes 2s linear infinite;
+	}
+}
+
+.textLoadingAnimationD1, .textLoadingAnimationD2, .textLoadingAnimationD3 {
+	animation: textLoadingAnimationKeyFrame 1s linear infinite 0s;
+}
+
+.textLoadingAnimationD2 {
+	animation-delay: 0.3s;
+}
+
+.textLoadingAnimationD3 {
+	animation-delay: 0.6s;
+}

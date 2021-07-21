@@ -1060,6 +1060,7 @@ class Actions
 			'RemoveColors' => (bool) $oConfig->Get('defaults', 'remove_colors', false),
 			'MPP' => (int) $oConfig->Get('webmail', 'messages_per_page', 25),
 			'SoundNotification' => false,
+			'NotificationSound' => 'new-mail',
 			'DesktopNotifications' => false,
 			'Layout' => (int) $oConfig->Get('defaults', 'view_layout', Enumerations\Layout::SIDE_PREVIEW),
 			'EditorDefaultType' => (string) $oConfig->Get('defaults', 'view_editor_type', ''),
@@ -1165,6 +1166,7 @@ class Actions
 						$aResult['ContactsAutosave'] = (bool)$oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
 						$aResult['MPP'] = (int)$oSettings->GetConf('MPP', $aResult['MPP']);
 						$aResult['SoundNotification'] = (bool)$oSettings->GetConf('SoundNotification', $aResult['SoundNotification']);
+						$aResult['NotificationSound'] = (string)$oSettings->GetConf('NotificationSound', $aResult['NotificationSound']);
 						$aResult['DesktopNotifications'] = (bool)$oSettings->GetConf('DesktopNotifications', $aResult['DesktopNotifications']);
 						$aResult['UseCheckboxesInList'] = (bool)$oSettings->GetConf('UseCheckboxesInList', $aResult['UseCheckboxesInList']);
 						$aResult['AllowDraftAutosave'] = (bool)$oSettings->GetConf('AllowDraftAutosave', $aResult['AllowDraftAutosave']);
@@ -1185,6 +1187,10 @@ class Actions
 						$aResult['UseThreads'] = (bool)$oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
 						$aResult['ReplySameFolder'] = (bool)$oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
 					}
+				}
+				$aResult['NewMailSounds'] = [];
+				foreach (\glob(APP_VERSION_ROOT_PATH.'static/sounds/*.mp3') as $file) {
+					$aResult['NewMailSounds'][] = \basename($file, '.mp3');
 				}
 			}
 			else {

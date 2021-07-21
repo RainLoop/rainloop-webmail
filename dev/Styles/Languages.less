@@ -1,16 +1,15 @@
 .b-languages-content {
 
 	&.modal {
-		width: 700px;
+		max-width: 700px;
 	}
 
-	.lang-item {
+	label {
 		display: inline-block;
 		padding: 5px 15px;
 		margin: 2px 5px;
 		width: 180px;
 		background-color: rgba(128, 128, 128, 0.1);
-		text-align: left;
 		border: 1px solid transparent;
 		border-radius: 3px;
 		position: relative;
@@ -26,7 +25,6 @@
 		}
 		&.selected::after {
 			content: "✔";
-			color: #080;
 			position: absolute;
 			right: 4px;
 			font-family: snappymail;
@@ -39,7 +37,7 @@
 }
 
 @media screen and (max-width: 999px) {
-	.b-languages-content .lang-item {
-		width: calc(~'100% - 40px');
+	.b-languages-content label {
+		width: calc(100% - 40px);
 	}
 }

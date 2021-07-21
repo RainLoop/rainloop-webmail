@@ -1,0 +1,145 @@
+.UserBackground body {
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#rl-left, #rl-right {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	z-index: 0;
+}
+
+#rl-left {
+	overflow: auto;
+	padding-top: 50px + @rlLowMargin + 10px;
+	width: @rlLeftWidth;
+
+	nav {
+		a {
+			color: var(--settings-menu-color, #333);
+			cursor: pointer;
+			display: block;
+			font-size: 18px;
+			line-height: 30px;
+			padding: 4px 10px;
+			text-decoration: none;
+		}
+
+		a:focus, a:hover {
+			background-color: var(--settings-menu-hover-bg-color, #333);
+			color: var(--settings-menu-hover-color, #eee);
+		}
+
+		a.selected {
+			background-color: var(--settings-menu-selected-bg-color, #333);
+			color: var(--settings-menu-selected-color, #eee);
+		}
+	}
+}
+
+#rl-right {
+	z-index: 1;
+	left: @rlLeftWidth;
+}
+
+.b-admin-right {
+
+	.b-toolbar {
+		position: absolute;
+		top: 0;
+		right: 0;
+		left: 0;
+		height: 34px;
+		padding: 8px @rlLowMargin 8px 0;
+		color: #fff;
+		text-shadow: 0 1px 1px #000;
+
+		display: flex;
+
+		h4 {
+			flex-grow: 1;
+		}
+	}
+
+	.b-content {
+		position: absolute;
+		top: 50px + @rlLowMargin;
+		bottom: @rlLowMargin;
+		left: 0;
+		right: @rlLowMargin;
+		overflow-y: auto;
+		z-index: 2;
+
+		background-color: #fff;
+		border: 1px solid @rlMainDarkColor;
+
+		box-shadow: @rlMainShadow;
+		border-radius: @rlMainBorderRadius;
+	}
+
+}
+
+.btn.btn-logout {
+	padding-left: 12px;
+	padding-right: 12px;
+}
+
+#rl-popups > .rl-view-model {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 1100;
+	overflow: auto;
+	background-color: rgba(0,0,0,0.3);
+}
+
+#rl-settings-subscreen {
+	padding: 20px;
+}
+
+/* desktop */
+@media screen and (min-width: 1000px) {
+	.toggleLeft {
+		display: none;
+	}
+}
+
+/* desktop-large */
+@media screen and (min-width: 1401px) {
+	#rl-left {
+		width: @rlLeftWidth + 20;
+	}
+
+	#rl-right {
+		left: @rlLeftWidth + 20;
+	}
+}
+
+/* mobile and tablet */
+@media screen and (max-width: 999px) {
+	#rl-settings-subscreen {
+		padding: 10px;
+	}
+
+	html:not(.rl-left-panel-disabled) #rl-right {
+		right: 5-@rlLeftWidth;
+	}
+
+	html.rl-left-panel-disabled {
+		#rl-left {
+			width: 0 !important;
+		}
+		#rl-right {
+			left: 5px !important;
+		}
+	}
+}

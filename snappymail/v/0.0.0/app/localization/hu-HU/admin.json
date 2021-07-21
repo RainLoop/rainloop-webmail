@@ -87,14 +87,8 @@
 		"LABEL_REQUIRE_VERIFICATION": "A használt (IMAP\/SMTP) tanúsítvány ellenőrzés megkövetelése",
 		"LABEL_ALLOW_SELF_SIGNED": "Saját aláírt tanúsítványok engedélyezése"
 	},
-	"TAB_PLUGINS": {
-		"LEGEND_PLUGINS": "Beépülők",
-		"LABEL_ENABLE_PLUGINS": "Beépülők engedélyezése",
-		"ALERT_NO_PLUGINS": "Még nincsenek telepítve beépülők.",
-		"LINK_INSTALL_NEW": "Új telepítéséhez kattints ide!",
-		"HINT_CLICK_NAME": "A beépülő beállításához kattints a nevére."
-	},
 	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Beépülők engedélyezése",
 		"LEGEND_AVAILABLE_FOR_UPDATE": "Frissíthető",
 		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Telepíthető",
 		"LEGEND_INSTALLED_PACKAGES": "Telepített csomagok",

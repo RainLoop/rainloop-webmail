@@ -140,7 +140,7 @@ export function reload(admin, language) {
 			// reload the data
 			if (init()) {
 				i18nToNodes(doc);
-				dispatchEvent(new CustomEvent('reload-time'));
+				admin || rl.app.reloadTime();
 				trigger(!trigger());
 			}
 			script.remove();

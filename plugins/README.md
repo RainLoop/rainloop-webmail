@@ -1,3 +1,4 @@
+PHP
 
 class Plugin extends \RainLoop\Plugins\AbstractPlugin
 
@@ -196,7 +197,7 @@ $Plugin->addHook('hook.name', 'functionName');
 		string $sAction
 		array &$aResponseItem
 
-### filter.message-html'
+### filter.message-html
 ### filter.message-plain
 	params:
 		\RainLoop\Model\Account $oAccount
@@ -276,6 +277,10 @@ $Plugin->addHook('hook.name', 'functionName');
 ### json.action-pre-call
 	params:
 		string $sAction
+
+### json.attachments
+	params:
+		\SnappyMail\AttachmentsAction $oData
 
 ### json.suggestions-input-parameters
 	params:

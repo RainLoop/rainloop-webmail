@@ -2,9 +2,9 @@ import ko from 'ko';
 
 import { SaveSettingsStep, UploadErrorCode, Capa } from 'Common/Enums';
 import { changeTheme, convertThemeName } from 'Common/Utils';
-import { userBackground, themePreviewLink, serverRequest } from 'Common/Links';
+import { themePreviewLink, serverRequest } from 'Common/Links';
 import { i18n } from 'Common/Translator';
-import { doc, $htmlCL, Settings } from 'Common/Globals';
+import { Settings } from 'Common/Globals';
 
 import { ThemeStore } from 'Stores/Theme';
 
@@ -37,16 +37,6 @@ export class ThemesUserSettings {
 			Remote.saveSettings(null, {
 				Theme: value
 			});
-		});
-
-		this.background.hash.subscribe((value) => {
-			if (!value) {
-				$htmlCL.remove('UserBackground');
-				doc.body.removeAttribute('style');
-			} else {
-				$htmlCL.add('UserBackground');
-				doc.body.style.backgroundImage = "url("+userBackground(value)+")";
-			}
 		});
 	}
 

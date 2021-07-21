@@ -6,9 +6,9 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Change Password',
-		VERSION  = '2.1',
-		RELEASE  = '2021-03-18',
-		REQUIRED = '2.4.0',
+		VERSION  = '2.2',
+		RELEASE  = '2021-07-20',
+		REQUIRED = '2.5.0',
 		CATEGORY = 'Security',
 		DESCRIPTION = 'This plugin allows you to change passwords of email accounts';
 
@@ -23,6 +23,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		$this->UseLangs(true); // start use langs folder
 
+		$this->addCss('style.less');
 		$this->addJs('js/ChangePasswordUserSettings.js'); // add js file
 		$this->addJsonHook('ChangePassword', 'ChangePassword');
 		$this->addTemplate('templates/SettingsChangePassword.html');

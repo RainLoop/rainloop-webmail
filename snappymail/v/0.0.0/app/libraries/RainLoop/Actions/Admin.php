@@ -540,103 +540,75 @@ trait Admin
 			$bReal = \is_array($aRep) && 0 < \count($aRep);
 		}
 
-		$aResult = array();
-		if (\is_array($aRep))
-		{
-			foreach ($aRep as $oItem)
-			{
-				if ($oItem && isset($oItem->type, $oItem->id, $oItem->name,
-					$oItem->version, $oItem->release, $oItem->file, $oItem->description))
-				{
-					if (!empty($oItem->required) && APP_DEV_VERSION !== APP_VERSION && version_compare(APP_VERSION, $oItem->required, '<'))
-					{
-						continue;
-					}
-
-					if (!empty($oItem->depricated) && APP_DEV_VERSION !== APP_VERSION && version_compare(APP_VERSION, $oItem->depricated, '>='))
-					{
-						continue;
-					}
-
-					if ('plugin' === $oItem->type)
-					{
-						$aResult[] = array(
-							'type' => $oItem->type,
-							'id' => $oItem->id,
-							'name' => $oItem->name,
-							'installed' => '',
-							'version' => $oItem->version,
-							'file' => $oItem->file,
-							'release' => $oItem->release,
-							'desc' => $oItem->description
-						);
-					}
-				}
-			}
-		}
-
-		return $aResult;
+		return \is_array($aRep) ? $aRep : [];
 	}
 
 	private function getRepositoryData(bool &$bReal, bool &$bRainLoopUpdatable) : array
 	{
 		$bRainLoopUpdatable = $this->rainLoopUpdatable();
 
-		$aResult = $this->getRepositoryDataByUrl($this->snappyMailRepo(), $bReal);
-
-		$aSub = array();
-		foreach ($aResult as $aItem)
-		{
-			if ('plugin' === $aItem['type'])
+		$aResult = array();
+		foreach ($this->getRepositoryDataByUrl($this->snappyMailRepo(), $bReal) as $oItem) {
+			if ($oItem && isset($oItem->type, $oItem->id, $oItem->name,
+				$oItem->version, $oItem->release, $oItem->file, $oItem->description))
 			{
-				$aSub[] = $aItem;
-			}
-		}
-		$aResult = $aSub;
-		unset($aSub);
+				if (!empty($oItem->required) && APP_DEV_VERSION !== APP_VERSION && version_compare(APP_VERSION, $oItem->required, '<')) {
+					continue;
+				}
 
-		$aInstalled = $this->Plugins()->InstalledPlugins();
-		foreach ($aResult as &$aItem)
-		{
-			if ('plugin' === $aItem['type'])
-			{
-				foreach ($aInstalled as &$aSubItem)
-				{
-					if (\is_array($aSubItem) && isset($aSubItem[0]) && $aSubItem[0] === $aItem['id'])
-					{
-						$aSubItem[2] = true;
-						$aItem['installed'] = $aSubItem[1];
-					}
+				if (!empty($oItem->depricated) && APP_DEV_VERSION !== APP_VERSION && version_compare(APP_VERSION, $oItem->depricated, '>=')) {
+					continue;
+				}
+
+				if ('plugin' === $oItem->type) {
+					$aResult[$oItem->id] = array(
+						'type' => $oItem->type,
+						'id' => $oItem->id,
+						'name' => $oItem->name,
+						'installed' => '',
+						'enabled' => true,
+						'version' => $oItem->version,
+						'file' => $oItem->file,
+						'release' => $oItem->release,
+						'desc' => $oItem->description,
+						'canBeDeleted' => false,
+						'canBeUpdated' => true
+					);
 				}
 			}
 		}
 
-		foreach ($aInstalled as $aSubItemSec)
-		{
-			if ($aSubItemSec && !isset($aSubItemSec[2]))
-			{
-				\array_push($aResult, array(
-					'type' => 'plugin',
-					'id' => $aSubItemSec[0],
-					'name' => $aSubItemSec[0],
-					'installed' => $aSubItemSec[1],
-					'version' => '',
-					'file' => '',
-					'release' => '',
-					'desc' => ''
-				));
+		$aEnabledPlugins = \array_map('trim',
+			\explode(',', \strtolower($this->Config()->Get('plugins', 'enabled_list', '')))
+		);
+
+		$aInstalled = $this->Plugins()->InstalledPlugins();
+		foreach ($aInstalled as $aItem) {
+			if ($aItem) {
+				if (isset($aResult[$aItem[0]])) {
+					$aResult[$aItem[0]]['installed'] = $aItem[1];
+					$aResult[$aItem[0]]['enabled'] = \in_array(\strtolower($aItem[0]), $aEnabledPlugins);
+					$aResult[$aItem[0]]['canBeDeleted'] = true;
+					$aResult[$aItem[0]]['canBeUpdated'] = \version_compare($aItem[1], $aResult[$aItem[0]]['version'], '<');
+				} else {
+					\array_push($aResult, array(
+						'type' => 'plugin',
+						'id' => $aItem[0],
+						'name' => $aItem[0],
+						'installed' => $aItem[1],
+						'enabled' => \in_array(\strtolower($aItem[0]), $aEnabledPlugins),
+						'version' => '',
+						'file' => '',
+						'release' => '',
+						'desc' => '',
+						'canBeDeleted' => true,
+						'canBeUpdated' => false
+					));
+				}
 			}
 		}
 
-		foreach ($aResult as &$aItem)
-		{
-			$aItem['compare'] = \version_compare($aItem['installed'], $aItem['version'], '<');
-			$aItem['canBeDeleted'] = '' !== $aItem['installed'] && 'plugin' === $aItem['type'];
-			$aItem['canBeUpdated'] = $aItem['compare'];
-			$aItem['canBeInstalled'] = true;
-		}
-
-		return $aResult;
+		return \array_values($aResult);
 	}
 
 	public function DoAdminPackagesList() : array
@@ -646,6 +618,8 @@ trait Admin
 		$bReal = false;
 		$bRainLoopUpdatable = false;
 		$aList = $this->getRepositoryData($bReal, $bRainLoopUpdatable);
+
+//		\uksort($aList, function($a, $b){return \strcasecmp($a['name'], $b['name']);});
 
 		return $this->DefaultResponse(__FUNCTION__, array(
 			 'Real' => $bReal,
@@ -771,29 +745,6 @@ trait Admin
 
 		return $this->DefaultResponse(__FUNCTION__, $bResult ?
 			('plugin' !== $sType ? array('Reload' => true) : true) : false);
-	}
-
-	public function DoAdminPluginList() : array
-	{
-		$this->IsAdminLoggined();
-
-		$aResult = array();
-
-		$sEnabledPlugins = $this->Config()->Get('plugins', 'enabled_list', '');
-		$aEnabledPlugins = \explode(',', \strtolower($sEnabledPlugins));
-		$aEnabledPlugins = \array_map('trim', $aEnabledPlugins);
-
-		$aList = $this->Plugins()->InstalledPlugins();
-		foreach ($aList as $aItem)
-		{
-			$aResult[] = array(
-				'Name' => $aItem[0],
-				'Enabled' => \in_array(\strtolower($aItem[0]), $aEnabledPlugins),
-				'Configured' => false
-			);
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $aResult);
 	}
 
 	private function pluginEnable(string $sName, bool $bEnable = true) : bool

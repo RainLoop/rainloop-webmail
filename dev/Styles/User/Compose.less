@@ -1,0 +1,172 @@
+
+.b-compose {
+
+	&.modal {
+		width: 98%;
+		max-width: 1000px;
+		min-height: calc(100% - 52px);
+	}
+
+	.modal-body {
+		padding: 0;
+	}
+
+	.textAreaParent, .attachmentAreaParent {
+		box-sizing: border-box;
+		min-height: 200px;
+		position: relative;
+	}
+
+	.attachmentAreaParent {
+		border-top: 1px solid #ccc;
+		overflow-y: auto;
+		padding: 10px;
+
+		.no-attachments-desc {
+			padding-top: 50px;
+			text-align: center;
+			font-size: 24px;
+			color: #666;
+			text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+		}
+
+		.attachmentList {
+			margin: 0;
+			padding: 10px;
+		}
+	}
+
+	.b-header-toolbar {
+
+		background-color: rgba(0,0,0,0.8);
+
+		.close, .minimize-custom {
+			opacity: 1;
+			color: #fff;
+			border-color: #eee;
+
+			font-size: 24px;
+			line-height: 24px;
+		}
+
+		.btn.disabled {
+			&.button-delete {
+				visibility: hidden;
+			}
+		}
+
+		.button-save, .button-delete, .saved-text {
+			margin-left: 8px;
+		}
+
+		.button-close, .button-skip {
+			margin-left: 8px;
+		}
+
+		.disabled.button-delete {
+			margin-left: 0;
+		}
+	}
+
+	.b-header {
+
+		padding: 10px;
+		background-color: rgba(128,128,128,0.2);;
+
+		.e-identity {
+
+			color: var(--main-color);
+			text-decoration: none;
+			font-weight: bold;
+
+			&.multiply {
+				cursor: pointer;
+				border-bottom: 1px dashed var(--main-color);
+			}
+		}
+
+		.e-row {
+			line-height: 30px;
+		}
+
+		.e-label {
+			text-align: right;
+			padding: 6px 10px;
+		}
+
+		.e-value {
+
+			padding: 2px 0;
+
+			textarea, input[type="text"] {
+				width: 100%;
+			}
+			textarea {
+				height: 40px;
+			}
+		}
+
+		.error-desc {
+			color: red;
+		}
+
+		.error-to {
+			color: red;
+			font-weight: bold;
+		}
+	}
+
+	.b-attachment-button {
+		display: inline-block;
+	}
+
+	.b-attachment-place {
+
+		position: absolute;
+		left: 5px;
+		right: 5px;
+		top: 5px;
+		bottom: 5px;
+
+		border: 2px #777 dashed;
+		z-index: 300;
+
+		line-height: 119px;
+		text-align: center;
+		background-color: #efefef;
+		font-size: 24px;
+
+		border-radius: 10px;
+
+		&.dragAndDropOver {
+			background-color: #fff;
+		}
+	}
+}
+
+@media screen and (max-width: 999px) {
+	.b-compose.modal {
+		border: 0;
+		width: 100%;
+	}
+}
+
+.minimize-custom {
+	border: 0 solid #333;
+	border-bottom-width: 3px;
+	display: inline-block;
+	float: right;
+	height: 20px;
+	width: 16px;
+	font-size: 20px;
+	font-weight: bold;
+	line-height: 20px;
+	margin-right: 15px;
+	cursor: pointer;
+}
+
+@media screen and (max-width: 700px) {
+	.b-compose .b-header .e-label {
+		padding-left: 0;
+	}
+}

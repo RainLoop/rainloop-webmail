@@ -41,7 +41,7 @@ abstract class AbstractConfig
 		$this->sFileHeader = $sFileHeader;
 		$this->aData = $this->defaultValues();
 
-		$this->bUseApcCache = APP_USE_APC_CACHE &&
+		$this->bUseApcCache = APP_USE_APCU_CACHE &&
 			\MailSo\Base\Utils::FunctionExistsAndEnabled(array('apcu_fetch', 'apcu_store'));
 	}
 
