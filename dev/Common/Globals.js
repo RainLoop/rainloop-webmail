@@ -40,19 +40,18 @@ export const keyScope = (()=>{
 			keyScope(keyScopeFake);
 		}
 	});
-	return ko.computed({
-		read: () => keyScopeFake,
-		write: value => {
+	return value => {
+		if (value) {
 			if (Scope.Menu !== value) {
 				keyScopeFake = value;
 				if (dropdownVisibility()) {
 					value = Scope.Menu;
 				}
 			}
-
 			keyScopeReal(value);
+			shortcuts.setScope(value);
+		} else {
+			return keyScopeFake;
 		}
-	});
+	};
 })();
-
-keyScopeReal.subscribe(value => shortcuts.setScope(value));
