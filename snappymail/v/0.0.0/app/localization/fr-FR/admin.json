@@ -2,6 +2,7 @@
 	"LOGIN": {
 		"LABEL_LOGIN": "Identifiant",
 		"LABEL_PASSWORD": "Mot de passe",
+		"LABEL_TOTP": "Code TOTP",
 		"BUTTON_LOGIN": "Se connecter au panneau d'administration"
 	},
 	"TOP_PANEL": {
