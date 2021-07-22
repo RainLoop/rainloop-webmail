@@ -168,6 +168,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'admin_login'                => array('admin', 'Login and password for web admin panel'),
 				'admin_password'             => array(''),
+				'admin_totp'                 => array(''),
 				'allow_admin_panel'          => array(true, 'Access settings'),
 				'hide_x_mailer_header'       => array(true),
 				'admin_panel_host'           => array(''),

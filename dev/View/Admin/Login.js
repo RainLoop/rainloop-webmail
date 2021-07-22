@@ -17,6 +17,7 @@ class LoginAdminView extends AbstractViewCenter {
 		this.addObservables({
 			login: '',
 			password: '',
+			totp: '',
 
 			loginError: false,
 			passwordError: false,
@@ -59,7 +60,8 @@ class LoginAdminView extends AbstractViewCenter {
 					}
 				},
 				name,
-				pass
+				pass,
+				this.totp()
 			);
 		}
 
