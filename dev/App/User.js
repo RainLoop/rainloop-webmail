@@ -520,8 +520,8 @@ class AppUser extends AbstractApp {
 			if (
 				!iError &&
 				1 < arrayLength(data.Result) &&
-				isPosNumeric(data.Result[0], true) &&
-				isPosNumeric(data.Result[1], true)
+				isPosNumeric(data.Result[0]) &&
+				isPosNumeric(data.Result[1])
 			) {
 				QuotaUserStore.populateData(pInt(data.Result[1]), pInt(data.Result[0]));
 			}
