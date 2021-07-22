@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { isNonEmptyArray, pString } from 'Common/Utils';
+import { arrayLength, pString } from 'Common/Utils';
 import { delegateRunOnDestroy } from 'Common/UtilsUser';
 import { i18n } from 'Common/Translator';
 import { getFolderFromCacheList } from 'Common/Cache';
@@ -230,7 +230,7 @@ export class FilterModel extends AbstractModel {
 
 			filter.conditions([]);
 
-			if (isNonEmptyArray(json.Conditions)) {
+			if (arrayLength(json.Conditions)) {
 				filter.conditions(
 					json.Conditions.map(aData => FilterConditionModel.reviveFromJson(aData)).filter(v => v)
 				);

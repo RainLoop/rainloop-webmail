@@ -6,10 +6,11 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {string} sLogin
 	 * @param {string} sPassword
 	 */
-	adminLogin(fCallback, sLogin, sPassword) {
+	adminLogin(fCallback, sLogin, sPassword, sCode) {
 		this.defaultRequest(fCallback, 'AdminLogin', {
 			Login: sLogin,
-			Password: sPassword
+			Password: sPassword,
+			TOTP: sCode
 		});
 	}
 

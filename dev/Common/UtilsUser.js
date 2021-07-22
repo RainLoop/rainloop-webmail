@@ -9,8 +9,8 @@ import { createElement } from 'Common/Globals';
  * @param {boolean=} includeZero = true
  * @returns {boolean}
  */
-export function isPosNumeric(value, includeZero = true) {
-	return null != value && (includeZero ? /^[0-9]*$/ : /^[1-9]+[0-9]*$/).test(value.toString());
+export function isPosNumeric(value) {
+	return null != value && /^[0-9]*$/.test(value.toString());
 }
 
 /**
@@ -395,13 +395,13 @@ export function computedPaginatorHelper(koCurrentPage, koPageCount) {
 			if (3 === prev) {
 				fAdd(2, false);
 			} else if (3 < prev) {
-				fAdd(Math.round((prev - 1) / 2), false, '...');
+				fAdd(Math.round((prev - 1) / 2), false, '…');
 			}
 
 			if (pageCount - 2 === next) {
 				fAdd(pageCount - 1, true);
 			} else if (pageCount - 2 > next) {
-				fAdd(Math.round((pageCount + next) / 2), true, '...');
+				fAdd(Math.round((pageCount + next) / 2), true, '…');
 			}
 
 			// first and last
@@ -434,22 +434,20 @@ export function mailToHelper(mailToUrl) {
 		mailToUrl = mailToUrl.toString().substr(7);
 
 		let to = [],
-			cc = null,
-			bcc = null,
 			params = {};
 
 		const email = mailToUrl.replace(/\?.+$/, ''),
-			query = mailToUrl.replace(/^[^?]*\?/, '');
+			query = mailToUrl.replace(/^[^?]*\?/, ''),
+			toEmailModel = value => null != value ? EmailModel.parseEmailLine(decodeURIComponent(value)) : null;
 
 		query.split('&').forEach(temp => {
 			temp = temp.split('=');
 			params[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
 		});
 
-		if (undefined !== params.to) {
-			to = EmailModel.parseEmailLine(decodeURIComponent(email + ',' + params.to));
+		if (null != params.to) {
 			to = Object.values(
-				to.reduce((result, value) => {
+				toEmailModel(email + ',' + params.to).reduce((result, value) => {
 					if (value) {
 						if (result[value.email]) {
 							if (!result[value.email].name) {
@@ -466,20 +464,12 @@ export function mailToHelper(mailToUrl) {
 			to = EmailModel.parseEmailLine(email);
 		}
 
-		if (undefined !== params.cc) {
-			cc = EmailModel.parseEmailLine(decodeURIComponent(params.cc));
-		}
-
-		if (undefined !== params.bcc) {
-			bcc = EmailModel.parseEmailLine(decodeURIComponent(params.bcc));
-		}
-
 		showMessageComposer([
 			ComposeType.Empty,
 			null,
 			to,
-			cc,
-			bcc,
+			toEmailModel(params.cc),
+			toEmailModel(params.bcc),
 			null == params.subject ? null : decodeURIComponent(params.subject),
 			null == params.body ? null : plainToHtml(decodeURIComponent(params.body))
 		]);

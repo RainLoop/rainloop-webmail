@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { i18n } from 'Common/Translator';
-import { isArray, isNonEmptyArray, pString } from 'Common/Utils';
+import { isArray, arrayLength, pString } from 'Common/Utils';
 import { createElement } from 'Common/Globals';
 
 import { AccountUserStore } from 'Stores/User/Account';
@@ -54,7 +54,7 @@ function domControlEncryptedClickHelper(store, dom, armoredMessage, recipients) 
 								decryptedMessage.getText()
 							);
 						} else if (validPrivateKey) {
-							const keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
+							const keyIds = arrayLength(signingKeyIds) ? signingKeyIds : null,
 								additional = keyIds
 									? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(v => v).join(', ')
 									: '';
@@ -110,7 +110,7 @@ function domControlSignedClickHelper(store, dom, armoredMessage) {
 						message.getText()
 					);
 				} else {
-					const keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
+					const keyIds = arrayLength(signingKeyIds) ? signingKeyIds : null,
 						additional = keyIds
 							? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(v => v).join(', ')
 							: '';
@@ -186,7 +186,7 @@ export const PgpUserStore = new class {
 				}).flat().filter(v => v)
 			: [];
 
-		if (!result.length && isNonEmptyArray(recipients)) {
+		if (!result.length && arrayLength(recipients)) {
 			result = recipients.map(sEmail => {
 				const keys = sEmail ? this.findAllPrivateKeysByEmailNotNative(sEmail) : null;
 				return keys

@@ -3,7 +3,7 @@ import { doc, elementById } from 'Common/Globals';
 
 export const
 	isArray = Array.isArray,
-	isNonEmptyArray = array => isArray(array) && array.length,
+	arrayLength = array => isArray(array) && array.length,
 	isFunction = v => typeof v === 'function';
 
 /**
@@ -116,7 +116,7 @@ export function changeTheme(value, themeTrigger = ()=>{}) {
 		}
 		rl.fetchJSON(url, init)
 			.then(data => {
-				if (data && isArray(data) && 2 === data.length) {
+				if (2 === arrayLength(data)) {
 					themeStyle.textContent = data[1];
 					themeStyle.dataset.href = url;
 					themeStyle.dataset.theme = data[0];

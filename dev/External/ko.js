@@ -1,7 +1,7 @@
 import { i18nToNodes } from 'Common/Translator';
 import { doc, createElement } from 'Common/Globals';
 import { SaveSettingsStep } from 'Common/Enums';
-import { isNonEmptyArray, isFunction } from 'Common/Utils';
+import { arrayLength, isFunction } from 'Common/Utils';
 
 const
 	koValue = value => !ko.isObservable(value) && isFunction(value) ? value() : ko.unwrap(value);
@@ -136,7 +136,7 @@ ko.extenders.limitedList = (target, limitedList) => {
 					const currentValue = ko.unwrap(target),
 						list = ko.unwrap(limitedList);
 
-					if (isNonEmptyArray(list)) {
+					if (arrayLength(list)) {
 						if (list.includes(newValue)) {
 							target(newValue);
 						} else if (list.includes(currentValue, list)) {

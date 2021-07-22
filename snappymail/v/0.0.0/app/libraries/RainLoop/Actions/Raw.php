@@ -112,36 +112,6 @@ trait Raw
 		return false;
 	}
 
-	public function RawContactsVcf() : bool
-	{
-		$oAccount = $this->getAccountFromToken();
-
-		\header('Content-Type: text/x-vcard; charset=UTF-8');
-		\header('Content-Disposition: attachment; filename="contacts.vcf"', true);
-		\header('Accept-Ranges: none', true);
-		\header('Content-Transfer-Encoding: binary');
-
-		$this->oHttp->ServerNoCache();
-
-		return $this->AddressBookProvider($oAccount)->IsActive() ?
-			$this->AddressBookProvider($oAccount)->Export($oAccount->ParentEmailHelper(), 'vcf') : false;
-	}
-
-	public function RawContactsCsv() : bool
-	{
-		$oAccount = $this->getAccountFromToken();
-
-		\header('Content-Type: text/csv; charset=UTF-8');
-		\header('Content-Disposition: attachment; filename="contacts.csv"', true);
-		\header('Accept-Ranges: none', true);
-		\header('Content-Transfer-Encoding: binary');
-
-		$this->oHttp->ServerNoCache();
-
-		return $this->AddressBookProvider($oAccount)->IsActive() ?
-			$this->AddressBookProvider($oAccount)->Export($oAccount->ParentEmailHelper(), 'csv') : false;
-	}
-
 	private function rawSmart(bool $bDownload, bool $bThumbnail = false) : bool
 	{
 		$sRawKey = (string) $this->GetActionParam('RawKey', '');

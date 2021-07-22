@@ -3,7 +3,7 @@ import ko from 'ko';
 import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 import { SaveSettingsStep } from 'Common/Enums';
 import { EditorDefaultType, Layout } from 'Common/EnumsUser';
-import { SettingsGet } from 'Common/Globals';
+import { Settings, SettingsGet } from 'Common/Globals';
 import { isArray, settingsSaveHelperSimpleFunction, addObservablesTo, addSubscribablesTo } from 'Common/Utils';
 import { i18n, trigger as translatorTrigger, reload as translatorReload, convertLangName } from 'Common/Translator';
 
@@ -119,7 +119,7 @@ export class GeneralUserSettings {
 			enableSoundNotification: value => Remote.saveSetting('SoundNotification', value ? 1 : 0),
 			notificationSound: value => {
 				Remote.saveSetting('NotificationSound', value);
-				rl.settings.set('NotificationSound', value);
+				Settings.set('NotificationSound', value);
 			},
 
 			replySameFolder: value => Remote.saveSetting('ReplySameFolder', value ? 1 : 0),
@@ -138,9 +138,7 @@ export class GeneralUserSettings {
 
 	editMainIdentity() {
 		const identity = this.identityMain();
-		if (identity) {
-			showScreenPopup(IdentityPopupView, [identity]);
-		}
+		identity && showScreenPopup(IdentityPopupView, [identity]);
 	}
 
 	testSoundNotification() {

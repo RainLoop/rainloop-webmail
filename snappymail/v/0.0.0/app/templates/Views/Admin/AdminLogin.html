@@ -6,7 +6,7 @@
 	<form action="#/" data-bind="submit: submitForm, css: {'errorAnimated': formError, 'submitting': submitRequest()}">
 		<div class="controls" data-bind="css: {'error': loginError}">
 			<div class="input-append">
-				<input required="" type="text" class="input-block-level inputLogin"
+				<input required="" type="text" class="input-block-level inputIcon"
 					autofocus="" autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false"
 					data-bind="textInput: login, disable: submitRequest"
 					data-i18n="[placeholder]LOGIN/LABEL_LOGIN" />
@@ -15,15 +15,20 @@
 		</div>
 		<div class="controls" data-bind="css: {'error': passwordError}">
 			<div class="input-append">
-				<input required="" type="password" class="input-block-level inputPassword"
+				<input required="" type="password" class="input-block-level inputIcon"
 					autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
 					data-bind="textInput: password, disable: submitRequest"
 					data-i18n="[placeholder]LOGIN/LABEL_PASSWORD" />
-				<span class="add-on" tabindex="-1"
-					data-bind="command: submitCommand" data-i18n="[title]LOGIN/BUTTON_LOGIN">
-					<i class="fontastic" data-bind="visible: '' === password()">🔑</i>
-					<button type="submit" class="btn-submit-icon-wrp login-submit-icon fontastic" data-bind="visible: '' !== password()">❯</button>
-				</span>
+				<span class="add-on fontastic">🔑</span>
+			</div>
+		</div>
+		<div class="controls">
+			<div class="input-append">
+				<input type="text" pattern="[0-9]*" inputmode="numeric" class="input-block-level inputIcon"
+					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+					data-bind="textInput: totp, disable: submitRequest"
+					data-i18n="[placeholder]LOGIN/LABEL_TOTP" />
+				<button type="submit" class="add-on btn-submit-icon-wrp login-submit-icon fontastic" data-bind="command: submitCommand" data-i18n="[title]LOGIN/BUTTON_LOGIN">❯</button>
 			</div>
 		</div>
 		<div id="plugin-Login-BottomControlGroup"></div>

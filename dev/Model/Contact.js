@@ -1,4 +1,4 @@
-import { isNonEmptyArray } from 'Common/Utils';
+import { arrayLength } from 'Common/Utils';
 import { ContactPropertyModel, ContactPropertyType } from 'Model/ContactProperty';
 import { AbstractModel } from 'Knoin/AbstractModel';
 
@@ -26,7 +26,7 @@ export class ContactModel extends AbstractModel {
 		let name = '',
 			email = '';
 
-		if (isNonEmptyArray(this.properties)) {
+		if (arrayLength(this.properties)) {
 			this.properties.forEach(property => {
 				if (property) {
 					if (ContactPropertyType.FirstName === property.type()) {
@@ -52,7 +52,7 @@ export class ContactModel extends AbstractModel {
 		const contact = super.reviveFromJson(json);
 		if (contact) {
 			let list = [];
-			if (isNonEmptyArray(json.properties)) {
+			if (arrayLength(json.properties)) {
 				json.properties.forEach(property => {
 					property = ContactPropertyModel.reviveFromJson(property);
 					property && list.push(property);

@@ -9,7 +9,7 @@
 		data-bind="submit: submitForm, css: {'errorAnimated': formError, 'submitting': submitRequest()}">
 		<div class="controls" data-bind="css: {'error': emailError}">
 			<div class="input-append">
-				<input required="" type="text" class="input-block-level inputLogin" pattern="[^@\s]+(@[^\s]+)?" inputmode="email"
+				<input required="" type="text" class="input-block-level inputIcon" pattern="[^@\s]+(@[^\s]+)?" inputmode="email"
 					autofocus="" autocomplete="email" autocorrect="off" autocapitalize="off" spellcheck="false"
 					data-bind="textInput: email, disable: submitRequest"
 					data-i18n="[placeholder]GLOBAL/EMAIL" />
@@ -18,7 +18,7 @@
 		</div>
 		<div class="controls" data-bind="css: {'error': passwordError}">
 			<div class="input-append">
-				<input required="" type="password" class="input-block-level inputPassword"
+				<input required="" type="password" class="input-block-level inputIcon"
 					autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
 					data-bind="textInput: password, disable: submitRequest"
 					data-i18n="[placeholder]GLOBAL/PASSWORD" />

@@ -179,10 +179,13 @@ trait Admin
 
 		$this->Logger()->AddSecret($sPassword);
 
+		$totp = $this->Config()->Get('security', 'admin_totp', '');
+
 		if (0 === strlen($sLogin) || 0 === strlen($sPassword) ||
 			!$this->Config()->Get('security', 'allow_admin_panel', true) ||
 			$sLogin !== $this->Config()->Get('security', 'admin_login', '') ||
-			!$this->Config()->ValidatePassword($sPassword))
+			!$this->Config()->ValidatePassword($sPassword)
+			|| ($totp && !\SnappyMail\TOTP::Verify($totp, $this->GetActionParam('TOTP', ''))))
 		{
 			$this->loginErrorDelay();
 			$this->LoggerAuthHelper(null, $this->getAdditionalLogParamsByUserLogin($sLogin, true));

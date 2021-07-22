@@ -1,5 +1,5 @@
 import { MessageSetAction } from 'Common/EnumsUser';
-import { isNonEmptyArray, pInt } from 'Common/Utils';
+import { arrayLength, pInt } from 'Common/Utils';
 
 let FOLDERS_CACHE = {},
 	FOLDERS_NAME_CACHE = {},
@@ -255,7 +255,7 @@ export class MessageFlagsCache
 	 * @param {Array} flags
 	 */
 	static storeByFolderAndUid(folder, uid, flags) {
-		if (isNonEmptyArray(flags)) {
+		if (arrayLength(flags)) {
 			this.setFor(folder, uid, flags);
 		}
 	}
@@ -269,7 +269,7 @@ export class MessageFlagsCache
 		let unread = 0;
 		const flags = this.getFor(folder, uid);
 
-		if (isNonEmptyArray(flags)) {
+		if (arrayLength(flags)) {
 			if (flags[0]) {
 				unread = 1;
 			}

@@ -1,4 +1,4 @@
-import { isArray, isNonEmptyArray, pString, pInt } from 'Common/Utils';
+import { isArray, arrayLength, pString, pInt } from 'Common/Utils';
 
 import {
 	getFolderHash,
@@ -371,7 +371,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		let request = true;
 		const uids = [];
 
-		if (isNonEmptyArray(list)) {
+		if (arrayLength(list)) {
 			request = false;
 			list.forEach(messageListItem => {
 				if (!MessageFlagsCache.getFor(messageListItem.folder, messageListItem.uid)) {

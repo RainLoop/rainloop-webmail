@@ -12,7 +12,7 @@ import {
 	SetSystemFoldersNotification
 } from 'Common/EnumsUser';
 
-import { inFocus, pInt, isArray, isNonEmptyArray } from 'Common/Utils';
+import { inFocus, pInt, isArray, arrayLength } from 'Common/Utils';
 import { delegateRunOnDestroy } from 'Common/UtilsUser';
 import { encodeHtml, HtmlEditor } from 'Common/Html';
 
@@ -308,7 +308,7 @@ class ComposePopupView extends AbstractViewPopup {
 			},
 
 			attachmentsInProcess: value => {
-				if (this.attachmentsInProcessError() && isNonEmptyArray(value)) {
+				if (this.attachmentsInProcessError() && arrayLength(value)) {
 					this.attachmentsInProcessError(false);
 				}
 			}
@@ -385,8 +385,7 @@ class ComposePopupView extends AbstractViewPopup {
 		if (!this.emptyToError() && !this.attachmentsInErrorError() && !this.attachmentsInProcessError()) {
 			if (SettingsUserStore.replySameFolder()) {
 				if (
-					isArray(this.aDraftInfo) &&
-					3 === this.aDraftInfo.length &&
+					3 === arrayLength(this.aDraftInfo) &&
 					null != this.aDraftInfo[2] &&
 					this.aDraftInfo[2].length
 				) {
@@ -400,7 +399,7 @@ class ComposePopupView extends AbstractViewPopup {
 				this.sendError(false);
 				this.sending(true);
 
-				if (isArray(this.aDraftInfo) && 3 === this.aDraftInfo.length) {
+				if (3 === arrayLength(this.aDraftInfo)) {
 					const flagsCache = MessageFlagsCache.getFor(this.aDraftInfo[2], this.aDraftInfo[1]);
 					if (flagsCache) {
 						if ('forward' === this.aDraftInfo[0]) {
@@ -753,7 +752,7 @@ class ComposePopupView extends AbstractViewPopup {
 	 * @param {Array} emails
 	 */
 	addEmailsTo(fKoValue, emails) {
-		if (isNonEmptyArray(emails)) {
+		if (arrayLength(emails)) {
 			const value = fKoValue().trim(),
 				values = emails.map(item => item ? item.toLine(false) : null)
 					.validUnique();
@@ -806,11 +805,11 @@ class ComposePopupView extends AbstractViewPopup {
 		oMessageOrArray = oMessageOrArray || null;
 		if (oMessageOrArray) {
 			message =
-				isArray(oMessageOrArray) && 1 === oMessageOrArray.length
+				1 === arrayLength(oMessageOrArray)
 					? oMessageOrArray[0]
-					: !isArray(oMessageOrArray)
-					? oMessageOrArray
-					: null;
+					: isArray(oMessageOrArray)
+					? null
+					: oMessageOrArray;
 		}
 
 		this.oLastMessage = message;
@@ -826,15 +825,15 @@ class ComposePopupView extends AbstractViewPopup {
 			excludeEmail[identity.email()] = true;
 		}
 
-		if (isNonEmptyArray(aToEmails)) {
+		if (arrayLength(aToEmails)) {
 			this.to(this.emailArrayToStringLineHelper(aToEmails));
 		}
 
-		if (isNonEmptyArray(aCcEmails)) {
+		if (arrayLength(aCcEmails)) {
 			this.cc(this.emailArrayToStringLineHelper(aCcEmails));
 		}
 
-		if (isNonEmptyArray(aBccEmails)) {
+		if (arrayLength(aBccEmails)) {
 			this.bcc(this.emailArrayToStringLineHelper(aBccEmails));
 		}
 
@@ -899,7 +898,7 @@ class ComposePopupView extends AbstractViewPopup {
 					this.subject(sSubject);
 					this.prepareMessageAttachments(message, lineComposeType);
 
-					this.aDraftInfo = isNonEmptyArray(aDraftInfo) && 3 === aDraftInfo.length ? aDraftInfo : null;
+					this.aDraftInfo = 3 === arrayLength(aDraftInfo) ? aDraftInfo : null;
 					this.sInReplyTo = message.sInReplyTo;
 					this.sReferences = message.sReferences;
 					break;
@@ -913,7 +912,7 @@ class ComposePopupView extends AbstractViewPopup {
 					this.subject(sSubject);
 					this.prepareMessageAttachments(message, lineComposeType);
 
-					this.aDraftInfo = isNonEmptyArray(aDraftInfo) && 3 === aDraftInfo.length ? aDraftInfo : null;
+					this.aDraftInfo = 3 === arrayLength(aDraftInfo) ? aDraftInfo : null;
 					this.sInReplyTo = message.sInReplyTo;
 					this.sReferences = message.sReferences;
 					break;
@@ -1003,7 +1002,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 				this.setFocusInPopup();
 			});
-		} else if (isNonEmptyArray(oMessageOrArray)) {
+		} else if (arrayLength(oMessageOrArray)) {
 			oMessageOrArray.forEach(item => this.addMessageAsAttachment(item));
 
 			this.editor(editor => {
@@ -1024,7 +1023,7 @@ class ComposePopupView extends AbstractViewPopup {
 		}
 
 		const downloads = this.getAttachmentsDownloadsForUpload();
-		if (isNonEmptyArray(downloads)) {
+		if (arrayLength(downloads)) {
 			Remote.messageUploadAttachments((iError, oData) => {
 				if (!iError) {
 					Object.entries(oData.Result).forEach(([tempName, id]) => {

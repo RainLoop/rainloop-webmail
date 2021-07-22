@@ -226,7 +226,7 @@ export class FolderModel extends AbstractModel {
 			folder.messageCountAll = ko.computed({
 					read: folder.privateMessageCountAll,
 					write: (iValue) => {
-						if (isPosNumeric(iValue, true)) {
+						if (isPosNumeric(iValue)) {
 							folder.privateMessageCountAll(iValue);
 						} else {
 							folder.privateMessageCountAll.valueHasMutated();
@@ -238,7 +238,7 @@ export class FolderModel extends AbstractModel {
 			folder.messageCountUnread = ko.computed({
 					read: folder.privateMessageCountUnread,
 					write: (value) => {
-						if (isPosNumeric(value, true)) {
+						if (isPosNumeric(value)) {
 							folder.privateMessageCountUnread(value);
 						} else {
 							folder.privateMessageCountUnread.valueHasMutated();
@@ -371,6 +371,6 @@ export class FolderModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	printableFullName() {
-		return this.fullName.split(this.delimiter).join(' / ');
+		return this.fullName.replace(this.delimiter, ' / ');
 	}
 }

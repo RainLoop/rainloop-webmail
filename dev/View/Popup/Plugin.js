@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { Scope } from 'Common/Enums';
 import { getNotification, i18n } from 'Common/Translator';
-import { isNonEmptyArray } from 'Common/Utils';
+import { arrayLength } from 'Common/Utils';
 
 import Remote from 'Remote/Admin/Fetch';
 
@@ -65,7 +65,7 @@ class PluginPopupView extends AbstractViewPopup {
 			this.readme(oPlugin.Readme);
 
 			const config = oPlugin.Config;
-			if (isNonEmptyArray(config)) {
+			if (arrayLength(config)) {
 				this.configures(
 					config.map(item => ({
 						value: ko.observable(item[0]),
