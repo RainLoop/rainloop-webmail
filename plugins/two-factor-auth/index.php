@@ -12,10 +12,6 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		CATEGORY = 'Login',
 		DESCRIPTION = 'This plugin allows you to have TOTP 2FA';
 
-	const
-		AccountTwoFactorAuthRequired = 120,
-		AccountTwoFactorAuthError = 121;
-
 	public function Init() : void
 	{
 		$this->UseLangs(true);
@@ -44,11 +40,10 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 			if ($aData && isset($aData['IsSet'], $aData['Enable']) && !empty($aData['Secret']) && $aData['IsSet'] && $aData['Enable']) {
 				$sCode = \trim($this->jsonParam('totp_code', ''));
 				if (empty($sCode)) {
-					$this->Logger()->Write("TFA: Required Code for {$oAccount->ParentEmailHelper()} account.");
-					throw new ClientException(static::AccountTwoFactorAuthRequired);
+					$this->Logger()->Write("TFA: Code required for {$oAccount->ParentEmailHelper()}");
+					throw new ClientException(\RainLoop\Notifications::AuthError);
 				}
 
-				$this->Logger()->Write("TFA: Verify Code for {$oAccount->ParentEmailHelper()} account.");
 				$bUseBackupCode = false;
 				if (6 < \strlen($sCode) && !empty($aData['BackupCodes'])) {
 					$aBackupCodes = \explode(' ', \trim(\preg_replace('/[^\d]+/', ' ', $aData['BackupCodes'])));
@@ -60,8 +55,10 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 				if (!$bUseBackupCode && !$this->TwoFactorAuthProvider($oAccount)->VerifyCode($aData['Secret'], $sCode)) {
 					$this->Manager()->Actions()->LoggerAuthHelper($oAccount);
-					throw new ClientException(static::AccountTwoFactorAuthError);
+					$this->Logger()->Write("TFA: Code failed for {$oAccount->ParentEmailHelper()}");
+					throw new ClientException(\RainLoop\Notifications::AuthError);
 				}
+				$this->Logger()->Write("TFA: Code verified for {$oAccount->ParentEmailHelper()}");
 			}
 		}
 	}

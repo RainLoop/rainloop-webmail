@@ -4,7 +4,7 @@
 	rl && addEventListener('rl-view-model', e => {
 		if (e.detail && 'Login' === e.detail.viewModelTemplateID) {
 			const container = e.detail.viewModelDom.querySelector('#plugin-Login-BottomControlGroup'),
-				placeholder = 'LOGIN/LABEL_VERIFICATION_CODE';
+				placeholder = 'LOGIN/LABEL_TWO_FACTOR_CODE';
 			if (container) {
 				container.prepend(Element.fromHTML('<div class="controls">'
 					+ '<div class="input-append">'
