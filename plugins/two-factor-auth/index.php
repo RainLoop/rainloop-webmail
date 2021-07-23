@@ -16,7 +16,6 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		$this->UseLangs(true);
 
-//		$this->addCss('style.less');
 		$this->addJs('js/TwoFactorAuthLogin.js');
 		$this->addJs('js/TwoFactorAuthSettings.js');
 
@@ -103,8 +102,6 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 			))
 		);
 
-//		$this->Manager()->Actions()->requestSleep();
-
 		return $this->jsonResponse(__FUNCTION__, $this->getTwoFactorInfo($oAccount));
 	}
 
@@ -130,7 +127,6 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 			return $this->jsonResponse(__FUNCTION__, false);
 		}
 
-//		$this->Manager()->Actions()->setSettingsFromParams($oSettings, 'EnableTwoFactor', 'bool');
 		$oSettings = $this->Manager()->Actions()->SettingsProvider()->Load($oAccount);
 		if ($this->Manager()->Actions()->HasActionParam('EnableTwoFactor')) {
 			$sValue = $this->GetActionParam('EnableTwoFactor', '');
@@ -170,13 +166,6 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		$aData = $this->getTwoFactorInfo($oAccount);
 		$sSecret = !empty($aData['Secret']) ? $aData['Secret'] : '';
-
-//		$this->Logger()->WriteDump(array(
-//			$sCode, $sSecret, $aData,
-//			$this->TwoFactorAuthProvider($oAccount)->VerifyCode($sSecret, $sCode)
-//		));
-
-//		$this->Manager()->Actions()->requestSleep();
 
 		return $this->jsonResponse(__FUNCTION__,
 			$this->TwoFactorAuthProvider($oAccount)->VerifyCode($sSecret, $sCode));

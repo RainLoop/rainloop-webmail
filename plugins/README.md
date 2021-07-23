@@ -348,3 +348,21 @@ $Plugin->addHook('hook.name', 'functionName');
 
 ### service.app-delay-start-end
 	no params
+
+# JavaScript Events
+
+## mailbox
+### mailbox.message-list.selector.go-up
+### mailbox.message-list.selector.go-down
+### mailbox.message-view.toggle-full-screen
+### mailbox.inbox-unread-count
+### mailbox.message.show
+## audio
+### audio.start
+### audio.stop
+### audio.api.stop
+## Misc
+### idle
+### rl-layout
+### rl-view-model
+	event.detail = the ViewModel class
