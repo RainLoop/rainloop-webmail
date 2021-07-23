@@ -2,6 +2,7 @@
 	"LOGIN": {
 		"LABEL_LOGIN": "Inlognaam",
 		"LABEL_PASSWORD": "Wachtwoord",
+		"LABEL_TOTP": "TOTP-code",
 		"BUTTON_LOGIN": "Aanmelden in het beheer paneel"
 	},
 	"TOP_PANEL": {

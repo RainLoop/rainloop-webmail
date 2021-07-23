@@ -2,6 +2,7 @@
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
 		"LABEL_PASSWORD": "Password",
+		"LABEL_TOTP": "TOTP code",
 		"BUTTON_LOGIN": "Log into the admin panel"
 	},
 	"TOP_PANEL": {

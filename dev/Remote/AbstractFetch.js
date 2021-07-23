@@ -47,7 +47,11 @@ abort = (sAction, bClearOnly) => {
 fetchJSON = (action, sGetAdd, params, timeout, jsonCallback) => {
 	sGetAdd = pString(sGetAdd);
 	params = params || {};
-	params.Action = action;
+	if (params instanceof FormData) {
+		params.set('Action', action);
+	} else {
+		params.Action = action;
+	}
 	let init = {};
 	if (window.AbortController) {
 		abort(action);

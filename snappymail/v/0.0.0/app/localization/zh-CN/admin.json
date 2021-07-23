@@ -2,6 +2,7 @@
 	"LOGIN": {
 		"LABEL_LOGIN": "登录",
 		"LABEL_PASSWORD": "密码",
+		"LABEL_TOTP": "TOTP代碼",
 		"BUTTON_LOGIN": "登录到控制面板"
 	},
 	"TOP_PANEL": {
