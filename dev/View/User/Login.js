@@ -16,18 +16,9 @@ import { AbstractViewCenter } from 'Knoin/AbstractViews';
 
 import { LanguagesPopupView } from 'View/Popup/Languages';
 
-const
-	LoginSignMeType = {
-		DefaultOff: 0,
-		DefaultOn: 1,
-		Unused: 2
-	},
-
-	LoginSignMeTypeAsString = {
-		DefaultOff: 'defaultoff',
-		DefaultOn: 'defaulton',
-		Unused: 'unused'
-	};
+const SignMeOff = 0,
+	SignMeOn = 1,
+	SignMeUnused = 2;
 
 
 class LoginUserView extends AbstractViewCenter {
@@ -52,7 +43,7 @@ class LoginUserView extends AbstractViewCenter {
 
 			langRequest: false,
 
-			signMeType: LoginSignMeType.Unused
+			signMeType: SignMeUnused
 		});
 
 		this.formError = ko.observable(false).extend({ falseTimeout: 500 });
@@ -68,19 +59,17 @@ class LoginUserView extends AbstractViewCenter {
 
 			languageFullName: () => convertLangName(this.language()),
 
-			signMeVisibility: () => LoginSignMeType.Unused !== this.signMeType()
+			signMeVisibility: () => SignMeUnused !== this.signMeType()
 		});
 
 		this.addSubscribables({
-			email: () => {
-				this.emailError(false);
-			},
+			email: () => this.emailError(false),
 
 			password: () => this.passwordError(false),
 
 			submitError: value => value || this.submitErrorAddidional(''),
 
-			signMeType: iValue => this.signMe(LoginSignMeType.DefaultOn === iValue),
+			signMeType: iValue => this.signMe(SignMeOn === iValue),
 
 			language: value => {
 				this.langRequest(true);
@@ -106,10 +95,9 @@ class LoginUserView extends AbstractViewCenter {
 	submitCommand(self, event) {
 		let form = event.target.form,
 			data = new FormData(form),
-			email = this.email().trim(),
-			valid = form.reportValidity() && email;
+			valid = form.reportValidity();
 
-		this.emailError(!email);
+		this.emailError(!this.email());
 		this.passwordError(!this.password());
 		this.formError(!valid);
 
@@ -146,29 +134,28 @@ class LoginUserView extends AbstractViewCenter {
 
 	onBuild() {
 		const signMeLocal = Local.get(ClientSideKeyName.LastSignMe),
-			signMe = (SettingsGet('SignMe') || 'unused').toLowerCase();
+			signMe = (SettingsGet('SignMe') || '').toLowerCase();
 
 		switch (signMe) {
-			case LoginSignMeTypeAsString.DefaultOff:
-			case LoginSignMeTypeAsString.DefaultOn:
+			case 'defaultoff':
+			case 'defaulton':
 				this.signMeType(
-					LoginSignMeTypeAsString.DefaultOn === signMe ? LoginSignMeType.DefaultOn : LoginSignMeType.DefaultOff
+					'defaulton' === signMe ? SignMeOn : SignMeOff
 				);
 
 				switch (signMeLocal) {
 					case '-1-':
-						this.signMeType(LoginSignMeType.DefaultOn);
+						this.signMeType(SignMeOn);
 						break;
 					case '-0-':
-						this.signMeType(LoginSignMeType.DefaultOff);
+						this.signMeType(SignMeOff);
 						break;
 					// no default
 				}
 
 				break;
-			case LoginSignMeTypeAsString.Unused:
 			default:
-				this.signMeType(LoginSignMeType.Unused);
+				this.signMeType(SignMeUnused);
 				break;
 		}
 	}
