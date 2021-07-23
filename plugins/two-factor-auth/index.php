@@ -44,29 +44,23 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 			if ($aData && isset($aData['IsSet'], $aData['Enable']) && !empty($aData['Secret']) && $aData['IsSet'] && $aData['Enable']) {
 				$sCode = \trim($this->jsonParam('totp_code', ''));
 				if (empty($sCode)) {
-					$this->Logger()->Write('TFA: Required Code for ' . $oAccount->ParentEmailHelper() . ' account.');
-
+					$this->Logger()->Write("TFA: Required Code for {$oAccount->ParentEmailHelper()} account.");
 					throw new ClientException(static::AccountTwoFactorAuthRequired);
-				} else {
-					$this->Logger()->Write('TFA: Verify Code for ' . $oAccount->ParentEmailHelper() . ' account.');
+				}
 
-					$bUseBackupCode = false;
-					if (6 < \strlen($sCode) && !empty($aData['BackupCodes'])) {
-						$aBackupCodes = \explode(' ', \trim(\preg_replace('/[^\d]+/', ' ', $aData['BackupCodes'])));
-						$bUseBackupCode = \in_array($sCode, $aBackupCodes);
-
-						if ($bUseBackupCode) {
-							$this->removeBackupCodeFromTwoFactorInfo($oAccount->ParentEmailHelper(), $sCode);
-						}
+				$this->Logger()->Write("TFA: Verify Code for {$oAccount->ParentEmailHelper()} account.");
+				$bUseBackupCode = false;
+				if (6 < \strlen($sCode) && !empty($aData['BackupCodes'])) {
+					$aBackupCodes = \explode(' ', \trim(\preg_replace('/[^\d]+/', ' ', $aData['BackupCodes'])));
+					$bUseBackupCode = \in_array($sCode, $aBackupCodes);
+					if ($bUseBackupCode) {
+						$this->removeBackupCodeFromTwoFactorInfo($oAccount->ParentEmailHelper(), $sCode);
 					}
+				}
 
-					if (!$bUseBackupCode && !$this->TwoFactorAuthProvider($oAccount)->VerifyCode($aData['Secret'], $sCode)) {
-						$this->Manager()->Actions()->loginErrorDelay();
-
-						$this->Manager()->Actions()->LoggerAuthHelper($oAccount);
-
-						throw new ClientException(static::AccountTwoFactorAuthError);
-					}
+				if (!$bUseBackupCode && !$this->TwoFactorAuthProvider($oAccount)->VerifyCode($aData['Secret'], $sCode)) {
+					$this->Manager()->Actions()->LoggerAuthHelper($oAccount);
+					throw new ClientException(static::AccountTwoFactorAuthError);
 				}
 			}
 		}
@@ -207,7 +201,7 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		return $this->jsonResponse(__FUNCTION__, $this->getTwoFactorInfo($oAccount, true));
 	}
 
-	protected function Logger() : \RainLoop\Providers\TwoFactorAuth
+	protected function Logger() : \MailSo\Log\Logger
 	{
 		return $this->Manager()->Actions()->Logger();
 	}

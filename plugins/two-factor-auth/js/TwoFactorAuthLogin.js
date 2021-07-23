@@ -6,7 +6,7 @@
 			const container = e.detail.viewModelDom.querySelector('#plugin-Login-BottomControlGroup'),
 				placeholder = 'LOGIN/LABEL_VERIFICATION_CODE';
 			if (container) {
-				container.append(Element.fromHTML('<div class="controls">'
+				container.prepend(Element.fromHTML('<div class="controls">'
 					+ '<div class="input-append">'
 						+ '<input name="totp_code" type="text" class="input-block-level inputIcon"'
 						+ ' pattern="[0-9]*" inputmode="numeric"'
