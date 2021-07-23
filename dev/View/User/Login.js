@@ -104,17 +104,19 @@ class LoginUserView extends AbstractViewCenter {
 	}
 
 	submitCommand(self, event) {
-		let email = this.email().trim(),
-			valid = event.target.form.reportValidity() && email,
-			pass = this.password();
+		let form = event.target.form,
+			data = new FormData(form),
+			email = this.email().trim(),
+			valid = form.reportValidity() && email;
 
 		this.emailError(!email);
-		this.passwordError(!pass);
+		this.passwordError(!this.password());
 		this.formError(!valid);
 
 		if (valid) {
 			this.submitRequest(true);
-
+			data.set('Language', this.bSendLanguage ? this.language() : '');
+			data.set('SignMe', this.signMe() ? 1 : 0);
 			Remote.login(
 				(iError, oData) => {
 					if (iError) {
@@ -129,10 +131,7 @@ class LoginUserView extends AbstractViewCenter {
 						rl.route.reload();
 					}
 				},
-				email,
-				pass,
-				!!this.signMe(),
-				this.bSendLanguage ? this.language() : ''
+				data
 			);
 
 			Local.set(ClientSideKeyName.LastSignMe, this.signMe() ? '-1-' : '-0-');

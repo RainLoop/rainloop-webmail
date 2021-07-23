@@ -94,10 +94,7 @@ export default App => {
 		if (postData) {
 			init.method = 'POST';
 			init.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
-			postData.XToken = Settings.app('token');
-//			init.body = JSON.stringify(postData);
-			const formData = new FormData(),
-			buildFormData = (formData, data, parentKey) => {
+			const buildFormData = (formData, data, parentKey) => {
 				if (data && typeof data === 'object' && !(data instanceof Date || data instanceof File)) {
 					Object.keys(data).forEach(key =>
 						buildFormData(formData, data[key], parentKey ? `${parentKey}[${key}]` : key)
@@ -105,9 +102,14 @@ export default App => {
 				} else {
 					formData.set(parentKey, data == null ? '' : data);
 				}
+				return formData;
 			};
-			buildFormData(formData, postData);
-			init.body = new URLSearchParams(formData);
+			postData = (postData instanceof FormData)
+				? postData
+				: buildFormData(new FormData(), postData);
+			postData.set('XToken', Settings.app('token'));
+//			init.body = JSON.stringify(Object.fromEntries(postData));
+			init.body = new URLSearchParams(postData);
 		}
 
 		return fetch(resource, init).then(response => {
