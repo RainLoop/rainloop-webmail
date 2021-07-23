@@ -5,11 +5,6 @@ import { trigger as translatorTrigger } from 'Common/Translator';
 (rl => { if (rl) {
 
 const
-	Capa = {
-		TwoFactor: 'TWO_FACTOR',
-		TwoFactorForce: 'TWO_FACTOR_FORCE',
-	},
-
 	pString = value => null != value ? '' + value : '',
 
 	Remote = new class {
@@ -56,10 +51,8 @@ class TwoFactorAuthSettings
 
 		this.viewEnable_ = ko.observable(false);
 
-		this.capaTwoFactor = rl.settings.capa(Capa.TwoFactor);
-
 		const fn = iError => iError && this.viewEnable_(false);
-		this.addComputables({
+		Object.entries({
 			viewEnable: {
 				read: this.viewEnable_,
 				write: (value) => {
@@ -92,10 +85,14 @@ class TwoFactorAuthSettings
 			},
 
 			twoFactorAllowedEnable: () => this.viewEnable() || this.twoFactorTested()
-		});
+		}).forEach(([key, fn]) => this[key] = ko.computed(fn));
 
 		this.onResult = this.onResult.bind(this);
 		this.onShowSecretResult = this.onShowSecretResult.bind(this);
+	}
+
+	configureTwoFactor() {
+//		showScreenPopup(require('View/Popup/TwoFactorConfiguration'));
 	}
 
 	showSecret() {
@@ -180,7 +177,7 @@ class TwoFactorAuthSettings
 			this.viewBackupCodes(pString(oData.Result.BackupCodes).replace(/[\s]+/g, '  '));
 
 			this.viewUrlTitle(pString(oData.Result.UrlTitle));
-			this.viewUrl(qr.toDataURL({ level: 'M', size: 8, value: this.getQr() }));
+			this.viewUrl(null/*qr.toDataURL({ level: 'M', size: 8, value: this.getQr() })*/);
 		}
 	}
 
@@ -194,15 +191,13 @@ class TwoFactorAuthSettings
 		} else {
 			this.viewSecret(pString(data.Result.Secret));
 			this.viewUrlTitle(pString(data.Result.UrlTitle));
-			this.viewUrl(qr.toDataURL({ level: 'M', size: 6, value: this.getQr() }));
+			this.viewUrl(null/*qr.toDataURL({ level: 'M', size: 6, value: this.getQr() })*/);
 		}
 	}
 
 	onBuild() {
-		if (this.capaTwoFactor) {
-			this.processing(true);
-			rl.pluginRemoteRequest(this.onResult, 'GetTwoFactorInfo');
-		}
+		this.processing(true);
+		rl.pluginRemoteRequest(this.onResult, 'GetTwoFactorInfo');
 	}
 }
 
