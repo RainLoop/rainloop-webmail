@@ -3,8 +3,9 @@
 
 const
 	doc = document,
-	eId = id => doc.getElementById(id),
-	app = eId('rl-app'),
+	eId = id => doc.getElementById('rl-'+id),
+	app = eId('app'),
+	css = eId('css'),
 	admin = app && '1' == app.dataset.admin,
 
 	getCookie = name => {
@@ -12,36 +13,9 @@ const
 		return data ? decodeURIComponent(data[2]) : null;
 	},
 
-	Storage = type => {
-		let name = type+'Storage';
-		try {
-			win[name].setItem(name, '');
-			win[name].getItem(name);
-			win[name].removeItem(name);
-		} catch (e) {
-			console.error(e);
-			const cookieName = encodeURIComponent(name+('session' === type ? win.name || (win.name = Date.now()) : ''));
-
-			// initialise if there's already data
-			let data = getCookie(cookieName);
-			data = data ? JSON.parse(data) : {};
-
-			win[name] = {
-				getItem: key => data[key] === undefined ? null : data[key],
-				setItem: function (key, value) {
-					data[key] = ''+value; // forces the value to a string
-					doc.cookie = cookieName+'='+encodeURIComponent(JSON.stringify(data))
-						+"; expires="+('local' === type ? (new Date(Date.now()+(365*24*60*60*1000))).toGMTString() : '')
-						+"; path=/; samesite=strict";
-				}
-			};
-		}
-		return win[name];
-	},
-
 	showError = () => {
-		eId('rl-loading').hidden = true;
-		eId('rl-loading-error').hidden = false;
+		eId('loading').hidden = true;
+		eId('loading-error').hidden = false;
 	},
 
 	loadScript = src => {
@@ -56,22 +30,18 @@ const
 //			script.async = true;
 			doc.head.append(script);
 		});
-	};
+	},
+
+	layout = getCookie('rllayout'),
+	sName = 'localStorage';
 
 if (!navigator || !navigator.cookieEnabled) {
 	doc.location.href = './?/NoCookie';
 }
 
-const layout = getCookie('rllayout');
 doc.documentElement.classList.toggle('rl-mobile', 'mobile' === layout || (!layout && 1000 > innerWidth));
 
-let progress = eId('progressjs'),
-	RL_APP_DATA = {};
-
-if (progress) {
-	progress.remove();
-	progress = null;
-}
+let RL_APP_DATA = {};
 
 win.rl = {
 	data: () => RL_APP_DATA,
@@ -111,9 +81,28 @@ win.rl = {
 	}
 };
 
-Storage('local');
+// Storage
+try {
+	win[sName].setItem(sName, '');
+	win[sName].getItem(sName);
+	win[sName].removeItem(sName);
+} catch (e) {
+	console.error(e);
+	// initialise if there's already data
+	let data = getCookie(sName);
+	data = data ? JSON.parse(data) : {};
+	win[sName] = {
+		getItem: key => data[key] === undefined ? null : data[key],
+		setItem: (key, value) => {
+			data[key] = ''+value; // forces the value to a string
+			doc.cookie = sName+'='+encodeURIComponent(JSON.stringify(data))
+				+"; expires="+((new Date(Date.now()+(365*24*60*60*1000))).toGMTString())
+				+"; path=/; samesite=strict";
+		}
+	};
+}
 
-eId('app-css').href = eId('app-css').dataset.href;
+css.href = css.dataset.href;
 
 loadScript(`./?/${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().substr(2)}/`)
 	.then(() => {});
