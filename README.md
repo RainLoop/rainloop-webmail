@@ -76,13 +76,21 @@ This fork of RainLoop has the following changes:
 * Prevent Google FLoC
 * Added [Fetch Metadata Request Headers](https://www.w3.org/TR/fetch-metadata/) checks
 
+### Supported browsers
+
+This fork uses downsized/simplified versions of scripts and has no support for Internet Explorer nor Edge Legacy.
+Supported are:
+
+* Chrome 69
+* Edge 79
+* Firefox 69
+* Opera 56
+* Safari 12
+
+
 ### Removal of old JavaScript
 
-This fork uses downsized/simplified versions of scripts and has no support for Internet Explorer.
-
 The result is faster and smaller download code (good for mobile networks).
-
-Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill for array.flat().
 
 * Added dev/prototype.js for some additional features
 * boot.js without webpack overhead
@@ -120,23 +128,23 @@ RainLoop 1.15 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.158.025	|   91.364	|
-|app.js          	|4.215.733	|  454.661	|
+|admin.js        	|2.158.025	|   91.598	|
+|app.js          	|4.215.733	|  454.046	|
 |boot.js         	|  672.433	|    3.147	|
-|libs.js         	|  647.679	|  218.491	|
+|libs.js         	|  647.679	|  218.139	|
 |polyfills.js    	|  325.908	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|8.019.778	|  767.663	|
+|TOTAL           	|8.019.778	|  767.215	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
-|admin.min.js    	|  255.514	|   47.527	| 73.899	| 14.263	| 60.674  	| 12.750	|
-|app.min.js      	|  516.000	|  233.755	|140.430	| 68.663	|110.657  	| 58.026	|
+|admin.min.js    	|  255.514	|   47.631	| 73.899	| 14.320	| 60.674  	| 12.796	|
+|app.min.js      	|  516.000	|  233.722	|140.430	| 68.676	|110.657  	| 58.037	|
 |boot.min.js     	|   66.456	|    1.751	| 22.553	|  1.025	| 20.043  	|    858	|
-|libs.min.js     	|  574.626	|  106.543	|177.280	| 38.613	|151.855  	| 34.543	|
+|libs.min.js     	|  574.626	|  106.273	|177.280	| 38.502	|151.855  	| 34.428	|
 |polyfills.min.js	|   32.608	|        0	| 11.315	|      0	| 10.072  	|      0	|
-|TOTAL           	|1.445.204	|  389.576	|425.477	|122.564	|353.301  	|106.177	|
-|TOTAL (no admin)	|1.189.690	|  342.049	|351.061	|108.301	|292.627  	| 93.427	|
+|TOTAL           	|1.445.204	|  389.377	|425.477	|122.523	|353.301  	|106.119	|
+|TOTAL (no admin)	|1.189.690	|  341.746	|351.061	|108.203	|292.627  	| 93.323	|
 
 For a user its around 69% smaller and faster than traditional RainLoop.
 
@@ -175,12 +183,12 @@ For a user its around 69% smaller and faster than traditional RainLoop.
 
 |css/*       	|RainLoop	|Snappy   	|RL gzip	|SM gzip	|SM brotli	|
 |------------	|-------:	|------:	|------:	|------:	|--------:	|
-|app.css     	| 340.334	| 98.499	| 46,959	| 17.842	| 15.378	|
-|app.min.css 	| 274.791	| 81.603	| 39.618	| 15.982	| 14.056	|
+|app.css     	| 340.334	| 98.323	| 46,959	| 17.821	| 15.355	|
+|app.min.css 	| 274.791	| 80.298	| 39.618	| 15.963	| 14.045	|
 |boot.css    	|       	|  1.326	|       	|    664	|    545	|
 |boot.min.css	|       	|  1.071	|       	|    590	|    474	|
-|admin.css    	|       	| 40.516	|       	|  8.481	|  7.401	|
-|admin.min.css	|       	| 32.041	|       	|  7.447	|  6.610	|
+|admin.css    	|       	| 40.369	|       	|  8.467	|  7.389	|
+|admin.min.css	|       	| 31.901	|       	|  7.430	|  6.599	|
 
 
 ### Squire vs CKEditor
