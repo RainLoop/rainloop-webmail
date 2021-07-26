@@ -49,23 +49,14 @@
 		getDataFromFile = oFile =>
 		{
 			let
-				sFileName = defined(oFile.fileName) ? oFile.fileName : (defined(oFile.name) ? oFile.name : null),
-				iSize = defined(oFile.fileSize) ? oFile.fileSize : (defined(oFile.size) ? oFile.size : null),
-				sType = defined(oFile.type) ? oFile.type : null
+				iSize = oFile.size || 0,
+				sType = oFile.type || ''
 			;
 
-			if (sFileName.charAt(0) === '/')
-			{
-				sFileName = sFileName.substr(1);
-			}
-
-			if (!sType && 0 === iSize)
-			{
-				return null; // Folder
-			}
-
-			return {
-				'FileName': sFileName,
+			return (!sType && 0 == iSize)
+			? null // Folder
+			: {
+				'FileName': (oFile.name || '').replace(/^.*\/([^/]*)$/, '$1'),
 				'Size': iSize,
 				'Type': sType,
 				'Folder': '',
