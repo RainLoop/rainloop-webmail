@@ -64,6 +64,8 @@ const
 		return html;
 	};
 
+let MessageSeenTimer;
+
 doc.body.append(hcont);
 
 export const MessageUserStore = new class {
@@ -202,6 +204,7 @@ export const MessageUserStore = new class {
 				}).debounce(500),
 
 			message: message => {
+				clearTimeout(MessageSeenTimer);
 				if (message) {
 					if (!SettingsUserStore.usePreviewPane()) {
 						AppUserStore.focusedState(Scope.MessageView);
@@ -562,7 +565,10 @@ export const MessageUserStore = new class {
 
 				MessageFlagsCache.initMessage(message);
 				if (message.isUnseen() || message.hasUnseenSubMessage()) {
-					rl.app.messageListAction(message.folder, MessageSetAction.SetSeen, [message]);
+					MessageSeenTimer = setTimeout(
+						() => rl.app.messageListAction(message.folder, MessageSetAction.SetSeen, [message]),
+						5000 // 5 seconds
+					);
 				}
 
 				if (isNew) {
