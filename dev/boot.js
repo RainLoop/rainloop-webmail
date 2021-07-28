@@ -1,3 +1,4 @@
+[].flat||document.location.replace('./?/BadBrowser');
 
 (win => {
 

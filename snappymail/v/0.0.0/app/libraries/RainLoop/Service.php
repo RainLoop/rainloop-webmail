@@ -62,12 +62,7 @@ class Service
 		// Google FLoC
 		\header('Permissions-Policy: interest-cohort=()');
 
-		$sContentSecurityPolicy = \trim($this->oActions->Config()->Get('security', 'content_security_policy', '')) ?: APP_DEFAULT_CSP;
-		if ($this->oActions->Config()->Get('security', 'use_local_proxy_for_external_images', '')) {
-			$sContentSecurityPolicy = preg_replace('/(img-src[^;]+)\\shttps:(\\s|;|$)/D', '$1$2', $sContentSecurityPolicy);
-			$sContentSecurityPolicy = preg_replace('/(img-src[^;]+)\\shttp:(\\s|;|$)/D', '$1$2', $sContentSecurityPolicy);
-		}
-		\header('Content-Security-Policy: '.$sContentSecurityPolicy, true);
+		$this->setCSP();
 
 		$sXFrameOptionsHeader = \trim($this->oActions->Config()->Get('security', 'x_frame_options_header', '')) ?: 'DENY';
 		\header('X-Frame-Options: '.$sXFrameOptionsHeader, true);
@@ -176,6 +171,15 @@ class Service
 					$this->oActions->Cacher()->Set($sCacheFileName, $sResult);
 				}
 			}
+
+			$sScriptNonce = \SnappyMail\UUID::generate();
+			$this->setCSP($sScriptNonce);
+			$sResult = \str_replace('nonce=""', 'nonce="'.$sScriptNonce.'"', $sResult);
+/*
+			\preg_match('<script[^>]+>(.+)</script>', $sResult, $script);
+			$sScriptHash = 'sha256-'.\base64_encode(\hash('sha256', $script[1], true));
+			$this->setCSP(null, $sScriptHash);
+*/
 		}
 		else if (!\headers_sent())
 		{
@@ -189,6 +193,23 @@ class Service
 		$this->oActions->BootEnd();
 
 		return true;
+	}
+
+	private function setCSP(string $sScriptNonce = null) : void
+	{
+		$sContentSecurityPolicy = \trim($this->oActions->Config()->Get('security', 'content_security_policy', '')) ?: APP_DEFAULT_CSP;
+		if ($this->oActions->Config()->Get('security', 'use_local_proxy_for_external_images', '')) {
+			$sContentSecurityPolicy = \preg_replace('/(img-src[^;]+)\\shttps:(\\s|;|$)/D', '$1$2', $sContentSecurityPolicy);
+			$sContentSecurityPolicy = \preg_replace('/(img-src[^;]+)\\shttp:(\\s|;|$)/D', '$1$2', $sContentSecurityPolicy);
+		}
+		// Internet Explorer does not support 'nonce'
+		if (!\strpos($_SERVER['HTTP_USER_AGENT'], 'Trident/')) {
+			if ($sScriptNonce) {
+				$sContentSecurityPolicy = \preg_replace("/(script-src[^;]+)'unsafe-inline'/", "\$1'nonce-{$sScriptNonce}'", $sContentSecurityPolicy);
+			}
+			$sContentSecurityPolicy = \preg_replace("/(script-src[^;]+)'unsafe-inline'/", '', $sContentSecurityPolicy);
+		}
+		\header('Content-Security-Policy: '.$sContentSecurityPolicy, true);
 	}
 
 	private function staticPath(string $sPath) : string
