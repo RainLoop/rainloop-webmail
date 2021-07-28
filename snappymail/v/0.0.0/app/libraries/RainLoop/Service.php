@@ -207,7 +207,9 @@ class Service
 			if ($sScriptNonce) {
 				$sContentSecurityPolicy = \preg_replace("/(script-src[^;]+)'unsafe-inline'/", "\$1'nonce-{$sScriptNonce}'", $sContentSecurityPolicy);
 			}
-			$sContentSecurityPolicy = \preg_replace("/(script-src[^;]+)'unsafe-inline'/", '', $sContentSecurityPolicy);
+			$sContentSecurityPolicy = \preg_replace("/(script-src[^;]+)'unsafe-inline'/", '$1', $sContentSecurityPolicy);
+			// Knockout.js requires eval() for observable binding purposes
+			//$sContentSecurityPolicy = \preg_replace("/(script-src[^;]+)'unsafe-eval'/", '$1', $sContentSecurityPolicy);
 		}
 		\header('Content-Security-Policy: '.$sContentSecurityPolicy, true);
 	}
