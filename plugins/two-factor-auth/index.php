@@ -7,8 +7,8 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 	const
 		NAME     = 'Two Factor Authentication',
 		VERSION  = '2.1',
-		RELEASE  = '2021-07-22',
-		REQUIRED = '2.5.4',
+		RELEASE  = '2021-07-28',
+		REQUIRED = '2.6.0',
 		CATEGORY = 'Login',
 		DESCRIPTION = 'This plugin allows you to have TOTP 2FA';
 

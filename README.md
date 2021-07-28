@@ -81,11 +81,11 @@ This fork of RainLoop has the following changes:
 This fork uses downsized/simplified versions of scripts and has no support for Internet Explorer nor Edge Legacy.
 Supported are:
 
-* Chrome 69
-* Edge 79
-* Firefox 69
-* Opera 56
-* Safari 12
+* Chrome 69+
+* Edge 79+
+* Firefox 69+
+* Opera 56+
+* Safari 12+
 
 
 ### Removal of old JavaScript
@@ -130,23 +130,23 @@ RainLoop 1.15 vs SnappyMail
 |---------------	|--------:	|--------:	|
 |admin.js        	|2.158.025	|   91.598	|
 |app.js          	|4.215.733	|  454.046	|
-|boot.js         	|  672.433	|    3.147	|
-|libs.js         	|  647.679	|  218.139	|
+|boot.js         	|  672.433	|    2.861	|
+|libs.js         	|  647.679	|  217.881	|
 |polyfills.js    	|  325.908	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|8.019.778	|  767.215	|
+|TOTAL           	|8.019.778	|  766.671	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
 |admin.min.js    	|  255.514	|   47.631	| 73.899	| 14.320	| 60.674  	| 12.796	|
 |app.min.js      	|  516.000	|  233.722	|140.430	| 68.676	|110.657  	| 58.037	|
-|boot.min.js     	|   66.456	|    1.751	| 22.553	|  1.025	| 20.043  	|    858	|
-|libs.min.js     	|  574.626	|  106.273	|177.280	| 38.502	|151.855  	| 34.428	|
+|boot.min.js     	|   66.456	|    1.621	| 22.553	|    968	| 20.043  	|    810	|
+|libs.min.js     	|  574.626	|  106.182	|177.280	| 38.479	|151.855  	| 34.497	|
 |polyfills.min.js	|   32.608	|        0	| 11.315	|      0	| 10.072  	|      0	|
-|TOTAL           	|1.445.204	|  389.377	|425.477	|122.523	|353.301  	|106.119	|
-|TOTAL (no admin)	|1.189.690	|  341.746	|351.061	|108.203	|292.627  	| 93.323	|
+|TOTAL           	|1.445.204	|  389.156	|425.477	|122.443	|353.301  	|106.140	|
+|TOTAL (no admin)	|1.189.690	|  341.525	|351.061	|108.123	|292.627  	| 93.344	|
 
-For a user its around 69% smaller and faster than traditional RainLoop.
+For a user its around 68% smaller and faster than traditional RainLoop.
 
 |OpenPGP        	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
