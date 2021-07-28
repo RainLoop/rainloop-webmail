@@ -114,7 +114,7 @@ trait Localization
 			$this->Plugins()->ReadLang($sLang, $aLang);
 		}
 
-		return $aLang[$aKey] ?? $sKey;
+		return $aLang[$sKey] ?? $sKey;
 	}
 
 	public function compileLanguage(string $sLanguage, bool $bAdmin = false) : string
