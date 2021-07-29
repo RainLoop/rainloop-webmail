@@ -35,18 +35,15 @@ ko.computed = (evaluatorFunctionOrOptions, options) => {
 
     function computedObservable() {
         if (arguments.length > 0) {
-            if (typeof writeFunction === "function") {
-                // Writing a value
-                writeFunction(...arguments);
-            } else {
+            if (typeof writeFunction !== "function") {
                 throw new Error("Cannot write a value to a ko.computed unless you specify a 'write' option. If you wish to read the current value, don't pass any parameters.");
             }
+            // Writing a value
+            writeFunction(...arguments);
             return this; // Permits chained assignments
         } else {
             // Reading the value
-            if (!state.isDisposed) {
-                ko.dependencyDetection.registerDependency(computedObservable);
-            }
+            state.isDisposed || ko.dependencyDetection.registerDependency(computedObservable);
             if (state.isDirty || (state.isSleeping && computedObservable.haveDependenciesChanged())) {
                 computedObservable.evaluateImmediate();
             }
@@ -132,23 +129,23 @@ function computedBeginDependencyDetectionCallback(subscribable, id) {
 }
 
 function evaluateImmediate_CallReadThenEndDependencyDetection(state, dependencyDetectionContext) {
-	// This function is really part of the evaluateImmediate_CallReadWithDependencyDetection logic.
-	// You'd never call it from anywhere else. Factoring it out means that evaluateImmediate_CallReadWithDependencyDetection
-	// can be independent of try/finally blocks, which contributes to saving about 40% off the CPU
-	// overhead of computed evaluation (on V8 at least).
+    // This function is really part of the evaluateImmediate_CallReadWithDependencyDetection logic.
+    // You'd never call it from anywhere else. Factoring it out means that evaluateImmediate_CallReadWithDependencyDetection
+    // can be independent of try/finally blocks, which contributes to saving about 40% off the CPU
+    // overhead of computed evaluation (on V8 at least).
 
-	try {
-		return state.readFunction();
-	} finally {
-		ko.dependencyDetection.end();
+    try {
+        return state.readFunction();
+    } finally {
+        ko.dependencyDetection.end();
 
-		// For each subscription no longer being used, remove it from the active subscriptions list and dispose it
-		if (dependencyDetectionContext.disposalCount && !state.isSleeping) {
-			ko.utils.objectForEach(dependencyDetectionContext.disposalCandidates, computedDisposeDependencyCallback);
-		}
+        // For each subscription no longer being used, remove it from the active subscriptions list and dispose it
+        if (dependencyDetectionContext.disposalCount && !state.isSleeping) {
+            ko.utils.objectForEach(dependencyDetectionContext.disposalCandidates, computedDisposeDependencyCallback);
+        }
 
-		state.isStale = state.isDirty = false;
-	}
+        state.isStale = state.isDirty = false;
+    }
 }
 
 var computedFn = {
@@ -170,12 +167,8 @@ var computedFn = {
             return false;
         }
         var dependencies = this.getDependencies();
-        if (dependencies.includes(obs)) {
-            return true;
-        }
-        return !!dependencies.find(dep =>
-            dep.hasAncestorDependency && dep.hasAncestorDependency(obs)
-        );
+        return dependencies.includes(obs)
+            || !!dependencies.find(dep => dep.hasAncestorDependency && dep.hasAncestorDependency(obs));
     },
     addDependencyTracking: function (id, target, trackingObj) {
         if (this[computedState].pure && target === this) {

@@ -9,20 +9,18 @@ ko.bindingHandlers['value'] = {
             return;
         }
 
-        var eventsToCatch = [];
+        var eventsToCatch = new Set;
         var requestedEventsToCatch = allBindings.get("valueUpdate");
         var elementValueBeforeEvent = null;
 
         if (requestedEventsToCatch) {
             // Allow both individual event names, and arrays of event names
             if (typeof requestedEventsToCatch == "string") {
-                eventsToCatch = [requestedEventsToCatch];
+                eventsToCatch.add(requestedEventsToCatch);
             } else {
-                eventsToCatch = requestedEventsToCatch ? requestedEventsToCatch.filter((item, index) =>
-                    requestedEventsToCatch.indexOf(item) === index
-                ) : [];
+                requestedEventsToCatch.forEach(item => eventsToCatch.add(item));
             }
-            ko.utils.arrayRemoveItem(eventsToCatch, "change");  // We'll subscribe to "change" events later
+            eventsToCatch.delete("change");  // We'll subscribe to "change" events later
         }
 
         var valueUpdateHandler = () => {
@@ -113,4 +111,4 @@ ko.bindingHandlers['value'] = {
     },
     'update': () => {} // Keep for backwards compatibility with code that may have wrapped value binding
 };
-ko.expressionRewriting.twoWayBindings['value'] = true;
+ko.expressionRewriting.twoWayBindings.add('value');

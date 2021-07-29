@@ -6,22 +6,21 @@ ko.utils.domNodeDisposal = (() => {
 
     const getDisposeCallbacksCollection = (node, createIfNotFound) => {
         var allDisposeCallbacks = ko.utils.domData.get(node, domDataKey);
-        if ((allDisposeCallbacks === undefined) && createIfNotFound) {
-            allDisposeCallbacks = [];
+        if (createIfNotFound && !allDisposeCallbacks) {
+            allDisposeCallbacks = new Set;
             ko.utils.domData.set(node, domDataKey, allDisposeCallbacks);
         }
         return allDisposeCallbacks;
     },
 
-    destroyCallbacksCollection = node => ko.utils.domData.set(node, domDataKey, undefined),
+    destroyCallbacksCollection = node => ko.utils.domData.set(node, domDataKey, null),
 
     cleanSingleNode = node => {
         // Run all the dispose callbacks
         var callbacks = getDisposeCallbacksCollection(node);
         if (callbacks) {
-            callbacks = callbacks.slice(0); // Clone, as the array may be modified during iteration (typically, callbacks will remove themselves)
-            for (var i = 0; i < callbacks.length; i++)
-                callbacks[i](node);
+            // Clone, as the array may be modified during iteration (typically, callbacks will remove themselves)
+            (new Set(callbacks)).forEach(callback => callback(node));
         }
 
         // Erase the DOM data
@@ -49,14 +48,14 @@ ko.utils.domNodeDisposal = (() => {
         addDisposeCallback : (node, callback) => {
             if (typeof callback != "function")
                 throw new Error("Callback must be a function");
-            getDisposeCallbacksCollection(node, 1).push(callback);
+            getDisposeCallbacksCollection(node, 1).add(callback);
         },
 
         removeDisposeCallback : (node, callback) => {
             var callbacksCollection = getDisposeCallbacksCollection(node);
             if (callbacksCollection) {
-                ko.utils.arrayRemoveItem(callbacksCollection, callback);
-                callbacksCollection.length || destroyCallbacksCollection(node);
+                callbacksCollection.delete(callback);
+                callbacksCollection.size || destroyCallbacksCollection(node);
             }
         },
 

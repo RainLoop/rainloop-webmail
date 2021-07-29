@@ -1,22 +1,7 @@
 (() => {
     const defaultBindingAttributeName = "data-bind",
 
-        bindingCache = {},
-
-        createBindingsStringEvaluatorViaCache = (bindingsString, cache, options) => {
-            var cacheKey = bindingsString + (options && options['valueAccessors'] || '');
-            return cache[cacheKey]
-                || (cache[cacheKey] = createBindingsStringEvaluator(bindingsString, options));
-        },
-
-        createBindingsStringEvaluator = (bindingsString, options) => {
-            // Build the source for a function that evaluates "expression"
-            // For each scope variable, add an extra level of "with" nesting
-            // Example result: with(sc1) { with(sc0) { return (expression) } }
-            var rewrittenBindings = ko.expressionRewriting.preProcessBindings(bindingsString, options),
-                functionBody = "with($context){with($data||{}){return{" + rewrittenBindings + "}}}";
-            return new Function("$context", "$element", functionBody);
-        },
+        bindingCache = new Map,
 
         // The following function is only used internally by this default provider.
         // It's not part of the interface definition for a general binding provider.
@@ -26,18 +11,6 @@
                 case 8: return ko.virtualElements.virtualNodeBindingValue(node); // Comment node
             }
             return null;
-        },
-
-        // The following function is only used internally by this default provider.
-        // It's not part of the interface definition for a general binding provider.
-        parseBindingsString = (bindingsString, bindingContext, node, options) => {
-            try {
-                var bindingFunction = createBindingsStringEvaluatorViaCache(bindingsString, bindingCache, options);
-                return bindingFunction(bindingContext, node);
-            } catch (ex) {
-                ex.message = "Unable to parse bindings.\nBindings value: " + bindingsString + "\nMessage: " + ex.message;
-                throw ex;
-            }
         };
 
     ko.bindingProvider = new class
@@ -53,8 +26,29 @@
         }
 
         getBindingAccessors(node, bindingContext) {
-            var bindingsString = getBindingsString(node, bindingContext);
-            return bindingsString ? parseBindingsString(bindingsString, bindingContext, node, { 'valueAccessors': true }) : null;
+            var bindingsString = getBindingsString(node);
+            if (bindingsString) {
+                try {
+                    let options = { 'valueAccessors': true },
+                        cacheKey = bindingsString,
+                        bindingFunction = bindingCache.get(cacheKey);
+                    if (!bindingFunction) {
+                        // Build the source for a function that evaluates "expression"
+                        // For each scope variable, add an extra level of "with" nesting
+                        // Example result: with(sc1) { with(sc0) { return (expression) } }
+                        var rewrittenBindings = ko.expressionRewriting.preProcessBindings(bindingsString, options),
+                            functionBody = "with($context){with($data||{}){return{" + rewrittenBindings + "}}}";
+                        bindingFunction = new Function("$context", "$element", functionBody);
+                        bindingCache.set(cacheKey, bindingFunction);
+                    }
+                    return bindingFunction(bindingContext, node);
+                } catch (ex) {
+                    ex.message = "Unable to parse bindings.\nBindings value: " + bindingsString
+                        + "\nMessage: " + ex.message;
+                    throw ex;
+                }
+            }
+            return null;
         }
     };
 

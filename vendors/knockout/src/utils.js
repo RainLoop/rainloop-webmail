@@ -1,14 +1,4 @@
 ko.utils = {
-    arrayRemoveItem: (array, itemToRemove) => {
-        var index = array.indexOf(itemToRemove);
-        if (index > 0) {
-            array.splice(index, 1);
-        }
-        else if (index === 0) {
-            array.shift();
-        }
-    },
-
     extend: (target, source) => {
         source && Object.entries(source).forEach(prop => target[prop[0]] = prop[1]);
         return target;
@@ -26,11 +16,7 @@ ko.utils = {
         return target;
     },
 
-    emptyDomNode: domNode => {
-        while (domNode.firstChild) {
-            ko.removeNode(domNode.firstChild);
-        }
-    },
+    emptyDomNode: domNode => [...domNode.childNodes].forEach(child => ko.removeNode(child)),
 
     moveCleanedNodesToContainerElement: nodes => {
         // Ensure it's a real array, as we're about to reparent the nodes and
@@ -133,11 +119,8 @@ ko.utils = {
             throw error;
         }, 0),
 
-    registerEventHandler: (element, eventType, handler) => {
-        var wrappedHandler = ko.utils.catchFunctionErrors(handler);
-
-        element.addEventListener(eventType, wrappedHandler, false);
-    },
+    registerEventHandler: (element, eventType, handler) =>
+        element.addEventListener(eventType, ko.utils.catchFunctionErrors(handler), false),
 
     triggerEvent: (element, eventType) => {
         if (!(element && element.nodeType))

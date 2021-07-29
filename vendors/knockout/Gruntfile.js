@@ -97,10 +97,7 @@ module.exports = function(grunt) {
     function buildDebug(output) {
         var source = [];
         source.push(grunt.config('banner'));
-        source.push('(()=>{\n');
-        source.push('var DEBUG=true;\n');
         source.push(getCombinedSources());
-        source.push('})();\n');
         grunt.file.write(output, source.join('').replace(/\r\n/g, '\n'));
     }
 
@@ -138,10 +135,12 @@ module.exports = function(grunt) {
     });
 
     grunt.registerMultiTask('test', 'Run tests', function () {
+/*
         var done = this.async();
         grunt.util.spawn({ cmd: this.target, args: [this.data] },
             function (error, result, code) {
-                if (code === 127 /*not found*/) {
+                if (code === 127) {
+                    // not found
                     grunt.verbose.error(result.stderr);
                     // ignore this error
                     done(true);
@@ -153,6 +152,7 @@ module.exports = function(grunt) {
                 }
             }
         );
+*/
     });
 
     grunt.registerMultiTask('testtypes', 'Run types tests', function () {

@@ -58,7 +58,8 @@ ko.expressionRewriting = (() => {
         var result = [], toks = str.match(bindingToken), key, values = [], depth = 0;
 
         if (toks.length > 1) {
-            for (var i = 0, tok; tok = toks[i]; ++i) {
+            var i = 0, tok;
+            while ((tok = toks[i++])) {
                 var c = tok.charCodeAt(0);
                 // A comma signals the end of a key/value pair if depth is zero
                 if (c === 44) { // ","
@@ -108,7 +109,7 @@ ko.expressionRewriting = (() => {
     }
 
     // Two-way bindings include a write function that allow the handler to update the value even if it's not an observable.
-    var twoWayBindings = {};
+    var twoWayBindings = new Set;
 
     function preProcessBindings(bindingsStringOrKeyValueArray, bindingOptions) {
         bindingOptions = bindingOptions || {};
@@ -119,14 +120,13 @@ ko.expressionRewriting = (() => {
                 return (obj && obj['preprocess']) ? (val = obj['preprocess'](val, key, processKeyValue)) : true;
             }
             if (!bindingParams) {
-                if (!callPreprocessHook(ko['getBindingHandler'](key)))
+                if (!callPreprocessHook(ko.bindingHandlers[key]))
                     return;
 
-                if (twoWayBindings[key] && (writableVal = getWriteableValue(val))) {
+                if (twoWayBindings.has(key) && (writableVal = getWriteableValue(val))) {
                     // For two-way bindings, provide a write method in case the value
                     // isn't a writable observable.
-                    var writeKey = typeof twoWayBindings[key] == 'string' ? twoWayBindings[key] : key;
-                    propertyAccessorResultStrings.push("'" + writeKey + "':function(_z){" + writableVal + "=_z}");
+                    propertyAccessorResultStrings.push("'" + key + "':function(_z){" + writableVal + "=_z}");
                 }
             }
             // Values are wrapped in a function so that each value can be accessed independently

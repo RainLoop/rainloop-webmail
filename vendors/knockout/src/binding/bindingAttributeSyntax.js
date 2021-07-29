@@ -6,142 +6,141 @@
 
     ko.bindingHandlers = {};
 
-    // Use an overridable method for retrieving binding handlers so that plugins may support dynamically created handlers
-    ko['getBindingHandler'] = bindingKey => ko.bindingHandlers[bindingKey];
-
     var inheritParentVm = {};
 
     // The ko.bindingContext constructor is only called directly to create the root context. For child
     // contexts, use bindingContext.createChildContext or bindingContext.extend.
-    ko.bindingContext = function(dataItemOrAccessor, parentContext, dataItemAlias, extendCallback, options) {
+    ko.bindingContext = class {
+        constructor(dataItemOrAccessor, parentContext, dataItemAlias, extendCallback, options)
+        {
+            // The binding context object includes static properties for the current, parent, and root view models.
+            // If a view model is actually stored in an observable, the corresponding binding context object, and
+            // any child contexts, must be updated when the view model is changed.
+            function updateContext() {
+                // Most of the time, the context will directly get a view model object, but if a function is given,
+                // we call the function to retrieve the view model. If the function accesses any observables or returns
+                // an observable, the dependency is tracked, and those observables can later cause the binding
+                // context to be updated.
+                var dataItemOrObservable = isFunc ? realDataItemOrAccessor() : realDataItemOrAccessor,
+                    dataItem = ko.utils.unwrapObservable(dataItemOrObservable);
 
-        // The binding context object includes static properties for the current, parent, and root view models.
-        // If a view model is actually stored in an observable, the corresponding binding context object, and
-        // any child contexts, must be updated when the view model is changed.
-        function updateContext() {
-            // Most of the time, the context will directly get a view model object, but if a function is given,
-            // we call the function to retrieve the view model. If the function accesses any observables or returns
-            // an observable, the dependency is tracked, and those observables can later cause the binding
-            // context to be updated.
-            var dataItemOrObservable = isFunc ? realDataItemOrAccessor() : realDataItemOrAccessor,
-                dataItem = ko.utils.unwrapObservable(dataItemOrObservable);
+                if (parentContext) {
+                    // Copy $root and any custom properties from the parent context
+                    ko.utils.extend(self, parentContext);
 
-            if (parentContext) {
-                // Copy $root and any custom properties from the parent context
-                ko.utils.extend(self, parentContext);
+                    // Copy Symbol properties
+                    if (contextAncestorBindingInfo in parentContext) {
+                        self[contextAncestorBindingInfo] = parentContext[contextAncestorBindingInfo];
+                    }
+                } else {
+                    self['$parents'] = [];
+                    self['$root'] = dataItem;
 
-                // Copy Symbol properties
-                if (contextAncestorBindingInfo in parentContext) {
-                    self[contextAncestorBindingInfo] = parentContext[contextAncestorBindingInfo];
+                    // Export 'ko' in the binding context so it will be available in bindings and templates
+                    // even if 'ko' isn't exported as a global, such as when using an AMD loader.
+                    // See https://github.com/SteveSanderson/knockout/issues/490
+                    self['ko'] = ko;
                 }
+
+                self[contextSubscribable] = subscribable;
+
+                if (shouldInheritData) {
+                    dataItem = self['$data'];
+                } else {
+                    self['$rawData'] = dataItemOrObservable;
+                    self['$data'] = dataItem;
+                }
+
+                if (dataItemAlias)
+                    self[dataItemAlias] = dataItem;
+
+                // The extendCallback function is provided when creating a child context or extending a context.
+                // It handles the specific actions needed to finish setting up the binding context. Actions in this
+                // function could also add dependencies to this binding context.
+                if (extendCallback)
+                    extendCallback(self, parentContext, dataItem);
+
+                // When a "parent" context is given and we don't already have a dependency on its context, register a dependency on it.
+                // Thus whenever the parent context is updated, this context will also be updated.
+                if (parentContext && parentContext[contextSubscribable] && !ko.dependencyDetection.computed().hasAncestorDependency(parentContext[contextSubscribable])) {
+                    parentContext[contextSubscribable]();
+                }
+
+                if (dataDependency) {
+                    self[contextDataDependency] = dataDependency;
+                }
+
+                return self['$data'];
+            }
+
+            var self = this,
+                shouldInheritData = dataItemOrAccessor === inheritParentVm,
+                realDataItemOrAccessor = shouldInheritData ? undefined : dataItemOrAccessor,
+                isFunc = typeof(realDataItemOrAccessor) == "function" && !ko.isObservable(realDataItemOrAccessor),
+                subscribable,
+                dataDependency = options && options['dataDependency'];
+
+            if (options && options['exportDependencies']) {
+                // The "exportDependencies" option means that the calling code will track any dependencies and re-create
+                // the binding context when they change.
+                updateContext();
             } else {
-                self['$parents'] = [];
-                self['$root'] = dataItem;
+                subscribable = ko.pureComputed(updateContext);
+                subscribable.peek();
 
-                // Export 'ko' in the binding context so it will be available in bindings and templates
-                // even if 'ko' isn't exported as a global, such as when using an AMD loader.
-                // See https://github.com/SteveSanderson/knockout/issues/490
-                self['ko'] = ko;
+                // At this point, the binding context has been initialized, and the "subscribable" computed observable is
+                // subscribed to any observables that were accessed in the process. If there is nothing to track, the
+                // computed will be inactive, and we can safely throw it away. If it's active, the computed is stored in
+                // the context object.
+                if (subscribable.isActive()) {
+                    // Always notify because even if the model ($data) hasn't changed, other context properties might have changed
+                    subscribable['equalityComparer'] = null;
+                } else {
+                    self[contextSubscribable] = undefined;
+                }
             }
-
-            self[contextSubscribable] = subscribable;
-
-            if (shouldInheritData) {
-                dataItem = self['$data'];
-            } else {
-                self['$rawData'] = dataItemOrObservable;
-                self['$data'] = dataItem;
-            }
-
-            if (dataItemAlias)
-                self[dataItemAlias] = dataItem;
-
-            // The extendCallback function is provided when creating a child context or extending a context.
-            // It handles the specific actions needed to finish setting up the binding context. Actions in this
-            // function could also add dependencies to this binding context.
-            if (extendCallback)
-                extendCallback(self, parentContext, dataItem);
-
-            // When a "parent" context is given and we don't already have a dependency on its context, register a dependency on it.
-            // Thus whenever the parent context is updated, this context will also be updated.
-            if (parentContext && parentContext[contextSubscribable] && !ko.dependencyDetection.computed().hasAncestorDependency(parentContext[contextSubscribable])) {
-                parentContext[contextSubscribable]();
-            }
-
-            if (dataDependency) {
-                self[contextDataDependency] = dataDependency;
-            }
-
-            return self['$data'];
         }
 
-        var self = this,
-            shouldInheritData = dataItemOrAccessor === inheritParentVm,
-            realDataItemOrAccessor = shouldInheritData ? undefined : dataItemOrAccessor,
-            isFunc = typeof(realDataItemOrAccessor) == "function" && !ko.isObservable(realDataItemOrAccessor),
-            subscribable,
-            dataDependency = options && options['dataDependency'];
-
-        if (options && options['exportDependencies']) {
-            // The "exportDependencies" option means that the calling code will track any dependencies and re-create
-            // the binding context when they change.
-            updateContext();
-        } else {
-            subscribable = ko.pureComputed(updateContext);
-            subscribable.peek();
-
-            // At this point, the binding context has been initialized, and the "subscribable" computed observable is
-            // subscribed to any observables that were accessed in the process. If there is nothing to track, the
-            // computed will be inactive, and we can safely throw it away. If it's active, the computed is stored in
-            // the context object.
-            if (subscribable.isActive()) {
-                // Always notify because even if the model ($data) hasn't changed, other context properties might have changed
-                subscribable['equalityComparer'] = null;
-            } else {
-                self[contextSubscribable] = undefined;
+        // Extend the binding context hierarchy with a new view model object. If the parent context is watching
+        // any observables, the new child context will automatically get a dependency on the parent context.
+        // But this does not mean that the $data value of the child context will also get updated. If the child
+        // view model also depends on the parent view model, you must provide a function that returns the correct
+        // view model on each update.
+       'createChildContext'(dataItemOrAccessor, dataItemAlias, extendCallback, options) {
+            if (!options && dataItemAlias && typeof dataItemAlias == "object") {
+                options = dataItemAlias;
+                dataItemAlias = options['as'];
+                extendCallback = options['extend'];
             }
-        }
-    }
 
-    // Extend the binding context hierarchy with a new view model object. If the parent context is watching
-    // any observables, the new child context will automatically get a dependency on the parent context.
-    // But this does not mean that the $data value of the child context will also get updated. If the child
-    // view model also depends on the parent view model, you must provide a function that returns the correct
-    // view model on each update.
-    ko.bindingContext.prototype['createChildContext'] = function (dataItemOrAccessor, dataItemAlias, extendCallback, options) {
-        if (!options && dataItemAlias && typeof dataItemAlias == "object") {
-            options = dataItemAlias;
-            dataItemAlias = options['as'];
-            extendCallback = options['extend'];
-        }
+            if (dataItemAlias && options && options['noChildContext']) {
+                var isFunc = typeof(dataItemOrAccessor) == "function" && !ko.isObservable(dataItemOrAccessor);
+                return new ko.bindingContext(inheritParentVm, this, null, self => {
+                    if (extendCallback)
+                        extendCallback(self);
+                    self[dataItemAlias] = isFunc ? dataItemOrAccessor() : dataItemOrAccessor;
+                }, options);
+            }
 
-        if (dataItemAlias && options && options['noChildContext']) {
-            var isFunc = typeof(dataItemOrAccessor) == "function" && !ko.isObservable(dataItemOrAccessor);
-            return new ko.bindingContext(inheritParentVm, this, null, self => {
+            return new ko.bindingContext(dataItemOrAccessor, this, dataItemAlias, (self, parentContext) => {
+                // Extend the context hierarchy by setting the appropriate pointers
+                self['$parentContext'] = parentContext;
+                self['$parent'] = parentContext['$data'];
+                self['$parents'] = (parentContext['$parents'] || []).slice(0);
+                self['$parents'].unshift(self['$parent']);
                 if (extendCallback)
                     extendCallback(self);
-                self[dataItemAlias] = isFunc ? dataItemOrAccessor() : dataItemOrAccessor;
             }, options);
         }
 
-        return new ko.bindingContext(dataItemOrAccessor, this, dataItemAlias, (self, parentContext) => {
-            // Extend the context hierarchy by setting the appropriate pointers
-            self['$parentContext'] = parentContext;
-            self['$parent'] = parentContext['$data'];
-            self['$parents'] = (parentContext['$parents'] || []).slice(0);
-            self['$parents'].unshift(self['$parent']);
-            if (extendCallback)
-                extendCallback(self);
-        }, options);
-    };
-
-    // Extend the binding context with new custom properties. This doesn't change the context hierarchy.
-    // Similarly to "child" contexts, provide a function here to make sure that the correct values are set
-    // when an observable view model is updated.
-    ko.bindingContext.prototype['extend'] = function(properties, options) {
-        return new ko.bindingContext(inheritParentVm, this, null, self =>
-            ko.utils.extend(self, typeof(properties) == "function" ? properties(self) : properties)
-        , options);
+        // Extend the binding context with new custom properties. This doesn't change the context hierarchy.
+        // Similarly to "child" contexts, provide a function here to make sure that the correct values are set
+        // when an observable view model is updated.
+        'extend'(properties, options) {
+            return new ko.bindingContext(inheritParentVm, this, null, self =>
+                ko.utils.extend(self, typeof(properties) == "function" ? properties(self) : properties)
+            , options);
+        }
     };
 
     var boundElementDomDataKey = ko.utils.domData.nextKey();
@@ -154,41 +153,44 @@
             asyncContext.notifyAncestor();
         }
     }
-    function AsyncCompleteContext(node, bindingInfo, ancestorBindingInfo) {
-        this.node = node;
-        this.bindingInfo = bindingInfo;
-        this.asyncDescendants = [];
-        this.childrenComplete = false;
 
-        if (!bindingInfo.asyncContext) {
-            ko.utils.domNodeDisposal.addDisposeCallback(node, asyncContextDispose);
+    class AsyncCompleteContext {
+        constructor(node, bindingInfo, ancestorBindingInfo) {
+            this.node = node;
+            this.bindingInfo = bindingInfo;
+            this.asyncDescendants = new Set;
+            this.childrenComplete = false;
+
+            if (!bindingInfo.asyncContext) {
+                ko.utils.domNodeDisposal.addDisposeCallback(node, asyncContextDispose);
+            }
+
+            if (ancestorBindingInfo && ancestorBindingInfo.asyncContext) {
+                ancestorBindingInfo.asyncContext.asyncDescendants.add(node);
+                this.ancestorBindingInfo = ancestorBindingInfo;
+            }
         }
-
-        if (ancestorBindingInfo && ancestorBindingInfo.asyncContext) {
-            ancestorBindingInfo.asyncContext.asyncDescendants.push(node);
-            this.ancestorBindingInfo = ancestorBindingInfo;
+        notifyAncestor() {
+            if (this.ancestorBindingInfo && this.ancestorBindingInfo.asyncContext) {
+                this.ancestorBindingInfo.asyncContext.descendantComplete(this.node);
+            }
+        }
+        descendantComplete(node) {
+            this.asyncDescendants.delete(node);
+            if (!this.asyncDescendants.size && this.childrenComplete) {
+                this.completeChildren();
+            }
+        }
+        completeChildren() {
+            this.childrenComplete = true;
+            if (this.bindingInfo.asyncContext && !this.asyncDescendants.size) {
+                this.bindingInfo.asyncContext = null;
+                ko.utils.domNodeDisposal.removeDisposeCallback(this.node, asyncContextDispose);
+                ko.bindingEvent.notify(this.node, ko.bindingEvent.descendantsComplete);
+                this.notifyAncestor();
+            }
         }
     }
-    AsyncCompleteContext.prototype.notifyAncestor = function () {
-        if (this.ancestorBindingInfo && this.ancestorBindingInfo.asyncContext) {
-            this.ancestorBindingInfo.asyncContext.descendantComplete(this.node);
-        }
-    };
-    AsyncCompleteContext.prototype.descendantComplete = function (node) {
-        ko.utils.arrayRemoveItem(this.asyncDescendants, node);
-        if (!this.asyncDescendants.length && this.childrenComplete) {
-            this.completeChildren();
-        }
-    };
-    AsyncCompleteContext.prototype.completeChildren = function () {
-        this.childrenComplete = true;
-        if (this.bindingInfo.asyncContext && !this.asyncDescendants.length) {
-            this.bindingInfo.asyncContext = null;
-            ko.utils.domNodeDisposal.removeDisposeCallback(this.node, asyncContextDispose);
-            ko.bindingEvent.notify(this.node, ko.bindingEvent.descendantsComplete);
-            this.notifyAncestor();
-        }
-    };
 
     ko.bindingEvent = {
         childrenComplete: "childrenComplete",
@@ -310,7 +312,7 @@
             cyclicDependencyStack = []; // Keeps track of a depth-search so that, if there's a cycle, we know which bindings caused it
         ko.utils.objectForEach(bindings, function pushBinding(bindingKey) {
             if (!bindingsConsidered[bindingKey]) {
-                var binding = ko['getBindingHandler'](bindingKey);
+                var binding = ko.bindingHandlers[bindingKey];
                 if (binding) {
                     // First add dependencies (if any) of the current binding
                     if (binding['after']) {

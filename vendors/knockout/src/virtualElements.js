@@ -31,15 +31,14 @@
         while (currentNode = currentNode.nextSibling) {
             if (isEndComment(currentNode)) {
                 ko.utils.domData.set(currentNode, matchedEndCommentDataKey, true);
-                depth--;
-                if (depth === 0)
+                if (!--depth)
                     return children;
             }
 
             children.push(currentNode);
 
             if (isStartComment(currentNode))
-                depth++;
+                ++depth;
         }
         if (!allowUnbalanced)
             throw new Error("Cannot find closing comment tag to match: " + startComment.nodeValue);
@@ -49,9 +48,9 @@
     function getMatchingEndComment(startComment, allowUnbalanced) {
         var allVirtualChildren = getVirtualChildren(startComment, allowUnbalanced);
         if (allVirtualChildren) {
-            if (allVirtualChildren.length > 0)
-                return allVirtualChildren[allVirtualChildren.length - 1].nextSibling;
-            return startComment.nextSibling;
+            return (allVirtualChildren.length
+                ? allVirtualChildren[allVirtualChildren.length - 1]
+                : startComment).nextSibling;
         }
         return null; // Must have no matching end comment, and allowUnbalanced is true
     }
@@ -64,8 +63,7 @@
         emptyNode: node => {
             if (isStartComment(node)) {
                 var virtualChildren = getVirtualChildren(node);
-                for (var i = 0, j = virtualChildren.length; i < j; i++)
-                    ko.removeNode(virtualChildren[i]);
+                virtualChildren && [...virtualChildren].forEach(child => ko.removeNode(child));
             } else
                 ko.utils.emptyDomNode(node);
         },
@@ -73,64 +71,48 @@
         setDomNodeChildren: (node, childNodes) => {
             if (isStartComment(node)) {
                 ko.virtualElements.emptyNode(node);
-                var endCommentNode = node.nextSibling; // Must be the next sibling, as we just emptied the children
-                for (var i = 0, j = childNodes.length; i < j; i++)
-                    endCommentNode.parentNode.insertBefore(childNodes[i], endCommentNode);
+                node.after(...childNodes);
             } else
                 ko.utils.setDomNodeChildren(node, childNodes);
         },
 
         prepend: (containerNode, nodeToPrepend) => {
-            var insertBeforeNode;
-
-            if (isStartComment(containerNode)) {
-                // Start comments must always have a parent and at least one following sibling (the end comment)
-                insertBeforeNode = containerNode.nextSibling;
-                containerNode = containerNode.parentNode;
-            } else {
-                insertBeforeNode = containerNode.firstChild;
-            }
-
-            containerNode.insertBefore(nodeToPrepend, insertBeforeNode);
+            // Start comments must always have a parent and at least one following sibling (the end comment)
+            isStartComment(containerNode)
+                ? containerNode.nextSibling.before(nodeToPrepend)
+                : containerNode.prepend(nodeToPrepend);
         },
 
         insertAfter: (containerNode, nodeToInsert, insertAfterNode) => {
-            if (insertAfterNode) {
-                // Children of start comments must always have a parent and at least one following sibling (the end comment)
-                var insertBeforeNode = insertAfterNode.nextSibling;
-
-                if (isStartComment(containerNode)) {
-                    containerNode = containerNode.parentNode;
-                }
-
-                containerNode.insertBefore(nodeToInsert, insertBeforeNode);
-            } else {
-                ko.virtualElements.prepend(containerNode, nodeToInsert);
-            }
+            insertAfterNode
+                ? insertAfterNode.after(nodeToInsert)
+                : ko.virtualElements.prepend(containerNode, nodeToInsert);
         },
 
         firstChild: node => {
             if (isStartComment(node)) {
-                return (!node.nextSibling || isEndComment(node.nextSibling)) ? null : node.nextSibling;
+                let next = node.nextSibling;
+                return (!next || isEndComment(next)) ? null : next;
             }
-            if (node.firstChild && isEndComment(node.firstChild)) {
+            let first = node.firstChild;
+            if (first && isEndComment(first)) {
                 throw new Error("Found invalid end comment, as the first child of " + node);
             }
-            return node.firstChild;
+            return first;
         },
 
         nextSibling: node => {
             if (isStartComment(node)) {
                 node = getMatchingEndComment(node);
             }
-
-            if (node.nextSibling && isEndComment(node.nextSibling)) {
-                if (isUnmatchedEndComment(node.nextSibling)) {
+            let next = node.nextSibling;
+            if (next && isEndComment(next)) {
+                if (isUnmatchedEndComment(next)) {
                     throw Error("Found end comment without a matching opening comment, as child of " + node);
                 }
                 return null;
             }
-            return node.nextSibling;
+            return next;
         },
 
         hasBindingValue: isStartComment,

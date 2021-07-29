@@ -66,5 +66,3 @@ ko.tasks = (() => {
 
     return tasks;
 })();
-
-ko.exportSymbol('tasks', ko.tasks);

@@ -12,26 +12,22 @@ ko.observableArray = initialValues => {
 ko.observableArray['fn'] = {
     'remove': function (valueOrPredicate) {
         var underlyingArray = this.peek();
-        var removedValues = [];
-        var predicate = typeof valueOrPredicate == "function" && !ko.isObservable(valueOrPredicate) ? valueOrPredicate : function (value) { return value === valueOrPredicate; };
+        var removed = false;
+        var predicate = typeof valueOrPredicate == "function" && !ko.isObservable(valueOrPredicate)
+            ? valueOrPredicate : value => value === valueOrPredicate;
         var i = underlyingArray.length;
         while (i--) {
             var value = underlyingArray[i];
             if (predicate(value)) {
-                if (removedValues.length === 0) {
-                    this.valueWillMutate();
-                }
                 if (underlyingArray[i] !== value) {
                     throw Error("Array modified during remove; cannot remove item");
                 }
-                removedValues.push(value);
+                removed || this.valueWillMutate();
+                removed = true;
                 underlyingArray.splice(i, 1);
             }
         }
-        if (removedValues.length) {
-            this.valueHasMutated();
-        }
-        return removedValues;
+        removed && this.valueHasMutated();
     }
 };
 
