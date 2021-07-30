@@ -280,21 +280,21 @@ export class FolderModel extends AbstractModel {
 						unread = folder.messageCountUnread(),
 						type = folder.type();
 
-					if (0 < count) {
+					if (count) {
 						if (FolderType.Draft === type) {
-							return '' + count;
+							return count;
 						}
 						if (
-							0 < unread &&
+							unread &&
 							FolderType.Trash !== type &&
 							FolderType.Archive !== type &&
 							FolderType.SentItems !== type
 						) {
-							return '' + unread;
+							return unread;
 						}
 					}
 
-					return '';
+					return null;
 				},
 
 				canBeDeleted: () => !folder.isSystemFolder() && !folder.subFolders.length,

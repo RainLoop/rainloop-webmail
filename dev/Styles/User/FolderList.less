@@ -19,12 +19,6 @@
 			transparent 75%, transparent);
 	}
 
-	.b-folders-user {
-		a.print-count.system .badge {
-			display: none !important;
-		}
-	}
-
 	.b-toolbar {
 		position: absolute;
 		top: 0;
@@ -148,20 +142,6 @@
 				color: grey;
 			}
 
-			.count {
-				position: relative;
-				display: none;
-				margin-top: 5px;
-				line-height: 19px;
-			}
-
-			&.print-count {
-				font-weight: bold;
-				.count {
-					display: inline;
-				}
-			}
-
 			&.unread-sub {
 				font-weight: bold;
 			}
@@ -176,11 +156,32 @@
 			}
 		}
 
+		a[data-unread] {
+			font-weight: bold;
+		}
+
 		.b-sub-folders.collapsed {
 			max-height: 0;
 			height: 0;
 			display: none;
 		}
+	}
+
+	.b-folders-system a[data-unread]::after,
+	.b-folders-user a[data-unread]:not(.system)::after
+	{
+		content: attr(data-unread);
+		background-color: @grayLight;
+		border-radius: 9px;
+		color: @white;
+		float: right;
+		font-size: 80%;
+		line-height: 19px;
+		margin-top: 5px;
+		min-width: 1em;
+		padding: 1px 4px;
+		text-align: center;
+		text-shadow: 0 -1px 0 rgba(0,0,0,.25);
 	}
 
 	&.inbox-is-starred {
