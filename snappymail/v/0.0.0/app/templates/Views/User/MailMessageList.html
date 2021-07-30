@@ -203,12 +203,7 @@
 					<div class="messageListItem" data-bind="css: lineAsCss()">
 						<div class="checkboxMessage fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
 
-						<div class="flagParent">
-							<i class="flagOn fontastic">★</i>
-							<i class="flagOnHalf fontastic">☆</i>
-							<i class="flagOff fontastic">☆</i>
-							<!-- ⚐⚑ -->
-						</div>
+						<div class="flagParent fontastic"><!-- ☆★⚐⚑ --></div>
 
 						<div class="senderParent actionHandle">
 							<i class="replyFlag fontastic">←</i>
@@ -228,13 +223,9 @@
 
 						<div class="sizeParent actionHandle" data-bind="text: friendlySize()"></div>
 
-						<div class="threadsParent" data-bind="visible: 1 < threadsLen()">
-							<span class="threads-len">
-								<span class="threads-len-data">
-									<span data-bind="text: threadsLen"></span>
-									<i class="icon-right-mini"></i>
-								</span>
-							</span>
+						<div class="threads-len" data-bind="visible: 1 < threadsLen()">
+							<span data-bind="text: threadsLen"></span>
+							›
 						</div>
 
 						<time class="actionHandle" data-moment-format="SHORT" data-moment-format-title="FULL" data-bind="moment: dateTimeStampInUTC"></time>

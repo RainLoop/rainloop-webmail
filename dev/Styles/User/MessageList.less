@@ -275,19 +275,11 @@ html.rl-no-preview-pane {
 		font-size: 16px;
 	}
 
-	.flagParent {
-		padding: 0 10px 0 5px;
-	}
-
 	time, .sizeParent {
 		margin: 0 5px;
 		opacity: 0.6;
 		font-size: 11px;
 		white-space: nowrap;
-	}
-
-	.threadsParent {
-		position: relative;
 	}
 
 	.attachmentParent {
@@ -345,27 +337,14 @@ html.rl-no-preview-pane {
 
 	.threads-len {
 		.threads-len-data {
-
 			border-radius: 6px;
 			padding: 2px 0 1px 4px;
 			border: 1px solid #ccc;
-
 			&:hover {
 				background-color: rgba(127,127,127,0.3);
 				border-color: #666;
 			}
 		}
-	}
-
-	.flagOff {
-		opacity: 0.5;
-		&:hover {
-			opacity: 1;
-		}
-	}
-
-	.flagOn, .flagOnHalf {
-		color: orange;
 	}
 
 	.replyFlag, .forwardFlag {
@@ -424,10 +403,19 @@ html.rl-no-preview-pane {
 		}
 	}
 
-	&:not(.flagged) .flagOn,
-	&:not(.hasFlaggedSubMessage) .flagOnHalf,
-	&.flagged .flagOff, &.hasFlaggedSubMessage .flagOff {
-		display: none;
+	.flagParent {
+		padding: 0 10px 0 5px;
+	}
+	&.flagged .flagParent::after,
+	&.hasFlaggedSubMessage .flagParent::after {
+		color: orange;
+		content: '★'; /*⚑*/
+	}
+	&:not(.flagged):not(.hasFlaggedSubMessage) .flagParent::after {
+		content: '☆'; /*⚐*/
+	}
+	&:not(.flagged):not(.hasFlaggedSubMessage) .flagParent:not(:hover) {
+		opacity: 0.5;
 	}
 }
 
