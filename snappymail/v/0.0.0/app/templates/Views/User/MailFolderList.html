@@ -6,7 +6,7 @@
 		</a>
 		<a class="btn buttonContacts fontastic" data-bind="visible: allowContacts, click: contactsClick" data-i18n="[title]GLOBAL/CONTACTS">📇</a>
 	</div>
-	<div class="b-content" data-bind="css: {'inbox-is-starred': isInboxStarred}">
+	<div class="b-content">
 		<div class="b-folders-system" data-bind="template: { name: 'MailFolderListSystemItem', foreach: folderListSystem }"></div>
 		<hr/>
 		<div class="b-folders-user" data-bind="template: { name: 'MailFolderListItem', foreach: folderList }"></div>

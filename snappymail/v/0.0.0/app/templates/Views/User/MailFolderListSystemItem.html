@@ -1,11 +1,8 @@
 <div class="e-item b-folder-system-item">
 	<a data-bind="dropmessages: $data,
-		css: { 'selected': selected, 'selectable': selectable, 'anim-action-class': actionBlink, 'is-inbox': isInbox },
+		css: { 'selected': selected, 'selectable': selectable, 'anim-action-class': actionBlink },
 		attr: { 'data-unread': printableUnreadCount }">
 		<span class="name" data-bind="text: localName()"></span>
-		<span class="inbox-star-icon">
-			<i class="fontastic flagged">★</i>
-			<i class="fontastic unflagged">☆</i>
-		</span>
+		<span class="inbox-star-icon fontastic" data-bind="visible: isInbox"></span>
 	</a>
 </div>

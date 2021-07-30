@@ -78,26 +78,6 @@
 			font-size: 14px;
 			border-left: 3px solid transparent;
 
-			.inbox-star-icon {
-				display: none;
-				margin-left: 7px;
-
-				.flagged {
-					display: none;
-				}
-				.unflagged {
-					opacity: .5;
-
-					&:hover {
-						opacity: 1;
-					}
-				}
-			}
-
-			&.is-inbox .inbox-star-icon {
-				display: inline;
-			}
-
 			padding: 0 @folderItemPadding;
 
 			text-decoration: none;
@@ -184,13 +164,18 @@
 		text-shadow: 0 -1px 0 rgba(0,0,0,.25);
 	}
 
+	.inbox-star-icon {
+		margin-left: 7px;
+	}
+	.inbox-star-icon::after {
+		content:'☆';
+		opacity: .5;
+	}
 	&.inbox-is-starred {
-		.flagged {
+		.inbox-star-icon::after {
 			color: orange;
-			display: inline-block !important;
-		}
-		.unflagged {
-			display: none;
+			content:'★';
+			opacity: 1;
 		}
 	}
 
