@@ -51,45 +51,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 
 	onBuild(dom) {
 		const qs = s => dom.querySelector(s),
-			eqs = (ev, s) => ev.target.closestWithin(s, dom),
-			fSelectFolder = (el, event, starred) => {
-				const isMove = moveAction();
-				ThemeStore.isMobile() && leftPanelDisabled(true);
-
-				event.preventDefault();
-
-				if (starred) {
-					event.stopPropagation();
-				}
-
-				const folder = ko.dataFor(el);
-				if (folder) {
-					if (isMove) {
-						moveAction(false);
-						rl.app.moveMessagesToFolder(
-							FolderUserStore.currentFolderFullNameRaw(),
-							MessageUserStore.listCheckedOrSelectedUidsWithSubMails(),
-							folder.fullNameRaw,
-							event.ctrlKey
-						);
-					} else {
-						if (!SettingsUserStore.usePreviewPane()) {
-							MessageUserStore.message(null);
-						}
-
-						if (folder.fullNameRaw === FolderUserStore.currentFolderFullNameRaw()) {
-							setFolderHash(folder.fullNameRaw, '');
-						}
-
-						rl.route.setHash(starred
-							? mailBox(folder.fullNameHash, 1, 'is:flagged')
-							: mailBox(folder.fullNameHash)
-						);
-					}
-
-					AppUserStore.focusedState(Scope.MessageList);
-				}
-			};
+			eqs = (ev, s) => ev.target.closestWithin(s, dom);
 
 		this.oContentScrollable = qs('.b-content');
 
@@ -108,11 +70,38 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 				}
 			}
 
-			el = eqs(event, '.b-folders .e-item a.selectable .inbox-star-icon');
-			el && fSelectFolder(el, event, !this.isInboxStarred());
-
 			el = eqs(event, '.b-folders .e-item a.selectable');
-			el && fSelectFolder(el, event, false);
+			if (el) {
+				ThemeStore.isMobile() && leftPanelDisabled(true);
+				event.preventDefault();
+				const folder = ko.dataFor(el);
+				if (folder) {
+					if (moveAction()) {
+						moveAction(false);
+						rl.app.moveMessagesToFolder(
+							FolderUserStore.currentFolderFullNameRaw(),
+							MessageUserStore.listCheckedOrSelectedUidsWithSubMails(),
+							folder.fullNameRaw,
+							event.ctrlKey
+						);
+					} else {
+						if (!SettingsUserStore.usePreviewPane()) {
+							MessageUserStore.message(null);
+						}
+
+						if (folder.fullNameRaw === FolderUserStore.currentFolderFullNameRaw()) {
+							setFolderHash(folder.fullNameRaw, '');
+						}
+
+						rl.route.setHash((eqs(event, '.b-folders .e-item a.selectable .inbox-star-icon') && !this.isInboxStarred())
+							? mailBox(folder.fullNameHash, 1, 'is:flagged')
+							: mailBox(folder.fullNameHash)
+						);
+					}
+
+					AppUserStore.focusedState(Scope.MessageList);
+				}
+			}
 		});
 
 		shortcuts.add('arrowup,arrowdown', '', Scope.FolderList, event => {
