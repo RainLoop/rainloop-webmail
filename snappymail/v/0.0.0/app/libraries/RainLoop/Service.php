@@ -107,15 +107,26 @@ class Service
 		{
 			\MailSo\Base\Http::StatusHeader(403);
 			echo $this->oServiceActions->ErrorTemplates('Access Denied.',
-				'Access to the SnappyMail Admin Panel is not allowed!', true);
+				'Access to the SnappyMail Admin Panel is not allowed!');
 
-			return $this;
+			return false;
 		}
 
 		$bIndex = true;
 		$sResult = '';
 		if (0 < \count($aPaths) && !empty($aPaths[0]) && !$bAdmin && 'index' !== \strtolower($aPaths[0]))
 		{
+			if (!\SnappyMail\HTTP\SecFetch::isSameOrigin()) {
+				\MailSo\Base\Http::StatusHeader(403);
+				echo $this->oServiceActions->ErrorTemplates('Access Denied.',
+					"Disallowed Sec-Fetch
+					Dest: " . ($_SERVER['HTTP_SEC_FETCH_DEST'] ?? '') . "
+					Mode: " . ($_SERVER['HTTP_SEC_FETCH_MODE'] ?? '') . "
+					Site: " . ($_SERVER['HTTP_SEC_FETCH_SITE'] ?? '') . "
+					User: " . (\SnappyMail\HTTP\SecFetch::user() ? 'true' : 'false'));
+				return false;
+			}
+
 			$bIndex = false;
 			$sMethodName = 'Service'.\preg_replace('/@.+$/', '', $aPaths[0]);
 			$sMethodExtra = 0 < \strpos($aPaths[0], '@') ? \preg_replace('/^[^@]+@/', '', $aPaths[0]) : '';
@@ -134,6 +145,7 @@ class Service
 
 		if ($bIndex)
 		{
+//			if (!\SnappyMail\HTTP\SecFetch::isEntering()) {
 			\header('Content-Type: text/html; charset=utf-8');
 			$this->oHttp->ServerNoCache();
 
@@ -141,10 +153,10 @@ class Service
 			{
 				echo $this->oServiceActions->ErrorTemplates(
 					'Permission denied!',
-					'SnappyMail cannot access to the data folder "'.APP_DATA_FOLDER_PATH.'"'
+					'SnappyMail can not access the data folder "'.APP_DATA_FOLDER_PATH.'"'
 				);
 
-				return $this;
+				return false;
 			}
 
 			$sLanguage = $this->oActions->GetLanguage($bAdmin);
@@ -204,6 +216,7 @@ class Service
 		}
 		// Internet Explorer does not support 'nonce'
 		if (!\strpos($_SERVER['HTTP_USER_AGENT'], 'Trident/') && !\strpos($_SERVER['HTTP_USER_AGENT'], 'Edge/1')) {
+			// Knockout.js requires unsafe-inline?
 			if ($sScriptNonce) {
 				$sContentSecurityPolicy = \preg_replace("/(script-src[^;]+)'unsafe-inline'/", "\$1'nonce-{$sScriptNonce}'", $sContentSecurityPolicy);
 			}
