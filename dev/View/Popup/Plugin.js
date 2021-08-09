@@ -16,6 +16,7 @@ class PluginPopupView extends AbstractViewPopup {
 
 		this.addObservables({
 			saveError: '',
+			id: '',
 			name: '',
 			readme: ''
 		});
@@ -36,15 +37,17 @@ class PluginPopupView extends AbstractViewPopup {
 	}
 
 	saveCommand() {
-		const list = {};
-		list.Name = this.name();
+		const list = {
+			Id: this.id(),
+			Settings: {}
+		};
 
 		this.configures.forEach(oItem => {
 			let value = oItem.value();
 			if (false === value || true === value) {
-				value = value ? '1' : '0';
+				value = value ? 1 : 0;
 			}
-			list['_' + oItem.Name] = value;
+			list.Settings[oItem.Name] = value;
 		});
 
 		this.saveError('');
@@ -56,11 +59,13 @@ class PluginPopupView extends AbstractViewPopup {
 	}
 
 	onShow(oPlugin) {
+		this.id('');
 		this.name('');
 		this.readme('');
 		this.configures([]);
 
 		if (oPlugin) {
+			this.id(oPlugin.Id);
 			this.name(oPlugin.Name);
 			this.readme(oPlugin.Readme);
 

@@ -789,12 +789,12 @@ trait Admin
 	{
 		$this->IsAdminLoggined();
 
-		$sName = (string) $this->GetActionParam('Name', '');
+		$sId = (string) $this->GetActionParam('Id', '');
 		$bDisable = '1' === (string) $this->GetActionParam('Disabled', '1');
 
 		if (!$bDisable)
 		{
-			$oPlugin = $this->Plugins()->CreatePluginByName($sName);
+			$oPlugin = $this->Plugins()->CreatePluginByName($sId);
 			if ($oPlugin)
 			{
 				$sValue = $oPlugin->Supported();
@@ -809,7 +809,7 @@ trait Admin
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $this->pluginEnable($sName, !$bDisable));
+		return $this->DefaultResponse(__FUNCTION__, $this->pluginEnable($sId, !$bDisable));
 	}
 
 	public function DoAdminPluginLoad() : array
@@ -817,15 +817,16 @@ trait Admin
 		$this->IsAdminLoggined();
 
 		$mResult = false;
-		$sName = (string) $this->GetActionParam('Name', '');
+		$sId = (string) $this->GetActionParam('Id', '');
 
-		if (!empty($sName))
+		if (!empty($sId))
 		{
-			$oPlugin = $this->Plugins()->CreatePluginByName($sName);
+			$oPlugin = $this->Plugins()->CreatePluginByName($sId);
 			if ($oPlugin)
 			{
 				$mResult = array(
-					 'Name' => $sName,
+					 'Id' => $sId,
+					 'Name' => $oPlugin->Name(),
 					 'Readme' => $oPlugin->Description(),
 					 'Config' => array()
 				);
@@ -860,20 +861,22 @@ trait Admin
 		$this->IsAdminLoggined();
 
 		$mResult = false;
-		$sName = (string) $this->GetActionParam('Name', '');
+		$sId = (string) $this->GetActionParam('Id', '');
 
-		if (!empty($sName))
+		if (!empty($sId))
 		{
-			$oPlugin = $this->Plugins()->CreatePluginByName($sName);
+			$oPlugin = $this->Plugins()->CreatePluginByName($sId);
 			if ($oPlugin)
 			{
 				$oConfig = $oPlugin->Config();
 				$aMap = $oPlugin->ConfigMap();
 				if (is_array($aMap))
 				{
+					$aSettings = (array) $this->GetActionParam('Settings', []);
 					foreach ($aMap as $oItem)
 					{
-						$sValue = $this->GetActionParam('_'.$oItem->Name(), $oConfig->Get('plugin', $oItem->Name()));
+						$sKey = $oItem->Name();
+						$sValue = $aSettings[$sKey] ?? $oConfig->Get('plugin', $sKey);
 						if (PluginPropertyType::PASSWORD !== $oItem->Type() || APP_DUMMY !== $sValue)
 						{
 							$mResultValue = null;
@@ -893,13 +896,14 @@ trait Admin
 								case PluginPropertyType::PASSWORD:
 								case PluginPropertyType::STRING:
 								case PluginPropertyType::STRING_TEXT:
+								case PluginPropertyType::URL:
 									$mResultValue = (string) $sValue;
 									break;
 							}
 
 							if (null !== $mResultValue)
 							{
-								$oConfig->Set('plugin', $oItem->Name(), $mResultValue);
+								$oConfig->Set('plugin', $sKey, $mResultValue);
 							}
 						}
 					}

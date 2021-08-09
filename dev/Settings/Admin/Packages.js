@@ -47,7 +47,7 @@ export class PackagesAdminSettings {
 			// configurePlugin
 			let el = event.target.closestWithin('.package-configure', oDom),
 				data = el ? ko.dataFor(el) : 0;
-			data && Remote.plugin((iError, data) => iError || showScreenPopup(PluginPopupView, [data.Result]), data.name)
+			data && Remote.plugin((iError, data) => iError || showScreenPopup(PluginPopupView, [data.Result]), data.id)
 			// disablePlugin
 			el = event.target.closestWithin('.package-active', oDom);
 			data = el ? ko.dataFor(el) : 0;
@@ -94,10 +94,11 @@ export class PackagesAdminSettings {
 	}
 
 	disablePlugin(plugin) {
-		let b = !plugin.enabled();
-		plugin.enabled(b);
+		let b = plugin.enabled();
+		plugin.enabled(!b);
 		Remote.pluginDisable((iError, data) => {
 			if (iError) {
+				plugin.enabled(b);
 				this.packagesError(
 					(Notification.UnsupportedPluginPackage === iError && data && data.ErrorMessage)
 					? data.ErrorMessage
@@ -105,7 +106,7 @@ export class PackagesAdminSettings {
 				);
 			}
 //			PackageAdminStore.fetch();
-		}, plugin.name, !b);
+		}, plugin.id, b);
 	}
 
 }

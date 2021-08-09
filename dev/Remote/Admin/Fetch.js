@@ -85,11 +85,11 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 
 	/**
 	 * @param {?Function} fCallback
-	 * @param {string} sName
+	 * @param {string} sId
 	 */
-	plugin(fCallback, sName) {
+	plugin(fCallback, sId) {
 		this.defaultRequest(fCallback, 'AdminPluginLoad', {
-			Name: sName
+			Id: sId
 		});
 	}
 
@@ -125,12 +125,12 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 
 	/**
 	 * @param {?Function} fCallback
-	 * @param {string} sName
+	 * @param {string} sId
 	 * @param {boolean} bDisabled
 	 */
-	pluginDisable(fCallback, sName, bDisabled) {
+	pluginDisable(fCallback, sId, bDisabled) {
 		this.defaultRequest(fCallback, 'AdminPluginDisable', {
-			Name: sName,
+			Id: sId,
 			Disabled: bDisabled ? 1 : 0
 		});
 	}
