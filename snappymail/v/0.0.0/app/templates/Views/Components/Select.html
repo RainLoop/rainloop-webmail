@@ -1,8 +1,4 @@
 <div class="e-component e-select inline">
-	<!-- ko if: preLabeled -->
-	<span data-bind="attr: {'data-i18n': preLabel}"></span>
-	&nbsp;&nbsp;
-	<!-- /ko -->
 	<select data-bind="options: options, value: value, enable: enable, optionsText: optionsText, optionsValue: optionsValue,
 		optionsCaption: optionsCaption, css: className, optionsAfterRender: defaultOptionsAfterRender"></select>
 	<!-- ko if: labeled -->
