@@ -402,8 +402,7 @@ END;
 
 	public static function IsUtf8(string $sValue) : bool
 	{
-		return (bool) (\function_exists('mb_check_encoding') ?
-			\mb_check_encoding($sValue, 'UTF-8') : \preg_match('//u', $sValue));
+		return \mb_check_encoding($sValue, 'UTF-8');
 	}
 
 	public static function FormatFileSize(int $iSize, int $iRound = 0) : string

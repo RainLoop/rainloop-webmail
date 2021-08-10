@@ -216,10 +216,10 @@ class Service
 		}
 		// Internet Explorer does not support 'nonce'
 		if (!\strpos($_SERVER['HTTP_USER_AGENT'], 'Trident/') && !\strpos($_SERVER['HTTP_USER_AGENT'], 'Edge/1')) {
-			// Knockout.js requires unsafe-inline?
 			if ($sScriptNonce) {
-				$sContentSecurityPolicy = \preg_replace("/(script-src[^;]+)'unsafe-inline'/", "\$1'nonce-{$sScriptNonce}'", $sContentSecurityPolicy);
+				$sContentSecurityPolicy = \str_replace('script-src', "script-src 'nonce-{$sScriptNonce}'", $sContentSecurityPolicy);
 			}
+			// Knockout.js requires unsafe-inline?
 			$sContentSecurityPolicy = \preg_replace("/(script-src[^;]+)'unsafe-inline'/", '$1', $sContentSecurityPolicy);
 			// Knockout.js requires eval() for observable binding purposes
 			//$sContentSecurityPolicy = \preg_replace("/(script-src[^;]+)'unsafe-eval'/", '$1', $sContentSecurityPolicy);
