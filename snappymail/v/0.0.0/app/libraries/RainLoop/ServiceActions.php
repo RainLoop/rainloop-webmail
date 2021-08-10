@@ -878,26 +878,27 @@ class ServiceActions
 		return $sResult;
 	}
 
-	public function compileTemplates(bool $bAdmin = false, bool $bJsOutput = true) : string
+	public function compileTemplates(bool $bAdmin = false) : string
 	{
 		$aTemplates = array();
 
-		Utils::CompileTemplates($aTemplates, APP_VERSION_ROOT_PATH.'app/templates/Views/Components', 'Component');
-		Utils::CompileTemplates($aTemplates, APP_VERSION_ROOT_PATH.'app/templates/Views/'.($bAdmin ? 'Admin' : 'User'));
-		Utils::CompileTemplates($aTemplates, APP_VERSION_ROOT_PATH.'app/templates/Views/Common');
+		foreach (['Components', ($bAdmin ? 'Admin' : 'User'), 'Common'] as $dir) {
+			$sNameSuffix = ('Components' === $dir) ? 'Component' : '';
+			foreach (\glob(APP_VERSION_ROOT_PATH."app/templates/Views/{$dir}/*.html") as $file) {
+				$sTemplateName = \basename($file, '.html') . $sNameSuffix;
+				$aTemplates[$sTemplateName] = $file;
+			}
+		}
 
 		$this->oActions->Plugins()->CompileTemplate($aTemplates, $bAdmin);
 
 		$sHtml = '';
-		foreach ($aTemplates as $sName => $sFile)
-		{
+		foreach ($aTemplates as $sName => $sFile) {
 			$sName = \preg_replace('/[^a-zA-Z0-9]/', '', $sName);
 			$sHtml .= '<template id="'.$sName.'">'.
 				$this->oActions->ProcessTemplate($sName, \file_get_contents($sFile)).'</template>';
 		}
 
-		unset($aTemplates);
-
-		return $bJsOutput ? 'rl.TEMPLATES='.\MailSo\Base\Utils::Php2js($sHtml, $this->Logger()).';' : $sHtml;
+		return $sHtml;
 	}
 }

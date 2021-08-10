@@ -131,31 +131,6 @@ class Utils
 		return $sResult;
 	}
 
-	public static function FolderFiles(string $sDir, string $sType = '') : array
-	{
-		$aResult = array();
-		if (\is_dir($sDir))
-		{
-			if (false !== ($rDirHandle = \opendir($sDir)))
-			{
-				while (false !== ($sFile = \readdir($rDirHandle)))
-				{
-					if (empty($sType) || $sType === \substr($sFile, -\strlen($sType)))
-					{
-						if (\is_file($sDir.'/'.$sFile))
-						{
-							$aResult[] = $sFile;
-						}
-					}
-				}
-
-				\closedir($rDirHandle);
-			}
-		}
-
-		return $aResult;
-	}
-
 	public static function ClearHtmlOutput(string $sHtml) : string
 	{
 //		return $sHtml;
@@ -164,20 +139,6 @@ class Utils
 			['">', '&nbsp;', '&nbsp;', ' ', '><'],
 			\trim($sHtml)
 		);
-	}
-
-	public static function CompileTemplates(array &$aList, string $sDirName, string $sNameSuffix = '')
-	{
-		if (\file_exists($sDirName))
-		{
-			$aFileList = static::FolderFiles($sDirName, '.html');
-
-			foreach ($aFileList as $sName)
-			{
-				$sTemplateName = \substr($sName, 0, -5).$sNameSuffix;
-				$aList[$sTemplateName] = $sDirName.'/'.$sName;
-			}
-		}
 	}
 
 	/**

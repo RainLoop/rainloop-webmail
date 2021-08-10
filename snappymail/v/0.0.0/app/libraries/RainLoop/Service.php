@@ -175,7 +175,7 @@ class Service
 			} else {
 				$aTemplateParameters['{{BaseAppThemeCss}}'] = $this->oActions->compileCss($this->oActions->GetTheme($bAdmin), $bAdmin);
 				$aTemplateParameters['{{BaseLanguage}}'] = $this->oActions->compileLanguage($sLanguage, $bAdmin);
-				$aTemplateParameters['{{BaseTemplates}}'] = $this->oServiceActions->compileTemplates($bAdmin, false);
+				$aTemplateParameters['{{BaseTemplates}}'] = $this->oServiceActions->compileTemplates($bAdmin);
 				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), $aTemplateParameters);
 
 				$sResult = Utils::ClearHtmlOutput($sResult);
