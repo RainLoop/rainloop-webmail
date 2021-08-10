@@ -84,7 +84,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 		this.messageListEndThreadUid = MessageUserStore.listEndThreadUid;
 
-		this.messageListCheckedOrSelected = MessageUserStore.listCheckedOrSelected;
 		this.messageListCompleteLoadingThrottle = MessageUserStore.listCompleteLoading;
 
 		initOnStartOrLangChange(() => this.emptySubjectValue = i18n('MESSAGE_LIST/EMPTY_SUBJECT_TEXT'));
@@ -549,7 +548,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.setActionForAll(
 			FolderUserStore.currentFolderFullNameRaw(),
 			MessageSetAction.SetSeen,
-			this.messageListEndThreadUid()
+			MessageUserStore.listEndThreadUid()
 		);
 	}
 
@@ -658,11 +657,21 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		}
 	}
 
+	listEmptyMessage() {
+		if (!this.dragOver()
+		 && !MessageUserStore.list().length
+		 && !MessageUserStore.listCompleteLoading()
+		 && !MessageUserStore.listError()) {
+			 return i18n('MESSAGE_LIST/EMPTY_' + (MessageUserStore.listSearch() ? 'SEARCH_' : '') + 'LIST');
+		}
+		return '';
+	}
+
 	clearListIsVisible() {
 		return (
 			!this.messageListSearchDesc() &&
-			!this.messageListError() &&
-			!this.messageListEndThreadUid() &&
+			!MessageUserStore.listError() &&
+			!MessageUserStore.listEndThreadUid() &&
 			MessageUserStore.list().length &&
 			(this.isSpamFolder() || this.isTrashFolder())
 		);
@@ -820,7 +829,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			if (this.messageListSearchDesc()) {
 				this.cancelSearch();
 				return false;
-			} else if (this.messageListEndThreadUid()) {
+			} else if (MessageUserStore.listEndThreadUid()) {
 				this.cancelThreadUid();
 				return false;
 			}

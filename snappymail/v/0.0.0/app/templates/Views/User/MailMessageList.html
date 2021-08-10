@@ -175,22 +175,19 @@
 			</div>
 			<div class="listSearchDesc" data-bind="visible: '' !== messageListSearchDesc(), text: messageListSearchDesc"></div>
 			<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && '' === messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea">
-				<i class="fontastic e-icon">⬇</i>
+				<i class="fontastic">⬇</i>
 				<span data-i18n="MESSAGE_LIST/PUT_MESSAGE_HERE"></span>
 			</div>
 			<div class="listClear" data-bind="visible: clearListIsVisible()">
 				<a href="#" class="g-ui-link" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER" data-bind="command: clearCommand"></a>
 			</div>
 			<div class="listError error" data-bind="visible: !dragOver() && '' !== messageListError(), text: messageListError"></div>
-			<div class="listEmptyList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' === messageListSearch()"
-				data-i18n="MESSAGE_LIST/EMPTY_LIST"></div>
-			<div class="listEmptyListLoading" data-bind="visible: !dragOver() && 0 === messageList().length &&
+			<div class="listEmptyMessage" data-bind="visible: listEmptyMessage(), text: listEmptyMessage()"></div>
+			<div class="listLoading" data-bind="visible: !dragOver() && 0 === messageList().length &&
 				messageListCompleteLoadingThrottle() && '' === messageListError()">
 				<i class="icon-spinner"></i>
 				<span data-i18n="GLOBAL/LOADING"></span>
 			</div>
-			<div class="listEmptySearchList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' !== messageListSearch()"
-				data-i18n="MESSAGE_LIST/EMPTY_SEARCH_LIST"></div>
 			<div data-bind="dragmessages: getDragData">
 				<div class="messageListPlace" data-bind="foreach: messageList">
 
