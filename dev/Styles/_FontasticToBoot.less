@@ -38,8 +38,8 @@
 
 .icon-spinner {
 
-	height: 10px;
-	width: 10px;
+	height: 0.75em;
+	width: 0.75em;
 
 	margin: 0 -1px;
 
@@ -48,26 +48,16 @@
 	border-radius: 100%;
 }
 
-.btn-success .icon-spinner {
-	border-color: #fff;
-	border-top-color: #999;
-	&.animated {
-		border-color: transparent;
-		border-top-color: #fff;
-	}
-}
-
-.btn-large .icon-spinner {
-	height: 13px;
-	width: 13px;
-	margin: -1px -2px;
-}
-
 .icon-spinner:not(.not-animated),
 .list-loading .icon-spinner.not-animated {
 	border-color: transparent;
 	border-top-color: #999;
 	animation: rotation .8s infinite ease-in-out;
+}
+
+.btn.btn-success .icon-spinner {
+	border-color: transparent;
+	border-top-color: #fff;
 }
 
 .fontastic.icon-spinner {

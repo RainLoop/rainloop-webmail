@@ -1,37 +1,36 @@
 (doc => {
-	let visible = "visible",
+	let idle = 'idle',
+		visible = 'visible',
 		status = visible,
 		timer = 0,
 		wakeUp = () => {
 			clearTimeout(timer);
-			if (status !== visible) {
-				status = visible;
-			}
+			status = visible;
 			timer = setTimeout(() => {
 				if (status === visible) {
-					status = "idle";
-					dispatchEvent(new CustomEvent("idle"));
+					status = idle;
+					dispatchEvent(new CustomEvent(idle));
 				}
 			}, 10000);
 		},
 		init = () => {
-			init = ()=>{};
+			init = () => 0;
 			// Safari
-			addEventListener('pagehide', () => status = "hidden");
+			addEventListener('pagehide', () => status = 'hidden');
 			// Else
-			doc.addEventListener("visibilitychange", () => {
+			doc.addEventListener('visibilitychange', () => {
 				status = doc.visibilityState;
 				doc.hidden || wakeUp();
 			});
 			wakeUp();
-			["mousemove","keyup","touchstart"].forEach(t => doc.addEventListener(t, wakeUp));
-			["scroll","pageshow"].forEach(t => addEventListener(t, wakeUp));
+			['mousemove','keyup','touchstart'].forEach(t => doc.addEventListener(t, wakeUp));
+			['scroll','pageshow'].forEach(t => addEventListener(t, wakeUp));
 		};
 
 	this.ifvisible = {
 		idle: callback => {
 			init();
-			addEventListener("idle", callback);
+			addEventListener(idle, callback);
 		},
 		now: () => {
 			init();
