@@ -2132,16 +2132,12 @@ ko.expressionRewriting = (() => {
     }
 
     function applyBindingsToDescendantsInternal(bindingContext, elementOrVirtualElement) {
-        var nextInQueue = ko.virtualElements.firstChild(elementOrVirtualElement);
+        var currentChild, nextInQueue = ko.virtualElements.firstChild(elementOrVirtualElement);
 
-        if (nextInQueue) {
-            var currentChild;
-
-            while (currentChild = nextInQueue) {
-                // Keep a record of the next child *before* applying bindings, in case the binding removes the current child from its position
-                nextInQueue = ko.virtualElements.nextSibling(currentChild);
-                applyBindingsToNodeAndDescendantsInternal(bindingContext, currentChild);
-            }
+        while (currentChild = nextInQueue) {
+            // Keep a record of the next child *before* applying bindings, in case the binding removes the current child from its position
+            nextInQueue = ko.virtualElements.nextSibling(currentChild);
+            applyBindingsToNodeAndDescendantsInternal(bindingContext, currentChild);
         }
         ko.bindingEvent.notify(elementOrVirtualElement, ko.bindingEvent.childrenComplete);
     }
@@ -2259,9 +2255,9 @@ ko.expressionRewriting = (() => {
             // Use of allBindings as a function is deprecated and removed
             // The following is the 3.x allBindings API
             var allBindings = {
-				'get': key => bindings[key] && getValueAccessor(key)(),
-				'has': key => key in bindings
-			};
+                'get': key => bindings[key] && getValueAccessor(key)(),
+                'has': key => key in bindings
+            };
 
             if (ko.bindingEvent.childrenComplete in bindings) {
                 ko.bindingEvent.subscribe(node, ko.bindingEvent.childrenComplete, () => {
@@ -2347,11 +2343,6 @@ ko.expressionRewriting = (() => {
 
     ko.applyBindingAccessorsToNode = (node, bindings, viewModelOrBindingContext) =>
         applyBindingsToNodeInternal(node, bindings, getBindingContext(viewModelOrBindingContext));
-
-    ko.applyBindingsToNode = (node, bindings, viewModelOrBindingContext) => {
-        var context = getBindingContext(viewModelOrBindingContext);
-        return ko.applyBindingAccessorsToNode(node, makeBindingAccessors(bindings, context, node), context);
-    };
 
     ko.applyBindingsToDescendants = (viewModelOrBindingContext, rootNode) => {
         if (rootNode.nodeType === 1 || rootNode.nodeType === 8)
