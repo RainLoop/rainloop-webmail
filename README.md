@@ -75,6 +75,7 @@ This fork of RainLoop has the following changes:
 * AddressBook Contacts support MySQL/MariaDB utf8mb4
 * Prevent Google FLoC
 * Added [Fetch Metadata Request Headers](https://www.w3.org/TR/fetch-metadata/) checks
+* Reduced excessive DOM size
 
 ### Supported browsers
 
@@ -128,23 +129,23 @@ RainLoop 1.15 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.158.025	|   91.598	|
-|app.js          	|4.215.733	|  454.046	|
+|admin.js        	|2.158.025	|   91.665	|
+|app.js          	|4.215.733	|  453.963	|
 |boot.js         	|  672.433	|    2.861	|
-|libs.js         	|  647.679	|  217.209	|
+|libs.js         	|  647.679	|  216.856	|
 |polyfills.js    	|  325.908	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|8.019.778	|  765.999	|
+|TOTAL           	|8.019.778	|  765.598	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
-|admin.min.js    	|  255.514	|   47.631	| 73.899	| 14.320	| 60.674  	| 12.796	|
-|app.min.js      	|  516.000	|  233.722	|140.430	| 68.676	|110.657  	| 58.037	|
+|admin.min.js    	|  255.514	|   47.675	| 73.899	| 14.346	| 60.674  	| 12.816	|
+|app.min.js      	|  516.000	|  233.723	|140.430	| 68.684	|110.657  	| 58.080	|
 |boot.min.js     	|   66.456	|    1.621	| 22.553	|    968	| 20.043  	|    810	|
-|libs.min.js     	|  574.626	|  105.538	|177.280	| 38.261	|151.855  	| 34.284	|
+|libs.min.js     	|  574.626	|  105.192	|177.280	| 38.128	|151.855  	| 34.188	|
 |polyfills.min.js	|   32.608	|        0	| 11.315	|      0	| 10.072  	|      0	|
-|TOTAL           	|1.445.204	|  388.512	|425.477	|122.225	|353.301  	|105.927	|
-|TOTAL (no admin)	|1.189.690	|  340.881	|351.061	|107.905	|292.627  	| 93.131	|
+|TOTAL           	|1.445.204	|  388.211	|425.477	|122.126	|353.301  	|105.894	|
+|TOTAL (no admin)	|1.189.690	|  340.536	|351.061	|107.780	|292.627  	| 93.078	|
 
 For a user its around 68% smaller and faster than traditional RainLoop.
 
@@ -183,12 +184,12 @@ For a user its around 68% smaller and faster than traditional RainLoop.
 
 |css/*       	|RainLoop	|Snappy   	|RL gzip	|SM gzip	|SM brotli	|
 |------------	|-------:	|------:	|------:	|------:	|--------:	|
-|app.css     	| 340.334	| 98.323	| 46,959	| 17.821	| 15.355	|
-|app.min.css 	| 274.791	| 80.298	| 39.618	| 15.963	| 14.045	|
+|app.css     	| 340.334	| 97.272	| 46,959	| 17.692	| 15.260	|
+|app.min.css 	| 274.791	| 79.365	| 39.618	| 15.822	| 13.926	|
 |boot.css    	|       	|  1.326	|       	|    664	|    545	|
 |boot.min.css	|       	|  1.071	|       	|    590	|    474	|
-|admin.css    	|       	| 40.369	|       	|  8.467	|  7.389	|
-|admin.min.css	|       	| 31.901	|       	|  7.430	|  6.599	|
+|admin.css    	|       	| 40.359	|       	|  8.468	|  7.396	|
+|admin.min.css	|       	| 31.591	|       	|  7.429	|  6.600	|
 
 
 ### Squire vs CKEditor
