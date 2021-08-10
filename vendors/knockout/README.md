@@ -64,3 +64,5 @@ Or, if you want to run the specs in a browser (e.g., for debugging), simply open
 ## License
 
 MIT license - [http://www.opensource.org/licenses/mit-license.php](http://www.opensource.org/licenses/mit-license.php)
+
+`ln -s node_modules/google-closure-compiler/contrib node_modules/closure-compiler/node_modules/google-closure-compiler/contrib`

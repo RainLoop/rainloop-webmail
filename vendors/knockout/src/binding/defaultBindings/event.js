@@ -33,12 +33,6 @@ ko.bindingHandlers['event'] = {
                             event.preventDefault();
                         }
                     }
-
-                    var bubble = allBindings.get(eventName + 'Bubble') !== false;
-                    if (!bubble) {
-                        event.cancelBubble = true;
-                        event.stopPropagation();
-                    }
                 });
             }
         });

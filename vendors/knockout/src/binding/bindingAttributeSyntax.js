@@ -393,13 +393,12 @@
                 ? bindingKey => () => bindingsUpdater()[bindingKey]()
                 : bindingKey => bindings[bindingKey];
 
-            // Use of allBindings as a function is maintained for backwards compatibility, but its use is deprecated
-            function allBindings() {
-                return ko.utils.objectMap(bindingsUpdater ? bindingsUpdater() : bindings, valueAccessor => valueAccessor());
-            }
+            // Use of allBindings as a function is deprecated and removed
             // The following is the 3.x allBindings API
-            allBindings['get'] = key => bindings[key] && getValueAccessor(key)();
-            allBindings['has'] = key => key in bindings;
+            var allBindings = {
+                'get': key => bindings[key] && getValueAccessor(key)(),
+                'has': key => key in bindings
+            };
 
             if (ko.bindingEvent.childrenComplete in bindings) {
                 ko.bindingEvent.subscribe(node, ko.bindingEvent.childrenComplete, () => {

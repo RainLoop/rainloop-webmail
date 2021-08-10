@@ -2256,13 +2256,12 @@ ko.expressionRewriting = (() => {
                 ? bindingKey => () => bindingsUpdater()[bindingKey]()
                 : bindingKey => bindings[bindingKey];
 
-            // Use of allBindings as a function is maintained for backwards compatibility, but its use is deprecated
-            function allBindings() {
-                return ko.utils.objectMap(bindingsUpdater ? bindingsUpdater() : bindings, valueAccessor => valueAccessor());
-            }
+            // Use of allBindings as a function is deprecated and removed
             // The following is the 3.x allBindings API
-            allBindings['get'] = key => bindings[key] && getValueAccessor(key)();
-            allBindings['has'] = key => key in bindings;
+            var allBindings = {
+				'get': key => bindings[key] && getValueAccessor(key)(),
+				'has': key => key in bindings
+			};
 
             if (ko.bindingEvent.childrenComplete in bindings) {
                 ko.bindingEvent.subscribe(node, ko.bindingEvent.childrenComplete, () => {
@@ -2901,12 +2900,6 @@ ko.bindingHandlers['event'] = {
                             event.preventDefault();
                         }
                     }
-
-                    var bubble = allBindings.get(eventName + 'Bubble') !== false;
-                    if (!bubble) {
-                        event.cancelBubble = true;
-                        event.stopPropagation();
-                    }
                 });
             }
         });
@@ -3015,7 +3008,7 @@ ko.bindingHandlers['html'] = {
 function makeWithIfBinding(bindingKey, isWith, isNot) {
     ko.bindingHandlers[bindingKey] = {
         'init': (element, valueAccessor, allBindings, viewModel, bindingContext) => {
-            var didDisplayOnLastUpdate, savedNodes, contextOptions = {}, completeOnRender, needAsyncContext, renderOnEveryChange;
+            var didDisplayOnLastUpdate, savedNodes, contextOptions = {}, needAsyncContext, renderOnEveryChange;
 
             if (isWith) {
                 var as = allBindings.get('as'), noChildContext = allBindings.get('noChildContext');
@@ -3023,8 +3016,7 @@ function makeWithIfBinding(bindingKey, isWith, isNot) {
                 contextOptions = { 'as': as, 'noChildContext': noChildContext, 'exportDependencies': renderOnEveryChange };
             }
 
-            completeOnRender = allBindings.get("completeOn") == "render";
-            needAsyncContext = completeOnRender || allBindings['has'](ko.bindingEvent.descendantsComplete);
+            needAsyncContext = allBindings['has'](ko.bindingEvent.descendantsComplete);
 
             ko.computed(() => {
                 var value = ko.utils.unwrapObservable(valueAccessor()),
@@ -3068,9 +3060,7 @@ function makeWithIfBinding(bindingKey, isWith, isNot) {
                 } else {
                     ko.virtualElements.emptyNode(element);
 
-                    if (!completeOnRender) {
-                        ko.bindingEvent.notify(element, ko.bindingEvent.childrenComplete);
-                    }
+                    ko.bindingEvent.notify(element, ko.bindingEvent.childrenComplete);
                 }
 
                 didDisplayOnLastUpdate = shouldDisplay;
