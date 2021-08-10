@@ -663,7 +663,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			!this.messageListSearchDesc() &&
 			!this.messageListError() &&
 			!this.messageListEndThreadUid() &&
-			MessageUserStore.list.length &&
+			MessageUserStore.list().length &&
 			(this.isSpamFolder() || this.isTrashFolder())
 		);
 	}
