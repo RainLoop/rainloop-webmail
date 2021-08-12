@@ -1085,7 +1085,6 @@ class ComposePopupView extends AbstractViewPopup {
 			this.identitiesDropdownTrigger(true);
 			return false;
 		}
-		return true;
 	}
 
 	onBuild(dom) {

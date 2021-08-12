@@ -746,8 +746,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 				dispatchEvent(new CustomEvent('mailbox.message-view.toggle-full-screen'));
 				return false;
 			}
-
-			return true;
 		});
 
 		if (Settings.capa(Capa.MessageListActions)) {
@@ -859,8 +857,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 				this.cancelThreadUid();
 				return false;
 			}
-
-			return true;
 		});
 
 		// change focused state

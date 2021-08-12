@@ -307,6 +307,8 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 	}
 
 	onBuild(dom) {
+		this.oMessageScrollerDom = dom.querySelector('.messageItem');
+
 		this.fullScreenMode.subscribe(value =>
 			value && MessageUserStore.message() && AppUserStore.focusedState(Scope.MessageView));
 
@@ -414,8 +416,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 		keyScopeReal.subscribe(value => this.messageDomFocused(Scope.MessageView === value && !inFocus()));
 
-		this.oMessageScrollerDom = dom.querySelector('.messageItem');
-
 		// initShortcuts
 
 		// exit fullscreen, back
@@ -436,8 +436,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 				return false;
 			}
-
-			return true;
 		});
 
 		// fullscreen
@@ -461,14 +459,12 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 				this.replyAllCommand();
 				return false;
 			}
-			return true;
 		});
 		shortcuts.add('mailreply', 'shift', [Scope.MessageList, Scope.MessageView], () => {
 			if (MessageUserStore.message()) {
 				this.replyAllCommand();
 				return false;
 			}
-			return true;
 		});
 
 		// forward
@@ -477,8 +473,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 				this.forwardCommand();
 				return false;
 			}
-
-			return true;
 		});
 
 		// message information
@@ -496,7 +490,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 				message.body.querySelectorAll('.rlBlockquoteSwitcher').forEach(node => node.click());
 				return false;
 			}
-			return true;
 		});
 
 		shortcuts.add('arrowup,arrowleft', 'meta', [Scope.MessageList, Scope.MessageView], () => {
@@ -527,10 +520,8 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 		// change focused state
 		shortcuts.add('arrowleft', '', Scope.MessageView, () => {
-			if (!this.fullScreenMode() && MessageUserStore.message() && SettingsUserStore.usePreviewPane()) {
-				if (this.oMessageScrollerDom && 0 < this.oMessageScrollerDom.scrollLeft) {
-					return true;
-				}
+			if (!this.fullScreenMode() && MessageUserStore.message() && SettingsUserStore.usePreviewPane()
+			 && !this.oMessageScrollerDom.scrollLeft) {
 				AppUserStore.focusedState(Scope.MessageList);
 				return false;
 			}
@@ -603,19 +594,11 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 	}
 
 	scrollMessageToTop() {
-		if (this.oMessageScrollerDom) {
-			if (50 < this.oMessageScrollerDom.scrollTop) {
-				this.oMessageScrollerDom.scrollTop = 50;
-			} else {
-				this.oMessageScrollerDom.scrollTop = 0;
-			}
-		}
+		this.oMessageScrollerDom.scrollTop = (50 < this.oMessageScrollerDom.scrollTop) ? 50 : 0;
 	}
 
 	scrollMessageToLeft() {
-		if (this.oMessageScrollerDom) {
-			this.oMessageScrollerDom.scrollLeft = 0;
-		}
+		this.oMessageScrollerDom.scrollLeft = 0;
 	}
 
 	downloadAsZip() {

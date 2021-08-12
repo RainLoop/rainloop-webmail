@@ -269,8 +269,6 @@ export class Selector {
 					this.actionClick(focused);
 					return false;
 				}
-
-				return true;
 			});
 
 			shortcuts.add('arrowup,arrowdown', 'meta', keyScope, () => false);

@@ -109,7 +109,6 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 				showScreenPopup(KeyboardShortcutsHelpPopupView);
 				return false;
 			}
-			return true;
 		});
 	}
 }
