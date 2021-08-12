@@ -519,7 +519,7 @@ trait User
 			$this->SettingsProvider()->Save($oAccount, $oSettings) : false);
 	}
 
-	protected function ClearSignMeData(Model\Account $oAccount) : void
+	protected function ClearSignMeData(\RainLoop\Model\Account $oAccount) : void
 	{
 		if ($oAccount) {
 			Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
