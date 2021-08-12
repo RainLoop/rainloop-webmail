@@ -2,7 +2,9 @@
 	<a data-bind="dropmessages: $data,
 		css: { 'selected': selected, 'selectable': selectable, 'anim-action-class': actionBlink },
 		attr: { 'data-unread': printableUnreadCount }">
-		<span class="name" data-bind="text: localName()"></span>
-		<span class="inbox-star-icon fontastic" data-bind="visible: isInbox"></span>
+		<!-- ko text: localName --><!-- /ko -->
+		<!-- ko if: isInbox -->
+		<span class="inbox-star-icon fontastic"></span>
+		<!-- /ko -->
 	</a>
 </div>

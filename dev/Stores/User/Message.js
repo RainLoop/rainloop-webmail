@@ -196,13 +196,6 @@ export const MessageUserStore = new class {
 			listIsNotCompleted: value =>
 				this.listCompleteLoading(value || this.listLoading()),
 
-			list:
-				(list => {
-					list.forEach(item =>
-						item && item.newForAnimation() && item.newForAnimation(false)
-					)
-				}).debounce(500),
-
 			message: message => {
 				clearTimeout(MessageSeenTimer);
 				if (message) {

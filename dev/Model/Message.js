@@ -54,8 +54,6 @@ export class MessageModel extends AbstractModel {
 			senderEmailsString: '',
 			senderClearEmailsString: '',
 
-			newForAnimation: false,
-
 			deleted: false,
 			isDeleted: false,
 			isUnseen: false,
@@ -127,8 +125,6 @@ export class MessageModel extends AbstractModel {
 
 		this.senderEmailsString('');
 		this.senderClearEmailsString('');
-
-		this.newForAnimation(false);
 
 		this.deleted(false);
 		this.isDeleted(false);
@@ -289,7 +285,6 @@ export class MessageModel extends AbstractModel {
 			focused: this.focused(),
 			important: this.isImportant(),
 			withAttachments: this.hasAttachments(),
-			new: this.newForAnimation(),
 			emptySubject: !this.subject(),
 			// hasChildrenMessage: 1 < this.threadsLen(),
 			hasUnseenSubMessage: this.hasUnseenSubMessage(),

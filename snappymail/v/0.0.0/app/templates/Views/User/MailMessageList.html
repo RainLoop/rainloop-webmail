@@ -196,10 +196,10 @@
 
 						<div class="flagParent fontastic"><!-- ☆★⚐⚑ --></div>
 
-						<div class="senderParent actionHandle">
-							<i class="replyFlag fontastic">←</i>
-							<i class="forwardFlag fontastic">→</i>
-							<span class="sender" data-bind="text: senderEmailsString, attr: {'title': senderClearEmailsString}"></span>
+						<div class="senderParent actionHandle" data-bind="attr: {'title': senderClearEmailsString}">
+							<!-- ko if: isAnswered --><i class="replyFlag fontastic">←</i><!-- /ko -->
+							<!-- ko if: isForwarded --><i class="forwardFlag fontastic">→</i><!-- /ko -->
+							<!-- ko text: senderEmailsString --><!-- /ko -->
 						</div>
 
 						<div class="attachmentParent actionHandle">
@@ -207,15 +207,14 @@
 						</div>
 
 						<div class="subjectParent actionHandle">
-							<b class="importantMark">!</b>
-							<span class="emptySubjectText" data-bind="text: $root.emptySubjectValue"></span>
-							<span class="subject" data-bind="text: subject"></span>
+							<!-- ko if: isImportant --><b class="importantMark">!</b><!-- /ko -->
+							<!-- ko text: subject || $root.emptySubjectValue --><!-- /ko -->
 						</div>
 
 						<div class="sizeParent actionHandle" data-bind="text: friendlySize()"></div>
 
 						<div class="threads-len" data-bind="visible: 1 < threadsLen()">
-							<span data-bind="text: threadsLen"></span>
+							<!-- ko text: threadsLen --><!-- /ko -->
 							›
 						</div>
 
@@ -228,7 +227,7 @@
 		</div>
 		<div class="b-footer thm-message-list-bottom-toolbar">
 			<span data-bind="visible: 0 < userUsageProc(), attr: { title: quotaTooltip() }" class="e-quota">
-				<span data-bind="text: userUsageProc"></span>%
+				<!-- ko text: userUsageProc --><!-- /ko -->%
 			</span>
 			<div class="pull-right">
 				<!-- ko template: { name: 'Paginator', data: messageListPaginator } --><!-- /ko -->

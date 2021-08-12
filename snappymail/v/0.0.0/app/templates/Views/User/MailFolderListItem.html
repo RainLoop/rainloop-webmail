@@ -3,7 +3,7 @@
 	   css: { 'i-am-inbox': isInbox, 'selected': selected() && !isSystemFolder(), 'selectable': canBeSelected, 'hidden' : hidden, 'unread-sub': hasSubscribedUnreadMessagesSubfolders, 'system': isSystemFolder, 'anim-action-class': actionBlink },
 	   attr: { 'data-unread': printableUnreadCount }">
 		<i data-bind="css: collapsedCss()"></i>
-		<span class="name" data-bind="text: name"></span>
+		<!-- ko text: name --><!-- /ko -->
 	</a>
 	<!-- ko if: subFolders.length -->
 	<div class="b-sub-folders" data-bind="template: { name: 'MailFolderListItem', foreach: subFolders }, css: { 'collapsed': collapsed() }"></div>

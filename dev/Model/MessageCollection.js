@@ -39,7 +39,6 @@ export class MessageCollectionModel extends AbstractCollectionModel
 			if (message) {
 				if (hasNewMessageAndRemoveFromCache(message.folder, message.uid) && 5 >= newCount) {
 					++newCount;
-					message.newForAnimation(true);
 				}
 
 				message.deleted(false);

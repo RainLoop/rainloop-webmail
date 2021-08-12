@@ -239,8 +239,6 @@ html.rl-no-preview-pane {
 	}
 
 	.importantMark {
-		display: none;
-
 		color:red;
 		margin-right:5px
 	}
@@ -252,17 +250,8 @@ html.rl-no-preview-pane {
 		}
 	}
 
-	&.important .importantMark {
-		display: inline;
-	}
-
-	&.new {
-		max-height: 0;
-	}
-
 	&.deleted {
-		max-height: 0;
-		border-color: transparent !important;
+		opacity: .3;
 	}
 
 	.checkboxMessage {
@@ -310,22 +299,12 @@ html.rl-no-preview-pane {
 		border-color: #666;
 	}
 
-	.subjectParent .emptySubjectText {
-		display: none;
+	&.emptySubject .subjectParent {
 		font-style: italic;
 		opacity: 0.5;
 	}
 
-	&.emptySubject .subjectParent {
-		.subject {
-			display: none;
-		}
-		.emptySubjectText {
-			display: inline;
-		}
-	}
-
-	.sender, .subject {
+	.senderParent, .subjectParent {
 		margin: 0;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -342,16 +321,7 @@ html.rl-no-preview-pane {
 	}
 
 	.replyFlag, .forwardFlag {
-		display: none;
 		margin-right: 0.25em;
-	}
-
-	&.answered .replyFlag {
-		display: inline-block;
-	}
-
-	&.forwarded .forwardFlag {
-		display: inline-block;
 	}
 
 	&:not(.withAttachments) .attachmentParent {
@@ -369,7 +339,7 @@ html.rl-no-preview-pane {
 	&.unseen {
 		background-color: rgba(255, 255, 64, 0.15);
 		border-left-color: orange;
-		.sender, .subjectParent {
+		.senderParent, .subjectParent {
 			font-weight: bold;
 		}
 
