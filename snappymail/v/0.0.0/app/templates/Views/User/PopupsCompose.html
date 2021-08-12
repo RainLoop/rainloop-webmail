@@ -159,7 +159,7 @@
 		</div>
 
 		<div class="attachmentAreaParent b-content" data-bind="visible: attachmentsPlace">
-			<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}"
+			<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}"
 				data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></div>
 			<ul class="attachmentList" data-bind="foreach: attachments">
 				<li class="attachmentItem" data-bind="attr: { 'title': title }, css: { 'waiting': waiting, 'error': '' !== error() }">

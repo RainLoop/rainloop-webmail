@@ -324,32 +324,6 @@ class ContactsPopupView extends AbstractViewPopup {
 		rl.app.download(serverRequestRaw('ContactsCsv'));
 	}
 
-	initUploader() {
-		if (this.importUploaderButton()) {
-			const j = new Jua({
-				action: serverRequest('UploadContacts'),
-				name: 'uploader',
-				queueSize: 1,
-				multipleSizeLimit: 1,
-				disableMultiple: true,
-				disableDocumentDropPrevent: true,
-				clickElement: this.importUploaderButton()
-			});
-
-			if (j) {
-				j.on('onStart', () => {
-					ContactUserStore.importing(true);
-				}).on('onComplete', (id, result, data) => {
-					ContactUserStore.importing(false);
-					this.reloadContactList();
-					if (!id || !result || !data || !data.Result) {
-						alert(i18n('CONTACTS/ERROR_IMPORT_FILE'));
-					}
-				});
-			}
-		}
-	}
-
 	removeCheckedOrSelectedContactsFromList() {
 		const contacts = this.contactsCheckedOrSelected();
 
@@ -494,7 +468,31 @@ class ContactsPopupView extends AbstractViewPopup {
 			}
 		});
 
-		this.initUploader();
+		// initUploader
+
+		if (this.importUploaderButton()) {
+			const j = new Jua({
+				action: serverRequest('UploadContacts'),
+				name: 'uploader',
+				queueSize: 1,
+				multipleSizeLimit: 1,
+				disableMultiple: true,
+				disableDocumentDropPrevent: true,
+				clickElement: this.importUploaderButton()
+			});
+
+			if (j) {
+				j.on('onStart', () => {
+					ContactUserStore.importing(true);
+				}).on('onComplete', (id, result, data) => {
+					ContactUserStore.importing(false);
+					this.reloadContactList();
+					if (!id || !result || !data || !data.Result) {
+						alert(i18n('CONTACTS/ERROR_IMPORT_FILE'));
+					}
+				});
+			}
+		}
 	}
 
 	onShow(bBackToCompose, sLastComposeFocusedField) {

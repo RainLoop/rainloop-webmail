@@ -53,9 +53,9 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 			createCommandActionHelper = (folderType, useFolder) =>
 				createCommand(() => {
-					const message = this.message();
+					const message = MessageUserStore.message();
 					if (message && this.allowMessageListActions) {
-						this.message(null);
+						MessageUserStore.message(null);
 						rl.app.deleteMessagesFromFolder(folderType, message.folder, [message.uid], useFolder);
 					}
 				}, this.messageVisibility);
@@ -84,9 +84,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 		this.hasCheckedMessages = MessageUserStore.hasCheckedMessages;
 		this.messageLoadingThrottle = MessageUserStore.messageLoading;
 		this.messagesBodiesDom = MessageUserStore.messagesBodiesDom;
-		this.useThreads = SettingsUserStore.useThreads;
-		this.replySameFolder = SettingsUserStore.replySameFolder;
-		this.layout = SettingsUserStore.layout;
 		this.isMessageSelected = MessageUserStore.isMessageSelected;
 		this.messageActiveDom = MessageUserStore.messageActiveDom;
 		this.messageError = MessageUserStore.messageError;
@@ -157,7 +154,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 				)
 			},
 
-			messageVisibility: () => !MessageUserStore.messageLoading() && !!this.message(),
+			messageVisibility: () => !MessageUserStore.messageLoading() && !!MessageUserStore.message(),
 
 			canBeRepliedOrForwarded: () => !this.isDraftFolder() && this.messageVisibility(),
 
@@ -190,8 +187,8 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 		});
 
 		this.addSubscribables({
-			showAttachmnetControls: v => this.message()
-				&& this.message().attachments.forEach(item => item && item.checked(!!v)),
+			showAttachmnetControls: v => MessageUserStore.message()
+				&& MessageUserStore.message().attachments.forEach(item => item && item.checked(!!v)),
 
 			lastReplyAction_: value => Local.set(ClientSideKeyName.LastReplyAction, value),
 
@@ -253,7 +250,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 		});
 
 		MessageUserStore.messageViewTrigger.subscribe(() => {
-			const message = this.message();
+			const message = MessageUserStore.message();
 			this.viewIsFlagged(message ? message.isFlagged() : false);
 		});
 
@@ -279,13 +276,13 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 	goUpCommand() {
 		dispatchEvent(new CustomEvent('mailbox.message-list.selector.go-up',
-			{detail:SettingsUserStore.usePreviewPane() || !!this.message()} // bForceSelect
+			{detail:SettingsUserStore.usePreviewPane() || !!MessageUserStore.message()} // bForceSelect
 		));
 	}
 
 	goDownCommand() {
 		dispatchEvent(new CustomEvent('mailbox.message-list.selector.go-down',
-			{detail:SettingsUserStore.usePreviewPane() || !!this.message()} // bForceSelect
+			{detail:SettingsUserStore.usePreviewPane() || !!MessageUserStore.message()} // bForceSelect
 		));
 	}
 
@@ -306,11 +303,12 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 	}
 
 	checkHeaderHeight() {
-		this.oHeaderDom && this.viewBodyTopValue(this.message() ? this.oHeaderDom.offsetHeight : 0);
+		this.oHeaderDom && this.viewBodyTopValue(MessageUserStore.message() ? this.oHeaderDom.offsetHeight : 0);
 	}
 
 	onBuild(dom) {
-		this.fullScreenMode.subscribe(value => value && this.message() && AppUserStore.focusedState(Scope.MessageView));
+		this.fullScreenMode.subscribe(value =>
+			value && MessageUserStore.message() && AppUserStore.focusedState(Scope.MessageView));
 
 		this.showFullInfo.subscribe(value => Local.set(ClientSideKeyName.MessageHeaderFullInfo, value ? '1' : '0'));
 
@@ -384,7 +382,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 			}
 
 			if (eqs(event, '.messageItemHeader .subjectParent .flagParent')) {
-				const message = this.message();
+				const message = MessageUserStore.message();
 				message && rl.app.messageListAction(
 					message.folder,
 					message.isFlagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
@@ -418,13 +416,11 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 		this.oMessageScrollerDom = dom.querySelector('.messageItem');
 
-		this.initShortcuts();
-	}
+		// initShortcuts
 
-	initShortcuts() {
 		// exit fullscreen, back
 		shortcuts.add('escape,backspace', '', Scope.MessageView, () => {
-			if (this.viewModelVisible && this.message()) {
+			if (this.viewModelVisible && MessageUserStore.message()) {
 				const preview = SettingsUserStore.usePreviewPane();
 				if (this.fullScreenMode()) {
 					this.fullScreenMode(false);
@@ -433,7 +429,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 						AppUserStore.focusedState(Scope.MessageList);
 					}
 				} else if (!preview) {
-					this.message(null);
+					MessageUserStore.message(null);
 				} else {
 					AppUserStore.focusedState(Scope.MessageList);
 				}
@@ -459,7 +455,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 			return true;
 		});
 
-		// replaAll
+		// replyAll
 		shortcuts.add('a', '', [Scope.MessageList, Scope.MessageView], () => {
 			if (MessageUserStore.message()) {
 				this.replyAllCommand();
@@ -515,7 +511,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 		// print
 		shortcuts.add('p,printscreen', 'meta', [Scope.MessageView, Scope.MessageList], () => {
-			this.message() && this.message().printMessage();
+			MessageUserStore.message() && MessageUserStore.message().printMessage();
 			return false;
 		});
 
@@ -531,7 +527,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 		// change focused state
 		shortcuts.add('arrowleft', '', Scope.MessageView, () => {
-			if (!this.fullScreenMode() && this.message() && SettingsUserStore.usePreviewPane()) {
+			if (!this.fullScreenMode() && MessageUserStore.message() && SettingsUserStore.usePreviewPane()) {
 				if (this.oMessageScrollerDom && 0 < this.oMessageScrollerDom.scrollLeft) {
 					return true;
 				}
@@ -540,7 +536,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 			}
 		});
 		shortcuts.add('tab', 'shift', Scope.MessageView, () => {
-			if (!this.fullScreenMode() && this.message() && SettingsUserStore.usePreviewPane()) {
+			if (!this.fullScreenMode() && MessageUserStore.message() && SettingsUserStore.usePreviewPane()) {
 				AppUserStore.focusedState(Scope.MessageList);
 			}
 			return false;
@@ -623,7 +619,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 	}
 
 	downloadAsZip() {
-		const hashes = (this.message() ? this.message().attachments : [])
+		const hashes = (MessageUserStore.message() ? MessageUserStore.message().attachments : [])
 			.map(item => (item && !item.isLinked && item.checked() ? item.download : ''))
 			.filter(v => v);
 		if (hashes.length) {
@@ -647,10 +643,8 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 	 * @param {MessageModel} oMessage
 	 * @returns {void}
 	 */
-	showImages(message) {
-		if (message && message.showExternalImages) {
-			message.showExternalImages();
-		}
+	showImages() {
+		MessageUserStore.message() && MessageUserStore.message().showExternalImages();
 	}
 
 	/**
@@ -665,7 +659,8 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 	 * @param {MessageModel} oMessage
 	 * @returns {void}
 	 */
-	readReceipt(oMessage) {
+	readReceipt() {
+		let oMessage = MessageUserStore.message()
 		if (oMessage && oMessage.readReceipt()) {
 			Remote.sendReadReceiptMessage(
 				()=>{},

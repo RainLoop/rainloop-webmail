@@ -129,13 +129,13 @@
 								</div>
 								<div data-bind="visible: allowMessageActions" class="dividerbar">
 									<li class="e-item" role="presentation">
-										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="click: function () { if (message()) { message().printMessage(); }} ">
+										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="click: function () { message() && message().printMessage(); } ">
 											<i class="fontastic">🖨</i>
 											<span data-i18n="MESSAGE/MENU_PRINT"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation">
-										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="click: function () { if (message()) { message().viewPopupMessage(); }}">
+										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="click: function () { message() && message().viewPopupMessage(); }">
 											<i class="icon-popup"></i>
 											<span data-i18n="MESSAGE/BUTTON_IN_NEW_WINDOW"></span>
 										</a>
@@ -244,7 +244,7 @@
 						</div>
 					</div>
 					<div class="messageItem fixIndex" data-bind="css: viewLineAsCss(), attr: {'style': 'top:' + viewBodyTopValue() + 'px' }">
-						<div tabindex="0" data-bind="hasfocus: messageDomFocused, css: { 'focused': messageDomFocused }">
+						<div tabindex="0" data-bind="hasfocus: messageDomFocused">
 
 							<div>
 								<span class="buttonFull" data-bind="click: toggleFullScreen">
@@ -260,11 +260,11 @@
 
 							<div class="g-ui-min-height-300" data-bind="visible: !messageLoadingThrottle()">
 								<div class="bodySubHeader">
-									<div class="showImages" data-bind="visible: message() && message().hasImages(), click: function() { showImages(message()); }">
+									<div class="showImages" data-bind="visible: message() && message().hasImages(), click: showImages">
 										<i class="fontastic">🖼</i>
 										<span class="text" data-i18n="MESSAGE/BUTTON_SHOW_IMAGES"></span>
 									</div>
-									<div class="readReceipt" data-bind="visible: message() && !isDraftOrSentFolder() && '' !== message().readReceipt() && !message().isReadReceipt(), click: function() { readReceipt(message()); }">
+									<div class="readReceipt" data-bind="visible: message() && !isDraftOrSentFolder() && '' !== message().readReceipt() && !message().isReadReceipt(), click: readReceipt">
 										<i class="icon-mail"></i>
 										<span class="text" data-i18n="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></span>
 									</div>

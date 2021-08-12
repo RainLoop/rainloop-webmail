@@ -706,15 +706,41 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			el && this.gotoThread(ko.dataFor(el));
 		});
 
-		this.initUploaderForAppend();
-		this.initShortcuts();
+		// initUploaderForAppend
 
-		if (!ThemeStore.isMobile() && Settings.capa(Capa.Prefetch)) {
-			ifvisible.idle(this.prefetchNextTick.bind(this));
+		if (Settings.app('allowAppendMessage') && this.dragOverArea()) {
+			const oJua = new Jua({
+				action: serverRequest('Append'),
+				name: 'AppendFile',
+				queueSize: 1,
+				multipleSizeLimit: 1,
+				hidden: {
+					Folder: () => FolderUserStore.currentFolderFullNameRaw()
+				},
+				dragAndDropElement: this.dragOverArea(),
+				dragAndDropBodyElement: this.dragOverBodyArea()
+			});
+
+			this.dragOver.subscribe(value => value && this.selector.scrollToTop());
+
+			oJua
+				.on('onDragEnter', () => this.dragOverEnter(true))
+				.on('onDragLeave', () => this.dragOverEnter(false))
+				.on('onBodyDragEnter', () => this.dragOver(true))
+				.on('onBodyDragLeave', () => this.dragOver(false))
+				.on('onSelect', (sUid, oData) => {
+					if (sUid && oData && 'message/rfc822' === oData.Type) {
+						MessageUserStore.listLoading(true);
+						return true;
+					}
+
+					return false;
+				})
+				.on('onComplete', () => rl.app.reloadMessageList(true, true));
 		}
-	}
 
-	initShortcuts() {
+		// initShortcuts
+
 		shortcuts.add('enter,open', '', Scope.MessageList, () => {
 			if (MessageUserStore.message() && this.useAutoSelect()) {
 				dispatchEvent(new CustomEvent('mailbox.message-view.toggle-full-screen'));
@@ -855,6 +881,10 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 		shortcuts.add('arrowleft', 'meta', Scope.MessageView, ()=>false);
 		shortcuts.add('arrowright', 'meta', Scope.MessageView, ()=>false);
+
+		if (!ThemeStore.isMobile() && Settings.capa(Capa.Prefetch)) {
+			ifvisible.idle(this.prefetchNextTick.bind(this));
+		}
 	}
 
 	prefetchNextTick() {
@@ -893,42 +923,5 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			PROC: QuotaUserStore.percentage(),
 			LIMIT: FileInfo.friendlySize(QuotaUserStore.quota())
 		}).replace(/<[^>]+>/g, '');
-	}
-
-	initUploaderForAppend() {
-		if (!Settings.app('allowAppendMessage') || !this.dragOverArea()) {
-			return false;
-		}
-
-		const oJua = new Jua({
-			action: serverRequest('Append'),
-			name: 'AppendFile',
-			queueSize: 1,
-			multipleSizeLimit: 1,
-			hidden: {
-				Folder: () => FolderUserStore.currentFolderFullNameRaw()
-			},
-			dragAndDropElement: this.dragOverArea(),
-			dragAndDropBodyElement: this.dragOverBodyArea()
-		});
-
-		this.dragOver.subscribe(value => value && this.selector.scrollToTop());
-
-		oJua
-			.on('onDragEnter', () => this.dragOverEnter(true))
-			.on('onDragLeave', () => this.dragOverEnter(false))
-			.on('onBodyDragEnter', () => this.dragOver(true))
-			.on('onBodyDragLeave', () => this.dragOver(false))
-			.on('onSelect', (sUid, oData) => {
-				if (sUid && oData && 'message/rfc822' === oData.Type) {
-					MessageUserStore.listLoading(true);
-					return true;
-				}
-
-				return false;
-			})
-			.on('onComplete', () => rl.app.reloadMessageList(true, true));
-
-		return !!oJua;
 	}
 }

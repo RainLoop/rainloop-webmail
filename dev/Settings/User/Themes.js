@@ -52,23 +52,8 @@ export class ThemesUserSettings {
 			}))
 		);
 
-		this.initUploader();
-	}
+		// initUploader
 
-	onShow() {
-		this.background.error('');
-	}
-
-	clearBackground() {
-		if (this.capaUserBackground()) {
-			Remote.clearUserBackground(() => {
-				this.background.name('');
-				this.background.hash('');
-			});
-		}
-	}
-
-	initUploader() {
 		if (this.background.uploaderButton() && this.capaUserBackground()) {
 			const oJua = new Jua({
 				action: serverRequest('UploadBackground'),
@@ -117,6 +102,19 @@ export class ThemesUserSettings {
 
 					return true;
 				});
+		}
+	}
+
+	onShow() {
+		this.background.error('');
+	}
+
+	clearBackground() {
+		if (this.capaUserBackground()) {
+			Remote.clearUserBackground(() => {
+				this.background.name('');
+				this.background.hash('');
+			});
 		}
 	}
 }

@@ -312,7 +312,7 @@ export function startScreens(screensClasses) {
 	setTimeout(() => $htmlCL.add('rl-started-delay'), 200);
 }
 
-function decorateKoCommands(thisArg, commands) {
+export function decorateKoCommands(thisArg, commands) {
 	Object.entries(commands).forEach(([key, canExecute]) => {
 		let command = thisArg[key],
 			fn = (...args) => fn.enabled() && fn.canExecute() && command.apply(thisArg, args);
@@ -330,29 +330,3 @@ function decorateKoCommands(thisArg, commands) {
 	});
 }
 ko.decorateCommands = decorateKoCommands;
-
-/**
- * @param {miced} $items
- * @returns {Function}
- */
-function settingsMenuKeysHandler(items) {
-	return ((event, handler)=>{
-		let index = items.length;
-		if (event && index) {
-			while (index-- && !items[index].matches('.selected'));
-			if (handler && 'arrowup' === handler.shortcut) {
-				index && --index;
-			} else if (index < items.length - 1) {
-				++index;
-			}
-
-			const resultHash = items[index].href;
-			resultHash && rl.route.setHash(resultHash, false, true);
-		}
-	}).throttle(200);
-}
-
-export {
-	decorateKoCommands,
-	settingsMenuKeysHandler
-};

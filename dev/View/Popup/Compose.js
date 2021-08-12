@@ -179,7 +179,6 @@ class ComposePopupView extends AbstractViewPopup {
 
 			composeUploaderButton: null,
 			composeUploaderDropPlace: null,
-			dragAndDropEnabled: false,
 			attacheMultipleAllowed: false,
 			addAttachmentEnabled: false,
 
@@ -1090,7 +1089,127 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	onBuild(dom) {
-		this.initUploader();
+		// initUploader
+
+		if (this.composeUploaderButton()) {
+			const uploadCache = {},
+				attachmentSizeLimit = pInt(SettingsGet('AttachmentLimit')),
+				oJua = new Jua({
+					action: serverRequest('Upload'),
+					name: 'uploader',
+					queueSize: 2,
+					multipleSizeLimit: 50,
+					clickElement: this.composeUploaderButton(),
+					dragAndDropElement: this.composeUploaderDropPlace()
+				});
+
+			oJua
+				// .on('onLimitReached', (limit) => {
+				// 	alert(limit);
+				// })
+				.on('onDragEnter', () => {
+					this.dragAndDropOver(true);
+				})
+				.on('onDragLeave', () => {
+					this.dragAndDropOver(false);
+				})
+				.on('onBodyDragEnter', () => {
+					this.attachmentsPlace(true);
+					this.dragAndDropVisible(true);
+				})
+				.on('onBodyDragLeave', () => {
+					this.dragAndDropVisible(false);
+				})
+				.on('onProgress', (id, loaded, total) => {
+					let item = uploadCache[id];
+					if (!item) {
+						item = this.getAttachmentById(id);
+						if (item) {
+							uploadCache[id] = item;
+						}
+					}
+
+					if (item) {
+						item.progress(Math.floor((loaded / total) * 100));
+					}
+				})
+				.on('onSelect', (sId, oData) => {
+					this.dragAndDropOver(false);
+
+					const fileName = undefined === oData.FileName ? '' : oData.FileName.toString(),
+						size = pInt(oData.Size, null),
+						attachment = new ComposeAttachmentModel(sId, fileName, size);
+
+					attachment.cancel = this.cancelAttachmentHelper(sId, oJua);
+
+					this.attachments.push(attachment);
+
+					this.attachmentsPlace(true);
+
+					if (0 < size && 0 < attachmentSizeLimit && attachmentSizeLimit < size) {
+						attachment
+							.waiting(false)
+							.uploading(true)
+							.complete(true)
+							.error(i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
+
+						return false;
+					}
+
+					return true;
+				})
+				.on('onStart', (id) => {
+					let item = uploadCache[id];
+					if (!item) {
+						item = this.getAttachmentById(id);
+						if (item) {
+							uploadCache[id] = item;
+						}
+					}
+
+					if (item) {
+						item
+							.waiting(false)
+							.uploading(true)
+							.complete(false);
+					}
+				})
+				.on('onComplete', (id, result, data) => {
+					const attachment = this.getAttachmentById(id),
+						errorCode = data && data.Result && data.Result.ErrorCode ? data.Result.ErrorCode : null,
+						attachmentJson = result && data && data.Result && data.Result.Attachment ? data.Result.Attachment : null;
+
+					let error = '';
+					if (null !== errorCode) {
+						error = getUploadErrorDescByCode(errorCode);
+					} else if (!attachmentJson) {
+						error = i18n('UPLOAD/ERROR_UNKNOWN');
+					}
+
+					if (attachment) {
+						if (error && error.length) {
+							attachment
+								.waiting(false)
+								.uploading(false)
+								.complete(true)
+								.error(error);
+						} else if (attachmentJson) {
+							attachment
+								.waiting(false)
+								.uploading(false)
+								.complete(true);
+
+							attachment.initByUploadJson(attachmentJson);
+						}
+
+						if (undefined === uploadCache[id]) {
+							delete uploadCache[id];
+						}
+					}
+				});
+
+			this.addAttachmentEnabled(true);
+		}
 
 		shortcuts.add('q', 'meta', Scope.Compose, ()=>false);
 		shortcuts.add('w', 'meta', Scope.Compose, ()=>false);
@@ -1178,132 +1297,6 @@ class ComposePopupView extends AbstractViewPopup {
 				oJua && oJua.cancel(id);
 			}
 		};
-	}
-
-	initUploader() {
-		if (this.composeUploaderButton()) {
-			const uploadCache = {},
-				attachmentSizeLimit = pInt(SettingsGet('AttachmentLimit')),
-				oJua = new Jua({
-					action: serverRequest('Upload'),
-					name: 'uploader',
-					queueSize: 2,
-					multipleSizeLimit: 50,
-					clickElement: this.composeUploaderButton(),
-					dragAndDropElement: this.composeUploaderDropPlace()
-				});
-
-			if (oJua) {
-				oJua
-					// .on('onLimitReached', (limit) => {
-					// 	alert(limit);
-					// })
-					.on('onDragEnter', () => {
-						this.dragAndDropOver(true);
-					})
-					.on('onDragLeave', () => {
-						this.dragAndDropOver(false);
-					})
-					.on('onBodyDragEnter', () => {
-						this.attachmentsPlace(true);
-						this.dragAndDropVisible(true);
-					})
-					.on('onBodyDragLeave', () => {
-						this.dragAndDropVisible(false);
-					})
-					.on('onProgress', (id, loaded, total) => {
-						let item = uploadCache[id];
-						if (!item) {
-							item = this.getAttachmentById(id);
-							if (item) {
-								uploadCache[id] = item;
-							}
-						}
-
-						if (item) {
-							item.progress(Math.floor((loaded / total) * 100));
-						}
-					})
-					.on('onSelect', (sId, oData) => {
-						this.dragAndDropOver(false);
-
-						const fileName = undefined === oData.FileName ? '' : oData.FileName.toString(),
-							size = pInt(oData.Size, null),
-							attachment = new ComposeAttachmentModel(sId, fileName, size);
-
-						attachment.cancel = this.cancelAttachmentHelper(sId, oJua);
-
-						this.attachments.push(attachment);
-
-						this.attachmentsPlace(true);
-
-						if (0 < size && 0 < attachmentSizeLimit && attachmentSizeLimit < size) {
-							attachment
-								.waiting(false)
-								.uploading(true)
-								.complete(true)
-								.error(i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
-
-							return false;
-						}
-
-						return true;
-					})
-					.on('onStart', (id) => {
-						let item = uploadCache[id];
-						if (!item) {
-							item = this.getAttachmentById(id);
-							if (item) {
-								uploadCache[id] = item;
-							}
-						}
-
-						if (item) {
-							item
-								.waiting(false)
-								.uploading(true)
-								.complete(false);
-						}
-					})
-					.on('onComplete', (id, result, data) => {
-						const attachment = this.getAttachmentById(id),
-							errorCode = data && data.Result && data.Result.ErrorCode ? data.Result.ErrorCode : null,
-							attachmentJson = result && data && data.Result && data.Result.Attachment ? data.Result.Attachment : null;
-
-						let error = '';
-						if (null !== errorCode) {
-							error = getUploadErrorDescByCode(errorCode);
-						} else if (!attachmentJson) {
-							error = i18n('UPLOAD/ERROR_UNKNOWN');
-						}
-
-						if (attachment) {
-							if (error && error.length) {
-								attachment
-									.waiting(false)
-									.uploading(false)
-									.complete(true)
-									.error(error);
-							} else if (attachmentJson) {
-								attachment
-									.waiting(false)
-									.uploading(false)
-									.complete(true);
-
-								attachment.initByUploadJson(attachmentJson);
-							}
-
-							if (undefined === uploadCache[id]) {
-								delete uploadCache[id];
-							}
-						}
-					});
-
-				this.addAttachmentEnabled(true).dragAndDropEnabled(true);
-			} else {
-				this.addAttachmentEnabled(false).dragAndDropEnabled(false);
-			}
-		}
 	}
 
 	/**
