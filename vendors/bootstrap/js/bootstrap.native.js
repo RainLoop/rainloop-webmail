@@ -88,28 +88,6 @@
 			self.toggle = () => element.open ? self.hide() : self.show();
 			open(false);
 			element.Dropdown = self;
-		},
-
-		Tab: class {
-			constructor(element) {
-				this.element = element
-				element.Tab = this;
-				element.addEventListener('click', e => {
-					e.preventDefault();
-					this.show();
-				});
-			}
-
-			show() {
-				const el = this.element, li = el.closest('li');
-				if (!li.classList.contains('active')) {
-					const previous = el.closest('ul').querySelector('.active a');
-					previous.closest('li').classList.remove('active');
-					doc.querySelector(previous.getAttribute('href')).classList.remove('active');
-					li.classList.add('active');
-					doc.querySelector(el.getAttribute('href')).classList.add('active');
-				}
-			}
 		}
 	};
 

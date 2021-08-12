@@ -10,32 +10,25 @@ const
 	toArray = v => Array.isArray(v) ? v : v.split(/\s*,\s*/),
 
 	keydown = event => {
-		let key = (event.key || event.code || '').toLowerCase().replace(' ','space'),
+		let key = (event.key || '').toLowerCase().replace(' ','space'),
 			scopes = [];
 		scope[key] && scopes.push(scope[key]);
 		_scope !== 'all' && _scopes.all[key] && scopes.push(_scopes.all[key]);
 		if (scopes.length && win.shortcuts.filter(event.target)) {
-			let modifiers = [];
-			event.altKey && modifiers.push('alt');
-			event.ctrlKey && modifiers.push('ctrl');
-			event.metaKey && modifiers.push('meta');
-			event.shiftKey && modifiers.push('shift');
-			modifiers = modifiers.join('+');
+			let modifiers = ['alt','ctrl','meta','shift'].filter(v => event[v+'Key']).join('+');
 			scopes.forEach(actions => {
-				if (actions[modifiers]) {
-					// for each potential shortcut
-					actions[modifiers].forEach(cmd => {
-						try {
-							// call the handler and stop the event if neccessary
-							if (!event.defaultPrevented && cmd(event) === false) {
-								event.preventDefault();
-								event.stopPropagation();
-							}
-						} catch (e) {
-							console.error(e);
+				// for each potential shortcut
+				actions[modifiers] && actions[modifiers].forEach(cmd => {
+					try {
+						// call the handler and stop the event if neccessary
+						if (!event.defaultPrevented && cmd(event) === false) {
+							event.preventDefault();
+							event.stopPropagation();
 						}
-					});
-				}
+					} catch (e) {
+						console.error(e);
+					}
+				});
 			});
 		}
 	};
