@@ -56,8 +56,8 @@ export default App => {
 			rl.route.root();
 			setTimeout(() => (Settings.app('inIframe') ? parent : window).location.reload(), 100);
 		},
-		off: () => hasher.changed.active = false,
-		on: () => hasher.changed.active = true,
+		off: () => hasher.active = false,
+		on: () => hasher.active = true,
 		/**
 		 * @param {string} sHash
 		 * @param {boolean=} silence = false
@@ -70,11 +70,11 @@ export default App => {
 			const cmd = replace ? 'replaceHash' : 'setHash';
 
 			if (silence) {
-				hasher.changed.active = false;
+				hasher.active = false;
 				hasher[cmd](hash);
-				hasher.changed.active = true;
+				hasher.active = true;
 			} else {
-				hasher.changed.active = true;
+				hasher.active = true;
 				hasher[cmd](hash);
 				hasher.setHash(hash);
 			}

@@ -28,7 +28,7 @@
         if (_hash !== newHash) {
             var oldHash = _hash;
             _hash = newHash; //should come before event dispatch to make sure user can get proper value inside event handler
-            hasher.changed.dispatch(_trimHash(newHash), _trimHash(oldHash));
+            hasher.dispatch(_trimHash(newHash), _trimHash(oldHash));
         }
     },
     _checkHistory = () => {
@@ -64,13 +64,9 @@
          * - pass current hash as 1st parameter to listeners and previous hash value as 2nd parameter.
          * @type signals.Signal
          */
-        changed : {
-            active : true,
-            add : callback => _bindings.push(callback),
-            dispatch : function(...args) {
-                this.active && _bindings.forEach(callback => callback(...args));
-            }
-        },
+        active : true,
+        add : callback => _bindings.push(callback),
+        dispatch : (...args) => hasher.active && _bindings.forEach(callback => callback(...args)),
 
         /**
          * Start listening/dispatching changes in the hash/history.
@@ -79,14 +75,14 @@
          * </ul>
          */
         init : () => {
-            hasher.init = ()=>{};
+            hasher.init = ()=>0;
             _hash = _getWindowHash();
 
             //thought about branching/overloading hasher.init() to avoid checking multiple times but
             //don't think worth doing it since it probably won't be called multiple times.
             addEventListener('hashchange', _checkHistory);
 
-            hasher.changed.dispatch(_trimHash(_hash));
+            hasher.dispatch(_trimHash(_hash));
         },
 
         /**
