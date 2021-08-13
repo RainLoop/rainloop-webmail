@@ -141,7 +141,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		FolderUserStore.archiveFolder(normalizeFolder(SettingsGet('ArchiveFolder')));
 
 		if (update) {
-			rl.app.Remote.saveSystemFolders(()=>{}, {
+			rl.app.Remote.saveSystemFolders(()=>0, {
 				SentFolder: FolderUserStore.sentFolder(),
 				DraftFolder: FolderUserStore.draftFolder(),
 				SpamFolder: FolderUserStore.spamFolder(),

@@ -694,7 +694,7 @@ class AppUser extends AbstractApp {
 						folder.messageCountUnread(folder.messageCountUnread() - alreadyUnread);
 					}
 
-					Remote.messageSetSeen(()=>{}, sFolderFullNameRaw, rootUids, true);
+					Remote.messageSetSeen(()=>0, sFolderFullNameRaw, rootUids, true);
 					break;
 
 				case MessageSetAction.UnsetSeen:
@@ -707,7 +707,7 @@ class AppUser extends AbstractApp {
 						folder.messageCountUnread(folder.messageCountUnread() - alreadyUnread + rootUids.length);
 					}
 
-					Remote.messageSetSeen(()=>{}, sFolderFullNameRaw, rootUids, false);
+					Remote.messageSetSeen(()=>0, sFolderFullNameRaw, rootUids, false);
 					break;
 
 				case MessageSetAction.SetFlag:
@@ -715,7 +715,7 @@ class AppUser extends AbstractApp {
 						MessageFlagsCache.storeBySetAction(sFolderFullNameRaw, sSubUid, iSetAction)
 					);
 
-					Remote.messageSetFlagged(()=>{}, sFolderFullNameRaw, rootUids, true);
+					Remote.messageSetFlagged(()=>0, sFolderFullNameRaw, rootUids, true);
 					break;
 
 				case MessageSetAction.UnsetFlag:
@@ -723,7 +723,7 @@ class AppUser extends AbstractApp {
 						MessageFlagsCache.storeBySetAction(sFolderFullNameRaw, sSubUid, iSetAction)
 					);
 
-					Remote.messageSetFlagged(()=>{}, sFolderFullNameRaw, rootUids, false);
+					Remote.messageSetFlagged(()=>0, sFolderFullNameRaw, rootUids, false);
 					break;
 				// no default
 			}
@@ -968,7 +968,7 @@ class AppUser extends AbstractApp {
 						}, 1000);
 
 						setTimeout(this.quota, 5000);
-						setTimeout(() => Remote.appDelayStart(()=>{}), 35000);
+						setTimeout(() => Remote.appDelayStart(()=>0), 35000);
 
 						// When auto-login is active
 						if (

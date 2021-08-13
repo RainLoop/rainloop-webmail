@@ -83,7 +83,7 @@ let __themeTimer = 0,
  * @param {function=} themeTrigger = noop
  * @returns {void}
  */
-export function changeTheme(value, themeTrigger = ()=>{}) {
+export function changeTheme(value, themeTrigger = ()=>0) {
 	const themeStyle = elementById('app-theme-style'),
 		clearTimer = () => {
 			__themeTimer = setTimeout(() => themeTrigger(SaveSettingsStep.Idle), 1000);

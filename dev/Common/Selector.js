@@ -218,9 +218,9 @@ export class Selector {
 
 	itemSelected(item) {
 		if (this.isListChecked()) {
-			item || (this.oCallbacks.ItemSelect || (()=>{}))(null);
+			item || (this.oCallbacks.ItemSelect || (()=>0))(null);
 		} else if (item) {
-			(this.oCallbacks.ItemSelect || (()=>{}))(item);
+			(this.oCallbacks.ItemSelect || (()=>0))(item);
 		}
 	}
 
@@ -258,7 +258,7 @@ export class Selector {
 					const item = getItem(this.sItemSelector);
 					if (item) {
 						this.focusedItem(item);
-						(this.oCallbacks.MiddleClick || (()=>{}))(item);
+						(this.oCallbacks.MiddleClick || (()=>0))(item);
 					}
 				}
 			});

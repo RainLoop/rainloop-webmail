@@ -59,7 +59,7 @@ class FolderSystemPopupView extends AbstractViewPopup {
 			},
 			fSaveSystemFolders = (()=>{
 				fSetSystemFolders();
-				Remote.saveSystemFolders(()=>{}, {
+				Remote.saveSystemFolders(()=>0, {
 					SentFolder: FolderUserStore.sentFolder(),
 					DraftFolder: FolderUserStore.draftFolder(),
 					SpamFolder: FolderUserStore.spamFolder(),

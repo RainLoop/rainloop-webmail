@@ -27,15 +27,13 @@ export const ViewType = {
  * @returns {Function}
  */
 export function createCommand(fExecute, fCanExecute = true) {
-	let fResult = null;
-
-	fResult = fExecute
+	let fResult = fExecute
 		? (...args) => {
 			if (fResult && fResult.canExecute && fResult.canExecute()) {
 				fExecute.apply(null, args);
 			}
 			return false;
-		} : ()=>{};
+		} : ()=>0;
 	fResult.enabled = ko.observable(true);
 	fResult.isCommand = true;
 

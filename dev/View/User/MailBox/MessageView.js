@@ -646,7 +646,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 		let oMessage = MessageUserStore.message()
 		if (oMessage && oMessage.readReceipt()) {
 			Remote.sendReadReceiptMessage(
-				()=>{},
+				()=>0,
 				oMessage.folder,
 				oMessage.uid,
 				oMessage.readReceipt(),

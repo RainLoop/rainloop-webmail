@@ -44,7 +44,7 @@ export class AbstractScreen {
 			const routes = this.routes();
 			if (arrayLength(routes)) {
 				let route = new Crossroads(),
-					fMatcher = (this.onRoute || (()=>{})).bind(this);
+					fMatcher = (this.onRoute || (()=>0)).bind(this);
 
 				routes.forEach(item => item && route && (route.addRoute(item[0], fMatcher).rules = item[1]));
 

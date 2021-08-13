@@ -500,7 +500,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 							MessageFlagsCache.clearFolder(sFolderFullNameRaw);
 						}
 
-						Remote.messageSetSeenToAll(()=>{}, sFolderFullNameRaw, true, sThreadUid ? uids : null);
+						Remote.messageSetSeenToAll(()=>0, sFolderFullNameRaw, true, sThreadUid ? uids : null);
 						break;
 					case MessageSetAction.UnsetSeen:
 						folder = getFolderFromCacheList(sFolderFullNameRaw);
@@ -526,7 +526,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 							MessageFlagsCache.clearFolder(sFolderFullNameRaw);
 						}
 
-						Remote.messageSetSeenToAll(()=>{}, sFolderFullNameRaw, false, sThreadUid ? uids : null);
+						Remote.messageSetSeenToAll(()=>0, sFolderFullNameRaw, false, sThreadUid ? uids : null);
 						break;
 					// no default
 				}
