@@ -99,9 +99,8 @@ class PluginPopupView extends AbstractViewPopup {
 		shortcuts.add('escape', '', Scope.All, () => {
 			if (this.modalVisibility()) {
 				this.tryToClosePopup();
+				return false;
 			}
-
-			return false;
 		});
 	}
 }

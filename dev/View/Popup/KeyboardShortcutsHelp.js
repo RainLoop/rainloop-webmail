@@ -2,9 +2,10 @@ import { Scope } from 'Common/Enums';
 
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-class KeyboardShortcutsHelpPopupView extends AbstractViewPopup {
+export class KeyboardShortcutsHelpPopupView extends AbstractViewPopup {
 	constructor() {
 		super('KeyboardShortcutsHelp');
+		this.metaKey = shortcuts.getMetaKey();
 	}
 
 	onBuild(dom) {
@@ -49,5 +50,3 @@ class KeyboardShortcutsHelpPopupView extends AbstractViewPopup {
 		);
 	}
 }
-
-export { KeyboardShortcutsHelpPopupView, KeyboardShortcutsHelpPopupView as default };

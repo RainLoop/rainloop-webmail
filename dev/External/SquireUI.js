@@ -9,7 +9,7 @@ const
 
 	i18n = (str, def) => rl.i18n(str) || def,
 
-	ctrlKey = shortcuts.getMetaKey().replace('meta','⌘') + ' + ',
+	ctrlKey = shortcuts.getMetaKey() + ' + ',
 
 	tpl = doc.createElement('template'),
 	clr = doc.createElement('input'),

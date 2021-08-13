@@ -1213,8 +1213,8 @@ class ComposePopupView extends AbstractViewPopup {
 		shortcuts.add('q', 'meta', Scope.Compose, ()=>false);
 		shortcuts.add('w', 'meta', Scope.Compose, ()=>false);
 
-		shortcuts.add('m,contextmenu', '', Scope.Compose, e => this.popupMenu(e));
-		shortcuts.add('m', 'ctrl', Scope.Compose, e => this.popupMenu(e));
+		shortcuts.add('contextmenu', '', Scope.Compose, e => this.popupMenu(e));
+		shortcuts.add('m', 'meta', Scope.Compose, e => this.popupMenu(e));
 
 		shortcuts.add('escape,close', '', Scope.Compose, () => {
 			this.skipCommand();
@@ -1229,7 +1229,7 @@ class ComposePopupView extends AbstractViewPopup {
 			this.saveCommand();
 			return false;
 		});
-		shortcuts.add('save', Scope.Compose, () => {
+		shortcuts.add('save', '', Scope.Compose, () => {
 			this.saveCommand();
 			return false;
 		});

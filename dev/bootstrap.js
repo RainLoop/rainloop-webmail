@@ -5,27 +5,6 @@ import { root } from 'Common/Links';
 
 export default App => {
 
-	addEventListener('keydown', event => {
-		event = event || window.event;
-		if (event && event.ctrlKey && !event.shiftKey && !event.altKey) {
-			if ('S' == event.key) {
-				event.preventDefault();
-			} else if ('A' == event.key) {
-				const sender = event.target;
-				if (
-					sender &&
-					('true' === '' + sender.contentEditable || (sender.matches && sender.matches('INPUT,TEXTAREA')))
-				) {
-					return;
-				}
-
-				getSelection().removeAllRanges();
-
-				event.preventDefault();
-			}
-		}
-	});
-
 	addEventListener('click', ()=>rl.Dropdowns.detectVisibility());
 
 	rl.app = App;
