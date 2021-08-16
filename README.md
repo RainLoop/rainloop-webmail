@@ -26,4 +26,4 @@ Information about installing the product, check the [documentation page](http://
 **GNU AFFERO GENERAL PUBLIC LICENSE Version 3 (AGPL)**.
 http://www.gnu.org/licenses/agpl-3.0.html
 
-Copyright (c) 2019 Rainloop Team
+Copyright (c) 2021 Rainloop Team
