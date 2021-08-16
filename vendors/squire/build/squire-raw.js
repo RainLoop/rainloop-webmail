@@ -32,12 +32,10 @@ const
 	ua = navigator.userAgent,
 
 	isMac = /Mac OS X/.test( ua ),
-	isWin = /Windows NT/.test( ua ),
 	isIOS = /iP(?:ad|hone|od)/.test( ua ) || ( isMac && !!navigator.maxTouchPoints ),
 
 	isGecko = /Gecko\//.test( ua ),
-	isEdge = /Edge\//.test( ua ),
-	isWebKit = !isEdge && /WebKit\//.test( ua ),
+	isWebKit = /WebKit\//.test( ua ),
 
 	ctrlKey = isMac ? 'meta-' : 'ctrl-',
 	osKey = isMac ? 'metaKey' : 'ctrlKey',
@@ -143,15 +141,7 @@ const
 		);
 	},
 	hasTagAttributes = ( node, tag, attributes ) => {
-		if ( node.nodeName !== tag ) {
-			return false;
-		}
-		for ( let attr in attributes ) {
-			if ( node.getAttribute( attr ) !== attributes[ attr ] ) {
-				return false;
-			}
-		}
-		return true;
+		return node.nodeName === tag && Object.entries(attributes).every(([k,v]) => node.getAttribute(k) === v);
 	},
 	getClosest = ( node, root, selector ) => {
 		node = (!node || node.closest ? node : node.parentElement);
@@ -213,31 +203,25 @@ const
 
 	setStyle = ( node, style ) => {
 		if (typeof style === 'object') {
-			for ( let p in style ) {
-				node.style[p] = style[p];
-			}
+			Object.entries(style).forEach(([k,v]) => node.style[k] = v);
 		} else if ( style !== undefined ) {
 			node.setAttribute( 'style', style );
 		}
 	},
 
 	createElement = ( tag, props, children ) => {
-		let el = doc.createElement( tag ),
-			attr, value;
+		let el = doc.createElement( tag );
 		if ( props instanceof Array ) {
 			children = props;
 			props = null;
 		}
-		if ( props ) {
-			for ( attr in props ) {
-				value = props[ attr ];
-				if ('style' === attr) {
-					setStyle( el, value );
-				} else if ( value !== undefined ) {
-					el.setAttribute( attr, value );
-				}
+		props && Object.entries(props).forEach(([k,v]) => {
+			if ('style' === k) {
+				setStyle( el, v );
+			} else if ( v !== undefined ) {
+				el.setAttribute( k, v );
 			}
-		}
+		});
 		children && el.append( ...children );
 		return el;
 	},
@@ -530,13 +514,12 @@ const
 
 		if ( prev && areAlike( prev, node ) ) {
 			if ( !isContainer( prev ) ) {
-				if ( isListItem ) {
-					block = createElement( 'DIV' );
-					block.append( empty( prev ) );
-					prev.append( block );
-				} else {
+				if ( !isListItem ) {
 					return;
 				}
+				block = createElement( 'DIV' );
+				block.append( empty( prev ) );
+				prev.append( block );
 			}
 			detach( node );
 			needsFix = !isContainer( node );
@@ -727,11 +710,11 @@ const
 
 		// Ensure root has a block-level element in it.
 		child = root.firstChild;
-		if ( !child || child.nodeName === 'BR' ) {
+		if ( child && child.nodeName !== 'BR' ) {
+			range.collapse( true );
+		} else {
 			fixCursor( root, root );
 			range.selectNodeContents( root.firstChild );
-		} else {
-			range.collapse( true );
 		}
 		return frag;
 	},
@@ -861,24 +844,13 @@ const
 
 		nodeRange.selectNode( node );
 
-		if ( partial ) {
-			// Node must not finish before range starts or start after range
-			// finishes.
-			let nodeEndBeforeStart = ( range.compareBoundaryPoints(
-					END_TO_START, nodeRange ) > -1 ),
-				nodeStartAfterEnd = ( range.compareBoundaryPoints(
-					START_TO_END, nodeRange ) < 1 );
-			return ( !nodeEndBeforeStart && !nodeStartAfterEnd );
-		}
-		else {
-			// Node must start after range starts and finish before range
-			// finishes
-			let nodeStartAfterStart = ( range.compareBoundaryPoints(
-					START_TO_START, nodeRange ) < 1 ),
-				nodeEndBeforeEnd = ( range.compareBoundaryPoints(
-					END_TO_END, nodeRange ) > -1 );
-			return ( nodeStartAfterStart && nodeEndBeforeEnd );
-		}
+		return partial
+			// Node must not finish before range starts or start after range finishes.
+			? range.compareBoundaryPoints( END_TO_START, nodeRange ) < 0
+				&& range.compareBoundaryPoints( START_TO_END, nodeRange ) > 0
+			// Node must start after range starts and finish before range finishes
+			: range.compareBoundaryPoints( START_TO_START, nodeRange ) < 1
+				&& range.compareBoundaryPoints( END_TO_END, nodeRange ) > -1;
 	},
 
 	moveRangeBoundariesDownTree = range => {
@@ -1002,8 +974,7 @@ const
 		} else if ( container !== root && isBlock( container ) ) {
 			block = container;
 		} else {
-			block = getNodeBefore( container, range.startOffset );
-			block = getNextBlock( block, root );
+			block = getNextBlock( getNodeBefore( container, range.startOffset ), root );
 		}
 		// Check the block actually intersects the range
 		return block && isNodeContainedInRange( range, block ) ? block : null;
@@ -1414,16 +1385,15 @@ const
 
 	replaceStyles = node => {
 		let style = node.style;
-		let attr, converter, css, newTreeBottom, newTreeTop, el;
+		let css, newTreeBottom, newTreeTop, el;
 
-		for ( attr in styleToSemantic ) {
-			converter = styleToSemantic[ attr ];
+		Object.entries(styleToSemantic).forEach(([attr,converter])=>{
 			css = style[ attr ];
 			if ( css && converter.regexp.test( css ) ) {
 				el = converter.replace( doc, css );
 				if ( el.nodeName === node.nodeName &&
 						el.className === node.className ) {
-					continue;
+					return;
 				}
 				if ( !newTreeTop ) {
 					newTreeTop = el;
@@ -1434,7 +1404,7 @@ const
 				newTreeBottom = el;
 				node.style[ attr ] = '';
 			}
-		}
+		});
 
 		if ( newTreeTop ) {
 			newTreeBottom.append( empty( node ) );
@@ -1681,13 +1651,6 @@ const
 		text = text.replace( NBSP, ' ' ); // Replace nbsp with regular space
 		node.remove(  );
 
-		// Firefox (and others?) returns unix line endings (\n) even on Windows.
-		// If on Windows, normalise to \r\n, since Notepad and some other crappy
-		// apps do not understand just \n.
-		if ( isWin ) {
-			text = text.replace( /\r?\n/g, '\r\n' );
-		}
-
 		if ( text !== html ) {
 			clipboardData.setData( 'text/html', html );
 		}
@@ -1696,20 +1659,14 @@ const
 	},
 
 	mergeObjects = ( base, extras, mayOverride ) => {
-		let prop, value;
-		if ( !base ) {
-			base = {};
-		}
-		if ( extras ) {
-			for ( prop in extras ) {
-				if ( mayOverride || !( prop in base ) ) {
-					value = extras[ prop ];
-					base[ prop ] = ( value && value.constructor === Object ) ?
-						mergeObjects( base[ prop ], value, mayOverride ) :
-						value;
-				}
+		base = base || {};
+		extras && Object.entries(extras).forEach(([prop,value])=>{
+			if ( mayOverride || !( prop in base ) ) {
+				base[ prop ] = ( value && value.constructor === Object ) ?
+					mergeObjects( base[ prop ], value, mayOverride ) :
+					value;
 			}
-		}
+		});
 		return base;
 	},
 
@@ -1777,13 +1734,8 @@ const
 	},
 
 	splitBlock = ( self, block, node, offset ) => {
-		let splitTag = tagAfterSplit[ block.nodeName ],
-			nodeAfterSplit = split( node, offset, block.parentNode, self._root ),
-			config = self._config;
-
-		if ( !splitTag ) {
-			splitTag = config.blockTag;
-		}
+		let splitTag = tagAfterSplit[ block.nodeName ] || self._config.blockTag,
+			nodeAfterSplit = split( node, offset, block.parentNode, self._root );
 
 		// Make sure the new node is the correct type.
 		if ( !hasTagAttributes( nodeAfterSplit, splitTag, {} ) ) {
@@ -1964,11 +1916,6 @@ function onKey ( event ) {
 		if ( event[osKey] ) { modifiers += ctrlKey; }
 		if ( event.shiftKey ) { modifiers += 'shift-'; }
 	}
-	// However, on Windows, shift-delete is apparently "cut" (WTF right?), so
-	// we want to let the browser handle shift-delete in this situation.
-	if ( isWin && event.shiftKey && key === 'delete' ) {
-		modifiers += 'shift-';
-	}
 
 	key = modifiers + key;
 
@@ -2004,7 +1951,7 @@ function onCut ( event ) {
 	this.saveUndoState( range );
 
 	// Edge only seems to support setting plain text as of 2016-03-11.
-	if ( !isEdge && event.clipboardData ) {
+	if ( event.clipboardData ) {
 		// Clipboard content should include all parents within block, or all
 		// parents up to root if selection across blocks
 		startBlock = getStartBlockOfRange( range, root );
@@ -2041,7 +1988,7 @@ function onCut ( event ) {
 
 function onCopy ( event ) {
 	// Edge only seems to support setting plain text as of 2016-03-11.
-	if ( !isEdge && event.clipboardData ) {
+	if ( event.clipboardData ) {
 		let range = this.getSelection(), root = this._root,
 			// Clipboard content should include all parents within block, or all
 			// parents up to root if selection across blocks
@@ -2141,15 +2088,13 @@ function onPaste ( event ) {
 		// indication there should be an HTML part. However, it does support
 		// access to image data, so we check for that first. Otherwise though,
 		// fall through to fallback clipboard handling methods
-		if ( !isEdge ) {
-			event.preventDefault();
-			if ( htmlItem && ( !choosePlain || !plainItem ) ) {
-				htmlItem.getAsString( html => self.insertHTML( html, true ) );
-			} else if ( plainItem ) {
-				plainItem.getAsString( text => self.insertPlainText( text, true ) );
-			}
-			return;
+		event.preventDefault();
+		if ( htmlItem && ( !choosePlain || !plainItem ) ) {
+			htmlItem.getAsString( html => self.insertHTML( html, true ) );
+		} else if ( plainItem ) {
+			plainItem.getAsString( text => self.insertPlainText( text, true ) );
 		}
+		return;
 	}
 
 	// Safari (and indeed many other OS X apps) copies stuff as text/rtf
@@ -2157,11 +2102,11 @@ function onPaste ( event ) {
 	// to get an HTML version is to fallback to letting the browser insert
 	// the content. Same for getting image data. *Sigh*.
 	types = clipboardData && clipboardData.types;
-	if ( !isEdge && types && (
-			indexOf( types, 'text/html' ) > -1 || (
+	if ( types && (
+			types.includes( 'text/html' ) || (
 				!isGecko &&
-				indexOf( types, 'text/plain' ) > -1 &&
-				indexOf( types, 'text/rtf' ) < 0 )
+				types.includes( 'text/plain') &&
+				!types.includes( 'text/rtf' ))
 			)) {
 		event.preventDefault();
 		// Abiword on Linux copies a plain text and html version, but the HTML
@@ -2171,9 +2116,7 @@ function onPaste ( event ) {
 		// text/plain item onto the clipboard. Why? Who knows.
 		if ( !choosePlain && ( data = clipboardData.getData( 'text/html' ) ) ) {
 			this.insertHTML( data, true );
-		} else if (
-				( data = clipboardData.getData( 'text/plain' ) ) ||
-				( data = clipboardData.getData( 'text/uri-list' ) ) ) {
+		} else if ( data = clipboardData.getData( 'text/plain' ) || clipboardData.getData( 'text/uri-list' ) ) {
 			this.insertPlainText( data, true );
 		}
 		return;
@@ -2186,21 +2129,20 @@ function onPaste ( event ) {
 function onDrop ( event ) {
 	let types = event.dataTransfer.types;
 	let l = types.length;
-	let hasPlain = false;
-	let hasHTML = false;
+	let hasData = false;
 	while ( l-- ) {
 		switch ( types[l] ) {
 		case 'text/plain':
-			hasPlain = true;
-			break;
 		case 'text/html':
-			hasHTML = true;
+			hasData = true;
 			break;
 		default:
 			return;
 		}
 	}
-	if ( hasHTML || hasPlain ) {
+
+//	if ( types.includes('text/plain') || types.includes('text/html') ) {
+	if ( hasData ) {
 		this.saveUndoState();
 	}
 }
@@ -2859,9 +2801,7 @@ class Squire
 			this._lastRange = range;
 			// If we're setting selection, that automatically, and synchronously, // triggers a focus event. So just store the selection and mark it as
 			// needing restore on focus.
-			if ( !this._isFocused ) {
-				this._restoreSelection = true;
-			} else {
+			if ( this._isFocused ) {
 				// iOS bug: if you don't focus the iframe before setting the
 				// selection, you can end up in a state where you type but the input
 				// doesn't get directed into the contenteditable area but is instead
@@ -2882,6 +2822,8 @@ class Squire
 					sel.removeAllRanges();
 					sel.addRange( range );
 				}
+			} else {
+				this._restoreSelection = true;
 			}
 		}
 		return this;
@@ -2989,11 +2931,8 @@ class Squire
 	// WebKit bug: https://bugs.webkit.org/show_bug.cgi?id=15256
 
 	_addZWS () {
-		if ( isWebKit ) {
-			this._hasZWS = true;
-			return doc.createTextNode( ZWS );
-		}
-		return doc.createTextNode( '' );
+		this._hasZWS = isWebKit;
+		return doc.createTextNode( isWebKit ? ZWS : '' );
 	}
 	_removeZWS () {
 		if ( this._hasZWS ) {
