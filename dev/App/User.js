@@ -537,8 +537,7 @@ class AppUser extends AbstractApp {
 			Remote.folderInformation(
 				(iError, data) => {
 					if (!iError && data.Result.Hash && data.Result.Folder) {
-						let uid = '',
-							check = false,
+						let check = false,
 							unreadCountChange = false;
 
 						const folderFromCache = getFolderFromCacheList(data.Result.Folder);
@@ -566,19 +565,16 @@ class AppUser extends AbstractApp {
 							}
 
 							if (data.Result.Flags) {
-								for (uid in data.Result.Flags) {
-									if (Object.prototype.hasOwnProperty.call(data.Result.Flags, uid)) {
-										check = true;
-										const flags = data.Result.Flags[uid];
-										MessageFlagsCache.storeByFolderAndUid(folderFromCache.fullNameRaw, uid.toString(), [
-											!!flags.IsUnseen,
-											!!flags.IsFlagged,
-											!!flags.IsAnswered,
-											!!flags.IsForwarded,
-											!!flags.IsReadReceipt
-										]);
-									}
-								}
+								Object.entries(data.Result.Flags).forEach(([uid,flags]) => {
+									check = true;
+									MessageFlagsCache.storeByFolderAndUid(folderFromCache.fullNameRaw, uid.toString(), [
+										!!flags.IsUnseen,
+										!!flags.IsFlagged,
+										!!flags.IsAnswered,
+										!!flags.IsForwarded,
+										!!flags.IsReadReceipt
+									]);
+								});
 
 								if (check) {
 									this.reloadFlagsCurrentMessageListAndMessageFromCache();
