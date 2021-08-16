@@ -35,8 +35,7 @@
 					],
 
 					removePlugins: 'liststyle' + (rl.settings.app('allowHtmlEditorBitiButtons') ? '' : ',bidi'),
-					removeButtons: 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,SelectAll'
-						+ (rl.settings.app('allowHtmlEditorSourceButton') ? '' : ',Source'),
+					removeButtons: 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,SelectAll',
 					removeDialogTabs: 'link:advanced;link:target;image:advanced;images:advanced',
 
 					extraPlugins: 'plain,signature',
