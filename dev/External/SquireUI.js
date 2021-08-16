@@ -336,7 +336,7 @@ class SquireUI
 		}
 
 		plain.className = 'squire-plain';
-		wysiwyg.className = 'squire-wysiwyg cke_editable';
+		wysiwyg.className = 'squire-wysiwyg';
 		this.mode = ''; // 'plain' | 'wysiwyg'
 		this.__plain = {
 			getRawData: () => this.plain.value,
@@ -349,18 +349,17 @@ class SquireUI
 		this.wysiwyg = wysiwyg;
 
 		toolbar.className = 'squire-toolbar btn-toolbar';
-		let touchTap;
-		for (let group in actions) {
+		let group, action, touchTap;
+		for (group in actions) {
+/*
 			if ('bidi' == group && !rl.settings.app('allowHtmlEditorBitiButtons')) {
 				continue;
 			}
+*/
 			let toolgroup = doc.createElement('div');
 			toolgroup.className = 'btn-group';
 			toolgroup.id = 'squire-toolgroup-'+group;
-			for (let action in actions[group]) {
-				if ('source' == action && !rl.settings.app('allowHtmlEditorSourceButton')) {
-					continue;
-				}
+			for (action in actions[group]) {
 				let cfg = actions[group][action], input, ev = 'click';
 				if (cfg.input) {
 					input = doc.createElement('input');

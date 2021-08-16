@@ -130,7 +130,6 @@ class ComposePopupView extends AbstractViewPopup {
 		this.allowContacts = AppUserStore.allowContacts();
 
 		this.bSkipNextHide = false;
-		this.editorDefaultType = SettingsUserStore.editorDefaultType;
 
 		this.capaOpenPGP = PgpUserStore.capaOpenPGP;
 
@@ -716,6 +715,8 @@ class ComposePopupView extends AbstractViewPopup {
 
 		this.autosaveStart();
 
+		this.viewModelDom.dataset.wysiwyg = SettingsUserStore.editorDefaultType();
+
 		if (AppUserStore.composeInEdit()) {
 			type = type || ComposeType.Empty;
 			if (ComposeType.Empty !== type) {
@@ -772,7 +773,7 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	isPlainEditor() {
-		let type = this.editorDefaultType();
+		let type = SettingsUserStore.editorDefaultType();
 		return EditorDefaultType.Html !== type && EditorDefaultType.HtmlForced !== type;
 	}
 
@@ -971,8 +972,8 @@ class ComposePopupView extends AbstractViewPopup {
 				editor.setHtml(sText);
 
 				if (
-					EditorDefaultType.PlainForced === this.editorDefaultType() ||
-					(!message.isHtml() && EditorDefaultType.HtmlForced !== this.editorDefaultType())
+					EditorDefaultType.PlainForced === SettingsUserStore.editorDefaultType() ||
+					(!message.isHtml() && EditorDefaultType.HtmlForced !== SettingsUserStore.editorDefaultType())
 				) {
 					editor.modePlain();
 				}
@@ -1256,7 +1257,7 @@ class ComposePopupView extends AbstractViewPopup {
 		ro.toolbar = dom.querySelector('.b-header-toolbar');
 		ro.els = [dom.querySelector('.textAreaParent'), dom.querySelector('.attachmentAreaParent')];
 
-		this.editor(editor => editor.modeWysiwyg());
+		this.editor(editor => editor[this.isPlainEditor()?'modePlain':'modeWysiwyg']());
 
 		// Fullscreen must be on app, else other popups fail
 		const el = doc.getElementById('rl-app');

@@ -30,7 +30,7 @@ export function pString(value) {
 export function inFocus() {
 	try {
 		return doc.activeElement && doc.activeElement.matches(
-			'input,textarea,.cke_editable'
+			'input,textarea,[contenteditable]'
 		);
 	} catch (e) {
 		return false;
