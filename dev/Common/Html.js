@@ -24,25 +24,42 @@ class HtmlEditor {
 	 * @param {Function=} onModeChange
 	 */
 	constructor(element, onBlur = null, onReady = null, onModeChange = null) {
-		this.editor;
 		this.blurTimer = 0;
 
-		this.__resizable = false;
-		this.__inited = false;
-
 		this.onBlur = onBlur;
-		this.onReady = onReady;
+		this.onReady = onReady ? [onReady] : [];
 		this.onModeChange = onModeChange;
-
-		this.element = element;
 
 		this.resize = (() => {
 			try {
-				this.editor && this.__resizable && this.editor.resize(element.clientWidth, element.clientHeight);
+				this.editor && this.editor.resize(element.clientWidth, element.clientHeight);
 			} catch (e) {} // eslint-disable-line no-empty
 		}).throttle(100);
 
-		this.init();
+		if (element) {
+			let editor;
+
+			const onReady = () => {
+				this.editor = editor;
+				this.resize();
+				this.onReady.forEach(fn => fn());
+			};
+
+			if (rl.createWYSIWYG) {
+				editor = rl.createWYSIWYG(element, onReady);
+			}
+			if (!editor) {
+				editor = new SquireUI(element);
+				setTimeout(onReady,1);
+			}
+
+			editor.on('blur', () => this.blurTrigger());
+			editor.on('focus', () => this.blurTimer && clearTimeout(this.blurTimer));
+			editor.on('mode', () => {
+				this.blurTrigger();
+				this.onModeChange && this.onModeChange(!this.isPlain());
+			});
+		}
 	}
 
 	blurTrigger() {
@@ -70,9 +87,10 @@ class HtmlEditor {
 	 * @returns {void}
 	 */
 	clearCachedSignature() {
-		this.editor && this.editor.execCommand('insertSignature', {
+		const fn = () => this.editor.execCommand('insertSignature', {
 			clearCache: true
 		});
+		this.editor ? fn() : this.onReady.push(fn);
 	}
 
 	/**
@@ -82,11 +100,12 @@ class HtmlEditor {
 	 * @returns {void}
 	 */
 	setSignature(signature, html, insertBefore = false) {
-		this.editor && this.editor.execCommand('insertSignature', {
+		const fn = () => this.editor.execCommand('insertSignature', {
 			isHtml: html,
 			insertBefore: insertBefore,
 			signature: signature
 		});
+		this.editor ? fn() : this.onReady.push(fn);
 	}
 
 	/**
@@ -140,17 +159,19 @@ class HtmlEditor {
 	}
 
 	setData(mode, data) {
-		if (this.editor && this.__inited) {
+		const fn = () => {
+			const editor = this.editor;
 			this.clearCachedSignature();
 			try {
-				this.editor.setMode(mode);
-				if (this.isPlain() && this.editor.plugins.plain && this.editor.__plain) {
-					this.editor.__plain.setRawData(data);
+				editor.setMode(mode);
+				if (this.isPlain() && editor.plugins.plain && editor.__plain) {
+					editor.__plain.setRawData(data);
 				} else {
-					this.editor.setData(data);
+					editor.setData(data);
 				}
 			} catch (e) { console.error(e); }
-		}
+		};
+		this.editor ? fn() : this.onReady.push(fn);
 	}
 
 	setHtml(html) {
@@ -159,42 +180,6 @@ class HtmlEditor {
 
 	setPlain(txt) {
 		this.setData('plain', txt);
-	}
-
-	init() {
-		if (this.element && !this.editor) {
-			const onReady = () => {
-				if (this.editor.removeMenuItem) {
-					this.editor.removeMenuItem('cut');
-					this.editor.removeMenuItem('copy');
-					this.editor.removeMenuItem('paste');
-				}
-
-				this.__resizable = true;
-				this.__inited = true;
-
-				this.resize();
-
-				this.onReady && this.onReady();
-			};
-
-			if (rl.createWYSIWYG) {
-				this.editor = rl.createWYSIWYG(this.element, onReady);
-			}
-			if (!this.editor) {
-				this.editor = new SquireUI(this.element);
-				setTimeout(onReady,1);
-			}
-
-			if (this.editor) {
-				this.editor.on('blur', () => this.blurTrigger());
-				this.editor.on('focus', () => this.blurTimer && clearTimeout(this.blurTimer));
-				this.editor.on('mode', () => {
-					this.blurTrigger();
-					this.onModeChange && this.onModeChange(!this.isPlain());
-				});
-			}
-		}
 	}
 
 	focus() {
