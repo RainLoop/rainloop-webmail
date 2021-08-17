@@ -4,7 +4,7 @@
 	<name>SnappyMail</name>
 	<summary>SnappyMail Webmail</summary>
 	<description>Simple, modern and fast web-based email client. After enabling in Nextcloud, go to Nextcloud admin panel, "Additionnal settings" and you will see a "SnappyMail webmail" section. There, click on the link to go to the SnappyMail admin panel. The default user/password is admin/12345. This version is based on SnappyMail 2.6.0 (2021-07).</description>
-	<version>2.6.0</version>
+	<version>2.6.2</version>
 	<licence>agpl</licence>
 	<author>SnappyMail Team, Nextgen-Networks, Tab Fitts, Nathan Kinkade, Pierre-Alain Bandinelli</author>
   <namespace>SnappyMail</namespace>
