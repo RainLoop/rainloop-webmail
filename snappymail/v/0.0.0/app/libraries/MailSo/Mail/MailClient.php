@@ -705,7 +705,7 @@ class MailClient
 			'Hash' => $this->GenerateFolderHash($sFolderName, $iCount, $iUnseenCount, $sUidNext, $sHighestModSeq),
 			'MessageCount' => $iCount,
 			'MessageUnseenCount' => $iUnseenCount,
-			'UidNext' => $sUidNext,
+			'UidNext' => (int) $sUidNext,
 			'Flags' => $aFlags,
 			'HighestModSeq' => $sHighestModSeq,
 			'NewMessages' => 'INBOX' === $sFolderName && \MailSo\Config::$CheckNewMessages ?

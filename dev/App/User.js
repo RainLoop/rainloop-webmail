@@ -536,59 +536,46 @@ class AppUser extends AbstractApp {
 		if (folder && folder.trim()) {
 			Remote.folderInformation(
 				(iError, data) => {
-					if (!iError && data.Result.Hash && data.Result.Folder) {
-						let check = false,
-							unreadCountChange = false;
-
-						const folderFromCache = getFolderFromCacheList(data.Result.Folder);
+					if (!iError && data.Result) {
+						const result = data.Result,
+							hash = getFolderHash(result.Folder),
+							folderFromCache = getFolderFromCacheList(result.Folder);
 						if (folderFromCache) {
 							folderFromCache.expires = Date.now();
 
-							if (data.Result.Hash) {
-								setFolderHash(data.Result.Folder, data.Result.Hash);
-							}
+							setFolderHash(result.Folder, result.Hash);
 
-							if (null != data.Result.MessageCount) {
-								folderFromCache.messageCountAll(data.Result.MessageCount);
-							}
+							folderFromCache.messageCountAll(result.MessageCount);
 
-							if (null != data.Result.MessageUnseenCount) {
-								if (pInt(folderFromCache.messageCountUnread()) !== pInt(data.Result.MessageUnseenCount)) {
-									unreadCountChange = true;
-								}
+							let unreadCountChange = (folderFromCache.messageCountUnread() !== result.MessageUnseenCount);
 
-								folderFromCache.messageCountUnread(data.Result.MessageUnseenCount);
-							}
+							folderFromCache.messageCountUnread(result.MessageUnseenCount);
 
 							if (unreadCountChange) {
 								MessageFlagsCache.clearFolder(folderFromCache.fullNameRaw);
 							}
 
-							if (data.Result.Flags) {
-								Object.entries(data.Result.Flags).forEach(([uid,flags]) => {
-									check = true;
-									MessageFlagsCache.storeByFolderAndUid(folderFromCache.fullNameRaw, uid.toString(), [
+							if (result.Flags.length) {
+								result.Flags.forEach(flags =>
+									MessageFlagsCache.storeByFolderAndUid(folderFromCache.fullNameRaw, flags.Uid.toString(), [
 										!!flags.IsUnseen,
 										!!flags.IsFlagged,
 										!!flags.IsAnswered,
 										!!flags.IsForwarded,
 										!!flags.IsReadReceipt
-									]);
-								});
+									])
+								);
 
-								if (check) {
-									this.reloadFlagsCurrentMessageListAndMessageFromCache();
-								}
+								this.reloadFlagsCurrentMessageListAndMessageFromCache();
 							}
 
 							MessageUserStore.initUidNextAndNewMessages(
 								folderFromCache.fullNameRaw,
-								data.Result.UidNext,
-								data.Result.NewMessages
+								result.UidNext,
+								result.NewMessages
 							);
 
-							const hash = getFolderHash(data.Result.Folder);
-							if (!hash || unreadCountChange || data.Result.Hash !== hash) {
+							if (!hash || unreadCountChange || result.Hash !== hash) {
 								if (folderFromCache.fullNameRaw === FolderUserStore.currentFolderFullNameRaw()) {
 									this.reloadMessageList();
 								} else if (getFolderInboxName() === folderFromCache.fullNameRaw) {
@@ -616,26 +603,17 @@ class AppUser extends AbstractApp {
 					oData.Result.List.forEach(item => {
 						const hash = getFolderHash(item.Folder),
 							folder = getFolderFromCacheList(item.Folder);
-						let unreadCountChange = false;
 
 						if (folder) {
 							folder.expires = utc;
 
-							if (item.Hash) {
-								setFolderHash(item.Folder, item.Hash);
-							}
+							setFolderHash(item.Folder, item.Hash);
 
-							if (null != item.MessageCount) {
-								folder.messageCountAll(item.MessageCount);
-							}
+							folder.messageCountAll(item.MessageCount);
 
-							if (null != item.MessageUnseenCount) {
-								if (pInt(folder.messageCountUnread()) !== pInt(item.MessageUnseenCount)) {
-									unreadCountChange = true;
-								}
+							let unreadCountChange = folder.messageCountUnread() !== item.MessageUnseenCount;
 
-								folder.messageCountUnread(item.MessageUnseenCount);
-							}
+							folder.messageCountUnread(item.MessageUnseenCount);
 
 							if (unreadCountChange) {
 								MessageFlagsCache.clearFolder(folder.fullNameRaw);

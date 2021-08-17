@@ -357,22 +357,21 @@ trait Folders
 				$sFolder, $sPrevUidNext, $aFlagsFilteredUids
 			);
 
-			if (isset($aInboxInformation['Flags']) && \is_array($aInboxInformation['Flags']))
+			foreach ($aInboxInformation['Flags'] as $iUid => $aFlags)
 			{
-				foreach ($aInboxInformation['Flags'] as $iUid => $aFlags)
-				{
-					$aLowerFlags = array_map('strtolower', $aFlags);
-					$aInboxInformation['Flags'][$iUid] = array(
-						'IsUnseen' => \in_array('\\unseen', $aLowerFlags) || !\in_array('\\seen', $aLowerFlags),
-						'IsSeen' => in_array('\\seen', $aLowerFlags),
-						'IsFlagged' => in_array('\\flagged', $aLowerFlags),
-						'IsAnswered' => in_array('\\answered', $aLowerFlags),
-						'IsDeleted' => in_array('\\deleted', $aLowerFlags),
-						'IsForwarded' => 0 < strlen($sForwardedFlag) && in_array(strtolower($sForwardedFlag), $aLowerFlags),
-						'IsReadReceipt' => 0 < strlen($sReadReceiptFlag) && in_array(strtolower($sReadReceiptFlag), $aLowerFlags)
-					);
-				}
+				$aLowerFlags = \array_map('strtolower', $aFlags);
+				$aInboxInformation['Flags'][$iUid] = array(
+					'Uid' => $iUid,
+					'IsUnseen' => \in_array('\\unseen', $aLowerFlags) || !\in_array('\\seen', $aLowerFlags),
+					'IsSeen' => \in_array('\\seen', $aLowerFlags),
+					'IsFlagged' => \in_array('\\flagged', $aLowerFlags),
+					'IsAnswered' => \in_array('\\answered', $aLowerFlags),
+					'IsDeleted' => \in_array('\\deleted', $aLowerFlags),
+					'IsForwarded' => $sForwardedFlag && \in_array(\strtolower($sForwardedFlag), $aLowerFlags),
+					'IsReadReceipt' => $sReadReceiptFlag && \in_array(\strtolower($sReadReceiptFlag), $aLowerFlags)
+				);
 			}
+			$aInboxInformation['Flags'] = \array_values($aInboxInformation['Flags']);
 		}
 		catch (\Throwable $oException)
 		{
@@ -409,7 +408,12 @@ trait Folders
 						$aInboxInformation = $this->MailClient()->FolderInformation($sFolder, '', array());
 						if (isset($aInboxInformation['Folder']))
 						{
-							$aResult['List'][] = $aInboxInformation;
+							$aResult['List'][] = [
+								'Folder' => $aInboxInformation['Folder'],
+								'Hash' => $aInboxInformation['Hash'],
+								'MessageCount' => $aInboxInformation['MessageCount'],
+								'MessageUnseenCount' => $aInboxInformation['MessageUnseenCount'],
+							];
 						}
 					}
 					catch (\Throwable $oException)
