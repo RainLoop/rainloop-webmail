@@ -250,11 +250,9 @@
 								<span class="buttonFull" data-bind="click: toggleFullScreen">
 									<i data-bind="css: { 'icon-arrows-out': !fullScreenMode(), 'icon-arrows-in': fullScreenMode }"></i>
 								</span>
-
-								<div class="line-loading e-strip-animation" data-bind="visible: messageLoadingThrottle()"></div>
-
 								<div class="loading g-ui-min-height-300" data-bind="visible: messageLoadingThrottle()">
-									<span class="text" data-i18n="GLOBAL/LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
+									<i class="icon-spinner"></i>
+									<span data-i18n="GLOBAL/LOADING"></span>
 								</div>
 							</div>
 

@@ -58,10 +58,8 @@
 				<div class="listEmptyList" data-bind="visible: 0 === contacts().length && '' === search() && !contacts.loading()"
 					data-i18n="CONTACTS/EMPTY_LIST"></div>
 				<div class="listEmptyListLoading" data-bind="visible: 0 === contacts().length && '' === search() && contacts.loading()">
+					<i class="icon-spinner"></i>
 					<span data-i18n="GLOBAL/LOADING"></span>
-					<span class="textLoadingAnimationD1">.</span>
-					<span class="textLoadingAnimationD2">.</span>
-					<span class="textLoadingAnimationD3">.</span>
 				</div>
 				<div class="listEmptySearchList" data-bind="visible: 0 === contacts().length && '' !== search() && !contacts.loading()"
 					data-i18n="CONTACTS/EMPTY_SEARCH"></div>
