@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/the-djmaze/snappymail">
-    <img src="https://snappymail.eu/static/img/logo-256x256.png">
+    <img src="https://snappymail.eu/static/img/logo-256x256-white.png">
   </a>
   <br>
   <h1>SnappyMail</h1>
