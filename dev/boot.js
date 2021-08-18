@@ -14,9 +14,11 @@ const
 		return data ? decodeURIComponent(data[2]) : null;
 	},
 
-	showError = () => {
+	showError = msg => {
+		let div = eId('loading-error');
+		div.append(' ' + msg);
 		eId('loading').hidden = true;
-		eId('loading-error').hidden = false;
+		div.hidden = false;
 	},
 
 	loadScript = src => {
@@ -26,7 +28,7 @@ const
 		return new Promise((resolve, reject) => {
 			const script = doc.createElement('script');
 			script.onload = () => resolve();
-			script.onerror = () => reject(new Error(src));
+			script.onerror = () => reject(new Error('Failed loading ' + src));
 			script.src = src;
 //			script.async = true;
 			doc.head.append(script);
@@ -71,9 +73,9 @@ win.rl = {
 			loadScript(appData.StaticLibJsLink)
 			.then(() => loadScript(appData.StaticAppJsLink))
 			.then(() => appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve())
-			.then(() => win.__APP_BOOT ? win.__APP_BOOT(showError) : showError())
+			.then(() => win.__APP_BOOT())
 			.catch(e => {
-				showError();
+				showError(e.message);
 				throw e;
 			});
 		} else {
