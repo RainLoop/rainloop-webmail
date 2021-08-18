@@ -1,7 +1,24 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine On
+
 	# Redirect cPanel
 	RewriteRule cpsess.* https://%{HTTP_HOST}/ [L,R=301]
+
+	RewriteCond %{HTTP:Accept-encoding} br
+	RewriteCond "%{REQUEST_FILENAME}\.br" -s
+	RewriteRule "^(.+\.js)$" "$1\.br" [L,T=text/javascript,QSA]
+
+	RewriteCond %{HTTP:Accept-encoding} gzip
+	RewriteCond "%{REQUEST_FILENAME}\.gz" -s
+	RewriteRule "^(.+\.js)$" "$1\.gz" [L,T=text/javascript,QSA]
+
+	RewriteCond %{HTTP:Accept-encoding} br
+	RewriteCond "%{REQUEST_FILENAME}\.br" -s
+	RewriteRule "^(.+\.css)$" "$1\.br" [L,T=text/css,QSA]
+
+	RewriteCond %{HTTP:Accept-encoding} gzip
+	RewriteCond "%{REQUEST_FILENAME}\.gz" -s
+	RewriteRule "^(.+\.css)$" "$1\.gz" [L,T=text/css,QSA]
 </IfModule>
 
 <IfModule mod_expires.c>
@@ -20,34 +37,18 @@
 </IfModule>
 
 <IfModule mod_headers.c>
-	Header set Cache-Control "public, max-age=31536000"
-	Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data:; style-src 'self' 'unsafe-inline'"
-	Header set Referrer-Policy "no-referrer"
+#	Header set Cache-Control "public, max-age=31536000"
+#	Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data:; style-src 'self' 'unsafe-inline'"
+#	Header set Referrer-Policy "no-referrer"
 	Header set Strict-Transport-Security "max-age=31536000"
 	Header set imagetoolbar "no"
-	Header set X-Content-Type-Options "nosniff"
-	Header set X-Frame-Options "DENY"
-	Header set X-XSS-Protection "1; mode=block"
+#	Header set X-Content-Type-Options "nosniff"
+#	Header set X-Frame-Options "DENY"
+#	Header set X-XSS-Protection "1; mode=block"
 	Header set Service-Worker-Allowed "/"
 
 	# Google FLoC
-	Header set Permissions-Policy "interest-cohort=()"
-
-	RewriteCond %{HTTP:Accept-encoding} br
-	RewriteCond "%{REQUEST_FILENAME}\.br" -s
-	RewriteRule "^(.+)" "$1\.br" [L,T=text/javascript,QSA]
-
-	RewriteCond %{HTTP:Accept-encoding} gzip
-	RewriteCond "%{REQUEST_FILENAME}\.gz" -s
-	RewriteRule "^(.+)" "$1\.gz" [L,T=text/javascript,QSA]
-
-	RewriteCond %{HTTP:Accept-encoding} br
-	RewriteCond "%{REQUEST_FILENAME}\.br" -s
-	RewriteRule "^(.+)" "$1\.br" [L,T=text/css,QSA]
-
-	RewriteCond %{HTTP:Accept-encoding} gzip
-	RewriteCond "%{REQUEST_FILENAME}\.gz" -s
-	RewriteRule "^(.+)" "$1\.gz" [L,T=text/css,QSA]
+#	Header set Permissions-Policy "interest-cohort=()"
 
 	<FilesMatch "(\.js\.br|\.css\.br)$">
 		SetEnv no-gzip 1
