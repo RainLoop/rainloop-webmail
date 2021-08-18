@@ -52,6 +52,15 @@
 		# non-gzipped css/js files separately.
 		Header append Vary Accept-Encoding
 	</FilesMatch>
+
+	<FilesMatch "(\.js\.br|\.js\.gz)$">
+		Header set Content-Type "application/javascript; charset=utf-8"
+		ForceType application/javascript
+	</FilesMatch>
+	<FilesMatch "(\.css\.br|\.css\.gz)$">
+		Header set Content-Type "text/css; charset=utf-8"
+		ForceType text/css
+	</FilesMatch>
 </IfModule>
 
 #<IfModule mod_brotli.c>
