@@ -32,35 +32,6 @@
 
 	# Google FLoC
 #	Header set Permissions-Policy "interest-cohort=()"
-
-	<FilesMatch "(\.js\.br|\.css\.br)$">
-		SetEnv no-gzip 1
-		SetEnv no-brotli 1
-		# Serve correct encoding type.
-		Header append Content-Encoding br
-		# Force proxies to cache brotli &
-		# non-brotli css/js files separately.
-		Header append Vary Accept-Encoding
-	</FilesMatch>
-
-	<FilesMatch "(\.js\.gz|\.css\.gz)$">
-		SetEnv no-gzip 1
-		SetEnv no-brotli 1
-		# Serve correct encoding type.
-		Header append Content-Encoding gzip
-		# Force proxies to cache gzipped &
-		# non-gzipped css/js files separately.
-		Header append Vary Accept-Encoding
-	</FilesMatch>
-
-	<FilesMatch "(\.js\.br|\.js\.gz)$">
-		Header set Content-Type "application/javascript; charset=utf-8"
-		ForceType application/javascript
-	</FilesMatch>
-	<FilesMatch "(\.css\.br|\.css\.gz)$">
-		Header set Content-Type "text/css; charset=utf-8"
-		ForceType text/css
-	</FilesMatch>
 </IfModule>
 
 #<IfModule mod_brotli.c>
