@@ -60,27 +60,21 @@ win.rl = {
 	},
 	setWindowTitle: title => {
 		title = null == title ? '' : '' + title;
-		if (RL_APP_DATA.Title) {
-			title += (title ? ' - ' : '') + RL_APP_DATA.Title;
-		}
-		doc.title = title;
+		doc.title = RL_APP_DATA.Title ? title + (title ? ' - ' : '') + RL_APP_DATA.Title : title;
 	},
 
 	initData: appData => {
 		RL_APP_DATA = appData;
-
-		if (appData) {
-			loadScript(appData.StaticLibJsLink)
+		appData
+		? loadScript(appData.StaticLibJsLink)
 			.then(() => loadScript(appData.StaticAppJsLink))
 			.then(() => appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve())
 			.then(() => win.__APP_BOOT())
 			.catch(e => {
 				showError(e.message);
 				throw e;
-			});
-		} else {
-			showError();
-		}
+			})
+		: showError();
 	}
 };
 
@@ -108,6 +102,6 @@ try {
 css.href = css.dataset.href;
 
 loadScript(`./?/${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().substr(2)}/`)
-	.then(() => {});
+	.then(() => 0);
 
 })(this);

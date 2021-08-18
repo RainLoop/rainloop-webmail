@@ -116,7 +116,7 @@ export class EmailAddressesComponent {
 					)
 				}
 			}).throttle(500)
-			: () => {};
+			: () => 0;
 	}
 
 	_focusTrigger(bValue) {
