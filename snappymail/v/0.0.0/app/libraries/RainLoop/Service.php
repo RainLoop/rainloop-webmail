@@ -53,7 +53,7 @@ class Service
 		$sServer = \trim($this->oActions->Config()->Get('security', 'custom_server_signature', ''));
 		if (0 < \strlen($sServer))
 		{
-			\header('Server: '.$sServer, true);
+			\header('Server: '.$sServer);
 		}
 
 		\header('Referrer-Policy: no-referrer');
@@ -65,14 +65,14 @@ class Service
 		$this->setCSP();
 
 		$sXFrameOptionsHeader = \trim($this->oActions->Config()->Get('security', 'x_frame_options_header', '')) ?: 'DENY';
-		\header('X-Frame-Options: '.$sXFrameOptionsHeader, true);
+		\header('X-Frame-Options: '.$sXFrameOptionsHeader);
 
 		$sXssProtectionOptionsHeader = \trim($this->oActions->Config()->Get('security', 'x_xss_protection_header', '')) ?: '1; mode=block';
-		\header('X-XSS-Protection: '.$sXssProtectionOptionsHeader, true);
+		\header('X-XSS-Protection: '.$sXssProtectionOptionsHeader);
 
 		if ($this->oActions->Config()->Get('labs', 'force_https', false) && !$this->oHttp->IsSecure())
 		{
-			\header('Location: https://'.$this->oHttp->GetHost(false, false).$this->oHttp->GetUrl(), true);
+			\header('Location: https://'.$this->oHttp->GetHost(false, false).$this->oHttp->GetUrl());
 			exit(0);
 		}
 
@@ -224,7 +224,7 @@ class Service
 			// Knockout.js requires eval() for observable binding purposes
 			//$sContentSecurityPolicy = \preg_replace("/(script-src[^;]+)'unsafe-eval'/", '$1', $sContentSecurityPolicy);
 		}
-		\header('Content-Security-Policy: '.$sContentSecurityPolicy, true);
+		\header('Content-Security-Policy: '.$sContentSecurityPolicy);
 	}
 
 	private function staticPath(string $sPath) : string

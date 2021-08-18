@@ -431,14 +431,14 @@ class Http
 			{
 				if ($bSetCacheHeader)
 				{
-					\header('Cache-Control: public', true);
-					\header('Pragma: public', true);
-					\header('Last-Modified: '.\gmdate('D, d M Y H:i:s', $iUtcTimeStamp - $iExpireTime).' UTC', true);
-					\header('Expires: '.\gmdate('D, j M Y H:i:s', $iUtcTimeStamp + $iExpireTime).' UTC', true);
+					\header('Cache-Control: public');
+					\header('Pragma: public');
+					\header('Last-Modified: '.\gmdate('D, d M Y H:i:s', $iUtcTimeStamp - $iExpireTime).' UTC');
+					\header('Expires: '.\gmdate('D, j M Y H:i:s', $iUtcTimeStamp + $iExpireTime).' UTC');
 
 					if (0 < strlen($sEtag))
 					{
-						\header('Etag: '.$sEtag, true);
+						\header('Etag: '.$sEtag);
 					}
 				}
 			}
@@ -463,8 +463,7 @@ class Http
 			$bCache = true;
 			\header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 			\header('Last-Modified: '.\gmdate('D, d M Y H:i:s').' GMT');
-			\header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-			\header('Cache-Control: post-check=0, pre-check=0', false);
+			\header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0');
 			\header('Pragma: no-cache');
 		}
 	}
@@ -478,10 +477,10 @@ class Http
 		if (false === $bCache)
 		{
 			$bCache = true;
-			\header('Cache-Control: private', true);
-			\header('ETag: '.$sEtag, true);
-			\header('Last-Modified: '.\gmdate('D, d M Y H:i:s', $iLastModified).' UTC', true);
-			\header('Expires: '.\gmdate('D, j M Y H:i:s', $iExpires).' UTC', true);
+			\header('Cache-Control: private');
+			\header('ETag: '.$sEtag);
+			\header('Last-Modified: '.\gmdate('D, d M Y H:i:s', $iLastModified).' UTC');
+			\header('Expires: '.\gmdate('D, j M Y H:i:s', $iExpires).' UTC');
 		}
 	}
 

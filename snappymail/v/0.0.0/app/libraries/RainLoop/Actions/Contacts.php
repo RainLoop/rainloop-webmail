@@ -264,8 +264,8 @@ trait Contacts
 		$oAccount = $this->getAccountFromToken();
 
 		\header('Content-Type: text/x-vcard; charset=UTF-8');
-		\header('Content-Disposition: attachment; filename="contacts.vcf"', true);
-		\header('Accept-Ranges: none', true);
+		\header('Content-Disposition: attachment; filename="contacts.vcf"');
+		\header('Accept-Ranges: none');
 		\header('Content-Transfer-Encoding: binary');
 
 		$this->oHttp->ServerNoCache();
@@ -279,8 +279,8 @@ trait Contacts
 		$oAccount = $this->getAccountFromToken();
 
 		\header('Content-Type: text/csv; charset=UTF-8');
-		\header('Content-Disposition: attachment; filename="contacts.csv"', true);
-		\header('Accept-Ranges: none', true);
+		\header('Content-Disposition: attachment; filename="contacts.csv"');
+		\header('Accept-Ranges: none');
 		\header('Content-Transfer-Encoding: binary');
 
 		$this->oHttp->ServerNoCache();

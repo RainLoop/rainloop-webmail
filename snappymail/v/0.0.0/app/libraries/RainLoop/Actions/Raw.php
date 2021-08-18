@@ -18,7 +18,7 @@ trait Raw
 		$iUid = (int) (isset($aValues['Uid']) ? $aValues['Uid'] : 0);
 		$sMimeIndex = (string) (isset($aValues['MimeIndex']) ? $aValues['MimeIndex'] : '');
 
-		\header('Content-Type: text/plain', true);
+		\header('Content-Type: text/plain');
 
 		return $this->MailClient()->MessageMimeStream(function ($rResource) {
 			if (\is_resource($rResource))
@@ -157,9 +157,9 @@ trait Raw
 			{
 				\header('Content-Type: '.$sContentTypeOut);
 				\header('Content-Disposition: attachment; '.
-					\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
+					\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)));
 
-				\header('Accept-Ranges: none', true);
+				\header('Accept-Ranges: none');
 				\header('Content-Transfer-Encoding: binary');
 
 				\MailSo\Base\Utils::FpassthruWithTimeLimitReset($rResource);
@@ -217,7 +217,7 @@ trait Raw
 							{
 								$oImage = static::loadImage(\stream_get_contents($rResource), $bDetectImageOrientation, 60);
 								\header('Content-Disposition: inline; '.
-									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut.'_thumb60x60.png')), true);
+									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut.'_thumb60x60.png')));
 								$oImage->show('png');
 //								$oImage->show('webp'); // Little Britain: "Safari says NO"
 								exit;
@@ -235,7 +235,7 @@ trait Raw
 								$sLoadedData = \stream_get_contents($rResource);
 								$oImage = static::loadImage($sLoadedData, $bDetectImageOrientation);
 								\header('Content-Disposition: inline; '.
-									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
+									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)));
 								$oImage->show();
 							}
 							catch (\Throwable $oException)
@@ -254,7 +254,7 @@ trait Raw
 						if (!headers_sent()) {
 							\header('Content-Type: '.$sContentTypeOut);
 							\header('Content-Disposition: '.($bDownload ? 'attachment' : 'inline').'; '.
-							\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
+								\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)));
 
 							\header('Accept-Ranges: bytes');
 							\header('Content-Transfer-Encoding: binary');
@@ -298,7 +298,7 @@ trait Raw
 
 								if (0 < $iContentLength)
 								{
-									\header('Content-Length: '.$iContentLength, true);
+									\header('Content-Length: '.$iContentLength);
 									\header('Content-Range: bytes '.$sRangeStart.'-'.(0 < $iRangeEnd ? $iRangeEnd : $iFullContentLength - 1).'/'.$iFullContentLength);
 								}
 
