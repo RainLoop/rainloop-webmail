@@ -21,7 +21,7 @@ config.paths.staticMinJS = 'snappymail/v/' + config.devVersion + '/static/js/min
 config.paths.staticCSS = 'snappymail/v/' + config.devVersion + '/static/css/';
 
 config.paths.assets = {
-	src: 'assets/**/*.*'
+	src: ['assets/**/*.*', 'assets/**/.htaccess']
 };
 
 config.paths.less = {

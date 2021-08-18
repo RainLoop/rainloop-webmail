@@ -1,24 +1,7 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine On
-
 	# Redirect cPanel
 	RewriteRule cpsess.* https://%{HTTP_HOST}/ [L,R=301]
-
-	RewriteCond %{HTTP:Accept-encoding} br
-	RewriteCond "%{REQUEST_FILENAME}\.br" -s
-	RewriteRule "^(.+\.js)$" "$1\.br" [L,T=text/javascript,QSA]
-
-	RewriteCond %{HTTP:Accept-encoding} gzip
-	RewriteCond "%{REQUEST_FILENAME}\.gz" -s
-	RewriteRule "^(.+\.js)$" "$1\.gz" [L,T=text/javascript,QSA]
-
-	RewriteCond %{HTTP:Accept-encoding} br
-	RewriteCond "%{REQUEST_FILENAME}\.br" -s
-	RewriteRule "^(.+\.css)$" "$1\.br" [L,T=text/css,QSA]
-
-	RewriteCond %{HTTP:Accept-encoding} gzip
-	RewriteCond "%{REQUEST_FILENAME}\.gz" -s
-	RewriteRule "^(.+\.css)$" "$1\.gz" [L,T=text/css,QSA]
 </IfModule>
 
 <IfModule mod_expires.c>
