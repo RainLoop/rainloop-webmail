@@ -81,7 +81,7 @@ class Utils
 
 	public static function Fingerprint() : string
 	{
-		return \md5(empty($_SERVER['HTTP_USER_AGENT']) ? 'RainLoopFingerprint' : $_SERVER['HTTP_USER_AGENT']);
+		return \md5($_SERVER['HTTP_USER_AGENT'] ?: 'RainLoopFingerprint');
 	}
 
 	public static function GetShortToken() : string

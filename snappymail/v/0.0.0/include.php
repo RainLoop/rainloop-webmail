@@ -15,7 +15,7 @@
 			}
 
 			// PHP 8
-			if (!\function_exists('str_contains')) {
+			if (!function_exists('str_contains')) {
 				function str_contains(string $haystack, string $needle) : bool
 				{
 					return false !== \strpos($haystack, $needle);
@@ -231,6 +231,10 @@
 			}
 
 			unset($sSalt, $sData, $sInstalled, $sPrivateDataFolderInternalName);
+		}
+
+		if (!isset($_SERVER['HTTP_USER_AGENT'])) {
+			$_SERVER['HTTP_USER_AGENT'] = '';
 		}
 
 		// See https://github.com/kjdev/php-ext-brotli

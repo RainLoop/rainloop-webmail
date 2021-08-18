@@ -77,7 +77,7 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 	}
 
-	public function FilterSendMessage(&$oMessage)
+	public function FilterSendMessage($oMessage)
 	{
 		if ($oMessage && $this->isDemoAccount($this->Manager()->Actions()->GetAccount()))
 		{
