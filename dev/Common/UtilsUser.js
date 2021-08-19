@@ -228,7 +228,8 @@ export function folderListOptionsBuilder(
 	aHeaderLines,
 	fRenameCallback,
 	fDisableCallback,
-	bNoSelectSelectable
+	bNoSelectSelectable,
+	aList = FolderUserStore.folderList()
 ) {
 	let /**
 		 * @type {?FolderModel}
@@ -273,7 +274,7 @@ export function folderListOptionsBuilder(
 	});
 
 	bSep = true;
-	FolderUserStore.folderList().forEach(oItem => {
+	aList.forEach(oItem => {
 /*
 		if ((oItem.subscribed() || !oItem.exists || bBuildUnvisible)
 		 && (oItem.selectable || oItem.hasSubscribedSubfolders())
@@ -300,12 +301,12 @@ export function folderListOptionsBuilder(
 			aResult = aResult.concat(
 				folderListOptionsBuilder(
 					[],
-					oItem.subFolders(),
 					aDisabled,
 					[],
 					fDisableCallback,
 					fRenameCallback,
-					bNoSelectSelectable
+					bNoSelectSelectable,
+					oItem.subFolders()
 				)
 			);
 		}
