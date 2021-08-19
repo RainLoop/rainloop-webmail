@@ -233,7 +233,7 @@ class Folder implements \JsonSerializable
 			'FullName' => $this->FullName(),
 			'FullNameRaw' => $this->FullNameRaw(),
 			'Delimiter' => (string) $this->Delimiter(),
-			'HasVisibleSubFolders' => $this->HasVisibleSubFolders(),
+//			'HasVisibleSubFolders' => $this->HasVisibleSubFolders(),
 			'Subscribed' => $this->bSubscribed,
 			'Exists' => $this->bExists,
 			'Selectable' => $this->IsSelectable(),

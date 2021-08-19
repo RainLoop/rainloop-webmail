@@ -25,14 +25,14 @@ class FolderCreatePopupView extends AbstractViewPopup {
 		this.parentFolderSelectList = ko.computed(() =>
 			folderListOptionsBuilder(
 				[],
-				FolderUserStore.folderList(),
 				[],
 				[['', '']],
+				oItem =>
+					oItem ? (oItem.isSystemFolder() ? oItem.name() + ' ' + oItem.manageFolderSystemName() : oItem.name()) : '',
 				FolderUserStore.namespace
 					? item => FolderUserStore.namespace !== item.fullNameRaw.substr(0, FolderUserStore.namespace.length)
 					: null,
-				oItem =>
-					oItem ? (oItem.isSystemFolder() ? oItem.name() + ' ' + oItem.manageFolderSystemName() : oItem.name()) : ''
+				true
 			)
 		);
 

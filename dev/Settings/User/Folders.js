@@ -118,25 +118,16 @@ export class FoldersUserSettings {
 		}
 	}
 
-	subscribeFolder(folder) {
+	toggleFolderSubscription(folder) {
+		let subscribe = !folder.subscribed();
 		Local.set(ClientSideKeyName.FoldersLashHash, '');
-		Remote.folderSetSubscribe(()=>0, folder.fullNameRaw, true);
-		folder.subscribed(true);
+		Remote.folderSetSubscribe(()=>0, folder.fullNameRaw, subscribe);
+		folder.subscribed(subscribe);
 	}
 
-	unSubscribeFolder(folder) {
-		Local.set(ClientSideKeyName.FoldersLashHash, '');
-		Remote.folderSetSubscribe(()=>0, folder.fullNameRaw, false);
-		folder.subscribed(false);
-	}
-
-	checkableTrueFolder(folder) {
-		Remote.folderSetCheckable(()=>0, folder.fullNameRaw, true);
-		folder.checkable(true);
-	}
-
-	checkableFalseFolder(folder) {
-		Remote.folderSetCheckable(()=>0, folder.fullNameRaw, false);
-		folder.checkable(false);
+	toggleFolderCheckable(folder) {
+		let checkable = !folder.checkable();
+		Remote.folderSetCheckable(()=>0, folder.fullNameRaw, checkable);
+		folder.checkable(checkable);
 	}
 }

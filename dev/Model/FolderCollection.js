@@ -257,13 +257,13 @@ export class FolderModel extends AbstractModel {
 							oFolder => (oFolder.subscribed() || oFolder.hasSubscribedSubfolders()) && !oFolder.isSystemFolder()
 						),
 
-				canBeEdited: () => FolderType.User === folder.type() && folder.exists && folder.selectable,
+				canBeEdited: () => FolderType.User === folder.type() && folder.exists/* && folder.selectable*/,
 
 				visible: () => {
 					const isSubscribed = folder.subscribed(),
 						isSubFolders = folder.hasSubscribedSubfolders();
 
-					return isSubscribed || (isSubFolders && (!folder.exists || !folder.selectable));
+					return isSubscribed || (isSubFolders && (!folder.exists/* || !folder.selectable*/));
 				},
 
 				isSystemFolder: () => FolderType.User !== folder.type(),

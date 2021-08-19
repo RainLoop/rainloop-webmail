@@ -14,14 +14,10 @@
 		<span class="delete-folder e-action fontastic" data-bind="visible: canBeDeleted() && !deleteAccess(), click: function (oFolder) { $root.folderForDeletion(oFolder); }">🗑</span>
 	</td>
 	<td data-i18n="[title]SETTINGS_FOLDERS/HELP_SHOW_HIDE_FOLDER">
-		<span class="unsubscribed-folder e-action fontastic" data-bind="visible: canBeSubscribed() && !subscribed(), click: function(oFolder) { $root.subscribeFolder(oFolder); }">👁</span>
-		<span class="e-action fontastic" data-bind="visible: canBeSubscribed() && subscribed(), click: function(oFolder) { $root.unSubscribeFolder(oFolder); }">👁</span>
+		<span class="e-action fontastic" data-bind="css: {'unsubscribed-folder':!subscribed()}, visible: canBeSubscribed(), click: function(oFolder) { $root.toggleFolderSubscription(oFolder); }">👁</span>
 	</td>
 	<td data-bind="visible: $root.displaySpecSetting" data-i18n="[title]SETTINGS_FOLDERS/HELP_CHECK_FOR_NEW_MESSAGES">
-		<span class="unchecked-folder e-action" data-bind="visible: canBeSelected() && subscribed() && !checkable(), click: function(oFolder) { $root.checkableTrueFolder(oFolder); }">
-			<i class="icon-check-mark-circle-two"></i>
-		</span>
-		<span class="check-folder e-action" data-bind="visible: canBeSelected() && subscribed() && checkable(), click: function(oFolder) { $root.checkableFalseFolder(oFolder); }">
+		<span class="e-action" data-bind="css: {'check-folder':checkable(), 'unchecked-folder':!checkable()}, visible: canBeSelected() && subscribed(), click: function(oFolder) { $root.toggleFolderCheckable(oFolder); }">
 			<i class="icon-check-mark-circle-two"></i>
 		</span>
 	</td>

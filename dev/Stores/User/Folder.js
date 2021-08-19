@@ -3,7 +3,6 @@ import ko from 'ko';
 import { FolderType, FolderSortMode } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { addObservablesTo, addSubscribablesTo } from 'Common/Utils';
-import { folderListOptionsBuilder } from 'Common/UtilsUser';
 import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
 import { SettingsGet } from 'Common/Globals';
 
@@ -105,28 +104,6 @@ export const FolderUserStore = new class {
 
 		this.folderListSystem = ko.computed(() =>
 			this.folderListSystemNames().map(name => getFolderFromCacheList(name)).filter(v => v)
-		);
-
-		this.folderMenuForMove = ko.computed(() =>
-			folderListOptionsBuilder(
-				this.folderListSystem(),
-				this.folderList(),
-				[this.currentFolderFullNameRaw()],
-				[],
-				null,
-				(item) => (item ? item.localName() : '')
-			)
-		);
-
-		this.folderMenuForFilters = ko.computed(() =>
-			folderListOptionsBuilder(
-				this.folderListSystem(),
-				this.folderList(),
-				[this.sieveAllowFileintoInbox ? '' : 'INBOX'],
-				[['', '']],
-				null,
-				(item) => (item ? item.localName() : '')
-			)
 		);
 
 		const

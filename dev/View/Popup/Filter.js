@@ -11,6 +11,8 @@ import { SieveUserStore } from 'Stores/User/Sieve';
 import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
+import { folderListOptionsBuilder } from 'Common/UtilsUser';
+
 class FilterPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Filter');
@@ -25,7 +27,15 @@ class FilterPopupView extends AbstractViewPopup {
 		this.fTrueCallback = null;
 
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
-		this.folderSelectList = FolderUserStore.folderMenuForFilters;
+		this.folderSelectList = ko.computed(() =>
+			folderListOptionsBuilder(
+				FolderUserStore.folderListSystem(),
+				[FolderUserStore.sieveAllowFileintoInbox ? '' : 'INBOX'],
+				[['', '']],
+				item => item ? item.localName() : ''
+			)
+		);
+
 
 		this.selectedFolderValue.subscribe(() => this.filter() && this.filter().actionValueError(false));
 

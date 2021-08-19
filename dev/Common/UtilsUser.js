@@ -1,8 +1,10 @@
-import { ComposeType, FolderType } from 'Common/EnumsUser';
+import { ComposeType/*, FolderType*/ } from 'Common/EnumsUser';
 import { EmailModel } from 'Model/Email';
 import { encodeHtml } from 'Common/Html';
 import { isArray } from 'Common/Utils';
 import { createElement } from 'Common/Globals';
+import { FolderUserStore } from 'Stores/User/Folder';
+import { SettingsUserStore } from 'Stores/User/Settings';
 
 /**
  * @param {(string|number)} value
@@ -213,24 +215,20 @@ rl.Utils = {
 
 /**
  * @param {Array} aSystem
- * @param {Array} aList
  * @param {Array=} aDisabled
  * @param {Array=} aHeaderLines
  * @param {Function=} fDisableCallback
  * @param {Function=} fRenameCallback
- * @param {boolean=} bSystem
- * @param {boolean=} bBuildUnvisible
+ * @param {boolean=} bNoSelectSelectable Used in FolderCreatePopupView
  * @returns {Array}
  */
 export function folderListOptionsBuilder(
 	aSystem,
-	aList,
 	aDisabled,
 	aHeaderLines,
-	fDisableCallback,
 	fRenameCallback,
-	bSystem,
-	bBuildUnvisible
+	fDisableCallback,
+	bNoSelectSelectable
 ) {
 	let /**
 		 * @type {?FolderModel}
@@ -238,71 +236,67 @@ export function folderListOptionsBuilder(
 		bSep = false,
 		aResult = [];
 
-	const sDeepPrefix = '\u00A0\u00A0\u00A0';
+	const sDeepPrefix = '\u00A0\u00A0\u00A0',
+		// FolderSystemPopupView should always be true
+		showUnsubscribed = (aSystem.length || bNoSelectSelectable) ? !SettingsUserStore.hideUnsubscribed() : true;
 
-	bBuildUnvisible = undefined === bBuildUnvisible ? false : !!bBuildUnvisible;
-	bSystem = null == bSystem ? 0 < aSystem.length : bSystem;
-	fDisableCallback = null != fDisableCallback ? fDisableCallback : null;
-	fRenameCallback = null != fRenameCallback ? fRenameCallback : null;
+	fDisableCallback = fDisableCallback || (() => false);
+	fRenameCallback = fRenameCallback || (oItem => oItem.name());
 
 	if (!isArray(aDisabled)) {
 		aDisabled = [];
 	}
 
-	if (!isArray(aHeaderLines)) {
-		aHeaderLines = [];
-	}
-
-	aHeaderLines.forEach(line => {
+	isArray(aHeaderLines) && aHeaderLines.forEach(line =>
 		aResult.push({
 			id: line[0],
 			name: line[1],
 			system: false,
 			dividerbar: false,
 			disabled: false
-		});
-	});
+		})
+	);
 
 	bSep = true;
 	aSystem.forEach(oItem => {
 		aResult.push({
 			id: oItem.fullNameRaw,
-			name: fRenameCallback ? fRenameCallback(oItem) : oItem.name(),
+			name: fRenameCallback(oItem),
 			system: true,
 			dividerbar: bSep,
 			disabled:
 				!oItem.selectable ||
 				aDisabled.includes(oItem.fullNameRaw) ||
-				(fDisableCallback ? fDisableCallback(oItem) : false)
+				fDisableCallback(oItem)
 		});
 		bSep = false;
 	});
 
 	bSep = true;
-	aList.forEach(oItem => {
-		// if (oItem.subscribed() || !oItem.exists || bBuildUnvisible)
-		if (
-			(oItem.subscribed() || !oItem.exists || bBuildUnvisible) &&
-			(oItem.selectable || oItem.hasSubscribedSubfolders())
+	FolderUserStore.folderList().forEach(oItem => {
+/*
+		if ((oItem.subscribed() || !oItem.exists || bBuildUnvisible)
+		 && (oItem.selectable || oItem.hasSubscribedSubfolders())
+		 && (FolderType.User === oItem.type() || !bSystem || oItem.hasSubscribedSubfolders()) {
 		) {
-			if (FolderType.User === oItem.type() || !bSystem || oItem.hasSubscribedSubfolders()) {
-				aResult.push({
-					id: oItem.fullNameRaw,
-					name:
-						sDeepPrefix.repeat(oItem.deep + 1) +
-						(fRenameCallback ? fRenameCallback(oItem) : oItem.name()),
-					system: false,
-					dividerbar: bSep,
-					disabled:
-						!oItem.selectable ||
-						aDisabled.includes(oItem.fullNameRaw) ||
-						(fDisableCallback ? fDisableCallback(oItem) : false)
-				});
-				bSep = false;
-			}
+*/
+		if (showUnsubscribed || oItem.subscribed() || !oItem.exists || oItem.hasSubscribedSubfolders()) {
+			aResult.push({
+				id: oItem.fullNameRaw,
+				name:
+					sDeepPrefix.repeat(oItem.deep) +
+					fRenameCallback(oItem),
+				system: false,
+				dividerbar: bSep,
+				disabled: !bNoSelectSelectable && (
+					!oItem.selectable ||
+					aDisabled.includes(oItem.fullNameRaw) ||
+					fDisableCallback(oItem))
+			});
+			bSep = false;
 		}
 
-		if (oItem.subscribed() && oItem.subFolders.length) {
+		if (oItem.subFolders.length) {
 			aResult = aResult.concat(
 				folderListOptionsBuilder(
 					[],
@@ -311,8 +305,7 @@ export function folderListOptionsBuilder(
 					[],
 					fDisableCallback,
 					fRenameCallback,
-					bSystem,
-					bBuildUnvisible
+					bNoSelectSelectable
 				)
 			);
 		}

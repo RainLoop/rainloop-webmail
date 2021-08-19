@@ -15,7 +15,7 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import { doc, leftPanelDisabled, moveAction, Settings, SettingsGet } from 'Common/Globals';
 
-import { computedPaginatorHelper, showMessageComposer } from 'Common/UtilsUser';
+import { computedPaginatorHelper, showMessageComposer, folderListOptionsBuilder } from 'Common/UtilsUser';
 import { FileInfo } from 'Common/File';
 
 import { mailBox, serverRequest } from 'Common/Links';
@@ -78,7 +78,14 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.isMessageSelected = MessageUserStore.isMessageSelected;
 		this.messageListSearch = MessageUserStore.listSearch;
 		this.messageListError = MessageUserStore.listError;
-		this.folderMenuForMove = FolderUserStore.folderMenuForMove;
+		this.folderMenuForMove = ko.computed(() =>
+			folderListOptionsBuilder(
+				FolderUserStore.folderListSystem(),
+				[FolderUserStore.currentFolderFullNameRaw()],
+				[],
+				item => item ? item.localName() : ''
+			)
+		);
 
 		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
 
