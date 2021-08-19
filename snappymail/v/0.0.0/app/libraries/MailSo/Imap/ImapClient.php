@@ -594,14 +594,33 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
+	 * https://datatracker.ietf.org/doc/html/rfc2087#section-4.2
+	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function Quota() : ?array
+	 * /
+	public function Quota(string $sRootName = '') : ?array
 	{
 		if ($this->IsSupported('QUOTA'))
 		{
-			return $this->SendRequestGetResponse('GETQUOTAROOT "INBOX"')->getQuotaResult();
+			return $this->SendRequestGetResponse("GETQUOTA {$this->EscapeString($sRootName)}")->getQuotaResult();
+		}
+
+		return null;
+	}
+*/
+
+	/**
+	 * https://datatracker.ietf.org/doc/html/rfc2087#section-4.3
+	 *
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function QuotaRoot(string $sFolderName = 'INBOX') : ?array
+	{
+		if ($this->IsSupported('QUOTA'))
+		{
+			return $this->SendRequestGetResponse("GETQUOTAROOT {$this->EscapeString($sFolderName)}")->getQuotaResult();
 		}
 
 		return null;

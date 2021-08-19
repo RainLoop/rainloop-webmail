@@ -1808,9 +1808,9 @@ class MailClient
 		return $oMessageCollection;
 	}
 
-	public function Quota() : ?array
+	public function QuotaRoot(string $sFolderName = 'INBOX') : ?array
 	{
-		return $this->oImapClient->Quota();
+		return $this->oImapClient->QuotaRoot($sFolderName);
 	}
 
 	public function FindMessageUidByMessageId(string $sFolderName, string $sMessageId) : ?int

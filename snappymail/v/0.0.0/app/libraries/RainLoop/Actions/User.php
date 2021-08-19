@@ -372,7 +372,7 @@ trait User
 
 		try
 		{
-			$aQuota = $this->MailClient()->Quota();
+			$aQuota = $this->MailClient()->QuotaRoot();
 		}
 		catch (\Throwable $oException)
 		{
