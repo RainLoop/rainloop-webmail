@@ -18,7 +18,7 @@
 					<span class="caret"></span>
 				</a>
 				<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="move-dropdown-id" role="menu" data-bind="foreach: folderMenuForMove">
-					<li class="e-item" role="presentation" data-bind="css: { 'disabled': disabled, 'dividerbar': dividerbar }, click: function (mdata, oEvent) { if (!disabled) $root.moveSelectedMessagesToFolder(id, oEvent && !!oEvent.ctrlKey); }">
+					<li class="e-item" role="presentation" data-bind="css: { 'disabled': disabled }, click: function (mdata, oEvent) { if (!disabled) $root.moveSelectedMessagesToFolder(id, oEvent && !!oEvent.ctrlKey); }">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="text: name"></a>
 					</li>
 				</ul>

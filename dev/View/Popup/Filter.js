@@ -29,7 +29,6 @@ class FilterPopupView extends AbstractViewPopup {
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 		this.folderSelectList = ko.computed(() =>
 			folderListOptionsBuilder(
-				FolderUserStore.folderListSystem(),
 				[FolderUserStore.sieveAllowFileintoInbox ? '' : 'INBOX'],
 				[['', '']],
 				item => item ? item.localName() : ''

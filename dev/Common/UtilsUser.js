@@ -214,7 +214,6 @@ rl.Utils = {
 };
 
 /**
- * @param {Array} aSystem
  * @param {Array=} aDisabled
  * @param {Array=} aHeaderLines
  * @param {Function=} fDisableCallback
@@ -223,7 +222,6 @@ rl.Utils = {
  * @returns {Array}
  */
 export function folderListOptionsBuilder(
-	aSystem,
 	aDisabled,
 	aHeaderLines,
 	fRenameCallback,
@@ -231,86 +229,51 @@ export function folderListOptionsBuilder(
 	bNoSelectSelectable,
 	aList = FolderUserStore.folderList()
 ) {
-	let /**
-		 * @type {?FolderModel}
-		 */
-		bSep = false,
-		aResult = [];
+//	FolderUserStore.folderListSystem()
 
-	const sDeepPrefix = '\u00A0\u00A0\u00A0',
+	const
+		aResult = [],
+		sDeepPrefix = '\u00A0\u00A0\u00A0',
 		// FolderSystemPopupView should always be true
-		showUnsubscribed = (aSystem.length || bNoSelectSelectable) ? !SettingsUserStore.hideUnsubscribed() : true;
+		showUnsubscribed = fRenameCallback ? !SettingsUserStore.hideUnsubscribed() : true,
+
+		foldersWalk = folders => {
+			folders.forEach(oItem => {
+				if (showUnsubscribed || oItem.subscribed() || !oItem.exists || oItem.hasSubscribedSubfolders()) {
+					aResult.push({
+						id: oItem.fullNameRaw,
+						name:
+							sDeepPrefix.repeat(oItem.deep) +
+							fRenameCallback(oItem),
+						system: false,
+						disabled: !bNoSelectSelectable && (
+							!oItem.selectable ||
+							aDisabled.includes(oItem.fullNameRaw) ||
+							fDisableCallback(oItem))
+					});
+				}
+
+				if (oItem.subFolders.length) {
+					foldersWalk(oItem.subFolders());
+				}
+			});
+		};
+
 
 	fDisableCallback = fDisableCallback || (() => false);
 	fRenameCallback = fRenameCallback || (oItem => oItem.name());
-
-	if (!isArray(aDisabled)) {
-		aDisabled = [];
-	}
+	isArray(aDisabled) || (aDisabled = []);
 
 	isArray(aHeaderLines) && aHeaderLines.forEach(line =>
 		aResult.push({
 			id: line[0],
 			name: line[1],
 			system: false,
-			dividerbar: false,
 			disabled: false
 		})
 	);
 
-	bSep = true;
-	aSystem.forEach(oItem => {
-		aResult.push({
-			id: oItem.fullNameRaw,
-			name: fRenameCallback(oItem),
-			system: true,
-			dividerbar: bSep,
-			disabled:
-				!oItem.selectable ||
-				aDisabled.includes(oItem.fullNameRaw) ||
-				fDisableCallback(oItem)
-		});
-		bSep = false;
-	});
-
-	bSep = true;
-	aList.forEach(oItem => {
-/*
-		if ((oItem.subscribed() || !oItem.exists || bBuildUnvisible)
-		 && (oItem.selectable || oItem.hasSubscribedSubfolders())
-		 && (FolderType.User === oItem.type() || !bSystem || oItem.hasSubscribedSubfolders()) {
-		) {
-*/
-		if (showUnsubscribed || oItem.subscribed() || !oItem.exists || oItem.hasSubscribedSubfolders()) {
-			aResult.push({
-				id: oItem.fullNameRaw,
-				name:
-					sDeepPrefix.repeat(oItem.deep) +
-					fRenameCallback(oItem),
-				system: false,
-				dividerbar: bSep,
-				disabled: !bNoSelectSelectable && (
-					!oItem.selectable ||
-					aDisabled.includes(oItem.fullNameRaw) ||
-					fDisableCallback(oItem))
-			});
-			bSep = false;
-		}
-
-		if (oItem.subFolders.length) {
-			aResult = aResult.concat(
-				folderListOptionsBuilder(
-					[],
-					aDisabled,
-					[],
-					fDisableCallback,
-					fRenameCallback,
-					bNoSelectSelectable,
-					oItem.subFolders()
-				)
-			);
-		}
-	});
+	foldersWalk(aList);
 
 	return aResult;
 }

@@ -80,7 +80,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.messageListError = MessageUserStore.listError;
 		this.folderMenuForMove = ko.computed(() =>
 			folderListOptionsBuilder(
-				FolderUserStore.folderListSystem(),
 				[FolderUserStore.currentFolderFullNameRaw()],
 				[],
 				item => item ? item.localName() : ''

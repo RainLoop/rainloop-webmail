@@ -29,7 +29,6 @@ class FolderSystemPopupView extends AbstractViewPopup {
 
 		this.folderSelectList = ko.computed(() =>
 			folderListOptionsBuilder(
-				[],
 				FolderUserStore.folderListSystemNames(),
 				[
 					['', this.sChooseOnText],
