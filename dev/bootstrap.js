@@ -45,16 +45,11 @@ export default App => {
 		 */
 		setHash: (hash, silence = false, replace = false) => {
 			hash = hash.replace(/^[#/]+/, '');
-
-			const cmd = replace ? 'replaceHash' : 'setHash';
-
+			hasher.active = !silence;
+			hasher[replace ? 'replaceHash' : 'setHash'](hash);
 			if (silence) {
-				hasher.active = false;
-				hasher[cmd](hash);
 				hasher.active = true;
 			} else {
-				hasher.active = true;
-				hasher[cmd](hash);
 				hasher.setHash(hash);
 			}
 		}

@@ -16,7 +16,7 @@ export function encodeHtml(text) {
 	return (text && text.toString ? text.toString() : ''+text).replace(htmlre, m => htmlmap[m]);
 }
 
-class HtmlEditor {
+export class HtmlEditor {
 	/**
 	 * @param {Object} element
 	 * @param {Function=} onBlur
@@ -206,5 +206,3 @@ class HtmlEditor {
 		this.setHtml('');
 	}
 }
-
-export { HtmlEditor, HtmlEditor as default };

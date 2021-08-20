@@ -11,152 +11,129 @@ let FOLDERS_CACHE = {},
 
 const REQUESTED_MESSAGE_CACHE = {};
 
-/**
- * @returns {void}
- */
-export function clear() {
-	FOLDERS_CACHE = {};
-	FOLDERS_NAME_CACHE = {};
-	FOLDERS_HASH_CACHE = {};
-	FOLDERS_UID_NEXT_CACHE = {};
-	MESSAGE_FLAGS_CACHE = {};
-}
+export const
+	/**
+	 * @returns {void}
+	 */
+	clear = () => {
+		FOLDERS_CACHE = {};
+		FOLDERS_NAME_CACHE = {};
+		FOLDERS_HASH_CACHE = {};
+		FOLDERS_UID_NEXT_CACHE = {};
+		MESSAGE_FLAGS_CACHE = {};
+	},
 
-/**
- * @param {string} folderFullNameRaw
- * @param {string} uid
- * @returns {string}
- */
-export function getMessageKey(folderFullNameRaw, uid) {
-	return `${folderFullNameRaw}#${uid}`;
-}
+	/**
+	 * @param {string} folderFullNameRaw
+	 * @param {string} uid
+	 * @returns {string}
+	 */
+	getMessageKey = (folderFullNameRaw, uid) => `${folderFullNameRaw}#${uid}`,
 
-/**
- * @param {string} folder
- * @param {string} uid
- */
-export function addRequestedMessage(folder, uid) {
-	REQUESTED_MESSAGE_CACHE[getMessageKey(folder, uid)] = true;
-}
+	/**
+	 * @param {string} folder
+	 * @param {string} uid
+	 */
+	addRequestedMessage = (folder, uid) => REQUESTED_MESSAGE_CACHE[getMessageKey(folder, uid)] = true,
 
-/**
- * @param {string} folder
- * @param {string} uid
- * @returns {boolean}
- */
-export function hasRequestedMessage(folder, uid) {
-	return true === REQUESTED_MESSAGE_CACHE[getMessageKey(folder, uid)];
-}
+	/**
+	 * @param {string} folder
+	 * @param {string} uid
+	 * @returns {boolean}
+	 */
+	hasRequestedMessage = (folder, uid) => true === REQUESTED_MESSAGE_CACHE[getMessageKey(folder, uid)],
 
-/**
- * @param {string} folderFullNameRaw
- * @param {string} uid
- */
-export function addNewMessageCache(folderFullNameRaw, uid) {
-	NEW_MESSAGE_CACHE[getMessageKey(folderFullNameRaw, uid)] = true;
-}
+	/**
+	 * @param {string} folderFullNameRaw
+	 * @param {string} uid
+	 */
+	addNewMessageCache = (folderFullNameRaw, uid) => NEW_MESSAGE_CACHE[getMessageKey(folderFullNameRaw, uid)] = true,
 
-/**
- * @param {string} folderFullNameRaw
- * @param {string} uid
- */
-export function hasNewMessageAndRemoveFromCache(folderFullNameRaw, uid) {
-	if (NEW_MESSAGE_CACHE[getMessageKey(folderFullNameRaw, uid)]) {
-		NEW_MESSAGE_CACHE[getMessageKey(folderFullNameRaw, uid)] = null;
-		return true;
-	}
-	return false;
-}
+	/**
+	 * @param {string} folderFullNameRaw
+	 * @param {string} uid
+	 */
+	hasNewMessageAndRemoveFromCache = (folderFullNameRaw, uid) => {
+		if (NEW_MESSAGE_CACHE[getMessageKey(folderFullNameRaw, uid)]) {
+			NEW_MESSAGE_CACHE[getMessageKey(folderFullNameRaw, uid)] = null;
+			return true;
+		}
+		return false;
+	},
 
-/**
- * @returns {void}
- */
-export function clearNewMessageCache() {
-	NEW_MESSAGE_CACHE = {};
-}
+	/**
+	 * @returns {void}
+	 */
+	clearNewMessageCache = () => NEW_MESSAGE_CACHE = {},
 
-/**
- * @returns {string}
- */
-export function getFolderInboxName() {
-	return inboxFolderName;
-}
+	/**
+	 * @returns {string}
+	 */
+	getFolderInboxName = () => inboxFolderName,
 
-/**
- * @returns {string}
- */
-export function setFolderInboxName(name) {
-	inboxFolderName = name;
-}
+	/**
+	 * @returns {string}
+	 */
+	setFolderInboxName = name => inboxFolderName = name,
 
-/**
- * @param {string} folderHash
- * @returns {string}
- */
-export function getFolderFullNameRaw(folderHash) {
-	return folderHash && FOLDERS_NAME_CACHE[folderHash] ? FOLDERS_NAME_CACHE[folderHash] : '';
-}
+	/**
+	 * @param {string} folderHash
+	 * @returns {string}
+	 */
+	getFolderFullNameRaw = folderHash =>
+		folderHash && FOLDERS_NAME_CACHE[folderHash] ? FOLDERS_NAME_CACHE[folderHash] : '',
 
-/**
- * @param {string} folderHash
- * @param {string} folderFullNameRaw
- * @param {?FolderModel} folder
- */
-export function setFolder(folderHash, folderFullNameRaw, folder) {
-	FOLDERS_CACHE[folderFullNameRaw] = folder;
-	FOLDERS_NAME_CACHE[folderHash] = folderFullNameRaw;
-}
+	/**
+	 * @param {string} folderHash
+	 * @param {string} folderFullNameRaw
+	 * @param {?FolderModel} folder
+	 */
+	setFolder = (folderHash, folderFullNameRaw, folder) => {
+		FOLDERS_CACHE[folderFullNameRaw] = folder;
+		FOLDERS_NAME_CACHE[folderHash] = folderFullNameRaw;
+	},
 
-/**
- * @param {string} folderFullNameRaw
- * @returns {string}
- */
-export function getFolderHash(folderFullNameRaw) {
-	return folderFullNameRaw && FOLDERS_HASH_CACHE[folderFullNameRaw] ? FOLDERS_HASH_CACHE[folderFullNameRaw] : '';
-}
+	/**
+	 * @param {string} folderFullNameRaw
+	 * @returns {string}
+	 */
+	getFolderHash = folderFullNameRaw =>
+		folderFullNameRaw && FOLDERS_HASH_CACHE[folderFullNameRaw] ? FOLDERS_HASH_CACHE[folderFullNameRaw] : '',
 
-/**
- * @param {string} folderFullNameRaw
- * @param {string} folderHash
- */
-export function setFolderHash(folderFullNameRaw, folderHash) {
-	if (folderFullNameRaw) {
-		FOLDERS_HASH_CACHE[folderFullNameRaw] = folderHash;
-	}
-}
+	/**
+	 * @param {string} folderFullNameRaw
+	 * @param {string} folderHash
+	 */
+	setFolderHash = (folderFullNameRaw, folderHash) =>
+		folderFullNameRaw && (FOLDERS_HASH_CACHE[folderFullNameRaw] = folderHash),
 
-/**
- * @param {string} folderFullNameRaw
- * @returns {string}
- */
-export function getFolderUidNext(folderFullNameRaw) {
-	return folderFullNameRaw && FOLDERS_UID_NEXT_CACHE[folderFullNameRaw]
-		? FOLDERS_UID_NEXT_CACHE[folderFullNameRaw]
-		: '';
-}
+	/**
+	 * @param {string} folderFullNameRaw
+	 * @returns {string}
+	 */
+	getFolderUidNext = folderFullNameRaw =>
+		folderFullNameRaw && FOLDERS_UID_NEXT_CACHE[folderFullNameRaw]
+			? FOLDERS_UID_NEXT_CACHE[folderFullNameRaw]
+			: '',
 
-/**
- * @param {string} folderFullNameRaw
- * @param {string} uidNext
- */
-export function setFolderUidNext(folderFullNameRaw, uidNext) {
-	FOLDERS_UID_NEXT_CACHE[folderFullNameRaw] = uidNext;
-}
+	/**
+	 * @param {string} folderFullNameRaw
+	 * @param {string} uidNext
+	 */
+	setFolderUidNext = (folderFullNameRaw, uidNext) =>
+		FOLDERS_UID_NEXT_CACHE[folderFullNameRaw] = uidNext,
 
-/**
- * @param {string} folderFullNameRaw
- * @returns {?FolderModel}
- */
-export function getFolderFromCacheList(folderFullNameRaw) {
-	return folderFullNameRaw && FOLDERS_CACHE[folderFullNameRaw] ? FOLDERS_CACHE[folderFullNameRaw] : null;
-}
+	/**
+	 * @param {string} folderFullNameRaw
+	 * @returns {?FolderModel}
+	 */
+	getFolderFromCacheList = folderFullNameRaw =>
+		folderFullNameRaw && FOLDERS_CACHE[folderFullNameRaw] ? FOLDERS_CACHE[folderFullNameRaw] : null,
 
-/**
- * @param {string} folderFullNameRaw
- */
-export function removeFolderFromCacheList(folderFullNameRaw) {
-	delete FOLDERS_CACHE[folderFullNameRaw];
-}
+	/**
+	 * @param {string} folderFullNameRaw
+	 */
+	removeFolderFromCacheList = folderFullNameRaw => delete FOLDERS_CACHE[folderFullNameRaw];
 
 export class MessageFlagsCache
 {

@@ -5,8 +5,8 @@
  */
 export const FolderType = {
 	Inbox: 10,
-	SentItems: 11,
-	Draft: 12,
+	Sent: 11,
+	Drafts: 12,
 	Trash: 13,
 	Spam: 14,
 	Archive: 15,

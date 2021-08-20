@@ -12,12 +12,11 @@ class DomainPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Domain');
 
+		this.addObservables(this.getDefaults());
 		this.addObservables({
 			edit: false,
+
 			saving: false,
-			savingError: '',
-			page: 'main',
-			sieveSettings: false,
 
 			testing: false,
 			testingDone: false,
@@ -31,28 +30,6 @@ class DomainPopupView extends AbstractViewPopup {
 			imapServerFocus: false,
 			sieveServerFocus: false,
 			smtpServerFocus: false,
-
-			name: '',
-
-			imapServer: '',
-			imapPort: '143',
-			imapSecure: 0,
-			imapShortLogin: false,
-			useSieve: false,
-			sieveServer: '',
-			sievePort: '4190',
-			sieveSecure: 0,
-			smtpServer: '',
-			smtpPort: '25',
-			smtpSecure: 0,
-			smtpShortLogin: false,
-			smtpAuth: true,
-			smtpSetSender: false,
-			smtpPhpMail: false,
-			whiteList: '',
-			aliasName: '',
-
-			enableSmartPorts: false
 		});
 
 		this.addComputables({
@@ -306,38 +283,42 @@ class DomainPopupView extends AbstractViewPopup {
 		}
 	}
 
+	getDefaults() {
+		return {
+			savingError: '',
+			page: 'main',
+			sieveSettings: false,
+
+			name: '',
+
+			imapServer: '',
+			imapPort: '143',
+			imapSecure: 0,
+			imapShortLogin: false,
+
+			useSieve: false,
+			sieveServer: '',
+			sievePort: '4190',
+			sieveSecure: 0,
+
+			smtpServer: '',
+			smtpPort: '25',
+			smtpSecure: 0,
+			smtpShortLogin: false,
+			smtpAuth: true,
+			smtpSetSender: false,
+			smtpPhpMail: false,
+
+			whiteList: '',
+			aliasName: '',
+
+			enableSmartPorts: false
+		};
+	}
+
 	clearForm() {
 		this.edit(false);
-
-		this.page('main');
-		this.sieveSettings(false);
-
-		this.enableSmartPorts(false);
-
-		this.savingError('');
-
-		this.name('');
-
-		this.imapServer('');
-		this.imapPort('143');
-		this.imapSecure(0);
-		this.imapShortLogin(false);
-
-		this.useSieve(false);
-		this.sieveServer('');
-		this.sievePort('4190');
-		this.sieveSecure(0);
-
-		this.smtpServer('');
-		this.smtpPort('25');
-		this.smtpSecure(0);
-		this.smtpShortLogin(false);
-		this.smtpAuth(true);
-		this.smtpSetSender(true);
-		this.smtpPhpMail(false);
-
-		this.whiteList('');
-		this.aliasName('');
+		Object.entries(this.getDefaults()).forEach(([key, value]) => this[key](value));
 		this.enableSmartPorts(true);
 	}
 }

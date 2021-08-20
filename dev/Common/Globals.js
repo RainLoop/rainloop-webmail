@@ -1,46 +1,33 @@
 import ko from 'ko';
 import { Scope } from 'Common/Enums';
 
-export const doc = document;
+let keyScopeFake = Scope.All;
 
-export const $htmlCL = doc.documentElement.classList;
+export const
 
-export const elementById = id => doc.getElementById(id);
+	doc = document,
 
-export const Settings = rl.settings;
-export const SettingsGet = rl.settings.get;
+	$htmlCL = doc.documentElement.classList,
 
-export const dropdownVisibility = ko.observable(false).extend({ rateLimit: 0 });
+	elementById = id => doc.getElementById(id),
 
-export const moveAction = ko.observable(false);
-export const leftPanelDisabled = ko.observable(false);
+	Settings = rl.settings,
+	SettingsGet = Settings.get,
 
-export const createElement = (name, attr) => {
-	let el = doc.createElement(name);
-	attr && Object.entries(attr).forEach(([k,v]) => el.setAttribute(k,v));
-	return el;
-};
+	dropdownVisibility = ko.observable(false).extend({ rateLimit: 0 }),
 
-leftPanelDisabled.subscribe(value => {
-	value && moveAction() && moveAction(false);
-	$htmlCL.toggle('rl-left-panel-disabled', value);
-});
+	moveAction = ko.observable(false),
+	leftPanelDisabled = ko.observable(false),
 
-moveAction.subscribe(value => value && leftPanelDisabled() && leftPanelDisabled(false));
+	createElement = (name, attr) => {
+		let el = doc.createElement(name);
+		attr && Object.entries(attr).forEach(([k,v]) => el.setAttribute(k,v));
+		return el;
+	},
 
-// keys
-export const keyScopeReal = ko.observable(Scope.All);
-
-export const keyScope = (()=>{
-	let keyScopeFake = Scope.All;
-	dropdownVisibility.subscribe(value => {
-		if (value) {
-			keyScope(Scope.Menu);
-		} else if (Scope.Menu === shortcuts.getScope()) {
-			keyScope(keyScopeFake);
-		}
-	});
-	return value => {
+	// keys
+	keyScopeReal = ko.observable(Scope.All),
+	keyScope = value => {
 		if (value) {
 			if (Scope.Menu !== value) {
 				keyScopeFake = value;
@@ -54,4 +41,18 @@ export const keyScope = (()=>{
 			return keyScopeFake;
 		}
 	};
-})();
+
+dropdownVisibility.subscribe(value => {
+	if (value) {
+		keyScope(Scope.Menu);
+	} else if (Scope.Menu === shortcuts.getScope()) {
+		keyScope(keyScopeFake);
+	}
+});
+
+leftPanelDisabled.subscribe(value => {
+	value && moveAction() && moveAction(false);
+	$htmlCL.toggle('rl-left-panel-disabled', value);
+});
+
+moveAction.subscribe(value => value && leftPanelDisabled() && leftPanelDisabled(false));

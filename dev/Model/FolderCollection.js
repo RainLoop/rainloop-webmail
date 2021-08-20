@@ -160,9 +160,9 @@ function getSystemFolderName(type, def)
 	switch (type) {
 		case FolderType.Inbox:
 			return i18n('FOLDER_LIST/INBOX_NAME');
-		case FolderType.SentItems:
+		case FolderType.Sent:
 			return i18n('FOLDER_LIST/SENT_NAME');
-		case FolderType.Draft:
+		case FolderType.Drafts:
 			return i18n('FOLDER_LIST/DRAFTS_NAME');
 		case FolderType.Spam:
 			return i18n('GLOBAL/SPAM');
@@ -281,14 +281,14 @@ export class FolderModel extends AbstractModel {
 						type = folder.type();
 
 					if (count) {
-						if (FolderType.Draft === type) {
+						if (FolderType.Drafts === type) {
 							return count;
 						}
 						if (
 							unread &&
 							FolderType.Trash !== type &&
 							FolderType.Archive !== type &&
-							FolderType.SentItems !== type
+							FolderType.Sent !== type
 						) {
 							return unread;
 						}

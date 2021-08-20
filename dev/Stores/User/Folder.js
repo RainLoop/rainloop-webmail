@@ -127,8 +127,8 @@ export const FolderUserStore = new class {
 		this.archiveFolder.subscribe(fRemoveSystemFolderType(this.archiveFolder), this, 'beforeChange');
 
 		addSubscribablesTo(this, {
-			sentFolder: fSetSystemFolderType(FolderType.SentItems),
-			draftFolder: fSetSystemFolderType(FolderType.Draft),
+			sentFolder: fSetSystemFolderType(FolderType.Sent),
+			draftFolder: fSetSystemFolderType(FolderType.Drafts),
 			spamFolder: fSetSystemFolderType(FolderType.Spam),
 			trashFolder: fSetSystemFolderType(FolderType.Trash),
 			archiveFolder: fSetSystemFolderType(FolderType.Archive)
