@@ -16,81 +16,46 @@ export function isPosNumeric(value) {
 }
 
 /**
- * @param {string} text
- * @param {number=} len = 100
- * @returns {string}
- */
-function splitPlainText(text, len = 100) {
-	let prefix = '',
-		subText = '',
-		result = text,
-		spacePos = 0,
-		newLinePos = 0;
-
-	while (result.length > len) {
-		subText = result.substr(0, len);
-		spacePos = subText.lastIndexOf(' ');
-		newLinePos = subText.lastIndexOf('\n');
-
-		if (-1 !== newLinePos) {
-			spacePos = newLinePos;
-		}
-
-		if (-1 === spacePos) {
-			spacePos = len;
-		}
-
-		prefix += subText.substr(0, spacePos) + '\n';
-		result = result.substr(spacePos + 1);
-	}
-
-	return prefix + result;
-}
-
-/**
  * @param {string} html
  * @returns {string}
  */
 export function htmlToPlain(html) {
 	let pos = 0,
-		limit = 0,
+		limit = 800,
 		iP1 = 0,
 		iP2 = 0,
 		iP3 = 0,
 		text = '';
 
-	const convertBlockquote = (blockquoteText) => {
-		blockquoteText = '> ' + blockquoteText.trim().replace(/\n/gm, '\n> ');
-		return blockquoteText.replace(/(^|\n)([> ]+)/gm, (...args) =>
-			args && 2 < args.length ? args[1] + args[2].replace(/[\s]/g, '').trim() + ' ' : ''
-		);
-	};
+	const
+		tpl = createElement('template'),
 
-	const convertDivs = (...args) => {
-		if (args && 1 < args.length) {
-			let divText = args[1].trim();
+		convertBlockquote = (blockquoteText) => {
+			blockquoteText = '> ' + blockquoteText.trim().replace(/\n/gm, '\n> ');
+			return blockquoteText.replace(/(^|\n)([> ]+)/gm, (...args) =>
+				args && 2 < args.length ? args[1] + args[2].replace(/[\s]/g, '').trim() + ' ' : ''
+			);
+		},
+
+		convertDivs = (...args) => {
+			let divText = 1 < args.length ? args[1].trim() : '';
 			if (divText.length) {
-				divText = divText.replace(/<div[^>]*>([\s\S\r\n]*)<\/div>/gim, convertDivs);
-				divText = '\n' + divText.trim() + '\n';
+				divText = '\n' + divText.replace(/<div[^>]*>([\s\S\r\n]*)<\/div>/gim, convertDivs).trim() + '\n';
 			}
 
 			return divText;
-		}
+		},
 
-		return '';
-	};
-
-	const
-		tpl = createElement('template'),
 		convertPre = (...args) =>
-			args && 1 < args.length
+			1 < args.length
 				? args[1]
 						.toString()
 						.replace(/[\n]/gm, '<br/>')
 						.replace(/[\r]/gm, '')
 				: '',
-		fixAttibuteValue = (...args) => (args && 1 < args.length ? '' + args[1] + encodeHtml(args[2]) : ''),
-		convertLinks = (...args) => (args && 1 < args.length ? args[1].trim() : '');
+		fixAttibuteValue = (...args) => (1 < args.length ? args[1] + encodeHtml(args[2]) : ''),
+
+		convertLinks = (...args) => (1 < args.length ? args[1].trim() : '');
 
 	tpl.innerHTML = html
 		.replace(/<p[^>]*><\/p>/gi, '')
@@ -116,34 +81,30 @@ export function htmlToPlain(html) {
 		.replace(/&quot;/gi, '"')
 		.replace(/<[^>]*>/gm, '');
 
-	text = splitPlainText(tpl.content.textContent
+	text = tpl.content.textContent
 		.replace(/\n[ \t]+/gm, '\n')
 		.replace(/[\n]{3,}/gm, '\n\n')
 		.replace(/&gt;/gi, '>')
 		.replace(/&lt;/gi, '<')
 		.replace(/&amp;/gi, '&')
-	);
+		// wordwrap max line length 100
+		.match(/.{1,100}(\s|$)|\S+?(\s|$)/g).join('\n');
 
-	pos = 0;
-	limit = 800;
-
-	while (0 < limit) {
-		--limit;
+	while (0 < --limit) {
 		iP1 = text.indexOf('__bq__start__', pos);
-		if (-1 < iP1) {
-			iP2 = text.indexOf('__bq__start__', iP1 + 5);
-			iP3 = text.indexOf('__bq__end__', iP1 + 5);
-
-			if ((-1 === iP2 || iP3 < iP2) && iP1 < iP3) {
-				text = text.substr(0, iP1) + convertBlockquote(text.substring(iP1 + 13, iP3)) + text.substr(iP3 + 11);
-				pos = 0;
-			} else if (-1 < iP2 && iP2 < iP3) {
-				pos = iP2 - 1;
-			} else {
-				pos = 0;
-			}
-		} else {
+		if (0 > iP1) {
 			break;
+		}
+		iP2 = text.indexOf('__bq__start__', iP1 + 5);
+		iP3 = text.indexOf('__bq__end__', iP1 + 5);
+
+		if ((-1 === iP2 || iP3 < iP2) && iP1 < iP3) {
+			text = text.substr(0, iP1) + convertBlockquote(text.substring(iP1 + 13, iP3)) + text.substr(iP3 + 11);
+			pos = 0;
+		} else if (-1 < iP2 && iP2 < iP3) {
+			pos = iP2 - 1;
+		} else {
+			pos = 0;
 		}
 	}
 
@@ -229,8 +190,6 @@ export function folderListOptionsBuilder(
 	bNoSelectSelectable,
 	aList = FolderUserStore.folderList()
 ) {
-//	FolderUserStore.folderListSystem()
-
 	const
 		aResult = [],
 		sDeepPrefix = '\u00A0\u00A0\u00A0',
