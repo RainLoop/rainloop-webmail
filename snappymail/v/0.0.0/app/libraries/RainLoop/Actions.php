@@ -690,7 +690,7 @@ class Actions
 					\MailSo\Base\Utils::FunctionExistsAndEnabled(array(
 						'apcu_store', 'apcu_fetch', 'apcu_delete', 'apcu_clear_cache')):
 
-					$oDriver = new \MailSo\Cache\Drivers\APC($sKey);
+					$oDriver = new \MailSo\Cache\Drivers\APCU($sKey);
 					break;
 
 				case ('MEMCACHE' === $sDriver || 'MEMCACHED' === $sDriver) &&
