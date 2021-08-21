@@ -706,8 +706,7 @@ class Actions
 
 				case 'REDIS' === $sDriver && \class_exists('Predis\Client'):
 					$oDriver = new \MailSo\Cache\Drivers\Redis(
-						$this->Config()->Get('labs', 'fast_cache_redis_host', '127.0.0.1'),
-						(int)$this->Config()->Get('labs', 'fast_cache_redis_port', 6379),
+						$this->Config()->Get('labs', 'fast_cache_redis_url', 'redis://127.0.0.1:6379'),
 						43200,
 						$sKey
 					);

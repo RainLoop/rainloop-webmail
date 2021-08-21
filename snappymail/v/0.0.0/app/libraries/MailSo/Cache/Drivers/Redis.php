@@ -21,12 +21,7 @@ class Redis implements \MailSo\Cache\DriverInterface
 	/**
 	 * @var string
 	 */
-	private $sHost;
-
-	/**
-	 * @var int
-	 */
-	private $iPost;
+	private $sUrl;
 
 	/**
 	 * @var int
@@ -43,20 +38,16 @@ class Redis implements \MailSo\Cache\DriverInterface
 	 */
 	private $sKeyPrefix;
 
-	function __construct(string $sHost = '127.0.0.1', int $iPost = 6379, int $iExpire = 43200, string $sKeyPrefix = '')
+	function __construct(string $sUrl = 'redis://127.0.0.1:6379', int $iExpire = 43200, string $sKeyPrefix = '')
 	{
-		$this->sHost = $sHost;
-		$this->iPost = $iPost;
+		$this->sUrl = $sUrl;
 		$this->iExpire = 0 < $iExpire ? $iExpire : 43200;
 
 		$this->oRedis = null;
 
 		try
 		{
-			$this->oRedis = new \Predis\Client('unix:' === substr($sHost, 0, 5) ? $sHost : array(
-				'host' => $sHost,
-				'port' => $iPost
-			));
+			$this->oRedis = new \Predis\Client($sUrl);
 
 			$this->oRedis->connect();
 
