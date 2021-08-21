@@ -50,13 +50,14 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$sSearchField = \trim($this->Config()->Get('plugin', 'search_field', ''));
 				$sNameField = \trim($this->Config()->Get('plugin', 'name_field', ''));
 				$sEmailField = \trim($this->Config()->Get('plugin', 'mail_field', ''));
+				$sAllowedEmails = \trim($this->Config()->Get('plugin', 'allowed_emails', ''));
 
 				if (0 < \strlen($sUsersDn) && 0 < \strlen($sObjectClass) && 0 < \strlen($sEmailField))
 				{
 					include_once __DIR__.'/LdapContactsSuggestions.php';
 
 					$oProvider = new LdapContactsSuggestions();
-					$oProvider->SetConfig($sHostName, $iHostPort, $sAccessDn, $sAccessPassword, $sUsersDn, $sObjectClass, $sSearchField, $sNameField, $sEmailField);
+					$oProvider->SetConfig($sHostName, $iHostPort, $sAccessDn, $sAccessPassword, $sUsersDn, $sObjectClass, $sSearchField, $sNameField, $sEmailField, $sAllowedEmails);
 
 					$mResult[] = $oProvider;
 				}

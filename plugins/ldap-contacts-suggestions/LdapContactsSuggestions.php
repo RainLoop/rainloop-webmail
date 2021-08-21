@@ -66,10 +66,11 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	 * @param string $sObjectClass
 	 * @param string $sNameField
 	 * @param string $sEmailField
+	 * @param string $sAllowedEmails
 	 *
 	 * @return \LdapContactsSuggestions
 	 */
-	public function SetConfig($sHostName, $iHostPort, $sAccessDn, $sAccessPassword, $sUsersDn, $sObjectClass, $sUidField, $sNameField, $sEmailField)
+	public function SetConfig($sHostName, $iHostPort, $sAccessDn, $sAccessPassword, $sUsersDn, $sObjectClass, $sUidField, $sNameField, $sEmailField, $sAllowedEmails)
 	{
 		$this->sHostName = $sHostName;
 		$this->iHostPort = $iHostPort;
@@ -83,17 +84,6 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 		$this->sUidField = $sUidField;
 		$this->sNameField = $sNameField;
 		$this->sEmailField = $sEmailField;
-
-		return $this;
-	}
-
-	/**
-	 * @param string $sAllowedEmails
-	 *
-	 * @return \LdapContactsSuggestions
-	 */
-	public function SetAllowedEmails($sAllowedEmails)
-	{
 		$this->sAllowedEmails = $sAllowedEmails;
 
 		return $this;
