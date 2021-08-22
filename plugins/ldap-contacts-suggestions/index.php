@@ -86,7 +86,7 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetDefaultValue(''),
 			\RainLoop\Plugins\Property::NewInstance('base_dn')->SetLabel('Search base DN')
 				->SetDescription('DN to use as the search base. Supported tokens: {domain}, {domain:dc}, {email}, {email:user}, {email:domain}, {login}, {imap:login}, {imap:host}, {imap:port}')
-				->SetDefaultValue('ou=People,dc=domain,dc=com'),
+				->SetDefaultValue('ou=People,dc=example,dc=com'),
 			\RainLoop\Plugins\Property::NewInstance('object_class')->SetLabel('objectClass value')
 				->SetDefaultValue('inetOrgPerson'),
 			\RainLoop\Plugins\Property::NewInstance('uid_field')->SetLabel('uid attributes')
@@ -94,10 +94,10 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetDefaultValue('uid'),
 			\RainLoop\Plugins\Property::NewInstance('name_field')->SetLabel('Name attributes')
 				->SetDescription('LDAP attributes for user names, comma separated list in order of preference')
-				->SetDefaultValue('givenName'),
+				->SetDefaultValue('displayName,cn,givenName,sn'),
 			\RainLoop\Plugins\Property::NewInstance('mail_field')->SetLabel('Mail attributes')
 				->SetDescription('LDAP attributes for user email addresses, comma separated list in order of preference')
-				->SetDefaultValue('mail'),
+				->SetDefaultValue('mailAddress,mail,mailAlternateAddress,mailAlias'),
 			\RainLoop\Plugins\Property::NewInstance('allowed_emails')->SetLabel('Allowed emails')
 				->SetDescription('Email addresses of users which should be allowed to do LDAP lookups, space as delimiter, wildcard supported. Example: user1@domain1.net user2@domain1.net *@domain2.net')
 				->SetDefaultValue('*')

@@ -25,7 +25,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	/**
 	 * @var string
 	 */
-	private $sBaseDn = '';
+	private $sBaseDn = 'ou=People,dc=example,dc=com';
 
 	/**
 	 * @var string
@@ -40,12 +40,12 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	/**
 	 * @var string
 	 */
-	private $sNameField = 'givenName';
+	private $sNameField = 'displayName,cn,givenName,sn';
 
 	/**
 	 * @var string
 	 */
-	private $sEmailField = 'mail';
+	private $sEmailField = 'mailAddress,mail,mailAlternateAddress,mailAlias';
 
 	/**
 	 * @var \MailSo\Log\Logger
@@ -55,7 +55,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	/**
 	 * @var string
 	 */
-	private $sAllowedEmails = '';
+	private $sAllowedEmails = '*';
 
 	/**
 	 * @param string $sLdapUri
