@@ -45,7 +45,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	/**
 	 * @var string
 	 */
-	private $sNameField = 'givenname';
+	private $sNameField = 'givenName';
 
 	/**
 	 * @var string
@@ -141,6 +141,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 		{
 			foreach ($aEmailFields as $sField)
 			{
+				$sField = \strtolower($sField);
 				if (!empty($aLdapItem[$sField][0]))
 				{
 					$sEmail = \trim($aLdapItem[$sField][0]);
@@ -153,6 +154,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 
 			foreach ($aNameFields as $sField)
 			{
+				$sField = \strtolower($sField);
 				if (!empty($aLdapItem[$sField][0]))
 				{
 					$sName = \trim($aLdapItem[$sField][0]);
@@ -165,6 +167,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 
 			foreach ($aUidFields as $sField)
 			{
+				$sField = \strtolower($sField);
 				if (!empty($aLdapItem[$sField][0]))
 				{
 					$sUid = \trim($aLdapItem[$sField][0]);

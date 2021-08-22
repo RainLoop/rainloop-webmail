@@ -95,7 +95,7 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			\RainLoop\Plugins\Property::NewInstance('search_field')->SetLabel('Search field')
 				->SetDefaultValue('uid'),
 			\RainLoop\Plugins\Property::NewInstance('name_field')->SetLabel('Name field')
-				->SetDefaultValue('givenname'),
+				->SetDefaultValue('givenName'),
 			\RainLoop\Plugins\Property::NewInstance('mail_field')->SetLabel('Mail field')
 				->SetDefaultValue('mail'),
 			\RainLoop\Plugins\Property::NewInstance('allowed_emails')->SetLabel('Allowed emails')
