@@ -20,17 +20,17 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	/**
 	 * @var string
 	 */
-	private $sAccessDn = null;
+	private $sBindDn = null;
 
 	/**
 	 * @var string
 	 */
-	private $sAccessPassword = null;
+	private $sBindPassword = null;
 
 	/**
 	 * @var string
 	 */
-	private $sUsersDn = '';
+	private $sBaseDn = '';
 
 	/**
 	 * @var string
@@ -66,9 +66,9 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	 * @param string $sHostName
 	 * @param int $iHostPort
 	 * @param bool $bUseStartTLS
-	 * @param string $sAccessDn
-	 * @param string $sAccessPassword
-	 * @param string $sUsersDn
+	 * @param string $sBindDn
+	 * @param string $sBindPassword
+	 * @param string $sBaseDn
 	 * @param string $sObjectClass
 	 * @param string $sNameField
 	 * @param string $sEmailField
@@ -76,17 +76,17 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	 *
 	 * @return \LdapContactsSuggestions
 	 */
-	public function SetConfig($sHostName, $iHostPort, $bUseStartTLS, $sAccessDn, $sAccessPassword, $sUsersDn, $sObjectClass, $sUidField, $sNameField, $sEmailField, $sAllowedEmails)
+	public function SetConfig($sHostName, $iHostPort, $bUseStartTLS, $sBindDn, $sBindPassword, $sBaseDn, $sObjectClass, $sUidField, $sNameField, $sEmailField, $sAllowedEmails)
 	{
 		$this->sHostName = $sHostName;
 		$this->iHostPort = $iHostPort;
 		$this->bUseStartTLS = $bUseStartTLS;
-		if (0 < \strlen($sAccessDn))
+		if (0 < \strlen($sBindDn))
 		{
-			$this->sAccessDn = $sAccessDn;
-			$this->sAccessPassword = $sAccessPassword;
+			$this->sBindDn = $sBindDn;
+			$this->sBindPassword = $sBindPassword;
 		}
-		$this->sUsersDn = $sUsersDn;
+		$this->sBaseDn = $sBaseDn;
 		$this->sObjectClass = $sObjectClass;
 		$this->sUidField = $sUidField;
 		$this->sNameField = $sNameField;
@@ -206,9 +206,9 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 				return $aResult;
 			}
 
-			if (!@\ldap_bind($oCon, $this->sAccessDn, $this->sAccessPassword))
+			if (!@\ldap_bind($oCon, $this->sBindDn, $this->sBindPassword))
 			{
-				if (is_null($this->sAccessDn))
+				if (is_null($this->sBindDn))
 				{
 					$this->logLdapError($oCon, 'ldap_bind (anonymous)');
 				}
@@ -221,7 +221,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 			}
 
 			$sDomain = \MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email());
-			$sSearchDn = \strtr($this->sUsersDn, array(
+			$sBaseDn = \strtr($this->sBaseDn, array(
 				'{domain}' => $sDomain,
 				'{domain:dc}' => 'dc='.\strtr($sDomain, array('.' => ',dc=')),
 				'{email}' => $oAccount->Email(),
@@ -258,8 +258,8 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 			$sFilter .= (1 < count($aItems) ? '(|' : '').$sSubFilter.(1 < count($aItems) ? ')' : '');
 			$sFilter .= ')';
 
-			$this->oLogger->Write('ldap_search: start: '.$sSearchDn.' / '.$sFilter, \MailSo\Log\Enumerations\Type::INFO, 'LDAP');
-			$oS = @\ldap_search($oCon, $sSearchDn, $sFilter, $aItems, 0, 30, 30);
+			$this->oLogger->Write('ldap_search: start: '.$sBaseDn.' / '.$sFilter, \MailSo\Log\Enumerations\Type::INFO, 'LDAP');
+			$oS = @\ldap_search($oCon, $sBaseDn, $sFilter, $aItems, 0, 30, 30);
 			if ($oS)
 			{
 				$aEntries = @\ldap_get_entries($oCon, $oS);

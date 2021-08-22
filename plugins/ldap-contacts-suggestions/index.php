@@ -44,21 +44,21 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$sHostName = \trim($this->Config()->Get('plugin', 'hostname', ''));
 				$iHostPort = (int) $this->Config()->Get('plugin', 'port', 389);
 				$bUseStartTLS = (bool) $this->Config()->Get('plugin', 'use_start_tls', True);
-				$sAccessDn = \trim($this->Config()->Get('plugin', 'access_dn', ''));
-				$sAccessPassword = \trim($this->Config()->Get('plugin', 'access_password', ''));
-				$sUsersDn = \trim($this->Config()->Get('plugin', 'users_dn_format', ''));
+				$sBindDn = \trim($this->Config()->Get('plugin', 'bind_dn', ''));
+				$sBindPassword = \trim($this->Config()->Get('plugin', 'bind_password', ''));
+				$sBaseDn = \trim($this->Config()->Get('plugin', 'base_dn', ''));
 				$sObjectClass = \trim($this->Config()->Get('plugin', 'object_class', ''));
 				$sUidField = \trim($this->Config()->Get('plugin', 'uid_field', ''));
 				$sNameField = \trim($this->Config()->Get('plugin', 'name_field', ''));
 				$sEmailField = \trim($this->Config()->Get('plugin', 'mail_field', ''));
 				$sAllowedEmails = \trim($this->Config()->Get('plugin', 'allowed_emails', ''));
 
-				if (0 < \strlen($sUsersDn) && 0 < \strlen($sObjectClass) && 0 < \strlen($sEmailField))
+				if (0 < \strlen($sBaseDn) && 0 < \strlen($sObjectClass) && 0 < \strlen($sEmailField))
 				{
 					include_once __DIR__.'/LdapContactsSuggestions.php';
 
 					$oProvider = new LdapContactsSuggestions();
-					$oProvider->SetConfig($sHostName, $iHostPort, $bUseStartTLS, $sAccessDn, $sAccessPassword, $sUsersDn, $sObjectClass, $sUidField, $sNameField, $sEmailField, $sAllowedEmails);
+					$oProvider->SetConfig($sHostName, $iHostPort, $bUseStartTLS, $sBindDn, $sBindPassword, $sBaseDn, $sObjectClass, $sUidField, $sNameField, $sEmailField, $sAllowedEmails);
 
 					$mResult[] = $oProvider;
 				}
@@ -81,13 +81,13 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			\RainLoop\Plugins\Property::NewInstance('use_start_tls')->SetLabel('Use StartTLS')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(True),
-			\RainLoop\Plugins\Property::NewInstance('access_dn')->SetLabel('Bind DN')
+			\RainLoop\Plugins\Property::NewInstance('bind_dn')->SetLabel('Bind DN')
 				->SetDescription('DN to bind (login) with. If left blank, anonymous bind will be tried and the password will be ignored')
 				->SetDefaultValue(''),
-			\RainLoop\Plugins\Property::NewInstance('access_password')->SetLabel('Bind password')
+			\RainLoop\Plugins\Property::NewInstance('bind_password')->SetLabel('Bind password')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::PASSWORD)
 				->SetDefaultValue(''),
-			\RainLoop\Plugins\Property::NewInstance('users_dn_format')->SetLabel('Search base DN')
+			\RainLoop\Plugins\Property::NewInstance('base_dn')->SetLabel('Search base DN')
 				->SetDescription('DN to use as the search base. Supported tokens: {domain}, {domain:dc}, {email}, {email:user}, {email:domain}, {login}, {imap:login}, {imap:host}, {imap:port}')
 				->SetDefaultValue('ou=People,dc=domain,dc=com'),
 			\RainLoop\Plugins\Property::NewInstance('object_class')->SetLabel('objectClass value')
