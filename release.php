@@ -85,10 +85,12 @@ if (!$gulp) {
 	exit('gulp not installed, run as root: npm install --global gulp-cli');
 }
 
+/*
 $rollup = trim(`which rollup`);
 if (!$rollup) {
 	exit('rollup not installed, run as root: npm install --global rollup');
 }
+*/
 
 // Arch User Repository
 // https://aur.archlinux.org/packages/snappymail/

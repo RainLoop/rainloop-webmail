@@ -1,7 +1,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL 3 */
 const gulp = require('gulp');
 const del = require('del');
-const fs = require('node-fs');
+const fs = require('fs');
 
 const { config } = require('./config');
 
