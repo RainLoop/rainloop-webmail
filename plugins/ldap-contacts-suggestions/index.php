@@ -47,17 +47,17 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$sBindPassword = \trim($this->Config()->Get('plugin', 'bind_password', ''));
 				$sBaseDn = \trim($this->Config()->Get('plugin', 'base_dn', ''));
 				$sObjectClass = \trim($this->Config()->Get('plugin', 'object_class', ''));
-				$sUidField = \trim($this->Config()->Get('plugin', 'uid_field', ''));
-				$sNameField = \trim($this->Config()->Get('plugin', 'name_field', ''));
-				$sEmailField = \trim($this->Config()->Get('plugin', 'mail_field', ''));
+				$sUidAttributes = \trim($this->Config()->Get('plugin', 'uid_attributes', ''));
+				$sNameAttributes = \trim($this->Config()->Get('plugin', 'name_attributes', ''));
+				$sEmailAttributes = \trim($this->Config()->Get('plugin', 'mail_attributes', ''));
 				$sAllowedEmails = \trim($this->Config()->Get('plugin', 'allowed_emails', ''));
 
-				if (0 < \strlen($sLdapUri) && 0 < \strlen($sBaseDn) && 0 < \strlen($sObjectClass) && 0 < \strlen($sEmailField))
+				if (0 < \strlen($sLdapUri) && 0 < \strlen($sBaseDn) && 0 < \strlen($sObjectClass) && 0 < \strlen($sEmailAttributes))
 				{
 					include_once __DIR__.'/LdapContactsSuggestions.php';
 
 					$oProvider = new LdapContactsSuggestions();
-					$oProvider->SetConfig($sLdapUri, $bUseStartTLS, $sBindDn, $sBindPassword, $sBaseDn, $sObjectClass, $sUidField, $sNameField, $sEmailField, $sAllowedEmails);
+					$oProvider->SetConfig($sLdapUri, $bUseStartTLS, $sBindDn, $sBindPassword, $sBaseDn, $sObjectClass, $sUidAttributes, $sNameAttributes, $sEmailAttributes, $sAllowedEmails);
 
 					$mResult[] = $oProvider;
 				}
@@ -89,13 +89,13 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetDefaultValue('ou=People,dc=example,dc=com'),
 			\RainLoop\Plugins\Property::NewInstance('object_class')->SetLabel('objectClass value')
 				->SetDefaultValue('inetOrgPerson'),
-			\RainLoop\Plugins\Property::NewInstance('uid_field')->SetLabel('uid attributes')
+			\RainLoop\Plugins\Property::NewInstance('uid_attributes')->SetLabel('uid attributes')
 				->SetDescription('LDAP attributes for userids, comma separated list in order of preference')
 				->SetDefaultValue('uid'),
-			\RainLoop\Plugins\Property::NewInstance('name_field')->SetLabel('Name attributes')
+			\RainLoop\Plugins\Property::NewInstance('name_attributes')->SetLabel('Name attributes')
 				->SetDescription('LDAP attributes for user names, comma separated list in order of preference')
 				->SetDefaultValue('displayName,cn,givenName,sn'),
-			\RainLoop\Plugins\Property::NewInstance('mail_field')->SetLabel('Mail attributes')
+			\RainLoop\Plugins\Property::NewInstance('mail_attributes')->SetLabel('Mail attributes')
 				->SetDescription('LDAP attributes for user email addresses, comma separated list in order of preference')
 				->SetDefaultValue('mailAddress,mail,mailAlternateAddress,mailAlias'),
 			\RainLoop\Plugins\Property::NewInstance('allowed_emails')->SetLabel('Allowed emails')

@@ -35,17 +35,17 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	/**
 	 * @var string
 	 */
-	private $sUidField = 'uid';
+	private $sUidAttributes = 'uid';
 
 	/**
 	 * @var string
 	 */
-	private $sNameField = 'displayName,cn,givenName,sn';
+	private $sNameAttributes = 'displayName,cn,givenName,sn';
 
 	/**
 	 * @var string
 	 */
-	private $sEmailField = 'mailAddress,mail,mailAlternateAddress,mailAlias';
+	private $sEmailAttributes = 'mailAddress,mail,mailAlternateAddress,mailAlias';
 
 	/**
 	 * @var \MailSo\Log\Logger
@@ -64,13 +64,14 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	 * @param string $sBindPassword
 	 * @param string $sBaseDn
 	 * @param string $sObjectClass
-	 * @param string $sNameField
-	 * @param string $sEmailField
+	 * @param string $sNameAttributes
+	 * @param string $sEmailAttributes
+	 * @param string $sUidAttributes
 	 * @param string $sAllowedEmails
 	 *
 	 * @return \LdapContactsSuggestions
 	 */
-	public function SetConfig($sLdapUri, $bUseStartTLS, $sBindDn, $sBindPassword, $sBaseDn, $sObjectClass, $sUidField, $sNameField, $sEmailField, $sAllowedEmails)
+	public function SetConfig($sLdapUri, $bUseStartTLS, $sBindDn, $sBindPassword, $sBaseDn, $sObjectClass, $sUidAttributes, $sNameAttributes, $sEmailAttributes, $sAllowedEmails)
 	{
 		$this->sLdapUri = $sLdapUri;
 		$this->bUseStartTLS = $bUseStartTLS;
@@ -81,9 +82,9 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 		}
 		$this->sBaseDn = $sBaseDn;
 		$this->sObjectClass = $sObjectClass;
-		$this->sUidField = $sUidField;
-		$this->sNameField = $sNameField;
-		$this->sEmailField = $sEmailField;
+		$this->sUidAttributes = $sUidAttributes;
+		$this->sNameAttributes = $sNameAttributes;
+		$this->sEmailAttributes = $sEmailAttributes;
 		$this->sAllowedEmails = $sAllowedEmails;
 
 		return $this;
@@ -122,17 +123,18 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 
 	/**
 	 * @param array $aLdapItem
-	 * @param array $aEmailFields
-	 * @param array $aNameFields
+	 * @param array $aEmailAttributes
+	 * @param array $aNameAttributes
+	 * @param array $aUidAttributes
 	 *
 	 * @return array
 	 */
-	private function findNameAndEmail($aLdapItem, $aEmailFields, $aNameFields, $aUidFields)
+	private function findNameAndEmail($aLdapItem, $aEmailAttributes, $aNameAttributes, $aUidAttributes)
 	{
 		$sEmail = $sName = $sUid = '';
 		if ($aLdapItem)
 		{
-			foreach ($aEmailFields as $sField)
+			foreach ($aEmailAttributes as $sField)
 			{
 				$sField = \strtolower($sField);
 				if (!empty($aLdapItem[$sField][0]))
@@ -145,7 +147,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 				}
 			}
 
-			foreach ($aNameFields as $sField)
+			foreach ($aNameAttributes as $sField)
 			{
 				$sField = \strtolower($sField);
 				if (!empty($aLdapItem[$sField][0]))
@@ -158,7 +160,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 				}
 			}
 
-			foreach ($aUidFields as $sField)
+			foreach ($aUidAttributes as $sField)
 			{
 				$sField = \strtolower($sField);
 				if (!empty($aLdapItem[$sField][0]))
@@ -226,9 +228,9 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 				'{imap:port}' => $oAccount->DomainIncPort()
 			));
 
-			$aEmails = empty($this->sEmailField) ? array() : \explode(',', $this->sEmailField);
-			$aNames = empty($this->sNameField) ? array() : \explode(',', $this->sNameField);
-			$aUIDs = empty($this->sUidField) ? array() : \explode(',', $this->sUidField);
+			$aEmails = empty($this->sEmailAttributes) ? array() : \explode(',', $this->sEmailAttributes);
+			$aNames = empty($this->sNameAttributes) ? array() : \explode(',', $this->sNameAttributes);
+			$aUIDs = empty($this->sUidAttributes) ? array() : \explode(',', $this->sUidAttributes);
 
 			$aEmails = \array_map('trim', $aEmails);
 			$aNames = \array_map('trim', $aNames);
