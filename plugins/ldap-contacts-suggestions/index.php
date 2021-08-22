@@ -46,18 +46,18 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$sBindDn = \trim($this->Config()->Get('plugin', 'bind_dn', ''));
 				$sBindPassword = \trim($this->Config()->Get('plugin', 'bind_password', ''));
 				$sBaseDn = \trim($this->Config()->Get('plugin', 'base_dn', ''));
-				$sObjectClass = \trim($this->Config()->Get('plugin', 'object_class', ''));
+				$sObjectClasses = \trim($this->Config()->Get('plugin', 'object_classes', ''));
 				$sUidAttributes = \trim($this->Config()->Get('plugin', 'uid_attributes', ''));
 				$sNameAttributes = \trim($this->Config()->Get('plugin', 'name_attributes', ''));
 				$sEmailAttributes = \trim($this->Config()->Get('plugin', 'mail_attributes', ''));
 				$sAllowedEmails = \trim($this->Config()->Get('plugin', 'allowed_emails', ''));
 
-				if (0 < \strlen($sLdapUri) && 0 < \strlen($sBaseDn) && 0 < \strlen($sObjectClass) && 0 < \strlen($sEmailAttributes))
+				if (0 < \strlen($sLdapUri) && 0 < \strlen($sBaseDn) && 0 < \strlen($sObjectClasses) && 0 < \strlen($sEmailAttributes))
 				{
 					include_once __DIR__.'/LdapContactsSuggestions.php';
 
 					$oProvider = new LdapContactsSuggestions();
-					$oProvider->SetConfig($sLdapUri, $bUseStartTLS, $sBindDn, $sBindPassword, $sBaseDn, $sObjectClass, $sUidAttributes, $sNameAttributes, $sEmailAttributes, $sAllowedEmails);
+					$oProvider->SetConfig($sLdapUri, $bUseStartTLS, $sBindDn, $sBindPassword, $sBaseDn, $sObjectClasses, $sUidAttributes, $sNameAttributes, $sEmailAttributes, $sAllowedEmails);
 
 					$mResult[] = $oProvider;
 				}
@@ -87,7 +87,8 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			\RainLoop\Plugins\Property::NewInstance('base_dn')->SetLabel('Search base DN')
 				->SetDescription('DN to use as the search base. Supported tokens: {domain}, {domain:dc}, {email}, {email:user}, {email:domain}, {login}, {imap:login}, {imap:host}, {imap:port}')
 				->SetDefaultValue('ou=People,dc=example,dc=com'),
-			\RainLoop\Plugins\Property::NewInstance('object_class')->SetLabel('objectClass value')
+			\RainLoop\Plugins\Property::NewInstance('object_classes')->SetLabel('objectClasses to use')
+				->SetDescription('LDAP objectClasses to search for, comma separated list')
 				->SetDefaultValue('inetOrgPerson'),
 			\RainLoop\Plugins\Property::NewInstance('uid_attributes')->SetLabel('uid attributes')
 				->SetDescription('LDAP attributes for userids, comma separated list in order of preference')
