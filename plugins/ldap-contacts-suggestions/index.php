@@ -43,6 +43,7 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 				$sHostName = \trim($this->Config()->Get('plugin', 'hostname', ''));
 				$iHostPort = (int) $this->Config()->Get('plugin', 'port', 389);
+				$bUseStartTLS = (bool) $this->Config()->Get('plugin', 'use_start_tls', True);
 				$sAccessDn = \trim($this->Config()->Get('plugin', 'access_dn', ''));
 				$sAccessPassword = \trim($this->Config()->Get('plugin', 'access_password', ''));
 				$sUsersDn = \trim($this->Config()->Get('plugin', 'users_dn_format', ''));
@@ -57,7 +58,7 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 					include_once __DIR__.'/LdapContactsSuggestions.php';
 
 					$oProvider = new LdapContactsSuggestions();
-					$oProvider->SetConfig($sHostName, $iHostPort, $sAccessDn, $sAccessPassword, $sUsersDn, $sObjectClass, $sSearchField, $sNameField, $sEmailField, $sAllowedEmails);
+					$oProvider->SetConfig($sHostName, $iHostPort, $bUseStartTLS, $sAccessDn, $sAccessPassword, $sUsersDn, $sObjectClass, $sSearchField, $sNameField, $sEmailField, $sAllowedEmails);
 
 					$mResult[] = $oProvider;
 				}
@@ -77,6 +78,9 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			\RainLoop\Plugins\Property::NewInstance('port')->SetLabel('LDAP port')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
 				->SetDefaultValue(389),
+			\RainLoop\Plugins\Property::NewInstance('use_start_tls')->SetLabel('Use StartTLS')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDefaultValue(True),
 			\RainLoop\Plugins\Property::NewInstance('access_dn')->SetLabel('Access dn (login)')
 				->SetDescription('LDAP bind DN to authentifcate with. If left blank, anonymous bind will be tried and Access password will be ignored')
 				->SetDefaultValue(''),

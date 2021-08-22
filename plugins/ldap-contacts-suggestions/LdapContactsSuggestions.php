@@ -13,6 +13,11 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	private $iHostPort = 389;
 
 	/**
+	 * @var bool
+	 */
+	private $bUseStartTLS = True;
+
+	/**
 	 * @var string
 	 */
 	private $sAccessDn = null;
@@ -60,6 +65,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	/**
 	 * @param string $sHostName
 	 * @param int $iHostPort
+	 * @param bool $bUseStartTLS
 	 * @param string $sAccessDn
 	 * @param string $sAccessPassword
 	 * @param string $sUsersDn
@@ -70,10 +76,11 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	 *
 	 * @return \LdapContactsSuggestions
 	 */
-	public function SetConfig($sHostName, $iHostPort, $sAccessDn, $sAccessPassword, $sUsersDn, $sObjectClass, $sUidField, $sNameField, $sEmailField, $sAllowedEmails)
+	public function SetConfig($sHostName, $iHostPort, $bUseStartTLS, $sAccessDn, $sAccessPassword, $sUsersDn, $sObjectClass, $sUidField, $sNameField, $sEmailField, $sAllowedEmails)
 	{
 		$this->sHostName = $sHostName;
 		$this->iHostPort = $iHostPort;
+		$this->bUseStartTLS = $bUseStartTLS;
 		if (0 < \strlen($sAccessDn))
 		{
 			$this->sAccessDn = $sAccessDn;
@@ -189,6 +196,12 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 			$this->oLogger->Write('ldap_connect: connected', \MailSo\Log\Enumerations\Type::INFO, 'LDAP');
 
 			@\ldap_set_option($oCon, LDAP_OPT_PROTOCOL_VERSION, 3);
+
+			if ($this->bUseStartTLS && !@\ldap_start_tls($oCon))
+			{
+				$this->logLdapError($oCon, 'ldap_start_tls');
+				return $aResult;
+			}
 
 			if (!@\ldap_bind($oCon, $this->sAccessDn, $this->sAccessPassword))
 			{
