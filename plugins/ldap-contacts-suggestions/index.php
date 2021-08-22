@@ -41,8 +41,7 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 					$mResult = array();
 				}
 
-				$sHostName = \trim($this->Config()->Get('plugin', 'hostname', ''));
-				$iHostPort = (int) $this->Config()->Get('plugin', 'port', 389);
+				$sLdapUri = \trim($this->Config()->Get('plugin', 'ldap_uri', ''));
 				$bUseStartTLS = (bool) $this->Config()->Get('plugin', 'use_start_tls', True);
 				$sBindDn = \trim($this->Config()->Get('plugin', 'bind_dn', ''));
 				$sBindPassword = \trim($this->Config()->Get('plugin', 'bind_password', ''));
@@ -53,12 +52,12 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$sEmailField = \trim($this->Config()->Get('plugin', 'mail_field', ''));
 				$sAllowedEmails = \trim($this->Config()->Get('plugin', 'allowed_emails', ''));
 
-				if (0 < \strlen($sBaseDn) && 0 < \strlen($sObjectClass) && 0 < \strlen($sEmailField))
+				if (0 < \strlen($sLdapUri) && 0 < \strlen($sBaseDn) && 0 < \strlen($sObjectClass) && 0 < \strlen($sEmailField))
 				{
 					include_once __DIR__.'/LdapContactsSuggestions.php';
 
 					$oProvider = new LdapContactsSuggestions();
-					$oProvider->SetConfig($sHostName, $iHostPort, $bUseStartTLS, $sBindDn, $sBindPassword, $sBaseDn, $sObjectClass, $sUidField, $sNameField, $sEmailField, $sAllowedEmails);
+					$oProvider->SetConfig($sLdapUri, $bUseStartTLS, $sBindDn, $sBindPassword, $sBaseDn, $sObjectClass, $sUidField, $sNameField, $sEmailField, $sAllowedEmails);
 
 					$mResult[] = $oProvider;
 				}
@@ -73,11 +72,9 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	protected function configMapping() : array
 	{
 		return array(
-			\RainLoop\Plugins\Property::NewInstance('hostname')->SetLabel('LDAP hostname')
-				->SetDefaultValue('127.0.0.1'),
-			\RainLoop\Plugins\Property::NewInstance('port')->SetLabel('LDAP port')
-				->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
-				->SetDefaultValue(389),
+			\RainLoop\Plugins\Property::NewInstance('ldap_uri')->SetLabel('LDAP URI')
+				->SetDescription('LDAP server URI(s), space separated')
+				->SetDefaultValue('ldap://127.0.0.1:389'),
 			\RainLoop\Plugins\Property::NewInstance('use_start_tls')->SetLabel('Use StartTLS')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(True),

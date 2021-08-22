@@ -5,12 +5,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	/**
 	 * @var string
 	 */
-	private $sHostName = '127.0.0.1';
-
-	/**
-	 * @var int
-	 */
-	private $iHostPort = 389;
+	private $sLdapUri = 'ldap://127.0.0.1:389';
 
 	/**
 	 * @var bool
@@ -63,8 +58,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	private $sAllowedEmails = '';
 
 	/**
-	 * @param string $sHostName
-	 * @param int $iHostPort
+	 * @param string $sLdapUri
 	 * @param bool $bUseStartTLS
 	 * @param string $sBindDn
 	 * @param string $sBindPassword
@@ -76,10 +70,9 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	 *
 	 * @return \LdapContactsSuggestions
 	 */
-	public function SetConfig($sHostName, $iHostPort, $bUseStartTLS, $sBindDn, $sBindPassword, $sBaseDn, $sObjectClass, $sUidField, $sNameField, $sEmailField, $sAllowedEmails)
+	public function SetConfig($sLdapUri, $bUseStartTLS, $sBindDn, $sBindPassword, $sBaseDn, $sObjectClass, $sUidField, $sNameField, $sEmailField, $sAllowedEmails)
 	{
-		$this->sHostName = $sHostName;
-		$this->iHostPort = $iHostPort;
+		$this->sLdapUri = $sLdapUri;
 		$this->bUseStartTLS = $bUseStartTLS;
 		if (0 < \strlen($sBindDn))
 		{
@@ -193,7 +186,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 		$sSearchEscaped = $this->escape($sQuery);
 
 		$aResult = array();
-		$oCon = @\ldap_connect($this->sHostName, $this->iHostPort);
+		$oCon = @\ldap_connect($this->sLdapUri);
 		if ($oCon)
 		{
 			$this->oLogger->Write('ldap_connect: connected', \MailSo\Log\Enumerations\Type::INFO, 'LDAP');
