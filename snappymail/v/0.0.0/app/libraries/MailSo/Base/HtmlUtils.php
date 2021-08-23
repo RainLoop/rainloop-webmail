@@ -290,7 +290,7 @@ abstract class HtmlUtils
 	public static function ClearStyle(string $sStyle, \DOMElement $oElement, bool &$bHasExternals, array &$aFoundCIDs,
 		array $aContentLocationUrls, array &$aFoundedContentLocationUrls, bool $bDoNotReplaceExternalUrl = false, $fAdditionalExternalFilter = null)
 	{
-		$sStyle = \trim($sStyle);
+		$sStyle = \trim($sStyles, " \n\r\t\v\0;");
 		$aOutStyles = array();
 		$aStyles = \explode(';', $sStyle);
 
@@ -323,7 +323,7 @@ abstract class HtmlUtils
 			{
 				// skip
 			}
-			else */if (\in_array($sName, array('behavior', 'pointer-events')) ||
+			else */if (\in_array($sName, array('behavior', 'pointer-events', 'visibility')) ||
 				('cursor' === $sName && !\in_array(\strtolower($sValue), array('none', 'cursor'))) ||
 				('display' === $sName && 'none' === \strtolower($sValue)) ||
 				\preg_match('/expression/i', $sValue) ||
@@ -503,22 +503,6 @@ abstract class HtmlUtils
 		unset($aNodes);
 	}
 
-	public static function ClearHtmlSimple(string $sHtml, bool $bDoNotReplaceExternalUrl = false, bool $bFindLinksInHtml = false, bool $bWrapByFakeHtmlAndBodyDiv = true) : string
-	{
-		$bHasExternals = false;
-		$aFoundCIDs = array();
-		$aContentLocationUrls = array();
-		$aFoundedContentLocationUrls = array();
-		$fAdditionalExternalFilter = null;
-		$fAdditionalDomReader = null;
-		$bTryToDetectHiddenImages = false;
-
-		return static::ClearHtml($sHtml, $bHasExternals, $aFoundCIDs,
-			$aContentLocationUrls, $aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl, $bFindLinksInHtml,
-			$fAdditionalExternalFilter, $fAdditionalDomReader, $bTryToDetectHiddenImages,
-			$bWrapByFakeHtmlAndBodyDiv);
-	}
-
 	/**
 	 * @param callback|null $fAdditionalExternalFilter = null
 	 * @param callback|null $fAdditionalDomReader = null
@@ -585,6 +569,8 @@ abstract class HtmlUtils
 			$aRemovedAttrs = array();
 			$sTagNameLower = \strtolower($oElement->tagName);
 
+			$sStyles = $oElement->hasAttribute('style') ? \trim($oElement->getAttribute('style'), " \n\r\t\v\0;") : '';
+
 			// convert body attributes to styles
 			if ('body' === $sTagNameLower)
 			{
@@ -649,23 +635,18 @@ abstract class HtmlUtils
 
 				if (0 < \count($aStyles))
 				{
-					$sStyles = $oElement->hasAttribute('style') ? \trim(\trim(\trim($oElement->getAttribute('style')), ';')) : '';
-					$oElement->setAttribute('style', (empty($sStyles) ? '' : $sStyles.'; ').\implode('; ', $aStyles));
+					$sStyles .= $sStyles . '; ' . \implode('; ', $aStyles);
 				}
 			}
 
-			if ('iframe' === $sTagNameLower || 'frame' === $sTagNameLower)
+			else if ('iframe' === $sTagNameLower || 'frame' === $sTagNameLower)
 			{
 				$oElement->setAttribute('src', 'javascript:false');
 			}
 
-			if ('a' === $sTagNameLower && !empty($sLinkColor))
+			else if ('a' === $sTagNameLower && !empty($sLinkColor))
 			{
-				$sStyles = $oElement->hasAttribute('style')
-					?  \trim(\trim(\trim($oElement->getAttribute('style')), ';')) : '';
-
-				$oElement->setAttribute('style',
-					'color: '.$sLinkColor.\trim((empty($sStyles) ? '' : '; '.$sStyles)));
+				$sStyles .= '; color: '.$sLinkColor;
 			}
 
 			if ($oElement->hasAttributes() && isset($oElement->attributes) && $oElement->attributes)
@@ -686,7 +667,7 @@ abstract class HtmlUtils
 //						 || \strpos($sAttrNameLower, ':')
 						 || \in_array($sAttrNameLower, array(
 							'id', 'class', 'contenteditable', 'designmode', 'formaction', 'manifest', 'action',
-							'data-bind', 'data-reactid', 'xmlns', 'srcset', 'data-x-skip-style',
+							'data-bind', 'data-reactid', 'xmlns', 'srcset',
 							'fscommand', 'seeksegmenttime'
 						)))
 						{
@@ -739,6 +720,7 @@ abstract class HtmlUtils
 				$oElement->setAttribute('tabindex', '-1');
 			}
 
+			$skipStyle = false;
 			if ($bTryToDetectHiddenImages && 'img' === $sTagNameLower)
 			{
 				$sAlt = $oElement->hasAttribute('alt')
@@ -759,13 +741,10 @@ abstract class HtmlUtils
 //					$sW = $oElement->hasAttribute('width')
 //						? \trim($oElement->getAttribute('width')) : '';
 
-					$sStyles = $oElement->hasAttribute('style')
-						? \preg_replace('/[\s]+/', '', \trim(\trim(\trim($oElement->getAttribute('style')), ';'))) : '';
-
 					$sSrc = \trim($oElement->getAttribute('src'));
 
 					$bC = \in_array($sH, array('1', '0', '1px', '0px')) ||
-						\preg_match('/(display:none|visibility:hidden|height:0|height:[01][a-z][a-z])/i', $sStyles);
+						\preg_match('/display:\\s*none|visibility:\\s*hidden|height:\\s*0/i', $sStyles);
 
 					if (!$bC)
 					{
@@ -782,10 +761,9 @@ abstract class HtmlUtils
 
 					if ($bC)
 					{
+						$skipStyle = true;
 						$oElement->setAttribute('style', 'display:none');
-						$oElement->setAttribute('data-x-skip-style', 'true');
 						$oElement->setAttribute('data-x-hidden-src', $sSrc);
-
 						$oElement->removeAttribute('src');
 					}
 				}
@@ -848,8 +826,6 @@ abstract class HtmlUtils
 			if (!empty($sBackground) || !empty($sBackgroundColor))
 			{
 				$aStyles = array();
-				$sStyles = $oElement->hasAttribute('style')
-					? \trim(\trim(\trim($oElement->getAttribute('style')), ';')) : '';
 
 				if (!empty($sBackground))
 				{
@@ -863,17 +839,15 @@ abstract class HtmlUtils
 					$oElement->removeAttribute('bgcolor');
 				}
 
-				$oElement->setAttribute('style', (empty($sStyles) ? '' : $sStyles.'; ').\implode('; ', $aStyles));
+				$sStyles .= '; ' . \implode('; ', $aStyles);
 			}
 
-			if ($oElement->hasAttribute('style') && !$oElement->hasAttribute('data-x-skip-style'))
+			if ($sStyles && !$skipStyle)
 			{
 				$oElement->setAttribute('style',
-					static::ClearStyle($oElement->getAttribute('style'), $oElement, $bHasExternals,
+					static::ClearStyle($sStyles, $oElement, $bHasExternals,
 						$aFoundCIDs, $aContentLocationUrls, $aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl, $fAdditionalExternalFilter));
 			}
-
-			$oElement->removeAttribute('data-x-skip-style');
 
 			if (\MailSo\Config::$HtmlStrictDebug && 0 < \count($aRemovedAttrs))
 			{
