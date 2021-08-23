@@ -30,9 +30,9 @@ export const
 	 * @param {string=} customSpecSuffix
 	 * @returns {string}
 	 */
-	serverRequestRaw = (type, hash, customSpecSuffix) =>
+	serverRequestRaw = (type, hash) =>
 		SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/'
-		+ (null == customSpecSuffix ? '0' : customSpecSuffix) + '/'
+		+ '0/' // AuthAccountHash ?
 		+ (type
 			? type + '/' + (hash ? SUB_QUERY_PREFIX + '/' + hash : '')
 			: ''),
