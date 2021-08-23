@@ -7,8 +7,8 @@ class ChangePasswordDriverLDAP
 		DESCRIPTION = 'Change passwords in LDAP.';
 
 	private
-		$sHostName = 'localhost',
-		$iHostPort = 389,
+		$sLdapUri = 'ldap://localhost:389',
+		$bUseStartTLS = True,
 		$sUserDnFormat = '',
 		$sPasswordField = 'userPassword',
 		$sPasswordEncType = 'SHA';
@@ -21,8 +21,8 @@ class ChangePasswordDriverLDAP
 	function __construct(\RainLoop\Config\Plugin $oConfig, \MailSo\Log\Logger $oLogger)
 	{
 		$this->oLogger = $oLogger;
-		$this->sHostName = \trim($oConfig->Get('plugin', 'ldap_hostname', ''));
-		$this->iHostPort = (int) $oConfig->Get('plugin', 'ldap_port', 389);
+		$this->sLdapUri = \trim($oConfig->Get('plugin', 'ldap_uri', ''));
+		$this->bUseStartTLS = (bool) \trim($oConfig->Get('plugin', 'ldap_use_start_tls', ''));
 		$this->sUserDnFormat = \trim($oConfig->Get('plugin', 'ldap_user_dn_format', ''));
 		$this->sPasswordField = \trim($oConfig->Get('plugin', 'ldap_password_field', ''));
 		$this->sPasswordEncType = \trim($oConfig->Get('plugin', 'ldap_password_enc_type', ''));
@@ -37,11 +37,12 @@ class ChangePasswordDriverLDAP
 	public static function configMapping() : array
 	{
 		return array(
-			\RainLoop\Plugins\Property::NewInstance('ldap_hostname')->SetLabel('Hostname')
-				->SetDefaultValue('localhost'),
-			\RainLoop\Plugins\Property::NewInstance('ldap_port')->SetLabel('Port')
-				->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
-				->SetDefaultValue(389),
+			\RainLoop\Plugins\Property::NewInstance('ldap_uri')->SetLabel('LDAP URI')
+				->SetDefaultValue('ldap://localhost:389')
+				->SetDescription('LDAP server URI(s), space separated'),
+			\RainLoop\Plugins\Property::NewInstance('ldap_use_start_tls')->SetLabel('Use StartTLS')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDefaultValue(True),
 			\RainLoop\Plugins\Property::NewInstance('ldap_user_dn_format')->SetLabel('User DN format')
 				->SetDescription('LDAP user dn format. Supported tokens: {email}, {email:user}, {email:domain}, {login}, {domain}, {domain:dc}, {imap:login}, {imap:host}, {imap:port}, {gecos}')
 				->SetDefaultValue('uid={imap:login},ou=Users,{domain:dc}'),
@@ -70,7 +71,7 @@ class ChangePasswordDriverLDAP
 			'{gecos}' => \function_exists('posix_getpwnam') ? \posix_getpwnam($oAccount->Login()) : ''
 		));
 
-		$oCon = \ldap_connect($this->sHostName, $this->iHostPort);
+		$oCon = \ldap_connect($this->sLdapUri);
 		if (!$oCon) {
 			return false;
 		}
@@ -82,8 +83,10 @@ class ChangePasswordDriverLDAP
 				'LDAP'
 			);
 		}
-		else if (!\ldap_start_tls($oCon)) {
-			$this->oLogger->Write("ldap_start_tls failed: ".$oCon, \MailSo\Log\Enumerations\Type::WARNING, 'LDAP');
+
+		if ($this->bUseStartTLS && !@\ldap_start_tls($oCon))
+		{
+			throw new \Exception('ldap_start_tls error '.\ldap_errno($oCon).': '.\ldap_error($oCon));
 		}
 
 		if (!\ldap_bind($oCon, $sUserDn, $sPrevPassword)) {
