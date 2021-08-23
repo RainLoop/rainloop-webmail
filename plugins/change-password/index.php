@@ -6,7 +6,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Change Password',
-		VERSION  = '2.2',
+		VERSION  = '2.3',
 		RELEASE  = '2021-07-20',
 		REQUIRED = '2.5.0',
 		CATEGORY = 'Security',
