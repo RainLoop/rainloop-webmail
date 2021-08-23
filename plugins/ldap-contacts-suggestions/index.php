@@ -4,9 +4,9 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Contacts suggestions (LDAP)',
-		VERSION = '2.0',
+		VERSION = '2.1',
 		CATEGORY = 'Security',
-		DESCRIPTION = 'Plugin that adds functionality to get contacts from LDAP on compose page.';
+		DESCRIPTION = 'Plugin to get contacts suggestions from LDAP.';
 
 	public function Init() : void
 	{
@@ -41,22 +41,23 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 					$mResult = array();
 				}
 
-				$sHostName = \trim($this->Config()->Get('plugin', 'hostname', ''));
-				$iHostPort = (int) $this->Config()->Get('plugin', 'port', 389);
-				$sAccessDn = \trim($this->Config()->Get('plugin', 'access_dn', ''));
-				$sAccessPassword = \trim($this->Config()->Get('plugin', 'access_password', ''));
-				$sUsersDn = \trim($this->Config()->Get('plugin', 'users_dn_format', ''));
-				$sObjectClass = \trim($this->Config()->Get('plugin', 'object_class', ''));
-				$sSearchField = \trim($this->Config()->Get('plugin', 'search_field', ''));
-				$sNameField = \trim($this->Config()->Get('plugin', 'name_field', ''));
-				$sEmailField = \trim($this->Config()->Get('plugin', 'mail_field', ''));
+				$sLdapUri = \trim($this->Config()->Get('plugin', 'ldap_uri', ''));
+				$bUseStartTLS = (bool) $this->Config()->Get('plugin', 'use_start_tls', True);
+				$sBindDn = \trim($this->Config()->Get('plugin', 'bind_dn', ''));
+				$sBindPassword = \trim($this->Config()->Get('plugin', 'bind_password', ''));
+				$sBaseDn = \trim($this->Config()->Get('plugin', 'base_dn', ''));
+				$sObjectClasses = \trim($this->Config()->Get('plugin', 'object_classes', ''));
+				$sUidAttributes = \trim($this->Config()->Get('plugin', 'uid_attributes', ''));
+				$sNameAttributes = \trim($this->Config()->Get('plugin', 'name_attributes', ''));
+				$sEmailAttributes = \trim($this->Config()->Get('plugin', 'mail_attributes', ''));
+				$sAllowedEmails = \trim($this->Config()->Get('plugin', 'allowed_emails', ''));
 
-				if (0 < \strlen($sUsersDn) && 0 < \strlen($sObjectClass) && 0 < \strlen($sEmailField))
+				if (0 < \strlen($sLdapUri) && 0 < \strlen($sBaseDn) && 0 < \strlen($sObjectClasses) && 0 < \strlen($sEmailAttributes))
 				{
 					include_once __DIR__.'/LdapContactsSuggestions.php';
 
 					$oProvider = new LdapContactsSuggestions();
-					$oProvider->SetConfig($sHostName, $iHostPort, $sAccessDn, $sAccessPassword, $sUsersDn, $sObjectClass, $sSearchField, $sNameField, $sEmailField);
+					$oProvider->SetConfig($sLdapUri, $bUseStartTLS, $sBindDn, $sBindPassword, $sBaseDn, $sObjectClasses, $sUidAttributes, $sNameAttributes, $sEmailAttributes, $sAllowedEmails);
 
 					$mResult[] = $oProvider;
 				}
@@ -71,30 +72,35 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	protected function configMapping() : array
 	{
 		return array(
-			\RainLoop\Plugins\Property::NewInstance('hostname')->SetLabel('LDAP hostname')
-				->SetDefaultValue('127.0.0.1'),
-			\RainLoop\Plugins\Property::NewInstance('port')->SetLabel('LDAP port')
-				->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
-				->SetDefaultValue(389),
-			\RainLoop\Plugins\Property::NewInstance('access_dn')->SetLabel('Access dn (login)')
-				->SetDescription('LDAP bind DN to authentifcate with. If left blank, anonymous bind will be tried and Access password will be ignored')
+			\RainLoop\Plugins\Property::NewInstance('ldap_uri')->SetLabel('LDAP URI')
+				->SetDescription('LDAP server URI(s), space separated')
+				->SetDefaultValue('ldap://localhost:389'),
+			\RainLoop\Plugins\Property::NewInstance('use_start_tls')->SetLabel('Use StartTLS')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDefaultValue(True),
+			\RainLoop\Plugins\Property::NewInstance('bind_dn')->SetLabel('Bind DN')
+				->SetDescription('DN to bind (login) with. If left blank, anonymous bind will be tried and the password will be ignored')
 				->SetDefaultValue(''),
-			\RainLoop\Plugins\Property::NewInstance('access_password')->SetLabel('Access password')
+			\RainLoop\Plugins\Property::NewInstance('bind_password')->SetLabel('Bind password')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::PASSWORD)
 				->SetDefaultValue(''),
-			\RainLoop\Plugins\Property::NewInstance('users_dn_format')->SetLabel('Users DN format')
-				->SetDescription('LDAP users dn format. Supported tokens: {email}, {login}, {domain}, {domain:dc}, {imap:login}, {imap:host}, {imap:port}')
-				->SetDefaultValue('ou=People,dc=domain,dc=com'),
-			\RainLoop\Plugins\Property::NewInstance('object_class')->SetLabel('objectClass value')
+			\RainLoop\Plugins\Property::NewInstance('base_dn')->SetLabel('Search base DN')
+				->SetDescription('DN to use as the search base. Supported tokens: {domain}, {domain:dc}, {email}, {email:user}, {email:domain}, {login}, {imap:login}, {imap:host}, {imap:port}')
+				->SetDefaultValue('ou=People,dc=example,dc=com'),
+			\RainLoop\Plugins\Property::NewInstance('object_classes')->SetLabel('objectClasses to use')
+				->SetDescription('LDAP objectClasses to search for, comma separated list')
 				->SetDefaultValue('inetOrgPerson'),
-			\RainLoop\Plugins\Property::NewInstance('search_field')->SetLabel('Search field')
+			\RainLoop\Plugins\Property::NewInstance('uid_attributes')->SetLabel('uid attributes')
+				->SetDescription('LDAP attributes for userids, comma separated list in order of preference')
 				->SetDefaultValue('uid'),
-			\RainLoop\Plugins\Property::NewInstance('name_field')->SetLabel('Name field')
-				->SetDefaultValue('givenname'),
-			\RainLoop\Plugins\Property::NewInstance('mail_field')->SetLabel('Mail field')
-				->SetDefaultValue('mail'),
+			\RainLoop\Plugins\Property::NewInstance('name_attributes')->SetLabel('Name attributes')
+				->SetDescription('LDAP attributes for user names, comma separated list in order of preference')
+				->SetDefaultValue('displayName,cn,givenName,sn'),
+			\RainLoop\Plugins\Property::NewInstance('mail_attributes')->SetLabel('Mail attributes')
+				->SetDescription('LDAP attributes for user email addresses, comma separated list in order of preference')
+				->SetDefaultValue('mailAddress,mail,mailAlternateAddress,mailAlias'),
 			\RainLoop\Plugins\Property::NewInstance('allowed_emails')->SetLabel('Allowed emails')
-				->SetDescription('Allowed emails, space as delimiter, wildcard supported. Example: user1@domain1.net user2@domain1.net *@domain2.net')
+				->SetDescription('Email addresses of users which should be allowed to do LDAP lookups, space as delimiter, wildcard supported. Example: user1@domain1.net user2@domain1.net *@domain2.net')
 				->SetDefaultValue('*')
 		);
 	}
