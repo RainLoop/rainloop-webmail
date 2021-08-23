@@ -21,15 +21,16 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 
 const
 	ServerFolderType = {
-		USER: 0,
+//		USER: 0,
 		INBOX: 1,
 		SENT: 2,
 		DRAFTS: 3,
 		JUNK: 4,
 		TRASH: 5,
-		IMPORTANT: 10,
-		FLAGGED: 11,
-		ALL: 12
+//		IMPORTANT: 10,
+//		FLAGGED: 11,
+		ARCHIVE: 12
+//		,ALL: 13
 	},
 
 normalizeFolder = sFolderFullNameRaw => ('' === sFolderFullNameRaw
@@ -129,7 +130,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 			Settings.set('DraftFolder', this.SystemFolders[ServerFolderType.DRAFTS] || null);
 			Settings.set('SpamFolder', this.SystemFolders[ServerFolderType.JUNK] || null);
 			Settings.set('TrashFolder', this.SystemFolders[ServerFolderType.TRASH] || null);
-			Settings.set('ArchiveFolder', this.SystemFolders[ServerFolderType.ALL] || null);
+			Settings.set('ArchiveFolder', this.SystemFolders[ServerFolderType.ARCHIVE] || null);
 
 			update = true;
 		}

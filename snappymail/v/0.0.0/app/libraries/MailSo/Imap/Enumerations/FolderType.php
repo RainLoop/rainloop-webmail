@@ -26,5 +26,6 @@ abstract class FolderType
 	const TRASH = 5;
 	const IMPORTANT = 10;
 	const FLAGGED = 11;
-	const ALL = 12;
+	const ARCHIVE = 12;
+	const ALL = 13;
 }

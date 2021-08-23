@@ -75,29 +75,10 @@ export const FolderUserStore = new class {
 
 		this.folderListSystemNames = ko.computed(() => {
 			const list = [getFolderInboxName()],
-				sentFolder = this.sentFolder(),
-				draftFolder = this.draftFolder(),
-				spamFolder = this.spamFolder(),
-				trashFolder = this.trashFolder(),
-				archiveFolder = this.archiveFolder();
+			others = [this.sentFolder(), this.draftFolder(), this.spamFolder(), this.trashFolder(), this.archiveFolder()];
 
-			if (this.folderList.length) {
-				if (sentFolder && UNUSED_OPTION_VALUE !== sentFolder) {
-					list.push(sentFolder);
-				}
-				if (draftFolder && UNUSED_OPTION_VALUE !== draftFolder) {
-					list.push(draftFolder);
-				}
-				if (spamFolder && UNUSED_OPTION_VALUE !== spamFolder) {
-					list.push(spamFolder);
-				}
-				if (trashFolder && UNUSED_OPTION_VALUE !== trashFolder) {
-					list.push(trashFolder);
-				}
-				if (archiveFolder && UNUSED_OPTION_VALUE !== archiveFolder) {
-					list.push(archiveFolder);
-				}
-			}
+			this.folderList().length &&
+				others.forEach(name => name && UNUSED_OPTION_VALUE !== name && list.push(name));
 
 			return list;
 		});
@@ -109,15 +90,11 @@ export const FolderUserStore = new class {
 		const
 			fRemoveSystemFolderType = (observable) => () => {
 				const folder = getFolderFromCacheList(observable());
-				if (folder) {
-					folder.type(FolderType.User);
-				}
+				folder && folder.type(FolderType.User);
 			},
 			fSetSystemFolderType = type => value => {
 				const folder = getFolderFromCacheList(value);
-				if (folder) {
-					folder.type(type);
-				}
+				folder && folder.type(type);
 			};
 
 		this.sentFolder.subscribe(fRemoveSystemFolderType(this.sentFolder), this, 'beforeChange');

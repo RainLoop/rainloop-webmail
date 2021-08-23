@@ -70,7 +70,7 @@ trait Folders
 
 				if ('' === $oSettingsLocal->GetConf('ArchiveFolder', ''))
 				{
-					$aList[] = FolderType::ALL;
+					$aList[] = FolderType::ARCHIVE;
 				}
 
 				$this->Plugins()->RunHook('filter.folders-system-types', array($oAccount, &$aList));
@@ -479,7 +479,7 @@ trait Folders
 						FolderType::DRAFTS,
 						FolderType::JUNK,
 						FolderType::TRASH,
-						FolderType::ALL
+						FolderType::ARCHIVE
 					)))
 					{
 						$aResult[$iFolderType] = $oFolder->FullNameRaw();
@@ -511,7 +511,7 @@ trait Folders
 						FolderType::DRAFTS,
 						FolderType::JUNK,
 						FolderType::TRASH,
-						FolderType::ALL
+						FolderType::ARCHIVE
 					)))
 					{
 						$aResult[$iFolderType] = $oFolder->FullNameRaw();
@@ -578,8 +578,8 @@ trait Folders
 				'Deleted' => FolderType::TRASH,
 				'Bin' => FolderType::TRASH,
 
-				'Archive' => FolderType::ALL,
-				'Archives' => FolderType::ALL,
+				'Archive' => FolderType::ARCHIVE,
+				'Archives' => FolderType::ARCHIVE,
 
 				'All' => FolderType::ALL,
 				'All Mail' => FolderType::ALL,

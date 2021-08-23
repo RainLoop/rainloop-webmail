@@ -216,9 +216,11 @@ class Folder implements \JsonSerializable
 			case \in_array('\\starred', $aFlags):
 				return \MailSo\Imap\Enumerations\FolderType::FLAGGED;
 
+			case \in_array('\\archive', $aFlags):
+				return \MailSo\Imap\Enumerations\FolderType::ARCHIVE;
+
 			case \in_array('\\all', $aFlags):
 			case \in_array('\\allmail', $aFlags):
-			case \in_array('\\archive', $aFlags):
 				return \MailSo\Imap\Enumerations\FolderType::ALL;
 		}
 
