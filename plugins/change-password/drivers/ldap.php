@@ -38,7 +38,8 @@ class ChangePasswordDriverLDAP
 	{
 		return array(
 			\RainLoop\Plugins\Property::NewInstance('ldap_uri')->SetLabel('LDAP URI')
-				->SetDefaultValue('ldap://localhost:389'),
+				->SetDefaultValue('ldap://localhost:389')
+				->SetDescription('LDAP server URI(s), space separated'),
 			\RainLoop\Plugins\Property::NewInstance('ldap_use_start_tls')->SetLabel('Use StartTLS')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(True),
