@@ -99,7 +99,8 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$result[] = \RainLoop\Plugins\Property::NewInstance("driver_{$name}_enabled")
 				->SetLabel('Enable ' . $class::NAME)
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
-				->SetDescription($class::DESCRIPTION);
+				->SetDescription($class::DESCRIPTION)
+				->SetDefaultValue(false);
 			$result[] = \RainLoop\Plugins\Property::NewInstance("driver_{$name}_allowed_emails")
 				->SetLabel('Allowed emails')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
