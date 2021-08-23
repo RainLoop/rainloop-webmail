@@ -74,7 +74,7 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		return array(
 			\RainLoop\Plugins\Property::NewInstance('ldap_uri')->SetLabel('LDAP URI')
 				->SetDescription('LDAP server URI(s), space separated')
-				->SetDefaultValue('ldap://127.0.0.1:389'),
+				->SetDefaultValue('ldap://localhost:389'),
 			\RainLoop\Plugins\Property::NewInstance('use_start_tls')->SetLabel('Use StartTLS')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(True),

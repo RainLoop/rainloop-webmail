@@ -5,7 +5,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	/**
 	 * @var string
 	 */
-	private $sLdapUri = 'ldap://127.0.0.1:389';
+	private $sLdapUri = 'ldap://localhost:389';
 
 	/**
 	 * @var bool
