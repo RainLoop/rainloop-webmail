@@ -694,11 +694,11 @@ class Actions
 					break;
 
 				case ('MEMCACHE' === $sDriver || 'MEMCACHED' === $sDriver) &&
-					\MailSo\Base\Utils::FunctionExistsAndEnabled('memcache_connect'):
-
+					(\class_exists('Memcache',false) || \class_exists('Memcached',false)):
+					$sHost = $this->Config()->Get('labs', 'fast_cache_memcache_host', '127.0.0.1');
 					$oDriver = new \MailSo\Cache\Drivers\Memcache(
-						$this->Config()->Get('labs', 'fast_cache_memcache_host', '127.0.0.1'),
-						(int)$this->Config()->Get('labs', 'fast_cache_memcache_port', 11211),
+						$sHost,
+						strpos($sHost, ':/') ? 0 : (int)$this->Config()->Get('labs', 'fast_cache_memcache_port', 11211),
 						43200,
 						$sKey
 					);

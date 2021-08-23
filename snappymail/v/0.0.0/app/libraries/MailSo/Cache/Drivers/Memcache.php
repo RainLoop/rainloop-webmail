@@ -19,16 +19,6 @@ namespace MailSo\Cache\Drivers;
 class Memcache implements \MailSo\Cache\DriverInterface
 {
 	/**
-	 * @var string
-	 */
-	private $sHost;
-
-	/**
-	 * @var int
-	 */
-	private $iPost;
-
-	/**
 	 * @var int
 	 */
 	private $iExpire;
@@ -43,14 +33,12 @@ class Memcache implements \MailSo\Cache\DriverInterface
 	 */
 	private $sKeyPrefix;
 
-	function __construct(string $sHost = '127.0.0.1', int $iPost = 11211, int $iExpire = 43200, string $sKeyPrefix = '')
+	function __construct(string $sHost = '127.0.0.1', int $iPort = 11211, int $iExpire = 43200, string $sKeyPrefix = '')
 	{
-		$this->sHost = $sHost;
-		$this->iPost = $iPost;
 		$this->iExpire = 0 < $iExpire ? $iExpire : 43200;
 
-		$this->oMem = new \Memcache;
-		if (!$this->oMem->connect($this->sHost, $this->iPost))
+		$this->oMem = \class_exists('Memcache',false) ? new \Memcache : new \Memcached;
+		if (!$this->oMem->addServer($sHost, $this->iPort))
 		{
 			$this->oMem = null;
 		}
