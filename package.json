@@ -59,11 +59,11 @@
     "gulp-size": "3.0.0",
     "gulp-stripbom": "1.0.5",
     "gulp-terser": "^1.4.0",
-    "gulp-util": "3.0.8",
-    "node-fs": "0.1.7"
+    "gulp-util": "3.0.8"
   },
   "dependencies": {
     "del": "^6.0.0",
+    "fs": "^0.0.1-security",
     "gulp-concat": "^2.6.1",
     "gulp-group-css-media-queries": "^1.2.2",
     "gulp-rollup-2": "^1.2.1",
