@@ -38,7 +38,7 @@ class Memcache implements \MailSo\Cache\DriverInterface
 		$this->iExpire = 0 < $iExpire ? $iExpire : 43200;
 
 		$this->oMem = \class_exists('Memcache',false) ? new \Memcache : new \Memcached;
-		if (!$this->oMem->addServer($sHost, $this->iPort))
+		if (!$this->oMem->addServer($sHost, \strpos($sHost, ':/') ? 0 : $this->iPort))
 		{
 			$this->oMem = null;
 		}
