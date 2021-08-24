@@ -304,7 +304,7 @@ export class FolderModel extends AbstractModel {
 					return null;
 				},
 
-				canBeDeleted: () => !folder.isSystemFolder() && !folder.subFolders().length,
+				canBeDeleted: () => !folder.isSystemFolder() && folder.selectable,
 
 				canBeSubscribed: () => !folder.isSystemFolder()
 					&& SettingsUserStore.hideUnsubscribed()
