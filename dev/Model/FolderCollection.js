@@ -20,19 +20,6 @@ import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 import { AbstractModel } from 'Knoin/AbstractModel';
 
 const
-	ServerFolderType = {
-//		USER: 0,
-		INBOX: 1,
-		SENT: 2,
-		DRAFTS: 3,
-		SPAM: 4, // JUNK
-		TRASH: 5,
-//		IMPORTANT: 10,
-//		FLAGGED: 11,
-		ARCHIVE: 12
-//		,ALL: 13
-	},
-
 normalizeFolder = sFolderFullNameRaw => ('' === sFolderFullNameRaw
 	|| UNUSED_OPTION_VALUE === sFolderFullNameRaw
 	|| null !== Cache.getFolderFromCacheList(sFolderFullNameRaw))
@@ -64,12 +51,17 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		const expandedFolders = Local.get(ClientSideKeyName.ExpandedFolders);
 		if (object && object.SystemFolders) {
 			let sf = object.SystemFolders;
-			SystemFolders = [0,0,
-				SettingsGet('SentFolder') || sf[ServerFolderType.SENT],
-				SettingsGet('DraftFolder') || sf[ServerFolderType.DRAFTS],
-				SettingsGet('SpamFolder') || sf[ServerFolderType.SPAM],
-				SettingsGet('TrashFolder') || sf[ServerFolderType.TRASH],
-				SettingsGet('ArchiveFolder') || sf[ServerFolderType.ARCHIVE]
+			SystemFolders = [
+				/* USER  */ 0,
+				/* INBOX */ sf[1],
+				SettingsGet('SentFolder') || sf[2],
+				SettingsGet('DraftFolder') || sf[3],
+				SettingsGet('SpamFolder') || sf[4],
+				SettingsGet('TrashFolder') || sf[5],
+				SettingsGet('ArchiveFolder') || sf[12]
+//				IMPORTANT: sf[10],
+//				FLAGGED: sf[11],
+//				ALL: sf[13]
 			];
 		}
 
@@ -82,7 +74,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 			}
 */
 			if (!oCacheFolder && (oCacheFolder = FolderModel.reviveFromJson(oFolder))) {
-				if (oFolder.FullNameRaw == SystemFolders[ServerFolderType.INBOX]) {
+				if (1 == SystemFolders.indexOf(oFolder.FullNameRaw)) {
 					oCacheFolder.type(FolderType.Inbox);
 					Cache.setFolderInboxName(oFolder.FullNameRaw);
 				}
@@ -132,11 +124,11 @@ export class FolderCollectionModel extends AbstractCollectionModel
 				SettingsGet('ArchiveFolder'))
 		) {
 			FolderUserStore.saveSystemFolders({
-				SentFolder: SystemFolders[ServerFolderType.SENT] || null,
-				DraftFolder: SystemFolders[ServerFolderType.DRAFTS] || null,
-				SpamFolder: SystemFolders[ServerFolderType.SPAM] || null,
-				TrashFolder: SystemFolders[ServerFolderType.TRASH] || null,
-				ArchiveFolder: SystemFolders[ServerFolderType.ARCHIVE] || null
+				SentFolder: SystemFolders[FolderType.SENT] || null,
+				DraftFolder: SystemFolders[FolderType.DRAFTS] || null,
+				SpamFolder: SystemFolders[FolderType.SPAM] || null,
+				TrashFolder: SystemFolders[FolderType.TRASH] || null,
+				ArchiveFolder: SystemFolders[FolderType.ARCHIVE] || null
 			});
 		}
 
@@ -261,13 +253,12 @@ export class FolderModel extends AbstractModel {
 				isInbox: () => FolderType.Inbox === folder.type(),
 
 				hasSubscribedSubfolders:
-					() =>
-						!!folder.subFolders().find(
-							oFolder => {
-								const subscribed = oFolder.hasSubscriptions();
-								return !oFolder.isSystemFolder() && subscribed;
-							}
-						),
+					() => !!folder.subFolders().find(
+						oFolder => {
+							const subscribed = oFolder.hasSubscriptions();
+							return !oFolder.isSystemFolder() && subscribed;
+						}
+					),
 
 				hasSubscriptions: () => folder.subscribed() | folder.hasSubscribedSubfolders(),
 
