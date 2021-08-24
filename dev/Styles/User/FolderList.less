@@ -4,6 +4,10 @@
 
 .b-folders {
 
+	ul {
+		margin: 0;
+	}
+
 	.move-action-content-wrapper {
 		z-index: -1;
 		position: fixed;
@@ -60,8 +64,8 @@
 		border-bottom: 1px solid #999;
 	}
 
-	.e-item {
-
+	li {
+		display: block;
 		overflow: hidden;
 		white-space: nowrap;
 
@@ -143,7 +147,7 @@
 			font-weight: bold;
 		}
 
-		.b-sub-folders.collapsed {
+		ul.collapsed {
 			max-height: 0;
 			height: 0;
 			display: none;
@@ -182,45 +186,39 @@
 		}
 	}
 
-	.b-folder-system-item {
+	.b-folders-system {
 		font-weight: bold;
 	}
 
-	.b-sub-folders .e-item a {
+	li li a {
 		padding-left: @subPadding * 1 + @folderItemPadding;
 	}
-	.b-sub-folders .b-sub-folders .e-item a {
+	li li li a {
 		padding-left: @subPadding * 2 + @folderItemPadding;
 	}
-	.b-sub-folders .b-sub-folders .b-sub-folders .e-item a {
+	li li li li a {
 		padding-left: @subPadding * 3 + @folderItemPadding;
 	}
-	.b-sub-folders .b-sub-folders .b-sub-folders .b-sub-folders .e-item a {
+	li li li li li a {
 		padding-left: @subPadding * 4 + @folderItemPadding;
 	}
 
 /**/
-	&.single-root-inbox a.i-am-inbox {
+	&.single-root-inbox .b-folders-user > li > a {
 		display: none !important;
 	}
 
-	&.single-root-inbox .i-am-inbox-wrapper > .b-sub-folders {
-		max-height: none !important;
-		height: inherit !important;
-		display: block !important;
-	}
-
-	&.single-root-inbox .i-am-inbox-wrapper {
-		.b-sub-folders .e-item a {
+	&.single-root-inbox {
+		li li a {
 			padding-left: @folderItemPadding;
 		}
-		.b-sub-folders .b-sub-folders .e-item a {
+		li li li a {
 			padding-left: @subPadding * 1 + @folderItemPadding;
 		}
-		.b-sub-folders .b-sub-folders .b-sub-folders .e-item a {
+		li li li li a {
 			padding-left: @subPadding * 2 + @folderItemPadding;
 		}
-		.b-sub-folders .b-sub-folders .b-sub-folders .b-sub-folders .e-item a {
+		li li li li li a {
 			padding-left: @subPadding * 3 + @folderItemPadding;
 		}
 	}

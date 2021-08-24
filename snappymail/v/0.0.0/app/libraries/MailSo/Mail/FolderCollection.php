@@ -157,8 +157,7 @@ class FolderCollection extends \MailSo\Base\Collection
 			'IsSortSupported' => $this->IsSortSupported,
 			'Optimized' => $this->Optimized,
 			'CountRec' => $this->CountRec(),
-			'SystemFolders' => isset($this->SystemFolders) && \is_array($this->SystemFolders) ?
-				$this->SystemFolders : array()
+			'SystemFolders' => empty($this->SystemFolders) ? null : $this->SystemFolders
 		));
 	}
 }

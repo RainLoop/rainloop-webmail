@@ -7,9 +7,9 @@
 		<a class="btn buttonContacts fontastic" data-bind="visible: allowContacts, click: contactsClick" data-i18n="[title]GLOBAL/CONTACTS">📇</a>
 	</div>
 	<div class="b-content">
-		<div class="b-folders-system" data-bind="template: { name: 'MailFolderListSystemItem', foreach: folderListSystem }"></div>
+		<ul class="b-folders-system" data-bind="template: { name: 'MailFolderListSystemItem', foreach: folderListSystem }"></ul>
 		<hr/>
-		<div class="b-folders-user" data-bind="template: { name: 'MailFolderListItem', foreach: folderList }"></div>
+		<ul class="b-folders-user" data-bind="template: { name: 'MailFolderListItem', foreach: folderList }"></ul>
 		<div class="move-action-content-wrapper" data-bind="visible: moveAction"></div>
 	</div>
 	<div class="b-content show-on-panel-disabled" data-bind="click: function () { leftPanelDisabled(false); }"></div>

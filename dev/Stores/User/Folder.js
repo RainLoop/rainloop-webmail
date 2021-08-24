@@ -4,7 +4,7 @@ import { FolderType, FolderSortMode } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { addObservablesTo, addSubscribablesTo } from 'Common/Utils';
 import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
-import { SettingsGet } from 'Common/Globals';
+import { Settings, SettingsGet } from 'Common/Globals';
 
 export const FolderUserStore = new class {
 	constructor() {
@@ -55,9 +55,17 @@ export const FolderUserStore = new class {
 			() => !this.draftFolder() || UNUSED_OPTION_VALUE === this.draftFolder()
 		);
 
-		this.foldersListWithSingleInboxRootFolder = ko.computed(
-			() => !this.folderList.find(folder => folder && !folder.isSystemFolder() && folder.visible())
-		);
+		// foldersListWithSingleInboxRootFolder
+		/** returns true when there are no non-system folders in the root of the folders tree */
+		this.singleRootFolder = ko.computed(() => {
+			let multiple = false;
+			this.folderList.forEach(folder => {
+				let subscribed = folder.subscribed(),
+					hasSub = folder.hasSubscribedSubfolders();
+				multiple |= (!folder.isSystemFolder() || (hasSub && !folder.isInbox())) && (subscribed || hasSub)
+			});
+			return !multiple;
+		});
 
 		this.currentFolderFullNameRaw = ko.computed(() => (this.currentFolder() ? this.currentFolder().fullNameRaw : ''));
 
@@ -155,5 +163,17 @@ export const FolderUserStore = new class {
 		});
 
 		return result.filter((value, index, self) => self.indexOf(value) == index);
+	}
+
+	saveSystemFolders(folders) {
+		folders = folders || {
+			SentFolder: FolderUserStore.sentFolder(),
+			DraftFolder: FolderUserStore.draftFolder(),
+			SpamFolder: FolderUserStore.spamFolder(),
+			TrashFolder: FolderUserStore.trashFolder(),
+			ArchiveFolder: FolderUserStore.archiveFolder()
+		};
+		Object.entries(folders).forEach(([k,v])=>Settings.set(k,v));
+		rl.app.Remote.saveSystemFolders(()=>0, folders);
 	}
 };

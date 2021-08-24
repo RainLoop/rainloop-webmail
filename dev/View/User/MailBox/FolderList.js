@@ -32,7 +32,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 
 		this.moveAction = moveAction;
 
-		this.foldersListWithSingleInboxRootFolder = FolderUserStore.foldersListWithSingleInboxRootFolder;
+		this.foldersListWithSingleInboxRootFolder = FolderUserStore.singleRootFolder;
 
 		this.leftPanelDisabled = leftPanelDisabled;
 

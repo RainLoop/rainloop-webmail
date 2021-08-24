@@ -2,14 +2,11 @@ import ko from 'ko';
 
 import { SetSystemFoldersNotification } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { Settings } from 'Common/Globals';
 import { defaultOptionsAfterRender, addSubscribablesTo } from 'Common/Utils';
 import { folderListOptionsBuilder } from 'Common/UtilsUser';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
 import { FolderUserStore } from 'Stores/User/Folder';
-
-import Remote from 'Remote/User/Fetch';
 
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
@@ -43,35 +40,14 @@ class FolderSystemPopupView extends AbstractViewPopup {
 		this.trashFolder = FolderUserStore.trashFolder;
 		this.archiveFolder = FolderUserStore.archiveFolder;
 
-		const settingsSet = Settings.set,
-			fSetSystemFolders = () => {
-				settingsSet('SentFolder', FolderUserStore.sentFolder());
-				settingsSet('DraftFolder', FolderUserStore.draftFolder());
-				settingsSet('SpamFolder', FolderUserStore.spamFolder());
-				settingsSet('TrashFolder', FolderUserStore.trashFolder());
-				settingsSet('ArchiveFolder', FolderUserStore.archiveFolder());
-			},
-			fSaveSystemFolders = (()=>{
-				fSetSystemFolders();
-				Remote.saveSystemFolders(()=>0, {
-					SentFolder: FolderUserStore.sentFolder(),
-					DraftFolder: FolderUserStore.draftFolder(),
-					SpamFolder: FolderUserStore.spamFolder(),
-					TrashFolder: FolderUserStore.trashFolder(),
-					ArchiveFolder: FolderUserStore.archiveFolder()
-				});
-			}).debounce(1000),
-			fCallback = () => {
-				fSetSystemFolders();
-				fSaveSystemFolders();
-			};
+		const fSaveSystemFolders = (()=>FolderUserStore.saveSystemFolders()).debounce(1000);
 
 		addSubscribablesTo(FolderUserStore, {
-			sentFolder: fCallback,
-			draftFolder: fCallback,
-			spamFolder: fCallback,
-			trashFolder: fCallback,
-			archiveFolder: fCallback
+			sentFolder: fSaveSystemFolders,
+			draftFolder: fSaveSystemFolders,
+			spamFolder: fSaveSystemFolders,
+			trashFolder: fSaveSystemFolders,
+			archiveFolder: fSaveSystemFolders
 		});
 
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
