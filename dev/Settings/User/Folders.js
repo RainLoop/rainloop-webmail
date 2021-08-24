@@ -98,7 +98,7 @@ export class FoldersUserSettings {
 					if (folderToRemove === folder) {
 						return true;
 					}
-					folder.subFolders.remove(fRemoveFolder);
+					//folder.subFolders.remove(fRemoveFolder);
 					return false;
 				};
 
