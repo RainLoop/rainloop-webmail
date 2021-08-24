@@ -2083,12 +2083,12 @@ class MailClient
 	 */
 	public function FolderCreate(string $sFolderNameInUtf8, string $sFolderParentFullNameRaw = '', bool $bSubscribeOnCreation = true, string $sDelimiter = '') : self
 	{
-		if (!strlen(\trim($sFolderNameInUtf8)))
+		$sFolderNameInUtf8 = \trim($sFolderNameInUtf8);
+
+		if (0 === \strlen($sFolderNameInUtf8))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
-
-		$sFolderNameInUtf8 = \trim($sFolderNameInUtf8);
 
 		if (0 === \strlen($sDelimiter) || 0 < \strlen(\trim($sFolderParentFullNameRaw)))
 		{
