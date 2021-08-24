@@ -39,7 +39,8 @@ normalizeFolder = sFolderFullNameRaw => ('' === sFolderFullNameRaw
 		? sFolderFullNameRaw
 		: '';
 
-let SystemFolders = {};
+// index is FolderType value
+let SystemFolders = [];
 
 export class FolderCollectionModel extends AbstractCollectionModel
 {
@@ -62,7 +63,14 @@ export class FolderCollectionModel extends AbstractCollectionModel
 	static reviveFromJson(object) {
 		const expandedFolders = Local.get(ClientSideKeyName.ExpandedFolders);
 		if (object && object.SystemFolders) {
-			SystemFolders = object.SystemFolders;
+			let sf = object.SystemFolders;
+			SystemFolders = [0,0,
+				SettingsGet('SentFolder') || sf[ServerFolderType.SENT],
+				SettingsGet('DraftFolder') || sf[ServerFolderType.DRAFTS],
+				SettingsGet('SpamFolder') || sf[ServerFolderType.SPAM],
+				SettingsGet('TrashFolder') || sf[ServerFolderType.TRASH],
+				SettingsGet('ArchiveFolder') || sf[ServerFolderType.ARCHIVE]
+			];
 		}
 
 		return super.reviveFromJson(object, oFolder => {
@@ -82,23 +90,9 @@ export class FolderCollectionModel extends AbstractCollectionModel
 			}
 
 			if (oCacheFolder) {
-				switch (oFolder.FullNameRaw)
-				{
-				case (SettingsGet('SentFolder') || SystemFolders[ServerFolderType.SENT]):
-					oCacheFolder.type(FolderType.Sent);
-					break;
-				case (SettingsGet('DraftFolder') || SystemFolders[ServerFolderType.DRAFTS]):
-					oCacheFolder.type(FolderType.Drafts);
-					break;
-				case (SettingsGet('SpamFolder') || SystemFolders[ServerFolderType.SPAM]):
-					oCacheFolder.type(FolderType.Spam);
-					break;
-				case (SettingsGet('TrashFolder') || SystemFolders[ServerFolderType.TRASH]):
-					oCacheFolder.type(FolderType.Trash);
-					break;
-				case (SettingsGet('ArchiveFolder') || SystemFolders[ServerFolderType.ARCHIVE]):
-					oCacheFolder.type(FolderType.Archive);
-					break;
+				let type = SystemFolders.indexOf(oFolder.FullNameRaw);
+				if (1 < type) {
+					oCacheFolder.type(type);
 				}
 
 				oCacheFolder.collapsed(!expandedFolders
@@ -269,15 +263,17 @@ export class FolderModel extends AbstractModel {
 				hasSubscribedSubfolders:
 					() =>
 						!!folder.subFolders().find(
-							oFolder => (oFolder.subscribed() || oFolder.hasSubscribedSubfolders()) && !oFolder.isSystemFolder()
+							oFolder => {
+								const subscribed = oFolder.hasSubscriptions();
+								return !oFolder.isSystemFolder() && subscribed;
+							}
 						),
+
+				hasSubscriptions: () => folder.subscribed() | folder.hasSubscribedSubfolders(),
 
 				canBeEdited: () => FolderType.User === folder.type() && folder.exists/* && folder.selectable*/,
 
-				visible: () => {
-					const hasSubFolders = folder.hasSubscribedSubfolders();
-					return folder.subscribed() || hasSubFolders;
-				},
+				visible: () => folder.hasSubscriptions() | !SettingsUserStore.hideUnsubscribed(),
 
 				isSystemFolder: () => FolderType.User !== folder.type(),
 

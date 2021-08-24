@@ -41,7 +41,7 @@ export class FoldersUserSettings {
 		this.folderForEdit = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'edited'] });
 
 		this.useImapSubscribe = Settings.app('useImapSubscribe');
-		this.hideUnsubscribed.subscribe(value => Remote.saveSetting('HideUnsubscribed', value ? 1 : 0));
+		SettingsUserStore.hideUnsubscribed.subscribe(value => Remote.saveSetting('HideUnsubscribed', value ? 1 : 0));
 	}
 
 	folderEditOnEnter(folder) {

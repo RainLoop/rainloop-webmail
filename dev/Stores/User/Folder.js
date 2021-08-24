@@ -5,6 +5,7 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { addObservablesTo, addSubscribablesTo } from 'Common/Utils';
 import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
 import { Settings, SettingsGet } from 'Common/Globals';
+//import Remote from 'Remote/User/Fetch'; Circular dependency
 
 export const FolderUserStore = new class {
 	constructor() {

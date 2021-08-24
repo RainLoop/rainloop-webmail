@@ -4,14 +4,14 @@
  * @enum {number}
  */
 export const FolderType = {
-	Inbox: 10,
-	Sent: 11,
-	Drafts: 12,
-	Trash: 13,
-	Spam: 14,
-	Archive: 15,
-	NotSpam: 80,
-	User: 99
+	User: 0,
+	Inbox: 1,
+	Sent: 2,
+	Drafts: 3,
+	Spam: 4, // JUNK
+	Trash: 5,
+	Archive: 6,
+	NotSpam: 80
 };
 
 /**

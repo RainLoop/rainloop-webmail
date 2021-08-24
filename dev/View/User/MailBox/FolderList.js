@@ -70,7 +70,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 				}
 			}
 
-			el = eqs(event, '.b-folders .e-item a.selectable');
+			el = eqs(event, '.b-folders li a.selectable');
 			if (el) {
 				ThemeStore.isMobile() && leftPanelDisabled(true);
 				event.preventDefault();
@@ -93,7 +93,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 							setFolderHash(folder.fullNameRaw, '');
 						}
 
-						rl.route.setHash((eqs(event, '.b-folders .e-item a.selectable .inbox-star-icon') && !this.isInboxStarred())
+						rl.route.setHash((eqs(event, '.b-folders li a.selectable .inbox-star-icon') && !this.isInboxStarred())
 							? mailBox(folder.fullNameHash, 1, 'is:flagged')
 							: mailBox(folder.fullNameHash)
 						);
@@ -106,7 +106,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 
 		shortcuts.add('arrowup,arrowdown', '', Scope.FolderList, event => {
 			let items = [], index = 0;
-			dom.querySelectorAll('.b-folders .e-item a:not(.hidden)').forEach(node => {
+			dom.querySelectorAll('.b-folders li a:not(.hidden)').forEach(node => {
 				if (node.offsetHeight || node.getClientRects().length) {
 					items.push(node);
 					if (node.matches('.focused')) {
@@ -129,7 +129,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 		});
 
 		shortcuts.add('enter,open', '', Scope.FolderList, () => {
-			const item = qs('.b-folders .e-item a:not(.hidden).focused');
+			const item = qs('.b-folders li a:not(.hidden).focused');
 			if (item) {
 				AppUserStore.focusedState(Scope.MessageList);
 				item.click();
@@ -139,7 +139,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 		});
 
 		shortcuts.add('space', '', Scope.FolderList, () => {
-			const item = qs('.b-folders .e-item a:not(.hidden).focused'),
+			const item = qs('.b-folders li a:not(.hidden).focused'),
 				folder = item && ko.dataFor(item);
 			if (folder) {
 				const collapsed = folder.collapsed();
@@ -158,11 +158,11 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 		});
 
 		AppUserStore.focusedState.subscribe(value => {
-			let el = qs('.b-folders .e-item a.focused');
-			el && qs('.b-folders .e-item a.focused').classList.remove('focused');
+			let el = qs('.b-folders li a.focused');
+			el && el.classList.remove('focused');
 			if (Scope.FolderList === value) {
-				el = qs('.b-folders .e-item a.selected');
-				el && qs('.b-folders .e-item a.selected').classList.add('focused');
+				el = qs('.b-folders li a.selected');
+				el && el.classList.add('focused');
 			}
 		});
 	}
@@ -170,7 +170,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 	scrollToFocused() {
 		const scrollable = this.oContentScrollable;
 		if (scrollable) {
-			let block, focused = scrollable.querySelector('.e-item a.focused');
+			let block, focused = scrollable.querySelector('li a.focused');
 			if (focused) {
 				const fRect = focused.getBoundingClientRect(),
 					sRect = scrollable.getBoundingClientRect();

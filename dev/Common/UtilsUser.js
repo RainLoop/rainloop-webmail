@@ -198,7 +198,7 @@ export function folderListOptionsBuilder(
 
 		foldersWalk = folders => {
 			folders.forEach(oItem => {
-				if (showUnsubscribed || oItem.subscribed() || !oItem.exists || oItem.hasSubscribedSubfolders()) {
+				if (showUnsubscribed || oItem.hasSubscriptions() || !oItem.exists) {
 					aResult.push({
 						id: oItem.fullNameRaw,
 						name:
