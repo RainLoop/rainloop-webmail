@@ -68,12 +68,12 @@ export class FolderCollectionModel extends AbstractCollectionModel
 
 		return super.reviveFromJson(object, oFolder => {
 			let oCacheFolder = Cache.getFolderFromCacheList(oFolder.FullNameRaw);
-/*
+
 			if (oCacheFolder) {
 				oFolder.SubFolders = FolderCollectionModel.reviveFromJson(oFolder.SubFolders);
 				oFolder.SubFolders && oCacheFolder.subFolders(oFolder.SubFolders);
 			}
-*/
+
 			if (!oCacheFolder && (oCacheFolder = FolderModel.reviveFromJson(oFolder))) {
 				if (1 == SystemFolders.indexOf(oFolder.FullNameRaw)) {
 					oCacheFolder.type(FolderType.Inbox);
