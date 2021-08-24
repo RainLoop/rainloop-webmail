@@ -2084,26 +2084,27 @@ class MailClient
 	public function FolderCreate(string $sFolderNameInUtf8, string $sFolderParentFullNameRaw = '', bool $bSubscribeOnCreation = true, string $sDelimiter = '') : self
 	{
 		$sFolderNameInUtf8 = \trim($sFolderNameInUtf8);
+		$sFolderParentFullNameRaw = \trim($sFolderParentFullNameRaw);
 
 		if (0 === \strlen($sFolderNameInUtf8))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
-		if (0 === \strlen($sDelimiter) || 0 < \strlen(\trim($sFolderParentFullNameRaw)))
+		if (0 === \strlen($sDelimiter) || 0 < \strlen($sFolderParentFullNameRaw))
 		{
-			$aFolders = $this->oImapClient->FolderList('', 0 === \strlen(\trim($sFolderParentFullNameRaw)) ? 'INBOX' : $sFolderParentFullNameRaw);
+			$aFolders = $this->oImapClient->FolderList('', 0 === \strlen($sFolderParentFullNameRaw) ? 'INBOX' : $sFolderParentFullNameRaw);
 			if (!$aFolders)
 			{
 				// TODO
 				throw new \MailSo\Mail\Exceptions\RuntimeException(
-					0 === \strlen(trim($sFolderParentFullNameRaw))
+					0 === \strlen($sFolderParentFullNameRaw)
 						? 'Cannot get folder delimiter'
 						: 'Cannot create folder in non-existen parent folder');
 			}
 
 			$sDelimiter = $aFolders[0]->Delimiter();
-			if (0 < \strlen($sDelimiter) && 0 < \strlen(\trim($sFolderParentFullNameRaw)))
+			if (0 < \strlen($sDelimiter) && 0 < \strlen($sFolderParentFullNameRaw))
 			{
 				$sFolderParentFullNameRaw .= $sDelimiter;
 			}
