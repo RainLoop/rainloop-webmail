@@ -72,9 +72,11 @@ export class FolderCollectionModel extends AbstractCollectionModel
 			if (oCacheFolder) {
 				oFolder.SubFolders = FolderCollectionModel.reviveFromJson(oFolder.SubFolders);
 				oFolder.SubFolders && oCacheFolder.subFolders(oFolder.SubFolders);
-			}
+			} else {
+				oCacheFolder = FolderModel.reviveFromJson(oFolder);
+				if (!oCacheFolder)
+					return null;
 
-			if (!oCacheFolder && (oCacheFolder = FolderModel.reviveFromJson(oFolder))) {
 				if (1 == SystemFolders.indexOf(oFolder.FullNameRaw)) {
 					oCacheFolder.type(FolderType.Inbox);
 					Cache.setFolderInboxName(oFolder.FullNameRaw);
@@ -82,28 +84,26 @@ export class FolderCollectionModel extends AbstractCollectionModel
 				Cache.setFolder(oCacheFolder.fullNameHash, oFolder.FullNameRaw, oCacheFolder);
 			}
 
-			if (oCacheFolder) {
-				let type = SystemFolders.indexOf(oFolder.FullNameRaw);
-				if (1 < type) {
-					oCacheFolder.type(type);
+			let type = SystemFolders.indexOf(oFolder.FullNameRaw);
+			if (1 < type) {
+				oCacheFolder.type(type);
+			}
+
+			oCacheFolder.collapsed(!expandedFolders
+				|| !isArray(expandedFolders)
+				|| !expandedFolders.includes(oCacheFolder.fullNameHash));
+
+			if (oFolder.Extended) {
+				if (oFolder.Extended.Hash) {
+					Cache.setFolderHash(oCacheFolder.fullNameRaw, oFolder.Extended.Hash);
 				}
 
-				oCacheFolder.collapsed(!expandedFolders
-					|| !isArray(expandedFolders)
-					|| !expandedFolders.includes(oCacheFolder.fullNameHash));
+				if (null != oFolder.Extended.MessageCount) {
+					oCacheFolder.messageCountAll(oFolder.Extended.MessageCount);
+				}
 
-				if (oFolder.Extended) {
-					if (oFolder.Extended.Hash) {
-						Cache.setFolderHash(oCacheFolder.fullNameRaw, oFolder.Extended.Hash);
-					}
-
-					if (null != oFolder.Extended.MessageCount) {
-						oCacheFolder.messageCountAll(oFolder.Extended.MessageCount);
-					}
-
-					if (null != oFolder.Extended.MessageUnseenCount) {
-						oCacheFolder.messageCountUnread(oFolder.Extended.MessageUnseenCount);
-					}
+				if (null != oFolder.Extended.MessageUnseenCount) {
+					oCacheFolder.messageCountUnread(oFolder.Extended.MessageUnseenCount);
 				}
 			}
 			return oCacheFolder;
