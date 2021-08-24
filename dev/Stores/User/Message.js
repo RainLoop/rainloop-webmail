@@ -31,7 +31,7 @@ import { PgpUserStore } from 'Stores/User/Pgp';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { NotificationUserStore } from 'Stores/User/Notification';
 
-import Remote from 'Remote/User/Fetch';
+//import Remote from 'Remote/User/Fetch'; Circular dependency
 
 const
 	hcont = Element.fromHTML('<div area="hidden" style="position:absolute;left:-5000px"></div>'),
@@ -617,7 +617,7 @@ export const MessageUserStore = new class {
 		if (oMessage) {
 			preload || this.hideMessageBodies();
 			preload || this.messageLoading(true);
-			Remote.message((iError, oData, bCached) => {
+			rl.app.Remote.message((iError, oData, bCached) => {
 				if (iError) {
 					if (Notification.RequestAborted !== iError && !preload) {
 						this.message(null);

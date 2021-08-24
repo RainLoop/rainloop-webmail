@@ -40,13 +40,6 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 		this.allowContacts = AppUserStore.allowContacts();
 
 		this.folderListFocused = ko.computed(() => Scope.FolderList === AppUserStore.focusedState());
-
-		this.isInboxStarred = ko.computed(
-			() =>
-				FolderUserStore.currentFolder() &&
-				FolderUserStore.currentFolder().isInbox() &&
-				MessageUserStore.listSearch().trim().includes('is:flagged')
-		);
 	}
 
 	onBuild(dom) {
@@ -93,7 +86,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 							setFolderHash(folder.fullNameRaw, '');
 						}
 
-						rl.route.setHash((eqs(event, '.b-folders li a.selectable .inbox-star-icon') && !this.isInboxStarred())
+						rl.route.setHash((eqs(event, '.b-folders li a.selectable .flag-icon') && !folder.isFlagged())
 							? mailBox(folder.fullNameHash, 1, 'is:flagged')
 							: mailBox(folder.fullNameHash)
 						);

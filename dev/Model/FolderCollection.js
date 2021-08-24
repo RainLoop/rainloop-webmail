@@ -10,6 +10,7 @@ import * as Local from 'Storage/Client';
 
 import { AppUserStore } from 'Stores/User/App';
 import { FolderUserStore } from 'Stores/User/Folder';
+import { MessageUserStore } from 'Stores/User/Message';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
 import ko from 'ko';
@@ -251,6 +252,9 @@ export class FolderModel extends AbstractModel {
 			folder.addComputables({
 
 				isInbox: () => FolderType.Inbox === folder.type(),
+
+				isFlagged: () => FolderUserStore.currentFolder() === folder
+					&& MessageUserStore.listSearch().trim().includes('is:flagged'),
 
 				hasSubscribedSubfolders:
 					() => !!folder.subFolders().find(
