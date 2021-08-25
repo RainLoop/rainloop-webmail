@@ -96,14 +96,21 @@ export class FoldersUserSettings {
 			if (folderToRemove) {
 				Local.set(ClientSideKeyName.FoldersLashHash, '');
 
-				folderToRemove.selectable(false);
-
-				rl.app.foldersPromisesActionHelper(
-					Remote.folderDelete(folderToRemove.fullNameRaw),
-					Notification.CantDeleteFolder
-				);
-
-				removeFolderFromCacheList(folderToRemove.fullNameRaw);
+				// rl.app.foldersPromisesActionHelper
+				Remote.abort('Folders')
+					.folderDelete(folderToRemove.fullNameRaw)
+					.then(
+						() => {
+							folderToRemove.selectable(false)
+							removeFolderFromCacheList(folderToRemove.fullNameRaw);
+						},
+						error => {
+							FolderUserStore.folderListError(
+								getNotification(error.code, '', Notification.CantDeleteFolder)
+								+ '.\n' + error.message
+							);
+						}
+					);
 			}
 		} else if (0 < folderToRemove.privateMessageCountAll()) {
 			FolderUserStore.folderListError(getNotification(Notification.CantDeleteNonEmptyFolder));
