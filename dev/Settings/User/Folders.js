@@ -94,17 +94,9 @@ export class FoldersUserSettings {
 			this.folderForDeletion(null);
 
 			if (folderToRemove) {
-				const fRemoveFolder = function(folder) {
-					if (folderToRemove === folder) {
-						return true;
-					}
-					//folder.subFolders.remove(fRemoveFolder);
-					return false;
-				};
-
 				Local.set(ClientSideKeyName.FoldersLashHash, '');
 
-				FolderUserStore.folderList.remove(fRemoveFolder);
+				folderToRemove.selectable(false);
 
 				rl.app.foldersPromisesActionHelper(
 					Remote.folderDelete(folderToRemove.fullNameRaw),

@@ -206,7 +206,7 @@ export function folderListOptionsBuilder(
 							fRenameCallback(oItem),
 						system: false,
 						disabled: !bNoSelectSelectable && (
-							!oItem.selectable ||
+							!oItem.selectable() ||
 							aDisabled.includes(oItem.fullNameRaw) ||
 							fDisableCallback(oItem))
 					});

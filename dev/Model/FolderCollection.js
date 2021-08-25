@@ -189,12 +189,12 @@ export class FolderModel extends AbstractModel {
 		this.deep = 0;
 		this.expires = 0;
 
-		this.selectable = false;
 		this.exists = true;
 
 		this.addObservables({
 			name: '',
 			type: FolderType.User,
+			selectable: false,
 
 			focused: false,
 			selected: false,
@@ -266,7 +266,7 @@ export class FolderModel extends AbstractModel {
 
 				hasSubscriptions: () => folder.subscribed() | folder.hasSubscribedSubfolders(),
 
-				canBeEdited: () => FolderType.User === folder.type() && folder.exists/* && folder.selectable*/,
+				canBeEdited: () => FolderType.User === folder.type() && folder.exists/* && folder.selectable()*/,
 
 				visible: () => folder.hasSubscriptions() | !SettingsUserStore.hideUnsubscribed(),
 
@@ -274,7 +274,7 @@ export class FolderModel extends AbstractModel {
 
 				hidden: () => {
 					let hasSubFolders = folder.hasSubscribedSubfolders();
-					return (folder.isSystemFolder() || !folder.selectable) && !hasSubFolders;
+					return (folder.isSystemFolder() | !folder.selectable()) && !hasSubFolders;
 				},
 
 				printableUnreadCount: () => {
@@ -299,14 +299,12 @@ export class FolderModel extends AbstractModel {
 					return null;
 				},
 
-				canBeDeleted: () => !folder.isSystemFolder() && folder.selectable,
+				canBeDeleted: () => !(folder.isSystemFolder() | !folder.selectable()),
 
-				canBeSubscribed: () => !folder.isSystemFolder()
-					&& SettingsUserStore.hideUnsubscribed()
-					&& folder.selectable
-					&& Settings.app('useImapSubscribe'),
+				canBeSubscribed: () => Settings.app('useImapSubscribe')
+					&& !(folder.isSystemFolder() | !SettingsUserStore.hideUnsubscribed() | !folder.selectable()),
 
-				canBeSelected:   () => !folder.isSystemFolder() && folder.selectable,
+				canBeSelected:   () => !(folder.isSystemFolder() | !folder.selectable()),
 
 				localName: () => {
 					let name = folder.name();

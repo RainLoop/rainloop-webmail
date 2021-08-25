@@ -135,7 +135,7 @@ export const FolderUserStore = new class {
 				list.forEach(folder => {
 					if (
 						folder &&
-						folder.selectable &&
+						folder.selectable() &&
 						folder.exists &&
 						timeout > folder.expires &&
 						(folder.isSystemFolder() || (folder.subscribed() && (folder.checkable() || !bDisplaySpecSetting)))
