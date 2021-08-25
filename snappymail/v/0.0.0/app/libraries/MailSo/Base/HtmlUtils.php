@@ -290,7 +290,7 @@ abstract class HtmlUtils
 	public static function ClearStyle(string $sStyle, \DOMElement $oElement, bool &$bHasExternals, array &$aFoundCIDs,
 		array $aContentLocationUrls, array &$aFoundedContentLocationUrls, bool $bDoNotReplaceExternalUrl = false, $fAdditionalExternalFilter = null)
 	{
-		$sStyle = \trim($sStyles, " \n\r\t\v\0;");
+		$sStyle = \trim($sStyle, " \n\r\t\v\0;");
 		$aOutStyles = array();
 		$aStyles = \explode(';', $sStyle);
 
