@@ -49,7 +49,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 		this.oContentScrollable = qs('.b-content');
 
 		dom.addEventListener('click', event => {
-			let el = event.target.closest('.e-collapsed-sign');
+			let el = eqs(event, '.e-collapsed-sign');
 			if (el) {
 				const folder = ko.dataFor(el);
 				if (folder) {
@@ -63,8 +63,8 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 				}
 			}
 
-			el = eqs(event, '.b-folders li a.selectable');
-			if (el) {
+			el = eqs(event, 'a');
+			if (el && el.matches('.selectable')) {
 				ThemeStore.isMobile() && leftPanelDisabled(true);
 				event.preventDefault();
 				const folder = ko.dataFor(el);
@@ -86,7 +86,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 							setFolderHash(folder.fullNameRaw, '');
 						}
 
-						rl.route.setHash((eqs(event, '.b-folders li a.selectable .flag-icon') && !folder.isFlagged())
+						rl.route.setHash((event.target.matches('.flag-icon') && !folder.isFlagged())
 							? mailBox(folder.fullNameHash, 1, 'is:flagged')
 							: mailBox(folder.fullNameHash)
 						);
