@@ -2100,8 +2100,8 @@ class MailClient
 				// TODO: Translate
 				throw new \MailSo\Mail\Exceptions\RuntimeException(
 					\strlen($sFolderParentFullNameRaw)
-						? 'Cannot create folder in non-existen parent folder'
-						: 'Cannot get folder delimiter');
+						? 'Cannot create folder in non-existent parent folder.'
+						: 'Cannot get folder delimiter.');
 			}
 
 			$sDelimiter = $aFolders[0]->Delimiter();
@@ -2119,7 +2119,7 @@ class MailClient
 		{
 			// TODO: Translate
 			throw new \MailSo\Mail\Exceptions\RuntimeException(
-				'New folder name contains delimiter');
+				'New folder name contains delimiter.');
 		}
 
 		$sFullNameRawToCreate = $sFolderParentFullNameRaw.$sFullNameRawToCreate;
@@ -2164,7 +2164,7 @@ class MailClient
 		if (!$aFolders)
 		{
 			// TODO: Translate
-			throw new \MailSo\Mail\Exceptions\RuntimeException('Cannot '.($bRename?'rename':'move').' non-existen folder');
+			throw new \MailSo\Mail\Exceptions\RuntimeException('Cannot '.($bRename?'rename':'move').' non-existent folder.');
 		}
 
 		$sDelimiter = $aFolders[0]->Delimiter();
@@ -2189,7 +2189,7 @@ class MailClient
 			if (\strlen($sDelimiter) && false !== \strpos($sNewFolderFullNameRaw, $sDelimiter))
 			{
 				// TODO: Translate
-				throw new \MailSo\Mail\Exceptions\RuntimeException('New folder name contains delimiter');
+				throw new \MailSo\Mail\Exceptions\RuntimeException('New folder name contains delimiter.');
 			}
 
 			$sFolderParentFullNameRaw = false === $iLast ? '' : \substr($sPrevFolderFullNameRaw, 0, $iLast + 1);
