@@ -380,8 +380,8 @@ class AppUser extends AbstractApp {
 			.then(() => promise)
 			.then(
 				() => Remote.foldersReloadWithTimeout(),
-				errorCode => {
-					FolderUserStore.folderListError(getNotification(errorCode, '', errorDefCode));
+				error => {
+					FolderUserStore.folderListError(getNotification(error.code, '', errorDefCode) + '.\n' + error.message);
 					Remote.foldersReloadWithTimeout();
 				}
 			);

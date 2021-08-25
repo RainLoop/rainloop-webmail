@@ -63,6 +63,14 @@ fetchJSON = (action, sGetAdd, params, timeout, jsonCallback) => {
 	return rl.fetchJSON(getURL(sGetAdd), init, sGetAdd ? null : params).then(jsonCallback);
 };
 
+class FetchError extends Error
+{
+	constructor(code, message) {
+		super(message);
+		this.code = code || Notification.JsonFalse;
+	}
+}
+
 export class AbstractFetchRemote
 {
 	abort(sAction, bClearOnly) {
@@ -201,8 +209,10 @@ export class AbstractFetchRemote
 
 				if (!data.Result || action !== data.Action) {
 					checkResponseError(data);
-					const err = data ? data.ErrorCode : 0;
-					return Promise.reject(err || Notification.JsonFalse);
+					return Promise.reject(new FetchError(
+						data ? data.ErrorCode : 0,
+						data ? (data.ErrorMessageAdditional || data.ErrorMessage) : ''
+					));
 				}
 
 				return data;
