@@ -46,7 +46,8 @@ class MailClient
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
 	public function Connect(string $sServerName, int $iPort = 143,
-		int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT, bool $bVerifySsl = false, bool $bAllowSelfSigned = false, string $sClientCert = '') : self
+		int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT, bool $bVerifySsl = false,
+		bool $bAllowSelfSigned = false, string $sClientCert = '') : self
 	{
 		$this->oImapClient->Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl, $bAllowSelfSigned, $sClientCert);
 		return $this;
@@ -357,8 +358,8 @@ class MailClient
 		$aFetchResponse = $this->oImapClient->Fetch(array(
 			\strlen($sMimeIndex)
 				? \MailSo\Imap\Enumerations\FetchType::BODY_PEEK.'['.$sMimeIndex.'.MIME]'
-				: \MailSo\Imap\Enumerations\FetchType::BODY_HEADER_PEEK
-		), $iIndex, $bIndexIsUid);
+				: \MailSo\Imap\Enumerations\FetchType::BODY_HEADER_PEEK),
+			$iIndex, $bIndexIsUid);
 
 		if (\count($aFetchResponse))
 		{
@@ -2179,21 +2180,21 @@ class MailClient
 			}
 		}
 
-        $sNewFolderFullNameRaw = \MailSo\Base\Utils::ConvertEncoding($sNextFolderNameInUtf,
-            \MailSo\Base\Enumerations\Charset::UTF_8,
-            \MailSo\Base\Enumerations\Charset::UTF_7_IMAP);
+		$sNewFolderFullNameRaw = \MailSo\Base\Utils::ConvertEncoding($sNextFolderNameInUtf,
+			\MailSo\Base\Enumerations\Charset::UTF_8,
+			\MailSo\Base\Enumerations\Charset::UTF_7_IMAP);
 
-        if ($bRename)
-        {
-            if (\strlen($sDelimiter) && false !== \strpos($sNewFolderFullNameRaw, $sDelimiter))
-            {
+		if ($bRename)
+		{
+			if (\strlen($sDelimiter) && false !== \strpos($sNewFolderFullNameRaw, $sDelimiter))
+			{
 				// TODO: Translate
-                throw new \MailSo\Mail\Exceptions\RuntimeException('New folder name contains delimiter');
-            }
+				throw new \MailSo\Mail\Exceptions\RuntimeException('New folder name contains delimiter');
+			}
 
-            $sFolderParentFullNameRaw = false === $iLast ? '' : \substr($sPrevFolderFullNameRaw, 0, $iLast + 1);
-            $sNewFolderFullNameRaw = $sFolderParentFullNameRaw.$sNewFolderFullNameRaw;
-        }
+			$sFolderParentFullNameRaw = false === $iLast ? '' : \substr($sPrevFolderFullNameRaw, 0, $iLast + 1);
+			$sNewFolderFullNameRaw = $sFolderParentFullNameRaw.$sNewFolderFullNameRaw;
+		}
 
 		$this->oImapClient->FolderRename($sPrevFolderFullNameRaw, $sNewFolderFullNameRaw);
 
