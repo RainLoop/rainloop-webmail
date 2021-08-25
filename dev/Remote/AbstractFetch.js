@@ -185,7 +185,7 @@ export class AbstractFetchRemote
 				abort(action, true);
 
 				if (!data) {
-					return Promise.reject(Notification.JsonParse);
+					return Promise.reject(new FetchError(Notification.JsonParse));
 				}
 /*
 				let isCached = false, type = '';
