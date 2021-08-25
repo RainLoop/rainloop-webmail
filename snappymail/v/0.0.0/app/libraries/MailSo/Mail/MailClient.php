@@ -188,9 +188,9 @@ class MailClient
 				: \MailSo\Imap\Enumerations\StoreAction::REMOVE_FLAGS_SILENT
 			;
 
-			if (is_array($aCustomUids))
+			if (\is_array($aCustomUids))
 			{
-				if (0 < count($aCustomUids))
+				if (0 < \count($aCustomUids))
 				{
 					$this->oImapClient->MessageStoreFlag(implode(',', $aCustomUids), true, array($sMessageFlag), $sStoreAction);
 				}
@@ -355,30 +355,30 @@ class MailClient
 
 		$sMimeIndex = trim($sMimeIndex);
 		$aFetchResponse = $this->oImapClient->Fetch(array(
-			0 === \strlen($sMimeIndex)
-				? \MailSo\Imap\Enumerations\FetchType::BODY_HEADER_PEEK
-				: \MailSo\Imap\Enumerations\FetchType::BODY_PEEK.'['.$sMimeIndex.'.MIME]'
+			\strlen($sMimeIndex)
+				? \MailSo\Imap\Enumerations\FetchType::BODY_PEEK.'['.$sMimeIndex.'.MIME]'
+				: \MailSo\Imap\Enumerations\FetchType::BODY_HEADER_PEEK
 		), $iIndex, $bIndexIsUid);
 
-		if (0 < \count($aFetchResponse))
+		if (\count($aFetchResponse))
 		{
 			$sMime = $aFetchResponse[0]->GetFetchValue(
-				0 === \strlen($sMimeIndex)
-					? \MailSo\Imap\Enumerations\FetchType::BODY_HEADER
-					: \MailSo\Imap\Enumerations\FetchType::BODY.'['.$sMimeIndex.'.MIME]'
+				\strlen($sMimeIndex)
+					? \MailSo\Imap\Enumerations\FetchType::BODY.'['.$sMimeIndex.'.MIME]'
+					: \MailSo\Imap\Enumerations\FetchType::BODY_HEADER
 			);
 
-			if (0 < \strlen($sMime))
+			if (\strlen($sMime))
 			{
 				$oHeaders = new \MailSo\Mime\HeaderCollection($sMime);
 
-				if (0 < \strlen($sMimeIndex))
+				if (\strlen($sMimeIndex))
 				{
 					$sFileName = $oHeaders->ParameterValue(
 						\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION,
 						\MailSo\Mime\Enumerations\Parameter::FILENAME);
 
-					if (0 === \strlen($sFileName))
+					if (!\strlen($sFileName))
 					{
 						$sFileName = $oHeaders->ParameterValue(
 							\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
@@ -395,7 +395,7 @@ class MailClient
 				{
 					$sSubject = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::SUBJECT);
 
-					$sFileName = 0 === \strlen($sSubject) ? (string) $iIndex : $sSubject;
+					$sFileName = \strlen($sSubject) ? $sSubject : (string) $iIndex;
 					$sFileName .= '.eml';
 
 					$sContentType = 'message/rfc822';
@@ -407,15 +407,15 @@ class MailClient
 			array(\MailSo\Imap\Enumerations\FetchType::BODY_PEEK.'['.$sMimeIndex.']',
 				function ($sParent, $sLiteralAtomUpperCase, $rImapLiteralStream) use ($mCallback, $sMimeIndex, $sMailEncodingName, $sContentType, $sFileName)
 				{
-					if (0 < \strlen($sLiteralAtomUpperCase))
+					if (\strlen($sLiteralAtomUpperCase))
 					{
-						if (is_resource($rImapLiteralStream) && 'FETCH' === $sParent)
+						if (\is_resource($rImapLiteralStream) && 'FETCH' === $sParent)
 						{
-							$rMessageMimeIndexStream = (0 === \strlen($sMailEncodingName))
-								? $rImapLiteralStream
-								: \MailSo\Base\StreamWrappers\Binary::CreateStream($rImapLiteralStream,
+							$rMessageMimeIndexStream = \strlen($sMailEncodingName)
+								? \MailSo\Base\StreamWrappers\Binary::CreateStream($rImapLiteralStream,
 									\MailSo\Base\StreamWrappers\Binary::GetInlineDecodeOrEncodeFunctionName(
-										$sMailEncodingName, true));
+										$sMailEncodingName, true))
+								: $rImapLiteralStream;
 
 							\call_user_func($mCallback, $rMessageMimeIndexStream, $sContentType, $sFileName, $sMimeIndex);
 						}
@@ -433,7 +433,7 @@ class MailClient
 	 */
 	public function MessageDelete(string $sFolder, array $aIndexRange, bool $bIndexIsUid, bool $bUseExpunge = true, bool $bExpungeAll = false) : self
 	{
-		if (0 === \strlen($sFolder) || 0 === \count($aIndexRange))
+		if (!\strlen($sFolder) || !\count($aIndexRange))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
@@ -462,7 +462,7 @@ class MailClient
 	 */
 	public function MessageMove(string $sFromFolder, string $sToFolder, array $aIndexRange, bool $bIndexIsUid, bool $bUseMoveSupported = false, bool $bExpungeAll = false) : self
 	{
-		if (!$sFromFolder || !$sToFolder || 0 === \count($aIndexRange))
+		if (!$sFromFolder || !$sToFolder || !\count($aIndexRange))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
@@ -492,7 +492,7 @@ class MailClient
 	 */
 	public function MessageCopy(string $sFromFolder, string $sToFolder, array $aIndexRange, bool $bIndexIsUid) : self
 	{
-		if (!$sFromFolder || !$sToFolder || 0 === \count($aIndexRange))
+		if (!$sFromFolder || !$sToFolder || !\count($aIndexRange))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
@@ -523,7 +523,7 @@ class MailClient
 	 */
 	public function MessageAppendStream($rMessageStream, int $iMessageStreamSize, string $sFolderToSave, array $aAppendFlags = null, int &$iUid = null) : self
 	{
-		if (!\is_resource($rMessageStream) || 0 === \strlen($sFolderToSave))
+		if (!\is_resource($rMessageStream) || !\strlen($sFolderToSave))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
@@ -605,7 +605,7 @@ class MailClient
 	{
 		$aNewMessages = array();
 
-		if (0 < \strlen($sPrevUidNext) && (string) $sPrevUidNext !== (string) $sCurrentUidNext)
+		if (\strlen($sPrevUidNext) && (string) $sPrevUidNext !== (string) $sCurrentUidNext)
 		{
 			$this->oImapClient->FolderSelect($sFolderName);
 
@@ -638,12 +638,12 @@ class MailClient
 					);
 
 					$sCharset = '';
-					if (0 < \strlen($sContentTypeCharset))
+					if (\strlen($sContentTypeCharset))
 					{
 						$sCharset = $sContentTypeCharset;
 					}
 
-					if (0 < \strlen($sCharset))
+					if (\strlen($sCharset))
 					{
 						$oHeaders->SetParentCharset($sCharset);
 					}
@@ -651,8 +651,8 @@ class MailClient
 					$aNewMessages[] = array(
 						'Folder' => $sFolderName,
 						'Uid' => $sUid,
-						'Subject' => $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::SUBJECT, 0 === \strlen($sCharset)),
-						'From' => $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::FROM_, 0 === \strlen($sCharset))
+						'Subject' => $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::SUBJECT, !\strlen($sCharset)),
+						'From' => $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::FROM_, !\strlen($sCharset))
 					);
 				}
 			}
@@ -757,7 +757,7 @@ class MailClient
 	private function parseSearchDate(string $sDate, int $iTimeZoneOffset) : int
 	{
 		$iResult = 0;
-		if (0 < \strlen($sDate))
+		if (\strlen($sDate))
 		{
 			$oDateTime = \DateTime::createFromFormat('Y.m.d', $sDate, \MailSo\Base\DateTimeHelper::GetUtcTimeZoneObject());
 			return $oDateTime ? $oDateTime->getTimestamp() - $iTimeZoneOffset : 0;
@@ -859,7 +859,7 @@ class MailClient
 
 			foreach ($mMatch[1] as $iIndex => $sName)
 			{
-				if (isset($mMatch[2][$iIndex]) && 0 < \strlen($mMatch[2][$iIndex]))
+				if (isset($mMatch[2][$iIndex]) && \strlen($mMatch[2][$iIndex]))
 				{
 					$sName = \strtoupper($sName);
 					$sValue = $mMatch[2][$iIndex];
@@ -928,7 +928,7 @@ class MailClient
 			$iTimeFilter = \gmmktime(1, 1, 1, \gmdate('n', $iD), 1, \gmdate('Y', $iD));
 		}
 
-		if (0 < \strlen(\trim($sSearch)))
+		if (\strlen(\trim($sSearch)))
 		{
 			$sResultBodyTextSearch = '';
 
@@ -1071,12 +1071,12 @@ class MailClient
 
 							if (2 === \count($aDate))
 							{
-								if (0 < \strlen($aDate[0]))
+								if (\strlen($aDate[0]))
 								{
 									$iDateStampFrom = $this->parseSearchDate($aDate[0], $iTimeZoneOffset);
 								}
 
-								if (0 < \strlen($aDate[1]))
+								if (\strlen($aDate[1]))
 								{
 									$iDateStampTo = $this->parseSearchDate($aDate[1], $iTimeZoneOffset);
 									$iDateStampTo += 60 * 60 * 24;
@@ -1084,7 +1084,7 @@ class MailClient
 							}
 							else
 							{
-								if (0 < \strlen($sDate))
+								if (\strlen($sDate))
 								{
 									$iDateStampFrom = $this->parseSearchDate($sDate, $iTimeZoneOffset);
 									$iDateStampTo = $iDateStampFrom + 60 * 60 * 24;
@@ -1117,7 +1117,7 @@ class MailClient
 			}
 
 			$sResultBodyTextSearch = \trim($sResultBodyTextSearch);
-			if (0 < \strlen($sResultBodyTextSearch))
+			if (\strlen($sResultBodyTextSearch))
 			{
 				$aCriteriasResult[] = 'BODY';
 				$aCriteriasResult[] = $this->escapeSearchString($sResultBodyTextSearch);
@@ -1543,7 +1543,7 @@ class MailClient
 				$this->oImapClient->MessageSimpleSearch($sSearchCriterias, true, \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? '' : 'UTF-8')
 			;
 
-			if (!$bUidsFromCacher && $bUseCacheAfterSearch && \is_array($aResultUids) && $oCacher && $oCacher->IsInited() && 0 < \strlen($sSerializedHash))
+			if (!$bUidsFromCacher && $bUseCacheAfterSearch && \is_array($aResultUids) && $oCacher && $oCacher->IsInited() && \strlen($sSerializedHash))
 			{
 				$oCacher->Set($sSerializedHash, \json_encode(array(
 					'FolderHash' => $sFolderHash,
@@ -1628,7 +1628,7 @@ class MailClient
 
 		$oMessageCollection->UidNext = $sUidNext;
 
-		if (empty($sThreadUid) && 0 < \strlen($sPrevUidNext) && 'INBOX' === $sFolderName)
+		if (empty($sThreadUid) && \strlen($sPrevUidNext) && 'INBOX' === $sFolderName)
 		{
 			$oMessageCollection->NewMessages = $this->getFolderNextMessageInformation(
 				$sFolderName, $sPrevUidNext, $sUidNext);
@@ -1692,7 +1692,7 @@ class MailClient
 				$aUids = $mAllSortedUids;
 			}
 
-			if (0 < \strlen($sSearch) && \is_array($aUids))
+			if (\strlen($sSearch) && \is_array($aUids))
 			{
 				$aSearchedUids = $this->GetUids($oCacher, $sSearch, $sFilter,
 					$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
@@ -1756,12 +1756,12 @@ class MailClient
 			$oMessageCollection->MessageCount = $iMessageRealCount;
 			$oMessageCollection->MessageUnseenCount = $iMessageUnseenCount;
 
-			if (0 < \strlen($sSearch) || $bUseFilter)
+			if (\strlen($sSearch) || $bUseFilter)
 			{
 				$aUids = $this->GetUids($oCacher, $sSearch, $sFilter,
 					$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
 
-				if (0 < \count($aUids))
+				if (\count($aUids))
 				{
 					$oMessageCollection->MessageResultCount = \count($aUids);
 
@@ -1790,11 +1790,11 @@ class MailClient
 			}
 		}
 
-		if ($bUseThreadSortIfSupported && 0 === $iThreadUid && \is_array($mAllThreads) && 0 < \count($mAllThreads))
+		if ($bUseThreadSortIfSupported && 0 === $iThreadUid && \is_array($mAllThreads) && \count($mAllThreads))
 		{
 			foreach ($oMessageCollection as $oMessage) {
 				$iUid = $oMessage->Uid();
-				if (isset($mAllThreads[$iUid]) && \is_array($mAllThreads[$iUid]) && 0 < \count($mAllThreads[$iUid]))
+				if (isset($mAllThreads[$iUid]) && \is_array($mAllThreads[$iUid]) && \count($mAllThreads[$iUid]))
 				{
 					$aSubThreads = $mAllThreads[$iUid];
 					\array_unshift($aSubThreads, $iUid);
@@ -1815,7 +1815,7 @@ class MailClient
 
 	public function FindMessageUidByMessageId(string $sFolderName, string $sMessageId) : ?int
 	{
-		if (0 === \strlen($sMessageId))
+		if (!\strlen($sMessageId))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
@@ -2021,7 +2021,7 @@ class MailClient
 				$sNonExistenFolderFullNameRaw = '';
 				foreach ($aFolderExplode as $sFolderExplodeItem)
 				{
-					$sNonExistenFolderFullNameRaw .= (0 < \strlen($sNonExistenFolderFullNameRaw))
+					$sNonExistenFolderFullNameRaw .= \strlen($sNonExistenFolderFullNameRaw)
 						? $sDelimiter.$sFolderExplodeItem : $sFolderExplodeItem;
 
 					if (!isset($aSortedByLenImapFolders[$sNonExistenFolderFullNameRaw]))
@@ -2086,25 +2086,25 @@ class MailClient
 		$sFolderNameInUtf8 = \trim($sFolderNameInUtf8);
 		$sFolderParentFullNameRaw = \trim($sFolderParentFullNameRaw);
 
-		if (0 === \strlen($sFolderNameInUtf8))
+		if (!\strlen($sFolderNameInUtf8))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
-		if (0 === \strlen($sDelimiter) || 0 < \strlen($sFolderParentFullNameRaw))
+		if (!\strlen($sDelimiter) || \strlen($sFolderParentFullNameRaw))
 		{
-			$aFolders = $this->oImapClient->FolderList('', 0 === \strlen($sFolderParentFullNameRaw) ? 'INBOX' : $sFolderParentFullNameRaw);
+			$aFolders = $this->oImapClient->FolderList('', \strlen($sFolderParentFullNameRaw) ? $sFolderParentFullNameRaw : 'INBOX');
 			if (!$aFolders)
 			{
-				// TODO
+				// TODO: Translate
 				throw new \MailSo\Mail\Exceptions\RuntimeException(
-					0 === \strlen($sFolderParentFullNameRaw)
-						? 'Cannot get folder delimiter'
-						: 'Cannot create folder in non-existen parent folder');
+					\strlen($sFolderParentFullNameRaw)
+						? 'Cannot create folder in non-existen parent folder'
+						: 'Cannot get folder delimiter');
 			}
 
 			$sDelimiter = $aFolders[0]->Delimiter();
-			if (0 < \strlen($sDelimiter) && 0 < \strlen($sFolderParentFullNameRaw))
+			if (\strlen($sDelimiter) && \strlen($sFolderParentFullNameRaw))
 			{
 				$sFolderParentFullNameRaw .= $sDelimiter;
 			}
@@ -2114,9 +2114,9 @@ class MailClient
 			\MailSo\Base\Enumerations\Charset::UTF_8,
 			\MailSo\Base\Enumerations\Charset::UTF_7_IMAP);
 
-		if (0 < \strlen($sDelimiter) && false !== \strpos($sFullNameRawToCreate, $sDelimiter))
+		if (\strlen($sDelimiter) && false !== \strpos($sFullNameRawToCreate, $sDelimiter))
 		{
-			// TODO
+			// TODO: Translate
 			throw new \MailSo\Mail\Exceptions\RuntimeException(
 				'New folder name contains delimiter');
 		}
@@ -2154,7 +2154,7 @@ class MailClient
 	 */
 	protected function folderModify(string $sPrevFolderFullNameRaw, string $sNextFolderNameInUtf, bool $bRename, bool $bSubscribeOnModify) : self
 	{
-		if (0 === \strlen($sPrevFolderFullNameRaw) || 0 === \strlen($sNextFolderNameInUtf))
+		if (!\strlen($sPrevFolderFullNameRaw) || !\strlen($sNextFolderNameInUtf))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
@@ -2162,7 +2162,7 @@ class MailClient
 		$aFolders = $this->oImapClient->FolderList('', $sPrevFolderFullNameRaw);
 		if (!$aFolders)
 		{
-			// TODO
+			// TODO: Translate
 			throw new \MailSo\Mail\Exceptions\RuntimeException('Cannot '.($bRename?'rename':'move').' non-existen folder');
 		}
 
@@ -2185,9 +2185,9 @@ class MailClient
 
         if ($bRename)
         {
-            if (0 < \strlen($sDelimiter) && false !== \strpos($sNewFolderFullNameRaw, $sDelimiter))
+            if (\strlen($sDelimiter) && false !== \strpos($sNewFolderFullNameRaw, $sDelimiter))
             {
-                // TODO
+				// TODO: Translate
                 throw new \MailSo\Mail\Exceptions\RuntimeException('New folder name contains delimiter');
             }
 
@@ -2218,7 +2218,7 @@ class MailClient
 	 */
 	public function FolderDelete(string $sFolderFullNameRaw, bool $bUnsubscribeOnDeletion = true) : self
 	{
-		if (0 === \strlen($sFolderFullNameRaw) || 'INBOX' === $sFolderFullNameRaw)
+		if (!\strlen($sFolderFullNameRaw) || 'INBOX' === $sFolderFullNameRaw)
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
@@ -2226,7 +2226,7 @@ class MailClient
 		$this->oImapClient->FolderExamine($sFolderFullNameRaw);
 
 		$aIndexOrUids = $this->oImapClient->MessageSimpleSearch('ALL');
-		if (0 < \count($aIndexOrUids))
+		if (\count($aIndexOrUids))
 		{
 			throw new \MailSo\Mail\Exceptions\NonEmptyFolder;
 		}
@@ -2269,7 +2269,7 @@ class MailClient
 	 */
 	public function FolderSubscribe(string $sFolderFullNameRaw, bool $bSubscribe) : self
 	{
-		if (0 === \strlen($sFolderFullNameRaw))
+		if (!\strlen($sFolderFullNameRaw))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
