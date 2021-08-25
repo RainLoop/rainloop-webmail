@@ -25,7 +25,7 @@ class NegativeResponseException extends ResponseException
 
 		$oResponse = $this->GetLastResponse();
 		if ($oResponse && $oResponse->IsStatusResponse && !empty($oResponse->HumanReadable) &&
-			isset($oResponse->OptionalResponse[0]) && 'ALERT' === $oResponse->OptionalResponse[0])
+			'ALERT' === ($oResponse->OptionalResponse[0] ?? ''))
 		{
 			$sResult = $oResponse->HumanReadable;
 		}

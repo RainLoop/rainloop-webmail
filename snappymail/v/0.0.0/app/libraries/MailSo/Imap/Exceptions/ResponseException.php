@@ -27,7 +27,7 @@ class ResponseException extends \MailSo\Imap\Exceptions\Exception
 	{
 		$this->oResponses = $oResponses;
 		if (!$sMessage && $response = $this->GetLastResponse()) {
-			$sMessage = $response->OptionalResponse[0] . ' ' . $response->HumanReadable;
+			$sMessage = ($response->OptionalResponse[0] ?? '') . ' ' . $response->HumanReadable;
 		}
 		parent::__construct($sMessage, $iCode, $oPrevious);
 	}
