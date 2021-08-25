@@ -86,9 +86,10 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 							setFolderHash(folder.fullNameRaw, '');
 						}
 
-						rl.route.setHash((event.target.matches('.flag-icon') && !folder.isFlagged())
-							? mailBox(folder.fullNameHash, 1, 'is:flagged')
-							: mailBox(folder.fullNameHash)
+						rl.route.setHash(
+							mailBox(folder.fullNameHash, 1,
+								(event.target.matches('.flag-icon') && !folder.isFlagged()) ? 'is:flagged' : ''
+							)
 						);
 					}
 
