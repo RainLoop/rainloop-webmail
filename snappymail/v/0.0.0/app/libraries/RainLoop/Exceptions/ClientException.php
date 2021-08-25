@@ -23,7 +23,7 @@ class ClientException extends Exception
 		parent::__construct(\RainLoop\Notifications::GetNotificationsMessage($iCode, $oPrevious),
 			$iCode, $oPrevious);
 
-		$this->sAdditionalMessage = $sAdditionalMessage;
+		$this->sAdditionalMessage = $sAdditionalMessage ?: ($oPrevious ? $oPrevious->getMessage() : '');
 
 		$this->bLogoutOnException = $bLogoutOnException;
 	}
