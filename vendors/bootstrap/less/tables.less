@@ -47,10 +47,9 @@
 .table-bordered {
   border: 1px solid @tableBorder;
   border-collapse: separate; // Done so we can round those corners!
-  border-left: 0;
   border-radius: 4px;
-  th,
-  td {
+  th + th,
+  td + td {
     border-left: 1px solid @tableBorder;
   }
   // Prevent a double border
