@@ -14,18 +14,6 @@
 		max-width: 810px;
 	}
 
-	.modal-body {
-		position: relative;
-		overflow: hidden;
-		width: 1600px;
-		left: 0;
-		transition: left 500ms ease;
-	}
-
-	&.domain-second-page .modal-body {
-		left: -800px;
-	}
-
 	.domain-desc {
 		color: #666;
 		line-height: 20px;
@@ -45,15 +33,16 @@
 	}
 
 	.testing-done {
-		&.imap-header, &.sieve-header, &.smtp-header {
-			color: green;
-			font-weight: bold;
-		}
+		color: green !important;
 	}
 
 	.testing-error {
-		&.imap-header, &.sieve-header, &.smtp-header {
-			color: red;
-		}
+		color: red !important;
+	}
+
+	.tab-content {
+		grid-column-end: 5;
+		border: 1px solid #ddd;
+		padding: 10px;
 	}
 }

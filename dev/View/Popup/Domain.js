@@ -80,8 +80,6 @@ class DomainPopupView extends AbstractViewPopup {
 			testingSieveError: value => value || this.testingSieveErrorDesc(''),
 			testingSmtpError: value => value || this.testingSmtpErrorDesc(''),
 
-			page: () => this.sieveSettings(false),
-
 			// smart form improvements
 			imapServerFocus: value =>
 				value && this.name() && !this.imapServer() && this.imapServer(this.name().replace(/[.]?[*][.]?/g, '')),
@@ -139,10 +137,7 @@ class DomainPopupView extends AbstractViewPopup {
 
 		decorateKoCommands(this, {
 			createOrAddCommand: self => self.canBeSaved(),
-			testConnectionCommand: self => self.canBeTested(),
-			whiteListCommand: 1,
-			backCommand: 1,
-			sieveCommand: 1
+			testConnectionCommand: self => self.canBeTested()
 		});
 	}
 
@@ -155,8 +150,6 @@ class DomainPopupView extends AbstractViewPopup {
 	}
 
 	testConnectionCommand() {
-		this.page('main');
-
 		this.testingDone(false);
 		this.testingImapError(false);
 		this.testingSieveError(false);
@@ -170,24 +163,18 @@ class DomainPopupView extends AbstractViewPopup {
 					this.testingImapError(true);
 					this.testingSieveError(true);
 					this.testingSmtpError(true);
-					this.sieveSettings(false);
 				} else {
-					let bImap = false,
-						bSieve = false;
-
 					this.testingDone(true);
 					this.testingImapError(true !== oData.Result.Imap);
 					this.testingSieveError(true !== oData.Result.Sieve);
 					this.testingSmtpError(true !== oData.Result.Smtp);
 
 					if (this.testingImapError() && oData.Result.Imap) {
-						bImap = true;
 						this.testingImapErrorDesc('');
 						this.testingImapErrorDesc(oData.Result.Imap);
 					}
 
 					if (this.testingSieveError() && oData.Result.Sieve) {
-						bSieve = true;
 						this.testingSieveErrorDesc('');
 						this.testingSieveErrorDesc(oData.Result.Sieve);
 					}
@@ -196,31 +183,10 @@ class DomainPopupView extends AbstractViewPopup {
 						this.testingSmtpErrorDesc('');
 						this.testingSmtpErrorDesc(oData.Result.Smtp);
 					}
-
-					if (this.sieveSettings()) {
-						if (!bSieve && bImap) {
-							this.sieveSettings(false);
-						}
-					} else if (bSieve && !bImap) {
-						this.sieveSettings(true);
-					}
 				}
 			},
 			this
 		);
-	}
-
-	whiteListCommand() {
-		this.page('white-list');
-	}
-
-	backCommand() {
-		this.page('main');
-	}
-
-	sieveCommand() {
-		this.sieveSettings(!this.sieveSettings());
-		this.clearTesting();
 	}
 
 	onDomainCreateOrSaveResponse(iError) {
@@ -241,16 +207,8 @@ class DomainPopupView extends AbstractViewPopup {
 		this.testingSmtpError(false);
 	}
 
-	onHide() {
-		this.page('main');
-		this.sieveSettings(false);
-	}
-
 	onShow(oDomain) {
 		this.saving(false);
-
-		this.page('main');
-		this.sieveSettings(false);
 
 		this.clearTesting();
 
@@ -286,8 +244,6 @@ class DomainPopupView extends AbstractViewPopup {
 	getDefaults() {
 		return {
 			savingError: '',
-			page: 'main',
-			sieveSettings: false,
 
 			name: '',
 
