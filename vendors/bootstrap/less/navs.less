@@ -26,56 +26,46 @@
 // TABS
 // -------------
 
-// Give the tabs something to sit on
-.nav-tabs {
-  border-bottom: 1px solid #ddd;
-  white-space: nowrap;
-}
-// Make the list-items overlay the bottom border
-.nav-tabs > li {
-  margin-bottom: -1px;
-  display: inline-block;
-}
-// Actual tabs (as links)
-.nav-tabs > li > a {
-  color: #555;
-  padding-top: 8px 12px;
-  margin-right: 2px;
-  line-height: 14px; // keeps the overall height an even number
-  line-height: @baseLineHeight;
-  border: 1px solid transparent;
-  border-radius: 4px 4px 0 0;
-  padding: 5px;
-  &:hover {
-    border-color: @grayLighter @grayLighter #ddd;
-  }
-}
-// Active state, and it's :hover to override normal :hover
-.nav-tabs > .active > a,
-.nav-tabs > .active > a:hover {
-  color: @gray;
-  background-color: @white;
-  border: 1px solid #ddd;
-  border-bottom-color: transparent;
-  cursor: default;
+.tabs {
+    display: grid;
 }
 
+.tabs input[type="radio"] {
+	position: absolute;
+	top: 0;
+	left: -9999px;
+	display: none;
+}
+
+// Actual tabs
+.tabs label {
+	grid-row-start: 1;
+	color: #555;
+	margin: 0 2px -1px 0;
+	line-height: @baseLineHeight;
+	border: 1px solid transparent;
+	border-radius: 4px 4px 0 0;
+	padding: 5px;
+	&:hover {
+		border-color: @grayLighter @grayLighter #ddd;
+	}
+}
+[id^="tab"]:checked + label {
+	color: @gray;
+	background-color: @white;
+	border-color: #ddd #ddd transparent #ddd;
+	z-index: 1;
+}
 
 // TABBABLE
 // --------
 
-
-// COMMON STYLES
-// -------------
-
 .tab-content {
-  overflow: auto; // prevent content from running below tabs
+	grid-column-start: 1;
+	grid-row-start: 2;
+	visibility: hidden;
 }
 
-// Show/hide tabbable areas
-.tab-content > .tab-pane {
-  display: none;
-}
-.tab-content > .active {
-  display: block;
+[id^="tab"]:checked + label + .tab-content {
+	visibility: visible;
 }

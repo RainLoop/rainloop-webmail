@@ -9,25 +9,8 @@ export class KeyboardShortcutsHelpPopupView extends AbstractViewPopup {
 	}
 
 	onBuild(dom) {
-		const tabs = dom.querySelectorAll('.nav.nav-tabs > li'),
-			last = tabs.length - 1,
-			show = tab => {
-				if (!tab.classList.contains('active')) {
-					const previous = tab.parentElement.querySelector('.active');
-					previous.classList.remove('active');
-					dom.querySelector(previous.firstElementChild.getAttribute('href')).classList.remove('active');
-
-					tab.classList.add('active');
-					dom.querySelector(tab.firstElementChild.getAttribute('href')).classList.add('active');
-				}
-			};
-
-		tabs.forEach(node => {
-			node.addEventListener('click', e => {
-				e.preventDefault();
-				show(node);
-			});
-		});
+		const tabs = dom.querySelectorAll('.tabs input'),
+			last = tabs.length - 1;
 
 //		shortcuts.add('tab', 'shift',
 		shortcuts.add('tab,arrowleft,arrowright', '',
@@ -35,7 +18,7 @@ export class KeyboardShortcutsHelpPopupView extends AbstractViewPopup {
 			event => {
 				let next = 0;
 				tabs.forEach((node, index) => {
-					if (node.matches('.active')) {
+					if (node.matches(':checked')) {
 						if (['Tab','ArrowRight'].includes(event.key)) {
 							next = index < last ? index+1 : 0;
 						} else {
@@ -43,8 +26,7 @@ export class KeyboardShortcutsHelpPopupView extends AbstractViewPopup {
 						}
 					}
 				});
-
-				show(tabs[next]);
+				tabs[next].checked = true;
 				return false;
 			}
 		);
