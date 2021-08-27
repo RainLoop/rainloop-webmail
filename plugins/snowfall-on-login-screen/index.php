@@ -6,7 +6,7 @@ class SnowfallOnLoginScreenPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME = 'Snowfall on login screen',
 		VERSION = '2.0',
 		CATEGORY = 'Fun',
-		DESCRIPTION = 'Snowfall on login screen plugin (just for fun).';
+		DESCRIPTION = 'Snowfall on login screen (just for fun).';
 
 	public function Init() : void
 	{

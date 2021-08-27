@@ -1,9 +1,10 @@
 <?php
 
 /**
- * This plug-in automatically detects the IMAP and SMTP settings by extracting them from the email address itself.
- * For example, user inputs: "info@example.com"
- * This plugin sets the IMAP and SMTP host to "example.com" upon login, and then connects to it.
+ * This extension automatically detects the IMAP and SMTP settings by
+ * extracting them from the email address itself. For example, if the user
+ * attemps to login as "info@example.com", then the IMAP and SMTP host would
+ * be set to to "example.com".
  *
  * Based on:
  * https://github.com/the-djmaze/snappymail/blob/master/plugins/override-smtp-credentials/index.php
@@ -13,11 +14,11 @@
 class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
-		NAME     = '',
+		NAME     = 'Auto Domain Selection',
 		VERSION = '2.1',
 		REQUIRED = '2.5.0',
 		CATEGORY = 'General',
-		DESCRIPTION = '';
+		DESCRIPTION = 'Sets the IMAP/SMTP host based on the user\'s login';
 
 	private $imap_prefix = "mail.";
 	private $smtp_prefix = "mail.";

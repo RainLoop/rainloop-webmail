@@ -3,9 +3,9 @@
 class ChangeSmtpEhloMessagePlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
-		NAME     = '',
+		NAME     = 'Change SMTP EHLO Message',
 		CATEGORY = 'General',
-		DESCRIPTION = '';
+		DESCRIPTION = 'Extension to enable custom SMTP EHLO messages';
 
 	public function Init() : void
 	{

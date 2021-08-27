@@ -40,7 +40,7 @@ class LdapIdentities implements IIdentities
 		// Check if LDAP is available
 		if (!extension_loaded('ldap') || !function_exists('ldap_connect')) {
 			$this->ldapAvailable = false;
-			$logger->Write("The LDAP plugin is not available!", Type::WARNING, self::LOG_KEY);
+			$logger->Write("The LDAP extension is not available!", Type::WARNING, self::LOG_KEY);
 			return;
 		}
 

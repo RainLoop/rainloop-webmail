@@ -3,9 +3,9 @@
 class CustomSettingsTabPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
-		NAME     = '',
+		NAME     = 'Custom Settings Tab',
 		CATEGORY = 'General',
-		DESCRIPTION = '';
+		DESCRIPTION = 'Example extension for custom settings tabs';
 
 	/**
 	 * @return void

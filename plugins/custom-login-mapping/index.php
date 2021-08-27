@@ -8,7 +8,7 @@ class CustomLoginMappingPlugin extends \RainLoop\Plugins\AbstractPlugin
 		RELEASE = '2021-04-21',
 		REQUIRED = '2.5.0',
 		CATEGORY = 'Login',
-		DESCRIPTION = 'Plugin which allows you to set up custom username by email address.';
+		DESCRIPTION = 'Enables custom usernames by email address.';
 
 	public function Init() : void
 	{

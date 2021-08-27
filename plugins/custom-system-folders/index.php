@@ -3,7 +3,7 @@
 class CustomSystemFoldersPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
-		NAME     = '',
+		NAME     = 'Custom System Folders',
 		CATEGORY = 'General',
 		DESCRIPTION = 'Set custom sytem folders';
 

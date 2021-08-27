@@ -10,7 +10,7 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		RELEASE  = '2021-07-28',
 		REQUIRED = '2.6.0',
 		CATEGORY = 'Login',
-		DESCRIPTION = 'This plugin allows you to have TOTP 2FA';
+		DESCRIPTION = 'Provides support for TOTP 2FA';
 
 	public function Init() : void
 	{
