@@ -173,7 +173,7 @@ class Header
 				);
 
 				return \iconv_mime_encode($this->Name(), $sResult, $aPreferences);
-	        }
+			}
 		}
 		else if ($this->IsParameterized() && $this->oParameters && 0 < $this->oParameters->Count())
 		{

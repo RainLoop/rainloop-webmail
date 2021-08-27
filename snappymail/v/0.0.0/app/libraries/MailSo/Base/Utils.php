@@ -1790,14 +1790,14 @@ END;
 		return \is_string($mResult) && 0 < \strlen($mResult) ? $mResult : '';
 	}
 
-    public static function Md5Rand(string $sAdditionalSalt = '') : string
-    {
+	public static function Md5Rand(string $sAdditionalSalt = '') : string
+	{
 		return \md5(\microtime(true).\rand(10000, 99999).
 			\md5($sAdditionalSalt).\rand(10000, 99999).\microtime(true));
 	}
 
-    public static function Sha1Rand(string $sAdditionalSalt = '') : string
-    {
+	public static function Sha1Rand(string $sAdditionalSalt = '') : string
+	{
 		return \sha1(\microtime(true).\rand(10000, 99999).
 			\sha1($sAdditionalSalt).\rand(10000, 99999).\microtime(true));
 	}

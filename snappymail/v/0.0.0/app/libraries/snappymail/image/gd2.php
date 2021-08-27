@@ -244,7 +244,7 @@ class GD2 implements \SnappyMail\Image
 		return true;
 	}
 
-	public function setImageFormat($format)     { $this->format = \strtolower($format); }
+	public function setImageFormat($format) { $this->format = \strtolower($format); }
 
 	public function stripImage() { return $this; }
 

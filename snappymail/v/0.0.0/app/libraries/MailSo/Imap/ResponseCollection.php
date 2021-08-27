@@ -145,6 +145,13 @@ class ResponseCollection extends \MailSo\Base\Collection
 
 					$sFullNameRaw = \implode('', $aFullNameRawList);
 
+					/**
+					 * $oResponse->ResponseList[0] = *
+					 * $oResponse->ResponseList[1] = LIST (all) | LSUB (subscribed)
+					 * $oResponse->ResponseList[2] = Flags
+					 * $oResponse->ResponseList[3] = Delimiter
+					 * $oResponse->ResponseList[4] = FullNameRaw
+					 */
 					$oFolder = new Folder($sFullNameRaw,
 						$oResponse->ResponseList[3], $oResponse->ResponseList[2]);
 
