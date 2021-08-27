@@ -34,20 +34,22 @@
 								data-bind="textInput: imapServer, hasfocus: imapServerFocus" />
 						</div>
 						<div class="span2">
+							<span data-i18n="POPUPS_DOMAIN/LABEL_SECURE"></span>
+							<br />
+							<select class="span2" data-bind="value: imapSecure">
+								<option value="0" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_NONE"></option>
+								<option value="1" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_SSL"></option>
+								<option value="2" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_STARTTLS"></option>
+							</select>
+						</div>
+						<div class="span2">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
 							<br />
 							<input type="number" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 								style="width:6em" data-bind="textInput: imapPort" />
 						</div>
 					</div>
-					<span data-i18n="POPUPS_DOMAIN/LABEL_SECURE"></span>
 					<br />
-					<select data-bind="value: imapSecure">
-						<option value="0" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_NONE"></option>
-						<option value="1" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_SSL"></option>
-						<option value="2" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_STARTTLS"></option>
-					</select>
-					<br /><br />
 					<div data-bind="component: {
 						name: 'Checkbox',
 						params: {
@@ -74,20 +76,22 @@
 									data-bind="textInput: smtpServer, hasfocus: smtpServerFocus" />
 							</div>
 							<div class="span2">
+								<span data-i18n="POPUPS_DOMAIN/LABEL_SECURE"></span>
+								<br />
+								<select class="span2" data-bind="value: smtpSecure">
+									<option value="0" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_NONE"></option>
+									<option value="1" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_SSL"></option>
+									<option value="2" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_STARTTLS"></option>
+								</select>
+							</div>
+							<div class="span2">
 								<span data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
 								<br />
 								<input type="number" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 									style="width:6em" data-bind="textInput: smtpPort" />
 							</div>
 						</div>
-						<span data-i18n="POPUPS_DOMAIN/LABEL_SECURE"></span>
 						<br />
-						<select data-bind="value: smtpSecure">
-							<option value="0" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_NONE"></option>
-							<option value="1" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_SSL"></option>
-							<option value="2" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_STARTTLS"></option>
-						</select>
-						<br /><br />
 						<div data-bind="component: {
 							name: 'Checkbox',
 							params: {
@@ -154,20 +158,22 @@
 								<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 									data-bind="textInput: sieveServer, hasfocus: sieveServerFocus" />
 							</div>
-							<div class="span1">
+							<div class="span2">
+								<span data-i18n="POPUPS_DOMAIN/LABEL_SECURE"></span>
+								<br />
+								<select class="span2" data-bind="value: sieveSecure">
+									<option value="0" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_NONE"></option>
+									<option value="1" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_SSL"></option>
+									<option value="2" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_STARTTLS"></option>
+								</select>
+							</div>
+							<div class="span2">
 								<span data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
 								<br />
 								<input type="number" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 									style="width:6em" data-bind="textInput: sievePort" />
 							</div>
 						</div>
-						<span data-i18n="POPUPS_DOMAIN/LABEL_SECURE"></span>
-						<br />
-						<select data-bind="value: sieveSecure">
-							<option value="0" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_NONE"></option>
-							<option value="1" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_SSL"></option>
-							<option value="2" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_STARTTLS"></option>
-						</select>
 					</div>
 				</div>
 
