@@ -10,7 +10,6 @@
 // Grays
 // -------------------------
 @black:                 #000;
-@grayDarker:            #222;
 @grayDark:              #333;
 @gray:                  #555;
 @grayLight:             #999;
@@ -18,21 +17,8 @@
 @white:                 #fff;
 
 
-// Accent colors
-// -------------------------
-@blue:                  #049cdb;
-@blueDark:              #0064cd;
-@green:                 #46a546;
-@red:                   #9d261d;
-@yellow:                #ffc40d;
-@orange:                #f89406;
-@pink:                  #c3325f;
-@purple:                #7a43b6;
-
-
 // Scaffolding
 // -------------------------
-@bodyBackground:        @white;
 @textColor:             @grayDark;
 
 
@@ -70,14 +56,11 @@
 @btnSuccessBackground:              #84AB04;
 @btnSuccessBackgroundHighlight:     #51a351;
 
-@btnWarningBackground:              lighten(@orange, 15%);
-@btnWarningBackgroundHighlight:     @orange;
+@btnWarningBackground:              lighten(#f89406, 15%);
+@btnWarningBackgroundHighlight:     #f89406;
 
 @btnDangerBackground:               #ee5f5b;
 @btnDangerBackgroundHighlight:      #bd362f;
-
-@btnInverseBackground:              #444;
-@btnInverseBackgroundHighlight:     @grayDarker;
 
 
 // Forms
@@ -119,11 +102,6 @@
 @zindexModal:             1101;
 
 
-// Input placeholder text color
-// -------------------------
-@placeholderText:         @grayLight;
-
-
 // Hr border color
 // -------------------------
 @hrBorder:                @grayLighter;
@@ -132,13 +110,6 @@
 // Wells
 // -------------------------
 @wellBackground:                  #f5f5f5;
-
-
-// Pagination
-// -------------------------
-@paginationBackground:                #fff;
-@paginationBorder:                    #ddd;
-@paginationActiveBackground:          #f5f5f5;
 
 
 // Form states and alerts
@@ -170,27 +141,3 @@
 @gridColumnWidth:         60px;
 @gridGutterWidth:         20px;
 @gridRowWidth:            (@gridColumns * @gridColumnWidth) + (@gridGutterWidth * (@gridColumns - 1));
-
-// 1200px min
-@gridColumnWidth1200:     70px;
-@gridGutterWidth1200:     30px;
-@gridRowWidth1200:        (@gridColumns * @gridColumnWidth1200) + (@gridGutterWidth1200 * (@gridColumns - 1));
-
-// 768px-979px
-@gridColumnWidth768:      42px;
-@gridGutterWidth768:      20px;
-@gridRowWidth768:         (@gridColumns * @gridColumnWidth768) + (@gridGutterWidth768 * (@gridColumns - 1));
-
-
-// Fluid grid
-// -------------------------
-@fluidGridColumnWidth:    percentage(@gridColumnWidth/@gridRowWidth);
-@fluidGridGutterWidth:    percentage(@gridGutterWidth/@gridRowWidth);
-
-// 1200px min
-@fluidGridColumnWidth1200:     percentage(@gridColumnWidth1200/@gridRowWidth1200);
-@fluidGridGutterWidth1200:     percentage(@gridGutterWidth1200/@gridRowWidth1200);
-
-// 768px-979px
-@fluidGridColumnWidth768:      percentage(@gridColumnWidth768/@gridRowWidth768);
-@fluidGridGutterWidth768:      percentage(@gridGutterWidth768/@gridRowWidth768);

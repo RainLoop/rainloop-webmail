@@ -13,10 +13,8 @@
 		<div class="control-group" data-bind="visible: allowLanguagesOnSettings">
 			<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_LANGUAGE"></label>
 			<div class="controls">
-				<div class="flag-selector">
-					<span class="flag-name" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, onSpace: selectLanguage, onEnter: selectLanguage"></span>
-					<span data-bind="saveTrigger: languageTrigger"></span>
-				</div>
+				<span class="select" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, onSpace: selectLanguage, onEnter: selectLanguage"></span>
+				<span data-bind="saveTrigger: languageTrigger"></span>
 			</div>
 		</div>
 		<div class="control-group">

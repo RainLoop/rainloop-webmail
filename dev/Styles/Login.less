@@ -82,7 +82,6 @@
 		.input-block-level {
 			font-size: 18px;
 			height: 40px;
-			line-height: 20px;
 			padding-left: 12px;
 		}
 		.inputIcon {
@@ -90,20 +89,15 @@
 		}
 
 		input, .btn {
-			border: 1px solid none;
 			background: none !important;
-			text-shadow: none;
-			box-shadow: none;
-
+			border: 1px solid @glass-m-color;
 			color: @glass-color;
-			border-color: @glass-m-color;
 		}
 
 		input {
 
 			&:placeholder {
 				color: @glass-color;
-				text-shadow: none;
 			}
 
 			&:focus, &:hover {
@@ -156,10 +150,6 @@
 	}
 	.alert[hidden] {
 		opacity: 0;
-	}
-
-	.flag-selector {
-		margin-bottom: 0;
 	}
 
 	.language-buttons {

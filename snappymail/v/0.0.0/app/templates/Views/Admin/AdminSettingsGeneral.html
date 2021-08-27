@@ -21,22 +21,15 @@
 		<div class="control-group" style="margin-bottom: 10px;">
 			<label class="control-label" data-i18n="TAB_GENERAL/LABEL_LANGUAGE"></label>
 			<div class="controls">
-				<div class="flag-selector">
-					<span class="flag-name" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, onSpace: selectLanguage, onEnter: selectLanguage"></span>
-					<span data-bind="saveTrigger: languageTrigger"></span>
-				</div>
+				<span class="select" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, onSpace: selectLanguage, onEnter: selectLanguage"></span>
+				<span data-bind="saveTrigger: languageTrigger"></span>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label" data-i18n="TAB_GENERAL/LABEL_LANGUAGE_ADMIN"></label>
 			<div class="controls">
-				<div class="flag-selector">
-					<span class="flag-wrapper">
-						<span data-bind="css: 'flag flag-' + languageAdmin().toLowerCase()"></span>
-					</span>
-					<span class="flag-name" tabindex="0" data-bind="text: languageAdminFullName, click: selectLanguageAdmin, onSpace: selectLanguageAdmin, onEnter: selectLanguageAdmin"></span>
-					<span data-bind="saveTrigger: languageAdminTrigger"></span>
-				</div>
+				<span class="select" tabindex="0" data-bind="text: languageAdminFullName, click: selectLanguageAdmin, onSpace: selectLanguageAdmin, onEnter: selectLanguageAdmin"></span>
+				<span data-bind="saveTrigger: languageAdminTrigger"></span>
 			</div>
 		</div>
 		<div class="control-group">
@@ -109,7 +102,7 @@
 				<span data-bind="saveTrigger: attachmentLimitTrigger"></span>
 				<br />
 				<br />
-				<span class="well well-small" data-bind="visible: '' !== uploadDataDesc">
+				<span class="well" data-bind="visible: '' !== uploadDataDesc">
 					<b>PHP:</b>
 					&nbsp;
 					<span data-bind="text: uploadDataDesc"></span>
