@@ -1,4 +1,3 @@
-<div class="b-admin-plugin-property">
 	<label class="control-label" data-bind="text: Label, visible: 5 !== Type"></label>
 	<div class="controls">
 		<!-- ko if: 0 === Type -->
@@ -32,7 +31,7 @@
 			<input type="url"
 				data-bind="value: value, attr: {placeholder: placeholder}" />
 		<!-- /ko -->
-		<span class="help-block" data-bind="text: Desc, visible: '' !== Desc"></span>
+		<span tabindex="0" class="help-block" data-bind="visible: '' !== Desc">
+			<span data-bind="text: Desc"></span>
+		</span>
 	</div>
-	<br />
-</div>
