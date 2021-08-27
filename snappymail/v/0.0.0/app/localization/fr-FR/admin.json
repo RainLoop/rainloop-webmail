@@ -15,8 +15,7 @@
 		"LABEL_CONTACTS_NAME": "Contacts",
 		"LABEL_DOMAINS_NAME": "Domaines",
 		"LABEL_SECURITY_NAME": "Sécurité",
-		"LABEL_PLUGINS_NAME": "Plugins",
-		"LABEL_PACKAGES_NAME": "Paquets",
+		"LABEL_PACKAGES_NAME": "Extensions",
 		"LABEL_ABOUT_NAME": "A propos"
 	},
 	"TAB_GENERAL": {
@@ -92,7 +91,7 @@
 		"LABEL_ENABLE_PLUGINS": "Activer les plugins",
 		"LEGEND_AVAILABLE_FOR_UPDATE": "Disponible pour la mise à jour",
 		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Disponible pour l'installation",
-		"LEGEND_INSTALLED_PACKAGES": "Paquets installés",
+		"LEGEND_INSTALLED_PACKAGES": "Extensions installées",
 		"ALERT_CANNOT_ACCESS_REPOSITORY": "Impossible d'accéder au dépôt pour l'instant."
 	},
 	"TAB_ABOUT": {
@@ -140,7 +139,7 @@
 		"WHITE_LIST_ALERT": "Liste des utilisateurs du domaine auxquels le webmail est autorisé à accéder.\nUtilisez un espace comme séparateur.\n"
 	},
 	"POPUPS_PLUGIN": {
-		"TITLE_PLUGIN": "Plugin",
+		"TITLE_PLUGIN": "Extension",
 		"DESC_NOTHING_TO_CONFIGURE": "Rien à configurer",
 		"BUTTON_CLOSE": "Fermer",
 		"BUTTON_SAVE": "Enregistrer"
@@ -191,10 +190,10 @@
 		"CANT_SAVE_SETTINGS": "Vous ne pouvez pas enregistrer les paramètres",
 		"CANT_SAVE_PLUGIN_SETTINGS": "Vous ne pouvez pas enregistrer les paramètres",
 		"DOMAIN_ALREADY_EXISTS": "Le domaine existe déjà",
-		"CANT_INSTALL_PACKAGE": "Impossible d'installer le paquet",
-		"CANT_DELETE_PACKAGE": "Impossible de supprimer le paquet",
-		"INVALID_PLUGIN_PACKAGE": "Ce plugin est invalide",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Ce plugin n'est pas supporté",
+		"CANT_INSTALL_PACKAGE": "Impossible d'installer le extension",
+		"CANT_DELETE_PACKAGE": "Impossible de supprimer le extension",
+		"INVALID_PLUGIN_PACKAGE": "Package d'extension non valide",
+		"UNSUPPORTED_PLUGIN_PACKAGE": "Package d'extension non pris en charge",
 		"DEMO_SEND_MESSAGE_ERROR": "Pour des raisons de sécurité, ce compte de démonstration n'est pas autorisé à envoyer des messages à des adresses e-mail externes !",
 		"DEMO_ACCOUNT_ERROR": "Pour des raisons de sécurité, ce compte n'est pas autorisé à faire cette action !",
 		"ACCOUNT_ALREADY_EXISTS": "Ce compte existe déjà",

@@ -15,8 +15,7 @@
 		"LABEL_CONTACTS_NAME": "Contactpersonen",
 		"LABEL_DOMAINS_NAME": "Domeinen",
 		"LABEL_SECURITY_NAME": "Beveiliging",
-		"LABEL_PLUGINS_NAME": "Invoegtoepassingen",
-		"LABEL_PACKAGES_NAME": "Pakketten",
+		"LABEL_PACKAGES_NAME": "Extensies",
 		"LABEL_ABOUT_NAME": "Over"
 	},
 	"TAB_GENERAL": {
@@ -89,10 +88,10 @@
 		"LABEL_ALLOW_SELF_SIGNED": "Sta zelf ondertekende certificaten toe"
 	},
 	"TAB_PACKAGES": {
-		"LABEL_ENABLE_PLUGINS": "Invoegtoepassingen inschakelen",
+		"LABEL_ENABLE_PLUGINS": "Extensies inschakelen",
 		"LEGEND_AVAILABLE_FOR_UPDATE": "Update beschikbaar",
 		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Gereed voor installatie",
-		"LEGEND_INSTALLED_PACKAGES": "Geïnstalleerde pakketten",
+		"LEGEND_INSTALLED_PACKAGES": "Geïnstalleerde extensies",
 		"ALERT_CANNOT_ACCESS_REPOSITORY": "De installatie bron is op het moment niet beschikbaar."
 	},
 	"TAB_ABOUT": {
@@ -140,7 +139,7 @@
 		"WHITE_LIST_ALERT": "Lijst van gebruikers die dit domein mogen gebruiken.\nGebruik een spatie als scheidingsteken.\n"
 	},
 	"POPUPS_PLUGIN": {
-		"TITLE_PLUGIN": "Invoegtoepassing",
+		"TITLE_PLUGIN": "Extensie",
 		"DESC_NOTHING_TO_CONFIGURE": "Niets om te configureren",
 		"BUTTON_CLOSE": "Annuleer",
 		"BUTTON_SAVE": "Opslaan"
@@ -191,10 +190,10 @@
 		"CANT_SAVE_SETTINGS": "Kan instellingen niet opslaan",
 		"CANT_SAVE_PLUGIN_SETTINGS": "Kan instellingen niet opslaan",
 		"DOMAIN_ALREADY_EXISTS": "Domein bestaat al",
-		"CANT_INSTALL_PACKAGE": "Kan pakket niet installeren",
-		"CANT_DELETE_PACKAGE": "Kan pakket niet de-installeren",
-		"INVALID_PLUGIN_PACKAGE": "Onjuist invoegtoepassing pakket",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "niet ondersteund invoegtoepassing pakket",
+		"CANT_INSTALL_PACKAGE": "Extensie installeren mislukt",
+		"CANT_DELETE_PACKAGE": "Extensie verwijderen mislukt",
+		"INVALID_PLUGIN_PACKAGE": "Onjuist extensie pakket",
+		"UNSUPPORTED_PLUGIN_PACKAGE": "Niet ondersteund extensie pakket",
 		"DEMO_SEND_MESSAGE_ERROR": "Vanwege beveiliging is het deze account niet toegestaan om e-mail naar externe adressen te versturen!",
 		"DEMO_ACCOUNT_ERROR": "Vanwege beveiliging is het deze account niet toegestaan om deze actie uit te voeren!",
 		"ACCOUNT_ALREADY_EXISTS": "Account bestaat al",

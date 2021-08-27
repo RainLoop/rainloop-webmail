@@ -15,8 +15,7 @@
 		"LABEL_CONTACTS_NAME": "Contactos",
 		"LABEL_DOMAINS_NAME": "Dominios",
 		"LABEL_SECURITY_NAME": "Seguridad",
-		"LABEL_PLUGINS_NAME": "Complementos",
-		"LABEL_PACKAGES_NAME": "Paquetes",
+		"LABEL_PACKAGES_NAME": "Extensiones",
 		"LABEL_ABOUT_NAME": "Acerca"
 	},
 	"TAB_GENERAL": {
@@ -89,10 +88,10 @@
 		"LABEL_ALLOW_SELF_SIGNED": "Permitir certificados auto-firmados"
 	},
 	"TAB_PACKAGES": {
-		"LABEL_ENABLE_PLUGINS": "Activar Plugins",
+		"LABEL_ENABLE_PLUGINS": "Habilitar extensiones",
 		"LEGEND_AVAILABLE_FOR_UPDATE": "Actualización disponible",
 		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Instalación disponible",
-		"LEGEND_INSTALLED_PACKAGES": "Paquetes instalados",
+		"LEGEND_INSTALLED_PACKAGES": "Extensiones instaladas",
 		"ALERT_CANNOT_ACCESS_REPOSITORY": "No se puede acceder al repositorio en estos momentos."
 	},
 	"TAB_ABOUT": {
@@ -140,7 +139,7 @@
 		"WHITE_LIST_ALERT": "Lista de dominios con que los usuarios pueden ingresar.\nUse un espacio como delimitador.\n"
 	},
 	"POPUPS_PLUGIN": {
-		"TITLE_PLUGIN": "Plugin",
+		"TITLE_PLUGIN": "Extensión",
 		"DESC_NOTHING_TO_CONFIGURE": "Nada para configurar",
 		"BUTTON_CLOSE": "Cerrar",
 		"BUTTON_SAVE": "Guardar"
@@ -191,10 +190,10 @@
 		"CANT_SAVE_SETTINGS": "No se pudieron guardar las configuraciones",
 		"CANT_SAVE_PLUGIN_SETTINGS": "No se pudieron guardar las configuraciones",
 		"DOMAIN_ALREADY_EXISTS": "El Dominio ya existe",
-		"CANT_INSTALL_PACKAGE": "No se ha podido instalar el paquete",
-		"CANT_DELETE_PACKAGE": "No se ha podido eliminar el paquete",
-		"INVALID_PLUGIN_PACKAGE": "El paquete del plugin es inválido",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "El paquete del plugin es incompatible",
+		"CANT_INSTALL_PACKAGE": "No se ha podido instalar el extensión",
+		"CANT_DELETE_PACKAGE": "No se ha podido eliminar el extensión",
+		"INVALID_PLUGIN_PACKAGE": "El paquete de extensión no válido",
+		"UNSUPPORTED_PLUGIN_PACKAGE": "El paquete del extensión es incompatible",
 		"DEMO_SEND_MESSAGE_ERROR": "Por razones de seguridad, esta cuenta no permite enviar mensajes a direcciones de correo electrónico externas",
 		"DEMO_ACCOUNT_ERROR": "Debido a razones de seguridad, esta cuenta no puede realizar esta acción",
 		"ACCOUNT_ALREADY_EXISTS": "La cuenta ya existe",

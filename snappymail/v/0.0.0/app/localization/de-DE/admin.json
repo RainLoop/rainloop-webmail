@@ -15,8 +15,7 @@
 		"LABEL_CONTACTS_NAME": "Kontakte",
 		"LABEL_DOMAINS_NAME": "Domains",
 		"LABEL_SECURITY_NAME": "Sicherheit",
-		"LABEL_PLUGINS_NAME": "Plugins",
-		"LABEL_PACKAGES_NAME": "Pakete",
+		"LABEL_PACKAGES_NAME": "Erweiterungen",
 		"LABEL_ABOUT_NAME": "Über"
 	},
 	"TAB_GENERAL": {
@@ -89,11 +88,11 @@
 		"LABEL_ALLOW_SELF_SIGNED": "Selbst-signierte Zertifikate erlauben"
 	},
 	"TAB_PACKAGES": {
-		"LABEL_ENABLE_PLUGINS": "Plugins aktivieren",
+		"LABEL_ENABLE_PLUGINS": "Erweiterungen aktivieren",
 		"LEGEND_AVAILABLE_FOR_UPDATE": "Zur Aktualisierung verfügbar",
 		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Zur Installation verfügbar",
-		"LEGEND_INSTALLED_PACKAGES": "Installierte Pakete",
-		"ALERT_CANNOT_ACCESS_REPOSITORY": "Auf das Plugin-Repository kann derzeit nicht zugegriffen werden."
+		"LEGEND_INSTALLED_PACKAGES": "Installierte Erweiterungen",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Kann momentan nicht auf das Repository zugreifen."
 	},
 	"TAB_ABOUT": {
 		"LEGEND_ABOUT": "Über",
@@ -140,7 +139,7 @@
 		"WHITE_LIST_ALERT": "Liste der User, die Webmail abrufen darf.\nVerwenden Sie Leerzeichen als Trenner.\n"
 	},
 	"POPUPS_PLUGIN": {
-		"TITLE_PLUGIN": "Plugin",
+		"TITLE_PLUGIN": "Erweiterung",
 		"DESC_NOTHING_TO_CONFIGURE": "Nichts zu konfigurieren",
 		"BUTTON_CLOSE": "Schließen",
 		"BUTTON_SAVE": "Speichern"
@@ -191,10 +190,10 @@
 		"CANT_SAVE_SETTINGS": "Einstellungen können nicht gespeichert werden",
 		"CANT_SAVE_PLUGIN_SETTINGS": "Einstellungen können nicht gespeichert werden",
 		"DOMAIN_ALREADY_EXISTS": "Diese Domain existiert bereits",
-		"CANT_INSTALL_PACKAGE": "Paket konnte nicht installiert werden",
-		"CANT_DELETE_PACKAGE": "Paket konnte nicht entfernt werden",
-		"INVALID_PLUGIN_PACKAGE": "Plugin-Paket ist ungültig",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Plugin-Paket wird nicht unterstützt",
+		"CANT_INSTALL_PACKAGE": "Fehler beim Installieren der Erweiterung",
+		"CANT_DELETE_PACKAGE": "Fehler beim entfernen der Erweiterung",
+		"INVALID_PLUGIN_PACKAGE": "Erweiterungspaket ist ungültig",
+		"UNSUPPORTED_PLUGIN_PACKAGE": "Erweiterungspaket wird nicht unterstützt",
 		"DEMO_SEND_MESSAGE_ERROR": "Dieses Demokonto darf aus Sicherheitsgründen keine Nachrichten an externe E-Mail-Adressen versenden!",
 		"DEMO_ACCOUNT_ERROR": "Aus Sicherheitsgründen ist dieses Konto nicht zu dieser Aktion berechtigt!",
 		"ACCOUNT_ALREADY_EXISTS": "Dieses Konto existiert bereits",

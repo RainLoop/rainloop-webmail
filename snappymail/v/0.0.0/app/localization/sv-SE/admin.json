@@ -15,8 +15,7 @@
 		"LABEL_CONTACTS_NAME": "Kontakter",
 		"LABEL_DOMAINS_NAME": "Domäner",
 		"LABEL_SECURITY_NAME": "Säkerhet",
-		"LABEL_PLUGINS_NAME": "Plugins",
-		"LABEL_PACKAGES_NAME": "Paket",
+		"LABEL_PACKAGES_NAME": "Tillägg",
 		"LABEL_ABOUT_NAME": "Om"
 	},
 	"TAB_GENERAL": {
@@ -89,7 +88,7 @@
 		"LABEL_ALLOW_SELF_SIGNED": "Låt självsignerade certifikat"
 	},
 	"TAB_PACKAGES": {
-		"LABEL_ENABLE_PLUGINS": "Aktivera Plugin",
+		"LABEL_ENABLE_PLUGINS": "Aktivera Tillägg",
 		"LEGEND_AVAILABLE_FOR_UPDATE": "Tillåt uppdateringar",
 		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Tillåt installation",
 		"LEGEND_INSTALLED_PACKAGES": "installerade paket",
@@ -140,7 +139,7 @@
 		"WHITE_LIST_ALERT": "Lista över domänanvändare som tillåts.\nAnvända ett utrymme som avgränsare.\n"
 	},
 	"POPUPS_PLUGIN": {
-		"TITLE_PLUGIN": "Plugin",
+		"TITLE_PLUGIN": "Tillägget",
 		"DESC_NOTHING_TO_CONFIGURE": "Inget att konfigurera",
 		"BUTTON_CLOSE": "Stäng",
 		"BUTTON_SAVE": "Spara"
@@ -191,10 +190,10 @@
 		"CANT_SAVE_SETTINGS": "Kan inte spara inställningarna",
 		"CANT_SAVE_PLUGIN_SETTINGS": "Kan inte spara inställningarna",
 		"DOMAIN_ALREADY_EXISTS": "Domänen finns redan",
-		"CANT_INSTALL_PACKAGE": "Det gick inte att installera paketet",
-		"CANT_DELETE_PACKAGE": "Det gick inte att ta bort paket",
-		"INVALID_PLUGIN_PACKAGE": "Ogiltig plugin",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Pluginet stöds inte",
+		"CANT_INSTALL_PACKAGE": "Det gick inte att installera tillägget",
+		"CANT_DELETE_PACKAGE": "Det gick inte att ta bort tillägget",
+		"INVALID_PLUGIN_PACKAGE": "Ogiltigt tilläggspaket",
+		"UNSUPPORTED_PLUGIN_PACKAGE": "Tillägg som inte stöds",
 		"DEMO_SEND_MESSAGE_ERROR": "Av säkerhetsskäl är det här kontot inte tillåtet att skicka meddelanden till externa e-postadresser!",
 		"DEMO_ACCOUNT_ERROR": "Av säkerhetsskäl är det här kontot inte tillåtet för denna åtgärd!",
 		"ACCOUNT_ALREADY_EXISTS": "Kontot finns redan",

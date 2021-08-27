@@ -15,8 +15,7 @@
 		"LABEL_CONTACTS_NAME": "Névjegyek",
 		"LABEL_DOMAINS_NAME": "Domainek",
 		"LABEL_SECURITY_NAME": "Biztonság",
-		"LABEL_PLUGINS_NAME": "Beépülők",
-		"LABEL_PACKAGES_NAME": "Csomagok",
+		"LABEL_PACKAGES_NAME": "Bővítmények",
 		"LABEL_ABOUT_NAME": "Névjegy"
 	},
 	"TAB_GENERAL": {
@@ -89,7 +88,7 @@
 		"LABEL_ALLOW_SELF_SIGNED": "Saját aláírt tanúsítványok engedélyezése"
 	},
 	"TAB_PACKAGES": {
-		"LABEL_ENABLE_PLUGINS": "Beépülők engedélyezése",
+		"LABEL_ENABLE_PLUGINS": "Bővítmények engedélyezése",
 		"LEGEND_AVAILABLE_FOR_UPDATE": "Frissíthető",
 		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Telepíthető",
 		"LEGEND_INSTALLED_PACKAGES": "Telepített csomagok",
@@ -140,7 +139,7 @@
 		"WHITE_LIST_ALERT": "Hozzáféréshez engedélyezett domainek listája.\nElválasztáshoz használd a szóközt.\n"
 	},
 	"POPUPS_PLUGIN": {
-		"TITLE_PLUGIN": "Beépülő",
+		"TITLE_PLUGIN": "Bővítményt",
 		"DESC_NOTHING_TO_CONFIGURE": "Nincs mit beállítani",
 		"BUTTON_CLOSE": "Bezár",
 		"BUTTON_SAVE": "Mentés"
@@ -191,10 +190,10 @@
 		"CANT_SAVE_SETTINGS": "Nem lehet menteni a beállításokat",
 		"CANT_SAVE_PLUGIN_SETTINGS": "Nem lehet menteni a beállításokat",
 		"DOMAIN_ALREADY_EXISTS": "A domain már létezik",
-		"CANT_INSTALL_PACKAGE": "Nem sikerült telepíteni a csomagot",
-		"CANT_DELETE_PACKAGE": "Nem sikerült eltávolítani a csomagot",
-		"INVALID_PLUGIN_PACKAGE": "Érvénytelen beépülő csomag",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Nem támogatott beépülő csomag",
+		"CANT_INSTALL_PACKAGE": "Nem sikerült telepíteni a bővítményt",
+		"CANT_DELETE_PACKAGE": "Nem sikerült eltávolítani a bővítményt",
+		"INVALID_PLUGIN_PACKAGE": "Érvénytelen kiterjesztési csomag",
+		"UNSUPPORTED_PLUGIN_PACKAGE": "Nem támogatott bővítménycsomag",
 		"DEMO_SEND_MESSAGE_ERROR": "Biztonsági okokból, ebből a demó fiókból nem lehet külső email címekre üzenetet küldeni.",
 		"DEMO_ACCOUNT_ERROR": "Biztonsági okokból, ebből a fiókból nem lehet elvégezni ezt a műveletet!",
 		"ACCOUNT_ALREADY_EXISTS": "A fiók már létezik",
