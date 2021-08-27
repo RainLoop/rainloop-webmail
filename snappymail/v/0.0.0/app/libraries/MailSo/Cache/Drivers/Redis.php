@@ -70,7 +70,14 @@ class Redis implements \MailSo\Cache\DriverInterface
 
 	public function Set(string $sKey, string $sValue) : bool
 	{
-		return $this->oRedis ? $this->oRedis->setex($this->generateCachedKey($sKey), $this->iExpire, $sValue) : false;
+		if (!$this->oRedis)
+		{
+			return false;
+		}
+
+		$sValue = $this->oRedis->setex($this->generateCachedKey($sKey), $this->iExpire, $sValue);
+
+		return $sValue === true || $sValue == 'OK';
 	}
 
 	public function Get(string $sKey) : string
