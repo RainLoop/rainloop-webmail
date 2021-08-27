@@ -91,21 +91,24 @@ textarea + .settings-save-trigger {
 
 // Actual tabs
 .tabs label {
-	grid-row-start: 1;
-	color: #555;
-	margin: 0 2px -1px 0;
-	line-height: @baseLineHeight;
 	border: 1px solid transparent;
 	border-radius: 4px 4px 0 0;
+	cursor: pointer;
+	grid-row-start: 1;
+	line-height: @baseLineHeight;
+	opacity: 0.6;
+	margin: 0 2px -1px 0;
 	padding: 5px;
+	text-align: center;
 	&:hover {
-		border-color: @grayLighter @grayLighter #ddd;
+		border-color: @grayLighter;
+		opacity: 0.8;
 	}
 }
 .tabs [id^="tab"]:checked + label {
-	color: @gray;
 	background-color: @white;
 	border-color: #ddd #ddd transparent #ddd;
+	opacity: 1;
 	z-index: 1;
 }
 
