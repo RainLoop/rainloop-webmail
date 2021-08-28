@@ -3,9 +3,9 @@
 class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
-		NAME     = '',
+		NAME     = 'Demo Account Extension',
 		CATEGORY = 'Login',
-		DESCRIPTION = '';
+		DESCRIPTION = 'Extension to enable a demo account';
 
 	/**
 	 * @return void

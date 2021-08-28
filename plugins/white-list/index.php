@@ -3,12 +3,12 @@
 class WhiteListPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
-		NAME = 'White list',
+		NAME = 'Whitelist',
 		VERSION = '2.1',
 		RELEASE = '2021-04-21',
 		REQUIRED = '2.5.0',
 		CATEGORY = 'Login',
-		DESCRIPTION = 'Simple white list plugin (with wildcard and exceptions functionality).';
+		DESCRIPTION = 'Simple login whitelist (with wildcard and exceptions functionality).';
 
 	public function Init() : void
 	{

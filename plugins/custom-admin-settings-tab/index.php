@@ -3,9 +3,9 @@
 class CustomAdminSettingsTabPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
-		NAME     = '',
+		NAME     = 'Custom Admin Settings',
 		CATEGORY = 'General',
-		DESCRIPTION = '';
+		DESCRIPTION = 'Custom admin settings example';
 
 	/**
 	 * @return void

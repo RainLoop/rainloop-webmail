@@ -3,9 +3,9 @@
 class ContactsSuggestionsExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
-		NAME     = '',
+		NAME     = 'Custom Contacts Suggestions Example',
 		CATEGORY = 'General',
-		DESCRIPTION = '';
+		DESCRIPTION = 'Custom contacts suggestions example';
 
 	public function Init() : void
 	{

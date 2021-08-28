@@ -8,7 +8,7 @@ class LoginRegisterPlugin extends \RainLoop\Plugins\AbstractPlugin
 		RELEASE  = '2021-06-01',
 		REQUIRED = '2.5.2',
 		CATEGORY = 'Login',
-		DESCRIPTION = 'Links on login screen for registration and forgot password';
+		DESCRIPTION = 'Links on login screen for registration and forgotten password';
 
 	public function Init() : void
 	{

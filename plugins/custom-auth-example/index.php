@@ -3,11 +3,11 @@
 class CustomAuthExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
-		NAME     = '',
+		NAME     = 'Custom Auth Example Extension',
 		VERSION = '2.1',
 		REQUIRED = '2.5.0',
 		CATEGORY = 'Login',
-		DESCRIPTION = '';
+		DESCRIPTION = 'Custom auth mechanism example';
 
 	public function Init() : void
 	{

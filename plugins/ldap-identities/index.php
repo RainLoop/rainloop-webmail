@@ -14,7 +14,7 @@ class LdapIdentitiesPlugin extends AbstractPlugin
 		RELEASE  = '2020-11-11',
 		REQUIRED = '2.1.0',
 		CATEGORY = 'Accounts',
-		DESCRIPTION = 'Plugin that adds functionality to import account identities from LDAP.';
+		DESCRIPTION = 'Adds functionality to import account identities from LDAP.';
 
 	public function __construct()
 	{

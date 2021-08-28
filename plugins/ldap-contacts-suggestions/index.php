@@ -6,7 +6,7 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME = 'Contacts suggestions (LDAP)',
 		VERSION = '2.1',
 		CATEGORY = 'Security',
-		DESCRIPTION = 'Plugin to get contacts suggestions from LDAP.';
+		DESCRIPTION = 'Get contacts suggestions from LDAP.';
 
 	public function Init() : void
 	{
@@ -20,7 +20,7 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		if (!\function_exists('ldap_connect'))
 		{
-			return 'The LDAP PHP extension must be installed to use this plugin';
+			return 'The LDAP PHP extension must be installed to use this extension';
 		}
 
 		return '';
