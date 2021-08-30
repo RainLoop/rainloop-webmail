@@ -1792,14 +1792,12 @@ END;
 
 	public static function Md5Rand(string $sAdditionalSalt = '') : string
 	{
-		return \md5(\microtime(true).\rand(10000, 99999).
-			\md5($sAdditionalSalt).\rand(10000, 99999).\microtime(true));
+		return \md5($sAdditionalSalt . \random_bytes(16));
 	}
 
 	public static function Sha1Rand(string $sAdditionalSalt = '') : string
 	{
-		return \sha1(\microtime(true).\rand(10000, 99999).
-			\sha1($sAdditionalSalt).\rand(10000, 99999).\microtime(true));
+		return \sha1($sAdditionalSalt . \random_bytes(16));
 	}
 
 	public static function ValidateDomain(string $sDomain, bool $bSimple = false) : bool
