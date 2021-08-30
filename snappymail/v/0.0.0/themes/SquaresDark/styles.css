@@ -3,7 +3,7 @@
 	// MAIN
 	--main-color: #fff;
 	--main-bg-color: #48525C;
-	--main-bg-image: url("@{base}images/background.jpg");
+	--main-bg-image: url("images/background.jpg");
 
 	// LOADING
 	--loading-color: #ddd;

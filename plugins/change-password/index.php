@@ -23,7 +23,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		$this->UseLangs(true); // start use langs folder
 
-		$this->addCss('style.less');
+//		$this->addCss('style.css');
 		$this->addJs('js/ChangePasswordUserSettings.js'); // add js file
 		$this->addJsonHook('ChangePassword', 'ChangePassword');
 		$this->addTemplate('templates/SettingsChangePassword.html');

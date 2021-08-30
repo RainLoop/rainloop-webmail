@@ -40,7 +40,8 @@ trait Themes
 			$rDirH = \opendir($sDir);
 			if ($rDirH) {
 				while (($sFile = \readdir($rDirH)) !== false) {
-					if ('.' !== $sFile[0] && \is_dir($sDir . '/' . $sFile) && \file_exists($sDir . '/' . $sFile . '/styles.less')) {
+					if ('.' !== $sFile[0] && \is_dir($sDir . '/' . $sFile)
+					 && (\file_exists("{$sDir}/{$sFile}/styles.css") || \file_exists("{$sDir}/{$sFile}/styles.less"))) {
 						if ('Default' === $sFile) {
 							$bDefault = true;
 						} else if ('Clear' === $sFile) {
@@ -59,7 +60,8 @@ trait Themes
 			$rDirH = \opendir($sDir);
 			if ($rDirH) {
 				while (($sFile = \readdir($rDirH)) !== false) {
-					if ('.' !== $sFile[0] && \is_dir($sDir . '/' . $sFile) && \file_exists($sDir . '/' . $sFile . '/styles.less')) {
+					if ('.' !== $sFile[0] && \is_dir($sDir . '/' . $sFile)
+					 && (\file_exists("{$sDir}/{$sFile}/styles.css") || \file_exists("{$sDir}/{$sFile}/styles.less"))) {
 						$aCache[] = $sFile . '@custom';
 					}
 				}
@@ -104,14 +106,17 @@ trait Themes
 
 		$aResult = array();
 
-		$sThemeFile = ($bCustomTheme ? APP_INDEX_ROOT_PATH : APP_VERSION_ROOT_PATH).'themes/'.$sTheme.'/styles.less';
+		$sThemeCSSFile = ($bCustomTheme ? APP_INDEX_ROOT_PATH : APP_VERSION_ROOT_PATH).'themes/'.$sTheme.'/styles.css';
+		$sThemeLessFile = ($bCustomTheme ? APP_INDEX_ROOT_PATH : APP_VERSION_ROOT_PATH).'themes/'.$sTheme.'/styles.less';
 
-		if (\is_file($sThemeFile)) {
-			$aResult[] = '@base: "'
-				. ($bCustomTheme ? \RainLoop\Utils::WebPath() : \RainLoop\Utils::WebVersionPath())
-				. 'themes/'.$sTheme.'/";';
+		$sBase = ($bCustomTheme ? \RainLoop\Utils::WebPath() : \RainLoop\Utils::WebVersionPath())
+				. "themes/{$sTheme}/";
 
-			$aResult[] = \file_get_contents($sThemeFile);
+		if (\is_file($sThemeCSSFile)) {
+			$aResult[] = \preg_replace('/(url\(["\']?)(\\.)?([a-z])/', "\$1{$sBase}\$3", \str_replace('@{base}', $sBase, \file_get_contents($sThemeCSSFile)));
+		} else if (\is_file($sThemeLessFile)) {
+			$aResult[] = "@base: \"{$sBase}\";";
+			$aResult[] = \file_get_contents($sThemeLessFile);
 		}
 
 		$aResult[] = $this->Plugins()->CompileCss($bAdmin);

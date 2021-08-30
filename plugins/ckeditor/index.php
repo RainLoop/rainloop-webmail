@@ -32,7 +32,7 @@ class CKEditorPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 
 		if (\is_file("{$path}/ckeditor.js")) {
-			$this->addCss('ckeditor.less');
+			$this->addCss('style.css');
 			$this->addJs('ckeditor.js');
 		}
 	}

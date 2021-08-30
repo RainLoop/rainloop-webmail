@@ -2,9 +2,8 @@
 :root {
 	// MAIN
 	--main-color: #333;
-	--main-bg-color: #AD455C;
-	--main-bg-image: url("@{base}images/background.jpg");
-	--main-bg-size: cover;
+	--main-bg-color: #48525C;
+	--main-bg-image: url("images/background.jpg");
 
 	// LOADING
 	--loading-color: #ddd;
@@ -28,20 +27,20 @@
 	--folders-color: #fff;
 	--folders-disabled-color: #aaa;
 	--folders-selected-color: #fff;
-	--folders-selected-bg-color: rgba(255,255,255,0.3);
+	--folders-selected-bg-color: rgba(0,0,0,0.5);
 	--folders-focused-color: #fff;
-	--folders-focused-bg-color: rgba(255,255,255,0.3);
+	--folders-focused-bg-color: rgba(0,0,0,0.7);
 	--folders-hover-color: #fff;
-	--folders-hover-bg-color: rgba(255,255,255,0.3);
+	--folders-hover-bg-color: rgba(0,0,0,0.5);
 	--folders-drop-color: #fff;
-	--folders-drop-bg-color: rgba(255,255,255,0.3);
+	--folders-drop-bg-color: rgba(0,0,0,0.5);
 
 	// SETTINGS
 	--settings-menu-color: #fff;
 	--settings-menu-selected-color: #fff;
-	--settings-menu-selected-bg-color: rgba(255,255,255,0.3);
+	--settings-menu-selected-bg-color: rgba(0,0,0,0.5);
 	--settings-menu-hover-color: #fff;
-	--settings-menu-hover-bg-color: rgba(255,255,255,0.3);
+	--settings-menu-hover-bg-color: rgba(0,0,0,0.5);
 
 	// MESSAGE LIST
 	--message-list-toolbar-bg-color: #eee;

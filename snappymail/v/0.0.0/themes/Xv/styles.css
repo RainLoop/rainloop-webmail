@@ -2,16 +2,15 @@
 :root {
 	// MAIN
 	--main-color: #333;
-	--main-bg-color: #48525C;
-	--main-bg-image: url("@{base}images/background.jpg");
+	--main-bg-color: #eee;
+	--main-bg-image: url("images/background.jpg");
 
 	// LOADING
-	--loading-color: #fff;
-	--loading-text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
+	--loading-color: #000;
 
 	// LOGIN
 	--login-color: #eee;
-	--login-bg-color: rgba(0,0,0,0.8);
+	--login-bg-color: rgba(0,0,0,0.5);
 	--login-box-shadow: none;
 	--login-border: none;
 	--login-border-radius: 7px;
@@ -19,27 +18,27 @@
 	// MENU
 	--dropdown-menu-color: #333;
 	--dropdown-menu-bg-color: #fff;
-	--dropdown-menu-hover-bg-color: #48525C;
+	--dropdown-menu-hover-bg-color: #757575;
 	--dropdown-menu-hover-color: #eee;
 	--dropdown-menu-disable-color: #999;
 
 	// FOLDERS
-	--folders-color: #fff;
-	--folders-disabled-color: #aaa;
-	--folders-selected-color: #fff;
+	--folders-color: #333;
+	--folders-disabled-color: #999;
+	--folders-selected-color: #eee;
 	--folders-selected-bg-color: rgba(0,0,0,0.5);
-	--folders-focused-color: #fff;
+	--folders-focused-color: #eee;
 	--folders-focused-bg-color: rgba(0,0,0,0.7);
-	--folders-hover-color: #fff;
+	--folders-hover-color: #eee;
 	--folders-hover-bg-color: rgba(0,0,0,0.5);
-	--folders-drop-color: #fff;
+	--folders-drop-color: #eee;
 	--folders-drop-bg-color: rgba(0,0,0,0.5);
 
 	// SETTINGS
-	--settings-menu-color: #fff;
-	--settings-menu-selected-color: #fff;
+	--settings-menu-color: #333;
+	--settings-menu-selected-color: #eee;
 	--settings-menu-selected-bg-color: rgba(0,0,0,0.5);
-	--settings-menu-hover-color: #fff;
+	--settings-menu-hover-color: #eee;
 	--settings-menu-hover-bg-color: rgba(0,0,0,0.5);
 
 	// MESSAGE LIST
