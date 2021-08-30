@@ -8,7 +8,7 @@ PackageAdminStore.real = ko.observable(true);
 
 PackageAdminStore.loading = ko.observable(false);
 
-//PackageAdminStore.error = ko.observable('');
+PackageAdminStore.error = ko.observable('');
 
 PackageAdminStore.fetch = () => {
 	PackageAdminStore.loading(true);
@@ -18,6 +18,7 @@ PackageAdminStore.fetch = () => {
 			PackageAdminStore.real(false);
 		} else {
 			PackageAdminStore.real(!!data.Result.Real);
+			PackageAdminStore.error(data.Result.Error);
 
 			const loading = {};
 			PackageAdminStore.forEach(item => {

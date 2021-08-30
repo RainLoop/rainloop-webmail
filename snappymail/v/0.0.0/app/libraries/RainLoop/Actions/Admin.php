@@ -181,7 +181,7 @@ trait Admin
 
 		$totp = $this->Config()->Get('security', 'admin_totp', '');
 
-		if (0 === strlen($sLogin) || 0 === strlen($sPassword) ||
+		if (!\strlen($sLogin) || !\strlen($sPassword) ||
 			!$this->Config()->Get('security', 'allow_admin_panel', true) ||
 			$sLogin !== $this->Config()->Get('security', 'admin_login', '') ||
 			!$this->Config()->ValidatePassword($sPassword)
@@ -245,7 +245,7 @@ trait Admin
 		$this->Logger()->AddSecret($sPassword);
 
 		$sNewPassword = $this->GetActionParam('NewPassword', '');
-		if (0 < \strlen(\trim($sNewPassword)))
+		if (\strlen(\trim($sNewPassword)))
 		{
 			$this->Logger()->AddSecret($sNewPassword);
 		}
@@ -254,12 +254,12 @@ trait Admin
 
 		if ($oConfig->ValidatePassword($sPassword))
 		{
-			if (0 < \strlen($sLogin))
+			if (\strlen($sLogin))
 			{
 				$oConfig->Set('security', 'admin_login', $sLogin);
 			}
 
-			if (0 < \strlen(\trim($sNewPassword)))
+			if (\strlen(\trim($sNewPassword)))
 			{
 				$oConfig->SetPassword($sNewPassword);
 				if (\is_file($passfile) && \trim(\file_get_contents($passfile)) !== $sNewPassword) {
@@ -485,16 +485,7 @@ trait Admin
 		return 'https://snappymail.eu/repository/v2/';
 	}
 
-	private function rainLoopUpdatable() : bool
-	{
-		return \file_exists(APP_INDEX_ROOT_PATH.'index.php') &&
-			\is_writable(APP_INDEX_ROOT_PATH.'index.php') &&
-			\is_writable(APP_INDEX_ROOT_PATH.'snappymail/') &&
-			APP_VERSION !== APP_DEV_VERSION
-		;
-	}
-
-	private function getRepositoryDataByUrl(string $sRepo, bool &$bReal = false) : array
+	private function getRepositoryDataByUrl(bool &$bReal = false) : array
 	{
 		$bReal = false;
 		$aRep = null;
@@ -503,9 +494,7 @@ trait Admin
 		$sRepoFile = 'packages.json';
 		$iRepTime = 0;
 
-		$oHttp = \MailSo\Base\Http::SingletonInstance();
-
-		$sCacheKey = KeyPathHelper::RepositoryCacheFile($sRepo, $sRepoFile);
+		$sCacheKey = KeyPathHelper::RepositoryCacheFile(\SnappyMail\Repository::BASE_URL, $sRepoFile);
 		$sRep = $this->Cacher()->Get($sCacheKey);
 		if ('' !== $sRep)
 		{
@@ -514,14 +503,11 @@ trait Admin
 
 		if ('' === $sRep || 0 === $iRepTime || \time() - 3600 > $iRepTime)
 		{
-			$iCode = 0;
-			$sContentType = '';
-
-			$sRepPath = $sRepo.$sRepoFile;
-			$sRep = '' !== $sRepo ? $oHttp->GetUrlAsString($sRepPath, 'SnappyMail', $sContentType, $iCode, $this->Logger(), 10,
-				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', '')) : false;
-
-			if (false !== $sRep)
+			$sRep = \SnappyMail\Repository::get($sRepoFile,
+				$this->Config()->Get('labs', 'curl_proxy', ''),
+				$this->Config()->Get('labs', 'curl_proxy_auth', '')
+			);
+			if ($sRep)
 			{
 				$aRep = \json_decode($sRep);
 				$bReal = \is_array($aRep) && 0 < \count($aRep);
@@ -534,7 +520,7 @@ trait Admin
 			}
 			else
 			{
-				$this->Logger()->Write('Cannot read remote repository file: '.$sRepPath, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
+				throw new \Exception('Cannot read remote repository file: '.$sRepoFile);
 			}
 		}
 		else if ('' !== $sRep)
@@ -546,39 +532,42 @@ trait Admin
 		return \is_array($aRep) ? $aRep : [];
 	}
 
-	private function getRepositoryData(bool &$bReal, bool &$bRainLoopUpdatable) : array
+	private function getRepositoryData(bool &$bReal, string &$sError) : array
 	{
-		$bRainLoopUpdatable = $this->rainLoopUpdatable();
-
 		$aResult = array();
-		foreach ($this->getRepositoryDataByUrl($this->snappyMailRepo(), $bReal) as $oItem) {
-			if ($oItem && isset($oItem->type, $oItem->id, $oItem->name,
-				$oItem->version, $oItem->release, $oItem->file, $oItem->description))
-			{
-				if (!empty($oItem->required) && APP_DEV_VERSION !== APP_VERSION && version_compare(APP_VERSION, $oItem->required, '<')) {
-					continue;
-				}
+		try {
+			foreach ($this->getRepositoryDataByUrl($bReal) as $oItem) {
+				if ($oItem && isset($oItem->type, $oItem->id, $oItem->name,
+					$oItem->version, $oItem->release, $oItem->file, $oItem->description))
+				{
+					if (!empty($oItem->required) && APP_DEV_VERSION !== APP_VERSION && version_compare(APP_VERSION, $oItem->required, '<')) {
+						continue;
+					}
 
-				if (!empty($oItem->depricated) && APP_DEV_VERSION !== APP_VERSION && version_compare(APP_VERSION, $oItem->depricated, '>=')) {
-					continue;
-				}
+					if (!empty($oItem->depricated) && APP_DEV_VERSION !== APP_VERSION && version_compare(APP_VERSION, $oItem->depricated, '>=')) {
+						continue;
+					}
 
-				if ('plugin' === $oItem->type) {
-					$aResult[$oItem->id] = array(
-						'type' => $oItem->type,
-						'id' => $oItem->id,
-						'name' => $oItem->name,
-						'installed' => '',
-						'enabled' => true,
-						'version' => $oItem->version,
-						'file' => $oItem->file,
-						'release' => $oItem->release,
-						'desc' => $oItem->description,
-						'canBeDeleted' => false,
-						'canBeUpdated' => true
-					);
+					if ('plugin' === $oItem->type) {
+						$aResult[$oItem->id] = array(
+							'type' => $oItem->type,
+							'id' => $oItem->id,
+							'name' => $oItem->name,
+							'installed' => '',
+							'enabled' => true,
+							'version' => $oItem->version,
+							'file' => $oItem->file,
+							'release' => $oItem->release,
+							'desc' => $oItem->description,
+							'canBeDeleted' => false,
+							'canBeUpdated' => true
+						);
+					}
 				}
 			}
+		} catch (\Throwable $e) {
+			$sError = "{$e->getCode()} {$e->getMessage()}";
+			$this->Logger()->Write($sError, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 		}
 
 		$aEnabledPlugins = \array_map('trim',
@@ -619,15 +608,21 @@ trait Admin
 		$this->IsAdminLoggined();
 
 		$bReal = false;
-		$bRainLoopUpdatable = false;
-		$aList = $this->getRepositoryData($bReal, $bRainLoopUpdatable);
+		$sError = '';
+		$aList = $this->getRepositoryData($bReal, $sError);
+
+		$bRainLoopUpdatable = \file_exists(APP_INDEX_ROOT_PATH.'index.php')
+		 && \is_writable(APP_INDEX_ROOT_PATH.'index.php')
+		 && \is_writable(APP_INDEX_ROOT_PATH.'snappymail/')
+		 && APP_VERSION !== APP_DEV_VERSION;
 
 //		\uksort($aList, function($a, $b){return \strcasecmp($a['name'], $b['name']);});
 
 		return $this->DefaultResponse(__FUNCTION__, array(
 			 'Real' => $bReal,
 			 'MainUpdatable' => $bRainLoopUpdatable,
-			 'List' => $aList
+			 'List' => $aList,
+			 'Error' => $sError
 		));
 	}
 
@@ -637,24 +632,8 @@ trait Admin
 
 		$sId = $this->GetActionParam('Id', '');
 
-		$bReal = false;
-		$bRainLoopUpdatable = false;
-		$aList = $this->getRepositoryData($bReal, $bRainLoopUpdatable);
-
-		$sResultId = '';
-		foreach ($aList as $oItem)
-		{
-			if ($oItem && 'plugin' === $oItem['type'] && $sId === $oItem['id'])
-			{
-				$sResultId = $sId;
-				break;
-			}
-		}
-
-		$bResult = '' !== $sResultId && static::deletePackageDir($sResultId);
-		if ($bResult) {
-			$this->pluginEnable($sResultId, false);
-		}
+		$bResult = static::deletePackageDir($sId);
+		$this->pluginEnable($sId, false);
 
 		return $this->DefaultResponse(__FUNCTION__, $bResult);
 	}
@@ -664,38 +643,6 @@ trait Admin
 		$sPath = APP_PLUGINS_PATH.$sId;
 		return (!\is_dir($sPath) || \MailSo\Base\Utils::RecRmDir($sPath))
 			&& (!\is_file("{$sPath}.phar") || \unlink("{$sPath}.phar"));
-	}
-
-	private function downloadRemotePackageByUrl(string $sUrl) : string
-	{
-		$bResult = false;
-		$sTmp = APP_PRIVATE_DATA.\md5(\microtime(true).$sUrl) . \substr($sUrl, -4);
-		$pDest = \fopen($sTmp, 'w+b');
-		if ($pDest)
-		{
-			$iCode = 0;
-			$sContentType = '';
-
-			\set_time_limit(120);
-
-			$oHttp = \MailSo\Base\Http::SingletonInstance();
-			$bResult = $oHttp->SaveUrlToFile($sUrl, $pDest, $sTmp, $sContentType, $iCode, $this->Logger(), 60,
-				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''));
-
-			if (!$bResult)
-			{
-				$this->Logger()->Write('Cannot save url to temp file: ', \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
-				$this->Logger()->Write($sUrl.' -> '.$sTmp, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
-			}
-
-			\fclose($pDest);
-		}
-		else
-		{
-			$this->Logger()->Write('Cannot create temp file: '.$sTmp, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
-		}
-
-		return $bResult ? $sTmp : '';
 	}
 
 	public function DoAdminPackageInstall() : array
@@ -710,40 +657,48 @@ trait Admin
 
 		$sRealFile = '';
 
-		$bReal = false;
-		$bRainLoopUpdatable = false;
-		$aList = $this->getRepositoryData($bReal, $bRainLoopUpdatable);
-
-		if ('plugin' === $sType)
-		{
-			foreach ($aList as $oItem)
-			{
-				if ($oItem && $sFile === $oItem['file'] && $sId === $oItem['id'])
-				{
-					$sRealFile = $sFile;
-					break;
-				}
-			}
-		}
-
 		$bResult = false;
-		$sTmp = $sRealFile ? $this->downloadRemotePackageByUrl($this->snappyMailRepo().$sRealFile) : null;
-		if ($sTmp)
-		{
-			$oArchive = new \PharData($sTmp, 0, $sRealFile);
-			if (static::deletePackageDir($sId)) {
-				if ('.phar' === \substr($sRealFile, -5)) {
-					$bResult = \copy($sTmp, APP_PLUGINS_PATH . \basename($sRealFile));
-				} else {
-					$bResult = $oArchive->extractTo(APP_PLUGINS_PATH);
+		$sTmp = null;
+		try {
+			if ('plugin' === $sType) {
+				$bReal = false;
+				$sError = '';
+				$aList = $this->getRepositoryData($bReal, $sError);
+				if ($sError) {
+					throw new \Exception($sError);
 				}
-				if (!$bResult) {
-					$this->Logger()->Write('Cannot extract package files: '.$oArchive->getStatusString(), \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
+				foreach ($aList as $oItem) {
+					if ($oItem && $sFile === $oItem['file'] && $sId === $oItem['id']) {
+						$sRealFile = $sFile;
+						$sTmp = \SnappyMail\Repository::download($sFile,
+							$this->Config()->Get('labs', 'curl_proxy', ''),
+							$this->Config()->Get('labs', 'curl_proxy_auth', '')
+						);
+						break;
+					}
 				}
-			} else {
-				$this->Logger()->Write('Cannot remove previous plugin folder: '.$sId, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 			}
-			\unlink($sTmp);
+
+			if ($sTmp) {
+				$oArchive = new \PharData($sTmp, 0, $sRealFile);
+				if (static::deletePackageDir($sId)) {
+					if ('.phar' === \substr($sRealFile, -5)) {
+						$bResult = \copy($sTmp, APP_PLUGINS_PATH . \basename($sRealFile));
+					} else {
+						$bResult = $oArchive->extractTo(\rtrim(APP_PLUGINS_PATH, '\\/'));
+					}
+					if (!$bResult) {
+						throw new \Exception('Cannot extract package files: '.$oArchive->getStatusString());
+					}
+				} else {
+					throw new \Exception('Cannot remove previous plugin folder: '.$sId);
+				}
+			}
+		} catch (\Throwable $e) {
+			$this->Logger()->Write("Install package {$sRealFile} failed: {$e->getMessage()}", \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
+			throw $e;
+		} finally {
+			$sTmp && \unlink($sTmp);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $bResult ?
@@ -752,7 +707,7 @@ trait Admin
 
 	private function pluginEnable(string $sName, bool $bEnable = true) : bool
 	{
-		if (0 === \strlen($sName))
+		if (!\strlen($sName))
 		{
 			return false;
 		}
@@ -773,7 +728,7 @@ trait Admin
 		{
 			foreach ($aEnabledPlugins as $sPlugin)
 			{
-				if ($sName !== $sPlugin && 0 < \strlen($sPlugin))
+				if ($sName !== $sPlugin && \strlen($sPlugin))
 				{
 					$aNewEnabledPlugins[] = $sPlugin;
 				}
@@ -798,7 +753,7 @@ trait Admin
 			if ($oPlugin)
 			{
 				$sValue = $oPlugin->Supported();
-				if (0 < \strlen($sValue))
+				if (\strlen($sValue))
 				{
 					return $this->FalseResponse(__FUNCTION__, Notifications::UnsupportedPluginPackage, $sValue);
 				}

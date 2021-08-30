@@ -63,6 +63,9 @@ class CURL extends \SnappyMail\HTTP\Request
 		}
 		if ($this->proxy) {
 			\curl_setopt($c, CURLOPT_PROXY, $this->proxy);
+			if ($this->proxy_auth) {
+				\curl_setopt($c, CURLOPT_PROXYUSERPWD, $this->proxy_auth);
+			}
 		}
 		if ('HEAD' === $method) {
 			\curl_setopt($c, CURLOPT_NOBODY, true);

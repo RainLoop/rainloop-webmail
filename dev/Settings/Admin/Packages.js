@@ -57,13 +57,6 @@ export class PackagesAdminSettings {
 
 	requestHelper(packageToRequest, install) {
 		return (iError, data) => {
-			if (iError) {
-				this.packagesError(
-					getNotification(install ? Notification.CantInstallPackage : Notification.CantDeletePackage)
-//					':\n' + getNotification(iError);
-				);
-			}
-
 			PackageAdminStore.forEach(item => {
 				if (item && packageToRequest && item.loading && item.loading() && packageToRequest.file === item.file) {
 					packageToRequest.loading(false);
@@ -71,7 +64,12 @@ export class PackagesAdminSettings {
 				}
 			});
 
-			if (!iError && data.Result.Reload) {
+			if (iError) {
+				this.packagesError(
+					getNotification(install ? Notification.CantInstallPackage : Notification.CantDeletePackage)
+					+ (data.ErrorMessage ? ':\n' + data.ErrorMessage : '')
+				);
+			} else if (data.Result.Reload) {
 				location.reload();
 			} else {
 				PackageAdminStore.fetch();

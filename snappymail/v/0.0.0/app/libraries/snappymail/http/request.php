@@ -17,7 +17,8 @@ abstract class Request
 		$user_agent,
 		$max_redirects = 0,
 		$verify_peer = false,
-		$proxy = null;
+		$proxy = null,
+		$proxy_auth = null;
 
 	protected
 		$auth = [

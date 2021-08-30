@@ -5,8 +5,10 @@
 		<i class="icon-spinner" style="margin: 5px" data-bind="visible: packages.loading"></i>
 	</div>
 
-	<div class="alert" style="margin-top: 10px;" data-bind="visible: !packages.real() && !packages.loading()"
-		data-i18n="TAB_PACKAGES/ALERT_CANNOT_ACCESS_REPOSITORY"></div>
+	<div class="alert" style="margin-top: 10px;" data-bind="visible: !packages.real() && !packages.loading()">
+		<div data-i18n="TAB_PACKAGES/ALERT_CANNOT_ACCESS_REPOSITORY"></div>
+		<!-- ko text: packages.error() --><!-- /ko -->
+	</div>
 
 	<div class="alert" style="margin-top: 10px;" data-bind="visible: '' !== packagesError()">
 		<button type="button" class="close" data-bind="click: function () { packagesError('') }">×</button>
