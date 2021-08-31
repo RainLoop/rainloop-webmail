@@ -70,8 +70,6 @@ class SubStreams
 				\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString($mItem);
 		}, $aSubStreams);
 
-		\MailSo\Base\Loader::IncStatistic('CreateStream/SubStreams');
-
 		return \fopen(self::STREAM_NAME.'://'.$sHashName, 'rb');
 	}
 

@@ -59,8 +59,6 @@ class Literal
 
 		self::$aStreams[$sHashName] = array($rStream, $iLiteralLen);
 
-		\MailSo\Base\Loader::IncStatistic('CreateStream/Literal');
-
 		return fopen(self::STREAM_NAME.'://'.$sHashName, 'rb');
 	}
 

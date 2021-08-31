@@ -1216,7 +1216,6 @@ class ImapClient extends \MailSo\Net\NetClient
 					if (false !== $sLiteral)
 					{
 						$iLiteralSize = \strlen($sLiteral);
-						\MailSo\Base\Loader::IncStatistic('NetRead', $iLiteralSize);
 						if ($iLiteralLen !== $iLiteralSize)
 						{
 							$this->writeLog('Literal stream read warning "read '.$iLiteralSize.' of '.
@@ -1684,8 +1683,6 @@ class ImapClient extends \MailSo\Net\NetClient
 			$this->writeLog('Literal stream is not resource after callback.',
 				\MailSo\Log\Enumerations\Type::WARNING);
 		}
-
-		\MailSo\Base\Loader::IncStatistic('NetRead', $iLiteralLen);
 
 		$this->bRunningCallback = false;
 

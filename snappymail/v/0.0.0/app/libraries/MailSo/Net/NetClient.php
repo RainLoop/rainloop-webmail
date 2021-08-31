@@ -402,8 +402,6 @@ abstract class NetClient
 		}
 		else
 		{
-			\MailSo\Base\Loader::IncStatistic('NetWrite', $mResult);
-
 			if ($bWriteToLog)
 			{
 				$this->writeLogWithCrlf('> '.($bFake ? $sFakeRaw : $sRaw), //.' ['.$iWriteSize.']',
@@ -484,8 +482,6 @@ abstract class NetClient
 				$this->writeLog('Received '.$iReadedLen.'/'.$iReadLen.' bytes.',
 					\MailSo\Log\Enumerations\Type::INFO);
 			}
-
-			\MailSo\Base\Loader::IncStatistic('NetRead', $iReadedLen);
 		}
 	}
 

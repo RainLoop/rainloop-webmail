@@ -38,7 +38,6 @@ abstract class ResourceRegistry
 					{
 						if (\is_resource(static::$Resources[$sKey]))
 						{
-							\MailSo\Base\Loader::IncStatistic('CloseMemoryResource');
 							\fclose(static::$Resources[$sKey]);
 						}
 						static::$Resources[$sKey] = null;
@@ -60,7 +59,6 @@ abstract class ResourceRegistry
 		$oResult = \fopen('php://temp/maxmemory:'.($iMemoryMaxInMb * 1024 * 1024), 'r+b');
 		if (\is_resource($oResult))
 		{
-			\MailSo\Base\Loader::IncStatistic('CreateMemoryResource');
 			static::$Resources[(string) $oResult] = $oResult;
 			return $oResult;
 		}
@@ -96,7 +94,6 @@ abstract class ResourceRegistry
 				\fclose(static::$Resources[$sKey]);
 				static::$Resources[$sKey] = null;
 				unset(static::$Resources[$sKey]);
-				\MailSo\Base\Loader::IncStatistic('CloseMemoryResource');
 			}
 
 			if (\is_resource($rResource))

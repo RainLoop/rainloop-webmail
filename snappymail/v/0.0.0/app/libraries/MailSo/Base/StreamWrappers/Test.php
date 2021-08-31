@@ -52,8 +52,6 @@ class Test
 
 		self::$aStreams[$sHashName] = $rConnect;
 
-		\MailSo\Base\Loader::IncStatistic('CreateStream/Test');
-
 		return fopen(self::STREAM_NAME.'://'.$sHashName, 'r+b');
 	}
 

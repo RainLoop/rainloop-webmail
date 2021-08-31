@@ -832,7 +832,7 @@ END;
 	public static function ResetTimeLimit(int $iTimeToReset = 15, int $iTimeToAdd = 120) : bool
 	{
 		$iTime = \time();
-		if ($iTime < Loader::$InitTime + 5)
+		if ($iTime < $_SERVER['REQUEST_TIME_FLOAT'] + 5)
 		{
 			// do nothing first 5s
 			return true;

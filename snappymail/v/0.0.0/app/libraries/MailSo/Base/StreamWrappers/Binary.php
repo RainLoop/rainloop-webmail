@@ -202,8 +202,6 @@ class Binary
 		self::$aStreams[$sHashName] =
 			array($rStream, $sUtilsDecodeOrEncodeFunctionName, $sFromEncoding, $sToEncoding);
 
-		\MailSo\Base\Loader::IncStatistic('CreateStream/Binary');
-
 		return \fopen(self::STREAM_NAME.'://'.$sHashName, 'rb');
 	}
 

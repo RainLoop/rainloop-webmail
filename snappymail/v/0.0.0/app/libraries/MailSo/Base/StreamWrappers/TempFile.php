@@ -75,8 +75,6 @@ class TempFile
 				self::$aStreams[$sHashName] = $this->rSream;
 
 				$bResult = true;
-
-				\MailSo\Base\Loader::IncStatistic('CreateStream/TempFile');
 			}
 		}
 

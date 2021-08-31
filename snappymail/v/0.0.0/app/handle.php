@@ -28,8 +28,6 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 
 if (\class_exists('RainLoop\Api'))
 {
-	\MailSo\Base\Loader::Init();
-
 	if (!empty($_ENV['RAINLOOP_INCLUDE_AS_API']))
 	{
 		if (!\defined('APP_API_STARTED'))
