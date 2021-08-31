@@ -72,7 +72,7 @@ import { LoginUserScreen } from 'Screen/User/Login';
 import { MailBoxUserScreen } from 'Screen/User/MailBox';
 import { SettingsUserScreen } from 'Screen/User/Settings';
 
-import { startScreens, showScreenPopup } from 'Knoin/Knoin';
+import { startScreens, showScreenPopup, arePopupsVisible } from 'Knoin/Knoin';
 
 import { AbstractApp } from 'App/Abstract';
 
@@ -851,6 +851,7 @@ class AppUser extends AbstractApp {
 		super.bootstart();
 
 		addEventListener('resize', () => leftPanelDisabled(ThemeStore.isMobile() || 1000 > innerWidth));
+		addEventListener('beforeunload', event => arePopupsVisible() && event.preventDefault() , {capture: true});
 
 		NotificationUserStore.populate();
 		AccountUserStore.populate();
