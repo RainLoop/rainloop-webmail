@@ -149,7 +149,7 @@ class Logger extends \MailSo\Base\Collection
 	{
 		if ($this->bUsed)
 		{
-			$this->Write('Memory peak usage: '.\MailSo\Utils::FormatFileSize(\memory_get_peak_usage(true), 2),
+			$this->Write('Memory peak usage: '.\MailSo\Base\Utils::FormatFileSize(\memory_get_peak_usage(true), 2),
 				Enumerations\Type::MEMORY);
 			$this->Write('Time delta: '.(\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']), Enumerations\Type::TIME_DELTA);
 		}
