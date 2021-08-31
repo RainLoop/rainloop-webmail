@@ -258,7 +258,7 @@ abstract class NetClient
 		{
 			$this->writeLogException(
 				new Exceptions\SocketCanNotConnectToHostException(
-					\MailSo\Base\Utils::ConvertSystemString($sErrorStr), (int) $iErrorNo,
+					\MailSo\Base\Locale::ConvertSystemString($sErrorStr), (int) $iErrorNo,
 					'Can\'t connect to host "'.$this->sConnectedHost.':'.$this->iConnectedPort.'"'
 				), \MailSo\Log\Enumerations\Type::NOTICE, true);
 		}
