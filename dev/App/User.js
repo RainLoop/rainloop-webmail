@@ -851,7 +851,12 @@ class AppUser extends AbstractApp {
 		super.bootstart();
 
 		addEventListener('resize', () => leftPanelDisabled(ThemeStore.isMobile() || 1000 > innerWidth));
-		addEventListener('beforeunload', event => arePopupsVisible() && event.preventDefault() , {capture: true});
+		addEventListener('beforeunload', event => {
+			if (arePopupsVisible()) {
+				event.preventDefault();
+				return event.returnValue = "Are you sure you want to exit?";
+			}
+		}, {capture: true});
 
 		NotificationUserStore.populate();
 		AccountUserStore.populate();
