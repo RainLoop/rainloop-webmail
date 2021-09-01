@@ -2,7 +2,7 @@
 <?php
 chdir(__DIR__);
 
-$options = getopt('', ['aur','docker','plugins']);
+$options = getopt('', ['aur','docker','plugins','set-version']);
 
 if (isset($options['plugins'])) {
 	$destPath = "build/dist/releases/plugins/";
@@ -85,14 +85,6 @@ if (!$gulp) {
 	exit('gulp not installed, run as root: npm install --global gulp-cli');
 }
 
-// Arch User Repository
-// https://aur.archlinux.org/packages/snappymail/
-$options['aur'] = isset($options['aur']);
-
-// Docker build
-$docker = trim(`which docker`);
-$options['docker'] = isset($options['docker']) || (!$options['aur'] && $docker && strtoupper(readline("Build Docker image? (Y/N): ")) === "Y");
-
 $package = json_decode(file_get_contents('package.json'));
 
 // Update files that contain version
@@ -101,6 +93,19 @@ $file = __DIR__ . '/integrations/nextcloud/snappymail/appinfo/info.xml';
 file_put_contents($file, preg_replace('/<version>[^<]*</', "<version>{$package->version}<", file_get_contents($file)));
 $file = __DIR__ . '/arch/PKGBUILD';
 file_put_contents($file, preg_replace('/pkgver=[0-9.]+/', "pkgver={$package->version}", file_get_contents($file)));
+$file = __DIR__ . '/.docker/release/files/usr/local/include/application.ini';
+file_put_contents($file, preg_replace('/current = "[0-9.]+"/', "current = \"{$package->version}\"", file_get_contents($file)));
+if (isset($options['set-version'])) {
+	exit;
+}
+
+// Arch User Repository
+// https://aur.archlinux.org/packages/snappymail/
+$options['aur'] = isset($options['aur']);
+
+// Docker build
+$docker = trim(`which docker`);
+$options['docker'] = isset($options['docker']) || (!$options['aur'] && $docker && strtoupper(readline("Build Docker image? (Y/N): ")) === "Y");
 
 $destPath = "build/dist/releases/webmail/{$package->version}/";
 is_dir($destPath) || mkdir($destPath, 0777, true);
