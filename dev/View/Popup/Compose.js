@@ -21,7 +21,7 @@ import { serverRequest } from 'Common/Links';
 import { i18n, getNotification, getUploadErrorDescByCode } from 'Common/Translator';
 import { timestampToString } from 'Common/Momentor';
 import { MessageFlagsCache, setFolderHash } from 'Common/Cache';
-import { doc, Settings, SettingsGet } from 'Common/Globals';
+import { doc, Settings, SettingsGet, getFullscreenElement, exitFullscreen } from 'Common/Globals';
 
 import { AppUserStore } from 'Stores/User/App';
 import { SettingsUserStore } from 'Stores/User/Settings';
@@ -643,7 +643,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 		this.resizeObserver.disconnect();
 
-		(doc.fullscreenElement || doc.webkitFullscreenElement) === this.oContent && doc.exitFullscreen();
+		(getFullscreenElement() === this.oContent) && exitFullscreen();
 	}
 
 	editor(fOnInit) {
@@ -1267,14 +1267,11 @@ class ComposePopupView extends AbstractViewPopup {
 			event = 'webkit' + event;
 		}
 		if (el.requestFullscreen) {
-			if (!doc.exitFullscreen && doc.webkitExitFullscreen) {
-				doc.exitFullscreen = doc.webkitExitFullscreen;
-			}
 			this.oContent = el;
 			el.addEventListener(event, () =>
 				ThemeStore.isMobile()
 				&& this.modalVisibility()
-				&& (doc.fullscreenElement || doc.webkitFullscreenElement) !== el
+				&& (getFullscreenElement() !== el)
 				&& this.skipCommand()
 			);
 		}

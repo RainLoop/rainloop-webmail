@@ -14,7 +14,7 @@ import {
 	MessageSetAction
 } from 'Common/EnumsUser';
 
-import { doc, $htmlCL, leftPanelDisabled, keyScopeReal, moveAction, Settings } from 'Common/Globals';
+import { $htmlCL, leftPanelDisabled, keyScopeReal, moveAction, Settings, getFullscreenElement, exitFullscreen } from 'Common/Globals';
 
 import { arrayLength, inFocus } from 'Common/Utils';
 import { mailToHelper, showMessageComposer } from 'Common/UtilsUser';
@@ -242,7 +242,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 			fullScreenMode: value => {
 				if (this.oContent) {
-					value ? this.oContent.requestFullscreen() : doc.exitFullscreen();
+					value ? this.oContent.requestFullscreen() : exitFullscreen();
 				} else {
 					$htmlCL.toggle('rl-message-fullscreen', value);
 				}
@@ -332,12 +332,9 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 			event = 'webkit'+event;
 		}
 		if (el.requestFullscreen) {
-			if (!doc.exitFullscreen && doc.webkitExitFullscreen) {
-				doc.exitFullscreen = doc.webkitExitFullscreen;
-			}
 			this.oContent = el;
 			el.addEventListener(event, () =>
-				this.fullScreenMode((doc.fullscreenElement || doc.webkitFullscreenElement) === el)
+				this.fullScreenMode(getFullscreenElement() === el)
 			);
 		}
 
