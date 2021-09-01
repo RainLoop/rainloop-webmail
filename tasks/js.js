@@ -127,9 +127,10 @@ const jsLint = () =>
 		.pipe(eslint.format())
 		.pipe(eslint.failAfterError());
 
-const jsState1 = gulp.series(jsLint);
-const jsState3 = gulp.parallel(jsBoot, jsServiceWorker, jsOpenPGP, jsOpenPGPWorker, jsLibs, jsApp, jsAdmin);
-const jsState2 = gulp.series(jsClean, jsState3, jsMin);
-
 exports.jsLint = jsLint;
-exports.js = gulp.parallel(jsState1, jsState2);
+exports.js = gulp.series(
+	jsClean,
+	jsLint,
+	gulp.parallel(jsBoot, jsServiceWorker, jsOpenPGP, jsOpenPGPWorker, jsLibs, jsApp, jsAdmin),
+	jsMin
+);
