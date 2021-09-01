@@ -172,75 +172,78 @@
 							<span class="subject" data-bind="text: viewSubject, title: viewSubject, event: { 'dblclick': toggleFullScreen }"></span>
 							<span class="emptySubjectText" data-i18n="MESSAGE/EMPTY_SUBJECT_TEXT" data-bind="event: { 'dblclick': toggleFullScreen }"></span>
 						</div>
-						<div>
-							<div style="overflow: hidden;" data-bind="hidden: showFullInfo()">
-								<div class="informationShort" data-bind="event: { 'dblclick': toggleFullScreen }">
-									<span class="from" data-bind="html: viewFromShort, title: viewFrom"></span>
-									<span data-bind="visible: viewFromDkimVisibility">
-										&nbsp;
-										<i data-bind="css: viewFromDkimStatusIconClass, title: viewFromDkimStatusTitle"></i>
-									</span>
-									<br/>
-									<span data-bind="visible: 0 < viewTimeStamp()">
-										(<time class="date" data-moment-format="FULL" data-bind="moment: viewTimeStamp"></time>)
-									</span>
-								</div>
-								<div class="informationShortWrp">
-									<div class="informationShort" data-bind="visible: viewTo, event: { 'dblclick': toggleFullScreen }">
-										<span class="labelTo" data-i18n="GLOBAL/TO"></span>:&nbsp;
-										<span class="to" data-bind="text: viewTo"></span>
-									</div>
-									<div class="informationShort" data-bind="visible: viewCc, event: { 'dblclick': toggleFullScreen }">
-										<span class="labelTo" data-i18n="GLOBAL/CC"></span>:&nbsp;
-										<span class="to" data-bind="text: viewCc"></span>
-									</div>
+						<div data-bind="hidden: showFullInfo(), event: { 'dblclick': toggleFullScreen }">
+							<div class="informationShort">
+								<span class="from" data-bind="html: viewFromShort, title: viewFrom"></span>
+								<span data-bind="visible: viewFromDkimVisibility">
+									&nbsp;
+									<i data-bind="css: viewFromDkimStatusIconClass, title: viewFromDkimStatusTitle"></i>
+								</span>
+								<div data-bind="visible: 0 < viewTimeStamp()">
+									(<time class="date" data-moment-format="FULL" data-bind="moment: viewTimeStamp"></time>)
 								</div>
 							</div>
-							<div class="informationFull" data-bind="visible: showFullInfo()">
-								<table>
-									<tr data-bind="visible: '' !== viewFrom()">
-										<td data-i18n="GLOBAL/FROM"></td>
-										<td><span data-bind="text: viewFrom, title: viewFrom"></span>
-											<span data-bind="visible: viewFromDkimVisibility">
-												&nbsp;
-												<i data-bind="css: viewFromDkimStatusIconClass, title: viewFromDkimStatusTitle"></i>
-											</span>
-										</td>
-									</tr>
-									<tr data-bind="visible: '' !== viewTo()">
-										<td data-i18n="GLOBAL/TO"></td>
-										<td data-bind="text: viewTo, title: viewTo"></td>
-									</tr>
-									<tr data-bind="visible: '' !== viewCc()">
-										<td data-i18n="GLOBAL/CC"></td>
-										<td data-bind="text: viewCc, title: viewCc"></td>
-									</tr>
-									<tr data-bind="visible: '' !== viewBcc()">
-										<td data-i18n="GLOBAL/BCC"></td>
-										<td data-bind="text: viewBcc, title: viewBcc"></td>
-									</tr>
-									<tr data-bind="visible: '' !== viewReplyTo()">
-										<td data-i18n="GLOBAL/REPLY_TO"></td>
-										<td data-bind="text: viewReplyTo, title: viewReplyTo"></td>
-									</tr>
-									<tr data-bind="visible: 0 < viewTimeStamp()">
-										<td data-i18n="MESSAGE/LABEL_DATE"></td>
-										<td>
-											<time data-moment-format="FULL" data-bind="moment: viewTimeStamp"></time>
+							<div class="informationShortWrp">
+								<div class="informationShort" data-bind="visible: viewTo">
+									<span data-i18n="GLOBAL/TO"></span>:&nbsp;
+									<span data-bind="text: viewTo"></span>
+								</div>
+								<div class="informationShort" data-bind="visible: viewCc">
+									<span data-i18n="GLOBAL/CC"></span>:&nbsp;
+									<span data-bind="text: viewCc"></span>
+								</div>
+							</div>
+<!--
+							<div class="informationShort">
+								<span data-i18n="MESSAGE/SPAM_SCORE"></span>:&nbsp;
+								<meter min="0" max="100" optimum="0" low="33" high="66" data-bind="value: viewSpamScore, title: viewSpamStatus"></meter>
+							</div>
+-->
+						</div>
+						<div class="informationFull" data-bind="visible: showFullInfo()">
+							<table>
+								<tr data-bind="visible: '' !== viewFrom()">
+									<td data-i18n="GLOBAL/FROM"></td>
+									<td><span data-bind="text: viewFrom, title: viewFrom"></span>
+										<span data-bind="visible: viewFromDkimVisibility">
 											&nbsp;
-											(<time data-moment-format="FROMNOW" data-bind="moment: viewTimeStamp"></time>)
-										</td>
-									</tr>
-									<tr data-bind="visible: 0 < viewSpamScore()">
-										<td data-i18n="MESSAGE/SPAM_SCORE"></td>
-										<td><span data-bind="text: viewSpamScore, title: viewSpamStatus"></span>%</td>
-									</tr>
-									<tr data-bind="visible: '' !== viewFrom()">
-										<td data-i18n="POPUPS_FILTER/SELECT_FIELD_SIZE"></td>
-										<td class="size" data-bind="text: viewSize"></td>
-									</tr>
-								</table>
-							</div>
+											<i data-bind="css: viewFromDkimStatusIconClass, title: viewFromDkimStatusTitle"></i>
+										</span>
+									</td>
+								</tr>
+								<tr data-bind="visible: '' !== viewTo()">
+									<td data-i18n="GLOBAL/TO"></td>
+									<td data-bind="text: viewTo, title: viewTo"></td>
+								</tr>
+								<tr data-bind="visible: '' !== viewCc()">
+									<td data-i18n="GLOBAL/CC"></td>
+									<td data-bind="text: viewCc, title: viewCc"></td>
+								</tr>
+								<tr data-bind="visible: '' !== viewBcc()">
+									<td data-i18n="GLOBAL/BCC"></td>
+									<td data-bind="text: viewBcc, title: viewBcc"></td>
+								</tr>
+								<tr data-bind="visible: '' !== viewReplyTo()">
+									<td data-i18n="GLOBAL/REPLY_TO"></td>
+									<td data-bind="text: viewReplyTo, title: viewReplyTo"></td>
+								</tr>
+								<tr data-bind="visible: 0 < viewTimeStamp()">
+									<td data-i18n="MESSAGE/LABEL_DATE"></td>
+									<td>
+										<time data-moment-format="FULL" data-bind="moment: viewTimeStamp"></time>
+										&nbsp;
+										(<time data-moment-format="FROMNOW" data-bind="moment: viewTimeStamp"></time>)
+									</td>
+								</tr>
+								<tr data-bind="visible: 0 < viewSpamScore()">
+									<td data-i18n="MESSAGE/SPAM_SCORE"></td>
+									<td><span data-bind="text: viewSpamScore, title: viewSpamStatus"></span>%</td>
+								</tr>
+								<tr data-bind="visible: '' !== viewFrom()">
+									<td data-i18n="POPUPS_FILTER/SELECT_FIELD_SIZE"></td>
+									<td class="size" data-bind="text: viewSize"></td>
+								</tr>
+							</table>
 						</div>
 					</div>
 					<div class="messageItem fixIndex" data-bind="css: viewLineAsCss(), attr: {'style': 'top:' + viewBodyTopValue() + 'px' }">
