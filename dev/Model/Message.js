@@ -84,6 +84,7 @@ export class MessageModel extends AbstractModel {
 		this.attachments = ko.observableArray(new AttachmentCollectionModel);
 		this.attachmentsSpecData = ko.observableArray();
 		this.threads = ko.observableArray();
+		this.unsubsribeLinks = ko.observableArray();
 
 		this.addComputables({
 			attachmentIconClass: () => FileInfo.getCombinedIconClass(this.hasAttachments() ? this.attachmentsSpecData() : []),
@@ -105,7 +106,6 @@ export class MessageModel extends AbstractModel {
 		this.bcc = new EmailCollectionModel;
 		this.replyTo = new EmailCollectionModel;
 		this.deliveredTo = new EmailCollectionModel;
-		this.unsubsribeLinks = [];
 		this.body = null;
 		this.draftInfo = [];
 		this.messageId = '';
@@ -152,6 +152,7 @@ export class MessageModel extends AbstractModel {
 		this.readReceipt('');
 
 		this.threads([]);
+		this.unsubsribeLinks([]);
 
 		this.hasUnseenSubMessage(false);
 		this.hasFlaggedSubMessage(false);
@@ -201,14 +202,14 @@ export class MessageModel extends AbstractModel {
 	 * @returns {boolean}
 	 */
 	hasUnsubsribeLinks() {
-		return this.unsubsribeLinks && this.unsubsribeLinks.length;
+		return this.unsubsribeLinks().length;
 	}
 
 	/**
 	 * @returns {string}
 	 */
 	getFirstUnsubsribeLink() {
-		return this.unsubsribeLinks && this.unsubsribeLinks.length ? this.unsubsribeLinks[0] || '' : '';
+		return this.unsubsribeLinks()[0] || '';
 	}
 
 	/**
@@ -431,7 +432,7 @@ export class MessageModel extends AbstractModel {
 			this.bcc = message.bcc;
 			this.replyTo = message.replyTo;
 			this.deliveredTo = message.deliveredTo;
-			this.unsubsribeLinks = message.unsubsribeLinks;
+			this.unsubsribeLinks(message.unsubsribeLinks);
 
 			this.isUnseen(message.isUnseen());
 			this.isFlagged(message.isFlagged());

@@ -206,7 +206,7 @@ const SCREENS = {},
 	};
 
 export const
-	popupVisibilityNames = ko.observableArray([]),
+	popupVisibilityNames = ko.observableArray(),
 
 	ViewType = {
 		Popup: 'Popups',
