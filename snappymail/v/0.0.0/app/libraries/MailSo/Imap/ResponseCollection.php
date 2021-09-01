@@ -300,32 +300,26 @@ class ResponseCollection extends \MailSo\Base\Collection
 				}
 
 				if (is_array($oResponse->OptionalResponse) && \count($oResponse->OptionalResponse) > 1) {
-					if ('PERMANENTFLAGS' === $oResponse->OptionalResponse[0] &&
-						is_array($oResponse->OptionalResponse[1]))
+					if ('PERMANENTFLAGS' === $oResponse->OptionalResponse[0]
+					 && is_array($oResponse->OptionalResponse[1]))
 					{
 						$oResult->PermanentFlags = $oResponse->OptionalResponse[1];
 					}
-					else if ('UIDVALIDITY' === $oResponse->OptionalResponse[0] &&
-						isset($oResponse->OptionalResponse[1]))
+					else if ('UIDVALIDITY' === $oResponse->OptionalResponse[0])
 					{
-						$oResult->Uidvalidity = $oResponse->OptionalResponse[1];
+						$oResult->Uidvalidity = (int) $oResponse->OptionalResponse[1];
 					}
-					else if ('UNSEEN' === $oResponse->OptionalResponse[0] &&
-						isset($oResponse->OptionalResponse[1]) &&
-						is_numeric($oResponse->OptionalResponse[1]))
+					else if ('UNSEEN' === $oResponse->OptionalResponse[0])
 					{
 						$oResult->Unread = (int) $oResponse->OptionalResponse[1];
 					}
-					else if ('UIDNEXT' === $oResponse->OptionalResponse[0] &&
-						isset($oResponse->OptionalResponse[1]))
+					else if ('UIDNEXT' === $oResponse->OptionalResponse[0])
 					{
 						$oResult->Uidnext = $oResponse->OptionalResponse[1];
 					}
-					else if ('HIGHESTMODSEQ' === $oResponse->OptionalResponse[0] &&
-						isset($oResponse->OptionalResponse[1]) &&
-						\is_numeric($oResponse->OptionalResponse[1]))
+					else if ('HIGHESTMODSEQ' === $oResponse->OptionalResponse[0])
 					{
-						$oResult->HighestModSeq = \trim($oResponse->OptionalResponse[1]);
+						$oResult->HighestModSeq = (int) $oResponse->OptionalResponse[1];
 					}
 				}
 

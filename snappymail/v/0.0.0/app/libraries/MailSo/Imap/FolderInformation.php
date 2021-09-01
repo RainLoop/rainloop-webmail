@@ -30,55 +30,51 @@ class FolderInformation
 	/**
 	 * @var array
 	 */
-	public $Flags;
+	public $Flags = array();
 
 	/**
 	 * @var array
 	 */
-	public $PermanentFlags;
+	public $PermanentFlags = array();
 
 	/**
 	 * @var int
 	 */
-	public $Exists;
+	public $Exists = null;
 
 	/**
 	 * @var int
 	 */
-	public $Recent;
+	public $Recent = null;
 
 	/**
-	 * @var string
+	 * rfc3501 2.3.1.1
+	 * A 32-bit value
+	 * @var int
 	 */
-	public $Uidvalidity;
+	public $Uidvalidity = null;
 
 	/**
 	 * @var int
 	 */
-	public $Unread;
+	public $Unread = null;
 
 	/**
 	 * @var string
 	 */
-	public $Uidnext;
+	public $Uidnext = null;
 
 	/**
-	 * @var string
+	 * rfc4551
+	 * 1*DIGIT Positive unsigned 64-bit integer
+	 * @var int
 	 */
-	public $HighestModSeq;
+	public $HighestModSeq = null;
 
 	function __construct(string $sFolderName, bool $bIsWritable)
 	{
 		$this->FolderName = $sFolderName;
 		$this->IsWritable = $bIsWritable;
-		$this->Exists = null;
-		$this->Recent = null;
-		$this->Flags = array();
-		$this->PermanentFlags = array();
-
-		$this->Unread = null;
-		$this->Uidnext = null;
-		$this->HighestModSeq = null;
 	}
 
 	public function IsFlagSupported(string $sFlag) : bool
