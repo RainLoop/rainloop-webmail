@@ -74,7 +74,7 @@ export class AbstractViewPopup extends AbstractView
 	 */
 	registerPopupKeyDown() {
 		addEventListener('keydown', event => {
-			if (event && this.modalVisibility && this.modalVisibility()) {
+			if (event && this.modalVisibility()) {
 				if (!this.bDisabeCloseOnEsc && 'Escape' == event.key) {
 					this.cancelCommand();
 					return false;

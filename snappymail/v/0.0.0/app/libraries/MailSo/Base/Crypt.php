@@ -20,7 +20,7 @@ class Crypt
 
 	public static function Encrypt(string $sString, string $sKey, string $sCipher = '') : string
 	{
-		if (0 === \strlen($sString)) {
+		if (!\strlen($sString)) {
 			return '';
 		}
 		if ($sCipher && \is_callable('openssl_encrypt')) {
@@ -35,7 +35,7 @@ class Crypt
 
 	public static function Decrypt(string $sString, string $sKey, string $sCipher = '') : string
 	{
-		if (0 === \strlen($sString)) {
+		if (!\strlen($sString)) {
 			return '';
 		}
 		if ($sCipher && \is_callable('openssl_encrypt')) {
