@@ -145,6 +145,8 @@
 		"BUTTON_SAVE": "保存"
 	},
 	"POPUPS_ASK": {
+		"BUTTON_YES": "是",
+		"BUTTON_NO": "否",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "你确定要关闭此窗口吗？"
 	},
 	"POPUPS_LANGUAGES": {

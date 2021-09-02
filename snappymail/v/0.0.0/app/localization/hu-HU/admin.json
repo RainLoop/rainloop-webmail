@@ -145,6 +145,8 @@
 		"BUTTON_SAVE": "Mentés"
 	},
 	"POPUPS_ASK": {
+		"BUTTON_YES": "Igen",
+		"BUTTON_NO": "Nem",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Biztos, hogy be akarod zárni ezt az ablakot?"
 	},
 	"POPUPS_LANGUAGES": {

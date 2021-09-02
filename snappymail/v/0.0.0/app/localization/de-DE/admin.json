@@ -145,6 +145,8 @@
 		"BUTTON_SAVE": "Speichern"
 	},
 	"POPUPS_ASK": {
+		"BUTTON_YES": "Ja",
+		"BUTTON_NO": "Nein",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Sind Sie sicher, dass Sie dieses Fenster schließen möchten?"
 	},
 	"POPUPS_LANGUAGES": {

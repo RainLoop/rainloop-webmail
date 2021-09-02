@@ -145,6 +145,8 @@
 		"BUTTON_SAVE": "Opslaan"
 	},
 	"POPUPS_ASK": {
+		"BUTTON_YES": "Ja",
+		"BUTTON_NO": "Nee",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Weet u zeker dat u dit venster wilt stuiten?"
 	},
 	"POPUPS_LANGUAGES": {

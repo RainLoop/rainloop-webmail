@@ -145,6 +145,8 @@
 		"BUTTON_SAVE": "Spara"
 	},
 	"POPUPS_ASK": {
+		"BUTTON_YES": "Ja",
+		"BUTTON_NO": "Nej",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Är du säker på att du vill stänga sidan?"
 	},
 	"POPUPS_LANGUAGES": {

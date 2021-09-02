@@ -145,6 +145,8 @@
 		"BUTTON_SAVE": "Save"
 	},
 	"POPUPS_ASK": {
+		"BUTTON_YES": "Yes",
+		"BUTTON_NO": "No",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Are you sure you want to close this window?"
 	},
 	"POPUPS_LANGUAGES": {
