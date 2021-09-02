@@ -137,7 +137,8 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 			viewUnsubscribeLink: '',
 			viewDownloadLink: '',
 			viewIsImportant: false,
-			viewIsFlagged: false
+			viewIsFlagged: false,
+			hasVirus: null
 		});
 
 		this.addComputables({
@@ -207,6 +208,8 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 						this.scrollMessageToTop();
 					}
 
+					let spam = message.spamResult();
+
 					this.viewFolder = message.folder;
 					this.viewUid = message.uid;
 					this.viewHash = message.hash;
@@ -222,13 +225,14 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 					this.viewTimeStamp(message.dateTimeStampInUTC());
 					this.viewSize(message.friendlySize());
 					this.viewSpamScore(message.spamScore());
-					this.viewSpamStatus(i18n(message.isSpam() ? 'GLOBAL/SPAM' : 'GLOBAL/NOT_SPAM') + ': ' + message.spamResult());
+					this.viewSpamStatus(spam ? i18n(message.isSpam() ? 'GLOBAL/SPAM' : 'GLOBAL/NOT_SPAM') + ': ' + spam : '');
 					this.viewLineAsCss(message.lineAsCss());
 					this.viewViewLink(message.viewLink());
 					this.viewUnsubscribeLink(message.getFirstUnsubsribeLink());
 					this.viewDownloadLink(message.downloadLink());
 					this.viewIsImportant(message.isImportant());
 					this.viewIsFlagged(message.isFlagged());
+					this.hasVirus(message.hasVirus());
 				} else {
 					MessageUserStore.selectorMessageSelected(null);
 
