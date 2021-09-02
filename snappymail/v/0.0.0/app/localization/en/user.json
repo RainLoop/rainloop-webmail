@@ -397,6 +397,8 @@
 		"LABEL_SHOW_IMAGES": "Always display external images in message body",
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Messages on page",
+		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "Notifications",
 		"LABEL_SOUND_NOTIFICATION": "Sound notification",
 		"LABEL_CHROME_NOTIFICATION_DESC": "Show new messages notification popups",

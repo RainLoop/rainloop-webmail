@@ -3,7 +3,7 @@ import ko from 'ko';
 import { Scope, Notification } from 'Common/Enums';
 import { MessageSetAction } from 'Common/EnumsUser';
 import { doc, $htmlCL, createElement, elementById } from 'Common/Globals';
-import { arrayLength, pInt, pString, addObservablesTo, addSubscribablesTo } from 'Common/Utils';
+import { arrayLength, pInt, pString, addObservablesTo, addComputablesTo, addSubscribablesTo } from 'Common/Utils';
 import { plainToHtml } from 'Common/UtilsUser';
 
 import {
@@ -111,30 +111,46 @@ export const MessageUserStore = new class {
 
 		// Computed Observables
 
-		this.listEndHash = ko.computed(
-			() =>
+		addComputablesTo(this, {
+			listEndHash: () =>
 				this.listEndFolder() +
 				'|' +
 				this.listEndSearch() +
 				'|' +
 				this.listEndThreadUid() +
 				'|' +
-				this.listEndPage()
-		);
+				this.listEndPage(),
 
-		this.listPageCount = ko.computed(() =>
-			Math.max(1, Math.ceil(this.listCount() / SettingsUserStore.messagesPerPage()))
-		);
+			listPageCount: () => Math.max(1, Math.ceil(this.listCount() / SettingsUserStore.messagesPerPage())),
 
-		this.mainMessageListSearch = ko.computed({
-			read: this.listSearch,
-			write: value =>
-				rl.route.setHash(
+			mainMessageListSearch: {
+				read: this.listSearch,
+				write: value => rl.route.setHash(
 					mailBox(FolderUserStore.currentFolderFullNameHash(), 1, value.toString().trim(), this.listThreadUid())
 				)
-		});
+			},
 
-		this.isMessageSelected = ko.computed(() => null !== this.message());
+			isMessageSelected: () => null !== this.message(),
+
+			listCheckedOrSelected: () => {
+				const
+					selectedMessage = this.selectorMessageSelected(),
+					focusedMessage = this.selectorMessageFocused(),
+					checked = this.list.filter(item => isChecked(item) || item === selectedMessage);
+				return checked.length ? checked : (focusedMessage ? [focusedMessage] : []);
+			},
+
+			listCheckedOrSelectedUidsWithSubMails: () => {
+				let result = [];
+				this.listCheckedOrSelected().forEach(message => {
+					result.push(message.uid);
+					if (1 < message.threadsLen()) {
+						result = result.concat(message.threads()).unique();
+					}
+				});
+				return result;
+			}
+		});
 
 		this.listChecked = ko
 			.computed(() => this.list.filter(isChecked))
@@ -149,25 +165,6 @@ export const MessageUserStore = new class {
 				|| this.selectorMessageFocused()
 				|| this.list.find(item => item.checked())))
 			.extend({ rateLimit: 50 });
-
-		this.listCheckedOrSelected = ko.computed(() => {
-			const
-				selectedMessage = this.selectorMessageSelected(),
-				focusedMessage = this.selectorMessageFocused(),
-				checked = this.list.filter(item => isChecked(item) || item === selectedMessage);
-			return checked.length ? checked : (focusedMessage ? [focusedMessage] : []);
-		});
-
-		this.listCheckedOrSelectedUidsWithSubMails = ko.computed(() => {
-			let result = [];
-			this.listCheckedOrSelected().forEach(message => {
-				result.push(message.uid);
-				if (1 < message.threadsLen()) {
-					result = result.concat(message.threads()).unique();
-				}
-			});
-			return result;
-		});
 
 		// Subscribers
 
@@ -470,7 +467,7 @@ export const MessageUserStore = new class {
 
 				if (messagesDom) {
 					let body = null,
-						id = 'rl-mgs-' + message.hash.replace(/[^a-zA-Z0-9]/g, '');
+						id = 'rl-msg-' + message.hash.replace(/[^a-zA-Z0-9]/g, '');
 
 					const textBody = elementById(id);
 					if (textBody) {
@@ -557,10 +554,10 @@ export const MessageUserStore = new class {
 				}
 
 				MessageFlagsCache.initMessage(message);
-				if (message.isUnseen() || message.hasUnseenSubMessage()) {
+				if (message.isUnseen()) {
 					MessageSeenTimer = setTimeout(
 						() => rl.app.messageListAction(message.folder, MessageSetAction.SetSeen, [message]),
-						5000 // 5 seconds
+						SettingsUserStore.messageReadDelay() * 1000 // seconds
 					);
 				}
 

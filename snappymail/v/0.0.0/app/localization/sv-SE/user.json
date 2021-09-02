@@ -397,6 +397,8 @@
 		"LABEL_SHOW_IMAGES": "Visa alltid bilder i mail",
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Meddelanden per sida",
+		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "Aviseringar",
 		"LABEL_SOUND_NOTIFICATION": "Ljudnotifikation",
 		"LABEL_CHROME_NOTIFICATION_DESC": "Visa nya meddelande-aviseringar som popup-fönster",

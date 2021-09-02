@@ -25,6 +25,7 @@ export class GeneralUserSettings {
 	constructor() {
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
+		this.messageReadDelay = SettingsUserStore.messageReadDelay;
 		this.messagesPerPage = SettingsUserStore.messagesPerPage;
 		this.messagesPerPageArray = MESSAGES_PER_PAGE_VALUES;
 
@@ -51,6 +52,7 @@ export class GeneralUserSettings {
 
 		addObservablesTo(this, {
 			mppTrigger: SaveSettingsStep.Idle,
+			messageReadDelayTrigger: SaveSettingsStep.Idle,
 			editorDefaultTypeTrigger: SaveSettingsStep.Idle,
 			layoutTrigger: SaveSettingsStep.Idle
 		});
@@ -101,6 +103,9 @@ export class GeneralUserSettings {
 
 			editorDefaultType: value => Remote.saveSetting('EditorDefaultType', value,
 				settingsSaveHelperSimpleFunction(this.editorDefaultTypeTrigger, this)),
+
+			messageReadDelay: value => Remote.saveSetting('MessageReadDelay', value,
+				settingsSaveHelperSimpleFunction(this.messageReadDelayTrigger, this)),
 
 			messagesPerPage: value => Remote.saveSetting('MPP', value,
 				settingsSaveHelperSimpleFunction(this.mppTrigger, this)),

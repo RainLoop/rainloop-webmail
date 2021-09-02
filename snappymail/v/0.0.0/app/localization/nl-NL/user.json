@@ -397,6 +397,8 @@
 		"LABEL_SHOW_IMAGES": "Afbeeldingen altijd weergeven in het bericht",
 		"LABEL_REMOVE_COLORS": "Verwijder achtergrond- en tekstkleuren uit het bericht",
 		"LABEL_MESSAGE_PER_PAGE": "Berichten op pagina",
+		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "Notificaties",
 		"LABEL_SOUND_NOTIFICATION": "Notificatie geluid",
 		"LABEL_CHROME_NOTIFICATION_DESC": "Toon nieuwe berichten popup",

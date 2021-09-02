@@ -397,6 +397,8 @@
 		"LABEL_SHOW_IMAGES": "Toujours afficher les images dans le mail",
 		"LABEL_REMOVE_COLORS": "Supprimer les couleurs d'arrière-plan et de texte du message",
 		"LABEL_MESSAGE_PER_PAGE": "Messages par page",
+		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "Notifications",
 		"LABEL_SOUND_NOTIFICATION": "Son de notification",
 		"LABEL_CHROME_NOTIFICATION_DESC": "Afficher un pop-up de notification pour les nouveaux messages",

@@ -1057,6 +1057,7 @@ class Actions
 			'ShowImages' => (bool) $oConfig->Get('defaults', 'show_images', false),
 			'RemoveColors' => (bool) $oConfig->Get('defaults', 'remove_colors', false),
 			'MPP' => (int) $oConfig->Get('webmail', 'messages_per_page', 25),
+			'MessageReadDelay' => (int) $oConfig->Get('webmail', 'message_read_delay', 5),
 			'SoundNotification' => false,
 			'NotificationSound' => 'new-mail',
 			'DesktopNotifications' => false,
@@ -1163,6 +1164,7 @@ class Actions
 						$aResult['RemoveColors'] = (bool)$oSettings->GetConf('RemoveColors', $aResult['RemoveColors']);
 						$aResult['ContactsAutosave'] = (bool)$oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
 						$aResult['MPP'] = (int)$oSettings->GetConf('MPP', $aResult['MPP']);
+						$aResult['MessageReadDelay'] = (int)$oSettings->GetConf('MessageReadDelay', $aResult['MessageReadDelay']);
 						$aResult['SoundNotification'] = (bool)$oSettings->GetConf('SoundNotification', $aResult['SoundNotification']);
 						$aResult['NotificationSound'] = (string)$oSettings->GetConf('NotificationSound', $aResult['NotificationSound']);
 						$aResult['DesktopNotifications'] = (bool)$oSettings->GetConf('DesktopNotifications', $aResult['DesktopNotifications']);

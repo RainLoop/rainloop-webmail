@@ -135,6 +135,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'allow_additional_identities' => array(true, ''),
 
 				'messages_per_page'           => array(20, 'Number of messages displayed on page by default'),
+				'message_read_delay'          => array(5, 'Mark message read after N seconds'),
 
 				'attachment_size_limit'       => array(\min($upload_max_filesize, 25), 'File size limit (MB) for file upload on compose screen
 0 for unlimited.')

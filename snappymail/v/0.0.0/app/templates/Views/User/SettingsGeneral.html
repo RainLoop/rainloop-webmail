@@ -63,6 +63,15 @@
 			</div>
 		</div>
 		<div class="control-group">
+			<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_MARK_MESSAGE_READ_AFTER"></label>
+			<div class="controls">
+				<input type="number" min="0" step="1" class="span1" data-bind="textInput: messageReadDelay"/>
+				&nbsp;
+				<span data-i18n="SETTINGS_GENERAL/SECONDS"></label>
+				<span data-bind="saveTrigger: messageReadDelayTrigger"></span>
+			</div>
+		</div>
+		<div class="control-group">
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Checkbox',

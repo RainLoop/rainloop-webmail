@@ -397,6 +397,8 @@
 		"LABEL_SHOW_IMAGES": "总是显示外部图片信息",
 		"LABEL_REMOVE_COLORS": "从消息中删除背景和文本颜色",
 		"LABEL_MESSAGE_PER_PAGE": "封邮件每页",
+		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "通知",
 		"LABEL_SOUND_NOTIFICATION": "提示音",
 		"LABEL_CHROME_NOTIFICATION_DESC": "显示新邮件弹窗",

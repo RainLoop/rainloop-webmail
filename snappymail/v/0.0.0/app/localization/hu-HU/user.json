@@ -397,6 +397,8 @@
 		"LABEL_SHOW_IMAGES": "Mindig jelenítse meg a külső képeket az üzenet törzsében",
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Üzenetek egy oldalon",
+		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "Értesítések",
 		"LABEL_SOUND_NOTIFICATION": "Hangos értesítés",
 		"LABEL_CHROME_NOTIFICATION_DESC": "Új üzenetek értesítő ablakainak megjelenítése",

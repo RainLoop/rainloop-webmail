@@ -23,6 +23,10 @@ export const SettingsUserStore = new class {
 
 		this.messagesPerPage = ko.observable(SettingsGet('MPP')).extend({ limitedList: MESSAGES_PER_PAGE_VALUES });
 
+		this.messageReadDelay = ko.observable(pInt(SettingsGet('MessageReadDelay'))).extend(
+			{ rateLimit: { timeout: 500, method: "notifyWhenChangesStop" } }
+		);
+
 		addObservablesTo(this, {
 			showImages: !!SettingsGet('ShowImages'),
 			removeColors: !!SettingsGet('RemoveColors'),
@@ -31,7 +35,6 @@ export const SettingsUserStore = new class {
 			useThreads: !!SettingsGet('UseThreads'),
 			replySameFolder: !!SettingsGet('ReplySameFolder'),
 			hideUnsubscribed: !!SettingsGet('HideUnsubscribed'),
-
 			autoLogout: pInt(SettingsGet('AutoLogout'))
 		});
 
