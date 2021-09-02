@@ -145,7 +145,8 @@
 		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP ondertekend bericht (klik om te verifiëren)",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP versleuteld bericht (klik om te ontsleutelen)",
 		"LINK_DOWNLOAD_AS_ZIP": "Download als zip",
-		"SPAM_SCORE": "Spamscore"
+		"SPAM_SCORE": "Spamscore",
+		"HAS_VIRUS_WARNING": "WARNING: virus detected"
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Ontvangstbevestiging (weergegeven) - %SUBJECT%",

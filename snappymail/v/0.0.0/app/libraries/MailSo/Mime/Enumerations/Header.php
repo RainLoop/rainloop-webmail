@@ -18,69 +18,74 @@ namespace MailSo\Mime\Enumerations;
  */
 abstract class Header
 {
-	const DATE = 'Date';
-	const RECEIVED = 'Received';
+	const
+		DATE = 'Date',
+		RECEIVED = 'Received',
 
-	const SUBJECT = 'Subject';
+		SUBJECT = 'Subject',
 
-	const TO_ = 'To';
-	const FROM_ = 'From';
-	const CC = 'Cc';
-	const BCC = 'Bcc';
-	const REPLY_TO = 'Reply-To';
-	const SENDER = 'Sender';
-	const RETURN_PATH = 'Return-Path';
-	const DELIVERED_TO = 'Delivered-To';
+		TO_ = 'To',
+		FROM_ = 'From',
+		CC = 'Cc',
+		BCC = 'Bcc',
+		REPLY_TO = 'Reply-To',
+		SENDER = 'Sender',
+		RETURN_PATH = 'Return-Path',
+		DELIVERED_TO = 'Delivered-To',
 
-	const MESSAGE_ID = 'Message-ID';
-	const IN_REPLY_TO = 'In-Reply-To';
-	const REFERENCES = 'References';
-	const X_DRAFT_INFO = 'X-Draft-Info';
-	const X_ORIGINATING_IP = 'X-Originating-IP';
+		MESSAGE_ID = 'Message-ID',
+		IN_REPLY_TO = 'In-Reply-To',
+		REFERENCES = 'References',
+		X_DRAFT_INFO = 'X-Draft-Info',
+		X_ORIGINATING_IP = 'X-Originating-IP',
 
-	const CONTENT_TYPE = 'Content-Type';
-	const CONTENT_TRANSFER_ENCODING = 'Content-Transfer-Encoding';
-	const CONTENT_DISPOSITION = 'Content-Disposition';
-	const CONTENT_DESCRIPTION = 'Content-Description';
-	const CONTENT_ID = 'Content-ID';
-	const CONTENT_LOCATION = 'Content-Location';
+		CONTENT_TYPE = 'Content-Type',
+		CONTENT_TRANSFER_ENCODING = 'Content-Transfer-Encoding',
+		CONTENT_DISPOSITION = 'Content-Disposition',
+		CONTENT_DESCRIPTION = 'Content-Description',
+		CONTENT_ID = 'Content-ID',
+		CONTENT_LOCATION = 'Content-Location',
 
-	const SENSITIVITY = 'Sensitivity';
+		SENSITIVITY = 'Sensitivity',
 
-	const RECEIVED_SPF = 'Received-SPF';
-	const AUTHENTICATION_RESULTS = 'Authentication-Results';
-	const X_DKIM_AUTHENTICATION_RESULTS = 'X-DKIM-Authentication-Results';
+		RECEIVED_SPF = 'Received-SPF',
+		AUTHENTICATION_RESULTS = 'Authentication-Results',
+		X_DKIM_AUTHENTICATION_RESULTS = 'X-DKIM-Authentication-Results',
 
-	const DKIM_SIGNATURE = 'DKIM-Signature';
-	const DOMAINKEY_SIGNATURE = 'DomainKey-Signature';
+		DKIM_SIGNATURE = 'DKIM-Signature',
+		DOMAINKEY_SIGNATURE = 'DomainKey-Signature',
 
 	// SpamAssassin
-	const X_SPAM_FLAG     = 'X-Spam-Flag';     // YES/NO
-	const X_SPAM_LEVEL    = 'X-Spam-Level';    // *******
-	const X_SPAM_STATUS   = 'X-Spam-Status';   // Yes|No
+		X_SPAM_FLAG     = 'X-Spam-Flag',     // YES/NO
+		X_SPAM_LEVEL    = 'X-Spam-Level',    // *******
+		X_SPAM_STATUS   = 'X-Spam-Status',   // Yes|No
 	// Rspamd
-	const X_SPAMD_RESULT  = 'X-Spamd-Result';  // default: False [7.13 / 9.00];
-	const X_SPAMD_BAR     = 'X-Spamd-Bar';     // +++++++
+		X_SPAMD_RESULT  = 'X-Spamd-Result',  // default: False [7.13 / 9.00],
+		X_SPAMD_BAR     = 'X-Spamd-Bar',     // +++++++
 	// Bogofilter
-	const X_BOGOSITY      = 'X-Bogosity';
+		X_BOGOSITY      = 'X-Bogosity',
 	// Unknown
-	const X_SPAM_CATEGORY = 'X-Spam-Category'; // SPAM|LEGIT
-	const X_SPAM_SCORE    = 'X-Spam-Score';    // 0
-	const X_HAM_REPORT    = 'X-Ham-Report';
-	const X_MICROSOFT_ANTISPAM = 'x-microsoft-antispam:';
+		X_SPAM_CATEGORY = 'X-Spam-Category', // SPAM|LEGIT
+		X_SPAM_SCORE    = 'X-Spam-Score',    // 0
+		X_HAM_REPORT    = 'X-Ham-Report',
+		X_MICROSOFT_ANTISPAM = 'x-microsoft-antispam',
 
-	const X_VIRUS = 'X-Virus';
+	// X-Quarantine-ID
+		X_VIRUS = 'X-Virus',
+	// ClamAV
+		X_VIRUS_SCANNED = 'X-Virus-Scanned',
+		X_VIRUS_STATUS  = 'X-Virus-Status',  // clean/infected/not-scanned
 
-	const RETURN_RECEIPT_TO = 'Return-Receipt-To';
-	const DISPOSITION_NOTIFICATION_TO = 'Disposition-Notification-To';
-	const X_CONFIRM_READING_TO = 'X-Confirm-Reading-To';
+		RETURN_RECEIPT_TO = 'Return-Receipt-To',
+		DISPOSITION_NOTIFICATION_TO = 'Disposition-Notification-To',
+		X_CONFIRM_READING_TO = 'X-Confirm-Reading-To',
 
-	const MIME_VERSION = 'MIME-Version';
-	const X_MAILER = 'X-Mailer';
+		MIME_VERSION = 'MIME-Version',
+		X_MAILER = 'X-Mailer',
 
-	const X_MSMAIL_PRIORITY = 'X-MSMail-Priority';
-	const IMPORTANCE = 'Importance';
-	const X_PRIORITY = 'X-Priority';
+		X_MSMAIL_PRIORITY = 'X-MSMail-Priority',
+		IMPORTANCE = 'Importance',
+		X_PRIORITY = 'X-Priority',
 
-	const LIST_UNSUBSCRIBE = 'List-Unsubscribe';
+		LIST_UNSUBSCRIBE = 'List-Unsubscribe';
 }

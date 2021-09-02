@@ -145,7 +145,8 @@
 		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP aláírt üzenet (kattints az ellenőrzéshez)",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP kódolt üzenet (kattints a visszafejtéshez)",
 		"LINK_DOWNLOAD_AS_ZIP": "Letöltés zip fájlként",
-		"SPAM_SCORE": "Spam Score"
+		"SPAM_SCORE": "Spam Score",
+		"HAS_VIRUS_WARNING": "WARNING: virus detected"
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Visszaigazolás (megjelenítve) - %SUBJECT%",

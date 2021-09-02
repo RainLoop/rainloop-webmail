@@ -48,6 +48,7 @@ export class MessageModel extends AbstractModel {
 			spamScore: 0,
 			spamResult: '',
 			isSpam: false,
+			hasVirus: null, // or boolean when scanned
 			dateTimeStampInUTC: 0,
 			priority: MessagePriority.Normal,
 
@@ -120,6 +121,7 @@ export class MessageModel extends AbstractModel {
 		this.spamScore(0);
 		this.spamResult('');
 		this.isSpam(false);
+		this.hasVirus(null);
 		this.dateTimeStampInUTC(0);
 		this.priority(MessagePriority.Normal);
 
@@ -419,6 +421,7 @@ export class MessageModel extends AbstractModel {
 			this.spamScore(message.spamScore());
 			this.spamResult(message.spamResult());
 			this.isSpam(message.isSpam());
+			this.hasVirus(message.hasVirus());
 			this.dateTimeStampInUTC(message.dateTimeStampInUTC());
 			this.priority(message.priority());
 

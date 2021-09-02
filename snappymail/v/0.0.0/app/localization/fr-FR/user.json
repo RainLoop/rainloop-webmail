@@ -145,7 +145,8 @@
 		"PGP_SIGNED_MESSAGE_DESC": "Message signé par OpenPGP (cliquer pour vérifier)",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "Message chiffré par OpenPGP (cliquer pour déchiffrer)",
 		"LINK_DOWNLOAD_AS_ZIP": "Télécharger le zip",
-		"SPAM_SCORE": "Score de spam"
+		"SPAM_SCORE": "Score de spam",
+		"HAS_VIRUS_WARNING": "WARNING: virus detected"
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Accusé de réception (affiché) - %SUBJECT%",

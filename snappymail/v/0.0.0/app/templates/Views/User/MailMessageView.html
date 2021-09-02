@@ -193,12 +193,10 @@
 									<span data-bind="text: viewCc"></span>
 								</div>
 							</div>
-<!--
-							<div class="informationShort">
+							<div class="informationShort" data-bind="visible: viewSpamStatus()">
 								<span data-i18n="MESSAGE/SPAM_SCORE"></span>:&nbsp;
 								<meter min="0" max="100" optimum="0" low="33" high="66" data-bind="value: viewSpamScore, title: viewSpamStatus"></meter>
 							</div>
--->
 						</div>
 						<div class="informationFull" data-bind="visible: showFullInfo()">
 							<table>
@@ -245,8 +243,9 @@
 								</tr>
 							</table>
 						</div>
+						<div class="hasVirus" data-bind="visible: hasVirus()" data-i18n="MESSAGE/HAS_VIRUS_WARNING"></div>
 					</div>
-					<div class="messageItem fixIndex" data-bind="css: viewLineAsCss(), attr: {'style': 'top:' + viewBodyTopValue() + 'px' }">
+					<div class="messageItem" data-bind="css: viewLineAsCss(), attr: {'style': 'top:' + viewBodyTopValue() + 'px' }">
 						<div tabindex="0" data-bind="hasfocus: messageDomFocused">
 
 							<div>

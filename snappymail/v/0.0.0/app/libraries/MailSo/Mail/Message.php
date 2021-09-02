@@ -27,6 +27,7 @@ class Message implements \JsonSerializable
 		$iSpamScore = 0,
 		$sSpamResult = '',
 		$bIsSpam = false,
+		$bHasVirus = null,
 		$iInternalTimeStampInUTC = 0,
 		$iHeaderTimeStampInUTC = 0,
 		$sHeaderDate = '',
@@ -166,6 +167,16 @@ class Message implements \JsonSerializable
 	public function IsSpam() : bool
 	{
 		return $this->bIsSpam;
+	}
+
+	/**
+	 * null = not scanned
+	 * true = scanned and infected
+	 * false = scanned and no infection found
+	 */
+	public function HasVirus() : ?bool
+	{
+		return $this->bHasVirus;
 	}
 
 	public function InternalTimeStampInUTC() : int
@@ -456,6 +467,7 @@ class Message implements \JsonSerializable
 					$this->iSpamScore = \max(0, \min(100, \floatval($spamicity[1])));
 				}
 			} else if ($spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAM_STATUS)) {
+				$this->sSpamResult = $spam;
 				if (\preg_match('/(?:hits|score)=([\\d\\.-]+)/', $spam, $value)
 				 && \preg_match('/required=([\\d\\.-]+)/', $spam, $required)) {
 					if ($threshold = \floatval($required[1])) {
@@ -465,6 +477,17 @@ class Message implements \JsonSerializable
 				}
 				$spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAM_FLAG);
 				$this->bIsSpam = false !== \stripos($spam, 'YES');
+			}
+
+			if ($virus = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_VIRUS_STATUS)) {
+				if (false !== \stripos($spam, 'infected')) {
+					$this->bHasVirus = true;
+				} else if (false !== \stripos($spam, 'clean')) {
+					$this->bHasVirus = false;
+				}
+			}
+			if ($virus = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_VIRUS_SCANNED)) {
+				$this->sVirusScanned = $virus;
 			}
 
 			$sDraftInfo = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_DRAFT_INFO);
@@ -632,44 +655,43 @@ class Message implements \JsonSerializable
 
 	public function jsonSerialize()
 	{
-		$oAttachments = $this->Attachments();
-		$aFlags = $this->FlagsLowerCase();
 		return array(
 			'@Object' => 'Object/Message',
-			'Folder' => $this->Folder(),
-			'Uid' => (string) $this->Uid(),
-			'Subject' => \trim(\MailSo\Base\Utils::Utf8Clear($this->Subject())),
-			'MessageId' => $this->MessageId(),
-			'Size' => $this->Size(),
-			'SpamScore' => $this->SpamScore(),
-			'SpamResult' => $this->SpamResult(),
-			'IsSpam' => $this->IsSpam(),
-			'DateTimeStampInUTC' => $this->InternalTimeStampInUTC(),
+			'Folder' => $this->sFolder,
+			'Uid' => (string) $this->iUid,
+			'Subject' => \trim(\MailSo\Base\Utils::Utf8Clear($this->sSubject)),
+			'MessageId' => $this->sMessageId,
+			'Size' => $this->iSize,
+			'SpamScore' => $this->iSpamScore,
+			'SpamResult' => $this->sSpamResult,
+			'IsSpam' => $this->bIsSpam,
+			'HasVirus' => $this->bHasVirus,
+			'DateTimeStampInUTC' => $this->iInternalTimeStampInUTC,
 
 			// \MailSo\Mime\EmailCollection
-			'From' => $this->From(),
-			'ReplyTo' => $this->ReplyTo(),
-			'To' => $this->To(),
-			'Cc' => $this->Cc(),
-			'Bcc' => $this->Bcc(),
-			'Sender' => $this->Sender(),
-			'DeliveredTo' => $this->DeliveredTo(),
+			'From' => $this->oFrom,
+			'ReplyTo' => $this->oReplyTo,
+			'To' => $this->oTo,
+			'Cc' => $this->oCc,
+			'Bcc' => $this->oBcc,
+			'Sender' => $this->oSender,
+			'DeliveredTo' => $this->oDeliveredTo,
 
-			'Priority' => $this->Priority(),
-			'Threads' => $this->Threads(),
-			'Sensitivity' => $this->Sensitivity(),
-			'UnsubsribeLinks' => $this->UnsubsribeLinks(),
+			'Priority' => $this->iPriority,
+			'Threads' => $this->aThreads,
+			'Sensitivity' => $this->iSensitivity,
+			'UnsubsribeLinks' => $this->aUnsubsribeLinks,
 			'ReadReceipt' => '',
 
-			'HasAttachments' => $oAttachments ? 0 < $oAttachments->Count() : false,
-			'AttachmentsSpecData' => $oAttachments ? $oAttachments->SpecData() : array(),
+			'HasAttachments' => $this->oAttachments && 0 < $this->oAttachments->Count(),
+			'AttachmentsSpecData' => $this->oAttachments ? $this->oAttachments->SpecData() : array(),
 
 			// Flags
-			'IsUnseen' => \in_array('\\unseen', $aFlags) || !\in_array('\\seen', $aFlags),
-			'IsSeen' => \in_array('\\seen', $aFlags),
-			'IsFlagged' => \in_array('\\flagged', $aFlags),
-			'IsAnswered' => \in_array('\\answered', $aFlags),
-			'IsDeleted' => \in_array('\\deleted', $aFlags)
+			'IsUnseen' => \in_array('\\unseen', $this->aFlagsLowerCase) || !\in_array('\\seen', $this->aFlagsLowerCase),
+			'IsSeen' => \in_array('\\seen', $this->aFlagsLowerCase),
+			'IsFlagged' => \in_array('\\flagged', $this->aFlagsLowerCase),
+			'IsAnswered' => \in_array('\\answered', $this->aFlagsLowerCase),
+			'IsDeleted' => \in_array('\\deleted', $this->aFlagsLowerCase)
 		);
 	}
 }
