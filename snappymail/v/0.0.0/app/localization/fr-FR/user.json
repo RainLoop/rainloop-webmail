@@ -146,7 +146,7 @@
 		"PGP_ENCRYPTED_MESSAGE_DESC": "Message chiffré par OpenPGP (cliquer pour déchiffrer)",
 		"LINK_DOWNLOAD_AS_ZIP": "Télécharger le zip",
 		"SPAM_SCORE": "Score de spam",
-		"HAS_VIRUS_WARNING": "WARNING: virus detected"
+		"HAS_VIRUS_WARNING": "ATTENTION : virus détecté"
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Accusé de réception (affiché) - %SUBJECT%",
@@ -397,8 +397,8 @@
 		"LABEL_SHOW_IMAGES": "Toujours afficher les images dans le mail",
 		"LABEL_REMOVE_COLORS": "Supprimer les couleurs d'arrière-plan et de texte du message",
 		"LABEL_MESSAGE_PER_PAGE": "Messages par page",
-		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
-		"SECONDS": "seconds",
+		"LABEL_MARK_MESSAGE_READ_AFTER": "Marquer le message comme lu après",
+		"SECONDS": "secondes",
 		"LABEL_NOTIFICATIONS": "Notifications",
 		"LABEL_SOUND_NOTIFICATION": "Son de notification",
 		"LABEL_CHROME_NOTIFICATION_DESC": "Afficher un pop-up de notification pour les nouveaux messages",

@@ -146,7 +146,7 @@
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP kódolt üzenet (kattints a visszafejtéshez)",
 		"LINK_DOWNLOAD_AS_ZIP": "Letöltés zip fájlként",
 		"SPAM_SCORE": "Spam Score",
-		"HAS_VIRUS_WARNING": "WARNING: virus detected"
+		"HAS_VIRUS_WARNING": "FIGYELEM: vírust észleltünk"
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Visszaigazolás (megjelenítve) - %SUBJECT%",
@@ -397,8 +397,8 @@
 		"LABEL_SHOW_IMAGES": "Mindig jelenítse meg a külső képeket az üzenet törzsében",
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Üzenetek egy oldalon",
-		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
-		"SECONDS": "seconds",
+		"LABEL_MARK_MESSAGE_READ_AFTER": "Jelölje meg az üzenetet olvasottként",
+		"SECONDS": "másodperc után",
 		"LABEL_NOTIFICATIONS": "Értesítések",
 		"LABEL_SOUND_NOTIFICATION": "Hangos értesítés",
 		"LABEL_CHROME_NOTIFICATION_DESC": "Új üzenetek értesítő ablakainak megjelenítése",

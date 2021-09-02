@@ -146,7 +146,7 @@
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP versleuteld bericht (klik om te ontsleutelen)",
 		"LINK_DOWNLOAD_AS_ZIP": "Download als zip",
 		"SPAM_SCORE": "Spamscore",
-		"HAS_VIRUS_WARNING": "WARNING: virus detected"
+		"HAS_VIRUS_WARNING": "WAARSCHUWING: virus gedetecteerd"
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Ontvangstbevestiging (weergegeven) - %SUBJECT%",
@@ -397,8 +397,8 @@
 		"LABEL_SHOW_IMAGES": "Afbeeldingen altijd weergeven in het bericht",
 		"LABEL_REMOVE_COLORS": "Verwijder achtergrond- en tekstkleuren uit het bericht",
 		"LABEL_MESSAGE_PER_PAGE": "Berichten op pagina",
-		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
-		"SECONDS": "seconds",
+		"LABEL_MARK_MESSAGE_READ_AFTER": "Bericht markeren als gelezen na",
+		"SECONDS": "seconden",
 		"LABEL_NOTIFICATIONS": "Notificaties",
 		"LABEL_SOUND_NOTIFICATION": "Notificatie geluid",
 		"LABEL_CHROME_NOTIFICATION_DESC": "Toon nieuwe berichten popup",

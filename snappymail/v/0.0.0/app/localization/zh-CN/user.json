@@ -146,7 +146,7 @@
 		"PGP_ENCRYPTED_MESSAGE_DESC": "由 OpenPGP 加密 (点击解密)",
 		"LINK_DOWNLOAD_AS_ZIP": "下载为zip压缩包",
 		"SPAM_SCORE": "垃圾邮件分数",
-		"HAS_VIRUS_WARNING": "WARNING: virus detected"
+		"HAS_VIRUS_WARNING": "警告：检测到病毒"
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "送达回执 - %SUBJECT%",
@@ -397,8 +397,8 @@
 		"LABEL_SHOW_IMAGES": "总是显示外部图片信息",
 		"LABEL_REMOVE_COLORS": "从消息中删除背景和文本颜色",
 		"LABEL_MESSAGE_PER_PAGE": "封邮件每页",
-		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
-		"SECONDS": "seconds",
+		"LABEL_MARK_MESSAGE_READ_AFTER": "将消息标记为已读",
+		"SECONDS": "秒",
 		"LABEL_NOTIFICATIONS": "通知",
 		"LABEL_SOUND_NOTIFICATION": "提示音",
 		"LABEL_CHROME_NOTIFICATION_DESC": "显示新邮件弹窗",
