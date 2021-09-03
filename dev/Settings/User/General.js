@@ -4,7 +4,7 @@ import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 import { SaveSettingsStep } from 'Common/Enums';
 import { EditorDefaultType, Layout } from 'Common/EnumsUser';
 import { Settings, SettingsGet } from 'Common/Globals';
-import { isArray, settingsSaveHelperSimpleFunction, addObservablesTo, addSubscribablesTo } from 'Common/Utils';
+import { isArray, settingsSaveHelperSimpleFunction, addObservablesTo, addSubscribablesTo, addComputablesTo } from 'Common/Utils';
 import { i18n, trigger as translatorTrigger, reload as translatorReload, convertLangName } from 'Common/Translator';
 
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -47,7 +47,6 @@ export class GeneralUserSettings {
 		this.replySameFolder = SettingsUserStore.replySameFolder;
 		this.allowLanguagesOnSettings = !!SettingsGet('AllowLanguagesOnSettings');
 
-		this.languageFullName = ko.computed(() => convertLangName(this.language()));
 		this.languageTrigger = ko.observable(SaveSettingsStep.Idle).extend({ debounce: 100 });
 
 		addObservablesTo(this, {
@@ -59,33 +58,37 @@ export class GeneralUserSettings {
 
 		this.identities = IdentityUserStore;
 
-		this.identityMain = ko.computed(() => {
-			const list = this.identities();
-			return isArray(list) ? list.find(item => item && !item.id()) : null;
-		});
+		addComputablesTo(this, {
+			languageFullName: () => convertLangName(this.language()),
 
-		this.identityMainDesc = ko.computed(() => {
-			const identity = this.identityMain();
-			return identity ? identity.formattedName() : '---';
-		});
+			identityMain: () => {
+				const list = this.identities();
+				return isArray(list) ? list.find(item => item && !item.id()) : null;
+			},
 
-		this.editorDefaultTypes = ko.computed(() => {
-			translatorTrigger();
-			return [
-				{ id: EditorDefaultType.Html, name: i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML') },
-				{ id: EditorDefaultType.Plain, name: i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN') },
-				{ id: EditorDefaultType.HtmlForced, name: i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML_FORCED') },
-				{ id: EditorDefaultType.PlainForced, name: i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN_FORCED') }
-			];
-		});
+			identityMainDesc: () => {
+				const identity = this.identityMain();
+				return identity ? identity.formattedName() : '---';
+			},
 
-		this.layoutTypes = ko.computed(() => {
-			translatorTrigger();
-			return [
-				{ id: Layout.NoPreview, name: i18n('SETTINGS_GENERAL/LABEL_LAYOUT_NO_SPLIT') },
-				{ id: Layout.SidePreview, name: i18n('SETTINGS_GENERAL/LABEL_LAYOUT_VERTICAL_SPLIT') },
-				{ id: Layout.BottomPreview, name: i18n('SETTINGS_GENERAL/LABEL_LAYOUT_HORIZONTAL_SPLIT') }
-			];
+			editorDefaultTypes: () => {
+				translatorTrigger();
+				return [
+					{ id: EditorDefaultType.Html, name: i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML') },
+					{ id: EditorDefaultType.Plain, name: i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN') },
+					{ id: EditorDefaultType.HtmlForced, name: i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML_FORCED') },
+					{ id: EditorDefaultType.PlainForced, name: i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN_FORCED') }
+				];
+			},
+
+			layoutTypes: () => {
+				translatorTrigger();
+				return [
+					{ id: Layout.NoPreview, name: i18n('SETTINGS_GENERAL/LABEL_LAYOUT_NO_SPLIT') },
+					{ id: Layout.SidePreview, name: i18n('SETTINGS_GENERAL/LABEL_LAYOUT_VERTICAL_SPLIT') },
+					{ id: Layout.BottomPreview, name: i18n('SETTINGS_GENERAL/LABEL_LAYOUT_HORIZONTAL_SPLIT') }
+				];
+			}
 		});
 
 		const fReloadLanguageHelper = (saveSettingsStep) => () => {

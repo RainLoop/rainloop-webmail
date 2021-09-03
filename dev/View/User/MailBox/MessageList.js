@@ -66,8 +66,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.allowMessageListActions = Settings.capa(Capa.MessageListActions);
 		this.allowDangerousActions = Settings.capa(Capa.DangerousActions);
 
-		this.popupVisibility = ko.computed(() => 0 < popupVisibilityNames().length);
-
 		this.messageList = MessageUserStore.list;
 
 		this.sortSupported = FolderUserStore.sortSupported;
@@ -78,13 +76,17 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.isMessageSelected = MessageUserStore.isMessageSelected;
 		this.messageListSearch = MessageUserStore.listSearch;
 		this.messageListError = MessageUserStore.listError;
-		this.folderMenuForMove = ko.computed(() =>
-			folderListOptionsBuilder(
-				[FolderUserStore.currentFolderFullNameRaw()],
-				[],
-				item => item ? item.localName() : ''
-			)
-		);
+
+		this.addComputables({
+			popupVisibility: () => 0 < popupVisibilityNames().length,
+
+			folderMenuForMove: () =>
+				folderListOptionsBuilder(
+					[FolderUserStore.currentFolderFullNameRaw()],
+					[],
+					item => item ? item.localName() : ''
+				)
+		});
 
 		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
 

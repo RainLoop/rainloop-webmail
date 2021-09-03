@@ -8,15 +8,17 @@ import Remote from 'Remote/User/Fetch';
 import { showScreenPopup } from 'Knoin/Knoin';
 
 import { TemplatePopupView } from 'View/Popup/Template';
+import { addComputablesTo } from 'Common/Utils';
 
 export class TemplatesUserSettings {
 	constructor() {
 		this.templates = TemplateUserStore.templates;
 
-		this.processText = ko.computed(() =>
-			TemplateUserStore.templates.loading() ? i18n('SETTINGS_TEMPLETS/LOADING_PROCESS') : ''
-		);
-		this.visibility = ko.computed(() => this.processText() ? 'visible' : 'hidden');
+		addComputablesTo({
+			processText: () => TemplateUserStore.templates.loading() ? i18n('SETTINGS_TEMPLETS/LOADING_PROCESS') : '',
+
+			visibility: () => this.processText() ? 'visible' : 'hidden'
+		});
 
 		this.templateForDeletion = ko.observable(null).deleteAccessHelper();
 	}

@@ -7,7 +7,8 @@ import {
 	changeTheme,
 	convertThemeName,
 	addObservablesTo,
-	addSubscribablesTo
+	addSubscribablesTo,
+	addComputablesTo
 } from 'Common/Utils';
 
 import { Capa, SaveSettingsStep } from 'Common/Enums';
@@ -74,12 +75,12 @@ export class GeneralAdminSettings {
 				  ].join('')
 				: '';
 
-		this.themesOptions = ko.computed(() =>
-			this.themes.map(theme => ({ optValue: theme, optText: convertThemeName(theme) }))
-		);
+		addComputablesTo(this, {
+			themesOptions: () => this.themes.map(theme => ({ optValue: theme, optText: convertThemeName(theme) })),
 
-		this.languageFullName = ko.computed(() => convertLangName(this.language()));
-		this.languageAdminFullName = ko.computed(() => convertLangName(this.languageAdmin()));
+			languageFullName: () => convertLangName(this.language()),
+			languageAdminFullName: () => convertLangName(this.languageAdmin())
+		});
 
 		this.languageAdminTrigger = ko.observable(SaveSettingsStep.Idle).extend({ debounce: 100 });
 

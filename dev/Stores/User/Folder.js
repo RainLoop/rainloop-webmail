@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { FolderType, FolderSortMode } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { addObservablesTo, addSubscribablesTo } from 'Common/Utils';
+import { addObservablesTo, addSubscribablesTo, addComputablesTo } from 'Common/Utils';
 import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
 import { Settings, SettingsGet } from 'Common/Globals';
 //import Remote from 'Remote/User/Fetch'; Circular dependency
@@ -52,49 +52,43 @@ export const FolderUserStore = new class {
 
 		this.sieveAllowFileintoInbox = !!SettingsGet('SieveAllowFileintoInbox');
 
-		this.draftFolderNotEnabled = ko.computed(
-			() => !this.draftFolder() || UNUSED_OPTION_VALUE === this.draftFolder()
-		);
+		addComputablesTo(this, {
 
-		// foldersListWithSingleInboxRootFolder
-		/** returns true when there are no non-system folders in the root of the folders tree */
-		this.singleRootFolder = ko.computed(() => {
-			let multiple = false;
-			this.folderList.forEach(folder => {
-				let subscribed = folder.subscribed(),
-					hasSub = folder.hasSubscribedSubfolders();
-				multiple |= (!folder.isSystemFolder() || (hasSub && !folder.isInbox())) && (subscribed || hasSub)
-			});
-			return !multiple;
+			draftFolderNotEnabled: () => !this.draftFolder() || UNUSED_OPTION_VALUE === this.draftFolder(),
+
+			// foldersListWithSingleInboxRootFolder
+			/** returns true when there are no non-system folders in the root of the folders tree */
+			singleRootFolder: () => {
+				let multiple = false;
+				this.folderList.forEach(folder => {
+					let subscribed = folder.subscribed(),
+						hasSub = folder.hasSubscribedSubfolders();
+					multiple |= (!folder.isSystemFolder() || (hasSub && !folder.isInbox())) && (subscribed || hasSub)
+				});
+				return !multiple;
+			},
+
+			currentFolderFullNameRaw: () => (this.currentFolder() ? this.currentFolder().fullNameRaw : ''),
+
+			currentFolderFullName: () => (this.currentFolder() ? this.currentFolder().fullName : ''),
+			currentFolderFullNameHash: () => (this.currentFolder() ? this.currentFolder().fullNameHash : ''),
+
+			foldersChanging: () =>
+				this.foldersLoading() | this.foldersCreating() | this.foldersDeleting() | this.foldersRenaming(),
+
+			folderListSystemNames: () => {
+				const list = [getFolderInboxName()],
+				others = [this.sentFolder(), this.draftFolder(), this.spamFolder(), this.trashFolder(), this.archiveFolder()];
+
+				this.folderList().length &&
+					others.forEach(name => name && UNUSED_OPTION_VALUE !== name && list.push(name));
+
+				return list;
+			},
+
+			folderListSystem: () =>
+				this.folderListSystemNames().map(name => getFolderFromCacheList(name)).filter(v => v)
 		});
-
-		this.currentFolderFullNameRaw = ko.computed(() => (this.currentFolder() ? this.currentFolder().fullNameRaw : ''));
-
-		this.currentFolderFullName = ko.computed(() => (this.currentFolder() ? this.currentFolder().fullName : ''));
-		this.currentFolderFullNameHash = ko.computed(() => (this.currentFolder() ? this.currentFolder().fullNameHash : ''));
-
-		this.foldersChanging = ko.computed(() => {
-			const loading = this.foldersLoading(),
-				creating = this.foldersCreating(),
-				deleting = this.foldersDeleting(),
-				renaming = this.foldersRenaming();
-
-			return loading || creating || deleting || renaming;
-		});
-
-		this.folderListSystemNames = ko.computed(() => {
-			const list = [getFolderInboxName()],
-			others = [this.sentFolder(), this.draftFolder(), this.spamFolder(), this.trashFolder(), this.archiveFolder()];
-
-			this.folderList().length &&
-				others.forEach(name => name && UNUSED_OPTION_VALUE !== name && list.push(name));
-
-			return list;
-		});
-
-		this.folderListSystem = ko.computed(() =>
-			this.folderListSystemNames().map(name => getFolderFromCacheList(name)).filter(v => v)
-		);
 
 		const
 			fRemoveSystemFolderType = (observable) => () => {

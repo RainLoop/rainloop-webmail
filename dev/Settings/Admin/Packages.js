@@ -9,6 +9,7 @@ import Remote from 'Remote/Admin/Fetch';
 import { showScreenPopup } from 'Knoin/Knoin';
 import { PluginPopupView } from 'View/Popup/Plugin';
 import { SettingsGet } from 'Common/Globals';
+import { addComputablesTo } from 'Common/Utils';
 
 export class PackagesAdminSettings {
 	constructor() {
@@ -16,17 +17,13 @@ export class PackagesAdminSettings {
 
 		this.packages = PackageAdminStore;
 
-		this.packagesCurrent = ko.computed(() =>
-			PackageAdminStore.filter(item => item && item.installed && !item.canBeUpdated)
-		);
-		this.packagesAvailableForUpdate = ko.computed(() =>
-			PackageAdminStore.filter(item => item && item.installed && !!item.canBeUpdated)
-		);
-		this.packagesAvailableForInstallation = ko.computed(() =>
-			PackageAdminStore.filter(item => item && !item.installed)
-		);
+		addComputablesTo(this, {
+			packagesCurrent: () => PackageAdminStore.filter(item => item && item.installed && !item.canBeUpdated),
+			packagesAvailableForUpdate: () => PackageAdminStore.filter(item => item && item.installed && !!item.canBeUpdated),
+			packagesAvailableForInstallation: () => PackageAdminStore.filter(item => item && !item.installed),
 
-		this.visibility = ko.computed(() => (PackageAdminStore.loading() ? 'visible' : 'hidden'));
+			visibility: () => (PackageAdminStore.loading() ? 'visible' : 'hidden')
+		});
 
 		this.enabledPlugins = ko.observable(!!SettingsGet('EnabledPlugins'));
 		this.enabledPlugins.subscribe(value =>

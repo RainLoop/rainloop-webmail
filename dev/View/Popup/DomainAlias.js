@@ -1,5 +1,3 @@
-import ko from 'ko';
-
 import { getNotification } from 'Common/Translator';
 
 import { DomainAdminStore } from 'Stores/Admin/Domain';
@@ -22,11 +20,13 @@ class DomainAliasPopupView extends AbstractViewPopup {
 			alias: ''
 		});
 
-		this.domains = ko.computed(() => DomainAdminStore.filter(item => item && !item.alias));
+		this.addComputables({
+			domains: () => DomainAdminStore.filter(item => item && !item.alias),
 
-		this.domainsOptions = ko.computed(() => this.domains().map(item => ({ optValue: item.name, optText: item.name })));
+			domainsOptions: () => this.domains().map(item => ({ optValue: item.name, optText: item.name })),
 
-		this.canBeSaved = ko.computed(() => !this.saving() && this.name() && this.alias());
+			canBeSaved: () => !this.saving() && this.name() && this.alias()
+		});
 
 		decorateKoCommands(this, {
 			createCommand: self => self.canBeSaved()

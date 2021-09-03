@@ -23,8 +23,10 @@ class PluginPopupView extends AbstractViewPopup {
 
 		this.configures = ko.observableArray();
 
-		this.hasReadme = ko.computed(() => !!this.readme());
-		this.hasConfiguration = ko.computed(() => 0 < this.configures().length);
+		this.addComputables({
+			hasReadme: () => !!this.readme(),
+			hasConfiguration: () => 0 < this.configures().length
+		});
 
 		this.bDisabeCloseOnEsc = true;
 		this.sDefaultScope = Scope.All;

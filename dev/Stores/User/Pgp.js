@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { i18n } from 'Common/Translator';
-import { isArray, arrayLength, pString } from 'Common/Utils';
+import { isArray, arrayLength, pString, addComputablesTo } from 'Common/Utils';
 import { createElement } from 'Common/Globals';
 
 import { AccountUserStore } from 'Stores/User/Account';
@@ -141,8 +141,10 @@ export const PgpUserStore = new class {
 		this.openpgpkeys = ko.observableArray();
 		this.openpgpKeyring = null;
 
-		this.openpgpkeysPublic = ko.computed(() => this.openpgpkeys.filter(item => item && !item.isPrivate));
-		this.openpgpkeysPrivate = ko.computed(() => this.openpgpkeys.filter(item => item && item.isPrivate));
+		addComputablesTo(this, {
+			openpgpkeysPublic: () => this.openpgpkeys.filter(item => item && !item.isPrivate),
+			openpgpkeysPrivate: () => this.openpgpkeys.filter(item => item && item.isPrivate)
+		});
 	}
 
 	/**
