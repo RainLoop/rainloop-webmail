@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 import { SaveSettingsStep } from 'Common/Enums';
 import { EditorDefaultType, Layout } from 'Common/EnumsUser';
 import { Settings, SettingsGet } from 'Common/Globals';
@@ -27,7 +26,6 @@ export class GeneralUserSettings {
 		this.languages = LanguageStore.languages;
 		this.messageReadDelay = SettingsUserStore.messageReadDelay;
 		this.messagesPerPage = SettingsUserStore.messagesPerPage;
-		this.messagesPerPageArray = MESSAGES_PER_PAGE_VALUES;
 
 		this.editorDefaultType = SettingsUserStore.editorDefaultType;
 		this.layout = SettingsUserStore.layout;

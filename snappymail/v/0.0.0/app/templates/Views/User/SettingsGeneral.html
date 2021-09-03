@@ -50,16 +50,9 @@
 		<div class="control-group">
 			<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_MESSAGE_PER_PAGE"></label>
 			<div class="controls">
-				<div data-bind="component: {
-					name: 'Select',
-					params: {
-						options: messagesPerPageArray,
-						value: messagesPerPage,
-						trigger: mppTrigger,
-						size: 2,
-						width: 80
-					}
-				}"></div>
+				<input type="number" min="10" max="50" step="1" class="span1" data-bind="textInput: messagesPerPage"/>
+				&nbsp;
+				<span data-bind="saveTrigger: mppTrigger"></span>
 			</div>
 		</div>
 		<div class="control-group">
