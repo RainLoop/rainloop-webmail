@@ -70,7 +70,8 @@ abstract class Header
 		X_HAM_REPORT    = 'X-Ham-Report',
 		X_MICROSOFT_ANTISPAM = 'x-microsoft-antispam',
 
-	// X-Quarantine-ID
+//	 	X_QUARANTINE_ID = 'X-Quarantine-ID',
+	// Rspamd
 		X_VIRUS = 'X-Virus',
 	// ClamAV
 		X_VIRUS_SCANNED = 'X-Virus-Scanned',

@@ -157,10 +157,11 @@ class MailClient
 			// SPAM
 			\MailSo\Mime\Enumerations\Header::X_SPAM_STATUS,
 			\MailSo\Mime\Enumerations\Header::X_SPAMD_RESULT,
-			\MailSo\Mime\Enumerations\Header::X_BOGOSITY
+			\MailSo\Mime\Enumerations\Header::X_BOGOSITY,
 			// Virus
-			,\MailSo\Mime\Enumerations\Header::X_VIRUS_SCANNED,
-			,\MailSo\Mime\Enumerations\Header::X_VIRUS_STATUS
+			\MailSo\Mime\Enumerations\Header::X_VIRUS,
+			\MailSo\Mime\Enumerations\Header::X_VIRUS_SCANNED,
+			\MailSo\Mime\Enumerations\Header::X_VIRUS_STATUS
 		), true);
 //
 //		return \MailSo\Imap\Enumerations\FetchType::ENVELOPE;

@@ -479,6 +479,9 @@ class Message implements \JsonSerializable
 				$this->bIsSpam = false !== \stripos($spam, 'YES');
 			}
 
+			if ($virus = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_VIRUS)) {
+				$this->bHasVirus = true;
+			}
 			if ($virus = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_VIRUS_STATUS)) {
 				if (false !== \stripos($spam, 'infected')) {
 					$this->bHasVirus = true;
