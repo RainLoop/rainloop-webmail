@@ -7,17 +7,19 @@ function dispose(disposable) {
 }
 
 function typeCast(curValue, newValue) {
-	switch (typeof curValue)
-	{
-	case 'boolean': return 0 != newValue && !!newValue;
-	case 'number': return isFinite(newValue) ? parseFloat(newValue) : 0;
-	case 'string': return null != newValue ? '' + newValue : '';
-	case 'object':
-		if (curValue.constructor.reviveFromJson) {
-			return curValue.constructor.reviveFromJson(newValue);
+	if (null != curValue) {
+		switch (typeof curValue)
+		{
+		case 'boolean': return 0 != newValue && !!newValue;
+		case 'number': return isFinite(newValue) ? parseFloat(newValue) : 0;
+		case 'string': return null != newValue ? '' + newValue : '';
+		case 'object':
+			if (curValue.constructor.reviveFromJson) {
+				return curValue.constructor.reviveFromJson(newValue);
+			}
+			if (isArray(curValue) && !isArray(newValue))
+				return [];
 		}
-		if (isArray(curValue) && !isArray(newValue))
-			return [];
 	}
 	return newValue;
 }
@@ -84,39 +86,37 @@ export class AbstractModel {
 
 	revivePropertiesFromJson(json) {
 		let model = this.constructor;
-		try {
-			if (!model.validJson(json)) {
-				return false;
-			}
-			Object.entries(json).forEach(([key, value]) => {
-				if ('@' !== key[0]) {
-					key = key[0].toLowerCase() + key.substr(1);
-					switch (typeof this[key])
-					{
-					case 'function':
-						if (ko.isObservable(this[key])) {
-							this[key](typeCast(this[key](), value));
-//							console.log('Observable ' + (typeof this[key]()) + ' ' + (model.name) + '.' + key + ' revived');
-						}
-//						else console.log(model.name + '.' + key + ' is a function');
-						break;
-					case 'boolean':
-					case 'number':
-					case 'object':
-					case 'string':
-						this[key] = typeCast(this[key], value);
-						break;
-						// fall through
-					case 'undefined':
-					default:
-//						console.log((typeof this[key])+' '+(model.name)+'.'+key+' not revived');
-					}
-				}
-			});
-		} catch (e) {
-			console.log(model.name);
-			console.error(e);
+		if (!model.validJson(json)) {
+			return false;
 		}
+		Object.entries(json).forEach(([key, value]) => {
+			if ('@' !== key[0]) try {
+				key = key[0].toLowerCase() + key.substr(1);
+				switch (typeof this[key])
+				{
+				case 'function':
+					if (ko.isObservable(this[key])) {
+						this[key](typeCast(this[key](), value));
+//						console.log('Observable ' + (typeof this[key]()) + ' ' + (model.name) + '.' + key + ' revived');
+					}
+//					else console.log(model.name + '.' + key + ' is a function');
+					break;
+				case 'boolean':
+				case 'number':
+				case 'object':
+				case 'string':
+					this[key] = typeCast(this[key], value);
+					break;
+					// fall through
+				case 'undefined':
+				default:
+//					console.log((typeof this[key])+' '+(model.name)+'.'+key+' not revived');
+				}
+			} catch (e) {
+				console.log(model.name + '.' + key);
+				console.error(e);
+			}
+		});
 		return true;
 	}
 
