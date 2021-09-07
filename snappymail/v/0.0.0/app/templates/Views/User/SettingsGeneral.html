@@ -114,12 +114,12 @@
 						params: {
 							label: 'SETTINGS_GENERAL/LABEL_CHROME_NOTIFICATION_DESC',
 							value: enableDesktopNotification,
-							disable: isDesktopNotificationDenied,
+							enable: isDesktopNotificationAllowed,
 							inline: true
 						}
 					}"></div>
 					&nbsp;
-					<span data-bind="visible: isDesktopNotificationDenied" style="color: #999" data-i18n="SETTINGS_GENERAL/LABEL_CHROME_NOTIFICATION_DESC_DENIED"></span>
+					<span data-bind="visible: !isDesktopNotificationAllowed()" style="color: #999" data-i18n="SETTINGS_GENERAL/LABEL_CHROME_NOTIFICATION_DESC_DENIED"></span>
 					<span class="fontastic" data-bind="click: testSystemNotification" style="color:green;cursor:pointer">▶️</span>
 				</div>
  				<div>

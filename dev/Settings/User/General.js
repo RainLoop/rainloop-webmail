@@ -35,7 +35,7 @@ export class GeneralUserSettings {
 		this.notificationSounds = ko.observableArray(SettingsGet('NewMailSounds'));
 
 		this.enableDesktopNotification = NotificationUserStore.enableDesktopNotification;
-		this.isDesktopNotificationDenied = NotificationUserStore.isDesktopNotificationDenied;
+		this.isDesktopNotificationAllowed = NotificationUserStore.isDesktopNotificationAllowed;
 
 		this.showImages = SettingsUserStore.showImages;
 		this.removeColors = SettingsUserStore.removeColors;

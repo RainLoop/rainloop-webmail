@@ -8,20 +8,11 @@ class AbstractCheckbox extends AbstractComponent {
 	constructor(params = {}) {
 		super();
 
-		this.value = params.value;
-		if (undefined === this.value || !this.value.subscribe) {
-			this.value = ko.observable(!!this.value);
-		}
+		this.value = ko.isObservable(params.value) ? params.value
+			: ko.observable(!!params.value);
 
-		this.enable = params.enable;
-		if (undefined === this.enable || !this.enable.subscribe) {
-			this.enable = ko.observable(undefined === this.enable || !!this.enable);
-		}
-
-		this.disable = params.disable;
-		if (undefined === this.disable || !this.disable.subscribe) {
-			this.disable = ko.observable(!!this.disable);
-		}
+		this.enable = ko.isObservable(params.enable) ? params.enable
+			: ko.observable(undefined === params.enable || !!params.enable);
 
 		this.label = params.label || '';
 		this.inline = !!params.inline;

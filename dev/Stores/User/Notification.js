@@ -41,13 +41,13 @@ export const NotificationUserStore = new class {
 
 		this.enableDesktopNotification = ko.observable(false)/*.extend({ notify: 'always' })*/;
 
-		this.isDesktopNotificationDenied = ko.observable(NotificationsDenied());
+		this.isDesktopNotificationAllowed = ko.observable(!NotificationsDenied());
 
 		this.enableDesktopNotification.subscribe(value => {
 			DesktopNotifications = !!value;
 			if (value && HTML5Notification && !NotificationsGranted()) {
 				HTML5Notification.requestPermission(() =>
-					this.isDesktopNotificationDenied(NotificationsDenied())
+					this.isDesktopNotificationAllowed(!NotificationsDenied())
 				);
 			}
 		});
