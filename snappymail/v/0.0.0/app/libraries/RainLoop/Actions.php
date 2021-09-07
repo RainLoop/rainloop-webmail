@@ -1082,7 +1082,7 @@ class Actions
 		$sPassword = $oConfig->Get('security', 'admin_password', '');
 		if (!$sPassword) {
 			$sPassword = \substr(\base64_encode(\random_bytes(16)), 0, 12);
-			\file_put_contents($passfile, $sPassword);
+			\file_put_contents($passfile, $sPassword . "\n");
 			\chmod($passfile, 0600);
 			$oConfig->SetPassword($sPassword);
 			$oConfig->Save();
