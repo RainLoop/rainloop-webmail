@@ -214,8 +214,10 @@
 						<div class="sizeParent actionHandle" data-bind="text: friendlySize()"></div>
 
 						<div class="threads-len" data-bind="visible: 1 < threadsLen()">
-							<!-- ko text: threadsLen --><!-- /ko -->
-							›
+							<span>
+								<!-- ko text: threadsLen --><!-- /ko -->
+								›
+							</span>
 						</div>
 
 						<time class="actionHandle" data-moment-format="SHORT" data-moment-format-title="FULL" data-bind="moment: dateTimeStampInUTC"></time>
