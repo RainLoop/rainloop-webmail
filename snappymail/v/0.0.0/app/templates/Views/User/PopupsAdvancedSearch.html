@@ -40,17 +40,15 @@
 				<div class="span4">
 					<div class="control-group">
 						<label class="control-label" data-i18n="SEARCH/LABEL_ADV_DATE"></label>
-						<div class="controls">
-							<div data-bind="component: {
-								name: 'Select',
-								params: {
-									options: selectedDates,
-									value: selectedDateValue,
-									optionsText: 'name',
-									optionsValue: 'id'
-								}
-							}"></div>
-						</div>
+						<div class="controls" data-bind="component: {
+							name: 'Select',
+							params: {
+								options: selectedDates,
+								value: selectedDateValue,
+								optionsText: 'name',
+								optionsValue: 'id'
+							}
+						}"></div>
 					</div>
 					<div class="control-group">
 						<label class="control-label">

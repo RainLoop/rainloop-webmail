@@ -86,10 +86,10 @@ export class AccountsUserSettings {
 
 	onBuild(oDom) {
 		oDom.addEventListener('click', event => {
-			let el = event.target.closestWithin('.accounts-list .account-item .e-action', oDom);
+			let el = event.target.closestWithin('.accounts-list .e-action', oDom);
 			el && ko.dataFor(el) && this.editAccount(ko.dataFor(el));
 
-			el = event.target.closestWithin('.identities-list .identity-item .e-action', oDom);
+			el = event.target.closestWithin('.identities-list .e-action', oDom);
 			el && ko.dataFor(el) && this.editIdentity(ko.dataFor(el));
 		});
 	}

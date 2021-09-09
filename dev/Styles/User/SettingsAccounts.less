@@ -1,57 +1,47 @@
 
 .b-settings-accounts {
 
-	.list-table {
-
-		.account-img, .identity-img {
-			font-size: 12px;
-			margin-right: 5px;
-		}
-
-		.account-name {
-			display: inline-block;
-			word-break: break-all;
-			box-sizing: border-box;
-			line-height: 22px;
-		}
-
-		.identity-default {
-			cursor: pointer;
-			color: #ccc;
-		}
-
-		.identity-name {
-			display: inline-block;
-			word-break: break-all;
-			box-sizing: border-box;
-			line-height: 22px;
-			cursor: pointer;
-		}
-	}
-
-	.accounts-list-top-padding, .identities-list-top-padding {
+	.account-name {
 		display: inline-block;
-		height: 5px;
-		width: 5px;
+		word-break: break-all;
 	}
 
-	.account-item {
+	.identity-default {
+		cursor: pointer;
+		color: #ccc;
+	}
 
+	.identity-name {
+		display: inline-block;
+		word-break: break-all;
+		cursor: pointer;
+	}
+
+	table {
+		margin-top: 1em;
+	}
+
+	tr {
 		white-space: nowrap;
-
-		.delete-account {
-			cursor: pointer;
-			opacity: 0.5;
-		}
 	}
 
-	.identity-item {
-
-		white-space: nowrap;
-
-		.delete-identity {
-			cursor: pointer;
-			opacity: 0.5;
-		}
+	td + td {
+		width: 150px;
 	}
+	td + td + td {
+		width: 1%;
+	}
+
+	.delete {
+		cursor: pointer;
+		opacity: 0.5;
+	}
+
+	.identity-default::before {
+		content: '(';
+	}
+	.identity-default::after {
+		content: ')';
+	}
+
 }

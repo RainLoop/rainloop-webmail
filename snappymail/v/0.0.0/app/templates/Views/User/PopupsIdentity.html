@@ -68,15 +68,13 @@
 		<hr />
 		<div class="form-horizontal">
 			<div class="control-group g-ui-user-select-none">
-				<div class="controls">
-					<div data-bind="component: {
-						name: 'Checkbox',
-						params: {
-							label: 'POPUPS_IDENTITY/LABEL_SIGNATURE_INSERT_BEFORE',
-							value: signatureInsertBefore
-						}
-					}"></div>
-				</div>
+				<div class="controls" data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'POPUPS_IDENTITY/LABEL_SIGNATURE_INSERT_BEFORE',
+						value: signatureInsertBefore
+					}
+				}"></div>
 			</div>
 			<div class="control-group">
 				<div class="e-signature-place" data-bind="editor: signature"></div>

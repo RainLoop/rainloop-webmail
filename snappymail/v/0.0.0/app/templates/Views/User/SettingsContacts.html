@@ -2,30 +2,26 @@
 	<div class="form-horizontal g-ui-user-select-none">
 		<div class="legend" data-i18n="GLOBAL/CONTACTS"></div>
 		<div class="control-group">
-			<div class="controls">
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
-						label: 'SETTINGS_CONTACTS/LABEL_CONTACTS_AUTOSAVE',
-						value: contactsAutosave
-					}
-				}"></div>
-			</div>
+			<div class="controls" data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_CONTACTS/LABEL_CONTACTS_AUTOSAVE',
+					value: contactsAutosave
+				}
+			}"></div>
 		</div>
 	</div>
 	<br />
 	<div class="form-horizontal" data-bind="visible: allowContactsSync">
 		<div class="legend" data-i18n="SETTINGS_CONTACTS/LEGEND_CONTACTS_SYNC"></div>
 		<div class="control-group">
-			<div class="controls">
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
-						label: 'SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_ENABLE',
-						value: enableContactsSync
-					}
-				}"></div>
-			</div>
+			<div class="controls" data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_ENABLE',
+					value: enableContactsSync
+				}
+			}"></div>
 		</div>
 		<div class="control-group">
 			<label class="control-label" data-i18n="SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_AB_URL"></label>

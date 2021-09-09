@@ -14,15 +14,13 @@
 	<br />
 	<br />
 	<div class="control-group">
-		<div class="controls">
-			<div data-bind="component: {
-				name: 'Checkbox',
-				params: {
-					label: 'SETTINGS_OPEN_PGP/LABEL_ALLOW_DRAFT_AUTOSAVE',
-					value: allowDraftAutosave
-				}
-			}"></div>
-		</div>
+		<div class="controls" data-bind="component: {
+			name: 'Checkbox',
+			params: {
+				label: 'SETTINGS_OPEN_PGP/LABEL_ALLOW_DRAFT_AUTOSAVE',
+				value: allowDraftAutosave
+			}
+		}"></div>
 	</div>
 	<br />
 	<table class="table table-hover list-table" data-bind="i18nUpdate: openpgpkeys">

@@ -19,33 +19,29 @@
 		</div>
 		<div class="control-group">
 			<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_LAYOUT"></label>
-			<div class="controls">
-				<div data-bind="component: {
-					name: 'Select',
-					params: {
-						options: layoutTypes,
-						value: layout,
-						trigger: layoutTrigger,
-						optionsText: 'name',
-						optionsValue: 'id'
-					}
-				}"></div>
-			</div>
+			<div class="controls" data-bind="component: {
+				name: 'Select',
+				params: {
+					options: layoutTypes,
+					value: layout,
+					trigger: layoutTrigger,
+					optionsText: 'name',
+					optionsValue: 'id'
+				}
+			}"></div>
 		</div>
 		<div class="control-group">
 			<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_EDITOR"></label>
-			<div class="controls">
-				<div data-bind="component: {
-					name: 'Select',
-					params: {
-						options: editorDefaultTypes,
-						value: editorDefaultType,
-						trigger: editorDefaultTypeTrigger,
-						optionsText: 'name',
-						optionsValue: 'id'
-					}
-				}"></div>
-			</div>
+			<div class="controls" data-bind="component: {
+				name: 'Select',
+				params: {
+					options: editorDefaultTypes,
+					value: editorDefaultType,
+					trigger: editorDefaultTypeTrigger,
+					optionsText: 'name',
+					optionsValue: 'id'
+				}
+			}"></div>
 		</div>
 		<div class="control-group">
 			<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_MESSAGE_PER_PAGE"></label>

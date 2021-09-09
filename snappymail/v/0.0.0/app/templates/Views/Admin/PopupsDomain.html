@@ -140,15 +140,13 @@
 				</label>
 				<div class="tab-content" role="tabpanel" aria-hidden="true">
 					<div class="row">
-						<div class="span5">
-							<div data-bind="component: {
-								name: 'Checkbox',
-								params: {
-									label: 'POPUPS_DOMAIN/LABEL_ALLOW_SIEVE_SCRIPTS',
-									value: useSieve
-								}
-							}"></div>
-						</div>
+						<div class="span5" data-bind="component: {
+							name: 'Checkbox',
+							params: {
+								label: 'POPUPS_DOMAIN/LABEL_ALLOW_SIEVE_SCRIPTS',
+								value: useSieve
+							}
+						}"></div>
 					</div>
 					<div data-bind="visible: useSieve">
 						<div class="row">

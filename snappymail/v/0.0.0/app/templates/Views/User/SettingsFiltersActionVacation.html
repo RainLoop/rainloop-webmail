@@ -1,15 +1,13 @@
 <div class="control-group" style="margin-bottom: 0">
-	<div class="controls">
-		<div data-bind="component: {
-			name: 'Select',
-			params: {
-				options: [1, 2, 3, 7, 30],
-				label: 'POPUPS_FILTER/REPLY_INTERVAL_LABEL',
-				value: actionValueThird,
-				size: 1
-			}
-		}"></div>
-	</div>
+	<div class="controls" data-bind="component: {
+		name: 'Select',
+		params: {
+			options: [1, 2, 3, 7, 30],
+			label: 'POPUPS_FILTER/REPLY_INTERVAL_LABEL',
+			value: actionValueThird,
+			size: 1
+		}
+	}"></div>
 </div>
 <div class="control-group" data-bind="css: {'error': actionValueFourthError}" style="margin-bottom: 0">
 	<div class="controls">
@@ -31,13 +29,11 @@
 	</div>
 </div>
 <div class="control-group">
-	<div class="controls">
-		<div data-bind="component: {
-			name: 'Checkbox',
-			params: {
-				label: 'POPUPS_FILTER/STOP_LABEL',
-				value: actionNoStop
-			}
-		}"></div>
-	</div>
+	<div class="controls" data-bind="component: {
+		name: 'Checkbox',
+		params: {
+			label: 'POPUPS_FILTER/STOP_LABEL',
+			value: actionNoStop
+		}
+	}"></div>
 </div>

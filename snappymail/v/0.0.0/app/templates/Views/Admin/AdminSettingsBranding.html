@@ -3,43 +3,37 @@
 		<div class="legend" data-i18n="TAB_BRANDING/LEGEND_BRANDING"></div>
 		<div class="control-group">
 			<label class="control-label" data-i18n="TAB_BRANDING/LABEL_PAGE_TITLE"></label>
-			<div class="controls">
-				<div data-bind="component: {
-					name: 'Input',
-					params: {
-						value: title,
-						trigger: title.trigger,
-						size: 5
-					}
-				}"></div>
-			</div>
+			<div class="controls" data-bind="component: {
+				name: 'Input',
+				params: {
+					value: title,
+					trigger: title.trigger,
+					size: 5
+				}
+			}"></div>
 		</div>
 		<div class="control-group">
 			<label class="control-label" data-i18n="TAB_BRANDING/LABEL_LOADING_DESCRIPTION"></label>
-			<div class="controls">
-				<div data-bind="component: {
-					name: 'Input',
-					params: {
-						value: loadingDesc,
-						trigger: loadingDesc.trigger,
-						size: 5
-					}
-				}"></div>
-			</div>
+			<div class="controls" data-bind="component: {
+				name: 'Input',
+				params: {
+					value: loadingDesc,
+					trigger: loadingDesc.trigger,
+					size: 5
+				}
+			}"></div>
 		</div>
 		<div class="control-group">
 			<label class="control-label" data-i18n="TAB_BRANDING/LABEL_FAVICON_URL"></label>
-			<div class="controls">
-				<div data-bind="component: {
-					name: 'Input',
-					params: {
-						value: faviconUrl,
-						trigger: faviconUrl.trigger,
-						placeholder: 'https://',
-						size: 5
-					}
-				}"></div>
-			</div>
+			<div class="controls" data-bind="component: {
+				name: 'Input',
+				params: {
+					value: faviconUrl,
+					trigger: faviconUrl.trigger,
+					placeholder: 'https://',
+					size: 5
+				}
+			}"></div>
 		</div>
 	</div>
 </div>

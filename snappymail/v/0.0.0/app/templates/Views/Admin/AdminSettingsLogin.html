@@ -3,16 +3,14 @@
 		<div class="legend" data-i18n="TAB_LOGIN/LEGEND_LOGIN_SCREEN"></div>
 		<div class="control-group">
 			<label class="control-label" data-i18n="TAB_LOGIN/LABEL_DEFAULT_DOMAIN"></label>
-			<div class="controls">
-				<div data-bind="component: {
-					name: 'Input',
-					params: {
-						value: defaultDomain,
-						trigger: defaultDomain.trigger,
-						size: 3
-					}
-				}"></div>
-			</div>
+			<div class="controls" data-bind="component: {
+				name: 'Input',
+				params: {
+					value: defaultDomain,
+					trigger: defaultDomain.trigger,
+					size: 3
+				}
+			}"></div>
 		</div>
 		<div class="control-group">
 			<div class="controls">

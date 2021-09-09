@@ -5,34 +5,34 @@
 		margin: 10px 0;
 	}
 
-	.list-table {
+	table {
 		margin-top: 1em;
-
-		.folder-padding {
-			display: inline-block;
-			width: 0;
-		}
-
-		.folder-name {
-			display: inline-block;
-			word-break: break-all;
-			white-space: pre-wrap;
-			box-sizing: border-box;
-			margin-left: 7px;
-		}
-
-		.folder-system-name {
-			display: inline-block;
-			opacity: 0.6;
-		}
-
-		.folder-name.can-be-edited:hover {
-			text-decoration-style: dashed;
-			cursor: pointer;
-		}
 	}
 
-	.folder-item {
+	td + td {
+		width: 1em;
+	}
+
+	table:not(.displaySpecSetting) td:last-child {
+		display: none;
+	}
+
+	.folder-name {
+		word-break: break-all;
+		white-space: pre-wrap;
+		box-sizing: border-box;
+	}
+
+	.folder-system-name {
+		opacity: 0.6;
+	}
+
+	.folder-name.can-be-edited:hover {
+		text-decoration-style: dashed;
+		cursor: pointer;
+	}
+
+	tr {
 
 		&:not(.selectable) {
 			font-style: italic;
@@ -59,19 +59,19 @@
 		}
 	}
 
-	.folder-padding.deep-1 {
-		width: 25px;
+	.deep-1 {
+		text-indent: 15px;
 	}
-	.folder-padding.deep-2 {
-		width: 40px;
+	.deep-2 {
+		text-indent: 30px;
 	}
-	.folder-padding.deep-3 {
-		width: 55px;
+	.deep-3 {
+		text-indent: 45px;
 	}
-	.folder-padding.deep-4 {
-		width: 70px;
+	.deep-4 {
+		text-indent: 60px;
 	}
-	.folder-padding.deep-5 {
-		width: 85px;
+	.deep-5 {
+		text-indent: 75px;
 	}
 }

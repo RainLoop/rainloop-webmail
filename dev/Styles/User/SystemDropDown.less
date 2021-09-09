@@ -32,19 +32,15 @@
 	}
 
 	.audioPlace {
+		cursor: pointer;
 		display: inline-block;
 		font-size: 30px;
 		height: 30px;
 		margin-right: 10px;
 		width: 1em;
 
-		.playIcon, .stopIcon {
-			cursor: pointer;
-			color: orange;
-			text-shadow: 0 1px 0 #555;
-		}
-
 		.stopIcon {
+			color: orange;
 			display: none;
 		}
 
@@ -93,60 +89,34 @@
 	}
 }
 
-@keyframes firstBar {
-  0%   { height: 30%; }
-  50%  { height: 100%; }
-  100% { height: 30%; }
+@keyframes equaliserBar {
+  0%   { top: 30%; }
+  50%  { top: 100%; }
+  100% { top: 30%; }
 }
 
-@keyframes secondBar {
-  0%   { height: 90%; }
-  50%  { height: 30%; }
-  100% { height: 100%; }
-}
-
-@keyframes thirdBar {
-  0%   { height: 20%; }
-  40%  { height: 40%; }
-  60%  { height: 80%; }
-  100% { height: 40%; }
-}
-
-.equaliser {
+.playIcon {
 
 	margin-top: 5px;
-	width: 30px;
 	height: 20px;
 	position: relative;
 
-	.bar {
-		width: 5px;
-		height: 5px;
+	*, &::before, &::after  {
+		animation: equaliserBar 1s infinite;
 		background: orange;
-		position: absolute;
 		bottom:0;
-		animation: none;
-	}
-
-	.first {
-		left: calc(1em / 2 - 10px);
-	}
-	.second {
 		left: calc(1em / 2 - 2px);
-	}
-	.third {
-		left: calc(1em / 2 + 6px);
+		position: absolute;
+		width: 5px;
+		content: '';
 	}
 
-	&.animated {
-		.first {
-			animation: firstBar 1s infinite;
-		}
-		.second {
-			animation: secondBar 1s infinite;
-		}
-		.third {
-			animation: thirdBar 1s infinite;
-		}
+	&::before {
+		left: calc(1em / 2 - 9px);
+		animation-delay: -0.33s;
+	}
+	&::after {
+		left: calc(1em / 2 + 5px);
+		animation-delay: -0.66s;
 	}
 }

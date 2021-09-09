@@ -3,11 +3,7 @@
 		<div class="btn-toolbar">
 			<div class="audioPlace"
 					data-bind="visible: '' !== currentAudio(), attr: { title: currentAudio }, click: stopPlay">
-				<div class="playIcon equaliser" data-bind="css: {'animated': '' !== currentAudio()}">
-					<div class="bar first"></div>
-					<div class="bar second"></div>
-					<div class="bar third"></div>
-				</div>
+				<div class="playIcon"><div></div></div>
 				<i class="stopIcon fontastic">⏸</i>
 			</div>
 			<div class="accountPlace hide-mobile" data-bind="text: emailTitle()"></div>
