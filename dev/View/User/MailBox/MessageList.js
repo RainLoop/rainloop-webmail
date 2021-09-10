@@ -216,10 +216,10 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		);
 
 		addEventListener('mailbox.message.show', e => {
-			const sFolder = e.detail.Folder, sUid = e.detail.Uid;
+			const sFolder = e.detail.Folder, iUid = e.detail.Uid;
 
 			const message = MessageUserStore.list.find(
-				item => item && sFolder === item.folder && sUid === item.uid
+				item => item && sFolder === item.folder && iUid == item.uid
 			);
 
 			if ('INBOX' === sFolder) {
@@ -233,7 +233,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 					rl.route.setHash(mailBox(sFolder, 1));
 				}
 
-				MessageUserStore.selectMessageByFolderAndUid(sFolder, sUid);
+				MessageUserStore.selectMessageByFolderAndUid(sFolder, iUid);
 			}
 		});
 
@@ -473,10 +473,10 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 	/**
 	 * @param {string} sFolderFullNameRaw
 	 * @param {number} iSetAction
-	 * @param {string} sThreadUid = ''
+	 * @param {number} iThreadUid = ''
 	 * @returns {void}
 	 */
-	setActionForAll(sFolderFullNameRaw, iSetAction, sThreadUid = '') {
+	setActionForAll(sFolderFullNameRaw, iSetAction, iThreadUid = 0) {
 		if (sFolderFullNameRaw) {
 			let cnt = 0;
 			const uids = [];
@@ -496,7 +496,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 								uids.push(message.uid);
 							});
 
-							if (sThreadUid) {
+							if (iThreadUid) {
 								folder.messageCountUnread(folder.messageCountUnread() - cnt);
 								if (0 > folder.messageCountUnread()) {
 									folder.messageCountUnread(0);
@@ -508,7 +508,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 							MessageFlagsCache.clearFolder(sFolderFullNameRaw);
 						}
 
-						Remote.messageSetSeenToAll(()=>0, sFolderFullNameRaw, true, sThreadUid ? uids : null);
+						Remote.messageSetSeenToAll(()=>0, sFolderFullNameRaw, true, iThreadUid ? uids : null);
 						break;
 					case MessageSetAction.UnsetSeen:
 						folder = getFolderFromCacheList(sFolderFullNameRaw);
@@ -522,7 +522,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 								uids.push(message.uid);
 							});
 
-							if (sThreadUid) {
+							if (iThreadUid) {
 								folder.messageCountUnread(folder.messageCountUnread() + cnt);
 								if (folder.messageCountAll() < folder.messageCountUnread()) {
 									folder.messageCountUnread(folder.messageCountAll());
@@ -534,7 +534,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 							MessageFlagsCache.clearFolder(sFolderFullNameRaw);
 						}
 
-						Remote.messageSetSeenToAll(()=>0, sFolderFullNameRaw, false, sThreadUid ? uids : null);
+						Remote.messageSetSeenToAll(()=>0, sFolderFullNameRaw, false, iThreadUid ? uids : null);
 						break;
 					// no default
 				}
@@ -702,15 +702,15 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 			eqs(event, '.checkboxCheckAll') && this.checkAll(!this.checkAll());
 
-			el = eqs(event, '.messageListItem .flagParent');
+			el = eqs(event, '.flagParent');
 			el && this.flagMessages(ko.dataFor(el));
 
-			el = eqs(event, '.messageListItem .threads-len');
+			el = eqs(event, '.threads-len');
 			el && this.gotoThread(ko.dataFor(el));
 		});
 
 		dom.addEventListener('dblclick', event => {
-			let  el = eqs(event, '.messageListItem .actionHandle');
+			let  el = eqs(event, '.actionHandle');
 			el && this.gotoThread(ko.dataFor(el));
 		});
 

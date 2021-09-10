@@ -121,18 +121,17 @@ export const
 	 * @param {string} folder
 	 * @param {number=} page = 1
 	 * @param {string=} search = ''
-	 * @param {string=} threadUid = ''
+	 * @param {number=} threadUid = 0
 	 * @returns {string}
 	 */
-	mailBox = (folder, page = 1, search = '', threadUid = '') => {
+	mailBox = (folder, page = 1, search = '', threadUid = 0) => {
 		page = pInt(page, 1);
 		search = pString(search);
 
 		let result = HASH_PREFIX + 'mailbox/';
 
 		if (folder) {
-			const resultThreadUid = pInt(threadUid);
-			result += encodeURI(folder) + (0 < resultThreadUid ? '~' + resultThreadUid : '');
+			result += encodeURI(folder) + (threadUid ? '~' + threadUid : '');
 		}
 
 		if (1 < page) {

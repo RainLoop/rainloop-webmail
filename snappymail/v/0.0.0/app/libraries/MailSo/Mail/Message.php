@@ -311,14 +311,12 @@ class Message implements \JsonSerializable
 			$oBodyStructure = $oFetchResponse->GetFetchBodyStructure();
 		}
 
-		$sUid = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::UID);
-		$sSize = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::RFC822_SIZE);
 		$sInternalDate = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::INTERNALDATE);
 		$aFlags = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::FLAGS);
 
 		$this->sFolder = $sFolder;
-		$this->iUid = \is_numeric($sUid) ? (int) $sUid : 0;
-		$this->iSize = \is_numeric($sSize) ? (int) $sSize : 0;
+		$this->iUid = (int) $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::UID);
+		$this->iSize = (int) $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::RFC822_SIZE);
 		$this->aFlags = \is_array($aFlags) ? $aFlags : array();
 		$this->aFlagsLowerCase = \array_map('strtolower', $this->aFlags);
 
@@ -497,7 +495,7 @@ class Message implements \JsonSerializable
 			if (0 < \strlen($sDraftInfo)) {
 				$sType = '';
 				$sFolder = '';
-				$sUid = '';
+				$iUid = 0;
 
 				$oParameters = new \MailSo\Mime\ParameterCollection($sDraftInfo);
 				foreach ($oParameters as $oParameter) {
@@ -507,7 +505,7 @@ class Message implements \JsonSerializable
 							$sType = $oParameter->Value();
 							break;
 						case 'uid':
-							$sUid = $oParameter->Value();
+							$iUid = (int) $oParameter->Value();
 							break;
 						case 'folder':
 							$sFolder = \base64_decode($oParameter->Value());
@@ -515,8 +513,8 @@ class Message implements \JsonSerializable
 					}
 				}
 
-				if (0 < \strlen($sType) && 0 < \strlen($sFolder) && 0 < \strlen($sUid)) {
-					$this->aDraftInfo = array($sType, $sUid, $sFolder);
+				if (0 < \strlen($sType) && 0 < \strlen($sFolder) && $iUid) {
+					$this->aDraftInfo = array($sType, $iUid, $sFolder);
 				}
 			}
 		}
@@ -661,7 +659,7 @@ class Message implements \JsonSerializable
 		return array(
 			'@Object' => 'Object/Message',
 			'Folder' => $this->sFolder,
-			'Uid' => (string) $this->iUid,
+			'Uid' => $this->iUid,
 			'Subject' => \trim(\MailSo\Base\Utils::Utf8Clear($this->sSubject)),
 			'MessageId' => $this->sMessageId,
 			'Size' => $this->iSize,

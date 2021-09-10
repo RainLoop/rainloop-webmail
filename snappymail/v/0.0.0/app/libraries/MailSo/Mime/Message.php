@@ -308,12 +308,12 @@ class Message
 		return $this;
 	}
 
-	public function SetDraftInfo(string $sType, string $sUid, string $sFolder) : self
+	public function SetDraftInfo(string $sType, int $iUid, string $sFolder) : self
 	{
 		$this->aHeadersValue[Enumerations\Header::X_DRAFT_INFO] = (new ParameterCollection)
 			->Add(new Parameter('type', $sType))
-			->Add(new Parameter('uid', $sUid))
-			->Add(new Parameter('folder', base64_encode($sFolder)))
+			->Add(new Parameter('uid', $iUid))
+			->Add(new Parameter('folder', \base64_encode($sFolder)))
 		;
 
 		return $this;

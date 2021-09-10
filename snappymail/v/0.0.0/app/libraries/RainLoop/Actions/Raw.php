@@ -15,7 +15,7 @@ trait Raw
 		$aValues = $this->getDecodedRawKeyValue($sRawKey);
 
 		$sFolder = isset($aValues['Folder']) ? $aValues['Folder'] : '';
-		$iUid = (int) (isset($aValues['Uid']) ? $aValues['Uid'] : 0);
+		$iUid = (isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0);
 		$sMimeIndex = (string) (isset($aValues['MimeIndex']) ? $aValues['MimeIndex'] : '');
 
 		\header('Content-Type: text/plain');

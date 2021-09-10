@@ -58,12 +58,12 @@ class MessageCollection extends \MailSo\Base\Collection
 	public $Search;
 
 	/**
-	 * @var string
+	 * @var int
 	 */
 	public $UidNext;
 
 	/**
-	 * @var string
+	 * @var int
 	 */
 	public $ThreadUid;
 
@@ -104,8 +104,8 @@ class MessageCollection extends \MailSo\Base\Collection
 		$this->Offset = 0;
 		$this->Limit = 0;
 		$this->Search = '';
-		$this->UidNext = '';
-		$this->ThreadUid = '';
+		$this->UidNext = 0;
+		$this->ThreadUid = 0;
 		$this->NewMessages = array();
 
 		$this->Filtered = false;

@@ -96,7 +96,7 @@ export class MessageModel extends AbstractModel {
 
 	_reset() {
 		this.folder = '';
-		this.uid = '';
+		this.uid = 0;
 		this.hash = '';
 		this.requestHash = '';
 		this.externalProxy = false;
@@ -188,9 +188,8 @@ export class MessageModel extends AbstractModel {
 	 * @returns {boolean}
 	 */
 	revivePropertiesFromJson(json) {
-		if ('Priority' in json) {
-			let p = parseInt(json.Priority, 10);
-			json.Priority = MessagePriority.High == p || MessagePriority.Low == p ? p : MessagePriority.Normal;
+		if ('Priority' in json && ![MessagePriority.High, MessagePriority.Low].includes(json.Priority)) {
+			json.Priority = MessagePriority.Normal;
 		}
 		if (super.revivePropertiesFromJson(json)) {
 //			this.foundedCIDs = isArray(json.FoundedCIDs) ? json.FoundedCIDs : [];

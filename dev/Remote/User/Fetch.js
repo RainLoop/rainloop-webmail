@@ -239,7 +239,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 			inboxUidNext = getFolderInboxName() === sFolderFullNameRaw ? getFolderUidNext(sFolderFullNameRaw) : '';
 
 		params.Folder = sFolderFullNameRaw;
-		params.ThreadUid = useThreads ? params.ThreadUid : '';
+		params.ThreadUid = useThreads ? params.ThreadUid : 0;
 		params = Object.assign({
 			Folder: '',
 			Offset: 0,
@@ -247,7 +247,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 			Search: '',
 			UidNext: inboxUidNext,
 			UseThreads: useThreads,
-			ThreadUid: '',
+			ThreadUid: 0,
 			Sort: FolderUserStore.sortMode()
 		}, params);
 
@@ -385,8 +385,8 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		if (request) {
 			this.defaultRequest(fCallback, 'FolderInformation', {
 				Folder: folder,
-				FlagsUids: isArray(uids) ? uids.join(',') : '',
-				UidNext: getFolderInboxName() === folder ? getFolderUidNext(folder) : ''
+				FlagsUids: isArray(uids) ? uids : [],
+				UidNext: getFolderInboxName() === folder ? getFolderUidNext(folder) : 0
 			});
 		} else if (SettingsUserStore.useThreads()) {
 			rl.app.reloadFlagsCurrentMessageListAndMessageFromCache();
@@ -463,15 +463,15 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	/**
 	 * @param {?Function} fCallback
 	 * @param {string} sMessageFolder
-	 * @param {string} sMessageUid
+	 * @param {number} iMessageUid
 	 * @param {string} sReadReceipt
 	 * @param {string} sSubject
 	 * @param {string} sText
 	 */
-	sendReadReceiptMessage(fCallback, sMessageFolder, sMessageUid, sReadReceipt, sSubject, sText) {
+	sendReadReceiptMessage(fCallback, sMessageFolder, iMessageUid, sReadReceipt, sSubject, sText) {
 		this.defaultRequest(fCallback, 'SendReadReceiptMessage', {
 			MessageFolder: sMessageFolder,
-			MessageUid: sMessageUid,
+			MessageUid: iMessageUid,
 			ReadReceipt: sReadReceipt,
 			Subject: sSubject,
 			Text: sText

@@ -336,16 +336,8 @@ trait Folders
 	public function DoFolderInformation() : array
 	{
 		$sFolder = $this->GetActionParam('Folder', '');
-		$sPrevUidNext = $this->GetActionParam('UidNext', '');
-		$aFlagsUids = array();
-		$sFlagsUids = (string) $this->GetActionParam('FlagsUids', '');
-
-		$aFlagsFilteredUids = array();
-		if (0 < strlen($sFlagsUids))
-		{
-			$aFlagsUids = \explode(',', $sFlagsUids);
-			$aFlagsFilteredUids = \array_filter(\array_map('intval', $aFlagsUids));
-		}
+		$iPrevUidNext = (int) $this->GetActionParam('UidNext', 0);
+		$aFlagsUids = \array_filter(\array_map('intval', $this->GetActionParam('FlagsUids', []))) ?: [];
 
 		$this->initMailClientConnection();
 
@@ -354,7 +346,7 @@ trait Folders
 		try
 		{
 			$aInboxInformation = $this->MailClient()->FolderInformation(
-				$sFolder, $sPrevUidNext, $aFlagsFilteredUids
+				$sFolder, $iPrevUidNext, $aFlagsUids
 			);
 
 			foreach ($aInboxInformation['Flags'] as $iUid => $aFlags)
@@ -401,11 +393,11 @@ trait Folders
 			$aFolders = \array_unique($aFolders);
 			foreach ($aFolders as $sFolder)
 			{
-				if (0 < \strlen(\trim($sFolder)) && 'INBOX' !== \strtoupper($sFolder))
+				if (0 < \strlen($sFolder) && 'INBOX' !== \strtoupper($sFolder))
 				{
 					try
 					{
-						$aInboxInformation = $this->MailClient()->FolderInformation($sFolder, '', array());
+						$aInboxInformation = $this->MailClient()->FolderInformation($sFolder);
 						if (isset($aInboxInformation['Folder']))
 						{
 							$aResult['List'][] = [

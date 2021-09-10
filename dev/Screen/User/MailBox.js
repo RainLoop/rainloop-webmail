@@ -63,16 +63,13 @@ export class MailBoxUserScreen extends AbstractScreen {
 	onRoute(folderHash, page, search) {
 		const folder = getFolderFromCacheList(getFolderFullNameRaw(folderHash.replace(/~([\d]+)$/, '')));
 		if (folder) {
-			let threadUid = folderHash.replace(/^.+~([\d]+)$/, '$1');
-			if (folderHash === threadUid) {
-				threadUid = '';
-			}
+			let threadUid = folderHash.replace(/^.+~(\d+)$/, '$1');
 
 			FolderUserStore.currentFolder(folder);
 
 			MessageUserStore.listPage(1 > page ? 1 : page);
 			MessageUserStore.listSearch(search);
-			MessageUserStore.listThreadUid(threadUid);
+			MessageUserStore.listThreadUid((folderHash === threadUid) ? 0 : pInt(threadUid));
 
 			rl.app.reloadMessageList();
 		}

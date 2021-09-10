@@ -60,7 +60,9 @@ class FolderInformation
 	public $Unread = null;
 
 	/**
-	 * @var string
+	 * rfc3501 2.3.1.1
+	 * A 32-bit value
+	 * @var int
 	 */
 	public $Uidnext = null;
 

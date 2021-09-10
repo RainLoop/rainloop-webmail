@@ -170,7 +170,7 @@ class ComposePopupView extends AbstractViewPopup {
 			showReplyTo: false,
 
 			draftFolder: '',
-			draftUid: '',
+			draftUid: 0,
 			sending: false,
 			saving: false,
 
@@ -465,7 +465,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 							if (this.bFromDraft) {
 								const message = MessageUserStore.message();
-								if (message && this.draftFolder() === message.folder && this.draftUid() === message.uid) {
+								if (message && this.draftFolder() === message.folder && this.draftUid() == message.uid) {
 									MessageUserStore.message(null);
 								}
 							}
@@ -1449,7 +1449,7 @@ class ComposePopupView extends AbstractViewPopup {
 		this.dragAndDropVisible(false);
 
 		this.draftFolder('');
-		this.draftUid('');
+		this.draftUid(0);
 
 		this.sending(false);
 		this.saving(false);

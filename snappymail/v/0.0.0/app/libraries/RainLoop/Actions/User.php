@@ -541,7 +541,7 @@ trait User
 		$aValues = $this->getDecodedRawKeyValue($sHash);
 
 		$sFolder = isset($aValues['Folder']) ? $aValues['Folder'] : '';
-		$iUid = (int) isset($aValues['Uid']) ? $aValues['Uid'] : 0;
+		$iUid = isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0;
 		$sMimeIndex = (string) isset($aValues['MimeIndex']) ? $aValues['MimeIndex'] : '';
 
 		$sContentTypeIn = (string) isset($aValues['MimeType']) ? $aValues['MimeType'] : '';

@@ -315,7 +315,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 					}
 					else if ('UIDNEXT' === $oResponse->OptionalResponse[0])
 					{
-						$oResult->Uidnext = $oResponse->OptionalResponse[1];
+						$oResult->Uidnext = (int) $oResponse->OptionalResponse[1];
 					}
 					else if ('HIGHESTMODSEQ' === $oResponse->OptionalResponse[0])
 					{

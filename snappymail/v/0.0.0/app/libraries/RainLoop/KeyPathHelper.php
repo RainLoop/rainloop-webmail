@@ -30,9 +30,9 @@ class KeyPathHelper
 		return '/RepositoryCache/CoreRepo/'.$sRepo;
 	}
 
-	static public function ReadReceiptCache(string $sEmail, string $sFolderFullName, string $sUid) : string
+	static public function ReadReceiptCache(string $sEmail, string $sFolderFullName, int $iUid) : string
 	{
-		return '/ReadReceipt/'.$sEmail.'/'.$sFolderFullName.'/'.$sUid;
+		return '/ReadReceipt/'.$sEmail.'/'.$sFolderFullName.'/'.$iUid;
 	}
 
 	static public function LangCache(string $sLanguage, bool $bAdmim, string $sPluginsHash) : string

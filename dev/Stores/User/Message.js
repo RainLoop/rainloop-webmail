@@ -77,14 +77,14 @@ export const MessageUserStore = new class {
 		addObservablesTo(this, {
 			listCount: 0,
 			listSearch: '',
-			listThreadUid: '',
+			listThreadUid: 0,
 			listPage: 1,
 			listPageBeforeThread: 1,
 			listError: '',
 
 			listEndFolder: '',
 			listEndSearch: '',
-			listEndThreadUid: '',
+			listEndThreadUid: 0,
 			listEndPage: 1,
 
 			listLoading: false,
@@ -348,11 +348,11 @@ export const MessageUserStore = new class {
 		if (this.listThreadUid()) {
 			if (
 				messageList.length &&
-				!!messageList.find(item => !!(item && item.deleted() && item.uid === this.listThreadUid()))
+				!!messageList.find(item => !!(item && item.deleted() && item.uid == this.listThreadUid()))
 			) {
 				const message = messageList.find(item => item && !item.deleted());
-				if (message && this.listThreadUid() !== pString(message.uid)) {
-					this.listThreadUid(pString(message.uid));
+				if (message && this.listThreadUid() != message.uid) {
+					this.listThreadUid(message.uid);
 
 					rl.route.setHash(
 						mailBox(
@@ -379,7 +379,7 @@ export const MessageUserStore = new class {
 							true
 						);
 					} else {
-						this.listThreadUid('');
+						this.listThreadUid(0);
 
 						rl.route.setHash(
 							mailBox(
@@ -437,7 +437,7 @@ export const MessageUserStore = new class {
 			message.folder === json.Folder
 		) {
 			const threads = message.threads();
-			if (message.uid !== json.Uid && 1 < threads.length && threads.includes(json.Uid)) {
+			if (message.uid != json.Uid && 1 < threads.length && threads.includes(json.Uid)) {
 				message = oMessage ? null : MessageModel.reviveFromJson(json);
 				if (message) {
 					message.threads(threads);
@@ -450,7 +450,7 @@ export const MessageUserStore = new class {
 				}
 			}
 
-			if (message && message.uid === json.Uid) {
+			if (message && message.uid == json.Uid) {
 				oMessage || this.messageError('');
 
 				if (cached) {
@@ -565,7 +565,7 @@ export const MessageUserStore = new class {
 					if (
 						selectedMessage &&
 						message &&
-						(message.folder !== selectedMessage.folder || message.uid !== selectedMessage.uid)
+						(message.folder !== selectedMessage.folder || message.uid != selectedMessage.uid)
 					) {
 						this.selectorMessageSelected(null);
 						if (1 === this.list.length) {
@@ -576,7 +576,7 @@ export const MessageUserStore = new class {
 							subMessage =>
 								subMessage &&
 								subMessage.folder === message.folder &&
-								subMessage.uid === message.uid
+								subMessage.uid == message.uid
 						);
 
 						if (selectedMessage) {
@@ -598,11 +598,11 @@ export const MessageUserStore = new class {
 		}
 	}
 
-	selectMessageByFolderAndUid(sFolder, sUid) {
-		if (sFolder && sUid) {
+	selectMessageByFolderAndUid(sFolder, iUid) {
+		if (sFolder && iUid) {
 			this.message(this.staticMessage.populateByMessageListItem(null));
 			this.message().folder = sFolder;
-			this.message().uid = sUid;
+			this.message().uid = iUid;
 
 			this.populateMessageBody(this.message());
 		} else {
@@ -671,7 +671,7 @@ export const MessageUserStore = new class {
 			this.listCount(iCount);
 			this.listSearch(pString(collection.Search));
 			this.listPage(Math.ceil(iOffset / SettingsUserStore.messagesPerPage() + 1));
-			this.listThreadUid(pString(data.Result.ThreadUid));
+			this.listThreadUid(data.Result.ThreadUid);
 
 			this.listEndFolder(collection.Folder);
 			this.listEndSearch(this.listSearch());
