@@ -4,7 +4,7 @@ import { doc, $htmlCL } from 'Common/Globals';
 import { arrayLength, isFunction } from 'Common/Utils';
 
 let currentScreen = null,
-	popupsVisible = 0,
+	visiblePopups = new Set,
 	defaultScreenName = '';
 
 const SCREENS = {},
@@ -61,7 +61,7 @@ const SCREENS = {},
 
 					vm.modalVisibility.subscribe(value => {
 						if (value) {
-							++popupsVisible;
+							visiblePopups.add(vm);
 							vmDom.style.zIndex = 3000 + popupVisibilityNames().length + 10;
 							vmDom.hidden = false;
 							vm.storeAndSetScope();
@@ -71,7 +71,7 @@ const SCREENS = {},
 								vmDom.classList.add('show'); // trigger the transitions
 							});
 						} else {
-							popupsVisible = Math.max(0, popupsVisible-1);
+							visiblePopups.delete(vm);
 							vm.onHide && vm.onHide();
 							vmDom.classList.remove('show');
 							vm.restoreScope();
@@ -121,6 +121,11 @@ const SCREENS = {},
 
 		if (null == screenName || '' == screenName) {
 			screenName = defaultScreenName;
+		}
+
+		// Close all popups
+		for (let vm of visiblePopups) {
+			vm.closeCommand();
 		}
 
 		if (screenName) {
@@ -271,7 +276,7 @@ export const
 		}
 	},
 
-	arePopupsVisible = () => 0 < popupsVisible,
+	arePopupsVisible = () => 0 < visiblePopups.size,
 
 	/**
 	 * @param {Function} ViewModelClassToShow
