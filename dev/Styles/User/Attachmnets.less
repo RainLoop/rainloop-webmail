@@ -47,35 +47,34 @@
 	}
 
 	.attachmentIconParent {
-
 		position: absolute;
 		height: 56px;
 		width: 60px;
 		text-align: center;
+	}
 
-		.iconPreview, .iconBG, .iconMain, .iconProgress {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-		}
+	.iconPreview, .iconBG, .iconMain, .iconProgress {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
 
-		.iconProgress {
-			background: #eee;
-			width: 0%;
-		}
+	.iconProgress {
+		background: #eee;
+		width: 0%;
+	}
 
-		.iconBG {
-			font-size: 18px;
-			font-weight: bold;
-			line-height: 55px;
-			text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
-		}
+	.iconBG {
+		font-size: 18px;
+		font-weight: bold;
+		line-height: 55px;
+		text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+	}
 
-		.iconPreview {
-			display: none;
-		}
+	.iconPreview {
+		display: none;
 	}
 
 	.attachmentNameParent {
@@ -111,20 +110,20 @@
 */
 
 	.showPreview, .showPreplay,
-	.attachmentIconParent.hasPreview:hover .iconMain,
-	.attachmentIconParent.hasPreplay:hover .iconMain,
-	.attachmentIconParent.hasPreview .hidePreview,
-	.attachmentIconParent.hasPreplay .hidePreview {
+	.hasPreview:hover .iconMain,
+	.hasPreplay:hover .iconMain,
+	.hasPreview .hidePreview,
+	.hasPreplay .hidePreview {
 		display: none;
 	}
 
-	.attachmentIconParent.hasPreview:hover .iconPreview,
-	.attachmentIconParent.hasPreplay:hover .iconPreview {
+	.hasPreview:hover .iconPreview,
+	.hasPreplay:hover .iconPreview {
 		display: inline-block;
 	}
 
-	.attachmentIconParent.hasPreview .showPreview,
-	.attachmentIconParent.hasPreplay .showPreplay {
+	.hasPreview .showPreview,
+	.hasPreplay .showPreplay {
 		display: inline;
 		cursor: pointer;
 	}

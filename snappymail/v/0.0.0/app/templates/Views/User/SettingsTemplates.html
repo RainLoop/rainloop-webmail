@@ -9,15 +9,9 @@
 		<span data-i18n="SETTINGS_TEMPLATES/BUTTON_ADD_TEMPLATE"></span>
 	</a>
 	<table class="table table-hover list-table templates-list" data-bind="i18nUpdate: templates">
-		<colgroup>
-			<col />
-			<col style="width: 150px" />
-			<col style="width: 1%" />
-		</colgroup>
 		<tbody data-bind="foreach: templates">
-			<tr class="template-item" draggable="true" data-bind="sortableItem: { list: $root.templates }">
+			<tr draggable="true" data-bind="sortableItem: { list: $root.templates }">
 				<td class="e-action">
-					<span class="template-img fontastic">👤</span>
 					<i class="fontastic drag-handle">⬍</i>
 					<span class="template-name" data-bind="text: name"></span>
 				</td>

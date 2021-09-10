@@ -4,18 +4,18 @@
 		<h3>
 			<span data-i18n="POPUPS_SIEVE_SCRIPT/TITLE_CREATE" data-bind="visible: !exists()"></span>
 			<span data-i18n="POPUPS_SIEVE_SCRIPT/TITLE_EDIT" data-bind="visible: exists"></span>
+			<span data-bind="visible: exists">: <!-- ko text: name--><!-- /ko --></span>
 		</h3>
 	</div>
 	<div class="modal-body">
 
-		<div class="control-group" data-bind="css: {'error': nameError}">
+		<div class="control-group" data-bind="css: {'error': nameError}, hidden: exists">
 			<div class="controls">
 				<input type="text" class="span5"
-					data-bind="value: name, hasfocus: !exists(), visible: !exists()"
+					data-bind="value: name, hasfocus: !exists()"
 					autocorrect="off" autocapitalize="off" spellcheck="false"
 					data-i18n="[placeholder]GLOBAL/NAME"
 				/>
-				<span data-bind="text: name, visible: exists"></span>
 			</div>
 		</div>
 
@@ -57,12 +57,8 @@
 				</colgroup>
 				<tbody data-bind="foreach: filters">
 					<tr class="filter-item" draggable="true" data-bind="sortableItem: { list: $parent.filters }">
-						<td>
-							<span class="disabled-filter fontastic" data-bind="click: function () { $parent.hasChanges(true); enabled(!enabled()); }, text: enabled() ? '☑' : '☐'"></span>
-						</td>
-						<td class="drag-wrapper">
-							<span class="fontastic drag-handle">⬍</span>
-						</td>
+						<td class="fontastic" data-bind="click: function () { $parent.hasChanges(true); enabled(!enabled()); }, text: enabled() ? '☑' : '☐'"></td>
+						<td class="drag-wrapper fontastic drag-handle">⬍</td>
 						<td class="e-action">
 							<span class="filter-name" data-bind="text: name()"></span>
 							&nbsp;&nbsp;

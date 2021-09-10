@@ -20,13 +20,9 @@ export const SettingsUserStore = new class {
 			]
 		});
 
-		this.messagesPerPage = ko.observable(pInt(SettingsGet('MPP'))).extend(
-			{ rateLimit: { timeout: 999, method: "notifyWhenChangesStop" } }
-		);
+		this.messagesPerPage = ko.observable(pInt(SettingsGet('MPP'))).extend({ debounce: 999 });
 
-		this.messageReadDelay = ko.observable(pInt(SettingsGet('MessageReadDelay'))).extend(
-			{ rateLimit: { timeout: 999, method: "notifyWhenChangesStop" } }
-		);
+		this.messageReadDelay = ko.observable(pInt(SettingsGet('MessageReadDelay'))).extend({ debounce: 999 });
 
 		addObservablesTo(this, {
 			showImages: !!SettingsGet('ShowImages'),

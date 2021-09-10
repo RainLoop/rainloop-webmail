@@ -192,7 +192,6 @@ class ContactsPopupView extends AbstractViewPopup {
 				case 'bcc':
 					bccEmails = aE;
 					break;
-				case 'to':
 				default:
 					toEmails = aE;
 					break;
@@ -496,8 +495,8 @@ class ContactsPopupView extends AbstractViewPopup {
 	}
 
 	onShow(bBackToCompose, sLastComposeFocusedField) {
-		this.bBackToCompose = undefined === bBackToCompose ? false : !!bBackToCompose;
-		this.sLastComposeFocusedField = undefined === sLastComposeFocusedField ? '' : sLastComposeFocusedField;
+		this.bBackToCompose = !!bBackToCompose;
+		this.sLastComposeFocusedField = sLastComposeFocusedField;
 
 		rl.route.off();
 		this.reloadContactList(true);

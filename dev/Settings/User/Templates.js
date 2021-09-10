@@ -53,7 +53,7 @@ export class TemplatesUserSettings {
 
 	onBuild(oDom) {
 		oDom.addEventListener('click', event => {
-			const el = event.target.closestWithin('.templates-list .template-item .e-action', oDom);
+			const el = event.target.closestWithin('td.e-action', oDom);
 			el && ko.dataFor(el) && this.editTemplate(ko.dataFor(el));
 		});
 

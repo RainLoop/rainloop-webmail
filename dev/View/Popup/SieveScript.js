@@ -124,7 +124,7 @@ class SieveScriptPopupView extends AbstractViewPopup {
 
 	onBuild(oDom) {
 		oDom.addEventListener('click', event => {
-			const el = event.target.closestWithin('.filter-item .e-action', oDom),
+			const el = event.target.closestWithin('td.e-action', oDom),
 				filter = el && ko.dataFor(el);
 			filter && this.editFilter(filter);
 		});
