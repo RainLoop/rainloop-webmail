@@ -21,9 +21,7 @@ class AbstractCheckbox extends AbstractComponent {
 	}
 
 	click() {
-		if (this.enable() && !this.disable()) {
-			this.value(!this.value());
-		}
+		this.enable() && this.value(!this.value());
 	}
 }
 
