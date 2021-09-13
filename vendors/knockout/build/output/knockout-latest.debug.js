@@ -1976,15 +1976,6 @@ ko.expressionRewriting = (() => {
                 extendCallback = options['extend'];
             }
 
-            if (dataItemAlias && options && options['noChildContext']) {
-                var isFunc = typeof(dataItemOrAccessor) == "function" && !ko.isObservable(dataItemOrAccessor);
-                return new ko.bindingContext(inheritParentVm, this, null, self => {
-                    if (extendCallback)
-                        extendCallback(self);
-                    self[dataItemAlias] = isFunc ? dataItemOrAccessor() : dataItemOrAccessor;
-                }, options);
-            }
-
             return new ko.bindingContext(dataItemOrAccessor, this, dataItemAlias, (self, parentContext) => {
                 // Extend the context hierarchy by setting the appropriate pointers
                 self['$parentContext'] = parentContext;
@@ -2916,12 +2907,7 @@ ko.bindingHandlers['foreach'] = {
             return {
                 'foreach': unwrappedValue['data'],
                 'as': unwrappedValue['as'],
-                'noChildContext': unwrappedValue['noChildContext'],
-                'includeDestroyed': unwrappedValue['includeDestroyed'],
-                'afterAdd': unwrappedValue['afterAdd'],
                 'beforeRemove': unwrappedValue['beforeRemove'],
-                'afterRender': unwrappedValue['afterRender'],
-                'beforeMove': unwrappedValue['beforeMove'],
                 'afterMove': unwrappedValue['afterMove']
             };
         };
@@ -2999,12 +2985,11 @@ ko.bindingHandlers['html'] = {
 function makeWithIfBinding(bindingKey, isWith, isNot) {
     ko.bindingHandlers[bindingKey] = {
         'init': (element, valueAccessor, allBindings, viewModel, bindingContext) => {
-            var didDisplayOnLastUpdate, savedNodes, contextOptions = {}, needAsyncContext, renderOnEveryChange;
+            var didDisplayOnLastUpdate, savedNodes, contextOptions = {}, needAsyncContext;
 
             if (isWith) {
-                var as = allBindings.get('as'), noChildContext = allBindings.get('noChildContext');
-                renderOnEveryChange = !(as && noChildContext);
-                contextOptions = { 'as': as, 'noChildContext': noChildContext, 'exportDependencies': renderOnEveryChange };
+                var as = allBindings.get('as'), noChildContext = false;
+                contextOptions = { 'as': as, 'exportDependencies': true };
             }
 
             needAsyncContext = allBindings['has'](ko.bindingEvent.descendantsComplete);
@@ -3015,18 +3000,12 @@ function makeWithIfBinding(bindingKey, isWith, isNot) {
                     isInitial = !savedNodes,
                     childContext;
 
-                if (!renderOnEveryChange && shouldDisplay === didDisplayOnLastUpdate) {
-                    return;
-                }
-
                 if (needAsyncContext) {
                     bindingContext = ko.bindingEvent.startPossiblyAsyncContentBinding(element, bindingContext);
                 }
 
                 if (shouldDisplay) {
-                    if (!isWith || renderOnEveryChange) {
-                        contextOptions['dataDependency'] = ko.dependencyDetection.computed();
-                    }
+                    contextOptions['dataDependency'] = ko.dependencyDetection.computed();
 
                     if (isWith) {
                         childContext = bindingContext['createChildContext'](typeof value == "function" ? value : valueAccessor, contextOptions);
@@ -3279,12 +3258,12 @@ ko.bindingHandlers['text'] = {
         return { 'controlsDescendantBindings': true };
     },
     'update': (element, valueAccessor) => {
-		if (8 === element.nodeType) {
-			element.text || element.after(element.text = document.createTextNode(''));
-			element = element.text;
-		}
+        if (8 === element.nodeType) {
+            element.text || element.after(element.text = document.createTextNode(''));
+            element = element.text;
+        }
         ko.utils.setTextContent(element, valueAccessor());
-	}
+    }
 };
 ko.virtualElements.allowedBindings['text'] = true;
 ko.bindingHandlers['textInput'] = {
@@ -3633,9 +3612,6 @@ makeEventHandlerShortcut('click');
 
         if (haveAddedNodesToParent) {
             activateBindingsOnContinuousNodeArray(renderedNodesArray, bindingContext);
-            if (options['afterRender']) {
-                ko.dependencyDetection.ignore(options['afterRender'], null, [renderedNodesArray, bindingContext[options['as'] || '$data']]);
-            }
             if (renderMode == "replaceChildren") {
                 ko.bindingEvent.notify(targetNodeOrNodeArray, ko.bindingEvent.childrenComplete);
             }
@@ -3690,7 +3666,6 @@ makeEventHandlerShortcut('click');
             // Support selecting template as a function of the data being rendered
             arrayItemContext = parentBindingContext['createChildContext'](arrayValue, {
                 'as': asName,
-                'noChildContext': options['noChildContext'],
                 'extend': context => {
                     context['$index'] = index;
                     if (asName) {
@@ -3706,8 +3681,6 @@ makeEventHandlerShortcut('click');
         // This will be called whenever setDomNodeChildrenFromArrayMapping has added nodes to targetNode
         var activateBindingsCallback = (arrayValue, addedNodesArray) => {
             activateBindingsOnContinuousNodeArray(addedNodesArray, arrayItemContext);
-            if (options['afterRender'])
-                options['afterRender'](addedNodesArray, arrayValue);
 
             // release the "cache" variable, so that it can be collected by
             // the GC when its value isn't used from within the bindings anymore.
@@ -3721,9 +3694,7 @@ makeEventHandlerShortcut('click');
             ko.bindingEvent.notify(targetNode, ko.bindingEvent.childrenComplete);
         };
 
-        var shouldHideDestroyed = (options['includeDestroyed'] === false);
-
-        if (!shouldHideDestroyed && !options['beforeRemove'] && ko.isObservableArray(arrayOrObservableArray)) {
+        if (!options['beforeRemove'] && ko.isObservableArray(arrayOrObservableArray)) {
             setDomNodeChildrenFromArrayMapping(arrayOrObservableArray.peek());
 
             var subscription = arrayOrObservableArray.subscribe(changeList => {
@@ -3738,10 +3709,6 @@ makeEventHandlerShortcut('click');
                 if (typeof unwrappedArray.length == "undefined") // Coerce single value into array
                     unwrappedArray = [unwrappedArray];
 
-                if (shouldHideDestroyed) {
-                    // Filter out any entries marked as destroyed
-                    unwrappedArray = unwrappedArray.filter(item => item || item == null);
-                }
                 setDomNodeChildrenFromArrayMapping(unwrappedArray);
 
             }, { disposeWhenNodeIsRemoved: targetNode });
@@ -3832,7 +3799,6 @@ makeEventHandlerShortcut('click');
                 if ('data' in options) {
                     innerBindingContext = bindingContext['createChildContext'](options['data'], {
                         'as': options['as'],
-                        'noChildContext': options['noChildContext'],
                         'exportDependencies': true
                     });
                 }
@@ -4020,23 +3986,20 @@ ko.utils.compareArrays = (() => {
         var nodesToDelete = [];
         var itemsToMoveFirstIndexes = [];
         var itemsForBeforeRemoveCallbacks = [];
-        var itemsForMoveCallbacks = [];
-        var itemsForAfterAddCallbacks = [];
+        var itemsForAfterMoveCallbacks = [];
         var mapData;
         var countWaitingForRemove = 0;
 
         function itemAdded(value) {
             mapData = { arrayEntry: value, indexObservable: ko.observable(currentArrayIndex++) };
             newMappingResult.push(mapData);
-            if (!isFirstExecution) {
-                itemsForAfterAddCallbacks.push(mapData);
-            }
         }
 
         function itemMovedOrRetained(oldPosition) {
             mapData = lastMappingResult[oldPosition];
-            if (currentArrayIndex !== mapData.indexObservable.peek())
-                itemsForMoveCallbacks.push(mapData);
+            if (currentArrayIndex !== mapData.indexObservable.peek()) {
+                itemsForAfterMoveCallbacks[currentArrayIndex] = mapData;
+            }
             // Since updating the index might change the nodes, do so before calling fixUpContinuousNodeArray
             mapData.indexObservable(currentArrayIndex++);
             ko.utils.fixUpContinuousNodeArray(mapData.mappedNodes, domNode);
@@ -4046,7 +4009,7 @@ ko.utils.compareArrays = (() => {
         function callCallback(callback, items) {
             if (callback) {
                 for (var i = 0, n = items.length; i < n; i++) {
-                    items[i].mappedNodes.forEach(node => callback(node, i, items[i].arrayEntry));
+                    items[i] && items[i].mappedNodes.forEach(node => callback(node, i, items[i].arrayEntry));
                 }
             }
         }
@@ -4089,7 +4052,7 @@ ko.utils.compareArrays = (() => {
                                     if (mapData.arrayEntry === deletedItemDummyValue) {
                                         mapData = null;
                                     } else {
-                                        itemsForBeforeRemoveCallbacks.push(mapData);
+                                        itemsForBeforeRemoveCallbacks[mapData.indexObservable.peek()] = mapData;
                                     }
                                 }
                                 if (mapData) {
@@ -4126,9 +4089,6 @@ ko.utils.compareArrays = (() => {
         // Store a copy of the array items we just considered so we can difference it next time
         ko.utils.domData.set(domNode, lastMappingResultDomDataKey, newMappingResult);
 
-        // Call beforeMove first before any changes have been made to the DOM
-        callCallback(options['beforeMove'], itemsForMoveCallbacks);
-
         // Next remove nodes for deleted items (or just clean if there's a beforeRemove callback)
         nodesToDelete.forEach(options['beforeRemove'] ? ko.cleanNode : ko.removeNode);
 
@@ -4144,7 +4104,7 @@ ko.utils.compareArrays = (() => {
                 mapData = newMappingResult[i];
                 for (lastNode = undefined; i; ) {
                     if ((mappedNodes = newMappingResult[--i].mappedNodes) && mappedNodes.length) {
-                        lastNode = mappedNodes[mappedNodes.length-1];
+                        lastNode = mappedNodes[mappedNodes.length - 1];
                         break;
                     }
                 }
@@ -4189,12 +4149,13 @@ ko.utils.compareArrays = (() => {
         // as already "removed" so we won't call beforeRemove for it again, and it ensures that the item won't match up
         // with an actual item in the array and appear as "retained" or "moved".
         for (i = 0; i < itemsForBeforeRemoveCallbacks.length; ++i) {
-            itemsForBeforeRemoveCallbacks[i].arrayEntry = deletedItemDummyValue;
+            if (itemsForBeforeRemoveCallbacks[i]) {
+                itemsForBeforeRemoveCallbacks[i].arrayEntry = deletedItemDummyValue;
+            }
         }
 
         // Finally call afterMove and afterAdd callbacks
-        callCallback(options['afterMove'], itemsForMoveCallbacks);
-        callCallback(options['afterAdd'], itemsForAfterAddCallbacks);
+        callCallback(options['afterMove'], itemsForAfterMoveCallbacks);
     }
 })();
 	window['ko'] = koExports;

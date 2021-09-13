@@ -4,12 +4,11 @@
 function makeWithIfBinding(bindingKey, isWith, isNot) {
     ko.bindingHandlers[bindingKey] = {
         'init': (element, valueAccessor, allBindings, viewModel, bindingContext) => {
-            var didDisplayOnLastUpdate, savedNodes, contextOptions = {}, needAsyncContext, renderOnEveryChange;
+            var didDisplayOnLastUpdate, savedNodes, contextOptions = {}, needAsyncContext;
 
             if (isWith) {
-                var as = allBindings.get('as'), noChildContext = allBindings.get('noChildContext');
-                renderOnEveryChange = !(as && noChildContext);
-                contextOptions = { 'as': as, 'noChildContext': noChildContext, 'exportDependencies': renderOnEveryChange };
+                var as = allBindings.get('as'), noChildContext = false;
+                contextOptions = { 'as': as, 'exportDependencies': true };
             }
 
             needAsyncContext = allBindings['has'](ko.bindingEvent.descendantsComplete);
@@ -20,18 +19,12 @@ function makeWithIfBinding(bindingKey, isWith, isNot) {
                     isInitial = !savedNodes,
                     childContext;
 
-                if (!renderOnEveryChange && shouldDisplay === didDisplayOnLastUpdate) {
-                    return;
-                }
-
                 if (needAsyncContext) {
                     bindingContext = ko.bindingEvent.startPossiblyAsyncContentBinding(element, bindingContext);
                 }
 
                 if (shouldDisplay) {
-                    if (!isWith || renderOnEveryChange) {
-                        contextOptions['dataDependency'] = ko.dependencyDetection.computed();
-                    }
+                    contextOptions['dataDependency'] = ko.dependencyDetection.computed();
 
                     if (isWith) {
                         childContext = bindingContext['createChildContext'](typeof value == "function" ? value : valueAccessor, contextOptions);

@@ -84,9 +84,6 @@
 
         if (haveAddedNodesToParent) {
             activateBindingsOnContinuousNodeArray(renderedNodesArray, bindingContext);
-            if (options['afterRender']) {
-                ko.dependencyDetection.ignore(options['afterRender'], null, [renderedNodesArray, bindingContext[options['as'] || '$data']]);
-            }
             if (renderMode == "replaceChildren") {
                 ko.bindingEvent.notify(targetNodeOrNodeArray, ko.bindingEvent.childrenComplete);
             }
@@ -141,7 +138,6 @@
             // Support selecting template as a function of the data being rendered
             arrayItemContext = parentBindingContext['createChildContext'](arrayValue, {
                 'as': asName,
-                'noChildContext': options['noChildContext'],
                 'extend': context => {
                     context['$index'] = index;
                     if (asName) {
@@ -157,8 +153,6 @@
         // This will be called whenever setDomNodeChildrenFromArrayMapping has added nodes to targetNode
         var activateBindingsCallback = (arrayValue, addedNodesArray) => {
             activateBindingsOnContinuousNodeArray(addedNodesArray, arrayItemContext);
-            if (options['afterRender'])
-                options['afterRender'](addedNodesArray, arrayValue);
 
             // release the "cache" variable, so that it can be collected by
             // the GC when its value isn't used from within the bindings anymore.
@@ -172,9 +166,7 @@
             ko.bindingEvent.notify(targetNode, ko.bindingEvent.childrenComplete);
         };
 
-        var shouldHideDestroyed = (options['includeDestroyed'] === false);
-
-        if (!shouldHideDestroyed && !options['beforeRemove'] && ko.isObservableArray(arrayOrObservableArray)) {
+        if (!options['beforeRemove'] && ko.isObservableArray(arrayOrObservableArray)) {
             setDomNodeChildrenFromArrayMapping(arrayOrObservableArray.peek());
 
             var subscription = arrayOrObservableArray.subscribe(changeList => {
@@ -189,10 +181,6 @@
                 if (typeof unwrappedArray.length == "undefined") // Coerce single value into array
                     unwrappedArray = [unwrappedArray];
 
-                if (shouldHideDestroyed) {
-                    // Filter out any entries marked as destroyed
-                    unwrappedArray = unwrappedArray.filter(item => item || item == null);
-                }
                 setDomNodeChildrenFromArrayMapping(unwrappedArray);
 
             }, { disposeWhenNodeIsRemoved: targetNode });
@@ -283,7 +271,6 @@
                 if ('data' in options) {
                     innerBindingContext = bindingContext['createChildContext'](options['data'], {
                         'as': options['as'],
-                        'noChildContext': options['noChildContext'],
                         'exportDependencies': true
                     });
                 }

@@ -113,15 +113,6 @@
                 extendCallback = options['extend'];
             }
 
-            if (dataItemAlias && options && options['noChildContext']) {
-                var isFunc = typeof(dataItemOrAccessor) == "function" && !ko.isObservable(dataItemOrAccessor);
-                return new ko.bindingContext(inheritParentVm, this, null, self => {
-                    if (extendCallback)
-                        extendCallback(self);
-                    self[dataItemAlias] = isFunc ? dataItemOrAccessor() : dataItemOrAccessor;
-                }, options);
-            }
-
             return new ko.bindingContext(dataItemOrAccessor, this, dataItemAlias, (self, parentContext) => {
                 // Extend the context hierarchy by setting the appropriate pointers
                 self['$parentContext'] = parentContext;

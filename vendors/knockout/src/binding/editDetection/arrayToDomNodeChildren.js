@@ -60,24 +60,18 @@
         var nodesToDelete = [];
         var itemsToMoveFirstIndexes = [];
         var itemsForBeforeRemoveCallbacks = [];
-        var itemsForBeforeMoveCallbacks = [];
         var itemsForAfterMoveCallbacks = [];
-        var itemsForAfterAddCallbacks = [];
         var mapData;
         var countWaitingForRemove = 0;
 
         function itemAdded(value) {
             mapData = { arrayEntry: value, indexObservable: ko.observable(currentArrayIndex++) };
             newMappingResult.push(mapData);
-            if (!isFirstExecution) {
-                itemsForAfterAddCallbacks[currentArrayIndex - 1] = mapData;
-            }
         }
 
         function itemMovedOrRetained(oldPosition) {
             mapData = lastMappingResult[oldPosition];
             if (currentArrayIndex !== mapData.indexObservable.peek()) {
-                itemsForBeforeMoveCallbacks[mapData.indexObservable.peek()] = mapData;
                 itemsForAfterMoveCallbacks[currentArrayIndex] = mapData;
             }
             // Since updating the index might change the nodes, do so before calling fixUpContinuousNodeArray
@@ -169,9 +163,6 @@
         // Store a copy of the array items we just considered so we can difference it next time
         ko.utils.domData.set(domNode, lastMappingResultDomDataKey, newMappingResult);
 
-        // Call beforeMove first before any changes have been made to the DOM
-        callCallback(options['beforeMove'], itemsForBeforeMoveCallbacks);
-
         // Next remove nodes for deleted items (or just clean if there's a beforeRemove callback)
         nodesToDelete.forEach(options['beforeRemove'] ? ko.cleanNode : ko.removeNode);
 
@@ -239,6 +230,5 @@
 
         // Finally call afterMove and afterAdd callbacks
         callCallback(options['afterMove'], itemsForAfterMoveCallbacks);
-        callCallback(options['afterAdd'], itemsForAfterAddCallbacks);
     }
 })();
