@@ -81,7 +81,9 @@ export function htmlToPlain(html) {
 		.replace(/&quot;/gi, '"')
 		.replace(/<[^>]*>/gm, '');
 
-	text = tpl.content.textContent
+	text = tpl.content.textContent;
+	if (text) {
+		text = text
 		.replace(/\n[ \t]+/gm, '\n')
 		.replace(/[\n]{3,}/gm, '\n\n')
 		.replace(/&gt;/gi, '>')
@@ -89,6 +91,7 @@ export function htmlToPlain(html) {
 		.replace(/&amp;/gi, '&')
 		// wordwrap max line length 100
 		.match(/.{1,100}(\s|$)|\S+?(\s|$)/g).join('\n');
+	}
 
 	while (0 < --limit) {
 		iP1 = text.indexOf('__bq__start__', pos);

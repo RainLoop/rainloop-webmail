@@ -27,7 +27,6 @@ export class HtmlEditor {
 		this.blurTimer = 0;
 
 		this.onBlur = onBlur;
-		this.onReady = onReady ? [onReady] : [];
 		this.onModeChange = onModeChange;
 
 		this.resize = (() => {
@@ -39,18 +38,21 @@ export class HtmlEditor {
 		if (element) {
 			let editor;
 
-			const onReady = () => {
+			onReady = onReady ? [onReady] : [];
+			this.onReady = fn => onReady.push(fn);
+			const readyCallback = () => {
 				this.editor = editor;
 				this.resize();
-				this.onReady.forEach(fn => fn());
+				this.onReady = fn => fn();
+				onReady.forEach(fn => fn());
 			};
 
 			if (rl.createWYSIWYG) {
-				editor = rl.createWYSIWYG(element, onReady);
+				editor = rl.createWYSIWYG(element, readyCallback);
 			}
 			if (!editor) {
 				editor = new SquireUI(element);
-				setTimeout(onReady,1);
+				setTimeout(readyCallback, 1);
 			}
 
 			editor.on('blur', () => this.blurTrigger());
@@ -87,10 +89,9 @@ export class HtmlEditor {
 	 * @returns {void}
 	 */
 	clearCachedSignature() {
-		const fn = () => this.editor.execCommand('insertSignature', {
+		this.onReady(() => this.editor.execCommand('insertSignature', {
 			clearCache: true
-		});
-		this.editor ? fn() : this.onReady.push(fn);
+		}));
 	}
 
 	/**
@@ -100,12 +101,11 @@ export class HtmlEditor {
 	 * @returns {void}
 	 */
 	setSignature(signature, html, insertBefore = false) {
-		const fn = () => this.editor.execCommand('insertSignature', {
+		this.onReady(() => this.editor.execCommand('insertSignature', {
 			isHtml: html,
 			insertBefore: insertBefore,
 			signature: signature
-		});
-		this.editor ? fn() : this.onReady.push(fn);
+		}));
 	}
 
 	/**
@@ -140,14 +140,10 @@ export class HtmlEditor {
 	}
 
 	modeWysiwyg() {
-		try {
-			this.editor && this.editor.setMode('wysiwyg');
-		} catch (e) { console.error(e); }
+		this.onReady(() => this.editor.setMode('wysiwyg'));
 	}
 	modePlain() {
-		try {
-			this.editor && this.editor.setMode('plain');
-		} catch (e) { console.error(e); }
+		this.onReady(() => this.editor.setMode('plain'));
 	}
 
 	setHtmlOrPlain(text) {
@@ -159,7 +155,7 @@ export class HtmlEditor {
 	}
 
 	setData(mode, data) {
-		const fn = () => {
+		this.onReady(() => {
 			const editor = this.editor;
 			this.clearCachedSignature();
 			try {
@@ -170,8 +166,7 @@ export class HtmlEditor {
 					editor.setData(data);
 				}
 			} catch (e) { console.error(e); }
-		};
-		this.editor ? fn() : this.onReady.push(fn);
+		});
 	}
 
 	setHtml(html) {
@@ -183,9 +178,7 @@ export class HtmlEditor {
 	}
 
 	focus() {
-		try {
-			this.editor && this.editor.focus();
-		} catch (e) {} // eslint-disable-line no-empty
+		this.onReady(() => this.editor.focus());
 	}
 
 	hasFocus() {
@@ -197,12 +190,10 @@ export class HtmlEditor {
 	}
 
 	blur() {
-		try {
-			this.editor && this.editor.focusManager.blur(true);
-		} catch (e) {} // eslint-disable-line no-empty
+		this.onReady(() => this.editor.focusManager.blur(true));
 	}
 
 	clear() {
-		this.setHtml('');
+		this.onReady(() => this.isPlain() ? this.setPlain('') : this.setHtml(''));
 	}
 }
