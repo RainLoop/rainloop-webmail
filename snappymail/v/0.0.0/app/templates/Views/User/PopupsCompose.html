@@ -27,7 +27,7 @@
 					<div class="e-cell e-value">
 						<div class="dropdown pull-left" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: identitiesDropdownTrigger">
 							<a class="dropdown-toggle e-identity" href="#" tabindex="-1"
-								id="identity-label-id" role="button" data-toggle="dropdown"
+								id="identity-label-id" role="button"
 								data-bind="text: currentIdentityView, dropdownCloser: true, css: {'multiply': 1 < identitiesOptions().length }">
 							</a>
 							<!-- ko if: 1 < identitiesOptions().length -->
@@ -40,7 +40,7 @@
 						</div>
 						<div class="pull-right">
 							<div class="btn-group dropdown colored-toggle pull-right" style="margin-right: 4px;" data-bind="registerBootstrapDropdown: true">
-								<a class="btn dropdown-toggle fontastic" data-toggle="dropdown">☰</a>
+								<a class="btn dropdown-toggle fontastic">☰</a>
 								<ul class="dropdown-menu right-edge g-ui-menu" role="menu">
 									<li class="e-item" data-bind="click: function () { requestReadReceipt(!requestReadReceipt()); }">
 										<a class="e-link">
@@ -127,7 +127,7 @@
 					<div class="e-cell e-value">
 						<div>
 							<div class="pull-left">
-								<div class="btn-group" data-toggle="buttons-radio">
+								<div class="btn-group">
 									<button type="button" class="btn" data-bind="click: function () { attachmentsPlace(false); },
 										css: { 'active': !attachmentsPlace() }">
 										<i class="icon-file-text"></i>

@@ -8,10 +8,10 @@
 	const setFocus = element => element.focus ? element.focus() : element.setActive();
 
 	this.BSN = {
-		Dropdown: function(element) {
+		Dropdown: function(toggleBtn) {
 			let menu, menuItems = [];
 			const self = this,
-				parent = element.parentNode,
+				parent = toggleBtn.parentNode,
 				preventEmptyAnchor = e => {
 					const t = e.target, href = t.href || (t.parentNode && t.parentNode.href);
 					(href && href.slice(-1) === '#') && e.preventDefault();
@@ -19,30 +19,24 @@
 				open = bool => {
 					menu && menu.classList.toggle('show', bool);
 					parent.classList.toggle('show', bool);
-					element.setAttribute('aria-expanded', bool);
-					element.open = bool;
+					toggleBtn.setAttribute('aria-expanded', bool);
+					toggleBtn.open = bool;
 					if (bool) {
-						element.removeEventListener('click',clickHandler);
+						toggleBtn.removeEventListener('click',clickHandler);
 					} else {
-						setTimeout(() => element.addEventListener('click',clickHandler), 1);
+						setTimeout(() => toggleBtn.addEventListener('click',clickHandler), 1);
 					}
 				},
 				toggleEvents = () => {
-					let action = (element.open ? 'add' : 'remove') + 'EventListener';
+					let action = (toggleBtn.open ? 'add' : 'remove') + 'EventListener';
 					doc[action]('click',dismissHandler);
 					doc[action]('keydown',preventScroll);
 					doc[action]('keyup',keyHandler);
 					doc[action]('focus',dismissHandler);
 				},
 				dismissHandler = e => {
-					let eventTarget = e.target,
-						inside = menu.contains(eventTarget),
-						hasData = eventTarget && (
-							(eventTarget.getAttribute && eventTarget.getAttribute('data-toggle'))
-							|| (eventTarget.parentNode && eventTarget.parentNode.getAttribute('data-toggle')));
-					if (!(hasData && inside)
-					 && !(e.type === 'focus' && (inside || eventTarget === element))
-					) {
+					let eventTarget = e.target;
+					if ((!menu.contains(eventTarget) && !toggleBtn.contains(eventTarget)) || e.type !== 'focus') {
 						self.hide();
 						preventEmptyAnchor(e);
 					}
@@ -57,7 +51,7 @@
 						self.toggle();
 					} else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
 						let activeItem = doc.activeElement,
-							isMenuButton = activeItem === element,
+							isMenuButton = activeItem === toggleBtn,
 							idx = isMenuButton ? 0 : menuItems.indexOf(activeItem);
 						if (parent.contains(activeItem)) {
 							if (!isMenuButton) {
@@ -76,18 +70,18 @@
 				!('tabindex' in menu) && menu.setAttribute('tabindex', '0');
 				open(true);
 				setTimeout(() => {
-					setFocus( menu.getElementsByTagName('INPUT')[0] || element );
+					setFocus( menu.getElementsByTagName('INPUT')[0] || toggleBtn );
 					toggleEvents();
 				},1);
 			};
 			self.hide = () => {
 				open(false);
 				toggleEvents();
-				setFocus(element);
+				setFocus(toggleBtn);
 			};
-			self.toggle = () => element.open ? self.hide() : self.show();
+			self.toggle = () => toggleBtn.open ? self.hide() : self.show();
 			open(false);
-			element.Dropdown = self;
+			toggleBtn.Dropdown = self;
 		}
 	};
 

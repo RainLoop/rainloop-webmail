@@ -234,7 +234,7 @@ ko.bindingHandlers.onEsc = {
 ko.bindingHandlers.registerBootstrapDropdown = {
 	init: element => {
 		rl.Dropdowns.register(element);
-		element.ddBtn = new BSN.Dropdown(element.querySelector('[data-toggle="dropdown"]'));
+		element.ddBtn = new BSN.Dropdown(element.querySelector('.dropdown-toggle'));
 	}
 };
 

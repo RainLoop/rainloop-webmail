@@ -74,19 +74,12 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 		this.allowContacts && showScreenPopup(ContactsPopupView);
 	}
 
-	layoutDesktop()
+	toggleLayout()
 	{
-		doc.cookie = 'rllayout=desktop';
-		ThemeStore.isMobile(false);
-		leftPanelDisabled(false);
-//		location.reload();
-	}
-
-	layoutMobile()
-	{
-		doc.cookie = 'rllayout=mobile';
-		ThemeStore.isMobile(true);
-		leftPanelDisabled(true);
+		const mobile = !ThemeStore.isMobile();
+		doc.cookie = 'rllayout=' + (mobile ? 'mobile' : 'desktop');
+		ThemeStore.isMobile(mobile);
+		leftPanelDisabled(mobile);
 //		location.reload();
 	}
 

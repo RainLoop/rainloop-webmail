@@ -8,7 +8,7 @@
 			</div>
 			<div class="accountPlace hide-mobile" data-bind="text: emailTitle()"></div>
 			<div class="btn-group dropdown colored-toggle" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: accountMenuDropdownTrigger">
-				<a id="top-system-dropdown-id" href="#" tabindex="-1" class="btn single btn-block dropdown-toggle" data-toggle="dropdown">
+				<a id="top-system-dropdown-id" href="#" tabindex="-1" class="btn single btn-block dropdown-toggle">
 					<i class="fontastic" data-bind="css: {'icon-spinner': accountsLoading()}">👤</i>
 <!--
 					<b data-bind="text: accountsUnreadCount, visible: 100 > accountsUnreadCount() && 0 < accountsUnreadCount()"></b>
@@ -42,8 +42,8 @@
 							<span data-i18n="TOP_TOOLBAR/BUTTON_ADD_ACCOUNT"></span>
 						</a>
 					</li>
-					<li class="e-item" role="presentation" data-bind="visible: allowSettings">
-						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="visible: allowContacts, click: contactsClick">
+					<li class="e-item" role="presentation" data-bind="visible: allowSettings && allowContacts">
+						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: contactsClick">
 							<i class="fontastic">📇</i>
 							<span data-i18n="GLOBAL/CONTACTS"></span>
 						</a>
@@ -61,13 +61,11 @@
 						</a>
 					</li>
 					<li class="e-item dividerbar" role="presentation">
-						<a class="e-link menuitem show-mobile" href="#" tabindex="-1" data-bind="click: layoutDesktop">
-							<i class="fontastic">💻</i>
-							<span data-i18n="MOBILE/BUTTON_DESKTOP_VERSION"></span>
-						</a>
-						<a class="e-link menuitem hide-mobile" href="#" tabindex="-1" data-bind="click: layoutMobile">
-							<i class="fontastic">📱</i>
-							<span data-i18n="MOBILE/BUTTON_MOBILE_VERSION"></span>
+						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: toggleLayout">
+							<i class="fontastic show-mobile">💻</i>
+							<span class="show-mobile" data-i18n="MOBILE/BUTTON_DESKTOP_VERSION"></span>
+							<i class="fontastic hide-mobile">📱</i>
+							<span class="hide-mobile" data-i18n="MOBILE/BUTTON_MOBILE_VERSION"></span>
 						</a>
 					</li>
 					<li class="e-item" role="presentation">

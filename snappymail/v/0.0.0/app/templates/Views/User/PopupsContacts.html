@@ -15,7 +15,7 @@
 			<a class="btn button-delete fontastic" data-bind="command: deleteCommand">🗑</a>
 
 			<div class="btn-group dropdown colored-toggle" data-bind="registerBootstrapDropdown: true, visible: !contacts.importing() && !contacts.syncing()">
-				<a id="contacts-more-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-toggle="dropdown">☰</a>
+				<a id="contacts-more-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1">☰</a>
 				<ul class="dropdown-menu g-ui-menu right-edge" role="menu" aria-labelledby="contacts-more-dropdown-id">
 					<li class="e-item" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="initDom: importUploaderButton">
@@ -85,7 +85,7 @@
 				</button>
 			</div>
 			<div class="btn-group dropdown colored-toggle button-add-prop" data-bind="visible: !emptySelection(), registerBootstrapDropdown: true">
-				<a id="button-add-prop-dropdown-id" href="#" tabindex="-1" class="btn dropdown-toggle" data-toggle="dropdown">
+				<a id="button-add-prop-dropdown-id" href="#" tabindex="-1" class="btn dropdown-toggle">
 					<span data-i18n="CONTACTS/ADD_MENU_LABEL"></span>
 					<span class="caret"></span>
 				</a>
