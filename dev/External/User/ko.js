@@ -250,9 +250,3 @@ ko.bindingHandlers.openDropdownTrigger = {
 		}
 	}
 };
-
-ko.bindingHandlers.dropdownCloser = {
-	init: element => element.closest('.dropdown').addEventListener('click', event =>
-		event.target.closestWithin('.e-item', element) && element.ddBtn.toggle()
-	)
-};
