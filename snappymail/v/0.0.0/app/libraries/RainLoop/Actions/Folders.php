@@ -337,7 +337,7 @@ trait Folders
 	{
 		$sFolder = $this->GetActionParam('Folder', '');
 		$iPrevUidNext = (int) $this->GetActionParam('UidNext', 0);
-		$aFlagsUids = \array_filter(\array_map('intval', $this->GetActionParam('FlagsUids', []))) ?: [];
+		$aFlagsUids = \array_filter(\array_map('intval', $this->GetActionParam('FlagsUids', []) ?: []));
 
 		$this->initMailClientConnection();
 
