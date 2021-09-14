@@ -11,50 +11,43 @@ class AbstractInput extends AbstractComponent {
 		super();
 
 		this.value = params.value || '';
-		this.size = params.size || 0;
 		this.label = params.label || '';
-		this.preLabel = params.preLabel || '';
-		this.enable = undefined === params.enable ? true : params.enable;
+		this.enable = null == params.enable ? true : params.enable;
 		this.trigger = params.trigger && params.trigger.subscribe ? params.trigger : null;
 		this.placeholder = params.placeholder || '';
 
-		this.labeled = undefined !== params.label;
-		this.preLabeled = undefined !== params.preLabel;
-		this.triggered = undefined !== params.trigger && !!this.trigger;
+		this.labeled = null != params.label;
 
-		this.classForTrigger = ko.observable('');
+		let size = params.size || 0;
+		if (this.trigger) {
+			const
+				classForTrigger = ko.observable(''),
+				setTriggerState = value => {
+					switch (pInt(value)) {
+						case SaveSettingsStep.TrueResult:
+							classForTrigger('success');
+							break;
+						case SaveSettingsStep.FalseResult:
+							classForTrigger('error');
+							break;
+						default:
+							classForTrigger('');
+							break;
+					}
+				};
 
-		this.className = ko.computed(() => {
-			const size = ko.unwrap(this.size),
-				suffixValue = this.trigger ? ' ' + ('settings-saved-trigger-input ' + this.classForTrigger()).trim() : '';
-			return (0 < size ? 'span' + size : '') + suffixValue;
-		});
+			setTriggerState(this.trigger());
 
-		if (undefined !== params.width && params.element) {
-			params.element.querySelectorAll('input,select,textarea').forEach(node => node.style.width = params.width);
+			this.className = ko.computed(() =>
+				((0 < size ? 'span' + size : '') + ' settings-saved-trigger-input ' + classForTrigger()).trim()
+			);
+
+			this.disposable.push(this.trigger.subscribe(setTriggerState, this));
+		} else {
+			this.className = ko.computed(() => 0 < size ? 'span' + size : '');
 		}
 
 		this.disposable.push(this.className);
-
-		if (this.trigger) {
-			this.setTriggerState(this.trigger());
-
-			this.disposable.push(this.trigger.subscribe(this.setTriggerState, this));
-		}
-	}
-
-	setTriggerState(value) {
-		switch (pInt(value)) {
-			case SaveSettingsStep.TrueResult:
-				this.classForTrigger('success');
-				break;
-			case SaveSettingsStep.FalseResult:
-				this.classForTrigger('error');
-				break;
-			default:
-				this.classForTrigger('');
-				break;
-		}
 	}
 }
 

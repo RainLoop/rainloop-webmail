@@ -59,11 +59,13 @@ export const
 	 * @returns {string}
 	 */
 	i18n = (key, valueList, defaulValue) => {
-		let path = key.split('/');
-		if (!I18N_DATA[path[0]] || !path[1]) {
-			return defaulValue || key;
+		let result = defaulValue || key;
+		if (key) {
+			let path = key.split('/');
+			if (I18N_DATA[path[0]] && path[1]) {
+				result = I18N_DATA[path[0]][path[1]] || result;
+			}
 		}
-		let result = I18N_DATA[path[0]][path[1]] || defaulValue || key;
 		if (valueList) {
 			Object.entries(valueList).forEach(([key, value]) => {
 				result = result.replace('%' + key + '%', value);

@@ -43,16 +43,13 @@ export class AbstractApp {
 				viewModel: {
 					createViewModel: (params, componentInfo) => {
 						params = params || {};
-						params.element = null;
 
 						if (componentInfo && componentInfo.element) {
-							params.component = componentInfo;
-							params.element = componentInfo.element;
 
 							i18nToNodes(componentInfo.element);
 
-							if (params.inline && ko.unwrap(params.inline)) {
-								params.element.style.display = 'inline-block';
+							if (params.inline) {
+								componentInfo.element.style.display = 'inline-block';
 							}
 						}
 

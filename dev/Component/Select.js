@@ -13,11 +13,7 @@ export class SelectComponent extends AbstractInput {
 
 		this.optionsText = params.optionsText || null;
 		this.optionsValue = params.optionsValue || null;
-		this.optionsCaption = params.optionsCaption || null;
-
-		if (this.optionsCaption) {
-			this.optionsCaption = i18n(this.optionsCaption);
-		}
+		this.optionsCaption = i18n(params.optionsCaption || null);
 
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 	}
