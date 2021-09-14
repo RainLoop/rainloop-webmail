@@ -57,10 +57,7 @@ export class ThemesUserSettings {
 		if (this.background.uploaderButton() && this.capaUserBackground()) {
 			const oJua = new Jua({
 				action: serverRequest('UploadBackground'),
-				name: 'uploader',
-				queueSize: 1,
-				multipleSizeLimit: 1,
-				disableMultiple: true,
+				limit: 1,
 				clickElement: this.background.uploaderButton()
 			});
 

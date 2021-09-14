@@ -1096,9 +1096,6 @@ class ComposePopupView extends AbstractViewPopup {
 				attachmentSizeLimit = pInt(SettingsGet('AttachmentLimit')),
 				oJua = new Jua({
 					action: serverRequest('Upload'),
-					name: 'uploader',
-					queueSize: 2,
-					multipleSizeLimit: 50,
 					clickElement: this.composeUploaderButton(),
 					dragAndDropElement: this.composeUploaderDropPlace()
 				});
@@ -1176,23 +1173,24 @@ class ComposePopupView extends AbstractViewPopup {
 				})
 				.on('onComplete', (id, result, data) => {
 					const attachment = this.getAttachmentById(id),
-						errorCode = data && data.Result && data.Result.ErrorCode ? data.Result.ErrorCode : null,
-						attachmentJson = result && data && data.Result && data.Result.Attachment ? data.Result.Attachment : null;
+						response = (data && data.Result) || {},
+						errorCode = response.ErrorCode,
+						attachmentJson = result && response.Attachment;
 
 					let error = '';
-					if (null !== errorCode) {
+					if (null != errorCode) {
 						error = getUploadErrorDescByCode(errorCode);
 					} else if (!attachmentJson) {
 						error = i18n('UPLOAD/ERROR_UNKNOWN');
 					}
 
 					if (attachment) {
-						if (error && error.length) {
+						if (error) {
 							attachment
 								.waiting(false)
 								.uploading(false)
 								.complete(true)
-								.error(error);
+								.error(error + '\n' + response.ErrorMessage);
 						} else if (attachmentJson) {
 							attachment
 								.waiting(false)

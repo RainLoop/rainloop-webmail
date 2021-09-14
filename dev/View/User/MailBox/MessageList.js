@@ -720,8 +720,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			const oJua = new Jua({
 				action: serverRequest('Append'),
 				name: 'AppendFile',
-				queueSize: 1,
-				multipleSizeLimit: 1,
+				limit: 1,
 				hidden: {
 					Folder: () => FolderUserStore.currentFolderFullNameRaw()
 				},
