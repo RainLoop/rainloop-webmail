@@ -23,7 +23,7 @@ trait Messages
 		$sSearch = '';
 		$iUidNext = 0;
 		$bUseThreads = false;
-		$iThreadUid = '';
+		$iThreadUid = 0;
 		$sSort = '';
 
 		$sRawKey = $this->GetActionParam('RawKey', '');
