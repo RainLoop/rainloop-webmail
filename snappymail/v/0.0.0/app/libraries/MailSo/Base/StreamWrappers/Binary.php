@@ -11,6 +11,20 @@
 
 namespace MailSo\Base\StreamWrappers;
 
+
+class WhitespaceFilter extends \php_user_filter
+{
+	function filter($in, $out, &$consumed, $closing)
+	{
+		while ($bucket = \stream_bucket_make_writeable($in)) {
+			$bucket->data = \str_replace(array("\r", "\n", "\t"), '', $bucket->data);
+			$consumed += $bucket->datalen;
+			\stream_bucket_append($out, $bucket);
+		}
+		return PSFS_PASS_ON;
+	}
+}
+
 /**
  * @category MailSo
  * @package Base
@@ -70,53 +84,21 @@ class Binary
 
 	public static function GetInlineDecodeOrEncodeFunctionName(string $sContentTransferEncoding, bool $bDecode = true) : string
 	{
-		$sFunctionName = '';
 		switch (strtolower($sContentTransferEncoding))
 		{
 			case \MailSo\Base\Enumerations\Encoding::BASE64_LOWER:
-				// InlineBase64Decode
-				$sFunctionName = $bDecode ? 'InlineBase64Decode' : 'convert.base64-encode';
-				break;
+				return $bDecode ? 'convert.base64-decode' : 'convert.base64-encode';
 			case \MailSo\Base\Enumerations\Encoding::QUOTED_PRINTABLE_LOWER:
-				// InlineQuotedPrintableDecode
-				$sFunctionName = $bDecode ? 'convert.quoted-printable-decode' : 'convert.quoted-printable-encode';
-				break;
+				return $bDecode ? 'convert.quoted-printable-decode' : 'convert.quoted-printable-encode';
 		}
 
-		return $sFunctionName;
+		return '';
 	}
 
 	public static function InlineNullDecode(string $sBodyString, string &$sEndBuffer) : string
 	{
 		$sEndBuffer = '';
 		return $sBodyString;
-	}
-
-	public static function InlineBase64Decode(string $sBaseString, string &$sEndBuffer) : string
-	{
-		$sEndBuffer = '';
-		$sBaseString = str_replace(array("\r", "\n", "\t"), '', $sBaseString);
-		$iBaseStringLen = strlen($sBaseString);
-		$iBaseStringNormFloorLen = floor($iBaseStringLen / 4) * 4;
-		if ($iBaseStringNormFloorLen < $iBaseStringLen)
-		{
-			$sEndBuffer = substr($sBaseString, $iBaseStringNormFloorLen);
-			$sBaseString = substr($sBaseString, 0, $iBaseStringNormFloorLen);
-		}
-		return \MailSo\Base\Utils::Base64Decode($sBaseString);
-	}
-
-	public static function InlineQuotedPrintableDecode(string $sQuotedPrintableString, string &$sEndBuffer) : string
-	{
-		$sEndBuffer = '';
-		$sQuotedPrintableLen = strlen($sQuotedPrintableString);
-		$iLastSpace = strrpos($sQuotedPrintableString, ' ');
-		if (false !== $iLastSpace && $iLastSpace + 1 < $sQuotedPrintableLen)
-		{
-			$sEndBuffer = substr($sQuotedPrintableString, $iLastSpace + 1);
-			$sQuotedPrintableString = substr($sQuotedPrintableString, 0, $iLastSpace + 1);
-		}
-		return quoted_printable_decode($sQuotedPrintableString);
 	}
 
 	public static function InlineConvertDecode(string $sEncodedString, string &$sEndBuffer, string $sFromEncoding, string $sToEncoding) : string
@@ -190,6 +172,12 @@ class Binary
 			'convert.quoted-printable-decode', 'convert.quoted-printable-encode'
 		)))
 		{
+			if ('convert.base64-decode' === $sUtilsDecodeOrEncodeFunctionName) {
+				\stream_filter_register('mailsowhitespace', '\\MailSo\\Base\\StreamWrappers\\WhitespaceFilter');
+				if (!\stream_filter_append($rStream, 'mailsowhitespace')) {
+					return false;
+				}
+			}
 			$rFilter = \stream_filter_append($rStream, $sUtilsDecodeOrEncodeFunctionName,
 				STREAM_FILTER_READ, array(
 					'line-length' => \MailSo\Mime\Enumerations\Constants::LINE_LENGTH,
