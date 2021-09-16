@@ -147,8 +147,12 @@ trait Raw
 
 			$oAccount = $this->getAccountFromToken();
 
-			$sContentTypeOut = empty($sContentTypeIn) ?
-				\MailSo\Base\Utils::MimeContentType($sFileNameIn) : $sContentTypeIn;
+			// https://github.com/the-djmaze/snappymail/issues/144
+			if ('.pdf' === \substr($sFileNameIn,-4)) {
+				$sContentTypeOut = 'application/pdf'; // application/octet-stream
+			} else {
+				$sContentTypeOut = $sContentTypeIn ?: \MailSo\Base\Utils::MimeContentType($sFileNameIn);
+			}
 
 			$sFileNameOut = $this->MainClearFileName($sFileNameIn, $sContentTypeIn, $sMimeIndex);
 
@@ -202,6 +206,11 @@ trait Raw
 					if (empty($sFileNameOut))
 					{
 						$sFileNameOut = $sFileName;
+					}
+
+					// https://github.com/the-djmaze/snappymail/issues/144
+					if ('.pdf' === \substr($sFileNameOut,-4)) {
+						$sContentTypeOut = 'application/pdf';
 					}
 
 					$sFileNameOut = $self->MainClearFileName($sFileNameOut, $sContentTypeOut, $sMimeIndex);
