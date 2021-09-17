@@ -11,7 +11,7 @@
 				<i class="icon-spinner not-animated"></i>
 			</a>
 			<!-- ko if: !newMoveToFolder -->
-			<div class="btn-group dropdown colored-toggle hide-mobile" data-bind="visible: allowMessageListActions, registerBootstrapDropdown: true, openDropdownTrigger: moveDropdownTrigger">
+			<div class="btn-group dropdown colored-toggle hide-mobile" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: moveDropdownTrigger">
 				<a id="move-dropdown-id" href="#" tabindex="-1" class="btn dropdown-toggle buttonMove" data-bind="command: moveCommand" data-i18n="[title]GLOBAL/MOVE_TO">
 					<i class="icon-copy visible-on-ctrl-btn"></i>
 					<i class="fontastic hidden-on-ctrl-btn">📁</i>
@@ -25,14 +25,14 @@
 			</div>
 			<!-- /ko -->
 			<!-- ko if: newMoveToFolder -->
-			<div class="btn-group" data-bind="visible: allowMessageListActions && mobileCheckedStateShow()">
+			<div class="btn-group" data-bind="visible: mobileCheckedStateShow()">
 				<a id="move-dropdown-id" href="#" tabindex="-1" class="btn buttonMove" data-bind="command: moveNewCommand" data-i18n="[title]GLOBAL/MOVE_TO">
 					<i class="icon-copy visible-on-ctrl-btn"></i>
 					<i class="fontastic hidden-on-ctrl-btn">📁</i>
 				</a>
 			</div>
 			<!-- /ko -->
-			<div class="btn-group" data-bind="visible: allowMessageListActions && mobileCheckedStateShow()">
+			<div class="btn-group" data-bind="visible: mobileCheckedStateShow()">
 				<a class="btn button-archive"
 					data-bind="visible: isArchiveVisible, command: archiveCommand" data-i18n="[title]GLOBAL/TO_ARCHIVE">
 					<i class="icon-archive"></i>
@@ -48,7 +48,7 @@
 			<div class="btn-group dropdown colored-toggle" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: moreDropdownTrigger">
 				<a id="more-list-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-i18n="[title]GLOBAL/MORE">☰</a>
 				<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="more-list-dropdown-id">
-					<div data-bind="visible: allowMessageListActions">
+					<div>
 						<li class="e-item" role="presentation" data-bind="click: listUnsetSeen, css: {'disabled': !hasCheckedOrSelectedLines()}">
 							<a class="e-link menuitem" href="#" tabindex="-1">
 								<i class="icon-none"></i>
