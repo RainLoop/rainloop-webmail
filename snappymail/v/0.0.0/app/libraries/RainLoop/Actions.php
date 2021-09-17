@@ -1909,10 +1909,6 @@ class Actions
 			$aResult[] = Enumerations\Capa::DANGEROUS_ACTIONS;
 		}
 
-		if ($oConfig->Get('capa', 'reload', true)) {
-			$aResult[] = Enumerations\Capa::RELOAD;
-		}
-
 		if ($oConfig->Get('capa', 'quota', true)) {
 			$aResult[] = Enumerations\Capa::QUOTA;
 		}

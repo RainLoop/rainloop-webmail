@@ -7,7 +7,6 @@ export const Capa = {
 	OpenPGP: 'OPEN_PGP',
 	Prefetch: 'PREFETCH',
 	Contacts: 'CONTACTS',
-	Reload: 'RELOAD',
 	Search: 'SEARCH',
 	SearchAdv: 'SEARCH_ADV',
 	MessageActions: 'MESSAGE_ACTIONS',

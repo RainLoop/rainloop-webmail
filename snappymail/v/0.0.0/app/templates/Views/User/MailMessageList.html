@@ -7,7 +7,7 @@
 			<a class="btn buttonCompose show-mobile" data-bind="click: composeClick, css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}, visible: mobileCheckedStateHide()" data-i18n="[title]FOLDER_LIST/BUTTON_NEW_MESSAGE">
 				<i class="icon-paper-plane"></i>
 			</a>
-			<a class="btn" data-bind="command: reloadCommand, visible: allowReload && mobileCheckedStateHide()" data-i18n="[title]MESSAGE_LIST/BUTTON_RELOAD">
+			<a class="btn" data-bind="command: reloadCommand, visible: mobileCheckedStateHide()" data-i18n="[title]MESSAGE_LIST/BUTTON_RELOAD">
 				<i class="icon-spinner not-animated"></i>
 			</a>
 			<!-- ko if: !newMoveToFolder -->

@@ -190,7 +190,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'settings' => array(true),
 				'quota' => array(true),
 				'help' => array(true),
-				'reload' => array(true),
 				'search' => array(true),
 				'search_adv' => array(true),
 				'dangerous_actions' => array(true),

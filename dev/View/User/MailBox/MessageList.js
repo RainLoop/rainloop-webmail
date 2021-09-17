@@ -59,7 +59,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 		this.newMoveToFolder = !!SettingsGet('NewMoveToFolder');
 
-		this.allowReload = Settings.capa(Capa.Reload);
 		this.allowSearch = Settings.capa(Capa.Search);
 		this.allowSearchAdv = Settings.capa(Capa.SearchAdv);
 		this.allowDangerousActions = Settings.capa(Capa.DangerousActions);
@@ -770,13 +769,11 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			return false;
 		});
 
-		if (Settings.capa(Capa.Reload)) {
-			// check mail
-			shortcuts.add('r', 'meta', [Scope.FolderList, Scope.MessageList, Scope.MessageView], () => {
-				this.reloadCommand();
-				return false;
-			});
-		}
+		// check mail
+		shortcuts.add('r', 'meta', [Scope.FolderList, Scope.MessageList, Scope.MessageView], () => {
+			this.reloadCommand();
+			return false;
+		});
 
 		// check all
 		shortcuts.add('a', 'meta', Scope.MessageList, () => {
