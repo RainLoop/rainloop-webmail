@@ -47,7 +47,6 @@ doc.documentElement.classList.toggle('rl-mobile', 'mobile' === layout || (!layou
 let RL_APP_DATA = {};
 
 win.rl = {
-	data: () => RL_APP_DATA,
 	adminArea: () => admin,
 	settings: {
 		get: name => null == RL_APP_DATA[name] ? null : RL_APP_DATA[name],
@@ -56,12 +55,10 @@ win.rl = {
 			const APP_SETTINGS = RL_APP_DATA.System || {};
 			return null == APP_SETTINGS[name] ? null : APP_SETTINGS[name];
 		},
-		capa: name => null != name && Array.isArray(RL_APP_DATA.Capa) && RL_APP_DATA.Capa.includes(name)
+		capa: name => name && Array.isArray(RL_APP_DATA.Capa) && RL_APP_DATA.Capa.includes(name)
 	},
-	setWindowTitle: title => {
-		title = null == title ? '' : '' + title;
-		doc.title = RL_APP_DATA.Title ? title + (title ? ' - ' : '') + RL_APP_DATA.Title : title;
-	},
+	setWindowTitle: title =>
+		doc.title = RL_APP_DATA.Title ? (title ? title + ' - ' : '') + RL_APP_DATA.Title : (title ? '' + title : ''),
 
 	initData: appData => {
 		RL_APP_DATA = appData;
@@ -89,7 +86,7 @@ try {
 	let data = getCookie(sName);
 	data = data ? JSON.parse(data) : {};
 	win[sName] = {
-		getItem: key => data[key] === undefined ? null : data[key],
+		getItem: key => data[key] == null ? null : data[key],
 		setItem: (key, value) => {
 			data[key] = ''+value; // forces the value to a string
 			doc.cookie = sName+'='+encodeURIComponent(JSON.stringify(data))
