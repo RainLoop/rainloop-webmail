@@ -1941,10 +1941,6 @@ class Actions
 			}
 		}
 
-		if ($oConfig->Get('capa', 'help', true)) {
-			$aResult[] = Enumerations\Capa::HELP;
-		}
-
 		if ($oConfig->Get('capa', 'attachments_actions', false)) {
 			$aResult[] = Enumerations\Capa::ATTACHMENTS_ACTIONS;
 		}

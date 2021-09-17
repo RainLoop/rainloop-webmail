@@ -22,7 +22,6 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 
 		this.allowAccounts = Settings.capa(Capa.AdditionalAccounts);
 		this.allowSettings = Settings.capa(Capa.Settings);
-		this.allowHelp = Settings.capa(Capa.Help);
 
 		this.accountEmail = AccountUserStore.email;
 
@@ -63,7 +62,7 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 	}
 
 	settingsHelp() {
-		this.allowHelp && showScreenPopup(KeyboardShortcutsHelpPopupView);
+		showScreenPopup(KeyboardShortcutsHelpPopupView);
 	}
 
 	addAccountClick() {

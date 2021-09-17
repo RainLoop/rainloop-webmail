@@ -13,7 +13,6 @@ export const Capa = {
 	AttachmentsActions: 'ATTACHMENTS_ACTIONS',
 	DangerousActions: 'DANGEROUS_ACTIONS',
 	Settings: 'SETTINGS',
-	Help: 'HELP',
 	Themes: 'THEMES',
 	UserBackground: 'USER_BACKGROUND',
 	Sieve: 'SIEVE',
