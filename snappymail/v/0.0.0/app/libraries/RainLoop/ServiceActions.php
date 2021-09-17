@@ -899,6 +899,6 @@ class ServiceActions
 				$this->oActions->ProcessTemplate($sName, \file_get_contents($sFile)).'</template>';
 		}
 
-		return $sHtml;
+		return \str_replace('&nbsp;', "\xC2\xA0", $sHtml);
 	}
 }
