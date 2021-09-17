@@ -73,7 +73,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 		this.moveAction = moveAction;
 
-		this.allowComposer = Settings.capa(Capa.Composer);
 		this.allowMessageActions = Settings.capa(Capa.MessageActions);
 		this.allowMessageListActions = Settings.capa(Capa.MessageListActions);
 

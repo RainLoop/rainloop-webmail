@@ -1961,12 +1961,8 @@ class Actions
 			$aResult[] = Enumerations\Capa::MESSAGE_ACTIONS;
 		}
 
-		if ($oConfig->Get('capa', 'composer', true)) {
-			$aResult[] = Enumerations\Capa::COMPOSER;
-
-			if ($oConfig->Get('capa', 'contacts', true)) {
-				$aResult[] = Enumerations\Capa::CONTACTS;
-			}
+		if ($oConfig->Get('capa', 'contacts', true)) {
+			$aResult[] = Enumerations\Capa::CONTACTS;
 		}
 
 		if ($oConfig->Get('capa', 'search', true)) {

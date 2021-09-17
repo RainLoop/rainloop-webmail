@@ -933,8 +933,7 @@ class AppUser extends AbstractApp {
 						// When auto-login is active
 						if (
 							!!SettingsGet('AccountSignMe') &&
-							navigator.registerProtocolHandler &&
-							Settings.capa(Capa.Composer)
+							navigator.registerProtocolHandler
 						) {
 							setTimeout(() => {
 								try {
@@ -982,7 +981,7 @@ class AppUser extends AbstractApp {
 
 	showMessageComposer(params = [])
 	{
-		Settings.capa(Capa.Composer) && showScreenPopup(ComposePopupView, params);
+		showScreenPopup(ComposePopupView, params);
 	}
 }
 

@@ -186,7 +186,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 			),
 
 			'capa' => array(
-				'composer' => array(true),
 				'contacts' => array(true),
 				'settings' => array(true),
 				'quota' => array(true),

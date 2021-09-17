@@ -104,11 +104,6 @@ trait Messages
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, Capa::COMPOSER, $oAccount))
-		{
-			return $this->FalseResponse(__FUNCTION__);
-		}
-
 		$sMessageFolder = $this->GetActionParam('MessageFolder', '');
 		$iMessageUid = $this->GetActionParam('MessageUid', 0);
 
@@ -170,11 +165,6 @@ trait Messages
 	public function DoSendMessage() : array
 	{
 		$oAccount = $this->initMailClientConnection();
-
-		if (!$this->GetCapa(false, Capa::COMPOSER, $oAccount))
-		{
-			return $this->FalseResponse(__FUNCTION__);
-		}
 
 		$oConfig = $this->Config();
 
@@ -353,11 +343,6 @@ trait Messages
 	public function DoSendReadReceiptMessage() : array
 	{
 		$oAccount = $this->initMailClientConnection();
-
-		if (!$this->GetCapa(false, Capa::COMPOSER, $oAccount))
-		{
-			return $this->FalseResponse(__FUNCTION__);
-		}
 
 		$oMessage = $this->buildReadReceiptMessage($oAccount);
 

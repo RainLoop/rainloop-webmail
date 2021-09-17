@@ -250,11 +250,6 @@ trait Response
 			$mResult['IsForwarded'] = \strlen($sForwardedFlag) && \in_array(\strtolower($sForwardedFlag), $aFlags);
 			$mResult['IsReadReceipt'] = \strlen($sReadReceiptFlag) && \in_array(\strtolower($sReadReceiptFlag), $aFlags);
 
-			if (!$this->GetCapa(false, Capa::COMPOSER, $oAccount))
-			{
-				$mResult['IsReadReceipt'] = true;
-			}
-
 			if ('Message' === $sParent)
 			{
 				$oAttachments = /* @var \MailSo\Mail\AttachmentCollection */  $mResponse->Attachments();

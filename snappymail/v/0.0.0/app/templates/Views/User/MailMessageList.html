@@ -4,7 +4,7 @@
 		<div class="btn-toolbar">
 			<a class="btn btn-thin-2 fontastic show-mobile" data-bind="click: hideLeft, visible: !leftPanelDisabled()">❮</a>
 			<a class="btn btn-thin-2 fontastic show-mobile" data-bind="click: showLeft, visible: leftPanelDisabled()">❯</a>
-			<a class="btn buttonCompose show-mobile" data-bind="click: composeClick, css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}, visible: allowComposer && mobileCheckedStateHide()" data-i18n="[title]FOLDER_LIST/BUTTON_NEW_MESSAGE">
+			<a class="btn buttonCompose show-mobile" data-bind="click: composeClick, css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}, visible: mobileCheckedStateHide()" data-i18n="[title]FOLDER_LIST/BUTTON_NEW_MESSAGE">
 				<i class="icon-paper-plane"></i>
 			</a>
 			<a class="btn" data-bind="command: reloadCommand, visible: allowReload && mobileCheckedStateHide()" data-i18n="[title]MESSAGE_LIST/BUTTON_RELOAD">
@@ -45,7 +45,7 @@
 				<a class="btn button-delete fontastic"
 					data-bind="command: deleteCommand" data-i18n="[title]GLOBAL/DELETE">🗑</a>
 			</div>
-			<div class="btn-group dropdown colored-toggle" data-bind="visible: allowComposer || allowMessageListActions || allowDangerousActions, registerBootstrapDropdown: true, openDropdownTrigger: moreDropdownTrigger">
+			<div class="btn-group dropdown colored-toggle" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: moreDropdownTrigger">
 				<a id="more-list-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-i18n="[title]GLOBAL/MORE">☰</a>
 				<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="more-list-dropdown-id">
 					<div data-bind="visible: allowMessageListActions">
@@ -80,7 +80,7 @@
 							</a>
 						</li>
 					</div>
-					<li class="e-item dividerbar" role="presentation" data-bind="visible: allowComposer, command: multyForwardCommand">
+					<li class="e-item dividerbar" role="presentation" data-bind="command: multyForwardCommand">
 						<a class="e-link menuitem" href="#" tabindex="-1">
 							<i class="fontastic">↞</i>
 							<span data-i18n="MESSAGE_LIST/BUTTON_MULTY_FORWARD"></span>

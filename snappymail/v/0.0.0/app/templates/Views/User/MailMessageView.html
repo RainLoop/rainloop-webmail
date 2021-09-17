@@ -46,18 +46,15 @@
 				<div class="message-fixed-button-toolbar" data-bind="visible: message">
 					<div class="btn-group" style="margin-right: -11px;">
 						<a class="btn btn-thin-2 btn-transparent buttonReply fontastic"
-							data-bind="visible: 'reply' === lastReplyAction() && allowComposer, command: replyCommand" data-i18n="[title]MESSAGE/BUTTON_REPLY">←</a>
+							data-bind="visible: 'reply' === lastReplyAction(), command: replyCommand" data-i18n="[title]MESSAGE/BUTTON_REPLY">←</a>
 						<a class="btn btn-thin-2 btn-transparent buttonReplyAll fontastic"
-							data-bind="visible: 'replyall' === lastReplyAction() && allowComposer, command: replyAllCommand" data-i18n="[title]MESSAGE/BUTTON_REPLY_ALL">↞</a>
+							data-bind="visible: 'replyall' === lastReplyAction(), command: replyAllCommand" data-i18n="[title]MESSAGE/BUTTON_REPLY_ALL">↞</a>
 						<a class="btn btn-thin-2 btn-transparent buttonForward fontastic"
-							data-bind="visible: 'forward' === lastReplyAction() && allowComposer, command: forwardCommand" data-i18n="[title]MESSAGE/BUTTON_FORWARD">→</a>
-						<div class="btn-group" data-bind="registerBootstrapDropdown: true, visible: allowComposer || allowMessageListActions || allowMessageActions" style="display: inline-block">
-							<a class="btn btn-thin-2 btn-transparent dropdown-toggle" id="more-view-dropdown-id" href="#" tabindex="-1" style="margin-left: -4px; margin-right: 2px">
-								<span data-bind="visible: allowComposer">▾</span>
-								<span data-bind="visible: !allowComposer" class="fontastic">⋮</span>
-							</a>
+							data-bind="visible: 'forward' === lastReplyAction(), command: forwardCommand" data-i18n="[title]MESSAGE/BUTTON_FORWARD">→</a>
+						<div class="btn-group" data-bind="registerBootstrapDropdown: true" style="display: inline-block">
+							<a class="btn btn-thin-2 btn-transparent dropdown-toggle" id="more-view-dropdown-id" href="#" tabindex="-1" style="margin-left: -4px; margin-right: 2px">▾</a>
 							<ul class="dropdown-menu g-ui-menu right-edge" role="menu" aria-labelledby="more-view-dropdown-id">
-								<div data-bind="visible: allowComposer && !isDraftFolder()">
+								<div data-bind="visible: !isDraftFolder()">
 									<li class="e-item" role="presentation">
 										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: replyCommand">
 											<i class="fontastic">←</i>

@@ -62,7 +62,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.allowReload = Settings.capa(Capa.Reload);
 		this.allowSearch = Settings.capa(Capa.Search);
 		this.allowSearchAdv = Settings.capa(Capa.SearchAdv);
-		this.allowComposer = Settings.capa(Capa.Composer);
 		this.allowMessageListActions = Settings.capa(Capa.MessageListActions);
 		this.allowDangerousActions = Settings.capa(Capa.DangerousActions);
 

@@ -1,7 +1,7 @@
 import ko from 'ko';
 
-import { Capa, Scope } from 'Common/Enums';
-import { leftPanelDisabled, moveAction, Settings } from 'Common/Globals';
+import { Scope } from 'Common/Enums';
+import { leftPanelDisabled, moveAction } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
 import { setFolderHash } from 'Common/Cache';
 
@@ -36,7 +36,6 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 
 		this.leftPanelDisabled = leftPanelDisabled;
 
-		this.allowComposer = Settings.capa(Capa.Composer);
 		this.allowContacts = AppUserStore.allowContacts();
 
 		this.folderListFocused = ko.computed(() => Scope.FolderList === AppUserStore.focusedState());
