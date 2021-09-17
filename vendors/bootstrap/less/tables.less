@@ -122,25 +122,3 @@
     }
   }
 }
-
-
-// TABLE CELL SIZING
-// -----------------
-
-// Reset default grid behavior
-table [class*=span] {
-  display: table-cell;
-  margin-left: 0; // undo default grid column styles
-}
-
-// Change the column widths to account for td/th padding
-table {
-  .span1     { .tableColumns(1); }
-  .span2     { .tableColumns(2); }
-  .span3     { .tableColumns(3); }
-  .span4     { .tableColumns(4); }
-  .span5     { .tableColumns(5); }
-  .span6     { .tableColumns(6); }
-  .span8     { .tableColumns(8); }
-  .span10    { .tableColumns(10); }
-}
