@@ -62,7 +62,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.allowReload = Settings.capa(Capa.Reload);
 		this.allowSearch = Settings.capa(Capa.Search);
 		this.allowSearchAdv = Settings.capa(Capa.SearchAdv);
-		this.allowMessageListActions = Settings.capa(Capa.MessageListActions);
 		this.allowDangerousActions = Settings.capa(Capa.DangerousActions);
 
 		this.messageList = MessageUserStore.list;
@@ -754,24 +753,22 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			}
 		});
 
-		if (Settings.capa(Capa.MessageListActions)) {
-			// archive (zip)
-			shortcuts.add('z', '', [Scope.MessageList, Scope.MessageView], () => {
-				this.archiveCommand();
-				return false;
-			});
+		// archive (zip)
+		shortcuts.add('z', '', [Scope.MessageList, Scope.MessageView], () => {
+			this.archiveCommand();
+			return false;
+		});
 
-			// delete
-			shortcuts.add('delete', 'shift', Scope.MessageList, () => {
-				MessageUserStore.listCheckedOrSelected().length && this.deleteWithoutMoveCommand();
-				return false;
-			});
-//			shortcuts.add('3', 'shift', Scope.MessageList, () => {
-			shortcuts.add('delete', '', Scope.MessageList, () => {
-				MessageUserStore.listCheckedOrSelected().length && this.deleteCommand();
-				return false;
-			});
-		}
+		// delete
+		shortcuts.add('delete', 'shift', Scope.MessageList, () => {
+			MessageUserStore.listCheckedOrSelected().length && this.deleteWithoutMoveCommand();
+			return false;
+		});
+//		shortcuts.add('3', 'shift', Scope.MessageList, () => {
+		shortcuts.add('delete', '', Scope.MessageList, () => {
+			MessageUserStore.listCheckedOrSelected().length && this.deleteCommand();
+			return false;
+		});
 
 		if (Settings.capa(Capa.Reload)) {
 			// check mail
@@ -793,13 +790,11 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			return false;
 		});
 
-		if (Settings.capa(Capa.MessageListActions)) {
-			// important - star/flag messages
-			shortcuts.add('i', '', [Scope.MessageList, Scope.MessageView], () => {
-				this.flagMessagesFast();
-				return false;
-			});
-		}
+		// important - star/flag messages
+		shortcuts.add('i', '', [Scope.MessageList, Scope.MessageView], () => {
+			this.flagMessagesFast();
+			return false;
+		});
 
 		shortcuts.add('t', '', [Scope.MessageList], () => {
 			let message = MessageUserStore.selectorMessageSelected();
@@ -814,32 +809,28 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			return false;
 		});
 
-		if (Settings.capa(Capa.MessageListActions)) {
-			// move
-			shortcuts.add('insert', '', Scope.MessageList, () => {
-				if (this.newMoveToFolder) {
-					this.moveNewCommand();
-				} else {
-					this.moveDropdownTrigger(true);
-				}
+		// move
+		shortcuts.add('insert', '', Scope.MessageList, () => {
+			if (this.newMoveToFolder) {
+				this.moveNewCommand();
+			} else {
+				this.moveDropdownTrigger(true);
+			}
 
-				return false;
-			});
-		}
+			return false;
+		});
 
-		if (Settings.capa(Capa.MessageListActions)) {
-			// read
-			shortcuts.add('q', '', [Scope.MessageList, Scope.MessageView], () => {
-				this.seenMessagesFast(true);
-				return false;
-			});
+		// read
+		shortcuts.add('q', '', [Scope.MessageList, Scope.MessageView], () => {
+			this.seenMessagesFast(true);
+			return false;
+		});
 
-			// unread
-			shortcuts.add('u', '', [Scope.MessageList, Scope.MessageView], () => {
-				this.seenMessagesFast(false);
-				return false;
-			});
-		}
+		// unread
+		shortcuts.add('u', '', [Scope.MessageList, Scope.MessageView], () => {
+			this.seenMessagesFast(false);
+			return false;
+		});
 
 		shortcuts.add('f,mailforward', 'shift', [Scope.MessageList, Scope.MessageView], () => {
 			this.multyForwardCommand();

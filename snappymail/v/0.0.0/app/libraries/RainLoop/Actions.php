@@ -1905,12 +1905,8 @@ class Actions
 
 		$aResult = array();
 
-		if ($oConfig->Get('capa', 'messagelist_actions', true)) {
-			$aResult[] = Enumerations\Capa::MESSAGELIST_ACTIONS;
-
-			if ($oConfig->Get('capa', 'dangerous_actions', true)) {
-				$aResult[] = Enumerations\Capa::DANGEROUS_ACTIONS;
-			}
+		if ($oConfig->Get('capa', 'dangerous_actions', true)) {
+			$aResult[] = Enumerations\Capa::DANGEROUS_ACTIONS;
 		}
 
 		if ($oConfig->Get('capa', 'reload', true)) {

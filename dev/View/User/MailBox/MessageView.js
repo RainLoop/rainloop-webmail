@@ -54,7 +54,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 			createCommandActionHelper = (folderType, useFolder) =>
 				createCommand(() => {
 					const message = MessageUserStore.message();
-					if (message && this.allowMessageListActions) {
+					if (message) {
 						MessageUserStore.message(null);
 						rl.app.deleteMessagesFromFolder(folderType, message.folder, [message.uid], useFolder);
 					}
@@ -74,7 +74,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 		this.moveAction = moveAction;
 
 		this.allowMessageActions = Settings.capa(Capa.MessageActions);
-		this.allowMessageListActions = Settings.capa(Capa.MessageListActions);
 
 		const attachmentsActions = Settings.app('attachmentsActions');
 		this.attachmentsActions = ko.observableArray(arrayLength(attachmentsActions) ? attachmentsActions : []);

@@ -195,7 +195,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'search_adv' => array(true),
 				'dangerous_actions' => array(true),
 				'message_actions' => array(true),
-				'messagelist_actions' => array(true),
 				'attachments_actions' => array(true)
 			),
 

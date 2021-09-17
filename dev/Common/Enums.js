@@ -11,7 +11,6 @@ export const Capa = {
 	Search: 'SEARCH',
 	SearchAdv: 'SEARCH_ADV',
 	MessageActions: 'MESSAGE_ACTIONS',
-	MessageListActions: 'MESSAGELIST_ACTIONS',
 	AttachmentsActions: 'ATTACHMENTS_ACTIONS',
 	DangerousActions: 'DANGEROUS_ACTIONS',
 	Settings: 'SETTINGS',
