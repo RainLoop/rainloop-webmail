@@ -21,7 +21,6 @@ export const Capa = {
 	UserBackground: 'USER_BACKGROUND',
 	Sieve: 'SIEVE',
 	AttachmentThumbnails: 'ATTACHMENT_THUMBNAILS',
-	Templates: 'TEMPLATES',
 	AutoLogout: 'AUTOLOGOUT',
 	AdditionalAccounts: 'ADDITIONAL_ACCOUNTS',
 	Identities: 'IDENTITIES'

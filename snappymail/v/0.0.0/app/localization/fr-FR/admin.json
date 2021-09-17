@@ -32,7 +32,6 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "Taille limite des pièces jointes",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Autoriser les comptes supplémentaires",
 		"LABEL_ALLOW_IDENTITIES": "Autoriser les identités multiples",
-		"LABEL_ALLOW_TEMPLATES": "Autoriser les modèles",
 		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
 		"ALERT_WARNING": "ATTENTION !",
 		"HTML_ALERT_WEAK_PASSWORD": "Vous utilisez le mot de passe administrateur par défaut.\n<br \/>\nPour des raisons de sécurité, veuillez\n<strong><a href=\"#\/security\">changer le mot de passe <\/a><\/strong>\ndès maintenant.\n"

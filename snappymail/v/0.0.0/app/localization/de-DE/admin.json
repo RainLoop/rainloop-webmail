@@ -32,7 +32,6 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "Größenlimit für Anhänge",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Zusätzliche Konten erlauben",
 		"LABEL_ALLOW_IDENTITIES": "Mehrere Identitäten erlauben",
-		"LABEL_ALLOW_TEMPLATES": "Vorlagen erlauben",
 		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
 		"ALERT_WARNING": "Warnung!",
 		"HTML_ALERT_WEAK_PASSWORD": "Sie verwenden das Standard-Admin-Passwort.\n<br \/>\nBitte <strong><a href=\"#\/security\">ändern<\/a><\/strong> Sie\naus Sicherheitsgründen das Passwort jetzt.\n"

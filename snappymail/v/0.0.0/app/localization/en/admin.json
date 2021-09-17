@@ -32,7 +32,6 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "Attachment size limit",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Allow additional accounts",
 		"LABEL_ALLOW_IDENTITIES": "Allow multiple identities",
-		"LABEL_ALLOW_TEMPLATES": "Allow templates",
 		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
 		"ALERT_WARNING": "Warning!",
 		"HTML_ALERT_WEAK_PASSWORD": "You are using the default admin password.\n<br \/>\nFor security reasons please\n<strong><a href=\"#\/security\">change<\/a><\/strong>\npassword to something else now.\n"

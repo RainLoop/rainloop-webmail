@@ -32,7 +32,6 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "Maximale bijlage grootte",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Sta extra accounts toe",
 		"LABEL_ALLOW_IDENTITIES": "Meerdere identiteiten toestaan",
-		"LABEL_ALLOW_TEMPLATES": "Sta templates toe",
 		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
 		"ALERT_WARNING": "Waarschuwing!",
 		"HTML_ALERT_WEAK_PASSWORD": "U gebruikt het standaard beheer wachtwoord.\n<br \/>\n<strong><a href=\"#\/security\">Wijzig<\/a><\/strong>\na.u.b. voor uw veiligheid direct het wachtwoord.\n"

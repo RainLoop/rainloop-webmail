@@ -32,7 +32,6 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "附件大小限制",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "允许额外的账户",
 		"LABEL_ALLOW_IDENTITIES": "允许多重身份",
-		"LABEL_ALLOW_TEMPLATES": "允许使用模板",
 		"ALERT_DATA_ACCESS": "数据文件夹可被访问。请配置您的 Web 服务器以阻止从外部访问数据文件夹。获取更多帮助：",
 		"ALERT_WARNING": "警告！",
 		"HTML_ALERT_WEAK_PASSWORD": "您正在使用默认的管理员密码\n<br \/>\n安全起见，请立即将密码\n<strong><a href=\"#\/security\">更改<\/a><\/strong>\n为其他的字符串。\n"

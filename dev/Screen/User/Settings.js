@@ -14,7 +14,6 @@ import { ContactsUserSettings } from 'Settings/User/Contacts';
 import { AccountsUserSettings } from 'Settings/User/Accounts';
 import { FiltersUserSettings } from 'Settings/User/Filters';
 import { SecurityUserSettings } from 'Settings/User/Security';
-import { TemplatesUserSettings } from 'Settings/User/Templates';
 import { FoldersUserSettings } from 'Settings/User/Folders';
 import { ThemesUserSettings } from 'Settings/User/Themes';
 import { OpenPgpUserSettings } from 'Settings/User/OpenPgp';
@@ -66,15 +65,6 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 
 		if (Settings.capa(Capa.AutoLogout)) {
 			settingsAddViewModel(SecurityUserSettings, 'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
-		}
-
-		if (Settings.capa(Capa.Templates)) {
-			settingsAddViewModel(
-				TemplatesUserSettings,
-				'SettingsTemplates',
-				'SETTINGS_LABELS/LABEL_TEMPLATES_NAME',
-				'templates'
-			);
 		}
 
 		settingsAddViewModel(FoldersUserSettings, 'SettingsFolders', 'SETTINGS_LABELS/LABEL_FOLDERS_NAME', 'folders');

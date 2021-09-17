@@ -14,7 +14,6 @@ trait User
 	use Filters;
 	use Folders;
 	use Messages;
-	use Templates;
 
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception

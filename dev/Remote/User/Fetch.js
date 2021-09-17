@@ -186,47 +186,6 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	}
 
 	/**
-	 * @param {?Function} fCallback
-	 */
-	templates(fCallback) {
-		this.defaultRequest(fCallback, 'Templates', {});
-	}
-
-	/**
-	 * @param {Function} fCallback
-	 * @param {string} sID
-	 */
-	templateGetById(fCallback, sID) {
-		this.defaultRequest(fCallback, 'TemplateGetByID', {
-			ID: sID
-		});
-	}
-
-	/**
-	 * @param {Function} fCallback
-	 * @param {string} sID
-	 */
-	templateDelete(fCallback, sID) {
-		this.defaultRequest(fCallback, 'TemplateDelete', {
-			IdToDelete: sID
-		});
-	}
-
-	/**
-	 * @param {Function} fCallback
-	 * @param {string} sID
-	 * @param {string} sName
-	 * @param {string} sBody
-	 */
-	templateSetup(fCallback, sID, sName, sBody) {
-		this.defaultRequest(fCallback, 'TemplateSetup', {
-			ID: sID,
-			Name: sName,
-			Body: sBody
-		});
-	}
-
-	/**
 	 * @param {Function} fCallback
 	 * @param {object} params
 	 * @param {boolean=} bSilent = false

@@ -32,7 +32,6 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "Tamaño máximo para adjuntos",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Permitir cuentas adicionales",
 		"LABEL_ALLOW_IDENTITIES": "Permitir múltiples identidades",
-		"LABEL_ALLOW_TEMPLATES": "Permitir plantillas",
 		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
 		"ALERT_WARNING": "¡Atención!",
 		"HTML_ALERT_WEAK_PASSWORD": "Estas utilizando la contraseña por defecto.\n<br \/>\nDebido a razones de seguridad, debes\n<strong><a href=\"#\/security\">cambiar<\/a><\/strong>\ntu contraseña inmediatamente.\n"

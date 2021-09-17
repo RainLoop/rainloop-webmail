@@ -51,7 +51,6 @@ import { NotificationUserStore } from 'Stores/User/Notification';
 import { AccountUserStore } from 'Stores/User/Account';
 import { ContactUserStore } from 'Stores/User/Contact';
 import { IdentityUserStore } from 'Stores/User/Identity';
-import { TemplateUserStore } from 'Stores/User/Template';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { PgpUserStore } from 'Stores/User/Pgp';
 import { MessageUserStore } from 'Stores/User/Message';
@@ -65,7 +64,6 @@ import Remote from 'Remote/User/Fetch';
 import { EmailModel } from 'Model/Email';
 import { AccountModel } from 'Model/Account';
 import { IdentityModel } from 'Model/Identity';
-import { TemplateModel } from 'Model/Template';
 import { OpenPgpKeyModel } from 'Model/OpenPgpKey';
 
 import { LoginUserScreen } from 'Screen/User/Login';
@@ -493,24 +491,6 @@ class AppUser extends AbstractApp {
 						})
 					);
 				}
-			}
-		});
-	}
-
-	templates() {
-		TemplateUserStore.templates.loading(true);
-
-		Remote.templates((iError, data) => {
-			TemplateUserStore.templates.loading(false);
-
-			if (!iError && isArray(data.Result.Templates)) {
-				delegateRunOnDestroy(TemplateUserStore.templates());
-
-				TemplateUserStore.templates(
-					data.Result.Templates.map(templateData =>
-						TemplateModel.reviveFromJson(templateData)
-					).filter(v => v)
-				);
 			}
 		});
 	}

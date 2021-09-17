@@ -48,7 +48,6 @@ export class GeneralAdminSettings {
 			capaAdditionalAccounts: Settings.capa(Capa.AdditionalAccounts),
 			capaIdentities: Settings.capa(Capa.Identities),
 			capaAttachmentThumbnails: Settings.capa(Capa.AttachmentThumbnails),
-			capaTemplates: Settings.capa(Capa.Templates),
 			dataFolderAccess: false
 		});
 
@@ -125,8 +124,6 @@ export class GeneralAdminSettings {
 			capaAdditionalAccounts: fSaveBoolHelper('CapaAdditionalAccounts'),
 
 			capaIdentities: fSaveBoolHelper('CapaIdentities'),
-
-			capaTemplates: fSaveBoolHelper('CapaTemplates'),
 
 			capaAttachmentThumbnails: fSaveBoolHelper('CapaAttachmentThumbnails'),
 
