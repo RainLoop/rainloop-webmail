@@ -91,8 +91,6 @@ $package = json_decode(file_get_contents('package.json'));
 file_put_contents(__DIR__ . '/integrations/nextcloud/snappymail/VERSION', $package->version);
 $file = __DIR__ . '/integrations/nextcloud/snappymail/appinfo/info.xml';
 file_put_contents($file, preg_replace('/<version>[^<]*</', "<version>{$package->version}<", file_get_contents($file)));
-$file = __DIR__ . '/arch/PKGBUILD';
-file_put_contents($file, preg_replace('/pkgver=[0-9.]+/', "pkgver={$package->version}", file_get_contents($file)));
 $file = __DIR__ . '/.docker/release/files/usr/local/include/application.ini';
 file_put_contents($file, preg_replace('/current = "[0-9.]+"/', "current = \"{$package->version}\"", file_get_contents($file)));
 if (isset($options['set-version'])) {
@@ -240,6 +238,13 @@ echo "{$zip_destination} created\n{$tar_destination}.gz created\n";
 
 // Arch User Repository
 if ($options['aur']) {
+	$b2sums = extension_loaded('blake2')
+		? [
+			b2sum("{$tar_destination}.gz"),
+			b2sum(__DIR__ . '/arch/snappymail.sysusers'),
+			b2sum(__DIR__ . '/arch/snappymail.tmpfiles')
+		]
+		: [];
 /*
 	file_put_contents('arch/.SRCINFO', 'pkgbase = snappymail
 	pkgdesc = modern PHP webmail client
@@ -259,13 +264,18 @@ if ($options['aur']) {
 	source = snappymail-'.$package->version.'.tar.gz::https://github.com/the-djmaze/snappymail/archive/v'.$package->version.'.tar.gz
 	source = snappymail.sysusers
 	source = snappymail.tmpfiles
-	b2sums = ?
-	b2sums = e020b2d4bc694ca056f5c15b148c69553ab610b5e1789f52543aa65e098f8097a41709b5b0fc22a6a01088a9d3f14d623b1b6e9ae2570acd4f380f429301c003
-	b2sums = 2536e11622895322cc752c6b651811b2122d3ae60099fe609609d7b45ba1ed00ea729c23f344405078698d161dbf9bcaffabf8eff14b740acdce3c681c513318
+	b2sums = '.implode("\n	b2sums = ", $b2sums).'
 
 pkgname = snappymail
 ');
 */
+	$file = __DIR__ . '/arch/PKGBUILD';
+	if (is_file($file)) {
+		$PKGBUILD = file_get_contents($file);
+		$PKGBUILD = preg_replace('/pkgver=[0-9.]+/', "pkgver={$package->version}", $PKGBUILD);
+		$PKGBUILD = preg_replace('/b2sums=\\([^)]+\\)/s', "b2sums=('".implode("'\n        '", $b2sums)."')", $PKGBUILD);
+		file_put_contents($file, $PKGBUILD);
+	}
 }
 // Docker build
 else if ($options['docker']) {
