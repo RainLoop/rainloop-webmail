@@ -8,18 +8,15 @@ import { ViewType } from 'Knoin/Knoin';
 class AbstractView {
 	constructor(name, templateID, type)
 	{
-		this.viewModelName = 'View/' + name;
 		this.viewModelTemplateID = templateID;
 		this.viewModelPosition = type;
 
-		this.bDisabeCloseOnEsc = false;
 		this.sDefaultScope = Scope.None;
 		this.sCurrentScope = Scope.None;
 
 		this.viewModelVisible = false;
 		this.modalVisibility = ko.observable(false).extend({ rateLimit: 0 });
 
-		this.viewModelName = '';
 		this.viewModelDom = null;
 	}
 
@@ -64,6 +61,7 @@ export class AbstractViewPopup extends AbstractView
 		if (name in Scope) {
 			this.sDefaultScope = Scope[name];
 		}
+		this.bDisabeCloseOnEsc = false;
 	}
 /*
 	cancelCommand() {}

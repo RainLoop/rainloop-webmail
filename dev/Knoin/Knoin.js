@@ -4,7 +4,6 @@ import { doc, $htmlCL } from 'Common/Globals';
 import { arrayLength, isFunction } from 'Common/Utils';
 
 let currentScreen = null,
-	visiblePopups = new Set,
 	defaultScreenName = '';
 
 const SCREENS = {},
@@ -12,6 +11,8 @@ const SCREENS = {},
 		const af = dom.querySelector('[autofocus]');
 		af && af.focus();
 	},
+
+	visiblePopups = new Set,
 
 	/**
 	 * @param {string} screenName
@@ -62,10 +63,10 @@ const SCREENS = {},
 					vm.modalVisibility.subscribe(value => {
 						if (value) {
 							visiblePopups.add(vm);
-							vmDom.style.zIndex = 3000 + popupVisibilityNames().length + 10;
+							vmDom.style.zIndex = 3000 + visiblePopups.size + 10;
 							vmDom.hidden = false;
 							vm.storeAndSetScope();
-							popupVisibilityNames.push(vm.viewModelName);
+							arePopupsVisible(true);
 							requestAnimationFrame(() => { // wait just before the next paint
 								vmDom.offsetHeight; // force a reflow
 								vmDom.classList.add('show'); // trigger the transitions
@@ -75,7 +76,7 @@ const SCREENS = {},
 							vm.onHide && vm.onHide();
 							vmDom.classList.remove('show');
 							vm.restoreScope();
-							popupVisibilityNames(popupVisibilityNames.filter(v=>v!==vm.viewModelName));
+							arePopupsVisible(0 < visiblePopups.size);
 						}
 						vmDom.setAttribute('aria-hidden', !value);
 					});
@@ -211,8 +212,6 @@ const SCREENS = {},
 	};
 
 export const
-	popupVisibilityNames = ko.observableArray(),
-
 	ViewType = {
 		Popup: 'Popups',
 		Left: 'Left',
@@ -276,7 +275,7 @@ export const
 		}
 	},
 
-	arePopupsVisible = () => 0 < visiblePopups.size,
+	arePopupsVisible = ko.observable(false),
 
 	/**
 	 * @param {Function} ViewModelClassToShow

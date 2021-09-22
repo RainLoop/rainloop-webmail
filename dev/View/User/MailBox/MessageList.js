@@ -39,7 +39,7 @@ import { ThemeStore } from 'Stores/Theme';
 
 import Remote from 'Remote/User/Fetch';
 
-import { decorateKoCommands, showScreenPopup, popupVisibilityNames } from 'Knoin/Knoin';
+import { decorateKoCommands, showScreenPopup, arePopupsVisible } from 'Knoin/Knoin';
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 import { FolderClearPopupView } from 'View/Popup/FolderClear';
@@ -74,16 +74,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.messageListSearch = MessageUserStore.listSearch;
 		this.messageListError = MessageUserStore.listError;
 
-		this.addComputables({
-			popupVisibility: () => 0 < popupVisibilityNames().length,
-
-			folderMenuForMove: () =>
-				folderListOptionsBuilder(
-					[FolderUserStore.currentFolderFullNameRaw()],
-					[],
-					item => item ? item.localName() : ''
-				)
-		});
+		this.popupVisibility = arePopupsVisible;
 
 		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
 
@@ -113,6 +104,14 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.sLastSearchValue = '';
 
 		this.addComputables({
+
+			folderMenuForMove: () =>
+				folderListOptionsBuilder(
+					[FolderUserStore.currentFolderFullNameRaw()],
+					[],
+					item => item ? item.localName() : ''
+				),
+
 			messageListSearchDesc: () => {
 				const value = MessageUserStore.listEndSearch();
 				return value ? i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', { SEARCH: value }) : ''
