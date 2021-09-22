@@ -20,7 +20,7 @@ import Remote from 'Remote/User/Fetch';
 import { IdentityPopupView } from 'View/Popup/Identity';
 import { LanguagesPopupView } from 'View/Popup/Languages';
 
-export class GeneralUserSettings {
+export class GeneralUserSettings /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;

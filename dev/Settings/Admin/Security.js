@@ -6,7 +6,7 @@ import Remote from 'Remote/Admin/Fetch';
 
 import { decorateKoCommands } from 'Knoin/Knoin';
 
-export class SecurityAdminSettings {
+export class SecurityAdminSettings /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.weakPassword = rl.app.weakPassword;
 

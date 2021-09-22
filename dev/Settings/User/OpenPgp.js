@@ -13,7 +13,7 @@ import { AddOpenPgpKeyPopupView } from 'View/Popup/AddOpenPgpKey';
 import { NewOpenPgpKeyPopupView } from 'View/Popup/NewOpenPgpKey';
 import { ViewOpenPgpKeyPopupView } from 'View/Popup/ViewOpenPgpKey';
 
-export class OpenPgpUserSettings {
+export class OpenPgpUserSettings /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.openpgpkeys = PgpUserStore.openpgpkeys;
 		this.openpgpkeysPublic = PgpUserStore.openpgpkeysPublic;

@@ -5,7 +5,7 @@ import { settingsSaveHelperSimpleFunction, addObservablesTo, addSubscribablesTo 
 
 import Remote from 'Remote/Admin/Fetch';
 
-export class LoginAdminSettings {
+export class LoginAdminSettings /*extends AbstractViewSettings*/ {
 	constructor() {
 		addObservablesTo(this, {
 			determineUserLanguage: !!SettingsGet('DetermineUserLanguage'),

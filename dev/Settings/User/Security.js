@@ -9,7 +9,7 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 
 import Remote from 'Remote/User/Fetch';
 
-export class SecurityUserSettings {
+export class SecurityUserSettings /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.capaAutoLogout = Settings.capa(Capa.AutoLogout);
 

@@ -8,32 +8,32 @@ import { ViewType } from 'Knoin/Knoin';
 class AbstractView {
 	constructor(name, templateID, type)
 	{
-		this.viewModelTemplateID = templateID;
-		this.viewModelPosition = type;
+//		Object.defineProperty(this, 'templateId', { value: templateID });
+		this.templateId = templateID;
+		this.viewType = type;
+		this.viewModelDom = null;
 
-		this.sDefaultScope = Scope.None;
-		this.sCurrentScope = Scope.None;
-
-		this.viewModelVisible = false;
 		this.modalVisibility = ko.observable(false).extend({ rateLimit: 0 });
 
-		this.viewModelDom = null;
+		this.keyScope = {
+			scope: Scope.None,
+			previous: Scope.None,
+			set: function() {
+				this.previous = keyScope();
+				keyScope(this.scope);
+			},
+			unset: function() {
+				keyScope(this.previous);
+			}
+		};
 	}
 
-	/**
-	 * @returns {void}
-	 */
-	storeAndSetScope() {
-		this.sCurrentScope = keyScope();
-		keyScope(this.sDefaultScope);
-	}
-
-	/**
-	 * @returns {void}
-	 */
-	restoreScope() {
-		keyScope(this.sCurrentScope);
-	}
+/*
+	onBuild() {}
+	onBeforeShow() {}
+	onShow() {}
+	onHide() {}
+*/
 
 	querySelector(selectors) {
 		return this.viewModelDom.querySelector(selectors);
@@ -59,11 +59,14 @@ export class AbstractViewPopup extends AbstractView
 	{
 		super('Popup/' + name, 'Popups' + name, ViewType.Popup);
 		if (name in Scope) {
-			this.sDefaultScope = Scope[name];
+			this.keyScope.scope = Scope[name];
 		}
 		this.bDisabeCloseOnEsc = false;
 	}
 /*
+	onShowWithDelay() {}
+	onHideWithDelay() {}
+
 	cancelCommand() {}
 	closeCommand() {}
 */
@@ -109,3 +112,14 @@ export class AbstractViewRight extends AbstractView
 		super(name, templateID, ViewType.Right);
 	}
 }
+
+/*
+export class AbstractViewSettings
+{
+	onBuild(viewModelDom) {}
+	onBeforeShow() {}
+	onShow() {}
+	onHide() {}
+	viewModelDom
+}
+*/

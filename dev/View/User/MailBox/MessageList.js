@@ -877,7 +877,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 	}
 
 	prefetchNextTick() {
-		if (!this.bPrefetch && !ifvisible.now() && this.viewModelVisible) {
+		if (!this.bPrefetch && !ifvisible.now() && !this.viewModelDom.hidden) {
 			const message = MessageUserStore.list.find(
 				item => item && !hasRequestedMessage(item.folder, item.uid)
 			);

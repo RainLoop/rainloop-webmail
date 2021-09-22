@@ -5,7 +5,7 @@ import { settingsSaveHelperSimpleFunction } from 'Common/Utils';
 
 import Remote from 'Remote/Admin/Fetch';
 
-export class BrandingAdminSettings {
+export class BrandingAdminSettings /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.title = ko.observable(SettingsGet('Title')).idleTrigger();
 		this.loadingDesc = ko.observable(SettingsGet('LoadingDescription')).idleTrigger();

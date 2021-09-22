@@ -29,7 +29,7 @@ class PluginPopupView extends AbstractViewPopup {
 		});
 
 		this.bDisabeCloseOnEsc = true;
-		this.sDefaultScope = Scope.All;
+		this.keyScope.scope = Scope.All;
 
 		this.tryToClosePopup = this.tryToClosePopup.debounce(200);
 

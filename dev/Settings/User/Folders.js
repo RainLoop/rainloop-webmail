@@ -19,7 +19,7 @@ import { showScreenPopup } from 'Knoin/Knoin';
 import { FolderCreatePopupView } from 'View/Popup/FolderCreate';
 import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
 
-export class FoldersUserSettings {
+export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.displaySpecSetting = FolderUserStore.displaySpecSetting;
 		this.folderList = FolderUserStore.folderList;

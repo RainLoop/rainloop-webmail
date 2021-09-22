@@ -12,7 +12,7 @@ import {
 import Remote from 'Remote/Admin/Fetch';
 import { decorateKoCommands } from 'Knoin/Knoin';
 
-export class ContactsAdminSettings {
+export class ContactsAdminSettings /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 

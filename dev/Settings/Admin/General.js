@@ -23,7 +23,7 @@ import { ThemeStore } from 'Stores/Theme';
 import { LanguageStore } from 'Stores/Language';
 import LanguagesPopupView from 'View/Popup/Languages';
 
-export class GeneralAdminSettings {
+export class GeneralAdminSettings /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;

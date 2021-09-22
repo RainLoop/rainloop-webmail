@@ -10,7 +10,7 @@ import { ThemeStore } from 'Stores/Theme';
 
 import Remote from 'Remote/User/Fetch';
 
-export class ThemesUserSettings {
+export class ThemesUserSettings /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.theme = ThemeStore.theme;
 		this.themes = ThemeStore.themes;

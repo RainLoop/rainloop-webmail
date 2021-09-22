@@ -32,13 +32,8 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 		);
 	}
 
-	/**
-	 * @param {Function=} fCallback
-	 */
-	setupSettings(fCallback = null) {
+	setupSettings() {
 		if (!Settings.capa(Capa.Settings)) {
-			fCallback && fCallback();
-
 			return false;
 		}
 
@@ -78,8 +73,6 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 		}
 
 		runSettingsViewModelHooks(false);
-
-		fCallback && fCallback();
 
 		return true;
 	}

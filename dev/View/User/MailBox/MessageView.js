@@ -419,7 +419,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 		// exit fullscreen, back
 		shortcuts.add('escape,backspace', '', Scope.MessageView, () => {
-			if (this.viewModelVisible && MessageUserStore.message()) {
+			if (!this.viewModelDom.hidden && MessageUserStore.message()) {
 				const preview = SettingsUserStore.usePreviewPane();
 				if (this.fullScreenMode()) {
 					this.fullScreenMode(false);

@@ -11,7 +11,7 @@ import { PluginPopupView } from 'View/Popup/Plugin';
 import { SettingsGet } from 'Common/Globals';
 import { addComputablesTo } from 'Common/Utils';
 
-export class PackagesAdminSettings {
+export class PackagesAdminSettings /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.packagesError = ko.observable('');
 

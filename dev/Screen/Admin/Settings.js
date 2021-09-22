@@ -19,10 +19,7 @@ export class SettingsAdminScreen extends AbstractSettingsScreen {
 		super([MenuSettingsAdminView, PaneSettingsAdminView]);
 	}
 
-	/**
-	 * @param {Function=} fCallback = null
-	 */
-	setupSettings(fCallback = null) {
+	setupSettings() {
 		settingsAddViewModel(
 			GeneralAdminSettings,
 			'AdminSettingsGeneral',
@@ -49,8 +46,6 @@ export class SettingsAdminScreen extends AbstractSettingsScreen {
 		);
 
 		runSettingsViewModelHooks(true);
-
-		fCallback && fCallback();
 	}
 
 	onShow() {

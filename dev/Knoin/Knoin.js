@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { doc, $htmlCL } from 'Common/Globals';
-import { arrayLength, isFunction } from 'Common/Utils';
+import { isFunction } from 'Common/Utils';
 
 let currentScreen = null,
 	defaultScreenName = '';
@@ -29,14 +29,14 @@ const SCREENS = {},
 		if (ViewModelClass && !ViewModelClass.__builded) {
 			let vmDom = null;
 			const vm = new ViewModelClass(vmScreen),
-				position = vm.viewModelPosition || '',
+				position = vm.viewType || '',
 				vmPlace = position ? doc.getElementById('rl-' + position.toLowerCase()) : null;
 
 			ViewModelClass.__builded = true;
 			ViewModelClass.__vm = vm;
 
 			if (vmPlace) {
-				vmDom = Element.fromHTML('<div class="rl-view-model RL-' + vm.viewModelTemplateID + '" hidden=""></div>');
+				vmDom = Element.fromHTML('<div class="rl-view-model RL-' + vm.templateId + '" hidden=""></div>');
 				vmPlace.append(vmDom);
 
 				vm.viewModelDom = vmDom;
@@ -65,7 +65,7 @@ const SCREENS = {},
 							visiblePopups.add(vm);
 							vmDom.style.zIndex = 3000 + visiblePopups.size + 10;
 							vmDom.hidden = false;
-							vm.storeAndSetScope();
+							vm.keyScope.set();
 							arePopupsVisible(true);
 							requestAnimationFrame(() => { // wait just before the next paint
 								vmDom.offsetHeight; // force a reflow
@@ -75,7 +75,7 @@ const SCREENS = {},
 							visiblePopups.delete(vm);
 							vm.onHide && vm.onHide();
 							vmDom.classList.remove('show');
-							vm.restoreScope();
+							vm.keyScope.unset();
 							arePopupsVisible(0 < visiblePopups.size);
 						}
 						vmDom.setAttribute('aria-hidden', !value);
@@ -92,7 +92,7 @@ const SCREENS = {},
 					vmDom,
 					{
 						i18nInit: true,
-						template: () => ({ name: vm.viewModelTemplateID })
+						template: () => ({ name: vm.templateId })
 					},
 					vm
 				);
@@ -109,6 +109,18 @@ const SCREENS = {},
 		}
 
 		return ViewModelClass && ViewModelClass.__vm;
+	},
+
+	forEachViewModel = (screen, fn) => {
+		screen.viewModels.forEach(ViewModelClass => {
+			if (
+				ViewModelClass.__vm &&
+				ViewModelClass.__dom &&
+				ViewType.Popup !== ViewModelClass.__vm.viewType
+			) {
+				fn(ViewModelClass.__vm, ViewModelClass.__dom);
+			}
+		});
 	},
 
 	/**
@@ -156,56 +168,30 @@ const SCREENS = {},
 					// hide screen
 					if (currentScreen && !isSameScreen) {
 						currentScreen.onHide && currentScreen.onHide();
-						currentScreen.onHideWithDelay && setTimeout(()=>currentScreen.onHideWithDelay(), 500);
 
-						if (arrayLength(currentScreen.viewModels)) {
-							currentScreen.viewModels.forEach(ViewModelClass => {
-								if (
-									ViewModelClass.__vm &&
-									ViewModelClass.__dom &&
-									ViewType.Popup !== ViewModelClass.__vm.viewModelPosition
-								) {
-									ViewModelClass.__dom.hidden = true;
-									ViewModelClass.__vm.viewModelVisible = false;
-
-									ViewModelClass.__vm.onHide && ViewModelClass.__vm.onHide();
-									ViewModelClass.__vm.onHideWithDelay && setTimeout(()=>ViewModelClass.__vm.onHideWithDelay(), 500);
-								}
-							});
-						}
+						forEachViewModel(currentScreen, (vm, dom) => {
+							dom.hidden = true;
+							vm.onHide && vm.onHide();
+						});
 					}
 					// --
 
 					currentScreen = vmScreen;
 
 					// show screen
-					if (currentScreen && !isSameScreen) {
-						currentScreen.onShow && currentScreen.onShow();
+					if (!isSameScreen) {
+						vmScreen.onShow && vmScreen.onShow();
 
-						if (arrayLength(currentScreen.viewModels)) {
-							currentScreen.viewModels.forEach(ViewModelClass => {
-								if (
-									ViewModelClass.__vm &&
-									ViewModelClass.__dom &&
-									ViewType.Popup !== ViewModelClass.__vm.viewModelPosition
-								) {
-									ViewModelClass.__vm.onBeforeShow && ViewModelClass.__vm.onBeforeShow();
-
-									ViewModelClass.__dom.hidden = false;
-									ViewModelClass.__vm.viewModelVisible = true;
-
-									ViewModelClass.__vm.onShow && ViewModelClass.__vm.onShow();
-
-									autofocus(ViewModelClass.__dom);
-
-									ViewModelClass.__vm.onShowWithDelay && setTimeout(()=>ViewModelClass.__vm.onShowWithDelay, 200);
-								}
-							});
-						}
+						forEachViewModel(vmScreen, (vm, dom) => {
+							vm.onBeforeShow && vm.onBeforeShow();
+							dom.hidden = false;
+							vm.onShow && vm.onShow();
+							autofocus(dom);
+						});
 					}
 					// --
 
-					vmScreen && vmScreen.__cross && vmScreen.__cross.parse(subPart);
+					vmScreen.__cross && vmScreen.__cross.parse(subPart);
 				}, 1);
 			}
 		}
@@ -292,19 +278,13 @@ export const
 		screensClasses.forEach(CScreen => {
 			if (CScreen) {
 				const vmScreen = new CScreen(),
-					screenName = vmScreen && vmScreen.screenName();
-
-				if (screenName) {
-					defaultScreenName || (defaultScreenName = screenName);
-
-					SCREENS[screenName] = vmScreen;
-				}
+					screenName = vmScreen.screenName;
+				defaultScreenName || (defaultScreenName = screenName);
+				SCREENS[screenName] = vmScreen;
 			}
 		});
 
-		Object.values(SCREENS).forEach(vmScreen =>
-			vmScreen && vmScreen.onStart && vmScreen.onStart()
-		);
+		Object.values(SCREENS).forEach(vmScreen => vmScreen.onStart());
 
 		const cross = new Crossroads();
 		cross.addRoute(/^([a-zA-Z0-9-]*)\/?(.*)$/, screenOnRoute);

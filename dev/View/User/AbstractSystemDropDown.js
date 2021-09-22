@@ -88,7 +88,7 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 
 	onBuild() {
 		shortcuts.add('m,contextmenu', '', [Scope.MessageList, Scope.MessageView, Scope.Settings], () => {
-			if (this.viewModelVisible) {
+			if (!this.viewModelDom.hidden) {
 				MessageUserStore.messageFullScreenMode(false);
 				this.accountMenuDropdownTrigger(true);
 				return false;
@@ -97,7 +97,7 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 
 		// shortcuts help
 		shortcuts.add('?,f1,help', '', [Scope.MessageList, Scope.MessageView, Scope.Settings], () => {
-			if (this.viewModelVisible) {
+			if (!this.viewModelDom.hidden) {
 				showScreenPopup(KeyboardShortcutsHelpPopupView);
 				return false;
 			}
