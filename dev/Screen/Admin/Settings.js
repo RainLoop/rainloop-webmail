@@ -17,9 +17,7 @@ import { PaneSettingsAdminView } from 'View/Admin/Settings/Pane';
 export class SettingsAdminScreen extends AbstractSettingsScreen {
 	constructor() {
 		super([MenuSettingsAdminView, PaneSettingsAdminView]);
-	}
 
-	setupSettings() {
 		settingsAddViewModel(
 			GeneralAdminSettings,
 			'AdminSettingsGeneral',

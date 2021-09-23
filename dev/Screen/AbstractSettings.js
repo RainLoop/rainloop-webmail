@@ -18,11 +18,7 @@ export class AbstractSettingsScreen extends AbstractScreen {
 		this.menu = ko.observableArray();
 
 		this.oCurrentSubScreen = null;
-
-		this.setupSettings();
 	}
-
-	setupSettings() {}
 
 	onRoute(subName) {
 		let settingsScreen = null,

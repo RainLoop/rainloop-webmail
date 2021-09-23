@@ -26,17 +26,6 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 	constructor() {
 		super([SystemDropDownSettingsUserView, MenuSettingsUserView, PaneSettingsUserView]);
 
-		initOnStartOrLangChange(
-			() => this.sSettingsTitle = i18n('TITLES/SETTINGS'),
-			() => this.setSettingsTitle()
-		);
-	}
-
-	setupSettings() {
-		if (!Settings.capa(Capa.Settings)) {
-			return false;
-		}
-
 		settingsAddViewModel(GeneralUserSettings, 'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
 
 		if (AppUserStore.allowContacts()) {
@@ -74,7 +63,10 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 
 		runSettingsViewModelHooks(false);
 
-		return true;
+		initOnStartOrLangChange(
+			() => this.sSettingsTitle = i18n('TITLES/SETTINGS'),
+			() => this.setSettingsTitle()
+		);
 	}
 
 	onShow() {
