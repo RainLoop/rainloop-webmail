@@ -11,7 +11,7 @@ export class MenuSettingsUserView extends AbstractViewLeft {
 	 * @param {Object} screen
 	 */
 	constructor(screen) {
-		super('User/Settings/Menu', 'SettingsMenu');
+		super('SettingsMenu');
 
 		this.leftPanelDisabled = leftPanelDisabled;
 

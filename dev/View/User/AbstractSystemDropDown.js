@@ -17,8 +17,8 @@ import { doc, Settings, leftPanelDisabled } from 'Common/Globals';
 import { ThemeStore } from 'Stores/Theme';
 
 export class AbstractSystemDropDownUserView extends AbstractViewRight {
-	constructor(name) {
-		super(name, 'SystemDropDown');
+	constructor() {
+		super('SystemDropDown');
 
 		this.allowAccounts = Settings.capa(Capa.AdditionalAccounts);
 		this.allowSettings = Settings.capa(Capa.Settings);

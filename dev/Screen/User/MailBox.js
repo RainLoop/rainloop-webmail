@@ -11,9 +11,9 @@ import { MessageUserStore } from 'Stores/User/Message';
 import { ThemeStore } from 'Stores/Theme';
 
 import { SystemDropDownMailBoxUserView } from 'View/User/MailBox/SystemDropDown';
-import { FolderListMailBoxUserView } from 'View/User/MailBox/FolderList';
-import { MessageListMailBoxUserView } from 'View/User/MailBox/MessageList';
-import { MessageViewMailBoxUserView } from 'View/User/MailBox/MessageView';
+import { MailFolderList } from 'View/User/MailBox/FolderList';
+import { MailMessageList } from 'View/User/MailBox/MessageList';
+import { MailMessageView } from 'View/User/MailBox/MessageView';
 
 import { AbstractScreen } from 'Knoin/AbstractScreen';
 
@@ -21,9 +21,9 @@ export class MailBoxUserScreen extends AbstractScreen {
 	constructor() {
 		super('mailbox', [
 			SystemDropDownMailBoxUserView,
-			FolderListMailBoxUserView,
-			MessageListMailBoxUserView,
-			MessageViewMailBoxUserView
+			MailFolderList,
+			MailMessageList,
+			MailMessageView
 		]);
 	}
 

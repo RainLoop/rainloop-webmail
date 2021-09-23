@@ -9,7 +9,7 @@ import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 export class PaneSettingsUserView extends AbstractViewRight {
 	constructor() {
-		super('User/Settings/Pane', 'SettingsPane');
+		super('SettingsPane');
 
 		this.leftPanelDisabled = leftPanelDisabled;
 	}

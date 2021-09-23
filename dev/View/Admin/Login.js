@@ -10,7 +10,7 @@ import { AbstractViewCenter } from 'Knoin/AbstractViews';
 
 class LoginAdminView extends AbstractViewCenter {
 	constructor() {
-		super('Admin/Login', 'AdminLogin');
+		super('AdminLogin');
 
 		this.hideSubmitButton = Settings.app('hideSubmitButton');
 

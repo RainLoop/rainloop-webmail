@@ -5,7 +5,7 @@ class MenuSettingsAdminView extends AbstractViewLeft {
 	 * @param {?} screen
 	 */
 	constructor(screen) {
-		super('Admin/Settings/Menu', 'AdminMenu');
+		super('AdminMenu');
 
 		this.menu = screen.menu;
 	}

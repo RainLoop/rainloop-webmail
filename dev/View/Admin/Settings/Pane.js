@@ -10,7 +10,7 @@ import { leftPanelDisabled, Settings } from 'Common/Globals';
 
 class PaneSettingsAdminView extends AbstractViewRight {
 	constructor() {
-		super('Admin/Settings/Pane', 'AdminPane');
+		super('AdminPane');
 
 		this.version = ko.observable(Settings.app('version'));
 

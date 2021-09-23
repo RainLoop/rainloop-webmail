@@ -48,9 +48,9 @@ import { AdvancedSearchPopupView } from 'View/Popup/AdvancedSearch';
 const
 	canBeMovedHelper = () => MessageUserStore.hasCheckedOrSelected();
 
-export class MessageListMailBoxUserView extends AbstractViewRight {
+export class MailMessageList extends AbstractViewRight {
 	constructor() {
-		super('User/MailBox/MessageList', 'MailMessageList');
+		super('MailMessageList');
 
 		this.bPrefetch = false;
 		this.emptySubjectValue = '';

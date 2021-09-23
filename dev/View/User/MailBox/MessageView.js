@@ -40,9 +40,9 @@ import Remote from 'Remote/User/Fetch';
 import { decorateKoCommands, createCommand } from 'Knoin/Knoin';
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
-class MessageViewMailBoxUserView extends AbstractViewRight {
+export class MailMessageView extends AbstractViewRight {
 	constructor() {
-		super('User/MailBox/MessageView', 'MailMessageView');
+		super('MailMessageView');
 
 		const
 			createCommandReplyHelper = type =>
@@ -659,5 +659,3 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 		}
 	}
 }
-
-export { MessageViewMailBoxUserView };

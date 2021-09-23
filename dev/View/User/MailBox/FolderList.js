@@ -18,9 +18,9 @@ import { showMessageComposer } from 'Common/UtilsUser';
 import { FolderCreatePopupView } from 'View/Popup/FolderCreate';
 import { ContactsPopupView } from 'View/Popup/Contacts';
 
-export class FolderListMailBoxUserView extends AbstractViewLeft {
+export class MailFolderList extends AbstractViewLeft {
 	constructor() {
-		super('User/MailBox/FolderList', 'MailFolderList');
+		super('MailFolderList');
 
 		this.oContentScrollable = null;
 

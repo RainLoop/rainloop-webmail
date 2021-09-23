@@ -6,7 +6,7 @@ import { keyScope } from 'Common/Globals';
 import { ViewType } from 'Knoin/Knoin';
 
 class AbstractView {
-	constructor(name, templateID, type)
+	constructor(templateID, type)
 	{
 //		Object.defineProperty(this, 'templateId', { value: templateID });
 		this.templateId = templateID;
@@ -57,7 +57,7 @@ export class AbstractViewPopup extends AbstractView
 {
 	constructor(name)
 	{
-		super('Popup/' + name, 'Popups' + name, ViewType.Popup);
+		super('Popups' + name, ViewType.Popup);
 		if (name in Scope) {
 			this.keyScope.scope = Scope[name];
 		}
@@ -91,25 +91,25 @@ export class AbstractViewPopup extends AbstractView
 
 export class AbstractViewCenter extends AbstractView
 {
-	constructor(name, templateID)
+	constructor(templateID)
 	{
-		super(name, templateID, ViewType.Content);
+		super(templateID, ViewType.Content);
 	}
 }
 
 export class AbstractViewLeft extends AbstractView
 {
-	constructor(name, templateID)
+	constructor(templateID)
 	{
-		super(name, templateID, ViewType.Left);
+		super(templateID, ViewType.Left);
 	}
 }
 
 export class AbstractViewRight extends AbstractView
 {
-	constructor(name, templateID)
+	constructor(templateID)
 	{
-		super(name, templateID, ViewType.Right);
+		super(templateID, ViewType.Right);
 	}
 }
 

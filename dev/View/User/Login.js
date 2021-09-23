@@ -23,7 +23,7 @@ const SignMeOff = 0,
 
 class LoginUserView extends AbstractViewCenter {
 	constructor() {
-		super('User/Login', 'Login');
+		super('Login');
 
 		this.hideSubmitButton = Settings.app('hideSubmitButton');
 
