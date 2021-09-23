@@ -13,7 +13,6 @@ trait Themes
 		$sTheme = $this->Config()->Get('webmail', 'theme', 'Default');
 		if (!$bAdmin
 		 && ($oAccount = $this->getAccountFromToken(false))
-		 && $this->GetCapa(false, \RainLoop\Enumerations\Capa::SETTINGS, $oAccount)
 		 && $this->GetCapa(false, \RainLoop\Enumerations\Capa::THEMES, $oAccount)
 		 && ($oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount))) {
 			$sTheme = (string) $oSettingsLocal->GetConf('Theme', $sTheme);

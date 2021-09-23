@@ -21,7 +21,6 @@ export class SystemDropDownUserView extends AbstractViewRight {
 		super('SystemDropDown');
 
 		this.allowAccounts = Settings.capa(Capa.AdditionalAccounts);
-		this.allowSettings = Settings.capa(Capa.Settings);
 
 		this.accountEmail = AccountUserStore.email;
 
@@ -58,7 +57,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 	}
 
 	settingsClick() {
-		this.allowSettings && rl.route.setHash(settings());
+		rl.route.setHash(settings());
 	}
 
 	settingsHelp() {

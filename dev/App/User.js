@@ -892,8 +892,7 @@ class AppUser extends AbstractApp {
 
 						startScreens([
 							MailBoxUserScreen,
-							Settings.capa(Capa.Settings) ? SettingsUserScreen : null
-							// false ? AboutUserScreen : null
+							SettingsUserScreen
 						]);
 						this.hideLoading();
 

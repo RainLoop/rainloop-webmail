@@ -13,7 +13,6 @@ trait Localization
 			$sLanguage = $oConfig->Get('webmail', 'language', 'en');
 			if ($oAccount = $this->getAccountFromToken(false)) {
 				if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)
-				 && $this->GetCapa(false, \RainLoop\Enumerations\Capa::SETTINGS, $oAccount)
 				 && ($oSettings = $this->SettingsProvider()->Load($oAccount))) {
 					$sLanguage = $oSettings->GetConf('Language', $sLanguage);
 				}

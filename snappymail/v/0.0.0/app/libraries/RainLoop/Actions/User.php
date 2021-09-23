@@ -297,10 +297,6 @@ trait User
 	public function DoSettingsUpdate() : array
 	{
 		$oAccount = $this->getAccountFromToken();
-		if (!$this->GetCapa(false, Capa::SETTINGS, $oAccount))
-		{
-			return $this->FalseResponse(__FUNCTION__);
-		}
 
 		$self = $this;
 		$oConfig = $this->Config();

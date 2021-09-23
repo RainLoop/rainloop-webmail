@@ -1153,41 +1153,40 @@ class Actions
 					$aResult['HideUnsubscribed'] = (bool)$oSettingsLocal->GetConf('HideUnsubscribed', $aResult['HideUnsubscribed']);
 				}
 
-				if ($this->GetCapa(false, Enumerations\Capa::SETTINGS, $oAccount)) {
-					if ($oSettings instanceof Settings) {
-						if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
-							$sLanguage = (string)$oSettings->GetConf('Language', $sLanguage);
-						}
-
-						$aResult['EditorDefaultType'] = (string)$oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']);
-						$aResult['ShowImages'] = (bool)$oSettings->GetConf('ShowImages', $aResult['ShowImages']);
-						$aResult['RemoveColors'] = (bool)$oSettings->GetConf('RemoveColors', $aResult['RemoveColors']);
-						$aResult['ContactsAutosave'] = (bool)$oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
-						$aResult['MPP'] = (int)$oSettings->GetConf('MPP', $aResult['MPP']);
-						$aResult['MessageReadDelay'] = (int)$oSettings->GetConf('MessageReadDelay', $aResult['MessageReadDelay']);
-						$aResult['SoundNotification'] = (bool)$oSettings->GetConf('SoundNotification', $aResult['SoundNotification']);
-						$aResult['NotificationSound'] = (string)$oSettings->GetConf('NotificationSound', $aResult['NotificationSound']);
-						$aResult['DesktopNotifications'] = (bool)$oSettings->GetConf('DesktopNotifications', $aResult['DesktopNotifications']);
-						$aResult['UseCheckboxesInList'] = (bool)$oSettings->GetConf('UseCheckboxesInList', $aResult['UseCheckboxesInList']);
-						$aResult['AllowDraftAutosave'] = (bool)$oSettings->GetConf('AllowDraftAutosave', $aResult['AllowDraftAutosave']);
-						$aResult['AutoLogout'] = (int)$oSettings->GetConf('AutoLogout', $aResult['AutoLogout']);
-						$aResult['Layout'] = (int)$oSettings->GetConf('Layout', $aResult['Layout']);
-
-						if (!$this->GetCapa(false, Enumerations\Capa::AUTOLOGOUT, $oAccount)) {
-							$aResult['AutoLogout'] = 0;
-						}
-
-						if ($this->GetCapa(false, Enumerations\Capa::USER_BACKGROUND, $oAccount)) {
-							$aResult['UserBackgroundName'] = (string)$oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
-							$aResult['UserBackgroundHash'] = (string)$oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
-						}
+				if ($oSettings instanceof Settings) {
+					if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
+						$sLanguage = (string)$oSettings->GetConf('Language', $sLanguage);
 					}
 
-					if ($oSettingsLocal instanceof Settings) {
-						$aResult['UseThreads'] = (bool)$oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
-						$aResult['ReplySameFolder'] = (bool)$oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
+					$aResult['EditorDefaultType'] = (string)$oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']);
+					$aResult['ShowImages'] = (bool)$oSettings->GetConf('ShowImages', $aResult['ShowImages']);
+					$aResult['RemoveColors'] = (bool)$oSettings->GetConf('RemoveColors', $aResult['RemoveColors']);
+					$aResult['ContactsAutosave'] = (bool)$oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
+					$aResult['MPP'] = (int)$oSettings->GetConf('MPP', $aResult['MPP']);
+					$aResult['MessageReadDelay'] = (int)$oSettings->GetConf('MessageReadDelay', $aResult['MessageReadDelay']);
+					$aResult['SoundNotification'] = (bool)$oSettings->GetConf('SoundNotification', $aResult['SoundNotification']);
+					$aResult['NotificationSound'] = (string)$oSettings->GetConf('NotificationSound', $aResult['NotificationSound']);
+					$aResult['DesktopNotifications'] = (bool)$oSettings->GetConf('DesktopNotifications', $aResult['DesktopNotifications']);
+					$aResult['UseCheckboxesInList'] = (bool)$oSettings->GetConf('UseCheckboxesInList', $aResult['UseCheckboxesInList']);
+					$aResult['AllowDraftAutosave'] = (bool)$oSettings->GetConf('AllowDraftAutosave', $aResult['AllowDraftAutosave']);
+					$aResult['AutoLogout'] = (int)$oSettings->GetConf('AutoLogout', $aResult['AutoLogout']);
+					$aResult['Layout'] = (int)$oSettings->GetConf('Layout', $aResult['Layout']);
+
+					if (!$this->GetCapa(false, Enumerations\Capa::AUTOLOGOUT, $oAccount)) {
+						$aResult['AutoLogout'] = 0;
+					}
+
+					if ($this->GetCapa(false, Enumerations\Capa::USER_BACKGROUND, $oAccount)) {
+						$aResult['UserBackgroundName'] = (string)$oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
+						$aResult['UserBackgroundHash'] = (string)$oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
 					}
 				}
+
+				if ($oSettingsLocal instanceof Settings) {
+					$aResult['UseThreads'] = (bool)$oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
+					$aResult['ReplySameFolder'] = (bool)$oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
+				}
+
 				$aResult['NewMailSounds'] = [];
 				foreach (\glob(APP_VERSION_ROOT_PATH.'static/sounds/*.mp3') as $file) {
 					$aResult['NewMailSounds'][] = \basename($file, '.mp3');
@@ -1913,32 +1912,28 @@ class Actions
 			$aResult[] = Enumerations\Capa::QUOTA;
 		}
 
-		if ($oConfig->Get('capa', 'settings', true)) {
-			$aResult[] = Enumerations\Capa::SETTINGS;
+		if ($oConfig->Get('webmail', 'allow_additional_accounts', false)) {
+			$aResult[] = Enumerations\Capa::ADDITIONAL_ACCOUNTS;
+		}
 
-			if ($oConfig->Get('webmail', 'allow_additional_accounts', false)) {
-				$aResult[] = Enumerations\Capa::ADDITIONAL_ACCOUNTS;
-			}
+		if ($oConfig->Get('webmail', 'allow_additional_identities', false)) {
+			$aResult[] = Enumerations\Capa::IDENTITIES;
+		}
 
-			if ($oConfig->Get('webmail', 'allow_additional_identities', false)) {
-				$aResult[] = Enumerations\Capa::IDENTITIES;
-			}
+		if ($oConfig->Get('webmail', 'allow_themes', false)) {
+			$aResult[] = Enumerations\Capa::THEMES;
+		}
 
-			if ($oConfig->Get('webmail', 'allow_themes', false)) {
-				$aResult[] = Enumerations\Capa::THEMES;
-			}
+		if ($oConfig->Get('webmail', 'allow_user_background', false)) {
+			$aResult[] = Enumerations\Capa::USER_BACKGROUND;
+		}
 
-			if ($oConfig->Get('webmail', 'allow_user_background', false)) {
-				$aResult[] = Enumerations\Capa::USER_BACKGROUND;
-			}
+		if ($oConfig->Get('security', 'openpgp', false)) {
+			$aResult[] = Enumerations\Capa::OPEN_PGP;
+		}
 
-			if ($oConfig->Get('security', 'openpgp', false)) {
-				$aResult[] = Enumerations\Capa::OPEN_PGP;
-			}
-
-			if ($bAdmin || ($oAccount && $oAccount->Domain()->UseSieve())) {
-				$aResult[] = Enumerations\Capa::SIEVE;
-			}
+		if ($bAdmin || ($oAccount && $oAccount->Domain()->UseSieve())) {
+			$aResult[] = Enumerations\Capa::SIEVE;
 		}
 
 		if ($oConfig->Get('capa', 'attachments_actions', false)) {

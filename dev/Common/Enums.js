@@ -12,7 +12,6 @@ export const Capa = {
 	MessageActions: 'MESSAGE_ACTIONS',
 	AttachmentsActions: 'ATTACHMENTS_ACTIONS',
 	DangerousActions: 'DANGEROUS_ACTIONS',
-	Settings: 'SETTINGS',
 	Themes: 'THEMES',
 	UserBackground: 'USER_BACKGROUND',
 	Sieve: 'SIEVE',
