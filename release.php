@@ -238,14 +238,22 @@ echo "{$zip_destination} created\n{$tar_destination}.gz created\n";
 
 // Arch User Repository
 if ($options['aur']) {
-	$b2sums = extension_loaded('blake2')
-		? [
-			b2sum("{$tar_destination}.gz"),
-			b2sum(__DIR__ . '/arch/snappymail.sysusers'),
-			b2sum(__DIR__ . '/arch/snappymail.tmpfiles')
-		]
-		: [];
-/*
+	// extension_loaded('blake2')
+	if (!function_exists('b2sum') && $b2sum = trim(`which b2sum`)) {
+		function b2sum($file) {
+			$file = escapeshellarg($file);
+			exec("b2sum --binary {$file} 2>&1", $output, $exitcode);
+			$output = explode(' ', implode("\n", $output));
+			return $output[0];
+		}
+	}
+
+	$b2sums = function_exists('b2sum') ? [
+		b2sum("{$tar_destination}.gz"),
+		b2sum(__DIR__ . '/arch/snappymail.sysusers'),
+		b2sum(__DIR__ . '/arch/snappymail.tmpfiles')
+	] : [];
+
 	file_put_contents('arch/.SRCINFO', 'pkgbase = snappymail
 	pkgdesc = modern PHP webmail client
 	pkgver = '.$package->version.'
@@ -268,7 +276,7 @@ if ($options['aur']) {
 
 pkgname = snappymail
 ');
-*/
+
 	$file = __DIR__ . '/arch/PKGBUILD';
 	if (is_file($file)) {
 		$PKGBUILD = file_get_contents($file);
