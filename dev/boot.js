@@ -49,29 +49,25 @@ let RL_APP_DATA = {};
 win.rl = {
 	adminArea: () => admin,
 	settings: {
-		get: name => null == RL_APP_DATA[name] ? null : RL_APP_DATA[name],
+		get: name => RL_APP_DATA[name],
 		set: (name, value) => RL_APP_DATA[name] = value,
-		app: name => {
-			const APP_SETTINGS = RL_APP_DATA.System || {};
-			return null == APP_SETTINGS[name] ? null : APP_SETTINGS[name];
-		},
-		capa: name => name && Array.isArray(RL_APP_DATA.Capa) && RL_APP_DATA.Capa.includes(name)
+		app: name => RL_APP_DATA.System[name],
+		capa: name => name && (RL_APP_DATA.Capa || []).includes(name)
 	},
 	setWindowTitle: title =>
 		doc.title = RL_APP_DATA.Title ? (title ? title + ' - ' : '') + RL_APP_DATA.Title : (title ? '' + title : ''),
 
 	initData: appData => {
+		const cb = () => rl.app.bootstart();
 		RL_APP_DATA = appData;
-		appData
-		? loadScript(appData.StaticLibJsLink)
+		loadScript(appData.StaticLibJsLink)
 			.then(() => loadScript(appData.StaticAppJsLink))
 			.then(() => appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve())
-			.then(() => win.__APP_BOOT())
+			.then(() => ('loading' !== doc.readyState) ? cb() : doc.addEventListener('DOMContentLoaded', cb))
 			.catch(e => {
 				showError(e.message);
 				throw e;
-			})
-		: showError();
+			});
 	}
 };
 

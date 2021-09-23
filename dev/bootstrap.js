@@ -1,4 +1,4 @@
-import { doc, dropdownVisibility, Settings } from 'Common/Globals';
+import { dropdownVisibility, Settings } from 'Common/Globals';
 import { i18n } from 'Common/Translator';
 
 import { root } from 'Common/Links';
@@ -111,11 +111,4 @@ export default App => {
 		});
 	};
 
-	window.__APP_BOOT = () => {
-		const cb = () => {
-			window.__APP_BOOT = null;
-			App.bootstart();
-		};
-		('loading' !== doc.readyState) ? cb() : doc.addEventListener('DOMContentLoaded', cb);
-	};
 };
