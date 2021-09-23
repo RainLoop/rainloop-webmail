@@ -18,13 +18,13 @@ import { FoldersUserSettings } from 'Settings/User/Folders';
 import { ThemesUserSettings } from 'Settings/User/Themes';
 import { OpenPgpUserSettings } from 'Settings/User/OpenPgp';
 
-import { SystemDropDownSettingsUserView } from 'View/User/Settings/SystemDropDown';
+import { SystemDropDownUserView } from 'View/User/SystemDropDown';
 import { MenuSettingsUserView } from 'View/User/Settings/Menu';
 import { PaneSettingsUserView } from 'View/User/Settings/Pane';
 
 export class SettingsUserScreen extends AbstractSettingsScreen {
 	constructor() {
-		super([SystemDropDownSettingsUserView, MenuSettingsUserView, PaneSettingsUserView]);
+		super([SystemDropDownUserView, MenuSettingsUserView, PaneSettingsUserView]);
 
 		settingsAddViewModel(GeneralUserSettings, 'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
 

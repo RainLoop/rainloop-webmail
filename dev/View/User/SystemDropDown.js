@@ -16,7 +16,7 @@ import { doc, Settings, leftPanelDisabled } from 'Common/Globals';
 
 import { ThemeStore } from 'Stores/Theme';
 
-export class AbstractSystemDropDownUserView extends AbstractViewRight {
+export class SystemDropDownUserView extends AbstractViewRight {
 	constructor() {
 		super('SystemDropDown');
 
