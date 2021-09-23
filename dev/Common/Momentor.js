@@ -34,18 +34,19 @@ export function timestampToString(timeStampInUTC, formatStr) {
 
 export function timeToNode(element, time) {
 	try {
-		time = time || (Date.parse(element.dateTime) / 1000);
 		if (time) {
 			element.dateTime = (new Date(time * 1000)).format('Y-m-d\\TH:i:s');
+		} else {
+			time = Date.parse(element.dateTime) / 1000;
+		}
 
-			let key = element.dataset.momentFormat;
-			if (key) {
-				element.textContent = timestampToString(time, key);
-			}
+		let key = element.dataset.momentFormat;
+		if (key) {
+			element.textContent = timestampToString(time, key);
+		}
 
-			if ((key = element.dataset.momentFormatTitle)) {
-				element.title = timestampToString(time, key);
-			}
+		if ((key = element.dataset.momentFormatTitle)) {
+			element.title = timestampToString(time, key);
 		}
 	} catch (e) {
 		// prevent knockout crashes

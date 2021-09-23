@@ -251,7 +251,7 @@ class ContactsPopupView extends AbstractViewPopup {
 	}
 
 	syncCommand() {
-		rl.app.contactsSync(iError => {
+		ContactUserStore.sync(iError => {
 			iError && alert(getNotification(iError));
 
 			this.reloadContactList(true);

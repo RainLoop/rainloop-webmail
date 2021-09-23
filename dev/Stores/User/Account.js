@@ -1,5 +1,4 @@
 import ko from 'ko';
-import { SettingsGet } from 'Common/Globals';
 import { addObservablesTo } from 'Common/Utils';
 
 export const AccountUserStore = {
@@ -18,11 +17,6 @@ export const AccountUserStore = {
 	// 	});
 	// 	return result;
 	// }),
-
-	populate: () => {
-		AccountUserStore.email(SettingsGet('Email'));
-		AccountUserStore.parentEmail(SettingsGet('ParentEmail'));
-	}
 };
 
 addObservablesTo(AccountUserStore, {

@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { SMAudio } from 'Common/Audio';
-import { SettingsGet } from 'Common/Globals';
 import * as Links from 'Common/Links';
 
 /**
@@ -100,10 +99,5 @@ export const NotificationUserStore = new class {
 				setTimeout(() => notification.close(), 7000);
 			}
 		}
-	}
-
-	populate() {
-		this.enableSoundNotification(!!SettingsGet('SoundNotification'));
-		this.enableDesktopNotification(!!SettingsGet('DesktopNotifications'));
 	}
 };

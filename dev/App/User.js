@@ -183,33 +183,6 @@ class AppUser extends AbstractApp {
 		Remote.messageList(null, {Folder: getFolderInboxName()}, true);
 	}
 
-	/**
-	 * @param {Function} fResultFunc
-	 * @returns {boolean}
-	 */
-	contactsSync(fResultFunc) {
-		if (
-			ContactUserStore.importing() ||
-			ContactUserStore.syncing() ||
-			!ContactUserStore.enableSync() ||
-			!ContactUserStore.allowSync()
-		) {
-			return false;
-		}
-
-		ContactUserStore.syncing(true);
-
-		Remote.contactsSync((sResult, oData) => {
-			ContactUserStore.syncing(false);
-
-			if (fResultFunc) {
-				fResultFunc(sResult, oData);
-			}
-		});
-
-		return true;
-	}
-
 	messagesMoveTrigger() {
 		const sTrashFolder = FolderUserStore.trashFolder(),
 			sSpamFolder = FolderUserStore.spamFolder();
@@ -824,7 +797,7 @@ class AppUser extends AbstractApp {
 	}
 
 	logout() {
-		Remote.logout(() => rl.logoutReload((SettingsGet('ParentEmail')||{length:0}).length));
+		Remote.logout(() => rl.logoutReload(!!SettingsGet('ParentEmail')));
 	}
 
 	bootstart() {
@@ -838,57 +811,20 @@ class AppUser extends AbstractApp {
 			}
 		}, {capture: true});
 
-		NotificationUserStore.populate();
-		AccountUserStore.populate();
-		ContactUserStore.populate();
-
-		let contactsSyncInterval = pInt(SettingsGet('ContactsSyncInterval'));
-
-		const startupUrl = pString(SettingsGet('StartupUrl'));
-
-		rl.setWindowTitle();
 		if (SettingsGet('Auth')) {
 			rl.setWindowTitle(i18n('GLOBAL/LOADING'));
+
+			NotificationUserStore.enableSoundNotification(!!SettingsGet('SoundNotification'));
+			NotificationUserStore.enableDesktopNotification(!!SettingsGet('DesktopNotifications'));
+
+			AccountUserStore.email(SettingsGet('Email'));
+			AccountUserStore.parentEmail(SettingsGet('ParentEmail'));
 
 			this.foldersReload(value => {
 				try {
 					if (value) {
-						if (startupUrl) {
-							rl.route.setHash(root(startupUrl), true);
-						}
-
-						if (window.crypto && crypto.getRandomValues && Settings.capa(Capa.OpenPGP)) {
-							const openpgpCallback = () => {
-								if (!window.openpgp) {
-									return false;
-								}
-								PgpUserStore.openpgp = openpgp;
-
-								if (window.Worker) {
-									try {
-										PgpUserStore.openpgp.initWorker({ path: openPgpWorkerJs() });
-									} catch (e) {
-										console.error(e);
-									}
-								}
-
-								PgpUserStore.openpgpKeyring = new openpgp.Keyring();
-								PgpUserStore.capaOpenPGP(true);
-
-								this.reloadOpenPgpKeys();
-
-								return true;
-							};
-
-							if (!openpgpCallback()) {
-								const script = createElement('script', {src:openPgpJs()});
-								script.onload = openpgpCallback;
-								script.onerror = () => console.error(script.src);
-								doc.head.append(script);
-							}
-						} else {
-							PgpUserStore.capaOpenPGP(false);
-						}
+						value = pString(SettingsGet('StartupUrl'));
+						value && rl.route.setHash(root(value), true);
 
 						startScreens([
 							MailBoxUserScreen,
@@ -907,14 +843,9 @@ class AppUser extends AbstractApp {
 						}, refreshFolders);
 
 						// Every 15 minutes
-						setInterval(this.quota, 900000);
-						// Every 20 minutes
-						setInterval(this.foldersReload, 1200000);
+						setInterval(()=>this.quota() | this.foldersReload(), 900000);
 
-						setTimeout(this.contactsSync, 10000);
-						contactsSyncInterval = 5 <= contactsSyncInterval ? contactsSyncInterval : 20;
-						contactsSyncInterval = 320 >= contactsSyncInterval ? contactsSyncInterval : 320;
-						setInterval(this.contactsSync, contactsSyncInterval * 60000 + 5000);
+						ContactUserStore.init();
 
 						this.accountsAndIdentities(true);
 
@@ -923,15 +854,15 @@ class AppUser extends AbstractApp {
 							if (getFolderInboxName() !== cF) {
 								this.folderInformation(cF);
 							}
+							this.quota();
 							this.folderInformationMultiply(true);
 						}, 1000);
 
-						setTimeout(this.quota, 5000);
 						setTimeout(() => Remote.appDelayStart(()=>0), 35000);
 
 						// When auto-login is active
 						if (
-							!!SettingsGet('AccountSignMe') &&
+							SettingsGet('AccountSignMe') &&
 							navigator.registerProtocolHandler
 						) {
 							setTimeout(() => {
@@ -943,9 +874,8 @@ class AppUser extends AbstractApp {
 									);
 								} catch (e) {} // eslint-disable-line no-empty
 
-								if (SettingsGet('MailToEmail')) {
-									mailToHelper(SettingsGet('MailToEmail'));
-								}
+								value = SettingsGet('MailToEmail');
+								value && mailToHelper(value);
 							}, 500);
 						}
 
@@ -955,6 +885,27 @@ class AppUser extends AbstractApp {
 						SettingsUserStore.delayLogout();
 
 						setTimeout(() => this.initVerticalLayoutResizer(), 1);
+
+						setInterval(this.reloadTime(), 60000);
+
+						if (window.crypto && crypto.getRandomValues && Settings.capa(Capa.OpenPGP)) {
+							const script = createElement('script', {src:openPgpJs()});
+							script.onload = () => {
+								PgpUserStore.openpgp = openpgp;
+								if (window.Worker) {
+									try {
+										PgpUserStore.openpgp.initWorker({ path: openPgpWorkerJs() });
+									} catch (e) {
+										console.error(e);
+									}
+								}
+								PgpUserStore.openpgpKeyring = new openpgp.Keyring();
+								PgpUserStore.capaOpenPGP(true);
+								this.reloadOpenPgpKeys();
+							};
+							script.onerror = () => console.error(script.src);
+							doc.head.append(script);
+						}
 					} else {
 						this.logout();
 					}
@@ -967,14 +918,12 @@ class AppUser extends AbstractApp {
 			startScreens([LoginUserScreen]);
 			this.hideLoading();
 		}
-
-		setInterval(this.reloadTime(), 60000);
 	}
 
 	reloadTime()
 	{
 		setTimeout(() =>
-			doc.querySelectorAll('[data-bind*="moment:"]').forEach(element => timeToNode(element))
+			doc.querySelectorAll('time').forEach(element => timeToNode(element))
 			, 1)
 	}
 
