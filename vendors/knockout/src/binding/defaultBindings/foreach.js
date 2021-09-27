@@ -18,8 +18,7 @@ ko.bindingHandlers['foreach'] = {
             return {
                 'foreach': unwrappedValue['data'],
                 'as': unwrappedValue['as'],
-                'beforeRemove': unwrappedValue['beforeRemove'],
-                'afterMove': unwrappedValue['afterMove']
+                'beforeRemove': unwrappedValue['beforeRemove']
             };
         };
     },

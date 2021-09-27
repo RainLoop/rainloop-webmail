@@ -2907,8 +2907,7 @@ ko.bindingHandlers['foreach'] = {
             return {
                 'foreach': unwrappedValue['data'],
                 'as': unwrappedValue['as'],
-                'beforeRemove': unwrappedValue['beforeRemove'],
-                'afterMove': unwrappedValue['afterMove']
+                'beforeRemove': unwrappedValue['beforeRemove']
             };
         };
     },
@@ -3986,7 +3985,6 @@ ko.utils.compareArrays = (() => {
         var nodesToDelete = [];
         var itemsToMoveFirstIndexes = [];
         var itemsForBeforeRemoveCallbacks = [];
-        var itemsForAfterMoveCallbacks = [];
         var mapData;
         var countWaitingForRemove = 0;
 
@@ -3997,9 +3995,6 @@ ko.utils.compareArrays = (() => {
 
         function itemMovedOrRetained(oldPosition) {
             mapData = lastMappingResult[oldPosition];
-            if (currentArrayIndex !== mapData.indexObservable.peek()) {
-                itemsForAfterMoveCallbacks[currentArrayIndex] = mapData;
-            }
             // Since updating the index might change the nodes, do so before calling fixUpContinuousNodeArray
             mapData.indexObservable(currentArrayIndex++);
             ko.utils.fixUpContinuousNodeArray(mapData.mappedNodes, domNode);
@@ -4153,9 +4148,6 @@ ko.utils.compareArrays = (() => {
                 itemsForBeforeRemoveCallbacks[i].arrayEntry = deletedItemDummyValue;
             }
         }
-
-        // Finally call afterMove and afterAdd callbacks
-        callCallback(options['afterMove'], itemsForAfterMoveCallbacks);
     }
 })();
 	window['ko'] = koExports;
