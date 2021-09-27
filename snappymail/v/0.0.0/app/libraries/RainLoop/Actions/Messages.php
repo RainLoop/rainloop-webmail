@@ -1014,7 +1014,9 @@ trait Messages
 
 		if ($bReadReceiptRequest)
 		{
-			$oMessage->SetReadReceipt($oAccount->Email());
+			// Read Receipts Reference Main Account Email, Not Identities #147
+//			$oMessage->SetReadReceipt(($oFromIdentity ?: $oAccount)->Email());
+			$oMessage->SetReadReceipt($oFrom->GetEmail());
 		}
 
 		if ($bMarkAsImportant)
