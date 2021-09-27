@@ -560,7 +560,7 @@ class MailClient
 	}
 
 	protected function initFolderValues(string $sFolderName, int &$iCount, int &$iUnseenCount,
-		int &$iUidNext, int &$iHighestModSeq = 0) : void
+		int &$iUidNext, int &$iHighestModSeq) : void
 	{
 		$aTypes = array(
 			\MailSo\Imap\Enumerations\FolderResponseStatus::MESSAGES,
@@ -581,7 +581,9 @@ class MailClient
 
 		$iUidNext = (int) $aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::UIDNEXT] ?? 0;
 
-		$iHighestModSeq = (int) $aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::HIGHESTMODSEQ] ?? 0;
+		$iHighestModSeq = $this->oImapClient->IsSupported('CONDSTORE')
+			? ((int) $aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::HIGHESTMODSEQ] ?? 0)
+			: 0;
 	}
 
 	public function GenerateImapClientHash() : string
@@ -593,10 +595,9 @@ class MailClient
 		);
 	}
 
-	public function GenerateFolderHash(string $sFolder, int $iCount, int $iUnseenCount, int $iUidNext, int $iHighestModSeq = 0) : string
+	public function GenerateFolderHash(string $sFolder, int $iCount, int $iUidNext, int $iHighestModSeq) : string
 	{
-		$iUnseenCount = 0; // unneccessery
-		return \md5('FolderHash/'.$sFolder.'-'.$iCount.'-'.$iUnseenCount.'-'.$iUidNext.'-'.
+		return \md5('FolderHash/'.$sFolder.'-'.$iCount.'-'.$iUidNext.'-'.
 			$iHighestModSeq.'-'.$this->GenerateImapClientHash().'-'.
 			\MailSo\Config::$MessageListPermanentFilter
 		);
@@ -701,9 +702,9 @@ class MailClient
 
 		$this->initFolderValues($sFolderName, $iCount, $iUnseenCount, $iUidNext, $iHighestModSeq);
 
-		$aResult = array(
+		return array(
 			'Folder' => $sFolderName,
-			'Hash' => $this->GenerateFolderHash($sFolderName, $iCount, $iUnseenCount, $iUidNext, $iHighestModSeq),
+			'Hash' => $this->GenerateFolderHash($sFolderName, $iCount, $iUidNext, $iHighestModSeq),
 			'MessageCount' => $iCount,
 			'MessageUnseenCount' => $iUnseenCount,
 			'UidNext' => $iUidNext,
@@ -712,8 +713,6 @@ class MailClient
 			'NewMessages' => 'INBOX' === $sFolderName && \MailSo\Config::$CheckNewMessages ?
 				$this->getFolderNextMessageInformation($sFolderName, $iPrevUidNext, $iUidNext) : array()
 		);
-
-		return $aResult;
 	}
 
 	/**
@@ -730,7 +729,7 @@ class MailClient
 
 		$this->initFolderValues($sFolderName, $iCount, $iUnseenCount, $iUidNext, $iHighestModSeq);
 
-		return $this->GenerateFolderHash($sFolderName, $iCount, $iUnseenCount, $iUidNext, $iHighestModSeq);
+		return $this->GenerateFolderHash($sFolderName, $iCount, $iUidNext, $iHighestModSeq);
 	}
 
 	/**
@@ -1623,7 +1622,7 @@ class MailClient
 		}
 
 		$oMessageCollection->FolderHash = $this->GenerateFolderHash(
-			$sFolderName, $iMessageRealCount, $iMessageUnseenCount, $iUidNext, $iHighestModSeq);
+			$sFolderName, $iMessageRealCount, $iUidNext, $iHighestModSeq);
 
 		$oMessageCollection->UidNext = $iUidNext;
 

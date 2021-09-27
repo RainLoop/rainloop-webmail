@@ -413,7 +413,7 @@ trait Response
 //					'MessageUnseenCount' => (int) $mStatus['UNSEEN'],
 //					'UidNext' => (int) $mStatus['UIDNEXT'],
 //					'Hash' => $this->MailClient()->GenerateFolderHash(
-//						$mResponse->FullNameRaw(), $mStatus['MESSAGES'], $mStatus['UNSEEN'], $mStatus['UIDNEXT'],
+//						$mResponse->FullNameRaw(), $mStatus['MESSAGES'], $mStatus['UIDNEXT'],
 //							empty($mStatus['HIGHESTMODSEQ']) ? '' : $mStatus['HIGHESTMODSEQ'])
 //				);
 //			}
