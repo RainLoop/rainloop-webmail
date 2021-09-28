@@ -47,7 +47,7 @@ ko.bindingHandlers['value'] = {
                     // techniques like rateLimit can trigger model changes at critical moments that will
                     // override the user's inputs, causing keystrokes to be lost.
                     elementValueBeforeEvent = ko.selectExtensions.readValue(element);
-                    ko.utils.setTimeout(valueUpdateHandler, 0);
+                    setTimeout(valueUpdateHandler, 0);
                 };
                 eventName = eventName.substring(5);
             }
@@ -72,7 +72,7 @@ ko.bindingHandlers['value'] = {
                 var elementValue = ko.selectExtensions.readValue(element);
 
                 if (elementValueBeforeEvent !== null && newValue === elementValueBeforeEvent) {
-                    ko.utils.setTimeout(updateFromModel, 0);
+                    setTimeout(updateFromModel, 0);
                     return;
                 }
 

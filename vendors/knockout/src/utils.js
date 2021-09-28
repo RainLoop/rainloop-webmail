@@ -94,8 +94,6 @@ ko.utils = {
 
     domNodeIsAttachedToDocument: node => ko.utils.domNodeIsContainedBy(node, node.ownerDocument.documentElement),
 
-    setTimeout: (handler, timeout) => setTimeout(handler, timeout),
-
     triggerEvent: (element, eventType) => {
         if (!(element && element.nodeType))
             throw new Error("element must be a DOM node when calling triggerEvent");

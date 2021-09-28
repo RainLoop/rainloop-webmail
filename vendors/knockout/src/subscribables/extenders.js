@@ -31,7 +31,7 @@ function throttle(callback, timeout) {
     var timeoutInstance;
     return () => {
         if (!timeoutInstance) {
-            timeoutInstance = ko.utils.setTimeout(() => {
+            timeoutInstance = setTimeout(() => {
                 timeoutInstance = 0;
                 callback();
             }, timeout);
@@ -43,7 +43,7 @@ function debounce(callback, timeout) {
     var timeoutInstance;
     return () => {
         clearTimeout(timeoutInstance);
-        timeoutInstance = ko.utils.setTimeout(callback, timeout);
+        timeoutInstance = setTimeout(callback, timeout);
     };
 }
 
