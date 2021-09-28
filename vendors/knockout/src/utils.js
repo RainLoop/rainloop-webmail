@@ -89,13 +89,6 @@ ko.utils = {
                 string.trim() :
                 string.toString().replace(/^[\s\xa0]+|[\s\xa0]+$/g, ''),
 
-    stringStartsWith: (string, startsWith) => {
-        string = string || "";
-        if (startsWith.length > string.length)
-            return false;
-        return string.substring(0, startsWith.length) === startsWith;
-    },
-
     domNodeIsContainedBy: (node, containedByNode) =>
         containedByNode.contains(node.nodeType !== 1 ? node.parentNode : node),
 

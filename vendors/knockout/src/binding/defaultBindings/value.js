@@ -35,7 +35,7 @@ ko.bindingHandlers['value'] = {
             // This is useful, for example, to catch "keydown" events after the browser has updated the control
             // (otherwise, ko.selectExtensions.readValue(this) will receive the control's value *before* the key event)
             var handler = valueUpdateHandler;
-            if (ko.utils.stringStartsWith(eventName, "after")) {
+            if ((eventName||'').startsWith("after")) {
                 handler = () => {
                     // The elementValueBeforeEvent variable is non-null *only* during the brief gap between
                     // a keyX event firing and the valueUpdateHandler running, which is scheduled to happen
