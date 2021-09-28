@@ -60,7 +60,7 @@ ko.bindingHandlers['value'] = {
             // For file input elements, can only write the empty string
             updateFromModel = () => {
                 var newValue = ko.utils.unwrapObservable(valueAccessor());
-                if (newValue === null || newValue === undefined || newValue === "") {
+                if (newValue == null || newValue === "") {
                     element.value = "";
                 } else {
                     ko.dependencyDetection.ignore(valueUpdateHandler);  // reset the model to match the element

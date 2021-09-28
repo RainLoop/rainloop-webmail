@@ -24,8 +24,9 @@ ko.tasks = (() => {
                     if (nextIndexToProcess > mark) {
                         if (++countMarks >= 5000) {
                             nextIndexToProcess = taskQueueLength;   // skip all tasks remaining in the queue since any of them could be causing the recursion
-                            setTimeout(() =>
-                                throw Error(`'Too much recursion' after processing ${countMarks} task groups.`), 0)
+                            setTimeout(() => {
+                                throw Error(`'Too much recursion' after processing ${countMarks} task groups.`)
+                            }, 0)
                             break;
                         }
                         mark = taskQueueLength;
@@ -33,7 +34,7 @@ ko.tasks = (() => {
                     try {
                         task();
                     } catch (ex) {
-                        setTimeout(() => throw ex, 0);
+                        setTimeout(() => { throw ex }, 0);
                     }
                 }
             }
