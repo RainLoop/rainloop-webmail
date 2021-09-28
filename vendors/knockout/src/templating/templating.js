@@ -60,8 +60,7 @@
                                         : null;
     }
 
-    function executeTemplate(targetNodeOrNodeArray, renderMode, template, bindingContext, options) {
-        options = options || {};
+    function executeTemplate(targetNodeOrNodeArray, renderMode, template, bindingContext) {
         var firstTargetNode = targetNodeOrNodeArray && getFirstNodeFromPossibleArray(targetNodeOrNodeArray);
         var templateDocument = (firstTargetNode || template || {}).ownerDocument;
 

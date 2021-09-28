@@ -4,10 +4,10 @@
 function makeWithIfBinding(bindingKey, isWith, isNot) {
     ko.bindingHandlers[bindingKey] = {
         'init': (element, valueAccessor, allBindings, viewModel, bindingContext) => {
-            var didDisplayOnLastUpdate, savedNodes, contextOptions = {}, needAsyncContext;
+            var savedNodes, contextOptions = {}, needAsyncContext;
 
             if (isWith) {
-                var as = allBindings.get('as'), noChildContext = false;
+                var as = allBindings.get('as');
                 contextOptions = { 'as': as, 'exportDependencies': true };
             }
 
@@ -51,8 +51,6 @@ function makeWithIfBinding(bindingKey, isWith, isNot) {
 
                     ko.bindingEvent.notify(element, ko.bindingEvent.childrenComplete);
                 }
-
-                didDisplayOnLastUpdate = shouldDisplay;
 
             }, { disposeWhenNodeIsRemoved: element });
 
