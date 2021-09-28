@@ -96,9 +96,6 @@ ko.utils = {
 
     setTimeout: (handler, timeout) => setTimeout(handler, timeout),
 
-    registerEventHandler: (element, eventType, handler) =>
-        element.addEventListener(eventType, handler, false),
-
     triggerEvent: (element, eventType) => {
         if (!(element && element.nodeType))
             throw new Error("element must be a DOM node when calling triggerEvent");

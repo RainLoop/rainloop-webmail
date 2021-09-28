@@ -49,7 +49,7 @@ ko.bindingHandlers['textInput'] = {
         };
 
         var onEvent = (event, handler) =>
-            ko.utils.registerEventHandler(element, event, handler);
+            element.addEventListener(event, handler);
 
         onEvent('input', updateModel);
 

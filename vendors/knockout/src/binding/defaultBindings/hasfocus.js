@@ -21,10 +21,13 @@ ko.bindingHandlers['hasfocus'] = {
         var handleElementFocusIn = handleElementFocusChange.bind(null, true);
         var handleElementFocusOut = handleElementFocusChange.bind(null, false);
 
-        ko.utils.registerEventHandler(element, "focus", handleElementFocusIn);
-        ko.utils.registerEventHandler(element, "focusin", handleElementFocusIn);
-        ko.utils.registerEventHandler(element, "blur",  handleElementFocusOut);
-        ko.utils.registerEventHandler(element, "focusout",  handleElementFocusOut);
+        var registerEventHandler = (event, handler) =>
+            element.addEventListener(event, handler);
+
+        registerEventHandler("focus", handleElementFocusIn);
+        registerEventHandler("focusin", handleElementFocusIn);
+        registerEventHandler("blur",  handleElementFocusOut);
+        registerEventHandler("focusout",  handleElementFocusOut);
 
         // Assume element is not focused (prevents "blur" being called initially)
         element[hasfocusLastValue] = false;

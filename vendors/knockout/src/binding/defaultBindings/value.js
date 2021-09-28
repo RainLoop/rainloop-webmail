@@ -12,6 +12,8 @@ ko.bindingHandlers['value'] = {
         var eventsToCatch = new Set;
         var requestedEventsToCatch = allBindings.get("valueUpdate");
         var elementValueBeforeEvent = null;
+        var registerEventHandler = (event, handler) =>
+            element.addEventListener(event, handler);
 
         if (requestedEventsToCatch) {
             // Allow both individual event names, and arrays of event names
@@ -47,9 +49,9 @@ ko.bindingHandlers['value'] = {
                     elementValueBeforeEvent = ko.selectExtensions.readValue(element);
                     ko.utils.setTimeout(valueUpdateHandler, 0);
                 };
-                eventName = eventName.substring("after".length);
+                eventName = eventName.substring(5);
             }
-            ko.utils.registerEventHandler(element, eventName, handler);
+            registerEventHandler(eventName, handler);
         });
 
         var updateFromModel;
@@ -96,7 +98,7 @@ ko.bindingHandlers['value'] = {
             var updateFromModelComputed;
             ko.bindingEvent.subscribe(element, ko.bindingEvent.childrenComplete, () => {
                 if (!updateFromModelComputed) {
-                    ko.utils.registerEventHandler(element, "change", valueUpdateHandler);
+                    registerEventHandler("change", valueUpdateHandler);
                     updateFromModelComputed = ko.computed(updateFromModel, { disposeWhenNodeIsRemoved: element });
                 } else if (allBindings.get('valueAllowUnset')) {
                     updateFromModel();
@@ -105,7 +107,7 @@ ko.bindingHandlers['value'] = {
                 }
             }, null, { 'notifyImmediately': true });
         } else {
-            ko.utils.registerEventHandler(element, "change", valueUpdateHandler);
+            registerEventHandler("change", valueUpdateHandler);
             ko.computed(updateFromModel, { disposeWhenNodeIsRemoved: element });
         }
     },

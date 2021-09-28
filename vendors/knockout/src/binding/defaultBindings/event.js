@@ -18,7 +18,7 @@ ko.bindingHandlers['event'] = {
         var eventsToHandle = valueAccessor() || {};
         ko.utils.objectForEach(eventsToHandle, eventName => {
             if (typeof eventName == "string") {
-                ko.utils.registerEventHandler(element, eventName, function (event) {
+                element.addEventListener(eventName, function (event) {
                     var handlerReturnValue;
                     var handlerFunction = valueAccessor()[eventName];
                     if (!handlerFunction)
