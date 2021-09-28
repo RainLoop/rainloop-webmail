@@ -94,26 +94,10 @@ ko.utils = {
 
     domNodeIsAttachedToDocument: node => ko.utils.domNodeIsContainedBy(node, node.ownerDocument.documentElement),
 
-    catchFunctionErrors: delegate => {
-        return ko['onError'] ? function () {
-            try {
-                return delegate.apply(this, arguments);
-            } catch (e) {
-                ko['onError'] && ko['onError'](e);
-                throw e;
-            }
-        } : delegate;
-    },
-
-    setTimeout: (handler, timeout) => setTimeout(ko.utils.catchFunctionErrors(handler), timeout),
-
-    deferError: error => setTimeout(() => {
-            ko['onError'] && ko['onError'](error);
-            throw error;
-        }, 0),
+    setTimeout: (handler, timeout) => setTimeout(handler, timeout),
 
     registerEventHandler: (element, eventType, handler) =>
-        element.addEventListener(eventType, ko.utils.catchFunctionErrors(handler), false),
+        element.addEventListener(eventType, handler, false),
 
     triggerEvent: (element, eventType) => {
         if (!(element && element.nodeType))
