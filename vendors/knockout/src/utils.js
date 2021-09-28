@@ -25,7 +25,7 @@ ko.utils = {
         var templateDocument = (nodesArray[0] && nodesArray[0].ownerDocument) || document;
 
         var container = templateDocument.createElement('div');
-        nodes.forEach(node => container.append(ko.cleanNode(node)));
+        nodesArray.forEach(node => container.append(ko.cleanNode(node)));
         return container;
     },
 
@@ -67,7 +67,7 @@ ko.utils = {
             // Rule [B]
             while (continuousNodeArray.length > 1
                 && continuousNodeArray[continuousNodeArray.length - 1].parentNode !== parentNode)
-                continuousNodeArray.length--;
+                --continuousNodeArray.length;
 
             // Rule [C]
             if (continuousNodeArray.length > 1) {
