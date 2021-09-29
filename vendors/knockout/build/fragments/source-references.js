@@ -23,7 +23,7 @@ knockoutDebugCallback([
     'src/binding/bindingProvider.js',
     'src/binding/bindingAttributeSyntax.js',
     'src/components/loaderRegistry.js',
-    'src/components/defaultLoader.js',
+//    'src/components/defaultLoader.js',
 //    'src/components/customElements.js',
     'src/components/componentBinding.js',
     'src/binding/defaultBindings/attr.js',

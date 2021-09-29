@@ -2320,144 +2320,63 @@ ko.expressionRewriting = (() => {
     ko.exportSymbol('dataFor', ko.dataFor);
 })();
 (() => {
-    var loadingSubscribablesCache = {}, // Tracks component loads that are currently in flight
-        loadedDefinitionsCache = {};    // Tracks component loads that have already completed
+    var loadingSubscribablesCache = Object.create(null), // Tracks component loads that are currently in flight
+        loadedDefinitionsCache = Object.create(null);    // Tracks component loads that have already completed
 
     ko.components = {
         get: (componentName, callback) => {
-            var cachedDefinition = getObjectOwnProperty(loadedDefinitionsCache, componentName);
+            var cachedDefinition = loadedDefinitionsCache[componentName];
             if (cachedDefinition) {
-                // It's already loaded and cached. Reuse the same definition object.
-                // Note that for API consistency, even cache hits complete asynchronously by default.
-                // You can bypass this by putting synchronous:true on your component config.
-                if (cachedDefinition.isSynchronousComponent) {
-                    ko.dependencyDetection.ignore(() => // See comment in loaderRegistryBehaviors.js for reasoning
-                        callback(cachedDefinition.definition)
-                    );
-                } else {
-                    ko.tasks.schedule(() => callback(cachedDefinition.definition) );
-                }
+                ko.tasks.schedule(() => callback(cachedDefinition.definition) );
             } else {
                 // Join the loading process that is already underway, or start a new one.
-                loadComponentAndNotify(componentName, callback);
+                var subscribable = loadingSubscribablesCache[componentName],
+                    completedAsync;
+                if (subscribable) {
+                    subscribable.subscribe(callback);
+                } else {
+                    // It's not started loading yet. Start loading, and when it's done, move it to loadedDefinitionsCache.
+                    subscribable = loadingSubscribablesCache[componentName] = new ko.subscribable();
+                    subscribable.subscribe(callback);
+
+                    beginLoadingComponent(componentName, definition => {
+                        loadedDefinitionsCache[componentName] = { definition: definition };
+                        delete loadingSubscribablesCache[componentName];
+
+                        // For API consistency, all loads complete asynchronously. However we want to avoid
+                        // adding an extra task schedule if it's unnecessary (i.e., the completion is already
+                        // async).
+                        //
+                        // You can bypass the 'always asynchronous' feature by putting the synchronous:true
+                        // flag on your component configuration when you register it.
+                        if (completedAsync) {
+                            // Note that notifySubscribers ignores any dependencies read within the callback.
+                            // See comment in loaderRegistryBehaviors.js for reasoning
+                            subscribable['notifySubscribers'](definition);
+                        } else {
+                            ko.tasks.schedule(() => subscribable['notifySubscribers'](definition));
+                        }
+                    });
+                    completedAsync = true;
+                }
             }
         },
 
         clearCachedDefinition: componentName =>
-            delete loadedDefinitionsCache[componentName]
-        ,
+            delete loadedDefinitionsCache[componentName],
 
-        _getFirstResultFromLoaders: getFirstResultFromLoaders
+		register: (componentName, config) => {
+			if (!config) {
+				throw new Error('Invalid configuration for ' + componentName);
+			}
+
+			if (defaultConfigRegistry[componentName]) {
+				throw new Error('Component ' + componentName + ' is already registered');
+			}
+
+			defaultConfigRegistry[componentName] = config;
+		}
     };
-
-    function getObjectOwnProperty(obj, propName) {
-        return Object.prototype.hasOwnProperty.call(obj, propName) ? obj[propName] : undefined;
-    }
-
-    function loadComponentAndNotify(componentName, callback) {
-        var subscribable = getObjectOwnProperty(loadingSubscribablesCache, componentName),
-            completedAsync;
-        if (!subscribable) {
-            // It's not started loading yet. Start loading, and when it's done, move it to loadedDefinitionsCache.
-            subscribable = loadingSubscribablesCache[componentName] = new ko.subscribable();
-            subscribable.subscribe(callback);
-
-            beginLoadingComponent(componentName, (definition, config) => {
-                var isSynchronousComponent = !!(config && config['synchronous']);
-                loadedDefinitionsCache[componentName] = { definition: definition, isSynchronousComponent: isSynchronousComponent };
-                delete loadingSubscribablesCache[componentName];
-
-                // For API consistency, all loads complete asynchronously. However we want to avoid
-                // adding an extra task schedule if it's unnecessary (i.e., the completion is already
-                // async).
-                //
-                // You can bypass the 'always asynchronous' feature by putting the synchronous:true
-                // flag on your component configuration when you register it.
-                if (completedAsync || isSynchronousComponent) {
-                    // Note that notifySubscribers ignores any dependencies read within the callback.
-                    // See comment in loaderRegistryBehaviors.js for reasoning
-                    subscribable['notifySubscribers'](definition);
-                } else {
-                    ko.tasks.schedule(() => subscribable['notifySubscribers'](definition));
-                }
-            });
-            completedAsync = true;
-        } else {
-            subscribable.subscribe(callback);
-        }
-    }
-
-    function beginLoadingComponent(componentName, callback) {
-        getFirstResultFromLoaders('getConfig', [componentName], config => {
-            if (config) {
-                // We have a config, so now load its definition
-                getFirstResultFromLoaders('loadComponent', [componentName, config], definition =>
-                    callback(definition, config)
-                );
-            } else {
-                // The component has no config - it's unknown to all the loaders.
-                // Note that this is not an error (e.g., a module loading error) - that would abort the
-                // process and this callback would not run. For this callback to run, all loaders must
-                // have confirmed they don't know about this component.
-                callback(null, null);
-            }
-        });
-    }
-
-    function getFirstResultFromLoaders(methodName, argsExceptCallback, callback, candidateLoaders) {
-        // On the first call in the stack, start with the full set of loaders
-        if (!candidateLoaders) {
-            candidateLoaders = ko.components['loaders'].slice(0); // Use a copy, because we'll be mutating this array
-        }
-
-        // Try the next candidate
-        var currentCandidateLoader = candidateLoaders.shift();
-        if (currentCandidateLoader) {
-            var methodInstance = currentCandidateLoader[methodName];
-            if (methodInstance) {
-                var wasAborted = false,
-                    synchronousReturnValue = methodInstance.apply(currentCandidateLoader, argsExceptCallback.concat(function(result) {
-                        if (wasAborted) {
-                            callback(null);
-                        } else if (result !== null) {
-                            // This candidate returned a value. Use it.
-                            callback(result);
-                        } else {
-                            // Try the next candidate
-                            getFirstResultFromLoaders(methodName, argsExceptCallback, callback, candidateLoaders);
-                        }
-                    }));
-
-                // Currently, loaders may not return anything synchronously. This leaves open the possibility
-                // that we'll extend the API to support synchronous return values in the future. It won't be
-                // a breaking change, because currently no loader is allowed to return anything except undefined.
-                if (synchronousReturnValue !== undefined) {
-                    wasAborted = true;
-
-                    // Method to suppress exceptions will remain undocumented. This is only to keep
-                    // KO's specs running tidily, since we can observe the loading got aborted without
-                    // having exceptions cluttering up the console too.
-                    if (!currentCandidateLoader['suppressLoaderExceptions']) {
-                        throw new Error('Component loaders must supply values by invoking the callback, not by returning values synchronously.');
-                    }
-                }
-            } else {
-                // This candidate doesn't have the relevant handler. Synchronously move on to the next one.
-                getFirstResultFromLoaders(methodName, argsExceptCallback, callback, candidateLoaders);
-            }
-        } else {
-            // No candidates returned a value
-            callback(null);
-        }
-    }
-
-    // Reference the loaders via string name so it's possible for developers
-    // to replace the whole array by assigning to ko.components.loaders
-    ko.components['loaders'] = [];
-
-    ko.exportSymbol('components', ko.components);
-})();
-(() => {
 
     // The default loader is responsible for two things:
     // 1. Maintaining the default in-memory registry of component configuration objects
@@ -2469,158 +2388,73 @@ ko.expressionRewriting = (() => {
     // 1. To supply configuration objects from some other source (e.g., conventions)
     // 2. Or, to resolve configuration objects by loading viewmodels/templates via arbitrary logic.
 
-    var defaultConfigRegistry = {};
-
-    ko.components.register = (componentName, config) => {
-        if (!config) {
-            throw new Error('Invalid configuration for ' + componentName);
-        }
-
-        if (ko.components.isRegistered(componentName)) {
-            throw new Error('Component ' + componentName + ' is already registered');
-        }
-
-        defaultConfigRegistry[componentName] = config;
-    };
-
-    ko.components.isRegistered = componentName =>
-        Object.prototype.hasOwnProperty.call(defaultConfigRegistry, componentName);
-
-    ko.components.unregister = componentName => {
-        delete defaultConfigRegistry[componentName];
-        ko.components.clearCachedDefinition(componentName);
-    };
-
-    ko.components.defaultLoader = {
-        'getConfig': (componentName, callback) => {
-            var result = ko.components.isRegistered(componentName)
-                ? defaultConfigRegistry[componentName]
-                : null;
-            callback(result);
-        },
-
-        'loadComponent': (componentName, config, callback) => {
-            var errorCallback = makeErrorCallback(componentName);
-            resolveConfig(componentName, errorCallback, config, callback);
-        },
-
-        'loadTemplate': (componentName, templateConfig, callback) =>
-            resolveTemplate(makeErrorCallback(componentName), templateConfig, callback)
-        ,
-
-        'loadViewModel': (componentName, viewModelConfig, callback) =>
-            resolveViewModel(makeErrorCallback(componentName), viewModelConfig, callback)
-    };
-
+    var defaultConfigRegistry = Object.create(null);
     var createViewModelKey = 'createViewModel';
 
-    // Takes a config object of the form { template: ..., viewModel: ... }, and asynchronously convert it
-    // into the standard component definition format:
-    //    { template: <ArrayOfDomNodes>, createViewModel: function(params, componentInfo) { ... } }.
-    // Since both template and viewModel may need to be resolved asynchronously, both tasks are performed
-    // in parallel, and the results joined when both are ready. We don't depend on any promises infrastructure,
-    // so this is implemented manually below.
-    function resolveConfig(componentName, errorCallback, config, callback) {
-        var result = {},
-            makeCallBackWhenZero = 2,
-            tryIssueCallback = () => {
-                if (--makeCallBackWhenZero === 0) {
-                    callback(result);
-                }
-            },
-            templateConfig = config['template'],
-            viewModelConfig = config['viewModel'];
+	// Takes a config object of the form { template: ..., viewModel: ... }, and asynchronously convert it
+	// into the standard component definition format:
+	//    { template: <ArrayOfDomNodes>, createViewModel: function(params, componentInfo) { ... } }.
+	// Since both template and viewModel may need to be resolved asynchronously, both tasks are performed
+	// in parallel, and the results joined when both are ready. We don't depend on any promises infrastructure,
+	// so this is implemented manually below.
+    function loadComponent(componentName, callback) {
+		var result = {},
+			config = defaultConfigRegistry[componentName] || {},
+			templateConfig = config['template'],
+			viewModelConfig = config['viewModel'];
 
-        if (templateConfig) {
-            ko.components._getFirstResultFromLoaders('loadTemplate', [componentName, templateConfig], resolvedTemplate => {
-                result['template'] = resolvedTemplate;
-                tryIssueCallback();
-            });
-        } else {
-            tryIssueCallback();
-        }
+		if (templateConfig) {
+			if (!templateConfig['element']) {
+				throwError(componentName, 'Unknown template value: ' + templateConfig);
+			}
+			// Element ID - find it, then copy its child nodes
+			var element = templateConfig['element'];
+			var elemInstance = document.getElementById(element);
+			if (!elemInstance) {
+				throwError(componentName, 'Cannot find element with ID ' + element);
+			}
+			if (!elemInstance.matches('TEMPLATE')) {
+				throwError(componentName, 'Template Source Element not a <template>');
+			}
+			// For browsers with proper <template> element support (i.e., where the .content property
+			// gives a document fragment), use that document fragment.
+			result['template'] = ko.utils.cloneNodes(elemInstance.content.childNodes);
+		}
 
-        if (viewModelConfig) {
-            ko.components._getFirstResultFromLoaders('loadViewModel', [componentName, viewModelConfig], resolvedViewModel => {
-                result[createViewModelKey] = resolvedViewModel;
-                tryIssueCallback();
-            });
-        } else {
-            tryIssueCallback();
-        }
+		if (viewModelConfig) {
+			if (typeof viewModelConfig[createViewModelKey] !== 'function') {
+				throwError(componentName, 'Unknown viewModel value: ' + viewModelConfig);
+			}
+			// Already a factory function - use it as-is
+			result[createViewModelKey] = viewModelConfig[createViewModelKey];
+		}
+
+		if (result['template'] && result[createViewModelKey]) {
+			callback(result);
+		} else {
+			callback(null);
+		}
     }
 
-    function resolveTemplate(errorCallback, templateConfig, callback) {
-        if (templateConfig instanceof Array) {
-            // Assume already an array of DOM nodes - pass through unchanged
-            callback(templateConfig);
-        } else if (templateConfig instanceof DocumentFragment) {
-            // Document fragment - use its child nodes
-            callback([...templateConfig.childNodes]);
-        } else if (templateConfig['element']) {
-            var element = templateConfig['element'];
-            if (element instanceof HTMLElement) {
-                // Element instance - copy its child nodes
-                callback(cloneNodesFromTemplateSourceElement(element));
-            } else if (typeof element === 'string') {
-                // Element ID - find it, then copy its child nodes
-                var elemInstance = document.getElementById(element);
-                if (elemInstance) {
-                    callback(cloneNodesFromTemplateSourceElement(elemInstance));
-                } else {
-                    errorCallback('Cannot find element with ID ' + element);
-                }
-            } else {
-                errorCallback('Unknown element type: ' + element);
-            }
-        } else {
-            errorCallback('Unknown template value: ' + templateConfig);
+    function throwError(componentName, message) {
+        throw new Error(`Component '${componentName}': ${message}`)
+    }
+
+    function beginLoadingComponent(componentName, callback) {
+        // Try the candidates
+        var found = false;
+        loadComponent(componentName, result => {
+            // This candidate returned a value. Use it.
+            (found = result != null) && callback(result);
+        });
+        if (!found) {
+            // No candidates returned a value
+            callback(null);
         }
     }
 
-    function resolveViewModel(errorCallback, viewModelConfig, callback) {
-        if (typeof viewModelConfig === 'function') {
-            // Constructor - convert to standard factory function format
-            // By design, this does *not* supply componentInfo to the constructor, as the intent is that
-            // componentInfo contains non-viewmodel data (e.g., the component's element) that should only
-            // be used in factory functions, not viewmodel constructors.
-            callback(params => new viewModelConfig(params));
-        } else if (typeof viewModelConfig[createViewModelKey] === 'function') {
-            // Already a factory function - use it as-is
-            callback(viewModelConfig[createViewModelKey]);
-        } else if ('instance' in viewModelConfig) {
-            // Fixed object instance - promote to createViewModel format for API consistency
-            var fixedInstance = viewModelConfig['instance'];
-            callback(() => fixedInstance);
-        } else if ('viewModel' in viewModelConfig) {
-            // Resolved AMD module whose value is of the form { viewModel: ... }
-            resolveViewModel(errorCallback, viewModelConfig['viewModel'], callback);
-        } else {
-            errorCallback('Unknown viewModel value: ' + viewModelConfig);
-        }
-    }
-
-    function cloneNodesFromTemplateSourceElement(elemInstance) {
-        if (elemInstance.matches('TEMPLATE')) {
-            // For browsers with proper <template> element support (i.e., where the .content property
-            // gives a document fragment), use that document fragment.
-            if (elemInstance.content instanceof DocumentFragment) {
-                return ko.utils.cloneNodes(elemInstance.content.childNodes);
-            }
-        }
-        throw 'Template Source Element not a <template>';
-    }
-
-    function makeErrorCallback(componentName) {
-        return message => {
-            throw new Error('Component \'' + componentName + '\': ' + message)
-        };
-    }
-
+    ko.exportSymbol('components', ko.components);
     ko.exportSymbol('components.register', ko.components.register);
-
-    // By default, the default loader is the only registered component loader
-    ko.components['loaders'].push(ko.components.defaultLoader);
 })();
 (() => {
     var componentLoadingOperationUniqueId = 0;
