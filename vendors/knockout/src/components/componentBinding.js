@@ -25,14 +25,12 @@
             ko.utils.domNodeDisposal.addDisposeCallback(element, disposeAssociatedComponentViewModel);
 
             ko.computed(() => {
-                var value = ko.utils.unwrapObservable(valueAccessor()),
-                    componentName, componentParams;
+                var componentName = ko.utils.unwrapObservable(valueAccessor()),
+                    componentParams;
 
-                if (typeof value === 'string') {
-                    componentName = value;
-                } else {
-                    componentName = ko.utils.unwrapObservable(value['name']);
-                    componentParams = ko.utils.unwrapObservable(value['params']);
+                if (typeof componentName !== 'string') {
+                    componentParams = ko.utils.unwrapObservable(componentName['params']);
+                    componentName = ko.utils.unwrapObservable(componentName['name']);
                 }
 
                 if (!componentName) {
@@ -43,39 +41,33 @@
 
                 var loadingOperationId = currentLoadingOperationId = ++componentLoadingOperationUniqueId;
                 ko.components.get(componentName, componentDefinition => {
-                    // If this is not the current load operation for this element, ignore it.
-                    if (currentLoadingOperationId !== loadingOperationId) {
-                        return;
-                    }
+                    // If this is the current load operation for this element
+                    if (currentLoadingOperationId === loadingOperationId) {
+                        // Clean up previous state
+                        disposeAssociatedComponentViewModel();
 
-                    // Clean up previous state
-                    disposeAssociatedComponentViewModel();
+                        // Instantiate and bind new component. Implicitly this cleans any old DOM nodes.
+                        if (!componentDefinition) {
+                            throw new Error('Unknown component \'' + componentName + '\'');
+                        }
+                        // cloneTemplateIntoElement
+                        var template = componentDefinition['template'];
+                        if (!template) {
+                            throw new Error('Component \'' + componentName + '\' has no template');
+                        }
+                        ko.virtualElements.setDomNodeChildren(element, ko.utils.cloneNodes(template));
 
-                    // Instantiate and bind new component. Implicitly this cleans any old DOM nodes.
-                    if (!componentDefinition) {
-                        throw new Error('Unknown component \'' + componentName + '\'');
-                    }
-                    cloneTemplateIntoElement(componentName, componentDefinition, element);
-
-                    var componentInfo = {
-                        'element': element,
-                        'templateNodes': originalChildNodes
-                    };
-
-                    var componentViewModel = createViewModel(componentDefinition, componentParams, componentInfo),
-                        childBindingContext = asyncContext['createChildContext'](componentViewModel, {
-                            'extend': ctx => {
-                                ctx['$component'] = componentViewModel;
-                                ctx['$componentTemplateNodes'] = originalChildNodes;
-                            }
+                        currentViewModel = componentDefinition['createViewModel'](componentParams, {
+                            'element': element,
+                            'templateNodes': originalChildNodes
                         });
-
-                    if (componentViewModel && componentViewModel['koDescendantsComplete']) {
-                        afterRenderSub = ko.bindingEvent.subscribe(element, ko.bindingEvent.descendantsComplete, componentViewModel['koDescendantsComplete'], componentViewModel);
+                        ko.applyBindingsToDescendants(asyncContext['createChildContext'](currentViewModel, {
+                                'extend': ctx => {
+                                    ctx['$component'] = currentViewModel;
+                                    ctx['$componentTemplateNodes'] = originalChildNodes;
+                                }
+                            }), element);
                     }
-
-                    currentViewModel = componentViewModel;
-                    ko.applyBindingsToDescendants(childBindingContext, element);
                 });
             }, { disposeWhenNodeIsRemoved: element });
 
@@ -84,22 +76,5 @@
     };
 
     ko.virtualElements.allowedBindings['component'] = true;
-
-    function cloneTemplateIntoElement(componentName, componentDefinition, element) {
-        var template = componentDefinition['template'];
-        if (!template) {
-            throw new Error('Component \'' + componentName + '\' has no template');
-        }
-
-        var clonedNodesArray = ko.utils.cloneNodes(template);
-        ko.virtualElements.setDomNodeChildren(element, clonedNodesArray);
-    }
-
-    function createViewModel(componentDefinition, componentParams, componentInfo) {
-        var componentViewModelFactory = componentDefinition['createViewModel'];
-        return componentViewModelFactory
-            ? componentViewModelFactory.call(componentDefinition, componentParams, componentInfo)
-            : componentParams; // Template-only component
-    }
 
 })();

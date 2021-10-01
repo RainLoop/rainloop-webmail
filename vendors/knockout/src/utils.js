@@ -1,20 +1,7 @@
 ko.utils = {
-    extend: (target, source) => {
-        source && Object.entries(source).forEach(prop => target[prop[0]] = prop[1]);
-        return target;
-    },
+    extend: (target, source) => source ? Object.assign(target, source) : target,
 
     objectForEach: (obj, action) => obj && Object.entries(obj).forEach(prop => action(prop[0], prop[1])),
-
-    objectMap: (source, mapping, mappingOwner) => {
-        if (!source)
-            return source;
-        var target = {};
-        Object.entries(source).forEach(prop =>
-            target[prop[0]] = mapping.call(mappingOwner, prop[1], prop[0], source)
-        );
-        return target;
-    },
 
     emptyDomNode: domNode => [...domNode.childNodes].forEach(child => ko.removeNode(child)),
 
@@ -89,10 +76,8 @@ ko.utils = {
                 string.trim() :
                 string.toString().replace(/^[\s\xa0]+|[\s\xa0]+$/g, ''),
 
-    domNodeIsContainedBy: (node, containedByNode) =>
-        containedByNode.contains(node.nodeType !== 1 ? node.parentNode : node),
-
-    domNodeIsAttachedToDocument: node => ko.utils.domNodeIsContainedBy(node, node.ownerDocument.documentElement),
+    domNodeIsAttachedToDocument: node =>
+		node.ownerDocument.documentElement.contains(node.nodeType !== 1 ? node.parentNode : node),
 
     triggerEvent: (element, eventType) => {
         if (!(element && element.nodeType))
