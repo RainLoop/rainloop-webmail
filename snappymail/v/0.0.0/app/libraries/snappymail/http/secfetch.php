@@ -107,8 +107,11 @@ abstract class SecFetch
 
 	public static function isSameOrigin() : bool
 	{
+
 		return !isset($_SERVER['HTTP_SEC_FETCH_SITE'])
-			|| 'same-origin' === $_SERVER['HTTP_SEC_FETCH_SITE'];
+			|| 'same-origin' === $_SERVER['HTTP_SEC_FETCH_SITE']
+			// Fulguris incognito: Dest = document, Mode = navigate, Site = none, User = true
+			|| 'none' === $_SERVER['HTTP_SEC_FETCH_SITE'];
 	}
 
 }
