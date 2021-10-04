@@ -7,7 +7,7 @@
 
 		if (forgotUrl || registerUrl) {
 			addEventListener('rl-view-model', e => {
-				if (e.detail && 'Login' === e.detail.viewModelTemplateID) {
+				if (e.detail && 'Login' === e.detail.templateId) {
 					const container = e.detail.viewModelDom.querySelector('#plugin-Login-BottomControlGroup'),
 						forgot = 'LOGIN/LABEL_FORGOT_PASSWORD',
 						register = 'LOGIN/LABEL_REGISTRATION';
