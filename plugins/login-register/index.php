@@ -4,8 +4,8 @@ class LoginRegisterPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Register and Forgot',
-		VERSION  = '2.0',
-		RELEASE  = '2021-06-01',
+		VERSION  = '2.1',
+		RELEASE  = '2021-10-04',
 		REQUIRED = '2.5.2',
 		CATEGORY = 'Login',
 		DESCRIPTION = 'Links on login screen for registration and forgotten password';

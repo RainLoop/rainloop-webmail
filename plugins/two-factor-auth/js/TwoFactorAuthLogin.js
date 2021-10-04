@@ -2,7 +2,7 @@
 (rl => {
 
 	rl && addEventListener('rl-view-model', e => {
-		if (e.detail && 'Login' === e.detail.templateId) {
+		if (e.detail && 'Login' === (e.detail.templateId || e.detail.viewModelTemplateID)) {
 			const container = e.detail.viewModelDom.querySelector('#plugin-Login-BottomControlGroup'),
 				placeholder = 'LOGIN/LABEL_TWO_FACTOR_CODE';
 			if (container) {
