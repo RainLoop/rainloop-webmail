@@ -9,7 +9,6 @@ class koSubscription
         this._node = null;
         this._domNodeDisposalCallback = null;
         ko.exportProperty(this, 'dispose', this.dispose);
-        ko.exportProperty(this, 'disposeWhenNodeIsRemoved', this.disposeWhenNodeIsRemoved);
     }
 
     dispose() {

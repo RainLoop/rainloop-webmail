@@ -77,7 +77,7 @@ ko.utils = {
                 string.toString().replace(/^[\s\xa0]+|[\s\xa0]+$/g, ''),
 
     domNodeIsAttachedToDocument: node =>
-		node.ownerDocument.documentElement.contains(node.nodeType !== 1 ? node.parentNode : node),
+        node.ownerDocument.documentElement.contains(node.nodeType !== 1 ? node.parentNode : node),
 
     triggerEvent: (element, eventType) => {
         if (!(element && element.nodeType))

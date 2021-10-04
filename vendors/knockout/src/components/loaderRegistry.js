@@ -44,17 +44,17 @@
         clearCachedDefinition: componentName =>
             delete loadedDefinitionsCache[componentName],
 
-		register: (componentName, config) => {
-			if (!config) {
-				throw new Error('Invalid configuration for ' + componentName);
-			}
+        register: (componentName, config) => {
+            if (!config) {
+                throw new Error('Invalid configuration for ' + componentName);
+            }
 
-			if (defaultConfigRegistry[componentName]) {
-				throw new Error('Component ' + componentName + ' is already registered');
-			}
+            if (defaultConfigRegistry[componentName]) {
+                throw new Error('Component ' + componentName + ' is already registered');
+            }
 
-			defaultConfigRegistry[componentName] = config;
-		}
+            defaultConfigRegistry[componentName] = config;
+        }
     };
 
     // The default loader is responsible for two things:
@@ -70,49 +70,49 @@
     var defaultConfigRegistry = Object.create(null);
     var createViewModelKey = 'createViewModel';
 
-	// Takes a config object of the form { template: ..., viewModel: ... }, and asynchronously convert it
-	// into the standard component definition format:
-	//    { template: <ArrayOfDomNodes>, createViewModel: function(params, componentInfo) { ... } }.
-	// Since both template and viewModel may need to be resolved asynchronously, both tasks are performed
-	// in parallel, and the results joined when both are ready. We don't depend on any promises infrastructure,
-	// so this is implemented manually below.
+    // Takes a config object of the form { template: ..., viewModel: ... }, and asynchronously convert it
+    // into the standard component definition format:
+    //    { template: <ArrayOfDomNodes>, createViewModel: function(params, componentInfo) { ... } }.
+    // Since both template and viewModel may need to be resolved asynchronously, both tasks are performed
+    // in parallel, and the results joined when both are ready. We don't depend on any promises infrastructure,
+    // so this is implemented manually below.
     function loadComponent(componentName, callback) {
-		var result = {},
-			config = defaultConfigRegistry[componentName] || {},
-			templateConfig = config['template'],
-			viewModelConfig = config['viewModel'];
+        var result = {},
+            config = defaultConfigRegistry[componentName] || {},
+            templateConfig = config['template'],
+            viewModelConfig = config['viewModel'];
 
-		if (templateConfig) {
-			if (!templateConfig['element']) {
-				throwError(componentName, 'Unknown template value: ' + templateConfig);
-			}
-			// Element ID - find it, then copy its child nodes
-			var element = templateConfig['element'];
-			var elemInstance = document.getElementById(element);
-			if (!elemInstance) {
-				throwError(componentName, 'Cannot find element with ID ' + element);
-			}
-			if (!elemInstance.matches('TEMPLATE')) {
-				throwError(componentName, 'Template Source Element not a <template>');
-			}
-			// For browsers with proper <template> element support (i.e., where the .content property
-			// gives a document fragment), use that document fragment.
-			result['template'] = ko.utils.cloneNodes(elemInstance.content.childNodes);
-		}
+        if (templateConfig) {
+            if (!templateConfig['element']) {
+                throwError(componentName, 'Unknown template value: ' + templateConfig);
+            }
+            // Element ID - find it, then copy its child nodes
+            var element = templateConfig['element'];
+            var elemInstance = document.getElementById(element);
+            if (!elemInstance) {
+                throwError(componentName, 'Cannot find element with ID ' + element);
+            }
+            if (!elemInstance.matches('TEMPLATE')) {
+                throwError(componentName, 'Template Source Element not a <template>');
+            }
+            // For browsers with proper <template> element support (i.e., where the .content property
+            // gives a document fragment), use that document fragment.
+            result['template'] = ko.utils.cloneNodes(elemInstance.content.childNodes);
+        }
 
-		if (viewModelConfig) {
-			if (typeof viewModelConfig[createViewModelKey] !== 'function') {
-				throwError(componentName, 'Unknown viewModel value: ' + viewModelConfig);
-			}
-			// Already a factory function - use it as-is
-			result[createViewModelKey] = viewModelConfig[createViewModelKey];
-		}
+        if (viewModelConfig) {
+            if (typeof viewModelConfig[createViewModelKey] !== 'function') {
+                throwError(componentName, 'Unknown viewModel value: ' + viewModelConfig);
+            }
+            // Already a factory function - use it as-is
+            result[createViewModelKey] = viewModelConfig[createViewModelKey];
+        }
 
-		if (result['template'] && result[createViewModelKey]) {
-			callback(result);
-		} else {
-			callback(null);
-		}
+        if (result['template'] && result[createViewModelKey]) {
+            callback(result);
+        } else {
+            callback(null);
+        }
     }
 
     function throwError(componentName, message) {
