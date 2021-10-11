@@ -8,8 +8,8 @@ import { ViewType } from 'Knoin/Knoin';
 class AbstractView {
 	constructor(templateID, type)
 	{
-//		Object.defineProperty(this, 'templateId', { value: templateID });
-		this.templateId = templateID;
+//		Object.defineProperty(this, 'viewModelTemplateID', { value: templateID });
+		this.viewModelTemplateID = templateID;
 		this.viewType = type;
 		this.viewModelDom = null;
 

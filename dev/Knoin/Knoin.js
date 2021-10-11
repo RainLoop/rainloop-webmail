@@ -36,7 +36,7 @@ const SCREENS = {},
 			ViewModelClass.__vm = vm;
 
 			if (vmPlace) {
-				vmDom = Element.fromHTML('<div class="rl-view-model RL-' + vm.templateId + '" hidden=""></div>');
+				vmDom = Element.fromHTML('<div class="rl-view-model RL-' + vm.viewModelTemplateID + '" hidden=""></div>');
 				vmPlace.append(vmDom);
 
 				vm.viewModelDom = vmDom;
@@ -92,7 +92,7 @@ const SCREENS = {},
 					vmDom,
 					{
 						i18nInit: true,
-						template: () => ({ name: vm.templateId })
+						template: () => ({ name: vm.viewModelTemplateID })
 					},
 					vm
 				);
