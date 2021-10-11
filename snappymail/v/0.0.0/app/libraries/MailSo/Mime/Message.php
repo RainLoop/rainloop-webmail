@@ -369,7 +369,7 @@ class Message
 		}
 
 		return '<'.
-			\MailSo\Base\Utils::Md5Rand($sHostName.
+			\MailSo\Base\Utils::Sha1Rand($sHostName.
 				(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : '')).'@'.$sHostName.'>';
 	}
 

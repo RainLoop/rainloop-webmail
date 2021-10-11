@@ -62,7 +62,7 @@ trait Admin
 
 	private function getAdminToken() : string
 	{
-		$sRand = \MailSo\Base\Utils::Md5Rand();
+		$sRand = \MailSo\Base\Utils::Sha1Rand();
 		if (!$this->Cacher(null, true)->Set(KeyPathHelper::SessionAdminKey($sRand), \time()))
 		{
 			$this->oLogger->Write('Cannot store an admin token',

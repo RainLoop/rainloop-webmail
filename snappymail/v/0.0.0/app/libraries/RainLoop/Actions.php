@@ -1760,7 +1760,7 @@ class Actions
 							)) {
 								$oSettings = $this->SettingsProvider()->Load($oAccount);
 								if ($oSettings) {
-									$sHash = \MailSo\Base\Utils::Md5Rand($sName . APP_VERSION . APP_SALT);
+									$sHash = \MailSo\Base\Utils::Sha1Rand($sName . APP_VERSION . APP_SALT);
 
 									$oSettings->SetConf('UserBackgroundName', $sName);
 									$oSettings->SetConf('UserBackgroundHash', $sHash);

@@ -107,7 +107,7 @@ trait User
 			{
 				case 'zip':
 
-					$sZipHash = \MailSo\Base\Utils::Md5Rand();
+					$sZipHash = \MailSo\Base\Utils::Sha1Rand();
 					$sZipFileName = $oFilesProvider->GenerateLocalFullFileName($oAccount, $sZipHash);
 
 					if (!empty($sZipFileName)) {
@@ -528,7 +528,7 @@ trait User
 
 	private function generateSignMeToken(string $sEmail) : string
 	{
-		return \MailSo\Base\Utils::Md5Rand(APP_SALT.$sEmail);
+		return \MailSo\Base\Utils::Sha1Rand(APP_SALT.$sEmail);
 	}
 
 	private function getMimeFileByHash(\RainLoop\Model\Account $oAccount, string $sHash) : array
@@ -553,7 +553,7 @@ trait User
 
 				if ($oAccount && \is_resource($rResource))
 				{
-					$sHash = \MailSo\Base\Utils::Md5Rand($sFileNameIn.'~'.$sContentTypeIn);
+					$sHash = \MailSo\Base\Utils::Sha1Rand($sFileNameIn.'~'.$sContentTypeIn);
 					$rTempResource = $oFileProvider->GetFile($oAccount, $sHash, 'wb+');
 
 					if (\is_resource($rTempResource))

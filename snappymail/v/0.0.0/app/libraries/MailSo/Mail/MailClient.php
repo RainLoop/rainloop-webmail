@@ -818,7 +818,7 @@ class MailClient
 			{
 				do
 				{
-					$sKey = \MailSo\Base\Utils::Md5Rand();
+					$sKey = \MailSo\Base\Utils::Sha1Rand();
 				}
 				while (isset($aCache[$sKey]));
 
@@ -834,7 +834,7 @@ class MailClient
 			{
 				do
 				{
-					$sKey = \MailSo\Base\Utils::Md5Rand();
+					$sKey = \MailSo\Base\Utils::Sha1Rand();
 				}
 				while (isset($aCache[$sKey]));
 

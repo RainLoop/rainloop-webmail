@@ -63,7 +63,7 @@ class SubStreams
 			\stream_wrapper_register(self::STREAM_NAME, '\MailSo\Base\StreamWrappers\SubStreams');
 		}
 
-		$sHashName = \MailSo\Base\Utils::Md5Rand();
+		$sHashName = \MailSo\Base\Utils::Sha1Rand();
 
 		self::$aStreams[$sHashName] = \array_map(function ($mItem) {
 			return \is_resource($mItem) ? $mItem :

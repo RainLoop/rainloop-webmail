@@ -72,7 +72,7 @@ class Utils
 		$sToken = static::GetCookie($sKey, null);
 		if (null === $sToken)
 		{
-			$sToken = \MailSo\Base\Utils::Md5Rand(APP_SALT);
+			$sToken = \MailSo\Base\Utils::Sha1Rand(APP_SALT);
 			static::SetCookie($sKey, $sToken, \time() + 60 * 60 * 24 * 30);
 		}
 
@@ -89,9 +89,9 @@ class Utils
 		$sKey = 'rlsession';
 
 		$sToken = static::GetCookie($sKey, null);
-		if (null === $sToken)
+		if (!$sToken)
 		{
-			$sToken = \MailSo\Base\Utils::Md5Rand(APP_SALT);
+			$sToken = \MailSo\Base\Utils::Sha1Rand(APP_SALT);
 			static::SetCookie($sKey, $sToken, 0);
 		}
 

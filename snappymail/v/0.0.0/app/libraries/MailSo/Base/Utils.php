@@ -1661,11 +1661,6 @@ END;
 		return \is_string($mResult) && \strlen($mResult) ? $mResult : '';
 	}
 
-	public static function Md5Rand(string $sAdditionalSalt = '') : string
-	{
-		return \md5($sAdditionalSalt . \random_bytes(16));
-	}
-
 	public static function Sha1Rand(string $sAdditionalSalt = '') : string
 	{
 		return \sha1($sAdditionalSalt . \random_bytes(16));
@@ -1726,23 +1721,5 @@ END;
 		}
 
 		return ('' === $sUser ? '' : $sUser.'@').$sDomain;
-	}
-
-	public static function HashToId(string $sHash, string $sSalt = '') : int
-	{
-		$sData = $sHash ? Crypt::Decrypt(\hex2bin($sHash), \md5($sSalt)) : null;
-
-		$aMatch = array();
-		if ($sData && \preg_match('/^id:(\d+)$/', $sData, $aMatch) && isset($aMatch[1]))
-		{
-			return \is_numeric($aMatch[1]) ? (int) $aMatch[1] : null;
-		}
-
-		return null;
-	}
-
-	public static function IdToHash(int $iID, string $sSalt = '') : string
-	{
-		return \bin2hex(Crypt::Encrypt('id:'.$iID, \md5($sSalt)));
 	}
 }

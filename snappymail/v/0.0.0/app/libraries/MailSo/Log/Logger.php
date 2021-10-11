@@ -75,7 +75,7 @@ class Logger extends \MailSo\Base\Collection
 		static $sCache = null;
 		if (null === $sCache)
 		{
-			$sCache = \substr(\MailSo\Base\Utils::Md5Rand(), -8);
+			$sCache = \substr(\MailSo\Base\Utils::Sha1Rand(), -8);
 		}
 
 		return $sCache;
