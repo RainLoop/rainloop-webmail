@@ -304,6 +304,8 @@ class ImapClient extends \MailSo\Net\NetClient
 	 *     URL-PARTIAL CATENATE UNSELECT CHILDREN NAMESPACE UIDPLUS LIST-EXTENDED
 	 *     I18NLEVEL=1 CONDSTORE QRESYNC ESEARCH ESORT SEARCHRES WITHIN CONTEXT=SEARCH
 	 *     LIST-STATUS BINARY MOVE SNIPPET=FUZZY PREVIEW=FUZZY STATUS=SIZE LITERAL+ NOTIFY SPECIAL-USE
+	 *     STARTTLS AUTH= LOGIN LOGINDISABLED QUOTA
+	 *     METADATA METADATA-SERVER
 	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
@@ -463,7 +465,18 @@ class ImapClient extends \MailSo\Net\NetClient
 			$bUseListStatus = false;
 		}
 
-		return $this->SendRequestGetResponse($sCmd, $aParameters)->getFoldersResult($sCmd, $bUseListStatus);
+		$aReturn = $this->SendRequestGetResponse($sCmd, $aParameters)->getFoldersResult($sCmd, $bUseListStatus);
+
+		// RFC 5464
+		if ($this->IsSupported('METADATA')) {
+			foreach ($aReturn as $oFolder) {
+				foreach ($this->FolderGetMetadata($oFolder->FullNameRaw(), ['/shared', '/private'], ['DEPTH'=>'infinity']) as $key => $value) {
+					$oFolder->SetMetadata($key, $value);
+				}
+			}
+		}
+
+		return $aReturn;
 	}
 
 	/**
@@ -1717,13 +1730,96 @@ class ImapClient extends \MailSo\Net\NetClient
 		return self::TAG_PREFIX.$this->iTagCount;
 	}
 
-	public function EscapeString(string $sStringForEscape) : string
+	public function EscapeString(?string $sStringForEscape) : string
 	{
-		return '"'.\str_replace(array('\\', '"'), array('\\\\', '\\"'), $sStringForEscape).'"';
+		if (null === $sStringForEscape) {
+			return 'NIL';
+		}
+/*
+		// literal-string
+		if (\preg_match('/[\r\n\x00\x80-\xFF]/', $sStringForEscape)) {
+			return \sprintf("{%d}\r\n%s", \strlen($sStringForEscape), $sStringForEscape);
+		}
+*/
+		// quoted-string
+		return '"' . \addcslashes($sStringForEscape, '\\"') . '"';
 	}
 
 	protected function getLogName() : string
 	{
 		return 'IMAP';
 	}
+
+	/**
+	 * RFC 5464
+	 */
+
+	const
+		ADMIN_SHARED    = '/shared/admin', // Server
+		COMMENT_SHARED  = '/shared/comment', // Server & Mailbox
+		COMMENT_PRIVATE  = '/private/comment', // Mailbox
+		// RFC 6154
+		SPECIALUSE_PRIVATE  = '/private/specialuse',
+		// Kolab
+		KOLAB_CTYPE_KEY_SHARED  = '/shared/vendor/kolab/folder-type',
+		KOLAB_CTYPE_KEY_PRIVATE = '/private/vendor/kolab/folder-type',
+		KOLAB_COLOR_KEY_SHARED  = '/shared/vendor/kolab/color',
+		KOLAB_COLOR_KEY_PRIVATE = '/private/vendor/kolab/color',
+		KOLAB_NAME_KEY_SHARED   = '/shared/vendor/kolab/displayname',
+		KOLAB_NAME_KEY_PRIVATE  = '/private/vendor/kolab/displayname',
+		KOLAB_UID_KEY_SHARED    = '/shared/vendor/kolab/uniqueid',
+		CYRUS_UID_KEY_SHARED    = '/shared/vendor/cmu/cyrus-imapd/uniqueid';
+
+	public function FolderGetMetadata(string $sFolderName, array $aEntries, array $aOptions = []) : array
+	{
+		if (!$this->IsSupported('METADATA') && !(!\strlen($sFolderName) && $this->IsSupported('METADATA-SERVER'))) {
+			return [];
+		}
+
+		$arguments = [];
+
+		if ($aOptions) {
+			$options = [];
+			$aOptions = \array_intersect_key(
+				\array_change_key_case($aOptions, CASE_UPPER),
+				['MAXSIZE' => 0, 'DEPTH' => 0]
+			);
+			if (isset($aOptions['MAXSIZE']) && 0 < \intval($aOptions['MAXSIZE'])) {
+				$options[] = 'MAXSIZE ' . \intval($aOptions['MAXSIZE']);
+			}
+			if (isset($aOptions['DEPTH']) && (1 == $aOptions['DEPTH'] || 'infinity' === $aOptions['DEPTH'])) {
+				$options[] = "DEPTH {$aOptions['DEPTH']}";
+			}
+			if ($options) {
+				$arguments[] = '(' . \implode(' ', $options) . ')';
+			}
+		}
+
+		$arguments[] = $this->EscapeString($sFolderName);
+
+		$arguments[] = '(' . \implode(' ', \array_map([$this, 'EscapeString'], $aEntries)) . ')';
+		return $this->SendRequestGetResponse('GETMETADATA', $arguments)->getFolderMetadataResult();
+	}
+
+	public function FolderSetMetadata(string $sFolderName, array $aEntries)
+	{
+		if (!$aEntries) {
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException("Wrong argument for SETMETADATA command");
+		}
+
+		$arguments = [$this->EscapeString($sFolderName)];
+
+		\array_walk($aEntries, function(&$v, $k){
+			$v = $this->EscapeString($k) . ' ' . $this->EscapeString($v);
+		});
+		$arguments[] = '(' . \implode(' ', $aEntries) . ')';
+
+		$result = $this->SendRequestGetResponse('SETMETADATA', $arguments);
+	}
+
+	public function FolderDeleteMetadata($sFolderName, array $aEntries)
+	{
+		$this->SetMetadata($sFolderName, \array_fill_keys(\array_keys($aEntries), null));
+	}
+
 }

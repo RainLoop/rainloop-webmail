@@ -48,6 +48,11 @@ class Folder
 	private $aExtended = array();
 
 	/**
+	 * RFC 5464
+	 */
+	private $aMetadata = array();
+
+	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
 	function __construct(string $sFullNameRaw, string $sDelimiter = '.', array $aFlags = array())
@@ -138,5 +143,21 @@ class Folder
 	public function GetExtended(string $sName)
 	{
 		return isset($this->aExtended[$sName]) ? $this->aExtended[$sName] : null;
+	}
+
+	/**
+	 * @param mixed $mData
+	 */
+	public function SetMetadata(string $sName, string $sData) : void
+	{
+		$this->aMetadata[$sName] = $sData;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function GetMetadata(string $sName) : ?string
+	{
+		return isset($this->aMetadata[$sName]) ? $this->aMetadata[$sName] : null;
 	}
 }

@@ -119,6 +119,25 @@ class ResponseCollection extends \MailSo\Base\Collection
 		return '';
 	}
 
+	public function getFolderMetadataResult() : array
+	{
+		$aReturn = array();
+		foreach ($this as $oResponse) {
+			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
+				&& 4 === \count($oResponse->ResponseList)
+				&& 'METADATA' === $oResponse->ResponseList[1]
+				&& \is_array($oResponse->ResponseList[3]))
+			{
+				$c = \count($oResponse->ResponseList[3]);
+				for ($i = 0; $i < $c; $i += 2) {
+					$value = $oResponse->ResponseList[3][$i+1];
+					$aReturn[$oResponse->ResponseList[3][$i]] = ('NIL' === $value) ? null : $value;
+				}
+			}
+		}
+		return $aReturn;
+	}
+
 	public function getFoldersResult(string $sStatus, bool $bUseListStatus = false) : array
 	{
 		$aReturn = array();
