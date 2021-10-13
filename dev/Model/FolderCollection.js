@@ -60,6 +60,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 				SettingsGet('SpamFolder') || sf[4],
 				SettingsGet('TrashFolder') || sf[5],
 				SettingsGet('ArchiveFolder') || sf[12]
+//				SettingsGet('TemplatesFolder') || sf[19]
 //				IMPORTANT: sf[10],
 //				FLAGGED: sf[11],
 //				ALL: sf[13]
@@ -188,6 +189,7 @@ export class FolderModel extends AbstractModel {
 		this.namespace = '';
 		this.deep = 0;
 		this.expires = 0;
+		this.metadata = {};
 
 		this.exists = true;
 
