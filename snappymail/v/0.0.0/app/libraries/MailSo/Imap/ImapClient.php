@@ -437,7 +437,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			$sCmd = 'LIST';
 		}
 
-		$sListPattern = 0 === strlen(trim($sListPattern)) ? '*' : $sListPattern;
+		$sListPattern = \strlen(\trim($sListPattern)) ? $sListPattern : '*';
 
 		$aParameters = array(
 			$this->EscapeString($sParentFolderName),
@@ -470,7 +470,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		// RFC 5464
 		if ($this->IsSupported('METADATA')) {
 			foreach ($aReturn as $oFolder) {
-				foreach ($this->FolderGetMetadata($oFolder->FullNameRaw(), ['/shared', '/private'], ['DEPTH'=>'infinity']) as $key => $value) {
+				foreach ($this->getMetadata($oFolder->FullNameRaw(), ['/shared', '/private'], ['DEPTH'=>'infinity']) as $key => $value) {
 					$oFolder->SetMetadata($key, $value);
 				}
 			}
@@ -1754,28 +1754,8 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * RFC 5464
 	 */
 
-	const
-		ADMIN_SHARED    = '/shared/admin', // Server
-		COMMENT_SHARED  = '/shared/comment', // Server & Mailbox
-		COMMENT_PRIVATE  = '/private/comment', // Mailbox
-		// RFC 6154
-		SPECIALUSE_PRIVATE  = '/private/specialuse',
-		// Kolab
-		KOLAB_CTYPE_KEY_SHARED  = '/shared/vendor/kolab/folder-type',
-		KOLAB_CTYPE_KEY_PRIVATE = '/private/vendor/kolab/folder-type',
-		KOLAB_COLOR_KEY_SHARED  = '/shared/vendor/kolab/color',
-		KOLAB_COLOR_KEY_PRIVATE = '/private/vendor/kolab/color',
-		KOLAB_NAME_KEY_SHARED   = '/shared/vendor/kolab/displayname',
-		KOLAB_NAME_KEY_PRIVATE  = '/private/vendor/kolab/displayname',
-		KOLAB_UID_KEY_SHARED    = '/shared/vendor/kolab/uniqueid',
-		CYRUS_UID_KEY_SHARED    = '/shared/vendor/cmu/cyrus-imapd/uniqueid';
-
-	public function FolderGetMetadata(string $sFolderName, array $aEntries, array $aOptions = []) : array
+	private function getMetadata(string $sFolderName, array $aEntries, array $aOptions = []) : array
 	{
-		if (!$this->IsSupported('METADATA') && !(!\strlen($sFolderName) && $this->IsSupported('METADATA-SERVER'))) {
-			return [];
-		}
-
 		$arguments = [];
 
 		if ($aOptions) {
@@ -1801,25 +1781,36 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $this->SendRequestGetResponse('GETMETADATA', $arguments)->getFolderMetadataResult();
 	}
 
-	public function FolderSetMetadata(string $sFolderName, array $aEntries)
+	public function ServerGetMetadata(array $aEntries, array $aOptions = []) : array
 	{
-		if (!$aEntries) {
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException("Wrong argument for SETMETADATA command");
-		}
-
-		$arguments = [$this->EscapeString($sFolderName)];
-
-		\array_walk($aEntries, function(&$v, $k){
-			$v = $this->EscapeString($k) . ' ' . $this->EscapeString($v);
-		});
-		$arguments[] = '(' . \implode(' ', $aEntries) . ')';
-
-		$result = $this->SendRequestGetResponse('SETMETADATA', $arguments);
+		return $this->IsSupported('METADATA-SERVER')
+			? $this->getMetadata('', $aEntries, $aOptions)
+			: [];
 	}
 
-	public function FolderDeleteMetadata($sFolderName, array $aEntries)
+	public function FolderGetMetadata(string $sFolderName, array $aEntries, array $aOptions = []) : array
 	{
-		$this->SetMetadata($sFolderName, \array_fill_keys(\array_keys($aEntries), null));
+		return $this->IsSupported('METADATA')
+			? $this->getMetadata($sFolderName, $aEntries, $aOptions)
+			: [];
+	}
+
+	public function FolderSetMetadata(string $sFolderName, array $aEntries) : void
+	{
+		if ($this->IsSupported('METADATA')) {
+			if (!$aEntries) {
+				throw new \MailSo\Base\Exceptions\InvalidArgumentException("Wrong argument for SETMETADATA command");
+			}
+
+			$arguments = [$this->EscapeString($sFolderName)];
+
+			\array_walk($aEntries, function(&$v, $k){
+				$v = $this->EscapeString($k) . ' ' . $this->EscapeString($v);
+			});
+			$arguments[] = '(' . \implode(' ', $aEntries) . ')';
+
+			$this->SendRequestGetResponse('SETMETADATA', $arguments);
+		}
 	}
 
 }

@@ -11,6 +11,8 @@
 
 namespace MailSo\Mail;
 
+use MailSo\Imap\Enumerations\MetadataKeys;
+
 /**
  * @category MailSo
  * @package Mail
@@ -188,6 +190,7 @@ class Folder implements \JsonSerializable
 	public function GetFolderListType() : int
 	{
 		$aFlags = $this->oImapFolder->FlagsLowerCase();
+//		$aFlags[] = \strtolower($this->oImapFolder->GetMetadata(MetadataKeys::SPECIALUSE));
 
 		switch (true)
 		{
@@ -224,7 +227,47 @@ class Folder implements \JsonSerializable
 				return \MailSo\Imap\Enumerations\FolderType::ALL;
 		}
 
+/*
+		// TODO: Kolab
+		switch ($this->oImapFolder->GetMetadata(MetadataKeys::KOLAB_CTYPE) ?: $this->oImapFolder->GetMetadata(MetadataKeys::KOLAB_CTYPE_SHARED)) {
+		{
+			case 'event':
+				return \MailSo\Imap\Enumerations\FolderType::CALENDAR;
+			case 'contact':
+				return \MailSo\Imap\Enumerations\FolderType::CONTACTS;
+			case 'task':
+				return \MailSo\Imap\Enumerations\FolderType::TASKS;
+			case 'note':
+				return \MailSo\Imap\Enumerations\FolderType::NOTES;
+			case 'file':
+				return \MailSo\Imap\Enumerations\FolderType::FILES;
+			case 'configuration':
+				return \MailSo\Imap\Enumerations\FolderType::CONFIGURATION;
+			case 'journal':
+				return \MailSo\Imap\Enumerations\FolderType::JOURNAL;
+			case 'mail.inbox':
+				return \MailSo\Imap\Enumerations\FolderType::INBOX;
+			case 'mail.drafts':
+				return \MailSo\Imap\Enumerations\FolderType::DRAFTS;
+			case 'mail.sentitems':
+				return \MailSo\Imap\Enumerations\FolderType::SENT;
+			case 'mail.wastebasket':
+				return \MailSo\Imap\Enumerations\FolderType::TRASH;
+//			case 'mail.outbox':
+			case 'mail.junkemail':
+				return \MailSo\Imap\Enumerations\FolderType::JUNK;
+		}
+*/
+
 		return \MailSo\Imap\Enumerations\FolderType::USER;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function GetMetadata(string $sName) : ?string
+	{
+		return $this->oImapFolder->GetMetadata($sName);
 	}
 
 	public function jsonSerialize()
@@ -239,7 +282,8 @@ class Folder implements \JsonSerializable
 			'Subscribed' => $this->bSubscribed,
 			'Exists' => $this->bExists,
 			'Selectable' => $this->IsSelectable(),
-			'Flags' => $this->FlagsLowerCase()
+			'Flags' => $this->FlagsLowerCase(),
+			'Metadata' => $this->oImapFolder->Metadata()
 		);
 	}
 }

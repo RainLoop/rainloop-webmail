@@ -182,7 +182,7 @@ class MailClient
 		{
 			if (!$bSkipUnsupportedFlag)
 			{
-				throw new \MailSo\Mail\Exceptions\RuntimeException('Message flag "'.$sMessageFlag.'" is not supported.');
+				throw new Exceptions\RuntimeException('Message flag "'.$sMessageFlag.'" is not supported.');
 			}
 		}
 
@@ -222,7 +222,7 @@ class MailClient
 		{
 			if (!$bSkipUnsupportedFlag)
 			{
-				throw new \MailSo\Mail\Exceptions\RuntimeException('Message flag "'.$sMessageFlag.'" is not supported.');
+				throw new Exceptions\RuntimeException('Message flag "'.$sMessageFlag.'" is not supported.');
 			}
 		}
 		else
@@ -2095,7 +2095,7 @@ class MailClient
 			if (!$aFolders)
 			{
 				// TODO: Translate
-				throw new \MailSo\Mail\Exceptions\RuntimeException(
+				throw new Exceptions\RuntimeException(
 					\strlen($sFolderParentFullNameRaw)
 						? 'Cannot create folder in non-existent parent folder.'
 						: 'Cannot get folder delimiter.');
@@ -2115,7 +2115,7 @@ class MailClient
 		if (\strlen($sDelimiter) && false !== \strpos($sFullNameRawToCreate, $sDelimiter))
 		{
 			// TODO: Translate
-			throw new \MailSo\Mail\Exceptions\RuntimeException(
+			throw new Exceptions\RuntimeException(
 				'New folder name contains delimiter.');
 		}
 
@@ -2161,7 +2161,7 @@ class MailClient
 		if (!$aFolders)
 		{
 			// TODO: Translate
-			throw new \MailSo\Mail\Exceptions\RuntimeException('Cannot '.($bRename?'rename':'move').' non-existent folder.');
+			throw new Exceptions\RuntimeException('Cannot '.($bRename?'rename':'move').' non-existent folder.');
 		}
 
 		$sDelimiter = $aFolders[0]->Delimiter();
@@ -2186,7 +2186,7 @@ class MailClient
 			if (\strlen($sDelimiter) && false !== \strpos($sNewFolderFullNameRaw, $sDelimiter))
 			{
 				// TODO: Translate
-				throw new \MailSo\Mail\Exceptions\RuntimeException('New folder name contains delimiter.');
+				throw new Exceptions\RuntimeException('New folder name contains delimiter.');
 			}
 
 			$sFolderParentFullNameRaw = false === $iLast ? '' : \substr($sPrevFolderFullNameRaw, 0, $iLast + 1);
@@ -2226,7 +2226,7 @@ class MailClient
 		$aIndexOrUids = $this->oImapClient->MessageSimpleSearch('ALL');
 		if (\count($aIndexOrUids))
 		{
-			throw new \MailSo\Mail\Exceptions\NonEmptyFolder;
+			throw new Exceptions\NonEmptyFolder;
 		}
 
 		$this->oImapClient->FolderExamine('INBOX');
@@ -2291,5 +2291,29 @@ class MailClient
 		$this->oImapClient->SetLogger($this->oLogger);
 
 		return $this;
+	}
+
+	/**
+	 * RFC 5464
+	 */
+
+	public function ServerGetMetadata(array $aEntries, array $aOptions = []) : array
+	{
+		return $this->oImapClient->ServerGetMetadata($aEntries, $aOptions);
+	}
+
+	public function FolderGetMetadata(string $sFolderName, array $aEntries, array $aOptions = []) : array
+	{
+		return $this->oImapClient->FolderGetMetadata($sFolderName, $aEntries, $aOptions);
+	}
+
+	public function FolderSetMetadata(string $sFolderName, array $aEntries) : void
+	{
+		$this->oImapClient->FolderSetMetadata($sFolderName, $aEntries);
+	}
+
+	public function FolderDeleteMetadata($sFolderName, array $aEntries) : void
+	{
+		$this->oImapClient->FolderSetMetadata($sFolderName, \array_fill_keys(\array_keys($aEntries), null));
 	}
 }

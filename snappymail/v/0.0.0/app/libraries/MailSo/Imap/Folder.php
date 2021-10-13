@@ -160,4 +160,12 @@ class Folder
 	{
 		return isset($this->aMetadata[$sName]) ? $this->aMetadata[$sName] : null;
 	}
+
+	/**
+	 * @return array
+	 */
+	public function Metadata() : array
+	{
+		return $this->aMetadata;
+	}
 }
