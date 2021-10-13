@@ -4,6 +4,7 @@ import { Scope } from 'Common/Enums';
 import { leftPanelDisabled, moveAction } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
 import { setFolderHash } from 'Common/Cache';
+import { addComputablesTo } from 'Common/Utils';
 
 import { AppUserStore } from 'Stores/User/App';
 import { SettingsUserStore } from 'Stores/User/Settings';
@@ -38,7 +39,11 @@ export class MailFolderList extends AbstractViewLeft {
 
 		this.allowContacts = AppUserStore.allowContacts();
 
-		this.folderListFocused = ko.computed(() => Scope.FolderList === AppUserStore.focusedState());
+		addComputablesTo(this, {
+			folderListFocused: () => Scope.FolderList === AppUserStore.focusedState(),
+
+			folderListVisible: () => FolderUserStore.folderList().filter(v => !v.hidden())
+		});
 	}
 
 	onBuild(dom) {
