@@ -17,6 +17,20 @@ export const FolderType = {
 /**
  * @enum {string}
  */
+export const FolderMetadataKeys = {
+	// RFC 5464
+	Comment: '/private/comment',
+	CommentShared: '/shared/comment',
+	// RFC 6154
+	SpecialUse: '/private/specialuse',
+	// Kolab
+	KolabFolderType: '/private/vendor/kolab/folder-type',
+	KolabFolderTypeShared: '/shared/vendor/kolab/folder-type'
+};
+
+/**
+ * @enum {string}
+ */
 export const FolderSortMode = {
 	DateDesc: '', // default 'REVERSE DATE'
 	DateAsc: 'DATE',

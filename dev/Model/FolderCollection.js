@@ -2,7 +2,7 @@ import { AbstractCollectionModel } from 'Model/AbstractCollection';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { isArray, pInt } from 'Common/Utils';
-import { ClientSideKeyName, FolderType } from 'Common/EnumsUser';
+import { ClientSideKeyName, FolderType, FolderMetadataKeys } from 'Common/EnumsUser';
 import * as Cache from 'Common/Cache';
 import { Settings, SettingsGet } from 'Common/Globals';
 
@@ -210,6 +210,8 @@ export class FolderModel extends AbstractModel {
 			privateMessageCountAll: 0,
 			privateMessageCountUnread: 0,
 
+			kolab: null,
+
 			collapsedPrivate: true
 		});
 
@@ -226,6 +228,9 @@ export class FolderModel extends AbstractModel {
 		const folder = super.reviveFromJson(json);
 		if (folder) {
 			folder.deep = json.FullNameRaw.split(folder.delimiter).length - 1;
+
+			let type = folder.metadata[FolderMetadataKeys.KolabFolderType] || folder.metadata[FolderMetadataKeys.KolabFolderTypeShared];
+			(type && !type.includes('mail.')) ? folder.kolab(type) : 0;
 
 			folder.messageCountAll = ko.computed({
 					read: folder.privateMessageCountAll,
@@ -306,7 +311,7 @@ export class FolderModel extends AbstractModel {
 				canBeSubscribed: () => Settings.app('useImapSubscribe')
 					&& !(folder.isSystemFolder() | !SettingsUserStore.hideUnsubscribed() | !folder.selectable()),
 
-				canBeSelected:   () => !(folder.isSystemFolder() | !folder.selectable()),
+				canBeSelected:   () => !(folder.isSystemFolder() | !folder.selectable() | folder.kolab()),
 
 				localName: () => {
 					let name = folder.name();

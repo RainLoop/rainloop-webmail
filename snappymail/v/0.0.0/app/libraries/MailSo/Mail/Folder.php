@@ -171,8 +171,7 @@ class Folder implements \JsonSerializable
 
 	public function IsSelectable() : bool
 	{
-		$type = $this->getKolabFolderType();
-		return $this->bExists && $this->oImapFolder->IsSelectable() && (!$type || 0 === \strpos($type, 'mail.'));
+		return $this->bExists && $this->oImapFolder->IsSelectable();
 	}
 
 	/**
@@ -234,7 +233,8 @@ class Folder implements \JsonSerializable
 
 /*
 		// TODO: Kolab
-		switch ($this->getKolabFolderType()) {
+		$type = $this->GetMetadata(MetadataKeys::KOLAB_CTYPE) ?: $this->GetMetadata(MetadataKeys::KOLAB_CTYPE_SHARED);
+		switch (($type && 0 !== \strpos($type, 'mail.')) ? $type : null)
 		{
 			case 'event':
 				return \MailSo\Imap\Enumerations\FolderType::CALENDAR;
@@ -290,10 +290,5 @@ class Folder implements \JsonSerializable
 			'Flags' => $this->FlagsLowerCase(),
 			'Metadata' => $this->oImapFolder->Metadata()
 		);
-	}
-
-	protected function getKolabFolderType() : ?string
-	{
-		return $this->GetMetadata(MetadataKeys::KOLAB_CTYPE) ?: $this->GetMetadata(MetadataKeys::KOLAB_CTYPE_SHARED);
 	}
 }
