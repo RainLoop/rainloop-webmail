@@ -42,7 +42,7 @@ export class MailFolderList extends AbstractViewLeft {
 		addComputablesTo(this, {
 			folderListFocused: () => Scope.FolderList === AppUserStore.focusedState(),
 
-			folderListVisible: () => FolderUserStore.folderList().filter(v => !(v.hidden() || v.kolab()))
+			folderListVisible: () => FolderUserStore.folderList().filter(v => !(v.hidden() || v.kolabType()))
 		});
 	}
 

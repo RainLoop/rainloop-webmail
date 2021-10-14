@@ -210,7 +210,7 @@ export class FolderModel extends AbstractModel {
 			privateMessageCountAll: 0,
 			privateMessageCountUnread: 0,
 
-			kolab: null,
+			kolabType: null,
 
 			collapsedPrivate: true
 		});
@@ -229,8 +229,9 @@ export class FolderModel extends AbstractModel {
 		if (folder) {
 			folder.deep = json.FullNameRaw.split(folder.delimiter).length - 1;
 
-			let type = folder.metadata[FolderMetadataKeys.KolabFolderType] || folder.metadata[FolderMetadataKeys.KolabFolderTypeShared];
-			(type && !type.includes('mail.')) ? folder.kolab(type) : 0;
+			let type = folder.metadata[FolderMetadataKeys.KolabFolderType]
+				|| folder.metadata[FolderMetadataKeys.KolabFolderTypeShared];
+			type && !type.includes('mail.') && folder.kolabType(type);
 
 			folder.messageCountAll = ko.computed({
 					read: folder.privateMessageCountAll,
@@ -311,7 +312,7 @@ export class FolderModel extends AbstractModel {
 				canBeSubscribed: () => Settings.app('useImapSubscribe')
 					&& !(folder.isSystemFolder() | !SettingsUserStore.hideUnsubscribed() | !folder.selectable()),
 
-				canBeSelected:   () => !(folder.isSystemFolder() | !folder.selectable() | folder.kolab()),
+				canBeSelected:   () => !(folder.isSystemFolder() | !folder.selectable() | folder.kolabType()),
 
 				localName: () => {
 					let name = folder.name();
