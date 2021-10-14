@@ -148,8 +148,19 @@
 	color: #000;
 }
 
-.select, select {
-    background: #000 url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' height='10px' width='15px'><text x='0' y='10' fill='rgb(255,255,255)'>▾</text></svg>") right center/1em no-repeat border-box;
+input, textarea, .select, select, .emailaddresses {
+    background-color: #000;
     border-color: #aaa;
     color: #fff;
+}
+.select, select {
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' height='10px' width='15px'><text x='0' y='10' fill='rgb(255,255,255)'>▾</text></svg>");
+}
+
+hr {
+	border-color: #666;
+}
+
+.b-settings-general .editMainIdentity {
+    border-color: #999;
 }
