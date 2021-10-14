@@ -112,7 +112,9 @@ trait Themes
 				. "themes/{$sTheme}/";
 
 		if (\is_file($sThemeCSSFile)) {
-			$aResult[] = \preg_replace('/(url\(["\']?)(\\.)?([a-z])/', "\$1{$sBase}\$3", \str_replace('@{base}', $sBase, \file_get_contents($sThemeCSSFile)));
+			$aResult[] = \preg_replace('@(url\(["\']?)(\\./)?([a-z]+[^:a-z])@',
+				"\$1{$sBase}\$3",
+				\str_replace('@{base}', $sBase, \file_get_contents($sThemeCSSFile)));
 		} else if (\is_file($sThemeLessFile)) {
 			$aResult[] = "@base: \"{$sBase}\";";
 			$aResult[] = \file_get_contents($sThemeLessFile);
