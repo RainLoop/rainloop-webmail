@@ -237,6 +237,16 @@
 			$_SERVER['HTTP_USER_AGENT'] = '';
 		}
 
+		if (empty($_SERVER['HTTPS']) || 'off' === $_SERVER['HTTPS']) {
+			unset($_SERVER['HTTPS']);
+		}
+		if (isset($_SERVER['REQUEST_SCHEME']) && 'https' === $_SERVER['REQUEST_SCHEME']) {
+			$_SERVER['HTTPS'] = 'on';
+		}
+		if (isset($_SERVER['HTTPS'])) {
+			header('Strict-Transport-Security: max-age=31536000');
+		}
+
 		// See https://github.com/kjdev/php-ext-brotli
 		if (!ini_get('zlib.output_compression') && !ini_get('brotli.output_compression')) {
 			if (defined('USE_BROTLI') && is_callable('brotli_compress_add') && false !== stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'br')) {

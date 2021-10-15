@@ -150,25 +150,15 @@ class Utils
 		return isset($_COOKIE[$sName]) ? $_COOKIE[$sName] : $mDefault;
 	}
 
-	public static function SetCookie(string $sName, string $sValue = '', int $iExpire = 0, ?string $sPath = null, ?string $sDomain = null, ?bool $bSecure = null, bool $bHttpOnly = true)
+	public static function SetCookie(string $sName, string $sValue = '', int $iExpire = 0, bool $bHttpOnly = true)
 	{
-		if (null === $sPath)
-		{
-			$sPath = static::$CookieDefaultPath;
-			$sPath = $sPath && 0 < \strlen($sPath) ? $sPath : '/';
-		}
-
-		if (null === $bSecure)
-		{
-			$bSecure = static::$CookieDefaultSecure;
-		}
-
+		$sPath = static::$CookieDefaultPath;
 		$_COOKIE[$sName] = $sValue;
 		\setcookie($sName, $sValue, array(
 			'expires' => $iExpire,
-			'path' => $sPath,
+			'path' => $sPath && 0 < \strlen($sPath) ? $sPath : '/',
 //			'domain' => $sDomain,
-			'secure' => $bSecure,
+			'secure' => isset($_SERVER['HTTPS']) || static::$CookieDefaultSecure,
 			'httponly' => $bHttpOnly,
 			'samesite' => 'Strict'
 		));
@@ -183,7 +173,7 @@ class Utils
 				'expires' => \time() - 3600 * 24 * 30,
 				'path' => $sPath && 0 < \strlen($sPath) ? $sPath : '/',
 //				'domain' => null,
-				'secure' => static::$CookieDefaultSecure,
+				'secure' => isset($_SERVER['HTTPS']) || static::$CookieDefaultSecure,
 				'httponly' => true,
 				'samesite' => 'Strict'
 			));
