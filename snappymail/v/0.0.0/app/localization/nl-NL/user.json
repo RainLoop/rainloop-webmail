@@ -438,7 +438,14 @@
 		"HELP_DELETE_FOLDER": "Verwijder map",
 		"HELP_SHOW_HIDE_FOLDER": "Toon\/verberg map",
 		"HELP_CHECK_FOR_NEW_MESSAGES": "Controleer wel of niet op nieuwe berichten",
-		"HIDE_UNSUBSCRIBED": "Verberg niet geabonneerde mappen"
+		"HIDE_UNSUBSCRIBED": "Verberg niet geabonneerde mappen",
+		"TYPE_CALENDAR": "Kalender",
+		"TYPE_CONFIGURATION": "Configuratie",
+		"TYPE_CONTACTS": "Contacten",
+		"TYPE_FILES": "Bestanden",
+		"TYPE_JOURNAL": "Journaal",
+		"TYPE_NOTES": "Opmerkingen",
+		"TYPE_TASKS": "Taken"
 	},
 	"SETTINGS_ACCOUNTS": {
 		"LEGEND_ACCOUNTS": "Account Lijst",
