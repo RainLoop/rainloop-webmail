@@ -497,6 +497,19 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	/**
 	 * @param {?Function} fCallback
 	 * @param {string} sFolderFullNameRaw
+	 * @param {boolean} bSubscribe
+	 */
+	folderSetMetadata(fCallback, sFolderFullNameRaw, sKey, sValue) {
+		this.defaultRequest(fCallback, 'FolderSetMetadata', {
+			Folder: sFolderFullNameRaw,
+			Key: sKey,
+			Value: sValue
+		});
+	}
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sFolderFullNameRaw
 	 * @param {boolean} bCheckable
 	 */
 	folderSetCheckable(fCallback, sFolderFullNameRaw, bCheckable) {

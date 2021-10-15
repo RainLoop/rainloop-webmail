@@ -29,7 +29,7 @@
 		<button type="button" class="close" data-bind="click: function () { folderListError(''); }">×</button>
 		<span data-bind="text: folderListError"></span>
 	</div>
-	<table class="table table-hover list-table" data-bind="i18nUpdate: folderList, css:{'displaySpecSetting': displaySpecSetting}">
+	<table class="table table-hover list-table" data-bind="i18nUpdate: folderList">
 		<tbody data-bind="template: { name: 'SettingsFolderItem', foreach: folderList }"></tbody>
 	</table>
 </div>

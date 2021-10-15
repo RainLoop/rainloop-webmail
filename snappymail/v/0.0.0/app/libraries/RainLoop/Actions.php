@@ -1964,6 +1964,10 @@ class Actions
 			$aResult[] = Enumerations\Capa::PREFETCH;
 		}
 
+		if ($oConfig->Get('labs', 'kolab_enabled', false)) {
+			$aResult[] = Enumerations\Capa::KOLAB;
+		}
+
 		$aResult[] = Enumerations\Capa::AUTOLOGOUT;
 
 		return $aResult;

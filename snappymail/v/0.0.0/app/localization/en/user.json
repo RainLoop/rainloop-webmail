@@ -438,7 +438,14 @@
 		"HELP_DELETE_FOLDER": "Delete folder",
 		"HELP_SHOW_HIDE_FOLDER": "Show\/hide folder",
 		"HELP_CHECK_FOR_NEW_MESSAGES": "Check\/don't check for new messages",
-		"HIDE_UNSUBSCRIBED": "Hide unsubscribed folders"
+		"HIDE_UNSUBSCRIBED": "Hide unsubscribed folders",
+		"TYPE_CALENDAR": "Calendar",
+		"TYPE_CONFIGURATION": "Configuration",
+		"TYPE_CONTACTS": "Contacts",
+		"TYPE_FILES": "Files",
+		"TYPE_JOURNAL": "Journal",
+		"TYPE_NOTES": "Notes",
+		"TYPE_TASKS": "Tasks"
 	},
 	"SETTINGS_ACCOUNTS": {
 		"LEGEND_ACCOUNTS": "Accounts",

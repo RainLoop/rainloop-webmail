@@ -215,6 +215,10 @@ export class FolderModel extends AbstractModel {
 			collapsedPrivate: true
 		});
 
+		this.addSubscribables({
+			kolabType: sValue => this.metadata[FolderMetadataKeys.KolabFolderType] = sValue
+		});
+
 		this.subFolders = ko.observableArray(new FolderCollectionModel);
 		this.actionBlink = ko.observable(false).extend({ falseTimeout: 1000 });
 	}

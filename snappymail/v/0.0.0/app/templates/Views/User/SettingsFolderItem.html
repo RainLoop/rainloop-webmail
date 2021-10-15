@@ -6,19 +6,28 @@
 			data-bind="value: nameForEdit, visible: edited, hasfocus: edited, onEnter: function () { $root.folderEditOnEnter($data); }, onEsc: function () { $root.folderEditOnEsc($data); }" />
 		&nbsp;
 		<span class="folder-system-name" data-bind="text: manageFolderSystemName, visible: isSystemFolder"></span>
-		<a class="btn btn-small btn-small-small btn-danger pull-right button-confirm-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function() { $root.deleteFolder($data); }"
+		<a class="btn btn-small btn-small-small btn-danger pull-right button-confirm-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: $root.deleteFolder"
 			data-i18n="GLOBAL/ARE_YOU_SURE"></a>
 	</td>
 	<td data-i18n="[title]SETTINGS_FOLDERS/HELP_DELETE_FOLDER">
-		<span class="delete-folder e-action fontastic" data-bind="visible: canBeDeleted() && !deleteAccess(), click: function (oFolder) { $root.folderForDeletion(oFolder); }">🗑</span>
+		<span class="delete-folder e-action fontastic" data-bind="visible: canBeDeleted() && !deleteAccess(), click: $root.folderForDeletion">🗑</span>
 	</td>
 	<td data-i18n="[title]SETTINGS_FOLDERS/HELP_SHOW_HIDE_FOLDER">
-		<span class="e-action fontastic" data-bind="css: {'unsubscribed-folder':!subscribed()}, visible: canBeSubscribed(), click: function(oFolder) { $root.toggleFolderSubscription(oFolder); }">👁</span>
+		<span class="e-action fontastic" data-bind="css: {'unsubscribed-folder':!subscribed()}, visible: canBeSubscribed(), click: $root.toggleFolderSubscription">👁</span>
 	</td>
+	<!-- ko if: $root.displaySpecSetting -->
 	<td data-i18n="[title]SETTINGS_FOLDERS/HELP_CHECK_FOR_NEW_MESSAGES">
 		<span class="e-action" data-bind="css: {'check-folder':checkable(), 'unchecked-folder':!checkable()}, visible: canBeSelected() && subscribed(), click: function(oFolder) { $root.toggleFolderCheckable(oFolder); }">
 			<i class="icon-check-mark-circle-two"></i>
 		</span>
 	</td>
+	<!-- /ko -->
+	<!-- ko if: $root.showKolab -->
+	<td class="kolab" title="Kolab">
+		<select data-bind="options: $root.kolabTypeOptions, value: kolabType,
+			optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defaultOptionsAfterRender,
+			event:{ input: $root.toggleFolderKolabType}"></select>
+	</td>
+	<!-- /ko -->
 </tr>
 <!-- ko template: { name: 'SettingsFolderItem', foreach: subFolders } --><!-- /ko -->

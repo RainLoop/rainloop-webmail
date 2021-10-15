@@ -153,7 +153,7 @@ trait Folders
 
 	public function DoFolderCreate() : array
 	{
-		$oAccount = $this->initMailClientConnection();
+		$this->initMailClientConnection();
 
 		try
 		{
@@ -171,9 +171,22 @@ trait Folders
 		return $this->TrueResponse(__FUNCTION__);
 	}
 
+	public function DoFolderSetMetadata() : array
+	{
+		$this->initMailClientConnection();
+		$sFolderFullNameRaw = $this->GetActionParam('Folder');
+		$sMetadataKey = $this->GetActionParam('Key');
+		if ($sFolderFullNameRaw && $sMetadataKey) {
+			$this->MailClient()->FolderSetMetadata($sFolderFullNameRaw, [
+				$sMetadataKey => $this->GetActionParam('Value') ?: null
+			]);
+		}
+		return $this->TrueResponse(__FUNCTION__);
+	}
+
 	public function DoFolderSubscribe() : array
 	{
-		$oAccount = $this->initMailClientConnection();
+		$this->initMailClientConnection();
 
 		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');
 		$bSubscribe = '1' === (string) $this->GetActionParam('Subscribe', '0');
@@ -244,7 +257,7 @@ trait Folders
 	 */
 	public function DoFolderMove() : array
 	{
-		$oAccount = $this->initMailClientConnection();
+		$this->initMailClientConnection();
 
 		try
 		{
@@ -267,7 +280,7 @@ trait Folders
 	 */
 	public function DoFolderRename() : array
 	{
-		$oAccount = $this->initMailClientConnection();
+		$this->initMailClientConnection();
 
 		try
 		{
@@ -290,7 +303,7 @@ trait Folders
 	 */
 	public function DoFolderDelete() : array
 	{
-		$oAccount = $this->initMailClientConnection();
+		$this->initMailClientConnection();
 
 		try
 		{

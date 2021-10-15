@@ -373,6 +373,7 @@ Enables caching in the system'),
 				'startup_url' => array(''),
 				'strict_html_parser' => array(false),
 				'boundary_prefix' => array(''),
+				'kolab_enabled' => array(false),
 				'dev_email' => array(''),
 				'dev_password' => array('')
 			),

@@ -17,6 +17,7 @@ export const Capa = {
 	Sieve: 'SIEVE',
 	AttachmentThumbnails: 'ATTACHMENT_THUMBNAILS',
 	AutoLogout: 'AUTOLOGOUT',
+	Kolab: 'KOLAB',
 	AdditionalAccounts: 'ADDITIONAL_ACCOUNTS',
 	Identities: 'IDENTITIES'
 };

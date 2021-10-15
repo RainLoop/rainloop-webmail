@@ -1,11 +1,14 @@
 import ko from 'ko';
 
 import { Notification } from 'Common/Enums';
-import { ClientSideKeyName } from 'Common/EnumsUser';
+import { ClientSideKeyName, FolderMetadataKeys } from 'Common/EnumsUser';
 import { Settings } from 'Common/Globals';
 import { getNotification } from 'Common/Translator';
 
 import { removeFolderFromCacheList } from 'Common/Cache';
+import { Capa } from 'Common/Enums';
+import { defaultOptionsAfterRender } from 'Common/Utils';
+import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
 import * as Local from 'Storage/Client';
 
@@ -21,6 +24,23 @@ import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
 
 export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 	constructor() {
+		this.showKolab = Settings.capa(Capa.Kolab);
+		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
+		this.kolabTypeOptions = ko.observableArray()
+		let i18nFilter = key => i18n('SETTINGS_FOLDERS/TYPE_' + key);
+		initOnStartOrLangChange(()=>{
+			this.kolabTypeOptions([
+				{ id: '', name: '' },
+				{ id: 'event', name: i18nFilter('CALENDAR') },
+				{ id: 'contact', name: i18nFilter('CONTACTS') },
+				{ id: 'task', name: i18nFilter('TASKS') },
+				{ id: 'note', name: i18nFilter('NOTES') },
+				{ id: 'file', name: i18nFilter('FILES') },
+				{ id: 'journal', name: i18nFilter('JOURNAL') },
+				{ id: 'configuration', name: i18nFilter('CONFIGURATION') }
+			]);
+		});
+
 		this.displaySpecSetting = FolderUserStore.displaySpecSetting;
 		this.folderList = FolderUserStore.folderList;
 		this.folderListOptimized = FolderUserStore.folderListOptimized;
@@ -115,6 +135,12 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 		} else if (0 < folderToRemove.privateMessageCountAll()) {
 			FolderUserStore.folderListError(getNotification(Notification.CantDeleteNonEmptyFolder));
 		}
+	}
+
+	toggleFolderKolabType(folder, event) {
+		let type = event.target.value;
+		Remote.folderSetMetadata(()=>0, folder.fullNameRaw, FolderMetadataKeys.KolabFolderType, type);
+		folder.kolabType(type);
 	}
 
 	toggleFolderSubscription(folder) {
