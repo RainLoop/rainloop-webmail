@@ -20,9 +20,10 @@ export const FolderUserStore = new class {
 			displaySpecSetting: false,
 
 			/**
-			 * If the IMAP server supports SORT
+			 * If the IMAP server supports SORT, METADATA
 			 */
 			sortSupported: false,
+			metadataSupported: false,
 //			sortMode: '',
 
 			sentFolder: '',

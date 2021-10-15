@@ -30,6 +30,11 @@ class FolderCollection extends \MailSo\Base\Collection
 	/**
 	 * @var bool
 	 */
+	public $IsMetadataSupported = false;
+
+	/**
+	 * @var bool
+	 */
 	public $IsThreadsSupported = false;
 
 	/**
@@ -153,6 +158,7 @@ class FolderCollection extends \MailSo\Base\Collection
 		return \array_merge(parent::jsonSerialize(), array(
 			'Namespace' => $this->GetNamespace(),
 			'FoldersHash' => $this->FoldersHash ?: '',
+			'IsMetadataSupported' => $this->IsMetadataSupported,
 			'IsThreadsSupported' => $this->IsThreadsSupported,
 			'IsSortSupported' => $this->IsSortSupported,
 			'Optimized' => $this->Optimized,

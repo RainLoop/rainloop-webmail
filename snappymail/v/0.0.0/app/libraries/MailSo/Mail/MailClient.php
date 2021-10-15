@@ -1995,6 +1995,7 @@ class MailClient
 		}
 
 		$oFolderCollection = new FolderCollection;
+		$oFolderCollection->IsMetadataSupported = $this->oImapClient->IsSupported('METADATA');
 		$oFolderCollection->IsThreadsSupported = $this->IsThreadsSupported();
 		$oFolderCollection->IsSortSupported = $this->oImapClient->IsSupported('SORT');
 		$oFolderCollection->Optimized = $iCount !== \count($aMailFoldersHelper);

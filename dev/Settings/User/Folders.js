@@ -24,9 +24,9 @@ import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
 
 export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 	constructor() {
-		this.showKolab = Settings.capa(Capa.Kolab);
+		this.showKolab = Settings.capa(Capa.Kolab) && FolderUserStore.metadataSupported();
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
-		this.kolabTypeOptions = ko.observableArray()
+		this.kolabTypeOptions = ko.observableArray();
 		let i18nFilter = key => i18n('SETTINGS_FOLDERS/TYPE_' + key);
 		initOnStartOrLangChange(()=>{
 			this.kolabTypeOptions([
