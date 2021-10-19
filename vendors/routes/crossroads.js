@@ -12,7 +12,7 @@
     // Crossroads --------
     //====================
 
-    class Crossroads {
+    global.Crossroads = class Crossroads {
 
         constructor() {
             this._routes = [];
@@ -25,38 +25,19 @@
         }
 
         parse(request) {
-            var routes = this._getMatchedRoutes(request || ''),
-                i = 0,
-                n = routes.length,
-                cur;
-
-            if (n) {
-                //shold be incremental loop, execute routes in order
-                while (i < n) {
-                    cur = routes[i];
-                    cur.route.callback && cur.route.callback(...cur.params);
-                    cur.isFirst = !i;
-                    i += 1;
-                }
-            }
-        }
-
-        _getMatchedRoutes(request) {
-            var res = [],
+            request = request || '';
+            var i = 0,
                 routes = this._routes,
                 n = routes.length,
                 route;
             //should be decrement loop since higher priorities are added at the end of array
-            while (n) {
-                route = routes[--n];
-                if ((!res.length || route.greedy) && route.match(request)) {
-                    res.push({
-                        route : route,
-                        params : route._getParamsArray(request)
-                    });
+            while (n--) {
+                route = routes[n];
+                if ((!i || route.greedy) && route.match(request)) {
+                    route.callback && route.callback(...route._getParamsArray(request));
+                    ++i;
                 }
             }
-            return res;
         }
     }
 
@@ -66,68 +47,60 @@
     class Route {
 
         constructor(pattern, callback, router) {
-            this.greedy = false;
-            this.rules = {};
             var isRegexPattern = pattern instanceof RegExp;
-            this._router = router;
-            this._pattern = pattern;
-            this._paramsIds = isRegexPattern ? null : patternLexer.getParamIds(this._pattern);
-            this._optionalParamsIds = isRegexPattern ? null : patternLexer.getOptionalParamsIds(this._pattern);
-            this._matchRegexp = isRegexPattern ? pattern : patternLexer.compilePattern(pattern);
-            this.callback = isFunction(callback) ? callback : null;
+            Object.assign(this, {
+                greedy: false,
+                rules: {},
+                _router: router,
+                _pattern: pattern,
+                _paramsIds: isRegexPattern ? null : captureVals(PARAMS_REGEXP, pattern),
+                _optionalParamsIds: isRegexPattern ? null : captureVals(OPTIONAL_PARAMS_REGEXP, pattern),
+                _matchRegexp: isRegexPattern ? pattern : compilePattern(pattern),
+                callback: isFunction(callback) ? callback : null
+            });
         }
-
 
         match(request) {
-            return this._matchRegexp.test(request) && this._validateParams(request); //validate params even if regexp because of `request_` rule.
-        }
-
-        _validateParams(request) {
+            // validate params even if regexp.
             var values = this._getParamsObject(request);
-            return 0 == Object.keys(this.rules).filter(key =>
-                key !== 'normalize_' && !this._isValidParam(request, key, values)
-            ).length;
-        }
-
-        _isValidParam(request, prop, values) {
-            var validationRule = this.rules[prop],
-                val = values[prop],
-                isValid = false;
-
-            if (val == null && this._optionalParamsIds && this._optionalParamsIds.indexOf(prop) !== -1) {
-                isValid = true;
-            }
-            else if (validationRule instanceof RegExp) {
-                isValid = validationRule.test(val);
-            }
-            else if (Array.isArray(validationRule)) {
-                isValid = validationRule.indexOf(val) !== -1;
-            }
-            else if (isFunction(validationRule)) {
-                isValid = validationRule(val, request, values);
-            }
-
-            return isValid; //fail silently if validationRule is from an unsupported type
+            return this._matchRegexp.test(request)
+             && 0 == Object.entries(this.rules).filter(([key, validationRule]) => {
+                var val = values[key],
+                    isValid = false;
+                if (key === 'normalize_'
+                 || (val == null && this._optionalParamsIds && this._optionalParamsIds.indexOf(key) !== -1)) {
+                    isValid = true;
+                }
+                else if (validationRule instanceof RegExp) {
+                    isValid = validationRule.test(val);
+                }
+                else if (Array.isArray(validationRule)) {
+                    isValid = validationRule.indexOf(val) !== -1;
+                }
+                else if (isFunction(validationRule)) {
+                    isValid = validationRule(val, request, values);
+                }
+                // fail silently if validationRule is from an unsupported type
+                return !isValid;
+            }).length;
         }
 
         _getParamsObject(request) {
-            var values = patternLexer.getParamValues(request, this._matchRegexp),
-                o = {},
+            var values = getParamValues(request, this._matchRegexp) || [],
                 n = values.length;
-            while (n--) {
-                o[n] = values[n]; //for RegExp pattern and also alias to normal paths
-                this._paramsIds && (o[this._paramsIds[n]] = values[n]);
+            if (this._paramsIds) {
+                while (n--) {
+                    values[this._paramsIds[n]] = values[n];
+                }
             }
-            o.request_ = request;
-            o.vals_ = values;
-            return o;
+            return values;
         }
 
         _getParamsArray(request) {
             var norm = this.rules.normalize_;
             return isFunction(norm)
                 ? norm(request, this._getParamsObject(request))
-                : patternLexer.getParamValues(request, this._matchRegexp);
+                : getParamValues(request, this._matchRegexp);
         }
 
     }
@@ -166,41 +139,30 @@
             return vals;
         },
 
-        tokenize = pattern => {
-            //save chars that shouldn't be escaped
-            return pattern.replace(OPTIONAL_SLASHES_REGEXP, '$1'+ SAVE_OPTIONAL_SLASHES +'$2')
-                .replace(REQUIRED_SLASHES_REGEXP, '$1'+ SAVE_REQUIRED_SLASHES +'$2')
-                .replace(OPTIONAL_PARAMS_REGEXP, SAVE_OPTIONAL_PARAMS)
-                .replace(REQUIRED_PARAMS_REGEXP, SAVE_REQUIRED_PARAMS);
-        },
-
-        untokenize = pattern => {
-            return pattern.replace(SAVED_OPTIONAL_SLASHES_REGEXP, '\\/?')
-                .replace(SAVED_REQUIRED_SLASHES_REGEXP, '\\/')
-                .replace(SAVED_OPTIONAL_REGEXP, '([^\\/]+)?/?')
-                .replace(SAVED_REQUIRED_REGEXP, '([^\\/]+)');
-        },
-
-        patternLexer = {
-            getParamIds : pattern => captureVals(PARAMS_REGEXP, pattern),
-            getOptionalParamsIds : pattern => captureVals(OPTIONAL_PARAMS_REGEXP, pattern),
-            getParamValues : (request, regexp) => {
-                var vals = regexp.exec(request);
-                if (vals) {
-                    vals.shift();
-                }
-                return vals;
-            },
-            compilePattern : pattern => {
-                pattern = pattern
-                    ? untokenize(
-                        tokenize(pattern.replace(UNNECESSARY_SLASHES_REGEXP, '')).replace(ESCAPE_CHARS_REGEXP, '\\$&')
-                    )
-                    : '';
-                return new RegExp('^'+ pattern + '/?$'); //trailing slash is optional
+        getParamValues = (request, regexp) => {
+            var vals = regexp.exec(request);
+            if (vals) {
+                vals.shift();
             }
+            return vals;
+        },
+        compilePattern = pattern => {
+            return new RegExp('^' + (pattern
+                ? pattern
+                    // tokenize, save chars that shouldn't be escaped
+                    .replace(UNNECESSARY_SLASHES_REGEXP, '')
+                    .replace(OPTIONAL_SLASHES_REGEXP, '$1'+ SAVE_OPTIONAL_SLASHES +'$2')
+                    .replace(REQUIRED_SLASHES_REGEXP, '$1'+ SAVE_REQUIRED_SLASHES +'$2')
+                    .replace(OPTIONAL_PARAMS_REGEXP, SAVE_OPTIONAL_PARAMS)
+                    .replace(REQUIRED_PARAMS_REGEXP, SAVE_REQUIRED_PARAMS)
+                    .replace(ESCAPE_CHARS_REGEXP, '\\$&')
+                    // untokenize
+                    .replace(SAVED_OPTIONAL_SLASHES_REGEXP, '\\/?')
+                    .replace(SAVED_REQUIRED_SLASHES_REGEXP, '\\/')
+                    .replace(SAVED_OPTIONAL_REGEXP, '([^\\/]+)?/?')
+                    .replace(SAVED_REQUIRED_REGEXP, '([^\\/]+)')
+                : ''
+            ) + '/?$'); //trailing slash is optional
         };
-
-    global.Crossroads = Crossroads;
 
 })(this);
