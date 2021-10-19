@@ -236,9 +236,11 @@ export class FolderModel extends AbstractModel {
 		if (folder) {
 			folder.deep = json.FullNameRaw.split(folder.delimiter).length - 1;
 
-			let type = folder.metadata[FolderMetadataKeys.KolabFolderType]
-				|| folder.metadata[FolderMetadataKeys.KolabFolderTypeShared];
-			type && !type.includes('mail.') && folder.kolabType(type);
+			let type = (folder.metadata[FolderMetadataKeys.KolabFolderType]
+				|| folder.metadata[FolderMetadataKeys.KolabFolderTypeShared]
+				|| ''
+			).split('.')[0];
+			type && 'mail' != type && folder.kolabType(type);
 
 			folder.messageCountAll = ko.computed({
 					read: folder.privateMessageCountAll,

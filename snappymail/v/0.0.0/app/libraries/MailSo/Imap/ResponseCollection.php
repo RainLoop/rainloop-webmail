@@ -320,27 +320,33 @@ class ResponseCollection extends \MailSo\Base\Collection
 					$oResult->Flags = $oResponse->ResponseList[2];
 				}
 
-				if (is_array($oResponse->OptionalResponse) && \count($oResponse->OptionalResponse) > 1) {
-					if ('PERMANENTFLAGS' === $oResponse->OptionalResponse[0]
-					 && is_array($oResponse->OptionalResponse[1]))
-					{
-						$oResult->PermanentFlags = $oResponse->OptionalResponse[1];
-					}
-					else if ('UIDVALIDITY' === $oResponse->OptionalResponse[0])
-					{
-						$oResult->Uidvalidity = (int) $oResponse->OptionalResponse[1];
-					}
-					else if ('UNSEEN' === $oResponse->OptionalResponse[0])
-					{
-						$oResult->Unread = (int) $oResponse->OptionalResponse[1];
-					}
-					else if ('UIDNEXT' === $oResponse->OptionalResponse[0])
-					{
-						$oResult->Uidnext = (int) $oResponse->OptionalResponse[1];
-					}
-					else if ('HIGHESTMODSEQ' === $oResponse->OptionalResponse[0])
-					{
-						$oResult->HighestModSeq = (int) $oResponse->OptionalResponse[1];
+				if (\is_array($oResponse->OptionalResponse)) {
+					if (\count($oResponse->OptionalResponse) > 1) {
+						if ('PERMANENTFLAGS' === $oResponse->OptionalResponse[0]
+						 && is_array($oResponse->OptionalResponse[1]))
+						{
+							$oResult->PermanentFlags = $oResponse->OptionalResponse[1];
+						}
+						else if ('UIDVALIDITY' === $oResponse->OptionalResponse[0])
+						{
+							$oResult->Uidvalidity = (int) $oResponse->OptionalResponse[1];
+						}
+						else if ('UNSEEN' === $oResponse->OptionalResponse[0])
+						{
+							$oResult->Unread = (int) $oResponse->OptionalResponse[1];
+						}
+						else if ('UIDNEXT' === $oResponse->OptionalResponse[0])
+						{
+							$oResult->Uidnext = (int) $oResponse->OptionalResponse[1];
+						}
+						else if ('HIGHESTMODSEQ' === $oResponse->OptionalResponse[0])
+						{
+							$oResult->HighestModSeq = (int) $oResponse->OptionalResponse[1];
+						}
+					} else if ('READ-ONLY' === $oResponse->OptionalResponse[0]) {
+//						$oResult->IsWritable = false;
+					} else if ('READ-WRITE' === $oResponse->OptionalResponse[0]) {
+//						$oResult->IsWritable = true;
 					}
 				}
 

@@ -38,11 +38,13 @@ class FolderInformation
 	public $PermanentFlags = array();
 
 	/**
+	 * https://datatracker.ietf.org/doc/html/rfc3501#section-7.3.1
 	 * @var int
 	 */
 	public $Exists = null;
 
 	/**
+	 * https://datatracker.ietf.org/doc/html/rfc3501#section-7.3.2
 	 * @var int
 	 */
 	public $Recent = null;
