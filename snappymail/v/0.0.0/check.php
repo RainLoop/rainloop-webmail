@@ -10,9 +10,21 @@
 			exit(301);
 		}
 
-		$aRequirements = array(
+		$aOptional = array(
 			'cURL' => extension_loaded('curl'),
-//			'intl' => function_exists('idn_to_ascii'),
+			'gd' => extension_loaded('gd'),
+			'gmagick' => extension_loaded('gmagick'),
+			'imagick' => extension_loaded('imagick'),
+			'intl' => function_exists('idn_to_ascii'),
+			'ldap' => extension_loaded('ldap'),
+			'mysql' => extension_loaded('pdo_mysql'),
+			'pgsql' => extension_loaded('pdo_pgsql'),
+			'sqlite' => extension_loaded('pdo_sqlite'),
+			'xxtea' => extension_loaded('xxtea'),
+			'zip' => extension_loaded('zip')
+		);
+
+		$aRequirements = array(
 			'mbstring' => extension_loaded('mbstring'),
 			'Zlib' => extension_loaded('zlib'),
 			// enabled by default:
@@ -23,9 +35,7 @@
 
 		if (in_array(false, $aRequirements))
 		{
-			echo '<p>';
-			echo '[302] The following PHP extensions are not available in your PHP configuration!';
-			echo '</p>';
+			echo '<p>[302] The following PHP extensions are not available in your PHP configuration!</p>';
 
 			echo '<ul>';
 			foreach ($aRequirements as $sKey => $bValue)
