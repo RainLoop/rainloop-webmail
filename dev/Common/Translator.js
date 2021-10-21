@@ -2,6 +2,7 @@ import ko from 'ko';
 import { Notification, UploadErrorCode } from 'Common/Enums';
 import { langLink } from 'Common/Links';
 import { doc, createElement } from 'Common/Globals';
+import { getKeyByValue } from 'Common/Utils';
 
 let I18N_DATA = {};
 
@@ -38,8 +39,6 @@ const
 	},
 
 	i18nKey = key => key.replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase(),
-
-	getKeyByValue = (o, v) => Object.keys(o).find(key => o[key] === v),
 
 	getNotificationMessage = code => {
 		let key = getKeyByValue(Notification, code);

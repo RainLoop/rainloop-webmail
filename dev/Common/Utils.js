@@ -93,4 +93,6 @@ export const
 				})
 				.then(clearTimer, clearTimer);
 		}
-	};
+	},
+
+	getKeyByValue = (o, v) => Object.keys(o).find(key => o[key] === v);

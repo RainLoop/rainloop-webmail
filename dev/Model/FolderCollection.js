@@ -1,7 +1,7 @@
 import { AbstractCollectionModel } from 'Model/AbstractCollection';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { isArray, pInt } from 'Common/Utils';
+import { isArray, pInt, getKeyByValue } from 'Common/Utils';
 import { ClientSideKeyName, FolderType, FolderMetadataKeys } from 'Common/EnumsUser';
 import * as Cache from 'Common/Cache';
 import { Settings, SettingsGet } from 'Common/Globals';
@@ -161,21 +161,31 @@ export class FolderCollectionModel extends AbstractCollectionModel
 
 }
 
+function getKolabFolderName(type)
+{
+	const types = {
+		configuration: 'CONFIGURATION',
+		event: 'CALENDAR',
+		contact: 'CONTACTS',
+		task: 'TASKS',
+		note: 'NOTES',
+		file: 'FILES',
+		journal: 'JOURNAL'
+	};
+	return types[type] ? 'Kolab ' + i18n('SETTINGS_FOLDERS/TYPE_' + types[type]) : '';
+}
+
 function getSystemFolderName(type, def)
 {
 	switch (type) {
 		case FolderType.Inbox:
-			return i18n('FOLDER_LIST/INBOX_NAME');
 		case FolderType.Sent:
-			return i18n('FOLDER_LIST/SENT_NAME');
 		case FolderType.Drafts:
-			return i18n('FOLDER_LIST/DRAFTS_NAME');
+		case FolderType.Trash:
+		case FolderType.Archive:
+			return i18n('FOLDER_LIST/' + getKeyByValue(FolderType, type).toUpperCase() + '_NAME');
 		case FolderType.Spam:
 			return i18n('GLOBAL/SPAM');
-		case FolderType.Trash:
-			return i18n('FOLDER_LIST/TRASH_NAME');
-		case FolderType.Archive:
-			return i18n('FOLDER_LIST/ARCHIVE_NAME');
 		// no default
 	}
 	return def;
@@ -287,7 +297,7 @@ export class FolderModel extends AbstractModel {
 
 				visible: () => folder.hasSubscriptions() | !SettingsUserStore.hideUnsubscribed(),
 
-				isSystemFolder: () => FolderType.User !== folder.type(),
+				isSystemFolder: () => FolderType.User !== folder.type() || !!folder.kolabType(),
 
 				hidden: () => {
 					let hasSubFolders = folder.hasSubscribedSubfolders();
@@ -335,12 +345,11 @@ export class FolderModel extends AbstractModel {
 				manageFolderSystemName: () => {
 					if (folder.isSystemFolder()) {
 						translatorTrigger();
-						let suffix = getSystemFolderName(folder.type(), '');
+						let suffix = getSystemFolderName(folder.type(), getKolabFolderName(folder.kolabType()));
 						if (folder.name() !== suffix && 'inbox' !== suffix.toLowerCase()) {
 							return '(' + suffix + ')';
 						}
 					}
-
 					return '';
 				},
 
