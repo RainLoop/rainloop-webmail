@@ -4,7 +4,7 @@ cs_CZ:
     LABEL_PASSWORD: "Heslo"
     BUTTON_LOGIN: "Přihlásit do administrace"
   TOP_PANEL:
-    LABEL_PREMIUM: "Prémium"
+    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Administrační panel"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Základní"
@@ -40,7 +40,7 @@ cs_CZ:
         Používáte výchozí administrátorské heslo.
         <br />
         Z bezpečnostních důvodů jej prosím
-        <strong><a href="#/security">změnte</a></strong>.
+        <strong><a href="#/security">změňte</a></strong>.
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Přihlašovací obrazovka"
     LABEL_DEFAULT_DOMAIN: "Výchozí doména"
@@ -70,7 +70,7 @@ cs_CZ:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Nikdy"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Jednou"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Vždy"
-    HTML_ALERT_PREMIUM: "Tato funkce je dostupná pouze pro <strong><a href=\"#/licensing\">Prémiovou</a></strong> verzi."
+    HTML_ALERT_PREMIUM: "Tato funkce je dostupná pouze v <strong><a href=\"#/licensing\">Premium</a></strong> verzi."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Kontakty"
     LEGEND_STORAGE: "Úložiště (PDO)"
@@ -158,7 +158,7 @@ cs_CZ:
         Komerční užívání (s přidanými doplňky) <b>RainLoop Webmail</b> vyžaduje získání
 
         <a href="http://www.rainloop.net/purchase/" target="_blank">licence</a>.
-    TYPE_PREMIUM_LIFETIME: "Lifetime"
+    TYPE_PREMIUM_LIFETIME: "Doživotní"
     LABEL_SUB_EXPIRES: "Licence vyprší"
     BUTTON_ACTIVATE: "Aktivační licenční klíč pro tuto doménu"
     BUTTON_PURCHASE: "Koupit"
@@ -167,7 +167,7 @@ cs_CZ:
     LEGEND_ABOUT: "Info"
     LABEL_TAG_HINT: "Jednoduchý, moderní a rychlý webový emailový klient"
     LABEL_ALL_RIGHTS_RESERVED: "Všechna práva vyhrazena."
-    HINT_READ_CHANGE_LOG: "Přečtěte si prosím change log předtím, než budete chtít provést aktualizaci."
+    HINT_READ_CHANGE_LOG: "Přečtěte si prosím přehled změn předtím, než budete chtít provést aktualizaci."
     HINT_IS_UP_TO_DATE: "RainLoop je v aktuální verzi."
     HTML_NEW_VERSION: "Nová verze <b>%VERSION%</b> je k dispozici."
     LABEL_UPDATING: "Aktualizuji"
@@ -215,7 +215,7 @@ cs_CZ:
     LABEL_ALLOW_SIEVE_SCRIPTS: "Povolit SIEVE skripty"
     LABEL_ALLOW_USER_SCRIPT: "Povolit vlastní uživatelské skripty"
     LABEL_USE_SHORT_LOGIN: "Používat krátký login"
-    LABEL_USE_AUTH: "Používat authentikaci"
+    LABEL_USE_AUTH: "Používat autorizaci"
     LABEL_USE_PHP_MAIL: "Používat php mail() funkci"
     BUTTON_TEST: "Test"
     BUTTON_WHITE_LIST: "White List"
@@ -236,12 +236,12 @@ cs_CZ:
     BUTTON_SAVE: "Uložit"
     TOOLTIP_ABOUT_TITLE: "Info"
   POPUPS_ASK:
-    DESC_WANT_CLOSE_THIS_WINDOW: "Jste si jistí, že opravdu chcete zavřit toto okno?"
+    DESC_WANT_CLOSE_THIS_WINDOW: "Jste si jistí, že opravdu chcete zavřít toto okno?"
   POPUPS_LANGUAGES:
     TITLE_LANGUAGES: "Vyberte váš jazyk"
   HINTS:
     BETA: "beta"
-    UNSTABLE: "unstable"
+    UNSTABLE: "nestabilní"
     WARNING: "Varování!"
     NOT_SUPPORTED: "není podporováno"
     REQUIRES_PHP_54: "vyžaduje PHP 5.4 nebo vyšší"
@@ -250,18 +250,18 @@ cs_CZ:
     UNKNOWN_ERROR: "Neznámá chyba"
   NOTIFICATIONS:
     INVALID_TOKEN: "Neplatný token"
-    AUTH_ERROR: "Chyba authentikace"
+    AUTH_ERROR: "Chyba autorizace"
     ACCESS_ERROR: "Chyba v přístupu"
     CONNECTION_ERROR: "Nelze se spojit se serverem"
     CAPTCHA_ERROR: "Nesprávná CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-        Toto ID není přiřazeno k žádnému účtu. Přihlašte se pomocí vaší emailové adresy
+        Toto ID není přiřazeno k žádnému účtu. Přihlaste se pomocí vaší emailové adresy
         a nastavte si tuto možnost.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-        Toto ID není přiřazeno k žádnému účtu. Přihlašte se pomocí vaší emailové adresy
+        Toto ID není přiřazeno k žádnému účtu. Přihlaste se pomocí vaší emailové adresy
         a nastavte si tuto možnost.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-        Toto ID není přiřazeno k žádnému účtu. Přihlašte se pomocí vaší emailové adresy
+        Toto ID není přiřazeno k žádnému účtu. Přihlaste se pomocí vaší emailové adresy
         a nastavte si tuto možnost.
     DOMAIN_NOT_ALLOWED: "Doména není povolená"
     ACCOUNT_NOT_ALLOWED: "Účet není povolený"
@@ -309,7 +309,7 @@ cs_CZ:
   STATIC:
     BACK_LINK: "Obnovit"
     DOMAIN_LIST_DESC: "Seznam domén, ke kterým je možné přistupovat přes webmail."
-    PHP_EXSTENSIONS_ERROR_DESC: "Potřebné rošíření PHP nejsou dostupné v konfiguraci PHP!"
+    PHP_EXSTENSIONS_ERROR_DESC: "Potřebné rozšíření PHP nejsou dostupné v konfiguraci PHP!"
     PHP_VERSION_ERROR_DESC: "Vaše verze PHP (%VERSION%) je nižší než požadovaná 5.3.0!"
     NO_SCRIPT_TITLE: "Tato aplikace vyžaduje JavaScript."
     NO_SCRIPT_DESC: |
@@ -321,5 +321,5 @@ cs_CZ:
         Prosím povolte podporu Cookies v nastavení vašeho internetového prohlížeče a zkuste to znovu.
     BAD_BROWSER_TITLE: "Používáte zastaralý internetový prohlížeč."
     BAD_BROWSER_DESC: |
-        Abyste mohli využívat všechny funkcie této aplikace,
+        Abyste mohli využívat všechny funkce této aplikace,
         použijte některý z následujících internetových prohlížečů:
