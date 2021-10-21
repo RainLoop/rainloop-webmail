@@ -1,0 +1,206 @@
+{
+	"LOGIN": {
+		"LABEL_LOGIN": "Логин",
+		"LABEL_PASSWORD": "Пароль",
+		"LABEL_TOTP": "TOTP code",
+		"BUTTON_LOGIN": "Войти в админ панель"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Админка"
+	},
+	"TABS_LABELS": {
+		"LABEL_GENERAL_NAME": "Основные",
+		"LABEL_LOGIN_NAME": "Логин",
+		"LABEL_BRANDING_NAME": "Брендинг",
+		"LABEL_CONTACTS_NAME": "Контакты",
+		"LABEL_DOMAINS_NAME": "Домены",
+		"LABEL_SECURITY_NAME": "Безопасность",
+		"LABEL_PACKAGES_NAME": "Пакеты",
+		"LABEL_ABOUT_NAME": "О Программе"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Интерфейс",
+		"LABEL_LANGUAGE": "Язык",
+		"LABEL_LANGUAGE_ADMIN": "Язык (Админ)",
+		"LABEL_THEME": "Тема",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Разрешить выбор языка на экране настроек",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Разрешить выбор темы на экране настроек",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Allow background selection on settings screen",
+		"LABEL_NEW_FOLDER_MOVE": "Новая кнопка \"переместить в папку\"",
+		"LABEL_SHOW_THUMBNAILS": "Показывать миниатюры (для вложений)",
+		"LEGEND_MAIN": "Основное",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Предельный размер вложений",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Разрешить дополнительные аккаунты",
+		"LABEL_ALLOW_IDENTITIES": "Разрешить множественные профили",
+		"ALERT_DATA_ACCESS": "Папка данных RainLoop доступна. Пожалуйста, настройте свой веб-сервер так, чтобы скрыть папку данных с внешнего доступа. Подробнее здесь:",
+		"ALERT_WARNING": "Внимание!",
+		"HTML_ALERT_WEAK_PASSWORD": "Вы используете пароль администратора по умолчанию.\n<br \/>\nПо соображениям безопасности, пожалуйста,\n<strong><a href=\"#\/security\">измените пароль<\/a><\/strong> прямо сейчас.\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Cтраница Входа",
+		"LABEL_DEFAULT_DOMAIN": "Основной домен",
+		"LABEL_DETERMINE_USER_DOMAIN": "Пытаться определить домен пользователя",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Разрешить выбор языка на странице входа",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Пытаться определить язык пользователя",
+		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Брендинг",
+		"LABEL_PAGE_TITLE": "Название страницы",
+		"LABEL_LOADING_DESCRIPTION": "Описание при загрузке",
+		"LABEL_FAVICON_URL": "Иконка (favicon)"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Контакты",
+		"LEGEND_STORAGE": "Хранилище (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Включить контакты",
+		"LABEL_ALLOW_SYNC": "Разрешить синхронизацию контактов (с внешним CardDAV сервером)",
+		"LABEL_STORAGE_TYPE": "Тип",
+		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_USER": "Пользователь",
+		"LABEL_STORAGE_PASSWORD": "Пароль",
+		"BUTTON_TEST": "Тест",
+		"ALERT_NOTICE": "Внимание!",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Не используйте этот тип базы данных с большим числом активных пользователей.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Ваша система не поддерживает контакты.\n<br \/>\nВам необходимо установить или включить <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> расширения на вашем сервере.\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Домены",
+		"BUTTON_ADD_DOMAIN": "Добавить домен",
+		"BUTTON_ADD_ALIAS": "Добавить Алиас",
+		"DELETE_ARE_YOU_SURE": "Вы уверены?",
+		"HTML_DOMAINS_HELPER": "Список доменов к которым разрешен доступ.\n<br \/>\nНажмите на имя, чтобы настроить домен.\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "Безопасность",
+		"LABEL_USE_IMAGE_PROXY": "Использовать локальный прокси для внешних изображений",
+		"LABEL_ALLOW_OPEN_PGP": "Разрешить OpenPGP",
+		"LABEL_SHOW_PHP_INFO": "Показать PHP информацию",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Admin Panel Access Credentials",
+		"LABEL_CURRENT_PASSWORD": "Текущий пароль",
+		"LABEL_NEW_LOGIN": "Новый логин",
+		"LABEL_NEW_PASSWORD": "Новый пароль",
+		"LABEL_REPEAT_PASSWORD": "Повторить пароль",
+		"BUTTON_UPDATE_PASSWORD": "Обновить пароль",
+		"LEGEND_SSL": "SSL",
+		"LABEL_REQUIRE_VERIFICATION": "Требовать проверку SSL сертификата для IMAP и SMTP",
+		"LABEL_ALLOW_SELF_SIGNED": "Разрешить cамоподписанные сертификаты"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Enable extensions",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Доступно для обновления",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Доступно для установки",
+		"LEGEND_INSTALLED_PACKAGES": "Установленные пакеты",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Не удается получить доступ к хранилищу пакетов в данный момент."
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "О программе",
+		"LABEL_TAG_HINT": "Простой, современный и быстрый веб-клиент электронной почты\n",
+		"LABEL_ALL_RIGHTS_RESERVED": "Все права защищены."
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Добавить Алиас",
+		"LABEL_ALIAS": "Алиас",
+		"LABEL_DOMAIN": "Домен",
+		"BUTTON_CLOSE": "Закрыть",
+		"BUTTON_ADD": "Добавить"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Добавить домен",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Добавить домен \"%NAME%\"",
+		"TITLE_EDIT_DOMAIN": "Редактировать домен \"%NAME%\"",
+		"LABEL_NAME": "Имя",
+		"NAME_HELPER": "wildcard supported",
+		"LABEL_IMAP": "IMAP",
+		"LABEL_SMTP": "SMTP",
+		"LABEL_SIEVE": "SIEVE",
+		"LABEL_SERVER": "Сервер",
+		"LABEL_PORT": "Порт",
+		"LABEL_SECURE": "Безопасность",
+		"LABEL_WHITE_LIST": "Белый список",
+		"SECURE_OPTION_NONE": "Нет",
+		"SECURE_OPTION_SSL": "SSL\/TLS",
+		"SECURE_OPTION_STARTTLS": "STARTTLS",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Разрешить sieve скрипты",
+		"LABEL_USE_SHORT_LOGIN": "Использовать короткий логин",
+		"LABEL_USE_AUTH": "Использовать аутентификацию",
+		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_USE_PHP_MAIL": "Использовать mail() функцию",
+		"BUTTON_TEST": "Тест",
+		"BUTTON_WHITE_LIST": "Белый список",
+		"BUTTON_SIEVE_CONFIGURATION": "настройки Sieve",
+		"BUTTON_BACK_TO_IMAP": "Назад к IMAP настройкам",
+		"BUTTON_BACK": "Назад",
+		"BUTTON_CLOSE": "Закрыть",
+		"BUTTON_ADD": "Добавить",
+		"BUTTON_UPDATE": "Обновить",
+		"NEW_DOMAIN_DESC": "Эта конфигурация позволит вам работать <br \/>с <i>%NAME%<\/i> адресами.",
+		"WHITE_LIST_ALERT": "Список пользователей домена к которым разрешен доступ.\nИспользуйте пробел в качестве разделителя.\n"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Плагин",
+		"DESC_NOTHING_TO_CONFIGURE": "Без настроек",
+		"BUTTON_CLOSE": "Закрыть",
+		"BUTTON_SAVE": "Сохранить"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "Yes",
+		"BUTTON_NO": "No",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Вы уверены, что хотите закрыть это окно?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Выберите язык"
+	},
+	"HINTS": {
+		"BETA": "beta",
+		"UNSTABLE": "unstable",
+		"WARNING": "Внимание!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "Домен уже существует",
+		"UNKNOWN_ERROR": "Неизвестная ошибка"
+	},
+	"NOTIFICATIONS": {
+		"INVALID_TOKEN": "Неверный токен запроса",
+		"AUTH_ERROR": "Не удалось авторизоваться",
+		"ACCESS_ERROR": "Ошибка доступа",
+		"CONNECTION_ERROR": "Ошибка соединения с сервером.",
+		"DOMAIN_NOT_ALLOWED": "Данный домен не разрешен",
+		"ACCOUNT_NOT_ALLOWED": "Данный аккаунт не разрешен",
+		"CURRENT_PASSWORD_INCORRECT": "Текущий пароль неверный",
+		"NEW_PASSWORD_SHORT": "Пароль слишком короткий",
+		"NEW_PASSWORD_WEAK": "Пароль слишком простой",
+		"CONTACTS_SYNC_ERROR": "Ошибка синхронизации контактов",
+		"CANT_GET_MESSAGE_LIST": "Не могу получить список писем",
+		"CANT_GET_MESSAGE": "Не могу получить письмо",
+		"CANT_DELETE_MESSAGE": "Не могу удалить письмо",
+		"CANT_COPY_MESSAGE": "Can't copy message",
+		"CANT_MOVE_MESSAGE": "Не могу переместить письмо",
+		"CANT_SAVE_MESSAGE": "Не могу сохранить письмо",
+		"CANT_SEND_MESSAGE": "Не могу отправить письмо",
+		"INVALID_RECIPIENTS": "Проверьте правильность ввода всех адресов.",
+		"CANT_SAVE_FILTERS": "Не могу сохранить фильтры",
+		"CANT_GET_FILTERS": "Не могу загрузить фильтры",
+		"FILTERS_ARE_NOT_CORRECT": "Фильтры неправильны",
+		"CANT_CREATE_FOLDER": "Не могу создать папку",
+		"CANT_RENAME_FOLDER": "Не могу переименовать папку",
+		"CANT_DELETE_FOLDER": "Не могу удалить папку",
+		"CANT_DELETE_NON_EMPTY_FOLDER": "Не могу удалить непустую папку",
+		"CANT_SUBSCRIBE_FOLDER": "Не могу подписать папку",
+		"CANT_UNSUBSCRIBE_FOLDER": "Не могу отписать папку",
+		"CANT_SAVE_SETTINGS": "Не могу сохранить настройки",
+		"CANT_SAVE_PLUGIN_SETTINGS": "Не могу сохранить настройки",
+		"DOMAIN_ALREADY_EXISTS": "Домен уже существует",
+		"CANT_INSTALL_PACKAGE": "Ошибка установки пакета",
+		"CANT_DELETE_PACKAGE": "Ошибка удаления пакета",
+		"INVALID_PLUGIN_PACKAGE": "Ошибка пакета плагина",
+		"UNSUPPORTED_PLUGIN_PACKAGE": "Для работы плагина необходима полная поддержка сервера",
+		"DEMO_SEND_MESSAGE_ERROR": "Демо аккаунту отправка писем  на внешние почтовые адреса запрещена!",
+		"DEMO_ACCOUNT_ERROR": "По соображениям безопасности данный аккаунт не может выполнить это действие.",
+		"ACCOUNT_ALREADY_EXISTS": "Аккаунт уже добавлен",
+		"ACCOUNT_DOES_NOT_EXIST": "Аккаунт не существует",
+		"MAIL_SERVER_ERROR": "Ошибка доступа к почтовому серверу",
+		"INVALID_INPUT_ARGUMENT": "Неверный параметр",
+		"UNKNOWN_ERROR": "Неизвестная ошибка"
+	}
+}
