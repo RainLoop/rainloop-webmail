@@ -49,7 +49,7 @@ cs_CZ:
     GALLERY_NEXT: "Další"
     GALLERY_COUNTER: "%curr% z %total%"
     IMAGE_ERROR: "<a href=\"%url%\" target=\"_blank\">Obrázek</a> se nepodařilo načíst."
-    AJAX_ERROR: "<a href=\"%url%\" target=\"_blank\">Obsah</a> sa nepodařilo načíst."
+    AJAX_ERROR: "<a href=\"%url%\" target=\"_blank\">Obsah</a> se nepodařilo načíst."
   FOLDER_LIST:
     BUTTON_COMPOSE: "Vytvořit"
     BUTTON_CONTACTS: "Adresář"
@@ -75,7 +75,7 @@ cs_CZ:
     BUTTON_MORE: "Více"
     MENU_SET_SEEN: "Označit jako přečtené"
     MENU_SET_ALL_SEEN: "Označit vše jako přečtené"
-    MENU_UNSET_SEEN: "Označit jako neprečtené"
+    MENU_UNSET_SEEN: "Označit jako nepřečtené"
     MENU_SET_FLAG: "Označit hvězdičkou"
     MENU_UNSET_FLAG: "Zrušit označení hvězdičkou"
     MENU_SELECT_ALL: "Vše"
@@ -156,7 +156,7 @@ cs_CZ:
   READ_RECEIPT:
     SUBJECT: "Potvrzení o zobrazení zprávy - %SUBJECT%"
     BODY: |
-        Toto je potrvzení o zaslání emailu na adresu %READ-RECEIPT%.
+        Toto je potvrzení o zaslání emailu na adresu %READ-RECEIPT%.
 
         Poznámka: Toto potvrzení zajišťuje, že zpráva byla zobrazena v poštovní schránce příjemce. Nezajišťuje, že ji příjemce četl a rozuměl jí.
   SUGGESTIONS:
@@ -170,7 +170,7 @@ cs_CZ:
     BUTTON_IMPORT: "Importovat (csv, vcf, vCard)"
     BUTTON_EXPORT_VCARD: "Exportovat (vcf, vCard)"
     BUTTON_EXPORT_CSV: "Exportovat (csv)"
-    ERROR_IMPORT_FILE: "Chyba importu (nesprávny formát souboru)"
+    ERROR_IMPORT_FILE: "Chyba importu (nesprávný formát souboru)"
     LIST_LOADING: "Načítám"
     EMPTY_LIST: "Nemáte žádné kontakty"
     EMPTY_SEARCH: "Nebyly nalezeny žádné kontakty"
@@ -188,7 +188,7 @@ cs_CZ:
     PLACEHOLDER_ENTER_LAST_NAME: "Zadejte příjmení"
     PLACEHOLDER_ENTER_FIRST_NAME: "Zadejte jméno"
     PLACEHOLDER_ENTER_NICK_NAME: "Zadejte přezdívku"
-    LABEL_READ_ONLY: "Jen pro čtění"
+    LABEL_READ_ONLY: "Jen pro čtení"
     LABEL_SHARE: "Sdílet"
     ADD_MENU_LABEL: "Přidat"
     ADD_MENU_NICKNAME: "Přezdívka"
@@ -216,7 +216,7 @@ cs_CZ:
     BUTTON_CANCEL: "Zrušit"
     BUTTON_MINIMIZE: "Minimalizovat"
     SAVED_TIME: "Uložené v %TIME%"
-    SAVED_ERROR_ON_SEND: "Zpráva byla odesláná, ale nebyla uložená do složky odeslaných zpráv."
+    SAVED_ERROR_ON_SEND: "Zpráva byla odeslána, ale nebyla uložená do složky odeslaných zpráv."
     DISCARD_UNSAVED_DATA: "Neuložit změny?"
     ATTACH_FILES: "Připojit soubory"
     ATTACH_DROP_FILES_DESC: "Soubory přetáhněte sem"
@@ -236,7 +236,7 @@ cs_CZ:
     ATTACHMENTS_UPLOAD_ERROR_DESC: "Některé přílohy ještě nebyly nahrány"
     BUTTON_REQUEST_READ_RECEIPT: "Vyžádat si potvrzení o přečtení"
     BUTTON_MARK_AS_IMPORTANT: "Označit jako důležité"
-    BUTTON_OPEN_PGP: "OpenPGP (jen Plain Text)"
+    BUTTON_OPEN_PGP: "OpenPGP (jen prostý text)"
     BUTTON_REQUEST_DSN: "Vyžádat si potvrzení o přijetí"
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "Zavřít"
@@ -286,7 +286,7 @@ cs_CZ:
     BUTTON_IMPORT_OPEN_PGP_KEY: "Import"
   POPUPS_VIEW_OPEN_PGP_KEY:
     TITLE_VIEW_OPEN_PGP_KEY: "Zobrazit OpenPGP klíč"
-    BUTTON_SELECT: "Vybart"
+    BUTTON_SELECT: "Vybrat"
     BUTTON_CLOSE: "Zavřít"
   POPUPS_GENERATE_OPEN_PGP_KEYS:
     TITLE_GENERATE_OPEN_PGP_KEYS: "Generovat OpenPGP klíče"
@@ -327,7 +327,7 @@ cs_CZ:
     SELECT_ACTION_VACATION_MESSAGE: "Odpověď v nepřítomnosti"
     SELECT_ACTION_DISCARD: "Zahodit"
     SELECT_FIELD_FROM: "Od"
-    SELECT_FIELD_RECIPIENTS: "Přijemci (Komu nebo Kopie)"
+    SELECT_FIELD_RECIPIENTS: "Příjemci (Komu nebo Kopie)"
     SELECT_FIELD_SUBJECT: "Předmět"
     SELECT_FIELD_HEADER: "Hlavička"
     SELECT_FIELD_SIZE: "Velikost"
@@ -335,12 +335,12 @@ cs_CZ:
     SELECT_TYPE_NOT_CONTAINS: "Neobsahuje"
     SELECT_TYPE_MATCHES: "Odpovídá (můžete použit * a ? )"
     SELECT_TYPE_NOT_MATCHES: "Neodpovídá (můžete použit * a ? )"
-    SELECT_TYPE_REGEXP: "Regexp"
-    SELECT_TYPE_NOT_REGEXP: "Not Regexp"
+    SELECT_TYPE_REGEXP: "Regulární výraz"
+    SELECT_TYPE_NOT_REGEXP: "Není regulární výraz"
     SELECT_TYPE_EQUAL_TO: "Rovná se"
     SELECT_TYPE_NOT_EQUAL_TO: "Nerovná se"
-    SELECT_TYPE_OVER: "Over"
-    SELECT_TYPE_UNDER: "Under"
+    SELECT_TYPE_OVER: "Více než"
+    SELECT_TYPE_UNDER: "Méně než"
     SELECT_MATCH_ANY: "Vyhovuje alespoň jednomu pravidlu"
     SELECT_MATCH_ALL: "Vyhovuje všem pravidlům"
     MARK_AS_READ_LABEL: "Odznačit jako přečtené"
@@ -377,7 +377,7 @@ cs_CZ:
     NOTIFICATION_ARCHIVE: "Nevybrali jste systémovou složku \"Archiv\", kam se ukládají archivované zprávy."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "Dvoufázové ověření"
-    LABEL_ENABLE_TWO_FACTOR: "Povlit dvoufázové ověření"
+    LABEL_ENABLE_TWO_FACTOR: "Povolit dvoufázové ověření"
     LABEL_TWO_FACTOR_USER: "Uživatel"
     LABEL_TWO_FACTOR_STATUS: "Stav"
     LABEL_TWO_FACTOR_SECRET: "Tajný klíč"
@@ -448,7 +448,7 @@ cs_CZ:
     SUBNAME_REJECT: "Odmítnout"
     SUBNAME_VACATION_MESSAGE: "Odpověď v nepřítomnosti"
     SUBNAME_DISCARD: "Zahodit"
-    CAPABILITY_LABEL: "Capability"
+    CAPABILITY_LABEL: "Schopnost"
     LOADING_PROCESS: "Aktualizovat seznam filtrů"
     DELETING_ASK: "Jste si jisti?"
     CHACHES_NEED_TO_BE_SAVED_DESC: "Změny musí být uloženy na serveru."
@@ -459,7 +459,7 @@ cs_CZ:
     LABEL_SIGNATURE: "Podpis"
     LABEL_ADD_SIGNATURE_TO_ALL: "Připojit podpis ke všem odchozím zprávám"
   SETTINGS_SECURITY:
-    LEGEND_SECURITY: "Zapezpečení"
+    LEGEND_SECURITY: "Zabezpečení"
     LABEL_CONFIGURE_TWO_FACTOR: "Nastavení dvoufázového ověření"
     LABEL_AUTOLOGOUT: "Automatické odhlášení"
     AUTOLOGIN_NEVER_OPTION_NAME: "Nikdy"
@@ -472,7 +472,7 @@ cs_CZ:
     LABEL_LAYOUT: "Rozložení"
     LABEL_LAYOUT_NO_SPLIT: "Nerozdělovat"
     LABEL_LAYOUT_VERTICAL_SPLIT: "Vertikální rozdělení"
-    LABEL_LAYOUT_HORIZONTAL_SPLIT: "Horizontální rozdělění"
+    LABEL_LAYOUT_HORIZONTAL_SPLIT: "Horizontální rozdělení"
     LABEL_EDITOR: "Přednastavený editor zpráv"
     LABEL_EDITOR_HTML: "Html"
     LABEL_EDITOR_PLAIN: "Text"
@@ -483,11 +483,11 @@ cs_CZ:
     LABEL_ANIMATION_NORMAL: "Normální"
     LABEL_ANIMATION_NONE: "Žádné"
     LABEL_VIEW_OPTIONS: "Možnosti zobrazení"
-    LABEL_USE_PREVIEW_PANE: "Používate panel rychlého zobrazení"
+    LABEL_USE_PREVIEW_PANE: "Používáte panel rychlého zobrazení"
     LABEL_USE_CHECKBOXES_IN_LIST: "Zobrazení zaškrtávacích políček v seznamu"
     LABEL_USE_THREADS: "Zobrazit jako konverzace"
     LABEL_REPLY_SAME_FOLDER: "Ukládat odpovědi do složky se zprávou, které se týkají"
-    LABEL_SHOW_IMAGES: "Vždy zobrazovat obrázky v těle správy"
+    LABEL_SHOW_IMAGES: "Vždy zobrazovat obrázky v těle zprávy"
     LABEL_SHOW_ANIMATION: "Animovat"
     LABEL_MESSAGE_PER_PAGE: "Zpráv na stranu"
     LABEL_NOTIFICATIONS: "Notifikace"
@@ -588,7 +588,7 @@ cs_CZ:
     TAB_MESSAGE_LIST: "Seznam zpráv"
     TAB_MESSAGE_VIEW: "Detail zprávy"
     TAB_COMPOSE: "Napsat"
-    LABEL_OPEN_USER_DROPDOWN: "Open user dropdown"
+    LABEL_OPEN_USER_DROPDOWN: "Otevřít nabídku uživatele"
     LABEL_REPLY: "Odpovědět"
     LABEL_REPLY_ALL: "Odpovědět všem"
     LABEL_FORWARD: "Přeposlat"
@@ -642,13 +642,13 @@ cs_CZ:
     CONNECTION_ERROR: "Nepodařilo se připojit k serveru"
     CAPTCHA_ERROR: "Nesprávná CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-        Toto ID není přiřazeno k žádnému účtu. Přihlašte se pomocí vaší emailové adresy
+        Toto ID není přiřazeno k žádnému účtu. Přihlaste se pomocí vaší emailové adresy
         a nastavte si tuto možnost.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-        Toto ID není přiřazeno k žádnému účtu. Přihlašte se pomocí vaší emailové adresy
+        Toto ID není přiřazeno k žádnému účtu. Přihlaste se pomocí vaší emailové adresy
         a nastavte si tuto možnost.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-        Toto ID není přiřazeno k žádnému účtu. Přihlašte se pomocí vaší emailové adresy
+        Toto ID není přiřazeno k žádnému účtu. Přihlaste se pomocí vaší emailové adresy
         a nastavte si tuto možnost.
     DOMAIN_NOT_ALLOWED: "Doména není povolená"
     ACCOUNT_NOT_ALLOWED: "Účet není povolený"
@@ -678,7 +678,7 @@ cs_CZ:
     CANT_UNSUBSCRIBE_FOLDER: "Nelze odhlásit adresář"
     CANT_SAVE_SETTINGS: "Nastavení se nepodařilo uložit"
     CANT_SAVE_PLUGIN_SETTINGS: "Nastavení se nepodařilo uložit"
-    DOMAIN_ALREADY_EXISTS: "Táto doména již existuje"
+    DOMAIN_ALREADY_EXISTS: "Tato doména již existuje"
     CANT_INSTALL_PACKAGE: "Instalace balíčku se nezdařila"
     CANT_DELETE_PACKAGE: "Odstranění balíčku se nezdařilo"
     INVALID_PLUGIN_PACKAGE: "Nevalidní balíček"
@@ -696,7 +696,7 @@ cs_CZ:
   STATIC:
     BACK_LINK: "Obnovit"
     DOMAIN_LIST_DESC: "Seznam domén, ke kterým je možné přistupovat přes webmail."
-    PHP_EXSTENSIONS_ERROR_DESC: "Potřebné rošíření PHP nejsou dostupné v konfiguraci PHP!"
+    PHP_EXSTENSIONS_ERROR_DESC: "Potřebné rozšíření PHP nejsou dostupné v konfiguraci PHP!"
     PHP_VERSION_ERROR_DESC: "Vaše verze PHP (%VERSION%) je nižší než požadovaná 5.3.0!"
     NO_SCRIPT_TITLE: "Tato aplikace vyžaduje JavaScript."
     NO_SCRIPT_DESC: |
@@ -708,5 +708,5 @@ cs_CZ:
         Prosím povolte podporu Cookies v nastavení vašeho internetového prohlížeče a zkuste to znovu.
     BAD_BROWSER_TITLE: "Používáte zastaralý internetový prohlížeč."
     BAD_BROWSER_DESC: |
-        Abyste mohli využívat všechny funkcie této aplikace,
+        Abyste mohli využívat všechny funkce této aplikace,
         použijte některý z následujících internetových prohlížečů:
