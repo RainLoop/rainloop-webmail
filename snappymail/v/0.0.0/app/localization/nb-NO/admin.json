@@ -1,0 +1,206 @@
+{
+	"LOGIN": {
+		"LABEL_LOGIN": "Brukernavn",
+		"LABEL_PASSWORD": "Passord",
+		"LABEL_TOTP": "TOTP code",
+		"BUTTON_LOGIN": "Logg inn på admin-panel"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Admin-panel"
+	},
+	"TABS_LABELS": {
+		"LABEL_GENERAL_NAME": "Generelt",
+		"LABEL_LOGIN_NAME": "Brukernavn",
+		"LABEL_BRANDING_NAME": "Utforming",
+		"LABEL_CONTACTS_NAME": "Kontakter",
+		"LABEL_DOMAINS_NAME": "Domener",
+		"LABEL_SECURITY_NAME": "Sikkerhet",
+		"LABEL_PACKAGES_NAME": "Pakker",
+		"LABEL_ABOUT_NAME": "Om"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Grensesnitt",
+		"LABEL_LANGUAGE": "Språk",
+		"LABEL_LANGUAGE_ADMIN": "Språk (admin)",
+		"LABEL_THEME": "Tema",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "La brukere velge språk på oppsettsskjerm",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "La brukere velge tema på oppsettsskjerm",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "La brukere velge bakgrunn på oppsettsskjerm",
+		"LABEL_NEW_FOLDER_MOVE": "Ny «flytt til mappe»-knapp",
+		"LABEL_SHOW_THUMBNAILS": "Vis miniatyrer (vedlegg)",
+		"LEGEND_MAIN": "Hoved",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Maksimal størrelse på vedlegg",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Tillat bruk av flere kontoer",
+		"LABEL_ALLOW_IDENTITIES": "Tillat bruk av flere identiteter",
+		"ALERT_DATA_ACCESS": "RainLoop-datamappa di er offentlig tiljgengelig. Sett opp webtjeneren slik at den ikke viser datamappa. Les mer her:",
+		"ALERT_WARNING": "Advarsel!",
+		"HTML_ALERT_WEAK_PASSWORD": "Du bruker forvalgt admin-passord.\n<br \/>\nAv sikkerhetshensyn bør du\n<strong><a href=\"#\/security\">endre<\/a><\/strong>\npassordet umiddelbart.\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Innloggingsskjerm",
+		"LABEL_DEFAULT_DOMAIN": "Standard-domene",
+		"LABEL_DETERMINE_USER_DOMAIN": "Prøv å finne brukerens domene",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "La brukere velge språk på innloggingsskjerm",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Prøv å finne brukerens språk",
+		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Utforming",
+		"LABEL_PAGE_TITLE": "Sidetittel",
+		"LABEL_LOADING_DESCRIPTION": "Tekst under innlasting",
+		"LABEL_FAVICON_URL": "Favorittikon"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Kontakter",
+		"LEGEND_STORAGE": "Lagring (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Slå på kontakter",
+		"LABEL_ALLOW_SYNC": "Tillat synkronisering av kontakter (med ekstern CardDAV-tjener)",
+		"LABEL_STORAGE_TYPE": "Type",
+		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_USER": "Bruker",
+		"LABEL_STORAGE_PASSWORD": "Passord",
+		"BUTTON_TEST": "Test",
+		"ALERT_NOTICE": "Varsel!",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Ikke bruk denne databasetypen hvis dette systemet har mange brukere.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Dette systemet støtter ikke kontakter.\n<br \/>\nDu må installere eller slå på utvidelsen <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> på tjeneren.\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Domener",
+		"BUTTON_ADD_DOMAIN": "Legg til domene",
+		"BUTTON_ADD_ALIAS": "Legg til alias",
+		"DELETE_ARE_YOU_SURE": "Er du sikker?",
+		"HTML_DOMAINS_HELPER": "Liste over domener som programmet kan få tilgang til.\n<br \/>\nTrykk på et navn for å sette opp domenet.\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "Sikkerhet",
+		"LABEL_USE_IMAGE_PROXY": "Bruk lokal mellomtjener for eksterne bilder",
+		"LABEL_ALLOW_OPEN_PGP": "Tillat OpenPGP",
+		"LABEL_SHOW_PHP_INFO": "Vis PHP-informasjon",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Akkreditiver for admin-panel",
+		"LABEL_CURRENT_PASSWORD": "Gjeldende passord",
+		"LABEL_NEW_LOGIN": "Nytt brukernavn",
+		"LABEL_NEW_PASSWORD": "Nytt passord",
+		"LABEL_REPEAT_PASSWORD": "Gjenta",
+		"BUTTON_UPDATE_PASSWORD": "Oppdater passord",
+		"LEGEND_SSL": "SSL",
+		"LABEL_REQUIRE_VERIFICATION": "Krev bekreftelse av SSL-sertifikat (IMAP\/SMTP)",
+		"LABEL_ALLOW_SELF_SIGNED": "Tillat selvutstedt sertifikat"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Enable extensions",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Tilgjengelig for oppdatering",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Tilgjengelig for installasjon",
+		"LEGEND_INSTALLED_PACKAGES": "Installerte pakker",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Fikk ikke tilgang til pakkelageret."
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "Om",
+		"LABEL_TAG_HINT": "Rask, enkel, moderne og web-basert e-postklient",
+		"LABEL_ALL_RIGHTS_RESERVED": "All Rights Reserved."
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Legg til alias",
+		"LABEL_ALIAS": "Alias",
+		"LABEL_DOMAIN": "Domene",
+		"BUTTON_CLOSE": "Lukk",
+		"BUTTON_ADD": "Legg til"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Legg til domene",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Legg til «%NAME%»",
+		"TITLE_EDIT_DOMAIN": "Rediger «%NAME%»",
+		"LABEL_NAME": "Navn",
+		"NAME_HELPER": "jokertegn støttes",
+		"LABEL_IMAP": "IMAP",
+		"LABEL_SMTP": "SMTP",
+		"LABEL_SIEVE": "SIEVE",
+		"LABEL_SERVER": "Tjener",
+		"LABEL_PORT": "Port",
+		"LABEL_SECURE": "Sikker",
+		"LABEL_WHITE_LIST": "Hvitliste",
+		"SECURE_OPTION_NONE": "None",
+		"SECURE_OPTION_SSL": "SSL\/TLS",
+		"SECURE_OPTION_STARTTLS": "STARTTLS",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Tillat sieve-skript",
+		"LABEL_USE_SHORT_LOGIN": "Bruk forkortet brukernavn",
+		"LABEL_USE_AUTH": "Bruk autentisering",
+		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_USE_PHP_MAIL": "Bruk php-funksjonen «mail()»",
+		"BUTTON_TEST": "Test",
+		"BUTTON_WHITE_LIST": "Hvitliste",
+		"BUTTON_SIEVE_CONFIGURATION": "Sieve-oppsett",
+		"BUTTON_BACK_TO_IMAP": "Tilbake til IMAP-innstillinger",
+		"BUTTON_BACK": "Tilbake",
+		"BUTTON_CLOSE": "Lukk",
+		"BUTTON_ADD": "Legg til",
+		"BUTTON_UPDATE": "Oppdater",
+		"NEW_DOMAIN_DESC": "Dette domeneoppsettet lar deg jobbe <br \/> med e-postadresser ved <i>%NAME%<\/i>.",
+		"WHITE_LIST_ALERT": "Liste over domenebrukere som programmet skal ha tilgang til.\nHold verdier adskilt med mellomrom.\n"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Tillegg",
+		"DESC_NOTHING_TO_CONFIGURE": "Ingenting å sette opp",
+		"BUTTON_CLOSE": "Lukk",
+		"BUTTON_SAVE": "Lagre"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "Yes",
+		"BUTTON_NO": "No",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Er du sikker på at du vil lukke dette vinduet?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Velg språk"
+	},
+	"HINTS": {
+		"BETA": "beta",
+		"UNSTABLE": "ustabil",
+		"WARNING": "Advarsel!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "Domenet finnes allerede",
+		"UNKNOWN_ERROR": "Ukjent feil"
+	},
+	"NOTIFICATIONS": {
+		"INVALID_TOKEN": "Ugyldig symbol",
+		"AUTH_ERROR": "Autentisering mislyktes",
+		"ACCESS_ERROR": "Tilgangsfeil",
+		"CONNECTION_ERROR": "Klarte ikke å koble til tjener",
+		"DOMAIN_NOT_ALLOWED": "Domenet tillates ikke",
+		"ACCOUNT_NOT_ALLOWED": "Kontoen tillates ikke",
+		"CURRENT_PASSWORD_INCORRECT": "Gjeldende passord er feil",
+		"NEW_PASSWORD_SHORT": "Passordet er for kort",
+		"NEW_PASSWORD_WEAK": "Passordet er for enkelt",
+		"CONTACTS_SYNC_ERROR": "Feil under synkronisering av kontakter",
+		"CANT_GET_MESSAGE_LIST": "Klarte ikke å hente meldingsliste",
+		"CANT_GET_MESSAGE": "Klarte ikke å hente melding",
+		"CANT_DELETE_MESSAGE": "Klarte ikke å slette melding",
+		"CANT_COPY_MESSAGE": "Can't copy message",
+		"CANT_MOVE_MESSAGE": "Klarte ikke å flytte melding",
+		"CANT_SAVE_MESSAGE": "Klarte ikke å lagre melding",
+		"CANT_SEND_MESSAGE": "Klarte ikke å sende melding",
+		"INVALID_RECIPIENTS": "Ugyldige mottakere",
+		"CANT_SAVE_FILTERS": "Klarte ikke å lagre filtre",
+		"CANT_GET_FILTERS": "Klarte ikke å hente filtre",
+		"FILTERS_ARE_NOT_CORRECT": "Ugyldige filtre",
+		"CANT_CREATE_FOLDER": "Klarte ikke å lage mappe",
+		"CANT_RENAME_FOLDER": "Klarte ikke å gi nytt navn til mappe",
+		"CANT_DELETE_FOLDER": "Klarte ikke å slette mappe",
+		"CANT_DELETE_NON_EMPTY_FOLDER": "Mappa er ikke tom, og kan derfor ikke slettes",
+		"CANT_SUBSCRIBE_FOLDER": "Klarte ikke å abonnere på mappe",
+		"CANT_UNSUBSCRIBE_FOLDER": "Klarte ikke å avslutte abonnement på mappe",
+		"CANT_SAVE_SETTINGS": "Klarte ikke å lagre innstillinger",
+		"CANT_SAVE_PLUGIN_SETTINGS": "Klarte ikke å lagre innstillinger",
+		"DOMAIN_ALREADY_EXISTS": "Domenet finnes allerede",
+		"CANT_INSTALL_PACKAGE": "Klarte ikke å installere pakke",
+		"CANT_DELETE_PACKAGE": "Klarte ikke å fjerne pakke",
+		"INVALID_PLUGIN_PACKAGE": "Ugyldig tilleggspakke",
+		"UNSUPPORTED_PLUGIN_PACKAGE": "Tilleggspakke støttes ikke",
+		"DEMO_SEND_MESSAGE_ERROR": "Av sikkerhetshensyn er denne demo-kontoen blokkert fra å sende meldinger til eksterne e-postadresser.",
+		"DEMO_ACCOUNT_ERROR": "Av sikkerhetshensyn er denne demo-kontoen blokkert fra å utføre denne handlinga",
+		"ACCOUNT_ALREADY_EXISTS": "Kontoen finnes allerede",
+		"ACCOUNT_DOES_NOT_EXIST": "Kontoen finnes ikke",
+		"MAIL_SERVER_ERROR": "Det oppstod en feil under tilkobling til e-posttjener",
+		"INVALID_INPUT_ARGUMENT": "Ugyldig inndata-argument",
+		"UNKNOWN_ERROR": "Ukjent feil"
+	}
+}

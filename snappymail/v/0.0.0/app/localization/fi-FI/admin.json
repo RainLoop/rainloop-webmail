@@ -1,0 +1,206 @@
+{
+	"LOGIN": {
+		"LABEL_LOGIN": "Tunnus",
+		"LABEL_PASSWORD": "Salasana",
+		"LABEL_TOTP": "TOTP code",
+		"BUTTON_LOGIN": "Kirjaudu hallintapaneliin"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Halintapaneli"
+	},
+	"TABS_LABELS": {
+		"LABEL_GENERAL_NAME": "Yleiset",
+		"LABEL_LOGIN_NAME": "Kirjautuminen",
+		"LABEL_BRANDING_NAME": "Brändäys",
+		"LABEL_CONTACTS_NAME": "Yhteystiedot",
+		"LABEL_DOMAINS_NAME": "Verkkotunnutkset",
+		"LABEL_SECURITY_NAME": "Turvallisuus",
+		"LABEL_PACKAGES_NAME": "Paketit",
+		"LABEL_ABOUT_NAME": "Tietoja"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Käyttöliittymä",
+		"LABEL_LANGUAGE": "Kieli",
+		"LABEL_LANGUAGE_ADMIN": "Kieli (admin)",
+		"LABEL_THEME": "Teema",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Salli kielivalinta asetuksissa",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Salli teemavalinta asetuksissa",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Salli taustavalinta asetuksissa",
+		"LABEL_NEW_FOLDER_MOVE": "New \"move to folder\" button",
+		"LABEL_SHOW_THUMBNAILS": "Näytä kuvakkeet (liitteet)",
+		"LEGEND_MAIN": "Yleiset",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Liitetiedoston kokorajoitus",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Salli ylimääräiset tilit",
+		"LABEL_ALLOW_IDENTITIES": "Salli useat identiteetit",
+		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
+		"ALERT_WARNING": "Varoitus!",
+		"HTML_ALERT_WEAK_PASSWORD": "Sinulla on käytössäsi hallintatunnuksen oletussalasana.\n<br \/>\nTietoturvasyistä, ole ystävällinen ja\n<strong><a href=\"#\/security\">vaihda<\/a><\/strong>\nsalasanasi nyt.\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Kirjautumissivu",
+		"LABEL_DEFAULT_DOMAIN": "Oletus domain",
+		"LABEL_DETERMINE_USER_DOMAIN": "Koita päätellä käyttäjän domain",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Salli kielivalinta kirjautumissivulla",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Koita päätellä käyttäjän kieli",
+		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Brändäys",
+		"LABEL_PAGE_TITLE": "Sivun otsikko",
+		"LABEL_LOADING_DESCRIPTION": "Ladataan kuvausta",
+		"LABEL_FAVICON_URL": "Favicon"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Yhteystiedot",
+		"LEGEND_STORAGE": "Tallennus (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Salli yhteystiedot",
+		"LABEL_ALLOW_SYNC": "Salli yhteystietojen synkronointi (ulkoisella CardDAV palvelimella)",
+		"LABEL_STORAGE_TYPE": "Tyyppi",
+		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_USER": "Käyttäjä",
+		"LABEL_STORAGE_PASSWORD": "Salasana",
+		"BUTTON_TEST": "Testi",
+		"ALERT_NOTICE": "Huomio!",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Älä käytä tätä tietokantatyyppiä suurella määrällä aktiivisia käyttäjiä.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Järjestelmäsi ei tue yhteystietoja.\n<br\/>\nAsenna tai aktivoi <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> lisäosa palvelimellasi.\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Domainit",
+		"BUTTON_ADD_DOMAIN": "Lisää domain",
+		"BUTTON_ADD_ALIAS": "Lisää alias",
+		"DELETE_ARE_YOU_SURE": "Oletko varma?",
+		"HTML_DOMAINS_HELPER": "Lista domaineista joilla webmaililla on pääsy.\n<br\/>\nKlikkaa nimeä konfiguroidaksesi domain.\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "Tietoturva",
+		"LABEL_USE_IMAGE_PROXY": "Käytä paikallista proxya ulkoisille kuville.",
+		"LABEL_ALLOW_OPEN_PGP": "Salli OpenPGP",
+		"LABEL_SHOW_PHP_INFO": "Näytä PHP tiedot",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Hallintapaneeli kirjautumistiedot",
+		"LABEL_CURRENT_PASSWORD": "Nykyinen salasana",
+		"LABEL_NEW_LOGIN": "Uusi tunnus",
+		"LABEL_NEW_PASSWORD": "Uusi salasana",
+		"LABEL_REPEAT_PASSWORD": "Toista",
+		"BUTTON_UPDATE_PASSWORD": "Päivitä salasana",
+		"LEGEND_SSL": "SSL",
+		"LABEL_REQUIRE_VERIFICATION": "Vaadi SSL sertifikaatin varmistus (IMAP\/SMTP)",
+		"LABEL_ALLOW_SELF_SIGNED": "Salli itse-allekirjoitetut sertifikaatit"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Enable extensions",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Voidaan päivittää",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Voidaan asentaa",
+		"LEGEND_INSTALLED_PACKAGES": "Aennetut pakkaukset",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Pääsy varastoon ei toimi tällä hetkellä."
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "Tietoja",
+		"LABEL_TAG_HINT": "Helppo, moderni ja nopea web-pohjainen sähköpostiohjelma",
+		"LABEL_ALL_RIGHTS_RESERVED": "Kaikki oikeudet pidätetään."
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Lisää Alias",
+		"LABEL_ALIAS": "Alias",
+		"LABEL_DOMAIN": "Verkkotunnus",
+		"BUTTON_CLOSE": "Sulje",
+		"BUTTON_ADD": "Lisää"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Lisää verkkotunnus",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Lisää verkkotunnus \"%NAME%\"",
+		"TITLE_EDIT_DOMAIN": "Muokkaa verkkotunnusta \"%NAME%\"",
+		"LABEL_NAME": "Nimi",
+		"NAME_HELPER": "wildcard tuettu",
+		"LABEL_IMAP": "IMAP",
+		"LABEL_SMTP": "SMTP",
+		"LABEL_SIEVE": "SIEVE",
+		"LABEL_SERVER": "Palvelin",
+		"LABEL_PORT": "Portti",
+		"LABEL_SECURE": "Secure",
+		"LABEL_WHITE_LIST": "Sallitut Lista",
+		"SECURE_OPTION_NONE": "Ei mitään",
+		"SECURE_OPTION_SSL": "SSL\/TLS",
+		"SECURE_OPTION_STARTTLS": "STARTTLS",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Salli sieve skriptit",
+		"LABEL_USE_SHORT_LOGIN": "Käytä lyhyttä kirjautumista",
+		"LABEL_USE_AUTH": "Käytä tunnistautumista",
+		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_USE_PHP_MAIL": "Käytä php mail() funktiota",
+		"BUTTON_TEST": "Test",
+		"BUTTON_WHITE_LIST": "Sallitut Lista",
+		"BUTTON_SIEVE_CONFIGURATION": "Sieve asetukset",
+		"BUTTON_BACK_TO_IMAP": "Takaisin IMAP asetuksiin",
+		"BUTTON_BACK": "Takaisin",
+		"BUTTON_CLOSE": "Sulje",
+		"BUTTON_ADD": "Lisää",
+		"BUTTON_UPDATE": "Päivitä",
+		"NEW_DOMAIN_DESC": "Tämän verkkotunnuksen asetukset sallivat käyttää <br\/> <i>%NAME%<i\/> säkhöpostiosoitteita.",
+		"WHITE_LIST_ALERT": "Lista domain käyttäjistä joihin webmaililla on oikeus.\nErottele välilyönnillä.\n"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Lisäosa",
+		"DESC_NOTHING_TO_CONFIGURE": "Ei mitään asetettavaa",
+		"BUTTON_CLOSE": "Sulje",
+		"BUTTON_SAVE": "Tallenna"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "Yes",
+		"BUTTON_NO": "No",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Haluatko varmasti sulkea tämän ikkunan?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Valitse kieli"
+	},
+	"HINTS": {
+		"BETA": "beta",
+		"UNSTABLE": "epävakaa",
+		"WARNING": "Varoitus!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "Verkkotunnus on jo olemassa",
+		"UNKNOWN_ERROR": "Tuntematon virhe"
+	},
+	"NOTIFICATIONS": {
+		"INVALID_TOKEN": "Väärä token",
+		"AUTH_ERROR": "Tunnistautuminen epäonnistui",
+		"ACCESS_ERROR": "Pääsyvirhe",
+		"CONNECTION_ERROR": "Palvelimeen ei saa yhteyttä",
+		"DOMAIN_NOT_ALLOWED": "Verkkotunnue ei ole sallittu",
+		"ACCOUNT_NOT_ALLOWED": "Tili ei ole sallittu",
+		"CURRENT_PASSWORD_INCORRECT": "Nykyinen salasana on väärin",
+		"NEW_PASSWORD_SHORT": "Salasana on liian lyhyt",
+		"NEW_PASSWORD_WEAK": "Salasana on liian helppo",
+		"CONTACTS_SYNC_ERROR": "Yhteystietojen syknronointivirhe",
+		"CANT_GET_MESSAGE_LIST": "Viestilistaa ei voi ladata",
+		"CANT_GET_MESSAGE": "Viestiä ei voi ladata",
+		"CANT_DELETE_MESSAGE": "Viestiä ei voi poistaa",
+		"CANT_COPY_MESSAGE": "Can't copy message",
+		"CANT_MOVE_MESSAGE": "Viestiä ei voi siirtää",
+		"CANT_SAVE_MESSAGE": "Viestiä ei voi tallentaa",
+		"CANT_SEND_MESSAGE": "Viestiä ei voi lähettää",
+		"INVALID_RECIPIENTS": "Virheelinen vastaanottaja",
+		"CANT_SAVE_FILTERS": "Suodatinta ei voi tallentaa",
+		"CANT_GET_FILTERS": "Suodattimia ei voi ladata",
+		"FILTERS_ARE_NOT_CORRECT": "Suodattimissa on virhe",
+		"CANT_CREATE_FOLDER": "Kansiota ei voi luoda",
+		"CANT_RENAME_FOLDER": "Kansiota ei voi uudelleennimetä",
+		"CANT_DELETE_FOLDER": "Kasiota ei voi poistaa",
+		"CANT_DELETE_NON_EMPTY_FOLDER": "Kansio ei ole tyhjä, ei voida poistaa",
+		"CANT_SUBSCRIBE_FOLDER": "Kansiota ei voi tilata",
+		"CANT_UNSUBSCRIBE_FOLDER": "Kansion tilausta ei voi purkaa",
+		"CANT_SAVE_SETTINGS": "Asetuksia ei voida tallentaa",
+		"CANT_SAVE_PLUGIN_SETTINGS": "Asetuksia ei voida tallentaa",
+		"DOMAIN_ALREADY_EXISTS": "Verkkotunnus on jo olemassa",
+		"CANT_INSTALL_PACKAGE": "Paketin asennus epäonnistui",
+		"CANT_DELETE_PACKAGE": "Paketin poisto epäonnistui",
+		"INVALID_PLUGIN_PACKAGE": "Virheellinen lisäosa-paketti",
+		"UNSUPPORTED_PLUGIN_PACKAGE": "Ei tuettu lisäosa-paketti",
+		"DEMO_SEND_MESSAGE_ERROR": "Turvallisuus syistä tältä tililtä ei saa lähettää sähköposteja ulkoisiin osoitteisiin!",
+		"DEMO_ACCOUNT_ERROR": "Turvallisuus syistä tämä toiminto on estettuy tälle tilille!",
+		"ACCOUNT_ALREADY_EXISTS": "Tili on jo olemassa.",
+		"ACCOUNT_DOES_NOT_EXIST": "Tiliä ei ole olemassa",
+		"MAIL_SERVER_ERROR": "Palvelin yhteydessä on tapahtunut virhe",
+		"INVALID_INPUT_ARGUMENT": "Virheellinen syöte",
+		"UNKNOWN_ERROR": "Tuntematon virhe"
+	}
+}

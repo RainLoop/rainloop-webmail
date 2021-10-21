@@ -1,0 +1,206 @@
+{
+	"LOGIN": {
+		"LABEL_LOGIN": "Prihlasovanie",
+		"LABEL_PASSWORD": "Heslo",
+		"LABEL_TOTP": "TOTP code",
+		"BUTTON_LOGIN": "Prihlásiť sa do admin panelu"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Admin Panel"
+	},
+	"TABS_LABELS": {
+		"LABEL_GENERAL_NAME": "Všeobecné",
+		"LABEL_LOGIN_NAME": "Používateľské meno",
+		"LABEL_BRANDING_NAME": "Branding",
+		"LABEL_CONTACTS_NAME": "Kontakty",
+		"LABEL_DOMAINS_NAME": "Domény",
+		"LABEL_SECURITY_NAME": "Zabezpečenie",
+		"LABEL_PACKAGES_NAME": "Balíčky",
+		"LABEL_ABOUT_NAME": "O programe"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Rozhranie",
+		"LABEL_LANGUAGE": "Jazyk",
+		"LABEL_LANGUAGE_ADMIN": "Jazyk (admin)",
+		"LABEL_THEME": "Téma",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Povoliť výber jazyka v nastaveniach",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Povoliť výber témy v nastaveniach",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Povoliť výber pozadia v nastaveniach",
+		"LABEL_NEW_FOLDER_MOVE": "New \"move to folder\" button",
+		"LABEL_SHOW_THUMBNAILS": "Zobraziť náhľady (prílohy)",
+		"LEGEND_MAIN": "Všeobecné",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Maximálna veľkosť prílohy",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Povoliť ďalšie účty",
+		"LABEL_ALLOW_IDENTITIES": "Povoliť viaceré identity",
+		"ALERT_DATA_ACCESS": "Adresár data je dostupný. Prosím skonfigurujte svoj webserver tak, aby bol adresár data nedostupný. Viac informácií:",
+		"ALERT_WARNING": "Upozornenie!",
+		"HTML_ALERT_WEAK_PASSWORD": "Používate predvolené administrátorské heslo.\n<br \/>\nKvôli bezpečnosti prosím\n<strong><a href=\"#\/security\">zmeňte<\/a><\/strong>\nheslo na iné.\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Prihlasovacia obrazovka",
+		"LABEL_DEFAULT_DOMAIN": "Predvolená doména",
+		"LABEL_DETERMINE_USER_DOMAIN": "Pokúsiť sa určiť doménu používateľa",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Povoliť výber jazyka na prihlasovacej obrazovke",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Pokúsiť sa určiť používateľov jazyk",
+		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Vlastné označenie",
+		"LABEL_PAGE_TITLE": "Názov stránky",
+		"LABEL_LOADING_DESCRIPTION": "Loading Description",
+		"LABEL_FAVICON_URL": "Favicon"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Kontakty",
+		"LEGEND_STORAGE": "Úložisko (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Zapnúť kontakty",
+		"LABEL_ALLOW_SYNC": "Povoliť synchronizáciu kontaktov (s externým CardDAV serverom)",
+		"LABEL_STORAGE_TYPE": "Typ",
+		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_USER": "Užívateľ",
+		"LABEL_STORAGE_PASSWORD": "Heslo",
+		"BUTTON_TEST": "Test",
+		"ALERT_NOTICE": "Notice!",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Nepoužívajte tento typ databázy, ak máte veľký počet aktívnych používateľov.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Your system doesn't support contacts.\n<br \/>\nYou need to install or enable <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> extension on your server.\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Domény",
+		"BUTTON_ADD_DOMAIN": "Pridať doménu",
+		"BUTTON_ADD_ALIAS": "Pridať alias",
+		"DELETE_ARE_YOU_SURE": "Ste si istí?",
+		"HTML_DOMAINS_HELPER": "List of domains webmail is allowed to access.\n<br \/>\nClick on the name to configure the domain.\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "Bezpečnosť",
+		"LABEL_USE_IMAGE_PROXY": "Use local proxy for external images",
+		"LABEL_ALLOW_OPEN_PGP": "Povoliť OpenPGP",
+		"LABEL_SHOW_PHP_INFO": "Zobraziť informácie o PHP",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Admin Panel Access Credentials",
+		"LABEL_CURRENT_PASSWORD": "Súčasné heslo",
+		"LABEL_NEW_LOGIN": "Nový login",
+		"LABEL_NEW_PASSWORD": "Nové heslo",
+		"LABEL_REPEAT_PASSWORD": "Opakovať",
+		"BUTTON_UPDATE_PASSWORD": "Zmeniť heslo",
+		"LEGEND_SSL": "SSL",
+		"LABEL_REQUIRE_VERIFICATION": "Require verification of SSL certificate used (IMAP\/SMTP)",
+		"LABEL_ALLOW_SELF_SIGNED": "Allow self signed certificates"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Enable extensions",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Dostupné na aktualizáciu",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Dostupné na inštaláciu",
+		"LEGEND_INSTALLED_PACKAGES": "Nainštalované balíčky",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Cannot access the repository at the moment."
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "O programe",
+		"LABEL_TAG_HINT": "Jednoduchý, moderný a rýchly webmail klient",
+		"LABEL_ALL_RIGHTS_RESERVED": "Všetky práva vyhradené."
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Pridať alias",
+		"LABEL_ALIAS": "Alias",
+		"LABEL_DOMAIN": "Doména",
+		"BUTTON_CLOSE": "Zatvoriť",
+		"BUTTON_ADD": "Pridať"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Pridať doménu",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Pridať doménu \"%NAME%\"",
+		"TITLE_EDIT_DOMAIN": "Upraviť doménu \"%NAME%\"",
+		"LABEL_NAME": "Meno",
+		"NAME_HELPER": "wildcard supported",
+		"LABEL_IMAP": "IMAP",
+		"LABEL_SMTP": "SMTP",
+		"LABEL_SIEVE": "SIEVE",
+		"LABEL_SERVER": "Server",
+		"LABEL_PORT": "Port",
+		"LABEL_SECURE": "Bezpečné",
+		"LABEL_WHITE_LIST": "Zoznam povolených",
+		"SECURE_OPTION_NONE": "Žiadne",
+		"SECURE_OPTION_SSL": "SSL\/TLS",
+		"SECURE_OPTION_STARTTLS": "STARTTLS",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Povoliť Sieve skripty",
+		"LABEL_USE_SHORT_LOGIN": "Použiť skrátené prihlásenie",
+		"LABEL_USE_AUTH": "Použiť overenie",
+		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_USE_PHP_MAIL": "Použiť php mail() funkciu",
+		"BUTTON_TEST": "Test",
+		"BUTTON_WHITE_LIST": "Zoznam povolených",
+		"BUTTON_SIEVE_CONFIGURATION": "Nastavenia Sieve",
+		"BUTTON_BACK_TO_IMAP": "Späť do IMAP nastavení",
+		"BUTTON_BACK": "Späť",
+		"BUTTON_CLOSE": "Zatvoriť",
+		"BUTTON_ADD": "Pridať",
+		"BUTTON_UPDATE": "Aktualizovať",
+		"NEW_DOMAIN_DESC": "This domain configuration will allow you to work <br \/>with <i>%NAME%<\/i> email addresses.",
+		"WHITE_LIST_ALERT": "List of domain users webmail is allowed to access.\nUse a space as delimiter.\n"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Doplnok",
+		"DESC_NOTHING_TO_CONFIGURE": "Nothing to configure",
+		"BUTTON_CLOSE": "Zatvoriť",
+		"BUTTON_SAVE": "Uložiť"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "Yes",
+		"BUTTON_NO": "No",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Are you sure you want to close this window?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Zvoľte jazyk"
+	},
+	"HINTS": {
+		"BETA": "beta",
+		"UNSTABLE": "nestabilné",
+		"WARNING": "Upozornenie!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "Táto Doména už existuje",
+		"UNKNOWN_ERROR": "Neznáma chyba"
+	},
+	"NOTIFICATIONS": {
+		"INVALID_TOKEN": "Neplatný token",
+		"AUTH_ERROR": "Overenie zlyhalo",
+		"ACCESS_ERROR": "Chyba prístupu",
+		"CONNECTION_ERROR": "Nepodarilo sa pripojiť k serveru",
+		"DOMAIN_NOT_ALLOWED": "Doména nie je povolená",
+		"ACCOUNT_NOT_ALLOWED": "Účet nie je povolený",
+		"CURRENT_PASSWORD_INCORRECT": "Chybné aktuálne heslo",
+		"NEW_PASSWORD_SHORT": "Heslo je príliš krátke",
+		"NEW_PASSWORD_WEAK": "Heslo je príliš jednoduché",
+		"CONTACTS_SYNC_ERROR": "Chyba synchronizovania kontaktov",
+		"CANT_GET_MESSAGE_LIST": "Chyba pri vytváraní zoznamu správ.",
+		"CANT_GET_MESSAGE": "Správu sa nepodarilo načítať",
+		"CANT_DELETE_MESSAGE": "Správu sa nepodarilo odstrániť",
+		"CANT_COPY_MESSAGE": "Can't copy message",
+		"CANT_MOVE_MESSAGE": "Správu sa nepodarilo presunúť",
+		"CANT_SAVE_MESSAGE": "Správu sa nepodarilo uložiť",
+		"CANT_SEND_MESSAGE": "Správu sa nepodarilo odoslať",
+		"INVALID_RECIPIENTS": "Neplatný príjemcovia",
+		"CANT_SAVE_FILTERS": "Nepodarilo sa uložiť filtre",
+		"CANT_GET_FILTERS": "Nepodarilo sa načítať filtre",
+		"FILTERS_ARE_NOT_CORRECT": "Filtre nie sú správne",
+		"CANT_CREATE_FOLDER": "Priečinok sa nepodarilo vytvoriť",
+		"CANT_RENAME_FOLDER": "Priečinok sa nepodarilo premenovať",
+		"CANT_DELETE_FOLDER": "Priečinok sa nepodarilo odstrániť",
+		"CANT_DELETE_NON_EMPTY_FOLDER": "Nemôžem odstrániť neprázdny priečinok",
+		"CANT_SUBSCRIBE_FOLDER": "Can't subscribe folder",
+		"CANT_UNSUBSCRIBE_FOLDER": "Can't unsubscribe folder",
+		"CANT_SAVE_SETTINGS": "Nastavenia sa nepodarilo uložiť",
+		"CANT_SAVE_PLUGIN_SETTINGS": "Nastavenia sa nepodarilo uložiť",
+		"DOMAIN_ALREADY_EXISTS": "Táto Doména už existuje",
+		"CANT_INSTALL_PACKAGE": "Inštalácia balíčka zlyhala",
+		"CANT_DELETE_PACKAGE": "Odstránenie balíčka zlyhalo",
+		"INVALID_PLUGIN_PACKAGE": "Invalid plugin package",
+		"UNSUPPORTED_PLUGIN_PACKAGE": "Unsupported plugin package",
+		"DEMO_SEND_MESSAGE_ERROR": "For security purposes, this account is not allowed to send messages to external e-mail addresses!",
+		"DEMO_ACCOUNT_ERROR": "For security purposes, this account is not allowed for this action!",
+		"ACCOUNT_ALREADY_EXISTS": "Účet už existuje",
+		"ACCOUNT_DOES_NOT_EXIST": "Účet neexistuje",
+		"MAIL_SERVER_ERROR": "Nastala chyba počas prístupu na poštový server",
+		"INVALID_INPUT_ARGUMENT": "Invalid input argument",
+		"UNKNOWN_ERROR": "Neznáma chyba"
+	}
+}

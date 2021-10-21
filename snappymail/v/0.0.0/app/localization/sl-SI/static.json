@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Ponovno naloži",
+	"NO_SCRIPT_TITLE": "Ta aplikacija potrebuje omogočen JavaScript.",
+	"NO_SCRIPT_DESC": "Brskalnik nima podpore za JavaScript.\nOmogočite JavaScript v brskalniku in poskusite znova.\n",
+	"NO_COOKIE_TITLE": "Ta aplikacije potrebuje omogočene piškotke.",
+	"NO_COOKIE_DESC": "Brskalnik nima omogočenih piškotkov.\nOmogočite piškotke v brskalniku in poskusite znova.\n",
+	"BAD_BROWSER_TITLE": "Brskalnik je zastarel.",
+	"BAD_BROWSER_DESC": "Za uporabo vseh funkcij te aplikacije\nprenesite in namestite enega od teh brskalnikov:\n"
+}

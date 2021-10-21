@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "更新",
+	"NO_SCRIPT_TITLE": "このアプリケーションでは  JavaScript が必要です。",
+	"NO_SCRIPT_DESC": "ブラウザで JavaScript が、有効になっていません。\nJavaScript を有効にして、再度試してください。\n",
+	"NO_COOKIE_TITLE": "このアプリケーションでは  Cookie が必要です。",
+	"NO_COOKIE_DESC": "ブラウザで Cookie が、有効になっていません。\nCookie を有効にして、再度試してください。\n",
+	"BAD_BROWSER_TITLE": "ブラウザが古いです。",
+	"BAD_BROWSER_DESC": "アプリケーションのすべての機能を使用するには、\nこれらのブラウザの1つをダウンロードしてインストールします：\n"
+}

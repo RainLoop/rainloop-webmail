@@ -1,0 +1,206 @@
+{
+	"LOGIN": {
+		"LABEL_LOGIN": "Log ind",
+		"LABEL_PASSWORD": "Adgangskode",
+		"LABEL_TOTP": "TOTP code",
+		"BUTTON_LOGIN": "Log ind i administrationspanelet"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Admin Panel"
+	},
+	"TABS_LABELS": {
+		"LABEL_GENERAL_NAME": "Generelt",
+		"LABEL_LOGIN_NAME": "Log ind",
+		"LABEL_BRANDING_NAME": "Branding",
+		"LABEL_CONTACTS_NAME": "Kontakter",
+		"LABEL_DOMAINS_NAME": "Domæner",
+		"LABEL_SECURITY_NAME": "Sikkerhed",
+		"LABEL_PACKAGES_NAME": "Pakker",
+		"LABEL_ABOUT_NAME": "Om"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Grænseflade",
+		"LABEL_LANGUAGE": "Sprog",
+		"LABEL_LANGUAGE_ADMIN": "Sprog (admin)",
+		"LABEL_THEME": "Tema",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Tillad sprogvalg i indstillinger",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Tillad temavalg i indstillinger",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Tillad baggrundsvalg i indstillinger",
+		"LABEL_NEW_FOLDER_MOVE": "Ny \"flyt til mappe\" knap",
+		"LABEL_SHOW_THUMBNAILS": "Vis miniaturer (vedhæftede filer)",
+		"LEGEND_MAIN": "Primære",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Vedhæftede filers størrelsesgrænse",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Tillad flere konti",
+		"LABEL_ALLOW_IDENTITIES": "Tillad flere identiteter",
+		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
+		"ALERT_WARNING": "Advarsler!",
+		"HTML_ALERT_WEAK_PASSWORD": "Du bruger standard admin adgangskoden.\n<br \/>\nAf sikkerhedsmæssige hensyn bør du venligst\n<strong><a href=\"#\/security\">ændre<\/a><\/strong>\nadgangskoden til noget andet snarest.\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Log ind skærm",
+		"LABEL_DEFAULT_DOMAIN": "Standard domæne",
+		"LABEL_DETERMINE_USER_DOMAIN": "Forsøg at bestemme brugerens domæne",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Tillad sprogvalg ved log ind",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Forsøg at bestemme brugerens sprog",
+		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Branding",
+		"LABEL_PAGE_TITLE": "Sidetitel",
+		"LABEL_LOADING_DESCRIPTION": "Indlæsningsbeskrivelse",
+		"LABEL_FAVICON_URL": "Favicon"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Kontakter",
+		"LEGEND_STORAGE": "Lagring (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Aktivér kontakter",
+		"LABEL_ALLOW_SYNC": "Tillad kontaktsynkronisering (med ektern CardDAV server)",
+		"LABEL_STORAGE_TYPE": "Type",
+		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_USER": "Bruger",
+		"LABEL_STORAGE_PASSWORD": "Adgangskode",
+		"BUTTON_TEST": "Test",
+		"ALERT_NOTICE": "Underretning!",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Brug ikke denne database type med større antal af aktive brugere.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Dit system ser ikke ud til at understøtte kontakter.\n<br \/>\nDu skal installere og aktivere <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> udvidelsen på din server.\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Domæner",
+		"BUTTON_ADD_DOMAIN": "Tilføj domæne",
+		"BUTTON_ADD_ALIAS": "Tilføj alias",
+		"DELETE_ARE_YOU_SURE": "Er du sikker?",
+		"HTML_DOMAINS_HELPER": "Liste over domæner webmail er tilladt adgang til.\n<br \/>\nKlik på navnet for at konfigurere domænet.\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "Sikkerhed",
+		"LABEL_USE_IMAGE_PROXY": "Brug lokal proxy til eksterne billeder",
+		"LABEL_ALLOW_OPEN_PGP": "Tillad OpenPGP",
+		"LABEL_SHOW_PHP_INFO": "Vis PHP informationer",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Admin Panel Adgangsoplysninger",
+		"LABEL_CURRENT_PASSWORD": "Nuværende adgangskode",
+		"LABEL_NEW_LOGIN": "Nyt log ind",
+		"LABEL_NEW_PASSWORD": "Ny adgangskode",
+		"LABEL_REPEAT_PASSWORD": "Gentag",
+		"BUTTON_UPDATE_PASSWORD": "Opdater adgangskode",
+		"LEGEND_SSL": "SSL",
+		"LABEL_REQUIRE_VERIFICATION": "Kræv verifikation af brugt SSL certifikat (IMAP\/SMTP)",
+		"LABEL_ALLOW_SELF_SIGNED": "Tillad selvsignerede certifikater"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Enable extensions",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Opdatering tilgængelig",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Installation tilgængelig",
+		"LEGEND_INSTALLED_PACKAGES": "Installerede pakker",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Kan ikke tilgå depotet lige nu."
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "Om",
+		"LABEL_TAG_HINT": "Simpel, moderne & hurtig web-baseret e-mail klient",
+		"LABEL_ALL_RIGHTS_RESERVED": "alle rettigheder forbeholdes."
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Tilføj alias",
+		"LABEL_ALIAS": "Alias",
+		"LABEL_DOMAIN": "Domæne",
+		"BUTTON_CLOSE": "Luk",
+		"BUTTON_ADD": "Tilføj"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Tilføj domæne",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Tilføj domæne \"%NAME%\"",
+		"TITLE_EDIT_DOMAIN": "Rediger domæne \"%NAME%\"",
+		"LABEL_NAME": "Navn",
+		"NAME_HELPER": "specieltegn understøttet",
+		"LABEL_IMAP": "IMAP",
+		"LABEL_SMTP": "SMTP",
+		"LABEL_SIEVE": "SIEVE",
+		"LABEL_SERVER": "Server",
+		"LABEL_PORT": "Port",
+		"LABEL_SECURE": "Sikker",
+		"LABEL_WHITE_LIST": "Whitelist",
+		"SECURE_OPTION_NONE": "Ingen",
+		"SECURE_OPTION_SSL": "SSL\/TLS",
+		"SECURE_OPTION_STARTTLS": "STARTTLS",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Tillad sieve skripts",
+		"LABEL_USE_SHORT_LOGIN": "Brug kort log ind",
+		"LABEL_USE_AUTH": "Brug godkendelse",
+		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_USE_PHP_MAIL": "Brug php mail()",
+		"BUTTON_TEST": "Test",
+		"BUTTON_WHITE_LIST": "Whitelist",
+		"BUTTON_SIEVE_CONFIGURATION": "Sieve opsætning",
+		"BUTTON_BACK_TO_IMAP": "Tilbage til IMAP indstillinger",
+		"BUTTON_BACK": "Tilbage",
+		"BUTTON_CLOSE": "Luk",
+		"BUTTON_ADD": "Tilføj",
+		"BUTTON_UPDATE": "Opdater",
+		"NEW_DOMAIN_DESC": "Denne domæne konfiguration tillader <i>%NAME%<\/i> e-mail adresser.",
+		"WHITE_LIST_ALERT": "Liste med godkendte domæne for webmail opsætning.\nBrug mellemrum til at separere domæner.\n"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Tilføjelse",
+		"DESC_NOTHING_TO_CONFIGURE": "Intet at opsætte",
+		"BUTTON_CLOSE": "Luk",
+		"BUTTON_SAVE": "Gem"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "Yes",
+		"BUTTON_NO": "No",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Vil du lukke vinduet?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Vælg sprog"
+	},
+	"HINTS": {
+		"BETA": "beta",
+		"UNSTABLE": "ustabil",
+		"WARNING": "Advarsel!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "Domæne eksisterer allerede",
+		"UNKNOWN_ERROR": "Ukendt fejl"
+	},
+	"NOTIFICATIONS": {
+		"INVALID_TOKEN": "Ugyldigt tegn",
+		"AUTH_ERROR": "Godkendelse fejlede",
+		"ACCESS_ERROR": "Adgangsfejl",
+		"CONNECTION_ERROR": "Kan ikke kontakte server",
+		"DOMAIN_NOT_ALLOWED": "Domæne ikke tilladt",
+		"ACCOUNT_NOT_ALLOWED": "Konto ikke tilladt",
+		"CURRENT_PASSWORD_INCORRECT": "Nuværende adgangskode forkert",
+		"NEW_PASSWORD_SHORT": "Adgangskoden for kort",
+		"NEW_PASSWORD_WEAK": "Adgangskoden for simpel",
+		"CONTACTS_SYNC_ERROR": "Fejl ved synkronisering af kontakter",
+		"CANT_GET_MESSAGE_LIST": "Kan ikke indlæse meddelelsesoversigt ",
+		"CANT_GET_MESSAGE": "Kan ikke indlæse meddelelse",
+		"CANT_DELETE_MESSAGE": "Kan ikke slette meddelelse",
+		"CANT_COPY_MESSAGE": "Can't copy message",
+		"CANT_MOVE_MESSAGE": "Kan ikke flytte meddelelse",
+		"CANT_SAVE_MESSAGE": "Kan ikke gemme meddelelse",
+		"CANT_SEND_MESSAGE": "Kan ikke sende meddelelse",
+		"INVALID_RECIPIENTS": "Ugyldige modtagere",
+		"CANT_SAVE_FILTERS": "Kan ikke gemme filtre",
+		"CANT_GET_FILTERS": "Kan ikke indlæse filtre",
+		"FILTERS_ARE_NOT_CORRECT": "Fejl i filtre",
+		"CANT_CREATE_FOLDER": "Kan ikke oprette mappe",
+		"CANT_RENAME_FOLDER": "Kan ikke omdøbe mappe",
+		"CANT_DELETE_FOLDER": "Kan ikke slette mappe",
+		"CANT_DELETE_NON_EMPTY_FOLDER": "Kan ikke slette mappe som ikke er tom",
+		"CANT_SUBSCRIBE_FOLDER": "Kan ikke abonnere på mappe",
+		"CANT_UNSUBSCRIBE_FOLDER": "Kan ikke afmelde mappe",
+		"CANT_SAVE_SETTINGS": "Kan ikke gemme instillinger",
+		"CANT_SAVE_PLUGIN_SETTINGS": "Kan ikke gemme instillinger",
+		"DOMAIN_ALREADY_EXISTS": "Domæne eksisterer allerede",
+		"CANT_INSTALL_PACKAGE": "Installation af pakke mislykkedes",
+		"CANT_DELETE_PACKAGE": "Fjernelse af pakke mislykkedes",
+		"INVALID_PLUGIN_PACKAGE": "Ugyldig tilføjelsespakke",
+		"UNSUPPORTED_PLUGIN_PACKAGE": "Tilføjelsespakke ikke understøttet",
+		"DEMO_SEND_MESSAGE_ERROR": "Denne konto kan af sikkerheds hensyn ikke sende e-mails til eksterne adresser!",
+		"DEMO_ACCOUNT_ERROR": "Denne konto kan af sikkerheds hensyn ikke udføre denne handling!",
+		"ACCOUNT_ALREADY_EXISTS": "Kontoen eksisterer allerede",
+		"ACCOUNT_DOES_NOT_EXIST": "Kontoen eksisterer ikke",
+		"MAIL_SERVER_ERROR": "Der skete en fejl under adgang til e-mail serveren",
+		"INVALID_INPUT_ARGUMENT": "Ugyldigt argument",
+		"UNKNOWN_ERROR": "Ukendt fejl"
+	}
+}

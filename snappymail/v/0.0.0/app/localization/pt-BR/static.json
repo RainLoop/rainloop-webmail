@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Recarregar",
+	"NO_SCRIPT_TITLE": "JavaScript é necessário para esta aplicação.",
+	"NO_SCRIPT_DESC": "O JavaScript não está disponível em seu navegador.\nPor favor ative o suporte a JavaScript nas configurações do seu navegador e tente novamente.\n",
+	"NO_COOKIE_TITLE": "É necessário suporte a cookies para esta aplicação.",
+	"NO_COOKIE_DESC": "Os Cookies não estão disponíveis em seu navegador.\nPor favor ative o suporte a Cookies nas configurações do seu navegador e tente novamente.\n",
+	"BAD_BROWSER_TITLE": "Seu navegador está desatualizado.",
+	"BAD_BROWSER_DESC": "Para usar todos os recursos do aplicativo,\nbaixe e instale um desses navegadores:\n"
+}

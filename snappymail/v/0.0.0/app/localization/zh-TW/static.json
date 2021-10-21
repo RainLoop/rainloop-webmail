@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "重新載入",
+	"NO_SCRIPT_TITLE": "JavaScript 需要啟用！",
+	"NO_SCRIPT_DESC": "您的瀏覽器不支持JavaScript。\n請啟用瀏覽器的JavaScript支持並重試。\n",
+	"NO_COOKIE_TITLE": "Cookies 需要啟用！",
+	"NO_COOKIE_DESC": "您的瀏覽器不支持Cookies。\n請啟用瀏覽器的Cookies支持並重試。\n",
+	"BAD_BROWSER_TITLE": "您的瀏覽器過時了",
+	"BAD_BROWSER_DESC": "為了使用所有特性，\n下載並安裝其中一款瀏覽器：\n"
+}

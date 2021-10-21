@@ -1,0 +1,206 @@
+{
+	"LOGIN": {
+		"LABEL_LOGIN": "Prijava",
+		"LABEL_PASSWORD": "Geslo",
+		"LABEL_TOTP": "TOTP code",
+		"BUTTON_LOGIN": "Prijava v administracijsko ploščo"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Administracijska plošča"
+	},
+	"TABS_LABELS": {
+		"LABEL_GENERAL_NAME": "Splošno",
+		"LABEL_LOGIN_NAME": "Prijava",
+		"LABEL_BRANDING_NAME": "Prilagoditev",
+		"LABEL_CONTACTS_NAME": "Stiki",
+		"LABEL_DOMAINS_NAME": "Domene",
+		"LABEL_SECURITY_NAME": "Varnost",
+		"LABEL_PACKAGES_NAME": "Paketi",
+		"LABEL_ABOUT_NAME": "Več o"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Vmesnik",
+		"LABEL_LANGUAGE": "Jezik",
+		"LABEL_LANGUAGE_ADMIN": "Jezik (administrator)",
+		"LABEL_THEME": "Tema",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Dovoli izbor jezika v nastavitvah",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Dovoli izbor teme v nastavitvah",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Dovoli izbor ozadja v nastavitvah",
+		"LABEL_NEW_FOLDER_MOVE": "Novi gumb \"Premakni v mapo\"",
+		"LABEL_SHOW_THUMBNAILS": "Pokaži predoglede (priloge)",
+		"LEGEND_MAIN": "Glavno",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Omejitev velikosti prilog",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Dovoli dodatne račune",
+		"LABEL_ALLOW_IDENTITIES": "Dovoli več identitet",
+		"ALERT_DATA_ACCESS": "Mapa z RainLoop podatki je prosto ogledljiva. Prosimo, nastavite strežnik, da skrije mapo pred zunanjimi dostopi. Preberite več tukaj:",
+		"ALERT_WARNING": "Pozor!",
+		"HTML_ALERT_WEAK_PASSWORD": "V uporabi je privzeto geslo administratorja\n<br \/>\nIz varnostnih razlogov\n<strong><a href=\"#\/security\">spremenite<\/a><\/strong>\ngeslo v nekaj drugega.\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Prijavni zaslon",
+		"LABEL_DEFAULT_DOMAIN": "Privzeta domena",
+		"LABEL_DETERMINE_USER_DOMAIN": "Poskusi ugotoviti domeno uporabnika",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Dovoli izbor jezika na prijavnem zaslonu",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Poskusi ugotoviti jezik uporabnika",
+		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Prilagoditev",
+		"LABEL_PAGE_TITLE": "Naslov strani",
+		"LABEL_LOADING_DESCRIPTION": "Opis med nalaganjem",
+		"LABEL_FAVICON_URL": "Favicon"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Stiki",
+		"LEGEND_STORAGE": "Shramba (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Omogoči stike",
+		"LABEL_ALLOW_SYNC": "Dovoli sinhronizacijo stikov (zunanji CardDAV strežnik)",
+		"LABEL_STORAGE_TYPE": "Tip",
+		"LABEL_STORAGE_DSN": "Ime podatkovnega vira (DSN)",
+		"LABEL_STORAGE_USER": "Uporabnik",
+		"LABEL_STORAGE_PASSWORD": "Geslo",
+		"BUTTON_TEST": "Preizkus",
+		"ALERT_NOTICE": "Obvestilo!",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Ta tip podatkovne baze ni priporočljiv za večje število uporabnikov.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Sistem ne podpira stikov.\n<br \/>\nNamestite ali omogočite <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> razširitev na strežniku.\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Domene",
+		"BUTTON_ADD_DOMAIN": "Dodaj domeno",
+		"BUTTON_ADD_ALIAS": "Dodaj vzdevek",
+		"DELETE_ARE_YOU_SURE": "Ste prepričani?",
+		"HTML_DOMAINS_HELPER": "Seznam domen, do katerih je omogočen dostop.\n<br \/>\nKliknite ime za konfiguracijo domene.\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "Varnost",
+		"LABEL_USE_IMAGE_PROXY": "Uporabni lokalni posredniški strežnik za zunanje slike",
+		"LABEL_ALLOW_OPEN_PGP": "Dovoli OpenPGP",
+		"LABEL_SHOW_PHP_INFO": "Prikaz PHP informacij",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Prijavni podatki za administracijsko ploščo",
+		"LABEL_CURRENT_PASSWORD": "Trenutno geslo",
+		"LABEL_NEW_LOGIN": "Novo uporabniško ime",
+		"LABEL_NEW_PASSWORD": "Novo geslo",
+		"LABEL_REPEAT_PASSWORD": "Ponovno",
+		"BUTTON_UPDATE_PASSWORD": "Posodobi geslo",
+		"LEGEND_SSL": "SSL",
+		"LABEL_REQUIRE_VERIFICATION": "Obvezno overjanje uporabljenega SSL certifikata (IMAP\/SMTP)",
+		"LABEL_ALLOW_SELF_SIGNED": "Dovoli samopodpisane certifikate"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Enable extensions",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Na voljo za posodobitev",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Na voljo za namestitev",
+		"LEGEND_INSTALLED_PACKAGES": "Nameščeni paketi",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Trenutno ni možen dostop do repozitorija"
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "Več o",
+		"LABEL_TAG_HINT": "Preprost, sodoben, in hiter spletni e-poštni odjemalec",
+		"LABEL_ALL_RIGHTS_RESERVED": "Vse pravice pridržane."
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Dodajanje domene",
+		"LABEL_ALIAS": "Vzdevek",
+		"LABEL_DOMAIN": "Domena",
+		"BUTTON_CLOSE": "Zapri",
+		"BUTTON_ADD": "Dodaj"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Dodajanje domene",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Dodajanje domene \"%NAME%\"",
+		"TITLE_EDIT_DOMAIN": "Urejanje domene \"%NAME%\"",
+		"LABEL_NAME": "Ime",
+		"NAME_HELPER": "podpora za nadomestne znake",
+		"LABEL_IMAP": "IMAP",
+		"LABEL_SMTP": "SMTP",
+		"LABEL_SIEVE": "SIEVE",
+		"LABEL_SERVER": "Strežnik",
+		"LABEL_PORT": "Vrata",
+		"LABEL_SECURE": "Varno",
+		"LABEL_WHITE_LIST": "Bela lista",
+		"SECURE_OPTION_NONE": "Nobeno",
+		"SECURE_OPTION_SSL": "SSL\/TLS",
+		"SECURE_OPTION_STARTTLS": "STARTTLS",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Dovoljene sieve skripte",
+		"LABEL_USE_SHORT_LOGIN": "Uporaba uporabniškega imena brez domene",
+		"LABEL_USE_AUTH": "Uporaba overjanja",
+		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_USE_PHP_MAIL": "Uporaba php mail() funkcije",
+		"BUTTON_TEST": "Preizkus",
+		"BUTTON_WHITE_LIST": "Dodaj na belo listo",
+		"BUTTON_SIEVE_CONFIGURATION": "Konfiguriraj Sieve",
+		"BUTTON_BACK_TO_IMAP": "Nazaj na nastavitve IMAP",
+		"BUTTON_BACK": "Nazaj",
+		"BUTTON_CLOSE": "Zapri",
+		"BUTTON_ADD": "Dodaj",
+		"BUTTON_UPDATE": "Posodobi",
+		"NEW_DOMAIN_DESC": "Ta konfiguiracija domene bo omogočala delo <br \/>z <i>%NAME%<\/i> e-naslovi.",
+		"WHITE_LIST_ALERT": "Seznam uporabnikov domene, do katerih je omogočen dostop.\nUporabnike ločite s presledkom.\n"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Vtičnik",
+		"DESC_NOTHING_TO_CONFIGURE": "Ni nastavitev za spreminjati",
+		"BUTTON_CLOSE": "Zapri",
+		"BUTTON_SAVE": "Shrani"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "Yes",
+		"BUTTON_NO": "No",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Želite zapreti to okno?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Izberite jezik"
+	},
+	"HINTS": {
+		"BETA": "beta",
+		"UNSTABLE": "nestabilno",
+		"WARNING": "Pozor!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "Domena že obstaja",
+		"UNKNOWN_ERROR": "Neznana napaka"
+	},
+	"NOTIFICATIONS": {
+		"INVALID_TOKEN": "Neveljaven žeton",
+		"AUTH_ERROR": "Spodletelo overjanje",
+		"ACCESS_ERROR": "Napaka dostopa",
+		"CONNECTION_ERROR": "Neuspešna povezava s strežnikom",
+		"DOMAIN_NOT_ALLOWED": "Domena ni dovoljena",
+		"ACCOUNT_NOT_ALLOWED": "Račun ni dovoljen",
+		"CURRENT_PASSWORD_INCORRECT": "Napačno trenutno geslo",
+		"NEW_PASSWORD_SHORT": "Prekratko geslo",
+		"NEW_PASSWORD_WEAK": "Preveč enostavno geslo",
+		"CONTACTS_SYNC_ERROR": "Napaka sinhronizacije stikov",
+		"CANT_GET_MESSAGE_LIST": "Ni bilo mogoče pridobiti seznama sporočil",
+		"CANT_GET_MESSAGE": "Ni bilo mogoče pridobiti sporočila",
+		"CANT_DELETE_MESSAGE": "Ni bilo mogoče izbrisati sporočila",
+		"CANT_COPY_MESSAGE": "Can't copy message",
+		"CANT_MOVE_MESSAGE": "Ni mogoče premakniti sporočila",
+		"CANT_SAVE_MESSAGE": "Ni mogoče shraniti sporočila",
+		"CANT_SEND_MESSAGE": "Ni mogoče poslati sporočila",
+		"INVALID_RECIPIENTS": "Neveljavni prejemniki",
+		"CANT_SAVE_FILTERS": "Ni mogoče shraniti filtrov",
+		"CANT_GET_FILTERS": "Ni mogoče pridobiti filtrov",
+		"FILTERS_ARE_NOT_CORRECT": "Filtri so nepravilni",
+		"CANT_CREATE_FOLDER": "Ni mogoče ustvariti mape",
+		"CANT_RENAME_FOLDER": "Ni mogoče preimenovati mape",
+		"CANT_DELETE_FOLDER": "Ni mogoče izbrisati mape",
+		"CANT_DELETE_NON_EMPTY_FOLDER": "Ni mogoče izbrisati neprazne mape",
+		"CANT_SUBSCRIBE_FOLDER": "Ni mogoče slediti mapi",
+		"CANT_UNSUBSCRIBE_FOLDER": "Ni mogoče prenehati slediti mapi",
+		"CANT_SAVE_SETTINGS": "Ni mogoče shraniti nastavitev",
+		"CANT_SAVE_PLUGIN_SETTINGS": "Ni mogoče shraniti nastavitev",
+		"DOMAIN_ALREADY_EXISTS": "Domena že obstaja",
+		"CANT_INSTALL_PACKAGE": "Neuspešna namestitev paketa",
+		"CANT_DELETE_PACKAGE": "Neuspešno odstranjevanje paketa",
+		"INVALID_PLUGIN_PACKAGE": "Neveljaven paket vtičnika",
+		"UNSUPPORTED_PLUGIN_PACKAGE": "Nepodprt paket vtičnika",
+		"DEMO_SEND_MESSAGE_ERROR": "Iz varnostnih razlogov ta račun ne sme pošiljati pošte na zunanje e-naslove!",
+		"DEMO_ACCOUNT_ERROR": "Iz varnostnih razlogov ta račun ne sme izvršiti tega dejanja!",
+		"ACCOUNT_ALREADY_EXISTS": "Račun že obstaja",
+		"ACCOUNT_DOES_NOT_EXIST": "Račun ne obstaja",
+		"MAIL_SERVER_ERROR": "Napaka pri dostopu do poštnega strežnika",
+		"INVALID_INPUT_ARGUMENT": "Neveljaven vhodni argument",
+		"UNKNOWN_ERROR": "Neznana napaka"
+	}
+}

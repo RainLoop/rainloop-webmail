@@ -1,0 +1,206 @@
+{
+	"LOGIN": {
+		"LABEL_LOGIN": "Prisijungimo vardas",
+		"LABEL_PASSWORD": "Slaptažodis",
+		"LABEL_TOTP": "TOTP code",
+		"BUTTON_LOGIN": "Prisijungti prie valdymo skydo"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Administratoriaus valdymo skydas"
+	},
+	"TABS_LABELS": {
+		"LABEL_GENERAL_NAME": "Pagrindiniai",
+		"LABEL_LOGIN_NAME": "Prisijungimo vardas",
+		"LABEL_BRANDING_NAME": "Įdaguoti",
+		"LABEL_CONTACTS_NAME": "Kontaktai",
+		"LABEL_DOMAINS_NAME": "Domenai",
+		"LABEL_SECURITY_NAME": "Sauga",
+		"LABEL_PACKAGES_NAME": "Paketai",
+		"LABEL_ABOUT_NAME": "Apie"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Sąsaja",
+		"LABEL_LANGUAGE": "Kalba",
+		"LABEL_LANGUAGE_ADMIN": "Kalba (administravimo pulto)",
+		"LABEL_THEME": "Tema",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Leisti kalbos keitimą nustatymuose",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Leisti temos keitimą nustatymuose",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Leisti keisti foną nustatymuose",
+		"LABEL_NEW_FOLDER_MOVE": "Naujas \"\"perkelti į katalogą\" mygtukas",
+		"LABEL_SHOW_THUMBNAILS": "Rodyti miniatiūrą (prisegtuko)",
+		"LEGEND_MAIN": "Pagrindinis",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Prisegtukų dydžio limitas",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Leisti papildomas paskyras",
+		"LABEL_ALLOW_IDENTITIES": "Leisti daugiau tapatybių",
+		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
+		"ALERT_WARNING": "Dėmesio!",
+		"HTML_ALERT_WEAK_PASSWORD": "Naudojate numatytąjį administratoriaus slaptažodį.\n<br \/>\nDėl Jūsų saugumo prašome\n<strong><a href=\"#\/security\">pakeiskite<\/a><\/strong>\nslaptažodį kitu.\n\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Prisijungimo langas",
+		"LABEL_DEFAULT_DOMAIN": "Numatytasis Domenas",
+		"LABEL_DETERMINE_USER_DOMAIN": "Bandyti nuspėti vartotojo domeną",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Leisti kalbų keitimą prisijungimo lange",
+		"LABEL_DETERMINE_USER_LANGUAGE": "bandyti nuspėti vartotojo kalbą",
+		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Prekės ženklo derinimas",
+		"LABEL_PAGE_TITLE": "Puslapio pavadinimas",
+		"LABEL_LOADING_DESCRIPTION": "Krovimosi aprašas",
+		"LABEL_FAVICON_URL": "Favicon"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Kontaktai",
+		"LEGEND_STORAGE": "Saugykla (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Įjungti kontaktus",
+		"LABEL_ALLOW_SYNC": "Leisti kontaktų sinchronizavimą (su išoriniu CardDAV serveriu)",
+		"LABEL_STORAGE_TYPE": "Tipas",
+		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_USER": "Vartotojas",
+		"LABEL_STORAGE_PASSWORD": "Slaptažodis",
+		"BUTTON_TEST": "Bandymas",
+		"ALERT_NOTICE": "Pastaba!",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Nenaudokite šio duomenų bazės tipo, jei turite daug aktyvių vartotojų",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Jūsų sistema nepalaiko kontaktų sąrašo.\nReikia įdiegti ar įjungti <strong>PDO (SĄLite \/ MySQL \/ PostgreSQL)<\/strong> plėtinius jūsų serveryje.\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Domenai",
+		"BUTTON_ADD_DOMAIN": "Pridėti Domeną",
+		"BUTTON_ADD_ALIAS": "Pridėti Alias",
+		"DELETE_ARE_YOU_SURE": "Ar jūs įsitikinę?",
+		"HTML_DOMAINS_HELPER": "Leidžiamų Domenų sąrašas\n<br\/>\nSpauskite ant pavadinimo norėdami redaguoti.\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "Sauga",
+		"LABEL_USE_IMAGE_PROXY": "naudoti vietinį šliuzą (proxy) išoriniams paveikslėliams",
+		"LABEL_ALLOW_OPEN_PGP": "Leisti OpenPGP",
+		"LABEL_SHOW_PHP_INFO": "Rodyti PHP informaciją",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Valdymo skydo prieigos rekvizitai",
+		"LABEL_CURRENT_PASSWORD": "Dabartinis slaptažodis",
+		"LABEL_NEW_LOGIN": "Naujas prisijungimo vardas",
+		"LABEL_NEW_PASSWORD": "Naujas slaptažodis",
+		"LABEL_REPEAT_PASSWORD": "Pakartokite",
+		"BUTTON_UPDATE_PASSWORD": "Atnaujinti slaptažodį",
+		"LEGEND_SSL": "SSL",
+		"LABEL_REQUIRE_VERIFICATION": "Reikalauti SSL sertifikato (IMAP\/SMTP)",
+		"LABEL_ALLOW_SELF_SIGNED": "Leisti pačių sukurtus sertifikatus"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Enable extensions",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Yra galimybė atnaujinti",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Galima diegti",
+		"LEGEND_INSTALLED_PACKAGES": "Įdiegti paketai",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Šiuo momentu negaliu prisijungti prie saugyklos."
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "Apie",
+		"LABEL_TAG_HINT": "Paprastas, modernus ir greitas web pašto klientas",
+		"LABEL_ALL_RIGHTS_RESERVED": "Visos teisės saugomos."
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Pridėti Alias",
+		"LABEL_ALIAS": "Alias",
+		"LABEL_DOMAIN": "Domenas",
+		"BUTTON_CLOSE": "Uždaryti",
+		"BUTTON_ADD": "Pridėti"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Pridėti Domeną",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Pridėti Domeną \"%NAME%\"",
+		"TITLE_EDIT_DOMAIN": "Redaguoti Domeną \"%NAME%\"",
+		"LABEL_NAME": "Pavadinimas",
+		"NAME_HELPER": "wildcard palaikymas",
+		"LABEL_IMAP": "IMAP",
+		"LABEL_SMTP": "SMTP",
+		"LABEL_SIEVE": "SIEVE",
+		"LABEL_SERVER": "Serveris",
+		"LABEL_PORT": "Prievadas",
+		"LABEL_SECURE": "Sauga",
+		"LABEL_WHITE_LIST": "Baltas Sąrašas",
+		"SECURE_OPTION_NONE": "Nėra",
+		"SECURE_OPTION_SSL": "SSL\/TLS",
+		"SECURE_OPTION_STARTTLS": "STARTTLS",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Leisti sieve programavimą",
+		"LABEL_USE_SHORT_LOGIN": "Naudoti trumpą prisijungimo vardą",
+		"LABEL_USE_AUTH": "Naudoti autentifikavimą ",
+		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_USE_PHP_MAIL": "Naudoti php mail() funkciją",
+		"BUTTON_TEST": "Bandyti",
+		"BUTTON_WHITE_LIST": "Baltas sąrašas",
+		"BUTTON_SIEVE_CONFIGURATION": "Sieve konfiguracija",
+		"BUTTON_BACK_TO_IMAP": "Atgal į IMAP nustatymus",
+		"BUTTON_BACK": "Atgal",
+		"BUTTON_CLOSE": "Uždaryti",
+		"BUTTON_ADD": "Pridėti",
+		"BUTTON_UPDATE": "Atnaujinti",
+		"NEW_DOMAIN_DESC": "Šie nustatymai leis jums dirbti <br\/> su <i>%NAME%<\/i> domeno pašto adresais.",
+		"WHITE_LIST_ALERT": "Domeno vartotojų sąrašas, kuriems leista naudotis web paštu.\nNaudokite tarpo simbolį kaip skyriklį.\n"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Įskiepis",
+		"DESC_NOTHING_TO_CONFIGURE": "Nėra ką konfiguruoti",
+		"BUTTON_CLOSE": "Uždaryti",
+		"BUTTON_SAVE": "Saugoti"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "Yes",
+		"BUTTON_NO": "No",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Ar tikrai norite uždaryti šį langą?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Pasirinkite kalbą"
+	},
+	"HINTS": {
+		"BETA": "beta",
+		"UNSTABLE": "nestabilus",
+		"WARNING": "Dėmesio!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "Toks domenas jau yra",
+		"UNKNOWN_ERROR": "Nežinoma klaida"
+	},
+	"NOTIFICATIONS": {
+		"INVALID_TOKEN": "Neteisingas raktas",
+		"AUTH_ERROR": "Autorizacija nepavyko",
+		"ACCESS_ERROR": "Prieigos klaida",
+		"CONNECTION_ERROR": "Nepavyskta prisijungti prie serverio",
+		"DOMAIN_NOT_ALLOWED": "Šis subdomenas neleidžiamas",
+		"ACCOUNT_NOT_ALLOWED": "Paskyra neleidžiama",
+		"CURRENT_PASSWORD_INCORRECT": "Dabartinis slaptažodis neteisingas",
+		"NEW_PASSWORD_SHORT": "Slaptažodis per trumpas",
+		"NEW_PASSWORD_WEAK": "Slaptažodis per lengvas",
+		"CONTACTS_SYNC_ERROR": "Kontaktų sinchronizavimo klaida",
+		"CANT_GET_MESSAGE_LIST": "Nepavyksta gauti laiškų sąrašo",
+		"CANT_GET_MESSAGE": "Nepavyksta gauti laiško",
+		"CANT_DELETE_MESSAGE": "Nepavyko pašalinti laiško",
+		"CANT_COPY_MESSAGE": "Can't copy message",
+		"CANT_MOVE_MESSAGE": "Nepavyko perkelti laiško",
+		"CANT_SAVE_MESSAGE": "Nepavyko išsaugoti laiško",
+		"CANT_SEND_MESSAGE": "Nepavyko išsiųsti laiško",
+		"INVALID_RECIPIENTS": "Netinkamas gavėjas",
+		"CANT_SAVE_FILTERS": "Nepavyko išsaugoti filtrų",
+		"CANT_GET_FILTERS": "Nepavyko gauti filtrų",
+		"FILTERS_ARE_NOT_CORRECT": "Filtrai neteisingi",
+		"CANT_CREATE_FOLDER": "Nepavyksta sukurti katalogo",
+		"CANT_RENAME_FOLDER": "Nepavyksta pervadinti katalogo",
+		"CANT_DELETE_FOLDER": "Nepavyksta pašalinti katalogo",
+		"CANT_DELETE_NON_EMPTY_FOLDER": "Negalima pašalinti ne tuščio katalogo",
+		"CANT_SUBSCRIBE_FOLDER": "Nepavyskta užprenumeruoti katalogo",
+		"CANT_UNSUBSCRIBE_FOLDER": "Nepavyksta nutraukti katalogo prenumeratos",
+		"CANT_SAVE_SETTINGS": "Nepavyksta išsaugoti nustatymų",
+		"CANT_SAVE_PLUGIN_SETTINGS": "Nepavyksta išsaugoti nustatymų",
+		"DOMAIN_ALREADY_EXISTS": "Toks domenas jau yra",
+		"CANT_INSTALL_PACKAGE": "Nepavyksta įdiegti paketo",
+		"CANT_DELETE_PACKAGE": "Nepavyksta pašalinti paketo",
+		"INVALID_PLUGIN_PACKAGE": "Netinkamas įskiepio paketas",
+		"UNSUPPORTED_PLUGIN_PACKAGE": "Nepalaikomas įskiepio paketas",
+		"DEMO_SEND_MESSAGE_ERROR": "Saugumo sumetimais, ši demo paskyra neleidžia siųsti laiškų išoriniais e-pašto adresais!",
+		"DEMO_ACCOUNT_ERROR": "Saugumo sumetimais, su šia paskyra negalima atlikti norimo veiksmo!",
+		"ACCOUNT_ALREADY_EXISTS": "Paskyra jau egzistuoja",
+		"ACCOUNT_DOES_NOT_EXIST": "Nėra tokios paskyros",
+		"MAIL_SERVER_ERROR": "Klaida bandant pasiekti pašto serverį",
+		"INVALID_INPUT_ARGUMENT": "Neteisingas įvesties argumentas",
+		"UNKNOWN_ERROR": "Nežinoma klaida"
+	}
+}

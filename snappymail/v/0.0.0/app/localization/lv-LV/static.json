@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Pārlādēt",
+	"NO_SCRIPT_TITLE": "JavaScript ir nepieciešams.",
+	"NO_SCRIPT_DESC": "Jūsu pārlūkprogramma neatbalsta JavaScript.\nLūdzu ieslēdziet JavaScript atbalstu.\n",
+	"NO_COOKIE_TITLE": "Cookies atbalsts ir nepieciešams.",
+	"NO_COOKIE_DESC": "Cookies atbalsts nav pieejams šai pārlūkprogrammai.\nLūdzu ieslēdziet Cookies atbalstu.\n",
+	"BAD_BROWSER_TITLE": "Jūsu pārlūkprogramma ir novecojusi.",
+	"BAD_BROWSER_DESC": "Lai izmantotu pilnas šis aplikācijas iespējas,\nlejupielādējat un uzinstalējas kādu no šīm pārlukprogrammām:\n"
+}

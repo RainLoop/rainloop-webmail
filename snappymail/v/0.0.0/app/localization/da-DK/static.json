@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Genindlæs",
+	"NO_SCRIPT_TITLE": "JavaScript er nødvendigt for dette program.",
+	"NO_SCRIPT_DESC": "JavaScript er slået fra i din browser.\nSlå JavaScript til og prøv igen.\n",
+	"NO_COOKIE_TITLE": "Cookies er nødvendige for dette program.",
+	"NO_COOKIE_DESC": "Cookies er slået fra i din browser.\nSlå Cookies til og prøv igen.\n",
+	"BAD_BROWSER_TITLE": "Din browser er forældet.",
+	"BAD_BROWSER_DESC": "Enkelte funktioner fungerer ikke med denne browser.\nFor at bruge alle funktioner, hent en af følgende:\n"
+}
