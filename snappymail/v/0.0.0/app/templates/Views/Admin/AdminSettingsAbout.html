@@ -10,11 +10,23 @@
 					<a class="g-ui-link" href="https://snappymail.eu/" target="_blank" style="padding-left: 0">https://snappymail.eu/</a>
 				</div>
 			</div>
-			<div class="rl-desc span6">
+			<div class="span6">
 				<h1 style="margin-bottom: 0;">SnappyMail</h1>
 				<h4 style="margin-top: 0;" data-bind="text: version"></h4>
 				<h4 style="color: #aaa; font-weight: normal;">An advanced fork of <a href="https://www.rainloop.net/" target="_blank">RainLoop</a></h4>
 				<h4 style="color: #aaa; font-weight: normal;" data-i18n="TAB_ABOUT/LABEL_TAG_HINT"></h4>
+
+				<h3>PHP optional extensions</h3>
+				<table class="table table-hover table-bordered"><thead><tr>
+					<th>Extension</th>
+					<th>Loaded</th>
+				</tr></thead><tbody data-bind="foreach: phpextensions">
+					<tr>
+						<td data-bind="text: name"></td>
+						<td data-bind="text: loaded ? '✔' : '❌'"></td>
+					</tr>
+				</tbody>
+				</table>
 			</div>
 		</div>
 	</div>

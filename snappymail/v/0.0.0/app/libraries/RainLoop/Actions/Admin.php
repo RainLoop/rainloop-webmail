@@ -694,6 +694,18 @@ trait Admin
 			('plugin' !== $sType ? array('Reload' => true) : true) : false);
 	}
 
+	public function DoAdminPHPExtensions() : array
+	{
+		$aResult = [];
+		foreach (['curl','gd','gmagick','imagick','intl','ldap','pdo_mysql','pdo_pgsql','pdo_sqlite','xxtea','zip'] as $name) {
+			$aResult[] = [
+				'name' => $name,
+				'loaded' => extension_loaded($name)
+			];
+		}
+		return $this->DefaultResponse(__FUNCTION__, $aResult);
+	}
+
 	private function pluginEnable(string $sName, bool $bEnable = true) : bool
 	{
 		if (!\strlen($sName))
