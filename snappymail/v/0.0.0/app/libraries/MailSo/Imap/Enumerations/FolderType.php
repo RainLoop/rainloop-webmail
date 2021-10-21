@@ -29,6 +29,9 @@ abstract class FolderType
 	const ARCHIVE = 12;
 	const ALL = 13;
 
+	// TODO: SnappyMail
+	const TEMPLATES = 19;
+
 	// Kolab
 	const CONFIGURATION = 20;
 	const CALENDAR = 21;
