@@ -20,34 +20,27 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	/**
 	 * @var bool
 	 */
-	private $bIsLoggined;
+	private $bIsLoggined = false;
 
 	/**
 	 * @var array
 	 */
-	private $aCapa;
+	private $aCapa = array();
 
 	/**
-	 * @var int
+	 * @var array
 	 */
-	private $iRequestTime;
+	private $aAuth = array();
+
+	/**
+	 * @var array
+	 */
+	private $aModules = array();
 
 	/**
 	 * @var bool
 	 */
-	public $__USE_INITIAL_AUTH_PLAIN_COMMAND;
-
-	function __construct()
-	{
-		parent::__construct();
-
-		$this->bIsLoggined = false;
-		$this->iRequestTime = 0;
-		$this->aCapa = array();
-		$this->aModules = array();
-
-		$this->__USE_INITIAL_AUTH_PLAIN_COMMAND = true;
-	}
+	public $__USE_INITIAL_AUTH_PLAIN_COMMAND = true;
 
 	public function IsSupported(string $sCapa) : bool
 	{
@@ -78,8 +71,6 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
 		bool $bVerifySsl = false, bool $bAllowSelfSigned = true, string $sClientCert = '') : void
 	{
-		$this->iRequestTime = \microtime(true);
-
 		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl, $bAllowSelfSigned);
 
 		$aResponse = $this->parseResponse();
@@ -111,7 +102,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 */
 	public function Login(string $sLogin, string $sPassword, string $sLoginAuthKey = '') : self
 	{
-		if (!strlen(\trim($sLogin)) || !strlen(\trim($sPassword)))
+		if (!\strlen(\trim($sLogin)) || !\strlen(\trim($sPassword)))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
@@ -120,7 +111,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 
 		if ($this->IsSupported('SASL'))
 		{
-//			$encrypted = !empty(\stream_get_meta_data($this->rConnect)['crypto']);
+//			$encrypted = !empty(\stream_get_meta_data($this->ConnectionResource())['crypto']);
 			$type = '';
 			$types = [
 //				'SCRAM-SHA-256' => 1, // !$encrypted
@@ -209,15 +200,13 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
-	public function Logout() : self
+	public function Logout() : void
 	{
 		if ($this->bIsLoggined)
 		{
 			$this->sendRequestWithCheck('LOGOUT');
 			$this->bIsLoggined = false;
 		}
-
-		return $this;
 	}
 
 	/**
@@ -281,7 +270,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		$this->validateResponse($aResponse);
 
 		$sScript = '';
-		if (0 < \count($aResponse))
+		if (\count($aResponse))
 		{
 			if ('{' === $aResponse[0][0])
 			{
@@ -452,7 +441,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 */
 	private function sendRequest(string $sRequest) : void
 	{
-		if (!strlen(\trim($sRequest)))
+		if (!\strlen(\trim($sRequest)))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
@@ -502,8 +491,6 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 
 	private function parseResponse() : array
 	{
-		$this->iRequestTime = \microtime(true);
-
 		$aResult = array();
 		do
 		{
@@ -525,9 +512,6 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 			}
 		}
 		while (true);
-
-		$this->writeLog((\microtime(true) - $this->iRequestTime),
-			\MailSo\Log\Enumerations\Type::TIME);
 
 		return $aResult;
 	}

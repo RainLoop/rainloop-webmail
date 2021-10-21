@@ -60,7 +60,7 @@ class SieveStorage implements FiltersInterface
 				);
 			}
 
-			$oSieveClient->LogoutAndDisconnect();
+			$oSieveClient->Disconnect();
 
 			if (!isset($aList[self::SIEVE_FILE_NAME])) {
 				$aScripts[self::SIEVE_FILE_NAME] = array(
@@ -97,7 +97,7 @@ class SieveStorage implements FiltersInterface
 			} else {
 				$oSieveClient->PutScript($sScriptName, $sRaw);
 			}
-			$oSieveClient->LogoutAndDisconnect();
+			$oSieveClient->Disconnect();
 			return true;
 		}
 		return false;

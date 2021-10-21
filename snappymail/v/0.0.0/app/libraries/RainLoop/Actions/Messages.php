@@ -715,7 +715,7 @@ trait Messages
 				$oSmtpClient->SetLogger($this->Logger());
 				$oSmtpClient->SetTimeOuts(10, (int) \RainLoop\Api::Config()->Get('labs', 'smtp_timeout', 60));
 
-				$bLoggined = $oAccount->OutConnectAndLoginHelper(
+				$oAccount->OutConnectAndLoginHelper(
 					$this->Plugins(), $oSmtpClient, $this->Config(), null, $bUsePhpMail
 				);
 
@@ -793,11 +793,6 @@ trait Messages
 					}
 
 					$oSmtpClient->DataWithStream($rMessageStream);
-
-					if ($bLoggined)
-					{
-						$oSmtpClient->Logout();
-					}
 
 					$oSmtpClient->Disconnect();
 				}

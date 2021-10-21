@@ -30,17 +30,17 @@ class ImapClient extends \MailSo\Net\NetClient
 	/**
 	 * @var int
 	 */
-	private $iTagCount;
+	private $iTagCount = 0;
 
 	/**
 	 * @var array
 	 */
-	private $aCapabilityItems;
+	private $aCapabilityItems = null;
 
 	/**
 	 * @var FolderInformation
 	 */
-	private $oCurrentFolderInfo;
+	private $oCurrentFolderInfo = null;
 
 	/**
 	 * @var ResponseCollection
@@ -55,52 +55,36 @@ class ImapClient extends \MailSo\Net\NetClient
 	/**
 	 * @var bool
 	 */
-	private $bNeedNext;
+	private $bNeedNext = true;
 
 	/**
 	 * @var array
 	 */
-	private $aTagTimeouts;
+	private $aTagTimeouts = array();
 
 	/**
 	 * @var bool
 	 */
-	private $bIsLoggined;
+	private $bIsLoggined = false;
 
 	/**
 	 * @var bool
 	 */
-	private $bIsSelected;
+	private $bIsSelected = false;
 
 	/**
 	 * @var string
 	 */
-	private $sLogginedUser;
+	private $sLogginedUser = '';
 
 	/**
 	 * @var bool
 	 */
-	public $__FORCE_SELECT_ON_EXAMINE__;
+	public $__FORCE_SELECT_ON_EXAMINE__ = false;
 
 	function __construct()
 	{
-		parent::__construct();
-
-		$this->iTagCount = 0;
-		$this->aCapabilityItems = null;
-		$this->oCurrentFolderInfo = null;
-
 		$this->oLastResponse = new ResponseCollection;
-		$this->bNeedNext = true;
-
-		$this->aTagTimeouts = array();
-
-		$this->bIsLoggined = false;
-		$this->bIsSelected = false;
-		$this->sLogginedUser = '';
-
-		$this->__FORCE_SELECT_ON_EXAMINE__ = false;
-
 		\ini_set('xdebug.max_nesting_level', 500);
 	}
 
@@ -149,7 +133,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function Login(string $sLogin, string $sPassword, string $sProxyAuthUser = '',
 		bool $bUseAuthPlainIfSupported = true, bool $bUseAuthCramMd5IfSupported = true) : self
 	{
-		if (!strlen(\trim($sLogin)) || !strlen(\trim($sPassword)))
+		if (!\strlen(\trim($sLogin)) || !\strlen(\trim($sPassword)))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
@@ -160,7 +144,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		$this->sLogginedUser = $sLogin;
 
-//		$encrypted = !empty(\stream_get_meta_data($this->rConnect)['crypto']);
+//		$encrypted = !empty(\stream_get_meta_data($this->ConnectionResource())['crypto']);
 		$type = $this->IsSupported('LOGINDISABLED') ? '' : 'LOGIN'; // RFC3501 6.2.3
 		$types = [
 //			'SCRAM-SHA-256' => 1, // !$encrypted
@@ -265,15 +249,13 @@ class ImapClient extends \MailSo\Net\NetClient
 	/**
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
-	public function Logout() : self
+	public function Logout() : void
 	{
 		if ($this->bIsLoggined)
 		{
 			$this->bIsLoggined = false;
 			$this->SendRequestGetResponse('LOGOUT');
 		}
-
-		return $this;
 	}
 
 	public function IsLoggined() : bool
@@ -523,7 +505,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 		}
 
-		if (!strlen(\trim($sFolderName)))
+		if (!\strlen(\trim($sFolderName)))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
@@ -548,6 +530,11 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
+	 * The EXAMINE command is identical to SELECT and returns the same output;
+	 * however, the selected mailbox is identified as read-only.
+	 * No changes to the permanent state of the mailbox, including per-user state,
+	 * are permitted; in particular, EXAMINE MUST NOT cause messages to lose the \Recent flag.
+	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
@@ -579,7 +566,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function Fetch(array $aInputFetchItems, string $sIndexRange, bool $bIndexIsUid) : array
 	{
-		if (!strlen(\trim($sIndexRange)))
+		if (!\strlen(\trim($sIndexRange)))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
@@ -648,7 +635,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function MessageSimpleSort(array $aSortTypes, string $sSearchCriterias = 'ALL', bool $bReturnUid = true) : array
 	{
 		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
-		$sSearchCriterias = !strlen(\trim($sSearchCriterias)) || '*' === $sSearchCriterias
+		$sSearchCriterias = !\strlen(\trim($sSearchCriterias)) || '*' === $sSearchCriterias
 			? 'ALL' : $sSearchCriterias;
 
 		if (!$aSortTypes)
@@ -766,8 +753,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function MessageSimpleSearch(string $sSearchCriterias = 'ALL', bool $bReturnUid = true, string $sCharset = '') : array
 	{
 		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
-		$sSearchCriterias = 0 === \strlen($sSearchCriterias) || '*' === $sSearchCriterias
-			? 'ALL' : $sSearchCriterias;
 
 		$aRequest = array();
 		if (0 < \strlen($sCharset))
@@ -776,14 +761,14 @@ class ImapClient extends \MailSo\Net\NetClient
 			$aRequest[] = \strtoupper($sCharset);
 		}
 
-		$aRequest[] = $sSearchCriterias;
+		$aRequest[] = !\strlen($sSearchCriterias) || '*' === $sSearchCriterias ? 'ALL' : $sSearchCriterias;
 
 		$sCmd = 'SEARCH';
 
 		$sCont = $this->SendRequest($sCommandPrefix.$sCmd, $aRequest, true);
+		$oResult = $this->getResponse();
 		if ('' !== $sCont)
 		{
-			$oResult = $this->getResponse();
 			$oItem = $oResult->getLast();
 
 			if ($oItem && Enumerations\ResponseType::CONTINUATION === $oItem->ResponseType)
@@ -802,10 +787,6 @@ class ImapClient extends \MailSo\Net\NetClient
 				}
 			}
 		}
-		else
-		{
-			$oResult = $this->getResponse();
-		}
 
 		return $oResult->getMessageSimpleSearchResult($sCmd, $bReturnUid);
 	}
@@ -818,7 +799,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function MessageSimpleThread(string $sSearchCriterias = 'ALL', bool $bReturnUid = true, string $sCharset = \MailSo\Base\Enumerations\Charset::UTF_8) : array
 	{
 		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
-		$sSearchCriterias = !strlen(\trim($sSearchCriterias)) || '*' === $sSearchCriterias
+		$sSearchCriterias = !\strlen(\trim($sSearchCriterias)) || '*' === $sSearchCriterias
 			? 'ALL' : $sSearchCriterias;
 
 		$sThreadType = '';
@@ -926,9 +907,9 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function MessageStoreFlag(string $sIndexRange, bool $bIndexIsUid, array $aInputStoreItems, string $sStoreAction) : self
 	{
-		if (!strlen(\trim($sIndexRange)) ||
-			!strlen(\trim($sStoreAction)) ||
-			0 === \count($aInputStoreItems))
+		if (!\strlen(\trim($sIndexRange)) ||
+			!\strlen(\trim($sStoreAction)) ||
+			!\count($aInputStoreItems))
 		{
 			return false;
 		}
@@ -959,7 +940,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		$this->writeLog('Write to connection stream', \MailSo\Log\Enumerations\Type::NOTE);
 
-		\MailSo\Base\Utils::MultipleStreamWriter($rMessageAppendStream, array($this->rConnect));
+		\MailSo\Base\Utils::MultipleStreamWriter($rMessageAppendStream, array($this->ConnectionResource()));
 
 		$this->sendRaw('');
 		$this->getResponse();
@@ -1085,7 +1066,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		try {
 			$oResult = new ResponseCollection;
 
-			if (\is_resource($this->rConnect)) {
+			if (\is_resource($this->ConnectionResource())) {
 				$sEndTag = (null === $sEndTag) ? $this->getCurrentTag() : $sEndTag;
 
 				while (true) {
@@ -1213,7 +1194,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 					while (0 < $iRead)
 					{
-						$sAddRead = \fread($this->rConnect, $iRead);
+						$sAddRead = \fread($this->ConnectionResource(), $iRead);
 						if (false === $sAddRead)
 						{
 							$sLiteral = false;
@@ -1636,7 +1617,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 
 		$rImapLiteralStream =
-			\MailSo\Base\StreamWrappers\Literal::CreateStream($this->rConnect, $iLiteralLen);
+			\MailSo\Base\StreamWrappers\Literal::CreateStream($this->ConnectionResource(), $iLiteralLen);
 
 		$this->writeLog('Start Callback for '.$sParent.' / '.$sLiteralAtomUpperCase.
 			' - try to read '.$iLiteralLen.' bytes.', \MailSo\Log\Enumerations\Type::NOTE);
@@ -1707,7 +1688,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		$sReturn = '';
 		foreach ($aParams as $mParamItem)
 		{
-			if (\is_array($mParamItem) && 0 < \count($mParamItem))
+			if (\is_array($mParamItem) && \count($mParamItem))
 			{
 				$sReturn .= ' ('.\trim($this->prepareParamLine($mParamItem)).')';
 			}

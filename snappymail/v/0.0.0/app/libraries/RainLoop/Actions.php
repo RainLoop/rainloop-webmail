@@ -289,7 +289,7 @@ class Actions
 	{
 		try {
 			if ($this->MailClient()->IsLoggined()) {
-				$this->MailClient()->LogoutAndDisconnect();
+				$this->MailClient()->Disconnect();
 			}
 		} catch (\Throwable $oException) {
 			unset($oException);
@@ -1560,7 +1560,7 @@ class Actions
 
 				$iResult = $oMailClient->InboxUnreadCount();
 
-				$oMailClient->LogoutAndDisconnect();
+				$oMailClient->Disconnect();
 			} catch (\Throwable $oException) {
 				$this->Logger()->WriteException($oException);
 			}

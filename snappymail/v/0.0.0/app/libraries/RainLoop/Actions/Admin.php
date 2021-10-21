@@ -345,13 +345,9 @@ trait Admin
 		$bSieveResult = false;
 		$sSieveErrorDesc = '';
 
-		$iImapTime = 0;
-		$iSmtpTime = 0;
-		$iSieveTime = 0;
-
 		$iConnectionTimeout = 5;
 
-		$oDomain = $this->DomainProvider()->LoadOrCreateNewFromAction($this, 'domain-test-connection.de');
+		$oDomain = $this->DomainProvider()->LoadOrCreateNewFromAction($this, 'test.example.com');
 		if ($oDomain)
 		{
 			try
@@ -367,7 +363,6 @@ trait Admin
 					$this->Config()->Get('ssl', 'client_cert', '')
 				);
 
-				$iImapTime = \microtime(true) - $iTime;
 				$oImapClient->Disconnect();
 				$bImapResult = true;
 			}
@@ -409,7 +404,6 @@ trait Admin
 						'', \MailSo\Smtp\SmtpClient::EhloHelper()
 					);
 
-					$iSmtpTime = \microtime(true) - $iTime;
 					$oSmtpClient->Disconnect();
 					$bSmtpResult = true;
 				}
@@ -444,7 +438,6 @@ trait Admin
 						!!$this->Config()->Get('ssl', 'allow_self_signed', true)
 					);
 
-					$iSieveTime = \microtime(true) - $iTime;
 					$oSieveClient->Disconnect();
 					$bSieveResult = true;
 				}

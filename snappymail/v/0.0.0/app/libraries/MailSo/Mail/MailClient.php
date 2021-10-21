@@ -68,27 +68,10 @@ class MailClient
 	/**
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
-	public function Logout() : self
-	{
-		$this->oImapClient->Logout();
-		return $this;
-	}
-
-	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 */
 	public function Disconnect() : self
 	{
 		$this->oImapClient->Disconnect();
 		return $this;
-	}
-
-	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 */
-	public function LogoutAndDisconnect() : self
-	{
-		return $this->Logout()->Disconnect();
 	}
 
 	public function IsConnected() : bool
@@ -347,7 +330,7 @@ class MailClient
 	 */
 	public function MessageMimeStream($mCallback, string $sFolderName, int $iIndex, bool $bIndexIsUid = true, string $sMimeIndex = '') : bool
 	{
-		if (!is_callable($mCallback))
+		if (!\is_callable($mCallback))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
