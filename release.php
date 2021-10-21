@@ -87,12 +87,26 @@ if (!$gulp) {
 
 $package = json_decode(file_get_contents('package.json'));
 
-// Update files that contain version
+/**
+ * Update files that contain version
+ */
+// cloudron
+$file = __DIR__ . '/integrations/cloudron/Dockerfile';
+file_put_contents($file, preg_replace('/ARG VERSION=[0-9.]+/', "VERSION={$package->version}", file_get_contents($file)));
+$file = __DIR__ . '/integrations/cloudron/DESCRIPTION.md';
+file_put_contents($file, preg_replace('/<upstream>[^<]*</', "<upstream>{$package->version}<", file_get_contents($file)));
+// docker
+$file = __DIR__ . '/.docker/release/files/usr/local/include/application.ini';
+file_put_contents($file, preg_replace('/current = "[0-9.]+"/', "current = \"{$package->version}\"", file_get_contents($file)));
+// nextcloud
 file_put_contents(__DIR__ . '/integrations/nextcloud/snappymail/VERSION', $package->version);
 $file = __DIR__ . '/integrations/nextcloud/snappymail/appinfo/info.xml';
 file_put_contents($file, preg_replace('/<version>[^<]*</', "<version>{$package->version}<", file_get_contents($file)));
-$file = __DIR__ . '/.docker/release/files/usr/local/include/application.ini';
-file_put_contents($file, preg_replace('/current = "[0-9.]+"/', "current = \"{$package->version}\"", file_get_contents($file)));
+// virtualmin
+$file = __DIR__ . '/integrations/virtualmin/snappymail.pl';
+file_put_contents($file, preg_replace('/return \\( "[0-9]+\\.[0-9]+\\.[0-9]+" \\)/', "return ( \"{$package->version}\" )", file_get_contents($file)));
+
+
 if (isset($options['set-version'])) {
 	exit;
 }
