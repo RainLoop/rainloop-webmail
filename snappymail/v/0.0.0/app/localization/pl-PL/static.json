@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Odśwież",
+	"NO_SCRIPT_TITLE": "Ta aplikacja wymaga JavaScript.",
+	"NO_SCRIPT_DESC": "Twoja przeglądarka nie obsługuje JavaScript.\nWłącz obsługę JavaScript w przeglądarce i ponowne załaduj tę stronę.\n",
+	"NO_COOKIE_TITLE": "Ta aplikacja wymaga plików Cookies",
+	"NO_COOKIE_DESC": "Obsługa Cookies jest wyłączona w Twojej przeglądarce.\nWłącz obsługę plików Cookie w przeglądarce i spróbuj ponowne.\n",
+	"BAD_BROWSER_TITLE": "Twoja przeglądarka jest przestarzała.",
+	"BAD_BROWSER_DESC": "W celu wykorzystania wszystkich funkcji tej aplikacji,\nzaktualizuj aktualnie używaną lub pobierz i zainstaluj jedną z poniższych przeglądarek:\n"
+}
