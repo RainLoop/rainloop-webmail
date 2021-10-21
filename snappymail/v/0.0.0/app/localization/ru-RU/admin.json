@@ -87,7 +87,7 @@
 		"LABEL_ALLOW_SELF_SIGNED": "Разрешить cамоподписанные сертификаты"
 	},
 	"TAB_PACKAGES": {
-		"LABEL_ENABLE_PLUGINS": "Enable extensions",
+		"LABEL_ENABLE_PLUGINS": "Включить плагины",
 		"LEGEND_AVAILABLE_FOR_UPDATE": "Доступно для обновления",
 		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Доступно для установки",
 		"LEGEND_INSTALLED_PACKAGES": "Установленные пакеты",

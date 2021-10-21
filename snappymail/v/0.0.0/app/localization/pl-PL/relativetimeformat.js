@@ -1,8 +1,5 @@
 {
 	year: {
-		previous: "w zeszłym roku",
-		current: "w tym roku",
-		next: "w przyszłym roku",
 		past: {
 			one: "{0} rok temu",
 			few: "{0} lata temu",
@@ -17,9 +14,6 @@
 		}
 	},
 	month: {
-		previous: "w zeszłym miesiącu",
-		current: "w tym miesiącu",
-		next: "w przyszłym miesiącu",
 		past: {
 			one: "{0} miesiąc temu",
 			few: "{0} miesiące temu",
@@ -34,9 +28,6 @@
 		}
 	},
 	week: {
-		previous: "w zeszłym tygodniu",
-		current: "w tym tygodniu",
-		next: "w przyszłym tygodniu",
 		past: {
 			one: "{0} tydzień temu",
 			few: "{0} tygodnie temu",
@@ -51,11 +42,6 @@
 		}
 	},
 	day: {
-		previous: "wczoraj",
-		previous-2: "przedwczoraj",
-		current: "dzisiaj",
-		next: "jutro",
-		next-2: "pojutrze",
 		past: {
 			one: "{0} dzień temu",
 			few: "{0} dni temu",
@@ -70,7 +56,6 @@
 		}
 	},
 	hour: {
-		current: "ta godzina",
 		past: {
 			one: "{0} godzinę temu",
 			many: "{0} godzin temu",
@@ -83,7 +68,6 @@
 		}
 	},
 	minute: {
-		current: "ta minuta",
 		past: {
 			one: "{0} minutę temu",
 			many: "{0} minut temu",
@@ -96,7 +80,6 @@
 		}
 	},
 	second: {
-		current: "teraz",
 		past: {
 			one: "{0} sekundę temu",
 			many: "{0} sekund temu",
@@ -107,5 +90,6 @@
 			many: "za {0} sekund",
 			other: "za {0} sekundy"
 		}
-	}
+	},
+	plural: n => 1 == n ? 'one' : 'other'
 }

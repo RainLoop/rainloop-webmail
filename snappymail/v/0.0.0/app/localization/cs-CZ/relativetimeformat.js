@@ -1,8 +1,5 @@
 {
 	year: {
-		previous: "minulý rok",
-		current: "tento rok",
-		next: "příští rok",
 		past: {
 			one: "před {0} rokem",
 			many: "před {0} roku",
@@ -16,9 +13,6 @@
 		}
 	},
 	month: {
-		previous: "minulý měsíc",
-		current: "tento měsíc",
-		next: "příští měsíc",
 		past: {
 			one: "před {0} měsícem",
 			many: "před {0} měsíce",
@@ -32,9 +26,6 @@
 		}
 	},
 	week: {
-		previous: "minulý týden",
-		current: "tento týden",
-		next: "příští týden",
 		past: {
 			one: "před {0} týdnem",
 			many: "před {0} týdne",
@@ -48,11 +39,6 @@
 		}
 	},
 	day: {
-		previous: "včera",
-		previous-2: "předevčírem",
-		current: "dnes",
-		next: "zítra",
-		next-2: "pozítří",
 		past: {
 			one: "před {0} dnem",
 			many: "před {0} dne",
@@ -66,7 +52,6 @@
 		}
 	},
 	hour: {
-		current: "tuto hodinu",
 		past: {
 			one: "před {0} hodinou",
 			many: "před {0} hodiny",
@@ -80,7 +65,6 @@
 		}
 	},
 	minute: {
-		current: "tuto minutu",
 		past: {
 			one: "před {0} minutou",
 			many: "před {0} minuty",
@@ -94,7 +78,6 @@
 		}
 	},
 	second: {
-		current: "nyní",
 		past: {
 			one: "před {0} sekundou",
 			many: "před {0} sekundy",
@@ -106,5 +89,6 @@
 			many: "za {0} sekundy",
 			other: "za {0} sekund"
 		}
-	}
+	},
+	plural: n => 1 == n ? 'one' : 'other'
 }
