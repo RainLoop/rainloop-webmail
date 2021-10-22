@@ -16,6 +16,7 @@ class CKEditorPlugin extends \RainLoop\Plugins\AbstractPlugin
 		// Apache AH00037: Symbolic link not allowed or link target not accessible
 		// That's why we clone the source
 		if (!\is_dir($path)/* && !\is_link($path)*/) {
+			$old_mask = umask(0022);
 			// $active = \symlink(__DIR__ . '/src', $path);
 			\mkdir($path, 0755);
 			$iterator = new \RecursiveIteratorIterator(
@@ -29,6 +30,7 @@ class CKEditorPlugin extends \RainLoop\Plugins\AbstractPlugin
 					\copy($item, $path . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
 				}
 			}
+			umask($old_mask);
 		}
 
 		if (\is_file("{$path}/ckeditor.js")) {
