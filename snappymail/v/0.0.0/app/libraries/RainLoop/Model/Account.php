@@ -85,12 +85,12 @@ class Account
 
 	public function ParentEmailHelper() : string
 	{
-		return 0 < \strlen($this->sParentEmail) ? $this->sParentEmail : $this->sEmail;
+		return \strlen($this->sParentEmail) ? $this->sParentEmail : $this->sEmail;
 	}
 
 	public function IsAdditionalAccount() : string
 	{
-		return 0 < \strlen($this->sParentEmail);
+		return \strlen($this->sParentEmail);
 	}
 
 	public function IncLogin() : string
@@ -137,7 +137,7 @@ class Account
 
 	public function SignMe() : bool
 	{
-		return 0 < \strlen($this->sSignMeToken);
+		return \strlen($this->sSignMeToken);
 	}
 
 	public function SignMeToken() : string
@@ -262,9 +262,9 @@ class Account
 		));
 	}
 
-	public function IncConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Mail\MailClient $oMailClient, \RainLoop\Config\Application $oConfig, ?callable $refreshTokenCallback = null) : bool
+	public function IncConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Mail\MailClient $oMailClient, \RainLoop\Config\Application $oConfig) : bool
 	{
-		$bLogin = false;
+		$oImapClient = $oMailClient->ImapClient();
 
 		$aImapCredentials = array(
 			'UseConnect' => true,
@@ -273,54 +273,25 @@ class Account
 			'Port' => $this->DomainIncPort(),
 			'Secure' => $this->DomainIncSecure(),
 			'Login' => $this->IncLogin(),
-			'Password' => $this->Password(),
-			'ProxyAuthUser' => $this->ProxyAuthUser(),
-			'ProxyAuthPassword' => $this->ProxyAuthPassword(),
 			'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
 			'ClientCert' => $this->ClientCert(),
-			'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true),
-			'UseAuthPlainIfSupported' => !!$oConfig->Get('labs', 'imap_use_auth_plain', true),
-			'UseAuthCramMd5IfSupported' => !!$oConfig->Get('labs', 'imap_use_auth_cram_md5', true)
+			'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true)
 		);
 
-		$oPlugins->RunHook('filter.imap-credentials', array($this, &$aImapCredentials));
-
-		$oPlugins->RunHook('imap.before-connect', array($this, $oMailClient, $aImapCredentials));
+		$oPlugins->RunHook('imap.before-connect', array($this, $oImapClient, &$aImapCredentials));
 		if ($aImapCredentials['UseConnect']) {
-			$oMailClient
-				->Connect($aImapCredentials['Host'], $aImapCredentials['Port'],
+			$oImapClient->Connect($aImapCredentials['Host'], $aImapCredentials['Port'],
 					$aImapCredentials['Secure'], $aImapCredentials['VerifySsl'],
 					$aImapCredentials['AllowSelfSigned'], $aImapCredentials['ClientCert']);
 
 		}
-		$oPlugins->RunHook('imap.after-connect', array($this, $oMailClient, $aImapCredentials));
+		$oPlugins->RunHook('imap.after-connect', array($this, $oImapClient, $aImapCredentials));
 
-		$oPlugins->RunHook('imap.before-login', array($this, $oMailClient, $aImapCredentials));
-		if ($aImapCredentials['UseAuth']) {
-			if (0 < \strlen($aImapCredentials['ProxyAuthUser']) &&
-				0 < \strlen($aImapCredentials['ProxyAuthPassword']))
-			{
-				$oMailClient
-					->Login($aImapCredentials['ProxyAuthUser'], $aImapCredentials['ProxyAuthPassword'],
-						$aImapCredentials['Login'], $aImapCredentials['UseAuthPlainIfSupported'], $aImapCredentials['UseAuthCramMd5IfSupported']);
-			}
-			else
-			{
-				$oMailClient->Login($aImapCredentials['Login'], $aImapCredentials['Password'], '',
-					$aImapCredentials['UseAuthPlainIfSupported'], $aImapCredentials['UseAuthCramMd5IfSupported']);
-			}
-
-			$bLogin = true;
-		}
-		$oPlugins->RunHook('imap.after-login', array($this, $oMailClient, $bLogin, $aImapCredentials));
-
-		return $bLogin;
+		return $this->netClientLogin($oImapClient, $oConfig, $oPlugins, $aImapCredentials);
 	}
 
-	public function OutConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Smtp\SmtpClient $oSmtpClient, \RainLoop\Config\Application $oConfig, ?callable $refreshTokenCallback = null, bool &$bUsePhpMail = false) : bool
+	public function OutConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Smtp\SmtpClient $oSmtpClient, \RainLoop\Config\Application $oConfig, bool &$bUsePhpMail = false) : bool
 	{
-		$bLogin = false;
-
 		$aSmtpCredentials = array(
 			'UseConnect' => !$bUsePhpMail,
 			'UseAuth' => $this->DomainOutAuth(),
@@ -330,21 +301,14 @@ class Account
 			'Port' => $this->DomainOutPort(),
 			'Secure' => $this->DomainOutSecure(),
 			'Login' => $this->OutLogin(),
-			'Password' => $this->Password(),
-			'ProxyAuthUser' => $this->ProxyAuthUser(),
-			'ProxyAuthPassword' => $this->ProxyAuthPassword(),
 			'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
-			'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true),
-			'UseAuthPlainIfSupported' => !!$oConfig->Get('labs', 'smtp_use_auth_plain', true),
-			'UseAuthCramMd5IfSupported' => !!$oConfig->Get('labs', 'smtp_use_auth_cram_md5', true)
+			'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true)
 		);
 
-		$oPlugins->RunHook('smtp.credentials', array($this, &$aSmtpCredentials));
-
+		$oPlugins->RunHook('smtp.before-connect', array($this, $oSmtpClient, &$aSmtpCredentials));
 		$bUsePhpMail = $aSmtpCredentials['UsePhpMail'];
-
-		$oPlugins->RunHook('smtp.before-connect', array($this, $oSmtpClient, $aSmtpCredentials));
-		if ($aSmtpCredentials['UseConnect']) {
+		$aSmtpCredentials['UseAuth'] = $aSmtpCredentials['UseAuth'] && !$aSmtpCredentials['UsePhpMail'];
+		if ($aSmtpCredentials['UseConnect'] && !$aSmtpCredentials['UsePhpMail']) {
 			$oSmtpClient->Connect($aSmtpCredentials['Host'], $aSmtpCredentials['Port'],
 				$aSmtpCredentials['Secure'], $aSmtpCredentials['VerifySsl'], $aSmtpCredentials['AllowSelfSigned'],
 				'', $aSmtpCredentials['Ehlo']
@@ -352,23 +316,11 @@ class Account
 		}
 		$oPlugins->RunHook('smtp.after-connect', array($this, $oSmtpClient, $aSmtpCredentials));
 
-		$oPlugins->RunHook('smtp.before-login', array($this, $oSmtpClient, $aSmtpCredentials));
-		if ($aSmtpCredentials['UseAuth'] && !$aSmtpCredentials['UsePhpMail'] && $oSmtpClient)
-		{
-			$oSmtpClient->Login($aSmtpCredentials['Login'], $aSmtpCredentials['Password'],
-				$aSmtpCredentials['UseAuthPlainIfSupported'], $aSmtpCredentials['UseAuthCramMd5IfSupported']);
-
-			$bLogin = true;
-		}
-		$oPlugins->RunHook('smtp.after-login', array($this, $oSmtpClient, $bLogin, $aSmtpCredentials));
-
-		return $bLogin;
+		return $this->netClientLogin($oSmtpClient, $oConfig, $oPlugins, $aSmtpCredentials);
 	}
 
 	public function SieveConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Sieve\ManageSieveClient $oSieveClient, \RainLoop\Config\Application $oConfig)
 	{
-		$bLogin = false;
-
 		$aSieveCredentials = array(
 			'UseConnect' => true,
 			'UseAuth' => true,
@@ -376,17 +328,12 @@ class Account
 			'Port' => $this->DomainSievePort(),
 			'Secure' => $this->DomainSieveSecure(),
 			'Login' => $this->IncLogin(),
-			'Password' => $this->Password(),
 			'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
 			'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true),
 			'InitialAuthPlain' => !!$oConfig->Get('ssl', 'sieve_auth_plain_initial', true)
 		);
 
-		$oPlugins->RunHook('sieve.credentials', array($this, &$aSieveCredentials));
-
-		$oSieveClient->__USE_INITIAL_AUTH_PLAIN_COMMAND = $aSieveCredentials['InitialAuthPlain'];
-
-		$oPlugins->RunHook('sieve.before-connect', array($this, $oSieveClient, $aSieveCredentials));
+		$oPlugins->RunHook('sieve.before-connect', array($this, $oSieveClient, &$aSieveCredentials));
 		if ($aSieveCredentials['UseConnect']) {
 			$oSieveClient->Connect($aSieveCredentials['Host'], $aSieveCredentials['Port'],
 				$aSieveCredentials['Secure'], $aSieveCredentials['VerifySsl'], $aSieveCredentials['AllowSelfSigned']
@@ -394,13 +341,82 @@ class Account
 		}
 		$oPlugins->RunHook('sieve.after-connect', array($this, $oSieveClient, $aSieveCredentials));
 
-		$oPlugins->RunHook('event.sieve-pre-login', array($this, $oSieveClient, $aSieveCredentials));
-		if ($aSieveCredentials['UseAuth']) {
-			$oSieveClient->Login($aSieveCredentials['Login'], $aSieveCredentials['Password']);
-			$bLogin = true;
-		}
-		$oPlugins->RunHook('sieve.after-login', array($this, $oSieveClient, $bLogin, $aSieveCredentials));
-
-		return $bLogin;
+		return $this->netClientLogin($oSieveClient, $oConfig, $oPlugins, $aSieveCredentials);
 	}
+
+	private function netClientLogin(\MailSo\Net\NetClient $oClient, \RainLoop\Config\Application $oConfig, \RainLoop\Plugins\Manager $oPlugins, array $aCredentials) : bool
+	{
+		$aCredentials = \array_merge(
+			$aCredentials,
+			array(
+				'Password' => $this->Password(),
+				'ProxyAuthUser' => $this->ProxyAuthUser(),
+				'ProxyAuthPassword' => $this->ProxyAuthPassword(),
+				'UseAuthPlainIfSupported' => !!$oConfig->Get('labs', 'imap_use_auth_plain', true),
+				'UseAuthCramMd5IfSupported' => !!$oConfig->Get('labs', 'imap_use_auth_cram_md5', true),
+				'UseAuthOAuth2IfSupported' => false
+			)
+		);
+
+		$client_name = \strtolower($oClient->getLogName());
+
+		$oPlugins->RunHook("{$client_name}.before-login", array($this, $oClient, &$aCredentials));
+		$bResult = $aCredentials['UseAuth'] && $oClient->Login($aCredentials);
+		$oPlugins->RunHook("{$client_name}.after-login", array($this, $oClient, $bResult, $aCredentials));
+		return $bResult;
+
+/*
+//		$encrypted = !empty(\stream_get_meta_data($oClient->ConnectionResource())['crypto']);
+		$type = $oClient->IsSupported('LOGINDISABLED') ? '' : 'LOGIN'; // RFC3501 6.2.3
+		$types = [
+//			'SCRAM-SHA-256' => 1, // !$encrypted
+//			'SCRAM-SHA-1' => 1, // !$encrypted
+			'CRAM-MD5' => $aSmtpCredentials['UseAuthCramMd5IfSupported'],
+			'PLAIN' => $aSmtpCredentials['UseAuthPlainIfSupported'],
+			'OAUTHBEARER' => $aSmtpCredentials['UseAuthOAuth2IfSupported'],
+			'XOAUTH2' => $aSmtpCredentials['UseAuthOAuth2IfSupported'],
+			'LOGIN' => 1,
+		];
+		foreach ($types as $sasl_type => $active) {
+			if ($active && $oClient->IsSupported("AUTH={$sasl_type}") && \SnappyMail\SASL::isSupported($sasl_type)) {
+				$type = $sasl_type;
+				break;
+			}
+		}
+
+		$SASL = \SnappyMail\SASL::factory($type);
+		$SASL->base64 = true;
+
+//		$oClient->Login($SASL);
+*/
+/*
+//		$encrypted = !empty(\stream_get_meta_data($oClient->ConnectionResource())['crypto']);
+		$type = '';
+		$types = [
+			'SCRAM-SHA-256' => 1, // !$encrypted
+			'SCRAM-SHA-1' => 1, // !$encrypted
+			'CRAM-MD5' => $bUseAuthCramMd5IfSupported,
+			'PLAIN' => $bUseAuthPlainIfSupported,
+			'LOGIN' => 1, // $encrypted
+			'XOAUTH2' => 0
+		];
+		foreach ($types as $sasl_type => $active) {
+			if ($active && $oClient->IsAuthSupported($sasl_type) && \SnappyMail\SASL::isSupported($sasl_type)) {
+				$type = $sasl_type;
+				break;
+			}
+		}
+
+		if (!$type) {
+			\trigger_error("SMTP {$oClient->GetConnectedHost()} no supported AUTH options. Disable login" . ($oClient->IsSupported('STARTTLS') ? ' or try with STARTTLS' : ''));
+			$oClient->writeLogException(
+				new \MailSo\Smtp\Exceptions\LoginBadMethodException,
+				\MailSo\Log\Enumerations\Type::NOTICE, true);
+		}
+
+		$SASL = \SnappyMail\SASL::factory($type);
+		$SASL->base64 = true;
+*/
+	}
+
 }

@@ -41,31 +41,6 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function Connect(string $sServerName, int $iPort = 143,
-		int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT, bool $bVerifySsl = false,
-		bool $bAllowSelfSigned = false, string $sClientCert = '') : self
-	{
-		$this->oImapClient->Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl, $bAllowSelfSigned, $sClientCert);
-		return $this;
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\LoginException
-	 */
-	public function Login(string $sLogin, string $sPassword, string $sProxyAuthUser = '',
-		bool $bUseAuthPlainIfSupported = true, bool $bUseAuthCramMd5IfSupported = true) : self
-	{
-		$this->oImapClient->Login($sLogin, $sPassword, $sProxyAuthUser, $bUseAuthPlainIfSupported, $bUseAuthCramMd5IfSupported);
-		return $this;
-	}
-
-	/**
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
 	public function Disconnect() : self

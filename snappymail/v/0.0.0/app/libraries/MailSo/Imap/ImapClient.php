@@ -130,17 +130,23 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function Login(string $sLogin, string $sPassword, string $sProxyAuthUser = '',
-		bool $bUseAuthPlainIfSupported = true, bool $bUseAuthCramMd5IfSupported = true) : self
+	public function Login(array $aCredentials) : self
 	{
-		if (!\strlen(\trim($sLogin)) || !\strlen(\trim($sPassword)))
+		if (!empty($aCredentials['ProxyAuthUser']) && !empty($aCredentials['ProxyAuthPassword'])) {
+			$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($aCredentials['ProxyAuthUser']));
+			$sPassword = $aCredentials['ProxyAuthPassword'];
+			$sProxyAuthUser = $aCredentials['Login'];
+		} else {
+			$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($aCredentials['Login']));
+			$sPassword = $aCredentials['Password'];
+		}
+
+		if (!\strlen($sLogin) || !\strlen($sPassword))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
-
-		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sLogin));
 
 		$this->sLogginedUser = $sLogin;
 
@@ -149,9 +155,11 @@ class ImapClient extends \MailSo\Net\NetClient
 		$types = [
 //			'SCRAM-SHA-256' => 1, // !$encrypted
 //			'SCRAM-SHA-1' => 1, // !$encrypted
-			'CRAM-MD5' => $bUseAuthCramMd5IfSupported,
-			'PLAIN' => $bUseAuthPlainIfSupported,
-			'LOGIN' => 1,
+			'CRAM-MD5' => $aCredentials['UseAuthCramMd5IfSupported'],
+			'PLAIN' => $aCredentials['UseAuthPlainIfSupported'],
+			'OAUTHBEARER' => $aCredentials['UseAuthOAuth2IfSupported'],
+			'XOAUTH2' => $aCredentials['UseAuthOAuth2IfSupported'],
+			'LOGIN' => 1
 		];
 		foreach ($types as $sasl_type => $active) {
 			if ($active && $this->IsSupported("AUTH={$sasl_type}") && \SnappyMail\SASL::isSupported($sasl_type)) {
@@ -188,7 +196,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				$this->sendRaw($sAuth, true, '*******');
 				$this->getResponse();
 			}
-			else if ('PLAIN' === $type)
+			else if ('PLAIN' === $type || 'OAUTHBEARER' === $type)
 			{
 				$sAuth = $SASL->authenticate($sLogin, $sPassword);
 				if ($this->oLogger) {
@@ -200,6 +208,23 @@ class ImapClient extends \MailSo\Net\NetClient
 					$this->SendRequestGetResponse('AUTHENTICATE', array($type));
 					$this->sendRaw($sAuth, true, '*******');
 					$this->getResponse();
+				}
+			}
+			else if ('XOAUTH2' === $type)
+			{
+				$sAuth = $SASL->authenticate($sLogin, $sPassword);
+				$this->SendRequest('AUTHENTICATE', array($type, $sAuth));
+				$aR = $this->parseResponseWithValidation();
+				if (\is_array($aR) && \count($aR) && isset($aR[\count($aR) - 1])) {
+					$oR = $aR[\count($aR) - 1];
+					if (\MailSo\Imap\Enumerations\ResponseType::CONTINUATION === $oR->ResponseType) {
+						if (!empty($oR->ResponseList[1]) && preg_match('/^[a-zA-Z0-9=+\/]+$/', $oR->ResponseList[1])) {
+							$this->Logger()->Write(\base64_decode($oR->ResponseList[1]),
+								\MailSo\Log\Enumerations\Type::WARNING);
+						}
+						$this->sendRaw('');
+						$this->parseResponseWithValidation();
+					}
 				}
 			}
 			else if ($this->IsSupported('LOGINDISABLED'))
@@ -227,7 +252,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					));
 			}
 
-			if (0 < \strlen($sProxyAuthUser))
+			if (\strlen($sProxyAuthUser))
 			{
 				$this->SendRequestGetResponse('PROXYAUTH', array($this->EscapeString($sProxyAuthUser)));
 			}
@@ -578,7 +603,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			$aFetchItems = Enumerations\FetchType::ChangeFetchItemsBefourRequest($aInputFetchItems);
 			foreach ($aFetchItems as $sName => $mItem)
 			{
-				if (0 < \strlen($sName) && '' !== $mItem)
+				if (\strlen($sName) && '' !== $mItem)
 				{
 					$this->aFetchCallbacks[$sName] = $mItem;
 				}
@@ -704,7 +729,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 		else
 		{
-			if (0 < \strlen($sCharset))
+			if (\strlen($sCharset))
 			{
 				$aRequest[] = 'CHARSET';
 				$aRequest[] = \strtoupper($sCharset);
@@ -716,7 +741,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		$aRequest[] = $sSearchCriterias;
 
-		if (0 < \strlen($sLimit))
+		if (\strlen($sLimit))
 		{
 			$aRequest[] = $sLimit;
 		}
@@ -755,7 +780,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
 
 		$aRequest = array();
-		if (0 < \strlen($sCharset))
+		if (\strlen($sCharset))
 		{
 			$aRequest[] = 'CHARSET';
 			$aRequest[] = \strtoupper($sCharset);
@@ -890,7 +915,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		$sCmd = 'EXPUNGE';
 		$aArguments = array();
 
-		if (!$bExpungeAll && $bForceUidExpunge && 0 < \strlen($sUidRangeIfSupported) && $this->IsSupported('UIDPLUS'))
+		if (!$bExpungeAll && $bForceUidExpunge && \strlen($sUidRangeIfSupported) && $this->IsSupported('UIDPLUS'))
 		{
 			$sCmd = 'UID '.$sCmd;
 			$aArguments = array($sUidRangeIfSupported);
@@ -950,8 +975,8 @@ class ImapClient extends \MailSo\Net\NetClient
 			$oLast = $this->GetLastResponse()->getLast();
 			if ($oLast && Enumerations\ResponseType::TAGGED === $oLast->ResponseType && \is_array($oLast->OptionalResponse))
 			{
-				if (0 < \strlen($oLast->OptionalResponse[0]) &&
-					0 < \strlen($oLast->OptionalResponse[2]) &&
+				if (\strlen($oLast->OptionalResponse[0]) &&
+					\strlen($oLast->OptionalResponse[2]) &&
 					'APPENDUID' === strtoupper($oLast->OptionalResponse[0]) &&
 					\is_numeric($oLast->OptionalResponse[2])
 				)
@@ -1603,11 +1628,11 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 
 		$sFetchKey = '';
-		if (0 < \strlen($sLiteralAtomUpperCasePeek) && isset($this->aFetchCallbacks[$sLiteralAtomUpperCasePeek]))
+		if (\strlen($sLiteralAtomUpperCasePeek) && isset($this->aFetchCallbacks[$sLiteralAtomUpperCasePeek]))
 		{
 			$sFetchKey = $sLiteralAtomUpperCasePeek;
 		}
-		else if (0 < \strlen($sLiteralAtomUpperCase) && isset($this->aFetchCallbacks[$sLiteralAtomUpperCase]))
+		else if (\strlen($sLiteralAtomUpperCase) && isset($this->aFetchCallbacks[$sLiteralAtomUpperCase]))
 		{
 			$sFetchKey = $sLiteralAtomUpperCase;
 		}
@@ -1726,7 +1751,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		return '"' . \addcslashes($sStringForEscape, '\\"') . '"';
 	}
 
-	protected function getLogName() : string
+	public function getLogName() : string
 	{
 		return 'IMAP';
 	}

@@ -430,7 +430,6 @@ trait Admin
 					$oSieveClient = new \MailSo\Sieve\ManageSieveClient();
 					$oSieveClient->SetLogger($this->Logger());
 					$oSieveClient->SetTimeOuts($iConnectionTimeout);
-					$oSieveClient->__USE_INITIAL_AUTH_PLAIN_COMMAND = !!$this->Config()->Get('labs', 'sieve_auth_plain_initial', true);
 
 					$iTime = \microtime(true);
 					$oSieveClient->Connect($oDomain->SieveHost(), $oDomain->SievePort(), $oDomain->SieveSecure(),

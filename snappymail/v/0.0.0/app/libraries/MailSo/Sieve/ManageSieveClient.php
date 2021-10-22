@@ -37,11 +37,6 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 */
 	private $aModules = array();
 
-	/**
-	 * @var bool
-	 */
-	public $__USE_INITIAL_AUTH_PLAIN_COMMAND = true;
-
 	public function IsSupported(string $sCapa) : bool
 	{
 		return isset($this->aCapa[\strtoupper($sCapa)]);
@@ -100,9 +95,12 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Sieve\Exceptions\LoginException
 	 */
-	public function Login(string $sLogin, string $sPassword, string $sLoginAuthKey = '') : self
+	public function Login(array $aCredentials) : self
 	{
-		if (!\strlen(\trim($sLogin)) || !\strlen(\trim($sPassword)))
+		$sLogin = $aCredentials['Login'];
+		$sPassword = $aCredentials['Password'];
+		$sLoginAuthKey = '';
+		if (!\strlen($sLogin) || !\strlen($sPassword))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
@@ -137,7 +135,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 				{
 					$sAuth = $SASL->authenticate($sLogin, $sPassword, $sLoginAuthKey);
 
-					if ($this->__USE_INITIAL_AUTH_PLAIN_COMMAND)
+					if ($aCredentials['InitialAuthPlain'])
 					{
 						$this->sendRequest('AUTHENTICATE "PLAIN" "'.$sAuth.'"');
 					}
@@ -530,7 +528,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		}
 	}
 
-	protected function getLogName() : string
+	public function getLogName() : string
 	{
 		return 'SIEVE';
 	}

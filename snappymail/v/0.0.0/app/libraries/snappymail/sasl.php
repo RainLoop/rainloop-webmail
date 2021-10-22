@@ -33,6 +33,9 @@ abstract class SASL
 	public static function isSupported(string $type) : bool
 	{
 		if (\preg_match('/^([A-Z2]+)(?:-(.+))?$/Di', $type, $m)) {
+			if ('XOAUTH2' === $m[1] || 'OAUTHBEARER' === $m[1]) {
+				 $m[1] = 'OAUTH';
+			}
 			$class = __CLASS__ . "\\{$m[1]}";
 			return \class_exists($class) && $class::isSupported($m[2] ?? '');
 		}

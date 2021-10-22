@@ -117,18 +117,21 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	public function Login(string $sLogin, string $sPassword, bool $bUseAuthPlainIfSupported = true, bool $bUseAuthCramMd5IfSupported = true) : self
+	public function Login(array $aCredentials) : self
 	{
-		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sLogin));
+		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($aCredentials['Login']));
+		$sPassword = $aCredentials['Password'];
 
 //		$encrypted = !empty(\stream_get_meta_data($this->ConnectionResource())['crypto']);
 		$type = '';
 		$types = [
 			'SCRAM-SHA-256' => 1, // !$encrypted
 			'SCRAM-SHA-1' => 1, // !$encrypted
-			'CRAM-MD5' => $bUseAuthCramMd5IfSupported,
-			'PLAIN' => $bUseAuthPlainIfSupported,
-			'LOGIN' => 1 // $encrypted
+			'CRAM-MD5' => $aCredentials['UseAuthCramMd5IfSupported'],
+			'PLAIN' => $aCredentials['UseAuthPlainIfSupported'],
+			'OAUTHBEARER' => $aCredentials['UseAuthOAuth2IfSupported'],
+			'XOAUTH2' => $aCredentials['UseAuthOAuth2IfSupported'],
+			'LOGIN' => 1, // $encrypted
 		];
 		foreach ($types as $sasl_type => $active) {
 			if ($active && $this->IsAuthSupported($sasl_type) && \SnappyMail\SASL::isSupported($sasl_type)) {
@@ -166,6 +169,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 			{
 			// RFC 4616
 			case 'PLAIN':
+			case 'XOAUTH2':
+			case 'OAUTHBEARER':
 				$this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword), 235, '', true);
 				break;
 
@@ -192,14 +197,6 @@ class SmtpClient extends \MailSo\Net\NetClient
 				$sResult = $this->sendRequestWithCheck($SASL->challenge($sResult), 235, '', true);
 				$SASL->verify($sResult);
 				break;
-
-/*
-			// https://developers.google.com/gmail/imap/xoauth2-protocol
-			case 'XOAUTH2':
-				throw new \Exception('Please use app passphrases: https://support.google.com/mail/answer/185833');
-				break;
-*/
-
 			}
 		}
 		catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
@@ -603,7 +600,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		while ('-' === \substr($aParts[1], 0, 1));
 	}
 
-	protected function getLogName() : string
+	public function getLogName() : string
 	{
 		return 'SMTP';
 	}

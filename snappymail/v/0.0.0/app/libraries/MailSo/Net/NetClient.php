@@ -433,10 +433,7 @@ abstract class NetClient
 		}
 	}
 
-	protected function getLogName() : string
-	{
-		return 'NET';
-	}
+	abstract function getLogName() : string;
 
 	protected function writeLog(string $sDesc, int $iDescType = \MailSo\Log\Enumerations\Type::INFO, bool $bDiplayCrLf = false) : void
 	{
