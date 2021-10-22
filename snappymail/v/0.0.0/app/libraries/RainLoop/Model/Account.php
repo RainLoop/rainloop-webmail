@@ -364,59 +364,6 @@ class Account
 		$bResult = $aCredentials['UseAuth'] && $oClient->Login($aCredentials);
 		$oPlugins->RunHook("{$client_name}.after-login", array($this, $oClient, $bResult, $aCredentials));
 		return $bResult;
-
-/*
-//		$encrypted = !empty(\stream_get_meta_data($oClient->ConnectionResource())['crypto']);
-		$type = $oClient->IsSupported('LOGINDISABLED') ? '' : 'LOGIN'; // RFC3501 6.2.3
-		$types = [
-//			'SCRAM-SHA-256' => 1, // !$encrypted
-//			'SCRAM-SHA-1' => 1, // !$encrypted
-			'CRAM-MD5' => $aSmtpCredentials['UseAuthCramMd5IfSupported'],
-			'PLAIN' => $aSmtpCredentials['UseAuthPlainIfSupported'],
-			'OAUTHBEARER' => $aSmtpCredentials['UseAuthOAuth2IfSupported'],
-			'XOAUTH2' => $aSmtpCredentials['UseAuthOAuth2IfSupported'],
-			'LOGIN' => 1,
-		];
-		foreach ($types as $sasl_type => $active) {
-			if ($active && $oClient->IsSupported("AUTH={$sasl_type}") && \SnappyMail\SASL::isSupported($sasl_type)) {
-				$type = $sasl_type;
-				break;
-			}
-		}
-
-		$SASL = \SnappyMail\SASL::factory($type);
-		$SASL->base64 = true;
-
-//		$oClient->Login($SASL);
-*/
-/*
-//		$encrypted = !empty(\stream_get_meta_data($oClient->ConnectionResource())['crypto']);
-		$type = '';
-		$types = [
-			'SCRAM-SHA-256' => 1, // !$encrypted
-			'SCRAM-SHA-1' => 1, // !$encrypted
-			'CRAM-MD5' => $bUseAuthCramMd5IfSupported,
-			'PLAIN' => $bUseAuthPlainIfSupported,
-			'LOGIN' => 1, // $encrypted
-			'XOAUTH2' => 0
-		];
-		foreach ($types as $sasl_type => $active) {
-			if ($active && $oClient->IsAuthSupported($sasl_type) && \SnappyMail\SASL::isSupported($sasl_type)) {
-				$type = $sasl_type;
-				break;
-			}
-		}
-
-		if (!$type) {
-			\trigger_error("SMTP {$oClient->GetConnectedHost()} no supported AUTH options. Disable login" . ($oClient->IsSupported('STARTTLS') ? ' or try with STARTTLS' : ''));
-			$oClient->writeLogException(
-				new \MailSo\Smtp\Exceptions\LoginBadMethodException,
-				\MailSo\Log\Enumerations\Type::NOTICE, true);
-		}
-
-		$SASL = \SnappyMail\SASL::factory($type);
-		$SASL->base64 = true;
-*/
 	}
 
 }

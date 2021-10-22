@@ -125,8 +125,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 //		$encrypted = !empty(\stream_get_meta_data($this->ConnectionResource())['crypto']);
 		$type = '';
 		$types = [
-			'SCRAM-SHA-256' => 1, // !$encrypted
-			'SCRAM-SHA-1' => 1, // !$encrypted
+			// if !$encrypted:
+			'SCRAM-SHA-256' => 1,
+			'SCRAM-SHA-1' => 1,
+			// if $encrypted:
 			'CRAM-MD5' => $aCredentials['UseAuthCramMd5IfSupported'],
 			'PLAIN' => $aCredentials['UseAuthPlainIfSupported'],
 			'OAUTHBEARER' => $aCredentials['UseAuthOAuth2IfSupported'],
