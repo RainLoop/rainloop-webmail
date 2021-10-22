@@ -115,6 +115,8 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 //				'SCRAM-SHA-256' => 1, // !$encrypted
 //				'SCRAM-SHA-1' => 1, // !$encrypted
 //				'CRAM-MD5' => 1, // $encrypted
+				'OAUTHBEARER' => $aCredentials['UseAuthOAuth2IfSupported'],
+				'XOAUTH2' => $aCredentials['UseAuthOAuth2IfSupported'],
 				'PLAIN' => 1, // $encrypted
 				'LOGIN' => 1 // $encrypted
 			];
@@ -131,17 +133,17 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 			$bAuth = false;
 			try
 			{
-				if ('PLAIN' === $type)
+				if ('PLAIN' === $type || 'OAUTHBEARER' === $type || 'XOAUTH2' === $type)
 				{
 					$sAuth = $SASL->authenticate($sLogin, $sPassword, $sLoginAuthKey);
 
 					if ($aCredentials['InitialAuthPlain'])
 					{
-						$this->sendRequest('AUTHENTICATE "PLAIN" "'.$sAuth.'"');
+						$this->sendRequest("AUTHENTICATE \"{$type}\" \"{$sAuth}\"");
 					}
 					else
 					{
-						$this->sendRequest('AUTHENTICATE "PLAIN" {'.\strlen($sAuth).'+}');
+						$this->sendRequest("AUTHENTICATE \"{$type}\" {".\strlen($sAuth).'+}');
 						$this->sendRequest($sAuth);
 					}
 
