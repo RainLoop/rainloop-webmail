@@ -187,7 +187,7 @@ abstract class NetClient
 
 		$rStreamContext = \stream_context_create($aStreamContextSettings);
 
-		\set_error_handler(array(&$this, 'capturePhpErrorWithException'));
+		\set_error_handler(array($this, 'capturePhpErrorWithException'));
 
 		try
 		{

@@ -31,10 +31,10 @@ class Logger extends \MailSo\Base\Collection
 
 		if ($bRegPhpErrorHandler)
 		{
-			\set_error_handler(array(&$this, '__phpErrorHandler'));
+			\set_error_handler(array($this, '__phpErrorHandler'));
 		}
 
-		\register_shutdown_function(array(&$this, '__loggerShutDown'));
+		\register_shutdown_function(array($this, '__loggerShutDown'));
 	}
 
 	/**

@@ -166,7 +166,7 @@ abstract class AbstractPlugin
 	{
 		if ($this->oPluginManager)
 		{
-			$this->oPluginManager->AddHook($sHookName, array(&$this, $sFunctionName));
+			$this->oPluginManager->AddHook($sHookName, array($this, $sFunctionName));
 		}
 
 		return $this;
@@ -216,7 +216,7 @@ abstract class AbstractPlugin
 	{
 		if ($this->oPluginManager)
 		{
-			$this->oPluginManager->AddAdditionalPartAction($sActionName, array(&$this, $sFunctionName));
+			$this->oPluginManager->AddAdditionalPartAction($sActionName, array($this, $sFunctionName));
 		}
 
 		return $this;
@@ -226,7 +226,7 @@ abstract class AbstractPlugin
 	{
 		if ($this->oPluginManager)
 		{
-			$this->oPluginManager->AddAdditionalJsonAction($sActionName, array(&$this, $sFunctionName));
+			$this->oPluginManager->AddAdditionalJsonAction($sActionName, array($this, $sFunctionName));
 		}
 
 		return $this;
