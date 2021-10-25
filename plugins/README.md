@@ -1,10 +1,15 @@
 PHP
-
+```php
 class Plugin extends \RainLoop\Plugins\AbstractPlugin
+{
+}
+```
 
 # Hooks
 
+```php
 $Plugin->addHook('hook.name', 'functionName');
+```
 
 ## Login
 
@@ -183,6 +188,11 @@ $Plugin->addHook('hook.name', 'functionName');
 		array &$aResponseItem
 
 ### filter.message-html
+	params:
+		\RainLoop\Model\Account $oAccount
+		\MailSo\Mime\Message $oMessage
+		string &$sTextConverted
+
 ### filter.message-plain
 	params:
 		\RainLoop\Model\Account $oAccount
@@ -250,15 +260,6 @@ $Plugin->addHook('hook.name', 'functionName');
 		string $sAction
 		array &$aResponseItem
 
-### json.action-post-call
-	params:
-		string $sAction
-		array &$aResponseItem
-
-### json.action-pre-call
-	params:
-		string $sAction
-
 ### json.action-pre-call
 	params:
 		string $sAction
@@ -291,26 +292,6 @@ $Plugin->addHook('hook.name', 'functionName');
 	params:
 		string $sActionName
 		array &$aResponseItem
-
-### main.default-response
-	params:
-		string $sActionName
-		array &$aResponseItem
-
-### main.default-response
-	params:
-		string $sActionName
-		array &$aResponseItem
-
-### main.default-response-data
-	params:
-		string $sActionName
-		mixed &$mResult
-
-### main.default-response-data
-	params:
-		string $sActionName
-		mixed &$mResult
 
 ### main.default-response-data
 	params:
