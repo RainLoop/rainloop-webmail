@@ -1,8 +1,6 @@
 <?php
 
-namespace RainLoop\Providers\Storage;
-
-class TemproryApcStorage extends \RainLoop\Providers\Storage\FileStorage
+class DemoStorage extends \RainLoop\Providers\Storage\FileStorage
 {
 	/**
 	 * @param \RainLoop\Model\Account|string|null $oAccount

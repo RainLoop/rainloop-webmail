@@ -37,8 +37,7 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 */
 	public function FilterAppData($bAdmin, &$aResult)
 	{
-		if (!$bAdmin && \is_array($aResult) && isset($aResult['Auth']) && !$aResult['Auth'])
-		{
+		if (!$bAdmin && \is_array($aResult) && isset($aResult['Auth']) && !$aResult['Auth']) {
 			$aResult['DevEmail'] = $this->Config()->Get('plugin', 'email', $aResult['DevEmail']);
 			$aResult['DevPassword'] = APP_DUMMY;
 		}
@@ -49,12 +48,11 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 */
 	public function FilterActionParams($sMethodName, &$aActionParams)
 	{
-		if ('DoLogin' === $sMethodName && isset($aActionParams['Email']) && isset($aActionParams['Password']))
-		{
-			if ($this->Config()->Get('plugin', 'email') === $aActionParams['Email'])
-			{
-				$aActionParams['Password'] = $this->Config()->Get('plugin', 'password');
-			}
+		if ('DoLogin' === $sMethodName
+		 && isset($aActionParams['Email'])
+		 && isset($aActionParams['Password'])
+		 && $this->Config()->Get('plugin', 'email') === $aActionParams['Email']) {
+			$aActionParams['Password'] = $this->Config()->Get('plugin', 'password');
 		}
 	}
 
@@ -70,17 +68,14 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function JsonActionPreCall($sAction)
 	{
-		if ('AccountSetup' === $sAction &&
-			$this->isDemoAccount($this->Manager()->Actions()->GetAccount()))
-		{
+		if ('AccountSetup' === $sAction && $this->isDemoAccount($this->Manager()->Actions()->GetAccount())) {
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DemoAccountError);
 		}
 	}
 
 	public function FilterSendMessage($oMessage)
 	{
-		if ($oMessage && $this->isDemoAccount($this->Manager()->Actions()->GetAccount()))
-		{
+		if ($oMessage && $this->isDemoAccount($this->Manager()->Actions()->GetAccount())) {
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DemoSendMessageError);
 		}
 	}
@@ -91,21 +86,12 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 */
 	public function MainFabrica($sName, &$oDriver)
 	{
-		switch ($sName)
-		{
-			case 'storage':
-			case 'storage-local':
-				if (\class_exists('\\RainLoop\\Providers\\Storage\\TemproryApcStorage') &&
-					\function_exists('apc_store'))
-				{
-					$oAccount = $this->Manager()->Actions()->GetAccount();
-					if ($this->isDemoAccount($oAccount))
-					{
-						$oDriver = new \RainLoop\Providers\Storage\TemproryApcStorage(APP_PRIVATE_DATA.'storage',
-							$sName === 'storage-local');
-					}
-				}
-				break;
+		if (('storage' === $sName || 'storage-local' === $sName) && \function_exists('apcu_store')) {
+			$oAccount = $this->Manager()->Actions()->GetAccount();
+			if ($this->isDemoAccount($oAccount)) {
+				require_once __DIR__ . '/storage.php';
+				$oDriver = new \DemoStorage(APP_PRIVATE_DATA.'storage', $sName === 'storage-local');
+			}
 		}
 	}
 }
