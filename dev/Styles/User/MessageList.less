@@ -244,7 +244,6 @@ html.rl-no-preview-pane {
 	}
 
 	.checkboxMessage {
-		line-height: 12px;
 		padding: 0 8px 0 6px;
 		font-size: 16px;
 	}
@@ -264,7 +263,9 @@ html.rl-no-preview-pane {
 	}
 
 	.senderParent, .subjectParent {
+		margin: 0;
 		overflow: hidden;
+		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
 
@@ -291,12 +292,6 @@ html.rl-no-preview-pane {
 	&.emptySubject .subjectParent {
 		font-style: italic;
 		opacity: 0.5;
-	}
-
-	.senderParent, .subjectParent {
-		margin: 0;
-		overflow: hidden;
-		text-overflow: ellipsis;
 	}
 
 	.threads-len span {
@@ -411,6 +406,7 @@ html.rl-ctrl-key-pressed .messageListItem {
 	.messageListItem {
 
 		.checkboxMessage {
+			line-height: 12px;
 			margin: 10px 0 -5px;
 		}
 
@@ -450,12 +446,8 @@ html:not(.rl-mobile):not(.rl-side-preview-pane) {
 		line-height: 25px;
 		flex-wrap: nowrap;
 
-		.checkboxMessage {
+		> * {
 			line-height: 25px;
-		}
-
-		.flagParent {
-			margin-top: 6px;
 		}
 
 		.attachmentParent {
@@ -463,8 +455,6 @@ html:not(.rl-mobile):not(.rl-side-preview-pane) {
 		}
 
 		.senderParent {
-			font-weight: normal;
-			text-overflow: none;
 			flex: 0 0 25%;
 		}
 

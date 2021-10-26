@@ -73,6 +73,20 @@
 		padding: 10px;
 		background-color: rgba(128,128,128,0.2);;
 
+		table {
+			border-collapse: collapse;
+			width: 100%;
+		}
+		td {
+			vertical-align: baseline;
+			padding: 2px 0;
+		}
+		td:first-child {
+			padding: 0 10px 0 0;
+			text-align: right;
+			width: 4em;
+		}
+
 		.e-identity {
 
 			color: var(--main-color);
@@ -85,25 +99,15 @@
 			}
 		}
 
-		.e-row {
+		> div {
 			line-height: 30px;
 		}
 
-		.e-label {
-			text-align: right;
-			padding: 6px 10px;
+		textarea, input[type="text"] {
+			width: 100%;
 		}
-
-		.e-value {
-
-			padding: 2px 0;
-
-			textarea, input[type="text"] {
-				width: 100%;
-			}
-			textarea {
-				height: 40px;
-			}
+		textarea {
+			height: 40px;
 		}
 
 		.error-desc {
@@ -163,10 +167,4 @@
 	line-height: 20px;
 	margin-right: 15px;
 	cursor: pointer;
-}
-
-@media screen and (max-width: 700px) {
-	.b-compose .b-header .e-label {
-		padding-left: 0;
-	}
 }
