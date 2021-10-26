@@ -480,8 +480,12 @@ class ImapClient extends \MailSo\Net\NetClient
 		// RFC 5464
 		if ($this->IsSupported('METADATA')) {
 			foreach ($aReturn as $oFolder) {
-				foreach ($this->getMetadata($oFolder->FullNameRaw(), ['/shared', '/private'], ['DEPTH'=>'infinity']) as $key => $value) {
-					$oFolder->SetMetadata($key, $value);
+				try {
+					foreach ($this->getMetadata($oFolder->FullNameRaw(), ['/shared', '/private'], ['DEPTH'=>'infinity']) as $key => $value) {
+						$oFolder->SetMetadata($key, $value);
+					}
+				} catch (\Throwable $e) {
+					// Ignore error
 				}
 			}
 		}
