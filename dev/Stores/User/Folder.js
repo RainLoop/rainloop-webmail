@@ -57,18 +57,6 @@ export const FolderUserStore = new class {
 
 			draftFolderNotEnabled: () => !this.draftFolder() || UNUSED_OPTION_VALUE === this.draftFolder(),
 
-			// foldersListWithSingleInboxRootFolder
-			/** returns true when there are no non-system folders in the root of the folders tree */
-			singleRootFolder: () => {
-				let multiple = false;
-				this.folderList.forEach(folder => {
-					let subscribed = folder.subscribed(),
-						hasSub = folder.hasSubscribedSubfolders();
-					multiple |= (!folder.isSystemFolder() || (hasSub && !folder.isInbox())) && (subscribed || hasSub)
-				});
-				return !multiple;
-			},
-
 			currentFolderFullNameRaw: () => (this.currentFolder() ? this.currentFolder().fullNameRaw : ''),
 
 			currentFolderFullName: () => (this.currentFolder() ? this.currentFolder().fullName : ''),

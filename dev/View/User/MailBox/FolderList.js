@@ -33,7 +33,7 @@ export class MailFolderList extends AbstractViewLeft {
 
 		this.moveAction = moveAction;
 
-		this.foldersListWithSingleInboxRootFolder = FolderUserStore.singleRootFolder;
+		this.foldersListWithSingleInboxRootFolder = ko.observable(false);
 
 		this.leftPanelDisabled = leftPanelDisabled;
 
@@ -42,7 +42,24 @@ export class MailFolderList extends AbstractViewLeft {
 		addComputablesTo(this, {
 			folderListFocused: () => Scope.FolderList === AppUserStore.focusedState(),
 
-			folderListVisible: () => FolderUserStore.folderList().filter(v => !(v.hidden() || v.kolabType()))
+			folderListVisible: () => {
+				let multiple = false,
+					inbox, subscribed, hasSub,
+					result = FolderUserStore.folderList().filter(folder => {
+						if (folder.isInbox()) {
+							inbox = folder;
+						}
+						subscribed = folder.subscribed();
+						hasSub = folder.hasSubscribedSubfolders();
+						multiple |= (!folder.isSystemFolder() || (hasSub && !folder.isInbox())) && (subscribed || hasSub)
+						return !(folder.hidden() | folder.kolabType());
+					});
+				if (inbox && !multiple) {
+					inbox.collapsedPrivate(false);
+				}
+				this.foldersListWithSingleInboxRootFolder(!multiple);
+				return result;
+			}
 		});
 	}
 

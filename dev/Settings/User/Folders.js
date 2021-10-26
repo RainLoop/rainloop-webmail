@@ -22,6 +22,8 @@ import { showScreenPopup } from 'Knoin/Knoin';
 import { FolderCreatePopupView } from 'View/Popup/FolderCreate';
 import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
 
+const folderForDeletion = ko.observable(null).deleteAccessHelper();
+
 export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.showKolab = Settings.capa(Capa.Kolab) && FolderUserStore.metadataSupported();
@@ -56,7 +58,7 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 			return loading || creating || deleting || renaming;
 		});
 
-		this.folderForDeletion = ko.observable(null).deleteAccessHelper();
+		this.folderForDeletion = folderForDeletion;
 
 		this.folderForEdit = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'edited'] });
 
@@ -111,7 +113,7 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 			folderToRemove.deleteAccess() &&
 			0 === folderToRemove.privateMessageCountAll()
 		) {
-			this.folderForDeletion(null);
+			folderForDeletion(null);
 
 			if (folderToRemove) {
 				Local.set(ClientSideKeyName.FoldersLashHash, '');
@@ -123,6 +125,7 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 						() => {
 							folderToRemove.selectable(false)
 							removeFolderFromCacheList(folderToRemove.fullNameRaw);
+							FolderUserStore.folderList(FolderUserStore.folderList.filter(folder => folder !== folderToRemove));
 						},
 						error => {
 							FolderUserStore.folderListError(

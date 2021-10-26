@@ -297,7 +297,7 @@ export class FolderModel extends AbstractModel {
 
 				visible: () => folder.hasSubscriptions() | !SettingsUserStore.hideUnsubscribed(),
 
-				isSystemFolder: () => FolderType.User !== folder.type() || !!folder.kolabType(),
+				isSystemFolder: () => FolderType.User !== folder.type() | !!folder.kolabType(),
 
 				hidden: () => {
 					let hasSubFolders = folder.hasSubscribedSubfolders();
@@ -354,9 +354,7 @@ export class FolderModel extends AbstractModel {
 				},
 
 				collapsed: {
-					read: () => folder.isInbox() && FolderUserStore.singleRootFolder()
-						? false
-						: !folder.hidden() && folder.collapsedPrivate(),
+					read: () => !folder.hidden() && folder.collapsedPrivate(),
 					write: value => folder.collapsedPrivate(value)
 				},
 

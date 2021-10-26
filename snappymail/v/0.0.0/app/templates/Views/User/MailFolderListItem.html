@@ -1,4 +1,5 @@
-<li data-bind="visible: visible">
+<!-- ko if: visible -->
+<li>
 	<a data-bind="dropmessages: $data,
 	   css: { 'selected': selected() && !isSystemFolder(), 'system': isSystemFolder, 'selectable': canBeSelected, 'hidden' : hidden, 'unread-sub': hasSubscribedUnreadMessagesSubfolders, 'anim-action-class': actionBlink },
 	   attr: { 'data-unread': printableUnreadCount }">
@@ -9,3 +10,4 @@
 	<ul data-bind="template: { name: 'MailFolderListItem', foreach: subFolders }, css: { 'collapsed': collapsed() }"></ul>
 	<!-- /ko -->
 </li>
+<!-- /ko -->
