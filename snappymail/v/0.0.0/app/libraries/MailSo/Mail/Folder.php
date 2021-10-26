@@ -76,10 +76,10 @@ class Folder implements \JsonSerializable
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public static function NewNonExistenInstance(string $sFullNameRaw, string $sDelimiter) : self
+	public static function NewNonExistentInstance(string $sFullNameRaw, string $sDelimiter) : self
 	{
 		return new self(
-			new \MailSo\Imap\Folder($sFullNameRaw, $sDelimiter, array('\\Noselect')), true, false);
+			new \MailSo\Imap\Folder($sFullNameRaw, $sDelimiter, array('\\Noselect')), false, false);
 	}
 
 	public function Name() : string

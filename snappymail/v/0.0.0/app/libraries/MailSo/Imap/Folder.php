@@ -121,7 +121,7 @@ class Folder
 
 	public function IsSelectable() : bool
 	{
-		return !\in_array('\\noselect', $this->aFlagsLowerCase);
+		return !\in_array('\\noselect', $this->aFlagsLowerCase) && !\in_array('\\nonexistent', $this->aFlagsLowerCase);
 	}
 
 	public function IsInbox() : bool

@@ -1988,7 +1988,7 @@ class MailClient
 						try
 						{
 							$aAddedFolders[$sNonExistenFolderFullNameRaw] =
-								Folder::NewNonExistenInstance($sNonExistenFolderFullNameRaw, $sDelimiter);
+								Folder::NewNonExistentInstance($sNonExistenFolderFullNameRaw, $sDelimiter);
 						}
 						catch (\Throwable $oExc)
 						{
