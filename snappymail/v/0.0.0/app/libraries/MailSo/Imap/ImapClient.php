@@ -139,6 +139,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		} else {
 			$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($aCredentials['Login']));
 			$sPassword = $aCredentials['Password'];
+			$sProxyAuthUser = '';
 		}
 
 		if (!\strlen($sLogin) || !\strlen($sPassword))
