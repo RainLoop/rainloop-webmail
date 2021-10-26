@@ -473,6 +473,11 @@ class ImapClient extends \MailSo\Net\NetClient
 		else
 		{
 			$bUseListStatus = false;
+			// RFC5258
+			if ($this->IsSupported('LIST-EXTENDED')) {
+				$aParameters[] = 'RETURN';
+				$aParameters[] = array('SUBSCRIBED'/*,'CHILDREN'*/);
+			}
 		}
 
 		$aReturn = $this->SendRequestGetResponse($sCmd, $aParameters)->getFoldersResult($sCmd, $bUseListStatus);

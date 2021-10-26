@@ -1915,8 +1915,10 @@ class MailClient
 	public function Folders(string $sParent = '', string $sListPattern = '*', bool $bUseListSubscribeStatus = true, int $iOptimizationLimit = 0) : ?FolderCollection
 	{
 		$aImapSubscribedFoldersHelper = null;
-		if ($bUseListSubscribeStatus)
-		{
+		if ($this->oImapClient->IsSupported('LIST-EXTENDED')) {
+			$bUseListSubscribeStatus = false;
+		} else if ($bUseListSubscribeStatus) {
+			//\error_log('RFC5258 not supported, using LSUB');
 			try
 			{
 				$aSubscribedFolders = $this->oImapClient->FolderSubscribeList($sParent, $sListPattern);
@@ -1928,7 +1930,7 @@ class MailClient
 			}
 			catch (\Throwable $oException)
 			{
-				unset($oException);
+				\error_log('ERROR FolderSubscribeList: ' . $oException->getMessage());
 			}
 		}
 
@@ -1941,8 +1943,8 @@ class MailClient
 		foreach ($aFolders as /* @var $oImapFolder \MailSo\Imap\Folder */ $oImapFolder)
 		{
 			$aMailFoldersHelper[] = new Folder($oImapFolder,
-				(null === $aImapSubscribedFoldersHelper || \in_array($oImapFolder->FullNameRaw(), $aImapSubscribedFoldersHelper)) ||
-				$oImapFolder->IsInbox()
+				($bUseListSubscribeStatus && (null === $aImapSubscribedFoldersHelper || \in_array($oImapFolder->FullNameRaw(), $aImapSubscribedFoldersHelper)))
+				|| $oImapFolder->IsInbox()
 			);
 		}
 

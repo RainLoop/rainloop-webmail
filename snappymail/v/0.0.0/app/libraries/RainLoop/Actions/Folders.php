@@ -193,7 +193,7 @@ trait Folders
 
 		try
 		{
-			$this->MailClient()->FolderSubscribe($sFolderFullNameRaw, !!$bSubscribe);
+			$this->MailClient()->FolderSubscribe($sFolderFullNameRaw, $bSubscribe);
 		}
 		catch (\Throwable $oException)
 		{

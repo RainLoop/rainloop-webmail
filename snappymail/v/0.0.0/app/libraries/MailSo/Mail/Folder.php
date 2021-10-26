@@ -68,7 +68,7 @@ class Folder implements \JsonSerializable
 			$this->sParentFullNameRaw = \implode($this->oImapFolder->Delimiter(), $aNames);
 		}
 
-		$this->bSubscribed = $bSubscribed;
+		$this->bSubscribed = $bSubscribed || \in_array('\\subscribed', $oImapFolder->FlagsLowerCase());
 		$this->bExists = $bExists;
 	}
 
