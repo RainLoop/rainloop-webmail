@@ -56,6 +56,7 @@ trait Status
 		 * The number of messages which do not have the \Seen flag set.
 		 * This response also occurs as a result of a SELECT or EXAMINE command,
 		 * but then it is the message sequence number of the first unseen message.
+		 * However, Dovecot does return the amount of unseen messages
 		 * @var int
 		 */
 		$UNSEEN,
