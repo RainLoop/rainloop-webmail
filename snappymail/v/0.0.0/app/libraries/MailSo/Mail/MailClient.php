@@ -1453,6 +1453,10 @@ class MailClient
 
 			TO
 				[IMAP] addr-mailbox of the first "To" address.
+
+			RFC 5957:
+				$this->oImapClient->IsSupported('SORT=DISPLAY')
+				DISPLAYFROM, DISPLAYTO
 		 */
 
 		$aResultUids = false;
