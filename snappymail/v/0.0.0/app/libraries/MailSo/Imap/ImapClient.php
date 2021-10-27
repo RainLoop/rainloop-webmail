@@ -433,14 +433,14 @@ class ImapClient extends \MailSo\Net\NetClient
 		if ($oFolderInfo && $sFolderName === $oFolderInfo->FolderName) {
 			$aResult = $oFolderInfo->getStatusItems();
 			// SELECT or EXAMINE command then UNSEEN is the message sequence number of the first unseen message
-			// However, Dovecot does return the amount of unseen messages
-//			$aResult['UNSEEN'] = $this->simpleESearchOrESortHelper(false, 'UNSEEN', ['COUNT'])['COUNT'];
-			return $aResult;
+			$aResult['UNSEEN'] = $this->simpleESearchOrESortHelper(false, 'UNSEEN', ['COUNT'])['COUNT'];
+		} else {
+			$aResult = \count($aStatusItems)
+				? $this->SendRequestGetResponse('STATUS', array($this->EscapeString($sFolderName), $aStatusItems))
+					->getStatusFolderInformationResult()
+				: null;
 		}
-		return \count($aStatusItems)
-			? $this->SendRequestGetResponse('STATUS', array($this->EscapeString($sFolderName), $aStatusItems))
-				->getStatusFolderInformationResult()
-			: null;
+		return $aResult;
 	}
 
 	/**
