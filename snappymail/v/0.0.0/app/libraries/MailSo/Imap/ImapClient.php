@@ -1810,6 +1810,26 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $this->SendRequestGetResponse('GETMETADATA', $arguments)->getFolderMetadataResult();
 	}
 
+	/**
+	 * Don't have to be logged in to call this command
+	 */
+	public function ServerID() : string
+	{
+		if ($this->IsSupported('ID')) {
+			foreach ($this->SendRequestGetResponse('ID', [null]) as $oResponse) {
+				if ('ID' === $oResponse->ResponseList[1] && \is_array($oResponse->ResponseList[2])) {
+					$c = \count($oResponse->ResponseList[2]);
+					$aResult = [];
+					for ($i = 0; $i < $c; $i += 2) {
+						$aResult[] = $oResponse->ResponseList[2][$i] . '=' . $oResponse->ResponseList[2][$i+1];
+					}
+					return \implode(' ', $aResult);
+				}
+			}
+		}
+		return 'UNKNOWN';
+	}
+
 	public function ServerGetMetadata(array $aEntries, array $aOptions = []) : array
 	{
 		return $this->IsSupported('METADATA-SERVER')
