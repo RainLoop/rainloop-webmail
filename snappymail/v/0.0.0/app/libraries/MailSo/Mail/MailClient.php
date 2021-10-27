@@ -630,14 +630,9 @@ class MailClient
 	{
 		$aFlags = array();
 
-		$bSelect = false;
-
 		if (\count($aUids))
 		{
-			if (!$bSelect)
-			{
-				$this->oImapClient->FolderSelect($sFolderName);
-			}
+			$this->oImapClient->FolderSelect($sFolderName);
 
 			$aFetchResponse = $this->oImapClient->Fetch(array(
 				\MailSo\Imap\Enumerations\FetchType::INDEX,

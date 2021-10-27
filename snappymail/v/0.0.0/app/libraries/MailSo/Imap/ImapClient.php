@@ -429,6 +429,10 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function FolderStatus(string $sFolderName, array $aStatusItems) : ?array
 	{
+		$oFolderInfo = $this->oCurrentFolderInfo;
+		if ($sFolderName === $oFolderInfo->FolderName) {
+			return $oFolderInfo->getStatusItems();
+		}
 		return \count($aStatusItems)
 			? $this->SendRequestGetResponse('STATUS', array($this->EscapeString($sFolderName), $aStatusItems))
 				->getStatusFolderInformationResult()
@@ -735,6 +739,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		if (!$aSearchOrSortReturn)
 		{
+			// ALL OR COUNT | MIN | MAX
 			$aSearchOrSortReturn = array('ALL');
 		}
 
@@ -1039,6 +1044,8 @@ class ImapClient extends \MailSo\Net\NetClient
 			$sFakeCommand = $sTag.' '.$sCommand.$this->prepareParamLine($aFakeParams);
 		}
 
+//		$this->lastCommand = $sFakeCommand ?: $sRealCommand;
+
 		$this->aTagTimeouts[$sTag] = \microtime(true);
 
 		if ($bBreakOnLiteral && !\preg_match('/\d\+\}\r\n/', $sRealCommand))
@@ -1123,6 +1130,12 @@ class ImapClient extends \MailSo\Net\NetClient
 						throw new Exceptions\ResponseNotFoundException;
 					}
 
+					// RFC 5530
+					if (\is_array($oResponse->OptionalResponse) && 'CLIENTBUG' === $oResponse->OptionalResponse[0]) {
+						// The server has detected a client bug.
+//						\error_log("IMAP {$oResponse->OptionalResponse[0]}: {$this->lastCommand}");
+					}
+
 					$oResult->append($oResponse);
 					if ($sEndTag === $oResponse->Tag || Enumerations\ResponseType::CONTINUATION === $oResponse->ResponseType) {
 						if (isset($this->aTagTimeouts[$sEndTag])) {
@@ -1133,11 +1146,6 @@ class ImapClient extends \MailSo\Net\NetClient
 						}
 
 						break;
-					}
-
-					// RFC 5530
-					if (\is_array($oResponse->OptionalResponse) && 'CLIENTBUG' === $oResponse->OptionalResponse[0]) {
-						// The server has detected a client bug.
 					}
 				}
 			}
