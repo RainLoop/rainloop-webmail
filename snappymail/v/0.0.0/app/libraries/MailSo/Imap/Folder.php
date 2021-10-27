@@ -46,11 +46,6 @@ class Folder
 	private $aFlagsLowerCase;
 
 	/**
-	 * @var array
-	 */
-	private $aExtended = array();
-
-	/**
 	 * RFC 5464
 	 */
 	private $aMetadata = array();
@@ -130,22 +125,6 @@ class Folder
 	public function IsInbox() : bool
 	{
 		return 'INBOX' === \strtoupper($this->sFullNameRaw) || \in_array('\\inbox', $this->aFlagsLowerCase);
-	}
-
-	/**
-	 * @param mixed $mData
-	 */
-	public function SetExtended(string $sName, $mData) : void
-	{
-		$this->aExtended[$sName] = $mData;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function GetExtended(string $sName)
-	{
-		return isset($this->aExtended[$sName]) ? $this->aExtended[$sName] : null;
 	}
 
 	/**

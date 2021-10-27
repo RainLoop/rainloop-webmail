@@ -10,6 +10,14 @@ use \MailSo\Imap\Enumerations\FolderType;
 trait Folders
 {
 
+	private function getFolderCollection(bool $HideUnsubscribed) : ?\MailSo\Mail\FolderCollection
+	{
+		return $this->MailClient()->Folders('', '*',
+			$HideUnsubscribed,
+			(int) $this->Config()->Get('labs', 'imap_folder_list_limit', 200)
+		);
+	}
+
 	public function DoFolders() : array
 	{
 		$oAccount = $this->initMailClientConnection();
@@ -20,13 +28,9 @@ trait Folders
 			$HideUnsubscribed = (bool) $oSettingsLocal->GetConf('HideUnsubscribed', $HideUnsubscribed);
 		}
 
-		$oFolderCollection = $this->MailClient()->Folders('',
-			'*',
-			$HideUnsubscribed,
-			(int) $this->Config()->Get('labs', 'imap_folder_list_limit', 200)
-		);
+		$oFolderCollection = $this->getFolderCollection($HideUnsubscribed);
 
-		if ($oFolderCollection instanceof \MailSo\Mail\FolderCollection)
+		if ($oFolderCollection)
 		{
 			$this->Plugins()->RunHook('filter.folders-post', array($oAccount, $oFolderCollection));
 
@@ -126,10 +130,7 @@ trait Folders
 
 				if ($bDoItAgain)
 				{
-					$oFolderCollection = $this->MailClient()->Folders('', '*',
-						$HideUnsubscribed,
-						(int) $this->Config()->Get('labs', 'imap_folder_list_limit', 200)
-					);
+					$oFolderCollection = $this->getFolderCollection($HideUnsubscribed);
 
 					if ($oFolderCollection)
 					{
@@ -406,7 +407,7 @@ trait Folders
 			$aFolders = \array_unique($aFolders);
 			foreach ($aFolders as $sFolder)
 			{
-				if (0 < \strlen($sFolder) && 'INBOX' !== \strtoupper($sFolder))
+				if (\strlen($sFolder) && 'INBOX' !== \strtoupper($sFolder))
 				{
 					try
 					{

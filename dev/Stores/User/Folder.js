@@ -24,6 +24,7 @@ export const FolderUserStore = new class {
 			 */
 			sortSupported: false,
 			metadataSupported: false,
+			listStatusSupported: false,
 //			sortMode: '',
 
 			sentFolder: '',

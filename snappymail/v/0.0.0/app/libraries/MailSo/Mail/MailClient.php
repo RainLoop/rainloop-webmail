@@ -153,7 +153,7 @@ class MailClient
 
 			if (\is_array($aCustomUids))
 			{
-				if (0 < \count($aCustomUids))
+				if (\count($aCustomUids))
 				{
 					$this->oImapClient->MessageStoreFlag(implode(',', $aCustomUids), true, array($sMessageFlag), $sStoreAction);
 				}
@@ -254,7 +254,7 @@ class MailClient
 		);
 
 		$aFetchResponse = $this->oImapClient->Fetch(array(\MailSo\Imap\Enumerations\FetchType::BODYSTRUCTURE), $iIndex, $bIndexIsUid);
-		if (0 < \count($aFetchResponse) && isset($aFetchResponse[0]))
+		if (\count($aFetchResponse) && isset($aFetchResponse[0]))
 		{
 			$oBodyStructure = $aFetchResponse[0]->GetFetchBodyStructure();
 			if ($oBodyStructure)
@@ -271,7 +271,7 @@ class MailClient
 				}
 
 				$aSignatureParts = $oBodyStructure->SearchByContentType('application/pgp-signature');
-				if (is_array($aSignatureParts) && 0 < \count($aSignatureParts))
+				if (is_array($aSignatureParts) && \count($aSignatureParts))
 				{
 					foreach ($aSignatureParts as $oPart)
 					{
@@ -287,7 +287,7 @@ class MailClient
 		}
 
 		$aFetchResponse = $this->oImapClient->Fetch($aFetchItems, $iIndex, $bIndexIsUid);
-		if (0 < \count($aFetchResponse))
+		if (\count($aFetchResponse))
 		{
 			$oMessage = Message::NewFetchResponseInstance(
 				$sFolderName, $aFetchResponse[0], $oBodyStructure);
@@ -632,7 +632,7 @@ class MailClient
 
 		$bSelect = false;
 
-		if (0 < \count($aUids))
+		if (\count($aUids))
 		{
 			if (!$bSelect)
 			{
@@ -803,7 +803,7 @@ class MailClient
 
 		$mMatch = array();
 		\preg_match_all('/('.$sReg.'):([^\s]*)/i', $sSearch, $mMatch);
-		if (\is_array($mMatch) && isset($mMatch[1]) && \is_array($mMatch[1]) && 0 < \count($mMatch[1]))
+		if (\is_array($mMatch) && isset($mMatch[1]) && \is_array($mMatch[1]) && \count($mMatch[1]))
 		{
 			if (\is_array($mMatch[0]))
 			{
@@ -1128,7 +1128,7 @@ class MailClient
 			else
 			{
 				$mMap = $this->threadArrayMap($mItem);
-				if (0 < \count($mMap))
+				if (\count($mMap))
 				{
 					$aNew = \array_merge($aNew, $mMap);
 				}
@@ -1150,7 +1150,7 @@ class MailClient
 				{
 					$aResult[] = $aMap;
 				}
-				else if (0 < \count($aMap))
+				else if (\count($aMap))
 				{
 					$aResult[] = $aMap[0];
 				}
@@ -1313,7 +1313,7 @@ class MailClient
 							$mFirst = \array_shift($aItem);
 							if (!empty($mFirst))
 							{
-								$aTemp[$mFirst] = 0 < \count($aItem) ? $aItem : $mFirst;
+								$aTemp[$mFirst] = \count($aItem) ? $aItem : $mFirst;
 							}
 						}
 					}
@@ -1361,7 +1361,7 @@ class MailClient
 	 */
 	public function MessageListByRequestIndexOrUids(MessageCollection $oMessageCollection, array $aRequestIndexOrUids, bool $bIndexAsUid, bool $bSimple = false)
 	{
-		if (0 < \count($aRequestIndexOrUids))
+		if (\count($aRequestIndexOrUids))
 		{
 			$aFetchResponse = $this->oImapClient->Fetch(array(
 				\MailSo\Imap\Enumerations\FetchType::INDEX,
@@ -1375,7 +1375,7 @@ class MailClient
 					$this->getEnvelopeOrHeadersRequestString()
 			), \MailSo\Base\Utils::PrepareFetchSequence($aRequestIndexOrUids), $bIndexAsUid);
 
-			if (0 < \count($aFetchResponse))
+			if (\count($aFetchResponse))
 			{
 				$aFetchIndexArray = array();
 				foreach ($aFetchResponse as /* @var $oFetchResponseItem \MailSo\Imap\FetchResponse */ $oFetchResponseItem)
@@ -1653,7 +1653,7 @@ class MailClient
 				$aSearchedUids = $this->GetUids($oCacher, $sSearch, $sFilter,
 					$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
 
-				if (0 < \count($aSearchedUids))
+				if (\count($aSearchedUids))
 				{
 					$aFlippedSearchedUids = \array_flip($aSearchedUids);
 
@@ -1694,7 +1694,7 @@ class MailClient
 				$oMessageCollection->MessageUnseenCount = $iMessageUnseenCount;
 				$oMessageCollection->MessageResultCount = \count($aUids);
 
-				if (0 < \count($aUids))
+				if (\count($aUids))
 				{
 					$aRequestUids = \array_slice($aUids, $iOffset, $iLimit);
 					$this->MessageListByRequestIndexOrUids($oMessageCollection, $aRequestUids, true);
@@ -1934,8 +1934,8 @@ class MailClient
 			}
 		}
 
-		$aFolders = $this->oImapClient->FolderList($sParent, $sListPattern);
-//		$aFolders = $this->oImapClient->FolderStatusList($sParent, $sListPattern);
+//		$aFolders = $this->oImapClient->FolderList($sParent, $sListPattern);
+		$aFolders = $this->oImapClient->FolderStatusList($sParent, $sListPattern);
 		if (!$aFolders) {
 			return null;
 		}
@@ -1959,6 +1959,7 @@ class MailClient
 		$oFolderCollection->IsMetadataSupported = $this->oImapClient->IsSupported('METADATA');
 		$oFolderCollection->IsThreadsSupported = $this->IsThreadsSupported();
 		$oFolderCollection->IsSortSupported = $this->oImapClient->IsSupported('SORT');
+		$oFolderCollection->IsListStatusSupported = $this->oImapClient->IsSupported('LIST-STATUS');
 		$oFolderCollection->Optimized = $iCount !== \count($aMailFoldersHelper);
 
 		$aSortedByLenImapFolders = array();

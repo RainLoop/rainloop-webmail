@@ -40,6 +40,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		this.IsMetadataSupported
 		this.IsThreadsSupported
 		this.IsSortSupported
+		this.IsExtendedSupported
 		this.Namespace;
 		this.Optimized
 		this.SystemFolders
@@ -147,6 +148,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		FolderUserStore.folderListOptimized(!!this.Optimized);
 		FolderUserStore.sortSupported(!!this.IsSortSupported);
 		FolderUserStore.metadataSupported(!!this.IsMetadataSupported);
+		FolderUserStore.listStatusSupported(!!this.IsListStatusSupported);
 
 		FolderUserStore.sentFolder(normalizeFolder(SettingsGet('SentFolder')));
 		FolderUserStore.draftFolder(normalizeFolder(SettingsGet('DraftFolder')));

@@ -283,6 +283,20 @@ class Folder implements \JsonSerializable
 
 	public function jsonSerialize()
 	{
+/*
+		$aExtended = null;
+		$aStatus = $this->oImapFolder->getStatusItems();
+		if ($aStatus && isset($aStatus['MESSAGES'], $aStatus['UNSEEN'], $aStatus['UIDNEXT'])) {
+			$aExtended = array(
+				'MessageCount' => (int) $aStatus['MESSAGES'],
+				'MessageUnseenCount' => (int) $aStatus['UNSEEN'],
+				'UidNext' => (int) $aStatus['UIDNEXT'],
+//				'Hash' => $this->MailClient()->GenerateFolderHash(
+//					$this->FullNameRaw(), $aStatus['MESSAGES'], $aStatus['UIDNEXT'],
+//						empty($aStatus['HIGHESTMODSEQ']) ? 0 : $aStatus['HIGHESTMODSEQ'])
+			);
+		}
+*/
 		return array(
 			'@Object' => 'Object/Folder',
 			'Name' => $this->Name(),
@@ -294,6 +308,7 @@ class Folder implements \JsonSerializable
 			'Exists' => $this->bExists,
 			'Selectable' => $this->IsSelectable(),
 			'Flags' => $this->FlagsLowerCase(),
+//			'Extended' => $aExtended,
 			'Metadata' => $this->oImapFolder->Metadata()
 		);
 	}

@@ -404,19 +404,17 @@ trait Response
 		if ($mResponse instanceof \MailSo\Mail\Folder)
 		{
 			$aExtended = null;
-
-//			$mStatus = $mResponse->Status();
-//			if (\is_array($mStatus) && isset($mStatus['MESSAGES'], $mStatus['UNSEEN'], $mStatus['UIDNEXT']))
-//			{
-//				$aExtended = array(
-//					'MessageCount' => (int) $mStatus['MESSAGES'],
-//					'MessageUnseenCount' => (int) $mStatus['UNSEEN'],
-//					'UidNext' => (int) $mStatus['UIDNEXT'],
-//					'Hash' => $this->MailClient()->GenerateFolderHash(
-//						$mResponse->FullNameRaw(), $mStatus['MESSAGES'], $mStatus['UIDNEXT'],
-//							empty($mStatus['HIGHESTMODSEQ']) ? '' : $mStatus['HIGHESTMODSEQ'])
-//				);
-//			}
+			$aStatus = $mResponse->Status();
+			if ($aStatus && isset($aStatus['MESSAGES'], $aStatus['UNSEEN'], $aStatus['UIDNEXT'])) {
+				$aExtended = array(
+					'MessageCount' => (int) $aStatus['MESSAGES'],
+					'MessageUnseenCount' => (int) $aStatus['UNSEEN'],
+					'UidNext' => (int) $aStatus['UIDNEXT'],
+					'Hash' => $this->MailClient()->GenerateFolderHash(
+						$mResponse->FullNameRaw(), $aStatus['MESSAGES'], $aStatus['UIDNEXT'],
+							empty($aStatus['HIGHESTMODSEQ']) ? 0 : $aStatus['HIGHESTMODSEQ'])
+				);
+			}
 
 			if (null === $this->aCheckableFolder)
 			{

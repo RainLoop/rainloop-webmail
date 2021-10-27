@@ -45,6 +45,11 @@ class FolderCollection extends \MailSo\Base\Collection
 	/**
 	 * @var bool
 	 */
+	public $IsListStatusSupported = false;
+
+	/**
+	 * @var bool
+	 */
 	public $Optimized = false;
 
 	/**
@@ -161,6 +166,7 @@ class FolderCollection extends \MailSo\Base\Collection
 			'IsMetadataSupported' => $this->IsMetadataSupported,
 			'IsThreadsSupported' => $this->IsThreadsSupported,
 			'IsSortSupported' => $this->IsSortSupported,
+			'IsListStatusSupported' => $this->IsListStatusSupported,
 			'Optimized' => $this->Optimized,
 			'CountRec' => $this->CountRec(),
 			'SystemFolders' => empty($this->SystemFolders) ? null : $this->SystemFolders

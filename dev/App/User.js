@@ -855,7 +855,7 @@ class AppUser extends AbstractApp {
 								this.folderInformation(cF);
 							}
 							this.quota();
-							this.folderInformationMultiply(true);
+							FolderUserStore.listStatusSupported() || this.folderInformationMultiply(true);
 						}, 1000);
 
 						setTimeout(() => Remote.appDelayStart(()=>0), 35000);

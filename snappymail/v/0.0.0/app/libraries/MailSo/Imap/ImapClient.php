@@ -441,43 +441,51 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	private function specificFolderList(bool $bIsSubscribeList, string $sParentFolderName = '', string $sListPattern = '*', bool $bUseListStatus = false) : array
 	{
-		$sCmd = 'LSUB';
-		if (!$bIsSubscribeList)
-		{
-			$sCmd = 'LIST';
+		$sCmd = 'LIST';
+
+		$aParameters = array();
+		$aReturnParams = array();
+
+		if ($bIsSubscribeList) {
+			$sCmd = 'LSUB';
+		} else if ($this->IsSupported('LIST-EXTENDED')) {
+			// RFC 5258
+			$aReturnParams[] = 'SUBSCRIBED';
+//			$aReturnParams[] = 'CHILDREN';
+			if ($bIsSubscribeList) {
+				$aParameters[] = ['SUBSCRIBED'/*,'REMOTE','RECURSIVEMATCH'*/];
+			} else {
+//				$aParameters[0] = '()';
+			}
 		}
 
-		$sListPattern = \strlen(\trim($sListPattern)) ? $sListPattern : '*';
-
-		$aParameters = array(
-			$this->EscapeString($sParentFolderName),
-			$this->EscapeString($sListPattern)
-		);
+		$aParameters[] = $this->EscapeString($sParentFolderName);
+		$aParameters[] = $this->EscapeString(\strlen(\trim($sListPattern)) ? $sListPattern : '*');
 
 		if ($bUseListStatus && !$bIsSubscribeList && $this->IsSupported('LIST-STATUS'))
 		{
+			// RFC 5819
 			$aL = array(
 				Enumerations\FolderStatus::MESSAGES,
 				Enumerations\FolderStatus::UNSEEN,
 				Enumerations\FolderStatus::UIDNEXT
 			);
 
-//			if ($this->IsSupported('CONDSTORE'))
-//			{
-//				$aL[] = Enumerations\FolderStatus::HIGHESTMODSEQ;
-//			}
+			if ($this->IsSupported('CONDSTORE')) {
+				$aL[] = Enumerations\FolderStatus::HIGHESTMODSEQ;
+			}
 
-			$aParameters[] = 'RETURN';
-			$aParameters[] = array('STATUS', $aL);
+			$aReturnParams[] = 'STATUS';
+			$aReturnParams[] = $aL;
 		}
 		else
 		{
 			$bUseListStatus = false;
-			// RFC5258
-			if ($this->IsSupported('LIST-EXTENDED')) {
-				$aParameters[] = 'RETURN';
-				$aParameters[] = array('SUBSCRIBED'/*,'CHILDREN'*/);
-			}
+		}
+
+		if ($aReturnParams) {
+			$aParameters[] = 'RETURN';
+			$aParameters[] = $aReturnParams;
 		}
 
 		$aReturn = $this->SendRequestGetResponse($sCmd, $aParameters)->getFoldersResult($sCmd, $bUseListStatus);
@@ -1127,7 +1135,10 @@ class ImapClient extends \MailSo\Net\NetClient
 						break;
 					}
 
-					unset($oResponse);
+					// RFC 5530
+					if (\is_array($oResponse->OptionalResponse) && 'CLIENTBUG' === $oResponse->OptionalResponse[0]) {
+						// The server has detected a client bug.
+					}
 				}
 			}
 
