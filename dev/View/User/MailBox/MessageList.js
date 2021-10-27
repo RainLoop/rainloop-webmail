@@ -263,7 +263,7 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	reloadCommand() {
-		if (!MessageUserStore.listLoadingAnimation() && this.allowReload) {
+		if (!MessageUserStore.listLoadingAnimation()) {
 			rl.app.reloadMessageList(false, true);
 		}
 	}
