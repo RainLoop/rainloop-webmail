@@ -1911,7 +1911,7 @@ class MailClient
 		return $aMailFoldersHelper;
 	}
 
-	public function Folders(string $sParent = '', string $sListPattern = '*', bool $bUseListSubscribeStatus = true, int $iOptimizationLimit = 0) : ?FolderCollection
+	public function Folders(string $sParent, string $sListPattern, bool $bUseListSubscribeStatus, int $iOptimizationLimit, bool $bUseListStatus) : ?FolderCollection
 	{
 		$aImapSubscribedFoldersHelper = null;
 		if ($this->oImapClient->IsSupported('LIST-EXTENDED')) {
@@ -1933,8 +1933,11 @@ class MailClient
 			}
 		}
 
-//		$aFolders = $this->oImapClient->FolderList($sParent, $sListPattern);
-		$aFolders = $this->oImapClient->FolderStatusList($sParent, $sListPattern);
+		$bUseListStatus = $bUseListStatus && $this->oImapClient->IsSupported('LIST-STATUS');
+
+		$aFolders = $bUseListStatus
+			? $this->oImapClient->FolderStatusList($sParent, $sListPattern)
+			: $this->oImapClient->FolderList($sParent, $sListPattern);
 		if (!$aFolders) {
 			return null;
 		}
@@ -1958,7 +1961,7 @@ class MailClient
 		$oFolderCollection->IsMetadataSupported = $this->oImapClient->IsSupported('METADATA');
 		$oFolderCollection->IsThreadsSupported = $this->IsThreadsSupported();
 		$oFolderCollection->IsSortSupported = $this->oImapClient->IsSupported('SORT');
-		$oFolderCollection->IsListStatusSupported = $this->oImapClient->IsSupported('LIST-STATUS');
+		$oFolderCollection->IsListStatusSupported = $bUseListStatus;
 		$oFolderCollection->Optimized = $iCount !== \count($aMailFoldersHelper);
 
 		$aSortedByLenImapFolders = array();

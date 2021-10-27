@@ -14,7 +14,8 @@ trait Folders
 	{
 		return $this->MailClient()->Folders('', '*',
 			$HideUnsubscribed,
-			(int) $this->Config()->Get('labs', 'imap_folder_list_limit', 200)
+			(int) $this->Config()->Get('labs', 'imap_folder_list_limit', 200),
+			(bool) $this->Config()->Get('labs', 'imap_use_list_status', true)
 		);
 	}
 
