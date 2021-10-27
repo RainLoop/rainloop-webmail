@@ -17,6 +17,9 @@ namespace MailSo\Imap;
  */
 class Folder
 {
+	// RFC5258 Response data STATUS items when using LIST-EXTENDED
+	use Traits\Status;
+
 	/**
 	 * @var string
 	 */

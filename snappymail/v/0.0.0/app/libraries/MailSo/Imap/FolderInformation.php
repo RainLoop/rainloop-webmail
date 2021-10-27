@@ -17,6 +17,8 @@ namespace MailSo\Imap;
  */
 class FolderInformation
 {
+	use Traits\Status;
+
 	/**
 	 * @var string
 	 */
@@ -42,38 +44,6 @@ class FolderInformation
 	 * @var int
 	 */
 	public $Exists = null;
-
-	/**
-	 * https://datatracker.ietf.org/doc/html/rfc3501#section-7.3.2
-	 * @var int
-	 */
-	public $Recent = null;
-
-	/**
-	 * rfc3501 2.3.1.1
-	 * A 32-bit value
-	 * @var int
-	 */
-	public $Uidvalidity = null;
-
-	/**
-	 * @var int
-	 */
-	public $Unread = null;
-
-	/**
-	 * rfc3501 2.3.1.1
-	 * A 32-bit value
-	 * @var int
-	 */
-	public $Uidnext = null;
-
-	/**
-	 * rfc4551
-	 * 1*DIGIT Positive unsigned 64-bit integer
-	 * @var int
-	 */
-	public $HighestModSeq = null;
 
 	function __construct(string $sFolderName, bool $bIsWritable)
 	{

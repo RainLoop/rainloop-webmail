@@ -175,12 +175,9 @@ class Folder implements \JsonSerializable
 		return $this->bExists && $this->oImapFolder->IsSelectable();
 	}
 
-	/**
-	 * @return mixed
-	 */
-	public function Status()
+	public function Status() : array
 	{
-		return $this->oImapFolder->GetExtended('STATUS');
+		return $this->oImapFolder->getStatusItems();
 	}
 
 	public function IsInbox() : bool
@@ -191,6 +188,7 @@ class Folder implements \JsonSerializable
 	public function GetFolderListType() : int
 	{
 		$aFlags = $this->oImapFolder->FlagsLowerCase();
+		// RFC 6154
 //		$aFlags[] = \strtolower($this->oImapFolder->GetMetadata(MetadataKeys::SPECIALUSE));
 
 		switch (true)

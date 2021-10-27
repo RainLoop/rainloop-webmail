@@ -209,39 +209,15 @@ class ResponseCollection extends \MailSo\Base\Collection
 			foreach ($this as $oResponse) {
 				if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType &&
 					'STATUS' === $oResponse->StatusOrIndex &&
-					isset($oResponse->ResponseList[2]) &&
-					isset($oResponse->ResponseList[3]) &&
-					\is_array($oResponse->ResponseList[3]))
+					isset($oResponse->ResponseList[2]))
 				{
 					$sFolderNameRaw = $oResponse->ResponseList[2];
-
-					$oCurrentFolder = null;
 					foreach ($aReturn as $oFolder) {
 						if ($oFolder && $sFolderNameRaw === $oFolder->FullNameRaw()) {
-							$oCurrentFolder =& $oFolder;
+							$oFolder->setStatusFromResponse($oResponse);
 							break;
 						}
 					}
-
-					if (null !== $oCurrentFolder) {
-						$sName = null;
-						$aStatus = array();
-
-						foreach ($oResponse->ResponseList[3] as $sArrayItem) {
-							if (null === $sName) {
-								$sName = $sArrayItem;
-							} else {
-								$aStatus[$sName] = $sArrayItem;
-								$sName = null;
-							}
-						}
-
-						if (0 < count($aStatus)) {
-							$oCurrentFolder->SetExtended('STATUS', $aStatus);
-						}
-					}
-
-					unset($oCurrentFolder);
 				}
 			}
 		}
@@ -309,59 +285,36 @@ class ResponseCollection extends \MailSo\Base\Collection
 		return $aReturn;
 	}
 
+	/**
+	 * Called by selectOrExamineFolder
+	 */
 	public function getCurrentFolderInformation(string $sFolderName, bool $bIsWritable) : FolderInformation
 	{
 		$oResult = new FolderInformation($sFolderName, $bIsWritable);
 		foreach ($this as $oResponse) {
 			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType) {
-				if (\count($oResponse->ResponseList) > 2 &&
-					'FLAGS' === $oResponse->ResponseList[1] && \is_array($oResponse->ResponseList[2]))
-				{
-					$oResult->Flags = $oResponse->ResponseList[2];
-				}
-
-				if (\is_array($oResponse->OptionalResponse)) {
-					if (\count($oResponse->OptionalResponse) > 1) {
-						if ('PERMANENTFLAGS' === $oResponse->OptionalResponse[0]
-						 && is_array($oResponse->OptionalResponse[1]))
-						{
-							$oResult->PermanentFlags = $oResponse->OptionalResponse[1];
+				if (!$oResult->setStatusFromResponse($oResponse)) {
+					// OK untagged responses
+					if (\is_array($oResponse->OptionalResponse)) {
+						if (\count($oResponse->OptionalResponse) > 1) {
+							if ('PERMANENTFLAGS' === $oResponse->OptionalResponse[0] && \is_array($oResponse->OptionalResponse[1])) {
+								$oResult->PermanentFlags = $oResponse->OptionalResponse[1];
+							}
+						} else if ('READ-ONLY' === $oResponse->OptionalResponse[0]) {
+//							$oResult->IsWritable = false;
+						} else if ('READ-WRITE' === $oResponse->OptionalResponse[0]) {
+//							$oResult->IsWritable = true;
+						} else if ('NOMODSEQ' === $key) {
+							// https://datatracker.ietf.org/doc/html/rfc4551#section-3.1.2
 						}
-						else if ('UIDVALIDITY' === $oResponse->OptionalResponse[0])
-						{
-							$oResult->Uidvalidity = (int) $oResponse->OptionalResponse[1];
-						}
-						else if ('UNSEEN' === $oResponse->OptionalResponse[0])
-						{
-							$oResult->Unread = (int) $oResponse->OptionalResponse[1];
-						}
-						else if ('UIDNEXT' === $oResponse->OptionalResponse[0])
-						{
-							$oResult->Uidnext = (int) $oResponse->OptionalResponse[1];
-						}
-						else if ('HIGHESTMODSEQ' === $oResponse->OptionalResponse[0])
-						{
-							$oResult->HighestModSeq = (int) $oResponse->OptionalResponse[1];
-						}
-					} else if ('READ-ONLY' === $oResponse->OptionalResponse[0]) {
-//						$oResult->IsWritable = false;
-					} else if ('READ-WRITE' === $oResponse->OptionalResponse[0]) {
-//						$oResult->IsWritable = true;
 					}
-				}
 
-				if (\count($oResponse->ResponseList) > 2 &&
-					\is_string($oResponse->ResponseList[2]) &&
-					\is_numeric($oResponse->ResponseList[1]))
-				{
-					switch ($oResponse->ResponseList[2])
-					{
-						case 'EXISTS':
-							$oResult->Exists = (int) $oResponse->ResponseList[1];
-							break;
-						case 'RECENT':
-							$oResult->Recent = (int) $oResponse->ResponseList[1];
-							break;
+					// untagged responses
+					else if (\count($oResponse->ResponseList) > 2) {
+						if ('FLAGS' === $oResponse->ResponseList[1] && \is_array($oResponse->ResponseList[2]))
+						{
+							$oResult->Flags = $oResponse->ResponseList[2];
+						}
 					}
 				}
 			}
@@ -456,24 +409,11 @@ class ResponseCollection extends \MailSo\Base\Collection
 
 	public function getStatusFolderInformationResult() : array
 	{
-		$aReturn = array();
+		$oInfo = new FolderInformation('', false);
 		foreach ($this as $oResponse) {
-			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType &&
-				'STATUS' === $oResponse->StatusOrIndex && isset($oResponse->ResponseList[3]) &&
-				\is_array($oResponse->ResponseList[3]))
-			{
-				$sName = null;
-				foreach ($oResponse->ResponseList[3] as $sArrayItem) {
-					if (null === $sName) {
-						$sName = $sArrayItem;
-					} else {
-						$aReturn[$sName] = $sArrayItem;
-						$sName = null;
-					}
-				}
-			}
+			$oInfo->setStatusFromResponse($oResponse);
 		}
-		return $aReturn;
+		return $oInfo->getStatusItems();
 	}
 
 	/**

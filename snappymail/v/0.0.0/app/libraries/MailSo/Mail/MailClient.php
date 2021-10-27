@@ -144,7 +144,7 @@ class MailClient
 			}
 		}
 
-		if ($oFolderInfo && 0 < $oFolderInfo->Exists)
+		if ($oFolderInfo && 0 < $oFolderInfo->MESSAGES)
 		{
 			$sStoreAction = $bSetAction
 				? \MailSo\Imap\Enumerations\StoreAction::ADD_FLAGS_SILENT
@@ -1935,6 +1935,7 @@ class MailClient
 		}
 
 		$aFolders = $this->oImapClient->FolderList($sParent, $sListPattern);
+//		$aFolders = $this->oImapClient->FolderStatusList($sParent, $sListPattern);
 		if (!$aFolders) {
 			return null;
 		}
@@ -2210,7 +2211,7 @@ class MailClient
 		$this->oImapClient->FolderSelect($sFolderFullNameRaw);
 
 		$oFolderInformation = $this->oImapClient->FolderCurrentInformation();
-		if ($oFolderInformation && $oFolderInformation->Exists && 0 < $oFolderInformation->Exists) // STATUS?
+		if ($oFolderInformation && 0 < $oFolderInformation->MESSAGES)
 		{
 			$this->oImapClient->MessageStoreFlag('1:*', false,
 				array(\MailSo\Imap\Enumerations\MessageFlag::DELETED),
