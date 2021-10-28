@@ -140,24 +140,6 @@ class FolderCollection extends \MailSo\Base\Collection
 		$this->append($oMailFolder);
 	}
 
-	public function SortByCallback(callable $fCallback) : void
-	{
-		if (\is_callable($fCallback))
-		{
-			$aList = $this->getArrayCopy();
-
-			\usort($aList, $fCallback);
-
-			foreach ($aList as $oItemFolder)
-			{
-				if ($oItemFolder->HasSubFolders())
-				{
-					$oItemFolder->SubFolders()->SortByCallback($fCallback);
-				}
-			}
-		}
-	}
-
 	public function jsonSerialize()
 	{
 		return \array_merge(parent::jsonSerialize(), array(
