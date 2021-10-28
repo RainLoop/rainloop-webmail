@@ -491,7 +491,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		$aReturn = $this->SendRequestGetResponse($sCmd, $aParameters)->getFoldersResult($sCmd, $bUseListStatus);
 
 		// RFC 5464
-		if ($this->IsSupported('METADATA')) {
+		if (!$bIsSubscribeList && $this->IsSupported('METADATA')) {
 			foreach ($aReturn as $oFolder) {
 				try {
 					foreach ($this->getMetadata($oFolder->FullNameRaw(), ['/shared', '/private'], ['DEPTH'=>'infinity']) as $key => $value) {
