@@ -35,6 +35,10 @@ abstract class FetchType
 	const RFC822_TEXT = 'RFC822.TEXT';
 	const UID = 'UID';
 	const INDEX = 'INDEX';
+	// RFC 3516
+	const BINARY = 'BINARY';
+	const BINARY_PEEK = 'BINARY.PEEK';
+	const BINARY_SIZE = 'BINARY.SIZE';
 
 	private static function addHelper(array &$aReturn, $mType)
 	{
