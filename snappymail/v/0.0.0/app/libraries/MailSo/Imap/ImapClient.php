@@ -55,11 +55,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	private $bIsLoggined = false;
 
 	/**
-	 * @var bool
-	 */
-	private $bIsSelected = false;
-
-	/**
 	 * @var string
 	 */
 	private $sLogginedUser = '';
@@ -279,7 +274,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 	public function IsSelected() : bool
 	{
-		return $this->IsLoggined() && $this->bIsSelected;
+		return $this->IsLoggined() && $this->oCurrentFolderInfo;
 	}
 
 	/**
@@ -563,8 +558,6 @@ class ImapClient extends \MailSo\Net\NetClient
 			array($this->EscapeString($sFolderName)))
 			->getCurrentFolderInformation($sFolderName, $bIsWritable);
 
-		$this->bIsSelected = true;
-
 		return $this;
 	}
 
@@ -602,7 +595,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		if ($this->IsSelected() && $this->IsSupported('UNSELECT'))
 		{
 			$this->SendRequestGetResponse('UNSELECT');
-			$this->bIsSelected = false;
+			$this->oCurrentFolderInfo = null;
 		}
 
 		return $this;
@@ -753,6 +746,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 
 		$aRequest = array();
+
 		if ($bSort)
 		{
 			$aRequest[] = 'RETURN';
