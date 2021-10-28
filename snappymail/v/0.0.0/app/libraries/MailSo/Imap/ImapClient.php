@@ -633,8 +633,17 @@ class ImapClient extends \MailSo\Net\NetClient
 				}
 			}
 
-			$oResult = $this->SendRequestGetResponse(($bIndexIsUid ? 'UID ' : '').'FETCH',
-				array($sIndexRange, \array_keys($aFetchItems)));
+			$aParams = array($sIndexRange, \array_keys($aFetchItems));
+			/**
+			 * TODO:
+			 *   https://datatracker.ietf.org/doc/html/rfc4551#section-3.3.1
+			 *     $aParams[1][] = FLAGS
+			 *     $aParams[] = (CHANGEDSINCE $modsequence)
+			 *   https://datatracker.ietf.org/doc/html/rfc4551#section-3.3.2
+			 *     $aParams[1][] = MODSEQ
+			 */
+
+			$oResult = $this->SendRequestGetResponse(($bIndexIsUid ? 'UID ' : '').'FETCH', $aParams);
 		} finally {
 			$this->aFetchCallbacks = array();
 		}
@@ -963,6 +972,12 @@ class ImapClient extends \MailSo\Net\NetClient
 		{
 			return false;
 		}
+
+		/**
+		 * TODO:
+		 *   https://datatracker.ietf.org/doc/html/rfc4551#section-3.2
+		 *     $sStoreAction[] = (UNCHANGEDSINCE $modsequence)
+		 */
 
 		$sCmd = ($bIndexIsUid) ? 'UID STORE' : 'STORE';
 		$this->SendRequestGetResponse($sCmd, array($sIndexRange, $sStoreAction, $aInputStoreItems));
