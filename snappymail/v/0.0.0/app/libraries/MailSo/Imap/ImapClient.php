@@ -1117,7 +1117,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				$sEndTag = $sEndTag ?: $this->getCurrentTag();
 
 				while (true) {
-					$oResponse = $this->partialParseResponse($oResponse);
+					$oResponse = $this->partialParseResponse();
 					$oResult->append($oResponse);
 
 					// RFC 5530
