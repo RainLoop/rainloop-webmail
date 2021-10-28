@@ -2056,8 +2056,8 @@ class MailClient
 
 		if (!\strlen($sDelimiter) || \strlen($sFolderParentFullNameRaw))
 		{
-			$aFolders = $this->oImapClient->FolderList('', \strlen($sFolderParentFullNameRaw) ? $sFolderParentFullNameRaw : 'INBOX');
-			if (!$aFolders)
+			$sDelimiter = $this->oImapClient->FolderHierarchyDelimiter($sFolderParentFullNameRaw);
+			if (null === $sDelimiter)
 			{
 				// TODO: Translate
 				throw new Exceptions\RuntimeException(
@@ -2066,7 +2066,6 @@ class MailClient
 						: 'Cannot get folder delimiter.');
 			}
 
-			$sDelimiter = $aFolders[0]->Delimiter();
 			if (\strlen($sDelimiter) && \strlen($sFolderParentFullNameRaw))
 			{
 				$sFolderParentFullNameRaw .= $sDelimiter;
@@ -2114,6 +2113,7 @@ class MailClient
 
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \MailSo\Base\Exceptions\RuntimeException
 	 */
 	protected function folderModify(string $sPrevFolderFullNameRaw, string $sNextFolderNameInUtf, bool $bRename, bool $bSubscribeOnModify) : self
 	{

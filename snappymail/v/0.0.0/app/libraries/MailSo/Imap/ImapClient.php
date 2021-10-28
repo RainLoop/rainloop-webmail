@@ -528,6 +528,16 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function FolderHierarchyDelimiter(string $sFolderName = '') : ?string
+	{
+		$oResponse = $this->SendRequestGetResponse('LIST', ['""', $this->EscapeString($sParentFolderName)]);
+		return ('LIST' === $oResponse[0]->ResponseList[1]) ? $oResponse[0]->ResponseList[3] : null;
+	}
+
+	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
