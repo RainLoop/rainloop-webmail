@@ -757,6 +757,15 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 		else
 		{
+/*
+			TODO: https://github.com/the-djmaze/snappymail/issues/154
+			https://datatracker.ietf.org/doc/html/rfc6237
+			$sCmd = 'ESEARCH';
+			$aReques[] = 'IN';
+			$aReques[] = ['mailboxes', '"folder1"', 'subtree', '"folder2"'];
+			$aReques[] = ['mailboxes', '"folder1"', 'subtree-one', '"folder2"'];
+*/
+
 			if (\strlen($sCharset))
 			{
 				$aRequest[] = 'CHARSET';
