@@ -33,6 +33,7 @@ trait Status
 		/**
 		 * The number of messages with the \Recent flag set.
 		 * This response also occurs as a result of a SELECT or EXAMINE command.
+		 * Obsolete in IMAP4rev2
 		 * @var int
 		 */
 		$RECENT,

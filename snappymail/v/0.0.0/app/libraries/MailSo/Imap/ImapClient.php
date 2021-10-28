@@ -239,6 +239,12 @@ class ImapClient extends \MailSo\Net\NetClient
 			{
 				$this->SendRequestGetResponse('PROXYAUTH', array($this->EscapeString($sProxyAuthUser)));
 			}
+/*
+			// RFC 9051
+			if ($this->IsSupported('IMAP4rev2')) {
+				$this->SendRequestGetResponse('ENABLE', array('IMAP4rev1'));
+			}
+*/
 		}
 		catch (Exceptions\NegativeResponseException $oException)
 		{
@@ -288,7 +294,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 	/**
 	 * Test support for things like:
-	 *     IMAP4rev1 SASL-IR LOGIN-REFERRALS ID ENABLE IDLE SORT SORT=DISPLAY
+	 *     IMAP4rev1 IMAP4rev2 SASL-IR LOGIN-REFERRALS ID ENABLE IDLE SORT SORT=DISPLAY
 	 *     THREAD=REFERENCES THREAD=REFS THREAD=ORDEREDSUBJECT MULTIAPPEND
 	 *     URL-PARTIAL CATENATE UNSELECT CHILDREN NAMESPACE UIDPLUS LIST-EXTENDED
 	 *     I18NLEVEL=1 CONDSTORE QRESYNC ESEARCH ESORT SEARCHRES WITHIN CONTEXT=SEARCH
@@ -301,14 +307,12 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function IsSupported(string $sExtentionName) : bool
 	{
-		$bResult = strlen(\trim($sExtentionName));
-		if ($bResult && null === $this->aCapabilityItems)
-		{
+		$sExtentionName = \trim($sExtentionName);
+		if ($sExtentionName && null === $this->aCapabilityItems) {
 			$this->aCapabilityItems = $this->Capability();
 		}
 
-		return $bResult && \is_array($this->aCapabilityItems) &&
-			\in_array(\strtoupper($sExtentionName), $this->aCapabilityItems);
+		return $sExtentionName && \in_array(\strtoupper($sExtentionName), $this->aCapabilityItems ?: []);
 	}
 
 	/**
@@ -588,14 +592,50 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderUnSelect() : self
+	public function FolderCheck() : self
 	{
-		if ($this->IsSelected() && $this->IsSupported('UNSELECT'))
-		{
-			$this->SendRequestGetResponse('UNSELECT');
+		if ($this->IsSelected()) {
+			$this->SendRequestGetResponse('CHECK');
+		}
+		return $this;
+	}
+
+	/**
+	 * This also expunge the mailbox
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function FolderClose() : self
+	{
+		if ($this->IsSelected()) {
+			$this->SendRequestGetResponse('CLOSE');
 			$this->oCurrentFolderInfo = null;
 		}
+		return $this;
+	}
 
+	/**
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function FolderUnSelect() : self
+	{
+		if ($this->IsSelected()) {
+			if ($this->IsSupported('UNSELECT')) {
+				$this->SendRequestGetResponse('UNSELECT');
+				$this->oCurrentFolderInfo = null;
+			} else {
+				try {
+					$this->SendRequestGetResponse('SELECT', '""');
+					// * OK [CLOSED] Previous mailbox closed.
+					// 3 NO [CANNOT] Invalid mailbox name: Name is empty
+				} catch (Exceptions\NegativeResponseException $e) {
+					if ('NO' === $e->GetResponseStatus()) {
+						$this->oCurrentFolderInfo = null;
+					}
+				}
+			}
+		}
 		return $this;
 	}
 

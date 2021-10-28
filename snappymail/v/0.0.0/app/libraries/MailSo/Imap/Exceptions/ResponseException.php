@@ -32,6 +32,12 @@ class ResponseException extends \MailSo\Imap\Exceptions\Exception
 		parent::__construct($sMessage, $iCode, $oPrevious);
 	}
 
+	public function GetResponseStatus() : ?string
+	{
+		$oItem = $this->GetLastResponse();
+		return $oItem && $oItem->IsStatusResponse ? $oItem->StatusOrIndex : null;
+	}
+
 	public function GetResponses() : ?\MailSo\Imap\ResponseCollection
 	{
 		return $this->oResponses;

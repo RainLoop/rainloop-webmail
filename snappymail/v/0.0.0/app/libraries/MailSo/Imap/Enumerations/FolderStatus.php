@@ -20,7 +20,7 @@ abstract class FolderStatus
 {
 	// rfc3501
 	const MESSAGES = 'MESSAGES';
-	const RECENT = 'RECENT';
+	const RECENT = 'RECENT'; // Obsolete in IMAP4rev2
 	const UIDNEXT = 'UIDNEXT';
 	const UIDVALIDITY = 'UIDVALIDITY';
 	const UNSEEN = 'UNSEEN';
