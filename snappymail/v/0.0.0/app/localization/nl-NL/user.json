@@ -97,7 +97,7 @@
 		"MENU_SELECT_UNFLAGGED": "Zonder Vlag",
 		"EMPTY_LIST": "Geen berichten",
 		"EMPTY_SEARCH_LIST": "Geen items gevonden",
-		"SEARCH_RESULT_FOR": "Zoekresultaten voor\"%SEARCH%\"",
+		"SEARCH_RESULT_FOR": "Zoekresultaten voor \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "terug naar berichtenlijst",
 		"EMPTY_SUBJECT_TEXT": "(Geen onderwerp)",
 		"PUT_MESSAGE_HERE": "Sleep bericht hier om ze te bekijken in de lijst",
