@@ -296,13 +296,14 @@ class ResponseCollection extends \MailSo\Base\Collection
 				if (!$oResult->setStatusFromResponse($oResponse)) {
 					// OK untagged responses
 					if (\is_array($oResponse->OptionalResponse)) {
+						$key = $oResponse->OptionalResponse[0];
 						if (\count($oResponse->OptionalResponse) > 1) {
-							if ('PERMANENTFLAGS' === $oResponse->OptionalResponse[0] && \is_array($oResponse->OptionalResponse[1])) {
+							if ('PERMANENTFLAGS' === $key && \is_array($oResponse->OptionalResponse[1])) {
 								$oResult->PermanentFlags = $oResponse->OptionalResponse[1];
 							}
-						} else if ('READ-ONLY' === $oResponse->OptionalResponse[0]) {
+						} else if ('READ-ONLY' === $key) {
 //							$oResult->IsWritable = false;
-						} else if ('READ-WRITE' === $oResponse->OptionalResponse[0]) {
+						} else if ('READ-WRITE' === $key) {
 //							$oResult->IsWritable = true;
 						} else if ('NOMODSEQ' === $key) {
 							// https://datatracker.ietf.org/doc/html/rfc4551#section-3.1.2
