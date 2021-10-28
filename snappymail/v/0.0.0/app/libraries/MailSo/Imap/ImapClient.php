@@ -19,10 +19,8 @@ class ImapClient extends \MailSo\Net\NetClient
 {
 	use Traits\ResponseParser;
 
-	/**
-	 * @var string
-	 */
-	const TAG_PREFIX = 'TAG';
+	const
+		TAG_PREFIX = 'TAG';
 
 	/**
 	 * @var int
@@ -166,7 +164,8 @@ class ImapClient extends \MailSo\Net\NetClient
 					$this->oLogger->AddSecret($sChallenge);
 				}
 				$this->sendRaw($sChallenge, true, '*******');
-				$sSignature = $this->getResponseValue($this->getResponse());
+				$oResponse = $this->getResponse();
+				$sSignature = $this->getResponseValue($oResponse);
 				$SASL->verify($sSignature);
 			}
 			else if ('CRAM-MD5' === $type)
@@ -178,7 +177,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					$this->oLogger->AddSecret($sAuth);
 				}
 				$this->sendRaw($sAuth, true, '*******');
-				$this->getResponse();
+				$oResponse = $this->getResponse();
 			}
 			else if ('PLAIN' === $type || 'OAUTHBEARER' === $type)
 			{
@@ -187,28 +186,26 @@ class ImapClient extends \MailSo\Net\NetClient
 					$this->oLogger->AddSecret($sAuth);
 				}
 				if ($this->IsSupported('SASL-IR')) {
-					$this->SendRequestGetResponse('AUTHENTICATE', array($type, $sAuth));
+					$oResponse = $this->SendRequestGetResponse('AUTHENTICATE', array($type, $sAuth));
 				} else {
 					$this->SendRequestGetResponse('AUTHENTICATE', array($type));
 					$this->sendRaw($sAuth, true, '*******');
-					$this->getResponse();
+					$oResponse = $this->getResponse();
 				}
 			}
 			else if ('XOAUTH2' === $type)
 			{
 				$sAuth = $SASL->authenticate($sLogin, $sPassword);
 				$this->SendRequest('AUTHENTICATE', array($type, $sAuth));
-				$aR = $this->parseResponseWithValidation();
-				if (\is_array($aR) && \count($aR) && isset($aR[\count($aR) - 1])) {
-					$oR = $aR[\count($aR) - 1];
-					if (Enumerations\ResponseType::CONTINUATION === $oR->ResponseType) {
-						if (!empty($oR->ResponseList[1]) && preg_match('/^[a-zA-Z0-9=+\/]+$/', $oR->ResponseList[1])) {
-							$this->Logger()->Write(\base64_decode($oR->ResponseList[1]),
-								\MailSo\Log\Enumerations\Type::WARNING);
-						}
-						$this->sendRaw('');
-						$this->parseResponseWithValidation();
+				$oResponse = $this->getResponse();
+				$oR = $oResponse->getLast();
+				if ($oR && Enumerations\ResponseType::CONTINUATION === $oR->ResponseType) {
+					if (!empty($oR->ResponseList[1]) && preg_match('/^[a-zA-Z0-9=+\/]+$/', $oR->ResponseList[1])) {
+						$this->Logger()->Write(\base64_decode($oR->ResponseList[1]),
+							\MailSo\Log\Enumerations\Type::WARNING);
 					}
+					$this->sendRaw('');
+					$oResponse = $this->getResponse();
 				}
 			}
 			else if ($this->IsSupported('LOGINDISABLED'))
@@ -221,7 +218,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					$this->oLogger->AddSecret($sPass);
 				}
 				$this->sendRaw($sPass, true, '*******');
-				$this->getResponse();
+				$oResponse = $this->getResponse();
 			}
 			else
 			{
@@ -229,12 +226,14 @@ class ImapClient extends \MailSo\Net\NetClient
 				{
 					$this->oLogger->AddSecret($this->EscapeString($sPassword));
 				}
-				$this->SendRequestGetResponse('LOGIN',
+				$oResponse = $this->SendRequestGetResponse('LOGIN',
 					array(
 						$this->EscapeString($sLogin),
 						$this->EscapeString($sPassword)
 					));
 			}
+
+			$this->aCapabilityItems = $oResponse->getCapabilityResult();
 
 			if (\strlen($sProxyAuthUser))
 			{
@@ -250,7 +249,6 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 
 		$this->bIsLoggined = true;
-		$this->aCapabilityItems = null;
 
 		return $this;
 	}
