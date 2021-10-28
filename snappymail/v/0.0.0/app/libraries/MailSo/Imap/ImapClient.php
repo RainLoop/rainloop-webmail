@@ -40,11 +40,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	private $oCurrentFolderInfo = null;
 
 	/**
-	 * @var ResponseCollection
-	 */
-	private $oLastResponse;
-
-	/**
 	 * @var array
 	 */
 	private $aFetchCallbacks;
@@ -76,7 +71,6 @@ class ImapClient extends \MailSo\Net\NetClient
 
 	function __construct()
 	{
-		$this->oLastResponse = new ResponseCollection;
 		\ini_set('xdebug.max_nesting_level', 500);
 	}
 
@@ -989,11 +983,11 @@ class ImapClient extends \MailSo\Net\NetClient
 		\MailSo\Base\Utils::MultipleStreamWriter($rMessageAppendStream, array($this->ConnectionResource()));
 
 		$this->sendRaw('');
-		$this->getResponse();
+		$oResponse = $this->getResponse();
 
 		if (null !== $iUid)
 		{
-			$oLast = $this->GetLastResponse()->getLast();
+			$oLast = $oResponse->getLast();
 			if ($oLast && Enumerations\ResponseType::TAGGED === $oLast->ResponseType && \is_array($oLast->OptionalResponse))
 			{
 				if (\strlen($oLast->OptionalResponse[0]) &&
@@ -1099,11 +1093,6 @@ class ImapClient extends \MailSo\Net\NetClient
 			\MailSo\Log\Enumerations\Type::NOTICE, true);
 	}
 
-	public function GetLastResponse() : ResponseCollection
-	{
-		return $this->oLastResponse;
-	}
-
 	/**
 	 * @throws \MailSo\Imap\Exceptions\ResponseNotFoundException
 	 * @throws \MailSo\Imap\Exceptions\InvalidResponseException
@@ -1139,8 +1128,6 @@ class ImapClient extends \MailSo\Net\NetClient
 					}
 				}
 			}
-
-			$this->oLastResponse = $oResult;
 
 			$oResult->validate();
 
