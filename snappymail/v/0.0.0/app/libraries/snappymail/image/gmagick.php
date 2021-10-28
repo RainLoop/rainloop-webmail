@@ -7,7 +7,7 @@ if (!\class_exists('Gmagick',false)) { return; }
 class GMagick extends \Gmagick implements \SnappyMail\Image
 {
 	private
-		$orientation = 1;
+		$orientation = 0;
 
 	function __destruct()
 	{
@@ -22,10 +22,8 @@ class GMagick extends \Gmagick implements \SnappyMail\Image
 		}
 		if (\method_exists($gmagick, 'getImageOrientation')) {
 			$gmagick->orientation = $gmagick->getImageOrientation();
-		} else if (\is_callable('exif_read_data') && $imginfo = \getimagesizefromstring($data)) {
-			if ($exif = \exif_read_data('data://'.$imginfo['mime'].';base64,' . \base64_encode($data))) {
-				$gmagick->orientation = \max(1, \intval($exif['IFD0.Orientation'] ?? 0));
-			}
+		} else {
+			$gd2->orientation = Exif::getImageOrientation($data);
 		}
 		return $gmagick;
 	}
