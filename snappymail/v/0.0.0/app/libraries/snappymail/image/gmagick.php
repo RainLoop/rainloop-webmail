@@ -23,7 +23,7 @@ class GMagick extends \Gmagick implements \SnappyMail\Image
 		if (\method_exists($gmagick, 'getImageOrientation')) {
 			$gmagick->orientation = $gmagick->getImageOrientation();
 		} else {
-			$gd2->orientation = Exif::getImageOrientation($data);
+			$gmagick->orientation = Exif::getImageOrientation($data);
 		}
 		return $gmagick;
 	}
