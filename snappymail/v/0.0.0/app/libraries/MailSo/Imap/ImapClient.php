@@ -363,8 +363,12 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function FolderDelete(string $sFolderName) : self
 	{
+		// Uncomment will work issue #124 ?
+//		$this->selectOrExamineFolder($sFolderName, true);
 		$this->SendRequestGetResponse('DELETE',
 			array($this->EscapeString($sFolderName)));
+//		$this->FolderCheck();
+//		$this->FolderUnSelect();
 		return $this;
 	}
 
