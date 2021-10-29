@@ -418,16 +418,19 @@ class ImapClient extends \MailSo\Net\NetClient
 	{
 		$oFolderInfo = $this->oCurrentFolderInfo;
 		if ($oFolderInfo && $sFolderName === $oFolderInfo->FolderName) {
-			$aResult = $oFolderInfo->getStatusItems();
-			// SELECT or EXAMINE command then UNSEEN is the message sequence number of the first unseen message
-			$aResult['UNSEEN'] = $this->simpleESearchOrESortHelper(false, 'UNSEEN', ['COUNT'])['COUNT'];
-		} else {
-			$aResult = \count($aStatusItems)
-				? $this->SendRequestGetResponse('STATUS', array($this->EscapeString($sFolderName), $aStatusItems))
-					->getStatusFolderInformationResult()
-				: null;
+			// Not supported by Outlook/Hotmail/Office365
+			if ($this->IsSupported('ESEARCH')) {
+				$aResult = $oFolderInfo->getStatusItems();
+				// SELECT or EXAMINE command then UNSEEN is the message sequence number of the first unseen message
+				$aResult['UNSEEN'] = $this->simpleESearchOrESortHelper(false, 'UNSEEN', ['COUNT'])['COUNT'];
+				return $aResult;
+			}
+//			$this->FolderUnSelect();
 		}
-		return $aResult;
+		return \count($aStatusItems)
+			? $this->SendRequestGetResponse('STATUS', array($this->EscapeString($sFolderName), $aStatusItems))
+				->getStatusFolderInformationResult()
+			: null;
 	}
 
 	/**
