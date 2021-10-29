@@ -469,17 +469,13 @@ class ImapClient extends \MailSo\Net\NetClient
 			$aReturnParams[] = 'STATUS';
 			$aReturnParams[] = $aL;
 		}
-		else
-		{
-			$bUseListStatus = false;
-		}
 
 		if ($aReturnParams) {
 			$aParameters[] = 'RETURN';
 			$aParameters[] = $aReturnParams;
 		}
 
-		$aReturn = $this->SendRequestGetResponse($sCmd, $aParameters)->getFoldersResult($sCmd, $bUseListStatus);
+		$aReturn = $this->SendRequestGetResponse($sCmd, $aParameters)->getFoldersResult($sCmd);
 
 		// RFC 5464
 		if (!$bIsSubscribeList && $this->IsSupported('METADATA')) {

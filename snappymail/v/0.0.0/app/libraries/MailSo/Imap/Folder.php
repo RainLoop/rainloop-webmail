@@ -48,41 +48,31 @@ class Folder
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	function __construct(string $sFullNameRaw, string $sDelimiter = '.', array $aFlags = array())
+	function __construct(string $sFullNameRaw, string $sDelimiter = null, array $aFlags = array())
 	{
-		$sDelimiter = 'NIL' === \strtoupper($sDelimiter) ? '' : $sDelimiter;
-		if (empty($sDelimiter))
-		{
-			$sDelimiter = '.'; // default delimiter
-		}
-
-		if (1 < \strlen($sDelimiter) || 0 === \strlen($sFullNameRaw))
-		{
+		if (!\strlen($sFullNameRaw)) {
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
-
 		$this->sFullNameRaw = $sFullNameRaw;
-		$this->sDelimiter = $sDelimiter;
+
+		$this->setDelimiter($sDelimiter);
+		$this->setFlags($aFlags);
+	}
+
+	public function setFlags(array $aFlags) : void
+	{
 		$this->aFlagsLowerCase = \array_map('strtolower', $aFlags);
+	}
 
-		$this->sFullNameRaw = 'INBOX'.$this->sDelimiter === \substr(\strtoupper($this->sFullNameRaw), 0, 5 + \strlen($this->sDelimiter)) ?
-			'INBOX'.\substr($this->sFullNameRaw, 5) : $this->sFullNameRaw;
-
-		if ($this->IsInbox())
-		{
-			$this->sFullNameRaw = 'INBOX';
-		}
-
-		$this->sNameRaw = $this->sFullNameRaw;
-		if (0 < \strlen($this->sDelimiter))
-		{
+	public function setDelimiter(?string $sDelimiter) : void
+	{
+		$sDelimiter = 'NIL' === \strtoupper($sDelimiter) ? null : $sDelimiter;
+		$this->sDelimiter = $sDelimiter;
+		if ($sDelimiter) {
 			$aNames = \explode($this->sDelimiter, $this->sFullNameRaw);
-			if (false !== \array_search('', $aNames))
-			{
-				throw new \MailSo\Base\Exceptions\InvalidArgumentException;
-			}
-
 			$this->sNameRaw = \end($aNames);
+		} else {
+			$this->sNameRaw = $this->sFullNameRaw;
 		}
 	}
 
@@ -96,7 +86,7 @@ class Folder
 		return $this->sFullNameRaw;
 	}
 
-	public function Delimiter() : string
+	public function Delimiter() : ?string
 	{
 		return $this->sDelimiter;
 	}

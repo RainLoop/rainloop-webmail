@@ -119,7 +119,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 	{
 		$aReturn = array();
 		foreach ($this as $oResponse) {
-			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
+			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
 				&& 4 === \count($oResponse->ResponseList)
 				&& 'METADATA' === $oResponse->ResponseList[1]
 				&& \is_array($oResponse->ResponseList[3]))
@@ -136,17 +136,24 @@ class ResponseCollection extends \MailSo\Base\Collection
 		return $aReturn;
 	}
 
-	public function getFoldersResult(string $sStatus, bool $bUseListStatus = false) : array
+	public function getFoldersResult(string $sStatus) : array
 	{
 		$aReturn = array();
 
 		$sDelimiter = '';
 		$bInbox = false;
-
 		foreach ($this as $oResponse) {
-			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType &&
-				$sStatus === $oResponse->StatusOrIndex && 5 <= count($oResponse->ResponseList))
-			{
+			if (Enumerations\ResponseType::UNTAGGED !== $oResponse->ResponseType) {
+				continue;
+			}
+			if ('STATUS' === $oResponse->StatusOrIndex && isset($oResponse->ResponseList[2])) {
+				$sFullNameRaw = $oResponse->ResponseList[2];
+				if (!isset($aReturn[$sFullNameRaw])) {
+					$aReturn[$sFullNameRaw] = new Folder($sFullNameRaw);
+				}
+				$aReturn[$sFullNameRaw]->setStatusFromResponse($oResponse);
+			}
+			else if ($sStatus === $oResponse->StatusOrIndex && 5 <= count($oResponse->ResponseList)) {
 				try
 				{
 					/**
@@ -169,14 +176,21 @@ class ResponseCollection extends \MailSo\Base\Collection
 					 * $oResponse->ResponseList[3] = Delimiter
 					 * $oResponse->ResponseList[4] = FullNameRaw
 					 */
-					$oFolder = new Folder($sFullNameRaw,
-						$oResponse->ResponseList[3], $oResponse->ResponseList[2]);
+					if (!isset($aReturn[$sFullNameRaw])) {
+						$oFolder = new Folder($sFullNameRaw,
+							$oResponse->ResponseList[3], $oResponse->ResponseList[2]);
+						$aReturn[$sFullNameRaw] = $oFolder;
+					} else {
+						$oFolder = $aReturn[$sFullNameRaw];
+						$oFolder->setDelimiter($oResponse->ResponseList[3]);
+						$oFolder->setFlags($oResponse->ResponseList[2]);
+					}
 
 					if ($oFolder->IsInbox()) {
 						$bInbox = true;
 					}
 
-					if (empty($sDelimiter)) {
+					if (!$sDelimiter) {
 						$sDelimiter = $oFolder->Delimiter();
 					}
 
@@ -197,22 +211,8 @@ class ResponseCollection extends \MailSo\Base\Collection
 			}
 		}
 
-		if (!$bInbox && !empty($sDelimiter) && !isset($aReturn['INBOX'])) {
+		if (!$bInbox && !isset($aReturn['INBOX'])) {
 			$aReturn['INBOX'] = new Folder('INBOX', $sDelimiter);
-		}
-
-		if ($bUseListStatus) {
-			foreach ($this as $oResponse) {
-				if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType &&
-					'STATUS' === $oResponse->StatusOrIndex &&
-					isset($oResponse->ResponseList[2]))
-				{
-					$sFolderNameRaw = $oResponse->ResponseList[2];
-					if (isset($aReturn[$sFolderNameRaw])) {
-						$aReturn[$sFolderNameRaw]->setStatusFromResponse($oResponse);
-					}
-				}
-			}
 		}
 
 		return $aReturn;
@@ -223,7 +223,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 		$aReturn = array();
 		foreach ($this as $oResponse) {
 			$iOffset = ($bReturnUid && 'UID' === $oResponse->StatusOrIndex && !empty($oResponse->ResponseList[2]) && $sStatus === $oResponse->ResponseList[2]) ? 1 : 0;
-			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
+			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
 				&& ($sStatus === $oResponse->StatusOrIndex || $iOffset)
 				&& \is_array($oResponse->ResponseList)
 				&& 2 < count($oResponse->ResponseList))
@@ -261,7 +261,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 		$aReturn = array();
 		foreach ($this as $oResponse) {
 			$iOffset = ($bReturnUid && 'UID' === $oResponse->StatusOrIndex && !empty($oResponse->ResponseList[2]) && $sStatus === $oResponse->ResponseList[2]) ? 1 : 0;
-			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
+			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
 				&& ($sStatus === $oResponse->StatusOrIndex || $iOffset)
 				&& \is_array($oResponse->ResponseList)
 				&& 2 < \count($oResponse->ResponseList))
@@ -285,7 +285,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 	{
 		$oResult = new FolderInformation($sFolderName, $bIsWritable);
 		foreach ($this as $oResponse) {
-			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType) {
+			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType) {
 				if (!$oResult->setStatusFromResponse($oResponse)) {
 					// OK untagged responses
 					if (\is_array($oResponse->OptionalResponse)) {
@@ -372,7 +372,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 	{
 		$aResult = array();
 		foreach ($this as $oResponse) {
-			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
+			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
 				&& ('ESEARCH' === $oResponse->StatusOrIndex || 'ESORT' === $oResponse->StatusOrIndex)
 				&& \is_array($oResponse->ResponseList)
 				&& isset($oResponse->ResponseList[2], $oResponse->ResponseList[2][0], $oResponse->ResponseList[2][1])
