@@ -31,7 +31,6 @@ class Message implements \JsonSerializable
 		$iInternalTimeStampInUTC = 0,
 		$iHeaderTimeStampInUTC = 0,
 		$sHeaderDate = '',
-		$aFlags = [],
 		$aFlagsLowerCase = [],
 
 		/**
@@ -194,11 +193,6 @@ class Message implements \JsonSerializable
 		return $this->sHeaderDate;
 	}
 
-	public function Flags() : array
-	{
-		return $this->aFlags;
-	}
-
 	public function FlagsLowerCase() : array
 	{
 		return $this->aFlagsLowerCase;
@@ -317,8 +311,7 @@ class Message implements \JsonSerializable
 		$this->sFolder = $sFolder;
 		$this->iUid = (int) $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::UID);
 		$this->iSize = (int) $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::RFC822_SIZE);
-		$this->aFlags = \is_array($aFlags) ? $aFlags : array();
-		$this->aFlagsLowerCase = \array_map('strtolower', $this->aFlags);
+		$this->aFlagsLowerCase = \array_map('strtolower', $aFlags ?: []);
 
 		$this->iInternalTimeStampInUTC =
 			\MailSo\Base\DateTimeHelper::ParseInternalDateString($sInternalDate);
@@ -692,7 +685,11 @@ class Message implements \JsonSerializable
 			'IsSeen' => \in_array('\\seen', $this->aFlagsLowerCase),
 			'IsFlagged' => \in_array('\\flagged', $this->aFlagsLowerCase),
 			'IsAnswered' => \in_array('\\answered', $this->aFlagsLowerCase),
-			'IsDeleted' => \in_array('\\deleted', $this->aFlagsLowerCase)
+			'IsDeleted' => \in_array('\\deleted', $this->aFlagsLowerCase),
+			'IsForwarded' => \in_array(\strtolower('$Forwarded'), $this->aFlagsLowerCase),
+			'IsReadReceipt' => \in_array(\strtolower('$MDNSent'), $this->aFlagsLowerCase),
+			'IsJunk' => !\in_array(\strtolower('$NonJunk'), $this->aFlagsLowerCase) && \in_array(\strtolower('$Junk'), $this->aFlagsLowerCase),
+			'IsPhishing' => \in_array(\strtolower('$Phishing'), $this->aFlagsLowerCase)
 		);
 	}
 }

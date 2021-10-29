@@ -665,7 +665,7 @@ class MailClient
 			'MessageCount' => $iCount,
 			'MessageUnseenCount' => $iUnseenCount,
 			'UidNext' => $iUidNext,
-			'Flags' => $aFlags,
+			'MessageFlags' => $aFlags,
 			'HighestModSeq' => $iHighestModSeq,
 			'NewMessages' => 'INBOX' === $sFolderName && \MailSo\Config::$CheckNewMessages ?
 				$this->getFolderNextMessageInformation($sFolderName, $iPrevUidNext, $iUidNext) : array()

@@ -18,7 +18,7 @@ namespace MailSo\Imap\Enumerations;
  */
 abstract class MessageFlag
 {
-	const RECENT = '\\Recent';
+//	const RECENT = '\\Recent'; // IMAP4rev2 deprecated
 	const SEEN = '\\Seen';
 	const DELETED = '\\Deleted';
 	const FLAGGED = '\\Flagged';

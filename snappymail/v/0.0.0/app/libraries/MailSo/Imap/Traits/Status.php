@@ -33,7 +33,7 @@ trait Status
 		/**
 		 * The number of messages with the \Recent flag set.
 		 * This response also occurs as a result of a SELECT or EXAMINE command.
-		 * Obsolete in IMAP4rev2
+		 * IMAP4rev2 deprecated.
 		 * @var int
 		 */
 		$RECENT,
@@ -55,8 +55,9 @@ trait Status
 
 		/**
 		 * The number of messages which do not have the \Seen flag set.
-		 * This response also occurs as a result of a SELECT or EXAMINE command,
+		 * This response also occurs as a result of a IMAP4rev1 SELECT or EXAMINE command,
 		 * but then it is the message sequence number of the first unseen message.
+		 * IMAP4rev2 deprecated on SELECT/EXAMINE.
 		 * @var int
 		 */
 		$UNSEEN,

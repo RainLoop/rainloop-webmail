@@ -442,6 +442,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		$aReturnParams = array();
 
 		if ($bIsSubscribeList) {
+			// IMAP4rev2 deprecated
 			$sCmd = 'LSUB';
 		} else if ($this->IsSupported('LIST-EXTENDED')) {
 			// RFC 5258
@@ -556,6 +557,9 @@ class ImapClient extends \MailSo\Net\NetClient
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
+		/**
+		 * IMAP4rev2 SELECT/EXAMINE are now required to return an untagged LIST response.
+		 */
 		$this->oCurrentFolderInfo = $this->SendRequestGetResponse($bIsWritable ? 'SELECT' : 'EXAMINE',
 			array($this->EscapeString($sFolderName)))
 			->getCurrentFolderInformation($sFolderName, $bIsWritable);
