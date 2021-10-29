@@ -219,14 +219,14 @@ export class MailMessageList extends AbstractViewRight {
 			);
 
 			if ('INBOX' === sFolder) {
-				rl.route.setHash(mailBox(sFolder, 1));
+				rl.route.setHash(mailBox(sFolder));
 			}
 
 			if (message) {
 				this.selector.selectMessageItem(message);
 			} else {
 				if ('INBOX' !== sFolder) {
-					rl.route.setHash(mailBox(sFolder, 1));
+					rl.route.setHash(mailBox(sFolder));
 				}
 
 				MessageUserStore.selectMessageByFolderAndUid(sFolder, iUid);

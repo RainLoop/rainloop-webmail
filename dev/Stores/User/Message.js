@@ -242,7 +242,7 @@ export const MessageUserStore = new class {
 						i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
 							COUNT: len
 						}),
-						{ Url: mailBox(newMessages[0].Folder, 1) }
+						{ Url: mailBox(newMessages[0].Folder) }
 					);
 				} else {
 					newMessages.forEach(item => {
