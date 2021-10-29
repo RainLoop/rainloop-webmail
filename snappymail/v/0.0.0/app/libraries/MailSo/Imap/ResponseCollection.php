@@ -180,7 +180,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 						$sDelimiter = $oFolder->Delimiter();
 					}
 
-					$aReturn[] = $oFolder;
+					$aReturn[$sFullNameRaw] = $oFolder;
 				}
 				catch (\MailSo\Base\Exceptions\InvalidArgumentException $oException)
 				{
@@ -197,8 +197,8 @@ class ResponseCollection extends \MailSo\Base\Collection
 			}
 		}
 
-		if (!$bInbox && !empty($sDelimiter)) {
-			$aReturn[] = new Folder('INBOX', $sDelimiter);
+		if (!$bInbox && !empty($sDelimiter) && !isset($aReturn['INBOX'])) {
+			$aReturn['INBOX'] = new Folder('INBOX', $sDelimiter);
 		}
 
 		if ($bUseListStatus) {
@@ -208,11 +208,8 @@ class ResponseCollection extends \MailSo\Base\Collection
 					isset($oResponse->ResponseList[2]))
 				{
 					$sFolderNameRaw = $oResponse->ResponseList[2];
-					foreach ($aReturn as $oFolder) {
-						if ($oFolder && $sFolderNameRaw === $oFolder->FullNameRaw()) {
-							$oFolder->setStatusFromResponse($oResponse);
-							break;
-						}
+					if (isset($aReturn[$sFolderNameRaw])) {
+						$aReturn[$sFolderNameRaw]->setStatusFromResponse($oResponse);
 					}
 				}
 			}

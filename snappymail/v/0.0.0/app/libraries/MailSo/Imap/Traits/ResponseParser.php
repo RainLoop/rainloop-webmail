@@ -492,7 +492,7 @@ trait ResponseParser
 							{
 								$bCountTwoInited = true;
 
-								$oImapResponse->StatusOrIndex = strtoupper($aList[1]);
+								$oImapResponse->StatusOrIndex = \strtoupper($aList[1]);
 
 								if ($oImapResponse->StatusOrIndex == ResponseStatus::OK ||
 									$oImapResponse->StatusOrIndex == ResponseStatus::NO ||

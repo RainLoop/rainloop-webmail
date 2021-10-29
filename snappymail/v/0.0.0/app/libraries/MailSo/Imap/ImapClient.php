@@ -155,7 +155,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		try
 		{
-			if (0 === \strpos($type, 'SCRAM-SHA-'))
+			if (0 === \strpos($type, 'SCRAM-'))
 			{
 				$sAuthzid = $this->getResponseValue($this->SendRequestGetResponse('AUTHENTICATE', array($type)), Enumerations\ResponseType::CONTINUATION);
 				$this->sendRaw($SASL->authenticate($sLogin, $sPassword/*, $sAuthzid*/), true);
@@ -759,7 +759,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	private function simpleESearchOrESortHelper(bool $bSort = false, string $sSearchCriterias = 'ALL', array $aSearchOrSortReturn = null, bool $bReturnUid = true, string $sLimit = '', string $sCharset = '', array $aSortTypes = null) : array
 	{
 		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
-		$sSearchCriterias = 0 === \strlen($sSearchCriterias) || '*' === $sSearchCriterias
+		$sSearchCriterias = !\strlen($sSearchCriterias) || '*' === $sSearchCriterias
 			? 'ALL' : $sSearchCriterias;
 
 		$sCmd = $bSort ? 'SORT': 'SEARCH';
@@ -939,7 +939,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function MessageCopy(string $sToFolder, string $sIndexRange, bool $bIndexIsUid) : self
 	{
-		if (0 === \strlen($sIndexRange))
+		if (!\strlen($sIndexRange))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
@@ -959,7 +959,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function MessageMove(string $sToFolder, string $sIndexRange, bool $bIndexIsUid) : self
 	{
-		if (0 === \strlen($sIndexRange))
+		if (!\strlen($sIndexRange))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,

@@ -1976,14 +1976,13 @@ class MailClient
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
-		$aFolders = $this->oImapClient->FolderList('', $sPrevFolderFullNameRaw);
-		if (!$aFolders)
+		$sDelimiter = $this->oImapClient->FolderHierarchyDelimiter($sPrevFolderFullNameRaw);
+		if (!$sDelimiter)
 		{
 			// TODO: Translate
 			throw new Exceptions\RuntimeException('Cannot '.($bRename?'rename':'move').' non-existent folder.');
 		}
 
-		$sDelimiter = $aFolders[0]->Delimiter();
 		$iLast = \strrpos($sPrevFolderFullNameRaw, $sDelimiter);
 
 		$aSubscribeFolders = array();
