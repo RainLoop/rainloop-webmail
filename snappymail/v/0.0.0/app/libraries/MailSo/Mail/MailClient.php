@@ -11,6 +11,8 @@
 
 namespace MailSo\Mail;
 
+use \MailSo\Imap\Enumerations\FolderResponseStatus;
+
 /**
  * @category MailSo
  * @package Mail
@@ -521,27 +523,29 @@ class MailClient
 		int &$iUidNext, int &$iHighestModSeq) : void
 	{
 		$aTypes = array(
-			\MailSo\Imap\Enumerations\FolderResponseStatus::MESSAGES,
-			\MailSo\Imap\Enumerations\FolderResponseStatus::UNSEEN,
-			\MailSo\Imap\Enumerations\FolderResponseStatus::UIDNEXT
+			FolderResponseStatus::MESSAGES,
+			FolderResponseStatus::UNSEEN,
+			FolderResponseStatus::UIDNEXT
 		);
 
 		if ($this->oImapClient->IsSupported('CONDSTORE'))
 		{
-			$aTypes[] = \MailSo\Imap\Enumerations\FolderResponseStatus::HIGHESTMODSEQ;
+			$aTypes[] = FolderResponseStatus::HIGHESTMODSEQ;
 		}
 
 		$aFolderStatus = $this->oImapClient->FolderStatus($sFolderName, $aTypes);
 
-		$iCount = (int) $aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::MESSAGES] ?? 0;
+		$iCount = (int) $aFolderStatus[FolderResponseStatus::MESSAGES] ?? 0;
 
-		$iUnseenCount = (int) $aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::UNSEEN] ?? 0;
+		$iUnseenCount = (int) $aFolderStatus[FolderResponseStatus::UNSEEN] ?? 0;
 
-		$iUidNext = (int) $aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::UIDNEXT] ?? 0;
+		$iUidNext = (int) $aFolderStatus[FolderResponseStatus::UIDNEXT] ?? 0;
 
-		$iHighestModSeq = $this->oImapClient->IsSupported('CONDSTORE')
-			? ((int) $aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::HIGHESTMODSEQ] ?? 0)
-			: 0;
+		if (isset($aFolderStatus[FolderResponseStatus::HIGHESTMODSEQ])) {
+			$iHighestModSeq = (int) $aFolderStatus[FolderResponseStatus::HIGHESTMODSEQ];
+		} else {
+			$iHighestModSeq = 0;
+		}
 	}
 
 	public function GenerateImapClientHash() : string
@@ -692,11 +696,11 @@ class MailClient
 	public function InboxUnreadCount() : int
 	{
 		$aFolderStatus = $this->oImapClient->FolderStatus('INBOX', array(
-			\MailSo\Imap\Enumerations\FolderResponseStatus::UNSEEN
+			FolderResponseStatus::UNSEEN
 		));
 
-		$iResult = isset($aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::UNSEEN]) ?
-			(int) $aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::UNSEEN] : 0;
+		$iResult = isset($aFolderStatus[FolderResponseStatus::UNSEEN]) ?
+			(int) $aFolderStatus[FolderResponseStatus::UNSEEN] : 0;
 
 		return 0 < $iResult ? $iResult : 0;
 	}
