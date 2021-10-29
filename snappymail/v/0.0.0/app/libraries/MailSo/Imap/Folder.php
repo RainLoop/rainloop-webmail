@@ -38,11 +38,6 @@ class Folder
 	/**
 	 * @var array
 	 */
-	private $aFlags;
-
-	/**
-	 * @var array
-	 */
 	private $aFlagsLowerCase;
 
 	/**
@@ -68,8 +63,7 @@ class Folder
 
 		$this->sFullNameRaw = $sFullNameRaw;
 		$this->sDelimiter = $sDelimiter;
-		$this->aFlags = $aFlags;
-		$this->aFlagsLowerCase = \array_map('strtolower', $this->aFlags);
+		$this->aFlagsLowerCase = \array_map('strtolower', $aFlags);
 
 		$this->sFullNameRaw = 'INBOX'.$this->sDelimiter === \substr(\strtoupper($this->sFullNameRaw), 0, 5 + \strlen($this->sDelimiter)) ?
 			'INBOX'.\substr($this->sFullNameRaw, 5) : $this->sFullNameRaw;
@@ -105,11 +99,6 @@ class Folder
 	public function Delimiter() : string
 	{
 		return $this->sDelimiter;
-	}
-
-	public function Flags() : array
-	{
-		return $this->aFlags;
 	}
 
 	public function FlagsLowerCase() : array

@@ -458,7 +458,7 @@ trait Folders
 			foreach ($oFolders as $oFolder)
 			{
 				$aResult[] = $oFolder->FullNameRaw()."|".
-					implode("|", $oFolder->Flags()).($oFolder->IsSubscribed() ? '1' : '0');
+					implode("|", $oFolder->FlagsLowerCase()).($oFolder->IsSubscribed() ? '1' : '0');
 
 				$oSub = $oFolder->SubFolders();
 				if ($oSub && 0 < $oSub->Count())

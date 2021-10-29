@@ -123,11 +123,6 @@ class Folder implements \JsonSerializable
 		return $this->oImapFolder->Delimiter();
 	}
 
-	public function Flags() : array
-	{
-		return $this->oImapFolder->Flags();
-	}
-
 	public function FlagsLowerCase() : array
 	{
 		return $this->oImapFolder->FlagsLowerCase();
