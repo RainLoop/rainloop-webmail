@@ -45,18 +45,18 @@ This fork of RainLoop has the following changes:
 * Admin uses password_hash/password_verify
 * Auth failed attempts written to syslog
 * Added Fail2ban instructions
-* ES2015
+* ES2018
 * PHP 7.3+ required
 * PHP mbstring extension required
 * PHP replaced pclZip with PharData and ZipArchive
-* PHP yaml extension else use the old Spyc
+* Dark mode
 * Added option to remove background/font colors from messages for real "dark mode"
 * Removed BackwardCapability (class \RainLoop\Account)
 * Removed ChangePassword (re-implemented as plugin)
-* Removed OAuth support
 * Removed POP3 support
 * Removed background video support
 * Removed Sentry (Application Monitoring and Error Tracking Software)
+* Removed Spyc yaml
 * Replaced gulp-uglify with gulp-terser
 * CRLF => LF line endings
 * Embed boot.js and boot.css into index.html
@@ -76,6 +76,14 @@ This fork of RainLoop has the following changes:
 * Prevent Google FLoC
 * Added [Fetch Metadata Request Headers](https://www.w3.org/TR/fetch-metadata/) checks
 * Reduced excessive DOM size
+* Support [Kolab groupware](https://kolab.org/)
+* Support IMAP RFC 2971 ID extension
+* Support IMAP RFC 5258 LIST-EXTENDED
+* Support IMAP RFC 5464 METADATA
+* Support IMAP RFC 5819 LIST-STATUS
+* Support IMAP RFC 7628 SASL OAUTHBEARER aka XOAUTH2
+* Support IMAP4rev2 RFC 9051
+
 
 ### Supported browsers
 
@@ -96,10 +104,9 @@ The result is faster and smaller download code (good for mobile networks).
 * Added dev/prototype.js for some additional features
 * boot.js without webpack overhead
 * Modified Jua.js to be without jQuery
-* Replaced ProgressJS with simple native dropin
 * Replaced Autolinker with simple https/email detection
 * Replaced ifvisible.js with simple drop-in replacement
-* Replaced momentToNode with proper HTML5 <time>
+* Replaced momentToNode with proper HTML5 `<time>`
 * Replaced resize listeners with ResizeObserver
 * Replaced bootstrap.js with native drop-in replacement
 * Replaced dev/Common/ClientStorageDriver/* with Web Storage Objects polyfill
@@ -123,29 +130,30 @@ The result is faster and smaller download code (good for mobile networks).
 * Removed momentjs (use Intl)
 * Removed opentip (use CSS)
 * Removed non-community (aka Prem/Premium/License) code
+* Removed ProgressJS
 
 
 RainLoop 1.15 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.158.025	|   86.179	|
-|app.js          	|4.215.733	|  435.073	|
+|admin.js        	|2.158.025	|   86.479	|
+|app.js          	|4.215.733	|  437.944	|
 |boot.js         	|  672.433	|    2.707	|
-|libs.js         	|  647.679	|  211.161	|
+|libs.js         	|  647.679	|  209.976	|
 |polyfills.js    	|  325.908	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|8.019.778	|  735.405	|
+|TOTAL           	|8.019.778	|  737.391	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
-|admin.min.js    	|  255.514	|   43.957	| 73.899	| 13.590	| 60.674  	| 12.174	|
-|app.min.js      	|  516.000	|  222.447	|140.430	| 66.271	|110.657  	| 56.274	|
+|admin.min.js    	|  255.514	|   44.124	| 73.899	| 13.633	| 60.674  	| 12.211	|
+|app.min.js      	|  516.000	|  223.756	|140.430	| 66.834	|110.657  	| 56.666	|
 |boot.min.js     	|   66.456	|    1.621	| 22.553	|    983	| 20.043  	|    805	|
-|libs.min.js     	|  574.626	|  101.006	|177.280	| 36.780	|151.855  	| 32.955	|
+|libs.min.js     	|  574.626	|  100.487	|177.280	| 36.620	|151.855  	| 32.835	|
 |polyfills.min.js	|   32.608	|        0	| 11.315	|      0	| 10.072  	|      0	|
-|TOTAL           	|1.445.204	|  369.031	|425.477	|117.624	|353.301  	|102.208	|
-|TOTAL (no admin)	|1.189.690	|  325.074	|351.061	|104.034	|292.627  	| 90.034	|
+|TOTAL           	|1.445.204	|  369.988	|425.477	|118.070	|353.301  	|102.517	|
+|TOTAL (no admin)	|1.189.690	|  325.864	|351.061	|104.437	|292.627  	| 90.306	|
 
 For a user its around 68% smaller and faster than traditional RainLoop.
 
@@ -184,12 +192,12 @@ For a user its around 68% smaller and faster than traditional RainLoop.
 
 |css/*       	|RainLoop	|Snappy   	|RL gzip	|SM gzip	|SM brotli	|
 |------------	|-------:	|------:	|------:	|------:	|--------:	|
-|app.css     	| 340.334	| 92.117	| 46.959	| 17.079	| 14.790	|
-|app.min.css 	| 274.791	| 74.827	| 39.618	| 15.259	| 13.473	|
+|app.css     	| 340.334	| 91.472	| 46.959	| 16.995	| 14.717	|
+|app.min.css 	| 274.791	| 74.268	| 39.618	| 15.159	| 13.419	|
 |boot.css    	|       	|  1.326	|       	|    664	|    545	|
 |boot.min.css	|       	|  1.071	|       	|    590	|    474	|
-|admin.css    	|       	| 39.492	|       	|  8.354	|  7.308	|
-|admin.min.css	|       	| 31.114	|       	|  7.324	|  6.506	|
+|admin.css    	|       	| 39.417	|       	|  8.337	|  7.293	|
+|admin.min.css	|       	| 31.051	|       	|  7.306	|  6.487	|
 
 
 ### Squire vs CKEditor

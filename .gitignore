@@ -18,3 +18,12 @@
 /include.php
 .idea/
 .env
+/test
+/public_html
+/vendors/knockout/spec
+/vendors/openpgp-2.6.2/test/
+/vendors/openpgp-3.1.3/
+/vendors/openpgp-4/
+/vendors/vanillaqr.js/
+/integrations/nextcloud/rainloop
+/integrations/owncloud/rainloop
