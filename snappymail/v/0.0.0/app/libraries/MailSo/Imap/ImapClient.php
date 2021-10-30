@@ -335,6 +335,25 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
+	 * RFC 7889
+	 * APPENDLIMIT=<number> indicates that the IMAP server has the same upload limit for all mailboxes.
+	 * APPENDLIMIT without any value indicates that the IMAP server supports this extension,
+	 * and that the client will need to discover upload limits for each mailbox,
+	 * as they might differ from mailbox to mailbox.
+	 */
+	public function AppendLimit() : ?int
+	{
+		if ($this->aCapabilityItems) {
+			foreach ($this->aCapabilityItems as $string) {
+				if ('APPENDLIMIT=' === \substr($string, 0, 12)) {
+					return (int) \substr($string, 12);
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
@@ -416,21 +435,36 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function FolderStatus(string $sFolderName, array $aStatusItems) : ?array
 	{
+		if (!\count($aStatusItems)) {
+			return null;
+		}
 		$oFolderInfo = $this->oCurrentFolderInfo;
+		$bReselect = false;
+		$bWritable = false;
 		if ($oFolderInfo && $sFolderName === $oFolderInfo->FolderName) {
-			// Not supported by Outlook/Hotmail/Office365
+			/**
+			 * There's a long standing IMAP CLIENTBUG where STATUS command is executed
+			 * after SELECT/EXAMINE on same folder (it should not).
+			 * So we must unselect the folder to be able to get the APPENDLIMIT and UNSEEN.
+			 */
+/*
 			if ($this->IsSupported('ESEARCH')) {
 				$aResult = $oFolderInfo->getStatusItems();
 				// SELECT or EXAMINE command then UNSEEN is the message sequence number of the first unseen message
 				$aResult['UNSEEN'] = $this->simpleESearchOrESortHelper(false, 'UNSEEN', ['COUNT'])['COUNT'];
 				return $aResult;
 			}
-//			$this->FolderUnSelect();
+*/
+			$bWritable = $oFolderInfo->IsWritable;
+			$bReselect = true;
+			$this->FolderUnSelect();
 		}
-		return \count($aStatusItems)
-			? $this->SendRequestGetResponse('STATUS', array($this->EscapeString($sFolderName), $aStatusItems))
-				->getStatusFolderInformationResult()
-			: null;
+		$aResult = $this->SendRequestGetResponse('STATUS', array($this->EscapeString($sFolderName), $aStatusItems))
+			->getStatusFolderInformationResult();
+		if ($bReselect) {
+			$this->selectOrExamineFolder($sFolderName, $bWritable, false);
+		}
+		return $aResult;
 	}
 
 	/**
@@ -461,17 +495,25 @@ class ImapClient extends \MailSo\Net\NetClient
 		$aParameters[] = $this->EscapeString($sParentFolderName);
 		$aParameters[] = $this->EscapeString(\strlen(\trim($sListPattern)) ? $sListPattern : '*');
 
+		// RFC 5819
 		if ($bUseListStatus && !$bIsSubscribeList && $this->IsSupported('LIST-STATUS'))
 		{
-			// RFC 5819
 			$aL = array(
 				Enumerations\FolderStatus::MESSAGES,
 				Enumerations\FolderStatus::UNSEEN,
 				Enumerations\FolderStatus::UIDNEXT
 			);
-
+			// RFC 4551
 			if ($this->IsSupported('CONDSTORE')) {
 				$aL[] = Enumerations\FolderStatus::HIGHESTMODSEQ;
+			}
+			// RFC 7889
+			if ($this->IsSupported('APPENDLIMIT')) {
+				$aL[] = Enumerations\FolderStatus::APPENDLIMIT;
+			}
+			// RFC 8474
+			if ($this->IsSupported('OBJECTID')) {
+				$aTypes[] = Enumerations\FolderStatus::MAILBOXID;
 			}
 
 			$aReturnParams[] = 'STATUS';
@@ -560,11 +602,17 @@ class ImapClient extends \MailSo\Net\NetClient
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
+		$aParams = array($this->EscapeString($sFolderName));
+/*
+		if ($this->IsSupported('CONDSTORE')) {
+			$aParams[] = ['CONDSTORE'];
+		}
+*/
 		/**
 		 * IMAP4rev2 SELECT/EXAMINE are now required to return an untagged LIST response.
 		 */
 		$this->oCurrentFolderInfo = $this->SendRequestGetResponse($bIsWritable ? 'SELECT' : 'EXAMINE',
-			array($this->EscapeString($sFolderName)))
+			$aParams)
 			->getCurrentFolderInformation($sFolderName, $bIsWritable);
 
 		return $this;

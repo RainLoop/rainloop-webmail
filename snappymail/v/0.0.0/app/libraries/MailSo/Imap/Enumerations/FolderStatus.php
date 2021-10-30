@@ -26,6 +26,8 @@ abstract class FolderStatus
 	const UNSEEN = 'UNSEEN';
 	// rfc4551
 	const HIGHESTMODSEQ = 'HIGHESTMODSEQ';
+	// rfc7889
+	const APPENDLIMIT = 'APPENDLIMIT';
 	// rfc8474
 	const MAILBOXID = 'MAILBOXID';
 }

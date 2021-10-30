@@ -71,6 +71,13 @@ trait Status
 		$HIGHESTMODSEQ,
 
 		/**
+		 * RFC7889
+		 * Message upload size limit.
+		 * @var int
+		 */
+		$APPENDLIMIT,
+
+		/**
 		 * RFC8474
 		 * A server-allocated unique identifier for the mailbox.
 		 * This response also occurs as a result of a CREATE, SELECT or EXAMINE command.
@@ -81,7 +88,7 @@ trait Status
 	public function getStatusItems() : array
 	{
 		return \array_filter(\get_object_vars($this), function($v, $k){
-			return isset($v) && \property_exists(__TRAIT__, $k);
+			return \property_exists(__TRAIT__, $k);
 		}, ARRAY_FILTER_USE_BOTH);
 	}
 

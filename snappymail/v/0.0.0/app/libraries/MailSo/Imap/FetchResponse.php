@@ -54,12 +54,12 @@ class FetchResponse
 	{
 		$oResult = null;
 		$aEmails = $this->GetFetchEnvelopeValue($iIndex);
-		if (is_array($aEmails) && 0 < count($aEmails))
+		if (\is_array($aEmails) && \count($aEmails))
 		{
 			$oResult = new \MailSo\Mime\EmailCollection;
 			foreach ($aEmails as $aEmailItem)
 			{
-				if (is_array($aEmailItem) && 4 === count($aEmailItem))
+				if (\is_array($aEmailItem) && 4 === \count($aEmailItem))
 				{
 					$sDisplayName = \MailSo\Base\Utils::DecodeHeaderValue(
 						self::findEnvelopeIndex($aEmailItem, 0, ''), $sParentCharset);
@@ -70,7 +70,7 @@ class FetchResponse
 					$sLocalPart = self::findEnvelopeIndex($aEmailItem, 2, '');
 					$sDomainPart = self::findEnvelopeIndex($aEmailItem, 3, '');
 
-					if (0 < strlen($sLocalPart) && 0 < strlen($sDomainPart))
+					if (\strlen($sLocalPart) && \strlen($sDomainPart))
 					{
 						$oResult->append(
 							new \MailSo\Mime\Email($sLocalPart.'@'.$sDomainPart, $sDisplayName)
@@ -87,9 +87,9 @@ class FetchResponse
 	{
 		$aBodyStructureArray = $this->GetFetchValue(Enumerations\FetchType::BODYSTRUCTURE);
 
-		if (is_array($aBodyStructureArray))
+		if (\is_array($aBodyStructureArray))
 		{
-			if (0 < strlen($sRfc822SubMimeIndex))
+			if (\strlen($sRfc822SubMimeIndex))
 			{
 				return BodyStructure::NewInstanceFromRfc822SubPart($aBodyStructureArray, $sRfc822SubMimeIndex);
 			}
@@ -100,6 +100,7 @@ class FetchResponse
 	}
 
 	/**
+	 * Like: UID, RFC822.SIZE, MODSEQ, INTERNALDATE, FLAGS, BODYSTRUCTURE
 	 * @return mixed
 	 */
 	public function GetFetchValue(string $sFetchItemName)
@@ -124,11 +125,15 @@ class FetchResponse
 		return null;
 	}
 
+	/**
+	 * Like: BODY[HEADER.FIELDS (RETURN-PATH RECEIVED MIME-VERSION MESSAGE-ID CONTENT-TYPE FROM TO CC BCC SENDER REPLY-TO DELIVERED-TO IN-REPLY-TO REFERENCES DATE SUBJECT SENSITIVITY X-MSMAIL-PRIORITY IMPORTANCE X-PRIORITY X-DRAFT-INFO RETURN-RECEIPT-TO DISPOSITION-NOTIFICATION-TO X-CONFIRM-READING-TO AUTHENTICATION-RESULTS X-DKIM-AUTHENTICATION-RESULTS LIST-UNSUBSCRIBE X-SPAM-STATUS X-SPAMD-RESULT X-BOGOSITY X-VIRUS X-VIRUS-SCANNED X-VIRUS-STATUS)]
+	 * @return mixed
+	 */
 	public function GetHeaderFieldsValue(string $sRfc822SubMimeIndex = '') : string
 	{
 		$bNextIsValue = false;
 
-		$sRfc822SubMimeIndex = 0 < \strlen($sRfc822SubMimeIndex) ? ''.$sRfc822SubMimeIndex.'.' : '';
+		$sRfc822SubMimeIndex = \strlen($sRfc822SubMimeIndex) ? ''.$sRfc822SubMimeIndex.'.' : '';
 
 		if (isset($this->oImapResponse->ResponseList[3]) && \is_array($this->oImapResponse->ResponseList[3]))
 		{
