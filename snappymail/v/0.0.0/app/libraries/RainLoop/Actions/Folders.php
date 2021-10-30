@@ -386,8 +386,6 @@ trait Folders
 			throw new ClientException(Notifications::MailServerError, $oException);
 		}
 
-		$aInboxInformation['Version'] = APP_VERSION;
-
 		return $this->DefaultResponse(__FUNCTION__, $aInboxInformation);
 	}
 
@@ -396,10 +394,7 @@ trait Folders
 	 */
 	public function DoFolderInformationMultiply() : array
 	{
-		$aResult = array(
-			'List' => array(),
-			'Version' => APP_VERSION
-		);
+		$aResult = array();
 
 		$aFolders = $this->GetActionParam('Folders', null);
 		if (\is_array($aFolders))
@@ -416,7 +411,7 @@ trait Folders
 						$aInboxInformation = $this->MailClient()->FolderInformation($sFolder);
 						if (isset($aInboxInformation['Folder']))
 						{
-							$aResult['List'][] = [
+							$aResult[] = [
 								'Folder' => $aInboxInformation['Folder'],
 								'Hash' => $aInboxInformation['Hash'],
 								'MessageCount' => $aInboxInformation['MessageCount'],

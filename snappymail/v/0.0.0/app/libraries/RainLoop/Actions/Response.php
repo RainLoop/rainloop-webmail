@@ -100,6 +100,7 @@ trait Response
 		$sActionName = \preg_replace('/[^a-zA-Z0-9_]+/', '', $sActionName);
 
 		$aResult = array(
+//			'Version' => APP_VERSION,
 			'Action' => $sActionName,
 			'Result' => $this->responseObject($mResult, $sActionName)
 		);

@@ -551,9 +551,9 @@ class AppUser extends AbstractApp {
 		const folders = FolderUserStore.getNextFolderNames(refreshFolders);
 		if (arrayLength(folders)) {
 			Remote.folderInformationMultiply((iError, oData) => {
-				if (!iError && arrayLength(oData.Result.List)) {
+				if (!iError && arrayLength(oData.Result)) {
 					const utc = Date.now();
-					oData.Result.List.forEach(item => {
+					oData.Result.forEach(item => {
 						const hash = getFolderHash(item.Folder),
 							folder = getFolderFromCacheList(item.Folder);
 
