@@ -2,7 +2,7 @@
 <?php
 chdir(__DIR__);
 
-$options = getopt('', ['aur','docker','plugins','set-version']);
+$options = getopt('', ['aur','docker','plugins','set-version','skip-gulp']);
 
 if (isset($options['plugins'])) {
 	$destPath = "build/dist/releases/plugins/";
@@ -128,37 +128,39 @@ $tar_destination = "{$destPath}snappymail-{$package->version}.tar";
 @unlink($tar_destination);
 @unlink("{$tar_destination}.gz");
 
-echo "\x1b[33;1m === Gulp === \x1b[0m\n";
-passthru($gulp, $return_var);
-if ($return_var) {
-	exit("gulp failed with error code {$return_var}\n");
+if (!isset($options['skip-gulp'])) {
+	echo "\x1b[33;1m === Gulp === \x1b[0m\n";
+	passthru($gulp, $return_var);
+	if ($return_var) {
+		exit("gulp failed with error code {$return_var}\n");
+	}
+
+	$cmddir = escapeshellcmd(__DIR__) . '/snappymail/v/0.0.0/static';
+
+	if ($gzip = trim(`which gzip`)) {
+		echo "\x1b[33;1m === Gzip *.js and *.css === \x1b[0m\n";
+		passthru("{$gzip} -k --best {$cmddir}/js/*.js");
+		passthru("{$gzip} -k --best {$cmddir}/js/min/*.js");
+		passthru("{$gzip} -k --best {$cmddir}/css/admin*.css");
+		passthru("{$gzip} -k --best {$cmddir}/css/app*.css");
+		unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/boot.js.gz');
+		unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/min/boot.min.js.gz');
+	}
+
+	if ($brotli = trim(`which brotli`)) {
+		echo "\x1b[33;1m === Brotli *.js and *.css === \x1b[0m\n";
+		passthru("{$brotli} -k --best {$cmddir}/js/*.js");
+		passthru("{$brotli} -k --best {$cmddir}/js/min/*.js");
+		passthru("{$brotli} -k --best {$cmddir}/css/admin*.css");
+		passthru("{$brotli} -k --best {$cmddir}/css/app*.css");
+		unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/boot.js.br');
+		unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/min/boot.min.js.br');
+	}
+
+	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/openpgp.js');
+	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/openpgp.js.br');
+	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/openpgp.js.gz');
 }
-
-$cmddir = escapeshellcmd(__DIR__) . '/snappymail/v/0.0.0/static';
-
-if ($gzip = trim(`which gzip`)) {
-	echo "\x1b[33;1m === Gzip *.js and *.css === \x1b[0m\n";
-	passthru("{$gzip} -k --best {$cmddir}/js/*.js");
-	passthru("{$gzip} -k --best {$cmddir}/js/min/*.js");
-	passthru("{$gzip} -k --best {$cmddir}/css/admin*.css");
-	passthru("{$gzip} -k --best {$cmddir}/css/app*.css");
-	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/boot.js.gz');
-	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/min/boot.min.js.gz');
-}
-
-if ($brotli = trim(`which brotli`)) {
-	echo "\x1b[33;1m === Brotli *.js and *.css === \x1b[0m\n";
-	passthru("{$brotli} -k --best {$cmddir}/js/*.js");
-	passthru("{$brotli} -k --best {$cmddir}/js/min/*.js");
-	passthru("{$brotli} -k --best {$cmddir}/css/admin*.css");
-	passthru("{$brotli} -k --best {$cmddir}/css/app*.css");
-	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/boot.js.br');
-	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/min/boot.min.js.br');
-}
-
-unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/openpgp.js');
-unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/openpgp.js.br');
-unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/openpgp.js.gz');
 
 // Temporary rename folder to speed up PharData
 //if (!rename('snappymail/v/0.0.0', "snappymail/v/{$package->version}")){

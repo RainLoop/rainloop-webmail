@@ -19,6 +19,7 @@ trait ACL
 {
 	public function FolderSetACL(string $sFolderName, string $sIdentifier, string $sAccessRights) : void
 	{
+//		if ($this->IsSupported('ACL')) {
 		$this->SendRequestGetResponse('SETACL', array(
 			$this->EscapeString($sFolderName),
 			$this->EscapeString($sIdentifier),
@@ -28,6 +29,7 @@ trait ACL
 
 	public function FolderDeleteACL(string $sFolderName, string $sIdentifier) : void
 	{
+//		if ($this->IsSupported('ACL')) {
 		$this->SendRequestGetResponse('DELETEACL', array(
 			$this->EscapeString($sFolderName),
 			$this->EscapeString($sIdentifier)
@@ -36,6 +38,7 @@ trait ACL
 
 	public function FolderGetACL(string $sFolderName) : array
 	{
+//		if ($this->IsSupported('ACL')) {
 		$oResponses = $this->SendRequestGetResponse('GETACL', array($this->EscapeString($sFolderName)));
 		$aResult = array();
 		foreach ($oResponses as $oResponse) {
@@ -53,6 +56,7 @@ trait ACL
 
 	public function FolderListRights(string $sFolderName, string $sIdentifier) : ?array
 	{
+//		if ($this->IsSupported('ACL')) {
 		$oResponses = $this->SendRequestGetResponse('LISTRIGHTS', array(
 			$this->EscapeString($sFolderName),
 			$this->EscapeString($sIdentifier)
@@ -73,6 +77,7 @@ trait ACL
 
 	public function FolderMyRights(string $sFolderName) : ?array
 	{
+//		if ($this->IsSupported('ACL')) {
 		$oResponses = $this->SendRequestGetResponse('MYRIGHTS', array($this->EscapeString($sFolderName)));
 		foreach ($oResponses as $oResponse) {
 			if (MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType

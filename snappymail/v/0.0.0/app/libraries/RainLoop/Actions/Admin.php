@@ -696,10 +696,10 @@ trait Admin
 	public function DoAdminPHPExtensions() : array
 	{
 		$aResult = [];
-		foreach (['curl','gd','gmagick','imagick','intl','ldap','pdo_mysql','pdo_pgsql','pdo_sqlite','xxtea','zip'] as $name) {
+		foreach (['APCu', 'cURL','GD','Gmagick','Imagick','intl','LDAP','pdo_mysql','pdo_pgsql','pdo_sqlite','XXTEA','Zip'] as $name) {
 			$aResult[] = [
 				'name' => $name,
-				'loaded' => extension_loaded($name)
+				'loaded' => \extension_loaded(\strtolower($name))
 			];
 		}
 		return $this->DefaultResponse(__FUNCTION__, $aResult);

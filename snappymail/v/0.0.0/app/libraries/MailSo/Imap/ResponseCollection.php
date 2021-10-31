@@ -53,12 +53,13 @@ class ResponseCollection extends \MailSo\Base\Collection
 	{
 		foreach ($this as $oResponse) {
 			$aList = null;
+			// ResponseList[2][0] => CAPABILITY
 			if (isset($oResponse->ResponseList[1]) && \is_string($oResponse->ResponseList[1]) &&
 				'CAPABILITY' === \strtoupper($oResponse->ResponseList[1]))
 			{
 				$aList = \array_slice($oResponse->ResponseList, 2);
 			}
-			else if ($oResponse->OptionalResponse && \is_array($oResponse->OptionalResponse) &&
+			else if (\is_array($oResponse->OptionalResponse) &&
 				1 < \count($oResponse->OptionalResponse) && \is_string($oResponse->OptionalResponse[0]) &&
 				'CAPABILITY' === \strtoupper($oResponse->OptionalResponse[0]))
 			{

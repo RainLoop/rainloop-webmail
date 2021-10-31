@@ -786,19 +786,12 @@ class Actions
 
 				$this->oLogger->Write('[DATE:' . (new \DateTime('now', new \DateTimeZone($sTimeZone)))->format('Y-m-d ') .
 					$sTimeZone .
-					'][RL:' . APP_VERSION . '][PHP:' . PHP_VERSION . '][IP:' .
+					'][SM:' . APP_VERSION . '][IP:' .
 					$oHttp->GetClientIp($this->Config()->Get('labs', 'http_client_ip_check_proxy', false)) . '][PID:' .
 					(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown') . '][' .
 					$oHttp->GetServer('SERVER_SOFTWARE', '~') . '][' .
-					(\MailSo\Base\Utils::FunctionExistsAndEnabled('php_sapi_name') ? \php_sapi_name() : '~') . ']'
+					(\MailSo\Base\Utils::FunctionExistsAndEnabled('php_sapi_name') ? \php_sapi_name() : '~') . '][Streams:' . \implode(',', \stream_get_transports()) . ']'
 				);
-
-				$this->oLogger->Write(
-					'[APCU:' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('apcu_fetch') ? 'on' : 'off') .
-					'][MB:' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding') ? 'on' : 'off') .
-					'][PDO:' . (\class_exists('PDO') ? (\implode(',', \Pdo::getAvailableDrivers()) ?: '~') : 'off') .
-					'][Streams:' . \implode(',', \stream_get_transports()) .
-					']');
 
 				$this->oLogger->Write(
 					'[' . $oHttp->GetMethod() . '] ' . $oHttp->GetScheme() . '://' . $oHttp->GetHost(false, false) . $oHttp->GetServer('REQUEST_URI', ''),
