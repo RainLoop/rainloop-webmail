@@ -1,7 +1,7 @@
 import 'External/User/ko';
 
-import { isArray, arrayLength, pInt, pString, forEachObjectValue } from 'Common/Utils';
-import { isPosNumeric, delegateRunOnDestroy, mailToHelper } from 'Common/UtilsUser';
+import { isArray, arrayLength, pString, forEachObjectValue } from 'Common/Utils';
+import { delegateRunOnDestroy, mailToHelper } from 'Common/UtilsUser';
 
 import {
 	Capa,
@@ -54,7 +54,6 @@ import { IdentityUserStore } from 'Stores/User/Identity';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { PgpUserStore } from 'Stores/User/Pgp';
 import { MessageUserStore } from 'Stores/User/Message';
-import { QuotaUserStore } from 'Stores/User/Quota';
 import { ThemeStore } from 'Stores/Theme';
 
 import * as Local from 'Storage/Client';
@@ -89,7 +88,6 @@ class AppUser extends AbstractApp {
 
 		this.moveCache = {};
 
-		this.quotaDebounce = this.quota.debounce(30000);
 		this.moveOrDeleteResponseHelper = this.moveOrDeleteResponseHelper.bind(this);
 
 		this.messagesMoveTrigger = this.messagesMoveTrigger.debounce(500);
@@ -468,19 +466,6 @@ class AppUser extends AbstractApp {
 		});
 	}
 
-	quota() {
-		Remote.quota((iError, data) => {
-			if (
-				!iError &&
-				1 < arrayLength(data.Result) &&
-				isPosNumeric(data.Result[0]) &&
-				isPosNumeric(data.Result[1])
-			) {
-				QuotaUserStore.populateData(pInt(data.Result[1]), pInt(data.Result[0]));
-			}
-		});
-	}
-
 	/**
 	 * @param {string} folder
 	 * @param {Array=} list = []
@@ -844,7 +829,7 @@ class AppUser extends AbstractApp {
 						}, refreshFolders);
 
 						// Every 15 minutes
-						setInterval(()=>this.quota() | this.foldersReload(), 900000);
+						setInterval(()=>this.foldersReload(), 900000);
 
 						ContactUserStore.init();
 
@@ -855,7 +840,6 @@ class AppUser extends AbstractApp {
 							if (getFolderInboxName() !== cF) {
 								this.folderInformation(cF);
 							}
-							this.quota();
 							FolderUserStore.listStatusSupported() || this.folderInformationMultiply(true);
 						}, 1000);
 

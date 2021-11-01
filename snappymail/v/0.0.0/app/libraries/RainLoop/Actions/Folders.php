@@ -12,11 +12,27 @@ trait Folders
 
 	private function getFolderCollection(bool $HideUnsubscribed) : ?\MailSo\Mail\FolderCollection
 	{
-		return $this->MailClient()->Folders('', '*',
+		$oFolderCollection = $this->MailClient()->Folders('', '*',
 			$HideUnsubscribed,
 			(int) $this->Config()->Get('labs', 'imap_folder_list_limit', 200),
 			(bool) $this->Config()->Get('labs', 'imap_use_list_status', true)
 		);
+
+		if ($oFolderCollection) {
+			$oAccount = $this->getAccountFromToken();
+			if ($this->GetCapa(false, Capa::QUOTA, $oAccount)) {
+				try {
+					$aQuota = $this->MailClient()->Quota();
+//					$aQuota = $this->MailClient()->QuotaRoot();
+					$oFolderCollection->quotaUsage = $aQuota[0] * 1024;
+					$oFolderCollection->quotaLimit = $aQuota[1] * 1024;
+				} catch (\Throwable $oException) {
+					// ignore
+				}
+			}
+		}
+
+		return $oFolderCollection;
 	}
 
 	public function DoFolders() : array

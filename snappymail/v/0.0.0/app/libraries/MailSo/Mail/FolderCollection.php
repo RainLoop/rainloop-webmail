@@ -57,6 +57,9 @@ class FolderCollection extends \MailSo\Base\Collection
 	 */
 	public $SystemFolders = array();
 
+	public $quotaUsage = 0;
+	public $quotaLimit = 0;
+
 	public function append($oFolder, bool $bToTop = false) : void
 	{
 		assert($oFolder instanceof Folder);
@@ -149,6 +152,8 @@ class FolderCollection extends \MailSo\Base\Collection
 			'IsThreadsSupported' => $this->IsThreadsSupported,
 			'IsSortSupported' => $this->IsSortSupported,
 			'IsListStatusSupported' => $this->IsListStatusSupported,
+			'quotaUsage' => $this->quotaUsage,
+			'quotaLimit' => $this->quotaLimit,
 			'Optimized' => $this->Optimized,
 			'CountRec' => $this->CountRec(),
 			'SystemFolders' => empty($this->SystemFolders) ? null : $this->SystemFolders

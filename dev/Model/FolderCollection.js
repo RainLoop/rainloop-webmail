@@ -149,6 +149,8 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		FolderUserStore.sortSupported(!!this.IsSortSupported);
 		FolderUserStore.metadataSupported(!!this.IsMetadataSupported);
 		FolderUserStore.listStatusSupported(!!this.IsListStatusSupported);
+		FolderUserStore.quotaUsage(this.quotaUsage);
+		FolderUserStore.quotaLimit(this.quotaLimit);
 
 		FolderUserStore.sentFolder(normalizeFolder(SettingsGet('SentFolder')));
 		FolderUserStore.draftFolder(normalizeFolder(SettingsGet('DraftFolder')));

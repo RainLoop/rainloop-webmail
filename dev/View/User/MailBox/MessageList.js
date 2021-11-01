@@ -31,7 +31,6 @@ import {
 } from 'Common/Cache';
 
 import { AppUserStore } from 'Stores/User/App';
-import { QuotaUserStore } from 'Stores/User/Quota';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { MessageUserStore } from 'Stores/User/Message';
@@ -84,7 +83,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		initOnStartOrLangChange(() => this.emptySubjectValue = i18n('MESSAGE_LIST/EMPTY_SUBJECT_TEXT'));
 
-		this.userUsageProc = QuotaUserStore.percentage;
+		this.userUsageProc = FolderUserStore.quotaPercentage;
 
 		this.addObservables({
 			moveDropdownTrigger: false,
@@ -908,9 +907,9 @@ export class MailMessageList extends AbstractViewRight {
 
 	quotaTooltip() {
 		return i18n('MESSAGE_LIST/QUOTA_SIZE', {
-			SIZE: FileInfo.friendlySize(QuotaUserStore.usage()),
-			PROC: QuotaUserStore.percentage(),
-			LIMIT: FileInfo.friendlySize(QuotaUserStore.quota())
+			SIZE: FileInfo.friendlySize(FolderUserStore.quotaUsage()),
+			PROC: FolderUserStore.quotaPercentage(),
+			LIMIT: FileInfo.friendlySize(FolderUserStore.quotaLimit())
 		}).replace(/<[^>]+>/g, '');
 	}
 }

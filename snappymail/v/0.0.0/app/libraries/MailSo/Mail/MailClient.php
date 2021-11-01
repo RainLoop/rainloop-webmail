@@ -1771,6 +1771,11 @@ class MailClient
 		return $oMessageCollection;
 	}
 
+	public function Quota(string $sRootName = '') : ?array
+	{
+		return $this->oImapClient->Quota($sRootName);
+	}
+
 	public function QuotaRoot(string $sFolderName = 'INBOX') : ?array
 	{
 		return $this->oImapClient->QuotaRoot($sFolderName);

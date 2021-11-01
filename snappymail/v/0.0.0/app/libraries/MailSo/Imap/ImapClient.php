@@ -743,7 +743,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
-	 * /
+	 */
 	public function Quota(string $sRootName = '') : ?array
 	{
 		if ($this->IsSupported('QUOTA'))
@@ -753,7 +753,6 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		return null;
 	}
-*/
 
 	/**
 	 * https://datatracker.ietf.org/doc/html/rfc2087#section-4.3

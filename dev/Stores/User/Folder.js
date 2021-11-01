@@ -27,6 +27,9 @@ export const FolderUserStore = new class {
 			listStatusSupported: false,
 //			sortMode: '',
 
+			quotaLimit: 0,
+			quotaUsage: 0,
+
 			sentFolder: '',
 			draftFolder: '',
 			spamFolder: '',
@@ -102,6 +105,11 @@ export const FolderUserStore = new class {
 			spamFolder: fSetSystemFolderType(FolderType.Spam),
 			trashFolder: fSetSystemFolderType(FolderType.Trash),
 			archiveFolder: fSetSystemFolderType(FolderType.Archive)
+		});
+
+		this.quotaPercentage = ko.computed(() => {
+			const quota = this.quotaLimit(), usage = this.quotaUsage();
+			return 0 < quota ? Math.ceil((usage / quota) * 100) : 0;
 		});
 	}
 
