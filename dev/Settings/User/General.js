@@ -4,7 +4,7 @@ import { SaveSettingsStep } from 'Common/Enums';
 import { EditorDefaultType, Layout } from 'Common/EnumsUser';
 import { Settings, SettingsGet } from 'Common/Globals';
 import { isArray, settingsSaveHelperSimpleFunction, addObservablesTo, addSubscribablesTo, addComputablesTo } from 'Common/Utils';
-import { i18n, trigger as translatorTrigger, reload as translatorReload, convertLangName } from 'Common/Translator';
+import { i18n, trigger as translatorTrigger, translatorReload, convertLangName } from 'Common/Translator';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 

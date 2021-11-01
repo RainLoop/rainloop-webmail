@@ -58,7 +58,7 @@ trait User
 			}
 		}
 
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->DefaultResponse(__FUNCTION__, $this->AppData(false));
 	}
 
 	/**

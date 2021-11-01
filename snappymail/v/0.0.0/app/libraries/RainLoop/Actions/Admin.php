@@ -198,7 +198,7 @@ trait Admin
 		$sToken = $this->getAdminToken();
 		$this->setAdminAuthToken($sToken);
 
-		return $this->DefaultResponse(__FUNCTION__, $sToken ? true : false);
+		return $this->DefaultResponse(__FUNCTION__, $sToken ? $this->AppData(true) : false);
 	}
 
 	public function DoAdminLogout() : array

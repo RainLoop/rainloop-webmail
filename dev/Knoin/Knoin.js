@@ -1,12 +1,14 @@
 import ko from 'ko';
 
-import { doc, $htmlCL } from 'Common/Globals';
-import { isFunction } from 'Common/Utils';
+import { doc, $htmlCL, elementById } from 'Common/Globals';
+import { isFunction, forEachObjectValue } from 'Common/Utils';
 
-let currentScreen = null,
+let
+	SCREENS = {},
+	currentScreen = null,
 	defaultScreenName = '';
 
-const SCREENS = {},
+const
 	autofocus = dom => {
 		const af = dom.querySelector('[autofocus]');
 		af && af.focus();
@@ -123,6 +125,15 @@ const SCREENS = {},
 		});
 	},
 
+	hideScreen = (screenToHide, destroy) => {
+		screenToHide.onHide && screenToHide.onHide();
+		forEachViewModel(screenToHide, (vm, dom) => {
+			dom.hidden = true;
+			vm.onHide && vm.onHide();
+			destroy && vm.viewModelDom.remove();
+		});
+	},
+
 	/**
 	 * @param {string} screenName
 	 * @param {string} subPart
@@ -167,12 +178,7 @@ const SCREENS = {},
 				setTimeout(() => {
 					// hide screen
 					if (currentScreen && !isSameScreen) {
-						currentScreen.onHide && currentScreen.onHide();
-
-						forEachViewModel(currentScreen, (vm, dom) => {
-							dom.hidden = true;
-							vm.onHide && vm.onHide();
-						});
+						hideScreen(currentScreen);
 					}
 					// --
 
@@ -275,6 +281,12 @@ export const
 	 * @returns {void}
 	 */
 	startScreens = screensClasses => {
+		hasher.clear();
+		forEachObjectValue(SCREENS, screen => hideScreen(screen, 1));
+		SCREENS = {};
+		currentScreen = null,
+		defaultScreenName = '';
+
 		screensClasses.forEach(CScreen => {
 			if (CScreen) {
 				const vmScreen = new CScreen(),
@@ -284,7 +296,7 @@ export const
 			}
 		});
 
-		Object.values(SCREENS).forEach(vmScreen => vmScreen.onStart());
+		forEachObjectValue(SCREENS, vmScreen => vmScreen.onStart());
 
 		const cross = new Crossroads();
 		cross.addRoute(/^([a-zA-Z0-9-]*)\/?(.*)$/, screenOnRoute);
@@ -294,6 +306,10 @@ export const
 
 		setTimeout(() => $htmlCL.remove('rl-started-trigger'), 100);
 		setTimeout(() => $htmlCL.add('rl-started-delay'), 200);
+
+		const c = elementById('rl-content'), l = elementById('rl-loading');
+		c && (c.hidden = false);
+		l && l.remove();
 	},
 
 	decorateKoCommands = (thisArg, commands) =>

@@ -3,7 +3,7 @@ import ko from 'ko';
 import { Notification } from 'Common/Enums';
 import { ClientSideKeyName } from 'Common/EnumsUser';
 import { Settings, SettingsGet } from 'Common/Globals';
-import { getNotification, reload as translatorReload, convertLangName } from 'Common/Translator';
+import { getNotification, translatorReload, convertLangName } from 'Common/Translator';
 
 import { LanguageStore } from 'Stores/Language';
 
@@ -116,7 +116,8 @@ class LoginUserView extends AbstractViewCenter {
 							Notification.UnknownNotification));
 						this.submitErrorAddidional((oData && oData.ErrorMessageAdditional) || '');
 					} else {
-						rl.route.reload();
+						rl.setData(oData.Result);
+//						rl.route.reload();
 					}
 				},
 				data

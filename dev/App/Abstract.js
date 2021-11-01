@@ -1,9 +1,6 @@
 import ko from 'ko';
 
-import {
-	elementById,
-	Settings
-} from 'Common/Globals';
+import { Settings, SettingsGet } from 'Common/Globals';
 
 import { logoutLink } from 'Common/Links';
 import { i18nToNodes, initOnStartOrLangChange } from 'Common/Translator';
@@ -37,6 +34,12 @@ export class AbstractApp {
 		}
 	}
 
+	refresh() {
+//		rl.adminArea() || !translatorReload(false, );
+		rl.adminArea() || LanguageStore.language(SettingsGet('Language'));
+		this.start();
+	}
+
 	bootstart() {
 		const register = (key, ClassObject, templateID) => ko.components.register(key, {
 				template: { element: templateID || (key + 'Component') },
@@ -68,14 +71,7 @@ export class AbstractApp {
 
 		LanguageStore.populate();
 		ThemeStore.populate();
-	}
 
-	/**
-	 * @returns {void}
-	 */
-	hideLoading() {
-		elementById('rl-content').hidden = false;
-		elementById('rl-loading').remove();
+		this.start();
 	}
-
 }

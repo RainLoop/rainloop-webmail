@@ -51,12 +51,12 @@ class LoginAdminView extends AbstractViewCenter {
 			this.submitRequest(true);
 
 			Remote.adminLogin(
-				iError => {
+				(iError, oData) => {
 					if (iError) {
 						this.submitRequest(false);
 						this.submitError(getNotification(iError));
 					} else {
-						rl.route.reload();
+						rl.setData(oData.Result);
 					}
 				},
 				name,

@@ -1,4 +1,4 @@
-import { isArray, isFunction, addObservablesTo, addComputablesTo } from 'Common/Utils';
+import { isArray, isFunction, addObservablesTo, addComputablesTo, forEachObjectValue } from 'Common/Utils';
 
 function dispose(disposable) {
 	if (disposable && isFunction(disposable.dispose)) {
@@ -52,7 +52,7 @@ export class AbstractModel {
 		this.subscribables.forEach(dispose);
 		/** clear object entries */
 //		Object.entries(this).forEach(([key, value]) => {
-		Object.values(this).forEach(value => {
+		forEachObjectValue(this, value => {
 			/** clear CollectionModel */
 			let arr = ko.isObservableArray(value) ? value() : value;
 			arr && arr.onDestroy && value.onDestroy();

@@ -16,8 +16,7 @@ class AdminApp extends AbstractApp {
 		this.weakPassword = ko.observable(false);
 	}
 
-	bootstart() {
-		super.bootstart();
+	start() {
 		if (!Settings.app('allowAdminPanel')) {
 			rl.route.root();
 			setTimeout(() => location.href = '/', 1);
@@ -27,7 +26,6 @@ class AdminApp extends AbstractApp {
 		} else {
 			startScreens([LoginAdminScreen]);
 		}
-		this.hideLoading();
 	}
 }
 

@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { getNotification } from 'Common/Translator';
-import { addObservablesTo } from 'Common/Utils';
+import { addObservablesTo, forEachObjectValue } from 'Common/Utils';
 import { delegateRunOnDestroy } from 'Common/UtilsUser';
 
 import { SieveUserStore } from 'Stores/User/Sieve';
@@ -50,7 +50,7 @@ export class FiltersUserSettings /*extends AbstractViewSettings*/ {
 						data.Result.Scripts.map(aItem => SieveScriptModel.reviveFromJson(aItem)).filter(v => v)
 					);
 */
-					Object.values(data.Result.Scripts).forEach(value => {
+					forEachObjectValue(data.Result.Scripts, value => {
 						value = SieveScriptModel.reviveFromJson(value);
 						value && this.scripts.push(value)
 					});

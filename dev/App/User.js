@@ -1,6 +1,6 @@
 import 'External/User/ko';
 
-import { isArray, arrayLength, pInt, pString } from 'Common/Utils';
+import { isArray, arrayLength, pInt, pString, forEachObjectValue } from 'Common/Utils';
 import { isPosNumeric, delegateRunOnDestroy, mailToHelper } from 'Common/UtilsUser';
 
 import {
@@ -187,7 +187,7 @@ class AppUser extends AbstractApp {
 		const sTrashFolder = FolderUserStore.trashFolder(),
 			sSpamFolder = FolderUserStore.spamFolder();
 
-		Object.values(this.moveCache).forEach(item => {
+		forEachObjectValue(this.moveCache, item => {
 			const isSpam = sSpamFolder === item.To,
 				isTrash = sTrashFolder === item.To,
 				isHam = !isSpam && sSpamFolder === item.From && getFolderInboxName() === item.To;
@@ -810,7 +810,9 @@ class AppUser extends AbstractApp {
 				return event.returnValue = "Are you sure you want to exit?";
 			}
 		}, {capture: true});
+	}
 
+	start() {
 		if (SettingsGet('Auth')) {
 			rl.setWindowTitle(i18n('GLOBAL/LOADING'));
 
@@ -830,7 +832,6 @@ class AppUser extends AbstractApp {
 							MailBoxUserScreen,
 							SettingsUserScreen
 						]);
-						this.hideLoading();
 
 						setInterval(() => {
 							const cF = FolderUserStore.currentFolderFullNameRaw(),
@@ -916,7 +917,6 @@ class AppUser extends AbstractApp {
 
 		} else {
 			startScreens([LoginUserScreen]);
-			this.hideLoading();
 		}
 	}
 

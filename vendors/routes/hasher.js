@@ -11,8 +11,6 @@
     // Private
     //--------------------------------------------------------------------------------------
 
-    var _hash, _bindings = [];
-
     const
     _hashValRegexp = /#(.*)$/,
     _hashRegexp = /^#/,
@@ -44,11 +42,12 @@
             // we should store raw value
             _registerChange(path);
             if (path === _hash) {
+                path = '#' + encodeURI(path)
                 // we check if path is still === _hash to avoid error in
                 // case of multiple consecutive redirects [issue #39]
                 replace
-                    ? location.replace('#' + encodeURI(path))
-                    : (location.hash = '#' + encodeURI(path));
+                    ? location.replace(path)
+                    : (location.hash = path);
             }
         }
     },
@@ -58,6 +57,10 @@
     //--------------------------------------------------------------------------------------
 
     hasher = /** @lends hasher */ {
+        clear : () => {
+            _bindings = [];
+            hasher.active = true;
+        },
 
         /**
          * Signal dispatched when hash value changes.
@@ -74,16 +77,7 @@
          *   <li>hasher won't dispatch CHANGE events by manually typing a new value or pressing the back/forward buttons before calling this method.</li>
          * </ul>
          */
-        init : () => {
-            hasher.init = ()=>0;
-            _hash = _getWindowHash();
-
-            //thought about branching/overloading hasher.init() to avoid checking multiple times but
-            //don't think worth doing it since it probably won't be called multiple times.
-            addEventListener('hashchange', _checkHistory);
-
-            hasher.dispatch(_trimHash(_hash));
-        },
+        init : () => hasher.dispatch(_trimHash(_hash)),
 
         /**
          * Set Hash value, generating a new history record.
@@ -100,6 +94,11 @@
          */
         replaceHash : (...path) => _setHash(path, true)
     };
+
+    var _hash = _getWindowHash(),
+        _bindings = [];
+
+    addEventListener('hashchange', _checkHistory);
 
     global.hasher = hasher;
 })(this);

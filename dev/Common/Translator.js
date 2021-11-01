@@ -133,7 +133,7 @@ export const
 	 * @param {boolean} admin
 	 * @param {string} language
 	 */
-	reload = (admin, language) =>
+	translatorReload = (admin, language) =>
 		new Promise((resolve, reject) => {
 			const script = createElement('script');
 			script.onload = () => {

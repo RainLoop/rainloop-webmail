@@ -68,6 +68,11 @@ win.rl = {
 				showError(e.message);
 				throw e;
 			});
+	},
+
+	setData: appData => {
+		RL_APP_DATA = appData;
+		rl.app.refresh();
 	}
 };
 

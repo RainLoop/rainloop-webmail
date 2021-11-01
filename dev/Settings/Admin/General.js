@@ -13,7 +13,7 @@ import {
 
 import { Capa, SaveSettingsStep } from 'Common/Enums';
 import { Settings, SettingsGet } from 'Common/Globals';
-import { reload as translatorReload, convertLangName } from 'Common/Translator';
+import { translatorReload, convertLangName } from 'Common/Translator';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 

@@ -10,6 +10,8 @@ export const
 	isFunction = v => typeof v === 'function',
 	pString = value => null != value ? '' + value : '',
 
+	forEachObjectValue = (obj, fn) => Object.values(obj).forEach(fn),
+
 	pInt = (value, defaultValue = 0) => {
 		value = parseInt(value, 10);
 		return isNaN(value) || !isFinite(value) ? defaultValue : value;
