@@ -363,24 +363,8 @@ trait Folders
 			$aInboxInformation = $this->MailClient()->FolderInformation(
 				$sFolder, $iPrevUidNext, $aFlagsUids
 			);
-			foreach ($aInboxInformation['MessageFlags'] as $iUid => $aFlags)
-			{
-				$aLowerFlags = \array_map('strtolower', $aFlags);
-				$aInboxInformation['Flags'][$iUid] = array(
-					'Uid' => $iUid,
-					'IsUnseen' => \in_array('\\unseen', $aLowerFlags) || !\in_array('\\seen', $aLowerFlags),
-					'IsSeen' => \in_array('\\seen', $aLowerFlags),
-					'IsFlagged' => \in_array('\\flagged', $aLowerFlags),
-					'IsAnswered' => \in_array('\\answered', $aLowerFlags),
-					'IsDeleted' => \in_array('\\deleted', $aLowerFlags),
-					'IsForwarded' => \in_array(\strtolower('$Forwarded'), $aLowerFlags) || ($sForwardedFlag && \in_array(\strtolower($sForwardedFlag), $aLowerFlags)),
-					'IsReadReceipt' => \in_array(\strtolower('$MDNSent'), $aLowerFlags) || ($sReadReceiptFlag && \in_array(\strtolower($sReadReceiptFlag), $aLowerFlags)),
-					'IsJunk' => !\in_array(\strtolower('$NonJunk'), $aLowerFlags) && \in_array(\strtolower('$Junk'), $aLowerFlags),
-					'IsPhishing' => \in_array(\strtolower('$Phishing'), $aLowerFlags)
-				);
-			}
-			$aInboxInformation['Flags'] = \array_values($aInboxInformation['Flags']);
-			unset($aInboxInformation['MessageFlags']);
+			$aInboxInformation['Flags'] = $aInboxInformation['MessagesFlags'];
+			unset($aInboxInformation['MessagesFlags']);
 		}
 		catch (\Throwable $oException)
 		{
