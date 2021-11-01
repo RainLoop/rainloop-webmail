@@ -79,6 +79,45 @@ export class AbstractFetchRemote
 	}
 
 	/**
+	 * Allows quicker visual responses to the user.
+	 * Can be used to stream lines of json encoded data, but does not work on all servers.
+	 * Apache needs 'flushpackets' like in <Proxy "fcgi://...." flushpackets=on></Proxy>
+	 */
+	streamPerLine(fCallback, sGetAdd) {
+		rl.fetch(getURL(sGetAdd))
+		.then(response => response.body)
+		.then(body => {
+			// Firefox TextDecoderStream is not defined
+		//	const reader = body.pipeThrough(new TextDecoderStream()).getReader();
+			const reader = body.getReader(),
+				re = /\r\n|\n|\r/gm,
+				utf8decoder = new TextDecoder();
+			let buffer = '';
+			function processText({ done, value }) {
+				buffer += value ? utf8decoder.decode(value, {stream: true}) : '';
+				for (;;) {
+					let result = re.exec(buffer);
+					if (!result) {
+						if (done) {
+							break;
+						}
+						reader.read().then(processText);
+						return;
+					}
+					fCallback(buffer.substring(0, result.index));
+					buffer = buffer.substring(result.index + 1);
+					re.lastIndex = 0;
+				}
+				if (buffer.length) {
+					// last line didn't end in a newline char
+					fCallback(buffer);
+				}
+			}
+			reader.read().then(processText);
+		})
+	}
+
+	/**
 	 * @param {?Function} fCallback
 	 * @param {string} sAction
 	 * @param {Object=} oParameters

@@ -55,7 +55,7 @@ export default App => {
 		}
 	};
 
-	rl.fetchJSON = (resource, init, postData) => {
+	rl.fetch = (resource, init, postData) => {
 		init = Object.assign({
 			mode: 'same-origin',
 			cache: 'no-cache',
@@ -64,7 +64,6 @@ export default App => {
 			credentials: 'same-origin',
 			headers: {}
 		}, init);
-		init.headers.Accept = 'application/json';
 		if (postData) {
 			init.method = 'POST';
 			init.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
@@ -86,7 +85,13 @@ export default App => {
 			init.body = new URLSearchParams(postData);
 		}
 
-		return fetch(resource, init).then(response => {
+		return fetch(resource, init);
+	};
+
+	rl.fetchJSON = (resource, init, postData) => {
+		init = Object.assign({ headers: {} }, init);
+		init.headers.Accept = 'application/json';
+		return rl.fetch(resource, init, postData).then(response => {
 			if (!response.ok) {
 				return Promise.reject('Network response error: ' + response.status);
 			}
