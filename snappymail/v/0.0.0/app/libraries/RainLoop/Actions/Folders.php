@@ -379,7 +379,8 @@ trait Folders
 					'IsPhishing' => \in_array(\strtolower('$Phishing'), $aLowerFlags)
 				);
 			}
-			$aInboxInformation['Flags'] = \array_values($aInboxInformation['MessageFlags']);
+			$aInboxInformation['Flags'] = \array_values($aInboxInformation['Flags']);
+			unset($aInboxInformation['MessageFlags']);
 		}
 		catch (\Throwable $oException)
 		{
