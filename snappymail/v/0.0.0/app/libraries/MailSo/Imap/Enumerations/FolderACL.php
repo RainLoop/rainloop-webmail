@@ -19,6 +19,12 @@ namespace MailSo\Imap\Enumerations;
  * @package Imap
  * @subpackage Enumerations
  */
+/**
+ * PHP 8.1
+enum FolderACL: string {
+	case ADMINISTER = 'a';
+}
+*/
 abstract class FolderACL
 {
 	const

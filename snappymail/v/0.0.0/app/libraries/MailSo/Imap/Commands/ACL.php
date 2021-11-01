@@ -11,6 +11,8 @@
 
 namespace MailSo\Imap\Commands;
 
+use \MailSo\Imap\Responses\ACL as ACLResponse;
+
 /**
  * @category MailSo
  * @package Imap
@@ -48,13 +50,13 @@ trait ACL
 				&& $sFolderName === $oResponse->ResponseList[2]
 			)
 			{
-				$aResult[$oResponse->ResponseList[3]] = static::aclRightsToArray(\array_slice($oResponse->ResponseList, 4));
+				$aResult[$oResponse->ResponseList[3]] = static::aclRightsToClass(\array_slice($oResponse->ResponseList, 4));
 			}
 		}
 		return $aResult;
 	}
 
-	public function FolderListRights(string $sFolderName, string $sIdentifier) : ?array
+	public function FolderListRights(string $sFolderName, string $sIdentifier) : ?ACLResponse
 	{
 //		if ($this->IsSupported('ACL')) {
 		$oResponses = $this->SendRequestGetResponse('LISTRIGHTS', array(
@@ -69,13 +71,13 @@ trait ACL
 				&& $sIdentifier === $oResponse->ResponseList[3]
 			)
 			{
-				return static::aclRightsToArray(\array_slice($oResponse->ResponseList, 4));
+				return static::aclRightsToClass(\array_slice($oResponse->ResponseList, 4));
 			}
 		}
 		return null;
 	}
 
-	public function FolderMyRights(string $sFolderName) : ?array
+	public function FolderMyRights(string $sFolderName) : ?ACLResponse
 	{
 //		if ($this->IsSupported('ACL')) {
 		$oResponses = $this->SendRequestGetResponse('MYRIGHTS', array($this->EscapeString($sFolderName)));
@@ -86,19 +88,19 @@ trait ACL
 				&& $sFolderName === $oResponse->ResponseList[2]
 			)
 			{
-				return static::aclRightsToArray(\array_slice($oResponse->ResponseList, 3));
+				return static::aclRightsToClass(\array_slice($oResponse->ResponseList, 3));
 			}
 		}
 		return null;
 	}
 
-	private static function aclRightsToArray(array $rules) : array
+	private static function aclRightsToClass(array $rules) : ACLResponse
 	{
 		$result = array();
 		foreach ($rules as $rule) {
 			$result = \array_merge($result, \str_split($rule));
 		}
-		return \array_unique($result);
+		return new ACLResponse(\array_unique($result));
 	}
 
 }
