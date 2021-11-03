@@ -85,52 +85,33 @@ class AdvancedSearchPopupView extends AbstractViewPopup {
 
 	buildSearchString() {
 		const
-			result = new FormData();
+			data = new FormData(),
+			append = (key, value) => value.length && data.append(key, value);
 
-		let value = this.from().trim();
-		if (value) {
-			result.set('from', value);
-		}
-
-		value = this.to().trim();
-		if (value) {
-			result.set('to', value);
-		}
-
-		value = this.subject().trim();
-		if (value) {
-			result.set('subject', value);
-		}
-
-		if (this.hasAttachment()) {
-			result.set('has', 'attachment');
-		}
-
-		if (this.unseen()) {
-			result.set('is[]', 'unseen');
-		}
-
-		if (this.starred()) {
-			result.set('is[]', 'flagged');
-		}
-
+		append('from', this.from().trim());
+		append('to', this.to().trim());
+		append('subject', this.subject().trim());
+		append('text', this.text().trim());
+		append('in', this.selectedTreeValue());
 		if (-1 < this.selectedDateValue()) {
 			let d = new Date();
 			d.setDate(d.getDate() - this.selectedDateValue());
-			result.set('date', d.format('Y.m.d') + '/');
+			append('date', d.format('Y.m.d') + '/');
 		}
 
-		value = this.selectedTreeValue();
-		if (value) {
-			result.set('in', value);
+		let result = new URLSearchParams(data).toString();
+
+		if (this.hasAttachment()) {
+			result += '&attachment';
+		}
+		if (this.unseen()) {
+			result += '&unseen';
+		}
+		if (this.starred()) {
+			result += '&flagged';
 		}
 
-		value = this.text().trim();
-		if (value) {
-			result.set('text', value);
-		}
-
-		return new URLSearchParams(result).toString();
+		return result.replace(/^&+/, '');
 	}
 
 	clearPopup() {

@@ -18,6 +18,9 @@ namespace MailSo\Imap;
  */
 class SearchCriterias
 {
+	const
+		RegEx = 'in|e?mail|from|to|subject|has|is|date|text|body|size|larger|bigger|smaller|maxsize|minsize';
+
 	/**
 		https://datatracker.ietf.org/doc/html/rfc3501#section-6.4.4
 
@@ -135,9 +138,11 @@ class SearchCriterias
 			$iTimeFilter = \gmmktime(1, 1, 1, \gmdate('n', $iD), 1, \gmdate('Y', $iD));
 		}
 
-		if (\strlen(\trim($sSearch))) {
-			$aLines = static::parseQueryString($sSearch);
-//			$aLines = static::parseSearchString($sSearch);
+		$sSearch = \trim($sSearch);
+		if (\strlen($sSearch)) {
+			$aLines = \preg_match('/^('.static::RegEx.'):/i', $sSearch)
+				? static::parseSearchString($sSearch)
+				: static::parseQueryString($sSearch);
 
 			if (!$aLines) {
 				$sValue = static::escapeSearchString($oImapClient, $sSearch);
@@ -173,25 +178,14 @@ class SearchCriterias
 					$aCriteriasResult[] = $sValue;
 
 					unset($aLines['EMAIL']);
-				}
-
-				if (isset($aLines['TO'])) {
-					$sValue = static::escapeSearchString($oImapClient, $aLines['TO']);
-
-					$aCriteriasResult[] = 'OR';
-					$aCriteriasResult[] = 'TO';
-					$aCriteriasResult[] = $sValue;
-					$aCriteriasResult[] = 'CC';
-					$aCriteriasResult[] = $sValue;
-
+					unset($aLines['FROM']);
 					unset($aLines['TO']);
 				}
 
 				foreach ($aLines as $sName => $sRawValue) {
-					if ('' === \trim($sRawValue)) {
+					if (\is_string($sRawValue) && '' === \trim($sRawValue)) {
 						continue;
 					}
-
 					$sValue = static::escapeSearchString($oImapClient, $sRawValue);
 					switch ($sName) {
 						case 'FROM':
@@ -200,41 +194,34 @@ class SearchCriterias
 							$aCriteriasResult[] = $sValue;
 							break;
 
+						case 'TO':
+							$aCriteriasResult[] = 'OR';
+							$aCriteriasResult[] = 'TO';
+							$aCriteriasResult[] = $sValue;
+							$aCriteriasResult[] = 'CC';
+							$aCriteriasResult[] = $sValue;
+
 						case 'BODY':
 //							$sMainText = \trim(\MailSo\Base\Utils::StripSpaces($sMainText), '"');
 							$aCriteriasResult[] = 'BODY';
-							$aCriteriasResult[] = static::escapeSearchString($oImapClient, $sRawValue);
+							$aCriteriasResult[] = $sValue;
 							break;
 
-						case 'HAS':
-							$aValue = \explode(',', \strtolower($sRawValue));
-							$aValue = \array_map('trim', $aValue);
-							$aCompareArray = array('file', 'files', 'attachment', 'attachments');
-							if (\count($aCompareArray) > \count(\array_diff($aCompareArray, $aValue))) {
-								// Simple, is not detailed search (Sometimes doesn't work)
-								$aCriteriasResult[] = 'OR OR OR';
-								$aCriteriasResult[] = 'HEADER Content-Type application/';
-								$aCriteriasResult[] = 'HEADER Content-Type multipart/m';
-								$aCriteriasResult[] = 'HEADER Content-Type multipart/signed';
-								$aCriteriasResult[] = 'HEADER Content-Type multipart/report';
-							}
+						case 'ATTACHMENT':
+							// Simple, is not detailed search (Sometimes doesn't work)
+							$aCriteriasResult[] = 'OR OR OR';
+							$aCriteriasResult[] = 'HEADER Content-Type application/';
+							$aCriteriasResult[] = 'HEADER Content-Type multipart/m';
+							$aCriteriasResult[] = 'HEADER Content-Type multipart/signed';
+							$aCriteriasResult[] = 'HEADER Content-Type multipart/report';
+							break;
 
-						case 'IS':
-							$aValue = \explode(',', \strtolower($sRawValue));
-							if (\in_array('flagged', $aValue)) {
-								$aCriteriasResult[] = 'FLAGGED';
-								$bUseCache = false;
-							} else if (\in_array('unflagged', $aValue)) {
-								$aCriteriasResult[] = 'UNFLAGGED';
-								$bUseCache = false;
-							}
-							if (\in_array('seen', $aValue)) {
-								$aCriteriasResult[] = 'SEEN';
-								$bUseCache = false;
-							} else if (\in_array('unseen', $aValue)) {
-								$aCriteriasResult[] = 'UNSEEN';
-								$bUseCache = false;
-							}
+						case 'FLAGGED':
+						case 'UNFLAGGED':
+						case 'SEEN':
+						case 'UNSEEN':
+							$aCriteriasResult[] = $sName;
+							$bUseCache = false;
 							break;
 
 						case 'LARGER':
@@ -342,32 +329,38 @@ class SearchCriterias
 			if (\is_array($mValue)) {
 				$mValue = \implode(',', $mValue);
 			}
-			if (\strlen($mValue)) {
-				$sName = \strtoupper($sName);
-				if ('MAIL' === $sName) {
-					$sName = 'EMAIL';
-				} else if ('TEXT' === $sName) {
-					$sName = 'BODY';
-				} else if ('SIZE' === $sName || 'BIGGER' === $sName || 'MINSIZE' === $sName) {
-					$sName = 'LARGER';
-				} else if ('MAXSIZE' === $sName) {
-					$sName = 'SMALLER';
-				}
-				switch ($sName) {
-					case 'BODY':
-					case 'EMAIL':
-					case 'FROM':
-					case 'TO':
-					case 'SUBJECT':
-					case 'IS':
-					case 'IN':
-					case 'HAS':
-					case 'SMALLER':
-					case 'LARGER':
-					case 'DATE':
+			$sName = \strtoupper($sName);
+			if ('MAIL' === $sName) {
+				$sName = 'EMAIL';
+			} else if ('TEXT' === $sName) {
+				$sName = 'BODY';
+			} else if ('SIZE' === $sName || 'BIGGER' === $sName || 'MINSIZE' === $sName) {
+				$sName = 'LARGER';
+			} else if ('MAXSIZE' === $sName) {
+				$sName = 'SMALLER';
+			}
+			switch ($sName) {
+				case 'BODY':
+				case 'EMAIL':
+				case 'FROM':
+				case 'TO':
+				case 'SUBJECT':
+				case 'IN':
+				case 'SMALLER':
+				case 'LARGER':
+				case 'DATE':
+					if (\strlen($mValue)) {
 						$aResult[$sName] = $mValue;
-						break;
-				}
+					}
+					break;
+
+				case 'ATTACHMENT':
+				case 'FLAGGED':
+				case 'UNFLAGGED':
+				case 'SEEN':
+				case 'UNSEEN':
+					$aResult[$sName] = true;
+					break;
 			}
 		}
 		return $aResult;
@@ -382,10 +375,8 @@ class SearchCriterias
 
 		$aCache = array();
 
-		$sReg = 'in|e?mail|from|to|subject|has|is|date|text|body|size|larger|bigger|smaller|maxsize|minsize';
-
 		$sSearch = \MailSo\Base\Utils::StripSpaces($sSearch);
-		$sSearch = \trim(\preg_replace('/('.$sReg.'): /i', '\\1:', $sSearch));
+		$sSearch = \trim(\preg_replace('/('.static::RegEx.'): /i', '\\1:', $sSearch));
 
 		$mMatch = array();
 		if (\preg_match_all('/".*?(?<!\\\)"/', $sSearch, $mMatch)) {
@@ -412,7 +403,7 @@ class SearchCriterias
 			}
 		}
 
-		if (\preg_match_all('/('.$sReg.'):([^\s]*)/i', $sSearch, $mMatch)) {
+		if (\preg_match_all('/('.static::RegEx.'):([^\s]*)/i', $sSearch, $mMatch)) {
 			if (\is_array($mMatch[0])) {
 				foreach ($mMatch[0] as $sToken) {
 					$sSearch = \str_replace($sToken, '', $sSearch);
@@ -433,7 +424,16 @@ class SearchCriterias
 					} else if ('MAXSIZE' === $sName) {
 						$sName = 'SMALLER';
 					}
-					$aResult[$sName] = $mMatch[2][$iIndex];
+
+					if ('HAS' === $sName && \preg_match('/files?|attachments?/', $mMatch[2][$iIndex])) {
+						$aResult['ATTACHMENT'] = true;
+					} else if ('IS' === $sName) {
+						foreach (\explode(',', \strtoupper($mMatch[2][$iIndex])) as $sName) {
+							$aResult[\trim($sName)] = true;
+						}
+					} else {
+						$aResult[$sName] = $mMatch[2][$iIndex];
+					}
 				}
 			}
 		}
