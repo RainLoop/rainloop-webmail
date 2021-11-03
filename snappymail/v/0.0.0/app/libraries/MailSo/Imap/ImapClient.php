@@ -778,32 +778,12 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function MessageSimpleSort(array $aSortTypes, string $sSearchCriterias = 'ALL', bool $bReturnUid = true) : array
 	{
-		if (!$aSortTypes)
-		{
-			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
-		}
-		if (!$this->IsSupported('SORT'))
-		{
-			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
-		}
-
-		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
-		$sSearchCriterias = !\strlen(\trim($sSearchCriterias)) || '*' === $sSearchCriterias
-			? 'ALL' : $sSearchCriterias;
-
-		$aRequest = array();
-		$aRequest[] = $aSortTypes;
-		$aRequest[] = \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? 'US-ASCII' : 'UTF-8';
-		$aRequest[] = $sSearchCriterias;
-
-		$sCmd = 'SORT';
-
-		return $this->SendRequestGetResponse($sCommandPrefix.$sCmd, $aRequest)
-			->getMessageSimpleSortResult($sCmd, $bReturnUid);
+		$oSort = new Requests\SORT($this);
+		$oSort->sCriterias = $sSearchCriterias;
+		$oSort->bUid = $bReturnUid;
+		$oSort->aSortTypes = $aSortTypes;
+		return $oSort->SendRequestGetResponse()
+			->getMessageSimpleSortResult($bReturnUid);
 	}
 
 	/**
@@ -832,10 +812,10 @@ class ImapClient extends \MailSo\Net\NetClient
 	{
 		$oSort = new Requests\SORT($this);
 		$oSort->sCriterias = $sSearchCriterias;
-		$oSort->aReturn = $aSearchReturn ?: ['ALL'];
 		$oSort->bUid = $bReturnUid;
-		$oSort->sLimit = $sLimit;
 		$oSort->aSortTypes = $aSortTypes;
+		$oSort->aReturn = $aSearchReturn ?: ['ALL'];
+		$oSort->sLimit = $sLimit;
 		return $oSort->SendRequestGetResponse()
 			->getSimpleESearchOrESortResult($this->getCurrentTag(), $bReturnUid);
 	}
@@ -883,7 +863,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 		}
 
-		return $oResult->getMessageSimpleSearchResult($sCmd, $bReturnUid);
+		return $oResult->getMessageSimpleSearchResult($bReturnUid);
 	}
 
 	/**
@@ -893,38 +873,12 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function MessageSimpleThread(string $sSearchCriterias = 'ALL', bool $bReturnUid = true, string $sCharset = \MailSo\Base\Enumerations\Charset::UTF_8) : array
 	{
-		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
-		$sSearchCriterias = !\strlen(\trim($sSearchCriterias)) || '*' === $sSearchCriterias
-			? 'ALL' : $sSearchCriterias;
-
-		$sThreadType = '';
-		switch (true)
-		{
-			case $this->IsSupported('THREAD=REFS'):
-				$sThreadType = 'REFS';
-				break;
-			case $this->IsSupported('THREAD=REFERENCES'):
-				$sThreadType = 'REFERENCES';
-				break;
-			case $this->IsSupported('THREAD=ORDEREDSUBJECT'):
-				$sThreadType = 'ORDEREDSUBJECT';
-				break;
-			default:
-				$this->writeLogException(
-					new Exceptions\RuntimeException('Thread is not supported'),
-					\MailSo\Log\Enumerations\Type::ERROR, true);
-				break;
-		}
-
-		$aRequest = array();
-		$aRequest[] = $sThreadType;
-		$aRequest[] = \strtoupper($sCharset);
-		$aRequest[] = $sSearchCriterias;
-
-		$sCmd = 'THREAD';
-
-		return $this->SendRequestGetResponse($sCommandPrefix.$sCmd, $aRequest)
-			->getMessageSimpleThreadResult($sCmd, $bReturnUid);
+		$oThread = new Requests\THREAD($this);
+		$oThread->sCriterias = $sSearchCriterias;
+		$oThread->sCharset = $sCharset;
+		$oThread->bUid = $bReturnUid;
+		return $oThread->SendRequestGetResponse()
+			->getMessageSimpleThreadResult($bReturnUid);
 	}
 
 	/**
@@ -1249,37 +1203,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * RFC 5464
-	 */
-
-	private function getMetadata(string $sFolderName, array $aEntries, array $aOptions = []) : array
-	{
-		$arguments = [];
-
-		if ($aOptions) {
-			$options = [];
-			$aOptions = \array_intersect_key(
-				\array_change_key_case($aOptions, CASE_UPPER),
-				['MAXSIZE' => 0, 'DEPTH' => 0]
-			);
-			if (isset($aOptions['MAXSIZE']) && 0 < \intval($aOptions['MAXSIZE'])) {
-				$options[] = 'MAXSIZE ' . \intval($aOptions['MAXSIZE']);
-			}
-			if (isset($aOptions['DEPTH']) && (1 == $aOptions['DEPTH'] || 'infinity' === $aOptions['DEPTH'])) {
-				$options[] = "DEPTH {$aOptions['DEPTH']}";
-			}
-			if ($options) {
-				$arguments[] = '(' . \implode(' ', $options) . ')';
-			}
-		}
-
-		$arguments[] = $this->EscapeString($sFolderName);
-
-		$arguments[] = '(' . \implode(' ', \array_map([$this, 'EscapeString'], $aEntries)) . ')';
-		return $this->SendRequestGetResponse('GETMETADATA', $arguments)->getFolderMetadataResult();
-	}
-
-	/**
 	 * Don't have to be logged in to call this command
 	 */
 	public function ServerID() : string
@@ -1297,38 +1220,6 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 		}
 		return 'UNKNOWN';
-	}
-
-	public function ServerGetMetadata(array $aEntries, array $aOptions = []) : array
-	{
-		return $this->IsSupported('METADATA-SERVER')
-			? $this->getMetadata('', $aEntries, $aOptions)
-			: [];
-	}
-
-	public function FolderGetMetadata(string $sFolderName, array $aEntries, array $aOptions = []) : array
-	{
-		return $this->IsSupported('METADATA')
-			? $this->getMetadata($sFolderName, $aEntries, $aOptions)
-			: [];
-	}
-
-	public function FolderSetMetadata(string $sFolderName, array $aEntries) : void
-	{
-		if ($this->IsSupported('METADATA')) {
-			if (!$aEntries) {
-				throw new \MailSo\Base\Exceptions\InvalidArgumentException("Wrong argument for SETMETADATA command");
-			}
-
-			$arguments = [$this->EscapeString($sFolderName)];
-
-			\array_walk($aEntries, function(&$v, $k){
-				$v = $this->EscapeString($k) . ' ' . $this->EscapeString($v);
-			});
-			$arguments[] = '(' . \implode(' ', $aEntries) . ')';
-
-			$this->SendRequestGetResponse('SETMETADATA', $arguments);
-		}
 	}
 
 }

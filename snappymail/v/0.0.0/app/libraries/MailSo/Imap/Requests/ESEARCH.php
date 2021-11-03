@@ -12,6 +12,9 @@
 
 namespace MailSo\Imap\Requests;
 
+use MailSo\Imap\Exceptions\RuntimeException;
+use MailSo\Log\Enumerations\Type;
+
 /**
  * @category MailSo
  * @package Imap
@@ -20,27 +23,51 @@ class ESEARCH extends Request
 {
 	public
 		$sCriterias = 'ALL',
-		$aReturn = [],
+		$aReturn = [
+		/**
+		   ALL
+			  Return all message numbers/UIDs which match the search criteria,
+			  in the requested sort order, using a sequence-set.
+
+		   COUNT
+			  As in [ESEARCH].
+
+		   MAX
+			  Return the message number/UID of the highest sorted message
+			  satisfying the search criteria.
+
+		   MIN
+			  Return the message number/UID of the lowest sorted message
+			  satisfying the search criteria.
+
+		   PARTIAL 1:500
+			  Return all message numbers/UIDs which match the search criteria,
+			  in the requested sort order, using a sequence-set.
+		 */
+		],
 		$bUid = true,
 		$sLimit = '',
 		$sCharset = '',
+		// https://datatracker.ietf.org/doc/html/rfc7377
 		$aMailboxes = [],
 		$aSubtrees = [],
 		$aSubtreesOne = [];
 
+	function __construct(\MailSo\Imap\ImapClient $oImapClient)
+	{
+		if (!$oImapClient->IsSupported('ESEARCH')) {
+			$oImapClient->writeLogException(
+				new RuntimeException('ESEARCH is not supported'),
+				Type::ERROR, true);
+		}
+		parent::__construct($oImapClient);
+	}
+
 	public function SendRequestGetResponse() : \MailSo\Imap\ResponseCollection
 	{
-		if (!$this->oImapClient->IsSupported('ESEARCH')) {
-			$this->oImapClient->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
-		}
-
 		$sCmd = 'SEARCH';
 		$aRequest = array();
 
-		// TODO: https://github.com/the-djmaze/snappymail/issues/154
-		// https://datatracker.ietf.org/doc/html/rfc7377
 		$aFolders = [];
 		if ($this->aMailboxes) {
 			$aFolders[] = 'mailboxes';
@@ -54,7 +81,12 @@ class ESEARCH extends Request
 			$aFolders[] = 'subtree-one';
 			$aFolders[] = $this->aSubtreesOne;
 		}
-		if ($aFolders && $this->oImapClient->IsSupported('MULTISEARCH')) {
+		if ($aFolders) {
+			if (!$this->oImapClient->IsSupported('MULTISEARCH')) {
+				$this->oImapClient->writeLogException(
+					new RuntimeException('MULTISEARCH is not supported'),
+					Type::ERROR, true);
+			}
 			$sCmd = 'ESEARCH';
 			$aReques[] = 'IN';
 			$aReques[] = $aFolders;
@@ -67,14 +99,22 @@ class ESEARCH extends Request
 
 		$aRequest[] = 'RETURN';
 		if ($this->aReturn) {
+			// RFC 5267 checks
+			if (!$this->oImapClient->IsSupported('CONTEXT=SEARCH')) {
+				foreach ($this->aReturn as $sReturn) {
+					if (\preg_match('/PARTIAL|UPDATE|CONTEXT/i', $sReturn)) {
+						$this->oImapClient->writeLogException(
+							new RuntimeException('CONTEXT=SEARCH is not supported'),
+							Type::ERROR, true);
+					}
+				}
+			}
 			$aRequest[] = $this->aReturn;
 		} else {
-			// ALL OR COUNT | MIN | MAX
 			$aRequest[] = array('ALL');
 		}
 
-		$aRequest[] = !\strlen($this->sCriterias) || '*' === $this->sCriterias
-			? 'ALL' : $this->sCriterias;
+		$aRequest[] = (\strlen($this->sCriterias) && '*' !== $this->sCriterias) ? $this->sCriterias : 'ALL';
 
 		if (\strlen($this->sLimit)) {
 			$aRequest[] = $this->sLimit;

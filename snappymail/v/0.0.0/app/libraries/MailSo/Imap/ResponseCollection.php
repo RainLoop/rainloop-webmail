@@ -219,13 +219,13 @@ class ResponseCollection extends \MailSo\Base\Collection
 		return $aReturn;
 	}
 
-	public function getMessageSimpleSearchResult(string $sStatus, bool $bReturnUid) : array
+	public function getMessageSimpleSearchResult(bool $bReturnUid) : array
 	{
 		$aReturn = array();
 		foreach ($this as $oResponse) {
-			$iOffset = ($bReturnUid && 'UID' === $oResponse->StatusOrIndex && !empty($oResponse->ResponseList[2]) && $sStatus === $oResponse->ResponseList[2]) ? 1 : 0;
+			$iOffset = ($bReturnUid && 'UID' === $oResponse->StatusOrIndex && !empty($oResponse->ResponseList[2]) && 'SEARCH' === $oResponse->ResponseList[2]) ? 1 : 0;
 			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
-				&& ($sStatus === $oResponse->StatusOrIndex || $iOffset)
+				&& ('SEARCH' === $oResponse->StatusOrIndex || $iOffset)
 				&& \is_array($oResponse->ResponseList)
 				&& 2 < \count($oResponse->ResponseList))
 			{
@@ -238,13 +238,13 @@ class ResponseCollection extends \MailSo\Base\Collection
 		return \array_reverse($aReturn);
 	}
 
-	public function getMessageSimpleSortResult(string $sStatus, bool $bReturnUid) : array
+	public function getMessageSimpleSortResult(bool $bReturnUid) : array
 	{
 		$aReturn = array();
 		foreach ($this as $oResponse) {
-			$iOffset = ($bReturnUid && 'UID' === $oResponse->StatusOrIndex && !empty($oResponse->ResponseList[2]) && $sStatus === $oResponse->ResponseList[2]) ? 1 : 0;
+			$iOffset = ($bReturnUid && 'UID' === $oResponse->StatusOrIndex && !empty($oResponse->ResponseList[2]) && 'SORT' === $oResponse->ResponseList[2]) ? 1 : 0;
 			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
-				&& ($sStatus === $oResponse->StatusOrIndex || $iOffset)
+				&& ('SORT' === $oResponse->StatusOrIndex || $iOffset)
 				&& \is_array($oResponse->ResponseList)
 				&& 2 < \count($oResponse->ResponseList))
 			{
@@ -257,13 +257,13 @@ class ResponseCollection extends \MailSo\Base\Collection
 		return $aReturn;
 	}
 
-	public function getMessageSimpleThreadResult(string $sStatus, bool $bReturnUid) : array
+	public function getMessageSimpleThreadResult(bool $bReturnUid) : array
 	{
 		$aReturn = array();
 		foreach ($this as $oResponse) {
-			$iOffset = ($bReturnUid && 'UID' === $oResponse->StatusOrIndex && !empty($oResponse->ResponseList[2]) && $sStatus === $oResponse->ResponseList[2]) ? 1 : 0;
+			$iOffset = ($bReturnUid && 'UID' === $oResponse->StatusOrIndex && !empty($oResponse->ResponseList[2]) && 'THREAD' === $oResponse->ResponseList[2]) ? 1 : 0;
 			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
-				&& ($sStatus === $oResponse->StatusOrIndex || $iOffset)
+				&& ('THREAD' === $oResponse->StatusOrIndex || $iOffset)
 				&& \is_array($oResponse->ResponseList)
 				&& 2 < \count($oResponse->ResponseList))
 			{
