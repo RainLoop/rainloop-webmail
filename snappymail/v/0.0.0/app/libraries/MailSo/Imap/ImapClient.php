@@ -19,6 +19,7 @@ class ImapClient extends \MailSo\Net\NetClient
 {
 	use Traits\ResponseParser;
 //	use Commands\ACL;
+	use Commands\Metadata;
 
 	const
 		TAG_PREFIX = 'TAG';
@@ -730,7 +731,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			 *     $aParams[1][] = MODSEQ
 			 */
 
-			$oResult = $this->SendRequestGetResponse(($bIndexIsUid ? 'UID ' : '').'FETCH', $aParams);
+			$oResult = $this->SendRequestGetResponse($bIndexIsUid ? 'UID FETCH' : 'FETCH', $aParams);
 		} finally {
 			$this->aFetchCallbacks = array();
 		}
@@ -827,8 +828,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function MessageSimpleSearch(string $sSearchCriterias = 'ALL', bool $bReturnUid = true, string $sCharset = '') : array
 	{
-		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
-
 		$aRequest = array();
 		if (\strlen($sCharset))
 		{
@@ -838,9 +837,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		$aRequest[] = !\strlen($sSearchCriterias) || '*' === $sSearchCriterias ? 'ALL' : $sSearchCriterias;
 
-		$sCmd = 'SEARCH';
-
-		$sCont = $this->SendRequest($sCommandPrefix.$sCmd, $aRequest, true);
+		$sCont = $this->SendRequest($bReturnUid ? 'UID SEARCH' : 'SEARCH', $aRequest, true);
 		$oResult = $this->getResponse();
 		if ('' !== $sCont)
 		{
@@ -895,8 +892,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
-		$sCommandPrefix = ($bIndexIsUid) ? 'UID ' : '';
-		$this->SendRequestGetResponse($sCommandPrefix.'COPY',
+		$this->SendRequestGetResponse($bReturnUid ? 'UID COPY' : 'COPY',
 			array($sIndexRange, $this->EscapeString($sToFolder)));
 		return $this;
 	}
@@ -922,8 +918,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
-		$sCommandPrefix = ($bIndexIsUid) ? 'UID ' : '';
-		$this->SendRequestGetResponse($sCommandPrefix.'MOVE',
+		$this->SendRequestGetResponse($bReturnUid ? 'UID MOVE' : 'MOVE',
 			array($sIndexRange, $this->EscapeString($sToFolder)));
 		return $this;
 	}
@@ -969,8 +964,10 @@ class ImapClient extends \MailSo\Net\NetClient
 		 *     $sStoreAction[] = (UNCHANGEDSINCE $modsequence)
 		 */
 
-		$sCmd = ($bIndexIsUid) ? 'UID STORE' : 'STORE';
-		$this->SendRequestGetResponse($sCmd, array($sIndexRange, $sStoreAction, $aInputStoreItems));
+		$this->SendRequestGetResponse(
+			$bIndexIsUid ? 'UID STORE' : 'STORE',
+			array($sIndexRange, $sStoreAction, $aInputStoreItems)
+		);
 		return $this;
 	}
 
