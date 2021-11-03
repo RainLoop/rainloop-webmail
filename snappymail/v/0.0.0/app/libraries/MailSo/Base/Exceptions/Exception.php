@@ -20,8 +20,8 @@ class Exception extends \Exception
 {
 	public function __construct(string $sMessage = '', int $iCode = 0, \Throwable $oPrevious = null)
 	{
-		$sMessage = 0 === strlen($sMessage) ? str_replace('\\', '-', get_class($this)).' ('.
-			basename($this->getFile()).' ~ '.$this->getLine().')' : $sMessage;
+		$sMessage = \strlen($sMessage) ? $sMessage
+			: \str_replace('\\', '-', \get_class($this)).' ('.\basename($this->getFile()).' ~ '.$this->getLine().')';
 
 		parent::__construct($sMessage, $iCode, $oPrevious);
 	}
