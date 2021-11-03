@@ -20,6 +20,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	use Traits\ResponseParser;
 //	use Commands\ACL;
 	use Commands\Metadata;
+	use Commands\Quota;
 
 	const
 		TAG_PREFIX = 'TAG';
@@ -740,38 +741,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * https://datatracker.ietf.org/doc/html/rfc2087#section-4.2
-	 *
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function Quota(string $sRootName = '') : ?array
-	{
-		if ($this->IsSupported('QUOTA'))
-		{
-			return $this->SendRequestGetResponse("GETQUOTA {$this->EscapeString($sRootName)}")->getQuotaResult();
-		}
-
-		return null;
-	}
-
-	/**
-	 * https://datatracker.ietf.org/doc/html/rfc2087#section-4.3
-	 *
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function QuotaRoot(string $sFolderName = 'INBOX') : ?array
-	{
-		if ($this->IsSupported('QUOTA'))
-		{
-			return $this->SendRequestGetResponse("GETQUOTAROOT {$this->EscapeString($sFolderName)}")->getQuotaResult();
-		}
-
-		return null;
-	}
-
-	/**
 	 * See https://tools.ietf.org/html/rfc5256
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
@@ -1200,6 +1169,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
+	 * RFC 2971
 	 * Don't have to be logged in to call this command
 	 */
 	public function ServerID() : string
