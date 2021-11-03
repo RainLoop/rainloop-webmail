@@ -82,14 +82,10 @@ class AddOpenPgpKeyPopupView extends AbstractViewPopup {
 		return true;
 	}
 
-	clearPopup() {
+	onShow() {
 		this.key('');
 		this.keyError(false);
 		this.keyErrorMessage('');
-	}
-
-	onShow() {
-		this.clearPopup();
 	}
 }
 

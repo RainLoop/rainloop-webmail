@@ -61,10 +61,14 @@ class AccountPopupView extends AbstractViewPopup {
 		return true;
 	}
 
-	clearPopup() {
-		this.isNew(true);
-
-		this.email('');
+	onShow(account) {
+		if (account && account.canBeEdit()) {
+			this.isNew(false);
+			this.email(account.email);
+		} else {
+			this.isNew(true);
+			this.email('');
+		}
 		this.password('');
 
 		this.emailError(false);
@@ -73,14 +77,6 @@ class AccountPopupView extends AbstractViewPopup {
 		this.submitRequest(false);
 		this.submitError('');
 		this.submitErrorAdditional('');
-	}
-
-	onShow(account) {
-		this.clearPopup();
-		if (account && account.canBeEdit()) {
-			this.isNew(false);
-			this.email(account.email);
-		}
 	}
 }
 

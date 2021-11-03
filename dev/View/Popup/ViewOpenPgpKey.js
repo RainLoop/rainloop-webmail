@@ -12,10 +12,6 @@ class ViewOpenPgpKeyPopupView extends AbstractViewPopup {
 		});
 	}
 
-	clearPopup() {
-		this.key('');
-	}
-
 	selectKey() {
 		const el = this.keyDom();
 		if (el) {
@@ -28,11 +24,7 @@ class ViewOpenPgpKeyPopupView extends AbstractViewPopup {
 	}
 
 	onShow(openPgpKey) {
-		this.clearPopup();
-
-		if (openPgpKey) {
-			this.key(openPgpKey.armor);
-		}
+		this.key(openPgpKey ? openPgpKey.armor : '');
 	}
 
 	onBuild() {

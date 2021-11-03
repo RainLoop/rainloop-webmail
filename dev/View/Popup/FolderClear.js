@@ -65,16 +65,9 @@ class FolderClearPopupView extends AbstractViewPopup {
 		}
 	}
 
-	clearPopup() {
-		this.clearingProcess(false);
-		this.selectedFolder(null);
-	}
-
 	onShow(folder) {
-		this.clearPopup();
-		if (folder) {
-			this.selectedFolder(folder);
-		}
+		this.clearingProcess(false);
+		this.selectedFolder(folder || null);
 	}
 }
 

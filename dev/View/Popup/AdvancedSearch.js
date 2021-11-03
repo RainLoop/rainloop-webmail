@@ -114,7 +114,7 @@ class AdvancedSearchPopupView extends AbstractViewPopup {
 		return result.replace(/^&+/, '');
 	}
 
-	clearPopup() {
+	onShow(search) {
 		this.from('');
 		this.to('');
 		this.subject('');
@@ -124,10 +124,7 @@ class AdvancedSearchPopupView extends AbstractViewPopup {
 		this.hasAttachment(false);
 		this.starred(false);
 		this.unseen(false);
-	}
 
-	onShow(search) {
-		this.clearPopup();
 		this.parseSearchStringValue(search);
 	}
 }

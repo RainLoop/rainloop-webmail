@@ -60,13 +60,9 @@ class FolderCreatePopupView extends AbstractViewPopup {
 		return /^[^\\/]+$/g.test(sName);
 	}
 
-	clearPopup() {
+	onShow() {
 		this.folderName('');
 		this.selectedParentValue('');
-	}
-
-	onShow() {
-		this.clearPopup();
 	}
 }
 

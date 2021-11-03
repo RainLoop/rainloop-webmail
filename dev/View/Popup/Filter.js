@@ -147,15 +147,8 @@ class FilterPopupView extends AbstractViewPopup {
 		}
 	}
 
-	clearPopup() {
-		this.isNew(true);
-
-		this.fTrueCallback = null;
-		this.filter(null);
-	}
-
 	onShow(oFilter, fTrueCallback, bEdit) {
-		this.clearPopup();
+		this.isNew(!bEdit);
 
 		this.fTrueCallback = fTrueCallback;
 		this.filter(oFilter);
@@ -163,8 +156,6 @@ class FilterPopupView extends AbstractViewPopup {
 		if (oFilter) {
 			this.selectedFolderValue(oFilter.actionValue());
 		}
-
-		this.isNew(!bEdit);
 
 		if (!bEdit && oFilter) {
 			oFilter.nameFocused(true);
