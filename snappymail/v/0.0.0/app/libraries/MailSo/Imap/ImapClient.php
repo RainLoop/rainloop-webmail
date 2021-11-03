@@ -861,7 +861,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
-		$this->SendRequestGetResponse($bReturnUid ? 'UID COPY' : 'COPY',
+		$this->SendRequestGetResponse($bIndexIsUid ? 'UID COPY' : 'COPY',
 			array($sIndexRange, $this->EscapeString($sToFolder)));
 		return $this;
 	}
@@ -887,7 +887,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
-		$this->SendRequestGetResponse($bReturnUid ? 'UID MOVE' : 'MOVE',
+		$this->SendRequestGetResponse($bIndexIsUid ? 'UID MOVE' : 'MOVE',
 			array($sIndexRange, $this->EscapeString($sToFolder)));
 		return $this;
 	}

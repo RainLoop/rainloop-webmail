@@ -236,7 +236,6 @@ class AppUser extends AbstractApp {
 				setFolderHash(FolderUserStore.currentFolderFullNameRaw(), '');
 			}
 			this.reloadMessageList(!MessageUserStore.list.length);
-			this.quotaDebounce();
 		}
 	}
 
