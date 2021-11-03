@@ -19,7 +19,7 @@ class Exif
 	public static function getImageOrientation(string &$data, array $image_info = null) : int
 	{
 		$image_info = empty($image_info['mime']) ? \getimagesizefromstring($data) : $image_info;
-		if (!empty($image_info['mime']) && \is_callable('exif_read_data')) {
+		if (!empty($image_info['mime']) && \IMG_JPG == $image_info[2] && \is_callable('exif_read_data')) {
 			$exif = \exif_read_data('data://'.$image_info['mime'].';base64,' . \base64_encode($data));
 			if (false !== $exif) {
 				return \max(0, \intval($exif['IFD0.Orientation'] ?? 0));
