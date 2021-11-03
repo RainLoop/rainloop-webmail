@@ -44,15 +44,14 @@ export class MailFolderList extends AbstractViewLeft {
 
 			folderListVisible: () => {
 				let multiple = false,
-					inbox, subscribed, hasSub,
+					inbox, visible,
 					result = FolderUserStore.folderList().filter(folder => {
 						if (folder.isInbox()) {
 							inbox = folder;
 						}
-						subscribed = folder.subscribed();
-						hasSub = folder.hasSubscribedSubfolders();
-						multiple |= (!folder.isSystemFolder() || (hasSub && !folder.isInbox())) && (subscribed || hasSub)
-						return !(folder.hidden() | folder.kolabType());
+						visible = folder.visible();
+						multiple |= visible && !folder.isInbox();
+						return visible;
 					});
 				if (inbox && !multiple) {
 					inbox.collapsedPrivate(false);
@@ -109,7 +108,7 @@ export class MailFolderList extends AbstractViewLeft {
 
 						rl.route.setHash(
 							mailBox(folder.fullNameHash, 1,
-								(event.target.matches('.flag-icon') && !folder.isFlagged()) ? 'is:flagged' : ''
+								(event.target.matches('.flag-icon') && !folder.isFlagged()) ? 'flagged' : ''
 							)
 						);
 					}

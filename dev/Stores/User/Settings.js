@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { Layout, EditorDefaultType } from 'Common/EnumsUser';
 import { pInt, addObservablesTo } from 'Common/Utils';
-import { $htmlCL, SettingsGet } from 'Common/Globals';
+import { $htmlCL, Settings, SettingsGet } from 'Common/Globals';
 import { ThemeStore } from 'Stores/Theme';
 
 export const SettingsUserStore = new class {
@@ -31,7 +31,7 @@ export const SettingsUserStore = new class {
 			allowDraftAutosave: !!SettingsGet('AllowDraftAutosave'),
 			useThreads: !!SettingsGet('UseThreads'),
 			replySameFolder: !!SettingsGet('ReplySameFolder'),
-			hideUnsubscribed: !!SettingsGet('HideUnsubscribed'),
+			hideUnsubscribed: Settings.app('useImapSubscribe') && SettingsGet('HideUnsubscribed'),
 			autoLogout: pInt(SettingsGet('AutoLogout'))
 		});
 

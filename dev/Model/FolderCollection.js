@@ -225,7 +225,7 @@ export class FolderModel extends AbstractModel {
 
 			kolabType: null,
 
-			collapsedPrivate: true
+			collapsed: true
 		});
 
 		this.addSubscribables({
@@ -281,28 +281,44 @@ export class FolderModel extends AbstractModel {
 				isInbox: () => FolderType.Inbox === folder.type(),
 
 				isFlagged: () => FolderUserStore.currentFolder() === folder
-					&& MessageUserStore.listSearch().trim().includes('is:flagged'),
+					&& MessageUserStore.listSearch().includes('flagged'),
 
-				hasSubscribedSubfolders:
-					() => !!folder.subFolders().find(
+				hasVisibleSubfolders: () => !!folder.subFolders().find(folder => folder.visible()),
+
+				hasSubscriptions: () => folder.subscribed() | !!folder.subFolders().find(
 						oFolder => {
 							const subscribed = oFolder.hasSubscriptions();
 							return !oFolder.isSystemFolder() && subscribed;
 						}
 					),
 
-				hasSubscriptions: () => folder.subscribed() | folder.hasSubscribedSubfolders(),
-
 				canBeEdited: () => FolderType.User === folder.type() && folder.exists/* && folder.selectable()*/,
-
-				visible: () => folder.hasSubscriptions() | !SettingsUserStore.hideUnsubscribed(),
 
 				isSystemFolder: () => FolderType.User !== folder.type() | !!folder.kolabType(),
 
-				hidden: () => {
-					let hasSubFolders = folder.hasSubscribedSubfolders();
-					return (folder.isSystemFolder() | !folder.selectable()) && !hasSubFolders;
+				canBeSelected: () => folder.selectable() && !folder.isSystemFolder(),
+
+				canBeDeleted: () => folder.canBeSelected() && folder.exists,
+
+				canBeSubscribed: () => folder.selectable()
+					&& !(folder.isSystemFolder() | !SettingsUserStore.hideUnsubscribed()),
+
+				/**
+				 * Folder is visible when:
+				 * - hasVisibleSubfolders()
+				 * Or when all below conditions are true:
+				 * - selectable()
+				 * - subscribed() OR hideUnsubscribed = false
+				 * - FolderType.User
+				 * - not kolabType()
+				 */
+				visible: () => {
+					const selectable = folder.canBeSelected(),
+						visible = (folder.subscribed() | !SettingsUserStore.hideUnsubscribed()) && selectable;
+					return folder.hasVisibleSubfolders() | visible;
 				},
+
+				hidden: () => !folder.selectable() && (folder.isSystemFolder() | !folder.hasVisibleSubfolders()),
 
 				printableUnreadCount: () => {
 					const count = folder.messageCountAll(),
@@ -326,13 +342,6 @@ export class FolderModel extends AbstractModel {
 					return null;
 				},
 
-				canBeDeleted: () => !(folder.isSystemFolder() | !folder.selectable()),
-
-				canBeSubscribed: () => Settings.app('useImapSubscribe')
-					&& !(folder.isSystemFolder() | !SettingsUserStore.hideUnsubscribed() | !folder.selectable()),
-
-				canBeSelected:   () => !(folder.isSystemFolder() | !folder.selectable() | folder.kolabType()),
-
 				localName: () => {
 					let name = folder.name();
 					if (folder.isSystemFolder()) {
@@ -353,17 +362,12 @@ export class FolderModel extends AbstractModel {
 					return '';
 				},
 
-				collapsed: {
-					read: () => !folder.hidden() && folder.collapsedPrivate(),
-					write: value => folder.collapsedPrivate(value)
-				},
-
 				hasUnreadMessages: () => 0 < folder.messageCountUnread() && folder.printableUnreadCount(),
 
 				hasSubscribedUnreadMessagesSubfolders: () =>
-						!!folder.subFolders().find(
-							folder => folder.hasUnreadMessages() || folder.hasSubscribedUnreadMessagesSubfolders()
-						)
+					!!folder.subFolders().find(
+						folder => folder.hasUnreadMessages() | folder.hasSubscribedUnreadMessagesSubfolders()
+					)
 			});
 
 			folder.addSubscribables({
@@ -385,7 +389,7 @@ export class FolderModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	collapsedCss() {
-		return 'e-collapsed-sign ' + (this.hasSubscribedSubfolders()
+		return 'e-collapsed-sign ' + (this.hasVisibleSubfolders()
 			? (this.collapsed() ? 'icon-right-mini' : 'icon-down-mini')
 			: 'icon-none'
 		);
