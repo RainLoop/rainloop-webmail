@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "Meno di un mese fa",
 		"LABEL_ADV_DATE_3_MONTHS": "Meno di 3 mesi fa",
 		"LABEL_ADV_DATE_6_MONTHS": "Meno di 6 mesi fa",
-		"LABEL_ADV_DATE_YEAR": "Meno di un anno fa"
+		"LABEL_ADV_DATE_YEAR": "Meno di un anno fa",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Passa a schermo intero",

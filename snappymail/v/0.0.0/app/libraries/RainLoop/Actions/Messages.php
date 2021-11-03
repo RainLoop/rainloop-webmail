@@ -28,7 +28,6 @@ trait Messages
 
 		$sRawKey = $this->GetActionParam('RawKey', '');
 		$aValues = $this->getDecodedClientRawKeyValue($sRawKey, 10);
-
 		if ($aValues && 7 < \count($aValues))
 		{
 			$sFolder = (string) $aValues[2];
@@ -63,7 +62,7 @@ trait Messages
 			}
 		}
 
-		if (0 === strlen($sFolder))
+		if (!\strlen($sFolder))
 		{
 			throw new ClientException(Notifications::CantGetMessageList);
 		}
@@ -83,7 +82,6 @@ trait Messages
 				!!$this->Config()->Get('labs', 'use_imap_sort', true),
 				$bUseThreads,
 				$iThreadUid,
-				'',
 				$sSort
 			);
 		}
@@ -108,7 +106,7 @@ trait Messages
 		$iMessageUid = $this->GetActionParam('MessageUid', 0);
 
 		$sDraftFolder = $this->GetActionParam('SaveFolder', '');
-		if (0 === strlen($sDraftFolder))
+		if (!\strlen($sDraftFolder))
 		{
 			throw new ClientException(Notifications::UnknownError);
 		}
@@ -144,7 +142,7 @@ trait Messages
 
 				$mResult = true;
 
-				if (0 < strlen($sMessageFolder) && 0 < $iMessageUid)
+				if (\strlen($sMessageFolder) && 0 < $iMessageUid)
 				{
 					$this->MailClient()->MessageDelete($sMessageFolder, array($iMessageUid), true, true);
 				}
@@ -209,7 +207,7 @@ trait Messages
 									break;
 								case 'forward':
 									$sForwardedFlag = $this->Config()->Get('labs', 'imap_forwarded_flag', '');
-									if (0 < strlen($sForwardedFlag))
+									if (\strlen($sForwardedFlag))
 									{
 										$this->MailClient()->MessageSetFlag($sDraftInfoFolder, array($sDraftInfoUid), true,
 											$sForwardedFlag, true);
@@ -223,7 +221,7 @@ trait Messages
 						}
 					}
 
-					if (0 < \strlen($sSentFolder))
+					if (\strlen($sSentFolder))
 					{
 						try
 						{
@@ -277,7 +275,7 @@ trait Messages
 
 					$this->deleteMessageAttachmnets($oAccount);
 
-					if (0 < \strlen($sDraftFolder) && 0 < $iDraftUid)
+					if (\strlen($sDraftFolder) && 0 < $iDraftUid)
 					{
 						try
 						{
@@ -377,7 +375,7 @@ trait Messages
 
 						$this->Cacher($oAccount)->Set(\RainLoop\KeyPathHelper::ReadReceiptCache($oAccount->Email(), $sFolderFullName, $iUid), '1');
 
-						if (0 < \strlen($sFolderFullName) && 0 < $iUid)
+						if (\strlen($sFolderFullName) && 0 < $iUid)
 						{
 							try
 							{
@@ -1044,12 +1042,12 @@ trait Messages
 			$oMessage->SetDraftInfo($aDraftInfo[0], $aDraftInfo[1], $aDraftInfo[2]);
 		}
 
-		if (0 < \strlen($sInReplyTo))
+		if (\strlen($sInReplyTo))
 		{
 			$oMessage->SetInReplyTo($sInReplyTo);
 		}
 
-		if (0 < \strlen($sReferences))
+		if (\strlen($sReferences))
 		{
 			$oMessage->SetReferences($sReferences);
 		}
@@ -1064,7 +1062,7 @@ trait Messages
 		$this->Plugins()->RunHook($bTextIsHtml ? 'filter.message-html' : 'filter.message-plain',
 			array($oAccount, $oMessage, &$sTextToAdd));
 
-		if ($bTextIsHtml && 0 < \strlen($sTextToAdd))
+		if ($bTextIsHtml && \strlen($sTextToAdd))
 		{
 			$sTextConverted = \MailSo\Base\HtmlUtils::ConvertHtmlToPlain($sTextToAdd);
 			$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sTextConverted));

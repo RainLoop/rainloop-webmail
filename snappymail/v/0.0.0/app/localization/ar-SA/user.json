@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "منذ شهر",
 		"LABEL_ADV_DATE_3_MONTHS": "منذ 3 أشهر",
 		"LABEL_ADV_DATE_6_MONTHS": "منذ 6 أشهر",
-		"LABEL_ADV_DATE_YEAR": "منذ سنة"
+		"LABEL_ADV_DATE_YEAR": "منذ سنة",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "إعداد افتراضي لوضع ملء الشاشة",

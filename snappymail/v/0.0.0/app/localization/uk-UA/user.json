@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "За місяць",
 		"LABEL_ADV_DATE_3_MONTHS": "За 3 місяці",
 		"LABEL_ADV_DATE_6_MONTHS": "За півроку",
-		"LABEL_ADV_DATE_YEAR": "За рік"
+		"LABEL_ADV_DATE_YEAR": "За рік",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Toggle fullscreen",

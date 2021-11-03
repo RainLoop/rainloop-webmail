@@ -452,7 +452,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			if ($this->IsSupported('ESEARCH')) {
 				$aResult = $oFolderInfo->getStatusItems();
 				// SELECT or EXAMINE command then UNSEEN is the message sequence number of the first unseen message
-				$aResult['UNSEEN'] = $this->simpleESearchOrESortHelper(false, 'UNSEEN', ['COUNT'])['COUNT'];
+				$aResult['UNSEEN'] = $this->MessageSimpleESearch('UNSEEN', ['COUNT'])['COUNT'];
 				return $aResult;
 			}
 */
@@ -778,10 +778,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function MessageSimpleSort(array $aSortTypes, string $sSearchCriterias = 'ALL', bool $bReturnUid = true) : array
 	{
-		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
-		$sSearchCriterias = !\strlen(\trim($sSearchCriterias)) || '*' === $sSearchCriterias
-			? 'ALL' : $sSearchCriterias;
-
 		if (!$aSortTypes)
 		{
 			$this->writeLogException(
@@ -794,6 +790,10 @@ class ImapClient extends \MailSo\Net\NetClient
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
+
+		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
+		$sSearchCriterias = !\strlen(\trim($sSearchCriterias)) || '*' === $sSearchCriterias
+			? 'ALL' : $sSearchCriterias;
 
 		$aRequest = array();
 		$aRequest[] = $aSortTypes;
@@ -811,72 +811,15 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	private function simpleESearchOrESortHelper(bool $bSort = false, string $sSearchCriterias = 'ALL', array $aSearchOrSortReturn = null, bool $bReturnUid = true, string $sLimit = '', string $sCharset = '', array $aSortTypes = null) : array
+	public function MessageSimpleESearch(string $sSearchCriterias = 'ALL', array $aSearchReturn = null, bool $bReturnUid = true, string $sCharset = '', string $sLimit = '') : array
 	{
-		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
-		$sSearchCriterias = !\strlen($sSearchCriterias) || '*' === $sSearchCriterias
-			? 'ALL' : $sSearchCriterias;
-
-		$sCmd = $bSort ? 'SORT': 'SEARCH';
-		if ($bSort && (!$aSortTypes || !$this->IsSupported('SORT')))
-		{
-			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
-		}
-
-		if (!$this->IsSupported($bSort ? 'ESORT' : 'ESEARCH'))
-		{
-			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
-		}
-
-		if (!$aSearchOrSortReturn)
-		{
-			// ALL OR COUNT | MIN | MAX
-			$aSearchOrSortReturn = array('ALL');
-		}
-
-		$aRequest = array();
-
-		if ($bSort)
-		{
-			$aRequest[] = 'RETURN';
-			$aRequest[] = $aSearchOrSortReturn;
-
-			$aRequest[] = $aSortTypes;
-			$aRequest[] = \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? 'US-ASCII' : 'UTF-8';
-		}
-		else
-		{
-/*
-			TODO: https://github.com/the-djmaze/snappymail/issues/154
-			https://datatracker.ietf.org/doc/html/rfc6237
-			$sCmd = 'ESEARCH';
-			$aReques[] = 'IN';
-			$aReques[] = ['mailboxes', '"folder1"', 'subtree', '"folder2"'];
-			$aReques[] = ['mailboxes', '"folder1"', 'subtree-one', '"folder2"'];
-*/
-
-			if (\strlen($sCharset))
-			{
-				$aRequest[] = 'CHARSET';
-				$aRequest[] = \strtoupper($sCharset);
-			}
-
-			$aRequest[] = 'RETURN';
-			$aRequest[] = $aSearchOrSortReturn;
-		}
-
-		$aRequest[] = $sSearchCriterias;
-
-		if (\strlen($sLimit))
-		{
-			$aRequest[] = $sLimit;
-		}
-
-		return $this->SendRequestGetResponse($sCommandPrefix.$sCmd, $aRequest)
+		$oESearch = new Requests\ESEARCH($this);
+		$oESearch->sCriterias = $sSearchCriterias;
+		$oESearch->aReturn = $aSearchReturn;
+		$oESearch->bUid = $bReturnUid;
+		$oESearch->sLimit = $sLimit;
+		$oESearch->sCharset = $sCharset;
+		return $oESearch->SendRequestGetResponse()
 			->getSimpleESearchOrESortResult($this->getCurrentTag(), $bReturnUid);
 	}
 
@@ -885,19 +828,16 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageSimpleESearch(string $sSearchCriterias = 'ALL', array $aSearchReturn = null, bool $bReturnUid = true, string $sLimit = '', string $sCharset = '') : array
+	public function MessageSimpleESort(array $aSortTypes, string $sSearchCriterias = 'ALL', array $aSearchReturn = ['ALL'], bool $bReturnUid = true, string $sLimit = '') : array
 	{
-		return $this->simpleESearchOrESortHelper(false, $sSearchCriterias, $aSearchReturn, $bReturnUid, $sLimit, $sCharset);
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function MessageSimpleESort(array $aSortTypes, string $sSearchCriterias = 'ALL', array $aSearchReturn = null, bool $bReturnUid = true, string $sLimit = '') : array
-	{
-		return $this->simpleESearchOrESortHelper(true, $sSearchCriterias, $aSearchReturn, $bReturnUid, $sLimit, '', $aSortTypes);
+		$oSort = new Requests\SORT($this);
+		$oSort->sCriterias = $sSearchCriterias;
+		$oSort->aReturn = $aSearchReturn ?: ['ALL'];
+		$oSort->bUid = $bReturnUid;
+		$oSort->sLimit = $sLimit;
+		$oSort->aSortTypes = $aSortTypes;
+		return $oSort->SendRequestGetResponse()
+			->getSimpleESearchOrESortResult($this->getCurrentTag(), $bReturnUid);
 	}
 
 	/**

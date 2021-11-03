@@ -840,7 +840,7 @@ class AppUser extends AbstractApp {
 							if (getFolderInboxName() !== cF) {
 								this.folderInformation(cF);
 							}
-							FolderUserStore.listStatusSupported() || this.folderInformationMultiply(true);
+							FolderUserStore.hasCapability('LIST-STATUS') || this.folderInformationMultiply(true);
 						}, 1000);
 
 						setTimeout(() => Remote.appDelayStart(()=>0), 35000);

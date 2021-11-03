@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "За месяц",
 		"LABEL_ADV_DATE_3_MONTHS": "За 3 месяца",
 		"LABEL_ADV_DATE_6_MONTHS": "За полгода",
-		"LABEL_ADV_DATE_YEAR": "За год"
+		"LABEL_ADV_DATE_YEAR": "За год",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Полный экран",

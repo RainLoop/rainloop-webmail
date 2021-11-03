@@ -6,6 +6,7 @@ import { MessageUserStore } from 'Stores/User/Message';
 
 import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
+import { FolderUserStore } from 'Stores/User/Folder';
 
 class AdvancedSearchPopupView extends AbstractViewPopup {
 	constructor() {
@@ -17,11 +18,14 @@ class AdvancedSearchPopupView extends AbstractViewPopup {
 			subject: '',
 			text: '',
 			selectedDateValue: -1,
+			selectedTreeValue: '',
 
 			hasAttachment: false,
 			starred: false,
 			unseen: false
 		});
+
+		this.showMultisearch = ko.computed(() => FolderUserStore.hasCapability('MULTISEARCH'));
 
 		let prefix = 'SEARCH/LABEL_ADV_DATE_';
 		this.selectedDates = ko.computed(() => {
@@ -34,6 +38,16 @@ class AdvancedSearchPopupView extends AbstractViewPopup {
 				{ id: 90, name: i18n(prefix + '3_MONTHS') },
 				{ id: 180, name: i18n(prefix + '6_MONTHS') },
 				{ id: 365, name: i18n(prefix + 'YEAR') }
+			];
+		});
+
+		prefix = 'SEARCH/LABEL_ADV_SUBFOLDERS_';
+		this.selectedTree = ko.computed(() => {
+			translatorTrigger();
+			return [
+				{ id: '', name: i18n(prefix + 'NONE') },
+				{ id: 'subtree-one', name: i18n(prefix + 'SUBTREE_ONE') },
+				{ id: 'subtree', name: i18n(prefix + 'SUBTREE') }
 			];
 		});
 
@@ -69,65 +83,54 @@ class AdvancedSearchPopupView extends AbstractViewPopup {
 		});
 	}
 
-	buildSearchStringValue(value) {
-		if (value.includes(' ')) {
-			value = '"' + value + '"';
-		}
-		return value;
-	}
-
 	buildSearchString() {
-		const result = [],
-			from_ = this.from().trim(),
-			to = this.to().trim(),
-			subject = this.subject().trim(),
-			text = this.text().trim(),
-			isPart = [],
-			hasPart = [];
+		const
+			result = new FormData();
 
-		if (from_) {
-			result.push('from:' + this.buildSearchStringValue(from_));
+		let value = this.from().trim();
+		if (value) {
+			result.set('from', value);
 		}
 
-		if (to) {
-			result.push('to:' + this.buildSearchStringValue(to));
+		value = this.to().trim();
+		if (value) {
+			result.set('to', value);
 		}
 
-		if (subject) {
-			result.push('subject:' + this.buildSearchStringValue(subject));
+		value = this.subject().trim();
+		if (value) {
+			result.set('subject', value);
 		}
 
 		if (this.hasAttachment()) {
-			hasPart.push('attachment');
+			result.set('has', 'attachment');
 		}
 
 		if (this.unseen()) {
-			isPart.push('unseen');
+			result.set('is[]', 'unseen');
 		}
 
 		if (this.starred()) {
-			isPart.push('flagged');
-		}
-
-		if (hasPart.length) {
-			result.push('has:' + hasPart.join(','));
-		}
-
-		if (isPart.length) {
-			result.push('is:' + isPart.join(','));
+			result.set('is[]', 'flagged');
 		}
 
 		if (-1 < this.selectedDateValue()) {
 			let d = new Date();
 			d.setDate(d.getDate() - this.selectedDateValue());
-			result.push('date:' + d.format('Y.m.d') + '/');
+			result.set('date', d.format('Y.m.d') + '/');
 		}
 
-		if (text) {
-			result.push('text:' + this.buildSearchStringValue(text));
+		value = this.selectedTreeValue();
+		if (value) {
+			result.set('in', value);
 		}
 
-		return result.join(' ').trim();
+		value = this.text().trim();
+		if (value) {
+			result.set('text', value);
+		}
+
+		return new URLSearchParams(result).toString();
 	}
 
 	clearPopup() {

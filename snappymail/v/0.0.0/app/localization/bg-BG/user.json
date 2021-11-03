@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "До 1 месец",
 		"LABEL_ADV_DATE_3_MONTHS": "До 3 месеца",
 		"LABEL_ADV_DATE_6_MONTHS": "До 6 месеца",
-		"LABEL_ADV_DATE_YEAR": "До 1 година"
+		"LABEL_ADV_DATE_YEAR": "До 1 година",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "На цял екран",

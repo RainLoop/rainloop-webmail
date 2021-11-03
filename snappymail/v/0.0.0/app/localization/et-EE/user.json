@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "Kuni 1 kuu vanune",
 		"LABEL_ADV_DATE_3_MONTHS": "Kuni 3 kuu vanune ",
 		"LABEL_ADV_DATE_6_MONTHS": "Kuni 6 kuu vanune",
-		"LABEL_ADV_DATE_YEAR": "Kuni 1 aasta vanune"
+		"LABEL_ADV_DATE_YEAR": "Kuni 1 aasta vanune",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Täisekraan sisse\/välja",

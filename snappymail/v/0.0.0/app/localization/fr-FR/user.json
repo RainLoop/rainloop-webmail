@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "Jusqu'à 1 mois",
 		"LABEL_ADV_DATE_3_MONTHS": "Jusqu'à 3 mois",
 		"LABEL_ADV_DATE_6_MONTHS": "Jusqu'à 6 mois",
-		"LABEL_ADV_DATE_YEAR": "Jusqu'à 1 an"
+		"LABEL_ADV_DATE_YEAR": "Jusqu'à 1 an",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Basculer en plein écran",

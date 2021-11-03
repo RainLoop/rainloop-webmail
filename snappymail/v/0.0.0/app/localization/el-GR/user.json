@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "Έως 1 μήνα πριν",
 		"LABEL_ADV_DATE_3_MONTHS": "Έως 3 μήνες πριν",
 		"LABEL_ADV_DATE_6_MONTHS": "Έως 6 μήνες πριν",
-		"LABEL_ADV_DATE_YEAR": "Έως 1 χρόνο πριν"
+		"LABEL_ADV_DATE_YEAR": "Έως 1 χρόνο πριν",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Ενναλαγή πλήρους οθόνης",

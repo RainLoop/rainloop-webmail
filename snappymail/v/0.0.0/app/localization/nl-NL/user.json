@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "Tot 1 maand oud",
 		"LABEL_ADV_DATE_3_MONTHS": "Tot 3 maanden oud",
 		"LABEL_ADV_DATE_6_MONTHS": "Tot 6 maanden oud",
-		"LABEL_ADV_DATE_YEAR": "Tot 1 jaar oud"
+		"LABEL_ADV_DATE_YEAR": "Tot 1 jaar oud",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Schakel volledig scherm in\/uit",

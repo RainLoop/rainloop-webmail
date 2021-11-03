@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "Allt að mánaðar gömlu",
 		"LABEL_ADV_DATE_3_MONTHS": "Allt að 3 mánaða gömlu",
 		"LABEL_ADV_DATE_6_MONTHS": "Allt að 6 mánaða gömlu",
-		"LABEL_ADV_DATE_YEAR": "Allt að 1 árs gömlu"
+		"LABEL_ADV_DATE_YEAR": "Allt að 1 árs gömlu",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Víxla heilskjá af\/á",

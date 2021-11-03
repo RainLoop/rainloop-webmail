@@ -30,22 +30,7 @@ class FolderCollection extends \MailSo\Base\Collection
 	/**
 	 * @var bool
 	 */
-	public $IsMetadataSupported = false;
-
-	/**
-	 * @var bool
-	 */
 	public $IsThreadsSupported = false;
-
-	/**
-	 * @var bool
-	 */
-	public $IsSortSupported = false;
-
-	/**
-	 * @var bool
-	 */
-	public $IsListStatusSupported = false;
 
 	/**
 	 * @var bool
@@ -59,6 +44,7 @@ class FolderCollection extends \MailSo\Base\Collection
 
 	public $quotaUsage = 0;
 	public $quotaLimit = 0;
+	public $capabilities = array();
 
 	public function append($oFolder, bool $bToTop = false) : void
 	{
@@ -148,15 +134,13 @@ class FolderCollection extends \MailSo\Base\Collection
 		return \array_merge(parent::jsonSerialize(), array(
 			'Namespace' => $this->GetNamespace(),
 			'FoldersHash' => $this->FoldersHash ?: '',
-			'IsMetadataSupported' => $this->IsMetadataSupported,
 			'IsThreadsSupported' => $this->IsThreadsSupported,
-			'IsSortSupported' => $this->IsSortSupported,
-			'IsListStatusSupported' => $this->IsListStatusSupported,
 			'quotaUsage' => $this->quotaUsage,
 			'quotaLimit' => $this->quotaLimit,
 			'Optimized' => $this->Optimized,
 			'CountRec' => $this->CountRec(),
-			'SystemFolders' => empty($this->SystemFolders) ? null : $this->SystemFolders
+			'SystemFolders' => empty($this->SystemFolders) ? null : $this->SystemFolders,
+			'Capabilities' => \array_values($this->capabilities)
 		));
 	}
 }

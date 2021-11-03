@@ -9,7 +9,8 @@ import { Settings, SettingsGet } from 'Common/Globals';
 
 export const FolderUserStore = new class {
 	constructor() {
-		addObservablesTo(this, {
+		const self = this;
+		addObservablesTo(self, {
 			/**
 			 * To use "checkable" option in /#/settings/folders
 			 * When true, getNextFolderNames only lists system and "checkable" folders
@@ -19,12 +20,6 @@ export const FolderUserStore = new class {
 			 */
 			displaySpecSetting: false,
 
-			/**
-			 * If the IMAP server supports SORT, METADATA
-			 */
-			sortSupported: false,
-			metadataSupported: false,
-			listStatusSupported: false,
 //			sortMode: '',
 
 			quotaLimit: 0,
@@ -47,40 +42,42 @@ export const FolderUserStore = new class {
 			foldersInboxUnreadCount: 0
 		});
 
-		this.sortMode = ko.observable('').extend({ limitedList: Object.values(FolderSortMode) });
+		self.sortMode = ko.observable('').extend({ limitedList: Object.values(FolderSortMode) });
 
-		this.namespace = '';
+		self.namespace = '';
 
-		this.folderList = ko.observableArray();
+		self.folderList = ko.observableArray();
 
-		this.currentFolder = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'selected'] });
+		self.capabilities = ko.observableArray();
 
-		this.sieveAllowFileintoInbox = !!SettingsGet('SieveAllowFileintoInbox');
+		self.currentFolder = ko.observable(null).extend({ toggleSubscribeProperty: [self, 'selected'] });
 
-		addComputablesTo(this, {
+		self.sieveAllowFileintoInbox = !!SettingsGet('SieveAllowFileintoInbox');
 
-			draftFolderNotEnabled: () => !this.draftFolder() || UNUSED_OPTION_VALUE === this.draftFolder(),
+		addComputablesTo(self, {
 
-			currentFolderFullNameRaw: () => (this.currentFolder() ? this.currentFolder().fullNameRaw : ''),
+			draftFolderNotEnabled: () => !self.draftFolder() || UNUSED_OPTION_VALUE === self.draftFolder(),
 
-			currentFolderFullName: () => (this.currentFolder() ? this.currentFolder().fullName : ''),
-			currentFolderFullNameHash: () => (this.currentFolder() ? this.currentFolder().fullNameHash : ''),
+			currentFolderFullNameRaw: () => (self.currentFolder() ? self.currentFolder().fullNameRaw : ''),
+
+			currentFolderFullName: () => (self.currentFolder() ? self.currentFolder().fullName : ''),
+			currentFolderFullNameHash: () => (self.currentFolder() ? self.currentFolder().fullNameHash : ''),
 
 			foldersChanging: () =>
-				this.foldersLoading() | this.foldersCreating() | this.foldersDeleting() | this.foldersRenaming(),
+				self.foldersLoading() | self.foldersCreating() | self.foldersDeleting() | self.foldersRenaming(),
 
 			folderListSystemNames: () => {
 				const list = [getFolderInboxName()],
-				others = [this.sentFolder(), this.draftFolder(), this.spamFolder(), this.trashFolder(), this.archiveFolder()];
+				others = [self.sentFolder(), self.draftFolder(), self.spamFolder(), self.trashFolder(), self.archiveFolder()];
 
-				this.folderList().length &&
+				self.folderList().length &&
 					others.forEach(name => name && UNUSED_OPTION_VALUE !== name && list.push(name));
 
 				return list;
 			},
 
 			folderListSystem: () =>
-				this.folderListSystemNames().map(name => getFolderFromCacheList(name)).filter(v => v)
+				self.folderListSystemNames().map(name => getFolderFromCacheList(name)).filter(v => v)
 		});
 
 		const
@@ -93,13 +90,13 @@ export const FolderUserStore = new class {
 				folder && folder.type(type);
 			};
 
-		this.sentFolder.subscribe(fRemoveSystemFolderType(this.sentFolder), this, 'beforeChange');
-		this.draftFolder.subscribe(fRemoveSystemFolderType(this.draftFolder), this, 'beforeChange');
-		this.spamFolder.subscribe(fRemoveSystemFolderType(this.spamFolder), this, 'beforeChange');
-		this.trashFolder.subscribe(fRemoveSystemFolderType(this.trashFolder), this, 'beforeChange');
-		this.archiveFolder.subscribe(fRemoveSystemFolderType(this.archiveFolder), this, 'beforeChange');
+		self.sentFolder.subscribe(fRemoveSystemFolderType(self.sentFolder), self, 'beforeChange');
+		self.draftFolder.subscribe(fRemoveSystemFolderType(self.draftFolder), self, 'beforeChange');
+		self.spamFolder.subscribe(fRemoveSystemFolderType(self.spamFolder), self, 'beforeChange');
+		self.trashFolder.subscribe(fRemoveSystemFolderType(self.trashFolder), self, 'beforeChange');
+		self.archiveFolder.subscribe(fRemoveSystemFolderType(self.archiveFolder), self, 'beforeChange');
 
-		addSubscribablesTo(this, {
+		addSubscribablesTo(self, {
 			sentFolder: fSetSystemFolderType(FolderType.Sent),
 			draftFolder: fSetSystemFolderType(FolderType.Drafts),
 			spamFolder: fSetSystemFolderType(FolderType.Spam),
@@ -107,10 +104,17 @@ export const FolderUserStore = new class {
 			archiveFolder: fSetSystemFolderType(FolderType.Archive)
 		});
 
-		this.quotaPercentage = ko.computed(() => {
-			const quota = this.quotaLimit(), usage = this.quotaUsage();
+		self.quotaPercentage = ko.computed(() => {
+			const quota = self.quotaLimit(), usage = self.quotaUsage();
 			return 0 < quota ? Math.ceil((usage / quota) * 100) : 0;
 		});
+	}
+
+	/**
+	 * If the IMAP server supports SORT, METADATA
+	 */
+	hasCapability(name) {
+		return this.capabilities().includes(name);
 	}
 
 	/**

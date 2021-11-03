@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "Līdz 1 mēnesi vecs",
 		"LABEL_ADV_DATE_3_MONTHS": "Līdz 3 mēnešus vecs",
 		"LABEL_ADV_DATE_6_MONTHS": "Līdz 6 mēnešus vecs",
-		"LABEL_ADV_DATE_YEAR": "Līdz 1 gadu vecs"
+		"LABEL_ADV_DATE_YEAR": "Līdz 1 gadu vecs",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Toggle fullscreen",

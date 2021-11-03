@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "Do 1  meseca nazaj",
 		"LABEL_ADV_DATE_3_MONTHS": "Do 3 mesecev nazaj",
 		"LABEL_ADV_DATE_6_MONTHS": "Do 6 mesecev nazaj",
-		"LABEL_ADV_DATE_YEAR": "Do 1 leta nazaj"
+		"LABEL_ADV_DATE_YEAR": "Do 1 leta nazaj",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Preklopi celozaslonski pogled",

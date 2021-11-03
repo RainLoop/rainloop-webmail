@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "Inntil 1 måned gamle",
 		"LABEL_ADV_DATE_3_MONTHS": "Inntil 3 måneder gamle",
 		"LABEL_ADV_DATE_6_MONTHS": "Inntil 6 måneder gamle",
-		"LABEL_ADV_DATE_YEAR": "Inntil 1 år gamle"
+		"LABEL_ADV_DATE_YEAR": "Inntil 1 år gamle",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Toggle fullscreen",

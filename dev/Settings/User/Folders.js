@@ -26,7 +26,7 @@ const folderForDeletion = ko.observable(null).deleteAccessHelper();
 
 export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 	constructor() {
-		this.showKolab = Settings.capa(Capa.Kolab) && FolderUserStore.metadataSupported();
+		this.showKolab = ko.computed(() => FolderUserStore.hasCapability('METADATA') && Settings.capa(Capa.Kolab));
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 		this.kolabTypeOptions = ko.observableArray();
 		let i18nFilter = key => i18n('SETTINGS_FOLDERS/TYPE_' + key);

@@ -24,8 +24,8 @@ trait Folders
 				try {
 					$aQuota = $this->MailClient()->Quota();
 //					$aQuota = $this->MailClient()->QuotaRoot();
-					$oFolderCollection->quotaUsage = $aQuota[0] * 1024;
-					$oFolderCollection->quotaLimit = $aQuota[1] * 1024;
+					$oFolderCollection->quotaUsage = $aQuota ? $aQuota[0] * 1024 : null;
+					$oFolderCollection->quotaLimit = $aQuota ? $aQuota[1] * 1024 : null;
 				} catch (\Throwable $oException) {
 					// ignore
 				}
@@ -56,6 +56,12 @@ trait Folders
 			$aSystemFolders = array();
 			$this->recFoldersTypes($oAccount, $oFolderCollection, $aSystemFolders);
 			$oFolderCollection->SystemFolders = $aSystemFolders;
+
+			if (!$this->Config()->Get('labs', 'use_imap_sort', true)) {
+				$oFolderCollection->capabilities = \array_filter($oFolderCollection->capabilities, function($item){
+					return !\preg_match('/^E?SORT/', $item);
+				});
+			}
 
 			if ($this->Config()->Get('labs', 'autocreate_system_folders', true))
 			{

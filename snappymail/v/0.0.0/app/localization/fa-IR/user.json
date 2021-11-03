@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "تا 1 ماه گذشته",
 		"LABEL_ADV_DATE_3_MONTHS": "تا 3 ماه گذشته",
 		"LABEL_ADV_DATE_6_MONTHS": "تا 6 ماه گذشته",
-		"LABEL_ADV_DATE_YEAR": "تا 1 سال گذشته"
+		"LABEL_ADV_DATE_YEAR": "تا 1 سال گذشته",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "ضامن تمام صفحه",

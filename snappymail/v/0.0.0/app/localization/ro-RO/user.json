@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "în această lună",
 		"LABEL_ADV_DATE_3_MONTHS": "3 luni",
 		"LABEL_ADV_DATE_6_MONTHS": "6 luni",
-		"LABEL_ADV_DATE_YEAR": "în acest an"
+		"LABEL_ADV_DATE_YEAR": "în acest an",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Toggle fullscreen",

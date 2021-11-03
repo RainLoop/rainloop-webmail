@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "Up to 1 month old",
 		"LABEL_ADV_DATE_3_MONTHS": "Up to 3 months old",
 		"LABEL_ADV_DATE_6_MONTHS": "Up to 6 months old",
-		"LABEL_ADV_DATE_YEAR": "Up to 1 year old"
+		"LABEL_ADV_DATE_YEAR": "Up to 1 year old",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE" : "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE" : "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE" : "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Toggle fullscreen",

@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "Até 1 mês atrás",
 		"LABEL_ADV_DATE_3_MONTHS": "Até 3 meses atrás",
 		"LABEL_ADV_DATE_6_MONTHS": "Até 6 meses atrás",
-		"LABEL_ADV_DATE_YEAR": "Até 1 ano atrás"
+		"LABEL_ADV_DATE_YEAR": "Até 1 ano atrás",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Em tela cheia",

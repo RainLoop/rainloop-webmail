@@ -64,7 +64,9 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.messageList = MessageUserStore.list;
 
-		this.sortSupported = FolderUserStore.sortSupported;
+		this.sortSupported = ko.computed(() =>
+			FolderUserStore.hasCapability('SORT') | FolderUserStore.hasCapability('ESORT')
+		);
 
 		this.composeInEdit = AppUserStore.composeInEdit;
 		this.leftPanelDisabled = leftPanelDisabled;

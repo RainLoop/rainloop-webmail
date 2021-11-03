@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "Lebih dari 1 bulan lalu",
 		"LABEL_ADV_DATE_3_MONTHS": "Lebih dari 3 bulan lalu",
 		"LABEL_ADV_DATE_6_MONTHS": "Lebih dari 6 bulan lalu",
-		"LABEL_ADV_DATE_YEAR": "Lebih dari 1 tahun lalu"
+		"LABEL_ADV_DATE_YEAR": "Lebih dari 1 tahun lalu",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Beralih ke layar penuh",

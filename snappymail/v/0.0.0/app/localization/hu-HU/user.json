@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "Legfeljebb 1 hónapos",
 		"LABEL_ADV_DATE_3_MONTHS": "Legfeljebb 3 hónapos",
 		"LABEL_ADV_DATE_6_MONTHS": "Legfeljebb 6 hónapos",
-		"LABEL_ADV_DATE_YEAR": "Legfeljebb 1 éves"
+		"LABEL_ADV_DATE_YEAR": "Legfeljebb 1 éves",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Teljes képernyő váltása",

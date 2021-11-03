@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "Ne starší než měsíc",
 		"LABEL_ADV_DATE_3_MONTHS": "Ne starší než 3 měsíce",
 		"LABEL_ADV_DATE_6_MONTHS": "Ne starší než 6 měsíců",
-		"LABEL_ADV_DATE_YEAR": "Ne starší než 1 rok"
+		"LABEL_ADV_DATE_YEAR": "Ne starší než 1 rok",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Celá obrazovka",

@@ -50,6 +50,20 @@
 							}
 						}"></div>
 					</div>
+					<!-- ko if: showMultisearch -->
+					<div class="control-group">
+						<label class="control-label" data-i18n="SEARCH/LABEL_ADV_SUBFOLDERS"></label>
+						<div class="controls" data-bind="component: {
+							name: 'Select',
+							params: {
+								options: selectedTree,
+								value: selectedTreeValue,
+								optionsText: 'name',
+								optionsValue: 'id'
+							}
+						}"></div>
+					</div>
+					<!-- /ko -->
 					<div class="control-group">
 						<label class="control-label">
 						</label>

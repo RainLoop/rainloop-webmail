@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "Upp till 1 månad gammalt",
 		"LABEL_ADV_DATE_3_MONTHS": "Upp till 3 månader gammalt",
 		"LABEL_ADV_DATE_6_MONTHS": "Upp till 6 månader gammalt",
-		"LABEL_ADV_DATE_YEAR": "Upp till 1 år gammalt"
+		"LABEL_ADV_DATE_YEAR": "Upp till 1 år gammalt",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Växla fullskärmsläge",

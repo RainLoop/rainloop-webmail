@@ -37,13 +37,11 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		super();
 		this.CountRec
 		this.FoldersHash
-		this.IsMetadataSupported
 		this.IsThreadsSupported
-		this.IsSortSupported
-		this.IsExtendedSupported
 		this.Namespace;
 		this.Optimized
 		this.SystemFolders
+		this.Capabilities
 	}
 */
 
@@ -146,11 +144,9 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		AppUserStore.threadsAllowed(!!(Settings.app('useImapThread') && this.IsThreadsSupported));
 
 		FolderUserStore.folderListOptimized(!!this.Optimized);
-		FolderUserStore.sortSupported(!!this.IsSortSupported);
-		FolderUserStore.metadataSupported(!!this.IsMetadataSupported);
-		FolderUserStore.listStatusSupported(!!this.IsListStatusSupported);
 		FolderUserStore.quotaUsage(this.quotaUsage);
 		FolderUserStore.quotaLimit(this.quotaLimit);
+		FolderUserStore.capabilities(this.Capabilities);
 
 		FolderUserStore.sentFolder(normalizeFolder(SettingsGet('SentFolder')));
 		FolderUserStore.draftFolder(normalizeFolder(SettingsGet('DraftFolder')));

@@ -227,7 +227,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
 				&& ($sStatus === $oResponse->StatusOrIndex || $iOffset)
 				&& \is_array($oResponse->ResponseList)
-				&& 2 < count($oResponse->ResponseList))
+				&& 2 < \count($oResponse->ResponseList))
 			{
 				$iLen = \count($oResponse->ResponseList);
 				for ($iIndex = 2 + $iOffset; $iIndex < $iLen; ++$iIndex) {
@@ -270,12 +270,13 @@ class ResponseCollection extends \MailSo\Base\Collection
 				$iLen = \count($oResponse->ResponseList);
 				for ($iIndex = 2 + $iOffset; $iIndex < $iLen; ++$iIndex) {
 					$aNewValue = $this->validateThreadItem($oResponse->ResponseList[$iIndex]);
-					if (false !== $aNewValue) {
+					if (\is_array($aNewValue)) {
 						$aReturn[] = $aNewValue;
 					}
 				}
 			}
 		}
+
 		return $aReturn;
 	}
 
@@ -374,27 +375,24 @@ class ResponseCollection extends \MailSo\Base\Collection
 		$aResult = array();
 		foreach ($this as $oResponse) {
 			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
-				&& ('ESEARCH' === $oResponse->StatusOrIndex || 'ESORT' === $oResponse->StatusOrIndex)
+				&& ('ESEARCH' === $oResponse->StatusOrIndex || 'SORT' === $oResponse->StatusOrIndex)
 				&& \is_array($oResponse->ResponseList)
-				&& isset($oResponse->ResponseList[2], $oResponse->ResponseList[2][0], $oResponse->ResponseList[2][1])
+				&& isset($oResponse->ResponseList[2][1])
 				&& 'TAG' === $oResponse->ResponseList[2][0] && $sRequestTag === $oResponse->ResponseList[2][1]
-				&& (!$bReturnUid || ($bReturnUid && !empty($oResponse->ResponseList[3]) && 'UID' === $oResponse->ResponseList[3]))
+				&& (!$bReturnUid || (!empty($oResponse->ResponseList[3]) && 'UID' === $oResponse->ResponseList[3]))
 			)
 			{
-				$iStart = 3;
-				foreach ($oResponse->ResponseList as $iIndex => $mItem) {
-					if ($iIndex >= $iStart) {
-						switch ($mItem)
-						{
-							case 'ALL':
-							case 'MAX':
-							case 'MIN':
-							case 'COUNT':
-								if (isset($oResponse->ResponseList[$iIndex + 1])) {
-									$aResult[$mItem] = $oResponse->ResponseList[$iIndex + 1];
-								}
-								break;
-						}
+				$i = \count($oResponse->ResponseList) - 1;
+				while (3 < --$i) {
+					$sItem = $oResponse->ResponseList[$i];
+					switch ($sItem)
+					{
+						case 'ALL':
+						case 'MAX':
+						case 'MIN':
+						case 'COUNT':
+							$aResult[$sItem] = $oResponse->ResponseList[$i + 1];
+							break;
 					}
 				}
 			}

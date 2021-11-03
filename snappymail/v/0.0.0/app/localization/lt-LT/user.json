@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "Nesenesni kaip 1 mėnesio",
 		"LABEL_ADV_DATE_3_MONTHS": "Nesenesni kaip 3 mėnesių",
 		"LABEL_ADV_DATE_6_MONTHS": "Nesenesni kaip 6 mėnesių",
-		"LABEL_ADV_DATE_YEAR": "Nesenesni kaip 1 metų"
+		"LABEL_ADV_DATE_YEAR": "Nesenesni kaip 1 metų",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Perjungti viso ekrano režimą",

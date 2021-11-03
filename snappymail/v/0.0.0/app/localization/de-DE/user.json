@@ -57,7 +57,11 @@
 		"LABEL_ADV_DATE_MONTH": "Nicht älter als 1 Monat",
 		"LABEL_ADV_DATE_3_MONTHS": "Nicht älter als 3 Monate",
 		"LABEL_ADV_DATE_6_MONTHS": "Nicht älter als 6 Monate",
-		"LABEL_ADV_DATE_YEAR": "Nicht älter als 1 Jahr"
+		"LABEL_ADV_DATE_YEAR": "Nicht älter als 1 Jahr",
+		"LABEL_ADV_SUBFOLDERS": "Subfolders",
+		"LABEL_ADV_SUBFOLDERS_NONE": "None",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Vollbild umschalten",
