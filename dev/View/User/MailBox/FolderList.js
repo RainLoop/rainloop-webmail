@@ -54,7 +54,7 @@ export class MailFolderList extends AbstractViewLeft {
 						return visible;
 					});
 				if (inbox && !multiple) {
-					inbox.collapsedPrivate(false);
+					inbox.collapsed(false);
 				}
 				this.foldersListWithSingleInboxRootFolder(!multiple);
 				return result;
