@@ -42,7 +42,7 @@ trait User
 
 		$this->AuthToken($oAccount);
 
-		if ($oAccount && 0 < \strlen($sLanguage))
+		if ($oAccount && \strlen($sLanguage))
 		{
 			$oSettings = $this->SettingsProvider()->Load($oAccount);
 			if ($oSettings)
@@ -80,7 +80,7 @@ trait User
 		$bError = false;
 		$aData = false;
 
-		if (\is_array($aHashes) && 0 < \count($aHashes))
+		if (\is_array($aHashes) && \count($aHashes))
 		{
 			$aData = array();
 			foreach ($aHashes as $sZipHash)
@@ -99,7 +99,7 @@ trait User
 		}
 
 		$oFilesProvider = $this->FilesProvider();
-		if (!empty($sAction) && !$bError && \is_array($aData) && 0 < \count($aData) &&
+		if (!empty($sAction) && !$bError && \is_array($aData) && \count($aData) &&
 			$oFilesProvider && $oFilesProvider->IsActive())
 		{
 			$bError = false;
@@ -397,7 +397,7 @@ trait User
 
 		$this->Plugins()->RunHook('json.suggestions-pre', array(&$aResult, $sQuery, $oAccount, $iLimit));
 
-		if ($iLimit > \count($aResult) && 0 < \strlen($sQuery))
+		if ($iLimit > \count($aResult) && \strlen($sQuery))
 		{
 			try
 			{
@@ -406,7 +406,7 @@ trait User
 				if ($oAddressBookProvider && $oAddressBookProvider->IsActive())
 				{
 					$aSuggestions = $oAddressBookProvider->GetSuggestions($oAccount->ParentEmailHelper(), $sQuery, $iLimit);
-					if (0 === \count($aResult))
+					if (!\count($aResult))
 					{
 						$aResult = $aSuggestions;
 					}
@@ -422,13 +422,13 @@ trait User
 			}
 		}
 
-		if ($iLimit > \count($aResult) && 0 < \strlen($sQuery))
+		if ($iLimit > \count($aResult) && \strlen($sQuery))
 		{
 			$oSuggestionsProvider = $this->SuggestionsProvider();
 			if ($oSuggestionsProvider && $oSuggestionsProvider->IsActive())
 			{
 				$aSuggestionsProviderResult = $oSuggestionsProvider->Process($oAccount, $sQuery, $iLimit);
-				if (\is_array($aSuggestionsProviderResult) && 0 < \count($aSuggestionsProviderResult))
+				if (\is_array($aSuggestionsProviderResult) && \count($aSuggestionsProviderResult))
 				{
 					$aResult = \array_merge($aResult, $aSuggestionsProviderResult);
 				}
@@ -459,7 +459,7 @@ trait User
 
 		$mResult = false;
 		$aExternals = $this->GetActionParam('Externals', array());
-		if (\is_array($aExternals) && 0 < \count($aExternals))
+		if (\is_array($aExternals) && \count($aExternals))
 		{
 			$oHttp = \MailSo\Base\Http::SingletonInstance();
 
@@ -590,7 +590,7 @@ trait User
 					$sValue = (string) $sValue;
 					if ($mStringCallback && is_callable($mStringCallback))
 					{
-						$sValue = call_user_func($mStringCallback, $sValue);
+						$sValue = $mStringCallback($sValue);
 					}
 
 					$oSettings->SetConf($sConfigName, (string) $sValue);

@@ -110,7 +110,7 @@ END;
 			};
 		}
 
-		if (!\call_user_func($fFileExistsCallback, $sFilePath))
+		if (!$fFileExistsCallback($sFilePath))
 		{
 			return $sFilePath;
 		}
@@ -129,7 +129,7 @@ END;
 				(empty($aFileInfo['extension']) ? '' : '.'.$aFileInfo['extension'])
 			;
 
-			if (!\call_user_func($fFileExistsCallback, $sFilePathNew))
+			if (!$fFileExistsCallback($sFilePathNew))
 			{
 				$sFilePath = $sFilePathNew;
 				break;
@@ -152,9 +152,8 @@ END;
 			$aSupportedEncodings = \array_map('strtoupper', \array_unique(
 				\array_merge(
 					$aSupportedEncodings,
-					\call_user_func_array(
-						'array_merge',
-						\array_map(
+					array_merge(
+						...\array_map(
 							'mb_encoding_aliases',
 							$aSupportedEncodings
 						)
@@ -1200,7 +1199,7 @@ END;
 	public static function PrepareFetchSequence(array $aSequence) : string
 	{
 		$aResult = array();
-		if (0 < \count($aSequence))
+		if (\count($aSequence))
 		{
 			$iStart = null;
 			$iPrev = null;
@@ -1276,7 +1275,7 @@ END;
 	public static function MultipleStreamWriter($rRead, array $aWrite, int $iBufferLen = 8192, bool $bResetTimeLimit = true, bool $bFixCrLf = false, bool $bRewindOnComplete = false) : int
 	{
 		$mResult = false;
-		if ($rRead && 0 < \count($aWrite))
+		if ($rRead && \count($aWrite))
 		{
 			$mResult = 0;
 			while (!\feof($rRead))

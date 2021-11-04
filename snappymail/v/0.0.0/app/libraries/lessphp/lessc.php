@@ -1321,7 +1321,7 @@ class lessc {
 				if ($args[0] == 'list')
 					$args = self::compressList($args[2], $args[1]);
 
-				$ret = call_user_func($f, $this->reduce($args, true), $this);
+				$ret = $f($this->reduce($args, true), $this);
 
 				if (is_null($ret)) {
 					return array("string", "", array(

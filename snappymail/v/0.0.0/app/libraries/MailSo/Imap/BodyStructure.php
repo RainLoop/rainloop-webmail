@@ -172,7 +172,7 @@ class BodyStructure
 	public function IsInline() : bool
 	{
 		return (null === $this->sDisposition) ?
-			(0 < \strlen($this->ContentID())) : ('inline' === strtolower($this->sDisposition));
+			(\strlen($this->ContentID())) : ('inline' === strtolower($this->sDisposition));
 	}
 
 	public function IsImage() : bool
@@ -328,7 +328,7 @@ class BodyStructure
 	public function SearchByCallback($fCallback) : array
 	{
 		$aReturn = array();
-		if (\call_user_func($fCallback, $this))
+		if ($fCallback($this))
 		{
 			$aReturn[] = $this;
 		}
@@ -359,7 +359,7 @@ class BodyStructure
 	public function GetPartByMimeIndex(string $sMimeIndex) : self
 	{
 		$oPart = null;
-		if (0 < \strlen($sMimeIndex))
+		if (\strlen($sMimeIndex))
 		{
 			if ($sMimeIndex === $this->sPartID)
 			{
@@ -419,7 +419,7 @@ class BodyStructure
 					if ($sCharsetIndex < $iIndex && false !== \strpos($sValue, "''"))
 					{
 						$aValueParts = \explode("''", $sValue, 2);
-						if (2 === \count($aValueParts) && 0 < \strlen($aValueParts[0]))
+						if (2 === \count($aValueParts) && \strlen($aValueParts[0]))
 						{
 							$sCharsetIndex = $iIndex;
 							$sCharset = $aValueParts[0];
@@ -431,13 +431,13 @@ class BodyStructure
 				}
 			}
 
-			if (0 < \count($aFileNames))
+			if (\count($aFileNames))
 			{
 				\ksort($aFileNames, SORT_NUMERIC);
 				$sResult = \implode(\array_values($aFileNames));
 				$sResult = \urldecode($sResult);
 
-				if (0 < \strlen($sCharset))
+				if (\strlen($sCharset))
 				{
 					$sResult = \MailSo\Base\Utils::ConvertEncoding($sResult,
 						$sCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
@@ -484,13 +484,13 @@ class BodyStructure
 
 			$sBodyMainType = 'multipart';
 			$sSubPartIDPrefix = '';
-			if (0 === \strlen($sPartID) || '.' === $sPartID[\strlen($sPartID) - 1])
+			if (!\strlen($sPartID) || '.' === $sPartID[\strlen($sPartID) - 1])
 			{
 				// This multi-part is root part of message.
 				$sSubPartIDPrefix = $sPartID;
 				$sPartID .= 'TEXT';
 			}
-			else if (0 < \strlen($sPartID))
+			else if (\strlen($sPartID))
 			{
 				// This multi-part is a part of another multi-part.
 				$sSubPartIDPrefix = $sPartID.'.';
@@ -606,7 +606,7 @@ class BodyStructure
 				$iSize = -1;
 			}
 
-			if (0 === \strlen($sPartID) || '.' === $sPartID[\strlen($sPartID) - 1])
+			if (!\strlen($sPartID) || '.' === $sPartID[\strlen($sPartID) - 1])
 			{
 				// This is the only sub-part of the message (otherwise, it would be
 				// one of sub-parts of a multi-part, and partID would already be fully set up).

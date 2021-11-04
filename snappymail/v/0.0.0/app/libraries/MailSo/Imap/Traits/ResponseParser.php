@@ -72,7 +72,7 @@ trait ResponseParser
 	 */
 	private function partialParseResponseBranch(Response $oImapResponse,
 		bool $bTreatAsAtom,
-		string $sParentToken,
+		?string $sParentToken,
 		string $sOpenBracket,
 		bool $bRoot = false)
 	{
@@ -147,9 +147,9 @@ trait ResponseParser
 					}
 				case '(':
 					$this->iResponseBufParsedPos = ++$iPos;
-					$mResult = $this->partialParseResponseBranch($oImapResponse, $bTreatAsAtom,
-						null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase),
-						$sChar);
+					$mResult = $this->partialParseResponseBranch(
+						$oImapResponse, $bTreatAsAtom, $sPreviousAtomUpperCase, $sChar
+					);
 					$sPreviousAtomUpperCase = null;
 					$iPos = $this->iResponseBufParsedPos;
 					if ($bTreatAsAtom) {
@@ -170,9 +170,7 @@ trait ResponseParser
 						$iLiteralLen = (int) \substr($this->sResponseBuffer, $iPos + 1, $iLength);
 						$iPos += 4 + $iLength;
 
-						if ($this->partialResponseLiteralCallbackCallable(
-							$sParentToken, null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase), $iLiteralLen))
-						{
+						if ($this->partialResponseLiteralCallbacks($sParentToken, $sPreviousAtomUpperCase, $iLiteralLen)) {
 							if (!$bTreatAsAtom) {
 								$aList[] = '';
 							}
@@ -277,9 +275,9 @@ trait ResponseParser
 
 								$this->iResponseBufParsedPos = ++$iPos;
 
-								$sListBlock = $this->partialParseResponseBranch($oImapResponse, true,
-									null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase),
-									'[');
+								$sListBlock = $this->partialParseResponseBranch(
+									$oImapResponse, true, $sPreviousAtomUpperCase, '['
+								);
 
 								if (null !== $sListBlock)
 								{
@@ -305,7 +303,7 @@ trait ResponseParser
 						if (null === $sAtomBuilder)
 						{
 							$aList[] = 'NIL' === $sLastCharBlock ? null : $sLastCharBlock;
-							$sPreviousAtomUpperCase = $sLastCharBlock;
+							$sPreviousAtomUpperCase = \strtoupper($sLastCharBlock);
 						}
 						else
 						{
@@ -314,7 +312,7 @@ trait ResponseParser
 							if (!$bTreatAsAtom)
 							{
 								$aList[] = $sAtomBuilder;
-								$sPreviousAtomUpperCase = $sAtomBuilder;
+								$sPreviousAtomUpperCase = \strtoupper($sAtomBuilder);
 								$sAtomBuilder = null;
 							}
 						}
@@ -376,26 +374,20 @@ trait ResponseParser
 		return $sLiteral;
 	}
 
-	private function partialResponseLiteralCallbackCallable(string $sParent, string $sLiteralAtomUpperCase, int $iLiteralLen) : bool
+	private function partialResponseLiteralCallbacks(?string $sParent, ?string $sLiteralAtomUpperCase, int $iLiteralLen) : bool
 	{
-		if (!$this->aFetchCallbacks) {
+		if (!$this->aFetchCallbacks || !$sLiteralAtomUpperCase || 'FETCH' !== $sParent) {
 			return false;
 		}
 
 		$sLiteralAtomUpperCasePeek = '';
-		if (0 === \strpos($sLiteralAtomUpperCase, 'BODY'))
-		{
+		if (0 === \strpos($sLiteralAtomUpperCase, 'BODY')) {
 			$sLiteralAtomUpperCasePeek = \str_replace('BODY', 'BODY.PEEK', $sLiteralAtomUpperCase);
 		}
 
-		$sFetchKey = '';
-		if (\strlen($sLiteralAtomUpperCasePeek) && isset($this->aFetchCallbacks[$sLiteralAtomUpperCasePeek]))
-		{
+		$sFetchKey = $sLiteralAtomUpperCase;
+		if ($sLiteralAtomUpperCasePeek && isset($this->aFetchCallbacks[$sLiteralAtomUpperCasePeek])) {
 			$sFetchKey = $sLiteralAtomUpperCasePeek;
-		}
-		else if (\strlen($sLiteralAtomUpperCase) && isset($this->aFetchCallbacks[$sLiteralAtomUpperCase]))
-		{
-			$sFetchKey = $sLiteralAtomUpperCase;
 		}
 
 		if (empty($this->aFetchCallbacks[$sFetchKey]) || !\is_callable($this->aFetchCallbacks[$sFetchKey])) {
@@ -412,8 +404,7 @@ trait ResponseParser
 
 		try
 		{
-			\call_user_func($this->aFetchCallbacks[$sFetchKey],
-				$sParent, $sLiteralAtomUpperCase, $rImapLiteralStream);
+			$this->aFetchCallbacks[$sFetchKey]($sParent, $sLiteralAtomUpperCase, $rImapLiteralStream);
 		}
 		catch (\Throwable $oException)
 		{
@@ -421,8 +412,7 @@ trait ResponseParser
 			$this->writeLogException($oException);
 		}
 
-		if ($rImapLiteralStream)
-		{
+		if ($rImapLiteralStream) {
 			$iNotReadLiteralLen = 0;
 
 			$bFeof = \feof($rImapLiteralStream);
@@ -430,13 +420,10 @@ trait ResponseParser
 				' - feof = '.($bFeof ? 'good' : 'BAD'), $bFeof ?
 					\MailSo\Log\Enumerations\Type::NOTE : \MailSo\Log\Enumerations\Type::WARNING);
 
-			if (!$bFeof)
-			{
-				while (!\feof($rImapLiteralStream))
-				{
+			if (!$bFeof) {
+				while (!\feof($rImapLiteralStream)) {
 					$sBuf = \fread($rImapLiteralStream, 1024 * 1024);
-					if (false === $sBuf || 0 === \strlen($sBuf) ||  null === $sBuf)
-					{
+					if (!\strlen($sBuf)) {
 						break;
 					}
 
@@ -444,22 +431,18 @@ trait ResponseParser
 					$iNotReadLiteralLen += \strlen($sBuf);
 				}
 
-				if (!\feof($rImapLiteralStream))
-				{
+				if (!\feof($rImapLiteralStream)) {
 					\stream_get_contents($rImapLiteralStream);
 				}
 			}
 
 			\fclose($rImapLiteralStream);
 
-			if ($iNotReadLiteralLen > 0)
-			{
+			if (0 < $iNotReadLiteralLen) {
 				$this->writeLog('Not read literal size is '.$iNotReadLiteralLen.' bytes.',
 					\MailSo\Log\Enumerations\Type::WARNING);
 			}
-		}
-		else
-		{
+		} else {
 			$this->writeLog('Literal stream is not resource after callback.',
 				\MailSo\Log\Enumerations\Type::WARNING);
 		}

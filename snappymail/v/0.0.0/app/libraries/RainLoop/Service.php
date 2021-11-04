@@ -51,7 +51,7 @@ class Service
 		}
 
 		$sServer = \trim($this->oActions->Config()->Get('security', 'custom_server_signature', ''));
-		if (0 < \strlen($sServer))
+		if (\strlen($sServer))
 		{
 			\header('Server: '.$sServer);
 		}
@@ -114,7 +114,7 @@ class Service
 
 		$bIndex = true;
 		$sResult = '';
-		if (0 < \count($aPaths) && !empty($aPaths[0]) && !$bAdmin && 'index' !== \strtolower($aPaths[0]))
+		if (\count($aPaths) && !empty($aPaths[0]) && !$bAdmin && 'index' !== \strtolower($aPaths[0]))
 		{
 			if (!\SnappyMail\HTTP\SecFetch::isSameOrigin()) {
 				\MailSo\Base\Http::StatusHeader(403);
@@ -129,13 +129,13 @@ class Service
 
 			$bIndex = false;
 			$sMethodName = 'Service'.\preg_replace('/@.+$/', '', $aPaths[0]);
-			$sMethodExtra = 0 < \strpos($aPaths[0], '@') ? \preg_replace('/^[^@]+@/', '', $aPaths[0]) : '';
+			$sMethodExtra = \strpos($aPaths[0], '@') ? \preg_replace('/^[^@]+@/', '', $aPaths[0]) : '';
 
 			if (\method_exists($this->oServiceActions, $sMethodName) &&
 				\is_callable(array($this->oServiceActions, $sMethodName)))
 			{
 				$this->oServiceActions->SetQuery($sQuery)->SetPaths($aPaths);
-				$sResult = \call_user_func(array($this->oServiceActions, $sMethodName), $sMethodExtra);
+				$sResult = $this->oServiceActions->{$sMethodName}($sMethodExtra);
 			}
 			else if (!$this->oActions->Plugins()->RunAdditionalPart($aPaths[0], $aPaths))
 			{

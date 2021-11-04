@@ -99,7 +99,7 @@ class ServiceActions
 			}
 			else if (!empty($sAction))
 			{
-				if (0 === stripos($sAction, 'Admin') && 'AdminLogin' !== $sAction && 'AdminLogout' !== $sAction) {
+				if (0 === \stripos($sAction, 'Admin') && 'AdminLogin' !== $sAction && 'AdminLogout' !== $sAction) {
 					$this->oActions->IsAdminLoggined();
 				}
 
@@ -140,7 +140,7 @@ class ServiceActions
 					\is_callable(array($this->oActions, $sMethodName)))
 				{
 					$this->Plugins()->RunHook('json.action-pre-call', array($sAction));
-					$aResponseItem = \call_user_func(array($this->oActions, $sMethodName));
+					$aResponseItem = $this->oActions->{$sMethodName}();
 					$this->Plugins()->RunHook('json.action-post-call', array($sAction, &$aResponseItem));
 				}
 				else if ($this->Plugins()->HasAdditionalJson($sMethodName))
@@ -194,7 +194,7 @@ class ServiceActions
 
 		if ($this->Logger()->IsEnabled())
 		{
-			if (0 < \strlen($sObResult))
+			if (\strlen($sObResult))
 			{
 				$this->Logger()->Write($sObResult, \MailSo\Log\Enumerations\Type::ERROR, 'OB-DATA');
 			}
@@ -223,7 +223,7 @@ class ServiceActions
 				\is_callable(array($this->oActions, 'Append')))
 			{
 				isset($_POST) && $this->oActions->SetActionParams($_POST, 'Append');
-				$bResponse = \call_user_func(array($this->oActions, 'Append'));
+				$bResponse = $this->oActions->Append();
 			}
 		}
 		catch (\Throwable $oException)
@@ -235,7 +235,7 @@ class ServiceActions
 		$sResult = true === $bResponse ? '1' : '0';
 
 		$sObResult = \ob_get_clean();
-		if (0 < \strlen($sObResult))
+		if (\strlen($sObResult))
 		{
 			$this->Logger()->Write($sObResult, \MailSo\Log\Enumerations\Type::ERROR, 'OB-DATA');
 		}
@@ -279,7 +279,7 @@ class ServiceActions
 					$aFile = $_FILES[$sInputName];
 				}
 			}
-			else if (!isset($_FILES) || !is_array($_FILES) || 0 === count($_FILES))
+			else if (!isset($_FILES) || !is_array($_FILES) || !\count($_FILES))
 			{
 				$iError = UPLOAD_ERR_INI_SIZE;
 			}
@@ -298,7 +298,7 @@ class ServiceActions
 
 				$this->oActions->SetActionParams($aActionParams, $sAction);
 
-				$aResponseItem = \call_user_func(array($this->oActions, $sAction));
+				$aResponseItem = $this->oActions->{$sAction}();
 			}
 
 			if (!is_array($aResponseItem))
@@ -317,7 +317,7 @@ class ServiceActions
 		$sResult = \MailSo\Base\Utils::Php2js($aResponseItem, $this->Logger());
 
 		$sObResult = \ob_get_clean();
-		if (0 < \strlen($sObResult))
+		if (\strlen($sObResult))
 		{
 			$this->Logger()->Write($sObResult, \MailSo\Log\Enumerations\Type::ERROR, 'OB-DATA');
 		}
@@ -402,7 +402,7 @@ class ServiceActions
 						'Params' => $this->aPaths
 					), $sMethodName);
 
-					if (!\call_user_func(array($this->oActions, $sMethodName)))
+					if (!$this->oActions->{$sMethodName}())
 					{
 						$sRawError = 'False result';
 					}
@@ -436,7 +436,7 @@ class ServiceActions
 			$sRawError = 'Exception as result';
 		}
 
-		if (0 < \strlen($sRawError))
+		if (\strlen($sRawError))
 		{
 			$this->oActions->Logger()->Write($sRawError, \MailSo\Log\Enumerations\Type::ERROR);
 			$this->oActions->Logger()->WriteDump($this->aPaths, \MailSo\Log\Enumerations\Type::ERROR, 'PATHS');
@@ -476,10 +476,10 @@ class ServiceActions
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
 
-			if (0 === \strlen($sResult))
+			if (!\strlen($sResult))
 			{
 				$sResult = $this->oActions->compileLanguage($sLanguage, $bAdmin);
-				if ($bCacheEnabled && 0 < \strlen($sCacheFileName))
+				if ($bCacheEnabled && \strlen($sCacheFileName))
 				{
 					$this->Cacher()->Set($sCacheFileName, $sResult);
 				}
@@ -514,10 +514,10 @@ class ServiceActions
 			$sResult = $this->Cacher()->Get($sCacheFileName);
 		}
 
-		if (0 === strlen($sResult))
+		if (!\strlen($sResult))
 		{
 			$sResult = $this->Plugins()->CompileJs($bAdmin);
-			if ($bCacheEnabled && 0 < \strlen($sCacheFileName))
+			if ($bCacheEnabled && \strlen($sCacheFileName))
 			{
 				$this->Cacher()->Set($sCacheFileName, $sResult);
 			}
@@ -678,7 +678,7 @@ class ServiceActions
 					$sPassword = $mData['Password'];
 
 					$aAdditionalOptions = isset($mData['AdditionalOptions']) && \is_array($mData['AdditionalOptions']) &&
-						0 < \count($mData['AdditionalOptions']) ? $mData['AdditionalOptions'] : null;
+						\count($mData['AdditionalOptions']) ? $mData['AdditionalOptions'] : null;
 
 					try
 					{
@@ -741,7 +741,7 @@ class ServiceActions
 		$sEmail = $_ENV['REMOTE_USER'] ?? '';
 		$sPassword = $_ENV['REMOTE_PASSWORD'] ?? '';
 
-		if (0 < \strlen($sEmail) && 0 < \strlen(\trim($sPassword)))
+		if (\strlen($sEmail) && \strlen(\trim($sPassword)))
 		{
 			try
 			{

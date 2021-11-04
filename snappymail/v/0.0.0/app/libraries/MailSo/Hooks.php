@@ -27,7 +27,7 @@ class Hooks
 		{
 			foreach (static::$aCallbacks[$sName] as $mCallback)
 			{
-				\call_user_func_array($mCallback, $aArg);
+				$mCallback(...$aArg);
 			}
 		}
 	}

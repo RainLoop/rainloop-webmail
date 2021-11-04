@@ -255,7 +255,7 @@ abstract class HtmlUtils
 		}
 
 		$aHtmlAllowedTags = isset(\MailSo\Config::$HtmlStrictAllowedTags) &&
-			\is_array(\MailSo\Config::$HtmlStrictAllowedTags) && 0 < \count(\MailSo\Config::$HtmlStrictAllowedTags) ?
+			\is_array(\MailSo\Config::$HtmlStrictAllowedTags) && \count(\MailSo\Config::$HtmlStrictAllowedTags) ?
 				\MailSo\Config::$HtmlStrictAllowedTags : null;
 
 		$aRemove = array();
@@ -311,7 +311,7 @@ abstract class HtmlUtils
 				$sValue = 'absolute';
 			}
 
-			if (0 === \strlen($sName) || 0 === \strlen($sValue))
+			if (!\strlen($sName) || !\strlen($sValue))
 			{
 				continue;
 			}
@@ -379,8 +379,8 @@ abstract class HtmlUtils
 
 								if ($fAdditionalExternalFilter)
 								{
-									$sAdditionalResult = \call_user_func($fAdditionalExternalFilter, $sUrl);
-									if (0 < \strlen($sAdditionalResult))
+									$sAdditionalResult = $fAdditionalExternalFilter($sUrl);
+									if (\strlen($sAdditionalResult))
 									{
 										$oElement->setAttribute('data-x-additional-style-url',
 											('background' === $sName ? 'background-image' : $sName).': url('.$sAdditionalResult.')');
@@ -444,7 +444,7 @@ abstract class HtmlUtils
 
 				foreach ($aTextNodes as $oTextNode)
 				{
-					if ($oTextNode && 0 < \strlen($oTextNode->wholeText)/* && \preg_match('/http[s]?:\/\//i', $oTextNode->wholeText)*/)
+					if ($oTextNode && \strlen($oTextNode->wholeText)/* && \preg_match('/http[s]?:\/\//i', $oTextNode->wholeText)*/)
 					{
 						$sText = (new \MailSo\Base\LinkFinder)
 							->Text($oTextNode->wholeText)
@@ -517,7 +517,7 @@ abstract class HtmlUtils
 
 		$sHtml = null === $sHtml ? '' : (string) $sHtml;
 		$sHtml = \trim($sHtml);
-		if (0 === \strlen($sHtml))
+		if (!\strlen($sHtml))
 		{
 			return '';
 		}
@@ -545,7 +545,7 @@ abstract class HtmlUtils
 
 		if ($fAdditionalDomReader)
 		{
-			$oResDom = \call_user_func($fAdditionalDomReader, $oDom);
+			$oResDom = $fAdditionalDomReader($oDom);
 			if ($oResDom)
 			{
 				$oDom = $oResDom;
@@ -633,7 +633,7 @@ abstract class HtmlUtils
 					}
 				}
 
-				if (0 < \count($aStyles))
+				if (\count($aStyles))
 				{
 					$sStyles .= $sStyles . '; ' . \implode('; ', $aStyles);
 				}
@@ -652,7 +652,7 @@ abstract class HtmlUtils
 			if ($oElement->hasAttributes() && isset($oElement->attributes) && $oElement->attributes)
 			{
 				$aHtmlAllowedAttributes = isset(\MailSo\Config::$HtmlStrictAllowedAttributes) &&
-					\is_array(\MailSo\Config::$HtmlStrictAllowedAttributes) && 0 < \count(\MailSo\Config::$HtmlStrictAllowedAttributes) ?
+					\is_array(\MailSo\Config::$HtmlStrictAllowedAttributes) && \count(\MailSo\Config::$HtmlStrictAllowedAttributes) ?
 						\MailSo\Config::$HtmlStrictAllowedAttributes : null;
 
 				$sAttrsForRemove = array();
@@ -676,7 +676,7 @@ abstract class HtmlUtils
 					}
 				}
 
-				if (0 < \count($sAttrsForRemove))
+				if (\count($sAttrsForRemove))
 				{
 					foreach ($sAttrsForRemove as $sName)
 					{
@@ -797,8 +797,8 @@ abstract class HtmlUtils
 							$oElement->setAttribute('data-x-src', $sSrc);
 							if ($fAdditionalExternalFilter)
 							{
-								$sCallResult = \call_user_func($fAdditionalExternalFilter, $sSrc);
-								if (0 < \strlen($sCallResult))
+								$sCallResult = $fAdditionalExternalFilter($sSrc);
+								if (\strlen($sCallResult))
 								{
 									$oElement->setAttribute('data-x-additional-src', $sCallResult);
 								}
@@ -849,13 +849,13 @@ abstract class HtmlUtils
 						$aFoundCIDs, $aContentLocationUrls, $aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl, $fAdditionalExternalFilter));
 			}
 
-			if (\MailSo\Config::$HtmlStrictDebug && 0 < \count($aRemovedAttrs))
+			if (\MailSo\Config::$HtmlStrictDebug && \count($aRemovedAttrs))
 			{
 				unset($aRemovedAttrs['class'], $aRemovedAttrs['target'], $aRemovedAttrs['id'], $aRemovedAttrs['name'],
 					$aRemovedAttrs['itemprop'], $aRemovedAttrs['itemscope'], $aRemovedAttrs['itemtype']);
 
 				$aRemovedAttrs = \array_keys($aRemovedAttrs);
-				if (0 < \count($aRemovedAttrs))
+				if (\count($aRemovedAttrs))
 				{
 					$oElement->setAttribute('data-removed-attrs', \implode(',', $aRemovedAttrs));
 				}
@@ -1006,7 +1006,7 @@ abstract class HtmlUtils
 	public static function ConvertPlainToHtml(string $sText, bool $bLinksWithTargetBlank = true) : string
 	{
 		$sText = \trim($sText);
-		if (0 === \strlen($sText))
+		if (!\strlen($sText))
 		{
 			return '';
 		}

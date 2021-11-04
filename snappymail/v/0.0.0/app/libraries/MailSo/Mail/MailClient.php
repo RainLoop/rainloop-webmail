@@ -369,21 +369,20 @@ class MailClient
 		}
 
 		$aFetchResponse = $this->oImapClient->Fetch(array(
-			array(\MailSo\Imap\Enumerations\FetchType::BODY_PEEK.'['.$sMimeIndex.']',
+			// Push in the aFetchCallbacks array and then called by \MailSo\Imap\Traits\ResponseParser::partialResponseLiteralCallbackCallable
+			array(
+				\MailSo\Imap\Enumerations\FetchType::BODY_PEEK.'['.$sMimeIndex.']',
 				function ($sParent, $sLiteralAtomUpperCase, $rImapLiteralStream) use ($mCallback, $sMimeIndex, $sMailEncodingName, $sContentType, $sFileName)
 				{
-					if (\strlen($sLiteralAtomUpperCase))
+					if (\strlen($sLiteralAtomUpperCase) && \is_resource($rImapLiteralStream) && 'FETCH' === $sParent)
 					{
-						if (\is_resource($rImapLiteralStream) && 'FETCH' === $sParent)
-						{
-							$rMessageMimeIndexStream = \strlen($sMailEncodingName)
-								? \MailSo\Base\StreamWrappers\Binary::CreateStream($rImapLiteralStream,
-									\MailSo\Base\StreamWrappers\Binary::GetInlineDecodeOrEncodeFunctionName(
-										$sMailEncodingName, true))
-								: $rImapLiteralStream;
+						$rMessageMimeIndexStream = \strlen($sMailEncodingName)
+							? \MailSo\Base\StreamWrappers\Binary::CreateStream($rImapLiteralStream,
+								\MailSo\Base\StreamWrappers\Binary::GetInlineDecodeOrEncodeFunctionName(
+									$sMailEncodingName, true))
+							: $rImapLiteralStream;
 
-							\call_user_func($mCallback, $rMessageMimeIndexStream, $sContentType, $sFileName, $sMimeIndex);
-						}
+						$mCallback($rMessageMimeIndexStream, $sContentType, $sFileName, $sMimeIndex);
 					}
 				}
 			)), $iIndex, $bIndexIsUid);

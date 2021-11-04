@@ -44,7 +44,7 @@ class Callback extends \MailSo\Log\Driver
 	{
 		if ($this->fWriteCallback)
 		{
-			\call_user_func_array($this->fWriteCallback, array($mDesc));
+			($this->fWriteCallback)($mDesc);
 		}
 
 		return true;
@@ -54,7 +54,7 @@ class Callback extends \MailSo\Log\Driver
 	{
 		if ($this->fClearCallback)
 		{
-			\call_user_func($this->fClearCallback);
+			($this->fClearCallback)();
 		}
 
 		return true;

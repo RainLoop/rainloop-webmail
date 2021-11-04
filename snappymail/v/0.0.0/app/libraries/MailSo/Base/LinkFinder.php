@@ -153,7 +153,7 @@ class LinkFinder
 
 		unset($sText, $sSubText);
 
-		if (0 < \count($this->aPrepearPlainStringUrls))
+		if (\count($this->aPrepearPlainStringUrls))
 		{
 			$aPrepearPlainStringUrls = $this->aPrepearPlainStringUrls;
 			$sResult = \preg_replace_callback('/'.\preg_quote(static::OPEN_LINK, '/').
@@ -195,8 +195,8 @@ class LinkFinder
 					}
 				}
 
-				$sLinkWithWrap = \call_user_func($fWrapper, $aMatch[2].$aMatch[3]);
-				if (\is_string($sLinkWithWrap) && 0 < \strlen($sLinkWithWrap))
+				$sLinkWithWrap = $fWrapper($aMatch[2].$aMatch[3]);
+				if (\is_string($sLinkWithWrap) && \strlen($sLinkWithWrap))
 				{
 					$aPrepearPlainStringUrls[] = \stripslashes($sLinkWithWrap);
 					return $aMatch[1].
@@ -213,7 +213,7 @@ class LinkFinder
 
 		}, $sText);
 
-		if (0 < \count($aPrepearPlainStringUrls))
+		if (\count($aPrepearPlainStringUrls))
 		{
 			$this->aPrepearPlainStringUrls = $aPrepearPlainStringUrls;
 		}
@@ -233,8 +233,8 @@ class LinkFinder
 
 			if (\is_array($aMatch) && isset($aMatch[1]))
 			{
-				$sMailWithWrap = \call_user_func($fWrapper, $aMatch[1]);
-				if (\is_string($sMailWithWrap) && 0 < \strlen($sMailWithWrap))
+				$sMailWithWrap = $fWrapper($aMatch[1]);
+				if (\is_string($sMailWithWrap) && \strlen($sMailWithWrap))
 				{
 					$aPrepearPlainStringUrls[] = \stripslashes($sMailWithWrap);
 					return static::OPEN_LINK.
@@ -249,7 +249,7 @@ class LinkFinder
 
 		}, $sText);
 
-		if (0 < \count($aPrepearPlainStringUrls))
+		if (\count($aPrepearPlainStringUrls))
 		{
 			$this->aPrepearPlainStringUrls = $aPrepearPlainStringUrls;
 		}

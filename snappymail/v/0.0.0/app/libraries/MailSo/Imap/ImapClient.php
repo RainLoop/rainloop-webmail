@@ -41,6 +41,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	private $oCurrentFolderInfo = null;
 
 	/**
+	 * Used by \MailSo\Mail\MailClient::MessageMimeStream
 	 * @var array
 	 */
 	private $aFetchCallbacks;

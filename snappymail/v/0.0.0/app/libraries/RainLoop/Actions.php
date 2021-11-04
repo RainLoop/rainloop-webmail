@@ -313,7 +313,7 @@ class Actions
 				return \trim(\trim($sS), ' /');
 			}, $aSubQuery);
 
-			if (0 < \count($aSubQuery)) {
+			if (\count($aSubQuery)) {
 				$sQuery .= '/' . \implode('/', $aSubQuery);
 			}
 		}
@@ -465,7 +465,7 @@ class Actions
 			$sFileName = \preg_replace('/[^a-zA-Z0-9@_+=\-\.\/!()\[\]]/', '', $sFileName);
 		}
 
-		if (0 === \strlen($sFileName)) {
+		if (!\strlen($sFileName)) {
 			$sFileName = 'rainloop-log.txt';
 		}
 
@@ -485,7 +485,7 @@ class Actions
 		$this->SetSpecAuthToken($sSpecAuthToken);
 		Utils::SetCookie(self::AUTH_SPEC_TOKEN_KEY, $sSpecAuthToken);
 
-		if ($oAccount->SignMe() && 0 < \strlen($oAccount->SignMeToken())) {
+		if ($oAccount->SignMe() && \strlen($oAccount->SignMeToken())) {
 			Utils::SetCookie(self::AUTH_SIGN_ME_TOKEN_KEY,
 				Utils::EncodeKeyValuesQ(array(
 					'e' => $oAccount->Email(),
@@ -861,7 +861,7 @@ class Actions
 	protected function LoginProvide(string $sEmail, string $sLogin, string $sPassword, string $sSignMeToken = '', string $sClientCert = '', bool $bThrowProvideException = false): ?Model\Account
 	{
 		$oAccount = null;
-		if (0 < \strlen($sEmail) && 0 < \strlen($sLogin) && 0 < \strlen($sPassword)) {
+		if (\strlen($sEmail) && \strlen($sLogin) && \strlen($sPassword)) {
 			$oDomain = $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
 			if ($oDomain) {
 				if ($oDomain->ValidateWhiteList($sEmail, $sLogin)) {
@@ -1368,7 +1368,7 @@ class Actions
 				$aDomainParts = \explode('.', $sUserHost);
 
 				$oDomainProvider = $this->DomainProvider();
-				while (0 < \count($aDomainParts) && 0 < $iLimit) {
+				while (\count($aDomainParts) && 0 < $iLimit) {
 					$sLine = \trim(\implode('.', $aDomainParts), '. ');
 
 					$oDomain = $oDomainProvider->Load($sLine, false);
@@ -1407,7 +1407,7 @@ class Actions
 			}
 
 			$sDefDomain = \trim($this->Config()->Get('login', 'default_domain', ''));
-			if (false === \strpos($sEmail, '@') && 0 < \strlen($sDefDomain)) {
+			if (false === \strpos($sEmail, '@') && \strlen($sDefDomain)) {
 				$this->Logger()->Write('Default domain "' . $sDefDomain . '" was used. (' . $sEmail . ' > ' . $sEmail . '@' . $sDefDomain . ')',
 					\MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
 
@@ -1417,7 +1417,7 @@ class Actions
 
 		$this->Plugins()->RunHook('login.credentials.step-2', array(&$sEmail, &$sPassword));
 
-		if (false === \strpos($sEmail, '@') || 0 === \strlen($sPassword)) {
+		if (false === \strpos($sEmail, '@') || !\strlen($sPassword)) {
 			$this->loginErrorDelay();
 
 			throw new Exceptions\ClientException(Notifications::InvalidInputArgument);
@@ -1472,7 +1472,7 @@ class Actions
 				$aAccounts = \json_decode($sAccounts, true);
 			}
 
-			if (\is_array($aAccounts) && 0 < \count($aAccounts)) {
+			if (\is_array($aAccounts) && \count($aAccounts)) {
 				if (1 === \count($aAccounts)) {
 					$this->SetAccounts($oAccount, array());
 
@@ -1571,7 +1571,7 @@ class Actions
 				case 'string':
 					$sValue = (string)$sValue;
 					if ($mStringCallback && is_callable($mStringCallback)) {
-						$sValue = call_user_func($mStringCallback, $sValue);
+						$sValue = $mStringCallback($sValue);
 					}
 
 					$oConfig->Set($sConfigSector, $sConfigName, (string)$sValue);
@@ -1615,7 +1615,7 @@ class Actions
 
 	public function MainClearFileName(string $sFileName, string $sContentType, string $sMimeIndex, int $iMaxLength = 250): string
 	{
-		$sFileName = 0 === \strlen($sFileName) ? \preg_replace('/[^a-zA-Z0-9]/', '.', (empty($sMimeIndex) ? '' : $sMimeIndex . '.') . $sContentType) : $sFileName;
+		$sFileName = !\strlen($sFileName) ? \preg_replace('/[^a-zA-Z0-9]/', '.', (empty($sMimeIndex) ? '' : $sMimeIndex . '.') . $sContentType) : $sFileName;
 		$sClearedFileName = \MailSo\Base\Utils::StripSpaces(\preg_replace('/[\.]+/', '.', $sFileName));
 		$sExt = \MailSo\Base\Utils::GetFileExtension($sClearedFileName);
 
@@ -1736,7 +1736,7 @@ class Actions
 					$rData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
 					if (\is_resource($rData)) {
 						$sData = \stream_get_contents($rData);
-						if (!empty($sData) && 0 < \strlen($sData)) {
+						if (!empty($sData) && \strlen($sData)) {
 							$sName = $aFile['name'];
 							if (empty($sName)) {
 								$sName = '_';
@@ -1826,7 +1826,7 @@ class Actions
 					}
 				}
 
-				if (0 < \count($aData)) {
+				if (\count($aData)) {
 					$this->Logger()->Write('Import contacts from csv');
 					$iCount = $oAddressBookProvider->ImportCsvArray($oAccount->ParentEmailHelper(), $aData);
 				}

@@ -39,7 +39,7 @@ class Manager
 		$this->bIsEnabled = (bool) $oConfig->Get('plugins', 'enable', false);
 		if ($this->bIsEnabled) {
 			$sList = $oConfig->Get('plugins', 'enabled_list', '');
-			if (0 < \strlen($sList)) {
+			if (\strlen($sList)) {
 				$aList = \array_map('trim', \explode(',', $sList));
 				foreach ($aList as $i => $sName) {
 					$oPlugin = $this->CreatePluginByName($sName);
@@ -169,7 +169,7 @@ class Manager
 
 	public function HaveJs(bool $bAdminScope = false) : bool
 	{
-		return $this->bIsEnabled && 0 < \count($this->aJs[$bAdminScope ? 1 : 0]);
+		return $this->bIsEnabled && \count($this->aJs[$bAdminScope ? 1 : 0]);
 	}
 
 	public function CompileCss(bool $bAdminScope = false) : string
@@ -245,7 +245,7 @@ class Manager
 
 					$oPlugin->FilterAppDataPluginSection($bAdmin, $bAuth, $aConfig);
 
-					if (0 < \count($aConfig))
+					if (\count($aConfig))
 					{
 						$aAppData['Plugins'][$oPlugin->Name()] = $aConfig;
 					}
@@ -323,7 +323,7 @@ class Manager
 
 				foreach ($this->aHooks[$sHookName] as $mCallback)
 				{
-					\call_user_func_array($mCallback, $aArg);
+					$mCallback(...$aArg);
 				}
 			}
 		}
@@ -360,7 +360,7 @@ class Manager
 			{
 				foreach ($this->aAdditionalParts[$sActionName] as $mCallbak)
 				{
-					$bCallResult = \call_user_func_array($mCallbak, $aParts);
+					$bCallResult = $mCallbak(...$aParts);
 					if ($bCallResult && !$bResult)
 					{
 						$bResult = true;
@@ -404,7 +404,7 @@ class Manager
 	 */
 	public function AddAdditionalJsonAction(string $sActionName, $mCallback) : self
 	{
-		if ($this->bIsEnabled && \is_callable($mCallback) && 0 < \strlen($sActionName))
+		if ($this->bIsEnabled && \is_callable($mCallback) && \strlen($sActionName))
 		{
 			$sActionName = 'DoPlugin'.$sActionName;
 
@@ -431,7 +431,7 @@ class Manager
 		{
 			if (isset($this->aAdditionalJson[$sActionName]))
 			{
-				return \call_user_func($this->aAdditionalJson[$sActionName]);
+				return $this->aAdditionalJson[$sActionName]();
 			}
 		}
 
