@@ -680,20 +680,20 @@ class BodyStructure
 						return null;
 					}
 				}
-			}
 
-			$aDispParamList = $aDispList[1];
-			if (\is_array($aDispParamList))
-			{
-				$aDispositionParams = self::getKeyValueListFromArrayList($aDispParamList);
-				$sFileName = self::decodeAttrParameter($aDispositionParams, 'filename', $sCharset ?: '');
+				$aDispParamList = $aDispList[1];
+				if (\is_array($aDispParamList))
+				{
+					$aDispositionParams = self::getKeyValueListFromArrayList($aDispParamList);
+					$sFileName = self::decodeAttrParameter($aDispositionParams, 'filename', $sCharset ?: '');
+				}
 			}
 		}
 
 		++$iExtraItemPos;
 
 		$sLanguage = null;
-		if ($iExtraItemPos < count($aBodyStructure))
+		if ($iExtraItemPos < \count($aBodyStructure))
 		{
 			if (null !== $aBodyStructure[$iExtraItemPos] && 'NIL' !== $aBodyStructure[$iExtraItemPos])
 			{
@@ -778,9 +778,10 @@ class BodyStructure
 	private static function getKeyValueListFromArrayList(array $aList) : array
 	{
 		$aDict = array();
-		if (0 === \count($aList) % 2)
+		$iLen = \count($aList);
+		if (0 === ($iLen % 2))
 		{
-			for ($iIndex = 0, $iLen = \count($aList); $iIndex < $iLen; $iIndex += 2)
+			for ($iIndex = 0; $iIndex < $iLen; $iIndex += 2)
 			{
 				if (\is_string($aList[$iIndex]) && isset($aList[$iIndex + 1]) && \is_string($aList[$iIndex + 1]))
 				{
