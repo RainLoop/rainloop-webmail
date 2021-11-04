@@ -290,8 +290,10 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function Capability() : ?array
 	{
-		$this->aCapabilityItems = $this->SendRequestGetResponse('CAPABILITY')
-			->getCapabilityResult();
+		if (!$this->aCapabilityItems) {
+			$this->aCapabilityItems = $this->SendRequestGetResponse('CAPABILITY')
+				->getCapabilityResult();
+		}
 		return $this->aCapabilityItems;
 	}
 
@@ -311,11 +313,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function IsSupported(string $sExtentionName) : bool
 	{
 		$sExtentionName = \trim($sExtentionName);
-		if ($sExtentionName && null === $this->aCapabilityItems) {
-			$this->aCapabilityItems = $this->Capability();
-		}
-
-		return $sExtentionName && \in_array(\strtoupper($sExtentionName), $this->aCapabilityItems ?: []);
+		return $sExtentionName && \in_array(\strtoupper($sExtentionName), $this->Capability() ?: []);
 	}
 
 	/**
@@ -346,7 +344,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function AppendLimit() : ?int
 	{
-		if ($this->aCapabilityItems) {
+		if ($this->Capability()) {
 			foreach ($this->aCapabilityItems as $string) {
 				if ('APPENDLIMIT=' === \substr($string, 0, 12)) {
 					return (int) \substr($string, 12);
