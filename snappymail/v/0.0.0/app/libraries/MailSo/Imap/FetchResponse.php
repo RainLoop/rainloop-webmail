@@ -201,7 +201,7 @@ class FetchResponse
 	 */
 	private static function findEnvelopeIndex(array $aEnvelope, int $iIndex, ?string $mNullResult)
 	{
-		return (isset($aEnvelope[$iIndex]) && 'NIL' !== $aEnvelope[$iIndex] && '' !== $aEnvelope[$iIndex])
+		return (isset($aEnvelope[$iIndex]) && '' !== $aEnvelope[$iIndex])
 			? $aEnvelope[$iIndex] : $mNullResult;
 	}
 }

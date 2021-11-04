@@ -66,7 +66,6 @@ class Folder
 
 	public function setDelimiter(?string $sDelimiter) : void
 	{
-		$sDelimiter = 'NIL' === \strtoupper($sDelimiter) ? null : $sDelimiter;
 		$this->sDelimiter = $sDelimiter;
 		if ($sDelimiter) {
 			$aNames = \explode($this->sDelimiter, $this->sFullNameRaw);

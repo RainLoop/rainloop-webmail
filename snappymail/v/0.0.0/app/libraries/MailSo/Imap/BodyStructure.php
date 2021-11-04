@@ -456,7 +456,7 @@ class BodyStructure
 		}
 
 		$sBodyMainType = null;
-		if (\is_string($aBodyStructure[0]) && 'NIL' !== $aBodyStructure[0])
+		if (\is_string($aBodyStructure[0]))
 		{
 			$sBodyMainType = $aBodyStructure[0];
 		}
@@ -520,7 +520,7 @@ class BodyStructure
 
 			if ($iExtraItemPos < \count($aBodyStructure))
 			{
-				if (!\is_string($aBodyStructure[$iExtraItemPos]) || 'NIL' === $aBodyStructure[$iExtraItemPos])
+				if (!\is_string($aBodyStructure[$iExtraItemPos]))
 				{
 					return null;
 				}
@@ -549,7 +549,7 @@ class BodyStructure
 			}
 
 			$sBodyMainType = \strtolower($sBodyMainType);
-			if (!\is_string($aBodyStructure[1]) || 'NIL' === $aBodyStructure[1])
+			if (!\is_string($aBodyStructure[1]))
 			{
 				return null;
 			}
@@ -568,7 +568,7 @@ class BodyStructure
 				$sName = self::decodeAttrParameter($aBodyParams, 'name', $sContentType);
 			}
 
-			if (null !== $aBodyStructure[3] && 'NIL' !== $aBodyStructure[3])
+			if (null !== $aBodyStructure[3])
 			{
 				if (!\is_string($aBodyStructure[3]))
 				{
@@ -578,7 +578,7 @@ class BodyStructure
 				$sContentID = $aBodyStructure[3];
 			}
 
-			if (null !== $aBodyStructure[4] && 'NIL' !== $aBodyStructure[4])
+			if (null !== $aBodyStructure[4])
 			{
 				if (!\is_string($aBodyStructure[4]))
 				{
@@ -588,7 +588,7 @@ class BodyStructure
 				$sDescription = $aBodyStructure[4];
 			}
 
-			if (null !== $aBodyStructure[5] && 'NIL' !== $aBodyStructure[5])
+			if (null !== $aBodyStructure[5])
 			{
 				if (!\is_string($aBodyStructure[5]))
 				{
@@ -671,7 +671,7 @@ class BodyStructure
 			{
 				if (null !== $aDispList[0])
 				{
-					if (\is_string($aDispList[0]) && 'NIL' !== $aDispList[0])
+					if (\is_string($aDispList[0]))
 					{
 						$sDisposition = $aDispList[0];
 					}
@@ -695,7 +695,7 @@ class BodyStructure
 		$sLanguage = null;
 		if ($iExtraItemPos < \count($aBodyStructure))
 		{
-			if (null !== $aBodyStructure[$iExtraItemPos] && 'NIL' !== $aBodyStructure[$iExtraItemPos])
+			if (null !== $aBodyStructure[$iExtraItemPos])
 			{
 				if (\is_array($aBodyStructure[$iExtraItemPos]))
 				{
@@ -712,7 +712,7 @@ class BodyStructure
 		$sLocation = null;
 		if ($iExtraItemPos < \count($aBodyStructure))
 		{
-			if (null !== $aBodyStructure[$iExtraItemPos] && 'NIL' !== $aBodyStructure[$iExtraItemPos])
+			if (null !== $aBodyStructure[$iExtraItemPos])
 			{
 				if (\is_string($aBodyStructure[$iExtraItemPos]))
 				{

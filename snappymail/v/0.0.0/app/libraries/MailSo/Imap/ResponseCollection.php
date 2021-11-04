@@ -99,10 +99,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 			{
 				$c = \count($oResponse->ResponseList[3]);
 				for ($i = 0; $i < $c; $i += 2) {
-					$value = $oResponse->ResponseList[3][$i+1];
-					if ('NIL' !== $value) {
-						$aReturn[$oResponse->ResponseList[3][$i]] = $value;
-					}
+					$aReturn[$oResponse->ResponseList[3][$i]] = $oResponse->ResponseList[3][$i+1];
 				}
 			}
 		}
