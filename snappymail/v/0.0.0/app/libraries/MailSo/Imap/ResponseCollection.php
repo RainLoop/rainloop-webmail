@@ -88,34 +88,6 @@ class ResponseCollection extends \MailSo\Base\Collection
 		return $aReturn;
 	}
 
-	/**
-	 * @param array|string $mName
-	 */
-	private function getArrayNameToStringName($mName) : string
-	{
-		if (\is_string($mName))
-		{
-			return $mName;
-		}
-
-		if (\is_array($mName))
-		{
-			if (0 === \count($mName))
-			{
-				return '[]';
-			}
-
-			foreach ($mName as &$mSubName)
-			{
-				$mSubName = "[{$this->getArrayNameToStringName($mSubName)}]";
-			}
-
-			return \implode('', $mName);
-		}
-
-		return '';
-	}
-
 	public function getFolderMetadataResult() : array
 	{
 		$aReturn = array();
@@ -154,21 +126,10 @@ class ResponseCollection extends \MailSo\Base\Collection
 				}
 				$aReturn[$sFullNameRaw]->setStatusFromResponse($oResponse);
 			}
-			else if ($sStatus === $oResponse->StatusOrIndex && 5 <= count($oResponse->ResponseList)) {
+			else if ($sStatus === $oResponse->StatusOrIndex && 5 == \count($oResponse->ResponseList)) {
 				try
 				{
-					/**
-					 * A bug in the parser converts folder names that start with '[' into arrays,
-					 * and subfolders are in $oResponse->ResponseList[5+]
-					 * https://github.com/the-djmaze/snappymail/issues/1
-					 * https://github.com/the-djmaze/snappymail/issues/70
-					 */
-					$aFullNameRawList = \array_slice($oResponse->ResponseList, 4);
-					foreach ($aFullNameRawList as &$sName) {
-						$sName = $this->getArrayNameToStringName($sName);
-					}
-
-					$sFullNameRaw = \implode('', $aFullNameRawList);
+					$sFullNameRaw = $oResponse->ResponseList[4];
 
 					/**
 					 * $oResponse->ResponseList[0] = *

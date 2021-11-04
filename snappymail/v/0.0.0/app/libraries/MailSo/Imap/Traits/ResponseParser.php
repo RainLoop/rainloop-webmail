@@ -42,15 +42,23 @@ trait ResponseParser
 		return $oResponse;
 	}
 
-	private function skipBracketParse(?Response $oImapResponse) : bool
+	/**
+	 * A bug in the parser converts folder names that start with '[' into arrays.
+	 * https://github.com/the-djmaze/snappymail/issues/1
+	 * https://github.com/the-djmaze/snappymail/issues/70
+	 * The fix RainLoop implemented isn't correct either.
+	 * This one should as RFC 3501 only mentions:
+	 *
+	 * 	Status responses are OK, NO, BAD, PREAUTH and BYE.
+	 *
+	 *	Status responses MAY include an OPTIONAL "response code".  A response
+	 *	code consists of data inside square brackets in the form of an atom,
+	 *	possibly followed by a space and arguments.
+	 */
+	private function skipSquareBracketParse(?Response $oImapResponse) : bool
 	{
-		return $oImapResponse &&
-			$oImapResponse->ResponseType === ResponseType::UNTAGGED &&
-			(
-				($oImapResponse->StatusOrIndex === 'STATUS' && 2 === \count($oImapResponse->ResponseList)) ||
-				($oImapResponse->StatusOrIndex === 'LIST' && 4 === \count($oImapResponse->ResponseList)) ||
-				($oImapResponse->StatusOrIndex === 'LSUB' && 4 === \count($oImapResponse->ResponseList))
-			);
+		return $oImapResponse
+			&& !($oImapResponse->IsStatusResponse && 2 < \count($oImapResponse->ResponseList));
 	}
 
 	/**
@@ -234,18 +242,16 @@ trait ResponseParser
 			switch (true)
 			{
 				case ']' === $sChar:
-				case ')' === $sChar:
-					if ($this->skipBracketParse($oImapResponse))
-					{
+					if ($this->skipSquareBracketParse($oImapResponse)) {
 						$bIsGotoDefault = true;
 						$bIsGotoNotAtomBracket = false;
+						break 2;
 					}
-					else
-					{
-						++$iPos;
-						$sPreviousAtomUpperCase = null;
-					}
+				case ')' === $sChar:
+					++$iPos;
+					$sPreviousAtomUpperCase = null;
 					break 2;
+
 				case ' ' === $sChar:
 					if ($bTreatAsAtom)
 					{
@@ -253,7 +259,13 @@ trait ResponseParser
 					}
 					++$iPos;
 					break;
+
 				case '[' === $sChar:
+					if ($this->skipSquareBracketParse($oImapResponse)) {
+						$bIsGotoDefault = true;
+						$bIsGotoNotAtomBracket = false;
+						break;
+					}
 				case '(' === $sChar:
 					$sOpenBracket = $sChar;
 					$sClosingBracket = '[' === $sChar ? ']' : ')';
@@ -263,19 +275,13 @@ trait ResponseParser
 						$bIsGotoAtomBracket = true;
 						$this->iResponseBufParsedPos = ++$iPos;
 					}
-					else if ($this->skipBracketParse($oImapResponse))
-					{
-						$sOpenBracket = '';
-						$sClosingBracket = '';
-						$bIsGotoDefault = true;
-						$bIsGotoNotAtomBracket = false;
-					}
 					else
 					{
 						$bIsGotoNotAtomBracket = true;
 						$this->iResponseBufParsedPos = ++$iPos;
 					}
 					break;
+
 				case '{' === $sChar:
 					$bIsLiteralParsed = false;
 					$mLiteralEndPos = \strpos($this->sResponseBuffer, '}', $iPos);
@@ -297,6 +303,7 @@ trait ResponseParser
 					}
 					$sPreviousAtomUpperCase = null;
 					break;
+
 				case '"' === $sChar:
 					$bIsQuotedParsed = false;
 					while (true)
@@ -402,8 +409,7 @@ trait ResponseParser
 						$sCharDef = $this->sResponseBuffer[$iPos];
 						switch (true)
 						{
-							case ('[' === $sCharDef || ']' === $sCharDef || '(' === $sCharDef || ')' === $sCharDef) &&
-								$this->skipBracketParse($oImapResponse):
+							case ('[' === $sCharDef || ']' === $sCharDef) && $this->skipSquareBracketParse($oImapResponse):
 								++$iPos;
 								break;
 							case '[' === $sCharDef:
