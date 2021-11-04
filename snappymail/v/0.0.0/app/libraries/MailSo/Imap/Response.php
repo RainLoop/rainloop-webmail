@@ -11,6 +11,8 @@
 
 namespace MailSo\Imap;
 
+use \MailSo\Imap\Enumerations\ResponseType;
+
 /**
  * @category MailSo
  * @package Imap
@@ -20,12 +22,12 @@ class Response
 	/**
 	 * @var array
 	 */
-	public $ResponseList;
+	public $ResponseList = array();
 
 	/**
 	 * @var array | null
 	 */
-	public $OptionalResponse;
+	public $OptionalResponse = null;
 
 	/**
 	 * @var string
@@ -35,33 +37,22 @@ class Response
 	/**
 	 * @var string
 	 */
-	public $HumanReadable;
+	public $HumanReadable = '';
 
 	/**
 	 * @var bool
 	 */
-	public $IsStatusResponse;
+	public $IsStatusResponse = false;
 
 	/**
-	 * @var string
+	 * @var int
 	 */
-	public $ResponseType;
+	public $ResponseType = 0;
 
 	/**
 	 * @var string
 	 */
 	public $Tag;
-
-	function __construct()
-	{
-		$this->ResponseList = array();
-		$this->OptionalResponse = null;
-		$this->StatusOrIndex = '';
-		$this->HumanReadable = '';
-		$this->IsStatusResponse = false;
-		$this->ResponseType = \MailSo\Imap\Enumerations\ResponseType::UNKNOWN;
-		$this->Tag = '';
-	}
 
 	private function recToLine(array $aList) : string
 	{
@@ -71,6 +62,25 @@ class Response
 			$aResult[] = \is_array($mItem) ? '('.$this->recToLine($mItem).')' : (string) $mItem;
 		}
 		return \implode(' ', $aResult);
+	}
+
+	public function setStatus(string $value) : void
+	{
+		$value = \strtoupper($value);
+		$this->StatusOrIndex = $value;
+		$this->IsStatusResponse = \defined("\\MailSo\\Imap\\Enumerations\\ResponseStatus::{$value}");
+	}
+
+	public function setTag(string $value) : void
+	{
+		$this->Tag = $value;
+		if ('+' === $value) {
+			$this->ResponseType = ResponseType::CONTINUATION;
+		} else if ('*' === $value) {
+			$this->ResponseType = ResponseType::UNTAGGED;
+		} else {
+			$this->ResponseType = ResponseType::UNKNOWN;
+		}
 	}
 
 	public function ToLine() : string

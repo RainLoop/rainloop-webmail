@@ -12,7 +12,6 @@
 namespace MailSo\Imap\Traits;
 
 use \MailSo\Imap\Response;
-use \MailSo\Imap\Enumerations\ResponseStatus;
 use \MailSo\Imap\Enumerations\ResponseType;
 use \MailSo\Imap\Exceptions\ResponseNotFoundException;
 
@@ -83,9 +82,6 @@ trait ResponseParser
 		$iBufferEndIndex = 0;
 
 		$bIsGotoDefault = false;
-
-		$bCountOneInited = false;
-		$bCountTwoInited = false;
 
 		$sAtomBuilder = $bTreatAsAtom ? '' : null;
 		$aList = array();
@@ -258,15 +254,12 @@ trait ResponseParser
 					if ($bRoot && $oImapResponse->IsStatusResponse)
 					{
 						$iPos = $iBufferEndIndex;
-
-						while ($iPos > $iCharBlockStartPos && $this->sResponseBuffer[$iCharBlockStartPos] === ' ')
-						{
-							++$iCharBlockStartPos;
+						if ($iPos > $iCharBlockStartPos) {
+							$iCharBlockStartPos += \strspn($this->sResponseBuffer, ' ', $iCharBlockStartPos, $iPos - $iCharBlockStartPos);
 						}
 					}
 
-					$bIsAtomDone = false;
-					while (!$bIsAtomDone && ($iPos <= $iBufferEndIndex))
+					while ($iPos <= $iBufferEndIndex)
 					{
 						$sCharDef = $this->sResponseBuffer[$iPos];
 						switch (true)
@@ -282,8 +275,7 @@ trait ResponseParser
 
 								$sAtomBuilder .= \substr($this->sResponseBuffer, $iCharBlockStartPos, $iPos - $iCharBlockStartPos + 1);
 
-								++$iPos;
-								$this->iResponseBufParsedPos = $iPos;
+								$this->iResponseBufParsedPos = ++$iPos;
 
 								$sListBlock = $this->partialParseResponseBranch($oImapResponse, true,
 									null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase),
@@ -300,8 +292,7 @@ trait ResponseParser
 							case ' ' === $sCharDef:
 							case ')' === $sCharDef && '(' === $sOpenBracket:
 							case ']' === $sCharDef && '[' === $sOpenBracket:
-								$bIsAtomDone = true;
-								break;
+								break 2;
 							default:
 								++$iPos;
 								break;
@@ -330,52 +321,20 @@ trait ResponseParser
 
 						if ($bRoot)
 						{
-//							if (1 === \count($aList))
-							if (!$bCountOneInited && 1 === \count($aList))
-//							if (isset($aList[0]) && !isset($aList[1])) // fast 1 === \count($aList)
+							if (!isset($oImapResponse->Tag) && 1 === \count($aList))
 							{
-								$bCountOneInited = true;
-
-								$oImapResponse->Tag = $aList[0];
-								if ('+' === $oImapResponse->Tag)
-								{
-									$oImapResponse->ResponseType = ResponseType::CONTINUATION;
-								}
-								else if ('*' === $oImapResponse->Tag)
-								{
-									$oImapResponse->ResponseType = ResponseType::UNTAGGED;
-								}
-								else if ($this->getCurrentTag() === $oImapResponse->Tag)
+								$oImapResponse->setTag($aList[0]);
+								if ($this->getCurrentTag() === $oImapResponse->Tag)
 								{
 									$oImapResponse->ResponseType = ResponseType::TAGGED;
 								}
-								else
-								{
-									$oImapResponse->ResponseType = ResponseType::UNKNOWN;
-								}
 							}
-//							else if (2 === \count($aList))
-							else if (!$bCountTwoInited && 2 === \count($aList))
-//							else if (isset($aList[1]) && !isset($aList[2])) // fast 2 === \count($aList)
+							else if (!isset($oImapResponse->StatusOrIndex) && 2 === \count($aList))
 							{
-								$bCountTwoInited = true;
-
-								$oImapResponse->StatusOrIndex = \strtoupper($aList[1]);
-
-								if ($oImapResponse->StatusOrIndex == ResponseStatus::OK ||
-									$oImapResponse->StatusOrIndex == ResponseStatus::NO ||
-									$oImapResponse->StatusOrIndex == ResponseStatus::BAD ||
-									$oImapResponse->StatusOrIndex == ResponseStatus::BYE ||
-									$oImapResponse->StatusOrIndex == ResponseStatus::PREAUTH)
-								{
-									$oImapResponse->IsStatusResponse = true;
-								}
+								$oImapResponse->setStatus($aList[1]);
 							}
-							else if (ResponseType::CONTINUATION === $oImapResponse->ResponseType)
-							{
-								$oImapResponse->HumanReadable = $sLastCharBlock;
-							}
-							else if ($oImapResponse->IsStatusResponse)
+							else if (ResponseType::CONTINUATION === $oImapResponse->ResponseType
+								|| $oImapResponse->IsStatusResponse)
 							{
 								$oImapResponse->HumanReadable = $sLastCharBlock;
 							}
