@@ -577,7 +577,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function FolderHierarchyDelimiter(string $sFolderName = '') : ?string
 	{
-		$oResponse = $this->SendRequestGetResponse('LIST', ['""', $this->EscapeString($sParentFolderName)]);
+		$oResponse = $this->SendRequestGetResponse('LIST', ['""', $this->EscapeString($sFolderName)]);
 		return ('LIST' === $oResponse[0]->ResponseList[1]) ? $oResponse[0]->ResponseList[3] : null;
 	}
 
