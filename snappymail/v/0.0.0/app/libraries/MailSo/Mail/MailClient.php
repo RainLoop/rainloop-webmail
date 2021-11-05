@@ -718,7 +718,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageListThreadsMap(string $sFolderName, string $sFolderHash, \MailSo\Cache\CacheClient $oCacher) : array
+	public function MessageListThreadsMap(string $sFolderName, string $sFolderHash, ?\MailSo\Cache\CacheClient $oCacher) : array
 	{
 		$iThreadLimit = \MailSo\Config::$LargeThreadLimit;
 
