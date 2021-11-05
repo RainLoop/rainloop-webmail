@@ -78,30 +78,30 @@ html:not(.rl-left-panel-disabled) #rl-left.resizable {
 	width: 5px;
 }
 
-.g-ui-menu {
+.dropdown-menu {
 	max-height: 60vh;
 	max-width: 90vw;
 	overflow: auto;
 
-	.e-link {
+	a {
 		text-decoration: none;
 		cursor: pointer;
 		color: var(--dropdown-menu-color, #333);
 		background-color: var(--dropdown-menu-bg-color, #fff);
 	}
 
-	.e-item.selected > .e-link {
+	li.selected > a {
 		background-color: var(--dropdown-menu-selected-bg-color, #eee);
 	}
 
-	.e-item:not(.disabled) > .e-link:focus,
-	.e-item:not(.disabled) > .e-link:hover {
+	li:not(.disabled) > a:focus,
+	li:not(.disabled) > a:hover {
 		background-color: var(--dropdown-menu-hover-bg-color, #444);
 		background-image: none;
 		color: var(--dropdown-menu-hover-color, #eee);
 	}
 
-	.e-item.disabled > .e-link {
+	li.disabled > a {
 		cursor: not-allowed;
 		opacity: 0.5;
 	}

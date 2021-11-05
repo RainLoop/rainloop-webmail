@@ -390,20 +390,6 @@ export class MailMessageView extends AbstractViewRight {
 					[message]
 				);
 			}
-
-			el = eqs(event, '.thread-list .flagParent');
-			if (el) {
-				const message = ko.dataFor(el);
-				message && message.folder && message.uid &&  rl.app.messageListAction(
-					message.folder,
-					message.isFlagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
-					[message]
-				);
-
-				this.threadsDropdownTrigger(true);
-
-				return false;
-			}
 		});
 
 		AppUserStore.focusedState.subscribe((value) => {

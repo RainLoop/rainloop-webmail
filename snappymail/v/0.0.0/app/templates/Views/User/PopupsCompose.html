@@ -29,9 +29,9 @@
 								data-bind="text: currentIdentityView, css: {'multiply': 1 < identitiesOptions().length }">
 							</a>
 							<!-- ko if: 1 < identitiesOptions().length -->
-								<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="identity-label-id" data-bind="foreach: identitiesOptions">
-									<li class="e-item" role="presentation">
-										<a class="e-link menuitem" tabindex="-1" href="#" data-bind="click: function (oIdentity) { $root.selectIdentity(oIdentity); return true; }, text: optText"></a>
+								<ul class="dropdown-menu" role="menu" aria-labelledby="identity-label-id" data-bind="foreach: identitiesOptions">
+									<li role="presentation">
+										<a tabindex="-1" href="#" data-bind="click: function (oIdentity) { $root.selectIdentity(oIdentity); return true; }, text: optText"></a>
 									</li>
 								</ul>
 							<!-- /ko -->
@@ -42,45 +42,45 @@
 							<a class="btn fontastic" data-bind="visible: allowContacts, command: contactsCommand" data-i18n="[title]GLOBAL/CONTACTS">📇</a>
 							<div class="btn-group dropdown colored-toggle" data-bind="registerBootstrapDropdown: true" style="display:inline;vertical-align:top">
 								<a class="btn dropdown-toggle fontastic">☰</a>
-								<ul class="dropdown-menu right-edge g-ui-menu" role="menu">
-									<li class="e-item" data-bind="click: function () { showBcc(!showBcc()); }">
-										<a class="e-link">
+								<ul class="dropdown-menu right-edge" role="menu">
+									<li data-bind="click: function () { showBcc(!showBcc()); }">
+										<a>
 											<i class="fontastic" data-bind="text: showBcc() ? '☑' : '☐'"></i>
 											<span data-i18n="GLOBAL/BCC"></span>
 										</a>
 									</li>
-									<li class="e-item" data-bind="click: function () { showCc(!showCc()); }">
-										<a class="e-link">
+									<li data-bind="click: function () { showCc(!showCc()); }">
+										<a>
 											<i class="fontastic" data-bind="text: showCc() ? '☑' : '☐'"></i>
 											<span data-i18n="GLOBAL/CC"></span>
 										</a>
 									</li>
-									<li class="e-item" data-bind="click: function () { showReplyTo(!showReplyTo()); }">
-										<a class="e-link">
+									<li data-bind="click: function () { showReplyTo(!showReplyTo()); }">
+										<a>
 											<i class="fontastic" data-bind="text: showReplyTo() ? '☑' : '☐'"></i>
 											<span data-i18n="GLOBAL/REPLY_TO"></span>
 										</a>
 									</li>
-									<li class="e-item" data-bind="click: function () { requestReadReceipt(!requestReadReceipt()); }">
-										<a class="e-link">
+									<li data-bind="click: function () { requestReadReceipt(!requestReadReceipt()); }">
+										<a>
 											<i class="fontastic" data-bind="text: requestReadReceipt() ? '☑' : '☐'"></i>
 											<span data-i18n="COMPOSE/BUTTON_REQUEST_READ_RECEIPT"></span>
 										</a>
 									</li>
-									<li class="e-item" data-bind="click: function () { requestDsn(!requestDsn()); }">
-										<a class="e-link">
+									<li data-bind="click: function () { requestDsn(!requestDsn()); }">
+										<a>
 											<i class="fontastic" data-bind="text: requestDsn() ? '☑' : '☐'"></i>
 											<span data-i18n="COMPOSE/BUTTON_REQUEST_DSN"></span>
 										</a>
 									</li>
-									<li class="e-item" data-bind="click: function () { markAsImportant(!markAsImportant()); }">
-										<a class="e-link">
+									<li data-bind="click: function () { markAsImportant(!markAsImportant()); }">
+										<a>
 											<i class="fontastic" data-bind="text: markAsImportant() ? '☑' : '☐'"></i>
 											<span data-i18n="COMPOSE/BUTTON_MARK_AS_IMPORTANT"></span>
 										</a>
 									</li>
-									<li class="e-item dividerbar" data-bind="visible: capaOpenPGP, click: openOpenPgpPopup, css: {'disabled': isHtml()}">
-										<a class="e-link">
+									<li class="dividerbar" data-bind="visible: capaOpenPGP, click: openOpenPgpPopup, css: {'disabled': isHtml()}">
+										<a>
 											<i class="fontastic">🔑</i>
 											<span data-i18n="COMPOSE/BUTTON_OPEN_PGP"></span>
 										</a>

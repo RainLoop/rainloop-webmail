@@ -17,9 +17,9 @@
 					<i class="fontastic hidden-on-ctrl-btn">📁</i>
 					<span class="caret"></span>
 				</a>
-				<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="move-dropdown-id" role="menu" data-bind="foreach: folderMenuForMove">
-					<li class="e-item" role="presentation" data-bind="css: { 'disabled': disabled }, click: function (mdata, oEvent) { if (!disabled) $root.moveSelectedMessagesToFolder(id, oEvent && !!oEvent.ctrlKey); }">
-						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="text: name"></a>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="move-dropdown-id" role="menu" data-bind="foreach: folderMenuForMove">
+					<li role="presentation" data-bind="css: { 'disabled': disabled }, click: function (mdata, oEvent) { if (!disabled) $root.moveSelectedMessagesToFolder(id, oEvent && !!oEvent.ctrlKey); }">
+						<a href="#" tabindex="-1" data-bind="text: name"></a>
 					</li>
 				</ul>
 			</div>
@@ -47,53 +47,51 @@
 			</div>
 			<div class="btn-group dropdown colored-toggle" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: moreDropdownTrigger">
 				<a id="more-list-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-i18n="[title]GLOBAL/MORE">☰</a>
-				<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="more-list-dropdown-id">
-					<div>
-						<li class="e-item" role="presentation" data-bind="click: listUnsetSeen, css: {'disabled': !hasCheckedOrSelectedLines()}">
-							<a class="e-link menuitem" href="#" tabindex="-1">
-								<i class="icon-none"></i>
-								<span data-i18n="MESSAGE_LIST/MENU_UNSET_SEEN"></span>
-							</a>
-						</li>
-						<li class="e-item" role="presentation" data-bind="click: listSetSeen, css: {'disabled': !hasCheckedOrSelectedLines()}">
-							<a class="e-link menuitem" href="#" tabindex="-1">
-								<i class="icon-none"></i>
-								<span data-i18n="MESSAGE_LIST/MENU_SET_SEEN"></span>
-							</a>
-						</li>
-						<li class="e-item" role="presentation" data-bind="click: listSetFlags, css: {'disabled': !hasCheckedOrSelectedLines()}">
-							<a class="e-link menuitem" href="#" tabindex="-1">
-								<i class="fontastic flagged">★</i>
-								<span data-i18n="MESSAGE_LIST/MENU_SET_FLAG"></span>
-							</a>
-						</li>
-						<li class="e-item" role="presentation" data-bind="click: listUnsetFlags, css: {'disabled': !hasCheckedOrSelectedLines()}">
-							<a class="e-link menuitem" href="#" tabindex="-1">
-								<i class="fontastic unflagged">☆</i>
-								<span data-i18n="MESSAGE_LIST/MENU_UNSET_FLAG"></span>
-							</a>
-						</li>
-						<li class="e-item" role="presentation" data-bind="click: listSetAllSeen, css: {'disabled': !hasMessages()}">
-							<a class="e-link menuitem" href="#" tabindex="-1">
-								<i class="icon-none"></i>
-								<span data-i18n="MESSAGE_LIST/MENU_SET_ALL_SEEN"></span>
-							</a>
-						</li>
-					</div>
-					<li class="e-item dividerbar" role="presentation" data-bind="command: multyForwardCommand">
-						<a class="e-link menuitem" href="#" tabindex="-1">
+				<ul class="dropdown-menu" role="menu" aria-labelledby="more-list-dropdown-id">
+					<li role="presentation" data-bind="click: listUnsetSeen, css: {'disabled': !hasCheckedOrSelectedLines()}">
+						<a href="#" tabindex="-1">
+							<i class="icon-none"></i>
+							<span data-i18n="MESSAGE_LIST/MENU_UNSET_SEEN"></span>
+						</a>
+					</li>
+					<li role="presentation" data-bind="click: listSetSeen, css: {'disabled': !hasCheckedOrSelectedLines()}">
+						<a href="#" tabindex="-1">
+							<i class="icon-none"></i>
+							<span data-i18n="MESSAGE_LIST/MENU_SET_SEEN"></span>
+						</a>
+					</li>
+					<li role="presentation" data-bind="click: listSetFlags, css: {'disabled': !hasCheckedOrSelectedLines()}">
+						<a href="#" tabindex="-1">
+							<i class="fontastic flagged">★</i>
+							<span data-i18n="MESSAGE_LIST/MENU_SET_FLAG"></span>
+						</a>
+					</li>
+					<li role="presentation" data-bind="click: listUnsetFlags, css: {'disabled': !hasCheckedOrSelectedLines()}">
+						<a href="#" tabindex="-1">
+							<i class="fontastic unflagged">☆</i>
+							<span data-i18n="MESSAGE_LIST/MENU_UNSET_FLAG"></span>
+						</a>
+					</li>
+					<li role="presentation" data-bind="click: listSetAllSeen, css: {'disabled': !hasMessages()}">
+						<a href="#" tabindex="-1">
+							<i class="icon-none"></i>
+							<span data-i18n="MESSAGE_LIST/MENU_SET_ALL_SEEN"></span>
+						</a>
+					</li>
+					<li class="dividerbar" role="presentation" data-bind="command: multyForwardCommand">
+						<a href="#" tabindex="-1">
 							<i class="fontastic">↞</i>
 							<span data-i18n="MESSAGE_LIST/BUTTON_MULTY_FORWARD"></span>
 						</a>
 					</li>
-					<li class="e-item dividerbar" role="presentation" data-bind="visible: allowDangerousActions, command: deleteWithoutMoveCommand">
-						<a class="e-link menuitem" href="#" tabindex="-1">
+					<li class="dividerbar" role="presentation" data-bind="visible: allowDangerousActions, command: deleteWithoutMoveCommand">
+						<a href="#" tabindex="-1">
 							<i class="fontastic">🗑</i>
 							<span data-i18n="MESSAGE_LIST/BUTTON_DELETE_WITHOUT_MOVE"></span>
 						</a>
 					</li>
-					<li class="e-item" role="presentation" data-bind="visible: allowDangerousActions, command: clearCommand">
-						<a class="e-link menuitem" href="#" tabindex="-1">
+					<li role="presentation" data-bind="visible: allowDangerousActions, command: clearCommand">
+						<a href="#" tabindex="-1">
 							<i class="fontastic">🔥</i>
 							<span data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER"></span>
 						</a>
@@ -102,51 +100,51 @@
 			</div>
 			<div class="btn-group dropdown sortFolder" data-bind="visible: sortSupported() && mobileCheckedStateHide(), registerBootstrapDropdown: true, openDropdownTrigger: sortDropdownTrigger">
 				<a id="sort-list-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-i18n="[title]MESSAGE_LIST/SORT" data-bind="text: sortText">⬇</a>
-				<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="sort-list-dropdown-id">
-					<li class="e-item" role="presentation" data-sort="DATE" data-bind="click: changeSort">
-						<a class="e-link menuitem" href="#" tabindex="-1">
+				<ul class="dropdown-menu" role="menu" aria-labelledby="sort-list-dropdown-id">
+					<li role="presentation" data-sort="DATE" data-bind="click: changeSort">
+						<a href="#" tabindex="-1">
 							<i class="fontastic">📅⬆</i>
 							<span data-i18n="MESSAGE_LIST/SORT_DATE_ASC"></span>
 						</a>
 					</li>
-					<li class="e-item" role="presentation" data-sort="" data-bind="click: changeSort">
-						<a class="e-link menuitem" href="#" tabindex="-1">
+					<li role="presentation" data-sort="" data-bind="click: changeSort">
+						<a href="#" tabindex="-1">
 							<i class="fontastic">📅⬇</i>
 							<span data-i18n="MESSAGE_LIST/SORT_DATE_DESC"></span>
 						</a>
 					</li>
-					<li class="e-item dividerbar" role="presentation" data-sort="SIZE" data-bind="click: changeSort">
-						<a class="e-link menuitem" href="#" tabindex="-1">
+					<li class="dividerbar" role="presentation" data-sort="SIZE" data-bind="click: changeSort">
+						<a href="#" tabindex="-1">
 							<i class="fontastic">✉⬆</i>
 							<span data-i18n="MESSAGE_LIST/SORT_SIZE_ASC"></span>
 						</a>
 					</li>
-					<li class="e-item" role="presentation" data-sort="REVERSE SIZE" data-bind="click: changeSort">
-						<a class="e-link menuitem" href="#" tabindex="-1">
+					<li role="presentation" data-sort="REVERSE SIZE" data-bind="click: changeSort">
+						<a href="#" tabindex="-1">
 							<i class="fontastic">✉⬇</i>
 							<span data-i18n="MESSAGE_LIST/SORT_SIZE_DESC"></span>
 						</a>
 					</li>
-					<li class="e-item dividerbar" role="presentation" data-sort="SUBJECT" data-bind="click: changeSort">
-						<a class="e-link menuitem" href="#" tabindex="-1">
+					<li class="dividerbar" role="presentation" data-sort="SUBJECT" data-bind="click: changeSort">
+						<a href="#" tabindex="-1">
 							<i class="fontastic">𝐒⬇</i>
 							<span data-i18n="MESSAGE_LIST/SORT_SUBJECT_ASC"></span>
 						</a>
 					</li>
-					<li class="e-item" role="presentation" data-sort="REVERSE SUBJECT" data-bind="click: changeSort">
-						<a class="e-link menuitem" href="#" tabindex="-1">
+					<li role="presentation" data-sort="REVERSE SUBJECT" data-bind="click: changeSort">
+						<a href="#" tabindex="-1">
 							<i class="fontastic">𝐒⬆</i>
 							<span data-i18n="MESSAGE_LIST/SORT_SUBJECT_DESC"></span>
 						</a>
 					</li>
-					<li class="e-item dividerbar" role="presentation" data-sort="FROM" data-bind="click: changeSort">
-						<a class="e-link menuitem" href="#" tabindex="-1">
+					<li class="dividerbar" role="presentation" data-sort="FROM" data-bind="click: changeSort">
+						<a href="#" tabindex="-1">
 							<i class="fontastic">@⬇</i>
 							<span data-i18n="MESSAGE_LIST/SORT_FROM_ASC"></span>
 						</a>
 					</li>
-					<li class="e-item" role="presentation" data-sort="REVERSE FROM" data-bind="click: changeSort">
-						<a class="e-link menuitem" href="#" tabindex="-1">
+					<li role="presentation" data-sort="REVERSE FROM" data-bind="click: changeSort">
+						<a href="#" tabindex="-1">
 							<i class="fontastic">@⬆</i>
 							<span data-i18n="MESSAGE_LIST/SORT_FROM_DESC"></span>
 						</a>

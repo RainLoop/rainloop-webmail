@@ -17,12 +17,12 @@
 -->
 					<span class="caret"></span>
 				</a>
-				<ul class="dropdown-menu right-edge g-ui-menu" tabindex="-1" role="menu" aria-labelledby="top-system-dropdown-id">
+				<ul class="dropdown-menu right-edge" tabindex="-1" role="menu" aria-labelledby="top-system-dropdown-id">
 
 					<!-- ko if: accounts().length -->
 						<!-- ko foreach: accounts -->
-							<li class="e-item" role="presentation">
-								<a class="e-link menuitem account-item" href="#" data-bind="click: $root.accountClick,
+							<li role="presentation">
+								<a class="account-item" href="#" data-bind="click: $root.accountClick,
 									attr: {'href': changeAccountLink()}, css: {'current': $root.accountEmail() === email}">
 <!--									<b class="pull-right counter" data-bind="visible: 0 < count()">
 										<span data-bind="text: count, visible: 100 > count()"></span>
@@ -36,40 +36,40 @@
 						<!-- /ko -->
 					<!-- /ko -->
 
-					<li class="e-item dividerbar" role="presentation" data-bind="visible: allowAccounts">
-						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addAccountClick">
+					<li class="dividerbar" role="presentation" data-bind="visible: allowAccounts">
+						<a href="#" tabindex="-1" data-bind="click: addAccountClick">
 							<i class="fontastic">✚</i>
 							<span data-i18n="TOP_TOOLBAR/BUTTON_ADD_ACCOUNT"></span>
 						</a>
 					</li>
-					<li class="e-item" role="presentation" data-bind="visible: allowContacts">
-						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: contactsClick">
+					<li role="presentation" data-bind="visible: allowContacts">
+						<a href="#" tabindex="-1" data-bind="click: contactsClick">
 							<i class="fontastic">📇</i>
 							<span data-i18n="GLOBAL/CONTACTS"></span>
 						</a>
 					</li>
-					<li class="e-item" role="presentation">
-						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: settingsClick">
+					<li role="presentation">
+						<a href="#" tabindex="-1" data-bind="click: settingsClick">
 							<i class="fontastic">⚙</i>
 							<span data-i18n="TOP_TOOLBAR/BUTTON_SETTINGS"></span>
 						</a>
 					</li>
-					<li class="e-item" role="presentation">
-						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: settingsHelp">
+					<li role="presentation">
+						<a href="#" tabindex="-1" data-bind="click: settingsHelp">
 							<i class="icon-help"></i>
 							<span data-i18n="TOP_TOOLBAR/BUTTON_HELP"></span>
 						</a>
 					</li>
-					<li class="e-item dividerbar" role="presentation">
-						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: toggleLayout">
+					<li class="dividerbar" role="presentation">
+						<a href="#" tabindex="-1" data-bind="click: toggleLayout">
 							<i class="fontastic show-mobile">💻</i>
 							<span class="show-mobile" data-i18n="MOBILE/BUTTON_DESKTOP_VERSION"></span>
 							<i class="fontastic hide-mobile">📱</i>
 							<span class="hide-mobile" data-i18n="MOBILE/BUTTON_MOBILE_VERSION"></span>
 						</a>
 					</li>
-					<li class="e-item" role="presentation">
-						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: logoutClick">
+					<li role="presentation">
+						<a href="#" tabindex="-1" data-bind="click: logoutClick">
 							<i class="fontastic">⏻</i>
 							<span data-i18n="GLOBAL/LOGOUT"></span>
 						</a>
