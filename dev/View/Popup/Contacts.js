@@ -460,7 +460,7 @@ class ContactsPopupView extends AbstractViewPopup {
 		const self = this;
 
 		dom.addEventListener('click', event => {
-			let el = event.target.closestWithin('.e-paginator .e-page', dom);
+			let el = event.target.closestWithin('.e-paginator a', dom);
 			if (el && ko.dataFor(el)) {
 				self.contactsPage(pInt(ko.dataFor(el).value));
 				self.reloadContactList();

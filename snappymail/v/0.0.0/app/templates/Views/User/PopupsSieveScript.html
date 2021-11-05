@@ -19,21 +19,13 @@
 			</div>
 		</div>
 
-		<div data-bind="visible: hasChanges">
-			<div class="span8 width100-on-mobile">
-				<div class="alert g-ui-user-select-none">
-					<i class="fontastic">⚠</i>
-					<span data-i18n="POPUPS_SIEVE_SCRIPT/CHANGES_NEED_TO_BE_SAVED_DESC"></span>
-				</div>
-			</div>
+		<div class="alert g-ui-user-select-none" data-bind="visible: hasChanges">
+			<i class="fontastic">⚠</i>
+			<span data-i18n="POPUPS_SIEVE_SCRIPT/CHANGES_NEED_TO_BE_SAVED_DESC"></span>
 		</div>
-		<div data-bind="visible: $root.saveError">
-			<div class="span8 width100-on-mobile">
-				<div class="alert alert-error g-ui-user-select-none">
-					<i class="fontastic">⚠</i>
-					<span data-bind="text: $root.saveErrorText"></span>
-				</div>
-			</div>
+		<div class="alert alert-error g-ui-user-select-none" data-bind="visible: $root.saveError">
+			<i class="fontastic">⚠</i>
+			<span data-bind="text: $root.saveErrorText"></span>
 		</div>
 
 		<div class="control-group" data-bind="visible: $root.rawActive">
