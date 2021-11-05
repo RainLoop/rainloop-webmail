@@ -11,7 +11,7 @@ export const
 
 	elementById = id => doc.getElementById(id),
 
-	exitFullscreen = () => getFullscreenElement() && (doc.exitFullscreen || doc.webkitExitFullscreen)(),
+	exitFullscreen = () => getFullscreenElement() && (doc.exitFullscreen || doc.webkitExitFullscreen).call(doc),
 	getFullscreenElement = () => doc.fullscreenElement || doc.webkitFullscreenElement,
 
 	Settings = rl.settings,
