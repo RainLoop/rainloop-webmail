@@ -1,9 +1,10 @@
 
 .squire-toolbar {
-	padding: 2px;
 	border-bottom: 1px solid #b6b6b6;
+	min-height: 28px;
 	overflow-x: auto;
 	overflow-y: hidden;
+	padding: 2px;
 	white-space: nowrap;
 }
 
@@ -38,6 +39,7 @@
 .squire-wysiwyg, .squire-plain {
 	box-sizing: border-box;
 	font-size: 13px;
+	height: 100%;
 	line-height: 16px;
 	min-height: 200px;
 	overflow: auto;
@@ -155,16 +157,22 @@ Secondly, we can't rely on MUA's what to do with :empty
 }
 
 /* @media (hover: none) */
-.rl-mobile .textAreaParent:not(:focus-within) .squire-toolbar {
-	display: none;
-}
-.rl-mobile .squire-toolbar {
-	background: #EEE;
-	padding: 1px;
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	right: 0;
+@media screen and (max-height: 600px) {
+	.rl-mobile .textAreaParent:not(:focus-within) .squire-toolbar {
+		display: none;
+	}
+	.rl-mobile .squire-toolbar {
+		background: #EEE;
+		padding: 1px;
+		position: fixed;
+		top: 18px;
+		left: 0;
+		right: 0;
+	/*
+		transform: translateY(-42px);
+		z-index: 9;
+	*/
+	}
 }
 
 .rl-mobile .b-compose.modal,

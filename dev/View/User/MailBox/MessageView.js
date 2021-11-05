@@ -60,7 +60,6 @@ export class MailMessageView extends AbstractViewRight {
 					}
 				}, this.messageVisibility);
 
-		this.oHeaderDom = null;
 		this.oMessageScrollerDom = null;
 
 		this.addObservables({
@@ -116,7 +115,6 @@ export class MailMessageView extends AbstractViewRight {
 		this.viewUid = '';
 		this.viewHash = '';
 		this.addObservables({
-			viewBodyTopValue: 0,
 			viewSubject: '',
 			viewFromShort: '',
 			viewFromDkimData: ['none', ''],
@@ -304,10 +302,6 @@ export class MailMessageView extends AbstractViewRight {
 		showMessageComposer([sType, MessageUserStore.message()]);
 	}
 
-	checkHeaderHeight() {
-		this.oHeaderDom && this.viewBodyTopValue(MessageUserStore.message() ? this.oHeaderDom.offsetHeight : 0);
-	}
-
 	onBuild(dom) {
 		this.oMessageScrollerDom = dom.querySelector('.messageItem');
 
@@ -316,19 +310,8 @@ export class MailMessageView extends AbstractViewRight {
 
 		this.showFullInfo.subscribe(value => Local.set(ClientSideKeyName.MessageHeaderFullInfo, value ? '1' : '0'));
 
-		let el = dom.querySelector('.messageItemHeader');
-		this.oHeaderDom = el;
-		if (el) {
-			if (!this.resizeObserver) {
-				this.resizeObserver = new ResizeObserver(this.checkHeaderHeight.debounce(50).bind(this));
-			}
-			this.resizeObserver.observe(el);
-		} else if (this.resizeObserver) {
-			this.resizeObserver.disconnect();
-		}
-
-		let event = 'fullscreenchange';
-		el = dom.querySelector('.b-message-view-wrapper');
+		let event = 'fullscreenchange',
+			el = dom.querySelector('.b-content');
 		if (!el.requestFullscreen && el.webkitRequestFullscreen) {
 			el.requestFullscreen = el.webkitRequestFullscreen;
 			event = 'webkit'+event;

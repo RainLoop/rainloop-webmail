@@ -312,8 +312,6 @@ class ComposePopupView extends AbstractViewPopup {
 			}
 		});
 
-		this.resizeObserver = new ResizeObserver(this.resizerTrigger.throttle(50).bind(this));
-
 		decorateKoCommands(this, {
 			sendCommand: self => self.canBeSentOrSaved(),
 				saveCommand: self => self.canBeSentOrSaved(),
@@ -641,8 +639,6 @@ class ComposePopupView extends AbstractViewPopup {
 
 		rl.route.on();
 
-		this.resizeObserver.disconnect();
-
 		(getFullscreenElement() === this.oContent) && exitFullscreen();
 	}
 
@@ -708,10 +704,6 @@ class ComposePopupView extends AbstractViewPopup {
 	 */
 	onShow(type, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText) {
 		rl.route.off();
-
-		const ro = this.resizeObserver;
-		ro.observe(ro.compose);
-		ro.observe(ro.header);
 
 		this.autosaveStart();
 
@@ -1088,7 +1080,7 @@ class ComposePopupView extends AbstractViewPopup {
 		}
 	}
 
-	onBuild(dom) {
+	onBuild() {
 		// initUploader
 
 		if (this.composeUploaderButton()) {
@@ -1248,12 +1240,6 @@ class ComposePopupView extends AbstractViewPopup {
 			this.modalVisibility() && this.tryToClosePopup();
 			return false;
 		});
-
-		const ro = this.resizeObserver;
-		ro.compose = dom.querySelector('.b-compose');
-		ro.header = dom.querySelector('.b-header');
-		ro.toolbar = dom.querySelector('.b-header-toolbar');
-		ro.els = [dom.querySelector('.textAreaParent'), dom.querySelector('.attachmentAreaParent')];
 
 		this.editor(editor => editor[this.isPlainEditor()?'modePlain':'modeWysiwyg']());
 
@@ -1462,16 +1448,6 @@ class ComposePopupView extends AbstractViewPopup {
 		return this.attachments.filter(item => item && !item.tempName()).map(
 			item => item.id
 		);
-	}
-
-	resizerTrigger() {
-		let ro = this.resizeObserver,
-			height = Math.max(200, ro.compose.clientHeight - ro.header.offsetHeight - ro.toolbar.offsetHeight) + 'px';
-		if (ro.height !== height) {
-			ro.height = height;
-			ro.els.forEach(element => element.style.height = height);
-			this.oEditor && this.oEditor.resize();
-		}
 	}
 }
 

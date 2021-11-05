@@ -29,12 +29,6 @@ export class HtmlEditor {
 		this.onBlur = onBlur;
 		this.onModeChange = onModeChange;
 
-		this.resize = (() => {
-			try {
-				this.editor && this.editor.resize(element.clientWidth, element.clientHeight);
-			} catch (e) {} // eslint-disable-line no-empty
-		}).throttle(100);
-
 		if (element) {
 			let editor;
 
@@ -42,7 +36,6 @@ export class HtmlEditor {
 			this.onReady = fn => onReady.push(fn);
 			const readyCallback = () => {
 				this.editor = editor;
-				this.resize();
 				this.onReady = fn => fn();
 				onReady.forEach(fn => fn());
 			};

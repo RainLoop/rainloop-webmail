@@ -71,15 +71,11 @@
 	border-top-color: var(--main-color);
 }
 
-.messageList .b-message-list-wrapper {
-	border-color: #555;
-}
-
 .well,
 .modal,
 .b-settins-right .b-content,
-.messageList .b-content,
-.messageView .b-content,
+.messageList,
+.messageView,
 .b-admin-right .b-content,
 .b-compose .b-attachment-place {
 	background-color: #000;

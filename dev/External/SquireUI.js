@@ -540,12 +540,6 @@ class SquireUI
 	focus() {
 		('plain' == this.mode ? this.plain : this.squire).focus();
 	}
-
-	resize(width, height) {
-		height = Math.max(200, (height - this.wysiwyg.offsetTop)) + 'px';
-		this.wysiwyg.style.height = height;
-		this.plain.style.height = height;
-	}
 }
 
 this.SquireUI = SquireUI;

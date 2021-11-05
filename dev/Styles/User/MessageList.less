@@ -13,6 +13,11 @@ html.rl-no-preview-pane {
 
 .messageList {
 	height: 100%;
+	background-color: #fff;
+	border: 1px solid @rlMainDarkColor;
+	border-radius: @rlMainBorderRadius;
+	box-shadow: @rlMainShadow;
+	z-index: 101;
 
 	.toolbar {
 		position: absolute;
@@ -25,14 +30,15 @@ html.rl-no-preview-pane {
 		white-space: nowrap;
 	}
 
+	.b-message-list-wrapper {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+	}
+
 	.b-footer {
-		position: absolute;
-		bottom: 0;
-		right: 0;
-		left: 0;
-		height: 30px;
+		flex-shrink: 0;
 		padding: 7px;
-		z-index: 101;
 
 		background-color: var(--message-list-toolbar-bg-color, #eee);
 //		#gradient > .vertical(#f4f4f4, #dfdfdf);
@@ -59,23 +65,9 @@ html.rl-no-preview-pane {
 		padding-right: 8px;
 	}
 
-	.b-message-list-wrapper {
-		border: 1px solid @rlMainDarkColor;
-		height: 100%;
-
-		box-shadow: @rlMainShadow;
-		border-radius: @rlMainBorderRadius;
-		z-index: 101;
-	}
-
 	.second-toolbar {
-		position: absolute;
-		top: 0;
-		right: 0;
-		left: 0;
-		height: 29px;
+		flex-shrink: 0;
 		padding: 10px 8px 10px 11px;
-		z-index: 101;
 		white-space: nowrap;
 
 		background-color: var(--message-list-toolbar-bg-color, #eee);
@@ -108,17 +100,10 @@ html.rl-no-preview-pane {
 	}
 
 	.b-content {
-		position: absolute;
-		top: 50px;
-		bottom: 45px;
-		left: 0;
-		right: 0;
+		height: 100%;
 		padding: 0;
 		overflow: auto;
-		z-index: 101;
 		scroll-behavior: smooth;
-
-		background-color: #fff;
 
 		.listClear {
 			text-align: center;
@@ -179,8 +164,7 @@ html.rl-no-preview-pane {
 		}
 	}
 
-	&.focused .b-message-list-wrapper {
-		background-color: #000;
+	&.focused {
 		border-color: #9d9d9d;
 	}
 }
