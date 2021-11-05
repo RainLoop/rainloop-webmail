@@ -5,21 +5,23 @@ import { isArray } from 'Common/Utils';
 import { createElement } from 'Common/Globals';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { SettingsUserStore } from 'Stores/User/Settings';
+import * as Local from 'Storage/Client';
 
+export const
 /**
  * @param {(string|number)} value
  * @param {boolean=} includeZero = true
  * @returns {boolean}
  */
-export function isPosNumeric(value) {
+isPosNumeric = (value) => {
 	return null != value && /^[0-9]*$/.test(value.toString());
-}
+},
 
 /**
  * @param {string} html
  * @returns {string}
  */
-export function htmlToPlain(html) {
+htmlToPlain = (html) => {
 	let pos = 0,
 		limit = 800,
 		iP1 = 0,
@@ -112,14 +114,14 @@ export function htmlToPlain(html) {
 	}
 
 	return text.replace(/__bq__start__|__bq__end__/gm, '').trim();
-}
+},
 
 /**
  * @param {string} plain
  * @param {boolean} findEmailAndLinksInText = false
  * @returns {string}
  */
-export function plainToHtml(plain) {
+plainToHtml = (plain) => {
 	plain = plain.toString().replace(/\r/g, '');
 	plain = plain.replace(/^>[> ]>+/gm, ([match]) => (match ? match.replace(/[ ]+/g, '') : match));
 
@@ -170,12 +172,7 @@ export function plainToHtml(plain) {
 		.replace(/~~~blockquote~~~[\s]*/g, '<blockquote>')
 		.replace(/[\s]*~~~\/blockquote~~~/g, '</blockquote>')
 		.replace(/\n/g, '<br/>');
-}
-
-rl.Utils = {
-	htmlToPlain: htmlToPlain,
-	plainToHtml: plainToHtml
-};
+},
 
 /**
  * @param {Array=} aDisabled
@@ -185,14 +182,14 @@ rl.Utils = {
  * @param {boolean=} bNoSelectSelectable Used in FolderCreatePopupView
  * @returns {Array}
  */
-export function folderListOptionsBuilder(
+folderListOptionsBuilder = (
 	aDisabled,
 	aHeaderLines,
 	fRenameCallback,
 	fDisableCallback,
 	bNoSelectSelectable,
 	aList = FolderUserStore.folderList()
-) {
+) => {
 	const
 		aResult = [],
 		sDeepPrefix = '\u00A0\u00A0\u00A0',
@@ -238,23 +235,23 @@ export function folderListOptionsBuilder(
 	foldersWalk(aList);
 
 	return aResult;
-}
+},
 
 /**
  * Call the Model/CollectionModel onDestroy() to clear knockout functions/objects
  * @param {Object|Array} objectOrObjects
  * @returns {void}
  */
-export function delegateRunOnDestroy(objectOrObjects) {
+delegateRunOnDestroy = (objectOrObjects) => {
 	objectOrObjects && (isArray(objectOrObjects) ? objectOrObjects : [objectOrObjects]).forEach(
 		obj => obj.onDestroy && obj.onDestroy()
 	);
-}
+},
 
 /**
  * @returns {function}
  */
-export function computedPaginatorHelper(koCurrentPage, koPageCount) {
+computedPaginatorHelper = (koCurrentPage, koPageCount) => {
 	return () => {
 		const currentPage = koCurrentPage(),
 			pageCount = koPageCount(),
@@ -335,13 +332,13 @@ export function computedPaginatorHelper(koCurrentPage, koPageCount) {
 
 		return result;
 	};
-}
+},
 
 /**
  * @param {string} mailToUrl
  * @returns {boolean}
  */
-export function mailToHelper(mailToUrl) {
+mailToHelper = (mailToUrl) => {
 	if (
 		mailToUrl &&
 		'mailto:' ===
@@ -397,9 +394,78 @@ export function mailToHelper(mailToUrl) {
 	}
 
 	return false;
-}
+},
 
-export function showMessageComposer(params = [])
+showMessageComposer = (params = []) =>
 {
 	rl.app.showMessageComposer(params);
-}
+},
+
+setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
+{
+	if (source.layoutResizer && source.layoutResizer.mode != mode) {
+		target.removeAttribute('style');
+		source.removeAttribute('style');
+	}
+	if (mode) {
+		source.classList.add('resizable');
+		if (!source.layoutResizer) {
+			const resizer = createElement('div', {'class':'resizer'}),
+				size = {},
+				cssint = s => {
+					let value = getComputedStyle(source, null)[s].replace('px', '');
+					if (value.includes('%')) {
+						value = source.parentElement['width'==resizer.mode ? 'offsetWidth' : 'offsetHeight']
+							* value.replace('%', '') / 100;
+					}
+					return parseFloat(value);
+				};
+			source.layoutResizer = resizer;
+			source.append(resizer);
+			resizer.addEventListener('mousedown', {
+				handleEvent: function(e) {
+					if ('mousedown' == e.type) {
+						e.preventDefault();
+						size.pos = ('width' == resizer.mode) ? e.pageX : e.pageY;
+						size.min = cssint('min-'+resizer.mode);
+						size.max = cssint('max-'+resizer.mode);
+						size.org = cssint(resizer.mode);
+						addEventListener('mousemove', this);
+						addEventListener('mouseup', this);
+					} else if ('mousemove' == e.type) {
+						const length = size.org + (('width' == resizer.mode ? e.pageX : e.pageY) - size.pos);
+						if (length >= size.min && length <= size.max ) {
+							source.style[resizer.mode] = length + 'px';
+						}
+					} else if ('mouseup' == e.type) {
+						removeEventListener('mousemove', this);
+						removeEventListener('mouseup', this);
+					}
+				}
+			});
+			source.observer = new ResizeObserver(() => {
+				if ('width' == resizer.mode) {
+					target.style.left = source.offsetWidth + 'px';
+					Local.set(sClientSideKeyName, source.offsetWidth);
+				} else {
+					target.style.top = (4 + source.offsetTop + source.offsetHeight) + 'px';
+					Local.set(sClientSideKeyName, source.offsetHeight);
+				}
+			});
+		}
+		source.layoutResizer.mode = mode;
+		source.observer.observe(source, { box: 'border-box' });
+		const length = Local.get(sClientSideKeyName);
+		if (length) {
+			source.style[mode] = length + 'px';
+		}
+	} else {
+		source.observer && source.observer.disconnect();
+		source.classList.remove('resizable');
+	}
+};
+
+rl.Utils = {
+	htmlToPlain: htmlToPlain,
+	plainToHtml: plainToHtml
+};

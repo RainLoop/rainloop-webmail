@@ -1,8 +1,11 @@
 import { Scope } from 'Common/Enums';
+import { Layout, ClientSideKeyName } from 'Common/EnumsUser';
 import { doc, leftPanelDisabled, moveAction, Settings } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
+import { setLayoutResizer } from 'Common/UtilsUser';
 import { getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName } from 'Common/Cache';
 import { i18n } from 'Common/Translator';
+import { SettingsUserStore } from 'Stores/User/Settings';
 
 import { AppUserStore } from 'Stores/User/App';
 import { AccountUserStore } from 'Stores/User/Account';
@@ -99,7 +102,23 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 * @returns {void}
 	 */
 	onBuild() {
-		setTimeout(() => rl.app.initHorizontalLayoutResizer(), 1);
+		setTimeout(() => {
+			// initMailboxLayoutResizer
+			const top = doc.querySelector('.RL-MailMessageList'),
+				bottom = doc.querySelector('.RL-MailMessageView'),
+				fToggle = () => {
+					let layout = SettingsUserStore.layout();
+					setLayoutResizer(top, bottom, ClientSideKeyName.MessageListSize,
+						(ThemeStore.isMobile() || Layout.NoPreview === layout)
+							? null
+							: (Layout.SidePreview === layout ? 'width' : 'height')
+					);
+				};
+			if (top && bottom) {
+				fToggle();
+				addEventListener('rl-layout', fToggle);
+			}
+		}, 1);
 
 		doc.addEventListener('click', event =>
 			event.target.closest('#rl-right') && moveAction(false)

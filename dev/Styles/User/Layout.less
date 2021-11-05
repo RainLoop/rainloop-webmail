@@ -68,7 +68,9 @@ html:not(.rl-left-panel-disabled) #rl-left.resizable {
 	min-width: 155px;
 	max-width: 350px;
 }
-#rl-left > .resizer {
+
+#rl-left > .resizer,
+.rl-side-preview-pane .RL-MailMessageList > .resizer {
 	cursor: ew-resize;
 	height: 100%;
 	right: 0;
@@ -105,13 +107,17 @@ html:not(.rl-left-panel-disabled) #rl-left.resizable {
 	}
 }
 
-.b-message-list-wrapper.resizable {
-	resize: vertical;
-	overflow: hidden;
-	min-height: 200px;
-	max-height: 500px;
+.rl-side-preview-pane .RL-MailMessageList.resizable {
+	resize: horizontal;
+	min-width: 320px;
+	max-width: 60%;
 }
-.b-message-list-wrapper > .resizer {
+.rl-bottom-preview-pane .RL-MailMessageList.resizable {
+	resize: vertical;
+	min-height: 200px;
+	max-height: 60%;
+}
+.rl-bottom-preview-pane .RL-MailMessageList > .resizer {
 	cursor: ns-resize;
 	height: 5px;
 	left: 0;
@@ -120,7 +126,7 @@ html:not(.rl-left-panel-disabled) #rl-left.resizable {
 }
 
 html:not(.rl-left-panel-disabled) #rl-left.resizable > .resizer,
-.b-message-list-wrapper > .resizer {
+.RL-MailMessageList > .resizer {
 	display: block;
 }
 
@@ -129,18 +135,18 @@ html:not(.rl-left-panel-disabled) #rl-left.resizable > .resizer,
 	left: @rlLeftWidth;
 }
 
-#rl-sub-left {
+.RL-MailMessageList {
 	position: absolute;
-	top: 0;
-	bottom: 0;
+	top: 50px;
+	bottom: @rlBottomMargin;
 	left: 0;
 	width: 50%;
 }
 
-#rl-sub-right {
+.RL-MailMessageView {
 	position: absolute;
-	top: 0;
-	bottom: 0;
+	top: 50px + @rlLowMargin;
+	bottom: 13px;
 	right: 0;
 	left: 50%;
 
@@ -244,11 +250,11 @@ html:not(.rl-left-panel-disabled) #rl-left.resizable > .resizer,
 		left: @rlLeftWidth + 20;
 	}
 
-	#rl-sub-left {
+	.RL-MailMessageList {
 		width: 40%;
 	}
 
-	#rl-sub-right {
+	.RL-MailMessageView {
 		left: 40%;
 	}
 }
@@ -304,45 +310,34 @@ html.rl-left-panel-disabled {
 html.rl-mobile,
 html.rl-no-preview-pane {
 
-	#rl-sub-left {
+	.RL-MailMessageList {
 		right: @rlBottomMargin !important;
 		width: inherit;
 	}
 
-	#rl-sub-right {
+	.RL-MailMessageView {
 		left: 0 !important;
 	}
 }
 
 html.rl-mobile #rl-left > .resizer,
-html.rl-side-preview-pane:not(.rl-mobile) #rl-right .resizer {
+html.rl-no-preview-pane #rl-right .resizer,
+html.rl-mobile #rl-right .resizer {
 	display: none !important;
 }
 
 html.rl-bottom-preview-pane:not(.rl-mobile) {
 
-	#rl-sub-left {
+	.RL-MailMessageList {
 		right: @rlBottomMargin !important;
+		bottom: inherit;
 		width: inherit;
-
-		.b-message-list-wrapper {
-			bottom: inherit;
-			height: 300px;
-
-			box-shadow: none;
-		}
+		height: 300px;
 	}
 
-	#rl-sub-right {
-
+	.RL-MailMessageView {
 		left: 0 !important;
-
-		.b-message-view-wrapper {
-			top: 356px;
-			left: 0;
-			right: 5px;
-			box-shadow: none;
-		}
+		top: 356px;
 	}
 }
 

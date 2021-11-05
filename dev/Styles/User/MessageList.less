@@ -12,10 +12,11 @@ html.rl-no-preview-pane {
 }
 
 .messageList {
+	height: 100%;
 
 	.toolbar {
 		position: absolute;
-		top: 0;
+		top: -50px;
 		right: 0;
 		left: 0;
 		height: 30px;
@@ -59,13 +60,8 @@ html.rl-no-preview-pane {
 	}
 
 	.b-message-list-wrapper {
-		position: absolute;
-		top: 50px;
-		right: 0;
-		left: 0;
-		bottom: @rlBottomMargin;
-
 		border: 1px solid @rlMainDarkColor;
+		height: 100%;
 
 		box-shadow: @rlMainShadow;
 		border-radius: @rlMainBorderRadius;

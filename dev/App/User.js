@@ -1,7 +1,7 @@
 import 'External/User/ko';
 
 import { isArray, arrayLength, pString, forEachObjectValue } from 'Common/Utils';
-import { delegateRunOnDestroy, mailToHelper } from 'Common/UtilsUser';
+import { delegateRunOnDestroy, mailToHelper, setLayoutResizer } from 'Common/UtilsUser';
 
 import {
 	Capa,
@@ -10,7 +10,6 @@ import {
 } from 'Common/Enums';
 
 import {
-	Layout,
 	FolderType,
 	SetSystemFoldersNotification,
 	MessageSetAction,
@@ -679,83 +678,11 @@ class AppUser extends AbstractApp {
 		Local.set(ClientSideKeyName.ExpandedFolders, aExpandedList);
 	}
 
-	setLayoutResizer(source, target, sClientSideKeyName, mode) {
-		if (mode) {
-			source.classList.add('resizable');
-			if (!source.querySelector('.resizer')) {
-				const resizer = createElement('div', {'class':'resizer'}),
-					cssint = s => parseFloat(getComputedStyle(source, null).getPropertyValue(s).replace('px', ''));
-				source.append(resizer);
-				resizer.addEventListener('mousedown', {
-					source: source,
-					mode: mode,
-					handleEvent: function(e) {
-						if ('mousedown' == e.type) {
-							e.preventDefault();
-							this.pos = ('width' == this.mode) ? e.pageX : e.pageY;
-							this.min = cssint('min-'+this.mode);
-							this.max = cssint('max-'+this.mode);
-							this.org = cssint(this.mode);
-							addEventListener('mousemove', this);
-							addEventListener('mouseup', this);
-						} else if ('mousemove' == e.type) {
-							const length = this.org + (('width' == this.mode ? e.pageX : e.pageY) - this.pos);
-							if (length >= this.min && length <= this.max ) {
-								this.source.style[this.mode] = length + 'px';
-							}
-						} else if ('mouseup' == e.type) {
-							removeEventListener('mousemove', this);
-							removeEventListener('mouseup', this);
-						}
-					}
-				});
-				if ('width' == mode) {
-					source.observer = new ResizeObserver(() => {
-						target.style.left = source.offsetWidth + 'px';
-						Local.set(sClientSideKeyName, source.offsetWidth);
-					});
-				} else {
-					source.observer = new ResizeObserver(() => {
-						target.style.top = (4 + source.offsetTop + source.offsetHeight) + 'px';
-						Local.set(sClientSideKeyName, source.offsetHeight);
-					});
-				}
-			}
-			source.observer.observe(source, { box: 'border-box' });
-			const length = Local.get(sClientSideKeyName);
-			if (length) {
-				if ('width' == mode) {
-					source.style.width = length + 'px';
-				} else {
-					source.style.height = length + 'px';
-				}
-			}
-		} else {
-			source.observer && source.observer.disconnect();
-			source.classList.remove('resizable');
-			target.removeAttribute('style');
-			source.removeAttribute('style');
-		}
-	}
-
-	initHorizontalLayoutResizer() {
-		const top = doc.querySelector('.b-message-list-wrapper'),
-			bottom = doc.querySelector('.b-message-view-wrapper'),
-			fToggle = () => {
-				this.setLayoutResizer(top, bottom, ClientSideKeyName.MessageListSize,
-					(ThemeStore.isMobile() || Layout.BottomPreview !== SettingsUserStore.layout()) ? null : 'height');
-			};
-		if (top && bottom) {
-			fToggle();
-			addEventListener('rl-layout', fToggle);
-		}
-	}
-
-	initVerticalLayoutResizer() {
+	initLeftSideLayoutResizer() {
 		const left = elementById('rl-left'),
 			right = elementById('rl-right'),
 			fToggle = () =>
-				this.setLayoutResizer(left, right, ClientSideKeyName.FolderListSize,
+				setLayoutResizer(left, right, ClientSideKeyName.FolderListSize,
 					(ThemeStore.isMobile() || leftPanelDisabled()) ? null : 'width');
 		if (left && right) {
 			fToggle();
@@ -868,7 +795,7 @@ class AppUser extends AbstractApp {
 						);
 						SettingsUserStore.delayLogout();
 
-						setTimeout(() => this.initVerticalLayoutResizer(), 1);
+						setTimeout(() => this.initLeftSideLayoutResizer(), 1);
 
 						setInterval(this.reloadTime(), 60000);
 

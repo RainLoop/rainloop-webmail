@@ -3,10 +3,11 @@
 }
 
 .messageView {
+	height: 100%;
 
 	.toolbar {
 		position: absolute;
-		top: 0;
+		top: -50px - @rlLowMargin;
 		right: 0;
 		left: 0;
 		height: 30px;
@@ -15,19 +16,10 @@
 	}
 
 	.b-content {
-
-		position: absolute;
-		margin: 0;
-		top: 50px + @rlLowMargin;
-		bottom: @rlLowMargin + @rlBottomMargin;
-		right: @rlLowMargin;
-		left: -2px;
-		/*overflow: hidden;*/
-		border: 1px solid @rlMainDarkColor;
-
-		border-radius: @rlMainBorderRadius;
-
 		background-color: #fff;
+		border: 1px solid @rlMainDarkColor;
+		border-radius: @rlMainBorderRadius;
+		height: 100%;
 
 		.b-message-view-checked-helper {
 			text-align: center;

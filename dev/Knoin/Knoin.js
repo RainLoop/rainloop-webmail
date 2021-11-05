@@ -305,7 +305,6 @@ export const
 		hasher.init();
 
 		setTimeout(() => $htmlCL.remove('rl-started-trigger'), 100);
-		setTimeout(() => $htmlCL.add('rl-started-delay'), 200);
 
 		const c = elementById('rl-content'), l = elementById('rl-loading');
 		c && (c.hidden = false);
