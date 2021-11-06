@@ -212,7 +212,9 @@ export const MessageUserStore = new class {
 				if (message && folder && folder !== message.folder) {
 					this.message(null);
 				}
-			}
+			},
+
+			isMessageSelected: value => elementById('rl-right').classList.toggle('message-selected', value)
 		});
 
 		this.purgeMessageBodyCache = this.purgeMessageBodyCache.throttle(30000);

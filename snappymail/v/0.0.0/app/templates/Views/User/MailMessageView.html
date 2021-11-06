@@ -1,4 +1,4 @@
-<div class="messageView" data-bind="css: {'message-selected': isMessageSelected, 'focused': messageFocused}">
+<div class="messageView">
 	<div class="toolbar top-toolbar g-ui-user-select-none">
 		<div class="messageButtons btn-toolbar">
 			<div class="btn-group" data-i18n="[title]GLOBAL/CLOSE">
@@ -243,17 +243,15 @@
 			<div class="messageItem" data-bind="css: viewLineAsCss()">
 				<div tabindex="0" data-bind="hasfocus: messageDomFocused">
 
-					<div>
-						<span class="buttonFull" data-bind="click: toggleFullScreen">
-							<i data-bind="css: { 'icon-arrows-out': !fullScreenMode(), 'icon-arrows-in': fullScreenMode }"></i>
-						</span>
-						<div class="loading g-ui-min-height-300" data-bind="visible: messageLoadingThrottle()">
-							<i class="icon-spinner"></i>
-							<span data-i18n="GLOBAL/LOADING"></span>
-						</div>
+					<span class="buttonFull" data-bind="click: toggleFullScreen">
+						<i data-bind="css: { 'icon-arrows-out': !fullScreenMode(), 'icon-arrows-in': fullScreenMode }"></i>
+					</span>
+					<div class="loading" data-bind="visible: messageLoadingThrottle()">
+						<i class="icon-spinner"></i>
+						<span data-i18n="GLOBAL/LOADING"></span>
 					</div>
 
-					<div class="g-ui-min-height-300" data-bind="visible: !messageLoadingThrottle()">
+					<div data-bind="visible: !messageLoadingThrottle()">
 						<div class="bodySubHeader">
 							<div class="showImages" data-bind="visible: message() && message().hasImages(), click: showImages">
 								<i class="fontastic">🖼</i>
@@ -310,7 +308,7 @@
 							</div>
 						</div>
 
-						<div class="bodyText g-ui-min-height-300"
+						<div class="bodyText"
 							data-bind="initDom: messagesBodiesDom"></div>
 					</div>
 				</div>

@@ -407,15 +407,25 @@ setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 		target.removeAttribute('style');
 		source.removeAttribute('style');
 	}
+//	source.classList.toggle('resizable', mode);
 	if (mode) {
-		source.classList.add('resizable');
+		const length = Local.get(sClientSideKeyName+mode);
 		if (!source.layoutResizer) {
 			const resizer = createElement('div', {'class':'resizer'}),
 				size = {},
+				store = () => {
+					if ('Width' == resizer.mode) {
+						target.style.left = source.offsetWidth + 'px';
+						Local.set(resizer.key+resizer.mode, source.offsetWidth);
+					} else {
+						target.style.top = (4 + source.offsetTop + source.offsetHeight) + 'px';
+						Local.set(resizer.key+resizer.mode, source.offsetHeight);
+					}
+				},
 				cssint = s => {
 					let value = getComputedStyle(source, null)[s].replace('px', '');
 					if (value.includes('%')) {
-						value = source.parentElement['width'==resizer.mode ? 'offsetWidth' : 'offsetHeight']
+						value = source.parentElement['offset'+resizer.mode]
 							* value.replace('%', '') / 100;
 					}
 					return parseFloat(value);
@@ -425,17 +435,20 @@ setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 			resizer.addEventListener('mousedown', {
 				handleEvent: function(e) {
 					if ('mousedown' == e.type) {
+						const lmode = resizer.mode.toLowerCase();
 						e.preventDefault();
-						size.pos = ('width' == resizer.mode) ? e.pageX : e.pageY;
-						size.min = cssint('min-'+resizer.mode);
-						size.max = cssint('max-'+resizer.mode);
-						size.org = cssint(resizer.mode);
+						size.pos = ('width' == lmode) ? e.pageX : e.pageY;
+						size.min = cssint('min-'+lmode);
+						size.max = cssint('max-'+lmode);
+						size.org = cssint(lmode);
 						addEventListener('mousemove', this);
 						addEventListener('mouseup', this);
 					} else if ('mousemove' == e.type) {
-						const length = size.org + (('width' == resizer.mode ? e.pageX : e.pageY) - size.pos);
+						const lmode = resizer.mode.toLowerCase(),
+							length = size.org + (('width' == lmode ? e.pageX : e.pageY) - size.pos);
 						if (length >= size.min && length <= size.max ) {
-							source.style[resizer.mode] = length + 'px';
+							source.style[lmode] = length + 'px';
+							source.observer || store();
 						}
 					} else if ('mouseup' == e.type) {
 						removeEventListener('mousemove', this);
@@ -443,25 +456,16 @@ setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 					}
 				}
 			});
-			source.observer = new ResizeObserver(() => {
-				if ('width' == resizer.mode) {
-					target.style.left = source.offsetWidth + 'px';
-					Local.set(sClientSideKeyName, source.offsetWidth);
-				} else {
-					target.style.top = (4 + source.offsetTop + source.offsetHeight) + 'px';
-					Local.set(sClientSideKeyName, source.offsetHeight);
-				}
-			});
+			source.observer = window.ResizeObserver ? new ResizeObserver(store) : null;
 		}
 		source.layoutResizer.mode = mode;
-		source.observer.observe(source, { box: 'border-box' });
-		const length = Local.get(sClientSideKeyName);
+		source.layoutResizer.key = sClientSideKeyName;
+		source.observer && source.observer.observe(source, { box: 'border-box' });
 		if (length) {
 			source.style[mode] = length + 'px';
 		}
 	} else {
 		source.observer && source.observer.disconnect();
-		source.classList.remove('resizable');
 	}
 };
 

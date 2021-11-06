@@ -81,7 +81,6 @@ export class MailMessageView extends AbstractViewRight {
 		this.hasCheckedMessages = MessageUserStore.hasCheckedMessages;
 		this.messageLoadingThrottle = MessageUserStore.messageLoading;
 		this.messagesBodiesDom = MessageUserStore.messagesBodiesDom;
-		this.isMessageSelected = MessageUserStore.isMessageSelected;
 		this.messageActiveDom = MessageUserStore.messageActiveDom;
 		this.messageError = MessageUserStore.messageError;
 
@@ -176,8 +175,6 @@ export class MailMessageView extends AbstractViewRight {
 
 				return '';
 			},
-
-			messageFocused: () => Scope.MessageView === AppUserStore.focusedState(),
 
 			messageListAndMessageViewLoading:
 				() => MessageUserStore.listCompleteLoading() || MessageUserStore.messageLoading()

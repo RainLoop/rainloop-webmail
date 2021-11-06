@@ -11,6 +11,7 @@ export class PaneSettingsUserView extends AbstractViewRight {
 	constructor() {
 		super('SettingsPane');
 
+		this.isMobile = ThemeStore.isMobile;
 		this.leftPanelDisabled = leftPanelDisabled;
 	}
 
@@ -18,22 +19,10 @@ export class PaneSettingsUserView extends AbstractViewRight {
 		MessageUserStore.message(null);
 	}
 
-	hideLeft(item, event) {
-		event.preventDefault();
-		event.stopPropagation();
-
-		leftPanelDisabled(true);
-	}
-
-	showLeft(item, event) {
-		event.preventDefault();
-		event.stopPropagation();
-
-		leftPanelDisabled(false);
-	}
-
 	onBuild(dom) {
-		dom.addEventListener('click', () => ThemeStore.isMobile() && leftPanelDisabled(true));
+		dom.addEventListener('click', () =>
+			ThemeStore.isMobile() && !event.target.closestWithin('.toggleLeft', dom) && leftPanelDisabled(true)
+		);
 	}
 
 	backToMailBoxClick() {

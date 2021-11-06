@@ -10,7 +10,6 @@ import { AppUserStore } from 'Stores/User/App';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { MessageUserStore } from 'Stores/User/Message';
-import { ThemeStore } from 'Stores/Theme';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewLeft } from 'Knoin/AbstractViews';
@@ -40,8 +39,6 @@ export class MailFolderList extends AbstractViewLeft {
 		this.allowContacts = AppUserStore.allowContacts();
 
 		addComputablesTo(this, {
-			folderListFocused: () => Scope.FolderList === AppUserStore.focusedState(),
-
 			folderListVisible: () => {
 				let multiple = false,
 					inbox, visible,
@@ -85,7 +82,6 @@ export class MailFolderList extends AbstractViewLeft {
 
 			el = eqs(event, 'a');
 			if (el && el.matches('.selectable')) {
-				ThemeStore.isMobile() && leftPanelDisabled(true);
 				event.preventDefault();
 				const folder = ko.dataFor(el);
 				if (folder) {
@@ -120,7 +116,7 @@ export class MailFolderList extends AbstractViewLeft {
 
 		shortcuts.add('arrowup,arrowdown', '', Scope.FolderList, event => {
 			let items = [], index = 0;
-			dom.querySelectorAll('.b-folders li a:not(.hidden)').forEach(node => {
+			dom.querySelectorAll('li a:not(.hidden)').forEach(node => {
 				if (node.offsetHeight || node.getClientRects().length) {
 					items.push(node);
 					if (node.matches('.focused')) {
@@ -143,7 +139,7 @@ export class MailFolderList extends AbstractViewLeft {
 		});
 
 		shortcuts.add('enter,open', '', Scope.FolderList, () => {
-			const item = qs('.b-folders li a:not(.hidden).focused');
+			const item = qs('li a:not(.hidden).focused');
 			if (item) {
 				AppUserStore.focusedState(Scope.MessageList);
 				item.click();
@@ -153,7 +149,7 @@ export class MailFolderList extends AbstractViewLeft {
 		});
 
 		shortcuts.add('space', '', Scope.FolderList, () => {
-			const item = qs('.b-folders li a:not(.hidden).focused'),
+			const item = qs('li a:not(.hidden).focused'),
 				folder = item && ko.dataFor(item);
 			if (folder) {
 				const collapsed = folder.collapsed();
@@ -172,10 +168,10 @@ export class MailFolderList extends AbstractViewLeft {
 		});
 
 		AppUserStore.focusedState.subscribe(value => {
-			let el = qs('.b-folders li a.focused');
+			let el = qs('li a.focused');
 			el && el.classList.remove('focused');
 			if (Scope.FolderList === value) {
-				el = qs('.b-folders li a.selected');
+				el = qs('li a.selected');
 				el && el.classList.add('focused');
 			}
 		});

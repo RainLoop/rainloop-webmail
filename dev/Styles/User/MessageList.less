@@ -1,9 +1,13 @@
 
 html.rl-mobile,
 html.rl-no-preview-pane {
-	.messageList.message-selected {
+	.message-selected .RL-MailMessageList {
 		display: none;
 	}
+}
+
+.RL-MailMessageList.focused .messageList {
+	border-color: #9d9d9d;
 }
 
 #sort-list-dropdown-id {
@@ -11,30 +15,20 @@ html.rl-no-preview-pane {
 	padding-right: 6px;
 }
 
+.RL-MailMessageList .btn-toolbar {
+	height: 30px;
+	padding: 10px 1px;
+	white-space: nowrap;
+}
+
 .messageList {
-	height: 100%;
+	height: calc(100% - 50px);
 	background-color: #fff;
 	border: 1px solid @rlMainDarkColor;
 	border-radius: @rlMainBorderRadius;
 	box-shadow: @rlMainShadow;
-	z-index: 101;
-
-	.toolbar {
-		position: absolute;
-		top: -50px;
-		right: 0;
-		left: 0;
-		height: 30px;
-		padding: 10px 1px;
-		z-index: 102;
-		white-space: nowrap;
-	}
-
-	.b-message-list-wrapper {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-	}
+	display: flex;
+	flex-direction: column;
 
 	.b-footer {
 		flex-shrink: 0;
@@ -162,10 +156,6 @@ html.rl-no-preview-pane {
 			background-color: #f4f4f4;
 			text-align: center;
 		}
-	}
-
-	&.focused {
-		border-color: #9d9d9d;
 	}
 }
 
@@ -414,7 +404,7 @@ html.rl-ctrl-key-pressed .messageListItem {
 		}
 	}
 
-	.b-message-list-wrapper:not(.hideMessageListCheckbox) .subjectParent {
+	.messageList:not(.hideMessageListCheckbox) .subjectParent {
 		margin-left: 30px;
 	}
 }

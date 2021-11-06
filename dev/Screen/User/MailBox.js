@@ -110,8 +110,8 @@ export class MailBoxUserScreen extends AbstractScreen {
 					let layout = SettingsUserStore.layout();
 					setLayoutResizer(top, bottom, ClientSideKeyName.MessageListSize,
 						(ThemeStore.isMobile() || Layout.NoPreview === layout)
-							? null
-							: (Layout.SidePreview === layout ? 'width' : 'height')
+							? 0
+							: (Layout.SidePreview === layout ? 'Width' : 'Height')
 					);
 				};
 			if (top && bottom) {

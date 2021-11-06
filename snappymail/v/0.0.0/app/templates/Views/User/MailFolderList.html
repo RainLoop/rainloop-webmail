@@ -1,4 +1,4 @@
-<div class="b-folders g-ui-user-select-none" data-bind="css: {'focused': folderListFocused, 'single-root-inbox': foldersListWithSingleInboxRootFolder}">
+<div class="b-folders g-ui-user-select-none" data-bind="css: {'single-root-inbox': foldersListWithSingleInboxRootFolder}">
 	<div class="b-toolbar btn-toolbar hide-mobile">
 		<a class="btn buttonCompose" data-bind="click: composeClick, css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}" data-i18n="[title]FOLDER_LIST/BUTTON_NEW_MESSAGE">
 			<i class="icon-paper-plane"></i>
@@ -12,10 +12,10 @@
 		<ul class="b-folders-user" data-bind="template: { name: 'MailFolderListItem', foreach: folderListVisible }"></ul>
 		<div class="move-action-content-wrapper" data-bind="visible: moveAction"></div>
 	</div>
-	<div class="b-content show-on-panel-disabled" data-bind="click: function () { leftPanelDisabled(false); }"></div>
+	<div class="b-content show-on-panel-disabled" data-bind="click: leftPanelDisabled.toggle()"></div>
 	<div class="b-footer btn-toolbar hide-mobile">
 		<div class="btn-group">
-			<a class="btn buttonResize" data-bind="click: function () { leftPanelDisabled(!leftPanelDisabled()); }">
+			<a class="btn buttonResize" data-bind="click: leftPanelDisabled.toggle()">
 				<i data-bind="css: {'icon-resize-out': leftPanelDisabled(), 'icon-resize-in': !leftPanelDisabled()}"></i>
 			</a>
 		</div>

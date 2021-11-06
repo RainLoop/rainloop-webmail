@@ -59,7 +59,6 @@ config.paths.js = {
 	libs: {
 		name: 'libs.js',
 		src: [
-			'dev/polyfill.js',
 			'dev/prototype.js',
 			'dev/External/ifvisible.js',
 			'dev/dragdropgecko.js',

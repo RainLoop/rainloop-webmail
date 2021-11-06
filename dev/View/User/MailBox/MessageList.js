@@ -69,9 +69,10 @@ export class MailMessageList extends AbstractViewRight {
 		);
 
 		this.composeInEdit = AppUserStore.composeInEdit;
+
+		this.isMobile = ThemeStore.isMobile;
 		this.leftPanelDisabled = leftPanelDisabled;
 
-		this.isMessageSelected = MessageUserStore.isMessageSelected;
 		this.messageListSearch = MessageUserStore.listSearch;
 		this.messageListError = MessageUserStore.listError;
 
@@ -166,8 +167,6 @@ export class MailMessageList extends AbstractViewRight {
 			mobileCheckedStateShow: () => ThemeStore.isMobile() ? 0 < MessageUserStore.listChecked().length : true,
 
 			mobileCheckedStateHide: () => ThemeStore.isMobile() ? !MessageUserStore.listChecked().length : true,
-
-			messageListFocused: () => Scope.MessageList === AppUserStore.focusedState(),
 
 			sortText: () => {
 				let mode = FolderUserStore.sortMode(),
@@ -336,20 +335,6 @@ export class MailMessageList extends AbstractViewRight {
 			AppUserStore.focusedState(b ? Scope.MessageList : Scope.FolderList);
 			moveAction(!b);
 		}
-	}
-
-	hideLeft(item, event) {
-		event.preventDefault();
-		event.stopPropagation();
-
-		leftPanelDisabled(true);
-	}
-
-	showLeft(item, event) {
-		event.preventDefault();
-		event.stopPropagation();
-
-		leftPanelDisabled(false);
 	}
 
 	composeClick() {
@@ -683,14 +668,14 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	onBuild(dom) {
-		const eqs = (ev, s) => ev.target.closestWithin('.messageList '+s, dom);
+		const eqs = (ev, s) => ev.target.closestWithin(s, dom);
 
 		this.selector.init(dom.querySelector('.b-content'), Scope.MessageList);
 
 		dom.addEventListener('click', event => {
-			ThemeStore.isMobile() && leftPanelDisabled(true);
+			ThemeStore.isMobile() && !eqs(event, '.toggleLeft') && leftPanelDisabled(true);
 
-			if (eqs(event, '.b-message-list-wrapper') && Scope.MessageView === AppUserStore.focusedState()) {
+			if (eqs(event, '.messageList') && Scope.MessageView === AppUserStore.focusedState()) {
 				AppUserStore.focusedState(Scope.MessageList);
 			}
 

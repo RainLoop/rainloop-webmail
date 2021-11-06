@@ -1,11 +1,10 @@
 <div class="b-settings b-settins-right">
 	<div class="b-toolbar btn-toolbar" style="margin-top: 2px;">
-		<div class="btn-group show-mobile" data-bind="visible: !leftPanelDisabled()" style="margin-left: -1px">
-			<a class="btn btn-thin-2 fontastic" data-bind="click: hideLeft">❮</a>
+		<!-- ko if: isMobile() -->
+		<div class="btn-group" style="margin-left: -1px">
+			<a class="btn btn-thin-2 fontastic toggleLeft" data-bind="click: leftPanelDisabled.toggle, text: leftPanelDisabled() ? '❯' : '❮'">❮</a>
 		</div>
-		<div class="btn-group show-mobile" data-bind="visible: leftPanelDisabled()">
-			<a class="btn btn-thin-2 fontastic" data-bind="click: showLeft">❯</a>
-		</div>
+		<!-- /ko -->
 		<a class="btn button-back" data-bind="click: backToMailBoxClick">
 			<i class="fontastic">⬅</i>
 			<span data-i18n="GLOBAL/BACK"></span>

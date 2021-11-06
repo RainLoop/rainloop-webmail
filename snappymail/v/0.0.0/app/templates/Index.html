@@ -19,23 +19,21 @@
 	{{BaseAppFaviconTouchLinkTag}}
 </head>
 
-<body>
-	<div id="rl-app" data-admin='{{BaseAppAdmin}}'>
-		<div id="rl-loading">
-			<div id="rl-loading-desc">{{LoadingDescriptionEsc}}</div>
-			<div class="e-spinner">
-				<div></div>
-				<div></div>
-				<div></div>
-			</div>
-		</div>
-		<div id="rl-loading-error" hidden="">An error occurred.<br>Please refresh the page and try again.</div>
-		<div id="rl-content" hidden="">
-			<div id="rl-popups"></div>
-			<div id="rl-left"></div>
-			<div id="rl-right"></div>
+<body id="rl-app" data-admin='{{BaseAppAdmin}}'>
+	<div id="rl-loading">
+		<div id="rl-loading-desc">{{LoadingDescriptionEsc}}</div>
+		<div class="e-spinner">
+			<div></div>
+			<div></div>
+			<div></div>
 		</div>
 	</div>
+	<div id="rl-loading-error" hidden="">An error occurred.<br>Please refresh the page and try again.</div>
+	<div id="rl-content" hidden="">
+		<div id="rl-left"></div>
+		<div id="rl-right"></div>
+	</div>
+	<div id="rl-popups"></div>
 	{{BaseTemplates}}
 	<script nonce="" type="text/javascript">{{BaseAppBootScript}}{{BaseLanguage}}</script>
 </body>

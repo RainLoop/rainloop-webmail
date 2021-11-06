@@ -53,6 +53,7 @@ dropdownVisibility.subscribe(value => {
 	}
 });
 
+leftPanelDisabled.toggle = () => leftPanelDisabled(!leftPanelDisabled());
 leftPanelDisabled.subscribe(value => {
 	value && moveAction() && moveAction(false);
 	$htmlCL.toggle('rl-left-panel-disabled', value);

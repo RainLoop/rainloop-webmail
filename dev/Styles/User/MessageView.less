@@ -1,5 +1,13 @@
-.g-ui-min-height-300 {
-	min-height: 300px;
+
+html.rl-no-preview-pane {
+	#rl-right:not(.message-selected) .RL-MailMessageView {
+		display: none;
+	}
+}
+
+.RL-MailMessageView.focused .messageView {
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+	border-color: darken(@rlMainDarkColor, 5%);
 }
 
 .messageView {
@@ -204,7 +212,7 @@
 			text-align: center;
 			font-size: 24px;
 			color: grey;
-			padding-top: 50px;
+			padding: 50px 0;
 		}
 
 		.showImages, .readReceipt, .pgpSigned, .pgpEncrypted {
@@ -446,11 +454,6 @@
 		}
 	}
 
-	&.focused {
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-		border-color: darken(@rlMainDarkColor, 5%);
-	}
-
 	.thread-controls {
 		.dropdown-toggle {
 			padding-left: 10px;
@@ -463,12 +466,7 @@
 	}
 }
 
-html.rl-mobile .messageView,
 html.rl-no-preview-pane .messageView {
-
-	&:not(.message-selected) {
-		display: none;
-	}
 
 	.toolbar {
 		padding-left: 1px;
@@ -490,7 +488,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) .messageView {
 	}
 }
 
-html.rl-bottom-preview-pane:not(.rl-mobile) .messageView {
+html.rl-bottom-preview-pane .messageView {
 	.b-content {
 		bottom: @rlBottomMargin;
 	}

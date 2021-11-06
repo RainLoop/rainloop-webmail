@@ -683,7 +683,7 @@ class AppUser extends AbstractApp {
 			right = elementById('rl-right'),
 			fToggle = () =>
 				setLayoutResizer(left, right, ClientSideKeyName.FolderListSize,
-					(ThemeStore.isMobile() || leftPanelDisabled()) ? null : 'width');
+					(ThemeStore.isMobile() || leftPanelDisabled()) ? 0 : 'Width');
 		if (left && right) {
 			fToggle();
 			leftPanelDisabled.subscribe(fToggle);
