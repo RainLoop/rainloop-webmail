@@ -13,8 +13,6 @@ class AbstractView {
 		this.viewType = type;
 		this.viewModelDom = null;
 
-		this.modalVisibility = ko.observable(false).extend({ rateLimit: 0 });
-
 		this.keyScope = {
 			scope: Scope.None,
 			previous: Scope.None,
@@ -62,6 +60,7 @@ export class AbstractViewPopup extends AbstractView
 			this.keyScope.scope = Scope[name];
 		}
 		this.bDisabeCloseOnEsc = false;
+		this.modalVisibility = ko.observable(false).extend({ rateLimit: 0 });
 	}
 /*
 	onShowWithDelay() {}

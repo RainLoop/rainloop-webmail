@@ -7,7 +7,18 @@
 		<a class="btn buttonContacts fontastic" data-bind="visible: allowContacts, click: contactsClick" data-i18n="[title]GLOBAL/CONTACTS">📇</a>
 	</div>
 	<div class="b-content">
-		<ul class="b-folders-system" data-bind="template: { name: 'MailFolderListSystemItem', foreach: folderListSystem }"></ul>
+		<ul class="b-folders-system" data-bind="foreach: folderListSystem">
+			<li>
+				<a data-bind="dropmessages: $data,
+					css: { 'selected': selected, 'selectable': selectable, 'anim-action-class': actionBlink, 'is-flagged': isFlagged },
+					attr: { 'data-unread': printableUnreadCount }">
+					<!-- ko text: localName --><!-- /ko -->
+					<!-- ko if: isInbox -->
+					<span class="flag-icon fontastic"></span>
+					<!-- /ko -->
+				</a>
+			</li>
+		</ul>
 		<hr/>
 		<ul class="b-folders-user" data-bind="template: { name: 'MailFolderListItem', foreach: folderListVisible }"></ul>
 		<div class="move-action-content-wrapper" data-bind="visible: moveAction"></div>

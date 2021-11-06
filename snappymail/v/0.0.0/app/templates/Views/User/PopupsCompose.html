@@ -1,4 +1,4 @@
-<div class="modal fade b-compose" data-bind="modal: modalVisibility, css: {'loading': saving() || sending()}">
+<div class="modal fade b-compose" data-bind="css: {'loading': saving() || sending()}">
 	<div class="modal-header b-header-toolbar g-ui-user-select-none">
 		<a class="btn button-send" data-bind="command: sendCommand, tooltipErrorTip: sendErrorDesc, css: {'btn-success': sendButtonSuccess, 'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
 			<i data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner': sending()}"></i>

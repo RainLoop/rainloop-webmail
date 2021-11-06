@@ -35,7 +35,7 @@ import Remote from 'Remote/User/Fetch';
 
 import { ComposeAttachmentModel } from 'Model/ComposeAttachment';
 
-import { decorateKoCommands, isPopupVisible, showScreenPopup, hideScreenPopup } from 'Knoin/Knoin';
+import { decorateKoCommands, isPopupVisible, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
@@ -500,7 +500,7 @@ class ComposePopupView extends AbstractViewPopup {
 				() => {
 					if (this.modalVisibility()) {
 						rl.app.deleteMessagesFromFolderWithoutCheck(this.draftFolder(), [this.draftUid()]);
-						hideScreenPopup(ComposePopupView);
+						this.closeCommand();
 					}
 				}
 			]);
@@ -1064,9 +1064,7 @@ class ComposePopupView extends AbstractViewPopup {
 			} else {
 				showScreenPopup(AskPopupView, [
 					i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'),
-					() => {
-						this.modalVisibility() && this.closeCommand();
-					}
+					() => this.closeCommand()
 				]);
 			}
 		}

@@ -45,18 +45,6 @@ ko.bindingHandlers.onSpace = {
 	}
 };
 
-ko.bindingHandlers.modal = {
-	init: (element, fValueAccessor) => {
-		const close = element.querySelector('.close'),
-			click = () => fValueAccessor()(false);
-		close && close.addEventListener('click.koModal', click);
-
-		ko.utils.domNodeDisposal.addDisposeCallback(element, () =>
-			close.removeEventListener('click.koModal', click)
-		);
-	}
-};
-
 ko.bindingHandlers.i18nInit = {
 	init: element => i18nToNodes(element)
 };

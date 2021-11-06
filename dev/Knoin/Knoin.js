@@ -45,9 +45,7 @@ const
 				ViewModelClass.__dom = vmDom;
 
 				if (ViewType.Popup === position) {
-					vm.cancelCommand = vm.closeCommand = createCommand(() => {
-						hideScreenPopup(ViewModelClass);
-					});
+					vm.cancelCommand = vm.closeCommand = createCommand(() => hideScreenPopup(ViewModelClass));
 
 					// show/hide popup/modal
 					const endShowHide = e => {
@@ -81,6 +79,17 @@ const
 							arePopupsVisible(0 < visiblePopups.size);
 						}
 						vmDom.setAttribute('aria-hidden', !value);
+/*
+						// the old ko.bindingHandlers.modal
+						const close = vmDom.querySelector('.close'),
+							click = () => vm.modalVisibility(false);
+						if (close) {
+							close.addEventListener('click.koModal', click);
+							ko.utils.domNodeDisposal.addDisposeCallback(vmDom, () =>
+								close.removeEventListener('click.koModal', click)
+							);
+						}
+*/
 					});
 					if ('ontransitionend' in vmDom) {
 						vmDom.addEventListener('transitionend', endShowHide);
@@ -132,6 +141,16 @@ const
 			vm.onHide && vm.onHide();
 			destroy && vm.viewModelDom.remove();
 		});
+	},
+
+	/**
+	 * @param {Function} ViewModelClassToHide
+	 * @returns {void}
+	 */
+	hideScreenPopup = ViewModelClassToHide => {
+		if (ViewModelClassToHide && ViewModelClassToHide.__vm && ViewModelClassToHide.__dom) {
+			ViewModelClassToHide.__vm.modalVisibility(false);
+		}
 	},
 
 	/**
@@ -234,16 +253,6 @@ export const
 		}
 
 		return fResult;
-	},
-
-	/**
-	 * @param {Function} ViewModelClassToHide
-	 * @returns {void}
-	 */
-	hideScreenPopup = ViewModelClassToHide => {
-		if (ViewModelClassToHide && ViewModelClassToHide.__vm && ViewModelClassToHide.__dom) {
-			ViewModelClassToHide.__vm.modalVisibility(false);
-		}
 	},
 
 	getScreenPopupViewModel = ViewModelClassToShow =>

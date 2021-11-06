@@ -224,9 +224,11 @@
 		<div id="messagesDragImage"><span class="text"></span>&nbsp;<i class="icon-mail"></i></div>
 	</div>
 	<div class="b-footer thm-message-list-bottom-toolbar">
-		<span data-bind="visible: 0 < userUsageProc(), attr: { title: quotaTooltip() }" class="e-quota">
+		<!-- ko if: 0 < userUsageProc() -->
+		<span data-bind="attr: { title: quotaTooltip() }" class="e-quota">
 			<!-- ko text: userUsageProc --><!-- /ko -->%
 		</span>
+		<!-- /ko -->
 		<div class="pull-right">
 			<!-- ko template: { name: 'Paginator', data: messageListPaginator } --><!-- /ko -->
 		</div>

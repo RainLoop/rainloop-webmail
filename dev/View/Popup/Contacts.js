@@ -23,7 +23,7 @@ import { EmailModel } from 'Model/Email';
 import { ContactModel } from 'Model/Contact';
 import { ContactPropertyModel, ContactPropertyType } from 'Model/ContactProperty';
 
-import { decorateKoCommands, hideScreenPopup } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 const CONTACTS_PER_PAGE = 50,
@@ -183,7 +183,7 @@ class ContactsPopupView extends AbstractViewPopup {
 		if (arrayLength(aE)) {
 			this.bBackToCompose = false;
 
-			hideScreenPopup(ContactsPopupView);
+			this.closeCommand();
 
 			switch (this.sLastComposeFocusedField) {
 				case 'cc':
