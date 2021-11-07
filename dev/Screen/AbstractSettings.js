@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { pString } from 'Common/Utils';
 import { settings } from 'Common/Links';
-import { doc, elementById } from 'Common/Globals';
+import { elementById } from 'Common/Globals';
 
 import { AbstractScreen } from 'Knoin/AbstractScreen';
 
@@ -33,11 +33,12 @@ export class AbstractSettingsScreen extends AbstractScreen {
 			} else {
 				const vmPlace = elementById('rl-settings-subscreen');
 				if (vmPlace) {
-					settingsScreen = new RoutedSettingsViewModel();
-
-					viewModelDom = Element.fromHTML('<div hidden=""></div>');
+					viewModelDom = Element.fromHTML('<div id="V-Settings-'
+						+ (RoutedSettingsViewModel.name.replace(/(User|Admin)Settings/,''))
+						+ '" class="g-ui-user-select-none" hidden=""></div>');
 					vmPlace.append(viewModelDom);
 
+					settingsScreen = new RoutedSettingsViewModel();
 					settingsScreen.viewModelDom = viewModelDom;
 
 					RoutedSettingsViewModel.__dom = viewModelDom;
@@ -78,7 +79,7 @@ export class AbstractSettingsScreen extends AbstractScreen {
 						);
 					});
 
-					doc.querySelector('#rl-content .b-settings .b-content').scrollTop = 0;
+					elementById('rl-settings-subscreen').scrollTop = 0;
 					// --
 				}, 1);
 			}

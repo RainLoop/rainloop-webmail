@@ -1,134 +1,132 @@
-<div class="b-settings-general g-ui-user-select-none">
-	<div class="form-horizontal">
-		<div class="legend" data-i18n="SETTINGS_GENERAL/LEGEND_GENERAL"></div>
-		<div class="control-group">
-			<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_IDENTITY"></label>
-			<div class="controls">
-				<b class="editMainIdentity" data-bind="click: editMainIdentity, text: identityMainDesc"></b>
-			</div>
+<div class="form-horizontal">
+	<div class="legend" data-i18n="SETTINGS_GENERAL/LEGEND_GENERAL"></div>
+	<div class="control-group">
+		<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_IDENTITY"></label>
+		<div class="controls">
+			<b class="editMainIdentity" data-bind="click: editMainIdentity, text: identityMainDesc"></b>
 		</div>
-		<div class="control-group" data-bind="visible: allowLanguagesOnSettings">
-			<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_LANGUAGE"></label>
-			<div class="controls">
-				<span class="select" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, onSpace: selectLanguage, onEnter: selectLanguage"></span>
-				<span data-bind="saveTrigger: languageTrigger"></span>
-			</div>
+	</div>
+	<div class="control-group" data-bind="visible: allowLanguagesOnSettings">
+		<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_LANGUAGE"></label>
+		<div class="controls">
+			<span class="select" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, onSpace: selectLanguage, onEnter: selectLanguage"></span>
+			<span data-bind="saveTrigger: languageTrigger"></span>
 		</div>
-		<div class="control-group">
-			<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_LAYOUT"></label>
-			<div class="controls" data-bind="component: {
-				name: 'Select',
+	</div>
+	<div class="control-group">
+		<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_LAYOUT"></label>
+		<div class="controls" data-bind="component: {
+			name: 'Select',
+			params: {
+				options: layoutTypes,
+				value: layout,
+				trigger: layoutTrigger,
+				optionsText: 'name',
+				optionsValue: 'id'
+			}
+		}"></div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_EDITOR"></label>
+		<div class="controls" data-bind="component: {
+			name: 'Select',
+			params: {
+				options: editorDefaultTypes,
+				value: editorDefaultType,
+				trigger: editorDefaultTypeTrigger,
+				optionsText: 'name',
+				optionsValue: 'id'
+			}
+		}"></div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_MESSAGE_PER_PAGE"></label>
+		<div class="controls">
+			<input type="number" min="10" max="50" step="1" class="span1" data-bind="textInput: messagesPerPage"/>
+			&nbsp;
+			<span data-bind="saveTrigger: mppTrigger"></span>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_MARK_MESSAGE_READ_AFTER"></label>
+		<div class="controls">
+			<input type="number" min="0" step="1" class="span1" data-bind="textInput: messageReadDelay"/>
+			&nbsp;
+			<span data-i18n="SETTINGS_GENERAL/SECONDS"></label>
+			<span data-bind="saveTrigger: messageReadDelayTrigger"></span>
+		</div>
+	</div>
+	<div class="control-group">
+		<div class="controls">
+			<div data-bind="component: {
+				name: 'Checkbox',
 				params: {
-					options: layoutTypes,
-					value: layout,
-					trigger: layoutTrigger,
-					optionsText: 'name',
-					optionsValue: 'id'
+					label: 'SETTINGS_GENERAL/LABEL_SHOW_IMAGES',
+					value: showImages
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/LABEL_REMOVE_COLORS',
+					value: removeColors
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/LABEL_USE_CHECKBOXES_IN_LIST',
+					value: useCheckboxesInList
+				}
+			}"></div>
+			<br />
+			<div data-bind="visible: threadsAllowed, component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/LABEL_USE_THREADS',
+					value: useThreads
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/LABEL_REPLY_SAME_FOLDER',
+					value: replySameFolder
 				}
 			}"></div>
 		</div>
-		<div class="control-group">
-			<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_EDITOR"></label>
-			<div class="controls" data-bind="component: {
-				name: 'Select',
-				params: {
-					options: editorDefaultTypes,
-					value: editorDefaultType,
-					trigger: editorDefaultTypeTrigger,
-					optionsText: 'name',
-					optionsValue: 'id'
-				}
-			}"></div>
-		</div>
-		<div class="control-group">
-			<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_MESSAGE_PER_PAGE"></label>
-			<div class="controls">
-				<input type="number" min="10" max="50" step="1" class="span1" data-bind="textInput: messagesPerPage"/>
-				&nbsp;
-				<span data-bind="saveTrigger: mppTrigger"></span>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_MARK_MESSAGE_READ_AFTER"></label>
-			<div class="controls">
-				<input type="number" min="0" step="1" class="span1" data-bind="textInput: messageReadDelay"/>
-				&nbsp;
-				<span data-i18n="SETTINGS_GENERAL/SECONDS"></label>
-				<span data-bind="saveTrigger: messageReadDelayTrigger"></span>
-			</div>
-		</div>
-		<div class="control-group">
-			<div class="controls">
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
-						label: 'SETTINGS_GENERAL/LABEL_SHOW_IMAGES',
-						value: showImages
-					}
-				}"></div>
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
-						label: 'SETTINGS_GENERAL/LABEL_REMOVE_COLORS',
-						value: removeColors
-					}
-				}"></div>
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
-						label: 'SETTINGS_GENERAL/LABEL_USE_CHECKBOXES_IN_LIST',
-						value: useCheckboxesInList
-					}
-				}"></div>
-				<br />
-				<div data-bind="visible: threadsAllowed, component: {
-					name: 'Checkbox',
-					params: {
-						label: 'SETTINGS_GENERAL/LABEL_USE_THREADS',
-						value: useThreads
-					}
-				}"></div>
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
-						label: 'SETTINGS_GENERAL/LABEL_REPLY_SAME_FOLDER',
-						value: replySameFolder
-					}
-				}"></div>
-			</div>
-		</div>
+	</div>
 
-		<div class="legend" data-i18n="SETTINGS_GENERAL/LABEL_NOTIFICATIONS"></div>
-		<div class="control-group">
-			<div class="controls">
-				<div>
-					<div data-bind="component: {
-						name: 'Checkbox',
-						params: {
-							label: 'SETTINGS_GENERAL/LABEL_CHROME_NOTIFICATION_DESC',
-							value: enableDesktopNotification,
-							enable: isDesktopNotificationAllowed,
-							inline: true
-						}
-					}"></div>
-					&nbsp;
-					<span data-bind="visible: !isDesktopNotificationAllowed()" style="color: #999" data-i18n="SETTINGS_GENERAL/LABEL_CHROME_NOTIFICATION_DESC_DENIED"></span>
-					<span class="fontastic" data-bind="click: testSystemNotification" style="color:green;cursor:pointer">▶️</span>
-				</div>
- 				<div>
-					<div data-bind="component: {
-						name: 'Checkbox',
-						params: {
-							label: 'SETTINGS_GENERAL/LABEL_SOUND_NOTIFICATION',
-							value: enableSoundNotification,
-							inline: true
-						}
-					}"></div>
-					&nbsp;
-					<select data-bind="options: notificationSounds, value: notificationSound"></select>
-					&nbsp;
-					<span class="fontastic" data-bind="click: testSoundNotification" style="color:green;cursor:pointer">▶️</span>
-				</div>
+	<div class="legend" data-i18n="SETTINGS_GENERAL/LABEL_NOTIFICATIONS"></div>
+	<div class="control-group">
+		<div class="controls">
+			<div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'SETTINGS_GENERAL/LABEL_CHROME_NOTIFICATION_DESC',
+						value: enableDesktopNotification,
+						enable: isDesktopNotificationAllowed,
+						inline: true
+					}
+				}"></div>
+				&nbsp;
+				<span data-bind="visible: !isDesktopNotificationAllowed()" style="color: #999" data-i18n="SETTINGS_GENERAL/LABEL_CHROME_NOTIFICATION_DESC_DENIED"></span>
+				<span class="fontastic" data-bind="click: testSystemNotification" style="color:green;cursor:pointer">▶️</span>
+			</div>
+			<div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'SETTINGS_GENERAL/LABEL_SOUND_NOTIFICATION',
+						value: enableSoundNotification,
+						inline: true
+					}
+				}"></div>
+				&nbsp;
+				<select data-bind="options: notificationSounds, value: notificationSound"></select>
+				&nbsp;
+				<span class="fontastic" data-bind="click: testSoundNotification" style="color:green;cursor:pointer">▶️</span>
 			</div>
 		</div>
 	</div>

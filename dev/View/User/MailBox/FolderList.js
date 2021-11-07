@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { Scope } from 'Common/Enums';
-import { leftPanelDisabled, moveAction } from 'Common/Globals';
+import { moveAction } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
 import { setFolderHash } from 'Common/Cache';
 import { addComputablesTo } from 'Common/Utils';
@@ -33,8 +33,6 @@ export class MailFolderList extends AbstractViewLeft {
 		this.moveAction = moveAction;
 
 		this.foldersListWithSingleInboxRootFolder = ko.observable(false);
-
-		this.leftPanelDisabled = leftPanelDisabled;
 
 		this.allowContacts = AppUserStore.allowContacts();
 

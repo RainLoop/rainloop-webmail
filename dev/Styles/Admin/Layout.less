@@ -49,7 +49,8 @@
 	left: @rlLeftWidth;
 }
 
-.b-admin-right {
+#V-AdminPane {
+	height: 100%;
 
 	.b-toolbar {
 		position: absolute;
@@ -67,23 +68,6 @@
 			flex-grow: 1;
 		}
 	}
-
-	.b-content {
-		position: absolute;
-		top: 50px + @rlLowMargin;
-		bottom: @rlLowMargin;
-		left: 0;
-		right: @rlLowMargin;
-		overflow-y: auto;
-		z-index: 2;
-
-		background-color: #fff;
-		border: 1px solid @rlMainDarkColor;
-
-		box-shadow: @rlMainShadow;
-		border-radius: @rlMainBorderRadius;
-	}
-
 }
 
 .btn.btn-logout {
@@ -92,7 +76,18 @@
 }
 
 #rl-settings-subscreen {
+	margin: (50px + @rlLowMargin) @rlLowMargin @rlLowMargin 0;
+	overflow-y: auto;
 	padding: 20px;
+
+	box-sizing: border-box;
+	height: calc(100% - 50px - @rlLowMargin - @rlLowMargin);
+
+	background-color: #fff;
+	border: 1px solid @rlMainDarkColor;
+
+	box-shadow: @rlMainShadow;
+	border-radius: @rlMainBorderRadius;
 }
 
 /* desktop */

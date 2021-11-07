@@ -73,10 +73,9 @@
 
 .well,
 #rl-popups > dialog,
-.b-settins-right .b-content,
+#rl-settings-subscreen,
 .messageList,
 .messageView,
-.b-admin-right .b-content,
 #V-PopupsCompose .b-attachment-place {
 	background-color: #000;
 	border-color: #555;
@@ -132,7 +131,7 @@ dialog header, dialog footer,
 	background-color: #111;
 }
 
-.b-admin-about .rl-logo {
+#V-Settings-About .rl-logo {
 	filter: drop-shadow(0 0 1px #FFF);
 }
 
@@ -141,6 +140,7 @@ dialog header, dialog footer,
 }
 
 .tabs [id^="tab"]:checked + label {
+	background: linear-gradient(#555 0%, #000 100%);
 	color: #000;
 }
 

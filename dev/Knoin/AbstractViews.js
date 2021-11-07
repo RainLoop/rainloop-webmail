@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { inFocus, addObservablesTo, addComputablesTo, addSubscribablesTo } from 'Common/Utils';
 import { Scope } from 'Common/Enums';
-import { keyScope, Settings } from 'Common/Globals';
+import { keyScope, Settings, leftPanelDisabled } from 'Common/Globals';
 import { ViewType } from 'Knoin/Knoin';
 
 class AbstractView {
@@ -102,6 +102,7 @@ export class AbstractViewLeft extends AbstractView
 	constructor(templateID)
 	{
 		super(templateID, ViewType.Left);
+		this.leftPanelDisabled = leftPanelDisabled;
 	}
 }
 

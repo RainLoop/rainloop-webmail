@@ -1,14 +1,12 @@
-<div class="b-settings b-settins-right">
-	<div class="b-toolbar btn-toolbar" style="margin-top: 2px;">
-		<!-- ko if: isMobile() -->
-		<div class="btn-group" style="margin-left: -1px">
-			<a class="btn btn-thin-2 fontastic toggleLeft" data-bind="click: leftPanelDisabled.toggle, text: leftPanelDisabled() ? '❯' : '❮'">❮</a>
-		</div>
-		<!-- /ko -->
-		<a class="btn button-back" data-bind="click: backToMailBoxClick">
-			<i class="fontastic">⬅</i>
-			<span data-i18n="GLOBAL/BACK"></span>
-		</a>
+<div class="btn-toolbar">
+	<!-- ko if: isMobile() -->
+	<div class="btn-group" style="margin-left: -1px">
+		<a class="btn btn-thin-2 fontastic toggleLeft" data-bind="click: leftPanelDisabled.toggle, text: leftPanelDisabled() ? '❯' : '❮'">❮</a>
 	</div>
-	<div class="b-content" id="rl-settings-subscreen"></div>
+	<!-- /ko -->
+	<a class="btn button-back" data-bind="click: backToMailBoxClick">
+		<i class="fontastic">⬅</i>
+		<span data-i18n="GLOBAL/BACK"></span>
+	</a>
 </div>
+<div id="rl-settings-subscreen"></div>

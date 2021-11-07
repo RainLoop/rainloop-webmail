@@ -1,5 +1,5 @@
 
-.b-settins-left {
+#V-SettingsMenu {
 
 	.b-footer {
 		position: absolute;
@@ -46,9 +46,10 @@
 	}
 }
 
-.b-settins-right {
+#V-SettingsPane {
+	height: 100%;
 
-	.b-toolbar {
+	.btn-toolbar {
 		position: absolute;
 		top: 0;
 		right: 0;
@@ -58,33 +59,32 @@
 		color: #fff;
 	}
 
-	.b-content {
-		position: absolute;
-		top: 50px;
-		bottom: @rlLowMargin;
-		left: 0;
-		right: @rlLowMargin;
-		overflow-y: auto;
-		z-index: 2;
-		scroll-behavior: smooth;
-
-		background-color: #fff;
-		border: 1px solid @rlMainDarkColor;
-		box-shadow: @rlMainShadow;
-		border-radius: @rlMainBorderRadius;
-	}
-
 	td {
 		padding: 4px 8px;
 		line-height: 30px;
 	}
 }
 
+#rl-settings-subscreen {
+	margin: 50px @rlLowMargin @rlLowMargin 0;
+	overflow-y: auto;
+	scroll-behavior: smooth;
+	padding:20px;
+
+	box-sizing: border-box;
+	height: calc(100% - 50px - @rlLowMargin - @rlLowMargin);
+
+	background-color: #fff;
+	border: 1px solid @rlMainDarkColor;
+	box-shadow: @rlMainShadow;
+	border-radius: @rlMainBorderRadius;
+}
+
 html.rl-mobile #rl-settings-subscreen > * {
 	margin-right: 15px;
 }
 
-.firefox-drag .b-settins-right .b-content,
+.firefox-drag #rl-settings-subscreen,
 .firefox-drag .modal-body {
 	overflow: hidden;
 }

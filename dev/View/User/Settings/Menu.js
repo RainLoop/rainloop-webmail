@@ -1,4 +1,3 @@
-import { leftPanelDisabled } from 'Common/Globals';
 import { settings, mailbox } from 'Common/Links';
 import { getFolderInboxName } from 'Common/Cache';
 
@@ -10,8 +9,6 @@ export class MenuSettingsUserView extends AbstractViewLeft {
 	 */
 	constructor(screen) {
 		super('SettingsMenu');
-
-		this.leftPanelDisabled = leftPanelDisabled;
 
 		this.menu = screen.menu;
 	}
