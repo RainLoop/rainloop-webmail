@@ -141,7 +141,6 @@ dialog header, dialog footer,
 
 .tabs [id^="tab"]:checked + label {
 	background: linear-gradient(#555 0%, #000 100%);
-	color: #000;
 }
 
 input, textarea, .select, select, .emailaddresses {

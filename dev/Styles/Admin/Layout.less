@@ -1,22 +1,18 @@
+
 .UserBackground body {
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
 }
 
-#rl-left, #rl-right {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	padding: 0;
-	margin: 0;
-	border: 0;
-	z-index: 0;
+#rl-content {
+	display:flex;
+	height: 100%;
 }
 
 #rl-left {
+	flex-grow: 0;
+	flex-shrink: 0;
 	overflow: auto;
 	padding-top: 50px + @rlLowMargin + 10px;
 	width: @rlLeftWidth;
@@ -45,14 +41,14 @@
 }
 
 #rl-right {
+	flex-grow: 1;
 	z-index: 1;
-	left: @rlLeftWidth;
 }
 
 #V-AdminPane {
 	height: 100%;
 
-	.b-toolbar {
+	> .b-toolbar {
 		position: absolute;
 		top: 0;
 		right: 0;
@@ -76,18 +72,15 @@
 }
 
 #rl-settings-subscreen {
+	background-color: #fff;
+	border: 1px solid @rlMainDarkColor;
+	border-radius: @rlMainBorderRadius;
+	box-shadow: @rlMainShadow;
+	box-sizing: border-box;
+	height: calc(100% - 50px - @rlLowMargin - @rlLowMargin);
 	margin: (50px + @rlLowMargin) @rlLowMargin @rlLowMargin 0;
 	overflow-y: auto;
 	padding: 20px;
-
-	box-sizing: border-box;
-	height: calc(100% - 50px - @rlLowMargin - @rlLowMargin);
-
-	background-color: #fff;
-	border: 1px solid @rlMainDarkColor;
-
-	box-shadow: @rlMainShadow;
-	border-radius: @rlMainBorderRadius;
 }
 
 /* desktop */
@@ -102,10 +95,6 @@
 	#rl-left {
 		width: @rlLeftWidth + 20;
 	}
-
-	#rl-right {
-		left: @rlLeftWidth + 20;
-	}
 }
 
 /* mobile and tablet */
@@ -114,16 +103,13 @@
 		padding: 10px;
 	}
 
-	html:not(.rl-left-panel-disabled) #rl-right {
-		right: 5-@rlLeftWidth;
+	#rl-right {
+		min-width: calc(100% - @rlLowMargin);
 	}
 
 	html.rl-left-panel-disabled {
 		#rl-left {
-			width: 0 !important;
-		}
-		#rl-right {
-			left: 5px !important;
+			width: 0;
 		}
 	}
 }

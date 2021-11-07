@@ -13,9 +13,7 @@
 					size: 4
 				}
 			}"></div>
-			<div data-bind="visible: '' !== savingError()">
-				<span class="error-desc" data-bind="text: savingError"></span>
-			</div>
+			<div class="alert-error" data-bind="visible: '' !== savingError(), text: savingError"></div>
 		</div>
 	</div>
 	<div class="control-group">
