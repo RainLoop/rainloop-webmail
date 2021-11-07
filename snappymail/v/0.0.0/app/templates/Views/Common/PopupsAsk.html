@@ -1,13 +1,11 @@
-<div class="modal fade b-ask-content g-ui-user-select-none">
-	<div class="modal-body" data-bind="html: askDesc"></div>
-	<div class="modal-footer">
-		<button class="btn buttonYes" data-bind="click: yesClick">
-			<i class="fontastic">✔</i>
-			<span data-bind="text: yesButton"></span>
-		</button>
-		<button class="btn buttonNo" data-bind="click: noClick">
-			<i class="fontastic">✖</i>
-			<span data-bind="text: noButton"></span>
-		</button>
-	</div>
-</div>
+<div class="modal-body" data-bind="html: askDesc"></div>
+<footer>
+	<button class="btn buttonYes" data-bind="click: yesClick">
+		<i class="fontastic">✔</i>
+		<span data-bind="text: yesButton"></span>
+	</button>
+	<button class="btn buttonNo" data-bind="click: noClick">
+		<i class="fontastic">✖</i>
+		<span data-bind="text: noButton"></span>
+	</button>
+</footer>

@@ -18,22 +18,22 @@
 
 @media screen and (min-width: 1000px) {
 
-	html.rl-started-trigger .b-login-content {
+	html.rl-started-trigger .LoginView {
 		/*transform: scale(1.1);*/
 		transform: translateY(-20px);
 		opacity: 0.5;
 	}
 
-	.b-login-content .errorAnimated {
+	.LoginView .errorAnimated {
 		animation: login-form-shake 400ms ease-in-out;
 	}
 
-	.b-login-content .errorAnimated .buttonLogin {
+	.LoginView .errorAnimated .buttonLogin {
 		color: #b94a48;
 		font-weight: bold;
 	}
 
-	.b-login-content {
+	.LoginView {
 		transition: all 0.3s ease-out;
 	}
 
@@ -41,23 +41,4 @@
 		transition: all 0.2s linear;
 	}
 
-	#rl-popups > .rl-view-model .modal {
-		transition: all .2s ease-out;
-	}
-	#rl-popups > .rl-view-model:not(.show) .modal {
-		top: -25%;
-	}
-	#rl-popups > .rl-view-model .modal.fade {
-		opacity: 1;
-	}
-	#rl-popups > .rl-view-model:not(.show) .modal.fade {
-		opacity: 0;
-	}
-}
-
-#rl-popups > .rl-view-model {
-	transition: background-color 0.2s linear;
-}
-#rl-popups > .rl-view-model:not(.show) {
-	background-color: rgba(0,0,0,0);
 }

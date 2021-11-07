@@ -13,6 +13,7 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 class FolderSystemPopupView extends AbstractViewPopup {
 	constructor() {
 		super('FolderSystem');
+		this.viewNoUserSelect = true;
 
 		this.sChooseOnText = '';
 		this.sUnuseText = '';

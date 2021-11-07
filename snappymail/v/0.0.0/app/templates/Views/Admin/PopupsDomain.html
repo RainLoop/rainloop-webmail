@@ -1,9 +1,8 @@
-<div class="modal fade b-domain-content g-ui-user-select-none"
-	data-bind="css: {'domain-edit': edit}">
-	<div class="modal-header">
+<div data-bind="css: {'domain-edit': edit}">
+	<header>
 		<button type="button" class="close" data-bind="command: cancelCommand">×</button>
 		<h3 data-bind="text: headerText"></h3>
-	</div>
+	</header>
 	<div class="modal-body">
 		<div class="row" data-bind="visible: !edit()" style="margin-bottom: 20px;">
 			<div class="span5">
@@ -187,7 +186,7 @@
 			</div>
 		</form>
 	</div>
-	<div class="modal-footer">
+	<footer>
 		<a class="btn button-test-connection pull-left" data-bind="command: testConnectionCommand, css: {
 		   'btn-success': testingDone() && !testingImapError() && !testingSmtpError(),
 		   'btn-danger': testingDone() && (testingImapError() || testingSmtpError()) }">
@@ -206,5 +205,5 @@
 			<i class="fontastic" data-bind="css: {'icon-spinner': saving()}">✚</i>
 			<span data-i18n="POPUPS_DOMAIN/BUTTON_ADD"></span>
 		</a>
-	</div>
+	</footer>
 </div>

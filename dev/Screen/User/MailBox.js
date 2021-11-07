@@ -1,6 +1,6 @@
 import { Scope } from 'Common/Enums';
 import { Layout, ClientSideKeyName } from 'Common/EnumsUser';
-import { doc, leftPanelDisabled, moveAction, Settings } from 'Common/Globals';
+import { doc, leftPanelDisabled, moveAction, Settings, elementById } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
 import { setLayoutResizer } from 'Common/UtilsUser';
 import { getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName } from 'Common/Cache';
@@ -104,8 +104,8 @@ export class MailBoxUserScreen extends AbstractScreen {
 	onBuild() {
 		setTimeout(() => {
 			// initMailboxLayoutResizer
-			const top = doc.querySelector('.RL-MailMessageList'),
-				bottom = doc.querySelector('.RL-MailMessageView'),
+			const top = elementById('V-MailMessageList'),
+				bottom = elementById('V-MailMessageView'),
 				fToggle = () => {
 					let layout = SettingsUserStore.layout();
 					setLayoutResizer(top, bottom, ClientSideKeyName.MessageListSize,

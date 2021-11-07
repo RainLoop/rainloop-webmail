@@ -7,6 +7,7 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 class LanguagesPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Languages');
+		this.viewNoUserSelect = true;
 
 		this.fLang = null;
 		this.userLanguage = ko.observable('');

@@ -75,7 +75,7 @@ html:not(.rl-left-panel-disabled) #rl-left {
 }
 
 #rl-left > .resizer,
-.rl-side-preview-pane .RL-MailMessageList > .resizer {
+.rl-side-preview-pane #V-MailMessageList > .resizer {
 	cursor: ew-resize;
 	height: 100%;
 	right: 0;
@@ -83,17 +83,17 @@ html:not(.rl-left-panel-disabled) #rl-left {
 	width: 5px;
 }
 
-.rl-side-preview-pane .RL-MailMessageList {
+.rl-side-preview-pane #V-MailMessageList {
 	resize: horizontal;
 	min-width: 320px;
 	max-width: 60%;
 }
-.rl-bottom-preview-pane .RL-MailMessageList {
+.rl-bottom-preview-pane #V-MailMessageList {
 	resize: vertical;
 	min-height: 200px;
 	max-height: 60%;
 }
-.rl-bottom-preview-pane .RL-MailMessageList > .resizer {
+.rl-bottom-preview-pane #V-MailMessageList > .resizer {
 	cursor: ns-resize;
 	height: 5px;
 	left: 0;
@@ -102,11 +102,11 @@ html:not(.rl-left-panel-disabled) #rl-left {
 }
 
 html:not(.rl-left-panel-disabled) #rl-left > .resizer,
-.RL-MailMessageList > .resizer {
+#V-MailMessageList > .resizer {
 	display: block;
 }
 
-.RL-MailMessageList {
+#V-MailMessageList {
 	position: absolute;
 	top: 0;
 	bottom: @rlBottomMargin;
@@ -114,7 +114,7 @@ html:not(.rl-left-panel-disabled) #rl-left > .resizer,
 	width: 50%;
 }
 
-.RL-MailMessageView {
+#V-MailMessageView {
 	position: absolute;
 	top: 50px + @rlLowMargin;
 	bottom: 13px;
@@ -148,28 +148,9 @@ html:not(.rl-left-panel-disabled) #rl-left > .resizer,
 }
 
 html.rl-side-preview-pane {
-	.RL-MailMessageView {
+	#V-MailMessageView {
 		left: 50%;
 	}
-}
-
-/*
-	#rl-popups > dialog {
-		top: 0;
-		margin: 10px auto;
-		padding: 0;
-		border: 0;
-	}
-*/
-#rl-popups > .rl-view-model {
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	z-index: 1100;
-	overflow: auto;
-	background-color: rgba(0,0,0,0.3);
 }
 
 #rl-settings-subscreen {
@@ -256,12 +237,12 @@ html.rl-side-preview-pane {
 		left: @rlLeftWidth + 20;
 	}
 
-	.RL-MailMessageList {
+	#V-MailMessageList {
 		width: 40%;
 	}
 
 	html.rl-side-preview-pane {
-		.RL-MailMessageView {
+		#V-MailMessageView {
 			left: 40%;
 		}
 	}
@@ -317,7 +298,7 @@ html.rl-left-panel-disabled {
 
 html.rl-no-preview-pane {
 
-	.RL-MailMessageList {
+	#V-MailMessageList {
 		right: @rlBottomMargin !important;
 		width: inherit;
 	}
@@ -331,14 +312,14 @@ html.rl-no-preview-pane #rl-right .resizer {
 
 html.rl-bottom-preview-pane {
 
-	.RL-MailMessageList {
+	#V-MailMessageList {
 		bottom: inherit;
 		width: inherit;
 		height: 300px;
 		right: 0;
 	}
 
-	.RL-MailMessageView {
+	#V-MailMessageView {
 		left: 0;
 		top: 356px;
 	}

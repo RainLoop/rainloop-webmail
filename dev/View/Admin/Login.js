@@ -1,18 +1,13 @@
-import ko from 'ko';
-
-import { Settings } from 'Common/Globals';
 import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Fetch';
 
 import { decorateKoCommands } from 'Knoin/Knoin';
-import { AbstractViewCenter } from 'Knoin/AbstractViews';
+import { AbstractViewLogin } from 'Knoin/AbstractViews';
 
-class LoginAdminView extends AbstractViewCenter {
+class LoginAdminView extends AbstractViewLogin {
 	constructor() {
 		super('AdminLogin');
-
-		this.hideSubmitButton = Settings.app('hideSubmitButton');
 
 		this.addObservables({
 			login: '',
@@ -25,8 +20,6 @@ class LoginAdminView extends AbstractViewCenter {
 			submitRequest: false,
 			submitError: ''
 		});
-
-		this.formError = ko.observable(false).extend({ falseTimeout: 500 });
 
 		this.addSubscribables({
 			login: () => this.loginError(false),
@@ -66,14 +59,6 @@ class LoginAdminView extends AbstractViewCenter {
 		}
 
 		return valid;
-	}
-
-	onShow() {
-		rl.route.off();
-	}
-
-	submitForm() {
-//		return false;
 	}
 }
 

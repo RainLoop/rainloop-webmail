@@ -1,104 +1,102 @@
-<div class="modal fade b-advanced-search-content g-ui-user-select-none">
-	<div class="modal-header">
-		<button type="button" class="close" data-bind="command: cancelCommand">×</button>
-		<h3 data-i18n="SEARCH/TITLE_ADV"></h3>
-	</div>
-	<div class="modal-body">
-		<form class="form-horizontal" action="#/" autocomplete="off" onsubmit="return false;" data-bind="command: searchCommand">
-			<div class="row">
-				<div class="span4">
-					<div class="control-group">
-						<label class="control-label" data-i18n="GLOBAL/FROM"></label>
-						<div class="controls">
-							<input type="text" class="uiInput inputFrom"
-								autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-								data-bind="value: from, onEnter: searchCommand, onEsc: cancelCommand" />
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" data-i18n="GLOBAL/TO"></label>
-						<div class="controls">
-							<input type="text" class="uiInput inputFrom" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-								data-bind="value: to, onEnter: searchCommand, onEsc: cancelCommand" />
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" data-i18n="GLOBAL/SUBJECT"></label>
-						<div class="controls">
-							<input type="text" class="uiInput inputFrom" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-								data-bind="value: subject, onEnter: searchCommand, onEsc: cancelCommand" />
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" data-i18n="SEARCH/LABEL_ADV_TEXT"></label>
-						<div class="controls">
-							<input type="text" class="uiInput inputFrom" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-								data-bind="value: text, onEnter: searchCommand, onEsc: cancelCommand" />
-						</div>
+<header>
+	<button type="button" class="close" data-bind="command: cancelCommand">×</button>
+	<h3 data-i18n="SEARCH/TITLE_ADV"></h3>
+</header>
+<div class="modal-body">
+	<form class="form-horizontal" action="#/" autocomplete="off" onsubmit="return false;" data-bind="command: searchCommand">
+		<div class="row">
+			<div class="span4">
+				<div class="control-group">
+					<label class="control-label" data-i18n="GLOBAL/FROM"></label>
+					<div class="controls">
+						<input type="text" class="uiInput inputFrom"
+							autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							data-bind="value: from, onEnter: searchCommand, onEsc: cancelCommand" />
 					</div>
 				</div>
-				<div class="span4">
-					<div class="control-group">
-						<label class="control-label" data-i18n="SEARCH/LABEL_ADV_DATE"></label>
-						<div class="controls" data-bind="component: {
-							name: 'Select',
-							params: {
-								options: selectedDates,
-								value: selectedDateValue,
-								optionsText: 'name',
-								optionsValue: 'id'
-							}
-						}"></div>
+				<div class="control-group">
+					<label class="control-label" data-i18n="GLOBAL/TO"></label>
+					<div class="controls">
+						<input type="text" class="uiInput inputFrom" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							data-bind="value: to, onEnter: searchCommand, onEsc: cancelCommand" />
 					</div>
-					<!-- ko if: showMultisearch -->
-					<div class="control-group">
-						<label class="control-label" data-i18n="SEARCH/LABEL_ADV_SUBFOLDERS"></label>
-						<div class="controls" data-bind="component: {
-							name: 'Select',
-							params: {
-								options: selectedTree,
-								value: selectedTreeValue,
-								optionsText: 'name',
-								optionsValue: 'id'
-							}
-						}"></div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" data-i18n="GLOBAL/SUBJECT"></label>
+					<div class="controls">
+						<input type="text" class="uiInput inputFrom" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							data-bind="value: subject, onEnter: searchCommand, onEsc: cancelCommand" />
 					</div>
-					<!-- /ko -->
-					<div class="control-group">
-						<label class="control-label">
-						</label>
-						<div class="controls">
-							<div data-bind="component: {
-								name: 'Checkbox',
-								params: {
-									label: 'SEARCH/LABEL_ADV_UNSEEN',
-									value: unseen
-								}
-							}"></div>
-							<div data-bind="component: {
-								name: 'Checkbox',
-								params: {
-									label: 'SEARCH/LABEL_ADV_FLAGGED',
-									value: starred
-								}
-							}"></div>
-							<div data-bind="component: {
-								name: 'Checkbox',
-								params: {
-									label: 'SEARCH/LABEL_ADV_HAS_ATTACHMENT',
-									value: hasAttachment
-								}
-							}"></div>
-						</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" data-i18n="SEARCH/LABEL_ADV_TEXT"></label>
+					<div class="controls">
+						<input type="text" class="uiInput inputFrom" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							data-bind="value: text, onEnter: searchCommand, onEsc: cancelCommand" />
 					</div>
 				</div>
 			</div>
-		</form>
-	</div>
-	<div class="modal-footer">
-		<button type="submit" class="btn buttonAdvSearch" data-bind="command: searchCommand">
-			<i class="fontastic">🔎</i>
-			<span data-i18n="GLOBAL/SEARCH"></span>
-		</a>
-	</div>
+			<div class="span4">
+				<div class="control-group">
+					<label class="control-label" data-i18n="SEARCH/LABEL_ADV_DATE"></label>
+					<div class="controls" data-bind="component: {
+						name: 'Select',
+						params: {
+							options: selectedDates,
+							value: selectedDateValue,
+							optionsText: 'name',
+							optionsValue: 'id'
+						}
+					}"></div>
+				</div>
+				<!-- ko if: showMultisearch -->
+				<div class="control-group">
+					<label class="control-label" data-i18n="SEARCH/LABEL_ADV_SUBFOLDERS"></label>
+					<div class="controls" data-bind="component: {
+						name: 'Select',
+						params: {
+							options: selectedTree,
+							value: selectedTreeValue,
+							optionsText: 'name',
+							optionsValue: 'id'
+						}
+					}"></div>
+				</div>
+				<!-- /ko -->
+				<div class="control-group">
+					<label class="control-label">
+					</label>
+					<div class="controls">
+						<div data-bind="component: {
+							name: 'Checkbox',
+							params: {
+								label: 'SEARCH/LABEL_ADV_UNSEEN',
+								value: unseen
+							}
+						}"></div>
+						<div data-bind="component: {
+							name: 'Checkbox',
+							params: {
+								label: 'SEARCH/LABEL_ADV_FLAGGED',
+								value: starred
+							}
+						}"></div>
+						<div data-bind="component: {
+							name: 'Checkbox',
+							params: {
+								label: 'SEARCH/LABEL_ADV_HAS_ATTACHMENT',
+								value: hasAttachment
+							}
+						}"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
 </div>
+<footer>
+	<button type="submit" class="btn buttonAdvSearch" data-bind="command: searchCommand">
+		<i class="fontastic">🔎</i>
+		<span data-i18n="GLOBAL/SEARCH"></span>
+	</a>
+</footer>

@@ -1,11 +1,11 @@
 
 html.rl-no-preview-pane {
-	#rl-right:not(.message-selected) .RL-MailMessageView {
+	#rl-right:not(.message-selected) #V-MailMessageView {
 		display: none;
 	}
 }
 
-.RL-MailMessageView.focused .messageView {
+#V-MailMessageView.focused .messageView {
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 	border-color: darken(@rlMainDarkColor, 5%);
 }
@@ -501,10 +501,10 @@ html.rl-message-fullscreen {
 	}
 
 	#rl-right {
-		.RL-MailMessageList,
-		.RL-SettingsPane,
-		.RL-SystemDropDown,
-		.RL-MailMessageView .messageView .toolbar {
+		#V-MailMessageList,
+		#V-SettingsPane,
+		#V-SystemDropDown,
+		#V-MailMessageView .messageView .toolbar {
 			display: none !important;
 		}
 	}

@@ -1,183 +1,177 @@
-<div class="modal fade b-compose" data-bind="css: {'loading': saving() || sending()}">
-	<div class="modal-header b-header-toolbar g-ui-user-select-none">
-		<a class="btn button-send" data-bind="command: sendCommand, tooltipErrorTip: sendErrorDesc, css: {'btn-success': sendButtonSuccess, 'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
-			<i data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner': sending()}"></i>
-			<span class="hide-mobile" data-i18n="COMPOSE/BUTTON_SEND"></span>
-		</a>
-		<a class="btn button-save" data-bind="command: saveCommand, tooltipErrorTip: savedErrorDesc, css: {'btn-danger': savedError }">
-			<i class="fontastic" data-bind="css: {'icon-spinner': saving()}">💾</i>
-			<span class="hide-mobile" data-i18n="GLOBAL/SAVE"></span>
-		</a>
+<header class="g-ui-user-select-none" data-bind="css: {'loading': saving() || sending()}">
+	<a class="btn button-send" data-bind="command: sendCommand, tooltipErrorTip: sendErrorDesc, css: {'btn-success': sendButtonSuccess, 'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
+		<i data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner': sending()}"></i>
+		<span class="hide-mobile" data-i18n="COMPOSE/BUTTON_SEND"></span>
+	</a>
+	<a class="btn button-save" data-bind="command: saveCommand, tooltipErrorTip: savedErrorDesc, css: {'btn-danger': savedError }">
+		<i class="fontastic" data-bind="css: {'icon-spinner': saving()}">💾</i>
+		<span class="hide-mobile" data-i18n="GLOBAL/SAVE"></span>
+	</a>
 
-		<a class="close" data-bind="click: tryToClosePopup" data-i18n="[title]GLOBAL/CANCEL">×</a>
-		<a class="minimize-custom" data-bind="click: skipCommand" data-i18n="[title]COMPOSE/BUTTON_MINIMIZE"></a>
+	<a class="close" data-bind="click: tryToClosePopup" data-i18n="[title]GLOBAL/CANCEL">×</a>
+	<a class="minimize-custom" data-bind="click: skipCommand" data-i18n="[title]COMPOSE/BUTTON_MINIMIZE"></a>
 
-		<a class="btn btn-danger button-delete button-delete-transitions" data-bind="command: deleteCommand">
-			<i class="fontastic">🗑</i>
-		</a>
-		<span class="saved-text hide-mobile" data-bind="text: savedTimeText"></span>
-	</div>
-	<div class="modal-body">
-		<div class="b-header g-ui-user-select-none">
-			<table>
-				<tr>
-					<td data-i18n="GLOBAL/FROM"></td>
-					<td>
-						<div class="dropdown" style="display:inline-block" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: identitiesDropdownTrigger">
-							<a class="dropdown-toggle e-identity" href="#" tabindex="-1"
-								id="identity-label-id" role="button"
-								data-bind="text: currentIdentityView, css: {'multiply': 1 < identitiesOptions().length }">
-							</a>
-							<!-- ko if: 1 < identitiesOptions().length -->
-								<ul class="dropdown-menu" role="menu" aria-labelledby="identity-label-id" data-bind="foreach: identitiesOptions">
-									<li role="presentation">
-										<a tabindex="-1" href="#" data-bind="click: function (oIdentity) { $root.selectIdentity(oIdentity); return true; }, text: optText"></a>
-									</li>
-								</ul>
-							<!-- /ko -->
-						</div>
-						<div class="pull-right">
-							<a class="btn" data-i18n="GLOBAL/BCC"
-								data-bind="visible: !showBcc(), click: function () { showBcc(true); }"></a>
-							<a class="btn fontastic" data-bind="visible: allowContacts, command: contactsCommand" data-i18n="[title]GLOBAL/CONTACTS">📇</a>
-							<div class="btn-group dropdown colored-toggle" data-bind="registerBootstrapDropdown: true" style="display:inline;vertical-align:top">
-								<a class="btn dropdown-toggle fontastic">☰</a>
-								<ul class="dropdown-menu right-edge" role="menu">
-									<li data-bind="click: function () { showBcc(!showBcc()); }">
-										<a>
-											<i class="fontastic" data-bind="text: showBcc() ? '☑' : '☐'"></i>
-											<span data-i18n="GLOBAL/BCC"></span>
-										</a>
-									</li>
-									<li data-bind="click: function () { showCc(!showCc()); }">
-										<a>
-											<i class="fontastic" data-bind="text: showCc() ? '☑' : '☐'"></i>
-											<span data-i18n="GLOBAL/CC"></span>
-										</a>
-									</li>
-									<li data-bind="click: function () { showReplyTo(!showReplyTo()); }">
-										<a>
-											<i class="fontastic" data-bind="text: showReplyTo() ? '☑' : '☐'"></i>
-											<span data-i18n="GLOBAL/REPLY_TO"></span>
-										</a>
-									</li>
-									<li data-bind="click: function () { requestReadReceipt(!requestReadReceipt()); }">
-										<a>
-											<i class="fontastic" data-bind="text: requestReadReceipt() ? '☑' : '☐'"></i>
-											<span data-i18n="COMPOSE/BUTTON_REQUEST_READ_RECEIPT"></span>
-										</a>
-									</li>
-									<li data-bind="click: function () { requestDsn(!requestDsn()); }">
-										<a>
-											<i class="fontastic" data-bind="text: requestDsn() ? '☑' : '☐'"></i>
-											<span data-i18n="COMPOSE/BUTTON_REQUEST_DSN"></span>
-										</a>
-									</li>
-									<li data-bind="click: function () { markAsImportant(!markAsImportant()); }">
-										<a>
-											<i class="fontastic" data-bind="text: markAsImportant() ? '☑' : '☐'"></i>
-											<span data-i18n="COMPOSE/BUTTON_MARK_AS_IMPORTANT"></span>
-										</a>
-									</li>
-									<li class="dividerbar" data-bind="visible: capaOpenPGP, click: openOpenPgpPopup, css: {'disabled': isHtml()}">
-										<a>
-											<i class="fontastic">🔑</i>
-											<span data-i18n="COMPOSE/BUTTON_OPEN_PGP"></span>
-										</a>
-									</li>
-								</ul>
-							</div>
-						</span>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<label data-bind="css: {'error-to': emptyToError}, tooltipErrorTip: emptyToErrorTooltip"
-							data-i18n="GLOBAL/TO"></label>
-					</td>
-					<td>
-						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: to, autoCompleteSource: emailsSource" />
-					</td>
-				</tr>
-				<tr class="cc-row" data-bind="visible: showCc">
-					<td data-i18n="GLOBAL/CC"></div>
-					<td>
-						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: cc, autoCompleteSource: emailsSource" />
-					</td>
-				</tr>
-				<tr class="bcc-row" data-bind="visible: showBcc">
-					<td data-i18n="GLOBAL/BCC"></div>
-					<td>
-						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: bcc, autoCompleteSource: emailsSource" />
-					</td>
-				</tr>
-				<tr class="reply-to-row" data-bind="visible: showReplyTo">
-					<td data-i18n="GLOBAL/REPLY_TO"></div>
-					<td>
-						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: replyTo, autoCompleteSource: emailsSource" />
-					</td>
-				</tr>
-				<tr>
-					<td data-i18n="GLOBAL/SUBJECT"></div>
-					<td>
-						<input type="text" size="70" autocomplete="off" data-bind="textInput: subject" />
-					</td>
-				</tr>
-				<tr>
-					<td></td>
-					<td>
-						<div class="btn-group pull-left">
-							<button type="button" class="btn" data-bind="click: function () { attachmentsPlace(false); },
-								css: { 'active': !attachmentsPlace() }">
-								<i class="icon-file-text"></i>
-							</button>
-							<button type="button" class="btn" data-bind="click: function () { attachmentsPlace(true); },
-								css: { 'btn-danger': 0 < attachmentsInErrorCount(), 'active': attachmentsPlace() },
-								tooltipErrorTip: attachmentsErrorTooltip">
-								<span data-bind="visible: 0 < attachmentsCount()">
-									<b data-bind="text: attachmentsCount"></b>
-									&nbsp;&nbsp;
-								</span>
-								<i data-bind="css: { 'icon-attachment': 0 === attachmentsInProcessCount(), 'icon-spinner': 0 < attachmentsInProcessCount()}"></i>
-							</button>
-						</div>
-						<div class="btn-group pull-right">
-							<a class="btn"
-								style="padding-left: 10px; padding-right: 10px;"
-								data-bind="visible: addAttachmentEnabled(), initDom: composeUploaderButton" data-i18n="[title]COMPOSE/ATTACH_FILES">
-								<sup style="font-weight: bold; font-size: 100%; top: -0.3em;">+</sup><i class="icon-attachment"></i>
-							</a>
-						</div>
-					</td>
-				</tr>
-			</table>
-		</div>
-
-		<div class="attachmentAreaParent" data-bind="visible: attachmentsPlace">
-			<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}"
-				data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></div>
-			<ul class="attachmentList" data-bind="foreach: attachments">
-				<li class="attachmentItem" data-bind="attr: { 'title': title }, css: { 'waiting': waiting, 'error': '' !== error() }">
-					<div class="attachmentIconParent">
-						<i class="iconMain" data-bind="css: iconClass(), visible: !uploading() || 0 === progress()"></i>
-						<div class="iconProgress" data-bind="attr: { 'style': progressStyle }, visible: uploading"></div>
-						<div class="iconBG" data-bind="text: progressText, visible: uploading"></div>
+	<a class="btn btn-danger button-delete button-delete-transitions" data-bind="command: deleteCommand">
+		<i class="fontastic">🗑</i>
+	</a>
+	<span class="saved-text hide-mobile" data-bind="text: savedTimeText"></span>
+</header>
+<div class="modal-body">
+	<div class="b-header g-ui-user-select-none">
+		<table>
+			<tr>
+				<td data-i18n="GLOBAL/FROM"></td>
+				<td>
+					<div class="dropdown" style="display:inline-block" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: identitiesDropdownTrigger">
+						<a class="dropdown-toggle e-identity" href="#" tabindex="-1"
+							id="identity-label-id" role="button"
+							data-bind="text: currentIdentityView, css: {'multiply': 1 < identitiesOptions().length }">
+						</a>
+						<!-- ko if: 1 < identitiesOptions().length -->
+							<ul class="dropdown-menu" role="menu" aria-labelledby="identity-label-id" data-bind="foreach: identitiesOptions">
+								<li role="presentation">
+									<a tabindex="-1" href="#" data-bind="click: function (oIdentity) { $root.selectIdentity(oIdentity); return true; }, text: optText"></a>
+								</li>
+							</ul>
+						<!-- /ko -->
 					</div>
-					<div class="attachmentNameParent">
-						<button type="button" class="close pull-right" style="margin-top:-4px;" data-bind="click: cancel">×</button>
-						<div style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
-							<span class="attachmentName" data-bind="text: fileName"></span>&nbsp;
+					<div class="pull-right">
+						<a class="btn" data-i18n="GLOBAL/BCC"
+							data-bind="visible: !showBcc(), click: function () { showBcc(true); }"></a>
+						<a class="btn fontastic" data-bind="visible: allowContacts, command: contactsCommand" data-i18n="[title]GLOBAL/CONTACTS">📇</a>
+						<div class="btn-group dropdown colored-toggle" data-bind="registerBootstrapDropdown: true" style="display:inline;vertical-align:top">
+							<a class="btn dropdown-toggle fontastic">☰</a>
+							<ul class="dropdown-menu right-edge" role="menu">
+								<li data-bind="click: function () { showBcc(!showBcc()); }">
+									<a>
+										<i class="fontastic" data-bind="text: showBcc() ? '☑' : '☐'"></i>
+										<span data-i18n="GLOBAL/BCC"></span>
+									</a>
+								</li>
+								<li data-bind="click: function () { showCc(!showCc()); }">
+									<a>
+										<i class="fontastic" data-bind="text: showCc() ? '☑' : '☐'"></i>
+										<span data-i18n="GLOBAL/CC"></span>
+									</a>
+								</li>
+								<li data-bind="click: function () { showReplyTo(!showReplyTo()); }">
+									<a>
+										<i class="fontastic" data-bind="text: showReplyTo() ? '☑' : '☐'"></i>
+										<span data-i18n="GLOBAL/REPLY_TO"></span>
+									</a>
+								</li>
+								<li data-bind="click: function () { requestReadReceipt(!requestReadReceipt()); }">
+									<a>
+										<i class="fontastic" data-bind="text: requestReadReceipt() ? '☑' : '☐'"></i>
+										<span data-i18n="COMPOSE/BUTTON_REQUEST_READ_RECEIPT"></span>
+									</a>
+								</li>
+								<li data-bind="click: function () { requestDsn(!requestDsn()); }">
+									<a>
+										<i class="fontastic" data-bind="text: requestDsn() ? '☑' : '☐'"></i>
+										<span data-i18n="COMPOSE/BUTTON_REQUEST_DSN"></span>
+									</a>
+								</li>
+								<li data-bind="click: function () { markAsImportant(!markAsImportant()); }">
+									<a>
+										<i class="fontastic" data-bind="text: markAsImportant() ? '☑' : '☐'"></i>
+										<span data-i18n="COMPOSE/BUTTON_MARK_AS_IMPORTANT"></span>
+									</a>
+								</li>
+								<li class="dividerbar" data-bind="visible: capaOpenPGP, click: openOpenPgpPopup, css: {'disabled': isHtml()}">
+									<a>
+										<i class="fontastic">🔑</i>
+										<span data-i18n="COMPOSE/BUTTON_OPEN_PGP"></span>
+									</a>
+								</li>
+							</ul>
 						</div>
-						<div>
-							<span class="attachmentSize" data-bind="text: friendlySize"></span>&nbsp;
-						</div>
+					</span>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label data-bind="css: {'error-to': emptyToError}, tooltipErrorTip: emptyToErrorTooltip"
+						data-i18n="GLOBAL/TO"></label>
+				</td>
+				<td>
+					<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: to, autoCompleteSource: emailsSource" />
+				</td>
+			</tr>
+			<tr class="cc-row" data-bind="visible: showCc">
+				<td data-i18n="GLOBAL/CC"></div>
+				<td>
+					<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: cc, autoCompleteSource: emailsSource" />
+				</td>
+			</tr>
+			<tr class="bcc-row" data-bind="visible: showBcc">
+				<td data-i18n="GLOBAL/BCC"></div>
+				<td>
+					<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: bcc, autoCompleteSource: emailsSource" />
+				</td>
+			</tr>
+			<tr class="reply-to-row" data-bind="visible: showReplyTo">
+				<td data-i18n="GLOBAL/REPLY_TO"></div>
+				<td>
+					<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: replyTo, autoCompleteSource: emailsSource" />
+				</td>
+			</tr>
+			<tr>
+				<td data-i18n="GLOBAL/SUBJECT"></div>
+				<td>
+					<input type="text" size="70" autocomplete="off" data-bind="textInput: subject" />
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<div class="btn-group pull-left">
+						<button type="button" class="btn" data-bind="click: function () { attachmentsPlace(false); },
+							css: { 'active': !attachmentsPlace() }">
+							<i class="icon-file-text"></i>
+						</button>
+						<button type="button" class="btn" data-bind="click: function () { attachmentsPlace(true); },
+							css: { 'btn-danger': 0 < attachmentsInErrorCount(), 'active': attachmentsPlace() },
+							tooltipErrorTip: attachmentsErrorTooltip">
+							<span data-bind="visible: 0 < attachmentsCount()">
+								<b data-bind="text: attachmentsCount"></b>
+								&nbsp;&nbsp;
+							</span>
+							<i data-bind="css: { 'icon-attachment': 0 === attachmentsInProcessCount(), 'icon-spinner': 0 < attachmentsInProcessCount()}"></i>
+						</button>
 					</div>
-				</li>
-			</ul>
-			<div class="no-attachments-desc" data-bind="visible: 0 === attachments().length"
-				data-i18n="COMPOSE/NO_ATTACHMENTS_HERE_DESC"></div>
-		</div>
-
-		<div class="textAreaParent" data-bind="visible: !attachmentsPlace(), initDom: composeEditorArea"></div>
+					<div class="btn-group pull-right">
+						<a class="btn"
+							style="padding-left: 10px; padding-right: 10px;"
+							data-bind="visible: addAttachmentEnabled(), initDom: composeUploaderButton" data-i18n="[title]COMPOSE/ATTACH_FILES">
+							<sup style="font-weight: bold; font-size: 100%; top: -0.3em;">+</sup><i class="icon-attachment"></i>
+						</a>
+					</div>
+				</td>
+			</tr>
+		</table>
 	</div>
+
+	<div class="attachmentAreaParent" data-bind="visible: attachmentsPlace">
+		<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}"
+			data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></div>
+		<ul class="attachmentList" data-bind="foreach: attachments">
+			<li class="attachmentItem" data-bind="attr: { 'title': title }, css: { 'waiting': waiting, 'error': '' !== error() }">
+				<div class="attachmentIconParent">
+					<i class="iconMain" data-bind="css: iconClass(), visible: !uploading() || 0 === progress()"></i>
+					<div class="iconProgress" data-bind="attr: { 'style': progressStyle }, visible: uploading"></div>
+					<div class="iconBG" data-bind="text: progressText, visible: uploading"></div>
+				</div>
+				<div class="attachmentNameParent">
+					<button type="button" class="close pull-right" style="margin-top:-4px;" data-bind="click: cancel">×</button>
+					<div class="attachmentName" data-bind="text: fileName"></div>
+					<span class="attachmentSize" data-bind="text: friendlySize"></span>
+				</div>
+			</li>
+		</ul>
+		<div class="no-attachments-desc" data-bind="visible: 0 === attachments().length"
+			data-i18n="COMPOSE/NO_ATTACHMENTS_HERE_DESC"></div>
+	</div>
+
+	<div class="textAreaParent" data-bind="visible: !attachmentsPlace(), initDom: composeEditorArea"></div>
 </div>

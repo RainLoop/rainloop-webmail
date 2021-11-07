@@ -1,46 +1,44 @@
-<div class="modal fade b-folder-system-content g-ui-user-select-none">
-	<div class="modal-header">
-		<button type="button" class="close" data-bind="command: cancelCommand">×</button>
-		<h3 data-i18n="POPUPS_SYSTEM_FOLDERS/TITLE_SYSTEM_FOLDERS"></h3>
-	</div>
-	<div class="modal-body">
-		<div class="form-horizontal">
-			<div class="alert" data-bind="visible: '' !== notification()" data-bind="text: notification"></div>
-			<br />
-			<div class="control-group">
-				<label class="control-label" data-i18n="FOLDER_LIST/SENT_NAME"></label>
-				<div class="controls">
-					<select data-bind="options: folderSelectList, value: sentFolder,
-						optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defaultOptionsAfterRender"></select>
-				</div>
+<header>
+	<button type="button" class="close" data-bind="command: cancelCommand">×</button>
+	<h3 data-i18n="POPUPS_SYSTEM_FOLDERS/TITLE_SYSTEM_FOLDERS"></h3>
+</header>
+<div class="modal-body">
+	<div class="form-horizontal">
+		<div class="alert" data-bind="visible: '' !== notification()" data-bind="text: notification"></div>
+		<br />
+		<div class="control-group">
+			<label class="control-label" data-i18n="FOLDER_LIST/SENT_NAME"></label>
+			<div class="controls">
+				<select data-bind="options: folderSelectList, value: sentFolder,
+					optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defaultOptionsAfterRender"></select>
 			</div>
-			<div class="control-group">
-				<label class="control-label" data-i18n="FOLDER_LIST/DRAFTS_NAME"></label>
-				<div class="controls">
-					<select data-bind="options: folderSelectList, value: draftFolder,
-						optionsText: 'name', optionsValue: 'id', optionsAfterRender: defaultOptionsAfterRender"></select>
-				</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" data-i18n="FOLDER_LIST/DRAFTS_NAME"></label>
+			<div class="controls">
+				<select data-bind="options: folderSelectList, value: draftFolder,
+					optionsText: 'name', optionsValue: 'id', optionsAfterRender: defaultOptionsAfterRender"></select>
 			</div>
-			<div class="control-group">
-				<label class="control-label" data-i18n="GLOBAL/SPAM"></label>
-				<div class="controls">
-					<select data-bind="options: folderSelectList, value: spamFolder,
-						optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defaultOptionsAfterRender"></select>
-				</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" data-i18n="GLOBAL/SPAM"></label>
+			<div class="controls">
+				<select data-bind="options: folderSelectList, value: spamFolder,
+					optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defaultOptionsAfterRender"></select>
 			</div>
-			<div class="control-group">
-				<label class="control-label" data-i18n="FOLDER_LIST/TRASH_NAME"></label>
-				<div class="controls">
-					<select data-bind="options: folderSelectList, value: trashFolder,
-						optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defaultOptionsAfterRender"></select>
-				</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" data-i18n="FOLDER_LIST/TRASH_NAME"></label>
+			<div class="controls">
+				<select data-bind="options: folderSelectList, value: trashFolder,
+					optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defaultOptionsAfterRender"></select>
 			</div>
-			<div class="control-group">
-				<label class="control-label" data-i18n="FOLDER_LIST/ARCHIVE_NAME"></label>
-				<div class="controls">
-					<select data-bind="options: folderSelectList, value: archiveFolder,
-						optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defaultOptionsAfterRender"></select>
-				</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" data-i18n="FOLDER_LIST/ARCHIVE_NAME"></label>
+			<div class="controls">
+				<select data-bind="options: folderSelectList, value: archiveFolder,
+					optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defaultOptionsAfterRender"></select>
 			</div>
 		</div>
 	</div>

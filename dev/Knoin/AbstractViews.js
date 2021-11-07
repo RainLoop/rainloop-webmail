@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { inFocus, addObservablesTo, addComputablesTo, addSubscribablesTo } from 'Common/Utils';
 import { Scope } from 'Common/Enums';
-import { keyScope } from 'Common/Globals';
+import { keyScope, Settings } from 'Common/Globals';
 import { ViewType } from 'Knoin/Knoin';
 
 class AbstractView {
@@ -12,6 +12,7 @@ class AbstractView {
 		this.viewModelTemplateID = templateID;
 		this.viewType = type;
 		this.viewModelDom = null;
+		this.viewNoUserSelect = false;
 
 		this.keyScope = {
 			scope: Scope.None,
@@ -122,3 +123,23 @@ export class AbstractViewSettings
 	viewModelDom
 }
 */
+
+export class AbstractViewLogin extends AbstractViewCenter {
+	constructor(templateID) {
+		super(templateID);
+		this.hideSubmitButton = Settings.app('hideSubmitButton');
+		this.formError = ko.observable(false).extend({ falseTimeout: 500 });
+	}
+
+	onBuild(dom) {
+		dom.classList.add('LoginView');
+	}
+
+	onShow() {
+		rl.route.off();
+	}
+
+	submitForm() {
+//		return false;
+	}
+}

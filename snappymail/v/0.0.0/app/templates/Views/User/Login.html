@@ -1,57 +1,55 @@
-<div class="b-login-content">
-	<div class="descWrapper" data-bind="visible: '' !== loadingDesc, text: loadingDesc"></div>
-	<div class="alert" data-bind="hidden: !submitError()" hidden="">
-		<button type="button" class="close" data-bind="click: function () { submitError('') }">×</button>
-		<span data-bind="text: submitError"></span>
-		<p data-bind="visible: '' !== submitErrorAddidional(), text: submitErrorAddidional"></p>
-	</div>
-	<form action="#/"
-		data-bind="submit: submitForm, css: {'errorAnimated': formError, 'submitting': submitRequest()}">
-		<div class="controls" data-bind="css: {'error': emailError}">
-			<div class="input-append">
-				<input name="Email" required="" type="text" class="input-block-level inputIcon" pattern="[^@\s]+(@[^\s]+)?" inputmode="email"
-					autofocus="" autocomplete="email" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="textInput: email, disable: submitRequest"
-					data-i18n="[placeholder]GLOBAL/EMAIL" />
-				<span class="add-on icon-mail"></span>
-			</div>
-		</div>
-		<div class="controls" data-bind="css: {'error': passwordError}">
-			<div class="input-append">
-				<input name="Password" required="" type="password" class="input-block-level inputIcon"
-					autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="textInput: password, disable: submitRequest"
-					data-i18n="[placeholder]GLOBAL/PASSWORD" />
-				<span class="add-on" tabindex="-1"
-					data-bind="command: submitCommand" data-i18n="[title]LOGIN/BUTTON_SIGN_IN">
-					<i class="fontastic" data-bind="visible: '' === password()">🔑</i>
-					<button type="submit" class="btn-submit-icon-wrp login-submit-icon fontastic" data-bind="visible: '' !== password()">❯</button>
-				</span>
-			</div>
-		</div>
-		<div id="plugin-Login-BottomControlGroup"></div>
-		<div class="controls" data-bind="hidden: hideSubmitButton">
-			<button type="submit" class="btn btn-large btn-block buttonLogin"
-				data-bind="command: submitCommand"
-				data-i18n="LOGIN/BUTTON_SIGN_IN"></button>
-		</div>
-		<div class="controls clearfix" style="margin-bottom: 10px">
-			<div class="pull-right language-buttons">
-				<a href="#" tabindex="-1" class="language-button fontastic"
-					data-bind="visible: allowLanguagesOnLogin, click: selectLanguage, css: { 'icon-spinner' : langRequest }"
-					data-i18n="[title]POPUPS_LANGUAGES/TITLE_LANGUAGES">
-					🌍
-				</a>
-			</div>
-
-			<div class="signMeLabel" data-bind="visible: signMeVisibility, component: {
-				name: 'CheckboxSimple',
-				params: {
-					label: 'LOGIN/LABEL_SIGN_ME',
-					value: signMe
-				}
-			}"></div>
-
-		</div>
-	</form>
+<div class="descWrapper" data-bind="visible: '' !== loadingDesc, text: loadingDesc"></div>
+<div class="alert" data-bind="hidden: !submitError()" hidden="">
+	<button type="button" class="close" data-bind="click: function () { submitError('') }">×</button>
+	<span data-bind="text: submitError"></span>
+	<p data-bind="visible: '' !== submitErrorAddidional(), text: submitErrorAddidional"></p>
 </div>
+<form action="#/"
+	data-bind="submit: submitForm, css: {'errorAnimated': formError, 'submitting': submitRequest()}">
+	<div class="controls" data-bind="css: {'error': emailError}">
+		<div class="input-append">
+			<input name="Email" required="" type="text" class="input-block-level inputIcon" pattern="[^@\s]+(@[^\s]+)?" inputmode="email"
+				autofocus="" autocomplete="email" autocorrect="off" autocapitalize="off" spellcheck="false"
+				data-bind="textInput: email, disable: submitRequest"
+				data-i18n="[placeholder]GLOBAL/EMAIL" />
+			<span class="add-on icon-mail"></span>
+		</div>
+	</div>
+	<div class="controls" data-bind="css: {'error': passwordError}">
+		<div class="input-append">
+			<input name="Password" required="" type="password" class="input-block-level inputIcon"
+				autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+				data-bind="textInput: password, disable: submitRequest"
+				data-i18n="[placeholder]GLOBAL/PASSWORD" />
+			<span class="add-on" tabindex="-1"
+				data-bind="command: submitCommand" data-i18n="[title]LOGIN/BUTTON_SIGN_IN">
+				<i class="fontastic" data-bind="visible: '' === password()">🔑</i>
+				<button type="submit" class="btn-submit-icon-wrp login-submit-icon fontastic" data-bind="visible: '' !== password()">❯</button>
+			</span>
+		</div>
+	</div>
+	<div id="plugin-Login-BottomControlGroup"></div>
+	<div class="controls" data-bind="hidden: hideSubmitButton">
+		<button type="submit" class="btn btn-large btn-block buttonLogin"
+			data-bind="command: submitCommand"
+			data-i18n="LOGIN/BUTTON_SIGN_IN"></button>
+	</div>
+	<div class="controls clearfix" style="margin-bottom: 10px">
+		<div class="pull-right language-buttons">
+			<a href="#" tabindex="-1" class="language-button fontastic"
+				data-bind="visible: allowLanguagesOnLogin, click: selectLanguage, css: { 'icon-spinner' : langRequest }"
+				data-i18n="[title]POPUPS_LANGUAGES/TITLE_LANGUAGES">
+				🌍
+			</a>
+		</div>
+
+		<div class="signMeLabel" data-bind="visible: signMeVisibility, component: {
+			name: 'CheckboxSimple',
+			params: {
+				label: 'LOGIN/LABEL_SIGN_ME',
+				value: signMe
+			}
+		}"></div>
+
+	</div>
+</form>

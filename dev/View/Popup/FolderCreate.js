@@ -15,6 +15,7 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 class FolderCreatePopupView extends AbstractViewPopup {
 	constructor() {
 		super('FolderCreate');
+		this.viewNoUserSelect = true;
 
 		this.addObservables({
 			folderName: '',

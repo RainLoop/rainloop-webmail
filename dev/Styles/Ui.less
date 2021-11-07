@@ -124,3 +124,96 @@ textarea + .settings-save-trigger {
 .tabs [id^="tab"]:checked + label + .tab-content {
 	visibility: visible;
 }
+
+.dialog-backdrop {
+	background: rgba(0,0,0,0.5);
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 1;
+/*
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: rgba(0,0,0,0.5);
+
+	z-index: 1000000000;
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 1100;
+	overflow: auto;
+	background-color: rgba(0,0,0,0.3);
+*/
+}
+
+dialog {
+	border: 0;
+	background-color: @white;
+	border: 1px solid rgba(0,0,0,.3);
+	border-radius: 6px;
+	box-shadow: 0 5px 80px rgba(0,0,0,0.3);
+	margin: 10px auto;
+	max-height: calc(100vh - 20px);
+	max-width: 560px;
+	overflow: auto;
+	padding: 0;
+	transition: all .2s ease-out;
+	top: 0;
+	width: calc(100% - 20px);
+}
+dialog:not([open]) {
+	display: none !important;
+}
+dialog.show {
+	opacity: 1;
+}
+dialog:not(.show) {
+	background-color: rgba(0,0,0,0);
+	opacity: 0;
+	top: -25%;
+}
+
+dialog header {
+  padding: 9px 15px;
+  border-bottom: 1px solid #eee;
+  // Close icon
+  .close { margin-top: 2px; }
+  // Heading
+  h3 {
+    margin: 0;
+    line-height: 30px;
+  }
+}
+
+// Body (where all modal content resides)
+dialog .modal-body {
+  overflow-y: auto;
+  padding: 15px;
+}
+
+// Footer (for actions)
+dialog footer {
+  padding: 14px 15px 15px;
+  margin-bottom: 0;
+  text-align: right; // right align buttons
+  border-top: 1px solid #ddd;
+  border-radius: 0 0 6px 6px;
+  .clearfix(); // clear it in case folks use .pull-* classes on buttons
+
+  // Properly space out buttons
+  .btn + .btn {
+    margin-left: 5px;
+    margin-bottom: 0; // account for input[type="submit"] which gets the bottom margin like all other inputs
+  }
+  // but override that for button groups
+  .btn-group .btn + .btn {
+    margin-left: -1px;
+  }
+}

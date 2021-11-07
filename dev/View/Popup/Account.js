@@ -8,6 +8,7 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 class AccountPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Account');
+		this.viewNoUserSelect = true;
 
 		this.addObservables({
 			isNew: true,

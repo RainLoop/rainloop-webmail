@@ -32,20 +32,47 @@ const
 			let vmDom = null;
 			const vm = new ViewModelClass(vmScreen),
 				position = vm.viewType || '',
+				dialog = ViewType.Popup === position,
 				vmPlace = position ? doc.getElementById('rl-' + position.toLowerCase()) : null;
 
 			ViewModelClass.__builded = true;
 			ViewModelClass.__vm = vm;
 
 			if (vmPlace) {
-				vmDom = Element.fromHTML('<div class="rl-view-model RL-' + vm.viewModelTemplateID + '" hidden=""></div>');
+				vmDom = dialog
+					? Element.fromHTML('<dialog id="V-'+ vm.viewModelTemplateID + '"></dialog>')
+					: Element.fromHTML('<div id="V-'+ vm.viewModelTemplateID + '" hidden=""></div>');
 				vmPlace.append(vmDom);
 
 				vm.viewModelDom = vmDom;
 				ViewModelClass.__dom = vmDom;
 
+				if (vm.viewNoUserSelect) {
+					vmDom.classList.add('g-ui-user-select-none');
+				}
+
 				if (ViewType.Popup === position) {
 					vm.cancelCommand = vm.closeCommand = createCommand(() => hideScreenPopup(ViewModelClass));
+
+					// Firefox / Safari HTMLDialogElement not defined
+					if (!vmDom.showModal) {
+						vmDom.classList.add('polyfill');
+						vmDom.showModal = () => {
+							if (!vmDom.backdrop) {
+								vmDom.before(vmDom.backdrop = Element.fromHTML('<div class="dialog-backdrop"></div>'));
+							}
+							vmDom.setAttribute('open','');
+							vmDom.open = true;
+							vmDom.returnValue = null;
+							vmDom.backdrop.hidden = false;
+						};
+						vmDom.close = v => {
+							vmDom.backdrop.hidden = true;
+							vmDom.returnValue = v;
+							vmDom.removeAttribute('open', null);
+							vmDom.open = false;
+						};
+					}
 
 					// show/hide popup/modal
 					const endShowHide = e => {
@@ -54,7 +81,7 @@ const
 								autofocus(vmDom);
 								vm.onShowWithDelay && vm.onShowWithDelay();
 							} else {
-								vmDom.hidden = true;
+								vmDom.close();
 								vm.onHideWithDelay && vm.onHideWithDelay();
 							}
 						}
@@ -63,10 +90,12 @@ const
 					vm.modalVisibility.subscribe(value => {
 						if (value) {
 							visiblePopups.add(vm);
-							vmDom.style.zIndex = 3000 + visiblePopups.size + 10;
-							vmDom.hidden = false;
+							vmDom.style.zIndex = 3000 + (visiblePopups.size * 2);
+							vmDom.showModal();
+							if (vmDom.backdrop) {
+								vmDom.backdrop.style.zIndex = 3000 + visiblePopups.size;
+							}
 							vm.keyScope.set();
-							arePopupsVisible(true);
 							requestAnimationFrame(() => { // wait just before the next paint
 								vmDom.offsetHeight; // force a reflow
 								vmDom.classList.add('show'); // trigger the transitions
@@ -74,11 +103,10 @@ const
 						} else {
 							visiblePopups.delete(vm);
 							vm.onHide && vm.onHide();
-							vmDom.classList.remove('show');
 							vm.keyScope.unset();
-							arePopupsVisible(0 < visiblePopups.size);
+							vmDom.classList.remove('show'); // trigger the transitions
 						}
-						vmDom.setAttribute('aria-hidden', !value);
+						arePopupsVisible(0 < visiblePopups.size);
 /*
 						// the old ko.bindingHandlers.modal
 						const close = vmDom.querySelector('.close'),

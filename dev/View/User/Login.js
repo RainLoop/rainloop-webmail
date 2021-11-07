@@ -1,8 +1,6 @@
-import ko from 'ko';
-
 import { Notification } from 'Common/Enums';
 import { ClientSideKeyName } from 'Common/EnumsUser';
-import { Settings, SettingsGet } from 'Common/Globals';
+import { SettingsGet } from 'Common/Globals';
 import { getNotification, translatorReload, convertLangName } from 'Common/Translator';
 
 import { LanguageStore } from 'Stores/Language';
@@ -12,7 +10,7 @@ import * as Local from 'Storage/Client';
 import Remote from 'Remote/User/Fetch';
 
 import { decorateKoCommands, showScreenPopup } from 'Knoin/Knoin';
-import { AbstractViewCenter } from 'Knoin/AbstractViews';
+import { AbstractViewLogin } from 'Knoin/AbstractViews';
 
 import { LanguagesPopupView } from 'View/Popup/Languages';
 
@@ -21,11 +19,9 @@ const SignMeOff = 0,
 	SignMeUnused = 2;
 
 
-class LoginUserView extends AbstractViewCenter {
+class LoginUserView extends AbstractViewLogin {
 	constructor() {
 		super('Login');
-
-		this.hideSubmitButton = Settings.app('hideSubmitButton');
 
 		this.addObservables({
 			loadingDesc: SettingsGet('LoadingDescription'),
@@ -45,8 +41,6 @@ class LoginUserView extends AbstractViewCenter {
 
 			signMeType: SignMeUnused
 		});
-
-		this.formError = ko.observable(false).extend({ falseTimeout: 500 });
 
 		this.allowLanguagesOnLogin = !!SettingsGet('AllowLanguagesOnLogin');
 
@@ -129,11 +123,9 @@ class LoginUserView extends AbstractViewCenter {
 		return valid;
 	}
 
-	onShow() {
-		rl.route.off();
-	}
+	onBuild(dom) {
+		super.onBuild(dom);
 
-	onBuild() {
 		const signMeLocal = Local.get(ClientSideKeyName.LastSignMe),
 			signMe = (SettingsGet('SignMe') || '').toLowerCase();
 
@@ -159,10 +151,6 @@ class LoginUserView extends AbstractViewCenter {
 				this.signMeType(SignMeUnused);
 				break;
 		}
-	}
-
-	submitForm() {
-//		return false;
 	}
 
 	selectLanguage() {

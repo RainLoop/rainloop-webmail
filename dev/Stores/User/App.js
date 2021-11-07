@@ -1,5 +1,5 @@
 import { Scope } from 'Common/Enums';
-import { doc, keyScope, leftPanelDisabled, SettingsGet } from 'Common/Globals';
+import { keyScope, leftPanelDisabled, SettingsGet, elementById } from 'Common/Globals';
 import { addObservablesTo } from 'Common/Utils';
 import { ThemeStore } from 'Stores/Theme';
 
@@ -25,7 +25,7 @@ AppUserStore.focusedState.subscribe(value => {
 			break;
 	}
 	['FolderList','MessageList','MessageView'].forEach(name => {
-		let dom = doc.querySelector('.RL-Mail'+name);
+		let dom = elementById('V-Mail'+name);
 		dom && dom.classList.toggle('focused', name === value);
 	});
 });

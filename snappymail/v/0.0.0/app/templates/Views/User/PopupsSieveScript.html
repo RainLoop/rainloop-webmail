@@ -1,84 +1,84 @@
-<div class="modal fade b-filter-script g-ui-user-select-none" data-bind="with: script">
-	<div class="modal-header">
-		<button type="button" class="close" data-bind="command: $root.cancelCommand">×</button>
-		<h3>
-			<span data-i18n="POPUPS_SIEVE_SCRIPT/TITLE_CREATE" data-bind="visible: !exists()"></span>
-			<span data-i18n="POPUPS_SIEVE_SCRIPT/TITLE_EDIT" data-bind="visible: exists"></span>
-			<span data-bind="visible: exists">: <!-- ko text: name--><!-- /ko --></span>
-		</h3>
-	</div>
-	<div class="modal-body">
+<!-- ko with: script -->
+<header>
+	<button type="button" class="close" data-bind="command: $root.cancelCommand">×</button>
+	<h3>
+		<span data-i18n="POPUPS_SIEVE_SCRIPT/TITLE_CREATE" data-bind="visible: !exists()"></span>
+		<span data-i18n="POPUPS_SIEVE_SCRIPT/TITLE_EDIT" data-bind="visible: exists"></span>
+		<span data-bind="visible: exists">: <!-- ko text: name--><!-- /ko --></span>
+	</h3>
+</header>
+<div class="modal-body">
 
-		<div class="control-group" data-bind="css: {'error': nameError}, hidden: exists">
-			<div class="controls">
-				<input type="text" class="span5"
-					data-bind="value: name, hasfocus: !exists()"
-					autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-i18n="[placeholder]GLOBAL/NAME"
-				/>
-			</div>
-		</div>
-
-		<div class="alert g-ui-user-select-none" data-bind="visible: hasChanges">
-			<i class="fontastic">⚠</i>
-			<span data-i18n="POPUPS_SIEVE_SCRIPT/CHANGES_NEED_TO_BE_SAVED_DESC"></span>
-		</div>
-		<div class="alert alert-error g-ui-user-select-none" data-bind="visible: $root.saveError">
-			<i class="fontastic">⚠</i>
-			<span data-bind="text: $root.saveErrorText"></span>
-		</div>
-
-		<div class="control-group" data-bind="visible: $root.rawActive">
-			<div class="controls">
-				<pre>
-					<b data-i18n="POPUPS_SIEVE_SCRIPT/CAPABILITY_LABEL"></b>:
-					<span data-bind="text: $root.sieveCapabilities"></span>
-				</pre>
-				<textarea style="width:100%" data-bind="value: body, valueUpdate: 'input'"></textarea>
-			</div>
-		</div>
-		<div data-bind="visible: !$root.rawActive()">
-			<table class="table table-hover list-table filters-list g-ui-user-select-none"
-				data-bind="i18nUpdate: filters">
-				<colgroup>
-					<col style="width: 30px" />
-					<col style="width: 16px" />
-					<col />
-					<col style="width: 140px" />
-					<col style="width: 1%" />
-				</colgroup>
-				<tbody data-bind="foreach: filters">
-					<tr class="filter-item" draggable="true" data-bind="sortableItem: { list: $parent.filters }">
-						<td class="fontastic" data-bind="click: function () { $parent.hasChanges(true); enabled(!enabled()); }, text: enabled() ? '☑' : '☐'"></td>
-						<td class="drag-wrapper fontastic drag-handle">⬍</td>
-						<td class="e-action">
-							<span class="filter-name" data-bind="text: name()"></span>
-							&nbsp;&nbsp;
-							<span class="filter-sub-name" data-bind="text: nameSub()"></span>
-						</td>
-						<td>
-							<a class="btn btn-small btn-small-small btn-danger pull-right button-confirm-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function(oFilter) { $root.deleteFilter(oFilter); }"
-								data-i18n="GLOBAL/ARE_YOU_SURE"></a>
-						</td>
-						<td>
-							<span class="delete-filter fontastic" data-bind="visible: !deleteAccess() && canBeDeleted(), click: function (oFilter) { $root.filterForDeletion(oFilter); }">🗑</span>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<a class="btn" data-bind="click: $root.addFilter">
-				<i class="fontastic">✚</i>
-				<span data-i18n="POPUPS_SIEVE_SCRIPT/BUTTON_ADD_FILTER"></span>
-			</a>
+	<div class="control-group" data-bind="css: {'error': nameError}, hidden: exists">
+		<div class="controls">
+			<input type="text" class="span5"
+				data-bind="value: name, hasfocus: !exists()"
+				autocorrect="off" autocapitalize="off" spellcheck="false"
+				data-i18n="[placeholder]GLOBAL/NAME"
+			/>
 		</div>
 	</div>
-	<div class="modal-footer">
-		<a class="btn" data-bind="visible: $root.allowToggle, click: function() { $root.toggleFiltersRaw(); }, css: {'active': $root.rawActive }" data-i18n="[title]POPUPS_SIEVE_SCRIPT/BUTTON_RAW_SCRIPT">
-			<i class="icon-file-code"></i>
-		</a>
-		<a class="btn buttonSave" data-bind="visible: hasChanges, click: function() { $root.saveScriptCommand(); }, css: {'btn-danger': $root.saveError}">
-			<i class="fontastic" data-bind="css: {'icon-spinner': $root.saving}">💾</i>
-			<span data-i18n="GLOBAL/SAVE"></span>
+
+	<div class="alert g-ui-user-select-none" data-bind="visible: hasChanges">
+		<i class="fontastic">⚠</i>
+		<span data-i18n="POPUPS_SIEVE_SCRIPT/CHANGES_NEED_TO_BE_SAVED_DESC"></span>
+	</div>
+	<div class="alert alert-error g-ui-user-select-none" data-bind="visible: $root.saveError">
+		<i class="fontastic">⚠</i>
+		<span data-bind="text: $root.saveErrorText"></span>
+	</div>
+
+	<div class="control-group" data-bind="visible: $root.rawActive">
+		<div class="controls">
+			<pre>
+				<b data-i18n="POPUPS_SIEVE_SCRIPT/CAPABILITY_LABEL"></b>:
+				<span data-bind="text: $root.sieveCapabilities"></span>
+			</pre>
+			<textarea style="width:100%" data-bind="value: body, valueUpdate: 'input'"></textarea>
+		</div>
+	</div>
+	<div data-bind="visible: !$root.rawActive()">
+		<table class="table table-hover list-table filters-list g-ui-user-select-none"
+			data-bind="i18nUpdate: filters">
+			<colgroup>
+				<col style="width: 30px" />
+				<col style="width: 16px" />
+				<col />
+				<col style="width: 140px" />
+				<col style="width: 1%" />
+			</colgroup>
+			<tbody data-bind="foreach: filters">
+				<tr class="filter-item" draggable="true" data-bind="sortableItem: { list: $parent.filters }">
+					<td class="fontastic" data-bind="click: function () { $parent.hasChanges(true); enabled(!enabled()); }, text: enabled() ? '☑' : '☐'"></td>
+					<td class="drag-wrapper fontastic drag-handle">⬍</td>
+					<td class="e-action">
+						<span class="filter-name" data-bind="text: name()"></span>
+						&nbsp;&nbsp;
+						<span class="filter-sub-name" data-bind="text: nameSub()"></span>
+					</td>
+					<td>
+						<a class="btn btn-small btn-small-small btn-danger pull-right button-confirm-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function(oFilter) { $root.deleteFilter(oFilter); }"
+							data-i18n="GLOBAL/ARE_YOU_SURE"></a>
+					</td>
+					<td>
+						<span class="delete-filter fontastic" data-bind="visible: !deleteAccess() && canBeDeleted(), click: function (oFilter) { $root.filterForDeletion(oFilter); }">🗑</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<a class="btn" data-bind="click: $root.addFilter">
+			<i class="fontastic">✚</i>
+			<span data-i18n="POPUPS_SIEVE_SCRIPT/BUTTON_ADD_FILTER"></span>
 		</a>
 	</div>
 </div>
+<footer>
+	<a class="btn" data-bind="visible: $root.allowToggle, click: function() { $root.toggleFiltersRaw(); }, css: {'active': $root.rawActive }" data-i18n="[title]POPUPS_SIEVE_SCRIPT/BUTTON_RAW_SCRIPT">
+		<i class="icon-file-code"></i>
+	</a>
+	<a class="btn buttonSave" data-bind="visible: hasChanges, click: function() { $root.saveScriptCommand(); }, css: {'btn-danger': $root.saveError}">
+		<i class="fontastic" data-bind="css: {'icon-spinner': $root.saving}">💾</i>
+		<span data-i18n="GLOBAL/SAVE"></span>
+	</a>
+</footer>
+<!-- /ko -->
