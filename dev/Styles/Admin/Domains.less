@@ -1,7 +1,8 @@
 
-.b-admin-domains-list-table {
-
-	width: 600px;
+#V-Settings-Domains {
+	table {
+		width: 600px;
+	}
 
 	.domain-name {
 		display: inline-block;
@@ -16,36 +17,16 @@
 		padding-left: 5px;
 	}
 
-	.button-delete {
-		position: relative;
-		right: 0;
-		visibility: hidden;
-		opacity: 0;
-		white-space: nowrap;
-
-		&.delete-access {
-			visibility: visible;
-			right: -15px;
-			opacity: 1;
-		}
-	}
-
 	.delete-domain, .disabled-domain {
 		cursor: pointer;
+	}
+	.delete-domain:not(:hover), .disabled-domain:not(:hover) {
 		opacity: 0.5;
-
-		&:hover {
-			opacity: 1;
-		}
 	}
 
-	&.disabled {
+	tr.disabled {
 		.domain-name, .domain-alias {
 			color: #bbb;
-		}
-
-		.disabled-domain {
-			opacity: 0.5;
 		}
 	}
 }
