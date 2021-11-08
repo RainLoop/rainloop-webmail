@@ -34,15 +34,7 @@
 			data-bind="command: submitCommand"
 			data-i18n="LOGIN/BUTTON_SIGN_IN"></button>
 	</div>
-	<div class="controls clearfix" style="margin-bottom: 10px">
-		<div class="pull-right language-buttons">
-			<a href="#" tabindex="-1" class="language-button fontastic"
-				data-bind="visible: allowLanguagesOnLogin, click: selectLanguage, css: { 'icon-spinner' : langRequest }"
-				data-i18n="[title]POPUPS_LANGUAGES/TITLE_LANGUAGES">
-				🌍
-			</a>
-		</div>
-
+	<div style="display: flex">
 		<div class="signMeLabel" data-bind="visible: signMeVisibility, component: {
 			name: 'CheckboxSimple',
 			params: {
@@ -50,6 +42,12 @@
 				value: signMe
 			}
 		}"></div>
-
+		<div class="language-buttons">
+			<a href="#" tabindex="-1" class="language-button fontastic"
+				data-bind="visible: allowLanguagesOnLogin, click: selectLanguage, css: { 'icon-spinner' : langRequest }"
+				data-i18n="[title]POPUPS_LANGUAGES/TITLE_LANGUAGES">
+				🌍
+			</a>
+		</div>
 	</div>
 </form>
