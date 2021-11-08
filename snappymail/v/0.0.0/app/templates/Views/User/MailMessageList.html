@@ -153,19 +153,17 @@
 
 <div class="messageList g-ui-user-select-none" data-bind="css: {'hideMessageListCheckbox': !useCheckboxesInList() }">
 	<div class="second-toolbar thm-message-list-top-toolbar">
-		<div class="form-inline">
-			<i class="checkboxCheckAll fontastic" data-bind="text: checkAll() ? (isIncompleteChecked() ? '▣' : '☑') : '☐'"></i>
-			<div class="input-append" data-bind="visible: allowSearch">
-				<div class="close-input-wrp">
-					<a class="close" data-bind="click: cancelSearch, visible: '' !== messageListSearchDesc()">×</a>
-					<input type="search" class="span4 inputSearch" tabindex="-1" placeholder="Search" autocorrect="off" autocapitalize="off" data-i18n="[placeholder]GLOBAL/SEARCH" data-bind="value: inputProxyMessageListSearch, onEnter: searchEnterAction, hasfocus: inputMessageListSearchFocus" />
-				</div>
-				<a class="btn buttonMoreSearch" data-bind="visible: allowSearchAdv, click: advancedSearchClick">▼</a>
-			</div>
+		<i class="checkboxCheckAll fontastic" data-bind="text: checkAll() ? (isIncompleteChecked() ? '▣' : '☑') : '☐'"></i>
+		<!-- ko if: allowSearch -->
+		<div class="search-input-wrp">
+			<input type="search" class="inputSearch" tabindex="-1" placeholder="Search" autocorrect="off" autocapitalize="off" data-i18n="[placeholder]GLOBAL/SEARCH" data-bind="value: inputProxyMessageListSearch, onEnter: searchEnterAction, hasfocus: inputMessageListSearchFocus" />
+			<a class="closeSearch" data-bind="click: cancelSearch, visible: messageListSearchDesc()">×</a>
 		</div>
+		<a class="btn buttonMoreSearch" data-bind="visible: allowSearchAdv, click: advancedSearchClick">▼</a>
+		<!-- /ko -->
 	</div>
 	<div class="b-content" data-bind="initDom: dragOverBodyArea">
-		<div class="listThreadUidDesc" data-bind="visible: 0 < messageListEndThreadUid(), click: cancelThreadUid">
+		<div class="listThreadUidDesc" data-bind="visible: messageListEndThreadUid(), click: cancelThreadUid">
 			<i class="fontastic">⬅</i>
 			<span data-i18n="MESSAGE_LIST/BACK_TO_MESSAGE_LIST"></span>
 		</div>
@@ -224,13 +222,11 @@
 		<div id="messagesDragImage"><span class="text"></span>&nbsp;<i class="icon-mail"></i></div>
 	</div>
 	<div class="b-footer thm-message-list-bottom-toolbar">
-		<!-- ko if: 0 < userUsageProc() -->
+		<!-- ko if: userUsageProc() -->
 		<span data-bind="attr: { title: quotaTooltip() }" class="e-quota">
 			<!-- ko text: userUsageProc --><!-- /ko -->%
 		</span>
 		<!-- /ko -->
-		<div class="pull-right">
-			<!-- ko template: { name: 'Paginator', data: messageListPaginator } --><!-- /ko -->
-		</div>
+		<!-- ko template: { name: 'Paginator', data: messageListPaginator } --><!-- /ko -->
 	</div>
 </div>

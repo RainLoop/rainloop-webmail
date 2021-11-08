@@ -16,29 +16,21 @@
 	transition: left 0.3s ease-out, right 0.3s ease-out;
 }
 
-@media screen and (min-width: 1000px) {
+html.rl-started-trigger .LoginView {
+	/*transform: scale(1.1);*/
+	transform: translateY(-20px);
+	opacity: 0.5;
+}
 
-	html.rl-started-trigger .LoginView {
-		/*transform: scale(1.1);*/
-		transform: translateY(-20px);
-		opacity: 0.5;
-	}
+.LoginView .errorAnimated {
+	animation: login-form-shake 400ms ease-in-out;
+}
 
-	.LoginView .errorAnimated {
-		animation: login-form-shake 400ms ease-in-out;
-	}
+.LoginView .errorAnimated .buttonLogin {
+	color: #b94a48;
+	font-weight: bold;
+}
 
-	.LoginView .errorAnimated .buttonLogin {
-		color: #b94a48;
-		font-weight: bold;
-	}
-
-	.LoginView {
-		transition: all 0.3s ease-out;
-	}
-
-	.button-delete-transitions {
-		transition: all 0.2s linear;
-	}
-
+.LoginView {
+	transition: all 0.3s ease-out;
 }

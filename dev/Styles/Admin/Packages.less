@@ -10,33 +10,32 @@
 		opacity: 0.5;
 	}
 
-}
+	table {
 
-.b-admin-packages-list-table {
+		width: 700px;
 
-	width: 700px;
-
-	.package-img {
-		font-size: 12px;
-		margin-right: 2px;
+		div:first-child {
+			display: flex;
+		}
 	}
 
+	.package-name {
+		flex-grow: 1;
+	}
 	.package-name.core {
 		font-weight: bold;
 	}
 	.package-desc {
-		color: #999;
 		font-size: 12px;
+		opacity: 0.7;
 	}
 
-	.package-release, .package-actions {
+	td + td {
 		text-align: center;
-	}
-	.package-actions {
 		vertical-align: middle;
 	}
 
-	.package-configure, .package-active {
+	a {
 		cursor: pointer;
 		margin-right: 1em;
 	}

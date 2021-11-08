@@ -8,7 +8,7 @@
 	<!-- ko text: packages.error() --><!-- /ko -->
 </div>
 
-<div class="alert" style="margin-top: 10px;" data-bind="visible: '' !== packagesError()">
+<div class="alert" style="margin-top: 10px;" data-bind="visible: packagesError()">
 	<button type="button" class="close" data-bind="click: function () { packagesError('') }">×</button>
 	<span data-bind="text: packagesError"></span>
 </div>
@@ -20,7 +20,7 @@
 
 <br />
 
-<div data-bind="visible: 0 < packagesAvailableForUpdate().length">
+<div data-bind="visible: packagesAvailableForUpdate().length">
 	<div class="legend">
 		<span data-i18n="TAB_PACKAGES/LEGEND_AVAILABLE_FOR_UPDATE"></span>&nbsp;
 		(<span data-bind="text: packagesAvailableForUpdate().length"></span>)
@@ -29,13 +29,13 @@
 	<br />
 </div>
 
-<div id="packages-installed" data-bind="visible: 0 < packagesCurrent().length, css: {'disabled': !enabledPlugins()}">
+<div id="packages-installed" data-bind="visible: packagesCurrent().length, css: {'disabled': !enabledPlugins()}">
 	<div class="legend" data-i18n="TAB_PACKAGES/LEGEND_INSTALLED_PACKAGES"></div>
 	<div data-bind="template: { name: 'AdminSettingsPackagesTable', data: {f: packagesCurrent} }"></div>
 	<br />
 </div>
 
-<div data-bind="visible: 0 < packagesAvailableForInstallation().length">
+<div data-bind="visible: packagesAvailableForInstallation().length">
 	<div class="legend" data-i18n="TAB_PACKAGES/LEGEND_AVAILABLE_FOR_INSTALLATION"></div>
 	<div data-bind="template: { name: 'AdminSettingsPackagesTable', data: {f: packagesAvailableForInstallation} }"></div>
 	<br />

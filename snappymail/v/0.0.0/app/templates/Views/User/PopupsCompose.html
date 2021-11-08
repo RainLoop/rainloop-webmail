@@ -11,7 +11,7 @@
 	<a class="close" data-bind="click: tryToClosePopup" data-i18n="[title]GLOBAL/CANCEL">×</a>
 	<a class="minimize-custom" data-bind="click: skipCommand" data-i18n="[title]COMPOSE/BUTTON_MINIMIZE"></a>
 
-	<a class="btn btn-danger button-delete button-delete-transitions" data-bind="command: deleteCommand">
+	<a class="btn btn-danger button-delete" data-bind="command: deleteCommand">
 		<i class="fontastic">🗑</i>
 	</a>
 	<span class="saved-text hide-mobile" data-bind="text: savedTimeText"></span>
@@ -124,8 +124,8 @@
 			</tr>
 			<tr>
 				<td></td>
-				<td>
-					<div class="btn-group pull-left">
+				<td style="display:flex">
+					<div class="btn-group" style="flex-grow:1">
 						<button type="button" class="btn" data-bind="click: function () { attachmentsPlace(false); },
 							css: { 'active': !attachmentsPlace() }">
 							<i class="icon-file-text"></i>
@@ -140,7 +140,7 @@
 							<i data-bind="css: { 'icon-attachment': 0 === attachmentsInProcessCount(), 'icon-spinner': 0 < attachmentsInProcessCount()}"></i>
 						</button>
 					</div>
-					<div class="btn-group pull-right">
+					<div class="btn-group">
 						<a class="btn"
 							style="padding-left: 10px; padding-right: 10px;"
 							data-bind="visible: addAttachmentEnabled(), initDom: composeUploaderButton" data-i18n="[title]COMPOSE/ATTACH_FILES">

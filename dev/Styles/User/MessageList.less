@@ -31,6 +31,7 @@ html.rl-no-preview-pane {
 	flex-direction: column;
 
 	.b-footer {
+	    display: flex;
 		flex-shrink: 0;
 		padding: 7px;
 
@@ -51,6 +52,11 @@ html.rl-no-preview-pane {
 		}
 	}
 
+	.b-footer nav {
+		flex-grow: 1;
+		text-align: right;
+	}
+
 	.btn.buttonMoreSearch {
 		font-size: 11px;
 		padding-left: 8px;
@@ -58,6 +64,7 @@ html.rl-no-preview-pane {
 	}
 
 	.second-toolbar {
+		display: flex;
 		flex-shrink: 0;
 		padding: 10px 8px 10px 11px;
 		white-space: nowrap;
@@ -68,26 +75,35 @@ html.rl-no-preview-pane {
 		border-top-right-radius: @rlMainBorderRadius;
 		border-top-left-radius: @rlMainBorderRadius;
 		border-bottom: 1px solid #bbb;
+	}
 
-		.checkboxCheckAll {
-			cursor: pointer;
-			vertical-align: middle
-		}
+	.checkboxCheckAll {
+		cursor: pointer;
+		margin: 0.5em 0.5em 0 0;
+	}
 
-		.input-append {
-			margin-left: 14px;
-			text-align: right;
-			width: calc(100% - 30px);
+	.search-input-wrp {
+		flex-grow: 1;
+		position: relative;
+		text-align: right;
+	}
 
-			.close-input-wrp {
-				width: 90%;
-				min-width: 200px;
-				max-width: 300px;
-			}
+	.inputSearch {
+	    display: inline-block;
+		max-width: 300px;
+		width: 100%;
+	}
 
-			.inputSearch {
-				width: 100%;
-			}
+	.closeSearch {
+		position: absolute;
+		right: 0;
+		top: 5px;
+		margin: 0 7px;
+		z-index: 100;
+		vertical-align: middle;
+		opacity: .4;
+		&:hover {
+			opacity: .6;
 		}
 	}
 

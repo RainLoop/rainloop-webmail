@@ -294,7 +294,7 @@ trait UserAuth
 		$this->ClearSignMeData($oAccount);
 
 		$uuid = \SnappyMail\UUID::generate();
-		$salt = \sha1(\microtime(true));
+		$salt = \sha1(\random_bytes(16));
 		Utils::SetCookie(self::AUTH_SIGN_ME_TOKEN_KEY,
 			Utils::EncodeKeyValuesQ(array(
 				'e' => $oAccount->Email(),

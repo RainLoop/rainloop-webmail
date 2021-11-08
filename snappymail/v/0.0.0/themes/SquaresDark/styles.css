@@ -71,11 +71,11 @@
 	border-top-color: var(--main-color);
 }
 
-.well,
 #rl-popups > dialog,
 #rl-settings-subscreen,
 .messageList,
 .messageView,
+.alert-info,
 #V-PopupsCompose .b-attachment-place {
 	background-color: #000;
 	border-color: #555;
