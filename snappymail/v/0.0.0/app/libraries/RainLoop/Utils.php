@@ -78,7 +78,7 @@ class Utils
 		try {
 			return \json_decode($sDecodedValues, true, 512, JSON_THROW_ON_ERROR) ?: array();
 		} catch (\Throwable $e) {
-			return \unserialize($aResult) ?: array();
+			return \unserialize($sDecodedValues) ?: array();
 		}
 	}
 
