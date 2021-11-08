@@ -77,7 +77,7 @@ const
 					// show/hide popup/modal
 					const endShowHide = e => {
 						if (e.target === vmDom) {
-							if (vmDom.classList.contains('show')) {
+							if (vmDom.classList.contains('animate')) {
 								autofocus(vmDom);
 								vm.onShowWithDelay && vm.onShowWithDelay();
 							} else {
@@ -98,13 +98,13 @@ const
 							vm.keyScope.set();
 							requestAnimationFrame(() => { // wait just before the next paint
 								vmDom.offsetHeight; // force a reflow
-								vmDom.classList.add('show'); // trigger the transitions
+								vmDom.classList.add('animate'); // trigger the transitions
 							});
 						} else {
 							visiblePopups.delete(vm);
 							vm.onHide && vm.onHide();
 							vm.keyScope.unset();
-							vmDom.classList.remove('show'); // trigger the transitions
+							vmDom.classList.remove('animate'); // trigger the transitions
 						}
 						arePopupsVisible(0 < visiblePopups.size);
 /*

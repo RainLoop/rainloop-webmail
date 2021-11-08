@@ -58,25 +58,6 @@ dialog::backdrop {
 	right: 0;
 	bottom: 0;
 	left: 0;
-	z-index: 1;
-/*
-	position: fixed;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	background: rgba(0,0,0,0.5);
-
-	z-index: 1000000000;
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	z-index: 1100;
-	overflow: auto;
-	background-color: rgba(0,0,0,0.3);
-*/
 }
 
 dialog {
@@ -85,6 +66,8 @@ dialog {
 	border: 1px solid rgba(0,0,0,.3);
 	border-radius: 6px;
 	box-shadow: 0 5px 80px rgba(0,0,0,0.3);
+	display: flex;
+	flex-direction: column;
 	margin: 10px auto;
 	max-height: calc(100vh - 20px);
 	max-width: 560px;
@@ -97,16 +80,16 @@ dialog {
 dialog:not([open]) {
 	display: none !important;
 }
-dialog.show {
+dialog.animate {
 	opacity: 1;
 }
-dialog:not(.show) {
+dialog:not(.animate) {
 	background-color: rgba(0,0,0,0);
 	opacity: 0;
 	top: -25%;
 }
 
-dialog header {
+dialog > header {
   padding: 9px 15px;
   border-bottom: 1px solid #eee;
   // Close icon
@@ -120,12 +103,12 @@ dialog header {
 
 // Body (where all modal content resides)
 dialog .modal-body {
-  overflow-y: auto;
+  overflow: auto;
   padding: 15px;
 }
 
 // Footer (for actions)
-dialog footer {
+dialog > footer {
   padding: 14px 15px 15px;
   margin-bottom: 0;
   text-align: right; // right align buttons
