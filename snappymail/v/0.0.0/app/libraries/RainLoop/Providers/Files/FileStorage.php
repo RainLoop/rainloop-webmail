@@ -55,6 +55,16 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 		$bCreate = !!\preg_match('/[wac]/', $sOpenMode);
 
 		$sFileName = $this->generateFullFileName($oAccount, $sKey, $bCreate);
+		if (!\file_exists($sFileName)) {
+			$sOldFileName = $this->generateFullFileNameOld($oAccount, $sKey);
+			if (\file_exists($sOldFileName)
+			 && (
+				(!\is_dir(\dirname($sOldFileName)) && !\mkdir(\dirname($sOldFileName), 0700, true))
+				|| !\rename($sOldFileName, $sFileName)
+			)) {
+				$sFileName = $sOldFileName;
+			}
+		}
 		if ($bCreate || \file_exists($sFileName))
 		{
 			$mResult = \fopen($sFileName, $sOpenMode);
@@ -68,57 +78,57 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 		return $mResult;
 	}
 
-	public function GetFileName(\RainLoop\Model\Account $oAccount, string $sKey) : string
+	public function GetFileName(\RainLoop\Model\Account $oAccount, string $sKey) /*: string|false*/
 	{
-		$mResult = false;
 		$sFileName = $this->generateFullFileName($oAccount, $sKey);
-		if (\file_exists($sFileName))
-		{
-			$mResult = $sFileName;
+		if (!\file_exists($sFileName)) {
+			$sFileName = $this->generateFullFileNameOld($oAccount, $sKey);
 		}
-
-		return $mResult;
+		return \file_exists($sFileName) ? $sFileName : false;
 	}
 
 	public function Clear(\RainLoop\Model\Account $oAccount, string $sKey) : bool
 	{
-		$mResult = true;
 		$sFileName = $this->generateFullFileName($oAccount, $sKey);
-		if (\file_exists($sFileName))
-		{
-			if (isset($this->aResources[$sFileName]) && \is_resource($this->aResources[$sFileName]))
-			{
+		if (!\file_exists($sFileName)) {
+			$sFileName = $this->generateFullFileNameOld($oAccount, $sKey);
+		}
+		if (\file_exists($sFileName)) {
+			if (isset($this->aResources[$sFileName]) && \is_resource($this->aResources[$sFileName])) {
 				\fclose($this->aResources[$sFileName]);
 			}
-
-			$mResult = \unlink($sFileName);
+			return \unlink($sFileName);
 		}
-
-		return $mResult;
+		return false;
 	}
 
-	public function FileSize(\RainLoop\Model\Account $oAccount, string $sKey) : int
+	public function FileSize(\RainLoop\Model\Account $oAccount, string $sKey) /*: int|false*/
 	{
-		$mResult = false;
 		$sFileName = $this->generateFullFileName($oAccount, $sKey);
-		if (\file_exists($sFileName))
-		{
-			$mResult = \filesize($sFileName);
+		if (!\file_exists($sFileName)) {
+			$sFileName = $this->generateFullFileNameOld($oAccount, $sKey);
 		}
-
-		return $mResult;
+		return \file_exists($sFileName) ? \filesize($sFileName) : false;
 	}
 
 	public function FileExists(\RainLoop\Model\Account $oAccount, string $sKey) : bool
 	{
-		return \file_exists($this->generateFullFileName($oAccount, $sKey));
+		return \file_exists($this->generateFullFileName($oAccount, $sKey))
+			|| \file_exists($this->generateFullFileNameOld($oAccount, $sKey));
 	}
 
 	public function GC(int $iTimeToClearInHours = 24) : bool
 	{
-		if (0 < $iTimeToClearInHours)
-		{
-			\MailSo\Base\Utils::RecTimeDirRemove($this->sDataPath, 60 * 60 * $iTimeToClearInHours, \time());
+		if (0 < $iTimeToClearInHours) {
+			$iTimeToClear = 3600 * $iTimeToClearInHours;
+			foreach (\glob("{$this->sDataPath}/*", GLOB_ONLYDIR) as $sDomain) {
+				foreach (\glob("{$sDomain}/*", GLOB_ONLYDIR) as $sLocal) {
+					\MailSo\Base\Utils::RecTimeDirRemove("{$sLocal}/.files", $iTimeToClear);
+				}
+			}
+			// Old
+			\MailSo\Base\Utils::RecTimeDirRemove("{$this->sDataPath}/files", $iTimeToClear);
+
 			return true;
 		}
 
@@ -141,7 +151,36 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 		return true;
 	}
 
+	/**
+	 * Replace control characters, ampersand, spaces and reserved characters (based on Win95 VFAT)
+	 * en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
+	 */
+	private static function fixName($filename)
+	{
+		return \preg_replace('#[|\\\\?*<":>+\\[\\]/&\\s\\pC]#su', '-', $filename);
+	}
+
 	private function generateFullFileName(\RainLoop\Model\Account $oAccount, string $sKey, bool $bMkDir = false) : string
+	{
+		$sEmail = $oAccount->ParentEmailHelper() ?: 'nobody@unknown.tld';
+		$sSubEmail = $oAccount->IsAdditionalAccount() ? $oAccount->Email() : '';
+
+		$aEmail = \explode('@', $sEmail ?: 'nobody@unknown.tld');
+		$sDomain = \trim(1 < \count($aEmail) ? \array_pop($aEmail) : '');
+		$sFilePath = $this->sDataPath
+			.'/'.static::fixName($sDomain ?: 'unknown.tld')
+			.'/'.static::fixName(\implode('@', $aEmail) ?: '.unknown')
+			.($sSubEmail ? '/'.static::fixName($sSubEmail) : '')
+			.'/.files/'.\sha1($sKey);
+
+		if ($bMkDir && !\is_dir(\dirname($sFilePath)) && !\mkdir(\dirname($sFilePath), 0700, true)) {
+			throw new \RainLoop\Exceptions\Exception('Can\'t make storage directory "'.$sFilePath.'"');
+		}
+
+		return $sFilePath;
+	}
+
+	private function generateFullFileNameOld(\RainLoop\Model\Account $oAccount, string $sKey, bool $bMkDir = false) : string
 	{
 		$sEmail = $sSubEmail = '';
 		if ($oAccount instanceof \RainLoop\Model\Account)

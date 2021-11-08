@@ -76,7 +76,7 @@ class File implements \MailSo\Cache\DriverInterface
 	{
 		if (0 < $iTimeToClearInHours)
 		{
-			\MailSo\Base\Utils::RecTimeDirRemove($this->sCacheFolder, 60 * 60 * $iTimeToClearInHours, \time());
+			\MailSo\Base\Utils::RecTimeDirRemove($this->sCacheFolder, 3600 * $iTimeToClearInHours);
 			return true;
 		}
 

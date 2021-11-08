@@ -1000,8 +1000,9 @@ END;
 		}
 	}
 
-	public static function RecTimeDirRemove(string $sTempPath, int $iTime2Kill, int $iNow) : bool
+	public static function RecTimeDirRemove(string $sTempPath, int $iTime2Kill, int $iNow = 0) : bool
 	{
+		$iNow = $iNow ?: \time();
 		$iFileCount = 0;
 
 		$sTempPath = rtrim($sTempPath, '\\/');

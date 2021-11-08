@@ -191,7 +191,7 @@ class Actions
 			switch ($sName) {
 				case 'files':
 					// RainLoop\Providers\Files\IFiles
-					$mResult = new Providers\Files\FileStorage(APP_PRIVATE_DATA . 'storage/files');
+					$mResult = new Providers\Files\FileStorage(APP_PRIVATE_DATA . 'storage');
 					break;
 				case 'storage':
 				case 'storage-local':
