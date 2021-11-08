@@ -85,7 +85,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	 */
 	public function DeleteStorage($oAccount) : bool
 	{
-		$sPath = $this->generateFileName($oAccount, StorageType::USER, '', false, true);
+		$sPath = $this->generateFileName($oAccount, StorageType::CONFIG, '', false, true);
 		if ($sPath && \is_dir($sPath)) {
 			\MailSo\Base\Utils::RecRmDir($sPath);
 		}
@@ -141,6 +141,8 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 			case StorageType::NOBODY:
 				$sFilePath = $this->sDataPath.'/__nobody__/'.\sha1($sKey ?: \time());
 				break;
+			case StorageType::SIGN_ME:
+				$sSubEmail = '.sign_me';
 			case StorageType::CONFIG:
 				if (empty($sEmail)) {
 					return '';
@@ -163,6 +165,11 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 			{
 				throw new \RainLoop\Exceptions\Exception('Can\'t make storage directory "'.$sFilePath.'"');
 			}
+		}
+
+		// CleanupSignMeData
+		if (StorageType::SIGN_ME === $iStorageType && $sKey && 0 === \random_int(0, 25) && \is_dir($sFilePath)) {
+			\MailSo\Base\Utils::RecTimeDirRemove(\is_dir($sFilePath), 3600 * 24 * 30); // 30 days
 		}
 
 		return $sFilePath;

@@ -209,35 +209,6 @@ trait UserAuth
 		return Utils::GetCookie(self::AUTH_SPEC_TOKEN_KEY, '');
 	}
 
-	public function GetAccountFromSignMeToken(): ?Account
-	{
-		$oAccount = null;
-
-		$sSignMeToken = Utils::GetCookie(self::AUTH_SIGN_ME_TOKEN_KEY, '');
-		if (!empty($sSignMeToken)) {
-			$aTokenData = Utils::DecodeKeyValuesQ($sSignMeToken);
-			if (!empty($aTokenData['e']) && !empty($aTokenData['t'])) {
-				$sTokenSettings = $this->StorageProvider()->Get($aTokenData['e'],
-					StorageType::CONFIG,
-					'sign_me'
-				);
-
-				if (!empty($sTokenSettings)) {
-					$aSignMeData = Utils::DecodeKeyValuesQ($sTokenSettings);
-					if (!empty($aSignMeData['AuthToken']) &&
-						!empty($aSignMeData['SignMeToken']) &&
-						$aSignMeData['SignMeToken'] === $aTokenData['t']) {
-						$oAccount = $this->GetAccountFromCustomToken($aSignMeData['AuthToken'], false, false, true);
-					}
-				}
-			}
-		} else {
-			Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
-		}
-
-		return $oAccount;
-	}
-
 	// rlspecauth / AuthAccountHash
 	public function getAuthAccountHash() : string
 	{
@@ -306,34 +277,89 @@ trait UserAuth
 		$this->SetSpecAuthToken($sSpecAuthToken);
 		Utils::SetCookie(self::AUTH_SPEC_TOKEN_KEY, $sSpecAuthToken);
 
-		if ($oAccount->SignMe() && \strlen($oAccount->SignMeToken())) {
-			Utils::SetCookie(self::AUTH_SIGN_ME_TOKEN_KEY,
-				Utils::EncodeKeyValuesQ(array(
-					'e' => $oAccount->Email(),
-					't' => $oAccount->SignMeToken()
-				)),
-				\time() + 60 * 60 * 24 * 30);
-
-			$this->StorageProvider()->Put($oAccount,
-				StorageType::CONFIG,
-				'sign_me',
-				Utils::EncodeKeyValuesQ(array(
-					'Time' => \time(),
-					'AuthToken' => $oAccount->GetAuthTokenQ(),
-					'SignMeToken' => $oAccount->SignMeToken()
-				))
-			);
+		if ($oAccount->SignMe()) {
+			$this->SetSignMeToken($oAccount);
 		}
+	}
+
+	private static function GetSignMeToken(): ?array
+	{
+		$sSignMeToken = Utils::GetCookie(self::AUTH_SIGN_ME_TOKEN_KEY, '');
+		return empty($sSignMeToken) ? null : Utils::DecodeKeyValuesQ($sSignMeToken);
+	}
+
+	private function SetSignMeToken(Account $oAccount): void
+	{
+		$this->ClearSignMeData($oAccount);
+
+		$uuid = \SnappyMail\UUID::generate();
+		Utils::SetCookie(self::AUTH_SIGN_ME_TOKEN_KEY,
+			Utils::EncodeKeyValuesQ(array(
+				'e' => $oAccount->Email(),
+				'u' => $uuid
+			)),
+			\time() + 3600 * 24 * 30); // 30 days
+
+		$this->StorageProvider()->Put($oAccount,
+			StorageType::SIGN_ME,
+			$uuid,
+			Utils::EncryptString($oAccount->GetAuthToken(), \sha1(APP_SALT . $uuid))
+		);
+	}
+
+	public function GetAccountFromSignMeToken(): ?Account
+	{
+		$oAccount = null;
+
+		$aTokenData = static::GetSignMeToken();
+		if (!empty($aTokenData)) {
+			if (!empty($aTokenData['e']) && !empty($aTokenData['u']) && \SnappyMail\UUID::isValid($aTokenData['u'])) {
+				$sAuthToken = $this->StorageProvider()->Get($aTokenData['e'],
+					StorageType::SIGN_ME,
+					$aTokenData['u']
+				);
+				if (empty($sAuthToken)) {
+					return null;
+				}
+				$sAuthToken = Utils::DecryptString($sAuthToken, \sha1(APP_SALT . $aTokenData['u']));
+				if (!empty($sAuthToken)) {
+					$oAccount = $this->GetAccountFromCustomToken($sAuthToken, false, false, true);
+				}
+			} else if (!empty($aTokenData['e']) && !empty($aTokenData['t'])) {
+				// This is old, see https://github.com/the-djmaze/snappymail/issues/126
+				$sTokenSettings = $this->StorageProvider()->Get($aTokenData['e'],
+					StorageType::CONFIG,
+					'sign_me'
+				);
+				if (!empty($sTokenSettings)) {
+					$aSignMeData = Utils::DecodeKeyValuesQ($sTokenSettings);
+					if (!empty($aSignMeData['AuthToken']) &&
+						!empty($aSignMeData['SignMeToken']) &&
+						$aSignMeData['SignMeToken'] === $aTokenData['t']) {
+						$oAccount = $this->GetAccountFromCustomToken($aSignMeData['AuthToken'], false, false, true);
+					}
+				}
+			}
+			if ($oAccount) {
+				// Update lifetime
+				$this->SetSignMeToken($oAccount);
+			}
+		} else {
+			Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
+		}
+
+		return $oAccount;
 	}
 
 	protected function ClearSignMeData(Account $oAccount) : void
 	{
 		if ($oAccount) {
+			$aTokenData = static::GetSignMeToken();
+			if (!empty($aTokenData['u']) && \SnappyMail\UUID::isValid($aTokenData['u'])) {
+				$this->StorageProvider()->Clear($oAccount, StorageType::SIGN_ME, $aTokenData['u']);
+			}
 			Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
-			$this->StorageProvider()->Clear($oAccount,
-				StorageType::CONFIG,
-				'sign_me'
-			);
+			$this->StorageProvider()->Clear($oAccount, StorageType::CONFIG, 'sign_me');
 		}
 	}
 
