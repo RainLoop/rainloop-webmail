@@ -89,7 +89,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	 * Replace control characters, ampersand, spaces and reserved characters (based on Win95 VFAT)
 	 * en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
 	 */
-	private static function fixName($filename)
+	protected static function fixName($filename)
 	{
 		return \preg_replace('#[|\\\\?*<":>+\\[\\]/&\\s\\pC]#su', '-', $filename);
 	}
@@ -97,7 +97,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	/**
 	 * @param \RainLoop\Model\Account|string|null $mAccount
 	 */
-	private function generateFileName($mAccount, int $iStorageType, string $sKey, bool $bMkDir = false, bool $bForDeleteAction = false) : string
+	protected function generateFileName($mAccount, int $iStorageType, string $sKey, bool $bMkDir = false, bool $bForDeleteAction = false) : string
 	{
 		$sEmail = $sSubEmail = '';
 		if (null === $mAccount) {
