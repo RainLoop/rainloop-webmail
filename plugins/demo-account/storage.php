@@ -11,9 +11,14 @@ class DemoStorage extends \RainLoop\Providers\Storage\FileStorage
 			return parent::generateFileName($mAccount, $iStorageType, $sKey, $bMkDir, $bForDeleteAction);
 		}
 
-		return $this->sDataPath
-			.'/demo'
-			.'/'.static::fixName(\RainLoop\Utils::GetConnectionToken())
-			.'/'.($sKey ? static::fixName($sKey) : '');
+		$sDataPath = "{$this->sDataPath}/demo";
+		if (\is_dir($sDataPath) && 0 === \random_int(0, 100)) {
+			\MailSo\Base\Utils::RecRmDir("{$this->sDataPath}/demo");
+		}
+
+		$sDataPath .= '/' . static::fixName(\RainLoop\Utils::GetConnectionToken());
+		\is_dir($sDataPath) || \mkdir($sDataPath, 0700, true);
+
+		return $sDataPath . '/' . ($sKey ? static::fixName($sKey) : '');
 	}
 }

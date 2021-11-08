@@ -9,7 +9,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	/**
 	 * @var string
 	 */
-	private $sDataPath;
+	protected $sDataPath;
 
 	/**
 	 * @var bool
