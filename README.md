@@ -137,25 +137,25 @@ RainLoop 1.15 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.158.025	|   88.141	|
-|app.js          	|4.215.733	|  438.509	|
+|admin.js        	|2.158.025	|   89.375	|
+|app.js          	|4.215.733	|  437.681	|
 |boot.js         	|  672.433	|    2.780	|
-|libs.js         	|  647.679	|  209.814	|
+|libs.js         	|  647.679	|  209.228	|
 |polyfills.js    	|  325.908	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|8.019.778	|  739.529	|
+|TOTAL           	|8.019.778	|  739.349	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
-|admin.min.js    	|  255.514	|   44.638	| 73.899	| 13.865	| 60.674  	| 12.445	|
-|app.min.js      	|  516.000	|  223.361	|140.430	| 66.988	|110.657  	| 56.798	|
+|admin.min.js    	|  255.514	|   45.084	| 73.899	| 13.985	| 60.674  	| 12.567	|
+|app.min.js      	|  516.000	|  222.160	|140.430	| 66.802	|110.657  	| 56.740	|
 |boot.min.js     	|   66.456	|    1.655	| 22.553	|    996	| 20.043  	|    815	|
-|libs.min.js     	|  574.626	|  100.487	|177.280	| 36.627	|151.855  	| 32.795	|
+|libs.min.js     	|  574.626	|  100.108	|177.280	| 36.501	|151.855  	| 32.669	|
 |polyfills.min.js	|   32.608	|        0	| 11.315	|      0	| 10.072  	|      0	|
-|TOTAL           	|1.445.204	|  370.141	|425.477	|118.476	|353.301  	|102.853	|
-|TOTAL (no admin)	|1.189.690	|  325.503	|351.061	|104.611	|292.627  	| 90.408	|
+|TOTAL           	|1.445.204	|  369.007	|425.477	|118.284	|353.301  	|102.791	|
+|TOTAL (no admin)	|1.189.690	|  323.923	|351.061	|104.299	|292.627  	| 90.224	|
 
-For a user its around 68% smaller and faster than traditional RainLoop.
+For a user its around 70% smaller and faster than traditional RainLoop.
 
 |OpenPGP        	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
@@ -192,12 +192,12 @@ For a user its around 68% smaller and faster than traditional RainLoop.
 
 |css/*       	|RainLoop	|Snappy   	|RL gzip	|SM gzip	|SM brotli	|
 |------------	|-------:	|------:	|------:	|------:	|--------:	|
-|app.css     	| 340.334	| 91.421	| 46.959	| 16.987	| 14.711	|
-|app.min.css 	| 274.791	| 74.222	| 39.618	| 15.149	| 13.406	|
+|app.css     	| 340.334	| 89.726	| 46.959	| 16.893	| 14.593	|
+|app.min.css 	| 274.791	| 72.537	| 39.618	| 15.002	| 13.287	|
 |boot.css    	|       	|  1.326	|       	|    664	|    545	|
 |boot.min.css	|       	|  1.071	|       	|    590	|    474	|
-|admin.css    	|       	| 39.417	|       	|  8.337	|  7.293	|
-|admin.min.css	|       	| 31.051	|       	|  7.306	|  6.487	|
+|admin.css    	|       	| 38.341	|       	|  8.317	|  7.268	|
+|admin.min.css	|       	| 29.916	|       	|  7.232	|  6.417	|
 
 
 ### Squire vs CKEditor
