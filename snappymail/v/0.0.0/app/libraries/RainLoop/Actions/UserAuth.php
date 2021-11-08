@@ -293,17 +293,19 @@ trait UserAuth
 		$this->ClearSignMeData($oAccount);
 
 		$uuid = \SnappyMail\UUID::generate();
+		$salt = \sha1(\microtime(true));
 		Utils::SetCookie(self::AUTH_SIGN_ME_TOKEN_KEY,
 			Utils::EncodeKeyValuesQ(array(
 				'e' => $oAccount->Email(),
-				'u' => $uuid
+				'u' => $uuid,
+				's' => $salt
 			)),
 			\time() + 3600 * 24 * 30); // 30 days
 
 		$this->StorageProvider()->Put($oAccount,
 			StorageType::SIGN_ME,
 			$uuid,
-			Utils::EncryptString($oAccount->GetAuthToken(), \sha1(APP_SALT . $uuid))
+			Utils::EncryptString($oAccount->GetAuthToken(), $salt)
 		);
 	}
 
@@ -313,7 +315,7 @@ trait UserAuth
 
 		$aTokenData = static::GetSignMeToken();
 		if (!empty($aTokenData)) {
-			if (!empty($aTokenData['e']) && !empty($aTokenData['u']) && \SnappyMail\UUID::isValid($aTokenData['u'])) {
+			if (!empty($aTokenData['e']) && !empty($aTokenData['u']) && !empty($aTokenData['s']) && \SnappyMail\UUID::isValid($aTokenData['u'])) {
 				$sAuthToken = $this->StorageProvider()->Get($aTokenData['e'],
 					StorageType::SIGN_ME,
 					$aTokenData['u']
@@ -321,7 +323,7 @@ trait UserAuth
 				if (empty($sAuthToken)) {
 					return null;
 				}
-				$sAuthToken = Utils::DecryptString($sAuthToken, \sha1(APP_SALT . $aTokenData['u']));
+				$sAuthToken = Utils::DecryptString($sAuthToken, $aTokenData['s']);
 				if (!empty($sAuthToken)) {
 					$oAccount = $this->GetAccountFromCustomToken($sAuthToken, false, false, true);
 				}
