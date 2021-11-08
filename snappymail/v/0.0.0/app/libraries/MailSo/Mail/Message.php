@@ -446,7 +446,7 @@ class Message implements \JsonSerializable
 			if ($spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAMD_RESULT)) {
 				if (\preg_match('/\\[([\\d\\.-]+)\\s*\\/\\s*([\\d\\.]+)\\];/', $spam, $match)) {
 					if ($threshold = \floatval($match[2])) {
-						$this->iSpamScore = \max(0, \min(100, 100 * \floatval($match[1]) / $threshold));
+						$this->iSpamScore = \intval(\max(0, \min(100, 100 * \floatval($match[1]) / $threshold)));
 						$this->sSpamResult = "{$match[1]} / {$match[2]}";
 					}
 				}
