@@ -2,6 +2,7 @@
 
 namespace RainLoop\Actions;
 
+use \RainLoop\Notifications;
 use \RainLoop\Utils;
 use \RainLoop\Model\Account;
 use \RainLoop\Providers\Storage\Enumerations\StorageType;
@@ -10,10 +11,10 @@ use \RainLoop\Exceptions\ClientException;
 trait UserAuth
 {
 /*
-	const AUTH_SIGN_ME_TOKEN_KEY = 'rlsmauth';
-	const AUTH_SPEC_TOKEN_KEY = 'rlspecauth';
-	const AUTH_SPEC_LOGOUT_TOKEN_KEY = 'rlspeclogout';
-	const AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY = 'rlspeclogoutcmk';
+	const AUTH_SIGN_ME_TOKEN_KEY = 'smremember';
+	const AUTH_SPEC_TOKEN_KEY = 'smspecauth';
+	const AUTH_SPEC_LOGOUT_TOKEN_KEY = 'smspeclogout';
+	const AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY = 'smspeclogoutcmk';
 */
 	/**
 	 * @var string
