@@ -49,13 +49,6 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 		$sFileName = $this->generateFileName($oAccount, $iStorageType, $sKey);
 		if ($sFileName && \file_exists($sFileName)) {
 			$mValue = \file_get_contents($sFileName);
-		} else {
-			$sFileName = $this->generateFileNameOld($oAccount, $iStorageType, $sKey);
-			if ($sFileName && \file_exists($sFileName)) {
-				$mValue = \file_get_contents($sFileName);
-				$this->Put($oAccount, $iStorageType, $sKey, $mValue);
-				\unlink($sFileName);
-			}
 		}
 
 		return false === $mValue ? $mDefault : $mValue;
@@ -70,11 +63,6 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 		$sFileName = $this->generateFileName($oAccount, $iStorageType, $sKey);
 		if ($sFileName && \file_exists($sFileName)) {
 			$mResult = \unlink($sFileName);
-		} else {
-			$sFileName = $this->generateFileNameOld($oAccount, $iStorageType, $sKey);
-			if ($sFileName && \file_exists($sFileName)) {
-				$mResult = \unlink($sFileName);
-			}
 		}
 
 		return $mResult;
@@ -89,17 +77,6 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 		if ($sPath && \is_dir($sPath)) {
 			\MailSo\Base\Utils::RecRmDir($sPath);
 		}
-
-		$sPath = $this->generateFileNameOld($oAccount, StorageType::USER, '', false, true);
-		if ($sPath && \is_dir($sPath)) {
-			\MailSo\Base\Utils::RecRmDir($sPath);
-		}
-
-		$sPath = $this->generateFileNameOld($oAccount, StorageType::CONFIG, '', false, true);
-		if ($sPath && \is_dir($sPath)) {
-			\MailSo\Base\Utils::RecRmDir($sPath);
-		}
-
 		return true;
 	}
 
@@ -147,6 +124,9 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 				if (empty($sEmail)) {
 					return '';
 				}
+				if (\is_dir("{$this->sDataPath}/cfg")) {
+					FixFileStorage::FixIt($this->sDataPath);
+				}
 				$aEmail = \explode('@', $sEmail ?: 'nobody@unknown.tld');
 				$sDomain = \trim(1 < \count($aEmail) ? \array_pop($aEmail) : '');
 				$sFilePath = $this->sDataPath
@@ -170,74 +150,6 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 		// CleanupSignMeData
 		if (StorageType::SIGN_ME === $iStorageType && $sKey && 0 === \random_int(0, 25) && \is_dir($sFilePath)) {
 			\MailSo\Base\Utils::RecTimeDirRemove(\is_dir($sFilePath), 3600 * 24 * 30); // 30 days
-		}
-
-		return $sFilePath;
-	}
-
-	/**
-	 * Old RainLoop structure
-	 */
-	private function generateFileNameOld($mAccount, int $iStorageType, string $sKey, bool $bMkDir = false, bool $bForDeleteAction = false) : string
-	{
-		if (null === $mAccount)
-		{
-			$iStorageType = StorageType::NOBODY;
-		}
-
-		$sEmail = $sSubEmail = '';
-		if ($mAccount instanceof \RainLoop\Model\Account)
-		{
-			$sEmail = $mAccount->ParentEmailHelper();
-			if ($this->bLocal && $mAccount->IsAdditionalAccount() && !$bForDeleteAction)
-			{
-				$sSubEmail = $mAccount->Email();
-			}
-		}
-
-		if (\is_string($mAccount) && empty($sEmail))
-		{
-			$sEmail = $mAccount;
-		}
-
-		$sEmail = \preg_replace('/[^a-z0-9\-\.@]+/i', '_', $sEmail);
-		$sSubEmail = \preg_replace('/[^a-z0-9\-\.@]+/i', '_', $sSubEmail);
-
-		$sTypePath = $sKeyPath = '';
-		switch ($iStorageType)
-		{
-			default:
-			case StorageType::USER:
-			case StorageType::NOBODY:
-				$sTypePath = 'data';
-				$sKeyPath = \md5($sKey);
-				$sKeyPath = \substr($sKeyPath, 0, 2).'/'.$sKeyPath;
-				break;
-			case StorageType::CONFIG:
-				$sTypePath = 'cfg';
-				$sKeyPath = \preg_replace('/[_]+/', '_', \preg_replace('/[^a-zA-Z0-9\/]/', '_', $sKey));
-				break;
-		}
-
-		$sFilePath = '';
-		if (StorageType::NOBODY === $iStorageType)
-		{
-			$sFilePath = $this->sDataPath.'/'.$sTypePath.'/__nobody__/'.$sKeyPath;
-		}
-		else if (!empty($sEmail))
-		{
-			$sFilePath = $this->sDataPath.'/'.$sTypePath.'/'.
-				\str_pad(\rtrim(\substr($sEmail, 0, 2), '@'), 2, '_').'/'.$sEmail.'/'.
-				(\strlen($sSubEmail) ? $sSubEmail.'/' : '').
-				($bForDeleteAction ? '' : $sKeyPath);
-		}
-
-		if ($bMkDir && !$bForDeleteAction && !empty($sFilePath) && !\is_dir(\dirname($sFilePath)))
-		{
-			if (!\mkdir(\dirname($sFilePath), 0700, true))
-			{
-				throw new \RainLoop\Exceptions\Exception('Can\'t make storage directory "'.$sFilePath.'"');
-			}
 		}
 
 		return $sFilePath;
