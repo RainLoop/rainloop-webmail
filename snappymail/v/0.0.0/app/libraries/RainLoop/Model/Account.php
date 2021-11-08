@@ -152,7 +152,7 @@ class Account
 
 	public function Hash() : string
 	{
-		return md5(APP_SALT.$this->Email().APP_SALT.$this->DomainIncHost().
+		return \md5(APP_SALT.$this->Email().APP_SALT.$this->DomainIncHost().
 			APP_SALT.$this->DomainIncPort().APP_SALT.$this->Password().APP_SALT.'0'.APP_SALT.$this->ParentEmail().APP_SALT);
 	}
 

@@ -205,7 +205,7 @@ class Api
 
 	public static function LogoutCurrentLogginedUser() : bool
 	{
-		Utils::ClearCookie('rlsession');
+		Utils::ClearCookie(Utils::SHORT_TOKEN);
 		return true;
 	}
 

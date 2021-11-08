@@ -289,7 +289,7 @@ trait Response
 				$mResult['References'] = $mResponse->References();
 
 				$fAdditionalExternalFilter = null;
-				if (!!$this->Config()->Get('labs', 'use_local_proxy_for_external_images', false))
+				if ($this->Config()->Get('labs', 'use_local_proxy_for_external_images', false))
 				{
 					$fAdditionalExternalFilter = function ($sUrl) {
 						return './?/ProxyExternal/'.Utils::EncodeKeyValuesQ(array(

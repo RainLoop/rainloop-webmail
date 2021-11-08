@@ -515,17 +515,6 @@ trait User
 			$this->SettingsProvider()->Save($oAccount, $oSettings) : false);
 	}
 
-	protected function ClearSignMeData(\RainLoop\Model\Account $oAccount) : void
-	{
-		if ($oAccount) {
-			Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
-			$this->StorageProvider()->Clear($oAccount,
-				\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
-				'sign_me'
-			);
-		}
-	}
-
 	private function generateSignMeToken(string $sEmail) : string
 	{
 		return \MailSo\Base\Utils::Sha1Rand(APP_SALT.$sEmail);

@@ -10,13 +10,14 @@ class Actions
 {
 	use Actions\Admin;
 	use Actions\User;
+	use Actions\UserAuth;
 	use Actions\Raw;
 	use Actions\Response;
 	use Actions\Localization;
 	use Actions\Themes;
 
-	const AUTH_SIGN_ME_TOKEN_KEY = 'rlsmauth';
 	const AUTH_MAILTO_TOKEN_KEY = 'rlmailtoauth';
+	const AUTH_SIGN_ME_TOKEN_KEY = 'rlsmauth';
 	const AUTH_SPEC_TOKEN_KEY = 'rlspecauth';
 	const AUTH_SPEC_LOGOUT_TOKEN_KEY = 'rlspeclogout';
 	const AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY = 'rlspeclogoutcmk';
@@ -107,11 +108,6 @@ class Actions
 	private $oConfig;
 
 	/**
-	 * @var string
-	 */
-	private $sSpecAuthToken;
-
-	/**
 	 * @access private
 	 */
 	function __construct()
@@ -143,13 +139,6 @@ class Actions
 		$this->Logger()->Ping();
 	}
 
-	public function SetSpecAuthToken(string $sSpecAuthToken): self
-	{
-		$this->sSpecAuthToken = $sSpecAuthToken;
-
-		return $this;
-	}
-
 	public function SetIsJson(bool $bIsJson): self
 	{
 		$this->bIsJson = $bIsJson;
@@ -157,25 +146,9 @@ class Actions
 		return $this;
 	}
 
-	public function GetSpecAuthToken(): string
-	{
-		return $this->sSpecAuthToken;
-	}
-
 	public function GetIsJson(): bool
 	{
 		return $this->bIsJson;
-	}
-
-	public function GetShortLifeSpecAuthToken(int $iLife = 60): string
-	{
-		$aAccountHash = Utils::DecodeKeyValues($this->getLocalAuthToken());
-		if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0]) {
-			$aAccountHash[10] = \time() + $iLife;
-			return Utils::EncodeKeyValues($aAccountHash);
-		}
-
-		return '';
 	}
 
 	public function Config(): Config\Application
@@ -321,30 +294,6 @@ class Actions
 		return $sQuery;
 	}
 
-	// rlspecauth / AuthAccountHash
-	public function getAuthAccountHash() : string
-	{
-		if ('' === $this->sSpecAuthToken && !\strlen($this->GetSpecAuthLogoutTokenWithDeletion())) {
-			$sAuthAccountHash = $this->GetSpecAuthTokenCookie() ?: $this->GetSpecAuthToken();
-			if (empty($sAuthAccountHash)) {
-				$oAccount = $this->GetAccountFromSignMeToken();
-				if ($oAccount) try
-				{
-					$this->CheckMailConnection($oAccount);
-					$this->AuthToken($oAccount);
-					$sAuthAccountHash = $this->GetSpecAuthToken();
-				}
-				catch (\Throwable $oException)
-				{
-					$oException = null;
-					$this->ClearSignMeData($oAccount);
-				}
-			}
-			$this->SetSpecAuthToken($sAuthAccountHash);
-		}
-		return $this->GetSpecAuthToken();
-	}
-
 	private function compileLogParams(string $sLine, ?Model\Account $oAccount = null, bool $bUrlEncode = false, array $aAdditionalParams = array()): string
 	{
 		$aClear = array();
@@ -470,75 +419,6 @@ class Actions
 		}
 
 		return $sFileName;
-	}
-
-	public function SetAuthLogoutToken(): void
-	{
-		\header('X-RainLoop-Action: Logout');
-		Utils::SetCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, \md5($_SERVER['REQUEST_TIME_FLOAT']), 0);
-	}
-
-	public function SetAuthToken(Model\Account $oAccount): void
-	{
-		$sSpecAuthToken = '_' . $oAccount->GetAuthTokenQ();
-
-		$this->SetSpecAuthToken($sSpecAuthToken);
-		Utils::SetCookie(self::AUTH_SPEC_TOKEN_KEY, $sSpecAuthToken);
-
-		if ($oAccount->SignMe() && \strlen($oAccount->SignMeToken())) {
-			Utils::SetCookie(self::AUTH_SIGN_ME_TOKEN_KEY,
-				Utils::EncodeKeyValuesQ(array(
-					'e' => $oAccount->Email(),
-					't' => $oAccount->SignMeToken()
-				)),
-				\time() + 60 * 60 * 24 * 30);
-
-			$this->StorageProvider()->Put($oAccount,
-				Providers\Storage\Enumerations\StorageType::CONFIG,
-				'sign_me',
-				Utils::EncodeKeyValuesQ(array(
-					'Time' => \time(),
-					'AuthToken' => $oAccount->GetAuthTokenQ(),
-					'SignMetToken' => $oAccount->SignMeToken()
-				))
-			);
-		}
-	}
-
-	public function GetSpecAuthTokenCookie(): string
-	{
-		return Utils::GetCookie(self::AUTH_SPEC_TOKEN_KEY, '');
-	}
-
-	public function GetSpecAuthLogoutTokenWithDeletion(): string
-	{
-		$sResult = Utils::GetCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, '');
-		if (0 < strlen($sResult)) {
-			Utils::ClearCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY);
-		}
-
-		return $sResult;
-	}
-
-	public function GetSpecLogoutCustomMgsWithDeletion(): string
-	{
-		$sResult = Utils::GetCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY, '');
-		if (0 < strlen($sResult)) {
-			Utils::ClearCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY);
-		}
-
-		return $sResult;
-	}
-
-	public function SetSpecLogoutCustomMgsWithDeletion(string $sMessage): string
-	{
-		Utils::SetCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY, $sMessage, 0);
-	}
-
-	private function getLocalAuthToken(): string
-	{
-		$sToken = $this->GetSpecAuthToken();
-		return !empty($sToken) && '_' === \substr($sToken, 0, 1) ? \substr($sToken, 1) : '';
 	}
 
 	/**
@@ -856,109 +736,6 @@ class Actions
 					'To' => $sTo
 				)), 0);
 		}
-	}
-
-	protected function LoginProvide(string $sEmail, string $sLogin, string $sPassword, string $sSignMeToken = '', string $sClientCert = '', bool $bThrowProvideException = false): ?Model\Account
-	{
-		$oAccount = null;
-		if (\strlen($sEmail) && \strlen($sLogin) && \strlen($sPassword)) {
-			$oDomain = $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
-			if ($oDomain) {
-				if ($oDomain->ValidateWhiteList($sEmail, $sLogin)) {
-					$oAccount = new Model\Account($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken, '', '', $sClientCert);
-					$this->Plugins()->RunHook('filter.account', array($oAccount));
-
-					if ($bThrowProvideException && !$oAccount) {
-						throw new Exceptions\ClientException(Notifications::AuthError);
-					}
-				} else if ($bThrowProvideException) {
-					throw new Exceptions\ClientException(Notifications::AccountNotAllowed);
-				}
-			} else if ($bThrowProvideException) {
-				throw new Exceptions\ClientException(Notifications::DomainNotAllowed);
-			}
-		}
-
-		return $oAccount;
-	}
-
-	/**
-	 * @throws \RainLoop\Exceptions\ClientException
-	 */
-	public function GetAccountFromCustomToken(string $sToken, bool $bThrowExceptionOnFalse = true, bool $bValidateShortToken = true, bool $bQ = false): ?Model\Account
-	{
-		$oResult = null;
-		if (!empty($sToken)) {
-			$aAccountHash = $bQ ? Utils::DecodeKeyValuesQ($sToken) : Utils::DecodeKeyValues($sToken);
-			if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0] && // simple token validation
-				8 <= \count($aAccountHash) && // length checking
-				!empty($aAccountHash[7]) && // does short token exist
-				(!$bValidateShortToken || Utils::GetShortToken() === $aAccountHash[7] ||  // check short token if needed
-					(isset($aAccountHash[10]) && 0 < $aAccountHash[10] && \time() < $aAccountHash[10]))
-			) {
-				$oAccount = $this->LoginProvide($aAccountHash[1], $aAccountHash[2], $aAccountHash[3],
-					empty($aAccountHash[5]) ? '' : $aAccountHash[5], empty($aAccountHash[11]) ? '' : $aAccountHash[11], $bThrowExceptionOnFalse);
-
-				if ($oAccount) {
-					// init proxy user/password
-					if (!empty($aAccountHash[8]) && !empty($aAccountHash[9])) {
-						$oAccount->SetProxyAuthUser($aAccountHash[8]);
-						$oAccount->SetProxyAuthPassword($aAccountHash[9]);
-					}
-
-					$this->Logger()->AddSecret($oAccount->Password());
-					$this->Logger()->AddSecret($oAccount->ProxyAuthPassword());
-
-					$oAccount->SetParentEmail($aAccountHash[6]);
-					$oResult = $oAccount;
-				}
-			} else if ($bThrowExceptionOnFalse) {
-				throw new Exceptions\ClientException(Notifications::AuthError);
-			}
-		}
-
-		if ($bThrowExceptionOnFalse && !$oResult) {
-			throw new Exceptions\ClientException(Notifications::AuthError);
-		}
-
-		return $oResult;
-	}
-
-	public function GetAccountFromSignMeToken(): ?Model\Account
-	{
-		$oAccount = null;
-
-		$sSignMeToken = Utils::GetCookie(self::AUTH_SIGN_ME_TOKEN_KEY, '');
-		if (!empty($sSignMeToken)) {
-			$aTokenData = Utils::DecodeKeyValuesQ($sSignMeToken);
-			if (!empty($aTokenData['e']) && !empty($aTokenData['t'])) {
-				$sTokenSettings = $this->StorageProvider()->Get($aTokenData['e'],
-					Providers\Storage\Enumerations\StorageType::CONFIG,
-					'sign_me'
-				);
-
-				if (!empty($sTokenSettings)) {
-					$aSignMeData = Utils::DecodeKeyValuesQ($sTokenSettings);
-					if (!empty($aSignMeData['AuthToken']) &&
-						!empty($aSignMeData['SignMetToken']) &&
-						$aSignMeData['SignMetToken'] === $aTokenData['t']) {
-						$oAccount = $this->GetAccountFromCustomToken($aSignMeData['AuthToken'], false, false, true);
-					}
-				}
-			}
-		} else {
-			Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
-		}
-
-		return $oAccount;
-	}
-
-	/**
-	 * @throws \RainLoop\Exceptions\ClientException
-	 */
-	public function getAccountFromToken(bool $bThrowExceptionOnFalse = true): ?Model\Account
-	{
-		return $this->GetAccountFromCustomToken($this->getLocalAuthToken(), $bThrowExceptionOnFalse, true, true);
 	}
 
 	public function AppDataSystem(bool $bAdmin = false): array
@@ -1339,124 +1116,6 @@ class Actions
 			'{user:login}' => \MailSo\Base\Utils::GetAccountNameFromEmail($sLogin),
 			'{user:domain}' => $sHost,
 		);
-	}
-
-	/**
-	 * @throws \RainLoop\Exceptions\ClientException
-	 */
-	public function LoginProcess(string &$sEmail, string &$sPassword, string $sSignMeToken = ''): Model\Account
-	{
-		$sInputEmail = $sEmail;
-
-		$this->Plugins()->RunHook('login.credentials.step-1', array(&$sEmail));
-
-		$sEmail = \MailSo\Base\Utils::Trim($sEmail);
-		if ($this->Config()->Get('login', 'login_lowercase', true)) {
-			$sEmail = \MailSo\Base\Utils::StrToLowerIfAscii($sEmail);
-		}
-
-		if (false === \strpos($sEmail, '@')) {
-			$this->Logger()->Write('The email address "' . $sEmail . '" is not complete', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
-
-			if (false === \strpos($sEmail, '@') && !!$this->Config()->Get('login', 'determine_user_domain', false)) {
-				$sUserHost = \trim($this->Http()->GetHost(false, true, true));
-				$this->Logger()->Write('Determined user domain: ' . $sUserHost, \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
-
-				$bAdded = false;
-
-				$iLimit = 14;
-				$aDomainParts = \explode('.', $sUserHost);
-
-				$oDomainProvider = $this->DomainProvider();
-				while (\count($aDomainParts) && 0 < $iLimit) {
-					$sLine = \trim(\implode('.', $aDomainParts), '. ');
-
-					$oDomain = $oDomainProvider->Load($sLine, false);
-					if ($oDomain) {
-						$bAdded = true;
-						$this->Logger()->Write('Check "' . $sLine . '": OK (' . $sEmail . ' > ' . $sEmail . '@' . $sLine . ')',
-							\MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
-
-						$sEmail = $sEmail . '@' . $sLine;
-						break;
-					} else {
-						$this->Logger()->Write('Check "' . $sLine . '": NO', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
-					}
-
-					\array_shift($aDomainParts);
-					$iLimit--;
-				}
-
-				if (!$bAdded) {
-					$sLine = $sUserHost;
-					$oDomain = $oDomainProvider->Load($sLine, true);
-					if ($oDomain && $oDomain) {
-						$bAdded = true;
-						$this->Logger()->Write('Check "' . $sLine . '" with wildcard: OK (' . $sEmail . ' > ' . $sEmail . '@' . $sLine . ')',
-							\MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
-
-						$sEmail = $sEmail . '@' . $sLine;
-					} else {
-						$this->Logger()->Write('Check "' . $sLine . '" with wildcard: NO', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
-					}
-				}
-
-				if (!$bAdded) {
-					$this->Logger()->Write('Domain was not found!', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
-				}
-			}
-
-			$sDefDomain = \trim($this->Config()->Get('login', 'default_domain', ''));
-			if (false === \strpos($sEmail, '@') && \strlen($sDefDomain)) {
-				$this->Logger()->Write('Default domain "' . $sDefDomain . '" was used. (' . $sEmail . ' > ' . $sEmail . '@' . $sDefDomain . ')',
-					\MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
-
-				$sEmail = $sEmail . '@' . $sDefDomain;
-			}
-		}
-
-		$this->Plugins()->RunHook('login.credentials.step-2', array(&$sEmail, &$sPassword));
-
-		if (false === \strpos($sEmail, '@') || !\strlen($sPassword)) {
-			$this->loginErrorDelay();
-
-			throw new Exceptions\ClientException(Notifications::InvalidInputArgument);
-		}
-
-		$this->Logger()->AddSecret($sPassword);
-
-		$sLogin = $sEmail;
-		if ($this->Config()->Get('login', 'login_lowercase', true)) {
-			$sLogin = \MailSo\Base\Utils::StrToLowerIfAscii($sLogin);
-		}
-
-		$this->Plugins()->RunHook('login.credentials', array(&$sEmail, &$sLogin, &$sPassword));
-
-		$this->Logger()->AddSecret($sPassword);
-
-		$oAccount = null;
-		$sClientCert = \trim($this->Config()->Get('ssl', 'client_cert', ''));
-		try {
-			$oAccount = $this->LoginProvide($sEmail, $sLogin, $sPassword, $sSignMeToken, $sClientCert, true);
-
-			if (!$oAccount) {
-				throw new Exceptions\ClientException(Notifications::AuthError);
-			}
-		} catch (\Throwable $oException) {
-			$this->loginErrorDelay();
-			$this->LoggerAuthHelper($oAccount, $this->getAdditionalLogParamsByUserLogin($sInputEmail));
-			throw $oException;
-		}
-
-		try {
-			$this->CheckMailConnection($oAccount, true);
-		} catch (\Throwable $oException) {
-			$this->loginErrorDelay();
-
-			throw $oException;
-		}
-
-		return $oAccount;
 	}
 
 	public function GetAccounts(Model\Account $oAccount): array
@@ -1871,7 +1530,7 @@ class Actions
 			$this->Config()->Get('labs', 'allow_message_append', false) &&
 			isset($_FILES, $_FILES['AppendFile'], $_FILES['AppendFile']['name'],
 				$_FILES['AppendFile']['tmp_name'], $_FILES['AppendFile']['size'])) {
-			if (is_string($_FILES['AppendFile']['tmp_name']) && 0 < strlen($_FILES['AppendFile']['tmp_name'])) {
+			if (is_string($_FILES['AppendFile']['tmp_name']) && \strlen($_FILES['AppendFile']['tmp_name'])) {
 				if (\UPLOAD_ERR_OK === (int)$_FILES['AppendFile']['error'] && !empty($sFolderFullNameRaw)) {
 					$sSavedName = 'append-post-' . md5($sFolderFullNameRaw . $_FILES['AppendFile']['name'] . $_FILES['AppendFile']['tmp_name']);
 

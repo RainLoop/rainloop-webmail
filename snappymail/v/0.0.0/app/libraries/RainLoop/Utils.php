@@ -14,6 +14,18 @@ class Utils
 	 */
 	static $CookieDefaultSecure = null;
 
+	const
+		/**
+		 * Used by: ServiceProxyExternal, compileLogParams, GetCsrfToken
+		 * To preven CSRF attacks on all requests.
+		 */
+		CONNECTION_TOKEN = 'rltoken',
+
+		/**
+		 * Used by: GetAuthToken, GetAuthTokenQ, GetAccountFromCustomToken, EncryptStringQ, DecryptStringQ
+		 */
+		SHORT_TOKEN = 'rlsession';
+
 	public static function EncryptString(string $sString, string $sKey) : string
 	{
 		return \MailSo\Base\Crypt::Encrypt($sString, $sKey);
@@ -37,43 +49,46 @@ class Utils
 	public static function EncodeKeyValues(array $aValues, string $sCustomKey = '') : string
 	{
 		return \MailSo\Base\Utils::UrlSafeBase64Encode(
-			static::EncryptString(\serialize($aValues), \md5(APP_SALT.$sCustomKey)));
+			static::EncryptString(\json_encode($aValues), \md5(APP_SALT.$sCustomKey)));
 	}
 
 	public static function DecodeKeyValues(string $sEncodedValues, string $sCustomKey = '') : array
 	{
-		$aResult = \unserialize(
-			static::DecryptString(
-				\MailSo\Base\Utils::UrlSafeBase64Decode($sEncodedValues), \md5(APP_SALT.$sCustomKey)));
-
-		return \is_array($aResult) ? $aResult : array();
+		return static::unserialize(
+			static::DecryptString(\MailSo\Base\Utils::UrlSafeBase64Decode($sEncodedValues), \md5(APP_SALT.$sCustomKey))
+		);
 	}
 
 	public static function EncodeKeyValuesQ(array $aValues, string $sCustomKey = '') : string
 	{
 		return \MailSo\Base\Utils::UrlSafeBase64Encode(
 			static::EncryptStringQ(
-				\serialize($aValues), \md5(APP_SALT.$sCustomKey)));
+				\json_encode($aValues), \md5(APP_SALT.$sCustomKey)));
 	}
 
 	public static function DecodeKeyValuesQ(string $sEncodedValues, string $sCustomKey = '') : array
 	{
-		$aResult = \unserialize(
-			static::DecryptStringQ(
-				\MailSo\Base\Utils::UrlSafeBase64Decode($sEncodedValues), \md5(APP_SALT.$sCustomKey)));
+		return static::unserialize(
+			static::DecryptStringQ(\MailSo\Base\Utils::UrlSafeBase64Decode($sEncodedValues), \md5(APP_SALT.$sCustomKey))
+		);
+	}
 
-		return \is_array($aResult) ? $aResult : array();
+	public static function unserialize(string $sDecodedValues) : array
+	{
+		try {
+			return \json_decode($sDecodedValues, true, 512, JSON_THROW_ON_ERROR) ?: array();
+		} catch (\Throwable $e) {
+			return \unserialize($aResult) ?: array();
+		}
 	}
 
 	public static function GetConnectionToken() : string
 	{
-		$sKey = 'rltoken';
-
-		$sToken = static::GetCookie($sKey, null);
+		$sToken = static::GetCookie(self::CONNECTION_TOKEN, null);
 		if (null === $sToken)
 		{
 			$sToken = \MailSo\Base\Utils::Sha1Rand(APP_SALT);
-			static::SetCookie($sKey, $sToken, \time() + 60 * 60 * 24 * 30);
+			static::SetCookie(self::CONNECTION_TOKEN, $sToken, \time() + 60 * 60 * 24 * 30);
 		}
 
 		return \md5('Connection'.APP_SALT.$sToken.'Token'.APP_SALT);
@@ -86,13 +101,11 @@ class Utils
 
 	public static function GetShortToken() : string
 	{
-		$sKey = 'rlsession';
-
-		$sToken = static::GetCookie($sKey, null);
+		$sToken = static::GetCookie(self::SHORT_TOKEN, null);
 		if (!$sToken)
 		{
 			$sToken = \MailSo\Base\Utils::Sha1Rand(APP_SALT);
-			static::SetCookie($sKey, $sToken, 0);
+			static::SetCookie(self::SHORT_TOKEN, $sToken, 0);
 		}
 
 		return \md5('Session'.APP_SALT.$sToken.'Token'.APP_SALT);
@@ -100,12 +113,10 @@ class Utils
 
 	public static function UpdateConnectionToken() : void
 	{
-		$sKey = 'rltoken';
-
-		$sToken = static::GetCookie($sKey, '');
+		$sToken = static::GetCookie(self::CONNECTION_TOKEN, '');
 		if (!empty($sToken))
 		{
-			static::SetCookie($sKey, $sToken, \time() + 60 * 60 * 24 * 30);
+			static::SetCookie(self::CONNECTION_TOKEN, $sToken, \time() + 60 * 60 * 24 * 30);
 		}
 	}
 
