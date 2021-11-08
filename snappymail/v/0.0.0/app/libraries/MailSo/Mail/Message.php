@@ -455,14 +455,14 @@ class Message implements \JsonSerializable
 				$this->sSpamResult = $spam;
 				$this->bIsSpam = !!\preg_match('/yes|spam/', $spam);
 				if (\preg_match('/spamicity=([\\d\\.]+)/', $spam, $spamicity)) {
-					$this->iSpamScore = \max(0, \min(100, \floatval($spamicity[1])));
+					$this->iSpamScore = \intval(\max(0, \min(100, \floatval($spamicity[1]))));
 				}
 			} else if ($spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAM_STATUS)) {
 				$this->sSpamResult = $spam;
 				if (\preg_match('/(?:hits|score)=([\\d\\.-]+)/', $spam, $value)
 				 && \preg_match('/required=([\\d\\.-]+)/', $spam, $required)) {
 					if ($threshold = \floatval($required[1])) {
-						$this->iSpamScore = \max(0, \min(100, 100 * \floatval($value[1]) / $threshold));
+						$this->iSpamScore = \intval(\max(0, \min(100, 100 * \floatval($value[1]) / $threshold)));
 						$this->sSpamResult = "{$value[1]} / {$required[1]}";
 					}
 				}
