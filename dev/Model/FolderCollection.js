@@ -148,11 +148,11 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		FolderUserStore.quotaLimit(this.quotaLimit);
 		FolderUserStore.capabilities(this.Capabilities);
 
-		FolderUserStore.sentFolder(normalizeFolder(SettingsGet('SentFolder')));
-		FolderUserStore.draftFolder(normalizeFolder(SettingsGet('DraftFolder')));
-		FolderUserStore.spamFolder(normalizeFolder(SettingsGet('SpamFolder')));
-		FolderUserStore.trashFolder(normalizeFolder(SettingsGet('TrashFolder')));
-		FolderUserStore.archiveFolder(normalizeFolder(SettingsGet('ArchiveFolder')));
+		FolderUserStore.sentFolder(normalizeFolder(SettingsGet('SentFolder') || SystemFolders[2]));
+		FolderUserStore.draftFolder(normalizeFolder(SettingsGet('DraftFolder') || SystemFolders[3]));
+		FolderUserStore.spamFolder(normalizeFolder(SettingsGet('SpamFolder') || SystemFolders[4]));
+		FolderUserStore.trashFolder(normalizeFolder(SettingsGet('TrashFolder') || SystemFolders[5]));
+		FolderUserStore.archiveFolder(normalizeFolder(SettingsGet('ArchiveFolder') || SystemFolders[6]));
 
 //		FolderUserStore.folderList.valueHasMutated();
 
