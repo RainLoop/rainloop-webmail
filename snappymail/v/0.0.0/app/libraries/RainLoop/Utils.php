@@ -16,15 +16,17 @@ class Utils
 
 	const
 		/**
+		 * 30 days cookie
 		 * Used by: ServiceProxyExternal, compileLogParams, GetCsrfToken
 		 * To preven CSRF attacks on all requests.
 		 */
-		CONNECTION_TOKEN = 'rltoken',
+		CONNECTION_TOKEN = 'smtoken',
 
 		/**
+		 * Session cookie
 		 * Used by: GetAuthToken, GetAuthTokenQ, GetAccountFromCustomToken, EncryptStringQ, DecryptStringQ
 		 */
-		SHORT_TOKEN = 'rlsession';
+		SHORT_TOKEN = 'smsession';
 
 	public static function EncryptString(string $sString, string $sKey) : string
 	{
@@ -96,14 +98,13 @@ class Utils
 
 	public static function Fingerprint() : string
 	{
-		return \md5($_SERVER['HTTP_USER_AGENT'] ?: 'RainLoopFingerprint');
+		return \sha1(\preg_replace('/[^a-z]+/i', '', \explode(')', $_SERVER['HTTP_USER_AGENT'])[0]));
 	}
 
 	public static function GetShortToken() : string
 	{
 		$sToken = static::GetCookie(self::SHORT_TOKEN, null);
-		if (!$sToken)
-		{
+		if (!$sToken) {
 			$sToken = \MailSo\Base\Utils::Sha1Rand(APP_SALT);
 			static::SetCookie(self::SHORT_TOKEN, $sToken, 0);
 		}

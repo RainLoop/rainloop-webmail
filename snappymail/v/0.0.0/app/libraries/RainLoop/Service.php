@@ -96,8 +96,6 @@ class Service
 			$bAdmin = true;
 		}
 
-		$bAdmin || $this->oActions->getAuthAccountHash();
-
 		if ($this->oHttp->IsPost())
 		{
 			$this->oHttp->ServerNoCache();

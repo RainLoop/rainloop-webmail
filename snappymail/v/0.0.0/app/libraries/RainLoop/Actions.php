@@ -17,8 +17,20 @@ class Actions
 	use Actions\Themes;
 
 	const AUTH_MAILTO_TOKEN_KEY = 'smmailtoauth';
+
+	/**
+	 * This 30 days cookie contains decrypt data,
+	 * to decrypt a \RainLoop\Model\Account which is stored at
+	 * /_data_/.../storage/DOMAIN/LOCAL/.sign_me/*
+	 * Gets refreshed on each login
+	 */
 	const AUTH_SIGN_ME_TOKEN_KEY = 'smremember';
-	const AUTH_SPEC_TOKEN_KEY = 'smspecauth';
+
+	/**
+	 * This session cookie contains a \RainLoop\Model\Account
+	 */
+	const AUTH_SPEC_TOKEN_KEY = 'smaccount';
+
 	const AUTH_SPEC_LOGOUT_TOKEN_KEY = 'smspeclogout';
 	const AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY = 'smspeclogoutcmk';
 
@@ -130,7 +142,6 @@ class Actions
 		$this->oAddressBookProvider = null;
 		$this->oSuggestionsProvider = null;
 
-		$this->sSpecAuthToken = '';
 		$this->bIsJson = false;
 
 		$oConfig = $this->Config();
@@ -309,7 +320,6 @@ class Actions
 
 		if (false !== \strpos($sLine, '{imap:') || false !== \strpos($sLine, '{smtp:')) {
 			if (!$oAccount) {
-				$this->getAuthAccountHash();
 				$oAccount = $this->getAccountFromToken(false);
 			}
 
@@ -363,7 +373,6 @@ class Actions
 
 			if (\preg_match('/\{user:(email|login|domain)\}/i', $sLine)) {
 				if (!$oAccount) {
-					$this->getAuthAccountHash();
 					$oAccount = $this->getAccountFromToken(false);
 				}
 
@@ -871,7 +880,8 @@ class Actions
 				$aResult['IncLogin'] = $oAccount->IncLogin();
 				$aResult['OutLogin'] = $oAccount->OutLogin();
 				$aResult['AccountHash'] = $oAccount->Hash();
-				$aResult['AccountSignMe'] = $oAccount->SignMe();
+//				$aResult['AccountSignMe'] = $oAccount->SignMe();
+				$aResult['AccountSignMe'] = false;
 				$aResult['ContactsIsAllowed'] = $oAddressBookProvider->IsActive();
 				$aResult['ContactsSyncIsAllowed'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
 				$aResult['ContactsSyncInterval'] = (int)$oConfig->Get('contacts', 'sync_interval', 20);
@@ -1066,17 +1076,6 @@ class Actions
 		}
 	}
 
-	public function AuthToken(Model\Account $oAccount): void
-	{
-		$this->SetAuthToken($oAccount);
-
-		$aAccounts = $this->GetAccounts($oAccount);
-		if (isset($aAccounts[$oAccount->Email()])) {
-			$aAccounts[$oAccount->Email()] = $oAccount->GetAuthToken();
-			$this->SetAccounts($oAccount, $aAccounts);
-		}
-	}
-
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
@@ -1202,7 +1201,7 @@ class Actions
 	{
 		$iResult = 0;
 
-		$oAccount = $this->GetAccountFromCustomToken($sHash, false);
+		$oAccount = $this->GetAccountFromCustomToken($sHash);
 		if ($oAccount) {
 			try {
 				$oMailClient = new \MailSo\Mail\MailClient();

@@ -2,7 +2,10 @@
 
 namespace RainLoop\Model;
 
-class Account
+use \RainLoop\Utils;
+use \RainLoop\Exceptions\ClientException;
+
+class Account implements \JsonSerializable
 {
 	/**
 	 * @var string
@@ -22,22 +25,17 @@ class Account
 	/**
 	 * @var string
 	 */
-	private $sProxyAuthUser;
+	private $sProxyAuthUser = '';
 
 	/**
 	 * @var string
 	 */
-	private $sProxyAuthPassword;
+	private $sProxyAuthPassword = '';
 
 	/**
 	 * @var string
 	 */
 	private $sClientCert;
-
-	/**
-	 * @var string
-	 */
-	private $sSignMeToken;
 
 	/**
 	 * @var \RainLoop\Model\Domain
@@ -47,21 +45,7 @@ class Account
 	/**
 	 * @var string
 	 */
-	private $sParentEmail;
-
-	function __construct(string $sEmail, string $sLogin, string $sPassword, Domain $oDomain,
-		string $sSignMeToken = '', string $sProxyAuthUser = '', string $sProxyAuthPassword = '', string $sClientCert = '')
-	{
-		$this->sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
-		$this->sLogin = \MailSo\Base\Utils::IdnToAscii($sLogin);
-		$this->sPassword = $sPassword;
-		$this->oDomain = $oDomain;
-		$this->sSignMeToken = $sSignMeToken;
-		$this->sProxyAuthUser = $sProxyAuthUser;
-		$this->sProxyAuthPassword = $sProxyAuthPassword;
-		$this->sClientCert = $sClientCert;
-		$this->sParentEmail = '';
-	}
+	private $sParentEmail = '';
 
 	public function Email() : string
 	{
@@ -85,12 +69,12 @@ class Account
 
 	public function ParentEmailHelper() : string
 	{
-		return \strlen($this->sParentEmail) ? $this->sParentEmail : $this->sEmail;
+		return $this->sParentEmail ?: $this->sEmail;
 	}
 
-	public function IsAdditionalAccount() : string
+	public function IsAdditionalAccount() : bool
 	{
-		return \strlen($this->sParentEmail);
+		return !empty($this->sParentEmail);
 	}
 
 	public function IncLogin() : string
@@ -135,16 +119,6 @@ class Account
 		return $this->sClientCert;
 	}
 
-	public function SignMe() : bool
-	{
-		return \strlen($this->sSignMeToken);
-	}
-
-	public function SignMeToken() : string
-	{
-		return $this->sSignMeToken;
-	}
-
 	public function Domain() : Domain
 	{
 		return $this->oDomain;
@@ -152,8 +126,13 @@ class Account
 
 	public function Hash() : string
 	{
-		return \md5(APP_SALT.$this->Email().APP_SALT.$this->DomainIncHost().
-			APP_SALT.$this->DomainIncPort().APP_SALT.$this->Password().APP_SALT.'0'.APP_SALT.$this->ParentEmail().APP_SALT);
+		return \md5(\implode(APP_SALT, [
+			$this->sEmail,
+			$this->Domain()->IncHost(),
+			$this->Domain()->IncPort(),
+			$this->sPassword,
+			$this->sParentEmail
+		]));
 	}
 
 	public function SetPassword(string $sPassword) : void
@@ -176,106 +155,108 @@ class Account
 		$this->sProxyAuthPassword = $sProxyAuthPassword;
 	}
 
-	public function DomainIncHost() : string
+	public function jsonSerialize()
 	{
-		return $this->Domain()->IncHost();
-	}
-
-	public function DomainIncPort() : int
-	{
-		return $this->Domain()->IncPort();
-	}
-
-	public function DomainIncSecure() : int
-	{
-		return $this->Domain()->IncSecure();
-	}
-
-	public function DomainOutHost() : string
-	{
-		return $this->Domain()->OutHost();
-	}
-
-	public function DomainOutPort() : int
-	{
-		return $this->Domain()->OutPort();
-	}
-
-	public function DomainOutSecure() : int
-	{
-		return $this->Domain()->OutSecure();
-	}
-
-	public function DomainOutAuth() : bool
-	{
-		return $this->Domain()->OutAuth();
-	}
-
-	public function DomainSieveHost() : string
-	{
-		return $this->Domain()->SieveHost();
-	}
-
-	public function DomainSievePort() : int
-	{
-		return $this->Domain()->SievePort();
-	}
-
-	public function DomainSieveSecure() : int
-	{
-		return $this->Domain()->SieveSecure();
+		return array(
+			'account',                // 0
+			$this->sEmail,            // 1
+			$this->sLogin,            // 2
+			$this->sPassword,         // 3
+			$this->sClientCert,       // 4
+			$this->sParentEmail,      // 5
+			$this->sProxyAuthUser,    // 6
+			$this->sProxyAuthPassword // 7
+		);
 	}
 
 	public function GetAuthToken() : string
 	{
-		return \RainLoop\Utils::EncodeKeyValues(array(
-			'token',                          // 0
-			$this->sEmail,                    // 1
-			$this->sLogin,                    // 2
-			$this->sPassword,                 // 3
-			\RainLoop\Utils::Fingerprint(),   // 4
-			$this->sSignMeToken,              // 5
-			$this->sParentEmail,              // 6
-			\RainLoop\Utils::GetShortToken(), // 7
-			$this->sProxyAuthUser,            // 8
-			$this->sProxyAuthPassword,        // 9
-			0,                                // 10 // lifetime
-			$this->sClientCert                // 11
-		));
+		return Utils::EncodeKeyValues($this->jsonSerialize());
 	}
 
 	public function GetAuthTokenQ() : string
 	{
-		return \RainLoop\Utils::EncodeKeyValuesQ(array(
-			'token',                          // 0
-			$this->sEmail,                    // 1
-			$this->sLogin,                    // 2
-			$this->sPassword,                 // 3
-			\RainLoop\Utils::Fingerprint(),   // 4
-			$this->sSignMeToken,              // 5
-			$this->sParentEmail,              // 6
-			\RainLoop\Utils::GetShortToken(), // 7
-			$this->sProxyAuthUser,            // 8
-			$this->sProxyAuthPassword,        // 9
-			0,                                // 10 // lifetime
-			$this->sClientCert                // 11
-		));
+		return Utils::EncodeKeyValuesQ($this->jsonSerialize());
+		return \MailSo\Base\Utils::UrlSafeBase64Encode(
+			\MailSo\Base\Crypt::Encrypt(\json_encode($this), \sha1(APP_SALT))
+		);
+	}
+
+	public static function NewInstanceByLogin(\RainLoop\Actions $oActions, string $sEmail, string $sLogin, string $sPassword, string $sClientCert = '', bool $bThrowException = false): ?self
+	{
+		$oAccount = null;
+		if (\strlen($sEmail) && \strlen($sLogin) && \strlen($sPassword)) {
+			$oDomain = $oActions->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
+			if ($oDomain) {
+				if ($oDomain->ValidateWhiteList($sEmail, $sLogin)) {
+					$oAccount = new self;
+
+					$oAccount->sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
+					$oAccount->sLogin = \MailSo\Base\Utils::IdnToAscii($sLogin);
+					$oAccount->sPassword = $sPassword;
+					$oAccount->oDomain = $oDomain;
+					$oAccount->sClientCert = $sClientCert;
+
+					$oActions->Plugins()->RunHook('filter.account', array($oAccount));
+
+					if ($bThrowException && !$oAccount) {
+						throw new ClientException(Notifications::AuthError);
+					}
+				} else if ($bThrowException) {
+					throw new ClientException(Notifications::AccountNotAllowed);
+				}
+			} else if ($bThrowException) {
+				throw new ClientException(Notifications::DomainNotAllowed);
+			}
+		}
+
+		return $oAccount;
+	}
+
+	public static function NewInstanceFromTokenArray(
+		\RainLoop\Actions $oActions,
+		array $aAccountHash,
+		bool $bThrowExceptionOnFalse = false): ?self
+	{
+		if (!empty($aAccountHash[0]) && 'account' === $aAccountHash[0] && 8 === \count($aAccountHash)) {
+			$oAccount = static::NewInstanceByLogin(
+				$oActions,
+				$aAccountHash[1],
+				$aAccountHash[2],
+				$aAccountHash[3],
+				$aAccountHash[4] ?: '',
+				$bThrowExceptionOnFalse
+			);
+
+			if ($oAccount) {
+				// init proxy user/password
+				if (!empty($aAccountHash[6]) && !empty($aAccountHash[7])) {
+					$oAccount->SetProxyAuthUser($aAccountHash[6]);
+					$oAccount->SetProxyAuthPassword($aAccountHash[7]);
+				}
+
+				$oActions->Logger()->AddSecret($oAccount->Password());
+				$oActions->Logger()->AddSecret($oAccount->ProxyAuthPassword());
+
+				$oAccount->SetParentEmail($aAccountHash[5]);
+				return $oAccount;
+			}
+		}
+		return null;
 	}
 
 	public function IncConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Mail\MailClient $oMailClient, \RainLoop\Config\Application $oConfig) : bool
 	{
 		$oImapClient = $oMailClient->ImapClient();
 
-		$aImapCredentials = array(
-			'UseConnect' => true,
-			'UseAuth' => true,
-			'Host' => $this->DomainIncHost(),
-			'Port' => $this->DomainIncPort(),
-			'Secure' => $this->DomainIncSecure(),
-			'Login' => $this->IncLogin(),
-			'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
-			'ClientCert' => $this->ClientCert(),
-			'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true)
+		$aImapCredentials = \array_merge(
+			$this->Domain()->ImapSettings(),
+			array(
+				'Login' => $this->IncLogin(),
+				'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
+				'ClientCert' => $this->ClientCert(),
+				'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true)
+			)
 		);
 
 		$oPlugins->RunHook('imap.before-connect', array($this, $oImapClient, &$aImapCredentials));
@@ -292,17 +273,15 @@ class Account
 
 	public function OutConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Smtp\SmtpClient $oSmtpClient, \RainLoop\Config\Application $oConfig, bool &$bUsePhpMail = false) : bool
 	{
-		$aSmtpCredentials = array(
-			'UseConnect' => !$bUsePhpMail,
-			'UseAuth' => $this->DomainOutAuth(),
-			'UsePhpMail' => $bUsePhpMail,
-			'Ehlo' => \MailSo\Smtp\SmtpClient::EhloHelper(),
-			'Host' => $this->DomainOutHost(),
-			'Port' => $this->DomainOutPort(),
-			'Secure' => $this->DomainOutSecure(),
-			'Login' => $this->OutLogin(),
-			'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
-			'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true)
+		$aSmtpCredentials = \array_merge(
+			$this->Domain()->SmtpSettings(),
+			array(
+				'UseConnect' => !$bUsePhpMail,
+				'UsePhpMail' => $bUsePhpMail,
+				'Login' => $this->OutLogin(),
+				'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
+				'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true)
+			)
 		);
 
 		$oPlugins->RunHook('smtp.before-connect', array($this, $oSmtpClient, &$aSmtpCredentials));
@@ -321,16 +300,14 @@ class Account
 
 	public function SieveConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Sieve\ManageSieveClient $oSieveClient, \RainLoop\Config\Application $oConfig)
 	{
-		$aSieveCredentials = array(
-			'UseConnect' => true,
-			'UseAuth' => true,
-			'Host' => $this->DomainSieveHost(),
-			'Port' => $this->DomainSievePort(),
-			'Secure' => $this->DomainSieveSecure(),
-			'Login' => $this->IncLogin(),
-			'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
-			'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true),
-			'InitialAuthPlain' => !!$oConfig->Get('ssl', 'sieve_auth_plain_initial', true)
+		$aSieveCredentials = \array_merge(
+			$this->Domain()->SieveSettings(),
+			array(
+				'Login' => $this->IncLogin(),
+				'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
+				'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true),
+				'InitialAuthPlain' => !!$oConfig->Get('ssl', 'sieve_auth_plain_initial', true)
+			)
 		);
 
 		$oPlugins->RunHook('sieve.before-connect', array($this, $oSieveClient, &$aSieveCredentials));

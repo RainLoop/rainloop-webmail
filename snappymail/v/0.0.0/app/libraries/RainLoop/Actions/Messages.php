@@ -707,15 +707,12 @@ trait Messages
 					$this->Plugins()->RunHook('filter.smtp-hidden-rcpt', array($oAccount, $oMessage, &$aHiddenRcpt));
 				}
 
-				$bUsePhpMail = $oAccount->Domain()->OutUsePhpMail();
-
 				$oSmtpClient = new \MailSo\Smtp\SmtpClient();
 				$oSmtpClient->SetLogger($this->Logger());
 				$oSmtpClient->SetTimeOuts(10, (int) \RainLoop\Api::Config()->Get('labs', 'smtp_timeout', 60));
 
-				$oAccount->OutConnectAndLoginHelper(
-					$this->Plugins(), $oSmtpClient, $this->Config(), $bUsePhpMail
-				);
+				$bUsePhpMail = false;
+				$oAccount->OutConnectAndLoginHelper($this->Plugins(), $oSmtpClient, $this->Config(), $bUsePhpMail);
 
 				if ($bUsePhpMail)
 				{

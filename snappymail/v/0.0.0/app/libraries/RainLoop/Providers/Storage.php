@@ -29,54 +29,54 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account|string|null $oAccount
+	 * @param \RainLoop\Model\Account|string|null $mAccount
 	 * @param mixed $sValue
 	 */
-	public function Put($oAccount, int $iStorageType, string $sKey, string $sValue) : bool
+	public function Put($mAccount, int $iStorageType, string $sKey, string $sValue) : bool
 	{
-		if (!$this->verifyAccount($oAccount, $iStorageType))
+		if (!$this->verifyAccount($mAccount, $iStorageType))
 		{
 			return false;
 		}
 
-		return $this->oDriver->Put($oAccount, $iStorageType, $sKey, $sValue);
+		return $this->oDriver->Put($mAccount, $iStorageType, $sKey, $sValue);
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account|string|null $oAccount
+	 * @param \RainLoop\Model\Account|string|null $mAccount
 	 * @param mixed $mDefault = false
 	 *
 	 * @return mixed
 	 */
-	public function Get($oAccount, int $iStorageType, string $sKey, $mDefault = false)
+	public function Get($mAccount, int $iStorageType, string $sKey, $mDefault = false)
 	{
-		if (!$this->verifyAccount($oAccount, $iStorageType))
+		if (!$this->verifyAccount($mAccount, $iStorageType))
 		{
 			return $mDefault;
 		}
 
-		return $this->oDriver->Get($oAccount, $iStorageType, $sKey, $mDefault);
+		return $this->oDriver->Get($mAccount, $iStorageType, $sKey, $mDefault);
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account|string|null $oAccount
+	 * @param \RainLoop\Model\Account|string|null $mAccount
 	 */
-	public function Clear($oAccount, int $iStorageType, string $sKey) : bool
+	public function Clear($mAccount, int $iStorageType, string $sKey) : bool
 	{
-		if (!$this->verifyAccount($oAccount, $iStorageType))
+		if (!$this->verifyAccount($mAccount, $iStorageType))
 		{
 			return false;
 		}
 
-		return $this->oDriver->Clear($oAccount, $iStorageType, $sKey);
+		return $this->oDriver->Clear($mAccount, $iStorageType, $sKey);
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account|string $oAccount
+	 * @param \RainLoop\Model\Account|string $mAccount
 	 */
-	public function DeleteStorage($oAccount) : bool
+	public function DeleteStorage($mAccount) : bool
 	{
-		return $this->oDriver->DeleteStorage($oAccount);
+		return $this->oDriver->DeleteStorage($mAccount);
 	}
 
 	public function IsActive() : bool

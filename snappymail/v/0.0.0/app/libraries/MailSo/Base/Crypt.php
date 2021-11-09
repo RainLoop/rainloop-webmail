@@ -18,14 +18,10 @@ namespace MailSo\Base;
 class Crypt
 {
 
-	public static function Encrypt(string $sString, string $sKey, string $sCipher = '') : string
+	public static function Encrypt(string $sString, string $sKey) : string
 	{
 		if (!\strlen($sString)) {
 			return '';
-		}
-		if ($sCipher && \is_callable('openssl_encrypt')) {
-			$iv = \str_pad('', \openssl_cipher_iv_length($sCipher), \sha1($sKey));
-			return \openssl_encrypt($sString, $sCipher, $sKey, OPENSSL_RAW_DATA, $iv);
 		}
 		if (\is_callable('xxtea_encrypt')) {
 			return \xxtea_encrypt($sString, $sKey);
@@ -33,14 +29,10 @@ class Crypt
 		return Xxtea::encrypt($sString, $sKey);
 	}
 
-	public static function Decrypt(string $sString, string $sKey, string $sCipher = '') : string
+	public static function Decrypt(string $sString, string $sKey) : string
 	{
 		if (!\strlen($sString)) {
 			return '';
-		}
-		if ($sCipher && \is_callable('openssl_encrypt')) {
-			$iv = \str_pad('', \openssl_cipher_iv_length($sCipher), \sha1($sKey));
-			return \openssl_decrypt($sString, $sCipher, $sKey, OPENSSL_RAW_DATA, $iv);
 		}
 		if (\is_callable('xxtea_decrypt')) {
 			return \xxtea_decrypt($sString, $sKey);

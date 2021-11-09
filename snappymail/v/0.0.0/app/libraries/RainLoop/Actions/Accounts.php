@@ -73,9 +73,9 @@ trait Accounts
 
 			$oAccountToChange = null;
 			if ($oAccount->Email() === $sEmailToDelete && !empty($aAccounts[$sParentEmail])) {
-				$oAccountToChange = $this->GetAccountFromCustomToken($aAccounts[$sParentEmail], false, false);
+				$oAccountToChange = $this->GetAccountFromCustomToken($aAccounts[$sParentEmail], false);
 				if ($oAccountToChange) {
-					$this->AuthToken($oAccountToChange);
+					$this->SetAuthToken($oAccountToChange);
 				}
 			}
 

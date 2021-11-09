@@ -29,24 +29,24 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account|string|null $oAccount
+	 * @param \RainLoop\Model\Account|string|null $mAccount
 	 */
-	public function Put($oAccount, int $iStorageType, string $sKey, string $sValue) : bool
+	public function Put($mAccount, int $iStorageType, string $sKey, string $sValue) : bool
 	{
-		$sFileName = $this->generateFileName($oAccount, $iStorageType, $sKey, true);
+		$sFileName = $this->generateFileName($mAccount, $iStorageType, $sKey, true);
 		return $sFileName && false !== \file_put_contents($sFileName, $sValue);
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account|string|null $oAccount
+	 * @param \RainLoop\Model\Account|string|null $mAccount
 	 * @param mixed $mDefault = false
 	 *
 	 * @return mixed
 	 */
-	public function Get($oAccount, int $iStorageType, string $sKey, $mDefault = false)
+	public function Get($mAccount, int $iStorageType, string $sKey, $mDefault = false)
 	{
 		$mValue = false;
-		$sFileName = $this->generateFileName($oAccount, $iStorageType, $sKey);
+		$sFileName = $this->generateFileName($mAccount, $iStorageType, $sKey);
 		if ($sFileName && \file_exists($sFileName)) {
 			$mValue = \file_get_contents($sFileName);
 		}
@@ -55,12 +55,12 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account|string|null $oAccount
+	 * @param \RainLoop\Model\Account|string|null $mAccount
 	 */
-	public function Clear($oAccount, int $iStorageType, string $sKey) : bool
+	public function Clear($mAccount, int $iStorageType, string $sKey) : bool
 	{
 		$mResult = true;
-		$sFileName = $this->generateFileName($oAccount, $iStorageType, $sKey);
+		$sFileName = $this->generateFileName($mAccount, $iStorageType, $sKey);
 		if ($sFileName && \file_exists($sFileName)) {
 			$mResult = \unlink($sFileName);
 		}
@@ -69,11 +69,11 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account|string $oAccount
+	 * @param \RainLoop\Model\Account|string $mAccount
 	 */
-	public function DeleteStorage($oAccount) : bool
+	public function DeleteStorage($mAccount) : bool
 	{
-		$sPath = $this->generateFileName($oAccount, StorageType::CONFIG, '', false, true);
+		$sPath = $this->generateFileName($mAccount, StorageType::CONFIG, '', false, true);
 		if ($sPath && \is_dir($sPath)) {
 			\MailSo\Base\Utils::RecRmDir($sPath);
 		}

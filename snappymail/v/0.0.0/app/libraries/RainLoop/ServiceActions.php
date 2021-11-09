@@ -684,7 +684,7 @@ class ServiceActions
 					{
 						$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
 
-						if ($oAccount instanceof Model\Account && $aAdditionalOptions)
+						if ($aAdditionalOptions)
 						{
 							$bNeedToSettings = false;
 
@@ -711,7 +711,7 @@ class ServiceActions
 							}
 						}
 
-						$this->oActions->AuthToken($oAccount);
+						$this->oActions->SetAuthToken($oAccount);
 
 						$bLogout = !($oAccount instanceof Model\Account);
 					}
@@ -746,7 +746,7 @@ class ServiceActions
 			try
 			{
 				$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
-				$this->oActions->AuthToken($oAccount);
+				$this->oActions->SetAuthToken($oAccount);
 				$bLogout = !($oAccount instanceof Model\Account);
 			}
 			catch (\Throwable $oException)
@@ -824,13 +824,13 @@ class ServiceActions
 				$aAccounts = $this->oActions->GetAccounts($oAccount);
 				if (isset($aAccounts[$sEmail]))
 				{
-					$oAccountToLogin = $this->oActions->GetAccountFromCustomToken($aAccounts[$sEmail], false, false);
+					$oAccountToLogin = $this->oActions->GetAccountFromCustomToken($aAccounts[$sEmail], false);
 				}
 			}
 
 			if ($oAccountToLogin)
 			{
-				$this->oActions->AuthToken($oAccountToLogin);
+				$this->oActions->SetAuthToken($oAccountToLogin);
 			}
 		}
 	}

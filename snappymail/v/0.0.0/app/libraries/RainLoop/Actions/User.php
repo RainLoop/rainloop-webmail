@@ -23,24 +23,16 @@ trait User
 		$sEmail = \MailSo\Base\Utils::Trim($this->GetActionParam('Email', ''));
 		$sPassword = $this->GetActionParam('Password', '');
 		$sLanguage = $this->GetActionParam('Language', '');
-		$bSignMe = '1' === (string) $this->GetActionParam('SignMe', '0');
+		$bSignMe = !empty($this->GetActionParam('SignMe', 0));
 
 		$oAccount = null;
 
 		$this->Logger()->AddSecret($sPassword);
 
-		try
-		{
-			$oAccount = $this->LoginProcess($sEmail, $sPassword,
-				$bSignMe ? $this->generateSignMeToken($sEmail) : '');
-			$this->Plugins()->RunHook('login.success', array($oAccount));
-		}
-		catch (ClientException $oException)
-		{
-			throw $oException;
-		}
+		$oAccount = $this->LoginProcess($sEmail, $sPassword, $bSignMe);
+		$this->Plugins()->RunHook('login.success', array($oAccount));
 
-		$this->AuthToken($oAccount);
+		$this->SetAuthToken($oAccount);
 
 		if ($oAccount && \strlen($sLanguage))
 		{
@@ -211,13 +203,9 @@ trait User
 		$oAccount = $this->getAccountFromToken(false);
 		if ($oAccount)
 		{
-			if ($oAccount->SignMe())
-			{
-				$this->ClearSignMeData($oAccount);
-			}
-
 			if (!$oAccount->IsAdditionalAccount())
 			{
+				$this->ClearSignMeData();
 				Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
 			}
 		}
@@ -513,11 +501,6 @@ trait User
 
 		return $this->DefaultResponse(__FUNCTION__, $oAccount && $oSettings ?
 			$this->SettingsProvider()->Save($oAccount, $oSettings) : false);
-	}
-
-	private function generateSignMeToken(string $sEmail) : string
-	{
-		return \MailSo\Base\Utils::Sha1Rand(APP_SALT.$sEmail);
 	}
 
 	private function getMimeFileByHash(\RainLoop\Model\Account $oAccount, string $sHash) : array
