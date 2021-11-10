@@ -7,7 +7,7 @@ abstract class Crypt
 	/**
 	 * Or use 'aes-256-xts' ?
 	 */
-	protected static $cipher = 'aes-256-cbc-hmac-sha1';
+	protected static $cipher = '';
 
 	public static function listCiphers() : array
 	{
@@ -77,7 +77,7 @@ abstract class Crypt
 
 		if (static::$cipher && \is_callable('openssl_encrypt')) {
 			$iv = \random_bytes(\openssl_cipher_iv_length(static::$cipher));
-			return ['openssl', $nonce, static::OpenSSLEncrypt($data, $iv)];
+			return ['openssl', $iv, static::OpenSSLEncrypt($data, $iv)];
 		}
 
 		$salt = \random_bytes(16);
@@ -164,3 +164,5 @@ abstract class Crypt
 	}
 
 }
+
+\SnappyMail\Crypt::setCipher(\RainLoop\API::Config()->Get('security', 'encrypt_cipher', 'aes-256-cbc-hmac-sha1'));

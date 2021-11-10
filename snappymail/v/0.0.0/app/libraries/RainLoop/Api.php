@@ -161,17 +161,18 @@ class Api
 		return APP_VERSION;
 	}
 
-	public static function GetUserSsoHash(string $sEmail, string $sPassword, array $aAdditionalOptions = array(), bool $bUseTimeout = true) : string
+	public static function GetUserSsoHash(string $sEmail, string $sPassword, array $aAdditionalOptions = array(), bool $bUseTimeout = true) : ?string
 	{
-		$sSsoHash = \MailSo\Base\Utils::Sha1Rand(\md5($sEmail).\md5($sPassword));
+		$sSsoHash = \MailSo\Base\Utils::Sha1Rand(\sha1($sPassword.$sEmail));
 
-		return static::Actions()->Cacher()->Set(KeyPathHelper::SsoCacherKey($sSsoHash),
+		return static::Actions()->Cacher()->Set(
+			KeyPathHelper::SsoCacherKey($sSsoHash),
 			Utils::EncodeKeyValuesQ(array(
 				'Email' => $sEmail,
 				'Password' => $sPassword,
 				'AdditionalOptions' => $aAdditionalOptions,
 				'Time' => $bUseTimeout ? \time() : 0
-			))) ? $sSsoHash : '';
+			))) ? $sSsoHash : null;
 	}
 
 	public static function ClearUserSsoHash(string $sSsoHash) : bool
@@ -181,7 +182,7 @@ class Api
 
 	public static function ClearUserData(string $sEmail) : bool
 	{
-		if (0 < \strlen($sEmail))
+		if (\strlen($sEmail))
 		{
 			$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail);
 
@@ -205,6 +206,7 @@ class Api
 
 	public static function LogoutCurrentLogginedUser() : bool
 	{
+		// TODO: kill SignMe data to prevent automatic login?
 		Utils::ClearCookie(Utils::SHORT_TOKEN);
 		return true;
 	}

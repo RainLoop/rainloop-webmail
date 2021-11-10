@@ -18,13 +18,12 @@ class Utils
 		/**
 		 * 30 days cookie
 		 * Used by: ServiceProxyExternal, compileLogParams, GetCsrfToken
-		 * To preven CSRF attacks on all requests.
 		 */
 		CONNECTION_TOKEN = 'smtoken',
 
 		/**
 		 * Session cookie
-		 * Used by: GetAuthToken, GetAuthTokenQ, GetAccountFromCustomToken, EncryptStringQ, DecryptStringQ
+		 * Used by: EncodeKeyValuesQ, DecodeKeyValuesQ
 		 */
 		SHORT_TOKEN = 'smsession';
 
@@ -36,16 +35,6 @@ class Utils
 	public static function DecryptString(string $sEncryptedString, string $sKey) : string
 	{
 		return \MailSo\Base\Crypt::Decrypt($sEncryptedString, $sKey);
-	}
-
-	public static function EncryptStringQ(string $sString, string $sKey) : string
-	{
-		return \MailSo\Base\Crypt::Encrypt($sString, $sKey.'Q'.static::GetShortToken());
-	}
-
-	public static function DecryptStringQ(string $sEncryptedString, string $sKey) : string
-	{
-		return \MailSo\Base\Crypt::Decrypt($sEncryptedString, $sKey.'Q'.static::GetShortToken());
 	}
 
 	public static function EncodeKeyValues(array $aValues, string $sCustomKey = '') : string
@@ -64,15 +53,19 @@ class Utils
 	public static function EncodeKeyValuesQ(array $aValues, string $sCustomKey = '') : string
 	{
 		return \MailSo\Base\Utils::UrlSafeBase64Encode(
-			static::EncryptStringQ(
-				\json_encode($aValues), \md5(APP_SALT.$sCustomKey)));
+			\MailSo\Base\Crypt::Encrypt(
+				\json_encode($aValues),
+				\md5(APP_SALT.$sCustomKey).'Q'.static::GetShortToken()
+		));
 	}
 
 	public static function DecodeKeyValuesQ(string $sEncodedValues, string $sCustomKey = '') : array
 	{
 		return static::unserialize(
-			static::DecryptStringQ(\MailSo\Base\Utils::UrlSafeBase64Decode($sEncodedValues), \md5(APP_SALT.$sCustomKey))
-		);
+			\MailSo\Base\Crypt::Decrypt(
+				\MailSo\Base\Utils::UrlSafeBase64Decode($sEncodedValues),
+				\md5(APP_SALT.$sCustomKey).'Q'.static::GetShortToken()
+		));
 	}
 
 	public static function unserialize(string $sDecodedValues) : array
@@ -82,18 +75,6 @@ class Utils
 		} catch (\Throwable $e) {
 			return \unserialize($sDecodedValues) ?: array();
 		}
-	}
-
-	public static function GetConnectionToken() : string
-	{
-		$sToken = static::GetCookie(self::CONNECTION_TOKEN, null);
-		if (null === $sToken)
-		{
-			$sToken = \MailSo\Base\Utils::Sha1Rand(APP_SALT);
-			static::SetCookie(self::CONNECTION_TOKEN, $sToken, \time() + 60 * 60 * 24 * 30);
-		}
-
-		return \md5('Connection'.APP_SALT.$sToken.'Token'.APP_SALT);
 	}
 
 	public static function Fingerprint() : string
@@ -112,18 +93,30 @@ class Utils
 		return \md5('Session'.APP_SALT.$sToken.'Token'.APP_SALT);
 	}
 
-	public static function UpdateConnectionToken() : void
+	public static function GetConnectionToken() : string
 	{
-		$sToken = static::GetCookie(self::CONNECTION_TOKEN, '');
-		if (!empty($sToken))
+		$sToken = static::GetCookie(self::CONNECTION_TOKEN);
+		if (!$sToken)
 		{
-			static::SetCookie(self::CONNECTION_TOKEN, $sToken, \time() + 60 * 60 * 24 * 30);
+			$sToken = \MailSo\Base\Utils::Sha1Rand(APP_SALT);
+			static::SetCookie(self::CONNECTION_TOKEN, $sToken, \time() + 3600 * 24 * 30);
 		}
+
+		return \md5('Connection'.APP_SALT.$sToken.'Token'.APP_SALT);
 	}
 
 	public static function GetCsrfToken() : string
 	{
 		return \md5('Csrf'.APP_SALT.self::GetConnectionToken().'Token'.APP_SALT);
+	}
+
+	public static function UpdateConnectionToken() : void
+	{
+		$sToken = static::GetCookie(self::CONNECTION_TOKEN);
+		if ($sToken)
+		{
+			static::SetCookie(self::CONNECTION_TOKEN, $sToken, \time() + 3600 * 24 * 30);
+		}
 	}
 
 	public static function PathMD5(string $sPath) : string
