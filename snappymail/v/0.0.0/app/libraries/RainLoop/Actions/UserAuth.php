@@ -216,7 +216,7 @@ trait UserAuth
 		if (empty($sSignMeToken)) {
 			return null;
 		}
-		$aResult = \SnappyMail\Crypt::DecryptCookie($sSignMeToken);
+		$aResult = \SnappyMail\Crypt::DecryptUrlSafe($sSignMeToken);
 		return \is_array($aResult) ? $aResult : null;
 	}
 
@@ -224,7 +224,7 @@ trait UserAuth
 	{
 		Utils::SetCookie(
 			self::AUTH_SIGN_ME_TOKEN_KEY,
-			\SnappyMail\Crypt::EncryptCookie($aData),
+			\SnappyMail\Crypt::EncryptUrlSafe($aData),
 			\time() + 3600 * 24 * 30 // 30 days
 		);
 	}

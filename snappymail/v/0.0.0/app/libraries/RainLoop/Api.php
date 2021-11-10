@@ -28,7 +28,7 @@ class Api
 		return $bOne;
 	}
 
-	public static function Actions() : Actions
+	final public static function Actions() : Actions
 	{
 		static $oActions = null;
 		if (null === $oActions)
@@ -161,18 +161,21 @@ class Api
 		return APP_VERSION;
 	}
 
-	public static function GetUserSsoHash(string $sEmail, string $sPassword, array $aAdditionalOptions = array(), bool $bUseTimeout = true) : ?string
+	public static function CreateUserSsoHash(string $sEmail, string $sPassword, array $aAdditionalOptions = array(), bool $bUseTimeout = true) : ?string
 	{
 		$sSsoHash = \MailSo\Base\Utils::Sha1Rand(\sha1($sPassword.$sEmail));
 
+		$data = \SnappyMail\Crypt::Encrypt(array(
+			'Email' => $sEmail,
+			'Password' => $sPassword,
+			'AdditionalOptions' => $aAdditionalOptions,
+			'Time' => $bUseTimeout ? \time() : 0
+		), $sSsoHash);
+
 		return static::Actions()->Cacher()->Set(
 			KeyPathHelper::SsoCacherKey($sSsoHash),
-			Utils::EncodeKeyValuesQ(array(
-				'Email' => $sEmail,
-				'Password' => $sPassword,
-				'AdditionalOptions' => $aAdditionalOptions,
-				'Time' => $bUseTimeout ? \time() : 0
-			))) ? $sSsoHash : null;
+			\json_encode(\array_map('base64_encode', $data))
+		) ? $sSsoHash : null;
 	}
 
 	public static function ClearUserSsoHash(string $sSsoHash) : bool

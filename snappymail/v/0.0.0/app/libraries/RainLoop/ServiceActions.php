@@ -652,6 +652,9 @@ class ServiceActions
 		return 'Pong';
 	}
 
+	/**
+	 * Login with the \RainLoop\API::CreateUserSsoHash() generated hash
+	 */
 	public function ServiceSso() : string
 	{
 		$this->oHttp->ServerNoCache();
@@ -668,7 +671,9 @@ class ServiceActions
 			$sSsoSubData = $this->Cacher()->Get(KeyPathHelper::SsoCacherKey($sSsoHash));
 			if (!empty($sSsoSubData))
 			{
-				$mData = Utils::DecodeKeyValuesQ($sSsoSubData);
+				$mData = \array_map('base64_decode', \json_decode($sSsoSubData, true));
+				$mData = \is_array($mData) ? \SnappyMail\Crypt::Decrypt($sSsoSubData, $sSsoHash) : null;
+
 				$this->Cacher()->Delete(KeyPathHelper::SsoCacherKey($sSsoHash));
 
 				if (\is_array($mData) && !empty($mData['Email']) && isset($mData['Password'], $mData['Time']) &&

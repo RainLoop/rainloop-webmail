@@ -7,7 +7,7 @@ class KeyPathHelper
 
 	static public function PublicFile(string $sHash) : string
 	{
-		return '/Public/Files/'.sha1($sHash).'/Data/';
+		return '/Public/Files/'.\sha1($sHash).'/Data/';
 	}
 
 	static public function SsoCacherKey(string $sSsoHash) : string
@@ -15,19 +15,9 @@ class KeyPathHelper
 		return '/Sso/Data/'.$sSsoHash.'/Login/';
 	}
 
-	static public function RsaCacherKey(string $sHash) : string
-	{
-		return '/Rsa/Data/'.$sHash.'/';
-	}
-
 	static public function RepositoryCacheFile(string $sRepo, string $sRepoFile) : string
 	{
 		return '/RepositoryCache/Repo/'.$sRepo.'/File/'.$sRepoFile;
-	}
-
-	static public function RepositoryCacheCore(string $sRepo) : string
-	{
-		return '/RepositoryCache/CoreRepo/'.$sRepo;
 	}
 
 	static public function ReadReceiptCache(string $sEmail, string $sFolderFullName, int $iUid) : string
