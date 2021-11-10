@@ -259,6 +259,7 @@ trait Contacts
 				return $aData;
 			}
 
+			// Try the old
 			$aData = \RainLoop\Utils::DecodeKeyValues($sData);
 			if ($aData) {
 				return array(

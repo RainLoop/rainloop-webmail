@@ -88,7 +88,7 @@ abstract class Crypt
 	public static function DecryptFromJSON(string $data, string $key = null) /* : mixed */
 	{
 		$aData = \json_decode($data, true);
-		$aData = \is_array($aData) ? static::Decrypt(\array_map('base64_decode', $aData), $key) : null;
+		return \is_array($aData) ? static::Decrypt(\array_map('base64_decode', $aData), $key) : null;
 	}
 
 	public static function Encrypt($data, string $key = null) : array

@@ -23,7 +23,7 @@ class Utils
 
 		/**
 		 * Session cookie
-		 * Used by: EncodeKeyValuesQ, DecodeKeyValuesQ
+		 * Used by: EncodeKeyValuesQ, DecodeKeyValuesQ and getAccountFromToken/SetAuthToken
 		 */
 		SHORT_TOKEN = 'smsession';
 

@@ -178,10 +178,7 @@ trait UserAuth
 				}
 			}
 
-			$aData = \SnappyMail\Crypt::DecryptFromJSON(
-				\MailSo\Base\Utils::UrlSafeBase64Decode($this->sSpecAuthToken),
-				APP_SALT . Utils::GetShortToken()
-			);
+			$aData = \SnappyMail\Crypt::DecryptFromJSON(\MailSo\Base\Utils::UrlSafeBase64Decode($this->sSpecAuthToken));
 			if (!empty($aData)) {
 				$this->oSpecAuthAccount = Account::NewInstanceFromTokenArray(
 					$this,
@@ -200,10 +197,7 @@ trait UserAuth
 
 	public function SetAuthToken(Account $oAccount): void
 	{
-		$sSpecAuthToken = \MailSo\Base\Utils::UrlSafeBase64Encode(\SnappyMail\Crypt::EncryptToJSON(
-			$oAccount,
-			APP_SALT . Utils::GetShortToken()
-		));
+		$sSpecAuthToken = \MailSo\Base\Utils::UrlSafeBase64Encode(\SnappyMail\Crypt::EncryptToJSON($oAccount));
 
 		$this->sSpecAuthToken = $sSpecAuthToken;
 		$this->oSpecAuthAccount = null;
