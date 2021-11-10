@@ -115,6 +115,12 @@ class Application extends \RainLoop\Config\AbstractConfig
 		}
 		$upload_max_filesize = $upload_max_filesize / 1024 / 1024;
 
+		$sCipher = 'aes-256-cbc-hmac-sha1';
+		$aCiphers = \SnappyMail\Crypt::listCiphers();
+		if (!\in_array($sCipher, $aCiphers)) {
+			$sCipher = $aCiphers[\array_rand($aCiphers)];
+		}
+
 		return array(
 
 			'webmail' => array(
@@ -174,7 +180,8 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'hide_x_mailer_header'       => array(true),
 				'admin_panel_host'           => array(''),
 				'admin_panel_key'            => array('admin'),
-				'content_security_policy'    => array('')
+				'content_security_policy'    => array(''),
+				'encrypt_cipher'             => array($sCipher)
 			),
 
 			'ssl' => array(

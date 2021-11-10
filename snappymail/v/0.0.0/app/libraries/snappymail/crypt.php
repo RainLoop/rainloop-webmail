@@ -7,7 +7,34 @@ abstract class Crypt
 	/**
 	 * Or use 'aes-256-xts' ?
 	 */
-	const CIPHER = 'aes-256-cbc-hmac-sha1';
+	protected static $cipher = 'aes-256-cbc-hmac-sha1';
+
+	public static function listCiphers() : array
+	{
+		$list = array();
+		if (\function_exists('openssl_get_cipher_methods')) {
+			$list = \openssl_get_cipher_methods();
+			$list = \array_diff($list, \array_map('strtoupper',$list));
+			$list = \array_filter($list, function($v){
+				// DES/ECB/bf/rc insecure, GCM/CCM not supported
+				return !\preg_match('/(^(des|bf|rc))|-(ecb|gcm|ccm)/i', $v);
+			});
+			\natcasesort($list);
+		}
+		return $list;
+	}
+
+	public static function setCipher(string $cipher) : bool
+	{
+		if ($cipher) {
+			$aCiphers = static::listCiphers();
+			if (\in_array($cipher, $aCiphers)) {
+				static::$cipher = $cipher;
+				return true;
+			}
+		}
+		return false;
+	}
 
 	private static function Passphrase() : string
 	{
@@ -43,16 +70,16 @@ abstract class Crypt
 
 	public static function EncryptRaw($data) : array
 	{
-		if (\is_callable('openssl_encrypt')) {
-			$iv = \random_bytes(\openssl_cipher_iv_length(static::CIPHER));
+		if (static::$cipher && \is_callable('openssl_encrypt')) {
+			$iv = \random_bytes(\openssl_cipher_iv_length(static::$cipher));
 			$data = \openssl_encrypt(
 				\json_encode($data),
-				static::CIPHER,
+				static::$cipher,
 				static::Passphrase(),
 				OPENSSL_RAW_DATA,
 				$iv
 			);
-			return [static::CIPHER, $iv, $data];
+			return [static::$cipher, $iv, $data];
 		}
 
 		$salt = \random_bytes(16);
@@ -61,12 +88,15 @@ abstract class Crypt
 
 	public static function OpenSSLDecrypt(string $data, string $iv)
 	{
-		if (!$data || !$iv || !\is_callable('openssl_decrypt')) {
+		if (!$data || !$iv) {
 			return null;
+		}
+		if (!static::$cipher || !\is_callable('openssl_decrypt')) {
+			return static::XxteaDecrypt($data, $iv);
 		}
 		return \json_decode(\openssl_decrypt(
 			$data,
-			static::CIPHER,
+			static::$cipher,
 			static::Passphrase(),
 			OPENSSL_RAW_DATA,
 			$iv

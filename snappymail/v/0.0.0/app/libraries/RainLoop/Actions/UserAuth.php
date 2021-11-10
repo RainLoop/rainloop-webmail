@@ -234,9 +234,10 @@ trait UserAuth
 		$this->ClearSignMeData();
 
 		$uuid = \SnappyMail\UUID::generate();
+		\SnappyMail\Crypt::setCipher($this->Config()->Get('security', 'encrypt_cipher', ''));
 		$data = \SnappyMail\Crypt::EncryptRaw($oAccount);
 
-		if ($data['xxtea']) {
+		if ('xxtea' === $data[0]) {
 			static::SetSignMeTokenCookie(array(
 				'e' => $oAccount->Email(),
 				'u' => $uuid,
@@ -272,6 +273,7 @@ trait UserAuth
 				if (empty($sAuthToken)) {
 					return null;
 				}
+				\SnappyMail\Crypt::setCipher($this->Config()->Get('security', 'encrypt_cipher', ''));
 				if (!empty($aTokenData['s'])) {
 					$aAccountHash = \SnappyMail\Crypt::XxteaDecrypt($sAuthToken, \base64_decode($aTokenData['s']));
 				} else if (!empty($aTokenData['i'])) {
