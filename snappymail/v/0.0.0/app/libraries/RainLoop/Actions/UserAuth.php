@@ -235,9 +235,15 @@ trait UserAuth
 
 		$uuid = \SnappyMail\UUID::generate();
 		\SnappyMail\Crypt::setCipher($this->Config()->Get('security', 'encrypt_cipher', ''));
-		$data = \SnappyMail\Crypt::EncryptRaw($oAccount);
+		$data = \SnappyMail\Crypt::Encrypt($oAccount);
 
 		if ('xxtea' === $data[0]) {
+			static::SetSignMeTokenCookie(array(
+				'e' => $oAccount->Email(),
+				'u' => $uuid,
+				'x' => \base64_encode($data[1])
+			));
+		} else if ('sodium' === $data[0]) {
 			static::SetSignMeTokenCookie(array(
 				'e' => $oAccount->Email(),
 				'u' => $uuid,
@@ -247,7 +253,7 @@ trait UserAuth
 			static::SetSignMeTokenCookie(array(
 				'e' => $oAccount->Email(),
 				'u' => $uuid,
-				'i' => \base64_encode($data[1])
+				'o' => \base64_encode($data[1])
 			));
 		}
 
@@ -274,10 +280,12 @@ trait UserAuth
 					return null;
 				}
 				\SnappyMail\Crypt::setCipher($this->Config()->Get('security', 'encrypt_cipher', ''));
-				if (!empty($aTokenData['s'])) {
-					$aAccountHash = \SnappyMail\Crypt::XxteaDecrypt($sAuthToken, \base64_decode($aTokenData['s']));
-				} else if (!empty($aTokenData['i'])) {
-					$aAccountHash = \SnappyMail\Crypt::OpenSSLDecrypt($sAuthToken, \base64_decode($aTokenData['i']));
+				if (!empty($aTokenData['x'])) {
+					$aAccountHash = \SnappyMail\Crypt::XxteaDecrypt($sAuthToken, \base64_decode($aTokenData['x']));
+				} else if (!empty($aTokenData['s'])) {
+					$aAccountHash = \SnappyMail\Crypt::SodiumDecrypt($sAuthToken, \base64_decode($aTokenData['s']));
+				} else if (!empty($aTokenData['o'])) {
+					$aAccountHash = \SnappyMail\Crypt::OpenSSLDecrypt($sAuthToken, \base64_decode($aTokenData['o']));
 				}
 				if (!empty($aAccountHash) && \is_array($aAccountHash)) {
 					$oAccount = Account::NewInstanceFromTokenArray($this, $aAccountHash);

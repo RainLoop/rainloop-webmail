@@ -68,31 +68,53 @@ abstract class Crypt
 		);
 	}
 
-	public static function EncryptRaw($data) : array
+	public static function Encrypt($data) : array
 	{
+		if (\is_callable('sodium_crypto_aead_xchacha20poly1305_ietf_encrypt')) {
+			$nonce = \random_bytes(24);
+			return ['sodium', $nonce, static::SodiumEncrypt($data, $nonce)];
+		}
+
 		if (static::$cipher && \is_callable('openssl_encrypt')) {
 			$iv = \random_bytes(\openssl_cipher_iv_length(static::$cipher));
-			$data = \openssl_encrypt(
-				\json_encode($data),
-				static::$cipher,
-				static::Passphrase(),
-				OPENSSL_RAW_DATA,
-				$iv
-			);
-			return [static::$cipher, $iv, $data];
+			return ['openssl', $nonce, static::OpenSSLEncrypt($data, $iv)];
 		}
 
 		$salt = \random_bytes(16);
 		return ['xxtea', $salt, static::XxteaEncrypt($data, $salt)];
 	}
 
-	public static function OpenSSLDecrypt(string $data, string $iv)
+	public static function SodiumDecrypt(string $data, string $nonce)
 	{
-		if (!$data || !$iv) {
+		if (!\is_callable('sodium_crypto_aead_xchacha20poly1305_ietf_decrypt')) {
 			return null;
 		}
-		if (!static::$cipher || !\is_callable('openssl_decrypt')) {
-			return static::XxteaDecrypt($data, $iv);
+		return \json_decode(\sodium_crypto_aead_xchacha20poly1305_ietf_decrypt(
+			$data,
+			APP_SALT,
+			$nonce,
+			static::Passphrase()
+
+		));
+	}
+
+	public static function SodiumEncrypt($data, string $nonce) : ?string
+	{
+		if (!\is_callable('sodium_crypto_aead_xchacha20poly1305_ietf_encrypt')) {
+			return null;
+		}
+		return \sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(
+			\json_encode($data),
+			APP_SALT,
+			$nonce,
+			\str_pad('', \SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES, static::Passphrase())
+		);
+	}
+
+	public static function OpenSSLDecrypt(string $data, string $iv)
+	{
+		if (!$data || !$iv || !static::$cipher || !\is_callable('openssl_decrypt')) {
+			return null;
 		}
 		return \json_decode(\openssl_decrypt(
 			$data,
@@ -101,6 +123,20 @@ abstract class Crypt
 			OPENSSL_RAW_DATA,
 			$iv
 		), true);
+	}
+
+	public static function OpenSSLEncrypt($data, string $iv) : ?string
+	{
+		if (!$data || !$iv || !static::$cipher || !\is_callable('openssl_encrypt')) {
+			return null;
+		}
+		return \openssl_encrypt(
+			\json_encode($data),
+			static::$cipher,
+			static::Passphrase(),
+			OPENSSL_RAW_DATA,
+			$iv
+		);
 	}
 
 	public static function XxteaDecrypt(string $data, string $salt)
@@ -115,7 +151,7 @@ abstract class Crypt
 		, true);
 	}
 
-	public static function XxteaEncrypt($data, string $salt) : string
+	public static function XxteaEncrypt($data, string $salt) : ?string
 	{
 		if (!$data || !$salt) {
 			return null;
