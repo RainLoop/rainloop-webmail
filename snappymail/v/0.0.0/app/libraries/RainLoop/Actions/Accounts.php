@@ -8,10 +8,71 @@ use RainLoop\Model\Account;
 use RainLoop\Model\Identity;
 use RainLoop\Notifications;
 use RainLoop\Providers\Storage\Enumerations\StorageType;
-use function trim;
 
 trait Accounts
 {
+
+	public function GetAccounts(Account $oAccount): array
+	{
+		if ($this->GetCapa(false, Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
+			$sAccounts = $this->StorageProvider()->Get($oAccount,
+				StorageType::CONFIG,
+				'accounts'
+			);
+
+			$aAccounts = $sAccounts ? \json_decode($sAccounts, true) : array();
+
+			if (\is_array($aAccounts) && \count($aAccounts)) {
+				if (1 === \count($aAccounts)) {
+					$this->SetAccounts($oAccount, array());
+
+				} else if (1 < \count($aAccounts)) {
+					$sOrder = $this->StorageProvider()->Get($oAccount,
+						StorageType::CONFIG,
+						'accounts_identities_order'
+					);
+
+					$aOrder = empty($sOrder) ? array() : \json_decode($sOrder, true);
+					if (isset($aOrder['Accounts']) && \is_array($aOrder['Accounts']) && 1 < \count($aOrder['Accounts'])) {
+						$aAccounts = \array_merge(\array_flip($aOrder['Accounts']), $aAccounts);
+
+						$aAccounts = \array_filter($aAccounts, function ($sHash) {
+							return 5 < \strlen($sHash);
+						});
+					}
+				}
+
+				return $aAccounts;
+			}
+		}
+
+		$aAccounts = array();
+		if (!$oAccount->IsAdditionalAccount()) {
+			$aAccounts[$oAccount->Email()] = $oAccount->GetAuthToken();
+		}
+
+		return $aAccounts;
+	}
+
+	protected function SetAccounts(Account $oAccount, array $aAccounts = array()): void
+	{
+		$sParentEmail = $oAccount->ParentEmailHelper();
+		if (!$aAccounts ||
+			(1 === \count($aAccounts) && !empty($aAccounts[$sParentEmail]))) {
+			$this->StorageProvider()->Clear(
+				$oAccount,
+				StorageType::CONFIG,
+				'accounts'
+			);
+		} else {
+			$this->StorageProvider()->Put(
+				$oAccount,
+				StorageType::CONFIG,
+				'accounts',
+				\json_encode($aAccounts)
+			);
+		}
+	}
 
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
@@ -28,7 +89,7 @@ trait Accounts
 
 		$aAccounts = $this->GetAccounts($oAccount);
 
-		$sEmail = trim($this->GetActionParam('Email', ''));
+		$sEmail = \trim($this->GetActionParam('Email', ''));
 		$sPassword = $this->GetActionParam('Password', '');
 		$bNew = '1' === (string)$this->GetActionParam('New', '1');
 
@@ -63,7 +124,7 @@ trait Accounts
 		}
 
 		$sParentEmail = $oAccount->ParentEmailHelper();
-		$sEmailToDelete = trim($this->GetActionParam('EmailToDelete', ''));
+		$sEmailToDelete = \trim($this->GetActionParam('EmailToDelete', ''));
 		$sEmailToDelete = \MailSo\Base\Utils::IdnToAscii($sEmailToDelete, true);
 
 		$aAccounts = $this->GetAccounts($oAccount);
@@ -93,7 +154,7 @@ trait Accounts
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		$oIdentity = new \RainLoop\Model\Identity();
+		$oIdentity = new Identity();
 		if (!$oIdentity->FromJSON($this->GetActionParams(), true)) {
 			throw new ClientException(Notifications::InvalidInputArgument);
 		}
@@ -113,7 +174,7 @@ trait Accounts
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
-		$sId = trim($this->GetActionParam('IdToDelete', ''));
+		$sId = \trim($this->GetActionParam('IdToDelete', ''));
 		if (empty($sId)) {
 			throw new ClientException(Notifications::UnknownError);
 		}
@@ -137,7 +198,7 @@ trait Accounts
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $this->StorageProvider()->Put($oAccount,
-			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG, 'accounts_identities_order',
+			StorageType::CONFIG, 'accounts_identities_order',
 			\json_encode(array(
 				'Accounts' => \is_array($aAccounts) ? $aAccounts : array(),
 				'Identities' => \is_array($aIdentities) ? $aIdentities : array()

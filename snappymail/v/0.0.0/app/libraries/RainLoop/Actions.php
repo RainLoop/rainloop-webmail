@@ -245,8 +245,6 @@ class Actions
 					$mResult = new Providers\AddressBook\PdoAddressBook($sDsn, $sUser, $sPassword, $sDsnType);
 					break;
 				case 'identities':
-					$mResult = [];
-					break;
 				case 'suggestions':
 					$mResult = [];
 					break;
@@ -1117,52 +1115,6 @@ class Actions
 		);
 	}
 
-	public function GetAccounts(Model\Account $oAccount): array
-	{
-		if ($this->GetCapa(false, Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
-			$sAccounts = $this->StorageProvider()->Get($oAccount,
-				Providers\Storage\Enumerations\StorageType::CONFIG,
-				'accounts'
-			);
-
-			$aAccounts = array();
-			if ('' !== $sAccounts && '{' === \substr($sAccounts, 0, 1)) {
-				$aAccounts = \json_decode($sAccounts, true);
-			}
-
-			if (\is_array($aAccounts) && \count($aAccounts)) {
-				if (1 === \count($aAccounts)) {
-					$this->SetAccounts($oAccount, array());
-
-				} else if (1 < \count($aAccounts)) {
-					$sOrder = $this->StorageProvider()->Get($oAccount,
-						Providers\Storage\Enumerations\StorageType::CONFIG,
-						'accounts_identities_order'
-					);
-
-					$aOrder = empty($sOrder) ? array() : \json_decode($sOrder, true);
-					if (isset($aOrder['Accounts']) && \is_array($aOrder['Accounts']) &&
-						1 < \count($aOrder['Accounts'])) {
-						$aAccounts = \array_merge(\array_flip($aOrder['Accounts']), $aAccounts);
-
-						$aAccounts = \array_filter($aAccounts, function ($sHash) {
-							return 5 < \strlen($sHash);
-						});
-					}
-				}
-
-				return $aAccounts;
-			}
-		}
-
-		$aAccounts = array();
-		if (!$oAccount->IsAdditionalAccount()) {
-			$aAccounts[$oAccount->Email()] = $oAccount->GetAuthToken();
-		}
-
-		return $aAccounts;
-	}
-
 	public function GetIdentityByID(Model\Account $oAccount, string $sID, bool $bFirstOnEmpty = false): ?Model\Identity
 	{
 		$aIdentities = $this->GetIdentities($oAccount);
@@ -1174,24 +1126,6 @@ class Actions
 		}
 
 		return $bFirstOnEmpty && isset($aIdentities[0]) ? $aIdentities[0] : null;
-	}
-
-	public function SetAccounts(Model\Account $oAccount, array $aAccounts = array()): void
-	{
-		$sParentEmail = $oAccount->ParentEmailHelper();
-		if (!$aAccounts ||
-			(1 === \count($aAccounts) && !empty($aAccounts[$sParentEmail]))) {
-			$this->StorageProvider()->Clear($oAccount,
-				Providers\Storage\Enumerations\StorageType::CONFIG,
-				'accounts'
-			);
-		} else {
-			$this->StorageProvider()->Put($oAccount,
-				Providers\Storage\Enumerations\StorageType::CONFIG,
-				'accounts',
-				\json_encode($aAccounts)
-			);
-		}
 	}
 
 	/**

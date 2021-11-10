@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\Storage;
 
-use \RainLoop\Providers\Storage\Enumerations\StorageType;
+use RainLoop\Providers\Storage\Enumerations\StorageType;
 
 class FileStorage implements \RainLoop\Providers\Storage\IStorage
 {

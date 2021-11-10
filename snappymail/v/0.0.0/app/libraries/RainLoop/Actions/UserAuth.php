@@ -2,11 +2,11 @@
 
 namespace RainLoop\Actions;
 
-use \RainLoop\Notifications;
-use \RainLoop\Utils;
-use \RainLoop\Model\Account;
-use \RainLoop\Providers\Storage\Enumerations\StorageType;
-use \RainLoop\Exceptions\ClientException;
+use RainLoop\Notifications;
+use RainLoop\Utils;
+use RainLoop\Model\Account;
+use RainLoop\Providers\Storage\Enumerations\StorageType;
+use RainLoop\Exceptions\ClientException;
 
 trait UserAuth
 {
@@ -145,12 +145,7 @@ trait UserAuth
 	 */
 	public function GetAccountFromCustomToken(string $sToken): ?Account
 	{
-		return empty($sToken) ? null
-			: Account::NewInstanceFromTokenArray(
-				$this,
-				Utils::DecodeKeyValues($sToken),
-				false
-			);
+		return empty($sToken) ? null : Account::NewInstanceFromAuthToken($sToken);
 	}
 
 	/**

@@ -11,7 +11,7 @@
 
 namespace MailSo\Imap\Commands;
 
-use \MailSo\Imap\Responses\ACL as ACLResponse;
+use MailSo\Imap\Responses\ACL as ACLResponse;
 
 /**
  * @category MailSo

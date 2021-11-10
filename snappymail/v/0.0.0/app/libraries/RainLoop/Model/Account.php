@@ -2,8 +2,8 @@
 
 namespace RainLoop\Model;
 
-use \RainLoop\Utils;
-use \RainLoop\Exceptions\ClientException;
+use RainLoop\Utils;
+use RainLoop\Exceptions\ClientException;
 
 class Account implements \JsonSerializable
 {
@@ -185,6 +185,19 @@ class Account implements \JsonSerializable
 			)
 		);
 */
+	}
+
+	/**
+	 * @throws \RainLoop\Exceptions\ClientException
+	 */
+	public static function NewInstanceFromAuthToken(\RainLoop\Actions $oActions, string $sToken): ?Account
+	{
+		return empty($sToken) ? null
+			: static::NewInstanceFromTokenArray(
+				$oActions,
+				Utils::DecodeKeyValues($sToken),
+				false
+			);
 	}
 
 	public static function NewInstanceByLogin(\RainLoop\Actions $oActions, string $sEmail, string $sLogin, string $sPassword, string $sClientCert = '', bool $bThrowException = false): ?self

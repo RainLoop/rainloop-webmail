@@ -811,10 +811,11 @@ class ServiceActions
 		return '';
 	}
 
-	private function changeAction()
+	public function ServiceChange() : string
 	{
 		$this->oHttp->ServerNoCache();
 
+//		$oAccount = $this->oActions->getAccountFromToken(false);
 		$oAccount = $this->oActions->GetAccount();
 
 		if ($oAccount && $this->oActions->GetCapa(false, Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
@@ -837,11 +838,7 @@ class ServiceActions
 				$this->oActions->SetAuthToken($oAccountToLogin);
 			}
 		}
-	}
 
-	public function ServiceChange() : string
-	{
-		$this->changeAction();
 		$this->oActions->Location('./');
 		return '';
 	}

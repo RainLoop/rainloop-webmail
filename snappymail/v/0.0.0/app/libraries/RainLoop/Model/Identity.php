@@ -2,10 +2,9 @@
 
 namespace RainLoop\Model;
 
-use JsonSerializable;
 use MailSo\Base\Utils;
 
-class Identity implements JsonSerializable
+class Identity implements \JsonSerializable
 {
 	/**
 	 * @var string

@@ -2,10 +2,10 @@
 
 namespace RainLoop\Actions;
 
-use \RainLoop\Enumerations\Capa;
-use \RainLoop\Exceptions\ClientException;
-use \RainLoop\Notifications;
-use \RainLoop\Utils;
+use RainLoop\Enumerations\Capa;
+use RainLoop\Exceptions\ClientException;
+use RainLoop\Notifications;
+use RainLoop\Utils;
 
 trait User
 {

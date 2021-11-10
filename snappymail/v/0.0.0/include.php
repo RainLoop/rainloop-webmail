@@ -44,7 +44,7 @@ if (defined('APP_VERSION'))
 		unset($sSite);
 
 		$sPrivateDataFolderInternalName = defined('MULTIDOMAIN') ? APP_SITE : '';
-		define('APP_PRIVATE_DATA_NAME', 0 === strlen($sPrivateDataFolderInternalName) ? '_default_' : $sPrivateDataFolderInternalName);
+		define('APP_PRIVATE_DATA_NAME', $sPrivateDataFolderInternalName ?: '_default_');
 
 		define('APP_DUMMY', '********');
 		define('APP_DEV_VERSION', '0.0.0');

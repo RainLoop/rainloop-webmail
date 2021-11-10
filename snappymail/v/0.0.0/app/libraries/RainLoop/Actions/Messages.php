@@ -2,10 +2,10 @@
 
 namespace RainLoop\Actions;
 
-use \RainLoop\Enumerations\Capa;
-use \RainLoop\Exceptions\ClientException;
-use \RainLoop\Model\Account;
-use \RainLoop\Notifications;
+use RainLoop\Enumerations\Capa;
+use RainLoop\Exceptions\ClientException;
+use RainLoop\Model\Account;
+use RainLoop\Notifications;
 
 trait Messages
 {

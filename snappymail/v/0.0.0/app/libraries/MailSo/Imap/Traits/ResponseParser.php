@@ -11,9 +11,9 @@
 
 namespace MailSo\Imap\Traits;
 
-use \MailSo\Imap\Response;
-use \MailSo\Imap\Enumerations\ResponseType;
-use \MailSo\Imap\Exceptions\ResponseNotFoundException;
+use MailSo\Imap\Response;
+use MailSo\Imap\Enumerations\ResponseType;
+use MailSo\Imap\Exceptions\ResponseNotFoundException;
 
 /**
  * @category MailSo

@@ -2,7 +2,7 @@
 
 namespace SnappyMail\HTTP\Request;
 
-use \SnappyMail\HTTP\Response;
+use SnappyMail\HTTP\Response;
 
 class CURL extends \SnappyMail\HTTP\Request
 {

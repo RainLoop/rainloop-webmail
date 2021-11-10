@@ -2,7 +2,7 @@
 
 namespace RainLoop\Actions;
 
-use \RainLoop\Enumerations\Capa;
+use RainLoop\Enumerations\Capa;
 
 trait Filters
 {

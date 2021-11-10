@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers;
 
-use \RainLoop\Providers\AddressBook\Enumerations\PropertyType as PropertyType;
+use RainLoop\Providers\AddressBook\Enumerations\PropertyType as PropertyType;
 
 class AddressBook extends \RainLoop\Providers\AbstractProvider
 {

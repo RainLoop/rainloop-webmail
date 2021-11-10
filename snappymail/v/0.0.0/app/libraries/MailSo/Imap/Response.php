@@ -11,7 +11,7 @@
 
 namespace MailSo\Imap;
 
-use \MailSo\Imap\Enumerations\ResponseType;
+use MailSo\Imap\Enumerations\ResponseType;
 
 /**
  * @category MailSo

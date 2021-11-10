@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\AddressBook;
 
-use \SnappyMail\DAV\Client as DAVClient;
+use SnappyMail\DAV\Client as DAVClient;
 
 trait CardDAV
 {

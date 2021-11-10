@@ -11,7 +11,7 @@
 
 namespace MailSo\Mail;
 
-use \MailSo\Imap\Enumerations\FolderResponseStatus;
+use MailSo\Imap\Enumerations\FolderResponseStatus;
 
 /**
  * @category MailSo

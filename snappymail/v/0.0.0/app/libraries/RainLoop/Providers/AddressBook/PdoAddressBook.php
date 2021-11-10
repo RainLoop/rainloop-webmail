@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\AddressBook;
 
-use \RainLoop\Providers\AddressBook\Enumerations\PropertyType;
+use RainLoop\Providers\AddressBook\Enumerations\PropertyType;
 
 class PdoAddressBook
 	extends \RainLoop\Common\PdoAbstract
