@@ -27,26 +27,16 @@ class Utils
 		 */
 		SHORT_TOKEN = 'smsession';
 
-	public static function EncryptString(string $sString, string $sKey) : string
-	{
-		return \MailSo\Base\Crypt::Encrypt($sString, $sKey);
-	}
-
-	public static function DecryptString(string $sEncryptedString, string $sKey) : string
-	{
-		return \MailSo\Base\Crypt::Decrypt($sEncryptedString, $sKey);
-	}
-
 	public static function EncodeKeyValues(array $aValues, string $sCustomKey = '') : string
 	{
 		return \MailSo\Base\Utils::UrlSafeBase64Encode(
-			static::EncryptString(\json_encode($aValues), \md5(APP_SALT.$sCustomKey)));
+			\MailSo\Base\Crypt::Encrypt(\json_encode($aValues), \md5(APP_SALT.$sCustomKey)));
 	}
 
 	public static function DecodeKeyValues(string $sEncodedValues, string $sCustomKey = '') : array
 	{
 		return static::unserialize(
-			static::DecryptString(\MailSo\Base\Utils::UrlSafeBase64Decode($sEncodedValues), \md5(APP_SALT.$sCustomKey))
+			\MailSo\Base\Crypt::Decrypt(\MailSo\Base\Utils::UrlSafeBase64Decode($sEncodedValues), \md5(APP_SALT.$sCustomKey))
 		);
 	}
 
@@ -75,11 +65,6 @@ class Utils
 		} catch (\Throwable $e) {
 			return \unserialize($sDecodedValues) ?: array();
 		}
-	}
-
-	public static function Fingerprint() : string
-	{
-		return \sha1(\preg_replace('/[^a-z]+/i', '', \explode(')', $_SERVER['HTTP_USER_AGENT'])[0]));
 	}
 
 	public static function GetShortToken() : string
