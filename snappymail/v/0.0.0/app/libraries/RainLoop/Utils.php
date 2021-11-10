@@ -30,13 +30,20 @@ class Utils
 	public static function EncodeKeyValues(array $aValues, string $sCustomKey = '') : string
 	{
 		return \MailSo\Base\Utils::UrlSafeBase64Encode(
-			\MailSo\Base\Crypt::Encrypt(\json_encode($aValues), \md5(APP_SALT.$sCustomKey)));
+			\MailSo\Base\Crypt::Encrypt(
+				\json_encode($aValues),
+				\md5(APP_SALT.$sCustomKey)
+			)
+		);
 	}
 
 	public static function DecodeKeyValues(string $sEncodedValues, string $sCustomKey = '') : array
 	{
 		return static::unserialize(
-			\MailSo\Base\Crypt::Decrypt(\MailSo\Base\Utils::UrlSafeBase64Decode($sEncodedValues), \md5(APP_SALT.$sCustomKey))
+			\MailSo\Base\Crypt::Decrypt(
+				\MailSo\Base\Utils::UrlSafeBase64Decode($sEncodedValues),
+				\md5(APP_SALT.$sCustomKey)
+			)
 		);
 	}
 

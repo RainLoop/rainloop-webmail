@@ -78,9 +78,9 @@ abstract class Crypt
 	public static function Decrypt(array $data, string $key = null) /* : mixed */
 	{
 		if (3 === \count($data) && isset($data[0], $data[1], $data[2])) {
-			$fn = "\\SnappyMail\\Crypt::{$data[0]}Decrypt";
-			if (\method_exists($fn)) {
-				return $fn($data[2], $data[1], $key);
+			$fn = "{$data[0]}Decrypt";
+			if (\method_exists(__CLASS__, $fn)) {
+				return \SnappyMail\Crypt::{$fn}($data[2], $data[1], $key);
 			}
 		}
 	}
@@ -106,12 +106,12 @@ abstract class Crypt
 		if (!\is_callable('sodium_crypto_aead_xchacha20poly1305_ietf_decrypt')) {
 			return null;
 		}
-		return \json_decode(\sodium_crypto_aead_xchacha20poly1305_ietf_decrypt(
+		return \json_decode(\zlib_decode(\sodium_crypto_aead_xchacha20poly1305_ietf_decrypt(
 			$data,
 			APP_SALT,
 			$nonce,
-			static::Passphrase($key)
-		));
+			\str_pad('', \SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES, static::Passphrase($key))
+		)));
 	}
 
 	public static function SodiumEncrypt($data, string $nonce, string $key = null) : ?string
@@ -120,7 +120,7 @@ abstract class Crypt
 			return null;
 		}
 		return \sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(
-			\json_encode($data),
+			\zlib_encode(\json_encode($data), ZLIB_ENCODING_RAW, 9),
 			APP_SALT,
 			$nonce,
 			\str_pad('', \SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES, static::Passphrase($key))
@@ -132,13 +132,13 @@ abstract class Crypt
 		if (!$data || !$iv || !static::$cipher || !\is_callable('openssl_decrypt')) {
 			return null;
 		}
-		return \json_decode(\openssl_decrypt(
+		return \json_decode(\zlib_decode(\openssl_decrypt(
 			$data,
 			static::$cipher,
 			static::Passphrase($key),
 			OPENSSL_RAW_DATA,
 			$iv
-		), true);
+		)), true);
 	}
 
 	public static function OpenSSLEncrypt($data, string $iv, string $key = null) : ?string
@@ -147,7 +147,7 @@ abstract class Crypt
 			return null;
 		}
 		return \openssl_encrypt(
-			\json_encode($data),
+			\zlib_encode(\json_encode($data), ZLIB_ENCODING_RAW, 9),
 			static::$cipher,
 			static::Passphrase($key),
 			OPENSSL_RAW_DATA,
@@ -161,10 +161,10 @@ abstract class Crypt
 			return null;
 		}
 		$key = $salt . static::Passphrase($key);
-		return \json_decode(\is_callable('xxtea_decrypt')
+		return \json_decode(\zlib_decode(\is_callable('xxtea_decrypt')
 			? \xxtea_decrypt($data, $key)
 			: \MailSo\Base\Xxtea::decrypt($data, $key)
-		, true);
+		), true);
 	}
 
 	public static function XxteaEncrypt($data, string $salt, string $key = null) : ?string
@@ -172,7 +172,7 @@ abstract class Crypt
 		if (!$data || !$salt) {
 			return null;
 		}
-		$data = \json_encode($data);
+		$data = \zlib_encode(\json_encode($data), ZLIB_ENCODING_RAW, 9);
 		$key = $salt . static::Passphrase($key);
 		return \is_callable('xxtea_encrypt')
 			? \xxtea_encrypt($data, $key)

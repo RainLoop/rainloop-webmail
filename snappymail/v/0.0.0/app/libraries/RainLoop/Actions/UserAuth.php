@@ -14,6 +14,7 @@ trait UserAuth
 	 * @var string
 	 */
 	private $sSpecAuthToken = null;
+	private $oSpecAuthAccount = null;
 
 	/**
 	 * Or use 'aes-256-xts' ?
@@ -142,33 +143,14 @@ trait UserAuth
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function GetAccountFromCustomToken(string $sToken, bool $bValidateShortToken = true, bool $bQ = false, bool $bThrowExceptionOnFalse = false): ?Account
+	public function GetAccountFromCustomToken(string $sToken): ?Account
 	{
-		if (!empty($sToken)) {
-			$aToken = $bQ ? Utils::DecodeKeyValuesQ($sToken) : Utils::DecodeKeyValues($sToken);
-			return Account::NewInstanceFromTokenArray(
+		return empty($sToken) ? null
+			: Account::NewInstanceFromTokenArray(
 				$this,
-				$bQ ? Utils::DecodeKeyValuesQ($sToken) : Utils::DecodeKeyValues($sToken),
-				$bThrowExceptionOnFalse
+				Utils::DecodeKeyValues($sToken),
+				false
 			);
-		}
-
-		if ($bThrowExceptionOnFalse) {
-			throw new ClientException(\RainLoop\Notifications::AuthError);
-		}
-
-		return null;
-	}
-
-	public function GetShortLifeSpecAuthToken(int $iLife = 60): string
-	{
-		$aAccountHash = Utils::DecodeKeyValues($this->sSpecAuthToken);
-		if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0]) {
-			$aAccountHash[10] = \time() + $iLife;
-			return Utils::EncodeKeyValues($aAccountHash);
-		}
-
-		return '';
 	}
 
 	/**
@@ -176,32 +158,56 @@ trait UserAuth
 	 */
 	public function getAccountFromToken(bool $bThrowExceptionOnFalse = true): ?Account
 	{
-		if (!\is_string($this->sSpecAuthToken)) {
-			$this->sSpecAuthToken = '';
-			if (isset($_COOKIE[self::AUTH_SPEC_LOGOUT_TOKEN_KEY])) {
-				Utils::ClearCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY);
-				Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
-//				Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
-			} else {
-				$sAuthAccountHash = Utils::GetCookie(self::AUTH_SPEC_TOKEN_KEY);
-				if (empty($sAuthAccountHash)) {
-					$oAccount = $this->GetAccountFromSignMeToken();
-					if ($oAccount) {
-						$this->SetAuthToken($oAccount);
-						$sAuthAccountHash = $this->sSpecAuthToken;
+		if (!$this->oSpecAuthAccount) {
+			if (!\is_string($this->sSpecAuthToken)) {
+				$this->sSpecAuthToken = '';
+				if (isset($_COOKIE[self::AUTH_SPEC_LOGOUT_TOKEN_KEY])) {
+					Utils::ClearCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY);
+					Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
+//					Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
+				} else {
+					$sAuthAccountHash = Utils::GetCookie(self::AUTH_SPEC_TOKEN_KEY);
+					if (empty($sAuthAccountHash)) {
+						$oAccount = $this->GetAccountFromSignMeToken();
+						if ($oAccount) {
+							$this->SetAuthToken($oAccount);
+						}
+					} else {
+						$this->sSpecAuthToken = $sAuthAccountHash;
 					}
 				}
-				$this->sSpecAuthToken = $sAuthAccountHash ?: '';
+			}
+
+			$aData = \json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($this->sSpecAuthToken), true);
+			$aData = \is_array($aData) ? \SnappyMail\Crypt::Decrypt(\array_map('base64_decode', $aData)) : null;
+			if (!empty($aData)) {
+				$this->oSpecAuthAccount = Account::NewInstanceFromTokenArray(
+					$this,
+					$aData,
+					$bThrowExceptionOnFalse
+				);
+			}
+
+			if ($bThrowExceptionOnFalse && !$this->oSpecAuthAccount) {
+				throw new ClientException(\RainLoop\Notifications::AuthError);
 			}
 		}
-		return $this->GetAccountFromCustomToken($this->sSpecAuthToken, true, true, $bThrowExceptionOnFalse);
+
+		return $this->oSpecAuthAccount;
 	}
 
 	public function SetAuthToken(Account $oAccount): void
 	{
-		$sSpecAuthToken = $oAccount->GetAuthTokenQ();
+		$sSpecAuthToken = \MailSo\Base\Utils::UrlSafeBase64Encode(\json_encode(\array_map(
+			'base64_encode',
+			\SnappyMail\Crypt::Encrypt(
+				$oAccount,
+				APP_SALT . Utils::GetShortToken()
+			)
+		)));
 
 		$this->sSpecAuthToken = $sSpecAuthToken;
+		$this->oSpecAuthAccount = null;
 		Utils::SetCookie(self::AUTH_SPEC_TOKEN_KEY, $sSpecAuthToken);
 
 		if (isset($aAccounts[$oAccount->Email()])) {

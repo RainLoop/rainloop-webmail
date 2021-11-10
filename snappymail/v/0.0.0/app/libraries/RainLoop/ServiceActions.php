@@ -671,19 +671,19 @@ class ServiceActions
 			$sSsoSubData = $this->Cacher()->Get(KeyPathHelper::SsoCacherKey($sSsoHash));
 			if (!empty($sSsoSubData))
 			{
-				$mData = \array_map('base64_decode', \json_decode($sSsoSubData, true));
-				$mData = \is_array($mData) ? \SnappyMail\Crypt::Decrypt($sSsoSubData, $sSsoHash) : null;
+				$aData = \json_decode($sSsoSubData, true);
+				$aData = \is_array($aData) ? \SnappyMail\Crypt::Decrypt(\array_map('base64_decode', $aData), $sSsoHash) : null;
 
 				$this->Cacher()->Delete(KeyPathHelper::SsoCacherKey($sSsoHash));
 
-				if (\is_array($mData) && !empty($mData['Email']) && isset($mData['Password'], $mData['Time']) &&
-					(0 === $mData['Time'] || \time() - 10 < $mData['Time']))
+				if (\is_array($aData) && !empty($aData['Email']) && isset($aData['Password'], $aData['Time']) &&
+					(0 === $aData['Time'] || \time() - 10 < $aData['Time']))
 				{
-					$sEmail = \trim($mData['Email']);
-					$sPassword = $mData['Password'];
+					$sEmail = \trim($aData['Email']);
+					$sPassword = $aData['Password'];
 
-					$aAdditionalOptions = isset($mData['AdditionalOptions']) && \is_array($mData['AdditionalOptions']) &&
-						\count($mData['AdditionalOptions']) ? $mData['AdditionalOptions'] : null;
+					$aAdditionalOptions = isset($aData['AdditionalOptions']) && \is_array($aData['AdditionalOptions']) &&
+						\count($aData['AdditionalOptions']) ? $aData['AdditionalOptions'] : null;
 
 					try
 					{
@@ -829,7 +829,7 @@ class ServiceActions
 				$aAccounts = $this->oActions->GetAccounts($oAccount);
 				if (isset($aAccounts[$sEmail]))
 				{
-					$oAccountToLogin = $this->oActions->GetAccountFromCustomToken($aAccounts[$sEmail], false);
+					$oAccountToLogin = $this->oActions->GetAccountFromCustomToken($aAccounts[$sEmail]);
 				}
 			}
 
