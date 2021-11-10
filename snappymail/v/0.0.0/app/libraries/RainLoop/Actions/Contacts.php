@@ -32,7 +32,7 @@ trait Contacts
 			\json_encode(array(
 				'Enable' => $bEnabled,
 				'User' => $sUser,
-				'Password' => $sPassword ? \SnappyMail\Crypt::Encrypt($sPassword, $oAccount->Password() ?: APP_SALT) : null,
+				'Password' => $sPassword ? \SnappyMail\Crypt::Encrypt($sPassword, $oAccount->PasswordHash()) : null,
 				'Url' => $sUrl
 			))
 		);
@@ -253,7 +253,7 @@ trait Contacts
 				if ($aData['Password']) {
 					$aData['Password'] = \SnappyMail\Crypt::DecryptFromJSON(
 						$aData['Password'],
-						$oAccount->Password() ?: APP_SALT
+						$oAccount->PasswordHash()
 					);
 				}
 				return $aData;
