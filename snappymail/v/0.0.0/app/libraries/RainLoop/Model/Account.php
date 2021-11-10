@@ -116,7 +116,7 @@ class Account implements \JsonSerializable
 
 	public function PasswordHash() : string
 	{
-		return \sha1($this->IncPassword() + APP_SALT, true);
+		return \sha1($this->IncPassword() ?: APP_SALT, true);
 	}
 
 	public function ClientCert() : string
