@@ -32,7 +32,7 @@ trait Contacts
 			\json_encode(array(
 				'Enable' => $bEnabled,
 				'User' => $sUser,
-				'Password' => $sPassword ? \SnappyMail\Crypt::Encrypt($sPassword, $oAccount->PasswordHash()) : null,
+				'Password' => $sPassword ? \SnappyMail\Crypt::EncryptToJSON($sPassword, $oAccount->PasswordHash()) : null,
 				'Url' => $sUrl
 			))
 		);
