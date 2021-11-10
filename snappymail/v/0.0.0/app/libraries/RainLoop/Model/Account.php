@@ -172,6 +172,14 @@ class Account implements \JsonSerializable
 	public function GetAuthToken() : string
 	{
 		return Utils::EncodeKeyValues($this->jsonSerialize());
+/*
+		return \MailSo\Base\Utils::UrlSafeBase64Encode(
+			\MailSo\Base\Crypt::Encrypt(
+				\json_encode($this),
+				\md5(APP_SALT.$sCustomKey)
+			)
+		);
+*/
 	}
 
 	public static function NewInstanceByLogin(\RainLoop\Actions $oActions, string $sEmail, string $sLogin, string $sPassword, string $sClientCert = '', bool $bThrowException = false): ?self

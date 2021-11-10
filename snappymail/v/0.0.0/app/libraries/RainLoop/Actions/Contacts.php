@@ -22,14 +22,17 @@ trait Contacts
 
 		$mData = $this->getContactsSyncData($oAccount);
 
-		$bResult = $this->StorageProvider()->Put($oAccount,
+		$sPassword = APP_DUMMY === $sPassword && isset($mData['Password'])
+			? $mData['Password'] : (APP_DUMMY === $sPassword ? '' : $sPassword);
+
+		$bResult = $this->StorageProvider()->Put(
+			$oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 			'contacts_sync',
-			\RainLoop\Utils::EncodeKeyValues(array(
+			\json_encode(array(
 				'Enable' => $bEnabled,
 				'User' => $sUser,
-				'Password' => APP_DUMMY === $sPassword && isset($mData['Password']) ?
-					$mData['Password'] : (APP_DUMMY === $sPassword ? '' : $sPassword),
+				'Password' => $sPassword ? \SnappyMail\Crypt::Encrypt($sPassword, $oAccount->Password() ?: APP_SALT) : null,
 				'Url' => $sUrl
 			))
 		);
@@ -240,15 +243,25 @@ trait Contacts
 
 	protected function getContactsSyncData(\RainLoop\Model\Account $oAccount) : ?array
 	{
-		$mResult = null;
 		$sData = $this->StorageProvider()->Get($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 			'contacts_sync'
 		);
 		if (!empty($sData)) {
+			$aData = \json_decode($sData);
+			if ($aData) {
+				if ($aData['Password']) {
+					$aData['Password'] = \SnappyMail\Crypt::DecryptFromJSON(
+						$aData['Password'],
+						$oAccount->Password() ?: APP_SALT
+					);
+				}
+				return $aData;
+			}
+
 			$aData = \RainLoop\Utils::DecodeKeyValues($sData);
 			if ($aData) {
-				$mResult = array(
+				return array(
 					'Enable' => isset($aData['Enable']) ? !!$aData['Enable'] : false,
 					'Url' => isset($aData['Url']) ? \trim($aData['Url']) : '',
 					'User' => isset($aData['User']) ? \trim($aData['User']) : '',
@@ -256,7 +269,7 @@ trait Contacts
 				);
 			}
 		}
-		return $mResult;
+		return null;
 	}
 
 	public function RawContactsVcf() : bool

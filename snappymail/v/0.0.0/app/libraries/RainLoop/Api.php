@@ -165,16 +165,14 @@ class Api
 	{
 		$sSsoHash = \MailSo\Base\Utils::Sha1Rand(\sha1($sPassword.$sEmail));
 
-		$data = \SnappyMail\Crypt::Encrypt(array(
-			'Email' => $sEmail,
-			'Password' => $sPassword,
-			'AdditionalOptions' => $aAdditionalOptions,
-			'Time' => $bUseTimeout ? \time() : 0
-		), $sSsoHash);
-
 		return static::Actions()->Cacher()->Set(
 			KeyPathHelper::SsoCacherKey($sSsoHash),
-			\json_encode(\array_map('base64_encode', $data))
+			\SnappyMail\Crypt::EncryptToJSON(array(
+				'Email' => $sEmail,
+				'Password' => $sPassword,
+				'AdditionalOptions' => $aAdditionalOptions,
+				'Time' => $bUseTimeout ? \time() : 0
+			), $sSsoHash)
 		) ? $sSsoHash : null;
 	}
 

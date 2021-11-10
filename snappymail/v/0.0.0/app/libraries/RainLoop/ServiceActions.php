@@ -671,8 +671,7 @@ class ServiceActions
 			$sSsoSubData = $this->Cacher()->Get(KeyPathHelper::SsoCacherKey($sSsoHash));
 			if (!empty($sSsoSubData))
 			{
-				$aData = \json_decode($sSsoSubData, true);
-				$aData = \is_array($aData) ? \SnappyMail\Crypt::Decrypt(\array_map('base64_decode', $aData), $sSsoHash) : null;
+				$aData = \SnappyMail\Crypt::DecryptFromJSON($sSsoSubData, $sSsoHash);
 
 				$this->Cacher()->Delete(KeyPathHelper::SsoCacherKey($sSsoHash));
 

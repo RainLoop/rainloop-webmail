@@ -85,6 +85,12 @@ abstract class Crypt
 		}
 	}
 
+	public static function DecryptFromJSON(string $data, string $key = null) /* : mixed */
+	{
+		$aData = \json_decode($data, true);
+		$aData = \is_array($aData) ? static::Decrypt(\array_map('base64_decode', $aData), $key) : null;
+	}
+
 	public static function Encrypt($data, string $key = null) : array
 	{
 		if (\is_callable('sodium_crypto_aead_xchacha20poly1305_ietf_encrypt')) {
@@ -99,6 +105,11 @@ abstract class Crypt
 
 		$salt = \random_bytes(16);
 		return ['xxtea', $salt, static::XxteaEncrypt($data, $salt)];
+	}
+
+	public static function EncryptToJSON($data, string $key = null) : string
+	{
+		return \json_encode(\array_map('base64_encode', static::Encrypt($data, $key)));
 	}
 
 	public static function SodiumDecrypt(string $data, string $nonce, string $key = null) /* : mixed */
