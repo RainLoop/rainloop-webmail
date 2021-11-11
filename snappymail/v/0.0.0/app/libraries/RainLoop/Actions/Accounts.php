@@ -5,6 +5,7 @@ namespace RainLoop\Actions;
 use RainLoop\Enumerations\Capa;
 use RainLoop\Exceptions\ClientException;
 use RainLoop\Model\Account;
+use RainLoop\Model\AdditionalAccount;
 use RainLoop\Model\Identity;
 use RainLoop\Notifications;
 use RainLoop\Providers\Storage\Enumerations\StorageType;
@@ -15,7 +16,7 @@ trait Accounts
 
 	protected function GetMainEmail(Account $oAccount)
 	{
-		return $oAccount instanceof \RainLoop\Model\AdditionalAccount ? $oAccount->ParentEmail() : $oAccount->Email();
+		return $oAccount instanceof AdditionalAccount ? $oAccount->ParentEmail() : $oAccount->Email();
 	}
 
 	public function GetAccounts(Account $oAccount): array
@@ -28,9 +29,7 @@ trait Accounts
 				StorageType::CONFIG,
 				'additionalaccounts'
 			);
-
-			$aAccounts = $sAccounts ? \json_decode($sAccounts, true) : array();
-
+			$aAccounts = $sAccounts ? \json_decode($sAccounts, true) : $this->ConvertInsecureAccounts($oAccount);
 			if ($aAccounts && \is_array($aAccounts)) {
 				return $aAccounts;
 			}
@@ -39,24 +38,99 @@ trait Accounts
 		return array();
 	}
 
+	/**
+	 * Attempt to convert the old less secure data into better secured data
+	 */
+	protected function ConvertInsecureAccounts(Account $oMainAccount) : array
+	{
+		$sAccounts = $this->StorageProvider()->Get($oMainAccount, StorageType::CONFIG, 'accounts');
+		if (!$sAccounts || '{' !== $sAccounts[0]) {
+			return [];
+		}
+
+		$aAccounts = \json_decode($sAccounts, true);
+		if (!$aAccounts || !\is_array($aAccounts)) {
+			return [];
+		}
+
+		$aNewAccounts = [];
+		if (1 < \count($aAccounts)) {
+			$sOrder = $this->StorageProvider()->Get($oMainAccount, StorageType::CONFIG, 'accounts_identities_order');
+			$aOrder = $sOrder ? \json_decode($sOrder, true) : [];
+			if (!empty($aOrder['Accounts']) && \is_array($aOrder['Accounts']) && 1 < \count($aOrder['Accounts'])) {
+				$aAccounts = \array_filter(\array_merge(
+					\array_fill_keys($aOrder['Accounts'], null),
+					$aAccounts
+				));
+			}
+			$sHash = $oMainAccount->PasswordHash();
+			foreach ($aAccounts as $sEmail => $sToken) {
+				try {
+					$aNewAccounts[$sEmail] = [
+						'account',
+						$sEmail,
+						$sEmail,
+						'',
+						'',
+						'',
+						'',
+						$oMainAccount->Email(),
+						\hash_hmac('sha1', '', $sHash)
+					];
+					if (!$sToken) {
+						\error_log("ConvertInsecureAccount {$sEmail} no token");
+						continue;
+					}
+					$aAccountHash = \RainLoop\Utils::DecodeKeyValues($sToken);
+					if (empty($aAccountHash[0]) || 'token' !== $aAccountHash[0] // simple token validation
+						|| 8 > \count($aAccountHash) // length checking
+					) {
+						\error_log("ConvertInsecureAccount {$sEmail} invalid aAccountHash: " . print_r($aAccountHash,1));
+						continue;
+					}
+					$aAccountHash[3] = \SnappyMail\Crypt::EncryptUrlSafe($aAccountHash[3], $sHash);
+					$aNewAccounts[$sEmail] = [
+						'account',
+						$aAccountHash[1],
+						$aAccountHash[2],
+						$aAccountHash[3],
+						$aAccountHash[11],
+						$aAccountHash[8],
+						$aAccountHash[9],
+						$oMainAccount->Email(),
+						\hash_hmac('sha1', $aAccountHash[3], $sHash)
+					];
+				} catch (\Throwable $e) {
+					\error_log("ConvertInsecureAccount {$sEmail} failed");
+				}
+			}
+
+			$this->SetAccounts($oMainAccount, $aNewAccounts);
+		}
+
+		$this->StorageProvider()->Clear($oMainAccount, StorageType::CONFIG, 'accounts');
+
+		return $aNewAccounts;
+	}
+
 	protected function SetAccounts(Account $oAccount, array $aAccounts = array()): void
 	{
 		if (\is_subclass_of($oAccount, 'RainLoop\\Model\\Account')) {
 			throw new \LogicException('Only main account can have sub accounts');
 		}
 		$sParentEmail = $oAccount->Email();
-		if (!$aAccounts) {
-			$this->StorageProvider()->Clear(
-				$oAccount,
-				StorageType::CONFIG,
-				'additionalaccounts'
-			);
-		} else {
+		if ($aAccounts) {
 			$this->StorageProvider()->Put(
 				$oAccount,
 				StorageType::CONFIG,
 				'additionalaccounts',
 				\json_encode($aAccounts)
+			);
+		} else {
+			$this->StorageProvider()->Clear(
+				$oAccount,
+				StorageType::CONFIG,
+				'additionalaccounts'
 			);
 		}
 	}
@@ -231,8 +305,14 @@ trait Accounts
 
 		// Sort identities
 		$orderString = $this->StorageProvider()->Get($oAccount, StorageType::CONFIG, 'identities_order');
+		$old = false;
+		if (!$orderString) {
+			$orderString = $this->StorageProvider()->Get($oMainAccount, StorageType::CONFIG, 'accounts_identities_order');
+			$old = !!$orderString;
+		}
+
 		$order = \json_decode($orderString, true) ?? [];
-		if (isset($order['Identities']) && \is_array($order['Identities']) && \count($order['Identities']) > 1) {
+		if (isset($order['Identities']) && \is_array($order['Identities']) && 1 < \count($order['Identities'])) {
 			$list = \array_map(function ($item) {
 				if ('' === $item) {
 					$item = '---';
@@ -243,6 +323,16 @@ trait Accounts
 			\usort($identities, function ($a, $b) use ($list) {
 				return \array_search($a->Id(true), $list) < \array_search($b->Id(true), $list) ? -1 : 1;
 			});
+		}
+
+		if ($old) {
+			$this->StorageProvider()->Put(
+				$this->getMainAccountFromToken(),
+				StorageType::CONFIG,
+				'identities_order',
+				\json_encode(array('Identities' => empty($order['Identities']) ? [] : $order['Identities']))
+			);
+			$this->StorageProvider()->Clear($oMainAccount, StorageType::CONFIG, 'accounts_identities_order');
 		}
 
 		return $identities;
