@@ -22,7 +22,7 @@ class AdditionalAccount extends Account
 		$this->sParentEmail = \trim(\MailSo\Base\Utils::IdnToAscii($sParentEmail, true));
 	}
 
-	public function PasswordHash() : string
+	public function CryptKey() : string
 	{
 		throw new \LogicException('Not allowed on AdditionalAccount');
 	}
@@ -41,7 +41,7 @@ class AdditionalAccount extends Account
 
 	public function asTokenArray(Account $oMainAccount) : array
 	{
-		$sHash = $oMainAccount->PasswordHash();
+		$sHash = $oMainAccount->CryptKey();
 		$aData = $this->jsonSerialize();
 		$aData[3] = \SnappyMail\Crypt::EncryptUrlSafe($aData[3], $sHash);
 		$aData[] = \hash_hmac('sha1', $aData[3], $sHash);
@@ -55,7 +55,7 @@ class AdditionalAccount extends Account
 	{
 		$iCount = \count($aAccountHash);
 		if (!empty($aAccountHash[0]) && 'account' === $aAccountHash[0] && 8 <= $iCount && 9 >= $iCount) {
-			$sHash = $oActions->getMainAccountFromToken()->PasswordHash();
+			$sHash = $oActions->getMainAccountFromToken()->CryptKey();
 			$sPasswordHMAC = (8 < $iCount) ? \array_pop($aAccountHash) : null;
 			$sParentEmail = \array_pop($aAccountHash);
 			if ($sPasswordHMAC && $sPasswordHMAC === \hash_hmac('sha1', $aAccountHash[3], $sHash)) {

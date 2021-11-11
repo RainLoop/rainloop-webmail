@@ -63,7 +63,7 @@ trait Accounts
 					$aAccounts
 				));
 			}
-			$sHash = $oMainAccount->PasswordHash();
+			$sHash = $oMainAccount->CryptKey();
 			foreach ($aAccounts as $sEmail => $sToken) {
 				try {
 					$aNewAccounts[$sEmail] = [

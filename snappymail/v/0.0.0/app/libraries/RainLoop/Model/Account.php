@@ -18,7 +18,7 @@ class Account implements \JsonSerializable
 	private $sLogin;
 
 	/**
-	 * @var int
+	 * @var string
 	 */
 	private $sPassword;
 
@@ -41,6 +41,11 @@ class Account implements \JsonSerializable
 	 * @var \RainLoop\Model\Domain
 	 */
 	private $oDomain;
+
+	/**
+	 * @var string
+	 */
+	private $sCryptKey;
 
 	public function Email() : string
 	{
@@ -94,9 +99,12 @@ class Account implements \JsonSerializable
 		return $this->IncPassword();
 	}
 
-	public function PasswordHash() : string
+	public function CryptKey() : string
 	{
-		return \sha1($this->IncPassword() ?: APP_SALT, true);
+		if (!$this->sCryptKey) {
+			$this->SetCryptKey($this->IncPassword() ?: APP_SALT);
+		}
+		return $this->sCryptKey;
 	}
 
 	public function ClientCert() : string
@@ -122,6 +130,11 @@ class Account implements \JsonSerializable
 	public function SetPassword(string $sPassword) : void
 	{
 		$this->sPassword = $sPassword;
+	}
+
+	public function SetCryptKey(string $sKey) : void
+	{
+		$this->sCryptKey = \sha1($sKey, true);
 	}
 
 	public function SetProxyAuthUser(string $sProxyAuthUser) : void
