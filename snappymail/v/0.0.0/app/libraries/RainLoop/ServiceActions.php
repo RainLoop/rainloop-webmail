@@ -816,10 +816,14 @@ class ServiceActions
 	 */
 	public function ServiceChange() : string
 	{
-		$oMainAccount = $this->oActions->switchAccount(
-			empty($this->aPaths[2]) ? '' : \urldecode(\trim($this->aPaths[2]))
-		);
-		$this->oActions->Location('./');
+		try {
+			$this->oActions->switchAccount(
+				empty($this->aPaths[2]) ? '' : \urldecode(\trim($this->aPaths[2]))
+			);
+			$this->oActions->Location('./');
+		} catch (\Exception $e) {
+			exit($e->getMessage());
+		}
 		return '';
 	}
 

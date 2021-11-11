@@ -559,6 +559,7 @@
 		"DEMO_ACCOUNT_ERROR": "لأسباب أمنية , هذا الحساب قد منع من هذا الإجراء",
 		"ACCOUNT_ALREADY_EXISTS": "الحساب موجود مسبقاَ",
 		"ACCOUNT_DOES_NOT_EXIST": "الحساب المطلوب غير موجود",
+		"ACCOUNT_SWITCH_FAILED": "Switch to account \"%EMAIL%\" failed",
 		"MAIL_SERVER_ERROR": "حدث خطأ أثناء محاولة الوصول الى المخدم البريدي",
 		"INVALID_INPUT_ARGUMENT": "Invalid input argument",
 		"UNKNOWN_ERROR": "خطأ غير معروف"

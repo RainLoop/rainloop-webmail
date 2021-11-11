@@ -119,6 +119,7 @@ export const Notification = {
 
 	AccountAlreadyExists: 801,
 	AccountDoesNotExist: 802,
+	AccountSwitchFailed: 803,
 
 	MailServerError: 901,
 	ClientViewError: 902,

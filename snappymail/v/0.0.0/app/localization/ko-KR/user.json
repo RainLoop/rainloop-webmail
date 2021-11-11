@@ -559,6 +559,7 @@
 		"DEMO_ACCOUNT_ERROR": "보안을 사유로 이 계정에서는 해당 동작이 허용되지 않습니다.",
 		"ACCOUNT_ALREADY_EXISTS": "이미 존재하는 계정입니다.",
 		"ACCOUNT_DOES_NOT_EXIST": "존재하지 않는 계정입니다",
+		"ACCOUNT_SWITCH_FAILED": "Switch to account \"%EMAIL%\" failed",
 		"MAIL_SERVER_ERROR": "메일 서버에 연결하는 도중 오류가 발생했습니다.",
 		"INVALID_INPUT_ARGUMENT": "유효하지 않은 input argument",
 		"UNKNOWN_ERROR": "알 수 없는 오류"

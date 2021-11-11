@@ -559,6 +559,7 @@
 		"DEMO_ACCOUNT_ERROR": "Av sikkerhetshensyn er denne kontoen blokkert fra å utføre denne handlinga.",
 		"ACCOUNT_ALREADY_EXISTS": "Kontoen finnes allerede",
 		"ACCOUNT_DOES_NOT_EXIST": "Kontoen finnes ikke",
+		"ACCOUNT_SWITCH_FAILED": "Switch to account \"%EMAIL%\" failed",
 		"MAIL_SERVER_ERROR": "Fikk ikke tilgang til e-posttjener",
 		"INVALID_INPUT_ARGUMENT": "Ugyldig inndata-argument",
 		"UNKNOWN_ERROR": "Ukjent feil"

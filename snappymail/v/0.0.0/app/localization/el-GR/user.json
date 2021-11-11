@@ -559,6 +559,7 @@
 		"DEMO_ACCOUNT_ERROR": "For security purposes, this account is not allowed for this action!",
 		"ACCOUNT_ALREADY_EXISTS": "Account already exists",
 		"ACCOUNT_DOES_NOT_EXIST": "Account doesn't exist",
+		"ACCOUNT_SWITCH_FAILED": "Switch to account \"%EMAIL%\" failed",
 		"MAIL_SERVER_ERROR": "An error has occured while accessing mail server",
 		"INVALID_INPUT_ARGUMENT": "Invalid input argument",
 		"UNKNOWN_ERROR": "Unknown error"

@@ -559,6 +559,7 @@
 		"DEMO_ACCOUNT_ERROR": "Atas alasan keamanan, akun ini tidak diizinkan melakukan aksi ini!",
 		"ACCOUNT_ALREADY_EXISTS": "Akun sudah ada",
 		"ACCOUNT_DOES_NOT_EXIST": "Akun tidak ada",
+		"ACCOUNT_SWITCH_FAILED": "Switch to account \"%EMAIL%\" failed",
 		"MAIL_SERVER_ERROR": "Terjadi kesalahan saat mengakses server mail",
 		"INVALID_INPUT_ARGUMENT": "Uraian input tidak sah",
 		"UNKNOWN_ERROR": "Kesalahan tidak diketahui"

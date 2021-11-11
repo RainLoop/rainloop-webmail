@@ -149,13 +149,20 @@ trait UserAuth
 		$oMainAccount = $this->getMainAccountFromToken(false);
 		if ($sEmail && $oMainAccount && $this->GetCapa(false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oMainAccount)) {
 			$oAccountToLogin = null;
+			if ($oMainAccount->Email() === $sEmail) {
+				$this->SetAdditionalAuthToken($oAccountToLogin);
+				return true;
+			}
 			$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail);
 			$aAccounts = $this->GetAccounts($oMainAccount);
-			if (isset($aAccounts[$sEmail])) {
-				$oAccountToLogin = \RainLoop\Model\AdditionalAccount::NewInstanceFromTokenArray(
-					$this,
-					$aAccounts[$sEmail]
-				);
+			if (!isset($aAccounts[$sEmail])) {
+				throw new ClientException(Notifications::AccountDoesNotExist);
+			}
+			$oAccountToLogin = AdditionalAccount::NewInstanceFromTokenArray(
+				$this, $aAccounts[$sEmail]
+			);
+			if (!$oAccountToLogin) {
+				throw new ClientException(Notifications::AccountSwitchFailed);
 			}
 			$this->SetAdditionalAuthToken($oAccountToLogin);
 			return true;

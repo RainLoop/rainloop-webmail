@@ -16,7 +16,8 @@ import { doc, Settings, leftPanelDisabled } from 'Common/Globals';
 
 import { ThemeStore } from 'Stores/Theme';
 
-//import Remote from 'Remote/User/Fetch';
+import Remote from 'Remote/User/Fetch';
+import { getNotification } from 'Common/Translator';
 
 export class SystemDropDownUserView extends AbstractViewRight {
 	constructor() {
@@ -46,27 +47,22 @@ export class SystemDropDownUserView extends AbstractViewRight {
 	}
 
 	accountClick(account, event) {
-/* TODO
-		event.preventDefault();
-		event.stopPropagation();
-		Remote.switchAccount(
-			(iError, oData) => {
-				if (iError) {
-					console.dir({
-						iError: iError,
-						oData: oData
-					})
-				} else {
-					rl.setData(oData.Result);
-//					rl.route.reload();
-				}
-			},
-			account.email
-		);
-*/
 		if (account && 0 === event.button) {
 			AccountUserStore.loading(true);
-			setTimeout(() => AccountUserStore.loading(false), 1000);
+			event.preventDefault();
+			event.stopPropagation();
+			Remote.defaultRequest(
+				(iError/*, oData*/) => {
+					if (iError) {
+						AccountUserStore.loading(false);
+						alert(getNotification(iError).replace('%EMAIL%', account.email));
+					} else {
+						// This does not work yet
+//						rl.setData(oData.Result);
+						location.reload();
+					}
+				}, 'AccountSwitch', {Email:account.email}
+			);
 		}
 		return true;
 	}
@@ -97,7 +93,6 @@ export class SystemDropDownUserView extends AbstractViewRight {
 		doc.cookie = 'rllayout=' + (mobile ? 'mobile' : 'desktop');
 		ThemeStore.isMobile(mobile);
 		leftPanelDisabled(mobile);
-//		location.reload();
 	}
 
 	logoutClick() {

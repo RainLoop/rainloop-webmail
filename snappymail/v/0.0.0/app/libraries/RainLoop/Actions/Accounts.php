@@ -318,7 +318,7 @@ trait Accounts
 		$orderString = $this->StorageProvider()->Get($oAccount, StorageType::CONFIG, 'identities_order');
 		$old = false;
 		if (!$orderString) {
-			$orderString = $this->StorageProvider()->Get($oMainAccount, StorageType::CONFIG, 'accounts_identities_order');
+			$orderString = $this->StorageProvider()->Get($oAccount, StorageType::CONFIG, 'accounts_identities_order');
 			$old = !!$orderString;
 		}
 
@@ -343,7 +343,7 @@ trait Accounts
 				'identities_order',
 				\json_encode(array('Identities' => empty($order['Identities']) ? [] : $order['Identities']))
 			);
-			$this->StorageProvider()->Clear($oMainAccount, StorageType::CONFIG, 'accounts_identities_order');
+			$this->StorageProvider()->Clear($oAccount, StorageType::CONFIG, 'accounts_identities_order');
 		}
 
 		return $identities;

@@ -559,6 +559,7 @@
 		"DEMO_ACCOUNT_ERROR": "Z důvodu bezpečnosti tento účet nemá oprávnění toto provést!",
 		"ACCOUNT_ALREADY_EXISTS": "Účet už existuje",
 		"ACCOUNT_DOES_NOT_EXIST": "Účet neexistuje",
+		"ACCOUNT_SWITCH_FAILED": "Switch to account \"%EMAIL%\" failed",
 		"MAIL_SERVER_ERROR": "Nastala chyba během přístupu na poštovní server",
 		"INVALID_INPUT_ARGUMENT": "Nevalidní vstupní argument",
 		"UNKNOWN_ERROR": "Neznámá chyba"

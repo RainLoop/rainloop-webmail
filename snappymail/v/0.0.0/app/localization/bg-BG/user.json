@@ -559,6 +559,7 @@
 		"DEMO_ACCOUNT_ERROR": "С цел сигурност, това действие не е разрешено за този акаунт!",
 		"ACCOUNT_ALREADY_EXISTS": "Акаунта вече съществува",
 		"ACCOUNT_DOES_NOT_EXIST": "Акаунта не съществува",
+		"ACCOUNT_SWITCH_FAILED": "Switch to account \"%EMAIL%\" failed",
 		"MAIL_SERVER_ERROR": "Възникна грешка при комуникацията с пощенския сървър",
 		"INVALID_INPUT_ARGUMENT": "Невалидни входни аргументи",
 		"UNKNOWN_ERROR": "Неизвестна грешка"

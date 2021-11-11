@@ -559,6 +559,7 @@
 		"DEMO_ACCOUNT_ERROR": "セキュリティ上の理由から、アカウントには、このアクションが許可されていません！",
 		"ACCOUNT_ALREADY_EXISTS": "アカウントがすでに存在します",
 		"ACCOUNT_DOES_NOT_EXIST": "アカウントは存在しません",
+		"ACCOUNT_SWITCH_FAILED": "Switch to account \"%EMAIL%\" failed",
 		"MAIL_SERVER_ERROR": "メールサーバーへのアクセス中にエラーが発生しました",
 		"INVALID_INPUT_ARGUMENT": "無効な入力引数",
 		"UNKNOWN_ERROR": "不明なエラー"

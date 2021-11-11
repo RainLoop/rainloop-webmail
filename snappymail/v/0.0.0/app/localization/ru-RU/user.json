@@ -559,6 +559,7 @@
 		"DEMO_ACCOUNT_ERROR": "По соображениям безопасности данный аккаунт не может выполнить это действие.",
 		"ACCOUNT_ALREADY_EXISTS": "Аккаунт уже добавлен",
 		"ACCOUNT_DOES_NOT_EXIST": "Аккаунт не существует",
+		"ACCOUNT_SWITCH_FAILED": "Switch to account \"%EMAIL%\" failed",
 		"MAIL_SERVER_ERROR": "Ошибка доступа к почтовому серверу",
 		"INVALID_INPUT_ARGUMENT": "Неверный параметр",
 		"UNKNOWN_ERROR": "Неизвестная ошибка"
