@@ -103,8 +103,8 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 		if (null === $mAccount) {
 			$iStorageType = StorageType::NOBODY;
 		} else if ($mAccount instanceof \RainLoop\Model\Account) {
-			$sEmail = $mAccount->ParentEmailHelper();
-			if ($this->bLocal && $mAccount->IsAdditionalAccount() && !$bForDeleteAction)
+			$sEmail = $mAccount instanceof \RainLoop\Model\AdditionalAccount ? $mAccount->ParentEmail() : $mAccount->Email();
+			if ($this->bLocal && $mAccount instanceof \RainLoop\Model\AdditionalAccount && !$bForDeleteAction)
 			{
 				$sSubEmail = $mAccount->Email();
 			}

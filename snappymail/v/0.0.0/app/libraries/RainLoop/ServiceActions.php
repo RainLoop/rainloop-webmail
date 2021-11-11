@@ -811,14 +811,16 @@ class ServiceActions
 		return '';
 	}
 
+	/**
+	 * Switch to AdditionalAccount
+	 */
 	public function ServiceChange() : string
 	{
 		$this->oHttp->ServerNoCache();
 
-//		$oAccount = $this->oActions->getAccountFromToken(false);
-		$oAccount = $this->oActions->GetAccount();
+		$oMainAccount = $this->oActions->getMainAccountFromToken(false);
 
-		if ($oAccount && $this->oActions->GetCapa(false, Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
+		if ($oMainAccount && $this->oActions->GetCapa(false, Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oMainAccount))
 		{
 			$oAccountToLogin = null;
 			$sEmail = empty($this->aPaths[2]) ? '' : \urldecode(\trim($this->aPaths[2]));
@@ -826,17 +828,16 @@ class ServiceActions
 			{
 				$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail);
 
-				$aAccounts = $this->oActions->GetAccounts($oAccount);
+				$aAccounts = $this->oActions->GetAccounts($oMainAccount);
 				if (isset($aAccounts[$sEmail]))
 				{
-					$oAccountToLogin = $this->oActions->GetAccountFromCustomToken($aAccounts[$sEmail]);
+					$oAccountToLogin = \RainLoop\Model\AdditionalAccount::NewInstanceFromTokenArray(
+						$this->oActions,
+						$aAccounts[$sEmail]
+					);
 				}
 			}
-
-			if ($oAccountToLogin)
-			{
-				$this->oActions->SetAuthToken($oAccountToLogin);
-			}
+			$this->oActions->SetAdditionalAuthToken($oAccountToLogin);
 		}
 
 		$this->oActions->Location('./');

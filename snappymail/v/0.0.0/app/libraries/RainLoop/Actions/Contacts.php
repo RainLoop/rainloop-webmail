@@ -5,6 +5,11 @@ namespace RainLoop\Actions;
 trait Contacts
 {
 
+	private function GetAccountParentEmail()
+	{
+//		$oAccount instanceof \RainLoop\Model\AdditionalAccount ? $oAccount->ParentEmail() : $oAccount->Email()
+	}
+
 	public function DoSaveContactsSyncData() : array
 	{
 		$oAccount = $this->getAccountFromToken();
@@ -45,7 +50,7 @@ trait Contacts
 			if (isset($mData['Enable'], $mData['User'], $mData['Password'], $mData['Url']) && $mData['Enable'])
 			{
 				$bResult = $oAddressBookProvider->Sync(
-					$oAccount->ParentEmailHelper(),
+					$this->GetMainEmail($oAccount),
 					$mData['Url'], $mData['User'], $mData['Password']);
 			}
 		}
@@ -75,7 +80,7 @@ trait Contacts
 		if ($oAbp->IsActive())
 		{
 			$iResultCount = 0;
-			$mResult = $oAbp->GetContacts($oAccount->ParentEmailHelper(),
+			$mResult = $oAbp->GetContacts($this->GetMainEmail($oAccount),
 				$iOffset, $iLimit, $sSearch, $iResultCount);
 		}
 
@@ -98,7 +103,7 @@ trait Contacts
 		$bResult = false;
 		if (0 < \count($aFilteredUids) && $this->AddressBookProvider($oAccount)->IsActive())
 		{
-			$bResult = $this->AddressBookProvider($oAccount)->DeleteContacts($oAccount->ParentEmailHelper(), $aFilteredUids);
+			$bResult = $this->AddressBookProvider($oAccount)->DeleteContacts($this->GetMainEmail($oAccount), $aFilteredUids);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $bResult);
@@ -119,7 +124,7 @@ trait Contacts
 			$oContact = null;
 			if (0 < \strlen($sUid))
 			{
-				$oContact = $oAddressBookProvider->GetContactByID($oAccount->ParentEmailHelper(), $sUid);
+				$oContact = $oAddressBookProvider->GetContactByID($this->GetMainEmail($oAccount), $sUid);
 			}
 
 			if (!$oContact)
@@ -159,7 +164,7 @@ trait Contacts
 
 			$oContact->PopulateDisplayAndFullNameValue(true);
 
-			$bResult = $oAddressBookProvider->ContactSave($oAccount->ParentEmailHelper(), $oContact);
+			$bResult = $oAddressBookProvider->ContactSave($this->GetMainEmail($oAccount), $oContact);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
@@ -300,7 +305,7 @@ trait Contacts
 		$this->oHttp->ServerNoCache();
 
 		return $this->AddressBookProvider($oAccount)->IsActive() ?
-			$this->AddressBookProvider($oAccount)->Export($oAccount->ParentEmailHelper(), 'vcf') : false;
+			$this->AddressBookProvider($oAccount)->Export($this->GetMainEmail($oAccount), 'vcf') : false;
 	}
 
 	public function RawContactsCsv() : bool
@@ -315,7 +320,31 @@ trait Contacts
 		$this->oHttp->ServerNoCache();
 
 		return $this->AddressBookProvider($oAccount)->IsActive() ?
-			$this->AddressBookProvider($oAccount)->Export($oAccount->ParentEmailHelper(), 'csv') : false;
+			$this->AddressBookProvider($oAccount)->Export($this->GetMainEmail($oAccount), 'csv') : false;
+	}
+
+	private function importContactsFromVcfFile(Model\Account $oAccount, /*resource*/ $rFile): int
+	{
+		$iCount = 0;
+		if ($oAccount && \is_resource($rFile)) {
+			$oAddressBookProvider = $this->AddressBookProvider($oAccount);
+			if ($oAddressBookProvider && $oAddressBookProvider->IsActive()) {
+				$sFile = \stream_get_contents($rFile);
+				if (\is_resource($rFile)) {
+					\fclose($rFile);
+				}
+
+				if (is_string($sFile) && 5 < \strlen($sFile)) {
+					$this->Logger()->Write('Import contacts from vcf');
+					$iCount = $oAddressBookProvider->ImportVcfFile(
+						$this->GetMainEmail($oAccount),
+						$sFile
+					);
+				}
+			}
+		}
+
+		return $iCount;
 	}
 
 }

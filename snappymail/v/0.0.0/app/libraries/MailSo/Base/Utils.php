@@ -1164,8 +1164,7 @@ END;
 
 	public static function UrlSafeBase64Decode(string $sValue) : string
 	{
-		$sValue = \rtrim(\strtr($sValue, '-_.', '+/='), '=');
-		return static::Base64Decode(\str_pad($sValue, \strlen($sValue) + (\strlen($sValue) % 4), '=', STR_PAD_RIGHT));
+		return \base64_decode(\strtr($sValue, '-_', '+/'), '=');
 	}
 
 	public static function ParseFetchSequence(string $sSequence) : array

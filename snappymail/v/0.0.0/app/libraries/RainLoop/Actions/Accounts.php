@@ -8,67 +8,54 @@ use RainLoop\Model\Account;
 use RainLoop\Model\Identity;
 use RainLoop\Notifications;
 use RainLoop\Providers\Storage\Enumerations\StorageType;
+use RainLoop\Utils;
 
 trait Accounts
 {
 
+	protected function GetMainEmail(Account $oAccount)
+	{
+		return $oAccount instanceof \RainLoop\Model\AdditionalAccount ? $oAccount->ParentEmail() : $oAccount->Email();
+	}
+
 	public function GetAccounts(Account $oAccount): array
 	{
+		if (\is_subclass_of($oAccount, 'RainLoop\\Model\\Account')) {
+			throw new \LogicException('Only main account can have sub accounts');
+		}
 		if ($this->GetCapa(false, Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
 			$sAccounts = $this->StorageProvider()->Get($oAccount,
 				StorageType::CONFIG,
-				'accounts'
+				'additionalaccounts'
 			);
 
 			$aAccounts = $sAccounts ? \json_decode($sAccounts, true) : array();
 
-			if (\is_array($aAccounts) && \count($aAccounts)) {
-				if (1 === \count($aAccounts)) {
-					$this->SetAccounts($oAccount, array());
-
-				} else if (1 < \count($aAccounts)) {
-					$sOrder = $this->StorageProvider()->Get($oAccount,
-						StorageType::CONFIG,
-						'accounts_identities_order'
-					);
-
-					$aOrder = empty($sOrder) ? array() : \json_decode($sOrder, true);
-					if (isset($aOrder['Accounts']) && \is_array($aOrder['Accounts']) && 1 < \count($aOrder['Accounts'])) {
-						$aAccounts = \array_merge(\array_flip($aOrder['Accounts']), $aAccounts);
-
-						$aAccounts = \array_filter($aAccounts, function ($sHash) {
-							return 5 < \strlen($sHash);
-						});
-					}
-				}
-
+			if ($aAccounts && \is_array($aAccounts)) {
 				return $aAccounts;
 			}
 		}
 
-		$aAccounts = array();
-		if (!$oAccount->IsAdditionalAccount()) {
-			$aAccounts[$oAccount->Email()] = $oAccount->GetAuthToken();
-		}
-
-		return $aAccounts;
+		return array();
 	}
 
 	protected function SetAccounts(Account $oAccount, array $aAccounts = array()): void
 	{
-		$sParentEmail = $oAccount->ParentEmailHelper();
-		if (!$aAccounts ||
-			(1 === \count($aAccounts) && !empty($aAccounts[$sParentEmail]))) {
+		if (\is_subclass_of($oAccount, 'RainLoop\\Model\\Account')) {
+			throw new \LogicException('Only main account can have sub accounts');
+		}
+		$sParentEmail = $oAccount->Email();
+		if (!$aAccounts) {
 			$this->StorageProvider()->Clear(
 				$oAccount,
 				StorageType::CONFIG,
-				'accounts'
+				'additionalaccounts'
 			);
 		} else {
 			$this->StorageProvider()->Put(
 				$oAccount,
 				StorageType::CONFIG,
-				'accounts',
+				'additionalaccounts',
 				\json_encode($aAccounts)
 			);
 		}
@@ -79,36 +66,30 @@ trait Accounts
 	 */
 	public function DoAccountSetup(): array
 	{
-		$oAccount = $this->getAccountFromToken();
+		$oMainAccount = $this->getMainAccountFromToken();
 
-		if (!$this->GetCapa(false, Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
+		if (!$this->GetCapa(false, Capa::ADDITIONAL_ACCOUNTS, $oMainAccount)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
-		$sParentEmail = $oAccount->ParentEmailHelper();
-
-		$aAccounts = $this->GetAccounts($oAccount);
+		$aAccounts = $this->GetAccounts($oMainAccount);
 
 		$sEmail = \trim($this->GetActionParam('Email', ''));
 		$sPassword = $this->GetActionParam('Password', '');
 		$bNew = '1' === (string)$this->GetActionParam('New', '1');
 
 		$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
-		if ($bNew && ($oAccount->Email() === $sEmail || $sParentEmail === $sEmail || isset($aAccounts[$sEmail]))) {
+		if ($bNew && ($oMainAccount->Email() === $sEmail || isset($aAccounts[$sEmail]))) {
 			throw new ClientException(Notifications::AccountAlreadyExists);
 		} else if (!$bNew && !isset($aAccounts[$sEmail])) {
 			throw new ClientException(Notifications::AccountDoesNotExist);
 		}
 
-		$oNewAccount = $this->LoginProcess($sEmail, $sPassword);
-		$oNewAccount->SetParentEmail($sParentEmail);
+		$oNewAccount = $this->LoginProcess($sEmail, $sPassword, false, $oMainAccount);
 
-		$aAccounts[$oNewAccount->Email()] = $oNewAccount->GetAuthToken();
-		if (!$oAccount->IsAdditionalAccount()) {
-			$aAccounts[$oAccount->Email()] = $oAccount->GetAuthToken();
-		}
+		$aAccounts[$oNewAccount->Email()] = $oNewAccount->asTokenArray($oMainAccount);
+		$this->SetAccounts($oMainAccount, $aAccounts);
 
-		$this->SetAccounts($oAccount, $aAccounts);
 		return $this->TrueResponse(__FUNCTION__);
 	}
 
@@ -117,31 +98,29 @@ trait Accounts
 	 */
 	public function DoAccountDelete(): array
 	{
-		$oAccount = $this->getAccountFromToken();
+		$oMainAccount = $this->getMainAccountFromToken();
 
-		if (!$this->GetCapa(false, Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
+		if (!$this->GetCapa(false, Capa::ADDITIONAL_ACCOUNTS, $oMainAccount)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
-		$sParentEmail = $oAccount->ParentEmailHelper();
 		$sEmailToDelete = \trim($this->GetActionParam('EmailToDelete', ''));
 		$sEmailToDelete = \MailSo\Base\Utils::IdnToAscii($sEmailToDelete, true);
 
-		$aAccounts = $this->GetAccounts($oAccount);
+		$aAccounts = $this->GetAccounts($oMainAccount);
 
-		if (0 < \strlen($sEmailToDelete) && $sEmailToDelete !== $sParentEmail && isset($aAccounts[$sEmailToDelete])) {
-			unset($aAccounts[$sEmailToDelete]);
-
-			$oAccountToChange = null;
-			if ($oAccount->Email() === $sEmailToDelete && !empty($aAccounts[$sParentEmail])) {
-				$oAccountToChange = $this->GetAccountFromCustomToken($aAccounts[$sParentEmail]);
-				if ($oAccountToChange) {
-					$this->SetAuthToken($oAccountToChange);
-				}
+		if (\strlen($sEmailToDelete) && isset($aAccounts[$sEmailToDelete])) {
+			$bReload = false;
+//			$oAccount = $this->getAccountFromToken();
+			if ($oAccount->Email() === $sEmailToDelete) {
+				Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
+				$bReload = true;
 			}
 
-			$this->SetAccounts($oAccount, $aAccounts);
-			return $this->TrueResponse(__FUNCTION__, array('Reload' => !!$oAccountToChange));
+			unset($aAccounts[$sEmailToDelete]);
+			$this->SetAccounts($oMainAccount, $aAccounts);
+
+			return $this->TrueResponse(__FUNCTION__, array('Reload' => $bReload));
 		}
 
 		return $this->FalseResponse(__FUNCTION__);
@@ -188,8 +167,6 @@ trait Accounts
 	 */
 	public function DoAccountsAndIdentitiesSortOrder(): array
 	{
-		$oAccount = $this->getAccountFromToken();
-
 		$aAccounts = $this->GetActionParam('Accounts', null);
 		$aIdentities = $this->GetActionParam('Identities', null);
 
@@ -197,10 +174,20 @@ trait Accounts
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $this->StorageProvider()->Put($oAccount,
-			StorageType::CONFIG, 'accounts_identities_order',
+		$oAccount = $this->getMainAccountFromToken();
+		if (1 < \count($aAccounts)) {
+			$aAccounts = \array_filter(\array_merge(
+				\array_fill_keys($aOrder['Accounts'], null),
+				$this->GetAccounts($oAccount)
+			));
+			$this->SetAccounts($oAccount, $aAccounts);
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, $this->StorageProvider()->Put(
+			$this->getMainAccountFromToken(),
+			StorageType::CONFIG,
+			'identities_order',
 			\json_encode(array(
-				'Accounts' => \is_array($aAccounts) ? $aAccounts : array(),
 				'Identities' => \is_array($aIdentities) ? $aIdentities : array()
 			))
 		));
@@ -211,39 +198,39 @@ trait Accounts
 	 */
 	public function DoAccountsAndIdentities(): array
 	{
-		$oAccount = $this->getAccountFromToken();
+		$oAccount = $this->getMainAccountFromToken();
 
-		$mAccounts = false;
-
+		$aAccounts = false;
 		if ($this->GetCapa(false, Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
-			$mAccounts = $this->GetAccounts($oAccount);
-			$mAccounts = \array_keys($mAccounts);
-
-			foreach ($mAccounts as $iIndex => $sName) {
-				$mAccounts[$iIndex] = \MailSo\Base\Utils::IdnToUtf8($sName);
+			$aAccounts = \array_map(
+				'MailSo\\Base\\Utils::IdnToUtf8',
+				\array_keys($this->GetAccounts($oAccount))
+			);
+			if ($aAccounts) {
+				\array_unshift($aAccounts, \MailSo\Base\Utils::IdnToUtf8($oAccount->Email()));
 			}
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
-			'Accounts' => $mAccounts,
+			'Accounts' => $aAccounts,
 			'Identities' => $this->GetIdentities($oAccount)
 		));
 	}
 
 	/**
-	 * @param Account $account
+	 * @param Account $oAccount
 	 * @return Identity[]
 	 */
-	public function GetIdentities(Account $account): array
+	public function GetIdentities(Account $oAccount): array
 	{
 		// A custom name for a single identity is also stored in this system
-		$allowMultipleIdentities = $this->GetCapa(false, Capa::IDENTITIES, $account);
+		$allowMultipleIdentities = $this->GetCapa(false, Capa::IDENTITIES, $oAccount);
 
 		// Get all identities
-		$identities = $this->IdentitiesProvider()->GetIdentities($account, $allowMultipleIdentities);
+		$identities = $this->IdentitiesProvider()->GetIdentities($oAccount, $allowMultipleIdentities);
 
 		// Sort identities
-		$orderString = $this->StorageProvider()->Get($account, StorageType::CONFIG, 'accounts_identities_order');
+		$orderString = $this->StorageProvider()->Get($oAccount, StorageType::CONFIG, 'identities_order');
 		$order = \json_decode($orderString, true) ?? [];
 		if (isset($order['Identities']) && \is_array($order['Identities']) && \count($order['Identities']) > 1) {
 			$list = \array_map(function ($item) {

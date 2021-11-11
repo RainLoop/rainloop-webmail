@@ -147,6 +147,13 @@ class Utils
 		return isset($_COOKIE[$sName]) ? $_COOKIE[$sName] : $mDefault;
 	}
 
+	public static function GetSecureCookie(string $sName)
+	{
+		return isset($_COOKIE[$sName])
+			? \SnappyMail\Crypt::DecryptFromJSON(\MailSo\Base\Utils::UrlSafeBase64Decode($_COOKIE[$sName]))
+			: null;
+	}
+
 	public static function SetCookie(string $sName, string $sValue = '', int $iExpire = 0, bool $bHttpOnly = true)
 	{
 		$sPath = static::$CookieDefaultPath;
@@ -159,6 +166,16 @@ class Utils
 			'httponly' => $bHttpOnly,
 			'samesite' => 'Strict'
 		));
+	}
+
+	public static function SetSecureCookie(string $sName, $mValue, int $iExpire = 0, bool $bHttpOnly = true)
+	{
+		static::SetCookie(
+			$sName,
+			\MailSo\Base\Utils::UrlSafeBase64Encode(\SnappyMail\Crypt::EncryptToJSON($mValue)),
+			$iExpire,
+			true
+		);
 	}
 
 	public static function ClearCookie(string $sName)

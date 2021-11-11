@@ -31,6 +31,11 @@ class Actions
 	 */
 	const AUTH_SPEC_TOKEN_KEY = 'smaccount';
 
+	/**
+	 * This session cookie optionally contains a \RainLoop\Model\AdditionalAccount
+	 */
+	const AUTH_ADDITIONAL_TOKEN_KEY = 'smadditional';
+
 	const AUTH_SPEC_LOGOUT_TOKEN_KEY = 'smspeclogout';
 	const AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY = 'smspeclogoutcmk';
 
@@ -553,7 +558,7 @@ class Actions
 	{
 		$sKey = '';
 		if ($oAccount) {
-			$sKey = $oAccount->ParentEmailHelper();
+			$sKey = $this->GetMainEmail($oAccount);
 		}
 
 		$sIndexKey = empty($sKey) ? '_default_' : $sKey;
@@ -918,7 +923,9 @@ class Actions
 					$aResult['StartupUrl'] = $this->compileLogParams($aResult['StartupUrl'], $oAccount, true);
 				}
 
-				$aResult['ParentEmail'] = $oAccount->ParentEmail();
+				if ($oAccount instanceof \RainLoop\Model\AdditionalAccount) {
+					$aResult['ParentEmail'] = $oAccount->ParentEmail();
+				}
 
 				$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
@@ -1126,32 +1133,6 @@ class Actions
 		}
 
 		return $bFirstOnEmpty && isset($aIdentities[0]) ? $aIdentities[0] : null;
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
-	 */
-	public function getAccountUnreadCountFromHash(string $sHash): int
-	{
-		$iResult = 0;
-
-		$oAccount = $this->GetAccountFromCustomToken($sHash);
-		if ($oAccount) {
-			try {
-				$oMailClient = new \MailSo\Mail\MailClient();
-				$oMailClient->SetLogger($this->Logger());
-
-				$oAccount->IncConnectAndLoginHelper($this->Plugins(), $oMailClient, $this->Config());
-
-				$iResult = $oMailClient->InboxUnreadCount();
-
-				$oMailClient->Disconnect();
-			} catch (\Throwable $oException) {
-				$this->Logger()->WriteException($oException);
-			}
-		}
-
-		return $iResult;
 	}
 
 	public function setConfigFromParams(Config\Application $oConfig, string $sParamName, string $sConfigSector, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null): void
@@ -1420,28 +1401,10 @@ class Actions
 
 				if (\count($aData)) {
 					$this->Logger()->Write('Import contacts from csv');
-					$iCount = $oAddressBookProvider->ImportCsvArray($oAccount->ParentEmailHelper(), $aData);
-				}
-			}
-		}
-
-		return $iCount;
-	}
-
-	private function importContactsFromVcfFile(Model\Account $oAccount, /*resource*/ $rFile): int
-	{
-		$iCount = 0;
-		if ($oAccount && \is_resource($rFile)) {
-			$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-			if ($oAddressBookProvider && $oAddressBookProvider->IsActive()) {
-				$sFile = \stream_get_contents($rFile);
-				if (\is_resource($rFile)) {
-					\fclose($rFile);
-				}
-
-				if (is_string($sFile) && 5 < \strlen($sFile)) {
-					$this->Logger()->Write('Import contacts from vcf');
-					$iCount = $oAddressBookProvider->ImportVcfFile($oAccount->ParentEmailHelper(), $sFile);
+					$iCount = $oAddressBookProvider->ImportCsvArray(
+						$this->GetMainEmail($oAccount),
+						$aData
+					);
 				}
 			}
 		}

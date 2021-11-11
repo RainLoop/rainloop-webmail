@@ -5,6 +5,7 @@ namespace RainLoop\Actions;
 use RainLoop\Notifications;
 use RainLoop\Utils;
 use RainLoop\Model\Account;
+use RainLoop\Model\AdditionalAccount;
 use RainLoop\Providers\Storage\Enumerations\StorageType;
 use RainLoop\Exceptions\ClientException;
 
@@ -13,18 +14,13 @@ trait UserAuth
 	/**
 	 * @var string
 	 */
-	private $sSpecAuthToken = null;
-	private $oSpecAuthAccount = null;
-
-	/**
-	 * Or use 'aes-256-xts' ?
-	 */
-	private static $sCipher = 'aes-256-cbc-hmac-sha1';
+	private $oAdditionalAuthAccount = null;
+	private $oMainAuthAccount = null;
 
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function LoginProcess(string &$sEmail, string &$sPassword, bool $bSignMe = false): Account
+	public function LoginProcess(string &$sEmail, string &$sPassword, bool $bSignMe = false, Account $oMainAccount = null): Account
 	{
 		$sInputEmail = $sEmail;
 
@@ -117,7 +113,14 @@ trait UserAuth
 		$oAccount = null;
 		$sClientCert = \trim($this->Config()->Get('ssl', 'client_cert', ''));
 		try {
-			$oAccount = Account::NewInstanceByLogin($this, $sEmail, $sLogin, $sPassword, $sClientCert, true);
+			if ($oMainAccount) {
+				$oAccount = AdditionalAccount::NewInstanceByLogin($this, $sEmail, $sLogin, $sPassword, $sClientCert, true);
+				if ($oAccount) {
+					$oAccount->SetParentEmail($oMainAccount->Email());
+				}
+			} else {
+				$oAccount = Account::NewInstanceByLogin($this, $sEmail, $sLogin, $sPassword, $sClientCert, true);
+			}
 
 			if (!$oAccount) {
 				throw new ClientException(Notifications::AuthError);
@@ -141,86 +144,103 @@ trait UserAuth
 	}
 
 	/**
-	 * @throws \RainLoop\Exceptions\ClientException
-	 */
-	public function GetAccountFromCustomToken(string $sToken): ?Account
-	{
-		return empty($sToken) ? null : Account::NewInstanceFromAuthToken($sToken);
-	}
-
-	/**
+	 * Returns RainLoop\Model\AdditionalAccount when it exists,
+	 * else returns RainLoop\Model\Account when it exists,
+	 * else null
+	 *
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
 	public function getAccountFromToken(bool $bThrowExceptionOnFalse = true): ?Account
 	{
-		if (!$this->oSpecAuthAccount) {
-			if (!\is_string($this->sSpecAuthToken)) {
-				$this->sSpecAuthToken = '';
-				if (isset($_COOKIE[self::AUTH_SPEC_LOGOUT_TOKEN_KEY])) {
-					Utils::ClearCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY);
-					Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
-//					Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
-				} else {
-					$sAuthAccountHash = Utils::GetCookie(self::AUTH_SPEC_TOKEN_KEY);
-					if (empty($sAuthAccountHash)) {
-						$oAccount = $this->GetAccountFromSignMeToken();
-						if ($oAccount) {
-							$this->SetAuthToken($oAccount);
-						}
-					} else {
-						$this->sSpecAuthToken = $sAuthAccountHash;
-					}
-				}
-			}
-
-			$aData = \SnappyMail\Crypt::DecryptFromJSON(\MailSo\Base\Utils::UrlSafeBase64Decode($this->sSpecAuthToken));
-			if (!empty($aData)) {
-				$this->oSpecAuthAccount = Account::NewInstanceFromTokenArray(
+		if (\is_null($this->oAdditionalAuthAccount) && isset($_COOKIE[self::AUTH_ADDITIONAL_TOKEN_KEY])) {
+			$aData = Utils::GetSecureCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
+			if ($aData) {
+				$this->oAdditionalAuthAccount = AdditionalAccount::NewInstanceFromTokenArray(
 					$this,
 					$aData,
 					$bThrowExceptionOnFalse
 				);
 			}
+			if (!$this->oAdditionalAuthAccount) {
+				$this->oAdditionalAuthAccount = false;
+				Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
+			}
+		}
+		return $this->oAdditionalAuthAccount ?: $this->getMainAccountFromToken($bThrowExceptionOnFalse);
+	}
 
-			if ($bThrowExceptionOnFalse && !$this->oSpecAuthAccount) {
+	/**
+	 * Returns RainLoop\Model\Account when it exists, else null
+	 *
+	 * @throws \RainLoop\Exceptions\ClientException
+	 */
+	public function getMainAccountFromToken(bool $bThrowExceptionOnFalse = true): ?Account
+	{
+		if (!$this->oMainAuthAccount) {
+			if (isset($_COOKIE[self::AUTH_SPEC_LOGOUT_TOKEN_KEY])) {
+				Utils::ClearCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY);
+				Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
+//				Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
+//				Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
+			}
+
+			$aData = Utils::GetSecureCookie(self::AUTH_SPEC_TOKEN_KEY);
+			if ($aData) {
+				$this->oMainAuthAccount = Account::NewInstanceFromTokenArray(
+					$this,
+					$aData,
+					$bThrowExceptionOnFalse
+				);
+			} else {
+				$oAccount = $this->GetAccountFromSignMeToken();
+				if ($oAccount) {
+					$this->SetAuthToken($oAccount);
+				}
+			}
+
+			if ($bThrowExceptionOnFalse && !$this->oMainAuthAccount) {
 				throw new ClientException(\RainLoop\Notifications::AuthError);
 			}
 		}
 
-		return $this->oSpecAuthAccount;
+		return $this->oMainAuthAccount;
 	}
 
 	public function SetAuthToken(Account $oAccount): void
 	{
-		$sSpecAuthToken = \MailSo\Base\Utils::UrlSafeBase64Encode(\SnappyMail\Crypt::EncryptToJSON($oAccount));
+		if (\is_subclass_of($oAccount, 'RainLoop\\Model\\Account')) {
+			throw new \LogicException('Only main Account can be set as AuthToken');
+		}
+		$this->oAdditionalAuthAccount = false;
+		$this->oMainAuthAccount = $oAccount;
+		Utils::SetSecureCookie(self::AUTH_SPEC_TOKEN_KEY, $oAccount);
+	}
 
-		$this->sSpecAuthToken = $sSpecAuthToken;
-		$this->oSpecAuthAccount = null;
-		Utils::SetCookie(self::AUTH_SPEC_TOKEN_KEY, $sSpecAuthToken);
-
-		if (isset($aAccounts[$oAccount->Email()])) {
-			$aAccounts[$oAccount->Email()] = $oAccount->GetAuthToken();
-			$this->SetAccounts($oAccount, $aAccounts);
+	public function SetAdditionalAuthToken(?AdditionalAccount $oAccount): void
+	{
+		$this->oAdditionalAuthAccount = $oAccount ?: false;
+		if ($oAccount) {
+			Utils::SetSecureCookie(self::AUTH_ADDITIONAL_TOKEN_KEY, $oAccount);
+		} else {
+			Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
 		}
 	}
+
+	/**
+	 * SignMe methods used for the "remember me" cookie
+	 */
 
 	private static function GetSignMeToken(): ?array
 	{
 		$sSignMeToken = Utils::GetCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
-		if (empty($sSignMeToken)) {
-			return null;
+		if ($sSignMeToken) {
+			$aResult = \SnappyMail\Crypt::DecryptUrlSafe($sSignMeToken);
+			if (isset($aResult['e'], $aResult['u']) && \SnappyMail\UUID::isValid($aResult['u'])) {
+				return $aResult;
+			}
+			Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
 		}
-		$aResult = \SnappyMail\Crypt::DecryptUrlSafe($sSignMeToken);
-		return \is_array($aResult) ? $aResult : null;
-	}
-
-	private static function SetSignMeTokenCookie(array $aData): void
-	{
-		Utils::SetCookie(
-			self::AUTH_SIGN_ME_TOKEN_KEY,
-			\SnappyMail\Crypt::EncryptUrlSafe($aData),
-			\time() + 3600 * 24 * 30 // 30 days
-		);
+		return null;
 	}
 
 	private function SetSignMeToken(Account $oAccount): void
@@ -230,25 +250,15 @@ trait UserAuth
 		$uuid = \SnappyMail\UUID::generate();
 		$data = \SnappyMail\Crypt::Encrypt($oAccount);
 
-		if ('xxtea' === $data[0]) {
-			static::SetSignMeTokenCookie(array(
+		Utils::SetCookie(
+			self::AUTH_SIGN_ME_TOKEN_KEY,
+			\SnappyMail\Crypt::EncryptUrlSafe([
 				'e' => $oAccount->Email(),
 				'u' => $uuid,
-				'x' => \base64_encode($data[1])
-			));
-		} else if ('sodium' === $data[0]) {
-			static::SetSignMeTokenCookie(array(
-				'e' => $oAccount->Email(),
-				'u' => $uuid,
-				's' => \base64_encode($data[1])
-			));
-		} else {
-			static::SetSignMeTokenCookie(array(
-				'e' => $oAccount->Email(),
-				'u' => $uuid,
-				'o' => \base64_encode($data[1])
-			));
-		}
+				$data[0] => \base64_encode($data[1])
+			]),
+			\time() + 3600 * 24 * 30 // 30 days
+		);
 
 		$this->StorageProvider()->Put(
 			$oAccount,
@@ -261,57 +271,54 @@ trait UserAuth
 	public function GetAccountFromSignMeToken(): ?Account
 	{
 		$aTokenData = static::GetSignMeToken();
-		if (!empty($aTokenData)) {
-			$oAccount = null;
-			if (!empty($aTokenData['e']) && !empty($aTokenData['u']) && \SnappyMail\UUID::isValid($aTokenData['u'])) {
+		if ($aTokenData) {
+			try
+			{
 				$sAuthToken = $this->StorageProvider()->Get(
 					$aTokenData['e'],
 					StorageType::SIGN_ME,
 					$aTokenData['u']
 				);
-				if (empty($sAuthToken)) {
-					return null;
-				}
-				if (!empty($aTokenData['x'])) {
-					$aAccountHash = \SnappyMail\Crypt::XxteaDecrypt($sAuthToken, \base64_decode($aTokenData['x']));
-				} else if (!empty($aTokenData['s'])) {
-					$aAccountHash = \SnappyMail\Crypt::SodiumDecrypt($sAuthToken, \base64_decode($aTokenData['s']));
-				} else if (!empty($aTokenData['o'])) {
-					$aAccountHash = \SnappyMail\Crypt::OpenSSLDecrypt($sAuthToken, \base64_decode($aTokenData['o']));
-				}
-				if (!empty($aAccountHash) && \is_array($aAccountHash)) {
-					$oAccount = Account::NewInstanceFromTokenArray($this, $aAccountHash);
-					if ($oAccount) {
-						try
-						{
-							$this->CheckMailConnection($oAccount);
-							// Update lifetime
-							$this->SetSignMeToken($oAccount);
+				if ($sAuthToken) {
+					$aAccountHash = \SnappyMail\Crypt::Decrypt([
+						\array_key_last($aTokenData),
+						\base64_decode(\end($aTokenData)),
+						$sAuthToken
+					]);
 
-							return $oAccount;
-						}
-						catch (\Throwable $oException)
-						{
-						}
+					$oAccount = \is_array($aAccountHash)
+						? Account::NewInstanceFromTokenArray($this, $aAccountHash) : null;
+					if ($oAccount) {
+						$this->CheckMailConnection($oAccount);
+						// Update lifetime
+						$this->SetSignMeToken($oAccount);
+
+						return $oAccount;
 					}
 				}
 			}
+			catch (\Throwable $oException)
+			{
+			}
+
+			$this->ClearSignMeData();
 		}
 
-		$this->ClearSignMeData();
 		return null;
 	}
 
 	protected function ClearSignMeData() : void
 	{
-		if (isset($_COOKIE[self::AUTH_SIGN_ME_TOKEN_KEY])) {
-			$aTokenData = static::GetSignMeToken();
-			if (!empty($aTokenData['e']) && !empty($aTokenData['u']) && \SnappyMail\UUID::isValid($aTokenData['u'])) {
-				$this->StorageProvider()->Clear($aTokenData['e'], StorageType::SIGN_ME, $aTokenData['u']);
-			}
+		$aTokenData = static::GetSignMeToken();
+		if ($aTokenData) {
+			$this->StorageProvider()->Clear($aTokenData['e'], StorageType::SIGN_ME, $aTokenData['u']);
 			Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
 		}
 	}
+
+	/**
+	 * Logout methods
+	 */
 
 	public function SetAuthLogoutToken(): void
 	{

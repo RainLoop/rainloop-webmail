@@ -203,7 +203,7 @@ trait User
 		$oAccount = $this->getAccountFromToken(false);
 		if ($oAccount)
 		{
-			if (!$oAccount->IsAdditionalAccount())
+			if (!\is_subclass_of($oAccount, 'RainLoop\\Model\\Account'))
 			{
 				$this->ClearSignMeData();
 				Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
@@ -393,7 +393,7 @@ trait User
 				$oAddressBookProvider = $this->AddressBookProvider($oAccount);
 				if ($oAddressBookProvider && $oAddressBookProvider->IsActive())
 				{
-					$aSuggestions = $oAddressBookProvider->GetSuggestions($oAccount->ParentEmailHelper(), $sQuery, $iLimit);
+					$aSuggestions = $oAddressBookProvider->GetSuggestions($this->GetMainEmail($oAccount), $sQuery, $iLimit);
 					if (!\count($aResult))
 					{
 						$aResult = $aSuggestions;

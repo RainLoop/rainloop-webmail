@@ -142,8 +142,13 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 
 	private function generateFullFileName(\RainLoop\Model\Account $oAccount, string $sKey, bool $bMkDir = false) : string
 	{
-		$sEmail = $oAccount->ParentEmailHelper() ?: 'nobody@unknown.tld';
-		$sSubEmail = $oAccount->IsAdditionalAccount() ? $oAccount->Email() : '';
+		if ($oAccount instanceof \RainLoop\Model\AdditionalAccount) {
+			$sEmail = $oAccount->ParentEmail();
+			$sSubEmail = $oAccount->Email();
+		} else {
+			$sEmail = $oAccount->Email() ?: 'nobody@unknown.tld';
+			$sSubEmail = '';
+		}
 
 		$aEmail = \explode('@', $sEmail ?: 'nobody@unknown.tld');
 		$sDomain = \trim(1 < \count($aEmail) ? \array_pop($aEmail) : '');

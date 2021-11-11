@@ -42,19 +42,9 @@ class Account implements \JsonSerializable
 	 */
 	private $oDomain;
 
-	/**
-	 * @var string
-	 */
-	private $sParentEmail = '';
-
 	public function Email() : string
 	{
 		return $this->sEmail;
-	}
-
-	public function ParentEmail() : string
-	{
-		return $this->sParentEmail;
 	}
 
 	public function ProxyAuthUser() : string
@@ -65,16 +55,6 @@ class Account implements \JsonSerializable
 	public function ProxyAuthPassword() : string
 	{
 		return $this->sProxyAuthPassword;
-	}
-
-	public function ParentEmailHelper() : string
-	{
-		return $this->sParentEmail ?: $this->sEmail;
-	}
-
-	public function IsAdditionalAccount() : bool
-	{
-		return !empty($this->sParentEmail);
 	}
 
 	public function IncLogin() : string
@@ -135,19 +115,13 @@ class Account implements \JsonSerializable
 			$this->sEmail,
 			$this->Domain()->IncHost(),
 			$this->Domain()->IncPort(),
-			$this->sPassword,
-			$this->sParentEmail
+			$this->sPassword
 		]));
 	}
 
 	public function SetPassword(string $sPassword) : void
 	{
 		$this->sPassword = $sPassword;
-	}
-
-	public function SetParentEmail(string $sParentEmail) : void
-	{
-		$this->sParentEmail = \trim(\MailSo\Base\Utils::IdnToAscii($sParentEmail, true));
 	}
 
 	public function SetProxyAuthUser(string $sProxyAuthUser) : void
@@ -168,29 +142,15 @@ class Account implements \JsonSerializable
 			$this->sLogin,            // 2
 			$this->sPassword,         // 3
 			$this->sClientCert,       // 4
-			$this->sParentEmail,      // 5
-			$this->sProxyAuthUser,    // 6
-			$this->sProxyAuthPassword // 7
+			$this->sProxyAuthUser,    // 5
+			$this->sProxyAuthPassword // 6
 		);
-	}
-
-	public function GetAuthToken() : string
-	{
-		return Utils::EncodeKeyValues($this->jsonSerialize());
-/*
-		return \MailSo\Base\Utils::UrlSafeBase64Encode(
-			\MailSo\Base\Crypt::Encrypt(
-				\json_encode($this),
-				\md5(APP_SALT.$sCustomKey)
-			)
-		);
-*/
 	}
 
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public static function NewInstanceFromAuthToken(\RainLoop\Actions $oActions, string $sToken): ?Account
+	public static function NewInstanceFromAuthToken(\RainLoop\Actions $oActions, string $sToken): ?self
 	{
 		return empty($sToken) ? null
 			: static::NewInstanceFromTokenArray(
@@ -200,14 +160,16 @@ class Account implements \JsonSerializable
 			);
 	}
 
-	public static function NewInstanceByLogin(\RainLoop\Actions $oActions, string $sEmail, string $sLogin, string $sPassword, string $sClientCert = '', bool $bThrowException = false): ?self
+	public static function NewInstanceByLogin(\RainLoop\Actions $oActions,
+		string $sEmail, string $sLogin, string $sPassword, string $sClientCert = '',
+		bool $bThrowException = false): ?self
 	{
 		$oAccount = null;
 		if (\strlen($sEmail) && \strlen($sLogin) && \strlen($sPassword)) {
 			$oDomain = $oActions->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
 			if ($oDomain) {
 				if ($oDomain->ValidateWhiteList($sEmail, $sLogin)) {
-					$oAccount = new self;
+					$oAccount = new static;
 
 					$oAccount->sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
 					$oAccount->sLogin = \MailSo\Base\Utils::IdnToAscii($sLogin);
@@ -236,7 +198,7 @@ class Account implements \JsonSerializable
 		array $aAccountHash,
 		bool $bThrowExceptionOnFalse = false): ?self
 	{
-		if (!empty($aAccountHash[0]) && 'account' === $aAccountHash[0] && 8 === \count($aAccountHash)) {
+		if (!empty($aAccountHash[0]) && 'account' === $aAccountHash[0] && 7 === \count($aAccountHash)) {
 			$oAccount = static::NewInstanceByLogin(
 				$oActions,
 				$aAccountHash[1],
@@ -248,15 +210,14 @@ class Account implements \JsonSerializable
 
 			if ($oAccount) {
 				// init proxy user/password
-				if (!empty($aAccountHash[6]) && !empty($aAccountHash[7])) {
-					$oAccount->SetProxyAuthUser($aAccountHash[6]);
-					$oAccount->SetProxyAuthPassword($aAccountHash[7]);
+				if (!empty($aAccountHash[5]) && !empty($aAccountHash[6])) {
+					$oAccount->SetProxyAuthUser($aAccountHash[5]);
+					$oAccount->SetProxyAuthPassword($aAccountHash[6]);
 				}
 
 				$oActions->Logger()->AddSecret($oAccount->Password());
 				$oActions->Logger()->AddSecret($oAccount->ProxyAuthPassword());
 
-				$oAccount->SetParentEmail($aAccountHash[5]);
 				return $oAccount;
 			}
 		}
