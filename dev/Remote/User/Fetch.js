@@ -19,13 +19,10 @@ import { AbstractFetchRemote } from 'Remote/AbstractFetch';
 
 import { FolderCollectionModel } from 'Model/FolderCollection';
 
-//const toUTF8 = window.TextEncoder
-//		? text => String.fromCharCode(...new TextEncoder().encode(text))
-//		: text => unescape(encodeURIComponent(text)),
-const urlsafeArray = array => btoa(unescape(encodeURIComponent(array.join('\x00').replace(/\r\n/g, '\n'))))
-		.replace('+', '-')
-		.replace('/', '_')
-		.replace('=', '');
+const urlSafeJSON = data => btoa(JSON.stringify(data))
+	.replace(/\+/g, '-')
+	.replace(/\//g, '_')
+	.replace(/=+$/, '');
 
 class RemoteUserFetch extends AbstractFetchRemote {
 	/**
@@ -185,22 +182,22 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	messageList(fCallback, params, bSilent = false) {
 		const
 			sFolderFullNameRaw = pString(params.Folder),
-			folderHash = getFolderHash(sFolderFullNameRaw),
-			useThreads = AppUserStore.threadsAllowed() && SettingsUserStore.useThreads() ? 1 : 0,
-			inboxUidNext = getFolderInboxName() === sFolderFullNameRaw ? getFolderUidNext(sFolderFullNameRaw) : '';
+			folderHash = getFolderHash(sFolderFullNameRaw);
 
-		params.Folder = sFolderFullNameRaw;
-		params.ThreadUid = useThreads ? params.ThreadUid : 0;
 		params = Object.assign({
-			Folder: '',
 			Offset: 0,
 			Limit: SettingsUserStore.messagesPerPage(),
 			Search: '',
-			UidNext: inboxUidNext,
-			UseThreads: useThreads,
-			ThreadUid: 0,
-			Sort: FolderUserStore.sortMode()
+			UidNext: getFolderInboxName() === sFolderFullNameRaw ? getFolderUidNext(sFolderFullNameRaw) : '',
+			Sort: FolderUserStore.sortMode(),
+			Hash: folderHash + SettingsGet('AccountHash')
 		}, params);
+		params.Folder = sFolderFullNameRaw;
+		if (AppUserStore.threadsAllowed() && SettingsUserStore.useThreads()) {
+			params.UseThreads = 1;
+		} else {
+			params.ThreadUid = 0;
+		}
 
 		let sGetAdd = '';
 
@@ -208,7 +205,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 			sGetAdd = 'MessageList/' +
 				SUB_QUERY_PREFIX +
 				'/' +
-				urlsafeArray([SettingsGet('ProjectHash'),folderHash].concat(Object.values(params)));
+				urlSafeJSON(params);
 			params = {};
 		}
 
@@ -256,11 +253,11 @@ class RemoteUserFetch extends AbstractFetchRemote {
 				'Message/' +
 					SUB_QUERY_PREFIX +
 					'/' +
-					urlsafeArray([
+					urlSafeJSON([
 						sFolderFullNameRaw,
 						iUid,
-						SettingsGet('ProjectHash'),
-						AppUserStore.threadsAllowed() && SettingsUserStore.useThreads() ? 1 : 0
+						AppUserStore.threadsAllowed() && SettingsUserStore.useThreads() ? 1 : 0,
+						SettingsGet('AccountHash')
 					]),
 				['Message']
 			);

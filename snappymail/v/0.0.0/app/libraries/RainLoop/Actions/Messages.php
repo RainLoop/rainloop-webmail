@@ -27,22 +27,19 @@ trait Messages
 		$sSort = '';
 
 		$sRawKey = $this->GetActionParam('RawKey', '');
-		$aValues = $this->getDecodedClientRawKeyValue($sRawKey, 10);
+		$aValues = \json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($sRawKey), true);
 		if ($aValues && 7 < \count($aValues))
 		{
-			$sFolder = (string) $aValues[2];
-			$iOffset = (int) $aValues[3];
-			$iLimit = (int) $aValues[4];
-			$sSearch = (string) $aValues[5];
-			$iUidNext = (int) $aValues[6];
-			$bUseThreads = (bool) $aValues[7];
-
-			if ($bUseThreads)
-			{
-				$iThreadUid = isset($aValues[8]) ? (int) $aValues[8] : 0;
+			$sFolder = (string) $aValues['Folder'];
+			$iOffset = (int) $aValues['Offset'];
+			$iLimit = (int) $aValues['Limit'];
+			$sSearch = (string) $aValues['Search'];
+			$iUidNext = (int) $aValues['UidNext'];
+			$bUseThreads = !empty($aValues['UseThreads']);
+			if ($bUseThreads) {
+				$iThreadUid = (int) $aValues['ThreadUid'];
 			}
-
-			$sSort = isset($aValues[9]) ? (string) $aValues[9] : '';
+			$sSort = (string) $aValues['Sort'];
 
 			$this->verifyCacheByKey($sRawKey);
 		}
@@ -445,8 +442,8 @@ trait Messages
 		$sFolder = '';
 		$iUid = 0;
 
-		$aValues = $this->getDecodedClientRawKeyValue($sRawKey, 4);
-		if ($aValues && 4 === count($aValues))
+		$aValues = \json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($sRawKey), true);
+		if ($aValues && 2 <= \count($aValues))
 		{
 			$sFolder = (string) $aValues[0];
 			$iUid = (int) $aValues[1];
@@ -844,22 +841,6 @@ trait Messages
 		}
 
 		return $this->TrueResponse($sResponseFunction);
-	}
-
-	private function getDecodedClientRawKeyValue(string $sRawKey, ?int $iLenCache = null) : ?array
-	{
-		if (!empty($sRawKey))
-		{
-			$sRawKey = \MailSo\Base\Utils::UrlSafeBase64Decode($sRawKey);
-			$aValues = explode("\x0", $sRawKey);
-
-			if (null === $iLenCache || $iLenCache  === count($aValues))
-			{
-				return $aValues;
-			}
-		}
-
-		return null;
 	}
 
 	private function deleteMessageAttachmnets(Account $oAccount) : void

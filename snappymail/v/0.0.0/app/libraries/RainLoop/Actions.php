@@ -1026,8 +1026,6 @@ class Actions
 			$aResult['Capa'] = $this->Capa(true);
 		}
 
-		$aResult['ProjectHash'] = \md5($aResult['AccountHash'] . APP_VERSION . $this->Plugins()->Hash());
-
 		$sStaticCache = $this->StaticCache();
 
 		$aResult['Theme'] = $this->GetTheme($bAdmin);
