@@ -203,6 +203,17 @@ trait Accounts
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
+	public function DoAccountSwitch(): array
+	{
+		if ($this->switchAccount(\trim($this->GetActionParam('Email', '')))) {
+			return $this->DefaultResponse(__FUNCTION__, $this->AppData(false));
+		}
+		return $this->FalseResponse(__FUNCTION__);
+	}
+
+	/**
+	 * @throws \MailSo\Base\Exceptions\Exception
+	 */
 	public function DoIdentityUpdate(): array
 	{
 		$oAccount = $this->getAccountFromToken();

@@ -16,6 +16,8 @@ import { doc, Settings, leftPanelDisabled } from 'Common/Globals';
 
 import { ThemeStore } from 'Stores/Theme';
 
+//import Remote from 'Remote/User/Fetch';
+
 export class SystemDropDownUserView extends AbstractViewRight {
 	constructor() {
 		super('SystemDropDown');
@@ -44,11 +46,28 @@ export class SystemDropDownUserView extends AbstractViewRight {
 	}
 
 	accountClick(account, event) {
+/* TODO
+		event.preventDefault();
+		event.stopPropagation();
+		Remote.switchAccount(
+			(iError, oData) => {
+				if (iError) {
+					console.dir({
+						iError: iError,
+						oData: oData
+					})
+				} else {
+					rl.setData(oData.Result);
+//					rl.route.reload();
+				}
+			},
+			account.email
+		);
+*/
 		if (account && 0 === event.button) {
 			AccountUserStore.loading(true);
 			setTimeout(() => AccountUserStore.loading(false), 1000);
 		}
-
 		return true;
 	}
 

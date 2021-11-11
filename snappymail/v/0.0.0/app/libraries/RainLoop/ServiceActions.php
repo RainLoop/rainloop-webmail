@@ -816,30 +816,9 @@ class ServiceActions
 	 */
 	public function ServiceChange() : string
 	{
-		$this->oHttp->ServerNoCache();
-
-		$oMainAccount = $this->oActions->getMainAccountFromToken(false);
-
-		if ($oMainAccount && $this->oActions->GetCapa(false, Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oMainAccount))
-		{
-			$oAccountToLogin = null;
-			$sEmail = empty($this->aPaths[2]) ? '' : \urldecode(\trim($this->aPaths[2]));
-			if (!empty($sEmail))
-			{
-				$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail);
-
-				$aAccounts = $this->oActions->GetAccounts($oMainAccount);
-				if (isset($aAccounts[$sEmail]))
-				{
-					$oAccountToLogin = \RainLoop\Model\AdditionalAccount::NewInstanceFromTokenArray(
-						$this->oActions,
-						$aAccounts[$sEmail]
-					);
-				}
-			}
-			$this->oActions->SetAdditionalAuthToken($oAccountToLogin);
-		}
-
+		$oMainAccount = $this->oActions->switchAccount(
+			empty($this->aPaths[2]) ? '' : \urldecode(\trim($this->aPaths[2]))
+		);
 		$this->oActions->Location('./');
 		return '';
 	}
@@ -849,7 +828,7 @@ class ServiceActions
 	 */
 	public function ErrorTemplates(string $sTitle, string $sDesc, bool $bShowBackLink = true)
 	{
-		return strtr(file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Error.html'), array(
+		return \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Error.html'), array(
 			'{{BaseWebStaticPath}}' => Utils::WebStaticPath(),
 			'{{ErrorTitle}}' => $sTitle,
 			'{{ErrorHeader}}' => $sTitle,
@@ -862,7 +841,7 @@ class ServiceActions
 
 	private function localError(string $sTitle, string $sDesc) : string
 	{
-		header('Content-Type: text/html; charset=utf-8');
+		\header('Content-Type: text/html; charset=utf-8');
 		return $this->ErrorTemplates($sTitle, \nl2br($sDesc));
 	}
 

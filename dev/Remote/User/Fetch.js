@@ -56,6 +56,13 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		this.defaultRequest(fCallback, 'Login', oData);
 	}
 
+/*
+	// TODO SystemDropDownUserView.accountClick
+	switchAccount(fCallback, email) {
+		this.defaultRequest(fCallback, 'AccountSwitch', {Email:email});
+	}
+*/
+
 	/**
 	 * @param {?Function} fCallback
 	 */

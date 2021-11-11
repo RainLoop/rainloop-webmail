@@ -143,6 +143,26 @@ trait UserAuth
 		return $oAccount;
 	}
 
+	public function switchAccount(string $sEmail) : bool
+	{
+		$this->Http()->ServerNoCache();
+		$oMainAccount = $this->getMainAccountFromToken(false);
+		if ($sEmail && $oMainAccount && $this->GetCapa(false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oMainAccount)) {
+			$oAccountToLogin = null;
+			$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail);
+			$aAccounts = $this->GetAccounts($oMainAccount);
+			if (isset($aAccounts[$sEmail])) {
+				$oAccountToLogin = \RainLoop\Model\AdditionalAccount::NewInstanceFromTokenArray(
+					$this,
+					$aAccounts[$sEmail]
+				);
+			}
+			$this->SetAdditionalAuthToken($oAccountToLogin);
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Returns RainLoop\Model\AdditionalAccount when it exists,
 	 * else returns RainLoop\Model\Account when it exists,

@@ -69,7 +69,7 @@ if (defined('APP_VERSION'))
 
 		define('APP_DATA_FOLDER_PATH_UNIX', str_replace('\\', '/', APP_DATA_FOLDER_PATH));
 
-		$sSalt = is_file(APP_DATA_FOLDER_PATH.'SALT.php') ? file_get_contents(APP_DATA_FOLDER_PATH.'SALT.php') : '';
+		$sSalt = is_file(APP_DATA_FOLDER_PATH.'SALT.php') ? trim(file_get_contents(APP_DATA_FOLDER_PATH.'SALT.php')) : '';
 		$sData = is_file(APP_DATA_FOLDER_PATH.'DATA.php') ? file_get_contents(APP_DATA_FOLDER_PATH.'DATA.php') : '';
 		$sInstalled = is_file(APP_DATA_FOLDER_PATH.'INSTALLED') ? file_get_contents(APP_DATA_FOLDER_PATH.'INSTALLED') : '';
 

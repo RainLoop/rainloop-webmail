@@ -201,9 +201,9 @@ class Account implements \JsonSerializable
 		if (!empty($aAccountHash[0]) && 'account' === $aAccountHash[0] && 7 === \count($aAccountHash)) {
 			$oAccount = static::NewInstanceByLogin(
 				$oActions,
-				$aAccountHash[1],
-				$aAccountHash[2],
-				$aAccountHash[3],
+				$aAccountHash[1] ?: '',
+				$aAccountHash[2] ?: '',
+				$aAccountHash[3] ?: '',
 				$aAccountHash[4] ?: '',
 				$bThrowExceptionOnFalse
 			);
