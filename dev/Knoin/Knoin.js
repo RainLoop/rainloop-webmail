@@ -162,11 +162,12 @@ const
 		});
 	},
 
-	hideScreen = screenToHide => {
+	hideScreen = (screenToHide, destroy) => {
 		screenToHide.onHide && screenToHide.onHide();
 		forEachViewModel(screenToHide, (vm, dom) => {
 			dom.hidden = true;
 			vm.onHide && vm.onHide();
+			destroy && vm.viewModelDom.remove();
 		});
 	},
 
@@ -318,7 +319,7 @@ export const
 	 */
 	startScreens = screensClasses => {
 		hasher.clear();
-		forEachObjectValue(SCREENS, screen => hideScreen(screen));
+		forEachObjectValue(SCREENS, screen => hideScreen(screen, 1));
 		SCREENS = {};
 		currentScreen = null,
 		defaultScreenName = '';
