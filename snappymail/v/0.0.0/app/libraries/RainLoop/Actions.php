@@ -881,8 +881,7 @@ class Actions
 				$aResult['IncLogin'] = $oAccount->IncLogin();
 				$aResult['OutLogin'] = $oAccount->OutLogin();
 				$aResult['AccountHash'] = $oAccount->Hash();
-//				$aResult['AccountSignMe'] = $oAccount->SignMe();
-				$aResult['AccountSignMe'] = false;
+				$aResult['AccountSignMe'] = isset($_COOKIE[self::AUTH_SIGN_ME_TOKEN_KEY]);
 				$aResult['ContactsIsAllowed'] = $this->AddressBookProvider($oAccount)->IsActive();
 				$aResult['ContactsSyncIsAllowed'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
 				$aResult['ContactsSyncInterval'] = (int)$oConfig->Get('contacts', 'sync_interval', 20);
