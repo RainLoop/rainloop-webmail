@@ -206,7 +206,8 @@ trait Accounts
 			$aResult['IncLogin'] = $oAccount->IncLogin();
 			$aResult['OutLogin'] = $oAccount->OutLogin();
 			$aResult['AccountHash'] = $oAccount->Hash();
-			$aResult['ParentEmail'] = $oAccount->ParentEmail();
+			$aResult['ParentEmail'] = ($oAccount instanceof \RainLoop\Model\AdditionalAccount)
+				? $oAccount->ParentEmail() : '';
 			$aResult['ContactsIsAllowed'] = $this->AddressBookProvider($oAccount)->IsActive();
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 			if ($oSettingsLocal instanceof Settings) {
