@@ -25,25 +25,6 @@ const urlSafeJSON = data => btoa(JSON.stringify(data))
 	.replace(/=+$/, '');
 
 class RemoteUserFetch extends AbstractFetchRemote {
-	/**
-	 * @param {?Function} fCallback
-	 */
-	folders(fCallback) {
-		this.defaultRequest(
-			fCallback,
-			'Folders',
-			{
-				SentFolder: SettingsGet('SentFolder'),
-				DraftFolder: SettingsGet('DraftFolder'),
-				SpamFolder: SettingsGet('SpamFolder'),
-				TrashFolder: SettingsGet('TrashFolder'),
-				ArchiveFolder: SettingsGet('ArchiveFolder')
-			},
-			null,
-			'',
-			['Folders']
-		);
-	}
 
 	/**
 	 * @param {?Function} fCallback
@@ -651,6 +632,9 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		this.defaultRequest(fCallback, 'ClearUserBackground');
 	}
 
+	/**
+	 * @param {?Function} fCallback
+	 */
 	foldersReload(fCallback) {
 		this.abort('Folders')
 			.postRequest('Folders', FolderUserStore.foldersLoading)

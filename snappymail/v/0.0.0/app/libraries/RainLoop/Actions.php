@@ -876,8 +876,6 @@ class Actions
 		if (!$bAdmin) {
 			$oAccount = $this->getAccountFromToken(false);
 			if ($oAccount) {
-				$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-
 				$aResult['Auth'] = true;
 				$aResult['Email'] = $oAccount->Email();
 				$aResult['IncLogin'] = $oAccount->IncLogin();
@@ -885,7 +883,7 @@ class Actions
 				$aResult['AccountHash'] = $oAccount->Hash();
 //				$aResult['AccountSignMe'] = $oAccount->SignMe();
 				$aResult['AccountSignMe'] = false;
-				$aResult['ContactsIsAllowed'] = $oAddressBookProvider->IsActive();
+				$aResult['ContactsIsAllowed'] = $this->AddressBookProvider($oAccount)->IsActive();
 				$aResult['ContactsSyncIsAllowed'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
 				$aResult['ContactsSyncInterval'] = (int)$oConfig->Get('contacts', 'sync_interval', 20);
 
@@ -936,6 +934,8 @@ class Actions
 					$aResult['TrashFolder'] = (string)$oSettingsLocal->GetConf('TrashFolder', '');
 					$aResult['ArchiveFolder'] = (string)$oSettingsLocal->GetConf('ArchiveFolder', '');
 					$aResult['HideUnsubscribed'] = (bool)$oSettingsLocal->GetConf('HideUnsubscribed', $aResult['HideUnsubscribed']);
+					$aResult['UseThreads'] = (bool)$oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
+					$aResult['ReplySameFolder'] = (bool)$oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
 				}
 
 				if ($oSettings instanceof Settings) {
@@ -965,11 +965,6 @@ class Actions
 						$aResult['UserBackgroundName'] = (string)$oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
 						$aResult['UserBackgroundHash'] = (string)$oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
 					}
-				}
-
-				if ($oSettingsLocal instanceof Settings) {
-					$aResult['UseThreads'] = (bool)$oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
-					$aResult['ReplySameFolder'] = (bool)$oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
 				}
 
 				$aResult['NewMailSounds'] = [];

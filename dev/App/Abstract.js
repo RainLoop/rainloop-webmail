@@ -23,10 +23,8 @@ export class AbstractApp {
 		this.Remote = Remote;
 	}
 
-	logoutReload(close = false) {
+	logoutReload() {
 		const url = logoutLink();
-
-		close && window.close && window.close();
 
 		if (location.href !== url) {
 			setTimeout(() => (Settings.app('inIframe') ? parent : window).location.href = url, 100);

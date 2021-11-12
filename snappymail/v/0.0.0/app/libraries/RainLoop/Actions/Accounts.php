@@ -201,7 +201,27 @@ trait Accounts
 	public function DoAccountSwitch(): array
 	{
 		if ($this->switchAccount(\trim($this->GetActionParam('Email', '')))) {
-			return $this->DefaultResponse(__FUNCTION__, $this->AppData(false));
+			$oAccount = $this->getAccountFromToken();
+			$aResult['Email'] = $oAccount->Email();
+			$aResult['IncLogin'] = $oAccount->IncLogin();
+			$aResult['OutLogin'] = $oAccount->OutLogin();
+			$aResult['AccountHash'] = $oAccount->Hash();
+			$aResult['ParentEmail'] = $oAccount->ParentEmail();
+			$aResult['ContactsIsAllowed'] = $this->AddressBookProvider($oAccount)->IsActive();
+			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
+			if ($oSettingsLocal instanceof Settings) {
+				$aResult['SentFolder'] = (string) $oSettingsLocal->GetConf('SentFolder', '');
+				$aResult['DraftFolder'] = (string) $oSettingsLocal->GetConf('DraftFolder', '');
+				$aResult['SpamFolder'] = (string) $oSettingsLocal->GetConf('SpamFolder', '');
+				$aResult['TrashFolder'] = (string) $oSettingsLocal->GetConf('TrashFolder', '');
+				$aResult['ArchiveFolder'] = (string) $oSettingsLocal->GetConf('ArchiveFolder', '');
+				$aResult['HideUnsubscribed'] = (bool) $oSettingsLocal->GetConf('HideUnsubscribed', $aResult['HideUnsubscribed']);
+				$aResult['UseThreads'] = (bool) $oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
+				$aResult['ReplySameFolder'] = (bool) $oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
+			}
+//			$this->Plugins()->InitAppData($bAdmin, $aResult, $oAccount);
+
+			return $this->DefaultResponse(__FUNCTION__, $aResult);
 		}
 		return $this->FalseResponse(__FUNCTION__);
 	}

@@ -18,6 +18,7 @@ import { ThemeStore } from 'Stores/Theme';
 
 import Remote from 'Remote/User/Fetch';
 import { getNotification } from 'Common/Translator';
+//import { FolderUserStore } from 'Stores/User/Folder';
 
 export class SystemDropDownUserView extends AbstractViewRight {
 	constructor() {
@@ -60,8 +61,15 @@ export class SystemDropDownUserView extends AbstractViewRight {
 							showScreenPopup(AccountPopupView, [account]);
 						}
 					} else {
-						// This does not work yet
-//						rl.setData(oData.Result);
+/*
+						// This does not work yet:
+						FolderUserStore.folderList([]);
+						MessageUserStore.list([]);
+						Object.entries(oData.Result).forEach((key, value) => rl.settings.set(key, value));
+						3. reload Folders = Remote.foldersReload
+						4. Change to INBOX = reload MessageList
+*/
+//						rl.route.reload();
 						location.reload();
 					}
 				}, 'AccountSwitch', {Email:account.email}
