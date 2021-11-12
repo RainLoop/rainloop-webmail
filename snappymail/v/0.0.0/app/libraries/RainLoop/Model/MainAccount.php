@@ -15,13 +15,13 @@ class MainAccount extends Account
 	public function CryptKey() : string
 	{
 		if (!$this->sCryptKey) {
-			$this->SetCryptKey($this->IncPassword() ?: APP_SALT);
+			$this->SetCryptKey($this->IncPassword());
 		}
 		return $this->sCryptKey;
 	}
 
 	public function SetCryptKey(string $sKey) : void
 	{
-		$this->sCryptKey = \sha1($sKey, true);
+		$this->sCryptKey = \sha1($sKey . APP_SALT, true);
 	}
 }

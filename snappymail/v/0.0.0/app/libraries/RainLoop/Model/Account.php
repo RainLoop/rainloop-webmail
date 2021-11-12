@@ -160,7 +160,7 @@ abstract class Account implements \JsonSerializable
 		bool $bThrowException = false): ?self
 	{
 		$oAccount = null;
-		if (\strlen($sEmail) && \strlen($sLogin) && \strlen($sPassword)) {
+		if ($sEmail && $sLogin && $sPassword) {
 			$oDomain = $oActions->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
 			if ($oDomain) {
 				if ($oDomain->ValidateWhiteList($sEmail, $sLogin)) {
