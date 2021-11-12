@@ -22,11 +22,6 @@ class AdditionalAccount extends Account
 		$this->sParentEmail = \trim(\MailSo\Base\Utils::IdnToAscii($sParentEmail, true));
 	}
 
-	public function CryptKey() : string
-	{
-		throw new \LogicException('Not allowed on AdditionalAccount');
-	}
-
 	public function Hash() : string
 	{
 		return \md5(parent::Hash() . $this->sParentEmail);
@@ -39,7 +34,7 @@ class AdditionalAccount extends Account
 		return $aData;
 	}
 
-	public function asTokenArray(Account $oMainAccount) : array
+	public function asTokenArray(MainAccount $oMainAccount) : array
 	{
 		$sHash = $oMainAccount->CryptKey();
 		$aData = $this->jsonSerialize();

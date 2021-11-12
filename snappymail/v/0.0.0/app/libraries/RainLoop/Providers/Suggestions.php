@@ -27,8 +27,7 @@ class Suggestions extends \RainLoop\Providers\AbstractProvider
 	public function Process(\RainLoop\Model\Account $oAccount, string $sQuery, int $iLimit = 20) : array
 	{
 		$aSuggestions = array();
-		if ($oAccount instanceof \RainLoop\Model\Account &&
-			$this->IsActive() && \is_array($this->aDrivers) && 0 < \strlen($sQuery))
+		if ($this->IsActive() && \is_array($this->aDrivers) && 0 < \strlen($sQuery))
 		{
 			foreach ($this->aDrivers as $oDriver)
 			{

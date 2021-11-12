@@ -201,15 +201,13 @@ trait User
 	public function DoLogout() : array
 	{
 		$oAccount = $this->getAccountFromToken(false);
-		if ($oAccount)
-		{
-			if (!\is_subclass_of($oAccount, 'RainLoop\\Model\\Account'))
-			{
+		if ($oAccount) {
+			if ($oAccount instanceof \RainLoop\Model\MainAccount) {
 				$this->ClearSignMeData();
 				Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
 			}
+			Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
 		}
-
 		return $this->TrueResponse(__FUNCTION__);
 	}
 

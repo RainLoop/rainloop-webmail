@@ -323,7 +323,7 @@ trait Contacts
 			$this->AddressBookProvider($oAccount)->Export($this->GetMainEmail($oAccount), 'csv') : false;
 	}
 
-	private function importContactsFromVcfFile(Model\Account $oAccount, /*resource*/ $rFile): int
+	private function importContactsFromVcfFile(\RainLoop\Model\Account $oAccount, /*resource*/ $rFile): int
 	{
 		$iCount = 0;
 		if ($oAccount && \is_resource($rFile)) {

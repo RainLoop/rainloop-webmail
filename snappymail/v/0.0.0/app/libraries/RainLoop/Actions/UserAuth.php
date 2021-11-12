@@ -5,6 +5,7 @@ namespace RainLoop\Actions;
 use RainLoop\Notifications;
 use RainLoop\Utils;
 use RainLoop\Model\Account;
+use RainLoop\Model\MainAccount;
 use RainLoop\Model\AdditionalAccount;
 use RainLoop\Providers\Storage\Enumerations\StorageType;
 use RainLoop\Exceptions\ClientException;
@@ -119,7 +120,7 @@ trait UserAuth
 					$oAccount->SetParentEmail($oMainAccount->Email());
 				}
 			} else {
-				$oAccount = Account::NewInstanceByLogin($this, $sEmail, $sLogin, $sPassword, $sClientCert, true);
+				$oAccount = MainAccount::NewInstanceByLogin($this, $sEmail, $sLogin, $sPassword, $sClientCert, true);
 			}
 
 			if (!$oAccount) {
@@ -197,11 +198,9 @@ trait UserAuth
 	}
 
 	/**
-	 * Returns RainLoop\Model\Account when it exists, else null
-	 *
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function getMainAccountFromToken(bool $bThrowExceptionOnFalse = true): ?Account
+	public function getMainAccountFromToken(bool $bThrowExceptionOnFalse = true): ?MainAccount
 	{
 		if (!$this->oMainAuthAccount) {
 			if (isset($_COOKIE[self::AUTH_SPEC_LOGOUT_TOKEN_KEY])) {
@@ -213,7 +212,7 @@ trait UserAuth
 
 			$aData = Utils::GetSecureCookie(self::AUTH_SPEC_TOKEN_KEY);
 			if ($aData) {
-				$this->oMainAuthAccount = Account::NewInstanceFromTokenArray(
+				$this->oMainAuthAccount = MainAccount::NewInstanceFromTokenArray(
 					$this,
 					$aData,
 					$bThrowExceptionOnFalse
@@ -233,11 +232,8 @@ trait UserAuth
 		return $this->oMainAuthAccount;
 	}
 
-	public function SetAuthToken(Account $oAccount): void
+	public function SetAuthToken(MainAccount $oAccount): void
 	{
-		if (\is_subclass_of($oAccount, 'RainLoop\\Model\\Account')) {
-			throw new \LogicException('Only main Account can be set as AuthToken');
-		}
 		$this->oAdditionalAuthAccount = false;
 		$this->oMainAuthAccount = $oAccount;
 		Utils::SetSecureCookie(self::AUTH_SPEC_TOKEN_KEY, $oAccount);
@@ -270,7 +266,7 @@ trait UserAuth
 		return null;
 	}
 
-	private function SetSignMeToken(Account $oAccount): void
+	private function SetSignMeToken(MainAccount $oAccount): void
 	{
 		$this->ClearSignMeData();
 
@@ -295,7 +291,7 @@ trait UserAuth
 		);
 	}
 
-	public function GetAccountFromSignMeToken(): ?Account
+	public function GetAccountFromSignMeToken(): ?MainAccount
 	{
 		$aTokenData = static::GetSignMeToken();
 		if ($aTokenData) {
@@ -314,7 +310,7 @@ trait UserAuth
 					]);
 
 					$oAccount = \is_array($aAccountHash)
-						? Account::NewInstanceFromTokenArray($this, $aAccountHash) : null;
+						? MainAccount::NewInstanceFromTokenArray($this, $aAccountHash) : null;
 					if ($oAccount) {
 						$this->CheckMailConnection($oAccount);
 						// Update lifetime

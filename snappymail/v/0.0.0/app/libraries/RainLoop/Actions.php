@@ -1420,7 +1420,7 @@ class Actions
 		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');
 
 		$_FILES = isset($_FILES) ? $_FILES : null;
-		if ($oAccount instanceof Model\Account &&
+		if ($oAccount &&
 			$this->Config()->Get('labs', 'allow_message_append', false) &&
 			isset($_FILES, $_FILES['AppendFile'], $_FILES['AppendFile']['name'],
 				$_FILES['AppendFile']['tmp_name'], $_FILES['AppendFile']['size'])) {

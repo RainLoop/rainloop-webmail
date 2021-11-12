@@ -5,7 +5,7 @@ namespace RainLoop\Model;
 use RainLoop\Utils;
 use RainLoop\Exceptions\ClientException;
 
-class Account implements \JsonSerializable
+abstract class Account implements \JsonSerializable
 {
 	/**
 	 * @var string
@@ -41,11 +41,6 @@ class Account implements \JsonSerializable
 	 * @var \RainLoop\Model\Domain
 	 */
 	private $oDomain;
-
-	/**
-	 * @var string
-	 */
-	private $sCryptKey;
 
 	public function Email() : string
 	{
@@ -99,14 +94,6 @@ class Account implements \JsonSerializable
 		return $this->IncPassword();
 	}
 
-	public function CryptKey() : string
-	{
-		if (!$this->sCryptKey) {
-			$this->SetCryptKey($this->IncPassword() ?: APP_SALT);
-		}
-		return $this->sCryptKey;
-	}
-
 	public function ClientCert() : string
 	{
 		return $this->sClientCert;
@@ -130,11 +117,6 @@ class Account implements \JsonSerializable
 	public function SetPassword(string $sPassword) : void
 	{
 		$this->sPassword = $sPassword;
-	}
-
-	public function SetCryptKey(string $sKey) : void
-	{
-		$this->sCryptKey = \sha1($sKey, true);
 	}
 
 	public function SetProxyAuthUser(string $sProxyAuthUser) : void

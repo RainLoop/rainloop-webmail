@@ -5,6 +5,7 @@ namespace RainLoop\Actions;
 use RainLoop\Enumerations\Capa;
 use RainLoop\Exceptions\ClientException;
 use RainLoop\Model\Account;
+use RainLoop\Model\MainAccount;
 use RainLoop\Model\AdditionalAccount;
 use RainLoop\Model\Identity;
 use RainLoop\Notifications;
@@ -19,11 +20,8 @@ trait Accounts
 		return $oAccount instanceof AdditionalAccount ? $oAccount->ParentEmail() : $oAccount->Email();
 	}
 
-	public function GetAccounts(Account $oAccount): array
+	public function GetAccounts(MainAccount $oAccount): array
 	{
-		if (\is_subclass_of($oAccount, 'RainLoop\\Model\\Account')) {
-			throw new \LogicException('Only main account can have sub accounts');
-		}
 		if ($this->GetCapa(false, Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
 			$sAccounts = $this->StorageProvider()->Get($oAccount,
 				StorageType::CONFIG,
@@ -41,7 +39,7 @@ trait Accounts
 	/**
 	 * Attempt to convert the old less secure data into better secured data
 	 */
-	protected function ConvertInsecureAccounts(Account $oMainAccount) : array
+	protected function ConvertInsecureAccounts(MainAccount $oMainAccount) : array
 	{
 		$sAccounts = $this->StorageProvider()->Get($oMainAccount, StorageType::CONFIG, 'accounts');
 		if (!$sAccounts || '{' !== $sAccounts[0]) {
@@ -113,11 +111,8 @@ trait Accounts
 		return $aNewAccounts;
 	}
 
-	protected function SetAccounts(Account $oAccount, array $aAccounts = array()): void
+	protected function SetAccounts(MainAccount $oAccount, array $aAccounts = array()): void
 	{
-		if (\is_subclass_of($oAccount, 'RainLoop\\Model\\Account')) {
-			throw new \LogicException('Only main account can have sub accounts');
-		}
 		$sParentEmail = $oAccount->Email();
 		if ($aAccounts) {
 			$this->StorageProvider()->Put(
@@ -303,10 +298,9 @@ trait Accounts
 	}
 
 	/**
-	 * @param Account $oAccount
 	 * @return Identity[]
 	 */
-	public function GetIdentities(Account $oAccount): array
+	public function GetIdentities(MainAccount $oAccount): array
 	{
 		// A custom name for a single identity is also stored in this system
 		$allowMultipleIdentities = $this->GetCapa(false, Capa::IDENTITIES, $oAccount);
