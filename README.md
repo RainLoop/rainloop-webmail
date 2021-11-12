@@ -83,6 +83,7 @@ This fork of RainLoop has the following changes:
 * Support IMAP RFC 5819 LIST-STATUS
 * Support IMAP RFC 7628 SASL OAUTHBEARER aka XOAUTH2
 * Support IMAP4rev2 RFC 9051
+* Support Sodium and OpenSSL for encryption
 
 
 ### Supported browsers
@@ -137,23 +138,23 @@ RainLoop 1.15 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.158.025	|   89.375	|
-|app.js          	|4.215.733	|  437.681	|
+|admin.js        	|2.158.025	|   89.354	|
+|app.js          	|4.215.733	|  437.655	|
 |boot.js         	|  672.433	|    2.780	|
 |libs.js         	|  647.679	|  209.228	|
 |polyfills.js    	|  325.908	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|8.019.778	|  739.349	|
+|TOTAL           	|8.019.778	|  739.302	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
-|admin.min.js    	|  255.514	|   45.084	| 73.899	| 13.985	| 60.674  	| 12.567	|
-|app.min.js      	|  516.000	|  222.160	|140.430	| 66.802	|110.657  	| 56.740	|
+|admin.min.js    	|  255.514	|   45.081	| 73.899	| 13.989	| 60.674  	| 12.573	|
+|app.min.js      	|  516.000	|  222.008	|140.430	| 66.774	|110.657  	| 56.554	|
 |boot.min.js     	|   66.456	|    1.655	| 22.553	|    996	| 20.043  	|    815	|
 |libs.min.js     	|  574.626	|  100.108	|177.280	| 36.501	|151.855  	| 32.669	|
 |polyfills.min.js	|   32.608	|        0	| 11.315	|      0	| 10.072  	|      0	|
-|TOTAL           	|1.445.204	|  369.007	|425.477	|118.284	|353.301  	|102.791	|
-|TOTAL (no admin)	|1.189.690	|  323.923	|351.061	|104.299	|292.627  	| 90.224	|
+|TOTAL           	|1.445.204	|  368.852	|425.477	|118.260	|353.301  	|102.611	|
+|TOTAL (no admin)	|1.189.690	|  323.771	|351.061	|104.271	|292.627  	| 90.038	|
 
 For a user its around 70% smaller and faster than traditional RainLoop.
 
@@ -192,12 +193,12 @@ For a user its around 70% smaller and faster than traditional RainLoop.
 
 |css/*       	|RainLoop	|Snappy   	|RL gzip	|SM gzip	|SM brotli	|
 |------------	|-------:	|------:	|------:	|------:	|--------:	|
-|app.css     	| 340.334	| 89.726	| 46.959	| 16.893	| 14.593	|
-|app.min.css 	| 274.791	| 72.537	| 39.618	| 15.002	| 13.287	|
+|app.css     	| 340.334	| 88.939	| 46.959	| 16.765	| 14.494	|
+|app.min.css 	| 274.791	| 72.135	| 39.618	| 14.944	| 13.223	|
 |boot.css    	|       	|  1.326	|       	|    664	|    545	|
 |boot.min.css	|       	|  1.071	|       	|    590	|    474	|
-|admin.css    	|       	| 38.341	|       	|  8.317	|  7.268	|
-|admin.min.css	|       	| 29.916	|       	|  7.232	|  6.417	|
+|admin.css    	|       	| 37.226	|       	|  8.109	|  7.080	|
+|admin.min.css	|       	| 29.236	|       	|  7.089	|  6.304	|
 
 
 ### Squire vs CKEditor
