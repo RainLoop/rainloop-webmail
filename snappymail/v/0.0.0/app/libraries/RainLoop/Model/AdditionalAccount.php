@@ -38,7 +38,8 @@ class AdditionalAccount extends Account
 	{
 		$sHash = $oMainAccount->CryptKey();
 		$aData = $this->jsonSerialize();
-		$aData[3] = \SnappyMail\Crypt::EncryptUrlSafe($aData[3], $sHash);
+		$aData[3] = \SnappyMail\Crypt::EncryptUrlSafe($aData[3], $sHash); // sPassword
+		$aData[6] = \SnappyMail\Crypt::EncryptUrlSafe($aData[6], $sHash); // sProxyAuthPassword
 		$aData[] = \hash_hmac('sha1', $aData[3], $sHash);
 		return $aData;
 	}
@@ -55,6 +56,7 @@ class AdditionalAccount extends Account
 			$sParentEmail = \array_pop($aAccountHash);
 			if ($sPasswordHMAC && $sPasswordHMAC === \hash_hmac('sha1', $aAccountHash[3], $sHash)) {
 				$aAccountHash[3] = \SnappyMail\Crypt::DecryptUrlSafe($aAccountHash[3], $sHash);
+				$aAccountHash[6] = \SnappyMail\Crypt::DecryptUrlSafe($aAccountHash[6], $sHash);
 			}
 			$oAccount = parent::NewInstanceFromTokenArray($oActions, $aAccountHash, $bThrowExceptionOnFalse);
 			if ($oAccount) {
