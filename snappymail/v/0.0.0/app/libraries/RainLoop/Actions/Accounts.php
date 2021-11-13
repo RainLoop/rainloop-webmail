@@ -278,7 +278,7 @@ trait Accounts
 		$oAccount = $this->getMainAccountFromToken();
 		if (1 < \count($aAccounts)) {
 			$aAccounts = \array_filter(\array_merge(
-				\array_fill_keys($aOrder['Accounts'], null),
+				\array_fill_keys($aAccounts, null),
 				$this->GetAccounts($oAccount)
 			));
 			$this->SetAccounts($oAccount, $aAccounts);
