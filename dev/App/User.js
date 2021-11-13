@@ -176,10 +176,6 @@ class AppUser extends AbstractApp {
 		);
 	}
 
-	recacheInboxMessageList() {
-		Remote.messageList(null, {Folder: getFolderInboxName()}, true);
-	}
-
 	messagesMoveTrigger() {
 		const sTrashFolder = FolderUserStore.trashFolder(),
 			sSpamFolder = FolderUserStore.spamFolder();
@@ -515,7 +511,7 @@ class AppUser extends AbstractApp {
 								if (folderFromCache.fullNameRaw === FolderUserStore.currentFolderFullNameRaw()) {
 									this.reloadMessageList();
 								} else if (getFolderInboxName() === folderFromCache.fullNameRaw) {
-									this.recacheInboxMessageList();
+									Remote.messageList(null, {Folder: getFolderInboxName()}, true);
 								}
 							}
 						}
@@ -604,7 +600,7 @@ class AppUser extends AbstractApp {
 						folder.messageCountUnread(folder.messageCountUnread() - alreadyUnread);
 					}
 
-					Remote.messageSetSeen(()=>0, sFolderFullNameRaw, rootUids, true);
+					Remote.messageSetSeen(null, sFolderFullNameRaw, rootUids, true);
 					break;
 
 				case MessageSetAction.UnsetSeen:
@@ -617,7 +613,7 @@ class AppUser extends AbstractApp {
 						folder.messageCountUnread(folder.messageCountUnread() - alreadyUnread + rootUids.length);
 					}
 
-					Remote.messageSetSeen(()=>0, sFolderFullNameRaw, rootUids, false);
+					Remote.messageSetSeen(null, sFolderFullNameRaw, rootUids, false);
 					break;
 
 				case MessageSetAction.SetFlag:
@@ -625,7 +621,7 @@ class AppUser extends AbstractApp {
 						MessageFlagsCache.storeBySetAction(sFolderFullNameRaw, sSubUid, iSetAction)
 					);
 
-					Remote.messageSetFlagged(()=>0, sFolderFullNameRaw, rootUids, true);
+					Remote.messageSetFlagged(null, sFolderFullNameRaw, rootUids, true);
 					break;
 
 				case MessageSetAction.UnsetFlag:
@@ -633,7 +629,7 @@ class AppUser extends AbstractApp {
 						MessageFlagsCache.storeBySetAction(sFolderFullNameRaw, sSubUid, iSetAction)
 					);
 
-					Remote.messageSetFlagged(()=>0, sFolderFullNameRaw, rootUids, false);
+					Remote.messageSetFlagged(null, sFolderFullNameRaw, rootUids, false);
 					break;
 				// no default
 			}
@@ -769,7 +765,7 @@ class AppUser extends AbstractApp {
 							FolderUserStore.hasCapability('LIST-STATUS') || this.folderInformationMultiply(true);
 						}, 1000);
 
-						setTimeout(() => Remote.appDelayStart(()=>0), 35000);
+						setTimeout(() => Remote.appDelayStart(null), 35000);
 
 						// When auto-login is active
 						if (

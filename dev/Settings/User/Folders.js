@@ -143,20 +143,20 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 	toggleFolderKolabType(folder, event) {
 		let type = event.target.value;
 		// TODO: append '.default' ?
-		Remote.folderSetMetadata(()=>0, folder.fullNameRaw, FolderMetadataKeys.KolabFolderType, type);
+		Remote.folderSetMetadata(null, folder.fullNameRaw, FolderMetadataKeys.KolabFolderType, type);
 		folder.kolabType(type);
 	}
 
 	toggleFolderSubscription(folder) {
 		let subscribe = !folder.subscribed();
 		Local.set(ClientSideKeyName.FoldersLashHash, '');
-		Remote.folderSetSubscribe(()=>0, folder.fullNameRaw, subscribe);
+		Remote.folderSetSubscribe(null, folder.fullNameRaw, subscribe);
 		folder.subscribed(subscribe);
 	}
 
 	toggleFolderCheckable(folder) {
 		let checkable = !folder.checkable();
-		Remote.folderSetCheckable(()=>0, folder.fullNameRaw, checkable);
+		Remote.folderSetCheckable(null, folder.fullNameRaw, checkable);
 		folder.checkable(checkable);
 	}
 }

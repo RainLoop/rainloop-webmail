@@ -609,7 +609,7 @@ export class MailMessageView extends AbstractViewRight {
 		let oMessage = MessageUserStore.message()
 		if (oMessage && oMessage.readReceipt()) {
 			Remote.sendReadReceiptMessage(
-				()=>0,
+				null,
 				oMessage.folder,
 				oMessage.uid,
 				oMessage.readReceipt(),

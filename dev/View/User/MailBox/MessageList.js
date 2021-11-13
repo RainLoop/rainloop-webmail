@@ -490,7 +490,7 @@ export class MailMessageList extends AbstractViewRight {
 							MessageFlagsCache.clearFolder(sFolderFullNameRaw);
 						}
 
-						Remote.messageSetSeenToAll(()=>0, sFolderFullNameRaw, true, iThreadUid ? uids : null);
+						Remote.messageSetSeenToAll(null, sFolderFullNameRaw, true, iThreadUid ? uids : null);
 						break;
 					case MessageSetAction.UnsetSeen:
 						folder = getFolderFromCacheList(sFolderFullNameRaw);
@@ -516,7 +516,7 @@ export class MailMessageList extends AbstractViewRight {
 							MessageFlagsCache.clearFolder(sFolderFullNameRaw);
 						}
 
-						Remote.messageSetSeenToAll(()=>0, sFolderFullNameRaw, false, iThreadUid ? uids : null);
+						Remote.messageSetSeenToAll(null, sFolderFullNameRaw, false, iThreadUid ? uids : null);
 						break;
 					// no default
 				}
