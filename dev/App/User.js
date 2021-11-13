@@ -674,18 +674,6 @@ class AppUser extends AbstractApp {
 		Local.set(ClientSideKeyName.ExpandedFolders, aExpandedList);
 	}
 
-	initLeftSideLayoutResizer() {
-		const left = elementById('rl-left'),
-			right = elementById('rl-right'),
-			fToggle = () =>
-				setLayoutResizer(left, right, ClientSideKeyName.FolderListSize,
-					(ThemeStore.isMobile() || leftPanelDisabled()) ? 0 : 'Width');
-		if (left && right) {
-			fToggle();
-			leftPanelDisabled.subscribe(fToggle);
-		}
-	}
-
 	/**
 	 * @param {string} link
 	 * @returns {boolean}
@@ -755,7 +743,7 @@ class AppUser extends AbstractApp {
 
 						ContactUserStore.init();
 
-						this.accountsAndIdentities(true);
+						this.accountsAndIdentities();
 
 						setTimeout(() => {
 							const cF = FolderUserStore.currentFolderFullNameRaw();
@@ -791,7 +779,18 @@ class AppUser extends AbstractApp {
 						);
 						SettingsUserStore.delayLogout();
 
-						setTimeout(() => this.initLeftSideLayoutResizer(), 1);
+						// initLeftSideLayoutResizer
+						setTimeout(() => {
+							const left = elementById('rl-left'),
+								right = elementById('rl-right'),
+								fToggle = () =>
+									setLayoutResizer(left, right, ClientSideKeyName.FolderListSize,
+										(ThemeStore.isMobile() || leftPanelDisabled()) ? 0 : 'Width');
+							if (left && right) {
+								fToggle();
+								leftPanelDisabled.subscribe(fToggle);
+							}
+						}, 1);
 
 						setInterval(this.reloadTime(), 60000);
 

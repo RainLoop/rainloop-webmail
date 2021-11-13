@@ -1,9 +1,10 @@
 import { AppUserStore } from 'Stores/User/App';
 import { AccountUserStore } from 'Stores/User/Account';
 import { MessageUserStore } from 'Stores/User/Message';
+//import { FolderUserStore } from 'Stores/User/Folder';
 
 import { Capa, Scope } from 'Common/Enums';
-import { settings } from 'Common/Links';
+import { /*root,*/ settings } from 'Common/Links';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewRight } from 'Knoin/AbstractViews';
@@ -12,13 +13,13 @@ import { KeyboardShortcutsHelpPopupView } from 'View/Popup/KeyboardShortcutsHelp
 import { AccountPopupView } from 'View/Popup/Account';
 import { ContactsPopupView } from 'View/Popup/Contacts';
 
-import { doc, Settings, leftPanelDisabled } from 'Common/Globals';
+import { doc, Settings/*, SettingsGet*/, leftPanelDisabled } from 'Common/Globals';
 
 import { ThemeStore } from 'Stores/Theme';
 
 import Remote from 'Remote/User/Fetch';
 import { getNotification } from 'Common/Translator';
-//import { FolderUserStore } from 'Stores/User/Folder';
+//import { clearCache } from 'Common/Cache';
 
 export class SystemDropDownUserView extends AbstractViewRight {
 	constructor() {
@@ -61,13 +62,23 @@ export class SystemDropDownUserView extends AbstractViewRight {
 							showScreenPopup(AccountPopupView, [account]);
 						}
 					} else {
-/*
-						// This does not work yet:
-						FolderUserStore.folderList([]);
-						MessageUserStore.list([]);
+/*						// Not working yet
 						Object.entries(oData.Result).forEach((key, value) => rl.settings.set(key, value));
-						3. reload Folders = Remote.foldersReload
-						4. Change to INBOX = reload MessageList
+						clearCache();
+//						MessageUserStore.setMessage();
+//						MessageUserStore.purgeMessageBodyCache();
+//						MessageUserStore.hideMessageBodies();
+						MessageUserStore.list([]);
+//						FolderUserStore.folderList([]);
+						Remote.foldersReload(value => {
+							if (value) {
+								value = SettingsGet('StartupUrl');
+								rl.route.setHash(root(value), true);
+//								4. Change to INBOX = reload MessageList
+//								MessageUserStore.setMessageList();
+							}
+						});
+						AccountUserStore.loading(false);
 */
 //						rl.route.reload();
 						location.reload();

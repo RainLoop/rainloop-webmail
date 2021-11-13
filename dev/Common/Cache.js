@@ -7,20 +7,21 @@ let FOLDERS_CACHE = {},
 	FOLDERS_UID_NEXT_CACHE = {},
 	MESSAGE_FLAGS_CACHE = {},
 	NEW_MESSAGE_CACHE = {},
+	REQUESTED_MESSAGE_CACHE = {},
 	inboxFolderName = 'INBOX';
-
-const REQUESTED_MESSAGE_CACHE = {};
 
 export const
 	/**
 	 * @returns {void}
 	 */
-	clear = () => {
+	clearCache = () => {
 		FOLDERS_CACHE = {};
 		FOLDERS_NAME_CACHE = {};
 		FOLDERS_HASH_CACHE = {};
 		FOLDERS_UID_NEXT_CACHE = {};
 		MESSAGE_FLAGS_CACHE = {};
+		NEW_MESSAGE_CACHE = {};
+		REQUESTED_MESSAGE_CACHE = {};
 	},
 
 	/**
