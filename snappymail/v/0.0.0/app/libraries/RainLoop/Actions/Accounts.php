@@ -224,21 +224,19 @@ trait Accounts
 	 */
 	public function DoAccountsAndIdentities(): array
 	{
-		$oAccount = $this->getMainAccountFromToken();
-
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'Accounts' => \array_map(
 				'MailSo\\Base\\Utils::IdnToUtf8',
-				\array_keys($this->GetAccounts($oAccount))
+				\array_keys($this->GetAccounts($this->getMainAccountFromToken()))
 			),
-			'Identities' => $this->GetIdentities($oAccount)
+			'Identities' => $this->GetIdentities($this->getAccountFromToken())
 		));
 	}
 
 	/**
 	 * @return Identity[]
 	 */
-	public function GetIdentities(MainAccount $oAccount): array
+	public function GetIdentities(Account $oAccount): array
 	{
 		// A custom name for a single identity is also stored in this system
 		$allowMultipleIdentities = $this->GetCapa(false, Capa::IDENTITIES, $oAccount);
@@ -279,6 +277,19 @@ trait Accounts
 		}
 
 		return $identities;
+	}
+
+	public function GetIdentityByID(Account $oAccount, string $sID, bool $bFirstOnEmpty = false): ?Identity
+	{
+		$aIdentities = $this->GetIdentities($oAccount);
+
+		foreach ($aIdentities as $oIdentity) {
+			if ($oIdentity && $sID === $oIdentity->Id()) {
+				return $oIdentity;
+			}
+		}
+
+		return $bFirstOnEmpty && isset($aIdentities[0]) ? $aIdentities[0] : null;
 	}
 
 }

@@ -1111,19 +1111,6 @@ class Actions
 		);
 	}
 
-	public function GetIdentityByID(Model\Account $oAccount, string $sID, bool $bFirstOnEmpty = false): ?Model\Identity
-	{
-		$aIdentities = $this->GetIdentities($oAccount);
-
-		foreach ($aIdentities as $oIdentity) {
-			if ($oIdentity && $sID === $oIdentity->Id()) {
-				return $oIdentity;
-			}
-		}
-
-		return $bFirstOnEmpty && isset($aIdentities[0]) ? $aIdentities[0] : null;
-	}
-
 	public function setConfigFromParams(Config\Application $oConfig, string $sParamName, string $sConfigSector, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null): void
 	{
 		$sValue = $this->GetActionParam($sParamName, '');

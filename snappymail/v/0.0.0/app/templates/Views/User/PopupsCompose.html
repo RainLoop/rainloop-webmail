@@ -22,19 +22,22 @@
 			<tr>
 				<td data-i18n="GLOBAL/FROM"></td>
 				<td>
+					<!-- ko if: 1 < identitiesOptions().length -->
 					<div class="dropdown" style="display:inline-block" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: identitiesDropdownTrigger">
-						<a class="dropdown-toggle e-identity" href="#" tabindex="-1"
+						<a class="dropdown-toggle e-identity multiply" href="#" tabindex="-1"
 							id="identity-label-id" role="button"
-							data-bind="text: currentIdentityView, css: {'multiply': 1 < identitiesOptions().length }">
+							data-bind="text: currentIdentityView">
 						</a>
-						<!-- ko if: 1 < identitiesOptions().length -->
-							<ul class="dropdown-menu" role="menu" aria-labelledby="identity-label-id" data-bind="foreach: identitiesOptions">
-								<li role="presentation">
-									<a tabindex="-1" href="#" data-bind="click: function (oIdentity) { $root.selectIdentity(oIdentity); return true; }, text: optText"></a>
-								</li>
-							</ul>
-						<!-- /ko -->
+						<ul class="dropdown-menu" role="menu" aria-labelledby="identity-label-id" data-bind="foreach: identitiesOptions">
+							<li role="presentation">
+								<a tabindex="-1" href="#" data-bind="click: function (oIdentity) { $root.selectIdentity(oIdentity); return true; }, text: optText"></a>
+							</li>
+						</ul>
 					</div>
+					<!-- /ko -->
+					<!-- ko if: 2 > identitiesOptions().length -->
+					<span class="e-identity" data-bind="text: currentIdentityView"></span>
+					<!-- /ko -->
 					<div class="pull-right">
 						<a class="btn" data-i18n="GLOBAL/BCC"
 							data-bind="visible: !showBcc(), click: function () { showBcc(true); }"></a>

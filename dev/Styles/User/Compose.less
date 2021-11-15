@@ -97,14 +97,18 @@
 		}
 
 		.e-identity {
-
 			color: var(--main-color);
-			text-decoration: none;
 			font-weight: bold;
+			line-height: @baseLineHeight;
+			padding: 4px 0;
+			text-decoration: none;
 
 			&.multiply {
 				cursor: pointer;
 				border-bottom: 1px dashed var(--main-color);
+			}
+			&.multiply::after {
+				content: '▼';
 			}
 		}
 
