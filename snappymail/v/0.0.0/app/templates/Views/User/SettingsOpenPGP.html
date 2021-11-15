@@ -30,7 +30,9 @@
 				<span class="open-pgp-key-user" data-bind="foreach: users">
 					<div class="open-pgp-key-user-address" data-bind="text: $data"></div>
 				</span>
-				<a class="btn btn-small btn-small-small btn-danger pull-right button-confirm-delete" data-bind="css: {'delete-access': deleteAccess()}, click: function(openPgpKey) { $root.deleteOpenPgpKey(openPgpKey); }"
+			</td>
+			<td>
+				<a class="btn btn-small btn-small-small btn-danger button-confirm-delete" data-bind="css: {'delete-access': deleteAccess()}, click: function(openPgpKey) { $root.deleteOpenPgpKey(openPgpKey); }"
 					data-i18n="GLOBAL/ARE_YOU_SURE"></a>
 			</td>
 			<td>
@@ -47,7 +49,9 @@
 						<span data-bind="text: $data"></span> (<span class="open-pgp-key-id" data-bind="text: $parent.id"></span>)
 					</div>
 				</span>
-				<a class="btn btn-small btn-small-small btn-danger pull-right button-confirm-delete" data-bind="css: {'delete-access': deleteAccess()}, click: function(oOpenPGP) { $root.deleteOpenPgpKey(oOpenPGP); }"
+			</td>
+			<td>
+				<a class="btn btn-small btn-small-small btn-danger button-confirm-delete" data-bind="css: {'delete-access': deleteAccess()}, click: function(oOpenPGP) { $root.deleteOpenPgpKey(oOpenPGP); }"
 					data-i18n="GLOBAL/ARE_YOU_SURE"></a>
 			</td>
 			<td>

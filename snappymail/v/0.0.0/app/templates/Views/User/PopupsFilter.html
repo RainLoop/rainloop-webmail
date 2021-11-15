@@ -20,7 +20,7 @@
 			</div>
 
 			<div class="legend" data-i18n="POPUPS_FILTER/LEGEND_CONDITIONS"></div>
-			<div data-bind="visible: 1 < conditions().length">
+			<div class="control-group" data-bind="visible: 1 < conditions().length">
 				<select class="span4" data-bind="value: conditionsType">
 					<option value="Any"
 						data-i18n="POPUPS_FILTER/SELECT_MATCH_ANY"></option>
@@ -29,16 +29,21 @@
 				</select>
 			</div>
 			<div data-bind="visible: 0 < conditions().length, foreach: conditions">
-				<div data-bind="template: {'name': template(), 'data': $data}"></div>
+				<div class="control-group" data-bind="css: {'error': valueError}" style="display:flex">
+					<div style="flex-grow:1" data-bind="css: {'error': valueError}, template: {'name': template(), 'data': $data}"></div>
+					<span class="delete-action button-delete fontastic" style="margin-top: 5px;"
+						data-bind="click: function (oCondition) { $root.removeCondition(oCondition); }">🗑</span>
+				</div>
 			</div>
-			<div data-bind="visible: 0 === conditions().length"
+			<div class="control-group" data-bind="visible: 0 === conditions().length"
 				data-i18n="POPUPS_FILTER/ALL_INCOMING_MESSAGES_DESC"></div>
-			<br />
-			<a class="btn" data-bind="click: addCondition, i18nInit: true">
-				<i class="fontastic">✚</i>
-				<span data-i18n="POPUPS_FILTER/BUTTON_ADD_CONDITION"></span>
-			</a>
-			<br />
+			<div class="control-group">
+				<a class="btn" data-bind="click: addCondition, i18nInit: true">
+					<i class="fontastic">✚</i>
+					<span data-i18n="POPUPS_FILTER/BUTTON_ADD_CONDITION"></span>
+				</a>
+			</div>
+
 			<div class="legend" data-i18n="POPUPS_FILTER/LEGEND_ACTIONS"></div>
 			<select class="span3" data-bind="options: $root.actionTypeOptions, value: actionType, optionsText: 'name', optionsValue: 'id'"></select>
 			<div data-bind="template: {'name': actionTemplate()}, i18nUpdate: actionTemplate"></div>
