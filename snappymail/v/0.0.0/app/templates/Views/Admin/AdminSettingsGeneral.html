@@ -17,7 +17,7 @@
 </div>
 <div class="form-horizontal">
 	<div class="legend" data-i18n="TAB_GENERAL/LEGEND_INTERFACE"></div>
-	<div class="control-group" style="margin-bottom: 10px;">
+	<div class="control-group">
 		<label class="control-label" data-i18n="TAB_GENERAL/LABEL_LANGUAGE"></label>
 		<div class="controls">
 			<span class="select" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, onSpace: selectLanguage, onEnter: selectLanguage"></span>
@@ -101,14 +101,11 @@
 			<span data-bind="saveTrigger: attachmentLimitTrigger"></span>
 			<br />
 			<br />
-			<span class="alert alert-info" data-bind="visible: '' !== uploadDataDesc">
-				<b>PHP:</b>
-				&nbsp;
-				<span data-bind="text: uploadDataDesc"></span>
-			</span>
+			<div class="alert alert-info">
+				<b>PHP:</b>&nbsp;<!-- ko text: uploadDataDesc --><!-- /ko -->
+			</div>
 		</div>
 	</div>
-	<br />
 	<div class="control-group">
 		<div class="controls">
 			<div data-bind="component: {

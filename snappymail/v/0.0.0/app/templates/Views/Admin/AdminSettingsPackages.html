@@ -26,17 +26,14 @@
 		(<span data-bind="text: packagesAvailableForUpdate().length"></span>)
 	</div>
 	<div data-bind="template: { name: 'AdminSettingsPackagesTable', data: {f: packagesAvailableForUpdate} }"></div>
-	<br />
 </div>
 
 <div id="packages-installed" data-bind="visible: packagesCurrent().length, css: {'disabled': !enabledPlugins()}">
 	<div class="legend" data-i18n="TAB_PACKAGES/LEGEND_INSTALLED_PACKAGES"></div>
 	<div data-bind="template: { name: 'AdminSettingsPackagesTable', data: {f: packagesCurrent} }"></div>
-	<br />
 </div>
 
 <div data-bind="visible: packagesAvailableForInstallation().length">
 	<div class="legend" data-i18n="TAB_PACKAGES/LEGEND_AVAILABLE_FOR_INSTALLATION"></div>
 	<div data-bind="template: { name: 'AdminSettingsPackagesTable', data: {f: packagesAvailableForInstallation} }"></div>
-	<br />
 </div>
