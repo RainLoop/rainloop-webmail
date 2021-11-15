@@ -132,7 +132,7 @@ dialog header, dialog footer,
 }
 
 #V-Settings-About .rl-logo {
-	filter: drop-shadow(0 0 1px #FFF);
+	filter: invert(1);
 }
 
 .b-folders li a.focused {
