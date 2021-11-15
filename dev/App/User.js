@@ -420,10 +420,10 @@ class AppUser extends AbstractApp {
 
 			if (!iError) {
 				const counts = {},
-					sAccountEmail = AccountUserStore.email();
-				let parentEmail = SettingsGet('ParentEmail') || sAccountEmail;
+					accounts = oData.Result.Accounts,
+					mainEmail = SettingsGet('MainEmail');
 
-				if (isArray(oData.Result.Accounts)) {
+				if (isArray(accounts)) {
 					AccountUserStore.accounts.forEach(oAccount =>
 						counts[oAccount.email] = oAccount.count()
 					);
@@ -431,10 +431,12 @@ class AppUser extends AbstractApp {
 					delegateRunOnDestroy(AccountUserStore.accounts());
 
 					AccountUserStore.accounts(
-						oData.Result.Accounts.map(
-							sValue => new AccountModel(sValue, sValue !== parentEmail, counts[sValue] || 0)
+						accounts.map(
+							sValue => new AccountModel(sValue, counts[sValue])
 						)
 					);
+//					accounts.length &&
+					AccountUserStore.accounts.unshift(new AccountModel(mainEmail, counts[mainEmail], false));
 				}
 
 				if (isArray(oData.Result.Identities)) {
@@ -442,9 +444,10 @@ class AppUser extends AbstractApp {
 
 					IdentityUserStore(
 						oData.Result.Identities.map(identityData => {
-							const id = pString(identityData.Id),
-								email = pString(identityData.Email),
-								identity = new IdentityModel(id, email);
+							const identity = new IdentityModel(
+								pString(identityData.Id),
+								pString(identityData.Email)
+							);
 
 							identity.name(pString(identityData.Name));
 							identity.replyTo(pString(identityData.ReplyTo));
@@ -715,7 +718,6 @@ class AppUser extends AbstractApp {
 			NotificationUserStore.enableDesktopNotification(!!SettingsGet('DesktopNotifications'));
 
 			AccountUserStore.email(SettingsGet('Email'));
-			AccountUserStore.parentEmail(SettingsGet('ParentEmail'));
 
 			this.foldersReload(value => {
 				try {

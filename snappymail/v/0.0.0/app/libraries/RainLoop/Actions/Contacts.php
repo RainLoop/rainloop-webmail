@@ -278,17 +278,7 @@ trait Contacts
 				return $aData;
 			}
 
-			// Try the old
-			$aData = \RainLoop\Utils::DecodeKeyValues($sData);
-			if ($aData) {
-				$this->setContactsSyncData($oAccount, $aData);
-				return array(
-					'Enable' => isset($aData['Enable']) ? !!$aData['Enable'] : false,
-					'Url' => isset($aData['Url']) ? \trim($aData['Url']) : '',
-					'User' => isset($aData['User']) ? \trim($aData['User']) : '',
-					'Password' => isset($aData['Password']) ? $aData['Password'] : ''
-				);
-			}
+			return \SnappyMail\Upgrade::ConvertInsecureContactsSync($this, $oAccount);
 		}
 		return null;
 	}

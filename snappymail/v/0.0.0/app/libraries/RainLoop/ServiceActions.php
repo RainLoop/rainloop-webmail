@@ -812,22 +812,6 @@ class ServiceActions
 	}
 
 	/**
-	 * Switch to AdditionalAccount
-	 */
-	public function ServiceChange() : string
-	{
-		try {
-			$this->oActions->switchAccount(
-				empty($this->aPaths[2]) ? '' : \urldecode(\trim($this->aPaths[2]))
-			);
-			$this->oActions->Location('./');
-		} catch (\Exception $e) {
-			exit($e->getMessage());
-		}
-		return '';
-	}
-
-	/**
 	 * @return mixed
 	 */
 	public function ErrorTemplates(string $sTitle, string $sDesc, bool $bShowBackLink = true)

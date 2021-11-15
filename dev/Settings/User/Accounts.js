@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { Capa } from 'Common/Enums';
-import { Settings } from 'Common/Globals';
+import { Settings, SettingsGet } from 'Common/Globals';
 
 import { AccountUserStore } from 'Stores/User/Account';
 import { IdentityUserStore } from 'Stores/User/Identity';
@@ -20,6 +20,7 @@ export class AccountsUserSettings /*extends AbstractViewSettings*/ {
 		this.accounts = AccountUserStore.accounts;
 		this.loading = AccountUserStore.loading;
 		this.identities = IdentityUserStore;
+		this.mainEmail = SettingsGet('MainEmail');
 
 		this.accountForDeletion = ko.observable(null).deleteAccessHelper();
 		this.identityForDeletion = ko.observable(null).deleteAccessHelper();
@@ -30,7 +31,7 @@ export class AccountsUserSettings /*extends AbstractViewSettings*/ {
 	}
 
 	editAccount(account) {
-		if (account && account.canBeEdit()) {
+		if (account && account.isAdditional()) {
 			showScreenPopup(AccountPopupView, [account]);
 		}
 	}
@@ -81,7 +82,10 @@ export class AccountsUserSettings /*extends AbstractViewSettings*/ {
 	}
 
 	accountsAndIdentitiesAfterMove() {
-		Remote.accountsAndIdentitiesSortOrder(null, AccountUserStore.getEmailAddresses(), IdentityUserStore.getIDS());
+		Remote.accountsAndIdentitiesSortOrder(null,
+			AccountUserStore.getEmailAddresses().filter(v => v != SettingsGet('MainEmail')),
+			IdentityUserStore.getIDS()
+		);
 	}
 
 	onBuild(oDom) {

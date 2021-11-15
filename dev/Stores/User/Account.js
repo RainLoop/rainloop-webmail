@@ -5,7 +5,7 @@ export const AccountUserStore = {
 	accounts: ko.observableArray(),
 	loading: ko.observable(false).extend({ debounce: 100 }),
 
-	getEmailAddresses: () => AccountUserStore.accounts.map(item => item ? item.email : null).filter(v => v),
+	getEmailAddresses: () => AccountUserStore.accounts.map(item => item.email),
 
 	accountsUnreadCount: ko.computed(() => 0),
 	// accountsUnreadCount: ko.computed(() => {
@@ -21,6 +21,5 @@ export const AccountUserStore = {
 
 addObservablesTo(AccountUserStore, {
 	email: '',
-	parentEmail: '',
 	signature: ''
 });

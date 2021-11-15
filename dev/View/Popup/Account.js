@@ -63,7 +63,7 @@ class AccountPopupView extends AbstractViewPopup {
 	}
 
 	onShow(account) {
-		if (account && account.canBeEdit()) {
+		if (account && account.isAdditional()) {
 			this.isNew(false);
 			this.email(account.email);
 		} else {

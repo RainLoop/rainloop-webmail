@@ -20,8 +20,7 @@
 			<!-- ko if: accounts().length -->
 				<!-- ko foreach: accounts -->
 					<li role="presentation">
-						<a class="account-item" href="#" data-bind="click: $root.accountClick,
-							attr: {'href': changeAccountLink()}, css: {'current': $root.accountEmail() === email}">
+						<a class="account-item" href="#" data-bind="click: $root.accountClick, css: {'current': $root.accountEmail() === email}">
 <!--							<b class="pull-right counter" data-bind="visible: 0 < count()">
 								<span data-bind="text: count, visible: 100 > count()"></span>
 								<span data-bind="visible: 99 < count()">99+</span>

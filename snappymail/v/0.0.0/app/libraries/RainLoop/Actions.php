@@ -852,7 +852,7 @@ class Actions
 			'ReplySameFolder' => (bool) $oConfig->Get('defaults', 'mail_reply_same_folder', false),
 			'ContactsAutosave' => (bool) $oConfig->Get('defaults', 'contacts_autosave', true),
 			'HideUnsubscribed' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
-			'ParentEmail' => '',
+			'MainEmail' => '',
 			'InterfaceAnimation' => true,
 			'UserBackgroundName' => '',
 			'UserBackgroundHash' => ''
@@ -920,9 +920,7 @@ class Actions
 					$aResult['StartupUrl'] = $this->compileLogParams($aResult['StartupUrl'], $oAccount, true);
 				}
 
-				if ($oAccount instanceof \RainLoop\Model\AdditionalAccount) {
-					$aResult['ParentEmail'] = $oAccount->ParentEmail();
-				}
+				$aResult['MainEmail'] = \MailSo\Base\Utils::IdnToUtf8($this->getMainAccountFromToken()->Email());
 
 				$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
@@ -1048,7 +1046,6 @@ class Actions
 
 		// IDN
 		$aResult['Email'] = \MailSo\Base\Utils::IdnToUtf8($aResult['Email']);
-		$aResult['ParentEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['ParentEmail']);
 		$aResult['MailToEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['MailToEmail']);
 		$aResult['DevEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['DevEmail']);
 

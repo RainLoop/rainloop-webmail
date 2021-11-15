@@ -27,88 +27,13 @@ trait Accounts
 				StorageType::CONFIG,
 				'additionalaccounts'
 			);
-			$aAccounts = $sAccounts ? \json_decode($sAccounts, true) : $this->ConvertInsecureAccounts($oAccount);
+			$aAccounts = $sAccounts ? \json_decode($sAccounts, true) : \SnappyMail\Upgrade::ConvertInsecureAccounts($this, $oAccount);
 			if ($aAccounts && \is_array($aAccounts)) {
 				return $aAccounts;
 			}
 		}
 
 		return array();
-	}
-
-	/**
-	 * Attempt to convert the old less secure data into better secured data
-	 */
-	protected function ConvertInsecureAccounts(MainAccount $oMainAccount) : array
-	{
-		$sAccounts = $this->StorageProvider()->Get($oMainAccount, StorageType::CONFIG, 'accounts');
-		if (!$sAccounts || '{' !== $sAccounts[0]) {
-			return [];
-		}
-
-		$aAccounts = \json_decode($sAccounts, true);
-		if (!$aAccounts || !\is_array($aAccounts)) {
-			return [];
-		}
-
-		$aNewAccounts = [];
-		if (1 < \count($aAccounts)) {
-			$sOrder = $this->StorageProvider()->Get($oMainAccount, StorageType::CONFIG, 'accounts_identities_order');
-			$aOrder = $sOrder ? \json_decode($sOrder, true) : [];
-			if (!empty($aOrder['Accounts']) && \is_array($aOrder['Accounts']) && 1 < \count($aOrder['Accounts'])) {
-				$aAccounts = \array_filter(\array_merge(
-					\array_fill_keys($aOrder['Accounts'], null),
-					$aAccounts
-				));
-			}
-			$sHash = $oMainAccount->CryptKey();
-			foreach ($aAccounts as $sEmail => $sToken) {
-				try {
-					$aNewAccounts[$sEmail] = [
-						'account',
-						$sEmail,
-						$sEmail,
-						'',
-						'',
-						'',
-						'',
-						$oMainAccount->Email(),
-						\hash_hmac('sha1', '', $sHash)
-					];
-					if (!$sToken) {
-						\error_log("ConvertInsecureAccount {$sEmail} no token");
-						continue;
-					}
-					$aAccountHash = \RainLoop\Utils::DecodeKeyValues($sToken);
-					if (empty($aAccountHash[0]) || 'token' !== $aAccountHash[0] // simple token validation
-						|| 8 > \count($aAccountHash) // length checking
-					) {
-						\error_log("ConvertInsecureAccount {$sEmail} invalid aAccountHash: " . print_r($aAccountHash,1));
-						continue;
-					}
-					$aAccountHash[3] = \SnappyMail\Crypt::EncryptUrlSafe($aAccountHash[3], $sHash);
-					$aNewAccounts[$sEmail] = [
-						'account',
-						$aAccountHash[1],
-						$aAccountHash[2],
-						$aAccountHash[3],
-						$aAccountHash[11],
-						$aAccountHash[8],
-						$aAccountHash[9],
-						$oMainAccount->Email(),
-						\hash_hmac('sha1', $aAccountHash[3], $sHash)
-					];
-				} catch (\Throwable $e) {
-					\error_log("ConvertInsecureAccount {$sEmail} failed");
-				}
-			}
-
-			$this->SetAccounts($oMainAccount, $aNewAccounts);
-		}
-
-		$this->StorageProvider()->Clear($oMainAccount, StorageType::CONFIG, 'accounts');
-
-		return $aNewAccounts;
 	}
 
 	protected function SetAccounts(MainAccount $oAccount, array $aAccounts = array()): void
@@ -206,7 +131,7 @@ trait Accounts
 			$aResult['IncLogin'] = $oAccount->IncLogin();
 			$aResult['OutLogin'] = $oAccount->OutLogin();
 			$aResult['AccountHash'] = $oAccount->Hash();
-			$aResult['ParentEmail'] = ($oAccount instanceof \RainLoop\Model\AdditionalAccount)
+			$aResult['MainEmail'] = ($oAccount instanceof \RainLoop\Model\AdditionalAccount)
 				? $oAccount->ParentEmail() : '';
 			$aResult['ContactsIsAllowed'] = $this->AddressBookProvider($oAccount)->IsActive();
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
@@ -301,19 +226,11 @@ trait Accounts
 	{
 		$oAccount = $this->getMainAccountFromToken();
 
-		$aAccounts = false;
-		if ($this->GetCapa(false, Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
-			$aAccounts = \array_map(
+		return $this->DefaultResponse(__FUNCTION__, array(
+			'Accounts' => \array_map(
 				'MailSo\\Base\\Utils::IdnToUtf8',
 				\array_keys($this->GetAccounts($oAccount))
-			);
-			if ($aAccounts) {
-				\array_unshift($aAccounts, \MailSo\Base\Utils::IdnToUtf8($oAccount->Email()));
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, array(
-			'Accounts' => $aAccounts,
+			),
 			'Identities' => $this->GetIdentities($oAccount)
 		));
 	}

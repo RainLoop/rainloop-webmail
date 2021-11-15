@@ -52,12 +52,6 @@ export const
 	serverRequest = type => SERVER_PREFIX + '/' + type + '/' + SUB_QUERY_PREFIX + '/0/',
 
 	/**
-	 * @param {string} email
-	 * @returns {string}
-	 */
-	change = email => serverRequest('Change') + encodeURIComponent(email) + '/',
-
-	/**
 	 * @param {string} lang
 	 * @param {boolean} isAdmin
 	 * @returns {string}

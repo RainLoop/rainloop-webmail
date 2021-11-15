@@ -58,7 +58,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 					if (iError) {
 						AccountUserStore.loading(false);
 						alert(getNotification(iError).replace('%EMAIL%', account.email));
-						if (account.canBeEdit()) {
+						if (account.isAdditional()) {
 							showScreenPopup(AccountPopupView, [account]);
 						}
 					} else {
