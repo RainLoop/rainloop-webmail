@@ -11,26 +11,6 @@ form {
   margin: 0 0 @baseLineHeight;
 }
 
-fieldset {
-  padding: 0;
-  margin: 0;
-  border: 0;
-}
-
-// Groups of fields with labels on top (legends)
-legend {
-  cursor: pointer;
-  display: block;
-  width: 100%;
-  padding: 0;
-  margin-bottom: @baseLineHeight;
-  font-size: @baseFontSize * 1.5;
-  line-height: @baseLineHeight * 2;
-  color: @grayDark;
-  border: 0;
-  border-bottom: 1px solid #e5e5e5;
-}
-
 // Identify controls by their labels
 label {
   display: block;
@@ -64,7 +44,6 @@ textarea,
 input {
   box-sizing: border-box;
   display: inline-block;
-  height: @baseLineHeight + 10;
   padding: 4px 6px;
   color: @gray;
   border-radius: @inputBorderRadius;
@@ -242,13 +221,7 @@ input[type="checkbox"][readonly] {
 
 // Margin to space out fieldsets
 .control-group {
-  margin-bottom: @baseLineHeight / 2;
-}
-
-// Legend collapses margin, so next element is responsible for spacing
-legend + .control-group {
-  margin-top: @baseLineHeight;
-  -webkit-margin-top-collapse: separate;
+  margin-bottom: (@baseLineHeight / 2);
 }
 
 // Horizontal-specific styles

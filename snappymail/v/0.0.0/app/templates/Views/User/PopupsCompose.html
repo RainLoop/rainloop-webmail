@@ -39,7 +39,7 @@
 						<a class="btn" data-i18n="GLOBAL/BCC"
 							data-bind="visible: !showBcc(), click: function () { showBcc(true); }"></a>
 						<a class="btn fontastic" data-bind="visible: allowContacts, command: contactsCommand" data-i18n="[title]GLOBAL/CONTACTS">📇</a>
-						<div class="btn-group dropdown colored-toggle" data-bind="registerBootstrapDropdown: true" style="display:inline;vertical-align:top">
+						<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true" style="display:inline;vertical-align:top">
 							<a class="btn dropdown-toggle fontastic">☰</a>
 							<ul class="dropdown-menu right-edge" role="menu">
 								<li data-bind="click: function () { showBcc(!showBcc()); }">
