@@ -32,7 +32,7 @@
 		</div>
 		<div class="b-message-view-checked-helper" data-bind="visible: !message() && '' === messageError() && hasCheckedMessages()">
 			<span data-bind="text: printableCheckedMessageCount()"></span>
-			<i class="icon-mail"></i>
+			<i class="fontastic">✉</i>
 		</div>
 
 		<div class="b-message-view-desc error" data-bind="visible: !message() && '' !== messageError() && !hasCheckedMessages(), text: messageError()">
@@ -258,7 +258,7 @@
 								<span class="text" data-i18n="MESSAGE/BUTTON_SHOW_IMAGES"></span>
 							</div>
 							<div class="readReceipt" data-bind="visible: message() && !isDraftOrSentFolder() && '' !== message().readReceipt() && !message().isReadReceipt(), click: readReceipt">
-								<i class="icon-mail"></i>
+								<i class="fontastic">✉</i>
 								<span class="text" data-i18n="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></span>
 							</div>
 							<div class="attachmentsPlace" data-bind="visible: message() && message().attachments().hasVisible(),

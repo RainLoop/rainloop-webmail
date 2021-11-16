@@ -30,9 +30,6 @@ config.paths.less = {
 		options: {
 			paths: [path.join(__dirname, 'dev', 'Styles'), path.join(__dirname, 'vendors', 'bootstrap', 'less')]
 		}
-	},
-	admin: {
-		src: 'dev/Styles/@Admin.less'
 	}
 };
 
@@ -45,7 +42,11 @@ config.paths.css = {
 		]
 	},
 	admin: {
-		name: 'admin.css'
+		name: 'admin.css',
+		src: [
+			'vendors/fontastic/styles.css',
+			'dev/Styles/@Admin.less'
+		]
 	},
 	boot: {
 		name: 'boot.css',

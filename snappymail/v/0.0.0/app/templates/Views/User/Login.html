@@ -7,30 +7,23 @@
 <form action="#/"
 	data-bind="submit: submitForm, css: {'errorAnimated': formError, 'submitting': submitRequest()}">
 	<div class="controls" data-bind="css: {'error': emailError}">
-		<div class="input-append">
-			<input name="Email" required="" type="text" class="input-block-level inputIcon" pattern="[^@\s]+(@[^\s]+)?" inputmode="email"
-				autofocus="" autocomplete="email" autocorrect="off" autocapitalize="off" spellcheck="false"
-				data-bind="textInput: email, disable: submitRequest"
-				data-i18n="[placeholder]GLOBAL/EMAIL" />
-			<span class="add-on icon-mail"></span>
-		</div>
+		<span class="fontastic">✉</span>
+		<input name="Email" required="" type="text" class="input-block-level" pattern="[^@\s]+(@[^\s]+)?" inputmode="email"
+			autofocus="" autocomplete="email" autocorrect="off" autocapitalize="off" spellcheck="false"
+			data-bind="textInput: email, disable: submitRequest"
+			data-i18n="[placeholder]GLOBAL/EMAIL" />
 	</div>
 	<div class="controls" data-bind="css: {'error': passwordError}">
-		<div class="input-append">
-			<input name="Password" required="" type="password" class="input-block-level inputIcon"
-				autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-				data-bind="textInput: password, disable: submitRequest"
-				data-i18n="[placeholder]GLOBAL/PASSWORD" />
-			<span class="add-on" tabindex="-1"
-				data-bind="command: submitCommand" data-i18n="[title]LOGIN/BUTTON_SIGN_IN">
-				<i class="fontastic" data-bind="visible: '' === password()">🔑</i>
-				<button type="submit" class="btn-submit-icon-wrp login-submit-icon fontastic" data-bind="visible: '' !== password()">❯</button>
-			</span>
-		</div>
+		<span class="fontastic">🔑</span>
+		<input name="Password" required="" type="password" class="input-block-level"
+			autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+			data-bind="textInput: password, disable: submitRequest"
+			data-i18n="[placeholder]GLOBAL/PASSWORD" />
+		<button class="fontastic" data-bind="command: submitCommand, visible: '' !== password()" data-i18n="[title]LOGIN/BUTTON_SIGN_IN">❯</button>
 	</div>
 	<div id="plugin-Login-BottomControlGroup"></div>
 	<div class="controls" data-bind="hidden: hideSubmitButton">
-		<button type="submit" class="btn btn-large btn-block buttonLogin"
+		<button class="btn btn-large btn-block buttonLogin"
 			data-bind="command: submitCommand"
 			data-i18n="LOGIN/BUTTON_SIGN_IN"></button>
 	</div>

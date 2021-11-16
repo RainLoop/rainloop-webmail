@@ -6,6 +6,7 @@
 	width: 100%;
 	min-width: 250px;
 	max-width: 600px;
+	transition: all 0.3s ease-out;
 	z-index: 5;
 }
 
@@ -15,18 +16,12 @@
 
 .LoginView {
 
-	position: relative;
-
 	.descWrapper {
 		color: var(--loading-color, #000);
 		font-size: 30px;
 		margin-bottom: 10px;
 		text-align: center;
 		text-shadow: var(--loading-text-shadow);
-	}
-
-	.controls, .control-group {
-		margin-bottom: 25px;
 	}
 
 	form {
@@ -43,16 +38,9 @@
 			color: var(--login-color, @glass-m-color);
 		}
 
-		.controls.error {
-			.input-append .add-on,
-			.input-append .add-on * {
-				color: @glass-error-color;
-			}
-
-			input {
-				color: @glass-error-color;
-				border-color: @glass-error-color;
-			}
+		.controls.error * {
+			color: @glass-error-color;
+			border-color: @glass-error-color;
 		}
 
 		&.submitting > * {
@@ -78,61 +66,64 @@
 		}
 	}
 
-	.controls {
-		.input-block-level {
-			font-size: 18px;
-			height: 40px;
-			padding-left: 12px;
-		}
-		.inputIcon {
-			padding-right: 35px;
-		}
+	.controls, .control-group {
+		margin-bottom: 25px;
+		position: relative;
+	}
 
-		input, .btn {
-			background: none !important;
-			border: 1px solid @glass-m-color;
+	input {
+		font-size: 18px;
+		height: 40px;
+		padding-right: 30px;
+
+		&:placeholder {
 			color: @glass-color;
 		}
 
-		input {
-
-			&:placeholder {
-				color: @glass-color;
-			}
-
-			&:focus, &:hover {
-				border-color: @glass-color;
-			}
-		}
-
-		.btn {
-
-			text-transform: uppercase;
-			font-size: 13px;
-
-			&:hover, &:active {
-				border-color: @glass-color;
-			}
+		&:focus, &:hover {
+			border-color: @glass-color;
 		}
 	}
 
-	.signMeLabel .e-checkbox {
-		margin-top: 5px;
+	input, .btn {
+		background: none !important;
+		border: 1px solid @glass-m-color;
+		color: @glass-color;
 	}
 
-	.input-append .add-on {
-		margin-left: -1.5em;
+	.fontastic + input {
+		padding-left: 30px;
+	}
+
+	.controls > .fontastic:first-child {
 		position: absolute;
 		font-size: 17px;
-		line-height: 29px;
-		right: 6px;
-		top: 6px;
-		z-index: 6;
+		line-height: 38px;
+		left: 6px;
 	}
 
-	.input-append .add-on * {
+	input + button {
+		border: none;
+		background: none;
+		cursor: pointer;
+		display: inline-block;
 		font-size: 17px;
-		line-height: 29px;
+		line-height: 38px;
+		margin: 0;
+		padding: 0;
+		position: absolute;
+		right: 6px;
+		top: 0;
+	}
+
+	.btn {
+
+		text-transform: uppercase;
+		font-size: 13px;
+
+		&:hover, &:active {
+			border-color: @glass-color;
+		}
 	}
 
 	.buttonLogin {
@@ -162,6 +153,15 @@
 		padding: 5px;
 		text-decoration: none;
 	}
+
+	.errorAnimated {
+		animation: login-form-shake 400ms ease-in-out;
+	}
+
+	.errorAnimated .buttonLogin {
+		color: #b94a48;
+		font-weight: bold;
+	}
 }
 
 @media screen and (max-width: 480px) {
@@ -176,11 +176,17 @@
 	to   {transform: rotate(1turn);}
 }
 
-.btn-submit-icon-wrp {
-	border: none;
-	background: none;
-	display: inline-block;
-	margin: 0;
-	padding: 0;
-	cursor: pointer;
+@keyframes login-form-shake  {
+  0% {transform: translateX(0);}
+  12.5% {transform: translateX(-6px)}
+  37.5% {transform: translateX(5px)}
+  62.5% {transform: translateX(-3px)}
+  87.5% {transform: translateX(2px)}
+  100% {transform: translateX(0)}
+}
+
+html.rl-started-trigger .LoginView {
+	/*transform: scale(1.1);*/
+	transform: translateY(-20px);
+	opacity: 0.5;
 }

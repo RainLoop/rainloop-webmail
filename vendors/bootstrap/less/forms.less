@@ -124,10 +124,6 @@ select[class*="span"],
 textarea[class*="span"] {
   margin-left: 0;
 }
-// Ensure input-prepend/append never wraps
-.input-append input[class*="span"] {
-  display: inline-block;
-}
 
 
 
@@ -163,59 +159,20 @@ input[type="checkbox"][readonly] {
   .formFieldState(@errorText, @errorText, @errorBackground);
 }
 
-// INPUT GROUPS
-// ------------
-
-// Allow us to put symbols and text within the input field for a cleaner look
-.input-append {
-  margin-bottom: 5px;
-  font-size: 0;
-  white-space: nowrap; // Prevent span and input from separating
-  position: relative;
-
-  input,
-  select {
-    margin-bottom: 0; // prevent bottom margin from screwing up alignment in stacked forms
-    font-size: @baseFontSize;
-    vertical-align: top;
-    border-radius: @inputBorderRadius;
-  }
-  .btn {
-    margin-left: -1px;
-    vertical-align: top;
-    border-radius: 0;
-  }
-  .btn:last-child {
-    border-radius: 0 @inputBorderRadius @inputBorderRadius 0;
-  }
-}
-
-
-
-// HORIZONTAL & VERTICAL FORMS
+// HORIZONTAL FORMS
 // ---------------------------
 
 // Common properties
 // -----------------
 
-.form-inline,
 .form-horizontal {
   input,
   textarea,
-  select,
-  .input-append {
+  select {
     display: inline-block;
     margin-bottom: 0;
     vertical-align: middle;
   }
-}
-.form-inline label,
-.form-inline .btn-group {
-  display: inline-block;
-}
-// Remove margin for input-prepend/-append
-.form-inline .input-append {
-  margin-bottom: 0;
 }
 
 
@@ -241,8 +198,6 @@ input[type="checkbox"][readonly] {
   }
   // Move over all input controls and content
   .controls {
-    // Super jank IE7 fix to ensure the inputs in .input-append and input-prepend
-    // don't inherit the margin of the parent, in this case .controls
     display: inline-block;
     margin-left: 20px;
     vertical-align: top;
