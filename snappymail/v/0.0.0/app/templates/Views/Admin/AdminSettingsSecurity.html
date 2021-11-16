@@ -1,7 +1,7 @@
 <div class="legend" data-i18n="TAB_SECURITY/LEGEND_SECURITY"></div>
 <div class="form-horizontal">
 	<div class="control-group">
-		<div class="controls">
+		<div>
 			<div data-bind="component: {
 				name: 'Checkbox',
 				params: {
@@ -23,47 +23,36 @@
 <div class="form-horizontal">
 	<div class="legend" data-i18n="TAB_SECURITY/LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS"></div>
 	<div class="control-group">
-		<label class="control-label" data-i18n="TAB_SECURITY/LABEL_CURRENT_PASSWORD"></label>
-		<div class="controls">
-			<input type="password" autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-				data-bind="textInput: adminPassword" />
-		</div>
+		<label data-i18n="TAB_SECURITY/LABEL_CURRENT_PASSWORD"></label>
+		<input type="password" autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+			data-bind="textInput: adminPassword" />
 	</div>
-	<br />
 	<div class="control-group" data-bind="css: {'error': adminLoginError}">
-		<label class="control-label" data-i18n="TAB_SECURITY/LABEL_NEW_LOGIN"></label>
-		<div class="controls">
-			<input type="text" autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false"
-				data-bind="textInput: adminLogin" />
-		</div>
+		<label data-i18n="TAB_SECURITY/LABEL_NEW_LOGIN"></label>
+		<input type="text" autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false"
+			data-bind="textInput: adminLogin" />
 	</div>
 	<div class="control-group" data-bind="css: {'error': adminPasswordNewError}">
-		<label class="control-label" data-i18n="TAB_SECURITY/LABEL_NEW_PASSWORD"></label>
-		<div class="controls">
-			<input type="password" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-				data-bind="textInput: adminPasswordNew" />
-		</div>
+		<label data-i18n="TAB_SECURITY/LABEL_NEW_PASSWORD"></label>
+		<input type="password" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+			data-bind="textInput: adminPasswordNew" />
 	</div>
 	<div class="control-group" data-bind="css: {'error': adminPasswordNewError}">
-		<label class="control-label" data-i18n="TAB_SECURITY/LABEL_REPEAT_PASSWORD"></label>
-		<div class="controls">
-			<input type="password" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-				data-bind="textInput: adminPasswordNew2" />
-		</div>
+		<label data-i18n="TAB_SECURITY/LABEL_REPEAT_PASSWORD"></label>
+		<input type="password" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+			data-bind="textInput: adminPasswordNew2" />
 	</div>
 	<div class="control-group">
-		<div class="controls">
-			<a class="btn" data-bind="command: saveNewAdminPasswordCommand, css: { 'btn-success': adminPasswordUpdateSuccess, 'btn-danger': adminPasswordUpdateError }">
-				<i class="fontastic">🔑</i>
-				<span data-i18n="TAB_SECURITY/BUTTON_UPDATE_PASSWORD"></span>
-			</a>
-		</div>
+		<a class="btn" data-bind="command: saveNewAdminPasswordCommand, css: { 'btn-success': adminPasswordUpdateSuccess, 'btn-danger': adminPasswordUpdateError }">
+			<i class="fontastic">🔑</i>
+			<span data-i18n="TAB_SECURITY/BUTTON_UPDATE_PASSWORD"></span>
+		</a>
 	</div>
 </div>
 <div class="form-horizontal">
 	<div class="legend" data-i18n="TAB_SECURITY/LEGEND_SSL"></div>
 	<div class="control-group">
-		<div class="controls">
+		<div>
 			<div data-bind="component: {
 				name: 'Checkbox',
 				params: {

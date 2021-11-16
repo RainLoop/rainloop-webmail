@@ -1,5 +1,5 @@
 <header>
-	<button type="button" class="close" data-bind="command: cancelCommand">×</button>
+	<a href="#" class="close" data-bind="command: cancelCommand">×</a>
 	<h4>
 		<span data-i18n="POPUPS_PLUGIN/TITLE_PLUGIN"></span>
 		&nbsp;
@@ -11,7 +11,7 @@
 	<form class="form-horizontal plugin-form" action="#/" onsubmit="return false;">
 		<div class="alert alert-info" data-bind="visible: !hasConfiguration()" data-i18n="POPUPS_PLUGIN/DESC_NOTHING_TO_CONFIGURE"></div>
 		<div class="alert" data-bind="visible: '' !== saveError()">
-			<button type="button" class="close" data-bind="click: function () { saveError('') }">×</button>
+			<a href="#" class="close" data-bind="click: function () { saveError('') }">×</a>
 			<span data-bind="text: saveError"></span>
 		</div>
 		<div data-bind="foreach: configures, visible: hasConfiguration">

@@ -1,6 +1,6 @@
 <!-- ko with: script -->
 <header>
-	<button type="button" class="close" data-bind="command: $root.cancelCommand">×</button>
+	<a href="#" class="close" data-bind="command: $root.cancelCommand">×</a>
 	<h3>
 		<span data-i18n="POPUPS_SIEVE_SCRIPT/TITLE_CREATE" data-bind="visible: !exists()"></span>
 		<span data-i18n="POPUPS_SIEVE_SCRIPT/TITLE_EDIT" data-bind="visible: exists"></span>
@@ -10,13 +10,11 @@
 <div class="modal-body">
 
 	<div class="control-group" data-bind="css: {'error': nameError}, hidden: exists">
-		<div class="controls">
-			<input type="text" class="span5"
-				data-bind="value: name, hasfocus: !exists()"
-				autocorrect="off" autocapitalize="off" spellcheck="false"
-				data-i18n="[placeholder]GLOBAL/NAME"
-			/>
-		</div>
+		<input type="text" class="span5"
+			data-bind="value: name, hasfocus: !exists()"
+			autocorrect="off" autocapitalize="off" spellcheck="false"
+			data-i18n="[placeholder]GLOBAL/NAME"
+		/>
 	</div>
 
 	<div class="alert g-ui-user-select-none" data-bind="visible: hasChanges">
@@ -29,7 +27,7 @@
 	</div>
 
 	<div class="control-group" data-bind="visible: $root.rawActive">
-		<div class="controls">
+		<div>
 			<pre>
 				<b data-i18n="POPUPS_SIEVE_SCRIPT/CAPABILITY_LABEL"></b>:
 				<span data-bind="text: $root.sieveCapabilities"></span>

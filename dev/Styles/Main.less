@@ -86,38 +86,43 @@ dialog:not(.animate) {
 }
 
 dialog > header {
-  padding: 9px 15px;
-  border-bottom: 1px solid #eee;
-  // Close icon
-  .close { margin-top: 2px; }
-  // Heading
-  h3 {
-    margin: 0;
-    line-height: 30px;
-  }
+	padding: 9px 15px;
+	border-bottom: 1px solid #eee;
+
+	// Close icon
+	.close {
+		margin-top: 2px;
+	}
+
+	// Heading
+	h3 {
+		margin: 0;
+		line-height: 30px;
+	}
 }
 
 // Body (where all modal content resides)
 dialog .modal-body {
-  overflow: auto;
-  padding: 15px;
+	overflow: auto;
+	margin: 0;
+	padding: 15px;
 }
 
 // Footer (for actions)
 dialog > footer {
-  padding: 14px 15px 15px;
-  margin-bottom: 0;
-  text-align: right; // right align buttons
-  border-top: 1px solid #ddd;
-  border-radius: 0 0 6px 6px;
+	padding: 14px 15px 15px;
+	margin-bottom: 0;
+	text-align: right; // right align buttons
+	border-top: 1px solid #ddd;
+	border-radius: 0 0 6px 6px;
 
-  // Properly space out buttons
-  .btn + .btn {
-    margin-left: 5px;
-    margin-bottom: 0; // account for input[type="submit"] which gets the bottom margin like all other inputs
-  }
-  // but override that for button groups
-  .btn-group .btn + .btn {
-    margin-left: -1px;
-  }
+	// Properly space out buttons
+	.btn + .btn {
+		margin-left: 5px;
+		margin-bottom: 0; // account for input[type="submit"] which gets the bottom margin like all other inputs
+	}
+	// but override that for button groups
+	.btn-group .btn + .btn {
+		margin-left: -1px;
+	}
 }

@@ -1,5 +1,5 @@
 <header>
-	<button type="button" class="close" data-bind="command: cancelCommand">×</button>
+	<a href="#" class="close" data-bind="command: cancelCommand">×</a>
 	<h3>
 		<span data-bind="visible: isNew" data-i18n="POPUPS_ADD_ACCOUNT/TITLE_ADD_ACCOUNT"></span>
 		<span data-bind="visible: !isNew()" data-i18n="POPUPS_ADD_ACCOUNT/TITLE_UPDATE_ACCOUNT"></span>
@@ -7,29 +7,24 @@
 </header>
 <form class="modal-body form-horizontal" autocomplete="off">
 	<div class="alert" data-bind="visible: '' !== submitError()">
-		<button type="button" class="close" data-bind="click: function () { submitError('') }">×</button>
+		<a href="#" class="close" data-bind="click: function () { submitError('') }">×</a>
 		<span data-bind="text: submitError"></span>
 		<div data-bind="visible: submitErrorAdditional">
 			<br />
 			<span data-bind="text: submitErrorAdditional"></span>
 		</div>
 	</div>
-	<br />
 	<div class="control-group" data-bind="css: {'error': emailError}">
-		<label class="control-label" data-i18n="GLOBAL/EMAIL"></label>
-		<div class="controls">
-			<label style="margin-top: 5px;" data-bind="visible: !isNew()"><strong data-bind="text: email"></strong></label>
-			<input type="email" class="input-xlarge"
-				autofocus="" autocorrect="off" autocapitalize="off" spellcheck="false"
-				data-bind="visible: isNew, textInput: email, onEnter: addAccountCommand" />
-		</div>
+		<label data-i18n="GLOBAL/EMAIL"></label>
+		<label style="margin-top: 5px;" data-bind="visible: !isNew()"><strong data-bind="text: email"></strong></label>
+		<input type="email" class="input-xlarge"
+			autofocus="" autocorrect="off" autocapitalize="off" spellcheck="false"
+			data-bind="visible: isNew, textInput: email, onEnter: addAccountCommand" />
 	</div>
 	<div class="control-group" data-bind="css: {'error': passwordError}">
-		<label class="control-label" data-i18n="GLOBAL/PASSWORD"></label>
-		<div class="controls">
-			<input type="password" class="inputPassword input-xlarge" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-				data-bind="value: password, onEnter: addAccountCommand" />
-		</div>
+		<label data-i18n="GLOBAL/PASSWORD"></label>
+		<input type="password" class="inputPassword input-xlarge" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+			data-bind="value: password, onEnter: addAccountCommand" />
 	</div>
 </form>
 <footer>

@@ -1,11 +1,9 @@
 <div class="control-group" data-bind="css: {'error': actionValueError}">
-	<div class="controls">
-		<select class="span3" data-bind="options: $root.folderSelectList, value: $root.selectedFolderValue,
-			optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defaultOptionsAfterRender"></select>
-	</div>
+	<select class="span3" data-bind="options: $root.folderSelectList, value: $root.selectedFolderValue,
+		optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defaultOptionsAfterRender"></select>
 </div>
 <div class="control-group">
-	<div class="controls">
+	<div>
 		<div data-bind="visible: $root.allowMarkAsRead, component: {
 			name: 'Checkbox',
 			params: {

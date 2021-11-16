@@ -1,5 +1,5 @@
 <header class="g-ui-user-select-none">
-	<button type="button" class="close" data-bind="command: cancelCommand">×</button>
+	<a href="#" class="close" data-bind="command: cancelCommand">×</a>
 	<h3>
 		<span data-bind="visible: !edit()" data-i18n="POPUPS_IDENTITY/TITLE_ADD_IDENTITY"></span>
 		<span data-bind="visible: edit" data-i18n="POPUPS_IDENTITY/TITLE_UPDATE_IDENTITY"></span>
@@ -8,50 +8,38 @@
 <div class="modal-body">
 	<div class="form-horizontal g-ui-user-select-none">
 		<div class="alert" data-bind="visible: '' !== submitError()">
-			<button type="button" class="close" data-bind="click: function () { submitError('') }">×</button>
+			<a href="#" class="close" data-bind="click: function () { submitError('') }">×</a>
 			<span data-bind="text: submitError"></span>
 		</div>
-		<br />
-		<div class="control-group" data-bind="visible: !owner(), css: {'error': emailHasError}">
-			<label class="control-label" data-i18n="GLOBAL/EMAIL"></label>
-			<div class="controls">
+		<div class="control-group" data-bind="css: {'error': emailHasError}">
+			<label data-i18n="GLOBAL/EMAIL"></label>
+			<div>
+				<div class="textEmail" data-bind="text: email, visible: owner"></div>
 				<input type="email" class="input-xlarge" autofocus=""
 					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: email, onEnter: addOrEditIdentityCommand, hasfocus: emailFocused" />
-			</div>
-		</div>
-		<div class="control-group" data-bind="visible: owner">
-			<label class="control-label" data-i18n="GLOBAL/EMAIL"></label>
-			<div class="controls">
-				<div class="textEmail" data-bind="text: email"></div>
+					data-bind="visible: !owner(), value: email, onEnter: addOrEditIdentityCommand, hasfocus: emailFocused" />
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label" data-i18n="GLOBAL/NAME"></label>
-			<div class="controls">
-				<input type="text" class="inputName input-xlarge"
-					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: name, onEnter: addOrEditIdentityCommand" />
-			</div>
+			<label data-i18n="GLOBAL/NAME"></label>
+			<input type="text" class="inputName input-xlarge"
+				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+				data-bind="value: name, onEnter: addOrEditIdentityCommand" />
 		</div>
 		<div class="control-group" data-bind="visible: showReplyTo, css: {'error': replyToHasError}">
-			<label class="control-label" data-i18n="GLOBAL/REPLY_TO"></label>
-			<div class="controls">
-				<input type="text" class="inputReplyTo input-xlarge"
-					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: replyTo, onEnter: addOrEditIdentityCommand, hasfocus: replyToFocused" />
-			</div>
+			<label data-i18n="GLOBAL/REPLY_TO"></label>
+			<input type="text" class="inputReplyTo input-xlarge"
+				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+				data-bind="value: replyTo, onEnter: addOrEditIdentityCommand, hasfocus: replyToFocused" />
 		</div>
 		<div class="control-group" data-bind="visible: showBcc, css: {'error': bccHasError}">
-			<label class="control-label" data-i18n="GLOBAL/BCC"></label>
-			<div class="controls">
-				<input type="text" class="inputBcc input-xlarge"
-					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: bcc, onEnter: addOrEditIdentityCommand, hasfocus: bccFocused" />
-			</div>
+			<label data-i18n="GLOBAL/BCC"></label>
+			<input type="text" class="inputBcc input-xlarge"
+				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+				data-bind="value: bcc, onEnter: addOrEditIdentityCommand, hasfocus: bccFocused" />
 		</div>
 		<div class="control-group" data-bind="visible: !showReplyTo() || !showBcc()">
-			<div class="controls">
+			<div>
 				<span data-bind="visible: !showReplyTo()">
 					<span class="g-ui-link" data-i18n="GLOBAL/REPLY_TO"
 						data-bind="click: function () { showReplyTo(true); }"></span>
@@ -66,7 +54,7 @@
 	</div>
 	<hr />
 	<div class="control-group g-ui-user-select-none">
-		<div class="controls" data-bind="component: {
+		<div data-bind="component: {
 			name: 'Checkbox',
 			params: {
 				label: 'POPUPS_IDENTITY/LABEL_SIGNATURE_INSERT_BEFORE',

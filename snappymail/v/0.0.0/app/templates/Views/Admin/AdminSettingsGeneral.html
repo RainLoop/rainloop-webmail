@@ -18,37 +18,35 @@
 <div class="form-horizontal">
 	<div class="legend" data-i18n="TAB_GENERAL/LEGEND_INTERFACE"></div>
 	<div class="control-group">
-		<label class="control-label" data-i18n="TAB_GENERAL/LABEL_LANGUAGE"></label>
-		<div class="controls">
+		<label data-i18n="TAB_GENERAL/LABEL_LANGUAGE"></label>
+		<div>
 			<span class="select" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, onSpace: selectLanguage, onEnter: selectLanguage"></span>
 			<span data-bind="saveTrigger: languageTrigger"></span>
 		</div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" data-i18n="TAB_GENERAL/LABEL_LANGUAGE_ADMIN"></label>
-		<div class="controls">
+		<label data-i18n="TAB_GENERAL/LABEL_LANGUAGE_ADMIN"></label>
+		<div>
 			<span class="select" tabindex="0" data-bind="text: languageAdminFullName, click: selectLanguageAdmin, onSpace: selectLanguageAdmin, onEnter: selectLanguageAdmin"></span>
 			<span data-bind="saveTrigger: languageAdminTrigger"></span>
 		</div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" data-i18n="TAB_GENERAL/LABEL_THEME"></label>
-		<div class="controls">
-			<div data-bind="component: {
-				name: 'Select',
-				params: {
-					options: themesOptions,
-					value: theme,
-					trigger: themeTrigger,
-					optionsText: 'optText',
-					optionsValue: 'optValue',
-					size: 2
-				}
-			}"></div>
-		</div>
+		<label data-i18n="TAB_GENERAL/LABEL_THEME"></label>
+		<div data-bind="component: {
+			name: 'Select',
+			params: {
+				options: themesOptions,
+				value: theme,
+				trigger: themeTrigger,
+				optionsText: 'optText',
+				optionsValue: 'optValue',
+				size: 2
+			}
+		}"></div>
 	</div>
 	<div class="control-group">
-		<div class="controls">
+		<div>
 			<div data-bind="component: {
 				name: 'Checkbox',
 				params: {
@@ -80,21 +78,19 @@
 		</div>
 	</div>
 	<div class="control-group">
-		<div class="controls">
-			<div data-bind="component: {
-				name: 'Checkbox',
-				params: {
-					label: 'TAB_GENERAL/LABEL_SHOW_THUMBNAILS',
-					value: capaAttachmentThumbnails,
-					inline: false
-				}
-			}"></div>
-		</div>
+		<div data-bind="component: {
+			name: 'Checkbox',
+			params: {
+				label: 'TAB_GENERAL/LABEL_SHOW_THUMBNAILS',
+				value: capaAttachmentThumbnails,
+				inline: false
+			}
+		}"></div>
 	</div>
 	<div class="legend" data-i18n="TAB_GENERAL/LEGEND_MAIN"></div>
 	<div class="control-group">
-		<label class="control-label" data-i18n="TAB_GENERAL/LABEL_ATTACHMENT_SIZE_LIMIT"></label>
-		<div class="controls">
+		<label data-i18n="TAB_GENERAL/LABEL_ATTACHMENT_SIZE_LIMIT"></label>
+		<div>
 			<input type="number" min="1" step="1" class="span1" data-bind="textInput: mainAttachmentLimit"/>
 			&nbsp;
 			<span data-i18n="MB"></span>
@@ -107,7 +103,7 @@
 		</div>
 	</div>
 	<div class="control-group">
-		<div class="controls">
+		<div>
 			<div data-bind="component: {
 				name: 'Checkbox',
 				params: {

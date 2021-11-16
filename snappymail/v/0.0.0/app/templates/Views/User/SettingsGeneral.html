@@ -1,21 +1,19 @@
 <div class="form-horizontal">
 	<div class="legend" data-i18n="SETTINGS_GENERAL/LEGEND_GENERAL"></div>
 	<div class="control-group">
-		<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_IDENTITY"></label>
-		<div class="controls">
-			<b class="editMainIdentity" data-bind="click: editMainIdentity, text: identityMainDesc"></b>
-		</div>
+		<label data-i18n="SETTINGS_GENERAL/LABEL_IDENTITY"></label>
+		<b class="editMainIdentity" data-bind="click: editMainIdentity, text: identityMainDesc"></b>
 	</div>
 	<div class="control-group" data-bind="visible: allowLanguagesOnSettings">
-		<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_LANGUAGE"></label>
-		<div class="controls">
+		<label data-i18n="SETTINGS_GENERAL/LABEL_LANGUAGE"></label>
+		<div>
 			<span class="select" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, onSpace: selectLanguage, onEnter: selectLanguage"></span>
 			<span data-bind="saveTrigger: languageTrigger"></span>
 		</div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_LAYOUT"></label>
-		<div class="controls" data-bind="component: {
+		<label data-i18n="SETTINGS_GENERAL/LABEL_LAYOUT"></label>
+		<div data-bind="component: {
 			name: 'Select',
 			params: {
 				options: layoutTypes,
@@ -27,8 +25,8 @@
 		}"></div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_EDITOR"></label>
-		<div class="controls" data-bind="component: {
+		<label data-i18n="SETTINGS_GENERAL/LABEL_EDITOR"></label>
+		<div data-bind="component: {
 			name: 'Select',
 			params: {
 				options: editorDefaultTypes,
@@ -40,16 +38,16 @@
 		}"></div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_MESSAGE_PER_PAGE"></label>
-		<div class="controls">
+		<label data-i18n="SETTINGS_GENERAL/LABEL_MESSAGE_PER_PAGE"></label>
+		<div>
 			<input type="number" min="10" max="50" step="1" class="span1" data-bind="textInput: messagesPerPage"/>
 			&nbsp;
 			<span data-bind="saveTrigger: mppTrigger"></span>
 		</div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" data-i18n="SETTINGS_GENERAL/LABEL_MARK_MESSAGE_READ_AFTER"></label>
-		<div class="controls">
+		<label data-i18n="SETTINGS_GENERAL/LABEL_MARK_MESSAGE_READ_AFTER"></label>
+		<div>
 			<input type="number" min="0" step="1" class="span1" data-bind="textInput: messageReadDelay"/>
 			&nbsp;
 			<span data-i18n="SETTINGS_GENERAL/SECONDS"></label>
@@ -57,7 +55,7 @@
 		</div>
 	</div>
 	<div class="control-group">
-		<div class="controls">
+		<div>
 			<div data-bind="component: {
 				name: 'Checkbox',
 				params: {
@@ -99,7 +97,7 @@
 
 	<div class="legend" data-i18n="SETTINGS_GENERAL/LABEL_NOTIFICATIONS"></div>
 	<div class="control-group">
-		<div class="controls">
+		<div>
 			<div>
 				<div data-bind="component: {
 					name: 'Checkbox',

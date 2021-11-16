@@ -160,7 +160,7 @@
 		<div class="b-message" data-bind="visible: message">
 			<div class="messageItemHeader" data-bind="css: {'emptySubject': '' === viewSubject()}">
 				<div class="subjectParent">
-					<button class="close" data-bind="command: closeMessageCommand" style="margin-top: -2px;">×</button>
+					<a href="#" class="close" data-bind="command: closeMessageCommand" style="margin-top: -2px;">×</a>
 					<span class="infoParent g-ui-user-select-none fontastic" data-bind="click: function() { showFullInfo(!showFullInfo()); }">ℹ</span>
 					<span class="flagParent g-ui-user-select-none flagOff fontastic" data-bind="text: viewIsFlagged() ? '★' : '☆', css: {'flagOn': viewIsFlagged, 'flagOff': !viewIsFlagged()}"></span>
 					<b style="color: red; margin-right: 5px" data-bind="visible: viewIsImportant">!</b>
@@ -303,8 +303,8 @@
 										data-i18n="MESSAGE/LINK_DOWNLOAD_AS_ZIP"></span>
 								</span>
 
-								<button type="button" class="close" style="margin-right: 5px;"
-									data-bind="click: function () { showAttachmnetControls(false); showAttachmnetControlsState(false); }">×</button>
+								<a href="#" class="close" style="margin-right: 5px;"
+									data-bind="click: function () { showAttachmnetControls(false); showAttachmnetControlsState(false); }">×</a>
 							</div>
 						</div>
 

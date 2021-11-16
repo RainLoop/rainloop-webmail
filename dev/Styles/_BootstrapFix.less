@@ -28,16 +28,16 @@ label.inline, span.inline {
 	padding: 4px 7px;
 }
 
-.alert a {
+.alert a:not(.close) {
 	text-decoration: underline;
 	color: @warningText;
 }
 
-.alert.alert-info a {
+.alert.alert-info a:not(.close) {
 	color: @infoText;
 }
 
-.alert.alert-error a {
+.alert.alert-error a:not(.close) {
 	color: @errorText;
 }
 
@@ -45,11 +45,13 @@ label.inline, span.inline {
 @media screen and (max-width: 999px) {
 	.form-horizontal {
 		.control-group {
-			.control-label {
+			> label {
 				text-align: left;
 			}
-			.controls {
-				margin-left: 10px;
+
+			// Move over all input controls and content
+			> *:not(label) {
+				margin-left: 20px;
 			}
 		}
 	}

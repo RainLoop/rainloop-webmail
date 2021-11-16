@@ -1,5 +1,5 @@
 <header>
-	<button type="button" class="close" data-bind="command: cancelCommand">×</button>
+	<a href="#" class="close" data-bind="command: cancelCommand">×</a>
 	<h3 data-i18n="SEARCH/TITLE_ADV"></h3>
 </header>
 <div class="modal-body">
@@ -7,39 +7,31 @@
 		<div class="row">
 			<div class="span4">
 				<div class="control-group">
-					<label class="control-label" data-i18n="GLOBAL/FROM"></label>
-					<div class="controls">
-						<input type="text" class="uiInput inputFrom"
-							autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="value: from, onEnter: searchCommand, onEsc: cancelCommand" />
-					</div>
+					<label data-i18n="GLOBAL/FROM"></label>
+					<input type="text" class="uiInput inputFrom"
+						autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						data-bind="value: from, onEnter: searchCommand, onEsc: cancelCommand" />
 				</div>
 				<div class="control-group">
-					<label class="control-label" data-i18n="GLOBAL/TO"></label>
-					<div class="controls">
-						<input type="text" class="uiInput inputFrom" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="value: to, onEnter: searchCommand, onEsc: cancelCommand" />
-					</div>
+					<label data-i18n="GLOBAL/TO"></label>
+					<input type="text" class="uiInput inputFrom" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						data-bind="value: to, onEnter: searchCommand, onEsc: cancelCommand" />
 				</div>
 				<div class="control-group">
-					<label class="control-label" data-i18n="GLOBAL/SUBJECT"></label>
-					<div class="controls">
-						<input type="text" class="uiInput inputFrom" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="value: subject, onEnter: searchCommand, onEsc: cancelCommand" />
-					</div>
+					<label data-i18n="GLOBAL/SUBJECT"></label>
+					<input type="text" class="uiInput inputFrom" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						data-bind="value: subject, onEnter: searchCommand, onEsc: cancelCommand" />
 				</div>
 				<div class="control-group">
-					<label class="control-label" data-i18n="SEARCH/LABEL_ADV_TEXT"></label>
-					<div class="controls">
-						<input type="text" class="uiInput inputFrom" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="value: text, onEnter: searchCommand, onEsc: cancelCommand" />
-					</div>
+					<label data-i18n="SEARCH/LABEL_ADV_TEXT"></label>
+					<input type="text" class="uiInput inputFrom" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						data-bind="value: text, onEnter: searchCommand, onEsc: cancelCommand" />
 				</div>
 			</div>
 			<div class="span4">
 				<div class="control-group">
-					<label class="control-label" data-i18n="SEARCH/LABEL_ADV_DATE"></label>
-					<div class="controls" data-bind="component: {
+					<label data-i18n="SEARCH/LABEL_ADV_DATE"></label>
+					<div data-bind="component: {
 						name: 'Select',
 						params: {
 							options: selectedDates,
@@ -51,8 +43,8 @@
 				</div>
 				<!-- ko if: showMultisearch -->
 				<div class="control-group">
-					<label class="control-label" data-i18n="SEARCH/LABEL_ADV_SUBFOLDERS"></label>
-					<div class="controls" data-bind="component: {
+					<label data-i18n="SEARCH/LABEL_ADV_SUBFOLDERS"></label>
+					<div data-bind="component: {
 						name: 'Select',
 						params: {
 							options: selectedTree,
@@ -64,9 +56,8 @@
 				</div>
 				<!-- /ko -->
 				<div class="control-group">
-					<label class="control-label">
-					</label>
-					<div class="controls">
+					<label></label>
+					<div>
 						<div data-bind="component: {
 							name: 'Checkbox',
 							params: {

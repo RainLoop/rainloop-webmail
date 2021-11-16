@@ -1,6 +1,6 @@
 <header class="b-header-toolbar g-ui-user-select-none">
 
-	<button type="button" class="close" data-bind="command: cancelCommand">×</button>
+	<a href="#" class="close" data-bind="command: cancelCommand">×</a>
 
 	<div class="btn-toolbar">
 
@@ -128,8 +128,8 @@
 		<div data-bind="visible: !emptySelection()">
 			<div class="form-horizontal top-part">
 				<div class="control-group" data-bind="visible: !viewReadOnly() || contactHasValidName()">
-					<label class="control-label fontastic iconsize24">👤</label>
-					<div class="controls">
+					<label class="fontastic iconsize24">👤</label>
+					<div>
 						<div data-bind="foreach: viewPropertiesNames">
 							<div class="property-line">
 								<span data-bind="text: value"></span>
@@ -157,8 +157,8 @@
 					</div>
 				</div>
 				<div class="control-group" data-bind="visible: !viewReadOnly() || 0 < viewPropertiesEmails().length">
-					<label class="control-label fontastic iconsize24" data-i18n="[title]GLOBAL/EMAIL">@</label>
-					<div class="controls">
+					<label class="fontastic iconsize24" data-i18n="[title]GLOBAL/EMAIL">@</label>
+					<div>
 						<div data-bind="foreach: viewPropertiesEmails">
 							<div class="property-line">
 								<span data-bind="text: value"></span>
@@ -171,8 +171,8 @@
 					</div>
 				</div>
 				<div class="control-group" data-bind="visible: 0 < viewPropertiesPhones().length">
-					<label class="control-label fontastic iconsize24" data-i18n="[title]CONTACTS/LABEL_PHONE">📞</label>
-					<div class="controls">
+					<label class="fontastic iconsize24" data-i18n="[title]CONTACTS/LABEL_PHONE">📞</label>
+					<div>
 						<div data-bind="foreach: viewPropertiesPhones">
 							<div class="property-line">
 								<span data-bind="text: value"></span>
@@ -184,8 +184,8 @@
 					</div>
 				</div>
 				<div class="control-group" data-bind="visible: 0 < viewPropertiesWeb().length">
-					<label class="control-label fontastic iconsize24" data-i18n="[title]CONTACTS/LABEL_WEB">🌍</label>
-					<div class="controls">
+					<label class="fontastic iconsize24" data-i18n="[title]CONTACTS/LABEL_WEB">🌍</label>
+					<div>
 						<div data-bind="foreach: viewPropertiesWeb">
 							<div class="property-line">
 								<span data-bind="text: value"></span>
