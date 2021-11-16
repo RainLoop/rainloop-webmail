@@ -255,10 +255,7 @@ trait Accounts
 		$order = \json_decode($orderString, true) ?? [];
 		if (isset($order['Identities']) && \is_array($order['Identities']) && 1 < \count($order['Identities'])) {
 			$list = \array_map(function ($item) {
-				if ('' === $item) {
-					$item = '---';
-				}
-				return $item;
+				return ('' === $item) ? '---' : $item;
 			}, $order['Identities']);
 
 			\usort($identities, function ($a, $b) use ($list) {
