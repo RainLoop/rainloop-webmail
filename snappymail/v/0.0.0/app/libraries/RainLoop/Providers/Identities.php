@@ -43,8 +43,10 @@ class Identities extends AbstractProvider
 		}));
 
 		// If no primary identity is found, generate default one from account info
-		if ($primaryIdentity === null || $primaryIdentity === false)
-			$identities[] = $primaryIdentity = new Identity('', $account->Email());
+		if ($primaryIdentity === null || $primaryIdentity === false) {
+			$primaryIdentity = $primaryIdentity = new Identity('', $account->Email());
+			$identities[] = $primaryIdentity;
+		}
 
 		// Return only primary identity or all identities
 		return $allowMultipleIdentities ? $identities : [$primaryIdentity];
