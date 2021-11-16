@@ -695,7 +695,12 @@ trait Admin
 
 	public function DoAdminPHPExtensions() : array
 	{
-		$aResult = [];
+		$aResult = [
+			[
+				'name' => 'PHP ' . PHP_VERSION,
+				'loaded' => true
+			]
+		];
 		foreach (['APCu', 'cURL','GD','Gmagick','Imagick','intl','LDAP','OpenSSL','pdo_mysql','pdo_pgsql','pdo_sqlite','Sodium','XXTEA','Zip'] as $name) {
 			$aResult[] = [
 				'name' => $name,
