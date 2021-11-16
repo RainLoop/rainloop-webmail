@@ -401,6 +401,19 @@ showMessageComposer = (params = []) =>
 	rl.app.showMessageComposer(params);
 },
 
+initFullscreen = (el, fn) =>
+{
+	let event = 'fullscreenchange';
+	if (!el.requestFullscreen && el.webkitRequestFullscreen) {
+		el.requestFullscreen = el.webkitRequestFullscreen;
+		event = 'webkit'+event;
+	}
+	if (el.requestFullscreen) {
+		el.addEventListener(event, fn);
+		return el;
+	}
+},
+
 setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 {
 	if (source.layoutResizer && source.layoutResizer.mode != mode) {

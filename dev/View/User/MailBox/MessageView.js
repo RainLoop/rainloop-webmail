@@ -17,7 +17,7 @@ import {
 import { $htmlCL, leftPanelDisabled, keyScopeReal, moveAction, Settings, getFullscreenElement, exitFullscreen } from 'Common/Globals';
 
 import { arrayLength, inFocus } from 'Common/Utils';
-import { mailToHelper, showMessageComposer } from 'Common/UtilsUser';
+import { mailToHelper, showMessageComposer, initFullscreen } from 'Common/UtilsUser';
 
 import { SMAudio } from 'Common/Audio';
 
@@ -307,18 +307,8 @@ export class MailMessageView extends AbstractViewRight {
 
 		this.showFullInfo.subscribe(value => Local.set(ClientSideKeyName.MessageHeaderFullInfo, value ? '1' : '0'));
 
-		let event = 'fullscreenchange',
-			el = dom.querySelector('.b-content');
-		if (!el.requestFullscreen && el.webkitRequestFullscreen) {
-			el.requestFullscreen = el.webkitRequestFullscreen;
-			event = 'webkit'+event;
-		}
-		if (el.requestFullscreen) {
-			this.oContent = el;
-			el.addEventListener(event, () =>
-				this.fullScreenMode(getFullscreenElement() === el)
-			);
-		}
+		const el = dom.querySelector('.b-content');
+		this.oContent = initFullscreen(el, () => this.fullScreenMode(getFullscreenElement() === el));
 
 		const eqs = (ev, s) => ev.target.closestWithin(s, dom);
 		dom.addEventListener('click', event => {

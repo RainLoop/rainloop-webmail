@@ -13,7 +13,7 @@ import {
 } from 'Common/EnumsUser';
 
 import { inFocus, pInt, isArray, arrayLength } from 'Common/Utils';
-import { delegateRunOnDestroy } from 'Common/UtilsUser';
+import { delegateRunOnDestroy, initFullscreen } from 'Common/UtilsUser';
 import { encodeHtml, HtmlEditor } from 'Common/Html';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
@@ -1243,20 +1243,12 @@ class ComposePopupView extends AbstractViewPopup {
 
 		// Fullscreen must be on app, else other popups fail
 		const el = doc.getElementById('rl-app');
-		let event = 'fullscreenchange';
-		if (!el.requestFullscreen && el.webkitRequestFullscreen) {
-			el.requestFullscreen = el.webkitRequestFullscreen;
-			event = 'webkit' + event;
-		}
-		if (el.requestFullscreen) {
-			this.oContent = el;
-			el.addEventListener(event, () =>
-				ThemeStore.isMobile()
-				&& this.modalVisibility()
-				&& (getFullscreenElement() !== el)
-				&& this.skipCommand()
-			);
-		}
+		this.oContent = initFullscreen(el, () =>
+			ThemeStore.isMobile()
+			&& this.modalVisibility()
+			&& (getFullscreenElement() !== el)
+			&& this.skipCommand()
+		);
 	}
 
 	/**
