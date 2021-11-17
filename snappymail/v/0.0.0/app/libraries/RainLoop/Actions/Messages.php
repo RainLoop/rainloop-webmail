@@ -16,50 +16,40 @@ trait Messages
 	{
 //		\sleep(1);
 //		throw new ClientException(Notifications::CantGetMessageList);
-
-		$sFolder = '';
-		$iOffset = 0;
-		$iLimit = 20;
-		$sSearch = '';
-		$iUidNext = 0;
-		$bUseThreads = false;
-		$iThreadUid = 0;
-		$sSort = '';
+		$oParams = new \MailSo\Mail\MessageListParams;
 
 		$sRawKey = $this->GetActionParam('RawKey', '');
 		$aValues = \json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($sRawKey), true);
 		if ($aValues && 7 < \count($aValues))
 		{
-			$sFolder = (string) $aValues['Folder'];
-			$iOffset = (int) $aValues['Offset'];
-			$iLimit = (int) $aValues['Limit'];
-			$sSearch = (string) $aValues['Search'];
-			$iUidNext = (int) $aValues['UidNext'];
-			$bUseThreads = !empty($aValues['UseThreads']);
-			if ($bUseThreads) {
-				$iThreadUid = (int) $aValues['ThreadUid'];
-			}
-			$sSort = (string) $aValues['Sort'];
-
 			$this->verifyCacheByKey($sRawKey);
+
+			$oParams->sFolderName = (string) $aValues['Folder'];
+			$oParams->iOffset = (int) $aValues['Offset'];
+			$oParams->iLimit = (int) $aValues['Limit'];
+			$oParams->sSearch = (string) $aValues['Search'];
+			$oParams->sSort = (string) $aValues['Sort'];
+			$oParams->iPrevUidNext = (int) $aValues['UidNext'];
+			$oParams->bUseThreads = !empty($aValues['UseThreads']);
+			if ($oParams->bUseThreads) {
+				$oParams->iThreadUid = (int) $aValues['ThreadUid'];
+			}
 		}
 		else
 		{
-			$sFolder = $this->GetActionParam('Folder', '');
-			$iOffset = (int) $this->GetActionParam('Offset', 0);
-			$iLimit = (int) $this->GetActionParam('Limit', 10);
-			$sSearch = $this->GetActionParam('Search', '');
-			$sSort = $this->GetActionParam('Sort', '');
-			$iUidNext = (int) $this->GetActionParam('UidNext', 0);
-			$bUseThreads = !empty($this->GetActionParam('UseThreads', '0'));
-
-			if ($bUseThreads)
-			{
-				$iThreadUid = (int) $this->GetActionParam('ThreadUid', '');
+			$oParams->sFolderName = $this->GetActionParam('Folder', '');
+			$oParams->iOffset = (int) $this->GetActionParam('Offset', 0);
+			$oParams->iLimit = (int) $this->GetActionParam('Limit', 10);
+			$oParams->sSearch = $this->GetActionParam('Search', '');
+			$oParams->sSort = $this->GetActionParam('Sort', '');
+			$oParams->iPrevUidNext = (int) $this->GetActionParam('UidNext', 0);
+			$oParams->bUseThreads = !empty($this->GetActionParam('UseThreads', '0'));
+			if ($oParams->bUseThreads) {
+				$oParams->iThreadUid = (int) $this->GetActionParam('ThreadUid', '');
 			}
 		}
 
-		if (!\strlen($sFolder))
+		if (!\strlen($oParams->sFolderName))
 		{
 			throw new ClientException(Notifications::CantGetMessageList);
 		}
@@ -68,19 +58,14 @@ trait Messages
 
 		try
 		{
-			if (!$this->Config()->Get('labs', 'use_imap_thread', false))
-			{
-				$bUseThreads = false;
+			if (!$this->Config()->Get('labs', 'use_imap_thread', false)) {
+				$oParams->bUseThreads = false;
 			}
 
-			$oMessageList = $this->MailClient()->MessageList(
-				$sFolder, $iOffset, $iLimit, $sSearch, $iUidNext,
-				$this->cacherForUids(),
-				!!$this->Config()->Get('labs', 'use_imap_sort', true),
-				$bUseThreads,
-				$iThreadUid,
-				$sSort
-			);
+			$oParams->oCacher = $this->cacherForUids();
+			$oParams->bUseSortIfSupported = !!$this->Config()->Get('labs', 'use_imap_sort', true);
+
+			$oMessageList = $this->MailClient()->MessageList($oParams);
 		}
 		catch (\Throwable $oException)
 		{
