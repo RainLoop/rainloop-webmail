@@ -10,7 +10,7 @@ abstract class Upgrade
 	/**
 	 * Attempt to convert the old less secure data into better secured data
 	 */
-	public function ConvertInsecureAccounts(\RainLoop\Actions $oActions, \RainLoop\Model\MainAccount $oMainAccount) : array
+	public static function ConvertInsecureAccounts(\RainLoop\Actions $oActions, \RainLoop\Model\MainAccount $oMainAccount) : array
 	{
 		$oStorage = $oActions->StorageProvider();
 		$sAccounts = $oStorage->Get($oMainAccount, StorageType::CONFIG, 'accounts');
@@ -86,7 +86,7 @@ abstract class Upgrade
 	/**
 	 * Attempt to convert the old less secure data into better secured data
 	 */
-	public function ConvertInsecureContactsSync(\RainLoop\Actions $oActions, \RainLoop\Model\Account $oAccount) : ?array
+	public static function ConvertInsecureContactsSync(\RainLoop\Actions $oActions, \RainLoop\Model\Account $oAccount) : ?array
 	{
 		$sData = $oActions->StorageProvider()->Get($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
