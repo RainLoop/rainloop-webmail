@@ -36,7 +36,7 @@ trait Accounts
 		return array();
 	}
 
-	protected function SetAccounts(MainAccount $oAccount, array $aAccounts = array()): void
+	public function SetAccounts(MainAccount $oAccount, array $aAccounts = array()): void
 	{
 		$sParentEmail = $oAccount->Email();
 		if ($aAccounts) {

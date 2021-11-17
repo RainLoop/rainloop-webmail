@@ -239,7 +239,7 @@ trait Contacts
 		return $this->DefaultResponse(__FUNCTION__, $mResponse);
 	}
 
-	protected function setContactsSyncData(\RainLoop\Model\Account $oAccount, array $aData) : bool
+	public function setContactsSyncData(\RainLoop\Model\Account $oAccount, array $aData) : bool
 	{
 		if ($aData['Password']) {
 			$aData['Password'] = \SnappyMail\Crypt::EncryptToJSON($aData['Password'], $oAccount->CryptKey());
