@@ -1525,7 +1525,7 @@ const
 								break;
 							}
 						}
-						data = data.replace( /^[ \t\r\n]+/g, sibling ? ' ' : '' );
+						data = data.replace( /^[ \r\n]+/g, sibling ? ' ' : '' );
 					}
 					if ( endsWithWS ) {
 						walker.currentNode = child;
@@ -1540,7 +1540,7 @@ const
 								break;
 							}
 						}
-						data = data.replace( /[ \t\r\n]+$/g, sibling ? ' ' : '' );
+						data = data.replace( /[ \r\n]+$/g, sibling ? ' ' : '' );
 					}
 					if ( data ) {
 						child.data = data;
