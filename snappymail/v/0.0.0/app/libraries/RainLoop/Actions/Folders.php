@@ -22,8 +22,8 @@ trait Folders
 			$oAccount = $this->getAccountFromToken();
 			if ($this->GetCapa(false, Capa::QUOTA, $oAccount)) {
 				try {
-					$aQuota = $this->MailClient()->Quota();
-//					$aQuota = $this->MailClient()->QuotaRoot();
+//					$aQuota = $this->MailClient()->Quota();
+					$aQuota = $this->MailClient()->QuotaRoot();
 					$oFolderCollection->quotaUsage = $aQuota ? $aQuota[0] * 1024 : null;
 					$oFolderCollection->quotaLimit = $aQuota ? $aQuota[1] * 1024 : null;
 				} catch (\Throwable $oException) {
