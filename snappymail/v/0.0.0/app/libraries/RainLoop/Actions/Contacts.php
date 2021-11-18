@@ -241,7 +241,7 @@ trait Contacts
 
 	public function setContactsSyncData(\RainLoop\Model\Account $oAccount, array $aData) : bool
 	{
-		$oMainAccount = $this->getAccountFromToken();
+		$oMainAccount = $this->getMainAccountFromToken();
 		if ($aData['Password']) {
 			$aData['Password'] = \SnappyMail\Crypt::EncryptToJSON($aData['Password'], $oMainAccount->CryptKey());
 		}
@@ -264,7 +264,7 @@ trait Contacts
 			$aData = \json_decode($sData);
 			if ($aData) {
 				if ($aData['Password']) {
-					$oMainAccount = $this->getAccountFromToken();
+					$oMainAccount = $this->getMainAccountFromToken();
 					// Verify oAccount password hasn't changed so that Password can be decrypted
 					if ($aData['PasswordHMAC'] !== \hash_hmac('sha1', $aData['Password'], $oMainAccount->CryptKey())) {
 						// Failed
