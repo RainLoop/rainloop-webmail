@@ -29,7 +29,7 @@ abstract class TOTP
 		return false;
 	}
 
-	public function CreateSecret() : string
+	public static function CreateSecret() : string
 	{
 		$CHARS = \array_keys(static::$map);
 		$length = 16;
