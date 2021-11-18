@@ -14,7 +14,7 @@
 	left: 5px;
 	width: 10px;
 	height: 18px;
-
+	border: 2px solid #0F9D58;
 	border-width: 0 2px 2px 0;
 
 	transform: rotate(45deg);
@@ -31,20 +31,22 @@
 
 .e-component {
 
-	&.e-select {
+	white-space: nowrap;
 
-		select:focus {
-			outline: 1px dotted;
-		}
+	* {
+		display: inline-block;
+	}
+
+	select:focus {
+		outline: 1px dotted;
 	}
 
 	&.e-checkbox {
 
+		cursor: pointer;
 		margin-bottom: 6px;
 		margin-left: -2px;
 		padding: 2px;
-
-		cursor: pointer;
 
 		&:focus {
 			outline: 1px dotted;
@@ -56,92 +58,49 @@
 		}
 	}
 
-	&.e-radio {
+	span {
+		margin-left: 0.5em;
+		white-space: normal;
+	}
 
-		cursor: pointer;
-
-		&.disabled {
-			cursor: not-allowed;
-			opacity: 0.5;
-		}
+	select + span {
+		line-height: 1.43em;
+		padding: 4px 0;
 	}
 }
 
-.e-component.material-design {
+.e-checkbox.material-design {
 
+	line-height: 20px;
 
-	&.e-checkbox {
+	> div {
+		position: relative;
+		width: 18px;
+		height: 18px;
+		vertical-align: top;
+	}
 
-		margin-top: 2px;
-		padding: 2px 2px 1px 2px;
+	> div > div {
+		position: absolute;
+		box-sizing: border-box;
+		margin-top: 1px;
 
-		.sub-checkbox-container {
-			display: inline-block;
-			position: relative;
-			transform: translateZ(0);
-			width: 18px;
-			height: 18px;
-			vertical-align: bottom;
-			margin-bottom: 3px;
-		}
+		animation: checkmark-to-box 200ms ease-out forwards;
+	}
 
-		.sub-label {
-			padding-left: 12px;
-		}
-
-		.sub-checkbox {
-			position: absolute;
-			box-sizing: border-box;
-			margin-top: 1px;
-
-			.checkbox-box-sizes();
-		}
-
-		.sub-checkbox.checked {
-			border-color: #0F9D58;
-
-			.checkbox-mark-sizes();
-		}
-
-		// animation
-		.sub-checkbox.checked {
-			&.box {
-				border: solid 2px;
-				animation: box-shrink 140ms ease-out forwards;
-			}
-			&.checkmark {
-				animation: checkmark-expand 140ms ease-out forwards;
-			}
-		}
-
-		.sub-checkbox.unchecked {
-			&.box {
-				animation: box-expand 140ms ease-out forwards;
-			}
-			&.checkmark {
-				transform: rotate(45deg);
-				animation: checkmark-shrink 140ms ease-out forwards;
-			}
-		}
+	div.checked {
+		animation: box-to-checkmark 200ms ease-out forwards;
 	}
 }
 
-@keyframes box-shrink {
+@keyframes box-to-checkmark {
 	0% { .checkbox-box-sizes(); }
-	100% { .checkbox-result-sizes(); }
-}
-
-@keyframes checkmark-expand {
-	0% { .checkbox-result-sizes(); }
+	50% { .checkbox-result-sizes(); }
 	100% { .checkbox-mark-sizes(); }
 }
 
-@keyframes checkmark-shrink {
+@keyframes checkmark-to-box {
 	0% { .checkbox-mark-sizes(); }
-	100% { .checkbox-result-sizes(); }
-}
-
-@keyframes box-expand {
-	0% { .checkbox-result-sizes(); }
+	50% { .checkbox-result-sizes(); }
 	100% { .checkbox-box-sizes(); }
 }

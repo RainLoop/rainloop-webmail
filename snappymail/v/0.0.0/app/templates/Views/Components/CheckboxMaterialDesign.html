@@ -1,10 +1,8 @@
-<span class="e-component e-checkbox material-design inline" tabindex="0" data-bind="click: click, onSpace: click, css: { 'disabled': !enable() }">
-	<div class="sub-checkbox-container" role="checkbox">
-		<div class="sub-checkbox" data-bind="css: {'checked': value(),
-			'unchecked': !value(),
-			'box': animationBox, 'checkmark': animationCheckmark}"></div>
+<div class="e-component e-checkbox material-design" tabindex="0" data-bind="click: click, onSpace: click, css: { 'disabled': !enable() }">
+	<div role="checkbox">
+		<div data-bind="css: {'checked': value()}"></div>
 	</div>
 <!-- ko if: labeled -->
-	<span class="sub-label" data-bind="attr: {'data-i18n': label}"></span>
+	<span data-bind="attr: {'data-i18n': label}"></span>
 <!-- /ko -->
-</span>
+</div>
