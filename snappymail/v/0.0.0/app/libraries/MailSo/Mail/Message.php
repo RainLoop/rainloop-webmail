@@ -466,7 +466,7 @@ class Message implements \JsonSerializable
 						$this->sSpamResult = "{$value[1]} / {$required[1]}";
 					}
 				}
-				$this->bIsSpam = 0 === \strpos($spam, 'Yes,');
+				$this->bIsSpam = 'Yes' === \substr($spam, 0, 3);
 //				$spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAM_FLAG);
 //				$this->bIsSpam = false !== \stripos($spam, 'YES');
 			}
