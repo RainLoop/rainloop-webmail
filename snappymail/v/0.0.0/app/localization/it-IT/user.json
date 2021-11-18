@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Non hai selezionato una cartella di sistema per i messaggi archiviati."
 	},
 	"TITLES": {
-		"LOGIN": "Accedi",
 		"MAILBOX": "Casella di posta",
-		"SETTINGS": "Impostazioni",
-		"COMPOSE": "Scrivi messaggio"
+		"SETTINGS": "Impostazioni"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "Il file è troppo grande",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Token invalido",
 		"AUTH_ERROR": "Autenticazione fallita",
-		"ACCESS_ERROR": "Errore di accesso",
 		"CONNECTION_ERROR": "Impossibile connettersi al server",
+		"DOMAIN_ALREADY_EXISTS": "Il dominio esiste già",
 		"DOMAIN_NOT_ALLOWED": "Il dominio non è autorizzato",
 		"ACCOUNT_NOT_ALLOWED": "L'account non è autorizzato",
 		"CONTACTS_SYNC_ERROR": "Errore durante la sincronizzazione dei contatti",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Impossibile eliminare una cartella non vuota",
 		"CANT_SUBSCRIBE_FOLDER": "Impossibile sottoscrivere la cartella",
 		"CANT_UNSUBSCRIBE_FOLDER": "Impossibile rimuovere la sottoscrizione alla cartella",
-		"CANT_SAVE_SETTINGS": "Impossibile salvare le impostazioni",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Impossibile salvare le impostazioni delle estensioni",
-		"DOMAIN_ALREADY_EXISTS": "Il dominio esiste già",
-		"CANT_INSTALL_PACKAGE": "Impossibile installare il pacchetto",
-		"CANT_DELETE_PACKAGE": "Impossibile rimuovere il pacchetto",
-		"INVALID_PLUGIN_PACKAGE": "Estensione non valida",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Estensione non supportata",
 		"DEMO_SEND_MESSAGE_ERROR": "Per ragioni di sicurezza, questa demo non è abilitata ad inviare email ad inidirizzi esterni",
 		"DEMO_ACCOUNT_ERROR": "Per ragioni di sicurezza, questo account non è autorizzato ad effettuare questa operazione!",
 		"ACCOUNT_ALREADY_EXISTS": "L'account esiste già",

@@ -364,4 +364,31 @@ trait UserAuth
 		Utils::SetCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY, $sMessage);
 	}
 
+	/**
+	 * @throws \RainLoop\Exceptions\ClientException
+	 */
+	protected function CheckMailConnection(Account $oAccount, bool $bAuthLog = false): void
+	{
+		try {
+			$oAccount->IncConnectAndLoginHelper($this->Plugins(), $this->MailClient(), $this->Config());
+		} catch (ClientException $oException) {
+			throw $oException;
+		} catch (\MailSo\Net\Exceptions\ConnectionException $oException) {
+			throw new ClientException(Notifications::ConnectionError, $oException);
+		} catch (\MailSo\Imap\Exceptions\LoginBadCredentialsException $oException) {
+			if ($bAuthLog) {
+				$this->LoggerAuthHelper($oAccount);
+			}
+
+			if ($this->Config()->Get('labs', 'imap_show_login_alert', true)) {
+				throw new ClientException(Notifications::AuthError,
+					$oException, $oException->getAlertFromStatus());
+			} else {
+				throw new ClientException(Notifications::AuthError, $oException);
+			}
+		} catch (\Throwable $oException) {
+			throw new ClientException(Notifications::AuthError, $oException);
+		}
+	}
+
 }

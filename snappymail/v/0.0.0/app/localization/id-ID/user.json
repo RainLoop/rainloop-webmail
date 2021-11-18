@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Anda belum memilih folder \"Arsip\" untuk menempatkan pesan arsip."
 	},
 	"TITLES": {
-		"LOGIN": "Login",
 		"MAILBOX": "Kotak surat",
-		"SETTINGS": "Pengaturan",
-		"COMPOSE": "Buat pesan"
+		"SETTINGS": "Pengaturan"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "File terlalu besar",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Token tidak sah",
 		"AUTH_ERROR": "Otentikasi gagal",
-		"ACCESS_ERROR": "Kesalahan akses",
 		"CONNECTION_ERROR": "Tidak terhubung ke server",
+		"DOMAIN_ALREADY_EXISTS": "Domain telah ada",
 		"DOMAIN_NOT_ALLOWED": "Domain tidak diizinkan",
 		"ACCOUNT_NOT_ALLOWED": "Akun ini tidak diizinkan",
 		"CONTACTS_SYNC_ERROR": "Kesalahan sinkronisasi kontak",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Gagal menghapus direkori yang berisi",
 		"CANT_SUBSCRIBE_FOLDER": "Gagal mengkaitkan folder",
 		"CANT_UNSUBSCRIBE_FOLDER": "Tidak bisa memutus folder",
-		"CANT_SAVE_SETTINGS": "Gagal menyimpan pengaturan",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Gagal menyimpan pengaturan",
-		"DOMAIN_ALREADY_EXISTS": "Domain telah ada",
-		"CANT_INSTALL_PACKAGE": "Gagal menginstall paket",
-		"CANT_DELETE_PACKAGE": "Gagal membuang paket",
-		"INVALID_PLUGIN_PACKAGE": "Paket plugin tidak sah",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Paket plugin tidak didukung",
 		"DEMO_SEND_MESSAGE_ERROR": "Atas alasan keamanan, akun ini tidak diizinkan mengirim pesan ke alamat luar!",
 		"DEMO_ACCOUNT_ERROR": "Atas alasan keamanan, akun ini tidak diizinkan melakukan aksi ini!",
 		"ACCOUNT_ALREADY_EXISTS": "Akun sudah ada",

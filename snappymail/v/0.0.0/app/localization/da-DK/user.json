@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Du har ikke valgt en systemmappe til arkiverede meddelelser."
 	},
 	"TITLES": {
-		"LOGIN": "Log ind",
 		"MAILBOX": "Postkasse",
-		"SETTINGS": "Indstillinger",
-		"COMPOSE": "Forfat"
+		"SETTINGS": "Indstillinger"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "Filen er for stor",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ugyldigt tegn",
 		"AUTH_ERROR": "Godkendelse fejlede",
-		"ACCESS_ERROR": "Adgangsfejl",
 		"CONNECTION_ERROR": "Kan ikke kontakte server",
+		"DOMAIN_ALREADY_EXISTS": "Domæne eksisterer allerede",
 		"DOMAIN_NOT_ALLOWED": "Domæne ikke tilladt",
 		"ACCOUNT_NOT_ALLOWED": "Konto ikke tilladt",
 		"CONTACTS_SYNC_ERROR": "Fejl ved synkronisering af kontakter",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Kan ikke slette mappe som ikke er tom",
 		"CANT_SUBSCRIBE_FOLDER": "Kan ikke abonnere på mappe",
 		"CANT_UNSUBSCRIBE_FOLDER": "Kan ikke afmelde mappe",
-		"CANT_SAVE_SETTINGS": "Kan ikke gemme instillinger",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Kan ikke gemme instillinger",
-		"DOMAIN_ALREADY_EXISTS": "Domæne eksisterer allerede",
-		"CANT_INSTALL_PACKAGE": "Installation af pakke mislykkedes",
-		"CANT_DELETE_PACKAGE": "Fjernelse af pakke mislykkedes",
-		"INVALID_PLUGIN_PACKAGE": "Ugyldig tilføjelsespakke",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Tilføjelsespakke ikke understøttet",
 		"DEMO_SEND_MESSAGE_ERROR": "Denne konto kan af sikkerhedshensyn ikke sende e-mails til eksterne adresser!",
 		"DEMO_ACCOUNT_ERROR": "Denne konto kan af sikkerhedshensyn ikke udføre denne handling!",
 		"ACCOUNT_ALREADY_EXISTS": "Kontoen eksisterer allerede",

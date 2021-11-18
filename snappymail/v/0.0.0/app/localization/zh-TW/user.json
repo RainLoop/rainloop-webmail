@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "You haven't selected \"Archive\" system folder achived messages are placed to.\n"
 	},
 	"TITLES": {
-		"LOGIN": "登錄",
 		"MAILBOX": "郵箱",
-		"SETTINGS": "設置",
-		"COMPOSE": "寫郵件"
+		"SETTINGS": "設置"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "文件太大",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "無效標記",
 		"AUTH_ERROR": "認證失敗",
-		"ACCESS_ERROR": "訪問錯誤",
 		"CONNECTION_ERROR": "無法連接伺服器",
+		"DOMAIN_ALREADY_EXISTS": "域已經存在",
 		"DOMAIN_NOT_ALLOWED": "無法連接到該域或者未輸入域",
 		"ACCOUNT_NOT_ALLOWED": "帳戶不允許",
 		"CONTACTS_SYNC_ERROR": "連絡人同步錯誤",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "無法刪除非空資料夾",
 		"CANT_SUBSCRIBE_FOLDER": "無法訂閱資料夾",
 		"CANT_UNSUBSCRIBE_FOLDER": "無法取消訂閱資料夾",
-		"CANT_SAVE_SETTINGS": "無法保存設置",
-		"CANT_SAVE_PLUGIN_SETTINGS": "無法保存設置",
-		"DOMAIN_ALREADY_EXISTS": "域已經存在",
-		"CANT_INSTALL_PACKAGE": "安裝包失敗",
-		"CANT_DELETE_PACKAGE": "移除包失敗",
-		"INVALID_PLUGIN_PACKAGE": "無效外掛程式",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "不支持的外掛程式",
 		"DEMO_SEND_MESSAGE_ERROR": "出於安全考慮，測試帳號無法發送外部郵件。",
 		"DEMO_ACCOUNT_ERROR": "For security purposes, this account is not allowed for this action!",
 		"ACCOUNT_ALREADY_EXISTS": "帳戶已存在",

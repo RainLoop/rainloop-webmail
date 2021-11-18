@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Þú hefur ekki valið kerfismöppuna \"Safnskrá\" undir skilaboð sem á að geyma til langs tíma."
 	},
 	"TITLES": {
-		"LOGIN": "Innskráning",
 		"MAILBOX": "Pósthólf",
-		"SETTINGS": "Stillingar",
-		"COMPOSE": "Semja"
+		"SETTINGS": "Stillingar"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "Skráin er of stór",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Rangt tákn",
 		"AUTH_ERROR": "Auðkenning mistókst",
-		"ACCESS_ERROR": "Aðgangsvilla",
 		"CONNECTION_ERROR": "Get ekki tengst á netþjón",
+		"DOMAIN_ALREADY_EXISTS": "Lén er nú þegar til staðar",
 		"DOMAIN_NOT_ALLOWED": "Lén ekki leyft",
 		"ACCOUNT_NOT_ALLOWED": "Aðgangur er ekki leyfður",
 		"CONTACTS_SYNC_ERROR": "Villa í samstillingu tengiliða",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Get ekki eytt möppu í notkun",
 		"CANT_SUBSCRIBE_FOLDER": "Get ekki gerst áskrifandi á möppu",
 		"CANT_UNSUBSCRIBE_FOLDER": "Get ekki hætt áskrift á möppu",
-		"CANT_SAVE_SETTINGS": "Get ekki vistað stillingar",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Get ekki stillingar",
-		"DOMAIN_ALREADY_EXISTS": "Lén er nú þegar til staðar",
-		"CANT_INSTALL_PACKAGE": "Mistókst að setja inn pakka",
-		"CANT_DELETE_PACKAGE": "Mistókst að fjarlægja pakka",
-		"INVALID_PLUGIN_PACKAGE": "Ógildur viðbótapakki",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Óstuddur viðbótapakki",
 		"DEMO_SEND_MESSAGE_ERROR": "Vegna öryggissjónarmiða, þá hefur þessi aðgangur ekki leyfi til að senda póst á utanaðkomandi netföng!",
 		"DEMO_ACCOUNT_ERROR": "Vegna öryggissjónarmiða, þá hefur þessi aðgangur ekki heimild fyrir þessa aðgerð!",
 		"ACCOUNT_ALREADY_EXISTS": "Aðgangur er nú þegar til staðar",

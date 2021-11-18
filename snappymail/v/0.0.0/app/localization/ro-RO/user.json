@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "You haven't selected \"Archive\" system folder achived messages are placed to.\n"
 	},
 	"TITLES": {
-		"LOGIN": "Conectare",
 		"MAILBOX": "Poștă",
-		"SETTINGS": "Opțiuni",
-		"COMPOSE": "Compune"
+		"SETTINGS": "Opțiuni"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "Fișierul este prea mare",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Semn invalid",
 		"AUTH_ERROR": "Nu se poate realiza conectarea",
-		"ACCESS_ERROR": "Eroare de acces",
 		"CONNECTION_ERROR": "Eroare la conectarea la server.",
+		"DOMAIN_ALREADY_EXISTS": "Domeniu există deja.",
 		"DOMAIN_NOT_ALLOWED": "Domeniul nu apartine de Wey5",
 		"ACCOUNT_NOT_ALLOWED": "Contul nu are permisiunea de conectare",
 		"CONTACTS_SYNC_ERROR": "Contacts synchronization error",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Nu pot șterge un dosar care nu este gol",
 		"CANT_SUBSCRIBE_FOLDER": "Nu pot semna dosarul. Încercați din nou",
 		"CANT_UNSUBSCRIBE_FOLDER": "Nu mă pot dezbona. Încercați din nou",
-		"CANT_SAVE_SETTINGS": "Nu pot salva opțiunile. Încercați din nou",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Nu pot salva setările. Încercați din nou",
-		"DOMAIN_ALREADY_EXISTS": "Domeniu există deja.",
-		"CANT_INSTALL_PACKAGE": "Nu pot instala pachetul.Încercați din nou",
-		"CANT_DELETE_PACKAGE": "Nu pot șterge pachetul. Încercați din nou",
-		"INVALID_PLUGIN_PACKAGE": "Pachetul este invalid",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Plugin-ul necesită sprijinul complet al serverului",
 		"DEMO_SEND_MESSAGE_ERROR": "Cont demo trimite e-mail la adresele de e-mail externe este interzisă!",
 		"DEMO_ACCOUNT_ERROR": "For security purposes, this account is not allowed for this action!",
 		"ACCOUNT_ALREADY_EXISTS": "Contul deja există",

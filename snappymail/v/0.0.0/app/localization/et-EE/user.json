@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Sa pole valinud kausta, kuhu arhiveeritud kirjad salvestatakse."
 	},
 	"TITLES": {
-		"LOGIN": "Sisenemine",
 		"MAILBOX": "Postkast",
-		"SETTINGS": "Sätted",
-		"COMPOSE": "Koosta uus kiri"
+		"SETTINGS": "Sätted"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "Fail on liiga suur",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Puudulik tõend",
 		"AUTH_ERROR": "Autentimine ebaõnnestus",
-		"ACCESS_ERROR": "Ligipääsu viga",
 		"CONNECTION_ERROR": "Serveriga ühendumine ebaõnnestus",
+		"DOMAIN_ALREADY_EXISTS": "Domeen juba eksisteerib",
 		"DOMAIN_NOT_ALLOWED": "Domeenil ei ole lubatud siseneda",
 		"ACCOUNT_NOT_ALLOWED": "Kasutajakontol ei ole lubatud siseneda",
 		"CONTACTS_SYNC_ERROR": "Kontaktide sünkroniseerimise viga",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Kirju sisaldavat kausta pole võimalik kustutada",
 		"CANT_SUBSCRIBE_FOLDER": "Kausta tellimine ebaõnnestus.",
 		"CANT_UNSUBSCRIBE_FOLDER": "Kausta tellimisest loobumine ebaõnnestus.",
-		"CANT_SAVE_SETTINGS": "Sätete salvestamine ebaõnnestus",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Sätete salvestamine ebaõnnestus",
-		"DOMAIN_ALREADY_EXISTS": "Domeen juba eksisteerib",
-		"CANT_INSTALL_PACKAGE": "Laienduse paigaldamine ebaõnnestus",
-		"CANT_DELETE_PACKAGE": "Laienduse eemaldamine ebaõnnestus",
-		"INVALID_PLUGIN_PACKAGE": "Puudulik laienduse pakk",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Laienduse pakk pole toetatud",
 		"DEMO_SEND_MESSAGE_ERROR": "Turvalisusega seotud põhjustel ei ole sellel kontol lubatud saata kirju välistele aadressidele!",
 		"DEMO_ACCOUNT_ERROR": "Turvalisusega seotud põhjustel ei ole sellel kontol lubatud soovitud toimingut teostada!",
 		"ACCOUNT_ALREADY_EXISTS": "Konto juba eksisteerib",

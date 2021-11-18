@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Вы еще не выбрали системную папку \"Архив\", в которую складываются все сообщения после архивации."
 	},
 	"TITLES": {
-		"LOGIN": "Вход",
 		"MAILBOX": "Почта",
-		"SETTINGS": "Настройки",
-		"COMPOSE": "Написать письмо"
+		"SETTINGS": "Настройки"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "Файл слишком большой",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Неверный токен запроса",
 		"AUTH_ERROR": "Не удалось авторизоваться",
-		"ACCESS_ERROR": "Ошибка доступа",
 		"CONNECTION_ERROR": "Ошибка соединения с сервером.",
+		"DOMAIN_ALREADY_EXISTS": "Домен уже существует",
 		"DOMAIN_NOT_ALLOWED": "Данный домен не разрешен",
 		"ACCOUNT_NOT_ALLOWED": "Данный аккаунт не разрешен",
 		"CONTACTS_SYNC_ERROR": "Ошибка синхронизации контактов",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Не могу удалить непустую папку",
 		"CANT_SUBSCRIBE_FOLDER": "Не могу подписать папку",
 		"CANT_UNSUBSCRIBE_FOLDER": "Не могу отписать папку",
-		"CANT_SAVE_SETTINGS": "Не могу сохранить настройки",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Не могу сохранить настройки",
-		"DOMAIN_ALREADY_EXISTS": "Домен уже существует",
-		"CANT_INSTALL_PACKAGE": "Ошибка установки пакета",
-		"CANT_DELETE_PACKAGE": "Ошибка удаления пакета",
-		"INVALID_PLUGIN_PACKAGE": "Ошибка пакета плагина",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Для работы плагина необходима полная поддержка сервера",
 		"DEMO_SEND_MESSAGE_ERROR": "Демо аккаунту отправка писем  на внешние почтовые адреса запрещена!",
 		"DEMO_ACCOUNT_ERROR": "По соображениям безопасности данный аккаунт не может выполнить это действие.",
 		"ACCOUNT_ALREADY_EXISTS": "Аккаунт уже добавлен",

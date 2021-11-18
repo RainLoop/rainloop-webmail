@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "U heeft nog geen \"Archief\" map aangeduid waar de gearchiveerde berichten geplaatst worden."
 	},
 	"TITLES": {
-		"LOGIN": "Inloggen",
 		"MAILBOX": "Mailbox",
-		"SETTINGS": "Instellingen",
-		"COMPOSE": "Opstellen"
+		"SETTINGS": "Instellingen"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "Bestand is te groot",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ongeldige token",
 		"AUTH_ERROR": "Authenticatie mislukt",
-		"ACCESS_ERROR": "Toegangsfout",
 		"CONNECTION_ERROR": "Kan geen verbinding maken met de Server",
+		"DOMAIN_ALREADY_EXISTS": "Domein bestaat reeds",
 		"DOMAIN_NOT_ALLOWED": "Domein is niet toegestaan",
 		"ACCOUNT_NOT_ALLOWED": "Account is niet toegestaan",
 		"CONTACTS_SYNC_ERROR": "Contactpersonen synchronisatie fout",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Een niet lege map kan niet verwijderd worden",
 		"CANT_SUBSCRIBE_FOLDER": "Kan niet abonneren op folder",
 		"CANT_UNSUBSCRIBE_FOLDER": "Kan abonnement op folder niet opzeggen",
-		"CANT_SAVE_SETTINGS": "Instellingen kunnen niet opgeslagen worden",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Instellingen kunnen niet opgeslagen worden",
-		"DOMAIN_ALREADY_EXISTS": "Domein bestaat reeds",
-		"CANT_INSTALL_PACKAGE": "Package installeren mislukt",
-		"CANT_DELETE_PACKAGE": "Package verwijderen mislukt",
-		"INVALID_PLUGIN_PACKAGE": "Ongeldig plug-in package",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Niet ondersteund plug-in package",
 		"DEMO_SEND_MESSAGE_ERROR": "Vanwege beveiliging is het niet toegestaan dat deze demo account e-mail naar extern verzend!",
 		"DEMO_ACCOUNT_ERROR": "Vanwege beveiliging is deze actie niet toegestaan voor deze account!",
 		"ACCOUNT_ALREADY_EXISTS": "Account bestaat al",

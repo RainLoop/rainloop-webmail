@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Niste izbrali sistemske mape \"Arhiv\" za trajno arhiviranje sporočil."
 	},
 	"TITLES": {
-		"LOGIN": "Prijava",
 		"MAILBOX": "Nabiralnik",
-		"SETTINGS": "Nastavitve",
-		"COMPOSE": "Sestavi"
+		"SETTINGS": "Nastavitve"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "Prevelika datoteka",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Neveljaven žeton",
 		"AUTH_ERROR": "Spodletelo overjanje",
-		"ACCESS_ERROR": "Napaka dostopa",
 		"CONNECTION_ERROR": "Ni mogoče vzpostaviti povezave s strežnikom",
+		"DOMAIN_ALREADY_EXISTS": "Domena že obstaja",
 		"DOMAIN_NOT_ALLOWED": "Domena ni dovoljena",
 		"ACCOUNT_NOT_ALLOWED": "Račun ni dovoljen",
 		"CONTACTS_SYNC_ERROR": "Napaka sinhronizacije stikov",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Ni mogoče izbrisati neprazne mape",
 		"CANT_SUBSCRIBE_FOLDER": "Ni mogoče slediti mapi",
 		"CANT_UNSUBSCRIBE_FOLDER": "Ni mogoče prenehati slediti mapi",
-		"CANT_SAVE_SETTINGS": "Ni mogoče shraniti nastavitev",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Ni mogoče shraniti nastavitev",
-		"DOMAIN_ALREADY_EXISTS": "Domena že obstaja",
-		"CANT_INSTALL_PACKAGE": "Neuspešna namestitev paketa",
-		"CANT_DELETE_PACKAGE": "Neuspešno odstranjevanje paketa",
-		"INVALID_PLUGIN_PACKAGE": "Neveljaven paket vtičnika",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Nepodprt paket vtičnika",
 		"DEMO_SEND_MESSAGE_ERROR": "Iz varnostnih razlogov ta račun ne sme pošiljati pošte na zunanje e-naslove!",
 		"DEMO_ACCOUNT_ERROR": "Iz varnostnih razlogov ta račun ne sme izvršiti tega dejanja!",
 		"ACCOUNT_ALREADY_EXISTS": "Račun že obstaja",

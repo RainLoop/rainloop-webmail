@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "You haven't selected \"Archive\" system folder achived messages are placed to.\n"
 	},
 	"TITLES": {
-		"LOGIN": "تسجيل الدخول",
 		"MAILBOX": "صندوق البريد",
-		"SETTINGS": "الإعدادات",
-		"COMPOSE": "إنشاء"
+		"SETTINGS": "الإعدادات"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "حجم الملف كبير جداً",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "خاطىء token",
 		"AUTH_ERROR": "خطأ في كلمة السر \\اسم المستخدم",
-		"ACCESS_ERROR": "خطأ في الوصول",
 		"CONNECTION_ERROR": "لايمكن الإتصال بالمخدم",
+		"DOMAIN_ALREADY_EXISTS": "الموقع موجود مسبقاَ",
 		"DOMAIN_NOT_ALLOWED": "غير مسموح لهذا الموقع",
 		"ACCOUNT_NOT_ALLOWED": "الحساب غير مسموح له",
 		"CONTACTS_SYNC_ERROR": "خطأ في مزامنة جهات الإتصال",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "لايمكن حذف مجلد ممتلأ",
 		"CANT_SUBSCRIBE_FOLDER": "لايمكن الإشتراك بالمجلد",
 		"CANT_UNSUBSCRIBE_FOLDER": "لايمكن حذف الإشتراك من المجلد",
-		"CANT_SAVE_SETTINGS": "لايمكن حفظ الإعدادات",
-		"CANT_SAVE_PLUGIN_SETTINGS": "لايمكن حفظ الإعدادات",
-		"DOMAIN_ALREADY_EXISTS": "الموقع موجود مسبقاَ",
-		"CANT_INSTALL_PACKAGE": "فشل في تنزيل الحزمة",
-		"CANT_DELETE_PACKAGE": "فشل في إزالة الحزمة",
-		"INVALID_PLUGIN_PACKAGE": "خطأ في الحزمة المراد تنزيلها",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "حزمة غير مدعومة",
 		"DEMO_SEND_MESSAGE_ERROR": "لأسباب أمنية, هذا الحساب غير مسموح له إرسال رسائل",
 		"DEMO_ACCOUNT_ERROR": "لأسباب أمنية , هذا الحساب قد منع من هذا الإجراء",
 		"ACCOUNT_ALREADY_EXISTS": "الحساب موجود مسبقاَ",

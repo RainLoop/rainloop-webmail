@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Et ole valinnut \"Arkisto\" järjestelmäkansiota."
 	},
 	"TITLES": {
-		"LOGIN": "Kirjaudu",
 		"MAILBOX": "Postilaatikko",
-		"SETTINGS": "Asetukset",
-		"COMPOSE": "Luo viesti"
+		"SETTINGS": "Asetukset"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "Tiedosto on liian iso",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Väärä suojaustunnus",
 		"AUTH_ERROR": "Tunnistusvirhe",
-		"ACCESS_ERROR": "Kirjautumisvirhe",
 		"CONNECTION_ERROR": "Ei voi yhdistää palvelimeen",
+		"DOMAIN_ALREADY_EXISTS": "Verkkotunnus on jo olemassa",
 		"DOMAIN_NOT_ALLOWED": "Verkkotunnus ei ole sallittu",
 		"ACCOUNT_NOT_ALLOWED": "Tili ei ole sallittu",
 		"CONTACTS_SYNC_ERROR": "Yhteystietojen synkronointivirhe",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Kansiossa on viestejä, ei voi poistaa",
 		"CANT_SUBSCRIBE_FOLDER": "Kansiota ei voi tilata",
 		"CANT_UNSUBSCRIBE_FOLDER": "Kansiotilausta ei voi peruuttaa",
-		"CANT_SAVE_SETTINGS": "Asetuksia ei voi tallentaa",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Asetuksia ei voi tallentaa",
-		"DOMAIN_ALREADY_EXISTS": "Verkkotunnus on jo olemassa",
-		"CANT_INSTALL_PACKAGE": "Pakkauksen asennus epäonnistui",
-		"CANT_DELETE_PACKAGE": "Pakkauksen poisto epäonnistui",
-		"INVALID_PLUGIN_PACKAGE": "Viallinen paketti",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Ei-tuettu plugin paketti",
 		"DEMO_SEND_MESSAGE_ERROR": "Turvallisuus syistä tältä tililtä ei voi lähettää viestejä ulkopuolisiin osoitteisiin!",
 		"DEMO_ACCOUNT_ERROR": "Turvallisuus syistä tämä ei ole sallittua!",
 		"ACCOUNT_ALREADY_EXISTS": "Tili on jo olemassa.",

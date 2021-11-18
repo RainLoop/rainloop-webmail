@@ -73,8 +73,11 @@ export const Notification = {
 	RequestError: 1,
 	RequestAborted: 2,
 
+	// Global
 	InvalidToken: 101,
 	AuthError: 102,
+
+	// User
 	ConnectionError: 104,
 	DomainNotAllowed: 109,
 	AccountNotAllowed: 110,
@@ -105,14 +108,8 @@ export const Notification = {
 	CantDeleteNonEmptyFolder: 405,
 
 //	CantSaveSettings: 501,
-	CantSavePluginSettings: 502,
 
 	DomainAlreadyExists: 601,
-
-	CantInstallPackage: 701,
-	CantDeletePackage: 702,
-	InvalidPluginPackage: 703,
-	UnsupportedPluginPackage: 704,
 
 	DemoSendMessageError: 750,
 	DemoAccountError: 751,
@@ -130,5 +127,12 @@ export const Notification = {
 //	JsonTimeout: 953,
 
 	UnknownNotification: 998,
-	UnknownError: 999
+	UnknownError: 999,
+
+	// Admin
+	CantInstallPackage: 701,
+	CantDeletePackage: 702,
+	InvalidPluginPackage: 703,
+	UnsupportedPluginPackage: 704,
+	CantSavePluginSettings: 705
 };

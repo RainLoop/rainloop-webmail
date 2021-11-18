@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "アーカイブされたメッセージを置くための ”Archive” システムフォルダが選択されていません。"
 	},
 	"TITLES": {
-		"LOGIN": "ログイン",
 		"MAILBOX": "メールボックス",
-		"SETTINGS": "設定",
-		"COMPOSE": "作成"
+		"SETTINGS": "設定"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "ファイルが大きすぎます",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "無効なトークン",
 		"AUTH_ERROR": "認証に失敗しました",
-		"ACCESS_ERROR": "アクセスエラー",
 		"CONNECTION_ERROR": "サーバーへ接続できません",
+		"DOMAIN_ALREADY_EXISTS": "ドメインが既に存在しています",
 		"DOMAIN_NOT_ALLOWED": "ドメインは、許可されていません",
 		"ACCOUNT_NOT_ALLOWED": "アカウントは、許可されていません",
 		"CONTACTS_SYNC_ERROR": "連絡先 同期 エラー",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "空ではないディレクトリを削除できません",
 		"CANT_SUBSCRIBE_FOLDER": "フォルダを購読できません",
 		"CANT_UNSUBSCRIBE_FOLDER": "フォルダを購読解除できません",
-		"CANT_SAVE_SETTINGS": "設定が保存できません",
-		"CANT_SAVE_PLUGIN_SETTINGS": "設定が保存できません",
-		"DOMAIN_ALREADY_EXISTS": "ドメインが既に存在しています",
-		"CANT_INSTALL_PACKAGE": "パッケージのインストールに失敗しました",
-		"CANT_DELETE_PACKAGE": "パッケージの削除に失敗しました",
-		"INVALID_PLUGIN_PACKAGE": "プラグインパッケージが不正です",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "プラグインパッケージがサポートされていません",
 		"DEMO_SEND_MESSAGE_ERROR": "セキュリティ上の理由から、アカウントは、外部の電子メールアドレスにメッセージを送信することを許可されていません！",
 		"DEMO_ACCOUNT_ERROR": "セキュリティ上の理由から、アカウントには、このアクションが許可されていません！",
 		"ACCOUNT_ALREADY_EXISTS": "アカウントがすでに存在します",

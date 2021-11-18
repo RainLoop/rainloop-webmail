@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Nem választottál \"Archívum\" rendszermappát az archivált üzenetek tárolásához."
 	},
 	"TITLES": {
-		"LOGIN": "Bejelentkezés",
 		"MAILBOX": "Postaláda",
-		"SETTINGS": "Beállítások",
-		"COMPOSE": "Levélírás"
+		"SETTINGS": "Beállítások"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "A fájl túl nagy",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Érvénytelen kulcs",
 		"AUTH_ERROR": "Érvénytelen hitelesítés",
-		"ACCESS_ERROR": "Érvénytelen hozzáférés",
 		"CONNECTION_ERROR": "Nem lehet kapcsolódni a szerverhez",
+		"DOMAIN_ALREADY_EXISTS": "A domain már létezik",
 		"DOMAIN_NOT_ALLOWED": "A domain nem engedélyezett",
 		"ACCOUNT_NOT_ALLOWED": "A fiók nem engedélyezett",
 		"CONTACTS_SYNC_ERROR": "Hiba lépett fel a névjegyek szinkronizálása közben",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Nem üres mappát nem lehet törölni",
 		"CANT_SUBSCRIBE_FOLDER": "Nem lehet feliratkozni mappára",
 		"CANT_UNSUBSCRIBE_FOLDER": "Nem lehet leiratkozni mappáról",
-		"CANT_SAVE_SETTINGS": "Nem lehet menteni a beállításokat",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Nem lehet menteni a beállításokat",
-		"DOMAIN_ALREADY_EXISTS": "A domain már létezik",
-		"CANT_INSTALL_PACKAGE": "Nem sikerült telepíteni a csomagot",
-		"CANT_DELETE_PACKAGE": "Nem sikerült eltávolítani a csomagot",
-		"INVALID_PLUGIN_PACKAGE": "Érvénytelen beépülő csomag",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Nem támogatott beépülő csomag",
 		"DEMO_SEND_MESSAGE_ERROR": "Biztonsági okokból, ebből a demó fiókból nem lehet külső e-mail címekre üzenetet küldeni.",
 		"DEMO_ACCOUNT_ERROR": "Biztonsági okokból, ebből a fiókból nem lehet elvégezni ezt a műveletet!",
 		"ACCOUNT_ALREADY_EXISTS": "A fiók már létezik",

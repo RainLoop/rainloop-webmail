@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "보관 메시지가 위치할 \"보관함\" 시스템 폴더를 선택하지 않으셨습니다."
 	},
 	"TITLES": {
-		"LOGIN": "로그인",
 		"MAILBOX": "메일함",
-		"SETTINGS": "설정",
-		"COMPOSE": "쓰기"
+		"SETTINGS": "설정"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "파일이 너무 큽니다.",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "잘못된 토큰입니다.",
 		"AUTH_ERROR": "인증에 실패했습니다",
-		"ACCESS_ERROR": "접근 오류",
 		"CONNECTION_ERROR": "서버에 연결할 수 없습니다.",
+		"DOMAIN_ALREADY_EXISTS": "이미 존재하는 도메인입니다.",
 		"DOMAIN_NOT_ALLOWED": "허용된 도메인이 아닙니다.",
 		"ACCOUNT_NOT_ALLOWED": "허용된 계정이 아닙니다.",
 		"CONTACTS_SYNC_ERROR": "연락처 동기화 오류",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "비어있지 않은 디렉터리를 삭제할 수 없습니다.",
 		"CANT_SUBSCRIBE_FOLDER": "폴더를 볼 수 없습니다.",
 		"CANT_UNSUBSCRIBE_FOLDER": "폴더를 보이지 않게 할 수 없습니다.",
-		"CANT_SAVE_SETTINGS": "설정을 저장할 수 없습니다.",
-		"CANT_SAVE_PLUGIN_SETTINGS": "설정을 저장할 수 없습니다.",
-		"DOMAIN_ALREADY_EXISTS": "이미 존재하는 도메인입니다.",
-		"CANT_INSTALL_PACKAGE": "패키지 설치에 실패했습니다.",
-		"CANT_DELETE_PACKAGE": "패키지 제거에 실패했습니다.",
-		"INVALID_PLUGIN_PACKAGE": "정상적인 플러그인 패키지가 아닙니다.",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "미지원 플러그인 패키지",
 		"DEMO_SEND_MESSAGE_ERROR": "이 테스트 계정은 외부 메일 발송이 금지되어있습니다.",
 		"DEMO_ACCOUNT_ERROR": "보안을 사유로 이 계정에서는 해당 동작이 허용되지 않습니다.",
 		"ACCOUNT_ALREADY_EXISTS": "이미 존재하는 계정입니다.",

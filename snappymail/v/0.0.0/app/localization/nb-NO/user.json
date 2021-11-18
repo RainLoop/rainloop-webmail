@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Du har ikke valgt «Arkiv» som mappe for arkiverte meldinger."
 	},
 	"TITLES": {
-		"LOGIN": "Logg inn",
 		"MAILBOX": "E-post",
-		"SETTINGS": "Innstillinger",
-		"COMPOSE": "Skriv"
+		"SETTINGS": "Innstillinger"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "Fila er for stor",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ugyldig info",
 		"AUTH_ERROR": "Autentisering mislyktes",
-		"ACCESS_ERROR": "Tilgangsfeil",
 		"CONNECTION_ERROR": "Klarte ikke å koble til tjeneren",
+		"DOMAIN_ALREADY_EXISTS": "Domenet finnes allerede",
 		"DOMAIN_NOT_ALLOWED": "Dette domenet tillates ikke",
 		"ACCOUNT_NOT_ALLOWED": "Denne kontoen tillates ikke",
 		"CONTACTS_SYNC_ERROR": "Synkronisering av kontakter mislyktes",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Du må slette mappeinnholdet før du kan slette mappa",
 		"CANT_SUBSCRIBE_FOLDER": "Klarte ikke å abonnere på mappe",
 		"CANT_UNSUBSCRIBE_FOLDER": "Klarte ikke å avslutte abonnement",
-		"CANT_SAVE_SETTINGS": "Klarte ikke å lagre innstillinger",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Klarte ikke å lagre innstillinger",
-		"DOMAIN_ALREADY_EXISTS": "Domenet finnes allerede",
-		"CANT_INSTALL_PACKAGE": "Klarte ikke å installere pakke",
-		"CANT_DELETE_PACKAGE": "Klarte ikke å fjerne pakken",
-		"INVALID_PLUGIN_PACKAGE": "Ugyldig tilleggspakke",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Denne illeggspakka støttes ikke",
 		"DEMO_SEND_MESSAGE_ERROR": "Denne demo-kontoen er blokkert fra å sende meldinger til eksterne e-postadresser av sikkerhetshensyn.",
 		"DEMO_ACCOUNT_ERROR": "Av sikkerhetshensyn er denne kontoen blokkert fra å utføre denne handlinga.",
 		"ACCOUNT_ALREADY_EXISTS": "Kontoen finnes allerede",

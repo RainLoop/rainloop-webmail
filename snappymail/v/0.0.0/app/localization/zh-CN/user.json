@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "您没有选择“已归档邮件”文件夹来存储归档邮件。"
 	},
 	"TITLES": {
-		"LOGIN": "登录",
 		"MAILBOX": "邮箱",
-		"SETTINGS": "设置",
-		"COMPOSE": "写邮件"
+		"SETTINGS": "设置"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "文件太大",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "无效标记",
 		"AUTH_ERROR": "认证失败",
-		"ACCESS_ERROR": "访问错误",
 		"CONNECTION_ERROR": "无法连接至服务器",
+		"DOMAIN_ALREADY_EXISTS": "域已经存在",
 		"DOMAIN_NOT_ALLOWED": "不允许此域名",
 		"ACCOUNT_NOT_ALLOWED": "不允许此账户",
 		"CONTACTS_SYNC_ERROR": "联系人同步错误",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "无法删除非空文件夹",
 		"CANT_SUBSCRIBE_FOLDER": "无法订阅文件夹",
 		"CANT_UNSUBSCRIBE_FOLDER": "无法取消订阅文件夹",
-		"CANT_SAVE_SETTINGS": "无法保存设置",
-		"CANT_SAVE_PLUGIN_SETTINGS": "无法保存设置",
-		"DOMAIN_ALREADY_EXISTS": "域已经存在",
-		"CANT_INSTALL_PACKAGE": "安装包失败",
-		"CANT_DELETE_PACKAGE": "移除包失败",
-		"INVALID_PLUGIN_PACKAGE": "无效插件",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "不支持的插件",
 		"DEMO_SEND_MESSAGE_ERROR": "出于安全考虑，测试账号无法发送外部邮件。",
 		"DEMO_ACCOUNT_ERROR": "出于安全考虑，测试账号无法进行此操作！",
 		"ACCOUNT_ALREADY_EXISTS": "账户已存在",

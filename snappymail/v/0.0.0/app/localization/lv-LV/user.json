@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "You haven't selected \"Archive\" system folder achived messages are placed to.\n"
 	},
 	"TITLES": {
-		"LOGIN": "Ielogoties",
 		"MAILBOX": "Pastkastīte",
-		"SETTINGS": "Uzstādijumi",
-		"COMPOSE": "Rakstīt"
+		"SETTINGS": "Uzstādijumi"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "Fails ir par lielu",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Nepareizs tokens",
 		"AUTH_ERROR": "Autorizācija neizdevās",
-		"ACCESS_ERROR": "Piekļuves kļūda",
 		"CONNECTION_ERROR": "Nevar savienoties ar serveri",
+		"DOMAIN_ALREADY_EXISTS": "Domeņes jau eksistē",
 		"DOMAIN_NOT_ALLOWED": "Šis domēns nav atļauts",
 		"ACCOUNT_NOT_ALLOWED": "Account is not allowed",
 		"CONTACTS_SYNC_ERROR": "Contacts synchronization error",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Nevar izdzēst pilnu mapi",
 		"CANT_SUBSCRIBE_FOLDER": "Nevar pierakstīties mapei",
 		"CANT_UNSUBSCRIBE_FOLDER": "Nevar atrakstīties mapei",
-		"CANT_SAVE_SETTINGS": "Nevar saglabāt uzstādijumus",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Nevar saglabāt uzstādijumus",
-		"DOMAIN_ALREADY_EXISTS": "Domeņes jau eksistē",
-		"CANT_INSTALL_PACKAGE": "Neizdevās instālēt paku",
-		"CANT_DELETE_PACKAGE": "Neizdevās nodzēst paku",
-		"INVALID_PLUGIN_PACKAGE": "Nepareiza spraudņa paka",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Neatbalstīta spraudņa paka",
 		"DEMO_SEND_MESSAGE_ERROR": "Drošīnas iemeslu dēļ, demo konts nedrīks sūtīt e-pastu uz ārējiem e-pastiem!",
 		"DEMO_ACCOUNT_ERROR": "For security purposes, this account is not allowed for this action!",
 		"ACCOUNT_ALREADY_EXISTS": "Konts jau eksistē",

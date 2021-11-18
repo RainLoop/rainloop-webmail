@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Herhangi bir sistem arşiv klasörü seçmediniz."
 	},
 	"TITLES": {
-		"LOGIN": "Giriş",
 		"MAILBOX": "PostaKutusu",
-		"SETTINGS": "Ayarlar",
-		"COMPOSE": "Yaz"
+		"SETTINGS": "Ayarlar"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "Dosya çok büyük",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Geçersiz token",
 		"AUTH_ERROR": "Kimlik doğrulama başarısız oldu",
-		"ACCESS_ERROR": "Erişim hatası",
 		"CONNECTION_ERROR": "Sunucuya bağlanılamadı",
+		"DOMAIN_ALREADY_EXISTS": "Alanadı bulunuyor",
 		"DOMAIN_NOT_ALLOWED": "Alan Adına izin verilmemiş",
 		"ACCOUNT_NOT_ALLOWED": "Hesaba izin verilmemiş",
 		"CONTACTS_SYNC_ERROR": "Kişi listesi senkronizasyon hatası",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Boş olmayan dizin silinemedi",
 		"CANT_SUBSCRIBE_FOLDER": "Klasöre abone olunamadı",
 		"CANT_UNSUBSCRIBE_FOLDER": "Klasör Aboneliğinden çıkılamadı",
-		"CANT_SAVE_SETTINGS": "Ayarlar kaydedilemedi",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Ayarlar kaydedilemedi",
-		"DOMAIN_ALREADY_EXISTS": "Alanadı bulunuyor",
-		"CANT_INSTALL_PACKAGE": "Paket kurulamadı",
-		"CANT_DELETE_PACKAGE": "Paket silinemedi",
-		"INVALID_PLUGIN_PACKAGE": "Geçersiz eklenti paketi",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Desteklenmeyen eklenti paketi",
 		"DEMO_SEND_MESSAGE_ERROR": "Güvenlik amacıyla, bu demo hesabı harici e-posta adreslerine mesaj göndermek için izin verilmez!",
 		"DEMO_ACCOUNT_ERROR": "For security purposes, this account is not allowed for this action!",
 		"ACCOUNT_ALREADY_EXISTS": "Hesap zaten var",

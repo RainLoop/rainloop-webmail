@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "شما پوشه سیستمی \"بایگانی\" را جهت قرارگرفتن پیام‌های بایگانی‌شده انتخاب نکرده‌اید."
 	},
 	"TITLES": {
-		"LOGIN": "ورود",
 		"MAILBOX": "صندوق پست الکترونیک",
-		"SETTINGS": "تنظیمات",
-		"COMPOSE": "ایجاد"
+		"SETTINGS": "تنظیمات"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "اندازه فایل بیش از حد بزرگ است",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "توکن نامعتبر",
 		"AUTH_ERROR": "احراز هویت با موفقیت همراه نبود",
-		"ACCESS_ERROR": "خطای دسترسی",
 		"CONNECTION_ERROR": "عدم اتصال به سرور",
+		"DOMAIN_ALREADY_EXISTS": "دامنه در حال حاضر موجود است",
 		"DOMAIN_NOT_ALLOWED": "به دامنه اجازه داده نشده است",
 		"ACCOUNT_NOT_ALLOWED": "به حساب کاربری اجازه داده نشده است",
 		"CONTACTS_SYNC_ERROR": "همگام‌سازی تماس‌ها با خطا همراه بود",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "امکان حذف شاخه‌ای که خالی نیست وجود ندارد",
 		"CANT_SUBSCRIBE_FOLDER": "امکان اشتراک شاخه نیست",
 		"CANT_UNSUBSCRIBE_FOLDER": "امکان عدم اشتراک شاخه نیست",
-		"CANT_SAVE_SETTINGS": "امکان ذخیره تنظیمات نیست",
-		"CANT_SAVE_PLUGIN_SETTINGS": "امکان ذخیره تنظیمات نیست",
-		"DOMAIN_ALREADY_EXISTS": "دامنه در حال حاضر موجود است",
-		"CANT_INSTALL_PACKAGE": "نصب بسته با خطا همراه بود",
-		"CANT_DELETE_PACKAGE": "حذف بسته با خطا همراه بو",
-		"INVALID_PLUGIN_PACKAGE": "بسته افزونه نامعتبر است",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "بسته افزونه پشتیبانی نمی‌شود",
 		"DEMO_SEND_MESSAGE_ERROR": "بنابر اهداف امنیتی، این کاربر اجازه ارسال ایمیل به یک ایمیل خارج از دامنه را ندارد!",
 		"DEMO_ACCOUNT_ERROR": "بنابر اهداف امنیتی، این کاربر اجازه انجام این عملیات را ندارد!",
 		"ACCOUNT_ALREADY_EXISTS": "کاربر وجود دارد",

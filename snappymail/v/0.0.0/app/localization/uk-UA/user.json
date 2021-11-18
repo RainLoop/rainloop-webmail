@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Ви ще не обрали системну теку \"Архив\", в яку складаються всі повідомлення після архівації."
 	},
 	"TITLES": {
-		"LOGIN": "Вхід",
 		"MAILBOX": "Пошта",
-		"SETTINGS": "Налаштування",
-		"COMPOSE": "Написати листа"
+		"SETTINGS": "Налаштування"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "Файл надто великий",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Невірний токен запиту",
 		"AUTH_ERROR": "Не вдалося авторизуватися",
-		"ACCESS_ERROR": "Помилка доступу",
 		"CONNECTION_ERROR": "Помилка з'єднання з сервером.",
+		"DOMAIN_ALREADY_EXISTS": "Домен вже існує",
 		"DOMAIN_NOT_ALLOWED": "Цей домен заборонений",
 		"ACCOUNT_NOT_ALLOWED": "Цей акаунт заборонений",
 		"CONTACTS_SYNC_ERROR": "Помилка синхронізації контактів",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Не можу видалити не порожню теку",
 		"CANT_SUBSCRIBE_FOLDER": "Не можу підписати теку",
 		"CANT_UNSUBSCRIBE_FOLDER": "Не можу відписати теку",
-		"CANT_SAVE_SETTINGS": "Не можу зберегти налаштування",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Не можу зберегти налаштування",
-		"DOMAIN_ALREADY_EXISTS": "Домен вже існує",
-		"CANT_INSTALL_PACKAGE": "Помилка встановлення пакету",
-		"CANT_DELETE_PACKAGE": "Помилка видалення пакету",
-		"INVALID_PLUGIN_PACKAGE": "Помилка пакету плагіну",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Для роботи плагину необхідна повна підтримка серверу",
 		"DEMO_SEND_MESSAGE_ERROR": "Демо акаунту надсилання листів на зовнішні поштові адреси заборонена!",
 		"DEMO_ACCOUNT_ERROR": "For security purposes, this account is not allowed for this action!",
 		"ACCOUNT_ALREADY_EXISTS": "акаунт вже додано",

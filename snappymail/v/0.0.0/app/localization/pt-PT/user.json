@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Você não selecionou a pasta \"Archive\" de sistema, onde as mensagens arquivadas são colocadas."
 	},
 	"TITLES": {
-		"LOGIN": "Utilizador",
 		"MAILBOX": "Caixa de correio",
-		"SETTINGS": "Definições",
-		"COMPOSE": "Compor"
+		"SETTINGS": "Definições"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "O ficheiro é muito grande",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Token inválido",
 		"AUTH_ERROR": "Falha na autenticação",
-		"ACCESS_ERROR": "Erro de acesso",
 		"CONNECTION_ERROR": "Não foi possível conectar ao servidor",
+		"DOMAIN_ALREADY_EXISTS": "O domínio já existe",
 		"DOMAIN_NOT_ALLOWED": "Este domínio não é permitido",
 		"ACCOUNT_NOT_ALLOWED": "Esta conta não é permitida",
 		"CONTACTS_SYNC_ERROR": "Erro na sincronização de contactos",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Não é possível eliminar pastas com conteúdos",
 		"CANT_SUBSCRIBE_FOLDER": "Não é possível assinar esta pasta",
 		"CANT_UNSUBSCRIBE_FOLDER": "Não é possível cancelar esta pasta",
-		"CANT_SAVE_SETTINGS": "Não é possível salvar as definições",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Não é possível guardar as definições",
-		"DOMAIN_ALREADY_EXISTS": "O domínio já existe",
-		"CANT_INSTALL_PACKAGE": "Erro ao instalar pacote",
-		"CANT_DELETE_PACKAGE": "Erro ao remover pacote",
-		"INVALID_PLUGIN_PACKAGE": "Pacote de plugin inválido",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Pacote de plugin não suportado",
 		"DEMO_SEND_MESSAGE_ERROR": "Por motivos de segurança, esta conta de demonstração não tem permissão para enviar mensagens para endereços de e-mail externos!",
 		"DEMO_ACCOUNT_ERROR": "Por motivos de segurança, esta conta não tem permissão de executar esta ação!",
 		"ACCOUNT_ALREADY_EXISTS": "Esta conta já existe",

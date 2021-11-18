@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Vous n'avez pas sélectionné de dossier \"Archive\" où placer les messages archivés.\n"
 	},
 	"TITLES": {
-		"LOGIN": "Identifiant",
 		"MAILBOX": "Boîte mail",
-		"SETTINGS": "Paramètres",
-		"COMPOSE": "Nouveau message"
+		"SETTINGS": "Paramètres"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "Le fichier est trop volumineux",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Jeton invalide",
 		"AUTH_ERROR": "L'authentification a échoué",
-		"ACCESS_ERROR": "Erreur d'accès",
 		"CONNECTION_ERROR": "Serveur injoignable",
+		"DOMAIN_ALREADY_EXISTS": "Le domaine existe déjà",
 		"DOMAIN_NOT_ALLOWED": "Ce domaine n'est pas autorisé",
 		"ACCOUNT_NOT_ALLOWED": "Ce compte n'est pas autorisé",
 		"CONTACTS_SYNC_ERROR": "Erreur de synchronisation des contacts",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Impossible de supprimer un dossier non vide",
 		"CANT_SUBSCRIBE_FOLDER": "Impossible de s'abonner au dossier",
 		"CANT_UNSUBSCRIBE_FOLDER": "Impossible de se désabonner du dossier",
-		"CANT_SAVE_SETTINGS": "Impossible d'enregistrer les paramètres",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Impossible d'enregistrer les paramètres",
-		"DOMAIN_ALREADY_EXISTS": "Le domaine existe déjà",
-		"CANT_INSTALL_PACKAGE": "Impossible d'installer le paquet",
-		"CANT_DELETE_PACKAGE": "Impossible de supprimer le paquet",
-		"INVALID_PLUGIN_PACKAGE": "Ce plug-in est invalide",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Ce plug-in n'est pas supporté",
 		"DEMO_SEND_MESSAGE_ERROR": "Pour des raisons de sécurité, ce compte de démonstration n'est pas autorisé à envoyer des messages à des adresses e-mail externes !",
 		"DEMO_ACCOUNT_ERROR": "Pour des raisons de sécurité, ce compte n'est pas autorisé à faire cette action !",
 		"ACCOUNT_ALREADY_EXISTS": "Ce compte existe déjà",

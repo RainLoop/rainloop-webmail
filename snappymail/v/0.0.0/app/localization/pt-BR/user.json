@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Você não selecionou a pasta \"Arquivadas\" do sistema que serão colocadas as mensagens arquivadas."
 	},
 	"TITLES": {
-		"LOGIN": "Login",
 		"MAILBOX": "Caixa de Correio",
-		"SETTINGS": "Configurações",
-		"COMPOSE": "Compor"
+		"SETTINGS": "Configurações"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "O arquivo é muito grande",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Senha inválida",
 		"AUTH_ERROR": "Falha na autenticação",
-		"ACCESS_ERROR": "Erro ao acessar",
 		"CONNECTION_ERROR": "Não foi possível conectar-se ao servidor",
+		"DOMAIN_ALREADY_EXISTS": "O domínio já existe",
 		"DOMAIN_NOT_ALLOWED": "Este domínio não é permitido",
 		"ACCOUNT_NOT_ALLOWED": "Conta não permitida",
 		"CONTACTS_SYNC_ERROR": "Erro na sincronização dos contatos",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Não é possível excluir diretório não vazio",
 		"CANT_SUBSCRIBE_FOLDER": "Não foi possível inscrever esta pasta",
 		"CANT_UNSUBSCRIBE_FOLDER": "Não foi possível desinscrever esta pasta",
-		"CANT_SAVE_SETTINGS": "Não foi possível salvar as configurações",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Não foi possível salvar as configurações",
-		"DOMAIN_ALREADY_EXISTS": "O domínio já existe",
-		"CANT_INSTALL_PACKAGE": "Erro ao instalar pacote de plugin",
-		"CANT_DELETE_PACKAGE": "Erro ao remover pacote de plugin",
-		"INVALID_PLUGIN_PACKAGE": "Pacote de plugins inválido",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Pacote de plugins insuportados",
 		"DEMO_SEND_MESSAGE_ERROR": "Por motivos de segurança, esta conta demo não tem permissão para enviar mensagens para endereços de e-mail externo!",
 		"DEMO_ACCOUNT_ERROR": "For security purposes, this account is not allowed for this action!",
 		"ACCOUNT_ALREADY_EXISTS": "Esta conta já existe",

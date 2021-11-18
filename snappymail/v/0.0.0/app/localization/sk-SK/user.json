@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Nepriradili ste systémový priečinok  pre \"Archív\" kam budú uložené archivované správy."
 	},
 	"TITLES": {
-		"LOGIN": "Používateľské meno",
 		"MAILBOX": "Schránka správ",
-		"SETTINGS": "Nastavenia",
-		"COMPOSE": "Napísať"
+		"SETTINGS": "Nastavenia"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "Súbor je príliš veľký",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Neplatný token",
 		"AUTH_ERROR": "Overenie zlyhalo",
-		"ACCESS_ERROR": "Chyba prístupu",
 		"CONNECTION_ERROR": "Nepodarilo sa pripojiť k serveru",
+		"DOMAIN_ALREADY_EXISTS": "Táto Doména už existuje",
 		"DOMAIN_NOT_ALLOWED": "Doména nie je povolená",
 		"ACCOUNT_NOT_ALLOWED": "Účet nie je povolený",
 		"CONTACTS_SYNC_ERROR": "Contacts synchronization error",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Nemôžem odstrániť neprázdny priečinok",
 		"CANT_SUBSCRIBE_FOLDER": "Can't subscribe folder",
 		"CANT_UNSUBSCRIBE_FOLDER": "Can't unsubscribe folder",
-		"CANT_SAVE_SETTINGS": "Nastavenia sa nepodarilo uložiť",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Nastavenia sa nepodarilo uložiť",
-		"DOMAIN_ALREADY_EXISTS": "Táto Doména už existuje",
-		"CANT_INSTALL_PACKAGE": "Inštalácia balíčka zlyhala",
-		"CANT_DELETE_PACKAGE": "Odstránenie balíčka zlyhalo",
-		"INVALID_PLUGIN_PACKAGE": "Invalid plugin package",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Nepodporovaný balíček rozšírenia",
 		"DEMO_SEND_MESSAGE_ERROR": "For security purposes, this demo account is not allowed to send messages to external e-mail addresses!",
 		"DEMO_ACCOUNT_ERROR": "For security purposes, this account is not allowed for this action!",
 		"ACCOUNT_ALREADY_EXISTS": "účet už existuje",

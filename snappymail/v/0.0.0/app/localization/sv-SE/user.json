@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Du har inte valt \"Arkiv\" systemmapp, där arkiverade meddelanden ska läggas."
 	},
 	"TITLES": {
-		"LOGIN": "Logga in",
 		"MAILBOX": "Brevlåda",
-		"SETTINGS": "Inställningar",
-		"COMPOSE": "Skriv"
+		"SETTINGS": "Inställningar"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "Filen är för stor",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ogiltigt tecken",
 		"AUTH_ERROR": "Autentisering misslyckades",
-		"ACCESS_ERROR": "Åtkomstfel",
 		"CONNECTION_ERROR": "Kan inte ansluta till servern",
+		"DOMAIN_ALREADY_EXISTS": "Domänen finns redan",
 		"DOMAIN_NOT_ALLOWED": "Domän är inte tillåtet",
 		"ACCOUNT_NOT_ALLOWED": "Konto är inte tillåtet",
 		"CONTACTS_SYNC_ERROR": "Kontakt-synkroniseringsfel",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Kan inte ta bort mapp med innehåll",
 		"CANT_SUBSCRIBE_FOLDER": "Kan inte prenumerera på mapp",
 		"CANT_UNSUBSCRIBE_FOLDER": "Kan inte avprenumerera på mapp",
-		"CANT_SAVE_SETTINGS": "Kan inte spara inställningarna",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Kan inte spara inställningarna",
-		"DOMAIN_ALREADY_EXISTS": "Domänen finns redan",
-		"CANT_INSTALL_PACKAGE": "Misslyckades att installera paket",
-		"CANT_DELETE_PACKAGE": "Misslyckades ta bort paket",
-		"INVALID_PLUGIN_PACKAGE": "Ogiltigt pluginpaket",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Inget stöd för detta pluginpaket",
 		"DEMO_SEND_MESSAGE_ERROR": "Av säkerhets skäl kan inte detta demo-konto skicka epost till externa adressater!",
 		"DEMO_ACCOUNT_ERROR": "Av säkerhetsskäl är det här kontot inte tillåtet för denna åtgärd!",
 		"ACCOUNT_ALREADY_EXISTS": "Kontot finns redan",

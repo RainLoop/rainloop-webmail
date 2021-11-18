@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Nevybrali jste systémovou složku \"Archiv\", kam se ukládají archivované zprávy."
 	},
 	"TITLES": {
-		"LOGIN": "Uživatelské jméno",
 		"MAILBOX": "Schránka zpráv",
-		"SETTINGS": "Nastavení",
-		"COMPOSE": "Napsat"
+		"SETTINGS": "Nastavení"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "Soubor je příliš velký.",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Neplatný token",
 		"AUTH_ERROR": "Ověření selhalo",
-		"ACCESS_ERROR": "Chyba přístupu",
 		"CONNECTION_ERROR": "Nepodařilo se připojit k serveru",
+		"DOMAIN_ALREADY_EXISTS": "Táto doména již existuje",
 		"DOMAIN_NOT_ALLOWED": "Doména není povolená",
 		"ACCOUNT_NOT_ALLOWED": "Účet není povolený",
 		"CONTACTS_SYNC_ERROR": "Chyba při synchronizaci kontaktů",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "Nelze odstranit neprázdnou složku",
 		"CANT_SUBSCRIBE_FOLDER": "Nelze přihlásit adresář",
 		"CANT_UNSUBSCRIBE_FOLDER": "Nelze odhlásit adresář",
-		"CANT_SAVE_SETTINGS": "Nastavení se nepodařilo uložit",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Nastavení se nepodařilo uložit",
-		"DOMAIN_ALREADY_EXISTS": "Táto doména již existuje",
-		"CANT_INSTALL_PACKAGE": "Instalace balíčku se nezdařila",
-		"CANT_DELETE_PACKAGE": "Odstranění balíčku se nezdařilo",
-		"INVALID_PLUGIN_PACKAGE": "Nevalidní balíček",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Nepodporovaný balíček rozšíření",
 		"DEMO_SEND_MESSAGE_ERROR": "Z důvodu bezpečnosti tento demo účet není oprávněn posílat zprávy na externí emaily!",
 		"DEMO_ACCOUNT_ERROR": "Z důvodu bezpečnosti tento účet nemá oprávnění toto provést!",
 		"ACCOUNT_ALREADY_EXISTS": "Účet už existuje",

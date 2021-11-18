@@ -334,10 +334,8 @@
 		"NOTIFICATION_ARCHIVE": "Usted no ha seleccionado la carpeta del sistema para alojar los mensajes enviados al \"Archivo\"."
 	},
 	"TITLES": {
-		"LOGIN": "Ingresar",
 		"MAILBOX": "Buzón",
-		"SETTINGS": "Configuraciones",
-		"COMPOSE": "Redactar"
+		"SETTINGS": "Configuraciones"
 	},
 	"UPLOAD": {
 		"ERROR_FILE_IS_TOO_BIG": "El archivo es muy grande",
@@ -524,8 +522,8 @@
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Elemento no válido",
 		"AUTH_ERROR": "Autentificación fallida",
-		"ACCESS_ERROR": "Error de acceso",
 		"CONNECTION_ERROR": "No se puede conectar al servidor",
+		"DOMAIN_ALREADY_EXISTS": "El Dominio ya existe",
 		"DOMAIN_NOT_ALLOWED": "Dominio no permitido",
 		"ACCOUNT_NOT_ALLOWED": "La cuenta no está permitida",
 		"CONTACTS_SYNC_ERROR": "Error de sincronización de Contactos",
@@ -548,13 +546,6 @@
 		"CANT_DELETE_NON_EMPTY_FOLDER": "No se puede eliminar un directorio que no está vacío",
 		"CANT_SUBSCRIBE_FOLDER": "No se puede suscribir carpeta",
 		"CANT_UNSUBSCRIBE_FOLDER": "No puede darse de baja de la carpeta",
-		"CANT_SAVE_SETTINGS": "No puede guardar la configuración",
-		"CANT_SAVE_PLUGIN_SETTINGS": "No puede guardar la configuración",
-		"DOMAIN_ALREADY_EXISTS": "El Dominio ya existe",
-		"CANT_INSTALL_PACKAGE": "No se pudo instalar el paquete",
-		"CANT_DELETE_PACKAGE": "No se pudo eliminar el paquete",
-		"INVALID_PLUGIN_PACKAGE": "Paquete de plugins no válido",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Paquete de plugins incompatible",
 		"DEMO_SEND_MESSAGE_ERROR": "Por razones de seguridad, esta cuenta demo no permite enviar mensajes a direcciones de correo electrónico externas!",
 		"DEMO_ACCOUNT_ERROR": "For security purposes, this account is not allowed for this action!",
 		"ACCOUNT_ALREADY_EXISTS": "La cuenta ya existe",
