@@ -35,7 +35,7 @@ abstract class AbstractConfig
 
 		$sAdditionalFileName = \trim($sAdditionalFileName);
 		$this->sAdditionalFile = \APP_PRIVATE_DATA.'configs/'.$sAdditionalFileName;
-		$this->sAdditionalFile = 0 < \strlen($sAdditionalFileName) &&
+		$this->sAdditionalFile = \strlen($sAdditionalFileName) &&
 			\file_exists($this->sAdditionalFile) ? $this->sAdditionalFile : '';
 
 		$this->sFileHeader = $sFileHeader;
@@ -49,7 +49,7 @@ abstract class AbstractConfig
 
 	public function IsInited() : bool
 	{
-		return \is_array($this->aData) && 0 < \count($this->aData);
+		return \is_array($this->aData) && \count($this->aData);
 	}
 
 	/**
@@ -186,7 +186,7 @@ abstract class AbstractConfig
 			}
 
 			$aData = \RainLoop\Utils::CustomParseIniFile($this->sFile, true);
-			if (0 < \count($aData))
+			if (\count($aData))
 			{
 				foreach ($aData as $sSectionKey => $aSectionValue)
 				{
@@ -204,7 +204,7 @@ abstract class AbstractConfig
 				if (\file_exists($this->sAdditionalFile) && \is_readable($this->sAdditionalFile))
 				{
 					$aSubData = \RainLoop\Utils::CustomParseIniFile($this->sAdditionalFile, true);
-					if (\is_array($aSubData) && 0 < \count($aSubData))
+					if (\is_array($aSubData) && \count($aSubData))
 					{
 						foreach ($aSubData as $sSectionKey => $aSectionValue)
 						{
@@ -295,7 +295,7 @@ abstract class AbstractConfig
 
 		$this->clearCache();
 		return false !== \file_put_contents($this->sFile,
-			(0 < \strlen($this->sFileHeader) ? $this->sFileHeader : '').
+			(\strlen($this->sFileHeader) ? $this->sFileHeader : '').
 			$sNewLine.\implode($sNewLine, $aResultLines));
 	}
 }

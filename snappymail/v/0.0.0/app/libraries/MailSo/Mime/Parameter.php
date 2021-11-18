@@ -75,7 +75,7 @@ class Parameter
 	public function ToString(bool $bConvertSpecialsName = false) : string
 	{
 		$sResult = '';
-		if (0 < strlen($this->sName))
+		if (\strlen($this->sName))
 		{
 			$sResult = $this->sName.'=';
 			if ($bConvertSpecialsName && in_array(strtolower($this->sName), array(

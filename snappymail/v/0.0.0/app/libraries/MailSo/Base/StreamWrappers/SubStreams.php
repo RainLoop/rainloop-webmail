@@ -95,13 +95,13 @@ class SubStreams
 		$aPath = \parse_url($sPath);
 
 		if (isset($aPath['host'], $aPath['scheme']) &&
-			0 < \strlen($aPath['host']) && 0 < \strlen($aPath['scheme']) &&
+			\strlen($aPath['host']) && \strlen($aPath['scheme']) &&
 			self::STREAM_NAME === $aPath['scheme'])
 		{
 			$sHashName = $aPath['host'];
 			if (isset(self::$aStreams[$sHashName]) &&
 				\is_array(self::$aStreams[$sHashName]) &&
-				0 < \count(self::$aStreams[$sHashName]))
+				\count(self::$aStreams[$sHashName]))
 			{
 				$this->iIndex = 0;
 				$this->iPos = 0;
@@ -110,7 +110,7 @@ class SubStreams
 				$this->aSubStreams = self::$aStreams[$sHashName];
 			}
 
-			$bResult = 0 < \count($this->aSubStreams);
+			$bResult = \count($this->aSubStreams);
 		}
 
 		return $bResult;

@@ -28,13 +28,13 @@ class PartCollection extends \MailSo\Base\Collection
 	 */
 	public function ToStream(string $sBoundary)
 	{
-		if (0 < \strlen($sBoundary))
+		if (\strlen($sBoundary))
 		{
 			$aResult = array();
 
 			foreach ($this as $oPart)
 			{
-				if (0 < count($aResult))
+				if (\count($aResult))
 				{
 					$aResult[] = Enumerations\Constants::CRLF.
 						'--'.$sBoundary.Enumerations\Constants::CRLF;

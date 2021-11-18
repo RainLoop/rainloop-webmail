@@ -62,7 +62,7 @@
 			</div>
 			<div class="listEmptySearchList" data-bind="visible: 0 === contacts().length && '' !== search() && !contacts.loading()"
 				data-i18n="CONTACTS/EMPTY_SEARCH"></div>
-			<div class="e-contact-foreach g-ui-user-select-none" data-bind="foreach: contacts, visible: 0 < contacts().length">
+			<div class="e-contact-foreach g-ui-user-select-none" data-bind="foreach: contacts, visible: contacts().length">
 				<div class="e-contact-item g-ui-user-select-none" data-bind="css: lineAsCss()">
 					<div class="checkboxItem fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
 					<div class="nameParent actionHandle" data-bind="text: display"></div>
@@ -138,7 +138,7 @@
 									data-bind="value: value, hasfocus: focused, valueUpdate: 'keyup', attr: {'placeholder': placeholderValue}" />
 							</div>
 						</div>
-						<div data-bind="visible: 0 < viewPropertiesOther().length, foreach: viewPropertiesOther">
+						<div data-bind="visible: viewPropertiesOther().length, foreach: viewPropertiesOther">
 							<div class="property-line">
 								<!-- ko if: !largeValue() -->
 								<span data-bind="text: value"></span>
@@ -156,7 +156,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="control-group" data-bind="visible: !viewReadOnly() || 0 < viewPropertiesEmails().length">
+				<div class="control-group" data-bind="visible: !viewReadOnly() || viewPropertiesEmails().length">
 					<label class="fontastic iconsize24" data-i18n="[title]GLOBAL/EMAIL">@</label>
 					<div>
 						<div data-bind="foreach: viewPropertiesEmails">
@@ -170,7 +170,7 @@
 						<a href="#" class="g-ui-link add-link" data-bind="visible: !viewReadOnly(), click: addNewEmail" data-i18n="CONTACTS/LINK_ADD_EMAIL"></a>
 					</div>
 				</div>
-				<div class="control-group" data-bind="visible: 0 < viewPropertiesPhones().length">
+				<div class="control-group" data-bind="visible: viewPropertiesPhones().length">
 					<label class="fontastic iconsize24" data-i18n="[title]CONTACTS/LABEL_PHONE">📞</label>
 					<div>
 						<div data-bind="foreach: viewPropertiesPhones">
@@ -183,7 +183,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="control-group" data-bind="visible: 0 < viewPropertiesWeb().length">
+				<div class="control-group" data-bind="visible: viewPropertiesWeb().length">
 					<label class="fontastic iconsize24" data-i18n="[title]CONTACTS/LABEL_WEB">🌍</label>
 					<div>
 						<div data-bind="foreach: viewPropertiesWeb">

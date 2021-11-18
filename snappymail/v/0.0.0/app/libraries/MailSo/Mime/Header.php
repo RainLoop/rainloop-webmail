@@ -61,12 +61,12 @@ class Header
 		$this->sEncodedValueForReparse = '';
 
 		$this->oParameters = null;
-		if (0 < \strlen($sEncodedValueForReparse) && $this->IsReparsed())
+		if (\strlen($sEncodedValueForReparse) && $this->IsReparsed())
 		{
 			$this->sEncodedValueForReparse = \trim($sEncodedValueForReparse);
 		}
 
-		if (0 < \strlen($this->sFullValue) && $this->IsParameterized())
+		if (\strlen($this->sFullValue) && $this->IsParameterized())
 		{
 			$aRawExplode = \explode(';', $this->sFullValue, 2);
 			if (2 === \count($aRawExplode))
@@ -93,7 +93,7 @@ class Header
 		}
 
 		$aParts = \explode(':', \str_replace("\r", '', $sEncodedLines), 2);
-		if (isset($aParts[0]) && isset($aParts[1]) && 0 < \strlen($aParts[0]) && 0 < \strlen($aParts[1]))
+		if (isset($aParts[0]) && isset($aParts[1]) && \strlen($aParts[0]) && \strlen($aParts[1]))
 		{
 			return new self(
 				\trim($aParts[0]),
@@ -128,7 +128,7 @@ class Header
 
 	public function SetParentCharset(string $sParentCharset) : Header
 	{
-		if ($this->sParentCharset !== $sParentCharset && $this->IsReparsed() && 0 < \strlen($this->sEncodedValueForReparse))
+		if ($this->sParentCharset !== $sParentCharset && $this->IsReparsed() && \strlen($this->sEncodedValueForReparse))
 		{
 			$this->initInputData(
 				$this->sName,
@@ -221,11 +221,11 @@ class Header
 	{
 		$sValue = $this->Value();
 		if (!\MailSo\Base\Utils::IsAscii($sValue) &&
-			0 < \strlen($this->sEncodedValueForReparse) &&
+			\strlen($this->sEncodedValueForReparse) &&
 			!\MailSo\Base\Utils::IsAscii($this->sEncodedValueForReparse))
 		{
 			$sValueCharset = \MailSo\Base\Utils::CharsetDetect($this->sEncodedValueForReparse);
-			if (0 < \strlen($sValueCharset))
+			if (\strlen($sValueCharset))
 			{
 				$this->SetParentCharset($sValueCharset);
 				$sValue = $this->Value();

@@ -101,7 +101,7 @@ trait Contacts
 		$aFilteredUids = \array_filter(\array_map('intval', $aUids));
 
 		$bResult = false;
-		if (0 < \count($aFilteredUids) && $this->AddressBookProvider($oAccount)->IsActive())
+		if (\count($aFilteredUids) && $this->AddressBookProvider($oAccount)->IsActive())
 		{
 			$bResult = $this->AddressBookProvider($oAccount)->DeleteContacts($this->GetMainEmail($oAccount), $aFilteredUids);
 		}
@@ -117,12 +117,12 @@ trait Contacts
 
 		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
 		$sRequestUid = \trim($this->GetActionParam('RequestUid', ''));
-		if ($oAddressBookProvider && $oAddressBookProvider->IsActive() && 0 < \strlen($sRequestUid))
+		if ($oAddressBookProvider && $oAddressBookProvider->IsActive() && \strlen($sRequestUid))
 		{
 			$sUid = \trim($this->GetActionParam('Uid', ''));
 
 			$oContact = null;
-			if (0 < \strlen($sUid))
+			if (\strlen($sUid))
 			{
 				$oContact = $oAddressBookProvider->GetContactByID($this->GetMainEmail($oAccount), $sUid);
 			}
@@ -130,7 +130,7 @@ trait Contacts
 			if (!$oContact)
 			{
 				$oContact = new \RainLoop\Providers\AddressBook\Classes\Contact();
-				if (0 < \strlen($sUid))
+				if (\strlen($sUid))
 				{
 					$oContact->IdContact = $sUid;
 				}

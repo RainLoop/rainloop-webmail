@@ -134,13 +134,13 @@
 							<i class="icon-file-text"></i>
 						</button>
 						<button type="button" class="btn" data-bind="click: function () { attachmentsPlace(true); },
-							css: { 'btn-danger': 0 < attachmentsInErrorCount(), 'active': attachmentsPlace() },
+							css: { 'btn-danger': attachmentsInErrorCount(), 'active': attachmentsPlace() },
 							tooltipErrorTip: attachmentsErrorTooltip">
-							<span data-bind="visible: 0 < attachmentsCount()">
+							<span data-bind="visible: attachmentsCount()">
 								<b data-bind="text: attachmentsCount"></b>
 								&nbsp;&nbsp;
 							</span>
-							<i data-bind="css: { 'icon-attachment': 0 === attachmentsInProcessCount(), 'icon-spinner': 0 < attachmentsInProcessCount()}"></i>
+							<i data-bind="css: { 'icon-attachment': !attachmentsInProcessCount(), 'icon-spinner': attachmentsInProcessCount()}"></i>
 						</button>
 					</div>
 					<div class="btn-group">

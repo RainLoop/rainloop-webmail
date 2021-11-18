@@ -138,6 +138,6 @@ class Attachment
 
 	public function IsLinked() : bool
 	{
-		return $this->bIsLinked && 0 < \strlen($this->sCID);
+		return $this->bIsLinked && \strlen($this->sCID);
 	}
 }

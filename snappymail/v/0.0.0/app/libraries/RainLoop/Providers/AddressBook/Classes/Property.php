@@ -115,7 +115,7 @@ class Property implements \JsonSerializable
 		$this->TypeStr = \trim($this->TypeStr);
 		$this->ValueLower = '';
 
-		if (0 < \strlen($this->Value))
+		if (\strlen($this->Value))
 		{
 			// lower
 			if ($this->IsEmail())

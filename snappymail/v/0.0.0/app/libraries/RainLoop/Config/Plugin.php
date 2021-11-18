@@ -18,7 +18,7 @@ class Plugin extends \RainLoop\Config\AbstractConfig
 
 	private function convertConfigMap(array $aMap) : array
 	{
-		if (0 < \count($aMap))
+		if (\count($aMap))
 		{
 			$aResultMap = array();
 			foreach ($aMap as /* @var $oProperty \RainLoop\Plugins\Property */ $oProperty)
@@ -31,7 +31,7 @@ class Plugin extends \RainLoop\Config\AbstractConfig
 				}
 			}
 
-			if (0 < \count($aResultMap))
+			if (\count($aResultMap))
 			{
 				return array(
 					'plugin' => $aResultMap

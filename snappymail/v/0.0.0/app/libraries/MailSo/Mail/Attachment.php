@@ -78,7 +78,7 @@ class Attachment implements \JsonSerializable
 				{
 					$sFileName = 'calendar'.$this->MimeIndex().'.ics';
 				}
-				else if (0 < \strlen($sMimeType))
+				else if (\strlen($sMimeType))
 				{
 					$sFileName = \str_replace('/', $this->MimeIndex().'.', $sMimeType);
 				}

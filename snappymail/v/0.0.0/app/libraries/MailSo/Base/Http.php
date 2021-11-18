@@ -145,7 +145,7 @@ class Http
 		if ($bWithRemoteUserData)
 		{
 			$sUser = \trim($this->GetServer('REMOTE_USER', ''));
-			$sHost = (0 < \strlen($sUser) ? $sUser.'@' : '').$sHost;
+			$sHost = (\strlen($sUser) ? $sUser.'@' : '').$sHost;
 		}
 
 		if ($bWithoutPort)
@@ -189,15 +189,15 @@ class Http
 			CURLOPT_TIMEOUT => (int) $iTimeout
 		);
 
-		if (0 < \strlen($sCustomUserAgent))
+		if (\strlen($sCustomUserAgent))
 		{
 			$aOptions[CURLOPT_USERAGENT] = $sCustomUserAgent;
 		}
 
-		if (0 < \strlen($sProxy))
+		if (\strlen($sProxy))
 		{
 			$aOptions[CURLOPT_PROXY] = $sProxy;
-			if (0 < \strlen($sProxyAuth))
+			if (\strlen($sProxyAuth))
 			{
 				$aOptions[CURLOPT_PROXYUSERPWD] = $sProxyAuth;
 			}
@@ -238,7 +238,7 @@ class Http
 		$sNewUrl = null;
 		$sUrl = isset($aOptions[CURLOPT_URL]) ? $aOptions[CURLOPT_URL] : $sUrl;
 
-		if (isset($aOptions[CURLOPT_FOLLOWLOCATION]) && $aOptions[CURLOPT_FOLLOWLOCATION] && 0 < \strlen($sUrl) &&
+		if (isset($aOptions[CURLOPT_FOLLOWLOCATION]) && $aOptions[CURLOPT_FOLLOWLOCATION] && \strlen($sUrl) &&
 			\ini_get('open_basedir') !== '')
 		{
 			$aOptions[CURLOPT_FOLLOWLOCATION] = false;
@@ -264,7 +264,7 @@ class Http
 					CURLOPT_TIMEOUT => 5
 				);
 
-				if (isset($aOptions[CURLOPT_HTTPHEADER]) && \is_array($aOptions[CURLOPT_HTTPHEADER]) && 0 < \count($aOptions[CURLOPT_HTTPHEADER]))
+				if (isset($aOptions[CURLOPT_HTTPHEADER]) && \is_array($aOptions[CURLOPT_HTTPHEADER]) && \count($aOptions[CURLOPT_HTTPHEADER]))
 				{
 					$aAddOptions[CURLOPT_HTTPHEADER] = $aOptions[CURLOPT_HTTPHEADER];
 				}
@@ -303,7 +303,7 @@ class Http
 				} while ($iCode && --$iRedirectLimit);
 
 				\curl_close($oCurl);
-				if ($iRedirectLimit > 0 && 0 < \strlen($sNewUrl))
+				if ($iRedirectLimit > 0 && \strlen($sNewUrl))
 				{
 					$aOptions[CURLOPT_URL] = $sNewUrl;
 				}
@@ -352,21 +352,21 @@ class Http
 			CURLOPT_TIMEOUT => (int) $iTimeout
 		);
 
-		if (0 < \strlen($sCustomUserAgent))
+		if (\strlen($sCustomUserAgent))
 		{
 			$aOptions[CURLOPT_USERAGENT] = $sCustomUserAgent;
 		}
 
-		if (0 < \strlen($sProxy))
+		if (\strlen($sProxy))
 		{
 			$aOptions[CURLOPT_PROXY] = $sProxy;
-			if (0 < \strlen($sProxyAuth))
+			if (\strlen($sProxyAuth))
 			{
 				$aOptions[CURLOPT_PROXYUSERPWD] = $sProxyAuth;
 			}
 		}
 
-		if (0 < \count($aHttpHeaders))
+		if (\count($aHttpHeaders))
 		{
 			$aOptions[CURLOPT_HTTPHEADER] = $aHttpHeaders;
 		}
@@ -374,7 +374,7 @@ class Http
 		if ($oLogger)
 		{
 			$oLogger->Write('cUrl: URL: '.$sUrl);
-//			if (isset($aOptions[CURLOPT_HTTPHEADER]) && \is_array($aOptions[CURLOPT_HTTPHEADER]) && 0 < \count($aOptions[CURLOPT_HTTPHEADER]))
+//			if (isset($aOptions[CURLOPT_HTTPHEADER]) && \is_array($aOptions[CURLOPT_HTTPHEADER]) && \count($aOptions[CURLOPT_HTTPHEADER]))
 //			{
 //				$oLogger->Write('cUrl: Headers: '.\print_r($aOptions[CURLOPT_HTTPHEADER], true));
 //			}
@@ -436,7 +436,7 @@ class Http
 					\header('Last-Modified: '.\gmdate('D, d M Y H:i:s', $iUtcTimeStamp - $iExpireTime).' UTC');
 					\header('Expires: '.\gmdate('D, j M Y H:i:s', $iUtcTimeStamp + $iExpireTime).' UTC');
 
-					if (0 < strlen($sEtag))
+					if (\strlen($sEtag))
 					{
 						\header('Etag: '.$sEtag);
 					}

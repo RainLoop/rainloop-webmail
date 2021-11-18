@@ -53,7 +53,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		if ($this->oCacher)
 		{
 			$sResult = $this->oCacher->Get($this->wildcardDomainsCacheKey());
-			if (0 < \strlen($sResult))
+			if (\strlen($sResult))
 			{
 				return $sResult;
 			}
@@ -72,7 +72,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 			}
 		}
 
-		if (0 < \count($aNames))
+		if (\count($aNames))
 		{
 			\rsort($aNames, SORT_STRING);
 			$sResult = \implode(' ', $aNames);
@@ -134,10 +134,10 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		else if ($bFindWithWildCard)
 		{
 			$sNames = $this->getWildcardDomainsLine();
-			if (0 < \strlen($sNames))
+			if (\strlen($sNames))
 			{
 				if (\RainLoop\Plugins\Helper::ValidateWildcardValues(
-					\MailSo\Base\Utils::IdnToUtf8($sName, true), $sNames, $sFoundedValue) && 0 < \strlen($sFoundedValue))
+					\MailSo\Base\Utils::IdnToUtf8($sName, true), $sNames, $sFoundedValue) && \strlen($sFoundedValue))
 				{
 					if (!$bCheckDisabled || 0 === \strlen($sDisabled) || false === \strpos(','.$sDisabled.',', ','.$sFoundedValue.','))
 					{
@@ -213,7 +213,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		$bResult = true;
 		$sRealFileName = $this->codeFileName($sName);
 
-		if (0 < \strlen($sName))
+		if (\strlen($sName))
 		{
 			if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini'))
 			{
@@ -286,10 +286,10 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		$aResult = \array_slice($aResult, $iOffset, $iLimit);
 
 		$aDisabledNames = array();
-		if (0 < \count($aResult) && \file_exists($this->sDomainPath.'/disabled'))
+		if (\count($aResult) && \file_exists($this->sDomainPath.'/disabled'))
 		{
 			$sDisabled = \file_get_contents($this->sDomainPath.'/disabled');
-			if (false !== $sDisabled && 0 < strlen($sDisabled))
+			if (false !== $sDisabled && \strlen($sDisabled))
 			{
 				$aDisabledNames = \explode(',', $sDisabled);
 				$aDisabledNames = \array_unique($aDisabledNames);

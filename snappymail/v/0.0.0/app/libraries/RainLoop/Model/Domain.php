@@ -132,7 +132,7 @@ class Domain implements \JsonSerializable
 	{
 		$oDomain = null;
 
-		if (0 < \strlen($sName) && 0 < \strlen($aDomain['imap_host']) && 0 < \strlen($aDomain['imap_port']))
+		if (\strlen($sName) && \strlen($aDomain['imap_host']) && \strlen($aDomain['imap_port']))
 		{
 			$sIncHost = (string) $aDomain['imap_host'];
 			$iIncPort = (int) $aDomain['imap_port'];
@@ -381,7 +381,7 @@ class Domain implements \JsonSerializable
 	public function ValidateWhiteList(string $sEmail, string $sLogin = '') : bool
 	{
 		$sW = \trim($this->sWhiteList);
-		if (0 < strlen($sW))
+		if (\strlen($sW))
 		{
 			$sEmail = \MailSo\Base\Utils::IdnToUtf8($sEmail, true);
 			$sLogin = \MailSo\Base\Utils::IdnToUtf8($sLogin, true);
@@ -389,7 +389,7 @@ class Domain implements \JsonSerializable
 			$sW = \preg_replace('/([^\s]+)@[^\s]*/', '$1', $sW);
 			$sW = ' '.\trim(\preg_replace('/[\s;,\r\n\t]+/', ' ', $sW)).' ';
 
-			$sUserPart = \MailSo\Base\Utils::GetAccountNameFromEmail(0 < \strlen($sLogin) ? $sLogin : $sEmail);
+			$sUserPart = \MailSo\Base\Utils::GetAccountNameFromEmail(\strlen($sLogin) ? $sLogin : $sEmail);
 			return false !== \stripos($sW, ' '.$sUserPart.' ');
 		}
 

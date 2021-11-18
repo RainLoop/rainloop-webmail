@@ -79,7 +79,7 @@ class CacheClient
 	{
 		$iTimer = 0;
 		$sValue = $this->Get($sKey.'/TIMER');
-		if (0 < strlen($sValue) && is_numeric($sValue))
+		if (\strlen($sValue) && is_numeric($sValue))
 		{
 			$iTimer = (int) $sValue;
 		}
@@ -116,7 +116,7 @@ class CacheClient
 
 	public function SetCacheIndex(string $sCacheIndex) : self
 	{
-		$this->sCacheIndex = 0 < \strlen($sCacheIndex) ? "\x0".$sCacheIndex : '';
+		$this->sCacheIndex = \strlen($sCacheIndex) ? "\x0".$sCacheIndex : '';
 
 		return $this;
 	}

@@ -301,7 +301,7 @@ trait Messages
 					}
 				}
 
-				if (0 < \count($aArrayToFrec))
+				if (\count($aArrayToFrec))
 				{
 					$oSettings = $this->SettingsProvider()->Load($oAccount);
 
@@ -616,7 +616,7 @@ trait Messages
 		try
 		{
 			$aAttachments = $this->GetActionParam('Attachments', array());
-			if (\is_array($aAttachments) && 0 < \count($aAttachments))
+			if (\is_array($aAttachments) && \count($aAttachments))
 			{
 				$mResult = array();
 				foreach ($aAttachments as $sAttachment)
@@ -758,7 +758,7 @@ trait Messages
 						$oSmtpClient->Rcpt($oEmail->GetEmail(), $bDsn);
 					}
 
-					if ($bAddHiddenRcpt && \is_array($aHiddenRcpt) && 0 < \count($aHiddenRcpt))
+					if ($bAddHiddenRcpt && \is_array($aHiddenRcpt) && \count($aHiddenRcpt))
 					{
 						foreach ($aHiddenRcpt as $sEmail)
 						{
@@ -1058,7 +1058,7 @@ trait Messages
 			}
 		}
 
-		if ($mFoundDataURL && \is_array($mFoundDataURL) && 0 < \count($mFoundDataURL))
+		if ($mFoundDataURL && \is_array($mFoundDataURL) && \count($mFoundDataURL))
 		{
 			foreach ($mFoundDataURL as $sCidHash => $sDataUrlString)
 			{

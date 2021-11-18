@@ -19,11 +19,11 @@ class Application extends \RainLoop\Config\AbstractConfig
 		$bResult = parent::Load();
 
 		$this->aReplaceEnv = null;
-		if ((isset($_ENV) && \is_array($_ENV) && 0 < \count($_ENV)) ||
-			(isset($_SERVER) && \is_array($_SERVER) && 0 < \count($_SERVER)))
+		if ((isset($_ENV) && \is_array($_ENV) && \count($_ENV)) ||
+			(isset($_SERVER) && \is_array($_SERVER) && \count($_SERVER)))
 		{
 			$sEnvNames = $this->Get('labs', 'replace_env_in_configuration', '');
-			if (0 < \strlen($sEnvNames))
+			if (\strlen($sEnvNames))
 			{
 				$this->aReplaceEnv = \explode(',', $sEnvNames);
 				if (\is_array($this->aReplaceEnv))
@@ -93,7 +93,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 			$this->SetPassword($sPassword);
 			return true;
 		}
-		return 0 < \strlen($sPassword) && \password_verify($sPassword, $sConfigPassword);
+		return \strlen($sPassword) && \password_verify($sPassword, $sConfigPassword);
 	}
 
 	public function Save() : bool

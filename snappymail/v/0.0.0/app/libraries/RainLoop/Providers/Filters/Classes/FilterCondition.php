@@ -62,7 +62,7 @@ class FilterCondition implements \JsonSerializable
 		$aResult = array();
 		foreach ($aCollection as $aItem)
 		{
-			if (\is_array($aItem) && 0 < \count($aItem))
+			if (\is_array($aItem) && \count($aItem))
 			{
 				$oItem = new \RainLoop\Providers\Filters\Classes\FilterCondition();
 				if ($oItem->FromJSON($aItem))

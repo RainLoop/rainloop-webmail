@@ -83,8 +83,8 @@ class Sieve
 		$sValue = \trim($oCondition->Value());
 		$sValueSecond = \trim($oCondition->ValueSecond());
 
-		if (0 < \strlen($sValue) ||
-			(0 < \strlen($sValue) && 0 < \strlen($sValueSecond) &&
+		if (\strlen($sValue) ||
+			(\strlen($sValue) && \strlen($sValueSecond) &&
 				Enumerations\ConditionField::HEADER === $oCondition->Field()))
 		{
 			switch ($oCondition->Type())
@@ -271,33 +271,33 @@ class Sieve
 				$sValueSecond = \trim($oFilter->ActionValueSecond());
 				$sValueThird = \trim($oFilter->ActionValueThird());
 				$sValueFourth = \trim($oFilter->ActionValueFourth());
-				if (0 < \strlen($sValue))
+				if (\strlen($sValue))
 				{
 					$aCapa['vacation'] = true;
 
 					$iDays = 1;
 					$sSubject = '';
-					if (0 < \strlen($sValueSecond))
+					if (\strlen($sValueSecond))
 					{
 						$sSubject = ':subject "'.
 							static::quote(\MailSo\Base\Utils::StripSpaces($sValueSecond)).'" ';
 					}
 
-					if (0 < \strlen($sValueThird) && \is_numeric($sValueThird) && 1 < (int) $sValueThird)
+					if (\strlen($sValueThird) && \is_numeric($sValueThird) && 1 < (int) $sValueThird)
 					{
 						$iDays = (int) $sValueThird;
 					}
 
 					$sAddresses = '';
-					if (0 < \strlen($sValueFourth))
+					if (\strlen($sValueFourth))
 					{
 						$aAddresses = \explode(',', $sValueFourth);
 						$aAddresses = \array_filter(\array_map(function ($sEmail) use ($self) {
 							$sEmail = \trim($sEmail);
-							return 0 < \strlen($sEmail) ? '"'.static::quote($sEmail).'"' : '';
+							return \strlen($sEmail) ? '"'.static::quote($sEmail).'"' : '';
 						}, $aAddresses), 'strlen');
 
-						if (0 < \count($aAddresses))
+						if (\count($aAddresses))
 						{
 							$sAddresses = ':addresses ['.\implode(', ', $aAddresses).'] ';
 						}
@@ -316,7 +316,7 @@ class Sieve
 				break;
 			case Enumerations\ActionType::REJECT:
 				$sValue = \trim($oFilter->ActionValue());
-				if (0 < \strlen($sValue))
+				if (\strlen($sValue))
 				{
 					$aCapa['reject'] = true;
 
@@ -333,7 +333,7 @@ class Sieve
 				break;
 			case Enumerations\ActionType::FORWARD:
 				$sValue = $oFilter->ActionValue();
-				if (0 < \strlen($sValue))
+				if (\strlen($sValue))
 				{
 					if ($oFilter->Keep())
 					{
@@ -354,7 +354,7 @@ class Sieve
 				break;
 			case Enumerations\ActionType::MOVE_TO:
 				$sValue = $oFilter->ActionValue();
-				if (0 < \strlen($sValue))
+				if (\strlen($sValue))
 				{
 					$sFolderName = $sValue; // utf7-imap
 					if (static::$bUtf8FolderName) // to utf-8

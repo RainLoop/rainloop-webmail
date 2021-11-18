@@ -498,7 +498,7 @@ trait Admin
 			if ($sRep)
 			{
 				$aRep = \json_decode($sRep);
-				$bReal = \is_array($aRep) && 0 < \count($aRep);
+				$bReal = \is_array($aRep) && \count($aRep);
 
 				if ($bReal)
 				{
@@ -514,7 +514,7 @@ trait Admin
 		else if ('' !== $sRep)
 		{
 			$aRep = \json_decode($sRep, false, 10);
-			$bReal = \is_array($aRep) && 0 < \count($aRep);
+			$bReal = \is_array($aRep) && \count($aRep);
 		}
 
 		return \is_array($aRep) ? $aRep : [];

@@ -223,7 +223,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 		$sCmd = 'FROM:<'.$sFrom.'>';
 
-		if (0 < \strlen($sSizeIfSupported) && \is_numeric($sSizeIfSupported) && $this->IsSupported('SIZE'))
+		if (\strlen($sSizeIfSupported) && \is_numeric($sSizeIfSupported) && $this->IsSupported('SIZE'))
 		{
 			$sCmd .= ' SIZE='.$sSizeIfSupported;
 		}
@@ -515,7 +515,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		foreach ($this->aResults as $sLine)
 		{
 			$aMatch = array();
-			if (\preg_match('/[\d]+[ \-](.+)$/', $sLine, $aMatch) && isset($aMatch[1]) && 0 < \strlen($aMatch[1]))
+			if (\preg_match('/[\d]+[ \-](.+)$/', $sLine, $aMatch) && isset($aMatch[1]) && \strlen($aMatch[1]))
 			{
 				$sLine = \trim($aMatch[1]);
 				$aLine = \preg_split('/[ =]/', $sLine, 2);
@@ -525,7 +525,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 					if (('AUTH' === $sCapa || 'SIZE' === $sCapa) && !empty($aLine[1]))
 					{
 						$sSubLine = \trim(\strtoupper($aLine[1]));
-						if (0 < \strlen($sSubLine))
+						if (\strlen($sSubLine))
 						{
 							if ('AUTH' === $sCapa)
 							{

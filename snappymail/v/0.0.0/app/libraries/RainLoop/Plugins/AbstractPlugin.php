@@ -127,7 +127,7 @@ abstract class AbstractPlugin
 
 	public function SetVersion(string $sVersion) : self
 	{
-		if (0 < \strlen($sVersion))
+		if (\strlen($sVersion))
 		{
 			$this->sVersion = $sVersion;
 		}

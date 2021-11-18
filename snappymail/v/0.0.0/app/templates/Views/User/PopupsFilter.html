@@ -26,7 +26,7 @@
 						data-i18n="POPUPS_FILTER/SELECT_MATCH_ALL"></option>
 				</select>
 			</div>
-			<div data-bind="visible: 0 < conditions().length, foreach: conditions">
+			<div data-bind="visible: conditions().length, foreach: conditions">
 				<div class="control-group" data-bind="css: {'error': valueError}" style="display:flex">
 					<div style="flex-grow:1" data-bind="css: {'error': valueError}, template: {'name': template(), 'data': $data}"></div>
 					<span class="delete-action button-delete fontastic" style="margin-top: 5px;"

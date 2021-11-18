@@ -117,7 +117,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 
 	public function CloseAllOpenedFiles() : bool
 	{
-		if (\is_array($this->aResources) && 0 < \count($this->aResources))
+		if (\is_array($this->aResources) && \count($this->aResources))
 		{
 			foreach ($this->aResources as $sFileName => $rFile)
 			{

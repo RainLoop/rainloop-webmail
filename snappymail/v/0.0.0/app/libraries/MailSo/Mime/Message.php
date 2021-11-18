@@ -161,7 +161,7 @@ class Message
 	public function SetCustomHeader(string $sHeaderName, string $sValue) : self
 	{
 		$sHeaderName = \trim($sHeaderName);
-		if (0 < \strlen($sHeaderName))
+		if (\strlen($sHeaderName))
 		{
 			$this->aHeadersValue[$sHeaderName] = $sValue;
 		}
@@ -220,7 +220,7 @@ class Message
 				break;
 		}
 
-		if (0 < \strlen($sResult))
+		if (\strlen($sResult))
 		{
 			$this->aHeadersValue[Enumerations\Header::X_PRIORITY] = $sResult;
 		}
@@ -244,7 +244,7 @@ class Message
 				break;
 		}
 
-		if (0 < \strlen($sResult))
+		if (\strlen($sResult))
 		{
 			$this->aHeadersValue[Enumerations\Header::SENSITIVITY] = $sResult;
 		}
@@ -275,7 +275,7 @@ class Message
 
 	public function SetDate(int $iDateTime) : self
 	{
-		$this->aHeadersValue[Enumerations\Header::DATE] = gmdate('r', $iDateTime);
+		$this->aHeadersValue[Enumerations\Header::DATE] = \gmdate('r', $iDateTime);
 
 		return $this;
 	}
@@ -348,7 +348,7 @@ class Message
 	private function generateNewBoundary() : string
 	{
 		return '--='.\MailSo\Config::$BoundaryPrefix.
-			\rand(100, 999).'_'.rand(100000000, 999999999).'.'.\time();
+			\rand(100, 999).'_'.\rand(100000000, 999999999).'.'.\time();
 	}
 
 	private function generateNewMessageId(string $sHostName = '') : string
@@ -384,7 +384,7 @@ class Message
 		$oContentTypeParameters = null;
 		$oContentDispositionParameters = null;
 
-		if (0 < strlen(trim($sFileName)))
+		if (\strlen(\trim($sFileName)))
 		{
 			$oContentTypeParameters =
 				(new ParameterCollection)->Add(new Parameter(
@@ -409,14 +409,14 @@ class Message
 			)
 		);
 
-		if (0 < strlen($sCID))
+		if (\strlen($sCID))
 		{
 			$oAttachmentPart->Headers->append(
 				new Header(Enumerations\Header::CONTENT_ID, $sCID)
 			);
 		}
 
-		if (0 < strlen($sContentLocation))
+		if (\strlen($sContentLocation))
 		{
 			$oAttachmentPart->Headers->append(
 				new Header(Enumerations\Header::CONTENT_LOCATION, $sContentLocation)
@@ -425,7 +425,7 @@ class Message
 
 		$oAttachmentPart->Body = $oAttachment->Resource();
 
-		if ('message/rfc822' !== strtolower($oAttachment->ContentType()))
+		if ('message/rfc822' !== \strtolower($oAttachment->ContentType()))
 		{
 			$oAttachmentPart->Headers->append(
 				new Header(
@@ -434,7 +434,7 @@ class Message
 				)
 			);
 
-			if (is_resource($oAttachmentPart->Body))
+			if (\is_resource($oAttachmentPart->Body))
 			{
 				if (!\MailSo\Base\StreamWrappers\Binary::IsStreamRemembed($oAttachmentPart->Body))
 				{
@@ -465,7 +465,7 @@ class Message
 					\MailSo\Base\Enumerations\Charset::UTF_8)
 			);
 
-			if (isset($aAlternativeData[3]) && \is_array($aAlternativeData[3]) && 0 < \count($aAlternativeData[3]))
+			if (isset($aAlternativeData[3]) && \is_array($aAlternativeData[3]) && \count($aAlternativeData[3]))
 			{
 				foreach ($aAlternativeData[3] as $sName => $sValue)
 				{
@@ -481,18 +481,18 @@ class Message
 			$oAlternativePart->Body = null;
 			if (isset($aAlternativeData[1]))
 			{
-				if (is_resource($aAlternativeData[1]))
+				if (\is_resource($aAlternativeData[1]))
 				{
 					$oAlternativePart->Body = $aAlternativeData[1];
 				}
-				else if (is_string($aAlternativeData[1]) && 0 < strlen($aAlternativeData[1]))
+				else if (\is_string($aAlternativeData[1]) && \strlen($aAlternativeData[1]))
 				{
 					$oAlternativePart->Body =
 						\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString($aAlternativeData[1]);
 				}
 			}
 
-			if (isset($aAlternativeData[2]) && 0 < strlen($aAlternativeData[2]))
+			if (isset($aAlternativeData[2]) && \strlen($aAlternativeData[2]))
 			{
 				$oAlternativePart->Headers->append(
 					new Header(Enumerations\Header::CONTENT_TRANSFER_ENCODING,
@@ -500,7 +500,7 @@ class Message
 					)
 				);
 
-				if (is_resource($oAlternativePart->Body))
+				if (\is_resource($oAlternativePart->Body))
 				{
 					if (!\MailSo\Base\StreamWrappers\Binary::IsStreamRemembed($oAlternativePart->Body))
 					{
@@ -514,7 +514,7 @@ class Message
 				}
 			}
 
-			if (!is_resource($oAlternativePart->Body))
+			if (!\is_resource($oAlternativePart->Body))
 			{
 				$oAlternativePart->Body =
 					\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString('');
@@ -554,7 +554,7 @@ class Message
 			}
 
 		}
-		else if (1 === count($this->aAlternativeParts))
+		else if (1 === \count($this->aAlternativeParts))
 		{
 			$oAlternativePart = $this->createNewMessageAlternativePartBody($this->aAlternativeParts[0]);
 			if ($oAlternativePart)
@@ -574,7 +574,7 @@ class Message
 			else
 			{
 				$aAttachments = $this->oAttachmentCollection->getArrayCopy();
-				if (1 === count($aAttachments) && isset($aAttachments[0]))
+				if (1 === \count($aAttachments) && isset($aAttachments[0]))
 				{
 					$this->oAttachmentCollection->Clear();
 
@@ -594,7 +594,7 @@ class Message
 		$oResultPart = null;
 
 		$aAttachments = $this->oAttachmentCollection->LinkedAttachments();
-		if (0 < count($aAttachments))
+		if (\count($aAttachments))
 		{
 			$oResultPart = new Part;
 
@@ -629,7 +629,7 @@ class Message
 		$oResultPart = null;
 
 		$aAttachments = $this->oAttachmentCollection->UnlinkedAttachments();
-		if (0 < count($aAttachments))
+		if (\count($aAttachments))
 		{
 			$oResultPart = new Part;
 

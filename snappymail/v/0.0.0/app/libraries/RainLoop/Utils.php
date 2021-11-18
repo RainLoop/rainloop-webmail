@@ -160,7 +160,7 @@ class Utils
 		$_COOKIE[$sName] = $sValue;
 		\setcookie($sName, $sValue, array(
 			'expires' => $iExpire,
-			'path' => $sPath && 0 < \strlen($sPath) ? $sPath : '/',
+			'path' => $sPath && \strlen($sPath) ? $sPath : '/',
 //			'domain' => $sDomain,
 			'secure' => isset($_SERVER['HTTPS']) || static::$CookieDefaultSecure,
 			'httponly' => $bHttpOnly,
@@ -185,7 +185,7 @@ class Utils
 			unset($_COOKIE[$sName]);
 			\setcookie($sName, '', array(
 				'expires' => \time() - 3600 * 24 * 30,
-				'path' => $sPath && 0 < \strlen($sPath) ? $sPath : '/',
+				'path' => $sPath && \strlen($sPath) ? $sPath : '/',
 //				'domain' => null,
 				'secure' => isset($_SERVER['HTTPS']) || static::$CookieDefaultSecure,
 				'httponly' => true,

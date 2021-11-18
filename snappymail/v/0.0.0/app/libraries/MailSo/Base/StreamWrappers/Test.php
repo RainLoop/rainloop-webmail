@@ -39,34 +39,34 @@ class Test
 	 */
 	public static function CreateStream(string $sRawResponse)
 	{
-		if (!in_array(self::STREAM_NAME, stream_get_wrappers()))
+		if (!\in_array(self::STREAM_NAME, \stream_get_wrappers()))
 		{
-			stream_wrapper_register(self::STREAM_NAME, '\MailSo\Base\StreamWrappers\Test');
+			\stream_wrapper_register(self::STREAM_NAME, '\MailSo\Base\StreamWrappers\Test');
 		}
 
-		$sHashName = md5(microtime(true).rand(1000, 9999));
+		$sHashName = \md5(\microtime(true).\rand(1000, 9999));
 
-		$rConnect = fopen('php://memory', 'r+b');
-		fwrite($rConnect, $sRawResponse);
-		fseek($rConnect, 0);
+		$rConnect = \fopen('php://memory', 'r+b');
+		\fwrite($rConnect, $sRawResponse);
+		\fseek($rConnect, 0);
 
 		self::$aStreams[$sHashName] = $rConnect;
 
-		return fopen(self::STREAM_NAME.'://'.$sHashName, 'r+b');
+		return \fopen(self::STREAM_NAME.'://'.$sHashName, 'r+b');
 	}
 
 	public function stream_open(string $sPath) : bool
 	{
 		$bResult = false;
-		$aPath = parse_url($sPath);
+		$aPath = \parse_url($sPath);
 
 		if (isset($aPath['host']) && isset($aPath['scheme']) &&
-			0 < strlen($aPath['host']) && 0 < strlen($aPath['scheme']) &&
+			\strlen($aPath['host']) && \strlen($aPath['scheme']) &&
 			self::STREAM_NAME === $aPath['scheme'])
 		{
 			$sHashName = $aPath['host'];
 			if (isset(self::$aStreams[$sHashName]) &&
-				is_resource(self::$aStreams[$sHashName]))
+				\is_resource(self::$aStreams[$sHashName]))
 			{
 				$this->rReadSream = self::$aStreams[$sHashName];
 				$bResult = true;
@@ -78,27 +78,27 @@ class Test
 
 	public function stream_read(int $iCount) : string
 	{
-		return fread($this->rReadSream, $iCount);
+		return \fread($this->rReadSream, $iCount);
 	}
 
 	public function stream_write(string $sInputString) : int
 	{
-		return strlen($sInputString);
+		return \strlen($sInputString);
 	}
 
 	public function stream_tell() : int
 	{
-		return ftell($this->rReadSream);
+		return \ftell($this->rReadSream);
 	}
 
 	public function stream_eof() : bool
 	{
-		return feof($this->rReadSream);
+		return \feof($this->rReadSream);
 	}
 
 	public function stream_stat() : array
 	{
-		return fstat($this->rReadSream);
+		return \fstat($this->rReadSream);
 	}
 
 	public function stream_seek() : bool

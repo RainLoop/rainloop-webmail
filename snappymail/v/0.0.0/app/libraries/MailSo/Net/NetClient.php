@@ -326,7 +326,7 @@ abstract class NetClient
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
-		$bFake = 0 < \strlen($sFakeRaw);
+		$bFake = \strlen($sFakeRaw);
 		$sRaw .= "\r\n";
 
 		if ($this->oLogger && $this->oLogger->IsShowSecter())

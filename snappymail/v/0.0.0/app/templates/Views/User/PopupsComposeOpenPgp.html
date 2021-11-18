@@ -66,10 +66,10 @@
 				autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
 				data-i18n="[placeholder]GLOBAL/PASSWORD"
 				data-bind="textInput: password, onEnter: doCommand" />
-			<select class="input-block-level" data-bind="visible: 0 < privateKeysOptions().length, options: privateKeysOptions, value: selectedPrivateKey,
+			<select class="input-block-level" data-bind="visible: privateKeysOptions().length, options: privateKeysOptions, value: selectedPrivateKey,
 				optionsCaption: privateKeysOptionsCaption, optionsText: 'name', optionsValue: 'id'"></select>
 		</div>
-		<select class="input-block-level" data-bind="visible: encrypt() && 0 < publicKeysOptions().length, options: publicKeysOptions, value: selectedPublicKey,
+		<select class="input-block-level" data-bind="visible: encrypt() && publicKeysOptions().length, options: publicKeysOptions, value: selectedPublicKey,
 			optionsCaption: publicKeysOptionsCaption, optionsText: 'name', optionsValue: 'id'"></select>
 	</div>
 </div>

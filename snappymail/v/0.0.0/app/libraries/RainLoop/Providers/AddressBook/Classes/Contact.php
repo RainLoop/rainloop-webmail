@@ -87,7 +87,7 @@ class Contact implements \JsonSerializable
 					$oFullNameProperty =& $oProperty;
 				}
 
-				if (0 < \strlen($oProperty->Value))
+				if (\strlen($oProperty->Value))
 				{
 					if ('' === $sEmail && $oProperty->IsEmail())
 					{
@@ -117,7 +117,7 @@ class Contact implements \JsonSerializable
 
 		$sDisplay = $bForceFullNameReplace ? '' : \trim($sFullName);
 
-		if ('' === $sDisplay && (0 < \strlen($sLastName) || 0 < \strlen($sFirstName)))
+		if ('' === $sDisplay && (\strlen($sLastName) || \strlen($sFirstName)))
 		{
 			$sDisplay = \trim($sFirstName.' '.$sLastName);
 		}
@@ -190,7 +190,7 @@ class Contact implements \JsonSerializable
 		}
 
 		$oVCard = null;
-		if (0 < \strlen($sPreVCard))
+		if (\strlen($sPreVCard))
 		{
 			try
 			{
@@ -273,7 +273,7 @@ class Contact implements \JsonSerializable
 						}
 
 						$aTypes = $oProperty->TypesAsArray();
-						$oVCard->add($sAddKey, $oProperty->Value, \is_array($aTypes) && 0 < \count($aTypes) ? array('TYPE' => $aTypes) : null);
+						$oVCard->add($sAddKey, $oProperty->Value, \is_array($aTypes) && \count($aTypes) ? array('TYPE' => $aTypes) : null);
 						break;
 				}
 			}
@@ -450,7 +450,7 @@ class Contact implements \JsonSerializable
 		$sValue = \trim($oProp);
 		if ($bOldVersion && !isset($oProp->parameters['CHARSET']))
 		{
-			if (0 < \strlen($sValue))
+			if (\strlen($sValue))
 			{
 				$sEncValue = \utf8_encode($sValue);
 				if (0 === \strlen($sEncValue))
@@ -476,7 +476,7 @@ class Contact implements \JsonSerializable
 			$aTypes = $oTypes ? $oTypes->getParts() : array();
 			$sValue = $oProp ? \trim($oProp->getValue()) : '';
 
-			if (0 < \strlen($sValue))
+			if (\strlen($sValue))
 			{
 				if (!$oTypes || $oTypes->has('PREF'))
 				{
@@ -530,7 +530,7 @@ class Contact implements \JsonSerializable
 				$sValue = \trim($sValue);
 				if ($bOldVersion && !isset($oVCard->N->parameters['CHARSET']))
 				{
-					if (0 < \strlen($sValue))
+					if (\strlen($sValue))
 					{
 						$sEncValue = \utf8_encode($sValue);
 						if (0 === \strlen($sEncValue))

@@ -96,7 +96,7 @@ class Part
 
 	public function ParentCharset() : string
 	{
-		return (0 < \strlen($this->sCharset)) ? $this->sParentCharset : self::$DefaultCharset;
+		return (\strlen($this->sCharset)) ? $this->sParentCharset : self::$DefaultCharset;
 	}
 
 	public function SetParentCharset(string $sParentCharset) : self
@@ -122,14 +122,14 @@ class Part
 
 	public function HeaderCharset() : string
 	{
-		return ($this->Headers) ? trim(strtolower($this->Headers->ParameterValue(
+		return ($this->Headers) ? \trim(\strtolower($this->Headers->ParameterValue(
 			Enumerations\Header::CONTENT_TYPE,
 			Enumerations\Parameter::CHARSET))) : '';
 	}
 
 	public function HeaderBoundary() : string
 	{
-		return ($this->Headers) ? trim($this->Headers->ParameterValue(
+		return ($this->Headers) ? \trim($this->Headers->ParameterValue(
 			Enumerations\Header::CONTENT_TYPE,
 			Enumerations\Parameter::BOUNDARY)) : '';
 	}
@@ -137,26 +137,26 @@ class Part
 	public function ContentType() : string
 	{
 		return ($this->Headers) ?
-			trim(strtolower($this->Headers->ValueByName(
+			\trim(\strtolower($this->Headers->ValueByName(
 				Enumerations\Header::CONTENT_TYPE))) : '';
 	}
 
 	public function ContentTransferEncoding() : string
 	{
 		return ($this->Headers) ?
-			trim(strtolower($this->Headers->ValueByName(
+			\trim(\strtolower($this->Headers->ValueByName(
 				Enumerations\Header::CONTENT_TRANSFER_ENCODING))) : '';
 	}
 
 	public function ContentID() : string
 	{
-		return ($this->Headers) ? trim($this->Headers->ValueByName(
+		return ($this->Headers) ? \trim($this->Headers->ValueByName(
 			Enumerations\Header::CONTENT_ID)) : '';
 	}
 
 	public function ContentLocation() : string
 	{
-		return ($this->Headers) ? trim($this->Headers->ValueByName(
+		return ($this->Headers) ? \trim($this->Headers->ValueByName(
 			Enumerations\Header::CONTENT_LOCATION)) : '';
 	}
 
@@ -183,13 +183,13 @@ class Part
 		$sResult = '';
 		if ($this->Headers)
 		{
-			$sResult = trim($this->Headers->ParameterValue(
+			$sResult = \trim($this->Headers->ParameterValue(
 				Enumerations\Header::CONTENT_DISPOSITION,
 				Enumerations\Parameter::FILENAME));
 
-			if (0 === strlen($sResult))
+			if (!\strlen($sResult))
 			{
-				$sResult = trim($this->Headers->ParameterValue(
+				$sResult = \trim($this->Headers->ParameterValue(
 					Enumerations\Header::CONTENT_TYPE,
 					Enumerations\Parameter::NAME));
 			}
@@ -200,14 +200,14 @@ class Part
 
 	public function ParseFromFile(string $sFileName) : self
 	{
-		$rStreamHandle = (file_exists($sFileName)) ? fopen($sFileName, 'rb') : false;
-		if (is_resource($rStreamHandle))
+		$rStreamHandle = \file_exists($sFileName) ? \fopen($sFileName, 'rb') : false;
+		if (\is_resource($rStreamHandle))
 		{
 			$this->ParseFromStream($rStreamHandle);
 
-			if (is_resource($rStreamHandle))
+			if (\is_resource($rStreamHandle))
 			{
-				fclose($rStreamHandle);
+				\fclose($rStreamHandle);
 			}
 		}
 
@@ -216,14 +216,14 @@ class Part
 
 	public function ParseFromString(string $sRawMessage) : self
 	{
-		$rStreamHandle = (0 < strlen($sRawMessage)) ?
+		$rStreamHandle = \strlen($sRawMessage) ?
 			\MailSo\Base\ResourceRegistry::CreateMemoryResource() : false;
 
-		if (is_resource($rStreamHandle))
+		if (\is_resource($rStreamHandle))
 		{
-			fwrite($rStreamHandle, $sRawMessage);
+			\fwrite($rStreamHandle, $sRawMessage);
 			unset($sRawMessage);
-			fseek($rStreamHandle, 0);
+			\fseek($rStreamHandle, 0);
 
 			$this->ParseFromStream($rStreamHandle);
 
@@ -260,7 +260,7 @@ class Part
 		foreach ($this->LineParts as /* @var $oMimePart Part */ $oMimePart)
 		{
 			$sCharset = $oMimePart->HeaderCharset();
-			if (0 < strlen($sCharset))
+			if (\strlen($sCharset))
 			{
 				$sFirstNotNullCharset = $sCharset;
 				break;
@@ -268,7 +268,7 @@ class Part
 		}
 
 		$sForceCharset = self::$ForceCharset;
-		if (0 < strlen($sForceCharset))
+		if (\strlen($sForceCharset))
 		{
 			foreach ($this->LineParts as /* @var $oMimePart Part */ $oMimePart)
 			{
@@ -284,7 +284,7 @@ class Part
 			foreach ($this->LineParts as /* @var $oMimePart Part */ $oMimePart)
 			{
 				$sHeaderCharset = $oMimePart->HeaderCharset();
-				$oMimePart->SetParentCharset((0 < strlen($sHeaderCharset)) ? $sHeaderCharset : $sFirstNotNullCharset);
+				$oMimePart->SetParentCharset((\strlen($sHeaderCharset)) ? $sHeaderCharset : $sFirstNotNullCharset);
 				$oMimePart->Headers->SetParentCharset($sHeaderCharset);
 			}
 		}
@@ -315,11 +315,11 @@ class Part
 				$sBuffer = '';
 			}
 
-			if (!$bIsOef && !feof($rStreamHandle))
+			if (!$bIsOef && !\feof($rStreamHandle))
 			{
 				if (!$bNotFirstRead)
 				{
-					$sBuffer = fread($rStreamHandle, $this->iParseBuffer);
+					$sBuffer = \fread($rStreamHandle, $this->iParseBuffer);
 					if (false === $sBuffer)
 					{
 						break;
@@ -332,7 +332,7 @@ class Part
 					$bNotFirstRead = false;
 				}
 			}
-			else if ($bIsOef && 0 === strlen($sBuffer))
+			else if ($bIsOef && !\strlen($sBuffer))
 			{
 				break;
 			}
@@ -347,28 +347,28 @@ class Part
 				if (self::POS_HEADERS === $iParsePosition)
 				{
 					$iEndLen = 4;
-					$iPos = strpos($sCurrentLine, "\r\n\r\n", $iOffset);
+					$iPos = \strpos($sCurrentLine, "\r\n\r\n", $iOffset);
 					if (false === $iPos)
 					{
 						$iEndLen = 2;
-						$iPos = strpos($sCurrentLine, "\n\n", $iOffset);
+						$iPos = \strpos($sCurrentLine, "\n\n", $iOffset);
 					}
 
 					if (false !== $iPos)
 					{
-						$aHeadersLines[] = substr($sCurrentLine, $iOffset, $iPos + $iEndLen - $iOffset);
+						$aHeadersLines[] = \substr($sCurrentLine, $iOffset, $iPos + $iEndLen - $iOffset);
 
-						$this->Headers->Parse(implode($aHeadersLines))->SetParentCharset($this->HeaderCharset());
+						$this->Headers->Parse(\implode($aHeadersLines))->SetParentCharset($this->HeaderCharset());
 						$aHeadersLines = array();
 
 						$oCallbackClass->InitMimePartHeader();
 
 						$sBoundary = $this->HeaderBoundary();
-						if (0 < strlen($sBoundary))
+						if (\strlen($sBoundary))
 						{
 							$sBoundary = '--'.$sBoundary;
 							$sCurrentBoundary = $sBoundary;
-							array_unshift($aBoundaryStack, $sBoundary);
+							\array_unshift($aBoundaryStack, $sBoundary);
 						}
 
 						$iOffset = $iPos + $iEndLen;
@@ -377,10 +377,10 @@ class Part
 					}
 					else
 					{
-						$iBufferLen = strlen($sPrevBuffer);
+						$iBufferLen = \strlen($sPrevBuffer);
 						if ($iBufferLen > $iOffset)
 						{
-							$aHeadersLines[] = substr($sPrevBuffer, $iOffset);
+							$aHeadersLines[] = \substr($sPrevBuffer, $iOffset);
 							$iOffset = 0;
 						}
 						else
@@ -396,19 +396,19 @@ class Part
 					$sBoundaryLen = 0;
 					$bIsBoundaryEnd = false;
 					$bCurrentPartBody = false;
-					$bIsBoundaryCheck = 0 < count($aBoundaryStack);
+					$bIsBoundaryCheck = \count($aBoundaryStack);
 
 					foreach ($aBoundaryStack as $sKey => $sBoundary)
 					{
-						if (false !== ($iPos = strpos($sCurrentLine, $sBoundary, $iOffset)))
+						if (false !== ($iPos = \strpos($sCurrentLine, $sBoundary, $iOffset)))
 						{
 							if ($sCurrentBoundary === $sBoundary)
 							{
 								$bCurrentPartBody = true;
 							}
 
-							$sBoundaryLen = strlen($sBoundary);
-							if ('--' === substr($sCurrentLine, $iPos + $sBoundaryLen, 2))
+							$sBoundaryLen = \strlen($sBoundary);
+							if ('--' === \substr($sCurrentLine, $iPos + $sBoundaryLen, 2))
 							{
 								$sBoundaryLen += 2;
 								$bIsBoundaryEnd = true;
@@ -423,7 +423,7 @@ class Part
 
 					if (false !== $iPos)
 					{
-						$oCallbackClass->WriteBody(substr($sCurrentLine, $iOffset, $iPos - $iOffset));
+						$oCallbackClass->WriteBody(\substr($sCurrentLine, $iOffset, $iPos - $iOffset));
 						$iOffset = $iPos;
 
 						if ($bCurrentPartBody)
@@ -437,10 +437,10 @@ class Part
 					}
 					else
 					{
-						$iBufferLen = strlen($sPrevBuffer);
+						$iBufferLen = \strlen($sPrevBuffer);
 						if ($iBufferLen > $iOffset)
 						{
-							$oCallbackClass->WriteBody(substr($sPrevBuffer, $iOffset));
+							$oCallbackClass->WriteBody(\substr($sPrevBuffer, $iOffset));
 							$iOffset = 0;
 						}
 						else
@@ -453,24 +453,24 @@ class Part
 				else if (self::POS_SUBPARTS === $iParsePosition)
 				{
 					$iPos = false;
-					$sBoundaryLen = 0;
+					$iBoundaryLen = 0;
 					$bIsBoundaryEnd = false;
 					$bCurrentPartBody = false;
-					$bIsBoundaryCheck = 0 < count($aBoundaryStack);
+					$bIsBoundaryCheck = \count($aBoundaryStack);
 
 					foreach ($aBoundaryStack as $sKey => $sBoundary)
 					{
-						if (false !== ($iPos = strpos($sCurrentLine, $sBoundary, $iOffset)))
+						if (false !== ($iPos = \strpos($sCurrentLine, $sBoundary, $iOffset)))
 						{
 							if ($sCurrentBoundary === $sBoundary)
 							{
 								$bCurrentPartBody = true;
 							}
 
-							$sBoundaryLen = strlen($sBoundary);
-							if ('--' === substr($sCurrentLine, $iPos + $sBoundaryLen, 2))
+							$iBoundaryLen = \strlen($sBoundary);
+							if ('--' === \substr($sCurrentLine, $iPos + $iBoundaryLen, 2))
 							{
-								$sBoundaryLen += 2;
+								$iBoundaryLen += 2;
 								$bIsBoundaryEnd = true;
 								unset($aBoundaryStack[$sKey]);
 								$sCurrentBoundary = (isset($aBoundaryStack[$sKey + 1]))
@@ -482,7 +482,7 @@ class Part
 
 					if (false !== $iPos && $bCurrentPartBody)
 					{
-						$iOffset = $iPos + $sBoundaryLen;
+						$iOffset = $iPos + $iBoundaryLen;
 
 						$oSubPart = new self;
 
@@ -505,15 +505,15 @@ class Part
 			}
 		}
 
-		if (0 < strlen($sPrevBuffer))
+		if (\strlen($sPrevBuffer))
 		{
 			if (self::POS_HEADERS === $iParsePosition)
 			{
-				$aHeadersLines[] = ($iOffset < strlen($sPrevBuffer))
-					? substr($sPrevBuffer, $iOffset)
+				$aHeadersLines[] = ($iOffset < \strlen($sPrevBuffer))
+					? \substr($sPrevBuffer, $iOffset)
 					: $sPrevBuffer;
 
-				$this->Headers->Parse(implode($aHeadersLines))->SetParentCharset($this->HeaderCharset());
+				$this->Headers->Parse(\implode($aHeadersLines))->SetParentCharset($this->HeaderCharset());
 				$aHeadersLines = array();
 
 				$oCallbackClass->InitMimePartHeader();
@@ -522,16 +522,16 @@ class Part
 			{
 				if (!$bIsBoundaryCheck)
 				{
-					$oCallbackClass->WriteBody(($iOffset < strlen($sPrevBuffer))
-						? substr($sPrevBuffer, $iOffset) : $sPrevBuffer);
+					$oCallbackClass->WriteBody(($iOffset < \strlen($sPrevBuffer))
+						? \substr($sPrevBuffer, $iOffset) : $sPrevBuffer);
 				}
 			}
 		}
 		else
 		{
-			if (self::POS_HEADERS === $iParsePosition && 0 < count($aHeadersLines))
+			if (self::POS_HEADERS === $iParsePosition && \count($aHeadersLines))
 			{
-				$this->Headers->Parse(implode($aHeadersLines))->SetParentCharset($this->HeaderCharset());
+				$this->Headers->Parse(\implode($aHeadersLines))->SetParentCharset($this->HeaderCharset());
 				$aHeadersLines = array();
 
 				$oCallbackClass->InitMimePartHeader();
@@ -579,12 +579,12 @@ class Part
 		if (0 < $this->SubParts->Count())
 		{
 			$sBoundary = $this->HeaderBoundary();
-			if (0 < strlen($sBoundary))
+			if (\strlen($sBoundary))
 			{
 				$aSubStreams[] = '--'.$sBoundary.Enumerations\Constants::CRLF;
 
 				$rSubPartsStream = $this->SubParts->ToStream($sBoundary);
-				if (is_resource($rSubPartsStream))
+				if (\is_resource($rSubPartsStream))
 				{
 					$aSubStreams[] = $rSubPartsStream;
 				}

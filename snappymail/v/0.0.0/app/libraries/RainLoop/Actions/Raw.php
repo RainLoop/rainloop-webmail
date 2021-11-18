@@ -278,7 +278,7 @@ trait Raw
 
 						if ($sLoadedData)
 						{
-							if ($bIsRangeRequest && (0 < \strlen($sRangeStart) || 0 < \strlen($sRangeEnd)))
+							if ($bIsRangeRequest && (\strlen($sRangeStart) || \strlen($sRangeEnd)))
 							{
 								$iFullContentLength = \strlen($sLoadedData);
 

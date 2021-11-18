@@ -196,7 +196,7 @@ abstract class Driver
 
 	protected function getTypedPrefix(int $iType, string $sName = '') : string
 	{
-		$sName = 0 < \strlen($sName) ? $sName : $this->sName;
+		$sName = \strlen($sName) ? $sName : $this->sName;
 		return isset($this->aPrefixes[$iType]) ? $sName.$this->aPrefixes[$iType].': ' : '';
 	}
 

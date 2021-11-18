@@ -21,13 +21,13 @@ class Suggestions extends \RainLoop\Providers\AbstractProvider
 			});
 		}
 
-		$this->aDrivers = \is_array($aDriver) && 0 < \count($aDriver) ? $aDriver : null;
+		$this->aDrivers = \is_array($aDriver) && \count($aDriver) ? $aDriver : null;
 	}
 
 	public function Process(\RainLoop\Model\Account $oAccount, string $sQuery, int $iLimit = 20) : array
 	{
 		$aSuggestions = array();
-		if ($this->IsActive() && \is_array($this->aDrivers) && 0 < \strlen($sQuery))
+		if ($this->IsActive() && \is_array($this->aDrivers) && \strlen($sQuery))
 		{
 			foreach ($this->aDrivers as $oDriver)
 			{
@@ -35,7 +35,7 @@ class Suggestions extends \RainLoop\Providers\AbstractProvider
 				if ($oDriver)
 				{
 					$aSubs = $oDriver->Process($oAccount, $sQuery, $iLimit);
-					if (\is_array($aSubs) && 0 < \count($aSubs))
+					if (\is_array($aSubs) && \count($aSubs))
 					{
 						$aSuggestions = \array_merge($aSuggestions, $aSubs);
 					}
@@ -55,6 +55,6 @@ class Suggestions extends \RainLoop\Providers\AbstractProvider
 
 	public function IsActive() : bool
 	{
-		return \is_array($this->aDrivers) && 0 < \count($this->aDrivers);
+		return \is_array($this->aDrivers) && \count($this->aDrivers);
 	}
 }

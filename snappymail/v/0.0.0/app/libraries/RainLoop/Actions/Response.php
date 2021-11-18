@@ -267,7 +267,7 @@ trait Response
 						if ($oAttachment)
 						{
 							$sContentLocation = $oAttachment->ContentLocation();
-							if ($sContentLocation && 0 < \strlen($sContentLocation))
+							if ($sContentLocation && \strlen($sContentLocation))
 							{
 								$aContentLocationUrls[] = $oAttachment->ContentLocation();
 							}
@@ -324,8 +324,8 @@ trait Response
 				unset($sHtml, $sPlain);
 
 				$mResult['HasExternals'] = $bHasExternals;
-				$mResult['HasInternals'] = (\is_array($mFoundedCIDs) && 0 < \count($mFoundedCIDs)) ||
-					(\is_array($mFoundedContentLocationUrls) && 0 < \count($mFoundedContentLocationUrls));
+				$mResult['HasInternals'] = (\is_array($mFoundedCIDs) && \count($mFoundedCIDs)) ||
+					(\is_array($mFoundedContentLocationUrls) && \count($mFoundedContentLocationUrls));
 				$mResult['FoundedCIDs'] = $mFoundedCIDs;
 				$mResult['Attachments'] = $this->responseObject($oAttachments, $sParent, \array_merge($aParameters, array(
 					'FoundedCIDs' => $mFoundedCIDs,
@@ -333,9 +333,9 @@ trait Response
 				)));
 
 				$mResult['ReadReceipt'] = $mResponse->ReadReceipt();
-				if (0 < \strlen($mResult['ReadReceipt']) && !$mResult['IsReadReceipt'])
+				if (\strlen($mResult['ReadReceipt']) && !$mResult['IsReadReceipt'])
 				{
-					if (0 < \strlen($mResult['ReadReceipt']))
+					if (\strlen($mResult['ReadReceipt']))
 					{
 						try
 						{
@@ -348,7 +348,7 @@ trait Response
 						catch (\Throwable $oException) { unset($oException); }
 					}
 
-					if (0 < \strlen($mResult['ReadReceipt']) && '1' === $this->Cacher($oAccount)->Get(
+					if (\strlen($mResult['ReadReceipt']) && '1' === $this->Cacher($oAccount)->Get(
 						\RainLoop\KeyPathHelper::ReadReceiptCache($oAccount->Email(), $mResult['Folder'], $mResult['Uid']), '0'))
 					{
 						$mResult['ReadReceipt'] = '';
@@ -367,12 +367,12 @@ trait Response
 			}
 
 			$mFoundedCIDs = isset($aParameters['FoundedCIDs']) && \is_array($aParameters['FoundedCIDs']) &&
-				0 < \count($aParameters['FoundedCIDs']) ?
+				\count($aParameters['FoundedCIDs']) ?
 					$aParameters['FoundedCIDs'] : null;
 
 			$mFoundedContentLocationUrls = isset($aParameters['FoundedContentLocationUrls']) &&
 				\is_array($aParameters['FoundedContentLocationUrls']) &&
-				0 < \count($aParameters['FoundedContentLocationUrls']) ?
+				\count($aParameters['FoundedContentLocationUrls']) ?
 					$aParameters['FoundedContentLocationUrls'] : null;
 
 			if ($mFoundedCIDs || $mFoundedContentLocationUrls)
@@ -380,7 +380,7 @@ trait Response
 				$mFoundedCIDs = \array_merge($mFoundedCIDs ? $mFoundedCIDs : array(),
 					$mFoundedContentLocationUrls ? $mFoundedContentLocationUrls : array());
 
-				$mFoundedCIDs = 0 < \count($mFoundedCIDs) ? $mFoundedCIDs : null;
+				$mFoundedCIDs = \count($mFoundedCIDs) ? $mFoundedCIDs : null;
 			}
 
 			$mResult['IsLinked'] = ($mFoundedCIDs && \in_array(\trim(\trim($mResponse->Cid()), '<>'), $mFoundedCIDs))

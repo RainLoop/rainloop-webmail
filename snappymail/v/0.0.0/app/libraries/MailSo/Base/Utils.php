@@ -152,7 +152,7 @@ END;
 			$aSupportedEncodings = \array_map('strtoupper', \array_unique(
 				\array_merge(
 					$aSupportedEncodings,
-					array_merge(
+					\array_merge(
 						...\array_map(
 							'mb_encoding_aliases',
 							$aSupportedEncodings
@@ -1005,7 +1005,7 @@ END;
 		$iNow = $iNow ?: \time();
 		$iFileCount = 0;
 
-		$sTempPath = rtrim($sTempPath, '\\/');
+		$sTempPath = \rtrim($sTempPath, '\\/');
 		if (\is_dir($sTempPath))
 		{
 			$rDirH = \opendir($sTempPath);
@@ -1055,7 +1055,7 @@ END;
 	{
 		$bResult = true;
 
-		$sTempPath = rtrim($sTempPath, '\\/');
+		$sTempPath = \rtrim($sTempPath, '\\/');
 		if (\is_dir($sTempPath))
 		{
 			$rDirH = \opendir($sTempPath);
@@ -1105,7 +1105,7 @@ END;
 
 	public static function Utf8Clear(?string $sUtfString, string $sReplaceOn = '') : string
 	{
-		if (!strlen($sUtfString))
+		if (!\strlen($sUtfString))
 		{
 			return '';
 		}

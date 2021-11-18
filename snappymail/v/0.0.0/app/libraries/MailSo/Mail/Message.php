@@ -329,13 +329,13 @@ class Message implements \JsonSerializable
 				\MailSo\Mime\Enumerations\Parameter::CHARSET
 			);
 
-			if (0 < \strlen($sContentTypeCharset))
+			if (\strlen($sContentTypeCharset))
 			{
 				$sCharset = $sContentTypeCharset;
 				$sCharset = \MailSo\Base\Utils::NormalizeCharset($sCharset);
 			}
 
-			if (0 < \strlen($sCharset))
+			if (\strlen($sCharset))
 			{
 				$oHeaders->SetParentCharset($sCharset);
 			}
@@ -394,7 +394,7 @@ class Message implements \JsonSerializable
 			{
 				$sPriority = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_PRIORITY);
 			}
-			if (0 < \strlen($sPriority))
+			if (\strlen($sPriority))
 			{
 				switch (\str_replace(' ', '', \strtolower($sPriority)))
 				{
@@ -485,7 +485,7 @@ class Message implements \JsonSerializable
 			}
 
 			$sDraftInfo = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_DRAFT_INFO);
-			if (0 < \strlen($sDraftInfo)) {
+			if (\strlen($sDraftInfo)) {
 				$sType = '';
 				$sFolder = '';
 				$iUid = 0;
@@ -506,7 +506,7 @@ class Message implements \JsonSerializable
 					}
 				}
 
-				if (0 < \strlen($sType) && 0 < \strlen($sFolder) && $iUid) {
+				if (\strlen($sType) && \strlen($sFolder) && $iUid) {
 					$this->aDraftInfo = array($sType, $iUid, $sFolder);
 				}
 			}
@@ -544,7 +544,7 @@ class Message implements \JsonSerializable
 			$aPgpSignatureParts = $oBodyStructure ? $oBodyStructure->SearchByContentType('application/pgp-signature') : null;
 			if ($this->bPgpSigned = !empty($aPgpSignatureParts)) {
 				$sPgpSignatureText = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::BODY.'['.$aPgpSignatureParts[0]->PartID().']');
-				if (\is_string($sPgpSignatureText) && 0 < \strlen($sPgpSignatureText) && 0 < \strpos($sPgpSignatureText, 'BEGIN PGP SIGNATURE')) {
+				if (\is_string($sPgpSignatureText) && \strlen($sPgpSignatureText) && 0 < \strpos($sPgpSignatureText, 'BEGIN PGP SIGNATURE')) {
 					$this->sPgpSignature = \trim($sPgpSignatureText);
 					$this->sPgpSignatureMicAlg = (string) $oHeaders->ParameterValue(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'micalg');
 				}
@@ -572,13 +572,13 @@ class Message implements \JsonSerializable
 				if (null === $sText)
 				{
 					$sText = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::BODY.'['.$oPart->PartID().']<0>');
-					if (\is_string($sText) && 0 < \strlen($sText))
+					if (\is_string($sText) && \strlen($sText))
 					{
 						$this->bTextPartIsTrimmed = true;
 					}
 				}
 
-				if (\is_string($sText) && 0 < \strlen($sText))
+				if (\is_string($sText) && \strlen($sText))
 				{
 					$sTextCharset = $oPart->Charset();
 					if (empty($sTextCharset))
@@ -608,7 +608,7 @@ class Message implements \JsonSerializable
 				}
 			}
 
-			if (0 < \count($aHtmlParts))
+			if (\count($aHtmlParts))
 			{
 				$this->sHtml = \implode('<br />', $aHtmlParts);
 			}
@@ -632,7 +632,7 @@ class Message implements \JsonSerializable
 		if ($oBodyStructure)
 		{
 			$aAttachmentsParts = $oBodyStructure->SearchAttachmentsParts();
-			if ($aAttachmentsParts && 0 < count($aAttachmentsParts))
+			if ($aAttachmentsParts && \count($aAttachmentsParts))
 			{
 				$this->oAttachments = new AttachmentCollection;
 				foreach ($aAttachmentsParts as /* @var $oAttachmentItem \MailSo\Imap\BodyStructure */ $oAttachmentItem)

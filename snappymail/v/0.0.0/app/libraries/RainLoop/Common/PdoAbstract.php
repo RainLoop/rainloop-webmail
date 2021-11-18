@@ -419,7 +419,7 @@ rl_email text NOT NULL DEFAULT \'\'
 					break;
 			}
 
-			if (0 < \count($aQ))
+			if (\count($aQ))
 			{
 				try
 				{

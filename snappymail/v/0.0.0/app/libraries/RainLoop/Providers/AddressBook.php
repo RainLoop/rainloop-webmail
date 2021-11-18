@@ -173,7 +173,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	public function ImportCsvArray(string $sEmail, array $aCsvData) : int
 	{
 		$iCount = 0;
-		if ($this->IsActive() && 0 < \count($aCsvData))
+		if ($this->IsActive() && \count($aCsvData))
 		{
 			$oContact = new \RainLoop\Providers\AddressBook\Classes\Contact();
 			foreach ($aCsvData as $aItem)
@@ -202,7 +202,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 					}
 				}
 
-				if ($oContact && 0 < \count($oContact->Properties))
+				if ($oContact && \count($oContact->Properties))
 				{
 					if ($this->ContactSave($sEmail, $oContact))
 					{
@@ -255,7 +255,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 
 						$oContact->PopulateByVCard($oVCard);
 
-						if (0 < \count($oContact->Properties))
+						if (\count($oContact->Properties))
 						{
 							if ($this->ContactSave($sEmail, $oContact))
 							{

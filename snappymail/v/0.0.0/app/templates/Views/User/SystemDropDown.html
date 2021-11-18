@@ -9,7 +9,7 @@
 		<a id="top-system-dropdown-id" href="#" tabindex="-1" class="btn single btn-block dropdown-toggle">
 			<i class="fontastic" data-bind="css: {'icon-spinner': accountsLoading()}">👤</i>
 <!--
-			<b data-bind="text: accountsUnreadCount, visible: 100 > accountsUnreadCount() && 0 < accountsUnreadCount()"></b>
+			<b data-bind="text: accountsUnreadCount, visible: 100 > accountsUnreadCount() && accountsUnreadCount()"></b>
 			<b data-bind="visible: 99 < accountsUnreadCount()">99+</b>
 			&nbsp;
 -->
@@ -21,7 +21,7 @@
 				<!-- ko foreach: accounts -->
 					<li role="presentation">
 						<a class="account-item" href="#" data-bind="click: $root.accountClick, css: {'current': $root.accountEmail() === email}">
-<!--							<b class="pull-right counter" data-bind="visible: 0 < count()">
+<!--							<b class="pull-right counter" data-bind="visible: count()">
 								<span data-bind="text: count, visible: 100 > count()"></span>
 								<span data-bind="visible: 99 < count()">99+</span>
 							</b>-->

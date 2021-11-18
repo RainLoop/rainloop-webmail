@@ -114,21 +114,21 @@ trait Folders
 							{
 								$mNewParent = \substr($mFolderNameToCreate, 0, $iPos);
 								$mNewFolderNameToCreate = \substr($mFolderNameToCreate, $iPos + 1);
-								if (0 < \strlen($mNewFolderNameToCreate))
+								if (\strlen($mNewFolderNameToCreate))
 								{
 									$mFolderNameToCreate = $mNewFolderNameToCreate;
 								}
 
-								if (0 < \strlen($mNewParent))
+								if (\strlen($mNewParent))
 								{
-									$sParent = 0 < \strlen($sParent) ? $sParent.$sDelimiter.$mNewParent : $mNewParent;
+									$sParent = \strlen($sParent) ? $sParent.$sDelimiter.$mNewParent : $mNewParent;
 								}
 							}
 
 							$sFullNameToCheck = \MailSo\Base\Utils::ConvertEncoding($mFolderNameToCreate,
 								\MailSo\Base\Enumerations\Charset::UTF_8, \MailSo\Base\Enumerations\Charset::UTF_7_IMAP);
 
-							if (0 < \strlen(\trim($sParent)))
+							if (\strlen(\trim($sParent)))
 							{
 								$sFullNameToCheck = $sParent.$sDelimiter.$sFullNameToCheck;
 							}
