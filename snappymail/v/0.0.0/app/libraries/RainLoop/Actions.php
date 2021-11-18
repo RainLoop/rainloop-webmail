@@ -873,7 +873,38 @@ class Actions
 		$sLanguage = $oConfig->Get('webmail', 'language', 'en');
 		$UserLanguageRaw = $this->detectUserLanguage($bAdmin);
 
-		if (!$bAdmin) {
+		if ($bAdmin) {
+			$aResult['Auth'] = $this->IsAdminLoggined(false);
+			if ($aResult['Auth']) {
+				$aResult['AdminDomain'] = APP_SITE;
+				$aResult['AdminLogin'] = (string)$oConfig->Get('security', 'admin_login', '');
+				$aResult['AdminTOTP'] = (string)$oConfig->Get('security', 'admin_totp', '');
+				$aResult['UseTokenProtection'] = (bool)$oConfig->Get('security', 'csrf_protection', true);
+				$aResult['EnabledPlugins'] = (bool)$oConfig->Get('plugins', 'enable', false);
+
+				$aResult['VerifySslCertificate'] = (bool)$oConfig->Get('ssl', 'verify_certificate', false);
+				$aResult['AllowSelfSigned'] = (bool)$oConfig->Get('ssl', 'allow_self_signed', true);
+
+				$aResult['supportedPdoDrivers'] = \RainLoop\Common\PdoAbstract::getAvailableDrivers();
+
+				$aResult['ContactsEnable'] = (bool)$oConfig->Get('contacts', 'enable', false);
+				$aResult['ContactsSync'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
+				$aResult['ContactsPdoType'] = (string)$this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
+				$aResult['ContactsPdoDsn'] = (string)$oConfig->Get('contacts', 'pdo_dsn', '');
+				$aResult['ContactsPdoType'] = (string)$oConfig->Get('contacts', 'type', '');
+				$aResult['ContactsPdoUser'] = (string)$oConfig->Get('contacts', 'pdo_user', '');
+				$aResult['ContactsPdoPassword'] = (string)APP_DUMMY;
+
+				$aResult['WeakPassword'] = \is_file($passfile);
+
+				$aResult['PhpUploadSizes'] = array(
+					'upload_max_filesize' => \ini_get('upload_max_filesize'),
+					'post_max_size' => \ini_get('post_max_size')
+				);
+			}
+
+			$aResult['Capa'] = $this->Capa(true);
+		} else {
 			$oAccount = $this->getAccountFromToken(false);
 			if ($oAccount) {
 				$aResult['Auth'] = true;
@@ -986,36 +1017,6 @@ class Actions
 			}
 
 			$aResult['Capa'] = $this->Capa(false, $oAccount);
-		} else {
-			$aResult['Auth'] = $this->IsAdminLoggined(false);
-			if ($aResult['Auth']) {
-				$aResult['AdminDomain'] = APP_SITE;
-				$aResult['AdminLogin'] = (string)$oConfig->Get('security', 'admin_login', '');
-				$aResult['UseTokenProtection'] = (bool)$oConfig->Get('security', 'csrf_protection', true);
-				$aResult['EnabledPlugins'] = (bool)$oConfig->Get('plugins', 'enable', false);
-
-				$aResult['VerifySslCertificate'] = (bool)$oConfig->Get('ssl', 'verify_certificate', false);
-				$aResult['AllowSelfSigned'] = (bool)$oConfig->Get('ssl', 'allow_self_signed', true);
-
-				$aResult['supportedPdoDrivers'] = \RainLoop\Common\PdoAbstract::getAvailableDrivers();
-
-				$aResult['ContactsEnable'] = (bool)$oConfig->Get('contacts', 'enable', false);
-				$aResult['ContactsSync'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
-				$aResult['ContactsPdoType'] = (string)$this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
-				$aResult['ContactsPdoDsn'] = (string)$oConfig->Get('contacts', 'pdo_dsn', '');
-				$aResult['ContactsPdoType'] = (string)$oConfig->Get('contacts', 'type', '');
-				$aResult['ContactsPdoUser'] = (string)$oConfig->Get('contacts', 'pdo_user', '');
-				$aResult['ContactsPdoPassword'] = (string)APP_DUMMY;
-
-				$aResult['WeakPassword'] = \is_file($passfile);
-
-				$aResult['PhpUploadSizes'] = array(
-					'upload_max_filesize' => \ini_get('upload_max_filesize'),
-					'post_max_size' => \ini_get('post_max_size')
-				);
-			}
-
-			$aResult['Capa'] = $this->Capa(true);
 		}
 
 		$sStaticCache = $this->StaticCache();

@@ -43,6 +43,12 @@
 			data-bind="textInput: adminPasswordNew2" />
 	</div>
 	<div class="control-group">
+		<label data-i18n="LOGIN/LABEL_TOTP"></label>
+		<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+			pattern="[A-Z2-7]{16,}"
+			data-bind="textInput: adminTOTP" />
+	</div>
+	<div class="control-group">
 		<a class="btn" data-bind="command: saveNewAdminPasswordCommand, css: { 'btn-success': adminPasswordUpdateSuccess, 'btn-danger': adminPasswordUpdateError }">
 			<i class="fontastic">🔑</i>
 			<span data-i18n="TAB_SECURITY/BUTTON_UPDATE_PASSWORD"></span>

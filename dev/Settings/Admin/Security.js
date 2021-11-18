@@ -22,6 +22,7 @@ export class SecurityAdminSettings /*extends AbstractViewSettings*/ {
 			adminPasswordNew: '',
 			adminPasswordNew2: '',
 			adminPasswordNewError: false,
+			adminTOTP: SettingsGet('AdminTOTP'),
 
 			adminPasswordUpdateError: false,
 			adminPasswordUpdateSuccess: false,
@@ -91,7 +92,7 @@ export class SecurityAdminSettings /*extends AbstractViewSettings*/ {
 		this.adminPasswordUpdateError(false);
 		this.adminPasswordUpdateSuccess(false);
 
-		Remote.saveNewAdminPassword((iError, data) => {
+		Remote.defaultRequest((iError, data) => {
 			if (iError) {
 				this.adminPasswordUpdateError(true);
 			} else {
@@ -103,10 +104,11 @@ export class SecurityAdminSettings /*extends AbstractViewSettings*/ {
 
 				this.weakPassword(!!data.Result.Weak);
 			}
-		}, {
+		}, 'AdminPasswordUpdate', {
 			'Login': this.adminLogin(),
 			'Password': this.adminPassword(),
-			'NewPassword': this.adminPasswordNew()
+			'NewPassword': this.adminPasswordNew(),
+			'TOTP': this.adminTOTP()
 		});
 
 		return true;

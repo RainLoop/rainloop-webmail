@@ -195,20 +195,6 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 		this.defaultRequest(fCallback, 'AdminContactsTest', oData);
 	}
 
-	/**
-	 * @param {?Function} fCallback
-	 * @param {?} oData
-	 */
-	saveNewAdminPassword(fCallback, oData) {
-		this.defaultRequest(fCallback, 'AdminPasswordUpdate', oData);
-	}
-
-	/**
-	 * @param {?Function} fCallback
-	 */
-	phpExtensions(fCallback) {
-		this.defaultRequest(fCallback, 'AdminPHPExtensions');
-	}
 }
 
 export default new RemoteAdminFetch();

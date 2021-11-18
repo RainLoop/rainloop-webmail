@@ -248,6 +248,8 @@ trait Admin
 
 		$passfile = APP_PRIVATE_DATA.'admin_password.txt';
 
+		$oConfig->Set('security', 'admin_totp', $this->GetActionParam('TOTP', ''));
+
 		if ($oConfig->ValidatePassword($sPassword))
 		{
 			if (\strlen($sLogin))
