@@ -116,7 +116,7 @@ class MailClient
 			\MailSo\Mime\Enumerations\Header::LIST_UNSUBSCRIBE,
 			// SPAM
 			\MailSo\Mime\Enumerations\Header::X_SPAM_STATUS,
-			\MailSo\Mime\Enumerations\Header::X_SPAM_FLAG,
+//			\MailSo\Mime\Enumerations\Header::X_SPAM_FLAG,
 			\MailSo\Mime\Enumerations\Header::X_SPAMD_RESULT,
 			\MailSo\Mime\Enumerations\Header::X_BOGOSITY,
 			// Virus

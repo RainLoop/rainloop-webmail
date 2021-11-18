@@ -56,8 +56,8 @@ class Header
 
 	private function initInputData(string $sName, string $sValue, string $sEncodedValueForReparse) : void
 	{
-		$this->sName = trim($sName);
-		$this->sFullValue = trim($sValue);
+		$this->sName = \trim($sName);
+		$this->sFullValue = \trim($sValue);
 		$this->sEncodedValueForReparse = '';
 
 		$this->oParameters = null;
