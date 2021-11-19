@@ -15,7 +15,7 @@ namespace MailSo\Log;
  * @category MailSo
  * @package Log
  */
-class Logger extends \MailSo\Base\Collection
+class Logger extends \SplFixedArray
 {
 	private $bUsed = false;
 
@@ -81,14 +81,17 @@ class Logger extends \MailSo\Base\Collection
 		return $sCache;
 	}
 
-	public function Ping() : bool
+	public function append($oDriver) : void
 	{
-		return true;
+		if ($oDriver) {
+			$this->setSize(1);
+			$this[0] = $oDriver;
+		}
 	}
 
 	public function IsEnabled() : bool
 	{
-		return 0 < $this->Count();
+		return 0 < $this->count();
 	}
 
 	public function AddSecret(string $sWord) : void

@@ -152,7 +152,7 @@ class Actions
 		$oConfig = $this->Config();
 		$this->Plugins()->RunHook('filter.application-config', array($oConfig));
 
-		$this->Logger()->Ping();
+		$this->Logger();
 	}
 
 	public function SetIsJson(bool $bIsJson): self
