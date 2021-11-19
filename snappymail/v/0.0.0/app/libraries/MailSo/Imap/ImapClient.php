@@ -531,7 +531,28 @@ class ImapClient extends \MailSo\Net\NetClient
 			$aParameters[] = $aReturnParams;
 		}
 
-		$aReturn = $this->SendRequestGetResponse($sCmd, $aParameters)->getFoldersResult($sCmd);
+		$this->SendRequest($sCommand, $aParams);
+		$bPassthru = false;
+		if ($bPassthru) {
+			// TODO: passthru to parse response in JavaScript
+			// This will reduce CPU time on server and moves it to the client
+			// And can be used with the new JavaScript AbstractFetchRemote.streamPerLine(fCallback, sGetAdd)
+			if (\is_resource($this->ConnectionResource())) {
+				\SnappyMail\HTTP\Stream::start();
+				$sEndTag = $this->getCurrentTag();
+				$sLine = \fgets($this->ConnectionResource());
+				do {
+					echo $sLine;
+					if (0 === \strpos($sLine, $sEndTag)) {
+						break;
+					}
+					$sLine = \fgets($this->ConnectionResource());
+				} while (\strlen($sLine));
+				exit;
+			}
+		} else {
+			$aReturn = $this->getResponse($sCmd, $aParameters)->getFoldersResult($sCmd);
+		}
 
 		// RFC 5464
 		if (!$bIsSubscribeList && $this->IsSupported('METADATA')) {
