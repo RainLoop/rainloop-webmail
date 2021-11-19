@@ -719,6 +719,8 @@ class AppUser extends AbstractApp {
 
 			AccountUserStore.email(SettingsGet('Email'));
 
+			SettingsUserStore.init();
+
 			this.foldersReload(value => {
 				try {
 					if (value) {

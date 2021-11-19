@@ -172,13 +172,15 @@ html.rl-no-preview-pane {
 	}
 }
 
-.hideMessageListCheckbox {
-	.checkboxCheckAll {
-		visibility: hidden;
-	}
+html:not(rl-mobile) {
+	.hideMessageListCheckbox {
+		.checkboxCheckAll {
+			visibility: hidden;
+		}
 
-	.checkboxMessage {
-		display: none;
+		.checkboxMessage {
+			display: none;
+		}
 	}
 }
 
@@ -416,7 +418,9 @@ html.rl-ctrl-key-pressed .messageListItem {
 			order: 3;
 		}
 	}
+}
 
+.rl-side-preview-pane {
 	.messageList:not(.hideMessageListCheckbox) .subjectParent {
 		margin-left: 30px;
 	}

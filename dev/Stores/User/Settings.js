@@ -7,11 +7,13 @@ import { ThemeStore } from 'Stores/Theme';
 
 export const SettingsUserStore = new class {
 	constructor() {
-		this.layout = ko
-			.observable(pInt(SettingsGet('Layout')))
+		const self = this;
+
+		self.layout = ko
+			.observable(1)
 			.extend({ limitedList: Object.values(Layout) });
 
-		this.editorDefaultType = ko.observable(SettingsGet('EditorDefaultType')).extend({
+		self.editorDefaultType = ko.observable('Html').extend({
 			limitedList: [
 				EditorDefaultType.Html,
 				EditorDefaultType.Plain,
@@ -20,43 +22,64 @@ export const SettingsUserStore = new class {
 			]
 		});
 
-		this.messagesPerPage = ko.observable(pInt(SettingsGet('MPP'))).extend({ debounce: 999 });
+		self.messagesPerPage = ko.observable(25).extend({ debounce: 999 });
 
-		this.messageReadDelay = ko.observable(pInt(SettingsGet('MessageReadDelay'))).extend({ debounce: 999 });
+		self.messageReadDelay = ko.observable(5).extend({ debounce: 999 });
 
-		addObservablesTo(this, {
-			showImages: !!SettingsGet('ShowImages'),
-			removeColors: !!SettingsGet('RemoveColors'),
-			useCheckboxesInList: !!(ThemeStore.isMobile() || SettingsGet('UseCheckboxesInList')),
-			allowDraftAutosave: !!SettingsGet('AllowDraftAutosave'),
-			useThreads: !!SettingsGet('UseThreads'),
-			replySameFolder: !!SettingsGet('ReplySameFolder'),
-			hideUnsubscribed: Settings.app('useImapSubscribe') && SettingsGet('HideUnsubscribed'),
-			autoLogout: pInt(SettingsGet('AutoLogout'))
+		addObservablesTo(self, {
+			showImages: 0,
+			removeColors: 0,
+			useCheckboxesInList: 1,
+			allowDraftAutosave: 1,
+			useThreads: 0,
+			replySameFolder: 0,
+			hideUnsubscribed: 1,
+			autoLogout: 0
 		});
 
-		this.usePreviewPane = ko.computed(() => Layout.NoPreview !== this.layout() && !ThemeStore.isMobile());
+		self.init();
+
+		self.usePreviewPane = ko.computed(() => Layout.NoPreview !== self.layout() && !ThemeStore.isMobile());
 
 		const toggleLayout = () => {
-			const value = ThemeStore.isMobile() ? Layout.NoPreview : this.layout();
+			const value = ThemeStore.isMobile() ? Layout.NoPreview : self.layout();
 			$htmlCL.toggle('rl-no-preview-pane', Layout.NoPreview === value);
 			$htmlCL.toggle('rl-side-preview-pane', Layout.SidePreview === value);
 			$htmlCL.toggle('rl-bottom-preview-pane', Layout.BottomPreview === value);
 			dispatchEvent(new CustomEvent('rl-layout', {detail:value}));
 		};
-		this.layout.subscribe(toggleLayout);
+		self.layout.subscribe(toggleLayout);
 		ThemeStore.isMobile.subscribe(toggleLayout);
 		toggleLayout();
 
 		let iAutoLogoutTimer;
-		this.delayLogout = (() => {
+		self.delayLogout = (() => {
 			clearTimeout(iAutoLogoutTimer);
-			if (0 < this.autoLogout() && !SettingsGet('AccountSignMe')) {
+			if (0 < self.autoLogout() && !SettingsGet('AccountSignMe')) {
 				iAutoLogoutTimer = setTimeout(
 					rl.app.logout,
-					this.autoLogout() * 60000
+					self.autoLogout() * 60000
 				);
 			}
 		}).throttle(5000);
+	}
+
+	init() {
+		const self = this;
+		self.editorDefaultType(SettingsGet('EditorDefaultType'));
+
+		self.layout(pInt(SettingsGet('Layout')));
+		self.messagesPerPage(pInt(SettingsGet('MessagesPerPage')));
+		self.messageReadDelay(pInt(SettingsGet('MessageReadDelay')));
+		self.autoLogout(pInt(SettingsGet('AutoLogout')));
+
+		self.showImages(!!SettingsGet('ShowImages'));
+		self.removeColors(!!SettingsGet('RemoveColors'));
+		self.useCheckboxesInList(!!SettingsGet('UseCheckboxesInList'));
+		self.allowDraftAutosave(!!SettingsGet('AllowDraftAutosave'));
+		self.useThreads(!!SettingsGet('UseThreads'));
+		self.replySameFolder(!!SettingsGet('ReplySameFolder'));
+
+		self.hideUnsubscribed(Settings.app('useImapSubscribe') && SettingsGet('HideUnsubscribed'));
 	}
 };

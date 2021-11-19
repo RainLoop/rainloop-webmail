@@ -313,7 +313,7 @@ trait User
 		}
 
 		$this->setSettingsFromParams($oSettings, 'MPP', 'int', function ($iValue) {
-			return (int) (\in_array($iValue, array(10, 20, 30, 50, 100, 150, 200, 300)) ? $iValue : 20);
+			return \min(50, \max(10, $iValue));
 		});
 
 		$this->setSettingsFromParams($oSettings, 'Layout', 'int', function ($iValue) {
@@ -548,7 +548,7 @@ trait User
 		return $aValues;
 	}
 
-	private function setSettingsFromParams(\RainLoop\Settings $oSettings, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null) : void
+	private function setSettingsFromParams(\RainLoop\Settings $oSettings, string $sConfigName, string $sType = 'string', ?callable $cCallback = null) : void
 	{
 		if ($this->HasActionParam($sConfigName))
 		{
@@ -558,21 +558,22 @@ trait User
 				default:
 				case 'string':
 					$sValue = (string) $sValue;
-					if ($mStringCallback && is_callable($mStringCallback))
-					{
-						$sValue = $mStringCallback($sValue);
+					if ($cCallback) {
+						$sValue = $cCallback($sValue);
 					}
-
 					$oSettings->SetConf($sConfigName, (string) $sValue);
 					break;
 
 				case 'int':
 					$iValue = (int) $sValue;
+					if ($cCallback) {
+						$sValue = $cCallback($iValue);
+					}
 					$oSettings->SetConf($sConfigName, $iValue);
 					break;
 
 				case 'bool':
-					$oSettings->SetConf($sConfigName, '1' === (string) $sValue);
+					$oSettings->SetConf($sConfigName, !empty($sValue));
 					break;
 			}
 		}

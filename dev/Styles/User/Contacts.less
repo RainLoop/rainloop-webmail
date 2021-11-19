@@ -76,12 +76,6 @@
 			font-size: 24px;
 			line-height: 30px;
 		}
-
-		&.hideContactListCheckbox {
-			.checkboxItem {
-				visibility: hidden;
-			}
-		}
 	}
 
 	.e-contact-item {
@@ -260,6 +254,14 @@
 			input, textarea, .e-share-sign {
 				display: none;
 			}
+		}
+	}
+}
+
+html:not(rl-mobile) {
+	.hideContactListCheckbox {
+		.checkboxItem {
+			visibility: hidden;
 		}
 	}
 }
