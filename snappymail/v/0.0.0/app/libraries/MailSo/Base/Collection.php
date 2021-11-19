@@ -49,7 +49,16 @@ abstract class Collection extends \ArrayObject implements \JsonSerializable
 	{
 		$this->exchangeArray([]);
 	}
-
+/*
+	public function __call(string $name, array $arguments)
+	{
+		$callable = "array_{$name}";
+		if (!\is_callable($callable)) {
+			throw new BadMethodCallException(__CLASS__.'->'.$name);
+		}
+		return $callable($this->getArrayCopy(), ...$arguments);
+	}
+*/
 	public function Slice(int $offset, int $length = null, bool $preserve_keys = false)
 	{
 		return new static(
@@ -70,7 +79,7 @@ abstract class Collection extends \ArrayObject implements \JsonSerializable
 		$aNames = \explode('\\', \get_class($this));
 		return array(
 			'@Object' => 'Collection/' . \end($aNames),
-			'@Count' => $this->Count(),
+			'@Count' => $this->count(),
 			'@Collection' => $this->getArrayCopy()
 		);
 	}

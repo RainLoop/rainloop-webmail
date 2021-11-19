@@ -124,29 +124,15 @@ trait Response
 		static $aCache = array();
 
 		$sExt = \MailSo\Base\Utils::GetFileExtension($sFileName);
-		if (isset($aCache[$sExt]))
-		{
+		if (isset($aCache[$sExt])) {
 			return $aCache[$sExt];
 		}
 
-		$bResult = \function_exists('gd_info');
-		if ($bResult)
-		{
-			$bResult = false;
-			switch ($sExt)
-			{
-				case 'png':
-					$bResult = \function_exists('imagecreatefrompng');
-					break;
-				case 'gif':
-					$bResult = \function_exists('imagecreatefromgif');
-					break;
-				case 'jpg':
-				case 'jpeg':
-					$bResult = \function_exists('imagecreatefromjpeg');
-					break;
-			}
-		}
+		$bResult = (
+			\extension_loaded('gd')
+			|| \extension_loaded('gmagick')
+			|| \extension_loaded('imagick')
+		) && \in_array($sExt, ['png', 'gif', 'jpg', 'jpeg']);
 
 		$aCache[$sExt] = $bResult;
 
@@ -158,31 +144,6 @@ trait Response
 		return \in_array(\strtolower($sFolderFullName), array('inbox', 'sent', 'send', 'drafts',
 			'spam', 'junk', 'bin', 'trash', 'archive', 'allmail', 'all')) ?
 				$sFolderFullName : \md5($sFolderFullName);
-	}
-
-	private function objectData(object $oData, string $sParent, array $aParameters = array()) : array
-	{
-		$mResult = array();
-		if (\is_object($oData))
-		{
-			$aNames = \explode('\\', \get_class($oData));
-			$mResult = array(
-				'@Object' => \end($aNames)
-			);
-
-			if ($oData instanceof \MailSo\Base\Collection)
-			{
-				$mResult['@Object'] = 'Collection/'.$mResult['@Object'];
-				$mResult['@Count'] = $oData->Count();
-				$mResult['@Collection'] = $this->responseObject($oData->getArrayCopy(), $sParent, $aParameters);
-			}
-			else
-			{
-				$mResult['@Object'] = 'Object/'.$mResult['@Object'];
-			}
-		}
-
-		return $mResult;
 	}
 
 	/**
@@ -241,7 +202,7 @@ trait Response
 				'Folder' => $mResult['Folder'],
 				'Uid' => $mResult['Uid'],
 				'MimeType' => 'message/rfc822',
-				'FileName' => (0 === \strlen($sSubject) ? 'message-'.$mResult['Uid'] : \MailSo\Base\Utils::ClearXss($sSubject)).'.eml'
+				'FileName' => (\strlen($sSubject) ? \MailSo\Base\Utils::ClearXss($sSubject) : 'message-'.$mResult['Uid']) . '.eml'
 			));
 
 			$sForwardedFlag = $this->Config()->Get('labs', 'imap_forwarded_flag', '');
@@ -253,7 +214,7 @@ trait Response
 
 			if ('Message' === $sParent)
 			{
-				$oAttachments = /* @var \MailSo\Mail\AttachmentCollection */  $mResponse->Attachments();
+				$oAttachments = /* @var \MailSo\Mail\AttachmentCollection */ $mResponse->Attachments();
 
 				$bHasExternals = false;
 				$mFoundedCIDs = array();
@@ -278,7 +239,7 @@ trait Response
 				$sPlain = '';
 				$sHtml = \trim($mResponse->Html());
 
-				if (0 === \strlen($sHtml))
+				if (!\strlen($sHtml))
 				{
 					$sPlain = \trim($mResponse->Plain());
 				}
@@ -304,15 +265,15 @@ trait Response
 					return \preg_replace('/[\r\n]+/', '<br />', $aMatches[1].\trim($aMatches[2]).$aMatches[3]);
 				}, $sHtml);
 
-				$mResult['Html'] = 0 === \strlen($sHtml) ? '' : \MailSo\Base\HtmlUtils::ClearHtml(
+				$mResult['Html'] = \strlen($sHtml) ? \MailSo\Base\HtmlUtils::ClearHtml(
 					$sHtml, $bHasExternals, $mFoundedCIDs, $aContentLocationUrls, $mFoundedContentLocationUrls, false, false,
 					$fAdditionalExternalFilter, null, !!$this->Config()->Get('labs', 'try_to_detect_hidden_images', false)
-				);
+				) : '';
 
 				$mResult['ExternalProxy'] = null !== $fAdditionalExternalFilter;
 
 				$mResult['Plain'] = $sPlain;
-//				$mResult['Plain'] = 0 === \strlen($sPlain) ? '' : \MailSo\Base\HtmlUtils::ConvertPlainToHtml($sPlain);
+//				$mResult['Plain'] = \strlen($sPlain) ? \MailSo\Base\HtmlUtils::ConvertPlainToHtml($sPlain) : '';
 
 				$mResult['TextHash'] = \md5($mResult['Html'].$mResult['Plain']);
 
@@ -446,7 +407,7 @@ trait Response
 			$mResult = $mResponse->jsonSerialize();
 			$mResult['@Collection'] = $this->responseObject($mResult['@Collection'], $sParent, $aParameters);
 			if ($mResponse instanceof \MailSo\Mail\EmailCollection) {
-				return array_slice($mResult['@Collection'], 0, 100);
+				return \array_slice($mResult['@Collection'], 0, 100);
 			}
 			if ($mResponse instanceof \MailSo\Mail\AttachmentCollection
 			 || $mResponse instanceof \MailSo\Mail\FolderCollection
