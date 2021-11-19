@@ -531,7 +531,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			$aParameters[] = $aReturnParams;
 		}
 
-		$this->SendRequest($sCommand, $aParams);
+		$this->SendRequest($sCmd, $aParameters);
 		$bPassthru = false;
 		if ($bPassthru) {
 			// TODO: passthru to parse response in JavaScript
@@ -551,7 +551,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				exit;
 			}
 		} else {
-			$aReturn = $this->getResponse($sCmd, $aParameters)->getFoldersResult($sCmd);
+			$aReturn = $this->getResponse()->getFoldersResult($sCmd);
 		}
 
 		// RFC 5464
