@@ -20,6 +20,40 @@ namespace MailSo\Imap\Commands;
 trait Metadata
 {
 
+	/**
+	 * Dovecot 2.2+ supports fetching all METADATA at once (wildcard).
+	 * RFC 5464 doesn't specify this, but its earlier draft did, and Kolab uses it.
+	 */
+	public function getAllMetadata() : array
+	{
+		$aReturn = array();
+		try {
+			$arguments = [
+				'(DEPTH infinity)',
+				$this->EscapeString('*')
+			];
+			$arguments[] = '(' . \implode(' ', \array_map([$this, 'EscapeString'], ['/shared', '/private'])) . ')';
+			$oResult = $this->SendRequestGetResponse('GETMETADATA', $arguments);
+			foreach ($oResult as $oResponse) {
+				if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
+					&& 4 === \count($oResponse->ResponseList)
+					&& 'METADATA' === $oResponse->ResponseList[1]
+					&& \is_array($oResponse->ResponseList[3]))
+				{
+					$aMetadata = array();
+					$c = \count($oResponse->ResponseList[3]);
+					for ($i = 0; $i < $c; $i += 2) {
+						$aMetadata[$oResponse->ResponseList[3][$i]] = $oResponse->ResponseList[3][$i+1];
+					}
+					$aReturn[$oResponse->ResponseList[2]] = $aMetadata;
+				}
+			}
+		} catch (\Throwable $e) {
+			//\error_log($e->getMessage());
+		}
+		return $aReturn;
+	}
+
 	public function getMetadata(string $sFolderName, array $aEntries, array $aOptions = []) : array
 	{
 		$arguments = [];
@@ -44,7 +78,23 @@ trait Metadata
 		$arguments[] = $this->EscapeString($sFolderName);
 
 		$arguments[] = '(' . \implode(' ', \array_map([$this, 'EscapeString'], $aEntries)) . ')';
-		return $this->SendRequestGetResponse('GETMETADATA', $arguments)->getFolderMetadataResult();
+
+		$oResult = $this->SendRequestGetResponse('GETMETADATA', $arguments);
+
+		$aReturn = array();
+		foreach ($oResult as $oResponse) {
+			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
+				&& 4 === \count($oResponse->ResponseList)
+				&& 'METADATA' === $oResponse->ResponseList[1]
+				&& \is_array($oResponse->ResponseList[3]))
+			{
+				$c = \count($oResponse->ResponseList[3]);
+				for ($i = 0; $i < $c; $i += 2) {
+					$aReturn[$oResponse->ResponseList[3][$i]] = $oResponse->ResponseList[3][$i+1];
+				}
+			}
+		}
+		return $aReturn;
 	}
 
 	public function ServerGetMetadata(array $aEntries, array $aOptions = []) : array

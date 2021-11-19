@@ -534,35 +534,30 @@ class ImapClient extends \MailSo\Net\NetClient
 		$this->SendRequest($sCmd, $aParameters);
 		$bPassthru = false;
 		if ($bPassthru) {
-			// TODO: passthru to parse response in JavaScript
-			// This will reduce CPU time on server and moves it to the client
-			// And can be used with the new JavaScript AbstractFetchRemote.streamPerLine(fCallback, sGetAdd)
-			if (\is_resource($this->ConnectionResource())) {
-				\SnappyMail\HTTP\Stream::start();
-				$sEndTag = $this->getCurrentTag();
-				$sLine = \fgets($this->ConnectionResource());
-				do {
-					echo $sLine;
-					if (0 === \strpos($sLine, $sEndTag)) {
-						break;
-					}
-					$sLine = \fgets($this->ConnectionResource());
-				} while (\strlen($sLine));
-				exit;
-			}
+			$this->streamResponse();
 		} else {
 			$aReturn = $this->getResponse()->getFoldersResult($sCmd);
 		}
 
 		// RFC 5464
 		if (!$bIsSubscribeList && $this->IsSupported('METADATA')) {
-			foreach ($aReturn as $oFolder) {
-				try {
-					foreach ($this->getMetadata($oFolder->FullNameRaw(), ['/shared', '/private'], ['DEPTH'=>'infinity']) as $key => $value) {
-						$oFolder->SetMetadata($key, $value);
+			// Dovecot supports fetching all METADATA at once
+			$aMetadata = $this->getAllMetadata();
+			if ($aMetadata) {
+				foreach ($aReturn as $oFolder) {
+					if (isset($aMetadata[$oFolder->FullNameRaw()])) {
+						$oFolder->SetAllMetadata($aMetadata[$oFolder->FullNameRaw()]);
 					}
-				} catch (\Throwable $e) {
-					// Ignore error
+				}
+			} else {
+				foreach ($aReturn as $oFolder) {
+					try {
+						$oFolder->SetAllMetadata(
+							$this->getMetadata($oFolder->FullNameRaw(), ['/shared', '/private'], ['DEPTH'=>'infinity'])
+						);
+					} catch (\Throwable $e) {
+						// Ignore error
+					}
 				}
 			}
 		}
@@ -1099,10 +1094,36 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
+	 * TODO: passthru to parse response in JavaScript
+	 * This will reduce CPU time on server and moves it to the client
+	 * And can be used with the new JavaScript AbstractFetchRemote.streamPerLine(fCallback, sGetAdd)
+	 *
 	 * @throws \MailSo\Imap\Exceptions\ResponseNotFoundException
 	 * @throws \MailSo\Imap\Exceptions\InvalidResponseException
 	 * @throws \MailSo\Imap\Exceptions\NegativeResponseException
 	 */
+	private function streamResponse(string $sEndTag = null) : void
+	{
+		try {
+			if (\is_resource($this->ConnectionResource())) {
+				\SnappyMail\HTTP\Stream::start();
+				$sEndTag = $sEndTag ?: $this->getCurrentTag();
+				$sLine = \fgets($this->ConnectionResource());
+				do {
+					echo $sLine;
+					if (0 === \strpos($sLine, $sEndTag)) {
+						break;
+					}
+					$sLine = \fgets($this->ConnectionResource());
+				} while (\strlen($sLine));
+				exit;
+			}
+		} catch (\Throwable $e) {
+			$this->writeLogException($e, \MailSo\Log\Enumerations\Type::WARNING);
+			throw $e;
+		}
+	}
+
 	private function getResponse(string $sEndTag = null) : ResponseCollection
 	{
 		try {

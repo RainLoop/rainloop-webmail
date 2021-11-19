@@ -88,24 +88,6 @@ class ResponseCollection extends \MailSo\Base\Collection
 		return $aReturn;
 	}
 
-	public function getFolderMetadataResult() : array
-	{
-		$aReturn = array();
-		foreach ($this as $oResponse) {
-			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
-				&& 4 === \count($oResponse->ResponseList)
-				&& 'METADATA' === $oResponse->ResponseList[1]
-				&& \is_array($oResponse->ResponseList[3]))
-			{
-				$c = \count($oResponse->ResponseList[3]);
-				for ($i = 0; $i < $c; $i += 2) {
-					$aReturn[$oResponse->ResponseList[3][$i]] = $oResponse->ResponseList[3][$i+1];
-				}
-			}
-		}
-		return $aReturn;
-	}
-
 	public function getFoldersResult(string $sStatus) : array
 	{
 		$aReturn = array();

@@ -113,6 +113,11 @@ class Folder
 		$this->aMetadata[$sName] = $sData;
 	}
 
+	public function SetAllMetadata(array $aMetadata) : void
+	{
+		$this->aMetadata = $aMetadata;
+	}
+
 	/**
 	 * @return mixed
 	 */
