@@ -492,6 +492,10 @@ class ImapClient extends \MailSo\Net\NetClient
 			} else {
 //				$aParameters[0] = '()';
 			}
+			// RFC 6154
+			if ($this->IsSupported('SPECIAL-USE')) {
+				$aReturnParams[] = 'SPECIAL-USE';
+			}
 		}
 
 		$aParameters[] = $this->EscapeString($sParentFolderName);
