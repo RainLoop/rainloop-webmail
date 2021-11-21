@@ -205,14 +205,12 @@ END;
 		}
 
 		if ($sFromEncoding === Enumerations\Charset::ISO_8859_1
-		 && $sToEncoding === Enumerations\Charset::UTF_8
-		 && \function_exists('utf8_encode')) {
+		 && $sToEncoding === Enumerations\Charset::UTF_8) {
 			return \utf8_encode($sInputString);
 		}
 
 		if ($sFromEncoding === Enumerations\Charset::UTF_8
-		 && $sToEncoding === Enumerations\Charset::ISO_8859_1
-		 && \function_exists('utf8_decode')) {
+		 && $sToEncoding === Enumerations\Charset::ISO_8859_1) {
 			return \utf8_decode($sInputString);
 		}
 
