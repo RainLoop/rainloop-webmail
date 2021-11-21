@@ -244,9 +244,13 @@ class ImapClient extends \MailSo\Net\NetClient
 				$this->SendRequestGetResponse('PROXYAUTH', array($this->EscapeString($sProxyAuthUser)));
 			}
 /*
-			// RFC 9051
+			// TODO: RFC 9051
 			if ($this->IsSupported('IMAP4rev2')) {
 				$this->SendRequestGetResponse('ENABLE', array('IMAP4rev1'));
+			}
+			// TODO: RFC 6855
+			if ($this->IsSupported('UTF8=ONLY')) {
+				$this->SendRequestGetResponse('ENABLE', array('UTF8=ACCEPT'));
 			}
 */
 		}
@@ -1107,13 +1111,14 @@ class ImapClient extends \MailSo\Net\NetClient
 		try {
 			if (\is_resource($this->ConnectionResource())) {
 				\SnappyMail\HTTP\Stream::start();
-				$sEndTag = $sEndTag ?: $this->getCurrentTag();
+				$sEndTag = ($sEndTag ?: $this->getCurrentTag()) . ' ';
 				$sLine = \fgets($this->ConnectionResource());
 				do {
-					echo $sLine;
-					if (0 === \strpos($sLine, $sEndTag)) {
+					if (\str_starts_with($sLine, $sEndTag)) {
+						echo 'T '.\substr($sLine, \strlen($sEndTag));
 						break;
 					}
+					echo $sLine;
 					$sLine = \fgets($this->ConnectionResource());
 				} while (\strlen($sLine));
 				exit;
