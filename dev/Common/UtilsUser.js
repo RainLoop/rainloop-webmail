@@ -200,14 +200,14 @@ folderListOptionsBuilder = (
 			folders.forEach(oItem => {
 				if (showUnsubscribed || oItem.hasSubscriptions() || !oItem.exists) {
 					aResult.push({
-						id: oItem.fullNameRaw,
+						id: oItem.fullName,
 						name:
 							sDeepPrefix.repeat(oItem.deep) +
 							fRenameCallback(oItem),
 						system: false,
 						disabled: !bNoSelectSelectable && (
 							!oItem.selectable() ||
-							aDisabled.includes(oItem.fullNameRaw) ||
+							aDisabled.includes(oItem.fullName) ||
 							fDisableCallback(oItem))
 					});
 				}

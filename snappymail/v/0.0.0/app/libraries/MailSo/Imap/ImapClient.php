@@ -66,6 +66,11 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public $__FORCE_SELECT_ON_EXAMINE__ = false;
 
+	/**
+	 * @var bool
+	 */
+	private $UTF8 = false;
+
 	function __construct()
 	{
 		\ini_set('xdebug.max_nesting_level', 500);
@@ -248,11 +253,12 @@ class ImapClient extends \MailSo\Net\NetClient
 			if ($this->IsSupported('IMAP4rev2')) {
 				$this->SendRequestGetResponse('ENABLE', array('IMAP4rev1'));
 			}
-			// TODO: RFC 6855
-			if ($this->IsSupported('UTF8=ONLY')) {
+*/
+			// RFC 6855 || RFC 5738
+			$this->UTF8 = $this->IsSupported('UTF8=ONLY') || $this->IsSupported('UTF8=ACCEPT');
+			if ($this->UTF8) {
 				$this->SendRequestGetResponse('ENABLE', array('UTF8=ACCEPT'));
 			}
-*/
 		}
 		catch (Exceptions\NegativeResponseException $oException)
 		{
@@ -377,7 +383,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function FolderCreate(string $sFolderName) : self
 	{
 		$this->SendRequestGetResponse('CREATE',
-			array($this->EscapeString($sFolderName)));
+			array($this->EscapeFolderName($sFolderName)));
 		return $this;
 	}
 
@@ -391,7 +397,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		// Uncomment will work issue #124 ?
 //		$this->selectOrExamineFolder($sFolderName, true);
 		$this->SendRequestGetResponse('DELETE',
-			array($this->EscapeString($sFolderName)));
+			array($this->EscapeFolderName($sFolderName)));
 //		$this->FolderCheck();
 //		$this->FolderUnSelect();
 		return $this;
@@ -405,7 +411,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function FolderSubscribe(string $sFolderName) : self
 	{
 		$this->SendRequestGetResponse('SUBSCRIBE',
-			array($this->EscapeString($sFolderName)));
+			array($this->EscapeFolderName($sFolderName)));
 		return $this;
 	}
 
@@ -417,7 +423,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function FolderUnSubscribe(string $sFolderName) : self
 	{
 		$this->SendRequestGetResponse('UNSUBSCRIBE',
-			array($this->EscapeString($sFolderName)));
+			array($this->EscapeFolderName($sFolderName)));
 		return $this;
 	}
 
@@ -429,8 +435,8 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function FolderRename(string $sOldFolderName, string $sNewFolderName) : self
 	{
 		$this->SendRequestGetResponse('RENAME', array(
-			$this->EscapeString($sOldFolderName),
-			$this->EscapeString($sNewFolderName)));
+			$this->EscapeFolderName($sOldFolderName),
+			$this->EscapeFolderName($sNewFolderName)));
 		return $this;
 	}
 
@@ -465,8 +471,14 @@ class ImapClient extends \MailSo\Net\NetClient
 			$bReselect = true;
 			$this->FolderUnSelect();
 		}
-		$aResult = $this->SendRequestGetResponse('STATUS', array($this->EscapeString($sFolderName), $aStatusItems))
-			->getStatusFolderInformationResult();
+
+		$oResponseCollection = $this->SendRequestGetResponse('STATUS', array($this->EscapeFolderName($sFolderName), $aStatusItems));
+		$oInfo = new FolderInformation($sFolderName, false);
+		foreach ($oResponseCollection as $oResponse) {
+			$oInfo->setStatusFromResponse($oResponse);
+		}
+		$aResult = $oInfo->getStatusItems();
+
 		if ($bReselect) {
 			$this->selectOrExamineFolder($sFolderName, $bWritable, false);
 		}
@@ -502,7 +514,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 		}
 
-		$aParameters[] = $this->EscapeString($sParentFolderName);
+		$aParameters[] = $this->EscapeFolderName($sParentFolderName);
 		$aParameters[] = $this->EscapeString(\strlen(\trim($sListPattern)) ? $sListPattern : '*');
 
 		// RFC 5819
@@ -529,7 +541,11 @@ class ImapClient extends \MailSo\Net\NetClient
 			$aReturnParams[] = 'STATUS';
 			$aReturnParams[] = $aL;
 		}
-
+/*
+		if ($this->UTF8) {
+			$aReturnParams[] = 'UTF8'; // 'UTF8ONLY';
+		}
+*/
 		if ($aReturnParams) {
 			$aParameters[] = 'RETURN';
 			$aParameters[] = $aReturnParams;
@@ -540,7 +556,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		if ($bPassthru) {
 			$this->streamResponse();
 		} else {
-			$aReturn = $this->getResponse()->getFoldersResult($sCmd);
+			$aReturn = $this->getResponse()->getFoldersResult($sCmd, $this);
 		}
 
 		// RFC 5464
@@ -549,15 +565,15 @@ class ImapClient extends \MailSo\Net\NetClient
 			$aMetadata = $this->getAllMetadata();
 			if ($aMetadata) {
 				foreach ($aReturn as $oFolder) {
-					if (isset($aMetadata[$oFolder->FullNameRaw()])) {
-						$oFolder->SetAllMetadata($aMetadata[$oFolder->FullNameRaw()]);
+					if (isset($aMetadata[$oFolder->FullName()])) {
+						$oFolder->SetAllMetadata($aMetadata[$oFolder->FullName()]);
 					}
 				}
 			} else {
 				foreach ($aReturn as $oFolder) {
 					try {
 						$oFolder->SetAllMetadata(
-							$this->getMetadata($oFolder->FullNameRaw(), ['/shared', '/private'], ['DEPTH'=>'infinity'])
+							$this->getMetadata($oFolder->FullName(), ['/shared', '/private'], ['DEPTH'=>'infinity'])
 						);
 					} catch (\Throwable $e) {
 						// Ignore error
@@ -602,7 +618,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function FolderHierarchyDelimiter(string $sFolderName = '') : ?string
 	{
-		$oResponse = $this->SendRequestGetResponse('LIST', ['""', $this->EscapeString($sFolderName)]);
+		$oResponse = $this->SendRequestGetResponse('LIST', ['""', $this->EscapeFolderName($sFolderName)]);
 		return ('LIST' === $oResponse[0]->ResponseList[1]) ? $oResponse[0]->ResponseList[3] : null;
 	}
 
@@ -628,18 +644,57 @@ class ImapClient extends \MailSo\Net\NetClient
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
-		$aParams = array($this->EscapeString($sFolderName));
+		$aSelectParams = array();
 /*
 		if ($this->IsSupported('CONDSTORE')) {
-			$aParams[] = ['CONDSTORE'];
+			$aSelectParams[] = 'CONDSTORE';
+		}
+		if ($this->UTF8) {
+			$aSelectParams[] = 'UTF8';
 		}
 */
+
+		$aParams = array(
+			$this->EscapeFolderName($sFolderName)
+		);
+		if ($aSelectParams) {
+			$aParams[] = $aSelectParams;
+		}
+
 		/**
 		 * IMAP4rev2 SELECT/EXAMINE are now required to return an untagged LIST response.
 		 */
-		$this->oCurrentFolderInfo = $this->SendRequestGetResponse($bIsWritable ? 'SELECT' : 'EXAMINE',
-			$aParams)
-			->getCurrentFolderInformation($sFolderName, $bIsWritable);
+		$oResponseCollection = $this->SendRequestGetResponse($bIsWritable ? 'SELECT' : 'EXAMINE', $aParams);
+		$oResult = new FolderInformation($sFolderName, $bIsWritable);
+		foreach ($oResponseCollection as $oResponse) {
+			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType) {
+				if (!$oResult->setStatusFromResponse($oResponse)) {
+					// OK untagged responses
+					if (\is_array($oResponse->OptionalResponse)) {
+						$key = $oResponse->OptionalResponse[0];
+						if (\count($oResponse->OptionalResponse) > 1) {
+							if ('PERMANENTFLAGS' === $key && \is_array($oResponse->OptionalResponse[1])) {
+								$oResult->PermanentFlags = $oResponse->OptionalResponse[1];
+							}
+						} else if ('READ-ONLY' === $key) {
+//							$oResult->IsWritable = false;
+						} else if ('READ-WRITE' === $key) {
+//							$oResult->IsWritable = true;
+						} else if ('NOMODSEQ' === $key) {
+							// https://datatracker.ietf.org/doc/html/rfc4551#section-3.1.2
+						}
+					}
+
+					// untagged responses
+					else if (\count($oResponse->ResponseList) > 2
+					 && 'FLAGS' === $oResponse->ResponseList[1]
+					 && \is_array($oResponse->ResponseList[2])) {
+						$oResult->Flags = $oResponse->ResponseList[2];
+					}
+				}
+			}
+		}
+		$this->oCurrentFolderInfo = $oResult;
 
 		return $this;
 	}
@@ -885,7 +940,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 
 		$this->SendRequestGetResponse($bIndexIsUid ? 'UID COPY' : 'COPY',
-			array($sIndexRange, $this->EscapeString($sToFolder)));
+			array($sIndexRange, $this->EscapeFolderName($sToFolder)));
 		return $this;
 	}
 
@@ -911,7 +966,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 
 		$this->SendRequestGetResponse($bIndexIsUid ? 'UID MOVE' : 'MOVE',
-			array($sIndexRange, $this->EscapeString($sToFolder)));
+			array($sIndexRange, $this->EscapeFolderName($sToFolder)));
 		return $this;
 	}
 
@@ -972,7 +1027,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function MessageAppendStream(string $sFolderName, $rMessageAppendStream, int $iStreamSize, array $aAppendFlags = null, int &$iUid = null, int $iDateTime = 0) : self
 	{
-		$aData = array($this->EscapeString($sFolderName), $aAppendFlags);
+		$aData = array($this->EscapeFolderName($sFolderName), $aAppendFlags);
 		if (0 < $iDateTime)
 		{
 			$aData[] = $this->EscapeString(\gmdate('d-M-Y H:i:s', $iDateTime).' +0000');
@@ -1237,6 +1292,16 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 		}
 		return 'UNKNOWN';
+	}
+
+	public function EscapeFolderName(string $sFolderName) : string
+	{
+		return $this->EscapeString($this->UTF8 ? $sFolderName : \MailSo\Base\Utils::Utf8ToUtf7Modified($sFolderName));
+	}
+
+	public function toUTF8(string $sText) : string
+	{
+		return $this->UTF8 ? $sText : \MailSo\Base\Utils::Utf7ModifiedToUtf8($sText);
 	}
 
 }

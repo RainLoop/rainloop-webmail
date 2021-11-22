@@ -57,7 +57,7 @@ class FolderCollection extends \MailSo\Base\Collection
 		$mResult = null;
 		foreach ($this as $oFolder)
 		{
-			if ($oFolder->FullNameRaw() === $sFullNameRaw)
+			if ($oFolder->FullName() === $sFullNameRaw)
 			{
 				$mResult = $oFolder;
 				break;
@@ -119,7 +119,7 @@ class FolderCollection extends \MailSo\Base\Collection
 	{
 		foreach ($this as $oItemFolder)
 		{
-			if (0 === \strpos($oMailFolder->FullNameRaw(), $oItemFolder->FullNameRaw().$oItemFolder->Delimiter()))
+			if (0 === \strpos($oMailFolder->FullName(), $oItemFolder->FullName().$oItemFolder->Delimiter()))
 			{
 				$oItemFolder->SubFolders(true)->AddWithPositionSearch($oMailFolder);
 				return;

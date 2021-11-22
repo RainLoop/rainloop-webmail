@@ -299,8 +299,8 @@ class AppUser extends AbstractApp {
 				}
 			]);
 		} else if (oMoveFolder) {
-			this.messagesMoveHelper(sFromFolderFullNameRaw, oMoveFolder.fullNameRaw, aUidForRemove);
-			MessageUserStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, oMoveFolder.fullNameRaw);
+			this.messagesMoveHelper(sFromFolderFullNameRaw, oMoveFolder.fullName, aUidForRemove);
+			MessageUserStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, oMoveFolder.fullName);
 		}
 	}
 
@@ -317,12 +317,12 @@ class AppUser extends AbstractApp {
 
 			if (oFromFolder && oToFolder) {
 				if (undefined === bCopy ? false : !!bCopy) {
-					this.messagesCopyHelper(oFromFolder.fullNameRaw, oToFolder.fullNameRaw, aUidForMove);
+					this.messagesCopyHelper(oFromFolder.fullName, oToFolder.fullName, aUidForMove);
 				} else {
-					this.messagesMoveHelper(oFromFolder.fullNameRaw, oToFolder.fullNameRaw, aUidForMove);
+					this.messagesMoveHelper(oFromFolder.fullName, oToFolder.fullName, aUidForMove);
 				}
 
-				MessageUserStore.removeMessagesFromList(oFromFolder.fullNameRaw, aUidForMove, oToFolder.fullNameRaw, bCopy);
+				MessageUserStore.removeMessagesFromList(oFromFolder.fullName, aUidForMove, oToFolder.fullName, bCopy);
 				return true;
 			}
 		}
@@ -487,12 +487,12 @@ class AppUser extends AbstractApp {
 							folderFromCache.messageCountUnread(result.MessageUnseenCount);
 
 							if (unreadCountChange) {
-								MessageFlagsCache.clearFolder(folderFromCache.fullNameRaw);
+								MessageFlagsCache.clearFolder(folderFromCache.fullName);
 							}
 
 							if (result.Flags.length) {
 								result.Flags.forEach(flags =>
-									MessageFlagsCache.storeByFolderAndUid(folderFromCache.fullNameRaw, flags.Uid.toString(), [
+									MessageFlagsCache.storeByFolderAndUid(folderFromCache.fullName, flags.Uid.toString(), [
 										!!flags.IsUnseen,
 										!!flags.IsFlagged,
 										!!flags.IsAnswered,
@@ -505,15 +505,15 @@ class AppUser extends AbstractApp {
 							}
 
 							MessageUserStore.initUidNextAndNewMessages(
-								folderFromCache.fullNameRaw,
+								folderFromCache.fullName,
 								result.UidNext,
 								result.NewMessages
 							);
 
 							if (!hash || unreadCountChange || result.Hash !== hash) {
-								if (folderFromCache.fullNameRaw === FolderUserStore.currentFolderFullNameRaw()) {
+								if (folderFromCache.fullName === FolderUserStore.currentFolderFullNameRaw()) {
 									this.reloadMessageList();
-								} else if (getFolderInboxName() === folderFromCache.fullNameRaw) {
+								} else if (getFolderInboxName() === folderFromCache.fullName) {
 									Remote.messageList(null, {Folder: getFolderInboxName()}, true);
 								}
 							}
@@ -551,17 +551,17 @@ class AppUser extends AbstractApp {
 							folder.messageCountUnread(item.MessageUnseenCount);
 
 							if (unreadCountChange) {
-								MessageFlagsCache.clearFolder(folder.fullNameRaw);
+								MessageFlagsCache.clearFolder(folder.fullName);
 							}
 
 							if (!hash || item.Hash !== hash) {
-								if (folder.fullNameRaw === FolderUserStore.currentFolderFullNameRaw()) {
+								if (folder.fullName === FolderUserStore.currentFolderFullNameRaw()) {
 									this.reloadMessageList();
 								}
 							} else if (unreadCountChange
-							 && folder.fullNameRaw === FolderUserStore.currentFolderFullNameRaw()
+							 && folder.fullName === FolderUserStore.currentFolderFullNameRaw()
 							 && MessageUserStore.list.length) {
-								this.folderInformation(folder.fullNameRaw, MessageUserStore.list());
+								this.folderInformation(folder.fullName, MessageUserStore.list());
 							}
 						}
 					});

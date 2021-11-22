@@ -21,16 +21,6 @@ use MailSo\Imap\Enumerations\MetadataKeys;
 class Folder implements \JsonSerializable
 {
 	/**
-	 * @var string
-	 */
-	private $sParentFullNameRaw;
-
-	/**
-	 * @var int
-	 */
-	private $iNestingLevel;
-
-	/**
 	 * @var bool
 	 */
 	private $bExists;
@@ -48,7 +38,7 @@ class Folder implements \JsonSerializable
 	/**
 	 * @var \MailSo\Mail\FolderCollection
 	 */
-	private $oSubFolders;
+	private $oSubFolders = null;
 
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
@@ -56,18 +46,6 @@ class Folder implements \JsonSerializable
 	function __construct(\MailSo\Imap\Folder $oImapFolder, bool $bSubscribed = true, bool $bExists = true)
 	{
 		$this->oImapFolder = $oImapFolder;
-		$this->oSubFolders = null;
-
-		$aNames = \explode($this->oImapFolder->Delimiter(), $this->oImapFolder->FullNameRaw());
-		$this->iNestingLevel = \count($aNames);
-
-		$this->sParentFullNameRaw = '';
-		if (1 < $this->iNestingLevel)
-		{
-			\array_pop($aNames);
-			$this->sParentFullNameRaw = \implode($this->oImapFolder->Delimiter(), $aNames);
-		}
-
 		$this->bSubscribed = $bSubscribed || \in_array('\\subscribed', $oImapFolder->FlagsLowerCase());
 		$this->bExists = $bExists;
 	}
@@ -84,38 +62,17 @@ class Folder implements \JsonSerializable
 
 	public function Name() : string
 	{
-		return \MailSo\Base\Utils::ConvertEncoding($this->NameRaw(),
-			\MailSo\Base\Enumerations\Charset::UTF_7_IMAP,
-			\MailSo\Base\Enumerations\Charset::UTF_8);
+		return $this->oImapFolder->Name();
 	}
 
 	public function FullName() : string
 	{
-		return \MailSo\Base\Utils::ConvertEncoding($this->FullNameRaw(),
-			\MailSo\Base\Enumerations\Charset::UTF_7_IMAP,
-			\MailSo\Base\Enumerations\Charset::UTF_8);
+		return $this->oImapFolder->FullName();
 	}
 
 	public function NameRaw() : string
 	{
 		return $this->oImapFolder->NameRaw();
-	}
-
-	public function FullNameRaw() : string
-	{
-		return $this->oImapFolder->FullNameRaw();
-	}
-
-	public function ParentFullName() : string
-	{
-		return \MailSo\Base\Utils::ConvertEncoding($this->sParentFullNameRaw,
-			\MailSo\Base\Enumerations\Charset::UTF_7_IMAP,
-			\MailSo\Base\Enumerations\Charset::UTF_8);
-	}
-
-	public function ParentFullNameRaw() : string
-	{
-		return $this->sParentFullNameRaw;
 	}
 
 	public function Delimiter() : string
@@ -188,7 +145,7 @@ class Folder implements \JsonSerializable
 
 		switch (true)
 		{
-			case \in_array('\\inbox', $aFlags) || 'INBOX' === \strtoupper($this->FullNameRaw()):
+			case \in_array('\\inbox', $aFlags) || 'INBOX' === \strtoupper($this->FullName()):
 				return FolderType::INBOX;
 
 			case \in_array('\\sent', $aFlags):
@@ -221,7 +178,7 @@ class Folder implements \JsonSerializable
 				return FolderType::ALL;
 
 			// TODO
-//			case 'Templates' === $this->FullNameRaw():
+//			case 'Templates' === $this->FullName():
 //				return FolderType::TEMPLATES;
 		}
 
@@ -287,7 +244,7 @@ class Folder implements \JsonSerializable
 				'MessageUnseenCount' => (int) $aStatus['UNSEEN'],
 				'UidNext' => (int) $aStatus['UIDNEXT'],
 //				'Hash' => $this->MailClient()->GenerateFolderHash(
-//					$this->FullNameRaw(), $aStatus['MESSAGES'], $aStatus['UIDNEXT'],
+//					$this->FullName(), $aStatus['MESSAGES'], $aStatus['UIDNEXT'],
 //						empty($aStatus['HIGHESTMODSEQ']) ? 0 : $aStatus['HIGHESTMODSEQ'])
 			);
 		}
@@ -296,7 +253,6 @@ class Folder implements \JsonSerializable
 			'@Object' => 'Object/Folder',
 			'Name' => $this->Name(),
 			'FullName' => $this->FullName(),
-			'FullNameRaw' => $this->FullNameRaw(),
 			'Delimiter' => (string) $this->Delimiter(),
 //			'HasVisibleSubFolders' => $this->HasVisibleSubFolders(),
 			'Subscribed' => $this->bSubscribed,

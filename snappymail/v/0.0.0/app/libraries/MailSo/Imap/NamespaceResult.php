@@ -20,42 +20,32 @@ class NamespaceResult
 	/**
 	 * @var string
 	 */
-	private $sPersonal;
+	private $sPersonal = '';
 
 	/**
 	 * @var string
 	 */
-	private $sPersonalDelimiter;
+	private $sPersonalDelimiter = '';
 
 	/**
 	 * @var string
 	 */
-	private $sOtherUser;
+	private $sOtherUser = '';
 
 	/**
 	 * @var string
 	 */
-	private $sOtherUserDelimiter;
+	private $sOtherUserDelimiter = '';
 
 	/**
 	 * @var string
 	 */
-	private $sShared;
+	private $sShared = '';
 
 	/**
 	 * @var string
 	 */
-	private $sSharedDelimiter;
-
-	function __construct()
-	{
-		$this->sPersonal = '';
-		$this->sPersonalDelimiter = '';
-		$this->sOtherUser = '';
-		$this->sOtherUserDelimiter = '';
-		$this->sShared = '';
-		$this->sSharedDelimiter = '';
-	}
+	private $sSharedDelimiter = '';
 
 	public function InitByImapResponse(\MailSo\Imap\Response $oImapResponse) : self
 	{
@@ -103,8 +93,4 @@ class NamespaceResult
 		return $this->sPersonal;
 	}
 
-	public function GetPersonalNamespaceDelimiter() : string
-	{
-		return $this->sPersonalDelimiter;
-	}
 }

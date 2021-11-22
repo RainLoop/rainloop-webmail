@@ -30,7 +30,7 @@ class FolderCreatePopupView extends AbstractViewPopup {
 				oItem =>
 					oItem ? (oItem.isSystemFolder() ? oItem.name() + ' ' + oItem.manageFolderSystemName() : oItem.name()) : '',
 				FolderUserStore.namespace
-					? item => FolderUserStore.namespace !== item.fullNameRaw.substr(0, FolderUserStore.namespace.length)
+					? item => FolderUserStore.namespace !== item.fullName.substr(0, FolderUserStore.namespace.length)
 					: null,
 				true
 			)

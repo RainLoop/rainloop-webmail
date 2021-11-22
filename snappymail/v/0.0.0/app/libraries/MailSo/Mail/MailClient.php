@@ -1219,7 +1219,7 @@ class MailClient
 				$aImapSubscribedFoldersHelper = array();
 				foreach ($aSubscribedFolders as /* @var $oImapFolder \MailSo\Imap\Folder */ $oImapFolder)
 				{
-					$aImapSubscribedFoldersHelper[] = $oImapFolder->FullNameRaw();
+					$aImapSubscribedFoldersHelper[] = $oImapFolder->FullName();
 				}
 			}
 			catch (\Throwable $oException)
@@ -1253,13 +1253,13 @@ class MailClient
 		foreach ($aFolders as /* @var $oImapFolder \MailSo\Imap\Folder */ $oImapFolder)
 		{
 			$oMailFolder = new Folder($oImapFolder,
-				($bUseListSubscribeStatus && (null === $aImapSubscribedFoldersHelper || \in_array($oImapFolder->FullNameRaw(), $aImapSubscribedFoldersHelper)))
+				($bUseListSubscribeStatus && (null === $aImapSubscribedFoldersHelper || \in_array($oImapFolder->FullName(), $aImapSubscribedFoldersHelper)))
 				|| $oImapFolder->IsInbox()
 			);
 			if ($oImapFolder->IsInbox()) {
-				$sINBOX = $oMailFolder->FullNameRaw();
+				$sINBOX = $oMailFolder->FullName();
 			}
-			$aSortedByLenImapFolders[$oMailFolder->FullNameRaw()] = $oMailFolder;
+			$aSortedByLenImapFolders[$oMailFolder->FullName()] = $oMailFolder;
 		}
 
 		// Add NonExistent folders
@@ -1267,7 +1267,7 @@ class MailClient
 		foreach ($aSortedByLenImapFolders as /* @var $oMailFolder Folder */ $oMailFolder)
 		{
 			$sDelimiter = $oMailFolder->Delimiter();
-			$aFolderExplode = \explode($sDelimiter, $oMailFolder->FullNameRaw());
+			$aFolderExplode = \explode($sDelimiter, $oMailFolder->FullName());
 
 			if (1 < \count($aFolderExplode))
 			{
@@ -1418,7 +1418,7 @@ class MailClient
 			$aSubscribeFolders = $this->oImapClient->FolderSubscribeList($sPrevFolderFullNameRaw, '*');
 			foreach ($aSubscribeFolders as /* @var $oFolder \MailSo\Imap\Folder */ $oFolder)
 			{
-				$this->oImapClient->FolderUnSubscribe($oFolder->FullNameRaw());
+				$this->oImapClient->FolderUnSubscribe($oFolder->FullName());
 			}
 		}
 
@@ -1442,7 +1442,7 @@ class MailClient
 
 		foreach ($aSubscribeFolders as /* @var $oFolder \MailSo\Imap\Folder */ $oFolder)
 		{
-			$sFolderFullNameRawForResubscrine = $oFolder->FullNameRaw();
+			$sFolderFullNameRawForResubscrine = $oFolder->FullName();
 			if (0 === \strpos($sFolderFullNameRawForResubscrine, $sPrevFolderFullNameRaw))
 			{
 				$sNewFolderFullNameRawForResubscrine = $sNewFolderFullNameRaw.

@@ -460,7 +460,7 @@ trait Folders
 		{
 			foreach ($oFolders as $oFolder)
 			{
-				$aResult[] = $oFolder->FullNameRaw()."|".
+				$aResult[] = $oFolder->FullName()."|".
 					implode("|", $oFolder->FlagsLowerCase()).($oFolder->IsSubscribed() ? '1' : '0');
 
 				$oSub = $oFolder->SubFolders();
@@ -492,7 +492,7 @@ trait Folders
 						FolderType::ARCHIVE
 					)))
 					{
-						$aResult[$iFolderType] = $oFolder->FullNameRaw();
+						$aResult[$iFolderType] = $oFolder->FullName();
 					}
 				}
 
@@ -524,7 +524,7 @@ trait Folders
 						FolderType::ARCHIVE
 					)))
 					{
-						$aResult[$iFolderType] = $oFolder->FullNameRaw();
+						$aResult[$iFolderType] = $oFolder->FullName();
 					}
 				}
 			}

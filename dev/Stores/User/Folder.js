@@ -58,7 +58,7 @@ export const FolderUserStore = new class {
 
 			draftFolderNotEnabled: () => !self.draftFolder() || UNUSED_OPTION_VALUE === self.draftFolder(),
 
-			currentFolderFullNameRaw: () => (self.currentFolder() ? self.currentFolder().fullNameRaw : ''),
+			currentFolderFullNameRaw: () => (self.currentFolder() ? self.currentFolder().fullName : ''),
 
 			currentFolderFullName: () => (self.currentFolder() ? self.currentFolder().fullName : ''),
 			currentFolderFullNameHash: () => (self.currentFolder() ? self.currentFolder().fullNameHash : ''),
@@ -136,7 +136,7 @@ export const FolderUserStore = new class {
 						timeout > folder.expires &&
 						(folder.isSystemFolder() || (folder.subscribed() && (folder.checkable() || !bDisplaySpecSetting)))
 					) {
-						timeouts.push([folder.expires, folder.fullNameRaw]);
+						timeouts.push([folder.expires, folder.fullName]);
 					}
 
 					if (folder && folder.subFolders.length) {

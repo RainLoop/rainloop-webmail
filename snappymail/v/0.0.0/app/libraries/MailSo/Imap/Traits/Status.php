@@ -112,10 +112,10 @@ trait Status
 	 * EXAMINE https://datatracker.ietf.org/doc/html/rfc3501#section-6.3.2
 	 * STATUS  https://datatracker.ietf.org/doc/html/rfc3501#section-6.3.10
 	 *
-	 * getCurrentFolderInformation
+	 * selectOrExamineFolder
 	 *        ResponseList[2] => EXISTS | RECENT
 	 *        OptionalResponse[0] => UNSEEN
-	 * getStatusFolderInformationResult
+	 * FolderStatus
 	 *        OptionalResponse[0] => HIGHESTMODSEQ
 	 *        ResponseList[1] => STATUS
 	 * getFoldersResult LIST-EXTENDED

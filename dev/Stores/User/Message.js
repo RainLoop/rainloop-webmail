@@ -308,7 +308,7 @@ export const MessageUserStore = new class {
 		}
 
 		if (toFolder) {
-			if (trashFolder === toFolder.fullNameRaw || spamFolder === toFolder.fullNameRaw) {
+			if (trashFolder === toFolder.fullName || spamFolder === toFolder.fullName) {
 				unseenCount = 0;
 			}
 
@@ -661,13 +661,13 @@ export const MessageUserStore = new class {
 				if (null != collection.MessageUnseenCount) {
 					if (pInt(folder.messageCountUnread()) !== pInt(collection.MessageUnseenCount)) {
 						unreadCountChange = true;
-						MessageFlagsCache.clearFolder(folder.fullNameRaw);
+						MessageFlagsCache.clearFolder(folder.fullName);
 					}
 
 					folder.messageCountUnread(collection.MessageUnseenCount);
 				}
 
-				this.initUidNextAndNewMessages(folder.fullNameRaw, collection.UidNext, collection.NewMessages);
+				this.initUidNextAndNewMessages(folder.fullName, collection.UidNext, collection.NewMessages);
 			}
 
 			this.listCount(iCount);
@@ -688,7 +688,7 @@ export const MessageUserStore = new class {
 			clearNewMessageCache();
 
 			if (folder && (cached || unreadCountChange || SettingsUserStore.useThreads())) {
-				rl.app.folderInformation(folder.fullNameRaw, collection);
+				rl.app.folderInformation(folder.fullName, collection);
 			}
 		} else {
 			this.listCount(0);

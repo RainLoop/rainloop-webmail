@@ -73,11 +73,11 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 			Local.set(ClientSideKeyName.FoldersLashHash, '');
 
 			rl.app.foldersPromisesActionHelper(
-				Remote.folderRename(folder.fullNameRaw, nameToEdit),
+				Remote.folderRename(folder.fullName, nameToEdit),
 				Notification.CantRenameFolder
 			);
 
-			removeFolderFromCacheList(folder.fullNameRaw);
+			removeFolderFromCacheList(folder.fullName);
 
 			folder.name(nameToEdit);
 		}
@@ -120,11 +120,11 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 
 				// rl.app.foldersPromisesActionHelper
 				Remote.abort('Folders')
-					.folderDelete(folderToRemove.fullNameRaw)
+					.folderDelete(folderToRemove.fullName)
 					.then(
 						() => {
 							folderToRemove.selectable(false)
-							removeFolderFromCacheList(folderToRemove.fullNameRaw);
+							removeFolderFromCacheList(folderToRemove.fullName);
 							FolderUserStore.folderList(FolderUserStore.folderList.filter(folder => folder !== folderToRemove));
 						},
 						error => {
@@ -143,20 +143,20 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 	toggleFolderKolabType(folder, event) {
 		let type = event.target.value;
 		// TODO: append '.default' ?
-		Remote.folderSetMetadata(null, folder.fullNameRaw, FolderMetadataKeys.KolabFolderType, type);
+		Remote.folderSetMetadata(null, folder.fullName, FolderMetadataKeys.KolabFolderType, type);
 		folder.kolabType(type);
 	}
 
 	toggleFolderSubscription(folder) {
 		let subscribe = !folder.subscribed();
 		Local.set(ClientSideKeyName.FoldersLashHash, '');
-		Remote.folderSetSubscribe(null, folder.fullNameRaw, subscribe);
+		Remote.folderSetSubscribe(null, folder.fullName, subscribe);
 		folder.subscribed(subscribe);
 	}
 
 	toggleFolderCheckable(folder) {
 		let checkable = !folder.checkable();
-		Remote.folderSetCheckable(null, folder.fullNameRaw, checkable);
+		Remote.folderSetCheckable(null, folder.fullName, checkable);
 		folder.checkable(checkable);
 	}
 }

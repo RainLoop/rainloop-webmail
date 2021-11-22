@@ -373,7 +373,7 @@ trait Response
 					'MessageUnseenCount' => (int) $aStatus['UNSEEN'],
 					'UidNext' => (int) $aStatus['UIDNEXT'],
 					'Hash' => $this->MailClient()->GenerateFolderHash(
-						$mResponse->FullNameRaw(), $aStatus['MESSAGES'], $aStatus['UIDNEXT'],
+						$mResponse->FullName(), $aStatus['MESSAGES'], $aStatus['UIDNEXT'],
 							empty($aStatus['HIGHESTMODSEQ']) ? 0 : $aStatus['HIGHESTMODSEQ'])
 				);
 			}
@@ -394,8 +394,8 @@ trait Response
 			return \array_merge(
 				$mResponse->jsonSerialize(),
 				array(
-					'FullNameHash' => $this->hashFolderFullName($mResponse->FullNameRaw(), $mResponse->FullName()),
-					'Checkable' => \in_array($mResponse->FullNameRaw(), $this->aCheckableFolder),
+					'FullNameHash' => $this->hashFolderFullName($mResponse->FullName(), $mResponse->FullName()),
+					'Checkable' => \in_array($mResponse->FullName(), $this->aCheckableFolder),
 					'Extended' => $aExtended,
 					'SubFolders' => $this->responseObject($mResponse->SubFolders(), $sParent, $aParameters)
 				)

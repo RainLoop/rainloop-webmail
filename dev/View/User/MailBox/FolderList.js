@@ -88,7 +88,7 @@ export class MailFolderList extends AbstractViewLeft {
 						rl.app.moveMessagesToFolder(
 							FolderUserStore.currentFolderFullNameRaw(),
 							MessageUserStore.listCheckedOrSelectedUidsWithSubMails(),
-							folder.fullNameRaw,
+							folder.fullName,
 							event.ctrlKey
 						);
 					} else {
@@ -96,8 +96,8 @@ export class MailFolderList extends AbstractViewLeft {
 							MessageUserStore.message(null);
 						}
 
-						if (folder.fullNameRaw === FolderUserStore.currentFolderFullNameRaw()) {
-							setFolderHash(folder.fullNameRaw, '');
+						if (folder.fullName === FolderUserStore.currentFolderFullNameRaw()) {
+							setFolderHash(folder.fullName, '');
 						}
 
 						rl.route.setHash(

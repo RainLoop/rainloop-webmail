@@ -29,7 +29,7 @@ trait Quota
 	public function Quota(string $sRootName = '') : ?array
 	{
 		return $this->IsSupported('QUOTA')
-			? $this->SendRequestGetResponse("GETQUOTA {$this->EscapeString($sRootName)}")->getQuotaResult()
+			? $this->getQuotaResult($this->SendRequestGetResponse("GETQUOTA {$this->EscapeFolderName($sRootName)}"))
 			: null;
 	}
 
@@ -42,7 +42,45 @@ trait Quota
 	public function QuotaRoot(string $sFolderName = 'INBOX') : ?array
 	{
 		return $this->IsSupported('QUOTA')
-			? $this->SendRequestGetResponse("GETQUOTAROOT {$this->EscapeString($sFolderName)}")->getQuotaResult()
+			? $this->getQuotaResult($this->SendRequestGetResponse("GETQUOTAROOT {$this->EscapeFolderName($sFolderName)}"))
 			: null;
 	}
+
+	private function getQuotaResult(\MailSo\Imap\ResponseCollection $oResponseCollection) : array
+	{
+		$aReturn = array(0, 0);
+		foreach ($oResponseCollection as $oResponse) {
+			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
+				&& 'QUOTA' === $oResponse->StatusOrIndex
+				&& \is_array($oResponse->ResponseList)
+				&& isset($oResponse->ResponseList[3])
+				&& \is_array($oResponse->ResponseList[3])
+				&& 2 < \count($oResponse->ResponseList[3])
+				&& 'STORAGE' === \strtoupper($oResponse->ResponseList[3][0])
+				&& \is_numeric($oResponse->ResponseList[3][1])
+				&& \is_numeric($oResponse->ResponseList[3][2])
+			)
+			{
+				$aReturn = array(
+					(int) $oResponse->ResponseList[3][1],
+					(int) $oResponse->ResponseList[3][2],
+					0,
+					0
+				);
+
+				if (5 < \count($oResponse->ResponseList[3])
+					&& 'MESSAGE' === \strtoupper($oResponse->ResponseList[3][3])
+					&& \is_numeric($oResponse->ResponseList[3][4])
+					&& \is_numeric($oResponse->ResponseList[3][5])
+				)
+				{
+					$aReturn[2] = (int) $oResponse->ResponseList[3][4];
+					$aReturn[3] = (int) $oResponse->ResponseList[3][5];
+				}
+			}
+		}
+
+		return $aReturn;
+	}
+
 }

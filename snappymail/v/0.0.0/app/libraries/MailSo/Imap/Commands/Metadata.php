@@ -45,7 +45,7 @@ trait Metadata
 					for ($i = 0; $i < $c; $i += 2) {
 						$aMetadata[$oResponse->ResponseList[3][$i]] = $oResponse->ResponseList[3][$i+1];
 					}
-					$aReturn[$oResponse->ResponseList[2]] = $aMetadata;
+					$aReturn[$this->toUTF8($oResponse->ResponseList[2])] = $aMetadata;
 				}
 			}
 		} catch (\Throwable $e) {
@@ -75,7 +75,7 @@ trait Metadata
 			}
 		}
 
-		$arguments[] = $this->EscapeString($sFolderName);
+		$arguments[] = $this->EscapeFolderName($sFolderName);
 
 		$arguments[] = '(' . \implode(' ', \array_map([$this, 'EscapeString'], $aEntries)) . ')';
 
@@ -118,7 +118,7 @@ trait Metadata
 				throw new \MailSo\Base\Exceptions\InvalidArgumentException("Wrong argument for SETMETADATA command");
 			}
 
-			$arguments = [$this->EscapeString($sFolderName)];
+			$arguments = [$this->EscapeFolderName($sFolderName)];
 
 			\array_walk($aEntries, function(&$v, $k){
 				$v = $this->EscapeString($k) . ' ' . $this->EscapeString($v);

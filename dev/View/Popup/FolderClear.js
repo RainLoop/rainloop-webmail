@@ -52,7 +52,7 @@ class FolderClearPopupView extends AbstractViewPopup {
 			folderToClear.messageCountAll(0);
 			folderToClear.messageCountUnread(0);
 
-			setFolderHash(folderToClear.fullNameRaw, '');
+			setFolderHash(folderToClear.fullName, '');
 
 			Remote.folderClear(iError => {
 				this.clearingProcess(false);
@@ -62,7 +62,7 @@ class FolderClearPopupView extends AbstractViewPopup {
 					rl.app.reloadMessageList(true);
 					this.cancelCommand();
 				}
-			}, folderToClear.fullNameRaw);
+			}, folderToClear.fullName);
 		}
 	}
 

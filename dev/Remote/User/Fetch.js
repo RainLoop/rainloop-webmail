@@ -19,10 +19,19 @@ import { AbstractFetchRemote } from 'Remote/AbstractFetch';
 
 import { FolderCollectionModel } from 'Model/FolderCollection';
 
-const urlSafeJSON = data => btoa(JSON.stringify(data))
+// unescape(encodeURIComponent()) makes the UTF-16 DOMString to an UTF-8 string
+const urlSafeJSON = data => btoa(unescape(encodeURIComponent(JSON.stringify(data))))
 	.replace(/\+/g, '-')
 	.replace(/\//g, '_')
 	.replace(/=+$/, '');
+/* Withous deprecated 'unescape':
+const urlSafeJSON = data => btoa(encodeURIComponent(JSON.stringify(data)).replace(
+		/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)
+    ))
+	.replace(/\+/g, '-')
+	.replace(/\//g, '_')
+	.replace(/=+$/, '');
+*/
 
 class RemoteUserFetch extends AbstractFetchRemote {
 

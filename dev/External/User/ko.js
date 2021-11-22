@@ -145,7 +145,7 @@ ko.bindingHandlers.dropmessages = {
 			if ('messages' === getDragAction(e) && ['move','copy'].includes(e.dataTransfer.effectAllowed)) {
 				let data = dragData.data;
 				if (folder && data && data.folder && isArray(data.uids)) {
-					rl.app.moveMessagesToFolder(data.folder, data.uids, folder.fullNameRaw, data.copy && e.ctrlKey);
+					rl.app.moveMessagesToFolder(data.folder, data.uids, folder.fullName, data.copy && e.ctrlKey);
 				}
 			}
 		});

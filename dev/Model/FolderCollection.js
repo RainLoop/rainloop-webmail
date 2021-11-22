@@ -69,7 +69,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		}
 
 		return super.reviveFromJson(object, oFolder => {
-			let oCacheFolder = Cache.getFolderFromCacheList(oFolder.FullNameRaw);
+			let oCacheFolder = Cache.getFolderFromCacheList(oFolder.FullName);
 
 			if (oCacheFolder) {
 				oFolder.SubFolders = FolderCollectionModel.reviveFromJson(oFolder.SubFolders);
@@ -79,14 +79,14 @@ export class FolderCollectionModel extends AbstractCollectionModel
 				if (!oCacheFolder)
 					return null;
 
-				if (1 == SystemFolders.indexOf(oFolder.FullNameRaw)) {
+				if (1 == SystemFolders.indexOf(oFolder.FullName)) {
 					oCacheFolder.type(FolderType.Inbox);
-					Cache.setFolderInboxName(oFolder.FullNameRaw);
+					Cache.setFolderInboxName(oFolder.FullName);
 				}
-				Cache.setFolder(oCacheFolder.fullNameHash, oFolder.FullNameRaw, oCacheFolder);
+				Cache.setFolder(oCacheFolder.fullNameHash, oFolder.FullName, oCacheFolder);
 			}
 
-			let type = SystemFolders.indexOf(oFolder.FullNameRaw);
+			let type = SystemFolders.indexOf(oFolder.FullName);
 			if (1 < type) {
 				oCacheFolder.type(type);
 			}
@@ -97,7 +97,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 
 			if (oFolder.Extended) {
 				if (oFolder.Extended.Hash) {
-					Cache.setFolderHash(oCacheFolder.fullNameRaw, oFolder.Extended.Hash);
+					Cache.setFolderHash(oCacheFolder.fullName, oFolder.Extended.Hash);
 				}
 
 				if (null != oFolder.Extended.MessageCount) {
@@ -196,7 +196,6 @@ export class FolderModel extends AbstractModel {
 		super();
 
 		this.fullName = '';
-		this.fullNameRaw = '';
 		this.fullNameHash = '';
 		this.delimiter = '';
 		this.namespace = '';
@@ -244,7 +243,7 @@ export class FolderModel extends AbstractModel {
 	static reviveFromJson(json) {
 		const folder = super.reviveFromJson(json);
 		if (folder) {
-			folder.deep = json.FullNameRaw.split(folder.delimiter).length - 1;
+			folder.deep = json.FullName.split(folder.delimiter).length - 1;
 
 			let type = (folder.metadata[FolderMetadataKeys.KolabFolderType]
 				|| folder.metadata[FolderMetadataKeys.KolabFolderTypeShared]

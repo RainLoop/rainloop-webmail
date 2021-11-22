@@ -88,7 +88,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 		return $aReturn;
 	}
 
-	public function getFoldersResult(string $sStatus) : array
+	public function getFoldersResult(string $sStatus, ImapClient $oImapClient) : array
 	{
 		$aReturn = array();
 
@@ -99,7 +99,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 				continue;
 			}
 			if ('STATUS' === $oResponse->StatusOrIndex && isset($oResponse->ResponseList[2])) {
-				$sFullNameRaw = $oResponse->ResponseList[2];
+				$sFullNameRaw = $oImapClient->toUTF8($oResponse->ResponseList[2]);
 				if (!isset($aReturn[$sFullNameRaw])) {
 					$aReturn[$sFullNameRaw] = new Folder($sFullNameRaw);
 				}
@@ -108,14 +108,14 @@ class ResponseCollection extends \MailSo\Base\Collection
 			else if ($sStatus === $oResponse->StatusOrIndex && 5 == \count($oResponse->ResponseList)) {
 				try
 				{
-					$sFullNameRaw = $oResponse->ResponseList[4];
+					$sFullNameRaw = $oImapClient->toUTF8($oResponse->ResponseList[4]);
 
 					/**
 					 * $oResponse->ResponseList[0] = *
 					 * $oResponse->ResponseList[1] = LIST (all) | LSUB (subscribed)
 					 * $oResponse->ResponseList[2] = Flags
 					 * $oResponse->ResponseList[3] = Delimiter
-					 * $oResponse->ResponseList[4] = FullNameRaw
+					 * $oResponse->ResponseList[4] = FullName
 					 */
 					if (!isset($aReturn[$sFullNameRaw])) {
 						$oFolder = new Folder($sFullNameRaw,
@@ -220,45 +220,6 @@ class ResponseCollection extends \MailSo\Base\Collection
 		return $aReturn;
 	}
 
-	/**
-	 * Called by selectOrExamineFolder
-	 */
-	public function getCurrentFolderInformation(string $sFolderName, bool $bIsWritable) : FolderInformation
-	{
-		$oResult = new FolderInformation($sFolderName, $bIsWritable);
-		foreach ($this as $oResponse) {
-			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType) {
-				if (!$oResult->setStatusFromResponse($oResponse)) {
-					// OK untagged responses
-					if (\is_array($oResponse->OptionalResponse)) {
-						$key = $oResponse->OptionalResponse[0];
-						if (\count($oResponse->OptionalResponse) > 1) {
-							if ('PERMANENTFLAGS' === $key && \is_array($oResponse->OptionalResponse[1])) {
-								$oResult->PermanentFlags = $oResponse->OptionalResponse[1];
-							}
-						} else if ('READ-ONLY' === $key) {
-//							$oResult->IsWritable = false;
-						} else if ('READ-WRITE' === $key) {
-//							$oResult->IsWritable = true;
-						} else if ('NOMODSEQ' === $key) {
-							// https://datatracker.ietf.org/doc/html/rfc4551#section-3.1.2
-						}
-					}
-
-					// untagged responses
-					else if (\count($oResponse->ResponseList) > 2) {
-						if ('FLAGS' === $oResponse->ResponseList[1] && \is_array($oResponse->ResponseList[2]))
-						{
-							$oResult->Flags = $oResponse->ResponseList[2];
-						}
-					}
-				}
-			}
-		}
-
-		return $oResult;
-	}
-
 	public function getNamespaceResult() : NamespaceResult
 	{
 		foreach ($this as $oResponse) {
@@ -271,43 +232,6 @@ class ResponseCollection extends \MailSo\Base\Collection
 			}
 		}
 		throw new Exceptions\ResponseException;
-	}
-
-	public function getQuotaResult() : array
-	{
-		$aReturn = array(0, 0);
-		foreach ($this as $oResponse) {
-			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
-				&& 'QUOTA' === $oResponse->StatusOrIndex
-				&& \is_array($oResponse->ResponseList)
-				&& isset($oResponse->ResponseList[3])
-				&& \is_array($oResponse->ResponseList[3])
-				&& 2 < \count($oResponse->ResponseList[3])
-				&& 'STORAGE' === \strtoupper($oResponse->ResponseList[3][0])
-				&& \is_numeric($oResponse->ResponseList[3][1])
-				&& \is_numeric($oResponse->ResponseList[3][2])
-			)
-			{
-				$aReturn = array(
-					(int) $oResponse->ResponseList[3][1],
-					(int) $oResponse->ResponseList[3][2],
-					0,
-					0
-				);
-
-				if (5 < \count($oResponse->ResponseList[3])
-					&& 'MESSAGE' === \strtoupper($oResponse->ResponseList[3][3])
-					&& \is_numeric($oResponse->ResponseList[3][4])
-					&& \is_numeric($oResponse->ResponseList[3][5])
-				)
-				{
-					$aReturn[2] = (int) $oResponse->ResponseList[3][4];
-					$aReturn[3] = (int) $oResponse->ResponseList[3][5];
-				}
-			}
-		}
-
-		return $aReturn;
 	}
 
 	public function getSimpleESearchOrESortResult(string $sRequestTag, bool $bReturnUid) : array
@@ -338,15 +262,6 @@ class ResponseCollection extends \MailSo\Base\Collection
 			}
 		}
 		return $aResult;
-	}
-
-	public function getStatusFolderInformationResult() : array
-	{
-		$oInfo = new FolderInformation('', false);
-		foreach ($this as $oResponse) {
-			$oInfo->setStatusFromResponse($oResponse);
-		}
-		return $oInfo->getStatusItems();
 	}
 
 	/**
