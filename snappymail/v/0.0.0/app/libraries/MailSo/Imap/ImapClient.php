@@ -19,6 +19,7 @@ class ImapClient extends \MailSo\Net\NetClient
 {
 	use Traits\ResponseParser;
 //	use Commands\ACL;
+	use Commands\Messages;
 	use Commands\Metadata;
 	use Commands\Quota;
 
@@ -333,13 +334,22 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function GetNamespace() : ?NamespaceResult
 	{
-		if (!$this->IsSupported('NAMESPACE'))
-		{
+		if (!$this->IsSupported('NAMESPACE')) {
 			return null;
 		}
 
 		try {
-			return $this->SendRequestGetResponse('NAMESPACE')->getNamespaceResult();
+			$oResponseCollection = $this->SendRequestGetResponse('NAMESPACE');
+			foreach ($oResponseCollection as $oResponse) {
+				if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
+				 && 'NAMESPACE' === $oResponse->StatusOrIndex)
+				{
+					$oReturn = new NamespaceResult;
+					$oReturn->InitByImapResponse($oResponse);
+					return $oReturn;
+				}
+			}
+			throw new Exceptions\ResponseException;
 		} catch (\Throwable $e) {
 			$this->writeLogException($e, \MailSo\Log\Enumerations\Type::ERROR);
 			throw $e;
@@ -489,7 +499,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	private function specificFolderList(bool $bIsSubscribeList, string $sParentFolderName = '', string $sListPattern = '*', bool $bUseListStatus = false) : array
+	protected function specificFolderList(bool $bIsSubscribeList, string $sParentFolderName = '', string $sListPattern = '*', bool $bUseListStatus = false) : array
 	{
 		$sCmd = 'LIST';
 
@@ -815,114 +825,17 @@ class ImapClient extends \MailSo\Net\NetClient
 			$this->aFetchCallbacks = array();
 		}
 
-		return $oResult->getFetchResult($this->oLogger);
-	}
-
-	/**
-	 * See https://tools.ietf.org/html/rfc5256
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function MessageSimpleSort(array $aSortTypes, string $sSearchCriterias = 'ALL', bool $bReturnUid = true) : array
-	{
-		$oSort = new Requests\SORT($this);
-		$oSort->sCriterias = $sSearchCriterias;
-		$oSort->bUid = $bReturnUid;
-		$oSort->aSortTypes = $aSortTypes;
-		return $oSort->SendRequestGetResponse()
-			->getMessageSimpleSortResult($bReturnUid);
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function MessageSimpleESearch(string $sSearchCriterias = 'ALL', array $aSearchReturn = null, bool $bReturnUid = true, string $sCharset = '', string $sLimit = '') : array
-	{
-		$oESearch = new Requests\ESEARCH($this);
-		$oESearch->sCriterias = $sSearchCriterias;
-		$oESearch->aReturn = $aSearchReturn;
-		$oESearch->bUid = $bReturnUid;
-		$oESearch->sLimit = $sLimit;
-		$oESearch->sCharset = $sCharset;
-		return $oESearch->SendRequestGetResponse()
-			->getSimpleESearchOrESortResult($this->getCurrentTag(), $bReturnUid);
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function MessageSimpleESort(array $aSortTypes, string $sSearchCriterias = 'ALL', array $aSearchReturn = ['ALL'], bool $bReturnUid = true, string $sLimit = '') : array
-	{
-		$oSort = new Requests\SORT($this);
-		$oSort->sCriterias = $sSearchCriterias;
-		$oSort->bUid = $bReturnUid;
-		$oSort->aSortTypes = $aSortTypes;
-		$oSort->aReturn = $aSearchReturn ?: ['ALL'];
-		$oSort->sLimit = $sLimit;
-		return $oSort->SendRequestGetResponse()
-			->getSimpleESearchOrESortResult($this->getCurrentTag(), $bReturnUid);
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function MessageSimpleSearch(string $sSearchCriterias = 'ALL', bool $bReturnUid = true, string $sCharset = '') : array
-	{
-		$aRequest = array();
-		if (\strlen($sCharset))
-		{
-			$aRequest[] = 'CHARSET';
-			$aRequest[] = \strtoupper($sCharset);
-		}
-
-		$aRequest[] = !\strlen($sSearchCriterias) || '*' === $sSearchCriterias ? 'ALL' : $sSearchCriterias;
-
-		$sCont = $this->SendRequest($bReturnUid ? 'UID SEARCH' : 'SEARCH', $aRequest, true);
-		$oResult = $this->getResponse();
-		if ('' !== $sCont)
-		{
-			$oItem = $oResult->getLast();
-
-			if ($oItem && Enumerations\ResponseType::CONTINUATION === $oItem->ResponseType)
-			{
-				$aParts = explode("\r\n", $sCont);
-				foreach ($aParts as $sLine)
-				{
-					$this->sendRaw($sLine);
-
-					$oResult = $this->getResponse();
-					$oItem = $oResult->getLast();
-					if ($oItem && Enumerations\ResponseType::CONTINUATION === $oItem->ResponseType)
-					{
-						continue;
-					}
+		$aReturn = array();
+		foreach ($oResult as $oResponse) {
+			if (FetchResponse::IsValidFetchImapResponse($oResponse)) {
+				if (FetchResponse::IsNotEmptyFetchImapResponse($oResponse)) {
+					$aReturn[] = new FetchResponse($oResponse);
+				} else if ($this->oLogger) {
+					$this->oLogger->Write('Skipped Imap Response! ['.$oResponse->ToLine().']', \MailSo\Log\Enumerations\Type::NOTICE);
 				}
 			}
 		}
-
-		return $oResult->getMessageSimpleSearchResult($bReturnUid);
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function MessageSimpleThread(string $sSearchCriterias = 'ALL', bool $bReturnUid = true, string $sCharset = \MailSo\Base\Enumerations\Charset::UTF_8) : array
-	{
-		$oThread = new Requests\THREAD($this);
-		$oThread->sCriterias = $sSearchCriterias;
-		$oThread->sCharset = $sCharset;
-		$oThread->bUid = $bReturnUid;
-		return $oThread->SendRequestGetResponse()
-			->getMessageSimpleThreadResult($bReturnUid);
+		return $aReturn;
 	}
 
 	/**
@@ -1115,7 +1028,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		return '';
 	}
 
-	private function secureRequestParams(string $sCommand, array $aParams) : ?array
+	protected function secureRequestParams(string $sCommand, array $aParams) : ?array
 	{
 		if ('LOGIN' === $sCommand && isset($aParams[1])) {
 			$aParams[1] = '"********"';
@@ -1135,7 +1048,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $this->getResponse();
 	}
 
-	private function getResponseValue(ResponseCollection $oResponseCollection, int $type = 0) : string
+	protected function getResponseValue(ResponseCollection $oResponseCollection, int $type = 0) : string
 	{
 		$oResponse = $oResponseCollection->getLast();
 		if ($oResponse && (!$type || $type === $oResponse->ResponseType)) {
@@ -1161,7 +1074,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Imap\Exceptions\InvalidResponseException
 	 * @throws \MailSo\Imap\Exceptions\NegativeResponseException
 	 */
-	private function streamResponse(string $sEndTag = null) : void
+	protected function streamResponse(string $sEndTag = null) : void
 	{
 		try {
 			if (\is_resource($this->ConnectionResource())) {
@@ -1184,7 +1097,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 	}
 
-	private function getResponse(string $sEndTag = null) : ResponseCollection
+	protected function getResponse(string $sEndTag = null) : ResponseCollection
 	{
 		try {
 			$oResult = new ResponseCollection;
@@ -1225,7 +1138,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $oResult;
 	}
 
-	private function prepareParamLine(array $aParams = array()) : string
+	protected function prepareParamLine(array $aParams = array()) : string
 	{
 		$sReturn = '';
 		foreach ($aParams as $mParamItem)
@@ -1242,13 +1155,13 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $sReturn;
 	}
 
-	private function getNewTag() : string
+	protected function getNewTag() : string
 	{
 		++$this->iTagCount;
 		return $this->getCurrentTag();
 	}
 
-	private function getCurrentTag() : string
+	protected function getCurrentTag() : string
 	{
 		return self::TAG_PREFIX.$this->iTagCount;
 	}

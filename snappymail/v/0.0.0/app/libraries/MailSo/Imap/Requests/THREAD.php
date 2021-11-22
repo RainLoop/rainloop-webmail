@@ -36,22 +36,23 @@ class THREAD extends Request
 			$this->sAlgorithm = 'ORDEREDSUBJECT';
 		} else {
 			$oImapClient->writeLogException(
-				new RuntimeException('THREAD is not supported'),
-				Type::ERROR, true);
+				new \MailSo\Imap\Exceptions\RuntimeException('THREAD is not supported'),
+				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 		parent::__construct($oImapClient);
 	}
 
-	public function SendRequestGetResponse() : \MailSo\Imap\ResponseCollection
+	public function SendRequestGetResponse() : array
 	{
 		if (!$this->oImapClient->IsSupported(\strtoupper("THREAD={$this->sAlgorithm}"))) {
 			$this->oImapClient->writeLogException(
-				new Exceptions\RuntimeException("THREAD={$this->sAlgorithm} is not supported"),
+				new \MailSo\Imap\Exceptions\RuntimeException("THREAD={$this->sAlgorithm} is not supported"),
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
-		$aRequest = array();
-		$aRequest[] = $this->sAlgorithm;
+		$aRequest = array(
+			$this->sAlgorithm
+		);
 
 		$sSearchCriterias = (\strlen($this->sCriterias) && '*' !== $this->sCriterias) ? $this->sCriterias : 'ALL';
 
@@ -62,9 +63,61 @@ class THREAD extends Request
 		$aRequest[] = \strtoupper($this->sCharset);
 		$aRequest[] = $sSearchCriterias;
 
-		return $this->oImapClient->SendRequestGetResponse(
+		$oResponseCollection = $this->oImapClient->SendRequestGetResponse(
 			($this->bUid ? 'UID THREAD' : 'THREAD'),
 			$aRequest
 		);
+
+		$aReturn = array();
+		foreach ($oResponseCollection as $oResponse) {
+			$iOffset = ($bReturnUid && 'UID' === $oResponse->StatusOrIndex && !empty($oResponse->ResponseList[2]) && 'THREAD' === $oResponse->ResponseList[2]) ? 1 : 0;
+			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
+				&& ('THREAD' === $oResponse->StatusOrIndex || $iOffset)
+				&& \is_array($oResponse->ResponseList)
+				&& 2 < \count($oResponse->ResponseList))
+			{
+				$iLen = \count($oResponse->ResponseList);
+				for ($iIndex = 2 + $iOffset; $iIndex < $iLen; ++$iIndex) {
+					$aNewValue = $this->validateThreadItem($oResponse->ResponseList[$iIndex]);
+					if (\is_array($aNewValue)) {
+						$aReturn[] = $aNewValue;
+					}
+				}
+			}
+		}
+		return $aReturn;
+	}
+
+	/**
+	 * @param mixed $mValue
+	 *
+	 * @return mixed
+	 */
+	private function validateThreadItem($mValue)
+	{
+		$mResult = false;
+		if (\is_numeric($mValue)) {
+			$mResult = (int) $mValue;
+			if (0 >= $mResult) {
+				$mResult = false;
+			}
+		} else if (\is_array($mValue)) {
+			if (1 === \count($mValue) && \is_numeric($mValue[0])) {
+				$mResult = (int) $mValue[0];
+				if (0 >= $mResult) {
+					$mResult = false;
+				}
+			} else {
+				$mResult = array();
+				foreach ($mValue as $mValueItem) {
+					$mTemp = $this->validateThreadItem($mValueItem);
+					if (false !== $mTemp) {
+						$mResult[] = $mTemp;
+					}
+				}
+			}
+		}
+
+		return $mResult;
 	}
 }
