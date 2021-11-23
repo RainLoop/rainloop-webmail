@@ -1340,8 +1340,6 @@ END;
 
 	public static function FunctionExistsAndEnabled($mFunctionNameOrNames) : bool
 	{
-		static $aCache = null;
-
 		if (\is_array($mFunctionNameOrNames))
 		{
 			foreach ($mFunctionNameOrNames as $sFunctionName)
@@ -1355,20 +1353,9 @@ END;
 			return true;
 		}
 
-		if (empty($mFunctionNameOrNames) || !\function_exists($mFunctionNameOrNames) || !\is_callable($mFunctionNameOrNames))
-		{
-			return false;
-		}
-
-		if (null === $aCache)
-		{
-			$sDisableFunctions = \ini_get('disable_functions');
-			$sDisableFunctions = \is_string($sDisableFunctions) ? $sDisableFunctions : '';
-
-			$aCache = \explode(',', $sDisableFunctions);
-		}
-
-		return !\in_array($mFunctionNameOrNames, $aCache);
+		return !empty($mFunctionNameOrNames)
+			&& \function_exists($mFunctionNameOrNames)
+			&& !\is_callable($mFunctionNameOrNames);
 	}
 
 	public static function ClearNullBite($mValue) : string
