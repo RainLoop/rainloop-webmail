@@ -552,6 +552,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			$aReturnParams[] = $aL;
 		}
 /*
+		// RFC 5738
 		if ($this->UTF8) {
 			$aReturnParams[] = 'UTF8'; // 'UTF8ONLY';
 		}
@@ -659,6 +660,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		if ($this->IsSupported('CONDSTORE')) {
 			$aSelectParams[] = 'CONDSTORE';
 		}
+		// RFC 5738
 		if ($this->UTF8) {
 			$aSelectParams[] = 'UTF8';
 		}

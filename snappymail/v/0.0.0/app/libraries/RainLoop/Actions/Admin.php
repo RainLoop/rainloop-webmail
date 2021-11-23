@@ -225,7 +225,7 @@ trait Admin
 		$sTestMessage = $this->AddressBookProvider(null, true)->Test();
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'Result' => '' === $sTestMessage,
-			'Message' => \MailSo\Base\Utils::Utf8Clear($sTestMessage, '?')
+			'Message' => \MailSo\Base\Utils::Utf8Clear($sTestMessage)
 		));
 	}
 

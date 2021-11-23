@@ -17,21 +17,6 @@ namespace MailSo\Base;
  */
 abstract class Utils
 {
-	/**
-	 * @var string
-	 */
-	static $sValidUtf8Regexp = <<<'END'
-/
-  (
-    (?: [\x00-\x7F]                 # single-byte sequences   0xxxxxxx
-    |   [\xC0-\xDF][\x80-\xBF]      # double-byte sequences   110xxxxx 10xxxxxx
-    |   [\xE0-\xEF][\x80-\xBF]{2}   # triple-byte sequences   1110xxxx 10xxxxxx * 2
-    |   [\xF0-\xF7][\x80-\xBF]{3}   # quadruple-byte sequence 11110xxx 10xxxxxx * 3
-    ){1,100}                        # ...one or more times
-  )
-| .                                 # anything else
-/x
-END;
 
 	public static function NormalizeCharset(string $sEncoding, bool $bAsciAsUtf8 = false) : string
 	{
@@ -166,12 +151,6 @@ END;
 
 	public static function MbConvertEncoding(string $sInputString, ?string $sInputFromEncoding, string $sInputToEncoding) : string
 	{
-		static $sMbstringSubCh = null;
-		if (null === $sMbstringSubCh)
-		{
-			$sMbstringSubCh = \mb_substitute_character();
-		}
-
 		if ($sInputFromEncoding) {
 			$sInputFromEncoding = \strtoupper($sInputFromEncoding);
 			if (!static::MbSupportedEncoding($sInputFromEncoding)) {
@@ -187,7 +166,7 @@ END;
 
 		\mb_substitute_character('none');
 		$sResult = \mb_convert_encoding($sInputString, \strtoupper($sInputToEncoding), $sInputFromEncoding);
-		\mb_substitute_character($sMbstringSubCh);
+		\mb_substitute_character(0xFFFD);
 
 		return (false !== $sResult) ? $sResult : $sInputString;
 	}
@@ -1093,30 +1072,25 @@ END;
 		return '';
 	}
 
-	public static function Utf8Clear(?string $sUtfString, string $sReplaceOn = '') : string
+	public static function Utf8Clear(?string $sUtfString) : string
 	{
-		if (!\strlen($sUtfString))
-		{
+		if (!\strlen($sUtfString)) {
 			return '';
 		}
 
-		$sUtfString = \preg_replace(static::$sValidUtf8Regexp, '$1', $sUtfString);
+		$sSubstitute = ''; // '�' 0xFFFD
+/*
+		$converter = new \UConverter('UTF-8', 'UTF-8');
+		$converter->setSubstChars($sSubstitute);
+		$sNewUtfString = $converter->->convert($sUtfString);
+//		$sNewUtfString = \UConverter::transcode($str, 'UTF-8', 'UTF-8', [????]);
+*/
+		\mb_substitute_character($sSubstitute ?: 'none');
+		$sNewUtfString = \mb_convert_encoding($sUtfString, 'UTF-8', 'UTF-8');
+		\mb_substitute_character(0xFFFD);
 
-		$sUtfString = \preg_replace(
-			'/\xE0[\x80-\x9F][\x80-\xBF]'.
-			'|\xEF\xBF\xBF'.
-			'|\xED[\xA0-\xBF][\x80-\xBF]/S', $sReplaceOn, $sUtfString);
-
-		$sUtfString = \preg_replace('/\xEF\xBF\xBD/', '?', $sUtfString);
-
-		$sNewUtfString = static::MbConvertEncoding($sUtfString, 'UTF-8', 'UTF-8');
-
-		if (false !== $sNewUtfString)
-		{
-			$sUtfString = $sNewUtfString;
-		}
-
-		return $sUtfString;
+		return (false !== $sNewUtfString) ? $sNewUtfString : $sUtfString;
+//		return (false !== $sNewUtfString) ? \preg_replace('/\\p{Cc}/u', '', $sNewUtfString) : $sUtfString;
 	}
 
 	public static function Base64Decode(string $sString) : string
@@ -1326,6 +1300,7 @@ END;
 			? \imap_mutf7_to_utf8($sStr)
 			: \mb_convert_encoding($sStr, 'UTF-8', 'UTF7-IMAP');
 //			static::MbConvertEncoding($sStr, 'UTF7-IMAP', 'UTF-8');
+//		$sResult = \UConverter::transcode($sStr, \UConverter::UTF8, \UConverter::IMAP_MAILBOX);
 		return (false === $sResult) ? $sStr : $sResult;
 	}
 
@@ -1335,6 +1310,7 @@ END;
 			? \imap_utf8_to_mutf7($sStr)
 			: \mb_convert_encoding($sStr, 'UTF7-IMAP', 'UTF-8');
 //			static::MbConvertEncoding($sStr, 'UTF-8', 'UTF7-IMAP');
+//		$sResult = \UConverter::transcode($sStr, \UConverter::IMAP_MAILBOX, \UConverter::UTF8);
 		return (false === $sResult) ? $sStr : $sResult;
 	}
 

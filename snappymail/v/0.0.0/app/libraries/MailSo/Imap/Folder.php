@@ -52,6 +52,7 @@ class Folder
 		$this->setDelimiter($sDelimiter);
 		$this->setFlags($aFlags);
 /*
+		// RFC 5738
 		if (\in_array('\\noutf8', $this->aFlagsLowerCase)) {
 		}
 		if (\in_array('\\utf8only', $this->aFlagsLowerCase)) {
