@@ -212,10 +212,10 @@ abstract class Utils
 
 	public static function StrMailDomainToLower(string $sValue) : string
 	{
-		$aParts = \explode('@', $sValue, 2);
-		if (!empty($aParts[1]))
-		{
-			$aParts[1] = \mb_strtolower($aParts[1]);
+		$aParts = \explode('@', $sValue);
+		$iLast = \count($aParts) - 1;
+		if ($iLast) {
+			$aParts[$iLast] = \mb_strtolower($aParts[$iLast]);
 		}
 
 		return \implode('@', $aParts);
@@ -633,6 +633,7 @@ abstract class Utils
 			'bz'	=> 'application/x-bzip',
 			'bz2'	=> 'application/x-bzip2',
 			'deb'	=> 'application/x-debian-package',
+			'tar'	=> 'application/x-tar',
 
 			// fonts
 			'psf'	=> 'application/x-font-linux-psf',
@@ -811,17 +812,6 @@ abstract class Utils
 		return false;
 	}
 
-	public static function InlineRebuildStringToJsString(string $sText) : string
-	{
-		static $aJsonReplaces = array(
-			array('\\', "\n", "\t", "\r", '\b', "\f", '"'),
-			array('\\\\', '\\n', '\\t', '\\r', '\\b', '\\f', '\"')
-		);
-
-		return \str_replace('</script>', '<\/script>',
-			\str_replace($aJsonReplaces[0], $aJsonReplaces[1], $sText));
-	}
-
 	public static function ClearArrayUtf8Values(array &$aInput)
 	{
 		foreach ($aInput as $mKey => $mItem)
@@ -919,40 +909,6 @@ abstract class Utils
 		}
 
 		return false;
-	}
-
-	public static function CopyDir(string $sSource, string $sDestination)
-	{
-		if (\is_dir($sSource))
-		{
-			if (!\is_dir($sDestination))
-			{
-				\mkdir($sDestination);
-			}
-
-			$oDirectory = \dir($sSource);
-			if ($oDirectory)
-			{
-				while (false !== ($sRead = $oDirectory->read()))
-				{
-					if ('.' === $sRead || '..' === $sRead)
-					{
-						continue;
-					}
-
-					$sPathDir = $sSource.'/'.$sRead;
-					if (\is_dir($sPathDir))
-					{
-						static::CopyDir($sPathDir, $sDestination.'/'.$sRead);
-						continue;
-					}
-
-					\copy($sPathDir, $sDestination.'/'.$sRead);
-				}
-
-				$oDirectory->close();
-			}
-		}
 	}
 
 	public static function RecTimeDirRemove(string $sTempPath, int $iTime2Kill, int $iNow = 0) : bool

@@ -55,12 +55,12 @@ abstract class HtmlUtils
 		$sText = static::ClearBodyAndHtmlTag($sText, $sHtmlAttrs, $sBodyAttrs);
 
 		$oDom = self::createDOMDocument();
-		@$oDom->loadHTML('<'.'?xml version="1.0" encoding="utf-8"?'.'>'.
+		$oDom->loadHTML('<?xml version="1.0" encoding="utf-8"?>'.
 			'<html '.$sHtmlAttrs.'><head>'.
 			'<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'.
 			'<body '.$sBodyAttrs.'>'.\MailSo\Base\Utils::Utf8Clear($sText).'</body></html>');
 
-		@$oDom->normalizeDocument();
+		$oDom->normalizeDocument();
 
 		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_clear_errors'))
 		{
