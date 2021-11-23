@@ -6,8 +6,6 @@ class Sieve
 {
 	const NEW_LINE = "\r\n";
 
-	public static $bUtf8FolderName = true;
-
 	public static function collectionToFileString(array $aFilters) : string
 	{
 		$sNL = static::NEW_LINE;
@@ -353,17 +351,9 @@ class Sieve
 				}
 				break;
 			case Enumerations\ActionType::MOVE_TO:
-				$sValue = $oFilter->ActionValue();
-				if (\strlen($sValue))
+				$sFolderName = $oFilter->ActionValue();
+				if (\strlen($sFolderName))
 				{
-					$sFolderName = $sValue; // utf7-imap
-					if (static::$bUtf8FolderName) // to utf-8
-					{
-						$sFolderName = \MailSo\Base\Utils::ConvertEncoding($sFolderName,
-							\MailSo\Base\Enumerations\Charset::UTF_7_IMAP,
-							\MailSo\Base\Enumerations\Charset::UTF_8);
-					}
-
 					$aCapa['fileinto'] = true;
 					$aResult[] = $sTab.'fileinto "'.static::quote($sFolderName).'";';
 					if ($oFilter->Stop())
