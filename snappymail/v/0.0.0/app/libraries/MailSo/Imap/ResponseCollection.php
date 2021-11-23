@@ -84,16 +84,16 @@ class ResponseCollection extends \MailSo\Base\Collection
 				continue;
 			}
 			if ('STATUS' === $oResponse->StatusOrIndex && isset($oResponse->ResponseList[2])) {
-				$sFullNameRaw = $oImapClient->toUTF8($oResponse->ResponseList[2]);
-				if (!isset($aReturn[$sFullNameRaw])) {
-					$aReturn[$sFullNameRaw] = new Folder($sFullNameRaw);
+				$sFullName = $oImapClient->toUTF8($oResponse->ResponseList[2]);
+				if (!isset($aReturn[$sFullName])) {
+					$aReturn[$sFullName] = new Folder($sFullName);
 				}
-				$aReturn[$sFullNameRaw]->setStatusFromResponse($oResponse);
+				$aReturn[$sFullName]->setStatusFromResponse($oResponse);
 			}
 			else if ($sStatus === $oResponse->StatusOrIndex && 5 == \count($oResponse->ResponseList)) {
 				try
 				{
-					$sFullNameRaw = $oImapClient->toUTF8($oResponse->ResponseList[4]);
+					$sFullName = $oImapClient->toUTF8($oResponse->ResponseList[4]);
 
 					/**
 					 * $oResponse->ResponseList[0] = *
@@ -102,12 +102,12 @@ class ResponseCollection extends \MailSo\Base\Collection
 					 * $oResponse->ResponseList[3] = Delimiter
 					 * $oResponse->ResponseList[4] = FullName
 					 */
-					if (!isset($aReturn[$sFullNameRaw])) {
-						$oFolder = new Folder($sFullNameRaw,
+					if (!isset($aReturn[$sFullName])) {
+						$oFolder = new Folder($sFullName,
 							$oResponse->ResponseList[3], $oResponse->ResponseList[2]);
-						$aReturn[$sFullNameRaw] = $oFolder;
+						$aReturn[$sFullName] = $oFolder;
 					} else {
-						$oFolder = $aReturn[$sFullNameRaw];
+						$oFolder = $aReturn[$sFullName];
 						$oFolder->setDelimiter($oResponse->ResponseList[3]);
 						$oFolder->setFlags($oResponse->ResponseList[2]);
 					}
@@ -120,7 +120,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 						$sDelimiter = $oFolder->Delimiter();
 					}
 
-					$aReturn[$sFullNameRaw] = $oFolder;
+					$aReturn[$sFullName] = $oFolder;
 				}
 				catch (\MailSo\Base\Exceptions\InvalidArgumentException $oException)
 				{

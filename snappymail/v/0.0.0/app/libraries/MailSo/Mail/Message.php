@@ -340,7 +340,7 @@ class Message implements \JsonSerializable
 				$oHeaders->SetParentCharset($sCharset);
 			}
 
-			$bCharsetAutoDetect = 0 === \strlen($sCharset);
+			$bCharsetAutoDetect = !\strlen($sCharset);
 
 			$this->sSubject = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::SUBJECT, $bCharsetAutoDetect);
 			$this->sMessageId = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::MESSAGE_ID);
@@ -386,11 +386,11 @@ class Message implements \JsonSerializable
 			// Priority
 			$this->iPriority = \MailSo\Mime\Enumerations\MessagePriority::NORMAL;
 			$sPriority = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_MSMAIL_PRIORITY);
-			if (0 === \strlen($sPriority))
+			if (!\strlen($sPriority))
 			{
 				$sPriority = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::IMPORTANCE);
 			}
-			if (0 === \strlen($sPriority))
+			if (!\strlen($sPriority))
 			{
 				$sPriority = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_PRIORITY);
 			}
@@ -514,13 +514,13 @@ class Message implements \JsonSerializable
 		}
 		else if ($oFetchResponse->GetEnvelope())
 		{
-			if (0 === \strlen($sCharset) && $oBodyStructure)
+			if (!\strlen($sCharset) && $oBodyStructure)
 			{
 				$sCharset = $oBodyStructure->SearchCharset();
 				$sCharset = \MailSo\Base\Utils::NormalizeCharset($sCharset);
 			}
 
-			if (0 === \strlen($sCharset))
+			if (!\strlen($sCharset))
 			{
 				$sCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1;
 			}
@@ -559,7 +559,7 @@ class Message implements \JsonSerializable
 		$aTextParts = $oBodyStructure ? $oBodyStructure->SearchHtmlOrPlainParts() : null;
 		if ($aTextParts)
 		{
-			if (0 === \strlen($sCharset))
+			if (!\strlen($sCharset))
 			{
 				$sCharset = \MailSo\Base\Enumerations\Charset::UTF_8;
 			}

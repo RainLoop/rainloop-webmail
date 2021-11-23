@@ -204,34 +204,22 @@ END;
 			return $sInputString;
 		}
 
-		if ($sFromEncoding === Enumerations\Charset::ISO_8859_1
-		 && $sToEncoding === Enumerations\Charset::UTF_8) {
-			return \utf8_encode($sInputString);
+		if ($sToEncoding === Enumerations\Charset::UTF_8) {
+			if ($sFromEncoding === Enumerations\Charset::ISO_8859_1) {
+				return \utf8_encode($sInputString);
+			}
+			if ($sFromEncoding === Enumerations\Charset::UTF_7_IMAP) {
+				return static::Utf7ModifiedToUtf8($sInputString);
+			}
 		}
 
-		if ($sFromEncoding === Enumerations\Charset::UTF_8
-		 && $sToEncoding === Enumerations\Charset::ISO_8859_1) {
-			return \utf8_decode($sInputString);
-		}
-
-		if ($sFromEncoding === Enumerations\Charset::UTF_7_IMAP
-		 && $sToEncoding === Enumerations\Charset::UTF_8) {
-			$sResult = static::Utf7ModifiedToUtf8($sInputString);
-			return (false !== $sResult) ? $sResult : $sInputString;
-		}
-
-		if ($sFromEncoding === Enumerations\Charset::UTF_8
-		 && $sToEncoding === Enumerations\Charset::UTF_7_IMAP) {
-			$sResult = static::Utf8ToUtf7Modified($sInputString);
-			return (false !== $sResult) ? $sResult : $sInputString;
-		}
-
-		if ($sFromEncoding === Enumerations\Charset::UTF_7_IMAP) {
-			return static::ConvertEncoding(
-				static::ModifiedToPlainUtf7($sInputString),
-				Enumerations\Charset::UTF_7,
-				$sToEncoding
-			);
+		if ($sFromEncoding === Enumerations\Charset::UTF_8) {
+			if ($sToEncoding === Enumerations\Charset::ISO_8859_1) {
+				return \utf8_decode($sInputString);
+			}
+			if ($sToEncoding === Enumerations\Charset::UTF_7_IMAP) {
+				return static::Utf8ToUtf7Modified($sInputString);
+			}
 		}
 
 		return static::MbConvertEncoding($sInputString, $sFromEncoding, $sToEncoding);
@@ -780,10 +768,12 @@ END;
 			case 'application/x-rar-compressed':
 			case 'application/x-msdownload':
 			case 'application/vnd.ms-cab-compressed':
+			case 'application/gzip':
 			case 'application/x-gzip':
 			case 'application/x-bzip':
 			case 'application/x-bzip2':
 			case 'application/x-debian-package':
+			case 'application/x-tar':
 				return 'archive';
 
 			case 'application/msword':
@@ -808,6 +798,8 @@ END;
 			case 'zip':
 			case '7z':
 			case 'rar':
+			case 'tar':
+			case 'tgz':
 				return 'archive';
 
 			case 'pdf':
@@ -1328,62 +1320,22 @@ END;
 		return $mResult;
 	}
 
-	public static function ModifiedToPlainUtf7(string $sUtfModifiedString) : string
-	{
-		$sUtf = '';
-		$bBase = false;
-
-		for ($iIndex = 0, $iLen = \strlen($sUtfModifiedString); $iIndex < $iLen; $iIndex++)
-		{
-			if ('&' === $sUtfModifiedString[$iIndex])
-			{
-				if (isset($sUtfModifiedString[$iIndex+1]) && '-' === $sUtfModifiedString[$iIndex + 1])
-				{
-					$sUtf .= '&';
-					$iIndex++;
-				}
-				else
-				{
-					$sUtf .= '+';
-					$bBase = true;
-				}
-			}
-			else if ($sUtfModifiedString[$iIndex] == '-' && $bBase)
-			{
-				$bBase = false;
-			}
-			else
-			{
-				if ($bBase && ',' === $sUtfModifiedString[$iIndex])
-				{
-					$sUtf .= '/';
-				}
-				else if (!$bBase && '+' === $sUtfModifiedString[$iIndex])
-				{
-					$sUtf .= '+-';
-				}
-				else
-				{
-					$sUtf .= $sUtfModifiedString[$iIndex];
-				}
-			}
-		}
-
-		return $sUtf;
-	}
-
 	public static function Utf7ModifiedToUtf8(string $sStr) : string
 	{
-		return \is_callable('imap_mutf7_to_utf8')
+		$sResult = \is_callable('imap_mutf7_to_utf8')
 			? \imap_mutf7_to_utf8($sStr)
 			: \mb_convert_encoding($sStr, 'UTF-8', 'UTF7-IMAP');
+//			static::MbConvertEncoding($sStr, 'UTF7-IMAP', 'UTF-8');
+		return (false === $sResult) ? $sStr : $sResult;
 	}
 
 	public static function Utf8ToUtf7Modified(string $sStr) : string
 	{
-		return \is_callable('imap_utf8_to_mutf7')
+		$sResult = \is_callable('imap_utf8_to_mutf7')
 			? \imap_utf8_to_mutf7($sStr)
 			: \mb_convert_encoding($sStr, 'UTF7-IMAP', 'UTF-8');
+//			static::MbConvertEncoding($sStr, 'UTF-8', 'UTF7-IMAP');
+		return (false === $sResult) ? $sStr : $sResult;
 	}
 
 	public static function FunctionExistsAndEnabled($mFunctionNameOrNames) : bool

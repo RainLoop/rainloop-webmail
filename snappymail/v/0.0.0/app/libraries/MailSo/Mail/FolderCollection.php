@@ -52,19 +52,19 @@ class FolderCollection extends \MailSo\Base\Collection
 		parent::append($oFolder, $bToTop);
 	}
 
-	public function GetByFullNameRaw(string $sFullNameRaw) : ?Folder
+	public function GetByFullName(string $sFullName) : ?Folder
 	{
 		$mResult = null;
 		foreach ($this as $oFolder)
 		{
-			if ($oFolder->FullName() === $sFullNameRaw)
+			if ($oFolder->FullName() === $sFullName)
 			{
 				$mResult = $oFolder;
 				break;
 			}
 			else if ($oFolder->HasSubFolders())
 			{
-				$mResult = $oFolder->SubFolders(true)->GetByFullNameRaw($sFullNameRaw);
+				$mResult = $oFolder->SubFolders(true)->GetByFullName($sFullName);
 				if ($mResult)
 				{
 					break;
@@ -99,7 +99,7 @@ class FolderCollection extends \MailSo\Base\Collection
 	{
 		$sDelimiter = '/';
 
-		$oFolder = $this->GetByFullNameRaw('INBOX');
+		$oFolder = $this->GetByFullName('INBOX');
 		if (!$oFolder && isset($this[0]))
 		{
 			$oFolder = $this[0];

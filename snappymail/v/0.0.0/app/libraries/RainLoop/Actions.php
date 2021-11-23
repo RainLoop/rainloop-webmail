@@ -1370,7 +1370,7 @@ class Actions
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');
+		$sFolderFullName = $this->GetActionParam('Folder', '');
 
 		$_FILES = isset($_FILES) ? $_FILES : null;
 		if ($oAccount &&
@@ -1378,15 +1378,15 @@ class Actions
 			isset($_FILES, $_FILES['AppendFile'], $_FILES['AppendFile']['name'],
 				$_FILES['AppendFile']['tmp_name'], $_FILES['AppendFile']['size'])) {
 			if (is_string($_FILES['AppendFile']['tmp_name']) && \strlen($_FILES['AppendFile']['tmp_name'])) {
-				if (\UPLOAD_ERR_OK === (int)$_FILES['AppendFile']['error'] && !empty($sFolderFullNameRaw)) {
-					$sSavedName = 'append-post-' . md5($sFolderFullNameRaw . $_FILES['AppendFile']['name'] . $_FILES['AppendFile']['tmp_name']);
+				if (\UPLOAD_ERR_OK === (int)$_FILES['AppendFile']['error'] && !empty($sFolderFullName)) {
+					$sSavedName = 'append-post-' . md5($sFolderFullName . $_FILES['AppendFile']['name'] . $_FILES['AppendFile']['tmp_name']);
 
 					if ($this->FilesProvider()->MoveUploadedFile($oAccount,
 						$sSavedName, $_FILES['AppendFile']['tmp_name'])) {
 						$iMessageStreamSize = $this->FilesProvider()->FileSize($oAccount, $sSavedName);
 						$rMessageStream = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
 
-						$this->MailClient()->MessageAppendStream($rMessageStream, $iMessageStreamSize, $sFolderFullNameRaw);
+						$this->MailClient()->MessageAppendStream($rMessageStream, $iMessageStreamSize, $sFolderFullName);
 
 						$this->FilesProvider()->Clear($oAccount, $sSavedName);
 					}

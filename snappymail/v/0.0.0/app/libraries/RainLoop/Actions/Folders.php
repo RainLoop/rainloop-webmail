@@ -125,15 +125,13 @@ trait Folders
 								}
 							}
 
-							$sFullNameToCheck = \MailSo\Base\Utils::ConvertEncoding($mFolderNameToCreate,
-								\MailSo\Base\Enumerations\Charset::UTF_8, \MailSo\Base\Enumerations\Charset::UTF_7_IMAP);
-
+							$sFullNameToCheck = $mFolderNameToCreate;
 							if (\strlen(\trim($sParent)))
 							{
 								$sFullNameToCheck = $sParent.$sDelimiter.$sFullNameToCheck;
 							}
 
-							if (!$oFolderCollection->GetByFullNameRaw($sFullNameToCheck))
+							if (!$oFolderCollection->GetByFullName($sFullNameToCheck))
 							{
 								try
 								{
@@ -182,9 +180,9 @@ trait Folders
 		try
 		{
 			$sFolderNameInUtf = $this->GetActionParam('Folder', '');
-			$sFolderParentFullNameRaw = $this->GetActionParam('Parent', '');
+			$sFolderParentFullName = $this->GetActionParam('Parent', '');
 
-			$this->MailClient()->FolderCreate($sFolderNameInUtf, $sFolderParentFullNameRaw,
+			$this->MailClient()->FolderCreate($sFolderNameInUtf, $sFolderParentFullName,
 				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true));
 		}
 		catch (\Throwable $oException)
@@ -198,10 +196,10 @@ trait Folders
 	public function DoFolderSetMetadata() : array
 	{
 		$this->initMailClientConnection();
-		$sFolderFullNameRaw = $this->GetActionParam('Folder');
+		$sFolderFullName = $this->GetActionParam('Folder');
 		$sMetadataKey = $this->GetActionParam('Key');
-		if ($sFolderFullNameRaw && $sMetadataKey) {
-			$this->MailClient()->FolderSetMetadata($sFolderFullNameRaw, [
+		if ($sFolderFullName && $sMetadataKey) {
+			$this->MailClient()->FolderSetMetadata($sFolderFullName, [
 				$sMetadataKey => $this->GetActionParam('Value') ?: null
 			]);
 		}
@@ -212,12 +210,12 @@ trait Folders
 	{
 		$this->initMailClientConnection();
 
-		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');
+		$sFolderFullName = $this->GetActionParam('Folder', '');
 		$bSubscribe = '1' === (string) $this->GetActionParam('Subscribe', '0');
 
 		try
 		{
-			$this->MailClient()->FolderSubscribe($sFolderFullNameRaw, $bSubscribe);
+			$this->MailClient()->FolderSubscribe($sFolderFullName, $bSubscribe);
 		}
 		catch (\Throwable $oException)
 		{
@@ -238,7 +236,7 @@ trait Folders
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');
+		$sFolderFullName = $this->GetActionParam('Folder', '');
 		$bCheckable = '1' === (string) $this->GetActionParam('Checkable', '0');
 
 		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
@@ -253,14 +251,14 @@ trait Folders
 
 		if ($bCheckable)
 		{
-			$aCheckableFolder[] = $sFolderFullNameRaw;
+			$aCheckableFolder[] = $sFolderFullName;
 		}
 		else
 		{
 			$aCheckableFolderNew = array();
 			foreach ($aCheckableFolder as $sFolder)
 			{
-				if ($sFolder !== $sFolderFullNameRaw)
+				if ($sFolder !== $sFolderFullName)
 				{
 					$aCheckableFolderNew[] = $sFolder;
 				}

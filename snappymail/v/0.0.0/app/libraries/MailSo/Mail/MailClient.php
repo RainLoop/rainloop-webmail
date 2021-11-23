@@ -1273,18 +1273,18 @@ class MailClient
 			{
 				\array_pop($aFolderExplode);
 
-				$sNonExistentFolderFullNameRaw = '';
+				$sNonExistentFolderFullName = '';
 				foreach ($aFolderExplode as $sFolderExplodeItem)
 				{
-					$sNonExistentFolderFullNameRaw .= \strlen($sNonExistentFolderFullNameRaw)
+					$sNonExistentFolderFullName .= \strlen($sNonExistentFolderFullName)
 						? $sDelimiter.$sFolderExplodeItem : $sFolderExplodeItem;
 
-					if (!isset($aSortedByLenImapFolders[$sNonExistentFolderFullNameRaw]))
+					if (!isset($aSortedByLenImapFolders[$sNonExistentFolderFullName]))
 					{
 						try
 						{
-							$aAddedFolders[$sNonExistentFolderFullNameRaw] =
-								Folder::NewNonExistentInstance($sNonExistentFolderFullNameRaw, $sDelimiter);
+							$aAddedFolders[$sNonExistentFolderFullName] =
+								Folder::NewNonExistentInstance($sNonExistentFolderFullName, $sDelimiter);
 						}
 						catch (\Throwable $oExc)
 						{
@@ -1325,52 +1325,48 @@ class MailClient
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function FolderCreate(string $sFolderNameInUtf8, string $sFolderParentFullNameRaw = '', bool $bSubscribeOnCreation = true, string $sDelimiter = '') : self
+	public function FolderCreate(string $sFolderNameInUtf8, string $sFolderParentFullName = '', bool $bSubscribeOnCreation = true, string $sDelimiter = '') : self
 	{
 		$sFolderNameInUtf8 = \trim($sFolderNameInUtf8);
-		$sFolderParentFullNameRaw = \trim($sFolderParentFullNameRaw);
+		$sFolderParentFullName = \trim($sFolderParentFullName);
 
 		if (!\strlen($sFolderNameInUtf8))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
-		if (!\strlen($sDelimiter) || \strlen($sFolderParentFullNameRaw))
+		if (!\strlen($sDelimiter) || \strlen($sFolderParentFullName))
 		{
-			$sDelimiter = $this->oImapClient->FolderHierarchyDelimiter($sFolderParentFullNameRaw);
+			$sDelimiter = $this->oImapClient->FolderHierarchyDelimiter($sFolderParentFullName);
 			if (null === $sDelimiter)
 			{
 				// TODO: Translate
 				throw new Exceptions\RuntimeException(
-					\strlen($sFolderParentFullNameRaw)
+					\strlen($sFolderParentFullName)
 						? 'Cannot create folder in non-existent parent folder.'
 						: 'Cannot get folder delimiter.');
 			}
 
-			if (\strlen($sDelimiter) && \strlen($sFolderParentFullNameRaw))
+			if (\strlen($sDelimiter) && \strlen($sFolderParentFullName))
 			{
-				$sFolderParentFullNameRaw .= $sDelimiter;
+				$sFolderParentFullName .= $sDelimiter;
 			}
 		}
 
-		$sFullNameRawToCreate = \MailSo\Base\Utils::ConvertEncoding($sFolderNameInUtf8,
-			\MailSo\Base\Enumerations\Charset::UTF_8,
-			\MailSo\Base\Enumerations\Charset::UTF_7_IMAP);
-
-		if (\strlen($sDelimiter) && false !== \strpos($sFullNameRawToCreate, $sDelimiter))
+		if (\strlen($sDelimiter) && false !== \strpos($sFolderNameInUtf8, $sDelimiter))
 		{
 			// TODO: Translate
 			throw new Exceptions\RuntimeException(
 				'New folder name contains delimiter.');
 		}
 
-		$sFullNameRawToCreate = $sFolderParentFullNameRaw.$sFullNameRawToCreate;
+		$sFullNameToCreate = $sFolderParentFullName.$sFolderNameInUtf8;
 
-		$this->oImapClient->FolderCreate($sFullNameRawToCreate);
+		$this->oImapClient->FolderCreate($sFullNameToCreate);
 
 		if ($bSubscribeOnCreation)
 		{
-			$this->oImapClient->FolderSubscribe($sFullNameRawToCreate);
+			$this->oImapClient->FolderSubscribe($sFullNameToCreate);
 		}
 
 		return $this;
@@ -1379,76 +1375,72 @@ class MailClient
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function FolderMove(string $sPrevFolderFullNameRaw, string $sNextFolderFullNameInUtf, bool $bSubscribeOnMove = true) : self
+	public function FolderMove(string $sPrevFolderFullName, string $sNextFolderFullNameInUtf, bool $bSubscribeOnMove = true) : self
 	{
-		return $this->folderModify($sPrevFolderFullNameRaw, $sNextFolderFullNameInUtf, false, $bSubscribeOnMove);
+		return $this->folderModify($sPrevFolderFullName, $sNextFolderFullNameInUtf, false, $bSubscribeOnMove);
 	}
 
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function FolderRename(string $sPrevFolderFullNameRaw, string $sNewTopFolderNameInUtf, bool $bSubscribeOnRename = true) : self
+	public function FolderRename(string $sPrevFolderFullName, string $sNewTopFolderNameInUtf, bool $bSubscribeOnRename = true) : self
 	{
-		return $this->folderModify($sPrevFolderFullNameRaw, $sNewTopFolderNameInUtf, true, $bSubscribeOnRename);
+		return $this->folderModify($sPrevFolderFullName, $sNewTopFolderNameInUtf, true, $bSubscribeOnRename);
 	}
 
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Base\Exceptions\RuntimeException
 	 */
-	protected function folderModify(string $sPrevFolderFullNameRaw, string $sNextFolderNameInUtf, bool $bRename, bool $bSubscribeOnModify) : self
+	protected function folderModify(string $sPrevFolderFullName, string $sNextFolderNameInUtf, bool $bRename, bool $bSubscribeOnModify) : self
 	{
-		if (!\strlen($sPrevFolderFullNameRaw) || !\strlen($sNextFolderNameInUtf))
+		if (!\strlen($sPrevFolderFullName) || !\strlen($sNextFolderNameInUtf))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
-		$sDelimiter = $this->oImapClient->FolderHierarchyDelimiter($sPrevFolderFullNameRaw);
+		$sDelimiter = $this->oImapClient->FolderHierarchyDelimiter($sPrevFolderFullName);
 		if (!$sDelimiter)
 		{
 			// TODO: Translate
 			throw new Exceptions\RuntimeException('Cannot '.($bRename?'rename':'move').' non-existent folder.');
 		}
 
-		$iLast = \strrpos($sPrevFolderFullNameRaw, $sDelimiter);
+		$iLast = \strrpos($sPrevFolderFullName, $sDelimiter);
 
 		$aSubscribeFolders = array();
 		if ($bSubscribeOnModify)
 		{
-			$aSubscribeFolders = $this->oImapClient->FolderSubscribeList($sPrevFolderFullNameRaw, '*');
+			$aSubscribeFolders = $this->oImapClient->FolderSubscribeList($sPrevFolderFullName, '*');
 			foreach ($aSubscribeFolders as /* @var $oFolder \MailSo\Imap\Folder */ $oFolder)
 			{
 				$this->oImapClient->FolderUnSubscribe($oFolder->FullName());
 			}
 		}
 
-		$sNewFolderFullNameRaw = \MailSo\Base\Utils::ConvertEncoding($sNextFolderNameInUtf,
-			\MailSo\Base\Enumerations\Charset::UTF_8,
-			\MailSo\Base\Enumerations\Charset::UTF_7_IMAP);
-
 		if ($bRename)
 		{
-			if (\strlen($sDelimiter) && false !== \strpos($sNewFolderFullNameRaw, $sDelimiter))
+			if (\strlen($sDelimiter) && false !== \strpos($sNewFolderFullName, $sDelimiter))
 			{
 				// TODO: Translate
 				throw new Exceptions\RuntimeException('New folder name contains delimiter.');
 			}
 
-			$sFolderParentFullNameRaw = false === $iLast ? '' : \substr($sPrevFolderFullNameRaw, 0, $iLast + 1);
-			$sNewFolderFullNameRaw = $sFolderParentFullNameRaw.$sNewFolderFullNameRaw;
+			$sFolderParentFullName = false === $iLast ? '' : \substr($sPrevFolderFullName, 0, $iLast + 1);
+			$sNewFolderFullName = $sFolderParentFullName.$sNewFolderFullName;
 		}
 
-		$this->oImapClient->FolderRename($sPrevFolderFullNameRaw, $sNewFolderFullNameRaw);
+		$this->oImapClient->FolderRename($sPrevFolderFullName, $sNewFolderFullName);
 
 		foreach ($aSubscribeFolders as /* @var $oFolder \MailSo\Imap\Folder */ $oFolder)
 		{
-			$sFolderFullNameRawForResubscrine = $oFolder->FullName();
-			if (0 === \strpos($sFolderFullNameRawForResubscrine, $sPrevFolderFullNameRaw))
+			$sFolderFullNameForResubscrine = $oFolder->FullName();
+			if (0 === \strpos($sFolderFullNameForResubscrine, $sPrevFolderFullName))
 			{
-				$sNewFolderFullNameRawForResubscrine = $sNewFolderFullNameRaw.
-					\substr($sFolderFullNameRawForResubscrine, \strlen($sPrevFolderFullNameRaw));
+				$sNewFolderFullNameForResubscrine = $sNewFolderFullName.
+					\substr($sFolderFullNameForResubscrine, \strlen($sPrevFolderFullName));
 
-				$this->oImapClient->FolderSubscribe($sNewFolderFullNameRawForResubscrine);
+				$this->oImapClient->FolderSubscribe($sNewFolderFullNameForResubscrine);
 			}
 		}
 
@@ -1459,14 +1451,14 @@ class MailClient
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Mail\Exceptions\RuntimeException
 	 */
-	public function FolderDelete(string $sFolderFullNameRaw, bool $bUnsubscribeOnDeletion = true) : self
+	public function FolderDelete(string $sFolderFullName, bool $bUnsubscribeOnDeletion = true) : self
 	{
-		if (!\strlen($sFolderFullNameRaw) || 'INBOX' === $sFolderFullNameRaw)
+		if (!\strlen($sFolderFullName) || 'INBOX' === $sFolderFullName)
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
-		$this->oImapClient->FolderExamine($sFolderFullNameRaw);
+		$this->oImapClient->FolderExamine($sFolderFullName);
 
 		$aIndexOrUids = $this->oImapClient->MessageSimpleSearch('ALL');
 		if (\count($aIndexOrUids))
@@ -1478,10 +1470,10 @@ class MailClient
 
 		if ($bUnsubscribeOnDeletion)
 		{
-			$this->oImapClient->FolderUnSubscribe($sFolderFullNameRaw);
+			$this->oImapClient->FolderUnSubscribe($sFolderFullName);
 		}
 
-		$this->oImapClient->FolderDelete($sFolderFullNameRaw);
+		$this->oImapClient->FolderDelete($sFolderFullName);
 
 		return $this;
 	}
@@ -1489,9 +1481,9 @@ class MailClient
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function FolderClear(string $sFolderFullNameRaw) : self
+	public function FolderClear(string $sFolderFullName) : self
 	{
-		$this->oImapClient->FolderSelect($sFolderFullNameRaw);
+		$this->oImapClient->FolderSelect($sFolderFullName);
 
 		$oFolderInformation = $this->oImapClient->FolderCurrentInformation();
 		if ($oFolderInformation && 0 < $oFolderInformation->MESSAGES)
@@ -1510,14 +1502,14 @@ class MailClient
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function FolderSubscribe(string $sFolderFullNameRaw, bool $bSubscribe) : self
+	public function FolderSubscribe(string $sFolderFullName, bool $bSubscribe) : self
 	{
-		if (!\strlen($sFolderFullNameRaw))
+		if (!\strlen($sFolderFullName))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
-		$this->oImapClient->{($bSubscribe) ? 'FolderSubscribe' : 'FolderUnSubscribe'}($sFolderFullNameRaw);
+		$this->oImapClient->{$bSubscribe ? 'FolderSubscribe' : 'FolderUnSubscribe'}($sFolderFullName);
 
 		return $this;
 	}
