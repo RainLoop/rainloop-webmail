@@ -146,6 +146,9 @@ if (defined('APP_VERSION'))
 
 		define('APP_PLUGINS_PATH', APP_PRIVATE_DATA.'plugins/');
 
+		mb_internal_encoding('UTF-8');
+		mb_language('uni');
+
 		if (APP_VERSION !== $sInstalled || (!is_dir(APP_PRIVATE_DATA) && strlen($sPrivateDataFolderInternalName) && '_default_' !== APP_PRIVATE_DATA_NAME))
 		{
 			define('APP_INSTALLED_START', true);

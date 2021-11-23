@@ -206,30 +206,16 @@ abstract class Utils
 
 	public static function IsAscii(string $sValue) : bool
 	{
-		if ('' === \trim($sValue))
-		{
-			return true;
-		}
-
-		return !\preg_match('/[^\x09\x10\x13\x0A\x0D\x20-\x7E]/', $sValue);
+		return '' === \trim($sValue)
+			|| !\preg_match('/[^\x09\x10\x13\x0A\x0D\x20-\x7E]/', $sValue);
 	}
 
-	public static function StrToLowerIfAscii(string $sValue) : string
-	{
-		return static::IsAscii($sValue) ? \strtolower($sValue) : $sValue;
-	}
-
-	public static function StrToUpperIfAscii(string $sValue) : string
-	{
-		return static::IsAscii($sValue) ? \strtoupper($sValue) : $sValue;
-	}
-
-	public static function StrMailDomainToLowerIfAscii(string $sValue) : string
+	public static function StrMailDomainToLower(string $sValue) : string
 	{
 		$aParts = \explode('@', $sValue, 2);
 		if (!empty($aParts[1]))
 		{
-			$aParts[1] = static::IsAscii($aParts[1]) ? \strtolower($aParts[1]) : $aParts[1];
+			$aParts[1] = \mb_strtolower($aParts[1]);
 		}
 
 		return \implode('@', $aParts);
@@ -1385,12 +1371,12 @@ abstract class Utils
 			catch (\Throwable $oException) {}
 		}
 
-		return $bLowerIfAscii ? static::StrMailDomainToLowerIfAscii($sStr) : $sStr;
+		return $bLowerIfAscii ? static::StrMailDomainToLower($sStr) : $sStr;
 	}
 
 	public static function IdnToAscii(string $sStr, bool $bLowerIfAscii = false) : string
 	{
-		$sStr = $bLowerIfAscii ? static::StrMailDomainToLowerIfAscii($sStr) : $sStr;
+		$sStr = $bLowerIfAscii ? static::StrMailDomainToLower($sStr) : $sStr;
 
 		$sUser = '';
 		$sDomain = $sStr;

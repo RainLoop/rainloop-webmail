@@ -409,7 +409,7 @@ trait CardDAV
 		if (\preg_match('/\|(.+)$/', $sUrl, $aMatch) && !empty($aMatch[1]))
 		{
 			$sUserAddressBookNameName = \trim($aMatch[1]);
-			$sUserAddressBookNameName = \MailSo\Base\Utils::StrToLowerIfAscii($sUserAddressBookNameName);
+			$sUserAddressBookNameName = \mb_strtolower($sUserAddressBookNameName);
 
 			$sUrl = \preg_replace('/\|(.+)$/', '', $sUrl);
 		}
@@ -434,7 +434,7 @@ trait CardDAV
 					{
 						foreach ($aPaths as $sKey => $sValue)
 						{
-							$sValue = \MailSo\Base\Utils::StrToLowerIfAscii(\trim($sValue));
+							$sValue = \mb_strtolower(\trim($sValue));
 							if ($sValue === $sUserAddressBookNameName)
 							{
 								$sNewPath = $sKey;
@@ -447,7 +447,7 @@ trait CardDAV
 					{
 						foreach ($aPaths as $sKey => $sValue)
 						{
-							$sValue = \MailSo\Base\Utils::StrToLowerIfAscii($sValue);
+							$sValue = \mb_strtolower($sValue);
 							if (\in_array($sValue, array('contacts', 'default', 'addressbook', 'address book')))
 							{
 								$sNewPath = $sKey;

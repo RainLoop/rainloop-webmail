@@ -29,7 +29,7 @@ trait UserAuth
 
 		$sEmail = \MailSo\Base\Utils::Trim($sEmail);
 		if ($this->Config()->Get('login', 'login_lowercase', true)) {
-			$sEmail = \MailSo\Base\Utils::StrToLowerIfAscii($sEmail);
+			$sEmail = \mb_strtolower($sEmail);
 		}
 
 		if (false === \strpos($sEmail, '@')) {
@@ -104,7 +104,7 @@ trait UserAuth
 
 		$sLogin = $sEmail;
 		if ($this->Config()->Get('login', 'login_lowercase', true)) {
-			$sLogin = \MailSo\Base\Utils::StrToLowerIfAscii($sLogin);
+			$sLogin = \mb_strtolower($sLogin);
 		}
 
 		$this->Plugins()->RunHook('login.credentials', array(&$sEmail, &$sLogin, &$sPassword));

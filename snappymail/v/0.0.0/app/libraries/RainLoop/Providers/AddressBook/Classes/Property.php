@@ -120,7 +120,7 @@ class Property implements \JsonSerializable
 			// lower
 			if ($this->IsEmail())
 			{
-				$this->Value = \MailSo\Base\Utils::StrMailDomainToLowerIfAscii($this->Value);
+				$this->Value = \MailSo\Base\Utils::StrMailDomainToLower($this->Value);
 			}
 
 			if ($this->IsName())

@@ -91,7 +91,7 @@ class Service
 			$bAdmin = !empty($aPaths[0]) && \strtolower($aPaths[0]) === $sAdminPanelKey;
 		}
 		else if (empty($aPaths[0]) &&
-			\MailSo\Base\Utils::StrToLowerIfAscii($sAdminPanelHost) === \MailSo\Base\Utils::StrToLowerIfAscii($this->oHttp->GetHost()))
+			\mb_strtolower($sAdminPanelHost) === \mb_strtolower($this->oHttp->GetHost()))
 		{
 			$bAdmin = true;
 		}

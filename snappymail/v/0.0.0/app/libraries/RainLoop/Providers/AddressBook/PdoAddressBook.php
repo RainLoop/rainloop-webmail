@@ -1020,7 +1020,7 @@ class PdoAddressBook
 					{
 						if ($aItem && !empty($aItem['prop_value']))
 						{
-							$aExists[] = \MailSo\Base\Utils::StrToLowerIfAscii(\trim($aItem['prop_value']));
+							$aExists[] = \mb_strtolower(\trim($aItem['prop_value']));
 						}
 					}
 				}
