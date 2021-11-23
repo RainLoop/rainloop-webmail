@@ -200,13 +200,13 @@ html:not(rl-mobile) {
 	border-left: 6px solid #eee;
 
 	z-index: 100;
-
+/*
 	> * {
 		display: flex;
 		flex: 0 0 auto;
 		order: 0;
 	}
-
+*/
 	&.focused {
 		background-color: rgba(128, 128, 128, 0.1);
 		border-left-color: #ccc;
@@ -229,7 +229,7 @@ html:not(rl-mobile) {
 	}
 
 	.checkboxMessage {
-		padding: 0 8px 0 6px;
+		padding: 0 6px;
 		font-size: 16px;
 	}
 
@@ -418,11 +418,9 @@ html.rl-ctrl-key-pressed .messageListItem {
 			order: 3;
 		}
 	}
-}
 
-.rl-side-preview-pane {
 	.messageList:not(.hideMessageListCheckbox) .subjectParent {
-		margin-left: 30px;
+		margin-left: 28px;
 	}
 }
 
@@ -435,10 +433,6 @@ html:not(.rl-mobile):not(.rl-side-preview-pane) {
 
 		> * {
 			line-height: 25px;
-		}
-
-		.attachmentParent {
-			margin: 6px 8px 0 0;
 		}
 
 		.senderParent {
