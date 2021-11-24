@@ -12,27 +12,11 @@ trait Folders
 
 	private function getFolderCollection(bool $HideUnsubscribed) : ?\MailSo\Mail\FolderCollection
 	{
-		$oFolderCollection = $this->MailClient()->Folders('', '*',
+		return $this->MailClient()->Folders('', '*',
 			$HideUnsubscribed,
 			(int) $this->Config()->Get('labs', 'imap_folder_list_limit', 200),
 			(bool) $this->Config()->Get('labs', 'imap_use_list_status', true)
 		);
-
-		if ($oFolderCollection) {
-			$oAccount = $this->getAccountFromToken();
-			if ($this->GetCapa(false, Capa::QUOTA, $oAccount)) {
-				try {
-//					$aQuota = $this->MailClient()->Quota();
-					$aQuota = $this->MailClient()->QuotaRoot();
-					$oFolderCollection->quotaUsage = $aQuota ? $aQuota[0] * 1024 : null;
-					$oFolderCollection->quotaLimit = $aQuota ? $aQuota[1] * 1024 : null;
-				} catch (\Throwable $oException) {
-					// ignore
-				}
-			}
-		}
-
-		return $oFolderCollection;
 	}
 
 	public function DoFolders() : array
@@ -49,13 +33,14 @@ trait Folders
 
 		if ($oFolderCollection)
 		{
+			$sNamespace = $this->MailClient()->GetNamespace();
+
 			$this->Plugins()->RunHook('filter.folders-post', array($oAccount, $oFolderCollection));
 
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
 			$aSystemFolders = array();
 			$this->recFoldersTypes($oAccount, $oFolderCollection, $aSystemFolders);
-			$oFolderCollection->SystemFolders = $aSystemFolders;
 
 			if (!$this->Config()->Get('labs', 'use_imap_sort', true)) {
 				$oFolderCollection->capabilities = \array_filter($oFolderCollection->capabilities, function($item){
@@ -67,8 +52,7 @@ trait Folders
 			{
 				$bDoItAgain = false;
 
-				$sNamespace = $oFolderCollection->GetNamespace();
-				$sParent = empty($sNamespace) ? '' : \substr($sNamespace, 0, -1);
+				$sParent = \substr($sNamespace, 0, -1);
 
 				$sDelimiter = $oFolderCollection->FindDelimiter();
 
@@ -157,17 +141,49 @@ trait Folders
 					{
 						$aSystemFolders = array();
 						$this->recFoldersTypes($oAccount, $oFolderCollection, $aSystemFolders);
-						$oFolderCollection->SystemFolders = $aSystemFolders;
 					}
 				}
 			}
 
 			if ($oFolderCollection)
 			{
-				$oFolderCollection->FoldersHash = \md5(\implode("\x0", $this->recFoldersNames($oFolderCollection)));
-			}
+				$this->Plugins()->RunHook('filter.folders-complete', array($oAccount, $oFolderCollection));
 
-			$this->Plugins()->RunHook('filter.folders-complete', array($oAccount, $oFolderCollection));
+				$aQuota = null;
+				if ($this->GetCapa(false, Capa::QUOTA, $this->getAccountFromToken())) {
+					try {
+//						$aQuota = $this->MailClient()->Quota();
+						$aQuota = $this->MailClient()->QuotaRoot();
+					} catch (\Throwable $oException) {
+						// ignore
+					}
+				}
+
+				$aCapabilities = \array_filter($this->MailClient()->Capabilities(), function($item){
+					return !\preg_match('/^(IMAP|AUTH|LOGIN|SASL)/', $item);
+				});
+				if (!$this->Config()->Get('labs', 'imap_use_list_status', true)) {
+					$key = \array_search('LIST-STATUS', $aCapabilities);
+					if (false !== $key) {
+						unset($aCapabilities[$key]);
+					}
+				}
+
+				$oFolderCollection = \array_merge(
+					$oFolderCollection->jsonSerialize(),
+					array(
+						'quotaUsage' => $aQuota ? $aQuota[0] * 1024 : null,
+						'quotaLimit' => $aQuota ? $aQuota[1] * 1024 : null,
+						'Namespace' => $sNamespace,
+						'FoldersHash' => \md5(\implode("\x0", $this->recFoldersNames($oFolderCollection))),
+						'IsThreadsSupported' => $this->MailClient()->IsThreadsSupported(),
+						'Optimized' => $oFolderCollection->Optimized,
+						'CountRec' => $oFolderCollection->TotalCount,
+						'SystemFolders' => empty($aSystemFolders) ? null : $aSystemFolders,
+						'Capabilities' => \array_values($aCapabilities)
+					)
+				);
+			}
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $oFolderCollection);

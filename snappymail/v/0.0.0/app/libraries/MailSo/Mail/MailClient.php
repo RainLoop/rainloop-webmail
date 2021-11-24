@@ -61,6 +61,11 @@ class MailClient
 		return $this->oImapClient->IsLoggined();
 	}
 
+	public function Capabilities() : array
+	{
+		return $this->oImapClient->Capability();
+	}
+
 	private function getEnvelopeOrHeadersRequestStringForSimpleList() : string
 	{
 		return \MailSo\Imap\Enumerations\FetchType::BuildBodyCustomHeaderRequest(array(
@@ -1204,12 +1209,8 @@ class MailClient
 
 	public function Folders(string $sParent, string $sListPattern, bool $bUseListSubscribeStatus, int $iOptimizationLimit, bool $bUseListStatus) : ?FolderCollection
 	{
-		$aCapabilities = \array_filter($this->oImapClient->Capability(), function($item){
-			return !\preg_match('/^(IMAP|AUTH|LOGIN|SASL)/', $item);
-		});
-
 		$aImapSubscribedFoldersHelper = null;
-		if (\in_array('LIST-EXTENDED', $aCapabilities)) {
+		if ($this->oImapClient->IsSupported('LIST-EXTENDED')) {
 			$bUseListSubscribeStatus = false;
 		} else if ($bUseListSubscribeStatus) {
 			//\error_log('RFC5258 not supported, using LSUB');
@@ -1228,13 +1229,7 @@ class MailClient
 			}
 		}
 
-		$bUseListStatus = $bUseListStatus && \in_array('LIST-STATUS', $aCapabilities);
-		if (!$bUseListStatus) {
-			$key = \array_search('LIST-STATUS', $aCapabilities);
-			if (false !== $key) {
-				unset($aCapabilities[$key]);
-			}
-		}
+		$bUseListStatus = $bUseListStatus && $this->oImapClient->IsSupported('LIST-STATUS');
 
 		$aFolders = $bUseListStatus
 			? $this->oImapClient->FolderStatusList($sParent, $sListPattern)
@@ -1244,9 +1239,7 @@ class MailClient
 		}
 
 		$oFolderCollection = new FolderCollection;
-		$oFolderCollection->IsThreadsSupported = $this->IsThreadsSupported();
 		$oFolderCollection->Optimized = 10 < $iOptimizationLimit && \count($aFolders) > $iOptimizationLimit;
-		$oFolderCollection->capabilities = $aCapabilities;
 
 		$sINBOX = 'INBOX';
 		$aSortedByLenImapFolders = array();
@@ -1303,7 +1296,11 @@ class MailClient
 			$aSortedByLenImapFolders["\x00".$sINBOX] = $aSortedByLenImapFolders[$sINBOX];
 			unset($aSortedByLenImapFolders[$sINBOX]);
 		}
-
+/*
+		// TODO: use active language
+		$collator = new \Collator('en_US');
+		\uksort($aSortedByLenImapFolders, static fn($a, $b) => $collator->compare($a, $b));
+*/
 		\uksort($aSortedByLenImapFolders, 'strnatcasecmp');
 
 		foreach ($aSortedByLenImapFolders as $oMailFolder)
@@ -1311,13 +1308,9 @@ class MailClient
 			$oFolderCollection->AddWithPositionSearch($oMailFolder);
 		}
 
-		unset($aSortedByLenImapFolders);
+		$oFolderCollection->TotalCount = \count($aSortedByLenImapFolders);
 
-		$oNamespace = $this->oImapClient->GetNamespace();
-		if ($oNamespace)
-		{
-			$oFolderCollection->SetNamespace($oNamespace->GetPersonalNamespace());
-		}
+		unset($aSortedByLenImapFolders);
 
 		return $oFolderCollection;
 	}
@@ -1528,6 +1521,12 @@ class MailClient
 		$this->oImapClient->SetLogger($this->oLogger);
 
 		return $this;
+	}
+
+	public function GetNamespace() : string
+	{
+		$oNamespace = $this->oImapClient->GetNamespace();
+		return $oNamespace ? $oNamespace->GetPersonalNamespace() : '';
 	}
 
 	/**

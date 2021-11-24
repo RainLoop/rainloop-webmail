@@ -1,7 +1,7 @@
 import { AbstractCollectionModel } from 'Model/AbstractCollection';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { isArray, pInt, getKeyByValue } from 'Common/Utils';
+import { isArray, getKeyByValue } from 'Common/Utils';
 import { ClientSideKeyName, FolderType, FolderMetadataKeys } from 'Common/EnumsUser';
 import * as Cache from 'Common/Cache';
 import { Settings, SettingsGet } from 'Common/Globals';
@@ -113,10 +113,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 	}
 
 	storeIt() {
-		const cnt = pInt(this.CountRec);
-
-		FolderUserStore.displaySpecSetting(0 >= cnt
-			|| Math.max(10, Math.min(100, pInt(Settings.app('folderSpecLimit')))) < cnt);
+		FolderUserStore.displaySpecSetting(Settings.app('folderSpecLimit') < this.CountRec);
 
 		if (SystemFolders &&
 			!('' +
@@ -214,7 +211,7 @@ export class FolderModel extends AbstractModel {
 			selected: false,
 			edited: false,
 			subscribed: true,
-			checkable: false,
+			checkable: false, // Check for new messages
 			deleteAccess: false,
 
 			nameForEdit: '',
