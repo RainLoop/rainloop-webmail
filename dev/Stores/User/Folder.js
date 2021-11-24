@@ -52,8 +52,6 @@ export const FolderUserStore = new class {
 
 		self.currentFolder = ko.observable(null).extend({ toggleSubscribeProperty: [self, 'selected'] });
 
-		self.sieveAllowFileintoInbox = !!SettingsGet('SieveAllowFileintoInbox');
-
 		addComputablesTo(self, {
 
 			draftFolderNotEnabled: () => !self.draftFolder() || UNUSED_OPTION_VALUE === self.draftFolder(),

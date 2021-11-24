@@ -2,10 +2,10 @@ import ko from 'ko';
 
 import { FilterAction } from 'Model/Filter';
 import { FilterConditionField, FilterConditionType } from 'Model/FilterCondition';
+import { SettingsGet } from 'Common/Globals';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 
-import { FolderUserStore } from 'Stores/User/Folder';
 import { SieveUserStore } from 'Stores/User/Sieve';
 
 import { decorateKoCommands } from 'Knoin/Knoin';
@@ -30,12 +30,11 @@ class FilterPopupView extends AbstractViewPopup {
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 		this.folderSelectList = ko.computed(() =>
 			folderListOptionsBuilder(
-				[FolderUserStore.sieveAllowFileintoInbox ? '' : 'INBOX'],
+				[SettingsGet('SieveAllowFileintoInbox') ? '' : 'INBOX'],
 				[['', '']],
 				item => item ? item.localName() : ''
 			)
 		);
-
 
 		this.selectedFolderValue.subscribe(() => this.filter() && this.filter().actionValueError(false));
 
