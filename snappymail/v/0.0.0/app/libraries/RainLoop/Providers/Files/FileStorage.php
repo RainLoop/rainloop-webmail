@@ -146,7 +146,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 			$sEmail = $oAccount->ParentEmail();
 			$sSubEmail = $oAccount->Email();
 		} else {
-			$sEmail = $oAccount->Email() ?: 'nobody@unknown.tld';
+			$sEmail = $oAccount->Email();
 			$sSubEmail = '';
 		}
 

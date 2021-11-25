@@ -5,11 +5,6 @@ namespace RainLoop\Actions;
 trait Contacts
 {
 
-	private function GetAccountParentEmail()
-	{
-//		$oAccount instanceof \RainLoop\Model\AdditionalAccount ? $oAccount->ParentEmail() : $oAccount->Email()
-	}
-
 	public function DoSaveContactsSyncData() : array
 	{
 		$oAccount = $this->getAccountFromToken();

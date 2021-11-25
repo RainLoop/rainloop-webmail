@@ -17,7 +17,7 @@ trait Accounts
 
 	protected function GetMainEmail(Account $oAccount)
 	{
-		return $oAccount instanceof AdditionalAccount ? $oAccount->ParentEmail() : $oAccount->Email();
+		return ($oAccount instanceof AdditionalAccount ? $this->getMainAccountFromToken() : $oAccount)->Email();
 	}
 
 	public function GetAccounts(MainAccount $oAccount): array

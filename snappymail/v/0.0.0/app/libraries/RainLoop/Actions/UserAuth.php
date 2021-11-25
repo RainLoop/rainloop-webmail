@@ -116,9 +116,6 @@ trait UserAuth
 		try {
 			if ($oMainAccount) {
 				$oAccount = AdditionalAccount::NewInstanceByLogin($this, $sEmail, $sLogin, $sPassword, $sClientCert, true);
-				if ($oAccount) {
-					$oAccount->SetParentEmail($oMainAccount->Email());
-				}
 			} else {
 				$oAccount = MainAccount::NewInstanceByLogin($this, $sEmail, $sLogin, $sPassword, $sClientCert, true);
 			}
