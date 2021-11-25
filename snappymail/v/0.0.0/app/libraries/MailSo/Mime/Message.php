@@ -593,68 +593,54 @@ class Message
 	{
 		$oResultPart = null;
 
-		$aAttachments = $this->oAttachmentCollection->LinkedAttachments();
-		if (\count($aAttachments))
-		{
-			$oResultPart = new Part;
+		foreach ($this->oAttachmentCollection as $oAttachment) {
+			if ($oAttachment->IsLinked()) {
+				if (!$oResultPart) {
+					$oResultPart = new Part;
+					$oResultPart->Headers->append(
+						new Header(Enumerations\Header::CONTENT_TYPE,
+							Enumerations\MimeType::MULTIPART_RELATED.'; '.
+							(new ParameterCollection)->Add(
+								new Parameter(
+									Enumerations\Parameter::BOUNDARY,
+									$this->generateNewBoundary())
+							)->ToString()
+						)
+					);
+					$oResultPart->SubParts->append($oIncPart);
+				}
 
-			$oResultPart->Headers->append(
-				new Header(Enumerations\Header::CONTENT_TYPE,
-					Enumerations\MimeType::MULTIPART_RELATED.'; '.
-					(new ParameterCollection)->Add(
-						new Parameter(
-							Enumerations\Parameter::BOUNDARY,
-							$this->generateNewBoundary())
-					)->ToString()
-				)
-			);
-
-			$oResultPart->SubParts->append($oIncPart);
-
-			foreach ($aAttachments as $oAttachment)
-			{
 				$oResultPart->SubParts->append($this->createNewMessageAttachmentBody($oAttachment));
 			}
 		}
-		else
-		{
-			$oResultPart = $oIncPart;
-		}
 
-		return $oResultPart;
+		return $oResultPart ?: $oIncPart;
 	}
 
 	private function createNewMessageMixedBody(Part $oIncPart) : Part
 	{
 		$oResultPart = null;
 
-		$aAttachments = $this->oAttachmentCollection->UnlinkedAttachments();
-		if (\count($aAttachments))
-		{
-			$oResultPart = new Part;
+		foreach ($this->oAttachmentCollection as $oAttachment) {
+			if (!$oAttachment->IsLinked()) {
+				if (!$oResultPart) {
+					$oResultPart = new Part;
+					$oResultPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE,
+						Enumerations\MimeType::MULTIPART_MIXED.'; '.
+						(new ParameterCollection)->Add(
+							new Parameter(
+								Enumerations\Parameter::BOUNDARY,
+								$this->generateNewBoundary())
+						)->ToString()
+					);
+					$oResultPart->SubParts->append($oIncPart);
+				}
 
-			$oResultPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE,
-				Enumerations\MimeType::MULTIPART_MIXED.'; '.
-				(new ParameterCollection)->Add(
-					new Parameter(
-						Enumerations\Parameter::BOUNDARY,
-						$this->generateNewBoundary())
-				)->ToString()
-			);
-
-			$oResultPart->SubParts->append($oIncPart);
-
-			foreach ($aAttachments as $oAttachment)
-			{
 				$oResultPart->SubParts->append($this->createNewMessageAttachmentBody($oAttachment));
 			}
 		}
-		else
-		{
-			$oResultPart = $oIncPart;
-		}
 
-		return $oResultPart;
+		return $oResultPart ?: $oIncPart;
 	}
 
 	private function setDefaultHeaders(Part $oIncPart, bool $bWithoutBcc = false) : Part

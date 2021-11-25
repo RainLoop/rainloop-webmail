@@ -34,17 +34,6 @@ class AttachmentCollection extends \MailSo\Base\Collection
 		return $iCount;
 	}
 
-	public function NonInlineCount() : int
-	{
-		$iCount = 0;
-		foreach ($this as $oAttachment) {
-			if ($oAttachment && !$oAttachment->IsInline()) {
-				++$iCount;
-			}
-		}
-		return $iCount;
-	}
-
 	public function SpecData() : array
 	{
 		$aResult = array();

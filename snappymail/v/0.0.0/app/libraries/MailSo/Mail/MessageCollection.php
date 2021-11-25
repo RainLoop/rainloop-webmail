@@ -20,69 +20,62 @@ class MessageCollection extends \MailSo\Base\Collection
 	/**
 	 * @var string
 	 */
-	public $FolderHash;
+	public $FolderHash = '';
 
 	/**
 	 * @var int
 	 */
-	public $MessageCount;
+	public $MessageCount = 0;
 
 	/**
 	 * @var int
 	 */
-	public $MessageUnseenCount;
+	public $MessageUnseenCount = 0;
 
 	/**
 	 * @var int
 	 */
-	public $MessageResultCount;
+	public $MessageResultCount = 0;
 
 	/**
 	 * @var string
 	 */
-	public $FolderName;
+	public $FolderName = '';
 
 	/**
 	 * @var int
 	 */
-	public $Offset;
+	public $Offset = 0;
 
 	/**
 	 * @var int
 	 */
-	public $Limit;
+	public $Limit = 0;
 
 	/**
 	 * @var string
 	 */
-	public $Search;
+	public $Search = '';
 
 	/**
 	 * @var int
 	 */
-	public $UidNext;
+	public $UidNext = 0;
 
 	/**
 	 * @var int
 	 */
-	public $ThreadUid;
+	public $ThreadUid = 0;
 
 	/**
 	 * @var array
 	 */
-	public $NewMessages;
+	public $NewMessages = array();
 
 	/**
 	 * @var bool
 	 */
-	public $Filtered;
-
-	function __construct()
-	{
-		parent::__construct();
-
-		$this->Clear();
-	}
+	public $Filtered = false;
 
 	public function append($oMessage, bool $bToTop = false) : void
 	{
@@ -92,23 +85,7 @@ class MessageCollection extends \MailSo\Base\Collection
 
 	public function Clear() : void
 	{
-		parent::Clear();
-
-		$this->FolderHash = '';
-
-		$this->MessageCount = 0;
-		$this->MessageUnseenCount = 0;
-		$this->MessageResultCount = 0;
-
-		$this->FolderName = '';
-		$this->Offset = 0;
-		$this->Limit = 0;
-		$this->Search = '';
-		$this->UidNext = 0;
-		$this->ThreadUid = 0;
-		$this->NewMessages = array();
-
-		$this->Filtered = false;
+		throw new \BadMethodCallException('disallowed');
 	}
 
 	public function jsonSerialize()

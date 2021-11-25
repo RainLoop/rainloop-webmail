@@ -678,7 +678,7 @@ class Message implements \JsonSerializable
 			'UnsubsribeLinks' => $this->aUnsubsribeLinks,
 			'ReadReceipt' => '',
 
-			'HasAttachments' => $this->oAttachments && 0 < $this->oAttachments->Count(),
+			'HasAttachments' => $this->oAttachments && 0 < $this->oAttachments->count(),
 			'AttachmentsSpecData' => $this->oAttachments ? $this->oAttachments->SpecData() : array(),
 
 			// Flags

@@ -221,7 +221,7 @@ trait Response
 				$aContentLocationUrls = array();
 				$mFoundedContentLocationUrls = array();
 
-				if ($oAttachments && 0 < $oAttachments->Count())
+				if ($oAttachments && 0 < $oAttachments->count())
 				{
 					foreach ($oAttachments as /* @var \MailSo\Mail\Attachment */ $oAttachment)
 					{

@@ -22,35 +22,4 @@ class AttachmentCollection extends \MailSo\Base\Collection
 		assert($oAttachment instanceof Attachment);
 		parent::append($oAttachment, $bToTop);
 	}
-
-	public function LinkedAttachments() : array
-	{
-		$aResult = array();
-		foreach ($this as $oAttachment) {
-			if ($oAttachment->IsLinked()) {
-				$aResult[] = $oAttachment;
-			}
-		}
-		return $aResult;
-	}
-
-	public function UnlinkedAttachments() : array
-	{
-		$aResult = array();
-		foreach ($this as $oAttachment) {
-			if (!$oAttachment->IsLinked()) {
-				$aResult[] = $oAttachment;
-			}
-		}
-		return $aResult;
-	}
-
-	public function SizeOfAttachments() : int
-	{
-		$iResult = 0;
-		foreach ($this as $oAttachment) {
-			$iResult += $oAttachment->FileSize();
-		}
-		return $iResult;
-	}
 }
