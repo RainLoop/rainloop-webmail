@@ -146,6 +146,8 @@ if (defined('APP_VERSION'))
 
 		define('APP_PLUGINS_PATH', APP_PRIVATE_DATA.'plugins/');
 
+		ini_set('default_charset', 'UTF-8');
+		ini_set('internal_encoding', 'UTF-8');
 		mb_internal_encoding('UTF-8');
 		mb_language('uni');
 

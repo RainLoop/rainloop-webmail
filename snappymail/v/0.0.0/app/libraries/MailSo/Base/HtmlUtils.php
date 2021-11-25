@@ -91,27 +91,17 @@ abstract class HtmlUtils
 		$sResult = '';
 		if ($oElem instanceof \DOMDocument)
 		{
-			if (isset($oElem->documentElement))
-			{
-				$sResult = $oElem->saveHTML($oElem->documentElement);
-			}
-			else
-			{
-				$sResult = $oElem->saveHTML();
-			}
+			$sResult = $oElem->saveHTML(isset($oElem->documentElement) ? $oElem->documentElement : null);
 		}
-		else if ($oElem)
+		else if ($oDom)
 		{
-			if ($oDom)
-			{
-				$sResult = $oDom->saveHTML($oElem);
-			}
-			else
-			{
-				$oTempDoc = self::createDOMDocument();
-				$oTempDoc->appendChild($oTempDoc->importNode($oElem->cloneNode(true), true));
-				$sResult = $oTempDoc->saveHTML();
-			}
+			$sResult = $oDom->saveHTML($oElem);
+		}
+		else
+		{
+			$oTempDoc = self::createDOMDocument();
+			$oTempDoc->appendChild($oTempDoc->importNode($oElem->cloneNode(true), true));
+			$sResult = $oTempDoc->saveHTML();
 		}
 
 		return \trim($sResult);
@@ -188,8 +178,8 @@ abstract class HtmlUtils
 		$sBodyAttrs = \preg_replace('/xmlns:[a-z]="[^"]*"/i', '', $sBodyAttrs);
 		$sBodyAttrs = \preg_replace('/xmlns:[a-z]=\'[^\']*\'/i', '', $sBodyAttrs);
 
-		$sHtmlAttrs = trim($sHtmlAttrs);
-		$sBodyAttrs = trim($sBodyAttrs);
+		$sHtmlAttrs = \trim($sHtmlAttrs);
+		$sBodyAttrs = \trim($sBodyAttrs);
 
 		return $sHtml;
 	}
@@ -1078,8 +1068,8 @@ abstract class HtmlUtils
 
 		$sText = \strtr($sText, array(
 			"\n" => "<br />",
-			"\t" => '&nbsp;&nbsp;&nbsp;',
-			'  ' => '&nbsp;&nbsp;'
+			"\t" => "\xC2\xA0\xC2\xA0\xC2\xA0\xC2\xA0",
+			'  ' => "\xC2\xA0\xC2\xA0"
 		));
 
 		return $sText;
@@ -1089,20 +1079,20 @@ abstract class HtmlUtils
 	{
 		$sText = \MailSo\Base\Utils::StripSpaces($sText);
 
+		$sText = \preg_replace_callback('/<h([1-6])[^>]*>/', function($m) {
+			return "\n\n" . \str_repeat('#', $m[1]) . ' ';
+		}, $sText);
+
 		$sText = \preg_replace(array(
 			"/\r/",
 			"/[\n\t]+/",
-			'/<script[^>]*>.*?<\/script>/i',
-			'/<style[^>]*>.*?<\/style>/i',
-			'/<title[^>]*>.*?<\/title>/i',
-			'/<h[123][^>]*>(.+?)<\/h[123]>/i',
-			'/<h[456][^>]*>(.+?)<\/h[456]>/i',
+			'/<script[^>]*>.*?<\/script>|<style[^>]*>.*?<\/style>|<title[^>]*>.*?<\/title>/i',
+			'/<\/h[1-6]>/i',
 			'/<p[^>]*>/i',
 			'/<br[^>]*>/i',
 			'/<b[^>]*>(.+?)<\/b>/i',
 			'/<i[^>]*>(.+?)<\/i>/i',
-			'/(<ul[^>]*>|<\/ul>)/i',
-			'/(<ol[^>]*>|<\/ol>)/i',
+			'/<ul[^>]*>|<\/ul>|<ol[^>]*>|<\/ol>/i',
 			'/<li[^>]*>/i',
 			'/<a[^>]*href="([^"]+)"[^>]*>(.+?)<\/a>/i',
 			'/<hr[^>]*>/i',
@@ -1110,40 +1100,15 @@ abstract class HtmlUtils
 			'/(<tr[^>]*>|<\/tr>)/i',
 			'/<td[^>]*>(.+?)<\/td>/i',
 			'/<th[^>]*>(.+?)<\/th>/i',
-			'/&nbsp;/i',
-			'/&quot;/i',
-			'/&amp;/i',
-			'/&copy;/i',
-			'/&trade;/i',
-			'/&#8220;/',
-			'/&#8221;/',
-			'/&#8211;/',
-			'/&#8217;/',
-			'/&#38;/',
-			'/&#169;/',
-			'/&#8482;/',
-			'/&#151;/',
-			'/&#147;/',
-			'/&#148;/',
-			'/&#149;/',
-			'/&reg;/i',
-			'/&bull;/i',
-			'/&[&;]+;/i',
-			'/&#39;/',
-			'/&#160;/'
 		), array(
 			'',
 			' ',
 			'',
-			'',
-			'',
-			"\n\n\\1\n\n",
-			"\n\n\\1\n\n",
+			"\n\n",
 			"\n\n\t",
 			"\n",
 			'\\1',
 			'\\1',
-			"\n\n",
 			"\n\n",
 			"\n\t* ",
 			'\\2 (\\1)',
@@ -1151,28 +1116,7 @@ abstract class HtmlUtils
 			"\n",
 			"\n",
 			"\t\\1\n",
-			"\t\\1\n",
-			' ',
-			'"',
-			'&',
-			'(c)',
-			'(tm)',
-			'"',
-			'"',
-			'-',
-			"'",
-			'&',
-			'(c)',
-			'(tm)',
-			'--',
-			'"',
-			'"',
-			'*',
-			'(R)',
-			'*',
-			'',
-			'\'',
-			''
+			"\t\\1\n"
 		), $sText);
 
 		$sText = \str_ireplace('<div>',"\n<div>", $sText);
@@ -1180,13 +1124,7 @@ abstract class HtmlUtils
 		$sText = \preg_replace("/\n\\s+\n/", "\n", $sText);
 		$sText = \preg_replace("/[\n]{3,}/", "\n\n", $sText);
 
-		$sText = \preg_replace(array(
-			'/&gt;/i',
-			'/&lt;/i'
-		), array(
-			'>',
-			'<'
-		), $sText);
+		$sText = \html_entity_decode($sText, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401, 'UTF-8');
 
 		return \trim($sText);
 	}
