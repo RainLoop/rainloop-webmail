@@ -105,8 +105,8 @@ trait Accounts
 
 		if (\strlen($sEmailToDelete) && isset($aAccounts[$sEmailToDelete])) {
 			$bReload = false;
-//			$oAccount = $this->getAccountFromToken();
-			if ($oAccount->Email() === $sEmailToDelete) {
+			$oAccount = $this->getAccountFromToken();
+			if ($oAccount instanceof AdditionalAccount && $oAccount->Email() === $sEmailToDelete) {
 				Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
 				$bReload = true;
 			}
