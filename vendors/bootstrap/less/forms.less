@@ -81,6 +81,8 @@ input[type="checkbox"] {
 
 // Make select elements obey height by applying a border
 select, .select {
+  // Safari requires -webkit-
+  -webkit-appearance: none;
   appearance: none;
   background: @inputBackground url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' height='10px' width='15px'><text x='0' y='10' fill='rgb(85,85,85)'>▾</text></svg>") right center/1em no-repeat border-box;
   border: 1px solid @inputBorder;
