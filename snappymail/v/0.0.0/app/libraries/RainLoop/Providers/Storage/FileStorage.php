@@ -86,15 +86,6 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	}
 
 	/**
-	 * Replace control characters, ampersand, spaces and reserved characters (based on Win95 VFAT)
-	 * en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
-	 */
-	protected static function fixName($filename)
-	{
-		return \preg_replace('#[|\\\\?*<":>+\\[\\]/&\\s\\pC]#su', '-', $filename);
-	}
-
-	/**
 	 * @param \RainLoop\Model\Account|string|null $mAccount
 	 */
 	protected function generateFileName($mAccount, int $iStorageType, string $sKey, bool $bMkDir = false, bool $bForDeleteAction = false) : string
@@ -125,15 +116,15 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 					return '';
 				}
 				if (\is_dir("{$this->sDataPath}/cfg")) {
-					FixFileStorage::FixIt($this->sDataPath);
+					\SnappyMail\Upgrade::FileStorage($this->sDataPath);
 				}
 				$aEmail = \explode('@', $sEmail ?: 'nobody@unknown.tld');
 				$sDomain = \trim(1 < \count($aEmail) ? \array_pop($aEmail) : '');
 				$sFilePath = $this->sDataPath
-					.'/'.static::fixName($sDomain ?: 'unknown.tld')
-					.'/'.static::fixName(\implode('@', $aEmail) ?: '.unknown')
-					.'/'.($sSubEmail ? static::fixName($sSubEmail).'/' : '')
-					.($sKey ? static::fixName($sKey) : '');
+					.'/'.\RainLoop\Utils::fixName($sDomain ?: 'unknown.tld')
+					.'/'.\RainLoop\Utils::fixName(\implode('@', $aEmail) ?: '.unknown')
+					.'/'.($sSubEmail ? \RainLoop\Utils::fixName($sSubEmail).'/' : '')
+					.($sKey ? \RainLoop\Utils::fixName($sKey) : '');
 				break;
 			default:
 				throw new \Exception("Invalid storage type {$iStorageType}");

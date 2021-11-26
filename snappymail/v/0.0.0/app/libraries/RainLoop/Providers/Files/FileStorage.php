@@ -131,15 +131,6 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 		return true;
 	}
 
-	/**
-	 * Replace control characters, ampersand, spaces and reserved characters (based on Win95 VFAT)
-	 * en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
-	 */
-	private static function fixName($filename)
-	{
-		return \preg_replace('#[|\\\\?*<":>+\\[\\]/&\\s\\pC]#su', '-', $filename);
-	}
-
 	private function generateFullFileName(\RainLoop\Model\Account $oAccount, string $sKey, bool $bMkDir = false) : string
 	{
 		if ($oAccount instanceof \RainLoop\Model\AdditionalAccount) {
@@ -153,9 +144,9 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 		$aEmail = \explode('@', $sEmail ?: 'nobody@unknown.tld');
 		$sDomain = \trim(1 < \count($aEmail) ? \array_pop($aEmail) : '');
 		$sFilePath = $this->sDataPath
-			.'/'.static::fixName($sDomain ?: 'unknown.tld')
-			.'/'.static::fixName(\implode('@', $aEmail) ?: '.unknown')
-			.($sSubEmail ? '/'.static::fixName($sSubEmail) : '')
+			.'/'.\RainLoop\Utils::fixName($sDomain ?: 'unknown.tld')
+			.'/'.\RainLoop\Utils::fixName(\implode('@', $aEmail) ?: '.unknown')
+			.($sSubEmail ? '/'.\RainLoop\Utils::fixName($sSubEmail) : '')
 			.'/.files/'.\sha1($sKey);
 
 		if ($bMkDir && !\is_dir(\dirname($sFilePath)) && !\mkdir(\dirname($sFilePath), 0700, true)) {

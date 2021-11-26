@@ -240,4 +240,13 @@ class Utils
 		return @\parse_ini_file($sFileName, !!$bProcessSections) ?: array();
 //		return @\parse_ini_string(\file_get_contents($sFileName), $bProcessSections) ?: array();
 	}
+
+	/**
+	 * Replace control characters, ampersand, spaces and reserved characters (based on Win95 VFAT)
+	 * en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
+	 */
+	public static function fixName($filename)
+	{
+		return \preg_replace('#[|\\\\?*<":>+\\[\\]/&\\s\\pC]#su', '-', $filename);
+	}
 }

@@ -7,6 +7,36 @@ use RainLoop\Providers\Storage\Enumerations\StorageType;
 abstract class Upgrade
 {
 
+	public static function FileStorage(string $sDataPath)
+	{
+		// /cfg/ex/example@example.com
+		foreach (\glob("{$sDataPath}/cfg/*", GLOB_ONLYDIR) as $sOldDir) {
+			foreach (\glob("{$sOldDir}/*", GLOB_ONLYDIR) as $sDomainDir) {
+				$aEmail = \explode('@', \basename($sDomainDir));
+				$sDomain = \trim(1 < \count($aEmail) ? \array_pop($aEmail) : '');
+				$sNewDir = $sDataPath
+					.'/'.\RainLoop\Utils::fixName($sDomain ?: 'unknown.tld')
+					.'/'.\RainLoop\Utils::fixName(\implode('@', $aEmail) ?: '.unknown');
+				if (\is_dir($sNewDir) || \mkdir($sNewDir, 0700, true)) {
+					foreach (\glob("{$sDomainDir}/*") as $sItem) {
+						$sName = \basename($sItem);
+						if ('sign_me' === $sName) {
+							// Security issue
+							// https://github.com/RainLoop/rainloop-webmail/issues/2133
+							\unlink($sItem);
+						} else {
+							\rename($sItem, "{$sNewDir}/{$sName}");
+						}
+					}
+					\MailSo\Base\Utils::RecRmDir($sDomainDir);
+				}
+			}
+		}
+		\MailSo\Base\Utils::RecRmDir("{$sDataPath}/cfg");
+		\MailSo\Base\Utils::RecRmDir("{$sDataPath}/data");
+		\MailSo\Base\Utils::RecRmDir("{$sDataPath}/files");
+	}
+
 	/**
 	 * Attempt to convert the old less secure data into better secured data
 	 */
