@@ -38,7 +38,7 @@ abstract class Utils
 			case 'unicode-1-1-utf-7':
 			case 'unicode-1-utf-7':
 			case 'unicode-utf-7':
-				$sEncoding = Enumerations\Charset::UTF_7;
+				$sEncoding = 'utf-7';
 				break;
 			case 'utf8':
 			case 'utf-8':
@@ -48,7 +48,7 @@ abstract class Utils
 			case 'utf-7imap':
 			case 'utf7-imap':
 			case 'utf-7-imap':
-				$sEncoding = Enumerations\Charset::UTF_7_IMAP;
+				$sEncoding = 'utf7-imap';
 				break;
 			case 'ks-c-5601-1987':
 			case 'ks_c_5601-1987':
@@ -60,7 +60,7 @@ abstract class Utils
 				break;
 			case 'iso-8859-i':
 			case 'iso-8859-8-i':
-				$sEncoding = Enumerations\Charset::ISO_8859_8;
+				$sEncoding = 'iso-8859-8';
 				break;
 		}
 
@@ -73,7 +73,7 @@ abstract class Utils
 
 		if (Enumerations\Charset::UTF_8 !== $sCharset &&
 			static::IsUtf8($sValue) &&
-			false === \strpos($sCharset, Enumerations\Charset::ISO_2022_JP)
+			!\str_contains($sCharset, Enumerations\Charset::ISO_2022_JP)
 		)
 		{
 			$sCharset = Enumerations\Charset::UTF_8;
@@ -187,7 +187,7 @@ abstract class Utils
 			if ($sFromEncoding === Enumerations\Charset::ISO_8859_1) {
 				return \utf8_encode($sInputString);
 			}
-			if ($sFromEncoding === Enumerations\Charset::UTF_7_IMAP) {
+			if ($sFromEncoding === 'utf7-imap') {
 				return static::Utf7ModifiedToUtf8($sInputString);
 			}
 		}
@@ -196,7 +196,7 @@ abstract class Utils
 			if ($sToEncoding === Enumerations\Charset::ISO_8859_1) {
 				return \utf8_decode($sInputString);
 			}
-			if ($sToEncoding === Enumerations\Charset::UTF_7_IMAP) {
+			if ($sToEncoding === 'utf7-imap') {
 				return static::Utf8ToUtf7Modified($sInputString);
 			}
 		}

@@ -41,7 +41,7 @@ class Test
 	{
 		if (!\in_array(self::STREAM_NAME, \stream_get_wrappers()))
 		{
-			\stream_wrapper_register(self::STREAM_NAME, '\MailSo\Base\StreamWrappers\Test');
+			\stream_wrapper_register(self::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\Test');
 		}
 
 		$sHashName = \md5(\microtime(true).\rand(1000, 9999));

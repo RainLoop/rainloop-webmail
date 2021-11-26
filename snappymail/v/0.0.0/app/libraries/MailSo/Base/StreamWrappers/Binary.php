@@ -151,7 +151,7 @@ class Binary
 	{
 		if (!\in_array(self::STREAM_NAME, \stream_get_wrappers()))
 		{
-			\stream_wrapper_register(self::STREAM_NAME, '\MailSo\Base\StreamWrappers\Binary');
+			\stream_wrapper_register(self::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\Binary');
 		}
 
 		if (null === $sUtilsDecodeOrEncodeFunctionName || !\strlen($sUtilsDecodeOrEncodeFunctionName))

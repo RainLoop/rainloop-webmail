@@ -52,7 +52,7 @@ class Literal
 	{
 		if (!\in_array(self::STREAM_NAME, stream_get_wrappers()))
 		{
-			\stream_wrapper_register(self::STREAM_NAME, '\MailSo\Base\StreamWrappers\Literal');
+			\stream_wrapper_register(self::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\Literal');
 		}
 
 		$sHashName = \md5(\microtime(true).\rand(1000, 9999));

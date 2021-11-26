@@ -37,7 +37,7 @@ class TempFile
 	{
 		if (!in_array(self::STREAM_NAME, stream_get_wrappers()))
 		{
-			stream_wrapper_register(self::STREAM_NAME, '\MailSo\Base\StreamWrappers\TempFile');
+			stream_wrapper_register(self::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\TempFile');
 		}
 	}
 

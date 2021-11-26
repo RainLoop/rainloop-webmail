@@ -60,7 +60,7 @@ class SubStreams
 	{
 		if (!\in_array(self::STREAM_NAME, \stream_get_wrappers()))
 		{
-			\stream_wrapper_register(self::STREAM_NAME, '\MailSo\Base\StreamWrappers\SubStreams');
+			\stream_wrapper_register(self::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\SubStreams');
 		}
 
 		$sHashName = \MailSo\Base\Utils::Sha1Rand();
