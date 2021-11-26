@@ -131,11 +131,11 @@ trait Accounts
 			$aResult['IncLogin'] = $oAccount->IncLogin();
 			$aResult['OutLogin'] = $oAccount->OutLogin();
 			$aResult['AccountHash'] = $oAccount->Hash();
-			$aResult['MainEmail'] = ($oAccount instanceof \RainLoop\Model\AdditionalAccount)
+			$aResult['MainEmail'] = ($oAccount instanceof AdditionalAccount)
 				? $oAccount->ParentEmail() : '';
 			$aResult['ContactsIsAllowed'] = $this->AddressBookProvider($oAccount)->IsActive();
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
-			if ($oSettingsLocal instanceof Settings) {
+			if ($oSettingsLocal instanceof \RainLoop\Settings) {
 				$aResult['SentFolder'] = (string) $oSettingsLocal->GetConf('SentFolder', '');
 				$aResult['DraftFolder'] = (string) $oSettingsLocal->GetConf('DraftFolder', '');
 				$aResult['SpamFolder'] = (string) $oSettingsLocal->GetConf('SpamFolder', '');
