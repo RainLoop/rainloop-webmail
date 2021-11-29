@@ -6,7 +6,7 @@ class stdClass extends \stdClass {};
 class Exception extends \Exception {};
 
 /**
- * lessphp v0.3.9
+ * lessphp v0.3.9-sm
  * http://leafo.net/lessphp
  *
  * LESS CSS compiler, adapted from http://lesscss.org
@@ -15,788 +15,68 @@ class Exception extends \Exception {};
  * Licensed under MIT or GPLv3, see LICENSE
  */
 
-
-/**
- * The LESS compiler and parser.
- *
- * Converting LESS to CSS is a three stage process. The incoming file is parsed
- * by `lessc_parser` into a syntax tree, then it is compiled into another tree
- * representing the CSS structure by `lessc`. The CSS tree is fed into a
- * formatter, like `lessc_formatter` which then outputs CSS as a string.
- *
- * During the first compile, all values are *reduced*, which means that their
- * types are brought to the lowest form before being dump as strings. This
- * handles math equations, variable dereferences, and the like.
- *
- * The `parse` function of `lessc` is the entry point.
- *
- * In summary:
- *
- * The `lessc` class creates an intstance of the parser, feeds it LESS code,
- * then transforms the resulting tree to a CSS tree. This class also holds the
- * evaluation context, such as all available mixins and variables at any given
- * time.
- *
- * The `lessc_parser` class is only concerned with parsing its input.
- *
- * The `lessc_formatter` takes a CSS tree, and dumps it to a formatted string,
- * handling things like indentation.
- */
-class lessc {
-	static public $VERSION = "v0.3.9";
-
-	static protected $TRUE = array("keyword", "true");
-	static protected $FALSE = array("keyword", "false");
-
-	protected $libFunctions = array();
-	protected $registeredVars = array();
-	protected $preserveComments = false;
-
-	public $vPrefix = '@'; // prefix of abstract properties
-	public $mPrefix = '$'; // prefix of abstract blocks
-	public $parentSelector = '&';
-
-	public $importDisabled = false;
-	public $importDir = '';
-
-	protected $numberPrecision = null;
-
-	// set to the parser that generated the current line when compiling
-	// so we know how to create error messages
-	protected $sourceParser = null;
-	protected $sourceLoc = null;
-
-	static public $defaultValue = array("keyword", "");
-
-	static protected $nextImportId = 0; // uniquely identify imports
-
-	// attempts to find the path of an import url, returns null for css files
-	protected function findImport($url) {
-		foreach ((array)$this->importDir as $dir) {
-			$full = $dir.(substr($dir, -1) != '/' ? '/' : '').$url;
-			if ($this->fileExists($file = $full.'.less') || $this->fileExists($file = $full)) {
-				return $file;
-			}
-		}
-
-		return null;
-	}
-
-	protected function fileExists($name) {
-		return is_file($name);
-	}
-
-	public static function compressList($items, $delim) {
-		if (!isset($items[1]) && isset($items[0])) return $items[0];
-		else return array('list', $delim, $items);
-	}
-
-	public static function preg_quote($what) {
-		return preg_quote($what, '/');
-	}
-
-	protected function tryImport($importPath, $parentBlock, $out) {
-		if ($importPath[0] == "function" && $importPath[1] == "url") {
-			$importPath = $this->flattenList($importPath[2]);
-		}
-
-		$str = $this->coerceString($importPath);
-		if ($str === null) return false;
-
-		$url = $this->compileValue($this->lib_e($str));
-
-		// don't import if it ends in css
-		if (substr_compare($url, '.css', -4, 4) === 0) return false;
-
-		$realPath = $this->findImport($url);
-		if ($realPath === null) return false;
-
-		if ($this->importDisabled) {
-			return array(false, "/* import disabled */");
-		}
-
-		$this->addParsedFile($realPath);
-		$parser = $this->makeParser($realPath);
-		$root = $parser->parse(file_get_contents($realPath));
-
-		// set the parents of all the block props
-		foreach ($root->props as $prop) {
-			if ($prop[0] == "block") {
-				$prop[1]->parent = $parentBlock;
-			}
-		}
-
-		// copy mixins into scope, set their parents
-		// bring blocks from import into current block
-		// TODO: need to mark the source parser	these came from this file
-		foreach ($root->children as $childName => $child) {
-			if (isset($parentBlock->children[$childName])) {
-				$parentBlock->children[$childName] = array_merge(
-					$parentBlock->children[$childName],
-					$child);
-			} else {
-				$parentBlock->children[$childName] = $child;
-			}
-		}
-
-		$pi = pathinfo($realPath);
-		$dir = $pi["dirname"];
-
-		list($top, $bottom) = $this->sortProps($root->props, true);
-		$this->compileImportedProps($top, $parentBlock, $out, $parser, $dir);
-
-		return array(true, $bottom, $parser, $dir);
-	}
-
-	protected function compileImportedProps($props, $block, $out, $sourceParser, $importDir) {
-		$oldSourceParser = $this->sourceParser;
-
-		$oldImport = $this->importDir;
-
-		// TODO: this is because the importDir api is stupid
-		$this->importDir = (array)$this->importDir;
-		array_unshift($this->importDir, $importDir);
-
-		foreach ($props as $prop) {
-			$this->compileProp($prop, $block, $out);
-		}
-
-		$this->importDir = $oldImport;
-		$this->sourceParser = $oldSourceParser;
+trait lessc_lib
+{
+	protected function assertNumber($value, $error = "expecting number") {
+		if ($value[0] == "number") return $value[1];
+		$this->throwError($error);
 	}
 
 	/**
-	 * Recursively compiles a block.
-	 *
-	 * A block is analogous to a CSS block in most cases. A single LESS document
-	 * is encapsulated in a block when parsed, but it does not have parent tags
-	 * so all of it's children appear on the root level when compiled.
-	 *
-	 * Blocks are made up of props and children.
-	 *
-	 * Props are property instructions, array tuples which describe an action
-	 * to be taken, eg. write a property, set a variable, mixin a block.
-	 *
-	 * The children of a block are just all the blocks that are defined within.
-	 * This is used to look up mixins when performing a mixin.
-	 *
-	 * Compiling the block involves pushing a fresh environment on the stack,
-	 * and iterating through the props, compiling each one.
-	 *
-	 * See lessc::compileProp()
-	 *
+	 * Helper function to get arguments for color manipulation functions.
+	 * takes a list that contains a color like thing and a percentage
 	 */
-	protected function compileBlock($block) {
-		switch ($block->type) {
-		case "root":
-			$this->compileRoot($block);
-			break;
-		case null:
-			$this->compileCSSBlock($block);
-			break;
-		case "media":
-			$this->compileMedia($block);
-			break;
-		case "directive":
-			$name = "@" . $block->name;
-			if (!empty($block->value)) {
-				$name .= " " . $this->compileValue($this->reduce($block->value));
-			}
-
-			$this->compileNestedBlock($block, array($name));
-			break;
-		default:
-			$this->throwError("unknown block type: $block->type\n");
+	protected function colorArgs($args) {
+		if ($args[0] != 'list' || count($args[2]) < 2) {
+			return array(array('color', 0, 0, 0), 0);
 		}
+		list($color, $delta) = $args[2];
+		$color = $this->assertColor($color);
+		$delta = floatval($delta[1]);
+
+		return array($color, $delta);
 	}
 
-	protected function compileCSSBlock($block) {
-		$env = $this->pushEnv();
+	protected function toHSL($color) {
+		if ($color[0] == 'hsl') return $color;
 
-		$selectors = $this->compileSelectors($block->tags);
-		$env->selectors = $this->multiplySelectors($selectors);
-		$out = $this->makeOutputBlock(null, $env->selectors);
+		$r = $color[1] / 255;
+		$g = $color[2] / 255;
+		$b = $color[3] / 255;
 
-		$this->scope->children[] = $out;
-		$this->compileProps($block, $out);
+		$min = min($r, $g, $b);
+		$max = max($r, $g, $b);
 
-		$block->scope = $env; // mixins carry scope with them!
-		$this->popEnv();
-	}
-
-	protected function compileMedia($media) {
-		$env = $this->pushEnv($media);
-		$parentScope = $this->mediaParent($this->scope);
-
-		$query = $this->compileMediaQuery($this->multiplyMedia($env));
-
-		$this->scope = $this->makeOutputBlock($media->type, array($query));
-		$parentScope->children[] = $this->scope;
-
-		$this->compileProps($media, $this->scope);
-
-		if (count($this->scope->lines) > 0) {
-			$orphanSelelectors = $this->findClosestSelectors();
-			if (!is_null($orphanSelelectors)) {
-				$orphan = $this->makeOutputBlock(null, $orphanSelelectors);
-				$orphan->lines = $this->scope->lines;
-				array_unshift($this->scope->children, $orphan);
-				$this->scope->lines = array();
-			}
-		}
-
-		$this->scope = $this->scope->parent;
-		$this->popEnv();
-	}
-
-	protected function mediaParent($scope) {
-		while (!empty($scope->parent)) {
-			if (!empty($scope->type) && $scope->type != "media") {
-				break;
-			}
-			$scope = $scope->parent;
-		}
-
-		return $scope;
-	}
-
-	protected function compileNestedBlock($block, $selectors) {
-		$this->pushEnv($block);
-		$this->scope = $this->makeOutputBlock($block->type, $selectors);
-		$this->scope->parent->children[] = $this->scope;
-
-		$this->compileProps($block, $this->scope);
-
-		$this->scope = $this->scope->parent;
-		$this->popEnv();
-	}
-
-	protected function compileRoot($root) {
-		$this->pushEnv();
-		$this->scope = $this->makeOutputBlock($root->type);
-		$this->compileProps($root, $this->scope);
-		$this->popEnv();
-	}
-
-	protected function compileProps($block, $out) {
-		foreach ($this->sortProps($block->props) as $prop) {
-			$this->compileProp($prop, $block, $out);
-		}
-	}
-
-	protected function sortProps($props, $split = false) {
-		$vars = array();
-		$imports = array();
-		$other = array();
-
-		foreach ($props as $prop) {
-			switch ($prop[0]) {
-			case "assign":
-				if (isset($prop[1][0]) && $prop[1][0] == $this->vPrefix) {
-					$vars[] = $prop;
-				} else {
-					$other[] = $prop;
-				}
-				break;
-			case "import":
-				$id = self::$nextImportId++;
-				$prop[] = $id;
-				$imports[] = $prop;
-				$other[] = array("import_mixin", $id);
-				break;
-			default:
-				$other[] = $prop;
-			}
-		}
-
-		if ($split) {
-			return array(array_merge($vars, $imports), $other);
+		$L = ($min + $max) / 2;
+		if ($min == $max) {
+			$S = $H = 0;
 		} else {
-			return array_merge($vars, $imports, $other);
-		}
-	}
-
-	protected function compileMediaQuery($queries) {
-		$compiledQueries = array();
-		foreach ($queries as $query) {
-			$parts = array();
-			foreach ($query as $q) {
-				switch ($q[0]) {
-				case "mediaType":
-					$parts[] = implode(" ", array_slice($q, 1));
-					break;
-				case "mediaExp":
-					if (isset($q[2])) {
-						$parts[] = "($q[1]: " .
-							$this->compileValue($this->reduce($q[2])) . ")";
-					} else {
-						$parts[] = "($q[1])";
-					}
-					break;
-				case "variable":
-					$parts[] = $this->compileValue($this->reduce($q));
-				break;
-				}
+			if ($L < 0.5) {
+				$S = ($max - $min)/($max + $min);
+			} else {
+				$S = ($max - $min)/(2.0 - $max - $min);
+			}
+			if ($r == $max) {
+				$H = ($g - $b)/($max - $min);
+			} elseif ($g == $max) {
+				$H = 2.0 + ($b - $r)/($max - $min);
+			} elseif ($b == $max) {
+				$H = 4.0 + ($r - $g)/($max - $min);
 			}
 
-			if (count($parts) > 0) {
-				$compiledQueries[] =  implode(" and ", $parts);
-			}
 		}
 
-		$out = "@media";
-		if (!empty($parts)) {
-			$out .= " " .
-				implode($this->formatter->selectorSeparator, $compiledQueries);
+		$out = array('hsl',
+			($H < 0 ? $H + 6 : $H)*60,
+			$S * 100,
+			$L * 100,
+		);
+
+		if (count($color) > 4) {
+			// copy alpha
+			$out[] = $color[4];
 		}
 		return $out;
-	}
-
-	protected function multiplyMedia($env, $childQueries = null) {
-		if (is_null($env) ||
-			!empty($env->block->type) && $env->block->type != "media"
-		) {
-			return $childQueries;
-		}
-
-		// plain old block, skip
-		if (empty($env->block->type)) {
-			return $this->multiplyMedia($env->parent, $childQueries);
-		}
-
-		$out = array();
-		$queries = $env->block->queries;
-		if (is_null($childQueries)) {
-			$out = $queries;
-		} else {
-			foreach ($queries as $parent) {
-				foreach ($childQueries as $child) {
-					$out[] = array_merge($parent, $child);
-				}
-			}
-		}
-
-		return $this->multiplyMedia($env->parent, $out);
-	}
-
-	protected function expandParentSelectors(&$tag, $replace) {
-		$parts = explode("$&$", $tag);
-		$count = 0;
-		foreach ($parts as &$part) {
-			$part = str_replace($this->parentSelector, $replace, $part, $c);
-			$count += $c;
-		}
-		$tag = implode($this->parentSelector, $parts);
-		return $count;
-	}
-
-	protected function findClosestSelectors() {
-		$env = $this->env;
-		$selectors = null;
-		while ($env !== null) {
-			if (isset($env->selectors)) {
-				$selectors = $env->selectors;
-				break;
-			}
-			$env = $env->parent;
-		}
-
-		return $selectors;
-	}
-
-
-	// multiply $selectors against the nearest selectors in env
-	protected function multiplySelectors($selectors) {
-		// find parent selectors
-
-		$parentSelectors = $this->findClosestSelectors();
-		if (is_null($parentSelectors)) {
-			// kill parent reference in top level selector
-			foreach ($selectors as &$s) {
-				$this->expandParentSelectors($s, "");
-			}
-
-			return $selectors;
-		}
-
-		$out = array();
-		foreach ($parentSelectors as $parent) {
-			foreach ($selectors as $child) {
-				$count = $this->expandParentSelectors($child, $parent);
-
-				// don't prepend the parent tag if & was used
-				if ($count > 0) {
-					$out[] = trim($child);
-				} else {
-					$out[] = trim($parent . ' ' . $child);
-				}
-			}
-		}
-
-		return $out;
-	}
-
-	// reduces selector expressions
-	protected function compileSelectors($selectors) {
-		$out = array();
-
-		foreach ($selectors as $s) {
-			if (is_array($s)) {
-				list(, $value) = $s;
-				$out[] = trim($this->compileValue($this->reduce($value)));
-			} else {
-				$out[] = $s;
-			}
-		}
-
-		return $out;
-	}
-
-	protected function eq($left, $right) {
-		return $left == $right;
-	}
-
-	protected function patternMatch($block, $callingArgs) {
-		// match the guards if it has them
-		// any one of the groups must have all its guards pass for a match
-		if (!empty($block->guards)) {
-			$groupPassed = false;
-			foreach ($block->guards as $guardGroup) {
-				foreach ($guardGroup as $guard) {
-					$this->pushEnv();
-					$this->zipSetArgs($block->args, $callingArgs);
-
-					$negate = false;
-					if ($guard[0] == "negate") {
-						$guard = $guard[1];
-						$negate = true;
-					}
-
-					$passed = $this->reduce($guard) == self::$TRUE;
-					if ($negate) $passed = !$passed;
-
-					$this->popEnv();
-
-					if ($passed) {
-						$groupPassed = true;
-					} else {
-						$groupPassed = false;
-						break;
-					}
-				}
-
-				if ($groupPassed) break;
-			}
-
-			if (!$groupPassed) {
-				return false;
-			}
-		}
-
-		$numCalling = count($callingArgs);
-
-		if (empty($block->args)) {
-			return $block->isVararg || $numCalling == 0;
-		}
-
-		$i = -1; // no args
-		// try to match by arity or by argument literal
-		foreach ($block->args as $i => $arg) {
-			switch ($arg[0]) {
-			case "lit":
-				if (empty($callingArgs[$i]) || !$this->eq($arg[1], $callingArgs[$i])) {
-					return false;
-				}
-				break;
-			case "arg":
-				// no arg and no default value
-				if (!isset($callingArgs[$i]) && !isset($arg[2])) {
-					return false;
-				}
-				break;
-			case "rest":
-				$i--; // rest can be empty
-				break 2;
-			}
-		}
-
-		if ($block->isVararg) {
-			return true; // not having enough is handled above
-		} else {
-			$numMatched = $i + 1;
-			// greater than becuase default values always match
-			return $numMatched >= $numCalling;
-		}
-	}
-
-	protected function patternMatchAll($blocks, $callingArgs) {
-		$matches = null;
-		foreach ($blocks as $block) {
-			if ($this->patternMatch($block, $callingArgs)) {
-				$matches[] = $block;
-			}
-		}
-
-		return $matches;
-	}
-
-	// attempt to find blocks matched by path and args
-	protected function findBlocks($searchIn, $path, $args, $seen=array()) {
-		if ($searchIn == null) return null;
-		if (isset($seen[$searchIn->id])) return null;
-		$seen[$searchIn->id] = true;
-
-		$name = $path[0];
-
-		if (isset($searchIn->children[$name])) {
-			$blocks = $searchIn->children[$name];
-			if (count($path) == 1) {
-				$matches = $this->patternMatchAll($blocks, $args);
-				if (!empty($matches)) {
-					// This will return all blocks that match in the closest
-					// scope that has any matching block, like lessjs
-					return $matches;
-				}
-			} else {
-				$matches = array();
-				foreach ($blocks as $subBlock) {
-					$subMatches = $this->findBlocks($subBlock,
-						array_slice($path, 1), $args, $seen);
-
-					if (!is_null($subMatches)) {
-						foreach ($subMatches as $sm) {
-							$matches[] = $sm;
-						}
-					}
-				}
-
-				return count($matches) > 0 ? $matches : null;
-			}
-		}
-
-		if ($searchIn->parent === $searchIn) return null;
-		return $this->findBlocks($searchIn->parent, $path, $args, $seen);
-	}
-
-	// sets all argument names in $args to either the default value
-	// or the one passed in through $values
-	protected function zipSetArgs($args, $values) {
-		$i = 0;
-		$assignedValues = array();
-		foreach ($args as $a) {
-			if ($a[0] == "arg") {
-				if ($i < count($values) && !is_null($values[$i])) {
-					$value = $values[$i];
-				} elseif (isset($a[2])) {
-					$value = $a[2];
-				} else {
-					$value = null;
-				}
-
-				$value = $this->reduce($value);
-				$this->set($a[1], $value);
-				$assignedValues[] = $value;
-			}
-			$i++;
-		}
-
-		// check for a rest
-		$last = end($args);
-		if ($last[0] == "rest") {
-			$rest = array_slice($values, count($args) - 1);
-			$this->set($last[1], $this->reduce(array("list", " ", $rest)));
-		}
-
-		$this->env->arguments = $assignedValues;
-	}
-
-	// compile a prop and update $lines or $blocks appropriately
-	protected function compileProp($prop, $block, $out) {
-		// set error position context
-		$this->sourceLoc = isset($prop[-1]) ? $prop[-1] : -1;
-
-		switch ($prop[0]) {
-		case 'assign':
-			list(, $name, $value) = $prop;
-			if ($name[0] == $this->vPrefix) {
-				$this->set($name, $value);
-			} else {
-				$out->lines[] = $this->formatter->property($name,
-						$this->compileValue($this->reduce($value)));
-			}
-			break;
-		case 'block':
-			list(, $child) = $prop;
-			$this->compileBlock($child);
-			break;
-		case 'mixin':
-			list(, $path, $args, $suffix) = $prop;
-
-			$args = array_map(array($this, "reduce"), (array)$args);
-			$mixins = $this->findBlocks($block, $path, $args);
-
-			if ($mixins === null) {
-				// fwrite(STDERR,"failed to find block: ".implode(" > ", $path)."\n");
-				break; // throw error here??
-			}
-
-			foreach ($mixins as $mixin) {
-				$haveScope = false;
-				if (isset($mixin->parent->scope)) {
-					$haveScope = true;
-					$mixinParentEnv = $this->pushEnv();
-					$mixinParentEnv->storeParent = $mixin->parent->scope;
-				}
-
-				$haveArgs = false;
-				if (isset($mixin->args)) {
-					$haveArgs = true;
-					$this->pushEnv();
-					$this->zipSetArgs($mixin->args, $args);
-				}
-
-				$oldParent = $mixin->parent;
-				if ($mixin != $block) $mixin->parent = $block;
-
-				foreach ($this->sortProps($mixin->props) as $subProp) {
-					if ($suffix !== null &&
-						$subProp[0] == "assign" &&
-						is_string($subProp[1]) &&
-						$subProp[1][0] != $this->vPrefix
-					) {
-						$subProp[2] = array(
-							'list', ' ',
-							array($subProp[2], array('keyword', $suffix))
-						);
-					}
-
-					$this->compileProp($subProp, $mixin, $out);
-				}
-
-				$mixin->parent = $oldParent;
-
-				if ($haveArgs) $this->popEnv();
-				if ($haveScope) $this->popEnv();
-			}
-
-			break;
-		case 'raw':
-			$out->lines[] = $prop[1];
-			break;
-		case "directive":
-			list(, $name, $value) = $prop;
-			$out->lines[] = "@$name " . $this->compileValue($this->reduce($value)).';';
-			break;
-		case "comment":
-			$out->lines[] = $prop[1];
-			break;
-		case "import":
-			list(, $importPath, $importId) = $prop;
-			$importPath = $this->reduce($importPath);
-
-			if (!isset($this->env->imports)) {
-				$this->env->imports = array();
-			}
-
-			$result = $this->tryImport($importPath, $block, $out);
-
-			$this->env->imports[$importId] = $result === false ?
-				array(false, "@import " . $this->compileValue($importPath).";") :
-				$result;
-
-			break;
-		case "import_mixin":
-			list(,$importId) = $prop;
-			$import = $this->env->imports[$importId];
-			if ($import[0] === false) {
-				if (isset($import[1])) {
-					$out->lines[] = $import[1];
-				}
-			} else {
-				list(, $bottom, $parser, $importDir) = $import;
-				$this->compileImportedProps($bottom, $block, $out, $parser, $importDir);
-			}
-
-			break;
-		default:
-			$this->throwError("unknown op: {$prop[0]}\n");
-		}
-	}
-
-
-	/**
-	 * Compiles a primitive value into a CSS property value.
-	 *
-	 * Values in lessphp are typed by being wrapped in arrays, their format is
-	 * typically:
-	 *
-	 *     array(type, contents [, additional_contents]*)
-	 *
-	 * The input is expected to be reduced. This function will not work on
-	 * things like expressions and variables.
-	 */
-	protected function compileValue($value) {
-		switch ($value[0]) {
-		case 'list':
-			// [1] - delimiter
-			// [2] - array of values
-			return implode($value[1], array_map(array($this, 'compileValue'), $value[2]));
-		case 'raw_color':
-			if (!empty($this->formatter->compressColors)) {
-				return $this->compileValue($this->coerceColor($value));
-			}
-			return $value[1];
-		case 'keyword':
-			// [1] - the keyword
-			return $value[1];
-		case 'number':
-			list(, $num, $unit) = $value;
-			// [1] - the number
-			// [2] - the unit
-			if ($this->numberPrecision !== null) {
-				$num = round($num, $this->numberPrecision);
-			}
-			return $num . $unit;
-		case 'string':
-			// [1] - contents of string (includes quotes)
-			list(, $delim, $content) = $value;
-			foreach ($content as &$part) {
-				if (is_array($part)) {
-					$part = $this->compileValue($part);
-				}
-			}
-			return $delim . implode($content) . $delim;
-		case 'color':
-			// [1] - red component (either number or a %)
-			// [2] - green component
-			// [3] - blue component
-			// [4] - optional alpha component
-			list(, $r, $g, $b) = $value;
-			$r = round($r);
-			$g = round($g);
-			$b = round($b);
-
-			if (count($value) == 5 && $value[4] != 1) { // rgba
-				return 'rgba('.$r.','.$g.','.$b.','.$value[4].')';
-			}
-
-			$h = sprintf("#%02x%02x%02x", $r, $g, $b);
-
-			if (!empty($this->formatter->compressColors)) {
-				// Converting hex color to short notation (e.g. #003399 to #039)
-				if ($h[1] === $h[2] && $h[3] === $h[4] && $h[5] === $h[6]) {
-					$h = '#' . $h[1] . $h[3] . $h[5];
-				}
-			}
-
-			return $h;
-
-		case 'function':
-			list(, $name, $args) = $value;
-			return $name.'('.$this->compileValue($args).')';
-		default: // assumed to be unit
-			$this->throwError("unknown value type: $value[0]");
-		}
 	}
 
 	protected function lib_isnumber($value) {
@@ -849,53 +129,6 @@ class lessc {
 		return $this->lib_rgbahex($color);
 	}
 
-	// utility func to unquote a string
-	protected function lib_e($arg) {
-		switch ($arg[0]) {
-			case "list":
-				$items = $arg[2];
-				if (isset($items[0])) {
-					return $this->lib_e($items[0]);
-				}
-				return self::$defaultValue;
-			case "string":
-				$arg[1] = "";
-				return $arg;
-			case "keyword":
-				return $arg;
-			default:
-				return array("keyword", $this->compileValue($arg));
-		}
-	}
-
-	protected function lib__sprintf($args) {
-		if ($args[0] != "list") return $args;
-		$values = $args[2];
-		$string = array_shift($values);
-		$template = $this->compileValue($this->lib_e($string));
-
-		$i = 0;
-		if (preg_match_all('/%[dsa]/', $template, $m)) {
-			foreach ($m[0] as $match) {
-				$val = isset($values[$i]) ?
-					$this->reduce($values[$i]) : array('keyword', '');
-
-				// lessjs compat, renders fully expanded color, not raw color
-				if ($color = $this->coerceColor($val)) {
-					$val = $color;
-				}
-
-				$i++;
-				$rep = $this->compileValue($this->lib_e($val));
-				$template = preg_replace('/'.self::preg_quote($match).'/',
-					$rep, $template, 1);
-			}
-		}
-
-		$d = $string[0] == "string" ? $string[1] : '"';
-		return array("string", $d, array($template));
-	}
-
 	protected function lib_floor($arg) {
 		$value = $this->assertNumber($arg);
 		return array("number", floor($value), $arg[2]);
@@ -919,21 +152,6 @@ class lessc {
 		} else {
 			return array("number", $this->assertNumber($arg), "");
 		}
-	}
-
-	/**
-	 * Helper function to get arguments for color manipulation functions.
-	 * takes a list that contains a color like thing and a percentage
-	 */
-	protected function colorArgs($args) {
-		if ($args[0] != 'list' || count($args[2]) < 2) {
-			return array(array('color', 0, 0, 0), 0);
-		}
-		list($color, $delta) = $args[2];
-		$color = $this->assertColor($color);
-		$delta = floatval($delta[1]);
-
-		return array($color, $delta);
 	}
 
 	protected function lib_darken($args) {
@@ -1081,57 +299,742 @@ class lessc {
 		return $lightColor;
 	}
 
+	function lib_red($color){
+		$color = $this->coerceColor($color);
+		if (is_null($color)) {
+			$this->throwError('color expected for red()');
+		}
+
+		return $color[1];
+	}
+
+	function lib_green($color){
+		$color = $this->coerceColor($color);
+		if (is_null($color)) {
+			$this->throwError('color expected for green()');
+		}
+
+		return $color[2];
+	}
+
+	function lib_blue($color){
+		$color = $this->coerceColor($color);
+		if (is_null($color)) {
+			$this->throwError('color expected for blue()');
+		}
+
+		return $color[3];
+	}
+}
+
+/**
+ * The LESS compiler and parser.
+ *
+ * Converting LESS to CSS is a three stage process. The incoming file is parsed
+ * by `lessc_parser` into a syntax tree, then it is compiled into another tree
+ * representing the CSS structure by `lessc`. The CSS tree is fed into a
+ * formatter, like `lessc_formatter` which then outputs CSS as a string.
+ *
+ * During the first compile, all values are *reduced*, which means that their
+ * types are brought to the lowest form before being dump as strings. This
+ * handles math equations, variable dereferences, and the like.
+ *
+ * The `parse` function of `lessc` is the entry point.
+ *
+ * In summary:
+ *
+ * The `lessc` class creates an intstance of the parser, feeds it LESS code,
+ * then transforms the resulting tree to a CSS tree. This class also holds the
+ * evaluation context, such as all available mixins and variables at any given
+ * time.
+ *
+ * The `lessc_parser` class is only concerned with parsing its input.
+ *
+ * The `lessc_formatter` takes a CSS tree, and dumps it to a formatted string,
+ * handling things like indentation.
+ */
+class lessc {
+
+	use lessc_lib;
+
+	static public $VERSION = "v0.3.9-sm";
+
+	static protected $TRUE = array("keyword", "true");
+	static protected $FALSE = array("keyword", "false");
+
+	const vPrefix = '@'; // prefix of abstract properties
+	const mPrefix = '$'; // prefix of abstract blocks
+	const parentSelector = '&';
+
+	// set to the parser that generated the current line when compiling
+	// so we know how to create error messages
+	protected $sourceParser = null;
+	protected $sourceLoc = null;
+
+	static public $defaultValue = array("keyword", "");
+
+	public static function compressList($items, $delim) {
+		if (!isset($items[1]) && isset($items[0])) return $items[0];
+		else return array('list', $delim, $items);
+	}
+
+	public static function preg_quote($what) {
+		return preg_quote($what, '/');
+	}
+
+	/**
+	 * Recursively compiles a block.
+	 *
+	 * A block is analogous to a CSS block in most cases. A single LESS document
+	 * is encapsulated in a block when parsed, but it does not have parent tags
+	 * so all of it's children appear on the root level when compiled.
+	 *
+	 * Blocks are made up of props and children.
+	 *
+	 * Props are property instructions, array tuples which describe an action
+	 * to be taken, eg. write a property, set a variable, mixin a block.
+	 *
+	 * The children of a block are just all the blocks that are defined within.
+	 * This is used to look up mixins when performing a mixin.
+	 *
+	 * Compiling the block involves pushing a fresh environment on the stack,
+	 * and iterating through the props, compiling each one.
+	 *
+	 * See lessc::compileProp()
+	 *
+	 */
+	protected function compileBlock($block) {
+		switch ($block->type) {
+		case "root":
+			$this->compileRoot($block);
+			break;
+		case null:
+			$this->compileCSSBlock($block);
+			break;
+		case "media":
+			$this->compileMedia($block);
+			break;
+		case "directive":
+			$name = "@" . $block->name;
+			if (!empty($block->value)) {
+				$name .= " " . $this->compileValue($this->reduce($block->value));
+			}
+
+			$this->compileNestedBlock($block, array($name));
+			break;
+		default:
+			$this->throwError("unknown block type: $block->type\n");
+		}
+	}
+
+	protected function compileCSSBlock($block) {
+		$env = $this->pushEnv();
+
+		$selectors = $this->compileSelectors($block->tags);
+		$env->selectors = $this->multiplySelectors($selectors);
+		$out = $this->makeOutputBlock(null, $env->selectors);
+
+		$this->scope->children[] = $out;
+		$this->compileProps($block, $out);
+
+		$block->scope = $env; // mixins carry scope with them!
+		$this->popEnv();
+	}
+
+	protected function compileMedia($media) {
+		$env = $this->pushEnv($media);
+		$parentScope = $this->mediaParent($this->scope);
+
+		$query = $this->compileMediaQuery($this->multiplyMedia($env));
+
+		$this->scope = $this->makeOutputBlock($media->type, array($query));
+		$parentScope->children[] = $this->scope;
+
+		$this->compileProps($media, $this->scope);
+
+		if (count($this->scope->lines) > 0) {
+			$orphanSelelectors = $this->findClosestSelectors();
+			if (!is_null($orphanSelelectors)) {
+				$orphan = $this->makeOutputBlock(null, $orphanSelelectors);
+				$orphan->lines = $this->scope->lines;
+				array_unshift($this->scope->children, $orphan);
+				$this->scope->lines = array();
+			}
+		}
+
+		$this->scope = $this->scope->parent;
+		$this->popEnv();
+	}
+
+	protected function mediaParent($scope) {
+		while (!empty($scope->parent)) {
+			if (!empty($scope->type) && $scope->type != "media") {
+				break;
+			}
+			$scope = $scope->parent;
+		}
+
+		return $scope;
+	}
+
+	protected function compileNestedBlock($block, $selectors) {
+		$this->pushEnv($block);
+		$this->scope = $this->makeOutputBlock($block->type, $selectors);
+		$this->scope->parent->children[] = $this->scope;
+
+		$this->compileProps($block, $this->scope);
+
+		$this->scope = $this->scope->parent;
+		$this->popEnv();
+	}
+
+	protected function compileRoot($root) {
+		$this->pushEnv();
+		$this->scope = $this->makeOutputBlock($root->type);
+		$this->compileProps($root, $this->scope);
+		$this->popEnv();
+	}
+
+	protected function compileProps($block, $out) {
+		foreach ($this->sortProps($block->props) as $prop) {
+			$this->compileProp($prop, $block, $out);
+		}
+	}
+
+	protected function sortProps($props, $split = false) {
+		$vars = array();
+		$other = array();
+
+		foreach ($props as $prop) {
+			switch ($prop[0]) {
+			case "assign":
+				if (isset($prop[1][0]) && $prop[1][0] == self::vPrefix) {
+					$vars[] = $prop;
+				} else {
+					$other[] = $prop;
+				}
+				break;
+			case "import":
+				break;
+			default:
+				$other[] = $prop;
+			}
+		}
+
+		if ($split) {
+			return array($vars, $other);
+		} else {
+			return array_merge($vars, $other);
+		}
+	}
+
+	protected function compileMediaQuery($queries) {
+		$compiledQueries = array();
+		foreach ($queries as $query) {
+			$parts = array();
+			foreach ($query as $q) {
+				switch ($q[0]) {
+				case "mediaType":
+					$parts[] = implode(" ", array_slice($q, 1));
+					break;
+				case "mediaExp":
+					if (isset($q[2])) {
+						$parts[] = "($q[1]: " .
+							$this->compileValue($this->reduce($q[2])) . ")";
+					} else {
+						$parts[] = "($q[1])";
+					}
+					break;
+				case "variable":
+					$parts[] = $this->compileValue($this->reduce($q));
+				break;
+				}
+			}
+
+			if (count($parts) > 0) {
+				$compiledQueries[] =  implode(" and ", $parts);
+			}
+		}
+
+		$out = "@media";
+		if (!empty($parts)) {
+			$out .= " " .
+				implode($this->formatter->selectorSeparator, $compiledQueries);
+		}
+		return $out;
+	}
+
+	protected function multiplyMedia($env, $childQueries = null) {
+		if (is_null($env) ||
+			!empty($env->block->type) && $env->block->type != "media"
+		) {
+			return $childQueries;
+		}
+
+		// plain old block, skip
+		if (empty($env->block->type)) {
+			return $this->multiplyMedia($env->parent, $childQueries);
+		}
+
+		$out = array();
+		$queries = $env->block->queries;
+		if (is_null($childQueries)) {
+			$out = $queries;
+		} else {
+			foreach ($queries as $parent) {
+				foreach ($childQueries as $child) {
+					$out[] = array_merge($parent, $child);
+				}
+			}
+		}
+
+		return $this->multiplyMedia($env->parent, $out);
+	}
+
+	protected function expandParentSelectors(&$tag, $replace) {
+		$parts = explode("$&$", $tag);
+		$count = 0;
+		foreach ($parts as &$part) {
+			$part = str_replace(self::parentSelector, $replace, $part, $c);
+			$count += $c;
+		}
+		$tag = implode(self::parentSelector, $parts);
+		return $count;
+	}
+
+	protected function findClosestSelectors() {
+		$env = $this->env;
+		$selectors = null;
+		while ($env !== null) {
+			if (isset($env->selectors)) {
+				$selectors = $env->selectors;
+				break;
+			}
+			$env = $env->parent;
+		}
+
+		return $selectors;
+	}
+
+
+	// multiply $selectors against the nearest selectors in env
+	protected function multiplySelectors($selectors) {
+		// find parent selectors
+
+		$parentSelectors = $this->findClosestSelectors();
+		if (is_null($parentSelectors)) {
+			// kill parent reference in top level selector
+			foreach ($selectors as &$s) {
+				$this->expandParentSelectors($s, "");
+			}
+
+			return $selectors;
+		}
+
+		$out = array();
+		foreach ($parentSelectors as $parent) {
+			foreach ($selectors as $child) {
+				$count = $this->expandParentSelectors($child, $parent);
+
+				// don't prepend the parent tag if & was used
+				if ($count > 0) {
+					$out[] = trim($child);
+				} else {
+					$out[] = trim($parent . ' ' . $child);
+				}
+			}
+		}
+
+		return $out;
+	}
+
+	// reduces selector expressions
+	protected function compileSelectors($selectors) {
+		$out = array();
+
+		foreach ($selectors as $s) {
+			if (is_array($s)) {
+				list(, $value) = $s;
+				$out[] = trim($this->compileValue($this->reduce($value)));
+			} else {
+				$out[] = $s;
+			}
+		}
+
+		return $out;
+	}
+
+	protected function eq($left, $right) {
+		return $left == $right;
+	}
+
+	protected function patternMatch($block, $callingArgs) {
+		// match the guards if it has them
+		// any one of the groups must have all its guards pass for a match
+		if (!empty($block->guards)) {
+			$groupPassed = false;
+			foreach ($block->guards as $guardGroup) {
+				foreach ($guardGroup as $guard) {
+					$this->pushEnv();
+					$this->zipSetArgs($block->args, $callingArgs);
+
+					$negate = false;
+					if ($guard[0] == "negate") {
+						$guard = $guard[1];
+						$negate = true;
+					}
+
+					$passed = $this->reduce($guard) == self::$TRUE;
+					if ($negate) $passed = !$passed;
+
+					$this->popEnv();
+
+					if ($passed) {
+						$groupPassed = true;
+					} else {
+						$groupPassed = false;
+						break;
+					}
+				}
+
+				if ($groupPassed) break;
+			}
+
+			if (!$groupPassed) {
+				return false;
+			}
+		}
+
+		$numCalling = count($callingArgs);
+
+		if (empty($block->args)) {
+			return $block->isVararg || $numCalling == 0;
+		}
+
+		$i = -1; // no args
+		// try to match by arity or by argument literal
+		foreach ($block->args as $i => $arg) {
+			switch ($arg[0]) {
+			case "lit":
+				if (empty($callingArgs[$i]) || !$this->eq($arg[1], $callingArgs[$i])) {
+					return false;
+				}
+				break;
+			case "arg":
+				// no arg and no default value
+				if (!isset($callingArgs[$i]) && !isset($arg[2])) {
+					return false;
+				}
+				break;
+			case "rest":
+				--$i; // rest can be empty
+				break 2;
+			}
+		}
+
+		if ($block->isVararg) {
+			return true; // not having enough is handled above
+		} else {
+			$numMatched = $i + 1;
+			// greater than becuase default values always match
+			return $numMatched >= $numCalling;
+		}
+	}
+
+	protected function patternMatchAll($blocks, $callingArgs) {
+		$matches = null;
+		foreach ($blocks as $block) {
+			if ($this->patternMatch($block, $callingArgs)) {
+				$matches[] = $block;
+			}
+		}
+
+		return $matches;
+	}
+
+	// attempt to find blocks matched by path and args
+	protected function findBlocks($searchIn, $path, $args, $seen=array()) {
+		if ($searchIn == null) return null;
+		if (isset($seen[$searchIn->id])) return null;
+		$seen[$searchIn->id] = true;
+
+		$name = $path[0];
+
+		if (isset($searchIn->children[$name])) {
+			$blocks = $searchIn->children[$name];
+			if (count($path) == 1) {
+				$matches = $this->patternMatchAll($blocks, $args);
+				if (!empty($matches)) {
+					// This will return all blocks that match in the closest
+					// scope that has any matching block, like lessjs
+					return $matches;
+				}
+			} else {
+				$matches = array();
+				foreach ($blocks as $subBlock) {
+					$subMatches = $this->findBlocks($subBlock,
+						array_slice($path, 1), $args, $seen);
+
+					if (!is_null($subMatches)) {
+						foreach ($subMatches as $sm) {
+							$matches[] = $sm;
+						}
+					}
+				}
+
+				return count($matches) > 0 ? $matches : null;
+			}
+		}
+
+		if ($searchIn->parent === $searchIn) return null;
+		return $this->findBlocks($searchIn->parent, $path, $args, $seen);
+	}
+
+	// sets all argument names in $args to either the default value
+	// or the one passed in through $values
+	protected function zipSetArgs($args, $values) {
+		$i = 0;
+		$assignedValues = array();
+		foreach ($args as $a) {
+			if ($a[0] == "arg") {
+				if ($i < count($values) && !is_null($values[$i])) {
+					$value = $values[$i];
+				} elseif (isset($a[2])) {
+					$value = $a[2];
+				} else {
+					$value = null;
+				}
+
+				$value = $this->reduce($value);
+				$this->set($a[1], $value);
+				$assignedValues[] = $value;
+			}
+			++$i;
+		}
+
+		// check for a rest
+		$last = end($args);
+		if ($last[0] == "rest") {
+			$rest = array_slice($values, count($args) - 1);
+			$this->set($last[1], $this->reduce(array("list", " ", $rest)));
+		}
+
+		$this->env->arguments = $assignedValues;
+	}
+
+	// compile a prop and update $lines or $blocks appropriately
+	protected function compileProp($prop, $block, $out) {
+		// set error position context
+		$this->sourceLoc = isset($prop[-1]) ? $prop[-1] : -1;
+
+		switch ($prop[0]) {
+		case 'assign':
+			list(, $name, $value) = $prop;
+			if ($name[0] == self::vPrefix) {
+				$this->set($name, $value);
+			} else {
+				$out->lines[] = $this->formatter->property($name,
+						$this->compileValue($this->reduce($value)));
+			}
+			break;
+		case 'block':
+			list(, $child) = $prop;
+			$this->compileBlock($child);
+			break;
+		case 'mixin':
+			list(, $path, $args, $suffix) = $prop;
+
+			$args = array_map(array($this, "reduce"), (array)$args);
+			$mixins = $this->findBlocks($block, $path, $args);
+
+			if ($mixins === null) {
+				// fwrite(STDERR,"failed to find block: ".implode(" > ", $path)."\n");
+				break; // throw error here??
+			}
+
+			foreach ($mixins as $mixin) {
+				$haveScope = false;
+				if (isset($mixin->parent->scope)) {
+					$haveScope = true;
+					$mixinParentEnv = $this->pushEnv();
+					$mixinParentEnv->storeParent = $mixin->parent->scope;
+				}
+
+				$haveArgs = false;
+				if (isset($mixin->args)) {
+					$haveArgs = true;
+					$this->pushEnv();
+					$this->zipSetArgs($mixin->args, $args);
+				}
+
+				$oldParent = $mixin->parent;
+				if ($mixin != $block) $mixin->parent = $block;
+
+				foreach ($this->sortProps($mixin->props) as $subProp) {
+					if ($suffix !== null &&
+						$subProp[0] == "assign" &&
+						is_string($subProp[1]) &&
+						$subProp[1][0] != self::vPrefix
+					) {
+						$subProp[2] = array(
+							'list', ' ',
+							array($subProp[2], array('keyword', $suffix))
+						);
+					}
+
+					$this->compileProp($subProp, $mixin, $out);
+				}
+
+				$mixin->parent = $oldParent;
+
+				if ($haveArgs) $this->popEnv();
+				if ($haveScope) $this->popEnv();
+			}
+
+			break;
+		case 'raw':
+			$out->lines[] = $prop[1];
+			break;
+		case "directive":
+			list(, $name, $value) = $prop;
+			$out->lines[] = "@$name " . $this->compileValue($this->reduce($value)).';';
+			break;
+		case "comment":
+			$out->lines[] = $prop[1];
+			break;
+		case "import":
+			break;
+		case "import_mixin":
+			break;
+		default:
+			$this->throwError("unknown op: {$prop[0]}\n");
+		}
+	}
+
+
+	/**
+	 * Compiles a primitive value into a CSS property value.
+	 *
+	 * Values in lessphp are typed by being wrapped in arrays, their format is
+	 * typically:
+	 *
+	 *     array(type, contents [, additional_contents]*)
+	 *
+	 * The input is expected to be reduced. This function will not work on
+	 * things like expressions and variables.
+	 */
+	protected function compileValue($value) {
+		switch ($value[0]) {
+		case 'list':
+			// [1] - delimiter
+			// [2] - array of values
+			return implode($value[1], array_map(array($this, 'compileValue'), $value[2]));
+		case 'raw_color':
+			if (!empty($this->formatter->compressColors)) {
+				return $this->compileValue($this->coerceColor($value));
+			}
+			return $value[1];
+		case 'keyword':
+			// [1] - the keyword
+			return $value[1];
+		case 'number':
+			list(, $num, $unit) = $value;
+			// [1] - the number
+			// [2] - the unit
+			return $num . $unit;
+		case 'string':
+			// [1] - contents of string (includes quotes)
+			list(, $delim, $content) = $value;
+			foreach ($content as &$part) {
+				if (is_array($part)) {
+					$part = $this->compileValue($part);
+				}
+			}
+			return $delim . implode($content) . $delim;
+		case 'color':
+			// [1] - red component (either number or a %)
+			// [2] - green component
+			// [3] - blue component
+			// [4] - optional alpha component
+			list(, $r, $g, $b) = $value;
+			$r = round($r);
+			$g = round($g);
+			$b = round($b);
+
+			if (count($value) == 5 && $value[4] != 1) { // rgba
+				return 'rgba('.$r.','.$g.','.$b.','.$value[4].')';
+			}
+
+			$h = sprintf("#%02x%02x%02x", $r, $g, $b);
+
+			if (!empty($this->formatter->compressColors)) {
+				// Converting hex color to short notation (e.g. #003399 to #039)
+				if ($h[1] === $h[2] && $h[3] === $h[4] && $h[5] === $h[6]) {
+					$h = '#' . $h[1] . $h[3] . $h[5];
+				}
+			}
+
+			return $h;
+
+		case 'function':
+			list(, $name, $args) = $value;
+			return $name.'('.$this->compileValue($args).')';
+		default: // assumed to be unit
+			$this->throwError("unknown value type: $value[0]");
+		}
+	}
+
+	// utility func to unquote a string
+	protected function lib_e($arg) {
+		switch ($arg[0]) {
+			case "list":
+				$items = $arg[2];
+				if (isset($items[0])) {
+					return $this->lib_e($items[0]);
+				}
+				return self::$defaultValue;
+			case "string":
+				$arg[1] = "";
+				return $arg;
+			case "keyword":
+				return $arg;
+			default:
+				return array("keyword", $this->compileValue($arg));
+		}
+	}
+
+	protected function lib__sprintf($args) {
+		if ($args[0] != "list") return $args;
+		$values = $args[2];
+		$string = array_shift($values);
+		$template = $this->compileValue($this->lib_e($string));
+
+		$i = 0;
+		if (preg_match_all('/%[dsa]/', $template, $m)) {
+			foreach ($m[0] as $match) {
+				$val = isset($values[$i]) ?
+					$this->reduce($values[$i]) : array('keyword', '');
+
+				// lessjs compat, renders fully expanded color, not raw color
+				if ($color = $this->coerceColor($val)) {
+					$val = $color;
+				}
+
+				++$i;
+				$rep = $this->compileValue($this->lib_e($val));
+				$template = preg_replace('/'.self::preg_quote($match).'/',
+					$rep, $template, 1);
+			}
+		}
+
+		$d = $string[0] == "string" ? $string[1] : '"';
+		return array("string", $d, array($template));
+	}
+
 	protected function assertColor($value, $error = "expected color value") {
 		$color = $this->coerceColor($value);
 		if (is_null($color)) $this->throwError($error);
 		return $color;
-	}
-
-	protected function assertNumber($value, $error = "expecting number") {
-		if ($value[0] == "number") return $value[1];
-		$this->throwError($error);
-	}
-
-	protected function toHSL($color) {
-		if ($color[0] == 'hsl') return $color;
-
-		$r = $color[1] / 255;
-		$g = $color[2] / 255;
-		$b = $color[3] / 255;
-
-		$min = min($r, $g, $b);
-		$max = max($r, $g, $b);
-
-		$L = ($min + $max) / 2;
-		if ($min == $max) {
-			$S = $H = 0;
-		} else {
-			if ($L < 0.5) {
-				$S = ($max - $min)/($max + $min);
-			} else {
-				$S = ($max - $min)/(2.0 - $max - $min);
-			}
-			if ($r == $max) {
-				$H = ($g - $b)/($max - $min);
-			} elseif ($g == $max) {
-				$H = 2.0 + ($b - $r)/($max - $min);
-			} elseif ($b == $max) {
-				$H = 4.0 + ($r - $g)/($max - $min);
-			}
-
-		}
-
-		$out = array('hsl',
-			($H < 0 ? $H + 6 : $H)*60,
-			$S * 100,
-			$L * 100,
-		);
-
-		if (count($color) > 4) {
-			// copy alpha
-			$out[] = $color[4];
-		}
-		return $out;
 	}
 
 	protected function toRGB_helper($comp, $temp1, $temp2) {
@@ -1222,7 +1125,7 @@ class lessc {
 				}
 
 				$hsl[] = $this->clamp($val, $clamp);
-				$i++;
+				++$i;
 			}
 
 			while (count($hsl) < 4) {
@@ -1249,7 +1152,7 @@ class lessc {
 					}
 				} else break;
 
-				$i++;
+				++$i;
 			}
 			while (count($components) < 3) {
 				$components[] = 0;
@@ -1266,7 +1169,7 @@ class lessc {
 		case "interpolate":
 			$reduced = $this->reduce($value[1]);
 			$var = $this->compileValue($reduced);
-			$res = $this->reduce(array("variable", $this->vPrefix . $var));
+			$res = $this->reduce(array("variable", self::vPrefix . $var));
 
 			if (empty($value[2])) $res = $this->lib_e($res);
 
@@ -1275,7 +1178,7 @@ class lessc {
 			$key = $value[1];
 			if (is_array($key)) {
 				$key = $this->reduce($key);
-				$key = $this->vPrefix . $this->compileValue($this->lib_e($key));
+				$key = self::vPrefix . $this->compileValue($this->lib_e($key));
 			}
 
 			$seen =& $this->env->seenNames;
@@ -1314,8 +1217,7 @@ class lessc {
 			list(, $name, $args) = $value;
 			if ($name == "%") $name = "_sprintf";
 
-			$f = isset($this->libFunctions[$name]) ?
-				$this->libFunctions[$name] : array($this, 'lib_'.$name);
+			$f = array($this, 'lib_'.$name);
 
 			if (is_callable($f)) {
 				if ($args[0] == 'list')
@@ -1384,7 +1286,7 @@ class lessc {
 				$num = hexdec($colorStr);
 				$width = strlen($colorStr) == 3 ? 16 : 256;
 
-				for ($i = 3; $i > 0; $i--) { // 3 2 1
+				for ($i = 3; $i > 0; --$i) { // 3 2 1
 					$t = $num % $width;
 					$num /= $width;
 
@@ -1550,34 +1452,6 @@ class lessc {
 		return $this->fixColor($out);
 	}
 
-	function lib_red($color){
-		$color = $this->coerceColor($color);
-		if (is_null($color)) {
-			$this->throwError('color expected for red()');
-		}
-
-		return $color[1];
-	}
-
-	function lib_green($color){
-		$color = $this->coerceColor($color);
-		if (is_null($color)) {
-			$this->throwError('color expected for green()');
-		}
-
-		return $color[2];
-	}
-
-	function lib_blue($color){
-		$color = $this->coerceColor($color);
-		if (is_null($color)) {
-			$this->throwError('color expected for blue()');
-		}
-
-		return $color[3];
-	}
-
-
 	// operator on two numbers
 	protected function op_number_number($op, $left, $right) {
 		$unit = empty($left[2]) ? $right[2] : $left[2];
@@ -1651,12 +1525,11 @@ class lessc {
 		$this->env->store[$name] = $value;
 	}
 
-
 	// get the highest occurrence entry for a name
 	protected function get($name, $default=null) {
 		$current = $this->env;
 
-		$isArguments = $name == $this->vPrefix . 'arguments';
+		$isArguments = $name == self::vPrefix . 'arguments';
 		while ($current) {
 			if ($isArguments && isset($current->arguments)) {
 				return array('list', ' ', $current->arguments);
@@ -1674,245 +1547,24 @@ class lessc {
 		return $default;
 	}
 
-	// inject array of unparsed strings into environment as variables
-	protected function injectVariables($args) {
-		$this->pushEnv();
-		$parser = new lessc_parser($this, __METHOD__);
-		foreach ($args as $name => $strValue) {
-			if ($name[0] != '@') {
-				$name = '@' . $name;
-			}
-			$parser->count = 0;
-			$parser->buffer = (string)$strValue;
-			if (!$parser->propertyValue($value)) {
-				throw new Exception("failed to parse passed in variable $name: $strValue");
-			}
-
-			$this->set($name, $value);
-		}
-	}
-
-	/**
-	 * Initialize any static state, can initialize parser for a file
-	 * $opts isn't used yet
-	 */
-	public function __construct($fname = null) {
-		if ($fname !== null) {
-			// used for deprecated parse method
-			$this->_parseFile = $fname;
-		}
-	}
-
 	public function compile($string, $name = null) {
 		$locale = setlocale(LC_NUMERIC, 0);
 		setlocale(LC_NUMERIC, "C");
 
-		$this->parser = $this->makeParser($name);
+		$this->parser = new lessc_parser($name);
 		$root = $this->parser->parse($string);
 
 		$this->env = null;
 		$this->scope = null;
 
-		$this->formatter = $this->newFormatter();
-
-		if (!empty($this->registeredVars)) {
-			$this->injectVariables($this->registeredVars);
-		}
+		$this->formatter = new lessc_formatter_compressed;
 
 		$this->sourceParser = $this->parser; // used for error messages
 		$this->compileBlock($root);
 
-		ob_start();
-		$this->formatter->block($this->scope);
-		$out = ob_get_clean();
+		$out = $this->formatter->block($this->scope);
 		setlocale(LC_NUMERIC, $locale);
 		return $out;
-	}
-
-	public function compileFile($fname, $outFname = null) {
-		if (!is_readable($fname)) {
-			throw new Exception('load error: failed to find '.$fname);
-		}
-
-		$pi = pathinfo($fname);
-
-		$oldImport = $this->importDir;
-
-		$this->importDir = (array)$this->importDir;
-		$this->importDir[] = $pi['dirname'].'/';
-
-		$this->allParsedFiles = array();
-		$this->addParsedFile($fname);
-
-		$out = $this->compile(file_get_contents($fname), $fname);
-
-		$this->importDir = $oldImport;
-
-		if ($outFname !== null) {
-			return file_put_contents($outFname, $out);
-		}
-
-		return $out;
-	}
-
-	// compile only if changed input has changed or output doesn't exist
-	public function checkedCompile($in, $out) {
-		if (!is_file($out) || filemtime($in) > filemtime($out)) {
-			$this->compileFile($in, $out);
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Execute lessphp on a .less file or a lessphp cache structure
-	 *
-	 * The lessphp cache structure contains information about a specific
-	 * less file having been parsed. It can be used as a hint for future
-	 * calls to determine whether or not a rebuild is required.
-	 *
-	 * The cache structure contains two important keys that may be used
-	 * externally:
-	 *
-	 * compiled: The final compiled CSS
-	 * updated: The time (in seconds) the CSS was last compiled
-	 *
-	 * The cache structure is a plain-ol' PHP associative array and can
-	 * be serialized and unserialized without a hitch.
-	 *
-	 * @param mixed $in Input
-	 * @param bool $force Force rebuild?
-	 * @return array lessphp cache structure
-	 */
-	public function cachedCompile($in, $force = false) {
-		// assume no root
-		$root = null;
-
-		if (is_string($in)) {
-			$root = $in;
-		} elseif (is_array($in) && isset($in['root'])) {
-			if ($force || !isset($in['files'])) {
-				// If we are forcing a recompile or if for some reason the
-				// structure does not contain any file information we should
-				// specify the root to trigger a rebuild.
-				$root = $in['root'];
-			} elseif (isset($in['files']) && is_array($in['files'])) {
-				foreach ($in['files'] as $fname => $ftime) {
-					if (!file_exists($fname) || filemtime($fname) > $ftime) {
-						// One of the files we knew about previously has changed
-						// so we should look at our incoming root again.
-						$root = $in['root'];
-						break;
-					}
-				}
-			}
-		} else {
-			// TODO: Throw an exception? We got neither a string nor something
-			// that looks like a compatible lessphp cache structure.
-			return null;
-		}
-
-		if ($root !== null) {
-			// If we have a root value which means we should rebuild.
-			$out = array();
-			$out['root'] = $root;
-			$out['compiled'] = $this->compileFile($root);
-			$out['files'] = $this->allParsedFiles();
-			$out['updated'] = time();
-			return $out;
-		} else {
-			// No changes, pass back the structure
-			// we were given initially.
-			return $in;
-		}
-
-	}
-
-	// parse and compile buffer
-	// This is deprecated
-	public function parse($str = null, $initialVariables = null) {
-		if (is_array($str)) {
-			$initialVariables = $str;
-			$str = null;
-		}
-
-		$oldVars = $this->registeredVars;
-		if ($initialVariables !== null) {
-			$this->setVariables($initialVariables);
-		}
-
-		if ($str == null) {
-			if (empty($this->_parseFile)) {
-				throw new exception("nothing to parse");
-			}
-
-			$out = $this->compileFile($this->_parseFile);
-		} else {
-			$out = $this->compile($str);
-		}
-
-		$this->registeredVars = $oldVars;
-		return $out;
-	}
-
-	protected function makeParser($name) {
-		$parser = new lessc_parser($this, $name);
-		$parser->writeComments = $this->preserveComments;
-
-		return $parser;
-	}
-
-	public function setFormatter($name) {
-		$this->formatterName = $name;
-	}
-
-	protected function newFormatter() {
-		$className = "lessc_formatter_lessjs";
-		if (!empty($this->formatterName)) {
-			if (!is_string($this->formatterName))
-				return $this->formatterName;
-			$className = "lessc_formatter_$this->formatterName";
-		}
-
-		$className = 'LessPHP\\'.$className;
-		return new $className;
-	}
-
-	public function setPreserveComments($preserve) {
-		$this->preserveComments = $preserve;
-	}
-
-	public function registerFunction($name, $func) {
-		$this->libFunctions[$name] = $func;
-	}
-
-	public function unregisterFunction($name) {
-		unset($this->libFunctions[$name]);
-	}
-
-	public function setVariables($variables) {
-		$this->registeredVars = array_merge($this->registeredVars, $variables);
-	}
-
-	public function unsetVariable($name) {
-		unset($this->registeredVars[$name]);
-	}
-
-	public function setImportDir($dirs) {
-		$this->importDir = (array)$dirs;
-	}
-
-	public function addImportDir($dir) {
-		$this->importDir = (array)$this->importDir;
-		$this->importDir[] = $dir;
-	}
-
-	public function allParsedFiles() {
-		return $this->allParsedFiles;
-	}
-
-	protected function addParsedFile($file) {
-		$this->allParsedFiles[realpath($file)] = filemtime($file);
 	}
 
 	/**
@@ -1923,22 +1575,6 @@ class lessc {
 			$this->sourceParser->throwError($msg, $this->sourceLoc);
 		}
 		throw new exception($msg);
-	}
-
-	// compile file $in to file $out if $in is newer than $out
-	// returns true when it compiles, false otherwise
-	public static function ccompile($in, $out, $less = null) {
-		if ($less === null) {
-			$less = new self;
-		}
-		return $less->checkedCompile($in, $out);
-	}
-
-	public static function cexecute($in, $force = false, $less = null) {
-		if ($less === null) {
-			$less = new self;
-		}
-		return $less->cachedCompile($in, $force);
 	}
 
 	static protected $cssColors = array(
@@ -2112,13 +1748,6 @@ class lessc_parser {
 		'%' => 2,
 	);
 
-	static protected $whitePattern;
-	static protected $commentMulti;
-
-	static protected $commentSingle = "//";
-	static protected $commentMultiLeft = "/*";
-	static protected $commentMultiRight = "*/";
-
 	// regex string to match any of the operators
 	static protected $operatorString;
 
@@ -2126,7 +1755,7 @@ class lessc_parser {
 	static protected $supressDivisionProps =
 		array('/border-radius$/i', '/^font$/i');
 
-	protected $blockDirectives = array("font-face", "keyframes", "page", "-moz-document");
+	protected $blockDirectives = array("font-face", "keyframes", "page");
 	protected $lineDirectives = array("charset");
 
 	/**
@@ -2143,26 +1772,15 @@ class lessc_parser {
 	// caches preg escaped literals
 	static protected $literalCache = array();
 
-	public function __construct($lessc, $sourceName = null) {
+	public function __construct($sourceName = null) {
 		$this->eatWhiteDefault = true;
-		// reference to less needed for vPrefix, mPrefix, and parentSelector
-		$this->lessc = $lessc;
 
 		$this->sourceName = $sourceName; // name used for error messages
-
-		$this->writeComments = false;
 
 		if (!self::$operatorString) {
 			self::$operatorString =
 				'('.implode('|', array_map(array('LessPHP\\lessc', 'preg_quote'),
 					array_keys(self::$precedence))).')';
-
-			$commentSingle = lessc::preg_quote(self::$commentSingle);
-			$commentMultiLeft = lessc::preg_quote(self::$commentMultiLeft);
-			$commentMultiRight = lessc::preg_quote(self::$commentMultiRight);
-
-			self::$commentMulti = $commentMultiLeft.'.*?'.$commentMultiRight;
-			self::$whitePattern = '/'.$commentSingle.'[^\n]*\s*|('.self::$commentMulti.')\s*|\s+/Ais';
 		}
 	}
 
@@ -2171,7 +1789,7 @@ class lessc_parser {
 		$this->line = 1;
 
 		$this->env = null; // block stack
-		$this->buffer = $this->writeComments ? $buffer : $this->removeComments($buffer);
+		$this->buffer = $this->removeComments($buffer);
 		$this->pushSpecialBlock("root");
 		$this->eatWhiteDefault = true;
 		$this->seenComments = array();
@@ -2250,7 +1868,7 @@ class lessc_parser {
 
 		// look for special css blocks
 		if ($this->literal('@', false)) {
-			$this->count--;
+			--$this->count;
 
 			// media
 			if ($this->literal('@media')) {
@@ -2339,7 +1957,7 @@ class lessc_parser {
 				$hidden = true;
 				if (!isset($block->args)) {
 					foreach ($block->tags as $tag) {
-						if (!is_string($tag) || $tag[0] != $this->lessc->mPrefix) {
+						if (!is_string($tag) || $tag[0] != lessc::mPrefix) {
 							$hidden = false;
 							break;
 						}
@@ -2393,8 +2011,8 @@ class lessc_parser {
 	protected function fixTags($tags) {
 		// move @ tags out of variable namespace
 		foreach ($tags as &$tag) {
-			if ($tag[0] == $this->lessc->vPrefix)
-				$tag[0] = $this->lessc->mPrefix;
+			if ($tag[0] == lessc::vPrefix)
+				$tag[0] = lessc::mPrefix;
 		}
 		return $tags;
 	}
@@ -2673,7 +2291,6 @@ class lessc_parser {
 
 		$stop = array("'", '"', "@{", $end);
 		$stop = array_map(array('LessPHP\\lessc', 'preg_quote'), $stop);
-		// $stop[] = self::$commentMulti;
 
 		if (!is_null($rejectStrs)) {
 			$stop = array_merge($stop, $rejectStrs);
@@ -2699,7 +2316,7 @@ class lessc_parser {
 				if ($nestingLevel == 0) {
 					break;
 				} else {
-					$nestingLevel--;
+					--$nestingLevel;
 				}
 			}
 
@@ -2956,7 +2573,7 @@ class lessc_parser {
 			if ($this->whitespace()) $value .= " ";
 
 			// escape parent selector, (yuck)
-			$value = str_replace($this->lessc->parentSelector, "$&$", $value);
+			$value = str_replace(lessc::parentSelector, "$&$", $value);
 			return true;
 		}
 
@@ -3094,13 +2711,13 @@ class lessc_parser {
 	// consume a less variable
 	protected function variable(&$name) {
 		$s = $this->seek();
-		if ($this->literal($this->lessc->vPrefix, false) &&
+		if ($this->literal(lessc::vPrefix, false) &&
 			($this->variable($sub) || $this->keyword($name))
 		) {
 			if (!empty($sub)) {
 				$name = array('variable', $sub);
 			} else {
-				$name = $this->lessc->vPrefix.$name;
+				$name = lessc::vPrefix.$name;
 			}
 			return true;
 		}
@@ -3205,7 +2822,7 @@ class lessc_parser {
 		if (!isset($what[1]) && isset($this->buffer[$this->count])) {
 			if ($this->buffer[$this->count] == $what) {
 				if (!$eatWhitespace) {
-					$this->count++;
+					++$this->count;
 					return true;
 				}
 				// goes below...
@@ -3265,10 +2882,9 @@ class lessc_parser {
 	protected function match($regex, &$out, $eatWhitespace = null) {
 		if ($eatWhitespace === null) $eatWhitespace = $this->eatWhiteDefault;
 
-		$r = '/'.$regex.($eatWhitespace && !$this->writeComments ? '\s*' : '').'/Ais';
+		$r = '/'.$regex.($eatWhitespace ? '\s*' : '').'/Ais';
 		if (preg_match($r, $this->buffer, $out, null, $this->count)) {
 			$this->count += strlen($out[0]);
-			if ($eatWhitespace && $this->writeComments) $this->whitespace();
 			return true;
 		}
 		return false;
@@ -3276,21 +2892,8 @@ class lessc_parser {
 
 	// match some whitespace
 	protected function whitespace() {
-		if ($this->writeComments) {
-			$gotWhite = false;
-			while (preg_match(self::$whitePattern, $this->buffer, $m, null, $this->count)) {
-				if (isset($m[1]) && empty($this->seenComments[$this->count])) {
-					$this->append(array("comment", $m[1]));
-					$this->seenComments[$this->count] = true;
-				}
-				$this->count += strlen($m[0]);
-				$gotWhite = true;
-			}
-			return $gotWhite;
-		} else {
-			$this->match("", $m);
-			return strlen($m[0]) > 0;
-		}
+		$this->match("", $m);
+		return strlen($m[0]) > 0;
 	}
 
 	// match something without consuming it
@@ -3318,17 +2921,16 @@ class lessc_parser {
 			substr_count(substr($this->buffer, 0, $count), "\n");
 
 		if (!empty($this->sourceName)) {
-			$loc = "$this->sourceName on line $line";
+			$loc = "{$this->sourceName} on line {$line}";
 		} else {
-			$loc = "line: $line";
+			$loc = "line: {$line}";
 		}
 
 		// TODO this depends on $this->count
 		if ($this->peek("(.*?)(\n|$)", $m, $count)) {
 			throw new exception("$msg: failed at `$m[1]` $loc");
-		} else {
-			throw new exception("$msg: $loc");
 		}
+		throw new exception("$msg: $loc");
 	}
 
 	protected function pushBlock($selectors=null, $type=null) {
@@ -3425,33 +3027,11 @@ class lessc_parser {
 
 }
 
-class lessc_formatter_classic {
-	public $indentChar = "  ";
-
-	public $break = "\n";
-	public $open = " {";
-	public $close = "}";
-	public $selectorSeparator = ", ";
-	public $assignSeparator = ":";
-
-	public $openSingle = " { ";
-	public $closeSingle = " }";
-
-	public $disableSingle = false;
-	public $breakSelectors = false;
-
-	public $compressColors = false;
-
-	public function __construct() {
-		$this->indentLevel = 0;
-	}
-
-	public function indentStr($n = 0) {
-		return str_repeat($this->indentChar, max($this->indentLevel + $n, 0));
-	}
+class lessc_formatter_compressed {
+	public $compressColors = true;
 
 	public function property($name, $value) {
-		return $name . $this->assignSeparator . $value . ";";
+		return "{$name}:{$value};";
 	}
 
 	protected function isEmpty($block) {
@@ -3465,77 +3045,28 @@ class lessc_formatter_classic {
 		return false;
 	}
 
-	public function block($block) {
-		if ($this->isEmpty($block)) return;
+	public function block($block) : string {
+		if ($this->isEmpty($block))
+			return '';
 
-		$inner = $pre = $this->indentStr();
-
-		$isSingle = !$this->disableSingle &&
-			is_null($block->type) && count($block->lines) == 1;
+		$result = '';
 
 		if (!empty($block->selectors)) {
-			$this->indentLevel++;
-
-			if ($this->breakSelectors) {
-				$selectorSeparator = $this->selectorSeparator . $this->break . $pre;
-			} else {
-				$selectorSeparator = $this->selectorSeparator;
-			}
-
-			echo $pre .
-				implode($selectorSeparator, $block->selectors);
-			if ($isSingle) {
-				echo $this->openSingle;
-				$inner = "";
-			} else {
-				echo $this->open . $this->break;
-				$inner = $this->indentStr();
-			}
-
+			$result .= implode(',', $block->selectors) . '{';
 		}
 
 		if (!empty($block->lines)) {
-			$glue = $this->break.$inner;
-			echo $inner . implode($glue, $block->lines);
-			if (!$isSingle && !empty($block->children)) {
-				echo $this->break;
-			}
+			$result .= implode('', $block->lines);
 		}
 
 		foreach ($block->children as $child) {
-			$this->block($child);
+			$result .= $this->block($child);
 		}
 
 		if (!empty($block->selectors)) {
-			if (!$isSingle && empty($block->children)) echo $this->break;
-
-			if ($isSingle) {
-				echo $this->closeSingle . $this->break;
-			} else {
-				echo $pre . $this->close . $this->break;
-			}
-
-			$this->indentLevel--;
+			$result .= '}';
 		}
+
+		return $result;
 	}
-}
-
-class lessc_formatter_compressed extends lessc_formatter_classic {
-	public $disableSingle = true;
-	public $open = "{";
-	public $selectorSeparator = ",";
-	public $assignSeparator = ":";
-	public $break = "";
-	public $compressColors = true;
-
-	public function indentStr($n = 0) {
-		return "";
-	}
-}
-
-class lessc_formatter_lessjs extends lessc_formatter_classic {
-	public $disableSingle = true;
-	public $breakSelectors = true;
-	public $assignSeparator = ": ";
-	public $selectorSeparator = ",";
 }
