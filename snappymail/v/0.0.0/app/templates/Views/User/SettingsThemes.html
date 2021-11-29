@@ -2,11 +2,11 @@
 	<span data-i18n="SETTINGS_THEMES/LEGEND_THEMES"></span>
 	<span data-bind="saveTrigger: themeTrigger"></span>
 </div>
-<div class="b-themes-list" data-bind="foreach: themesObjects">
-	<div class="e-item" data-bind="click: function () { $root.theme(name); }, css: { 'selected': selected }">
-		<div class="e-name" data-bind="text: nameDisplay"></div>
-		<img class="e-image" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC" data-bind="attr: { 'src': themePreviewSrc }" />
-	</div>
+<div data-bind="foreach: themesObjects">
+	<figure data-bind="click: function () { $root.theme(name); }, css: { 'selected': selected }">
+		<figcaption data-bind="text: nameDisplay"></figcaption>
+		<img data-bind="attr: { 'src': themePreviewSrc }" />
+	</figure>
 </div>
 <br />
 <br />
