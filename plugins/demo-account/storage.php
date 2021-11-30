@@ -16,9 +16,9 @@ class DemoStorage extends \RainLoop\Providers\Storage\FileStorage
 			\MailSo\Base\Utils::RecRmDir("{$this->sDataPath}/demo");
 		}
 
-		$sDataPath .= '/' . static::fixName(\RainLoop\Utils::GetConnectionToken());
+		$sDataPath .= '/' . \RainLoop\Utils::fixName(\RainLoop\Utils::GetConnectionToken());
 		\is_dir($sDataPath) || \mkdir($sDataPath, 0700, true);
 
-		return $sDataPath . '/' . ($sKey ? static::fixName($sKey) : '');
+		return $sDataPath . '/' . ($sKey ? \RainLoop\Utils::fixName($sKey) : '');
 	}
 }
