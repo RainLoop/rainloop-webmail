@@ -160,12 +160,12 @@
 		<div class="b-message" data-bind="visible: message">
 			<div class="messageItemHeader" data-bind="css: {'emptySubject': '' === viewSubject()}">
 				<div class="subjectParent">
-					<a href="#" class="close" data-bind="command: closeMessageCommand" style="margin-top: -2px;">×</a>
 					<span class="infoParent g-ui-user-select-none fontastic" data-bind="click: function() { showFullInfo(!showFullInfo()); }">ℹ</span>
 					<span class="flagParent g-ui-user-select-none flagOff fontastic" data-bind="text: viewIsFlagged() ? '★' : '☆', css: {'flagOn': viewIsFlagged, 'flagOff': !viewIsFlagged()}"></span>
 					<b style="color: red; margin-right: 5px" data-bind="visible: viewIsImportant">!</b>
-					<span class="subject" data-bind="text: viewSubject, title: viewSubject, event: { 'dblclick': toggleFullScreen }"></span>
-					<span class="emptySubjectText" data-i18n="MESSAGE/EMPTY_SUBJECT_TEXT" data-bind="event: { 'dblclick': toggleFullScreen }"></span>
+					<span class="subject" data-bind="hidden: !viewSubject(), text: viewSubject, title: viewSubject, event: { 'dblclick': toggleFullScreen }"></span>
+					<span class="emptySubjectText" data-i18n="MESSAGE/EMPTY_SUBJECT_TEXT" data-bind="hidden: viewSubject(), event: { 'dblclick': toggleFullScreen }"></span>
+					<a href="#" class="close" data-bind="command: closeMessageCommand" style="margin-top: -8px;">×</a>
 				</div>
 				<div data-bind="hidden: showFullInfo(), event: { 'dblclick': toggleFullScreen }">
 					<div class="informationShort">

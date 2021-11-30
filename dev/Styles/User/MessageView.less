@@ -102,12 +102,17 @@ html.rl-no-preview-pane {
 		flex-shrink: 0;
 
 		.subjectParent {
+			display: flex;
 			font-size: 18px;
 			font-weight: bold;
-			text-overflow: ellipsis;
-			overflow: hidden;
-			white-space: nowrap;
 			margin-bottom: 8px;
+		}
+
+		.subject, .emptySubjectText {
+			flex-grow: 1;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 		}
 
 		.messageButtons {
@@ -157,14 +162,9 @@ html.rl-no-preview-pane {
 		}
 
 		.emptySubjectText {
-			display: none;
 			font-style: italic;
 			font-weight: normal;
 			color: #999;
-		}
-
-		&.emptySubject .emptySubjectText {
-			display: inline;
 		}
 
 		.hasVirus {
