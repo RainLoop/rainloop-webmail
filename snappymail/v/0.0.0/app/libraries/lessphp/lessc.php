@@ -1545,6 +1545,31 @@ class lessc {
 		return false;
 	}
 
+	protected function block($block) : string {
+		if ($this->isEmpty($block))
+			return '';
+
+		$result = '';
+
+		if (!empty($block->selectors)) {
+			$result .= implode(',', $block->selectors) . '{';
+		}
+
+		if (!empty($block->lines)) {
+			$result .= implode('', $block->lines);
+		}
+
+		foreach ($block->children as $child) {
+			$result .= $this->block($child);
+		}
+
+		if (!empty($block->selectors)) {
+			$result .= '}';
+		}
+
+		return $result;
+	}
+
 	public function compile($string, $name = null) {
 		$locale = setlocale(LC_NUMERIC, 0);
 		setlocale(LC_NUMERIC, "C");
@@ -1558,25 +1583,7 @@ class lessc {
 		$this->sourceParser = $this->parser; // used for error messages
 		$this->compileBlock($root);
 
-		$out = '';
-		if (!$this->isEmpty($this->scope)) {
-			if (!empty($this->scope->selectors)) {
-				$out .= implode(',', $this->scope->selectors) . '{';
-			}
-
-			if (!empty($this->scope->lines)) {
-				$out .= implode('', $this->scope->lines);
-			}
-
-			foreach ($this->scope->children as $child) {
-				$out .= $this->block($child);
-			}
-
-			if (!empty($this->scope->selectors)) {
-				$out .= '}';
-			}
-		}
-
+		$out = $this->block($this->scope);
 		setlocale(LC_NUMERIC, $locale);
 		return $out;
 	}
