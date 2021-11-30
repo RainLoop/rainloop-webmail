@@ -132,7 +132,7 @@ class AppUser extends AbstractApp {
 		let iOffset = (MessageUserStore.listPage() - 1) * SettingsUserStore.messagesPerPage();
 
 		if (bDropCurrenFolderCache) {
-			setFolderHash(FolderUserStore.currentFolderFullNameRaw(), '');
+			setFolderHash(FolderUserStore.currentFolderFullName(), '');
 		}
 
 		if (bDropPagePosition) {
@@ -167,7 +167,7 @@ class AppUser extends AbstractApp {
 				MessageUserStore.listLoading(false);
 			},
 			{
-				Folder: FolderUserStore.currentFolderFullNameRaw(),
+				Folder: FolderUserStore.currentFolderFullName(),
 				Offset: iOffset,
 				Limit: SettingsUserStore.messagesPerPage(),
 				Search: MessageUserStore.listSearch(),
@@ -198,12 +198,12 @@ class AppUser extends AbstractApp {
 		this.moveCache = {};
 	}
 
-	messagesMoveHelper(fromFolderFullNameRaw, toFolderFullNameRaw, uidsForMove) {
-		const hash = '$$' + fromFolderFullNameRaw + '$$' + toFolderFullNameRaw + '$$';
+	messagesMoveHelper(fromFolderFullName, toFolderFullName, uidsForMove) {
+		const hash = '$$' + fromFolderFullName + '$$' + toFolderFullName + '$$';
 		if (!this.moveCache[hash]) {
 			this.moveCache[hash] = {
-				From: fromFolderFullNameRaw,
-				To: toFolderFullNameRaw,
+				From: fromFolderFullName,
+				To: toFolderFullName,
 				Uid: []
 			};
 		}
@@ -212,44 +212,44 @@ class AppUser extends AbstractApp {
 		this.messagesMoveTrigger();
 	}
 
-	messagesCopyHelper(sFromFolderFullNameRaw, sToFolderFullNameRaw, aUidForCopy) {
-		Remote.messagesCopy(this.moveOrDeleteResponseHelper, sFromFolderFullNameRaw, sToFolderFullNameRaw, aUidForCopy);
+	messagesCopyHelper(sFromFolderFullName, sToFolderFullName, aUidForCopy) {
+		Remote.messagesCopy(this.moveOrDeleteResponseHelper, sFromFolderFullName, sToFolderFullName, aUidForCopy);
 	}
 
-	messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove) {
-		Remote.messagesDelete(this.moveOrDeleteResponseHelper, sFromFolderFullNameRaw, aUidForRemove);
+	messagesDeleteHelper(sFromFolderFullName, aUidForRemove) {
+		Remote.messagesDelete(this.moveOrDeleteResponseHelper, sFromFolderFullName, aUidForRemove);
 	}
 
 	moveOrDeleteResponseHelper(iError, oData) {
 		if (iError) {
-			setFolderHash(FolderUserStore.currentFolderFullNameRaw(), '');
+			setFolderHash(FolderUserStore.currentFolderFullName(), '');
 			alert(getNotification(iError));
 		} else if (FolderUserStore.currentFolder()) {
 			if (2 === arrayLength(oData.Result)) {
 				setFolderHash(oData.Result[0], oData.Result[1]);
 			} else {
-				setFolderHash(FolderUserStore.currentFolderFullNameRaw(), '');
+				setFolderHash(FolderUserStore.currentFolderFullName(), '');
 			}
 			this.reloadMessageList(!MessageUserStore.list.length);
 		}
 	}
 
 	/**
-	 * @param {string} sFromFolderFullNameRaw
+	 * @param {string} sFromFolderFullName
 	 * @param {Array} aUidForRemove
 	 */
-	deleteMessagesFromFolderWithoutCheck(sFromFolderFullNameRaw, aUidForRemove) {
-		this.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
-		MessageUserStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
+	deleteMessagesFromFolderWithoutCheck(sFromFolderFullName, aUidForRemove) {
+		this.messagesDeleteHelper(sFromFolderFullName, aUidForRemove);
+		MessageUserStore.removeMessagesFromList(sFromFolderFullName, aUidForRemove);
 	}
 
 	/**
 	 * @param {number} iDeleteType
-	 * @param {string} sFromFolderFullNameRaw
+	 * @param {string} sFromFolderFullName
 	 * @param {Array} aUidForRemove
 	 * @param {boolean=} bUseFolder = true
 	 */
-	deleteMessagesFromFolder(iDeleteType, sFromFolderFullNameRaw, aUidForRemove, bUseFolder) {
+	deleteMessagesFromFolder(iDeleteType, sFromFolderFullName, aUidForRemove, bUseFolder) {
 		let oMoveFolder = null,
 			nSetSystemFoldersNotification = null;
 
@@ -288,32 +288,32 @@ class AppUser extends AbstractApp {
 		} else if (
 			!bUseFolder ||
 			(FolderType.Trash === iDeleteType &&
-				(sFromFolderFullNameRaw === FolderUserStore.spamFolder()
-				 || sFromFolderFullNameRaw === FolderUserStore.trashFolder()))
+				(sFromFolderFullName === FolderUserStore.spamFolder()
+				 || sFromFolderFullName === FolderUserStore.trashFolder()))
 		) {
 			showScreenPopup(AskPopupView, [
 				i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'),
 				() => {
-					this.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
-					MessageUserStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
+					this.messagesDeleteHelper(sFromFolderFullName, aUidForRemove);
+					MessageUserStore.removeMessagesFromList(sFromFolderFullName, aUidForRemove);
 				}
 			]);
 		} else if (oMoveFolder) {
-			this.messagesMoveHelper(sFromFolderFullNameRaw, oMoveFolder.fullName, aUidForRemove);
-			MessageUserStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, oMoveFolder.fullName);
+			this.messagesMoveHelper(sFromFolderFullName, oMoveFolder.fullName, aUidForRemove);
+			MessageUserStore.removeMessagesFromList(sFromFolderFullName, aUidForRemove, oMoveFolder.fullName);
 		}
 	}
 
 	/**
-	 * @param {string} sFromFolderFullNameRaw
+	 * @param {string} sFromFolderFullName
 	 * @param {Array} aUidForMove
-	 * @param {string} sToFolderFullNameRaw
+	 * @param {string} sToFolderFullName
 	 * @param {boolean=} bCopy = false
 	 */
-	moveMessagesToFolder(sFromFolderFullNameRaw, aUidForMove, sToFolderFullNameRaw, bCopy) {
-		if (sFromFolderFullNameRaw !== sToFolderFullNameRaw && arrayLength(aUidForMove)) {
-			const oFromFolder = getFolderFromCacheList(sFromFolderFullNameRaw),
-				oToFolder = getFolderFromCacheList(sToFolderFullNameRaw);
+	moveMessagesToFolder(sFromFolderFullName, aUidForMove, sToFolderFullName, bCopy) {
+		if (sFromFolderFullName !== sToFolderFullName && arrayLength(aUidForMove)) {
+			const oFromFolder = getFolderFromCacheList(sFromFolderFullName),
+				oToFolder = getFolderFromCacheList(sToFolderFullName);
 
 			if (oFromFolder && oToFolder) {
 				if (undefined === bCopy ? false : !!bCopy) {
@@ -511,7 +511,7 @@ class AppUser extends AbstractApp {
 							);
 
 							if (!hash || unreadCountChange || result.Hash !== hash) {
-								if (folderFromCache.fullName === FolderUserStore.currentFolderFullNameRaw()) {
+								if (folderFromCache.fullName === FolderUserStore.currentFolderFullName()) {
 									this.reloadMessageList();
 								} else if (getFolderInboxName() === folderFromCache.fullName) {
 									Remote.messageList(null, {Folder: getFolderInboxName()}, true);
@@ -555,11 +555,11 @@ class AppUser extends AbstractApp {
 							}
 
 							if (!hash || item.Hash !== hash) {
-								if (folder.fullName === FolderUserStore.currentFolderFullNameRaw()) {
+								if (folder.fullName === FolderUserStore.currentFolderFullName()) {
 									this.reloadMessageList();
 								}
 							} else if (unreadCountChange
-							 && folder.fullName === FolderUserStore.currentFolderFullNameRaw()
+							 && folder.fullName === FolderUserStore.currentFolderFullName()
 							 && MessageUserStore.list.length) {
 								this.folderInformation(folder.fullName, MessageUserStore.list());
 							}
@@ -575,11 +575,11 @@ class AppUser extends AbstractApp {
 	}
 
 	/**
-	 * @param {string} sFolderFullNameRaw
+	 * @param {string} sFolderFullName
 	 * @param {number} iSetAction
 	 * @param {Array=} messages = null
 	 */
-	messageListAction(sFolderFullNameRaw, iSetAction, messages) {
+	messageListAction(sFolderFullName, iSetAction, messages) {
 		let folder = null,
 			alreadyUnread = 0,
 			rootUids = [];
@@ -591,48 +591,48 @@ class AppUser extends AbstractApp {
 		rootUids = messages.map(oMessage => oMessage && oMessage.uid ? oMessage.uid : null)
 			.validUnique();
 
-		if (sFolderFullNameRaw && rootUids.length) {
+		if (sFolderFullName && rootUids.length) {
 			switch (iSetAction) {
 				case MessageSetAction.SetSeen:
 					rootUids.forEach(sSubUid =>
-						alreadyUnread += MessageFlagsCache.storeBySetAction(sFolderFullNameRaw, sSubUid, iSetAction)
+						alreadyUnread += MessageFlagsCache.storeBySetAction(sFolderFullName, sSubUid, iSetAction)
 					);
 
-					folder = getFolderFromCacheList(sFolderFullNameRaw);
+					folder = getFolderFromCacheList(sFolderFullName);
 					if (folder) {
 						folder.messageCountUnread(folder.messageCountUnread() - alreadyUnread);
 					}
 
-					Remote.messageSetSeen(null, sFolderFullNameRaw, rootUids, true);
+					Remote.messageSetSeen(null, sFolderFullName, rootUids, true);
 					break;
 
 				case MessageSetAction.UnsetSeen:
 					rootUids.forEach(sSubUid =>
-						alreadyUnread += MessageFlagsCache.storeBySetAction(sFolderFullNameRaw, sSubUid, iSetAction)
+						alreadyUnread += MessageFlagsCache.storeBySetAction(sFolderFullName, sSubUid, iSetAction)
 					);
 
-					folder = getFolderFromCacheList(sFolderFullNameRaw);
+					folder = getFolderFromCacheList(sFolderFullName);
 					if (folder) {
 						folder.messageCountUnread(folder.messageCountUnread() - alreadyUnread + rootUids.length);
 					}
 
-					Remote.messageSetSeen(null, sFolderFullNameRaw, rootUids, false);
+					Remote.messageSetSeen(null, sFolderFullName, rootUids, false);
 					break;
 
 				case MessageSetAction.SetFlag:
 					rootUids.forEach(sSubUid =>
-						MessageFlagsCache.storeBySetAction(sFolderFullNameRaw, sSubUid, iSetAction)
+						MessageFlagsCache.storeBySetAction(sFolderFullName, sSubUid, iSetAction)
 					);
 
-					Remote.messageSetFlagged(null, sFolderFullNameRaw, rootUids, true);
+					Remote.messageSetFlagged(null, sFolderFullName, rootUids, true);
 					break;
 
 				case MessageSetAction.UnsetFlag:
 					rootUids.forEach(sSubUid =>
-						MessageFlagsCache.storeBySetAction(sFolderFullNameRaw, sSubUid, iSetAction)
+						MessageFlagsCache.storeBySetAction(sFolderFullName, sSubUid, iSetAction)
 					);
 
-					Remote.messageSetFlagged(null, sFolderFullNameRaw, rootUids, false);
+					Remote.messageSetFlagged(null, sFolderFullName, rootUids, false);
 					break;
 				// no default
 			}
@@ -734,7 +734,7 @@ class AppUser extends AbstractApp {
 						]);
 
 						setInterval(() => {
-							const cF = FolderUserStore.currentFolderFullNameRaw(),
+							const cF = FolderUserStore.currentFolderFullName(),
 								iF = getFolderInboxName();
 							this.folderInformation(iF);
 							if (iF !== cF) {
@@ -751,7 +751,7 @@ class AppUser extends AbstractApp {
 						this.accountsAndIdentities();
 
 						setTimeout(() => {
-							const cF = FolderUserStore.currentFolderFullNameRaw();
+							const cF = FolderUserStore.currentFolderFullName();
 							if (getFolderInboxName() !== cF) {
 								this.folderInformation(cF);
 							}

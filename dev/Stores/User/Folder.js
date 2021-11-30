@@ -56,8 +56,6 @@ export const FolderUserStore = new class {
 
 			draftFolderNotEnabled: () => !self.draftFolder() || UNUSED_OPTION_VALUE === self.draftFolder(),
 
-			currentFolderFullNameRaw: () => (self.currentFolder() ? self.currentFolder().fullName : ''),
-
 			currentFolderFullName: () => (self.currentFolder() ? self.currentFolder().fullName : ''),
 			currentFolderFullNameHash: () => (self.currentFolder() ? self.currentFolder().fullNameHash : ''),
 

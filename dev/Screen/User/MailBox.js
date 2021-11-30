@@ -3,7 +3,7 @@ import { Layout, ClientSideKeyName } from 'Common/EnumsUser';
 import { doc, leftPanelDisabled, moveAction, Settings, elementById } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
 import { setLayoutResizer } from 'Common/UtilsUser';
-import { getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName } from 'Common/Cache';
+import { getFolderFromCacheList, getFolderFullName, getFolderInboxName } from 'Common/Cache';
 import { i18n } from 'Common/Translator';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
@@ -64,7 +64,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 * @returns {void}
 	 */
 	onRoute(folderHash, page, search) {
-		const folder = getFolderFromCacheList(getFolderFullNameRaw(folderHash.replace(/~([\d]+)$/, '')));
+		const folder = getFolderFromCacheList(getFolderFullName(folderHash.replace(/~([\d]+)$/, '')));
 		if (folder) {
 			let threadUid = folderHash.replace(/^.+~(\d+)$/, '$1');
 

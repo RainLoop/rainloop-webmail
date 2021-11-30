@@ -571,7 +571,7 @@ class ComposePopupView extends AbstractViewPopup {
 		const draftFolder = FolderUserStore.draftFolder();
 		if (draftFolder && UNUSED_OPTION_VALUE !== draftFolder) {
 			setFolderHash(draftFolder, '');
-			if (FolderUserStore.currentFolderFullNameRaw() === draftFolder) {
+			if (FolderUserStore.currentFolderFullName() === draftFolder) {
 				rl.app.reloadMessageList(true);
 			} else {
 				rl.app.folderInformation(draftFolder);

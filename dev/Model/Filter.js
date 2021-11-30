@@ -67,9 +67,9 @@ export class FilterModel extends AbstractModel {
 
 		this.conditions = ko.observableArray();
 
-		const fGetRealFolderName = (folderFullNameRaw) => {
-			const folder = getFolderFromCacheList(folderFullNameRaw);
-			return folder ? folder.fullName.replace('.' === folder.delimiter ? /\./ : /[\\/]+/, ' / ') : folderFullNameRaw;
+		const fGetRealFolderName = (folderFullName) => {
+			const folder = getFolderFromCacheList(folderFullName);
+			return folder ? folder.fullName.replace('.' === folder.delimiter ? /\./ : /[\\/]+/, ' / ') : folderFullName;
 		};
 
 		this.addComputables({

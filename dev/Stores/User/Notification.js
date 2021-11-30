@@ -1,7 +1,6 @@
-import ko from 'ko';
-
 import { SMAudio } from 'Common/Audio';
 import * as Links from 'Common/Links';
+import { addObservablesTo } from 'Common/Utils';
 
 /**
  * Might not work due to the new ServiceWorkerRegistration.showNotification
@@ -36,11 +35,13 @@ if (WorkerNotifications && ServiceWorkerRegistration && ServiceWorkerRegistratio
 
 export const NotificationUserStore = new class {
 	constructor() {
-		this.enableSoundNotification = ko.observable(false);
+		addObservablesTo(this, {
+			enableSoundNotification: false,
 
-		this.enableDesktopNotification = ko.observable(false)/*.extend({ notify: 'always' })*/;
+			enableDesktopNotification: false,/*.extend({ notify: 'always' })*/
 
-		this.isDesktopNotificationAllowed = ko.observable(!NotificationsDenied());
+			isDesktopNotificationAllowed: !NotificationsDenied()
+		});
 
 		this.enableDesktopNotification.subscribe(value => {
 			DesktopNotifications = !!value;

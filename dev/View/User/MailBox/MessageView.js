@@ -176,8 +176,8 @@ export class MailMessageView extends AbstractViewRight {
 				return '';
 			},
 
-			messageListAndMessageViewLoading:
-				() => MessageUserStore.listCompleteLoading() || MessageUserStore.messageLoading()
+			messageListOrViewLoading:
+				() => MessageUserStore.listCompleteLoading() | MessageUserStore.messageLoading()
 		});
 
 		this.addSubscribables({
@@ -258,8 +258,8 @@ export class MailMessageView extends AbstractViewRight {
 		decorateKoCommands(this, {
 			closeMessageCommand: 1,
 			messageEditCommand: self => self.messageVisibility(),
-			goUpCommand: self => !self.messageListAndMessageViewLoading(),
-			goDownCommand: self => !self.messageListAndMessageViewLoading()
+			goUpCommand: self => !self.messageListOrViewLoading(),
+			goDownCommand: self => !self.messageListOrViewLoading()
 		});
 	}
 

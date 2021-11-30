@@ -267,12 +267,12 @@ export const MessageUserStore = new class {
 	}
 
 	/**
-	 * @param {string} fromFolderFullNameRaw
+	 * @param {string} fromFolderFullName
 	 * @param {Array} uidForRemove
-	 * @param {string=} toFolderFullNameRaw = ''
+	 * @param {string=} toFolderFullName = ''
 	 * @param {boolean=} copy = false
 	 */
-	removeMessagesFromList(fromFolderFullNameRaw, uidForRemove, toFolderFullNameRaw = '', copy = false) {
+	removeMessagesFromList(fromFolderFullName, uidForRemove, toFolderFullName = '', copy = false) {
 		uidForRemove = uidForRemove.map(mValue => pInt(mValue));
 
 		let unseenCount = 0,
@@ -281,11 +281,10 @@ export const MessageUserStore = new class {
 
 		const trashFolder = FolderUserStore.trashFolder(),
 			spamFolder = FolderUserStore.spamFolder(),
-			fromFolder = getFolderFromCacheList(fromFolderFullNameRaw),
-			toFolder = toFolderFullNameRaw ? getFolderFromCacheList(toFolderFullNameRaw) : null,
-			currentFolderFullNameRaw = FolderUserStore.currentFolderFullNameRaw(),
+			fromFolder = getFolderFromCacheList(fromFolderFullName),
+			toFolder = toFolderFullName ? getFolderFromCacheList(toFolderFullName) : null,
 			messages =
-				currentFolderFullNameRaw === fromFolderFullNameRaw
+				FolderUserStore.currentFolderFullName() === fromFolderFullName
 					? messageList.filter(item => item && uidForRemove.includes(pInt(item.uid)))
 					: [];
 
@@ -339,12 +338,12 @@ export const MessageUserStore = new class {
 			}
 		}
 
-		if (fromFolderFullNameRaw) {
-			setFolderHash(fromFolderFullNameRaw, '');
+		if (fromFolderFullName) {
+			setFolderHash(fromFolderFullName, '');
 		}
 
-		if (toFolderFullNameRaw) {
-			setFolderHash(toFolderFullNameRaw, '');
+		if (toFolderFullName) {
+			setFolderHash(toFolderFullName, '');
 		}
 
 		if (this.listThreadUid()) {
@@ -635,7 +634,7 @@ export const MessageUserStore = new class {
 	 * @returns {string}
 	 */
 	calculateMessageListHash(list) {
-		return list.map(message => '' + message.hash + '_' + message.threadsLen() + '_' + message.flagHash()).join(
+		return list.map(message => message.hash + '_' + message.threadsLen() + '_' + message.flagHash()).join(
 			'|'
 		);
 	}

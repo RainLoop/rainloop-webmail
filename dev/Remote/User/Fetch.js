@@ -171,18 +171,18 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	 */
 	messageList(fCallback, params, bSilent = false) {
 		const
-			sFolderFullNameRaw = pString(params.Folder),
-			folderHash = getFolderHash(sFolderFullNameRaw);
+			sFolderFullName = pString(params.Folder),
+			folderHash = getFolderHash(sFolderFullName);
 
 		params = Object.assign({
 			Offset: 0,
 			Limit: SettingsUserStore.messagesPerPage(),
 			Search: '',
-			UidNext: getFolderInboxName() === sFolderFullNameRaw ? getFolderUidNext(sFolderFullNameRaw) : '',
+			UidNext: getFolderInboxName() === sFolderFullName ? getFolderUidNext(sFolderFullName) : '',
 			Sort: FolderUserStore.sortMode(),
 			Hash: folderHash + SettingsGet('AccountHash')
 		}, params);
-		params.Folder = sFolderFullNameRaw;
+		params.Folder = sFolderFullName;
 		if (AppUserStore.threadsAllowed() && SettingsUserStore.useThreads()) {
 			params.UseThreads = 1;
 		} else {
@@ -226,15 +226,15 @@ class RemoteUserFetch extends AbstractFetchRemote {
 
 	/**
 	 * @param {?Function} fCallback
-	 * @param {string} sFolderFullNameRaw
+	 * @param {string} sFolderFullName
 	 * @param {number} iUid
 	 * @returns {boolean}
 	 */
-	message(fCallback, sFolderFullNameRaw, iUid) {
-		sFolderFullNameRaw = pString(sFolderFullNameRaw);
+	message(fCallback, sFolderFullName, iUid) {
+		sFolderFullName = pString(sFolderFullName);
 		iUid = pInt(iUid);
 
-		if (getFolderFromCacheList(sFolderFullNameRaw) && 0 < iUid) {
+		if (getFolderFromCacheList(sFolderFullName) && 0 < iUid) {
 			this.defaultRequest(
 				fCallback,
 				'Message',
@@ -244,7 +244,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 					SUB_QUERY_PREFIX +
 					'/' +
 					urlSafeJSON([
-						sFolderFullNameRaw,
+						sFolderFullName,
 						iUid,
 						AppUserStore.threadsAllowed() && SettingsUserStore.useThreads() ? 1 : 0,
 						SettingsGet('AccountHash')
@@ -350,13 +350,13 @@ class RemoteUserFetch extends AbstractFetchRemote {
 
 	/**
 	 * @param {?Function} fCallback
-	 * @param {string} sFolderFullNameRaw
+	 * @param {string} sFolderFullName
 	 * @param {Array} aUids
 	 * @param {boolean} bSetFlagged
 	 */
-	messageSetFlagged(fCallback, sFolderFullNameRaw, aUids, bSetFlagged) {
+	messageSetFlagged(fCallback, sFolderFullName, aUids, bSetFlagged) {
 		this.defaultRequest(fCallback, 'MessageSetFlagged', {
-			Folder: sFolderFullNameRaw,
+			Folder: sFolderFullName,
 			Uids: aUids.join(','),
 			SetAction: bSetFlagged ? 1 : 0
 		});
@@ -364,13 +364,13 @@ class RemoteUserFetch extends AbstractFetchRemote {
 
 	/**
 	 * @param {?Function} fCallback
-	 * @param {string} sFolderFullNameRaw
+	 * @param {string} sFolderFullName
 	 * @param {Array} aUids
 	 * @param {boolean} bSetSeen
 	 */
-	messageSetSeen(fCallback, sFolderFullNameRaw, aUids, bSetSeen) {
+	messageSetSeen(fCallback, sFolderFullName, aUids, bSetSeen) {
 		this.defaultRequest(fCallback, 'MessageSetSeen', {
-			Folder: sFolderFullNameRaw,
+			Folder: sFolderFullName,
 			Uids: aUids.join(','),
 			SetAction: bSetSeen ? 1 : 0
 		});
@@ -378,13 +378,13 @@ class RemoteUserFetch extends AbstractFetchRemote {
 
 	/**
 	 * @param {?Function} fCallback
-	 * @param {string} sFolderFullNameRaw
+	 * @param {string} sFolderFullName
 	 * @param {boolean} bSetSeen
 	 * @param {Array} aThreadUids = null
 	 */
-	messageSetSeenToAll(fCallback, sFolderFullNameRaw, bSetSeen, aThreadUids = null) {
+	messageSetSeenToAll(fCallback, sFolderFullName, bSetSeen, aThreadUids = null) {
 		this.defaultRequest(fCallback, 'MessageSetSeenToAll', {
-			Folder: sFolderFullNameRaw,
+			Folder: sFolderFullName,
 			SetAction: bSetSeen ? 1 : 0,
 			ThreadUids: aThreadUids ? aThreadUids.join(',') : ''
 		});
@@ -453,34 +453,34 @@ class RemoteUserFetch extends AbstractFetchRemote {
 
 	/**
 	 * @param {?Function} fCallback
-	 * @param {string} sFolderFullNameRaw
+	 * @param {string} sFolderFullName
 	 */
-	folderClear(fCallback, sFolderFullNameRaw) {
+	folderClear(fCallback, sFolderFullName) {
 		this.defaultRequest(fCallback, 'FolderClear', {
-			Folder: sFolderFullNameRaw
+			Folder: sFolderFullName
 		});
 	}
 
 	/**
 	 * @param {?Function} fCallback
-	 * @param {string} sFolderFullNameRaw
+	 * @param {string} sFolderFullName
 	 * @param {boolean} bSubscribe
 	 */
-	folderSetSubscribe(fCallback, sFolderFullNameRaw, bSubscribe) {
+	folderSetSubscribe(fCallback, sFolderFullName, bSubscribe) {
 		this.defaultRequest(fCallback, 'FolderSubscribe', {
-			Folder: sFolderFullNameRaw,
+			Folder: sFolderFullName,
 			Subscribe: bSubscribe ? 1 : 0
 		});
 	}
 
 	/**
 	 * @param {?Function} fCallback
-	 * @param {string} sFolderFullNameRaw
+	 * @param {string} sFolderFullName
 	 * @param {boolean} bSubscribe
 	 */
-	folderSetMetadata(fCallback, sFolderFullNameRaw, sKey, sValue) {
+	folderSetMetadata(fCallback, sFolderFullName, sKey, sValue) {
 		this.defaultRequest(fCallback, 'FolderSetMetadata', {
-			Folder: sFolderFullNameRaw,
+			Folder: sFolderFullName,
 			Key: sKey,
 			Value: sValue
 		});
@@ -488,12 +488,12 @@ class RemoteUserFetch extends AbstractFetchRemote {
 
 	/**
 	 * @param {?Function} fCallback
-	 * @param {string} sFolderFullNameRaw
+	 * @param {string} sFolderFullName
 	 * @param {boolean} bCheckable
 	 */
-	folderSetCheckable(fCallback, sFolderFullNameRaw, bCheckable) {
+	folderSetCheckable(fCallback, sFolderFullName, bCheckable) {
 		this.defaultRequest(fCallback, 'FolderCheckable', {
-			Folder: sFolderFullNameRaw,
+			Folder: sFolderFullName,
 			Checkable: bCheckable ? 1 : 0
 		});
 	}
@@ -662,9 +662,9 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		this.foldersTimeout = setTimeout(() => this.foldersReload(), 500);
 	}
 
-	folderDelete(sFolderFullNameRaw) {
+	folderDelete(sFolderFullName) {
 		return this.postRequest('FolderDelete', FolderUserStore.foldersDeleting, {
-			Folder: sFolderFullNameRaw
+			Folder: sFolderFullName
 		});
 	}
 
@@ -675,16 +675,16 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		});
 	}
 
-	folderMove(sPrevFolderFullNameRaw, sNewFolderFullName) {
+	folderMove(sPrevFolderFullName, sNewFolderFullName) {
 		return this.postRequest('FolderMove', FolderUserStore.foldersRenaming, {
-			Folder: sPrevFolderFullNameRaw,
+			Folder: sPrevFolderFullName,
 			NewFolder: sNewFolderFullName
 		});
 	}
 
-	folderRename(sPrevFolderFullNameRaw, sNewFolderName) {
+	folderRename(sPrevFolderFullName, sNewFolderName) {
 		return this.postRequest('FolderRename', FolderUserStore.foldersRenaming, {
-			Folder: sPrevFolderFullNameRaw,
+			Folder: sPrevFolderFullName,
 			NewFolderName: sNewFolderName
 		});
 	}

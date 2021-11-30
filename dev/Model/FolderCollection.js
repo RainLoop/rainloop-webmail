@@ -21,10 +21,10 @@ import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 import { AbstractModel } from 'Knoin/AbstractModel';
 
 const
-normalizeFolder = sFolderFullNameRaw => ('' === sFolderFullNameRaw
-	|| UNUSED_OPTION_VALUE === sFolderFullNameRaw
-	|| null !== Cache.getFolderFromCacheList(sFolderFullNameRaw))
-		? sFolderFullNameRaw
+normalizeFolder = sFolderFullName => ('' === sFolderFullName
+	|| UNUSED_OPTION_VALUE === sFolderFullName
+	|| null !== Cache.getFolderFromCacheList(sFolderFullName))
+		? sFolderFullName
 		: '';
 
 // index is FolderType value

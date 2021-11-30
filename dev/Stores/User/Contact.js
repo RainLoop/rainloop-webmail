@@ -27,9 +27,9 @@ ContactUserStore.sync = fResultFunc => {
 	 && !ContactUserStore.syncing()
 	) {
 		ContactUserStore.syncing(true);
-		Remote.contactsSync((sResult, oData) => {
+		Remote.contactsSync((iError, oData) => {
 			ContactUserStore.syncing(false);
-			fResultFunc && fResultFunc(sResult, oData);
+			fResultFunc && fResultFunc(iError, oData);
 		});
 	}
 };
@@ -44,8 +44,7 @@ ContactUserStore.init = () => {
 		ContactUserStore.syncPass(SettingsGet('ContactsSyncPassword'));
 		setTimeout(ContactUserStore.sync, 10000);
 		value = pInt(SettingsGet('ContactsSyncInterval'));
-		value = 5 <= value ? value : 20;
-		value = 320 >= value ? value : 320;
+		value = 5 <= value ? (320 >= value ? value : 320) : 20;
 		setInterval(ContactUserStore.sync, value * 60000 + 5000);
 	}
 };

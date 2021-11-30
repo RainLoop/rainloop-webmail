@@ -25,11 +25,11 @@ export const
 	},
 
 	/**
-	 * @param {string} folderFullNameRaw
+	 * @param {string} folderFullName
 	 * @param {string} uid
 	 * @returns {string}
 	 */
-	getMessageKey = (folderFullNameRaw, uid) => `${folderFullNameRaw}#${uid}`,
+	getMessageKey = (folderFullName, uid) => `${folderFullName}#${uid}`,
 
 	/**
 	 * @param {string} folder
@@ -45,18 +45,18 @@ export const
 	hasRequestedMessage = (folder, uid) => true === REQUESTED_MESSAGE_CACHE[getMessageKey(folder, uid)],
 
 	/**
-	 * @param {string} folderFullNameRaw
+	 * @param {string} folderFullName
 	 * @param {string} uid
 	 */
-	addNewMessageCache = (folderFullNameRaw, uid) => NEW_MESSAGE_CACHE[getMessageKey(folderFullNameRaw, uid)] = true,
+	addNewMessageCache = (folderFullName, uid) => NEW_MESSAGE_CACHE[getMessageKey(folderFullName, uid)] = true,
 
 	/**
-	 * @param {string} folderFullNameRaw
+	 * @param {string} folderFullName
 	 * @param {string} uid
 	 */
-	hasNewMessageAndRemoveFromCache = (folderFullNameRaw, uid) => {
-		if (NEW_MESSAGE_CACHE[getMessageKey(folderFullNameRaw, uid)]) {
-			NEW_MESSAGE_CACHE[getMessageKey(folderFullNameRaw, uid)] = null;
+	hasNewMessageAndRemoveFromCache = (folderFullName, uid) => {
+		if (NEW_MESSAGE_CACHE[getMessageKey(folderFullName, uid)]) {
+			NEW_MESSAGE_CACHE[getMessageKey(folderFullName, uid)] = null;
 			return true;
 		}
 		return false;
@@ -81,60 +81,60 @@ export const
 	 * @param {string} folderHash
 	 * @returns {string}
 	 */
-	getFolderFullNameRaw = folderHash =>
+	getFolderFullName = folderHash =>
 		folderHash && FOLDERS_NAME_CACHE[folderHash] ? FOLDERS_NAME_CACHE[folderHash] : '',
 
 	/**
 	 * @param {string} folderHash
-	 * @param {string} folderFullNameRaw
+	 * @param {string} folderFullName
 	 * @param {?FolderModel} folder
 	 */
-	setFolder = (folderHash, folderFullNameRaw, folder) => {
-		FOLDERS_CACHE[folderFullNameRaw] = folder;
-		FOLDERS_NAME_CACHE[folderHash] = folderFullNameRaw;
+	setFolder = (folderHash, folderFullName, folder) => {
+		FOLDERS_CACHE[folderFullName] = folder;
+		FOLDERS_NAME_CACHE[folderHash] = folderFullName;
 	},
 
 	/**
-	 * @param {string} folderFullNameRaw
+	 * @param {string} folderFullName
 	 * @returns {string}
 	 */
-	getFolderHash = folderFullNameRaw =>
-		folderFullNameRaw && FOLDERS_HASH_CACHE[folderFullNameRaw] ? FOLDERS_HASH_CACHE[folderFullNameRaw] : '',
+	getFolderHash = folderFullName =>
+		folderFullName && FOLDERS_HASH_CACHE[folderFullName] ? FOLDERS_HASH_CACHE[folderFullName] : '',
 
 	/**
-	 * @param {string} folderFullNameRaw
+	 * @param {string} folderFullName
 	 * @param {string} folderHash
 	 */
-	setFolderHash = (folderFullNameRaw, folderHash) =>
-		folderFullNameRaw && (FOLDERS_HASH_CACHE[folderFullNameRaw] = folderHash),
+	setFolderHash = (folderFullName, folderHash) =>
+		folderFullName && (FOLDERS_HASH_CACHE[folderFullName] = folderHash),
 
 	/**
-	 * @param {string} folderFullNameRaw
+	 * @param {string} folderFullName
 	 * @returns {string}
 	 */
-	getFolderUidNext = folderFullNameRaw =>
-		folderFullNameRaw && FOLDERS_UID_NEXT_CACHE[folderFullNameRaw]
-			? FOLDERS_UID_NEXT_CACHE[folderFullNameRaw]
+	getFolderUidNext = folderFullName =>
+		folderFullName && FOLDERS_UID_NEXT_CACHE[folderFullName]
+			? FOLDERS_UID_NEXT_CACHE[folderFullName]
 			: '',
 
 	/**
-	 * @param {string} folderFullNameRaw
+	 * @param {string} folderFullName
 	 * @param {string} uidNext
 	 */
-	setFolderUidNext = (folderFullNameRaw, uidNext) =>
-		FOLDERS_UID_NEXT_CACHE[folderFullNameRaw] = uidNext,
+	setFolderUidNext = (folderFullName, uidNext) =>
+		FOLDERS_UID_NEXT_CACHE[folderFullName] = uidNext,
 
 	/**
-	 * @param {string} folderFullNameRaw
+	 * @param {string} folderFullName
 	 * @returns {?FolderModel}
 	 */
-	getFolderFromCacheList = folderFullNameRaw =>
-		folderFullNameRaw && FOLDERS_CACHE[folderFullNameRaw] ? FOLDERS_CACHE[folderFullNameRaw] : null,
+	getFolderFromCacheList = folderFullName =>
+		folderFullName && FOLDERS_CACHE[folderFullName] ? FOLDERS_CACHE[folderFullName] : null,
 
 	/**
-	 * @param {string} folderFullNameRaw
+	 * @param {string} folderFullName
 	 */
-	removeFolderFromCacheList = folderFullNameRaw => delete FOLDERS_CACHE[folderFullNameRaw];
+	removeFolderFromCacheList = folderFullName => delete FOLDERS_CACHE[folderFullName];
 
 export class MessageFlagsCache
 {
