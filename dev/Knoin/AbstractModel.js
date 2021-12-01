@@ -1,4 +1,4 @@
-import { isArray, isFunction, addObservablesTo, addComputablesTo, forEachObjectValue } from 'Common/Utils';
+import { isArray, isFunction, addObservablesTo, addComputablesTo, forEachObjectValue, forEachObjectEntry } from 'Common/Utils';
 
 function dispose(disposable) {
 	if (disposable && isFunction(disposable.dispose)) {
@@ -43,7 +43,7 @@ export class AbstractModel {
 	}
 
 	addSubscribables(subscribables) {
-		Object.entries(subscribables).forEach(([key, fn]) => this.subscribables.push( this[key].subscribe(fn) ) );
+		forEachObjectEntry(subscribables, (key, fn) => this.subscribables.push( this[key].subscribe(fn) ) );
 	}
 
 	/** Called by delegateRunOnDestroy */
@@ -51,7 +51,7 @@ export class AbstractModel {
 		/** dispose ko subscribables */
 		this.subscribables.forEach(dispose);
 		/** clear object entries */
-//		Object.entries(this).forEach(([key, value]) => {
+//		forEachObjectEntry(this, (key, value) => {
 		forEachObjectValue(this, value => {
 			/** clear CollectionModel */
 			let arr = ko.isObservableArray(value) ? value() : value;
@@ -89,7 +89,7 @@ export class AbstractModel {
 		if (!model.validJson(json)) {
 			return false;
 		}
-		Object.entries(json).forEach(([key, value]) => {
+		forEachObjectEntry(json, (key, value) => {
 			if ('@' !== key[0]) try {
 				key = key[0].toLowerCase() + key.substr(1);
 				switch (typeof this[key])

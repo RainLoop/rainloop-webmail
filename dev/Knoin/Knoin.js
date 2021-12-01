@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { doc, $htmlCL, elementById } from 'Common/Globals';
-import { isFunction, forEachObjectValue } from 'Common/Utils';
+import { isFunction, forEachObjectValue, forEachObjectEntry } from 'Common/Utils';
 
 let
 	SCREENS = {},
@@ -349,7 +349,7 @@ export const
 	},
 
 	decorateKoCommands = (thisArg, commands) =>
-		Object.entries(commands).forEach(([key, canExecute]) => {
+		forEachObjectEntry(commands, (key, canExecute) => {
 			let command = thisArg[key],
 				fn = (...args) => fn.enabled() && fn.canExecute() && command.apply(thisArg, args);
 

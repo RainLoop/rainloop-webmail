@@ -4,7 +4,7 @@ import { MessagePriority } from 'Common/EnumsUser';
 import { i18n } from 'Common/Translator';
 
 import { encodeHtml } from 'Common/Html';
-import { isArray, arrayLength } from 'Common/Utils';
+import { isArray, arrayLength, forEachObjectEntry } from 'Common/Utils';
 
 import { serverRequestRaw } from 'Common/Links';
 
@@ -275,7 +275,7 @@ export class MessageModel extends AbstractModel {
 	 */
 	lineAsCss() {
 		let classes = [];
-		Object.entries({
+		forEachObjectEntry({
 			deleted: this.deleted(),
 			'deleted-mark': this.isDeleted(),
 			selected: this.selected(),
@@ -291,7 +291,7 @@ export class MessageModel extends AbstractModel {
 			// hasChildrenMessage: 1 < this.threadsLen(),
 			hasUnseenSubMessage: this.hasUnseenSubMessage(),
 			hasFlaggedSubMessage: this.hasFlaggedSubMessage()
-		}).forEach(([key, value]) => value && classes.push(key));
+		}, (key, value) => value && classes.push(key));
 		return classes.join(' ');
 	}
 

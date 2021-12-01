@@ -1,4 +1,4 @@
-import { pInt, pString } from 'Common/Utils';
+import { pInt, pString, forEachObjectEntry } from 'Common/Utils';
 import { i18n, getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Fetch';
@@ -275,7 +275,7 @@ class DomainPopupView extends AbstractViewPopup {
 
 	clearForm() {
 		this.edit(false);
-		Object.entries(this.getDefaults()).forEach(([key, value]) => this[key](value));
+		forEachObjectEntry(this.getDefaults(), (key, value) => this[key](value));
 		this.enableSmartPorts(true);
 	}
 }

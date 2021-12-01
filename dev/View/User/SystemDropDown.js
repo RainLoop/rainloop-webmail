@@ -63,7 +63,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 						}
 					} else {
 /*						// Not working yet
-						Object.entries(oData.Result).forEach((key, value) => rl.settings.set(key, value));
+						forEachObjectEntry(oData.Result, (key, value) => rl.settings.set(key, value));
 						clearCache();
 //						MessageUserStore.setMessage();
 //						MessageUserStore.purgeMessageBodyCache();

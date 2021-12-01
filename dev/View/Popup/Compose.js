@@ -12,7 +12,7 @@ import {
 	SetSystemFoldersNotification
 } from 'Common/EnumsUser';
 
-import { inFocus, pInt, isArray, arrayLength } from 'Common/Utils';
+import { inFocus, pInt, isArray, arrayLength, forEachObjectEntry } from 'Common/Utils';
 import { delegateRunOnDestroy, initFullscreen } from 'Common/UtilsUser';
 import { encodeHtml, HtmlEditor } from 'Common/Html';
 
@@ -1018,7 +1018,7 @@ class ComposePopupView extends AbstractViewPopup {
 		if (arrayLength(downloads)) {
 			Remote.messageUploadAttachments((iError, oData) => {
 				if (!iError) {
-					Object.entries(oData.Result).forEach(([tempName, id]) => {
+					forEachObjectEntry(oData.Result, (tempName, id) => {
 						const attachment = this.getAttachmentById(id);
 						if (attachment) {
 							attachment.tempName(tempName);
