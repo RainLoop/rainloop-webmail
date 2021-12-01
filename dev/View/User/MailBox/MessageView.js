@@ -493,7 +493,7 @@ export class MailMessageView extends AbstractViewRight {
 	 * @returns {boolean}
 	 */
 	isDraftFolder() {
-		return MessageUserStore.message() && FolderUserStore.draftFolder() === MessageUserStore.message().folder;
+		return MessageUserStore.message() && FolderUserStore.draftsFolder() === MessageUserStore.message().folder;
 	}
 
 	/**

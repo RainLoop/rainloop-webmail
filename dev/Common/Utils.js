@@ -12,6 +12,8 @@ export const
 
 	forEachObjectValue = (obj, fn) => Object.values(obj).forEach(fn),
 
+	forEachObjectEntry = (obj, fn) => Object.entries(obj).forEach(([key, value]) => fn(key, value)),
+
 	pInt = (value, defaultValue = 0) => {
 		value = parseInt(value, 10);
 		return isNaN(value) || !isFinite(value) ? defaultValue : value;
@@ -28,14 +30,14 @@ export const
 		&& domItem.classList.toggle('disabled', domItem.disabled = item.disabled),
 
 	addObservablesTo = (target, observables) =>
-		Object.entries(observables).forEach(([key, value]) =>
+		forEachObjectEntry(observables, (key, value) =>
 			target[key] = /*isArray(value) ? ko.observableArray(value) :*/ ko.observable(value) ),
 
 	addComputablesTo = (target, computables) =>
-		Object.entries(computables).forEach(([key, fn]) => target[key] = ko.computed(fn)),
+		forEachObjectEntry(computables, (key, fn) => target[key] = ko.computed(fn)),
 
 	addSubscribablesTo = (target, subscribables) =>
-		Object.entries(subscribables).forEach(([key, fn]) => target[key].subscribe(fn)),
+		forEachObjectEntry(subscribables, (key, fn) => target[key].subscribe(fn)),
 
 	inFocus = () => {
 		try {

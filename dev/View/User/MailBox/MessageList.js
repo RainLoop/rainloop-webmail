@@ -148,7 +148,7 @@ export class MailMessageList extends AbstractViewRight {
 
 			isTrashFolder: () => (FolderUserStore.trashFolder() || 0) === MessageUserStore.listEndFolder(),
 
-			isDraftFolder: () => (FolderUserStore.draftFolder() || 0) === MessageUserStore.listEndFolder(),
+			isDraftFolder: () => (FolderUserStore.draftsFolder() || 0) === MessageUserStore.listEndFolder(),
 
 			isSentFolder: () => (FolderUserStore.sentFolder() || 0) === MessageUserStore.listEndFolder(),
 

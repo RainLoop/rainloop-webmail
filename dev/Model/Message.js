@@ -178,7 +178,7 @@ export class MessageModel extends AbstractModel {
 	}
 
 	computeSenderEmail() {
-		const list = [FolderUserStore.sentFolder(), FolderUserStore.draftFolder()].includes(this.folder) ? 'to' : 'from';
+		const list = [FolderUserStore.sentFolder(), FolderUserStore.draftsFolder()].includes(this.folder) ? 'to' : 'from';
 		this.senderEmailsString(this[list].toString(true));
 		this.senderClearEmailsString(this[list].toStringClear());
 	}

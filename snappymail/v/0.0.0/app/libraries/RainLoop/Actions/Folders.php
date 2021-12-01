@@ -457,11 +457,11 @@ trait Folders
 
 		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
-		$oSettingsLocal->SetConf('SentFolder', $this->GetActionParam('SentFolder', ''));
-		$oSettingsLocal->SetConf('DraftFolder', $this->GetActionParam('DraftFolder', ''));
-		$oSettingsLocal->SetConf('SpamFolder', $this->GetActionParam('SpamFolder', ''));
-		$oSettingsLocal->SetConf('TrashFolder', $this->GetActionParam('TrashFolder', ''));
-		$oSettingsLocal->SetConf('ArchiveFolder', $this->GetActionParam('ArchiveFolder', ''));
+		$oSettingsLocal->SetConf('SentFolder', $this->GetActionParam('Sent', ''));
+		$oSettingsLocal->SetConf('DraftFolder', $this->GetActionParam('Drafts', ''));
+		$oSettingsLocal->SetConf('SpamFolder', $this->GetActionParam('Spam', ''));
+		$oSettingsLocal->SetConf('TrashFolder', $this->GetActionParam('Trash', ''));
+		$oSettingsLocal->SetConf('ArchiveFolder', $this->GetActionParam('Archive', ''));
 
 		return $this->DefaultResponse(__FUNCTION__,
 			$this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));

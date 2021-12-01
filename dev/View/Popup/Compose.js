@@ -169,7 +169,7 @@ class ComposePopupView extends AbstractViewPopup {
 			showBcc: false,
 			showReplyTo: false,
 
-			draftFolder: '',
+			draftsFolder: '',
 			draftUid: 0,
 			sending: false,
 			saving: false,
@@ -250,7 +250,7 @@ class ComposePopupView extends AbstractViewPopup {
 			attachmentsCount: () => this.attachments.length,
 			attachmentsInErrorCount: () => this.attachmentsInError.length,
 			attachmentsInProcessCount: () => this.attachmentsInProcess.length,
-			isDraftFolderMessage: () => this.draftFolder() && this.draftUid(),
+			isDraftFolderMessage: () => this.draftsFolder() && this.draftUid(),
 
 			identitiesOptions: () =>
 				IdentityUserStore.map(item => ({
@@ -338,7 +338,7 @@ class ComposePopupView extends AbstractViewPopup {
 		}
 		return {
 			IdentityID: this.currentIdentity() ? this.currentIdentity().id() : '',
-			MessageFolder: this.draftFolder(),
+			MessageFolder: this.draftsFolder(),
 			MessageUid: this.draftUid(),
 			SaveFolder: sSaveFolder,
 			To: this.to(),
@@ -412,7 +412,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 				sSentFolder = UNUSED_OPTION_VALUE === sSentFolder ? '' : sSentFolder;
 
-				setFolderHash(this.draftFolder(), '');
+				setFolderHash(this.draftsFolder(), '');
 				setFolderHash(sSentFolder, '');
 
 				Remote.sendMessage(
@@ -441,7 +441,7 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	saveCommand() {
-		if (FolderUserStore.draftFolderNotEnabled()) {
+		if (FolderUserStore.draftsFolderNotEnabled()) {
 			showScreenPopup(FolderSystemPopupView, [SetSystemFoldersNotification.Draft]);
 		} else {
 			this.savedError(false);
@@ -449,7 +449,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 			this.autosaveStart();
 
-			setFolderHash(FolderUserStore.draftFolder(), '');
+			setFolderHash(FolderUserStore.draftsFolder(), '');
 
 			Remote.saveMessage(
 				(iError, oData) => {
@@ -463,18 +463,18 @@ class ComposePopupView extends AbstractViewPopup {
 
 							if (this.bFromDraft) {
 								const message = MessageUserStore.message();
-								if (message && this.draftFolder() === message.folder && this.draftUid() == message.uid) {
+								if (message && this.draftsFolder() === message.folder && this.draftUid() == message.uid) {
 									MessageUserStore.message(null);
 								}
 							}
 
-							this.draftFolder(oData.Result.NewFolder);
+							this.draftsFolder(oData.Result.NewFolder);
 							this.draftUid(oData.Result.NewUid);
 
 							this.savedTime(new Date);
 
 							if (this.bFromDraft) {
-								setFolderHash(this.draftFolder(), '');
+								setFolderHash(this.draftsFolder(), '');
 							}
 						}
 					}
@@ -486,7 +486,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 					this.reloadDraftFolder();
 				},
-				this.getMessageRequestParams(FolderUserStore.draftFolder())
+				this.getMessageRequestParams(FolderUserStore.draftsFolder())
 			);
 		}
 
@@ -499,7 +499,7 @@ class ComposePopupView extends AbstractViewPopup {
 				i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'),
 				() => {
 					if (this.modalVisibility()) {
-						rl.app.deleteMessagesFromFolderWithoutCheck(this.draftFolder(), [this.draftUid()]);
+						rl.app.deleteMessagesFromFolderWithoutCheck(this.draftsFolder(), [this.draftUid()]);
 						this.closeCommand();
 					}
 				}
@@ -514,7 +514,7 @@ class ComposePopupView extends AbstractViewPopup {
 			this.modalVisibility() &&
 			!this.saving() &&
 			!this.sending() &&
-			!FolderUserStore.draftFolderNotEnabled() &&
+			!FolderUserStore.draftsFolderNotEnabled() &&
 			SettingsUserStore.allowDraftAutosave()
 		) {
 			this.saveCommand();
@@ -536,7 +536,7 @@ class ComposePopupView extends AbstractViewPopup {
 		clearTimeout(this.iTimer);
 		this.iTimer = setTimeout(()=>{
 			if (this.modalVisibility()
-				&& !FolderUserStore.draftFolderNotEnabled()
+				&& !FolderUserStore.draftsFolderNotEnabled()
 				&& SettingsUserStore.allowDraftAutosave()
 				&& !this.isEmptyForm(false)
 				&& !this.saving()
@@ -568,13 +568,13 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	reloadDraftFolder() {
-		const draftFolder = FolderUserStore.draftFolder();
-		if (draftFolder && UNUSED_OPTION_VALUE !== draftFolder) {
-			setFolderHash(draftFolder, '');
-			if (FolderUserStore.currentFolderFullName() === draftFolder) {
+		const draftsFolder = FolderUserStore.draftsFolder();
+		if (draftsFolder && UNUSED_OPTION_VALUE !== draftsFolder) {
+			setFolderHash(draftsFolder, '');
+			if (FolderUserStore.currentFolderFullName() === draftsFolder) {
 				rl.app.reloadMessageList(true);
 			} else {
-				rl.app.folderInformation(draftFolder);
+				rl.app.folderInformation(draftsFolder);
 			}
 		}
 	}
@@ -884,7 +884,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 					this.bFromDraft = true;
 
-					this.draftFolder(message.folder);
+					this.draftsFolder(message.folder);
 					this.draftUid(message.uid);
 
 					this.subject(sSubject);
@@ -1422,7 +1422,7 @@ class ComposePopupView extends AbstractViewPopup {
 		this.dragAndDropOver(false);
 		this.dragAndDropVisible(false);
 
-		this.draftFolder('');
+		this.draftsFolder('');
 		this.draftUid(0);
 
 		this.sending(false);

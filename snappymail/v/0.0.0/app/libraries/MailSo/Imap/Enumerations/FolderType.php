@@ -24,9 +24,9 @@ abstract class FolderType
 	const DRAFTS = 3;
 	const JUNK = 4;
 	const TRASH = 5;
+	const ARCHIVE = 6;
 	const IMPORTANT = 10;
 	const FLAGGED = 11;
-	const ARCHIVE = 12;
 	const ALL = 13;
 
 	// TODO: SnappyMail

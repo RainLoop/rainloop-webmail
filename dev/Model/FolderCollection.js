@@ -1,7 +1,7 @@
 import { AbstractCollectionModel } from 'Model/AbstractCollection';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { isArray, getKeyByValue } from 'Common/Utils';
+import { isArray, getKeyByValue, forEachObjectEntry } from 'Common/Utils';
 import { ClientSideKeyName, FolderType, FolderMetadataKeys } from 'Common/EnumsUser';
 import * as Cache from 'Common/Cache';
 import { Settings, SettingsGet } from 'Common/Globals';
@@ -27,8 +27,14 @@ normalizeFolder = sFolderFullName => ('' === sFolderFullName
 		? sFolderFullName
 		: '';
 
-// index is FolderType value
-let SystemFolders = [0,'','','','','','',''];
+const SystemFolders = {
+	Inbox:   0,
+	Sent:    0,
+	Drafts:  0,
+	Spam:    0,
+	Trash:   0,
+	Archive: 0
+};
 
 export class FolderCollectionModel extends AbstractCollectionModel
 {
@@ -52,24 +58,14 @@ export class FolderCollectionModel extends AbstractCollectionModel
 	static reviveFromJson(object) {
 		const expandedFolders = Local.get(ClientSideKeyName.ExpandedFolders);
 		if (object && object.SystemFolders) {
-			let sf = object.SystemFolders;
-			SystemFolders = [
-				/* USER  */ 0,
-				/* INBOX */ sf[1],
-				SettingsGet('SentFolder') || sf[2],
-				SettingsGet('DraftFolder') || sf[3],
-				SettingsGet('SpamFolder') || sf[4],
-				SettingsGet('TrashFolder') || sf[5],
-				SettingsGet('ArchiveFolder') || sf[12]
-//				SettingsGet('TemplatesFolder') || sf[19]
-//				IMPORTANT: sf[10],
-//				FLAGGED: sf[11],
-//				ALL: sf[13]
-			];
+			forEachObjectEntry(SystemFolders, key =>
+				SystemFolders[key] = SettingsGet(key+'Folder') || object.SystemFolders[FolderType[key]]
+			);
 		}
 
 		return super.reviveFromJson(object, oFolder => {
-			let oCacheFolder = Cache.getFolderFromCacheList(oFolder.FullName);
+			let oCacheFolder = Cache.getFolderFromCacheList(oFolder.FullName),
+				type = FolderType[getKeyByValue(SystemFolders, oFolder.FullName)];
 
 			if (oCacheFolder) {
 				oFolder.SubFolders = FolderCollectionModel.reviveFromJson(oFolder.SubFolders);
@@ -79,14 +75,13 @@ export class FolderCollectionModel extends AbstractCollectionModel
 				if (!oCacheFolder)
 					return null;
 
-				if (1 == SystemFolders.indexOf(oFolder.FullName)) {
+				if (1 == type) {
 					oCacheFolder.type(FolderType.Inbox);
 					Cache.setFolderInboxName(oFolder.FullName);
 				}
 				Cache.setFolder(oCacheFolder.fullNameHash, oFolder.FullName, oCacheFolder);
 			}
 
-			let type = SystemFolders.indexOf(oFolder.FullName);
 			if (1 < type) {
 				oCacheFolder.type(type);
 			}
@@ -115,22 +110,15 @@ export class FolderCollectionModel extends AbstractCollectionModel
 	storeIt() {
 		FolderUserStore.displaySpecSetting(Settings.app('folderSpecLimit') < this.CountRec);
 
-		if (SystemFolders &&
-			!(
+		if (!(
 				SettingsGet('SentFolder') +
-				SettingsGet('DraftFolder') +
+				SettingsGet('DraftsFolder') +
 				SettingsGet('SpamFolder') +
 				SettingsGet('TrashFolder') +
 				SettingsGet('ArchiveFolder')
 			)
 		) {
-			FolderUserStore.saveSystemFolders({
-				SentFolder: SystemFolders[FolderType.Sent],
-				DraftFolder: SystemFolders[FolderType.Drafts],
-				SpamFolder: SystemFolders[FolderType.Spam],
-				TrashFolder: SystemFolders[FolderType.Trash],
-				ArchiveFolder: SystemFolders[FolderType.Archive]
-			});
+			FolderUserStore.saveSystemFolders(SystemFolders);
 		}
 
 		FolderUserStore.folderList(this);
@@ -144,11 +132,11 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		FolderUserStore.quotaLimit(this.quotaLimit);
 		FolderUserStore.capabilities(this.Capabilities);
 
-		FolderUserStore.sentFolder(normalizeFolder(SettingsGet('SentFolder') || SystemFolders[2]));
-		FolderUserStore.draftFolder(normalizeFolder(SettingsGet('DraftFolder') || SystemFolders[3]));
-		FolderUserStore.spamFolder(normalizeFolder(SettingsGet('SpamFolder') || SystemFolders[4]));
-		FolderUserStore.trashFolder(normalizeFolder(SettingsGet('TrashFolder') || SystemFolders[5]));
-		FolderUserStore.archiveFolder(normalizeFolder(SettingsGet('ArchiveFolder') || SystemFolders[6]));
+		FolderUserStore.sentFolder(normalizeFolder(SystemFolders.Sent));
+		FolderUserStore.draftsFolder(normalizeFolder(SystemFolders.Drafts));
+		FolderUserStore.spamFolder(normalizeFolder(SystemFolders.Spam));
+		FolderUserStore.trashFolder(normalizeFolder(SystemFolders.Trash));
+		FolderUserStore.archiveFolder(normalizeFolder(SystemFolders.Archive));
 
 //		FolderUserStore.folderList.valueHasMutated();
 

@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { FolderType, FolderSortMode } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { addObservablesTo, addSubscribablesTo, addComputablesTo } from 'Common/Utils';
+import { addObservablesTo, addSubscribablesTo, addComputablesTo, forEachObjectEntry } from 'Common/Utils';
 import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
 import { Settings } from 'Common/Globals';
 //import Remote from 'Remote/User/Fetch'; Circular dependency
@@ -26,7 +26,7 @@ export const FolderUserStore = new class {
 			quotaUsage: 0,
 
 			sentFolder: '',
-			draftFolder: '',
+			draftsFolder: '',
 			spamFolder: '',
 			trashFolder: '',
 			archiveFolder: '',
@@ -46,7 +46,7 @@ export const FolderUserStore = new class {
 
 		self.namespace = '';
 
-		self.folderList = ko.observableArray();
+		self.folderList = ko.observableArray(/*new FolderCollectionModel*/);
 
 		self.capabilities = ko.observableArray();
 
@@ -54,7 +54,7 @@ export const FolderUserStore = new class {
 
 		addComputablesTo(self, {
 
-			draftFolderNotEnabled: () => !self.draftFolder() || UNUSED_OPTION_VALUE === self.draftFolder(),
+			draftsFolderNotEnabled: () => !self.draftsFolder() || UNUSED_OPTION_VALUE === self.draftsFolder(),
 
 			currentFolderFullName: () => (self.currentFolder() ? self.currentFolder().fullName : ''),
 			currentFolderFullNameHash: () => (self.currentFolder() ? self.currentFolder().fullNameHash : ''),
@@ -64,7 +64,7 @@ export const FolderUserStore = new class {
 
 			folderListSystemNames: () => {
 				const list = [getFolderInboxName()],
-				others = [self.sentFolder(), self.draftFolder(), self.spamFolder(), self.trashFolder(), self.archiveFolder()];
+				others = [self.sentFolder(), self.draftsFolder(), self.spamFolder(), self.trashFolder(), self.archiveFolder()];
 
 				self.folderList().length &&
 					others.forEach(name => name && UNUSED_OPTION_VALUE !== name && list.push(name));
@@ -87,14 +87,14 @@ export const FolderUserStore = new class {
 			};
 
 		self.sentFolder.subscribe(fRemoveSystemFolderType(self.sentFolder), self, 'beforeChange');
-		self.draftFolder.subscribe(fRemoveSystemFolderType(self.draftFolder), self, 'beforeChange');
+		self.draftsFolder.subscribe(fRemoveSystemFolderType(self.draftsFolder), self, 'beforeChange');
 		self.spamFolder.subscribe(fRemoveSystemFolderType(self.spamFolder), self, 'beforeChange');
 		self.trashFolder.subscribe(fRemoveSystemFolderType(self.trashFolder), self, 'beforeChange');
 		self.archiveFolder.subscribe(fRemoveSystemFolderType(self.archiveFolder), self, 'beforeChange');
 
 		addSubscribablesTo(self, {
 			sentFolder: fSetSystemFolderType(FolderType.Sent),
-			draftFolder: fSetSystemFolderType(FolderType.Drafts),
+			draftsFolder: fSetSystemFolderType(FolderType.Drafts),
 			spamFolder: fSetSystemFolderType(FolderType.Spam),
 			trashFolder: fSetSystemFolderType(FolderType.Trash),
 			archiveFolder: fSetSystemFolderType(FolderType.Archive)
@@ -160,13 +160,13 @@ export const FolderUserStore = new class {
 
 	saveSystemFolders(folders) {
 		folders = folders || {
-			SentFolder: FolderUserStore.sentFolder(),
-			DraftFolder: FolderUserStore.draftFolder(),
-			SpamFolder: FolderUserStore.spamFolder(),
-			TrashFolder: FolderUserStore.trashFolder(),
-			ArchiveFolder: FolderUserStore.archiveFolder()
+			Sent: FolderUserStore.sentFolder(),
+			Drafts: FolderUserStore.draftsFolder(),
+			Spam: FolderUserStore.spamFolder(),
+			Trash: FolderUserStore.trashFolder(),
+			Archive: FolderUserStore.archiveFolder()
 		};
-		Object.entries(folders).forEach(([k,v])=>Settings.set(k,v));
+		forEachObjectEntry(folders, (k,v)=>Settings.set(k+'Folder',v));
 		rl.app.Remote.saveSystemFolders(null, folders);
 	}
 };

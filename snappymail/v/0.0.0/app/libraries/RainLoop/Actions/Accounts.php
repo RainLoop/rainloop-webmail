@@ -137,7 +137,7 @@ trait Accounts
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 			if ($oSettingsLocal instanceof \RainLoop\Settings) {
 				$aResult['SentFolder'] = (string) $oSettingsLocal->GetConf('SentFolder', '');
-				$aResult['DraftFolder'] = (string) $oSettingsLocal->GetConf('DraftFolder', '');
+				$aResult['DraftsFolder'] = (string) $oSettingsLocal->GetConf('DraftFolder', '');
 				$aResult['SpamFolder'] = (string) $oSettingsLocal->GetConf('SpamFolder', '');
 				$aResult['TrashFolder'] = (string) $oSettingsLocal->GetConf('TrashFolder', '');
 				$aResult['ArchiveFolder'] = (string) $oSettingsLocal->GetConf('ArchiveFolder', '');
