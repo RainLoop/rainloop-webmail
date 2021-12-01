@@ -28,7 +28,7 @@ normalizeFolder = sFolderFullName => ('' === sFolderFullName
 		: '';
 
 // index is FolderType value
-let SystemFolders = [];
+let SystemFolders = [0,'','','','','','',''];
 
 export class FolderCollectionModel extends AbstractCollectionModel
 {
@@ -116,27 +116,26 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		FolderUserStore.displaySpecSetting(Settings.app('folderSpecLimit') < this.CountRec);
 
 		if (SystemFolders &&
-			!('' +
+			!(
 				SettingsGet('SentFolder') +
 				SettingsGet('DraftFolder') +
 				SettingsGet('SpamFolder') +
 				SettingsGet('TrashFolder') +
-				SettingsGet('ArchiveFolder'))
+				SettingsGet('ArchiveFolder')
+			)
 		) {
 			FolderUserStore.saveSystemFolders({
-				SentFolder: SystemFolders[FolderType.SENT] || null,
-				DraftFolder: SystemFolders[FolderType.DRAFTS] || null,
-				SpamFolder: SystemFolders[FolderType.SPAM] || null,
-				TrashFolder: SystemFolders[FolderType.TRASH] || null,
-				ArchiveFolder: SystemFolders[FolderType.ARCHIVE] || null
+				SentFolder: SystemFolders[FolderType.Sent],
+				DraftFolder: SystemFolders[FolderType.Drafts],
+				SpamFolder: SystemFolders[FolderType.Spam],
+				TrashFolder: SystemFolders[FolderType.Trash],
+				ArchiveFolder: SystemFolders[FolderType.Archive]
 			});
 		}
 
 		FolderUserStore.folderList(this);
 
-		if (undefined !== this.Namespace) {
-			FolderUserStore.namespace = this.Namespace;
-		}
+		FolderUserStore.namespace = this.Namespace;
 
 		AppUserStore.threadsAllowed(!!(Settings.app('useImapThread') && this.IsThreadsSupported));
 
@@ -195,7 +194,6 @@ export class FolderModel extends AbstractModel {
 		this.fullName = '';
 		this.fullNameHash = '';
 		this.delimiter = '';
-		this.namespace = '';
 		this.deep = 0;
 		this.expires = 0;
 		this.metadata = {};
