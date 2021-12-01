@@ -141,9 +141,8 @@ trait Response
 
 	private function hashFolderFullName(string $sFolderFullName) : string
 	{
-		return \in_array(\strtolower($sFolderFullName), array('inbox', 'sent', 'send', 'drafts',
-			'spam', 'junk', 'bin', 'trash', 'archive', 'allmail', 'all')) ?
-				$sFolderFullName : \md5($sFolderFullName);
+//		return \strspn(\mb_strtolower($sFolderFullName), ':/#?') ? \md5($sFolderFullName) : $sFolderFullName;
+		return \preg_match('/^[a-z0-9]+$/iu', $sFolderFullName) ? $sFolderFullName : \md5($sFolderFullName);
 	}
 
 	/**
@@ -394,7 +393,7 @@ trait Response
 			return \array_merge(
 				$mResponse->jsonSerialize(),
 				array(
-					'FullNameHash' => $this->hashFolderFullName($mResponse->FullName(), $mResponse->FullName()),
+					'FullNameHash' => $this->hashFolderFullName($mResponse->FullName()),
 					'Checkable' => \in_array($mResponse->FullName(), $this->aCheckableFolder),
 					'Extended' => $aExtended,
 					'SubFolders' => $this->responseObject($mResponse->SubFolders(), $sParent, $aParameters)
