@@ -136,14 +136,15 @@ trait Accounts
 			$aResult['ContactsIsAllowed'] = $this->AddressBookProvider($oAccount)->IsActive();
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 			if ($oSettingsLocal instanceof \RainLoop\Settings) {
+				$oConfig = $this->Config();
 				$aResult['SentFolder'] = (string) $oSettingsLocal->GetConf('SentFolder', '');
 				$aResult['DraftsFolder'] = (string) $oSettingsLocal->GetConf('DraftFolder', '');
 				$aResult['SpamFolder'] = (string) $oSettingsLocal->GetConf('SpamFolder', '');
 				$aResult['TrashFolder'] = (string) $oSettingsLocal->GetConf('TrashFolder', '');
 				$aResult['ArchiveFolder'] = (string) $oSettingsLocal->GetConf('ArchiveFolder', '');
-				$aResult['HideUnsubscribed'] = (bool) $oSettingsLocal->GetConf('HideUnsubscribed', $aResult['HideUnsubscribed']);
-				$aResult['UseThreads'] = (bool) $oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
-				$aResult['ReplySameFolder'] = (bool) $oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
+				$aResult['HideUnsubscribed'] = (bool) $oSettingsLocal->GetConf('HideUnsubscribed', $oConfig->Get('labs', 'use_imap_list_subscribe', true));
+				$aResult['UseThreads'] = (bool) $oSettingsLocal->GetConf('UseThreads', $oConfig->Get('defaults', 'mail_use_threads', false));
+				$aResult['ReplySameFolder'] = (bool) $oSettingsLocal->GetConf('ReplySameFolder', $oConfig->Get('defaults', 'mail_reply_same_folder', false));
 			}
 //			$this->Plugins()->InitAppData($bAdmin, $aResult, $oAccount);
 
