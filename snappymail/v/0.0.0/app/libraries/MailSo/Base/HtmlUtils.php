@@ -55,7 +55,7 @@ abstract class HtmlUtils
 		$sText = static::ClearBodyAndHtmlTag($sText, $sHtmlAttrs, $sBodyAttrs);
 
 		$oDom = self::createDOMDocument();
-		$oDom->loadHTML('<?xml version="1.0" encoding="utf-8"?>'.
+		@$oDom->loadHTML('<?xml version="1.0" encoding="utf-8"?>'.
 			'<html '.$sHtmlAttrs.'><head>'.
 			'<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'.
 			'<body '.$sBodyAttrs.'>'.\MailSo\Base\Utils::Utf8Clear($sText).'</body></html>');
@@ -165,11 +165,8 @@ abstract class HtmlUtils
 			$sBodyAttrs = $aMatch[1];
 		}
 
-		$sHtml = \preg_replace('/<head([^>]*)>/si', '', $sHtml);
-		$sHtml = \preg_replace('/<body([^>]*)>/si', '', $sHtml);
-		$sHtml = \preg_replace('/<\/body>/i', '', $sHtml);
-		$sHtml = \preg_replace('/<html([^>]*)>/i', '', $sHtml);
-		$sHtml = \preg_replace('/<\/html>/i', '', $sHtml);
+//		$sHtml = \preg_replace('/^.*<body([^>]*)>/si', '', $sHtml);
+		$sHtml = \preg_replace('/<\/?(head|body|html|meta)(\\s[^>]*)?>/si', '', $sHtml);
 
 		$sHtmlAttrs = \preg_replace('/xmlns:[a-z]="[^"]*"/i', '', $sHtmlAttrs);
 		$sHtmlAttrs = \preg_replace('/xmlns:[a-z]=\'[^\']*\'/i', '', $sHtmlAttrs);
