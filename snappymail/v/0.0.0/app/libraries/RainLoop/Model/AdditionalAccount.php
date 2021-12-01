@@ -17,6 +17,13 @@ class AdditionalAccount extends Account
 		return \md5(parent::Hash() . $this->ParentEmail());
 	}
 
+	public function jsonSerialize()
+	{
+		$aData = parent::jsonSerialize();
+		$aData[] = ''; // was ParentEmail
+		return $aData;
+	}
+
 	public function asTokenArray(MainAccount $oMainAccount) : array
 	{
 		$sHash = $oMainAccount->CryptKey();
