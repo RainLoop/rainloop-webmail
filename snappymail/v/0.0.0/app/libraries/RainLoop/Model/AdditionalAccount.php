@@ -17,13 +17,6 @@ class AdditionalAccount extends Account
 		return \md5(parent::Hash() . $this->ParentEmail());
 	}
 
-	public function jsonSerialize()
-	{
-		$aData = parent::jsonSerialize();
-		$aData[] = ''; // was ParentEmail
-		return $aData;
-	}
-
 	public function asTokenArray(MainAccount $oMainAccount) : array
 	{
 		$sHash = $oMainAccount->CryptKey();
@@ -40,9 +33,9 @@ class AdditionalAccount extends Account
 		bool $bThrowExceptionOnFalse = false) : ?Account /* PHP7.4: ?self*/
 	{
 		$iCount = \count($aAccountHash);
-		if (!empty($aAccountHash[0]) && 'account' === $aAccountHash[0] && 8 <= $iCount && 9 >= $iCount) {
+		if (!empty($aAccountHash[0]) && 'account' === $aAccountHash[0] && 7 <= $iCount && 9 >= $iCount) {
 			$sHash = $oActions->getMainAccountFromToken()->CryptKey();
-			$sPasswordHMAC = (8 < $iCount) ? \array_pop($aAccountHash) : null;
+			$sPasswordHMAC = (7 < $iCount) ? \array_pop($aAccountHash) : null;
 			if ($sPasswordHMAC && $sPasswordHMAC === \hash_hmac('sha1', $aAccountHash[3], $sHash)) {
 				$aAccountHash[3] = \SnappyMail\Crypt::DecryptUrlSafe($aAccountHash[3], $sHash);
 				$aAccountHash[6] = \SnappyMail\Crypt::DecryptUrlSafe($aAccountHash[6], $sHash);
