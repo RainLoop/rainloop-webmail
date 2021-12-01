@@ -192,6 +192,6 @@ abstract class Crypt
 
 }
 
-\SnappyMail\Crypt::setCipher(\RainLoop\API::Config()->Get('security', 'encrypt_cipher', 'aes-256-cbc-hmac-sha1'))
+\SnappyMail\Crypt::setCipher(\RainLoop\Api::Config()->Get('security', 'encrypt_cipher', 'aes-256-cbc-hmac-sha1'))
 	|| \SnappyMail\Crypt::setCipher('aes-256-cbc-hmac-sha1')
 	|| \SnappyMail\Crypt::setCipher('aes-256-xts');

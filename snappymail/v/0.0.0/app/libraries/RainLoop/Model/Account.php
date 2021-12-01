@@ -193,7 +193,7 @@ abstract class Account implements \JsonSerializable
 		array $aAccountHash,
 		bool $bThrowExceptionOnFalse = false): ?self
 	{
-		if (!empty($aAccountHash[0]) && 'account' === $aAccountHash[0] && 7 === \count($aAccountHash)) {
+		if (!empty($aAccountHash[0]) && 'account' === $aAccountHash[0] && 7 <= \count($aAccountHash)) {
 			$oAccount = static::NewInstanceByLogin(
 				$oActions,
 				$aAccountHash[1] ?: '',
