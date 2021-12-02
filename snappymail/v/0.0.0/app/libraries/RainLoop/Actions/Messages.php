@@ -31,7 +31,7 @@ trait Messages
 			$oParams->sSort = (string) $aValues['Sort'];
 			$oParams->iPrevUidNext = (int) $aValues['UidNext'];
 			$oParams->bUseThreads = !empty($aValues['UseThreads']);
-			if ($oParams->bUseThreads) {
+			if ($oParams->bUseThreads && isset($aValues['ThreadUid'])) {
 				$oParams->iThreadUid = (int) $aValues['ThreadUid'];
 			}
 		}
