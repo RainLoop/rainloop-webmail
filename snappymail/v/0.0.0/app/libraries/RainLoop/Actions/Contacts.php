@@ -22,7 +22,7 @@ trait Contacts
 
 		$mData = $this->getContactsSyncData($oAccount);
 
-		$bResult = $this->setContactsSyncData(array(
+		$bResult = $this->setContactsSyncData($oAccount, array(
 			'Enable' => $bEnabled,
 			'User' => $sUser,
 			'Password' => APP_DUMMY === $sPassword && isset($mData['Password'])
