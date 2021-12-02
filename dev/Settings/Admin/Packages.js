@@ -44,7 +44,12 @@ export class PackagesAdminSettings /*extends AbstractViewSettings*/ {
 			// configurePlugin
 			let el = event.target.closestWithin('.package-configure', oDom),
 				data = el ? ko.dataFor(el) : 0;
-			data && Remote.plugin((iError, data) => iError || showScreenPopup(PluginPopupView, [data.Result]), data.id)
+			data && Remote.request('AdminPluginLoad',
+				(iError, data) => iError || showScreenPopup(PluginPopupView, [data.Result]),
+				{
+					Id: data.id
+				}
+			);
 			// disablePlugin
 			el = event.target.closestWithin('.package-active', oDom);
 			data = el ? ko.dataFor(el) : 0;
@@ -77,31 +82,49 @@ export class PackagesAdminSettings /*extends AbstractViewSettings*/ {
 	deletePackage(packageToDelete) {
 		if (packageToDelete) {
 			packageToDelete.loading(true);
-			Remote.packageDelete(this.requestHelper(packageToDelete, false), packageToDelete);
+			Remote.request('AdminPackageDelete',
+				this.requestHelper(packageToDelete, false),
+				{
+					Id: packageToDelete.id
+				}
+			);
 		}
 	}
 
 	installPackage(packageToInstall) {
 		if (packageToInstall) {
 			packageToInstall.loading(true);
-			Remote.packageInstall(this.requestHelper(packageToInstall, true), packageToInstall);
+			Remote.request('AdminPackageInstall',
+				this.requestHelper(packageToInstall, true),
+				{
+					Id: packageToInstall.id,
+					Type: packageToInstall.type,
+					File: packageToInstall.file
+				},
+				60000
+			);
 		}
 	}
 
 	disablePlugin(plugin) {
-		let b = plugin.enabled();
-		plugin.enabled(!b);
-		Remote.pluginDisable((iError, data) => {
-			if (iError) {
-				plugin.enabled(b);
-				this.packagesError(
-					(Notification.UnsupportedPluginPackage === iError && data && data.ErrorMessage)
-					? data.ErrorMessage
-					: getNotification(iError)
-				);
+		let disable = plugin.enabled();
+		plugin.enabled(!disable);
+		Remote.request('AdminPluginDisable',
+		(iError, data) => {
+				if (iError) {
+					plugin.enabled(disable);
+					this.packagesError(
+						(Notification.UnsupportedPluginPackage === iError && data && data.ErrorMessage)
+						? data.ErrorMessage
+						: getNotification(iError)
+					);
+				}
+//				PackageAdminStore.fetch();
+			}, {
+				Id: plugin.id,
+				Disabled: disable ? 1 : 0
 			}
-//			PackageAdminStore.fetch();
-		}, plugin.id, b);
+		);
 	}
 
 }

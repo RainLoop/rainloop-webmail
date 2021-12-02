@@ -43,7 +43,7 @@ class LoginAdminView extends AbstractViewLogin {
 		if (valid) {
 			this.submitRequest(true);
 
-			Remote.adminLogin(
+			Remote.request('AdminLogin',
 				(iError, oData) => {
 					if (iError) {
 						this.submitRequest(false);
@@ -51,11 +51,11 @@ class LoginAdminView extends AbstractViewLogin {
 					} else {
 						rl.setData(oData.Result);
 					}
-				},
-				name,
-				pass,
-				this.totp()
-			);
+				}, {
+					Login: name,
+					Password: pass,
+					TOTP: this.totp()
+				});
 		}
 
 		return valid;

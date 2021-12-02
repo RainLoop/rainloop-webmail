@@ -21,7 +21,7 @@ class PaneSettingsAdminView extends AbstractViewRight {
 	}
 
 	logoutClick() {
-		Remote.adminLogout(() => rl.logoutReload());
+		Remote.request('AdminLogout', () => rl.logoutReload());
 	}
 }
 

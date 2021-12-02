@@ -8,6 +8,25 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 import { DomainAdminStore } from 'Stores/Admin/Domain';
 
+const domainToParams = oDomain => ({
+			Name: oDomain.name(),
+
+			IncHost: oDomain.imapServer(),
+			IncPort: oDomain.imapPort(),
+			IncSecure: oDomain.imapSecure(),
+
+			UseSieve: oDomain.useSieve() ? 1 : 0,
+			SieveHost: oDomain.sieveServer(),
+			SievePort: oDomain.sievePort(),
+			SieveSecure: oDomain.sieveSecure(),
+
+			OutHost: oDomain.smtpServer(),
+			OutPort: oDomain.smtpPort(),
+			OutSecure: oDomain.smtpSecure(),
+			OutAuth: oDomain.smtpAuth() ? 1 : 0,
+			OutUsePhpMail: oDomain.smtpPhpMail() ? 1 : 0
+		});
+
 class DomainPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Domain');
@@ -144,9 +163,18 @@ class DomainPopupView extends AbstractViewPopup {
 
 	createOrAddCommand() {
 		this.saving(true);
-		Remote.createOrUpdateDomain(
+		Remote.request('AdminDomainSave',
 			this.onDomainCreateOrSaveResponse.bind(this),
-			this
+			Object.assign(domainToParams(this), {
+				Create: this.edit() ? 0 : 1,
+
+				IncShortLogin: this.imapShortLogin() ? 1 : 0,
+
+				OutShortLogin: this.smtpShortLogin() ? 1 : 0,
+				OutSetSender: this.smtpSetSender() ? 1 : 0,
+
+				WhiteList: this.whiteList()
+			})
 		);
 	}
 
@@ -157,7 +185,7 @@ class DomainPopupView extends AbstractViewPopup {
 		this.testingSmtpError(false);
 		this.testing(true);
 
-		Remote.testConnectionForDomain(
+		Remote.request('AdminDomainTest',
 			(iError, oData) => {
 				this.testing(false);
 				if (iError) {
@@ -186,7 +214,7 @@ class DomainPopupView extends AbstractViewPopup {
 					}
 				}
 			},
-			this
+			domainToParams(this)
 		);
 	}
 

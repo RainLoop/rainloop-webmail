@@ -39,7 +39,7 @@ class PluginPopupView extends AbstractViewPopup {
 	}
 
 	saveCommand() {
-		const list = {
+		const oConfig = {
 			Id: this.id(),
 			Settings: {}
 		};
@@ -49,15 +49,15 @@ class PluginPopupView extends AbstractViewPopup {
 			if (false === value || true === value) {
 				value = value ? 1 : 0;
 			}
-			list.Settings[oItem.Name] = value;
+			oConfig.Settings[oItem.Name] = value;
 		});
 
 		this.saveError('');
-		Remote.pluginSettingsUpdate(iError =>
-			iError
+		Remote.request('AdminPluginSettingsUpdate',
+			iError => iError
 				? this.saveError(getNotification(iError))
-				: this.cancelCommand()
-		, list);
+				: this.cancelCommand(),
+			oConfig);
 	}
 
 	onShow(oPlugin) {

@@ -12,7 +12,7 @@ PackageAdminStore.error = ko.observable('');
 
 PackageAdminStore.fetch = () => {
 	PackageAdminStore.loading(true);
-	Remote.packagesList((iError, data) => {
+	Remote.request('AdminPackagesList', (iError, data) => {
 		PackageAdminStore.loading(false);
 		if (iError) {
 			PackageAdminStore.real(false);

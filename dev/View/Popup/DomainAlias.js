@@ -35,15 +35,19 @@ class DomainAliasPopupView extends AbstractViewPopup {
 
 	createCommand() {
 		this.saving(true);
-		Remote.createDomainAlias(iError => {
-			this.saving(false);
-			if (iError) {
-				this.savingError(getNotification(iError));
-			} else {
-				DomainAdminStore.fetch();
-				this.closeCommand();
-			}
-		}, this.name(), this.alias());
+		Remote.request('AdminDomainAliasSave',
+			iError => {
+				this.saving(false);
+				if (iError) {
+					this.savingError(getNotification(iError));
+				} else {
+					DomainAdminStore.fetch();
+					this.closeCommand();
+				}
+			}, {
+				Name: this.name(),
+				Alias: this.alias()
+			});
 	}
 
 	onShow() {

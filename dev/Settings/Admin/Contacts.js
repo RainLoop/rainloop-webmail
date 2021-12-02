@@ -116,29 +116,31 @@ export class ContactsAdminSettings /*extends AbstractViewSettings*/ {
 		this.testContactsErrorMessage('');
 		this.testing(true);
 
-		Remote.testContacts((iError, data) => {
-			this.testContactsSuccess(false);
-			this.testContactsError(false);
-			this.testContactsErrorMessage('');
+		Remote.request('AdminContactsTest',
+			(iError, data) => {
+				this.testContactsSuccess(false);
+				this.testContactsError(false);
+				this.testContactsErrorMessage('');
 
-			if (!iError && data.Result.Result) {
-				this.testContactsSuccess(true);
-			} else {
-				this.testContactsError(true);
-				if (data && data.Result) {
-					this.testContactsErrorMessage(data.Result.Message || '');
+				if (!iError && data.Result.Result) {
+					this.testContactsSuccess(true);
 				} else {
-					this.testContactsErrorMessage('');
+					this.testContactsError(true);
+					if (data && data.Result) {
+						this.testContactsErrorMessage(data.Result.Message || '');
+					} else {
+						this.testContactsErrorMessage('');
+					}
 				}
-			}
 
-			this.testing(false);
-		}, {
-			ContactsPdoType: this.contactsType(),
-			ContactsPdoDsn: this.pdoDsn(),
-			ContactsPdoUser: this.pdoUser(),
-			ContactsPdoPassword: this.pdoPassword()
-		});
+				this.testing(false);
+			}, {
+				ContactsPdoType: this.contactsType(),
+				ContactsPdoDsn: this.pdoDsn(),
+				ContactsPdoUser: this.pdoUser(),
+				ContactsPdoPassword: this.pdoPassword()
+			}
+		);
 	}
 
 	onShow() {
