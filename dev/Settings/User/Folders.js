@@ -73,7 +73,10 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 			Local.set(ClientSideKeyName.FoldersLashHash, '');
 
 			rl.app.foldersPromisesActionHelper(
-				Remote.folderRename(folder.fullName, nameToEdit),
+				Remote.post('FolderRename', FolderUserStore.foldersRenaming, {
+					Folder: folder.fullName,
+					NewFolderName: nameToEdit
+				}),
 				Notification.CantRenameFolder
 			);
 
@@ -119,9 +122,9 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 				Local.set(ClientSideKeyName.FoldersLashHash, '');
 
 				// rl.app.foldersPromisesActionHelper
-				Remote.abort('Folders')
-					.folderDelete(folderToRemove.fullName)
-					.then(
+				Remote.abort('Folders').post('FolderDelete', FolderUserStore.foldersDeleting, {
+						Folder: folderToRemove.fullName
+					}).then(
 						() => {
 							folderToRemove.selectable(false)
 							removeFolderFromCacheList(folderToRemove.fullName);
@@ -150,13 +153,19 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 	toggleFolderSubscription(folder) {
 		let subscribe = !folder.subscribed();
 		Local.set(ClientSideKeyName.FoldersLashHash, '');
-		Remote.folderSetSubscribe(null, folder.fullName, subscribe);
+		Remote.request('FolderSubscribe', null, {
+			Folder: folder.fullName,
+			Subscribe: subscribe ? 1 : 0
+		});
 		folder.subscribed(subscribe);
 	}
 
 	toggleFolderCheckable(folder) {
 		let checkable = !folder.checkable();
-		Remote.folderSetCheckable(null, folder.fullName, checkable);
+		Remote.request('FolderCheckable', null, {
+			Folder: folder.fullName,
+			Checkable: checkable ? 1 : 0
+		});
 		folder.checkable(checkable);
 	}
 }

@@ -27,10 +27,10 @@ ContactUserStore.sync = fResultFunc => {
 	 && !ContactUserStore.syncing()
 	) {
 		ContactUserStore.syncing(true);
-		Remote.contactsSync((iError, oData) => {
+		Remote.request('ContactsSync', (iError, oData) => {
 			ContactUserStore.syncing(false);
 			fResultFunc && fResultFunc(iError, oData);
-		});
+		}, null, 200000);
 	}
 };
 

@@ -598,14 +598,13 @@ export class MailMessageView extends AbstractViewRight {
 	readReceipt() {
 		let oMessage = MessageUserStore.message()
 		if (oMessage && oMessage.readReceipt()) {
-			Remote.sendReadReceiptMessage(
-				null,
-				oMessage.folder,
-				oMessage.uid,
-				oMessage.readReceipt(),
-				i18n('READ_RECEIPT/SUBJECT', { SUBJECT: oMessage.subject() }),
-				i18n('READ_RECEIPT/BODY', { 'READ-RECEIPT': AccountUserStore.email() })
-			);
+			Remote.request('SendReadReceiptMessage', null, {
+				MessageFolder: oMessage.folder,
+				MessageUid: oMessage.uid,
+				ReadReceipt: oMessage.readReceipt(),
+				Subject: i18n('READ_RECEIPT/SUBJECT', { SUBJECT: oMessage.subject() }),
+				Text: i18n('READ_RECEIPT/BODY', { 'READ-RECEIPT': AccountUserStore.email() })
+			});
 
 			oMessage.isReadReceipt(true);
 

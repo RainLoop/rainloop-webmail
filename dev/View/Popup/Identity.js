@@ -94,8 +94,7 @@ class IdentityPopupView extends AbstractViewPopup {
 
 		this.submitRequest(true);
 
-		Remote.identityUpdate(
-			iError => {
+		Remote.request('IdentityUpdate', iError => {
 				this.submitRequest(false);
 				if (iError) {
 					this.submitError(getNotification(iError));
@@ -103,14 +102,15 @@ class IdentityPopupView extends AbstractViewPopup {
 					rl.app.accountsAndIdentities();
 					this.cancelCommand();
 				}
-			},
-			this.id,
-			this.email(),
-			this.name(),
-			this.replyTo(),
-			this.bcc(),
-			this.signature(),
-			this.signatureInsertBefore()
+			}, {
+				Id: this.id,
+				Email: this.email(),
+				Name: this.name(),
+				ReplyTo: this.replyTo(),
+				Bcc: this.bcc(),
+				Signature: this.signature(),
+				SignatureInsertBefore: this.signatureInsertBefore() ? 1 : 0
+			}
 		);
 
 		return true;

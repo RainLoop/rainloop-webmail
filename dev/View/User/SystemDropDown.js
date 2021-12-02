@@ -56,7 +56,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 			AccountUserStore.loading(true);
 			event.preventDefault();
 			event.stopPropagation();
-			Remote.defaultRequest(
+			Remote.request('AccountSwitch',
 				(iError/*, oData*/) => {
 					if (iError) {
 						AccountUserStore.loading(false);
@@ -86,7 +86,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 //						rl.route.reload();
 						location.reload();
 					}
-				}, 'AccountSwitch', {Email:account.email}
+				}, {Email:account.email}
 			);
 		}
 		return true;

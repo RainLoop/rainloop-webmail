@@ -439,43 +439,6 @@ trait User
 		return $this->DefaultResponse(__FUNCTION__, $aResult);
 	}
 
-	public function DoComposeUploadExternals() : array
-	{
-		$oAccount = $this->getAccountFromToken();
-
-		$mResult = false;
-		$aExternals = $this->GetActionParam('Externals', array());
-		if (\is_array($aExternals) && \count($aExternals))
-		{
-			$oHttp = \MailSo\Base\Http::SingletonInstance();
-
-			$mResult = array();
-			foreach ($aExternals as $sUrl)
-			{
-				$mResult[$sUrl] = '';
-
-				$sTempName = \md5($sUrl);
-
-				$iCode = 0;
-				$sContentType = '';
-
-				$rFile = $this->FilesProvider()->GetFile($oAccount, $sTempName, 'wb+');
-				if ($rFile && $oHttp->SaveUrlToFile($sUrl, $rFile, '', $sContentType, $iCode, $this->Logger(), 60,
-						$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', '')))
-				{
-					$mResult[$sUrl] = $sTempName;
-				}
-
-				if (\is_resource($rFile))
-				{
-					\fclose($rFile);
-				}
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $mResult);
-	}
-
 	public function DoClearUserBackground() : array
 	{
 		$oAccount = $this->getAccountFromToken();

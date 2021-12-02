@@ -92,7 +92,7 @@ export class SecurityAdminSettings /*extends AbstractViewSettings*/ {
 		this.adminPasswordUpdateError(false);
 		this.adminPasswordUpdateSuccess(false);
 
-		Remote.defaultRequest((iError, data) => {
+		Remote.request('AdminPasswordUpdate', (iError, data) => {
 			if (iError) {
 				this.adminPasswordUpdateError(true);
 			} else {
@@ -104,7 +104,7 @@ export class SecurityAdminSettings /*extends AbstractViewSettings*/ {
 
 				this.weakPassword(!!data.Result.Weak);
 			}
-		}, 'AdminPasswordUpdate', {
+		}, {
 			'Login': this.adminLogin(),
 			'Password': this.adminPassword(),
 			'NewPassword': this.adminPasswordNew(),

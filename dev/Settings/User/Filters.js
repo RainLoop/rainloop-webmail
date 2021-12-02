@@ -36,7 +36,7 @@ export class FiltersUserSettings /*extends AbstractViewSettings*/ {
 			this.loading(true);
 			this.serverError(false);
 
-			Remote.filtersGet((iError, data) => {
+			Remote.request('Filters', (iError, data) => {
 				this.loading(false);
 				this.scripts([]);
 
@@ -69,7 +69,7 @@ export class FiltersUserSettings /*extends AbstractViewSettings*/ {
 
 	deleteScript(script) {
 		this.serverError(false);
-		Remote.filtersScriptDelete(
+		Remote.request('FiltersScriptDelete',
 			(iError, data) => {
 				if (iError) {
 					this.setError((data && data.ErrorMessageAdditional) || getNotification(iError));
@@ -78,14 +78,14 @@ export class FiltersUserSettings /*extends AbstractViewSettings*/ {
 					delegateRunOnDestroy(script);
 				}
 			},
-			script.name()
+			{name:script.name()}
 		);
 	}
 
 	toggleScript(script) {
 		let name = script.active() ? '' : script.name();
 		this.serverError(false);
-		Remote.filtersScriptActivate(
+		Remote.request('FiltersScriptActivate',
 			(iError, data) => {
 				if (iError) {
 					this.setError((data && data.ErrorMessageAdditional) || iError)
@@ -93,7 +93,7 @@ export class FiltersUserSettings /*extends AbstractViewSettings*/ {
 					this.scripts.forEach(script => script.active(script.name() === name));
 				}
 			},
-			name
+			{name:name}
 		);
 	}
 

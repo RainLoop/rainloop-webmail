@@ -97,11 +97,10 @@ class AppUser extends AbstractApp {
 		setInterval(() => {
 			const currentTime = Date.now();
 			if (currentTime > (lastTime + interval + 1000)) {
-				Remote.jsVersion(iError => {
-					if (100 < iError) {
-						this.reload();
-					}
-				}, Settings.app('version'));
+				Remote.request('Version',
+					iError => (100 < iError) && this.reload(),
+					{ Version: Settings.app('version') }
+				);
 			}
 			lastTime = currentTime;
 		}, interval);
@@ -185,13 +184,18 @@ class AppUser extends AbstractApp {
 				isTrash = sTrashFolder === item.To,
 				isHam = !isSpam && sSpamFolder === item.From && getFolderInboxName() === item.To;
 
-			Remote.messagesMove(
+			Remote.request('MessageMove',
 				this.moveOrDeleteResponseHelper,
-				item.From,
-				item.To,
-				item.Uid,
-				isSpam ? 'SPAM' : isHam ? 'HAM' : '',
-				isSpam || isTrash
+				{
+					FromFolder: item.From,
+					ToFolder: item.To,
+					Uids: item.Uid.join(','),
+					MarkAsRead: (isSpam || isTrash) ? 1 : 0,
+					Learning: isSpam ? 'SPAM' : isHam ? 'HAM' : ''
+				},
+				null,
+				'',
+				['MessageList']
 			);
 		});
 
@@ -213,11 +217,24 @@ class AppUser extends AbstractApp {
 	}
 
 	messagesCopyHelper(sFromFolderFullName, sToFolderFullName, aUidForCopy) {
-		Remote.messagesCopy(this.moveOrDeleteResponseHelper, sFromFolderFullName, sToFolderFullName, aUidForCopy);
+		Remote.request('MessageCopy', this.moveOrDeleteResponseHelper, {
+			FromFolder: sFromFolderFullName,
+			ToFolder: sToFolderFullName,
+			Uids: aUidForCopy.join(',')
+		});
 	}
 
 	messagesDeleteHelper(sFromFolderFullName, aUidForRemove) {
-		Remote.messagesDelete(this.moveOrDeleteResponseHelper, sFromFolderFullName, aUidForRemove);
+		Remote.request('MessageDelete',
+			this.moveOrDeleteResponseHelper,
+			{
+				Folder: sFromFolderFullName,
+				Uids: aUidForRemove.join(',')
+			},
+			null,
+			'',
+			['MessageList']
+		);
 	}
 
 	moveOrDeleteResponseHelper(iError, oData) {
@@ -414,7 +431,7 @@ class AppUser extends AbstractApp {
 		AccountUserStore.loading(true);
 		IdentityUserStore.loading(true);
 
-		Remote.accountsAndIdentities((iError, oData) => {
+		Remote.request('AccountsAndIdentities', (iError, oData) => {
 			AccountUserStore.loading(false);
 			IdentityUserStore.loading(false);
 
@@ -531,7 +548,7 @@ class AppUser extends AbstractApp {
 	folderInformationMultiply(boot = false) {
 		const folders = FolderUserStore.getNextFolderNames(refreshFolders);
 		if (arrayLength(folders)) {
-			Remote.folderInformationMultiply((iError, oData) => {
+			Remote.request('FolderInformationMultiply', (iError, oData) => {
 				if (!iError && arrayLength(oData.Result)) {
 					const utc = Date.now();
 					oData.Result.forEach(item => {
@@ -569,7 +586,9 @@ class AppUser extends AbstractApp {
 						setTimeout(() => this.folderInformationMultiply(true), 2000);
 					}
 				}
-			}, folders);
+			}, {
+				Folders: folders
+			});
 		}
 	}
 
@@ -579,32 +598,19 @@ class AppUser extends AbstractApp {
 	 * @param {Array=} messages = null
 	 */
 	messageListAction(sFolderFullName, iSetAction, messages) {
+		messages = messages || MessageUserStore.listChecked();
+
 		let folder = null,
 			alreadyUnread = 0,
-			rootUids = [];
+			rootUids = messages.map(oMessage => oMessage && oMessage.uid ? oMessage.uid : null)
+				.validUnique(),
+			length = rootUids.length;
 
-		if (undefined === messages || !messages) {
-			messages = MessageUserStore.listChecked();
-		}
-
-		rootUids = messages.map(oMessage => oMessage && oMessage.uid ? oMessage.uid : null)
-			.validUnique();
-
-		if (sFolderFullName && rootUids.length) {
+		if (sFolderFullName && length) {
 			switch (iSetAction) {
 				case MessageSetAction.SetSeen:
-					rootUids.forEach(sSubUid =>
-						alreadyUnread += MessageFlagsCache.storeBySetAction(sFolderFullName, sSubUid, iSetAction)
-					);
-
-					folder = getFolderFromCacheList(sFolderFullName);
-					if (folder) {
-						folder.messageCountUnread(folder.messageCountUnread() - alreadyUnread);
-					}
-
-					Remote.messageSetSeen(null, sFolderFullName, rootUids, true);
-					break;
-
+					length = 0;
+					// fallthrough is intentionally
 				case MessageSetAction.UnsetSeen:
 					rootUids.forEach(sSubUid =>
 						alreadyUnread += MessageFlagsCache.storeBySetAction(sFolderFullName, sSubUid, iSetAction)
@@ -612,26 +618,26 @@ class AppUser extends AbstractApp {
 
 					folder = getFolderFromCacheList(sFolderFullName);
 					if (folder) {
-						folder.messageCountUnread(folder.messageCountUnread() - alreadyUnread + rootUids.length);
+						folder.messageCountUnread(folder.messageCountUnread() - alreadyUnread + length);
 					}
 
-					Remote.messageSetSeen(null, sFolderFullName, rootUids, false);
+					Remote.request('MessageSetSeen', null, {
+						Folder: sFolderFullName,
+						Uids: rootUids.join(','),
+						SetAction: iSetAction == MessageSetAction.SetSeen ? 1 : 0
+					});
 					break;
 
 				case MessageSetAction.SetFlag:
-					rootUids.forEach(sSubUid =>
-						MessageFlagsCache.storeBySetAction(sFolderFullName, sSubUid, iSetAction)
-					);
-
-					Remote.messageSetFlagged(null, sFolderFullName, rootUids, true);
-					break;
-
 				case MessageSetAction.UnsetFlag:
 					rootUids.forEach(sSubUid =>
 						MessageFlagsCache.storeBySetAction(sFolderFullName, sSubUid, iSetAction)
 					);
-
-					Remote.messageSetFlagged(null, sFolderFullName, rootUids, false);
+					Remote.request('MessageSetFlagged', null, {
+						Folder: sFolderFullName,
+						Uids: rootUids.join(','),
+						SetAction: iSetAction == MessageSetAction.SetFlag ? 1 : 0
+					});
 					break;
 				// no default
 			}
@@ -694,7 +700,7 @@ class AppUser extends AbstractApp {
 	}
 
 	logout() {
-		Remote.logout(() => rl.logoutReload());
+		Remote.request('Logout', () => rl.logoutReload());
 	}
 
 	bootstart() {
@@ -757,7 +763,7 @@ class AppUser extends AbstractApp {
 							FolderUserStore.hasCapability('LIST-STATUS') || this.folderInformationMultiply(true);
 						}, 1000);
 
-						setTimeout(() => Remote.appDelayStart(null), 35000);
+						setTimeout(() => Remote.request('AppDelayStart'), 35000);
 
 						// When auto-login is active
 						if (

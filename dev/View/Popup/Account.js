@@ -43,8 +43,7 @@ class AccountPopupView extends AbstractViewPopup {
 
 		this.submitRequest(true);
 
-		Remote.accountSetup(
-			(iError, data) => {
+		Remote.request('AccountSetup', (iError, data) => {
 				this.submitRequest(false);
 				if (iError) {
 					this.submitError(getNotification(iError));
@@ -53,10 +52,11 @@ class AccountPopupView extends AbstractViewPopup {
 					rl.app.accountsAndIdentities();
 					this.cancelCommand();
 				}
-			},
-			this.email(),
-			this.password(),
-			this.isNew()
+			}, {
+				Email: this.email(),
+				Password: this.password(),
+				New: this.isNew() ? 1 : 0
+			}
 		);
 
 		return true;

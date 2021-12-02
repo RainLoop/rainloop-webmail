@@ -7,7 +7,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {string} sPassword
 	 */
 	adminLogin(fCallback, sLogin, sPassword, sCode) {
-		this.defaultRequest(fCallback, 'AdminLogin', {
+		this.request('AdminLogin', fCallback, {
 			Login: sLogin,
 			Password: sPassword,
 			TOTP: sCode
@@ -18,7 +18,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {?Function} fCallback
 	 */
 	adminLogout(fCallback) {
-		this.defaultRequest(fCallback, 'AdminLogout');
+		this.request('AdminLogout', fCallback);
 	}
 
 	/**
@@ -26,7 +26,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {?} oData
 	 */
 	saveAdminConfig(fCallback, oData) {
-		this.defaultRequest(fCallback, 'AdminSettingsUpdate', oData);
+		this.request('AdminSettingsUpdate', fCallback, oData);
 	}
 
 	/**
@@ -34,7 +34,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {boolean=} bIncludeAliases = true
 	 */
 	domainList(fCallback, bIncludeAliases = true) {
-		this.defaultRequest(fCallback, 'AdminDomainList', {
+		this.request('AdminDomainList', fCallback, {
 			IncludeAliases: bIncludeAliases ? 1 : 0
 		});
 	}
@@ -43,7 +43,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {?Function} fCallback
 	 */
 	packagesList(fCallback) {
-		this.defaultRequest(fCallback, 'AdminPackagesList');
+		this.request('AdminPackagesList', fCallback);
 	}
 
 	/**
@@ -51,9 +51,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {Object} oPackage
 	 */
 	packageInstall(fCallback, oPackage) {
-		this.defaultRequest(
-			fCallback,
-			'AdminPackageInstall',
+		this.request('AdminPackageInstall', fCallback,
 			{
 				Id: oPackage.id,
 				Type: oPackage.type,
@@ -68,7 +66,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {Object} oPackage
 	 */
 	packageDelete(fCallback, oPackage) {
-		this.defaultRequest(fCallback, 'AdminPackageDelete', {
+		this.request('AdminPackageDelete', fCallback, {
 			Id: oPackage.id
 		});
 	}
@@ -78,7 +76,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {string} sName
 	 */
 	domain(fCallback, sName) {
-		this.defaultRequest(fCallback, 'AdminDomainLoad', {
+		this.request('AdminDomainLoad', fCallback, {
 			Name: sName
 		});
 	}
@@ -88,7 +86,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {string} sId
 	 */
 	plugin(fCallback, sId) {
-		this.defaultRequest(fCallback, 'AdminPluginLoad', {
+		this.request('AdminPluginLoad', fCallback, {
 			Id: sId
 		});
 	}
@@ -98,7 +96,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {string} sName
 	 */
 	domainDelete(fCallback, sName) {
-		this.defaultRequest(fCallback, 'AdminDomainDelete', {
+		this.request('AdminDomainDelete', fCallback, {
 			Name: sName
 		});
 	}
@@ -109,7 +107,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {boolean} bDisabled
 	 */
 	domainDisable(fCallback, sName, bDisabled) {
-		this.defaultRequest(fCallback, 'AdminDomainDisable', {
+		this.request('AdminDomainDisable', fCallback, {
 			Name: sName,
 			Disabled: bDisabled ? 1 : 0
 		});
@@ -120,7 +118,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {Object} oConfig
 	 */
 	pluginSettingsUpdate(fCallback, oConfig) {
-		this.defaultRequest(fCallback, 'AdminPluginSettingsUpdate', oConfig);
+		this.request('AdminPluginSettingsUpdate', fCallback, oConfig);
 	}
 
 	/**
@@ -129,21 +127,21 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {boolean} bDisabled
 	 */
 	pluginDisable(fCallback, sId, bDisabled) {
-		this.defaultRequest(fCallback, 'AdminPluginDisable', {
+		this.request('AdminPluginDisable', fCallback, {
 			Id: sId,
 			Disabled: bDisabled ? 1 : 0
 		});
 	}
 
 	createDomainAlias(fCallback, sName, sAlias) {
-		this.defaultRequest(fCallback, 'AdminDomainAliasSave', {
+		this.request('AdminDomainAliasSave', fCallback, {
 			Name: sName,
 			Alias: sAlias
 		});
 	}
 
 	createOrUpdateDomain(fCallback, oDomain) {
-		this.defaultRequest(fCallback, 'AdminDomainSave', {
+		this.request('AdminDomainSave', fCallback, {
 			Create: oDomain.edit() ? 0 : 1,
 			Name: oDomain.name(),
 
@@ -170,7 +168,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	}
 
 	testConnectionForDomain(fCallback, oDomain) {
-		this.defaultRequest(fCallback, 'AdminDomainTest', {
+		this.request('AdminDomainTest', fCallback, {
 			Name: oDomain.name(),
 			IncHost: oDomain.imapServer(),
 			IncPort: oDomain.imapPort(),
@@ -192,7 +190,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {?} oData
 	 */
 	testContacts(fCallback, oData) {
-		this.defaultRequest(fCallback, 'AdminContactsTest', oData);
+		this.request('AdminContactsTest', fCallback, oData);
 	}
 
 }

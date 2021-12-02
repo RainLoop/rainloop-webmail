@@ -32,13 +32,12 @@ export class ContactsUserSettings /*extends AbstractViewSettings*/ {
 		);
 
 		this.saveTrigger.subscribe(() =>
-			Remote.saveContactsSyncData(
-				null,
-				ContactUserStore.enableSync(),
-				ContactUserStore.syncUrl(),
-				ContactUserStore.syncUser(),
-				ContactUserStore.syncPass()
-			)
+			Remote.request('SaveContactsSyncData', null, {
+				Enable: ContactUserStore.enableSync() ? 1 : 0,
+				Url: ContactUserStore.syncUrl(),
+				User: ContactUserStore.syncUser(),
+				Password: ContactUserStore.syncPass()
+			})
 		);
 	}
 }

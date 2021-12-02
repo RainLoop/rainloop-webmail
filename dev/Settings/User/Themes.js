@@ -108,7 +108,7 @@ export class ThemesUserSettings /*extends AbstractViewSettings*/ {
 
 	clearBackground() {
 		if (this.capaUserBackground()) {
-			Remote.clearUserBackground(() => {
+			Remote.request('ClearUserBackground', () => {
 				this.background.name('');
 				this.background.hash('');
 			});

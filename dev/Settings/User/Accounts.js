@@ -54,14 +54,16 @@ export class AccountsUserSettings /*extends AbstractViewSettings*/ {
 			if (accountToRemove) {
 				this.accounts.remove((account) => accountToRemove === account);
 
-				Remote.accountDelete((iError, data) => {
+				Remote.request('AccountDelete', (iError, data) => {
 					if (!iError && data.Reload) {
 						rl.route.root();
 						setTimeout(() => location.reload(), 1);
 					} else {
 						rl.app.accountsAndIdentities();
 					}
-				}, accountToRemove.email);
+				}, {
+					EmailToDelete: accountToRemove.email
+				});
 			}
 		}
 	}
@@ -76,16 +78,18 @@ export class AccountsUserSettings /*extends AbstractViewSettings*/ {
 
 			if (identityToRemove) {
 				IdentityUserStore.remove(oIdentity => identityToRemove === oIdentity);
-				Remote.identityDelete(() => rl.app.accountsAndIdentities(), identityToRemove.id());
+				Remote.request('IdentityDelete', () => rl.app.accountsAndIdentities(), {
+					IdToDelete: identityToRemove.id()
+				});
 			}
 		}
 	}
 
 	accountsAndIdentitiesAfterMove() {
-		Remote.accountsAndIdentitiesSortOrder(null,
-			AccountUserStore.getEmailAddresses().filter(v => v != SettingsGet('MainEmail')),
-			IdentityUserStore.getIDS()
-		);
+		Remote.request('AccountsAndIdentitiesSortOrder', null, {
+			Accounts: AccountUserStore.getEmailAddresses().filter(v => v != SettingsGet('MainEmail')),
+			Identities: IdentityUserStore.getIDS()
+		});
 	}
 
 	onBuild(oDom) {

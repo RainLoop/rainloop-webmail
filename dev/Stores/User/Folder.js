@@ -167,6 +167,6 @@ export const FolderUserStore = new class {
 			Archive: FolderUserStore.archiveFolder()
 		};
 		forEachObjectEntry(folders, (k,v)=>Settings.set(k+'Folder',v));
-		rl.app.Remote.saveSystemFolders(null, folders);
+		rl.app.Remote.request('SystemFoldersUpdate', null, folders);
 	}
 };

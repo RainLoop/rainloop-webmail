@@ -99,7 +99,7 @@ class LoginUserView extends AbstractViewLogin {
 			this.submitRequest(true);
 			data.set('Language', this.bSendLanguage ? this.language() : '');
 			data.set('SignMe', this.signMe() ? 1 : 0);
-			Remote.defaultRequest(
+			Remote.request('Login',
 				(iError, oData) => {
 					if (iError) {
 						this.submitRequest(false);
@@ -114,7 +114,7 @@ class LoginUserView extends AbstractViewLogin {
 //						rl.route.reload();
 					}
 				},
-				'Login', data
+				data
 			);
 
 			Local.set(ClientSideKeyName.LastSignMe, this.signMe() ? '-1-' : '-0-');

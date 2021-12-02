@@ -125,7 +125,7 @@ export class AbstractFetchRemote
 	 * @param {string=} sGetAdd = ''
 	 * @param {Array=} aAbortActions = []
 	 */
-	defaultRequest(fCallback, sAction, params, iTimeout, sGetAdd, abortActions) {
+	request(sAction, fCallback, params, iTimeout, sGetAdd, abortActions) {
 		params = params || {};
 
 		const start = Date.now();
@@ -184,24 +184,14 @@ export class AbstractFetchRemote
 	 * @param {?Function} fCallback
 	 */
 	noop(fCallback) {
-		this.defaultRequest(fCallback, 'Noop');
+		this.request('Noop', fCallback);
 	}
 
 	/**
 	 * @param {?Function} fCallback
 	 */
 	getPublicKey(fCallback) {
-		this.defaultRequest(fCallback, 'GetPublicKey');
-	}
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sVersion
-	 */
-	jsVersion(fCallback, sVersion) {
-		this.defaultRequest(fCallback, 'Version', {
-			Version: sVersion
-		});
+		this.request('GetPublicKey', fCallback);
 	}
 
 	fastResolve(mData) {
@@ -217,7 +207,7 @@ export class AbstractFetchRemote
 		}
 	}
 
-	postRequest(action, fTrigger, params, timeOut) {
+	post(action, fTrigger, params, timeOut) {
 		this.setTrigger(fTrigger, true);
 		return fetchJSON(action, '', params, pInt(timeOut, 30000),
 			data => {

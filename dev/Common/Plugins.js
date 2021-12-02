@@ -13,7 +13,7 @@ const USER_VIEW_MODELS_HOOKS = [],
  * @param {?number=} timeout
  */
 rl.pluginRemoteRequest = (callback, action, parameters, timeout) => {
-	rl.app && rl.app.Remote.defaultRequest(callback, 'Plugin' + action, parameters, timeout);
+	rl.app && rl.app.Remote.request('Plugin' + action, callback, parameters, timeout);
 };
 
 /**

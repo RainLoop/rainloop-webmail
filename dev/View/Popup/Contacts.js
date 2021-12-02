@@ -217,7 +217,7 @@ class ContactsPopupView extends AbstractViewPopup {
 
 		const requestUid = Jua.randomId();
 
-		Remote.contactSave(
+		Remote.request('ContactSave',
 			(iError, oData) => {
 				let res = false;
 				this.viewSaving(false);
@@ -243,10 +243,11 @@ class ContactsPopupView extends AbstractViewPopup {
 					this.watchDirty(false);
 					setTimeout(() => this.viewSaveTrigger(SaveSettingsStep.Idle), 1000);
 				}
-			},
-			requestUid,
-			this.viewID(),
-			this.viewProperties.map(oItem => oItem.toJSON())
+			}, {
+				RequestUid: requestUid,
+				Uid: this.viewID(),
+				Properties: this.viewProperties.map(oItem => oItem.toJSON())
+			}
 		);
 	}
 
@@ -355,14 +356,17 @@ class ContactsPopupView extends AbstractViewPopup {
 
 	deleteSelectedContacts() {
 		if (this.contactsCheckedOrSelected().length) {
-			Remote.contactsDelete((iError, oData) => {
-				if (500 < (!iError && oData && oData.Time ? pInt(oData.Time) : 0)) {
-					this.reloadContactList(this.bDropPageAfterDelete);
-				} else {
-					setTimeout(() => this.reloadContactList(this.bDropPageAfterDelete), 500);
+			Remote.request('ContactsDelete',
+				(iError, oData) => {
+					if (500 < (!iError && oData && oData.Time ? pInt(oData.Time) : 0)) {
+						this.reloadContactList(this.bDropPageAfterDelete);
+					} else {
+						setTimeout(() => this.reloadContactList(this.bDropPageAfterDelete), 500);
+					}
+				}, {
+					Uids: this.contactsCheckedOrSelectedUids().join(',')
 				}
-			}, this.contactsCheckedOrSelectedUids());
-
+			);
 			this.removeCheckedOrSelectedContactsFromList();
 		}
 	}
@@ -415,7 +419,7 @@ class ContactsPopupView extends AbstractViewPopup {
 		}
 
 		ContactUserStore.loading(true);
-		Remote.contacts(
+		Remote.request('Contacts',
 			(iError, data) => {
 				let count = 0,
 					list = [];
@@ -438,9 +442,14 @@ class ContactsPopupView extends AbstractViewPopup {
 				ContactUserStore.loading(false);
 				this.viewClearSearch(!!this.search());
 			},
-			offset,
-			CONTACTS_PER_PAGE,
-			this.search()
+			{
+				Offset: offset,
+				Limit: CONTACTS_PER_PAGE,
+				Search: this.search()
+			},
+			null,
+			'',
+			['Contacts']
 		);
 	}
 

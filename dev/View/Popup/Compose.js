@@ -415,7 +415,7 @@ class ComposePopupView extends AbstractViewPopup {
 				setFolderHash(this.draftsFolder(), '');
 				setFolderHash(sSentFolder, '');
 
-				Remote.sendMessage(
+				Remote.request('SendMessage',
 					(iError, data) => {
 						this.sending(false);
 						if (this.modalVisibility()) {
@@ -434,7 +434,8 @@ class ComposePopupView extends AbstractViewPopup {
 						}
 						this.reloadDraftFolder();
 					},
-					this.getMessageRequestParams(sSentFolder)
+					this.getMessageRequestParams(sSentFolder),
+					30000
 				);
 			}
 		}
@@ -451,7 +452,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 			setFolderHash(FolderUserStore.draftsFolder(), '');
 
-			Remote.saveMessage(
+			Remote.request('SaveMessage',
 				(iError, oData) => {
 					let result = false;
 
@@ -486,7 +487,8 @@ class ComposePopupView extends AbstractViewPopup {
 
 					this.reloadDraftFolder();
 				},
-				this.getMessageRequestParams(FolderUserStore.draftsFolder())
+				this.getMessageRequestParams(FolderUserStore.draftsFolder()),
+				200000
 			);
 		}
 
@@ -1016,30 +1018,36 @@ class ComposePopupView extends AbstractViewPopup {
 
 		const downloads = this.getAttachmentsDownloadsForUpload();
 		if (arrayLength(downloads)) {
-			Remote.messageUploadAttachments((iError, oData) => {
-				if (!iError) {
-					forEachObjectEntry(oData.Result, (tempName, id) => {
-						const attachment = this.getAttachmentById(id);
-						if (attachment) {
-							attachment.tempName(tempName);
-							attachment
-								.waiting(false)
-								.uploading(false)
-								.complete(true);
-						}
-					});
-				} else {
-					this.attachments.forEach(attachment => {
-						if (attachment && attachment.fromMessage) {
-							attachment
-								.waiting(false)
-								.uploading(false)
-								.complete(true)
-								.error(getUploadErrorDescByCode(UploadErrorCode.NoFileUploaded));
-						}
-					});
-				}
-			}, downloads);
+			Remote.request('MessageUploadAttachments',
+				(iError, oData) => {
+					if (!iError) {
+						forEachObjectEntry(oData.Result, (tempName, id) => {
+							const attachment = this.getAttachmentById(id);
+							if (attachment) {
+								attachment.tempName(tempName);
+								attachment
+									.waiting(false)
+									.uploading(false)
+									.complete(true);
+							}
+						});
+					} else {
+						this.attachments.forEach(attachment => {
+							if (attachment && attachment.fromMessage) {
+								attachment
+									.waiting(false)
+									.uploading(false)
+									.complete(true)
+									.error(getUploadErrorDescByCode(UploadErrorCode.NoFileUploaded));
+							}
+						});
+					}
+				},
+				{
+					Attachments: downloads
+				},
+				999000
+			);
 		}
 
 		if (identity) {

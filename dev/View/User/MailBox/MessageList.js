@@ -467,54 +467,49 @@ export class MailMessageList extends AbstractViewRight {
 			if (folder) {
 				switch (iSetAction) {
 					case MessageSetAction.SetSeen:
-						folder = getFolderFromCacheList(sFolderFullName);
-						if (folder) {
-							MessageUserStore.list.forEach(message => {
-								if (message.isUnseen()) {
-									++cnt;
-								}
-
-								message.isUnseen(false);
-								uids.push(message.uid);
-							});
-
-							if (iThreadUid) {
-								folder.messageCountUnread(folder.messageCountUnread() - cnt);
-								if (0 > folder.messageCountUnread()) {
-									folder.messageCountUnread(0);
-								}
-							} else {
-								folder.messageCountUnread(0);
+						MessageUserStore.list.forEach(message => {
+							if (message.isUnseen()) {
+								++cnt;
 							}
 
-							MessageFlagsCache.clearFolder(sFolderFullName);
+							message.isUnseen(false);
+							uids.push(message.uid);
+						});
+
+						if (iThreadUid) {
+							folder.messageCountUnread(folder.messageCountUnread() - cnt);
+							if (0 > folder.messageCountUnread()) {
+								folder.messageCountUnread(0);
+							}
+						} else {
+							folder.messageCountUnread(0);
 						}
+
+						MessageFlagsCache.clearFolder(sFolderFullName);
 
 						Remote.messageSetSeenToAll(null, sFolderFullName, true, iThreadUid ? uids : null);
 						break;
+
 					case MessageSetAction.UnsetSeen:
-						folder = getFolderFromCacheList(sFolderFullName);
-						if (folder) {
-							MessageUserStore.list.forEach(message => {
-								if (!message.isUnseen()) {
-									++cnt;
-								}
-
-								message.isUnseen(true);
-								uids.push(message.uid);
-							});
-
-							if (iThreadUid) {
-								folder.messageCountUnread(folder.messageCountUnread() + cnt);
-								if (folder.messageCountAll() < folder.messageCountUnread()) {
-									folder.messageCountUnread(folder.messageCountAll());
-								}
-							} else {
-								folder.messageCountUnread(folder.messageCountAll());
+						MessageUserStore.list.forEach(message => {
+							if (!message.isUnseen()) {
+								++cnt;
 							}
 
-							MessageFlagsCache.clearFolder(sFolderFullName);
+							message.isUnseen(true);
+							uids.push(message.uid);
+						});
+
+						if (iThreadUid) {
+							folder.messageCountUnread(folder.messageCountUnread() + cnt);
+							if (folder.messageCountAll() < folder.messageCountUnread()) {
+								folder.messageCountUnread(folder.messageCountAll());
+							}
+						} else {
+							folder.messageCountUnread(folder.messageCountAll());
 						}
+
+						MessageFlagsCache.clearFolder(sFolderFullName);
 
 						Remote.messageSetSeenToAll(null, sFolderFullName, false, iThreadUid ? uids : null);
 						break;
