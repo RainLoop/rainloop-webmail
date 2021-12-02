@@ -31,7 +31,10 @@ export class SystemDropDownUserView extends AbstractViewRight {
 
 		this.accounts = AccountUserStore.accounts;
 		this.accountsLoading = AccountUserStore.loading;
-		this.accountsUnreadCount = AccountUserStore.accountsUnreadCount;
+/*
+		this.accountsUnreadCount = : ko.computed(() => 0);
+		this.accountsUnreadCount = : ko.computed(() => AccountUserStore.accounts().reduce((result, item) => result + item.count(), 0));
+*/
 
 		this.addObservables({
 			currentAudio: '',

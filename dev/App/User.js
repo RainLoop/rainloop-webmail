@@ -419,24 +419,23 @@ class AppUser extends AbstractApp {
 			IdentityUserStore.loading(false);
 
 			if (!iError) {
-				const counts = {},
+				const
+//					counts = {},
 					accounts = oData.Result.Accounts,
 					mainEmail = SettingsGet('MainEmail');
 
 				if (isArray(accounts)) {
-					AccountUserStore.accounts.forEach(oAccount =>
-						counts[oAccount.email] = oAccount.count()
-					);
+//					AccountUserStore.accounts.forEach(oAccount => counts[oAccount.email] = oAccount.count());
 
 					delegateRunOnDestroy(AccountUserStore.accounts());
 
 					AccountUserStore.accounts(
 						accounts.map(
-							sValue => new AccountModel(sValue, counts[sValue])
+							sValue => new AccountModel(sValue/*, counts[sValue]*/)
 						)
 					);
 //					accounts.length &&
-					AccountUserStore.accounts.unshift(new AccountModel(mainEmail, counts[mainEmail], false));
+					AccountUserStore.accounts.unshift(new AccountModel(mainEmail/*, counts[mainEmail]*/, false));
 				}
 
 				if (isArray(oData.Result.Identities)) {

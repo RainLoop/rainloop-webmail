@@ -17,20 +17,17 @@
 		</a>
 		<ul class="dropdown-menu right-edge" tabindex="-1" role="menu" aria-labelledby="top-system-dropdown-id">
 
-			<!-- ko if: accounts().length -->
-				<!-- ko foreach: accounts -->
-					<li role="presentation">
-						<a class="account-item" href="#" data-bind="click: $root.accountClick, css: {'current': $root.accountEmail() === email}">
-<!--							<b class="pull-right counter" data-bind="visible: count()">
-								<span data-bind="text: count, visible: 100 > count()"></span>
-								<span data-bind="visible: 99 < count()">99+</span>
-							</b>-->
-							<i class="fontastic">✔</i>
-							<i class="fontastic">👤</i>
-							<span class="email-title" data-bind="text: email, attr: {title: email}"></span>
-						</a>
-					</li>
-				<!-- /ko -->
+			<!-- ko foreach: accounts -->
+				<li role="presentation">
+					<a class="account-item" href="#" data-bind="click: $root.accountClick">
+<!--						<b class="pull-right counter" data-bind="visible: count()">
+							<span data-bind="text: count, visible: 100 > count()"></span>
+							<span data-bind="visible: 99 < count()">99+</span>
+						</b>-->
+						<i class="fontastic" data-bind="text: $root.accountEmail() === email ? '✔' : '👤'"></i>
+						<span class="email-title" data-bind="text: email, attr: {title: email}"></span>
+					</a>
+				</li>
 			<!-- /ko -->
 
 			<li class="dividerbar" role="presentation" data-bind="visible: allowAccounts">
