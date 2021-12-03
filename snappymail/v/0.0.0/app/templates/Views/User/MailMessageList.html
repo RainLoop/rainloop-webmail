@@ -99,28 +99,28 @@
 	<div class="btn-group dropdown sortFolder" data-bind="visible: sortSupported() && mobileCheckedStateHide(), registerBootstrapDropdown: true, openDropdownTrigger: sortDropdownTrigger">
 		<a id="sort-list-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-i18n="[title]MESSAGE_LIST/SORT" data-bind="text: sortText">⬇</a>
 		<ul class="dropdown-menu" role="menu" aria-labelledby="sort-list-dropdown-id">
-			<li role="presentation" data-sort="DATE" data-bind="click: changeSort">
-				<a href="#" tabindex="-1">
-					<i class="fontastic">📅⬆</i>
-					<span data-i18n="MESSAGE_LIST/SORT_DATE_ASC"></span>
-				</a>
-			</li>
 			<li role="presentation" data-sort="" data-bind="click: changeSort">
 				<a href="#" tabindex="-1">
 					<i class="fontastic">📅⬇</i>
 					<span data-i18n="MESSAGE_LIST/SORT_DATE_DESC"></span>
 				</a>
 			</li>
-			<li class="dividerbar" role="presentation" data-sort="SIZE" data-bind="click: changeSort">
+			<li role="presentation" data-sort="DATE" data-bind="click: changeSort">
 				<a href="#" tabindex="-1">
-					<i class="fontastic">✉⬆</i>
-					<span data-i18n="MESSAGE_LIST/SORT_SIZE_ASC"></span>
+					<i class="fontastic">📅⬆</i>
+					<span data-i18n="MESSAGE_LIST/SORT_DATE_ASC"></span>
 				</a>
 			</li>
-			<li role="presentation" data-sort="REVERSE SIZE" data-bind="click: changeSort">
+			<li class="dividerbar" role="presentation" data-sort="REVERSE SIZE" data-bind="click: changeSort">
 				<a href="#" tabindex="-1">
 					<i class="fontastic">✉⬇</i>
 					<span data-i18n="MESSAGE_LIST/SORT_SIZE_DESC"></span>
+				</a>
+			</li>
+			<li role="presentation" data-sort="SIZE" data-bind="click: changeSort">
+				<a href="#" tabindex="-1">
+					<i class="fontastic">✉⬆</i>
+					<span data-i18n="MESSAGE_LIST/SORT_SIZE_ASC"></span>
 				</a>
 			</li>
 			<li class="dividerbar" role="presentation" data-sort="SUBJECT" data-bind="click: changeSort">
