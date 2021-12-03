@@ -87,38 +87,34 @@ export class GeneralAdminSettings /*extends AbstractViewSettings*/ {
 				this.languageAdminTrigger(saveSettingsStep);
 				setTimeout(() => this.languageAdminTrigger(SaveSettingsStep.Idle), 1000);
 			},
-		fSaveBoolHelper = (key, fn) =>
-			value => {
-				const data = {};
-				data[key] = value ? 1 : 0;
-				Remote.saveAdminConfig(fn, data);
-			};
+			fSaveBoolHelper = key =>
+				value => Remote.saveConfig({[key]: value ? 1 : 0});
 
 		addSubscribablesTo(this, {
 			mainAttachmentLimit: value =>
-				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.attachmentLimitTrigger, this), {
+				Remote.saveConfig({
 					AttachmentLimit: pInt(value)
-				}),
+				}, settingsSaveHelperSimpleFunction(this.attachmentLimitTrigger, this)),
 
 			language: value =>
-				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.languageTrigger, this), {
+				Remote.saveConfig({
 					Language: value.trim()
-				}),
+				}, settingsSaveHelperSimpleFunction(this.languageTrigger, this)),
 
 			languageAdmin: value => {
 				this.languageAdminTrigger(SaveSettingsStep.Animate);
 				translatorReload(true, value)
 					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult), fReloadLanguageHelper(SaveSettingsStep.FalseResult))
-					.then(() => Remote.saveAdminConfig(null, {
+					.then(() => Remote.saveConfig({
 						LanguageAdmin: value.trim()
 					}));
 			},
 
 			theme: value => {
 				changeTheme(value, this.themeTrigger);
-				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.themeTrigger, this), {
+				Remote.saveConfig({
 					Theme: value.trim()
-				});
+				}, settingsSaveHelperSimpleFunction(this.themeTrigger, this));
 			},
 
 			capaAdditionalAccounts: fSaveBoolHelper('CapaAdditionalAccounts'),

@@ -51,24 +51,24 @@ export class SecurityAdminSettings /*extends AbstractViewSettings*/ {
 			},
 
 			capaOpenPGP: value =>
-				Remote.saveAdminConfig(null, {
+				Remote.saveConfig({
 					CapaOpenPGP: value ? 1 : 0
 				}),
 
 			useLocalProxyForExternalImages: value =>
-				Remote.saveAdminConfig(null, {
+				Remote.saveConfig({
 					UseLocalProxyForExternalImages: value ? 1 : 0
 				}),
 
 			verifySslCertificate: value => {
-				value => value || this.allowSelfSigned(true);
-				Remote.saveAdminConfig(null, {
+				value || this.allowSelfSigned(true);
+				Remote.saveConfig({
 					VerifySslCertificate: value ? 1 : 0
 				});
 			},
 
 			allowSelfSigned: value =>
-				Remote.saveAdminConfig(null, {
+				Remote.saveConfig({
 					AllowSelfSigned: value ? 1 : 0
 				})
 		});

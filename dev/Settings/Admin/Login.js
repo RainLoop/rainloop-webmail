@@ -1,5 +1,4 @@
-import ko from 'ko';
-
+import { SaveSettingsStep } from 'Common/Enums';
 import { Settings, SettingsGet } from 'Common/Globals';
 import { settingsSaveHelperSimpleFunction, addObservablesTo, addSubscribablesTo } from 'Common/Utils';
 
@@ -11,36 +10,37 @@ export class LoginAdminSettings /*extends AbstractViewSettings*/ {
 			determineUserLanguage: !!SettingsGet('DetermineUserLanguage'),
 			determineUserDomain: !!SettingsGet('DetermineUserDomain'),
 			allowLanguagesOnLogin: !!SettingsGet('AllowLanguagesOnLogin'),
-			hideSubmitButton: !!Settings.app('hideSubmitButton')
+			hideSubmitButton: !!Settings.app('hideSubmitButton'),
+			defaultDomain: SettingsGet('LoginDefaultDomain'),
+			defaultDomainTrigger: SaveSettingsStep.Idle
 		});
-
-		this.defaultDomain = ko.observable(SettingsGet('LoginDefaultDomain')).idleTrigger();
 
 		addSubscribablesTo(this, {
 			determineUserLanguage: value =>
-				Remote.saveAdminConfig(null, {
+				Remote.saveConfig({
 					DetermineUserLanguage: value ? 1 : 0
 				}),
 
 			determineUserDomain: value =>
-				Remote.saveAdminConfig(null, {
+				Remote.saveConfig({
 					DetermineUserDomain: value ? 1 : 0
 				}),
 
 			allowLanguagesOnLogin: value =>
-				Remote.saveAdminConfig(null, {
+				Remote.saveConfig({
 					AllowLanguagesOnLogin: value ? 1 : 0
 				}),
 
 			hideSubmitButton: value =>
-				Remote.saveAdminConfig(null, {
+				Remote.saveConfig({
 					hideSubmitButton: value ? 1 : 0
 				}),
 
-			defaultDomain: value =>
-				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.defaultDomain.trigger, this), {
+			defaultDomain: (value =>
+				Remote.saveConfig({
 					LoginDefaultDomain: value.trim()
-				})
+				}, settingsSaveHelperSimpleFunction(this.defaultDomainTrigger, this))
+			).debounce(999)
 		});
 	}
 }

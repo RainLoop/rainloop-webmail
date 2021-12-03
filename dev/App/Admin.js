@@ -1,4 +1,4 @@
-import 'External/Admin/ko';
+import 'External/ko';
 
 import { Settings, SettingsGet } from 'Common/Globals';
 

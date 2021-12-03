@@ -9,11 +9,14 @@ import Remote from 'Remote/Admin/Fetch';
 import { showScreenPopup } from 'Knoin/Knoin';
 import { PluginPopupView } from 'View/Popup/Plugin';
 import { SettingsGet } from 'Common/Globals';
-import { addComputablesTo } from 'Common/Utils';
+import { addObservablesTo, addComputablesTo } from 'Common/Utils';
 
 export class PackagesAdminSettings /*extends AbstractViewSettings*/ {
 	constructor() {
-		this.packagesError = ko.observable('');
+		addObservablesTo(this, {
+			packagesError: '',
+			enabledPlugins: !!SettingsGet('EnabledPlugins')
+		});
 
 		this.packages = PackageAdminStore;
 
@@ -25,9 +28,8 @@ export class PackagesAdminSettings /*extends AbstractViewSettings*/ {
 			visibility: () => (PackageAdminStore.loading() ? 'visible' : 'hidden')
 		});
 
-		this.enabledPlugins = ko.observable(!!SettingsGet('EnabledPlugins'));
 		this.enabledPlugins.subscribe(value =>
-			Remote.saveAdminConfig(null, {
+			Remote.saveConfig({
 				EnabledPlugins: value ? 1 : 0
 			})
 		);

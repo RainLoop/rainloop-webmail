@@ -1,32 +1,39 @@
-import ko from 'ko';
-
+import { SaveSettingsStep } from 'Common/Enums';
 import { SettingsGet } from 'Common/Globals';
-import { settingsSaveHelperSimpleFunction } from 'Common/Utils';
+import { settingsSaveHelperSimpleFunction, addObservablesTo, addSubscribablesTo } from 'Common/Utils';
 
 import Remote from 'Remote/Admin/Fetch';
 
 export class BrandingAdminSettings /*extends AbstractViewSettings*/ {
 	constructor() {
-		this.title = ko.observable(SettingsGet('Title')).idleTrigger();
-		this.loadingDesc = ko.observable(SettingsGet('LoadingDescription')).idleTrigger();
-		this.faviconUrl = ko.observable(SettingsGet('FaviconUrl')).idleTrigger();
+		addObservablesTo(this, {
+			title: SettingsGet('Title'),
+			loadingDesc: SettingsGet('LoadingDescription'),
+			faviconUrl: SettingsGet('FaviconUrl'),
 
-		this.title.subscribe(value =>
-			Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.title.trigger, this), {
-				Title: value.trim()
-			})
-		);
+			titleTrigger: SaveSettingsStep.Idle,
+			loadingDescTrigger: SaveSettingsStep.Idle,
+			faviconUrlTrigger: SaveSettingsStep.Idle
+		});
 
-		this.loadingDesc.subscribe(value =>
-			Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.loadingDesc.trigger, this), {
-				LoadingDescription: value.trim()
-			})
-		);
+		addSubscribablesTo(this, {
+			title: (value =>
+				Remote.saveConfig({
+					Title: value.trim()
+				}, settingsSaveHelperSimpleFunction(this.titleTrigger, this))
+			).debounce(999),
 
-		this.faviconUrl.subscribe(value =>
-			Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.faviconUrl.trigger, this), {
-				FaviconUrl: value.trim()
-			})
-		);
+			loadingDesc: (value =>
+				Remote.saveConfig({
+					LoadingDescription: value.trim()
+				}, settingsSaveHelperSimpleFunction(this.loadingDescTrigger, this))
+			).debounce(999),
+
+			faviconUrl: (value =>
+				Remote.saveConfig({
+					FaviconUrl: value.trim()
+				}, settingsSaveHelperSimpleFunction(this.faviconUrlTrigger, this))
+			).debounce(999)
+		});
 	}
 }

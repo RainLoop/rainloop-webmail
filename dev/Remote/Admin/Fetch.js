@@ -6,7 +6,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {?Function} fCallback
 	 * @param {?} oData
 	 */
-	saveAdminConfig(fCallback, oData) {
+	saveConfig(oData, fCallback) {
 		this.request('AdminSettingsUpdate', fCallback, oData);
 	}
 
