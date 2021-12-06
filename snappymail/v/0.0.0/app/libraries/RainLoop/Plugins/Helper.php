@@ -4,9 +4,9 @@ namespace RainLoop\Plugins;
 
 class Helper
 {
-	static public function ValidateWildcardValues(string $sString, string $sWildcardValues, string &$sFoundedValue = null) : bool
+	static public function ValidateWildcardValues(string $sString, string $sWildcardValues, string &$sFoundValue = null) : bool
 	{
-		$sFoundedValue = '';
+		$sFoundValue = '';
 
 		$sString = \trim($sString);
 		if ('' === $sString)
@@ -22,7 +22,7 @@ class Helper
 
 		if ('*' === $sWildcardValues)
 		{
-			$sFoundedValue = '*';
+			$sFoundValue = '*';
 			return true;
 		}
 
@@ -35,7 +35,7 @@ class Helper
 			{
 				if ($sString === $sItem)
 				{
-					$sFoundedValue = $sItem;
+					$sFoundValue = $sItem;
 					return true;
 				}
 			}
@@ -48,7 +48,7 @@ class Helper
 
 				if (\preg_match('/'.\implode('.*', $aItem).'/', $sString))
 				{
-					$sFoundedValue = $sItem;
+					$sFoundValue = $sItem;
 					return true;
 				}
 			}

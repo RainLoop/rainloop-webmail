@@ -150,7 +150,6 @@ trait Response
 	 *
 	 * @return mixed
 	 */
-	private $oAccount = null;
 	private $aCheckableFolder = null;
 	private function responseObject($mResponse, string $sParent = '', array $aParameters = array())
 	{
@@ -176,10 +175,7 @@ trait Response
 		{
 			$mResult = $mResponse->jsonSerialize();
 
-			if (null === $this->oAccount) {
-				$this->oAccount = $this->getAccountFromToken(false);
-			}
-			$oAccount = $this->oAccount;
+			$oAccount = $this->getAccountFromToken();
 
 			if (!$mResult['DateTimeStampInUTC'] || !!$this->Config()->Get('labs', 'date_from_headers', false)) {
 				$iDateTimeStampInUTC = $mResponse->HeaderTimeStampInUTC();
@@ -204,21 +200,20 @@ trait Response
 				'FileName' => (\strlen($sSubject) ? \MailSo\Base\Utils::ClearXss($sSubject) : 'message-'.$mResult['Uid']) . '.eml'
 			));
 
-			$sForwardedFlag = $this->Config()->Get('labs', 'imap_forwarded_flag', '');
-			$sReadReceiptFlag = $this->Config()->Get('labs', 'imap_read_receipt_flag', '');
-
-			$aFlags = $mResponse->FlagsLowerCase();
-			$mResult['IsForwarded'] = \strlen($sForwardedFlag) && \in_array(\strtolower($sForwardedFlag), $aFlags);
-			$mResult['IsReadReceipt'] = \strlen($sReadReceiptFlag) && \in_array(\strtolower($sReadReceiptFlag), $aFlags);
+			$sForwardedFlag = \strtolower($this->Config()->Get('labs', 'imap_forwarded_flag', ''));
+			$sReadReceiptFlag = \strtolower($this->Config()->Get('labs', 'imap_read_receipt_flag', ''));
+			\strlen($sForwardedFlag) && \in_array($sForwardedFlag, $mResult['Flags']) && \array_push($mResult['Flags'], '$forwarded');
+			\strlen($sReadReceiptFlag) && \in_array($sReadReceiptFlag, $mResult['Flags']) && \array_push($mResult['Flags'], '$mdnsent');
+			$mResult['Flags'] = \array_unique($mResult['Flags']);
 
 			if ('Message' === $sParent)
 			{
 				$oAttachments = /* @var \MailSo\Mail\AttachmentCollection */ $mResponse->Attachments();
 
 				$bHasExternals = false;
-				$mFoundedCIDs = array();
+				$mFoundCIDs = array();
 				$aContentLocationUrls = array();
-				$mFoundedContentLocationUrls = array();
+				$mFoundContentLocationUrls = array();
 
 				if ($oAttachments && 0 < $oAttachments->count())
 				{
@@ -265,8 +260,8 @@ trait Response
 				}, $sHtml);
 
 				$mResult['Html'] = \strlen($sHtml) ? \MailSo\Base\HtmlUtils::ClearHtml(
-					$sHtml, $bHasExternals, $mFoundedCIDs, $aContentLocationUrls, $mFoundedContentLocationUrls, false, false,
-					$fAdditionalExternalFilter, null, !!$this->Config()->Get('labs', 'try_to_detect_hidden_images', false)
+					$sHtml, $bHasExternals, $mFoundCIDs, $aContentLocationUrls, $mFoundContentLocationUrls,
+					$fAdditionalExternalFilter, !!$this->Config()->Get('labs', 'try_to_detect_hidden_images', false)
 				) : '';
 
 				$mResult['ExternalProxy'] = null !== $fAdditionalExternalFilter;
@@ -274,26 +269,25 @@ trait Response
 				$mResult['Plain'] = $sPlain;
 //				$mResult['Plain'] = \strlen($sPlain) ? \MailSo\Base\HtmlUtils::ConvertPlainToHtml($sPlain) : '';
 
-				$mResult['TextHash'] = \md5($mResult['Html'].$mResult['Plain']);
-
 				$mResult['isPgpSigned'] = $mResponse->isPgpSigned();
 				$mResult['isPgpEncrypted'] = $mResponse->isPgpEncrypted();
-				$mResult['PgpSignature'] = $mResponse->PgpSignature();
-				$mResult['PgpSignatureMicAlg'] = $mResponse->PgpSignatureMicAlg();
+//				$mResult['PgpSignature'] = $mResponse->PgpSignature();
+//				$mResult['PgpSignatureMicAlg'] = $mResponse->PgpSignatureMicAlg();
 
 				unset($sHtml, $sPlain);
 
 				$mResult['HasExternals'] = $bHasExternals;
-				$mResult['HasInternals'] = (\is_array($mFoundedCIDs) && \count($mFoundedCIDs)) ||
-					(\is_array($mFoundedContentLocationUrls) && \count($mFoundedContentLocationUrls));
-				$mResult['FoundedCIDs'] = $mFoundedCIDs;
+				$mResult['HasInternals'] = (\is_array($mFoundCIDs) && \count($mFoundCIDs)) ||
+					(\is_array($mFoundContentLocationUrls) && \count($mFoundContentLocationUrls));
+//				$mResult['FoundCIDs'] = $mFoundCIDs;
 				$mResult['Attachments'] = $this->responseObject($oAttachments, $sParent, \array_merge($aParameters, array(
-					'FoundedCIDs' => $mFoundedCIDs,
-					'FoundedContentLocationUrls' => $mFoundedContentLocationUrls
+					'FoundCIDs' => $mFoundCIDs,
+					'FoundContentLocationUrls' => $mFoundContentLocationUrls
 				)));
 
 				$mResult['ReadReceipt'] = $mResponse->ReadReceipt();
-				if (\strlen($mResult['ReadReceipt']) && !$mResult['IsReadReceipt'])
+
+				if (\strlen($mResult['ReadReceipt']) && !\in_array('$forwarded', $mResult['Flags']))
 				{
 					if (\strlen($mResult['ReadReceipt']))
 					{
@@ -322,36 +316,34 @@ trait Response
 		{
 			$mResult = $mResponse->jsonSerialize();
 
-			if (null === $this->oAccount) {
-				$this->oAccount = $this->getAccountFromToken(false);
-			}
+			$oAccount = $this->getAccountFromToken();
 
-			$mFoundedCIDs = isset($aParameters['FoundedCIDs']) && \is_array($aParameters['FoundedCIDs']) &&
-				\count($aParameters['FoundedCIDs']) ?
-					$aParameters['FoundedCIDs'] : null;
+			$mFoundCIDs = isset($aParameters['FoundCIDs']) && \is_array($aParameters['FoundCIDs']) &&
+				\count($aParameters['FoundCIDs']) ?
+					$aParameters['FoundCIDs'] : null;
 
-			$mFoundedContentLocationUrls = isset($aParameters['FoundedContentLocationUrls']) &&
-				\is_array($aParameters['FoundedContentLocationUrls']) &&
-				\count($aParameters['FoundedContentLocationUrls']) ?
-					$aParameters['FoundedContentLocationUrls'] : null;
+			$mFoundContentLocationUrls = isset($aParameters['FoundContentLocationUrls']) &&
+				\is_array($aParameters['FoundContentLocationUrls']) &&
+				\count($aParameters['FoundContentLocationUrls']) ?
+					$aParameters['FoundContentLocationUrls'] : null;
 
-			if ($mFoundedCIDs || $mFoundedContentLocationUrls)
+			if ($mFoundCIDs || $mFoundContentLocationUrls)
 			{
-				$mFoundedCIDs = \array_merge($mFoundedCIDs ? $mFoundedCIDs : array(),
-					$mFoundedContentLocationUrls ? $mFoundedContentLocationUrls : array());
+				$mFoundCIDs = \array_merge($mFoundCIDs ? $mFoundCIDs : array(),
+					$mFoundContentLocationUrls ? $mFoundContentLocationUrls : array());
 
-				$mFoundedCIDs = \count($mFoundedCIDs) ? $mFoundedCIDs : null;
+				$mFoundCIDs = \count($mFoundCIDs) ? $mFoundCIDs : null;
 			}
 
-			$mResult['IsLinked'] = ($mFoundedCIDs && \in_array(\trim(\trim($mResponse->Cid()), '<>'), $mFoundedCIDs))
-				|| ($mFoundedContentLocationUrls && \in_array(\trim($mResponse->ContentLocation()), $mFoundedContentLocationUrls));
+			$mResult['IsLinked'] = ($mFoundCIDs && \in_array(\trim(\trim($mResponse->Cid()), '<>'), $mFoundCIDs))
+				|| ($mFoundContentLocationUrls && \in_array(\trim($mResponse->ContentLocation()), $mFoundContentLocationUrls));
 
 			$mResult['Framed'] = $this->isFileHasFramedPreview($mResult['FileName']);
 			$mResult['IsThumbnail'] = $this->GetCapa(false, Capa::ATTACHMENT_THUMBNAILS) && $this->isFileHasThumbnail($mResult['FileName']);
 
 			$mResult['Download'] = Utils::EncodeKeyValuesQ(array(
 				'V' => APP_VERSION,
-				'Account' => $this->oAccount ? \md5($this->oAccount->Hash()) : '',
+				'Account' => $oAccount ? \md5($oAccount->Hash()) : '',
 				'Folder' => $mResult['Folder'],
 				'Uid' => $mResult['Uid'],
 				'MimeIndex' => $mResult['MimeIndex'],
@@ -379,12 +371,9 @@ trait Response
 
 			if (null === $this->aCheckableFolder)
 			{
-				if (null === $this->oAccount) {
-					$this->oAccount = $this->getAccountFromToken(false);
-				}
 				$aCheckable = \json_decode(
 					$this->SettingsProvider(true)
-					->Load($this->oAccount)
+					->Load($this->getAccountFromToken())
 					->GetConf('CheckableFolder', '[]')
 				);
 				$this->aCheckableFolder = \is_array($aCheckable) ? $aCheckable : array();

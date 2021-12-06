@@ -1,5 +1,5 @@
 import { MessageSetAction } from 'Common/EnumsUser';
-import { arrayLength, pInt } from 'Common/Utils';
+import { isArray, pInt } from 'Common/Utils';
 
 let FOLDERS_CACHE = {},
 	FOLDERS_NAME_CACHE = {},
@@ -176,16 +176,8 @@ export class MessageFlagsCache
 			const uid = message.uid,
 				flags = this.getFor(message.folder, uid);
 
-			if (flags && flags.length) {
-				message.isFlagged(!!flags[1]);
-
-				if (!message.isSimpleMessage) {
-					message.isUnseen(!!flags[0]);
-					message.isAnswered(!!flags[2]);
-					message.isForwarded(!!flags[3]);
-					message.isReadReceipt(!!flags[4]);
-					message.isDeleted(!!flags[5]);
-				}
+			if (isArray(flags)) {
+				message.flags(flags);
 			}
 
 			if (message.threads.length) {
@@ -216,14 +208,7 @@ export class MessageFlagsCache
 	 */
 	static store(message) {
 		if (message) {
-			this.setFor(message.folder, message.uid, [
-				message.isUnseen(),
-				message.isFlagged(),
-				message.isAnswered(),
-				message.isForwarded(),
-				message.isReadReceipt(),
-				message.isDeleted()
-			]);
+			this.setFor(message.folder, message.uid, message.flags());
 		}
 	}
 
@@ -233,7 +218,7 @@ export class MessageFlagsCache
 	 * @param {Array} flags
 	 */
 	static storeByFolderAndUid(folder, uid, flags) {
-		if (arrayLength(flags)) {
+		if (isArray(flags)) {
 			this.setFor(folder, uid, flags);
 		}
 	}
@@ -245,30 +230,34 @@ export class MessageFlagsCache
 	 */
 	static storeBySetAction(folder, uid, setAction) {
 		let unread = 0;
-		const flags = this.getFor(folder, uid);
+		const flags = this.getFor(folder, uid),
+			remove = item => {
+				const index = flags.indexOf(item);
+				if (index > -1) {
+					flags.splice(index, 1);
+				}
+			};
 
-		if (arrayLength(flags)) {
-			if (flags[0]) {
-				unread = 1;
-			}
+		if (isArray(flags)) {
+			unread = flags.includes('\\seen') ? 0 : 1;
 
 			switch (setAction) {
 				case MessageSetAction.SetSeen:
-					flags[0] = false;
+					flags.push('\\seen');
 					break;
 				case MessageSetAction.UnsetSeen:
-					flags[0] = true;
+					remove('\\seen');
 					break;
 				case MessageSetAction.SetFlag:
-					flags[1] = true;
+					flags.push('\\flagged');
 					break;
 				case MessageSetAction.UnsetFlag:
-					flags[1] = false;
+					remove('\\flagged');
 					break;
 				// no default
 			}
 
-			this.setFor(folder, uid, flags);
+			this.setFor(folder, uid, flags.unique());
 		}
 
 		return unread;

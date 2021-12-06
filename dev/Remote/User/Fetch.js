@@ -159,8 +159,8 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	 * @param {boolean} bSetSeen
 	 * @param {Array} aThreadUids = null
 	 */
-	messageSetSeenToAll(fCallback, sFolderFullName, bSetSeen, aThreadUids = null) {
-		this.request('MessageSetSeenToAll', fCallback, {
+	messageSetSeenToAll(sFolderFullName, bSetSeen, aThreadUids = null) {
+		this.request('MessageSetSeenToAll', null, {
 			Folder: sFolderFullName,
 			SetAction: bSetSeen ? 1 : 0,
 			ThreadUids: aThreadUids ? aThreadUids.join(',') : ''

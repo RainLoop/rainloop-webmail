@@ -606,7 +606,8 @@ export class MailMessageView extends AbstractViewRight {
 				Text: i18n('READ_RECEIPT/BODY', { 'READ-RECEIPT': AccountUserStore.email() })
 			});
 
-			oMessage.isReadReceipt(true);
+			oMessage.flags.push('$mdnsent');
+//			oMessage.flags.valueHasMutated();
 
 			MessageFlagsCache.store(oMessage);
 

@@ -453,16 +453,11 @@ export const MessageUserStore = new class {
 
 			if (message && message.uid == json.Uid) {
 				oMessage || this.messageError('');
-
+/*
 				if (cached) {
-					delete json.IsSeen;
-					delete json.IsFlagged;
-					delete json.IsAnswered;
-					delete json.IsForwarded;
-					delete json.IsReadReceipt;
-					delete json.IsDeleted;
+					delete json.Flags;
 				}
-
+*/
 				message.revivePropertiesFromJson(json);
 				addRequestedMessage(message.folder, message.uid);
 

@@ -1015,12 +1015,12 @@ trait Messages
 			$oMessage->SetReferences($sReferences);
 		}
 
-		$aFoundedCids = array();
+		$aFoundCids = array();
 		$mFoundDataURL = array();
-		$aFoundedContentLocationUrls = array();
+		$aFoundContentLocationUrls = array();
 
 		$sTextToAdd = $bTextIsHtml ?
-			\MailSo\Base\HtmlUtils::BuildHtml($sText, $aFoundedCids, $mFoundDataURL, $aFoundedContentLocationUrls) : $sText;
+			\MailSo\Base\HtmlUtils::BuildHtml($sText, $aFoundCids, $mFoundDataURL, $aFoundContentLocationUrls) : $sText;
 
 		$this->Plugins()->RunHook($bTextIsHtml ? 'filter.message-html' : 'filter.message-plain',
 			array($oAccount, $oMessage, &$sTextToAdd));
@@ -1050,7 +1050,7 @@ trait Messages
 
 					$oMessage->Attachments()->append(
 						new \MailSo\Mime\Attachment($rResource, $sFileName, $iFileSize, $bIsInline,
-							\in_array(trim(trim($sCID), '<>'), $aFoundedCids),
+							\in_array(trim(trim($sCID), '<>'), $aFoundCids),
 							$sCID, array(), $sContentLocation
 						)
 					);

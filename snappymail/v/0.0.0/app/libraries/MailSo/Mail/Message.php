@@ -64,7 +64,6 @@ class Message implements \JsonSerializable
 		/**
 		 * @var int
 		 */
-		$iSensitivity,
 		$iPriority,
 
 		$sDeliveryReceipt = '',
@@ -84,7 +83,6 @@ class Message implements \JsonSerializable
 
 	function __construct()
 	{
-		$this->iSensitivity = \MailSo\Mime\Enumerations\Sensitivity::NOTHING;
 		$this->iPriority = \MailSo\Mime\Enumerations\MessagePriority::NORMAL;
 	}
 
@@ -201,11 +199,6 @@ class Message implements \JsonSerializable
 	public function From() : ?\MailSo\Mime\EmailCollection
 	{
 		return $this->oFrom;
-	}
-
-	public function Sensitivity() : int
-	{
-		return $this->iSensitivity;
 	}
 
 	public function Priority() : int
@@ -366,22 +359,6 @@ class Message implements \JsonSerializable
 			$sHeaderDate = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::DATE);
 			$this->sHeaderDate = $sHeaderDate;
 			$this->iHeaderTimeStampInUTC = \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($sHeaderDate);
-
-			// Sensitivity
-			$this->iSensitivity = \MailSo\Mime\Enumerations\Sensitivity::NOTHING;
-			$sSensitivity = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::SENSITIVITY);
-			switch (\strtolower($sSensitivity))
-			{
-				case 'personal':
-					$this->iSensitivity = \MailSo\Mime\Enumerations\Sensitivity::PERSONAL;
-					break;
-				case 'private':
-					$this->iSensitivity = \MailSo\Mime\Enumerations\Sensitivity::PRIVATE_;
-					break;
-				case 'company-confidential':
-					$this->iSensitivity = \MailSo\Mime\Enumerations\Sensitivity::CONFIDENTIAL;
-					break;
-			}
 
 			// Priority
 			$this->iPriority = \MailSo\Mime\Enumerations\MessagePriority::NORMAL;
@@ -674,23 +651,13 @@ class Message implements \JsonSerializable
 
 			'Priority' => $this->iPriority,
 			'Threads' => $this->aThreads,
-			'Sensitivity' => $this->iSensitivity,
 			'UnsubsribeLinks' => $this->aUnsubsribeLinks,
 			'ReadReceipt' => '',
 
 			'HasAttachments' => $this->oAttachments && 0 < $this->oAttachments->count(),
 			'AttachmentsSpecData' => $this->oAttachments ? $this->oAttachments->SpecData() : array(),
 
-			// Flags
-			'IsUnseen' => \in_array('\\unseen', $this->aFlagsLowerCase) || !\in_array('\\seen', $this->aFlagsLowerCase),
-			'IsSeen' => \in_array('\\seen', $this->aFlagsLowerCase),
-			'IsFlagged' => \in_array('\\flagged', $this->aFlagsLowerCase),
-			'IsAnswered' => \in_array('\\answered', $this->aFlagsLowerCase),
-			'IsDeleted' => \in_array('\\deleted', $this->aFlagsLowerCase),
-			'IsForwarded' => \in_array(\strtolower('$Forwarded'), $this->aFlagsLowerCase),
-			'IsReadReceipt' => \in_array(\strtolower('$MDNSent'), $this->aFlagsLowerCase),
-			'IsJunk' => !\in_array(\strtolower('$NonJunk'), $this->aFlagsLowerCase) && \in_array(\strtolower('$Junk'), $this->aFlagsLowerCase),
-			'IsPhishing' => \in_array(\strtolower('$Phishing'), $this->aFlagsLowerCase)
+			'Flags' => $this->aFlagsLowerCase
 		);
 	}
 }

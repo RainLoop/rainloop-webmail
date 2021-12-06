@@ -91,7 +91,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		$mResult = null;
 
 		$sDisabled = '';
-		$sFoundedValue = '';
+		$sFoundValue = '';
 
 		$sRealFileName = $this->codeFileName($sName);
 
@@ -137,11 +137,11 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 			if (\strlen($sNames))
 			{
 				if (\RainLoop\Plugins\Helper::ValidateWildcardValues(
-					\MailSo\Base\Utils::IdnToUtf8($sName, true), $sNames, $sFoundedValue) && \strlen($sFoundedValue))
+					\MailSo\Base\Utils::IdnToUtf8($sName, true), $sNames, $sFoundValue) && \strlen($sFoundValue))
 				{
-					if (!$bCheckDisabled || 0 === \strlen($sDisabled) || false === \strpos(','.$sDisabled.',', ','.$sFoundedValue.','))
+					if (!$bCheckDisabled || 0 === \strlen($sDisabled) || false === \strpos(','.$sDisabled.',', ','.$sFoundValue.','))
 					{
-						$mResult = $this->Load($sFoundedValue, false);
+						$mResult = $this->Load($sFoundValue, false);
 					}
 				}
 			}

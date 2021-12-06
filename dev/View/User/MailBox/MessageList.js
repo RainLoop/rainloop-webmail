@@ -452,75 +452,6 @@ export class MailMessageList extends AbstractViewRight {
 		rl.app.messageListAction(sFolderFullName, iSetAction, aMessages);
 	}
 
-	/**
-	 * @param {string} sFolderFullName
-	 * @param {number} iSetAction
-	 * @param {number} iThreadUid = ''
-	 * @returns {void}
-	 */
-	setActionForAll(sFolderFullName, iSetAction, iThreadUid = 0) {
-		if (sFolderFullName) {
-			let cnt = 0;
-			const uids = [];
-
-			let folder = getFolderFromCacheList(sFolderFullName);
-			if (folder) {
-				switch (iSetAction) {
-					case MessageSetAction.SetSeen:
-						MessageUserStore.list.forEach(message => {
-							if (message.isUnseen()) {
-								++cnt;
-							}
-
-							message.isUnseen(false);
-							uids.push(message.uid);
-						});
-
-						if (iThreadUid) {
-							folder.messageCountUnread(folder.messageCountUnread() - cnt);
-							if (0 > folder.messageCountUnread()) {
-								folder.messageCountUnread(0);
-							}
-						} else {
-							folder.messageCountUnread(0);
-						}
-
-						MessageFlagsCache.clearFolder(sFolderFullName);
-
-						Remote.messageSetSeenToAll(null, sFolderFullName, true, iThreadUid ? uids : null);
-						break;
-
-					case MessageSetAction.UnsetSeen:
-						MessageUserStore.list.forEach(message => {
-							if (!message.isUnseen()) {
-								++cnt;
-							}
-
-							message.isUnseen(true);
-							uids.push(message.uid);
-						});
-
-						if (iThreadUid) {
-							folder.messageCountUnread(folder.messageCountUnread() + cnt);
-							if (folder.messageCountAll() < folder.messageCountUnread()) {
-								folder.messageCountUnread(folder.messageCountAll());
-							}
-						} else {
-							folder.messageCountUnread(folder.messageCountAll());
-						}
-
-						MessageFlagsCache.clearFolder(sFolderFullName);
-
-						Remote.messageSetSeenToAll(null, sFolderFullName, false, iThreadUid ? uids : null);
-						break;
-					// no default
-				}
-
-				rl.app.reloadFlagsCurrentMessageListAndMessageFromCache();
-			}
-		}
-	}
-
 	listSetSeen() {
 		this.setAction(
 			FolderUserStore.currentFolderFullName(),
@@ -530,11 +461,37 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	listSetAllSeen() {
-		this.setActionForAll(
-			FolderUserStore.currentFolderFullName(),
-			MessageSetAction.SetSeen,
-			MessageUserStore.listEndThreadUid()
-		);
+		let sFolderFullName = FolderUserStore.currentFolderFullName(),
+			iThreadUid = MessageUserStore.listEndThreadUid();
+		if (sFolderFullName) {
+			let cnt = 0;
+			const uids = [];
+
+			let folder = getFolderFromCacheList(sFolderFullName);
+			if (folder) {
+				MessageUserStore.list.forEach(message => {
+					if (message.isUnseen()) {
+						++cnt;
+					}
+
+					message.flags.push('\\seen');
+//					message.flags.valueHasMutated();
+					uids.push(message.uid);
+				});
+
+				if (iThreadUid) {
+					folder.messageCountUnread(Math.max(0, folder.messageCountUnread() - cnt));
+				} else {
+					folder.messageCountUnread(0);
+				}
+
+				MessageFlagsCache.clearFolder(sFolderFullName);
+
+				Remote.messageSetSeenToAll(sFolderFullName, true, iThreadUid ? uids : null);
+
+				rl.app.reloadFlagsCurrentMessageListAndMessageFromCache();
+			}
+		}
 	}
 
 	listUnsetSeen() {

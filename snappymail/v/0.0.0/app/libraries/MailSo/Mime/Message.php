@@ -228,30 +228,6 @@ class Message
 		return $this;
 	}
 
-	public function SetSensitivity(int $iValue) : self
-	{
-		$sResult = '';
-		switch ($iValue)
-		{
-			case Enumerations\Sensitivity::CONFIDENTIAL:
-				$sResult = 'Company-Confidential';
-				break;
-			case Enumerations\Sensitivity::PERSONAL:
-				$sResult = 'Personal';
-				break;
-			case Enumerations\Sensitivity::PRIVATE_:
-				$sResult = 'Private';
-				break;
-		}
-
-		if (\strlen($sResult))
-		{
-			$this->aHeadersValue[Enumerations\Header::SENSITIVITY] = $sResult;
-		}
-
-		return $this;
-	}
-
 	public function SetXMailer(string $sXMailer) : self
 	{
 		$this->aHeadersValue[Enumerations\Header::X_MAILER] = $sXMailer;

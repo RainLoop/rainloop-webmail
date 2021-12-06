@@ -46,8 +46,6 @@ abstract class Header
 		CONTENT_ID = 'Content-ID',
 		CONTENT_LOCATION = 'Content-Location',
 
-		SENSITIVITY = 'Sensitivity',
-
 		RECEIVED_SPF = 'Received-SPF',
 		AUTHENTICATION_RESULTS = 'Authentication-Results',
 		X_DKIM_AUTHENTICATION_RESULTS = 'X-DKIM-Authentication-Results',

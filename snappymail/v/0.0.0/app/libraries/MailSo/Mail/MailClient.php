@@ -108,7 +108,6 @@ class MailClient
 			\MailSo\Mime\Enumerations\Header::REFERENCES,
 			\MailSo\Mime\Enumerations\Header::DATE,
 			\MailSo\Mime\Enumerations\Header::SUBJECT,
-			\MailSo\Mime\Enumerations\Header::SENSITIVITY,
 			\MailSo\Mime\Enumerations\Header::X_MSMAIL_PRIORITY,
 			\MailSo\Mime\Enumerations\Header::IMPORTANCE,
 			\MailSo\Mime\Enumerations\Header::X_PRIORITY,
@@ -663,15 +662,7 @@ class MailClient
 				$aLowerFlags = \array_map('strtolower', $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::FLAGS));
 				$aFlags[] = array(
 					'Uid' => $iUid,
-					'IsUnseen' => \in_array('\\unseen', $aLowerFlags) || !\in_array('\\seen', $aLowerFlags),
-					'IsSeen' => \in_array('\\seen', $aLowerFlags),
-					'IsFlagged' => \in_array('\\flagged', $aLowerFlags),
-					'IsAnswered' => \in_array('\\answered', $aLowerFlags),
-					'IsDeleted' => \in_array('\\deleted', $aLowerFlags),
-					'IsForwarded' => \in_array(\strtolower('$Forwarded'), $aLowerFlags)/* || ($sForwardedFlag && \in_array(\strtolower($sForwardedFlag), $aLowerFlags))*/,
-					'IsReadReceipt' => \in_array(\strtolower('$MDNSent'), $aLowerFlags)/* || ($sReadReceiptFlag && \in_array(\strtolower($sReadReceiptFlag), $aLowerFlags))*/,
-					'IsJunk' => !\in_array(\strtolower('$NonJunk'), $aLowerFlags) && \in_array(\strtolower('$Junk'), $aLowerFlags),
-					'IsPhishing' => \in_array(\strtolower('$Phishing'), $aLowerFlags)
+					'Flags' => $aLowerFlags
 				);
 			}
 		}
