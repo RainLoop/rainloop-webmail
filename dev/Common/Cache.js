@@ -141,6 +141,18 @@ export class MessageFlagsCache
 	/**
 	 * @param {string} folderFullName
 	 * @param {string} uid
+	 * @param {string} flag
+	 * @returns {bool}
+	 */
+	static hasFlag(folderFullName, uid, flag) {
+		return MESSAGE_FLAGS_CACHE[folderFullName]
+			&& MESSAGE_FLAGS_CACHE[folderFullName][uid]
+			&& MESSAGE_FLAGS_CACHE[folderFullName][uid].includes(flag);
+	}
+
+	/**
+	 * @param {string} folderFullName
+	 * @param {string} uid
 	 * @returns {?Array}
 	 */
 	static getFor(folderFullName, uid) {
@@ -183,21 +195,13 @@ export class MessageFlagsCache
 			}
 
 			if (message.threads.length) {
-				const unseenSubUid = message.threads.find(sSubUid => {
-					if (uid !== sSubUid) {
-						const subFlags = this.getFor(message.folder, sSubUid);
-						return subFlags && !subFlags.includes('\\seen');
-					}
-					return false;
-				});
+				const unseenSubUid = message.threads.find(sSubUid =>
+					(uid !== sSubUid) && !this.hasFlag(message.folder, sSubUid, '\\seen')
+				);
 
-				const flaggedSubUid = message.threads.find(sSubUid => {
-					if (uid !== sSubUid) {
-						const subFlags = this.getFor(message.folder, sSubUid);
-						return subFlags && subFlags.includes('\\flagged');
-					}
-					return false;
-				});
+				const flaggedSubUid = message.threads.find(sSubUid =>
+					(uid !== sSubUid) && this.hasFlag(message.folder, sSubUid, '\\flagged')
+				);
 
 				message.hasUnseenSubMessage(!!unseenSubUid);
 				message.hasFlaggedSubMessage(!!flaggedSubUid);
@@ -220,25 +224,21 @@ export class MessageFlagsCache
 	 * @param {number} setAction
 	 */
 	static storeBySetAction(folder, uid, setAction) {
+		let flags = this.getFor(folder, uid) || [];
 		const
-			flags = this.getFor(folder, uid) || [],
 			unread = flags.includes('\\seen') ? 0 : 1,
-			remove = item => {
-				const index = flags.indexOf(item);
-				if (index > -1) {
-					flags.splice(index, 1);
-				}
-			};
+			add = item => flags.includes(item) || flags.push(item),
+			remove = item => flags = flags.filter(flag => flag != item);
 
 		switch (setAction) {
 			case MessageSetAction.SetSeen:
-				flags.push('\\seen');
+				add('\\seen');
 				break;
 			case MessageSetAction.UnsetSeen:
 				remove('\\seen');
 				break;
 			case MessageSetAction.SetFlag:
-				flags.push('\\flagged');
+				add('\\flagged');
 				break;
 			case MessageSetAction.UnsetFlag:
 				remove('\\flagged');
@@ -246,7 +246,7 @@ export class MessageFlagsCache
 			// no default
 		}
 
-		this.setFor(folder, uid, flags.unique());
+		this.setFor(folder, uid, flags);
 
 		return unread;
 	}

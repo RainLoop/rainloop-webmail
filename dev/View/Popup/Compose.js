@@ -397,13 +397,8 @@ class ComposePopupView extends AbstractViewPopup {
 
 				if (3 === arrayLength(this.aDraftInfo)) {
 					const flagsCache = MessageFlagsCache.getFor(this.aDraftInfo[2], this.aDraftInfo[1]);
-					if (flagsCache) {
-						if ('forward' === this.aDraftInfo[0]) {
-							flagsCache[3] = true;
-						} else {
-							flagsCache[2] = true;
-						}
-
+					if (isArray(flagsCache)) {
+						flagsCache.push(('forward' === this.aDraftInfo[0]) ? '$forwarded' : '\\answered');
 						MessageFlagsCache.setFor(this.aDraftInfo[2], this.aDraftInfo[1], flagsCache);
 						rl.app.reloadFlagsCurrentMessageListAndMessageFromCache();
 						setFolderHash(this.aDraftInfo[2], '');
