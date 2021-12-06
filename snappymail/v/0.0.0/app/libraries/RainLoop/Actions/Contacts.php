@@ -256,7 +256,7 @@ trait Contacts
 			'contacts_sync'
 		);
 		if (!empty($sData)) {
-			$aData = \json_decode($sData);
+			$aData = \json_decode($sData, true);
 			if ($aData) {
 				if ($aData['Password']) {
 					$oMainAccount = $this->getMainAccountFromToken();

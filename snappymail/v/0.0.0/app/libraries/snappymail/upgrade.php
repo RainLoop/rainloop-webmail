@@ -124,7 +124,7 @@ abstract class Upgrade
 		);
 
 		if (!empty($sData)) {
-			$aData = \json_decode($sData);
+			$aData = \json_decode($sData, true);
 			if (!$aData) {
 				$aData = \RainLoop\Utils::DecodeKeyValues($sData);
 				if ($aData) {
