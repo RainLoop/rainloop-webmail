@@ -480,12 +480,12 @@ export const MessageUserStore = new class {
 							plain = '',
 							resultHtml = '<pre></pre>';
 						if (isHtml) {
-							resultHtml = json.Html.toString();
+							resultHtml = json.Html.toString().replace(/font-size:\s*[0-9]px/g,'font-size:11px');
 							if (SettingsUserStore.removeColors()) {
 								resultHtml = removeColors(resultHtml);
 							}
 						} else if (json.Plain) {
-							resultHtml = plainToHtml(json.Plain.toString());
+							resultHtml = findEmailAndLinks(plainToHtml(json.Plain.toString()));
 
 							if ((message.isPgpSigned() || message.isPgpEncrypted()) && PgpUserStore.capaOpenPGP()) {
 								plain = pString(json.Plain);
@@ -507,7 +507,7 @@ export const MessageUserStore = new class {
 
 						body = Element.fromHTML('<div id="' + id + '" hidden="" class="b-text-part '
 							+ (isHtml ? 'html' : 'plain') + '">'
-							+ (isHtml ? resultHtml : findEmailAndLinks(resultHtml))
+							+ resultHtml
 							+ '</div>');
 
 						if (isHtml) {
