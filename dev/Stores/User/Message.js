@@ -507,7 +507,7 @@ export const MessageUserStore = new class {
 
 						body = Element.fromHTML('<div id="' + id + '" hidden="" class="b-text-part '
 							+ (isHtml ? 'html' : 'plain') + '">'
-							+ findEmailAndLinks(resultHtml)
+							+ (isHtml ? resultHtml : findEmailAndLinks(resultHtml))
 							+ '</div>');
 
 						if (isHtml) {
