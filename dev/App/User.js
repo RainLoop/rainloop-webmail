@@ -508,7 +508,7 @@ class AppUser extends AbstractApp {
 
 							if (result.Flags.length) {
 								result.Flags.forEach(message =>
-									MessageFlagsCache.storeByFolderAndUid(folderFromCache.fullName, message.Uid.toString(), message.Flags)
+									MessageFlagsCache.setFor(folderFromCache.fullName, message.Uid.toString(), message.Flags)
 								);
 
 								this.reloadFlagsCurrentMessageListAndMessageFromCache();

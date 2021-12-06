@@ -1,5 +1,5 @@
 import { MessageSetAction } from 'Common/EnumsUser';
-import { isArray, pInt } from 'Common/Utils';
+import { isArray } from 'Common/Utils';
 
 let FOLDERS_CACHE = {},
 	FOLDERS_NAME_CACHE = {},
@@ -154,11 +154,13 @@ export class MessageFlagsCache
 	 * @param {string} uid
 	 * @param {Array} flagsCache
 	 */
-	static setFor(folderFullName, uid, flagsCache) {
-		if (!MESSAGE_FLAGS_CACHE[folderFullName]) {
-			MESSAGE_FLAGS_CACHE[folderFullName] = {};
+	static setFor(folderFullName, uid, flags) {
+		if (isArray(flags)) {
+			if (!MESSAGE_FLAGS_CACHE[folderFullName]) {
+				MESSAGE_FLAGS_CACHE[folderFullName] = {};
+			}
+			MESSAGE_FLAGS_CACHE[folderFullName][uid] = flags;
 		}
-		MESSAGE_FLAGS_CACHE[folderFullName][uid] = flagsCache;
 	}
 
 	/**
@@ -184,7 +186,7 @@ export class MessageFlagsCache
 				const unseenSubUid = message.threads.find(sSubUid => {
 					if (uid !== sSubUid) {
 						const subFlags = this.getFor(message.folder, sSubUid);
-						return subFlags && subFlags.length && !!subFlags[0];
+						return subFlags && !subFlags.includes('\\seen');
 					}
 					return false;
 				});
@@ -192,13 +194,13 @@ export class MessageFlagsCache
 				const flaggedSubUid = message.threads.find(sSubUid => {
 					if (uid !== sSubUid) {
 						const subFlags = this.getFor(message.folder, sSubUid);
-						return subFlags && subFlags.length && !!subFlags[1];
+						return subFlags && subFlags.includes('\\flagged');
 					}
 					return false;
 				});
 
-				message.hasUnseenSubMessage(unseenSubUid && 0 < pInt(unseenSubUid));
-				message.hasFlaggedSubMessage(flaggedSubUid && 0 < pInt(flaggedSubUid));
+				message.hasUnseenSubMessage(!!unseenSubUid);
+				message.hasFlaggedSubMessage(!!flaggedSubUid);
 			}
 		}
 	}
@@ -215,22 +217,12 @@ export class MessageFlagsCache
 	/**
 	 * @param {string} folder
 	 * @param {string} uid
-	 * @param {Array} flags
-	 */
-	static storeByFolderAndUid(folder, uid, flags) {
-		if (isArray(flags)) {
-			this.setFor(folder, uid, flags);
-		}
-	}
-
-	/**
-	 * @param {string} folder
-	 * @param {string} uid
 	 * @param {number} setAction
 	 */
 	static storeBySetAction(folder, uid, setAction) {
-		let unread = 0;
-		const flags = this.getFor(folder, uid),
+		const
+			flags = this.getFor(folder, uid) || [],
+			unread = flags.includes('\\seen') ? 0 : 1,
 			remove = item => {
 				const index = flags.indexOf(item);
 				if (index > -1) {
@@ -238,27 +230,23 @@ export class MessageFlagsCache
 				}
 			};
 
-		if (isArray(flags)) {
-			unread = flags.includes('\\seen') ? 0 : 1;
-
-			switch (setAction) {
-				case MessageSetAction.SetSeen:
-					flags.push('\\seen');
-					break;
-				case MessageSetAction.UnsetSeen:
-					remove('\\seen');
-					break;
-				case MessageSetAction.SetFlag:
-					flags.push('\\flagged');
-					break;
-				case MessageSetAction.UnsetFlag:
-					remove('\\flagged');
-					break;
-				// no default
-			}
-
-			this.setFor(folder, uid, flags.unique());
+		switch (setAction) {
+			case MessageSetAction.SetSeen:
+				flags.push('\\seen');
+				break;
+			case MessageSetAction.UnsetSeen:
+				remove('\\seen');
+				break;
+			case MessageSetAction.SetFlag:
+				flags.push('\\flagged');
+				break;
+			case MessageSetAction.UnsetFlag:
+				remove('\\flagged');
+				break;
+			// no default
 		}
+
+		this.setFor(folder, uid, flags.unique());
 
 		return unread;
 	}
