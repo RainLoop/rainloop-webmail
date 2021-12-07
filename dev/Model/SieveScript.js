@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 import { FilterModel } from 'Model/Filter';
-import { arrayLength, pString } from 'Common/Utils';
+import { arrayLength, pString, b64EncodeJSON } from 'Common/Utils';
 
 const SIEVE_FILE_NAME = 'rainloop.user';
 
@@ -215,7 +215,7 @@ function filtersToSieveScript(filters)
 			'/*',
 			'BEGIN:FILTER:' + filter.id,
 			'BEGIN:HEADER',
-			btoa(unescape(encodeURIComponent(JSON.stringify(filter.toJson())))).match(split).join(eol) + 'END:HEADER',
+			b64EncodeJSON(filter.toJson()).match(split).join(eol) + 'END:HEADER',
 			'*/',
 			filter.enabled() ? '' : '/* @Filter is disabled ',
 			filterToString(filter, require),

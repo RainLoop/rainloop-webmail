@@ -49,6 +49,15 @@ export const
 		}
 	},
 
+	// unescape(encodeURIComponent()) makes the UTF-16 DOMString to an UTF-8 string
+	b64EncodeJSON = data => btoa(unescape(encodeURIComponent(JSON.stringify(data)))),
+/* 	// Without deprecated 'unescape':
+	b64EncodeJSON = data => btoa(encodeURIComponent(JSON.stringify(data)).replace(
+		/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)
+    )),
+*/
+	b64EncodeJSONSafe = data => b64EncodeJSON(data).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''),
+
 	settingsSaveHelperSimpleFunction = (koTrigger, context) =>
 		iError => {
 			koTrigger.call(context, iError ? SaveSettingsStep.FalseResult : SaveSettingsStep.TrueResult);
