@@ -119,19 +119,18 @@ export const
 	 * @returns {string}
 	 */
 	mailBox = (folder, page, search, threadUid) => {
-		page = pInt(page, 1);
-		search = pString(search);
-
 		let result = [HASH_PREFIX + 'mailbox'];
 
 		if (folder) {
 			result.push(folder + (threadUid ? '~' + threadUid : ''));
 		}
 
+		page = pInt(page, 1);
 		if (1 < page) {
 			result.push('p' + page);
 		}
 
+		search = pString(search);
 		if (search) {
 			result.push(encodeURI(search));
 		}
