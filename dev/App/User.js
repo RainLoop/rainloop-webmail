@@ -38,7 +38,6 @@ import {
 
 import {
 	mailBox,
-	root,
 	openPgpWorkerJs,
 	openPgpJs
 } from 'Common/Links';
@@ -724,9 +723,6 @@ class AppUser extends AbstractApp {
 			this.foldersReload(value => {
 				try {
 					if (value) {
-						value = pString(SettingsGet('StartupUrl'));
-						value && rl.route.setHash(root(value), true);
-
 						startScreens([
 							MailBoxUserScreen,
 							SettingsUserScreen

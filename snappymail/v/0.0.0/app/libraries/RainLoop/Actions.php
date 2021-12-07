@@ -820,7 +820,6 @@ class Actions
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
 			'DetermineUserLanguage' => (bool)$oConfig->Get('login', 'determine_user_language', true),
 			'DetermineUserDomain' => (bool)$oConfig->Get('login', 'determine_user_domain', false),
-			'StartupUrl' => \trim(\ltrim(\trim($oConfig->Get('labs', 'startup_url', '')), '#/')),
 			'SieveAllowFileintoInbox' => (bool)$oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false),
 			'ContactsIsAllowed' => false,
 			'Admin' => array(),
@@ -947,10 +946,6 @@ class Actions
 
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
 
-				if (!empty($aResult['StartupUrl'])) {
-					$aResult['StartupUrl'] = $this->compileLogParams($aResult['StartupUrl'], $oAccount, true);
-				}
-
 				$aResult['MainEmail'] = \MailSo\Base\Utils::IdnToUtf8($this->getMainAccountFromToken()->Email());
 
 				$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
@@ -1009,8 +1004,6 @@ class Actions
 
 				$aResult['DevEmail'] = $oConfig->Get('labs', 'dev_email', '');
 				$aResult['DevPassword'] = $oConfig->Get('labs', 'dev_password', '');
-
-				$aResult['StartupUrl'] = '';
 
 				if (empty($aResult['AdditionalLoginError'])) {
 					$aResult['AdditionalLoginError'] = $this->GetSpecLogoutCustomMgsWithDeletion();

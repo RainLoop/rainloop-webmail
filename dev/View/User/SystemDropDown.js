@@ -75,8 +75,6 @@ export class SystemDropDownUserView extends AbstractViewRight {
 //						FolderUserStore.folderList([]);
 						Remote.foldersReload(value => {
 							if (value) {
-								value = SettingsGet('StartupUrl');
-								rl.route.setHash(root(value), true);
 //								4. Change to INBOX = reload MessageList
 //								MessageUserStore.setMessageList();
 							}
