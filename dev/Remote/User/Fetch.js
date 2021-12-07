@@ -1,4 +1,4 @@
-import { isArray, arrayLength, pString, pInt } from 'Common/Utils';
+import { isArray, arrayLength, pString, pInt, b64EncodeJSONSafe } from 'Common/Utils';
 
 import {
 	getFolderHash,
@@ -18,20 +18,6 @@ import { FolderUserStore } from 'Stores/User/Folder';
 import { AbstractFetchRemote } from 'Remote/AbstractFetch';
 
 import { FolderCollectionModel } from 'Model/FolderCollection';
-
-// unescape(encodeURIComponent()) makes the UTF-16 DOMString to an UTF-8 string
-const urlSafeJSON = data => btoa(unescape(encodeURIComponent(JSON.stringify(data))))
-	.replace(/\+/g, '-')
-	.replace(/\//g, '_')
-	.replace(/=+$/, '');
-/* Withous deprecated 'unescape':
-const urlSafeJSON = data => btoa(encodeURIComponent(JSON.stringify(data)).replace(
-		/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)
-    ))
-	.replace(/\+/g, '-')
-	.replace(/\//g, '_')
-	.replace(/=+$/, '');
-*/
 
 class RemoteUserFetch extends AbstractFetchRemote {
 
@@ -66,7 +52,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 			sGetAdd = 'MessageList/' +
 				SUB_QUERY_PREFIX +
 				'/' +
-				urlSafeJSON(params);
+				b64EncodeJSONSafe(params);
 			params = {};
 		}
 
@@ -97,7 +83,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 				'Message/' +
 					SUB_QUERY_PREFIX +
 					'/' +
-					urlSafeJSON([
+					b64EncodeJSONSafe([
 						sFolderFullName,
 						iUid,
 						AppUserStore.threadsAllowed() && SettingsUserStore.useThreads() ? 1 : 0,
