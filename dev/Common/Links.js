@@ -118,23 +118,23 @@ export const
 	 * @param {number=} threadUid = 0
 	 * @returns {string}
 	 */
-	mailBox = (folder, page = 1, search = '', threadUid = 0) => {
+	mailBox = (folder, page, search, threadUid) => {
 		page = pInt(page, 1);
 		search = pString(search);
 
-		let result = HASH_PREFIX + 'mailbox/';
+		let result = [HASH_PREFIX + 'mailbox'];
 
 		if (folder) {
-			result += encodeURI(folder) + (threadUid ? '~' + threadUid : '');
+			result.push(folder + (threadUid ? '~' + threadUid : ''));
 		}
 
 		if (1 < page) {
-			result = result.replace(/\/+$/, '') + '/p' + page;
+			result.push('p' + page);
 		}
 
 		if (search) {
-			result = result.replace(/\/+$/, '') + '/' + encodeURI(search);
+			result.push(encodeURI(search));
 		}
 
-		return result;
+		return result.join('/');
 	};
