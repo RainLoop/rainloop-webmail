@@ -657,20 +657,20 @@ class AppUser extends AbstractApp {
 	}
 
 	/**
-	 * @param {string} sFullNameHash
+	 * @param {string} sFullName
 	 * @param {boolean} bExpanded
 	 */
-	setExpandedFolder(sFullNameHash, bExpanded) {
+	setExpandedFolder(sFullName, bExpanded) {
 		let aExpandedList = Local.get(ClientSideKeyName.ExpandedFolders);
 		if (!isArray(aExpandedList)) {
 			aExpandedList = [];
 		}
 
 		if (bExpanded) {
-			if (!aExpandedList.includes(sFullNameHash))
-				aExpandedList.push(sFullNameHash);
+			if (!aExpandedList.includes(sFullName))
+				aExpandedList.push(sFullName);
 		} else {
-			aExpandedList = aExpandedList.filter(value => value !== sFullNameHash);
+			aExpandedList = aExpandedList.filter(value => value !== sFullName);
 		}
 
 		Local.set(ClientSideKeyName.ExpandedFolders, aExpandedList);

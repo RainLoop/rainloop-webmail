@@ -1,7 +1,7 @@
 import { AbstractCollectionModel } from 'Model/AbstractCollection';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { isArray, getKeyByValue, forEachObjectEntry } from 'Common/Utils';
+import { isArray, getKeyByValue, forEachObjectEntry, b64EncodeJSONSafe } from 'Common/Utils';
 import { ClientSideKeyName, FolderType, FolderMetadataKeys } from 'Common/EnumsUser';
 import * as Cache from 'Common/Cache';
 import { Settings, SettingsGet } from 'Common/Globals';
@@ -79,7 +79,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 					oCacheFolder.type(FolderType.Inbox);
 					Cache.setFolderInboxName(oFolder.FullName);
 				}
-				Cache.setFolder(oCacheFolder.fullNameHash, oFolder.FullName, oCacheFolder);
+				Cache.setFolder(oCacheFolder);
 			}
 
 			if (1 < type) {
@@ -88,7 +88,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 
 			oCacheFolder.collapsed(!expandedFolders
 				|| !isArray(expandedFolders)
-				|| !expandedFolders.includes(oCacheFolder.fullNameHash));
+				|| !expandedFolders.includes(oCacheFolder.fullName));
 
 			if (oFolder.Extended) {
 				if (oFolder.Extended.Hash) {
@@ -180,13 +180,15 @@ export class FolderModel extends AbstractModel {
 		super();
 
 		this.fullName = '';
-		this.fullNameHash = '';
 		this.delimiter = '';
 		this.deep = 0;
 		this.expires = 0;
 		this.metadata = {};
 
 		this.exists = true;
+
+//		this.hash = '';
+//		this.uidNext = 0;
 
 		this.addObservables({
 			name: '',
@@ -216,6 +218,14 @@ export class FolderModel extends AbstractModel {
 
 		this.subFolders = ko.observableArray(new FolderCollectionModel);
 		this.actionBlink = ko.observable(false).extend({ falseTimeout: 1000 });
+	}
+
+	/**
+	 * For url safe '/#/mailbox/...' path
+	 */
+	get fullNameHash() {
+		return this.fullName.replace(/[^a-z0-9._-]+/giu, b64EncodeJSONSafe);
+//		return /^[a-z0-9._-]+$/iu.test(this.fullName) ? this.fullName : b64EncodeJSONSafe(this.fullName);
 	}
 
 	/**

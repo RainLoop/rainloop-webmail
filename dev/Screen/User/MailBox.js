@@ -135,10 +135,11 @@ export class MailBoxUserScreen extends AbstractScreen {
 
 		return [
 			[/^([^/]*)$/, { normalize_: fNormS }],
-			[/^([a-zA-Z0-9~]+)\/(.+)\/?$/, { normalize_: (request, vals) =>
+			// Regex the fullNameHash
+			[/^([a-zA-Z0-9.~_-]+)\/(.+)\/?$/, { normalize_: (request, vals) =>
 				[folder(request, vals), 1, decodeURI(pString(vals[1]))]
 			}],
-			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)(?:\/(.+)\/?)?$/, { normalize_: fNormS }]
+			[/^([a-zA-Z0-9.~_-]+)\/p([1-9][0-9]*)(?:\/(.+)\/?)?$/, { normalize_: fNormS }]
 		];
 	}
 }

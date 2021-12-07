@@ -5,7 +5,7 @@ import { ClientSideKeyName, FolderMetadataKeys } from 'Common/EnumsUser';
 import { Settings } from 'Common/Globals';
 import { getNotification } from 'Common/Translator';
 
-import { removeFolderFromCacheList } from 'Common/Cache';
+import { setFolder, removeFolderFromCacheList } from 'Common/Cache';
 import { Capa } from 'Common/Enums';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
@@ -71,18 +71,28 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 
 		if (nameToEdit && folder.name() !== nameToEdit) {
 			Local.set(ClientSideKeyName.FoldersLashHash, '');
-
-			rl.app.foldersPromisesActionHelper(
-				Remote.post('FolderRename', FolderUserStore.foldersRenaming, {
+			Remote
+				.post('FolderRename', FolderUserStore.foldersRenaming, {
 					Folder: folder.fullName,
 					NewFolderName: nameToEdit
-				}),
-				Notification.CantRenameFolder
-			);
-
-			removeFolderFromCacheList(folder.fullName);
-
-			folder.name(nameToEdit);
+				})
+				.then(data => {
+					folder.name(nameToEdit/*data.Name*/);
+					if (folder.subFolders.length) {
+						Remote.foldersReloadWithTimeout();
+						// rename all subfolders folder.delimiter
+					} else {
+						removeFolderFromCacheList(folder.fullName);
+						data = data.Result;
+						folder.fullName = data.FullName;
+						setFolder(folder);
+					}
+				})
+				.catch(error => {
+					FolderUserStore.folderListError(
+						getNotification(error.code, '', Notification.CantRenameFolder)
+						+ '.\n' + error.message);
+				});
 		}
 
 		folder.edited(false);

@@ -69,7 +69,7 @@ export class MailFolderList extends AbstractViewLeft {
 				const folder = ko.dataFor(el);
 				if (folder) {
 					const collapsed = folder.collapsed();
-					rl.app.setExpandedFolder(folder.fullNameHash, collapsed);
+					rl.app.setExpandedFolder(folder.fullName, collapsed);
 
 					folder.collapsed(!collapsed);
 					event.preventDefault();
@@ -151,7 +151,7 @@ export class MailFolderList extends AbstractViewLeft {
 				folder = item && ko.dataFor(item);
 			if (folder) {
 				const collapsed = folder.collapsed();
-				rl.app.setExpandedFolder(folder.fullNameHash, collapsed);
+				rl.app.setExpandedFolder(folder.fullName, collapsed);
 				folder.collapsed(!collapsed);
 			}
 

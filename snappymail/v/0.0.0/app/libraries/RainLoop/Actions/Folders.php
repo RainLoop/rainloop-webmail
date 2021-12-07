@@ -320,11 +320,12 @@ trait Folders
 	{
 		$this->initMailClientConnection();
 
+		$sName = $this->GetActionParam('NewFolderName', '');
 		try
 		{
-			$this->MailClient()->FolderRename(
+			$sFullName = $this->MailClient()->FolderRename(
 				$this->GetActionParam('Folder', ''),
-				$this->GetActionParam('NewFolderName', ''),
+				$sName,
 				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true)
 			);
 		}
@@ -333,7 +334,11 @@ trait Folders
 			throw new ClientException(Notifications::CantRenameFolder, $oException);
 		}
 
-		return $this->TrueResponse(__FUNCTION__);
+//		FolderInformation(string $sFolderName, int $iPrevUidNext = 0, array $aUids = array())
+		return $this->DefaultResponse(__FUNCTION__, array(
+			'Name' => $sName,
+			'FullName' => $sFullName,
+		));
 	}
 
 	/**

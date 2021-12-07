@@ -132,7 +132,7 @@ ko.bindingHandlers.dropmessages = {
 					if (folder && folder.collapsed()) {
 						dragTimer.start(() => {
 							folder.collapsed(false);
-							rl.app.setExpandedFolder(folder.fullNameHash, true);
+							rl.app.setExpandedFolder(folder.fullName, true);
 						}, 500);
 					}
 				}

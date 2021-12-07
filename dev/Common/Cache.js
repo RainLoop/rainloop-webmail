@@ -3,8 +3,6 @@ import { isArray } from 'Common/Utils';
 
 let FOLDERS_CACHE = {},
 	FOLDERS_NAME_CACHE = {},
-	FOLDERS_HASH_CACHE = {},
-	FOLDERS_UID_NEXT_CACHE = {},
 	MESSAGE_FLAGS_CACHE = {},
 	NEW_MESSAGE_CACHE = {},
 	REQUESTED_MESSAGE_CACHE = {},
@@ -17,8 +15,6 @@ export const
 	clearCache = () => {
 		FOLDERS_CACHE = {};
 		FOLDERS_NAME_CACHE = {};
-		FOLDERS_HASH_CACHE = {};
-		FOLDERS_UID_NEXT_CACHE = {};
 		MESSAGE_FLAGS_CACHE = {};
 		NEW_MESSAGE_CACHE = {};
 		REQUESTED_MESSAGE_CACHE = {};
@@ -89,9 +85,10 @@ export const
 	 * @param {string} folderFullName
 	 * @param {?FolderModel} folder
 	 */
-	setFolder = (folderHash, folderFullName, folder) => {
-		FOLDERS_CACHE[folderFullName] = folder;
-		FOLDERS_NAME_CACHE[folderHash] = folderFullName;
+	setFolder = folder => {
+		folder.hash = '';
+		FOLDERS_CACHE[folder.fullName] = folder;
+		FOLDERS_NAME_CACHE[folder.fullNameHash] = folder.fullName;
 	},
 
 	/**
@@ -99,37 +96,35 @@ export const
 	 * @returns {string}
 	 */
 	getFolderHash = folderFullName =>
-		folderFullName && FOLDERS_HASH_CACHE[folderFullName] ? FOLDERS_HASH_CACHE[folderFullName] : '',
+		FOLDERS_CACHE[folderFullName] ? FOLDERS_CACHE[folderFullName].hash : '',
 
 	/**
 	 * @param {string} folderFullName
 	 * @param {string} folderHash
 	 */
 	setFolderHash = (folderFullName, folderHash) =>
-		folderFullName && (FOLDERS_HASH_CACHE[folderFullName] = folderHash),
+		FOLDERS_CACHE[folderFullName] && (FOLDERS_CACHE[folderFullName].hash = folderHash),
 
 	/**
 	 * @param {string} folderFullName
 	 * @returns {string}
 	 */
 	getFolderUidNext = folderFullName =>
-		folderFullName && FOLDERS_UID_NEXT_CACHE[folderFullName]
-			? FOLDERS_UID_NEXT_CACHE[folderFullName]
-			: '',
+		FOLDERS_CACHE[folderFullName] ? FOLDERS_CACHE[folderFullName].uidNext : 0,
 
 	/**
 	 * @param {string} folderFullName
 	 * @param {string} uidNext
 	 */
 	setFolderUidNext = (folderFullName, uidNext) =>
-		FOLDERS_UID_NEXT_CACHE[folderFullName] = uidNext,
+		FOLDERS_CACHE[folderFullName] && (FOLDERS_CACHE[folderFullName].uidNext = uidNext),
 
 	/**
 	 * @param {string} folderFullName
 	 * @returns {?FolderModel}
 	 */
 	getFolderFromCacheList = folderFullName =>
-		folderFullName && FOLDERS_CACHE[folderFullName] ? FOLDERS_CACHE[folderFullName] : null,
+		FOLDERS_CACHE[folderFullName] ? FOLDERS_CACHE[folderFullName] : null,
 
 	/**
 	 * @param {string} folderFullName
@@ -156,9 +151,7 @@ export class MessageFlagsCache
 	 * @returns {?Array}
 	 */
 	static getFor(folderFullName, uid) {
-		return MESSAGE_FLAGS_CACHE[folderFullName] && MESSAGE_FLAGS_CACHE[folderFullName][uid]
-			? MESSAGE_FLAGS_CACHE[folderFullName][uid]
-			: null;
+		return MESSAGE_FLAGS_CACHE[folderFullName] && MESSAGE_FLAGS_CACHE[folderFullName][uid];
 	}
 
 	/**
