@@ -562,12 +562,72 @@ class ImapClient extends \MailSo\Net\NetClient
 			$aParameters[] = $aReturnParams;
 		}
 
+		$aReturn = array();
+
 		$this->SendRequest($sCmd, $aParameters);
 		$bPassthru = false;
 		if ($bPassthru) {
 			$this->streamResponse();
 		} else {
-			$aReturn = $this->getResponse()->getFoldersResult($sCmd, $this);
+			$sDelimiter = '';
+			$bInbox = false;
+			foreach ($this->getResponse() as $oResponse) {
+				if (Enumerations\ResponseType::UNTAGGED !== $oResponse->ResponseType) {
+					continue;
+				}
+				if ('STATUS' === $oResponse->StatusOrIndex && isset($oResponse->ResponseList[2])) {
+					$sFullName = $this->toUTF8($oResponse->ResponseList[2]);
+					if (!isset($aReturn[$sFullName])) {
+						$aReturn[$sFullName] = new Folder($sFullName);
+					}
+					$aReturn[$sFullName]->setStatusFromResponse($oResponse);
+				}
+				else if ($sCmd === $oResponse->StatusOrIndex && 5 == \count($oResponse->ResponseList)) {
+					try
+					{
+						$sFullName = $this->toUTF8($oResponse->ResponseList[4]);
+
+						/**
+						 * $oResponse->ResponseList[0] = *
+						 * $oResponse->ResponseList[1] = LIST (all) | LSUB (subscribed)
+						 * $oResponse->ResponseList[2] = Flags
+						 * $oResponse->ResponseList[3] = Delimiter
+						 * $oResponse->ResponseList[4] = FullName
+						 */
+						if (!isset($aReturn[$sFullName])) {
+							$oFolder = new Folder($sFullName,
+								$oResponse->ResponseList[3], $oResponse->ResponseList[2]);
+							$aReturn[$sFullName] = $oFolder;
+						} else {
+							$oFolder = $aReturn[$sFullName];
+							$oFolder->setDelimiter($oResponse->ResponseList[3]);
+							$oFolder->setFlags($oResponse->ResponseList[2]);
+						}
+
+						if ($oFolder->IsInbox()) {
+							$bInbox = true;
+						}
+
+						if (!$sDelimiter) {
+							$sDelimiter = $oFolder->Delimiter();
+						}
+
+						$aReturn[$sFullName] = $oFolder;
+					}
+					catch (\MailSo\Base\Exceptions\InvalidArgumentException $oException)
+					{
+						$this->writeLogException($oException, \MailSo\Log\Enumerations\Type::WARNING, false);
+					}
+					catch (\Throwable $oException)
+					{
+						$this->writeLogException($oException, \MailSo\Log\Enumerations\Type::WARNING, false);
+					}
+				}
+			}
+
+			if (!$bInbox && !$sParentFolderName && !isset($aReturn['INBOX'])) {
+				$aReturn['INBOX'] = new Folder('INBOX', $sDelimiter);
+			}
 		}
 
 		// RFC 5464
