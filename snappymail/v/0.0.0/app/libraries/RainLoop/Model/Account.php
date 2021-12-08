@@ -303,8 +303,8 @@ abstract class Account implements \JsonSerializable
 				'Password' => $this->Password(),
 				'ProxyAuthUser' => $this->ProxyAuthUser(),
 				'ProxyAuthPassword' => $this->ProxyAuthPassword(),
-				'UseAuthPlainIfSupported' => !!$oConfig->Get('labs', 'imap_use_auth_plain', true),
-				'UseAuthCramMd5IfSupported' => !!$oConfig->Get('labs', 'imap_use_auth_cram_md5', true),
+				'UseAuthPlainIfSupported' => !!$oConfig->Get('labs', 'sasl_allow_plain', true),
+				'UseAuthCramMd5IfSupported' => !!$oConfig->Get('labs', 'sasl_allow_cram_md5', false),
 				'UseAuthOAuth2IfSupported' => false
 			)
 		);
