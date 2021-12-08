@@ -79,8 +79,9 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 					folder.name(nameToEdit/*data.Name*/);
 					if (folder.subFolders.length) {
 						Remote.setTrigger(FolderUserStore.foldersLoading, true);
-						clearTimeout(Remote.foldersTimeout);
-						Remote.foldersTimeout = setTimeout(() => Remote.foldersReload(), 500);
+//						clearTimeout(Remote.foldersTimeout);
+//						Remote.foldersTimeout = setTimeout(() => Remote.foldersReload(), 500);
+						setTimeout(() => Remote.foldersReload(), 500);
 						// TODO: rename all subfolders with folder.delimiter to prevent reload?
 					} else {
 						removeFolderFromCacheList(folder.fullName);

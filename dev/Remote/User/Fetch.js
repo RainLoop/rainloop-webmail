@@ -207,15 +207,15 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	 * @param {?Function} fCallback
 	 */
 	foldersReload(fCallback) {
-		clearTimeout(this.foldersTimeout);
+//		clearTimeout(this.foldersTimeout);
 		this.abort('Folders')
 			.post('Folders', FolderUserStore.foldersLoading)
 			.then(data => {
 				data = FolderCollectionModel.reviveFromJson(data.Result);
 				data && data.storeIt();
 				fCallback && fCallback(true);
-				// Repeat every 15 minutes
-				this.foldersTimeout = setTimeout(() => this.foldersReload(), 900000);
+				// Repeat every 15 minutes?
+//				this.foldersTimeout = setTimeout(() => this.foldersReload(), 900000);
 			})
 			.catch(() => fCallback && setTimeout(fCallback, 1, false));
 	}
