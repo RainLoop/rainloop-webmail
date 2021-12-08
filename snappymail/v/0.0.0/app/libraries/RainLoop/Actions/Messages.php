@@ -20,7 +20,7 @@ trait Messages
 
 		$sRawKey = $this->GetActionParam('RawKey', '');
 		$aValues = \json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($sRawKey), true);
-		if ($aValues && 7 < \count($aValues))
+		if ($aValues && 6 < \count($aValues))
 		{
 			$this->verifyCacheByKey($sRawKey);
 
@@ -510,7 +510,7 @@ trait Messages
 			unset($oException);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, '' === $sHash ? false : array($sFolder, $sHash));
+		return $this->DefaultResponse(__FUNCTION__, $sHash ? array($sFolder, $sHash) : false);
 	}
 
 	/**
@@ -574,7 +574,7 @@ trait Messages
 			unset($oException);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, '' === $sHash ? false : array($sFromFolder, $sHash));
+		return $this->DefaultResponse(__FUNCTION__, $sHash ? array($sFromFolder, $sHash) : false);
 	}
 
 	/**
@@ -602,8 +602,7 @@ trait Messages
 			throw new ClientException(Notifications::CantCopyMessage, $oException);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__,
-			'' === $sHash ? false : array($sFromFolder, $sHash));
+		return $this->DefaultResponse(__FUNCTION__, $sHash ? array($sFromFolder, $sHash) : false);
 	}
 
 	public function DoMessageUploadAttachments() : array
