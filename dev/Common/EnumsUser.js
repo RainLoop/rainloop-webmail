@@ -73,15 +73,11 @@ export const SetSystemFoldersNotification = {
  * @enum {number}
  */
 export const ClientSideKeyName = {
-	FoldersLashHash: 0,
-	MessagesInboxLastHash: 1,
-	MailBoxListSize: 2,
 	ExpandedFolders: 3,
 	FolderListSize: 4,
 	MessageListSize: 5,
 	LastReplyAction: 6,
 	LastSignMe: 7,
-	ComposeLastIdentityID: 8,
 	MessageHeaderFullInfo: 9,
 	MessageAttachmentControls: 10
 };

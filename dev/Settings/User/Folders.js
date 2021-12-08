@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { Notification } from 'Common/Enums';
-import { ClientSideKeyName, FolderMetadataKeys } from 'Common/EnumsUser';
+import { FolderMetadataKeys } from 'Common/EnumsUser';
 import { Settings } from 'Common/Globals';
 import { getNotification } from 'Common/Translator';
 
@@ -9,8 +9,6 @@ import { setFolder, getFolderFromCacheList, removeFolderFromCacheList } from 'Co
 import { Capa } from 'Common/Enums';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
-
-import * as Local from 'Storage/Client';
 
 import { FolderUserStore } from 'Stores/User/Folder';
 import { SettingsUserStore } from 'Stores/User/Settings';
@@ -70,7 +68,6 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 		const nameToEdit = folder ? folder.nameForEdit().trim() : '';
 
 		if (nameToEdit && folder.name() !== nameToEdit) {
-			Local.set(ClientSideKeyName.FoldersLashHash, '');
 			Remote.abort('Folders').post('FolderRename', FolderUserStore.foldersRenaming, {
 					Folder: folder.fullName,
 					NewFolderName: nameToEdit
@@ -136,8 +133,6 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 			folderForDeletion(null);
 
 			if (folderToRemove) {
-				Local.set(ClientSideKeyName.FoldersLashHash, '');
-
 				Remote.abort('Folders').post('FolderDelete', FolderUserStore.foldersDeleting, {
 						Folder: folderToRemove.fullName
 					}).then(
@@ -174,7 +169,6 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 
 	toggleFolderSubscription(folder) {
 		let subscribe = !folder.subscribed();
-		Local.set(ClientSideKeyName.FoldersLashHash, '');
 		Remote.request('FolderSubscribe', null, {
 			Folder: folder.fullName,
 			Subscribe: subscribe ? 1 : 0

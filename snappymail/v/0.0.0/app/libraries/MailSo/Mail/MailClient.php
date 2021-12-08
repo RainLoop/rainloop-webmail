@@ -1233,75 +1233,40 @@ class MailClient
 		$oFolderCollection->Optimized = 10 < $iOptimizationLimit && \count($aFolders) > $iOptimizationLimit;
 
 		$sINBOX = 'INBOX';
-		$aSortedByLenImapFolders = array();
-		foreach ($aFolders as /* @var $oImapFolder \MailSo\Imap\Folder */ $oImapFolder)
-		{
+		foreach ($aFolders as $sFullName => /* @var $oImapFolder \MailSo\Imap\Folder */ $oImapFolder) {
 			$oMailFolder = new Folder($oImapFolder,
-				($bUseListSubscribeStatus && (null === $aImapSubscribedFoldersHelper || \in_array($oImapFolder->FullName(), $aImapSubscribedFoldersHelper)))
+				($bUseListSubscribeStatus && (null === $aImapSubscribedFoldersHelper || \in_array($sFullName, $aImapSubscribedFoldersHelper)))
 				|| $oImapFolder->IsInbox()
 			);
 			if ($oImapFolder->IsInbox()) {
-				$sINBOX = $oMailFolder->FullName();
+				$sINBOX = $sFullName;
 			}
-			$aSortedByLenImapFolders[$oMailFolder->FullName()] = $oMailFolder;
-		}
+			$aFolders[$sFullName] = $oMailFolder;
 
-		// Add NonExistent folders
-		$aAddedFolders = array();
-		foreach ($aSortedByLenImapFolders as /* @var $oMailFolder Folder */ $oMailFolder)
-		{
+			// Add NonExistent folders
 			$sDelimiter = $oMailFolder->Delimiter();
-			$aFolderExplode = \explode($sDelimiter, $oMailFolder->FullName());
-
-			if (1 < \count($aFolderExplode))
-			{
-				\array_pop($aFolderExplode);
-
-				$sNonExistentFolderFullName = '';
-				foreach ($aFolderExplode as $sFolderExplodeItem)
-				{
-					$sNonExistentFolderFullName .= \strlen($sNonExistentFolderFullName)
-						? $sDelimiter.$sFolderExplodeItem : $sFolderExplodeItem;
-
-					if (!isset($aSortedByLenImapFolders[$sNonExistentFolderFullName]))
+			$aFolderExplode = \explode($sDelimiter, $sFullName);
+			\array_pop($aFolderExplode);
+			while ($aFolderExplode) {
+				$sNonExistentFolderFullName = \implode($sDelimiter, $aFolderExplode);
+				if (!isset($aFolders[$sNonExistentFolderFullName])) {
+					try
 					{
-						try
-						{
-							$aAddedFolders[$sNonExistentFolderFullName] =
-								Folder::NewNonExistentInstance($sNonExistentFolderFullName, $sDelimiter);
-						}
-						catch (\Throwable $oExc)
-						{
-							unset($oExc);
-						}
+						$aFolders[$sNonExistentFolderFullName] =
+							Folder::NewNonExistentInstance($sNonExistentFolderFullName, $sDelimiter);
+					}
+					catch (\Throwable $oExc)
+					{
+						unset($oExc);
 					}
 				}
+				\array_pop($aFolderExplode);
 			}
 		}
 
-		$aSortedByLenImapFolders = \array_merge($aSortedByLenImapFolders, $aAddedFolders);
-		unset($aAddedFolders);
+		$oFolderCollection->exchangeArray(\array_values($aFolders));
 
-		// Make sure the inbox is the first in list when sorted
-		if (isset($aSortedByLenImapFolders[$sINBOX])) {
-			$aSortedByLenImapFolders["\x00".$sINBOX] = $aSortedByLenImapFolders[$sINBOX];
-			unset($aSortedByLenImapFolders[$sINBOX]);
-		}
-/*
-		// TODO: use active language
-		$collator = new \Collator('en_US');
-		\uksort($aSortedByLenImapFolders, static fn($a, $b) => $collator->compare($a, $b));
-*/
-		\uksort($aSortedByLenImapFolders, 'strnatcasecmp');
-
-		foreach ($aSortedByLenImapFolders as $oMailFolder)
-		{
-			$oFolderCollection->AddWithPositionSearch($oMailFolder);
-		}
-
-		$oFolderCollection->TotalCount = \count($aSortedByLenImapFolders);
-
-		unset($aSortedByLenImapFolders);
+		$oFolderCollection->TotalCount = \count($aFolders);
 
 		return $oFolderCollection;
 	}

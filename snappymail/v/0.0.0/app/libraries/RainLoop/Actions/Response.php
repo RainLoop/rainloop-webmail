@@ -378,7 +378,6 @@ trait Response
 				array(
 					'Checkable' => \in_array($mResponse->FullName(), $this->aCheckableFolder),
 					'Extended' => $aExtended,
-					'SubFolders' => $this->responseObject($mResponse->SubFolders(), $sParent, $aParameters)
 				)
 			);
 		}

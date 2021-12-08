@@ -3,7 +3,7 @@ import { AbstractCollectionModel } from 'Model/AbstractCollection';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { isArray, getKeyByValue, forEachObjectEntry, b64EncodeJSONSafe } from 'Common/Utils';
 import { ClientSideKeyName, FolderType, FolderMetadataKeys } from 'Common/EnumsUser';
-import * as Cache from 'Common/Cache';
+import { getFolderFromCacheList, setFolder, setFolderInboxName, setFolderHash } from 'Common/Cache';
 import { Settings, SettingsGet } from 'Common/Globals';
 
 import * as Local from 'Storage/Client';
@@ -25,7 +25,7 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 const
 normalizeFolder = sFolderFullName => ('' === sFolderFullName
 	|| UNUSED_OPTION_VALUE === sFolderFullName
-	|| null !== Cache.getFolderFromCacheList(sFolderFullName))
+	|| null !== getFolderFromCacheList(sFolderFullName))
 		? sFolderFullName
 		: '';
 
@@ -44,7 +44,6 @@ export class FolderCollectionModel extends AbstractCollectionModel
 	constructor() {
 		super();
 		this.CountRec
-		this.FoldersHash
 		this.IsThreadsSupported
 		this.Namespace;
 		this.Optimized
@@ -65,23 +64,20 @@ export class FolderCollectionModel extends AbstractCollectionModel
 			);
 		}
 
-		return super.reviveFromJson(object, oFolder => {
-			let oCacheFolder = Cache.getFolderFromCacheList(oFolder.FullName),
+		const result = super.reviveFromJson(object, oFolder => {
+			let oCacheFolder = getFolderFromCacheList(oFolder.FullName),
 				type = FolderType[getKeyByValue(SystemFolders, oFolder.FullName)];
 
-			if (oCacheFolder) {
-				oFolder.SubFolders = FolderCollectionModel.reviveFromJson(oFolder.SubFolders);
-				oFolder.SubFolders && oCacheFolder.subFolders(oFolder.SubFolders);
-			} else {
+			if (!oCacheFolder) {
 				oCacheFolder = FolderModel.reviveFromJson(oFolder);
 				if (!oCacheFolder)
 					return null;
 
 				if (1 == type) {
 					oCacheFolder.type(FolderType.Inbox);
-					Cache.setFolderInboxName(oFolder.FullName);
+					setFolderInboxName(oFolder.FullName);
 				}
-				Cache.setFolder(oCacheFolder);
+				setFolder(oCacheFolder);
 			}
 
 			if (1 < type) {
@@ -94,7 +90,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 
 			if (oFolder.Extended) {
 				if (oFolder.Extended.Hash) {
-					Cache.setFolderHash(oCacheFolder.fullName, oFolder.Extended.Hash);
+					setFolderHash(oCacheFolder.fullName, oFolder.Extended.Hash);
 				}
 
 				if (null != oFolder.Extended.MessageCount) {
@@ -107,6 +103,31 @@ export class FolderCollectionModel extends AbstractCollectionModel
 			}
 			return oCacheFolder;
 		});
+
+		let i = result.length;
+		if (i) {
+			try {
+				let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+				result.sort((a, b) =>
+					a.isInbox() ? -1 : (b.isInbox() ? 1 : collator.compare(a.fullName, b.fullName))
+				);
+			} catch (e) {
+				console.error(e);
+			}
+			try {
+				while (i--) {
+					let folder = result[i], parent = getFolderFromCacheList(folder.parentName);
+					if (parent) {
+						parent.subFolders.unshift(folder);
+						result.splice(i,1);
+					}
+				}
+			} catch (e) {
+				console.error(e);
+			}
+		}
+
+		return result;
 	}
 
 	storeIt() {
@@ -141,8 +162,6 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		FolderUserStore.archiveFolder(normalizeFolder(SystemFolders.Archive));
 
 //		FolderUserStore.folderList.valueHasMutated();
-
-		Local.set(ClientSideKeyName.FoldersLashHash, this.FoldersHash);
 	}
 
 }

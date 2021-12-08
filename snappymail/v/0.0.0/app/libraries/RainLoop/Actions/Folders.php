@@ -48,7 +48,7 @@ trait Folders
 				});
 			}
 
-			if ($this->Config()->Get('labs', 'autocreate_system_folders', true))
+			if ($this->Config()->Get('labs', 'autocreate_system_folders', false))
 			{
 				$bDoItAgain = false;
 
@@ -110,16 +110,17 @@ trait Folders
 							}
 
 							$sFullNameToCheck = $mFolderNameToCreate;
-							if (\strlen(\trim($sParent)))
+							if (\strlen($sParent))
 							{
 								$sFullNameToCheck = $sParent.$sDelimiter.$sFullNameToCheck;
 							}
 
-							if (!$oFolderCollection->GetByFullName($sFullNameToCheck))
+							if (!isset($oFolderCollection[$sFullNameToCheck]))
 							{
 								try
 								{
 									$this->MailClient()->FolderCreate($mFolderNameToCreate, $sParent, true, $sDelimiter);
+									$bDoItAgain = true;
 								}
 								catch (\Throwable $oException)
 								{
@@ -172,7 +173,6 @@ trait Folders
 						'quotaUsage' => $aQuota ? $aQuota[0] * 1024 : null,
 						'quotaLimit' => $aQuota ? $aQuota[1] * 1024 : null,
 						'Namespace' => $sNamespace,
-						'FoldersHash' => \md5(\implode("\x0", $this->recFoldersNames($oFolderCollection))),
 						'IsThreadsSupported' => $this->MailClient()->IsThreadsSupported(),
 						'Optimized' => $oFolderCollection->Optimized,
 						'CountRec' => $oFolderCollection->TotalCount,
@@ -470,27 +470,6 @@ trait Folders
 			$this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
 	}
 
-	private function recFoldersNames(\MailSo\Mail\FolderCollection $oFolders) : array
-	{
-		$aResult = array();
-		if ($oFolders)
-		{
-			foreach ($oFolders as $oFolder)
-			{
-				$aResult[] = $oFolder->FullName()."|".
-					implode("|", $oFolder->FlagsLowerCase()).($oFolder->IsSubscribed() ? '1' : '0');
-
-				$oSub = $oFolder->SubFolders();
-				if ($oSub && 0 < $oSub->Count())
-				{
-					$aResult = \array_merge($aResult, $this->recFoldersNames($oSub));
-				}
-			}
-		}
-
-		return $aResult;
-	}
-
 	private function recFoldersTypes(\RainLoop\Model\Account $oAccount, \MailSo\Mail\FolderCollection $oFolders, array &$aResult, bool $bListFolderTypes = true) : void
 	{
 		if ($oFolders->Count())
@@ -510,15 +489,6 @@ trait Folders
 					)))
 					{
 						$aResult[$iFolderType] = $oFolder->FullName();
-					}
-				}
-
-				foreach ($oFolders as $oFolder)
-				{
-					$oSub = $oFolder->SubFolders();
-					if ($oSub && $oSub->Count())
-					{
-						$this->recFoldersTypes($oAccount, $oSub, $aResult, true);
 					}
 				}
 			}
@@ -543,15 +513,6 @@ trait Folders
 					{
 						$aResult[$iFolderType] = $oFolder->FullName();
 					}
-				}
-			}
-
-			foreach ($oFolders as $oFolder)
-			{
-				$oSub = $oFolder->SubFolders();
-				if ($oSub && $oSub->Count())
-				{
-					$this->recFoldersTypes($oAccount, $oSub, $aResult, false);
 				}
 			}
 		}
