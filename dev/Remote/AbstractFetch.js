@@ -104,8 +104,8 @@ export class AbstractFetchRemote
 						reader.read().then(processText);
 						return;
 					}
-					fCallback(buffer.substring(0, result.index));
-					buffer = buffer.substring(result.index + 1);
+					fCallback(buffer.slice(0, result.index));
+					buffer = buffer.slice(result.index + 1);
 					re.lastIndex = 0;
 				}
 				if (buffer.length) {

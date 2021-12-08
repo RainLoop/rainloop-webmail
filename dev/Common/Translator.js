@@ -10,16 +10,16 @@ const
 	i18nToNode = element => {
 		const key = element.dataset.i18n;
 		if (key) {
-			if ('[' === key.substr(0, 1)) {
-				switch (key.substr(0, 6)) {
+			if ('[' === key.slice(0, 1)) {
+				switch (key.slice(0, 6)) {
 					case '[html]':
-						element.innerHTML = i18n(key.substr(6));
+						element.innerHTML = i18n(key.slice(6));
 						break;
 					case '[place':
-						element.placeholder = i18n(key.substr(13));
+						element.placeholder = i18n(key.slice(13));
 						break;
 					case '[title':
-						element.title = i18n(key.substr(7));
+						element.title = i18n(key.slice(7));
 						break;
 					// no default
 				}

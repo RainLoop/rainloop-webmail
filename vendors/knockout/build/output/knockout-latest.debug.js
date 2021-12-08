@@ -1536,7 +1536,7 @@ ko.expressionRewriting = (() => {
                     var match = toks[i-1].match(divisionLookBehind);
                     if (match && !keywordRegexLookBehind[match[0]]) {
                         // The slash is actually a division punctuator; re-parse the remainder of the string (not including the slash)
-                        str = str.substr(str.indexOf(tok) + 1);
+                        str = str.slice(str.indexOf(tok) + 1);
                         toks = str.match(bindingToken);
                         i = -1;
                         // Continue with just the slash
@@ -2528,7 +2528,7 @@ ko.bindingHandlers['attr'] = {
 
             // Find the namespace of this attribute, if any.
             var prefixLen = attrName.indexOf(':');
-            var namespace = "lookupNamespaceURI" in element && prefixLen > 0 && element.lookupNamespaceURI(attrName.substr(0, prefixLen));
+            var namespace = "lookupNamespaceURI" in element && prefixLen > 0 && element.lookupNamespaceURI(attrName.slice(0, prefixLen));
 
             // To cover cases like "attr: { checked:someProp }", we want to remove the attribute entirely
             // when someProp is a "no value"-like value (strictly null, false, or undefined)
@@ -3123,7 +3123,7 @@ ko.bindingHandlers['value'] = {
                     elementValueBeforeEvent = ko.selectExtensions.readValue(element);
                     setTimeout(valueUpdateHandler, 0);
                 };
-                eventName = eventName.substring(5);
+                eventName = eventName.slice(5);
             }
             registerEventHandler(eventName, handler);
         });

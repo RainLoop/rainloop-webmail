@@ -104,7 +104,7 @@ htmlToPlain = (html) => {
 		iP3 = text.indexOf('__bq__end__', iP1 + 5);
 
 		if ((-1 === iP2 || iP3 < iP2) && iP1 < iP3) {
-			text = text.substr(0, iP1) + convertBlockquote(text.substring(iP1 + 13, iP3)) + text.substr(iP3 + 11);
+			text = text.slice(0, iP1) + convertBlockquote(text.slice(iP1 + 13, iP3)) + text.slice(iP3 + 11);
 			pos = 0;
 		} else if (-1 < iP2 && iP2 < iP3) {
 			pos = iP2 - 1;
@@ -135,12 +135,12 @@ plainToHtml = (plain) => {
 		bDo = false;
 		aNextText = [];
 		aText.forEach(sLine => {
-			bStart = '>' === sLine.substr(0, 1);
+			bStart = '>' === sLine.slice(0, 1);
 			if (bStart && !bIn) {
 				bDo = true;
 				bIn = true;
 				aNextText.push('~~~blockquote~~~');
-				aNextText.push(sLine.substr(1));
+				aNextText.push(sLine.slice(1));
 			} else if (!bStart && bIn) {
 				if (sLine) {
 					bIn = false;
@@ -150,7 +150,7 @@ plainToHtml = (plain) => {
 					aNextText.push(sLine);
 				}
 			} else if (bStart && bIn) {
-				aNextText.push(sLine.substr(1));
+				aNextText.push(sLine.slice(1));
 			} else {
 				aNextText.push(sLine);
 			}
@@ -344,10 +344,10 @@ mailToHelper = (mailToUrl) => {
 		'mailto:' ===
 			mailToUrl
 				.toString()
-				.substr(0, 7)
+				.slice(0, 7)
 				.toLowerCase()
 	) {
-		mailToUrl = mailToUrl.toString().substr(7);
+		mailToUrl = mailToUrl.toString().slice(7);
 
 		let to = [],
 			params = {};

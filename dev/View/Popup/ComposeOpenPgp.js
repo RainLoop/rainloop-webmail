@@ -51,7 +51,7 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 					}
 					return oKey.users.map(user => ({
 						id: oKey.guid,
-						name: '(' + oKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() + ') ' + user,
+						name: '(' + oKey.id.slice(KEY_NAME_SUBSTR).toUpperCase() + ') ' + user,
 						key: oKey
 					}));
 				});
@@ -66,7 +66,7 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 					}
 					return oKey.users.map(user => ({
 						id: oKey.guid,
-						name: '(' + oKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() + ') ' + user,
+						name: '(' + oKey.id.slice(KEY_NAME_SUBSTR).toUpperCase() + ') ' + user,
 						key: oKey
 					}));
 				});
@@ -241,7 +241,7 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 				empty: !option.key,
 				selected: ko.observable(!!option.key),
 				users: option.key.users,
-				hash: option.key.id.substr(KEY_NAME_SUBSTR).toUpperCase(),
+				hash: option.key.id.slice(KEY_NAME_SUBSTR).toUpperCase(),
 				key: option.key
 			});
 		}
@@ -257,7 +257,7 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 				selected: ko.observable(!!option.key),
 				removable: ko.observable(!this.sign() || !this.signKey() || this.signKey().key.id !== option.key.id),
 				users: option.key.users,
-				hash: option.key.id.substr(KEY_NAME_SUBSTR).toUpperCase(),
+				hash: option.key.id.slice(KEY_NAME_SUBSTR).toUpperCase(),
 				key: option.key
 			});
 		}
@@ -345,7 +345,7 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 			if (keys && keys[0]) {
 				this.signKey({
 					users: keys[0].users || [emailLine],
-					hash: keys[0].id.substr(KEY_NAME_SUBSTR).toUpperCase(),
+					hash: keys[0].id.slice(KEY_NAME_SUBSTR).toUpperCase(),
 					key: keys[0]
 				});
 			}
@@ -367,7 +367,7 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 									!this.sign() || !this.signKey() || this.signKey().key.id !== publicKey.id
 								),
 								users: publicKey ? publicKey.users || [recEmail] : [recEmail],
-								hash: publicKey ? publicKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() : '',
+								hash: publicKey ? publicKey.id.slice(KEY_NAME_SUBSTR).toUpperCase() : '',
 								key: publicKey
 						  }))
 						: [];

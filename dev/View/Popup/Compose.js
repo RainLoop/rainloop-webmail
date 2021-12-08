@@ -681,10 +681,10 @@ class ComposePopupView extends AbstractViewPopup {
 		if (identity) {
 			this.editor(editor => {
 				let signature = identity.signature(),
-					isHtml = signature && ':HTML:' === signature.substr(0, 6);
+					isHtml = signature && ':HTML:' === signature.slice(0, 6);
 
 				editor.setSignature(
-					this.convertSignature(isHtml ? signature.substr(6) : signature),
+					this.convertSignature(isHtml ? signature.slice(6) : signature),
 					isHtml, !!identity.signatureInsertBefore());
 			});
 		}
@@ -1293,7 +1293,7 @@ class ComposePopupView extends AbstractViewPopup {
 	addMessageAsAttachment(message) {
 		if (message) {
 			let temp = message.subject();
-			temp = '.eml' === temp.substr(-4).toLowerCase() ? temp : temp + '.eml';
+			temp = '.eml' === temp.slice(-4).toLowerCase() ? temp : temp + '.eml';
 
 			const attachment = new ComposeAttachmentModel(message.requestHash, temp, message.size());
 

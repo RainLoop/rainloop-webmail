@@ -140,8 +140,8 @@ export class HtmlEditor {
 	}
 
 	setHtmlOrPlain(text) {
-		if (':HTML:' === text.substr(0, 6)) {
-			this.setHtml(text.substr(6));
+		if (':HTML:' === text.slice(0, 6)) {
+			this.setHtml(text.slice(6));
 		} else {
 			this.setPlain(text);
 		}

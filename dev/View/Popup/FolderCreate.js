@@ -34,7 +34,7 @@ class FolderCreatePopupView extends AbstractViewPopup {
 				oItem =>
 					oItem ? (oItem.isSystemFolder() ? oItem.name() + ' ' + oItem.manageFolderSystemName() : oItem.name()) : '',
 				FolderUserStore.namespace
-					? item => FolderUserStore.namespace !== item.fullName.substr(0, FolderUserStore.namespace.length)
+					? item => FolderUserStore.namespace !== item.fullName.slice(0, FolderUserStore.namespace.length)
 					: null,
 				true
 			)
@@ -50,7 +50,7 @@ class FolderCreatePopupView extends AbstractViewPopup {
 	createFolderCommand() {
 		let parentFolderName = this.selectedParentValue();
 		if (!parentFolderName && 1 < FolderUserStore.namespace.length) {
-			parentFolderName = FolderUserStore.namespace.substr(0, FolderUserStore.namespace.length - 1);
+			parentFolderName = FolderUserStore.namespace.slice(0, FolderUserStore.namespace.length - 1);
 		}
 
 		Remote.abort('Folders').post('FolderCreate', FolderUserStore.foldersCreating, {

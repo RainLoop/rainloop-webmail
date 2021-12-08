@@ -142,7 +142,7 @@ export class EmailAddressesComponent {
 				values = [];
 
 			const v = val.trim(),
-				hook = (v && [',', ';', '\n'].includes(v.substr(-1)))
+				hook = (v && [',', ';', '\n'].includes(v.slice(-1)))
 					 ? EmailModel.splitEmailLine(val)
 					 : null;
 

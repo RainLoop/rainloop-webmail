@@ -49,7 +49,7 @@ ko.bindingHandlers['value'] = {
                     elementValueBeforeEvent = ko.selectExtensions.readValue(element);
                     setTimeout(valueUpdateHandler, 0);
                 };
-                eventName = eventName.substring(5);
+                eventName = eventName.slice(5);
             }
             registerEventHandler(eventName, handler);
         });

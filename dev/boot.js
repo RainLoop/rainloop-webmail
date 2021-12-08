@@ -99,7 +99,7 @@ try {
 
 css.href = css.dataset.href;
 
-loadScript(`./?/${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().substr(2)}/`)
+loadScript(`./?/${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().slice(2)}/`)
 	.then(() => 0);
 
 })(this);

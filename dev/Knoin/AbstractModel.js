@@ -91,7 +91,7 @@ export class AbstractModel {
 		}
 		forEachObjectEntry(json, (key, value) => {
 			if ('@' !== key[0]) try {
-				key = key[0].toLowerCase() + key.substr(1);
+				key = key[0].toLowerCase() + key.slice(1);
 				switch (typeof this[key])
 				{
 				case 'function':

@@ -81,8 +81,8 @@ export const
 	 */
 	themePreviewLink = theme => {
 		let prefix = VERSION_PREFIX;
-		if ('@custom' === theme.substr(-7)) {
-			theme = theme.substr(0, theme.length - 7).trim();
+		if ('@custom' === theme.slice(-7)) {
+			theme = theme.slice(0, theme.length - 7).trim();
 			prefix = Settings.app('webPath') || '';
 		}
 
