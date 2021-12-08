@@ -482,17 +482,17 @@ class ImapClient extends \MailSo\Net\NetClient
 			$this->FolderUnSelect();
 		}
 
-		$oResponseCollection = $this->SendRequestGetResponse('STATUS', array($this->EscapeFolderName($sFolderName), $aStatusItems));
 		$oInfo = new FolderInformation($sFolderName, false);
-		foreach ($oResponseCollection as $oResponse) {
+		$this->SendRequest('STATUS', array($this->EscapeFolderName($sFolderName), $aStatusItems));
+		$this->getResponse(null, function(Response $oResponse) use ($oInfo) {
 			$oInfo->setStatusFromResponse($oResponse);
-		}
-		$aResult = $oInfo->getStatusItems();
+			return true;
+		});
 
 		if ($bReselect) {
 			$this->selectOrExamineFolder($sFolderName, $bWritable, false);
 		}
-		return $aResult;
+		return $oInfo->getStatusItems();
 	}
 
 	/**
@@ -562,30 +562,37 @@ class ImapClient extends \MailSo\Net\NetClient
 			$aParameters[] = $aReturnParams;
 		}
 
+		$bPassthru = false;
 		$aReturn = array();
 
+		// RFC 5464
+		$bMetadata = !$bIsSubscribeList && $this->IsSupported('METADATA');
+		$aMetadata = null;
+		if ($bMetadata) {
+			// Dovecot supports fetching all METADATA at once
+			$aMetadata = $this->getAllMetadata();
+		}
+
 		$this->SendRequest($sCmd, $aParameters);
-		$bPassthru = false;
 		if ($bPassthru) {
 			$this->streamResponse();
 		} else {
 			$sDelimiter = '';
 			$bInbox = false;
-			foreach ($this->getResponse() as $oResponse) {
-				if (Enumerations\ResponseType::UNTAGGED !== $oResponse->ResponseType) {
-					continue;
-				}
+			$oImapClient = $this;
+			$this->getResponse(null, function(Response $oResponse) use ($oImapClient, &$aReturn, $sCmd, &$sDelimiter, &$bInbox, $aMetadata) {
 				if ('STATUS' === $oResponse->StatusOrIndex && isset($oResponse->ResponseList[2])) {
-					$sFullName = $this->toUTF8($oResponse->ResponseList[2]);
+					$sFullName = $oImapClient->toUTF8($oResponse->ResponseList[2]);
 					if (!isset($aReturn[$sFullName])) {
 						$aReturn[$sFullName] = new Folder($sFullName);
 					}
 					$aReturn[$sFullName]->setStatusFromResponse($oResponse);
+					return true;
 				}
-				else if ($sCmd === $oResponse->StatusOrIndex && 5 == \count($oResponse->ResponseList)) {
+				else if ($sCmd === $oResponse->StatusOrIndex && 5 === \count($oResponse->ResponseList)) {
 					try
 					{
-						$sFullName = $this->toUTF8($oResponse->ResponseList[4]);
+						$sFullName = $oImapClient->toUTF8($oResponse->ResponseList[4]);
 
 						/**
 						 * $oResponse->ResponseList[0] = *
@@ -612,18 +619,24 @@ class ImapClient extends \MailSo\Net\NetClient
 							$sDelimiter = $oFolder->Delimiter();
 						}
 
+						if (isset($aMetadata[$oResponse->ResponseList[4]])) {
+							$oFolder->SetAllMetadata($aMetadata[$oResponse->ResponseList[4]]);
+						}
+
 						$aReturn[$sFullName] = $oFolder;
+						return true;
 					}
 					catch (\MailSo\Base\Exceptions\InvalidArgumentException $oException)
 					{
-						$this->writeLogException($oException, \MailSo\Log\Enumerations\Type::WARNING, false);
+						$oImapClient->writeLogException($oException, \MailSo\Log\Enumerations\Type::WARNING, false);
 					}
 					catch (\Throwable $oException)
 					{
-						$this->writeLogException($oException, \MailSo\Log\Enumerations\Type::WARNING, false);
+						$oImapClient->writeLogException($oException, \MailSo\Log\Enumerations\Type::WARNING, false);
 					}
 				}
-			}
+				return false;
+			});
 
 			if (!$bInbox && !$sParentFolderName && !isset($aReturn['INBOX'])) {
 				$aReturn['INBOX'] = new Folder('INBOX', $sDelimiter);
@@ -631,24 +644,14 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 
 		// RFC 5464
-		if (!$bIsSubscribeList && $this->IsSupported('METADATA')) {
-			// Dovecot supports fetching all METADATA at once
-			$aMetadata = $this->getAllMetadata();
-			if ($aMetadata) {
-				foreach ($aReturn as $oFolder) {
-					if (isset($aMetadata[$oFolder->FullName()])) {
-						$oFolder->SetAllMetadata($aMetadata[$oFolder->FullName()]);
-					}
-				}
-			} else {
-				foreach ($aReturn as $oFolder) {
-					try {
-						$oFolder->SetAllMetadata(
-							$this->getMetadata($oFolder->FullName(), ['/shared', '/private'], ['DEPTH'=>'infinity'])
-						);
-					} catch (\Throwable $e) {
-						// Ignore error
-					}
+		if ($bMetadata && !$aMetadata) {
+			foreach ($aReturn as $oFolder) {
+				try {
+					$oFolder->SetAllMetadata(
+						$this->getMetadata($oFolder->FullName(), ['/shared', '/private'], ['DEPTH'=>'infinity'])
+					);
+				} catch (\Throwable $e) {
+					// Ignore error
 				}
 			}
 		}
@@ -738,34 +741,36 @@ class ImapClient extends \MailSo\Net\NetClient
 		 */
 		$oResponseCollection = $this->SendRequestGetResponse($bIsWritable ? 'SELECT' : 'EXAMINE', $aParams);
 		$oResult = new FolderInformation($sFolderName, $bIsWritable);
-		foreach ($oResponseCollection as $oResponse) {
-			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType) {
-				if (!$oResult->setStatusFromResponse($oResponse)) {
-					// OK untagged responses
-					if (\is_array($oResponse->OptionalResponse)) {
-						$key = $oResponse->OptionalResponse[0];
-						if (\count($oResponse->OptionalResponse) > 1) {
-							if ('PERMANENTFLAGS' === $key && \is_array($oResponse->OptionalResponse[1])) {
-								$oResult->PermanentFlags = $oResponse->OptionalResponse[1];
-							}
-						} else if ('READ-ONLY' === $key) {
-//							$oResult->IsWritable = false;
-						} else if ('READ-WRITE' === $key) {
-//							$oResult->IsWritable = true;
-						} else if ('NOMODSEQ' === $key) {
-							// https://datatracker.ietf.org/doc/html/rfc4551#section-3.1.2
-						}
-					}
 
-					// untagged responses
-					else if (\count($oResponse->ResponseList) > 2
-					 && 'FLAGS' === $oResponse->ResponseList[1]
-					 && \is_array($oResponse->ResponseList[2])) {
-						$oResult->Flags = $oResponse->ResponseList[2];
+		$this->SendRequest($bIsWritable ? 'SELECT' : 'EXAMINE', $aParams);
+		$this->getResponse(null, function(Response $oResponse) use ($oResult) {
+			if (!$oResult->setStatusFromResponse($oResponse)) {
+				// OK untagged responses
+				if (\is_array($oResponse->OptionalResponse)) {
+					$key = $oResponse->OptionalResponse[0];
+					if (\count($oResponse->OptionalResponse) > 1) {
+						if ('PERMANENTFLAGS' === $key && \is_array($oResponse->OptionalResponse[1])) {
+							$oResult->PermanentFlags = $oResponse->OptionalResponse[1];
+						}
+					} else if ('READ-ONLY' === $key) {
+//						$oResult->IsWritable = false;
+					} else if ('READ-WRITE' === $key) {
+//						$oResult->IsWritable = true;
+					} else if ('NOMODSEQ' === $key) {
+						// https://datatracker.ietf.org/doc/html/rfc4551#section-3.1.2
 					}
 				}
+
+				// untagged responses
+				else if (\count($oResponse->ResponseList) > 2
+				 && 'FLAGS' === $oResponse->ResponseList[1]
+				 && \is_array($oResponse->ResponseList[2])) {
+					$oResult->Flags = $oResponse->ResponseList[2];
+				}
 			}
-		}
+			return true;
+		});
+
 		$this->oCurrentFolderInfo = $oResult;
 
 		return $this;
@@ -861,6 +866,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
+		$aReturn = array();
 		$this->aFetchCallbacks = array();
 		try {
 			$aFetchItems = Enumerations\FetchType::ChangeFetchItemsBefourRequest($aInputFetchItems);
@@ -882,21 +888,22 @@ class ImapClient extends \MailSo\Net\NetClient
 			 *     $aParams[1][] = MODSEQ
 			 */
 
-			$oResult = $this->SendRequestGetResponse($bIndexIsUid ? 'UID FETCH' : 'FETCH', $aParams);
+			$this->SendRequest($bIndexIsUid ? 'UID FETCH' : 'FETCH', $aParams);
+			$oImapClient = $this;
+			$this->getResponse(null, function(Response $oResponse) use ($oImapClient, &$aReturn) {
+				if (FetchResponse::IsValidFetchImapResponse($oResponse)) {
+					if (FetchResponse::IsNotEmptyFetchImapResponse($oResponse)) {
+						$aReturn[] = new FetchResponse($oResponse);
+						return true;
+					} else if ($oImapClient->oLogger) {
+						$oImapClient->oLogger->Write('Skipped Imap Response! ['.$oResponse->ToLine().']', \MailSo\Log\Enumerations\Type::NOTICE);
+					}
+				}
+			});
 		} finally {
 			$this->aFetchCallbacks = array();
 		}
 
-		$aReturn = array();
-		foreach ($oResult as $oResponse) {
-			if (FetchResponse::IsValidFetchImapResponse($oResponse)) {
-				if (FetchResponse::IsNotEmptyFetchImapResponse($oResponse)) {
-					$aReturn[] = new FetchResponse($oResponse);
-				} else if ($this->oLogger) {
-					$this->oLogger->Write('Skipped Imap Response! ['.$oResponse->ToLine().']', \MailSo\Log\Enumerations\Type::NOTICE);
-				}
-			}
-		}
 		return $aReturn;
 	}
 
@@ -1159,7 +1166,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 	}
 
-	protected function getResponse(string $sEndTag = null) : ResponseCollection
+	protected function getResponse(string $sEndTag = null, callable $cbUntaggedResponse = null) : ResponseCollection
 	{
 		try {
 			$oResult = new ResponseCollection;
@@ -1169,7 +1176,9 @@ class ImapClient extends \MailSo\Net\NetClient
 
 				while (true) {
 					$oResponse = $this->partialParseResponse();
-					$oResult->append($oResponse);
+					if (!$cbUntaggedResponse || Enumerations\ResponseType::UNTAGGED !== $oResponse->ResponseType || !$cbUntaggedResponse($oResponse)) {
+						$oResult->append($oResponse);
+					}
 
 					// RFC 5530
 					if ($sEndTag === $oResponse->Tag && \is_array($oResponse->OptionalResponse) && 'CLIENTBUG' === $oResponse->OptionalResponse[0]) {

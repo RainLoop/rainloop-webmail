@@ -1220,8 +1220,6 @@ class MailClient
 			}
 		}
 
-		$bUseListStatus = $bUseListStatus && $this->oImapClient->IsSupported('LIST-STATUS');
-
 		$aFolders = $bUseListStatus
 			? $this->oImapClient->FolderStatusList($sParent, $sListPattern)
 			: $this->oImapClient->FolderList($sParent, $sListPattern);
