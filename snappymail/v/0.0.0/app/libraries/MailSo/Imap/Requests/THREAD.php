@@ -63,16 +63,15 @@ class THREAD extends Request
 		$aRequest[] = \strtoupper($this->sCharset);
 		$aRequest[] = $sSearchCriterias;
 
-		$oResponseCollection = $this->oImapClient->SendRequestGetResponse(
+		$this->oImapClient->SendRequest(
 			($this->bUid ? 'UID THREAD' : 'THREAD'),
 			$aRequest
 		);
 
 		$aReturn = array();
-		foreach ($oResponseCollection as $oResponse) {
+		foreach ($this->oImapClient->yieldUntaggedResponses() as $oResponse) {
 			$iOffset = ($bReturnUid && 'UID' === $oResponse->StatusOrIndex && !empty($oResponse->ResponseList[2]) && 'THREAD' === $oResponse->ResponseList[2]) ? 1 : 0;
-			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
-				&& ('THREAD' === $oResponse->StatusOrIndex || $iOffset)
+			if (('THREAD' === $oResponse->StatusOrIndex || $iOffset)
 				&& \is_array($oResponse->ResponseList)
 				&& 2 < \count($oResponse->ResponseList))
 			{

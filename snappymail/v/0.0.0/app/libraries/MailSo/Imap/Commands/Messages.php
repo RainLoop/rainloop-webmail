@@ -33,14 +33,13 @@ trait Messages
 		$oSort->sCriterias = $sSearchCriterias;
 		$oSort->bUid = $bReturnUid;
 		$oSort->aSortTypes = $aSortTypes;
-		$oResponseCollection = $oSort->SendRequestGetResponse();
+		$oSort->SendRequest();
 		$aReturn = array();
-		foreach ($oResponseCollection as $oResponse) {
+		foreach ($this->yieldUntaggedResponses() as $oResponse) {
 			$iOffset = ($bReturnUid && 'UID' === $oResponse->StatusOrIndex && !empty($oResponse->ResponseList[2]) && 'SORT' === $oResponse->ResponseList[2]) ? 1 : 0;
-			if (ResponseType::UNTAGGED === $oResponse->ResponseType
-				&& ('SORT' === $oResponse->StatusOrIndex || $iOffset)
-				&& \is_array($oResponse->ResponseList)
-				&& 2 < \count($oResponse->ResponseList))
+			if (\is_array($oResponse->ResponseList)
+				&& 2 < \count($oResponse->ResponseList)
+				&& ('SORT' === $oResponse->StatusOrIndex || $iOffset))
 			{
 				$iLen = \count($oResponse->ResponseList);
 				for ($iIndex = 2 + $iOffset; $iIndex < $iLen; ++$iIndex) {
@@ -64,7 +63,8 @@ trait Messages
 		$oESearch->bUid = $bReturnUid;
 		$oESearch->sLimit = $sLimit;
 		$oESearch->sCharset = $sCharset;
-		return $this->getSimpleESearchOrESortResult($oESearch->SendRequestGetResponse(), $bReturnUid);
+		$oESearch->SendRequest();
+		return $this->getSimpleESearchOrESortResult($bReturnUid);
 	}
 
 	/**
@@ -80,7 +80,8 @@ trait Messages
 		$oSort->aSortTypes = $aSortTypes;
 		$oSort->aReturn = $aSearchReturn ?: ['ALL'];
 		$oSort->sLimit = $sLimit;
-		return $this->getSimpleESearchOrESortResult($oSort->SendRequestGetResponse(), $bReturnUid);
+		$oSort->SendRequest();
+		return $this->getSimpleESearchOrESortResult($bReturnUid);
 	}
 
 	/**
@@ -146,15 +147,14 @@ trait Messages
 		return $oThread->SendRequestGetResponse();
 	}
 
-	private function getSimpleESearchOrESortResult(ResponseCollection $oResponseCollection, bool $bReturnUid) : array
+	private function getSimpleESearchOrESortResult(bool $bReturnUid) : array
 	{
 		$sRequestTag = $this->getCurrentTag();
 		$aResult = array();
-		foreach ($oResponseCollection as $oResponse) {
-			if (ResponseType::UNTAGGED === $oResponse->ResponseType
-				&& ('ESEARCH' === $oResponse->StatusOrIndex || 'SORT' === $oResponse->StatusOrIndex)
-				&& \is_array($oResponse->ResponseList)
+		foreach ($this->yieldUntaggedResponses() as $oResponse) {
+			if (\is_array($oResponse->ResponseList)
 				&& isset($oResponse->ResponseList[2][1])
+				&& ('ESEARCH' === $oResponse->StatusOrIndex || 'SORT' === $oResponse->StatusOrIndex)
 				&& 'TAG' === $oResponse->ResponseList[2][0] && $sRequestTag === $oResponse->ResponseList[2][1]
 				&& (!$bReturnUid || (!empty($oResponse->ResponseList[3]) && 'UID' === $oResponse->ResponseList[3]))
 			)

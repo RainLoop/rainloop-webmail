@@ -64,7 +64,7 @@ class SORT extends Request
 		parent::__construct($oImapClient);
 	}
 
-	public function SendRequestGetResponse() : \MailSo\Imap\ResponseCollection
+	public function SendRequest() : string
 	{
 		if (!$this->aSortTypes) {
 			$this->oImapClient->writeLogException(
@@ -109,7 +109,7 @@ class SORT extends Request
 			$aRequest[] = $this->sLimit;
 		}
 
-		return $this->oImapClient->SendRequestGetResponse(
+		return $this->oImapClient->SendRequest(
 			($this->bUid ? 'UID SORT' : 'SORT'),
 			$aRequest
 		);

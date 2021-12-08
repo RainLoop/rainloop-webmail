@@ -63,7 +63,7 @@ class ESEARCH extends Request
 		parent::__construct($oImapClient);
 	}
 
-	public function SendRequestGetResponse() : \MailSo\Imap\ResponseCollection
+	public function SendRequest() : string
 	{
 		$sCmd = 'SEARCH';
 		$aRequest = array();
@@ -120,7 +120,7 @@ class ESEARCH extends Request
 			$aRequest[] = $this->sLimit;
 		}
 
-		return $this->oImapClient->SendRequestGetResponse(
+		return $this->oImapClient->SendRequest(
 			($this->bUid ? 'UID ' : '') . $sCmd,
 			$aRequest
 		);

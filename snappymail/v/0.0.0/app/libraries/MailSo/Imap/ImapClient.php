@@ -484,10 +484,9 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		$oInfo = new FolderInformation($sFolderName, false);
 		$this->SendRequest('STATUS', array($this->EscapeFolderName($sFolderName), $aStatusItems));
-		$this->getResponse(null, function(Response $oResponse) use ($oInfo) {
+		foreach ($this->yieldUntaggedResponses() as $oResponse) {
 			$oInfo->setStatusFromResponse($oResponse);
-			return true;
-		});
+		}
 
 		if ($bReselect) {
 			$this->selectOrExamineFolder($sFolderName, $bWritable, false);
@@ -579,20 +578,18 @@ class ImapClient extends \MailSo\Net\NetClient
 		} else {
 			$sDelimiter = '';
 			$bInbox = false;
-			$oImapClient = $this;
-			$this->getResponse(null, function(Response $oResponse) use ($oImapClient, &$aReturn, $sCmd, &$sDelimiter, &$bInbox, $aMetadata) {
+			foreach ($this->yieldUntaggedResponses() as $oResponse) {
 				if ('STATUS' === $oResponse->StatusOrIndex && isset($oResponse->ResponseList[2])) {
-					$sFullName = $oImapClient->toUTF8($oResponse->ResponseList[2]);
+					$sFullName = $this->toUTF8($oResponse->ResponseList[2]);
 					if (!isset($aReturn[$sFullName])) {
 						$aReturn[$sFullName] = new Folder($sFullName);
 					}
 					$aReturn[$sFullName]->setStatusFromResponse($oResponse);
-					return true;
 				}
 				else if ($sCmd === $oResponse->StatusOrIndex && 5 === \count($oResponse->ResponseList)) {
 					try
 					{
-						$sFullName = $oImapClient->toUTF8($oResponse->ResponseList[4]);
+						$sFullName = $this->toUTF8($oResponse->ResponseList[4]);
 
 						/**
 						 * $oResponse->ResponseList[0] = *
@@ -624,19 +621,17 @@ class ImapClient extends \MailSo\Net\NetClient
 						}
 
 						$aReturn[$sFullName] = $oFolder;
-						return true;
 					}
 					catch (\MailSo\Base\Exceptions\InvalidArgumentException $oException)
 					{
-						$oImapClient->writeLogException($oException, \MailSo\Log\Enumerations\Type::WARNING, false);
+						$this->writeLogException($oException, \MailSo\Log\Enumerations\Type::WARNING, false);
 					}
 					catch (\Throwable $oException)
 					{
-						$oImapClient->writeLogException($oException, \MailSo\Log\Enumerations\Type::WARNING, false);
+						$this->writeLogException($oException, \MailSo\Log\Enumerations\Type::WARNING, false);
 					}
 				}
-				return false;
-			});
+			}
 
 			if (!$bInbox && !$sParentFolderName && !isset($aReturn['INBOX'])) {
 				$aReturn['INBOX'] = new Folder('INBOX', $sDelimiter);
@@ -743,7 +738,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		$oResult = new FolderInformation($sFolderName, $bIsWritable);
 
 		$this->SendRequest($bIsWritable ? 'SELECT' : 'EXAMINE', $aParams);
-		$this->getResponse(null, function(Response $oResponse) use ($oResult) {
+		foreach ($this->yieldUntaggedResponses() as $oResponse) {
 			if (!$oResult->setStatusFromResponse($oResponse)) {
 				// OK untagged responses
 				if (\is_array($oResponse->OptionalResponse)) {
@@ -768,8 +763,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					$oResult->Flags = $oResponse->ResponseList[2];
 				}
 			}
-			return true;
-		});
+		}
 
 		$this->oCurrentFolderInfo = $oResult;
 
@@ -889,17 +883,15 @@ class ImapClient extends \MailSo\Net\NetClient
 			 */
 
 			$this->SendRequest($bIndexIsUid ? 'UID FETCH' : 'FETCH', $aParams);
-			$oImapClient = $this;
-			$this->getResponse(null, function(Response $oResponse) use ($oImapClient, &$aReturn) {
+			foreach ($this->yieldUntaggedResponses() as $oResponse) {
 				if (FetchResponse::IsValidFetchImapResponse($oResponse)) {
 					if (FetchResponse::IsNotEmptyFetchImapResponse($oResponse)) {
 						$aReturn[] = new FetchResponse($oResponse);
-						return true;
-					} else if ($oImapClient->oLogger) {
-						$oImapClient->oLogger->Write('Skipped Imap Response! ['.$oResponse->ToLine().']', \MailSo\Log\Enumerations\Type::NOTICE);
+					} else if ($this->oLogger) {
+						$this->oLogger->Write('Skipped Imap Response! ['.$oResponse->ToLine().']', \MailSo\Log\Enumerations\Type::NOTICE);
 					}
 				}
-			});
+			}
 		} finally {
 			$this->aFetchCallbacks = array();
 		}
@@ -1166,7 +1158,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 	}
 
-	protected function getResponse(string $sEndTag = null, callable $cbUntaggedResponse = null) : ResponseCollection
+	protected function getResponse(string $sEndTag = null) : ResponseCollection
 	{
 		try {
 			$oResult = new ResponseCollection;
@@ -1176,9 +1168,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 				while (true) {
 					$oResponse = $this->partialParseResponse();
-					if (!$cbUntaggedResponse || Enumerations\ResponseType::UNTAGGED !== $oResponse->ResponseType || !$cbUntaggedResponse($oResponse)) {
-						$oResult->append($oResponse);
-					}
+					$oResult->append($oResponse);
 
 					// RFC 5530
 					if ($sEndTag === $oResponse->Tag && \is_array($oResponse->OptionalResponse) && 'CLIENTBUG' === $oResponse->OptionalResponse[0]) {
@@ -1207,6 +1197,50 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 
 		return $oResult;
+	}
+
+//	public function yieldUntaggedResponses(string $sEndTag = null) : \Generator
+	public function yieldUntaggedResponses(string $sEndTag = null) : iterable
+	{
+		try {
+			$oResult = new ResponseCollection;
+
+			if (\is_resource($this->ConnectionResource())) {
+				$sEndTag = $sEndTag ?: $this->getCurrentTag();
+
+				while (true) {
+					$oResponse = $this->partialParseResponse();
+					if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType) {
+						yield $oResponse;
+					} else {
+						$oResult->append($oResponse);
+					}
+
+					// RFC 5530
+					if ($sEndTag === $oResponse->Tag && \is_array($oResponse->OptionalResponse) && 'CLIENTBUG' === $oResponse->OptionalResponse[0]) {
+						// The server has detected a client bug.
+//						\error_log("IMAP {$oResponse->OptionalResponse[0]}: {$this->lastCommand}");
+					}
+
+					if ($sEndTag === $oResponse->Tag || Enumerations\ResponseType::CONTINUATION === $oResponse->ResponseType) {
+						if (isset($this->aTagTimeouts[$sEndTag])) {
+							$this->writeLog((\microtime(true) - $this->aTagTimeouts[$sEndTag]).' ('.$sEndTag.')',
+								\MailSo\Log\Enumerations\Type::TIME);
+
+							unset($this->aTagTimeouts[$sEndTag]);
+						}
+
+						break;
+					}
+				}
+			}
+
+			$oResult->validate();
+
+		} catch (\Throwable $e) {
+			$this->writeLogException($e, \MailSo\Log\Enumerations\Type::WARNING);
+			throw $e;
+		}
 	}
 
 	protected function prepareParamLine(array $aParams = array()) : string
