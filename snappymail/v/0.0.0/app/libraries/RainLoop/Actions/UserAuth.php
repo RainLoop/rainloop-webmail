@@ -222,7 +222,7 @@ trait UserAuth
 			}
 
 			if ($bThrowExceptionOnFalse && !$this->oMainAuthAccount) {
-				throw new ClientException(\RainLoop\Notifications::AuthError);
+				throw new ClientException(Notifications::AuthError);
 			}
 		}
 

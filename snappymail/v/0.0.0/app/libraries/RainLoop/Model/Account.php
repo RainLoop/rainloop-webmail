@@ -3,6 +3,7 @@
 namespace RainLoop\Model;
 
 use RainLoop\Utils;
+use RainLoop\Notifications;
 use RainLoop\Exceptions\ClientException;
 
 abstract class Account implements \JsonSerializable
