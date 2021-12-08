@@ -119,10 +119,7 @@ trait Folders
 							{
 								try
 								{
-									if ($this->MailClient()->FolderCreate($mFolderNameToCreate, $sParent, true, $sDelimiter))
-									{
-										$bDoItAgain = true;
-									}
+									$this->MailClient()->FolderCreate($mFolderNameToCreate, $sParent, true, $sDelimiter);
 								}
 								catch (\Throwable $oException)
 								{
@@ -198,15 +195,16 @@ trait Folders
 			$sFolderNameInUtf = $this->GetActionParam('Folder', '');
 			$sFolderParentFullName = $this->GetActionParam('Parent', '');
 
-			$this->MailClient()->FolderCreate($sFolderNameInUtf, $sFolderParentFullName,
+			$oFolder = $this->MailClient()->FolderCreate($sFolderNameInUtf, $sFolderParentFullName,
 				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true));
+
+//			FolderInformation(string $sFolderName, int $iPrevUidNext = 0, array $aUids = array())
+			return $this->DefaultResponse(__FUNCTION__, $oFolder);
 		}
 		catch (\Throwable $oException)
 		{
 			throw new ClientException(Notifications::CantCreateFolder, $oException);
 		}
-
-		return $this->TrueResponse(__FUNCTION__);
 	}
 
 	public function DoFolderSetMetadata() : array

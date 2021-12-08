@@ -1309,7 +1309,7 @@ class MailClient
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function FolderCreate(string $sFolderNameInUtf8, string $sFolderParentFullName = '', bool $bSubscribeOnCreation = true, string $sDelimiter = '') : self
+	public function FolderCreate(string $sFolderNameInUtf8, string $sFolderParentFullName = '', bool $bSubscribeOnCreation = true, string $sDelimiter = '') : ?Folder
 	{
 		$sFolderNameInUtf8 = \trim($sFolderNameInUtf8);
 		$sFolderParentFullName = \trim($sFolderParentFullName);
@@ -1353,7 +1353,11 @@ class MailClient
 			$this->oImapClient->FolderSubscribe($sFullNameToCreate);
 		}
 
-		return $this;
+		$aFolders = $this->oImapClient->IsSupported('LIST-STATUS')
+			? $this->oImapClient->FolderStatusList($sFullNameToCreate, '')
+			: $this->oImapClient->FolderList($sFullNameToCreate, '');
+		$oImapFolder = $aFolders[$sFullNameToCreate];
+		return $oImapFolder ? new Folder($oImapFolder, $bSubscribeOnCreation) : null;
 	}
 
 	/**

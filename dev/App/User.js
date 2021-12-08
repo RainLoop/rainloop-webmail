@@ -346,26 +346,6 @@ class AppUser extends AbstractApp {
 		return false;
 	}
 
-	/**
-	 * @param {Function=} callback = null
-	 */
-	foldersReload(callback = null) {
-		Remote.foldersReload(callback);
-	}
-
-	foldersPromisesActionHelper(promise, errorDefCode) {
-		Remote.abort('Folders')
-			.fastResolve(true)
-			.then(() => promise)
-			.then(
-				() => Remote.foldersReloadWithTimeout(),
-				error => {
-					FolderUserStore.folderListError(getNotification(error.code, '', errorDefCode) + '.\n' + error.message);
-					Remote.foldersReloadWithTimeout();
-				}
-			);
-	}
-
 	reloadOpenPgpKeys() {
 		if (PgpUserStore.capaOpenPGP()) {
 			const keys = [],
@@ -720,7 +700,7 @@ class AppUser extends AbstractApp {
 			SettingsUserStore.init();
 			ContactUserStore.init();
 
-			this.foldersReload(value => {
+			Remote.foldersReload(value => {
 				try {
 					if (value) {
 						startScreens([
@@ -737,9 +717,6 @@ class AppUser extends AbstractApp {
 							}
 							this.folderInformationMultiply();
 						}, refreshFolders);
-
-						// Every 15 minutes
-						setInterval(()=>this.foldersReload(), 900000);
 
 						ContactUserStore.init();
 

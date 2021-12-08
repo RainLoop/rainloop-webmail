@@ -20,6 +20,8 @@ import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
+//import { mailBox } from 'Common/Links';
+
 const
 normalizeFolder = sFolderFullName => ('' === sFolderFullName
 	|| UNUSED_OPTION_VALUE === sFolderFullName
@@ -236,7 +238,10 @@ export class FolderModel extends AbstractModel {
 	static reviveFromJson(json) {
 		const folder = super.reviveFromJson(json);
 		if (folder) {
-			folder.deep = json.FullName.split(folder.delimiter).length - 1;
+			const path = folder.fullName.split(folder.delimiter);
+			folder.deep = path.length - 1;
+			path.pop();
+			folder.parentName = path.join(folder.delimiter);
 
 			let type = (folder.metadata[FolderMetadataKeys.KolabFolderType]
 				|| folder.metadata[FolderMetadataKeys.KolabFolderTypeShared]
@@ -360,6 +365,8 @@ export class FolderModel extends AbstractModel {
 					!!folder.subFolders().find(
 						folder => folder.hasUnreadMessages() | folder.hasSubscribedUnreadMessagesSubfolders()
 					)
+
+//				,href: () => folder.canBeSelected() && mailBox(folder.fullNameHash)
 			});
 
 			folder.addSubscribables({

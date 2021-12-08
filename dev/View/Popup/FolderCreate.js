@@ -4,6 +4,7 @@ import { Notification } from 'Common/Enums';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { folderListOptionsBuilder } from 'Common/UtilsUser';
+import { getNotification } from 'Common/Translator';
 
 import { FolderUserStore } from 'Stores/User/Folder';
 
@@ -11,6 +12,9 @@ import Remote from 'Remote/User/Fetch';
 
 import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
+
+import { setFolder, getFolderFromCacheList } from 'Common/Cache';
+import { FolderModel } from 'Model/FolderCollection';
 
 class FolderCreatePopupView extends AbstractViewPopup {
 	constructor() {
@@ -49,13 +53,27 @@ class FolderCreatePopupView extends AbstractViewPopup {
 			parentFolderName = FolderUserStore.namespace.substr(0, FolderUserStore.namespace.length - 1);
 		}
 
-		rl.app.foldersPromisesActionHelper(
-			Remote.post('FolderCreate', FolderUserStore.foldersCreating, {
+		Remote.abort('Folders').post('FolderCreate', FolderUserStore.foldersCreating, {
 				Folder: this.folderName(),
 				Parent: parentFolderName
-			}),
-			Notification.CantCreateFolder
-		);
+			})
+			.then(
+				data => {
+					const folder = getFolderFromCacheList(parentFolderName),
+						subFolder = FolderModel.reviveFromJson(data.Result);
+					setFolder(subFolder);
+					(folder ? folder.subFolders : FolderUserStore.folderList).push(subFolder);
+/*
+					var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+					console.log((folder ? folder.subFolders : FolderUserStore.folderList).sort(collator.compare));
+*/
+				},
+				error => {
+					FolderUserStore.folderListError(
+						getNotification(error.code, '', Notification.CantCreateFolder)
+						+ '.\n' + error.message);
+				}
+			);
 
 		this.cancelCommand();
 	}

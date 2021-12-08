@@ -194,10 +194,6 @@ export class AbstractFetchRemote
 		this.request('GetPublicKey', fCallback);
 	}
 
-	fastResolve(mData) {
-		return Promise.resolve(mData);
-	}
-
 	setTrigger(trigger, value) {
 		if (trigger) {
 			value = !!value;

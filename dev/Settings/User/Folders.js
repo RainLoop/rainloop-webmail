@@ -5,7 +5,7 @@ import { ClientSideKeyName, FolderMetadataKeys } from 'Common/EnumsUser';
 import { Settings } from 'Common/Globals';
 import { getNotification } from 'Common/Translator';
 
-import { setFolder, removeFolderFromCacheList } from 'Common/Cache';
+import { setFolder, getFolderFromCacheList, removeFolderFromCacheList } from 'Common/Cache';
 import { Capa } from 'Common/Enums';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
@@ -71,21 +71,27 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 
 		if (nameToEdit && folder.name() !== nameToEdit) {
 			Local.set(ClientSideKeyName.FoldersLashHash, '');
-			Remote
-				.post('FolderRename', FolderUserStore.foldersRenaming, {
+			Remote.abort('Folders').post('FolderRename', FolderUserStore.foldersRenaming, {
 					Folder: folder.fullName,
 					NewFolderName: nameToEdit
 				})
 				.then(data => {
 					folder.name(nameToEdit/*data.Name*/);
 					if (folder.subFolders.length) {
-						Remote.foldersReloadWithTimeout();
-						// rename all subfolders folder.delimiter
+						Remote.setTrigger(FolderUserStore.foldersLoading, true);
+						clearTimeout(Remote.foldersTimeout);
+						Remote.foldersTimeout = setTimeout(() => Remote.foldersReload(), 500);
+						// TODO: rename all subfolders with folder.delimiter to prevent reload?
 					} else {
 						removeFolderFromCacheList(folder.fullName);
 						data = data.Result;
 						folder.fullName = data.FullName;
 						setFolder(folder);
+/*
+						const folder = getFolderFromCacheList(folder.parentName);
+						var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+						console.log((folder ? folder.subFolders : FolderUserStore.folderList).sort(collator.compare));
+*/
 					}
 				})
 				.catch(error => {
@@ -131,14 +137,19 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 			if (folderToRemove) {
 				Local.set(ClientSideKeyName.FoldersLashHash, '');
 
-				// rl.app.foldersPromisesActionHelper
 				Remote.abort('Folders').post('FolderDelete', FolderUserStore.foldersDeleting, {
 						Folder: folderToRemove.fullName
 					}).then(
 						() => {
-							folderToRemove.selectable(false)
-							removeFolderFromCacheList(folderToRemove.fullName);
-							FolderUserStore.folderList(FolderUserStore.folderList.filter(folder => folder !== folderToRemove));
+//							folderToRemove.flags.push('\\nonexistent');
+							folderToRemove.selectable(false);
+//							folderToRemove.subscribed(false);
+//							folderToRemove.checkable(false);
+							if (!folderToRemove.subFolders.length) {
+								removeFolderFromCacheList(folderToRemove.fullName);
+								const folder = getFolderFromCacheList(folderToRemove.parentName);
+								(folder ? folder.subFolders : FolderUserStore.folderList).remove(folderToRemove);
+							}
 						},
 						error => {
 							FolderUserStore.folderListError(
