@@ -3,7 +3,7 @@ import ko from 'ko';
 import { Notification } from 'Common/Enums';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { defaultOptionsAfterRender } from 'Common/Utils';
-import { folderListOptionsBuilder } from 'Common/UtilsUser';
+import { folderListOptionsBuilder, sortFolders } from 'Common/UtilsUser';
 import { getNotification } from 'Common/Translator';
 
 import { FolderUserStore } from 'Stores/User/Folder';
@@ -60,9 +60,11 @@ class FolderCreatePopupView extends AbstractViewPopup {
 			.then(
 				data => {
 					const folder = getFolderFromCacheList(parentFolderName),
-						subFolder = FolderModel.reviveFromJson(data.Result);
+						subFolder = FolderModel.reviveFromJson(data.Result),
+						folders = (folder ? folder.subFolders : FolderUserStore.folderList);
 					setFolder(subFolder);
-					(folder ? folder.subFolders : FolderUserStore.folderList).push(subFolder);
+					folders.push(subFolder);
+					sortFolders(folders);
 /*
 					var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
 					console.log((folder ? folder.subFolders : FolderUserStore.folderList).sort(collator.compare));

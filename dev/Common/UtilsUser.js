@@ -8,13 +8,16 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 import * as Local from 'Storage/Client';
 
 export const
-/**
- * @param {(string|number)} value
- * @param {boolean=} includeZero = true
- * @returns {boolean}
- */
-isPosNumeric = (value) => {
-	return null != value && /^[0-9]*$/.test(value.toString());
+
+sortFolders = folders => {
+	try {
+		let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+		folders.sort((a, b) =>
+			a.isInbox() ? -1 : (b.isInbox() ? 1 : collator.compare(a.fullName, b.fullName))
+		);
+	} catch (e) {
+		console.error(e);
+	}
 },
 
 /**

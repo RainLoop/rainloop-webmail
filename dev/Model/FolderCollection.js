@@ -15,7 +15,7 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 
 import ko from 'ko';
 
-import { isPosNumeric } from 'Common/UtilsUser';
+import { sortFolders } from 'Common/UtilsUser';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
@@ -23,20 +23,22 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 //import { mailBox } from 'Common/Links';
 
 const
-normalizeFolder = sFolderFullName => ('' === sFolderFullName
-	|| UNUSED_OPTION_VALUE === sFolderFullName
-	|| null !== getFolderFromCacheList(sFolderFullName))
-		? sFolderFullName
-		: '';
+	isPosNumeric = value => null != value && /^[0-9]*$/.test(value.toString()),
 
-const SystemFolders = {
-	Inbox:   0,
-	Sent:    0,
-	Drafts:  0,
-	Spam:    0,
-	Trash:   0,
-	Archive: 0
-};
+	normalizeFolder = sFolderFullName => ('' === sFolderFullName
+		|| UNUSED_OPTION_VALUE === sFolderFullName
+		|| null !== getFolderFromCacheList(sFolderFullName))
+			? sFolderFullName
+			: '',
+
+	SystemFolders = {
+		Inbox:   0,
+		Sent:    0,
+		Drafts:  0,
+		Spam:    0,
+		Trash:   0,
+		Archive: 0
+	};
 
 export class FolderCollectionModel extends AbstractCollectionModel
 {
@@ -106,14 +108,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 
 		let i = result.length;
 		if (i) {
-			try {
-				let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-				result.sort((a, b) =>
-					a.isInbox() ? -1 : (b.isInbox() ? 1 : collator.compare(a.fullName, b.fullName))
-				);
-			} catch (e) {
-				console.error(e);
-			}
+			sortFolders(result);
 			try {
 				while (i--) {
 					let folder = result[i], parent = getFolderFromCacheList(folder.parentName);
@@ -257,15 +252,16 @@ export class FolderModel extends AbstractModel {
 	static reviveFromJson(json) {
 		const folder = super.reviveFromJson(json);
 		if (folder) {
-			const path = folder.fullName.split(folder.delimiter);
+			const path = folder.fullName.split(folder.delimiter),
+				type = (folder.metadata[FolderMetadataKeys.KolabFolderType]
+					|| folder.metadata[FolderMetadataKeys.KolabFolderTypeShared]
+					|| ''
+				).split('.')[0];
+
 			folder.deep = path.length - 1;
 			path.pop();
 			folder.parentName = path.join(folder.delimiter);
 
-			let type = (folder.metadata[FolderMetadataKeys.KolabFolderType]
-				|| folder.metadata[FolderMetadataKeys.KolabFolderTypeShared]
-				|| ''
-			).split('.')[0];
 			type && 'mail' != type && folder.kolabType(type);
 
 			folder.messageCountAll = ko.computed({

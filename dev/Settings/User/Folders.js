@@ -8,6 +8,7 @@ import { getNotification } from 'Common/Translator';
 import { setFolder, getFolderFromCacheList, removeFolderFromCacheList } from 'Common/Cache';
 import { Capa } from 'Common/Enums';
 import { defaultOptionsAfterRender } from 'Common/Utils';
+import { sortFolders } from 'Common/UtilsUser';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
 import { FolderUserStore } from 'Stores/User/Folder';
@@ -82,14 +83,10 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 						// TODO: rename all subfolders with folder.delimiter to prevent reload?
 					} else {
 						removeFolderFromCacheList(folder.fullName);
-						data = data.Result;
-						folder.fullName = data.FullName;
+						folder.fullName = data.Result.FullName;
 						setFolder(folder);
-/*
-						const folder = getFolderFromCacheList(folder.parentName);
-						var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-						console.log((folder ? folder.subFolders : FolderUserStore.folderList).sort(collator.compare));
-*/
+						const parent = getFolderFromCacheList(folder.parentName);
+						sortFolders(parent ? parent.subFolders : FolderUserStore.folderList);
 					}
 				})
 				.catch(error => {
