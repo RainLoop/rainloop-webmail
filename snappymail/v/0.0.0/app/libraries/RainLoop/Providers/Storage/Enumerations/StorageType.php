@@ -8,4 +8,5 @@ class StorageType
 	const CONFIG = 2;
 	const NOBODY = 3;
 	const SIGN_ME = 4;
+	const SESSION = 5;
 }

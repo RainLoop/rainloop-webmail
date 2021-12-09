@@ -131,7 +131,10 @@ trait UserAuth
 
 		try {
 			$this->CheckMailConnection($oAccount, true);
-			$bSignMe && $this->SetSignMeToken($oAccount);
+			if (!$oMainAccount) {
+				$bSignMe && $this->SetSignMeToken($oAccount);
+				$this->StorageProvider()->Put($oAccount, StorageType::SESSION, Utils::GetSessionToken(), 'true');
+			}
 		} catch (\Throwable $oException) {
 			$this->loginErrorDelay();
 
@@ -177,6 +180,8 @@ trait UserAuth
 	 */
 	public function getAccountFromToken(bool $bThrowExceptionOnFalse = true): ?Account
 	{
+		$this->getMainAccountFromToken($bThrowExceptionOnFalse);
+
 		if (\is_null($this->oAdditionalAuthAccount) && isset($_COOKIE[self::AUTH_ADDITIONAL_TOKEN_KEY])) {
 			$aData = Utils::GetSecureCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
 			if ($aData) {
@@ -191,7 +196,8 @@ trait UserAuth
 				Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
 			}
 		}
-		return $this->oAdditionalAuthAccount ?: $this->getMainAccountFromToken($bThrowExceptionOnFalse);
+
+		return $this->oAdditionalAuthAccount ?: $this->oMainAuthAccount;
 	}
 
 	/**
@@ -205,15 +211,34 @@ trait UserAuth
 				Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
 //				Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
 //				Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
+				Utils::ClearCookie(Utils::SESSION_TOKEN);
 			}
 
 			$aData = Utils::GetSecureCookie(self::AUTH_SPEC_TOKEN_KEY);
 			if ($aData) {
-				$this->oMainAuthAccount = MainAccount::NewInstanceFromTokenArray(
-					$this,
-					$aData,
-					$bThrowExceptionOnFalse
-				);
+				/**
+				 * Server side control/kickout of logged in sessions
+				 * https://github.com/the-djmaze/snappymail/issues/151
+				 */
+				if (isset($_COOKIE[Utils::SESSION_TOKEN])) {
+					$oMainAuthAccount = MainAccount::NewInstanceFromTokenArray(
+						$this,
+						$aData,
+						$bThrowExceptionOnFalse
+					);
+					$sToken = Utils::GetSessionToken();
+					if ($oMainAuthAccount && $this->StorageProvider()->Get($oMainAuthAccount, StorageType::SESSION, $sToken)) {
+						$this->oMainAuthAccount = $oMainAuthAccount;
+					} else {
+						$oMainAuthAccount && $this->StorageProvider()->Clear($oMainAuthAccount, StorageType::SESSION, $sToken);
+						Utils::ClearCookie(Utils::SESSION_TOKEN);
+						Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
+						Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
+					}
+				} else {
+					Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
+					Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
+				}
 			} else {
 				$oAccount = $this->GetAccountFromSignMeToken();
 				if ($oAccount) {
@@ -223,6 +248,10 @@ trait UserAuth
 
 			if ($bThrowExceptionOnFalse && !$this->oMainAuthAccount) {
 				throw new ClientException(Notifications::AuthError);
+			}
+
+			if ($this->oMainAuthAccount) {
+				$this->StorageProvider()->Put($this->oMainAuthAccount, StorageType::SESSION, $sToken, 'true');
 			}
 		}
 

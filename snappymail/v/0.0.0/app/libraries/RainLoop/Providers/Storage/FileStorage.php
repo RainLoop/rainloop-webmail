@@ -50,7 +50,6 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 		if ($sFileName && \file_exists($sFileName)) {
 			$mValue = \file_get_contents($sFileName);
 		}
-
 		return false === $mValue ? $mDefault : $mValue;
 	}
 
@@ -59,13 +58,8 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	 */
 	public function Clear($mAccount, int $iStorageType, string $sKey) : bool
 	{
-		$mResult = true;
 		$sFileName = $this->generateFileName($mAccount, $iStorageType, $sKey);
-		if ($sFileName && \file_exists($sFileName)) {
-			$mResult = \unlink($sFileName);
-		}
-
-		return $mResult;
+		return $sFileName && \file_exists($sFileName) && \unlink($sFileName);
 	}
 
 	/**
@@ -90,14 +84,20 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	 */
 	protected function generateFileName($mAccount, int $iStorageType, string $sKey, bool $bMkDir = false, bool $bForDeleteAction = false) : string
 	{
-		$sEmail = $sSubEmail = '';
+		$sEmail = $sSubFolder = '';
 		if (null === $mAccount) {
 			$iStorageType = StorageType::NOBODY;
-		} else if ($mAccount instanceof \RainLoop\Model\Account) {
-			$sEmail = $mAccount instanceof \RainLoop\Model\AdditionalAccount ? $mAccount->ParentEmail() : $mAccount->Email();
-			if ($this->bLocal && $mAccount instanceof \RainLoop\Model\AdditionalAccount && !$bForDeleteAction)
-			{
-				$sSubEmail = $mAccount->Email();
+		} else if ($mAccount instanceof \RainLoop\Model\MainAccount) {
+			$sEmail = $mAccount->Email();
+			if (StorageType::SIGN_ME === $iStorageType) {
+				$sSubFolder = '.sign_me';
+			} else if (StorageType::SESSION === $iStorageType) {
+				$sSubFolder = '.sessions';
+			}
+		} else if ($mAccount instanceof \RainLoop\Model\AdditionalAccount) {
+			$sEmail = $mAccount->ParentEmail();
+			if ($this->bLocal && !$bForDeleteAction) {
+				$sSubFolder = $mAccount->Email();
 			}
 		} else if (\is_string($mAccount) && empty($sEmail)) {
 			$sEmail = $mAccount;
@@ -110,7 +110,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 				$sFilePath = $this->sDataPath.'/__nobody__/'.\sha1($sKey ?: \time());
 				break;
 			case StorageType::SIGN_ME:
-				$sSubEmail = '.sign_me';
+			case StorageType::SESSION:
 			case StorageType::CONFIG:
 				if (empty($sEmail)) {
 					return '';
@@ -123,7 +123,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 				$sFilePath = $this->sDataPath
 					.'/'.\RainLoop\Utils::fixName($sDomain ?: 'unknown.tld')
 					.'/'.\RainLoop\Utils::fixName(\implode('@', $aEmail) ?: '.unknown')
-					.'/'.($sSubEmail ? \RainLoop\Utils::fixName($sSubEmail).'/' : '')
+					.'/'.($sSubFolder ? \RainLoop\Utils::fixName($sSubFolder).'/' : '')
 					.($sKey ? \RainLoop\Utils::fixName($sKey) : '');
 				break;
 			default:
@@ -138,9 +138,14 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 			}
 		}
 
-		// CleanupSignMeData
+		// Cleanup SignMe
 		if (StorageType::SIGN_ME === $iStorageType && $sKey && 0 === \random_int(0, 25) && \is_dir($sFilePath)) {
 			\MailSo\Base\Utils::RecTimeDirRemove(\is_dir($sFilePath), 3600 * 24 * 30); // 30 days
+		}
+
+		// Cleanup sessions
+		if (StorageType::SESSION === $iStorageType && $sKey && 0 === \random_int(0, 25) && \is_dir($sFilePath)) {
+			\MailSo\Base\Utils::RecTimeDirRemove(\is_dir($sFilePath), 3600 * 3); // 3 hours
 		}
 
 		return $sFilePath;

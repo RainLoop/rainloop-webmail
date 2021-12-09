@@ -25,7 +25,7 @@ class Utils
 		 * Session cookie
 		 * Used by: EncodeKeyValuesQ, DecodeKeyValuesQ
 		 */
-		SHORT_TOKEN = 'smsession';
+		SESSION_TOKEN = 'smsession';
 
 	public static function EncodeKeyValues(array $aValues, string $sCustomKey = '') : string
 	{
@@ -74,10 +74,10 @@ class Utils
 
 	public static function GetSessionToken() : string
 	{
-		$sToken = static::GetCookie(self::SHORT_TOKEN, null);
+		$sToken = static::GetCookie(self::SESSION_TOKEN, null);
 		if (!$sToken) {
 			$sToken = \MailSo\Base\Utils::Sha1Rand(APP_SALT);
-			static::SetCookie(self::SHORT_TOKEN, $sToken, 0);
+			static::SetCookie(self::SESSION_TOKEN, $sToken, 0);
 		}
 
 		return \sha1('Session'.APP_SALT.$sToken.'Token'.APP_SALT);
