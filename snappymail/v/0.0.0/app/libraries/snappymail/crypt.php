@@ -50,7 +50,7 @@ abstract class Crypt
 
 	public static function Decrypt(array $data, string $key = null) /* : mixed */
 	{
-		if (3 === \count($data) && isset($data[0], $data[1], $data[2])) {
+		if (3 === \count($data) && isset($data[0], $data[1], $data[2]) && \strlen($data[0])) {
 			try {
 				$fn = "{$data[0]}Decrypt";
 				if (\method_exists(__CLASS__, $fn)) {
