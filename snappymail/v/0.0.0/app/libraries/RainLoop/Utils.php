@@ -23,7 +23,7 @@ class Utils
 
 		/**
 		 * Session cookie
-		 * Used by: EncodeKeyValuesQ, DecodeKeyValuesQ and getAccountFromToken/SetAuthToken
+		 * Used by: EncodeKeyValuesQ, DecodeKeyValuesQ
 		 */
 		SHORT_TOKEN = 'smsession';
 
@@ -49,20 +49,18 @@ class Utils
 
 	public static function EncodeKeyValuesQ(array $aValues, string $sCustomKey = '') : string
 	{
-		return \MailSo\Base\Utils::UrlSafeBase64Encode(
-			\MailSo\Base\Crypt::Encrypt(
-				\json_encode($aValues),
-				\md5(APP_SALT.$sCustomKey).'Q'.static::GetShortToken()
-		));
+		return \SnappyMail\Crypt::EncryptUrlSafe(
+			$aValues,
+			\sha1(APP_SALT.$sCustomKey.'Q'.static::GetSessionToken())
+		);
 	}
 
 	public static function DecodeKeyValuesQ(string $sEncodedValues, string $sCustomKey = '') : array
 	{
-		return static::unserialize(
-			\MailSo\Base\Crypt::Decrypt(
-				\MailSo\Base\Utils::UrlSafeBase64Decode($sEncodedValues),
-				\md5(APP_SALT.$sCustomKey).'Q'.static::GetShortToken()
-		));
+		return \SnappyMail\Crypt::DecryptUrlSafe(
+			$sEncodedValues,
+			\sha1(APP_SALT.$sCustomKey.'Q'.static::GetSessionToken())
+		);
 	}
 
 	public static function unserialize(string $sDecodedValues) : array
@@ -74,7 +72,7 @@ class Utils
 		}
 	}
 
-	public static function GetShortToken() : string
+	public static function GetSessionToken() : string
 	{
 		$sToken = static::GetCookie(self::SHORT_TOKEN, null);
 		if (!$sToken) {
@@ -82,7 +80,7 @@ class Utils
 			static::SetCookie(self::SHORT_TOKEN, $sToken, 0);
 		}
 
-		return \md5('Session'.APP_SALT.$sToken.'Token'.APP_SALT);
+		return \sha1('Session'.APP_SALT.$sToken.'Token'.APP_SALT);
 	}
 
 	public static function GetConnectionToken() : string
@@ -94,12 +92,12 @@ class Utils
 			static::SetCookie(self::CONNECTION_TOKEN, $sToken, \time() + 3600 * 24 * 30);
 		}
 
-		return \md5('Connection'.APP_SALT.$sToken.'Token'.APP_SALT);
+		return \sha1('Connection'.APP_SALT.$sToken.'Token'.APP_SALT);
 	}
 
 	public static function GetCsrfToken() : string
 	{
-		return \md5('Csrf'.APP_SALT.self::GetConnectionToken().'Token'.APP_SALT);
+		return \sha1('Csrf'.APP_SALT.self::GetConnectionToken().'Token'.APP_SALT);
 	}
 
 	public static function UpdateConnectionToken() : void
@@ -109,23 +107,6 @@ class Utils
 		{
 			static::SetCookie(self::CONNECTION_TOKEN, $sToken, \time() + 3600 * 24 * 30);
 		}
-	}
-
-	public static function PathMD5(string $sPath) : string
-	{
-		$sResult = '';
-		if (\is_dir($sPath))
-		{
-			$oDirIterator = new \RecursiveDirectoryIterator($sPath);
-			$oIterator = new \RecursiveIteratorIterator($oDirIterator, \RecursiveIteratorIterator::SELF_FIRST);
-
-			foreach ($oIterator as $oFile)
-			{
-				$sResult = \md5($sResult.($oFile->isFile() ? \md5_file($oFile) : $oFile));
-			}
-		}
-
-		return $sResult;
 	}
 
 	public static function ClearHtmlOutput(string $sHtml) : string

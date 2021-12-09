@@ -187,7 +187,7 @@ trait Response
 			$mResult['Hash'] = \md5($mResult['Folder'].$mResult['Uid']);
 			$mResult['RequestHash'] = Utils::EncodeKeyValuesQ(array(
 				'V' => APP_VERSION,
-				'Account' => $oAccount ? \md5($oAccount->Hash()) : '',
+				'Account' => $oAccount->Hash(),
 				'Folder' => $mResult['Folder'],
 				'Uid' => $mResult['Uid'],
 				'MimeType' => 'message/rfc822',
@@ -337,7 +337,7 @@ trait Response
 
 			$mResult['Download'] = Utils::EncodeKeyValuesQ(array(
 				'V' => APP_VERSION,
-				'Account' => $oAccount ? \md5($oAccount->Hash()) : '',
+				'Account' => $oAccount->Hash(),
 				'Folder' => $mResult['Folder'],
 				'Uid' => $mResult['Uid'],
 				'MimeIndex' => $mResult['MimeIndex'],

@@ -107,7 +107,7 @@ abstract class Account implements \JsonSerializable
 
 	public function Hash() : string
 	{
-		return \md5(\implode(APP_SALT, [
+		return \sha1(\implode(APP_SALT, [
 			$this->sEmail,
 			$this->Domain()->IncHost(),
 			$this->Domain()->IncPort(),
