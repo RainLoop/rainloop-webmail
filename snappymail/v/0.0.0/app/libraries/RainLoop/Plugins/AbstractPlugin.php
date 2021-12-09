@@ -50,21 +50,6 @@ abstract class AbstractPlugin
 		$this->sName = static::NAME;
 	}
 
-	public function Config() : \RainLoop\Config\Plugin
-	{
-		return $this->oPluginConfig;
-	}
-
-	public function Manager() : \RainLoop\Plugins\Manager
-	{
-		return $this->oPluginManager;
-	}
-
-	public function Path() : string
-	{
-		return $this->sPath;
-	}
-
 	public function Name() : string
 	{
 		return $this->sName;
@@ -91,65 +76,9 @@ abstract class AbstractPlugin
 		return array();
 	}
 
-	public function Hash() : string
-	{
-		return \md5($this->sName . '@' . static::VERSION);
-	}
-
 	public function Supported() : string
 	{
 		return '';
-	}
-
-	final public function ConfigMap() : array
-	{
-		if (null === $this->aConfigMap)
-		{
-			$this->aConfigMap = $this->configMapping();
-		}
-
-		return $this->aConfigMap;
-	}
-
-	public function SetPath(string $sPath) : self
-	{
-		$this->sPath = $sPath;
-
-		return $this;
-	}
-
-	public function SetName(string $sName) : self
-	{
-		$this->sName = $sName;
-
-		return $this;
-	}
-
-	public function SetVersion(string $sVersion) : self
-	{
-		if (\strlen($sVersion))
-		{
-			$this->sVersion = $sVersion;
-		}
-
-		return $this;
-	}
-
-	public function SetPluginManager(\RainLoop\Plugins\Manager $oPluginManager) : self
-	{
-		$this->oPluginManager = $oPluginManager;
-
-		return $this;
-	}
-
-	public function SetPluginConfig(\RainLoop\Config\Plugin $oPluginConfig) : self
-	{
-		$this->oPluginConfig = $oPluginConfig;
-		if ($oPluginConfig->IsInited() && !$oPluginConfig->Load())
-		{
-			$oPluginConfig->Save();
-		}
-		return $this;
 	}
 
 	public function Init() : void
@@ -162,7 +91,68 @@ abstract class AbstractPlugin
 
 	}
 
-	protected function addHook(string $sHookName, string $sFunctionName) : self
+	final public function Hash() : string
+	{
+		return static::class . '@' . static::VERSION;
+	}
+
+	final public function Config() : \RainLoop\Config\Plugin
+	{
+		return $this->oPluginConfig;
+	}
+
+	final public function Manager() : \RainLoop\Plugins\Manager
+	{
+		return $this->oPluginManager;
+	}
+
+	final public function Path() : string
+	{
+		return $this->sPath;
+	}
+
+	final public function ConfigMap() : array
+	{
+		if (null === $this->aConfigMap)
+		{
+			$this->aConfigMap = $this->configMapping();
+		}
+
+		return $this->aConfigMap;
+	}
+
+	final public function SetPath(string $sPath) : self
+	{
+		$this->sPath = $sPath;
+
+		return $this;
+	}
+
+	final public function SetName(string $sName) : self
+	{
+		$this->sName = $sName;
+
+		return $this;
+	}
+
+	final public function SetPluginManager(\RainLoop\Plugins\Manager $oPluginManager) : self
+	{
+		$this->oPluginManager = $oPluginManager;
+
+		return $this;
+	}
+
+	final public function SetPluginConfig(\RainLoop\Config\Plugin $oPluginConfig) : self
+	{
+		$this->oPluginConfig = $oPluginConfig;
+		if ($oPluginConfig->IsInited() && !$oPluginConfig->Load())
+		{
+			$oPluginConfig->Save();
+		}
+		return $this;
+	}
+
+	final protected function addHook(string $sHookName, string $sFunctionName) : self
 	{
 		if ($this->oPluginManager)
 		{
@@ -172,7 +162,7 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	protected function addCss(string $sFile, bool $bAdminScope = false) : self
+	final protected function addCss(string $sFile, bool $bAdminScope = false) : self
 	{
 		if ($this->oPluginManager)
 		{
@@ -182,7 +172,7 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	protected function addJs(string $sFile, bool $bAdminScope = false) : self
+	final protected function addJs(string $sFile, bool $bAdminScope = false) : self
 	{
 		if ($this->oPluginManager)
 		{
@@ -192,7 +182,7 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	protected function addTemplate(string $sFile, bool $bAdminScope = false) : self
+	final protected function addTemplate(string $sFile, bool $bAdminScope = false) : self
 	{
 		if ($this->oPluginManager)
 		{
@@ -202,7 +192,7 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	protected function replaceTemplate(string $sFile, bool $bAdminScope = false) : self
+	final protected function replaceTemplate(string $sFile, bool $bAdminScope = false) : self
 	{
 		if ($this->oPluginManager)
 		{
@@ -212,7 +202,7 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	protected function addPartHook(string $sActionName, string $sFunctionName) : self
+	final protected function addPartHook(string $sActionName, string $sFunctionName) : self
 	{
 		if ($this->oPluginManager)
 		{
@@ -222,7 +212,7 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	protected function addJsonHook(string $sActionName, string $sFunctionName) : self
+	final protected function addJsonHook(string $sActionName, string $sFunctionName) : self
 	{
 		if ($this->oPluginManager)
 		{
@@ -232,29 +222,15 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	protected function addTemplateHook(string $sName, string $sPlace, string $sLocalTemplateName, bool $bPrepend = false) : self
-	{
-		if ($this->oPluginManager)
-		{
-			$this->oPluginManager->AddProcessTemplateAction($sName, $sPlace,
-				'<!-- ko template: \''.$sLocalTemplateName.'\' --><!-- /ko -->', $bPrepend);
-		}
-
-		return $this;
-	}
-
 	/**
 	 * @return mixed false|string|array
 	 */
-	protected function jsonResponse(string $sFunctionName, $mData)
+	final protected function jsonResponse(string $sFunctionName, $mData)
 	{
-		if ($this->oPluginManager)
-		{
-			return $this->oPluginManager->JsonResponseHelper(
-				$this->oPluginManager->convertPluginFolderNameToClassName($this->Name()).'::'.$sFunctionName, $mData);
-		}
-
-		return \json_encode($mData);
+		return $this->oPluginManager
+			? $this->oPluginManager->JsonResponseHelper(
+				$this->oPluginManager->convertPluginFolderNameToClassName($this->Name()).'::'.$sFunctionName, $mData)
+			: \json_encode($mData);
 	}
 
 	/**
@@ -262,33 +238,23 @@ abstract class AbstractPlugin
 	 *
 	 * @return mixed
 	 */
-	public function jsonParam(string $sKey, $mDefault = null)
+	final public function jsonParam(string $sKey, $mDefault = null)
 	{
-		if ($this->oPluginManager)
-		{
-			return $this->oPluginManager->Actions()->GetActionParam($sKey, $mDefault);
-		}
-
-		return '';
+		return $this->oPluginManager
+			? $this->oPluginManager->Actions()->GetActionParam($sKey, $mDefault)
+			: '';
 	}
 
-	public function getUserSettings() : array
+	final public function getUserSettings() : array
 	{
-		if ($this->oPluginManager)
-		{
-			return $this->oPluginManager->GetUserPluginSettings($this->Name());
-		}
-
-		return array();
+		return $this->oPluginManager
+			? $this->oPluginManager->GetUserPluginSettings($this->Name())
+			: array();
 	}
 
-	public function saveUserSettings(array $aSettings) : bool
+	final public function saveUserSettings(array $aSettings) : bool
 	{
-		if ($this->oPluginManager)
-		{
-			return $this->oPluginManager->SaveUserPluginSettings($this->Name(), $aSettings);
-		}
-
-		return false;
+		return $this->oPluginManager
+			&& $this->oPluginManager->SaveUserPluginSettings($this->Name(), $aSettings);
 	}
 }

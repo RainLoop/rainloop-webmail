@@ -864,8 +864,9 @@ class ServiceActions
 		$sHtml = '';
 		foreach ($aTemplates as $sName => $sFile) {
 			$sName = \preg_replace('/[^a-zA-Z0-9]/', '', $sName);
-			$sHtml .= '<template id="'.$sName.'">'.
-				$this->oActions->ProcessTemplate($sName, \file_get_contents($sFile)).'</template>';
+			$sHtml .= '<template id="'.$sName.'">'
+				. Utils::ClearHtmlOutput(\preg_replace('/<(\/?)script/i', '<$1x-script', \file_get_contents($sFile)))
+				. '</template>';
 		}
 
 		return \str_replace('&nbsp;', "\xC2\xA0", $sHtml);

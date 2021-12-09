@@ -40,6 +40,12 @@ class PdoAddressBook
 		$this->bExplain = false; // debug
 	}
 
+	public static function validPdoType(string $sType): string
+	{
+		$sType = \trim($sType);
+		return \in_array($sType, static::getAvailableDrivers()) ? $sType : 'sqlite';
+	}
+
 	public function IsSupported() : bool
 	{
 		$aDrivers = static::getAvailableDrivers();

@@ -76,7 +76,22 @@ class Service
 			exit(0);
 		}
 
-		$sQuery = $this->oActions->ParseQueryString();
+		$sQuery = \trim($_SERVER['QUERY_STRING'] ?? '');
+		$iPos = \strpos($sQuery, '&');
+		if (0 < $iPos) {
+			$sQuery = \substr($sQuery, 0, $iPos);
+		}
+		$sQuery = \trim(\trim($sQuery), ' /');
+		$aSubQuery = $_GET['q'] ?? null;
+		if (\is_array($aSubQuery)) {
+			$aSubQuery = \array_map(function ($sS) {
+				return \trim(\trim($sS), ' /');
+			}, $aSubQuery);
+
+			if (\count($aSubQuery)) {
+				$sQuery .= '/' . \implode('/', $aSubQuery);
+			}
+		}
 
 		$this->oActions->Plugins()->RunHook('filter.http-query', array(&$sQuery));
 		$aPaths = \explode('/', $sQuery);

@@ -149,7 +149,7 @@ class Utils
 
 	public static function GetSecureCookie(string $sName)
 	{
-		return isset($_COOKIE[$sName])
+		return isset($_COOKIE[$sName]) && 1024 > \strlen($_COOKIE[$sName])
 			? \SnappyMail\Crypt::DecryptFromJSON(\MailSo\Base\Utils::UrlSafeBase64Decode($_COOKIE[$sName]))
 			: null;
 	}

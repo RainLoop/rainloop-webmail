@@ -42,27 +42,27 @@ class Actions
 	/**
 	 * @var \MailSo\Base\Http
 	 */
-	private $oHttp;
+	private $oHttp = null;
 
 	/**
 	 * @var array
 	 */
-	private $aCurrentActionParams;
+	private $aCurrentActionParams = array();
 
 	/**
 	 * @var \MailSo\Mail\MailClient
 	 */
-	private $oMailClient;
+	private $oMailClient = null;
 
 	/**
 	 * @var \RainLoop\Plugins\Manager
 	 */
-	private $oPlugins;
+	private $oPlugins = null;
 
 	/**
 	 * @var \MailSo\Log\Logger
 	 */
-	private $oLogger;
+	private $oLogger = null;
 
 	/**
 	 * @var \MailSo\Log\Logger
@@ -72,7 +72,7 @@ class Actions
 	/**
 	 * @var array of \MailSo\Cache\CacheClient
 	 */
-	private $aCachers;
+	private $aCachers = array();
 
 	/**
 	 * @var Providers\Identities
@@ -82,77 +82,128 @@ class Actions
 	/**
 	 * @var \RainLoop\Providers\Storage
 	 */
-	private $oStorageProvider;
+	private $oStorageProvider = null;
 
 	/**
 	 * @var \RainLoop\Providers\Storage
 	 */
-	private $oLocalStorageProvider;
+	private $oLocalStorageProvider = null;
 
 	/**
 	 * @var \RainLoop\Providers\Files
 	 */
-	private $oFilesProvider;
+	private $oFilesProvider = null;
 
 	/**
 	 * @var \RainLoop\Providers\Domain
 	 */
-	private $oDomainProvider;
+	private $oDomainProvider = null;
 
 	/**
 	 * @var \RainLoop\Providers\Settings
 	 */
-	private $oSettingsProvider;
+	private $oSettingsProvider = null;
 
 	/**
 	 * @var \RainLoop\Providers\Settings
 	 */
-	private $oLocalSettingsProvider;
+	private $oLocalSettingsProvider = null;
 
 	/**
 	 * @var \RainLoop\Providers\AddressBook
 	 */
-	private $oAddressBookProvider;
+	private $oAddressBookProvider = null;
 
 	/**
 	 * @var \RainLoop\Providers\Suggestions
 	 */
-	private $oSuggestionsProvider;
+	private $oSuggestionsProvider = null;
 
 	/**
 	 * @var \RainLoop\Config\Application
 	 */
-	private $oConfig;
+	private $oConfig = null;
+
+	/**
+	 * @var bool
+	 */
+	private $bIsJson = false;
 
 	/**
 	 * @access private
 	 */
 	function __construct()
 	{
-		$this->aCurrentActionParams = array();
+		$this->oConfig = new Config\Application();
+		if (!$this->oConfig->Load()) {
+			usleep(10000);
+			$this->oConfig->Load();
+		}
 
-		$this->oHttp = null;
-		$this->oLogger = null;
-		$this->oPlugins = null;
-		$this->oMailClient = null;
-		$this->oConfig = null;
-		$this->aCachers = array();
+		$this->oLogger = \MailSo\Log\Logger::SingletonInstance();
+		if (!!$this->oConfig->Get('logs', 'enable', false)) {
+			$sSessionFilter = (string)$this->oConfig->Get('logs', 'session_filter', '');
+			if (!empty($sSessionFilter)) {
+				$aSessionParts = \explode(':', $sSessionFilter, 2);
 
-		$this->oStorageProvider = null;
-		$this->oLocalStorageProvider = null;
-		$this->oSettingsProvider = null;
-		$this->oLocalSettingsProvider = null;
-		$this->oFilesProvider = null;
-		$this->oDomainProvider = null;
-		$this->oAddressBookProvider = null;
-		$this->oSuggestionsProvider = null;
+				if (empty($aSessionParts[0]) || empty($aSessionParts[1]) ||
+					(string)$aSessionParts[1] !== (string)Utils::GetCookie($aSessionParts[0], '')) {
+					return $this->oLogger;
+				}
+			}
 
-		$this->bIsJson = false;
+			$sTimeZone = $this->oConfig->Get('logs', 'time_zone', 'UTC');
 
-		$oConfig = $this->Config();
-		$this->Plugins()->RunHook('filter.application-config', array($oConfig));
+			$this->oLogger->SetShowSecter(!$this->oConfig->Get('logs', 'hide_passwords', true));
 
-		$this->Logger();
+			$sLogFileName = $this->oConfig->Get('logs', 'filename', '');
+
+			$oDriver = null;
+			if ('syslog' === $sLogFileName) {
+				$oDriver = new \MailSo\Log\Drivers\Syslog();
+			} else {
+				$sLogFileFullPath = \APP_PRIVATE_DATA . 'logs/' . $this->compileLogFileName($sLogFileName);
+				$sLogFileDir = \dirname($sLogFileFullPath);
+
+				if (!\is_dir($sLogFileDir)) {
+					\mkdir($sLogFileDir, 0755, true);
+				}
+
+				$oDriver = new \MailSo\Log\Drivers\File($sLogFileFullPath);
+			}
+
+			$this->oLogger->append($oDriver
+				->WriteOnErrorOnly($this->oConfig->Get('logs', 'write_on_error_only', false))
+				->WriteOnPhpErrorOnly($this->oConfig->Get('logs', 'write_on_php_error_only', false))
+				->WriteOnTimeoutOnly($this->oConfig->Get('logs', 'write_on_timeout_only', 0))
+				->SetTimeZone($sTimeZone)
+			);
+
+			if (!$this->oConfig->Get('debug', 'enable', false)) {
+				$this->oLogger->AddForbiddenType(\MailSo\Log\Enumerations\Type::TIME);
+			}
+
+			$this->oLogger->WriteEmptyLine();
+
+			$oHttp = $this->Http();
+
+			$this->oLogger->Write('[DATE:' . (new \DateTime('now', new \DateTimeZone($sTimeZone)))->format('Y-m-d ') .
+				$sTimeZone .
+				'][SM:' . APP_VERSION . '][IP:' .
+				$oHttp->GetClientIp($this->oConfig->Get('labs', 'http_client_ip_check_proxy', false)) . '][PID:' .
+				(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown') . '][' .
+				$oHttp->GetServer('SERVER_SOFTWARE', '~') . '][' .
+				(\MailSo\Base\Utils::FunctionExistsAndEnabled('php_sapi_name') ? \php_sapi_name() : '~') . '][Streams:' . \implode(',', \stream_get_transports()) . ']'
+			);
+
+			$this->oLogger->Write(
+				'[' . $oHttp->GetMethod() . '] ' . $oHttp->GetScheme() . '://' . $oHttp->GetHost(false, false) . $oHttp->GetServer('REQUEST_URI', ''),
+				\MailSo\Log\Enumerations\Type::NOTE, 'REQUEST');
+		}
+
+		$this->oPlugins = new Plugins\Manager($this);
+		$this->oPlugins->SetLogger($this->oLogger);
+		$this->oPlugins->RunHook('filter.application-config', array($this->oConfig));
 	}
 
 	public function SetIsJson(bool $bIsJson): self
@@ -169,29 +220,6 @@ class Actions
 
 	public function Config(): Config\Application
 	{
-		if (null === $this->oConfig) {
-			$this->oConfig = new Config\Application();
-			if (!$this->oConfig->Load()) {
-				usleep(10000);
-				$this->oConfig->Load();
-			}
-
-//			if (!$bLoaded && !$this->oConfig->IsFileExists())
-//			{
-//				$bSave = true;
-//			}
-//
-//			if ($bLoaded && !$bSave)
-//			{
-//				$bSave = APP_VERSION !== $this->oConfig->Get('version', 'current');
-//			}
-//
-//			if ($bSave)
-//			{
-//				$this->oConfig->Save();
-//			}
-		}
-
 		return $this->oConfig;
 	}
 
@@ -201,7 +229,7 @@ class Actions
 	private function fabrica(string $sName, ?Model\Account $oAccount = null)
 	{
 		$mResult = null;
-		$this->Plugins()->RunHook('main.fabrica', array($sName, &$mResult), false);
+		$this->oPlugins->RunHook('main.fabrica', array($sName, &$mResult), false);
 
 		if (null === $mResult) {
 			switch ($sName) {
@@ -232,15 +260,15 @@ class Actions
 				case 'filters':
 					// Providers\Filters\FiltersInterface
 					$mResult = new Providers\Filters\SieveStorage(
-						$this->Plugins(), $this->Config()
+						$this->oPlugins, $this->oConfig
 					);
 					break;
 				case 'address-book':
 					// Providers\AddressBook\AddressBookInterface
-					$sDsn = \trim($this->Config()->Get('contacts', 'pdo_dsn', ''));
-					$sUser = \trim($this->Config()->Get('contacts', 'pdo_user', ''));
-					$sPassword = (string)$this->Config()->Get('contacts', 'pdo_password', '');
-					$sDsnType = $this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
+					$sDsn = \trim($this->oConfig->Get('contacts', 'pdo_dsn', ''));
+					$sUser = \trim($this->oConfig->Get('contacts', 'pdo_user', ''));
+					$sPassword = (string)$this->oConfig->Get('contacts', 'pdo_password', '');
+					$sDsnType = Providers\AddressBook\PdoAddressBook::validPdoType($this->oConfig->Get('contacts', 'type', 'sqlite'));
 					if ('sqlite' === $sDsnType) {
 						$sUser = $sPassword = '';
 						$sDsn = 'sqlite:' . APP_PRIVATE_DATA . 'AddressBook.sqlite';
@@ -263,11 +291,11 @@ class Actions
 
 		foreach (\is_array($mResult) ? $mResult : array($mResult) as $oItem) {
 			if ($oItem && \method_exists($oItem, 'SetLogger')) {
-				$oItem->SetLogger($this->Logger());
+				$oItem->SetLogger($this->oLogger);
 			}
 		}
 
-		$this->Plugins()->RunHook('filter.fabrica', array($sName, &$mResult, $oAccount), false);
+		$this->oPlugins->RunHook('filter.fabrica', array($sName, &$mResult, $oAccount), false);
 
 		return $mResult;
 	}
@@ -283,37 +311,12 @@ class Actions
 		}
 	}
 
-	public function ParseQueryString(): string
-	{
-		$sQuery = \trim($_SERVER['QUERY_STRING'] ?? '');
-
-		$iPos = \strpos($sQuery, '&');
-		if (0 < $iPos) {
-			$sQuery = \substr($sQuery, 0, $iPos);
-		}
-
-		$sQuery = \trim(\trim($sQuery), ' /');
-
-		$aSubQuery = $_GET['q'] ?? null;
-		if (\is_array($aSubQuery)) {
-			$aSubQuery = \array_map(function ($sS) {
-				return \trim(\trim($sS), ' /');
-			}, $aSubQuery);
-
-			if (\count($aSubQuery)) {
-				$sQuery .= '/' . \implode('/', $aSubQuery);
-			}
-		}
-
-		return $sQuery;
-	}
-
 	private function compileLogParams(string $sLine, ?Model\Account $oAccount = null, bool $bUrlEncode = false, array $aAdditionalParams = array()): string
 	{
 		$aClear = array();
 
 		if (false !== \strpos($sLine, '{date:')) {
-			$oConfig = $this->Config();
+			$oConfig = $this->oConfig;
 			$sLine = \preg_replace_callback('/\{date:([^}]+)\}/', function ($aMatch) use ($oConfig, $bUrlEncode) {
 				return Utils::UrlEncode((new \DateTime('now', new \DateTimeZone($oConfig->Get('logs', 'time_zone', 'UTC'))))->format($aMatch[1]), $bUrlEncode);
 			}, $sLine);
@@ -343,7 +346,7 @@ class Actions
 		if (false !== \strpos($sLine, '{request:')) {
 			if (false !== \strpos($sLine, '{request:ip}')) {
 				$sLine = \str_replace('{request:ip}', Utils::UrlEncode($this->Http()->GetClientIp(
-					$this->Config()->Get('labs', 'http_client_ip_check_proxy', false)), $bUrlEncode), $sLine);
+					$this->oConfig->Get('labs', 'http_client_ip_check_proxy', false)), $bUrlEncode), $sLine);
 			}
 
 			if (false !== \strpos($sLine, '{request:domain}')) {
@@ -371,7 +374,7 @@ class Actions
 
 			if (false !== \strpos($sLine, '{user:ip}')) {
 				$sLine = \str_replace('{user:ip}', Utils::UrlEncode($this->Http()->GetClientIp(
-					$this->Config()->Get('labs', 'http_client_ip_check_proxy', false)), $bUrlEncode), $sLine);
+					$this->oConfig->Get('labs', 'http_client_ip_check_proxy', false)), $bUrlEncode), $sLine);
 			}
 
 			if (\preg_match('/\{user:(email|login|domain)\}/i', $sLine)) {
@@ -454,7 +457,7 @@ class Actions
 	{
 		if (null === $this->oMailClient) {
 			$this->oMailClient = new \MailSo\Mail\MailClient();
-			$this->oMailClient->SetLogger($this->Logger());
+			$this->oMailClient->SetLogger($this->oLogger);
 		}
 
 		return $this->oMailClient;
@@ -521,7 +524,7 @@ class Actions
 	{
 		if (null === $this->oDomainProvider) {
 			$this->oDomainProvider = new Providers\Domain(
-				$this->fabrica('domain'), $this->Plugins());
+				$this->fabrica('domain'), $this->oPlugins);
 		}
 
 		return $this->oDomainProvider;
@@ -542,13 +545,13 @@ class Actions
 		if (null === $this->oAddressBookProvider) {
 			$oDriver = null;
 			if ($this->GetCapa(false, Enumerations\Capa::CONTACTS, $oAccount)) {
-				if ($this->Config()->Get('contacts', 'enable', false) || $bForceEnable) {
+				if ($this->oConfig->Get('contacts', 'enable', false) || $bForceEnable) {
 					$oDriver = $this->fabrica('address-book', $oAccount);
 				}
 			}
 
 			$this->oAddressBookProvider = new Providers\AddressBook($oDriver);
-			$this->oAddressBookProvider->SetLogger($this->Logger());
+			$this->oAddressBookProvider->SetLogger($this->oLogger);
 		}
 
 		return $this->oAddressBookProvider;
@@ -570,7 +573,7 @@ class Actions
 			$this->aCachers[$sIndexKey] = new \MailSo\Cache\CacheClient();
 
 			$oDriver = null;
-			$sDriver = \strtoupper(\trim($this->Config()->Get('cache', 'fast_cache_driver', 'files')));
+			$sDriver = \strtoupper(\trim($this->oConfig->Get('cache', 'fast_cache_driver', 'files')));
 
 			switch (true) {
 				default:
@@ -588,8 +591,8 @@ class Actions
 				case ('MEMCACHE' === $sDriver || 'MEMCACHED' === $sDriver) &&
 					(\class_exists('Memcache',false) || \class_exists('Memcached',false)):
 					$oDriver = new \MailSo\Cache\Drivers\Memcache(
-						$this->Config()->Get('labs', 'fast_cache_memcache_host', '127.0.0.1'),
-						(int) $this->Config()->Get('labs', 'fast_cache_memcache_port', 11211),
+						$this->oConfig->Get('labs', 'fast_cache_memcache_host', '127.0.0.1'),
+						(int) $this->oConfig->Get('labs', 'fast_cache_memcache_port', 11211),
 						43200,
 						$sKey
 					);
@@ -597,8 +600,8 @@ class Actions
 
 				case 'REDIS' === $sDriver && \class_exists('Predis\Client'):
 					$oDriver = new \MailSo\Cache\Drivers\Redis(
-						$this->Config()->Get('labs', 'fast_cache_redis_host', '127.0.0.1'),
-						(int) $this->Config()->Get('labs', 'fast_cache_redis_port', 6379),
+						$this->oConfig->Get('labs', 'fast_cache_redis_host', '127.0.0.1'),
+						(int) $this->oConfig->Get('labs', 'fast_cache_redis_port', 6379),
 						43200,
 						$sKey
 					);
@@ -609,7 +612,7 @@ class Actions
 				$this->aCachers[$sIndexKey]->SetDriver($oDriver);
 			}
 
-			$this->aCachers[$sIndexKey]->SetCacheIndex($this->Config()->Get('cache', 'fast_cache_index', ''));
+			$this->aCachers[$sIndexKey]->SetCacheIndex($this->oConfig->Get('cache', 'fast_cache_index', ''));
 		}
 
 		return $this->aCachers[$sIndexKey];
@@ -617,80 +620,11 @@ class Actions
 
 	public function Plugins(): Plugins\Manager
 	{
-		if (null === $this->oPlugins) {
-			$this->oPlugins = new Plugins\Manager($this);
-			$this->oPlugins->SetLogger($this->Logger());
-		}
-
 		return $this->oPlugins;
 	}
 
 	public function Logger(): \MailSo\Log\Logger
 	{
-		if (null === $this->oLogger) {
-			$this->oLogger = \MailSo\Log\Logger::SingletonInstance();
-
-			if (!!$this->Config()->Get('logs', 'enable', false)) {
-				$sSessionFilter = (string)$this->Config()->Get('logs', 'session_filter', '');
-				if (!empty($sSessionFilter)) {
-					$aSessionParts = \explode(':', $sSessionFilter, 2);
-
-					if (empty($aSessionParts[0]) || empty($aSessionParts[1]) ||
-						(string)$aSessionParts[1] !== (string)Utils::GetCookie($aSessionParts[0], '')) {
-						return $this->oLogger;
-					}
-				}
-
-				$sTimeZone = $this->Config()->Get('logs', 'time_zone', 'UTC');
-
-				$this->oLogger->SetShowSecter(!$this->Config()->Get('logs', 'hide_passwords', true));
-
-				$sLogFileName = $this->Config()->Get('logs', 'filename', '');
-
-				$oDriver = null;
-				if ('syslog' === $sLogFileName) {
-					$oDriver = new \MailSo\Log\Drivers\Syslog();
-				} else {
-					$sLogFileFullPath = \APP_PRIVATE_DATA . 'logs/' . $this->compileLogFileName($sLogFileName);
-					$sLogFileDir = \dirname($sLogFileFullPath);
-
-					if (!\is_dir($sLogFileDir)) {
-						\mkdir($sLogFileDir, 0755, true);
-					}
-
-					$oDriver = new \MailSo\Log\Drivers\File($sLogFileFullPath);
-				}
-
-				$this->oLogger->append($oDriver
-					->WriteOnErrorOnly($this->Config()->Get('logs', 'write_on_error_only', false))
-					->WriteOnPhpErrorOnly($this->Config()->Get('logs', 'write_on_php_error_only', false))
-					->WriteOnTimeoutOnly($this->Config()->Get('logs', 'write_on_timeout_only', 0))
-					->SetTimeZone($sTimeZone)
-				);
-
-				if (!$this->Config()->Get('debug', 'enable', false)) {
-					$this->oLogger->AddForbiddenType(\MailSo\Log\Enumerations\Type::TIME);
-				}
-
-				$this->oLogger->WriteEmptyLine();
-
-				$oHttp = $this->Http();
-
-				$this->oLogger->Write('[DATE:' . (new \DateTime('now', new \DateTimeZone($sTimeZone)))->format('Y-m-d ') .
-					$sTimeZone .
-					'][SM:' . APP_VERSION . '][IP:' .
-					$oHttp->GetClientIp($this->Config()->Get('labs', 'http_client_ip_check_proxy', false)) . '][PID:' .
-					(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown') . '][' .
-					$oHttp->GetServer('SERVER_SOFTWARE', '~') . '][' .
-					(\MailSo\Base\Utils::FunctionExistsAndEnabled('php_sapi_name') ? \php_sapi_name() : '~') . '][Streams:' . \implode(',', \stream_get_transports()) . ']'
-				);
-
-				$this->oLogger->Write(
-					'[' . $oHttp->GetMethod() . '] ' . $oHttp->GetScheme() . '://' . $oHttp->GetHost(false, false) . $oHttp->GetServer('REQUEST_URI', ''),
-					\MailSo\Log\Enumerations\Type::NOTE, 'REQUEST');
-			}
-		}
-
 		return $this->oLogger;
 	}
 
@@ -699,9 +633,9 @@ class Actions
 		if (null === $this->oLoggerAuth) {
 			$this->oLoggerAuth = new \MailSo\Log\Logger(false);
 
-			if (!!$this->Config()->Get('logs', 'auth_logging', false)) {
+			if (!!$this->oConfig->Get('logs', 'auth_logging', false)) {
 				$sAuthLogFileFullPath = \APP_PRIVATE_DATA . 'logs/' . $this->compileLogFileName(
-						$this->Config()->Get('logs', 'auth_logging_filename', ''));
+						$this->oConfig->Get('logs', 'auth_logging_filename', ''));
 
 				$sLogFileDir = \dirname($sAuthLogFileFullPath);
 
@@ -728,11 +662,11 @@ class Actions
 
 	public function LoggerAuthHelper(?Model\Account $oAccount = null, array $aAdditionalParams = array()): void
 	{
-		$sLine = $this->Config()->Get('logs', 'auth_logging_format', '');
+		$sLine = $this->oConfig->Get('logs', 'auth_logging_format', '');
 		if (!empty($sLine)) {
 			$this->LoggerAuth()->Write($this->compileLogParams($sLine, $oAccount, false, $aAdditionalParams));
 		}
-		if ($this->Config()->Get('logs', 'auth_logging', false) && \openlog('snappymail', 0, \LOG_AUTHPRIV)) {
+		if ($this->oConfig->Get('logs', 'auth_logging', false) && \openlog('snappymail', 0, \LOG_AUTHPRIV)) {
 			\syslog(\LOG_ERR, $this->compileLogParams('Auth failed: ip={request:ip} user={imap:login}', $oAccount, false, $aAdditionalParams));
 			\closelog();
 		}
@@ -752,7 +686,7 @@ class Actions
 
 	public function AppDataSystem(bool $bAdmin = false): array
 	{
-		$oConfig = $this->Config();
+		$oConfig = $this->oConfig;
 
 		$aAttachmentsActions = array();
 		if ($this->GetCapa(false, Enumerations\Capa::ATTACHMENTS_ACTIONS)) {
@@ -791,7 +725,7 @@ class Actions
 	public function AppData(bool $bAdmin): array
 	{
 		$oAccount = null;
-		$oConfig = $this->Config();
+		$oConfig = $this->oConfig;
 
 		/*
 		required by Index.html and rl.js:
@@ -888,7 +822,7 @@ class Actions
 
 				$aResult['ContactsEnable'] = (bool)$oConfig->Get('contacts', 'enable', false);
 				$aResult['ContactsSync'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
-				$aResult['ContactsPdoType'] = (string)$this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
+				$aResult['ContactsPdoType'] = Providers\AddressBook\PdoAddressBook::validPdoType($this->oConfig->Get('contacts', 'type', 'sqlite'));
 				$aResult['ContactsPdoDsn'] = (string)$oConfig->Get('contacts', 'pdo_dsn', '');
 				$aResult['ContactsPdoType'] = (string)$oConfig->Get('contacts', 'type', '');
 				$aResult['ContactsPdoUser'] = (string)$oConfig->Get('contacts', 'pdo_user', '');
@@ -1025,11 +959,11 @@ class Actions
 		}
 
 		$aResult['PluginsLink'] = '';
-		if (0 < $this->Plugins()->Count() && $this->Plugins()->HaveJs($bAdmin)) {
+		if (0 < $this->oPlugins->Count() && $this->oPlugins->HaveJs($bAdmin)) {
 			$aResult['PluginsLink'] = './?/Plugins/0/' . ($bAdmin ? 'Admin' : 'User') . '/' . $sStaticCache . '/';
 		}
 
-		$bAppJsDebug = !!$this->Config()->Get('labs', 'use_app_debug_js', false);
+		$bAppJsDebug = !!$this->oConfig->Get('labs', 'use_app_debug_js', false);
 
 		$aResult['StaticLibJsLink'] = $this->StaticPath('js/' . ($bAppJsDebug ? '' : 'min/') .
 			'libs' . ($bAppJsDebug ? '' : '.min') . '.js');
@@ -1044,7 +978,7 @@ class Actions
 		$aResult['MailToEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['MailToEmail']);
 		$aResult['DevEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['DevEmail']);
 
-		$this->Plugins()->InitAppData($bAdmin, $aResult, $oAccount);
+		$this->oPlugins->InitAppData($bAdmin, $aResult, $oAccount);
 
 		return $aResult;
 	}
@@ -1059,7 +993,7 @@ class Actions
 
 	protected function loginErrorDelay(): void
 	{
-		$iDelay = (int)$this->Config()->Get('labs', 'login_fault_delay', 0);
+		$iDelay = (int)$this->oConfig->Get('labs', 'login_fault_delay', 0);
 		if (0 < $iDelay) {
 			$this->requestSleep($iDelay);
 		}
@@ -1344,7 +1278,7 @@ class Actions
 				}
 
 				if (\count($aData)) {
-					$this->Logger()->Write('Import contacts from csv');
+					$this->oLogger->Write('Import contacts from csv');
 					$iCount = $oAddressBookProvider->ImportCsvArray(
 						$this->GetMainEmail($oAccount),
 						$aData
@@ -1367,7 +1301,7 @@ class Actions
 
 		$_FILES = isset($_FILES) ? $_FILES : null;
 		if ($oAccount &&
-			$this->Config()->Get('labs', 'allow_message_append', false) &&
+			$this->oConfig->Get('labs', 'allow_message_append', false) &&
 			isset($_FILES, $_FILES['AppendFile'], $_FILES['AppendFile']['name'],
 				$_FILES['AppendFile']['tmp_name'], $_FILES['AppendFile']['size'])) {
 			if (is_string($_FILES['AppendFile']['tmp_name']) && \strlen($_FILES['AppendFile']['tmp_name'])) {
@@ -1392,7 +1326,7 @@ class Actions
 
 	public function Capa(bool $bAdmin, ?Model\Account $oAccount = null): array
 	{
-		$oConfig = $this->Config();
+		$oConfig = $this->oConfig;
 
 		$aResult = array();
 
@@ -1472,14 +1406,14 @@ class Actions
 
 	public function etag(string $sKey): string
 	{
-		return \md5('Etag:' . \md5($sKey . \md5($this->Config()->Get('cache', 'index', ''))));
+		return \md5('Etag:' . \md5($sKey . \md5($this->oConfig->Get('cache', 'index', ''))));
 	}
 
 	public function cacheByKey(string $sKey, bool $bForce = false): bool
 	{
 		$bResult = false;
-		if (!empty($sKey) && ($bForce || ($this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true)))) {
-			$iExpires = $this->Config()->Get('cache', 'http_expires', 3600);
+		if (!empty($sKey) && ($bForce || ($this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true)))) {
+			$iExpires = $this->oConfig->Get('cache', 'http_expires', 3600);
 			if (0 < $iExpires) {
 				$this->Http()->ServerUseCache($this->etag($sKey), 1382478804, \time() + $iExpires);
 				$bResult = true;
@@ -1495,7 +1429,7 @@ class Actions
 
 	public function verifyCacheByKey(string $sKey, bool $bForce = false): void
 	{
-		if (!empty($sKey) && ($bForce || $this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true))) {
+		if (!empty($sKey) && ($bForce || $this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true))) {
 			$sIfNoneMatch = $this->Http()->GetHeader('If-None-Match', '');
 			if ($this->etag($sKey) === $sIfNoneMatch) {
 				\MailSo\Base\Http::StatusHeader(304);
@@ -1513,14 +1447,14 @@ class Actions
 			$oAccount = $this->getAccountFromToken();
 
 			try {
-				$oAccount->IncConnectAndLoginHelper($this->Plugins(), $this->MailClient(), $this->Config());
+				$oAccount->IncConnectAndLoginHelper($this->oPlugins, $this->MailClient(), $this->oConfig);
 			} catch (\MailSo\Net\Exceptions\ConnectionException $oException) {
 				throw new Exceptions\ClientException(Notifications::ConnectionError, $oException);
 			} catch (\Throwable $oException) {
 				throw new Exceptions\ClientException(Notifications::AuthError, $oException);
 			}
 
-			$this->MailClient()->ImapClient()->__FORCE_SELECT_ON_EXAMINE__ = !!$this->Config()->Get('labs', 'use_imap_force_selection');
+			$this->MailClient()->ImapClient()->__FORCE_SELECT_ON_EXAMINE__ = !!$this->oConfig->Get('labs', 'use_imap_force_selection');
 		}
 
 		return $oAccount;
@@ -1535,27 +1469,14 @@ class Actions
 	{
 		static $sCache = null;
 		if (!$sCache) {
-			$sCache = \md5(APP_VERSION . $this->Plugins()->Hash());
+			$sCache = \md5(APP_VERSION . $this->oPlugins->Hash());
 		}
 		return $sCache;
 	}
 
-	public function ValidateContactPdoType(string $sType): string
-	{
-		return \in_array($sType, \RainLoop\Common\PdoAbstract::getAvailableDrivers()) ? $sType : 'sqlite';
-	}
-
-	public function ProcessTemplate(string $sName, string $sHtml): string
-	{
-		$sHtml = \preg_replace('/<script/i', '<x-script', $sHtml);
-		$sHtml = \preg_replace('/<\/script>/i', '</x-script>', $sHtml);
-
-		return Utils::ClearHtmlOutput($sHtml);
-	}
-
 	public function SetActionParams(array $aCurrentActionParams, string $sMethodName = ''): self
 	{
-		$this->Plugins()->RunHook('filter.action-params', array($sMethodName, &$aCurrentActionParams));
+		$this->oPlugins->RunHook('filter.action-params', array($sMethodName, &$aCurrentActionParams));
 
 		$this->aCurrentActionParams = $aCurrentActionParams;
 
@@ -1569,14 +1490,11 @@ class Actions
 	 */
 	public function GetActionParam(string $sKey, $mDefault = null)
 	{
-		return \is_array($this->aCurrentActionParams) && isset($this->aCurrentActionParams[$sKey]) ?
+		return isset($this->aCurrentActionParams[$sKey]) ?
 			$this->aCurrentActionParams[$sKey] : $mDefault;
 	}
 
-	/**
-	 * @return mixed
-	 */
-	public function GetActionParams()
+	public function GetActionParams(): array
 	{
 		return $this->aCurrentActionParams;
 	}
@@ -1588,7 +1506,7 @@ class Actions
 
 	public function Location(string $sUrl): void
 	{
-		$this->Logger()->Write('Location: ' . $sUrl);
+		$this->oLogger->Write('Location: ' . $sUrl);
 		\header('Location: ' . $sUrl);
 	}
 

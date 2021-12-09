@@ -15,7 +15,6 @@ class Manager
 		$aJs = array([], []),
 		$aTemplates = array(),
 		$aAdminTemplates = array(),
-		$aProcessTemplate = array(),
 		$aAdditionalParts = array(),
 		$aAdditionalJson = array(),
 		$aPlugins = array();
@@ -158,13 +157,9 @@ class Manager
 
 	public function Hash() : string
 	{
-		$sResult = \md5(APP_VERSION);
-		foreach ($this->aPlugins as $oPlugin)
-		{
-			$sResult = \md5($sResult.$oPlugin->Path().$oPlugin->Hash());
-		}
-
-		return $sResult;
+		return \md5(\array_reduce($this->aPlugins, function($sResult, $oPlugin){
+			$sResult .= "|{$oPlugin->Hash()}";
+		}, APP_VERSION));
 	}
 
 	public function HaveJs(bool $bAdminScope = false) : bool
@@ -370,33 +365,6 @@ class Manager
 		}
 
 		return $bResult;
-	}
-
-	public function AddProcessTemplateAction(string $sName, string $sPlace, string $sHtml, bool $bPrepend = false) : self
-	{
-		if ($this->bIsEnabled)
-		{
-			if (!isset($this->aProcessTemplate[$sName]))
-			{
-				$this->aProcessTemplate[$sName] = array();
-			}
-
-			if (!isset($this->aProcessTemplate[$sName][$sPlace]))
-			{
-				$this->aProcessTemplate[$sName][$sPlace] = array();
-			}
-
-			if ($bPrepend)
-			{
-				\array_unshift($this->aProcessTemplate[$sName][$sPlace], $sHtml);
-			}
-			else
-			{
-				\array_push($this->aProcessTemplate[$sName][$sPlace], $sHtml);
-			}
-		}
-
-		return $this;
 	}
 
 	/**

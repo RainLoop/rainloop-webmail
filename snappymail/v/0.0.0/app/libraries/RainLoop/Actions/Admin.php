@@ -142,7 +142,7 @@ trait Admin
 		$this->setConfigFromParams($oConfig, 'ContactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
 
 		$this->setConfigFromParams($oConfig, 'ContactsPdoType', 'contacts', 'type', 'string', function ($sType) use ($self) {
-			return $self->ValidateContactPdoType($sType);
+			return \RainLoop\Providers\AddressBook\PdoAddressBook::validPdoType($sType);
 		});
 
 		$this->setCapaFromParams($oConfig, 'CapaAdditionalAccounts', Capa::ADDITIONAL_ACCOUNTS);
@@ -219,7 +219,7 @@ trait Admin
 
 		$self = $this;
 		$this->setConfigFromParams($oConfig, 'ContactsPdoType', 'contacts', 'type', 'string', function ($sType) use ($self) {
-			return $self->ValidateContactPdoType($sType);
+			return \RainLoop\Providers\AddressBook\PdoAddressBook::validPdoType($sType);
 		});
 
 		$sTestMessage = $this->AddressBookProvider(null, true)->Test();
