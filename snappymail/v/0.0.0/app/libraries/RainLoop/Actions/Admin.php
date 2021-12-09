@@ -11,34 +11,29 @@ use RainLoop\Utils;
 
 trait Admin
 {
-	private static $AUTH_ADMIN_TOKEN_KEY = 'rlaauth';
+	private static $AUTH_ADMIN_TOKEN_KEY = 'smadmin';
 
 	public function IsAdminLoggined(bool $bThrowExceptionOnFalse = true) : bool
 	{
-		$bResult = false;
-		if ($this->Config()->Get('security', 'allow_admin_panel', true))
-		{
-			$aAdminHash = Utils::DecodeKeyValuesQ($this->getAdminAuthToken());
-			if (!empty($aAdminHash[0]) && !empty($aAdminHash[1]) && !empty($aAdminHash[2]) &&
-				'token' === $aAdminHash[0] && \md5(APP_SALT) === $aAdminHash[1] &&
-				'' !== $this->Cacher(null, true)->Get(KeyPathHelper::SessionAdminKey($aAdminHash[2]), '')
-			)
-			{
-				$bResult = true;
+		if ($this->Config()->Get('security', 'allow_admin_panel', true)) {
+			$sAdminKey = $this->getAdminAuthKey();
+			if ($sAdminKey && '' !== $this->Cacher(null, true)->Get(KeyPathHelper::SessionAdminKey($sAdminKey), '')) {
+				return true;
 			}
 		}
 
-		if (!$bResult && $bThrowExceptionOnFalse)
+		if ($bThrowExceptionOnFalse)
 		{
 			throw new ClientException(Notifications::AuthError);
 		}
 
-		return $bResult;
+		return false;
 	}
 
-	private function getAdminAuthToken() : string
+	private function getAdminAuthKey() : string
 	{
-		return Utils::GetCookie(static::$AUTH_ADMIN_TOKEN_KEY, '');
+		$aAdminHash = Utils::DecodeKeyValuesQ(Utils::GetCookie(static::$AUTH_ADMIN_TOKEN_KEY, ''));
+		return (empty($aAdminHash[1]) || 'token' !== $aAdminHash[0]) ? '' : $aAdminHash[1];
 	}
 
 	private function setAdminAuthToken(string $sToken) : void
@@ -48,15 +43,10 @@ trait Admin
 
 	public function ClearAdminAuthToken() : void
 	{
-		$aAdminHash = Utils::DecodeKeyValuesQ($this->getAdminAuthToken());
-		if (
-			!empty($aAdminHash[0]) && !empty($aAdminHash[1]) && !empty($aAdminHash[2]) &&
-			'token' === $aAdminHash[0] && \md5(APP_SALT) === $aAdminHash[1]
-		)
-		{
-			$this->Cacher(null, true)->Delete(KeyPathHelper::SessionAdminKey($aAdminHash[2]));
+		$sAdminKey = $this->getAdminAuthKey();
+		if ($sAdminKey) {
+			$this->Cacher(null, true)->Delete(KeyPathHelper::SessionAdminKey($sAdminKey));
 		}
-
 		Utils::ClearCookie(static::$AUTH_ADMIN_TOKEN_KEY);
 	}
 
@@ -70,7 +60,7 @@ trait Admin
 			return '';
 		}
 
-		return Utils::EncodeKeyValuesQ(array('token', \md5(APP_SALT), $sRand));
+		return Utils::EncodeKeyValuesQ(array('token', $sRand));
 	}
 
 	private function setCapaFromParams(\RainLoop\Config\Application $oConfig, string $sParamName, string $sCapa) : void
