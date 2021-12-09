@@ -15,8 +15,8 @@ trait UserAuth
 	/**
 	 * @var string
 	 */
-	private $oAdditionalAuthAccount = null;
-	private $oMainAuthAccount = null;
+	private $oAdditionalAuthAccount = false;
+	private $oMainAuthAccount = false;
 
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
@@ -182,7 +182,7 @@ trait UserAuth
 	{
 		$this->getMainAccountFromToken($bThrowExceptionOnFalse);
 
-		if (\is_null($this->oAdditionalAuthAccount) && isset($_COOKIE[self::AUTH_ADDITIONAL_TOKEN_KEY])) {
+		if (false === $this->oAdditionalAuthAccount && isset($_COOKIE[self::AUTH_ADDITIONAL_TOKEN_KEY])) {
 			$aData = Utils::GetSecureCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
 			if ($aData) {
 				$this->oAdditionalAuthAccount = AdditionalAccount::NewInstanceFromTokenArray(
@@ -192,7 +192,7 @@ trait UserAuth
 				);
 			}
 			if (!$this->oAdditionalAuthAccount) {
-				$this->oAdditionalAuthAccount = false;
+				$this->oAdditionalAuthAccount = null;
 				Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
 			}
 		}
@@ -205,7 +205,8 @@ trait UserAuth
 	 */
 	public function getMainAccountFromToken(bool $bThrowExceptionOnFalse = true): ?MainAccount
 	{
-		if (!$this->oMainAuthAccount) {
+		if (false === $this->oMainAuthAccount) {
+			$this->oMainAuthAccount = null;
 			if (isset($_COOKIE[self::AUTH_SPEC_LOGOUT_TOKEN_KEY])) {
 				Utils::ClearCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY);
 				Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
