@@ -29,7 +29,9 @@ trait Messages
 			$oParams->iLimit = (int) $aValues['Limit'];
 			$oParams->sSearch = (string) $aValues['Search'];
 			$oParams->sSort = (string) $aValues['Sort'];
-			$oParams->iPrevUidNext = (int) $aValues['UidNext'];
+			if (isset($aValues['UidNext'])) {
+				$oParams->iPrevUidNext = (int) $aValues['UidNext'];
+			}
 			$oParams->bUseThreads = !empty($aValues['UseThreads']);
 			if ($oParams->bUseThreads && isset($aValues['ThreadUid'])) {
 				$oParams->iThreadUid = (int) $aValues['ThreadUid'];
