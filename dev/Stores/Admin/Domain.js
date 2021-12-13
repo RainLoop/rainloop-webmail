@@ -23,5 +23,4 @@ DomainAdminStore.fetch = () => {
 		}, {
 			IncludeAliases: 1
 		});
-	Remote.domainList();
 };
