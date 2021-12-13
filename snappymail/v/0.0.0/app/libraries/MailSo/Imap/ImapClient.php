@@ -98,8 +98,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		$this->aCapabilityItems = $this->getResponse('*')->getCapabilityResult();
 
-		if (\MailSo\Net\Enumerations\ConnectionSecurityType::UseStartTLS(
-			$this->IsSupported('STARTTLS'), $this->iSecurityType))
+		if ($this->IsSupported('STARTTLS') && \MailSo\Net\Enumerations\ConnectionSecurityType::UseStartTLS($this->iSecurityType))
 		{
 			$this->SendRequestGetResponse('STARTTLS');
 			$this->EnableCrypto();

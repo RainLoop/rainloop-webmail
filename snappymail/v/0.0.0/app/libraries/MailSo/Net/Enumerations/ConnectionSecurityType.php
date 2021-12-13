@@ -47,11 +47,11 @@ abstract class ConnectionSecurityType
 		return self::SSL === $iResult;
 	}
 
-	public static function UseStartTLS(bool $bSupported, int $iSecurityType, bool $bHasSupportedAuth = true) : bool
+	public static function UseStartTLS(int $iSecurityType, bool $bHasSupportedAuth = true) : bool
 	{
-		return ($bSupported &&
-			(self::STARTTLS === $iSecurityType ||
-				(self::AUTO_DETECT === $iSecurityType && (!$bHasSupportedAuth || \MailSo\Config::$PreferStartTlsIfAutoDetect))) &&
-			\defined('STREAM_CRYPTO_METHOD_TLS_CLIENT') && \MailSo\Base\Utils::FunctionExistsAndEnabled('stream_socket_enable_crypto'));
+		return
+			(self::STARTTLS === $iSecurityType
+			 || (self::AUTO_DETECT === $iSecurityType && (!$bHasSupportedAuth || \MailSo\Config::$PreferStartTlsIfAutoDetect)))
+		 && \defined('STREAM_CRYPTO_METHOD_TLS_CLIENT') && \MailSo\Base\Utils::FunctionExistsAndEnabled('stream_socket_enable_crypto');
 	}
 }

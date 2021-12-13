@@ -72,8 +72,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		$this->validateResponse($aResponse);
 		$this->parseStartupResponse($aResponse);
 
-		if (\MailSo\Net\Enumerations\ConnectionSecurityType::UseStartTLS(
-			$this->IsSupported('STARTTLS'), $this->iSecurityType))
+		if ($this->IsSupported('STARTTLS') && \MailSo\Net\Enumerations\ConnectionSecurityType::UseStartTLS($this->iSecurityType))
 		{
 			$this->sendRequestWithCheck('STARTTLS');
 			$this->EnableCrypto();

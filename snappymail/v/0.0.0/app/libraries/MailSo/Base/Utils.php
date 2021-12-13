@@ -1273,7 +1273,7 @@ abstract class Utils
 
 		return !empty($mFunctionNameOrNames)
 			&& \function_exists($mFunctionNameOrNames)
-			&& !\is_callable($mFunctionNameOrNames);
+			&& \is_callable($mFunctionNameOrNames);
 	}
 
 	public static function ClearNullBite($mValue) : string
