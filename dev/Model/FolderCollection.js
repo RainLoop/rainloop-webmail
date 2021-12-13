@@ -219,6 +219,7 @@ export class FolderModel extends AbstractModel {
 			deleteAccess: false,
 
 			nameForEdit: '',
+			errorMsg: '',
 
 			privateMessageCountAll: 0,
 			privateMessageCountUnread: 0,

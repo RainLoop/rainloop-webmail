@@ -3,15 +3,17 @@ import { doc, createElement } from 'Common/Globals';
 import { SaveSettingsStep } from 'Common/Enums';
 import { arrayLength, isFunction } from 'Common/Utils';
 
-const
-	koValue = value => !ko.isObservable(value) && isFunction(value) ? value() : ko.unwrap(value);
-
 ko.bindingHandlers.tooltipErrorTip = {
-	init: element => {
-		doc.addEventListener('click', () => element.removeAttribute('data-rainloopErrorTip'));
+	init: (element, fValueAccessor) => {
+		doc.addEventListener('click', () => {
+			let value = fValueAccessor();
+			ko.isObservable(value) && value('');
+			element.removeAttribute('data-rainloopErrorTip');
+		});
 	},
 	update: (element, fValueAccessor) => {
-		const value = koValue(fValueAccessor());
+		let value = ko.unwrap(fValueAccessor());
+		value = isFunction(value) ? value() : value;
 		if (value) {
 			setTimeout(() => element.setAttribute('data-rainloopErrorTip', value), 100);
 		} else {

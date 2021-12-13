@@ -1,6 +1,8 @@
 <tr data-bind="css: { 'selectable': selectable, 'system': isSystemFolder }">
 	<td data-bind="css: 'deep-' + deep">
-		<span class="folder-name" data-bind="text: name, visible: !edited(), css: { 'can-be-edited': canBeEdited }, click: function (oFolder) { oFolder.canBeEdited() && $root.folderForEdit(oFolder); }"></span>
+		<span class="folder-name" data-bind="text: name, visible: !edited(), css: { 'can-be-edited': canBeEdited },
+			click: function (oFolder) { oFolder.canBeEdited() && $root.folderForEdit(oFolder); },
+			tooltipErrorTip: errorMsg"></span>
 		<input type="text"
 			autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 			data-bind="value: nameForEdit, visible: edited, hasfocus: edited, onEnter: function () { $root.folderEditOnEnter($data); }, onEsc: function () { $root.folderEditOnEsc($data); }" />

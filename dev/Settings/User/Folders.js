@@ -121,39 +121,40 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 	}
 
 	deleteFolder(folderToRemove) {
-		if (
-			folderToRemove &&
-			folderToRemove.canBeDeleted() &&
-			folderToRemove.deleteAccess() &&
-			0 === folderToRemove.privateMessageCountAll()
+		if (folderToRemove
+		 && folderToRemove.canBeDeleted()
+		 && folderToRemove.deleteAccess()
 		) {
-			folderForDeletion(null);
+			if (0 < folderToRemove.privateMessageCountAll()) {
+//				FolderUserStore.folderListError(getNotification(Notification.CantDeleteNonEmptyFolder));
+				folderToRemove.errorMsg(getNotification(Notification.CantDeleteNonEmptyFolder));
+			} else {
+				folderForDeletion(null);
 
-			if (folderToRemove) {
-				Remote.abort('Folders').post('FolderDelete', FolderUserStore.foldersDeleting, {
-						Folder: folderToRemove.fullName
-					}).then(
-						() => {
-//							folderToRemove.flags.push('\\nonexistent');
-							folderToRemove.selectable(false);
-//							folderToRemove.subscribed(false);
-//							folderToRemove.checkable(false);
-							if (!folderToRemove.subFolders.length) {
-								removeFolderFromCacheList(folderToRemove.fullName);
-								const folder = getFolderFromCacheList(folderToRemove.parentName);
-								(folder ? folder.subFolders : FolderUserStore.folderList).remove(folderToRemove);
+				if (folderToRemove) {
+					Remote.abort('Folders').post('FolderDelete', FolderUserStore.foldersDeleting, {
+							Folder: folderToRemove.fullName
+						}).then(
+							() => {
+//								folderToRemove.flags.push('\\nonexistent');
+								folderToRemove.selectable(false);
+//								folderToRemove.subscribed(false);
+//								folderToRemove.checkable(false);
+								if (!folderToRemove.subFolders.length) {
+									removeFolderFromCacheList(folderToRemove.fullName);
+									const folder = getFolderFromCacheList(folderToRemove.parentName);
+									(folder ? folder.subFolders : FolderUserStore.folderList).remove(folderToRemove);
+								}
+							},
+							error => {
+								FolderUserStore.folderListError(
+									getNotification(error.code, '', Notification.CantDeleteFolder)
+									+ '.\n' + error.message
+								);
 							}
-						},
-						error => {
-							FolderUserStore.folderListError(
-								getNotification(error.code, '', Notification.CantDeleteFolder)
-								+ '.\n' + error.message
-							);
-						}
-					);
+						);
+				}
 			}
-		} else if (0 < folderToRemove.privateMessageCountAll()) {
-			FolderUserStore.folderListError(getNotification(Notification.CantDeleteNonEmptyFolder));
 		}
 	}
 
