@@ -398,7 +398,7 @@ trait UserAuth
 		return $sResult;
 	}
 
-	public function SetSpecLogoutCustomMgsWithDeletion(string $sMessage): string
+	public function SetSpecLogoutCustomMgsWithDeletion(string $sMessage): void
 	{
 		Utils::SetCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY, $sMessage);
 	}
