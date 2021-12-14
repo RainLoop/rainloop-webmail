@@ -406,10 +406,6 @@ class ServiceActions
 					{
 						$sRawError = 'False result';
 					}
-					else
-					{
-						$sRawError = '';
-					}
 				}
 				else
 				{
@@ -423,13 +419,9 @@ class ServiceActions
 		}
 		catch (Exceptions\ClientException $oException)
 		{
-			$sRawError = 'Exception as result';
-			switch ($oException->getCode())
-			{
-				case Notifications::AuthError:
-					$sRawError = 'Authentication failed';
-					break;
-			}
+			$sRawError = Notifications::AuthError == $oException->getCode()
+				? 'Authentication failed'
+				: 'Exception as result';
 		}
 		catch (\Throwable $oException)
 		{

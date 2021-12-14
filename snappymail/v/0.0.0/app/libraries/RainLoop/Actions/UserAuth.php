@@ -237,24 +237,25 @@ trait UserAuth
 				 * Server side control/kickout of logged in sessions
 				 * https://github.com/the-djmaze/snappymail/issues/151
 				 */
-				if (isset($_COOKIE[Utils::SESSION_TOKEN])) {
-					$oMainAuthAccount = MainAccount::NewInstanceFromTokenArray(
-						$this,
-						$aData,
-						$bThrowExceptionOnFalse
-					);
-					$sToken = Utils::GetSessionToken();
-					if ($oMainAuthAccount && $this->StorageProvider()->Get($oMainAuthAccount, StorageType::SESSION, $sToken)) {
-						$this->oMainAuthAccount = $oMainAuthAccount;
-					} else {
-						$oMainAuthAccount && $this->StorageProvider()->Clear($oMainAuthAccount, StorageType::SESSION, $sToken);
-						Utils::ClearCookie(Utils::SESSION_TOKEN);
-						$this->SetSpecLogoutCustomMgsWithDeletion('Session gone');
-						$this->Logout(true);
-					}
-				} else {
-					$this->SetSpecLogoutCustomMgsWithDeletion('Session undefined');
+				if (!isset($_COOKIE[Utils::SESSION_TOKEN])) {
+//					\MailSo\Base\Http::StatusHeader(401);
 					$this->Logout(true);
+					throw new ClientException(Notifications::InvalidToken, null, 'Session undefined', true);
+				}
+				$oMainAuthAccount = MainAccount::NewInstanceFromTokenArray(
+					$this,
+					$aData,
+					$bThrowExceptionOnFalse
+				);
+				$sToken = Utils::GetSessionToken();
+				if ($oMainAuthAccount && $this->StorageProvider()->Get($oMainAuthAccount, StorageType::SESSION, $sToken)) {
+					$this->oMainAuthAccount = $oMainAuthAccount;
+				} else {
+					$oMainAuthAccount && $this->StorageProvider()->Clear($oMainAuthAccount, StorageType::SESSION, $sToken);
+					Utils::ClearCookie(Utils::SESSION_TOKEN);
+//					\MailSo\Base\Http::StatusHeader(401);
+					$this->Logout(true);
+					throw new ClientException(Notifications::AuthError, null, 'Session gone', true);
 				}
 			} else {
 				$oAccount = $this->GetAccountFromSignMeToken();
@@ -263,13 +264,11 @@ trait UserAuth
 				}
 			}
 
-			if ($bThrowExceptionOnFalse && !$this->oMainAuthAccount) {
-				throw new ClientException(Notifications::AuthError);
-			}
-
 			if ($this->oMainAuthAccount) {
 				// Extend session cookie lifetime
 				$this->StorageProvider()->Put($this->oMainAuthAccount, StorageType::SESSION, Utils::GetSessionToken(), 'true');
+			} else if ($bThrowExceptionOnFalse) {
+				throw new ClientException(Notifications::AuthError);
 			}
 		}
 
