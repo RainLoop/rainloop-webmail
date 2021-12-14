@@ -215,9 +215,8 @@ trait User
 		$bMainCache = false;
 		$bFilesCache = false;
 
-		$iOneDay1 = 60 * 60 * 23;
-		$iOneDay2 = 60 * 60 * 25;
-		$iOneDay3 = 60 * 60 * 30;
+		$iOneDay1 = 3600 * 23;
+		$iOneDay2 = 3600 * 25;
 
 		$sTimers = $this->StorageProvider()->Get(null,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY, 'Cache/Timers', '');

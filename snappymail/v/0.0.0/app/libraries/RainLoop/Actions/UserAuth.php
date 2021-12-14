@@ -161,9 +161,9 @@ trait UserAuth
 		$this->Http()->ServerNoCache();
 		$oMainAccount = $this->getMainAccountFromToken(false);
 		if ($sEmail && $oMainAccount && $this->GetCapa(false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oMainAccount)) {
-			$oAccountToLogin = null;
+			$oAccount = null;
 			if ($oMainAccount->Email() === $sEmail) {
-				$this->SetAdditionalAuthToken($oAccountToLogin);
+				$this->SetAdditionalAuthToken($oAccount);
 				return true;
 			}
 			$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail);
@@ -171,16 +171,17 @@ trait UserAuth
 			if (!isset($aAccounts[$sEmail])) {
 				throw new ClientException(Notifications::AccountDoesNotExist);
 			}
-			$oAccountToLogin = AdditionalAccount::NewInstanceFromTokenArray(
+			$oAccount = AdditionalAccount::NewInstanceFromTokenArray(
 				$this, $aAccounts[$sEmail]
 			);
-			if (!$oAccountToLogin) {
+			if (!$oAccount) {
 				throw new ClientException(Notifications::AccountSwitchFailed);
 			}
 
-//			$this->CheckMailConnection($oAccountToLogin);
+			// Test the login
+			$this->CheckMailConnection($oAccount);
 
-			$this->SetAdditionalAuthToken($oAccountToLogin);
+			$this->SetAdditionalAuthToken($oAccount);
 			return true;
 		}
 		return false;
@@ -248,9 +249,11 @@ trait UserAuth
 					} else {
 						$oMainAuthAccount && $this->StorageProvider()->Clear($oMainAuthAccount, StorageType::SESSION, $sToken);
 						Utils::ClearCookie(Utils::SESSION_TOKEN);
+						$this->SetSpecLogoutCustomMgsWithDeletion('Session gone');
 						$this->Logout(true);
 					}
 				} else {
+					$this->SetSpecLogoutCustomMgsWithDeletion('Session undefined');
 					$this->Logout(true);
 				}
 			} else {
@@ -265,6 +268,7 @@ trait UserAuth
 			}
 
 			if ($this->oMainAuthAccount) {
+				// Extend session cookie lifetime
 				$this->StorageProvider()->Put($this->oMainAuthAccount, StorageType::SESSION, Utils::GetSessionToken(), 'true');
 			}
 		}
