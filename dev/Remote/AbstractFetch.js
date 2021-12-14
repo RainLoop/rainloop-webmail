@@ -1,30 +1,28 @@
 import { Notification } from 'Common/Enums';
 import { isArray, pInt, pString } from 'Common/Utils';
 import { serverRequest } from 'Common/Links';
+import { getNotification } from 'Common/Translator';
 
-let iJsonErrorCount = 0,
-	iTokenErrorCount = 0;
+let iJsonErrorCount = 0;
 
 const getURL = (add = '') => serverRequest('Json') + add,
 
 checkResponseError = data => {
 	const err = data ? data.ErrorCode : null;
-	if (Notification.InvalidToken === err && 10 < ++iTokenErrorCount) {
+	if (Notification.InvalidToken === err) {
+		alert(getNotification(err));
 		rl.logoutReload();
-	} else {
-		if ([
-				Notification.AuthError,
-				Notification.ConnectionError,
-				Notification.DomainNotAllowed,
-				Notification.AccountNotAllowed,
-				Notification.MailServerError,
-				Notification.UnknownNotification,
-				Notification.UnknownError
-			].includes(err)
-		) {
-			++iJsonErrorCount;
-		}
-		if (data.Logout || 7 < iJsonErrorCount) {
+	} else if ([
+			Notification.AuthError,
+			Notification.ConnectionError,
+			Notification.DomainNotAllowed,
+			Notification.AccountNotAllowed,
+			Notification.MailServerError,
+			Notification.UnknownNotification,
+			Notification.UnknownError
+		].includes(err)
+	) {
+		if (7 < ++iJsonErrorCount) {
 			rl.logoutReload();
 		}
 	}
@@ -158,7 +156,7 @@ export class AbstractFetchRemote
 					}
 */
 					if (data.Result) {
-						iJsonErrorCount = iTokenErrorCount = 0;
+						iJsonErrorCount = 0;
 					} else {
 						checkResponseError(data);
 						iError = data.ErrorCode || Notification.UnknownError

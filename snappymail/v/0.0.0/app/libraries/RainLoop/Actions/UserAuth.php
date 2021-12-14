@@ -240,7 +240,8 @@ trait UserAuth
 				if (!isset($_COOKIE[Utils::SESSION_TOKEN])) {
 //					\MailSo\Base\Http::StatusHeader(401);
 					$this->Logout(true);
-					throw new ClientException(Notifications::InvalidToken, null, 'Session undefined', true);
+//					$sAdditionalMessage = $this->StaticI18N('SESSION_UNDEFINED');
+					throw new ClientException(Notifications::InvalidToken, null, 'Session undefined');
 				}
 				$oMainAuthAccount = MainAccount::NewInstanceFromTokenArray(
 					$this,
@@ -255,7 +256,8 @@ trait UserAuth
 					Utils::ClearCookie(Utils::SESSION_TOKEN);
 //					\MailSo\Base\Http::StatusHeader(401);
 					$this->Logout(true);
-					throw new ClientException(Notifications::AuthError, null, 'Session gone', true);
+//					$sAdditionalMessage = $this->StaticI18N('SESSION_GONE');
+					throw new ClientException(Notifications::InvalidToken, null, 'Session gone');
 				}
 			} else {
 				$oAccount = $this->GetAccountFromSignMeToken();
@@ -268,7 +270,7 @@ trait UserAuth
 				// Extend session cookie lifetime
 				$this->StorageProvider()->Put($this->oMainAuthAccount, StorageType::SESSION, Utils::GetSessionToken(), 'true');
 			} else if ($bThrowExceptionOnFalse) {
-				throw new ClientException(Notifications::AuthError);
+				throw new ClientException(Notifications::InvalidToken, null, 'Account undefined');
 			}
 		}
 
@@ -425,8 +427,7 @@ trait UserAuth
 			}
 
 			if ($this->Config()->Get('labs', 'imap_show_login_alert', true)) {
-				throw new ClientException(Notifications::AuthError,
-					$oException, $oException->getAlertFromStatus());
+				throw new ClientException(Notifications::AuthError, $oException, $oException->getAlertFromStatus());
 			} else {
 				throw new ClientException(Notifications::AuthError, $oException);
 			}

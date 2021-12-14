@@ -1439,6 +1439,9 @@ class Actions
 		}
 	}
 
+	/**
+	 * @throws \RainLoop\Exceptions\ClientException
+	 */
 	private function initMailClientConnection(): ?Model\Account
 	{
 		$oAccount = null;

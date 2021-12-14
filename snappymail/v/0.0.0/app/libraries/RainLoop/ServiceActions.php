@@ -95,7 +95,7 @@ class ServiceActions
 				$this->Config()->Get('security', 'csrf_protection', false) &&
 				($_POST['XToken'] ?? '') !== Utils::GetCsrfToken())
 			{
-				throw new Exceptions\ClientException(Notifications::InvalidToken);
+				throw new Exceptions\ClientException(Notifications::InvalidToken, null, 'CSRF failed');
 			}
 			else if (!empty($sAction))
 			{
@@ -165,18 +165,6 @@ class ServiceActions
 
 			$aResponseItem = $this->oActions->ExceptionResponse(
 				empty($sAction) ? 'Unknown' : $sAction, $oException);
-
-			if (\is_array($aResponseItem) && $oException instanceof Exceptions\ClientException)
-			{
-				if ($oException->getLogoutOnException())
-				{
-					$aResponseItem['Logout'] = true;
-					if ($oException->getAdditionalMessage())
-					{
-						$this->oActions->SetSpecLogoutCustomMgsWithDeletion($oException->getAdditionalMessage());
-					}
-				}
-			}
 		}
 
 		if (\is_array($aResponseItem))
