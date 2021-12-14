@@ -214,7 +214,6 @@ trait User
 
 		$bMainCache = false;
 		$bFilesCache = false;
-		$bVersionsCache = false;
 
 		$iOneDay1 = 60 * 60 * 23;
 		$iOneDay2 = 60 * 60 * 25;
@@ -227,7 +226,6 @@ trait User
 
 		$iMainCacheTime = !empty($aTimers[0]) && \is_numeric($aTimers[0]) ? (int) $aTimers[0] : 0;
 		$iFilesCacheTime = !empty($aTimers[1]) && \is_numeric($aTimers[1]) ? (int) $aTimers[1] : 0;
-		$iVersionsCacheTime = !empty($aTimers[2]) && \is_numeric($aTimers[2]) ? (int) $aTimers[2] : 0;
 
 		if (0 === $iMainCacheTime || $iMainCacheTime + $iOneDay1 < \time())
 		{
@@ -241,19 +239,13 @@ trait User
 			$iFilesCacheTime = \time();
 		}
 
-		if (0 === $iVersionsCacheTime || $iVersionsCacheTime + $iOneDay3 < \time())
-		{
-			$bVersionsCache = true;
-			$iVersionsCacheTime = \time();
-		}
-
-		if ($bMainCache || $bFilesCache || $bVersionsCache)
+		if ($bMainCache || $bFilesCache)
 		{
 			if (!$this->StorageProvider()->Put(null,
 				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY, 'Cache/Timers',
-				\implode(',', array($iMainCacheTime, $iFilesCacheTime, $iVersionsCacheTime))))
+				\implode(',', array($iMainCacheTime, $iFilesCacheTime))))
 			{
-				$bMainCache = $bFilesCache = $bVersionsCache = false;
+				$bMainCache = $bFilesCache = false;
 			}
 		}
 
