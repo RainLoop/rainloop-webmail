@@ -21,7 +21,7 @@ trait UserAuth
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function LoginProcess(string &$sEmail, string &$sPassword, bool $bSignMe = false, Account $oMainAccount = null): Account
+	public function LoginProcess(string &$sEmail, string &$sPassword, bool $bSignMe = false, bool $bMainAccount = true): Account
 	{
 		$sInputEmail = $sEmail;
 
@@ -114,10 +114,10 @@ trait UserAuth
 		$oAccount = null;
 		$sClientCert = \trim($this->Config()->Get('ssl', 'client_cert', ''));
 		try {
-			if ($oMainAccount) {
-				$oAccount = AdditionalAccount::NewInstanceByLogin($this, $sEmail, $sLogin, $sPassword, $sClientCert, true);
+			if ($bMainAccount) {
+				$oAccount = MainAccount::NewInstanceFromCredentials($this, $sEmail, $sLogin, $sPassword, $sClientCert, true);
 			} else {
-				$oAccount = MainAccount::NewInstanceByLogin($this, $sEmail, $sLogin, $sPassword, $sClientCert, true);
+				$oAccount = AdditionalAccount::NewInstanceFromCredentials($this, $sEmail, $sLogin, $sPassword, $sClientCert, true);
 			}
 
 			if (!$oAccount) {
@@ -131,7 +131,7 @@ trait UserAuth
 
 		try {
 			$this->CheckMailConnection($oAccount, true);
-			if (!$oMainAccount) {
+			if ($bMainAccount) {
 				$bSignMe && $this->SetSignMeToken($oAccount);
 				$this->StorageProvider()->Put($oAccount, StorageType::SESSION, Utils::GetSessionToken(), 'true');
 			}
@@ -142,6 +142,18 @@ trait UserAuth
 		}
 
 		return $oAccount;
+	}
+
+	private static function SetAccountCookie(string $sName, ?Account $oAccount)
+	{
+		if ($oAccount) {
+			Utils::SetCookie(
+				$sName,
+				\MailSo\Base\Utils::UrlSafeBase64Encode(\SnappyMail\Crypt::EncryptToJSON($oAccount))
+			);
+		} else {
+			Utils::ClearCookie($sName);
+		}
 	}
 
 	public function switchAccount(string $sEmail) : bool
@@ -165,6 +177,9 @@ trait UserAuth
 			if (!$oAccountToLogin) {
 				throw new ClientException(Notifications::AccountSwitchFailed);
 			}
+
+//			$this->CheckMailConnection($oAccountToLogin);
+
 			$this->SetAdditionalAuthToken($oAccountToLogin);
 			return true;
 		}
@@ -233,12 +248,10 @@ trait UserAuth
 					} else {
 						$oMainAuthAccount && $this->StorageProvider()->Clear($oMainAuthAccount, StorageType::SESSION, $sToken);
 						Utils::ClearCookie(Utils::SESSION_TOKEN);
-						Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
-						Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
+						$this->Logout(true);
 					}
 				} else {
-					Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
-					Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
+					$this->Logout(true);
 				}
 			} else {
 				$oAccount = $this->GetAccountFromSignMeToken();
@@ -252,7 +265,7 @@ trait UserAuth
 			}
 
 			if ($this->oMainAuthAccount) {
-				$this->StorageProvider()->Put($this->oMainAuthAccount, StorageType::SESSION, $sToken, 'true');
+				$this->StorageProvider()->Put($this->oMainAuthAccount, StorageType::SESSION, Utils::GetSessionToken(), 'true');
 			}
 		}
 
@@ -263,17 +276,13 @@ trait UserAuth
 	{
 		$this->oAdditionalAuthAccount = false;
 		$this->oMainAuthAccount = $oAccount;
-		Utils::SetSecureCookie(self::AUTH_SPEC_TOKEN_KEY, $oAccount);
+		static::SetAccountCookie(self::AUTH_SPEC_TOKEN_KEY, $oAccount);
 	}
 
 	public function SetAdditionalAuthToken(?AdditionalAccount $oAccount): void
 	{
 		$this->oAdditionalAuthAccount = $oAccount ?: false;
-		if ($oAccount) {
-			Utils::SetSecureCookie(self::AUTH_ADDITIONAL_TOKEN_KEY, $oAccount);
-		} else {
-			Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
-		}
+		static::SetAccountCookie(self::AUTH_ADDITIONAL_TOKEN_KEY, $oAccount);
 	}
 
 	/**
@@ -288,7 +297,6 @@ trait UserAuth
 			if (isset($aResult['e'], $aResult['u']) && \SnappyMail\UUID::isValid($aResult['u'])) {
 				return $aResult;
 			}
-			Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
 		}
 		return null;
 	}
@@ -350,9 +358,9 @@ trait UserAuth
 			catch (\Throwable $oException)
 			{
 			}
-
-			$this->ClearSignMeData();
 		}
+
+		$this->ClearSignMeData();
 
 		return null;
 	}
@@ -362,8 +370,8 @@ trait UserAuth
 		$aTokenData = static::GetSignMeToken();
 		if ($aTokenData) {
 			$this->StorageProvider()->Clear($aTokenData['e'], StorageType::SIGN_ME, $aTokenData['u']);
-			Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
 		}
+		Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
 	}
 
 	/**
@@ -389,6 +397,12 @@ trait UserAuth
 	public function SetSpecLogoutCustomMgsWithDeletion(string $sMessage): string
 	{
 		Utils::SetCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY, $sMessage);
+	}
+
+	protected function Logout(bool $bMain) : void
+	{
+		Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
+		$bMain && Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
 	}
 
 	/**

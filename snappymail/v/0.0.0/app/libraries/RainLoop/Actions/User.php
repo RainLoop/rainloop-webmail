@@ -200,14 +200,9 @@ trait User
 
 	public function DoLogout() : array
 	{
-		$oAccount = $this->getAccountFromToken(false);
-		if ($oAccount) {
-			if ($oAccount instanceof \RainLoop\Model\MainAccount) {
-				$this->ClearSignMeData();
-				Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
-			}
-			Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
-		}
+		$bMain = empty($_COOKIE[self::AUTH_ADDITIONAL_TOKEN_KEY]);
+		$this->Logout($bMain);
+		$bMain && $this->ClearSignMeData();
 		return $this->TrueResponse(__FUNCTION__);
 	}
 

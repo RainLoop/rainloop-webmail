@@ -717,7 +717,7 @@ class ServiceActions
 
 						$this->oActions->SetAuthToken($oAccount);
 
-						$bLogout = !($oAccount instanceof Model\Account);
+						$bLogout = !($oAccount instanceof Model\MainAccount);
 					}
 					catch (\Throwable $oException)
 					{
@@ -751,7 +751,7 @@ class ServiceActions
 			{
 				$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
 				$this->oActions->SetAuthToken($oAccount);
-				$bLogout = !($oAccount instanceof Model\Account);
+				$bLogout = !($oAccount instanceof Model\MainAccount);
 			}
 			catch (\Throwable $oException)
 			{
@@ -765,49 +765,6 @@ class ServiceActions
 		}
 
 		$this->oActions->Location('./');
-		return '';
-	}
-
-	public function ServiceExternalLogin() : string
-	{
-		$this->oHttp->ServerNoCache();
-
-		$oException = null;
-		$oAccount = null;
-		$bLogout = true;
-
-		switch (\strtolower($_REQUEST['Output'] ?? 'Redirect'))
-		{
-			case 'json':
-
-				\header('Content-Type: application/json; charset=utf-8');
-
-				$aResult = array(
-					'Action' => 'ExternalLogin',
-					'Result' => $oAccount instanceof Model\Account ? true : false,
-					'ErrorCode' => 0
-				);
-
-				if (!$aResult['Result'])
-				{
-					if ($oException instanceof Exceptions\ClientException)
-					{
-						$aResult['ErrorCode'] = $oException->getCode();
-					}
-					else
-					{
-						$aResult['ErrorCode'] = Notifications::AuthError;
-					}
-				}
-
-				return \MailSo\Base\Utils::Php2js($aResult, $this->Logger());
-
-			case 'redirect':
-			default:
-				$this->oActions->Location('./');
-				break;
-		}
-
 		return '';
 	}
 

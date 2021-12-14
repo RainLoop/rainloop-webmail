@@ -47,6 +47,7 @@ class Notifications
 	const AccountAlreadyExists = 801;
 	const AccountDoesNotExist = 802;
 	const AccountSwitchFailed = 803;
+	const AccountFilterError = 804;
 
 	const MailServerError = 901;
 	const ClientViewError = 902;

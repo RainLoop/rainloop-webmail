@@ -143,20 +143,7 @@ abstract class Account implements \JsonSerializable
 		);
 	}
 
-	/**
-	 * @throws \RainLoop\Exceptions\ClientException
-	 */
-	public static function NewInstanceFromAuthToken(\RainLoop\Actions $oActions, string $sToken): ?self
-	{
-		return empty($sToken) ? null
-			: static::NewInstanceFromTokenArray(
-				$oActions,
-				Utils::DecodeKeyValues($sToken),
-				false
-			);
-	}
-
-	public static function NewInstanceByLogin(\RainLoop\Actions $oActions,
+	public static function NewInstanceFromCredentials(\RainLoop\Actions $oActions,
 		string $sEmail, string $sLogin, string $sPassword, string $sClientCert = '',
 		bool $bThrowException = false): ?self
 	{
@@ -176,7 +163,7 @@ abstract class Account implements \JsonSerializable
 					$oActions->Plugins()->RunHook('filter.account', array($oAccount));
 
 					if ($bThrowException && !$oAccount) {
-						throw new ClientException(Notifications::AuthError);
+						throw new ClientException(Notifications::AccountFilterError);
 					}
 				} else if ($bThrowException) {
 					throw new ClientException(Notifications::AccountNotAllowed);
@@ -195,7 +182,7 @@ abstract class Account implements \JsonSerializable
 		bool $bThrowExceptionOnFalse = false): ?self
 	{
 		if (!empty($aAccountHash[0]) && 'account' === $aAccountHash[0] && 7 <= \count($aAccountHash)) {
-			$oAccount = static::NewInstanceByLogin(
+			$oAccount = static::NewInstanceFromCredentials(
 				$oActions,
 				$aAccountHash[1] ?: '',
 				$aAccountHash[2] ?: '',

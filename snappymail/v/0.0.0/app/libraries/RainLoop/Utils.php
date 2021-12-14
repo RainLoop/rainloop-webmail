@@ -77,7 +77,7 @@ class Utils
 		$sToken = static::GetCookie(self::SESSION_TOKEN, null);
 		if (!$sToken) {
 			$sToken = \MailSo\Base\Utils::Sha1Rand(APP_SALT);
-			static::SetCookie(self::SESSION_TOKEN, $sToken, 0);
+			static::SetCookie(self::SESSION_TOKEN, $sToken);
 		}
 
 		return \sha1('Session'.APP_SALT.$sToken.'Token'.APP_SALT);
@@ -147,16 +147,6 @@ class Utils
 			'httponly' => $bHttpOnly,
 			'samesite' => 'Strict'
 		));
-	}
-
-	public static function SetSecureCookie(string $sName, $mValue, int $iExpire = 0, bool $bHttpOnly = true)
-	{
-		static::SetCookie(
-			$sName,
-			\MailSo\Base\Utils::UrlSafeBase64Encode(\SnappyMail\Crypt::EncryptToJSON($mValue)),
-			$iExpire,
-			true
-		);
 	}
 
 	public static function ClearCookie(string $sName)
