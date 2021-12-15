@@ -82,7 +82,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.messageListEndThreadUid = MessageUserStore.listEndThreadUid;
 
-		this.messageListCompleteLoadingThrottle = MessageUserStore.listCompleteLoading;
+		this.messageListIsLoading = MessageUserStore.listIsLoading;
 
 		initOnStartOrLangChange(() => this.emptySubjectValue = i18n('MESSAGE_LIST/EMPTY_SUBJECT_TEXT'));
 
@@ -263,7 +263,7 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	reloadCommand() {
-		if (!MessageUserStore.listLoadingAnimation()) {
+		if (!MessageUserStore.listIsLoading()) {
 			rl.app.reloadMessageList(false, true);
 		}
 	}
@@ -602,7 +602,7 @@ export class MailMessageList extends AbstractViewRight {
 	listEmptyMessage() {
 		if (!this.dragOver()
 		 && !MessageUserStore.list().length
-		 && !MessageUserStore.listCompleteLoading()
+		 && !MessageUserStore.listIsLoading()
 		 && !MessageUserStore.listError()) {
 			 return i18n('MESSAGE_LIST/EMPTY_' + (MessageUserStore.listSearch() ? 'SEARCH_' : '') + 'LIST');
 		}

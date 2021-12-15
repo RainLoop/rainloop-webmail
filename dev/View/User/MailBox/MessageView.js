@@ -177,7 +177,7 @@ export class MailMessageView extends AbstractViewRight {
 			},
 
 			messageListOrViewLoading:
-				() => MessageUserStore.listCompleteLoading() | MessageUserStore.messageLoading()
+				() => MessageUserStore.listIsLoading() | MessageUserStore.messageLoading()
 		});
 
 		this.addSubscribables({

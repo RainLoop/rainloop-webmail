@@ -88,9 +88,10 @@ export const MessageUserStore = new class {
 			listEndPage: 1,
 
 			listLoading: false,
-			listLoadingAnimation: false,
-			listIsNotCompleted: false,
-			listCompleteLoading: false,
+			// Happens when message(s) removed from list
+			listIsIncomplete: false,
+			// when this.listLoading || this.listIsIncomplete
+			listIsLoading: false,
 
 			selectorMessageSelected: null,
 			selectorMessageFocused: null,
@@ -112,6 +113,13 @@ export const MessageUserStore = new class {
 		// Computed Observables
 
 		addComputablesTo(this, {
+/*
+			listIsLoading: () => {
+				const value = this.listLoading() | this.listIsIncomplete();
+				$htmlCL.toggle('list-loading', value);
+				return value;
+			},
+*/
 			listEndHash: () =>
 				this.listEndFolder() +
 				'|' +
@@ -168,30 +176,14 @@ export const MessageUserStore = new class {
 
 		// Subscribers
 
-		let timer = 0, fn = this.listLoadingAnimation;
-
 		addSubscribablesTo(this, {
-			listCompleteLoading: value => {
-				if (value) {
-					fn(value);
-				} else if (fn()) {
-					clearTimeout(timer);
-					timer = setTimeout(() => {
-						fn(value);
-						timer = 0;
-					}, 700);
-				} else {
-					fn(value);
-				}
-			},
-
-			listLoadingAnimation: value => $htmlCL.toggle('list-loading', value),
+			listIsLoading: value => $htmlCL.toggle('list-loading', value),
 
 			listLoading: value =>
-				this.listCompleteLoading(value || this.listIsNotCompleted()),
+				this.listIsLoading(value || this.listIsIncomplete()),
 
-			listIsNotCompleted: value =>
-				this.listCompleteLoading(value || this.listLoading()),
+			listIsIncomplete: value =>
+				this.listIsLoading(value || this.listLoading()),
 
 			message: message => {
 				clearTimeout(MessageSeenTimer);
@@ -323,7 +315,7 @@ export const MessageUserStore = new class {
 			if (copy) {
 				messages.forEach(item => item.checked(false));
 			} else {
-				this.listIsNotCompleted(true);
+				this.listIsIncomplete(true);
 
 				messages.forEach(item => {
 					if (currentMessage && currentMessage.hash === item.hash) {
@@ -639,8 +631,7 @@ export const MessageUserStore = new class {
 		if (collection) {
 			let unreadCountChange = false;
 
-			const iCount = collection.MessageResultCount,
-				iOffset = collection.Offset,
+			const
 				folder = getFolderFromCacheList(collection.Folder);
 
 			if (folder && !cached) {
@@ -664,9 +655,9 @@ export const MessageUserStore = new class {
 				this.initUidNextAndNewMessages(folder.fullName, collection.UidNext, collection.NewMessages);
 			}
 
-			this.listCount(iCount);
+			this.listCount(collection.MessageResultCount);
 			this.listSearch(pString(collection.Search));
-			this.listPage(Math.ceil(iOffset / SettingsUserStore.messagesPerPage() + 1));
+			this.listPage(Math.ceil(collection.Offset / SettingsUserStore.messagesPerPage() + 1));
 			this.listThreadUid(data.Result.ThreadUid);
 
 			this.listEndFolder(collection.Folder);
@@ -677,7 +668,7 @@ export const MessageUserStore = new class {
 			this.listDisableAutoSelect(true);
 
 			this.list(collection);
-			this.listIsNotCompleted(false);
+			this.listIsIncomplete(false);
 
 			clearNewMessageCache();
 

@@ -167,18 +167,18 @@
 			<i class="fontastic">⬅</i>
 			<span data-i18n="MESSAGE_LIST/BACK_TO_MESSAGE_LIST"></span>
 		</div>
-		<div class="listSearchDesc" data-bind="visible: '' !== messageListSearchDesc(), text: messageListSearchDesc"></div>
-		<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && '' === messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea">
+		<div class="listSearchDesc" data-bind="visible: messageListSearchDesc(), text: messageListSearchDesc"></div>
+		<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && !messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea">
 			<i class="fontastic">⬇</i>
 			<span data-i18n="MESSAGE_LIST/PUT_MESSAGE_HERE"></span>
 		</div>
 		<div class="listClear" data-bind="visible: clearListIsVisible()">
 			<a href="#" class="g-ui-link" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER" data-bind="command: clearCommand"></a>
 		</div>
-		<div class="listError error" data-bind="visible: !dragOver() && '' !== messageListError(), text: messageListError"></div>
+		<div class="listError error" data-bind="visible: !dragOver() && messageListError(), text: messageListError"></div>
 		<div class="listEmptyMessage" data-bind="visible: listEmptyMessage(), text: listEmptyMessage()"></div>
-		<div class="listLoading" data-bind="visible: !dragOver() && 0 === messageList().length &&
-			messageListCompleteLoadingThrottle() && '' === messageListError()">
+		<div class="listLoading" data-bind="visible: !dragOver() && !messageList().length &&
+			messageListIsLoading() && !messageListError()">
 			<i class="icon-spinner"></i>
 			<span data-i18n="GLOBAL/LOADING"></span>
 		</div>
