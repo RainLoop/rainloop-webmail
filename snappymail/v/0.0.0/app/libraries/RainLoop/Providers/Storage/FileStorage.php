@@ -99,7 +99,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 			if ($this->bLocal && !$bForDeleteAction) {
 				$sSubFolder = $mAccount->Email();
 			}
-		} else if (\is_string($mAccount) && empty($sEmail)) {
+		} else if (\is_string($mAccount)) {
 			$sEmail = $mAccount;
 		}
 

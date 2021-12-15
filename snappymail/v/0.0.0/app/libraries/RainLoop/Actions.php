@@ -367,7 +367,7 @@ class Actions
 			if (false !== \strpos($sLine, '{user:uid}')) {
 				$sLine = \str_replace('{user:uid}',
 					Utils::UrlEncode(\base_convert(\sprintf('%u',
-						\crc32(\md5(Utils::GetConnectionToken()))), 10, 32), $bUrlEncode),
+						\crc32(Utils::GetConnectionToken())), 10, 32), $bUrlEncode),
 					$sLine
 				);
 			}

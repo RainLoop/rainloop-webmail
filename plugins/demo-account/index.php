@@ -61,21 +61,22 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 *
 	 * @return bool
 	 */
-	public function isDemoAccount($oAccount)
+	private function isDemoAccount()
 	{
+		$oAccount = $this->Manager()->Actions()->GetAccount();
 		return ($oAccount && $oAccount->Email() === $this->Config()->Get('plugin', 'email'));
 	}
 
 	public function JsonActionPreCall($sAction)
 	{
-		if ('AccountSetup' === $sAction && $this->isDemoAccount($this->Manager()->Actions()->GetAccount())) {
+		if ('AccountSetup' === $sAction && $this->isDemoAccount()) {
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DemoAccountError);
 		}
 	}
 
 	public function FilterSendMessage($oMessage)
 	{
-		if ($oMessage && $this->isDemoAccount($this->Manager()->Actions()->GetAccount())) {
+		if ($oMessage && $this->isDemoAccount()) {
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DemoSendMessageError);
 		}
 	}
@@ -87,12 +88,9 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function MainFabrica($sName, &$oDriver)
 	{
 		if ('storage' === $sName || 'storage-local' === $sName) {
-			$oAccount = $this->Manager()->Actions()->GetAccount();
-			if ($this->isDemoAccount($oAccount)) {
-				require_once __DIR__ . '/storage.php';
-				$oDriver = new \DemoStorage(APP_PRIVATE_DATA.'storage', $sName === 'storage-local');
-			}
+			require_once __DIR__ . '/storage.php';
+			$oDriver = new \DemoStorage(APP_PRIVATE_DATA.'storage', $sName === 'storage-local');
+			$oDriver->setDemoEmail($this->Config()->Get('plugin', 'email'));
 		}
 	}
 }
-
