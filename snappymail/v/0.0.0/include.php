@@ -182,65 +182,57 @@ if (defined('APP_VERSION'))
 				clearstatcache();
 			}
 
-			foreach (array('logs', 'cache', 'configs', 'plugins', 'storage') as $sName)
+			foreach (array('logs', 'cache', 'configs', 'domains', 'plugins', 'storage') as $sName)
 			{
 				if (!is_dir(APP_PRIVATE_DATA.$sName))
 				{
-					mkdir(APP_PRIVATE_DATA.$sName, 0755, true);
+					mkdir(APP_PRIVATE_DATA.$sName, 0700, true);
 				}
 			}
 
-			if (!file_exists(APP_PRIVATE_DATA.'domains/disabled'))
+			if (!file_exists(APP_PRIVATE_DATA.'domains/disabled') && is_dir(APP_PRIVATE_DATA.'domains'))
 			{
-				if (!is_dir(APP_PRIVATE_DATA.'domains'))
-				{
-					mkdir(APP_PRIVATE_DATA.'domains', 0755);
-				}
+				$sFile = $sNewFile = $sNewFileName = '';
+				$aFiles = glob(APP_VERSION_ROOT_PATH.'app/domains/*');
 
-				if (is_dir(APP_PRIVATE_DATA.'domains'))
+				if (is_array($aFiles) && 0 < \count($aFiles))
 				{
-					$sFile = $sNewFile = $sNewFileName = '';
-					$aFiles = glob(APP_VERSION_ROOT_PATH.'app/domains/*');
-
-					if (is_array($aFiles) && 0 < \count($aFiles))
+					foreach ($aFiles as $sFile)
 					{
-						foreach ($aFiles as $sFile)
+						if (is_file($sFile))
 						{
-							if (is_file($sFile))
+							$sNewFileName = basename($sFile);
+							if ('default.ini.dist' !== $sNewFileName)
 							{
-								$sNewFileName = basename($sFile);
-								if ('default.ini.dist' !== $sNewFileName)
+								$sNewFile = APP_PRIVATE_DATA.'domains/'.$sNewFileName;
+								if (!file_exists($sNewFile))
 								{
-									$sNewFile = APP_PRIVATE_DATA.'domains/'.$sNewFileName;
-									if (!file_exists($sNewFile))
-									{
-										copy($sFile, $sNewFile);
-									}
+									copy($sFile, $sNewFile);
 								}
 							}
 						}
 					}
-
-//					$sClearedSiteName = preg_replace('/^(www|demo|snappymail|webmail|email|mail|imap|imap4|smtp)\./i', '', trim(APP_SITE));
-//					if (!empty($sClearedSiteName) && file_exists(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist') &&
-//						!file_exists(APP_PRIVATE_DATA.'domains/'.$sClearedSiteName.'.ini'))
-//					{
-//						$sConfigTemplate = file_get_contents(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist');
-//						if (!empty($sConfigTemplate))
-//						{
-//							file_put_contents(APP_PRIVATE_DATA.'domains/'.$sClearedSiteName.'.ini', strtr($sConfigTemplate, array(
-//								'IMAP_HOST' => 'localhost' !== $sClearedSiteName? 'imap.'.$sClearedSiteName : $sClearedSiteName,
-//								'IMAP_PORT' => '993',
-//								'SMTP_HOST' => 'localhost' !== $sClearedSiteName? 'smtp.'.$sClearedSiteName : $sClearedSiteName,
-//								'SMTP_PORT' => '465'
-//							)));
-//						}
-//
-//						unset($sConfigTemplate);
-//					}
-
-					unset($aFiles, $sFile, $sNewFileName, $sNewFile);
 				}
+
+//				$sClearedSiteName = preg_replace('/^(www|demo|snappymail|webmail|email|mail|imap|imap4|smtp)\./i', '', trim(APP_SITE));
+//				if (!empty($sClearedSiteName) && file_exists(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist') &&
+//					!file_exists(APP_PRIVATE_DATA.'domains/'.$sClearedSiteName.'.ini'))
+//				{
+//					$sConfigTemplate = file_get_contents(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist');
+//					if (!empty($sConfigTemplate))
+//					{
+//						file_put_contents(APP_PRIVATE_DATA.'domains/'.$sClearedSiteName.'.ini', strtr($sConfigTemplate, array(
+//							'IMAP_HOST' => 'localhost' !== $sClearedSiteName? 'imap.'.$sClearedSiteName : $sClearedSiteName,
+//							'IMAP_PORT' => '993',
+//							'SMTP_HOST' => 'localhost' !== $sClearedSiteName? 'smtp.'.$sClearedSiteName : $sClearedSiteName,
+//							'SMTP_PORT' => '465'
+//						)));
+//					}
+//
+//					unset($sConfigTemplate);
+//				}
+
+				unset($aFiles, $sFile, $sNewFileName, $sNewFile);
 			}
 		}
 

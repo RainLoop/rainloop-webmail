@@ -220,4 +220,16 @@ class Utils
 	{
 		return \preg_replace('#[|\\\\?*<":>+\\[\\]/&\\s\\pC]#su', '-', $filename);
 	}
+
+	public static function saveFile(string $filename, string $data) : void
+	{
+		$dir = \dirname($filename);
+		if (!\is_dir($dir) && !\mkdir($dir, 0700, true)) {
+			throw new \RainLoop\Exceptions\Exception('Failed to create directory "'.$dir.'"');
+		}
+		if (false === \file_put_contents($filename, $data)) {
+			throw new \RainLoop\Exceptions\Exception('Failed to save file "'.$filename.'"');
+		}
+		\chmod($filename, 0600);
+	}
 }

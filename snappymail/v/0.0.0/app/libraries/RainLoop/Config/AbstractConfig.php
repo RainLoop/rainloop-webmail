@@ -294,8 +294,11 @@ abstract class AbstractConfig
 		}
 
 		$this->clearCache();
-		return false !== \file_put_contents($this->sFile,
+
+		\RainLoop\Utils::saveFile($this->sFile,
 			(\strlen($this->sFileHeader) ? $this->sFileHeader : '').
 			$sNewLine.\implode($sNewLine, $aResultLines));
+
+		return true;
 	}
 }

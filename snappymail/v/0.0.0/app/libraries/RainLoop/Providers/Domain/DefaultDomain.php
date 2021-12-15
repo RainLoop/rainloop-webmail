@@ -159,8 +159,9 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 			$this->oCacher->Delete($this->wildcardDomainsCacheKey());
 		}
 
-		$mResult = \file_put_contents($this->sDomainPath.'/'.$sRealFileName.'.ini', $oDomain->ToIniString());
-		return \is_int($mResult) && 0 < $mResult;
+		\RainLoop\Utils::saveFile($this->sDomainPath.'/'.$sRealFileName.'.ini', $oDomain->ToIniString());
+
+		return true;
 	}
 
 	public function SaveAlias(string $sName, string $sAlias) : bool
@@ -172,8 +173,8 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 			$this->oCacher->Delete($this->wildcardDomainsCacheKey());
 		}
 
-		$mResult = \file_put_contents($this->sDomainPath.'/'.$sRealFileName.'.alias', $sAlias);
-		return \is_int($mResult) && 0 < $mResult;
+		\RainLoop\Utils::saveFile($this->sDomainPath.'/'.$sRealFileName.'.alias', $sAlias);
+		return true;
 	}
 
 	public function Disable(string $sName, bool $bDisable) : bool
@@ -204,8 +205,8 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 			}
 		}
 
-		$aResult = \array_unique($aResult);
-		return false !== \file_put_contents($this->sDomainPath.'/disabled', \trim(\implode(',', $aResult), ', '));
+		\RainLoop\Utils::saveFile($this->sDomainPath.'/disabled', \trim(\implode(',', \array_unique($aResult)), ', '));
+		return true;
 	}
 
 	public function Delete(string $sName) : bool
