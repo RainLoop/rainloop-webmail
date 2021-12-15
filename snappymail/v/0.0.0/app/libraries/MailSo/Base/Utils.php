@@ -888,22 +888,17 @@ abstract class Utils
 	{
 		if (\is_dir($sDir))
 		{
-			$aObjects = \scandir($sDir);
-			foreach ($aObjects as $sObject)
-			{
-				if ('.' !== $sObject && '..' !== $sObject)
-				{
-//					if ('dir' === \filetype($sDir.'/'.$sObject))
-					if (\is_dir($sDir.'/'.$sObject))
-					{
-						self::RecRmDir($sDir.'/'.$sObject);
-					}
-					else
-					{
-						\unlink($sDir.'/'.$sObject);
-					}
+			$iterator = new \RecursiveIteratorIterator(
+				new \RecursiveDirectoryIterator($sDir, \FilesystemIterator::SKIP_DOTS),
+				\RecursiveIteratorIterator::CHILD_FIRST);
+			foreach ($iterator as $path) {
+				if ($path->isDir()) {
+					\rmdir($path);
+				} else {
+					\unlink($path);
 				}
 			}
+			\clearstatcache();
 
 			return \rmdir($sDir);
 		}
@@ -913,85 +908,18 @@ abstract class Utils
 
 	public static function RecTimeDirRemove(string $sTempPath, int $iTime2Kill, int $iNow = 0) : bool
 	{
-		$iNow = $iNow ?: \time();
-		$iFileCount = 0;
-
-		$sTempPath = \rtrim($sTempPath, '\\/');
-		if (\is_dir($sTempPath))
-		{
-			$rDirH = \opendir($sTempPath);
-			if ($rDirH)
-			{
-				$bRemoveAllDirs = true;
-				while (($sFile = \readdir($rDirH)) !== false)
-				{
-					if ('.' !== $sFile && '..' !== $sFile)
-					{
-						if (\is_dir($sTempPath.'/'.$sFile))
-						{
-							if (!static::RecTimeDirRemove($sTempPath.'/'.$sFile, $iTime2Kill, $iNow))
-							{
-								$bRemoveAllDirs = false;
-							}
-						}
-						else
-						{
-							$iFileCount++;
-						}
-					}
-				}
-
-				\closedir($rDirH);
+		$iTime = ($iNow ?: \time()) - $iTime2Kill;
+		\clearstatcache();
+		$iterator = new \RecursiveIteratorIterator(
+			new \RecursiveDirectoryIterator($sTempPath, \FilesystemIterator::SKIP_DOTS),
+			\RecursiveIteratorIterator::CHILD_FIRST);
+		foreach ($iterator as $path) {
+			if ($path->isFile() && '.' !== $path->getBasename()[0] && $path->getMTime() < $iTime) {
+				\unlink($path);
 			}
-
-			if ($iFileCount > 0)
-			{
-				if (static::TimeFilesRemove($sTempPath, $iTime2Kill, $iNow))
-				{
-					return \rmdir($sTempPath);
-				}
-			}
-			else
-			{
-				return $bRemoveAllDirs ? \rmdir($sTempPath) : false;
-			}
-
-			return false;
 		}
-
+		\clearstatcache();
 		return true;
-	}
-
-	public static function TimeFilesRemove(string $sTempPath, int $iTime2Kill, int $iNow)
-	{
-		$bResult = true;
-
-		$sTempPath = \rtrim($sTempPath, '\\/');
-		if (\is_dir($sTempPath))
-		{
-			$rDirH = \opendir($sTempPath);
-			if ($rDirH)
-			{
-				while (($sFile = \readdir($rDirH)) !== false)
-				{
-					if ($sFile !== '.' && $sFile !== '..')
-					{
-						if ($iNow - \filemtime($sTempPath.'/'.$sFile) > $iTime2Kill)
-						{
-							\unlink($sTempPath.'/'.$sFile);
-						}
-						else
-						{
-							$bResult = false;
-						}
-					}
-				}
-
-				\closedir($rDirH);
-			}
-		}
-
-		return $bResult;
 	}
 
 	public static function Utf8Truncate(string $sUtfString, int $iLength) : string
