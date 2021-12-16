@@ -82,10 +82,8 @@ export const MessageUserStore = new class {
 			listPageBeforeThread: 1,
 			listError: '',
 
-			listEndFolder: '',
-			listEndSearch: '',
+			listEndHash: '',
 			listEndThreadUid: 0,
-			listEndPage: 1,
 
 			listLoading: false,
 			// Happens when message(s) removed from list
@@ -120,15 +118,6 @@ export const MessageUserStore = new class {
 				return value;
 			},
 */
-			listEndHash: () =>
-				this.listEndFolder() +
-				'|' +
-				this.listEndSearch() +
-				'|' +
-				this.listEndThreadUid() +
-				'|' +
-				this.listEndPage(),
-
 			listPageCount: () => Math.max(1, Math.ceil(this.listCount() / SettingsUserStore.messagesPerPage())),
 
 			mainMessageListSearch: {
@@ -196,13 +185,6 @@ export const MessageUserStore = new class {
 
 					this.messageFullScreenMode(false);
 					this.hideMessageBodies();
-				}
-			},
-
-			listEndFolder: folder => {
-				const message = this.message();
-				if (message && folder && folder !== message.folder) {
-					this.message(null);
 				}
 			},
 
@@ -658,12 +640,19 @@ export const MessageUserStore = new class {
 			this.listCount(collection.MessageResultCount);
 			this.listSearch(pString(collection.Search));
 			this.listPage(Math.ceil(collection.Offset / SettingsUserStore.messagesPerPage() + 1));
-			this.listThreadUid(data.Result.ThreadUid);
+			this.listThreadUid(collection.ThreadUid);
 
-			this.listEndFolder(collection.Folder);
-			this.listEndSearch(this.listSearch());
-			this.listEndThreadUid(this.listThreadUid());
-			this.listEndPage(this.listPage());
+			this.listEndHash(
+				collection.Folder +
+				'|' + collection.Search +
+				'|' + this.listThreadUid() +
+				'|' + this.listPage()
+			);
+			this.listEndThreadUid(collection.ThreadUid);
+			const message = this.message();
+			if (message && collection.Folder !== message.folder) {
+				this.message(null);
+			}
 
 			this.listDisableAutoSelect(true);
 

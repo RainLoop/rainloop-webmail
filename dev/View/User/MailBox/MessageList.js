@@ -80,7 +80,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
 
-		this.messageListEndThreadUid = MessageUserStore.listEndThreadUid;
+		this.messageListThreadUid = MessageUserStore.listEndThreadUid;
 
 		this.messageListIsLoading = MessageUserStore.listIsLoading;
 
@@ -115,7 +115,7 @@ export class MailMessageList extends AbstractViewRight {
 				),
 
 			messageListSearchDesc: () => {
-				const value = MessageUserStore.listEndSearch();
+				const value = MessageUserStore.list().Search;
 				return value ? i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', { SEARCH: value }) : ''
 			},
 
@@ -142,17 +142,17 @@ export class MailMessageList extends AbstractViewRight {
 
 			hasMessages: () => 0 < MessageUserStore.list.length,
 
-			isSpamFolder: () => (FolderUserStore.spamFolder() || 0) === MessageUserStore.listEndFolder(),
+			isSpamFolder: () => (FolderUserStore.spamFolder() || 0) === MessageUserStore.list().Folder,
 
 			isSpamDisabled: () => UNUSED_OPTION_VALUE === FolderUserStore.spamFolder(),
 
-			isTrashFolder: () => (FolderUserStore.trashFolder() || 0) === MessageUserStore.listEndFolder(),
+			isTrashFolder: () => (FolderUserStore.trashFolder() || 0) === MessageUserStore.list().Folder,
 
-			isDraftFolder: () => (FolderUserStore.draftsFolder() || 0) === MessageUserStore.listEndFolder(),
+			isDraftFolder: () => (FolderUserStore.draftsFolder() || 0) === MessageUserStore.list().Folder,
 
-			isSentFolder: () => (FolderUserStore.sentFolder() || 0) === MessageUserStore.listEndFolder(),
+			isSentFolder: () => (FolderUserStore.sentFolder() || 0) === MessageUserStore.list().Folder,
 
-			isArchiveFolder: () => (FolderUserStore.archiveFolder() || 0) === MessageUserStore.listEndFolder(),
+			isArchiveFolder: () => (FolderUserStore.archiveFolder() || 0) === MessageUserStore.list().Folder,
 
 			isArchiveDisabled: () => UNUSED_OPTION_VALUE === FolderUserStore.archiveFolder(),
 
