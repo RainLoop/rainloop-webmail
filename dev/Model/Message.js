@@ -77,13 +77,12 @@ export class MessageModel extends AbstractModel {
 		});
 
 		this.attachments = ko.observableArray(new AttachmentCollectionModel);
-		this.attachmentsSpecData = ko.observableArray();
 		this.threads = ko.observableArray();
 		this.unsubsribeLinks = ko.observableArray();
 		this.flags = ko.observableArray();
 
 		this.addComputables({
-			attachmentIconClass: () => FileInfo.getCombinedIconClass(this.hasAttachments() ? this.attachmentsSpecData() : []),
+			attachmentIconClass: () => FileInfo.getAttachmentsIconClass(this.attachments()),
 			threadsLen: () => this.threads().length,
 			isImportant: () => MessagePriority.High === this.priority(),
 
@@ -137,7 +136,6 @@ export class MessageModel extends AbstractModel {
 		this.selected(false);
 		this.checked(false);
 		this.hasAttachments(false);
-		this.attachmentsSpecData([]);
 
 		this.isHtml(false);
 		this.hasImages(false);
@@ -190,6 +188,7 @@ export class MessageModel extends AbstractModel {
 			json.Priority = MessagePriority.Normal;
 		}
 		if (super.revivePropertiesFromJson(json)) {
+			this.hasAttachments(!!this.attachments.length);
 //			this.foundCIDs = isArray(json.FoundCIDs) ? json.FoundCIDs : [];
 //			this.attachments(AttachmentCollectionModel.reviveFromJson(json.Attachments, this.foundCIDs));
 
@@ -441,7 +440,7 @@ export class MessageModel extends AbstractModel {
 			this.selected(message.selected());
 			this.checked(message.checked());
 			this.hasAttachments(message.hasAttachments());
-			this.attachmentsSpecData(message.attachmentsSpecData());
+			this.attachments(message.attachments());
 		}
 
 		this.body = null;

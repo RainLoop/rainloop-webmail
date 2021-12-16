@@ -202,13 +202,12 @@ trait Response
 
 			if ('Message' === $sParent)
 			{
-				$oAttachments = /* @var \MailSo\Mail\AttachmentCollection */ $mResponse->Attachments();
-
 				$bHasExternals = false;
 				$mFoundCIDs = array();
 				$aContentLocationUrls = array();
 				$mFoundContentLocationUrls = array();
 
+				$oAttachments = /* @var \MailSo\Mail\AttachmentCollection */ $mResponse->Attachments();
 				if ($oAttachments && 0 < $oAttachments->count())
 				{
 					foreach ($oAttachments as /* @var \MailSo\Mail\Attachment */ $oAttachment)
@@ -218,7 +217,7 @@ trait Response
 							$sContentLocation = $oAttachment->ContentLocation();
 							if ($sContentLocation && \strlen($sContentLocation))
 							{
-								$aContentLocationUrls[] = $oAttachment->ContentLocation();
+								$aContentLocationUrls[] = $sContentLocation;
 							}
 						}
 					}
@@ -273,12 +272,14 @@ trait Response
 				$mResult['HasExternals'] = $bHasExternals;
 				$mResult['HasInternals'] = (\is_array($mFoundCIDs) && \count($mFoundCIDs)) ||
 					(\is_array($mFoundContentLocationUrls) && \count($mFoundContentLocationUrls));
+				$mResult['Attachments'] = $this->responseObject($oAttachments, $sParent, $aParameters);
+/*
 //				$mResult['FoundCIDs'] = $mFoundCIDs;
 				$mResult['Attachments'] = $this->responseObject($oAttachments, $sParent, \array_merge($aParameters, array(
 					'FoundCIDs' => $mFoundCIDs,
 					'FoundContentLocationUrls' => $mFoundContentLocationUrls
 				)));
-
+*/
 				$mResult['ReadReceipt'] = $mResponse->ReadReceipt();
 
 				if (\strlen($mResult['ReadReceipt']) && !\in_array('$forwarded', $mResult['Flags']))

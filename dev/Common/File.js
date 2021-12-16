@@ -249,10 +249,10 @@ export const FileInfo = {
 	 * @param {string} sFileType
 	 * @returns {string}
 	 */
-	getCombinedIconClass: data => {
+	getAttachmentsIconClass: data => {
 		if (arrayLength(data)) {
 			let icons = data
-				.map(item => item ? FileInfo.getIconClass(FileInfo.getExtension(item[0]), item[1]) : '')
+				.map(item => item ? FileInfo.getIconClass(FileInfo.getExtension(item.fileName), item.mimeType) : '')
 				.validUnique();
 
 			return (icons && 1 === icons.length && 'icon-file' !== icons[0])
