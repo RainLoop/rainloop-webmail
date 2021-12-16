@@ -4,19 +4,16 @@ use RainLoop\Providers\Storage\Enumerations\StorageType;
 
 class DemoStorage extends \RainLoop\Providers\Storage\FileStorage
 {
+	private static $gc_done;
+
 	/**
 	 * @param \RainLoop\Model\Account|string|null $mAccount
 	 */
 	protected function generateFileName($mAccount, int $iStorageType, string $sKey, bool $bMkDir = false, bool $bForDeleteAction = false) : string
 	{
-		$sEmail = $sSubFolder = '';
+		$sEmail = '';
 		if ($mAccount instanceof \RainLoop\Model\MainAccount) {
 			$sEmail = $mAccount->Email();
-			if (StorageType::SIGN_ME === $iStorageType) {
-				$sSubFolder = '/.sign_me';
-			} else if (StorageType::SESSION === $iStorageType) {
-				$sSubFolder = '/.sessions';
-			}
 		} else if (\is_string($mAccount)) {
 			$sEmail = $mAccount;
 		}
@@ -26,11 +23,20 @@ class DemoStorage extends \RainLoop\Providers\Storage\FileStorage
 
 		$sDataPath = "{$this->sDataPath}/demo";
 
-		if (\is_dir($sDataPath) && 0 === \random_int(0, 100)) {
-			\MailSo\Base\Utils::RecTimeDirRemove($sDataPath, 3600 * 3); // 3 hours
+		// Garbage collection
+		if (!static::$gc_done) {
+			static::$gc_done = true;
+			if (\is_dir($sDataPath) && 0 === \random_int(0, 100)) {
+				\MailSo\Base\Utils::RecTimeDirRemove($sDataPath, 3600 * 3); // 3 hours
+			}
 		}
 
-		$sDataPath .= '/' . \RainLoop\Utils::fixName(\RainLoop\Utils::GetConnectionToken()) . $sSubFolder;
+		$sDataPath .= '/' . \RainLoop\Utils::fixName(\RainLoop\Utils::GetConnectionToken());
+		if (StorageType::SIGN_ME === $iStorageType) {
+			$sDataPath .= '/.sign_me';
+		} else if (StorageType::SESSION === $iStorageType) {
+			$sDataPath .= '/.sessions';
+		}
 		\is_dir($sDataPath) || \mkdir($sDataPath, 0700, true);
 
 		return $sDataPath . '/' . ($sKey ? \RainLoop\Utils::fixName($sKey) : '');
