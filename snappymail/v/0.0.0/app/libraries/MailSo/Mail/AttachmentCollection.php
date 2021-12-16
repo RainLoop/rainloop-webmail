@@ -29,7 +29,7 @@ class AttachmentCollection extends \MailSo\Base\Collection
 		foreach ($this as $oAttachment) {
 			$aResult[] = array(
 				'@Object' => 'Object/Attachment',
-				'FileName' => $oAttachment->FileName(true),
+				'FileName' => $oAttachment->FileName(),
 				'MimeType' => $oAttachment->MimeType(),
 				'IsInline' => $oAttachment->IsInline()
 			);

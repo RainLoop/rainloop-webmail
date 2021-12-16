@@ -67,7 +67,7 @@ class Attachment implements \JsonSerializable
 		if ($this->oBodyStructure)
 		{
 			$sFileName = $this->oBodyStructure->FileName();
-			if ($bCalculateOnEmpty && 0 === \strlen(trim($sFileName)))
+			if ($bCalculateOnEmpty && !\strlen(\trim($sFileName)))
 			{
 				$sMimeType = \strtolower(\trim($this->MimeType()));
 				if ('message/rfc822' === $sMimeType)
