@@ -26,7 +26,7 @@ class DemoStorage extends \RainLoop\Providers\Storage\FileStorage
 		// Garbage collection
 		if (!static::$gc_done) {
 			static::$gc_done = true;
-			if (\is_dir($sDataPath) && 0 === \random_int(0, 100)) {
+			if (!\random_int(0, \max(50, \ini_get('session.gc_divisor')))) {
 				\MailSo\Base\Utils::RecTimeDirRemove($sDataPath, 3600 * 3); // 3 hours
 			}
 		}
@@ -37,7 +37,6 @@ class DemoStorage extends \RainLoop\Providers\Storage\FileStorage
 		} else if (StorageType::SESSION === $iStorageType) {
 			$sDataPath .= '/.sessions';
 		}
-		\is_dir($sDataPath) || \mkdir($sDataPath, 0700, true);
 
 		return $sDataPath . '/' . ($sKey ? \RainLoop\Utils::fixName($sKey) : '');
 	}

@@ -466,14 +466,14 @@ class Actions
 	public function StorageProvider(bool $bLocal = false): Providers\Storage
 	{
 		if ($bLocal) {
-			if (null === $this->oLocalStorageProvider) {
+			if (!$this->oLocalStorageProvider) {
 				$this->oLocalStorageProvider = new Providers\Storage(
 					$this->fabrica('storage-local'));
 			}
 
 			return $this->oLocalStorageProvider;
 		} else {
-			if (null === $this->oStorageProvider) {
+			if (!$this->oStorageProvider) {
 				$this->oStorageProvider = new Providers\Storage(
 					$this->fabrica('storage'));
 			}

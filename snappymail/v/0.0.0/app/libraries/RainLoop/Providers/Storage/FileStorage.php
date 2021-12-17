@@ -24,7 +24,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	public function __construct(string $sStoragePath, bool $bLocal = false)
 	{
 		$this->sDataPath = \rtrim(\trim($sStoragePath), '\\/');
-		$this->bLocal = !!$bLocal;
+		$this->bLocal = $bLocal;
 		$this->oLogger = null;
 	}
 
@@ -34,7 +34,13 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	public function Put($mAccount, int $iStorageType, string $sKey, string $sValue) : bool
 	{
 		$sFileName = $this->generateFileName($mAccount, $iStorageType, $sKey, true);
-		return $sFileName && false !== \file_put_contents($sFileName, $sValue);
+		try {
+			$sFileName && \RainLoop\Utils::saveFile($sFileName, $sValue);
+			return true;
+		} catch (\Throwable $e) {
+			\error_log("{$e->getMessage()}: {$sFileName}");
+		}
+		return false;
 	}
 
 	/**
@@ -138,21 +144,21 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 			}
 		}
 
-		// Cleanup SignMe
-		if (StorageType::SIGN_ME === $iStorageType && $sKey && 0 === \random_int(0, 25) && \is_dir($sFilePath)) {
-			\MailSo\Base\Utils::RecTimeDirRemove(\is_dir($sFilePath), 3600 * 24 * 30); // 30 days
-		}
-
-		// Cleanup sessions
-		if (StorageType::SESSION === $iStorageType && $sKey && 0 === \random_int(0, 25) && \is_dir($sFilePath)) {
-			\MailSo\Base\Utils::RecTimeDirRemove(\is_dir($sFilePath), 3600 * 3); // 3 hours
-		}
-
 		return $sFilePath;
 	}
 
 	public function SetLogger(?\MailSo\Log\Logger $oLogger)
 	{
 		$this->oLogger = $oLogger;
+	}
+
+	public function GC() : void
+	{
+		foreach (\glob("{$this->sDataPath}/*", GLOB_ONLYDIR) as $sDomain) {
+			foreach (\glob("{$sDomain}/*", GLOB_ONLYDIR) as $sLocal) {
+				\MailSo\Base\Utils::RecTimeDirRemove("{$sLocal}/.sign_me", 3600 * 24 * 30); // 30 days
+				\MailSo\Base\Utils::RecTimeDirRemove("{$sLocal}/.sessions", 3600 * 3); // 3 hours
+			}
+		}
 	}
 }

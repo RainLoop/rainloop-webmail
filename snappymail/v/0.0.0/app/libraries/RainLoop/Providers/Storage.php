@@ -81,12 +81,16 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 
 	public function IsActive() : bool
 	{
-		return $this->oDriver instanceof \RainLoop\Providers\Storage\IStorage;
+		return true;
 	}
 
 	public function IsLocal() : bool
 	{
-		return $this->oDriver instanceof \RainLoop\Providers\Storage\IStorage &&
-			$this->oDriver->IsLocal();
+		return $this->oDriver->IsLocal();
+	}
+
+	public function GC() : void
+	{
+		$this->oDriver->GC();
 	}
 }

@@ -886,8 +886,8 @@ abstract class Utils
 
 	public static function RecRmDir(string $sDir) : bool
 	{
-		if (\is_dir($sDir))
-		{
+		\clearstatcache();
+		if (\is_dir($sDir)) {
 			$iterator = new \RecursiveIteratorIterator(
 				new \RecursiveDirectoryIterator($sDir, \FilesystemIterator::SKIP_DOTS),
 				\RecursiveIteratorIterator::CHILD_FIRST);
@@ -899,27 +899,34 @@ abstract class Utils
 				}
 			}
 			\clearstatcache();
-
+//			\realpath_cache_size() && \clearstatcache(true);
 			return \rmdir($sDir);
 		}
 
 		return false;
 	}
 
-	public static function RecTimeDirRemove(string $sTempPath, int $iTime2Kill, int $iNow = 0) : bool
+	public static function RecTimeDirRemove(string $sDir, int $iTime2Kill) : bool
 	{
-		$iTime = ($iNow ?: \time()) - $iTime2Kill;
 		\clearstatcache();
-		$iterator = new \RecursiveIteratorIterator(
-			new \RecursiveDirectoryIterator($sTempPath, \FilesystemIterator::SKIP_DOTS),
-			\RecursiveIteratorIterator::CHILD_FIRST);
-		foreach ($iterator as $path) {
-			if ($path->isFile() && '.' !== $path->getBasename()[0] && $path->getMTime() < $iTime) {
-				\unlink($path);
+		if (\is_dir($sDir)) {
+			$iTime = \time() - $iTime2Kill;
+			$iterator = new \RecursiveIteratorIterator(
+				new \RecursiveDirectoryIterator($sDir, \FilesystemIterator::SKIP_DOTS),
+				\RecursiveIteratorIterator::CHILD_FIRST);
+			foreach ($iterator as $path) {
+				if ($path->isFile() && $path->getMTime() < $iTime) {
+					\unlink($path);
+				} else if ($path->isDir() && !(new \FilesystemIterator($path))->valid()) {
+					\rmdir($path);
+				}
 			}
+			\clearstatcache();
+//			\realpath_cache_size() && \clearstatcache(true);
+			return !(new \FilesystemIterator($sDir))->valid() && \rmdir($sDir);
 		}
-		\clearstatcache();
-		return true;
+
+		return false;
 	}
 
 	public static function Utf8Truncate(string $sUtfString, int $iLength) : string

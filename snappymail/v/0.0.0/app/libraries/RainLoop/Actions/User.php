@@ -253,6 +253,10 @@ trait User
 			$this->Logger()->Write('Cacher GC: Begin');
 			$this->Cacher()->GC(48);
 			$this->Logger()->Write('Cacher GC: End');
+
+			$this->Logger()->Write('Storage GC: Begin');
+			$this->StorageProvider()->GC();
+			$this->Logger()->Write('Storage GC: End');
 		}
 		else if ($bFilesCache)
 		{
