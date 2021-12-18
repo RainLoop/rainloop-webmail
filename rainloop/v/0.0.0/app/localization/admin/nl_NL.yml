@@ -4,7 +4,6 @@ nl_NL:
     LABEL_PASSWORD: "Wachtwoord"
     BUTTON_LOGIN: "Aanmelden in het beheer paneel"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Beheer paneel"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Algemeen"
@@ -16,7 +15,6 @@ nl_NL:
     LABEL_INTEGRATION_NAME: "Integratie"
     LABEL_PLUGINS_NAME: "Invoegtoepassingen"
     LABEL_PACKAGES_NAME: "Paketten"
-    LABEL_LICENSING_NAME: "Licentieovereenkomst"
     LABEL_ABOUT_NAME: "Over"
   TAB_GENERAL:
     LEGEND_INTERFACE: "Interface"
@@ -70,7 +68,6 @@ nl_NL:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Nooit"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Eenmalig"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Altijd"
-    HTML_ALERT_PREMIUM: "Deze functionaliteit is alleen beschikbaar voor <strong><a href=\"#/licensing\">Premium</a></strong> abonnees.\n"
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Contactpersonen"
     LEGEND_STORAGE: "Opslag (PDO)"
@@ -145,21 +142,6 @@ nl_NL:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Gereed voor installatie"
     LEGEND_INSTALLED_PACKAGES: "Geïnstalleerde pakketten"
     ALERT_CANNOT_ACCESS_REPOSITORY: "De installatie bron is op het moment niet beschikbaar."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Uw domein"
-    LABEL_VERSION: "Versie"
-    LABEL_CHECKING: "Controleren"
-    TYPE_BASIC_HINT: "Dit domein is niet gelicentieerd voor commercieel gebruik (met aditionele functies)."
-    TYPE_BASIC_HINT_2: "Dit domein kan niet worden gelicentieerd."
-    HTML_ALERT_TOP_1: "RainLoop Webmail is gelicentieerd onder de"
-    HTML_ALERT_TOP_2: "U staat u <b>vrij</b> om dit voor uw <b>persoonlijk</b> project te gebruiken."
-    HTML_ALERT_TOP_3: |
-        Voor commercieel gebruik (met additionele functies) van <b>RainLoop Webmail</b> moet u een <a href=http://www.rainloop.net/purchase/ target=_blank>activatie code</a>.
-    TYPE_PREMIUM_LIFETIME: "Levenslang"
-    LABEL_SUB_EXPIRES: "Activatie verloopt"
-    BUTTON_ACTIVATE: "Activeer de activatie code voor dit domein."
-    BUTTON_PURCHASE: "Aanschaffen"
-    BUTTON_TRIAL: "Proefperiode"
   TAB_ABOUT:
     LEGEND_ABOUT: "Over"
     LABEL_TAG_HINT: "Simpel, modern en snelle web-based e-mail client"
@@ -172,21 +154,6 @@ nl_NL:
     BUTTON_UPDATE: "Bijwerken"
     BUTTON_DOWNLOAD: "Download"
     BUTTON_CHANGELOG: "Veranderingen logboek"
-  POPUPS_ACTIVATE:
-    TITLE_ACTIVATE: "Activatie code activeren?"
-    TITLE_ACTIVATION: "Activeren..."
-    LABEL_DOMAIN: "Domein"
-    LABEL_SUB_KEY: "Activatie code"
-    BUTTON_ACTIVATE: "Activeer"
-    LABEL_ACTIVATED: "Geactiveerd"
-    ERROR_INVALID_SUBS_KEY: "Onjuiste activatie code"
-    SUBS_KEY_ACTIVATED: "Activatie code is al succesvol geactiveerd"
-    HTML_DESC: |
-        Na activatie wordt het premium abonnement voor <b>%DOMAIN%</b> verlengd.
-        <br />
-        Let op: een activatie code kan slechts voor één domein worden gebruikt.
-        <br /><br />
-        Het activatieproces kan niet meer worden afgebroken of geannuleerd nadat het is gestart.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Voeg alias toe"
     LABEL_ALIAS: "Alias"
@@ -293,9 +260,6 @@ nl_NL:
     CANT_DELETE_PACKAGE: "Kan pakket niet de-installeren"
     INVALID_PLUGIN_PACKAGE: "Onjuist invoegtoepassing pakket"
     UNSUPPORTED_PLUGIN_PACKAGE: "niet ondersteund invoegtoepassing pakket"
-    LICENSING_SERVER_IS_UNAVAILABLE: "Activatie server is niet beschikbaar"
-    LICENSING_DOMAIN_EXPIRED: "Activatie voor dit domein is verlopen."
-    LICENSING_DOMAIN_BANNED: "Activatie voor dit domein niet mogelijk."
     DEMO_SEND_MESSAGE_ERROR: "Vanwege beveiliging is het deze account niet toegestaan om e-mail naar externe adressen te versturen!"
     DEMO_ACCOUNT_ERROR: "Vanwege beveiliging is het deze account niet toegestaan om deze actie uit te voeren!"
     ACCOUNT_ALREADY_EXISTS: "Account bestaat al"

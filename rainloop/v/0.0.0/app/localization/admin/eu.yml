@@ -4,7 +4,6 @@ eu:
     LABEL_PASSWORD: "Pasahitza"
     BUTTON_LOGIN: "Hasi saioa administrazio panelean"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Administrazio panela"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Orokorra"
@@ -16,7 +15,6 @@ eu:
     LABEL_INTEGRATION_NAME: "Integrazioak"
     LABEL_PLUGINS_NAME: "Pluginak"
     LABEL_PACKAGES_NAME: "Paketeak"
-    LABEL_LICENSING_NAME: "Lizentziak"
     LABEL_ABOUT_NAME: "Honi buruz"
   TAB_GENERAL:
     LEGEND_INTERFACE: "Interfazea"
@@ -71,7 +69,6 @@ eu:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Bat ere ez"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Behin"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Beti"
-    HTML_ALERT_PREMIUM: "Funtzionalitate hau <strong><a href=\"#/licensing\">Premium</a></strong> erabiltzaileentzat soilik dago eskuragarri."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Kontaktuak"
     LEGEND_STORAGE: "Biltegiratzea (PDO)"
@@ -146,22 +143,6 @@ eu:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Instalatzeko erabilgarri"
     LEGEND_INSTALLED_PACKAGES: "Instalatutako paketeak"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Une honetan ezin da sartu errepositorioan "
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Zure domeinua"
-    LABEL_VERSION: "Bertsioa"
-    LABEL_CHECKING: "Frogatzen"
-    TYPE_BASIC_HINT: "Domeinu honek ez dauka lizentziarik erabilera komertzialerako (eginbide gehigarriekin)"
-    TYPE_BASIC_HINT_2: "Domeinu hau ezin da lizentziatu"
-    HTML_ALERT_TOP_1: "RainLoop Webmail-ek honako lizentzia dauka"
-    HTML_ALERT_TOP_2: "<b>Erabili</b> dezakezu zure proiektu <b>pertsonaletarako</b>."
-    HTML_ALERT_TOP_3: |
-        <b>RainLoop Webmail</b>-aren erabilera komertzialak
-        (eginbide gehigarriekin) <a href="http://www.rainloop.net/purchase/" target="_blank">harpidetza</a> behar du.
-    TYPE_PREMIUM_LIFETIME: "Iraupena"
-    LABEL_SUB_EXPIRES: "Harpidetza iraungitzen da"
-    BUTTON_ACTIVATE: "Aktibatu harpidetza domeinu honetarako"
-    BUTTON_PURCHASE: "Erosketa"
-    BUTTON_TRIAL: "Proba"
   TAB_ABOUT:
     LEGEND_ABOUT: "Honi buruz"
     LABEL_TAG_HINT: "Web-posta bezero sinple, moderno eta azkarra"
@@ -174,22 +155,6 @@ eu:
     BUTTON_UPDATE: "Eguneratu"
     BUTTON_DOWNLOAD: "Deskargatu"
     BUTTON_CHANGELOG: "Aldaketen erregistroa"
-  POPUPS_ACTIVATE:
-    TITLE_ACTIVATE: "Aktibatu harpidetza gakoa?"
-    TITLE_ACTIVATION: "Aktibatzioa..."
-    LABEL_DOMAIN: "Domeinua"
-    LABEL_SUB_KEY: "Harpidetza gakoa"
-    BUTTON_ACTIVATE: "Aktibatu"
-    LABEL_ACTIVATED: "Aktibatuta"
-    ERROR_INVALID_SUBS_KEY: "Harpidetza gako baliogabea"
-    SUBS_KEY_ACTIVATED: "Harpidetza gakoa behar bezala aktibatu da"
-    HTML_DESC: |
-        Aktibazioaren ondoren, <b>%DOMAIN%</b> domeinurako premium harpdetza
-        zabalduko da.
-        <br />
-        Kontuan izan  harpidetza gakoa domeinu bakarrarentzat balio duela.
-        <br /><br />
-        Behin hasita, aktibazio prozesua ezin da gelditu edo bertan behera utzi.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Gehitu ezizena"
     LABEL_ALIAS: "Ezizena"
@@ -296,9 +261,6 @@ eu:
     CANT_DELETE_PACKAGE: "Huts egin du paketearen desintalazioak"
     INVALID_PLUGIN_PACKAGE: "Plugin pakete baliogabea"
     UNSUPPORTED_PLUGIN_PACKAGE: "Onarpenik gabeko plugin paketea"
-    LICENSING_SERVER_IS_UNAVAILABLE: "Harpidetza zerbitzaria ez dago eskuragarri"
-    LICENSING_DOMAIN_EXPIRED: "Domeinu honen harpidetza iraungi da."
-    LICENSING_DOMAIN_BANNED: "Domeinu honen harpidetza debekatuta dago."
     DEMO_SEND_MESSAGE_ERROR: "Segurtasun arrazoiengatik, kontu honi ez zaio onartzen kanpoko helbide elektronikoei mezuak bidaltzea!"
     DEMO_ACCOUNT_ERROR: "Segurtasun arrazoiengatik, kontu honi ez zaio onartzen ekintza hau!"
     ACCOUNT_ALREADY_EXISTS: "Kontua dagoeneko badago"

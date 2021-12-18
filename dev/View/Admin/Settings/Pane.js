@@ -22,11 +22,7 @@ class PaneSettingsAdminView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.adminDomain = ko.observable(Settings.settingsGet('AdminDomain'));
 		this.version = ko.observable(Settings.appSettingsGet('version'));
-
-		this.capa = !!Settings.settingsGet('PremType');
-		this.community = RL_COMMUNITY;
 
 		this.adminManLoading = ko.computed(
 			() =>

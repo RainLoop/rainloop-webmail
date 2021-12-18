@@ -32,23 +32,15 @@ const rainloopSetup = (done) => {
 		fs
 			.readFileSync('index.php', 'utf8')
 			.replace("'APP_VERSION', '0.0.0'", "'APP_VERSION', '" + versionFull + "'")
-			.replace(
-				"'APP_VERSION_TYPE', 'source'",
-				"'APP_VERSION_TYPE', '" + (config.community ? 'community' : 'standard') + "'"
-			)
 	);
 
 	fs.writeFileSync(dist + 'rainloop/v/' + versionFull + '/index.php.root', fs.readFileSync(dist + 'index.php'));
 
-	if (config.community) {
-		require('rimraf').sync(dist + 'rainloop/v/' + versionFull + '/app/libraries/RainLoop/Providers/Prem.php');
-	}
-
 	config.destPath = config.releasesPath + '/webmail/' + versionFull + '/';
 	config.cleanPath = dist;
 	config.zipSrcPath = dist;
-	config.zipFile = 'rainloop-' + (config.community ? 'community-' : '') + versionFull + '.zip';
-	// config.zipFileShort = 'rainloop-' + (config.community ? 'community-' : '') + 'latest.zip';
+	config.zipFile = 'rainloop-' + versionFull + '.zip';
+	// config.zipFileShort = 'rainloop-' + 'latest.zip';
 
 	config.rainloopBuilded = true;
 

@@ -4,7 +4,6 @@ hu_HU:
     LABEL_PASSWORD: "Jelszó"
     BUTTON_LOGIN: "Bejelentkezés az admin felületre"
   TOP_PANEL:
-    LABEL_PREMIUM: "Prémuim"
     LABEL_ADMIN_PANEL: "Adminisztrációs felület"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Általános"
@@ -16,7 +15,6 @@ hu_HU:
     LABEL_INTEGRATION_NAME: "Integrációk"
     LABEL_PLUGINS_NAME: "Beépülők"
     LABEL_PACKAGES_NAME: "Csomagok"
-    LABEL_LICENSING_NAME: "Licencelés"
     LABEL_ABOUT_NAME: "Névjegy"
   TAB_GENERAL:
     LEGEND_INTERFACE: "Felület"
@@ -71,7 +69,6 @@ hu_HU:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Semmi"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Egyszer"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Mindig"
-    HTML_ALERT_PREMIUM: "Ez a funkció csak a <strong><a href=\"#/licensing\">Prémium</a></strong> előfizetők számára érhető el."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Névjegyek"
     LEGEND_STORAGE: "Tárhely (PDO)"
@@ -146,21 +143,6 @@ hu_HU:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Telepíthető"
     LEGEND_INSTALLED_PACKAGES: "Telepített csomagok"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Jelenleg nem lehet csatlakozni a tárolóhoz"
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Domained"
-    LABEL_VERSION: "Verzió"
-    LABEL_CHECKING: "Ellenőrzés"
-    TYPE_BASIC_HINT: "Ez a domain nem licencelt kereskedelmi használatra (hozzáadott funkciókkal)."
-    TYPE_BASIC_HINT_2: "Ez a domain nem licencelhető."
-    HTML_ALERT_TOP_1: "RainLoop Webmail licence:"
-    HTML_ALERT_TOP_2: "<strong>Szabadon</strong> felhasználható a <strong>személyes</strong> projektjeidhez."
-    HTML_ALERT_TOP_3: |
-        A <b>RainLoop Webmail</b> kereskedelmi használatához (további funkciókkal) <a href="http://www.rainloop.net/purchase/" target="_blank">előfizetés</a> szükséges.
-    TYPE_PREMIUM_LIFETIME: "Örökös"
-    LABEL_SUB_EXPIRES: "Előfizetés lejár"
-    BUTTON_ACTIVATE: "Előfizetési kulcs aktiválása ehhez a domainhez"
-    BUTTON_PURCHASE: "Vásárlás"
-    BUTTON_TRIAL: "Próba"
   TAB_ABOUT:
     LEGEND_ABOUT: "Névjegy"
     LABEL_TAG_HINT: "Egyszerű, modern és gyors webes email kliens"
@@ -173,21 +155,6 @@ hu_HU:
     BUTTON_UPDATE: "Frissítés"
     BUTTON_DOWNLOAD: "Letöltés"
     BUTTON_CHANGELOG: "Változások listája"
-  POPUPS_ACTIVATE:
-    TITLE_ACTIVATE: "Előfizetési kulcs aktiválása?"
-    TITLE_ACTIVATION: "Aktiválás..."
-    LABEL_DOMAIN: "Domain"
-    LABEL_SUB_KEY: "Előfizetési kulcs"
-    BUTTON_ACTIVATE: "Aktivál"
-    LABEL_ACTIVATED: "Akitválva"
-    ERROR_INVALID_SUBS_KEY: "Érvénytelen előfizetési kulcs"
-    SUBS_KEY_ACTIVATED: "Előfizetési kulcs sikeresen aktiválva"
-    HTML_DESC: |
-        Aktiválás után a <b>%DOMAIN%</b> prémium előfizetése meg lesz hosszabbítva.
-        <br />
-        Egy előfizetési kulcs csak egy domainhez aktiválható.
-        <br /><br />
-        Miután elindult, az aktiválási folyamat nem szakítható meg vagy vonható vissza.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Álnév hozzáadás"
     LABEL_ALIAS: "Álnév"
@@ -294,9 +261,6 @@ hu_HU:
     CANT_DELETE_PACKAGE: "Nem sikerült eltávolítani a csomagot"
     INVALID_PLUGIN_PACKAGE: "Érvénytelen beépülő csomag"
     UNSUPPORTED_PLUGIN_PACKAGE: "Nem támogatott beépülő csomag"
-    LICENSING_SERVER_IS_UNAVAILABLE: "A előfizetési szerver nem érhető el"
-    LICENSING_DOMAIN_EXPIRED: "A domain előfizetése lejárt."
-    LICENSING_DOMAIN_BANNED: "A domain előfizetése letiltva."
     DEMO_SEND_MESSAGE_ERROR: "Biztonsági okokból, ebből a demó fiókból nem lehet külső email címekre üzenetet küldeni."
     DEMO_ACCOUNT_ERROR: "Biztonsági okokból, ebből a fiókból nem lehet elvégezni ezt a műveletet!"
     ACCOUNT_ALREADY_EXISTS: "A fiók már létezik"

@@ -4,7 +4,6 @@ ja_JP:
     LABEL_PASSWORD: "パスワード"
     BUTTON_LOGIN: "管理画面へログイン"
   TOP_PANEL:
-    LABEL_PREMIUM: "プレミアム"
     LABEL_ADMIN_PANEL: "管理画面"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "全般"
@@ -16,7 +15,6 @@ ja_JP:
     LABEL_INTEGRATION_NAME: "連携"
     LABEL_PLUGINS_NAME: "プラグイン"
     LABEL_PACKAGES_NAME: "パッケージ"
-    LABEL_LICENSING_NAME: "ライセンス"
     LABEL_ABOUT_NAME: "RainLoop について"
   TAB_GENERAL:
     LEGEND_INTERFACE: "インターフェース"
@@ -71,7 +69,6 @@ ja_JP:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "なし"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "1回だけ"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "いつも"
-    HTML_ALERT_PREMIUM: "この機能には<strong><a href=\"#/licensing\">プレミアム</a></strong>が必要です"
   TAB_CONTACTS:
     LEGEND_CONTACTS: "連絡先"
     LEGEND_STORAGE: "ストレージ (PDO)"
@@ -147,22 +144,6 @@ ja_JP:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "インストール可能なパッケージ"
     LEGEND_INSTALLED_PACKAGES: "インストールされたパッケージ"
     ALERT_CANNOT_ACCESS_REPOSITORY: "現時点でリポジトリにアクセスすることはできません。"
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "ドメイン"
-    LABEL_VERSION: "バージョン"
-    LABEL_CHECKING: "チェック中"
-    TYPE_BASIC_HINT: "このドメインは、 (追加の機能を備えた)商業的使用のためにライセンスされていません。"
-    TYPE_BASIC_HINT_2: "このドメインはライセンスされていません"
-    HTML_ALERT_TOP_1: "RainLoop Webmail is licensed under"
-    HTML_ALERT_TOP_2: "You are <b>free</b> to use it for your <b>personal</b> projects."
-    HTML_ALERT_TOP_3: |
-        <b>RainLoop Webmail</b>の（付加的な機能を備えた）商業的使用は、
-        <a href="http://www.rainloop.net/purchase/" target="_blank">サブスクリプション</a>を取得する必要があります。
-    TYPE_PREMIUM_LIFETIME: "ライフタイム"
-    LABEL_SUB_EXPIRES: "サブスクリプションの有効期限切れ"
-    BUTTON_ACTIVATE: "このドメインサブスクリプションキーをアクティベートする"
-    BUTTON_PURCHASE: "購入"
-    BUTTON_TRIAL: "試用"
   TAB_ABOUT:
     LEGEND_ABOUT: "RainLoop について"
     LABEL_TAG_HINT: "シンプル・モダン・高速なウェブベースのメールクライアント"
@@ -175,21 +156,6 @@ ja_JP:
     BUTTON_UPDATE: "更新"
     BUTTON_DOWNLOAD: "ダウンロード"
     BUTTON_CHANGELOG: "変更履歴"
-  POPUPS_ACTIVATE:
-    TITLE_ACTIVATE: "サブスクリプションキーをアクティベートしますか？"
-    TITLE_ACTIVATION: "アクティベーション ..."
-    LABEL_DOMAIN: "ドメイン"
-    LABEL_SUB_KEY: "サブスクリプションキー"
-    BUTTON_ACTIVATE: "アクティベート"
-    LABEL_ACTIVATED: "アクティベート済み"
-    ERROR_INVALID_SUBS_KEY: "無効なサブスクリプションキー"
-    SUBS_KEY_ACTIVATED: "サブスクリプションキーのアクティベートに成功しました"
-    HTML_DESC: |
-        <b>%DOMAIN%</b> のプレミアムサブスクリプションをアクティベートした後、拡張されます。
-        <br />
-        そのサブスクリプションキーは、1つのドメインのみアクティベートできます。
-        <br /><br />
-        一度アクティベーションの処理を開始すると、中止またはキャンセルすることはできません。
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "エイリアスを追加"
     LABEL_ALIAS: "エイリアス"
@@ -293,9 +259,6 @@ ja_JP:
     CANT_DELETE_PACKAGE: "パッケージの削除に失敗しました"
     INVALID_PLUGIN_PACKAGE: "無効なプラグインパッケージ"
     UNSUPPORTED_PLUGIN_PACKAGE: "サポートされていないプラグインパッケージ"
-    LICENSING_SERVER_IS_UNAVAILABLE: "サブスクリプションサーバーが利用できません"
-    LICENSING_DOMAIN_EXPIRED: "このドメインのサブスクリプションの有効期限が切れました"
-    LICENSING_DOMAIN_BANNED: "このドメインのサブスクリプションが無効化されました"
     DEMO_SEND_MESSAGE_ERROR: "セキュリティ上の理由から、アカウントは、外部の電子メールアドレスにメッセージを送信することを許可されていません！"
     DEMO_ACCOUNT_ERROR: "セキュリティ上の理由から、アカウントには、このアクションが許可されていません！"
     ACCOUNT_ALREADY_EXISTS: "アカウントがすでに存在します"

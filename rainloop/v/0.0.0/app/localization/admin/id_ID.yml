@@ -4,7 +4,6 @@ id_ID:
     LABEL_PASSWORD: "Password"
     BUTTON_LOGIN: "Login ke panel admin"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Panel Admin"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Umum"
@@ -16,7 +15,6 @@ id_ID:
     LABEL_INTEGRATION_NAME: "Integrasi"
     LABEL_PLUGINS_NAME: "Plugin"
     LABEL_PACKAGES_NAME: "Paket"
-    LABEL_LICENSING_NAME: "Lisensi"
     LABEL_ABOUT_NAME: "Tentang"
   TAB_GENERAL:
     LEGEND_INTERFACE: "Antarmuka"
@@ -71,7 +69,6 @@ id_ID:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Tidak ada"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Sekali"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Selalu"
-    HTML_ALERT_PREMIUM: "Fungsi ini tersedia hanya untuk pengguna <strong><a href=\"#/licensing\">Premium</a></strong>."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Kontak"
     LEGEND_STORAGE: "Media simpan (PDO)"
@@ -146,22 +143,6 @@ id_ID:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Tersedia untuk Instalasi"
     LEGEND_INSTALLED_PACKAGES: "Paket Terinstal"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Tidak bisa menjangkau repositori saat ini"
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Domain anda"
-    LABEL_VERSION: "Versi"
-    LABEL_CHECKING: "Memeriksa"
-    TYPE_BASIC_HINT: "Domain ini belum dilisensikan untuk penggunaan komersil (dengan fitur tambahan)."
-    TYPE_BASIC_HINT_2: "Domain ini tidak bisa dilinsensikan"
-    HTML_ALERT_TOP_1: "RainLoop Webmail dilisensi di bawah"
-    HTML_ALERT_TOP_2: "Anda <b>gratis </b> jika ditujukan <b>proyek </b> pribadi."
-    HTML_ALERT_TOP_3: |
-        Tujuan penggunaan komersil (dengan fitur tambahan) <b>RainLoop Webmail</b> harus
-        <a href="http://www.rainloop.net/purchase/" target="_blank">langganan</a>.
-    TYPE_PREMIUM_LIFETIME: "Seumur hidup"
-    LABEL_SUB_EXPIRES: "Langganan berakhir"
-    BUTTON_ACTIVATE: "Aktifkan Kunci Langganan untuk domain ini"
-    BUTTON_PURCHASE: "Beli"
-    BUTTON_TRIAL: "Percobaan"
   TAB_ABOUT:
     LEGEND_ABOUT: "Tentang"
     LABEL_TAG_HINT: "Klien web-based email yang simpel, modern & cepat"
@@ -174,21 +155,6 @@ id_ID:
     BUTTON_UPDATE: "Pembaruan"
     BUTTON_DOWNLOAD: "Mengunduh"
     BUTTON_CHANGELOG: "Log Perubahan"
-  POPUPS_ACTIVATE:
-    TITLE_ACTIVATE: "Akifkan kunci berlangganan?"
-    TITLE_ACTIVATION: "Mengaktivasi..."
-    LABEL_DOMAIN: "Domain"
-    LABEL_SUB_KEY: "Kunci Berlangganan"
-    BUTTON_ACTIVATE: "Aktivasi"
-    LABEL_ACTIVATED: "Sudah Diaktivasi"
-    ERROR_INVALID_SUBS_KEY: "Kunci Berlangganan tidak sah"
-    SUBS_KEY_ACTIVATED: "Kunci berlangganan berhasil diaktifkan"
-    HTML_DESC: |
-        Setelah aktivasi, langganan premium untuk <b>%DOMAIN%</b> akan diperpanjang.
-        <br />
-        Ingat bahwa kunci berlangganan hanya berlaku untuk domain tunggal.
-        <br /><br />
-        Setelah Dimulai, proses aktivasi tidak bisa dicegah dan dibatalkan.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Tambah Alias"
     LABEL_ALIAS: "Alias"
@@ -295,9 +261,6 @@ id_ID:
     CANT_DELETE_PACKAGE: "Gagal menghapus paket"
     INVALID_PLUGIN_PACKAGE: "Paket plugin tidak sah"
     UNSUPPORTED_PLUGIN_PACKAGE: "Paket plugin tidak didukung"
-    LICENSING_SERVER_IS_UNAVAILABLE: "Server berlangganan tidak tersedia"
-    LICENSING_DOMAIN_EXPIRED: "Berlangganan untuk domain ini telah habis."
-    LICENSING_DOMAIN_BANNED: "Berlangganan untuk domain ini ditolak."
     DEMO_SEND_MESSAGE_ERROR: "Untuk alasan keamanan, akun ini tidak diizinkan untuk mengirim pesan ke alamat e-mail eksternal!"
     DEMO_ACCOUNT_ERROR: "Untuk alasan keamanan, akun ini tidak diizinkan melakukan aksi ini!"
     ACCOUNT_ALREADY_EXISTS: "Akun telah ada"

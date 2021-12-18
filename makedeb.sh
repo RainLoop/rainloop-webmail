@@ -12,7 +12,7 @@ mkdir rainloop-deb-build;
 cd rainloop-deb-build;
 
 #Prepare zip file
-unzip ../rainloop-community-latest.zip;
+unzip ../rainloop-latest.zip;
 find . -type d -exec chmod 755 {} \;
 find . -type f -exec chmod 644 {} \;
 

@@ -4,7 +4,6 @@ pl_PL:
     LABEL_PASSWORD: "Hasło"
     BUTTON_LOGIN: "Zaloguj do panelu administracjnego"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Panel administracyjny"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Ogólne"
@@ -16,7 +15,6 @@ pl_PL:
     LABEL_INTEGRATION_NAME: "Integracje"
     LABEL_PLUGINS_NAME: "Wtyczki"
     LABEL_PACKAGES_NAME: "Pakiety"
-    LABEL_LICENSING_NAME: "Licencjonowanie"
     LABEL_ABOUT_NAME: "O programie"
   TAB_GENERAL:
     LEGEND_INTERFACE: "Interfejs"
@@ -71,7 +69,6 @@ pl_PL:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Nigdy"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Tylko raz"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Zawsze"
-    HTML_ALERT_PREMIUM: "Ta opcja dostępna jest tylko dla subskrybentów licencji <strong><a href=\"#/licensing\">Premium</a></strong>."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Kontakty"
     LEGEND_STORAGE: "Baza danych (PDO)"
@@ -146,22 +143,6 @@ pl_PL:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Dostępne do zainstalowania"
     LEGEND_INSTALLED_PACKAGES: "Zainstalowane pakiety"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Nie można uzyskać dostępu do repozytorium."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Twoja domena"
-    LABEL_VERSION: "Wersja"
-    LABEL_CHECKING: "Sprawdzanie..."
-    TYPE_BASIC_HINT: "Ta domena nie jest licencjonowana do użytku komercyjnego."
-    TYPE_BASIC_HINT_2: "Nie można dodać licencji dla tej domeny."
-    HTML_ALERT_TOP_1: "RainLoop Webmail korzysta z licencji"
-    HTML_ALERT_TOP_2: "Możesz używać tego klienta <b>za darmo</b>, tylko do celów <b>prywatnych</b>."
-    HTML_ALERT_TOP_3: |
-        Do użytku komercyjnego (z dodatkowymi opcjami) <b>RainLoop Webmail</b>, wymagane jest posiadanie
-        <a href=http://www.rainloop.net/purchase/ target=_blank>ważnej subskrypcji</a>.
-    TYPE_PREMIUM_LIFETIME: "Dożywotnia"
-    LABEL_SUB_EXPIRES: "Subskrypcja wygasa"
-    BUTTON_ACTIVATE: "Aktywuj klucz dla tej domeny"
-    BUTTON_PURCHASE: "Kup klucz"
-    BUTTON_TRIAL: "Wersja testowa"
   TAB_ABOUT:
     LEGEND_ABOUT: "O programie"
     LABEL_TAG_HINT: "Prosty, nowoczesny i szybki klient pocztowy"
@@ -174,21 +155,6 @@ pl_PL:
     BUTTON_UPDATE: "Zaktualizuj"
     BUTTON_DOWNLOAD: "Pobierz"
     BUTTON_CHANGELOG: "Lista zmian"
-  POPUPS_ACTIVATE:
-    TITLE_ACTIVATE: "Czy chcesz aktywować klucz subskrypcji?"
-    TITLE_ACTIVATION: "Aktywacja w toku..."
-    LABEL_DOMAIN: "Domena"
-    LABEL_SUB_KEY: "Klucz subskrypcji"
-    BUTTON_ACTIVATE: "Aktywuj"
-    LABEL_ACTIVATED: "Aktywowano"
-    ERROR_INVALID_SUBS_KEY: "Niepoprawny klucz subskrypcji"
-    SUBS_KEY_ACTIVATED: "Poprawnie aktywowano klucz subskrypcji"
-    HTML_DESC: |
-        Subskrypcja premium dla domeny <b>%DOMAIN%</b>, zostanie przedłużona po aktywacji.
-        <br />
-        Zwróć uwagę, że klucz subskrypcji może być aktywowany tylko dla jednej domeny.
-        <br /><br />
-        Po uruchomieniu aktywacji, nie można jej przerwać lub anulować.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Dodaj Alias"
     LABEL_ALIAS: "Alias"
@@ -298,9 +264,6 @@ pl_PL:
     CANT_DELETE_PACKAGE: "Usunięcie wtyczki zakończone niepowodzeniem"
     INVALID_PLUGIN_PACKAGE: "Niepoprawna wtyczka"
     UNSUPPORTED_PLUGIN_PACKAGE: "Nieobsługiwana wtyczka"
-    LICENSING_SERVER_IS_UNAVAILABLE: "Serwer aktywacji subskrypcji jest niedostępny"
-    LICENSING_DOMAIN_EXPIRED: "Subskrypcja dla tej domeny wygasła."
-    LICENSING_DOMAIN_BANNED: "Subskrypcja dla tej domeny została zawieszona."
     DEMO_SEND_MESSAGE_ERROR: "Ze względów bezpieczeństwa, to konto nie posiada zezwolenia na wysyłanie wiadomości na zewnętrzne adresy e-mail!"
     DEMO_ACCOUNT_ERROR: "Ze względów bezpieczeństwa, to konto nie posiada uprawnień do wykonania tego zadania!"
     ACCOUNT_ALREADY_EXISTS: "To konto już istnieje"

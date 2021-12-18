@@ -4,7 +4,6 @@ cs_CZ:
     LABEL_PASSWORD: "Heslo"
     BUTTON_LOGIN: "Přihlásit do administrace"
   TOP_PANEL:
-    LABEL_PREMIUM: "Prémium"
     LABEL_ADMIN_PANEL: "Administrační panel"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Základní"
@@ -16,7 +15,6 @@ cs_CZ:
     LABEL_INTEGRATION_NAME: "Integrace"
     LABEL_PLUGINS_NAME: "Pluginy"
     LABEL_PACKAGES_NAME: "Balíčky"
-    LABEL_LICENSING_NAME: "Licence"
     LABEL_ABOUT_NAME: "Info"
   TAB_GENERAL:
     LEGEND_INTERFACE: "Rozhraní"
@@ -70,7 +68,6 @@ cs_CZ:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Nikdy"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Jednou"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Vždy"
-    HTML_ALERT_PREMIUM: "Tato funkce je dostupná pouze pro <strong><a href=\"#/licensing\">Prémiovou</a></strong> verzi."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Kontakty"
     LEGEND_STORAGE: "Úložiště (PDO)"
@@ -146,23 +143,7 @@ cs_CZ:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Dostupné pro instalaci"
     LEGEND_INSTALLED_PACKAGES: "Nainstalované balíčky"
     ALERT_CANNOT_ACCESS_REPOSITORY: "V tento moment se nelze připojit k repozitáři."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Vaše doména"
-    LABEL_VERSION: "Verze"
-    LABEL_CHECKING: "Kontrolování"
-    TYPE_BASIC_HINT: "Tato doména není licencována pro komerční užití."
-    TYPE_BASIC_HINT_2: "Tato doména nemůže být licencována."
-    HTML_ALERT_TOP_1: "RainLoop Webmail je licencován pod"
-    HTML_ALERT_TOP_2: "Můžete tento nástroj <b>volně</b> používat pro vaše <b>osobní</b> projekty."
-    HTML_ALERT_TOP_3: |
-        Komerční užívání (s přidanými doplňky) <b>RainLoop Webmail</b> vyžaduje získání
 
-        <a href="http://www.rainloop.net/purchase/" target="_blank">licence</a>.
-    TYPE_PREMIUM_LIFETIME: "Lifetime"
-    LABEL_SUB_EXPIRES: "Licence vyprší"
-    BUTTON_ACTIVATE: "Aktivační licenční klíč pro tuto doménu"
-    BUTTON_PURCHASE: "Koupit"
-    BUTTON_TRIAL: "Trial"
   TAB_ABOUT:
     LEGEND_ABOUT: "Info"
     LABEL_TAG_HINT: "Jednoduchý, moderní a rychlý webový emailový klient"
@@ -175,21 +156,6 @@ cs_CZ:
     BUTTON_UPDATE: "Aktualizovat"
     BUTTON_DOWNLOAD: "Stáhnout"
     BUTTON_CHANGELOG: "Seznam změn"
-  POPUPS_ACTIVATE:
-    TITLE_ACTIVATE: "Aktivovat licenční klíč?"
-    TITLE_ACTIVATION: "Aktivace..."
-    LABEL_DOMAIN: "Doména"
-    LABEL_SUB_KEY: "Licenční klíč"
-    BUTTON_ACTIVATE: "Aktivovat"
-    LABEL_ACTIVATED: "Aktivováno"
-    ERROR_INVALID_SUBS_KEY: "Neplatný licenční klíč"
-    SUBS_KEY_ACTIVATED: "Licenční klíč byl úspěšně aktivován"
-    HTML_DESC: |
-        Po aktivaci bude prémiová licence pro doménu <b>%DOMAIN%</b> prodloužena.
-        <br />
-        Aktivační klíč lze použít pouze pro jednu doménu.
-        <br /><br />
-        Jakmile začnete proces aktivace, nelze ho přerušit nebo ukončit.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Přidat alias"
     LABEL_ALIAS: "Alias"
@@ -296,9 +262,6 @@ cs_CZ:
     CANT_DELETE_PACKAGE: "Odstranění balíčku se nezdařilo"
     INVALID_PLUGIN_PACKAGE: "Nevalidní balíček"
     UNSUPPORTED_PLUGIN_PACKAGE: "Nepodporovaný balíček rozšíření"
-    LICENSING_SERVER_IS_UNAVAILABLE: "Licenční server je nedostupný"
-    LICENSING_DOMAIN_EXPIRED: "Licence pro tuto doménu vypršela."
-    LICENSING_DOMAIN_BANNED: "Licence pro tuto doménu byla zablokována."
     DEMO_SEND_MESSAGE_ERROR: "Z důvodu bezpečnosti tento demo účet není oprávněn posílat zprávy na externí emaily!"
     DEMO_ACCOUNT_ERROR: "Z důvodu bezpečnosti tento účet nemá oprávnění k této akci!"
     ACCOUNT_ALREADY_EXISTS: "Účet již existuje"

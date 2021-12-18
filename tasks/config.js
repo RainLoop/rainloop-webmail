@@ -4,12 +4,10 @@ const { argv } = require('yargs');
 
 const config = {
 	head: {
-		rainloop: '/* RainLoop Webmail (c) RainLoop Team | Licensed under RainLoop Software License */',
 		agpl: '/* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL v3 */'
 	},
 	devVersion: '0.0.0',
 	releasesPath: 'build/dist/releases',
-	community: !argv.pro,
 	source: !!argv.source,
 	watch: false,
 	watchInterval: 1000,

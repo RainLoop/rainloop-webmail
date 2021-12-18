@@ -1496,7 +1496,6 @@ class Actions
 			'themes' => $this->GetThemes($bMobile, false),
 			'languages' => $this->GetLanguages(false),
 			'languagesAdmin' => $this->GetLanguages(true),
-			'appVersionType' => APP_VERSION_TYPE,
 			'attachmentsActions' => $aAttachmentsActions
 		), $bAdmin ? array(
 			'adminHostUse' => '' !== $oConfig->Get('security', 'admin_panel_host', ''),
@@ -1561,8 +1560,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 			'ContactsIsAllowed' => false,
 			'ChangePasswordIsAllowed' => false,
 			'RequireTwoFactor' => false,
-			'Community' => true,
-			'PremType' => false,
 			'Admin' => array(),
 			'Capa' => array(),
 			'Plugins' => array(),
@@ -1769,7 +1766,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 			$aResult['Auth'] = $this->IsAdminLoggined(false);
 			if ($aResult['Auth'])
 			{
-				$aResult['AdminDomain'] = APP_SITE;
 				$aResult['AdminLogin'] = (string) $oConfig->Get('security', 'admin_login', '');
 				$aResult['UseTokenProtection'] = (bool) $oConfig->Get('security', 'csrf_protection', true);
 				$aResult['EnabledPlugins'] = (bool) $oConfig->Get('plugins', 'enable', false);
@@ -1810,9 +1806,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 
 				$aResult['AllowDropboxSocial'] = (bool) $oConfig->Get('social', 'dropbox_enable', false);
 				$aResult['DropboxApiKey'] = (string) $oConfig->Get('social', 'dropbox_api_key', '');
-
-				$aResult['SubscriptionEnabled'] = (bool) \MailSo\Base\Utils::ValidateDomain($aResult['AdminDomain'], true);
-//					|| \MailSo\Base\Utils::ValidateIP($aResult['AdminDomain']);
 
 				$aResult['WeakPassword'] = (bool) $oConfig->ValidatePassword('12345');
 				$aResult['CoreAccess'] = (bool) $this->rainLoopCoreAccess();
@@ -3963,108 +3956,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 			'Result' => '' === $sTestMessage,
 			'Message' => \MailSo\Base\Utils::Utf8Clear($sTestMessage, '?')
 		));
-	}
-
-	/**
-	 * @return array
-	 */
-	public function DoAdminLicensing()
-	{
-		$this->IsAdminLoggined();
-
-		$bForce = '1' === (string) $this->GetActionParam('Force', '0');
-
-		$mResult = false;
-		$iErrorCode = -1;
-
-		$oPremProvider = $this->PremProvider();
-
-		if ($oPremProvider && 2 < \strlen(APP_SITE))
-		{
-			$sValue = $oPremProvider->Fetcher($bForce);
-
-			$this->requestSleep();
-
-			$iExpired = 0;
-			if ($oPremProvider->Parser($sValue, $iExpired))
-			{
-				$mResult = array(
-					'Banned' => false,
-					'Expired' => $iExpired,
-				);
-			}
-			else if ($sValue === 'NO' || \preg_match('/^EXPIRED:[\d]+$/', $sValue))
-			{
-				$iErrorCode = -1;
-			}
-			else if ($sValue === 'TOO_MANY_CONNECTIONS')
-			{
-				$iErrorCode = -1;
-			}
-			else
-			{
-				$iErrorCode = \RainLoop\Notifications::LicensingServerIsUnavailable;
-			}
-		}
-
-		if (0 < $iErrorCode && !$mResult)
-		{
-			throw new \RainLoop\Exceptions\ClientException($iErrorCode);
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $mResult);
-	}
-
-	/**
-	 * @return array
-	 */
-	public function DoAdminLicensingActivate()
-	{
-		$this->IsAdminLoggined();
-
-		$sDomain = (string) $this->GetActionParam('Domain', '');
-		$sKey = (string) $this->GetActionParam('Key', '');
-
-		$mResult = false;
-		$iErrorCode = -1;
-
-		$oPrem = $this->PremProvider();
-
-		if ($oPrem && 2 < \strlen($sDomain) && 2 < \strlen($sKey) && $sDomain === APP_SITE)
-		{
-			$iCode = 0;
-			$sValue = $oPrem->Activate($sDomain, $sKey, $iCode);
-
-			$this->requestSleep();
-
-			$aMatch = array();
-			if ('OK' === $sValue)
-			{
-				$mResult = true;
-			}
-			else if ('TOO_MANY_CONNECTIONS' === $sValue)
-			{
-				$mResult = 'Too many connections. Please try again later.';
-			}
-			else if (\preg_match('/^ERROR:(.+)$/', $sValue, $aMatch) && !empty($aMatch[1]))
-			{
-				$mResult = trim($aMatch[1]);
-
-				$this->Logger()->Write('Activation error for: '.$sKey.' ('.$sDomain.')', \MailSo\Log\Enumerations\Type::ERROR);
-				$this->Logger()->Write($mResult, \MailSo\Log\Enumerations\Type::ERROR);
-			}
-			else
-			{
-				$iErrorCode = \RainLoop\Notifications::LicensingServerIsUnavailable;
-			}
-		}
-
-		if (0 < $iErrorCode && !$mResult)
-		{
-			throw new \RainLoop\Exceptions\ClientException($iErrorCode);
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $mResult);
 	}
 
 	/**
@@ -9701,11 +9592,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 	 */
 	public function StaticPath($sPath)
 	{
-		$sKey = defined('APP_VERSION_TYPE') && 0 < strlen(APP_VERSION_TYPE) ? APP_VERSION_TYPE :
-			($this->IsOpen() ? 'community' : 'standard');
-
 		$sResult = \RainLoop\Utils::WebStaticPath().$sPath;
-		return $sResult.(false === \strpos($sResult, '?') ? '?' : '&').$sKey;
+		return $sResult.(false === \strpos($sResult, '?') ? '?' : '&');
 	}
 
 	/**

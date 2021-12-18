@@ -6,14 +6,11 @@ import { settingsSaveHelperSimpleFunction, trim } from 'Common/Utils';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Ajax';
-import AppStore from 'Stores/Admin/App';
 
 import { settingsGet } from 'Storage/Settings';
 
 class BrandingAdminSettings {
 	constructor() {
-		this.capa = AppStore.prem;
-
 		this.title = ko.observable(settingsGet('Title')).idleTrigger();
 		this.loadingDesc = ko.observable(settingsGet('LoadingDescription')).idleTrigger();
 		this.faviconUrl = ko.observable(settingsGet('FaviconUrl')).idleTrigger();
@@ -36,8 +33,6 @@ class BrandingAdminSettings {
 				{ optValue: 'always', optText: i18n('TAB_BRANDING/OPTION_WELCOME_PAGE_DISPLAY_ALWAYS') }
 			];
 		});
-
-		this.community = RL_COMMUNITY || AppStore.community();
 	}
 
 	onBuild() {

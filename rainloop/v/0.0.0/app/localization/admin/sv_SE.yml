@@ -4,7 +4,6 @@ sv_SE:
     LABEL_PASSWORD: "Lösenord"
     BUTTON_LOGIN: "Logga in till admin-panelen"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Adminpanel"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Allmän"
@@ -16,7 +15,6 @@ sv_SE:
     LABEL_INTEGRATION_NAME: "integrationer"
     LABEL_PLUGINS_NAME: "Plugins"
     LABEL_PACKAGES_NAME: "Paket"
-    LABEL_LICENSING_NAME: "Licensiering"
     LABEL_ABOUT_NAME: "Om"
   TAB_GENERAL:
     LEGEND_INTERFACE: "Gränssnitt"
@@ -71,7 +69,6 @@ sv_SE:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Ingen"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "En gång"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Alltid"
-    HTML_ALERT_PREMIUM: "Denna funktion är tillgänglig för <strong> <a href=\"#/licensing\"> Premium </a> </ strong> abonnenter."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Kontakter"
     LEGEND_STORAGE: "Storage (PDO)"
@@ -146,22 +143,6 @@ sv_SE:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Tillåt installation"
     LEGEND_INSTALLED_PACKAGES: "installerade paket"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Det går inte att komma åt arkivet för tillfället."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Din domän"
-    LABEL_VERSION: "Version"
-    LABEL_CHECKING: "Kontroll"
-    TYPE_BASIC_HINT: "Denna domän är inte godkänt för kommersiellt bruk (med ytterligare funktioner)."
-    TYPE_BASIC_HINT_2: "Denna domän kan inte licensieras."
-    HTML_ALERT_TOP_1: "RainLoop Webmail är licensierat under"
-    HTML_ALERT_TOP_2: "Du är <b>gratis</ b> för att använda den för dina <b>personliga</ b> projekt."
-    HTML_ALERT_TOP_3: |
-        Kommersiellt bruk (med ytterligare funktioner) av <b>RainLoop Webmail</ b> kräver att få
-        <a href="http://www.rainloop.net/purchase/" target="_blank"> prenumerations</a>.
-    TYPE_PREMIUM_LIFETIME: "Livstid"
-    LABEL_SUB_EXPIRES: "Abonnemang löper ut"
-    BUTTON_ACTIVATE: "Aktivera prenumerationsnyckel för den här domänen"
-    BUTTON_PURCHASE: "Inköp"
-    BUTTON_TRIAL: "Rättegång"
   TAB_ABOUT:
     LEGEND_ABOUT: "Om"
     LABEL_TAG_HINT: "Enkel, modern & snabb e-postklient"
@@ -174,21 +155,6 @@ sv_SE:
     BUTTON_UPDATE: "Uppdatera"
     BUTTON_DOWNLOAD: "Ladda ner"
     BUTTON_CHANGELOG: "Ändringslogg"
-  POPUPS_ACTIVATE:
-    TITLE_ACTIVATE: "Aktivera prenumerationsnyckel?"
-    TITLE_ACTIVATION: "Aktivering..."
-    LABEL_DOMAIN: "Domän"
-    LABEL_SUB_KEY: "Prenumerationsnyckel"
-    BUTTON_ACTIVATE: "Aktivera"
-    LABEL_ACTIVATED: "Aktiverad"
-    ERROR_INVALID_SUBS_KEY: "Ogiltig prenumerationsnyckel"
-    SUBS_KEY_ACTIVATED: "Lyckades aktivera prenumerationsnyckel"
-    HTML_DESC: |
-        Efter aktivering, premium prenumeration för <b>%DOMAIN%</b> kommer att förängas.
-        <br />
-        Observera att prenumerationsnyckel kan aktiveras för en enda domän.
-        <br /> <br />
-        När processen för aktivering har påbörjats så kan den inte avbrytas.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Lägg till Alias"
     LABEL_ALIAS: "Alias"
@@ -296,9 +262,6 @@ sv_SE:
     CANT_DELETE_PACKAGE: "Det gick inte att ta bort paket"
     INVALID_PLUGIN_PACKAGE: "Ogiltig plugin"
     UNSUPPORTED_PLUGIN_PACKAGE: "Pluginet stöds inte"
-    LICENSING_SERVER_IS_UNAVAILABLE: "Prenumerations servern inte är tillgänglig"
-    LICENSING_DOMAIN_EXPIRED: "Abonnemang för den här domänen har gått ut."
-    LICENSING_DOMAIN_BANNED: "Abonnemang för den här domänen är förbjudet."
     DEMO_SEND_MESSAGE_ERROR: "Av säkerhetsskäl är det här kontot inte tillåtet att skicka meddelanden till externa e-postadresser!"
     DEMO_ACCOUNT_ERROR: "Av säkerhetsskäl är det här kontot inte tillåtet för denna åtgärd!"
     ACCOUNT_ALREADY_EXISTS: "Kontot finns redan"

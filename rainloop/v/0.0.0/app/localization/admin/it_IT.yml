@@ -4,7 +4,6 @@ it_IT:
     LABEL_PASSWORD: "Password"
     BUTTON_LOGIN: "Accedi all'amministrazione"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Amministrazione"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Generali"
@@ -16,7 +15,6 @@ it_IT:
     LABEL_INTEGRATION_NAME: "Integrazioni"
     LABEL_PLUGINS_NAME: "Plugin"
     LABEL_PACKAGES_NAME: "Pacchetti"
-    LABEL_LICENSING_NAME: "Licenze"
     LABEL_ABOUT_NAME: "Informazioni"
   TAB_GENERAL:
     LEGEND_INTERFACE: "Interfaccia"
@@ -70,7 +68,6 @@ it_IT:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Mai"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Solo una volta"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Sempre"
-    HTML_ALERT_PREMIUM: "Questa funzionalità è disponibile solo per coloro che hanno acquistato una licenza <strong><a href=\"#/licensing\">Premium</a></strong>.\n"
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Contatti"
     LEGEND_STORAGE: "Metodo di salvataggio (PDO)"
@@ -145,22 +142,6 @@ it_IT:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Disponibili per l'installazione"
     LEGEND_INSTALLED_PACKAGES: "Pacchetti installati"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Impossibile accedere al repository in questo momento."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Il tuo dominio"
-    LABEL_VERSION: "Licenza"
-    LABEL_CHECKING: "Controllo in corso..."
-    TYPE_BASIC_HINT: "Questo dominio non possiede una licenza commerciale (con funzionalità aggiuntive)."
-    TYPE_BASIC_HINT_2: "Questo dominio non può possedere una licenza."
-    HTML_ALERT_TOP_1: "RainLoop Webmail è rilasciato sotto la licenza"
-    HTML_ALERT_TOP_2: "Sei <b>libero</b> di usarla per i tuoi progetti <b>personali</b>."
-    HTML_ALERT_TOP_3: |
-        L'uso commerciale (con funzionalità aggiuntive) di <b>RainLoop Webmail</b> richiede di ottenere una
-        <a href=http://www.rainloop.net/purchase/ target=_blank>licenza</a>.
-    TYPE_PREMIUM_LIFETIME: "A vita"
-    LABEL_SUB_EXPIRES: "La licenza scade il"
-    BUTTON_ACTIVATE: "Attiva una chiave di licenza per questo dominio"
-    BUTTON_PURCHASE: "Compra una licenza"
-    BUTTON_TRIAL: "Versione di prova"
   TAB_ABOUT:
     LEGEND_ABOUT: "Informazioni"
     LABEL_TAG_HINT: "Semplice, moderno e veloce client email online"
@@ -173,21 +154,6 @@ it_IT:
     BUTTON_UPDATE: "Aggiorna"
     BUTTON_DOWNLOAD: "Scarica"
     BUTTON_CHANGELOG: "Changelog"
-  POPUPS_ACTIVATE:
-    TITLE_ACTIVATE: "Attivare chiave di licenza?"
-    TITLE_ACTIVATION: "Attivazione..."
-    LABEL_DOMAIN: "Dominio"
-    LABEL_SUB_KEY: "Chiave di licenza"
-    BUTTON_ACTIVATE: "Attiva"
-    LABEL_ACTIVATED: "Attivata"
-    ERROR_INVALID_SUBS_KEY: "Chiave di licenza non valida"
-    SUBS_KEY_ACTIVATED: "Chiave di licenza attivata correttamente"
-    HTML_DESC: |
-        Dopo l'attivazione, la licenza Premium per <b>%DOMAIN%</b> sarà estesa.
-        <br />
-        Una chiave di licenza può essere attivata su un solo dominio.
-        <br /><br />
-        Una volta iniziato, il processo di attivazione non potrà essere bloccato od annullato.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Aggiungi alias"
     LABEL_ALIAS: "Alias"
@@ -297,9 +263,6 @@ it_IT:
     CANT_DELETE_PACKAGE: "Impossibile rimuovere il pacchetto"
     INVALID_PLUGIN_PACKAGE: "Pacchetto non valido"
     UNSUPPORTED_PLUGIN_PACKAGE: "Pacchetto non supportato"
-    LICENSING_SERVER_IS_UNAVAILABLE: "Il server dlele licenze non è dispobibile"
-    LICENSING_DOMAIN_EXPIRED: "La licenza per questo dominio è scaduta"
-    LICENSING_DOMAIN_BANNED: "La licenza per questo dominio è stata revocata"
     DEMO_SEND_MESSAGE_ERROR: "Per ragioni di sicurezza, questo account non è abilitato ad inviare email all'esterno."
     DEMO_ACCOUNT_ERROR: "Per ragioni di sicurezza, questa funzionalità è bloccata."
     ACCOUNT_ALREADY_EXISTS: "Questo account esiste già"

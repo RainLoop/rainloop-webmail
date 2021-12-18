@@ -34,5 +34,5 @@ const webpackCallback = (done) => (err, stats) => {
 };
 
 exports.webpack = (done) => {
-	webpack(webpackCfgBuilder(config.paths.staticJS, !config.community, 'production'), webpackCallback(done));
+	webpack(webpackCfgBuilder(config.paths.staticJS, 'production'), webpackCallback(done));
 };

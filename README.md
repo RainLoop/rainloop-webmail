@@ -22,7 +22,7 @@ Information about installing the product, check the [documentation page](http://
 
 ## License
 
-**RainLoop Webmail (Community edition)** is released under
+**RainLoop Webmail** is released under
 **GNU AFFERO GENERAL PUBLIC LICENSE Version 3 (AGPL)**.
 http://www.gnu.org/licenses/agpl-3.0.html
 

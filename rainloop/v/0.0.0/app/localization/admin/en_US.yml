@@ -4,7 +4,6 @@ en_US:
     LABEL_PASSWORD: "Password"
     BUTTON_LOGIN: "Log into the admin panel"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Admin Panel"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "General"
@@ -16,7 +15,6 @@ en_US:
     LABEL_INTEGRATION_NAME: "Integrations"
     LABEL_PLUGINS_NAME: "Plugins"
     LABEL_PACKAGES_NAME: "Packages"
-    LABEL_LICENSING_NAME: "Licensing"
     LABEL_ABOUT_NAME: "About"
   TAB_GENERAL:
     LEGEND_INTERFACE: "Interface"
@@ -69,7 +67,6 @@ en_US:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "None"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Once"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Always"
-    HTML_ALERT_PREMIUM: "This functionality is available for <strong><a href=\"#/licensing\">Premium</a></strong> subscribers."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Contacts"
     LEGEND_STORAGE: "Storage (PDO)"
@@ -144,22 +141,6 @@ en_US:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Available for Installation"
     LEGEND_INSTALLED_PACKAGES: "Installed Packages"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Cannot access the repository at the moment."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Your domain"
-    LABEL_VERSION: "Version"
-    LABEL_CHECKING: "Checking"
-    TYPE_BASIC_HINT: "This domain isn't licensed for commercial use (with additional features)."
-    TYPE_BASIC_HINT_2: "This domain can't be licensed."
-    HTML_ALERT_TOP_1: "RainLoop Webmail is licensed under"
-    HTML_ALERT_TOP_2: "You are <b>free</b> to use it for your <b>personal</b> projects."
-    HTML_ALERT_TOP_3: |
-        Commercial use (with additional features) of <b>RainLoop Webmail</b> requires getting a
-        <a href="http://www.rainloop.net/purchase/" target="_blank">subscription</a>.
-    TYPE_PREMIUM_LIFETIME: "Lifetime"
-    LABEL_SUB_EXPIRES: "Subscription expires"
-    BUTTON_ACTIVATE: "Activate Subscription Key for this domain"
-    BUTTON_PURCHASE: "Purchase"
-    BUTTON_TRIAL: "Trial"
   TAB_ABOUT:
     LEGEND_ABOUT: "About"
     LABEL_TAG_HINT: "Simple, modern & fast web-based email client"
@@ -172,21 +153,6 @@ en_US:
     BUTTON_UPDATE: "Update"
     BUTTON_DOWNLOAD: "Download"
     BUTTON_CHANGELOG: "Changelog"
-  POPUPS_ACTIVATE:
-    TITLE_ACTIVATE: "Activate Subscription Key?"
-    TITLE_ACTIVATION: "Activation..."
-    LABEL_DOMAIN: "Domain"
-    LABEL_SUB_KEY: "Subscription Key"
-    BUTTON_ACTIVATE: "Activate"
-    LABEL_ACTIVATED: "Activated"
-    ERROR_INVALID_SUBS_KEY: "Invalid Subscription Key"
-    SUBS_KEY_ACTIVATED: "Subscription Key Activated Successfully"
-    HTML_DESC: |
-        After activation, premium subscription for <b>%DOMAIN%</b> will be extended.
-        <br />
-        Note that subscription key can be activated for a single domain only.
-        <br /><br />
-        Once started, the process of activation cannot be aborted or cancelled.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Add Alias"
     LABEL_ALIAS: "Alias"
@@ -293,9 +259,6 @@ en_US:
     CANT_DELETE_PACKAGE: "Failed to remove package"
     INVALID_PLUGIN_PACKAGE: "Invalid plugin package"
     UNSUPPORTED_PLUGIN_PACKAGE: "Unsupported plugin package"
-    LICENSING_SERVER_IS_UNAVAILABLE: "Subscription server is unvailable"
-    LICENSING_DOMAIN_EXPIRED: "Subscription for this domain has expired."
-    LICENSING_DOMAIN_BANNED: "Subscription for this domain is banned."
     DEMO_SEND_MESSAGE_ERROR: "For security purposes, this account is not allowed to send messages to external e-mail addresses!"
     DEMO_ACCOUNT_ERROR: "For security purposes, this account is not allowed for this action!"
     ACCOUNT_ALREADY_EXISTS: "Account already exists"

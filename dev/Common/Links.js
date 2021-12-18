@@ -385,9 +385,6 @@ export function admin(screenName) {
 		case 'AdminSecurity':
 			result += 'security';
 			break;
-		case 'AdminLicensing':
-			result += 'licensing';
-			break;
 		// no default
 	}
 

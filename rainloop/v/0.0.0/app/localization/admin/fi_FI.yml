@@ -4,7 +4,6 @@ fi_FI:
     LABEL_PASSWORD: "Salasana"
     BUTTON_LOGIN: "Kirjaudu hallintapaneliin"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Halintapaneli"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Yleiset"
@@ -16,7 +15,6 @@ fi_FI:
     LABEL_INTEGRATION_NAME: "Integroinnit"
     LABEL_PLUGINS_NAME: "Pluginit"
     LABEL_PACKAGES_NAME: "Paketit"
-    LABEL_LICENSING_NAME: "Lisensointi"
     LABEL_ABOUT_NAME: "Tietoja"
   TAB_GENERAL:
     LEGEND_INTERFACE: "Käyttöliittymä"
@@ -69,7 +67,6 @@ fi_FI:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Ei mitään"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Kerran"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Aina"
-    HTML_ALERT_PREMIUM: "Tämä toiminto on saatavissa vain <strong><a href=\"#/licensing\">Premium</a></strong> tilaajille."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Yhteystiedot"
     LEGEND_STORAGE: "Tallennus (PDO)"
@@ -144,22 +141,6 @@ fi_FI:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Voidaan asentaa"
     LEGEND_INSTALLED_PACKAGES: "Aennetut pakkaukset"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Pääsy varastoon ei toimi tällä hetkellä."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Sinun domain"
-    LABEL_VERSION: "Versio"
-    LABEL_CHECKING: "Tarkastaa"
-    TYPE_BASIC_HINT: "Tämä domain ei ole lisensoitu kaupalliseen käyttöön (lisäominaisuuksilla)."
-    TYPE_BASIC_HINT_2: "Tätä verkkotunnusta ei voi lisensoida."
-    HTML_ALERT_TOP_1: "RainLoop Webmail on lisensoitu"
-    HTML_ALERT_TOP_2: "Voit käyttää <b>ilmaiseksi omissa</b> projekteissasi. "
-    HTML_ALERT_TOP_3: |
-        <b>RainLoop Webmail</b>in kaupallinen käyttö (lisäominaisuuksilla) vaatii
-        <a href="http://www.rainloop.net/purchase/" target="_blank">tilauksen</a>.
-    TYPE_PREMIUM_LIFETIME: "Kesto"
-    LABEL_SUB_EXPIRES: "Tilaus päättyy"
-    BUTTON_ACTIVATE: "Aktivoi Tilaus Avain tälle verkkotunnukselle"
-    BUTTON_PURCHASE: "Osta"
-    BUTTON_TRIAL: "Koeaika"
   TAB_ABOUT:
     LEGEND_ABOUT: "Tietoja"
     LABEL_TAG_HINT: "Helppo, moderni ja nopea web-pohjainen sähköpostiohjelma"
@@ -172,21 +153,6 @@ fi_FI:
     BUTTON_UPDATE: "Päivitä"
     BUTTON_DOWNLOAD: "Lataa"
     BUTTON_CHANGELOG: "Muutosloki"
-  POPUPS_ACTIVATE:
-    TITLE_ACTIVATE: "Aktivoi tilausavain?"
-    TITLE_ACTIVATION: "Aktivoidaan..."
-    LABEL_DOMAIN: "Verkkotunnus"
-    LABEL_SUB_KEY: "Tilaus avain"
-    BUTTON_ACTIVATE: "Aktivoi"
-    LABEL_ACTIVATED: "Aktivoitu"
-    ERROR_INVALID_SUBS_KEY: "Väärä tilausavain"
-    SUBS_KEY_ACTIVATED: "Tilausavain aktivoitu onnistuneesti"
-    HTML_DESC: |
-        Aktivoinninn jälkeen tilaus <b>%DOMAIN%</b> verkkotunnukselle jatkuu.
-        <br/>
-        Huomioi että tilausavain voidaan aktivoida vain yhdelle verkkotunnukselle.
-        <br/><br/>
-        Aloituksen jälkeen aktivointia ei voi keskeyttää tai peruuttaa.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Lisää Alias"
     LABEL_ALIAS: "Alias"
@@ -293,9 +259,6 @@ fi_FI:
     CANT_DELETE_PACKAGE: "Paketin poisto epäonnistui"
     INVALID_PLUGIN_PACKAGE: "Virheellinen lisäosa-paketti"
     UNSUPPORTED_PLUGIN_PACKAGE: "Ei tuettu lisäosa-paketti"
-    LICENSING_SERVER_IS_UNAVAILABLE: "Tilauspalvelimeen ei saa yhteyttä"
-    LICENSING_DOMAIN_EXPIRED: "Tänä verkkotunnuksen tilaus on päättynyt."
-    LICENSING_DOMAIN_BANNED: "Tämän verkkotunnuksen tilaus on estetty."
     DEMO_SEND_MESSAGE_ERROR: "Turvallisuus syistä tältä tililtä ei saa lähettää sähköposteja ulkoisiin osoitteisiin!"
     DEMO_ACCOUNT_ERROR: "Turvallisuus syistä tämä toiminto on estettuy tälle tilille!"
     ACCOUNT_ALREADY_EXISTS: "Tili on jo olemassa."

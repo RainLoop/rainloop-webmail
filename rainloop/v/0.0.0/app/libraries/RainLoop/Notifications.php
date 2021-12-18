@@ -57,10 +57,6 @@ class Notifications
 	const InvalidPluginPackage = 703;
 	const UnsupportedPluginPackage = 704;
 
-	const LicensingServerIsUnavailable = 710;
-	const LicensingExpired = 711;
-	const LicensingBanned = 712;
-
 	const DemoSendMessageError = 750;
 	const DemoAccountError = 751;
 
@@ -129,9 +125,6 @@ class Notifications
 			self::CantDeletePackage => 'CantDeletePackage',
 			self::InvalidPluginPackage => 'InvalidPluginPackage',
 			self::UnsupportedPluginPackage => 'UnsupportedPluginPackage',
-			self::LicensingServerIsUnavailable => 'LicensingServerIsUnavailable',
-			self::LicensingExpired => 'LicensingExpired',
-			self::LicensingBanned => 'LicensingBanned',
 			self::DemoSendMessageError => 'DemoSendMessageError',
 			self::DemoAccountError => 'DemoAccountError',
 			self::AccountAlreadyExists => 'AccountAlreadyExists',

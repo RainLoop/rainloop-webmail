@@ -17,20 +17,6 @@ class Prem
 	/**
 	 * @return bool
 	 */
-	public function Type()
-	{
-		static $bResult = null;
-		if (null === $bResult)
-		{
-			$bResult = $this->Parser($this->Fetcher(false, true));
-		}
-
-		return $bResult;
-	}
-
-	/**
-	 * @return bool
-	 */
 	public function IsActive()
 	{
 		return true;
@@ -61,12 +47,9 @@ class Prem
 	{
 		if (\is_array($aAppData))
 		{
-			$aAppData['Community'] = false;
-
 			$oConfig = $this->oConfig;
-			if ($oConfig && $this->Type())
+			if ($oConfig)
 			{
-				$aAppData['PremType'] = true;
 				$aAppData['LoginLogo'] = $oConfig->Get('branding', 'login_logo', '');
 				$aAppData['LoginBackground'] = $oConfig->Get('branding', 'login_background', '');
 				$aAppData['LoginCss'] = $oConfig->Get('branding', 'login_css', '');
@@ -88,7 +71,7 @@ class Prem
 			'LoginLogo', 'LoginBackground', 'LoginDescription', 'LoginCss',
 			'UserLogo', 'UserLogoTitle', 'UserLogoMessage', 'UserIframeMessage', 'UserCss',
 			'WelcomePageUrl', 'WelcomePageDisplay'
-		)) && $this->Type())
+		)))
 		{
 			$oActions->setConfigFromParams($oConfig, 'LoginLogo', 'branding', 'login_logo', 'string');
 			$oActions->setConfigFromParams($oConfig, 'LoginBackground', 'branding', 'login_background', 'string');
@@ -104,123 +87,6 @@ class Prem
 			$oActions->setConfigFromParams($oConfig, 'WelcomePageUrl', 'branding', 'welcome_page_url', 'string');
 			$oActions->setConfigFromParams($oConfig, 'WelcomePageDisplay', 'branding', 'welcome_page_display', 'string');
 		}
-	}
-
-	/**
-	 * @return string
-	 */
-	public function Activate($sDomain, $sKey, &$iCode)
-	{
-		$iCode = 0;
-		$sContentType = '';
-
-		$oHttp = \MailSo\Base\Http::SingletonInstance();
-
-		$sResult = $oHttp->GetUrlAsString(APP_API_PATH.'activate/'.\urlencode($sDomain).'/'.\urlencode($sKey),
-			'RainLoop/'.APP_VERSION, $sContentType, $iCode, $this->oLogger, 10,
-			$this->oConfig->Get('labs', 'curl_proxy', ''), $this->oConfig->Get('labs', 'curl_proxy_auth', ''),
-			array(), false
-		);
-
-		if (200 !== $iCode)
-		{
-			$sResult = '';
-		}
-
-		return $sResult;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function Fetcher($sForce = false, $bLongCache = false, $iFastCacheTimeInMin = 10, $iLongCacheTimeInDays = 3)
-	{
-		$sDomain = \trim(APP_SITE);
-
-		$oConfig = $this->oConfig;
-		$oLogger = $this->oLogger;
-		$oCacher = $this->oCacher;
-
-		$oHttp = \MailSo\Base\Http::SingletonInstance();
-
-		if (0 === \strlen($sDomain) || $oHttp->CheckLocalhost($sDomain) || !$oCacher || !$oConfig || !$oCacher->Verify(true))
-		{
-			return 'NO';
-		}
-
-		$sDomainKeyValue = \RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain);
-		$sDomainLongKeyValue = \RainLoop\KeyPathHelper::LicensingDomainKeyOtherValue($sDomain);
-
-		$sValue = '';
-		if (!$sForce)
-		{
-			if ($bLongCache)
-			{
-				$bLock = $oCacher->GetLock($sDomainLongKeyValue);
-				$iTime = $bLock ? 0 : $oCacher->GetTimer($sDomainLongKeyValue);
-
-				if ($bLock || (0 < $iTime && \time() < $iTime + (60 * 60 * 24) * $iLongCacheTimeInDays))
-				{
-					$sValue = $oCacher->Get($sDomainLongKeyValue);
-				}
-			}
-			else
-			{
-				$iTime = $oCacher->GetTimer($sDomainKeyValue);
-				if (0 < $iTime && \time() < $iTime + 60 * $iFastCacheTimeInMin)
-				{
-					$sValue = $oCacher->Get($sDomainKeyValue);
-				}
-			}
-		}
-
-		if (0 === \strlen($sValue))
-		{
-			if ($bLongCache)
-			{
-				if (!$oCacher->SetTimer($sDomainLongKeyValue))
-				{
-					return 'NO';
-				}
-
-				$oCacher->SetLock($sDomainLongKeyValue);
-			}
-
-			$iCode = 0;
-			$sContentType = '';
-
-			$sValue = $oHttp->GetUrlAsString(APP_API_PATH.'status/'.\urlencode($sDomain),
-				'RainLoop/'.APP_VERSION, $sContentType, $iCode, $oLogger, 5,
-				$oConfig->Get('labs', 'curl_proxy', ''), $oConfig->Get('labs', 'curl_proxy_auth', ''),
-				array(), false
-			);
-
-			if ($oLogger)
-			{
-				$oLogger->Write($sValue);
-			}
-
-			if (404 === $iCode)
-			{
-				$sValue = 'NO';
-			}
-			else if (200 !== $iCode)
-			{
-				$sValue = '';
-			}
-
-			$oCacher->SetTimer($sDomainKeyValue);
-
-			$oCacher->Set($sDomainKeyValue, $sValue);
-			$oCacher->Set($sDomainLongKeyValue, $sValue);
-
-			if ($bLongCache)
-			{
-				$oCacher->RemoveLock($sDomainLongKeyValue);
-			}
-		}
-
-		return $sValue;
 	}
 
 	public function ClearOldVersion()

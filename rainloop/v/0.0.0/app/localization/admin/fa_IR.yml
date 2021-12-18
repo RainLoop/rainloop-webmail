@@ -4,7 +4,6 @@ fa_IR:
     LABEL_PASSWORD: "گذرواژه"
     BUTTON_LOGIN: "ورود به صفحه مدیریت"
   TOP_PANEL:
-    LABEL_PREMIUM: "پریمیوم"
     LABEL_ADMIN_PANEL: "صفحه مدیریت"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "عمومی"
@@ -16,7 +15,6 @@ fa_IR:
     LABEL_INTEGRATION_NAME: "یکپارچه‌سازی"
     LABEL_PLUGINS_NAME: "افزونه‌ها"
     LABEL_PACKAGES_NAME: "بسته‌ها"
-    LABEL_LICENSING_NAME: "مجوزها"
     LABEL_ABOUT_NAME: "درباره"
   TAB_GENERAL:
     LEGEND_INTERFACE: "رابط"
@@ -72,7 +70,6 @@ fa_IR:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "هیچ‌کدام"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "یک‌بار"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "همیشه"
-    HTML_ALERT_PREMIUM: "این قابلیت برای نسخه <strong><a href=\"#/licensing\">Premium</a></strong> مشترکین در دسترس هست."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "تماس‌ها"
     LEGEND_STORAGE: "فضای‌ ذخیره‌سازی (pdo)"
@@ -147,21 +144,6 @@ fa_IR:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "برای نصب در دسترس هست"
     LEGEND_INSTALLED_PACKAGES: "بسته‌های نصب شده"
     ALERT_CANNOT_ACCESS_REPOSITORY: "در این لحظه دسترسی به مخزن امکان‌پذیر نیست"
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "دامنه شما"
-    LABEL_VERSION: "نسخه"
-    LABEL_CHECKING: "در حال چک کردن"
-    TYPE_BASIC_HINT: "این دامنه مجوز استفاده تجاری را ندارد (با قابلیت‌های بیشتر)"
-    TYPE_BASIC_HINT_2: "به این دامنه مجوز داده نشده است."
-    HTML_ALERT_TOP_1: "وبمیل RainLoop تحت مجوز"
-    HTML_ALERT_TOP_2: " شما <b>برای استفاده از آن </b> آزاد <b>personal</b> projects. هستید"
-    HTML_ALERT_TOP_3: |
-        استفاده تجاری (با قابلیت‌های بیشتر) از <b>RainLoop Webmail</b> نیاز به پرداخت <a href="http://www.rainloop.net/purchase/" target="_blank">حق اشتراک</a> دارد.
-    TYPE_PREMIUM_LIFETIME: "مادام العمر"
-    LABEL_SUB_EXPIRES: "انقضای حق اشتراک"
-    BUTTON_ACTIVATE: "فعال‌کردن حق اشتراک این دامنه"
-    BUTTON_PURCHASE: "خرید"
-    BUTTON_TRIAL: "آزمایشی"
   TAB_ABOUT:
     LEGEND_ABOUT: "درباره"
     LABEL_TAG_HINT: "یک رابط کاربری پست الکترونیک ساده، پیشرفته و سریع"
@@ -174,21 +156,6 @@ fa_IR:
     BUTTON_UPDATE: "بروزرسانی"
     BUTTON_DOWNLOAD: "دریافت"
     BUTTON_CHANGELOG: "تغییرات"
-  POPUPS_ACTIVATE:
-    TITLE_ACTIVATE: "حق اشتراک فعال شده است؟"
-    TITLE_ACTIVATION: "در حال فعال‌سازی..."
-    LABEL_DOMAIN: "دامن"
-    LABEL_SUB_KEY: "کلید حق اشتراک"
-    BUTTON_ACTIVATE: "فعال‌سازی"
-    LABEL_ACTIVATED: "فعال شده است"
-    ERROR_INVALID_SUBS_KEY: "کلید حق اشتراک نامعتبر"
-    SUBS_KEY_ACTIVATED: "کلید حق اشتراک با موفقیت فعال شد"
-    HTML_DESC: |
-        بعد از فعال‌سازی، سطح بالاتر اشتراک برای <b>%DOMAIN%</b>  گسترش خواهد یافت.
-        <br />
-        توجه کنید که کلید اشتراک فقط برای یک دامنه می‌تواند فعال شود.
-        <br /><br />
-        زمانی که شروع کردید، فرآیند فعال‌سازی قابل انصراف نیست.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "اضافه کردن نام مستعار"
     LABEL_ALIAS: "مستعار"
@@ -298,9 +265,6 @@ fa_IR:
     CANT_DELETE_PACKAGE: "حذف بسته با خطا همراه بو"
     INVALID_PLUGIN_PACKAGE: "بسته افزونه نامعتبر است"
     UNSUPPORTED_PLUGIN_PACKAGE: "بسته افزونه پشتیبانی نمی‌شود"
-    LICENSING_SERVER_IS_UNAVAILABLE: "سرور مشترک شدن در دسترس نیست"
-    LICENSING_DOMAIN_EXPIRED: "اشتراک برای این دامنه منقضی شده است"
-    LICENSING_DOMAIN_BANNED: "اشتراک برای این دامنه مسدود شده است"
     DEMO_SEND_MESSAGE_ERROR: "بنابر اهداف امنیتی، این کاربر اجازه ارسال ایمیل به یک ایمیل خارج از دامنه را ندارد!"
     DEMO_ACCOUNT_ERROR: "بنابر اهداف امنیتی، این کاربر اجازه انجام این عملیات را ندارد!"
     ACCOUNT_ALREADY_EXISTS: "کاربر وجود دارد"

@@ -48,7 +48,7 @@ const owncloudSetup = (done) => {
 			.replace('<version>0.0</version>', '<version>' + versionFull + '</version>')
 			.replace(
 				'<licence></licence>',
-				'<licence>' + (config.community ? 'AGPLv3' : 'RainLoop Software License') + '</licence>'
+				'<licence>AGPLv3</licence>'
 			)
 	);
 
@@ -58,8 +58,8 @@ const owncloudSetup = (done) => {
 	config.destPath = config.releasesPath + '/owncloud/' + versionFull + '/';
 	config.cleanPath = dist;
 	config.zipSrcPath = dist;
-	config.zipFile = 'rainloop-owncloud-app-' + (config.community ? '' : 'standard-') + versionFull + '.zip';
-	// config.zipFileShort = 'rainloop' + (config.community ? '' : '-standard') + '.zip';
+	config.zipFile = 'rainloop-owncloud-app-' + versionFull + '.zip';
+	// config.zipFileShort = 'rainloop' + '.zip';
 
 	done();
 };

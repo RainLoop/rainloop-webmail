@@ -4,7 +4,6 @@ sk_SK:
     LABEL_PASSWORD: "Heslo"
     BUTTON_LOGIN: "Prihlásiť sa do admin panelu"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Admin Panel"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Všeobecné"
@@ -16,7 +15,6 @@ sk_SK:
     LABEL_INTEGRATION_NAME: "Integrácie"
     LABEL_PLUGINS_NAME: "Doplnky"
     LABEL_PACKAGES_NAME: "Balíčky"
-    LABEL_LICENSING_NAME: "Licencovanie"
     LABEL_ABOUT_NAME: "O programe"
   TAB_GENERAL:
     LEGEND_INTERFACE: "Rozhranie"
@@ -117,15 +115,6 @@ sk_SK:
     LEGEND_AVAILABLE_FOR_UPDATE: "Dostupné na aktualizáciu"
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Dostupné na inštaláciu"
     LEGEND_INSTALLED_PACKAGES: "Nainštalované balíčky"
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Vaša doména"
-    LABEL_VERSION: "Verzia"
-    LABEL_CHECKING: "Kontrolujem"
-    TYPE_BASIC_HINT_2: "Táto doména nemôže byť licencovaná"
-    HTML_ALERT_TOP_1: "RainLoop Webmail je licencovaný pod"
-    TYPE_PREMIUM_LIFETIME: "Doživotná"
-    BUTTON_PURCHASE: "Kúpiť"
-    BUTTON_TRIAL: "Skúšobná verzia"
   TAB_ABOUT:
     LEGEND_ABOUT: "O programe"
     LABEL_TAG_HINT: "Jednoduchý, moderný a rýchly webmail klient"
@@ -138,11 +127,6 @@ sk_SK:
     BUTTON_UPDATE: "Aktualizovať"
     BUTTON_DOWNLOAD: "Stiahnuť"
     BUTTON_CHANGELOG: "Zoznam zmien"
-  POPUPS_ACTIVATE:
-    TITLE_ACTIVATION: "Aktivácia..."
-    LABEL_DOMAIN: "Doména"
-    BUTTON_ACTIVATE: "Aktivovať"
-    LABEL_ACTIVATED: "Aktivované"
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Pridať alias"
     LABEL_ALIAS: "Alias"
@@ -227,8 +211,6 @@ sk_SK:
     DOMAIN_ALREADY_EXISTS: "Táto Doména už existuje"
     CANT_INSTALL_PACKAGE: "Inštalácia balíčka zlyhala"
     CANT_DELETE_PACKAGE: "Odstránenie balíčka zlyhalo"
-    LICENSING_DOMAIN_EXPIRED: "Prihlásenie pre túto doménu vypršalo."
-    LICENSING_DOMAIN_BANNED: "Prihlásenie pre túto doménu je zablokované."
     ACCOUNT_ALREADY_EXISTS: "Účet už existuje"
     ACCOUNT_DOES_NOT_EXIST: "Účet neexistuje"
     MAIL_SERVER_ERROR: "Nastala chyba počas prístupu na poštový server"

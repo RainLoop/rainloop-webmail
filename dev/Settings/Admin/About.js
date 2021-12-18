@@ -3,7 +3,6 @@ import ko from 'ko';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 import { appSettingsGet, settingsGet } from 'Storage/Settings';
 
-import AppStore from 'Stores/Admin/App';
 import CoreStore from 'Stores/Admin/Core';
 
 import { getApp } from 'Helper/Apps/Admin';
@@ -26,8 +25,6 @@ class AboutAdminSettings {
 		this.coreRemoteVersion = CoreStore.coreRemoteVersion;
 		this.coreRemoteRelease = CoreStore.coreRemoteRelease;
 		this.coreVersionCompare = CoreStore.coreVersionCompare;
-
-		this.community = RL_COMMUNITY || AppStore.community();
 
 		this.coreRemoteVersionHtmlDesc = ko.computed(() => {
 			translatorTrigger();
@@ -59,13 +56,13 @@ class AboutAdminSettings {
 	}
 
 	onBuild() {
-		if (this.access() && !this.community) {
+		if (this.access()) {
 			getApp().reloadCoreData();
 		}
 	}
 
 	updateCoreData() {
-		if (!this.coreUpdating() && !this.community) {
+		if (!this.coreUpdating()) {
 			getApp().updateCoreData();
 		}
 	}

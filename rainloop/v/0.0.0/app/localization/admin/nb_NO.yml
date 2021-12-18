@@ -4,7 +4,6 @@ nb_NO:
     LABEL_PASSWORD: "Passord"
     BUTTON_LOGIN: "Logg inn på admin-panel"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Admin-panel"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Generelt"
@@ -16,7 +15,6 @@ nb_NO:
     LABEL_INTEGRATION_NAME: "Integrasjon"
     LABEL_PLUGINS_NAME: "Tillegg"
     LABEL_PACKAGES_NAME: "Pakker"
-    LABEL_LICENSING_NAME: "Lisens"
     LABEL_ABOUT_NAME: "Om"
   TAB_GENERAL:
     LEGEND_INTERFACE: "Grensesnitt"
@@ -71,7 +69,6 @@ nb_NO:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Ingen"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Én gang"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Alltid"
-    HTML_ALERT_PREMIUM: "Denne funksjonaliteten er bare tilgjengelig for <strong><a href=\"#/licensing\">Premium</a></strong>-brukere."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Kontakter"
     LEGEND_STORAGE: "Lagring (PDO)"
@@ -146,22 +143,6 @@ nb_NO:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Tilgjengelig for installasjon"
     LEGEND_INSTALLED_PACKAGES: "Installerte pakker"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Fikk ikke tilgang til pakkelageret."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Domenenavn"
-    LABEL_VERSION: "Versjon"
-    LABEL_CHECKING: "Sjekker"
-    TYPE_BASIC_HINT: "Dette domenet har ikke lisens for kommersiell bruk (med ekstrafunksjoner)."
-    TYPE_BASIC_HINT_2: "Dette domenet kan ikke brukes med lisens for ekstrafunksjoner."
-    HTML_ALERT_TOP_1: "RainLoop Webmail er utgitt på betingelsene i"
-    HTML_ALERT_TOP_2: "Du står <b>fritt</b> til å bruke programmet til <b>personlige</b> formål."
-    HTML_ALERT_TOP_3: |
-        Hvis du vil bruke <b>RainLoop Webmail</b> kommersielt (med ekstrafunksjoner), må du kjøpe et
-        <a href=http://www.rainloop.net/purchase/ target=_blank>abonnement</a>.
-    TYPE_PREMIUM_LIFETIME: "Livstid"
-    LABEL_SUB_EXPIRES: "Abonnement utgår"
-    BUTTON_ACTIVATE: "Ta i bruk abonnementsnøkkel for dette domenet"
-    BUTTON_PURCHASE: "Kjøp"
-    BUTTON_TRIAL: "Prøv"
   TAB_ABOUT:
     LEGEND_ABOUT: "Om"
     LABEL_TAG_HINT: "Rask, enkel, moderne og web-basert e-postklient"
@@ -174,21 +155,6 @@ nb_NO:
     BUTTON_UPDATE: "Oppdater"
     BUTTON_DOWNLOAD: "Last ned"
     BUTTON_CHANGELOG: "Endringslogg"
-  POPUPS_ACTIVATE:
-    TITLE_ACTIVATE: "Vil du ta abonnementsnøkkelen i bruk?"
-    TITLE_ACTIVATION: "Aktivering …"
-    LABEL_DOMAIN: "Domene"
-    LABEL_SUB_KEY: "Abonnementsnøkkel"
-    BUTTON_ACTIVATE: "Bruk"
-    LABEL_ACTIVATED: "I bruk"
-    ERROR_INVALID_SUBS_KEY: "Ugyldig abonnementsnøkkel"
-    SUBS_KEY_ACTIVATED: "Abonnementsnøkkelen er nå i bruk"
-    HTML_DESC: |
-        Premium-abonnement for <b>%DOMAIN%</b> fonyes.
-        <br />
-        Nøkkelen kan bare tas i bruk for ett domene.
-        <br /><br />
-        Du kan ikke angre på å ta en nøkkel i bruk.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Legg til alias"
     LABEL_ALIAS: "Alias"
@@ -295,9 +261,6 @@ nb_NO:
     CANT_DELETE_PACKAGE: "Klarte ikke å fjerne pakke"
     INVALID_PLUGIN_PACKAGE: "Ugyldig tilleggspakke"
     UNSUPPORTED_PLUGIN_PACKAGE: "Tilleggspakke støttes ikke"
-    LICENSING_SERVER_IS_UNAVAILABLE: "Abonnementstjener er utilgjengelig"
-    LICENSING_DOMAIN_EXPIRED: "Abonnementet for dette domenet er utgått."
-    LICENSING_DOMAIN_BANNED: "Abonnementet for dette domenet er blokkert."
     DEMO_SEND_MESSAGE_ERROR: "Av sikkerhetshensyn er denne demo-kontoen blokkert fra å sende meldinger til eksterne e-postadresser."
     DEMO_ACCOUNT_ERROR: "Av sikkerhetshensyn er denne demo-kontoen blokkert fra å utføre denne handlinga"
     ACCOUNT_ALREADY_EXISTS: "Kontoen finnes allerede"

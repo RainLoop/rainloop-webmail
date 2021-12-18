@@ -66,10 +66,6 @@ const I18N_NOTIFICATION_MAP = [
 	[Notification.InvalidPluginPackage, 'NOTIFICATIONS/INVALID_PLUGIN_PACKAGE'],
 	[Notification.UnsupportedPluginPackage, 'NOTIFICATIONS/UNSUPPORTED_PLUGIN_PACKAGE'],
 
-	[Notification.LicensingServerIsUnavailable, 'NOTIFICATIONS/LICENSING_SERVER_IS_UNAVAILABLE'],
-	[Notification.LicensingExpired, 'NOTIFICATIONS/LICENSING_EXPIRED'],
-	[Notification.LicensingBanned, 'NOTIFICATIONS/LICENSING_BANNED'],
-
 	[Notification.DemoSendMessageError, 'NOTIFICATIONS/DEMO_SEND_MESSAGE_ERROR'],
 	[Notification.DemoAccountError, 'NOTIFICATIONS/DEMO_ACCOUNT_ERROR'],
 

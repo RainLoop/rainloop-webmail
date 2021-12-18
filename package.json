@@ -18,20 +18,9 @@
   "scripts": {
     "watch-css": "gulp watchCss",
     "watch-js": "webpack --color --watch",
-    "build": "gulp all",
-    "build-pro": "gulp all --pro"
+    "build": "gulp all"
   },
   "license": "SEE LICENSE IN LICENSE",
-  "licenses": [
-    {
-      "type": "AGPL 3.0",
-      "ulr": "http://www.gnu.org/licenses/agpl-3.0.html"
-    },
-    {
-      "type": "RainLoop Software License",
-      "ulr": "https://www.rainloop.net/licensing/"
-    }
-  ],
   "bugs": {
     "url": "https://github.com/RainLoop/rainloop-webmail/issues"
   },

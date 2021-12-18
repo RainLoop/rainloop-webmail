@@ -18,6 +18,6 @@ exports.zip = (srcDir, destDir, fileName) =>
 		.pipe(require('gulp-zip')(fileName))
 		.pipe(gulp.dest(destDir));
 
-exports.getHead = () => (!config.community ? config.head.rainloop : config.head.agpl);
+exports.getHead = () => config.head.agpl;
 
 exports.cleanStatic = () => exports.del(config.paths.static);
