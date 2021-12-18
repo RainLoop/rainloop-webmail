@@ -41,7 +41,6 @@
 			define('APP_DEV_VERSION', '0.0.0');
 			define('APP_GOOGLE_ACCESS_TOKEN_PREFIX', ':GAT:');
 			define('APP_WEB_SITE', 'http://www.rainloop.net/');
-			define('APP_API_PATH', 'http://api.rainloop.net/');
 			define('APP_STATUS_PATH', 'http://status.rainloop.net/');
 			define('APP_REPOSITORY_PATH', 'http://repository.rainloop.net/v1/');
 			define('APP_REPO_CORE_FILE', 'http://repository.rainloop.net/v2/core.{{channel}}.json');
