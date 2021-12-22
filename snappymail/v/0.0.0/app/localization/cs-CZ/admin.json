@@ -34,7 +34,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Povolit další identity",
 		"ALERT_DATA_ACCESS": "Adresář s RainLoop daty je veřejně přístupný. Nakonfigurujte prosím webový server tak, aby skryl adresář data z externího přístupu. Více zde:",
 		"ALERT_WARNING": "Upozornění!",
-		"HTML_ALERT_WEAK_PASSWORD": "Používáte výchozí administrátorské heslo.\n<br \/>\nZ bezpečnostních důvodů jej prosím\n<strong><a href=\"#\/security\">změnte<\/a><\/strong>.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "Používáte výchozí administrátorské heslo.\n<br \/>\nZ bezpečnostních důvodů jej prosím\n<strong><a href=\"#\/security\">změňte<\/a><\/strong>.\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Přihlašovací obrazovka",
@@ -123,7 +123,7 @@
 		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Povolit SIEVE skripty",
 		"LABEL_USE_SHORT_LOGIN": "Používat krátký login",
-		"LABEL_USE_AUTH": "Používat authentikaci",
+		"LABEL_USE_AUTH": "Používat autorizaci",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_USE_PHP_MAIL": "Používat php mail() funkci",
 		"BUTTON_TEST": "Test",
@@ -146,7 +146,7 @@
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",
 		"BUTTON_NO": "No",
-		"DESC_WANT_CLOSE_THIS_WINDOW": "Jste si jistí, že opravdu chcete zavřit toto okno?"
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Jste si jistí, že opravdu chcete zavřít toto okno?"
 	},
 	"POPUPS_LANGUAGES": {
 		"TITLE_LANGUAGES": "Vyberte váš jazyk"
@@ -162,7 +162,7 @@
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Neplatný token",
-		"AUTH_ERROR": "Chyba authentikace",
+		"AUTH_ERROR": "Chyba autorizace",
 		"DOMAIN_ALREADY_EXISTS": "Tato doména již existuje",
 		"CANT_SAVE_PLUGIN_SETTINGS": "Nastavení se nepodařilo uložit",
 		"CANT_INSTALL_PACKAGE": "Instalace balíčku se nezdařila",

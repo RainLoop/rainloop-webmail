@@ -90,7 +90,7 @@
 		"BUTTON_DELETE_WITHOUT_MOVE": "Navždy odstranit",
 		"MENU_SET_SEEN": "Označit jako přečtené",
 		"MENU_SET_ALL_SEEN": "Označit vše jako přečtené",
-		"MENU_UNSET_SEEN": "Označit jako neprečtené",
+		"MENU_UNSET_SEEN": "Označit jako nepřečtené",
 		"MENU_SET_FLAG": "Označit hvězdičkou",
 		"MENU_UNSET_FLAG": "Zrušit označení hvězdičkou",
 		"MENU_SELECT_ALL": "Vše",
@@ -154,7 +154,7 @@
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Potvrzení o zobrazení zprávy - %SUBJECT%",
-		"BODY": "Toto je potrvzení o zaslání emailu na adresu %READ-RECEIPT%.\n\nPoznámka: Toto potvrzení zajišťuje, že zpráva byla zobrazena v poštovní schránce příjemce. Nezajišťuje, že ji příjemce četl a rozuměl jí.\n"
+		"BODY": "Toto je potvrzení o zaslání emailu na adresu %READ-RECEIPT%.\n\nPoznámka: Toto potvrzení zajišťuje, že zpráva byla zobrazena v poštovní schránce příjemce. Nezajišťuje, že ji příjemce četl a rozuměl jí.\n"
 	},
 	"SUGGESTIONS": {
 		"SEARCHING_DESC": "Hledám..."
@@ -166,7 +166,7 @@
 		"BUTTON_IMPORT": "Importovat (csv, vcf, vCard)",
 		"BUTTON_EXPORT_VCARD": "Exportovat (vcf, vCard)",
 		"BUTTON_EXPORT_CSV": "Exportovat (csv)",
-		"ERROR_IMPORT_FILE": "Chyba importu (nesprávny formát souboru)",
+		"ERROR_IMPORT_FILE": "Chyba importu (nesprávný formát souboru)",
 		"EMPTY_LIST": "Nemáte žádné kontakty",
 		"EMPTY_SEARCH": "Nebyly nalezeny žádné kontakty",
 		"CLEAR_SEARCH": "Smazat vyhledávání",
@@ -181,7 +181,7 @@
 		"PLACEHOLDER_ENTER_LAST_NAME": "Zadejte příjmení",
 		"PLACEHOLDER_ENTER_FIRST_NAME": "Zadejte jméno",
 		"PLACEHOLDER_ENTER_NICK_NAME": "Zadejte přezdívku",
-		"LABEL_READ_ONLY": "Jen pro čtění",
+		"LABEL_READ_ONLY": "Jen pro čtení",
 		"LABEL_SHARE": "Sdílet",
 		"ADD_MENU_LABEL": "Přidat",
 		"ADD_MENU_NICKNAME": "Přezdívka",
@@ -199,7 +199,7 @@
 		"BUTTON_SEND": "Odeslat",
 		"BUTTON_MINIMIZE": "Minimalizovat",
 		"SAVED_TIME": "Uložené v %TIME%",
-		"SAVED_ERROR_ON_SEND": "Zpráva byla odesláná, ale nebyla uložená do složky odeslaných zpráv.",
+		"SAVED_ERROR_ON_SEND": "Zpráva byla odeslána, ale nebyla uložená do složky odeslaných zpráv.",
 		"DISCARD_UNSAVED_DATA": "Neuložit změny?",
 		"ATTACH_FILES": "Připojit soubory",
 		"ATTACH_DROP_FILES_DESC": "Soubory přetáhněte sem",
@@ -212,7 +212,7 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Některé přílohy ještě nebyly nahrány",
 		"BUTTON_REQUEST_READ_RECEIPT": "Vyžádat si potvrzení o přečtení",
 		"BUTTON_MARK_AS_IMPORTANT": "Označit jako důležité",
-		"BUTTON_OPEN_PGP": "OpenPGP (jen Plain Text)",
+		"BUTTON_OPEN_PGP": "OpenPGP (jen prostý text)",
 		"BUTTON_REQUEST_DSN": "Vyžádat si potvrzení o přijetí"
 	},
 	"POPUPS_ASK": {
@@ -256,7 +256,7 @@
 	},
 	"POPUPS_VIEW_OPEN_PGP_KEY": {
 		"TITLE_VIEW_OPEN_PGP_KEY": "Zobrazit OpenPGP klíč",
-		"BUTTON_SELECT": "Vybart"
+		"BUTTON_SELECT": "Vybrat"
 	},
 	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
 		"TITLE_GENERATE_OPEN_PGP_KEYS": "Generovat OpenPGP klíče",
@@ -287,7 +287,7 @@
 		"SELECT_ACTION_REJECT": "Odmítnout",
 		"SELECT_ACTION_VACATION_MESSAGE": "Odpověď v nepřítomnosti",
 		"SELECT_ACTION_DISCARD": "Zahodit",
-		"SELECT_FIELD_RECIPIENTS": "Přijemci (Komu nebo Kopie)",
+		"SELECT_FIELD_RECIPIENTS": "Příjemci (Komu nebo Kopie)",
 		"SELECT_FIELD_HEADER": "Hlavička",
 		"SELECT_FIELD_BODY": "Body",
 		"SELECT_FIELD_SIZE": "Velikost",
@@ -295,12 +295,12 @@
 		"SELECT_TYPE_NOT_CONTAINS": "Neobsahuje",
 		"SELECT_TYPE_MATCHES": "Odpovídá (můžete použit * a ? )",
 		"SELECT_TYPE_NOT_MATCHES": "Neodpovídá (můžete použit * a ? )",
-		"SELECT_TYPE_REGEXP": "Regexp",
-		"SELECT_TYPE_NOT_REGEXP": "Not Regexp",
+		"SELECT_TYPE_REGEXP": "egulární výraz",
+		"SELECT_TYPE_NOT_REGEXP": "Není regulární výraz",
 		"SELECT_TYPE_EQUAL_TO": "Rovná se",
 		"SELECT_TYPE_NOT_EQUAL_TO": "Nerovná se",
-		"SELECT_TYPE_OVER": "Over",
-		"SELECT_TYPE_UNDER": "Under",
+		"SELECT_TYPE_OVER": "Více než",
+		"SELECT_TYPE_UNDER": "Méně než",
 		"SELECT_TYPE_TEXT": "Text",
 		"SELECT_TYPE_RAW": "Raw",
 		"SELECT_MATCH_ANY": "Vyhovuje alespoň jednomu pravidlu",
@@ -320,7 +320,7 @@
 		"TITLE_EDIT": "Edit Script",
 		"BUTTON_ADD_FILTER": "Add a Filter",
 		"BUTTON_RAW_SCRIPT": "Use Custom User Script",
-		"CAPABILITY_LABEL": "Capabilities",
+		"CAPABILITY_LABEL": "Schopnost",
 		"CHANGES_NEED_TO_BE_SAVED_DESC": "These changes need to be saved to the server."
 	},
 	"POPUPS_SYSTEM_FOLDERS": {
@@ -371,7 +371,7 @@
 		"LOADING_PROCESS": "Aktualizovat seznam filtrů"
 	},
 	"SETTINGS_SECURITY": {
-		"LEGEND_SECURITY": "Zapezpečení",
+		"LEGEND_SECURITY": "Zabezpečení",
 		"LABEL_AUTOLOGOUT": "Automatické odhlášení",
 		"AUTOLOGIN_NEVER_OPTION_NAME": "Nikdy",
 		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minut",
@@ -384,18 +384,18 @@
 		"LABEL_LAYOUT": "Rozložení",
 		"LABEL_LAYOUT_NO_SPLIT": "Nerozdělovat",
 		"LABEL_LAYOUT_VERTICAL_SPLIT": "Vertikální rozdělení",
-		"LABEL_LAYOUT_HORIZONTAL_SPLIT": "Horizontální rozdělění",
+		"LABEL_LAYOUT_HORIZONTAL_SPLIT": "Horizontální rozdělení",
 		"LABEL_EDITOR": "Přednastavený editor zpráv",
 		"LABEL_EDITOR_HTML": "Html",
 		"LABEL_EDITOR_PLAIN": "Text",
 		"LABEL_EDITOR_HTML_FORCED": "Html (vynucený)",
 		"LABEL_EDITOR_PLAIN_FORCED": "Text (vynucený)",
 		"LABEL_VIEW_OPTIONS": "Možnosti zobrazení",
-		"LABEL_USE_PREVIEW_PANE": "Používate panel rychlého zobrazení",
+		"LABEL_USE_PREVIEW_PANE": "Používáte panel rychlého zobrazení",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Zobrazení zaškrtávacích políček v seznamu",
 		"LABEL_USE_THREADS": "Zobrazit jako konverzace",
 		"LABEL_REPLY_SAME_FOLDER": "Ukládat odpovědi do složky se zprávou, které se týkají",
-		"LABEL_SHOW_IMAGES": "Vždy zobrazovat obrázky v těle správy",
+		"LABEL_SHOW_IMAGES": "Vždy zobrazovat obrázky v těle zprávy",
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Zpráv na stranu",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
@@ -472,7 +472,7 @@
 		"TAB_MESSAGE_LIST": "Seznam zpráv",
 		"TAB_MESSAGE_VIEW": "Detail zprávy",
 		"TAB_COMPOSE": "Napsat",
-		"LABEL_OPEN_USER_DROPDOWN": "Open user dropdown",
+		"LABEL_OPEN_USER_DROPDOWN": "Otevřít nabídku uživatele",
 		"LABEL_REPLY": "Odpovědět",
 		"LABEL_REPLY_ALL": "Odpovědět všem",
 		"LABEL_FORWARD": "Přeposlat",
@@ -523,7 +523,7 @@
 		"INVALID_TOKEN": "Neplatný token",
 		"AUTH_ERROR": "Ověření selhalo",
 		"CONNECTION_ERROR": "Nepodařilo se připojit k serveru",
-		"DOMAIN_ALREADY_EXISTS": "Táto doména již existuje",
+		"DOMAIN_ALREADY_EXISTS": "Tato doména již existuje",
 		"DOMAIN_NOT_ALLOWED": "Doména není povolená",
 		"ACCOUNT_NOT_ALLOWED": "Účet není povolený",
 		"CONTACTS_SYNC_ERROR": "Chyba při synchronizaci kontaktů",
