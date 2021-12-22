@@ -70,7 +70,7 @@ class THREAD extends Request
 
 		$aReturn = array();
 		foreach ($this->oImapClient->yieldUntaggedResponses() as $oResponse) {
-			$iOffset = ($bReturnUid && 'UID' === $oResponse->StatusOrIndex && !empty($oResponse->ResponseList[2]) && 'THREAD' === $oResponse->ResponseList[2]) ? 1 : 0;
+			$iOffset = ($this->bUid && 'UID' === $oResponse->StatusOrIndex && !empty($oResponse->ResponseList[2]) && 'THREAD' === $oResponse->ResponseList[2]) ? 1 : 0;
 			if (('THREAD' === $oResponse->StatusOrIndex || $iOffset)
 				&& \is_array($oResponse->ResponseList)
 				&& 2 < \count($oResponse->ResponseList))

@@ -24,9 +24,10 @@ trait Messages
 		{
 			$this->verifyCacheByKey($sRawKey);
 
+//			$oParams->sHash = (string) $aValues['Hash'];
 			$oParams->sFolderName = (string) $aValues['Folder'];
-			$oParams->iOffset = (int) $aValues['Offset'];
 			$oParams->iLimit = (int) $aValues['Limit'];
+			$oParams->iOffset = (int) $aValues['Offset'];
 			$oParams->sSearch = (string) $aValues['Search'];
 			$oParams->sSort = (string) $aValues['Sort'];
 			if (isset($aValues['UidNext'])) {

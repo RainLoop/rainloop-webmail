@@ -1039,21 +1039,23 @@ class MailClient
 				$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported, $oParams->sSort);
 
 			if ($bUseThreads) {
+				$aAllThreads = $this->MessageListThreadsMap($oMessageCollection->FolderName, $oMessageCollection->FolderHash, $oParams->oCacher);
 				if (0 < $oParams->iThreadUid)
 				{
-					$aAllThreads = $this->MessageListThreadsMap($oMessageCollection->FolderName, $oMessageCollection->FolderHash, $oParams->oCacher);
 					$aUids = [$oParams->iThreadUid];
 					// Only show the selected thread messages
 					foreach ($aAllThreads as $aMap) {
 						if (\in_array($oParams->iThreadUid, $aMap)) {
-							$aUids = \array_intersect($aUids, $aMap);
+							$aUids = $aMap;
 							break;
 						}
 					}
 				}
 				else
 				{
-//					$aUids = \array_diff($aUids, $aAllThreads);
+					// Show all threads
+//					$aUids = array();
+//					\array_walk_recursive($aAllThreads, function($a) use (&$aUids) { $aUids[] = $a; });
 				}
 			}
 
@@ -1155,17 +1157,16 @@ class MailClient
 			}
 		}
 
-		if ($bUseThreads && 0 === $oParams->iThreadUid && \count($aAllThreads))
+		if ($bUseThreads && !$oParams->iThreadUid && $aAllThreads)
 		{
 			foreach ($oMessageCollection as $oMessage) {
 				$iUid = $oMessage->Uid();
-				if (isset($aAllThreads[$iUid]) && \is_array($aAllThreads[$iUid]) && \count($aAllThreads[$iUid]))
-				{
-					$aSubThreads = $aAllThreads[$iUid];
-					\array_unshift($aSubThreads, $iUid);
-
-					$oMessage->SetThreads(\array_map('trim', $aSubThreads));
-					unset($aSubThreads);
+				// Find thread
+				foreach ($aAllThreads as $aMap) {
+					if (\in_array($iUid, $aMap)) {
+						$oMessage->SetThreads($aMap);
+						break;
+					}
 				}
 			}
 		}
