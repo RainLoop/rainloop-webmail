@@ -87,7 +87,7 @@
 		"BUTTON_RELOAD": "Odśwież listę wiadomości",
 		"BUTTON_EMPTY_FOLDER": "Usuń zawartość folderu",
 		"BUTTON_MULTY_FORWARD": "Przekaż dalej jako załącznik(i)",
-		"BUTTON_DELETE_WITHOUT_MOVE": "Usuń permanentnie",
+		"BUTTON_DELETE_WITHOUT_MOVE": "Usuń trwale",
 		"MENU_SET_SEEN": "Oznacz jako przeczytane",
 		"MENU_SET_ALL_SEEN": "Oznacz wszystkie jako przeczytane",
 		"MENU_UNSET_SEEN": "Oznacz jako nieprzeczytane",
@@ -329,8 +329,8 @@
 		"SELECT_UNUSE_NAME": "Nie używaj",
 		"NOTIFICATION_SENT": "Nie wybrano folderu systemowego \"Wysłane\", do którego przenoszone są wysłane wiadomości.\nJeżeli wysyłane wiadomości nie mają być przechowywane, proszę zaznaczyć opcję \"Nie używaj\".\n",
 		"NOTIFICATION_DRAFTS": "Nie wybrano folderu \"Wersje robocze\", do którego są zapisywane wiadomości w trakcie ich tworzenia.",
-		"NOTIFICATION_SPAM": "Nie wybrano folderu \"Spam\", do którego przenoszone są niepożądane wiadomości.\nJeżeli niechciane wiadomości mają być usuwane na stałe, proszę o zaznaczenie opcji \"Nie używaj\".\n",
-		"NOTIFICATION_TRASH": "Nie wybrano folderu \"Kosz\", do którego przenoszone są wszystkie usunięte wiadomości.\nJeżeli wiadomości mają być usuwane na stałe, proszę o zaznaczenie opcji \"Nie używaj\".\n",
+		"NOTIFICATION_SPAM": "Nie wybrano folderu \"Spam\", do którego przenoszone są niepożądane wiadomości.\nJeżeli niechciane wiadomości mają być usuwane trwale, proszę o zaznaczenie opcji \"Nie używaj\".\n",
+		"NOTIFICATION_TRASH": "Nie wybrano folderu \"Kosz\", do którego przenoszone są wszystkie usunięte wiadomości.\nJeżeli wiadomości mają być usuwane trwale, proszę o zaznaczenie opcji \"Nie używaj\".\n",
 		"NOTIFICATION_ARCHIVE": "Nie został wybrany folder \"Archiwum\", zostanie użyty systemowy folder archiwizacji wiadomości."
 	},
 	"TITLES": {
