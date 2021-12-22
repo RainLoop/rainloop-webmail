@@ -412,7 +412,7 @@ export const MessageUserStore = new class {
 			message.folder === json.Folder
 		) {
 			const threads = message.threads();
-			if (message.uid != json.Uid && 1 < threads.length && threads.includes(json.Uid)) {
+			if (message.uid != json.Uid && threads.includes(json.Uid)) {
 				message = oMessage ? null : MessageModel.reviveFromJson(json);
 				if (message) {
 					message.threads(threads);

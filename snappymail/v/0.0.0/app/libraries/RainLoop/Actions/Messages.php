@@ -26,29 +26,29 @@ trait Messages
 
 //			$oParams->sHash = (string) $aValues['Hash'];
 			$oParams->sFolderName = (string) $aValues['Folder'];
-			$oParams->iLimit = (int) $aValues['Limit'];
-			$oParams->iOffset = (int) $aValues['Offset'];
+			$oParams->iLimit = $aValues['Limit'];
+			$oParams->iOffset = $aValues['Offset'];
 			$oParams->sSearch = (string) $aValues['Search'];
 			$oParams->sSort = (string) $aValues['Sort'];
 			if (isset($aValues['UidNext'])) {
-				$oParams->iPrevUidNext = (int) $aValues['UidNext'];
+				$oParams->iPrevUidNext = $aValues['UidNext'];
 			}
 			$oParams->bUseThreads = !empty($aValues['UseThreads']);
 			if ($oParams->bUseThreads && isset($aValues['ThreadUid'])) {
-				$oParams->iThreadUid = (int) $aValues['ThreadUid'];
+				$oParams->iThreadUid = $aValues['ThreadUid'];
 			}
 		}
 		else
 		{
 			$oParams->sFolderName = $this->GetActionParam('Folder', '');
-			$oParams->iOffset = (int) $this->GetActionParam('Offset', 0);
-			$oParams->iLimit = (int) $this->GetActionParam('Limit', 10);
+			$oParams->iOffset = $this->GetActionParam('Offset', 0);
+			$oParams->iLimit = $this->GetActionParam('Limit', 10);
 			$oParams->sSearch = $this->GetActionParam('Search', '');
 			$oParams->sSort = $this->GetActionParam('Sort', '');
-			$oParams->iPrevUidNext = (int) $this->GetActionParam('UidNext', 0);
+			$oParams->iPrevUidNext = $this->GetActionParam('UidNext', 0);
 			$oParams->bUseThreads = !empty($this->GetActionParam('UseThreads', '0'));
 			if ($oParams->bUseThreads) {
-				$oParams->iThreadUid = (int) $this->GetActionParam('ThreadUid', '');
+				$oParams->iThreadUid = $this->GetActionParam('ThreadUid', '');
 			}
 		}
 

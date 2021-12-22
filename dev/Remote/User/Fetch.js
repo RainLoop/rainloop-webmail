@@ -35,7 +35,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 			Offset: 0,
 			Limit: SettingsUserStore.messagesPerPage(),
 			Search: '',
-			UidNext: getFolderInboxName() === sFolderFullName ? getFolderUidNext(sFolderFullName) : '',
+			UidNext: getFolderUidNext(sFolderFullName), // Used to check for new messages
 			Sort: FolderUserStore.sortMode(),
 			Hash: folderHash + SettingsGet('AccountHash')
 		}, params);
@@ -104,11 +104,10 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	 * @param {Array=} list = []
 	 */
 	folderInformation(fCallback, folder, list = []) {
-		let request = true;
+		let fetch = !arrayLength(list);
 		const uids = [];
 
-		if (arrayLength(list)) {
-			request = false;
+		if (!fetch) {
 			list.forEach(messageListItem => {
 				if (!MessageFlagsCache.getFor(messageListItem.folder, messageListItem.uid)) {
 					uids.push(messageListItem.uid);
@@ -122,17 +121,14 @@ class RemoteUserFetch extends AbstractFetchRemote {
 					});
 				}
 			});
-
-			if (uids.length) {
-				request = true;
-			}
+			fetch = uids.length;
 		}
 
-		if (request) {
+		if (fetch) {
 			this.request('FolderInformation', fCallback, {
 				Folder: folder,
-				FlagsUids: isArray(uids) ? uids : [],
-				UidNext: getFolderInboxName() === folder ? getFolderUidNext(folder) : 0
+				FlagsUids: uids,
+				UidNext: getFolderUidNext(folder) // Used to check for new messages
 			});
 		} else if (SettingsUserStore.useThreads()) {
 			rl.app.reloadFlagsCurrentMessageListAndMessageFromCache();

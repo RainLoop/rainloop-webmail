@@ -181,19 +181,20 @@ export class MessageFlagsCache
 	static initMessage(message) {
 		if (message) {
 			const uid = message.uid,
-				flags = this.getFor(message.folder, uid);
+				flags = this.getFor(message.folder, uid),
+				thread = message.threads;
 
 			if (isArray(flags)) {
 				message.flags(flags);
 			}
 
-			if (message.threads.length) {
-				const unseenSubUid = message.threads.find(sSubUid =>
-					(uid !== sSubUid) && !this.hasFlag(message.folder, sSubUid, '\\seen')
+			if (thread.length) {
+				const unseenSubUid = thread.find(iSubUid =>
+					(uid !== iSubUid) && !this.hasFlag(message.folder, iSubUid, '\\seen')
 				);
 
-				const flaggedSubUid = message.threads.find(sSubUid =>
-					(uid !== sSubUid) && this.hasFlag(message.folder, sSubUid, '\\flagged')
+				const flaggedSubUid = thread.find(iSubUid =>
+					(uid !== iSubUid) && this.hasFlag(message.folder, iSubUid, '\\flagged')
 				);
 
 				message.hasUnseenSubMessage(!!unseenSubUid);

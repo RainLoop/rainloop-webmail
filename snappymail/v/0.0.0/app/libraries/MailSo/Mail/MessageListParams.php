@@ -15,13 +15,29 @@ class MessageListParams
 {
 	public
 		$sFolderName, // string
-		$iOffset = 0, // int
-		$iLimit = 10, // int
 		$sSearch = '', // string
-		$iPrevUidNext = 0, // int
 		$oCacher = null, // ?\MailSo\Cache\CacheClient
 		$bUseSortIfSupported = false, // bool
 		$bUseThreads = false, // bool
-		$iThreadUid = 0, // int
 		$sSort = ''; // string
+
+	protected
+		$iOffset = 0,
+		$iLimit = 10,
+		$iPrevUidNext = 0, // used to check for new messages
+		$iThreadUid = 0;
+
+	public function __get($k)
+	{
+		return \property_exists($this, $k) ? $this->$k : null;
+	}
+
+	public function __set($k, $v)
+	{
+		if ('i' === $k[0]) {
+			$this->$k = \max(0, (int) $v);
+		}
+//		\MailSo\Base\Validator::RangeInt($oParams->iOffset, 0)
+//		\MailSo\Base\Validator::RangeInt($oParams->iLimit, 0, 999)
+	}
 }

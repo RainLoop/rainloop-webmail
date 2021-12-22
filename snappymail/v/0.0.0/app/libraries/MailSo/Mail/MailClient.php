@@ -544,13 +544,13 @@ class MailClient
 		$aFolderStatus = $this->oImapClient->FolderStatus($sFolderName, $aTypes);
 
 		return [
-			$aFolderStatus[FolderResponseStatus::MESSAGES] ?: 0,
+			\max(0, $aFolderStatus[FolderResponseStatus::MESSAGES] ?: 0),
 
-			$aFolderStatus[FolderResponseStatus::UNSEEN] ?: 0,
+			\max(0, $aFolderStatus[FolderResponseStatus::UNSEEN] ?: 0),
 
-			$aFolderStatus[FolderResponseStatus::UIDNEXT] ?: 0,
+			\max(0, $aFolderStatus[FolderResponseStatus::UIDNEXT] ?: 0),
 
-			$aFolderStatus[FolderResponseStatus::HIGHESTMODSEQ] ?: 0,
+			\max(0, $aFolderStatus[FolderResponseStatus::HIGHESTMODSEQ] ?: 0),
 
 			$aFolderStatus[FolderResponseStatus::APPENDLIMIT] ?: $this->oImapClient->AppendLimit(),
 
@@ -575,11 +575,15 @@ class MailClient
 		);
 	}
 
+	/**
+	 * Returns list of new messages since $iPrevUidNext
+	 * Currently only for INBOX
+	 */
 	private function getFolderNextMessageInformation(string $sFolderName, int $iPrevUidNext, int $iCurrentUidNext) : array
 	{
 		$aNewMessages = array();
 
-		if ($iPrevUidNext && $iPrevUidNext != $iCurrentUidNext)
+		if ($iPrevUidNext && $iPrevUidNext != $iCurrentUidNext && 'INBOX' === $sFolderName && \MailSo\Config::$CheckNewMessages)
 		{
 			$this->oImapClient->FolderSelect($sFolderName);
 
@@ -611,22 +615,15 @@ class MailClient
 						\MailSo\Mime\Enumerations\Parameter::CHARSET
 					);
 
-					$sCharset = '';
-					if (\strlen($sContentTypeCharset))
-					{
-						$sCharset = $sContentTypeCharset;
-					}
-
-					if (\strlen($sCharset))
-					{
-						$oHeaders->SetParentCharset($sCharset);
+					if ($sContentTypeCharset) {
+						$oHeaders->SetParentCharset($sContentTypeCharset);
 					}
 
 					$aNewMessages[] = array(
 						'Folder' => $sFolderName,
 						'Uid' => $iUid,
-						'Subject' => $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::SUBJECT, !\strlen($sCharset)),
-						'From' => $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::FROM_, !\strlen($sCharset))
+						'Subject' => $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::SUBJECT, !$sContentTypeCharset),
+						'From' => $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::FROM_, !$sContentTypeCharset)
 					);
 				}
 			}
@@ -677,8 +674,7 @@ class MailClient
 			'HighestModSeq' => $iHighestModSeq,
 			'AppendLimit' => $iAppendLimit,
 			'MailboxId' => $sMailboxId,
-			'NewMessages' => 'INBOX' === $sFolderName && \MailSo\Config::$CheckNewMessages ?
-				$this->getFolderNextMessageInformation($sFolderName, $iPrevUidNext, $iUidNext) : array()
+			'NewMessages' => $this->getFolderNextMessageInformation($sFolderName, $iPrevUidNext, $iUidNext)
 		);
 	}
 
@@ -1017,7 +1013,7 @@ class MailClient
 
 		$oMessageCollection->UidNext = $iUidNext;
 
-		if (!$oParams->iThreadUid && $oParams->iPrevUidNext && 'INBOX' === $oParams->sFolderName)
+		if (!$oParams->iThreadUid)
 		{
 			$oMessageCollection->NewMessages = $this->getFolderNextMessageInformation(
 				$oParams->sFolderName, $oParams->iPrevUidNext, $iUidNext);
@@ -1033,14 +1029,12 @@ class MailClient
 			$bUseThreads = false;
 		}
 
-		if (0 < $iMessageRealCount && !$bMessageListOptimization)
+		if ($iMessageRealCount && !$bMessageListOptimization)
 		{
-			$aUids = $this->GetUids($oParams->oCacher, '',
-				$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported, $oParams->sSort);
-
 			if ($bUseThreads) {
 				$aAllThreads = $this->MessageListThreadsMap($oMessageCollection->FolderName, $oMessageCollection->FolderHash, $oParams->oCacher);
-				if (0 < $oParams->iThreadUid)
+
+				if ($oParams->iThreadUid)
 				{
 					$aUids = [$oParams->iThreadUid];
 					// Only show the selected thread messages
@@ -1053,13 +1047,20 @@ class MailClient
 				}
 				else
 				{
-					// Show all threads
-//					$aUids = array();
-//					\array_walk_recursive($aAllThreads, function($a) use (&$aUids) { $aUids[] = $a; });
+					$aUids = $this->GetUids($oParams->oCacher, '',
+						$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported, $oParams->sSort);
+					// Remove all threaded UID's except the most recent of each thread
+					foreach ($aAllThreads as $aMap) {
+						unset($aMap[\array_key_last($aMap)]);
+						$aUids = \array_diff($aUids, $aMap);
+					}
 				}
+			} else {
+				$aUids = $this->GetUids($oParams->oCacher, '',
+					$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported, $oParams->sSort);
 			}
 
-			if (\strlen($sSearch) && \is_array($aUids))
+			if ($aUids && \strlen($sSearch))
 			{
 				$aSearchedUids = $this->GetUids($oParams->oCacher, $sSearch,
 					$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
@@ -1084,26 +1085,19 @@ class MailClient
 					$aUids = \array_unique($aNewUids);
 					unset($aNewUids);
 				}
-				else
-				{
-					$aUids = array();
-				}
 			}
 
-			if (\is_array($aUids))
-			{
-				$oMessageCollection->MessageCount = $iMessageRealCount;
-				$oMessageCollection->MessageUnseenCount = $iMessageUnseenCount;
-				$oMessageCollection->MessageResultCount = \count($aUids);
+			$oMessageCollection->MessageCount = $iMessageRealCount;
+			$oMessageCollection->MessageUnseenCount = $iMessageUnseenCount;
+			$oMessageCollection->MessageResultCount = \count($aUids);
 
-				if (\count($aUids))
-				{
-					$aRequestUids = \array_slice($aUids, $oParams->iOffset, $oParams->iLimit);
-					$this->MessageListByRequestIndexOrUids($oMessageCollection, $aRequestUids, true);
-				}
+			if (\count($aUids))
+			{
+				$aRequestUids = \array_slice($aUids, $oParams->iOffset, $oParams->iLimit);
+				$this->MessageListByRequestIndexOrUids($oMessageCollection, $aRequestUids, true);
 			}
 		}
-		else if (0 < $iMessageRealCount)
+		else if ($iMessageRealCount)
 		{
 			if ($this->oLogger)
 			{
@@ -1148,11 +1142,12 @@ class MailClient
 			}
 		}
 
-		if ($bUseThreads && !$oParams->iThreadUid && $aAllThreads)
+		if ($aAllThreads && !$oParams->iThreadUid)
 		{
 			foreach ($oMessageCollection as $oMessage) {
 				$iUid = $oMessage->Uid();
-				// Find thread
+				// Find thread and set it.
+				// Used by GUI to delete/move the whole thread or other features
 				foreach ($aAllThreads as $aMap) {
 					if (\in_array($iUid, $aMap)) {
 						$oMessage->SetThreads($aMap);
