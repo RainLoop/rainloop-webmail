@@ -65,16 +65,18 @@ abstract class Upgrade
 			}
 			$sHash = $oMainAccount->CryptKey();
 			foreach ($aAccounts as $sEmail => $sToken) {
+				if ($oMainAccount->Email() == $sEmail) {
+					continue;
+				}
 				try {
 					$aNewAccounts[$sEmail] = [
 						'account',
 						$sEmail,
-						$sEmail,
-						'',
-						'',
-						'',
-						'',
-						$oMainAccount->Email(),
+						$sEmail, // sLogin
+						'',      // sPassword
+						'',      // sClientCert
+						'',      // sProxyAuthUser
+						'',      // sProxyAuthPassword
 						\hash_hmac('sha1', '', $sHash)
 					];
 					if (!$sToken) {
