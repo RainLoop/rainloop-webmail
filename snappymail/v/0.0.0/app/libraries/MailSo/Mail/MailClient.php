@@ -1066,25 +1066,16 @@ class MailClient
 
 				if (\count($aSearchedUids))
 				{
-					$aFlippedSearchedUids = \array_flip($aSearchedUids);
-
-					$bSearch = true;
 					$aNewUids = array();
-
 					foreach ($aUids as $iUid)
 					{
-						if (isset($aFlippedSearchedUids[$iUid]))
-						{
+						if (\in_array($iUid, $aSearchedUids)) {
 							$aNewUids[] = $iUid;
-						}
-						else if ($bUseThreads && !$oParams->iThreadUid && isset($aAllThreads[$iUid]) && \is_array($aAllThreads[$iUid]))
-						{
-							foreach ($aAllThreads[$iUid] as $iSubUid)
-							{
-								if (isset($aFlippedSearchedUids[$iSubUid]))
-								{
+						} else if ($bUseThreads && !$oParams->iThreadUid) {
+							foreach ($aAllThreads as $aMap) {
+								if (\in_array($iUid, $aMap) && \array_intersect($aSearchedUids, $aMap)) {
 									$aNewUids[] = $iUid;
-									continue;
+									break;
 								}
 							}
 						}
