@@ -61,7 +61,7 @@ abstract class Crypt
 				\trigger_error(__CLASS__ . "::{$fn}(): " . $e->getMessage());
 			}
 		} else {
-			\trigger_error(__CLASS__ . '::Decrypt() invalid $data');
+//			\trigger_error(__CLASS__ . '::Decrypt() invalid $data');
 		}
 	}
 
@@ -69,7 +69,7 @@ abstract class Crypt
 	{
 		$data = \json_decode($data, true);
 		if (!\is_array($data)) {
-			\trigger_error(__CLASS__ . '::DecryptFromJSON() invalid $data');
+//			\trigger_error(__CLASS__ . '::DecryptFromJSON() invalid $data');
 			return null;
 		}
 		return static::Decrypt(\array_map('base64_decode', $data), $key);
@@ -79,7 +79,7 @@ abstract class Crypt
 	{
 		$data = \explode('.', $data);
 		if (!\is_array($data)) {
-			\trigger_error(__CLASS__ . '::DecryptUrlSafe() invalid $data');
+//			\trigger_error(__CLASS__ . '::DecryptUrlSafe() invalid $data');
 			return null;
 		}
 		return static::Decrypt(\array_map('MailSo\\Base\\Utils::UrlSafeBase64Decode', $data), $key);
