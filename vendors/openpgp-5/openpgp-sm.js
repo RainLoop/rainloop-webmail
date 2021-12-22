@@ -9613,7 +9613,7 @@ let openpgp = (function (exports) {
 
   function xorMut(a, b) {
     for (let i = 0; i < a.length; i++) {
-      a[i] = a[i] ^ b[i];
+      a[i] ^= b[i];
     }
   }
 
@@ -9730,7 +9730,6 @@ let openpgp = (function (exports) {
 
   const blockLength = 16;
 
-
   /**
    * xor `padding` into the end of `data`. This function implements "the
    * operation xor→ [which] xors the shorter string into the end of longer
@@ -9791,13 +9790,11 @@ let openpgp = (function (exports) {
 
   // OpenPGP.js - An OpenPGP implementation in javascript
 
-  const blockLength$1 = 16;
-  const ivLength = blockLength$1;
-  const tagLength = blockLength$1;
+  const tagLength = blockLength;
 
-  const zero = new Uint8Array(blockLength$1);
-  const one = new Uint8Array(blockLength$1); one[blockLength$1 - 1] = 1;
-  const two = new Uint8Array(blockLength$1); two[blockLength$1 - 1] = 2;
+  const zero = new Uint8Array(blockLength);
+  const one = new Uint8Array(blockLength); one[blockLength - 1] = 1;
+  const two = new Uint8Array(blockLength); two[blockLength - 1] = 2;
 
   async function OMAC(key) {
     const cmac = await CMAC(key);
@@ -9814,7 +9811,7 @@ let openpgp = (function (exports) {
     ) {
       key = await webCrypto.importKey('raw', key, { name: 'AES-CTR', length: key.length * 8 }, false, ['encrypt']);
       return async function(pt, iv) {
-        const ct = await webCrypto.encrypt({ name: 'AES-CTR', counter: iv, length: blockLength$1 * 8 }, key, pt);
+        const ct = await webCrypto.encrypt({ name: 'AES-CTR', counter: iv, length: blockLength * 8 }, key, pt);
         return new Uint8Array(ct);
       };
     }
@@ -9913,22 +9910,19 @@ let openpgp = (function (exports) {
     return nonce;
   };
 
-  EAX.blockLength = blockLength$1;
-  EAX.ivLength = ivLength;
+  EAX.blockLength = blockLength;
+  EAX.ivLength = blockLength;
   EAX.tagLength = tagLength;
 
   // OpenPGP.js - An OpenPGP implementation in javascript
 
 
-  const blockLength$2 = 16;
   const ivLength$1 = 15;
 
   // https://tools.ietf.org/html/draft-ietf-openpgp-rfc4880bis-04#section-5.16.2:
   // While OCB [RFC7253] allows the authentication tag length to be of any
   // number up to 128 bits long, this document requires a fixed
   // authentication tag length of 128 bits (16 octets) for simplicity.
-  const tagLength$1 = 16;
-
 
   function ntz(n) {
     let ntz = 0;
@@ -9938,18 +9932,11 @@ let openpgp = (function (exports) {
     return ntz;
   }
 
-  function xorMut$1(S, T) {
-    for (let i = 0; i < S.length; i++) {
-      S[i] ^= T[i];
-    }
-    return S;
-  }
-
   function xor(S, T) {
-    return xorMut$1(S.slice(), T);
+    return xorMut(S.slice(), T);
   }
 
-  const zeroBlock$1 = new Uint8Array(blockLength$2);
+  const zeroBlock$1 = new Uint8Array(blockLength);
   const one$1 = new Uint8Array([1]);
 
   /**
@@ -9982,7 +9969,7 @@ let openpgp = (function (exports) {
     }
 
     function extendKeyVariables(text, adata) {
-      const newMaxNtz = util.nbits(Math.max(text.length, adata.length) / blockLength$2 | 0) - 1;
+      const newMaxNtz = util.nbits(Math.max(text.length, adata.length) / blockLength | 0) - 1;
       for (let i = maxNtz + 1; i <= newMaxNtz; i++) {
         mask[i] = util.double(mask[i - 1]);
       }
@@ -9998,28 +9985,28 @@ let openpgp = (function (exports) {
       //
       // Consider A as a sequence of 128-bit blocks
       //
-      const m = adata.length / blockLength$2 | 0;
+      const m = adata.length / blockLength | 0;
 
-      const offset = new Uint8Array(blockLength$2);
-      const sum = new Uint8Array(blockLength$2);
+      const offset = new Uint8Array(blockLength);
+      const sum = new Uint8Array(blockLength);
       for (let i = 0; i < m; i++) {
-        xorMut$1(offset, mask[ntz(i + 1)]);
-        xorMut$1(sum, encipher(xor(offset, adata)));
-        adata = adata.subarray(blockLength$2);
+        xorMut(offset, mask[ntz(i + 1)]);
+        xorMut(sum, encipher(xor(offset, adata)));
+        adata = adata.subarray(blockLength);
       }
 
       //
       // Process any final partial block; compute final hash value
       //
       if (adata.length) {
-        xorMut$1(offset, mask.x);
+        xorMut(offset, mask.x);
 
-        const cipherInput = new Uint8Array(blockLength$2);
+        const cipherInput = new Uint8Array(blockLength);
         cipherInput.set(adata, 0);
         cipherInput[adata.length] = 0b10000000;
-        xorMut$1(cipherInput, offset);
+        xorMut(cipherInput, offset);
 
-        xorMut$1(sum, encipher(cipherInput));
+        xorMut(sum, encipher(cipherInput));
       }
 
       return sum;
@@ -10037,7 +10024,7 @@ let openpgp = (function (exports) {
       //
       // Consider P as a sequence of 128-bit blocks
       //
-      const m = text.length / blockLength$2 | 0;
+      const m = text.length / blockLength | 0;
 
       //
       // Key-dependent variables
@@ -10051,18 +10038,18 @@ let openpgp = (function (exports) {
       // Note: We assume here that tagLength mod 16 == 0.
       const paddedNonce = util.concatUint8Array([zeroBlock$1.subarray(0, ivLength$1 - nonce.length), one$1, nonce]);
       //    bottom = str2num(Nonce[123..128])
-      const bottom = paddedNonce[blockLength$2 - 1] & 0b111111;
+      const bottom = paddedNonce[blockLength - 1] & 0b111111;
       //    Ktop = ENCIPHER(K, Nonce[1..122] || zeros(6))
-      paddedNonce[blockLength$2 - 1] &= 0b11000000;
+      paddedNonce[blockLength - 1] &= 0b11000000;
       const kTop = encipher(paddedNonce);
       //    Stretch = Ktop || (Ktop[1..64] xor Ktop[9..72])
       const stretched = util.concatUint8Array([kTop, xor(kTop.subarray(0, 8), kTop.subarray(1, 9))]);
       //    Offset_0 = Stretch[1+bottom..128+bottom]
       const offset = util.shiftRight(stretched.subarray(0 + (bottom >> 3), 17 + (bottom >> 3)), 8 - (bottom & 7)).subarray(1);
       //    Checksum_0 = zeros(128)
-      const checksum = new Uint8Array(blockLength$2);
+      const checksum = new Uint8Array(blockLength);
 
-      const ct = new Uint8Array(text.length + tagLength$1);
+      const ct = new Uint8Array(text.length + tagLength);
 
       //
       // Process any whole blocks
@@ -10071,15 +10058,15 @@ let openpgp = (function (exports) {
       let pos = 0;
       for (i = 0; i < m; i++) {
         // Offset_i = Offset_{i-1} xor L_{ntz(i)}
-        xorMut$1(offset, mask[ntz(i + 1)]);
+        xorMut(offset, mask[ntz(i + 1)]);
         // C_i = Offset_i xor ENCIPHER(K, P_i xor Offset_i)
         // P_i = Offset_i xor DECIPHER(K, C_i xor Offset_i)
-        ct.set(xorMut$1(fn(xor(offset, text)), offset), pos);
+        ct.set(xorMut(fn(xor(offset, text)), offset), pos);
         // Checksum_i = Checksum_{i-1} xor P_i
-        xorMut$1(checksum, fn === encipher ? text : ct.subarray(pos));
+        xorMut(checksum, fn === encipher ? text : ct.subarray(pos));
 
-        text = text.subarray(blockLength$2);
-        pos += blockLength$2;
+        text = text.subarray(blockLength);
+        pos += blockLength;
       }
 
       //
@@ -10087,21 +10074,21 @@ let openpgp = (function (exports) {
       //
       if (text.length) {
         // Offset_* = Offset_m xor L_*
-        xorMut$1(offset, mask.x);
+        xorMut(offset, mask.x);
         // Pad = ENCIPHER(K, Offset_*)
         const padding = encipher(offset);
         // C_* = P_* xor Pad[1..bitlen(P_*)]
         ct.set(xor(text, padding), pos);
 
         // Checksum_* = Checksum_m xor (P_* || 1 || new Uint8Array(127-bitlen(P_*)))
-        const xorInput = new Uint8Array(blockLength$2);
-        xorInput.set(fn === encipher ? text : ct.subarray(pos, -tagLength$1), 0);
+        const xorInput = new Uint8Array(blockLength);
+        xorInput.set(fn === encipher ? text : ct.subarray(pos, -tagLength), 0);
         xorInput[text.length] = 0b10000000;
-        xorMut$1(checksum, xorInput);
+        xorMut(checksum, xorInput);
         pos += text.length;
       }
       // Tag = ENCIPHER(K, Checksum_* xor Offset_* xor L_$) xor HASH(K,A)
-      const tag = xorMut$1(encipher(xorMut$1(xorMut$1(checksum, offset), mask.$)), hash(adata));
+      const tag = xorMut(encipher(xorMut(xorMut(checksum, offset), mask.$)), hash(adata));
 
       //
       // Assemble ciphertext
@@ -10132,15 +10119,15 @@ let openpgp = (function (exports) {
        * @returns {Promise<Uint8Array>} The ciphertext output.
        */
       decrypt: async function(ciphertext, nonce, adata) {
-        if (ciphertext.length < tagLength$1) throw new Error('Invalid OCB ciphertext');
+        if (ciphertext.length < tagLength) throw new Error('Invalid OCB ciphertext');
 
-        const tag = ciphertext.subarray(-tagLength$1);
-        ciphertext = ciphertext.subarray(0, -tagLength$1);
+        const tag = ciphertext.subarray(-tagLength);
+        ciphertext = ciphertext.subarray(0, -tagLength);
 
         const crypted = crypt(decipher, ciphertext, nonce, adata);
         // if (Tag[1..TAGLEN] == T)
-        if (util.equalsUint8Array(tag, crypted.subarray(-tagLength$1))) {
-          return crypted.subarray(0, -tagLength$1);
+        if (util.equalsUint8Array(tag, crypted.subarray(-tagLength))) {
+          return crypted.subarray(0, -tagLength);
         }
         throw new Error('Authentication tag mismatch');
       }
@@ -10161,9 +10148,9 @@ let openpgp = (function (exports) {
     return nonce;
   };
 
-  OCB.blockLength = blockLength$2;
+  OCB.blockLength = blockLength;
   OCB.ivLength = ivLength$1;
-  OCB.tagLength = tagLength$1;
+  OCB.tagLength = tagLength;
 
   const _AES_GCM_data_maxLength = 68719476704; // 2^36 - 2^5
   class AES_GCM {
@@ -10447,11 +10434,6 @@ let openpgp = (function (exports) {
 
   // OpenPGP.js - An OpenPGP implementation in javascript
 
-  const webCrypto$4 = util.getWebCrypto();
-
-  const blockLength$3 = 16;
-  const ivLength$2 = 12; // size of the IV in bytes
-  const tagLength$2 = 16; // size of the tag in bytes
   const ALGO = 'AES-GCM';
 
   /**
@@ -10465,7 +10447,7 @@ let openpgp = (function (exports) {
     }
 
     if (util.getWebCrypto() && key.length !== 24) { // WebCrypto (no 192 bit support) see: https://www.chromium.org/blink/webcrypto#TOC-AES-support
-      const _key = await webCrypto$4.importKey('raw', key, { name: ALGO }, false, ['encrypt', 'decrypt']);
+      const _key = await webCrypto.importKey('raw', key, { name: ALGO }, false, ['encrypt', 'decrypt']);
 
       return {
         encrypt: async function(pt, iv, adata = new Uint8Array()) {
@@ -10478,13 +10460,13 @@ let openpgp = (function (exports) {
           ) {
             return AES_GCM.encrypt(pt, key, iv, adata);
           }
-          const ct = await webCrypto$4.encrypt({ name: ALGO, iv, additionalData: adata, tagLength: tagLength$2 * 8 }, _key, pt);
+          const ct = await webCrypto.encrypt({ name: ALGO, iv, additionalData: adata, tagLength: tagLength * 8 }, _key, pt);
           return new Uint8Array(ct);
         },
 
         decrypt: async function(ct, iv, adata = new Uint8Array()) {
           if (
-            ct.length === tagLength$2 ||
+            ct.length === tagLength ||
             // iOS does not support GCM-en/decrypting empty messages
             // Also, synchronous en/decryption might be faster in this case.
             (!adata.length && navigator.userAgent.indexOf('Edge') !== -1)
@@ -10492,7 +10474,7 @@ let openpgp = (function (exports) {
           ) {
             return AES_GCM.decrypt(ct, key, iv, adata);
           }
-          const pt = await webCrypto$4.decrypt({ name: ALGO, iv, additionalData: adata, tagLength: tagLength$2 * 8 }, _key, ct);
+          const pt = await webCrypto.decrypt({ name: ALGO, iv, additionalData: adata, tagLength: tagLength * 8 }, _key, ct);
           return new Uint8Array(pt);
         }
       };
@@ -10526,9 +10508,9 @@ let openpgp = (function (exports) {
     return nonce;
   };
 
-  GCM.blockLength = blockLength$3;
-  GCM.ivLength = ivLength$2;
-  GCM.tagLength = tagLength$2;
+  GCM.blockLength = blockLength;
+  GCM.ivLength = 12;
+  GCM.tagLength = tagLength;
 
   /**
    * @fileoverview Cipher modes
@@ -11988,8 +11970,6 @@ let openpgp = (function (exports) {
 
   // GPG4Browsers - An OpenPGP implementation in javascript
 
-  const webCrypto$5 = util.getWebCrypto();
-
   /** Create signature
    * @param {module:enums.hash} hashAlgo - Hash algorithm
    * @param {Uint8Array} data - Message
@@ -12068,11 +12048,11 @@ let openpgp = (function (exports) {
           name: 'SHA-1' // not required for actual RSA keys, but for crypto api 'sign' and 'verify'
         }
       };
-      const keyPair = await webCrypto$5.generateKey(keyGenOpt, true, ['sign', 'verify']);
+      const keyPair = await webCrypto.generateKey(keyGenOpt, true, ['sign', 'verify']);
 
       // export the generated keys as JsonWebKey (JWK)
       // https://tools.ietf.org/html/draft-ietf-jose-json-web-key-33
-      const jwk = await webCrypto$5.exportKey('jwk', keyPair.privateKey);
+      const jwk = await webCrypto.exportKey('jwk', keyPair.privateKey);
       // map JWK parameters to corresponding OpenPGP names
       return {
         n: b64ToUint8Array(jwk.n),
@@ -12116,56 +12096,6 @@ let openpgp = (function (exports) {
     };
   }
 
-  /**
-   * Validate RSA parameters
-   * @param {Uint8Array} n - RSA public modulus
-   * @param {Uint8Array} e - RSA public exponent
-   * @param {Uint8Array} d - RSA private exponent
-   * @param {Uint8Array} p - RSA private prime p
-   * @param {Uint8Array} q - RSA private prime q
-   * @param {Uint8Array} u - RSA inverse of p w.r.t. q
-   * @returns {Promise<Boolean>} Whether params are valid.
-   * @async
-   */
-  async function validateParams(n, e, d, p, q, u) {
-    const BigInteger = await util.getBigInteger();
-    n = new BigInteger(n);
-    p = new BigInteger(p);
-    q = new BigInteger(q);
-
-    // expect pq = n
-    if (!p.mul(q).equal(n)) {
-      return false;
-    }
-
-    const two = new BigInteger(2);
-    // expect p*u = 1 mod q
-    u = new BigInteger(u);
-    if (!p.mul(u).mod(q).isOne()) {
-      return false;
-    }
-
-    e = new BigInteger(e);
-    d = new BigInteger(d);
-    /**
-     * In RSA pkcs#1 the exponents (d, e) are inverses modulo lcm(p-1, q-1)
-     * We check that [de = 1 mod (p-1)] and [de = 1 mod (q-1)]
-     * By CRT on coprime factors of (p-1, q-1) it follows that [de = 1 mod lcm(p-1, q-1)]
-     *
-     * We blind the multiplication with r, and check that rde = r mod lcm(p-1, q-1)
-     */
-    const nSizeOver3 = new BigInteger(Math.floor(n.bitLength() / 3));
-    const r = await getRandomBigInteger(two, two.leftShift(nSizeOver3)); // r in [ 2, 2^{|n|/3} ) < p and q
-    const rde = r.mul(d).mul(e);
-
-    const areInverses = rde.mod(p.dec()).equal(r) && rde.mod(q.dec()).equal(r);
-    if (!areInverses) {
-      return false;
-    }
-
-    return true;
-  }
-
   async function bnSign(hashAlgo, n, d, hashed) {
     const BigInteger = await util.getBigInteger();
     n = new BigInteger(n);
@@ -12189,9 +12119,9 @@ let openpgp = (function (exports) {
       name: 'RSASSA-PKCS1-v1_5',
       hash: { name: hashName }
     };
-    const key = await webCrypto$5.importKey('jwk', jwk, algo, false, ['sign']);
+    const key = await webCrypto.importKey('jwk', jwk, algo, false, ['sign']);
     // add hash field for ms edge support
-    return new Uint8Array(await webCrypto$5.sign({ 'name': 'RSASSA-PKCS1-v1_5', 'hash': hashName }, key, data));
+    return new Uint8Array(await webCrypto.sign({ 'name': 'RSASSA-PKCS1-v1_5', 'hash': hashName }, key, data));
   }
 
   async function bnVerify(hashAlgo, s, n, e, hashed) {
@@ -12209,12 +12139,12 @@ let openpgp = (function (exports) {
 
   async function webVerify(hashName, data, s, n, e) {
     const jwk = publicToJWK(n, e);
-    const key = await webCrypto$5.importKey('jwk', jwk, {
+    const key = await webCrypto.importKey('jwk', jwk, {
       name: 'RSASSA-PKCS1-v1_5',
       hash: { name:  hashName }
     }, false, ['verify']);
     // add hash field for ms edge support
-    return webCrypto$5.verify({ 'name': 'RSASSA-PKCS1-v1_5', 'hash': hashName }, key, s, data);
+    return webCrypto.verify({ 'name': 'RSASSA-PKCS1-v1_5', 'hash': hashName }, key, s, data);
   }
 
   async function bnEncrypt(data, n, e) {
@@ -12318,80 +12248,58 @@ let openpgp = (function (exports) {
     encrypt: bnEncrypt,
     decrypt: bnDecrypt,
     generate: generate,
-    validateParams: validateParams
+    /**
+     * Validate RSA parameters
+     * @param {Uint8Array} n - RSA public modulus
+     * @param {Uint8Array} e - RSA public exponent
+     * @param {Uint8Array} d - RSA private exponent
+     * @param {Uint8Array} p - RSA private prime p
+     * @param {Uint8Array} q - RSA private prime q
+     * @param {Uint8Array} u - RSA inverse of p w.r.t. q
+     * @returns {Promise<Boolean>} Whether params are valid.
+     * @async
+     */
+    validateParams: async function(n, e, d, p, q, u) {
+      const BigInteger = await util.getBigInteger();
+      n = new BigInteger(n);
+      p = new BigInteger(p);
+      q = new BigInteger(q);
+
+      // expect pq = n
+      if (!p.mul(q).equal(n)) {
+        return false;
+      }
+
+      const two = new BigInteger(2);
+      // expect p*u = 1 mod q
+      u = new BigInteger(u);
+      if (!p.mul(u).mod(q).isOne()) {
+        return false;
+      }
+
+      e = new BigInteger(e);
+      d = new BigInteger(d);
+      /**
+       * In RSA pkcs#1 the exponents (d, e) are inverses modulo lcm(p-1, q-1)
+       * We check that [de = 1 mod (p-1)] and [de = 1 mod (q-1)]
+       * By CRT on coprime factors of (p-1, q-1) it follows that [de = 1 mod lcm(p-1, q-1)]
+       *
+       * We blind the multiplication with r, and check that rde = r mod lcm(p-1, q-1)
+       */
+      const nSizeOver3 = new BigInteger(Math.floor(n.bitLength() / 3));
+      const r = await getRandomBigInteger(two, two.leftShift(nSizeOver3)); // r in [ 2, 2^{|n|/3} ) < p and q
+      const rde = r.mul(d).mul(e);
+
+      const areInverses = rde.mod(p.dec()).equal(r) && rde.mod(q.dec()).equal(r);
+      if (!areInverses) {
+        return false;
+      }
+
+      return true;
+    }
   });
 
   // GPG4Browsers - An OpenPGP implementation in javascript
-
-  /**
-   * Validate ElGamal parameters
-   * @param {Uint8Array} p - ElGamal prime
-   * @param {Uint8Array} g - ElGamal group generator
-   * @param {Uint8Array} y - ElGamal public key
-   * @param {Uint8Array} x - ElGamal private exponent
-   * @returns {Promise<Boolean>} Whether params are valid.
-   * @async
-   */
-  async function validateParams$1(p, g, y, x) {
-    const BigInteger = await util.getBigInteger();
-    p = new BigInteger(p);
-    g = new BigInteger(g);
-    y = new BigInteger(y);
-
-    const one = new BigInteger(1);
-    // Check that 1 < g < p
-    if (g.lte(one) || g.gte(p)) {
-      return false;
-    }
-
-    // Expect p-1 to be large
-    const pSize = new BigInteger(p.bitLength());
-    const n1023 = new BigInteger(1023);
-    if (pSize.lt(n1023)) {
-      return false;
-    }
-
-    /**
-     * g should have order p-1
-     * Check that g ** (p-1) = 1 mod p
-     */
-    if (!g.modExp(p.dec(), p).isOne()) {
-      return false;
-    }
-
-    /**
-     * Since p-1 is not prime, g might have a smaller order that divides p-1
-     * We want to make sure that the order is large enough to hinder a small subgroup attack
-     *
-     * We just check g**i != 1 for all i up to a threshold
-     */
-    let res = g;
-    const i = new BigInteger(1);
-    const threshold = new BigInteger(2).leftShift(new BigInteger(17)); // we want order > threshold
-    while (i.lt(threshold)) {
-      res = res.mul(g).imod(p);
-      if (res.isOne()) {
-        return false;
-      }
-      i.iinc();
-    }
-
-    /**
-     * Re-derive public key y' = g ** x mod p
-     * Expect y == y'
-     *
-     * Blinded exponentiation computes g**{r(p-1) + x} to compare to y
-     */
-    x = new BigInteger(x);
-    const two = new BigInteger(2);
-    const r = await getRandomBigInteger(two.leftShift(pSize.dec()), two.leftShift(pSize)); // draw r of same size as p-1
-    const rqx = p.dec().imul(r).iadd(x);
-    if (!y.equal(g.modExp(rqx, p))) {
-      return false;
-    }
-
-    return true;
-  }
 
   let elgamal = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -12441,7 +12349,75 @@ let openpgp = (function (exports) {
       const padded = c1.modExp(x, p).modInv(p).imul(c2).imod(p);
       return emeDecode(padded.toUint8Array('be', p.byteLength()));
     },
-    validateParams: validateParams$1
+    /**
+     * Validate ElGamal parameters
+     * @param {Uint8Array} p - ElGamal prime
+     * @param {Uint8Array} g - ElGamal group generator
+     * @param {Uint8Array} y - ElGamal public key
+     * @param {Uint8Array} x - ElGamal private exponent
+     * @returns {Promise<Boolean>} Whether params are valid.
+     * @async
+     */
+    validateParams: async function(p, g, y, x) {
+      const BigInteger = await util.getBigInteger();
+      p = new BigInteger(p);
+      g = new BigInteger(g);
+      y = new BigInteger(y);
+
+      const one = new BigInteger(1);
+      // Check that 1 < g < p
+      if (g.lte(one) || g.gte(p)) {
+        return false;
+      }
+
+      // Expect p-1 to be large
+      const pSize = new BigInteger(p.bitLength());
+      const n1023 = new BigInteger(1023);
+      if (pSize.lt(n1023)) {
+        return false;
+      }
+
+      /**
+       * g should have order p-1
+       * Check that g ** (p-1) = 1 mod p
+       */
+      if (!g.modExp(p.dec(), p).isOne()) {
+        return false;
+      }
+
+      /**
+       * Since p-1 is not prime, g might have a smaller order that divides p-1
+       * We want to make sure that the order is large enough to hinder a small subgroup attack
+       *
+       * We just check g**i != 1 for all i up to a threshold
+       */
+      let res = g;
+      const i = new BigInteger(1);
+      const threshold = new BigInteger(2).leftShift(new BigInteger(17)); // we want order > threshold
+      while (i.lt(threshold)) {
+        res = res.mul(g).imod(p);
+        if (res.isOne()) {
+          return false;
+        }
+        i.iinc();
+      }
+
+      /**
+       * Re-derive public key y' = g ** x mod p
+       * Expect y == y'
+       *
+       * Blinded exponentiation computes g**{r(p-1) + x} to compare to y
+       */
+      x = new BigInteger(x);
+      const two = new BigInteger(2);
+      const r = await getRandomBigInteger(two.leftShift(pSize.dec()), two.leftShift(pSize)); // draw r of same size as p-1
+      const rqx = p.dec().imul(r).iadd(x);
+      if (!y.equal(g.modExp(rqx, p))) {
+        return false;
+      }
+
+      return true;
+    }
   });
 
   // OpenPGP.js - An OpenPGP implementation in javascript
@@ -12535,8 +12511,6 @@ let openpgp = (function (exports) {
   }
 
   // OpenPGP.js - An OpenPGP implementation in javascript
-
-  const webCrypto$6 = util.getWebCrypto();
 
   const webCurves = {
     'p256': 'P-256',
@@ -12775,10 +12749,10 @@ let openpgp = (function (exports) {
 
   async function webGenKeyPair(name) {
     // Note: keys generated with ECDSA and ECDH are structurally equivalent
-    const webCryptoKey = await webCrypto$6.generateKey({ name: 'ECDSA', namedCurve: webCurves[name] }, true, ['sign', 'verify']);
+    const webCryptoKey = await webCrypto.generateKey({ name: 'ECDSA', namedCurve: webCurves[name] }, true, ['sign', 'verify']);
 
-    const privateKey = await webCrypto$6.exportKey('jwk', webCryptoKey.privateKey);
-    const publicKey = await webCrypto$6.exportKey('jwk', webCryptoKey.publicKey);
+    const privateKey = await webCrypto.exportKey('jwk', webCryptoKey.privateKey);
+    const publicKey = await webCrypto.exportKey('jwk', webCryptoKey.publicKey);
 
     return {
       publicKey: jwkToRawPublic(publicKey),
@@ -12844,8 +12818,6 @@ let openpgp = (function (exports) {
   }
 
   // OpenPGP.js - An OpenPGP implementation in javascript
-
-  const webCrypto$7 = util.getWebCrypto();
 
   /**
    * Sign a message using the provided key
@@ -12923,41 +12895,6 @@ let openpgp = (function (exports) {
     return ellipticVerify(curve, signature, digest, publicKey);
   }
 
-  /**
-   * Validate ECDSA parameters
-   * @param {module:type/oid} oid - Elliptic curve object identifier
-   * @param {Uint8Array} Q - ECDSA public point
-   * @param {Uint8Array} d - ECDSA secret scalar
-   * @returns {Promise<Boolean>} Whether params are valid.
-   * @async
-   */
-  async function validateParams$2(oid, Q, d) {
-    const curve = new Curve(oid);
-    // Reject curves x25519 and ed25519
-    if (curve.keyType !== enums.publicKey.ecdsa) {
-      return false;
-    }
-
-    // To speed up the validation, we try to use node- or webcrypto when available
-    // and sign + verify a random message
-    switch (curve.type) {
-      case 'web': {
-        const message = await getRandomBytes(8);
-        const hashAlgo = enums.hash.sha256;
-        const hashed = await hash.digest(hashAlgo, message);
-        try {
-          const signature = await sign$1(oid, hashAlgo, message, Q, d, hashed);
-          return await verify$1(oid, hashAlgo, signature, message, Q, hashed);
-        } catch (err) {
-          return false;
-        }
-      }
-      default:
-        return validateStandardParams(enums.publicKey.ecdsa, oid, Q, d);
-    }
-  }
-
-
   //////////////////////////
   //                      //
   //   Helper functions   //
@@ -12983,7 +12920,7 @@ let openpgp = (function (exports) {
   async function webSign$1(curve, hashAlgo, message, keyPair) {
     const len = curve.payloadSize;
     const jwk = privateToJWK$1(curve.payloadSize, webCurves[curve.name], keyPair.publicKey, keyPair.privateKey);
-    const key = await webCrypto$7.importKey(
+    const key = await webCrypto.importKey(
       'jwk',
       jwk,
       {
@@ -12995,7 +12932,7 @@ let openpgp = (function (exports) {
       ['sign']
     );
 
-    const signature = new Uint8Array(await webCrypto$7.sign(
+    const signature = new Uint8Array(await webCrypto.sign(
       {
         'name': 'ECDSA',
         'namedCurve': webCurves[curve.name],
@@ -13013,7 +12950,7 @@ let openpgp = (function (exports) {
 
   async function webVerify$1(curve, hashAlgo, { r, s }, message, publicKey) {
     const jwk = rawPublicToJWK(curve.payloadSize, webCurves[curve.name], publicKey);
-    const key = await webCrypto$7.importKey(
+    const key = await webCrypto.importKey(
       'jwk',
       jwk,
       {
@@ -13027,7 +12964,7 @@ let openpgp = (function (exports) {
 
     const signature = util.concatUint8Array([r, s]).buffer;
 
-    return webCrypto$7.verify(
+    return webCrypto.verify(
       {
         'name': 'ECDSA',
         'namedCurve': webCurves[curve.name],
@@ -13048,85 +12985,112 @@ let openpgp = (function (exports) {
     __proto__: null,
     sign: sign$1,
     verify: verify$1,
-    validateParams: validateParams$2
+    /**
+     * Validate ECDSA parameters
+     * @param {module:type/oid} oid - Elliptic curve object identifier
+     * @param {Uint8Array} Q - ECDSA public point
+     * @param {Uint8Array} d - ECDSA secret scalar
+     * @returns {Promise<Boolean>} Whether params are valid.
+     * @async
+     */
+    validateParams: async function(oid, Q, d) {
+      const curve = new Curve(oid);
+      // Reject curves x25519 and ed25519
+      if (curve.keyType !== enums.publicKey.ecdsa) {
+        return false;
+      }
+
+      // To speed up the validation, we try to use node- or webcrypto when available
+      // and sign + verify a random message
+      switch (curve.type) {
+        case 'web': {
+          const message = await getRandomBytes(8);
+          const hashAlgo = enums.hash.sha256;
+          const hashed = await hash.digest(hashAlgo, message);
+          try {
+            const signature = await sign$1(oid, hashAlgo, message, Q, d, hashed);
+            return await verify$1(oid, hashAlgo, signature, message, Q, hashed);
+          } catch (err) {
+            return false;
+          }
+        }
+        default:
+          return validateStandardParams(enums.publicKey.ecdsa, oid, Q, d);
+      }
+    }
   });
 
   // OpenPGP.js - An OpenPGP implementation in javascript
 
   naclFastLight.hash = bytes => new Uint8Array(_512().update(bytes).digest());
 
-  /**
-   * Sign a message using the provided key
-   * @param {module:type/oid} oid - Elliptic curve object identifier
-   * @param {module:enums.hash} hashAlgo - Hash algorithm used to sign (must be sha256 or stronger)
-   * @param {Uint8Array} message - Message to sign
-   * @param {Uint8Array} publicKey - Public key
-   * @param {Uint8Array} privateKey - Private key used to sign the message
-   * @param {Uint8Array} hashed - The hashed message
-   * @returns {Promise<{
-   *   r: Uint8Array,
-   *   s: Uint8Array
-   * }>} Signature of the message
-   * @async
-   */
-  async function sign$2(oid, hashAlgo, message, publicKey, privateKey, hashed) {
-    if (hash.getHashByteLength(hashAlgo) < hash.getHashByteLength(enums.hash.sha256)) {
-      // see https://tools.ietf.org/id/draft-ietf-openpgp-rfc4880bis-10.html#section-15-7.2
-      throw new Error('Hash algorithm too weak: sha256 or stronger is required for EdDSA.');
-    }
-    const secretKey = util.concatUint8Array([privateKey, publicKey.subarray(1)]);
-    const signature = naclFastLight.sign.detached(hashed, secretKey);
-    // EdDSA signature params are returned in little-endian format
-    return {
-      r: signature.subarray(0, 32),
-      s: signature.subarray(32)
-    };
-  }
-
-  /**
-   * Verifies if a signature is valid for a message
-   * @param {module:type/oid} oid - Elliptic curve object identifier
-   * @param {module:enums.hash} hashAlgo - Hash algorithm used in the signature
-   * @param  {{r: Uint8Array,
-               s: Uint8Array}}   signature Signature to verify the message
-   * @param {Uint8Array} m - Message to verify
-   * @param {Uint8Array} publicKey - Public key used to verify the message
-   * @param {Uint8Array} hashed - The hashed message
-   * @returns {Boolean}
-   * @async
-   */
-  async function verify$2(oid, hashAlgo, { r, s }, m, publicKey, hashed) {
-    const signature = util.concatUint8Array([r, s]);
-    return naclFastLight.sign.detached.verify(hashed, signature, publicKey.subarray(1));
-  }
-  /**
-   * Validate EdDSA parameters
-   * @param {module:type/oid} oid - Elliptic curve object identifier
-   * @param {Uint8Array} Q - EdDSA public point
-   * @param {Uint8Array} k - EdDSA secret seed
-   * @returns {Promise<Boolean>} Whether params are valid.
-   * @async
-   */
-  async function validateParams$3(oid, Q, k) {
-    // Check whether the given curve is supported
-    if (oid.getName() !== 'ed25519') {
-      return false;
-    }
-
-    /**
-     * Derive public point Q' = dG from private key
-     * and expect Q == Q'
-     */
-    const { publicKey } = naclFastLight.sign.keyPair.fromSeed(k);
-    const dG = new Uint8Array([0x40, ...publicKey]); // Add public key prefix
-    return util.equalsUint8Array(Q, dG);
-  }
-
   let eddsa = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    sign: sign$2,
-    verify: verify$2,
-    validateParams: validateParams$3
+    /**
+     * Sign a message using the provided key
+     * @param {module:type/oid} oid - Elliptic curve object identifier
+     * @param {module:enums.hash} hashAlgo - Hash algorithm used to sign (must be sha256 or stronger)
+     * @param {Uint8Array} message - Message to sign
+     * @param {Uint8Array} publicKey - Public key
+     * @param {Uint8Array} privateKey - Private key used to sign the message
+     * @param {Uint8Array} hashed - The hashed message
+     * @returns {Promise<{
+     *   r: Uint8Array,
+     *   s: Uint8Array
+     * }>} Signature of the message
+     * @async
+     */
+    sign: async function(oid, hashAlgo, message, publicKey, privateKey, hashed) {
+      if (hash.getHashByteLength(hashAlgo) < hash.getHashByteLength(enums.hash.sha256)) {
+        // see https://tools.ietf.org/id/draft-ietf-openpgp-rfc4880bis-10.html#section-15-7.2
+        throw new Error('Hash algorithm too weak: sha256 or stronger is required for EdDSA.');
+      }
+      const secretKey = util.concatUint8Array([privateKey, publicKey.subarray(1)]);
+      const signature = naclFastLight.sign.detached(hashed, secretKey);
+      // EdDSA signature params are returned in little-endian format
+      return {
+        r: signature.subarray(0, 32),
+        s: signature.subarray(32)
+      };
+    },
+    /**
+     * Verifies if a signature is valid for a message
+     * @param {module:type/oid} oid - Elliptic curve object identifier
+     * @param {module:enums.hash} hashAlgo - Hash algorithm used in the signature
+     * @param  {{r: Uint8Array,
+                 s: Uint8Array}}   signature Signature to verify the message
+     * @param {Uint8Array} m - Message to verify
+     * @param {Uint8Array} publicKey - Public key used to verify the message
+     * @param {Uint8Array} hashed - The hashed message
+     * @returns {Boolean}
+     * @async
+     */
+    verify: async function(oid, hashAlgo, { r, s }, m, publicKey, hashed) {
+      const signature = util.concatUint8Array([r, s]);
+      return naclFastLight.sign.detached.verify(hashed, signature, publicKey.subarray(1));
+    },
+    /**
+     * Validate EdDSA parameters
+     * @param {module:type/oid} oid - Elliptic curve object identifier
+     * @param {Uint8Array} Q - EdDSA public point
+     * @param {Uint8Array} k - EdDSA secret seed
+     * @returns {Promise<Boolean>} Whether params are valid.
+     * @async
+     */
+    validateParams: async function(oid, Q, k) {
+      // Check whether the given curve is supported
+      if (oid.getName() !== 'ed25519') {
+        return false;
+      }
+
+      /**
+       * Derive public point Q' = dG from private key
+       * and expect Q == Q'
+       */
+      const { publicKey } = naclFastLight.sign.keyPair.fromSeed(k);
+      const dG = new Uint8Array([0x40, ...publicKey]); // Add public key prefix
+      return util.equalsUint8Array(Q, dG);
+    }
   });
 
   // OpenPGP.js - An OpenPGP implementation in javascript
@@ -13307,20 +13271,6 @@ let openpgp = (function (exports) {
 
   // OpenPGP.js - An OpenPGP implementation in javascript
 
-  const webCrypto$8 = util.getWebCrypto();
-
-  /**
-   * Validate ECDH parameters
-   * @param {module:type/oid} oid - Elliptic curve object identifier
-   * @param {Uint8Array} Q - ECDH public point
-   * @param {Uint8Array} d - ECDH secret scalar
-   * @returns {Promise<Boolean>} Whether params are valid.
-   * @async
-   */
-  async function validateParams$4(oid, Q, d) {
-    return validateStandardParams(enums.publicKey.ecdh, oid, Q, d);
-  }
-
   // Build Param for ECDH algorithm (RFC 6637)
   function buildEcdhParam(public_algo, oid, kdfParams, fingerprint) {
     return util.concatUint8Array([
@@ -13387,29 +13337,6 @@ let openpgp = (function (exports) {
   }
 
   /**
-   * Encrypt and wrap a session key
-   *
-   * @param {module:type/oid} oid - Elliptic curve object identifier
-   * @param {module:type/kdf_params} kdfParams - KDF params including cipher and algorithm to use
-   * @param {Uint8Array} data - Unpadded session key data
-   * @param {Uint8Array} Q - Recipient public key
-   * @param {Uint8Array} fingerprint - Recipient fingerprint
-   * @returns {Promise<{publicKey: Uint8Array, wrappedKey: Uint8Array}>}
-   * @async
-   */
-  async function encrypt$3(oid, kdfParams, data, Q, fingerprint) {
-    const m = encode$1(data);
-
-    const curve = new Curve(oid);
-    const { publicKey, sharedKey } = await genPublicEphemeralKey(curve, Q);
-    const param = buildEcdhParam(enums.publicKey.ecdh, oid, kdfParams, fingerprint);
-    const cipherAlgo = enums.read(enums.symmetric, kdfParams.cipher);
-    const Z = await kdf(kdfParams.hash, sharedKey, cipher[cipherAlgo].keySize, param);
-    const wrappedKey = wrap(Z, m);
-    return { publicKey, wrappedKey };
-  }
-
-  /**
    * Generate ECDHE secret from private key and public part of ephemeral key
    *
    * @param {Curve} curve - Elliptic curve object
@@ -13445,37 +13372,6 @@ let openpgp = (function (exports) {
   }
 
   /**
-   * Decrypt and unwrap the value derived from session key
-   *
-   * @param {module:type/oid} oid - Elliptic curve object identifier
-   * @param {module:type/kdf_params} kdfParams - KDF params including cipher and algorithm to use
-   * @param {Uint8Array} V - Public part of ephemeral key
-   * @param {Uint8Array} C - Encrypted and wrapped value derived from session key
-   * @param {Uint8Array} Q - Recipient public key
-   * @param {Uint8Array} d - Recipient private key
-   * @param {Uint8Array} fingerprint - Recipient fingerprint
-   * @returns {Promise<Uint8Array>} Value derived from session key.
-   * @async
-   */
-  async function decrypt$3(oid, kdfParams, V, C, Q, d, fingerprint) {
-    const curve = new Curve(oid);
-    const { sharedKey } = await genPrivateEphemeralKey(curve, V, Q, d);
-    const param = buildEcdhParam(enums.publicKey.ecdh, oid, kdfParams, fingerprint);
-    const cipherAlgo = enums.read(enums.symmetric, kdfParams.cipher);
-    let err;
-    for (let i = 0; i < 3; i++) {
-      try {
-        // Work around old go crypto bug and old OpenPGP.js bug, respectively.
-        const Z = await kdf(kdfParams.hash, sharedKey, cipher[cipherAlgo].keySize, param, i === 1, i === 2);
-        return decode$1(unwrap(Z, C));
-      } catch (e) {
-        err = e;
-      }
-    }
-    throw err;
-  }
-
-  /**
    * Generate ECDHE secret from private key and public part of ephemeral key using webCrypto
    *
    * @param {Curve} curve - Elliptic curve object
@@ -13487,7 +13383,7 @@ let openpgp = (function (exports) {
    */
   async function webPrivateEphemeralKey(curve, V, Q, d) {
     const recipient = privateToJWK$1(curve.payloadSize, curve.web.web, Q, d);
-    let privateKey = webCrypto$8.importKey(
+    let privateKey = webCrypto.importKey(
       'jwk',
       recipient,
       {
@@ -13498,7 +13394,7 @@ let openpgp = (function (exports) {
       ['deriveKey', 'deriveBits']
     );
     const jwk = rawPublicToJWK(curve.payloadSize, curve.web.web, V);
-    let sender = webCrypto$8.importKey(
+    let sender = webCrypto.importKey(
       'jwk',
       jwk,
       {
@@ -13509,7 +13405,7 @@ let openpgp = (function (exports) {
       []
     );
     [privateKey, sender] = await Promise.all([privateKey, sender]);
-    let S = webCrypto$8.deriveBits(
+    let S = webCrypto.deriveBits(
       {
         name: 'ECDH',
         namedCurve: curve.web.web,
@@ -13518,7 +13414,7 @@ let openpgp = (function (exports) {
       privateKey,
       curve.web.sharedSize
     );
-    let secret = webCrypto$8.exportKey(
+    let secret = webCrypto.exportKey(
       'jwk',
       privateKey
     );
@@ -13538,7 +13434,7 @@ let openpgp = (function (exports) {
    */
   async function webPublicEphemeralKey(curve, Q) {
     const jwk = rawPublicToJWK(curve.payloadSize, curve.web.web, Q);
-    let keyPair = webCrypto$8.generateKey(
+    let keyPair = webCrypto.generateKey(
       {
         name: 'ECDH',
         namedCurve: curve.web.web
@@ -13546,7 +13442,7 @@ let openpgp = (function (exports) {
       true,
       ['deriveKey', 'deriveBits']
     );
-    let recipient = webCrypto$8.importKey(
+    let recipient = webCrypto.importKey(
       'jwk',
       jwk,
       {
@@ -13557,7 +13453,7 @@ let openpgp = (function (exports) {
       []
     );
     [keyPair, recipient] = await Promise.all([keyPair, recipient]);
-    let s = webCrypto$8.deriveBits(
+    let s = webCrypto.deriveBits(
       {
         name: 'ECDH',
         namedCurve: curve.web.web,
@@ -13566,7 +13462,7 @@ let openpgp = (function (exports) {
       keyPair.privateKey,
       curve.web.sharedSize
     );
-    let p = webCrypto$8.exportKey(
+    let p = webCrypto.exportKey(
       'jwk',
       keyPair.publicKey
     );
@@ -13618,9 +13514,69 @@ let openpgp = (function (exports) {
 
   let ecdh = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    validateParams: validateParams$4,
-    encrypt: encrypt$3,
-    decrypt: decrypt$3
+    /**
+     * Encrypt and wrap a session key
+     *
+     * @param {module:type/oid} oid - Elliptic curve object identifier
+     * @param {module:type/kdf_params} kdfParams - KDF params including cipher and algorithm to use
+     * @param {Uint8Array} data - Unpadded session key data
+     * @param {Uint8Array} Q - Recipient public key
+     * @param {Uint8Array} fingerprint - Recipient fingerprint
+     * @returns {Promise<{publicKey: Uint8Array, wrappedKey: Uint8Array}>}
+     * @async
+     */
+    encrypt: async function(oid, kdfParams, data, Q, fingerprint) {
+      const m = encode$1(data);
+
+      const curve = new Curve(oid);
+      const { publicKey, sharedKey } = await genPublicEphemeralKey(curve, Q);
+      const param = buildEcdhParam(enums.publicKey.ecdh, oid, kdfParams, fingerprint);
+      const cipherAlgo = enums.read(enums.symmetric, kdfParams.cipher);
+      const Z = await kdf(kdfParams.hash, sharedKey, cipher[cipherAlgo].keySize, param);
+      const wrappedKey = wrap(Z, m);
+      return { publicKey, wrappedKey };
+    },
+    /**
+     * Decrypt and unwrap the value derived from session key
+     *
+     * @param {module:type/oid} oid - Elliptic curve object identifier
+     * @param {module:type/kdf_params} kdfParams - KDF params including cipher and algorithm to use
+     * @param {Uint8Array} V - Public part of ephemeral key
+     * @param {Uint8Array} C - Encrypted and wrapped value derived from session key
+     * @param {Uint8Array} Q - Recipient public key
+     * @param {Uint8Array} d - Recipient private key
+     * @param {Uint8Array} fingerprint - Recipient fingerprint
+     * @returns {Promise<Uint8Array>} Value derived from session key.
+     * @async
+     */
+    decrypt: async function(oid, kdfParams, V, C, Q, d, fingerprint) {
+      const curve = new Curve(oid);
+      const { sharedKey } = await genPrivateEphemeralKey(curve, V, Q, d);
+      const param = buildEcdhParam(enums.publicKey.ecdh, oid, kdfParams, fingerprint);
+      const cipherAlgo = enums.read(enums.symmetric, kdfParams.cipher);
+      let err;
+      for (let i = 0; i < 3; i++) {
+        try {
+          // Work around old go crypto bug and old OpenPGP.js bug, respectively.
+          const Z = await kdf(kdfParams.hash, sharedKey, cipher[cipherAlgo].keySize, param, i === 1, i === 2);
+          return decode$1(unwrap(Z, C));
+        } catch (e) {
+          err = e;
+        }
+      }
+      throw err;
+    },
+    /**
+     * Validate ECDH parameters
+     * @param {module:type/oid} oid - Elliptic curve object identifier
+     * @param {Uint8Array} Q - ECDH public point
+     * @param {Uint8Array} d - ECDH secret scalar
+     * @returns {Promise<Boolean>} Whether params are valid.
+     * @async
+     */
+    validateParams: async function(oid, Q, d) {
+      return validateStandardParams(enums.publicKey.ecdh, oid, Q, d);
+    }
   });
 
   // OpenPGP.js - An OpenPGP implementation in javascript
@@ -13643,177 +13599,171 @@ let openpgp = (function (exports) {
      https://tools.ietf.org/html/rfc4880#section-14
   */
 
-  /**
-   * DSA Sign function
-   * @param {Integer} hashAlgo
-   * @param {Uint8Array} hashed
-   * @param {Uint8Array} g
-   * @param {Uint8Array} p
-   * @param {Uint8Array} q
-   * @param {Uint8Array} x
-   * @returns {Promise<{ r: Uint8Array, s: Uint8Array }>}
-   * @async
-   */
-  async function sign$3(hashAlgo, hashed, g, p, q, x) {
-    const BigInteger = await util.getBigInteger();
-    const one = new BigInteger(1);
-    p = new BigInteger(p);
-    q = new BigInteger(q);
-    g = new BigInteger(g);
-    x = new BigInteger(x);
-
-    let k;
-    let r;
-    let s;
-    let t;
-    g = g.mod(p);
-    x = x.mod(q);
-    // If the output size of the chosen hash is larger than the number of
-    // bits of q, the hash result is truncated to fit by taking the number
-    // of leftmost bits equal to the number of bits of q.  This (possibly
-    // truncated) hash function result is treated as a number and used
-    // directly in the DSA signature algorithm.
-    const h = new BigInteger(hashed.subarray(0, q.byteLength())).mod(q);
-    // FIPS-186-4, section 4.6:
-    // The values of r and s shall be checked to determine if r = 0 or s = 0.
-    // If either r = 0 or s = 0, a new value of k shall be generated, and the
-    // signature shall be recalculated. It is extremely unlikely that r = 0
-    // or s = 0 if signatures are generated properly.
-    while (true) {
-      // See Appendix B here: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-4.pdf
-      k = await getRandomBigInteger(one, q); // returns in [1, q-1]
-      r = g.modExp(k, p).imod(q); // (g**k mod p) mod q
-      if (r.isZero()) {
-        continue;
-      }
-      const xr = x.mul(r).imod(q);
-      t = h.add(xr).imod(q); // H(m) + x*r mod q
-      s = k.modInv(q).imul(t).imod(q); // k**-1 * (H(m) + x*r) mod q
-      if (s.isZero()) {
-        continue;
-      }
-      break;
-    }
-    return {
-      r: r.toUint8Array('be', q.byteLength()),
-      s: s.toUint8Array('be', q.byteLength())
-    };
-  }
-
-  /**
-   * DSA Verify function
-   * @param {Integer} hashAlgo
-   * @param {Uint8Array} r
-   * @param {Uint8Array} s
-   * @param {Uint8Array} hashed
-   * @param {Uint8Array} g
-   * @param {Uint8Array} p
-   * @param {Uint8Array} q
-   * @param {Uint8Array} y
-   * @returns {boolean}
-   * @async
-   */
-  async function verify$3(hashAlgo, r, s, hashed, g, p, q, y) {
-    const BigInteger = await util.getBigInteger();
-    const zero = new BigInteger(0);
-    r = new BigInteger(r);
-    s = new BigInteger(s);
-
-    p = new BigInteger(p);
-    q = new BigInteger(q);
-    g = new BigInteger(g);
-    y = new BigInteger(y);
-
-    if (r.lte(zero) || r.gte(q) ||
-        s.lte(zero) || s.gte(q)) {
-      util.printDebug('invalid DSA Signature');
-      return false;
-    }
-    const h = new BigInteger(hashed.subarray(0, q.byteLength())).imod(q);
-    const w = s.modInv(q); // s**-1 mod q
-    if (w.isZero()) {
-      util.printDebug('invalid DSA Signature');
-      return false;
-    }
-
-    g = g.mod(p);
-    y = y.mod(p);
-    const u1 = h.mul(w).imod(q); // H(m) * w mod q
-    const u2 = r.mul(w).imod(q); // r * w mod q
-    const t1 = g.modExp(u1, p); // g**u1 mod p
-    const t2 = y.modExp(u2, p); // y**u2 mod p
-    const v = t1.mul(t2).imod(p).imod(q); // (g**u1 * y**u2 mod p) mod q
-    return v.equal(r);
-  }
-
-  /**
-   * Validate DSA parameters
-   * @param {Uint8Array} p - DSA prime
-   * @param {Uint8Array} q - DSA group order
-   * @param {Uint8Array} g - DSA sub-group generator
-   * @param {Uint8Array} y - DSA public key
-   * @param {Uint8Array} x - DSA private key
-   * @returns {Promise<Boolean>} Whether params are valid.
-   * @async
-   */
-  async function validateParams$5(p, q, g, y, x) {
-    const BigInteger = await util.getBigInteger();
-    p = new BigInteger(p);
-    q = new BigInteger(q);
-    g = new BigInteger(g);
-    y = new BigInteger(y);
-    const one = new BigInteger(1);
-    // Check that 1 < g < p
-    if (g.lte(one) || g.gte(p)) {
-      return false;
-    }
-
-    /**
-     * Check that subgroup order q divides p-1
-     */
-    if (!p.dec().mod(q).isZero()) {
-      return false;
-    }
-
-    /**
-     * g has order q
-     * Check that g ** q = 1 mod p
-     */
-    if (!g.modExp(q, p).isOne()) {
-      return false;
-    }
-
-    /**
-     * Check q is large and probably prime (we mainly want to avoid small factors)
-     */
-    const qSize = new BigInteger(q.bitLength());
-    const n150 = new BigInteger(150);
-    if (qSize.lt(n150) || !(await isProbablePrime(q, null, 32))) {
-      return false;
-    }
-
-    /**
-     * Re-derive public key y' = g ** x mod p
-     * Expect y == y'
-     *
-     * Blinded exponentiation computes g**{rq + x} to compare to y
-     */
-    x = new BigInteger(x);
-    const two = new BigInteger(2);
-    const r = await getRandomBigInteger(two.leftShift(qSize.dec()), two.leftShift(qSize)); // draw r of same size as q
-    const rqx = q.mul(r).add(x);
-    if (!y.equal(g.modExp(rqx, p))) {
-      return false;
-    }
-
-    return true;
-  }
-
   let dsa = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    sign: sign$3,
-    verify: verify$3,
-    validateParams: validateParams$5
+    /**
+     * DSA Sign function
+     * @param {Integer} hashAlgo
+     * @param {Uint8Array} hashed
+     * @param {Uint8Array} g
+     * @param {Uint8Array} p
+     * @param {Uint8Array} q
+     * @param {Uint8Array} x
+     * @returns {Promise<{ r: Uint8Array, s: Uint8Array }>}
+     * @async
+     */
+    sign: async function(hashAlgo, hashed, g, p, q, x) {
+      const BigInteger = await util.getBigInteger();
+      const one = new BigInteger(1);
+      p = new BigInteger(p);
+      q = new BigInteger(q);
+      g = new BigInteger(g);
+      x = new BigInteger(x);
+
+      let k;
+      let r;
+      let s;
+      let t;
+      g = g.mod(p);
+      x = x.mod(q);
+      // If the output size of the chosen hash is larger than the number of
+      // bits of q, the hash result is truncated to fit by taking the number
+      // of leftmost bits equal to the number of bits of q.  This (possibly
+      // truncated) hash function result is treated as a number and used
+      // directly in the DSA signature algorithm.
+      const h = new BigInteger(hashed.subarray(0, q.byteLength())).mod(q);
+      // FIPS-186-4, section 4.6:
+      // The values of r and s shall be checked to determine if r = 0 or s = 0.
+      // If either r = 0 or s = 0, a new value of k shall be generated, and the
+      // signature shall be recalculated. It is extremely unlikely that r = 0
+      // or s = 0 if signatures are generated properly.
+      while (true) {
+        // See Appendix B here: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-4.pdf
+        k = await getRandomBigInteger(one, q); // returns in [1, q-1]
+        r = g.modExp(k, p).imod(q); // (g**k mod p) mod q
+        if (r.isZero()) {
+          continue;
+        }
+        const xr = x.mul(r).imod(q);
+        t = h.add(xr).imod(q); // H(m) + x*r mod q
+        s = k.modInv(q).imul(t).imod(q); // k**-1 * (H(m) + x*r) mod q
+        if (s.isZero()) {
+          continue;
+        }
+        break;
+      }
+      return {
+        r: r.toUint8Array('be', q.byteLength()),
+        s: s.toUint8Array('be', q.byteLength())
+      };
+    },
+    /**
+     * DSA Verify function
+     * @param {Integer} hashAlgo
+     * @param {Uint8Array} r
+     * @param {Uint8Array} s
+     * @param {Uint8Array} hashed
+     * @param {Uint8Array} g
+     * @param {Uint8Array} p
+     * @param {Uint8Array} q
+     * @param {Uint8Array} y
+     * @returns {boolean}
+     * @async
+     */
+    verify: async function(hashAlgo, r, s, hashed, g, p, q, y) {
+      const BigInteger = await util.getBigInteger();
+      const zero = new BigInteger(0);
+      r = new BigInteger(r);
+      s = new BigInteger(s);
+
+      p = new BigInteger(p);
+      q = new BigInteger(q);
+      g = new BigInteger(g);
+      y = new BigInteger(y);
+
+      if (r.lte(zero) || r.gte(q) ||
+          s.lte(zero) || s.gte(q)) {
+        util.printDebug('invalid DSA Signature');
+        return false;
+      }
+      const h = new BigInteger(hashed.subarray(0, q.byteLength())).imod(q);
+      const w = s.modInv(q); // s**-1 mod q
+      if (w.isZero()) {
+        util.printDebug('invalid DSA Signature');
+        return false;
+      }
+
+      g = g.mod(p);
+      y = y.mod(p);
+      const u1 = h.mul(w).imod(q); // H(m) * w mod q
+      const u2 = r.mul(w).imod(q); // r * w mod q
+      const t1 = g.modExp(u1, p); // g**u1 mod p
+      const t2 = y.modExp(u2, p); // y**u2 mod p
+      const v = t1.mul(t2).imod(p).imod(q); // (g**u1 * y**u2 mod p) mod q
+      return v.equal(r);
+    },
+    /**
+     * Validate DSA parameters
+     * @param {Uint8Array} p - DSA prime
+     * @param {Uint8Array} q - DSA group order
+     * @param {Uint8Array} g - DSA sub-group generator
+     * @param {Uint8Array} y - DSA public key
+     * @param {Uint8Array} x - DSA private key
+     * @returns {Promise<Boolean>} Whether params are valid.
+     * @async
+     */
+    validateParams: async function(p, q, g, y, x) {
+      const BigInteger = await util.getBigInteger();
+      p = new BigInteger(p);
+      q = new BigInteger(q);
+      g = new BigInteger(g);
+      y = new BigInteger(y);
+      const one = new BigInteger(1);
+      // Check that 1 < g < p
+      if (g.lte(one) || g.gte(p)) {
+        return false;
+      }
+
+      /**
+       * Check that subgroup order q divides p-1
+       */
+      if (!p.dec().mod(q).isZero()) {
+        return false;
+      }
+
+      /**
+       * g has order q
+       * Check that g ** q = 1 mod p
+       */
+      if (!g.modExp(q, p).isOne()) {
+        return false;
+      }
+
+      /**
+       * Check q is large and probably prime (we mainly want to avoid small factors)
+       */
+      const qSize = new BigInteger(q.bitLength());
+      const n150 = new BigInteger(150);
+      if (qSize.lt(n150) || !(await isProbablePrime(q, null, 32))) {
+        return false;
+      }
+
+      /**
+       * Re-derive public key y' = g ** x mod p
+       * Expect y == y'
+       *
+       * Blinded exponentiation computes g**{rq + x} to compare to y
+       */
+      x = new BigInteger(x);
+      const two = new BigInteger(2);
+      const r = await getRandomBigInteger(two.leftShift(qSize.dec()), two.leftShift(qSize)); // draw r of same size as q
+      const rqx = q.mul(r).add(x);
+      if (!y.equal(g.modExp(rqx, p))) {
+        return false;
+      }
+
+      return true;
+    }
   });
 
   /**
@@ -13892,107 +13842,104 @@ let openpgp = (function (exports) {
     }
   }
 
-  /**
-   * Verifies the signature provided for data using specified algorithms and public key parameters.
-   * See {@link https://tools.ietf.org/html/rfc4880#section-9.1|RFC 4880 9.1}
-   * and {@link https://tools.ietf.org/html/rfc4880#section-9.4|RFC 4880 9.4}
-   * for public key and hash algorithms.
-   * @param {module:enums.publicKey} algo - Public key algorithm
-   * @param {module:enums.hash} hashAlgo - Hash algorithm
-   * @param {Object} signature - Named algorithm-specific signature parameters
-   * @param {Object} publicParams - Algorithm-specific public key parameters
-   * @param {Uint8Array} data - Data for which the signature was created
-   * @param {Uint8Array} hashed - The hashed data
-   * @returns {Promise<Boolean>} True if signature is valid.
-   * @async
-   */
-  async function verify$4(algo, hashAlgo, signature, publicParams, data, hashed) {
-    switch (algo) {
-      case enums.publicKey.rsaEncryptSign:
-      case enums.publicKey.rsaEncrypt:
-      case enums.publicKey.rsaSign: {
-        const { n, e } = publicParams;
-        const s = util.leftPad(signature.s, n.length); // padding needed for webcrypto and node crypto
-        return publicKey.rsa.verify(hashAlgo, data, s, n, e, hashed);
-      }
-      case enums.publicKey.dsa: {
-        const { g, p, q, y } = publicParams;
-        const { r, s } = signature; // no need to pad, since we always handle them as BigIntegers
-        return publicKey.dsa.verify(hashAlgo, r, s, hashed, g, p, q, y);
-      }
-      case enums.publicKey.ecdsa: {
-        const { oid, Q } = publicParams;
-        const curveSize = new publicKey.elliptic.Curve(oid).payloadSize;
-        // padding needed for webcrypto
-        const r = util.leftPad(signature.r, curveSize);
-        const s = util.leftPad(signature.s, curveSize);
-        return publicKey.elliptic.ecdsa.verify(oid, hashAlgo, { r, s }, data, Q, hashed);
-      }
-      case enums.publicKey.eddsa: {
-        const { oid, Q } = publicParams;
-        // signature already padded on parsing
-        return publicKey.elliptic.eddsa.verify(oid, hashAlgo, signature, data, Q, hashed);
-      }
-      default:
-        throw new Error('Invalid signature algorithm.');
-    }
-  }
-
-  /**
-   * Creates a signature on data using specified algorithms and private key parameters.
-   * See {@link https://tools.ietf.org/html/rfc4880#section-9.1|RFC 4880 9.1}
-   * and {@link https://tools.ietf.org/html/rfc4880#section-9.4|RFC 4880 9.4}
-   * for public key and hash algorithms.
-   * @param {module:enums.publicKey} algo - Public key algorithm
-   * @param {module:enums.hash} hashAlgo - Hash algorithm
-   * @param {Object} publicKeyParams - Algorithm-specific public and private key parameters
-   * @param {Object} privateKeyParams - Algorithm-specific public and private key parameters
-   * @param {Uint8Array} data - Data to be signed
-   * @param {Uint8Array} hashed - The hashed data
-   * @returns {Promise<Object>} Signature                      Object containing named signature parameters.
-   * @async
-   */
-  async function sign$4(algo, hashAlgo, publicKeyParams, privateKeyParams, data, hashed) {
-    if (!publicKeyParams || !privateKeyParams) {
-      throw new Error('Missing key parameters');
-    }
-    switch (algo) {
-      case enums.publicKey.rsaEncryptSign:
-      case enums.publicKey.rsaEncrypt:
-      case enums.publicKey.rsaSign: {
-        const { n, e } = publicKeyParams;
-        const { d, p, q, u } = privateKeyParams;
-        const s = await publicKey.rsa.sign(hashAlgo, data, n, e, d, p, q, u, hashed);
-        return { s };
-      }
-      case enums.publicKey.dsa: {
-        const { g, p, q } = publicKeyParams;
-        const { x } = privateKeyParams;
-        return publicKey.dsa.sign(hashAlgo, hashed, g, p, q, x);
-      }
-      case enums.publicKey.elgamal: {
-        throw new Error('Signing with Elgamal is not defined in the OpenPGP standard.');
-      }
-      case enums.publicKey.ecdsa: {
-        const { oid, Q } = publicKeyParams;
-        const { d } = privateKeyParams;
-        return publicKey.elliptic.ecdsa.sign(oid, hashAlgo, data, Q, d, hashed);
-      }
-      case enums.publicKey.eddsa: {
-        const { oid, Q } = publicKeyParams;
-        const { seed } = privateKeyParams;
-        return publicKey.elliptic.eddsa.sign(oid, hashAlgo, data, Q, seed, hashed);
-      }
-      default:
-        throw new Error('Invalid signature algorithm.');
-    }
-  }
-
   let signature = /*#__PURE__*/Object.freeze({
     __proto__: null,
     parseSignatureParams: parseSignatureParams,
-    verify: verify$4,
-    sign: sign$4
+    /**
+     * Verifies the signature provided for data using specified algorithms and public key parameters.
+     * See {@link https://tools.ietf.org/html/rfc4880#section-9.1|RFC 4880 9.1}
+     * and {@link https://tools.ietf.org/html/rfc4880#section-9.4|RFC 4880 9.4}
+     * for public key and hash algorithms.
+     * @param {module:enums.publicKey} algo - Public key algorithm
+     * @param {module:enums.hash} hashAlgo - Hash algorithm
+     * @param {Object} signature - Named algorithm-specific signature parameters
+     * @param {Object} publicParams - Algorithm-specific public key parameters
+     * @param {Uint8Array} data - Data for which the signature was created
+     * @param {Uint8Array} hashed - The hashed data
+     * @returns {Promise<Boolean>} True if signature is valid.
+     * @async
+     */
+    verify: async function(algo, hashAlgo, signature, publicParams, data, hashed) {
+      switch (algo) {
+        case enums.publicKey.rsaEncryptSign:
+        case enums.publicKey.rsaEncrypt:
+        case enums.publicKey.rsaSign: {
+          const { n, e } = publicParams;
+          const s = util.leftPad(signature.s, n.length); // padding needed for webcrypto and node crypto
+          return publicKey.rsa.verify(hashAlgo, data, s, n, e, hashed);
+        }
+        case enums.publicKey.dsa: {
+          const { g, p, q, y } = publicParams;
+          const { r, s } = signature; // no need to pad, since we always handle them as BigIntegers
+          return publicKey.dsa.verify(hashAlgo, r, s, hashed, g, p, q, y);
+        }
+        case enums.publicKey.ecdsa: {
+          const { oid, Q } = publicParams;
+          const curveSize = new publicKey.elliptic.Curve(oid).payloadSize;
+          // padding needed for webcrypto
+          const r = util.leftPad(signature.r, curveSize);
+          const s = util.leftPad(signature.s, curveSize);
+          return publicKey.elliptic.ecdsa.verify(oid, hashAlgo, { r, s }, data, Q, hashed);
+        }
+        case enums.publicKey.eddsa: {
+          const { oid, Q } = publicParams;
+          // signature already padded on parsing
+          return publicKey.elliptic.eddsa.verify(oid, hashAlgo, signature, data, Q, hashed);
+        }
+        default:
+          throw new Error('Invalid signature algorithm.');
+      }
+    },
+
+    /**
+     * Creates a signature on data using specified algorithms and private key parameters.
+     * See {@link https://tools.ietf.org/html/rfc4880#section-9.1|RFC 4880 9.1}
+     * and {@link https://tools.ietf.org/html/rfc4880#section-9.4|RFC 4880 9.4}
+     * for public key and hash algorithms.
+     * @param {module:enums.publicKey} algo - Public key algorithm
+     * @param {module:enums.hash} hashAlgo - Hash algorithm
+     * @param {Object} publicKeyParams - Algorithm-specific public and private key parameters
+     * @param {Object} privateKeyParams - Algorithm-specific public and private key parameters
+     * @param {Uint8Array} data - Data to be signed
+     * @param {Uint8Array} hashed - The hashed data
+     * @returns {Promise<Object>} Signature                      Object containing named signature parameters.
+     * @async
+     */
+    sign: async function(algo, hashAlgo, publicKeyParams, privateKeyParams, data, hashed) {
+      if (!publicKeyParams || !privateKeyParams) {
+        throw new Error('Missing key parameters');
+      }
+      switch (algo) {
+        case enums.publicKey.rsaEncryptSign:
+        case enums.publicKey.rsaEncrypt:
+        case enums.publicKey.rsaSign: {
+          const { n, e } = publicKeyParams;
+          const { d, p, q, u } = privateKeyParams;
+          const s = await publicKey.rsa.sign(hashAlgo, data, n, e, d, p, q, u, hashed);
+          return { s };
+        }
+        case enums.publicKey.dsa: {
+          const { g, p, q } = publicKeyParams;
+          const { x } = privateKeyParams;
+          return publicKey.dsa.sign(hashAlgo, hashed, g, p, q, x);
+        }
+        case enums.publicKey.elgamal: {
+          throw new Error('Signing with Elgamal is not defined in the OpenPGP standard.');
+        }
+        case enums.publicKey.ecdsa: {
+          const { oid, Q } = publicKeyParams;
+          const { d } = privateKeyParams;
+          return publicKey.elliptic.ecdsa.sign(oid, hashAlgo, data, Q, d, hashed);
+        }
+        case enums.publicKey.eddsa: {
+          const { oid, Q } = publicKeyParams;
+          const { seed } = privateKeyParams;
+          return publicKey.elliptic.eddsa.sign(oid, hashAlgo, data, Q, seed, hashed);
+        }
+        default:
+          throw new Error('Invalid signature algorithm.');
+      }
+    }
   });
 
   // OpenPGP.js - An OpenPGP implementation in javascript
@@ -14364,53 +14311,6 @@ let openpgp = (function (exports) {
   }
 
   /**
-   * Validate algorithm-specific key parameters
-   * @param {module:enums.publicKey} algo - The public key algorithm
-   * @param {Object} publicParams - Algorithm-specific public key parameters
-   * @param {Object} privateParams - Algorithm-specific private key parameters
-   * @returns {Promise<Boolean>} Whether the parameters are valid.
-   * @async
-   */
-  async function validateParams$6(algo, publicParams, privateParams) {
-    if (!publicParams || !privateParams) {
-      throw new Error('Missing key parameters');
-    }
-    switch (algo) {
-      case enums.publicKey.rsaEncrypt:
-      case enums.publicKey.rsaEncryptSign:
-      case enums.publicKey.rsaSign: {
-        const { n, e } = publicParams;
-        const { d, p, q, u } = privateParams;
-        return publicKey.rsa.validateParams(n, e, d, p, q, u);
-      }
-      case enums.publicKey.dsa: {
-        const { p, q, g, y } = publicParams;
-        const { x } = privateParams;
-        return publicKey.dsa.validateParams(p, q, g, y, x);
-      }
-      case enums.publicKey.elgamal: {
-        const { p, g, y } = publicParams;
-        const { x } = privateParams;
-        return publicKey.elgamal.validateParams(p, g, y, x);
-      }
-      case enums.publicKey.ecdsa:
-      case enums.publicKey.ecdh: {
-        const algoModule = publicKey.elliptic[enums.read(enums.publicKey, algo)];
-        const { oid, Q } = publicParams;
-        const { d } = privateParams;
-        return algoModule.validateParams(oid, Q, d);
-      }
-      case enums.publicKey.eddsa: {
-        const { oid, Q } = publicParams;
-        const { seed } = privateParams;
-        return publicKey.elliptic.eddsa.validateParams(oid, Q, seed);
-      }
-      default:
-        throw new Error('Invalid public key algorithm.');
-    }
-  }
-
-  /**
    * Generates a random byte prefix for the specified algorithm
    * See {@link https://tools.ietf.org/html/rfc4880#section-9.2|RFC 4880 9.2} for algorithms.
    * @param {module:enums.symmetric} algo - Symmetric encryption algorithm
@@ -14443,7 +14343,52 @@ let openpgp = (function (exports) {
     parseEncSessionKeyParams: parseEncSessionKeyParams,
     serializeParams: serializeParams,
     generateParams: generateParams,
-    validateParams: validateParams$6,
+    /**
+     * Validate algorithm-specific key parameters
+     * @param {module:enums.publicKey} algo - The public key algorithm
+     * @param {Object} publicParams - Algorithm-specific public key parameters
+     * @param {Object} privateParams - Algorithm-specific private key parameters
+     * @returns {Promise<Boolean>} Whether the parameters are valid.
+     * @async
+     */
+    validateParams: async function(algo, publicParams, privateParams) {
+      if (!publicParams || !privateParams) {
+        throw new Error('Missing key parameters');
+      }
+      switch (algo) {
+        case enums.publicKey.rsaEncrypt:
+        case enums.publicKey.rsaEncryptSign:
+        case enums.publicKey.rsaSign: {
+          const { n, e } = publicParams;
+          const { d, p, q, u } = privateParams;
+          return publicKey.rsa.validateParams(n, e, d, p, q, u);
+        }
+        case enums.publicKey.dsa: {
+          const { p, q, g, y } = publicParams;
+          const { x } = privateParams;
+          return publicKey.dsa.validateParams(p, q, g, y, x);
+        }
+        case enums.publicKey.elgamal: {
+          const { p, g, y } = publicParams;
+          const { x } = privateParams;
+          return publicKey.elgamal.validateParams(p, g, y, x);
+        }
+        case enums.publicKey.ecdsa:
+        case enums.publicKey.ecdh: {
+          const algoModule = publicKey.elliptic[enums.read(enums.publicKey, algo)];
+          const { oid, Q } = publicParams;
+          const { d } = privateParams;
+          return algoModule.validateParams(oid, Q, d);
+        }
+        case enums.publicKey.eddsa: {
+          const { oid, Q } = publicParams;
+          const { seed } = privateParams;
+          return publicKey.elliptic.eddsa.validateParams(oid, Q, seed);
+        }
+        default:
+          throw new Error('Invalid public key algorithm.');
+      }
+    },
     getPrefixRandom: getPrefixRandom,
     generateSessionKey: generateSessionKey
   });
@@ -15959,24 +15904,7 @@ let openpgp = (function (exports) {
   const MAX_MEM_LEVEL = 9;
 
 
-  const LENGTH_CODES$1 = 29;
-  /* number of length codes, not counting the special END_BLOCK code */
-  const LITERALS$1 = 256;
-  /* number of literal bytes 0..255 */
-  const L_CODES$1 = LITERALS$1 + 1 + LENGTH_CODES$1;
-  /* number of Literal or Length codes, including the END_BLOCK code */
-  const D_CODES$1 = 30;
-  /* number of distance codes */
-  const BL_CODES$1 = 19;
-  /* number of codes used to transfer the bit lengths */
-  const HEAP_SIZE$1 = 2 * L_CODES$1 + 1;
-  /* maximum heap size */
-  const MAX_BITS$1 = 15;
-  /* All codes must not exceed MAX_BITS bits */
-
-  const MIN_MATCH$1 = 3;
-  const MAX_MATCH$1 = 258;
-  const MIN_LOOKAHEAD = (MAX_MATCH$1 + MIN_MATCH$1 + 1);
+  const MIN_LOOKAHEAD = (MAX_MATCH + MIN_MATCH + 1);
 
   const PRESET_DICT = 0x20;
 
@@ -16003,8 +15931,6 @@ let openpgp = (function (exports) {
   function rank(f) {
     return ((f) << 1) - ((f) > 4 ? 9 : 0);
   }
-
-  function zero$2(buf) { let len = buf.length; while (--len >= 0) { buf[len] = 0; } }
 
 
   /* =========================================================================
@@ -16120,7 +16046,7 @@ let openpgp = (function (exports) {
      * we prevent matches with the string of window index 0.
      */
 
-    const strend = s.strstart + MAX_MATCH$1;
+    const strend = s.strstart + MAX_MATCH;
     let scan_end1 = _win[scan + best_len - 1];
     let scan_end = _win[scan + best_len];
 
@@ -16183,8 +16109,8 @@ let openpgp = (function (exports) {
 
       // Assert(scan <= s->window+(unsigned)(s->window_size-1), "wild scan");
 
-      len = MAX_MATCH$1 - (strend - scan);
-      scan = strend - MAX_MATCH$1;
+      len = MAX_MATCH - (strend - scan);
+      scan = strend - MAX_MATCH;
 
       if (len > best_len) {
         s.match_start = cur_match;
@@ -16295,7 +16221,7 @@ let openpgp = (function (exports) {
       s.lookahead += n;
 
       /* Initialize the hash value now that we have some input: */
-      if (s.lookahead + s.insert >= MIN_MATCH$1) {
+      if (s.lookahead + s.insert >= MIN_MATCH) {
         str = s.strstart - s.insert;
         s.ins_h = s.window[str];
 
@@ -16306,13 +16232,13 @@ let openpgp = (function (exports) {
         //#endif
         while (s.insert) {
           /* UPDATE_HASH(s, s->ins_h, s->window[str + MIN_MATCH-1]); */
-          s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[str + MIN_MATCH$1 - 1]) & s.hash_mask;
+          s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[str + MIN_MATCH - 1]) & s.hash_mask;
 
           s.prev[str & s.w_mask] = s.head[s.ins_h];
           s.head[s.ins_h] = str;
           str++;
           s.insert--;
-          if (s.lookahead + s.insert < MIN_MATCH$1) {
+          if (s.lookahead + s.insert < MIN_MATCH) {
             break;
           }
         }
@@ -16492,9 +16418,9 @@ let openpgp = (function (exports) {
        * dictionary, and set hash_head to the head of the hash chain:
        */
       hash_head = 0/*NIL*/;
-      if (s.lookahead >= MIN_MATCH$1) {
+      if (s.lookahead >= MIN_MATCH) {
         /*** INSERT_STRING(s, s.strstart, hash_head); ***/
-        s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH$1 - 1]) & s.hash_mask;
+        s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH - 1]) & s.hash_mask;
         hash_head = s.prev[s.strstart & s.w_mask] = s.head[s.ins_h];
         s.head[s.ins_h] = s.strstart;
         /***/
@@ -16511,24 +16437,24 @@ let openpgp = (function (exports) {
         s.match_length = longest_match(s, hash_head);
         /* longest_match() sets match_start */
       }
-      if (s.match_length >= MIN_MATCH$1) {
+      if (s.match_length >= MIN_MATCH) {
         // check_match(s, s.strstart, s.match_start, s.match_length); // for debug only
 
         /*** _tr_tally_dist(s, s.strstart - s.match_start,
                        s.match_length - MIN_MATCH, bflush); ***/
-        bflush = _tr_tally(s, s.strstart - s.match_start, s.match_length - MIN_MATCH$1);
+        bflush = _tr_tally(s, s.strstart - s.match_start, s.match_length - MIN_MATCH);
 
         s.lookahead -= s.match_length;
 
         /* Insert new strings in the hash table only if the match length
          * is not too large. This saves time but degrades compression.
          */
-        if (s.match_length <= s.max_lazy_match/*max_insert_length*/ && s.lookahead >= MIN_MATCH$1) {
+        if (s.match_length <= s.max_lazy_match/*max_insert_length*/ && s.lookahead >= MIN_MATCH) {
           s.match_length--; /* string at strstart already in table */
           do {
             s.strstart++;
             /*** INSERT_STRING(s, s.strstart, hash_head); ***/
-            s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH$1 - 1]) & s.hash_mask;
+            s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH - 1]) & s.hash_mask;
             hash_head = s.prev[s.strstart & s.w_mask] = s.head[s.ins_h];
             s.head[s.ins_h] = s.strstart;
             /***/
@@ -16569,7 +16495,7 @@ let openpgp = (function (exports) {
         /***/
       }
     }
-    s.insert = ((s.strstart < (MIN_MATCH$1 - 1)) ? s.strstart : MIN_MATCH$1 - 1);
+    s.insert = ((s.strstart < (MIN_MATCH - 1)) ? s.strstart : MIN_MATCH - 1);
     if (flush === Z_FINISH) {
       /*** FLUSH_BLOCK(s, 1); ***/
       flush_block_only(s, true);
@@ -16620,9 +16546,9 @@ let openpgp = (function (exports) {
        * dictionary, and set hash_head to the head of the hash chain:
        */
       hash_head = 0/*NIL*/;
-      if (s.lookahead >= MIN_MATCH$1) {
+      if (s.lookahead >= MIN_MATCH) {
         /*** INSERT_STRING(s, s.strstart, hash_head); ***/
-        s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH$1 - 1]) & s.hash_mask;
+        s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH - 1]) & s.hash_mask;
         hash_head = s.prev[s.strstart & s.w_mask] = s.head[s.ins_h];
         s.head[s.ins_h] = s.strstart;
         /***/
@@ -16632,7 +16558,7 @@ let openpgp = (function (exports) {
        */
       s.prev_length = s.match_length;
       s.prev_match = s.match_start;
-      s.match_length = MIN_MATCH$1 - 1;
+      s.match_length = MIN_MATCH - 1;
 
       if (hash_head !== 0/*NIL*/ && s.prev_length < s.max_lazy_match &&
         s.strstart - hash_head <= (s.w_size - MIN_LOOKAHEAD)/*MAX_DIST(s)*/) {
@@ -16644,26 +16570,26 @@ let openpgp = (function (exports) {
         /* longest_match() sets match_start */
 
         if (s.match_length <= 5 &&
-          (s.strategy === Z_FILTERED || (s.match_length === MIN_MATCH$1 && s.strstart - s.match_start > 4096/*TOO_FAR*/))) {
+          (s.strategy === Z_FILTERED || (s.match_length === MIN_MATCH && s.strstart - s.match_start > 4096/*TOO_FAR*/))) {
 
           /* If prev_match is also MIN_MATCH, match_start is garbage
            * but we will ignore the current match anyway.
            */
-          s.match_length = MIN_MATCH$1 - 1;
+          s.match_length = MIN_MATCH - 1;
         }
       }
       /* If there was a match at the previous step and the current
        * match is not better, output the previous match:
        */
-      if (s.prev_length >= MIN_MATCH$1 && s.match_length <= s.prev_length) {
-        max_insert = s.strstart + s.lookahead - MIN_MATCH$1;
+      if (s.prev_length >= MIN_MATCH && s.match_length <= s.prev_length) {
+        max_insert = s.strstart + s.lookahead - MIN_MATCH;
         /* Do not insert strings in hash table beyond this. */
 
         //check_match(s, s.strstart-1, s.prev_match, s.prev_length);
 
         /***_tr_tally_dist(s, s.strstart - 1 - s.prev_match,
                        s.prev_length - MIN_MATCH, bflush);***/
-        bflush = _tr_tally(s, s.strstart - 1 - s.prev_match, s.prev_length - MIN_MATCH$1);
+        bflush = _tr_tally(s, s.strstart - 1 - s.prev_match, s.prev_length - MIN_MATCH);
         /* Insert in hash table all strings up to the end of the match.
          * strstart-1 and strstart are already inserted. If there is not
          * enough lookahead, the last two strings are not inserted in
@@ -16674,14 +16600,14 @@ let openpgp = (function (exports) {
         do {
           if (++s.strstart <= max_insert) {
             /*** INSERT_STRING(s, s.strstart, hash_head); ***/
-            s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH$1 - 1]) & s.hash_mask;
+            s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH - 1]) & s.hash_mask;
             hash_head = s.prev[s.strstart & s.w_mask] = s.head[s.ins_h];
             s.head[s.ins_h] = s.strstart;
             /***/
           }
         } while (--s.prev_length !== 0);
         s.match_available = 0;
-        s.match_length = MIN_MATCH$1 - 1;
+        s.match_length = MIN_MATCH - 1;
         s.strstart++;
 
         if (bflush) {
@@ -16729,7 +16655,7 @@ let openpgp = (function (exports) {
 
       s.match_available = 0;
     }
-    s.insert = s.strstart < MIN_MATCH$1 - 1 ? s.strstart : MIN_MATCH$1 - 1;
+    s.insert = s.strstart < MIN_MATCH - 1 ? s.strstart : MIN_MATCH - 1;
     if (flush === Z_FINISH) {
       /*** FLUSH_BLOCK(s, 1); ***/
       flush_block_only(s, true);
@@ -16769,9 +16695,9 @@ let openpgp = (function (exports) {
        * at the end of the input file. We need MAX_MATCH bytes
        * for the longest run, plus one for the unrolled loop.
        */
-      if (s.lookahead <= MAX_MATCH$1) {
+      if (s.lookahead <= MAX_MATCH) {
         fill_window(s);
-        if (s.lookahead <= MAX_MATCH$1 && flush === Z_NO_FLUSH) {
+        if (s.lookahead <= MAX_MATCH && flush === Z_NO_FLUSH) {
           return BS_NEED_MORE;
         }
         if (s.lookahead === 0) { break; } /* flush the current block */
@@ -16779,11 +16705,11 @@ let openpgp = (function (exports) {
 
       /* See how many times the previous byte repeats */
       s.match_length = 0;
-      if (s.lookahead >= MIN_MATCH$1 && s.strstart > 0) {
+      if (s.lookahead >= MIN_MATCH && s.strstart > 0) {
         scan = s.strstart - 1;
         prev = _win[scan];
         if (prev === _win[++scan] && prev === _win[++scan] && prev === _win[++scan]) {
-          strend = s.strstart + MAX_MATCH$1;
+          strend = s.strstart + MAX_MATCH;
           do {
             /*jshint noempty:false*/
           } while (prev === _win[++scan] && prev === _win[++scan] &&
@@ -16791,7 +16717,7 @@ let openpgp = (function (exports) {
           prev === _win[++scan] && prev === _win[++scan] &&
           prev === _win[++scan] && prev === _win[++scan] &&
             scan < strend);
-          s.match_length = MAX_MATCH$1 - (strend - scan);
+          s.match_length = MAX_MATCH - (strend - scan);
           if (s.match_length > s.lookahead) {
             s.match_length = s.lookahead;
           }
@@ -16800,11 +16726,11 @@ let openpgp = (function (exports) {
       }
 
       /* Emit match if have run of MIN_MATCH or longer, else emit literal */
-      if (s.match_length >= MIN_MATCH$1) {
+      if (s.match_length >= MIN_MATCH) {
         //check_match(s, s.strstart, s.strstart - 1, s.match_length);
 
         /*** _tr_tally_dist(s, 1, s.match_length - MIN_MATCH, bflush); ***/
-        bflush = _tr_tally(s, 1, s.match_length - MIN_MATCH$1);
+        bflush = _tr_tally(s, 1, s.match_length - MIN_MATCH);
 
         s.lookahead -= s.match_length;
         s.strstart += s.match_length;
@@ -16941,7 +16867,7 @@ let openpgp = (function (exports) {
     s.window_size = 2 * s.w_size;
 
     /*** CLEAR_HASH(s); ***/
-    zero$2(s.head); // Fill with NIL (= 0);
+    zero$1(s.head); // Fill with NIL (= 0);
 
     /* Set the default configuration parameters:
      */
@@ -16954,7 +16880,7 @@ let openpgp = (function (exports) {
     s.block_start = 0;
     s.lookahead = 0;
     s.insert = 0;
-    s.match_length = s.prev_length = MIN_MATCH$1 - 1;
+    s.match_length = s.prev_length = MIN_MATCH - 1;
     s.match_available = 0;
     s.ins_h = 0;
   }
@@ -17063,24 +16989,24 @@ let openpgp = (function (exports) {
 
       // Use flat array of DOUBLE size, with interleaved fata,
       // because JS does not support effective
-      this.dyn_ltree  = new Buf16(HEAP_SIZE$1 * 2);
-      this.dyn_dtree  = new Buf16((2 * D_CODES$1 + 1) * 2);
-      this.bl_tree    = new Buf16((2 * BL_CODES$1 + 1) * 2);
-      zero$2(this.dyn_ltree);
-      zero$2(this.dyn_dtree);
-      zero$2(this.bl_tree);
+      this.dyn_ltree  = new Buf16(HEAP_SIZE * 2);
+      this.dyn_dtree  = new Buf16((2 * D_CODES + 1) * 2);
+      this.bl_tree    = new Buf16((2 * BL_CODES + 1) * 2);
+      zero$1(this.dyn_ltree);
+      zero$1(this.dyn_dtree);
+      zero$1(this.bl_tree);
 
       this.l_desc   = null;         /* desc. for literal tree */
       this.d_desc   = null;         /* desc. for distance tree */
       this.bl_desc  = null;         /* desc. for bit length tree */
 
       //ush bl_count[MAX_BITS+1];
-      this.bl_count = new Buf16(MAX_BITS$1 + 1);
+      this.bl_count = new Buf16(MAX_BITS + 1);
       /* number of codes at each bit length for an optimal tree */
 
       //int heap[2*L_CODES+1];      /* heap used to build the Huffman trees */
-      this.heap = new Buf16(2 * L_CODES$1 + 1);  /* heap used to build the Huffman trees */
-      zero$2(this.heap);
+      this.heap = new Buf16(2 * L_CODES + 1);  /* heap used to build the Huffman trees */
+      zero$1(this.heap);
 
       this.heap_len = 0;               /* number of elements in the heap */
       this.heap_max = 0;               /* element of largest frequency */
@@ -17088,8 +17014,8 @@ let openpgp = (function (exports) {
        * The same heap array is used to build all trees.
        */
 
-      this.depth = new Buf16(2 * L_CODES$1 + 1); //uch depth[2*L_CODES+1];
-      zero$2(this.depth);
+      this.depth = new Buf16(2 * L_CODES + 1); //uch depth[2*L_CODES+1];
+      zero$1(this.depth);
       /* Depth of each subtree used as tie breaker for trees of equal frequency
        */
 
@@ -17242,7 +17168,7 @@ let openpgp = (function (exports) {
     s.hash_bits = memLevel + 7;
     s.hash_size = 1 << s.hash_bits;
     s.hash_mask = s.hash_size - 1;
-    s.hash_shift = ~~((s.hash_bits + MIN_MATCH$1 - 1) / MIN_MATCH$1);
+    s.hash_shift = ~~((s.hash_bits + MIN_MATCH - 1) / MIN_MATCH);
     s.window = new Buf8(s.w_size * 2);
     s.head = new Buf16(s.hash_size);
     s.prev = new Buf16(s.w_size);
@@ -17559,7 +17485,7 @@ let openpgp = (function (exports) {
            */
           if (flush === Z_FULL_FLUSH) {
             /*** CLEAR_HASH(s); ***/             /* forget history */
-            zero$2(s.head); // Fill with NIL (= 0);
+            zero$1(s.head); // Fill with NIL (= 0);
 
             if (s.lookahead === 0) {
               s.strstart = 0;
@@ -17669,7 +17595,7 @@ let openpgp = (function (exports) {
     if (dictLength >= s.w_size) {
       if (wrap === 0) {            /* already empty otherwise */
         /*** CLEAR_HASH(s); ***/
-        zero$2(s.head); // Fill with NIL (= 0);
+        zero$1(s.head); // Fill with NIL (= 0);
         s.strstart = 0;
         s.block_start = 0;
         s.insert = 0;
@@ -17689,12 +17615,12 @@ let openpgp = (function (exports) {
     strm.next_in = 0;
     strm.input = dictionary;
     fill_window(s);
-    while (s.lookahead >= MIN_MATCH$1) {
+    while (s.lookahead >= MIN_MATCH) {
       str = s.strstart;
-      n = s.lookahead - (MIN_MATCH$1 - 1);
+      n = s.lookahead - (MIN_MATCH - 1);
       do {
         /* UPDATE_HASH(s, s->ins_h, s->window[str + MIN_MATCH-1]); */
-        s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[str + MIN_MATCH$1 - 1]) & s.hash_mask;
+        s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[str + MIN_MATCH - 1]) & s.hash_mask;
 
         s.prev[str & s.w_mask] = s.head[s.ins_h];
 
@@ -17702,14 +17628,14 @@ let openpgp = (function (exports) {
         str++;
       } while (--n);
       s.strstart = str;
-      s.lookahead = MIN_MATCH$1 - 1;
+      s.lookahead = MIN_MATCH - 1;
       fill_window(s);
     }
     s.strstart += s.lookahead;
     s.block_start = s.strstart;
     s.insert = s.lookahead;
     s.lookahead = 0;
-    s.match_length = s.prev_length = MIN_MATCH$1 - 1;
+    s.match_length = s.prev_length = MIN_MATCH - 1;
     s.match_available = 0;
     strm.next_in = next;
     strm.input = input;
@@ -18785,10 +18711,6 @@ let openpgp = (function (exports) {
       return 0;
   }
 
-  const CODES$1 = 0;
-  const LENS$1 = 1;
-  const DISTS$1 = 2;
-
   /* STATES ====================================================================*/
   /* ===========================================================================*/
 
@@ -18822,16 +18744,11 @@ let openpgp = (function (exports) {
   const    CHECK = 27;     /* i: waiting for 32-bit check value */
   const    LENGTH = 28;    /* i: waiting for 32-bit length (gzip) */
   const    DONE = 29;      /* finished check, done -- remain here until reset */
-  const    BAD$1 = 30;       /* got a data error -- remain here until reset */
   //const    MEM = 31;       /* got an inflate() memory error -- remain here until reset */
   const    SYNC = 32;      /* looking for synchronization bytes to restart inflate() */
 
   /* ===========================================================================*/
 
-
-
-  const ENOUGH_LENS$1 = 852;
-  const ENOUGH_DISTS$1 = 592;
 
 
   function zswap32(q) {
@@ -18920,8 +18837,8 @@ let openpgp = (function (exports) {
     state.hold = 0;
     state.bits = 0;
     //state.lencode = state.distcode = state.next = state.codes;
-    state.lencode = state.lendyn = new Buf32(ENOUGH_LENS$1);
-    state.distcode = state.distdyn = new Buf32(ENOUGH_DISTS$1);
+    state.lencode = state.lendyn = new Buf32(ENOUGH_LENS);
+    state.distcode = state.distdyn = new Buf32(ENOUGH_DISTS);
 
     state.sane = 1;
     state.back = -1;
@@ -19025,13 +18942,13 @@ let openpgp = (function (exports) {
       while (sym < 280) { state.lens[sym++] = 7; }
       while (sym < 288) { state.lens[sym++] = 8; }
 
-      inflate_table(LENS$1,  state.lens, 0, 288, lenfix,   0, state.work, { bits: 9 });
+      inflate_table(LENS,  state.lens, 0, 288, lenfix,   0, state.work, { bits: 9 });
 
       /* distance table */
       sym = 0;
       while (sym < 32) { state.lens[sym++] = 5; }
 
-      inflate_table(DISTS$1, state.lens, 0, 32,   distfix, 0, state.work, { bits: 5 });
+      inflate_table(DISTS, state.lens, 0, 32,   distfix, 0, state.work, { bits: 5 });
 
       /* do this just once */
       virgin = false;
@@ -19189,12 +19106,12 @@ let openpgp = (function (exports) {
           if (!(state.wrap & 1) ||   /* check if zlib header allowed */
             (((hold & 0xff)/*BITS(8)*/ << 8) + (hold >> 8)) % 31) {
             strm.msg = 'incorrect header check';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           if ((hold & 0x0f)/*BITS(4)*/ !== Z_DEFLATED) {
             strm.msg = 'unknown compression method';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           //--- DROPBITS(4) ---//
@@ -19207,7 +19124,7 @@ let openpgp = (function (exports) {
           }
           else if (len > state.wbits) {
             strm.msg = 'invalid window size';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           state.dmax = 1 << len;
@@ -19231,12 +19148,12 @@ let openpgp = (function (exports) {
           state.flags = hold;
           if ((state.flags & 0xff) !== Z_DEFLATED) {
             strm.msg = 'unknown compression method';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           if (state.flags & 0xe000) {
             strm.msg = 'unknown header flags set';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           if (state.head) {
@@ -19439,7 +19356,7 @@ let openpgp = (function (exports) {
             //===//
             if (hold !== (state.check & 0xffff)) {
               strm.msg = 'header crc mismatch';
-              state.mode = BAD$1;
+              state.mode = BAD;
               break;
             }
             //=== INITBITS();
@@ -19537,7 +19454,7 @@ let openpgp = (function (exports) {
               break;
             case 3:
               strm.msg = 'invalid block type';
-              state.mode = BAD$1;
+              state.mode = BAD;
           }
           //--- DROPBITS(2) ---//
           hold >>>= 2;
@@ -19559,7 +19476,7 @@ let openpgp = (function (exports) {
           //===//
           if ((hold & 0xffff) !== ((hold >>> 16) ^ 0xffff)) {
             strm.msg = 'invalid stored block lengths';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           state.length = hold & 0xffff;
@@ -19621,7 +19538,7 @@ let openpgp = (function (exports) {
   //#ifndef PKZIP_BUG_WORKAROUND
           if (state.nlen > 286 || state.ndist > 30) {
             strm.msg = 'too many length or distance symbols';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
   //#endif
@@ -19656,12 +19573,12 @@ let openpgp = (function (exports) {
           state.lenbits = 7;
 
           opts = { bits: state.lenbits };
-          ret = inflate_table(CODES$1, state.lens, 0, 19, state.lencode, 0, state.work, opts);
+          ret = inflate_table(CODES, state.lens, 0, 19, state.lencode, 0, state.work, opts);
           state.lenbits = opts.bits;
 
           if (ret) {
             strm.msg = 'invalid code lengths set';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           //Tracev((stderr, "inflate:       code lengths ok\n"));
@@ -19708,7 +19625,7 @@ let openpgp = (function (exports) {
                 //---//
                 if (state.have === 0) {
                   strm.msg = 'invalid bit length repeat';
-                  state.mode = BAD$1;
+                  state.mode = BAD;
                   break;
                 }
                 len = state.lens[state.have - 1];
@@ -19762,7 +19679,7 @@ let openpgp = (function (exports) {
               }
               if (state.have + copy > state.nlen + state.ndist) {
                 strm.msg = 'invalid bit length repeat';
-                state.mode = BAD$1;
+                state.mode = BAD;
                 break;
               }
               while (copy--) {
@@ -19772,12 +19689,12 @@ let openpgp = (function (exports) {
           }
 
           /* handle error breaks in while */
-          if (state.mode === BAD$1) { break; }
+          if (state.mode === BAD) { break; }
 
           /* check for end-of-block code (better have one) */
           if (state.lens[256] === 0) {
             strm.msg = 'invalid code -- missing end-of-block';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
 
@@ -19787,7 +19704,7 @@ let openpgp = (function (exports) {
           state.lenbits = 9;
 
           opts = { bits: state.lenbits };
-          ret = inflate_table(LENS$1, state.lens, 0, state.nlen, state.lencode, 0, state.work, opts);
+          ret = inflate_table(LENS, state.lens, 0, state.nlen, state.lencode, 0, state.work, opts);
           // We have separate tables & no pointers. 2 commented lines below not needed.
           // state.next_index = opts.table_index;
           state.lenbits = opts.bits;
@@ -19795,7 +19712,7 @@ let openpgp = (function (exports) {
 
           if (ret) {
             strm.msg = 'invalid literal/lengths set';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
 
@@ -19804,7 +19721,7 @@ let openpgp = (function (exports) {
           // Switch to use dynamic table
           state.distcode = state.distdyn;
           opts = { bits: state.distbits };
-          ret = inflate_table(DISTS$1, state.lens, state.nlen, state.ndist, state.distcode, 0, state.work, opts);
+          ret = inflate_table(DISTS, state.lens, state.nlen, state.ndist, state.distcode, 0, state.work, opts);
           // We have separate tables & no pointers. 2 commented lines below not needed.
           // state.next_index = opts.table_index;
           state.distbits = opts.bits;
@@ -19812,7 +19729,7 @@ let openpgp = (function (exports) {
 
           if (ret) {
             strm.msg = 'invalid distances set';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           //Tracev((stderr, 'inflate:       codes ok\n'));
@@ -19910,7 +19827,7 @@ let openpgp = (function (exports) {
           }
           if (here_op & 64) {
             strm.msg = 'invalid literal/length code';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           state.extra = here_op & 15;
@@ -19985,7 +19902,7 @@ let openpgp = (function (exports) {
           state.back += here_bits;
           if (here_op & 64) {
             strm.msg = 'invalid distance code';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           state.offset = here_val;
@@ -20013,7 +19930,7 @@ let openpgp = (function (exports) {
   //#ifdef INFLATE_STRICT
           if (state.offset > state.dmax) {
             strm.msg = 'invalid distance too far back';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
   //#endif
@@ -20028,7 +19945,7 @@ let openpgp = (function (exports) {
             if (copy > state.whave) {
               if (state.sane) {
                 strm.msg = 'invalid distance too far back';
-                state.mode = BAD$1;
+                state.mode = BAD;
                 break;
               }
   // (!) This block is disabled in zlib defaults,
@@ -20100,7 +20017,7 @@ let openpgp = (function (exports) {
             // NB: crc32 stored as signed 32-bit int, zswap32 returns signed too
             if ((state.flags ? hold : zswap32(hold)) !== state.check) {
               strm.msg = 'incorrect data check';
-              state.mode = BAD$1;
+              state.mode = BAD;
               break;
             }
             //=== INITBITS();
@@ -20123,7 +20040,7 @@ let openpgp = (function (exports) {
             //===//
             if (hold !== (state.total & 0xffffffff)) {
               strm.msg = 'incorrect length check';
-              state.mode = BAD$1;
+              state.mode = BAD;
               break;
             }
             //=== INITBITS();
@@ -20137,7 +20054,7 @@ let openpgp = (function (exports) {
         case DONE:
           ret = Z_STREAM_END;
           break inf_leave;
-        case BAD$1:
+        case BAD:
           ret = Z_DATA_ERROR;
           break inf_leave;
         // case MEM:
@@ -20167,7 +20084,7 @@ let openpgp = (function (exports) {
     state.bits = bits;
     //---
 
-    if (state.wsize || (_out !== strm.avail_out && state.mode < BAD$1 &&
+    if (state.wsize || (_out !== strm.avail_out && state.mode < BAD &&
                         (state.mode < CHECK || flush !== Z_FINISH))) {
       if (updatewindow(strm, strm.output, strm.next_out, _out - strm.avail_out)) ;
     }
@@ -21354,37 +21271,6 @@ let openpgp = (function (exports) {
     return outputStream;
   };
 
-  /* Static helper functions */
-  // 'input' can be a stream or a buffer
-  // 'output' can be a stream or a buffer or a number (buffer size)
-  const decode$2 = function(input, output, multistream) {
-    // make a stream from a buffer, if necessary
-    let inputStream = coerceInputStream(input);
-    let outputStream = coerceOutputStream(output);
-
-    let bz = new Bunzip(inputStream, outputStream);
-    while (true) {
-      if ('eof' in inputStream && inputStream.eof()) break;
-      if (bz._init_block()) {
-        bz._read_bunzip();
-      } else {
-        let targetStreamCRC = bz.reader.read(32) >>> 0; // (convert to unsigned)
-        if (targetStreamCRC !== bz.streamCRC) {
-          _throw(Err.DATA_ERROR, "Bad stream CRC "+
-                 "(got "+bz.streamCRC.toString(16)+
-                 " expected "+targetStreamCRC.toString(16)+")");
-        }
-        if (multistream &&
-            'eof' in inputStream &&
-            !inputStream.eof()) {
-          // note that start_bunzip will also resync the bit reader to next byte
-          bz._start_bunzip(inputStream, outputStream);
-        } else break;
-      }
-    }
-    if ('getBuffer' in outputStream)
-      return outputStream.getBuffer();
-  };
   const decodeBlock = function(input, pos, output) {
     // make a stream from a buffer, if necessary
     let inputStream = coerceInputStream(input);
@@ -21457,7 +21343,37 @@ let openpgp = (function (exports) {
     Bunzip,
     Stream: stream,
     Err,
-    decode: decode$2,
+    /* Static helper functions */
+    // 'input' can be a stream or a buffer
+    // 'output' can be a stream or a buffer or a number (buffer size)
+    decode: function(input, output, multistream) {
+      // make a stream from a buffer, if necessary
+      let inputStream = coerceInputStream(input);
+      let outputStream = coerceOutputStream(output);
+
+      let bz = new Bunzip(inputStream, outputStream);
+      while (true) {
+        if ('eof' in inputStream && inputStream.eof()) break;
+        if (bz._init_block()) {
+          bz._read_bunzip();
+        } else {
+          let targetStreamCRC = bz.reader.read(32) >>> 0; // (convert to unsigned)
+          if (targetStreamCRC !== bz.streamCRC) {
+            _throw(Err.DATA_ERROR, "Bad stream CRC "+
+                   "(got "+bz.streamCRC.toString(16)+
+                   " expected "+targetStreamCRC.toString(16)+")");
+          }
+          if (multistream &&
+              'eof' in inputStream &&
+              !inputStream.eof()) {
+            // note that start_bunzip will also resync the bit reader to next byte
+            bz._start_bunzip(inputStream, outputStream);
+          } else break;
+        }
+      }
+      if ('getBuffer' in outputStream)
+        return outputStream.getBuffer();
+    },
     decodeBlock,
     table
   };
@@ -22640,7 +22556,7 @@ let openpgp = (function (exports) {
 
   // GPG4Browsers - An OpenPGP implementation in javascript
 
-  const VERSION = 3;
+  const VERSION3 = 3;
 
   /**
    * Implementation of the One-Pass Signature Packets (Tag 4)
@@ -22695,7 +22611,7 @@ let openpgp = (function (exports) {
       let mypos = 0;
       // A one-octet version number.  The current version is 3.
       this.version = bytes[mypos++];
-      if (this.version !== VERSION) {
+      if (this.version !== VERSION3) {
         throw new UnsupportedError(`Version ${this.version} of the one-pass signature packet is unsupported.`);
       }
 
@@ -22727,7 +22643,7 @@ let openpgp = (function (exports) {
      * @returns {Uint8Array} A Uint8Array representation of a one-pass signature packet.
      */
     write() {
-      const start = new Uint8Array([VERSION, enums.write(enums.signature, this.signatureType),
+      const start = new Uint8Array([VERSION3, enums.write(enums.signature, this.signatureType),
         enums.write(enums.hash, this.hashAlgorithm),
         enums.write(enums.publicKey, this.publicKeyAlgorithm)]);
 
@@ -23127,7 +23043,7 @@ let openpgp = (function (exports) {
     SignaturePacket
   ]);
 
-  const VERSION$1 = 1; // A one-octet version number of the data packet.
+  const VERSION1 = 1; // A one-octet version number of the data packet.
 
   /**
    * Implementation of the Sym. Encrypted Integrity Protected Data Packet (Tag 18)
@@ -23145,7 +23061,7 @@ let openpgp = (function (exports) {
     }
 
     constructor() {
-      this.version = VERSION$1;
+      this.version = VERSION1;
       this.encrypted = null;
       this.packets = null;
     }
@@ -23154,7 +23070,7 @@ let openpgp = (function (exports) {
       await parse(bytes, async reader => {
         const version = await reader.readByte();
         // - A one-octet version number. The only currently defined value is 1.
-        if (version !== VERSION$1) {
+        if (version !== VERSION1) {
           throw new UnsupportedError(`Version ${version} of the SEIP packet is unsupported.`);
         }
 
@@ -23166,7 +23082,7 @@ let openpgp = (function (exports) {
     }
 
     write() {
-      return util.concat([new Uint8Array([VERSION$1]), this.encrypted]);
+      return util.concat([new Uint8Array([VERSION1]), this.encrypted]);
     }
 
     /**
@@ -23230,16 +23146,6 @@ let openpgp = (function (exports) {
 
   // OpenPGP.js - An OpenPGP implementation in javascript
 
-  // An AEAD-encrypted Data packet can contain the following packet types
-  const allowedPackets$2 = /*#__PURE__*/ util.constructAllowedPackets([
-    LiteralDataPacket,
-    CompressedDataPacket,
-    OnePassSignaturePacket,
-    SignaturePacket
-  ]);
-
-  const VERSION$2 = 1; // A one-octet version number of the data packet.
-
   /**
    * Implementation of the Symmetrically Encrypted Authenticated Encryption with
    * Additional Data (AEAD) Protected Data Packet
@@ -23253,7 +23159,7 @@ let openpgp = (function (exports) {
     }
 
     constructor() {
-      this.version = VERSION$2;
+      this.version = VERSION1;
       this.cipherAlgo = null;
       this.aeadAlgorithm = 'eax';
       this.aeadAlgo = null;
@@ -23270,7 +23176,7 @@ let openpgp = (function (exports) {
     async read(bytes) {
       await parse(bytes, async reader => {
         const version = await reader.readByte();
-        if (version !== VERSION$2) { // The only currently defined value is 1.
+        if (version !== VERSION1) { // The only currently defined value is 1.
           throw new UnsupportedError(`Version ${version} of the AEAD-encrypted data packet is not supported.`);
         }
         this.cipherAlgo = await reader.readByte();
@@ -23301,7 +23207,7 @@ let openpgp = (function (exports) {
     async decrypt(sessionKeyAlgorithm, key, config = defaultConfig) {
       this.packets = await PacketList.fromBinary(
         await this.crypt('decrypt', key, clone(this.encrypted)),
-        allowedPackets$2,
+        allowedPackets$1,
         config
       );
     }
@@ -23407,8 +23313,6 @@ let openpgp = (function (exports) {
 
   // GPG4Browsers - An OpenPGP implementation in javascript
 
-  const VERSION$3 = 3;
-
   /**
    * Public-Key Encrypted Session Key Packets (Tag 1)
    *
@@ -23450,7 +23354,7 @@ let openpgp = (function (exports) {
      */
     read(bytes) {
       this.version = bytes[0];
-      if (this.version !== VERSION$3) {
+      if (this.version !== VERSION3) {
         throw new UnsupportedError(`Version ${this.version} of the PKESK packet is unsupported.`);
       }
       this.publicKeyID.read(bytes.subarray(1, bytes.length));
@@ -24117,14 +24021,6 @@ let openpgp = (function (exports) {
 
   // GPG4Browsers - An OpenPGP implementation in javascript
 
-  // A SE packet can contain the following packet types
-  const allowedPackets$3 = /*#__PURE__*/ util.constructAllowedPackets([
-    LiteralDataPacket,
-    CompressedDataPacket,
-    OnePassSignaturePacket,
-    SignaturePacket
-  ]);
-
   /**
    * Implementation of the Symmetrically Encrypted Data Packet (Tag 9)
    *
@@ -24182,7 +24078,7 @@ let openpgp = (function (exports) {
         encrypted.subarray(2, mod.cipher[sessionKeyAlgorithm].blockSize + 2)
       );
 
-      this.packets = await PacketList.fromBinary(decrypted, allowedPackets$3, config);
+      this.packets = await PacketList.fromBinary(decrypted, allowedPackets$1, config);
     }
 
     /**
@@ -29119,9 +29015,6 @@ let openpgp = (function (exports) {
 
   // GPG4Browsers - An OpenPGP implementation in javascript
 
-  // A Cleartext message can contain the following packets
-  const allowedPackets$5 = /*#__PURE__*/ util.constructAllowedPackets([SignaturePacket]);
-
   /**
    * Class that represents an OpenPGP cleartext signed message.
    * See {@link https://tools.ietf.org/html/rfc4880#section-7}
@@ -29242,7 +29135,7 @@ let openpgp = (function (exports) {
     if (input.type !== enums.armor.signed) {
       throw new Error('No cleartext signed message.');
     }
-    const packetlist = await PacketList.fromBinary(input.data, allowedPackets$5, config);
+    const packetlist = await PacketList.fromBinary(input.data, allowedPackets$4, config);
     verifyHeaders$1(input.headers, packetlist);
     const signature = new Signature(packetlist);
     return new CleartextMessage(input.text, signature);
@@ -33893,9 +33786,6 @@ let openpgp = (function (exports) {
   function noop$1() {
       return;
   }
-  function typeIsObject$1(x) {
-      return (typeof x === 'object' && x !== null) || typeof x === 'function';
-  }
 
   function isStreamConstructor(ctor) {
       if (typeof ctor !== 'function') {
@@ -33915,7 +33805,7 @@ let openpgp = (function (exports) {
       return startCalled;
   }
   function isReadableStream(readable) {
-      if (!typeIsObject$1(readable)) {
+      if (!typeIsObject(readable)) {
           return false;
       }
       if (typeof readable.getReader !== 'function') {
@@ -33933,7 +33823,7 @@ let openpgp = (function (exports) {
       return true;
   }
   function isWritableStream(writable) {
-      if (!typeIsObject$1(writable)) {
+      if (!typeIsObject(writable)) {
           return false;
       }
       if (typeof writable.getWriter !== 'function') {
@@ -33951,7 +33841,7 @@ let openpgp = (function (exports) {
       return true;
   }
   function isTransformStream(transform) {
-      if (!typeIsObject$1(transform)) {
+      if (!typeIsObject(transform)) {
           return false;
       }
       if (!isReadableStream(transform.readable)) {
@@ -38097,7 +37987,7 @@ let openpgp = (function (exports) {
 
   let getNAF = utils_1$1.getNAF;
   let getJSF = utils_1$1.getJSF;
-  let assert$2 = utils_1$1.assert;
+  const assert$2 = utils_1$1.assert;
 
   function BaseCurve(type, conf) {
     this.type = type;
@@ -38466,8 +38356,6 @@ let openpgp = (function (exports) {
     return r;
   };
 
-  let assert$3 = utils_1$1.assert;
-
   function ShortCurve(conf) {
     base.call(this, 'short', conf);
 
@@ -38511,7 +38399,7 @@ let openpgp = (function (exports) {
         lambda = lambdas[0];
       } else {
         lambda = lambdas[1];
-        assert$3(this.g.mul(lambda).x.cmp(this.g.x.redMul(beta)) === 0);
+        assert$2(this.g.mul(lambda).x.cmp(this.g.x.redMul(beta)) === 0);
       }
     }
 
@@ -39589,8 +39477,6 @@ let openpgp = (function (exports) {
     return this.x.fromRed();
   };
 
-  let assert$4 = utils_1$1.assert;
-
   function EdwardsCurve(conf) {
     // NOTE: Important as we are creating point in Base.call()
     this.twisted = (conf.a | 0) !== 1;
@@ -39606,7 +39492,7 @@ let openpgp = (function (exports) {
     this.d = new bn(conf.d, 16).toRed(this.red);
     this.dd = this.d.redAdd(this.d);
 
-    assert$4(!this.twisted || this.c.fromRed().cmpn(1) === 0);
+    assert$2(!this.twisted || this.c.fromRed().cmpn(1) === 0);
     this.oneC = (conf.c | 0) === 1;
   }
   inherits_browser(EdwardsCurve, base);
@@ -41324,8 +41210,6 @@ let openpgp = (function (exports) {
     return utils_1.encode(res, enc);
   };
 
-  let assert$5 = utils_1$1.assert;
-
   function KeyPair(ec, options) {
     this.ec = ec;
     this.priv = null;
@@ -41412,10 +41296,10 @@ let openpgp = (function (exports) {
       // Weierstrass/Edwards points on the other hand have both `x` and
       // `y` coordinates.
       if (this.ec.curve.type === 'mont') {
-        assert$5(key.x, 'Need x coordinate');
+        assert$2(key.x, 'Need x coordinate');
       } else if (this.ec.curve.type === 'short' ||
                  this.ec.curve.type === 'edwards') {
-        assert$5(key.x && key.y, 'Need both x and y coordinate');
+        assert$2(key.x && key.y, 'Need both x and y coordinate');
       }
       this.pub = this.ec.curve.point(key.x, key.y);
       return;
@@ -41442,8 +41326,6 @@ let openpgp = (function (exports) {
            ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
   };
 
-  let assert$6 = utils_1$1.assert;
-
   function Signature$1(options, enc) {
     if (options instanceof Signature$1)
       return options;
@@ -41451,7 +41333,7 @@ let openpgp = (function (exports) {
     if (this._importDER(options, enc))
       return;
 
-    assert$6(options.r && options.s, 'Signature without r or s');
+    assert$2(options.r && options.s, 'Signature without r or s');
     this.r = new bn(options.r, 16);
     this.s = new bn(options.s, 16);
     if (options.recoveryParam === undefined)
@@ -41459,7 +41341,6 @@ let openpgp = (function (exports) {
     else
       this.recoveryParam = options.recoveryParam;
   }
-  let signature$1 = Signature$1;
 
   function Position() {
     this.place = 0;
@@ -41572,8 +41453,6 @@ let openpgp = (function (exports) {
     return utils_1$1.encode(res, enc);
   };
 
-  let assert$7 = utils_1$1.assert;
-
 
 
 
@@ -41583,7 +41462,7 @@ let openpgp = (function (exports) {
 
     // Shortcut `elliptic.ec(curve-name)`
     if (typeof options === 'string') {
-      assert$7(curves_1.hasOwnProperty(options), 'Unknown curve ' + options);
+      assert$2(curves_1.hasOwnProperty(options), 'Unknown curve ' + options);
 
       options = curves_1[options];
     }
@@ -41737,13 +41616,13 @@ let openpgp = (function (exports) {
         recoveryParam ^= 1;
       }
 
-      return new signature$1({ r: r, s: s, recoveryParam: recoveryParam });
+      return new Signature$1({ r: r, s: s, recoveryParam: recoveryParam });
     }
   };
 
   EC.prototype.verify = function verify(msg, signature, key, enc) {
     key = this.keyFromPublic(key, enc);
-    signature = new signature$1(signature, 'hex');
+    signature = new Signature$1(signature, 'hex');
     // Fallback to the old code
     let ret = this._verify(this.truncateMsg(msg), signature, key) ||
     this._verify(this._truncateToN(new bn(msg, 16)), signature, key);
@@ -41786,8 +41665,8 @@ let openpgp = (function (exports) {
   };
 
   EC.prototype.recoverPubKey = function(msg, signature, j, enc) {
-    assert$7((3 & j) === j, 'The recovery param is more than two bits');
-    signature = new signature$1(signature, enc);
+    assert$2((3 & j) === j, 'The recovery param is more than two bits');
+    signature = new Signature$1(signature, enc);
 
     let n = this.n;
     let e = new bn(msg);
@@ -41816,7 +41695,7 @@ let openpgp = (function (exports) {
   };
 
   EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
-    signature = new signature$1(signature, enc);
+    signature = new Signature$1(signature, enc);
     if (signature.recoveryParam !== null)
       return signature.recoveryParam;
 
@@ -41834,7 +41713,6 @@ let openpgp = (function (exports) {
     throw new Error('Unable to find valid recovery factor');
   };
 
-  let assert$8 = utils_1$1.assert;
   let parseBytes = utils_1$1.parseBytes;
   let cachedProperty = utils_1$1.cachedProperty;
 
@@ -41916,7 +41794,7 @@ let openpgp = (function (exports) {
   });
 
   KeyPair$1.prototype.sign = function sign(message) {
-    assert$8(this._secret, 'KeyPair can only verify');
+    assert$2(this._secret, 'KeyPair can only verify');
     return this.eddsa.sign(message, this);
   };
 
@@ -41925,7 +41803,7 @@ let openpgp = (function (exports) {
   };
 
   KeyPair$1.prototype.getSecret = function getSecret(enc) {
-    assert$8(this._secret, 'KeyPair is public only');
+    assert$2(this._secret, 'KeyPair is public only');
     return utils_1$1.encode(this.secret(), enc);
   };
 
@@ -41935,9 +41813,7 @@ let openpgp = (function (exports) {
 
   let key$1 = KeyPair$1;
 
-  let assert$9 = utils_1$1.assert;
   let cachedProperty$1 = utils_1$1.cachedProperty;
-  let parseBytes$1 = utils_1$1.parseBytes;
 
   /**
   * @param {EDDSA} eddsa - eddsa instance
@@ -41951,7 +41827,7 @@ let openpgp = (function (exports) {
     this.eddsa = eddsa;
 
     if (typeof sig !== 'object')
-      sig = parseBytes$1(sig);
+      sig = parseBytes(sig);
 
     if (Array.isArray(sig)) {
       sig = {
@@ -41960,7 +41836,7 @@ let openpgp = (function (exports) {
       };
     }
 
-    assert$9(sig.R && sig.S, 'Signature without R or S');
+    assert$2(sig.R && sig.S, 'Signature without R or S');
 
     if (eddsa.isPoint(sig.R))
       this._R = sig.R;
@@ -41997,13 +41873,12 @@ let openpgp = (function (exports) {
 
   let signature$2 = Signature$2;
 
-  let assert$a = utils_1$1.assert;
   let parseBytes$2 = utils_1$1.parseBytes;
 
 
 
   function EDDSA(curve) {
-    assert$a(curve === 'ed25519', 'only tested with ed25519 so far');
+    assert$2(curve === 'ed25519', 'only tested with ed25519 so far');
 
     if (!(this instanceof EDDSA))
       return new EDDSA(curve);
@@ -42134,16 +42009,16 @@ let openpgp = (function (exports) {
 
   let elliptic_1 = createCommonjsModule(function (module, exports) {
 
-  let elliptic = exports;
+    let elliptic = exports;
 
-  elliptic.utils = utils_1$1;
-  elliptic.rand = brorand;
-  elliptic.curve = curve_1;
-  elliptic.curves = curves_1;
+    elliptic.utils = utils_1$1;
+    elliptic.rand = brorand;
+    elliptic.curve = curve_1;
+    elliptic.curves = curves_1;
 
-  // Protocols
-  elliptic.ec = ec;
-  elliptic.eddsa = eddsa$1;
+    // Protocols
+    elliptic.ec = ec;
+    elliptic.eddsa = eddsa$1;
   });
 
   let elliptic$1 = /*#__PURE__*/Object.freeze({
