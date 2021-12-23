@@ -154,7 +154,7 @@ class Actions
 
 			$sTimeZone = $this->oConfig->Get('logs', 'time_zone', 'UTC');
 
-			$this->oLogger->SetShowSecter(!$this->oConfig->Get('logs', 'hide_passwords', true));
+			$this->oLogger->SetShowSecrets(!$this->oConfig->Get('logs', 'hide_passwords', true));
 
 			$sLogFileName = $this->oConfig->Get('logs', 'filename', '');
 
@@ -643,9 +643,10 @@ class Actions
 					mkdir($sLogFileDir, 0755, true);
 				}
 
-				$this->oLoggerAuth->AddForbiddenType(\MailSo\Log\Enumerations\Type::MEMORY);
-				$this->oLoggerAuth->AddForbiddenType(\MailSo\Log\Enumerations\Type::TIME);
-				$this->oLoggerAuth->AddForbiddenType(\MailSo\Log\Enumerations\Type::TIME_DELTA);
+				$this->oLoggerAuth
+					->AddForbiddenType(\MailSo\Log\Enumerations\Type::MEMORY)
+					->AddForbiddenType(\MailSo\Log\Enumerations\Type::TIME)
+					->AddForbiddenType(\MailSo\Log\Enumerations\Type::TIME_DELTA);
 
 				$oDriver = new \MailSo\Log\Drivers\File($sAuthLogFileFullPath);
 

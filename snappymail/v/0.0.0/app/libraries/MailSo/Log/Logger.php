@@ -23,7 +23,7 @@ class Logger extends \SplFixedArray
 
 	private $aSecretWords = [];
 
-	private $bShowSecter = false;
+	private $bShowSecrets = false;
 
 	function __construct(bool $bRegPhpErrorHandler = true)
 	{
@@ -103,27 +103,21 @@ class Logger extends \SplFixedArray
 		}
 	}
 
-	public function SetShowSecter(bool $bShow) : self
+	public function SetShowSecrets(bool $bShow) : self
 	{
-		$this->bShowSecter = $bShow;
+		$this->bShowSecrets = $bShow;
 		return $this;
 	}
 
 	public function IsShowSecter() : bool
 	{
-		return $this->bShowSecter;
+		return $this->bShowSecrets;
 	}
 
 	public function AddForbiddenType(int $iType) : self
 	{
 		$this->aForbiddenTypes[$iType] = true;
 
-		return $this;
-	}
-
-	public function RemoveForbiddenType(int $iType) : self
-	{
-		$this->aForbiddenTypes[$iType] = false;
 		return $this;
 	}
 
@@ -140,7 +134,21 @@ class Logger extends \SplFixedArray
 					 $iType = Enumerations\Type::WARNING_PHP;
 					 break;
 			}
-
+/*
+				case E_ERROR:
+				case E_WARNING:
+				case E_PARSE:
+				case E_NOTICE:
+				case E_CORE_ERROR:
+				case E_CORE_WARNING:
+				case E_COMPILE_ERROR:
+				case E_COMPILE_WARNING:
+				case E_USER_NOTICE:
+				case E_STRICT:
+				case E_RECOVERABLE_ERROR:
+				case E_DEPRECATED:
+				case E_USER_DEPRECATED:
+*/
 			$this->Write($sErrFile.' [line:'.$iErrLine.', code:'.$iErrNo.']', $iType, 'PHP');
 			$this->Write('Error: '.$sErrStr, $iType, 'PHP');
 		}
@@ -173,21 +181,19 @@ class Logger extends \SplFixedArray
 	public function Write(string $sDesc, int $iType = Enumerations\Type::INFO,
 		string $sName = '', bool $bSearchSecretWords = true, bool $bDiplayCrLf = false) : bool
 	{
-		if (isset($this->aForbiddenTypes[$iType]) && true === $this->aForbiddenTypes[$iType])
+		if (!empty($this->aForbiddenTypes[$iType]))
 		{
 			return true;
 		}
 
 		$this->bUsed = true;
 
-		$oLogger = null;
-		$aLoggers = array();
-		$iResult = 1;
-
-		if ($bSearchSecretWords && !$this->bShowSecter && \count($this->aSecretWords))
+		if ($bSearchSecretWords && !$this->bShowSecrets && \count($this->aSecretWords))
 		{
 			$sDesc = \str_replace($this->aSecretWords, '*******', $sDesc);
 		}
+
+		$iResult = 1;
 
 		foreach ($this as /* @var $oLogger \MailSo\Log\Driver */ $oLogger)
 		{
@@ -256,16 +262,8 @@ class Logger extends \SplFixedArray
 				$iType = null === $iType ? Enumerations\Type::NOTICE : $iType;
 				return $this->WriteException($mData, $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);
 			}
-			else
-			{
-				return  $this->WriteDump($mData, $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);
-			}
+			return  $this->WriteDump($mData, $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);
 		}
-		else
-		{
-			return $this->Write($mData, $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);
-		}
-
-		return false;
+		return $this->Write($mData, $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);
 	}
 }

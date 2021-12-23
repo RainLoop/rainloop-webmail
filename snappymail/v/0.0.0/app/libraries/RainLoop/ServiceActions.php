@@ -158,9 +158,9 @@ class ServiceActions
 		}
 		catch (\Throwable $oException)
 		{
-			error_log($oException->getMessage());
+			\error_log($oException->getMessage());
 			if ($e = $oException->getPrevious()) {
-				error_log("\t{$e->getMessage()} @ {$e->getFile()}#{$e->getLine()}");
+				\error_log("\t{$e->getMessage()} @ {$e->getFile()}#{$e->getLine()}");
 			}
 
 			$aResponseItem = $this->oActions->ExceptionResponse(
