@@ -2,150 +2,279 @@
 
 class IspConfigChangePasswordDriver implements \RainLoop\Providers\ChangePassword\ChangePasswordInterface
 {
-	/**
-	 * @var string
-	 */
-	private $sDsn = '';
+    const PASSWORD_ENCODING = 'ISO-8859-1';
 
-	/**
-	 * @var string
-	 */
-	private $sUser = '';
+    /**
+     * @var string
+     */
+    private $sDsn = '';
 
-	/**
-	 * @var string
-	 */
-	private $sPassword = '';
+    /**
+     * @var string
+     */
+    private $sUser = '';
 
-	/**
-	 * @var string
-	 */
-	private $sAllowedEmails = '';
+    /**
+     * @var string
+     */
+    private $sPassword = '';
 
-	/**
-	 * @var \MailSo\Log\Logger
-	 */
-	private $oLogger = null;
+    /**
+     * @var string
+     */
+    private $sAllowedEmails = '';
 
-	/**
-	 * @param string $sDsn
-	 * @param string $sUser
-	 * @param string $sPassword
-	 *
-	 * @return \IspConfigChangePasswordDriver
-	 */
-	public function SetConfig($sDsn, $sUser, $sPassword)
-	{
-		$this->sDsn = $sDsn;
-		$this->sUser = $sUser;
-		$this->sPassword = $sPassword;
+    /**
+     * @var \MailSo\Log\Logger
+     */
+    private $oLogger;
 
-		return $this;
-	}
+    /**
+     * @var PDO
+     */
+    private $oConnection;
 
-	/**
-	 * @param string $sAllowedEmails
-	 *
-	 * @return \IspConfigChangePasswordDriver
-	 */
-	public function SetAllowedEmails($sAllowedEmails)
-	{
-		$this->sAllowedEmails = $sAllowedEmails;
-		return $this;
-	}
+    /**
+     * @param string $sDsn
+     * @param string $sUser
+     * @param string $sPassword
+     *
+     * @return \IspConfigChangePasswordDriver
+     */
+    public function SetConfig($sDsn, $sUser, $sPassword)
+    {
+        $this->sDsn = $sDsn;
+        $this->sUser = $sUser;
+        $this->sPassword = $sPassword;
 
-	/**
-	 * @param \MailSo\Log\Logger $oLogger
-	 *
-	 * @return \IspConfigChangePasswordDriver
-	 */
-	public function SetLogger($oLogger)
-	{
-		if ($oLogger instanceof \MailSo\Log\Logger)
-		{
-			$this->oLogger = $oLogger;
-		}
+        return $this;
+    }
 
-		return $this;
-	}
+    /**
+     * @param string $sAllowedEmails
+     *
+     * @return \IspConfigChangePasswordDriver
+     */
+    public function SetAllowedEmails($sAllowedEmails)
+    {
+        $this->sAllowedEmails = $sAllowedEmails;
+        return $this;
+    }
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 *
-	 * @return bool
-	 */
-	public function PasswordChangePossibility($oAccount)
-	{
-		return $oAccount && $oAccount->Email() &&
-			\RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $this->sAllowedEmails);
-	}
+    /**
+     * @param \MailSo\Log\Logger $oLogger
+     *
+     * @return \IspConfigChangePasswordDriver
+     */
+    public function SetLogger($oLogger)
+    {
+        if ($oLogger instanceof \MailSo\Log\Logger) {
+            $this->oLogger = $oLogger;
+        }
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sPrevPassword
-	 * @param string $sNewPassword
-	 *
-	 * @return bool
-	 */
-	public function ChangePassword(\RainLoop\Account $oAccount, $sPrevPassword, $sNewPassword)
-	{
-		if ($this->oLogger)
-		{
-			$this->oLogger->Write('ISP: Try to change password for '.$oAccount->Email());
-		}
+        return $this;
+    }
 
-		$bResult = false;
-		if (!empty($this->sDsn) && 0 < \strlen($this->sUser) && 0 < \strlen($this->sPassword) && $oAccount)
-		{
-			try
-			{
-				$oPdo = new \PDO($this->sDsn, $this->sUser, $this->sPassword);
-				$oPdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+    /**
+     * @param \RainLoop\Account $oAccount
+     *
+     * @return bool
+     */
+    public function PasswordChangePossibility($oAccount)
+    {
+        return $oAccount && $oAccount->Email() &&
+            \RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $this->sAllowedEmails);
+    }
 
-				$oStmt = $oPdo->prepare('SELECT password, mailuser_id FROM mail_user WHERE login = ? LIMIT 1');
-				if ($oStmt->execute(array($oAccount->IncLogin())))
-				{
-					$aFetchResult = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
-					if (\is_array($aFetchResult) && isset($aFetchResult[0]['password'], $aFetchResult[0]['mailuser_id']))
-					{
-						$sDbPassword = \stripslashes($aFetchResult[0]['password']);
-						$sDbSalt = '$1$'.\substr($sDbPassword, 3, 8).'$';
+    /**
+     * @param \RainLoop\Account $oAccount
+     * @param string            $sPrevPassword
+     * @param string            $sNewPassword
+     *
+     * @return bool
+     */
+    public function ChangePassword(\RainLoop\Account $oAccount, $sPrevPassword, $sNewPassword)
+    {
+        $this->log('ISP: Try to change password for ' . $oAccount->Email());
 
-						if (\crypt(\stripslashes($sPrevPassword), $sDbSalt) === $sDbPassword)
-						{
-							$oStmt = $oPdo->prepare('UPDATE mail_user SET password = ? WHERE mailuser_id = ?');
-							$bResult = (bool) $oStmt->execute(
-								array($this->cryptPassword($sNewPassword), $aFetchResult[0]['mailuser_id']));
-						}
-					}
-				}
-			}
-			catch (\Exception $oException)
-			{
-				if ($this->oLogger)
-				{
-					$this->oLogger->WriteException($oException);
-				}
-			}
-		}
+        if ($this->isConfigValid() === false) {
+            return false;
+        }
 
-		return $bResult;
-	}
+        try {
+            $sMailUser = $this->getMailUserForLogin($oAccount->IncLogin());
+            if ($sMailUser === null) {
+                $this->log('No user found for login: ' . $oAccount->IncLogin());
+                return false;
+            }
 
-	/**
-	 * @param string $sPassword
-	 * @return string
-	 */
-	private function cryptPassword($sPassword)
-	{
-		$sSalt = '';
-		$sBase64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+            $iDbMailUserId = $sMailUser['mailuser_id'];
+            $sDbPasswordHash = $sMailUser['password'];
+            $sPreviousPasswordHash = $this->getPasswordHashFromOldPassword($sDbPasswordHash, $sPrevPassword);
 
-		for ($iIndex = 0; $iIndex < 8; $iIndex++)
-		{
-			$sSalt .= $sBase64[\rand(0, 63)];
-		}
+            if ($sPreviousPasswordHash !== $sDbPasswordHash) {
+                $this->log('Hashes for current password do not match');
+                throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CurrentPasswordIncorrect);
+            }
 
-		return \crypt($sPassword, '$1$'.$sSalt.'$');
-	}
+
+            $sNewPasswordHash = $this->cryptPassword($sNewPassword, self::PASSWORD_ENCODING);
+
+            return $this->updatePasswordForMailUserId($iDbMailUserId, $sNewPasswordHash);
+        } catch (\Exception $oException) {
+            if ($this->oLogger) {
+                $this->oLogger->WriteException($oException);
+            }
+            return false;
+        }
+    }
+
+    /**
+     * Encrypts a password for a mailbox (based on ISPConfig version)
+     *
+     * Base function: interface/lib/classes/auth.inc.php -> crypt_password
+     * Used in: interface/lib/classes/tform_base.inc.php via CRYPTMAIL
+     * Called in: interface/web/mail/form/mail_user.tform.php
+     *
+     * @param string $cleartext_password
+     * @param string $charset
+     *
+     * @return string|null
+     */
+    public function cryptPassword($cleartext_password, $charset = 'UTF-8')
+    {
+        if ($charset !== 'UTF-8') {
+            $cleartext_password = \mb_convert_encoding($cleartext_password, $charset, 'UTF-8');
+        }
+
+        if (\defined('CRYPT_SHA512') && CRYPT_SHA512 == 1) {
+            $salt = '$6$rounds=5000$';
+            $salt_length = 16;
+        } elseif (\defined('CRYPT_SHA256') && CRYPT_SHA256 == 1) {
+            $salt = '$5$rounds=5000$';
+            $salt_length = 16;
+        } else {
+            $salt = '$1$';
+            $salt_length = 12;
+        }
+
+        if (function_exists('openssl_random_pseudo_bytes')) {
+            $salt .= \substr(\bin2hex(\openssl_random_pseudo_bytes($salt_length)), 0, $salt_length);
+        } else {
+            $base64_alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789./';
+            for ($n = 0; $n < $salt_length; $n++) {
+                $salt .= $base64_alphabet[\mt_rand(0, 63)];
+            }
+        }
+        $salt .= "$";
+        return \crypt($cleartext_password, $salt);
+    }
+
+    /**
+     * @param string $sPasswordHash
+     *
+     * @return string
+     */
+    private function getSaltFromPasswordHash($sPasswordHash)
+    {
+        return substr($sPasswordHash, 0, strrpos($sPasswordHash, '$'));
+    }
+
+    private function getPasswordHashFromOldPassword($sHashedPassword, $sClearTextPassword)
+    {
+        $sClearTextPassword = mb_convert_encoding($sClearTextPassword, self::PASSWORD_ENCODING, 'UTF-8');
+        $sPasswordSalt = $this->getSaltFromPasswordHash($sHashedPassword);
+
+        return crypt($sClearTextPassword, $sPasswordSalt);
+    }
+
+    /**
+     * @return bool
+     */
+    private function isConfigValid()
+    {
+        if (empty($this->sDsn)) {
+            $this->log('ERROR: DB - pdo_dsn not configured');
+            return false;
+        }
+
+        if ($this->sUser === '') {
+            $this->log('ERROR: DB - user not configured');
+            return false;
+        }
+
+        if ($this->sPassword === '') {
+            $this->log('ERROR: DB - password not configured');
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @return PDO
+     * @throws Exception
+     */
+    private function getConnection()
+    {
+        if ($this->oConnection !== null) {
+            return $this->oConnection;
+        }
+
+        try {
+            $oPdo = new \PDO($this->sDsn, $this->sUser, $this->sPassword);
+            $oPdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);#
+        } catch (Exception $exception) {
+            $this->log('Failed to establish DB connection: ' . $exception->getMessage());
+            throw $exception;
+        }
+
+        $this->oConnection = $oPdo;
+
+        return $oPdo;
+    }
+
+    /**
+     * @param string $sLogin
+     *
+     * @return array|null
+     * @throws Exception
+     */
+    private function getMailUserForLogin($sLogin)
+    {
+        $oStatement = $this->getConnection()->prepare('SELECT * FROM mail_user WHERE login = ? LIMIT 1');
+        if ($oStatement->execute(array($sLogin)) === false) {
+            return null;
+        }
+
+        return $oStatement->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * @param int    $iMailUserId
+     * @param string $sPasswordHash
+     *
+     * @return bool
+     * @throws Exception
+     */
+    private function updatePasswordForMailUserId($iMailUserId, $sPasswordHash)
+    {
+        $oStatement = $this->getConnection()->prepare('UPDATE mail_user SET password = ? WHERE mailuser_id = ?');
+
+        return $oStatement->execute(array($sPasswordHash, $iMailUserId));
+    }
+
+    /**
+     * @param string $sMessage
+     *
+     * @return void
+     */
+    private function log($sMessage)
+    {
+        if ($this->oLogger === null) {
+            return;
+        }
+
+        $this->oLogger->Write($sMessage);
+    }
 }
