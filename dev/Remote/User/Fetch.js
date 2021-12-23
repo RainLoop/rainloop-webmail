@@ -1,8 +1,7 @@
-import { isArray, arrayLength, pString, pInt, b64EncodeJSONSafe } from 'Common/Utils';
+import { arrayLength, pString, pInt, b64EncodeJSONSafe } from 'Common/Utils';
 
 import {
 	getFolderHash,
-	getFolderInboxName,
 	getFolderUidNext,
 	getFolderFromCacheList,
 	MessageFlagsCache
