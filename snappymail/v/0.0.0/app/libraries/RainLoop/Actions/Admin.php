@@ -32,8 +32,15 @@ trait Admin
 
 	private function getAdminAuthKey() : string
 	{
-		$aAdminHash = Utils::DecodeKeyValuesQ(Utils::GetCookie(static::$AUTH_ADMIN_TOKEN_KEY, ''));
-		return (empty($aAdminHash[1]) || 'token' !== $aAdminHash[0]) ? '' : $aAdminHash[1];
+		$cookie = Utils::GetCookie(static::$AUTH_ADMIN_TOKEN_KEY, '');
+		if ($cookie) {
+			$aAdminHash = Utils::DecodeKeyValuesQ($cookie);
+			if (!empty($aAdminHash[1]) && 'token' === $aAdminHash[0]) {
+				return $aAdminHash[1];
+			}
+			Utils::ClearCookie(static::$AUTH_ADMIN_TOKEN_KEY);
+		}
+		return '';
 	}
 
 	private function setAdminAuthToken(string $sToken) : void
