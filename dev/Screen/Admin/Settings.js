@@ -10,6 +10,7 @@ import { SecurityAdminSettings } from 'Settings/Admin/Security';
 import { PackagesAdminSettings } from 'Settings/Admin/Packages';
 import { AboutAdminSettings } from 'Settings/Admin/About';
 import { BrandingAdminSettings } from 'Settings/Admin/Branding';
+import { ConfigAdminSettings } from 'Settings/Admin/Config';
 
 import { MenuSettingsAdminView } from 'View/Admin/Settings/Menu';
 import { PaneSettingsAdminView } from 'View/Admin/Settings/Pane';
@@ -33,6 +34,7 @@ export class SettingsAdminScreen extends AbstractSettingsScreen {
 			[ContactsAdminSettings, 'Contacts'],
 			[SecurityAdminSettings, 'Security'],
 			[PackagesAdminSettings, 'Packages'],
+			[ConfigAdminSettings, 'Config'],
 			[AboutAdminSettings, 'About'],
 		].forEach(item =>
 			settingsAddViewModel(

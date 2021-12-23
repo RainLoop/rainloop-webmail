@@ -1,4 +1,7 @@
 {
+	"GLOBAL": {
+		"SAVE": "Spara"
+	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logga in",
 		"LABEL_PASSWORD": "Lösenord",
@@ -16,6 +19,7 @@
 		"LABEL_DOMAINS_NAME": "Domäner",
 		"LABEL_SECURITY_NAME": "Säkerhet",
 		"LABEL_PACKAGES_NAME": "Tillägg",
+		"LABEL_CONFIG_NAME": "Config",
 		"LABEL_ABOUT_NAME": "Om"
 	},
 	"TAB_GENERAL": {
@@ -140,8 +144,7 @@
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Tillägget",
 		"DESC_NOTHING_TO_CONFIGURE": "Inget att konfigurera",
-		"BUTTON_CLOSE": "Stäng",
-		"BUTTON_SAVE": "Spara"
+		"BUTTON_CLOSE": "Stäng"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Ja",

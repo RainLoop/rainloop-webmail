@@ -1,4 +1,7 @@
 {
+	"GLOBAL": {
+		"SAVE": "Lagre"
+	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Brukernavn",
 		"LABEL_PASSWORD": "Passord",
@@ -16,6 +19,7 @@
 		"LABEL_DOMAINS_NAME": "Domener",
 		"LABEL_SECURITY_NAME": "Sikkerhet",
 		"LABEL_PACKAGES_NAME": "Pakker",
+		"LABEL_CONFIG_NAME": "Config",
 		"LABEL_ABOUT_NAME": "Om"
 	},
 	"TAB_GENERAL": {
@@ -140,8 +144,7 @@
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Tillegg",
 		"DESC_NOTHING_TO_CONFIGURE": "Ingenting å sette opp",
-		"BUTTON_CLOSE": "Lukk",
-		"BUTTON_SAVE": "Lagre"
+		"BUTTON_CLOSE": "Lukk"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

@@ -1,4 +1,7 @@
 {
+	"GLOBAL": {
+		"SAVE": "Salvar"
+	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Usuário",
 		"LABEL_PASSWORD": "Senha",
@@ -16,6 +19,7 @@
 		"LABEL_DOMAINS_NAME": "Domínios",
 		"LABEL_SECURITY_NAME": "Segurança",
 		"LABEL_PACKAGES_NAME": "Pacotes",
+		"LABEL_CONFIG_NAME": "Config",
 		"LABEL_ABOUT_NAME": "Sobre"
 	},
 	"TAB_GENERAL": {
@@ -140,8 +144,7 @@
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Plugin",
 		"DESC_NOTHING_TO_CONFIGURE": "Nada para configurar",
-		"BUTTON_CLOSE": "Fechar",
-		"BUTTON_SAVE": "Salvar"
+		"BUTTON_CLOSE": "Fechar"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

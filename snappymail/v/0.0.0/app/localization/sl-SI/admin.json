@@ -1,4 +1,7 @@
 {
+	"GLOBAL": {
+		"SAVE": "Shrani"
+	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prijava",
 		"LABEL_PASSWORD": "Geslo",
@@ -16,6 +19,7 @@
 		"LABEL_DOMAINS_NAME": "Domene",
 		"LABEL_SECURITY_NAME": "Varnost",
 		"LABEL_PACKAGES_NAME": "Paketi",
+		"LABEL_CONFIG_NAME": "Config",
 		"LABEL_ABOUT_NAME": "Več o"
 	},
 	"TAB_GENERAL": {
@@ -140,8 +144,7 @@
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Vtičnik",
 		"DESC_NOTHING_TO_CONFIGURE": "Ni nastavitev za spreminjati",
-		"BUTTON_CLOSE": "Zapri",
-		"BUTTON_SAVE": "Shrani"
+		"BUTTON_CLOSE": "Zapri"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

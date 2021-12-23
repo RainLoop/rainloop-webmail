@@ -1,4 +1,7 @@
 {
+	"GLOBAL": {
+		"SAVE": "Tallenna"
+	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Tunnus",
 		"LABEL_PASSWORD": "Salasana",
@@ -16,6 +19,7 @@
 		"LABEL_DOMAINS_NAME": "Verkkotunnutkset",
 		"LABEL_SECURITY_NAME": "Turvallisuus",
 		"LABEL_PACKAGES_NAME": "Paketit",
+		"LABEL_CONFIG_NAME": "Config",
 		"LABEL_ABOUT_NAME": "Tietoja"
 	},
 	"TAB_GENERAL": {
@@ -140,8 +144,7 @@
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Lisäosa",
 		"DESC_NOTHING_TO_CONFIGURE": "Ei mitään asetettavaa",
-		"BUTTON_CLOSE": "Sulje",
-		"BUTTON_SAVE": "Tallenna"
+		"BUTTON_CLOSE": "Sulje"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

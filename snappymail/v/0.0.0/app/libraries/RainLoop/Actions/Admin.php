@@ -88,6 +88,35 @@ trait Admin
 		}
 	}
 
+	public function DoAdminSettingsGet() : array
+	{
+		$aConfig = $this->Config()->jsonSerialize();
+		unset($aConfig['version']);
+		return $this->DefaultResponse(__FUNCTION__, $aConfig);
+	}
+
+	public function DoAdminSettingsSet() : array
+	{
+		// TODO
+		$aConfig = $this->GetActionParam('config', []);
+		unset($aConfig['version']);
+		/* Sections:
+		[webmail] => Array
+		[interface] => Array
+		[contacts] => Array
+		[security] => Array
+		[ssl] => Array
+		[capa] => Array
+		[login] => Array
+		[plugins] => Array
+		[defaults] => Array
+		[logs] => Array
+		[cache] => Array
+		[labs] => Array
+		*/
+		return $this->TrueResponse(__FUNCTION__);
+	}
+
 	public function DoAdminSettingsUpdate() : array
 	{
 //		sleep(3);
@@ -884,5 +913,39 @@ trait Admin
 		}
 
 		return false;
+	}
+
+	private function setConfigFromParams(Config\Application $oConfig, string $sParamName, string $sConfigSector, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null): void
+	{
+		$sValue = $this->GetActionParam($sParamName, '');
+		if ($this->HasActionParam($sParamName)) {
+			switch ($sType) {
+				default:
+				case 'string':
+					$sValue = (string)$sValue;
+					if ($mStringCallback && is_callable($mStringCallback)) {
+						$sValue = $mStringCallback($sValue);
+					}
+
+					$oConfig->Set($sConfigSector, $sConfigName, (string)$sValue);
+					break;
+
+				case 'dummy':
+					$sValue = (string)$this->GetActionParam('ContactsPdoPassword', APP_DUMMY);
+					if (APP_DUMMY !== $sValue) {
+						$oConfig->Set($sConfigSector, $sConfigName, (string)$sValue);
+					}
+					break;
+
+				case 'int':
+					$iValue = (int)$sValue;
+					$oConfig->Set($sConfigSector, $sConfigName, $iValue);
+					break;
+
+				case 'bool':
+					$oConfig->Set($sConfigSector, $sConfigName, '1' === (string)$sValue);
+					break;
+			}
+		}
 	}
 }

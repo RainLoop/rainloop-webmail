@@ -1,4 +1,7 @@
 {
+	"GLOBAL": {
+		"SAVE": "Gem"
+	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Log ind",
 		"LABEL_PASSWORD": "Adgangskode",
@@ -16,6 +19,7 @@
 		"LABEL_DOMAINS_NAME": "Domæner",
 		"LABEL_SECURITY_NAME": "Sikkerhed",
 		"LABEL_PACKAGES_NAME": "Pakker",
+		"LABEL_CONFIG_NAME": "Config",
 		"LABEL_ABOUT_NAME": "Om"
 	},
 	"TAB_GENERAL": {
@@ -140,8 +144,7 @@
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Tilføjelse",
 		"DESC_NOTHING_TO_CONFIGURE": "Intet at opsætte",
-		"BUTTON_CLOSE": "Luk",
-		"BUTTON_SAVE": "Gem"
+		"BUTTON_CLOSE": "Luk"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

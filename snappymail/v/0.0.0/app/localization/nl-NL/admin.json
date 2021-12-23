@@ -1,4 +1,7 @@
 {
+	"GLOBAL": {
+		"SAVE": "Opslaan"
+	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Inlognaam",
 		"LABEL_PASSWORD": "Wachtwoord",
@@ -16,6 +19,7 @@
 		"LABEL_DOMAINS_NAME": "Domeinen",
 		"LABEL_SECURITY_NAME": "Beveiliging",
 		"LABEL_PACKAGES_NAME": "Extensies",
+		"LABEL_CONFIG_NAME": "Config",
 		"LABEL_ABOUT_NAME": "Over"
 	},
 	"TAB_GENERAL": {
@@ -140,8 +144,7 @@
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Extensie",
 		"DESC_NOTHING_TO_CONFIGURE": "Niets om te configureren",
-		"BUTTON_CLOSE": "Annuleer",
-		"BUTTON_SAVE": "Opslaan"
+		"BUTTON_CLOSE": "Annuleer"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Ja",

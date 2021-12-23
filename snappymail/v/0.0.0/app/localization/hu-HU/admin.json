@@ -1,4 +1,7 @@
 {
+	"GLOBAL": {
+		"SAVE": "Mentés"
+	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Belépés",
 		"LABEL_PASSWORD": "Jelszó",
@@ -16,6 +19,7 @@
 		"LABEL_DOMAINS_NAME": "Domainek",
 		"LABEL_SECURITY_NAME": "Biztonság",
 		"LABEL_PACKAGES_NAME": "Bővítmények",
+		"LABEL_CONFIG_NAME": "Config",
 		"LABEL_ABOUT_NAME": "Névjegy"
 	},
 	"TAB_GENERAL": {
@@ -140,8 +144,7 @@
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Bővítményt",
 		"DESC_NOTHING_TO_CONFIGURE": "Nincs mit beállítani",
-		"BUTTON_CLOSE": "Bezár",
-		"BUTTON_SAVE": "Mentés"
+		"BUTTON_CLOSE": "Bezár"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Igen",

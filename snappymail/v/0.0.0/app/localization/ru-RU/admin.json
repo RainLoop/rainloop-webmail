@@ -1,4 +1,7 @@
 {
+	"GLOBAL": {
+		"SAVE": "Сохранить"
+	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Логин",
 		"LABEL_PASSWORD": "Пароль",
@@ -16,6 +19,7 @@
 		"LABEL_DOMAINS_NAME": "Домены",
 		"LABEL_SECURITY_NAME": "Безопасность",
 		"LABEL_PACKAGES_NAME": "Пакеты",
+		"LABEL_CONFIG_NAME": "Config",
 		"LABEL_ABOUT_NAME": "О Программе"
 	},
 	"TAB_GENERAL": {
@@ -140,8 +144,7 @@
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Плагин",
 		"DESC_NOTHING_TO_CONFIGURE": "Без настроек",
-		"BUTTON_CLOSE": "Закрыть",
-		"BUTTON_SAVE": "Сохранить"
+		"BUTTON_CLOSE": "Закрыть"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

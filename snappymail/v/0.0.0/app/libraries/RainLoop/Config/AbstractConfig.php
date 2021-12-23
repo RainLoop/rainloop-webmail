@@ -2,7 +2,7 @@
 
 namespace RainLoop\Config;
 
-abstract class AbstractConfig
+abstract class AbstractConfig implements \JsonSerializable
 {
 	/**
 	 * @var string
@@ -50,6 +50,11 @@ abstract class AbstractConfig
 	public function IsInited() : bool
 	{
 		return \is_array($this->aData) && \count($this->aData);
+	}
+
+	public function jsonSerialize()
+	{
+		return $this->aData;
 	}
 
 	/**

@@ -1,4 +1,7 @@
 {
+	"GLOBAL": {
+		"SAVE": "保存"
+	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登录",
 		"LABEL_PASSWORD": "密码",
@@ -16,6 +19,7 @@
 		"LABEL_DOMAINS_NAME": "域名",
 		"LABEL_SECURITY_NAME": "安全",
 		"LABEL_PACKAGES_NAME": "插件包",
+		"LABEL_CONFIG_NAME": "Config",
 		"LABEL_ABOUT_NAME": "关于"
 	},
 	"TAB_GENERAL": {
@@ -140,8 +144,7 @@
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "插件",
 		"DESC_NOTHING_TO_CONFIGURE": "无可用配置",
-		"BUTTON_CLOSE": "关闭",
-		"BUTTON_SAVE": "保存"
+		"BUTTON_CLOSE": "关闭"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "是",

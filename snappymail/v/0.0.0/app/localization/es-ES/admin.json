@@ -1,4 +1,7 @@
 {
+	"GLOBAL": {
+		"SAVE": "Guardar"
+	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Ingresar",
 		"LABEL_PASSWORD": "Contraseña",
@@ -16,6 +19,7 @@
 		"LABEL_DOMAINS_NAME": "Dominios",
 		"LABEL_SECURITY_NAME": "Seguridad",
 		"LABEL_PACKAGES_NAME": "Extensiones",
+		"LABEL_CONFIG_NAME": "Config",
 		"LABEL_ABOUT_NAME": "Acerca"
 	},
 	"TAB_GENERAL": {
@@ -140,8 +144,7 @@
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Extensión",
 		"DESC_NOTHING_TO_CONFIGURE": "Nada para configurar",
-		"BUTTON_CLOSE": "Cerrar",
-		"BUTTON_SAVE": "Guardar"
+		"BUTTON_CLOSE": "Cerrar"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Sí",

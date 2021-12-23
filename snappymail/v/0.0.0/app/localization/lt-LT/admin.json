@@ -1,4 +1,7 @@
 {
+	"GLOBAL": {
+		"SAVE": "Saugoti"
+	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prisijungimo vardas",
 		"LABEL_PASSWORD": "Slaptažodis",
@@ -16,6 +19,7 @@
 		"LABEL_DOMAINS_NAME": "Domenai",
 		"LABEL_SECURITY_NAME": "Sauga",
 		"LABEL_PACKAGES_NAME": "Paketai",
+		"LABEL_CONFIG_NAME": "Config",
 		"LABEL_ABOUT_NAME": "Apie"
 	},
 	"TAB_GENERAL": {
@@ -140,8 +144,7 @@
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Įskiepis",
 		"DESC_NOTHING_TO_CONFIGURE": "Nėra ką konfiguruoti",
-		"BUTTON_CLOSE": "Uždaryti",
-		"BUTTON_SAVE": "Saugoti"
+		"BUTTON_CLOSE": "Uždaryti"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

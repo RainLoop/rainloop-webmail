@@ -1014,40 +1014,6 @@ class Actions
 		);
 	}
 
-	public function setConfigFromParams(Config\Application $oConfig, string $sParamName, string $sConfigSector, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null): void
-	{
-		$sValue = $this->GetActionParam($sParamName, '');
-		if ($this->HasActionParam($sParamName)) {
-			switch ($sType) {
-				default:
-				case 'string':
-					$sValue = (string)$sValue;
-					if ($mStringCallback && is_callable($mStringCallback)) {
-						$sValue = $mStringCallback($sValue);
-					}
-
-					$oConfig->Set($sConfigSector, $sConfigName, (string)$sValue);
-					break;
-
-				case 'dummy':
-					$sValue = (string)$this->GetActionParam('ContactsPdoPassword', APP_DUMMY);
-					if (APP_DUMMY !== $sValue) {
-						$oConfig->Set($sConfigSector, $sConfigName, (string)$sValue);
-					}
-					break;
-
-				case 'int':
-					$iValue = (int)$sValue;
-					$oConfig->Set($sConfigSector, $sConfigName, $iValue);
-					break;
-
-				case 'bool':
-					$oConfig->Set($sConfigSector, $sConfigName, '1' === (string)$sValue);
-					break;
-			}
-		}
-	}
-
 	public function DoNoop(): array
 	{
 		$this->initMailClientConnection();

@@ -1,4 +1,7 @@
 {
+	"GLOBAL": {
+		"SAVE": "保存"
+	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ログイン",
 		"LABEL_PASSWORD": "パスワード",
@@ -16,6 +19,7 @@
 		"LABEL_DOMAINS_NAME": "ドメイン",
 		"LABEL_SECURITY_NAME": "セキュリティ",
 		"LABEL_PACKAGES_NAME": "パッケージ",
+		"LABEL_CONFIG_NAME": "Config",
 		"LABEL_ABOUT_NAME": "RainLoop について"
 	},
 	"TAB_GENERAL": {
@@ -140,8 +144,7 @@
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "プラグイン",
 		"DESC_NOTHING_TO_CONFIGURE": "何も設定されていません",
-		"BUTTON_CLOSE": "閉じる",
-		"BUTTON_SAVE": "保存"
+		"BUTTON_CLOSE": "閉じる"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

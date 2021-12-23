@@ -1,4 +1,7 @@
 {
+	"GLOBAL": {
+		"SAVE": "ذخیره"
+	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ورود",
 		"LABEL_PASSWORD": "گذرواژه",
@@ -16,6 +19,7 @@
 		"LABEL_DOMAINS_NAME": "دامنه‌ها",
 		"LABEL_SECURITY_NAME": "امنیت",
 		"LABEL_PACKAGES_NAME": "بسته‌ها",
+		"LABEL_CONFIG_NAME": "Config",
 		"LABEL_ABOUT_NAME": "درباره"
 	},
 	"TAB_GENERAL": {
@@ -140,8 +144,7 @@
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "افزونه",
 		"DESC_NOTHING_TO_CONFIGURE": "چیزی برای پیکربندی نیست",
-		"BUTTON_CLOSE": "بستن",
-		"BUTTON_SAVE": "ذخیره"
+		"BUTTON_CLOSE": "بستن"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

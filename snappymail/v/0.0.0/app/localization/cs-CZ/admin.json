@@ -1,4 +1,7 @@
 {
+	"GLOBAL": {
+		"SAVE": "Uložit"
+	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
 		"LABEL_PASSWORD": "Heslo",
@@ -16,6 +19,7 @@
 		"LABEL_DOMAINS_NAME": "Domény",
 		"LABEL_SECURITY_NAME": "Zabezpečení",
 		"LABEL_PACKAGES_NAME": "Balíčky",
+		"LABEL_CONFIG_NAME": "Config",
 		"LABEL_ABOUT_NAME": "Info"
 	},
 	"TAB_GENERAL": {
@@ -140,8 +144,7 @@
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Plugin",
 		"DESC_NOTHING_TO_CONFIGURE": "Není zde nic ke konfiguraci",
-		"BUTTON_CLOSE": "Zavřít",
-		"BUTTON_SAVE": "Uložit"
+		"BUTTON_CLOSE": "Zavřít"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

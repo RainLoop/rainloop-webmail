@@ -1,4 +1,7 @@
 {
+	"GLOBAL": {
+		"SAVE": "Speichern"
+	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Benutzer",
 		"LABEL_PASSWORD": "Passwort",
@@ -16,6 +19,7 @@
 		"LABEL_DOMAINS_NAME": "Domains",
 		"LABEL_SECURITY_NAME": "Sicherheit",
 		"LABEL_PACKAGES_NAME": "Erweiterungen",
+		"LABEL_CONFIG_NAME": "Config",
 		"LABEL_ABOUT_NAME": "Über"
 	},
 	"TAB_GENERAL": {
@@ -140,8 +144,7 @@
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Erweiterung",
 		"DESC_NOTHING_TO_CONFIGURE": "Nichts zu konfigurieren",
-		"BUTTON_CLOSE": "Schließen",
-		"BUTTON_SAVE": "Speichern"
+		"BUTTON_CLOSE": "Schließen"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Ja",
