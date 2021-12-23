@@ -51,4 +51,54 @@
 
 			exit(302);
 		}
+
+		$sCheckName = 'delete_if_you_see_it_after_install';
+		$sCheckFolder = APP_DATA_FOLDER_PATH.$sCheckName;
+		$sCheckFilePath = APP_DATA_FOLDER_PATH.$sCheckName.'/'.$sCheckName.'.file';
+
+		is_file($sCheckFilePath) && unlink($sCheckFilePath);
+		is_dir($sCheckFolder) && rmdir($sCheckFolder);
+
+		if (!is_dir(APP_DATA_FOLDER_PATH))
+		{
+			mkdir(APP_DATA_FOLDER_PATH, 0700, true);
+		}
+		else
+		{
+			chmod(APP_DATA_FOLDER_PATH, 0700);
+		}
+
+		$sTest = '';
+		switch (true)
+		{
+			case !is_dir(APP_DATA_FOLDER_PATH):
+				$sTest = 'is_dir';
+				break;
+			case !is_readable(APP_DATA_FOLDER_PATH):
+				$sTest = 'is_readable';
+				break;
+			case !is_writable(APP_DATA_FOLDER_PATH):
+				$sTest = 'is_writable';
+				break;
+			case !mkdir($sCheckFolder, 0700):
+				$sTest = 'mkdir';
+				break;
+			case false === file_put_contents($sCheckFilePath, time()):
+				$sTest = 'file_put_contents';
+				break;
+			case !unlink($sCheckFilePath):
+				$sTest = 'unlink';
+				break;
+			case !rmdir($sCheckFolder):
+				$sTest = 'rmdir';
+				break;
+		}
+
+		if (!empty($sTest))
+		{
+			echo '[202] Data folder permissions error ['.$sTest.']';
+			exit(202);
+		}
+
+		unset($sCheckName, $sCheckFilePath, $sCheckFolder, $sTest);
 	}

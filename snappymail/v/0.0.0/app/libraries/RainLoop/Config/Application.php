@@ -11,7 +11,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 		parent::__construct('application.ini',
 			'; SnappyMail configuration file
 ; Please don\'t add custom parameters here, those will be overwritten',
-			defined('APP_ADDITIONAL_CONFIGURATION_NAME') ? APP_ADDITIONAL_CONFIGURATION_NAME : '');
+			APP_CONFIGURATION_NAME);
 	}
 
 	public function Load() : bool

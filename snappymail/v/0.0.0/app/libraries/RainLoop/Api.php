@@ -211,12 +211,4 @@ class Api
 		Utils::ClearCookie(Utils::SESSION_TOKEN);
 		return true;
 	}
-
-	public static function ExitOnEnd() : void
-	{
-		if (!\defined('SNAPPYMAIL_EXIT_ON_END'))
-		{
-			\define('SNAPPYMAIL_EXIT_ON_END', true);
-		}
-	}
 }

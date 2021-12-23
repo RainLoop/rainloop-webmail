@@ -9,6 +9,8 @@ use RainLoop\KeyPathHelper;
 use RainLoop\Notifications;
 use RainLoop\Utils;
 
+//define('APP_DEV_VERSION', '0.0.0');
+
 trait Admin
 {
 	private static $AUTH_ADMIN_TOKEN_KEY = 'smadmin';
@@ -556,11 +558,11 @@ trait Admin
 				if ($oItem && isset($oItem->type, $oItem->id, $oItem->name,
 					$oItem->version, $oItem->release, $oItem->file, $oItem->description))
 				{
-					if (!empty($oItem->required) && APP_DEV_VERSION !== APP_VERSION && version_compare(APP_VERSION, $oItem->required, '<')) {
+					if (!empty($oItem->required) && '0.0.0' !== APP_VERSION && version_compare(APP_VERSION, $oItem->required, '<')) {
 						continue;
 					}
 
-					if (!empty($oItem->depricated) && APP_DEV_VERSION !== APP_VERSION && version_compare(APP_VERSION, $oItem->depricated, '>=')) {
+					if (!empty($oItem->depricated) && '0.0.0' !== APP_VERSION && version_compare(APP_VERSION, $oItem->depricated, '>=')) {
 						continue;
 					}
 
@@ -630,7 +632,7 @@ trait Admin
 		$bRainLoopUpdatable = \file_exists(APP_INDEX_ROOT_PATH.'index.php')
 		 && \is_writable(APP_INDEX_ROOT_PATH.'index.php')
 		 && \is_writable(APP_INDEX_ROOT_PATH.'snappymail/')
-		 && APP_VERSION !== APP_DEV_VERSION;
+		 && APP_VERSION !== '0.0.0';
 
 //		\uksort($aList, function($a, $b){return \strcasecmp($a['name'], $b['name']);});
 

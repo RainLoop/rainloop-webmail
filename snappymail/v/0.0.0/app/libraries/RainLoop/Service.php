@@ -222,7 +222,9 @@ class Service
 
 	private function setCSP(string $sScriptNonce = null) : void
 	{
-		$sContentSecurityPolicy = \trim($this->oActions->Config()->Get('security', 'content_security_policy', '')) ?: APP_DEFAULT_CSP;
+		// "img-src https:" is allowed due to remote images in e-mails
+		$sContentSecurityPolicy = \trim($this->oActions->Config()->Get('security', 'content_security_policy', ''))
+			?: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https: http:; style-src 'self' 'unsafe-inline'";
 		if ($this->oActions->Config()->Get('security', 'use_local_proxy_for_external_images', '')) {
 			$sContentSecurityPolicy = \preg_replace('/(img-src[^;]+)\\shttps:(\\s|;|$)/D', '$1$2', $sContentSecurityPolicy);
 			$sContentSecurityPolicy = \preg_replace('/(img-src[^;]+)\\shttp:(\\s|;|$)/D', '$1$2', $sContentSecurityPolicy);
