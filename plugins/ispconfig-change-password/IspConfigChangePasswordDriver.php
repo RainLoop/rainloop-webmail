@@ -180,6 +180,12 @@ class IspConfigChangePasswordDriver implements \RainLoop\Providers\ChangePasswor
         return substr($sPasswordHash, 0, strrpos($sPasswordHash, '$'));
     }
 
+    /**
+     * @param string $sHashedPassword
+     * @param string $sClearTextPassword
+     *
+     * @return string|null
+     */
     private function getPasswordHashFromOldPassword($sHashedPassword, $sClearTextPassword)
     {
         $sClearTextPassword = mb_convert_encoding($sClearTextPassword, self::PASSWORD_ENCODING, 'UTF-8');
