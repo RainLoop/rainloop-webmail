@@ -230,7 +230,7 @@ class Service
 			$sContentSecurityPolicy = \preg_replace('/(img-src[^;]+)\\shttp:(\\s|;|$)/D', '$1$2', $sContentSecurityPolicy);
 		}
 		// Internet Explorer does not support 'nonce'
-		if (!isset($_SERVER['HTTP_USER_AGENT']) || (!\strpos($_SERVER['HTTP_USER_AGENT'], 'Trident/') && !\strpos($_SERVER['HTTP_USER_AGENT'], 'Edge/1'))) {
+		if (!$_SERVER['HTTP_USER_AGENT'] || (!\strpos($_SERVER['HTTP_USER_AGENT'], 'Trident/') && !\strpos($_SERVER['HTTP_USER_AGENT'], 'Edge/1'))) {
 			if ($sScriptNonce) {
 				$sContentSecurityPolicy = \str_replace('script-src', "script-src 'nonce-{$sScriptNonce}'", $sContentSecurityPolicy);
 			}

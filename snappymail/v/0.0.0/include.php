@@ -44,17 +44,6 @@ define('APP_VERSION_ROOT_PATH', __DIR__ . DIRECTORY_SEPARATOR);
 
 date_default_timezone_set('UTC');
 
-$sSite = strtolower(trim(empty($_SERVER['HTTP_HOST']) ? (empty($_SERVER['SERVER_NAME']) ? '' : $_SERVER['SERVER_NAME']) : $_SERVER['HTTP_HOST']));
-$sSite = 'www.' === substr($sSite, 0, 4) ? substr($sSite, 4) : $sSite;
-$sSite = trim(preg_replace('/^.+@/', '', preg_replace('/:[\d]+$/', '', $sSite)));
-$sSite = in_array($sSite, array('', 'localhost', '127.0.0.1', '::1', '::1/128', '0:0:0:0:0:0:0:1')) ? 'localhost' : $sSite;
-
-define('APP_SITE', $sSite);
-unset($sSite);
-
-$sPrivateDataFolderInternalName = defined('MULTIDOMAIN') ? APP_SITE : '';
-define('APP_PRIVATE_DATA_NAME', $sPrivateDataFolderInternalName ?: '_default_');
-
 define('APP_DUMMY', '********');
 
 $sCustomDataPath = '';
@@ -64,6 +53,15 @@ if (is_file(APP_INDEX_ROOT_PATH.'include.php'))
 {
 	include_once APP_INDEX_ROOT_PATH.'include.php';
 }
+
+$sPrivateDataFolderInternalName = '';
+if (defined('MULTIDOMAIN')) {
+	$sPrivateDataFolderInternalName = strtolower(trim(empty($_SERVER['HTTP_HOST']) ? (empty($_SERVER['SERVER_NAME']) ? '' : $_SERVER['SERVER_NAME']) : $_SERVER['HTTP_HOST']));
+	$sPrivateDataFolderInternalName = 'www.' === substr($sPrivateDataFolderInternalName, 0, 4) ? substr($sPrivateDataFolderInternalName, 4) : $sPrivateDataFolderInternalName;
+	$sPrivateDataFolderInternalName = preg_replace('/^.+@/', '', preg_replace('/(.+\\..+):[\d]+$/', '$1', $sPrivateDataFolderInternalName));
+	$sPrivateDataFolderInternalName = in_array($sPrivateDataFolderInternalName, array('', '127.0.0.1', '::1')) ? 'localhost' : $sPrivateDataFolderInternalName;
+}
+define('APP_PRIVATE_DATA_NAME', $sPrivateDataFolderInternalName ?: '_default_');
 
 defined('APP_USE_APCU_CACHE') || define('APP_USE_APCU_CACHE', true);
 
@@ -139,47 +137,23 @@ if (APP_VERSION !== $sInstalled || (!is_dir(APP_PRIVATE_DATA) && strlen($sPrivat
 
 	if (!file_exists(APP_PRIVATE_DATA.'domains/disabled') && is_dir(APP_PRIVATE_DATA.'domains'))
 	{
-		$sFile = $sNewFile = $sNewFileName = '';
+		$sFile = $sNewFile = '';
 		$aFiles = glob(APP_VERSION_ROOT_PATH.'app/domains/*');
-
-		if (is_array($aFiles) && 0 < count($aFiles))
+		if (is_array($aFiles) && count($aFiles))
 		{
 			foreach ($aFiles as $sFile)
 			{
 				if (is_file($sFile))
 				{
-					$sNewFileName = basename($sFile);
-					if ('default.ini.dist' !== $sNewFileName)
+					$sNewFile = APP_PRIVATE_DATA.'domains/'.basename($sFile);
+					if (!file_exists($sNewFile))
 					{
-						$sNewFile = APP_PRIVATE_DATA.'domains/'.$sNewFileName;
-						if (!file_exists($sNewFile))
-						{
-							copy($sFile, $sNewFile);
-						}
+						copy($sFile, $sNewFile);
 					}
 				}
 			}
 		}
-
-//		$sClearedSiteName = preg_replace('/^(www|demo|snappymail|webmail|email|mail|imap|imap4|smtp)\./i', '', trim(APP_SITE));
-//		if (!empty($sClearedSiteName) && file_exists(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist') &&
-//			!file_exists(APP_PRIVATE_DATA.'domains/'.$sClearedSiteName.'.ini'))
-//		{
-//			$sConfigTemplate = file_get_contents(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist');
-//			if (!empty($sConfigTemplate))
-//			{
-//				file_put_contents(APP_PRIVATE_DATA.'domains/'.$sClearedSiteName.'.ini', strtr($sConfigTemplate, array(
-//					'IMAP_HOST' => 'localhost' !== $sClearedSiteName? 'imap.'.$sClearedSiteName : $sClearedSiteName,
-//					'IMAP_PORT' => '993',
-//					'SMTP_HOST' => 'localhost' !== $sClearedSiteName? 'smtp.'.$sClearedSiteName : $sClearedSiteName,
-//					'SMTP_PORT' => '465'
-//				)));
-//			}
-//
-//			unset($sConfigTemplate);
-//		}
-
-		unset($aFiles, $sFile, $sNewFileName, $sNewFile);
+		unset($aFiles, $sFile, $sNewFile);
 	}
 }
 

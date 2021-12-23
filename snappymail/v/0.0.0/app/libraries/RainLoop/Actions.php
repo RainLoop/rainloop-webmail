@@ -810,7 +810,6 @@ class Actions
 		if ($bAdmin) {
 			$aResult['Auth'] = $this->IsAdminLoggined(false);
 			if ($aResult['Auth']) {
-				$aResult['AdminDomain'] = APP_SITE;
 				$aResult['AdminLogin'] = (string)$oConfig->Get('security', 'admin_login', '');
 				$aResult['AdminTOTP'] = (string)$oConfig->Get('security', 'admin_totp', '');
 				$aResult['UseTokenProtection'] = (bool)$oConfig->Get('security', 'csrf_protection', true);

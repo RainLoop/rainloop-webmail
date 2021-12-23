@@ -59,7 +59,7 @@ class Http
 	public function CheckLocalhost(string $sServer) : bool
 	{
 		return \in_array(\strtolower(\trim($sServer)), array(
-			'localhost', '127.0.0.1', '::1', '::1/128', '0:0:0:0:0:0:0:1'
+			'localhost', '127.0.0.1', '::1'
 		));
 	}
 
