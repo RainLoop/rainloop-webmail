@@ -216,7 +216,7 @@ class AppUser extends AbstractApp {
 	}
 
 	messagesCopyHelper(sFromFolderFullName, sToFolderFullName, aUidForCopy) {
-		Remote.request('MessageCopy', this.moveOrDeleteResponseHelper, {
+		Remote.request('MessageCopy', null, {
 			FromFolder: sFromFolderFullName,
 			ToFolder: sToFolderFullName,
 			Uids: aUidForCopy.join(',')

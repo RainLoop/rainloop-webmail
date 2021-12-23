@@ -503,17 +503,16 @@ trait Messages
 		}
 
 		$sHash = '';
-
 		try
 		{
 			$sHash = $this->MailClient()->FolderHash($sFolder);
 		}
 		catch (\Throwable $oException)
 		{
-			unset($oException);
+			\error_log("FolderHash({$sFolder}) Exception: {$oException->getMessage()}");
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $sHash ? array($sFolder, $sHash) : false);
+		return $this->DefaultResponse(__FUNCTION__, $sHash ? array($sFolder, $sHash) : array($sFromFolder));
 	}
 
 	/**
@@ -567,17 +566,16 @@ trait Messages
 		}
 
 		$sHash = '';
-
 		try
 		{
 			$sHash = $this->MailClient()->FolderHash($sFromFolder);
 		}
 		catch (\Throwable $oException)
 		{
-			unset($oException);
+			\error_log("FolderHash({$sFromFolder}) Exception: {$oException->getMessage()}");
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $sHash ? array($sFromFolder, $sHash) : false);
+		return $this->DefaultResponse(__FUNCTION__, $sHash ? array($sFromFolder, $sHash) : array($sFromFolder));
 	}
 
 	/**
@@ -597,15 +595,13 @@ trait Messages
 		{
 			$this->MailClient()->MessageCopy($sFromFolder, $sToFolder,
 				$aFilteredUids, true);
-
-			$sHash = $this->MailClient()->FolderHash($sFromFolder);
 		}
 		catch (\Throwable $oException)
 		{
 			throw new ClientException(Notifications::CantCopyMessage, $oException);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $sHash ? array($sFromFolder, $sHash) : false);
+		return $this->TrueResponse(__FUNCTION__);
 	}
 
 	public function DoMessageUploadAttachments() : array
