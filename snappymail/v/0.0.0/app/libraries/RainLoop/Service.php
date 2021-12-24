@@ -50,7 +50,9 @@ class Service
 			\ini_set('log_errors', 1);
 		}
 
-		$sServer = \trim($this->oActions->Config()->Get('security', 'custom_server_signature', ''));
+		$oConfig = $this->oActions->Config();
+
+		$sServer = \trim($oConfig->Get('security', 'custom_server_signature', ''));
 		if (\strlen($sServer))
 		{
 			\header('Server: '.$sServer);
@@ -64,13 +66,13 @@ class Service
 
 		$this->setCSP();
 
-		$sXFrameOptionsHeader = \trim($this->oActions->Config()->Get('security', 'x_frame_options_header', '')) ?: 'DENY';
+		$sXFrameOptionsHeader = \trim($oConfig->Get('security', 'x_frame_options_header', '')) ?: 'DENY';
 		\header('X-Frame-Options: '.$sXFrameOptionsHeader);
 
-		$sXssProtectionOptionsHeader = \trim($this->oActions->Config()->Get('security', 'x_xss_protection_header', '')) ?: '1; mode=block';
+		$sXssProtectionOptionsHeader = \trim($oConfig->Get('security', 'x_xss_protection_header', '')) ?: '1; mode=block';
 		\header('X-XSS-Protection: '.$sXssProtectionOptionsHeader);
 
-		if ($this->oActions->Config()->Get('labs', 'force_https', false) && !$this->oHttp->IsSecure())
+		if ($oConfig->Get('labs', 'force_https', false) && !$this->oHttp->IsSecure())
 		{
 			\header('Location: https://'.$this->oHttp->GetHost(false, false).$this->oHttp->GetUrl());
 			exit(0);
@@ -99,10 +101,10 @@ class Service
 		$this->oActions->Plugins()->RunHook('filter.http-paths', array(&$aPaths));
 
 		$bAdmin = false;
-		$sAdminPanelHost = $this->oActions->Config()->Get('security', 'admin_panel_host', '');
+		$sAdminPanelHost = $oConfig->Get('security', 'admin_panel_host', '');
 		if (empty($sAdminPanelHost))
 		{
-			$sAdminPanelKey = \strtolower($this->oActions->Config()->Get('security', 'admin_panel_key', 'admin'));
+			$sAdminPanelKey = \strtolower($oConfig->Get('security', 'admin_panel_key', 'admin'));
 			$bAdmin = !empty($aPaths[0]) && \strtolower($aPaths[0]) === $sAdminPanelKey;
 		}
 		else if (empty($aPaths[0]) &&
@@ -116,7 +118,7 @@ class Service
 			$this->oHttp->ServerNoCache();
 		}
 
-		if ($bAdmin && !$this->oActions->Config()->Get('security', 'allow_admin_panel', true))
+		if ($bAdmin && !$oConfig->Get('security', 'allow_admin_panel', true))
 		{
 			\MailSo\Base\Http::StatusHeader(403);
 			echo $this->oServiceActions->ErrorTemplates('Access Denied.',
@@ -174,12 +176,37 @@ class Service
 
 			$sLanguage = $this->oActions->GetLanguage($bAdmin);
 
-			$aTemplateParameters = $this->indexTemplateParameters($bAdmin);
+			$sAppJsMin = $oConfig->Get('labs', 'use_app_debug_js', false) ? '' : '.min';
+			$sAppCssMin = $oConfig->Get('labs', 'use_app_debug_css', false) ? '' : '.min';
+
+			$sFaviconUrl = (string) $oConfig->Get('webmail', 'favicon_url', '');
+
+			$sFaviconPngLink = $sFaviconUrl ? $sFaviconUrl : $this->oActions->StaticPath('apple-touch-icon.png');
+			$sAppleTouchLink = $sFaviconUrl ? '' : $this->oActions->StaticPath('apple-touch-icon.png');
+
+			$aTemplateParameters = array(
+				'{{BaseAppFaviconPngLinkTag}}' => $sFaviconPngLink ? '<link type="image/png" rel="shortcut icon" href="'.$sFaviconPngLink.'" />' : '',
+				'{{BaseAppFaviconTouchLinkTag}}' => $sAppleTouchLink ? '<link type="image/png" rel="apple-touch-icon" href="'.$sAppleTouchLink.'" />' : '',
+				'{{BaseAppMainCssLink}}' => $this->oActions->StaticPath('css/'.($bAdmin ? 'admin' : 'app').$sAppCssMin.'.css'),
+				'{{BaseAppThemeCssLink}}' => $this->oActions->ThemeLink($bAdmin),
+				'{{BaseAppManifestLink}}' => $this->oActions->StaticPath('manifest.json'),
+				'{{LoadingDescriptionEsc}}' => \htmlspecialchars($oConfig->Get('webmail', 'loading_description', 'SnappyMail'), ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
+				'{{BaseAppAdmin}}' => $bAdmin ? 1 : 0
+			);
 
 			$sCacheFileName = '';
-			if ($this->oActions->Config()->Get('labs', 'cache_system_data', true) && !empty($aTemplateParameters['{{BaseHash}}']))
+			if ($oConfig->Get('labs', 'cache_system_data', true))
 			{
-				$sCacheFileName = 'TMPL:'.$sLanguage.$aTemplateParameters['{{BaseHash}}'];
+				$sCacheFileName = 'TMPL:' . $sLanguage . \md5(
+					\json_encode(array(
+						$oConfig->Get('cache', 'index', ''),
+						$this->oActions->Plugins()->Hash(),
+						$sAppJsMin,
+						$sAppCssMin,
+						$aTemplateParameters,
+						APP_VERSION
+					))
+				);
 				$sResult = $this->oActions->Cacher()->Get($sCacheFileName);
 			}
 
@@ -189,9 +216,19 @@ class Service
 				$aTemplateParameters['{{BaseAppThemeCss}}'] = $this->oActions->compileCss($this->oActions->GetTheme($bAdmin), $bAdmin);
 				$aTemplateParameters['{{BaseLanguage}}'] = $this->oActions->compileLanguage($sLanguage, $bAdmin);
 				$aTemplateParameters['{{BaseTemplates}}'] = $this->oServiceActions->compileTemplates($bAdmin);
+				$aTemplateParameters['{{BaseAppBootCss}}'] = \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.$sAppCssMin.'.css');
+				$aTemplateParameters['{{BaseAppBootScript}}'] = \file_get_contents(APP_VERSION_ROOT_PATH.'static/js'.($sAppJsMin ? '/min' : '').'/boot'.$sAppJsMin.'.js');
 				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), $aTemplateParameters);
 
-				$sResult = Utils::ClearHtmlOutput($sResult);
+				if ($sAppJsMin || $sAppCssMin) {
+					$sResult = \preg_replace(
+						['@\\s*/>@', '/\\s*&nbsp;/i', '/&nbsp;\\s*/i', '/>\\s+</'],
+						['>', "\xC2\xA0", "\xC2\xA0", '><'],
+						\trim($sResult)
+					);
+				} else {
+					$sResult = Utils::ClearHtmlOutput($sResult);
+				}
 				if ($sCacheFileName) {
 					$this->oActions->Cacher()->Set($sCacheFileName, $sResult);
 				}
@@ -240,50 +277,5 @@ class Service
 			//$sContentSecurityPolicy = \preg_replace("/(script-src[^;]+)'unsafe-eval'/", '$1', $sContentSecurityPolicy);
 		}
 		\header('Content-Security-Policy: '.$sContentSecurityPolicy);
-	}
-
-	private function staticPath(string $sPath) : string
-	{
-		return $this->oActions->StaticPath($sPath);
-	}
-
-	private function indexTemplateParameters(bool $bAdmin) : array
-	{
-		$oConfig = $this->oActions->Config();
-
-		$bAppJsDebug = !!$oConfig->Get('labs', 'use_app_debug_js', false);
-		$bAppCssDebug = !!$oConfig->Get('labs', 'use_app_debug_css', false);
-
-		$sFaviconUrl = (string) $oConfig->Get('webmail', 'favicon_url', '');
-
-		$sFaviconPngLink = $sFaviconUrl ? $sFaviconUrl : $this->staticPath('apple-touch-icon.png');
-		$sAppleTouchLink = $sFaviconUrl ? '' : $this->staticPath('apple-touch-icon.png');
-
-		$LoadingDescription = $oConfig->Get('webmail', 'loading_description', 'SnappyMail');
-
-		$aTemplateParameters = array(
-			'{{BaseAppFaviconPngLinkTag}}' => $sFaviconPngLink ? '<link type="image/png" rel="shortcut icon" href="'.$sFaviconPngLink.'" />' : '',
-			'{{BaseAppFaviconTouchLinkTag}}' => $sAppleTouchLink ? '<link type="image/png" rel="apple-touch-icon" href="'.$sAppleTouchLink.'" />' : '',
-			'{{BaseAppMainCssLink}}' => $this->staticPath('css/'.($bAdmin ? 'admin' : 'app').($bAppCssDebug ? '' : '.min').'.css'),
-			'{{BaseAppThemeCssLink}}' => $this->oActions->ThemeLink($bAdmin),
-			'{{BaseAppBootScript}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/js/min/boot.min.js'),
-			'{{BaseAppManifestLink}}' => $this->staticPath('manifest.json'),
-			'{{BaseAppBootCss}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot.min.css'),
-			'{{LoadingDescriptionEsc}}' => \htmlspecialchars($LoadingDescription, ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
-			'{{BaseAppAdmin}}' => $bAdmin ? 1 : 0
-		);
-
-		$aTemplateParameters['{{BaseHash}}'] = \md5(
-			\implode('~', array(
-				$bAdmin ? '1' : '0',
-				\md5($oConfig->Get('cache', 'index', '')),
-				$this->oActions->Plugins()->Hash(),
-				Utils::WebVersionPath(),
-				APP_VERSION,
-			)).
-			\implode('~', $aTemplateParameters)
-		);
-
-		return $aTemplateParameters;
 	}
 }

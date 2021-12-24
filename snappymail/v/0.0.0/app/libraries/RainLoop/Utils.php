@@ -113,8 +113,8 @@ class Utils
 	{
 //		return $sHtml;
 		return \preg_replace(
-			['@"\\s*/>@', '/\\s*&nbsp;/i', '/&nbsp;\\s*/i', '/[\\r\\n\\t]+/', '/>\\s+</'],
-			['">', "\xC2\xA0", "\xC2\xA0", ' ', '><'],
+			['@\\s*/>@', '/\\s*&nbsp;/i', '/&nbsp;\\s*/i', '/[\\r\\n\\t]+/', '/>\\s+</'],
+			['>', "\xC2\xA0", "\xC2\xA0", ' ', '><'],
 			\trim($sHtml)
 		);
 	}
