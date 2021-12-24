@@ -713,8 +713,6 @@ class MailClient
 	 */
 	public function MessageListThreadsMap(string $sFolderName, string $sFolderHash, ?\MailSo\Cache\CacheClient $oCacher) : array
 	{
-		$iThreadLimit = \MailSo\Config::$LargeThreadLimit;
-
 		$sSearchHash = '';
 		if (0 < \MailSo\Config::$MessageListDateFilter)
 		{
@@ -732,8 +730,7 @@ class MailClient
 		if ($oCacher && $oCacher->IsInited())
 		{
 			$sSerializedHashKey =
-				'ThreadsMapSorted/'.$sSearchHash.'/'.
-				'Limit='.$iThreadLimit.'/'.$sFolderName.'/'.$sFolderHash;
+				'ThreadsMapSorted/'.$sSearchHash.'/'.$sFolderName.'/'.$sFolderHash;
 
 			if ($this->oLogger)
 			{
@@ -765,6 +762,7 @@ class MailClient
 		}
 		catch (\MailSo\Imap\Exceptions\RuntimeException $oException)
 		{
+			\SnappyMail\LOG::warning('MessageListThreadsMap ' . $oException->getMessage());
 			unset($oException);
 		}
 
@@ -1033,6 +1031,7 @@ class MailClient
 		{
 			if ($bUseThreads) {
 				$aAllThreads = $this->MessageListThreadsMap($oMessageCollection->FolderName, $oMessageCollection->FolderHash, $oParams->oCacher);
+//				$iThreadLimit = \MailSo\Config::$LargeThreadLimit;
 
 				if ($oParams->iThreadUid)
 				{
