@@ -217,7 +217,7 @@ class Manager
 	{
 		if ($this->bIsEnabled && isset($aAppData['Plugins']) && \is_array($aAppData['Plugins']))
 		{
-			$bAuth = isset($aAppData['Auth']) && !!$aAppData['Auth'];
+			$bAuth = !empty($aAppData['Auth']);
 			foreach ($this->aPlugins as $oPlugin)
 			{
 				if ($oPlugin)

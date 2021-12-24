@@ -95,7 +95,7 @@ class Property
 
 	public function SetAllowedInJs(bool $bValue = true) : self
 	{
-		$this->bAllowedInJs = !!$bValue;
+		$this->bAllowedInJs = $bValue;
 
 		return $this;
 	}

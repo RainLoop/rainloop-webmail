@@ -346,7 +346,7 @@ class Http
 			CURLOPT_FAILONERROR => true,
 			CURLOPT_SSL_VERIFYPEER => false,
 			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_FOLLOWLOCATION => !!$bFollowLocation,
+			CURLOPT_FOLLOWLOCATION => $bFollowLocation,
 			CURLOPT_MAXREDIRS => 7,
 			CURLOPT_FILE => $rFile,
 			CURLOPT_TIMEOUT => (int) $iTimeout

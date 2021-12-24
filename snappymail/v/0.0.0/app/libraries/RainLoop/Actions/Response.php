@@ -171,7 +171,7 @@ trait Response
 
 			$oAccount = $this->getAccountFromToken();
 
-			if (!$mResult['DateTimeStampInUTC'] || !!$this->Config()->Get('labs', 'date_from_headers', false)) {
+			if (!$mResult['DateTimeStampInUTC'] || $this->Config()->Get('labs', 'date_from_headers', false)) {
 				$iDateTimeStampInUTC = $mResponse->HeaderTimeStampInUTC();
 				if ($iDateTimeStampInUTC) {
 					$mResult['DateTimeStampInUTC'] = $iDateTimeStampInUTC;

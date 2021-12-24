@@ -140,7 +140,7 @@ class Identity implements \JsonSerializable
 			$this->sBcc = !empty($aData['Bcc']) ? $aData['Bcc'] : '';
 			$this->sSignature = !empty($aData['Signature']) ? $aData['Signature'] : '';
 			$this->bSignatureInsertBefore = isset($aData['SignatureInsertBefore']) ?
-				($bJson ? '1' === $aData['SignatureInsertBefore'] : !!$aData['SignatureInsertBefore']) : true;
+				!empty($aData['SignatureInsertBefore']) : true;
 
 			return true;
 		}

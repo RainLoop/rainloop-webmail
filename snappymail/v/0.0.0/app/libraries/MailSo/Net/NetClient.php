@@ -167,14 +167,12 @@ abstract class NetClient
 		$this->writeLog('Start connection to "'.$this->sConnectedHost.':'.$this->iConnectedPort.'"',
 			\MailSo\Log\Enumerations\Type::NOTE);
 
-		$bVerifySsl = !!$bVerifySsl;
-		$bAllowSelfSigned = $bVerifySsl ? !!$bAllowSelfSigned : true;
 		$aStreamContextSettings = array(
 			'ssl' => array(
 				'verify_host' => $bVerifySsl,
 				'verify_peer' => $bVerifySsl,
 				'verify_peer_name' => $bVerifySsl,
-				'allow_self_signed' => $bAllowSelfSigned
+				'allow_self_signed' => $bVerifySsl ? $bAllowSelfSigned : true
 			)
 		);
 

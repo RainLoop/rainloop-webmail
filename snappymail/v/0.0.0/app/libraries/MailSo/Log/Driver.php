@@ -140,13 +140,13 @@ abstract class Driver
 
 	public function WriteOnErrorOnly(bool $bValue) : self
 	{
-		$this->bWriteOnErrorOnly = !!$bValue;
+		$this->bWriteOnErrorOnly = $bValue;
 		return $this;
 	}
 
 	public function WriteOnPhpErrorOnly(bool $bValue) : self
 	{
-		$this->bWriteOnPhpErrorOnly = !!$bValue;
+		$this->bWriteOnPhpErrorOnly = $bValue;
 		return $this;
 	}
 

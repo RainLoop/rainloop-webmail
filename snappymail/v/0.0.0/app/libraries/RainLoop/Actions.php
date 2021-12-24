@@ -141,7 +141,7 @@ class Actions
 		}
 
 		$this->oLogger = \MailSo\Log\Logger::SingletonInstance();
-		if (!!$this->oConfig->Get('logs', 'enable', false)) {
+		if ($this->oConfig->Get('logs', 'enable', false)) {
 			$sSessionFilter = (string)$this->oConfig->Get('logs', 'session_filter', '');
 			if (!empty($sSessionFilter)) {
 				$aSessionParts = \explode(':', $sSessionFilter, 2);
@@ -633,7 +633,7 @@ class Actions
 		if (null === $this->oLoggerAuth) {
 			$this->oLoggerAuth = new \MailSo\Log\Logger(false);
 
-			if (!!$this->oConfig->Get('logs', 'auth_logging', false)) {
+			if ($this->oConfig->Get('logs', 'auth_logging', false)) {
 				$sAuthLogFileFullPath = \APP_PRIVATE_DATA . 'logs/' . $this->compileLogFileName(
 						$this->oConfig->Get('logs', 'auth_logging_filename', ''));
 
@@ -963,7 +963,7 @@ class Actions
 			$aResult['PluginsLink'] = './?/Plugins/0/' . ($bAdmin ? 'Admin' : 'User') . '/' . $sStaticCache . '/';
 		}
 
-		$bAppJsDebug = !!$this->oConfig->Get('labs', 'use_app_debug_js', false);
+		$bAppJsDebug = $this->oConfig->Get('labs', 'use_app_debug_js', false);
 
 		$aResult['StaticLibJsLink'] = $this->StaticPath('js/' . ($bAppJsDebug ? '' : 'min/') .
 			'libs' . ($bAppJsDebug ? '' : '.min') . '.js');
