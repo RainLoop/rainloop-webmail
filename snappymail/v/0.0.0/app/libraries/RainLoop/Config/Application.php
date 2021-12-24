@@ -247,7 +247,17 @@ Values:
 
 				'enable' => array(false, 'Enable logging'),
 
-				'write_on_error_only' => array(false, 'Logs entire request only if error occured (php requred)'),
+				'level' => array(4, 'Log messages of set RFC 5424 section 6.2.1 Severity level and higher (0 = highest, 7 = lowest).
+0 = Emergency
+1 = Alert
+2 = Critical
+3 = Error
+4 = Warning
+5 = Notice
+6 = Informational
+7 = Debug'),
+
+				'write_on_error_only' => array(false, 'Logs entire request only if error occured (php required)'),
 				'write_on_php_error_only' => array(false, 'Logs entire request only if php error occured'),
 				'write_on_timeout_only' => array(0, 'Logs entire request only if request timeout (in seconds) occured.'),
 
