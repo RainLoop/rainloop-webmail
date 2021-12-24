@@ -65,13 +65,17 @@ define('APP_PRIVATE_DATA_NAME', $sPrivateDataFolderInternalName ?: '_default_');
 
 defined('APP_USE_APCU_CACHE') || define('APP_USE_APCU_CACHE', true);
 
-$sCustomDataPath = function_exists('__get_custom_data_full_path') ? rtrim(trim(__get_custom_data_full_path()), '\\/') : $sCustomDataPath;
-define('APP_DATA_FOLDER_PATH', strlen($sCustomDataPath) ? $sCustomDataPath.'/' : APP_INDEX_ROOT_PATH.'data/');
-unset($sCustomDataPath);
+if (!defined('APP_DATA_FOLDER_PATH')) {
+	$sCustomDataPath = function_exists('__get_custom_data_full_path') ? rtrim(trim(__get_custom_data_full_path()), '\\/') : $sCustomDataPath;
+	define('APP_DATA_FOLDER_PATH', strlen($sCustomDataPath) ? $sCustomDataPath.'/' : APP_INDEX_ROOT_PATH.'data/');
+	unset($sCustomDataPath);
+}
 
-define('APP_CONFIGURATION_NAME', function_exists('__get_additional_configuration_name')
-	? trim(__get_additional_configuration_name()) : $sCustomConfiguration);
-unset($sCustomConfiguration);
+if (!defined('APP_CONFIGURATION_NAME')) {
+	define('APP_CONFIGURATION_NAME', function_exists('__get_additional_configuration_name')
+		? trim(__get_additional_configuration_name()) : $sCustomConfiguration);
+	unset($sCustomConfiguration);
+}
 
 // installation checking data folder
 $sInstalled = is_file(APP_DATA_FOLDER_PATH.'INSTALLED') ? file_get_contents(APP_DATA_FOLDER_PATH.'INSTALLED') : '';

@@ -12,7 +12,7 @@ abstract class AbstractConfig implements \JsonSerializable
 	/**
 	 * @var string
 	 */
-	private $sAdditionalFile;
+	private $sAdditionalFile = '';
 
 	/**
 	 * @var array
@@ -34,9 +34,12 @@ abstract class AbstractConfig implements \JsonSerializable
 		$this->sFile = \APP_PRIVATE_DATA.'configs/'.\trim($sFileName);
 
 		$sAdditionalFileName = \trim($sAdditionalFileName);
-		$this->sAdditionalFile = \APP_PRIVATE_DATA.'configs/'.$sAdditionalFileName;
-		$this->sAdditionalFile = \strlen($sAdditionalFileName) &&
-			\file_exists($this->sAdditionalFile) ? $this->sAdditionalFile : '';
+		if (\strlen($sAdditionalFileName)) {
+			$sAdditionalFileName = \APP_PRIVATE_DATA.'configs/'.$sAdditionalFileName;
+			if (\file_exists($this->sAdditionalFile)) {
+				$this->sAdditionalFile = $this->sAdditionalFile;
+			}
+		}
 
 		$this->sFileHeader = $sFileHeader;
 		$this->aData = $this->defaultValues();
