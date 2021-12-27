@@ -509,7 +509,7 @@ trait Messages
 		}
 		catch (\Throwable $oException)
 		{
-			\error_log("FolderHash({$sFolder}) Exception: {$oException->getMessage()}");
+			\SnappyMail\LOG::warning("FolderHash({$sFolder}) Exception: {$oException->getMessage()}");
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $sHash ? array($sFolder, $sHash) : array($sFromFolder));
@@ -572,7 +572,7 @@ trait Messages
 		}
 		catch (\Throwable $oException)
 		{
-			\error_log("FolderHash({$sFromFolder}) Exception: {$oException->getMessage()}");
+			\SnappyMail\LOG::warning("FolderHash({$sFromFolder}) Exception: {$oException->getMessage()}");
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $sHash ? array($sFromFolder, $sHash) : array($sFromFolder));

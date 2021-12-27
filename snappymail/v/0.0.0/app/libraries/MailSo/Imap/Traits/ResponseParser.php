@@ -183,7 +183,7 @@ trait ResponseParser
 										$this->writeLog('{'.$iLiteralSize.'} '.$sLiteral, \MailSo\Log\Enumerations\Type::INFO);
 									}
 								} else {
-									\error_log('Literal treated as atom and skipped');
+									\SnappyMail\LOG::notice('IMAP', 'Literal treated as atom and skipped');
 								}
 								unset($sLiteral);
 							} else {
@@ -238,7 +238,7 @@ trait ResponseParser
 						default:
 						case "\r":
 						case "\n":
-							\error_log('Invalid char in quoted string: "' . \substr($this->sResponseBuffer, $iPos, $iOffset + $iLength - $iPos) . '"');
+							\SnappyMail\LOG::notice('IMAP', 'Invalid char in quoted string: "' . \substr($this->sResponseBuffer, $iPos, $iOffset + $iLength - $iPos) . '"');
 							// Not allowed in quoted string
 							break 2;
 						}

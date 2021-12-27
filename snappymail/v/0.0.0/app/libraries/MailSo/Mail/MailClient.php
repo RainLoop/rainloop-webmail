@@ -1190,7 +1190,7 @@ class MailClient
 		if ($this->oImapClient->IsSupported('LIST-EXTENDED')) {
 			$bUseListSubscribeStatus = false;
 		} else if ($bUseListSubscribeStatus) {
-			//\error_log('RFC5258 not supported, using LSUB');
+			//\SnappyMail\LOG::warning('IMAP', 'RFC5258 not supported, using LSUB');
 			try
 			{
 				$aSubscribedFolders = $this->oImapClient->FolderSubscribeList($sParent, $sListPattern);
@@ -1202,7 +1202,7 @@ class MailClient
 			}
 			catch (\Throwable $oException)
 			{
-				\error_log('ERROR FolderSubscribeList: ' . $oException->getMessage());
+				\SnappyMail\LOG::error('IMAP', 'FolderSubscribeList: ' . $oException->getMessage());
 			}
 		}
 

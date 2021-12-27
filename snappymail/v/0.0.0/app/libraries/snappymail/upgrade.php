@@ -80,14 +80,14 @@ abstract class Upgrade
 						\hash_hmac('sha1', '', $sHash)
 					];
 					if (!$sToken) {
-						\error_log("ConvertInsecureAccount {$sEmail} no token");
+						\SnappyMail\LOG::warning('UPGRADE', "ConvertInsecureAccount {$sEmail} no token");
 						continue;
 					}
 					$aAccountHash = \RainLoop\Utils::DecodeKeyValues($sToken);
 					if (empty($aAccountHash[0]) || 'token' !== $aAccountHash[0] // simple token validation
 						|| 8 > \count($aAccountHash) // length checking
 					) {
-						\error_log("ConvertInsecureAccount {$sEmail} invalid aAccountHash: " . \print_r($aAccountHash,1));
+						\SnappyMail\LOG::warning('UPGRADE', "ConvertInsecureAccount {$sEmail} invalid aAccountHash: " . \print_r($aAccountHash,1));
 						continue;
 					}
 					$aAccountHash[3] = Crypt::EncryptUrlSafe($aAccountHash[3], $sHash);
@@ -103,7 +103,7 @@ abstract class Upgrade
 						\hash_hmac('sha1', $aAccountHash[3], $sHash)
 					];
 				} catch (\Throwable $e) {
-					\error_log("ConvertInsecureAccount {$sEmail} failed");
+					\SnappyMail\LOG::warning('UPGRADE', "ConvertInsecureAccount {$sEmail} failed");
 				}
 			}
 
