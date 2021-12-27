@@ -62,6 +62,7 @@ if (defined('MULTIDOMAIN')) {
 	$sPrivateDataFolderInternalName = in_array($sPrivateDataFolderInternalName, array('', '127.0.0.1', '::1')) ? 'localhost' : $sPrivateDataFolderInternalName;
 }
 define('APP_PRIVATE_DATA_NAME', $sPrivateDataFolderInternalName ?: '_default_');
+unset($sPrivateDataFolderInternalName);
 
 defined('APP_USE_APCU_CACHE') || define('APP_USE_APCU_CACHE', true);
 
@@ -77,25 +78,8 @@ if (!defined('APP_CONFIGURATION_NAME')) {
 	unset($sCustomConfiguration);
 }
 
-// installation checking data folder
-$sInstalled = is_file(APP_DATA_FOLDER_PATH.'INSTALLED') ? file_get_contents(APP_DATA_FOLDER_PATH.'INSTALLED') : '';
-if (APP_VERSION !== $sInstalled)
-{
-	include APP_VERSION_ROOT_PATH.'check.php';
-}
-
-$sSalt = is_file(APP_DATA_FOLDER_PATH.'SALT.php') ? trim(file_get_contents(APP_DATA_FOLDER_PATH.'SALT.php')) : '';
-if (!$sSalt)
-{
-	// random salt
-	$sSalt = '<'.'?php //'.bin2hex(random_bytes(48));
-	file_put_contents(APP_DATA_FOLDER_PATH.'SALT.php', $sSalt);
-}
-define('APP_SALT', md5($sSalt.APP_PRIVATE_DATA_NAME.$sSalt));
-
 $sData = is_file(APP_DATA_FOLDER_PATH.'DATA.php') ? file_get_contents(APP_DATA_FOLDER_PATH.'DATA.php') : '';
 define('APP_PRIVATE_DATA', APP_DATA_FOLDER_PATH.'_data_'.($sData ? md5($sData) : '').'/'.APP_PRIVATE_DATA_NAME.'/');
-
 define('APP_PLUGINS_PATH', APP_PRIVATE_DATA.'plugins/');
 
 ini_set('default_charset', 'UTF-8');
@@ -103,65 +87,22 @@ ini_set('internal_encoding', 'UTF-8');
 mb_internal_encoding('UTF-8');
 mb_language('uni');
 
-if (APP_VERSION !== $sInstalled || (!is_dir(APP_PRIVATE_DATA) && strlen($sPrivateDataFolderInternalName) && '_default_' !== APP_PRIVATE_DATA_NAME))
+// installation checking data folder
+if (APP_VERSION !== (is_file(APP_DATA_FOLDER_PATH.'INSTALLED') ? file_get_contents(APP_DATA_FOLDER_PATH.'INSTALLED') : '')
+ || !is_dir(APP_PRIVATE_DATA))
 {
-	file_put_contents(APP_DATA_FOLDER_PATH.'INSTALLED', APP_VERSION);
-	file_put_contents(APP_DATA_FOLDER_PATH.'VERSION', APP_VERSION);
-	file_put_contents(APP_DATA_FOLDER_PATH.'index.html', 'Forbidden');
-	file_put_contents(APP_DATA_FOLDER_PATH.'index.php', 'Forbidden');
-
-	if (!is_file(APP_DATA_FOLDER_PATH.'.htaccess') && is_file(APP_VERSION_ROOT_PATH.'app/.htaccess'))
-	{
-		copy(APP_VERSION_ROOT_PATH.'app/.htaccess', APP_DATA_FOLDER_PATH.'.htaccess');
-	}
-
-	if (!is_dir(APP_PRIVATE_DATA))
-	{
-		mkdir(APP_PRIVATE_DATA, 0755, true);
-		file_put_contents(APP_PRIVATE_DATA.'.htaccess', 'Require all denied');
-	}
-
-	else if (is_dir(APP_PRIVATE_DATA.'cache'))
-	{
-		foreach (new RecursiveIteratorIterator(
-			new RecursiveDirectoryIterator(APP_PRIVATE_DATA.'cache', FilesystemIterator::SKIP_DOTS),
-			RecursiveIteratorIterator::CHILD_FIRST) as $value) {
-				$value->isDir() ? rmdir($value) : unlink($value);
-		}
-		clearstatcache();
-	}
-
-	foreach (array('logs', 'cache', 'configs', 'domains', 'plugins', 'storage') as $sName)
-	{
-		if (!is_dir(APP_PRIVATE_DATA.$sName))
-		{
-			mkdir(APP_PRIVATE_DATA.$sName, 0700, true);
-		}
-	}
-
-	if (!file_exists(APP_PRIVATE_DATA.'domains/disabled') && is_dir(APP_PRIVATE_DATA.'domains'))
-	{
-		$sFile = $sNewFile = '';
-		$aFiles = glob(APP_VERSION_ROOT_PATH.'app/domains/*');
-		if (is_array($aFiles) && count($aFiles))
-		{
-			foreach ($aFiles as $sFile)
-			{
-				if (is_file($sFile))
-				{
-					$sNewFile = APP_PRIVATE_DATA.'domains/'.basename($sFile);
-					if (!file_exists($sNewFile))
-					{
-						copy($sFile, $sNewFile);
-					}
-				}
-			}
-		}
-		unset($aFiles, $sFile, $sNewFile);
-	}
+	include APP_VERSION_ROOT_PATH.'setup.php';
 }
 
-unset($sSalt, $sData, $sInstalled, $sPrivateDataFolderInternalName);
+$sSalt = is_file(APP_DATA_FOLDER_PATH.'SALT.php') ? trim(file_get_contents(APP_DATA_FOLDER_PATH.'SALT.php')) : '';
+if (!$sSalt) {
+	// random salt
+	$sSalt = '<'.'?php //'.bin2hex(random_bytes(48));
+	file_put_contents(APP_DATA_FOLDER_PATH.'SALT.php', $sSalt);
+}
+define('APP_SALT', md5($sSalt.APP_PRIVATE_DATA_NAME.$sSalt));
+
+unset($sSalt, $sData);
 
 if (!isset($_SERVER['HTTP_USER_AGENT'])) {
 	$_SERVER['HTTP_USER_AGENT'] = '';
