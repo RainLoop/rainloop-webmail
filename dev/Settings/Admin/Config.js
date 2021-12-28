@@ -12,13 +12,13 @@ export class ConfigAdminSettings /*extends AbstractViewSettings*/ {
 		Remote.request('AdminSettingsGet', (iError, data) => {
 			if (!iError) {
 				const cfg = [],
-					getInputType = value => {
+					getInputType = (value, pass) => {
 						switch (typeof value)
 						{
 						case 'boolean': return 'checkbox';
 						case 'number': return 'number';
 						}
-						return 'text';
+						return pass ? 'password' : 'text';
 					};
 				Object.entries(data.Result).forEach(([key, items]) => {
 					const section = {
@@ -30,7 +30,7 @@ export class ConfigAdminSettings /*extends AbstractViewSettings*/ {
 							key: `config[${key}][${skey}]`,
 							name: skey,
 							value: item[0],
-							type: getInputType(item[0]),
+							type: getInputType(item[0], skey.includes('password')),
 							comment: item[1]
 						});
 					});
