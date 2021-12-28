@@ -47,10 +47,6 @@ const
 				vm.viewModelDom = vmDom;
 				ViewModelClass.__dom = vmDom;
 
-				if (vm.viewNoUserSelect) {
-					vmDom.classList.add('g-ui-user-select-none');
-				}
-
 				if (ViewType.Popup === position) {
 					vm.cancelCommand = vm.closeCommand = createCommand(() => hideScreenPopup(ViewModelClass));
 

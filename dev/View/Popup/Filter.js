@@ -16,7 +16,6 @@ import { folderListOptionsBuilder } from 'Common/UtilsUser';
 class FilterPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Filter');
-		this.viewNoUserSelect = true;
 
 		this.addObservables({
 			isNew: true,

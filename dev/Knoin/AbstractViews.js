@@ -12,7 +12,6 @@ class AbstractView {
 		this.viewModelTemplateID = templateID;
 		this.viewType = type;
 		this.viewModelDom = null;
-		this.viewNoUserSelect = false;
 
 		this.keyScope = {
 			scope: Scope.None,

@@ -18,7 +18,6 @@ const KEY_NAME_SUBSTR = -8,
 class ComposeOpenPgpPopupView extends AbstractViewPopup {
 	constructor() {
 		super('ComposeOpenPgp');
-		this.viewNoUserSelect = true;
 
 		this.publicKeysOptionsCaption = i18nPGP('ADD_A_PUBLICK_KEY');
 		this.privateKeysOptionsCaption = i18nPGP('SELECT_A_PRIVATE_KEY');

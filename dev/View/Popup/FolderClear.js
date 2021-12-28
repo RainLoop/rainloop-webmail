@@ -11,7 +11,6 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 class FolderClearPopupView extends AbstractViewPopup {
 	constructor() {
 		super('FolderClear');
-		this.viewNoUserSelect = true;
 
 		this.addObservables({
 			selectedFolder: null,

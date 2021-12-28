@@ -16,7 +16,6 @@ import { FilterPopupView } from 'View/Popup/Filter';
 class SieveScriptPopupView extends AbstractViewPopup {
 	constructor() {
 		super('SieveScript');
-		this.viewNoUserSelect = true;
 
 		addObservablesTo(this, {
 			saveError: false,

@@ -7,7 +7,6 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 class AskPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Ask');
-		this.viewNoUserSelect = true;
 
 		this.addObservables({
 			askDesc: '',

@@ -30,7 +30,6 @@ const domainToParams = oDomain => ({
 class DomainPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Domain');
-		this.viewNoUserSelect = true;
 
 		this.addObservables(this.getDefaults());
 		this.addObservables({

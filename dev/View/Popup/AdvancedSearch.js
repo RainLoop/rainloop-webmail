@@ -11,7 +11,6 @@ import { FolderUserStore } from 'Stores/User/Folder';
 class AdvancedSearchPopupView extends AbstractViewPopup {
 	constructor() {
 		super('AdvancedSearch');
-		this.viewNoUserSelect = true;
 
 		this.addObservables({
 			from: '',

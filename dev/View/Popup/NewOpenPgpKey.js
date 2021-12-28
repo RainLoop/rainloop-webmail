@@ -8,7 +8,6 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 class NewOpenPgpKeyPopupView extends AbstractViewPopup {
 	constructor() {
 		super('NewOpenPgpKey');
-		this.viewNoUserSelect = true;
 
 		this.addObservables({
 			email: '',

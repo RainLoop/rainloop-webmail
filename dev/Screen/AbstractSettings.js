@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { pString } from 'Common/Utils';
 import { settings } from 'Common/Links';
-import { elementById } from 'Common/Globals';
+import { createElement, elementById } from 'Common/Globals';
 
 import { AbstractScreen } from 'Knoin/AbstractScreen';
 
@@ -33,9 +33,10 @@ export class AbstractSettingsScreen extends AbstractScreen {
 			} else {
 				const vmPlace = elementById('rl-settings-subscreen');
 				if (vmPlace) {
-					viewModelDom = Element.fromHTML('<div id="V-Settings-'
-						+ (RoutedSettingsViewModel.name.replace(/(User|Admin)Settings/,''))
-						+ '" class="g-ui-user-select-none" hidden=""></div>');
+					viewModelDom = createElement('div',{
+						id: 'V-Settings-' + RoutedSettingsViewModel.name.replace(/(User|Admin)Settings/,''),
+						hidden: ''
+					})
 					vmPlace.append(viewModelDom);
 
 					settingsScreen = new RoutedSettingsViewModel();
