@@ -11,8 +11,10 @@ const
 
 	ctrlKey = shortcuts.getMetaKey() + ' + ',
 
-	tpl = doc.createElement('template'),
-	clr = doc.createElement('input'),
+	createElement = name => doc.createElement(name),
+
+	tpl = createElement('template'),
+	clr = createElement('input'),
 
 	trimLines = html => html.trim().replace(/^(<div>\s*<br\s*\/?>\s*<\/div>)+/, '').trim(),
 	clearHtmlLine = html => rl.Utils.htmlToPlain(html).trim(),
@@ -318,10 +320,10 @@ class SquireUI
 				}
 			},
 
-			plain = doc.createElement('textarea'),
-			wysiwyg = doc.createElement('div'),
-			toolbar = doc.createElement('div'),
-			browseImage = doc.createElement('input'),
+			plain = createElement('textarea'),
+			wysiwyg = createElement('div'),
+			toolbar = createElement('div'),
+			browseImage = createElement('input'),
 			squire = new Squire(wysiwyg, SquireDefaultConfig);
 
 		browseImage.type = 'file';
@@ -356,17 +358,17 @@ class SquireUI
 				continue;
 			}
 */
-			let toolgroup = doc.createElement('div');
+			let toolgroup = createElement('div');
 			toolgroup.className = 'btn-group';
 			toolgroup.id = 'squire-toolgroup-'+group;
 			for (action in actions[group]) {
 				let cfg = actions[group][action], input, ev = 'click';
 				if (cfg.input) {
-					input = doc.createElement('input');
+					input = createElement('input');
 					input.type = cfg.input;
 					ev = 'change';
 				} else if (cfg.select) {
-					input = doc.createElement('select');
+					input = createElement('select');
 					input.className = 'btn';
 					if (Array.isArray(cfg.select)) {
 						cfg.select.forEach(value => {
@@ -376,7 +378,7 @@ class SquireUI
 						});
 					} else {
 						Object.entries(cfg.select).forEach(([label, options]) => {
-							let group = doc.createElement('optgroup');
+							let group = createElement('optgroup');
 							group.label = label;
 							Object.entries(options).forEach(([text, value]) => {
 								var option = new Option(text, value);
@@ -388,7 +390,7 @@ class SquireUI
 					}
 					ev = 'input';
 				} else {
-					input = doc.createElement('button');
+					input = createElement('button');
 					input.type = 'button';
 					input.className = 'btn';
 					input.innerHTML = cfg.html;
