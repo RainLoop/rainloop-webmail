@@ -104,8 +104,7 @@ class Service
 		$sAdminPanelHost = $oConfig->Get('security', 'admin_panel_host', '');
 		if (empty($sAdminPanelHost))
 		{
-			$sAdminPanelKey = \strtolower($oConfig->Get('security', 'admin_panel_key', 'admin'));
-			$bAdmin = !empty($aPaths[0]) && \strtolower($aPaths[0]) === $sAdminPanelKey;
+			$bAdmin = !empty($aPaths[0]) && ($oConfig->Get('security', 'admin_panel_key', '') ?: 'admin') === $aPaths[0];
 		}
 		else if (empty($aPaths[0]) &&
 			\mb_strtolower($sAdminPanelHost) === \mb_strtolower($this->oHttp->GetHost()))

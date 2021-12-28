@@ -718,8 +718,8 @@ class Actions
 			'attachmentsActions' => $aAttachmentsActions
 		), $bAdmin ? array(
 			'adminHostUse' => '' !== $oConfig->Get('security', 'admin_panel_host', ''),
-			'adminPath' => \strtolower($oConfig->Get('security', 'admin_panel_key', 'admin')),
-			'allowAdminPanel' => (bool)$oConfig->Get('security', 'allow_admin_panel', true),
+			'adminPath' => $oConfig->Get('security', 'admin_panel_key', '') ?: 'admin',
+			'adminAllowed' => (bool)$oConfig->Get('security', 'allow_admin_panel', true),
 		) : array());
 	}
 

@@ -17,7 +17,7 @@ class AdminApp extends AbstractApp {
 	}
 
 	start() {
-		if (!Settings.app('allowAdminPanel')) {
+		if (!Settings.app('adminAllowed')) {
 			rl.route.root();
 			setTimeout(() => location.href = '/', 1);
 		} else if (SettingsGet('Auth')) {

@@ -21,7 +21,7 @@ export const
 	 * @returns {string}
 	 */
 	logoutLink = () => (rl.adminArea() && !Settings.app('adminHostUse'))
-		? SERVER_PREFIX + (Settings.app('adminPath') || 'admin')
+		? SERVER_PREFIX + Settings.app('adminPath')
 		: ROOT,
 
 	/**
