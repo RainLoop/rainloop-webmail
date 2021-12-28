@@ -924,7 +924,7 @@ trait Admin
 		return false;
 	}
 
-	private function setConfigFromParams(Config\Application $oConfig, string $sParamName, string $sConfigSector, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null): void
+	private function setConfigFromParams(\RainLoop\Config\Application $oConfig, string $sParamName, string $sConfigSector, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null): void
 	{
 		$sValue = $this->GetActionParam($sParamName, '');
 		if ($this->HasActionParam($sParamName)) {
