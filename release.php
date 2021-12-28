@@ -210,9 +210,6 @@ $tar->addFromString('data/VERSION', $package->version);
 $zip->addFile('data/README.md');
 $tar->addFile('data/README.md');
 
-//$zip->addFile('data/EMPTY');
-//$tar->addFile('data/EMPTY');
-
 if ($options['aur']) {
 	$data = '<?php
 function __get_custom_data_full_path()

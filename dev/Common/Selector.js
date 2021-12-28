@@ -288,7 +288,7 @@ export class Selector {
 	 * @returns {boolean}
 	 */
 	autoSelect() {
-		return !!(this.oCallbacks.AutoSelect || (()=>true))();
+		return !!(this.oCallbacks.AutoSelect || (()=>1))();
 	}
 
 	/**
@@ -329,7 +329,7 @@ export class Selector {
 					} else if (++i < listLen) {
 						result = list[i];
 					}
-					result || (this.oCallbacks.UpOrDown || (()=>true))('ArrowUp' === sEventKey);
+					result || (this.oCallbacks.UpOrDown || (()=>0))('ArrowUp' === sEventKey);
 				} else if ('Home' === sEventKey) {
 					result = list[0];
 				} else if ('End' === sEventKey) {
