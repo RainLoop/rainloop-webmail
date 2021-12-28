@@ -59,7 +59,7 @@ class Utils
 	{
 		return \SnappyMail\Crypt::DecryptUrlSafe(
 			$sEncodedValues,
-			\sha1(APP_SALT.$sCustomKey.'Q'.static::GetSessionToken())
+			\sha1(APP_SALT.$sCustomKey.'Q'.static::GetSessionToken(false))
 		) ?: null;
 	}
 
@@ -72,14 +72,17 @@ class Utils
 		}
 	}
 
-	public static function GetSessionToken() : string
+	public static function GetSessionToken(bool $generate = true) : ?string
 	{
 		$sToken = static::GetCookie(self::SESSION_TOKEN, null);
 		if (!$sToken) {
+			if (!$generate) {
+				return null;
+			}
+			\SnappyMail\LOG::debug('TOKENS', 'New SESSION_TOKEN');
 			$sToken = \MailSo\Base\Utils::Sha1Rand(APP_SALT);
 			static::SetCookie(self::SESSION_TOKEN, $sToken);
 		}
-
 		return \sha1('Session'.APP_SALT.$sToken.'Token'.APP_SALT);
 	}
 
@@ -225,11 +228,18 @@ class Utils
 	{
 		$dir = \dirname($filename);
 		if (!\is_dir($dir) && !\mkdir($dir, 0700, true)) {
-			throw new \RainLoop\Exceptions\Exception('Failed to create directory "'.$dir.'"');
+			throw new Exceptions\Exception('Failed to create directory "'.$dir.'"');
 		}
 		if (false === \file_put_contents($filename, $data)) {
-			throw new \RainLoop\Exceptions\Exception('Failed to save file "'.$filename.'"');
+			throw new Exceptions\Exception('Failed to save file "'.$filename.'"');
 		}
+		\clearstatcache();
 		\chmod($filename, 0600);
+/*
+		try {
+		} catch (\Throwable $oException) {
+			throw new Exceptions\Exception($oException->getMessage() . ': ' . \error_get_last()['message']);
+		}
+*/
 	}
 }

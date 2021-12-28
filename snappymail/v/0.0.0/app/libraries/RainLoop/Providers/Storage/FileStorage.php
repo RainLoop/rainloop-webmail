@@ -38,7 +38,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 			$sFileName && \RainLoop\Utils::saveFile($sFileName, $sValue);
 			return true;
 		} catch (\Throwable $e) {
-			\error_log("{$e->getMessage()}: {$sFileName}");
+			\SnappyMail\LOG::warning('FileStorage', $e->getMessage());
 		}
 		return false;
 	}
@@ -55,6 +55,10 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 		$sFileName = $this->generateFileName($mAccount, $iStorageType, $sKey);
 		if ($sFileName && \file_exists($sFileName)) {
 			$mValue = \file_get_contents($sFileName);
+			// Update mtime to prevent garbage collection
+			if (StorageType::SESSION === $iStorageType) {
+				\touch($sFileName);
+			}
 		}
 		return false === $mValue ? $mDefault : $mValue;
 	}
@@ -154,6 +158,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 
 	public function GC() : void
 	{
+		\clearstatcache();
 		foreach (\glob("{$this->sDataPath}/*", GLOB_ONLYDIR) as $sDomain) {
 			foreach (\glob("{$sDomain}/*", GLOB_ONLYDIR) as $sLocal) {
 				\MailSo\Base\Utils::RecTimeDirRemove("{$sLocal}/.sign_me", 3600 * 24 * 30); // 30 days

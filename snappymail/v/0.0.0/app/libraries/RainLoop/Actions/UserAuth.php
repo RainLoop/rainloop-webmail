@@ -237,7 +237,7 @@ trait UserAuth
 				 * Server side control/kickout of logged in sessions
 				 * https://github.com/the-djmaze/snappymail/issues/151
 				 */
-				if (!isset($_COOKIE[Utils::SESSION_TOKEN])) {
+				if (empty($_COOKIE[Utils::SESSION_TOKEN])) {
 //					\MailSo\Base\Http::StatusHeader(401);
 					$this->Logout(true);
 //					$sAdditionalMessage = $this->StaticI18N('SESSION_UNDEFINED');
@@ -248,11 +248,19 @@ trait UserAuth
 					$aData,
 					$bThrowExceptionOnFalse
 				);
-				$sToken = Utils::GetSessionToken();
-				if ($oMainAuthAccount && $this->StorageProvider()->Get($oMainAuthAccount, StorageType::SESSION, $sToken)) {
+				$oMainAuthAccount || \SnappyMail\LOG::notice('TOKENS', 'AUTH_SPEC_TOKEN_KEY invalid');
+				$sToken = $oMainAuthAccount ? Utils::GetSessionToken(false) : null;
+				$sTokenValue = $sToken ? $this->StorageProvider()->Get($oMainAuthAccount, StorageType::SESSION, $sToken) : null;
+				if ($oMainAuthAccount && $sTokenValue) {
 					$this->oMainAuthAccount = $oMainAuthAccount;
 				} else {
-					$oMainAuthAccount && $this->StorageProvider()->Clear($oMainAuthAccount, StorageType::SESSION, $sToken);
+					if ($oMainAuthAccount) {
+						$sToken || \SnappyMail\LOG::notice('TOKENS', 'SESSION_TOKEN not found');
+						if ($sToken) {
+							$oMainAuthAccount && $this->StorageProvider()->Clear($oMainAuthAccount, StorageType::SESSION, $sToken);
+							$sTokenValue || \SnappyMail\LOG::notice('TOKENS', 'SESSION_TOKEN value invalid: ' . \gettype($sTokenValue));
+						}
+					}
 					Utils::ClearCookie(Utils::SESSION_TOKEN);
 //					\MailSo\Base\Http::StatusHeader(401);
 					$this->Logout(true);
@@ -266,10 +274,7 @@ trait UserAuth
 				}
 			}
 
-			if ($this->oMainAuthAccount) {
-				// Extend session cookie lifetime
-				$this->StorageProvider()->Put($this->oMainAuthAccount, StorageType::SESSION, Utils::GetSessionToken(), 'true');
-			} else if ($bThrowExceptionOnFalse) {
+			if ($bThrowExceptionOnFalse && !$this->oMainAuthAccount) {
 				throw new ClientException(Notifications::InvalidToken, null, 'Account undefined');
 			}
 		}
