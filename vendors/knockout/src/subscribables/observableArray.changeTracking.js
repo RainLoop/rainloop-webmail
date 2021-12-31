@@ -82,7 +82,7 @@ ko.extenders['trackArrayChanges'] = (target, options) => {
                 pendingChanges = 0;
 
                 if (changes && changes.length) {
-                    target['notifySubscribers'](changes, arrayChangeEventName);
+                    target.notifySubscribers(changes, arrayChangeEventName);
                 }
             }
         }

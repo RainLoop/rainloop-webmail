@@ -94,7 +94,7 @@
                 // the context object.
                 if (subscribable.isActive()) {
                     // Always notify because even if the model ($data) hasn't changed, other context properties might have changed
-                    subscribable['equalityComparer'] = null;
+                    subscribable.equalityComparer = null;
                 } else {
                     self[contextSubscribable] = undefined;
                 }
@@ -203,7 +203,7 @@
             if (bindingInfo) {
                 bindingInfo.notifiedEvents[event] = true;
                 if (bindingInfo.eventSubscribable) {
-                    bindingInfo.eventSubscribable['notifySubscribers'](node, event);
+                    bindingInfo.eventSubscribable.notifySubscribers(node, event);
                 }
                 if (event == ko.bindingEvent.childrenComplete) {
                     if (bindingInfo.asyncContext) {

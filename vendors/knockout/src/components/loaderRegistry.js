@@ -31,9 +31,9 @@
                         if (completedAsync) {
                             // Note that notifySubscribers ignores any dependencies read within the callback.
                             // See comment in loaderRegistryBehaviors.js for reasoning
-                            subscribable['notifySubscribers'](definition);
+                            subscribable.notifySubscribers(definition);
                         } else {
-                            ko.tasks.schedule(() => subscribable['notifySubscribers'](definition));
+                            ko.tasks.schedule(() => subscribable.notifySubscribers(definition));
                         }
                     });
                     completedAsync = true;

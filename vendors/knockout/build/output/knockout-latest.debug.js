@@ -323,7 +323,7 @@ ko.extenders = {
     },
 
     'notify': (target, notifyWhen) => {
-        target["equalityComparer"] = notifyWhen == "always" ?
+        target.equalityComparer = notifyWhen == "always" ?
             null :  // null equalityComparer means to always notify
             valuesArePrimitiveAndEqual;
     }
@@ -424,7 +424,7 @@ var ko_subscribable_fn = {
         return subscription;
     },
 
-    "notifySubscribers": function (valueToNotify, event) {
+    notifySubscribers: function (valueToNotify, event) {
         event = event || defaultEvent;
         if (event === defaultEvent) {
             this.updateVersion();
@@ -462,9 +462,9 @@ var ko_subscribable_fn = {
             beforeChange = 'beforeChange';
 
         if (!self._origNotifySubscribers) {
-            self._origNotifySubscribers = self["notifySubscribers"];
+            self._origNotifySubscribers = self.notifySubscribers;
             // Moved out of "limit" to avoid the extra closure
-            self["notifySubscribers"] = function(value, event) {
+            self.notifySubscribers = function(value, event) {
                 if (!event || event === defaultEvent) {
                     this._limitChange(value);
                 } else if (event === 'beforeChange') {
@@ -522,7 +522,7 @@ var ko_subscribable_fn = {
     },
 
     isDifferent: function(oldValue, newValue) {
-        return !this['equalityComparer'] || !this['equalityComparer'](oldValue, newValue);
+        return !this.equalityComparer || !this.equalityComparer(oldValue, newValue);
     },
 
     toString: () => '[object Object]',
@@ -554,7 +554,7 @@ ko.subscribable['fn'] = ko_subscribable_fn;
 
 
 ko.isSubscribable = instance =>
-    instance != null && typeof instance.subscribe == "function" && typeof instance["notifySubscribers"] == "function";
+    instance != null && typeof instance.subscribe == "function" && typeof instance.notifySubscribers == "function";
 (() => {
 
 var outerFrames = [],
@@ -643,13 +643,13 @@ var observableFn = {
         let value = this[observableLatestValue];
         return value && value.toJSON ? value.toJSON() : value;
     },
-    'equalityComparer': valuesArePrimitiveAndEqual,
+    equalityComparer: valuesArePrimitiveAndEqual,
     peek: function() { return this[observableLatestValue]; },
     valueHasMutated: function () {
-        this['notifySubscribers'](this[observableLatestValue], 'spectate');
-        this['notifySubscribers'](this[observableLatestValue]);
+        this.notifySubscribers(this[observableLatestValue], 'spectate');
+        this.notifySubscribers(this[observableLatestValue]);
     },
-    valueWillMutate: function () { this['notifySubscribers'](this[observableLatestValue], 'beforeChange'); }
+    valueWillMutate: function () { this.notifySubscribers(this[observableLatestValue], 'beforeChange'); }
 };
 
 // Note that for browsers that don't support proto assignment, the
@@ -835,7 +835,7 @@ ko.extenders['trackArrayChanges'] = (target, options) => {
                 pendingChanges = 0;
 
                 if (changes && changes.length) {
-                    target['notifySubscribers'](changes, arrayChangeEventName);
+                    target.notifySubscribers(changes, arrayChangeEventName);
                 }
             }
         }
@@ -1058,7 +1058,7 @@ function evaluateImmediate_CallReadThenEndDependencyDetection(state, dependencyD
 }
 
 var computedFn = {
-    "equalityComparer": valuesArePrimitiveAndEqual,
+    equalityComparer: valuesArePrimitiveAndEqual,
     getDependenciesCount: function () {
         return this[computedState].dependenciesCount;
     },
@@ -1212,17 +1212,17 @@ var computedFn = {
 
         if (changed) {
             if (!state.isSleeping) {
-                computedObservable["notifySubscribers"](state.latestValue, "beforeChange");
+                computedObservable.notifySubscribers(state.latestValue, "beforeChange");
             } else {
                 computedObservable.updateVersion();
             }
 
             state.latestValue = newValue;
 
-            computedObservable["notifySubscribers"](state.latestValue, "spectate");
+            computedObservable.notifySubscribers(state.latestValue, "spectate");
 
             if (!state.isSleeping && notifyChange) {
-                computedObservable["notifySubscribers"](state.latestValue);
+                computedObservable.notifySubscribers(state.latestValue);
             }
             if (computedObservable._recordUpdate) {
                 computedObservable._recordUpdate();
@@ -1230,7 +1230,7 @@ var computedFn = {
         }
 
         if (isInitial) {
-            computedObservable["notifySubscribers"](state.latestValue, "awake");
+            computedObservable.notifySubscribers(state.latestValue, "awake");
         }
 
         return changed;
@@ -1329,7 +1329,7 @@ var pureComputedOverrides = {
             }
 
             if (!state.isDisposed) {     // test since evaluating could trigger disposal
-                computedObservable["notifySubscribers"](state.latestValue, "awake");
+                computedObservable.notifySubscribers(state.latestValue, "awake");
             }
         }
     },
@@ -1347,7 +1347,7 @@ var pureComputedOverrides = {
                 }
             });
             state.isSleeping = true;
-            this["notifySubscribers"](undefined, "asleep");
+            this.notifySubscribers(undefined, "asleep");
         }
     },
     getVersion: function () {
@@ -1914,7 +1914,7 @@ ko.expressionRewriting = (() => {
                 // the context object.
                 if (subscribable.isActive()) {
                     // Always notify because even if the model ($data) hasn't changed, other context properties might have changed
-                    subscribable['equalityComparer'] = null;
+                    subscribable.equalityComparer = null;
                 } else {
                     self[contextSubscribable] = undefined;
                 }
@@ -2023,7 +2023,7 @@ ko.expressionRewriting = (() => {
             if (bindingInfo) {
                 bindingInfo.notifiedEvents[event] = true;
                 if (bindingInfo.eventSubscribable) {
-                    bindingInfo.eventSubscribable['notifySubscribers'](node, event);
+                    bindingInfo.eventSubscribable.notifySubscribers(node, event);
                 }
                 if (event == ko.bindingEvent.childrenComplete) {
                     if (bindingInfo.asyncContext) {
@@ -2337,9 +2337,9 @@ ko.expressionRewriting = (() => {
                         if (completedAsync) {
                             // Note that notifySubscribers ignores any dependencies read within the callback.
                             // See comment in loaderRegistryBehaviors.js for reasoning
-                            subscribable['notifySubscribers'](definition);
+                            subscribable.notifySubscribers(definition);
                         } else {
-                            ko.tasks.schedule(() => subscribable['notifySubscribers'](definition));
+                            ko.tasks.schedule(() => subscribable.notifySubscribers(definition));
                         }
                     });
                     completedAsync = true;

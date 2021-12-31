@@ -16,7 +16,7 @@ ko.extenders = {
     },
 
     'notify': (target, notifyWhen) => {
-        target["equalityComparer"] = notifyWhen == "always" ?
+        target.equalityComparer = notifyWhen == "always" ?
             null :  // null equalityComparer means to always notify
             valuesArePrimitiveAndEqual;
     }
