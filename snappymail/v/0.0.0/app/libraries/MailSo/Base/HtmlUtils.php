@@ -727,7 +727,7 @@ abstract class HtmlUtils
 	/**
 	 * Used by DoSaveMessage() and DoSendMessage()
 	 */
-	public static function BuildHtml(string $sHtml, array &$aFoundCids = array(), &$mFoundDataURL = null, array &$aFoundContentLocationUrls = array()) : string
+	public static function BuildHtml(string $sHtml, array &$aFoundCids, array &$aFoundDataURL, array &$aFoundContentLocationUrls) : string
 	{
 		$oDom = static::GetDomFromText($sHtml);
 
@@ -842,13 +842,13 @@ abstract class HtmlUtils
 				}
 			}
 
-			if ('img' === $sTagNameLower && \is_array($mFoundDataURL))
+			if ('img' === $sTagNameLower)
 			{
 				$sSrc = $oElement->getAttribute('src');
 				if ('data:image/' === \strtolower(\substr($sSrc, 0, 11)))
 				{
 					$sHash = \md5($sSrc);
-					$mFoundDataURL[$sHash] = $sSrc;
+					$aFoundDataURL[$sHash] = $sSrc;
 
 					$oElement->setAttribute('src', 'cid:'.$sHash);
 				}

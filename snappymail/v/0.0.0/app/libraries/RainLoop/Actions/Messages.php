@@ -915,21 +915,7 @@ trait Messages
 
 	private function buildMessage(Account $oAccount, bool $bWithDraftInfo = true) : \MailSo\Mime\Message
 	{
-		$sIdentityID = $this->GetActionParam('IdentityID', '');
-		$sTo = $this->GetActionParam('To', '');
-		$sCc = $this->GetActionParam('Cc', '');
-		$sBcc = $this->GetActionParam('Bcc', '');
-		$sReplyTo = $this->GetActionParam('ReplyTo', '');
-		$sSubject = $this->GetActionParam('Subject', '');
 		$bTextIsHtml = '1' === $this->GetActionParam('TextIsHtml', '0');
-		$bReadReceiptRequest = '1' === $this->GetActionParam('ReadReceiptRequest', '0');
-		$bMarkAsImportant = '1' === $this->GetActionParam('MarkAsImportant', '0');
-		$sText = $this->GetActionParam('Text', '');
-		$aAttachments = $this->GetActionParam('Attachments', null);
-
-		$aDraftInfo = $this->GetActionParam('DraftInfo', null);
-		$sInReplyTo = $this->GetActionParam('InReplyTo', '');
-		$sReferences = $this->GetActionParam('References', '');
 
 		$oMessage = new \MailSo\Mime\Message();
 
@@ -940,7 +926,7 @@ trait Messages
 			$oMessage->DoesNotAddDefaultXMailer();
 		}
 
-		$oFromIdentity = $this->GetIdentityByID($oAccount, $sIdentityID);
+		$oFromIdentity = $this->GetIdentityByID($oAccount, $this->GetActionParam('IdentityID', ''));
 		if ($oFromIdentity)
 		{
 			$oMessage->SetFrom(new \MailSo\Mime\Email(
@@ -957,81 +943,72 @@ trait Messages
 		$oFrom = $oMessage->GetFrom();
 		$oMessage->RegenerateMessageId($oFrom ? $oFrom->GetDomain() : '');
 
-		if (!empty($sReplyTo))
-		{
-			$oReplyTo = new \MailSo\Mime\EmailCollection($sReplyTo);
-			if ($oReplyTo && 0 < $oReplyTo->Count())
-			{
-				$oMessage->SetReplyTo($oReplyTo);
-			}
+		$oReplyTo = new \MailSo\Mime\EmailCollection($this->GetActionParam('ReplyTo', ''));
+		if ($oReplyTo->count()) {
+			$oMessage->SetReplyTo($oReplyTo);
 		}
 
-		if ($bReadReceiptRequest)
-		{
+		if ('1' === $this->GetActionParam('ReadReceiptRequest', '0')) {
 			// Read Receipts Reference Main Account Email, Not Identities #147
 //			$oMessage->SetReadReceipt(($oFromIdentity ?: $oAccount)->Email());
 			$oMessage->SetReadReceipt($oFrom->GetEmail());
 		}
 
-		if ($bMarkAsImportant)
-		{
+		if ('1' === $this->GetActionParam('MarkAsImportant', '0')) {
 			$oMessage->SetPriority(\MailSo\Mime\Enumerations\MessagePriority::HIGH);
 		}
 
-		$oMessage->SetSubject($sSubject);
+		$oMessage->SetSubject($this->GetActionParam('Subject', ''));
 
-		$oToEmails = new \MailSo\Mime\EmailCollection($sTo);
-		if ($oToEmails && $oToEmails->Count())
-		{
+		$oToEmails = new \MailSo\Mime\EmailCollection($this->GetActionParam('To', ''));
+		if ($oToEmails->count()) {
 			$oMessage->SetTo($oToEmails);
 		}
 
-		$oCcEmails = new \MailSo\Mime\EmailCollection($sCc);
-		if ($oCcEmails && $oCcEmails->Count())
-		{
+		$oCcEmails = new \MailSo\Mime\EmailCollection($this->GetActionParam('Cc', ''));
+		if ($oCcEmails->count()) {
 			$oMessage->SetCc($oCcEmails);
 		}
 
-		$oBccEmails = new \MailSo\Mime\EmailCollection($sBcc);
-		if ($oBccEmails && $oBccEmails->Count())
-		{
+		$oBccEmails = new \MailSo\Mime\EmailCollection($this->GetActionParam('Bcc', ''));
+		if ($oBccEmails->count()) {
 			$oMessage->SetBcc($oBccEmails);
 		}
 
+		$aDraftInfo = $this->GetActionParam('DraftInfo', null);
 		if ($bWithDraftInfo && \is_array($aDraftInfo) && !empty($aDraftInfo[0]) && !empty($aDraftInfo[1]) && !empty($aDraftInfo[2]))
 		{
 			$oMessage->SetDraftInfo($aDraftInfo[0], $aDraftInfo[1], $aDraftInfo[2]);
 		}
 
-		if (\strlen($sInReplyTo))
-		{
+		$sInReplyTo = $this->GetActionParam('InReplyTo', '');
+		if (\strlen($sInReplyTo)) {
 			$oMessage->SetInReplyTo($sInReplyTo);
 		}
 
-		if (\strlen($sReferences))
-		{
+		$sReferences = $this->GetActionParam('References', '');
+		if (\strlen($sReferences)) {
 			$oMessage->SetReferences($sReferences);
 		}
 
 		$aFoundCids = array();
-		$mFoundDataURL = array();
+		$aFoundDataURL = array();
 		$aFoundContentLocationUrls = array();
 
-		$sTextToAdd = $bTextIsHtml ?
-			\MailSo\Base\HtmlUtils::BuildHtml($sText, $aFoundCids, $mFoundDataURL, $aFoundContentLocationUrls) : $sText;
-
+		$sText = $this->GetActionParam('Text', '');
+		if ($bTextIsHtml) {
+			$sText = \MailSo\Base\HtmlUtils::BuildHtml($sText, $aFoundCids, $aFoundDataURL, $aFoundContentLocationUrls);
+		}
 		$this->Plugins()->RunHook($bTextIsHtml ? 'filter.message-html' : 'filter.message-plain',
-			array($oAccount, $oMessage, &$sTextToAdd));
-
-		if ($bTextIsHtml && \strlen($sTextToAdd))
-		{
-			$sTextConverted = \MailSo\Base\HtmlUtils::ConvertHtmlToPlain($sTextToAdd);
+			array($oAccount, $oMessage, &$sText));
+		if ($bTextIsHtml && \strlen($sText)) {
+			$sTextConverted = \MailSo\Base\HtmlUtils::ConvertHtmlToPlain($sText);
 			$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sTextConverted));
 			$oMessage->AddText($sTextConverted, false);
 		}
+		$oMessage->AddText($sText, $bTextIsHtml);
 
-		$oMessage->AddText($sTextToAdd, $bTextIsHtml);
-
+		$aAttachments = $this->GetActionParam('Attachments', null);
 		if (\is_array($aAttachments))
 		{
 			foreach ($aAttachments as $sTempName => $aData)
@@ -1056,30 +1033,27 @@ trait Messages
 			}
 		}
 
-		if ($mFoundDataURL && \is_array($mFoundDataURL) && \count($mFoundDataURL))
+		foreach ($aFoundDataURL as $sCidHash => $sDataUrlString)
 		{
-			foreach ($mFoundDataURL as $sCidHash => $sDataUrlString)
+			$aMatch = array();
+			$sCID = '<'.$sCidHash.'>';
+			if (\preg_match('/^data:(image\/[a-zA-Z0-9]+);base64,(.+)$/i', $sDataUrlString, $aMatch) &&
+				!empty($aMatch[1]) && !empty($aMatch[2]))
 			{
-				$aMatch = array();
-				$sCID = '<'.$sCidHash.'>';
-				if (\preg_match('/^data:(image\/[a-zA-Z0-9]+);base64,(.+)$/i', $sDataUrlString, $aMatch) &&
-					!empty($aMatch[1]) && !empty($aMatch[2]))
+				$sRaw = \MailSo\Base\Utils::Base64Decode($aMatch[2]);
+				$iFileSize = \strlen($sRaw);
+				if (0 < $iFileSize)
 				{
-					$sRaw = \MailSo\Base\Utils::Base64Decode($aMatch[2]);
-					$iFileSize = \strlen($sRaw);
-					if (0 < $iFileSize)
-					{
-						$sFileName = \preg_replace('/[^a-z0-9]+/i', '.', $aMatch[1]);
-						$rResource = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString($sRaw);
+					$sFileName = \preg_replace('/[^a-z0-9]+/i', '.', $aMatch[1]);
+					$rResource = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString($sRaw);
 
-						$sRaw = '';
-						unset($sRaw);
-						unset($aMatch);
+					$sRaw = '';
+					unset($sRaw);
+					unset($aMatch);
 
-						$oMessage->Attachments()->append(
-							new \MailSo\Mime\Attachment($rResource, $sFileName, $iFileSize, true, true, $sCID)
-						);
-					}
+					$oMessage->Attachments()->append(
+						new \MailSo\Mime\Attachment($rResource, $sFileName, $iFileSize, true, true, $sCID)
+					);
 				}
 			}
 		}

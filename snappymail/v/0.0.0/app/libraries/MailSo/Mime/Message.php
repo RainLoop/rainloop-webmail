@@ -114,6 +114,17 @@ class Message
 		return new EmailCollection;
 	}
 
+	public function GetCc() : ?EmailCollection
+	{
+		if (isset($this->aHeadersValue[Enumerations\Header::CC]) &&
+			$this->aHeadersValue[Enumerations\Header::CC] instanceof EmailCollection)
+		{
+			return $this->aHeadersValue[Enumerations\Header::CC]->Unique();
+		}
+
+		return null;
+	}
+
 	public function GetBcc() : ?EmailCollection
 	{
 		if (isset($this->aHeadersValue[Enumerations\Header::BCC]) &&
