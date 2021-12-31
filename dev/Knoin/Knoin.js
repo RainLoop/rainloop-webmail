@@ -259,23 +259,15 @@ export const
 	 * @param {(Function|boolean|null)=} fCanExecute = true
 	 * @returns {Function}
 	 */
-	createCommand = (fExecute, fCanExecute = true) => {
-		let fResult = fExecute
-			? (...args) => {
-				if (fResult && fResult.canExecute && fResult.canExecute()) {
-					fExecute.apply(null, args);
-				}
+	createCommand = (fExecute, fCanExecute) => {
+		let fResult = () => {
+				fResult.canExecute() && fExecute.call(null);
 				return false;
-			} : ()=>0;
+			};
 		fResult.enabled = ko.observable(true);
-		fResult.isCommand = true;
-
-		if (isFunction(fCanExecute)) {
-			fResult.canExecute = koComputable(() => fResult && fResult.enabled() && fCanExecute.call(null));
-		} else {
-			fResult.canExecute = koComputable(() => fResult && fResult.enabled() && !!fCanExecute);
-		}
-
+		fResult.canExecute = isFunction(fCanExecute)
+			? koComputable(() => fResult.enabled() && fCanExecute())
+			: fResult.enabled;
 		return fResult;
 	},
 
@@ -350,11 +342,10 @@ export const
 				fn = (...args) => fn.enabled() && fn.canExecute() && command.apply(thisArg, args);
 
 	//		fn.__realCanExecute = canExecute;
-	//		fn.isCommand = true;
 
 			fn.enabled = ko.observable(true);
 
-			fn.canExecute = (typeof canExecute === 'function')
+			fn.canExecute = isFunction(canExecute)
 				? koComputable(() => fn.enabled() && canExecute.call(thisArg, thisArg))
 				: koComputable(() => fn.enabled());
 
