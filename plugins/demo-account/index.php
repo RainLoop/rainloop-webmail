@@ -5,6 +5,7 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	const
 		NAME     = 'Demo Account Extension',
 		CATEGORY = 'Login',
+		REQUIRED = '2.10.1',
 		DESCRIPTION = 'Extension to enable a demo account';
 
 	/**
@@ -77,7 +78,23 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function FilterSendMessage($oMessage)
 	{
 		if ($oMessage && $this->isDemoAccount()) {
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DemoSendMessageError);
+			$sEmail = $this->Config()->Get('plugin', 'email');
+			foreach ($oMessage->GetTo() as $oEmail) {
+				if ($oEmail->GetEmail() !== $sEmail) {
+					throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DemoSendMessageError);
+				}
+			}
+			foreach ($oMessage->GetCc() ?: [] as $oEmail) {
+				if ($oEmail->GetEmail() !== $sEmail) {
+					throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DemoSendMessageError);
+				}
+			}
+			foreach ($oMessage->GetBcc() ?: [] as $oEmail) {
+				if ($oEmail->GetEmail() !== $sEmail) {
+					throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DemoSendMessageError);
+				}
+			}
+//			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DemoSendMessageError);
 		}
 	}
 
