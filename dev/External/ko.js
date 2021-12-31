@@ -7,7 +7,7 @@ ko.bindingHandlers.tooltipErrorTip = {
 	init: (element, fValueAccessor) => {
 		doc.addEventListener('click', () => {
 			let value = fValueAccessor();
-			ko.isObservable(value) && value('');
+			ko.isObservable(value) && !ko.isComputed(value) && value('');
 			element.removeAttribute('data-rainloopErrorTip');
 		});
 	},

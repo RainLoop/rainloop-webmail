@@ -471,6 +471,7 @@ var protoProp = ko.observable.protoProperty; // == "__ko_proto__"
 computedFn[protoProp] = ko.computed;
 
 ko.exportSymbol('computed', ko.computed);
+ko.exportSymbol('isComputed', instance => (typeof instance == 'function' && instance[protoProp] === computedFn[protoProp]));
 ko.exportSymbol('computed.fn', computedFn);
 ko.exportProperty(computedFn, 'dispose', computedFn.dispose);
 
@@ -482,3 +483,4 @@ ko.pureComputed = (evaluatorFunctionOrOptions) => {
     evaluatorFunctionOrOptions['pure'] = true;
     return ko.computed(evaluatorFunctionOrOptions);
 };
+ko.exportSymbol('pureComputed', ko.pureComputed);
