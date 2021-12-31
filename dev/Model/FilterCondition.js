@@ -1,4 +1,4 @@
-import ko from 'ko';
+import { koComputable } from 'External/ko';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
@@ -43,7 +43,7 @@ export class FilterConditionModel extends AbstractModel {
 			valueSecondError: false
 		});
 
-		this.template = ko.computed(() => {
+		this.template = koComputable(() => {
 			const template = 'SettingsFiltersCondition';
 			switch (this.field()) {
 				case FilterConditionField.Body:

@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { koComputable } from 'External/ko';
 
 import { FilterAction } from 'Model/Filter';
 import { FilterConditionField, FilterConditionType } from 'Model/FilterCondition';
@@ -27,7 +28,7 @@ class FilterPopupView extends AbstractViewPopup {
 		this.fTrueCallback = null;
 
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
-		this.folderSelectList = ko.computed(() =>
+		this.folderSelectList = koComputable(() =>
 			folderListOptionsBuilder(
 				[SettingsGet('SieveAllowFileintoInbox') ? '' : 'INBOX'],
 				[['', '']],

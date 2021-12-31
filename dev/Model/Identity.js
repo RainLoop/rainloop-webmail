@@ -1,4 +1,4 @@
-import ko from 'ko';
+import { koComputable } from 'External/ko';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
@@ -24,7 +24,7 @@ export class IdentityModel extends AbstractModel {
 			deleteAccess: false
 		});
 
-		this.canBeDeleted = ko.computed(() => !!this.id());
+		this.canBeDeleted = koComputable(() => !!this.id());
 	}
 
 	/**

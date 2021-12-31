@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { koComputable } from 'External/ko';
 
 import { pInt, settingsSaveHelperSimpleFunction } from 'Common/Utils';
 import { Capa, SaveSettingsStep } from 'Common/Enums';
@@ -17,7 +18,7 @@ export class SecurityUserSettings /*extends AbstractViewSettings*/ {
 		this.autoLogoutTrigger = ko.observable(SaveSettingsStep.Idle);
 
 		let i18nLogout = (key, params) => i18n('SETTINGS_SECURITY/AUTOLOGIN_' + key, params);
-		this.autoLogoutOptions = ko.computed(() => {
+		this.autoLogoutOptions = koComputable(() => {
 			translatorTrigger();
 			return [
 				{ id: 0, name: i18nLogout('NEVER_OPTION_NAME') },

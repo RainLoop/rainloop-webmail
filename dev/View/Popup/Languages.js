@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { koComputable } from 'External/ko';
 
 import { convertLangName } from 'Common/Translator';
 
@@ -13,7 +14,7 @@ class LanguagesPopupView extends AbstractViewPopup {
 
 		this.langs = ko.observableArray();
 
-		this.languages = ko.computed(() => {
+		this.languages = koComputable(() => {
 			const userLanguage = this.userLanguage();
 			return this.langs.map(language => ({
 				key: language,

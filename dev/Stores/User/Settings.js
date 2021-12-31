@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { koComputable } from 'External/ko';
 
 import { Layout, EditorDefaultType } from 'Common/EnumsUser';
 import { pInt, addObservablesTo } from 'Common/Utils';
@@ -39,7 +40,7 @@ export const SettingsUserStore = new class {
 
 		self.init();
 
-		self.usePreviewPane = ko.computed(() => Layout.NoPreview !== self.layout() && !ThemeStore.isMobile());
+		self.usePreviewPane = koComputable(() => Layout.NoPreview !== self.layout() && !ThemeStore.isMobile());
 
 		const toggleLayout = () => {
 			const value = ThemeStore.isMobile() ? Layout.NoPreview : self.layout();

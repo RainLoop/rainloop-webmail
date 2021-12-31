@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { koComputable } from 'External/ko';
 
 import { SetSystemFoldersNotification } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
@@ -24,7 +25,7 @@ class FolderSystemPopupView extends AbstractViewPopup {
 
 		this.notification = ko.observable('');
 
-		this.folderSelectList = ko.computed(() =>
+		this.folderSelectList = koComputable(() =>
 			folderListOptionsBuilder(
 				FolderUserStore.folderListSystemNames(),
 				[

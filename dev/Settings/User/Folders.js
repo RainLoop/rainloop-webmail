@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { koComputable } from 'External/ko';
 
 import { Notification } from 'Common/Enums';
 import { FolderMetadataKeys } from 'Common/EnumsUser';
@@ -25,7 +26,7 @@ const folderForDeletion = ko.observable(null).deleteAccessHelper();
 
 export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 	constructor() {
-		this.showKolab = ko.computed(() => FolderUserStore.hasCapability('METADATA') && Settings.capa(Capa.Kolab));
+		this.showKolab = koComputable(() => FolderUserStore.hasCapability('METADATA') && Settings.capa(Capa.Kolab));
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 		this.kolabTypeOptions = ko.observableArray();
 		let i18nFilter = key => i18n('SETTINGS_FOLDERS/TYPE_' + key);
@@ -48,7 +49,7 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 		this.folderListError = FolderUserStore.folderListError;
 		this.hideUnsubscribed = SettingsUserStore.hideUnsubscribed;
 
-		this.loading = ko.computed(() => {
+		this.loading = koComputable(() => {
 			const loading = FolderUserStore.foldersLoading(),
 				creating = FolderUserStore.foldersCreating(),
 				deleting = FolderUserStore.foldersDeleting(),

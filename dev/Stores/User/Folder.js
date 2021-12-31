@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { koComputable } from 'External/ko';
 
 import { FolderType, FolderSortMode } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
@@ -100,7 +101,7 @@ export const FolderUserStore = new class {
 			archiveFolder: fSetSystemFolderType(FolderType.Archive)
 		});
 
-		self.quotaPercentage = ko.computed(() => {
+		self.quotaPercentage = koComputable(() => {
 			const quota = self.quotaLimit(), usage = self.quotaUsage();
 			return 0 < quota ? Math.ceil((usage / quota) * 100) : 0;
 		});

@@ -64,10 +64,6 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.messageList = MessageUserStore.list;
 
-		this.sortSupported = ko.computed(() =>
-			FolderUserStore.hasCapability('SORT') | FolderUserStore.hasCapability('ESORT')
-		);
-
 		this.composeInEdit = AppUserStore.composeInEdit;
 
 		this.isMobile = ThemeStore.isMobile;
@@ -106,6 +102,9 @@ export class MailMessageList extends AbstractViewRight {
 		this.sLastSearchValue = '';
 
 		this.addComputables({
+
+			sortSupported: () =>
+				FolderUserStore.hasCapability('SORT') | FolderUserStore.hasCapability('ESORT'),
 
 			folderMenuForMove: () =>
 				folderListOptionsBuilder(

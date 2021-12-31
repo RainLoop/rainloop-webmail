@@ -1,5 +1,5 @@
 import ko from 'ko';
-
+import { koComputable } from 'External/ko';
 import { doc, $htmlCL, elementById } from 'Common/Globals';
 import { isFunction, forEachObjectValue, forEachObjectEntry } from 'Common/Utils';
 
@@ -271,9 +271,9 @@ export const
 		fResult.isCommand = true;
 
 		if (isFunction(fCanExecute)) {
-			fResult.canExecute = ko.computed(() => fResult && fResult.enabled() && fCanExecute.call(null));
+			fResult.canExecute = koComputable(() => fResult && fResult.enabled() && fCanExecute.call(null));
 		} else {
-			fResult.canExecute = ko.computed(() => fResult && fResult.enabled() && !!fCanExecute);
+			fResult.canExecute = koComputable(() => fResult && fResult.enabled() && !!fCanExecute);
 		}
 
 		return fResult;
@@ -355,8 +355,8 @@ export const
 			fn.enabled = ko.observable(true);
 
 			fn.canExecute = (typeof canExecute === 'function')
-				? ko.computed(() => fn.enabled() && canExecute.call(thisArg, thisArg))
-				: ko.computed(() => fn.enabled());
+				? koComputable(() => fn.enabled() && canExecute.call(thisArg, thisArg))
+				: koComputable(() => fn.enabled());
 
 			thisArg[key] = fn;
 		});

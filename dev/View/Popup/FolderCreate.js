@@ -1,4 +1,4 @@
-import ko from 'ko';
+import { koComputable } from 'External/ko';
 
 import { Notification } from 'Common/Enums';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
@@ -26,7 +26,7 @@ class FolderCreatePopupView extends AbstractViewPopup {
 			selectedParentValue: UNUSED_OPTION_VALUE
 		});
 
-		this.parentFolderSelectList = ko.computed(() =>
+		this.parentFolderSelectList = koComputable(() =>
 			folderListOptionsBuilder(
 				[],
 				[['', '']],

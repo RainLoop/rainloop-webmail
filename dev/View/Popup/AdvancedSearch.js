@@ -1,4 +1,4 @@
-import ko from 'ko';
+import { koComputable } from 'External/ko';
 
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
@@ -25,10 +25,10 @@ class AdvancedSearchPopupView extends AbstractViewPopup {
 			unseen: false
 		});
 
-		this.showMultisearch = ko.computed(() => FolderUserStore.hasCapability('MULTISEARCH'));
+		this.showMultisearch = koComputable(() => FolderUserStore.hasCapability('MULTISEARCH'));
 
 		let prefix = 'SEARCH/LABEL_ADV_DATE_';
-		this.selectedDates = ko.computed(() => {
+		this.selectedDates = koComputable(() => {
 			translatorTrigger();
 			return [
 				{ id: -1, name: i18n(prefix + 'ALL') },
@@ -42,7 +42,7 @@ class AdvancedSearchPopupView extends AbstractViewPopup {
 		});
 
 		prefix = 'SEARCH/LABEL_ADV_SUBFOLDERS_';
-		this.selectedTree = ko.computed(() => {
+		this.selectedTree = koComputable(() => {
 			translatorTrigger();
 			return [
 				{ id: '', name: i18n(prefix + 'NONE') },

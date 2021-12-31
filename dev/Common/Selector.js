@@ -1,5 +1,6 @@
 import ko from 'ko';
 import { isArray } from 'Common/Utils';
+import { koComputable } from 'External/ko';
 
 /*
 	oCallbacks:
@@ -28,8 +29,8 @@ export class Selector {
 		sItemFocusedSelector
 	) {
 		this.list = koList;
-		this.listChecked = ko.computed(() => this.list.filter(item => item.checked())).extend({ rateLimit: 0 });
-		this.isListChecked = ko.computed(() => 0 < this.listChecked().length);
+		this.listChecked = koComputable(() => this.list.filter(item => item.checked())).extend({ rateLimit: 0 });
+		this.isListChecked = koComputable(() => 0 < this.listChecked().length);
 
 		this.focusedItem = koFocusedItem || ko.observable(null);
 		this.selectedItem = koSelectedItem || ko.observable(null);

@@ -20,6 +20,8 @@ import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
+import { koComputable } from 'External/ko';
+
 //import { mailBox } from 'Common/Links';
 
 const
@@ -265,7 +267,7 @@ export class FolderModel extends AbstractModel {
 
 			type && 'mail' != type && folder.kolabType(type);
 
-			folder.messageCountAll = ko.computed({
+			folder.messageCountAll = koComputable({
 					read: folder.privateMessageCountAll,
 					write: (iValue) => {
 						if (isPosNumeric(iValue)) {
@@ -277,7 +279,7 @@ export class FolderModel extends AbstractModel {
 				})
 				.extend({ notify: 'always' });
 
-			folder.messageCountUnread = ko.computed({
+			folder.messageCountUnread = koComputable({
 					read: folder.privateMessageCountUnread,
 					write: (value) => {
 						if (isPosNumeric(value)) {
