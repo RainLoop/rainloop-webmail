@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { koComputable } from 'External/ko';
 
 import Remote from 'Remote/Admin/Fetch';
 
@@ -16,8 +17,7 @@ class PaneSettingsAdminView extends AbstractViewRight {
 
 		this.leftPanelDisabled = leftPanelDisabled;
 
-		this.adminManLoadingVisibility = ko
-			.computed(() => PackageAdminStore.loading() ? 'visible' : 'hidden');
+		this.adminManLoadingVisibility = koComputable(() => PackageAdminStore.loading() ? 'visible' : 'hidden');
 	}
 
 	logoutClick() {

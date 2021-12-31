@@ -8,7 +8,7 @@ import { arrayLength, isFunction } from 'Common/Utils';
  * number of evaluations or other “hidden” information. Its value should be
  * based solely on the values of other observables in the application
  */
-export const koComputable = ko.pureComputed;
+export const koComputable = fn => ko.computed(fn, {'pure':true});
 
 ko.bindingHandlers.tooltipErrorTip = {
 	init: (element, fValueAccessor) => {

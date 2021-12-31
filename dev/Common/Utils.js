@@ -34,7 +34,7 @@ export const
 			target[key] = /*isArray(value) ? ko.observableArray(value) :*/ ko.observable(value) ),
 
 	addComputablesTo = (target, computables) =>
-		forEachObjectEntry(computables, (key, fn) => target[key] = ko.computed(fn)),
+		forEachObjectEntry(computables, (key, fn) => target[key] = ko.computed(fn, {'pure':true})),
 
 	addSubscribablesTo = (target, subscribables) =>
 		forEachObjectEntry(subscribables, (key, fn) => target[key].subscribe(fn)),

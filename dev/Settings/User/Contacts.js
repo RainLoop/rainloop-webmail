@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { koComputable } from 'External/ko';
 
 import { SettingsGet } from 'Common/Globals';
 import { ContactUserStore } from 'Stores/User/Contact';
@@ -14,8 +15,7 @@ export class ContactsUserSettings /*extends AbstractViewSettings*/ {
 		this.contactsSyncUser = ContactUserStore.syncUser;
 		this.contactsSyncPass = ContactUserStore.syncPass;
 
-		this.saveTrigger = ko
-			.computed(() =>
+		this.saveTrigger = koComputable(() =>
 				[
 					ContactUserStore.enableSync() ? '1' : '0',
 					ContactUserStore.syncUrl(),

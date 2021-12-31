@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { koComputable } from 'External/ko';
 
 import { Scope, Notification } from 'Common/Enums';
 import { MessageSetAction } from 'Common/EnumsUser';
@@ -149,16 +150,13 @@ export const MessageUserStore = new class {
 			}
 		});
 
-		this.listChecked = ko
-			.computed(() => this.list.filter(isChecked))
+		this.listChecked = koComputable(() => this.list.filter(isChecked))
 			.extend({ rateLimit: 0 });
 
-		this.hasCheckedMessages = ko
-			.computed(() => !!this.list.find(isChecked))
+		this.hasCheckedMessages = koComputable(() => !!this.list.find(isChecked))
 			.extend({ rateLimit: 0 });
 
-		this.hasCheckedOrSelected = ko
-			.computed(() => !!(this.selectorMessageSelected()
+		this.hasCheckedOrSelected = koComputable(() => !!(this.selectorMessageSelected()
 				|| this.selectorMessageFocused()
 				|| this.list.find(item => item.checked())))
 			.extend({ rateLimit: 50 });

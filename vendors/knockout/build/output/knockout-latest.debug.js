@@ -1392,7 +1392,6 @@ ko.pureComputed = (evaluatorFunctionOrOptions) => {
     evaluatorFunctionOrOptions['pure'] = true;
     return ko.computed(evaluatorFunctionOrOptions);
 };
-ko.exportSymbol('pureComputed', ko.pureComputed);
 (() => {
     var hasDomDataExpandoProperty = '__ko__hasDomDataOptionValue__';
 

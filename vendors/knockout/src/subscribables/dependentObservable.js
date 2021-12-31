@@ -483,4 +483,3 @@ ko.pureComputed = (evaluatorFunctionOrOptions) => {
     evaluatorFunctionOrOptions['pure'] = true;
     return ko.computed(evaluatorFunctionOrOptions);
 };
-ko.exportSymbol('pureComputed', ko.pureComputed);
