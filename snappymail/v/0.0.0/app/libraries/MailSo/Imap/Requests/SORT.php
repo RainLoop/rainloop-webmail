@@ -99,7 +99,8 @@ class SORT extends Request
 		$sSearchCriterias = (\strlen($this->sCriterias) && '*' !== $this->sCriterias) ? $this->sCriterias : 'ALL';
 
 		if (!$this->sCharset) {
-			$this->sCharset = \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? 'US-ASCII' : 'UTF-8';
+			$this->sCharset = (!$this->oImapClient->isUTF8() && \MailSo\Base\Utils::IsAscii($sSearchCriterias))
+				? 'US-ASCII' : 'UTF-8';
 		}
 
 		$aRequest[] = \strtoupper($this->sCharset);

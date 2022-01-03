@@ -1321,4 +1321,9 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $this->UTF8 ? $sText : \MailSo\Base\Utils::Utf7ModifiedToUtf8($sText);
 	}
 
+	public function isUTF8() : bool
+	{
+		return $this->UTF8;
+	}
+
 }
