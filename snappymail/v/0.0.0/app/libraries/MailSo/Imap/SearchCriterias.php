@@ -16,7 +16,7 @@ namespace MailSo\Imap;
  * @category MailSo
  * @package Mail
  */
-class SearchCriterias
+abstract class SearchCriterias
 {
 	const
 		RegEx = 'in|e?mail|from|to|subject|has|is|date|text|body|size|larger|bigger|smaller|maxsize|minsize';

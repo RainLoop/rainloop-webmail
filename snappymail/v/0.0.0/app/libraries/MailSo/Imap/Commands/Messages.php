@@ -138,11 +138,10 @@ trait Messages
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageSimpleThread(string $sSearchCriterias = 'ALL', bool $bReturnUid = true, string $sCharset = \MailSo\Base\Enumerations\Charset::UTF_8) : array
+	public function MessageSimpleThread(string $sSearchCriterias = 'ALL', bool $bReturnUid = true) : array
 	{
 		$oThread = new \MailSo\Imap\Requests\THREAD($this);
 		$oThread->sCriterias = $sSearchCriterias;
-		$oThread->sCharset = $sCharset;
 		$oThread->bUid = $bReturnUid;
 		return $oThread->SendRequestGetResponse();
 	}

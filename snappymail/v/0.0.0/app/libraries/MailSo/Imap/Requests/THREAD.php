@@ -23,7 +23,6 @@ class THREAD extends Request
 	public
 		$sAlgorithm = '', // ORDEREDSUBJECT or REFERENCES or REFS
 		$sCriterias = 'ALL',
-		$sCharset = '',
 		$bUid = true;
 
 	function __construct(\MailSo\Imap\ImapClient $oImapClient)
@@ -50,23 +49,13 @@ class THREAD extends Request
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
-		$aRequest = array(
-			$this->sAlgorithm
-		);
-
-		$sSearchCriterias = (\strlen($this->sCriterias) && '*' !== $this->sCriterias) ? $this->sCriterias : 'ALL';
-
-		if (!$this->sCharset) {
-			$this->sCharset = (!$this->oImapClient->isUTF8() && \MailSo\Base\Utils::IsAscii($sSearchCriterias))
-				? 'US-ASCII' : 'UTF-8';
-		}
-
-		$aRequest[] = \strtoupper($this->sCharset);
-		$aRequest[] = $sSearchCriterias;
-
 		$this->oImapClient->SendRequest(
 			($this->bUid ? 'UID THREAD' : 'THREAD'),
-			$aRequest
+			array(
+				$this->sAlgorithm,
+				'UTF-8', // \strtoupper(\MailSo\Base\Enumerations\Charset::UTF_8)
+				(\strlen($this->sCriterias) && '*' !== $this->sCriterias) ? $this->sCriterias : 'ALL'
+			)
 		);
 
 		$aReturn = array();

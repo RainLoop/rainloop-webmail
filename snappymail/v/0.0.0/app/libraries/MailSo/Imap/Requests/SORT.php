@@ -96,15 +96,9 @@ class SORT extends Request
 
 		$aRequest[] = $this->aSortTypes;
 
-		$sSearchCriterias = (\strlen($this->sCriterias) && '*' !== $this->sCriterias) ? $this->sCriterias : 'ALL';
+		$aRequest[] = 'UTF-8'; // \strtoupper(\MailSo\Base\Enumerations\Charset::UTF_8)
 
-		if (!$this->sCharset) {
-			$this->sCharset = (!$this->oImapClient->isUTF8() && \MailSo\Base\Utils::IsAscii($sSearchCriterias))
-				? 'US-ASCII' : 'UTF-8';
-		}
-
-		$aRequest[] = \strtoupper($this->sCharset);
-		$aRequest[] = $sSearchCriterias;
+		$aRequest[] = (\strlen($this->sCriterias) && '*' !== $this->sCriterias) ? $this->sCriterias : 'ALL';
 
 		if (\strlen($this->sLimit)) {
 			$aRequest[] = $this->sLimit;
