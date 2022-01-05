@@ -1172,7 +1172,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					// RFC 5530
 					if ($sEndTag === $oResponse->Tag && \is_array($oResponse->OptionalResponse) && 'CLIENTBUG' === $oResponse->OptionalResponse[0]) {
 						// The server has detected a client bug.
-//						\SnappyMail\LOG::warning('IMAP', "{$oResponse->OptionalResponse[0]}: {$this->lastCommand}");
+//						\SnappyMail\Log::warning('IMAP', "{$oResponse->OptionalResponse[0]}: {$this->lastCommand}");
 					}
 
 					if ($sEndTag === $oResponse->Tag || Enumerations\ResponseType::CONTINUATION === $oResponse->ResponseType) {
@@ -1218,7 +1218,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					// RFC 5530
 					if ($sEndTag === $oResponse->Tag && \is_array($oResponse->OptionalResponse) && 'CLIENTBUG' === $oResponse->OptionalResponse[0]) {
 						// The server has detected a client bug.
-//						\SnappyMail\LOG::warning('IMAP', "{$oResponse->OptionalResponse[0]}: {$this->lastCommand}");
+//						\SnappyMail\Log::warning('IMAP', "{$oResponse->OptionalResponse[0]}: {$this->lastCommand}");
 					}
 
 					if ($sEndTag === $oResponse->Tag || Enumerations\ResponseType::CONTINUATION === $oResponse->ResponseType) {

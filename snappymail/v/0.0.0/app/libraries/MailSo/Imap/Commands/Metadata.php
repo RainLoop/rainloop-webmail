@@ -49,7 +49,7 @@ trait Metadata
 				}
 			}
 		} catch (\Throwable $e) {
-			//\SnappyMail\LOG::warning('IMAP', $e->getMessage());
+			//\SnappyMail\Log::warning('IMAP', $e->getMessage());
 		}
 		return $aReturn;
 	}

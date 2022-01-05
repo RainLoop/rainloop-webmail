@@ -38,7 +38,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 			$sFileName && \RainLoop\Utils::saveFile($sFileName, $sValue);
 			return true;
 		} catch (\Throwable $e) {
-			\SnappyMail\LOG::warning('FileStorage', $e->getMessage());
+			\SnappyMail\Log::warning('FileStorage', $e->getMessage());
 		}
 		return false;
 	}

@@ -24,7 +24,7 @@ class Exif
 			if (false !== $exif) {
 				return \max(0, \intval($exif['IFD0.Orientation'] ?? 0));
 			}
-			\SnappyMail\LOG::warning('EXIF', "{$image_info['mime']} " . \error_get_last()['message']);
+			\SnappyMail\Log::warning('EXIF', "{$image_info['mime']} " . \error_get_last()['message']);
 		}
 		return 0;
 	}

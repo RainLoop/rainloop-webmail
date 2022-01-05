@@ -79,7 +79,7 @@ class Utils
 			if (!$generate) {
 				return null;
 			}
-			\SnappyMail\LOG::debug('TOKENS', 'New SESSION_TOKEN');
+			\SnappyMail\Log::debug('TOKENS', 'New SESSION_TOKEN');
 			$sToken = \MailSo\Base\Utils::Sha1Rand(APP_SALT);
 			static::SetCookie(self::SESSION_TOKEN, $sToken);
 		}

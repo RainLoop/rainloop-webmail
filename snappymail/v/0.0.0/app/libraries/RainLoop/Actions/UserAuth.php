@@ -248,17 +248,17 @@ trait UserAuth
 					$aData,
 					$bThrowExceptionOnFalse
 				);
-				$oMainAuthAccount || \SnappyMail\LOG::notice('TOKENS', 'AUTH_SPEC_TOKEN_KEY invalid');
+				$oMainAuthAccount || \SnappyMail\Log::notice('TOKENS', 'AUTH_SPEC_TOKEN_KEY invalid');
 				$sToken = $oMainAuthAccount ? Utils::GetSessionToken(false) : null;
 				$sTokenValue = $sToken ? $this->StorageProvider()->Get($oMainAuthAccount, StorageType::SESSION, $sToken) : null;
 				if ($oMainAuthAccount && $sTokenValue) {
 					$this->oMainAuthAccount = $oMainAuthAccount;
 				} else {
 					if ($oMainAuthAccount) {
-						$sToken || \SnappyMail\LOG::notice('TOKENS', 'SESSION_TOKEN not found');
+						$sToken || \SnappyMail\Log::notice('TOKENS', 'SESSION_TOKEN not found');
 						if ($sToken) {
 							$oMainAuthAccount && $this->StorageProvider()->Clear($oMainAuthAccount, StorageType::SESSION, $sToken);
-							$sTokenValue || \SnappyMail\LOG::notice('TOKENS', 'SESSION_TOKEN value invalid: ' . \gettype($sTokenValue));
+							$sTokenValue || \SnappyMail\Log::notice('TOKENS', 'SESSION_TOKEN value invalid: ' . \gettype($sTokenValue));
 						}
 					}
 					Utils::ClearCookie(Utils::SESSION_TOKEN);

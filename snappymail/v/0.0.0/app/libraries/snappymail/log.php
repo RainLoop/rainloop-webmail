@@ -4,7 +4,7 @@ namespace SnappyMail;
 
 use MailSo\Log\Enumerations\Type;
 
-abstract class LOG
+abstract class Log
 {
 	// Same as RFC 5424 section 6.2.1 decimal Severity level indicator
 	// http://tools.ietf.org/html/rfc5424#section-6.2.1

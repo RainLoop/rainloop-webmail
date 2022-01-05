@@ -3,7 +3,7 @@
 /*
  * This file is part of MailSo.
  *
- * (c) 2022 DJ Maze
+ * (c) 2022 DJMaze
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
