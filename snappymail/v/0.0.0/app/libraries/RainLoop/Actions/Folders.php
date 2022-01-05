@@ -389,18 +389,14 @@ trait Folders
 	 */
 	public function DoFolderInformation() : array
 	{
-		$sFolder = $this->GetActionParam('Folder', '');
-		$iPrevUidNext = (int) $this->GetActionParam('UidNext', 0);
-		$aFlagsUids = \array_filter(\array_map('intval', $this->GetActionParam('FlagsUids', []) ?: []));
-
 		$this->initMailClientConnection();
 
-		$sForwardedFlag = $this->Config()->Get('labs', 'imap_forwarded_flag', '');
-		$sReadReceiptFlag = $this->Config()->Get('labs', 'imap_read_receipt_flag', '');
 		try
 		{
 			$aInboxInformation = $this->MailClient()->FolderInformation(
-				$sFolder, $iPrevUidNext, $aFlagsUids
+				$this->GetActionParam('Folder', ''),
+				(int) $this->GetActionParam('UidNext', 0),
+				new \MailSo\Imap\SequenceSet($this->GetActionParam('FlagsUids', []))
 			);
 			$aInboxInformation['Flags'] = $aInboxInformation['MessagesFlags'];
 			unset($aInboxInformation['MessagesFlags']);

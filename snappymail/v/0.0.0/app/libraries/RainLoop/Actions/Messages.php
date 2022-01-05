@@ -6,6 +6,7 @@ use RainLoop\Enumerations\Capa;
 use RainLoop\Exceptions\ClientException;
 use RainLoop\Model\Account;
 use RainLoop\Notifications;
+use MailSo\Imap\SequenceSet;
 
 trait Messages
 {
@@ -87,9 +88,6 @@ trait Messages
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		$sMessageFolder = $this->GetActionParam('MessageFolder', '');
-		$iMessageUid = $this->GetActionParam('MessageUid', 0);
-
 		$sDraftFolder = $this->GetActionParam('SaveFolder', '');
 		if (!\strlen($sDraftFolder))
 		{
@@ -127,9 +125,11 @@ trait Messages
 
 				$mResult = true;
 
+				$sMessageFolder = $this->GetActionParam('MessageFolder', '');
+				$iMessageUid = (int) $this->GetActionParam('MessageUid', 0);
 				if (\strlen($sMessageFolder) && 0 < $iMessageUid)
 				{
-					$this->MailClient()->MessageDelete($sMessageFolder, array($iMessageUid), true, true);
+					$this->MailClient()->MessageDelete($sMessageFolder, new SequenceSet($iMessageUid));
 				}
 
 				if (null !== $iNewUid && 0 < $iNewUid)
@@ -151,8 +151,6 @@ trait Messages
 
 		$oConfig = $this->Config();
 
-		$sDraftFolder = $this->GetActionParam('MessageFolder', '');
-		$iDraftUid = $this->GetActionParam('MessageUid', 0);
 		$sSentFolder = $this->GetActionParam('SaveFolder', '');
 		$aDraftInfo = $this->GetActionParam('DraftInfo', null);
 		$bDsn = '1' === (string) $this->GetActionParam('Dsn', '0');
@@ -178,7 +176,7 @@ trait Messages
 					if (\is_array($aDraftInfo) && 3 === \count($aDraftInfo))
 					{
 						$sDraftInfoType = $aDraftInfo[0];
-						$sDraftInfoUid = $aDraftInfo[1];
+						$iDraftInfoUid = (int) $aDraftInfo[1];
 						$sDraftInfoFolder = $aDraftInfo[2];
 
 						try
@@ -187,15 +185,15 @@ trait Messages
 							{
 								case 'reply':
 								case 'reply-all':
-									$this->MailClient()->MessageSetFlag($sDraftInfoFolder, array($sDraftInfoUid), true,
-										\MailSo\Imap\Enumerations\MessageFlag::ANSWERED, true);
+									$this->MailClient()->MessageSetFlag($sDraftInfoFolder, new SequenceSet($iDraftInfoUid),
+										\MailSo\Imap\Enumerations\MessageFlag::ANSWERED);
 									break;
 								case 'forward':
 									$sForwardedFlag = $this->Config()->Get('labs', 'imap_forwarded_flag', '');
 									if (\strlen($sForwardedFlag))
 									{
-										$this->MailClient()->MessageSetFlag($sDraftInfoFolder, array($sDraftInfoUid), true,
-											$sForwardedFlag, true);
+										$this->MailClient()->MessageSetFlag($sDraftInfoFolder, new SequenceSet($iDraftInfoUid),
+											$sForwardedFlag);
 									}
 									break;
 							}
@@ -260,11 +258,13 @@ trait Messages
 
 					$this->deleteMessageAttachmnets($oAccount);
 
+					$sDraftFolder = $this->GetActionParam('MessageFolder', '');
+					$iDraftUid = (int) $this->GetActionParam('MessageUid', 0);
 					if (\strlen($sDraftFolder) && 0 < $iDraftUid)
 					{
 						try
 						{
-							$this->MailClient()->MessageDelete($sDraftFolder, array($iDraftUid), true, true);
+							$this->MailClient()->MessageDelete($sDraftFolder, new SequenceSet($iDraftUid));
 						}
 						catch (\Throwable $oException)
 						{
@@ -364,7 +364,7 @@ trait Messages
 						{
 							try
 							{
-								$this->MailClient()->MessageSetFlag($sFolderFullName, array($iUid), true, $sReadReceiptFlag, true, true);
+								$this->MailClient()->MessageSetFlag($sFolderFullName, new SequenceSet($iUid), $sReadReceiptFlag, true, true);
 							}
 							catch (\Throwable $oException) {}
 						}
@@ -478,11 +478,9 @@ trait Messages
 		$sFolder = $this->GetActionParam('Folder', '');
 		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
 
-		$aFilteredUids = \array_filter(\array_map('intval', $aUids));
-
 		try
 		{
-			$this->MailClient()->MessageDelete($sFolder, $aFilteredUids, true, true,
+			$this->MailClient()->MessageDelete($sFolder, new SequenceSet($aUids),
 				!!$this->Config()->Get('labs', 'use_imap_expunge_all_on_delete', false));
 		}
 		catch (\Throwable $oException)
@@ -526,14 +524,13 @@ trait Messages
 		$sToFolder = $this->GetActionParam('ToFolder', '');
 		$bMarkAsRead = !empty($this->GetActionParam('MarkAsRead', '0'));
 
-		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
-		$aFilteredUids = \array_filter(\array_map('intval', $aUids));
+		$oUids = new SequenceSet(\explode(',', (string) $this->GetActionParam('Uids', '')));
 
 		if ($bMarkAsRead)
 		{
 			try
 			{
-				$this->MailClient()->MessageSetSeen($sFromFolder, $aFilteredUids, true, true);
+				$this->MailClient()->MessageSetSeen($sFromFolder, $oUids);
 			}
 			catch (\Throwable $oException)
 			{
@@ -543,7 +540,7 @@ trait Messages
 
 		try
 		{
-			$this->MailClient()->MessageMove($sFromFolder, $sToFolder, $aFilteredUids, true,
+			$this->MailClient()->MessageMove($sFromFolder, $sToFolder, $oUids,
 				!!$this->Config()->Get('labs', 'use_imap_move', true),
 				!!$this->Config()->Get('labs', 'use_imap_expunge_all_on_delete', false)
 			);
@@ -585,16 +582,13 @@ trait Messages
 	{
 		$this->initMailClientConnection();
 
-		$sFromFolder = $this->GetActionParam('FromFolder', '');
-		$sToFolder = $this->GetActionParam('ToFolder', '');
-
-		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
-		$aFilteredUids = \array_filter(\array_map('intval', $aUids));
-
 		try
 		{
-			$this->MailClient()->MessageCopy($sFromFolder, $sToFolder,
-				$aFilteredUids, true);
+			$this->MailClient()->MessageCopy(
+				$this->GetActionParam('FromFolder', ''),
+				$this->GetActionParam('ToFolder', ''),
+				new SequenceSet(\explode(',', (string) $this->GetActionParam('Uids', '')))
+			);
 		}
 		catch (\Throwable $oException)
 		{
@@ -809,14 +803,14 @@ trait Messages
 	{
 		$this->initMailClientConnection();
 
-		$sFolder = $this->GetActionParam('Folder', '');
-		$bSetAction = '1' === (string) $this->GetActionParam('SetAction', '0');
-		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
-		$aFilteredUids = \array_filter(\array_map('intval', $aUids));
-
 		try
 		{
-			$this->MailClient()->{$sActionFunction}($sFolder, $aFilteredUids, true, $bSetAction, true);
+			$this->MailClient()->{$sActionFunction}(
+				$this->GetActionParam('Folder', ''),
+				new SequenceSet(\explode(',', (string) $this->GetActionParam('Uids', ''))),
+				!empty($this->GetActionParam('SetAction', '0')),
+				true
+			);
 		}
 		catch (\Throwable $oException)
 		{

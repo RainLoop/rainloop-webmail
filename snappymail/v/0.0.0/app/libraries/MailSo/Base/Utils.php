@@ -1037,52 +1037,6 @@ abstract class Utils
 		return $aResult;
 	}
 
-	public static function PrepareFetchSequence(array $aSequence) : string
-	{
-		$aResult = array();
-		if (\count($aSequence))
-		{
-			$iStart = null;
-			$iPrev = null;
-
-			foreach ($aSequence as $sItem)
-			{
-				// simple protection
-				if (false !== \strpos($sItem, ':'))
-				{
-					$aResult[] = $sItem;
-					continue;
-				}
-
-				$iItem = (int) $sItem;
-				if (null === $iStart || null === $iPrev)
-				{
-					$iStart = $iItem;
-					$iPrev = $iItem;
-					continue;
-				}
-
-				if ($iPrev === $iItem - 1)
-				{
-					$iPrev = $iItem;
-				}
-				else
-				{
-					$aResult[] = $iStart === $iPrev ? $iStart : $iStart.':'.$iPrev;
-					$iStart = $iItem;
-					$iPrev = $iItem;
-				}
-			}
-
-			if (null !== $iStart && null !== $iPrev)
-			{
-				$aResult[] = $iStart === $iPrev ? $iStart : $iStart.':'.$iPrev;
-			}
-		}
-
-		return \implode(',', $aResult);
-	}
-
 	/**
 	 * @param resource $fResource
 	 */

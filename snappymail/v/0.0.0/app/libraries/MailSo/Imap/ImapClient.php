@@ -903,17 +903,17 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageCopy(string $sToFolder, string $sIndexRange, bool $bIndexIsUid) : self
+	public function MessageCopy(string $sToFolder, SequenceSet $oRange) : self
 	{
-		if (!\strlen($sIndexRange))
+		if (!\count($oRange))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
-		$this->SendRequestGetResponse($bIndexIsUid ? 'UID COPY' : 'COPY',
-			array($sIndexRange, $this->EscapeFolderName($sToFolder)));
+		$this->SendRequestGetResponse($oRange->UID ? 'UID COPY' : 'COPY',
+			array((string) $oRange, $this->EscapeFolderName($sToFolder)));
 		return $this;
 	}
 
@@ -922,9 +922,9 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageMove(string $sToFolder, string $sIndexRange, bool $bIndexIsUid) : self
+	public function MessageMove(string $sToFolder, SequenceSet $oRange) : self
 	{
-		if (!\strlen($sIndexRange))
+		if (!\count($oRange))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
@@ -938,8 +938,8 @@ class ImapClient extends \MailSo\Net\NetClient
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
-		$this->SendRequestGetResponse($bIndexIsUid ? 'UID MOVE' : 'MOVE',
-			array($sIndexRange, $this->EscapeFolderName($sToFolder)));
+		$this->SendRequestGetResponse($oRange->UID ? 'UID MOVE' : 'MOVE',
+			array((string) $oRange, $this->EscapeFolderName($sToFolder)));
 		return $this;
 	}
 
@@ -969,9 +969,9 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageStoreFlag(string $sIndexRange, bool $bIndexIsUid, array $aInputStoreItems, string $sStoreAction) : self
+	public function MessageStoreFlag(SequenceSet $oRange, array $aInputStoreItems, string $sStoreAction) : self
 	{
-		if (!\strlen(\trim($sIndexRange)) ||
+		if (!\count($oRange) ||
 			!\strlen(\trim($sStoreAction)) ||
 			!\count($aInputStoreItems))
 		{
@@ -985,8 +985,8 @@ class ImapClient extends \MailSo\Net\NetClient
 		 */
 
 		$this->SendRequestGetResponse(
-			$bIndexIsUid ? 'UID STORE' : 'STORE',
-			array($sIndexRange, $sStoreAction, $aInputStoreItems)
+			$oRange->UID ? 'UID STORE' : 'STORE',
+			array((string) $oRange, $sStoreAction, $aInputStoreItems)
 		);
 		return $this;
 	}
