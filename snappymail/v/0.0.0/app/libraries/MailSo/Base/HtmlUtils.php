@@ -399,8 +399,7 @@ abstract class HtmlUtils
 	{
 		$sResult = '';
 
-		$sHtml = null === $sHtml ? '' : (string) $sHtml;
-		$sHtml = \trim($sHtml);
+		$sHtml = null === $sHtml ? '' : \trim($sHtml);
 		if (!\strlen($sHtml))
 		{
 			return '';
@@ -429,7 +428,7 @@ abstract class HtmlUtils
 		$aNodes = $oDom->getElementsByTagName('*');
 		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
 		{
-			$aRemovedAttrs = array();
+			$aAttrsForRemove = array();
 			$sTagNameLower = \strtolower($oElement->tagName);
 
 			$sStyles = $oElement->hasAttribute('style') ? \trim($oElement->getAttribute('style'), " \n\r\t\v\0;") : '';
@@ -512,13 +511,18 @@ abstract class HtmlUtils
 				$sStyles .= '; color: '.$sLinkColor;
 			}
 
+			else if ('table' === $sTagNameLower && $oElement->hasAttribute('width'))
+			{
+				@$oElement->removeAttribute('width');
+				$aAttrsForRemove['width'] = true;
+			}
+
 			if ($oElement->hasAttributes() && isset($oElement->attributes) && $oElement->attributes)
 			{
 				$aHtmlAllowedAttributes = isset(\MailSo\Config::$HtmlStrictAllowedAttributes) &&
 					\is_array(\MailSo\Config::$HtmlStrictAllowedAttributes) && \count(\MailSo\Config::$HtmlStrictAllowedAttributes) ?
 						\MailSo\Config::$HtmlStrictAllowedAttributes : null;
 
-				$sAttrsForRemove = array();
 				foreach ($oElement->attributes as $sAttrName => $oAttr)
 				{
 					if ($sAttrName && $oAttr)
@@ -534,21 +538,10 @@ abstract class HtmlUtils
 							'fscommand', 'seeksegmenttime'
 						)))
 						{
-							$sAttrsForRemove[] = $sAttrName;
+							$aAttrsForRemove[$sName] = true;
 						}
 					}
 				}
-
-				if (\count($sAttrsForRemove))
-				{
-					foreach ($sAttrsForRemove as $sName)
-					{
-						@$oElement->removeAttribute($sName);
-						$aRemovedAttrs[\trim(\strtolower($sName))] = true;
-					}
-				}
-
-				unset($sAttrsForRemove);
 			}
 
 			if ($oElement->hasAttribute('href'))
@@ -705,23 +698,23 @@ abstract class HtmlUtils
 						$aFoundCIDs, $aContentLocationUrls, $aFoundContentLocationUrls, $fAdditionalExternalFilter));
 			}
 
-			if (\MailSo\Config::$HtmlStrictDebug && \count($aRemovedAttrs))
+			foreach ($aAttrsForRemove as $sName)
 			{
-				unset($aRemovedAttrs['class'], $aRemovedAttrs['target'], $aRemovedAttrs['id'], $aRemovedAttrs['name'],
-					$aRemovedAttrs['itemprop'], $aRemovedAttrs['itemscope'], $aRemovedAttrs['itemtype']);
+				@$oElement->removeAttribute($sName);
+			}
 
-				$aRemovedAttrs = \array_keys($aRemovedAttrs);
-				if (\count($aRemovedAttrs))
+			if (\MailSo\Config::$HtmlStrictDebug && $aAttrsForRemove)
+			{
+				unset($aAttrsForRemove['class'], $aAttrsForRemove['target'], $aAttrsForRemove['id'], $aAttrsForRemove['name'],
+					$aAttrsForRemove['itemprop'], $aAttrsForRemove['itemscope'], $aAttrsForRemove['itemtype']);
+				if ($aAttrsForRemove)
 				{
-					$oElement->setAttribute('data-removed-attrs', \implode(',', $aRemovedAttrs));
+					$oElement->setAttribute('data-removed-attrs', \implode(',', \array_keys($aAttrsForRemove)));
 				}
 			}
 		}
 
-		$sResult = static::GetTextFromDom($oDom, true);
-		unset($oDom);
-
-		return $sResult;
+		return static::GetTextFromDom($oDom, true);
 	}
 
 	/**
