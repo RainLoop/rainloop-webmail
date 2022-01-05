@@ -832,7 +832,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				$this->oCurrentFolderInfo = null;
 			} else {
 				try {
-					$this->SendRequestGetResponse('SELECT', '""');
+					$this->SendRequestGetResponse('SELECT', ['""']);
 					// * OK [CLOSED] Previous mailbox closed.
 					// 3 NO [CANNOT] Invalid mailbox name: Name is empty
 				} catch (Exceptions\NegativeResponseException $e) {
