@@ -89,8 +89,6 @@ export const MessageUserStore = new class {
 			listLoading: false,
 			// Happens when message(s) removed from list
 			listIsIncomplete: false,
-			// when this.listLoading || this.listIsIncomplete
-			listIsLoading: false,
 
 			selectorMessageSelected: null,
 			selectorMessageFocused: null,
@@ -112,13 +110,12 @@ export const MessageUserStore = new class {
 		// Computed Observables
 
 		addComputablesTo(this, {
-/*
 			listIsLoading: () => {
 				const value = this.listLoading() | this.listIsIncomplete();
 				$htmlCL.toggle('list-loading', value);
 				return value;
 			},
-*/
+
 			listPageCount: () => Math.max(1, Math.ceil(this.listCount() / SettingsUserStore.messagesPerPage())),
 
 			mainMessageListSearch: {
@@ -164,14 +161,6 @@ export const MessageUserStore = new class {
 		// Subscribers
 
 		addSubscribablesTo(this, {
-			listIsLoading: value => $htmlCL.toggle('list-loading', value),
-
-			listLoading: value =>
-				this.listIsLoading(value || this.listIsIncomplete()),
-
-			listIsIncomplete: value =>
-				this.listIsLoading(value || this.listLoading()),
-
 			message: message => {
 				clearTimeout(MessageSeenTimer);
 				if (message) {
