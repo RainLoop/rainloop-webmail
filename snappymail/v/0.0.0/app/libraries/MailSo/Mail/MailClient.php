@@ -222,7 +222,7 @@ class MailClient
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
-		$this->oImapClient->FolderSelect($sFolderName);
+		$this->oImapClient->FolderExamine($sFolderName);
 
 		$oBodyStructure = null;
 		$oMessage = null;
@@ -293,7 +293,7 @@ class MailClient
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
-		$this->oImapClient->FolderSelect($sFolderName);
+		$this->oImapClient->FolderExamine($sFolderName);
 
 		$sFileName = '';
 		$sContentType = '';
@@ -557,7 +557,7 @@ class MailClient
 
 		if ($iPrevUidNext && $iPrevUidNext != $iCurrentUidNext && 'INBOX' === $sFolderName && \MailSo\Config::$CheckNewMessages)
 		{
-			$this->oImapClient->FolderSelect($sFolderName);
+			$this->oImapClient->FolderExamine($sFolderName);
 
 			$aFetchResponse = $this->oImapClient->Fetch(array(
 				\MailSo\Imap\Enumerations\FetchType::INDEX,
@@ -617,7 +617,7 @@ class MailClient
 
 		if ($oRange && \count($oRange))
 		{
-			$this->oImapClient->FolderSelect($sFolderName);
+			$this->oImapClient->FolderExamine($sFolderName);
 
 			$aFetchResponse = $this->oImapClient->Fetch(array(
 				\MailSo\Imap\Enumerations\FetchType::INDEX,
@@ -937,7 +937,7 @@ class MailClient
 
 		list($iMessageRealCount, $iMessageUnseenCount, $iUidNext, $iHighestModSeq) = $this->initFolderValues($oParams->sFolderName);
 
-		$this->oImapClient->FolderSelect($oParams->sFolderName);
+		$this->oImapClient->FolderExamine($oParams->sFolderName);
 
 		$oMessageCollection = new MessageCollection;
 		$oMessageCollection->FolderName = $oParams->sFolderName;
