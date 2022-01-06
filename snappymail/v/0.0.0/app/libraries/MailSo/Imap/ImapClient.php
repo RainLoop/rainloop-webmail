@@ -883,8 +883,8 @@ class ImapClient extends \MailSo\Net\NetClient
 
 			$this->SendRequest($bIndexIsUid ? 'UID FETCH' : 'FETCH', $aParams);
 			foreach ($this->yieldUntaggedResponses() as $oResponse) {
-				if (FetchResponse::IsValidFetchImapResponse($oResponse)) {
-					if (FetchResponse::IsNotEmptyFetchImapResponse($oResponse)) {
+				if (FetchResponse::isValidImapResponse($oResponse)) {
+					if (FetchResponse::hasUidAndSize($oResponse)) {
 						$aReturn[] = new FetchResponse($oResponse);
 					} else if ($this->oLogger) {
 						$this->oLogger->Write('Skipped Imap Response! ['.$oResponse->ToLine().']', \MailSo\Log\Enumerations\Type::NOTICE);
