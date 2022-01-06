@@ -732,12 +732,11 @@ class ImapClient extends \MailSo\Net\NetClient
 			$aParams[] = $aSelectParams;
 		}
 
+		$oResult = new FolderInformation($sFolderName, $bIsWritable);
+
 		/**
 		 * IMAP4rev2 SELECT/EXAMINE are now required to return an untagged LIST response.
 		 */
-		$oResponseCollection = $this->SendRequestGetResponse($bIsWritable ? 'SELECT' : 'EXAMINE', $aParams);
-		$oResult = new FolderInformation($sFolderName, $bIsWritable);
-
 		$this->SendRequest($bIsWritable ? 'SELECT' : 'EXAMINE', $aParams);
 		foreach ($this->yieldUntaggedResponses() as $oResponse) {
 			if (!$oResult->setStatusFromResponse($oResponse)) {
