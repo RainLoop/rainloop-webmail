@@ -513,8 +513,7 @@ abstract class HtmlUtils
 
 			else if ('table' === $sTagNameLower && $oElement->hasAttribute('width'))
 			{
-				@$oElement->removeAttribute('width');
-				$aAttrsForRemove['width'] = true;
+				$aAttrsForRemove[] = 'width';
 			}
 
 			if ($oElement->hasAttributes() && isset($oElement->attributes) && $oElement->attributes)
@@ -538,7 +537,7 @@ abstract class HtmlUtils
 							'fscommand', 'seeksegmenttime'
 						)))
 						{
-							$aAttrsForRemove[$sName] = true;
+							$aAttrsForRemove[] = $sAttrName;
 						}
 					}
 				}
@@ -705,12 +704,7 @@ abstract class HtmlUtils
 
 			if (\MailSo\Config::$HtmlStrictDebug && $aAttrsForRemove)
 			{
-				unset($aAttrsForRemove['class'], $aAttrsForRemove['target'], $aAttrsForRemove['id'], $aAttrsForRemove['name'],
-					$aAttrsForRemove['itemprop'], $aAttrsForRemove['itemscope'], $aAttrsForRemove['itemtype']);
-				if ($aAttrsForRemove)
-				{
-					$oElement->setAttribute('data-removed-attrs', \implode(',', \array_keys($aAttrsForRemove)));
-				}
+				$oElement->setAttribute('data-removed-attrs', \implode(',', $aAttrsForRemove));
 			}
 		}
 
