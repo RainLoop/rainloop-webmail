@@ -785,9 +785,7 @@ class MailClient
 				$sFetchType = $oRange->UID ? \MailSo\Imap\Enumerations\FetchType::UID : \MailSo\Imap\Enumerations\FetchType::INDEX;
 				foreach ($aFetchResponse as /* @var $oFetchResponseItem \MailSo\Imap\FetchResponse */ $oFetchResponseItem) {
 					$id = $oFetchResponseItem->GetFetchValue($sFetchType);
-					if (\array_key_exists($id, $aCollection)) {
-						$aCollection[$id] = Message::NewFetchResponseInstance($oMessageCollection->FolderName, $oFetchResponseItem);
-					}
+					$aCollection[$id] = Message::NewFetchResponseInstance($oMessageCollection->FolderName, $oFetchResponseItem);
 				}
 				$oMessageCollection->exchangeArray(\array_values(\array_filter($aCollection)));
 			}
