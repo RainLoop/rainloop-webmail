@@ -11,6 +11,8 @@
 
 namespace MailSo\Imap;
 
+use MailSo\Imap\Enumerations\FetchType;
+
 /**
  * @category MailSo
  * @package Imap
@@ -862,16 +864,45 @@ class ImapClient extends \MailSo\Net\NetClient
 		$aReturn = array();
 		$this->aFetchCallbacks = array();
 		try {
-			$aFetchItems = Enumerations\FetchType::ChangeFetchItemsBefourRequest($aInputFetchItems);
-			foreach ($aFetchItems as $sName => $mItem)
+			$aFetchItems = array(
+				FetchType::UID,
+				FetchType::RFC822_SIZE
+			);
+			foreach ($aInputFetchItems as $mFetchKey)
 			{
-				if (\strlen($sName) && '' !== $mItem)
+				switch ($mFetchKey)
 				{
-					$this->aFetchCallbacks[$sName] = $mItem;
+					case FetchType::INDEX:
+					case FetchType::UID:
+					case FetchType::RFC822_SIZE:
+						// Already defined by default
+						break;
+
+					case FetchType::FULL:
+						$aFetchItems[] = FetchType::BODY;
+						// Falls through
+					case FetchType::ALL:
+						$aFetchItems[] = FetchType::ENVELOPE;
+						// Falls through
+					case FetchType::FAST:
+						$aFetchItems[] = FetchType::FLAGS;
+						$aFetchItems[] = FetchType::INTERNALDATE;
+						break;
+
+					default:
+						if (\is_string($mFetchKey)) {
+							$aFetchItems[] = $mFetchKey;
+						} else if (\is_array($mFetchKey) && 2 === \count($mFetchKey)
+							&& \is_string($mFetchKey[0]) && \is_callable($mFetchKey[1]))
+						{
+							$this->aFetchCallbacks[$mFetchKey[0]] = $mFetchKey[1];
+						}
+						break;
 				}
 			}
 
-			$aParams = array($sIndexRange, \array_keys($aFetchItems));
+			$aParams = array($sIndexRange, $aFetchItems);
+
 			/**
 			 * TODO:
 			 *   https://datatracker.ietf.org/doc/html/rfc4551#section-3.3.1
@@ -887,7 +918,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					if (FetchResponse::hasUidAndSize($oResponse)) {
 						$aReturn[] = new FetchResponse($oResponse);
 					} else if ($this->oLogger) {
-						$this->oLogger->Write('Skipped Imap Response! ['.$oResponse->ToLine().']', \MailSo\Log\Enumerations\Type::NOTICE);
+						$this->oLogger->Write('Skipped Imap Response! ['.$oResponse.']', \MailSo\Log\Enumerations\Type::NOTICE);
 					}
 				}
 			}

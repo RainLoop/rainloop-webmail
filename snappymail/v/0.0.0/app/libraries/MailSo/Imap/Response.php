@@ -83,7 +83,7 @@ class Response
 		}
 	}
 
-	public function ToLine() : string
+	public function __toString()
 	{
 		return $this->recToLine($this->ResponseList);
 	}
