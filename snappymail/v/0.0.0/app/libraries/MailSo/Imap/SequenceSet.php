@@ -7,6 +7,10 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * Messages in IMAP4rev1 are accessed by the use of numbers.
+ * These numbers are either message sequence numbers or unique identifiers.
+ * https://datatracker.ietf.org/doc/html/rfc3501#section-2.3.1
  */
 
 namespace MailSo\Imap;
@@ -17,6 +21,9 @@ namespace MailSo\Imap;
  */
 class SequenceSet /*extends \SplFixedArray*/ implements \Countable
 {
+	/**
+	 * By default the numbers are unique identifiers as this is more reliable.
+	 */
 	public $UID = true;
 
 	private $data = [];
