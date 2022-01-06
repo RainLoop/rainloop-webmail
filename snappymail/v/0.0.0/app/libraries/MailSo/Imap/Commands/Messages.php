@@ -13,6 +13,7 @@
 namespace MailSo\Imap\Commands;
 
 use MailSo\Imap\ResponseCollection;
+use MailSo\Imap\SequenceSet;
 use MailSo\Imap\Enumerations\ResponseType;
 
 /**
@@ -21,6 +22,116 @@ use MailSo\Imap\Enumerations\ResponseType;
  */
 trait Messages
 {
+	/**
+	 * Appends message to specified folder
+	 *
+	 * @param resource $rMessageAppendStream
+	 *
+	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function MessageAppendStream(string $sFolderName, $rMessageAppendStream, int $iStreamSize, array $aAppendFlags = null, int &$iUid = null, int $iDateTime = 0) : ?int
+	{
+		$aData = array($this->EscapeFolderName($sFolderName), $aAppendFlags);
+		if (0 < $iDateTime) {
+			$aData[] = $this->EscapeString(\gmdate('d-M-Y H:i:s', $iDateTime).' +0000');
+		}
+
+		$aData[] = '{'.$iStreamSize.'}';
+
+		$this->SendRequestGetResponse('APPEND', $aData);
+
+		$this->writeLog('Write to connection stream', \MailSo\Log\Enumerations\Type::NOTE);
+
+		\MailSo\Base\Utils::MultipleStreamWriter($rMessageAppendStream, array($this->ConnectionResource()));
+
+		$this->sendRaw('');
+		$oResponse = $this->getResponse();
+
+		if (null !== $iUid) {
+			$oLast = $oResponse->getLast();
+			if ($oLast
+			 && ResponseType::TAGGED === $oLast->ResponseType
+			 && \is_array($oLast->OptionalResponse)
+			 && !empty($oLast->OptionalResponse[2])
+			 && \is_numeric($oLast->OptionalResponse[2])
+			 && 'APPENDUID' === \strtoupper($oLast->OptionalResponse[0])
+			) {
+				$iUid = (int) $oLast->OptionalResponse[2];
+			}
+		}
+
+		return $iUid;
+	}
+
+	/**
+	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function MessageCopy(string $sToFolder, SequenceSet $oRange) : ResponseCollection
+	{
+		if (!\count($oRange)) {
+			$this->writeLogException(
+				new \MailSo\Base\Exceptions\InvalidArgumentException,
+				\MailSo\Log\Enumerations\Type::ERROR, true);
+		}
+
+		return $this->SendRequestGetResponse(
+			$oRange->UID ? 'UID COPY' : 'COPY',
+			array((string) $oRange, $this->EscapeFolderName($sToFolder))
+		);
+	}
+
+	/**
+	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function MessageMove(string $sToFolder, SequenceSet $oRange) : ResponseCollection
+	{
+		if (!\count($oRange)) {
+			$this->writeLogException(
+				new \MailSo\Base\Exceptions\InvalidArgumentException,
+				\MailSo\Log\Enumerations\Type::ERROR, true);
+		}
+
+		if (!$this->IsSupported('MOVE')) {
+			$this->writeLogException(
+				new Exceptions\RuntimeException('Move is not supported'),
+				\MailSo\Log\Enumerations\Type::ERROR, true);
+		}
+
+		return $this->SendRequestGetResponse(
+			$oRange->UID ? 'UID MOVE' : 'MOVE',
+			array((string) $oRange, $this->EscapeFolderName($sToFolder))
+		);
+	}
+
+	/**
+	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function MessageStoreFlag(SequenceSet $oRange, array $aInputStoreItems, string $sStoreAction) : ?ResponseCollection
+	{
+		if (!\count($oRange) || !\strlen(\trim($sStoreAction)) || !\count($aInputStoreItems)) {
+			return null;
+		}
+
+		/**
+		 * TODO:
+		 *   https://datatracker.ietf.org/doc/html/rfc4551#section-3.2
+		 *     $sStoreAction[] = (UNCHANGEDSINCE $modsequence)
+		 */
+
+		return $this->SendRequestGetResponse(
+			$oRange->UID ? 'UID STORE' : 'STORE',
+			array((string) $oRange, $sStoreAction, $aInputStoreItems)
+		);
+	}
+
 	/**
 	 * See https://tools.ietf.org/html/rfc5256
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException

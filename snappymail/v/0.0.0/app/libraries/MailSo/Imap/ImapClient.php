@@ -899,51 +899,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function MessageCopy(string $sToFolder, SequenceSet $oRange) : self
-	{
-		if (!\count($oRange))
-		{
-			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
-		}
-
-		$this->SendRequestGetResponse($oRange->UID ? 'UID COPY' : 'COPY',
-			array((string) $oRange, $this->EscapeFolderName($sToFolder)));
-		return $this;
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function MessageMove(string $sToFolder, SequenceSet $oRange) : self
-	{
-		if (!\count($oRange))
-		{
-			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
-		}
-
-		if (!$this->IsSupported('MOVE'))
-		{
-			$this->writeLogException(
-				new Exceptions\RuntimeException('Move is not supported'),
-				\MailSo\Log\Enumerations\Type::ERROR, true);
-		}
-
-		$this->SendRequestGetResponse($oRange->UID ? 'UID MOVE' : 'MOVE',
-			array((string) $oRange, $this->EscapeFolderName($sToFolder)));
-		return $this;
-	}
-
-	/**
 	 * The EXPUNGE command permanently removes all messages that have the
 	 * \Deleted flag set from the currently selected mailbox.
 	 *
@@ -961,78 +916,6 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 
 		$this->SendRequestGetResponse($sCmd, $aArguments);
-		return $this;
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function MessageStoreFlag(SequenceSet $oRange, array $aInputStoreItems, string $sStoreAction) : self
-	{
-		if (!\count($oRange) ||
-			!\strlen(\trim($sStoreAction)) ||
-			!\count($aInputStoreItems))
-		{
-			return false;
-		}
-
-		/**
-		 * TODO:
-		 *   https://datatracker.ietf.org/doc/html/rfc4551#section-3.2
-		 *     $sStoreAction[] = (UNCHANGEDSINCE $modsequence)
-		 */
-
-		$this->SendRequestGetResponse(
-			$oRange->UID ? 'UID STORE' : 'STORE',
-			array((string) $oRange, $sStoreAction, $aInputStoreItems)
-		);
-		return $this;
-	}
-
-	/**
-	 * @param resource $rMessageAppendStream
-	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function MessageAppendStream(string $sFolderName, $rMessageAppendStream, int $iStreamSize, array $aAppendFlags = null, int &$iUid = null, int $iDateTime = 0) : self
-	{
-		$aData = array($this->EscapeFolderName($sFolderName), $aAppendFlags);
-		if (0 < $iDateTime)
-		{
-			$aData[] = $this->EscapeString(\gmdate('d-M-Y H:i:s', $iDateTime).' +0000');
-		}
-
-		$aData[] = '{'.$iStreamSize.'}';
-
-		$this->SendRequestGetResponse('APPEND', $aData);
-
-		$this->writeLog('Write to connection stream', \MailSo\Log\Enumerations\Type::NOTE);
-
-		\MailSo\Base\Utils::MultipleStreamWriter($rMessageAppendStream, array($this->ConnectionResource()));
-
-		$this->sendRaw('');
-		$oResponse = $this->getResponse();
-
-		if (null !== $iUid)
-		{
-			$oLast = $oResponse->getLast();
-			if ($oLast && Enumerations\ResponseType::TAGGED === $oLast->ResponseType && \is_array($oLast->OptionalResponse))
-			{
-				if (\strlen($oLast->OptionalResponse[0]) &&
-					\strlen($oLast->OptionalResponse[2]) &&
-					'APPENDUID' === strtoupper($oLast->OptionalResponse[0]) &&
-					\is_numeric($oLast->OptionalResponse[2])
-				)
-				{
-					$iUid = (int) $oLast->OptionalResponse[2];
-				}
-			}
-		}
-
 		return $this;
 	}
 
