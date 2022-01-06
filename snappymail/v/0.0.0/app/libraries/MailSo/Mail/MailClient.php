@@ -781,15 +781,16 @@ class MailClient
 
 			if (\count($aFetchResponse))
 			{
+				$aCollection = [];
 				$sFetchType = $oRange->UID ? \MailSo\Imap\Enumerations\FetchType::UID : \MailSo\Imap\Enumerations\FetchType::INDEX;
-				foreach ($aFetchResponse as /* @var $oFetchResponseItem \MailSo\Imap\FetchResponse */ $oFetchResponseItem)
-				{
-					if ($oRange->contains($oFetchResponseItem->GetFetchValue($sFetchType))) {
-						$oMessageCollection->append(
-							Message::NewFetchResponseInstance($oMessageCollection->FolderName, $oFetchResponseItem)
-						);
+				foreach ($aFetchResponse as /* @var $oFetchResponseItem \MailSo\Imap\FetchResponse */ $oFetchResponseItem) {
+					$i = $oRange->indexOf($oFetchResponseItem->GetFetchValue($sFetchType));
+					if (false !== $i) {
+						$aCollection[$i] = Message::NewFetchResponseInstance($oMessageCollection->FolderName, $oFetchResponseItem);
 					}
 				}
+				\ksort($aCollection);
+				$oMessageCollection->exchangeArray(\array_values($aCollection));
 			}
 		}
 	}
@@ -927,7 +928,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageList(\MailSo\Mail\MessageListParams $oParams) : MessageCollection
+	public function MessageList(MessageListParams $oParams) : MessageCollection
 	{
 		if (!\MailSo\Base\Validator::RangeInt($oParams->iOffset, 0) ||
 			!\MailSo\Base\Validator::RangeInt($oParams->iLimit, 0, 999))

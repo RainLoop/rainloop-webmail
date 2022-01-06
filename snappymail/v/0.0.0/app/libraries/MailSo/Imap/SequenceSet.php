@@ -31,9 +31,9 @@ class SequenceSet /*extends \SplFixedArray*/ implements \Countable
 	public function __construct($mItems, bool $uid = true)
 	{
 		if (\is_array($mItems)) {
-			$this->data = $uid ? \array_filter(\array_map(function($id){
+			$this->data = \array_values($uid ? \array_filter(\array_map(function($id){
 				return \preg_match('/^([0-9]+|\\*):([0-9]+|\\*)/', $id, $dummy) ? $id : \intval($id);
-			}, $mItems)) : $mItems;
+			}, $mItems)) : $mItems);
 		} else if (\is_scalar($mItems)) {
 			$this->data[] = $mItems;
 		}
@@ -48,6 +48,11 @@ class SequenceSet /*extends \SplFixedArray*/ implements \Countable
 	public function contains($value): bool
 	{
 		return \in_array($value, $this->data);
+	}
+
+	public function indexOf($value)/*: int|false*/
+	{
+		return \array_search($value, $this->data);
 	}
 
 	public function __toString(): string
