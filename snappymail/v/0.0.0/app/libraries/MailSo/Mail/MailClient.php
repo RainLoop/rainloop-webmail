@@ -781,16 +781,15 @@ class MailClient
 
 			if (\count($aFetchResponse))
 			{
-				$aCollection = [];
+				$aCollection = \array_fill_keys($oRange->getArrayCopy(), null);
 				$sFetchType = $oRange->UID ? \MailSo\Imap\Enumerations\FetchType::UID : \MailSo\Imap\Enumerations\FetchType::INDEX;
 				foreach ($aFetchResponse as /* @var $oFetchResponseItem \MailSo\Imap\FetchResponse */ $oFetchResponseItem) {
-					$i = $oRange->indexOf($oFetchResponseItem->GetFetchValue($sFetchType));
-					if (false !== $i) {
-						$aCollection[$i] = Message::NewFetchResponseInstance($oMessageCollection->FolderName, $oFetchResponseItem);
+					$id = $oFetchResponseItem->GetFetchValue($sFetchType);
+					if (\array_key_exists($id, $aCollection)) {
+						$aCollection[$id] = Message::NewFetchResponseInstance($oMessageCollection->FolderName, $oFetchResponseItem);
 					}
 				}
-				\ksort($aCollection);
-				$oMessageCollection->exchangeArray(\array_values($aCollection));
+				$oMessageCollection->exchangeArray(\array_values(\array_filter($aCollection)));
 			}
 		}
 	}

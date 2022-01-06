@@ -55,6 +55,11 @@ class SequenceSet /*extends \SplFixedArray*/ implements \Countable
 		return \array_search($value, $this->data);
 	}
 
+	public function getArrayCopy(): array
+	{
+		return $this->data;
+	}
+
 	public function __toString(): string
 	{
 		$aResult = array();
