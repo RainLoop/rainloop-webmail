@@ -390,10 +390,10 @@ class MailClient
 			StoreAction::ADD_FLAGS_SILENT
 		);
 
-		if ($oRange->UID) {
-			$this->oImapClient->MessageExpunge((string) $oRange, true, $bExpungeAll);
+		if ($bExpungeAll) {
+			$this->oImapClient->FolderExpunge();
 		} else {
-			$this->oImapClient->MessageExpunge('', false, $bExpungeAll);
+			$this->oImapClient->FolderExpunge($oRange);
 		}
 
 		return $this;
@@ -1390,7 +1390,7 @@ class MailClient
 				StoreAction::ADD_FLAGS_SILENT
 			);
 
-			$this->oImapClient->MessageExpunge();
+			$this->oImapClient->FolderExpunge();
 		}
 
 		return $this;

@@ -944,20 +944,20 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
+	 * The EXPUNGE command permanently removes all messages that have the
+	 * \Deleted flag set from the currently selected mailbox.
+	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageExpunge(string $sUidRangeIfSupported = '', bool $bForceUidExpunge = false, bool $bExpungeAll = false) : self
+	public function FolderExpunge(SequenceSet $oUidRange = null) : self
 	{
-		$sUidRangeIfSupported = \trim($sUidRangeIfSupported);
-
 		$sCmd = 'EXPUNGE';
 		$aArguments = array();
 
-		if (!$bExpungeAll && $bForceUidExpunge && \strlen($sUidRangeIfSupported) && $this->IsSupported('UIDPLUS'))
-		{
+		if ($oUidRange && \count($oUidRange) && $oRange->UID && $this->IsSupported('UIDPLUS')) {
 			$sCmd = 'UID '.$sCmd;
-			$aArguments = array($sUidRangeIfSupported);
+			$aArguments = array((string) $oUidRange);
 		}
 
 		$this->SendRequestGetResponse($sCmd, $aArguments);
