@@ -910,7 +910,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		$sCmd = 'EXPUNGE';
 		$aArguments = array();
 
-		if ($oUidRange && \count($oUidRange) && $oRange->UID && $this->IsSupported('UIDPLUS')) {
+		if ($oUidRange && \count($oUidRange) && $oUidRange->UID && $this->IsSupported('UIDPLUS')) {
 			$sCmd = 'UID '.$sCmd;
 			$aArguments = array((string) $oUidRange);
 		}
