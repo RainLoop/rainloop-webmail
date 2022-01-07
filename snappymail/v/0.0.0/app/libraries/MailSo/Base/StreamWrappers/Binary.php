@@ -12,19 +12,6 @@
 namespace MailSo\Base\StreamWrappers;
 
 
-class WhitespaceFilter extends \php_user_filter
-{
-	function filter($in, $out, &$consumed, $closing)
-	{
-		while ($bucket = \stream_bucket_make_writeable($in)) {
-			$bucket->data = \str_replace(array("\r", "\n", "\t"), '', $bucket->data);
-			$consumed += $bucket->datalen;
-			\stream_bucket_append($out, $bucket);
-		}
-		return PSFS_PASS_ON;
-	}
-}
-
 /**
  * @category MailSo
  * @package Base
@@ -149,11 +136,6 @@ class Binary
 	public static function CreateStream($rStream,
 		string $sUtilsDecodeOrEncodeFunctionName = null, string $sFromEncoding = null, string $sToEncoding = null)
 	{
-		if (!\in_array(self::STREAM_NAME, \stream_get_wrappers()))
-		{
-			\stream_wrapper_register(self::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\Binary');
-		}
-
 		if (null === $sUtilsDecodeOrEncodeFunctionName || !\strlen($sUtilsDecodeOrEncodeFunctionName))
 		{
 			$sUtilsDecodeOrEncodeFunctionName = 'InlineNullDecode';
@@ -167,23 +149,18 @@ class Binary
 			$sUtilsDecodeOrEncodeFunctionName = 'InlineConvertDecode';
 		}
 
-		if (\in_array($sUtilsDecodeOrEncodeFunctionName, array(
-			'convert.base64-decode', 'convert.base64-encode',
-			'convert.quoted-printable-decode', 'convert.quoted-printable-encode'
-		)))
+		if (\in_array($sUtilsDecodeOrEncodeFunctionName, ['convert.base64-decode', 'convert.quoted-printable-decode']))
 		{
-			if ('convert.base64-decode' === $sUtilsDecodeOrEncodeFunctionName) {
-				\stream_filter_register('mailsowhitespace', '\\MailSo\\Base\\StreamWrappers\\WhitespaceFilter');
-				if (!\stream_filter_append($rStream, 'mailsowhitespace')) {
-					return false;
-				}
-			}
+			$rFilter = \stream_filter_append($rStream, $sUtilsDecodeOrEncodeFunctionName);
+			return \is_resource($rFilter) ? $rStream : false;
+		}
+		else if (\in_array($sUtilsDecodeOrEncodeFunctionName, ['convert.base64-encode', 'convert.quoted-printable-encode']))
+		{
 			$rFilter = \stream_filter_append($rStream, $sUtilsDecodeOrEncodeFunctionName,
-				STREAM_FILTER_READ, array(
+				\STREAM_FILTER_READ, array(
 					'line-length' => \MailSo\Mime\Enumerations\Constants::LINE_LENGTH,
 					'line-break-chars' => \MailSo\Mime\Enumerations\Constants::CRLF
 				));
-
 			return \is_resource($rFilter) ? $rStream : false;
 		}
 
@@ -333,3 +310,5 @@ class Binary
 		return false;
 	}
 }
+
+\stream_wrapper_register(Binary::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\Binary');

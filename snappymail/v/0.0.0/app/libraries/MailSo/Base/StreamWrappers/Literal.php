@@ -50,11 +50,6 @@ class Literal
 	 */
 	public static function CreateStream($rStream, int $iLiteralLen)
 	{
-		if (!\in_array(self::STREAM_NAME, stream_get_wrappers()))
-		{
-			\stream_wrapper_register(self::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\Literal');
-		}
-
 		$sHashName = \md5(\microtime(true).\rand(1000, 9999));
 
 		self::$aStreams[$sHashName] = array($rStream, $iLiteralLen);
@@ -163,3 +158,5 @@ class Literal
 		return false;
 	}
 }
+
+\stream_wrapper_register(Literal::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\Literal');

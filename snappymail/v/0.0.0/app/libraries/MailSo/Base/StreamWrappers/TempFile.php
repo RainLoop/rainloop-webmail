@@ -33,21 +33,11 @@ class TempFile
 	 */
 	private $rSream;
 
-	public static function Reg()
-	{
-		if (!in_array(self::STREAM_NAME, stream_get_wrappers()))
-		{
-			stream_wrapper_register(self::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\TempFile');
-		}
-	}
-
 	/**
 	 * @return resource|bool
 	 */
 	public static function CreateStream(string $sHash, string &$sFileName = '')
 	{
-		self::Reg();
-
 		$sFileName = self::STREAM_NAME.'://'.$sHash;
 		return fopen($sFileName, 'r+b');
 	}
@@ -121,3 +111,5 @@ class TempFile
 		return fseek($this->rSream, $iOffset, $iWhence);
 	}
 }
+
+\stream_wrapper_register(TempFile::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\TempFile');

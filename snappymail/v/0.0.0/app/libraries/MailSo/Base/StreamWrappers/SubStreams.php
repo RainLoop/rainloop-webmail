@@ -58,11 +58,6 @@ class SubStreams
 	 */
 	public static function CreateStream(array $aSubStreams)
 	{
-		if (!\in_array(self::STREAM_NAME, \stream_get_wrappers()))
-		{
-			\stream_wrapper_register(self::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\SubStreams');
-		}
-
 		$sHashName = \MailSo\Base\Utils::Sha1Rand();
 
 		self::$aStreams[$sHashName] = \array_map(function ($mItem) {
@@ -219,3 +214,5 @@ class SubStreams
 		return false;
 	}
 }
+
+\stream_wrapper_register(SubStreams::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\SubStreams');

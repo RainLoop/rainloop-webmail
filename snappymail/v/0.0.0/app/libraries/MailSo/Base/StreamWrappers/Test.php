@@ -39,11 +39,6 @@ class Test
 	 */
 	public static function CreateStream(string $sRawResponse)
 	{
-		if (!\in_array(self::STREAM_NAME, \stream_get_wrappers()))
-		{
-			\stream_wrapper_register(self::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\Test');
-		}
-
 		$sHashName = \md5(\microtime(true).\rand(1000, 9999));
 
 		$rConnect = \fopen('php://memory', 'r+b');
@@ -106,3 +101,5 @@ class Test
 		return false;
 	}
 }
+
+\stream_wrapper_register(Test::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\Test');
