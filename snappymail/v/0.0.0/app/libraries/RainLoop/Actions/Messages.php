@@ -7,6 +7,7 @@ use RainLoop\Exceptions\ClientException;
 use RainLoop\Model\Account;
 use RainLoop\Notifications;
 use MailSo\Imap\SequenceSet;
+use MailSo\Imap\Enumerations\MessageFlag;
 
 trait Messages
 {
@@ -114,9 +115,8 @@ trait Messages
 
 				$iNewUid = 0;
 				$this->MailClient()->MessageAppendStream(
-					$rMessageStream, $iMessageStreamSize, $sDraftFolder, array(
-						\MailSo\Imap\Enumerations\MessageFlag::SEEN
-					), $iNewUid);
+					$rMessageStream, $iMessageStreamSize, $sDraftFolder, array(MessageFlag::SEEN), $iNewUid
+				);
 
 				if (!empty($sMessageId) && (null === $iNewUid || 0 === $iNewUid))
 				{
@@ -186,7 +186,7 @@ trait Messages
 								case 'reply':
 								case 'reply-all':
 									$this->MailClient()->MessageSetFlag($sDraftInfoFolder, new SequenceSet($iDraftInfoUid),
-										\MailSo\Imap\Enumerations\MessageFlag::ANSWERED);
+										MessageFlag::ANSWERED);
 									break;
 								case 'forward':
 									$sForwardedFlag = $this->Config()->Get('labs', 'imap_forwarded_flag', '');
@@ -219,9 +219,7 @@ trait Messages
 									array($oAccount, &$rMessageStream, &$iMessageStreamSize));
 
 								$this->MailClient()->MessageAppendStream(
-									$rMessageStream, $iMessageStreamSize, $sSentFolder, array(
-										\MailSo\Imap\Enumerations\MessageFlag::SEEN
-									)
+									$rMessageStream, $iMessageStreamSize, $sSentFolder, array(MessageFlag::SEEN)
 								);
 							}
 							else
@@ -235,9 +233,8 @@ trait Messages
 									array($oAccount, &$rAppendMessageStream, &$iAppendMessageStreamSize));
 
 								$this->MailClient()->MessageAppendStream(
-									$rAppendMessageStream, $iAppendMessageStreamSize, $sSentFolder, array(
-										\MailSo\Imap\Enumerations\MessageFlag::SEEN
-									));
+									$rAppendMessageStream, $iAppendMessageStreamSize, $sSentFolder, array(MessageFlag::SEEN)
+								);
 
 								if (\is_resource($rAppendMessageStream))
 								{
@@ -391,21 +388,23 @@ trait Messages
 
 	public function DoMessageSetSeen() : array
 	{
-		return $this->messageSetFlag('MessageSetSeen', __FUNCTION__);
+		return $this->messageSetFlag(MessageFlag::SEEN, __FUNCTION__);
 	}
 
 	public function DoMessageSetSeenToAll() : array
 	{
 		$this->initMailClientConnection();
 
-		$sFolder = $this->GetActionParam('Folder', '');
-		$bSetAction = '1' === (string) $this->GetActionParam('SetAction', '0');
 		$sThreadUids = \trim($this->GetActionParam('ThreadUids', ''));
 
 		try
 		{
-			$this->MailClient()->MessageSetSeenToAll($sFolder, $bSetAction,
-				!empty($sThreadUids) ? explode(',', $sThreadUids) : null);
+			$this->MessageSetFlag(
+				$this->GetActionParam('Folder', ''),
+				empty($sThreadUids) ? new SequenceSet('1:*', false) : new SequenceSet(\explode(',', $sThreadUids)),
+				MessageFlag::SEEN,
+				!empty($this->GetActionParam('SetAction', '0'))
+			);
 		}
 		catch (\Throwable $oException)
 		{
@@ -417,7 +416,7 @@ trait Messages
 
 	public function DoMessageSetFlagged() : array
 	{
-		return $this->messageSetFlag('MessageSetFlagged', __FUNCTION__);
+		return $this->messageSetFlag(MessageFlag::FLAGGED, __FUNCTION__, true);
 	}
 
 	/**
@@ -530,7 +529,7 @@ trait Messages
 		{
 			try
 			{
-				$this->MailClient()->MessageSetSeen($sFromFolder, $oUids);
+				$this->MailClient()->MessageSetFlag($sFromFolder, $oUids, MessageFlag::SEEN);
 			}
 			catch (\Throwable $oException)
 			{
@@ -799,17 +798,18 @@ trait Messages
 		}
 	}
 
-	private function messageSetFlag(string $sActionFunction, string $sResponseFunction) : array
+	private function messageSetFlag(string $sMessageFlag, string $sResponseFunction, bool $bSkipUnsupportedFlag = false) : array
 	{
 		$this->initMailClientConnection();
 
 		try
 		{
-			$this->MailClient()->{$sActionFunction}(
+			$this->MailClient()->MessageSetFlag(
 				$this->GetActionParam('Folder', ''),
 				new SequenceSet(\explode(',', (string) $this->GetActionParam('Uids', ''))),
+				$sMessageFlag,
 				!empty($this->GetActionParam('SetAction', '0')),
-				true
+				$bSkipUnsupportedFlag
 			);
 		}
 		catch (\Throwable $oException)

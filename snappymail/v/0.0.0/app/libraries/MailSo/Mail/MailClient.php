@@ -12,6 +12,7 @@
 namespace MailSo\Mail;
 
 use MailSo\Imap\Enumerations\FolderResponseStatus;
+use MailSo\Imap\Enumerations\MessageFlag;
 use MailSo\Imap\Enumerations\StoreAction;
 use MailSo\Imap\SequenceSet;
 
@@ -122,88 +123,17 @@ class MailClient
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 * @throws \MailSo\Mail\Exceptions\Exception
 	 */
-	public function MessageSetFlagToAll(string $sFolderName, string $sMessageFlag, bool $bSetAction = true, bool $bSkipUnsupportedFlag = false, ?array $aCustomUids = null) : void
-	{
-		$oFolderInfo = $this->oImapClient->FolderSelect($sFolderName);
-		if (!$oFolderInfo->IsFlagSupported($sMessageFlag))
-		{
-			if (!$bSkipUnsupportedFlag)
-			{
-				throw new Exceptions\RuntimeException('Message flag "'.$sMessageFlag.'" is not supported.');
-			}
-		}
-
-		if ($oFolderInfo && 0 < $oFolderInfo->MESSAGES)
-		{
-			$oRange = null;
-			if (\is_array($aCustomUids)) {
-				if (\count($aCustomUids)) {
-					$oRange = new SequenceSet($aCustomUids);
-				}
-			} else {
-				$oRange = new SequenceSet('1:*', false);
-			}
-
-			if ($oRange) {
-				$sStoreAction = $bSetAction ? StoreAction::ADD_FLAGS_SILENT : StoreAction::REMOVE_FLAGS_SILENT;
-				$this->oImapClient->MessageStoreFlag($oRange, array($sMessageFlag), $sStoreAction);
-			}
-		}
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 * @throws \MailSo\Mail\Exceptions\Exception
-	 */
 	public function MessageSetFlag(string $sFolderName, SequenceSet $oRange, string $sMessageFlag, bool $bSetAction = true, bool $bSkipUnsupportedFlag = false) : void
 	{
-		$oFolderInfo = $this->oImapClient->FolderSelect($sFolderName);
-		if (!$oFolderInfo->IsFlagSupported($sMessageFlag))
-		{
-			if (!$bSkipUnsupportedFlag)
-			{
+		if (\count($oRange)) {
+			$oFolderInfo = $this->oImapClient->FolderSelect($sFolderName);
+			if ($oFolderInfo->IsFlagSupported($sMessageFlag)) {
+				$sStoreAction = $bSetAction ? StoreAction::ADD_FLAGS_SILENT : StoreAction::REMOVE_FLAGS_SILENT;
+				$this->oImapClient->MessageStoreFlag($oRange, array($sMessageFlag), $sStoreAction);
+			} else if (!$bSkipUnsupportedFlag) {
 				throw new Exceptions\RuntimeException('Message flag "'.$sMessageFlag.'" is not supported.');
 			}
 		}
-		else
-		{
-			$sStoreAction = $bSetAction ? StoreAction::ADD_FLAGS_SILENT : StoreAction::REMOVE_FLAGS_SILENT;
-			$this->oImapClient->MessageStoreFlag($oRange, array($sMessageFlag), $sStoreAction);
-		}
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function MessageSetFlagged(string $sFolderName, SequenceSet $oRange, bool $bSetAction = true, bool $bSkipUnsupportedFlag = false) : void
-	{
-		$this->MessageSetFlag($sFolderName, $oRange,
-			\MailSo\Imap\Enumerations\MessageFlag::FLAGGED, $bSetAction, $bSkipUnsupportedFlag);
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function MessageSetSeenToAll(string $sFolderName, bool $bSetAction = true, array $aCustomUids = null) : void
-	{
-		$this->MessageSetFlagToAll($sFolderName, \MailSo\Imap\Enumerations\MessageFlag::SEEN, $bSetAction, true, $aCustomUids);
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function MessageSetSeen(string $sFolderName, SequenceSet $oRange, bool $bSetAction = true) : void
-	{
-		$this->MessageSetFlag($sFolderName, $oRange,
-			\MailSo\Imap\Enumerations\MessageFlag::SEEN, $bSetAction, true);
 	}
 
 	/**
@@ -382,7 +312,7 @@ class MailClient
 		$this->oImapClient->FolderSelect($sFolder);
 
 		$this->oImapClient->MessageStoreFlag($oRange,
-			array(\MailSo\Imap\Enumerations\MessageFlag::DELETED),
+			array(MessageFlag::DELETED),
 			StoreAction::ADD_FLAGS_SILENT
 		);
 
@@ -571,7 +501,7 @@ class MailClient
 				$aFlags = \array_map('strtolower', $oFetchResponse->GetFetchValue(
 					\MailSo\Imap\Enumerations\FetchType::FLAGS));
 
-				if (!\in_array(\strtolower(\MailSo\Imap\Enumerations\MessageFlag::SEEN), $aFlags))
+				if (!\in_array(\strtolower(MessageFlag::SEEN), $aFlags))
 				{
 					$iUid = (int) $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::UID);
 					$sHeaders = $oFetchResponse->GetHeaderFieldsValue();
@@ -1344,26 +1274,24 @@ class MailClient
 	 */
 	public function FolderDelete(string $sFolderFullName, bool $bUnsubscribeOnDeletion = true) : self
 	{
-		if (!\strlen($sFolderFullName) || 'INBOX' === $sFolderFullName)
-		{
+		if (!\strlen($sFolderFullName) || 'INBOX' === $sFolderFullName) {
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
-		$this->oImapClient->FolderExamine($sFolderFullName);
-
-		$aIndexOrUids = $this->oImapClient->MessageSimpleSearch('ALL');
-		if (\count($aIndexOrUids))
-		{
+		if ($this->IsSupported('IMAP4rev2')) {
+			$oInfo = $this->oImapClient->FolderExamine($sFolderFullName);
+		} else {
+			$oInfo = $this->oImapClient->FolderStatus($sFolderFullName);
+		}
+		if ($oInfo->MESSAGES) {
 			throw new Exceptions\NonEmptyFolder;
 		}
 
-		$this->oImapClient->FolderExamine('INBOX');
-
-		if ($bUnsubscribeOnDeletion)
-		{
+		if ($bUnsubscribeOnDeletion) {
 			$this->oImapClient->FolderUnsubscribe($sFolderFullName);
 		}
 
+		$this->oImapClient->FolderUnselect();
 		$this->oImapClient->FolderDelete($sFolderFullName);
 
 		return $this;
@@ -1378,7 +1306,7 @@ class MailClient
 		if (0 < $oFolderInformation->MESSAGES)
 		{
 			$this->oImapClient->MessageStoreFlag(new SequenceSet('1:*', false),
-				array(\MailSo\Imap\Enumerations\MessageFlag::DELETED),
+				array(MessageFlag::DELETED),
 				StoreAction::ADD_FLAGS_SILENT
 			);
 
