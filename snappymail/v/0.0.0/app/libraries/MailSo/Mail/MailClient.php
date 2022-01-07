@@ -15,6 +15,7 @@ use MailSo\Imap\Enumerations\FolderResponseStatus;
 use MailSo\Imap\Enumerations\MessageFlag;
 use MailSo\Imap\Enumerations\StoreAction;
 use MailSo\Imap\SequenceSet;
+use MailSo\Mime\Enumerations\Header as MimeHeader;
 
 /**
  * @category MailSo
@@ -77,41 +78,41 @@ class MailClient
 		}
 
 		return \MailSo\Imap\Enumerations\FetchType::BuildBodyCustomHeaderRequest(array(
-			\MailSo\Mime\Enumerations\Header::RETURN_PATH,
-			\MailSo\Mime\Enumerations\Header::RECEIVED,
-			\MailSo\Mime\Enumerations\Header::MIME_VERSION,
-			\MailSo\Mime\Enumerations\Header::MESSAGE_ID,
-			\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-			\MailSo\Mime\Enumerations\Header::FROM_,
-			\MailSo\Mime\Enumerations\Header::TO_,
-			\MailSo\Mime\Enumerations\Header::CC,
-			\MailSo\Mime\Enumerations\Header::BCC,
-			\MailSo\Mime\Enumerations\Header::SENDER,
-			\MailSo\Mime\Enumerations\Header::REPLY_TO,
-			\MailSo\Mime\Enumerations\Header::DELIVERED_TO,
-			\MailSo\Mime\Enumerations\Header::IN_REPLY_TO,
-			\MailSo\Mime\Enumerations\Header::REFERENCES,
-			\MailSo\Mime\Enumerations\Header::DATE,
-			\MailSo\Mime\Enumerations\Header::SUBJECT,
-			\MailSo\Mime\Enumerations\Header::X_MSMAIL_PRIORITY,
-			\MailSo\Mime\Enumerations\Header::IMPORTANCE,
-			\MailSo\Mime\Enumerations\Header::X_PRIORITY,
-			\MailSo\Mime\Enumerations\Header::X_DRAFT_INFO,
-			\MailSo\Mime\Enumerations\Header::RETURN_RECEIPT_TO,
-			\MailSo\Mime\Enumerations\Header::DISPOSITION_NOTIFICATION_TO,
-			\MailSo\Mime\Enumerations\Header::X_CONFIRM_READING_TO,
-			\MailSo\Mime\Enumerations\Header::AUTHENTICATION_RESULTS,
-			\MailSo\Mime\Enumerations\Header::X_DKIM_AUTHENTICATION_RESULTS,
-			\MailSo\Mime\Enumerations\Header::LIST_UNSUBSCRIBE,
+			MimeHeader::RETURN_PATH,
+			MimeHeader::RECEIVED,
+			MimeHeader::MIME_VERSION,
+			MimeHeader::MESSAGE_ID,
+			MimeHeader::CONTENT_TYPE,
+			MimeHeader::FROM_,
+			MimeHeader::TO_,
+			MimeHeader::CC,
+			MimeHeader::BCC,
+			MimeHeader::SENDER,
+			MimeHeader::REPLY_TO,
+			MimeHeader::DELIVERED_TO,
+			MimeHeader::IN_REPLY_TO,
+			MimeHeader::REFERENCES,
+			MimeHeader::DATE,
+			MimeHeader::SUBJECT,
+			MimeHeader::X_MSMAIL_PRIORITY,
+			MimeHeader::IMPORTANCE,
+			MimeHeader::X_PRIORITY,
+			MimeHeader::X_DRAFT_INFO,
+			MimeHeader::RETURN_RECEIPT_TO,
+			MimeHeader::DISPOSITION_NOTIFICATION_TO,
+			MimeHeader::X_CONFIRM_READING_TO,
+			MimeHeader::AUTHENTICATION_RESULTS,
+			MimeHeader::X_DKIM_AUTHENTICATION_RESULTS,
+			MimeHeader::LIST_UNSUBSCRIBE,
 			// SPAM
-			\MailSo\Mime\Enumerations\Header::X_SPAM_STATUS,
-//			\MailSo\Mime\Enumerations\Header::X_SPAM_FLAG,
-			\MailSo\Mime\Enumerations\Header::X_SPAMD_RESULT,
-			\MailSo\Mime\Enumerations\Header::X_BOGOSITY,
+			MimeHeader::X_SPAM_STATUS,
+//			MimeHeader::X_SPAM_FLAG,
+			MimeHeader::X_SPAMD_RESULT,
+			MimeHeader::X_BOGOSITY,
 			// Virus
-			\MailSo\Mime\Enumerations\Header::X_VIRUS,
-			\MailSo\Mime\Enumerations\Header::X_VIRUS_SCANNED,
-			\MailSo\Mime\Enumerations\Header::X_VIRUS_STATUS
+			MimeHeader::X_VIRUS,
+			MimeHeader::X_VIRUS_SCANNED,
+			MimeHeader::X_VIRUS_STATUS
 		), true);
 //
 //		return \MailSo\Imap\Enumerations\FetchType::ENVELOPE;
@@ -247,25 +248,25 @@ class MailClient
 				if (\strlen($sMimeIndex))
 				{
 					$sFileName = $oHeaders->ParameterValue(
-						\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION,
+						MimeHeader::CONTENT_DISPOSITION,
 						\MailSo\Mime\Enumerations\Parameter::FILENAME);
 
 					if (!\strlen($sFileName))
 					{
 						$sFileName = $oHeaders->ParameterValue(
-							\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+							MimeHeader::CONTENT_TYPE,
 							\MailSo\Mime\Enumerations\Parameter::NAME);
 					}
 
 					$sMailEncodingName = $oHeaders->ValueByName(
-						\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING);
+						MimeHeader::CONTENT_TRANSFER_ENCODING);
 
 					$sContentType = $oHeaders->ValueByName(
-						\MailSo\Mime\Enumerations\Header::CONTENT_TYPE);
+						MimeHeader::CONTENT_TYPE);
 				}
 				else
 				{
-					$sSubject = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::SUBJECT);
+					$sSubject = $oHeaders->ValueByName(MimeHeader::SUBJECT);
 
 					$sFileName = \strlen($sSubject) ? $sSubject : (string) $iIndex;
 					$sFileName .= '.eml';
@@ -490,9 +491,9 @@ class MailClient
 				\MailSo\Imap\Enumerations\FetchType::UID,
 				\MailSo\Imap\Enumerations\FetchType::FLAGS,
 				\MailSo\Imap\Enumerations\FetchType::BuildBodyCustomHeaderRequest(array(
-					\MailSo\Mime\Enumerations\Header::FROM_,
-					\MailSo\Mime\Enumerations\Header::SUBJECT,
-					\MailSo\Mime\Enumerations\Header::CONTENT_TYPE
+					MimeHeader::FROM_,
+					MimeHeader::SUBJECT,
+					MimeHeader::CONTENT_TYPE
 				))
 			), $iPrevUidNext.':*', true);
 
@@ -509,7 +510,7 @@ class MailClient
 					$oHeaders = new \MailSo\Mime\HeaderCollection($sHeaders);
 
 					$sContentTypeCharset = $oHeaders->ParameterValue(
-						\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+						MimeHeader::CONTENT_TYPE,
 						\MailSo\Mime\Enumerations\Parameter::CHARSET
 					);
 
@@ -520,8 +521,8 @@ class MailClient
 					$aNewMessages[] = array(
 						'Folder' => $sFolderName,
 						'Uid' => $iUid,
-						'Subject' => $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::SUBJECT, !$sContentTypeCharset),
-						'From' => $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::FROM_, !$sContentTypeCharset)
+						'Subject' => $oHeaders->ValueByName(MimeHeader::SUBJECT, !$sContentTypeCharset),
+						'From' => $oHeaders->GetAsEmailCollection(MimeHeader::FROM_, !$sContentTypeCharset)
 					);
 				}
 			}
