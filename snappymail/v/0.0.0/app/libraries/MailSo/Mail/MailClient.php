@@ -124,10 +124,8 @@ class MailClient
 	 */
 	public function MessageSetFlagToAll(string $sFolderName, string $sMessageFlag, bool $bSetAction = true, bool $bSkipUnsupportedFlag = false, ?array $aCustomUids = null) : void
 	{
-		$this->oImapClient->FolderSelect($sFolderName);
-
-		$oFolderInfo = $this->oImapClient->FolderCurrentInformation();
-		if (!$oFolderInfo || !$oFolderInfo->IsFlagSupported($sMessageFlag))
+		$oFolderInfo = $this->oImapClient->FolderSelect($sFolderName);
+		if (!$oFolderInfo->IsFlagSupported($sMessageFlag))
 		{
 			if (!$bSkipUnsupportedFlag)
 			{
@@ -161,10 +159,8 @@ class MailClient
 	 */
 	public function MessageSetFlag(string $sFolderName, SequenceSet $oRange, string $sMessageFlag, bool $bSetAction = true, bool $bSkipUnsupportedFlag = false) : void
 	{
-		$this->oImapClient->FolderSelect($sFolderName);
-
-		$oFolderInfo = $this->oImapClient->FolderCurrentInformation();
-		if (!$oFolderInfo || !$oFolderInfo->IsFlagSupported($sMessageFlag))
+		$oFolderInfo = $this->oImapClient->FolderSelect($sFolderName);
+		if (!$oFolderInfo->IsFlagSupported($sMessageFlag))
 		{
 			if (!$bSkipUnsupportedFlag)
 			{
@@ -449,11 +445,11 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderUnSelect() : self
+	public function FolderUnselect() : self
 	{
 		if ($this->oImapClient->IsSelected())
 		{
-			$this->oImapClient->FolderUnSelect();
+			$this->oImapClient->FolderUnselect();
 		}
 
 		return $this;
@@ -1321,7 +1317,7 @@ class MailClient
 			$aSubscribeFolders = $this->oImapClient->FolderSubscribeList($sPrevFolderFullName, '*');
 			foreach ($aSubscribeFolders as /* @var $oFolder \MailSo\Imap\Folder */ $oFolder)
 			{
-				$this->oImapClient->FolderUnSubscribe($oFolder->FullName());
+				$this->oImapClient->FolderUnsubscribe($oFolder->FullName());
 			}
 		}
 
@@ -1365,7 +1361,7 @@ class MailClient
 
 		if ($bUnsubscribeOnDeletion)
 		{
-			$this->oImapClient->FolderUnSubscribe($sFolderFullName);
+			$this->oImapClient->FolderUnsubscribe($sFolderFullName);
 		}
 
 		$this->oImapClient->FolderDelete($sFolderFullName);
@@ -1378,10 +1374,8 @@ class MailClient
 	 */
 	public function FolderClear(string $sFolderFullName) : self
 	{
-		$this->oImapClient->FolderSelect($sFolderFullName);
-
-		$oFolderInformation = $this->oImapClient->FolderCurrentInformation();
-		if ($oFolderInformation && 0 < $oFolderInformation->MESSAGES)
+		$oFolderInformation = $this->oImapClient->FolderSelect($sFolderFullName);
+		if (0 < $oFolderInformation->MESSAGES)
 		{
 			$this->oImapClient->MessageStoreFlag(new SequenceSet('1:*', false),
 				array(\MailSo\Imap\Enumerations\MessageFlag::DELETED),
@@ -1404,7 +1398,7 @@ class MailClient
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
-		$this->oImapClient->{$bSubscribe ? 'FolderSubscribe' : 'FolderUnSubscribe'}($sFolderFullName);
+		$this->oImapClient->{$bSubscribe ? 'FolderSubscribe' : 'FolderUnsubscribe'}($sFolderFullName);
 
 		return $this;
 	}

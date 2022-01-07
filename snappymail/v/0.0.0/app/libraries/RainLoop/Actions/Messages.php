@@ -492,7 +492,7 @@ trait Messages
 		{
 			try
 			{
-				$this->MailClient()->FolderUnSelect();
+				$this->MailClient()->FolderUnselect();
 			}
 			catch (\Throwable $oException)
 			{
@@ -554,7 +554,7 @@ trait Messages
 		{
 			try
 			{
-				$this->MailClient()->FolderUnSelect();
+				$this->MailClient()->FolderUnselect();
 			}
 			catch (\Throwable $oException)
 			{
