@@ -56,13 +56,8 @@ trait Messages
 						// Already defined by default
 						break;
 
-					case FetchType::FULL:
-						$aFetchItems[] = FetchType::BODY;
-						// Falls through
 					case FetchType::ALL:
 						$aFetchItems[] = FetchType::ENVELOPE;
-						// Falls through
-					case FetchType::FAST:
 						$aFetchItems[] = FetchType::FLAGS;
 						$aFetchItems[] = FetchType::INTERNALDATE;
 						break;

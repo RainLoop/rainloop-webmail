@@ -19,8 +19,6 @@ namespace MailSo\Imap\Enumerations;
 abstract class FetchType
 {
 	const ALL = 'ALL';
-	const FAST = 'FAST';
-	const FULL = 'FULL';
 	const BODY = 'BODY';
 	const BODY_PEEK = 'BODY.PEEK';
 	const BODY_HEADER = 'BODY[HEADER]';
