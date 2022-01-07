@@ -589,22 +589,6 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function InboxUnreadCount() : int
-	{
-		$aFolderStatus = $this->oImapClient->FolderStatus('INBOX', array(
-			FolderResponseStatus::UNSEEN
-		));
-
-		$iResult = isset($aFolderStatus[FolderResponseStatus::UNSEEN]) ?
-			(int) $aFolderStatus[FolderResponseStatus::UNSEEN] : 0;
-
-		return 0 < $iResult ? $iResult : 0;
-	}
-
-	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
