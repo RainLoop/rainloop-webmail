@@ -42,6 +42,7 @@ trait Messages
 		$this->aFetchCallbacks = array();
 		try {
 			$aFetchItems = array(
+				FetchType::INDEX,
 				FetchType::UID,
 				FetchType::RFC822_SIZE
 			);
