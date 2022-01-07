@@ -18,7 +18,7 @@ use MailSo\Imap\ResponseCollection;
 use MailSo\Imap\SequenceSet;
 use MailSo\Imap\Enumerations\ResponseType;
 use MailSo\Log\Enumerations\Type as LogType;
-use \MailSo\Base\Exceptions\InvalidArgumentException;
+use MailSo\Base\Exceptions\InvalidArgumentException;
 
 /**
  * @category MailSo

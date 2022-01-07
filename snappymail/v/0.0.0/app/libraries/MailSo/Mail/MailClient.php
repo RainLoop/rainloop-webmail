@@ -15,7 +15,9 @@ use MailSo\Imap\Enumerations\FolderResponseStatus;
 use MailSo\Imap\Enumerations\MessageFlag;
 use MailSo\Imap\Enumerations\StoreAction;
 use MailSo\Imap\SequenceSet;
+use MailSo\Imap\Enumerations\FetchType;
 use MailSo\Mime\Enumerations\Header as MimeHeader;
+use MailSo\Mime\Enumerations\Parameter as MimeParameter;
 
 /**
  * @category MailSo
@@ -74,10 +76,10 @@ class MailClient
 	{
 		if (\MailSo\Config::$MessageAllHeaders)
 		{
-			return \MailSo\Imap\Enumerations\FetchType::BODY_HEADER_PEEK;
+			return FetchType::BODY_HEADER_PEEK;
 		}
 
-		return \MailSo\Imap\Enumerations\FetchType::BuildBodyCustomHeaderRequest(array(
+		return FetchType::BuildBodyCustomHeaderRequest(array(
 			MimeHeader::RETURN_PATH,
 			MimeHeader::RECEIVED,
 			MimeHeader::MIME_VERSION,
@@ -115,7 +117,7 @@ class MailClient
 			MimeHeader::X_VIRUS_STATUS
 		), true);
 //
-//		return \MailSo\Imap\Enumerations\FetchType::ENVELOPE;
+//		return FetchType::ENVELOPE;
 	}
 
 	/**
@@ -155,15 +157,15 @@ class MailClient
 		$oMessage = null;
 
 		$aFetchItems = array(
-			\MailSo\Imap\Enumerations\FetchType::INDEX,
-			\MailSo\Imap\Enumerations\FetchType::UID,
-			\MailSo\Imap\Enumerations\FetchType::RFC822_SIZE,
-			\MailSo\Imap\Enumerations\FetchType::INTERNALDATE,
-			\MailSo\Imap\Enumerations\FetchType::FLAGS,
+			FetchType::INDEX,
+			FetchType::UID,
+			FetchType::RFC822_SIZE,
+			FetchType::INTERNALDATE,
+			FetchType::FLAGS,
 			$this->getEnvelopeOrHeadersRequestString()
 		);
 
-		$aFetchResponse = $this->oImapClient->Fetch(array(\MailSo\Imap\Enumerations\FetchType::BODYSTRUCTURE), $iIndex, $bIndexIsUid);
+		$aFetchResponse = $this->oImapClient->Fetch(array(FetchType::BODYSTRUCTURE), $iIndex, $bIndexIsUid);
 		if (\count($aFetchResponse) && isset($aFetchResponse[0]))
 		{
 			$oBodyStructure = $aFetchResponse[0]->GetFetchBodyStructure();
@@ -171,7 +173,7 @@ class MailClient
 			{
 				foreach ($oBodyStructure->SearchHtmlOrPlainParts() as $oPart)
 				{
-					$sLine = \MailSo\Imap\Enumerations\FetchType::BODY_PEEK.'['.$oPart->PartID().']';
+					$sLine = FetchType::BODY_PEEK.'['.$oPart->PartID().']';
 					if (0 < $iBodyTextLimit && $iBodyTextLimit < $oPart->Size())
 					{
 						$sLine .= "<0.{$iBodyTextLimit}>";
@@ -181,11 +183,11 @@ class MailClient
 				}
 
 				$aSignatureParts = $oBodyStructure->SearchByContentType('application/pgp-signature');
-				if (is_array($aSignatureParts) && \count($aSignatureParts))
+				if (\is_array($aSignatureParts) && \count($aSignatureParts))
 				{
 					foreach ($aSignatureParts as $oPart)
 					{
-						$aFetchItems[] = \MailSo\Imap\Enumerations\FetchType::BODY_PEEK.'['.$oPart->PartID().']';
+						$aFetchItems[] = FetchType::BODY_PEEK.'['.$oPart->PartID().']';
 					}
 				}
 			}
@@ -193,7 +195,7 @@ class MailClient
 
 		if (!$oBodyStructure)
 		{
-			$aFetchItems[] = \MailSo\Imap\Enumerations\FetchType::BODYSTRUCTURE;
+			$aFetchItems[] = FetchType::BODYSTRUCTURE;
 		}
 
 		$aFetchResponse = $this->oImapClient->Fetch($aFetchItems, $iIndex, $bIndexIsUid);
@@ -229,16 +231,16 @@ class MailClient
 		$sMimeIndex = trim($sMimeIndex);
 		$aFetchResponse = $this->oImapClient->Fetch(array(
 			\strlen($sMimeIndex)
-				? \MailSo\Imap\Enumerations\FetchType::BODY_PEEK.'['.$sMimeIndex.'.MIME]'
-				: \MailSo\Imap\Enumerations\FetchType::BODY_HEADER_PEEK),
+				? FetchType::BODY_PEEK.'['.$sMimeIndex.'.MIME]'
+				: FetchType::BODY_HEADER_PEEK),
 			$iIndex, $bIndexIsUid);
 
 		if (\count($aFetchResponse))
 		{
 			$sMime = $aFetchResponse[0]->GetFetchValue(
 				\strlen($sMimeIndex)
-					? \MailSo\Imap\Enumerations\FetchType::BODY.'['.$sMimeIndex.'.MIME]'
-					: \MailSo\Imap\Enumerations\FetchType::BODY_HEADER
+					? FetchType::BODY.'['.$sMimeIndex.'.MIME]'
+					: FetchType::BODY_HEADER
 			);
 
 			if (\strlen($sMime))
@@ -247,22 +249,16 @@ class MailClient
 
 				if (\strlen($sMimeIndex))
 				{
-					$sFileName = $oHeaders->ParameterValue(
-						MimeHeader::CONTENT_DISPOSITION,
-						\MailSo\Mime\Enumerations\Parameter::FILENAME);
+					$sFileName = $oHeaders->ParameterValue(MimeHeader::CONTENT_DISPOSITION, MimeParameter::FILENAME);
 
 					if (!\strlen($sFileName))
 					{
-						$sFileName = $oHeaders->ParameterValue(
-							MimeHeader::CONTENT_TYPE,
-							\MailSo\Mime\Enumerations\Parameter::NAME);
+						$sFileName = $oHeaders->ParameterValue(MimeHeader::CONTENT_TYPE, MimeParameter::NAME);
 					}
 
-					$sMailEncodingName = $oHeaders->ValueByName(
-						MimeHeader::CONTENT_TRANSFER_ENCODING);
+					$sMailEncodingName = $oHeaders->ValueByName(MimeHeader::CONTENT_TRANSFER_ENCODING);
 
-					$sContentType = $oHeaders->ValueByName(
-						MimeHeader::CONTENT_TYPE);
+					$sContentType = $oHeaders->ValueByName(MimeHeader::CONTENT_TYPE);
 				}
 				else
 				{
@@ -279,7 +275,7 @@ class MailClient
 		$aFetchResponse = $this->oImapClient->Fetch(array(
 			// Push in the aFetchCallbacks array and then called by \MailSo\Imap\Traits\ResponseParser::partialResponseLiteralCallbackCallable
 			array(
-				\MailSo\Imap\Enumerations\FetchType::BODY_PEEK.'['.$sMimeIndex.']',
+				FetchType::BODY_PEEK.'['.$sMimeIndex.']',
 				function ($sParent, $sLiteralAtomUpperCase, $rImapLiteralStream) use ($mCallback, $sMimeIndex, $sMailEncodingName, $sContentType, $sFileName)
 				{
 					if (\strlen($sLiteralAtomUpperCase) && \is_resource($rImapLiteralStream) && 'FETCH' === $sParent)
@@ -487,10 +483,10 @@ class MailClient
 			$this->oImapClient->FolderExamine($sFolderName);
 
 			$aFetchResponse = $this->oImapClient->Fetch(array(
-				\MailSo\Imap\Enumerations\FetchType::INDEX,
-				\MailSo\Imap\Enumerations\FetchType::UID,
-				\MailSo\Imap\Enumerations\FetchType::FLAGS,
-				\MailSo\Imap\Enumerations\FetchType::BuildBodyCustomHeaderRequest(array(
+				FetchType::INDEX,
+				FetchType::UID,
+				FetchType::FLAGS,
+				FetchType::BuildBodyCustomHeaderRequest(array(
 					MimeHeader::FROM_,
 					MimeHeader::SUBJECT,
 					MimeHeader::CONTENT_TYPE
@@ -499,20 +495,16 @@ class MailClient
 
 			foreach ($aFetchResponse as /* @var $oFetchResponse \MailSo\Imap\FetchResponse */ $oFetchResponse)
 			{
-				$aFlags = \array_map('strtolower', $oFetchResponse->GetFetchValue(
-					\MailSo\Imap\Enumerations\FetchType::FLAGS));
+				$aFlags = \array_map('strtolower', $oFetchResponse->GetFetchValue(FetchType::FLAGS));
 
 				if (!\in_array(\strtolower(MessageFlag::SEEN), $aFlags))
 				{
-					$iUid = (int) $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::UID);
+					$iUid = (int) $oFetchResponse->GetFetchValue(FetchType::UID);
 					$sHeaders = $oFetchResponse->GetHeaderFieldsValue();
 
 					$oHeaders = new \MailSo\Mime\HeaderCollection($sHeaders);
 
-					$sContentTypeCharset = $oHeaders->ParameterValue(
-						MimeHeader::CONTENT_TYPE,
-						\MailSo\Mime\Enumerations\Parameter::CHARSET
-					);
+					$sContentTypeCharset = $oHeaders->ParameterValue(MimeHeader::CONTENT_TYPE, MimeParameter::CHARSET);
 
 					if ($sContentTypeCharset) {
 						$oHeaders->SetParentCharset($sContentTypeCharset);
@@ -547,15 +539,15 @@ class MailClient
 			$this->oImapClient->FolderExamine($sFolderName);
 
 			$aFetchResponse = $this->oImapClient->Fetch(array(
-				\MailSo\Imap\Enumerations\FetchType::INDEX,
-				\MailSo\Imap\Enumerations\FetchType::UID,
-				\MailSo\Imap\Enumerations\FetchType::FLAGS
+				FetchType::INDEX,
+				FetchType::UID,
+				FetchType::FLAGS
 			), (string) $oRange, $oRange->UID);
 
 			foreach ($aFetchResponse as $oFetchResponse)
 			{
-				$iUid = (int) $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::UID);
-				$aLowerFlags = \array_map('strtolower', $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::FLAGS));
+				$iUid = (int) $oFetchResponse->GetFetchValue(FetchType::UID);
+				$aLowerFlags = \array_map('strtolower', $oFetchResponse->GetFetchValue(FetchType::FLAGS));
 				$aFlags[] = array(
 					'Uid' => $iUid,
 					'Flags' => $aLowerFlags
@@ -681,19 +673,19 @@ class MailClient
 		if (\count($oRange))
 		{
 			$aFetchResponse = $this->oImapClient->Fetch(array(
-				\MailSo\Imap\Enumerations\FetchType::INDEX,
-				\MailSo\Imap\Enumerations\FetchType::UID,
-				\MailSo\Imap\Enumerations\FetchType::RFC822_SIZE,
-				\MailSo\Imap\Enumerations\FetchType::INTERNALDATE,
-				\MailSo\Imap\Enumerations\FetchType::FLAGS,
-				\MailSo\Imap\Enumerations\FetchType::BODYSTRUCTURE,
+				FetchType::INDEX,
+				FetchType::UID,
+				FetchType::RFC822_SIZE,
+				FetchType::INTERNALDATE,
+				FetchType::FLAGS,
+				FetchType::BODYSTRUCTURE,
 				$this->getEnvelopeOrHeadersRequestString()
 			), (string) $oRange, $oRange->UID);
 
 			if (\count($aFetchResponse))
 			{
 				$aCollection = \array_fill_keys($oRange->getArrayCopy(), null);
-				$sFetchType = $oRange->UID ? \MailSo\Imap\Enumerations\FetchType::UID : \MailSo\Imap\Enumerations\FetchType::INDEX;
+				$sFetchType = $oRange->UID ? FetchType::UID : FetchType::INDEX;
 				foreach ($aFetchResponse as /* @var $oFetchResponseItem \MailSo\Imap\FetchResponse */ $oFetchResponseItem) {
 					$id = $oFetchResponseItem->GetFetchValue($sFetchType);
 					$aCollection[$id] = Message::NewFetchResponseInstance($oMessageCollection->FolderName, $oFetchResponseItem);
