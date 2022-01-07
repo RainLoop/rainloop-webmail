@@ -72,6 +72,7 @@ trait Messages
 						} else if (\is_array($mFetchKey) && 2 === \count($mFetchKey)
 							&& \is_string($mFetchKey[0]) && \is_callable($mFetchKey[1]))
 						{
+							$aFetchItems[] = $mFetchKey[0];
 							$this->aFetchCallbacks[$mFetchKey[0]] = $mFetchKey[1];
 						}
 						break;
