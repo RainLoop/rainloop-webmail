@@ -12,9 +12,13 @@
 
 namespace MailSo\Imap\Commands;
 
+use MailSo\Imap\FetchResponse;
+use MailSo\Imap\Enumerations\FetchType;
 use MailSo\Imap\ResponseCollection;
 use MailSo\Imap\SequenceSet;
 use MailSo\Imap\Enumerations\ResponseType;
+use MailSo\Log\Enumerations\Type as LogType;
+use \MailSo\Base\Exceptions\InvalidArgumentException;
 
 /**
  * @category MailSo
@@ -22,6 +26,86 @@ use MailSo\Imap\Enumerations\ResponseType;
  */
 trait Messages
 {
+	/**
+	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function Fetch(array $aInputFetchItems, string $sIndexRange, bool $bIndexIsUid) : array
+	{
+		if (!\strlen(\trim($sIndexRange)))
+		{
+			$this->writeLogException(new InvalidArgumentException, LogType::ERROR, true);
+		}
+
+		$aReturn = array();
+		$this->aFetchCallbacks = array();
+		try {
+			$aFetchItems = array(
+				FetchType::UID,
+				FetchType::RFC822_SIZE
+			);
+			foreach ($aInputFetchItems as $mFetchKey)
+			{
+				switch ($mFetchKey)
+				{
+					case FetchType::INDEX:
+					case FetchType::UID:
+					case FetchType::RFC822_SIZE:
+						// Already defined by default
+						break;
+
+					case FetchType::FULL:
+						$aFetchItems[] = FetchType::BODY;
+						// Falls through
+					case FetchType::ALL:
+						$aFetchItems[] = FetchType::ENVELOPE;
+						// Falls through
+					case FetchType::FAST:
+						$aFetchItems[] = FetchType::FLAGS;
+						$aFetchItems[] = FetchType::INTERNALDATE;
+						break;
+
+					default:
+						if (\is_string($mFetchKey)) {
+							$aFetchItems[] = $mFetchKey;
+						} else if (\is_array($mFetchKey) && 2 === \count($mFetchKey)
+							&& \is_string($mFetchKey[0]) && \is_callable($mFetchKey[1]))
+						{
+							$this->aFetchCallbacks[$mFetchKey[0]] = $mFetchKey[1];
+						}
+						break;
+				}
+			}
+
+			$aParams = array($sIndexRange, $aFetchItems);
+
+			/**
+			 * TODO:
+			 *   https://datatracker.ietf.org/doc/html/rfc4551#section-3.3.1
+			 *     $aParams[1][] = FLAGS
+			 *     $aParams[] = (CHANGEDSINCE $modsequence)
+			 *   https://datatracker.ietf.org/doc/html/rfc4551#section-3.3.2
+			 *     $aParams[1][] = MODSEQ
+			 */
+
+			$this->SendRequest($bIndexIsUid ? 'UID FETCH' : 'FETCH', $aParams);
+			foreach ($this->yieldUntaggedResponses() as $oResponse) {
+				if (FetchResponse::isValidImapResponse($oResponse)) {
+					if (FetchResponse::hasUidAndSize($oResponse)) {
+						$aReturn[] = new FetchResponse($oResponse);
+					} else if ($this->oLogger) {
+						$this->oLogger->Write('Skipped Imap Response! ['.$oResponse.']', LogType::NOTICE);
+					}
+				}
+			}
+		} finally {
+			$this->aFetchCallbacks = array();
+		}
+
+		return $aReturn;
+	}
+
 	/**
 	 * Appends message to specified folder
 	 *
@@ -42,7 +126,7 @@ trait Messages
 
 		$this->SendRequestGetResponse('APPEND', $aData);
 
-		$this->writeLog('Write to connection stream', \MailSo\Log\Enumerations\Type::NOTE);
+		$this->writeLog('Write to connection stream', LogType::NOTE);
 
 		\MailSo\Base\Utils::MultipleStreamWriter($rMessageAppendStream, array($this->ConnectionResource()));
 
@@ -73,9 +157,7 @@ trait Messages
 	public function MessageCopy(string $sToFolder, SequenceSet $oRange) : ResponseCollection
 	{
 		if (!\count($oRange)) {
-			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+			$this->writeLogException(new InvalidArgumentException, LogType::ERROR, true);
 		}
 
 		return $this->SendRequestGetResponse(
@@ -92,15 +174,13 @@ trait Messages
 	public function MessageMove(string $sToFolder, SequenceSet $oRange) : ResponseCollection
 	{
 		if (!\count($oRange)) {
-			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+			$this->writeLogException(new InvalidArgumentException, LogType::ERROR, true);
 		}
 
 		if (!$this->IsSupported('MOVE')) {
 			$this->writeLogException(
-				new Exceptions\RuntimeException('Move is not supported'),
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				new \MailSo\IMAP\Exceptions\RuntimeException('Move is not supported'),
+				LogType::ERROR, true);
 		}
 
 		return $this->SendRequestGetResponse(

@@ -11,8 +11,6 @@
 
 namespace MailSo\Imap;
 
-use MailSo\Imap\Enumerations\FetchType;
-
 /**
  * @category MailSo
  * @package Imap
@@ -74,11 +72,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @var bool
 	 */
 	private $UTF8 = false;
-
-	function __construct()
-	{
-		\ini_set('xdebug.max_nesting_level', 500);
-	}
 
 	public function GetLogginedUser() : string
 	{
@@ -385,88 +378,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	{
 		$this->SendRequestGetResponse('NOOP');
 		return $this;
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function Fetch(array $aInputFetchItems, string $sIndexRange, bool $bIndexIsUid) : array
-	{
-		if (!\strlen(\trim($sIndexRange)))
-		{
-			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
-		}
-
-		$aReturn = array();
-		$this->aFetchCallbacks = array();
-		try {
-			$aFetchItems = array(
-				FetchType::UID,
-				FetchType::RFC822_SIZE
-			);
-			foreach ($aInputFetchItems as $mFetchKey)
-			{
-				switch ($mFetchKey)
-				{
-					case FetchType::INDEX:
-					case FetchType::UID:
-					case FetchType::RFC822_SIZE:
-						// Already defined by default
-						break;
-
-					case FetchType::FULL:
-						$aFetchItems[] = FetchType::BODY;
-						// Falls through
-					case FetchType::ALL:
-						$aFetchItems[] = FetchType::ENVELOPE;
-						// Falls through
-					case FetchType::FAST:
-						$aFetchItems[] = FetchType::FLAGS;
-						$aFetchItems[] = FetchType::INTERNALDATE;
-						break;
-
-					default:
-						if (\is_string($mFetchKey)) {
-							$aFetchItems[] = $mFetchKey;
-						} else if (\is_array($mFetchKey) && 2 === \count($mFetchKey)
-							&& \is_string($mFetchKey[0]) && \is_callable($mFetchKey[1]))
-						{
-							$this->aFetchCallbacks[$mFetchKey[0]] = $mFetchKey[1];
-						}
-						break;
-				}
-			}
-
-			$aParams = array($sIndexRange, $aFetchItems);
-
-			/**
-			 * TODO:
-			 *   https://datatracker.ietf.org/doc/html/rfc4551#section-3.3.1
-			 *     $aParams[1][] = FLAGS
-			 *     $aParams[] = (CHANGEDSINCE $modsequence)
-			 *   https://datatracker.ietf.org/doc/html/rfc4551#section-3.3.2
-			 *     $aParams[1][] = MODSEQ
-			 */
-
-			$this->SendRequest($bIndexIsUid ? 'UID FETCH' : 'FETCH', $aParams);
-			foreach ($this->yieldUntaggedResponses() as $oResponse) {
-				if (FetchResponse::isValidImapResponse($oResponse)) {
-					if (FetchResponse::hasUidAndSize($oResponse)) {
-						$aReturn[] = new FetchResponse($oResponse);
-					} else if ($this->oLogger) {
-						$this->oLogger->Write('Skipped Imap Response! ['.$oResponse.']', \MailSo\Log\Enumerations\Type::NOTICE);
-					}
-				}
-			}
-		} finally {
-			$this->aFetchCallbacks = array();
-		}
-
-		return $aReturn;
 	}
 
 	/**
