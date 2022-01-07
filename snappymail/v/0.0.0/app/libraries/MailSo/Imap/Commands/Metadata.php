@@ -33,13 +33,12 @@ trait Metadata
 				$this->EscapeString('*')
 			];
 			$arguments[] = '(' . \implode(' ', \array_map([$this, 'EscapeString'], ['/shared', '/private'])) . ')';
-			$oResult = $this->SendRequestGetResponse('GETMETADATA', $arguments);
-			foreach ($oResult as $oResponse) {
-				if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
-					&& 4 === \count($oResponse->ResponseList)
+			$this->SendRequest('GETMETADATA', $arguments);
+			foreach ($this->yieldUntaggedResponses() as $oResponse) {
+				if (isset($oResponse->ResponseList[3])
+					&& \is_array($oResponse->ResponseList[3])
 					&& 'METADATA' === $oResponse->ResponseList[1]
-					&& \is_array($oResponse->ResponseList[3]))
-				{
+				) {
 					$aMetadata = array();
 					$c = \count($oResponse->ResponseList[3]);
 					for ($i = 0; $i < $c; $i += 2) {
@@ -79,15 +78,13 @@ trait Metadata
 
 		$arguments[] = '(' . \implode(' ', \array_map([$this, 'EscapeString'], $aEntries)) . ')';
 
-		$oResult = $this->SendRequestGetResponse('GETMETADATA', $arguments);
-
 		$aReturn = array();
-		foreach ($oResult as $oResponse) {
-			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
-				&& 4 === \count($oResponse->ResponseList)
+		$this->SendRequest('GETMETADATA', $arguments);
+		foreach ($this->yieldUntaggedResponses() as $oResponse) {
+			if (isset($oResponse->ResponseList[3])
+				&& \is_array($oResponse->ResponseList[3])
 				&& 'METADATA' === $oResponse->ResponseList[1]
-				&& \is_array($oResponse->ResponseList[3]))
-			{
+			) {
 				$c = \count($oResponse->ResponseList[3]);
 				for ($i = 0; $i < $c; $i += 2) {
 					$aReturn[$oResponse->ResponseList[3][$i]] = $oResponse->ResponseList[3][$i+1];
