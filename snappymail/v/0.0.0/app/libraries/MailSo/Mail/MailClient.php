@@ -157,7 +157,6 @@ class MailClient
 		$oMessage = null;
 
 		$aFetchItems = array(
-			FetchType::INDEX,
 			FetchType::UID,
 			FetchType::RFC822_SIZE,
 			FetchType::INTERNALDATE,
@@ -477,7 +476,6 @@ class MailClient
 			$this->oImapClient->FolderExamine($sFolderName);
 
 			$aFetchResponse = $this->oImapClient->Fetch(array(
-				FetchType::INDEX,
 				FetchType::UID,
 				FetchType::FLAGS,
 				FetchType::BuildBodyCustomHeaderRequest(array(
@@ -533,7 +531,6 @@ class MailClient
 			$this->oImapClient->FolderExamine($sFolderName);
 
 			$aFetchResponse = $this->oImapClient->Fetch(array(
-				FetchType::INDEX,
 				FetchType::UID,
 				FetchType::FLAGS
 			), (string) $oRange, $oRange->UID);
@@ -667,7 +664,6 @@ class MailClient
 		if (\count($oRange))
 		{
 			$aFetchResponse = $this->oImapClient->Fetch(array(
-				FetchType::INDEX,
 				FetchType::UID,
 				FetchType::RFC822_SIZE,
 				FetchType::INTERNALDATE,
@@ -679,9 +675,10 @@ class MailClient
 			if (\count($aFetchResponse))
 			{
 				$aCollection = \array_fill_keys($oRange->getArrayCopy(), null);
-				$sFetchType = $oRange->UID ? FetchType::UID : FetchType::INDEX;
 				foreach ($aFetchResponse as /* @var $oFetchResponseItem \MailSo\Imap\FetchResponse */ $oFetchResponseItem) {
-					$id = $oFetchResponseItem->GetFetchValue($sFetchType);
+					$id = $oRange->UID
+						? $oFetchResponseItem->GetFetchValue(FetchType::UID)
+						: $this->oImapResponse->ResponseList[1];
 					$aCollection[$id] = Message::NewFetchResponseInstance($oMessageCollection->FolderName, $oFetchResponseItem);
 				}
 				$oMessageCollection->exchangeArray(\array_values(\array_filter($aCollection)));

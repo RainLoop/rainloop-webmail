@@ -42,7 +42,6 @@ trait Messages
 		$this->aFetchCallbacks = array();
 		try {
 			$aFetchItems = array(
-				FetchType::INDEX,
 				FetchType::UID,
 				FetchType::RFC822_SIZE
 			);
@@ -50,14 +49,19 @@ trait Messages
 			{
 				switch ($mFetchKey)
 				{
-					case FetchType::INDEX:
 					case FetchType::UID:
 					case FetchType::RFC822_SIZE:
 						// Already defined by default
 						break;
 
+					// Macro's
+					case FetchType::FULL:
+						$aFetchItems[] = FetchType::BODY;
+						// Falls through
 					case FetchType::ALL:
 						$aFetchItems[] = FetchType::ENVELOPE;
+						// Falls through
+					case FetchType::FAST:
 						$aFetchItems[] = FetchType::FLAGS;
 						$aFetchItems[] = FetchType::INTERNALDATE;
 						break;

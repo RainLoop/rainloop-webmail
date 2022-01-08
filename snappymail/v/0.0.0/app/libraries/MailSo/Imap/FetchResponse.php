@@ -105,10 +105,6 @@ class FetchResponse
 	 */
 	public function GetFetchValue(string $sFetchItemName)
 	{
-		if (Enumerations\FetchType::INDEX === $sFetchItemName) {
-			return $this->oImapResponse->ResponseList[1];
-		}
-
 		if (isset($this->oImapResponse->ResponseList[3]) && \is_array($this->oImapResponse->ResponseList[3])) {
 			$bNextIsValue = false;
 			foreach ($this->oImapResponse->ResponseList[3] as $mItem) {

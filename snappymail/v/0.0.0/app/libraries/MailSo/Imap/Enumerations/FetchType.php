@@ -18,7 +18,13 @@ namespace MailSo\Imap\Enumerations;
  */
 abstract class FetchType
 {
+	// Macro equivalent to: (FLAGS INTERNALDATE RFC822.SIZE)
+	const FAST = 'FAST';
+	// Macro equivalent to: (FLAGS INTERNALDATE RFC822.SIZE ENVELOPE)
 	const ALL = 'ALL';
+	// Macro equivalent to: (FLAGS INTERNALDATE RFC822.SIZE ENVELOPE BODY)
+	const FULL = 'FULL';
+
 	const BODY = 'BODY';
 	const BODY_PEEK = 'BODY.PEEK';
 	const BODY_HEADER = 'BODY[HEADER]';
@@ -32,7 +38,6 @@ abstract class FetchType
 	const RFC822_SIZE = 'RFC822.SIZE';
 	const RFC822_TEXT = 'RFC822.TEXT';
 	const UID = 'UID';
-	const INDEX = 'INDEX';
 	// RFC 3516
 	const BINARY = 'BINARY';
 	const BINARY_PEEK = 'BINARY.PEEK';
