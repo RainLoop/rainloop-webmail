@@ -21,6 +21,7 @@ class Scram extends \SnappyMail\SASL
 	function __construct(string $algo)
 	{
 		if (\stripos($algo, '-PLUS')) {
+			// https://github.com/the-djmaze/snappymail/issues/182
 			throw new \Exception("SASL SCRAM channel binding unsupported: {$algo}");
 		}
 		$algo = \str_replace('sha-', 'sha', \strtolower($algo));

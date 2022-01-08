@@ -126,6 +126,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		$type = '';
 		$types = [
 			// if !$encrypted:
+			'SCRAM-SHA-512' => 1,
 			'SCRAM-SHA-256' => 1,
 			'SCRAM-SHA-1' => 1,
 			// if $encrypted:

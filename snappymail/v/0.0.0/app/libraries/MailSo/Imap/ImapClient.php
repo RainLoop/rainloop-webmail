@@ -139,6 +139,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		$type = $this->IsSupported('LOGINDISABLED') ? '' : 'LOGIN'; // RFC3501 6.2.3
 		$types = [
 			// if !$encrypted:
+//			'SCRAM-SHA-512' => 1,
 //			'SCRAM-SHA-256' => 1,
 //			'SCRAM-SHA-1' => 1,
 			// if $encrypted:

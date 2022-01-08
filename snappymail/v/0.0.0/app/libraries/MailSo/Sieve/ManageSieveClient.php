@@ -111,8 +111,11 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 //			$encrypted = !empty(\stream_get_meta_data($this->ConnectionResource())['crypto']);
 			$type = '';
 			$types = [
+				// if !$encrypted:
+//				'SCRAM-SHA-512' => 1, // !$encrypted
 //				'SCRAM-SHA-256' => 1, // !$encrypted
 //				'SCRAM-SHA-1' => 1, // !$encrypted
+				// if $encrypted:
 //				'CRAM-MD5' => 1, // $encrypted
 				'OAUTHBEARER' => $aCredentials['UseAuthOAuth2IfSupported'],
 				'XOAUTH2' => $aCredentials['UseAuthOAuth2IfSupported'],
