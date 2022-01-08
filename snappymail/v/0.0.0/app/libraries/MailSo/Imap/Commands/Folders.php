@@ -14,6 +14,7 @@ namespace MailSo\Imap\Commands;
 
 use MailSo\Imap\Folder;
 use MailSo\Imap\FolderInformation;
+use MailSo\Imap\SequenceSet;
 use MailSo\Imap\Enumerations\FolderStatus;
 
 /**
