@@ -203,9 +203,9 @@ trait Response
 			if ('Message' === $sParent)
 			{
 				$bHasExternals = false;
-				$mFoundCIDs = array();
+				$aFoundCIDs = array();
 				$aContentLocationUrls = array();
-				$mFoundContentLocationUrls = array();
+				$aFoundContentLocationUrls = array();
 
 				$oAttachments = /* @var \MailSo\Mail\AttachmentCollection */ $mResponse->Attachments();
 				if ($oAttachments && 0 < $oAttachments->count())
@@ -253,7 +253,7 @@ trait Response
 				}, $sHtml);
 
 				$mResult['Html'] = \strlen($sHtml) ? \MailSo\Base\HtmlUtils::ClearHtml(
-					$sHtml, $bHasExternals, $mFoundCIDs, $aContentLocationUrls, $mFoundContentLocationUrls,
+					$sHtml, $bHasExternals, $aFoundCIDs, $aContentLocationUrls, $aFoundContentLocationUrls,
 					$fAdditionalExternalFilter, !!$this->Config()->Get('labs', 'try_to_detect_hidden_images', false)
 				) : '';
 
@@ -270,16 +270,14 @@ trait Response
 				unset($sHtml, $sPlain);
 
 				$mResult['HasExternals'] = $bHasExternals;
-				$mResult['HasInternals'] = (\is_array($mFoundCIDs) && \count($mFoundCIDs)) ||
-					(\is_array($mFoundContentLocationUrls) && \count($mFoundContentLocationUrls));
-				$mResult['Attachments'] = $this->responseObject($oAttachments, $sParent, $aParameters);
-/*
-//				$mResult['FoundCIDs'] = $mFoundCIDs;
+				$mResult['HasInternals'] = \count($aFoundCIDs) || \count($aFoundContentLocationUrls);
+
+//				$mResult['FoundCIDs'] = $aFoundCIDs;
 				$mResult['Attachments'] = $this->responseObject($oAttachments, $sParent, \array_merge($aParameters, array(
-					'FoundCIDs' => $mFoundCIDs,
-					'FoundContentLocationUrls' => $mFoundContentLocationUrls
+					'FoundCIDs' => $aFoundCIDs,
+					'FoundContentLocationUrls' => $aFoundContentLocationUrls
 				)));
-*/
+
 				$mResult['ReadReceipt'] = $mResponse->ReadReceipt();
 
 				if (\strlen($mResult['ReadReceipt']) && !\in_array('$forwarded', $mResult['Flags']))
@@ -313,25 +311,19 @@ trait Response
 
 			$oAccount = $this->getAccountFromToken();
 
-			$mFoundCIDs = isset($aParameters['FoundCIDs']) && \is_array($aParameters['FoundCIDs']) &&
-				\count($aParameters['FoundCIDs']) ?
-					$aParameters['FoundCIDs'] : null;
+			$aFoundCIDs = (isset($aParameters['FoundCIDs']) && \is_array($aParameters['FoundCIDs']))
+				? $aParameters['FoundCIDs'] : [];
 
-			$mFoundContentLocationUrls = isset($aParameters['FoundContentLocationUrls']) &&
-				\is_array($aParameters['FoundContentLocationUrls']) &&
-				\count($aParameters['FoundContentLocationUrls']) ?
-					$aParameters['FoundContentLocationUrls'] : null;
+			$aFoundContentLocationUrls = (isset($aParameters['FoundContentLocationUrls']) && \is_array($aParameters['FoundContentLocationUrls']))
+				? $aParameters['FoundContentLocationUrls'] : [];
 
-			if ($mFoundCIDs || $mFoundContentLocationUrls)
-			{
-				$mFoundCIDs = \array_merge($mFoundCIDs ? $mFoundCIDs : array(),
-					$mFoundContentLocationUrls ? $mFoundContentLocationUrls : array());
-
-				$mFoundCIDs = \count($mFoundCIDs) ? $mFoundCIDs : null;
+			if ($aFoundContentLocationUrls) {
+				$aFoundCIDs = \array_merge($aFoundCIDs, $aFoundContentLocationUrls);
 			}
 
-			$mResult['IsLinked'] = ($mFoundCIDs && \in_array(\trim(\trim($mResponse->Cid()), '<>'), $mFoundCIDs))
-				|| ($mFoundContentLocationUrls && \in_array(\trim($mResponse->ContentLocation()), $mFoundContentLocationUrls));
+			// Hides valid inline attachments in message view 'attachments' section
+			$mResult['IsLinked'] = \in_array(\trim(\trim($mResponse->Cid()), '<>'), $aFoundCIDs)
+				|| \in_array(\trim($mResponse->ContentLocation()), $aFoundContentLocationUrls);
 
 			$mResult['Framed'] = $this->isFileHasFramedPreview($mResult['FileName']);
 			$mResult['IsThumbnail'] = $this->GetCapa(false, Capa::ATTACHMENT_THUMBNAILS) && $this->isFileHasThumbnail($mResult['FileName']);
