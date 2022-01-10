@@ -497,7 +497,7 @@ abstract class HtmlUtils
 
 				if (\count($aStyles))
 				{
-					$sStyles .= $sStyles . '; ' . \implode('; ', $aStyles);
+					$sStyles .= '; ' . \implode('; ', $aStyles);
 				}
 			}
 
@@ -514,6 +514,11 @@ abstract class HtmlUtils
 			else if ('table' === $sTagNameLower && $oElement->hasAttribute('width'))
 			{
 				$aAttrsForRemove[] = 'width';
+				$sWidth = $oElement->getAttribute('width');
+				if (\ctype_digit($sWidth)) {
+					$sWidth .= 'px';
+				}
+				$sStyles .= "; max-width:{$sWidth}";
 			}
 
 			if ($oElement->hasAttributes() && isset($oElement->attributes) && $oElement->attributes)
