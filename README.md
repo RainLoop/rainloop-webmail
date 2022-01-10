@@ -34,7 +34,7 @@ And don't forget to read the [RainLoop documentation](https://www.rainloop.net/d
 **GNU AFFERO GENERAL PUBLIC LICENSE Version 3 (AGPL)**.
 http://www.gnu.org/licenses/agpl-3.0.html
 
-Copyright (c) 2020 - 2021 SnappyMail
+Copyright (c) 2020 - 2022 SnappyMail
 Copyright (c) 2013 - 2021 RainLoop
 
 ## Modifications
