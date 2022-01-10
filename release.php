@@ -264,11 +264,11 @@ if ($options['aur']) {
 
 	$b2sums = function_exists('b2sum') ? [
 		b2sum("{$tar_destination}.gz"),
-		b2sum(__DIR__ . '/arch/snappymail.sysusers'),
-		b2sum(__DIR__ . '/arch/snappymail.tmpfiles')
+		b2sum(__DIR__ . '/build/arch/snappymail.sysusers'),
+		b2sum(__DIR__ . '/build/arch/snappymail.tmpfiles')
 	] : [];
 
-	file_put_contents('arch/.SRCINFO', 'pkgbase = snappymail
+	file_put_contents('build/arch/.SRCINFO', 'pkgbase = snappymail
 	pkgdesc = modern PHP webmail client
 	pkgver = '.$package->version.'
 	pkgrel = 1
@@ -291,7 +291,7 @@ if ($options['aur']) {
 pkgname = snappymail
 ');
 
-	$file = __DIR__ . '/arch/PKGBUILD';
+	$file = __DIR__ . '/build/arch/PKGBUILD';
 	if (is_file($file)) {
 		$PKGBUILD = file_get_contents($file);
 		$PKGBUILD = preg_replace('/pkgver=[0-9.]+/', "pkgver={$package->version}", $PKGBUILD);
