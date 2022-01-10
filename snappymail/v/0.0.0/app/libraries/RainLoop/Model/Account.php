@@ -294,10 +294,13 @@ abstract class Account implements \JsonSerializable
 			[cipher_version] => TLSv1.3
 		)
 */
+		/**
+		 * TODO: move these to Admin -> Domains -> per Domain management?
+		 */
 		$aSASLMechanisms = [];
 		if ($oConfig->Get('labs', 'sasl_allow_scram_sha', false)) {
 			// https://github.com/the-djmaze/snappymail/issues/182
-			\array_push($aSASLMechanisms, 'SCRAM-SHA-512'. 'SCRAM-SHA-256', 'SCRAM-SHA-1');
+			\array_push($aSASLMechanisms, 'SCRAM-SHA3-512', 'SCRAM-SHA-512', 'SCRAM-SHA-256', 'SCRAM-SHA-1');
 		}
 		if ($oConfig->Get('labs', 'sasl_allow_cram_md5', false)) {
 			$aSASLMechanisms[] = 'CRAM-MD5';

@@ -123,18 +123,32 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 			$bAuth = false;
 			try
 			{
-				if ('PLAIN' === $type || 'OAUTHBEARER' === $type || 'XOAUTH2' === $type)
+				if (0 === \strpos($type, 'SCRAM-'))
+				{
+/*
+					$sAuthzid = $this->getResponseValue($this->SendRequestGetResponse('AUTHENTICATE', array($type)), \MailSo\Imap\Enumerations\ResponseType::CONTINUATION);
+					$this->sendRaw($SASL->authenticate($sLogin, $sPassword/*, $sAuthzid* /), true);
+					$sChallenge = $SASL->challenge($this->getResponseValue($this->getResponse(), \MailSo\Imap\Enumerations\ResponseType::CONTINUATION));
+					if ($this->oLogger) {
+						$this->oLogger->AddSecret($sChallenge);
+					}
+					$this->sendRaw($sChallenge, true, '*******');
+					$oResponse = $this->getResponse();
+					$SASL->verify($this->getResponseValue($oResponse));
+*/
+				}
+				else if ('PLAIN' === $type || 'OAUTHBEARER' === $type || 'XOAUTH2' === $type)
 				{
 					$sAuth = $SASL->authenticate($sLogin, $sPassword, $sLoginAuthKey);
 
 					if ($aCredentials['InitialAuthPlain'])
 					{
-						$this->sendRequest("AUTHENTICATE \"{$type}\" \"{$sAuth}\"");
+						$this->sendRaw("AUTHENTICATE \"{$type}\" \"{$sAuth}\"");
 					}
 					else
 					{
-						$this->sendRequest("AUTHENTICATE \"{$type}\" {".\strlen($sAuth).'+}');
-						$this->sendRequest($sAuth);
+						$this->sendRaw("AUTHENTICATE \"{$type}\" {".\strlen($sAuth).'+}');
+						$this->sendRaw($sAuth);
 					}
 
 					$aResponse = $this->parseResponse();
@@ -147,11 +161,11 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 					$sLogin = $SASL->authenticate($sLogin, $sPassword);
 					$sPassword = $SASL->challenge('');
 
-					$this->sendRequest('AUTHENTICATE "LOGIN"');
-					$this->sendRequest('{'.\strlen($sLogin).'+}');
-					$this->sendRequest($sLogin);
-					$this->sendRequest('{'.\strlen($sPassword).'+}');
-					$this->sendRequest($sPassword);
+					$this->sendRaw('AUTHENTICATE "LOGIN"');
+					$this->sendRaw('{'.\strlen($sLogin).'+}');
+					$this->sendRaw($sLogin);
+					$this->sendRaw('{'.\strlen($sPassword).'+}');
+					$this->sendRaw($sPassword);
 
 					$aResponse = $this->parseResponse();
 					$this->validateResponse($aResponse);

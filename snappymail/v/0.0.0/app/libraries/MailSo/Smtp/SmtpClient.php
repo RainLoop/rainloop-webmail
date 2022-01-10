@@ -156,8 +156,12 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 		try
 		{
-			switch ($type)
-			{
+			if (0 === \strpos($type, 'SCRAM-')) {
+				// RFC 5802
+				$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 234, '');
+				$sResult = $this->sendRequestWithCheck($SASL->challenge($sResult), 235, '', true);
+				$SASL->verify($sResult);
+			} else switch ($type) {
 			// RFC 4616
 			case 'PLAIN':
 			case 'XOAUTH2':
@@ -179,14 +183,6 @@ class SmtpClient extends \MailSo\Net\NetClient
 					);
 				}
 				$this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 235, '', true);
-				break;
-
-			// RFC 5802
-			case 'SCRAM-SHA-1':
-			case 'SCRAM-SHA-256':
-				$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 234, '');
-				$sResult = $this->sendRequestWithCheck($SASL->challenge($sResult), 235, '', true);
-				$SASL->verify($sResult);
 				break;
 			}
 		}
