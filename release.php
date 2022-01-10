@@ -2,7 +2,7 @@
 <?php
 chdir(__DIR__);
 
-$options = getopt('', ['aur','docker','plugins','set-version','skip-gulp']);
+$options = getopt('', ['aur','docker','plugins','set-version','skip-gulp','debian']);
 
 if (isset($options['plugins'])) {
 	$destPath = "build/dist/releases/plugins/";
@@ -248,6 +248,8 @@ unlink($tar_destination);
 
 echo "{$zip_destination} created\n{$tar_destination}.gz created\n";
 
+rename("snappymail/v/{$package->version}", 'snappymail/v/0.0.0');
+
 // Arch User Repository
 if ($options['aur']) {
 	// extension_loaded('blake2')
@@ -296,6 +298,36 @@ pkgname = snappymail
 		$PKGBUILD = preg_replace('/b2sums=\\([^)]+\\)/s', "b2sums=('".implode("'\n        '", $b2sums)."')", $PKGBUILD);
 		file_put_contents($file, $PKGBUILD);
 	}
+}
+// Debian Repository
+else if (isset($options['debian'])) {
+	$target_dir = __DIR__ . "/build/deb/snappymail_{$package->version}-1_all";
+
+	$data = file_get_contents(__DIR__ . '/build/deb/DEBIAN/control');
+	$data = preg_replace('/Version: [0-9.]+/', "Version: {$package->version}", $data);
+	$dir = $target_dir . '/DEBIAN';
+	is_dir($dir) || mkdir($dir, 0755, true);
+	file_put_contents("{$dir}/control", $data);
+
+	$dir = $target_dir . '/var/lib/snappymail';
+	is_dir($dir) || mkdir($dir, 0755, true);
+	file_put_contents($dir . '/VERSION', $package->version);
+
+	$dir = $target_dir . '/usr/share/doc/snappymail';
+	is_dir($dir) || mkdir($dir, 0755, true);
+	copy('CODE_OF_CONDUCT.md', "{$dir}/CODE_OF_CONDUCT.md");
+	copy('CONTRIBUTING.md', "{$dir}/CONTRIBUTING.md");
+	copy('README.md', "{$dir}/README.md");
+	copy('CODE_OF_CONDUCT.md', "{$dir}/CODE_OF_CONDUCT.md");
+	//usr/share/doc/snappymail/README.Debian
+	//usr/share/doc/snappymail/changelog.Debian.gz
+	//usr/share/doc/snappymail/copyright
+
+	$dir = $target_dir . '/usr/share/snappymail';
+	is_dir($dir) ? passthru('rm -dfr "'.$dir.'"') : mkdir(dirname($dir), 0755, true);
+	passthru('cp -r "' . __DIR__ . '/snappymail/v/0.0.0" "' . $dir . '"');
+
+	passthru('dpkg --build "'.$target_dir.'"');
 }
 // Docker build
 else if ($options['docker']) {

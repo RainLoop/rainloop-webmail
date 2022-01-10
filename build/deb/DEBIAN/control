@@ -1,0 +1,12 @@
+Package: snappymail
+Version: 0.0.0
+Maintainer: the-djmaze <debian@snappymail.eu>
+Depends: php-json
+Architecture: all
+Homepage: https://snappymail.eu
+Vcs-Browser: https://github.com/the-djmaze/snappymail
+Vcs-Git: https://github.com/the-djmaze/snappymail.git
+Description: SnappyMail is a PHP-based simple, modern, lightweight & fast web-based email client with no database requirements.
+ It supports IMAP, SMTP and Sieve protocols, multiple accounts and identities, an admin panel for configuration.
+ Plugins can be installed to further extend functionality.
+ Emails are not stored locally, but are accessed through IMAP.
