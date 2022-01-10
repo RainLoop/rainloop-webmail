@@ -158,7 +158,7 @@ if (!defined('RAINLOOP_APP_LIBRARIES_PATH')) {
 if (class_exists('RainLoop\\Api')) {
 	RainLoop\Api::Handle();
 	// NextCloud/OwnCloud?
-	if (empty($_ENV['RAINLOOP_INCLUDE_AS_API'])) {
+	if (empty($_ENV['SNAPPYMAIL_INCLUDE_AS_API'])) {
 		RainLoop\Service::Handle();
 		exit(0);
 	}

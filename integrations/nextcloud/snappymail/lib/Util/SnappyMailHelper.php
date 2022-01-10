@@ -65,12 +65,12 @@ class SnappyMailHelper {
 		{
 			self::regSnappyMailDataFunction();
 
-			$_ENV['RAINLOOP_INCLUDE_AS_API'] = true;
+			$_ENV['SNAPPYMAIL_INCLUDE_AS_API'] = true;
 			include $sPath;
 
-			if (class_exists('\\SnappyMail\\Api'))
+			if (class_exists('\\RainLoop\\Api'))
 			{
-				$SsoHash = \SnappyMail\Api::GetUserSsoHash($sEmail, $sPassword);
+				$SsoHash = \RainLoop\Api::GetUserSsoHash($sEmail, $sPassword);
 			}
 		}
 
@@ -238,10 +238,10 @@ class SnappyMailHelper {
 
 		self::regSnappyMailDataFunction();
 
-		$_ENV['RAINLOOP_INCLUDE_AS_API'] = true;
+		$_ENV['SNAPPYMAIL_INCLUDE_AS_API'] = true;
 		include $sApiPath;
 
-		\SnappyMail\Api::LogoutCurrentLogginedUser();
+		\RainLoop\Api::LogoutCurrentLogginedUser();
 
 		return true;
 	}

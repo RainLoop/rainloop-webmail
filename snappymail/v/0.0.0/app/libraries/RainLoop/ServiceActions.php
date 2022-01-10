@@ -661,8 +661,8 @@ class ServiceActions
 					$sEmail = \trim($aData['Email']);
 					$sPassword = $aData['Password'];
 
-					$aAdditionalOptions = isset($aData['AdditionalOptions']) && \is_array($aData['AdditionalOptions']) &&
-						\count($aData['AdditionalOptions']) ? $aData['AdditionalOptions'] : null;
+					$aAdditionalOptions = (isset($aData['AdditionalOptions']) && \is_array($aData['AdditionalOptions']))
+						? $aData['AdditionalOptions'] : [];
 
 					try
 					{
