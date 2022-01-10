@@ -122,22 +122,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($aCredentials['Login']));
 		$sPassword = $aCredentials['Password'];
 
-//		$encrypted = !empty(\stream_get_meta_data($this->ConnectionResource())['crypto']);
 		$type = '';
-		$types = [
-			// if !$encrypted:
-			'SCRAM-SHA-512' => 1,
-			'SCRAM-SHA-256' => 1,
-			'SCRAM-SHA-1' => 1,
-			// if $encrypted:
-			'CRAM-MD5' => $aCredentials['UseAuthCramMd5IfSupported'],
-			'PLAIN' => $aCredentials['UseAuthPlainIfSupported'],
-			'OAUTHBEARER' => $aCredentials['UseAuthOAuth2IfSupported'],
-			'XOAUTH2' => $aCredentials['UseAuthOAuth2IfSupported'],
-			'LOGIN' => 1, // $encrypted
-		];
-		foreach ($types as $sasl_type => $active) {
-			if ($active && $this->IsAuthSupported($sasl_type) && \SnappyMail\SASL::isSupported($sasl_type)) {
+		$aCredentials['SASLMechanisms'][] = 'LOGIN';
+		foreach ($aCredentials['SASLMechanisms'] as $sasl_type) {
+			if ($this->IsAuthSupported($sasl_type) && \SnappyMail\SASL::isSupported($sasl_type)) {
 				$type = $sasl_type;
 				break;
 			}

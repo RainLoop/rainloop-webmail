@@ -285,15 +285,33 @@ abstract class Account implements \JsonSerializable
 
 	private function netClientLogin(\MailSo\Net\NetClient $oClient, \RainLoop\Config\Application $oConfig, \RainLoop\Plugins\Manager $oPlugins, array $aCredentials) : bool
 	{
+/*
+		$encrypted = !empty(\stream_get_meta_data($oClient->ConnectionResource())['crypto']);
+		[crypto] => Array(
+			[protocol] => TLSv1.3
+			[cipher_name] => TLS_AES_256_GCM_SHA384
+			[cipher_bits] => 256
+			[cipher_version] => TLSv1.3
+		)
+*/
+		$aSASLMechanisms = [];
+		if ($oConfig->Get('labs', 'sasl_allow_scram_sha', false)) {
+			// https://github.com/the-djmaze/snappymail/issues/182
+			\array_push($aSASLMechanisms, 'SCRAM-SHA-512'. 'SCRAM-SHA-256', 'SCRAM-SHA-1');
+		}
+		if ($oConfig->Get('labs', 'sasl_allow_cram_md5', false)) {
+			$aSASLMechanisms[] = 'CRAM-MD5';
+		}
+		if ($oConfig->Get('labs', 'sasl_allow_plain', true)) {
+			$aSASLMechanisms[] = 'PLAIN';
+		}
 		$aCredentials = \array_merge(
 			$aCredentials,
 			array(
 				'Password' => $this->Password(),
 				'ProxyAuthUser' => $this->ProxyAuthUser(),
 				'ProxyAuthPassword' => $this->ProxyAuthPassword(),
-				'UseAuthPlainIfSupported' => !!$oConfig->Get('labs', 'sasl_allow_plain', true),
-				'UseAuthCramMd5IfSupported' => !!$oConfig->Get('labs', 'sasl_allow_cram_md5', false),
-				'UseAuthOAuth2IfSupported' => false
+				'SASLMechanisms' => $aSASLMechanisms
 			)
 		);
 

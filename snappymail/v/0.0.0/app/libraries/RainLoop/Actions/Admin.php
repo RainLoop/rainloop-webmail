@@ -312,18 +312,8 @@ trait Admin
 	public function DoAdminDomainList() : array
 	{
 		$this->IsAdminLoggined();
-
-		$iOffset = (int) $this->GetActionParam('Offset', 0);
-		$iLimit = (int) $this->GetActionParam('Limit', 20);
-		$sSearch = (string) $this->GetActionParam('Search', '');
-		$bIncludeAliases = '1' === (string) $this->GetActionParam('IncludeAliases', '1');
-
-		$iOffset = 0;
-		$sSearch = '';
-		$iLimit = $this->Config()->Get('labs', 'domain_list_limit', 99);
-
-		return $this->DefaultResponse(__FUNCTION__,
-			$this->DomainProvider()->GetList($iOffset, $iLimit, $sSearch, $bIncludeAliases));
+		$bIncludeAliases = !empty($this->GetActionParam('IncludeAliases', '1'));
+		return $this->DefaultResponse(__FUNCTION__, $this->DomainProvider()->GetList($bIncludeAliases));
 	}
 
 	public function DoAdminDomainDelete() : array

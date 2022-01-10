@@ -8,7 +8,7 @@ class LoginOAuth2Plugin extends \RainLoop\Plugins\AbstractPlugin
 		RELEASE  = '2021-11-12',
 		REQUIRED = '2.9.1',
 		CATEGORY = 'Login',
-		DESCRIPTION = 'IMAP, Sieve & SMTP login using OAuth2';
+		DESCRIPTION = 'IMAP, Sieve & SMTP login using RFC 7628 OAuth2';
 
 	const
 		LOGIN_URI = 'https://accounts.google.com/o/oauth2/auth',
@@ -57,7 +57,7 @@ class LoginOAuth2Plugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 		if ($sAccessToken && $sRefreshToken) {
 			$aCredentials['Password'] = $this->gmailRefreshToken($sAccessToken, $sRefreshToken);
-			$aCredentials['UseAuthOAuth2IfSupported'] = true;
+			\array_unshift($aCredentials['SASLMechanisms'], 'OAUTHBEARER', 'XOAUTH2');
 		}
 	}
 

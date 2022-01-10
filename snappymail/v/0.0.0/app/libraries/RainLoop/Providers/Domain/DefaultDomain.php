@@ -239,7 +239,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		return $bResult;
 	}
 
-	public function GetList(int $iOffset = 0, int $iLimit = 20, string $sSearch = '', bool $bIncludeAliases = true) : array
+	public function GetList(bool $bIncludeAliases = true) : array
 	{
 		$aResult = array();
 		$aWildCards = array();
@@ -281,11 +281,6 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 
 		$aResult = \array_merge($aResult, $aAliases, $aWildCards);
 
-		$iOffset = (0 > $iOffset) ? 0 : $iOffset;
-		$iLimit = (0 > $iLimit) ? 0 : ((999 < $iLimit) ? 999 : $iLimit);
-
-		$aResult = \array_slice($aResult, $iOffset, $iLimit);
-
 		$aDisabledNames = array();
 		if (\count($aResult) && \file_exists($this->sDomainPath.'/disabled'))
 		{
@@ -304,17 +299,13 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		$aReturn = array();
 		foreach ($aResult as $sName)
 		{
-			$aReturn[$sName] = array(
-				!\in_array($sName, $aDisabledNames),
-				\in_array($sName, $aAliases)
+			$aReturn[] = array(
+				'name' => $sName,
+				'disabled' => \in_array($sName, $aDisabledNames),
+				'alias' => \in_array($sName, $aAliases)
 			);
 		}
 
 		return $aReturn;
-	}
-
-	public function Count(string $sSearch = '', bool $bIncludeAliases = true) : int
-	{
-		return \count($this->GetList(0, 999, $sSearch, $bIncludeAliases));
 	}
 }

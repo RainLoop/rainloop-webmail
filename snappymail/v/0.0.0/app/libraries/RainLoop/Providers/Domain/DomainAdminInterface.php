@@ -13,7 +13,5 @@ interface DomainAdminInterface extends DomainInterface
 
 	public function Delete(string $sName) : bool;
 
-	public function GetList(int $iOffset = 0, int $iLimit = 20, string $sSearch = '', bool $bIncludeAliases = true) : array;
-
-	public function Count(string $sSearch = '', bool $bIncludeAliases = true) : int;
+	public function GetList(bool $bIncludeAliases = true) : array;
 }

@@ -12,12 +12,11 @@ DomainAdminStore.fetch = () => {
 			DomainAdminStore.loading(false);
 			if (!iError) {
 				DomainAdminStore(
-					Object.entries(data.Result).map(([name, [enabled, alias]]) => ({
-						name: name,
-						disabled: ko.observable(!enabled),
-						alias: alias,
-						deleteAccess: ko.observable(false)
-					}))
+					data.Result.map(item => {
+						item.disabled = ko.observable(item.disabled);
+						item.deleteAccess = ko.observable(false);
+						return item;
+					})
 				);
 			}
 		}, {

@@ -135,22 +135,9 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		$this->sLogginedUser = $sLogin;
 
-//		$encrypted = !empty(\stream_get_meta_data($this->ConnectionResource())['crypto']);
 		$type = $this->IsSupported('LOGINDISABLED') ? '' : 'LOGIN'; // RFC3501 6.2.3
-		$types = [
-			// if !$encrypted:
-//			'SCRAM-SHA-512' => 1,
-//			'SCRAM-SHA-256' => 1,
-//			'SCRAM-SHA-1' => 1,
-			// if $encrypted:
-			'CRAM-MD5' => $aCredentials['UseAuthCramMd5IfSupported'],
-			'PLAIN' => $aCredentials['UseAuthPlainIfSupported'],
-			'OAUTHBEARER' => $aCredentials['UseAuthOAuth2IfSupported'],
-			'XOAUTH2' => $aCredentials['UseAuthOAuth2IfSupported'],
-			'LOGIN' => 1
-		];
-		foreach ($types as $sasl_type => $active) {
-			if ($active && $this->IsSupported("AUTH={$sasl_type}") && \SnappyMail\SASL::isSupported($sasl_type)) {
+		foreach ($aCredentials['SASLMechanisms'] as $sasl_type) {
+			if ($this->IsSupported("AUTH={$sasl_type}") && \SnappyMail\SASL::isSupported($sasl_type)) {
 				$type = $sasl_type;
 				break;
 			}

@@ -68,26 +68,9 @@ class Domain extends AbstractProvider
 		return $this->bAdmin ? $this->oDriver->Disable($sName, $bDisabled) : false;
 	}
 
-	public function GetList(int $iOffset = 0, int $iLimit = 20, string $sSearch = '', bool $bIncludeAliases = true) : array
+	public function GetList(bool $bIncludeAliases = true) : array
 	{
-		$sSearch = \trim($sSearch);
-
-		if ($iOffset < 0)
-		{
-			$iOffset = 0;
-		}
-
-		if ($iLimit < 20)
-		{
-			$iLimit = 20;
-		}
-
-		return $this->bAdmin ? $this->oDriver->GetList($iOffset, $iLimit, $sSearch, $bIncludeAliases) : array();
-	}
-
-	public function Count(string $sSearch = '') : int
-	{
-		return $this->oDriver->Count($sSearch);
+		return $this->bAdmin ? $this->oDriver->GetList($bIncludeAliases) : array();
 	}
 
 	public function LoadOrCreateNewFromAction(\RainLoop\Actions $oActions, string $sNameForTest = null) : ?\RainLoop\Model\Domain
@@ -105,7 +88,7 @@ class Domain extends AbstractProvider
 
 			if (\strlen($sName) || $sNameForTest)
 			{
-				$bCreate = '1' === (string) $oActions->GetActionParam('Create', '0');
+				$bCreate = !empty($oActions->GetActionParam('Create', 0));
 				$sIncHost = (string) $oActions->GetActionParam('IncHost', '');
 				$iIncPort = (int) $oActions->GetActionParam('IncPort', 143);
 				$iIncSecure = (int) $oActions->GetActionParam('IncSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
@@ -130,23 +113,21 @@ class Domain extends AbstractProvider
 					{
 						throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DomainAlreadyExists);
 					}
-					else
-					{
-						$oDomain->UpdateInstance(
-							$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-							$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
-							$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutSetSender, $bOutUsePhpMail,
-							$sWhiteList);
-					}
 				}
 				else
 				{
-					$oDomain = new \RainLoop\Model\Domain($sNameForTest ?: $sName,
-						$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-						$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
-						$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutSetSender, $bOutUsePhpMail,
-						$sWhiteList);
+					$oDomain = new \RainLoop\Model\Domain($sNameForTest ?: $sName);
 				}
+
+				$sIncHost = \MailSo\Base\Utils::IdnToAscii($sIncHost);
+				$sSieveHost = \MailSo\Base\Utils::IdnToAscii($sSieveHost);
+				$sOutHost = \MailSo\Base\Utils::IdnToAscii($sOutHost);
+
+				$oDomain->SetConfig(
+					$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
+					$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
+					$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutSetSender, $bOutUsePhpMail,
+					$sWhiteList);
 			}
 		}
 
