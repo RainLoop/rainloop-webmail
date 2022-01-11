@@ -205,6 +205,7 @@ trait Admin
 
 		$totp = $this->Config()->Get('security', 'admin_totp', '');
 
+		// \explode(':',`getent shadow root`)[1];
 		if (!\strlen($sLogin) || !\strlen($sPassword) ||
 			!$this->Config()->Get('security', 'allow_admin_panel', true) ||
 			$sLogin !== $this->Config()->Get('security', 'admin_login', '') ||
@@ -544,15 +545,16 @@ trait Admin
 	{
 		$aResult = array();
 		try {
+			$notDev = '0.0.0' !== APP_VERSION;
 			foreach ($this->getRepositoryDataByUrl($bReal) as $oItem) {
 				if ($oItem && isset($oItem->type, $oItem->id, $oItem->name,
 					$oItem->version, $oItem->release, $oItem->file, $oItem->description))
 				{
-					if (!empty($oItem->required) && '0.0.0' !== APP_VERSION && version_compare(APP_VERSION, $oItem->required, '<')) {
+					if (!empty($oItem->required) && $notDev && \version_compare(APP_VERSION, $oItem->required, '<')) {
 						continue;
 					}
 
-					if (!empty($oItem->depricated) && '0.0.0' !== APP_VERSION && version_compare(APP_VERSION, $oItem->depricated, '>=')) {
+					if (!empty($oItem->depricated) && $notDev && \version_compare(APP_VERSION, $oItem->depricated, '>=')) {
 						continue;
 					}
 
@@ -577,6 +579,16 @@ trait Admin
 			$sError = "{$e->getCode()} {$e->getMessage()}";
 			$this->Logger()->Write($sError, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 		}
+		return $aResult;
+	}
+
+	public function DoAdminPackagesList() : array
+	{
+		$this->IsAdminLoggined();
+
+		$bReal = false;
+		$sError = '';
+		$aList = $this->getRepositoryData($bReal, $sError);
 
 		$aEnabledPlugins = \array_map('trim',
 			\explode(',', \strtolower($this->Config()->Get('plugins', 'enabled_list', '')))
@@ -585,13 +597,13 @@ trait Admin
 		$aInstalled = $this->Plugins()->InstalledPlugins();
 		foreach ($aInstalled as $aItem) {
 			if ($aItem) {
-				if (isset($aResult[$aItem[0]])) {
-					$aResult[$aItem[0]]['installed'] = $aItem[1];
-					$aResult[$aItem[0]]['enabled'] = \in_array(\strtolower($aItem[0]), $aEnabledPlugins);
-					$aResult[$aItem[0]]['canBeDeleted'] = true;
-					$aResult[$aItem[0]]['canBeUpdated'] = \version_compare($aItem[1], $aResult[$aItem[0]]['version'], '<');
+				if (isset($aList[$aItem[0]])) {
+					$aList[$aItem[0]]['installed'] = $aItem[1];
+					$aList[$aItem[0]]['enabled'] = \in_array(\strtolower($aItem[0]), $aEnabledPlugins);
+					$aList[$aItem[0]]['canBeDeleted'] = true;
+					$aList[$aItem[0]]['canBeUpdated'] = \version_compare($aItem[1], $aList[$aItem[0]]['version'], '<');
 				} else {
-					\array_push($aResult, array(
+					\array_push($aList, array(
 						'type' => 'plugin',
 						'id' => $aItem[0],
 						'name' => $aItem[0],
@@ -608,28 +620,11 @@ trait Admin
 			}
 		}
 
-		return \array_values($aResult);
-	}
-
-	public function DoAdminPackagesList() : array
-	{
-		$this->IsAdminLoggined();
-
-		$bReal = false;
-		$sError = '';
-		$aList = $this->getRepositoryData($bReal, $sError);
-
-		$bRainLoopUpdatable = \file_exists(APP_INDEX_ROOT_PATH.'index.php')
-		 && \is_writable(APP_INDEX_ROOT_PATH.'index.php')
-		 && \is_writable(APP_INDEX_ROOT_PATH.'snappymail/')
-		 && APP_VERSION !== '0.0.0';
-
 //		\uksort($aList, function($a, $b){return \strcasecmp($a['name'], $b['name']);});
 
 		return $this->DefaultResponse(__FUNCTION__, array(
 			 'Real' => $bReal,
-			 'MainUpdatable' => $bRainLoopUpdatable,
-			 'List' => $aList,
+			 'List' => \array_values($aList),
 			 'Error' => $sError
 		));
 	}
@@ -675,15 +670,12 @@ trait Admin
 				if ($sError) {
 					throw new \Exception($sError);
 				}
-				foreach ($aList as $oItem) {
-					if ($oItem && $sFile === $oItem['file'] && $sId === $oItem['id']) {
-						$sRealFile = $sFile;
-						$sTmp = \SnappyMail\Repository::download($sFile,
-							$this->Config()->Get('labs', 'curl_proxy', ''),
-							$this->Config()->Get('labs', 'curl_proxy_auth', '')
-						);
-						break;
-					}
+				if (isset($aList[$sId]) && $sFile === $aList[$sId]['file']) {
+					$sRealFile = $sFile;
+					$sTmp = \SnappyMail\Repository::download($sFile,
+						$this->Config()->Get('labs', 'curl_proxy', ''),
+						$this->Config()->Get('labs', 'curl_proxy_auth', '')
+					);
 				}
 			}
 
@@ -721,7 +713,7 @@ trait Admin
 				'loaded' => true
 			]
 		];
-		foreach (['APCu', 'cURL','GD','Gmagick','Imagick','intl','LDAP','OpenSSL','pdo_mysql','pdo_pgsql','pdo_sqlite','Sodium','XXTEA','Zip'] as $name) {
+		foreach (['APCu', 'cURL','GD','Gmagick','Imagick','intl','LDAP','OpenSSL','pdo_mysql','pdo_pgsql','pdo_sqlite','redis','Sodium','uuid','XXTEA','Zip'] as $name) {
 			$aResult[] = [
 				'name' => $name,
 				'loaded' => \extension_loaded(\strtolower($name))

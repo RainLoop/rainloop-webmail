@@ -12,6 +12,7 @@ if (defined('APP_VERSION'))
 
 	$aOptional = array(
 		'cURL' => extension_loaded('curl'),
+		'exif' => extension_loaded('exif'),
 		'gd' => extension_loaded('gd'),
 		'gmagick' => extension_loaded('gmagick'),
 		'imagick' => extension_loaded('imagick'),
@@ -20,8 +21,10 @@ if (defined('APP_VERSION'))
 		'OpenSSL' => extension_loaded('openssl'),
 		'mysql' => extension_loaded('pdo_mysql'),
 		'pgsql' => extension_loaded('pdo_pgsql'),
+		'redis' => extension_loaded('redis'),
 		'Sodium' => extension_loaded('sodium'),
 		'sqlite' => extension_loaded('pdo_sqlite'),
+		'uuid' => extension_loaded('uuid'),
 		'xxtea' => extension_loaded('xxtea'),
 		'zip' => extension_loaded('zip')
 	);
