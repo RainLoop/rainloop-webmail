@@ -99,6 +99,7 @@ class ServiceActions
 			}
 			else if (!empty($sAction))
 			{
+				// if ($this->oActions instanceof ActionsAdmin)
 				if (0 === \stripos($sAction, 'Admin') && 'AdminLogin' !== $sAction && 'AdminLogout' !== $sAction) {
 					$this->oActions->IsAdminLoggined();
 				}
@@ -335,7 +336,7 @@ class ServiceActions
 	{
 		$bResult = false;
 		$sData = empty($this->aPaths[1]) ? '' : $this->aPaths[1];
-		if (!empty($sData) && $this->oActions->Config()->Get('labs', 'use_local_proxy_for_external_images', false))
+		if (!empty($sData) && $this->Config()->Get('labs', 'use_local_proxy_for_external_images', false))
 		{
 			$this->oActions->verifyCacheByKey($sData);
 
@@ -419,8 +420,8 @@ class ServiceActions
 
 		if (\strlen($sRawError))
 		{
-			$this->oActions->Logger()->Write($sRawError, \MailSo\Log\Enumerations\Type::ERROR);
-			$this->oActions->Logger()->WriteDump($this->aPaths, \MailSo\Log\Enumerations\Type::ERROR, 'PATHS');
+			$this->Logger()->Write($sRawError, \MailSo\Log\Enumerations\Type::ERROR);
+			$this->Logger()->WriteDump($this->aPaths, \MailSo\Log\Enumerations\Type::ERROR, 'PATHS');
 		}
 
 		if ($oException)
@@ -702,7 +703,7 @@ class ServiceActions
 					}
 					catch (\Throwable $oException)
 					{
-						$this->oActions->Logger()->WriteException($oException);
+						$this->Logger()->WriteException($oException);
 					}
 				}
 			}
@@ -736,7 +737,7 @@ class ServiceActions
 			}
 			catch (\Throwable $oException)
 			{
-				$this->oActions->Logger()->WriteException($oException);
+				$this->Logger()->WriteException($oException);
 			}
 		}
 

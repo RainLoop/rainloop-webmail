@@ -6,7 +6,11 @@ const
 	HASH_PREFIX = '#/',
 	SERVER_PREFIX = './?',
 	VERSION = Settings.app('version'),
-	VERSION_PREFIX = Settings.app('webVersionPath') || 'snappymail/v/' + VERSION + '/';
+	VERSION_PREFIX = Settings.app('webVersionPath') || 'snappymail/v/' + VERSION + '/',
+
+	adminPath = () => rl.adminArea() && !Settings.app('adminHostUse'),
+
+	prefix = () => SERVER_PREFIX + (adminPath() ? Settings.app('adminPath') : '');
 
 export const
 	SUB_QUERY_PREFIX = '&q[]=',
@@ -20,9 +24,7 @@ export const
 	/**
 	 * @returns {string}
 	 */
-	logoutLink = () => (rl.adminArea() && !Settings.app('adminHostUse'))
-		? SERVER_PREFIX + Settings.app('adminPath')
-		: ROOT,
+	logoutLink = () => adminPath() ? prefix() : ROOT,
 
 	/**
 	 * @param {string} type
@@ -49,7 +51,7 @@ export const
 	 * @param {string} type
 	 * @returns {string}
 	 */
-	serverRequest = type => SERVER_PREFIX + '/' + type + '/' + SUB_QUERY_PREFIX + '/0/',
+	serverRequest = type => prefix() + '/' + type + '/' + SUB_QUERY_PREFIX + '/0/',
 
 	/**
 	 * @param {string} lang

@@ -34,7 +34,7 @@ class Manager
 		$this->oLogger = null;
 		$this->oActions = $oActions;
 
-		$oConfig = $this->oActions->Config();
+		$oConfig = $oActions->Config();
 		$this->bIsEnabled = (bool) $oConfig->Get('plugins', 'enable', false);
 		if ($this->bIsEnabled) {
 			$sList = $oConfig->Get('plugins', 'enabled_list', '');

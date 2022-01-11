@@ -178,10 +178,6 @@ $Plugin->addHook('hook.name', 'functionName');
 	params:
 		array &$aPaths
 
-### filter.http-query
-	params:
-		string &$sQuery
-
 ### filter.json-response
 	params:
 		string $sAction
