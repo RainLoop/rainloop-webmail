@@ -222,7 +222,7 @@ trait Contacts
 
 		if (UPLOAD_ERR_OK !== $iError)
 		{
-			$iClientError = \RainLoop\Enumerations\UploadClientError::NORMAL;
+			$iClientError = \RainLoop\Enumerations\UploadError::NORMAL;
 			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
 
 			if (!empty($sError))

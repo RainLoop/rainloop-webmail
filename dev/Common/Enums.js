@@ -48,10 +48,10 @@ export const Scope = {
 export const UploadErrorCode = {
 	Normal: 0,
 	FileIsTooBig: 1,
-	FilePartiallyUploaded: 2,
-	NoFileUploaded: 3,
-	MissingTempFolder: 4,
-	OnSavingFile: 5,
+	FilePartiallyUploaded: 3,
+	NoFileUploaded: 4,
+	MissingTempFolder: 6,
+	OnSavingFile: 7,
 	FileType: 98,
 	Unknown: 99
 };

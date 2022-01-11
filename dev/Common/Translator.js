@@ -114,19 +114,8 @@ export const
 	 * @returns {string}
 	 */
 	getUploadErrorDescByCode = code => {
-		let result = 'UNKNOWN';
-		code = parseInt(code, 10) || 0;
-		switch (code) {
-			case UploadErrorCode.FileIsTooBig:
-			case UploadErrorCode.FilePartiallyUploaded:
-			case UploadErrorCode.NoFileUploaded:
-			case UploadErrorCode.MissingTempFolder:
-			case UploadErrorCode.OnSavingFile:
-			case UploadErrorCode.FileType:
-				result = i18nKey(getKeyByValue(UploadErrorCode, code));
-				break;
-		}
-		return i18n('UPLOAD/ERROR_' + result);
+		let key = getKeyByValue(UploadErrorCode, parseInt(code, 10));
+		return i18n('UPLOAD/ERROR_' + (key ? i18nKey(key) : 'UNKNOWN'));
 	},
 
 	/**

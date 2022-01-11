@@ -2,7 +2,6 @@
 
 namespace RainLoop;
 
-use RainLoop\Enumerations\UploadClientError;
 use RainLoop\Enumerations\UploadError;
 
 class Actions
@@ -994,7 +993,7 @@ class Actions
 	private function getUploadErrorMessageByCode(int $iError, int &$iClientError): string
 	{
 		$sError = '';
-		$iClientError = UploadClientError::NORMAL;
+		$iClientError = UploadError::NORMAL;
 		switch ($iError) {
 			case UPLOAD_ERR_OK:
 				break;
@@ -1003,34 +1002,34 @@ class Actions
 			case UploadError::CONFIG_SIZE:
 			case UploadError::EMPTY_FILES_DATA:
 				$sError = 'File is too big';
-				$iClientError = UploadClientError::FILE_IS_TOO_BIG;
+				$iClientError = UploadError::FILE_IS_TOO_BIG;
 				break;
 			case UPLOAD_ERR_PARTIAL:
 				$sError = 'File partially uploaded';
-				$iClientError = UploadClientError::FILE_PARTIALLY_UPLOADED;
+				$iClientError = UploadError::FILE_PARTIALLY_UPLOADED;
 				break;
 			case UPLOAD_ERR_NO_FILE:
 				$sError = 'No file uploaded';
-				$iClientError = UploadClientError::FILE_NO_UPLOADED;
+				$iClientError = UploadError::FILE_NO_UPLOADED;
 				break;
 			case UPLOAD_ERR_NO_TMP_DIR:
 			case UPLOAD_ERR_CANT_WRITE:
 			case UPLOAD_ERR_EXTENSION:
 				$sError = 'Missing temp folder';
-				$iClientError = UploadClientError::MISSING_TEMP_FOLDER;
+				$iClientError = UploadError::MISSING_TEMP_FOLDER;
 				break;
 			case UploadError::ON_SAVING:
 				$sError = 'Error on saving file';
-				$iClientError = UploadClientError::FILE_ON_SAVING_ERROR;
+				$iClientError = UploadError::FILE_ON_SAVING_ERROR;
 				break;
 			case UploadError::FILE_TYPE:
 				$sError = 'Invalid file type';
-				$iClientError = UploadClientError::FILE_TYPE;
+				$iClientError = UploadError::FILE_TYPE;
 				break;
 			case UploadError::UNKNOWN:
 			default:
 				$sError = 'Unknown error';
-				$iClientError = UploadClientError::UNKNOWN;
+				$iClientError = UploadError::UNKNOWN;
 				break;
 		}
 
@@ -1065,7 +1064,7 @@ class Actions
 		}
 
 		if (UPLOAD_ERR_OK !== $iError) {
-			$iClientError = Enumerations\UploadClientError::NORMAL;
+			$iClientError = Enumerations\UploadError::NORMAL;
 			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
 
 			if (!empty($sError)) {
@@ -1144,7 +1143,7 @@ class Actions
 		}
 
 		if (UPLOAD_ERR_OK !== $iError) {
-			$iClientError = Enumerations\UploadClientError::NORMAL;
+			$iClientError = Enumerations\UploadError::NORMAL;
 			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
 
 			if (!empty($sError)) {
