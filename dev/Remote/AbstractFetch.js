@@ -181,13 +181,6 @@ export class AbstractFetchRemote
 	/**
 	 * @param {?Function} fCallback
 	 */
-	noop(fCallback) {
-		this.request('Noop', fCallback);
-	}
-
-	/**
-	 * @param {?Function} fCallback
-	 */
 	getPublicKey(fCallback) {
 		this.request('GetPublicKey', fCallback);
 	}

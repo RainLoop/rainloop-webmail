@@ -19,6 +19,37 @@ trait Folders
 		);
 	}
 
+	/**
+	 * Appends uploaded rfc822 message to mailbox
+	 * @throws \MailSo\Base\Exceptions\Exception
+	 */
+	public function Append(): bool
+	{
+		$oAccount = $this->initMailClientConnection();
+
+		$sFolderFullName = $this->GetActionParam('Folder', '');
+
+		if ($oAccount
+		 && !empty($sFolderFullName)
+		 && !empty($_FILES['AppendFile'])
+		 && \is_uploaded_file($_FILES['AppendFile']['tmp_name'])
+		 && \UPLOAD_ERR_OK == $_FILES['AppendFile']['error']
+		 && $this->oConfig->Get('labs', 'allow_message_append', false)
+		) {
+			$sSavedName = 'append-post-' . \md5($sFolderFullName . $_FILES['AppendFile']['name'] . $_FILES['AppendFile']['tmp_name']);
+			if ($this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $_FILES['AppendFile']['tmp_name'])) {
+				$iMessageStreamSize = $this->FilesProvider()->FileSize($oAccount, $sSavedName);
+				$rMessageStream = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
+
+				$this->MailClient()->MessageAppendStream($rMessageStream, $iMessageStreamSize, $sFolderFullName);
+
+				$this->FilesProvider()->Clear($oAccount, $sSavedName);
+			}
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, true);
+	}
+
 	public function DoFolders() : array
 	{
 		$oAccount = $this->initMailClientConnection();

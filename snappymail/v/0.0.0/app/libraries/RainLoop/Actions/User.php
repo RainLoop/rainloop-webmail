@@ -5,6 +5,7 @@ namespace RainLoop\Actions;
 use RainLoop\Enumerations\Capa;
 use RainLoop\Exceptions\ClientException;
 use RainLoop\Notifications;
+use RainLoop\Providers\Suggestions;
 use RainLoop\Utils;
 
 trait User
@@ -14,6 +15,33 @@ trait User
 	use Filters;
 	use Folders;
 	use Messages;
+
+	/**
+	 * @var \RainLoop\Providers\Suggestions
+	 */
+	private $oSuggestionsProvider = null;
+
+	public function SuggestionsProvider(): Suggestions
+	{
+		if (null === $this->oSuggestionsProvider) {
+			$this->oSuggestionsProvider = new Suggestions(
+				$this->fabrica('suggestions'));
+		}
+
+		return $this->oSuggestionsProvider;
+	}
+
+	public function SetMailtoRequest(string $sTo): void
+	{
+		if (!empty($sTo)) {
+			Utils::SetCookie(self::AUTH_MAILTO_TOKEN_KEY,
+				Utils::EncodeKeyValuesQ(array(
+					'Time' => \microtime(true),
+					'MailTo' => 'MailTo',
+					'To' => $sTo
+				)), 0);
+		}
+	}
 
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception

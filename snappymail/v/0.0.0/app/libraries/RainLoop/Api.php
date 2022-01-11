@@ -41,12 +41,21 @@ class Api
 
 	public static function Config() : Config\Application
 	{
-		return static::Actions()->Config();
+		static $oConfig = null;
+		if (!$oConfig)
+		{
+			$oConfig = new Config\Application();
+			if (!$oConfig->Load()) {
+				usleep(10000);
+				$oConfig->Load();
+			}
+		}
+		return $oConfig;
 	}
 
 	public static function Logger() : \MailSo\Log\Logger
 	{
-		return static::Actions()->Logger();
+		return \MailSo\Log\Logger::SingletonInstance();
 	}
 
 	protected static function SetupDefaultMailSoConfig() : void

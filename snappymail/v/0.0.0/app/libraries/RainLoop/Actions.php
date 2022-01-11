@@ -4,7 +4,6 @@ namespace RainLoop;
 
 use RainLoop\Enumerations\UploadClientError;
 use RainLoop\Enumerations\UploadError;
-use RainLoop\Providers\Identities;
 
 class Actions
 {
@@ -75,11 +74,6 @@ class Actions
 	private $aCachers = array();
 
 	/**
-	 * @var Providers\Identities
-	 */
-	private $oIdentitiesProvider;
-
-	/**
 	 * @var \RainLoop\Providers\Storage
 	 */
 	private $oStorageProvider = null;
@@ -115,11 +109,6 @@ class Actions
 	private $oAddressBookProvider = null;
 
 	/**
-	 * @var \RainLoop\Providers\Suggestions
-	 */
-	private $oSuggestionsProvider = null;
-
-	/**
 	 * @var \RainLoop\Config\Application
 	 */
 	private $oConfig = null;
@@ -134,13 +123,9 @@ class Actions
 	 */
 	function __construct()
 	{
-		$this->oConfig = new Config\Application();
-		if (!$this->oConfig->Load()) {
-			usleep(10000);
-			$this->oConfig->Load();
-		}
+		$this->oConfig = API::Config();
 
-		$this->oLogger = \MailSo\Log\Logger::SingletonInstance();
+		$this->oLogger = API::Logger();
 		if ($this->oConfig->Get('logs', 'enable', false)) {
 			$sSessionFilter = (string)$this->oConfig->Get('logs', 'session_filter', '');
 			if (!empty($sSessionFilter)) {
@@ -482,15 +467,6 @@ class Actions
 		}
 	}
 
-	public function IdentitiesProvider(): Identities
-	{
-		if (null === $this->oIdentitiesProvider) {
-			$this->oIdentitiesProvider = new Providers\Identities($this->fabrica('identities'));
-		}
-
-		return $this->oIdentitiesProvider;
-	}
-
 	public function SettingsProvider(bool $bLocal = false): Providers\Settings
 	{
 		if ($bLocal) {
@@ -528,16 +504,6 @@ class Actions
 		}
 
 		return $this->oDomainProvider;
-	}
-
-	public function SuggestionsProvider(): Providers\Suggestions
-	{
-		if (null === $this->oSuggestionsProvider) {
-			$this->oSuggestionsProvider = new Providers\Suggestions(
-				$this->fabrica('suggestions'));
-		}
-
-		return $this->oSuggestionsProvider;
 	}
 
 	public function AddressBookProvider(?Model\Account $oAccount = null, bool $bForceEnable = false): Providers\AddressBook
@@ -673,18 +639,6 @@ class Actions
 		}
 	}
 
-	public function SetMailtoRequest(string $sTo): void
-	{
-		if (!empty($sTo)) {
-			Utils::SetCookie(self::AUTH_MAILTO_TOKEN_KEY,
-				Utils::EncodeKeyValuesQ(array(
-					'Time' => \microtime(true),
-					'MailTo' => 'MailTo',
-					'To' => $sTo
-				)), 0);
-		}
-	}
-
 	public function AppDataSystem(bool $bAdmin = false): array
 	{
 		$oConfig = $this->oConfig;
@@ -711,7 +665,7 @@ class Actions
 			'allowAppendMessage' => (bool)$oConfig->Get('labs', 'allow_message_append', false),
 			'folderSpecLimit' => (int)$oConfig->Get('labs', 'folders_spec_limit', 50),
 			'faviconStatus' => (bool)$oConfig->Get('labs', 'favicon_status', true),
-			'listPermanentFiltered' => '' !== \trim(Api::Config()->Get('labs', 'imap_message_list_permanent_filter', '')),
+			'listPermanentFiltered' => '' !== \trim($oConfig->Get('labs', 'imap_message_list_permanent_filter', '')),
 			'themes' => $this->GetThemes(),
 			'languages' => \SnappyMail\L10n::getLanguages(false),
 			'languagesAdmin' => \SnappyMail\L10n::getLanguages(true),
@@ -1013,12 +967,6 @@ class Actions
 		);
 	}
 
-	public function DoNoop(): array
-	{
-		$this->initMailClientConnection();
-		return $this->TrueResponse(__FUNCTION__);
-	}
-
 	public function DoPing(): array
 	{
 		return $this->DefaultResponse(__FUNCTION__, 'Pong');
@@ -1208,86 +1156,6 @@ class Actions
 			'Name' => $sName,
 			'Hash' => $sHash
 		) : false);
-	}
-
-	private function importContactsFromCsvFile(Model\Account $oAccount, /*resource*/ $rFile, string $sFileStart): int
-	{
-		$iCount = 0;
-		$aHeaders = null;
-		$aData = array();
-
-		if ($oAccount && \is_resource($rFile)) {
-			$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-			if ($oAddressBookProvider && $oAddressBookProvider->IsActive()) {
-				$sDelimiter = ((int)\strpos($sFileStart, ',') > (int)\strpos($sFileStart, ';')) ? ',' : ';';
-
-				\setlocale(LC_CTYPE, 'en_US.UTF-8');
-				while (false !== ($mRow = \fgetcsv($rFile, 5000, $sDelimiter, '"'))) {
-					if (null === $aHeaders) {
-						if (3 >= \count($mRow)) {
-							return 0;
-						}
-
-						$aHeaders = $mRow;
-
-						foreach ($aHeaders as $iIndex => $sHeaderValue) {
-							$aHeaders[$iIndex] = \MailSo\Base\Utils::Utf8Clear($sHeaderValue);
-						}
-					} else {
-						$aNewItem = array();
-						foreach ($aHeaders as $iIndex => $sHeaderValue) {
-							$aNewItem[$sHeaderValue] = isset($mRow[$iIndex]) ? $mRow[$iIndex] : '';
-						}
-
-						$aData[] = $aNewItem;
-					}
-				}
-
-				if (\count($aData)) {
-					$this->oLogger->Write('Import contacts from csv');
-					$iCount = $oAddressBookProvider->ImportCsvArray(
-						$this->GetMainEmail($oAccount),
-						$aData
-					);
-				}
-			}
-		}
-
-		return $iCount;
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
-	 */
-	public function Append(): bool
-	{
-		$oAccount = $this->initMailClientConnection();
-
-		$sFolderFullName = $this->GetActionParam('Folder', '');
-
-		$_FILES = isset($_FILES) ? $_FILES : null;
-		if ($oAccount &&
-			$this->oConfig->Get('labs', 'allow_message_append', false) &&
-			isset($_FILES, $_FILES['AppendFile'], $_FILES['AppendFile']['name'],
-				$_FILES['AppendFile']['tmp_name'], $_FILES['AppendFile']['size'])) {
-			if (is_string($_FILES['AppendFile']['tmp_name']) && \strlen($_FILES['AppendFile']['tmp_name'])) {
-				if (\UPLOAD_ERR_OK === (int)$_FILES['AppendFile']['error'] && !empty($sFolderFullName)) {
-					$sSavedName = 'append-post-' . md5($sFolderFullName . $_FILES['AppendFile']['name'] . $_FILES['AppendFile']['tmp_name']);
-
-					if ($this->FilesProvider()->MoveUploadedFile($oAccount,
-						$sSavedName, $_FILES['AppendFile']['tmp_name'])) {
-						$iMessageStreamSize = $this->FilesProvider()->FileSize($oAccount, $sSavedName);
-						$rMessageStream = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
-
-						$this->MailClient()->MessageAppendStream($rMessageStream, $iMessageStreamSize, $sFolderFullName);
-
-						$this->FilesProvider()->Clear($oAccount, $sSavedName);
-					}
-				}
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, true);
 	}
 
 	public function Capa(bool $bAdmin, ?Model\Account $oAccount = null): array

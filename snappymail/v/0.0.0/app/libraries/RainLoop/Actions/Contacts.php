@@ -334,4 +334,50 @@ trait Contacts
 		return $iCount;
 	}
 
+	private function importContactsFromCsvFile(\RainLoop\Model\Account $oAccount, /*resource*/ $rFile, string $sFileStart): int
+	{
+		$iCount = 0;
+		$aHeaders = null;
+		$aData = array();
+
+		if ($oAccount && \is_resource($rFile)) {
+			$oAddressBookProvider = $this->AddressBookProvider($oAccount);
+			if ($oAddressBookProvider && $oAddressBookProvider->IsActive()) {
+				$sDelimiter = ((int)\strpos($sFileStart, ',') > (int)\strpos($sFileStart, ';')) ? ',' : ';';
+
+				\setlocale(LC_CTYPE, 'en_US.UTF-8');
+				while (false !== ($mRow = \fgetcsv($rFile, 5000, $sDelimiter, '"'))) {
+					if (null === $aHeaders) {
+						if (3 >= \count($mRow)) {
+							return 0;
+						}
+
+						$aHeaders = $mRow;
+
+						foreach ($aHeaders as $iIndex => $sHeaderValue) {
+							$aHeaders[$iIndex] = \MailSo\Base\Utils::Utf8Clear($sHeaderValue);
+						}
+					} else {
+						$aNewItem = array();
+						foreach ($aHeaders as $iIndex => $sHeaderValue) {
+							$aNewItem[$sHeaderValue] = isset($mRow[$iIndex]) ? $mRow[$iIndex] : '';
+						}
+
+						$aData[] = $aNewItem;
+					}
+				}
+
+				if (\count($aData)) {
+					$this->oLogger->Write('Import contacts from csv');
+					$iCount = $oAddressBookProvider->ImportCsvArray(
+						$this->GetMainEmail($oAccount),
+						$aData
+					);
+				}
+			}
+		}
+
+		return $iCount;
+	}
+
 }

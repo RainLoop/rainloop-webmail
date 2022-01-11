@@ -253,9 +253,10 @@ class ServiceActions
 
 			$iError = UPLOAD_ERR_OK;
 			$_FILES = isset($_FILES) ? $_FILES : null;
-			if (isset($_FILES, $_FILES[$sInputName], $_FILES[$sInputName]['name'], $_FILES[$sInputName]['tmp_name'], $_FILES[$sInputName]['size']))
+			if (isset($_FILES[$sInputName], $_FILES[$sInputName]['name'], $_FILES[$sInputName]['tmp_name'], $_FILES[$sInputName]['size']))
 			{
 				$iError = (isset($_FILES[$sInputName]['error'])) ? (int) $_FILES[$sInputName]['error'] : UPLOAD_ERR_OK;
+//				\is_uploaded_file($_FILES[$sInputName]['tmp_name'])
 
 				if (UPLOAD_ERR_OK === $iError && 0 < $iSizeLimit && $iSizeLimit < (int) $_FILES[$sInputName]['size'])
 				{
@@ -267,7 +268,7 @@ class ServiceActions
 					$aFile = $_FILES[$sInputName];
 				}
 			}
-			else if (!isset($_FILES) || !is_array($_FILES) || !\count($_FILES))
+			else if (empty($_FILES))
 			{
 				$iError = UPLOAD_ERR_INI_SIZE;
 			}

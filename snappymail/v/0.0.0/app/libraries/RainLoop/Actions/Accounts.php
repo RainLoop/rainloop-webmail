@@ -9,15 +9,29 @@ use RainLoop\Model\MainAccount;
 use RainLoop\Model\AdditionalAccount;
 use RainLoop\Model\Identity;
 use RainLoop\Notifications;
+use RainLoop\Providers\Identities;
 use RainLoop\Providers\Storage\Enumerations\StorageType;
 use RainLoop\Utils;
 
 trait Accounts
 {
+	/**
+	 * @var RainLoop\Providers\Identities
+	 */
+	private $oIdentitiesProvider;
 
 	protected function GetMainEmail(Account $oAccount)
 	{
 		return ($oAccount instanceof AdditionalAccount ? $this->getMainAccountFromToken() : $oAccount)->Email();
+	}
+
+	public function IdentitiesProvider(): Identities
+	{
+		if (null === $this->oIdentitiesProvider) {
+			$this->oIdentitiesProvider = new Identities($this->fabrica('identities'));
+		}
+
+		return $this->oIdentitiesProvider;
 	}
 
 	public function GetAccounts(MainAccount $oAccount): array
