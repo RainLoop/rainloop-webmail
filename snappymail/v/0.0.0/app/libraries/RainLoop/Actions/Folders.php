@@ -54,7 +54,7 @@ trait Folders
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		$HideUnsubscribed = $this->Config()->Get('labs', 'use_imap_list_subscribe', true);
+		$HideUnsubscribed = false;
 		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 		if ($oSettingsLocal instanceof \RainLoop\Settings) {
 			$HideUnsubscribed = (bool) $oSettingsLocal->GetConf('HideUnsubscribed', $HideUnsubscribed);
@@ -67,8 +67,6 @@ trait Folders
 			$sNamespace = $this->MailClient()->GetNamespace();
 
 			$this->Plugins()->RunHook('filter.folders-post', array($oAccount, $oFolderCollection));
-
-			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
 			$aSystemFolders = array();
 			$this->recFoldersTypes($oAccount, $oFolderCollection, $aSystemFolders);
@@ -226,7 +224,7 @@ trait Folders
 			$oFolder = $this->MailClient()->FolderCreate(
 				$this->GetActionParam('Folder', ''),
 				$this->GetActionParam('Parent', ''),
-				!!$this->GetActionParam('Subscribe', !!$this->Config()->Get('labs', 'use_imap_list_subscribe', true))
+				!!$this->GetActionParam('Subscribe', 1)
 			);
 
 //			FolderInformation(string $sFolderName, int $iPrevUidNext = 0, array $aUids = array())
@@ -331,7 +329,7 @@ trait Folders
 			$this->MailClient()->FolderMove(
 				$this->GetActionParam('Folder', ''),
 				$this->GetActionParam('NewFolder', ''),
-				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true)
+				!!$this->GetActionParam('Subscribe', 1)
 			);
 		}
 		catch (\Throwable $oException)
@@ -355,7 +353,7 @@ trait Folders
 			$sFullName = $this->MailClient()->FolderRename(
 				$this->GetActionParam('Folder', ''),
 				$sName,
-				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true)
+				!!$this->GetActionParam('Subscribe', 1)
 			);
 		}
 		catch (\Throwable $oException)
@@ -379,10 +377,7 @@ trait Folders
 
 		try
 		{
-			$this->MailClient()->FolderDelete(
-				$this->GetActionParam('Folder', ''),
-				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true)
-			);
+			$this->MailClient()->FolderDelete($this->GetActionParam('Folder', ''));
 		}
 		catch (\MailSo\Mail\Exceptions\NonEmptyFolder $oException)
 		{

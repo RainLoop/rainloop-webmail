@@ -62,7 +62,6 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 
 		this.folderForEdit = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'edited'] });
 
-		this.useImapSubscribe = Settings.app('useImapSubscribe');
 		SettingsUserStore.hideUnsubscribed.subscribe(value => Remote.saveSetting('HideUnsubscribed', value ? 1 : 0));
 	}
 
@@ -72,7 +71,8 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 		if (nameToEdit && folder.name() !== nameToEdit) {
 			Remote.abort('Folders').post('FolderRename', FolderUserStore.foldersRenaming, {
 					Folder: folder.fullName,
-					NewFolderName: nameToEdit
+					NewFolderName: nameToEdit,
+					Subscribe: folder.subscribed() ? 1 : 0
 				})
 				.then(data => {
 					folder.name(nameToEdit/*data.Name*/);

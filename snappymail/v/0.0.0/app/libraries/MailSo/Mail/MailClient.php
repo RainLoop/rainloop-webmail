@@ -1224,7 +1224,7 @@ class MailClient
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Mail\Exceptions\RuntimeException
 	 */
-	public function FolderDelete(string $sFolderFullName, bool $bUnsubscribeOnDeletion = true) : self
+	public function FolderDelete(string $sFolderFullName) : self
 	{
 		if (!\strlen($sFolderFullName) || 'INBOX' === $sFolderFullName) {
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
@@ -1239,9 +1239,7 @@ class MailClient
 			throw new Exceptions\NonEmptyFolder;
 		}
 
-		if ($bUnsubscribeOnDeletion) {
-			$this->oImapClient->FolderUnsubscribe($sFolderFullName);
-		}
+		$this->oImapClient->FolderUnsubscribe($sFolderFullName);
 
 		$this->oImapClient->FolderUnselect();
 		$this->oImapClient->FolderDelete($sFolderFullName);

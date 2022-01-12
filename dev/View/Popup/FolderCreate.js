@@ -5,7 +5,6 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { folderListOptionsBuilder, sortFolders } from 'Common/UtilsUser';
 import { getNotification } from 'Common/Translator';
-import { Settings } from 'Common/Globals';
 
 import { FolderUserStore } from 'Stores/User/Folder';
 import { SettingsUserStore } from 'Stores/User/Settings';
@@ -22,11 +21,9 @@ class FolderCreatePopupView extends AbstractViewPopup {
 	constructor() {
 		super('FolderCreate');
 
-		this.useImapSubscribe = Settings.app('useImapSubscribe');
-
 		this.addObservables({
 			folderName: '',
-			folderSubscribe: this.useImapSubscribe && SettingsUserStore.hideUnsubscribed,
+			folderSubscribe: SettingsUserStore.hideUnsubscribed(),
 
 			selectedParentValue: UNUSED_OPTION_VALUE
 		});

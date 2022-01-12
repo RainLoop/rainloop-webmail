@@ -3,7 +3,7 @@ import { koComputable } from 'External/ko';
 
 import { Layout, EditorDefaultType } from 'Common/EnumsUser';
 import { pInt, addObservablesTo } from 'Common/Utils';
-import { $htmlCL, Settings, SettingsGet } from 'Common/Globals';
+import { $htmlCL, SettingsGet } from 'Common/Globals';
 import { ThemeStore } from 'Stores/Theme';
 
 export const SettingsUserStore = new class {
@@ -34,7 +34,7 @@ export const SettingsUserStore = new class {
 			allowDraftAutosave: 1,
 			useThreads: 0,
 			replySameFolder: 0,
-			hideUnsubscribed: 1,
+			hideUnsubscribed: 0,
 			autoLogout: 0
 		});
 
@@ -74,13 +74,13 @@ export const SettingsUserStore = new class {
 		self.messageReadDelay(pInt(SettingsGet('MessageReadDelay')));
 		self.autoLogout(pInt(SettingsGet('AutoLogout')));
 
-		self.showImages(!!SettingsGet('ShowImages'));
-		self.removeColors(!!SettingsGet('RemoveColors'));
-		self.useCheckboxesInList(!!SettingsGet('UseCheckboxesInList'));
-		self.allowDraftAutosave(!!SettingsGet('AllowDraftAutosave'));
-		self.useThreads(!!SettingsGet('UseThreads'));
-		self.replySameFolder(!!SettingsGet('ReplySameFolder'));
+		self.showImages(SettingsGet('ShowImages'));
+		self.removeColors(SettingsGet('RemoveColors'));
+		self.useCheckboxesInList(SettingsGet('UseCheckboxesInList'));
+		self.allowDraftAutosave(SettingsGet('AllowDraftAutosave'));
+		self.useThreads(SettingsGet('UseThreads'));
+		self.replySameFolder(SettingsGet('ReplySameFolder'));
 
-		self.hideUnsubscribed(Settings.app('useImapSubscribe') && SettingsGet('HideUnsubscribed'));
+		self.hideUnsubscribed(SettingsGet('HideUnsubscribed'));
 	}
 };
