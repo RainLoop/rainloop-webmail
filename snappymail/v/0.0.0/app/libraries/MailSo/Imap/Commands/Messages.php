@@ -88,6 +88,8 @@ trait Messages
 			 *     $aParams[] = (CHANGEDSINCE $modsequence)
 			 *   https://datatracker.ietf.org/doc/html/rfc4551#section-3.3.2
 			 *     $aParams[1][] = MODSEQ
+			 *   https://datatracker.ietf.org/doc/html/rfc5162#section-3.2
+			 *     $bIndexIsUid && $aParams[] = (CHANGEDSINCE $modsequence VANISHED)
 			 */
 
 			$this->SendRequest($bIndexIsUid ? 'UID FETCH' : 'FETCH', $aParams);
@@ -149,6 +151,11 @@ trait Messages
 
 		return $iUid;
 	}
+
+	/**
+	 * RFC 3502 MULTIAPPEND
+	public function MessageAppendStreams(string $sFolderName, $rMessageAppendStream, int $iStreamSize, array $aAppendFlags = null, int &$iUid = null, int $iDateTime = 0) : ?int
+	*/
 
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException

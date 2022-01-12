@@ -30,7 +30,7 @@ class SORT extends Request
 		$bUid = true,
 		$aSortTypes = [],
 		$sLimit = '',
-		// rfc5267
+		// RFC 5267
 		$aReturn = [
 		/**
 		   ALL

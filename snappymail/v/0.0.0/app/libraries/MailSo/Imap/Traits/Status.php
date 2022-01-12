@@ -63,7 +63,7 @@ trait Status
 		$UNSEEN,
 
 		/**
-		 * RFC4551
+		 * RFC 4551
 		 * The highest mod-sequence value of all messages in the mailbox.
 		 * This response also occurs as a result of a SELECT or EXAMINE command.
 		 * @var int 1*DIGIT Positive unsigned 64-bit integer
@@ -71,14 +71,14 @@ trait Status
 		$HIGHESTMODSEQ,
 
 		/**
-		 * RFC7889
+		 * RFC 7889
 		 * Message upload size limit.
 		 * @var int
 		 */
 		$APPENDLIMIT,
 
 		/**
-		 * RFC8474
+		 * RFC 8474
 		 * A server-allocated unique identifier for the mailbox.
 		 * This response also occurs as a result of a CREATE, SELECT or EXAMINE command.
 		 * @var string

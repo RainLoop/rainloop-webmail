@@ -234,13 +234,13 @@ class ImapClient extends \MailSo\Net\NetClient
 /*
 			// TODO: RFC 9051
 			if ($this->IsSupported('IMAP4rev2')) {
-				$this->SendRequestGetResponse('ENABLE', array('IMAP4rev1'));
+				$this->Enable('IMAP4rev1');
 			}
 */
 			// RFC 6855 || RFC 5738
 			$this->UTF8 = $this->IsSupported('UTF8=ONLY') || $this->IsSupported('UTF8=ACCEPT');
 			if ($this->UTF8) {
-				$this->SendRequestGetResponse('ENABLE', array('UTF8=ACCEPT'));
+				$this->Enable('ENABLE', 'UTF8=ACCEPT');
 			}
 		}
 		catch (Exceptions\NegativeResponseException $oException)
@@ -308,6 +308,19 @@ class ImapClient extends \MailSo\Net\NetClient
 	{
 		$sExtentionName = \trim($sExtentionName);
 		return $sExtentionName && \in_array(\strtoupper($sExtentionName), $this->Capability() ?: []);
+	}
+
+	/**
+	 * RFC 5161
+	 */
+	public function Enable(/*string|array*/ $mCapabilityNames) : void
+	{
+		if (\is_string($mCapabilityNames)) {
+			$mCapabilityNames = [$mCapabilityNames];
+		}
+		if (\is_array($mCapabilityNames)) {
+			$this->SendRequestGetResponse('ENABLE', $mCapabilityNames);
+		}
 	}
 
 	/**
@@ -636,6 +649,26 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 		return 'UNKNOWN';
 	}
+
+	/**
+	 * RFC 4978
+	 * It is RECOMMENDED that the client uses TLS compression.
+	 *//*
+	public function Compress() : bool
+	{
+		try {
+			if ($this->IsSupported('COMPRESS=DEFLATE')) {
+				$this->SendRequestGetResponse('COMPRESS', ['DEFLATE']);
+				\stream_filter_append($this->ConnectionResource(), 'zlib.inflate');
+				\stream_filter_append($this->ConnectionResource(), 'zlib.deflate', STREAM_FILTER_WRITE, array(
+					'level' => 6, 'window' => 15, 'memory' => 9
+				));
+				return true;
+			}
+		} catch (\Throwable $e) {
+		}
+		return false;
+	}*/
 
 	public function EscapeFolderName(string $sFolderName) : string
 	{

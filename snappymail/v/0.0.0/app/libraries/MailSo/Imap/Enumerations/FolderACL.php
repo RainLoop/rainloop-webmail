@@ -28,7 +28,7 @@ enum FolderACL: string {
 abstract class FolderACL
 {
 	const
-	/** rfc2086 */
+	/** RFC 2086 */
 		// perform SETACL/DELETEACL/GETACL/LISTRIGHTS
 		ADMINISTER = 'a',
 		// mailbox is visible to LIST/LSUB commands, SUBSCRIBE mailbox
@@ -47,7 +47,7 @@ abstract class FolderACL
 //		CREATE_OLD = 'c',
 		// STORE DELETED flag, perform EXPUNGE
 //		DELETED_OLD = 'd',
-	/** rfc4314 */
+	/** RFC 4314 */
 		// CREATE new sub-mailboxes in any implementation-defined hierarchy, parent mailbox for the new mailbox name in RENAME
 		CREATE = 'k',
 		// DELETE mailbox, old mailbox name in RENAME

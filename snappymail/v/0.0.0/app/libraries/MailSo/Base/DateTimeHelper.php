@@ -32,7 +32,7 @@ abstract class DateTimeHelper
 
 	/**
 	 * Parse date string formated as "Thu, 10 Jun 2010 08:58:33 -0700 (PDT)"
-	 * RFC2822
+	 * RFC 2822
 	 */
 	public static function ParseRFC2822DateString(string $sDateTime) : int
 	{

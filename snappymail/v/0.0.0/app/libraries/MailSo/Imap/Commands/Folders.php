@@ -31,8 +31,10 @@ trait Folders
 	 */
 	public function FolderCreate(string $sFolderName) : self
 	{
-		$this->SendRequestGetResponse('CREATE',
-			array($this->EscapeFolderName($sFolderName)));
+		$this->SendRequestGetResponse('CREATE', array(
+			$this->EscapeFolderName($sFolderName)
+//			, ['(USE (\Drafts \Sent))'] RFC 6154
+		));
 		return $this;
 	}
 
@@ -163,13 +165,15 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderClose() : self
+	public function FolderClose() : int
 	{
 		if ($this->IsSelected()) {
 			$this->SendRequestGetResponse('CLOSE');
 			$this->oCurrentFolderInfo = null;
+			// https://datatracker.ietf.org/doc/html/rfc5162#section-3.4
+			// return HIGHESTMODSEQ ?
 		}
-		return $this;
+		return 0;
 	}
 
 	/**
@@ -204,7 +208,7 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderExpunge(SequenceSet $oUidRange = null) : self
+	public function FolderExpunge(SequenceSet $oUidRange = null) : void
 	{
 		$sCmd = 'EXPUNGE';
 		$aArguments = array();
@@ -214,8 +218,11 @@ trait Folders
 			$aArguments = array((string) $oUidRange);
 		}
 
+		// https://datatracker.ietf.org/doc/html/rfc5162#section-3.5
+		// Before returning an OK to the client, those messages that are removed
+		// are reported using a VANISHED response or EXPUNGE responses.
+
 		$this->SendRequestGetResponse($sCmd, $aArguments);
-		return $this;
 	}
 
 	/**
@@ -274,10 +281,24 @@ trait Folders
 		}
 
 		$aSelectParams = array();
+
 /*
+		// RFC 5162
+		if ($this->IsSupported('QRESYNC')) {
+			$this->Enable(['QRESYNC', 'CONDSTORE']);
+			- the last known UIDVALIDITY,
+			- the last known modification sequence,
+			- the optional set of known UIDs,
+			- and an optional parenthesized list of known sequence ranges and their corresponding UIDs.
+			QRESYNC (UIDVALIDITY HIGHESTMODSEQ 41,43:211,214:541)
+			QRESYNC (67890007 20050715194045000 41,43:211,214:541)
+		}
+
+		// RFC 4551
 		if ($this->IsSupported('CONDSTORE')) {
 			$aSelectParams[] = 'CONDSTORE';
 		}
+
 		// RFC 5738
 		if ($this->UTF8) {
 			$aSelectParams[] = 'UTF8';
