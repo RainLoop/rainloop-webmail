@@ -751,7 +751,8 @@ class AppUser extends AbstractApp {
 							}, 500);
 						}
 
-						['touchstart','mousedown','mousemove','keydown'].forEach(
+						// add pointermove ?
+						['touchstart','mousemove','keydown'].forEach(
 							t => doc.addEventListener(t, SettingsUserStore.delayLogout, {passive:true})
 						);
 						SettingsUserStore.delayLogout();

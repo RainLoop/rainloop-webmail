@@ -158,8 +158,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				}
 				$this->sendRaw($sChallenge, true, '*******');
 				$oResponse = $this->getResponse();
-				$sSignature = $this->getResponseValue($oResponse);
-				$SASL->verify($sSignature);
+				$SASL->verify($this->getResponseValue($oResponse));
 			}
 			else if ('CRAM-MD5' === $type)
 			{
