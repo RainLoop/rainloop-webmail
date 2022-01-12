@@ -16,6 +16,7 @@ use MailSo\Imap\Folder;
 use MailSo\Imap\FolderInformation;
 use MailSo\Imap\SequenceSet;
 use MailSo\Imap\Enumerations\FolderStatus;
+use MailSo\Imap\Enumerations\FolderResponseStatus;
 
 /**
  * @category MailSo
@@ -93,11 +94,23 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderStatus(string $sFolderName, array $aStatusItems) : ?array
+	public function FolderStatus(string $sFolderName) : FolderInformation
 	{
-		if (!\count($aStatusItems)) {
-			return null;
+		$aStatusItems = array(
+			FolderResponseStatus::MESSAGES,
+			FolderResponseStatus::UNSEEN,
+			FolderResponseStatus::UIDNEXT
+		);
+		if ($this->IsSupported('CONDSTORE')) {
+			$aStatusItems[] = FolderResponseStatus::HIGHESTMODSEQ;
 		}
+		if ($this->IsSupported('APPENDLIMIT')) {
+			$aStatusItems[] = FolderResponseStatus::APPENDLIMIT;
+		}
+		if ($this->IsSupported('OBJECTID')) {
+			$aStatusItems[] = FolderResponseStatus::MAILBOXID;
+		}
+
 		$oFolderInfo = $this->oCurrentFolderInfo;
 		$bReselect = false;
 		$bWritable = false;
@@ -129,7 +142,8 @@ trait Folders
 		if ($bReselect) {
 			$this->selectOrExamineFolder($sFolderName, $bWritable, false);
 		}
-		return $oInfo->getStatusItems();
+
+		return $oInfo;
 	}
 
 	/**

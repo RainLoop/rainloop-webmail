@@ -413,23 +413,7 @@ class MailClient
 
 	protected function initFolderValues(string $sFolderName) : array
 	{
-		$aTypes = array(
-			FolderResponseStatus::MESSAGES,
-			FolderResponseStatus::UNSEEN,
-			FolderResponseStatus::UIDNEXT
-		);
-
-		if ($this->oImapClient->IsSupported('CONDSTORE')) {
-			$aTypes[] = FolderResponseStatus::HIGHESTMODSEQ;
-		}
-		if ($this->oImapClient->IsSupported('APPENDLIMIT')) {
-			$aTypes[] = FolderResponseStatus::APPENDLIMIT;
-		}
-		if ($this->oImapClient->IsSupported('OBJECTID')) {
-			$aTypes[] = FolderResponseStatus::MAILBOXID;
-		}
-
-		$aFolderStatus = $this->oImapClient->FolderStatus($sFolderName, $aTypes);
+		$aFolderStatus = $this->oImapClient->FolderStatus($sFolderName)->getStatusItems();
 
 		return [
 			\max(0, $aFolderStatus[FolderResponseStatus::MESSAGES] ?: 0),
@@ -1246,7 +1230,7 @@ class MailClient
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
-		if ($this->IsSupported('IMAP4rev2')) {
+		if ($this->oImapClient->IsSupported('IMAP4rev2')) {
 			$oInfo = $this->oImapClient->FolderExamine($sFolderFullName);
 		} else {
 			$oInfo = $this->oImapClient->FolderStatus($sFolderFullName);
