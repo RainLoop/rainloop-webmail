@@ -5,8 +5,10 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { folderListOptionsBuilder, sortFolders } from 'Common/UtilsUser';
 import { getNotification } from 'Common/Translator';
+import { Settings } from 'Common/Globals';
 
 import { FolderUserStore } from 'Stores/User/Folder';
+import { SettingsUserStore } from 'Stores/User/Settings';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -20,8 +22,11 @@ class FolderCreatePopupView extends AbstractViewPopup {
 	constructor() {
 		super('FolderCreate');
 
+		this.useImapSubscribe = Settings.app('useImapSubscribe');
+
 		this.addObservables({
 			folderName: '',
+			folderSubscribe: this.useImapSubscribe && SettingsUserStore.hideUnsubscribed,
 
 			selectedParentValue: UNUSED_OPTION_VALUE
 		});
@@ -54,7 +59,8 @@ class FolderCreatePopupView extends AbstractViewPopup {
 
 		Remote.abort('Folders').post('FolderCreate', FolderUserStore.foldersCreating, {
 				Folder: this.folderName(),
-				Parent: parentFolderName
+				Parent: parentFolderName,
+				Subscribe: this.folderSubscribe() ? 1 : 0
 			})
 			.then(
 				data => {

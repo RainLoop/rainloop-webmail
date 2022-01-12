@@ -223,11 +223,11 @@ trait Folders
 
 		try
 		{
-			$sFolderNameInUtf = $this->GetActionParam('Folder', '');
-			$sFolderParentFullName = $this->GetActionParam('Parent', '');
-
-			$oFolder = $this->MailClient()->FolderCreate($sFolderNameInUtf, $sFolderParentFullName,
-				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true));
+			$oFolder = $this->MailClient()->FolderCreate(
+				$this->GetActionParam('Folder', ''),
+				$this->GetActionParam('Parent', ''),
+				!!$this->GetActionParam('Subscribe', !!$this->Config()->Get('labs', 'use_imap_list_subscribe', true))
+			);
 
 //			FolderInformation(string $sFolderName, int $iPrevUidNext = 0, array $aUids = array())
 			return $this->DefaultResponse(__FUNCTION__, $oFolder);

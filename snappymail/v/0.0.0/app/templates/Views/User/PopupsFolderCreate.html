@@ -15,6 +15,13 @@
 				autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 				data-bind="textInput: folderName, onEnter: createFolderCommand" />
 		</div>
+		<div class="control-group" data-bind="visible: useImapSubscribe, component: {
+			name: 'Checkbox',
+			params: {
+				label: 'SETTINGS_FOLDERS/BUTTON_SUBSCRIBE',
+				value: folderSubscribe
+			}
+		}"></div>
 	</div>
 </div>
 <footer>
