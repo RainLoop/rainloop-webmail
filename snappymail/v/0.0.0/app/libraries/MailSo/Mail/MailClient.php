@@ -261,6 +261,7 @@ class MailClient
 					);
 
 					// RFC 3516
+					// Should mailserver decode or PHP?
 					if ($sMailEncoding && $this->oImapClient->IsSupported('BINARY')) {
 						$sMailEncoding = '';
 						$sPeek = FetchType::BINARY_PEEK;

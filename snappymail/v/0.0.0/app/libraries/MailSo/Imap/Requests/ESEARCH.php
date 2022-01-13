@@ -68,6 +68,14 @@ class ESEARCH extends Request
 		$sCmd = 'SEARCH';
 		$aRequest = array();
 
+/*		// RFC 6203
+		if (false !== \stripos($this->sCriterias, 'FUZZY') && !$this->oImapClient->IsSupported('SEARCH=FUZZY')) {
+			$this->oImapClient->writeLogException(
+				new RuntimeException('SEARCH=FUZZY is not supported'),
+				Type::ERROR, true);
+		}
+*/
+
 		$aFolders = [];
 		if ($this->aMailboxes) {
 			$aFolders[] = 'mailboxes';

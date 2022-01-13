@@ -118,16 +118,25 @@ trait Messages
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageAppendStream(string $sFolderName, $rMessageAppendStream, int $iStreamSize, array $aAppendFlags = null, int &$iUid = null, int $iDateTime = 0) : ?int
+	public function MessageAppendStream(string $sFolderName, $rMessageAppendStream, int $iStreamSize, array $aFlagsList = null, int &$iUid = null, int $iDateTime = 0) : ?int
 	{
-		$aData = array($this->EscapeFolderName($sFolderName), $aAppendFlags);
+		$aParams = array(
+			$this->EscapeFolderName($sFolderName),
+			$aFlagsList
+		);
 		if (0 < $iDateTime) {
-			$aData[] = $this->EscapeString(\gmdate('d-M-Y H:i:s', $iDateTime).' +0000');
+			$aParams[] = $this->EscapeString(\gmdate('d-M-Y H:i:s', $iDateTime).' +0000');
 		}
 
-		$aData[] = '{'.$iStreamSize.'}';
+/*
+		// RFC 3516 || RFC 6855 section-4
+		if ($this->IsSupported('BINARY') || $this->IsSupported('UTF8=ACCEPT')) {
+			$aParams[] = '~{'.$iStreamSize.'}';
+		}
+*/
+		$aParams[] = '{'.$iStreamSize.'}';
 
-		$this->SendRequestGetResponse('APPEND', $aData);
+		$this->SendRequestGetResponse('APPEND', $aParams);
 
 		$this->writeLog('Write to connection stream', LogType::NOTE);
 
@@ -154,7 +163,7 @@ trait Messages
 
 	/**
 	 * RFC 3502 MULTIAPPEND
-	public function MessageAppendStreams(string $sFolderName, $rMessageAppendStream, int $iStreamSize, array $aAppendFlags = null, int &$iUid = null, int $iDateTime = 0) : ?int
+	public function MessageAppendStreams(string $sFolderName, $rMessageAppendStream, int $iStreamSize, array $aFlagsList = null, int &$iUid = null, int $iDateTime = 0) : ?int
 	*/
 
 	/**
