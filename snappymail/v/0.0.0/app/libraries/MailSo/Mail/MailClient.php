@@ -208,6 +208,8 @@ class MailClient
 	}
 
 	/**
+	 * Streams mime part to $mCallback
+	 *
 	 * @param mixed $mCallback
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
@@ -226,8 +228,9 @@ class MailClient
 		$sFileName = '';
 		$sContentType = '';
 		$sMailEncoding = '';
+		$sPeek = FetchType::BODY_PEEK;
 
-		$sMimeIndex = trim($sMimeIndex);
+		$sMimeIndex = \trim($sMimeIndex);
 		$aFetchResponse = $this->oImapClient->Fetch(array(
 			\strlen($sMimeIndex)
 				? FetchType::BODY_PEEK.'['.$sMimeIndex.'.MIME]'
@@ -257,6 +260,12 @@ class MailClient
 						$oHeaders->ValueByName(MimeHeader::CONTENT_TRANSFER_ENCODING)
 					);
 
+					// RFC 3516
+					if ($sMailEncoding && $this->oImapClient->IsSupported('BINARY')) {
+						$sMailEncoding = '';
+						$sPeek = FetchType::BINARY_PEEK;
+					}
+
 					$sContentType = $oHeaders->ValueByName(MimeHeader::CONTENT_TYPE);
 				}
 				else
@@ -271,7 +280,7 @@ class MailClient
 		$aFetchResponse = $this->oImapClient->Fetch(array(
 			// Push in the aFetchCallbacks array and then called by \MailSo\Imap\Traits\ResponseParser::partialResponseLiteralCallbackCallable
 			array(
-				FetchType::BODY_PEEK.'['.$sMimeIndex.']',
+				$sPeek.'['.$sMimeIndex.']',
 				function ($sParent, $sLiteralAtomUpperCase, $rImapLiteralStream) use ($mCallback, $sMimeIndex, $sMailEncoding, $sContentType, $sFileName)
 				{
 					if (\strlen($sLiteralAtomUpperCase) && \is_resource($rImapLiteralStream) && 'FETCH' === $sParent)
