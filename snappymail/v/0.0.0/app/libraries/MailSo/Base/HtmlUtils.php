@@ -45,9 +45,29 @@ abstract class HtmlUtils
 			$bState = \libxml_use_internal_errors(true);
 		}
 
+		$sText = \str_replace('<o:p></o:p>', '', $sText);
+		$sText = \str_replace('<o:p>', '<span>', $sText);
+		$sText = \str_replace('</o:p>', '</span>', $sText);
+//		$sText = \preg_replace('#<!--.*?-->#s', '', $sText);
+
+		// https://github.com/the-djmaze/snappymail/issues/187
+		$sText = \preg_replace('#<a[^>]*>(((?!</a).)+<a\\s)#si', '$1', $sText);
+
+		if (\function_exists('tidy_repair_string')) {
+			# http://tidy.sourceforge.net/docs/quickref.html
+			$tidyConfig = array(
+				'bare' => 1,
+				'join-classes' => 1,
+				'newline' => 'LF',
+				'numeric-entities' => 1,
+				'quote-nbsp' => 0,
+				'word-2000' => 1
+			);
+			$sText = \tidy_repair_string($sText, $tidyConfig, 'utf8');
+		}
+
 		$sHtmlAttrs = $sBodyAttrs = '';
 
-		$sText = static::FixSchemas($sText);
 		$sText = static::ClearFastTags($sText);
 		$sText = static::ClearBodyAndHtmlTag($sText, $sHtmlAttrs, $sBodyAttrs);
 
@@ -174,19 +194,6 @@ abstract class HtmlUtils
 
 		$sHtmlAttrs = \trim($sHtmlAttrs);
 		$sBodyAttrs = \trim($sBodyAttrs);
-
-		return $sHtml;
-	}
-
-	private static function FixSchemas(string $sHtml, bool $bClearEmpty = true) : string
-	{
-		if ($bClearEmpty)
-		{
-			$sHtml = \str_replace('<o:p></o:p>', '', $sHtml);
-		}
-
-		$sHtml = \str_replace('<o:p>', '<span>', $sHtml);
-		$sHtml = \str_replace('</o:p>', '</span>', $sHtml);
 
 		return $sHtml;
 	}
