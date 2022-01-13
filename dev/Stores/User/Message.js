@@ -461,6 +461,9 @@ export const MessageUserStore = new class {
 							}
 						}
 
+						// Strip utm_* tracking
+						resultHtml = resultHtml.replace(/(\\?|&amp;|&)utm_[a-z]+=[a-z0-9_-]*/si, '$1');
+
 						body = Element.fromHTML('<div id="' + id + '" hidden="" class="b-text-part '
 							+ (isHtml ? 'html' : 'plain') + '">'
 							+ resultHtml
