@@ -387,7 +387,7 @@ html.rl-no-preview-pane {
 			&.plain {
 
 				padding: 15px;
-				/*white-space: pre-wrap;*/
+				white-space: pre-wrap;
 				font-family: var(--fontMono);
 
 				pre {
@@ -396,22 +396,6 @@ html.rl-no-preview-pane {
 					border: none;
 					display: block;
 					word-break: normal;
-				}
-
-				pre.b-plain-openpgp {
-					display: inline-block;
-					padding: 6px 10px;
-					border: 1px dashed #666;
-					word-break: break-all;
-
-					&.success {
-						border-color: green;
-						background-color: rgba(0, 255, 0, 0.03);
-					}
-					&.error {
-						border-color: red;
-						background-color: rgba(255, 0, 0, 0.03);
-					}
 				}
 
 				blockquote {
@@ -430,11 +414,28 @@ html.rl-no-preview-pane {
 				}
 			}
 
+/*
+			&.openpgp-signed,
+			&.openpgp-encrypted {
+				border: 1px dashed #FA0;
+
+				&.success {
+					border-color: green;
+					background-color: rgba(0, 255, 0, 0.03);
+				}
+				&.error {
+					border-color: red;
+					background-color: rgba(255, 0, 0, 0.03);
+				}
+			}
+*/
 			.b-openpgp-control {
 
-				display: inline-block;
+				color: #FA0;
 				cursor: pointer;
+				display: block;
 				opacity: 0.5;
+				margin: 15px;
 
 				&:hover {
 					opacity: 1;
@@ -442,7 +443,6 @@ html.rl-no-preview-pane {
 
 				&.success {
 					color: green;
-					cursor: help;
 					opacity: 1;
 				}
 

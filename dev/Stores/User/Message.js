@@ -3,7 +3,7 @@ import { koComputable } from 'External/ko';
 
 import { Scope, Notification } from 'Common/Enums';
 import { MessageSetAction } from 'Common/EnumsUser';
-import { doc, $htmlCL, createElement, elementById } from 'Common/Globals';
+import { doc, $htmlCL, elementById } from 'Common/Globals';
 import { arrayLength, pInt, pString, addObservablesTo, addComputablesTo, addSubscribablesTo } from 'Common/Utils';
 import { plainToHtml } from 'Common/UtilsUser';
 
@@ -358,33 +358,6 @@ export const MessageUserStore = new class {
 		}
 	}
 
-	/**
-	 * @param {Object} messageTextBody
-	 */
-	initBlockquoteSwitcher(messageTextBody) {
-		messageTextBody && messageTextBody.querySelectorAll('blockquote:not(.rl-bq-switcher)').forEach(node => {
-			if (node.textContent.trim() && !node.parentNode.closest('blockquote')) {
-				let h = node.clientHeight || getRealHeight(node);
-				if (0 === h || 100 < h) {
-					const el = Element.fromHTML('<span class="rlBlockquoteSwitcher">•••</span>');
-					node.classList.add('rl-bq-switcher','hidden-bq');
-					node.before(el);
-					el.addEventListener('click', () => node.classList.toggle('hidden-bq'));
-				}
-			}
-		});
-	}
-
-	/**
-	 * @param {Object} messageTextBody
-	 * @param {Object} message
-	 */
-	initOpenPgpControls(messageTextBody, message) {
-		messageTextBody && messageTextBody.querySelectorAll('.b-plain-openpgp:not(.inited)').forEach(node =>
-			PgpUserStore.initMessageBodyControls(node, message)
-		);
-	}
-
 	setMessage(data, cached, oMessage) {
 		let isNew = false,
 			json = data && data.Result,
@@ -423,18 +396,14 @@ export const MessageUserStore = new class {
 				addRequestedMessage(message.folder, message.uid);
 
 				if (messagesDom) {
-					let body = null,
-						id = 'rl-msg-' + message.hash.replace(/[^a-zA-Z0-9]/g, '');
-
-					const textBody = elementById(id);
-					if (textBody) {
-						message.body = textBody;
+					let id = 'rl-msg-' + message.hash.replace(/[^a-zA-Z0-9]/g, ''),
+						body = elementById(id);
+					if (body) {
+						message.body = body;
 						message.fetchDataFromDom();
-						messagesDom.append(textBody);
 					} else {
 						let isHtml = !!json.Html,
-							plain = '',
-							resultHtml = '<pre></pre>';
+							resultHtml = '';
 						if (isHtml) {
 							resultHtml = json.Html.toString().replace(/font-size:\s*[0-9]px/g,'font-size:11px');
 							if (SettingsUserStore.removeColors()) {
@@ -442,30 +411,16 @@ export const MessageUserStore = new class {
 							}
 						} else if (json.Plain) {
 							resultHtml = findEmailAndLinks(plainToHtml(json.Plain.toString()));
-
-							if ((message.isPgpSigned() || message.isPgpEncrypted()) && PgpUserStore.capaOpenPGP()) {
-								plain = pString(json.Plain);
-								const pre = createElement('pre');
-								if (message.isPgpSigned()) {
-									pre.className = 'b-plain-openpgp signed';
-									pre.textContent = plain;
-								} else if (message.isPgpEncrypted()) {
-									pre.className = 'b-plain-openpgp encrypted';
-									pre.textContent = plain;
-								} else {
-									pre.innerHTML = resultHtml;
-								}
-								resultHtml = pre.outerHTML;
-							} else {
-								resultHtml = '<pre>' + resultHtml + '</pre>';
-							}
 						}
 
 						// Strip utm_* tracking
 						resultHtml = resultHtml.replace(/(\\?|&amp;|&)utm_[a-z]+=[a-z0-9_-]*/si, '$1');
 
 						body = Element.fromHTML('<div id="' + id + '" hidden="" class="b-text-part '
-							+ (isHtml ? 'html' : 'plain') + '">'
+							+ (isHtml ? 'html' : 'plain')
+							+ (message.isPgpSigned() ? ' openpgp-signed' : '')
+							+ (message.isPgpEncrypted() ? ' openpgp-encrypted' : '')
+							+ '">'
 							+ resultHtml
 							+ '</div>');
 
@@ -482,11 +437,7 @@ export const MessageUserStore = new class {
 						body.rlHasImages = !!json.HasExternals;
 
 						message.body = body;
-
-						message.isHtml(isHtml);
-						message.hasImages(body.rlHasImages);
-
-						messagesDom.append(body);
+						message.fetchDataFromDom();
 
 						if (json.HasInternals) {
 							message.showInternalImages();
@@ -497,17 +448,28 @@ export const MessageUserStore = new class {
 						}
 
 						this.purgeMessageBodyCache();
+
+						PgpUserStore.initMessageBodyControls(body, message);
+
+						// init BlockquoteSwitcher
+						body.querySelectorAll('blockquote:not(.rl-bq-switcher)').forEach(node => {
+							if (node.textContent.trim() && !node.parentNode.closest('blockquote')) {
+								let h = node.clientHeight || getRealHeight(node);
+								if (0 === h || 100 < h) {
+									const el = Element.fromHTML('<span class="rlBlockquoteSwitcher">•••</span>');
+									node.classList.add('rl-bq-switcher','hidden-bq');
+									node.before(el);
+									el.addEventListener('click', () => node.classList.toggle('hidden-bq'));
+								}
+							}
+						});
 					}
+
+					messagesDom.append(body);
 
 					oMessage || this.messageActiveDom(message.body);
 
 					oMessage || this.hideMessageBodies();
-
-					if (body) {
-						this.initOpenPgpControls(body, message);
-
-						this.initBlockquoteSwitcher(body);
-					}
 
 					oMessage || (message.body.hidden = false);
 					oMessage && message.viewPopupMessage();

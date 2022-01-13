@@ -2,7 +2,6 @@ import ko from 'ko';
 
 import { i18n } from 'Common/Translator';
 import { isArray, arrayLength, pString, addComputablesTo } from 'Common/Utils';
-import { createElement } from 'Common/Globals';
 
 import { AccountUserStore } from 'Stores/User/Account';
 
@@ -341,30 +340,24 @@ export const PgpUserStore = new class {
 	 * @param {MessageModel} rainLoopMessage
 	 */
 	initMessageBodyControls(dom, rainLoopMessage) {
-		const cl = dom && dom.classList;
-		if (!cl.contains('inited')) {
-			cl.add('inited');
-
-			const encrypted = cl.contains('encrypted'),
-				signed = cl.contains('signed'),
-				recipients = rainLoopMessage ? rainLoopMessage.getEmails(['from', 'to', 'cc']) : [];
-
-			let verControl = null;
-
-			if (encrypted || signed) {
-				const domText = dom.textContent;
-
+		const cl = dom.classList,
+			signed = cl.contains('openpgp-signed'),
+			encrypted = cl.contains('openpgp-encrypted');
+		if ((encrypted || signed) && !dom.phpInited) {
+			dom.phpInited = 1;
+			const
+				domText = dom.textContent,
+				recipients = rainLoopMessage ? rainLoopMessage.getEmails(['from', 'to', 'cc']) : [],
 				verControl = Element.fromHTML('<div class="b-openpgp-control"><i class="fontastic">🔒</i></div>');
-				if (encrypted) {
-					verControl.title = i18n('MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC');
-					verControl.addEventListener('click', domControlEncryptedClickHelper(this, dom, domText, recipients));
-				} else {
-					verControl.title = i18n('MESSAGE/PGP_SIGNED_MESSAGE_DESC');
-					verControl.addEventListener('click', domControlSignedClickHelper(this, dom, domText));
-				}
-
-				dom.before(verControl, createElement('div'));
+			if (encrypted) {
+				verControl.title = i18n('MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC');
+				verControl.addEventListener('click', domControlEncryptedClickHelper(this, dom, domText, recipients));
+			} else {
+				verControl.title = i18n('MESSAGE/PGP_SIGNED_MESSAGE_DESC');
+				verControl.addEventListener('click', domControlSignedClickHelper(this, dom, domText));
 			}
+
+			dom.prepend(verControl);
 		}
 	}
 };

@@ -460,7 +460,7 @@ export class MessageModel extends AbstractModel {
 	}
 
 	showExternalImages() {
-		if (this.body && this.body.rlHasImages) {
+		if (this.body && this.hasImages()) {
 			this.hasImages(false);
 			this.body.rlHasImages = false;
 
