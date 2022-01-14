@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "Pesan lainnya",
 		"MENU_HEADERS": "Tampilkan header pesan",
 		"MENU_VIEW_ORIGINAL": "Tampilkan kode sumber",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "Unduh sebagai berkas .eml",
 		"MENU_FILTER_SIMILAR": "Saring pesan seperti ini",
 		"MENU_PRINT": "Cetak",

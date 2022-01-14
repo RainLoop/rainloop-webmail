@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "Più messaggi",
 		"MENU_HEADERS": "Mostra le intestazioni del messaggio",
 		"MENU_VIEW_ORIGINAL": "Visualizza sorgente",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "Scarica come file .eml",
 		"MENU_FILTER_SIMILAR": "Mostra messaggi come questo",
 		"MENU_PRINT": "Stampa",

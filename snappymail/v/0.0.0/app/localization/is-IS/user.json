@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "Fleiri skilaboð",
 		"MENU_HEADERS": "Sýna skilaboðahausa",
 		"MENU_VIEW_ORIGINAL": "Sýna upprunalegt",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "Sækja sem .eml skrá",
 		"MENU_FILTER_SIMILAR": "Sía skilaboð eins og þessi",
 		"MENU_PRINT": "Prenta",

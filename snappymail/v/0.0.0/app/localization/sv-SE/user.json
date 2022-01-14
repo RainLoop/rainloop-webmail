@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "Mer meddelanden",
 		"MENU_HEADERS": "Visa meddelanderubriker",
 		"MENU_VIEW_ORIGINAL": "Visa källa",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "Ladda ner som .eml fil",
 		"MENU_FILTER_SIMILAR": "Filtrera meddelanden som detta",
 		"MENU_PRINT": "Skriv ut",

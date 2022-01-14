@@ -3,12 +3,15 @@ import ko from 'ko';
 import { MessagePriority } from 'Common/EnumsUser';
 import { i18n } from 'Common/Translator';
 
+import { doc } from 'Common/Globals';
 import { encodeHtml } from 'Common/Html';
 import { isArray, arrayLength, forEachObjectEntry } from 'Common/Utils';
+import { plainToHtml } from 'Common/UtilsUser';
 
 import { serverRequestRaw } from 'Common/Links';
 
 import { FolderUserStore } from 'Stores/User/Folder';
+import { SettingsUserStore } from 'Stores/User/Settings';
 
 import { FileInfo } from 'Common/File';
 import { AttachmentCollectionModel } from 'Model/AttachmentCollection';
@@ -17,7 +20,36 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 
 import PreviewHTML from 'Html/PreviewMessage.html';
 
+import { PgpUserStore } from 'Stores/User/Pgp';
+
 const
+	/*eslint-disable max-len*/
+	url = /(^|[\s\n]|\/?>)(https:\/\/[-A-Z0-9+\u0026\u2019#/%?=()~_|!:,.;]*[-A-Z0-9+\u0026#/%=~()_|])/gi,
+	email = /(^|[\s\n]|\/?>)((?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x21\x23-\x5b\x5d-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x21-\x5a\x53-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])+)\]))/gi,
+
+	// Removes background and color
+	// Many e-mails incorrectly only define one, not both
+	// And in dark theme mode this kills the readability
+	removeColors = html => {
+		let l;
+		do {
+			l = html.length;
+			html = html
+				.replace(/(<[^>]+[;"'])\s*background(-[a-z]+)?\s*:[^;"']+/gi, '$1')
+				.replace(/(<[^>]+[;"'])\s*color\s*:[^;"']+/gi, '$1')
+				.replace(/(<[^>]+)\s(bg)?color=("[^"]+"|'[^']+')/gi, '$1');
+		} while (l != html.length)
+		return html;
+	},
+
+	hcont = Element.fromHTML('<div area="hidden" style="position:absolute;left:-5000px"></div>'),
+	getRealHeight = el => {
+		hcont.innerHTML = el.outerHTML;
+		const result = hcont.clientHeight;
+		hcont.innerHTML = '';
+		return result;
+	},
+
 	SignedVerifyStatus = {
 		UnknownPublicKeys: -4,
 		UnknownPrivateKey: -3,
@@ -36,6 +68,8 @@ const
 		});
 	};
 
+doc.body.append(hcont);
+
 export class MessageModel extends AbstractModel {
 	constructor() {
 		super();
@@ -44,6 +78,8 @@ export class MessageModel extends AbstractModel {
 
 		this.addObservables({
 			subject: '',
+			plain: '',
+			html: '',
 			size: 0,
 			spamScore: 0,
 			spamResult: '',
@@ -64,6 +100,7 @@ export class MessageModel extends AbstractModel {
 
 			isHtml: false,
 			hasImages: false,
+			hasExternals: false,
 
 			isPgpSigned: false,
 			isPgpEncrypted: false,
@@ -120,6 +157,8 @@ export class MessageModel extends AbstractModel {
 	clear() {
 		this._reset();
 		this.subject('');
+		this.html('');
+		this.plain('');
 		this.size(0);
 		this.spamScore(0);
 		this.spamResult('');
@@ -139,6 +178,7 @@ export class MessageModel extends AbstractModel {
 
 		this.isHtml(false);
 		this.hasImages(false);
+		this.hasExternals(false);
 		this.attachments(new AttachmentCollectionModel);
 
 		this.isPgpSigned(false);
@@ -361,6 +401,100 @@ export class MessageModel extends AbstractModel {
 		return [toResult, ccResult];
 	}
 
+	viewHtml() {
+		const body = this.body;
+		if (body && this.html()) {
+			let html = this.html().toString()
+				.replace(/font-size:\s*[0-9]px/g, 'font-size:11px')
+				// Strip utm_* tracking
+				.replace(/(\\?|&amp;|&)utm_[a-z]+=[a-z0-9_-]*/si, '$1');
+			if (SettingsUserStore.removeColors()) {
+				html = removeColors(html);
+			}
+
+			body.innerHTML = html;
+
+			body.classList.toggle('html', 1);
+			body.classList.toggle('plain', 0);
+
+			// Drop Microsoft Office style properties
+			const rgbRE = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/g,
+				hex = n => ('0' + parseInt(n).toString(16)).slice(-2);
+			body.querySelectorAll('[style*=mso]').forEach(el =>
+				el.setAttribute('style', el.style.cssText.replace(rgbRE, (m,r,g,b) => '#' + hex(r) + hex(g) + hex(b)))
+			);
+
+			// showInternalImages
+			const findAttachmentByCid = cid => this.attachments().findByCid(cid);
+			body.querySelectorAll('[data-x-src-cid],[data-x-src-location],[data-x-style-cid]').forEach(el => {
+				const data = el.dataset;
+				if (data.xSrcCid) {
+					const attachment = findAttachmentByCid(data.xSrcCid);
+					if (attachment && attachment.download) {
+						el.src = attachment.linkPreview();
+					}
+				} else if (data.xSrcLocation) {
+					const attachment = this.attachments.find(item => data.xSrcLocation === item.contentLocation)
+						|| findAttachmentByCid(data.xSrcLocation);
+					if (attachment && attachment.download) {
+						el.loading = 'lazy';
+						el.src = attachment.linkPreview();
+					}
+				} else if (data.xStyleCid) {
+					const name = data.xStyleCidName,
+						attachment = findAttachmentByCid(data.xStyleCid);
+					if (attachment && attachment.linkPreview && name) {
+						el.setAttribute('style', name + ": url('" + attachment.linkPreview() + "');"
+							+ (el.getAttribute('style') || ''));
+					}
+				}
+			});
+
+			if (SettingsUserStore.showImages()) {
+				this.showExternalImages();
+			}
+
+			this.isHtml(true);
+			this.initView();
+			return true;
+		}
+	}
+
+	viewPlain() {
+		const body = this.body;
+		if (body && this.plain()) {
+			body.classList.toggle('html', 0);
+			body.classList.toggle('plain', 1);
+			body.innerHTML = plainToHtml(this.plain().toString())
+				// Strip utm_* tracking
+				.replace(/(\\?|&amp;|&)utm_[a-z]+=[a-z0-9_-]*/si, '$1')
+				.replace(url, '$1<a href="$2" target="_blank">$2</a>')
+				.replace(email, '$1<a href="mailto:$2">$2</a>');
+
+			this.isHtml(false);
+			this.hasImages(this.hasExternals());
+			this.initView();
+			return true;
+		}
+	}
+
+	initView() {
+		PgpUserStore.initMessageBodyControls(this.body, this);
+
+		// init BlockquoteSwitcher
+		this.body.querySelectorAll('blockquote:not(.rl-bq-switcher)').forEach(node => {
+			if (node.textContent.trim() && !node.parentNode.closest('blockquote')) {
+				let h = node.clientHeight || getRealHeight(node);
+				if (0 === h || 100 < h) {
+					const el = Element.fromHTML('<span class="rlBlockquoteSwitcher">•••</span>');
+					node.classList.add('rl-bq-switcher','hidden-bq');
+					node.before(el);
+					el.addEventListener('click', () => node.classList.toggle('hidden-bq'));
+				}
+			}
+		});
+	}
+
 	/**
 	 * @param {boolean=} print = false
 	 */
@@ -406,12 +540,16 @@ export class MessageModel extends AbstractModel {
 	 * @returns {MessageModel}
 	 */
 	populateByMessageListItem(message) {
+		this.clear();
+
 		if (message) {
 			this.folder = message.folder;
 			this.uid = message.uid;
 			this.hash = message.hash;
 			this.requestHash = message.requestHash;
 			this.subject(message.subject());
+			this.plain(message.plain());
+			this.html(message.html());
 
 			this.size(message.size());
 			this.spamScore(message.spamScore());
@@ -421,6 +559,7 @@ export class MessageModel extends AbstractModel {
 			this.dateTimeStampInUTC(message.dateTimeStampInUTC());
 			this.priority(message.priority());
 
+			this.hasExternals(message.hasExternals());
 			this.externalProxy = message.externalProxy;
 
 			this.emails = message.emails;
@@ -441,16 +580,7 @@ export class MessageModel extends AbstractModel {
 			this.checked(message.checked());
 			this.hasAttachments(message.hasAttachments());
 			this.attachments(message.attachments());
-		}
 
-		this.body = null;
-
-		this.draftInfo = [];
-		this.messageId = '';
-		this.inReplyTo = '';
-		this.references = '';
-
-		if (message) {
 			this.threads(message.threads());
 		}
 
@@ -460,11 +590,12 @@ export class MessageModel extends AbstractModel {
 	}
 
 	showExternalImages() {
-		if (this.body && this.hasImages()) {
+		const body = this.body;
+		if (body && this.hasImages()) {
 			this.hasImages(false);
-			this.body.rlHasImages = false;
+			body.rlHasImages = false;
 
-			let body = this.body, attr = this.externalProxy ? 'data-x-additional-src' : 'data-x-src';
+			let attr = this.externalProxy ? 'data-x-additional-src' : 'data-x-src';
 			body.querySelectorAll('[' + attr + ']').forEach(node => {
 				if (node.matches('img')) {
 					node.loading = 'lazy';
@@ -478,46 +609,6 @@ export class MessageModel extends AbstractModel {
 					+ ';' + node.getAttribute(attr))
 					.replace(/^[;\s]+/,''));
 			});
-		}
-	}
-
-	showInternalImages() {
-		const body = this.body;
-		if (body && !body.rlInitInternalImages) {
-			const findAttachmentByCid = cid => this.attachments().findByCid(cid);
-
-			body.rlInitInternalImages = true;
-
-			body.querySelectorAll('[data-x-src-cid],[data-x-src-location],[data-x-style-cid]').forEach(el => {
-				const data = el.dataset;
-				if (data.xSrcCid) {
-					const attachment = findAttachmentByCid(data.xSrcCid);
-					if (attachment && attachment.download) {
-						el.src = attachment.linkPreview();
-					}
-				} else if (data.xSrcLocation) {
-					const attachment = this.attachments.find(item => data.xSrcLocation === item.contentLocation)
-						|| findAttachmentByCid(data.xSrcLocation);
-					if (attachment && attachment.download) {
-						el.loading = 'lazy';
-						el.src = attachment.linkPreview();
-					}
-				} else if (data.xStyleCid) {
-					const name = data.xStyleCidName,
-						attachment = findAttachmentByCid(data.xStyleCid);
-					if (attachment && attachment.linkPreview && name) {
-						el.setAttribute('style', name + ": url('" + attachment.linkPreview() + "');"
-							+ (el.getAttribute('style') || ''));
-					}
-				}
-			});
-		}
-	}
-
-	fetchDataFromDom() {
-		if (this.body) {
-			this.isHtml(!!this.body.rlIsHtml);
-			this.hasImages(!!this.body.rlHasImages);
 		}
 	}
 

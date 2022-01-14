@@ -343,8 +343,7 @@ export const PgpUserStore = new class {
 		const cl = dom.classList,
 			signed = cl.contains('openpgp-signed'),
 			encrypted = cl.contains('openpgp-encrypted');
-		if ((encrypted || signed) && !dom.phpInited) {
-			dom.phpInited = 1;
+		if (encrypted || signed) {
 			const
 				domText = dom.textContent,
 				recipients = rainLoopMessage ? rainLoopMessage.getEmails(['from', 'to', 'cc']) : [],

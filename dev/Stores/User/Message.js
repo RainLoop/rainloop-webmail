@@ -3,9 +3,8 @@ import { koComputable } from 'External/ko';
 
 import { Scope, Notification } from 'Common/Enums';
 import { MessageSetAction } from 'Common/EnumsUser';
-import { doc, $htmlCL, elementById } from 'Common/Globals';
+import { $htmlCL, elementById } from 'Common/Globals';
 import { arrayLength, pInt, pString, addObservablesTo, addComputablesTo, addSubscribablesTo } from 'Common/Utils';
-import { plainToHtml } from 'Common/UtilsUser';
 
 import {
 	getFolderInboxName,
@@ -28,46 +27,15 @@ import { MessageCollectionModel } from 'Model/MessageCollection';
 import { AppUserStore } from 'Stores/User/App';
 import { AccountUserStore } from 'Stores/User/Account';
 import { FolderUserStore } from 'Stores/User/Folder';
-import { PgpUserStore } from 'Stores/User/Pgp';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { NotificationUserStore } from 'Stores/User/Notification';
 
 //import Remote from 'Remote/User/Fetch'; Circular dependency
 
 const
-	hcont = Element.fromHTML('<div area="hidden" style="position:absolute;left:-5000px"></div>'),
-	getRealHeight = el => {
-		hcont.innerHTML = el.outerHTML;
-		const result = hcont.clientHeight;
-		hcont.innerHTML = '';
-		return result;
-	},
-	/*eslint-disable max-len*/
-	url = /(^|[\s\n]|\/?>)(https:\/\/[-A-Z0-9+\u0026\u2019#/%?=()~_|!:,.;]*[-A-Z0-9+\u0026#/%=~()_|])/gi,
-	email = /(^|[\s\n]|\/?>)((?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x21\x23-\x5b\x5d-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x21-\x5a\x53-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])+)\]))/gi,
-	findEmailAndLinks = html => html
-		.replace(url, '$1<a href="$2" target="_blank">$2</a>')
-		.replace(email, '$1<a href="mailto:$2">$2</a>'),
-	isChecked = item => item.checked(),
-
-	// Removes background and color
-	// Many e-mails incorrectly only define one, not both
-	// And in dark theme mode this kills the readability
-	removeColors = html => {
-		let l;
-		do {
-			l = html.length;
-			html = html
-				.replace(/(<[^>]+[;"'])\s*background(-[a-z]+)?\s*:[^;"']+/gi, '$1')
-				.replace(/(<[^>]+[;"'])\s*color\s*:[^;"']+/gi, '$1')
-				.replace(/(<[^>]+)\s(bg)?color=("[^"]+"|'[^']+')/gi, '$1');
-		} while (l != html.length)
-		return html;
-	};
+	isChecked = item => item.checked();
 
 let MessageSeenTimer;
-
-doc.body.append(hcont);
 
 export const MessageUserStore = new class {
 	constructor() {
@@ -361,8 +329,6 @@ export const MessageUserStore = new class {
 	setMessage(data, cached, oMessage) {
 		let isNew = false,
 			json = data && data.Result,
-			messagesDom = this.messagesBodiesDom(),
-			selectedMessage = this.selectorMessageSelected(),
 			message = oMessage || this.message();
 
 		if (
@@ -371,9 +337,10 @@ export const MessageUserStore = new class {
 			message &&
 			message.folder === json.Folder
 		) {
-			const threads = message.threads();
-			if (message.uid != json.Uid && threads.includes(json.Uid)) {
-				message = oMessage ? null : MessageModel.reviveFromJson(json);
+			const threads = message.threads(),
+				messagesDom = this.messagesBodiesDom();
+			if (!oMessage && message.uid != json.Uid && threads.includes(json.Uid)) {
+				message = MessageModel.reviveFromJson(json);
 				if (message) {
 					message.threads(threads);
 					MessageFlagsCache.initMessage(message);
@@ -392,77 +359,31 @@ export const MessageUserStore = new class {
 					delete json.Flags;
 				}
 */
-				message.revivePropertiesFromJson(json);
+				isNew || message.revivePropertiesFromJson(json);
 				addRequestedMessage(message.folder, message.uid);
-
 				if (messagesDom) {
 					let id = 'rl-msg-' + message.hash.replace(/[^a-zA-Z0-9]/g, ''),
 						body = elementById(id);
 					if (body) {
 						message.body = body;
-						message.fetchDataFromDom();
+						message.isHtml(body.classList.contains('html'));
+						message.hasImages(body.rlHasImages);
 					} else {
-						let isHtml = (SettingsUserStore.viewHTML() || !json.Plain) && !!json.Html,
-							resultHtml = '';
-						if (isHtml) {
-							resultHtml = json.Html.toString().replace(/font-size:\s*[0-9]px/g,'font-size:11px');
-							if (SettingsUserStore.removeColors()) {
-								resultHtml = removeColors(resultHtml);
-							}
-						} else if (json.Plain) {
-							resultHtml = findEmailAndLinks(plainToHtml(json.Plain.toString()));
-						}
-
-						// Strip utm_* tracking
-						resultHtml = resultHtml.replace(/(\\?|&amp;|&)utm_[a-z]+=[a-z0-9_-]*/si, '$1');
-
 						body = Element.fromHTML('<div id="' + id + '" hidden="" class="b-text-part '
-							+ (isHtml ? 'html' : 'plain')
 							+ (message.isPgpSigned() ? ' openpgp-signed' : '')
 							+ (message.isPgpEncrypted() ? ' openpgp-encrypted' : '')
 							+ '">'
-							+ resultHtml
 							+ '</div>');
 
-						if (isHtml) {
-							// Drop Microsoft Office style properties
-							const rgbRE = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/g,
-								hex = n => ('0' + parseInt(n).toString(16)).slice(-2);
-							body.querySelectorAll('[style*=mso]').forEach(el =>
-								el.setAttribute('style', el.style.cssText.replace(rgbRE, (m,r,g,b) => '#' + hex(r) + hex(g) + hex(b)))
-							);
-						}
-
-						body.rlIsHtml = isHtml;
 						body.rlHasImages = !!json.HasExternals;
+						message.hasImages(body.rlHasImages);
 
 						message.body = body;
-						message.fetchDataFromDom();
-
-						if (json.HasInternals) {
-							message.showInternalImages();
-						}
-
-						if (message.hasImages() && SettingsUserStore.showImages()) {
-							message.showExternalImages();
+						if (!SettingsUserStore.viewHTML() || !message.viewHtml()) {
+							message.viewPlain();
 						}
 
 						this.purgeMessageBodyCache();
-
-						PgpUserStore.initMessageBodyControls(body, message);
-
-						// init BlockquoteSwitcher
-						body.querySelectorAll('blockquote:not(.rl-bq-switcher)').forEach(node => {
-							if (node.textContent.trim() && !node.parentNode.closest('blockquote')) {
-								let h = node.clientHeight || getRealHeight(node);
-								if (0 === h || 100 < h) {
-									const el = Element.fromHTML('<span class="rlBlockquoteSwitcher">•••</span>');
-									node.classList.add('rl-bq-switcher','hidden-bq');
-									node.before(el);
-									el.addEventListener('click', () => node.classList.toggle('hidden-bq'));
-								}
-							}
-						});
 					}
 
 					messagesDom.append(body);
@@ -483,17 +404,17 @@ export const MessageUserStore = new class {
 					);
 				}
 
-				if (isNew) {
+				if (message && isNew) {
+					let selectedMessage = this.selectorMessageSelected();
 					if (
 						selectedMessage &&
-						message &&
 						(message.folder !== selectedMessage.folder || message.uid != selectedMessage.uid)
 					) {
 						this.selectorMessageSelected(null);
 						if (1 === this.list.length) {
 							this.selectorMessageFocused(null);
 						}
-					} else if (!selectedMessage && message) {
+					} else if (!selectedMessage) {
 						selectedMessage = this.list.find(
 							subMessage =>
 								subMessage &&

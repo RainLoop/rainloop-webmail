@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "Mai multe mesaje",
 		"MENU_HEADERS": "Vezi titlurile",
 		"MENU_VIEW_ORIGINAL": "Vezi originalul",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "Descărcați ca fișier eml",
 		"MENU_FILTER_SIMILAR": "Filtrează similarele",
 		"MENU_PRINT": "Printează",

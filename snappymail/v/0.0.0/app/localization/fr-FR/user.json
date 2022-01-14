@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "Plus de messages",
 		"MENU_HEADERS": "Voir les en-têtes du message",
 		"MENU_VIEW_ORIGINAL": "Voir la source",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "Télécharger comme fichier .eml",
 		"MENU_FILTER_SIMILAR": "Filtrer les messages similaires",
 		"MENU_PRINT": "Imprimer",

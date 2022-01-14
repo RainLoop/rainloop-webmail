@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "More messages",
 		"MENU_HEADERS": "İleti başlıklarını göster",
 		"MENU_VIEW_ORIGINAL": "Kaynağı görüntüle",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": ".eml dosyası olarak indir",
 		"MENU_FILTER_SIMILAR": "Bunun gibi iletileri filtrele",
 		"MENU_PRINT": "yazdır",

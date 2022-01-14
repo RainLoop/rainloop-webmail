@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "Flere meddelelser",
 		"MENU_HEADERS": "Vis meddelelseoplysninger",
 		"MENU_VIEW_ORIGINAL": "Vis kilder",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "Hent som .eml fil",
 		"MENU_FILTER_SIMILAR": "Find lignende meddelelser",
 		"MENU_PRINT": "Udskriv",

@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "Więcej wiadomości",
 		"MENU_HEADERS": "Pokaż nagłówki wiadomości",
 		"MENU_VIEW_ORIGINAL": "Pokaż źródło",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "Pobierz jako plik eml",
 		"MENU_FILTER_SIMILAR": "Filtruj podobne wiadomości",
 		"MENU_PRINT": "Drukuj",

@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "Več sporočil",
 		"MENU_HEADERS": "Pokaži glavo sporočila",
 		"MENU_VIEW_ORIGINAL": "Pokaži izvorno",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "Prenesi kot .eml datoteko",
 		"MENU_FILTER_SIMILAR": "Filtriraj sporočila, kot je to",
 		"MENU_PRINT": "Natisni",

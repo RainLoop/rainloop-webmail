@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "Daugiau žinučių",
 		"MENU_HEADERS": "Rodyti pranešimų antraštės",
 		"MENU_VIEW_ORIGINAL": "Rodyti šaltinį",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "Atsisiųsti .eml failą",
 		"MENU_FILTER_SIMILAR": "Filtruoti laiškus, kaip šis",
 		"MENU_PRINT": "Spausdinti",

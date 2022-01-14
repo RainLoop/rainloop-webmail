@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "پیام‌های بیشتر",
 		"MENU_HEADERS": "نمایش سرصفحه پیام",
 		"MENU_VIEW_ORIGINAL": "نمایش منبع",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "دریافت با پسوند eml.",
 		"MENU_FILTER_SIMILAR": " فیلتر کردن پیام‌های مشابه",
 		"MENU_PRINT": "چاپ",

@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "További üzenetek",
 		"MENU_HEADERS": "Üzenet fejléc megjelenítése",
 		"MENU_VIEW_ORIGINAL": "Eredeti megjelenítése",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": ".eml fájl letöltés",
 		"MENU_FILTER_SIMILAR": "Hasonló üzenetek szűrése",
 		"MENU_PRINT": "Nyomtatás",

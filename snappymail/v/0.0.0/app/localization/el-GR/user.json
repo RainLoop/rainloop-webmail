@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "Περισσότερα μηνύματα",
 		"MENU_HEADERS": "Εμφάνιση των επικεφαλίδων του μηνύματος",
 		"MENU_VIEW_ORIGINAL": "Εμφάνιση πηγαίου μηνύματος",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "Μεταφόρτωση σαν αρχείο .eml",
 		"MENU_FILTER_SIMILAR": "Φιλτράρισμα μηνυμάτων όπως αυτό",
 		"MENU_PRINT": "Εκτύπωση",

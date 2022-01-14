@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "Больше сообщений",
 		"MENU_HEADERS": "Просмотреть заголовки",
 		"MENU_VIEW_ORIGINAL": "Просмотреть оригинал",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "Скачать как .eml файл",
 		"MENU_FILTER_SIMILAR": "Фильтровать похожие",
 		"MENU_PRINT": "Распечатать",

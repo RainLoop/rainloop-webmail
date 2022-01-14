@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "Mehr Nachrichten",
 		"MENU_HEADERS": "Kopfzeilen anzeigen",
 		"MENU_VIEW_ORIGINAL": "Original anzeigen",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "Als .eml-Datei herunterladen",
 		"MENU_FILTER_SIMILAR": "Ähnliche Nachrichten",
 		"MENU_PRINT": "Drucken",

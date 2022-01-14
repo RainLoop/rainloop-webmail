@@ -135,6 +135,18 @@
 									<span data-i18n="MESSAGE/BUTTON_IN_NEW_WINDOW"></span>
 								</a>
 							</li>
+							<li role="presentation" data-bind="visible: message() && message().html() && !message().isHtml()">
+								<a target="_blank" href="#" tabindex="-1" data-bind="click: function () { message().viewHtml(); }">
+									<i class="fontastic">👁</i>
+									<span data-i18n="MESSAGE/HTML_VIEW"></span>
+								</a>
+							</li>
+							<li role="presentation" data-bind="visible: message() && message().plain() && message().isHtml()">
+								<a target="_blank" href="#" tabindex="-1" data-bind="click: function () { message().viewPlain(); }">
+									<i class="fontastic">👁</i>
+									<span data-i18n="MESSAGE/PLAIN_VIEW"></span>
+								</a>
+							</li>
 							<li class="dividerbar" role="presentation">
 								<a target="_blank" href="#" tabindex="-1" data-bind="attr: { href: viewViewLink }">
 									<i class="icon-file-code"></i>

@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "Rohkem kirju",
 		"MENU_HEADERS": "Näita kirja päised",
 		"MENU_VIEW_ORIGINAL": "Näita lähteteksti",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "Laadi alla .eml failina",
 		"MENU_FILTER_SIMILAR": "Filtreeri sarnased kirjad",
 		"MENU_PRINT": "Prindi",

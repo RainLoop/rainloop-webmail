@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "さらに読み込む",
 		"MENU_HEADERS": "メールのヘッダーを表示",
 		"MENU_VIEW_ORIGINAL": "メールのソースを表示",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": ".emlファイルでダウンロード",
 		"MENU_FILTER_SIMILAR": "このようなメッセージをフィルタ",
 		"MENU_PRINT": "印刷",

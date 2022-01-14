@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "More messages",
 		"MENU_HEADERS": "顯示詳細資訊",
 		"MENU_VIEW_ORIGINAL": "顯示原始內容",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "作為 .eml 文件下載",
 		"MENU_FILTER_SIMILAR": "過濾郵件如此",
 		"MENU_PRINT": "列印郵件",

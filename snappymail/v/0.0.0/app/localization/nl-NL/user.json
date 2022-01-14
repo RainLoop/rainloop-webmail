@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "Meer berichten",
 		"MENU_HEADERS": "Toon berichtkoppen",
 		"MENU_VIEW_ORIGINAL": "Toon origineel",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "Download als .eml bestand",
 		"MENU_FILTER_SIMILAR": "Filter gelijksoortige berichten",
 		"MENU_PRINT": "Afdrukken",

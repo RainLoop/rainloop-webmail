@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "Více zpráv",
 		"MENU_HEADERS": "Zobrazit hlavičku zprávy",
 		"MENU_VIEW_ORIGINAL": "Zobrazit zdroj",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "Stáhnout jako soubor .eml",
 		"MENU_FILTER_SIMILAR": "Filtrovat zprávy jako tato",
 		"MENU_PRINT": "Tisknout",

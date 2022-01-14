@@ -136,6 +136,8 @@
 		"BUTTON_THREAD_MORE": "More messages",
 		"MENU_HEADERS": "Rādīt ziņojuma galveni",
 		"MENU_VIEW_ORIGINAL": "Rādīt orģinālu",
+		"HTML_VIEW": "View HTML message",
+		"PLAIN_VIEW": "View plain text message",
 		"MENU_DOWNLOAD_ORIGINAL": "Lejuplādēt kā .eml failu",
 		"MENU_FILTER_SIMILAR": "Atfiltrēt šādus ziņojumus",
 		"MENU_PRINT": "Printēt",
