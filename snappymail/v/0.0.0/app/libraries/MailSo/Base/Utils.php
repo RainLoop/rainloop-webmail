@@ -20,11 +20,7 @@ abstract class Utils
 
 	public static function NormalizeCharset(string $sEncoding, bool $bAsciAsUtf8 = false) : string
 	{
-		$sEncoding = \strtolower($sEncoding);
-
-		$sEncoding = \preg_replace('/^iso8/', 'iso-8', $sEncoding);
-		$sEncoding = \preg_replace('/^cp-([\d])/', 'cp$1', $sEncoding);
-		$sEncoding = \preg_replace('/^windows?12/', 'windows-12', $sEncoding);
+		$sEncoding = \preg_replace('/^iso8/', 'iso-8', \strtolower($sEncoding));
 
 		switch ($sEncoding)
 		{
@@ -32,37 +28,39 @@ abstract class Utils
 			case 'ascii':
 			case 'us-asci':
 			case 'us-ascii':
-				$sEncoding = $bAsciAsUtf8 ? Enumerations\Charset::UTF_8 :
+				return $bAsciAsUtf8 ? Enumerations\Charset::UTF_8 :
 					Enumerations\Charset::ISO_8859_1;
-				break;
+
 			case 'unicode-1-1-utf-7':
 			case 'unicode-1-utf-7':
 			case 'unicode-utf-7':
-				$sEncoding = 'utf-7';
-				break;
+				return 'utf-7';
+
 			case 'utf8':
 			case 'utf-8':
-				$sEncoding = Enumerations\Charset::UTF_8;
-				break;
+				return Enumerations\Charset::UTF_8;
+
 			case 'utf7imap':
 			case 'utf-7imap':
 			case 'utf7-imap':
 			case 'utf-7-imap':
-				$sEncoding = 'utf7-imap';
-				break;
+				return 'utf7-imap';
+
 			case 'ks-c-5601-1987':
 			case 'ks_c_5601-1987':
 			case 'ks_c_5601_1987':
-				$sEncoding = 'euc-kr';
-				break;
+				return 'euc-kr';
+
 			case 'x-gbk':
-				$sEncoding = 'gb2312';
-				break;
+				return 'gb2312';
+
 			case 'iso-8859-i':
 			case 'iso-8859-8-i':
-				$sEncoding = 'iso-8859-8';
-				break;
+				return 'iso-8859-8';
 		}
+
+		$sEncoding = \preg_replace('/^cp-([\d])/', 'cp$1', $sEncoding);
+		$sEncoding = \preg_replace('/^windows?12/', 'windows-12', $sEncoding);
 
 		return $sEncoding;
 	}

@@ -83,20 +83,13 @@ class FetchResponse
 		return $oResult;
 	}
 
-	public function GetFetchBodyStructure(string $sRfc822SubMimeIndex = '') : ?BodyStructure
+	public function GetFetchBodyStructure() : ?BodyStructure
 	{
 		$aBodyStructureArray = $this->GetFetchValue(Enumerations\FetchType::BODYSTRUCTURE);
 
-		if (\is_array($aBodyStructureArray))
-		{
-			if (\strlen($sRfc822SubMimeIndex))
-			{
-				return BodyStructure::NewInstanceFromRfc822SubPart($aBodyStructureArray, $sRfc822SubMimeIndex);
-			}
-			return BodyStructure::NewInstance($aBodyStructureArray);
-		}
-
-		return null;
+		return \is_array($aBodyStructureArray)
+			? BodyStructure::NewInstance($aBodyStructureArray)
+			: null;
 	}
 
 	/**
@@ -125,11 +118,9 @@ class FetchResponse
 	 * Like: BODY[HEADER.FIELDS (RETURN-PATH RECEIVED MIME-VERSION MESSAGE-ID CONTENT-TYPE FROM TO CC BCC SENDER REPLY-TO DELIVERED-TO IN-REPLY-TO REFERENCES DATE SUBJECT SENSITIVITY X-MSMAIL-PRIORITY IMPORTANCE X-PRIORITY X-DRAFT-INFO RETURN-RECEIPT-TO DISPOSITION-NOTIFICATION-TO X-CONFIRM-READING-TO AUTHENTICATION-RESULTS X-DKIM-AUTHENTICATION-RESULTS LIST-UNSUBSCRIBE X-SPAM-STATUS X-SPAMD-RESULT X-BOGOSITY X-VIRUS X-VIRUS-SCANNED X-VIRUS-STATUS)]
 	 * @return mixed
 	 */
-	public function GetHeaderFieldsValue(string $sRfc822SubMimeIndex = '') : string
+	public function GetHeaderFieldsValue() : string
 	{
 		$bNextIsValue = false;
-
-		$sRfc822SubMimeIndex = \strlen($sRfc822SubMimeIndex) ? ''.$sRfc822SubMimeIndex.'.' : '';
 
 		if (isset($this->oImapResponse->ResponseList[3]) && \is_array($this->oImapResponse->ResponseList[3]))
 		{
@@ -141,9 +132,9 @@ class FetchResponse
 				}
 
 				if (\is_string($mItem) && (
-					$mItem === 'BODY['.$sRfc822SubMimeIndex.'HEADER]' ||
-					0 === \strpos($mItem, 'BODY['.$sRfc822SubMimeIndex.'HEADER.FIELDS') ||
-					$mItem === 'BODY['.$sRfc822SubMimeIndex.'MIME]'))
+					$mItem === 'BODY[HEADER]' ||
+					0 === \strpos($mItem, 'BODY[HEADER.FIELDS') ||
+					$mItem === 'BODY[MIME]'))
 				{
 					$bNextIsValue = true;
 				}

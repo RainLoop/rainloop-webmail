@@ -141,13 +141,6 @@ class Part
 				Enumerations\Header::CONTENT_TYPE))) : '';
 	}
 
-	public function ContentTransferEncoding() : string
-	{
-		return ($this->Headers) ?
-			\trim(\strtolower($this->Headers->ValueByName(
-				Enumerations\Header::CONTENT_TRANSFER_ENCODING))) : '';
-	}
-
 	public function ContentID() : string
 	{
 		return ($this->Headers) ? \trim($this->Headers->ValueByName(
@@ -169,7 +162,7 @@ class Part
 				Enumerations\Header::CONTENT_TYPE,
 				Enumerations\Parameter::FORMAT)));
 
-			if ($bResult && \in_array(\strtolower($this->MailEncodingName()), array('base64', 'quoted-printable')))
+			if ($bResult && \in_array($this->MailEncodingName(), array('base64', 'quoted-printable')))
 			{
 				$bResult = false;
 			}

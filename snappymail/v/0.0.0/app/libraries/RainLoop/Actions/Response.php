@@ -223,14 +223,6 @@ trait Response
 					}
 				}
 
-				$sPlain = '';
-				$sHtml = \trim($mResponse->Html());
-
-				if (!\strlen($sHtml))
-				{
-					$sPlain = \trim($mResponse->Plain());
-				}
-
 				$mResult['DraftInfo'] = $mResponse->DraftInfo();
 				$mResult['InReplyTo'] = $mResponse->InReplyTo();
 				$mResult['UnsubsribeLinks'] = $mResponse->UnsubsribeLinks();
@@ -248,26 +240,24 @@ trait Response
 					};
 				}
 
+				$sHtml = $mResponse->Html();
 				$sHtml = \preg_replace_callback('/(<pre[^>]*>)([\s\S\r\n\t]*?)(<\/pre>)/mi', function ($aMatches) {
 					return \preg_replace('/[\r\n]+/', '<br />', $aMatches[1].\trim($aMatches[2]).$aMatches[3]);
 				}, $sHtml);
-
 				$mResult['Html'] = \strlen($sHtml) ? \MailSo\Base\HtmlUtils::ClearHtml(
 					$sHtml, $bHasExternals, $aFoundCIDs, $aContentLocationUrls, $aFoundContentLocationUrls,
 					$fAdditionalExternalFilter, !!$this->Config()->Get('labs', 'try_to_detect_hidden_images', false)
 				) : '';
+				unset($sHtml);
 
 				$mResult['ExternalProxy'] = null !== $fAdditionalExternalFilter;
 
-				$mResult['Plain'] = $sPlain;
-//				$mResult['Plain'] = \strlen($sPlain) ? \MailSo\Base\HtmlUtils::ConvertPlainToHtml($sPlain) : '';
+				$mResult['Plain'] = $mResponse->Plain();
 
 				$mResult['isPgpSigned'] = $mResponse->isPgpSigned();
 				$mResult['isPgpEncrypted'] = $mResponse->isPgpEncrypted();
 //				$mResult['PgpSignature'] = $mResponse->PgpSignature();
 //				$mResult['PgpSignatureMicAlg'] = $mResponse->PgpSignatureMicAlg();
-
-				unset($sHtml, $sPlain);
 
 				$mResult['HasExternals'] = $bHasExternals;
 				$mResult['HasInternals'] = \count($aFoundCIDs) || \count($aFoundContentLocationUrls);

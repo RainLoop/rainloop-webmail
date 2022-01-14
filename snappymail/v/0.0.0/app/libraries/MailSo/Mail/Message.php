@@ -11,6 +11,9 @@
 
 namespace MailSo\Mail;
 
+use \MailSo\Base\Utils;
+use \MailSo\Imap\Enumerations\FetchType;
+
 /**
  * @category MailSo
  * @package Mail
@@ -114,11 +117,6 @@ class Message implements \JsonSerializable
 	public function isPgpEncrypted() : bool
 	{
 		return $this->bPgpEncrypted;
-	}
-
-	public function SetHtml(string $sHtml) : void
-	{
-		$this->sHtml = $sHtml;
 	}
 
 	public function Folder() : string
@@ -298,19 +296,18 @@ class Message implements \JsonSerializable
 			$oBodyStructure = $oFetchResponse->GetFetchBodyStructure();
 		}
 
-		$sInternalDate = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::INTERNALDATE);
-		$aFlags = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::FLAGS);
+		$sInternalDate = $oFetchResponse->GetFetchValue(FetchType::INTERNALDATE);
+		$aFlags = $oFetchResponse->GetFetchValue(FetchType::FLAGS);
 
 		$this->sFolder = $sFolder;
-		$this->iUid = (int) $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::UID);
-		$this->iSize = (int) $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::RFC822_SIZE);
+		$this->iUid = (int) $oFetchResponse->GetFetchValue(FetchType::UID);
+		$this->iSize = (int) $oFetchResponse->GetFetchValue(FetchType::RFC822_SIZE);
 		$this->aFlagsLowerCase = \array_map('strtolower', $aFlags ?: []);
 
 		$this->iInternalTimeStampInUTC =
 			\MailSo\Base\DateTimeHelper::ParseInternalDateString($sInternalDate);
 
-		$sCharset = $oBodyStructure ? $oBodyStructure->SearchCharset() : '';
-		$sCharset = \MailSo\Base\Utils::NormalizeCharset($sCharset);
+		$sCharset = $oBodyStructure ? Utils::NormalizeCharset($oBodyStructure->SearchCharset()) : '';
 
 		$sHeaders = $oFetchResponse->GetHeaderFieldsValue();
 		if (\strlen($sHeaders))
@@ -324,8 +321,7 @@ class Message implements \JsonSerializable
 
 			if (\strlen($sContentTypeCharset))
 			{
-				$sCharset = $sContentTypeCharset;
-				$sCharset = \MailSo\Base\Utils::NormalizeCharset($sCharset);
+				$sCharset = Utils::NormalizeCharset($sContentTypeCharset);
 			}
 
 			if (\strlen($sCharset))
@@ -353,7 +349,7 @@ class Message implements \JsonSerializable
 			$this->oDeliveredTo = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::DELIVERED_TO, $bCharsetAutoDetect);
 
 			$this->sInReplyTo = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::IN_REPLY_TO);
-			$this->sReferences = \MailSo\Base\Utils::StripSpaces(
+			$this->sReferences = Utils::StripSpaces(
 				$oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::REFERENCES));
 
 			$sHeaderDate = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::DATE);
@@ -491,20 +487,11 @@ class Message implements \JsonSerializable
 		}
 		else if ($oFetchResponse->GetEnvelope())
 		{
-			if (!\strlen($sCharset) && $oBodyStructure)
-			{
-				$sCharset = $oBodyStructure->SearchCharset();
-				$sCharset = \MailSo\Base\Utils::NormalizeCharset($sCharset);
-			}
-
-			if (!\strlen($sCharset))
-			{
-				$sCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1;
-			}
+			$sCharset = $sCharset ?: \MailSo\Base\Enumerations\Charset::ISO_8859_1;
 
 			// date, subject, from, sender, reply-to, to, cc, bcc, in-reply-to, message-id
 			$this->sMessageId = $oFetchResponse->GetFetchEnvelopeValue(9, '');
-			$this->sSubject = \MailSo\Base\Utils::DecodeHeaderValue($oFetchResponse->GetFetchEnvelopeValue(1, ''), $sCharset);
+			$this->sSubject = Utils::DecodeHeaderValue($oFetchResponse->GetFetchEnvelopeValue(1, ''), $sCharset);
 
 			$this->oFrom = $oFetchResponse->GetFetchEnvelopeEmailCollection(2, $sCharset);
 			$this->oSender = $oFetchResponse->GetFetchEnvelopeEmailCollection(3, $sCharset);
@@ -519,9 +506,10 @@ class Message implements \JsonSerializable
 		if ('multipart/signed' === \strtolower($this->sContentType)
 		 && 'application/pgp-signature' === \strtolower($oHeaders->ParameterValue(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, \MailSo\Mime\Enumerations\Parameter::PROTOCOL)))
 		{
-			$aPgpSignatureParts = $oBodyStructure ? $oBodyStructure->SearchByContentType('application/pgp-signature') : null;
-			if ($this->bPgpSigned = !empty($aPgpSignatureParts)) {
-				$sPgpSignatureText = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::BODY.'['.$aPgpSignatureParts[0]->PartID().']');
+			$gPgpSignatureParts = $oBodyStructure ? $oBodyStructure->SearchByContentType('application/pgp-signature') : null;
+			$this->bPgpSigned = $gPgpSignatureParts && $gPgpSignatureParts->valid();
+			if ($this->bPgpSigned) {
+				$sPgpSignatureText = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$gPgpSignatureParts->current()->PartID().']');
 				if (\is_string($sPgpSignatureText) && \strlen($sPgpSignatureText) && 0 < \strpos($sPgpSignatureText, 'BEGIN PGP SIGNATURE')) {
 					$this->sPgpSignature = \trim($sPgpSignatureText);
 					$this->sPgpSignatureMicAlg = (string) $oHeaders->ParameterValue(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'micalg');
@@ -533,23 +521,21 @@ class Message implements \JsonSerializable
 		$this->bPgpEncrypted = ('multipart/encrypted' === \strtolower($this->sContentType)
 		 && 'application/pgp-encrypted' === \strtolower($oHeaders->ParameterValue(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, \MailSo\Mime\Enumerations\Parameter::PROTOCOL)));
 
-		$aTextParts = $oBodyStructure ? $oBodyStructure->SearchHtmlOrPlainParts() : null;
+		$aTextParts = $oBodyStructure ? $oBodyStructure->GetHtmlAndPlainParts() : null;
+
 		if ($aTextParts)
 		{
-			if (!\strlen($sCharset))
-			{
-				$sCharset = \MailSo\Base\Enumerations\Charset::UTF_8;
-			}
+			$sCharset = $sCharset ?: \MailSo\Base\Enumerations\Charset::UTF_8;
 
 			$aHtmlParts = array();
 			$aPlainParts = array();
 
 			foreach ($aTextParts as $oPart)
 			{
-				$sText = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::BODY.'['.$oPart->PartID().']');
+				$sText = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oPart->PartID().']');
 				if (null === $sText)
 				{
-					$sText = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::BODY.'['.$oPart->PartID().']<0>');
+					$sText = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oPart->PartID().']<0>');
 					if (\is_string($sText) && \strlen($sText))
 					{
 						$this->bTextPartIsTrimmed = true;
@@ -564,11 +550,11 @@ class Message implements \JsonSerializable
 						$sTextCharset = $sCharset;
 					}
 
-					$sTextCharset = \MailSo\Base\Utils::NormalizeCharset($sTextCharset, true);
+					$sTextCharset = Utils::NormalizeCharset($sTextCharset, true);
 
-					$sText = \MailSo\Base\Utils::DecodeEncodingValue($sText, $oPart->MailEncodingName());
-					$sText = \MailSo\Base\Utils::ConvertEncoding($sText, $sTextCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
-					$sText = \MailSo\Base\Utils::Utf8Clear($sText);
+					$sText = Utils::DecodeEncodingValue($sText, $oPart->MailEncodingName());
+					$sText = Utils::ConvertEncoding($sText, $sTextCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
+					$sText = Utils::Utf8Clear($sText);
 
 					if ('text/html' === $oPart->ContentType())
 					{
@@ -578,7 +564,7 @@ class Message implements \JsonSerializable
 					{
 						if ($oPart->IsFlowedFormat())
 						{
-							$sText = \MailSo\Base\Utils::DecodeFlowedFormat($sText);
+							$sText = Utils::DecodeFlowedFormat($sText);
 						}
 
 						$aPlainParts[] = $sText;
@@ -586,14 +572,8 @@ class Message implements \JsonSerializable
 				}
 			}
 
-			if (\count($aHtmlParts))
-			{
-				$this->sHtml = \implode('<br />', $aHtmlParts);
-			}
-			else
-			{
-				$this->sPlain = \trim(\implode("\n", $aPlainParts));
-			}
+			$this->sHtml = \implode('<br />', $aHtmlParts);
+			$this->sPlain = \trim(\implode("\n", $aPlainParts));
 
 			$aMatch = array();
 			if (!$this->bPgpSigned && \preg_match('/-----BEGIN PGP SIGNATURE-----(.+)-----END PGP SIGNATURE-----/ism', $this->sPlain, $aMatch) && !empty($aMatch[0]))
@@ -609,11 +589,11 @@ class Message implements \JsonSerializable
 
 		if ($oBodyStructure)
 		{
-			$aAttachmentsParts = $oBodyStructure->SearchAttachmentsParts();
-			if ($aAttachmentsParts && \count($aAttachmentsParts))
+			$gAttachmentsParts = $oBodyStructure->SearchAttachmentsParts();
+			if ($gAttachmentsParts->valid())
 			{
 				$this->oAttachments = new AttachmentCollection;
-				foreach ($aAttachmentsParts as /* @var $oAttachmentItem \MailSo\Imap\BodyStructure */ $oAttachmentItem)
+				foreach ($gAttachmentsParts as /* @var $oAttachmentItem \MailSo\Imap\BodyStructure */ $oAttachmentItem)
 				{
 					$this->oAttachments->append(
 						Attachment::NewBodyStructureInstance($this->sFolder, $this->iUid, $oAttachmentItem)
@@ -631,7 +611,7 @@ class Message implements \JsonSerializable
 			'@Object' => 'Object/Message',
 			'Folder' => $this->sFolder,
 			'Uid' => $this->iUid,
-			'Subject' => \trim(\MailSo\Base\Utils::Utf8Clear($this->sSubject)),
+			'Subject' => \trim(Utils::Utf8Clear($this->sSubject)),
 			'MessageId' => $this->sMessageId,
 			'Size' => $this->iSize,
 			'SpamScore' => $this->iSpamScore,

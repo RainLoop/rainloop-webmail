@@ -100,11 +100,6 @@ class Attachment implements \JsonSerializable
 		return $this->oBodyStructure ? $this->oBodyStructure->ContentType() : '';
 	}
 
-	public function ContentTransferEncoding() : string
-	{
-		return $this->oBodyStructure ? $this->oBodyStructure->MailEncodingName() : '';
-	}
-
 	public function EncodedSize() : int
 	{
 		return $this->oBodyStructure ? $this->oBodyStructure->Size() : 0;

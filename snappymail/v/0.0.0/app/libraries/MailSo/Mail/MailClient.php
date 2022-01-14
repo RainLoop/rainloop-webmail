@@ -170,7 +170,7 @@ class MailClient
 			$oBodyStructure = $aFetchResponse[0]->GetFetchBodyStructure();
 			if ($oBodyStructure)
 			{
-				foreach ($oBodyStructure->SearchHtmlOrPlainParts() as $oPart)
+				foreach ($oBodyStructure->GetHtmlAndPlainParts() as $oPart)
 				{
 					$sLine = FetchType::BODY_PEEK.'['.$oPart->PartID().']';
 					if (0 < $iBodyTextLimit && $iBodyTextLimit < $oPart->Size())
@@ -181,13 +181,10 @@ class MailClient
 					$aFetchItems[] = $sLine;
 				}
 
-				$aSignatureParts = $oBodyStructure->SearchByContentType('application/pgp-signature');
-				if (\is_array($aSignatureParts) && \count($aSignatureParts))
+				$gSignatureParts = $oBodyStructure->SearchByContentType('application/pgp-signature');
+				foreach ($gSignatureParts as $oPart)
 				{
-					foreach ($aSignatureParts as $oPart)
-					{
-						$aFetchItems[] = FetchType::BODY_PEEK.'['.$oPart->PartID().']';
-					}
+					$aFetchItems[] = FetchType::BODY_PEEK.'['.$oPart->PartID().']';
 				}
 			}
 		}
