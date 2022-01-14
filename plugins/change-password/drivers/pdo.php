@@ -6,13 +6,10 @@ class ChangePasswordDriverPDO
 		NAME        = 'PDO',
 		DESCRIPTION = 'Use your own SQL (PDO) statement (with wildcards).';
 
-	private
-		$dsn = '',
-		$user = '',
-		$pass = '',
-		$sql = '',
-		$encrypt = '',
-		$encrypt_prefix = ''; // Like: {ARGON2I} {BLF-CRYPT} {SHA512-CRYPT}
+	/**
+	 * @var \RainLoop\Config\Plugin
+	 */
+	private $oConfig = null;
 
 	/**
 	 * @var \MailSo\Log\Logger
@@ -21,13 +18,8 @@ class ChangePasswordDriverPDO
 
 	function __construct(\RainLoop\Config\Plugin $oConfig, \MailSo\Log\Logger $oLogger)
 	{
+		$this->oConfig = $oConfig;
 		$this->oLogger = $oLogger;
-		$this->dsn = $oConfig->Get('plugin', 'pdo_dsn', '');
-		$this->user = $oConfig->Get('plugin', 'pdo_user', '');
-		$this->pass = $oConfig->Get('plugin', 'pdo_password', '');
-		$this->sql = $oConfig->Get('plugin', 'pdo_sql', '');
-		$this->encrypt = $oConfig->Get('plugin', 'pdo_encrypt', '');
-		$this->encrypt_prefix = $oConfig->Get('plugin', 'pdo_encryptprefix', '');
 	}
 
 	public static function isSupported() : bool
@@ -52,43 +44,57 @@ class ChangePasswordDriverPDO
 				->SetDefaultValue(array('none', 'bcrypt', 'Argon2i', 'Argon2id', 'SHA256-CRYPT', 'SHA512-CRYPT'))
 				->SetDescription('In what way do you want the passwords to be encrypted?'),
 			\RainLoop\Plugins\Property::NewInstance('pdo_encryptprefix')->SetLabel('Encrypt prefix')
-				->SetDescription('Optional encrypted password prefix, like: {BLF-CRYPT}'),
+				->SetDescription('Optional encrypted password prefix, like {ARGON2I} or {BLF-CRYPT} or {SHA512-CRYPT}')
 		);
 	}
 
 	public function ChangePassword(\RainLoop\Model\Account $oAccount, string $sPrevPassword, string $sNewPassword) : bool
 	{
-		$options = array(
-			\PDO::ATTR_EMULATE_PREPARES  => true,
-			\PDO::ATTR_PERSISTENT        => true,
-			\PDO::ATTR_ERRMODE           => \PDO::ERRMODE_EXCEPTION
-		);
+		try
+		{
+			$conn = new \PDO(
+				$this->oConfig->Get('plugin', 'pdo_dsn', ''),
+				$this->oConfig->Get('plugin', 'pdo_user', ''),
+				$this->oConfig->Get('plugin', 'pdo_password', ''),
+				array(
+					\PDO::ATTR_EMULATE_PREPARES  => true,
+					\PDO::ATTR_PERSISTENT        => true,
+					\PDO::ATTR_ERRMODE           => \PDO::ERRMODE_EXCEPTION
+				)
+			);
 
-		$conn = new \PDO($this->dsn, $this->user, $this->pass, $options);
+			$sEmail = $oAccount->Email();
+			$encrypt = $this->oConfig->Get('plugin', 'pdo_encrypt', '');
+			$encrypt_prefix = $this->oConfig->Get('plugin', 'pdo_encryptprefix', '');
 
-		//prepare SQL varaibles
-		$sEmail = $oAccount->Email();
-		$sEmailUser = \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail);
-		$sEmailDomain = \MailSo\Base\Utils::GetDomainFromEmail($sEmail);
+			$placeholders = array(
+				':email' => $sEmail,
+				':oldpass' => $encrypt_prefix . \ChangePasswordPlugin::encrypt($encrypt, $sPrevPassword),
+				':newpass' => $encrypt_prefix . \ChangePasswordPlugin::encrypt($encrypt, $sNewPassword),
+				':domain' => \MailSo\Base\Utils::GetDomainFromEmail($sEmail),
+				':username' => \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail)
+			);
 
-		$placeholders = array(
-			':email' => $sEmail,
-			':oldpass' => $this->encrypt_prefix . \ChangePasswordPlugin::encrypt($this->encrypt, $sPrevPassword),
-			':newpass' => $this->encrypt_prefix . \ChangePasswordPlugin::encrypt($this->encrypt, $sNewPassword),
-			':domain' => $sEmailDomain,
-			':username' => $sEmailUser
-		);
+			$sql = $this->oConfig->Get('plugin', 'pdo_sql', '');
 
-		$statement = $conn->prepare($this->sql);
+			$statement = $conn->prepare($sql);
 
-		// we have to check that all placehoders are used in the query, passing any unused placeholders will generate an error
-		foreach ($placeholders as $placeholder => $value) {
-			if (\preg_match_all("/{$placeholder}(?![a-zA-Z0-9\-])/", $this->sql)) {
-				$statement->bindValue($placeholder, $value);
+			// we have to check that all placehoders are used in the query, passing any unused placeholders will generate an error
+			foreach ($placeholders as $placeholder => $value) {
+				if (\preg_match_all("/{$placeholder}(?![a-zA-Z0-9\-])/", $sql)) {
+					$statement->bindValue($placeholder, $value);
+				}
+			}
+
+			// and execute
+			return !!$statement->execute();
+		}
+		catch (\Exception $oException)
+		{
+			if ($this->oLogger) {
+				$this->oLogger->WriteException($oException);
 			}
 		}
-
-		// and execute
-		return !!$statement->execute();
+		return false;
 	}
 }

@@ -276,6 +276,7 @@ class MailClient
 		}
 
 		$aFetchResponse = $this->oImapClient->Fetch(array(
+//			FetchType::BINARY_SIZE.'['.$sMimeIndex.']',
 			// Push in the aFetchCallbacks array and then called by \MailSo\Imap\Traits\ResponseParser::partialResponseLiteralCallbackCallable
 			array(
 				$sPeek.'['.$sMimeIndex.']',
