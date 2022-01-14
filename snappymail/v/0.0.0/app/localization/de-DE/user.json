@@ -396,6 +396,8 @@
 		"LABEL_USE_THREADS": "Als Unterhaltungen anzeigen",
 		"LABEL_REPLY_SAME_FOLDER": "Antworten im gleichen Ordner wie die Nachricht, auf die geantwortet wurde, abspeichern",
 		"LABEL_SHOW_IMAGES": "In der Nachricht enthaltene Bilder immer anzeigen",
+		"LABEL_PREFER_HTML": "Prefer HTML to plain text",
+		"LABEL_PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"LABEL_REMOVE_COLORS": "Entferne Hintergrund- und Textfarben aus der Nachricht",
 		"LABEL_MESSAGE_PER_PAGE": "Nachrichten pro Seite",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Nachricht als gelesen markieren nach",

@@ -396,6 +396,8 @@
 		"LABEL_USE_THREADS": "Zobrazit jako konverzace",
 		"LABEL_REPLY_SAME_FOLDER": "Ukládat odpovědi do složky se zprávou, které se týkají",
 		"LABEL_SHOW_IMAGES": "Vždy zobrazovat obrázky v těle zprávy",
+		"LABEL_PREFER_HTML": "Prefer HTML to plain text",
+		"LABEL_PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Zpráv na stranu",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",

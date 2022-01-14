@@ -396,6 +396,8 @@
 		"LABEL_USE_THREADS": "Usar hilos de conversación",
 		"LABEL_REPLY_SAME_FOLDER": "Coloque las respuestas en la carpeta del mensaje que esta respondiendo.",
 		"LABEL_SHOW_IMAGES": "Mostrar siempre las imágenes en el cuerpo del mensaje",
+		"LABEL_PREFER_HTML": "Prefer HTML to plain text",
+		"LABEL_PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"LABEL_REMOVE_COLORS": "Eliminar el fondo y los colores del texto del mensaje",
 		"LABEL_MESSAGE_PER_PAGE": "Mensajes en página",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Marcar el mensaje como leído después de",

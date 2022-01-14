@@ -236,6 +236,7 @@ Values:
 				'view_layout'            => array(1, 'layout: 0 - no preview, 1 - side preview, 2 - bottom preview'),
 				'view_use_checkboxes'    => array(true),
 				'autologout'             => array(30),
+				'view_html'              => array(true),
 				'show_images'            => array(false),
 				'contacts_autosave'      => array(true),
 				'mail_use_threads'       => array(false),

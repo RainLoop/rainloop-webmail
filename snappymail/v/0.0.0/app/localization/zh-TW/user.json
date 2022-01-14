@@ -396,6 +396,8 @@
 		"LABEL_USE_THREADS": "使用對話",
 		"LABEL_REPLY_SAME_FOLDER": "將回復的郵件放置到其回復的郵件所在資料夾",
 		"LABEL_SHOW_IMAGES": "總是顯示外部圖片資訊",
+		"LABEL_PREFER_HTML": "Prefer HTML to plain text",
+		"LABEL_PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "封郵件每頁",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",

@@ -28,6 +28,7 @@ export const SettingsUserStore = new class {
 		self.messageReadDelay = ko.observable(5).extend({ debounce: 999 });
 
 		addObservablesTo(self, {
+			viewHTML: 1,
 			showImages: 0,
 			removeColors: 0,
 			useCheckboxesInList: 1,
@@ -74,6 +75,7 @@ export const SettingsUserStore = new class {
 		self.messageReadDelay(pInt(SettingsGet('MessageReadDelay')));
 		self.autoLogout(pInt(SettingsGet('AutoLogout')));
 
+		self.viewHTML(SettingsGet('ViewHTML'));
 		self.showImages(SettingsGet('ShowImages'));
 		self.removeColors(SettingsGet('RemoveColors'));
 		self.useCheckboxesInList(SettingsGet('UseCheckboxesInList'));

@@ -396,6 +396,8 @@
 		"LABEL_USE_THREADS": "Nota þræði",
 		"LABEL_REPLY_SAME_FOLDER": "Setja svör í möppu skilaboðanna sem er verið að svara",
 		"LABEL_SHOW_IMAGES": "Sýna ávallt myndir í skilaboðum",
+		"LABEL_PREFER_HTML": "Prefer HTML to plain text",
+		"LABEL_PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Skilaboð á síðu",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",

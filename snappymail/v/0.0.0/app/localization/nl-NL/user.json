@@ -396,6 +396,8 @@
 		"LABEL_USE_THREADS": "Groepeer berichten",
 		"LABEL_REPLY_SAME_FOLDER": "Plaats antwoorden in de map van het originele bericht",
 		"LABEL_SHOW_IMAGES": "Afbeeldingen altijd weergeven in het bericht",
+		"LABEL_PREFER_HTML": "Prefer HTML to plain text",
+		"LABEL_PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"LABEL_REMOVE_COLORS": "Verwijder achtergrond- en tekstkleuren uit het bericht",
 		"LABEL_MESSAGE_PER_PAGE": "Berichten op pagina",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Bericht markeren als gelezen na",

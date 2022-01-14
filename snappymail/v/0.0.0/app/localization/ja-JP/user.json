@@ -396,6 +396,8 @@
 		"LABEL_USE_THREADS": "スレッドを使う",
 		"LABEL_REPLY_SAME_FOLDER": "返信したメッセージのフォルダに送信メールを置く",
 		"LABEL_SHOW_IMAGES": "外部画像を常に表示する",
+		"LABEL_PREFER_HTML": "Prefer HTML to plain text",
+		"LABEL_PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "1ページに表示する件数",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",

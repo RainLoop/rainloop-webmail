@@ -37,6 +37,7 @@ export class GeneralUserSettings /*extends AbstractViewSettings*/ {
 		this.enableDesktopNotification = NotificationUserStore.enableDesktopNotification;
 		this.isDesktopNotificationAllowed = NotificationUserStore.isDesktopNotificationAllowed;
 
+		this.viewHTML = SettingsUserStore.viewHTML;
 		this.showImages = SettingsUserStore.showImages;
 		this.removeColors = SettingsUserStore.removeColors;
 		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
@@ -111,6 +112,7 @@ export class GeneralUserSettings /*extends AbstractViewSettings*/ {
 			messagesPerPage: value => Remote.saveSetting('MPP', value,
 				settingsSaveHelperSimpleFunction(this.mppTrigger, this)),
 
+			viewHTML: value => Remote.saveSetting('ViewHTML', value ? 1 : 0),
 			showImages: value => Remote.saveSetting('ShowImages', value ? 1 : 0),
 
 			removeColors: value => {

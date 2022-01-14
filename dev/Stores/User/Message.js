@@ -402,7 +402,7 @@ export const MessageUserStore = new class {
 						message.body = body;
 						message.fetchDataFromDom();
 					} else {
-						let isHtml = !!json.Html,
+						let isHtml = (SettingsUserStore.viewHTML() || !json.Plain) && !!json.Html,
 							resultHtml = '';
 						if (isHtml) {
 							resultHtml = json.Html.toString().replace(/font-size:\s*[0-9]px/g,'font-size:11px');

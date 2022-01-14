@@ -396,6 +396,8 @@
 		"LABEL_USE_THREADS": "Szálak használata",
 		"LABEL_REPLY_SAME_FOLDER": "Válaszüzenetek elhelyezése az eredeti üzenet mappájában",
 		"LABEL_SHOW_IMAGES": "Mindig jelenítse meg a külső képeket az üzenet törzsében",
+		"LABEL_PREFER_HTML": "Prefer HTML to plain text",
+		"LABEL_PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Üzenetek egy oldalon",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Jelölje meg az üzenetet olvasottként",

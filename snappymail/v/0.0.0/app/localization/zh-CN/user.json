@@ -396,6 +396,8 @@
 		"LABEL_USE_THREADS": "使用对话",
 		"LABEL_REPLY_SAME_FOLDER": "将回复的邮件置于被回复的邮件所在的文件夹",
 		"LABEL_SHOW_IMAGES": "总是显示外部图片信息",
+		"LABEL_PREFER_HTML": "Prefer HTML to plain text",
+		"LABEL_PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"LABEL_REMOVE_COLORS": "从消息中删除背景和文本颜色",
 		"LABEL_MESSAGE_PER_PAGE": "封邮件每页",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "将消息标记为已读",

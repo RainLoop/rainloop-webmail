@@ -722,6 +722,7 @@ class Actions
 			'UseLocalProxyForExternalImages' => (bool)$oConfig->Get('labs', 'use_local_proxy_for_external_images', false),
 
 			// user
+			'ViewHTML' => (bool) $oConfig->Get('defaults', 'view_html', true),
 			'ShowImages' => (bool) $oConfig->Get('defaults', 'show_images', false),
 			'RemoveColors' => (bool) $oConfig->Get('defaults', 'remove_colors', false),
 			'MessagesPerPage' => (int) $oConfig->Get('webmail', 'messages_per_page', 25),
@@ -855,6 +856,7 @@ class Actions
 					}
 
 					$aResult['EditorDefaultType'] = (string)$oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']);
+					$aResult['ViewHTML'] = (bool)$oSettings->GetConf('ViewHTML', $aResult['ViewHTML']);
 					$aResult['ShowImages'] = (bool)$oSettings->GetConf('ShowImages', $aResult['ShowImages']);
 					$aResult['RemoveColors'] = (bool)$oSettings->GetConf('RemoveColors', $aResult['RemoveColors']);
 					$aResult['ContactsAutosave'] = (bool)$oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);

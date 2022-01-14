@@ -396,6 +396,8 @@
 		"LABEL_USE_THREADS": "Сворачивать письма в переписках",
 		"LABEL_REPLY_SAME_FOLDER": "Помещать ответы в ту же папку, где находится оригинал",
 		"LABEL_SHOW_IMAGES": "Показывать внешние изображения в теле письма без предупреждения",
+		"LABEL_PREFER_HTML": "Prefer HTML to plain text",
+		"LABEL_PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Cообщений на одной странице",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
