@@ -219,7 +219,7 @@ class BodyStructure
 		});
 
 		if ($aParts->valid()) {
-			return \iterator_to_array($aParts);
+			return \array_merge([$aParts->current()], \iterator_to_array($aParts));
 		}
 
 		$oPart = $this->SearchInlineEncryptedPart();
@@ -556,6 +556,7 @@ class BodyStructure
 					$sFileName = self::decodeAttrParameter($aDispositionParams, 'filename', $sCharset);
 				}
 			}
+			++$iExtraItemPos;
 		}
 
 		$oStructure = new self;
@@ -582,11 +583,11 @@ class BodyStructure
 				$oStructure->sLanguage = $aBodyStructure[$iExtraItemPos];
 			}
 			++$iExtraItemPos;
-		}
 
-		if ($iExtraItemPos < \count($aBodyStructure) && \is_string($aBodyStructure[$iExtraItemPos]))
-		{
-			$oStructure->sLocation = $aBodyStructure[$iExtraItemPos];
+			if ($iExtraItemPos < \count($aBodyStructure) && \is_string($aBodyStructure[$iExtraItemPos]))
+			{
+				$oStructure->sLocation = $aBodyStructure[$iExtraItemPos];
+			}
 		}
 
 		return $oStructure;
