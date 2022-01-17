@@ -138,6 +138,11 @@ class BodyStructure
 		return $this->sLocation;
 	}
 
+	public function SubParts() : array
+	{
+		return $this->aSubParts;
+	}
+
 	public function IsInline() : bool
 	{
 		return 'inline' === $this->sDisposition || \strlen($this->sContentID);
@@ -161,6 +166,17 @@ class BodyStructure
 	public function IsDoc() : bool
 	{
 		return 'doc' === \MailSo\Base\Utils::ContentTypeType($this->sContentType, $this->sFileName);
+	}
+
+	public function IsPgpSigned() : bool
+	{
+		// https://datatracker.ietf.org/doc/html/rfc3156#section-5
+		return 'multipart/signed' === $this->sContentType
+		 && !empty($this->aBodyParams['protocol'])
+		 && 'application/pgp-signature' === \strtolower(\trim($this->aBodyParams['protocol']))
+		 // The multipart/signed body MUST consist of exactly two parts.
+		 && 2 === \count($this->aSubParts)
+		 &&	$this->aSubParts[1]->IsPgpSignature();
 	}
 
 	public function IsPgpSignature() : bool

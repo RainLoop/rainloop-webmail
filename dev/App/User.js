@@ -347,7 +347,7 @@ class AppUser extends AbstractApp {
 	}
 
 	reloadOpenPgpKeys() {
-		if (PgpUserStore.capaOpenPGP()) {
+		if (PgpUserStore.openpgp) {
 			const keys = [],
 				email = new EmailModel(),
 				openpgpKeyring = PgpUserStore.openpgpKeyring,
@@ -784,7 +784,6 @@ class AppUser extends AbstractApp {
 									}
 								}
 								PgpUserStore.openpgpKeyring = new openpgp.Keyring();
-								PgpUserStore.capaOpenPGP(true);
 								this.reloadOpenPgpKeys();
 							};
 							script.onerror = () => console.error(script.src);

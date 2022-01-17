@@ -320,6 +320,15 @@
 							</div>
 						</div>
 
+						<div class="b-openpgp-control" data-bind="visible: pgpEncrypted, click: pgpDecrypt">
+							<i class="fontastic">🔒</i>
+							<span data-i18n="MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC"></span>
+						</div>
+						<div class="b-openpgp-control" data-bind="visible: pgpSigned, click: pgpVerify">
+							<i class="fontastic">🔒</i>
+							<span data-i18n="MESSAGE/PGP_SIGNED_MESSAGE_DESC"></span>
+						</div>
+
 						<div class="bodyText"
 							data-bind="initDom: messagesBodiesDom"></div>
 					</div>

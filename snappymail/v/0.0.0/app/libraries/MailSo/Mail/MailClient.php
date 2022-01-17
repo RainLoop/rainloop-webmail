@@ -158,6 +158,7 @@ class MailClient
 
 		$aFetchItems = array(
 			FetchType::UID,
+//			FetchType::FAST,
 			FetchType::RFC822_SIZE,
 			FetchType::INTERNALDATE,
 			FetchType::FLAGS,
@@ -180,12 +181,18 @@ class MailClient
 
 					$aFetchItems[] = $sLine;
 				}
-
-				$gSignatureParts = $oBodyStructure->SearchByContentType('application/pgp-signature');
-				foreach ($gSignatureParts as $oPart)
-				{
-					$aFetchItems[] = FetchType::BODY_PEEK.'['.$oPart->PartID().']';
+/*
+				$gSignatureParts = $oBodyStructure->SearchByContentType('multipart/signed');
+				foreach ($gSignatureParts as $oPart) {
+					if ($oPart->IsPgpSigned()) {
+						// An empty section specification refers to the entire message, including the header.
+						// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
+						$aFetchItems[] = FetchType::BODY_PEEK.'['.$oPart->SubParts()[0]->PartID().'.MIME]';
+						$aFetchItems[] = FetchType::BODY_PEEK.'['.$oPart->SubParts()[0]->PartID().']';
+						$aFetchItems[] = FetchType::BODY_PEEK.'['.$oPart->SubParts()[1]->PartID().']';
+					}
 				}
+*/
 			}
 		}
 
@@ -197,8 +204,7 @@ class MailClient
 		$aFetchResponse = $this->oImapClient->Fetch($aFetchItems, $iIndex, $bIndexIsUid);
 		if (\count($aFetchResponse))
 		{
-			$oMessage = Message::NewFetchResponseInstance(
-				$sFolderName, $aFetchResponse[0], $oBodyStructure);
+			$oMessage = Message::NewFetchResponseInstance($sFolderName, $aFetchResponse[0], $oBodyStructure);
 		}
 
 		return $oMessage;

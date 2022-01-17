@@ -131,7 +131,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 		this.bSkipNextHide = false;
 
-		this.capaOpenPGP = PgpUserStore.capaOpenPGP;
+		this.capaOpenPGP = !!PgpUserStore.openpgp;
 
 		this.identities = IdentityUserStore;
 
@@ -552,7 +552,7 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	openOpenPgpPopup() {
-		if (PgpUserStore.capaOpenPGP() && !this.oEditor.isHtml()) {
+		if (PgpUserStore.openpgp && !this.oEditor.isHtml()) {
 			showScreenPopup(ComposeOpenPgpPopupView, [
 				result => this.editor(editor => editor.setPlain(result)),
 				this.oEditor.getData(false),

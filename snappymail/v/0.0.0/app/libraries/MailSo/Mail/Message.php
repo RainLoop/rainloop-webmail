@@ -79,9 +79,7 @@ class Message implements \JsonSerializable
 
 		$bTextPartIsTrimmed = false,
 
-		$sPgpSignature = '',
-		$sPgpSignatureMicAlg = '',
-		$bPgpSigned = false,
+		$aPgpSigned = null,
 		$bPgpEncrypted = false;
 
 	function __construct()
@@ -99,19 +97,9 @@ class Message implements \JsonSerializable
 		return $this->sHtml;
 	}
 
-	public function PgpSignature() : string
+	public function PgpSigned() : ?array
 	{
-		return $this->sPgpSignature;
-	}
-
-	public function PgpSignatureMicAlg() : string
-	{
-		return $this->sPgpSignatureMicAlg;
-	}
-
-	public function isPgpSigned() : bool
-	{
-		return $this->bPgpSigned;
+		return $this->aPgpSigned;
 	}
 
 	public function isPgpEncrypted() : bool
@@ -286,11 +274,8 @@ class Message implements \JsonSerializable
 
 	public static function NewFetchResponseInstance(string $sFolder, \MailSo\Imap\FetchResponse $oFetchResponse, ?\MailSo\Imap\BodyStructure $oBodyStructure = null) : self
 	{
-		return (new self)->InitByFetchResponse($sFolder, $oFetchResponse, $oBodyStructure);
-	}
+		$oMessage = new self;
 
-	public function InitByFetchResponse(string $sFolder, \MailSo\Imap\FetchResponse $oFetchResponse, ?\MailSo\Imap\BodyStructure $oBodyStructure = null) : self
-	{
 		if (!$oBodyStructure)
 		{
 			$oBodyStructure = $oFetchResponse->GetFetchBodyStructure();
@@ -299,12 +284,12 @@ class Message implements \JsonSerializable
 		$sInternalDate = $oFetchResponse->GetFetchValue(FetchType::INTERNALDATE);
 		$aFlags = $oFetchResponse->GetFetchValue(FetchType::FLAGS);
 
-		$this->sFolder = $sFolder;
-		$this->iUid = (int) $oFetchResponse->GetFetchValue(FetchType::UID);
-		$this->iSize = (int) $oFetchResponse->GetFetchValue(FetchType::RFC822_SIZE);
-		$this->aFlagsLowerCase = \array_map('strtolower', $aFlags ?: []);
+		$oMessage->sFolder = $sFolder;
+		$oMessage->iUid = (int) $oFetchResponse->GetFetchValue(FetchType::UID);
+		$oMessage->iSize = (int) $oFetchResponse->GetFetchValue(FetchType::RFC822_SIZE);
+		$oMessage->aFlagsLowerCase = \array_map('strtolower', $aFlags ?: []);
 
-		$this->iInternalTimeStampInUTC =
+		$oMessage->iInternalTimeStampInUTC =
 			\MailSo\Base\DateTimeHelper::ParseInternalDateString($sInternalDate);
 
 		$sCharset = $oBodyStructure ? Utils::NormalizeCharset($oBodyStructure->SearchCharset()) : '';
@@ -331,33 +316,33 @@ class Message implements \JsonSerializable
 
 			$bCharsetAutoDetect = !\strlen($sCharset);
 
-			$this->sSubject = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::SUBJECT, $bCharsetAutoDetect);
-			$this->sMessageId = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::MESSAGE_ID);
-			$this->sContentType = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE);
+			$oMessage->sSubject = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::SUBJECT, $bCharsetAutoDetect);
+			$oMessage->sMessageId = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::MESSAGE_ID);
+			$oMessage->sContentType = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE);
 
-			$this->oFrom = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::FROM_, $bCharsetAutoDetect);
-			$this->oTo = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::TO_, $bCharsetAutoDetect);
-			$this->oCc = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::CC, $bCharsetAutoDetect);
-			$this->oBcc = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::BCC, $bCharsetAutoDetect);
+			$oMessage->oFrom = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::FROM_, $bCharsetAutoDetect);
+			$oMessage->oTo = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::TO_, $bCharsetAutoDetect);
+			$oMessage->oCc = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::CC, $bCharsetAutoDetect);
+			$oMessage->oBcc = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::BCC, $bCharsetAutoDetect);
 
-			if ($this->oFrom) {
-				$oHeaders->PopulateEmailColectionByDkim($this->oFrom);
+			if ($oMessage->oFrom) {
+				$oHeaders->PopulateEmailColectionByDkim($oMessage->oFrom);
 			}
 
-			$this->oSender = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::SENDER, $bCharsetAutoDetect);
-			$this->oReplyTo = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::REPLY_TO, $bCharsetAutoDetect);
-			$this->oDeliveredTo = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::DELIVERED_TO, $bCharsetAutoDetect);
+			$oMessage->oSender = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::SENDER, $bCharsetAutoDetect);
+			$oMessage->oReplyTo = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::REPLY_TO, $bCharsetAutoDetect);
+			$oMessage->oDeliveredTo = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::DELIVERED_TO, $bCharsetAutoDetect);
 
-			$this->sInReplyTo = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::IN_REPLY_TO);
-			$this->sReferences = Utils::StripSpaces(
+			$oMessage->sInReplyTo = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::IN_REPLY_TO);
+			$oMessage->sReferences = Utils::StripSpaces(
 				$oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::REFERENCES));
 
 			$sHeaderDate = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::DATE);
-			$this->sHeaderDate = $sHeaderDate;
-			$this->iHeaderTimeStampInUTC = \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($sHeaderDate);
+			$oMessage->sHeaderDate = $sHeaderDate;
+			$oMessage->iHeaderTimeStampInUTC = \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($sHeaderDate);
 
 			// Priority
-			$this->iPriority = \MailSo\Mime\Enumerations\MessagePriority::NORMAL;
+			$oMessage->iPriority = \MailSo\Mime\Enumerations\MessagePriority::NORMAL;
 			$sPriority = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_MSMAIL_PRIORITY);
 			if (!\strlen($sPriority))
 			{
@@ -376,7 +361,7 @@ class Message implements \JsonSerializable
 					case '2(high)':
 					case '1':
 					case '2':
-						$this->iPriority = \MailSo\Mime\Enumerations\MessagePriority::HIGH;
+						$oMessage->iPriority = \MailSo\Mime\Enumerations\MessagePriority::HIGH;
 						break;
 
 					case 'low':
@@ -384,78 +369,78 @@ class Message implements \JsonSerializable
 					case '5(lowest)':
 					case '4':
 					case '5':
-						$this->iPriority = \MailSo\Mime\Enumerations\MessagePriority::LOW;
+						$oMessage->iPriority = \MailSo\Mime\Enumerations\MessagePriority::LOW;
 						break;
 				}
 			}
 
 			// Delivery Receipt
-			$this->sDeliveryReceipt = \trim($oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::RETURN_RECEIPT_TO));
+			$oMessage->sDeliveryReceipt = \trim($oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::RETURN_RECEIPT_TO));
 
 			// Read Receipt
-			$this->sReadReceipt = \trim($oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::DISPOSITION_NOTIFICATION_TO));
-			if (empty($this->sReadReceipt))
+			$oMessage->sReadReceipt = \trim($oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::DISPOSITION_NOTIFICATION_TO));
+			if (empty($oMessage->sReadReceipt))
 			{
-				$this->sReadReceipt = \trim($oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_CONFIRM_READING_TO));
+				$oMessage->sReadReceipt = \trim($oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_CONFIRM_READING_TO));
 			}
 
 			// Unsubscribe links
-			$this->aUnsubsribeLinks = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::LIST_UNSUBSCRIBE);
-			if (empty($this->aUnsubsribeLinks))
+			$oMessage->aUnsubsribeLinks = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::LIST_UNSUBSCRIBE);
+			if (empty($oMessage->aUnsubsribeLinks))
 			{
-				$this->aUnsubsribeLinks = array();
+				$oMessage->aUnsubsribeLinks = array();
 			}
 			else
 			{
-				$this->aUnsubsribeLinks = explode(',', $this->aUnsubsribeLinks);
-				$this->aUnsubsribeLinks = array_map(
+				$oMessage->aUnsubsribeLinks = explode(',', $oMessage->aUnsubsribeLinks);
+				$oMessage->aUnsubsribeLinks = array_map(
 					function ($link) {
 						return trim($link, ' <>');
 					},
-					$this->aUnsubsribeLinks
+					$oMessage->aUnsubsribeLinks
 				);
 			}
 
 			if ($spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAMD_RESULT)) {
 				if (\preg_match('/\\[([\\d\\.-]+)\\s*\\/\\s*([\\d\\.]+)\\];/', $spam, $match)) {
 					if ($threshold = \floatval($match[2])) {
-						$this->iSpamScore = \intval(\max(0, \min(100, 100 * \floatval($match[1]) / $threshold)));
-						$this->sSpamResult = "{$match[1]} / {$match[2]}";
+						$oMessage->iSpamScore = \intval(\max(0, \min(100, 100 * \floatval($match[1]) / $threshold)));
+						$oMessage->sSpamResult = "{$match[1]} / {$match[2]}";
 					}
 				}
-				$this->bIsSpam = false !== \stripos($this->sSubject, '*** SPAM ***');
+				$oMessage->bIsSpam = false !== \stripos($oMessage->sSubject, '*** SPAM ***');
 			} else if ($spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_BOGOSITY)) {
-				$this->sSpamResult = $spam;
-				$this->bIsSpam = !!\preg_match('/yes|spam/', $spam);
+				$oMessage->sSpamResult = $spam;
+				$oMessage->bIsSpam = !!\preg_match('/yes|spam/', $spam);
 				if (\preg_match('/spamicity=([\\d\\.]+)/', $spam, $spamicity)) {
-					$this->iSpamScore = \intval(\max(0, \min(100, \floatval($spamicity[1]))));
+					$oMessage->iSpamScore = \intval(\max(0, \min(100, \floatval($spamicity[1]))));
 				}
 			} else if ($spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAM_STATUS)) {
-				$this->sSpamResult = $spam;
+				$oMessage->sSpamResult = $spam;
 				if (\preg_match('/(?:hits|score)=([\\d\\.-]+)/', $spam, $value)
 				 && \preg_match('/required=([\\d\\.-]+)/', $spam, $required)) {
 					if ($threshold = \floatval($required[1])) {
-						$this->iSpamScore = \intval(\max(0, \min(100, 100 * \floatval($value[1]) / $threshold)));
-						$this->sSpamResult = "{$value[1]} / {$required[1]}";
+						$oMessage->iSpamScore = \intval(\max(0, \min(100, 100 * \floatval($value[1]) / $threshold)));
+						$oMessage->sSpamResult = "{$value[1]} / {$required[1]}";
 					}
 				}
-				$this->bIsSpam = 'Yes' === \substr($spam, 0, 3);
+				$oMessage->bIsSpam = 'Yes' === \substr($spam, 0, 3);
 //				$spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAM_FLAG);
-//				$this->bIsSpam = false !== \stripos($spam, 'YES');
+//				$oMessage->bIsSpam = false !== \stripos($spam, 'YES');
 			}
 
 			if ($virus = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_VIRUS)) {
-				$this->bHasVirus = true;
+				$oMessage->bHasVirus = true;
 			}
 			if ($virus = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_VIRUS_STATUS)) {
 				if (false !== \stripos($spam, 'infected')) {
-					$this->bHasVirus = true;
+					$oMessage->bHasVirus = true;
 				} else if (false !== \stripos($spam, 'clean')) {
-					$this->bHasVirus = false;
+					$oMessage->bHasVirus = false;
 				}
 			}
 			if ($virus = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_VIRUS_SCANNED)) {
-				$this->sVirusScanned = $virus;
+				$oMessage->sVirusScanned = $virus;
 			}
 
 			$sDraftInfo = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_DRAFT_INFO);
@@ -481,7 +466,7 @@ class Message implements \JsonSerializable
 				}
 
 				if (\strlen($sType) && \strlen($sFolder) && $iUid) {
-					$this->aDraftInfo = array($sType, $iUid, $sFolder);
+					$oMessage->aDraftInfo = array($sType, $iUid, $sFolder);
 				}
 			}
 		}
@@ -490,119 +475,141 @@ class Message implements \JsonSerializable
 			$sCharset = $sCharset ?: \MailSo\Base\Enumerations\Charset::ISO_8859_1;
 
 			// date, subject, from, sender, reply-to, to, cc, bcc, in-reply-to, message-id
-			$this->sMessageId = $oFetchResponse->GetFetchEnvelopeValue(9, '');
-			$this->sSubject = Utils::DecodeHeaderValue($oFetchResponse->GetFetchEnvelopeValue(1, ''), $sCharset);
+			$oMessage->sMessageId = $oFetchResponse->GetFetchEnvelopeValue(9, '');
+			$oMessage->sSubject = Utils::DecodeHeaderValue($oFetchResponse->GetFetchEnvelopeValue(1, ''), $sCharset);
 
-			$this->oFrom = $oFetchResponse->GetFetchEnvelopeEmailCollection(2, $sCharset);
-			$this->oSender = $oFetchResponse->GetFetchEnvelopeEmailCollection(3, $sCharset);
-			$this->oReplyTo = $oFetchResponse->GetFetchEnvelopeEmailCollection(4, $sCharset);
-			$this->oTo = $oFetchResponse->GetFetchEnvelopeEmailCollection(5, $sCharset);
-			$this->oCc = $oFetchResponse->GetFetchEnvelopeEmailCollection(6, $sCharset);
-			$this->oBcc = $oFetchResponse->GetFetchEnvelopeEmailCollection(7, $sCharset);
-			$this->sInReplyTo = $oFetchResponse->GetFetchEnvelopeValue(8, '');
-		}
-
-		// Content-Type: multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"
-		if ('multipart/signed' === \strtolower($this->sContentType)
-		 && 'application/pgp-signature' === \strtolower($oHeaders->ParameterValue(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, \MailSo\Mime\Enumerations\Parameter::PROTOCOL)))
-		{
-			$gPgpSignatureParts = $oBodyStructure ? $oBodyStructure->SearchByContentType('application/pgp-signature') : null;
-			$this->bPgpSigned = $gPgpSignatureParts && $gPgpSignatureParts->valid();
-			if ($this->bPgpSigned) {
-				$sPgpSignatureText = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$gPgpSignatureParts->current()->PartID().']');
-				if (\is_string($sPgpSignatureText) && \strlen($sPgpSignatureText) && 0 < \strpos($sPgpSignatureText, 'BEGIN PGP SIGNATURE')) {
-					$this->sPgpSignature = \trim($sPgpSignatureText);
-					$this->sPgpSignatureMicAlg = (string) $oHeaders->ParameterValue(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'micalg');
-				}
-			}
+			$oMessage->oFrom = $oFetchResponse->GetFetchEnvelopeEmailCollection(2, $sCharset);
+			$oMessage->oSender = $oFetchResponse->GetFetchEnvelopeEmailCollection(3, $sCharset);
+			$oMessage->oReplyTo = $oFetchResponse->GetFetchEnvelopeEmailCollection(4, $sCharset);
+			$oMessage->oTo = $oFetchResponse->GetFetchEnvelopeEmailCollection(5, $sCharset);
+			$oMessage->oCc = $oFetchResponse->GetFetchEnvelopeEmailCollection(6, $sCharset);
+			$oMessage->oBcc = $oFetchResponse->GetFetchEnvelopeEmailCollection(7, $sCharset);
+			$oMessage->sInReplyTo = $oFetchResponse->GetFetchEnvelopeValue(8, '');
 		}
 
 		// Content-Type: multipart/encrypted; protocol="application/pgp-encrypted"
-		$this->bPgpEncrypted = ('multipart/encrypted' === \strtolower($this->sContentType)
+		$oMessage->bPgpEncrypted = ('multipart/encrypted' === \strtolower($oMessage->sContentType)
 		 && 'application/pgp-encrypted' === \strtolower($oHeaders->ParameterValue(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, \MailSo\Mime\Enumerations\Parameter::PROTOCOL)));
-
-		$aTextParts = $oBodyStructure ? $oBodyStructure->GetHtmlAndPlainParts() : null;
-
-		if ($aTextParts)
-		{
-			$sCharset = $sCharset ?: \MailSo\Base\Enumerations\Charset::UTF_8;
-
-			$aHtmlParts = array();
-			$aPlainParts = array();
-
-			foreach ($aTextParts as $oPart)
-			{
-				$sText = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oPart->PartID().']');
-				if (null === $sText)
-				{
-					$sText = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oPart->PartID().']<0>');
-					if (\is_string($sText) && \strlen($sText))
-					{
-						$this->bTextPartIsTrimmed = true;
-					}
-				}
-
-				if (\is_string($sText) && \strlen($sText))
-				{
-					$sTextCharset = $oPart->Charset();
-					if (empty($sTextCharset))
-					{
-						$sTextCharset = $sCharset;
-					}
-
-					$sTextCharset = Utils::NormalizeCharset($sTextCharset, true);
-
-					$sText = Utils::DecodeEncodingValue($sText, $oPart->MailEncodingName());
-					$sText = Utils::ConvertEncoding($sText, $sTextCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
-					$sText = Utils::Utf8Clear($sText);
-
-					if ('text/html' === $oPart->ContentType())
-					{
-						$aHtmlParts[] = $sText;
-					}
-					else
-					{
-						if ($oPart->IsFlowedFormat())
-						{
-							$sText = Utils::DecodeFlowedFormat($sText);
-						}
-
-						$aPlainParts[] = $sText;
-					}
-				}
-			}
-
-			$this->sHtml = \implode('<br />', $aHtmlParts);
-			$this->sPlain = \trim(\implode("\n", $aPlainParts));
-
-			$aMatch = array();
-			if (!$this->bPgpSigned && \preg_match('/-----BEGIN PGP SIGNATURE-----(.+)-----END PGP SIGNATURE-----/ism', $this->sPlain, $aMatch) && !empty($aMatch[0]))
-			{
-				$this->sPgpSignature = \trim($aMatch[0]);
-				$this->bPgpSigned = true;
-			}
-
-			$this->bPgpEncrypted = !$this->bPgpEncrypted && false !== \stripos($this->sPlain, '-----BEGIN PGP MESSAGE-----');
-
-			unset($aHtmlParts, $aPlainParts, $aMatch);
-		}
 
 		if ($oBodyStructure)
 		{
+			$gSignatureParts = $oBodyStructure->SearchByContentType('multipart/signed');
+			foreach ($gSignatureParts as $oPart) {
+				if (!$oPart->IsPgpSigned()) {
+					continue;
+				}
+				$oPgpSignaturePart = $oBodyStructure->SubParts()[1];
+				$oMessage->aPgpSigned = [
+					// /?/Raw/&q[]=/0/Download/&q[]=/...
+					// /?/Raw/&q[]=/0/View/&q[]=/...
+					'BodyPartId' => $oBodyStructure->SubParts()[0]->PartID(),
+					'SigPartId' => $oPgpSignaturePart->PartID(),
+					'MicAlg' => (string) $oHeaders->ParameterValue(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'micalg')
+				];
+/*
+				// An empty section specification refers to the entire message, including the header.
+				// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
+				$sPgpText = \trim(
+					\trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oMessage->aPgpSigned['BodyPartId'].'.MIME]'))
+					. "\r\n\r\n"
+					. \trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oMessage->aPgpSigned['BodyPartId'].']'))
+				);
+				if ($sPgpText) {
+					$oMessage->aPgpSigned['Body'] = $sPgpText;
+				}
+				$sPgpSignatureText = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oMessage->aPgpSigned['SigPartId'].']');
+				if ($sPgpSignatureText && 0 < \strpos($sPgpSignatureText, 'BEGIN PGP SIGNATURE')) {
+					$oMessage->aPgpSigned['Signature'] = $oBodyStructure->SubParts()[0]->PartID();
+				}
+*/
+				break;
+			}
+
+			$aTextParts = $oBodyStructure->GetHtmlAndPlainParts();
+			if ($aTextParts)
+			{
+				$sCharset = $sCharset ?: \MailSo\Base\Enumerations\Charset::UTF_8;
+
+				$aHtmlParts = array();
+				$aPlainParts = array();
+
+				foreach ($aTextParts as $oPart)
+				{
+					$sText = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oPart->PartID().']');
+					if (null === $sText)
+					{
+						$sText = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oPart->PartID().']<0>');
+						if (\is_string($sText) && \strlen($sText))
+						{
+							$oMessage->bTextPartIsTrimmed = true;
+						}
+					}
+
+					if (\is_string($sText) && \strlen($sText))
+					{
+						$sTextCharset = $oPart->Charset();
+						if (empty($sTextCharset))
+						{
+							$sTextCharset = $sCharset;
+						}
+
+						$sTextCharset = Utils::NormalizeCharset($sTextCharset, true);
+
+						$sText = Utils::DecodeEncodingValue($sText, $oPart->MailEncodingName());
+						$sText = Utils::ConvertEncoding($sText, $sTextCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
+						$sText = Utils::Utf8Clear($sText);
+
+						if ('text/html' === $oPart->ContentType())
+						{
+							$aHtmlParts[] = $sText;
+						}
+						else
+						{
+							if ($oPart->IsFlowedFormat())
+							{
+								$sText = Utils::DecodeFlowedFormat($sText);
+							}
+
+							$aPlainParts[] = $sText;
+						}
+					}
+				}
+
+				$oMessage->sHtml = \implode('<br />', $aHtmlParts);
+				$oMessage->sPlain = \trim(\implode("\n", $aPlainParts));
+
+				$aMatch = array();
+				if (!$oMessage->aPgpSigned && \preg_match('/-----BEGIN PGP SIGNATURE-----.+?-----END PGP SIGNATURE-----/ism', $oMessage->sPlain, $aMatch))
+				{
+					$oMessage->aPgpSigned = [
+						// /?/Raw/&q[]=/0/Download/&q[]=/...
+						// /?/Raw/&q[]=/0/View/&q[]=/...
+						'BodyPartId' => 0,
+						'SigPartId' => 0,
+						'MicAlg' => '',
+						'Signature' => \trim($aMatch[0])
+					];
+				}
+
+				$oMessage->bPgpEncrypted = !$oMessage->bPgpEncrypted && false !== \stripos($oMessage->sPlain, '-----BEGIN PGP MESSAGE-----');
+
+				unset($aHtmlParts, $aPlainParts, $aMatch);
+			}
+
 			$gAttachmentsParts = $oBodyStructure->SearchAttachmentsParts();
 			if ($gAttachmentsParts->valid())
 			{
-				$this->oAttachments = new AttachmentCollection;
+				$oMessage->oAttachments = new AttachmentCollection;
 				foreach ($gAttachmentsParts as /* @var $oAttachmentItem \MailSo\Imap\BodyStructure */ $oAttachmentItem)
 				{
-					$this->oAttachments->append(
-						Attachment::NewBodyStructureInstance($this->sFolder, $this->iUid, $oAttachmentItem)
+					$oMessage->oAttachments->append(
+						Attachment::NewBodyStructureInstance($oMessage->sFolder, $oMessage->iUid, $oAttachmentItem)
 					);
 				}
 			}
 		}
 
-		return $this;
+		return $oMessage;
 	}
 
 	public function jsonSerialize()

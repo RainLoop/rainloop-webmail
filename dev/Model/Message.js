@@ -20,8 +20,6 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 
 import PreviewHTML from 'Html/PreviewMessage.html';
 
-import { PgpUserStore } from 'Stores/User/Pgp';
-
 const
 	/*eslint-disable max-len*/
 	url = /(^|[\s\n]|\/?>)(https:\/\/[-A-Z0-9+\u0026\u2019#/%?=()~_|!:,.;]*[-A-Z0-9+\u0026#/%=~()_|])/gi,
@@ -102,7 +100,7 @@ export class MessageModel extends AbstractModel {
 			hasImages: false,
 			hasExternals: false,
 
-			isPgpSigned: false,
+			pgpSigned: null, // { BodyPartId: "1", SigPartId: "2", MicAlg: "pgp-sha256" }
 			isPgpEncrypted: false,
 			pgpSignedVerifyStatus: SignedVerifyStatus.None,
 			pgpSignedVerifyUser: '',
@@ -181,7 +179,7 @@ export class MessageModel extends AbstractModel {
 		this.hasExternals(false);
 		this.attachments(new AttachmentCollectionModel);
 
-		this.isPgpSigned(false);
+		this.pgpSigned(null);
 		this.isPgpEncrypted(false);
 		this.pgpSignedVerifyStatus(SignedVerifyStatus.None);
 		this.pgpSignedVerifyUser('');
@@ -404,7 +402,7 @@ export class MessageModel extends AbstractModel {
 	viewHtml() {
 		const body = this.body;
 		if (body && this.html()) {
-			let html = this.html().toString()
+			let html = this.html()
 				.replace(/font-size:\s*[0-9]px/g, 'font-size:11px')
 				// Strip utm_* tracking
 				.replace(/(\\?|&amp;|&)utm_[a-z]+=[a-z0-9_-]*/si, '$1');
@@ -465,7 +463,7 @@ export class MessageModel extends AbstractModel {
 		if (body && this.plain()) {
 			body.classList.toggle('html', 0);
 			body.classList.toggle('plain', 1);
-			body.innerHTML = plainToHtml(this.plain().toString())
+			body.innerHTML = plainToHtml(this.plain())
 				// Strip utm_* tracking
 				.replace(/(\\?|&amp;|&)utm_[a-z]+=[a-z0-9_-]*/si, '$1')
 				.replace(url, '$1<a href="$2" target="_blank">$2</a>')
@@ -479,8 +477,6 @@ export class MessageModel extends AbstractModel {
 	}
 
 	initView() {
-		PgpUserStore.initMessageBodyControls(this.body, this);
-
 		// init BlockquoteSwitcher
 		this.body.querySelectorAll('blockquote:not(.rl-bq-switcher)').forEach(node => {
 			if (node.textContent.trim() && !node.parentNode.closest('blockquote')) {

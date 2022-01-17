@@ -370,7 +370,7 @@ export const MessageUserStore = new class {
 						message.hasImages(body.rlHasImages);
 					} else {
 						body = Element.fromHTML('<div id="' + id + '" hidden="" class="b-text-part '
-							+ (message.isPgpSigned() ? ' openpgp-signed' : '')
+							+ (message.pgpSigned() ? ' openpgp-signed' : '')
 							+ (message.isPgpEncrypted() ? ' openpgp-encrypted' : '')
 							+ '">'
 							+ '</div>');
