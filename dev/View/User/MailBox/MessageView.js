@@ -124,7 +124,7 @@ export class MailMessageView extends AbstractViewRight {
 		this.oMessageScrollerDom = null;
 
 		this.addObservables({
-			showAttachmnetControls: false,
+			showAttachmentControls: false,
 			downloadAsZipLoading: false,
 			lastReplyAction_: '',
 			showFullInfo: '1' === Local.get(ClientSideKeyName.MessageHeaderFullInfo),
@@ -150,7 +150,7 @@ export class MailMessageView extends AbstractViewRight {
 		this.messageListOfThreadsLoading = ko.observable(false).extend({ rateLimit: 1 });
 		this.highlightUnselectedAttachments = ko.observable(false).extend({ falseTimeout: 2000 });
 
-		this.showAttachmnetControlsState = v => Local.set(ClientSideKeyName.MessageAttachmentControls, !!v);
+		this.showAttachmentControlsState = v => Local.set(ClientSideKeyName.MessageAttachmentControls, !!v);
 
 		this.downloadAsZipError = ko.observable(false).extend({ falseTimeout: 7000 });
 
@@ -198,9 +198,9 @@ export class MailMessageView extends AbstractViewRight {
 		});
 
 		this.addComputables({
-			allowAttachmnetControls: () => this.attachmentsActions.length && Settings.capa(Capa.AttachmentsActions),
+			allowAttachmentControls: () => this.attachmentsActions.length && Settings.capa(Capa.AttachmentsActions),
 
-			downloadAsZipAllowed: () => this.attachmentsActions.includes('zip') && this.allowAttachmnetControls(),
+			downloadAsZipAllowed: () => this.attachmentsActions.includes('zip') && this.allowAttachmentControls(),
 
 			lastReplyAction: {
 				read: this.lastReplyAction_,
@@ -248,7 +248,7 @@ export class MailMessageView extends AbstractViewRight {
 		});
 
 		this.addSubscribables({
-			showAttachmnetControls: v => MessageUserStore.message()
+			showAttachmentControls: v => MessageUserStore.message()
 				&& MessageUserStore.message().attachments.forEach(item => item && item.checked(!!v)),
 
 			lastReplyAction_: value => Local.set(ClientSideKeyName.LastReplyAction, value),
@@ -257,10 +257,10 @@ export class MailMessageView extends AbstractViewRight {
 				this.messageActiveDom(null);
 
 				if (message) {
-					this.showAttachmnetControls(false);
+					this.showAttachmentControls(false);
 					if (Local.get(ClientSideKeyName.MessageAttachmentControls)) {
 						setTimeout(() => {
-							this.showAttachmnetControls(true);
+							this.showAttachmentControls(true);
 						}, 50);
 					}
 

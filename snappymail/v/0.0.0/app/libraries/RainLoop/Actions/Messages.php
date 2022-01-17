@@ -253,7 +253,7 @@ trait Messages
 						\fclose($rMessageStream);
 					}
 
-					$this->deleteMessageAttachmnets($oAccount);
+					$this->deleteMessageAttachments($oAccount);
 
 					$sDraftFolder = $this->GetActionParam('MessageFolder', '');
 					$iDraftUid = (int) $this->GetActionParam('MessageUid', 0);
@@ -820,7 +820,7 @@ trait Messages
 		return $this->TrueResponse($sResponseFunction);
 	}
 
-	private function deleteMessageAttachmnets(Account $oAccount) : void
+	private function deleteMessageAttachments(Account $oAccount) : void
 	{
 		$aAttachments = $this->GetActionParam('Attachments', null);
 

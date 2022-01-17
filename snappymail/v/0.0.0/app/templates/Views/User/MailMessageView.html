@@ -274,7 +274,7 @@
 								<span class="text" data-i18n="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></span>
 							</div>
 							<div class="attachmentsPlace" data-bind="visible: message() && message().attachments().hasVisible(),
-								css: {'selection-mode' : showAttachmnetControls, 'unselectedAttachmentsError': highlightUnselectedAttachments}">
+								css: {'selection-mode' : showAttachmentControls, 'unselectedAttachmentsError': highlightUnselectedAttachments}">
 								<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">
 									<li class="attachmentItem" draggable="true"
 											data-bind="visible: !isLinked, event: { 'dragstart': eventDragStart }, attr: { 'title': fileName }, css: {'checked': checked}">
@@ -301,11 +301,11 @@
 												click: function () { checked(!checked()); return false }"></div>
 									</li>
 								</ul>
-								<i class="fontastic controls-handle" data-bind="visible: allowAttachmnetControls() && !showAttachmnetControls(), click: function () { showAttachmnetControls(true); showAttachmnetControlsState(true); }">⚙</i>
+								<i class="fontastic controls-handle" data-bind="visible: allowAttachmentControls() && !showAttachmentControls(), click: function () { showAttachmentControls(true); showAttachmentControlsState(true); }">⚙</i>
 							</div>
 
 							<div class="attachmentsControls"
-								data-bind="visible: showAttachmnetControls() && message() && message().attachments().hasVisible()">
+								data-bind="visible: showAttachmentControls() && message() && message().attachments().hasVisible()">
 
 								<span data-bind="visible: downloadAsZipAllowed">
 									<i class="fontastic iconcolor-red" data-bind="visible: downloadAsZipError">✖</i>
@@ -316,7 +316,7 @@
 								</span>
 
 								<a href="#" class="close" style="margin-right: 5px;"
-									data-bind="click: function () { showAttachmnetControls(false); showAttachmnetControlsState(false); }">×</a>
+									data-bind="click: function () { showAttachmentControls(false); showAttachmentControlsState(false); }">×</a>
 							</div>
 						</div>
 
