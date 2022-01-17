@@ -13,6 +13,7 @@ if (defined('APP_VERSION'))
 	$aOptional = array(
 		'cURL' => extension_loaded('curl'),
 		'exif' => extension_loaded('exif'),
+		'gnupg' => extension_loaded('gnupg'),
 		'gd' => extension_loaded('gd'),
 		'gmagick' => extension_loaded('gmagick'),
 		'imagick' => extension_loaded('imagick'),

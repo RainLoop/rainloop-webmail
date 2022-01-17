@@ -13,22 +13,24 @@ namespace SnappyMail\PGP;
 
 abstract class Keyservers
 {
-	public static $keyservers = [
+	public static $hosts = [
 /*
-		'hkp://keys.gnupg.net',
-		'hkps://keyserver.ubuntu.com',
-		keys.openpgp.org
-		pgp.mit.edu
-		keyring.debian.org
-		keyserver.ubuntu.com
-		attester.flowcrypt.com
-		zimmermann.mayfirst.org
+		'https://keys.openpgp.org',
+		'https://pgp.mit.edu',
+		'https://keyring.debian.org',
+		'https://attester.flowcrypt.com',
+		'https://zimmermann.mayfirst.org',
+		'https://pool.sks-keyservers.net',
 */
-		'https://keys.fedoraproject.org'
+		'https://keyserver.ubuntu.com',
+		'https://keys.fedoraproject.org',
+		'https://keys.openpgp.org'
 	];
 
-	private static function fetch(string $host, string $op, string $search, bool $fingerprint = false, bool $exact = false) : ?Response
+	private static function fetch(string $host, string $op, string $search, bool $fingerprint = false, bool $exact = false) : ?\SnappyMail\HTTP\Response
 	{
+		$host = \str_replace('hkp://', 'http://', $host);
+		$host = \str_replace('hkps://', 'https://', $host);
 		$search = \urlencode($search);
 		$fingerprint = $fingerprint ? '&fingerprint=on' : '';
 		$exact = $exact ? '&exact=on' : '';
@@ -57,7 +59,7 @@ abstract class Keyservers
 			$keyId = '0x' . $keyId;
 		}
 
-		foreach ($this->keyservers as $host) {
+		foreach (static::$hosts as $host) {
 			$oResponse = static::fetch($host, 'get', $keyId);
 			if (!$oResponse) {
 				\SnappyMail\Log::info('PGP', "No response for key {$keyId} on {$host}");
@@ -86,7 +88,7 @@ abstract class Keyservers
 	public static function index(string $search, bool $fingerprint = true, bool $exact = false) : array
 	{
 		$keys = [];
-		foreach ($this->keyservers as $host) {
+		foreach (static::$hosts as $host) {
 			$oResponse = static::fetch($host, 'index', $search, $fingerprint, $exact);
 			if (!$oResponse) {
 				\SnappyMail\Log::info('PGP', "No response for key {$keyId} on {$host}");
@@ -98,6 +100,7 @@ abstract class Keyservers
 			}
 
 			$result = \explode("\n", $oResponse->body);
+			$curKey = null;
 			foreach ($result as $line) {
 				// https://datatracker.ietf.org/doc/html/draft-shaw-openpgp-hkp-00#section-5.2
 				$line = \explode(':', $line);

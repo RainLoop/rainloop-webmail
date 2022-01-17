@@ -658,7 +658,7 @@ export class MessageModel extends AbstractModel {
 		if (params) {
 			params.Folder = this.folder;
 			params.Uid = this.uid;
-			rl.app.Remote.post('PgpVerify', null, params)
+			rl.app.Remote.post('MessagePgpVerify', null, params)
 				.then(data => {
 					console.dir(data);
 				})

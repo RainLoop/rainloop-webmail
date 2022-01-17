@@ -12,40 +12,6 @@ use MailSo\Imap\Enumerations\MessageFlag;
 
 trait Messages
 {
-	public function DoPgpVerify() : array
-	{
-		$sFolderName = $this->GetActionParam('Folder', '');
-		$iUid = (int) $this->GetActionParam('Uid', 0);
-		$sBodyPartId = $this->GetActionParam('BodyPartId', '');
-		$sSigPartId = $this->GetActionParam('SigPartId', '');
-		$sMicAlg = $this->GetActionParam('MicAlg', '');
-
-		$oAccount = $this->initMailClientConnection();
-
-		$oImapClient = $this->MailClient()->ImapClient();
-		$oImapClient->FolderExamine($sFolderName);
-
-		$aFetchResponse = $oImapClient->Fetch([
-			// An empty section specification refers to the entire message, including the header.
-			// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
-			$aFetchItems[] = FetchType::BODY_PEEK.'['.$sBodyPartId.'.MIME]',
-			$aFetchItems[] = FetchType::BODY_PEEK.'['.$sBodyPartId.']',
-			$aFetchItems[] = FetchType::BODY_PEEK.'['.$sSigPartId.']'
-		], $iUid, true);
-
-		$oFetchResponse = $aFetchResponse[0];
-
-		$result = [
-			'MIME' => \trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.'.MIME]')),
-			'Body' => \trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']')),
-			'Signature' => \trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sSigPartId.']'))
-		];
-
-		// TODO: check gnugp and \SnappyMail\PGP\Keyservers::get() and \SnappyMail\PGP\Keyservers::index()
-
-		return $this->DefaultResponse(__FUNCTION__, $result);
-	}
-
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
@@ -684,6 +650,93 @@ trait Messages
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $mResult);
+	}
+
+	public function DoMessagePgpVerify() : array
+	{
+		$sFolderName = $this->GetActionParam('Folder', '');
+		$iUid = (int) $this->GetActionParam('Uid', 0);
+		$sBodyPartId = $this->GetActionParam('BodyPartId', '');
+		$sSigPartId = $this->GetActionParam('SigPartId', '');
+		$sMicAlg = $this->GetActionParam('MicAlg', '');
+
+		$oAccount = $this->initMailClientConnection();
+
+		$oImapClient = $this->MailClient()->ImapClient();
+		$oImapClient->FolderExamine($sFolderName);
+
+		$aFetchResponse = $oImapClient->Fetch([
+			// An empty section specification refers to the entire message, including the header.
+			// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
+			FetchType::BODY_PEEK.'['.$sBodyPartId.'.MIME]',
+			FetchType::BODY_PEEK.'['.$sBodyPartId.']',
+			FetchType::BODY_PEEK.'['.$sSigPartId.']',
+			FetchType::BuildBodyCustomHeaderRequest([
+				\MailSo\Mime\Enumerations\Header::FROM_,
+			], true)
+		], $iUid, true);
+
+		$oFetchResponse = $aFetchResponse[0];
+
+		$sKey = '';
+		$sFrom = $oFetchResponse->GetFetchValue('BODY[HEADER.FIELDS (FROM)]');
+		$aFrom = [];
+		if (\preg_match('/[^\\s<>]+@[^\\s<>]+/', $sFrom, $aFrom)) {
+			$sFrom = $aFrom[0];
+		}
+		if ($sFrom) {
+/*			// Check expired/revoked
+			$aKey = $this->StorageProvider()->Get(
+				$oAccount,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::PGP,
+				\sha1($sFrom)
+			);
+			if ($aKey) {
+				$sKey = $aKeys[0]['key'];
+			} else
+*/
+				try {
+					$aKeys = \SnappyMail\PGP\Keyservers::index($sFrom);
+					if ($aKeys) {
+						$sKey = \SnappyMail\PGP\Keyservers::get($aKeys[0]['keyid']);
+						if ($sKey) {
+							$aKeys[0]['key'] = $sKey;
+/*
+							$this->StorageProvider()->Put(
+								$oAccount,
+								\RainLoop\Providers\Storage\Enumerations\StorageType::PGP,
+								\sha1($sFrom),
+								$aKeys[0]
+							);
+*/
+						}
+					}
+				} catch (\Throwable $e) {
+					// ignore
+				}
+		}
+
+		$result = [
+			'MIME' => \trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.'.MIME]')),
+			'Body' => \trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']')),
+			'Signature' => \trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sSigPartId.']')),
+			'From' => $sFrom,
+			'PubKey' => $sKey
+		];
+
+		// TODO: this fails
+		if ($result['PubKey'] && \class_exists('gnupg')) {
+			$pgp_dir = $this->StorageProvider()->GenerateFilePath($oAccount, \RainLoop\Providers\Storage\Enumerations\StorageType::PGP);
+			$gpg = new \gnupg(['home_dir' => \dirname($pgp_dir) . '/.gnupg']);
+			$gpg->import($result['PubKey']);
+			$info = $gpg->verify(
+				\trim(\trim($result['MIME']) . "\r\n\r\n" . \trim($result['Body'])),
+				$result['Signature']
+			);
+			$result['gnupg'] = $info;
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, $result);
 	}
 
 	/**

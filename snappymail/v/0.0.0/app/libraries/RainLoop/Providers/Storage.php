@@ -66,6 +66,11 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 		return $this->oDriver->DeleteStorage($mAccount);
 	}
 
+	public function GenerateFilePath($mAccount, int $iStorageType, bool $bMkDir = false) : string
+	{
+		return $this->oDriver->GenerateFilePath($mAccount, $iStorageType, $bMkDir);
+	}
+
 	public function IsActive() : bool
 	{
 		return true;

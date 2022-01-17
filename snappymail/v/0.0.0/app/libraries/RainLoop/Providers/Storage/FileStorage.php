@@ -89,10 +89,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 		return $this->bLocal;
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account|string|null $mAccount
-	 */
-	protected function generateFileName($mAccount, int $iStorageType, string $sKey, bool $bMkDir = false, bool $bForDeleteAction = false) : string
+	public function GenerateFilePath($mAccount, int $iStorageType, bool $bMkDir = false, bool $bForDeleteAction = false) : string
 	{
 		$sEmail = $sSubFolder = '';
 		if (null === $mAccount) {
@@ -103,6 +100,8 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 				$sSubFolder = '.sign_me';
 			} else if (StorageType::SESSION === $iStorageType) {
 				$sSubFolder = '.sessions';
+			} else if (StorageType::PGP === $iStorageType) {
+				$sSubFolder = '.pgp';
 			}
 		} else if ($mAccount instanceof \RainLoop\Model\AdditionalAccount) {
 			$sEmail = $mAccount->ParentEmail();
@@ -117,11 +116,12 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 		switch ($iStorageType)
 		{
 			case StorageType::NOBODY:
-				$sFilePath = $this->sDataPath.'/__nobody__/'.\sha1($sKey ?: \time());
+				$sFilePath = $this->sDataPath.'/__nobody__/';
 				break;
 			case StorageType::SIGN_ME:
 			case StorageType::SESSION:
 			case StorageType::CONFIG:
+			case StorageType::PGP:
 				if (empty($sEmail)) {
 					return '';
 				}
@@ -133,8 +133,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 				$sFilePath = $this->sDataPath
 					.'/'.\RainLoop\Utils::fixName($sDomain ?: 'unknown.tld')
 					.'/'.\RainLoop\Utils::fixName(\implode('@', $aEmail) ?: '.unknown')
-					.'/'.($sSubFolder ? \RainLoop\Utils::fixName($sSubFolder).'/' : '')
-					.($sKey ? \RainLoop\Utils::fixName($sKey) : '');
+					.'/'.($sSubFolder ? \RainLoop\Utils::fixName($sSubFolder).'/' : '');
 				break;
 			default:
 				throw new \Exception("Invalid storage type {$iStorageType}");
@@ -148,6 +147,22 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 			}
 		}
 
+		return $sFilePath;
+	}
+
+	/**
+	 * @param \RainLoop\Model\Account|string|null $mAccount
+	 */
+	protected function generateFileName($mAccount, int $iStorageType, string $sKey, bool $bMkDir = false, bool $bForDeleteAction = false) : string
+	{
+		$sFilePath = $this->GenerateFilePath($mAccount, $iStorageType, $bMkDir, $bForDeleteAction);
+		if ($sFilePath) {
+			if (StorageType::NOBODY === $iStorageType) {
+				$sFilePath .= \sha1($sKey ?: \time());
+			} else {
+				$sFilePath .= ($sKey ? \RainLoop\Utils::fixName($sKey) : '');
+			}
+		}
 		return $sFilePath;
 	}
 
