@@ -42,65 +42,6 @@ import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 import { PgpUserStore } from 'Stores/User/Pgp';
 
-function controlsHelper(dom, verControl, success, title, text)
-{
-	dom.classList.toggle('error', !success);
-	dom.classList.toggle('success', success);
-//	verControl.classList.toggle('error', !success);
-//	verControl.classList.toggle('success', success);
-	dom.title = verControl.title = title;
-
-	if (undefined !== text) {
-		dom.textContent = text.trim();
-	}
-}
-
-function pgpClickHelper(dom, armoredMessage) {
-	if (dom.classList.contains('success') || dom.classList.contains('error')) {
-		return;
-	}
-
-	let message = null;
-	try {
-		message = PgpUserStore.openpgp.cleartext.readArmored(armoredMessage);
-	} catch (e) {
-		console.log(e);
-	}
-
-	if (message && message.getText && message.verify) {
-		PgpUserStore.verifyMessage(message, (validKey, signingKeyIds) => {
-			console.dir([validKey, signingKeyIds]);
-/*
-			if (validKey) {
-				controlsHelper(
-					dom,
-					this,
-					true,
-					i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
-						USER: validKey.user + ' (' + validKey.id + ')'
-					}),
-					message.getText()
-				);
-			} else {
-				const keyIds = arrayLength(signingKeyIds) ? signingKeyIds : null,
-					additional = keyIds
-						? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(v => v).join(', ')
-						: '';
-
-				controlsHelper(
-					dom,
-					this,
-					false,
-					i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') + (additional ? ' (' + additional + ')' : '')
-				);
-			}
-*/
-		});
-	} else {
-		controlsHelper(dom, this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
-	}
-}
-
 export class MailMessageView extends AbstractViewRight {
 	constructor() {
 		super('MailMessageView');
@@ -237,8 +178,7 @@ export class MailMessageView extends AbstractViewRight {
 				return '';
 			},
 
-			pgpSigned: () => PgpUserStore.openpgp
-				&& MessageUserStore.message() && !!MessageUserStore.message().pgpSigned(),
+			pgpSigned: () => MessageUserStore.message() && !!MessageUserStore.message().pgpSigned(),
 
 			pgpEncrypted: () => PgpUserStore.openpgp
 				&& MessageUserStore.message() && MessageUserStore.message().isPgpEncrypted(),
@@ -682,13 +622,13 @@ export class MailMessageView extends AbstractViewRight {
 		}
 	}
 
-	pgpDecrypt(self/*, event*/) {
+	pgpDecrypt(self) {
 		const message = self.message();
-		message && pgpClickHelper(message.body, message.plain(), message.getEmails(['from', 'to', 'cc']));
+		message && message.pgpDecrypt();
 	}
 
-	pgpVerify(self/*, event*/) {
+	pgpVerify(self) {
 		const message = self.message();
-		message && pgpClickHelper(message.body, message.plain());
+		message && message.pgpVerify();
 	}
 }

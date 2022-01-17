@@ -100,7 +100,7 @@ export class MessageModel extends AbstractModel {
 			hasImages: false,
 			hasExternals: false,
 
-			pgpSigned: null, // { BodyPartId: "1", SigPartId: "2", MicAlg: "pgp-sha256" }
+			pgpSigned: null,
 			isPgpEncrypted: false,
 			pgpSignedVerifyStatus: SignedVerifyStatus.None,
 			pgpSignedVerifyUser: '',
@@ -643,4 +643,29 @@ export class MessageModel extends AbstractModel {
 			this.isReadReceipt()
 		].join(',');
 	}
+
+	pgpDecrypt() {
+//		const message = self.message();
+//		message && pgpClickHelper(message.body, message.plain(), message.getEmails(['from', 'to', 'cc']));
+/*
+			pgpEncrypted: () => PgpUserStore.openpgp
+				&& MessageUserStore.message() && MessageUserStore.message().isPgpEncrypted(),
+*/
+	}
+
+	pgpVerify() {
+		let params = this.pgpSigned(); // { BodyPartId: "1", SigPartId: "2", MicAlg: "pgp-sha256" }
+		if (params) {
+			params.Folder = this.folder;
+			params.Uid = this.uid;
+			rl.app.Remote.post('PgpVerify', null, params)
+				.then(data => {
+					console.dir(data);
+				})
+				.catch(error => {
+					console.dir(error);
+				});
+		}
+	}
+
 }

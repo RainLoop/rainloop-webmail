@@ -7,10 +7,45 @@ use RainLoop\Exceptions\ClientException;
 use RainLoop\Model\Account;
 use RainLoop\Notifications;
 use MailSo\Imap\SequenceSet;
+use MailSo\Imap\Enumerations\FetchType;
 use MailSo\Imap\Enumerations\MessageFlag;
 
 trait Messages
 {
+	public function DoPgpVerify() : array
+	{
+		$sFolderName = $this->GetActionParam('Folder', '');
+		$iUid = (int) $this->GetActionParam('Uid', 0);
+		$sBodyPartId = $this->GetActionParam('BodyPartId', '');
+		$sSigPartId = $this->GetActionParam('SigPartId', '');
+		$sMicAlg = $this->GetActionParam('MicAlg', '');
+
+		$oAccount = $this->initMailClientConnection();
+
+		$oImapClient = $this->MailClient()->ImapClient();
+		$oImapClient->FolderExamine($sFolderName);
+
+		$aFetchResponse = $oImapClient->Fetch([
+			// An empty section specification refers to the entire message, including the header.
+			// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
+			$aFetchItems[] = FetchType::BODY_PEEK.'['.$sBodyPartId.'.MIME]',
+			$aFetchItems[] = FetchType::BODY_PEEK.'['.$sBodyPartId.']',
+			$aFetchItems[] = FetchType::BODY_PEEK.'['.$sSigPartId.']'
+		], $iUid, true);
+
+		$oFetchResponse = $aFetchResponse[0];
+
+		$result = [
+			'MIME' => \trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.'.MIME]')),
+			'Body' => \trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']')),
+			'Signature' => \trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sSigPartId.']'))
+		];
+
+		// TODO: check gnugp and \SnappyMail\PGP\Keyservers::get() and \SnappyMail\PGP\Keyservers::index()
+
+		return $this->DefaultResponse(__FUNCTION__, $result);
+	}
+
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
