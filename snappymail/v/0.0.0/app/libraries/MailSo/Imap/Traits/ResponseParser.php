@@ -184,7 +184,7 @@ trait ResponseParser
 								if (!$bTreatAsAtom) {
 									$aList[] = $sLiteral;
 									if (\MailSo\Config::$LogSimpleLiterals) {
-										$this->writeLog('{'.$iLiteralSize.'} '.$sLiteral, \MailSo\Log\Enumerations\Type::INFO);
+										$this->writeLog('{'.$iLiteralLen.'} '.$sLiteral, \MailSo\Log\Enumerations\Type::INFO);
 									}
 								} else {
 									\SnappyMail\Log::notice('IMAP', 'Literal treated as atom and skipped');
