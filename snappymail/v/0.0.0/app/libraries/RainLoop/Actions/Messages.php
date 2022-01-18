@@ -682,26 +682,26 @@ trait Messages
 
 		if ($sSigPartId) {
 			$result = [
-				'Text' => \preg_replace('/\\R/s', "\r\n",
+				'text' => \preg_replace('/\\R/s', "\r\n",
 					$oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.'.MIME]')
 					. $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']')
 				),
-				'Signature' => preg_replace('/[^\x00-\x7F]/', '',
+				'signature' => preg_replace('/[^\x00-\x7F]/', '',
 					$oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sSigPartId.']')
 				)
 			];
 		} else {
 			// clearsigned text
 			$result = [
-				'Text' => \preg_replace('/\\R/s', "\r\n",
+				'text' => \preg_replace('/\\R/s', "\r\n",
 					$oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']')
 				),
-				'Signature' => false
+				'signature' => false
 			];
 		}
 
 		if (\class_exists('gnupg')) {
-			$info = $this->GnuPG()->verify($result['Text'], $result['Signature'])[0];
+			$info = $this->GnuPG()->verify($result['text'], $result['signature'])[0];
 
 			/**
 			 * https://code.woboq.org/qt5/include/gpg-error.h.html
@@ -727,17 +727,15 @@ trait Messages
 //				GNUPG_SIGSUM_TOFU_CONFLICT = 'A TOFU conflict was detected.',
 			];
 
-			// Verified, so no need to return $result['Text'] and $result['Signature']
+			// Verified, so no need to return $result['text'] and $result['signature']
 			$result = [
-				'Result' => [
-					'fingerprint' => $info['fingerprint'],
-					'validity' => $info['validity'],
-					'status' => $info['status'],
-					'summary' => $info['summary'],
-					'message' => \implode("\n", \array_filter($summary, function($k) use ($info) {
-						return $info['summary'] & $k;
-					}, ARRAY_FILTER_USE_KEY))
-				]
+				'fingerprint' => $info['fingerprint'],
+				'validity' => $info['validity'],
+				'status' => $info['status'],
+				'summary' => $info['summary'],
+				'message' => \implode("\n", \array_filter($summary, function($k) use ($info) {
+					return $info['summary'] & $k;
+				}, ARRAY_FILTER_USE_KEY))
 			];
 		}
 
