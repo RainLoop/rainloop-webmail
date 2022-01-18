@@ -727,14 +727,17 @@ trait Messages
 //				GNUPG_SIGSUM_TOFU_CONFLICT = 'A TOFU conflict was detected.',
 			];
 
-			$result['Result'] = [
-				'fingerprint' => $info['fingerprint'],
-				'validity' => $info['validity'],
-				'status' => $info['status'],
-				'summary' => $info['summary'],
-				'message' => \implode("\n", \array_filter($summary, function($k) use ($info) {
-					return $info['summary'] & $k;
-				}, ARRAY_FILTER_USE_KEY))
+			// Verified, so no need to return $result['Text'] and $result['Signature']
+			$result = [
+				'Result' => [
+					'fingerprint' => $info['fingerprint'],
+					'validity' => $info['validity'],
+					'status' => $info['status'],
+					'summary' => $info['summary'],
+					'message' => \implode("\n", \array_filter($summary, function($k) use ($info) {
+						return $info['summary'] & $k;
+					}, ARRAY_FILTER_USE_KEY))
+				]
 			];
 		}
 
