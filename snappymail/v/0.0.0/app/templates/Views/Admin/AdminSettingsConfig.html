@@ -9,10 +9,10 @@
 			<td data-bind="text: name"></td>
 			<td>
 				<!-- ko if: 'checkbox' == type -->
-				<input type="checkbox" data-bind="attr: {name: key, checked: value}"/>
+				<input type="checkbox" data-bind="attr: {name: key, checked: value}" readonly=""/>
 				<!-- /ko -->
 				<!-- ko if: 'checkbox' != type -->
-				<input data-bind="attr: {name: key, type: type}, value: value"/>
+				<input data-bind="attr: {name: key, type: type}, value: value" readonly=""/>
 				<!-- /ko -->
 				<em data-bind="text: comment, visible: comment"></em>
 			</td>
