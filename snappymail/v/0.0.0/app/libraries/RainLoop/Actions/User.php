@@ -15,6 +15,7 @@ trait User
 	use Filters;
 	use Folders;
 	use Messages;
+	use Pgp;
 
 	/**
 	 * @var \RainLoop\Providers\Suggestions

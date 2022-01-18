@@ -658,82 +658,67 @@ trait Messages
 		$iUid = (int) $this->GetActionParam('Uid', 0);
 		$sBodyPartId = $this->GetActionParam('BodyPartId', '');
 		$sSigPartId = $this->GetActionParam('SigPartId', '');
-		$sMicAlg = $this->GetActionParam('MicAlg', '');
+//		$sMicAlg = $this->GetActionParam('MicAlg', '');
 
 		$oAccount = $this->initMailClientConnection();
 
 		$oImapClient = $this->MailClient()->ImapClient();
 		$oImapClient->FolderExamine($sFolderName);
 
-		$aFetchResponse = $oImapClient->Fetch([
+		$oFetchResponse = $oImapClient->Fetch([
 			// An empty section specification refers to the entire message, including the header.
 			// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
 			FetchType::BODY_PEEK.'['.$sBodyPartId.'.MIME]',
 			FetchType::BODY_PEEK.'['.$sBodyPartId.']',
-			FetchType::BODY_PEEK.'['.$sSigPartId.']',
-			FetchType::BuildBodyCustomHeaderRequest([
-				\MailSo\Mime\Enumerations\Header::FROM_,
-			], true)
-		], $iUid, true);
-
-		$oFetchResponse = $aFetchResponse[0];
-
-		$sKey = '';
-		$sFrom = $oFetchResponse->GetFetchValue('BODY[HEADER.FIELDS (FROM)]');
-		$aFrom = [];
-		if (\preg_match('/[^\\s<>]+@[^\\s<>]+/', $sFrom, $aFrom)) {
-			$sFrom = $aFrom[0];
-		}
-		if ($sFrom) {
-/*			// Check expired/revoked
-			$aKey = $this->StorageProvider()->Get(
-				$oAccount,
-				\RainLoop\Providers\Storage\Enumerations\StorageType::PGP,
-				\sha1($sFrom)
-			);
-			if ($aKey) {
-				$sKey = $aKeys[0]['key'];
-			} else
-*/
-				try {
-					$aKeys = \SnappyMail\PGP\Keyservers::index($sFrom);
-					if ($aKeys) {
-						$sKey = \SnappyMail\PGP\Keyservers::get($aKeys[0]['keyid']);
-						if ($sKey) {
-							$aKeys[0]['key'] = $sKey;
-/*
-							$this->StorageProvider()->Put(
-								$oAccount,
-								\RainLoop\Providers\Storage\Enumerations\StorageType::PGP,
-								\sha1($sFrom),
-								$aKeys[0]
-							);
-*/
-						}
-					}
-				} catch (\Throwable $e) {
-					// ignore
-				}
-		}
+			FetchType::BODY_PEEK.'['.$sSigPartId.']'
+		], $iUid, true)[0];
 
 		$result = [
-			'MIME' => \trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.'.MIME]')),
-			'Body' => \trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']')),
-			'Signature' => \trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sSigPartId.']')),
-			'From' => $sFrom,
-			'PubKey' => $sKey
+			'Text' => \preg_replace('/\\R/s', "\r\n",
+				$oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.'.MIME]')
+				. $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']')
+			),
+			'Signature' => preg_replace('/[^\x00-\x7F]/', '',
+				$oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sSigPartId.']')
+			)
 		];
 
-		// TODO: this fails
-		if ($result['PubKey'] && \class_exists('gnupg')) {
-			$pgp_dir = $this->StorageProvider()->GenerateFilePath($oAccount, \RainLoop\Providers\Storage\Enumerations\StorageType::PGP);
-			$gpg = new \gnupg(['home_dir' => \dirname($pgp_dir) . '/.gnupg']);
-			$gpg->import($result['PubKey']);
-			$info = $gpg->verify(
-				\trim(\trim($result['MIME']) . "\r\n\r\n" . \trim($result['Body'])),
-				$result['Signature']
-			);
-			$result['gnupg'] = $info;
+		if (\class_exists('gnupg')) {
+			$info = $this->GnuPG()->verify($result['Text'], $result['Signature'])[0];
+
+			/**
+			 * https://code.woboq.org/qt5/include/gpg-error.h.html
+			 * status:
+				0 = GPG_ERR_NO_ERROR
+				9 = GPG_ERR_NO_PUBKEY
+				117440513 = General error
+				117440520 = Bad signature
+			 */
+
+			$summary = [
+				GNUPG_SIGSUM_VALID => 'The signature is fully valid.',
+				GNUPG_SIGSUM_GREEN => 'The signature is good but one might want to display some extra information. Check the other bits.',
+				GNUPG_SIGSUM_RED => 'The signature is bad. It might be useful to check other bits and display more information, i.e. a revoked certificate might not render a signature invalid when the message was received prior to the cause for the revocation.',
+				GNUPG_SIGSUM_KEY_REVOKED => 'The key or at least one certificate has been revoked.',
+				GNUPG_SIGSUM_KEY_EXPIRED => 'The key or one of the certificates has expired. It is probably a good idea to display the date of the expiration.',
+				GNUPG_SIGSUM_SIG_EXPIRED => 'The signature has expired.',
+				GNUPG_SIGSUM_KEY_MISSING => 'Can’t verify due to a missing key or certificate.',
+				GNUPG_SIGSUM_CRL_MISSING => 'The CRL (or an equivalent mechanism) is not available.',
+				GNUPG_SIGSUM_CRL_TOO_OLD => 'Available CRL is too old.',
+				GNUPG_SIGSUM_BAD_POLICY => 'A policy requirement was not met.',
+				GNUPG_SIGSUM_SYS_ERROR => 'A system error occurred.',
+//				GNUPG_SIGSUM_TOFU_CONFLICT = 'A TOFU conflict was detected.',
+			];
+
+			$result['Result'] = [
+				'fingerprint' => $info['fingerprint'],
+				'validity' => $info['validity'],
+				'status' => $info['status'],
+				'summary' => $info['summary'],
+				'message' => \implode("\n", \array_filter($summary, function($k) use ($info) {
+					return $info['summary'] & $k;
+				}, ARRAY_FILTER_USE_KEY))
+			];
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $result);
