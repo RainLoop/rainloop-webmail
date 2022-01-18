@@ -652,6 +652,9 @@ trait Messages
 		return $this->DefaultResponse(__FUNCTION__, $mResult);
 	}
 
+	/**
+	 * https://datatracker.ietf.org/doc/html/rfc3156#section-5
+	 */
 	public function DoMessagePgpVerify() : array
 	{
 		$sFolderName = $this->GetActionParam('Folder', '');
@@ -665,23 +668,37 @@ trait Messages
 		$oImapClient = $this->MailClient()->ImapClient();
 		$oImapClient->FolderExamine($sFolderName);
 
-		$oFetchResponse = $oImapClient->Fetch([
+		$aParts = [
+			FetchType::BODY_PEEK.'['.$sBodyPartId.']'
+		];
+		if ($sSigPartId) {
 			// An empty section specification refers to the entire message, including the header.
 			// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
-			FetchType::BODY_PEEK.'['.$sBodyPartId.'.MIME]',
-			FetchType::BODY_PEEK.'['.$sBodyPartId.']',
-			FetchType::BODY_PEEK.'['.$sSigPartId.']'
-		], $iUid, true)[0];
+			$aParts[] = FetchType::BODY_PEEK.'['.$sBodyPartId.'.MIME]';
+			$aParts[] = FetchType::BODY_PEEK.'['.$sSigPartId.']';
+		}
 
-		$result = [
-			'Text' => \preg_replace('/\\R/s', "\r\n",
-				$oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.'.MIME]')
-				. $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']')
-			),
-			'Signature' => preg_replace('/[^\x00-\x7F]/', '',
-				$oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sSigPartId.']')
-			)
-		];
+		$oFetchResponse = $oImapClient->Fetch($aParts, $iUid, true)[0];
+
+		if ($sSigPartId) {
+			$result = [
+				'Text' => \preg_replace('/\\R/s', "\r\n",
+					$oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.'.MIME]')
+					. $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']')
+				),
+				'Signature' => preg_replace('/[^\x00-\x7F]/', '',
+					$oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sSigPartId.']')
+				)
+			];
+		} else {
+			// clearsigned text
+			$result = [
+				'Text' => \preg_replace('/\\R/s', "\r\n",
+					$oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']')
+				),
+				'Signature' => false
+			];
+		}
 
 		if (\class_exists('gnupg')) {
 			$info = $this->GnuPG()->verify($result['Text'], $result['Signature'])[0];

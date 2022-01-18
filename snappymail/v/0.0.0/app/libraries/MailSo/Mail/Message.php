@@ -77,8 +77,6 @@ class Message implements \JsonSerializable
 
 		$aThreads = array(),
 
-		$bTextPartIsTrimmed = false,
-
 		$aPgpSigned = null,
 		$bPgpEncrypted = false;
 
@@ -538,26 +536,27 @@ class Message implements \JsonSerializable
 					$sText = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oPart->PartID().']');
 					if (null === $sText)
 					{
+						// TextPartIsTrimmed ?
 						$sText = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oPart->PartID().']<0>');
-						if (\is_string($sText) && \strlen($sText))
-						{
-							$oMessage->bTextPartIsTrimmed = true;
-						}
 					}
 
 					if (\is_string($sText) && \strlen($sText))
 					{
-						$sTextCharset = $oPart->Charset();
-						if (empty($sTextCharset))
-						{
-							$sTextCharset = $sCharset;
-						}
-
-						$sTextCharset = Utils::NormalizeCharset($sTextCharset, true);
-
 						$sText = Utils::DecodeEncodingValue($sText, $oPart->MailEncodingName());
-						$sText = Utils::ConvertEncoding($sText, $sTextCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
+						$sText = Utils::ConvertEncoding($sText,
+							Utils::NormalizeCharset($oPart->Charset() ?: $sCharset, true),
+							\MailSo\Base\Enumerations\Charset::UTF_8
+						);
 						$sText = Utils::Utf8Clear($sText);
+
+						// https://datatracker.ietf.org/doc/html/rfc4880#section-7
+						// Cleartext Signature
+						if (!$oMessage->aPgpSigned && \str_contains($sText, '-----BEGIN PGP SIGNED MESSAGE-----'))
+						{
+							$oMessage->aPgpSigned = [
+								'BodyPartId' => $oPart->PartID()
+							];
+						}
 
 						if ('text/html' === $oPart->ContentType())
 						{
@@ -578,19 +577,6 @@ class Message implements \JsonSerializable
 				$oMessage->sHtml = \implode('<br />', $aHtmlParts);
 				$oMessage->sPlain = \trim(\implode("\n", $aPlainParts));
 
-				$aMatch = array();
-				if (!$oMessage->aPgpSigned && \preg_match('/-----BEGIN PGP SIGNATURE-----.+?-----END PGP SIGNATURE-----/ism', $oMessage->sPlain, $aMatch))
-				{
-					$oMessage->aPgpSigned = [
-						// /?/Raw/&q[]=/0/Download/&q[]=/...
-						// /?/Raw/&q[]=/0/View/&q[]=/...
-						'BodyPartId' => 0,
-						'SigPartId' => 0,
-						'MicAlg' => '',
-						'Signature' => \trim($aMatch[0])
-					];
-				}
-
 				$oMessage->bPgpEncrypted = !$oMessage->bPgpEncrypted && false !== \stripos($oMessage->sPlain, '-----BEGIN PGP MESSAGE-----');
 
 				unset($aHtmlParts, $aPlainParts, $aMatch);
@@ -602,6 +588,7 @@ class Message implements \JsonSerializable
 				$oMessage->oAttachments = new AttachmentCollection;
 				foreach ($gAttachmentsParts as /* @var $oAttachmentItem \MailSo\Imap\BodyStructure */ $oAttachmentItem)
 				{
+//					if ('application/pgp-keys' === $oAttachmentItem->ContentType()) import ???
 					$oMessage->oAttachments->append(
 						Attachment::NewBodyStructureInstance($oMessage->sFolder, $oMessage->iUid, $oAttachmentItem)
 					);
