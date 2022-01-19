@@ -47,7 +47,7 @@ class NewOpenPgpKeyPopupView extends AbstractViewPopup {
 
 		setTimeout(() => {
 			try {
-				PgpUserStore.openpgp
+				openpgp
 					.generateKey({
 						userIds: [userId],
 						numBits: pInt(this.keyBitLength()),
@@ -62,7 +62,7 @@ class NewOpenPgpKeyPopupView extends AbstractViewPopup {
 
 							openpgpKeyring.store();
 
-							rl.app.reloadOpenPgpKeys();
+							PgpUserStore.reloadOpenPgpKeys();
 							this.cancelCommand();
 						}
 					})

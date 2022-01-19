@@ -35,7 +35,9 @@ module.exports = {
 		// vendors/jua
 		'Jua': "readonly",
 		// vendors/bootstrap/bootstrap.native.js
-		'BSN': "readonly"
+		'BSN': "readonly",
+		// Mailvelope
+		'mailvelope': "readonly"
 	},
 	// http://eslint.org/docs/rules/
 	rules: {

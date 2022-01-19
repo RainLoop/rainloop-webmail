@@ -34,6 +34,7 @@ import { MessageUserStore } from 'Stores/User/Message';
 import Remote from 'Remote/User/Fetch';
 
 import { ComposeAttachmentModel } from 'Model/ComposeAttachment';
+import { EmailModel } from 'Model/Email';
 
 import { decorateKoCommands, isPopupVisible, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
@@ -41,7 +42,6 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
 import { AskPopupView } from 'View/Popup/Ask';
 import { ContactsPopupView } from 'View/Popup/Contacts';
-import { ComposeOpenPgpPopupView } from 'View/Popup/ComposeOpenPgp';
 
 import { ThemeStore } from 'Stores/Theme';
 
@@ -131,7 +131,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 		this.bSkipNextHide = false;
 
-		this.capaOpenPGP = !!PgpUserStore.openpgp;
+		this.capaOpenPGP = PgpUserStore.isSupported();
 
 		this.identities = IdentityUserStore;
 
@@ -168,6 +168,11 @@ class ComposePopupView extends AbstractViewPopup {
 			showCc: false,
 			showBcc: false,
 			showReplyTo: false,
+
+			pgpSign: false,
+			pgpEncrypt: false,
+			canPgpSign: false,
+			canPgpEncrypt: false,
 
 			draftsFolder: '',
 			draftUid: 0,
@@ -265,7 +270,6 @@ class ComposePopupView extends AbstractViewPopup {
 			},
 
 			canBeSentOrSaved: () => !this.sending() && !this.saving()
-
 		});
 
 		this.addSubscribables({
@@ -275,16 +279,26 @@ class ComposePopupView extends AbstractViewPopup {
 
 			sendSuccessButSaveError: value => !value && this.savedErrorDesc(''),
 
+			currentIdentity: value => {
+				this.canPgpSign(false);
+				value && PgpUserStore.hasPrivateKeyForEmail(value.email()).then(result => {
+					console.log({canPgpSign:result});
+					this.canPgpSign(result)
+				});
+			},
+
 			cc: value => {
 				if (false === this.showCc() && value.length) {
 					this.showCc(true);
 				}
+				this.initPgpEncrypt();
 			},
 
 			bcc: value => {
 				if (false === this.showBcc() && value.length) {
 					this.showBcc(true);
 				}
+				this.initPgpEncrypt();
 			},
 
 			replyTo: value => {
@@ -303,6 +317,7 @@ class ComposePopupView extends AbstractViewPopup {
 				if (this.emptyToError() && value.length) {
 					this.emptyToError(false);
 				}
+				this.initPgpEncrypt();
 			},
 
 			attachmentsInProcess: value => {
@@ -549,19 +564,6 @@ class ComposePopupView extends AbstractViewPopup {
 
 	emailsSource(oData, fResponse) {
 		rl.app.getAutocomplete(oData.term, aData => fResponse(aData.map(oEmailItem => oEmailItem.toLine(false))));
-	}
-
-	openOpenPgpPopup() {
-		if (PgpUserStore.openpgp && !this.oEditor.isHtml()) {
-			showScreenPopup(ComposeOpenPgpPopupView, [
-				result => this.editor(editor => editor.setPlain(result)),
-				this.oEditor.getData(false),
-				this.currentIdentity(),
-				this.to(),
-				this.cc(),
-				this.bcc()
-			]);
-		}
 	}
 
 	reloadDraftFolder() {
@@ -1419,6 +1421,9 @@ class ComposePopupView extends AbstractViewPopup {
 		this.showBcc(false);
 		this.showReplyTo(false);
 
+		this.pgpSign(false);
+		this.pgpEncrypt(false);
+
 		delegateRunOnDestroy(this.attachments());
 		this.attachments([]);
 
@@ -1441,6 +1446,31 @@ class ComposePopupView extends AbstractViewPopup {
 		return this.attachments.filter(item => item && !item.tempName()).map(
 			item => item.id
 		);
+	}
+
+	initPgpEncrypt() {
+		const email = new EmailModel();
+		return PgpUserStore.hasPublicKeyForEmails([
+//				this.currentIdentity.email(),
+				this.to(),
+				this.cc(),
+				this.bcc()
+			].join(',').split(',').map(value => {
+				email.clear();
+				email.parse(value.trim());
+				return email.email || false;
+			}).filter(v => v), 1).then(result => {
+				console.log({canPgpEncrypt:result});
+				this.canPgpEncrypt(result);
+			});
+	}
+
+	togglePgpSign() {
+		this.pgpSign(!this.pgpSign()/* && this.canPgpSign()*/);
+	}
+
+	togglePgpEncrypt() {
+		this.pgpEncrypt(!this.pgpEncrypt()/* && this.canPgpEncrypt()*/);
 	}
 }
 

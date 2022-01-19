@@ -648,7 +648,7 @@ export class MessageModel extends AbstractModel {
 //		const message = self.message();
 //		message && pgpClickHelper(message.body, message.plain(), message.getEmails(['from', 'to', 'cc']));
 /*
-			pgpEncrypted: () => PgpUserStore.openpgp
+			pgpEncrypted: () => PgpUserStore.isSupported()
 				&& MessageUserStore.message() && MessageUserStore.message().isPgpEncrypted(),
 */
 	}
@@ -660,9 +660,11 @@ export class MessageModel extends AbstractModel {
 			params.Uid = this.uid;
 			rl.app.Remote.post('MessagePgpVerify', null, params)
 				.then(data => {
+					// TODO
 					console.dir(data);
 				})
 				.catch(error => {
+					// TODO
 					console.dir(error);
 				});
 		}

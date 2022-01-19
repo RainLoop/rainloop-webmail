@@ -7,19 +7,46 @@ trait Pgp
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function GnuPG() : ?\gnupg
+	public function GnuPG() : ?\SnappyMail\PGP\GnuPG
 	{
-		if (\class_exists('gnupg')) {
-			$pgp_dir = $this->StorageProvider()->GenerateFilePath(
-				$this->getAccountFromToken(),
-				\RainLoop\Providers\Storage\Enumerations\StorageType::PGP
-			);
-			return new \gnupg(['home_dir' => \dirname($pgp_dir) . '/.gnupg']);
-		}
-		return null;
+		$pgp_dir = $this->StorageProvider()->GenerateFilePath(
+			$this->getAccountFromToken(),
+			\RainLoop\Providers\Storage\Enumerations\StorageType::PGP
+		);
+		return \SnappyMail\PGP\GnuPG::getInstance($pgp_dir);
 	}
 
-	public function DoImportKey() : array
+	public function DoPgpGetKeysEmails() : array
+	{
+		$GPG = $this->GnuPG();
+		if ($GPG) {
+			$sign = $encrypt = $keys = [];
+			foreach ($GPG->keyInfo('') as $info) {
+				if (!$info['disabled'] && !$info['expired'] && !$info['revoked']) {
+					if ($info['can_sign']) {
+						foreach ($info['uids'] as $uid)  {
+							$private[] = $info['email'];
+						}
+					}
+					if ($info['can_encrypt']) {
+						foreach ($info['uids'] as $uid)  {
+							$public[] = $info['email'];
+						}
+					}
+				}
+				$keys[] = $info;
+			}
+			return $this->DefaultResponse(__FUNCTION__, [
+				'sign' => $sign,
+				'encrypt' => $encrypt,
+				'keys' => $keys,
+				'info' => $GPG->getEngineInfo()
+			]);
+		}
+		return $this->FalseResponse(__FUNCTION__);
+	}
+
+	public function DoPgpImportKey() : array
 	{
 		$sKeyId = $this->GetActionParam('KeyId', '');
 		$sPublicKey = $this->GetActionParam('PublicKey', '');
@@ -32,6 +59,16 @@ trait Pgp
 						$sEmail = $aMatch[0];
 					}
 					if ($sEmail) {
+						/** https://wiki.gnupg.org/WKD
+							DNS:
+								openpgpkey.example.org. 300     IN      CNAME   wkd.keys.openpgp.org.
+
+							https://openpgpkey.example.com/.well-known/openpgpkey/example.com/hu/
+							else       https://example.com/.well-known/openpgpkey/hu/
+
+							An example: https://example.com/.well-known/openpgpkey/hu/it5sewh54rxz33fwmr8u6dy4bbz8itz4
+							is the direct method URL for "bernhard.reiter@example.com"
+						*/
 						$aKeys = \SnappyMail\PGP\Keyservers::index($sEmail);
 						if ($aKeys) {
 							$sKeyId = $aKeys[0]['keyid'];
@@ -46,8 +83,9 @@ trait Pgp
 			}
 		}
 
-		return $sPublicKey
-			? $this->DefaultResponse(__FUNCTION__, $this->GnuPG()->import($sPublicKey))
+		$GPG = $sPublicKey ? $this->GnuPG() : null;
+		return $GPG
+			? $this->DefaultResponse(__FUNCTION__, $GPG->import($sPublicKey))
 			: $this->FalseResponse(__FUNCTION__);
 	}
 }

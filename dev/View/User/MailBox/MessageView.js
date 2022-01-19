@@ -180,7 +180,7 @@ export class MailMessageView extends AbstractViewRight {
 
 			pgpSigned: () => MessageUserStore.message() && !!MessageUserStore.message().pgpSigned(),
 
-			pgpEncrypted: () => PgpUserStore.openpgp
+			pgpEncrypted: () => PgpUserStore.isSupported()
 				&& MessageUserStore.message() && MessageUserStore.message().isPgpEncrypted(),
 
 			messageListOrViewLoading:

@@ -59,7 +59,7 @@ export class OpenPgpUserSettings /*extends AbstractViewSettings*/ {
 					PgpUserStore.openpgpKeyring.store();
 				}
 
-				rl.app.reloadOpenPgpKeys();
+				PgpUserStore.reloadOpenPgpKeys();
 			}
 		}
 	}

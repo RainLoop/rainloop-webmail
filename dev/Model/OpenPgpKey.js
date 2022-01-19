@@ -2,7 +2,6 @@ import ko from 'ko';
 
 import { arrayLength } from 'Common/Utils';
 import { AbstractModel } from 'Knoin/AbstractModel';
-import { PgpUserStore } from 'Stores/User/Pgp';
 
 export class OpenPgpKeyModel extends AbstractModel {
 	/**
@@ -35,23 +34,19 @@ export class OpenPgpKeyModel extends AbstractModel {
 		this.deleteAccess = ko.observable(false);
 	}
 
-	getNativeKey() {
-		let key = null;
+	/**
+	 * OpenPGP.js
+	 */
+	getNativeKeys() {
 		try {
-			key = PgpUserStore.openpgp.key.readArmored(this.armor);
+			let key = openpgp.key.readArmored(this.armor);
 			if (key && !key.err && key.keys && key.keys[0]) {
-				return key;
+				return key.keys;
 			}
 		} catch (e) {
-			console.log(e);
+			console.error(e);
 		}
-
 		return null;
-	}
-
-	getNativeKeys() {
-		const key = this.getNativeKey();
-		return key && key.keys ? key.keys : null;
 	}
 
 	select(pattern, property) {

@@ -4,7 +4,6 @@ import { isArray, arrayLength, pString, forEachObjectValue } from 'Common/Utils'
 import { delegateRunOnDestroy, mailToHelper, setLayoutResizer } from 'Common/UtilsUser';
 
 import {
-	Capa,
 	Notification,
 	Scope
 } from 'Common/Enums';
@@ -36,11 +35,7 @@ import {
 	getFolderFromCacheList
 } from 'Common/Cache';
 
-import {
-	mailBox,
-	openPgpWorkerJs,
-	openPgpJs
-} from 'Common/Links';
+import { mailBox } from 'Common/Links';
 
 import { getNotification, i18n } from 'Common/Translator';
 
@@ -61,7 +56,6 @@ import Remote from 'Remote/User/Fetch';
 import { EmailModel } from 'Model/Email';
 import { AccountModel } from 'Model/Account';
 import { IdentityModel } from 'Model/Identity';
-import { OpenPgpKeyModel } from 'Model/OpenPgpKey';
 
 import { LoginUserScreen } from 'Screen/User/Login';
 import { MailBoxUserScreen } from 'Screen/User/MailBox';
@@ -344,66 +338,6 @@ class AppUser extends AbstractApp {
 		}
 
 		return false;
-	}
-
-	reloadOpenPgpKeys() {
-		if (PgpUserStore.openpgp) {
-			const keys = [],
-				email = new EmailModel(),
-				openpgpKeyring = PgpUserStore.openpgpKeyring,
-				openpgpKeys = openpgpKeyring ? openpgpKeyring.getAllKeys() : [];
-
-			openpgpKeys.forEach((oItem, iIndex) => {
-				if (oItem && oItem.primaryKey) {
-					const aEmails = [],
-						aUsers = [],
-						primaryUser = oItem.getPrimaryUser(),
-						user =
-							primaryUser && primaryUser.user
-								? primaryUser.user.userId.userid
-								: oItem.users && oItem.users[0]
-								? oItem.users[0].userId.userid
-								: '';
-
-					if (oItem.users) {
-						oItem.users.forEach(item => {
-							if (item.userId) {
-								email.clear();
-								email.parse(item.userId.userid);
-								if (email.validate()) {
-									aEmails.push(email.email);
-									aUsers.push(item.userId.userid);
-								}
-							}
-						});
-					}
-
-					if (aEmails.length) {
-						keys.push(
-							new OpenPgpKeyModel(
-								iIndex,
-								oItem.primaryKey.getFingerprint(),
-								oItem.primaryKey
-									.getKeyId()
-									.toHex()
-									.toLowerCase(),
-								oItem.getKeyIds()
-									.map(item => (item && item.toHex ? item.toHex() : null))
-									.validUnique(),
-								aUsers,
-								aEmails,
-								oItem.isPrivate(),
-								oItem.armor(),
-								user
-							)
-						);
-					}
-				}
-			});
-
-			delegateRunOnDestroy(PgpUserStore.openpgpkeys());
-			PgpUserStore.openpgpkeys(keys);
-		}
 	}
 
 	accountsAndIdentities() {
@@ -772,23 +706,7 @@ class AppUser extends AbstractApp {
 
 						setInterval(this.reloadTime(), 60000);
 
-						if (window.crypto && crypto.getRandomValues && Settings.capa(Capa.OpenPGP)) {
-							const script = createElement('script', {src:openPgpJs()});
-							script.onload = () => {
-								PgpUserStore.openpgp = openpgp;
-								if (window.Worker) {
-									try {
-										PgpUserStore.openpgp.initWorker({ path: openPgpWorkerJs() });
-									} catch (e) {
-										console.error(e);
-									}
-								}
-								PgpUserStore.openpgpKeyring = new openpgp.Keyring();
-								this.reloadOpenPgpKeys();
-							};
-							script.onerror = () => console.error(script.src);
-							doc.head.append(script);
-						}
+						PgpUserStore.init();
 					} else {
 						this.logout();
 					}

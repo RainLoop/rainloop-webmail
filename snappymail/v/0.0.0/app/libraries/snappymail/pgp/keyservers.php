@@ -21,6 +21,7 @@ abstract class Keyservers
 		'https://attester.flowcrypt.com',
 		'https://zimmermann.mayfirst.org',
 		'https://pool.sks-keyservers.net',
+		'https://keys.mailvelope.com',
 */
 		'https://keyserver.ubuntu.com',
 		'https://keys.fedoraproject.org',

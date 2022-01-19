@@ -72,7 +72,7 @@ class AddOpenPgpKeyPopupView extends AbstractViewPopup {
 
 		openpgpKeyring.store();
 
-		rl.app.reloadOpenPgpKeys();
+		PgpUserStore.reloadOpenPgpKeys();
 
 		if (this.keyError()) {
 			return false;
