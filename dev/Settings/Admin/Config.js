@@ -1,6 +1,7 @@
 import ko from 'ko';
 
 import Remote from 'Remote/Admin/Fetch';
+import { forEachObjectEntry } from 'Common/Utils';
 
 export class ConfigAdminSettings /*extends AbstractViewSettings*/ {
 
@@ -20,12 +21,12 @@ export class ConfigAdminSettings /*extends AbstractViewSettings*/ {
 						}
 						return pass ? 'password' : 'text';
 					};
-				Object.entries(data.Result).forEach(([key, items]) => {
+				forEachObjectEntry(data.Result, (key, items) => {
 					const section = {
 						name: key,
 						items: []
 					};
-					Object.entries(items).forEach(([skey, item]) => {
+					forEachObjectEntry(items, (skey, item) => {
 						section.items.push({
 							key: `config[${key}][${skey}]`,
 							name: skey,
