@@ -57,7 +57,7 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 			settingsAddViewModel(ThemesUserSettings, 'SettingsThemes', 'SETTINGS_LABELS/LABEL_THEMES_NAME', 'themes');
 		}
 
-		if (Settings.capa(Capa.OpenPGP)) {
+		if (Settings.capa(Capa.OpenPGP) || Settings.capa(Capa.GnuPGP)) {
 			settingsAddViewModel(OpenPgpUserSettings, 'SettingsOpenPGP', 'OpenPGP', 'openpgp');
 		}
 

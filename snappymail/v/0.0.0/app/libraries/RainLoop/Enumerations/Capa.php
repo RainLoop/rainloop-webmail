@@ -4,6 +4,7 @@ namespace RainLoop\Enumerations;
 
 class Capa
 {
+	const GNUGP = 'GNUGP';
 	const OPEN_PGP = 'OPEN_PGP';
 	const PREFETCH = 'PREFETCH';
 	const THEMES = 'THEMES';

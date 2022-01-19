@@ -4,6 +4,7 @@
  * @enum {string}
  */
 export const Capa = {
+	GnuPGP: 'GNUGP',
 	OpenPGP: 'OPEN_PGP',
 	Prefetch: 'PREFETCH',
 	Contacts: 'CONTACTS',

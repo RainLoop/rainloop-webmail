@@ -40,31 +40,34 @@ export const PgpUserStore = new class {
 	}
 
 	init() {
-		if (Settings.capa(Capa.OpenPGP)) {
-			if (window.crypto && crypto.getRandomValues) {
-				const script = createElement('script', {src:openPgpJs()});
-				script.onload = () => {
-					if (window.Worker) {
-						try {
-							openpgp.initWorker({ path: openPgpWorkerJs() });
-						} catch (e) {
-							console.error(e);
-						}
+		if (Settings.capa(Capa.OpenPGP) && window.crypto && crypto.getRandomValues) {
+			const script = createElement('script', {src:openPgpJs()});
+			script.onload = () => {
+				if (window.Worker) {
+					try {
+						openpgp.initWorker({ path: openPgpWorkerJs() });
+					} catch (e) {
+						console.error(e);
 					}
-					this.loadKeyrings();
-				};
-				script.onerror = () => console.error(script.src);
-				doc.head.append(script);
-			} else {
+				}
 				this.loadKeyrings();
+			};
+			script.onerror = () => {
+				this.loadKeyrings();
+				console.error(script.src);
 			}
+			doc.head.append(script);
+		} else {
+			this.loadKeyrings();
 		}
 	}
 
 	loadKeyrings(identifier) {
 		if (window.mailvelope) {
-			console.log('mailvelope ready');
-			var fn = keyring => this.mailvelopeKeyring = keyring;
+			var fn = keyring => {
+				this.mailvelopeKeyring = keyring;
+				console.log('mailvelope ready');
+			};
 			mailvelope.getKeyring().then(fn, err => {
 				if (identifier) {
 					// attempt to create a new keyring for this app/user
@@ -79,18 +82,23 @@ export const PgpUserStore = new class {
 		} else {
 			addEventListener('mailvelope', () => this.loadKeyrings(identifier));
 		}
+
 		if (openpgp) {
-			console.log('openpgp.js ready');
 			this.openpgpKeyring = new openpgp.Keyring();
 			this.reloadOpenPgpKeys();
 		}
 
-		this.gnupgkeys = [];
-		Remote.request('PgpGetKeysEmails',
-			(iError, oData) => {
-				console.dir(oData);
-			}
-		);
+		if (Settings.capa(Capa.GnuPGP)) {
+			this.gnupgkeys = [];
+			Remote.request('GnupgGetKeysEmails',
+				(iError, oData) => {
+					if (oData.Result) {
+						this.gnupgkeys = oData.Result;
+						console.log('gnupg ready');
+					}
+				}
+			);
+		}
 	}
 
 	reloadOpenPgpKeys() {
@@ -148,6 +156,7 @@ export const PgpUserStore = new class {
 
 			delegateRunOnDestroy(this.openpgpkeys());
 			this.openpgpkeys(keys);
+			console.log('openpgp.js ready');
 		}
 	}
 
@@ -213,6 +222,13 @@ export const PgpUserStore = new class {
 				this.openpgpkeys.find(item => item && !item.isPrivate && item.emails.includes(email))
 			);
 
+		if (this.gnupgkeys) {
+			let length = recipients.filter(email => this.gnupgkeys[email] && this.gnupgkeys[email].can_encrypt).length;
+			if (length && (!all || length === count)) {
+				return 'gnupg';
+			}
+		}
+
 		if (openpgp && openpgp.length && (!all || openpgp.length === count)) {
 			return 'openpgp';
 		}
@@ -234,6 +250,10 @@ export const PgpUserStore = new class {
 	 * Returns the first library that can.
 	 */
 	async hasPrivateKeyForEmail(email) {
+		if (this.gnupgkeys && this.gnupgkeys[email] && this.gnupgkeys[email].can_sign) {
+			return 'gnupg';
+		}
+
 		if (this.openpgpkeys && this.openpgpkeys.find(item => item && item.isPrivate && item.emails.includes(email))) {
 			return 'openpgp';
 		}

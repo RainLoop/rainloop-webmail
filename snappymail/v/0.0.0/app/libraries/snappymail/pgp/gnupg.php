@@ -11,10 +11,16 @@ class GnuPG
 		// Instance of PEAR Crypt_GPG
 		$Crypt_GPG;
 
-	public static function getInstance(string $home) : ?self
+	public static function isSupported() : bool
+	{
+		return \class_exists('gnupg')
+			|| \stream_resolve_include_path('Crypt/GPG.php');
+	}
+
+	public static function getInstance(string $base_dir) : ?self
 	{
 		$self = null;
-		$home .= '/.gnupg';
+		$home = $base_dir . '/.gnupg';
 		if (\class_exists('gnupg')) {
 			$self = new self;
 			$self->GnuPG = new \gnupg([
