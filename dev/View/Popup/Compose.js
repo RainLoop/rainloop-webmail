@@ -338,7 +338,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 	getMessageRequestParams(sSaveFolder)
 	{
-		let TextIsHtml = this.oEditor.isHtml() ? 1 : 0,
+		let TextIsHtml = this.oEditor.isHtml(),
 			Text = this.oEditor.getData(true);
 		if (TextIsHtml) {
 			let l;
@@ -361,13 +361,13 @@ class ComposePopupView extends AbstractViewPopup {
 			Bcc: this.bcc(),
 			ReplyTo: this.replyTo(),
 			Subject: this.subject(),
-			TextIsHtml: TextIsHtml,
+			TextIsHtml: TextIsHtml ? 1 : 0,
 			Text: Text,
 			DraftInfo: this.aDraftInfo,
 			InReplyTo: this.sInReplyTo,
 			References: this.sReferences,
 			MarkAsImportant: this.markAsImportant() ? 1 : 0,
-			Attachments: this.prepearAttachmentsForSendOrSave(),
+			Attachments: this.prepareAttachmentsForSendOrSave(),
 			// Only used at send, not at save:
 			Dsn: this.requestDsn() ? 1 : 0,
 			ReadReceiptRequest: this.requestReadReceipt() ? 1 : 0
@@ -425,28 +425,81 @@ class ComposePopupView extends AbstractViewPopup {
 				setFolderHash(this.draftsFolder(), '');
 				setFolderHash(sSentFolder, '');
 
-				Remote.request('SendMessage',
-					(iError, data) => {
-						this.sending(false);
-						if (this.modalVisibility()) {
-							if (iError) {
-								if (Notification.CantSaveMessage === iError) {
-									this.sendSuccessButSaveError(true);
-									this.savedErrorDesc(i18n('COMPOSE/SAVED_ERROR_ON_SEND').trim());
-								} else {
-									this.sendError(true);
-									this.sendErrorDesc(getNotification(iError, data && data.ErrorMessage)
-										|| getNotification(Notification.CantSendMessage));
+				const
+					params = this.getMessageRequestParams(sSentFolder),
+					sign = this.pgpSign() && this.canPgpSign(),
+					encrypt = this.pgpEncrypt() && this.canPgpEncrypt(),
+					send = () =>
+						Remote.request('SendMessage',
+							(iError, data) => {
+								this.sending(false);
+								if (this.modalVisibility()) {
+									if (iError) {
+										if (Notification.CantSaveMessage === iError) {
+											this.sendSuccessButSaveError(true);
+											this.savedErrorDesc(i18n('COMPOSE/SAVED_ERROR_ON_SEND').trim());
+										} else {
+											this.sendError(true);
+											this.sendErrorDesc(getNotification(iError, data && data.ErrorMessage)
+												|| getNotification(Notification.CantSendMessage));
+										}
+									} else {
+										this.closeCommand();
+									}
 								}
-							} else {
-								this.closeCommand();
-							}
+								this.reloadDraftFolder();
+							},
+							params,
+							30000
+						);
+
+				let pgpPromise = null,
+					cfg = {
+						data: params.Text,
+					};
+				if ('openpgp' == sign) {
+					let privateKey;
+					try {
+						const keys = PgpUserStore.openpgpKeyring.privateKeys.getForAddress(this.currentIdentity().email());
+						if (keys[0]) {
+							keys[0].decrypt(window.prompt('Password', ''));
+							privateKey = keys[0];
+							cfg.privateKeys = [privateKey];
 						}
-						this.reloadDraftFolder();
-					},
-					this.getMessageRequestParams(sSentFolder),
-					30000
-				);
+					} catch (e) {
+						console.error(e);
+						privateKey = null;
+					}
+					if (!privateKey) {
+						this.sendError(true);
+						this.sendErrorDesc(i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND'));
+						return;
+					}
+				}
+				if (encrypt && sign && encrypt != sign) {
+					// error 'sign and encrypt must be same engine';
+				} else if ('openpgp' == encrypt) {
+					this.allRecipients().forEach(recEmail => {
+						cfg.publicKeys = cfg.publicKeys.concat(PgpUserStore.openpgpKeyring.publicKeys.getForAddress(recEmail));
+					});
+					pgpPromise = openpgp.encrypt(cfg);
+				} else if ('openpgp' == sign) {
+					pgpPromise = openpgp.sign(cfg);
+				} else {
+					params.Sign = sign;
+					params.Encrypt = encrypt;
+				}
+				pgpPromise
+					? pgpPromise
+						.then(mData => {
+							params.Text = mData.data;
+							send();
+						})
+						.catch(e => {
+							this.sendError(true);
+							this.sendErrorDesc(i18n('PGP_NOTIFICATIONS/PGP_ERROR', { ERROR: '' + e }));
+						})
+					: send();
 			}
 		}
 	}
@@ -1278,7 +1331,7 @@ class ComposePopupView extends AbstractViewPopup {
 	/**
 	 * @returns {Object}
 	 */
-	prepearAttachmentsForSendOrSave() {
+	prepareAttachmentsForSendOrSave() {
 		const result = {};
 		this.attachments.forEach(item => {
 			if (item && item.complete() && item.tempName() && item.enabled()) {
@@ -1448,9 +1501,9 @@ class ComposePopupView extends AbstractViewPopup {
 		);
 	}
 
-	initPgpEncrypt() {
+	allRecipients() {
 		const email = new EmailModel();
-		return PgpUserStore.hasPublicKeyForEmails([
+		return [
 //				this.currentIdentity.email(),
 				this.to(),
 				this.cc(),
@@ -1459,7 +1512,11 @@ class ComposePopupView extends AbstractViewPopup {
 				email.clear();
 				email.parse(value.trim());
 				return email.email || false;
-			}).filter(v => v), 1).then(result => {
+			}).filter(v => v);
+	}
+
+	initPgpEncrypt() {
+		return PgpUserStore.hasPublicKeyForEmails(this.allRecipients(), 1).then(result => {
 				console.log({canPgpEncrypt:result});
 				this.canPgpEncrypt(result);
 			});

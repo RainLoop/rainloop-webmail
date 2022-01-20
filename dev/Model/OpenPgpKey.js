@@ -29,7 +29,13 @@ export class OpenPgpKeyModel extends AbstractModel {
 		this.armor = armor;
 		this.isPrivate = !!isPrivate;
 
-		this.selectUser(userID);
+		if (this.users) {
+			const index = this.users.indexOf(userID);
+			if (-1 !== index) {
+				this.user = this.users[index];
+				this.email = this.emails[index];
+			}
+		}
 
 		this.deleteAccess = ko.observable(false);
 	}
@@ -47,23 +53,5 @@ export class OpenPgpKeyModel extends AbstractModel {
 			console.error(e);
 		}
 		return null;
-	}
-
-	select(pattern, property) {
-		if (this[property]) {
-			const index = this[property].indexOf(pattern);
-			if (-1 !== index) {
-				this.user = this.users[index];
-				this.email = this.emails[index];
-			}
-		}
-	}
-
-	selectUser(user) {
-		this.select(user, 'users');
-	}
-
-	selectEmail(email) {
-		this.select(email, 'emails');
 	}
 }
