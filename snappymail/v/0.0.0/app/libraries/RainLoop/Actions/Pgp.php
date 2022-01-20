@@ -16,50 +16,48 @@ trait Pgp
 		return \SnappyMail\PGP\GnuPG::getInstance($pgp_dir);
 	}
 
-	public function DoGnupgGetKeysEmails() : array
+	public function DoGnupgGetKeys() : array
 	{
 		$GPG = $this->GnuPG();
 		if ($GPG) {
 			$keys = [];
+			/**
+			 * PECL GnuPG can't list private
+			 *
+			 * gpg --list-secret-keys
+			 * gpg --list-public-keys
+			 */
 			foreach ($GPG->keyInfo('') as $info) {
 				if (!$info['disabled'] && !$info['expired'] && !$info['revoked']) {
+					$info['can_verify'] = $info['can_sign'];
+					$info['can_sign'] = $info['can_decrypt'] = false;
+					foreach ($info['subkeys'] as $key)  {
+						$hasKey = $GPG->hasPrivateKey($key['keygrip']);
+						$info['can_sign'] = $info['can_sign'] || ($info['can_verify'] && $hasKey);
+						$info['can_decrypt'] = $info['can_decrypt'] || ($info['can_encrypt'] && $hasKey);
+					}
 					foreach ($info['uids'] as $uid)  {
 						$id = $uid['email'];
 						if (isset($keys[$id])) {
-							$keys[$id]['can_sign'] = $keys[$id]['can_sign'] || $info['can_sign'];
+							// Public Key tasks
+							$keys[$id]['can_verify'] = $keys[$id]['can_verify'] || $info['can_verify'];
 							$keys[$id]['can_encrypt'] = $keys[$id]['can_encrypt'] || $info['can_encrypt'];
+							// Private Key tasks
+							$keys[$id]['can_sign'] = $keys[$id]['can_sign'] || $info['can_sign'];
+							$keys[$id]['can_decrypt'] = $keys[$id]['can_decrypt'] || $info['can_decrypt'];
 						} else {
 							$keys[$id] = [
 								'name' => $uid['name'],
 								'email' => $uid['email'],
+								// Public Key tasks
+								'can_verify' => $info['can_sign'],
+								'can_encrypt' => $info['can_encrypt'],
+								// Private Key tasks
 								'can_sign' => $info['can_sign'],
-								'can_encrypt' => $info['can_encrypt']
+								'can_decrypt' => $info['can_decrypt']
 							];
 						}
 					}
-					/*
-					foreach ($info['subkeys'] as $key)  {
-						$key['can_authenticate'] = true
-						​​​​​​$key['can_certify'] = true
-						​​​​​​$key['can_encrypt'] = true
-						​​​​​​$key['can_sign'] = true
-						​​​​​​$key['disabled'] = false
-						​​​​​​$key['expired'] = false
-						​​​​​​$key['expires'] = 0
-						​​​​​​$key['fingerprint'] = "99BBB6F2FDDE9E20CD78B98DC85B364A5A6CCF52"
-						​​​​​​$key['invalid'] = false
-						​​​​​​$key['is_cardkey'] = false
-						​​​​​​$key['is_de_vs'] = true
-						​​​​​​$key['is_qualified'] = false
-						​​​​​​$key['is_secret'] = false
-						​​​​​​$key['keygrip'] = "CBCCF45D4F6D300417F044A08E08F8F14522BABE"
-						​​​​​​$key['keyid'] = "C85B364A5A6CCF52"
-						​​​​​​$key['length'] = 4096
-						​​​​​​$key['pubkey_algo'] = 1
-						​​​​​​$key['revoked'] = false
-						​​​​​​$key['timestamp'] = 1428449321
-					}
-					*/
 				}
 			}
 			return $this->DefaultResponse(__FUNCTION__, $keys);
@@ -67,13 +65,13 @@ trait Pgp
 		return $this->FalseResponse(__FUNCTION__);
 	}
 
-	public function DoPgpImportKey() : array
+	public function DoGnupgImportKey() : array
 	{
+		$sKey = $this->GetActionParam('Key', '');
 		$sKeyId = $this->GetActionParam('KeyId', '');
-		$sPublicKey = $this->GetActionParam('PublicKey', '');
 		$sEmail = $this->GetActionParam('Email', '');
 
-		if (!$sPublicKey) {
+		if (!$sKey) {
 			try {
 				if (!$sKeyId) {
 					if (\preg_match('/[^\\s<>]+@[^\\s<>]+/', $sEmail, $aMatch)) {
@@ -97,16 +95,16 @@ trait Pgp
 					}
 				}
 				if ($sKeyId) {
-					$sPublicKey = \SnappyMail\PGP\Keyservers::get($sKeyId);
+					$sKey = \SnappyMail\PGP\Keyservers::get($sKeyId);
 				}
 			} catch (\Throwable $e) {
 				// ignore
 			}
 		}
 
-		$GPG = $sPublicKey ? $this->GnuPG() : null;
+		$GPG = $sKey ? $this->GnuPG() : null;
 		return $GPG
-			? $this->DefaultResponse(__FUNCTION__, $GPG->import($sPublicKey))
+			? $this->DefaultResponse(__FUNCTION__, $GPG->import($sKey))
 			: $this->FalseResponse(__FUNCTION__);
 	}
 }

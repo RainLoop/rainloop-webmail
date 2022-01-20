@@ -375,6 +375,17 @@ class GnuPG
 	}
 
 	/**
+	 * Returns an array with information about all keys that matches the given pattern
+	 */
+	public function hasPrivateKey(string $keygrip) : bool
+	{
+		if ($this->GnuPG || $this->Crypt_GPG) {
+			return \is_file("{$this->homedir}/private-keys-v1.d/{$keygrip}.key");
+		}
+		return false;
+	}
+
+	/**
 	 * Toggle armored output
 	 * When true the output is ASCII
 	 */

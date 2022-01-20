@@ -1,6 +1,7 @@
 import { pInt } from 'Common/Utils';
 
 import { PgpUserStore } from 'Stores/User/Pgp';
+import { IdentityUserStore } from 'Stores/User/Identity';
 
 import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
@@ -8,6 +9,8 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 class NewOpenPgpKeyPopupView extends AbstractViewPopup {
 	constructor() {
 		super('NewOpenPgpKey');
+
+		this.identities = IdentityUserStore;
 
 		this.addObservables({
 			email: '',
@@ -63,6 +66,9 @@ class NewOpenPgpKeyPopupView extends AbstractViewPopup {
 							openpgpKeyring.store();
 
 							PgpUserStore.reloadOpenPgpKeys();
+
+							PgpUserStore.gnupgImportKey(keyPair.privateKeyArmored);
+
 							this.cancelCommand();
 						}
 					})
@@ -87,13 +93,11 @@ class NewOpenPgpKeyPopupView extends AbstractViewPopup {
 	}
 
 	onShow() {
-		this.name('');
+		this.name(IdentityUserStore()[0].name());
 		this.password('');
-
-		this.email('');
+		this.email(IdentityUserStore()[0].email());
 		this.emailError(false);
 		this.keyBitLength(4096);
-
 		this.submitError('');
 	}
 }

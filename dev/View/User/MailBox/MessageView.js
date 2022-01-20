@@ -180,8 +180,7 @@ export class MailMessageView extends AbstractViewRight {
 
 			pgpSigned: () => MessageUserStore.message() && !!MessageUserStore.message().pgpSigned(),
 
-			pgpEncrypted: () => PgpUserStore.isSupported()
-				&& MessageUserStore.message() && MessageUserStore.message().isPgpEncrypted(),
+			pgpEncrypted: () => MessageUserStore.message() && MessageUserStore.message().isPgpEncrypted(),
 
 			messageListOrViewLoading:
 				() => MessageUserStore.listIsLoading() | MessageUserStore.messageLoading()
@@ -624,11 +623,65 @@ export class MailMessageView extends AbstractViewRight {
 
 	pgpDecrypt(self) {
 		const message = self.message();
-		message && message.pgpDecrypt();
+		if (message && PgpUserStore.isSupported()) {
+//			pgpClickHelper(message.body, message.plain(), message.getEmails(['from', 'to', 'cc']));
+/*
+			pgpEncrypted: () => PgpUserStore.isSupported()
+				&& MessageUserStore.message() && MessageUserStore.message().isPgpEncrypted(),
+*/
+		}
 	}
 
 	pgpVerify(self) {
 		const message = self.message();
-		message && message.pgpVerify();
+		if (message && PgpUserStore.isSupported()) {
+			const mode = PgpUserStore.hasPublicKeyForEmails([message.from[0].email()]);
+			if ('gnupg' === mode) {
+				let params = message.pgpSigned(); // { BodyPartId: "1", SigPartId: "2", MicAlg: "pgp-sha256" }
+				if (params) {
+					params.Folder = message.folder;
+					params.Uid = message.uid;
+					rl.app.Remote.post('MessagePgpVerify', null, params)
+						.then(data => {
+							// TODO
+							console.dir(data);
+						})
+						.catch(error => {
+							// TODO
+							console.dir(error);
+						});
+				}
+			} else if ('openpgp' === mode) {
+				let text = null;
+				try {
+					text = PgpUserStore.openpgp.cleartext.readArmored(message.plain);
+				} catch (e) {
+					console.error(e);
+				}
+				if (text && text.getText && text.verify) {
+					PgpUserStore.verifyMessage(text, (validKey, signingKeyIds) => {
+						console.dir([validKey, signingKeyIds]);
+/*
+						if (validKey) {
+							i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
+								USER: validKey.user + ' (' + validKey.id + ')'
+							});
+							message.getText()
+						} else {
+							const keyIds = arrayLength(signingKeyIds) ? signingKeyIds : null,
+								additional = keyIds
+									? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(v => v).join(', ')
+									: '';
+
+							i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') + (additional ? ' (' + additional + ')' : '');
+						}
+*/
+					});
+				} else {
+//					controlsHelper(dom, this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
+				}
+			}
+		}
 	}
+
 }

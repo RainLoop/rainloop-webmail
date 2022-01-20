@@ -8,6 +8,22 @@
 		<div class="control-group" data-bind="css: {'error': keyError}">
 			<textarea class="inputKey input-xxlarge" rows="14" autofocus="" autocomplete="off" data-bind="value: key"></textarea>
 		</div>
+		<div class="control-group">
+			<div data-bind="visible: canGnuPG, component: {
+				name: 'Checkbox',
+				params: {
+					label: 'Store in GnuPG',
+					value: saveGnuPG
+				}
+			}"></div>
+			<div data-bind="visible: canOpenPGP, component: {
+				name: 'Checkbox',
+				params: {
+					label: 'Store in OpenPGP.js',
+					value: saveOpenPGP
+				}
+			}"></div>
+		</div>
 	</div>
 </div>
 <footer>

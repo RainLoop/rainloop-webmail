@@ -1,7 +1,5 @@
 import ko from 'ko';
 
-import { delegateRunOnDestroy } from 'Common/UtilsUser';
-
 import { PgpUserStore } from 'Stores/User/Pgp';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
@@ -15,11 +13,14 @@ import { ViewOpenPgpKeyPopupView } from 'View/Popup/ViewOpenPgpKey';
 
 export class OpenPgpUserSettings /*extends AbstractViewSettings*/ {
 	constructor() {
-		this.openpgpkeys = PgpUserStore.openpgpkeys;
-		this.openpgpkeysPublic = PgpUserStore.openpgpkeysPublic;
-		this.openpgpkeysPrivate = PgpUserStore.openpgpkeysPrivate;
+		this.gnupgkeys = PgpUserStore.gnupgKeys;
 
+		this.openpgpkeysPublic = PgpUserStore.openpgpPublicKeys;
+		this.openpgpkeysPrivate = PgpUserStore.openpgpPrivateKeys;
 		this.openPgpKeyForDeletion = ko.observable(null).deleteAccessHelper();
+
+		this.canOpenPGP = !!PgpUserStore.openpgpKeyring;
+//		this.canOpenPGP = Settings.capa(Capa.OpenPGP);
 
 		this.allowDraftAutosave = SettingsUserStore.allowDraftAutosave;
 
@@ -47,20 +48,7 @@ export class OpenPgpUserSettings /*extends AbstractViewSettings*/ {
 	deleteOpenPgpKey(openPgpKeyToRemove) {
 		if (openPgpKeyToRemove && openPgpKeyToRemove.deleteAccess()) {
 			this.openPgpKeyForDeletion(null);
-
-			if (openPgpKeyToRemove && PgpUserStore.openpgpKeyring) {
-				const findedItem = PgpUserStore.openpgpkeys.find(key => openPgpKeyToRemove === key);
-				if (findedItem) {
-					PgpUserStore.openpgpkeys.remove(findedItem);
-					delegateRunOnDestroy(findedItem);
-
-					PgpUserStore.openpgpKeyring[findedItem.isPrivate ? 'privateKeys' : 'publicKeys'].removeForId(findedItem.guid);
-
-					PgpUserStore.openpgpKeyring.store();
-				}
-
-				PgpUserStore.reloadOpenPgpKeys();
-			}
+			PgpUserStore.deleteKey(openPgpKeyToRemove);
 		}
 	}
 }

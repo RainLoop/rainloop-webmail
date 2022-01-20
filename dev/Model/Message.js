@@ -21,8 +21,9 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 import PreviewHTML from 'Html/PreviewMessage.html';
 
 const
-	/*eslint-disable max-len*/
+	// eslint-disable-next-line max-len
 	url = /(^|[\s\n]|\/?>)(https:\/\/[-A-Z0-9+\u0026\u2019#/%?=()~_|!:,.;]*[-A-Z0-9+\u0026#/%=~()_|])/gi,
+	// eslint-disable-next-line max-len
 	email = /(^|[\s\n]|\/?>)((?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x21\x23-\x5b\x5d-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x21-\x5a\x53-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])+)\]))/gi,
 
 	// Removes background and color
@@ -642,32 +643,6 @@ export class MessageModel extends AbstractModel {
 			this.isForwarded(),
 			this.isReadReceipt()
 		].join(',');
-	}
-
-	pgpDecrypt() {
-//		const message = self.message();
-//		message && pgpClickHelper(message.body, message.plain(), message.getEmails(['from', 'to', 'cc']));
-/*
-			pgpEncrypted: () => PgpUserStore.isSupported()
-				&& MessageUserStore.message() && MessageUserStore.message().isPgpEncrypted(),
-*/
-	}
-
-	pgpVerify() {
-		let params = this.pgpSigned(); // { BodyPartId: "1", SigPartId: "2", MicAlg: "pgp-sha256" }
-		if (params) {
-			params.Folder = this.folder;
-			params.Uid = this.uid;
-			rl.app.Remote.post('MessagePgpVerify', null, params)
-				.then(data => {
-					// TODO
-					console.dir(data);
-				})
-				.catch(error => {
-					// TODO
-					console.dir(error);
-				});
-		}
 	}
 
 }

@@ -9,9 +9,7 @@
 	</div>
 	<div class="control-group" data-bind="css: {'error': emailError}">
 		<label data-i18n="GLOBAL/EMAIL"></label>
-		<input type="email" class="input-xlarge"
-			autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-			data-bind="value: email" />
+		<select class="input-xlarge" data-bind="value: email, options: identities, optionsText: 'email', optionsValue: 'email'"></select>
 	</div>
 	<div class="control-group">
 		<label data-i18n="GLOBAL/NAME"></label>

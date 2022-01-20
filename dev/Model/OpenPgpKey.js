@@ -5,20 +5,17 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 
 export class OpenPgpKeyModel extends AbstractModel {
 	/**
-	 * @param {string} index
 	 * @param {string} guID
 	 * @param {string} ID
 	 * @param {array} IDs
 	 * @param {array} userIDs
 	 * @param {array} emails
-	 * @param {boolean} isPrivate
 	 * @param {string} armor
 	 * @param {string} userID
 	 */
-	constructor(index, guID, ID, IDs, userIDs, emails, isPrivate, armor, userID) {
+	constructor(guID, ID, IDs, userIDs, emails, armor, userID) {
 		super();
 
-		this.index = index;
 		this.id = ID;
 		this.ids = arrayLength(IDs) ? IDs : [ID];
 		this.guid = guID;
@@ -27,7 +24,6 @@ export class OpenPgpKeyModel extends AbstractModel {
 		this.email = '';
 		this.emails = emails;
 		this.armor = armor;
-		this.isPrivate = !!isPrivate;
 
 		if (this.users) {
 			const index = this.users.indexOf(userID);

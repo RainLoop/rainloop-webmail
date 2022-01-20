@@ -133,8 +133,6 @@ class ComposePopupView extends AbstractViewPopup {
 
 		this.capaOpenPGP = PgpUserStore.isSupported();
 
-		this.identities = IdentityUserStore;
-
 		this.addObservables({
 			identitiesDropdownTrigger: false,
 
@@ -189,7 +187,7 @@ class ComposePopupView extends AbstractViewPopup {
 			// div.textAreaParent
 			composeEditorArea: null,
 
-			currentIdentity: this.identities()[0] ? this.identities()[0] : null
+			currentIdentity: IdentityUserStore()[0] || null
 		});
 
 		// this.to.subscribe((v) => console.log(v));
@@ -281,7 +279,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 			currentIdentity: value => {
 				this.canPgpSign(false);
-				value && PgpUserStore.hasPrivateKeyForEmail(value.email()).then(result => {
+				value && PgpUserStore.hasKeyForSigning(value.email()).then(result => {
 					console.log({canPgpSign:result});
 					this.canPgpSign(result)
 				});

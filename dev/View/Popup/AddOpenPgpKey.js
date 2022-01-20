@@ -3,6 +3,9 @@ import { PgpUserStore } from 'Stores/User/Pgp';
 import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
+import { Capa } from 'Common/Enums';
+import { Settings } from 'Common/Globals';
+
 class AddOpenPgpKeyPopupView extends AbstractViewPopup {
 	constructor() {
 		super('AddOpenPgpKey');
@@ -10,8 +13,14 @@ class AddOpenPgpKeyPopupView extends AbstractViewPopup {
 		this.addObservables({
 			key: '',
 			keyError: false,
-			keyErrorMessage: ''
+			keyErrorMessage: '',
+
+			saveGnuPG: true,
+			saveOpenPGP: true
 		});
+
+		this.canGnuPG = Settings.capa(Capa.GnuPG);
+		this.canOpenPGP = Settings.capa(Capa.OpenPGP);
 
 		this.key.subscribe(() => {
 			this.keyError(false);
@@ -24,36 +33,40 @@ class AddOpenPgpKeyPopupView extends AbstractViewPopup {
 	}
 
 	addOpenPgpKeyCommand() {
-		// eslint-disable-next-line max-len
-		const reg = /[-]{3,6}BEGIN[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[-]{3,6}[\s\S]+?[-]{3,6}END[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[-]{3,6}/gi,
-			openpgpKeyring = PgpUserStore.openpgpKeyring;
-
 		let keyTrimmed = this.key().trim();
 
-		if (/[\n]/.test(keyTrimmed)) {
-			keyTrimmed = keyTrimmed.replace(/[\r]+/g, '').replace(/[\n]{2,}/g, '\n\n');
+		if (/\n/.test(keyTrimmed)) {
+			keyTrimmed = keyTrimmed.replace(/\r+/g, '').replace(/\n{2,}/g, '\n\n');
 		}
 
 		this.keyError(!keyTrimmed);
 		this.keyErrorMessage('');
 
-		if (!openpgpKeyring || this.keyError()) {
+		if (!keyTrimmed) {
 			return false;
 		}
 
 		let match = null,
 			count = 30,
 			done = false;
+		// eslint-disable-next-line max-len
+		const reg = /[-]{3,6}BEGIN[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[-]{3,6}[\s\S]+?[-]{3,6}END[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[-]{3,6}/gi,
+			keyring = PgpUserStore.openpgpKeyring;
 
 		do {
 			match = reg.exec(keyTrimmed);
 			if (match && 0 < count) {
 				if (match[0] && match[1] && match[2] && match[1] === match[2]) {
 					let err = null;
-					if ('PRIVATE' === match[1]) {
-						err = openpgpKeyring.privateKeys.importKey(match[0]);
-					} else if ('PUBLIC' === match[1]) {
-						err = openpgpKeyring.publicKeys.importKey(match[0]);
+					if (this.saveGnuPG()) {
+						PgpUserStore.gnupgImportKey(this.key());
+					}
+					if (this.canOpenPGP && this.saveOpenPGP()) {
+						if ('PRIVATE' === match[1]) {
+							err = keyring.privateKeys.importKey(match[0]);
+						} else if ('PUBLIC' === match[1]) {
+							err = keyring.publicKeys.importKey(match[0]);
+						}
 					}
 
 					if (err) {
@@ -70,9 +83,11 @@ class AddOpenPgpKeyPopupView extends AbstractViewPopup {
 			}
 		} while (!done);
 
-		openpgpKeyring.store();
+		if (this.canOpenPGP && this.saveOpenPGP()) {
+			keyring.store();
+		}
 
-		PgpUserStore.reloadOpenPgpKeys();
+//		PgpUserStore.reloadOpenPgpKeys();
 
 		if (this.keyError()) {
 			return false;

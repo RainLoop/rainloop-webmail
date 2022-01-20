@@ -1192,7 +1192,7 @@ class Actions
 			$aResult[] = Enumerations\Capa::OPEN_PGP;
 		}
 		if (\SnappyMail\PGP\GnuPG::isSupported()) {
-			$aResult[] = Enumerations\Capa::GNUGP;
+			$aResult[] = Enumerations\Capa::GNUPG;
 		}
 
 		if ($bAdmin || ($oAccount && $oAccount->Domain()->UseSieve())) {
