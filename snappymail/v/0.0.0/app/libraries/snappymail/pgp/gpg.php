@@ -87,7 +87,16 @@ class GPG
 
 	function __construct(string $homedir)
 	{
-		$this->options['homedir'] = \rtrim($homedir, '/');
+		$homedir = \rtrim($homedir, '/\\');
+		if (107 <= \strlen($homedir . '/S.gpg-agent.extra')) {
+			throw new \Exception("socket name for '{$homedir}/S.gpg-agent.extra' is too long");
+		}
+
+		if (!\is_dir($homedir)) {
+			\mkdir($homedir, 0700, true);
+		}
+
+		$this->options['homedir'] = $homedir;
 
 		// the random seed file makes subsequent actions faster so only disable it if we have to.
 		if ($this->options['homedir'] && !\is_writeable($this->options['homedir'])) {
@@ -599,6 +608,12 @@ return [];
 		$this->addStatusHandler(array($this->_processHandler, 'handleStatus'));
 		$this->addErrorHandler(array($this->_processHandler, 'handleError'));
 */
+	}
+
+	public function agent()
+	{
+//		$home = \escapeshellarg($this->options['homedir']);
+//		echo `gpg-agent --daemon --homedir $home 2>&1`;
 	}
 
 	private function exec(array $arguments)

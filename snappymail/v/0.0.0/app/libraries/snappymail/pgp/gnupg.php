@@ -17,17 +17,22 @@ class GnuPG
 			|| \stream_resolve_include_path('Crypt/GPG.php');
 	}
 
-	public static function getInstance(string $base_dir) : ?self
+	public static function getInstance(string $homedir) : ?self
 	{
+		$homedir = \rtrim($homedir, '/\\');
+		if (107 <= \strlen($homedir . '/S.gpg-agent.extra')) {
+			throw new \Exception('socket name for S.gpg-agent.extra is too long');
+		}
+
 		$self = null;
-		$home = $base_dir . '/.gnupg';
+//		if (\version_compare(\phpversion('gnupg'), '1.5', '>=')) {
 		if (\class_exists('gnupg')) {
 			$self = new self;
 			$self->GnuPG = new \gnupg([
 				// It is the file name of the executable program implementing this protocol which is usually path of the gpg executable.
 //				'file_name' => '/usr/bin/gpg',
 				// It is the directory name of the configuration directory. It also overrides GNUPGHOME environment variable that is used for the same purpose.
-				'home_dir' => $home
+				'home_dir' => $homedir
 			]);
 			// Output is ASCII
 			$self->GnuPG->setarmor(1);
@@ -42,13 +47,13 @@ class GnuPG
 				$self->Crypt_GPG = new \Crypt_GPG([
 //					'debug' => true,
 //					'binary' => $binary,
-					'homedir' => $home
+					'homedir' => $homedir
 				]);
 			}
 		}
 		if ($self) {
-			$self->homedir = $home;
-//			\putenv("GNUPGHOME={$home}");
+			$self->homedir = $homedir;
+//			\putenv("GNUPGHOME={$homedir}");
 		}
 		return $self;
 	}
@@ -367,6 +372,14 @@ class GnuPG
 	{
 		if ($this->GnuPG) {
 			return $this->GnuPG->keyinfo($pattern);
+/*			// v1.5 Slow and fails
+			return \array_merge(
+				// Public
+				$this->GnuPG->keyinfo($pattern),
+				// Private, read https://github.com/php-gnupg/php-gnupg/issues/5
+				$this->GnuPG->keyinfo($pattern, 1)
+			);
+*/
 		}
 		if ($this->Crypt_GPG) {
 			return true;

@@ -9,11 +9,19 @@ trait Pgp
 	 */
 	public function GnuPG() : ?\SnappyMail\PGP\GnuPG
 	{
-		$pgp_dir = \dirname($this->StorageProvider()->GenerateFilePath(
-			$this->getAccountFromToken(),
-			\RainLoop\Providers\Storage\Enumerations\StorageType::PGP
-		));
-		return \SnappyMail\PGP\GnuPG::getInstance($pgp_dir);
+		$oAccount = $this->getAccountFromToken();
+		if (!$oAccount) {
+			return null;
+		}
+
+		$home = ($_SERVER['HOME'] ?: \exec('echo ~')) . '/.gnupg/';
+		if ($oAccount instanceof \RainLoop\Model\AdditionalAccount) {
+			$home .= \sha1($oAccount->ParentEmail());
+		} else {
+			$home .= \sha1($oAccount->Email());
+		}
+
+		return \SnappyMail\PGP\GnuPG::getInstance($home);
 	}
 
 	public function DoGnupgGetKeys() : array
