@@ -14,14 +14,36 @@ trait Pgp
 			return null;
 		}
 
-		$home = ($_SERVER['HOME'] ?: \exec('echo ~')) . '/.gnupg/';
-		if ($oAccount instanceof \RainLoop\Model\AdditionalAccount) {
-			$home .= \sha1($oAccount->ParentEmail());
-		} else {
-			$home .= \sha1($oAccount->Email());
+		$homedir = \dirname($this->StorageProvider()->GenerateFilePath(
+			$oAccount,
+			\RainLoop\Providers\Storage\Enumerations\StorageType::PGP
+		)) . '/.gnupg';
+
+		/**
+		 * Workaround error: socket name for '/very/long/path/to/.gnupg/S.gpg-agent.extra' is too long
+		 * BSD 4.4 max length = 104
+		 */
+		if (80 < \strlen($homedir)) {
+			// First try a symbolic link
+			$link = \sys_get_temp_dir() . '/snappymail';
+			if (\is_dir($link) || \mkdir($link, 0700, true)) {
+				$link = $tmpdir . '/' . \md5($homedir);
+				if (\is_link($homedir) || \symlink($homedir, $link)) {
+					$homedir = $link;
+				}
+			}
+			// Else try ~/.gnupg/ + hash(email address)
+			if (80 < \strlen($homedir)) {
+				$homedir = ($_SERVER['HOME'] ?: \exec('echo ~')) . '/.gnupg/';
+				if ($oAccount instanceof \RainLoop\Model\AdditionalAccount) {
+					$homedir .= \sha1($oAccount->ParentEmail());
+				} else {
+					$homedir .= \sha1($oAccount->Email());
+				}
+			}
 		}
 
-		return \SnappyMail\PGP\GnuPG::getInstance($home);
+		return \SnappyMail\PGP\GnuPG::getInstance($homedir);
 	}
 
 	public function DoGnupgGetKeys() : array

@@ -14,13 +14,15 @@ class GnuPG
 	public static function isSupported() : bool
 	{
 		return \class_exists('gnupg')
-			|| \stream_resolve_include_path('Crypt/GPG.php');
+			|| \stream_resolve_include_path('Crypt/GPG.php')
+			|| \SnappyMail\PGP\GPG::isSupported();
 	}
 
 	public static function getInstance(string $homedir) : ?self
 	{
 		$homedir = \rtrim($homedir, '/\\');
-		if (107 <= \strlen($homedir . '/S.gpg-agent.extra')) {
+		// BSD 4.4 max length
+		if (104 <= \strlen($homedir . '/S.gpg-agent.extra')) {
 			throw new \Exception('socket name for S.gpg-agent.extra is too long');
 		}
 

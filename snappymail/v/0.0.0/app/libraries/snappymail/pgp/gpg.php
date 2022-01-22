@@ -88,7 +88,8 @@ class GPG
 	function __construct(string $homedir)
 	{
 		$homedir = \rtrim($homedir, '/\\');
-		if (107 <= \strlen($homedir . '/S.gpg-agent.extra')) {
+		// BSD 4.4 max length
+		if (104 <= \strlen($homedir . '/S.gpg-agent.extra')) {
 			throw new \Exception("socket name for '{$homedir}/S.gpg-agent.extra' is too long");
 		}
 
