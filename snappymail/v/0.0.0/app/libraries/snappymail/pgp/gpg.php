@@ -1,19 +1,8 @@
 <?php
 /**
-	# gpg1 --version
-		gpg (GnuPG) 1.4.23
-		Pubkey: RSA, RSA-E, RSA-S, ELG-E, DSA
-		Cipher: IDEA, 3DES, CAST5, BLOWFISH, AES, AES192, AES256, TWOFISH, CAMELLIA128, CAMELLIA192, CAMELLIA256
-		Hash: MD5, SHA1, RIPEMD160, SHA256, SHA384, SHA512, SHA224
-		Compression: Uncompressed, ZIP, ZLIB, BZIP2
-
-	# gpg2 --version
-		gpg (GnuPG) 2.2.20
-		libgcrypt 1.8.5
-		Pubkey: RSA, ELG, DSA, ECDH, ECDSA, EDDSA
-		Cipher: IDEA, 3DES, CAST5, BLOWFISH, AES, AES192, AES256, TWOFISH, CAMELLIA128, CAMELLIA192, CAMELLIA256
-		Hash: SHA1, RIPEMD160, SHA256, SHA384, SHA512, SHA224
-		Compression: Uncompressed, ZIP, ZLIB, BZIP2
+ * This class is inspired by PEAR Crypt_GPG and PECL gnupg
+ * It does not support gpg v1 because that is missing ECDH, ECDSA, EDDSA
+ * It does not support gpg < v2.2.5 as they are from before 2018
  */
 
 namespace SnappyMail\PGP;
@@ -53,13 +42,14 @@ class GPG
 		$debug = false;
 
 	private
-		$_processHandler = null,
-		$_errorHandlers = array(),
-		$_statusHandlers = array(),
 		$_commandBuffer,
 		$_message,
 		$_input,
-		$_output;
+		$_output,
+
+		$signKeys = array(),
+		$encryptKeys = array(),
+		$decryptKeys = array();
 
 	private
 		$binary,
@@ -131,7 +121,7 @@ class GPG
 
 		$gpgconf = static::findBinary('gpgconf');
 		if ($gpgconf) {
-            $env = array('GNUPGHOME' => $this->options['homedir']);
+			$env = array('GNUPGHOME' => $this->options['homedir']);
 			$pipes = array();
 			if ($process = \proc_open($gpgconf . ' --kill gpg-agent --homedir ' . \escapeshellarg($this->options['homedir']), array(), $pipes, null, $env)) {
 				\proc_close($process);
@@ -149,7 +139,8 @@ class GPG
 	 */
 	public function addDecryptKey(string $fingerprint, string $passphrase) : bool
 	{
-		return false;
+		$this->signKeys[$fingerprint] = $passphrase;
+		return true;
 	}
 
 	/**
@@ -157,7 +148,8 @@ class GPG
 	 */
 	public function addEncryptKey(string $fingerprint) : bool
 	{
-		return false;
+		$this->encryptKeys[$fingerprint] = 1;
+		return true;
 	}
 
 	/**
@@ -165,6 +157,7 @@ class GPG
 	 */
 	public function addSignKey(string $fingerprint, ?string $passphrase) : bool
 	{
+		$this->decryptKeys[$fingerprint] = $passphrase;
 		return false;
 	}
 
@@ -173,7 +166,8 @@ class GPG
 	 */
 	public function clearDecryptKeys() : bool
 	{
-		return false;
+		$this->decryptKeys = [];
+		return true;
 	}
 
 	/**
@@ -181,7 +175,8 @@ class GPG
 	 */
 	public function clearEncryptKeys() : bool
 	{
-		return false;
+		$this->encryptKeys = [];
+		return true;
 	}
 
 	/**
@@ -189,7 +184,8 @@ class GPG
 	 */
 	public function clearSignKeys() : bool
 	{
-		return false;
+		$this->signKeys = [];
+		return true;
 	}
 
 	/**
@@ -301,12 +297,59 @@ class GPG
 		return false;
 	}
 
+	public function addPassphrase($key, $passphrase)
+	{
+		$this->passphrases[$key] = $passphrase;
+		return $this;
+	}
+
+	protected function _importKey($input) /*: array|false*/
+	{
+		$arguments = array('--import');
+
+		$envKeys = array();
+		if (empty($this->passphrases)) {
+			$arguments[] = '--batch';
+		} else {
+			foreach ($this->passphrases as $keyId => $key) {
+				$envKeys[$keyId] = \is_array($key) ? $key['passphrase'] : $key;
+			}
+		}
+		$_ENV['PINENTRY_USER_DATA'] = \json_encode($envKeys);
+
+		$this->reset();
+		$this->setInput($input);
+		$result = $this->exec($arguments);
+
+		foreach ($result['status'] as $line) {
+			if (\strpos($line, 'IMPORT_RES')) {
+				$line = \explode(' ', \explode('IMPORT_RES ', $line)[1]);
+				return [
+					'imported' => (int) $line[2],
+					'unchanged' => (int) $line[4],
+					'newuserids' => (int) $line[5],
+					'newsubkeys' => (int) $line[6],
+					'secretimported' => (int) $line[10],
+					'secretunchanged' => (int) $line[11],
+					'newsignatures' => (int) $line[7],
+					'skippedkeys' => (int) $line[12],
+					'fingerprint' => ''
+				];
+			}
+		}
+
+		return false;
+	}
+
 	/**
 	 * Imports a key
 	 */
 	public function import(string $keydata) /*: array|false*/
 	{
-		return false;
+		if (!$keydata) {
+			throw new \Exception('No valid input data found.');
+		}
+		return $this->_importKey($keydata);
 	}
 
 	/**
@@ -314,142 +357,49 @@ class GPG
 	 */
 	public function importFile(string $filename) /*: array|false*/
 	{
-		return false;
-	}
-
-	/**
-	 * Returns an array with information about all keys that matches the given pattern
-	 */
-	public function keyInfo(string $pattern) : array
-	{
-		return false;
-	}
-
-	/**
-	 * Returns an array with information about all keys that matches the given pattern
-	 */
-	public function hasPrivateKey(string $keygrip) : bool
-	{
-		return \is_file("{$this->options['homedir']}/private-keys-v1.d/{$keygrip}.key");
-	}
-
-	/**
-	 * Toggle armored output
-	 * When true the output is ASCII
-	 */
-	public function setArmor(bool $armor = true) : bool
-	{
-		return false;
-	}
-
-	/**
-	 * Sets the mode for error_reporting
-	 * GNUPG_ERROR_WARNING, GNUPG_ERROR_EXCEPTION and GNUPG_ERROR_SILENT.
-	 * By default GNUPG_ERROR_SILENT is used.
-	 */
-	public function setErrorMode(int $errormode) : void
-	{
-	}
-
-	/**
-	 * Sets the mode for signing
-	 * GNUPG_SIG_MODE_NORMAL, GNUPG_SIG_MODE_DETACH and GNUPG_SIG_MODE_CLEAR.
-	 * By default GNUPG_SIG_MODE_CLEAR
-	 */
-	public function setSignMode(int $signmode) : bool
-	{
-		return false;
-	}
-
-	/**
-	 * Signs a given text
-	 */
-	public function sign(string $plaintext) /*: string|false*/
-	{
-		return false;
-	}
-
-	/**
-	 * Signs a given file
-	 */
-	public function signFile(string $filename) /*: string|false*/
-	{
-		return false;
-	}
-
-	/**
-	 * Verifies a signed text
-	 */
-	public function verify(string $signed_text, string $signature, string &$plaintext = null) /*: array|false*/
-	{
-		return false;
-	}
-
-	/**
-	 * Verifies a signed file
-	 */
-	public function verifyFile(string $filename, string $signature, string &$plaintext = null) /*: array|false*/
-	{
-		return false;
-	}
-
-	/**
-	 * RFC 4880
-	 * https://datatracker.ietf.org/doc/html/rfc4880#section-5.2.3.5
-	 */
-	public function signatureIssuer(string $signature) /*: array|false*/
-	{
-		if (preg_match('/-----BEGIN PGP SIGNATURE-----(.+)-----END PGP SIGNATURE-----/', $signature, $match)) {
-			// TODO: use https://github.com/singpolyma/openpgp-php ?
-			$binary = \base64_decode(\trim($match[1]));
-			return \strtoupper(\bin2hex(\substr($binary, 24, 8)));
-		}
-		return false;
-	}
-
-	/**
-	 * This hangs with:
-	 *     gpg: can't connect to the agent: IPC connect call failed
-	 */
-	public function getPrivateKeys($keyId = '') : array
-	{
-		// According to The file 'doc/DETAILS' in the GnuPG distribution, using
-		// double '--with-fingerprint' also prints the fingerprint for subkeys.
-		$arguments = array(
-			'--with-colons',
-			'--with-fingerprint',
-			'--with-fingerprint',
-			'--fixed-list-mode',
-			'--list-secret-keys'
-		);
-		if ($keyId) {
-			$arguments[] = '--utf8-strings';
-			$arguments[] = \escapeshellarg($keyId);
-		}
-
-		$output = '';
-
-		$this->reset();
-		$this->setOutput($output);
-		$this->exec($arguments);
-
-echo $output;
-return [];
-
-		$fingerprints = array();
-		foreach (\explode(PHP_EOL, $output) as $line) {
-			$lineExp = \explode(':', $line);
-			if ('fpr' === $lineExp[0]) {
-				$fingerprints[] = $lineExp[9];
+		$fp = \fopen($filename, 'rb');
+		try {
+			if (!$fp) {
+				throw new \Exception("Could not open file '{$filename}'");
 			}
+			return $this->_importKey($fp);
+		} finally {
+			$fp && \fclose($fp);
 		}
-		return $fingerprints;
 	}
 
-	public function getPublicKeys($keyId = '') : array
+	public function deleteKey(string $keyId, bool $private)
 	{
-//		$privateKeyFingerprints = $this->getPrivateKeys($keyId);
+		$key = $this->keyInfo($keyId, $private ? 1 : 0);
+		if (!$key) {
+			return false;
+//			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $keyId);
+		}
+		if (!$private && $this->keyInfo($keyId, 1)) {
+			return false;
+			throw new \Exception('Delete private key first: ' . $keyId);
+		}
 
+		$this->reset();
+		$result = $this->exec(array(
+			'--batch',
+			'--yes',
+			$private ? '--delete-secret-key' : '--delete-key',
+			\escapeshellarg($key[0]['subkeys'][0]['fingerprint'])
+		));
+
+//		$result['status'][0] = '[GNUPG:] ERROR keylist.getkey 17'
+//		$result['errors'][0] = 'gpg: error reading key: No public key'
+
+//		print_r($result);
+		return true;
+	}
+
+	/**
+	 * Returns an array with information about all keys that matches the given pattern
+	 */
+	public function keyInfo(string $pattern, int $private = 0) : array
+	{
 		// According to The file 'doc/DETAILS' in the GnuPG distribution, using
 		// double '--with-fingerprint' also prints the fingerprint for subkeys.
 		$arguments = array(
@@ -457,24 +407,21 @@ return [];
 			'--with-fingerprint',
 			'--with-fingerprint',
 			'--fixed-list-mode',
-			'--list-public-keys' // --list-keys ?
+			$private ? '--list-secret-keys' : '--list-public-keys'
 		);
-		if ($keyId) {
+		if ($pattern) {
 			$arguments[] = '--utf8-strings';
-			$arguments[] = \escapeshellarg($keyId);
+			$arguments[] = \escapeshellarg($pattern);
 		}
 
-		$output = '';
-
 		$this->reset();
-		$this->setOutput($output);
-		$this->exec($arguments);
+		$result = $this->exec($arguments);
 
 		$keys   = array();
 		$key    = null; // current key
 		$subKey = null; // current sub-key
 
-		foreach (\explode(PHP_EOL, $output) as $line) {
+		foreach (\explode(PHP_EOL, $result['output']) as $line) {
 			$tokens = \explode(':', $line);
 
 			switch ($tokens[0])
@@ -482,6 +429,7 @@ return [];
 			case 'tru':
 				break;
 
+			case 'sec':
 			case 'pub':
 				// new primary key means last key should be added to the array
 				if ($key !== null) {
@@ -491,20 +439,21 @@ return [];
 					'disabled' => false,
 					'expired' => false,
 					'revoked' => false,
-					'is_secret' => false,
+					'is_secret' => 'ssb' === $tokens[0],
 					'can_sign' => \str_contains($tokens[11], 's'),
 					'can_encrypt' => \str_contains($tokens[11], 'e'),
 					'uids' => [],
 					'subkeys' => []
 				];
-				// Fall through to add (sub)key
-			case 'sub':
+				// Fall through to add subkey
+			case 'ssb': // secure subkey
+			case 'sub': // public subkey
 				$key['subkeys'][] = [
 					'fingerprint' => '', // fpr:::::::::....:
 					'keyid' => $tokens[4],
 					'timestamp' => $tokens[5],
 					'expires' => $tokens[6],
-					'is_secret' => false,
+					'is_secret' => 'ssb' === $tokens[0],
 					'invalid' => false,
 					// escaESCA
 					'can_encrypt' => \str_contains($tokens[11], 'e'),
@@ -521,6 +470,10 @@ return [];
 
 			case 'fpr':
 				$key['subkeys'][\array_key_last($key['subkeys'])]['fingerprint'] = $tokens[9];
+				break;
+
+			case 'grp':
+				$key['subkeys'][\array_key_last($key['subkeys'])]['keygrip'] = $tokens[9];
 				break;
 
 			case 'uid':
@@ -570,45 +523,186 @@ return [];
 		return $keys;
 	}
 
-	private function _debug(string $msg)
+	/**
+	 * Toggle armored output
+	 * When true the output is ASCII
+	 */
+	public function setArmor(bool $armor = true) : bool
+	{
+		return false;
+	}
+
+	/**
+	 * Sets the mode for error_reporting
+	 * GNUPG_ERROR_WARNING, GNUPG_ERROR_EXCEPTION and GNUPG_ERROR_SILENT.
+	 * By default GNUPG_ERROR_SILENT is used.
+	 */
+	public function setErrorMode(int $errormode) : void
+	{
+	}
+
+	/**
+	 * Sets the mode for signing
+	 * GNUPG_SIG_MODE_NORMAL, GNUPG_SIG_MODE_DETACH and GNUPG_SIG_MODE_CLEAR.
+	 * By default GNUPG_SIG_MODE_CLEAR
+	 */
+	public function setSignMode(int $signmode) : bool
+	{
+		return false;
+	}
+
+	/**
+	 * Signs a given text
+	 */
+	public function sign(string $plaintext) /*: string|false*/
+	{
+		return false;
+	}
+
+	/**
+	 * Signs a given file
+	 */
+	public function signFile(string $filename) /*: string|false*/
+	{
+		return false;
+	}
+
+	protected function _verify($input, string $signature)
+	{
+		$this->reset();
+
+		$arguments = array('--verify');
+		if ('' === $signature) {
+			// signed or clearsigned data
+			$this->setInput($input);
+		} else {
+			// detached signature
+			$this->setInput($signature);
+			$this->_message =& $input;
+			// Signed data goes in FD_MESSAGE, detached signature data goes in FD_INPUT.
+			$arguments[] = '--enable-special-filenames';
+			$arguments[] = '- "-&' . self::FD_MESSAGE . '"';
+		}
+
+		$result = $this->exec($arguments);
+
+		$signatures = [];
+		foreach ($result['status'] as $line) {
+			$tokens = \explode(' ', $line);
+			switch ($tokens[0])
+			{
+			case 'VERIFICATION_COMPLIANCE_MODE':
+			case 'TRUST_FULLY':
+				break;
+
+			case 'EXPSIG':
+			case 'EXPKEYSIG':
+			case 'REVKEYSIG':
+			case 'BADSIG':
+			case 'ERRSIG':
+			case 'GOODSIG':
+				$signatures[] = [
+					'fingerprint' => '',
+					'validity' => 0,
+					'timestamp' => 0,
+					'status' => 'GOODSIG' === $tokens[0] ? 0 : 1,
+					'summary' => 'GOODSIG' === $tokens[0] ? 0 : 4,
+					'keyid' => $tokens[1],
+					'uid' => \rawurldecode(\implode(' ', \array_splice($tokens, 2))),
+					'valid' => false
+				];
+				break;
+
+			case 'VALIDSIG':
+				$last = \array_key_last($signatures);
+				$signatures[$last]['fingerprint'] = $tokens[1];
+				$signatures[$last]['timestamp'] = (int) $tokens[3];
+				$signatures[$last]['expires'] = (int) $tokens[4];
+				$signatures[$last]['version'] = (int) $tokens[5];
+//				$signatures[$last]['reserved'] = (int) $tokens[6];
+//				$signatures[$last]['pubkey-algo'] = (int) $tokens[7];
+//				$signatures[$last]['hash-algo'] = (int) $tokens[8];
+//				$signatures[$last]['sig-class'] = $tokens[9];
+//				$signatures[$last]['primary-fingerprint'] = $tokens[10];
+				$signatures[$last]['valid'] = 0;
+			}
+		}
+
+		return $signatures;
+	}
+
+	/**
+	 * Verifies a signed text
+	 */
+	public function verify(string $signed_text, string $signature, string &$plaintext = null) /*: array|false*/
+	{
+		return $this->_verify($signed_text, $signature);
+	}
+
+	/**
+	 * Verifies a signed file
+	 */
+	public function verifyFile(string $filename, string $signature, string &$plaintext = null) /*: array|false*/
+	{
+		$fp = \fopen($filename, 'rb');
+		try {
+			if (!$fp) {
+				throw new \Exception("Could not open file '{$filename}'");
+			}
+			return $this->_verify($fp, $signature);
+		} finally {
+			$fp && \fclose($fp);
+		}
+	}
+
+	/**
+	 * Verifies a signed file
+	 */
+	public function verifyStream($fp, string $signature, string &$plaintext = null) /*: array|false*/
+	{
+		if (!$fp || !\is_resource($fp)) {
+			throw new \Exception('Invalid stream resource');
+		}
+		return $this->_verify($fp, $signature);
+	}
+
+	/**
+	 * RFC 4880
+	 * https://datatracker.ietf.org/doc/html/rfc4880#section-5.2.3.5
+	 */
+	public function signatureIssuer(string $signature) /*: array|false*/
+	{
+		if (preg_match('/-----BEGIN PGP SIGNATURE-----(.+)-----END PGP SIGNATURE-----/', $signature, $match)) {
+			// TODO: use https://github.com/singpolyma/openpgp-php ?
+			$binary = \base64_decode(\trim($match[1]));
+			return \strtoupper(\bin2hex(\substr($binary, 24, 8)));
+		}
+		return false;
+	}
+
+	private function _debug(string $msg) : void
 	{
 		if ($this->debug) {
 			echo $msg . "\n";
 		}
 	}
 
-	public function setOutput(&$output)
+	private function setInput(&$input) : void
 	{
-		$this->_output =& $output;
+		$this->_input =& $input;
 	}
 
-	/**
-	 * Resets the GPG engine, preparing it for a new operation
-	 *
-	 * @return void
-	 *
-	 * @see Crypt_GPG_Engine::run()
-	 * @see Crypt_GPG_Engine::setOperation()
-	 */
-	public function reset()
+	private function setOutput($output) : void
 	{
-		$this->_message        = null;
-		$this->_input          = null;
-		$this->_output         = '';
-		$this->_commandBuffer  = '';
+		$this->_output = \is_resource($output) ? $output : null;
+	}
 
-		$this->_errorHandlers  = array();
-		$this->_statusHandlers = array();
-/*
-		if ($this->debug) {
-			$this->addStatusHandler(array($this, '_handleDebugStatus'));
-			$this->addErrorHandler(array($this, '_handleDebugError'));
-		}
-
-		$this->_processHandler = new Crypt_GPG_ProcessHandler($this);
-		$this->addStatusHandler(array($this->_processHandler, 'handleStatus'));
-		$this->addErrorHandler(array($this->_processHandler, 'handleError'));
-*/
+	private function reset() : void
+	{
+		$this->_message       = null;
+		$this->_input         = null;
+		$this->_output        = null;
+		$this->_commandBuffer = '';
 	}
 
 	public function agent()
@@ -617,7 +711,7 @@ return [];
 //		echo `gpg-agent --daemon --homedir $home 2>&1`;
 	}
 
-	private function exec(array $arguments)
+	private function exec(array $arguments) /*: array|false*/
 	{
 		if (\version_compare($this->version, '2.2.5', '<')) {
 			// Too old (<2018)
@@ -717,9 +811,8 @@ return [];
 			$messageComplete = true;
 		}
 
-		if (\is_string($this->_output)) {
-			$outputBuffer =& $this->_output;
-		}
+		$status = [];
+		$errors = [];
 
 		// convenience variables
 		$fdInput   = $proc_pipes[self::FD_INPUT];
@@ -727,7 +820,7 @@ return [];
 		$fdError   = $proc_pipes[self::FD_ERROR];
 		$fdStatus  = $proc_pipes[self::FD_STATUS];
 		$fdCommand = $proc_pipes[self::FD_COMMAND];
-		$fdMessage = $this->_openPipes->get(self::FD_MESSAGE);
+		$fdMessage = $proc_pipes[self::FD_MESSAGE];
 
 		// select loop delay in milliseconds
 		$delay         = 0;
@@ -774,7 +867,7 @@ return [];
 			}
 
 			// set up output streams
-			if ($outputBuffer != '' && \is_resource($this->_output)) {
+			if ('' != $outputBuffer && $this->_output) {
 				$outputStreams[] = $this->_output;
 			}
 
@@ -920,17 +1013,8 @@ return [];
 				$this->_debug('GPG error stream ready for reading');
 				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from GPG error');
 				foreach ($this->_openPipes->readPipeLines(self::FD_ERROR) as $line) {
-					if (!$this->_errorHandlers) {
-						$this->debug ? $this->_debug('ERROR ' . $line) : \trigger_error($line, E_USER_WARNING);
-					}
-					foreach ($this->_errorHandlers as $handler) {
-						\array_unshift($handler['args'], $line);
-						\call_user_func_array(
-							$handler['callback'],
-							$handler['args']
-						);
-						\array_shift($handler['args']);
-					}
+					$errors[] = $line;
+					$this->debug && $this->_debug("\t{$line}");
 				}
 			}
 
@@ -940,20 +1024,11 @@ return [];
 				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from GPG status');
 				// pass lines to status handlers
 				foreach ($this->_openPipes->readPipeLines(self::FD_STATUS) as $line) {
-					if (!$this->_statusHandlers) {
-						$this->debug ? $this->_debug($line) : \trigger_error($line);
-					}
 					// only pass lines beginning with magic prefix
 					if ('[GNUPG:] ' == \substr($line, 0, 9)) {
 						$line = \substr($line, 9);
-						foreach ($this->_statusHandlers as $handler) {
-							\array_unshift($handler['args'], $line);
-							\call_user_func_array(
-								$handler['callback'],
-								$handler['args']
-							);
-							\array_shift($handler['args']);
-						}
+						$status[] = $line;
+						$this->debug && $this->_debug("\t{$line}");
 					}
 				}
 			}
@@ -992,10 +1067,18 @@ return [];
 		$this->_debug('END PROCESSING');
 
 		$this->proc_close();
+
+		return [
+			'output' => $outputBuffer,
+			'status' => $status,
+			'errors' => $errors
+		];
 	}
 
-	private function proc_close()
+	private function proc_close() : int
 	{
+		$exitCode = 0;
+
 		// clear PINs from environment if they were set
 		$_ENV['PINENTRY_USER_DATA'] = null;
 
@@ -1018,18 +1101,9 @@ return [];
 			if ($exitCode > 0) {
 				$this->_debug('=> subprocess returned an unexpected exit code: ' . $exitCode);
 			}
-
-			// close file handles before throwing an exception
-			if (\is_resource($this->_input)) {
-				\fclose($this->_input);
-			}
-
-			if (\is_resource($this->_output)) {
-				\fclose($this->_output);
-			}
-
-			$this->_processHandler && $this->_processHandler->throwException($exitCode);
 		}
+
+		return $exitCode;
 	}
 
 	private static function findBinary($name) : ?string
@@ -1131,7 +1205,7 @@ class GpgProcPipes
 				// the pipe was seleted for writing, we assume it was EPIPE.
 				// There's no way to get the actual error code in PHP. See
 				// PHP Bug #39598. https://bugs.php.net/bug.php?id=39598
-				$this->pipes->close($number);
+				$this->close($number);
 			}
 			return $length ?: 0;
 		}

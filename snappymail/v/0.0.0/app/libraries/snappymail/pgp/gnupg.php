@@ -8,6 +8,8 @@ class GnuPG
 		$homedir,
 		// Instance of gnupg pecl extension
 		$GnuPG,
+		// Instance of \SnappyMail\PGP\GPG
+		$GPG,
 		// Instance of PEAR Crypt_GPG
 		$Crypt_GPG;
 
@@ -38,6 +40,9 @@ class GnuPG
 			]);
 			// Output is ASCII
 			$self->GnuPG->setarmor(1);
+		} else if (\SnappyMail\PGP\GPG::isSupported()) {
+			$self = new self;
+			$self->GPG = new \SnappyMail\PGP\GPG($homedir);
 		} else {
 			/**
 			 * $binary = trim(`which gpg`) ?: trim(`which gpg2`);
@@ -68,6 +73,9 @@ class GnuPG
 		if ($this->GnuPG) {
 			return $this->GnuPG->adddecryptkey($fingerprint, $passphrase);
 		}
+		if ($this->GPG) {
+			return $this->GPG->adddecryptkey($fingerprint, $passphrase);
+		}
 		if ($this->Crypt_GPG) {
 			$this->Crypt_GPG->addDecryptKey($fingerprint, $passphrase);
 			return true;
@@ -82,6 +90,9 @@ class GnuPG
 	{
 		if ($this->GnuPG) {
 			return $this->GnuPG->addencryptkey($fingerprint);
+		}
+		if ($this->GPG) {
+			return $this->GPG->addencryptkey($fingerprint);
 		}
 		if ($this->Crypt_GPG) {
 			$this->Crypt_GPG->addEncryptKey($fingerprint);
@@ -98,6 +109,9 @@ class GnuPG
 		if ($this->GnuPG) {
 			return $this->GnuPG->addsignkey($fingerprint, $passphrase);
 		}
+		if ($this->GPG) {
+			return $this->GPG->addsignkey($fingerprint, $passphrase);
+		}
 		if ($this->Crypt_GPG) {
 			$this->Crypt_GPG->addSignKey($fingerprint, $passphrase);
 			return true;
@@ -112,6 +126,9 @@ class GnuPG
 	{
 		if ($this->GnuPG) {
 			return $this->GnuPG->cleardecryptkeys();
+		}
+		if ($this->GPG) {
+			return $this->GPG->cleardecryptkeys();
 		}
 		if ($this->Crypt_GPG) {
 			$this->Crypt_GPG->clearDecryptKeys();
@@ -128,6 +145,9 @@ class GnuPG
 		if ($this->GnuPG) {
 			return $this->GnuPG->clearencryptkeys();
 		}
+		if ($this->GPG) {
+			return $this->GPG->clearencryptkeys();
+		}
 		if ($this->Crypt_GPG) {
 			$this->Crypt_GPG->clearEncryptKeys();
 			return true;
@@ -142,6 +162,9 @@ class GnuPG
 	{
 		if ($this->GnuPG) {
 			return $this->GnuPG->clearsignkeys();
+		}
+		if ($this->GPG) {
+			return $this->GPG->clearsignkeys();
 		}
 		if ($this->Crypt_GPG) {
 			$this->Crypt_GPG->clearSignKeys();
@@ -158,6 +181,9 @@ class GnuPG
 		if ($this->GnuPG) {
 			return $this->GnuPG->decrypt($text);
 		}
+		if ($this->GPG) {
+			return $this->GPG->decrypt($text);
+		}
 		if ($this->Crypt_GPG) {
 			return $this->Crypt_GPG->decrypt($encryptedData);
 		}
@@ -171,6 +197,9 @@ class GnuPG
 	{
 		if ($this->GnuPG) {
 			return $this->GnuPG->decrypt(\file_get_contents($filename));
+		}
+		if ($this->GPG) {
+			return $this->GPG->decryptFile($filename);
 		}
 		if ($this->Crypt_GPG) {
 			return $this->Crypt_GPG->decryptFile($filename, $decryptedFile = null);
@@ -186,6 +215,9 @@ class GnuPG
 		if ($this->GnuPG) {
 			return $this->GnuPG->decryptverify($text, $plaintext);
 		}
+		if ($this->GPG) {
+			return $this->GPG->decryptverify($text, $plaintext);
+		}
 		if ($this->Crypt_GPG) {
 			return $this->Crypt_GPG->decryptAndVerify($text, $ignoreVerifyErrors = false);
 		}
@@ -199,6 +231,9 @@ class GnuPG
 	{
 		if ($this->GnuPG) {
 			return $this->GnuPG->decryptverify(\file_get_contents($filename), $plaintext);
+		}
+		if ($this->GPG) {
+			return $this->GPG->decryptverifyFile($filename, $plaintext);
 		}
 		if ($this->Crypt_GPG) {
 			return $this->Crypt_GPG->decryptAndVerifyFile($filename, $decryptedFile = null, $ignoreVerifyErrors = false);
@@ -214,6 +249,9 @@ class GnuPG
 		if ($this->GnuPG) {
 			return $this->GnuPG->encrypt($plaintext);
 		}
+		if ($this->GPG) {
+			return $this->GPG->encrypt($plaintext);
+		}
 		if ($this->Crypt_GPG) {
 			return $this->Crypt_GPG->encrypt($plaintext);
 		}
@@ -227,6 +265,9 @@ class GnuPG
 	{
 		if ($this->GnuPG) {
 			return $this->GnuPG->encrypt(\file_get_contents($filename));
+		}
+		if ($this->GPG) {
+			return $this->GPG->encryptFile($filename);
 		}
 		if ($this->Crypt_GPG) {
 			return $this->Crypt_GPG->encryptFile($filename, $encryptedFile = null);
@@ -242,6 +283,9 @@ class GnuPG
 		if ($this->GnuPG) {
 			return $this->GnuPG->encryptsign($plaintext);
 		}
+		if ($this->GPG) {
+			return $this->GPG->encryptsign($plaintext);
+		}
 		if ($this->Crypt_GPG) {
 			return $this->Crypt_GPG->encryptAndSign($plaintext);
 		}
@@ -256,6 +300,9 @@ class GnuPG
 		if ($this->GnuPG) {
 			return $this->GnuPG->encryptsign(\file_get_contents($filename));
 		}
+		if ($this->GPG) {
+			return $this->GPG->encryptsignFile($filename);
+		}
 		if ($this->Crypt_GPG) {
 			return $this->Crypt_GPG->encryptAndSignFile($filename, $signedFile = null);
 		}
@@ -269,6 +316,9 @@ class GnuPG
 	{
 		if ($this->GnuPG) {
 			return $this->GnuPG->export($fingerprint);
+		}
+		if ($this->GPG) {
+			return $this->GPG->export($fingerprint);
 		}
 		if ($this->Crypt_GPG) {
 			$this->Crypt_GPG->exportPrivateKey($fingerprint, $armor = true);
@@ -285,6 +335,9 @@ class GnuPG
 	{
 		if ($this->GnuPG) {
 			return $this->GnuPG->getengineinfo();
+		}
+		if ($this->GPG) {
+			return $this->GPG->getengineinfo();
 		}
 		if ($this->Crypt_GPG) {
 			return [
@@ -305,6 +358,9 @@ class GnuPG
 		if ($this->GnuPG) {
 			return $this->GnuPG->geterror();
 		}
+		if ($this->GPG) {
+			return $this->GPG->geterror();
+		}
 		if ($this->Crypt_GPG) {
 			return true;
 		}
@@ -318,6 +374,9 @@ class GnuPG
 	{
 		if ($this->GnuPG) {
 			return $this->GnuPG->geterrorinfo();
+		}
+		if ($this->GPG) {
+			return $this->GPG->geterrorinfo();
 		}
 		if ($this->Crypt_GPG) {
 			return true;
@@ -333,6 +392,9 @@ class GnuPG
 		if ($this->GnuPG) {
 			return $this->GnuPG->getprotocol();
 		}
+		if ($this->GPG) {
+			return $this->GPG->getprotocol();
+		}
 		if ($this->Crypt_GPG) {
 			return true;
 		}
@@ -346,6 +408,9 @@ class GnuPG
 	{
 		if ($this->GnuPG) {
 			return $this->GnuPG->import($keydata);
+		}
+		if ($this->GPG) {
+			return $this->GPG->import($keydata);
 		}
 		if ($this->Crypt_GPG) {
 			return $this->Crypt_GPG->importKey($keydata);
@@ -361,6 +426,9 @@ class GnuPG
 		if ($this->GnuPG) {
 			return $this->GnuPG->import(\file_get_contents($filename));
 		}
+		if ($this->GPG) {
+			return $this->GPG->importFile($filename);
+		}
 		if ($this->Crypt_GPG) {
 			return $this->Crypt_GPG->importKeyFile($filename);
 		}
@@ -372,32 +440,65 @@ class GnuPG
 	 */
 	public function keyInfo(string $pattern) : array
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->keyinfo($pattern);
-/*			// v1.5 Slow and fails
-			return \array_merge(
-				// Public
-				$this->GnuPG->keyinfo($pattern),
-				// Private, read https://github.com/php-gnupg/php-gnupg/issues/5
-				$this->GnuPG->keyinfo($pattern, 1)
-			);
+		$keys = [];
+		$GPG = $this->GnuPG ?: $this->GPG;
+		if ($GPG) {
+			// Public
+			foreach ($GPG->keyinfo($pattern) as $info) {
+				if (!$info['disabled'] && !$info['expired'] && !$info['revoked']) {
+/*
+					$hasPrivateKey = false;
+					foreach ($info['subkeys'] as $key)  {
+						$hasPrivateKey |= \is_file("{$this->homedir}/private-keys-v1.d/{$key['keygrip']}.key");
+					}
 */
+					foreach ($info['uids'] as $uid)  {
+						$id = $uid['email'];
+						if (isset($keys[$id])) {
+							$keys[$id]['can_sign'] = $keys[$id]['can_sign'] || $info['can_sign'];
+							$keys[$id]['can_encrypt'] = $keys[$id]['can_encrypt'] || $info['can_encrypt'];
+						} else {
+							$keys[$id] = [
+								'name' => $uid['name'],
+								'email' => $uid['email'],
+								// Public Key tasks
+								'can_verify' => $info['can_sign'],
+								'can_encrypt' => $info['can_encrypt'],
+								// Private Key tasks
+								'can_sign' => false,
+								'can_decrypt' => false
+							];
+						}
+					}
+				}
+			}
+			// Private, read https://github.com/php-gnupg/php-gnupg/issues/5
+			foreach ($GPG->keyinfo($pattern, 1) as $info) {
+				if (!$info['disabled'] && !$info['expired'] && !$info['revoked']) {
+					foreach ($info['uids'] as $uid)  {
+						$id = $uid['email'];
+						if (isset($keys[$id])) {
+							$keys[$id]['can_sign'] = $keys[$id]['can_sign'] || $info['can_sign'];
+							$keys[$id]['can_decrypt'] = $keys[$id]['can_decrypt'] || $info['can_encrypt'];
+						} else {
+							$keys[$id] = [
+								'name' => $uid['name'],
+								'email' => $uid['email'],
+								// Public Key tasks
+								'can_verify' => false,
+								'can_encrypt' => false,
+								// Private Key tasks
+								'can_sign' => $info['can_sign'],
+								'can_decrypt' => $info['can_encrypt']
+							];
+						}
+					}
+				}
+			}
 		}
-		if ($this->Crypt_GPG) {
-			return true;
+		else if ($this->Crypt_GPG) {
 		}
-		return false;
-	}
-
-	/**
-	 * Returns an array with information about all keys that matches the given pattern
-	 */
-	public function hasPrivateKey(string $keygrip) : bool
-	{
-		if ($this->GnuPG || $this->Crypt_GPG) {
-			return \is_file("{$this->homedir}/private-keys-v1.d/{$keygrip}.key");
-		}
-		return false;
+		return $keys;
 	}
 
 	/**
@@ -408,6 +509,9 @@ class GnuPG
 	{
 		if ($this->GnuPG) {
 			return $this->GnuPG->setarmor($armor ? 1 : 0);
+		}
+		if ($this->GPG) {
+			return $this->GPG->setarmor($armor ? 1 : 0);
 		}
 		if ($this->Crypt_GPG) {
 			//$armor ? \Crypt_GPG::ARMOR_ASCII : \Crypt_GPG::ARMOR_
@@ -426,6 +530,9 @@ class GnuPG
 		if ($this->GnuPG) {
 			$this->GnuPG->seterrormode($errormode);
 		}
+		if ($this->GPG) {
+			$this->GPG->seterrormode($errormode);
+		}
 		if ($this->Crypt_GPG) {
 		}
 	}
@@ -439,6 +546,9 @@ class GnuPG
 	{
 		if ($this->GnuPG) {
 			return $this->GnuPG->setsignmode($signmode);
+		}
+		if ($this->GPG) {
+			return $this->GPG->setsignmode($signmode);
 		}
 		if ($this->Crypt_GPG) {
 			return true;
@@ -454,6 +564,9 @@ class GnuPG
 		if ($this->GnuPG) {
 			return $this->GnuPG->sign($plaintext);
 		}
+		if ($this->GPG) {
+			return $this->GPG->sign($plaintext);
+		}
 		if ($this->Crypt_GPG) {
 			return $this->Crypt_GPG->sign($data, $mode = self::SIGN_MODE_NORMAL);
 		}
@@ -467,6 +580,9 @@ class GnuPG
 	{
 		if ($this->GnuPG) {
 			return $this->GnuPG->sign(\file_get_contents($filename));
+		}
+		if ($this->GPG) {
+			return $this->GPG->signFile($filename);
 		}
 		if ($this->Crypt_GPG) {
 			return $this->Crypt_GPG->signFile($filename, $signedFile = null, $mode = self::SIGN_MODE_NORMAL);
@@ -482,6 +598,9 @@ class GnuPG
 		if ($this->GnuPG) {
 			return $this->GnuPG->verify($signed_text, $signature, $plaintext);
 		}
+		if ($this->GPG) {
+			return $this->GPG->verify($signed_text, $signature, $plaintext);
+		}
 		if ($this->Crypt_GPG) {
 			return $this->Crypt_GPG->verify($signed_text, $signature = '');
 		}
@@ -495,6 +614,9 @@ class GnuPG
 	{
 		if ($this->GnuPG) {
 			return $this->GnuPG->verify(\file_get_contents($filename), $signature, $plaintext);
+		}
+		if ($this->GPG) {
+			return $this->GPG->verifyFile($filename, $signature, $plaintext);
 		}
 		if ($this->Crypt_GPG) {
 			return $this->Crypt_GPG->verifyFile($filename, $signature = '');
