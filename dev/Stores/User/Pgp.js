@@ -270,21 +270,24 @@ export const PgpUserStore = new class {
 	 * @returns {void}
 	 */
 	deleteKey(openPgpKeyToRemove) {
-		if (openPgpKeyToRemove && openPgpKeyToRemove.deleteAccess() && this.openpgpKeyring) {
-			let findedItem = this.openpgpPublicKeys.find(key => openPgpKeyToRemove === key);
-			if (findedItem) {
-				this.openpgpPublicKeys.remove(findedItem);
-				this.openpgpKeyring.publicKeys.removeForId(findedItem.guid);
-			} else {
-				findedItem = this.openpgpPrivateKeys.find(key => openPgpKeyToRemove === key);
-				if (findedItem) {
-					this.openpgpPrivateKeys.remove(findedItem);
-					this.openpgpKeyring.privateKeys.removeForId(findedItem.guid);
-				}
+		const openpgpKeyring = this.openpgpKeyring;
+		if (openPgpKeyToRemove && openPgpKeyToRemove.deleteAccess() && openpgpKeyring) {
+			let items = [
+				this.openpgpPrivateKeys.find(key => openPgpKeyToRemove === key),
+				this.openpgpPublicKeys.find(key => openPgpKeyToRemove === key)
+			];
+			if (items[0]) {
+				this.openpgpPrivateKeys.remove(items[0]);
+				openpgpKeyring.privateKeys.removeForId(items[0].guid);
+				delegateRunOnDestroy(items[0]);
 			}
-			if (findedItem) {
-				delegateRunOnDestroy(findedItem);
-				this.openpgpKeyring.store();
+			if (items[1]) {
+				this.openpgpPublicKeys.remove(items[1]);
+				openpgpKeyring.publicKeys.removeForId(items[1].guid);
+				delegateRunOnDestroy(items[1]);
+			}
+			if (items[0] || items[1]) {
+				openpgpKeyring.store();
 			}
 //			this.reloadOpenPgpKeys();
 		}

@@ -21,6 +21,7 @@ export class OpenPgpUserSettings /*extends AbstractViewSettings*/ {
 
 		this.canOpenPGP = !!PgpUserStore.openpgpKeyring;
 //		this.canOpenPGP = Settings.capa(Capa.OpenPGP);
+		this.canMailvelope = !!window.mailvelope;
 
 		this.allowDraftAutosave = SettingsUserStore.allowDraftAutosave;
 
@@ -39,6 +40,11 @@ export class OpenPgpUserSettings /*extends AbstractViewSettings*/ {
 		if (openPgpKey) {
 			showScreenPopup(ViewOpenPgpKeyPopupView, [openPgpKey]);
 		}
+	}
+
+	onBuild() {
+		window.mailvelope
+		&& mailvelope.createSettingsContainer('#mailvelope-settings'/*[, keyring], options*/);
 	}
 
 	/**

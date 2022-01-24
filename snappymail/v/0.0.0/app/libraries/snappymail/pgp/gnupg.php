@@ -602,7 +602,7 @@ class GnuPG
 			return $this->GPG->verify($signed_text, $signature, $plaintext);
 		}
 		if ($this->Crypt_GPG) {
-			return $this->Crypt_GPG->verify($signed_text, $signature = '');
+			return $this->Crypt_GPG->verify($signed_text, $signature);
 		}
 		return false;
 	}
@@ -619,7 +619,7 @@ class GnuPG
 			return $this->GPG->verifyFile($filename, $signature, $plaintext);
 		}
 		if ($this->Crypt_GPG) {
-			return $this->Crypt_GPG->verifyFile($filename, $signature = '');
+			return $this->Crypt_GPG->verifyFile($filename, $signature);
 		}
 		return false;
 	}
