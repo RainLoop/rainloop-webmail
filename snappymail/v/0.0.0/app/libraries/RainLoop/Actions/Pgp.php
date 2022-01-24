@@ -54,6 +54,23 @@ trait Pgp
 			: $this->FalseResponse(__FUNCTION__);
 	}
 
+	public function DoGnupgGenerateKey() : array
+	{
+		$fingerprint = false;
+		$GPG = $this->GnuPG();
+		if ($GPG) {
+			$sName = $this->GetActionParam('Name', '');
+			$sEmail = $this->GetActionParam('Email', '');
+			$fingerprint = $GPG->generateKey(
+				$sName ? "{$sName} <{$sEmail}>" : $sEmail,
+				$this->GetActionParam('Passphrase', '')
+			);
+		}
+		return $fingerprint
+			? $this->DefaultResponse(__FUNCTION__, $fingerprint)
+			: $this->FalseResponse(__FUNCTION__);
+	}
+
 	public function DoGnupgImportKey() : array
 	{
 		$sKey = $this->GetActionParam('Key', '');

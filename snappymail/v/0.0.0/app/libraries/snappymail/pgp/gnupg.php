@@ -402,6 +402,20 @@ class GnuPG
 	}
 
 	/**
+	 * Generates a key
+	 */
+	public function generateKey(string $uid, string $passphrase) /*: string|false*/
+	{
+		if (!$this->GPG) {
+			if (!\SnappyMail\PGP\GPG::isSupported()) {
+				return false;
+			}
+			$this->GPG = new \SnappyMail\PGP\GPG($homedir);
+		}
+		return $this->GPG->generateKey($uid, $passphrase);
+	}
+
+	/**
 	 * Imports a key
 	 */
 	public function import(string $keydata) /*: array|false*/
@@ -446,12 +460,6 @@ class GnuPG
 			// Public
 			foreach ($GPG->keyinfo($pattern) as $info) {
 				if (!$info['disabled'] && !$info['expired'] && !$info['revoked']) {
-/*
-					$hasPrivateKey = false;
-					foreach ($info['subkeys'] as $key)  {
-						$hasPrivateKey |= \is_file("{$this->homedir}/private-keys-v1.d/{$key['keygrip']}.key");
-					}
-*/
 					foreach ($info['uids'] as $uid)  {
 						$id = $uid['email'];
 						if (isset($keys[$id])) {
@@ -466,8 +474,14 @@ class GnuPG
 								'can_encrypt' => $info['can_encrypt'],
 								// Private Key tasks
 								'can_sign' => false,
-								'can_decrypt' => false
+								'can_decrypt' => false,
+								// The keys
+								'publicKeys' => [],
+								'privateKeys' => []
 							];
+						}
+						foreach ($info['subkeys'] as $key)  {
+							$keys[$id]['publicKeys'][$key['fingerprint']] = $key;
 						}
 					}
 				}
@@ -489,8 +503,14 @@ class GnuPG
 								'can_encrypt' => false,
 								// Private Key tasks
 								'can_sign' => $info['can_sign'],
-								'can_decrypt' => $info['can_encrypt']
+								'can_decrypt' => $info['can_encrypt'],
+								// The keys
+								'publicKeys' => [],
+								'privateKeys' => []
 							];
+						}
+						foreach ($info['subkeys'] as $key)  {
+							$keys[$id]['privateKeys'][$key['fingerprint']] = $key;
 						}
 					}
 				}

@@ -53,10 +53,10 @@ class GPG
 
 	private
 		$binary,
-		$version = '1.0',
+		$version = '2.0',
 		$cipher_algorithms = ['IDEA', '3DES', 'CAST5', 'BLOWFISH', 'AES', 'AES192', 'AES256', 'TWOFISH', 'CAMELLIA128', 'CAMELLIA192', 'CAMELLIA256'],
 		$hash_algorithms = ['SHA1', 'RIPEMD160', 'SHA256', 'SHA384', 'SHA512', 'SHA224'],
-		$pubkey_algorithms = ['RSA', 'DSA'],
+		$pubkey_algorithms = ['RSA', 'ELG', 'DSA', 'ECDH', 'ECDSA', 'EDDSA'],
 		$compression = ['Uncompressed', 'ZIP', 'ZLIB'],
 
 		$proc_resource,
@@ -301,6 +301,85 @@ class GPG
 	{
 		$this->passphrases[$key] = $passphrase;
 		return $this;
+	}
+
+	/**
+	 * Generates a key
+	 * Also saves revocation certificate in {homedir}/openpgp-revocs.d/
+	 */
+	public function generateKey(string $uid, string $passphrase) /*: string|false*/
+	{
+		/**
+		 * https://www.gnupg.org/documentation/manuals/gnupg/Unattended-GPG-key-generation.html
+		 * But it can't generate multiple subkeys
+		 */
+/*
+		$this->_input = "Key-Type: ECDSA
+Key-Curve: nistp256
+Key-Usage: sign
+Subkey-Type: ecdh
+Subkey-Curve: Curve25519
+Subkey-Usage: sign
+Name-Real: John
+Name-Comment: comment
+Name-Email: john.doe@example.com
+Expire-Date: 0
+Passphrase: {$passphrase}
+%commit";
+
+//		gpg --full-generate-key
+//		gpg --quick-gen-key
+		$result = $this->exec(array(
+			'--batch',
+			'--yes',
+			'--full-gen-key' // '--gen-key'
+		));
+*/
+		$arguments = array(
+			'--batch',
+			'--yes',
+			'--passphrase', \escapeshellarg($passphrase)
+		);
+
+		$result = $this->exec(\array_merge($arguments, array(
+			'--quick-generate-key',
+			\escapeshellarg(\rawurlencode($uid)),
+			'ed25519',
+			'cert',
+			'0'
+		)));
+		$fingerprint = '';
+		foreach ($result['status'] as $line) {
+			$tokens = \explode(' ', $line);
+			if ('KEY_CREATED' === $tokens[0]/* && 'P' === $tokens[1]*/) {
+				$fingerprint = $tokens[2];
+			}
+		}
+		if (!$fingerprint) {
+			return false;
+		}
+
+		$arguments[] = '--quick-add-key';
+		$arguments[] = $fingerprint;
+		$this->exec(\array_merge($arguments, array(
+			'ed25519',
+			'sign',
+			'0'
+		)));
+		$this->exec(\array_merge($arguments, array(
+			'cv25519',
+			'encrypt',
+			'0'
+		)));
+/*
+		[status][0] => KEY_NOT_CREATED
+		[errors][0] => gpg: -:3: specified Key-Usage not allowed for algo 22
+		[errors][0] => gpg: key generation failed: Unknown elliptic curve
+
+		[status][0] => KEY_CONSIDERED B2FD2BCADCC6A9E4B2C90DBBE776CADFF94D327F 0
+		[status][1] => KEY_CREATED P B2FD2BCADCC6A9E4B2C90DBBE776CADFF94D327F
+*/
+		return $fingerprint;
 	}
 
 	protected function _importKey($input) /*: array|false*/
