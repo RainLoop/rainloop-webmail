@@ -9,14 +9,11 @@ class GnuPG
 		// Instance of gnupg pecl extension
 		$GnuPG,
 		// Instance of \SnappyMail\PGP\GPG
-		$GPG,
-		// Instance of PEAR Crypt_GPG
-		$Crypt_GPG;
+		$GPG;
 
 	public static function isSupported() : bool
 	{
 		return \class_exists('gnupg')
-			|| \stream_resolve_include_path('Crypt/GPG.php')
 			|| \SnappyMail\PGP\GPG::isSupported();
 	}
 
@@ -43,20 +40,6 @@ class GnuPG
 		} else if (\SnappyMail\PGP\GPG::isSupported()) {
 			$self = new self;
 			$self->GPG = new \SnappyMail\PGP\GPG($homedir);
-		} else {
-			/**
-			 * $binary = trim(`which gpg`) ?: trim(`which gpg2`);
-			 * \is_executable($binary)
-			 */
-			include_once 'Crypt/GPG.php';
-			if (\class_exists('Crypt_GPG')) {
-				$self = new self;
-				$self->Crypt_GPG = new \Crypt_GPG([
-//					'debug' => true,
-//					'binary' => $binary,
-					'homedir' => $homedir
-				]);
-			}
 		}
 		if ($self) {
 			$self->homedir = $homedir;
@@ -76,10 +59,6 @@ class GnuPG
 		if ($this->GPG) {
 			return $this->GPG->adddecryptkey($fingerprint, $passphrase);
 		}
-		if ($this->Crypt_GPG) {
-			$this->Crypt_GPG->addDecryptKey($fingerprint, $passphrase);
-			return true;
-		}
 		return false;
 	}
 
@@ -93,10 +72,6 @@ class GnuPG
 		}
 		if ($this->GPG) {
 			return $this->GPG->addencryptkey($fingerprint);
-		}
-		if ($this->Crypt_GPG) {
-			$this->Crypt_GPG->addEncryptKey($fingerprint);
-			return true;
 		}
 		return false;
 	}
@@ -112,10 +87,6 @@ class GnuPG
 		if ($this->GPG) {
 			return $this->GPG->addsignkey($fingerprint, $passphrase);
 		}
-		if ($this->Crypt_GPG) {
-			$this->Crypt_GPG->addSignKey($fingerprint, $passphrase);
-			return true;
-		}
 		return false;
 	}
 
@@ -129,10 +100,6 @@ class GnuPG
 		}
 		if ($this->GPG) {
 			return $this->GPG->cleardecryptkeys();
-		}
-		if ($this->Crypt_GPG) {
-			$this->Crypt_GPG->clearDecryptKeys();
-			return true;
 		}
 		return false;
 	}
@@ -148,10 +115,6 @@ class GnuPG
 		if ($this->GPG) {
 			return $this->GPG->clearencryptkeys();
 		}
-		if ($this->Crypt_GPG) {
-			$this->Crypt_GPG->clearEncryptKeys();
-			return true;
-		}
 		return false;
 	}
 
@@ -165,10 +128,6 @@ class GnuPG
 		}
 		if ($this->GPG) {
 			return $this->GPG->clearsignkeys();
-		}
-		if ($this->Crypt_GPG) {
-			$this->Crypt_GPG->clearSignKeys();
-			return true;
 		}
 		return false;
 	}
@@ -184,9 +143,6 @@ class GnuPG
 		if ($this->GPG) {
 			return $this->GPG->decrypt($text);
 		}
-		if ($this->Crypt_GPG) {
-			return $this->Crypt_GPG->decrypt($encryptedData);
-		}
 		return false;
 	}
 
@@ -200,9 +156,6 @@ class GnuPG
 		}
 		if ($this->GPG) {
 			return $this->GPG->decryptFile($filename);
-		}
-		if ($this->Crypt_GPG) {
-			return $this->Crypt_GPG->decryptFile($filename, $decryptedFile = null);
 		}
 		return false;
 	}
@@ -218,9 +171,6 @@ class GnuPG
 		if ($this->GPG) {
 			return $this->GPG->decryptverify($text, $plaintext);
 		}
-		if ($this->Crypt_GPG) {
-			return $this->Crypt_GPG->decryptAndVerify($text, $ignoreVerifyErrors = false);
-		}
 		return false;
 	}
 
@@ -234,9 +184,6 @@ class GnuPG
 		}
 		if ($this->GPG) {
 			return $this->GPG->decryptverifyFile($filename, $plaintext);
-		}
-		if ($this->Crypt_GPG) {
-			return $this->Crypt_GPG->decryptAndVerifyFile($filename, $decryptedFile = null, $ignoreVerifyErrors = false);
 		}
 		return false;
 	}
@@ -252,9 +199,6 @@ class GnuPG
 		if ($this->GPG) {
 			return $this->GPG->encrypt($plaintext);
 		}
-		if ($this->Crypt_GPG) {
-			return $this->Crypt_GPG->encrypt($plaintext);
-		}
 		return false;
 	}
 
@@ -268,9 +212,6 @@ class GnuPG
 		}
 		if ($this->GPG) {
 			return $this->GPG->encryptFile($filename);
-		}
-		if ($this->Crypt_GPG) {
-			return $this->Crypt_GPG->encryptFile($filename, $encryptedFile = null);
 		}
 		return false;
 	}
@@ -286,9 +227,6 @@ class GnuPG
 		if ($this->GPG) {
 			return $this->GPG->encryptsign($plaintext);
 		}
-		if ($this->Crypt_GPG) {
-			return $this->Crypt_GPG->encryptAndSign($plaintext);
-		}
 		return false;
 	}
 
@@ -302,9 +240,6 @@ class GnuPG
 		}
 		if ($this->GPG) {
 			return $this->GPG->encryptsignFile($filename);
-		}
-		if ($this->Crypt_GPG) {
-			return $this->Crypt_GPG->encryptAndSignFile($filename, $signedFile = null);
 		}
 		return false;
 	}
@@ -320,11 +255,6 @@ class GnuPG
 		if ($this->GPG) {
 			return $this->GPG->export($fingerprint);
 		}
-		if ($this->Crypt_GPG) {
-			$this->Crypt_GPG->exportPrivateKey($fingerprint, $armor = true);
-			$this->Crypt_GPG->exportPublicKey($fingerprint, $armor = true);
-			return true;
-		}
 		return false;
 	}
 
@@ -338,14 +268,6 @@ class GnuPG
 		}
 		if ($this->GPG) {
 			return $this->GPG->getengineinfo();
-		}
-		if ($this->Crypt_GPG) {
-			return [
-				'protocol' => null,
-				'file_name' => null, // $this->Crypt_GPG->binary
-				'home_dir' => $this->homedir,
-				'version' => $this->Crypt_GPG->getVersion()
-			];
 		}
 		return false;
 	}
@@ -361,9 +283,6 @@ class GnuPG
 		if ($this->GPG) {
 			return $this->GPG->geterror();
 		}
-		if ($this->Crypt_GPG) {
-			return true;
-		}
 		return false;
 	}
 
@@ -378,9 +297,6 @@ class GnuPG
 		if ($this->GPG) {
 			return $this->GPG->geterrorinfo();
 		}
-		if ($this->Crypt_GPG) {
-			return true;
-		}
 		return false;
 	}
 
@@ -394,9 +310,6 @@ class GnuPG
 		}
 		if ($this->GPG) {
 			return $this->GPG->getprotocol();
-		}
-		if ($this->Crypt_GPG) {
-			return true;
 		}
 		return false;
 	}
@@ -426,9 +339,6 @@ class GnuPG
 		if ($this->GPG) {
 			return $this->GPG->import($keydata);
 		}
-		if ($this->Crypt_GPG) {
-			return $this->Crypt_GPG->importKey($keydata);
-		}
 		return false;
 	}
 
@@ -442,9 +352,6 @@ class GnuPG
 		}
 		if ($this->GPG) {
 			return $this->GPG->importFile($filename);
-		}
-		if ($this->Crypt_GPG) {
-			return $this->Crypt_GPG->importKeyFile($filename);
 		}
 		return false;
 	}
@@ -516,8 +423,6 @@ class GnuPG
 				}
 			}
 		}
-		else if ($this->Crypt_GPG) {
-		}
 		return $keys;
 	}
 
@@ -532,10 +437,6 @@ class GnuPG
 		}
 		if ($this->GPG) {
 			return $this->GPG->setarmor($armor ? 1 : 0);
-		}
-		if ($this->Crypt_GPG) {
-			//$armor ? \Crypt_GPG::ARMOR_ASCII : \Crypt_GPG::ARMOR_
-			return true;
 		}
 		return false;
 	}
@@ -553,8 +454,6 @@ class GnuPG
 		if ($this->GPG) {
 			$this->GPG->seterrormode($errormode);
 		}
-		if ($this->Crypt_GPG) {
-		}
 	}
 
 	/**
@@ -570,9 +469,6 @@ class GnuPG
 		if ($this->GPG) {
 			return $this->GPG->setsignmode($signmode);
 		}
-		if ($this->Crypt_GPG) {
-			return true;
-		}
 		return false;
 	}
 
@@ -586,9 +482,6 @@ class GnuPG
 		}
 		if ($this->GPG) {
 			return $this->GPG->sign($plaintext);
-		}
-		if ($this->Crypt_GPG) {
-			return $this->Crypt_GPG->sign($data, $mode = self::SIGN_MODE_NORMAL);
 		}
 		return false;
 	}
@@ -604,9 +497,6 @@ class GnuPG
 		if ($this->GPG) {
 			return $this->GPG->signFile($filename);
 		}
-		if ($this->Crypt_GPG) {
-			return $this->Crypt_GPG->signFile($filename, $signedFile = null, $mode = self::SIGN_MODE_NORMAL);
-		}
 		return false;
 	}
 
@@ -621,9 +511,6 @@ class GnuPG
 		if ($this->GPG) {
 			return $this->GPG->verify($signed_text, $signature, $plaintext);
 		}
-		if ($this->Crypt_GPG) {
-			return $this->Crypt_GPG->verify($signed_text, $signature);
-		}
 		return false;
 	}
 
@@ -637,9 +524,6 @@ class GnuPG
 		}
 		if ($this->GPG) {
 			return $this->GPG->verifyFile($filename, $signature, $plaintext);
-		}
-		if ($this->Crypt_GPG) {
-			return $this->Crypt_GPG->verifyFile($filename, $signature);
 		}
 		return false;
 	}
@@ -657,17 +541,4 @@ class GnuPG
 		}
 		return false;
 	}
-
-/*
-	$this->Crypt_GPG->deletePublicKey($keyId);
-	$this->Crypt_GPG->deletePrivateKey($keyId);
-	$this->Crypt_GPG->getKeys($keyId = '');
-	$this->Crypt_GPG->getFingerprint($keyId, $format = self::FORMAT_NONE);
-	$this->Crypt_GPG->getLastSignatureInfo();
-	$this->Crypt_GPG->addPassphrase($key, $passphrase);
-	$this->Crypt_GPG->clearPassphrases();
-	$this->Crypt_GPG->hasEncryptKeys();
-	$this->Crypt_GPG->hasSignKeys();
-	$this->Crypt_GPG->getWarnings();
-*/
 }
