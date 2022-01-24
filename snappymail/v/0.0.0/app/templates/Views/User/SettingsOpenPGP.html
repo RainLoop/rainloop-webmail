@@ -3,7 +3,7 @@
 	<i class="icon-list-add"></i>
 	<span data-i18n="SETTINGS_OPEN_PGP/BUTTON_ADD_OPEN_PGP_KEY"></span>
 </button>
-<!-- ko if: canOpenPGP -->
+<!-- ko if: canOpenPGP || canGnuPG -->
 &nbsp;&nbsp;
 <div style="display: inline-block" data-i18n="[title]SETTINGS_OPEN_PGP/GENERATE_ONLY_HTTPS">
 	<button class="btn" data-bind="click: generateOpenPgpKey">
@@ -26,7 +26,8 @@
 </div>
 <br />
 
-<h1>GnuPG</h1>
+<!-- ko if: canGnuPG -->
+<div class="legend">GnuPG</div>
 <table class="table table-hover list-table">
 	<tbody data-bind="foreach: gnupgkeys, i18nUpdate: gnupgkeys">
 		<tr class="open-pgp-key-item">
@@ -42,8 +43,10 @@
 		</tr>
 	</tbody>
 </table>
+<!-- /ko -->
 
-<h1>OpenPGP.js</h1>
+<!-- ko if: canOpenPGP -->
+<div class="legend">OpenPGP.js</div>
 <table class="table table-hover list-table">
 	<tbody data-bind="foreach: openpgpkeysPrivate, i18nUpdate: openpgpkeysPrivate">
 		<tr class="open-pgp-key-item">
@@ -83,8 +86,9 @@
 		</tr>
 	</tbody>
 </table>
+<!-- /ko -->
 
 <!-- ko if: canMailvelope -->
-<h1>Mailvelope</h1>
+<div class="legend">Mailvelope</div>
 <div id="mailvelope-settings" style="height:40em"></div>
 <!-- /ko -->

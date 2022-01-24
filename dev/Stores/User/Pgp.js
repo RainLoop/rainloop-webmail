@@ -168,7 +168,7 @@ export const PgpUserStore = new class {
 	 * @returns {boolean}
 	 */
 	isSupported() {
-		return !!(window.openpgp || window.mailvelope);
+		return !!(window.openpgp || window.mailvelope || Settings.capa(Capa.GnuPG));
 	}
 
 	gnupgImportKey(key, callback) {
