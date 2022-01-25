@@ -11,41 +11,60 @@ class GnuPG
 		// Instance of \SnappyMail\PGP\GPG
 		$GPG;
 
-	public static function isSupported() : bool
-	{
-		return \class_exists('gnupg')
-			|| \SnappyMail\PGP\GPG::isSupported();
-	}
-
-	public static function getInstance(string $homedir) : ?self
+	function __construct(string $homedir)
 	{
 		$homedir = \rtrim($homedir, '/\\');
 		// BSD 4.4 max length
 		if (104 <= \strlen($homedir . '/S.gpg-agent.extra')) {
 			throw new \Exception('socket name for S.gpg-agent.extra is too long');
 		}
+		$this->homedir = $homedir;
+//		\putenv("GNUPGHOME={$homedir}");
 
-		$self = null;
 //		if (\version_compare(\phpversion('gnupg'), '1.5', '>=')) {
 		if (\class_exists('gnupg')) {
-			$self = new self;
-			$self->GnuPG = new \gnupg([
+			$this->GnuPG = new \gnupg([
 				// It is the file name of the executable program implementing this protocol which is usually path of the gpg executable.
 //				'file_name' => '/usr/bin/gpg',
 				// It is the directory name of the configuration directory. It also overrides GNUPGHOME environment variable that is used for the same purpose.
 				'home_dir' => $homedir
 			]);
 			// Output is ASCII
-			$self->GnuPG->setarmor(1);
-		} else if (\SnappyMail\PGP\GPG::isSupported()) {
-			$self = new self;
-			$self->GPG = new \SnappyMail\PGP\GPG($homedir);
+			$this->GnuPG->setarmor(1);
+		} else {
+			$this->getGPG();
 		}
-		if ($self) {
-			$self->homedir = $homedir;
-//			\putenv("GNUPGHOME={$homedir}");
+	}
+
+	public static function isSupported() : bool
+	{
+		return \class_exists('gnupg')
+			|| \SnappyMail\PGP\GPG::isSupported();
+	}
+
+	private static $instance;
+	public static function getInstance(string $homedir) : ?self
+	{
+		if (!static::$instance) {
+			static::$instance = new self($homedir);
 		}
-		return $self;
+		return static::$instance;
+	}
+
+	public function handler()
+	{
+		return $this->GnuPG ?: $this->GPG;
+	}
+
+	public function getGPG()
+	{
+		if (!$this->GPG) {
+			if (!\SnappyMail\PGP\GPG::isSupported()) {
+				throw new \Exception('GnuPG not supported');
+			}
+			$this->GPG = new \SnappyMail\PGP\GPG($this->homedir);
+		}
+		return $this->GPG;
 	}
 
 	/**
@@ -53,13 +72,7 @@ class GnuPG
 	 */
 	public function addDecryptKey(string $fingerprint, string $passphrase) : bool
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->adddecryptkey($fingerprint, $passphrase);
-		}
-		if ($this->GPG) {
-			return $this->GPG->adddecryptkey($fingerprint, $passphrase);
-		}
-		return false;
+		return $this->handler()->adddecryptkey($fingerprint, $passphrase);
 	}
 
 	/**
@@ -67,13 +80,7 @@ class GnuPG
 	 */
 	public function addEncryptKey(string $fingerprint) : bool
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->addencryptkey($fingerprint);
-		}
-		if ($this->GPG) {
-			return $this->GPG->addencryptkey($fingerprint);
-		}
-		return false;
+		return $this->handler()->addencryptkey($fingerprint);
 	}
 
 	/**
@@ -81,13 +88,7 @@ class GnuPG
 	 */
 	public function addSignKey(string $fingerprint, ?string $passphrase) : bool
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->addsignkey($fingerprint, $passphrase);
-		}
-		if ($this->GPG) {
-			return $this->GPG->addsignkey($fingerprint, $passphrase);
-		}
-		return false;
+		return $this->handler()->addsignkey($fingerprint, $passphrase);
 	}
 
 	/**
@@ -95,13 +96,7 @@ class GnuPG
 	 */
 	public function clearDecryptKeys() : bool
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->cleardecryptkeys();
-		}
-		if ($this->GPG) {
-			return $this->GPG->cleardecryptkeys();
-		}
-		return false;
+		return $this->handler()->cleardecryptkeys();
 	}
 
 	/**
@@ -109,13 +104,7 @@ class GnuPG
 	 */
 	public function clearEncryptKeys() : bool
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->clearencryptkeys();
-		}
-		if ($this->GPG) {
-			return $this->GPG->clearencryptkeys();
-		}
-		return false;
+		return $this->handler()->clearencryptkeys();
 	}
 
 	/**
@@ -123,13 +112,7 @@ class GnuPG
 	 */
 	public function clearSignKeys() : bool
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->clearsignkeys();
-		}
-		if ($this->GPG) {
-			return $this->GPG->clearsignkeys();
-		}
-		return false;
+		return $this->handler()->clearsignkeys();
 	}
 
 	/**
@@ -137,13 +120,9 @@ class GnuPG
 	 */
 	public function decrypt(string $text) /*: string|false */
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->decrypt($text);
-		}
-		if ($this->GPG) {
-			return $this->GPG->decrypt($text);
-		}
-		return false;
+		return $this->GnuPG
+			? $this->GnuPG->decrypt($text)
+			: $this->GPG->decrypt($text);
 	}
 
 	/**
@@ -151,13 +130,9 @@ class GnuPG
 	 */
 	public function decryptFile(string $filename) /*: string|false */
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->decrypt(\file_get_contents($filename));
-		}
-		if ($this->GPG) {
-			return $this->GPG->decryptFile($filename);
-		}
-		return false;
+		return $this->GnuPG
+			? $this->GnuPG->decrypt(\file_get_contents($filename))
+			: $this->GPG->decryptFile($filename);
 	}
 
 	/**
@@ -165,13 +140,9 @@ class GnuPG
 	 */
 	public function decryptVerify(string $text, string &$plaintext) /*: array|false*/
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->decryptverify($text, $plaintext);
-		}
-		if ($this->GPG) {
-			return $this->GPG->decryptverify($text, $plaintext);
-		}
-		return false;
+		return $this->GnuPG
+			? $this->GnuPG->decryptverify($text, $plaintext)
+			: $this->GPG->decryptverify($text, $plaintext);
 	}
 
 	/**
@@ -179,13 +150,9 @@ class GnuPG
 	 */
 	public function decryptVerifyFile(string $filename, string &$plaintext) /*: array|false*/
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->decryptverify(\file_get_contents($filename), $plaintext);
-		}
-		if ($this->GPG) {
-			return $this->GPG->decryptverifyFile($filename, $plaintext);
-		}
-		return false;
+		return $this->GnuPG
+			? $this->GnuPG->decryptverify(\file_get_contents($filename), $plaintext)
+			: $this->GPG->decryptverifyFile($filename, $plaintext);
 	}
 
 	/**
@@ -193,13 +160,9 @@ class GnuPG
 	 */
 	public function encrypt(string $plaintext) /*: string|false*/
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->encrypt($plaintext);
-		}
-		if ($this->GPG) {
-			return $this->GPG->encrypt($plaintext);
-		}
-		return false;
+		return $this->GnuPG
+			? $this->GnuPG->encrypt($plaintext)
+			: $this->GPG->encrypt($plaintext);
 	}
 
 	/**
@@ -207,13 +170,9 @@ class GnuPG
 	 */
 	public function encryptFile(string $filename) /*: string|false*/
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->encrypt(\file_get_contents($filename));
-		}
-		if ($this->GPG) {
-			return $this->GPG->encryptFile($filename);
-		}
-		return false;
+		return $this->GnuPG
+			? $this->GnuPG->encrypt(\file_get_contents($filename))
+			: $this->GPG->encryptFile($filename);
 	}
 
 	/**
@@ -221,13 +180,9 @@ class GnuPG
 	 */
 	public function encryptSign(string $plaintext) /*: string|false*/
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->encryptsign($plaintext);
-		}
-		if ($this->GPG) {
-			return $this->GPG->encryptsign($plaintext);
-		}
-		return false;
+		return $this->GnuPG
+			? $this->GnuPG->encryptsign($plaintext)
+			: $this->GPG->encryptsign($plaintext);
 	}
 
 	/**
@@ -235,13 +190,9 @@ class GnuPG
 	 */
 	public function encryptSignFile(string $filename) /*: string|false*/
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->encryptsign(\file_get_contents($filename));
-		}
-		if ($this->GPG) {
-			return $this->GPG->encryptsignFile($filename);
-		}
-		return false;
+		return $this->GnuPG
+			? $this->GnuPG->encryptsign(\file_get_contents($filename))
+			: $this->GPG->encryptsignFile($filename);
 	}
 
 	/**
@@ -249,13 +200,9 @@ class GnuPG
 	 */
 	public function export(string $fingerprint) /*: string|false*/
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->export($fingerprint);
-		}
-		if ($this->GPG) {
-			return $this->GPG->export($fingerprint);
-		}
-		return false;
+		return $this->GnuPG
+			? $this->GnuPG->export($fingerprint)
+			: $this->GPG->export($fingerprint);
 	}
 
 	/**
@@ -263,13 +210,7 @@ class GnuPG
 	 */
 	public function getEngineInfo() : array
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->getengineinfo();
-		}
-		if ($this->GPG) {
-			return $this->GPG->getengineinfo();
-		}
-		return false;
+		return $this->handler()->getengineinfo();
 	}
 
 	/**
@@ -277,13 +218,7 @@ class GnuPG
 	 */
 	public function getError() /*: string|false*/
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->geterror();
-		}
-		if ($this->GPG) {
-			return $this->GPG->geterror();
-		}
-		return false;
+		return $this->handler()->geterror();
 	}
 
 	/**
@@ -291,13 +226,7 @@ class GnuPG
 	 */
 	public function getErrorInfo() : array
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->geterrorinfo();
-		}
-		if ($this->GPG) {
-			return $this->GPG->geterrorinfo();
-		}
-		return false;
+		return $this->handler()->geterrorinfo();
 	}
 
 	/**
@@ -305,13 +234,7 @@ class GnuPG
 	 */
 	public function getProtocol() : int
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->getprotocol();
-		}
-		if ($this->GPG) {
-			return $this->GPG->getprotocol();
-		}
-		return false;
+		return $this->handler()->getprotocol();
 	}
 
 	/**
@@ -333,13 +256,7 @@ class GnuPG
 	 */
 	public function import(string $keydata) /*: array|false*/
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->import($keydata);
-		}
-		if ($this->GPG) {
-			return $this->GPG->import($keydata);
-		}
-		return false;
+		return $this->handler()->import($keydata);
 	}
 
 	/**
@@ -347,13 +264,9 @@ class GnuPG
 	 */
 	public function importFile(string $filename) /*: array|false*/
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->import(\file_get_contents($filename));
-		}
-		if ($this->GPG) {
-			return $this->GPG->importFile($filename);
-		}
-		return false;
+		return $this->GnuPG
+			? $this->GnuPG->import(\file_get_contents($filename))
+			: $this->GPG->importFile($filename);
 	}
 
 	/**
@@ -362,63 +275,60 @@ class GnuPG
 	public function keyInfo(string $pattern) : array
 	{
 		$keys = [];
-		$GPG = $this->GnuPG ?: $this->GPG;
-		if ($GPG) {
-			// Public
-			foreach ($GPG->keyinfo($pattern) as $info) {
-				if (!$info['disabled'] && !$info['expired'] && !$info['revoked']) {
-					foreach ($info['uids'] as $uid)  {
-						$id = $uid['email'];
-						if (isset($keys[$id])) {
-							$keys[$id]['can_sign'] = $keys[$id]['can_sign'] || $info['can_sign'];
-							$keys[$id]['can_encrypt'] = $keys[$id]['can_encrypt'] || $info['can_encrypt'];
-						} else {
-							$keys[$id] = [
-								'name' => $uid['name'],
-								'email' => $uid['email'],
-								// Public Key tasks
-								'can_verify' => $info['can_sign'],
-								'can_encrypt' => $info['can_encrypt'],
-								// Private Key tasks
-								'can_sign' => false,
-								'can_decrypt' => false,
-								// The keys
-								'publicKeys' => [],
-								'privateKeys' => []
-							];
-						}
-						foreach ($info['subkeys'] as $key)  {
-							$keys[$id]['publicKeys'][$key['fingerprint']] = $key;
-						}
+		// Public
+		foreach ($this->handler()->keyinfo($pattern) as $info) {
+			if (!$info['disabled'] && !$info['expired'] && !$info['revoked']) {
+				foreach ($info['uids'] as $uid)  {
+					$id = $uid['email'];
+					if (isset($keys[$id])) {
+						$keys[$id]['can_sign'] = $keys[$id]['can_sign'] || $info['can_sign'];
+						$keys[$id]['can_encrypt'] = $keys[$id]['can_encrypt'] || $info['can_encrypt'];
+					} else {
+						$keys[$id] = [
+							'name' => $uid['name'],
+							'email' => $uid['email'],
+							// Public Key tasks
+							'can_verify' => $info['can_sign'],
+							'can_encrypt' => $info['can_encrypt'],
+							// Private Key tasks
+							'can_sign' => false,
+							'can_decrypt' => false,
+							// The keys
+							'publicKeys' => [],
+							'privateKeys' => []
+						];
+					}
+					foreach ($info['subkeys'] as $key)  {
+						$keys[$id]['publicKeys'][$key['fingerprint']] = $key;
 					}
 				}
 			}
-			// Private, read https://github.com/php-gnupg/php-gnupg/issues/5
-			foreach ($GPG->keyinfo($pattern, 1) as $info) {
-				if (!$info['disabled'] && !$info['expired'] && !$info['revoked']) {
-					foreach ($info['uids'] as $uid)  {
-						$id = $uid['email'];
-						if (isset($keys[$id])) {
-							$keys[$id]['can_sign'] = $keys[$id]['can_sign'] || $info['can_sign'];
-							$keys[$id]['can_decrypt'] = $keys[$id]['can_decrypt'] || $info['can_encrypt'];
-						} else {
-							$keys[$id] = [
-								'name' => $uid['name'],
-								'email' => $uid['email'],
-								// Public Key tasks
-								'can_verify' => false,
-								'can_encrypt' => false,
-								// Private Key tasks
-								'can_sign' => $info['can_sign'],
-								'can_decrypt' => $info['can_encrypt'],
-								// The keys
-								'publicKeys' => [],
-								'privateKeys' => []
-							];
-						}
-						foreach ($info['subkeys'] as $key)  {
-							$keys[$id]['privateKeys'][$key['fingerprint']] = $key;
-						}
+		}
+		// Private, read https://github.com/php-gnupg/php-gnupg/issues/5
+		foreach ($this->handler()->keyinfo($pattern, 1) as $info) {
+			if (!$info['disabled'] && !$info['expired'] && !$info['revoked']) {
+				foreach ($info['uids'] as $uid)  {
+					$id = $uid['email'];
+					if (isset($keys[$id])) {
+						$keys[$id]['can_sign'] = $keys[$id]['can_sign'] || $info['can_sign'];
+						$keys[$id]['can_decrypt'] = $keys[$id]['can_decrypt'] || $info['can_encrypt'];
+					} else {
+						$keys[$id] = [
+							'name' => $uid['name'],
+							'email' => $uid['email'],
+							// Public Key tasks
+							'can_verify' => false,
+							'can_encrypt' => false,
+							// Private Key tasks
+							'can_sign' => $info['can_sign'],
+							'can_decrypt' => $info['can_encrypt'],
+							// The keys
+							'publicKeys' => [],
+							'privateKeys' => []
+						];
+					}
+					foreach ($info['subkeys'] as $key)  {
+						$keys[$id]['privateKeys'][$key['fingerprint']] = $key;
 					}
 				}
 			}
@@ -432,13 +342,7 @@ class GnuPG
 	 */
 	public function setArmor(bool $armor = true) : bool
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->setarmor($armor ? 1 : 0);
-		}
-		if ($this->GPG) {
-			return $this->GPG->setarmor($armor ? 1 : 0);
-		}
-		return false;
+		return $this->handler()->setarmor($armor ? 1 : 0);
 	}
 
 	/**
@@ -448,12 +352,7 @@ class GnuPG
 	 */
 	public function setErrorMode(int $errormode) : void
 	{
-		if ($this->GnuPG) {
-			$this->GnuPG->seterrormode($errormode);
-		}
-		if ($this->GPG) {
-			$this->GPG->seterrormode($errormode);
-		}
+		$this->handler()->seterrormode($errormode);
 	}
 
 	/**
@@ -463,13 +362,7 @@ class GnuPG
 	 */
 	public function setSignMode(int $signmode) : bool
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->setsignmode($signmode);
-		}
-		if ($this->GPG) {
-			return $this->GPG->setsignmode($signmode);
-		}
-		return false;
+		return $this->handler()->setsignmode($signmode);
 	}
 
 	/**
@@ -477,13 +370,9 @@ class GnuPG
 	 */
 	public function sign(string $plaintext) /*: string|false*/
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->sign($plaintext);
-		}
-		if ($this->GPG) {
-			return $this->GPG->sign($plaintext);
-		}
-		return false;
+		return $this->GnuPG
+			? $this->GnuPG->sign($plaintext)
+			: $this->GPG->sign($plaintext);
 	}
 
 	/**
@@ -491,13 +380,9 @@ class GnuPG
 	 */
 	public function signFile(string $filename) /*: string|false*/
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->sign(\file_get_contents($filename));
-		}
-		if ($this->GPG) {
-			return $this->GPG->signFile($filename);
-		}
-		return false;
+		return $this->GnuPG
+			? $this->GnuPG->sign(\file_get_contents($filename))
+			: $this->GPG->signFile($filename);
 	}
 
 	/**
@@ -505,13 +390,9 @@ class GnuPG
 	 */
 	public function verify(string $signed_text, string $signature, string &$plaintext = null) /*: array|false*/
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->verify($signed_text, $signature, $plaintext);
-		}
-		if ($this->GPG) {
-			return $this->GPG->verify($signed_text, $signature, $plaintext);
-		}
-		return false;
+		return $this->GnuPG
+			? $this->GnuPG->verify($signed_text, $signature, $plaintext)
+			: $this->GPG->verify($signed_text, $signature, $plaintext);
 	}
 
 	/**
@@ -519,26 +400,8 @@ class GnuPG
 	 */
 	public function verifyFile(string $filename, string $signature, string &$plaintext = null) /*: array|false*/
 	{
-		if ($this->GnuPG) {
-			return $this->GnuPG->verify(\file_get_contents($filename), $signature, $plaintext);
-		}
-		if ($this->GPG) {
-			return $this->GPG->verifyFile($filename, $signature, $plaintext);
-		}
-		return false;
-	}
-
-	/**
-	 * RFC 4880
-	 * https://datatracker.ietf.org/doc/html/rfc4880#section-5.2.3.5
-	 */
-	public function signatureIssuer(string $signature) /*: array|false*/
-	{
-		if (preg_match('/-----BEGIN PGP SIGNATURE-----(.+)-----END PGP SIGNATURE-----/', $signature, $match)) {
-			// TODO: use https://github.com/singpolyma/openpgp-php ?
-			$binary = \base64_decode(\trim($match[1]));
-			return \strtoupper(\bin2hex(\substr($binary, 24, 8)));
-		}
-		return false;
+		return $this->GnuPG
+			? $this->GnuPG->verify(\file_get_contents($filename), $signature, $plaintext)
+			: $this->GPG->verifyFile($filename, $signature, $plaintext);
 	}
 }

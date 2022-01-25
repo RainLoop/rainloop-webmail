@@ -62,6 +62,10 @@ class GPG
 
 		$proc_resource,
 
+		$armor = true,
+
+		$signmode = 2,
+
 		$options = [
 			'homedir' => '',
 			'keyring' => '',
@@ -143,7 +147,7 @@ class GPG
 	 */
 	public function addDecryptKey(string $fingerprint, string $passphrase) : bool
 	{
-		$this->signKeys[$fingerprint] = $passphrase;
+		$this->decryptKeys[$fingerprint] = $passphrase;
 		return true;
 	}
 
@@ -161,7 +165,7 @@ class GPG
 	 */
 	public function addSignKey(string $fingerprint, ?string $passphrase) : bool
 	{
-		$this->decryptKeys[$fingerprint] = $passphrase;
+		$this->signKeys[$fingerprint] = $passphrase;
 		return false;
 	}
 
@@ -192,12 +196,27 @@ class GPG
 		return true;
 	}
 
+	protected function _decrypt(/*string|resource*/ $input, /*string|resource*/ $output = null)
+	{
+		$this->setInput($input);
+
+		$fclose = $this->setOutput($output);
+
+		$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->decryptKeys);
+
+		$result = $this->exec('--decrypt --skip-verify');
+
+		$fclose && \fclose($fclose);
+
+		return $output ? true : $result['output'];
+	}
+
 	/**
 	 * Decrypts a given text
 	 */
 	public function decrypt(string $text) /*: string|false */
 	{
-		return false;
+		return $this->_decrypt($text);
 	}
 
 	/**
@@ -205,7 +224,26 @@ class GPG
 	 */
 	public function decryptFile(string $filename) /*: string|false */
 	{
-		return false;
+		$fp = \fopen($filename, 'rb');
+		try {
+			if (!$fp) {
+				throw new \Exception("Could not open file '{$filename}'");
+			}
+			return $this->_decrypt($fp, $output);
+		} finally {
+			$fp && \fclose($fp);
+		}
+	}
+
+	/**
+	 * Decrypts a given stream
+	 */
+	public function decryptStream($fp, /*string|resource*/ $output = null) /*: string|false*/
+	{
+		if (!$fp || !\is_resource($fp)) {
+			throw new \Exception('Invalid stream resource');
+		}
+		return $this->_decrypt($fp, $output);
 	}
 
 	/**
@@ -224,26 +262,20 @@ class GPG
 		return false;
 	}
 
-	protected function _encrypt(/*resource*/ $input, /*string|resource*/ $output = null, bool $armor = true)
+	protected function _encrypt(/*string|resource*/ $input, /*string|resource*/ $output = null)
 	{
 		if (!$this->encryptKeys) {
 			throw new \Exception('No encryption keys specified.');
 		}
 
-		$fclose = false;
-		if ($output && !\is_resource($output)) {
-			$output = \fopen($output, 'rb');
-			if (!$output) {
-				throw new \Exception("Could not open file '{$filename}'");
-			}
-			$fclose = true;
-		}
-		$this->_output = $output;
+		$this->setInput($input);
+
+		$fclose = $this->setOutput($output);
 
 		$arguments = [
 			'--encrypt'
 		];
-		if ($armor) {
+		if ($this->armor) {
 			$arguments[] = '--armor';
 		}
 
@@ -251,10 +283,9 @@ class GPG
 			$arguments[] = '--recipient ' . \escapeshellarg($key['fingerprint']);
 		}
 
-		$this->setInput($input);
 		$result = $this->exec($arguments);
 
-		$fclose && \fclose($output);
+		$fclose && \fclose($fclose);
 
 		return $output ? true : $result['output'];
 	}
@@ -283,7 +314,7 @@ class GPG
 		}
 	}
 
-	public function encryptStream($fp, /*string|resource*/ $output = null) /*: string|false*/
+	public function encryptStream(/*resource*/ $fp, /*string|resource*/ $output = null) /*: string|false*/
 	{
 		if (!$fp || !\is_resource($fp)) {
 			throw new \Exception('Invalid stream resource');
@@ -349,10 +380,10 @@ class GPG
 	 */
 	public function getProtocol() : int
 	{
-		return false;
+		return 0;
 	}
 
-	public function addPassphrase($key, $passphrase)
+	public function addPassphrase($keyId, $passphrase)
 	{
 		$this->passphrases[$key] = $passphrase;
 		return $this;
@@ -425,15 +456,11 @@ class GPG
 	{
 		$arguments = ['--import'];
 
-		$envKeys = [];
-		if (empty($this->passphrases)) {
-			$arguments[] = '--batch';
+		if ($this->passphrases) {
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->passphrases);
 		} else {
-			foreach ($this->passphrases as $keyId => $key) {
-				$envKeys[$keyId] = \is_array($key) ? $key['passphrase'] : $key;
-			}
+			$arguments[] = '--batch';
 		}
-		$_ENV['PINENTRY_USER_DATA'] = \json_encode($envKeys);
 
 		$this->setInput($input);
 		$result = $this->exec($arguments);
@@ -639,12 +666,12 @@ class GPG
 	}
 
 	/**
-	 * Toggle armored output
-	 * When true the output is ASCII
+	 * Toggle the armored output
 	 */
-	public function setArmor(bool $armor = true) : bool
+	public function setArmor(int $armor = 1) : bool
 	{
-		return false;
+		$this->armor = !!$armor;
+		return true;
 	}
 
 	/**
@@ -658,43 +685,108 @@ class GPG
 
 	/**
 	 * Sets the mode for signing
-	 * GNUPG_SIG_MODE_NORMAL, GNUPG_SIG_MODE_DETACH and GNUPG_SIG_MODE_CLEAR.
+	 * GNUPG_SIG_MODE_NORMAL, GNUPG_SIG_MODE_DETACH, GNUPG_SIG_MODE_CLEAR
 	 * By default GNUPG_SIG_MODE_CLEAR
 	 */
 	public function setSignMode(int $signmode) : bool
 	{
-		return false;
+		$this->signmode = $signmode;
+		return true;
+	}
+
+	protected function _sign(/*string|resource*/ $input, /*string|resource*/ $output = null, bool $textmode = true) /*: string|false*/
+	{
+		if (!$this->hasSignKeys()) {
+			throw new \Exception('No signing keys specified.');
+		}
+
+		$this->setInput($input);
+
+		$fclose = $this->setOutput($output);
+
+		$arguments = [];
+
+		switch ($this->signmode)
+		{
+		case 0: // GNUPG_SIG_MODE_NORMAL
+			$arguments[] = '--sign';
+			break;
+		case 1: // GNUPG_SIG_MODE_DETACH
+			$arguments[] = '--detach-sign';
+			break;
+		case 2: // GNUPG_SIG_MODE_CLEAR
+		default:
+			$arguments[] = '--clearsign';
+			break;
+		}
+
+		if ($this->armor) {
+			$arguments[] = '--armor';
+		}
+		if ($textmode) {
+			$arguments[] = '--textmode';
+		}
+
+		foreach ($this->signKeys as $fingerprint => $pass) {
+			$arguments[] = '--local-user ' . \escapeshellarg($fingerprint);
+		}
+		$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->signKeys);
+
+		$result = $this->exec($arguments);
+
+		$fclose && \fclose($fclose);
+
+		return $output ? true : $result['output'];
 	}
 
 	/**
 	 * Signs a given text
 	 */
-	public function sign(string $plaintext) /*: string|false*/
+	public function sign(string $plaintext, /*string|resource*/ $output = null) /*: string|false*/
 	{
-		return false;
+		return $this->_sign($plaintext, $output);
 	}
 
 	/**
 	 * Signs a given file
 	 */
-	public function signFile(string $filename) /*: string|false*/
+	public function signFile(string $filename, /*string|resource*/ $output = null) /*: string|false*/
 	{
-		return false;
+		$fp = \fopen($filename, 'rb');
+		try {
+			if (!$fp) {
+				throw new \Exception("Could not open file '{$filename}'");
+			}
+			return $this->_sign($fp, $output);
+		} finally {
+			$fp && \fclose($fp);
+		}
+	}
+
+	/**
+	 * Signs a given file
+	 */
+	public function signStream($fp, /*string|resource*/ $output = null) /*: array|false*/
+	{
+		if (!$fp || !\is_resource($fp)) {
+			throw new \Exception('Invalid stream resource');
+		}
+		return $this->_sign($fp, $output);
 	}
 
 	protected function _verify($input, string $signature)
 	{
 		$arguments = ['--verify'];
-		if ('' === $signature) {
-			// signed or clearsigned data
-			$this->setInput($input);
-		} else {
+		if ($signature) {
 			// detached signature
 			$this->setInput($signature);
 			$this->_message =& $input;
 			// Signed data goes in FD_MESSAGE, detached signature data goes in FD_INPUT.
 			$arguments[] = '--enable-special-filenames';
 			$arguments[] = '- "-&' . self::FD_MESSAGE . '"';
+		} else {
+			// signed or clearsigned data
+			$this->setInput($input);
 		}
 
 		$result = $this->exec($arguments);
@@ -779,20 +871,6 @@ class GPG
 		return $this->_verify($fp, $signature);
 	}
 
-	/**
-	 * RFC 4880
-	 * https://datatracker.ietf.org/doc/html/rfc4880#section-5.2.3.5
-	 */
-	public function signatureIssuer(string $signature) /*: array|false*/
-	{
-		if (preg_match('/-----BEGIN PGP SIGNATURE-----(.+)-----END PGP SIGNATURE-----/', $signature, $match)) {
-			// TODO: use https://github.com/singpolyma/openpgp-php ?
-			$binary = \base64_decode(\trim($match[1]));
-			return \strtoupper(\bin2hex(\substr($binary, 24, 8)));
-		}
-		return false;
-	}
-
 	private function _debug(string $msg) : void
 	{
 		if ($this->debug) {
@@ -805,9 +883,18 @@ class GPG
 		$this->_input =& $input;
 	}
 
-	private function setOutput($output) : void
+	private function setOutput($output)/* : resource|false*/
 	{
-		$this->_output = \is_resource($output) ? $output : null;
+		$fclose = false;
+		if ($output && !\is_resource($output)) {
+			$output = \fopen($output, 'wb');
+			if (!$output) {
+				throw new \Exception("Could not open file '{$filename}'");
+			}
+			$fclose = $output;
+		}
+		$this->_output = $output;
+		return $fclose;
 	}
 
 	public function agent()

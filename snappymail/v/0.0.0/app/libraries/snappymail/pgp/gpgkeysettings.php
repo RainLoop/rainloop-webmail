@@ -1,9 +1,4 @@
 <?php
-/**
- * This class is inspired by PEAR Crypt_GPG and PECL gnupg
- * It does not support gpg v1 because that is missing ECDH, ECDSA, EDDSA
- * It does not support gpg < v2.2.5 as they are from before 2018
- */
 
 namespace SnappyMail\PGP;
 
@@ -87,7 +82,7 @@ class GPGKeySettings
 			$keyParams[] = "Key-Usage: {$this->usage}";
 		}
 
-		/** Somehow this is broken
+		/** Somehow this is broken and not working in v2.3.4
 		$subkey = $this->subkeys[0];
 		if (!empty($subkey['type'])) {
 			$keyParams[] = "Subkey-Type: {$subkey['type']}";
