@@ -163,9 +163,10 @@ class GPG
 	/**
 	 * Add a key for signing
 	 */
-	public function addSignKey(string $fingerprint, ?string $passphrase) : bool
+	public function addSignKey(string $fingerprint, string $passphrase) : bool
 	{
 		$this->signKeys[$fingerprint] = $passphrase;
+//		$this->signKeys[\substr($fingerprint, -16)] = $passphrase;
 		return false;
 	}
 
@@ -279,8 +280,8 @@ class GPG
 			$arguments[] = '--armor';
 		}
 
-		foreach ($this->encryptKeys as $key) {
-			$arguments[] = '--recipient ' . \escapeshellarg($key['fingerprint']);
+		foreach ($this->encryptKeys as $fingerprint => $dummy) {
+			$arguments[] = '--recipient ' . \escapeshellarg($fingerprint);
 		}
 
 		$result = $this->exec($arguments);
@@ -1193,11 +1194,7 @@ class GPG
 				$length = \strlen($chunk);
 				$this->_debug('=> about to write ' . $length . ' bytes to output stream');
 				$length = \fwrite($this->_output, $chunk, $length);
-				if ($length === 0 || $length === false) {
-					// If we wrote 0 bytes it was either EAGAIN or EPIPE. Since
-					// the pipe was seleted for writing, we assume it was EPIPE.
-					// There's no way to get the actual error code in PHP. See
-					// PHP Bug #39598. https://bugs.php.net/bug.php?id=39598
+				if (!$length) {
 					$this->_debug('=> broken pipe on output stream');
 					$this->_debug('=> closing pipe output stream');
 					$this->_openPipes->close(self::FD_OUTPUT);
@@ -1235,7 +1232,6 @@ class GPG
 							// key ?: subkey
 							$passphrase = $this->getPassphrase($tokens[1]) ?: $this->getPassphrase($tokens[2]);
 							$commandBuffer .= $passphrase . PHP_EOL;
-//							$this->_openPipes->writePipe(self::FD_COMMAND, $passphrase . PHP_EOL);
 						}
 					}
 				}
