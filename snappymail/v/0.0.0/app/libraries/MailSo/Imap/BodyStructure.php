@@ -168,6 +168,19 @@ class BodyStructure
 		return 'doc' === \MailSo\Base\Utils::ContentTypeType($this->sContentType, $this->sFileName);
 	}
 
+	public function IsPgpEncrypted() : bool
+	{
+		// https://datatracker.ietf.org/doc/html/rfc3156#section-4
+		return 'multipart/encrypted' === $this->sContentType
+		 && !empty($this->aBodyParams['protocol'])
+		 && 'application/pgp-encrypted' === \strtolower(\trim($this->aBodyParams['protocol']))
+		 // The multipart/encrypted body MUST consist of exactly two parts.
+		 && 2 === \count($this->aSubParts)
+		 && 'application/pgp-encrypted' === $this->aSubParts[0]->ContentType()
+		 && 'application/octet-stream' === $this->aSubParts[1]->ContentType();
+//		 && 'Version: 1' === $this->aSubParts[0]->Body()
+	}
+
 	public function IsPgpSigned() : bool
 	{
 		// https://datatracker.ietf.org/doc/html/rfc3156#section-5
@@ -187,44 +200,21 @@ class BodyStructure
 
 	public function IsAttachBodyPart() : bool
 	{
-		return 'attachment' === $this->sDisposition
-			|| (
+		return 'application/pgp-encrypted' !== $this->sContentType
+		 && (
+			'attachment' === $this->sDisposition || (
 				!\str_starts_with($this->sContentType, 'multipart/')
 				&& 'text/html' !== $this->sContentType
 				&& 'text/plain' !== $this->sContentType
-			);
-
-		return $bResult;
+			)
+		);
 	}
 
 	public function IsFlowedFormat() : bool
 	{
-		$bResult = !empty($this->aBodyParams['format']) &&
-			'flowed' === \strtolower(\trim($this->aBodyParams['format']));
-
-		if ($bResult && \in_array($this->sMailEncodingName, array('base64', 'quoted-printable')))
-		{
-			$bResult = false;
-		}
-
-		return $bResult;
-	}
-
-	public function SearchInlineEncryptedPart() : ?self
-	{
-		if ('multipart/encrypted' === \strtolower($this->sContentType))
-		{
-			$aSearchParts = \iterator_to_array($this->SearchByCallback(function ($oItem) {
-				return $oItem->IsInline();
-			}));
-
-			if (1 === \count($aSearchParts) && isset($aSearchParts[0]))
-			{
-				return $aSearchParts[0];
-			}
-		}
-
-		return null;
+		return !empty($this->aBodyParams['format'])
+			&& 'flowed' === \strtolower(\trim($this->aBodyParams['format']))
+			&& !\in_array($this->sMailEncodingName, array('base64', 'quoted-printable'));
 	}
 
 	public function GetHtmlAndPlainParts() : array
@@ -238,9 +228,15 @@ class BodyStructure
 			return \array_merge([$aParts->current()], \iterator_to_array($aParts));
 		}
 
-		$oPart = $this->SearchInlineEncryptedPart();
-		if ($oPart instanceof self) {
-			return array($oPart);
+		/**
+		 * No text found, is it encrypted?
+		 * If so, just return that.
+		 */
+		$gEncryptedParts = $this->SearchByContentType('multipart/encrypted');
+		foreach ($gEncryptedParts as $oPart) {
+			if ($oPart->IsPgpEncrypted() && $oPart->SubParts()[1]->IsInline()) {
+				return array($oPart->SubParts()[1]);
+			}
 		}
 
 		return [];
@@ -267,20 +263,21 @@ class BodyStructure
 	 * @param mixed $fCallback
 	 */
 //	public function SearchByCallback($fCallback) : \Generator
-	public function SearchByCallback($fCallback) : iterable
+	public function SearchByCallback($fCallback, $parent = null) : iterable
 	{
-		if ($fCallback($this)) {
+		if ($fCallback($this, $parent)) {
 			yield $this;
 		}
 		foreach ($this->aSubParts as /* @var $oSubPart \MailSo\Imap\BodyStructure */ $oSubPart) {
-			yield from $oSubPart->SearchByCallback($fCallback);
+			yield from $oSubPart->SearchByCallback($fCallback, $this);
 		}
 	}
 
 	public function SearchAttachmentsParts() : iterable
 	{
-		return $this->SearchByCallback(function ($oItem) {
-			return $oItem->IsAttachBodyPart();
+		return $this->SearchByCallback(function ($oItem, $oParent) {
+//			return $oItem->IsAttachBodyPart();
+			return $oItem->IsAttachBodyPart() && (!$oParent || !$oParent->IsPgpEncrypted());
 		});
 	}
 

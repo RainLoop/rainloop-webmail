@@ -78,6 +78,7 @@ class Message implements \JsonSerializable
 		$aThreads = array(),
 
 		$aPgpSigned = null,
+		$aPgpEncrypted = null,
 		$bPgpEncrypted = false;
 
 	function __construct()
@@ -100,9 +101,14 @@ class Message implements \JsonSerializable
 		return $this->aPgpSigned;
 	}
 
+	public function PgpEncrypted() : ?array
+	{
+		return $this->aPgpEncrypted;
+	}
+
 	public function isPgpEncrypted() : bool
 	{
-		return $this->bPgpEncrypted;
+		return $this->bPgpEncrypted || $this->aPgpEncrypted;
 	}
 
 	public function Folder() : string
@@ -491,16 +497,28 @@ class Message implements \JsonSerializable
 
 		if ($oBodyStructure)
 		{
+			$gEncryptedParts = $oBodyStructure->SearchByContentType('multipart/encrypted');
+			foreach ($gEncryptedParts as $oPart) {
+				if ($oPart->IsPgpEncrypted()) {
+					if (!$oMessage->aPgpEncrypted) {
+						$oMessage->aPgpEncrypted = [];
+					}
+					$oMessage->aPgpEncrypted = [
+						'PartId' => $oPart->SubParts()[1]->PartID()
+					];
+				}
+			}
+
 			$gSignatureParts = $oBodyStructure->SearchByContentType('multipart/signed');
 			foreach ($gSignatureParts as $oPart) {
 				if (!$oPart->IsPgpSigned()) {
 					continue;
 				}
-				$oPgpSignaturePart = $oBodyStructure->SubParts()[1];
+				$oPgpSignaturePart = $oPart->SubParts()[1];
 				$oMessage->aPgpSigned = [
 					// /?/Raw/&q[]=/0/Download/&q[]=/...
 					// /?/Raw/&q[]=/0/View/&q[]=/...
-					'BodyPartId' => $oBodyStructure->SubParts()[0]->PartID(),
+					'BodyPartId' => $oPart->SubParts()[0]->PartID(),
 					'SigPartId' => $oPgpSignaturePart->PartID(),
 					'MicAlg' => (string) $oHeaders->ParameterValue(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'micalg')
 				];
@@ -517,7 +535,7 @@ class Message implements \JsonSerializable
 				}
 				$sPgpSignatureText = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oMessage->aPgpSigned['SigPartId'].']');
 				if ($sPgpSignatureText && 0 < \strpos($sPgpSignatureText, 'BEGIN PGP SIGNATURE')) {
-					$oMessage->aPgpSigned['Signature'] = $oBodyStructure->SubParts()[0]->PartID();
+					$oMessage->aPgpSigned['Signature'] = $oPart->SubParts()[0]->PartID();
 				}
 */
 				break;

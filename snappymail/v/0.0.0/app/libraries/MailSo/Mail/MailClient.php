@@ -490,9 +490,8 @@ class MailClient
 				if (!\in_array(\strtolower(MessageFlag::SEEN), $aFlags))
 				{
 					$iUid = (int) $oFetchResponse->GetFetchValue(FetchType::UID);
-					$sHeaders = $oFetchResponse->GetHeaderFieldsValue();
 
-					$oHeaders = new \MailSo\Mime\HeaderCollection($sHeaders);
+					$oHeaders = new \MailSo\Mime\HeaderCollection($oFetchResponse->GetHeaderFieldsValue());
 
 					$sContentTypeCharset = $oHeaders->ParameterValue(MimeHeader::CONTENT_TYPE, MimeParameter::CHARSET);
 

@@ -257,6 +257,7 @@ trait Response
 //				$this->GetCapa(false, Capa::OPEN_PGP) || $this->GetCapa(false, Capa::GNUPG)
 				$mResult['isPgpEncrypted'] = $mResponse->isPgpEncrypted();
 				$mResult['PgpSigned'] = $mResponse->PgpSigned();
+				$mResult['PgpEncrypted'] = $mResponse->PgpEncrypted();
 
 				$mResult['HasExternals'] = $bHasExternals;
 				$mResult['HasInternals'] = \count($aFoundCIDs) || \count($aFoundContentLocationUrls);
