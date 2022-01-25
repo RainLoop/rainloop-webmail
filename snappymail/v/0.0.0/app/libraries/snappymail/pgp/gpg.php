@@ -47,17 +47,18 @@ class GPG
 		$_input,
 		$_output,
 
-		$signKeys = array(),
-		$encryptKeys = array(),
-		$decryptKeys = array();
+		$signKeys = [],
+		$encryptKeys = [],
+		$decryptKeys = [];
 
 	private
 		$binary,
 		$version = '2.0',
-		$cipher_algorithms = ['IDEA', '3DES', 'CAST5', 'BLOWFISH', 'AES', 'AES192', 'AES256', 'TWOFISH', 'CAMELLIA128', 'CAMELLIA192', 'CAMELLIA256'],
-		$hash_algorithms = ['SHA1', 'RIPEMD160', 'SHA256', 'SHA384', 'SHA512', 'SHA224'],
-		$pubkey_algorithms = ['RSA', 'ELG', 'DSA', 'ECDH', 'ECDSA', 'EDDSA'],
-		$compression = ['Uncompressed', 'ZIP', 'ZLIB'],
+		$ciphers = [],
+		$digests = [],
+		$curves = [],
+		$pubkey_types = [],
+		$compressions = [],
 
 		$proc_resource,
 
@@ -97,21 +98,24 @@ class GPG
 		// How to use gpgme-json ?
 		$this->binary = static::findBinary('gpg');
 
-		$info = \preg_replace('/\R +/', ' ', `$this->binary --version`);
-		if (\preg_match('/gpg\\s.+([0-9]+\\.[0-9]+\\.[0-9]+)/', $info, $match)) {
+		$info = \preg_replace('/\R +/', ' ', `$this->binary --with-colons --list-config`);
+		if (\preg_match('/cfg:version:([0-9]+\\.[0-9]+\\.[0-9]+)/', $info, $match)) {
 			$this->version = $match[1];
 		}
-		if (\preg_match('/Cipher: (.+)/', $info, $match)) {
-			$this->cipher_algorithms = \array_map('trim', \explode(',', $match[1]));
+		if (\preg_match('/cfg:cipher:(.+)/', $info, $match) && \preg_match('/cfg:ciphername:(.+)/', $info, $match1)) {
+			$this->ciphers = \array_combine(\explode(';', $match[1]), \explode(';', $match1[1]));
 		}
-		if (\preg_match('/Hash: (.+)/', $info, $match)) {
-			$this->hash_algorithms = \array_map('trim', \explode(',', $match[1]));
+		if (\preg_match('/cfg:digest:(.+)/', $info, $match) && \preg_match('/cfg:digestname:(.+)/', $info, $match1)) {
+			$this->digests = \array_combine(\explode(';', $match[1]), \explode(';', $match1[1]));
 		}
-		if (\preg_match('/Pubkey: (.+)/', $info, $match)) {
-			$this->pubkey_algorithms = \array_map('trim', \explode(',', $match[1]));
+		if (\preg_match('/cfg:pubkey:(.+)/', $info, $match) && \preg_match('/cfg:pubkeyname:(.+)/', $info, $match1)) {
+			$this->pubkey_types = \array_combine(\explode(';', $match[1]), \explode(';', $match1[1]));
 		}
-		if (\preg_match('/Compression: (.+)/', $info, $match)) {
-			$this->compression = \array_map('trim', \explode(',', $match[1]));
+		if (\preg_match('/cfg:compress:(.+)/', $info, $match) && \preg_match('/cfg:compressname:(.+)/', $info, $match1)) {
+			$this->compressions = \array_combine(\explode(';', $match[1]), \explode(';', $match1[1]));
+		}
+		if (\preg_match('/cfg:curve:(.+)/', $info, $match)) {
+			$this->curves = \explode(';', $match[1]);
 		}
 	}
 
@@ -121,9 +125,9 @@ class GPG
 
 		$gpgconf = static::findBinary('gpgconf');
 		if ($gpgconf) {
-			$env = array('GNUPGHOME' => $this->options['homedir']);
-			$pipes = array();
-			if ($process = \proc_open($gpgconf . ' --kill gpg-agent --homedir ' . \escapeshellarg($this->options['homedir']), array(), $pipes, null, $env)) {
+			$env = ['GNUPGHOME' => $this->options['homedir']];
+			$pipes = [];
+			if ($process = \proc_open($gpgconf . ' --kill gpg-agent --homedir ' . \escapeshellarg($this->options['homedir']), [], $pipes, null, $env)) {
 				\proc_close($process);
 			}
 		}
@@ -220,20 +224,71 @@ class GPG
 		return false;
 	}
 
-	/**
-	 * Encrypts a given text
-	 */
-	public function encrypt(string $plaintext) /*: string|false*/
+	protected function _encrypt(/*resource*/ $input, /*string|resource*/ $output = null, bool $armor = true)
 	{
-		return false;
+		if (!$this->encryptKeys) {
+			throw new \Exception('No encryption keys specified.');
+		}
+
+		$fclose = false;
+		if ($output && !\is_resource($output)) {
+			$output = \fopen($output, 'rb');
+			if (!$output) {
+				throw new \Exception("Could not open file '{$filename}'");
+			}
+			$fclose = true;
+		}
+		$this->_output = $output;
+
+		$arguments = [
+			'--encrypt'
+		];
+		if ($armor) {
+			$arguments[] = '--armor';
+		}
+
+		foreach ($this->encryptKeys as $key) {
+			$arguments[] = '--recipient ' . \escapeshellarg($key['fingerprint']);
+		}
+
+		$this->setInput($input);
+		$result = $this->exec($arguments);
+
+		$fclose && \fclose($output);
+
+		return $output ? true : $result['output'];
 	}
 
 	/**
 	 * Encrypts a given text
 	 */
-	public function encryptFile(string $filename) /*: string|false*/
+	public function encrypt(string $plaintext, /*string|resource*/ $output = null) /*: string|false*/
 	{
-		return false;
+		return $this->_encrypt($plaintext, $output);
+	}
+
+	/**
+	 * Encrypts a given text
+	 */
+	public function encryptFile(string $filename, /*string|resource*/ $output = null) /*: string|false*/
+	{
+		$fp = \fopen($filename, 'rb');
+		try {
+			if (!$fp) {
+				throw new \Exception("Could not open file '{$filename}'");
+			}
+			return $this->_encrypt($filename, $output);
+		} finally {
+			$fp && \fclose($fp);
+		}
+	}
+
+	public function encryptStream($fp, /*string|resource*/ $output = null) /*: string|false*/
+	{
+		if (!$fp || !\is_resource($fp)) {
+			throw new \Exception('Invalid stream resource');
+		}
+		return $this->_encrypt($fp, $output);
 	}
 
 	/**
@@ -306,48 +361,30 @@ class GPG
 	/**
 	 * Generates a key
 	 * Also saves revocation certificate in {homedir}/openpgp-revocs.d/
+	 * https://www.gnupg.org/documentation/manuals/gnupg/OpenPGP-Key-Management.html
 	 */
-	public function generateKey(string $uid, string $passphrase) /*: string|false*/
+	public function generateKey(GPGKeySettings $settings) /*: string|false*/
 	{
+		$arguments = [
+			'--batch',
+			'--yes',
+			'--passphrase', \escapeshellarg($settings->passphrase)
+		];
+
 		/**
 		 * https://www.gnupg.org/documentation/manuals/gnupg/Unattended-GPG-key-generation.html
 		 * But it can't generate multiple subkeys
+		 * Somehow generating first subkey is also broken in v2.3.4
+		$this->_input = $settings->asUnattendedData();
+		$result = $this->exec(['--batch', '--yes', '--full-gen-key']);
 		 */
-/*
-		$this->_input = "Key-Type: ECDSA
-Key-Curve: nistp256
-Key-Usage: sign
-Subkey-Type: ecdh
-Subkey-Curve: Curve25519
-Subkey-Usage: sign
-Name-Real: John
-Name-Comment: comment
-Name-Email: john.doe@example.com
-Expire-Date: 0
-Passphrase: {$passphrase}
-%commit";
+		$result = $this->exec(\array_merge($arguments, [
+			'--quick-gen-key',
+			\escapeshellarg($settings->uid()),
+			$settings->algo(),
+			$settings->usage
+		]));
 
-//		gpg --full-generate-key
-//		gpg --quick-gen-key
-		$result = $this->exec(array(
-			'--batch',
-			'--yes',
-			'--full-gen-key' // '--gen-key'
-		));
-*/
-		$arguments = array(
-			'--batch',
-			'--yes',
-			'--passphrase', \escapeshellarg($passphrase)
-		);
-
-		$result = $this->exec(\array_merge($arguments, array(
-			'--quick-generate-key',
-			\escapeshellarg(\rawurlencode($uid)),
-			'ed25519',
-			'cert',
-			'0'
-		)));
 		$fingerprint = '';
 		foreach ($result['status'] as $line) {
 			$tokens = \explode(' ', $line);
@@ -361,16 +398,18 @@ Passphrase: {$passphrase}
 
 		$arguments[] = '--quick-add-key';
 		$arguments[] = $fingerprint;
-		$this->exec(\array_merge($arguments, array(
-			'ed25519',
-			'sign',
-			'0'
-		)));
-		$this->exec(\array_merge($arguments, array(
-			'cv25519',
-			'encrypt',
-			'0'
-		)));
+
+		foreach ($settings->subkeys as $i => $key) {
+			$algo = 'default';
+			if (!empty($key['curve'])) {
+				$algo = $key['curve'];
+			}
+			if (!empty($key['type'])) {
+				$algo = $key['type'] . ($key['length'] ?? '');
+			}
+			$this->exec(\array_merge($arguments, [$algo, $key['usage'], '0']));
+		}
+
 /*
 		[status][0] => KEY_NOT_CREATED
 		[errors][0] => gpg: -:3: specified Key-Usage not allowed for algo 22
@@ -384,9 +423,9 @@ Passphrase: {$passphrase}
 
 	protected function _importKey($input) /*: array|false*/
 	{
-		$arguments = array('--import');
+		$arguments = ['--import'];
 
-		$envKeys = array();
+		$envKeys = [];
 		if (empty($this->passphrases)) {
 			$arguments[] = '--batch';
 		} else {
@@ -396,7 +435,6 @@ Passphrase: {$passphrase}
 		}
 		$_ENV['PINENTRY_USER_DATA'] = \json_encode($envKeys);
 
-		$this->reset();
 		$this->setInput($input);
 		$result = $this->exec($arguments);
 
@@ -459,13 +497,12 @@ Passphrase: {$passphrase}
 			throw new \Exception('Delete private key first: ' . $keyId);
 		}
 
-		$this->reset();
-		$result = $this->exec(array(
+		$result = $this->exec([
 			'--batch',
 			'--yes',
 			$private ? '--delete-secret-key' : '--delete-key',
 			\escapeshellarg($key[0]['subkeys'][0]['fingerprint'])
-		));
+		]);
 
 //		$result['status'][0] = '[GNUPG:] ERROR keylist.getkey 17'
 //		$result['errors'][0] = 'gpg: error reading key: No public key'
@@ -481,22 +518,21 @@ Passphrase: {$passphrase}
 	{
 		// According to The file 'doc/DETAILS' in the GnuPG distribution, using
 		// double '--with-fingerprint' also prints the fingerprint for subkeys.
-		$arguments = array(
+		$arguments = [
 			'--with-colons',
 			'--with-fingerprint',
 			'--with-fingerprint',
 			'--fixed-list-mode',
 			$private ? '--list-secret-keys' : '--list-public-keys'
-		);
+		];
 		if ($pattern) {
 			$arguments[] = '--utf8-strings';
 			$arguments[] = \escapeshellarg($pattern);
 		}
 
-		$this->reset();
 		$result = $this->exec($arguments);
 
-		$keys   = array();
+		$keys   = [];
 		$key    = null; // current key
 		$subKey = null; // current sub-key
 
@@ -560,7 +596,7 @@ Passphrase: {$passphrase}
 				$name    = '';
 				$email   = '';
 				$comment = '';
-				$matches = array();
+				$matches = [];
 
 				// get email address from end of string if it exists
 				if (\preg_match('/^(.*?)<([^>]+)>$/', $string, $matches)) {
@@ -569,7 +605,7 @@ Passphrase: {$passphrase}
 				}
 
 				// get comment from end of string if it exists
-				$matches = array();
+				$matches = [];
 				if (\preg_match('/^(.+?) \(([^\)]+)\)$/', $string, $matches)) {
 					$string  = $matches[1];
 					$comment = $matches[2];
@@ -648,9 +684,7 @@ Passphrase: {$passphrase}
 
 	protected function _verify($input, string $signature)
 	{
-		$this->reset();
-
-		$arguments = array('--verify');
+		$arguments = ['--verify'];
 		if ('' === $signature) {
 			// signed or clearsigned data
 			$this->setInput($input);
@@ -776,14 +810,6 @@ Passphrase: {$passphrase}
 		$this->_output = \is_resource($output) ? $output : null;
 	}
 
-	private function reset() : void
-	{
-		$this->_message       = null;
-		$this->_input         = null;
-		$this->_output        = null;
-		$this->_commandBuffer = '';
-	}
-
 	public function agent()
 	{
 //		$home = \escapeshellarg($this->options['homedir']);
@@ -797,7 +823,7 @@ Passphrase: {$passphrase}
 			return false;
 		}
 
-		$defaultArguments = array(
+		$defaultArguments = [
 			'--status-fd ' . self::FD_STATUS,
 			'--command-fd ' . self::FD_COMMAND,
 //			'--no-greeting',
@@ -810,7 +836,7 @@ Passphrase: {$passphrase}
 			'--exit-on-status-write-error', // 1.4.2+
 			'--trust-model always',         // 1.3.2+ else --always-trust
 			'--pinentry-mode loopback'      // 2.1.13+
-		);
+		];
 
 		if (!$this->strict) {
 			$defaultArguments[] = '--ignore-time-conflict';
@@ -838,14 +864,14 @@ Passphrase: {$passphrase}
 
 		$commandLine = $this->binary . ' ' . \implode(' ', \array_merge($defaultArguments, $arguments));
 
-		$descriptorSpec = array(
+		$descriptorSpec = [
 			self::FD_INPUT   => array('pipe', 'rb'), // stdin
 			self::FD_OUTPUT  => array('pipe', 'wb'), // stdout
 			self::FD_ERROR   => array('pipe', 'wb'), // stderr
 			self::FD_STATUS  => array('pipe', 'wb'), // status
 			self::FD_COMMAND => array('pipe', 'rb'), // command
 			self::FD_MESSAGE => array('pipe', 'rb')  // message
-		);
+		];
 
 		$this->_debug('OPENING GPG SUBPROCESS WITH THE FOLLOWING COMMAND:');
 		$this->_debug($commandLine);
@@ -854,7 +880,7 @@ Passphrase: {$passphrase}
 		$env = $_ENV;
 		$env['LC_ALL'] = 'C';
 
-		$proc_pipes = array();
+		$proc_pipes = [];
 
 		$this->proc_resource = \proc_open(
 			$commandLine,
@@ -862,7 +888,7 @@ Passphrase: {$passphrase}
 			$proc_pipes,
 			null,
 			$env,
-			array('binary_pipes' => true)
+			['binary_pipes' => true]
 		);
 
 		if (!\is_resource($this->proc_resource)) {
@@ -906,9 +932,9 @@ Passphrase: {$passphrase}
 		$inputPosition = 0;
 
 		while (true) {
-			$inputStreams     = array();
-			$outputStreams    = array();
-			$exceptionStreams = array();
+			$inputStreams     = [];
+			$outputStreams    = [];
+			$exceptionStreams = [];
 
 			// set up input streams
 			if (!$inputComplete && \is_resource($this->_input)) {
@@ -1147,6 +1173,11 @@ Passphrase: {$passphrase}
 
 		$this->proc_close();
 
+		$this->_message       = null;
+		$this->_input         = null;
+		$this->_output        = null;
+		$this->_commandBuffer = '';
+
 		return [
 			'output' => $outputBuffer,
 			'status' => $status,
@@ -1191,13 +1222,13 @@ Passphrase: {$passphrase}
 		if ($binary && \is_executable($binary)) {
 			return $binary;
 		}
-		$locations = array(
+		$locations = [
 			'/sw/bin/',
 			'/usr/bin/',
 			'/usr/local/bin/',
 			'/opt/local/bin/',
 			'/run/current-system/sw/bin/'
-		);
+		];
 		foreach ($locations as $location) {
 			if (\is_executable($location . $name)) {
 				return $location . $name;
