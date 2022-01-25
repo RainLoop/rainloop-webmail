@@ -426,7 +426,7 @@ class Part
 						}
 
 						$oCallbackClass->EndParseMimePart($this);
-						return true;
+						return $this;
 					}
 					else
 					{
@@ -492,7 +492,7 @@ class Part
 					else
 					{
 						$oCallbackClass->EndParseMimePart($this);
-						return true;
+						return $this;
 					}
 				}
 			}
