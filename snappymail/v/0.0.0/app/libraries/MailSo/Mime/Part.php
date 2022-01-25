@@ -22,8 +22,6 @@ class Part
 	const POS_SUBPARTS = 3;
 	const POS_CLOSE_BOUNDARY = 4;
 
-	const DEFAUL_BUFFER = 8192;
-
 	/**
 	 * @var string
 	 */
@@ -42,7 +40,7 @@ class Part
 	/**
 	 * @var resource
 	 */
-	public $Body;
+	public $Body = null;
 
 	/**
 	 * @var PartCollection
@@ -50,43 +48,24 @@ class Part
 	public $SubParts;
 
 	/**
-	 * @var array
+	 * @var string
 	 */
-	public $LineParts;
+	private $sBoundary = '';
 
 	/**
 	 * @var string
 	 */
-	private $sBoundary;
-
-	/**
-	 * @var string
-	 */
-	private $sParentCharset;
-
-	/**
-	 * @var int
-	 */
-	private $iParseBuffer;
+	private $sParentCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1;
 
 	function __construct()
 	{
-		$this->iParseBuffer = self::DEFAUL_BUFFER;
-		$this->Reset();
-	}
-
-	public function Reset() : self
-	{
-		\MailSo\Base\ResourceRegistry::CloseMemoryResource($this->Body);
-		$this->Body = null;
-
 		$this->Headers = new HeaderCollection;
 		$this->SubParts = new PartCollection;
-		$this->LineParts = array();
-		$this->sBoundary = '';
-		$this->sParentCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1;
+	}
 
-		return $this;
+	function __destruct()
+	{
+		\MailSo\Base\ResourceRegistry::CloseMemoryResource($this->Body);
 	}
 
 	public function Boundary() : string
@@ -109,13 +88,6 @@ class Part
 	public function SetBoundary(string $sBoundary) : self
 	{
 		$this->sBoundary = $sBoundary;
-
-		return $this;
-	}
-
-	public function SetParseBuffer(int $iParseBuffer) : self
-	{
-		$this->iParseBuffer = $iParseBuffer;
 
 		return $this;
 	}
@@ -191,47 +163,48 @@ class Part
 		return $sResult;
 	}
 
-	public function ParseFromFile(string $sFileName) : self
+	public static function FromFile(string $sFileName) : ?self
 	{
 		$rStreamHandle = \file_exists($sFileName) ? \fopen($sFileName, 'rb') : false;
-		if (\is_resource($rStreamHandle))
-		{
-			$this->ParseFromStream($rStreamHandle);
-
-			if (\is_resource($rStreamHandle))
-			{
+		if ($rStreamHandle) {
+			try {
+				return static::FromStream($rStreamHandle);
+			} finally {
 				\fclose($rStreamHandle);
 			}
 		}
-
-		return $this;
+		return null;
 	}
 
-	public function ParseFromString(string $sRawMessage) : self
+	public static function FromString(string $sRawMessage) : ?self
 	{
 		$rStreamHandle = \strlen($sRawMessage) ?
 			\MailSo\Base\ResourceRegistry::CreateMemoryResource() : false;
-
-		if (\is_resource($rStreamHandle))
-		{
+		if ($rStreamHandle) {
 			\fwrite($rStreamHandle, $sRawMessage);
 			unset($sRawMessage);
 			\fseek($rStreamHandle, 0);
 
-			$this->ParseFromStream($rStreamHandle);
-
-			\MailSo\Base\ResourceRegistry::CloseMemoryResource($rStreamHandle);
+			try {
+				return static::FromStream($rStreamHandle);
+			} finally {
+				\MailSo\Base\ResourceRegistry::CloseMemoryResource($rStreamHandle);
+			}
 		}
-
-		return $this;
+		return null;
 	}
 
 	/**
 	 * @param resource $rStreamHandle
 	 */
-	public function ParseFromStream($rStreamHandle) : self
+	public $LineParts = [];
+	public static function FromStream($rStreamHandle) : ?self
 	{
-		$this->Reset();
+		if (!\is_resource($rStreamHandle)) {
+			return null;
+		}
+
+		$self = new self;
 
 		$oParserClass = new Parser\ParserMemory;
 
@@ -243,14 +216,14 @@ class Part
 		$aBoundaryStack = array();
 
 
-		$oParserClass->StartParse($this);
+		$oParserClass->StartParse($self);
 
-		$this->LineParts[] =& $this;
-		$this->ParseFromStreamRecursion($rStreamHandle, $oParserClass, $iOffset,
+		$self->LineParts[] =& $self;
+		$self->ParseFromStreamRecursion($rStreamHandle, $oParserClass, $iOffset,
 			$sPrevBuffer, $sBuffer, $aBoundaryStack, $bIsOef);
 
 		$sFirstNotNullCharset = null;
-		foreach ($this->LineParts as /* @var $oMimePart Part */ $oMimePart)
+		foreach ($self->LineParts as /* @var $oMimePart Part */ $oMimePart)
 		{
 			$sCharset = $oMimePart->HeaderCharset();
 			if (\strlen($sCharset))
@@ -263,7 +236,7 @@ class Part
 		$sForceCharset = self::$ForceCharset;
 		if (\strlen($sForceCharset))
 		{
-			foreach ($this->LineParts as /* @var $oMimePart Part */ $oMimePart)
+			foreach ($self->LineParts as /* @var $oMimePart Part */ $oMimePart)
 			{
 				$oMimePart->SetParentCharset($sForceCharset);
 				$oMimePart->Headers->SetParentCharset($sForceCharset);
@@ -274,7 +247,7 @@ class Part
 			$sFirstNotNullCharset = (null !== $sFirstNotNullCharset)
 				? $sFirstNotNullCharset : self::$DefaultCharset;
 
-			foreach ($this->LineParts as /* @var $oMimePart Part */ $oMimePart)
+			foreach ($self->LineParts as /* @var $oMimePart Part */ $oMimePart)
 			{
 				$sHeaderCharset = $oMimePart->HeaderCharset();
 				$oMimePart->SetParentCharset((\strlen($sHeaderCharset)) ? $sHeaderCharset : $sFirstNotNullCharset);
@@ -282,15 +255,16 @@ class Part
 			}
 		}
 
-		$oParserClass->EndParse($this);
+		$oParserClass->EndParse($self);
 
-		return $this;
+		$self->LineParts = [];
+		return $self;
 	}
 
 	/**
 	 * @param resource $rStreamHandle
 	 */
-	public function ParseFromStreamRecursion($rStreamHandle, $oCallbackClass, int &$iOffset,
+	protected function ParseFromStreamRecursion($rStreamHandle, $oCallbackClass, int &$iOffset,
 		string &$sPrevBuffer, string &$sBuffer, array &$aBoundaryStack, bool &$bIsOef, bool $bNotFirstRead = false) : self
 	{
 		$oCallbackClass->StartParseMimePart($this);
@@ -312,7 +286,7 @@ class Part
 			{
 				if (!$bNotFirstRead)
 				{
-					$sBuffer = \fread($rStreamHandle, $this->iParseBuffer);
+					$sBuffer = \fread($rStreamHandle, 8192);
 					if (false === $sBuffer)
 					{
 						break;
@@ -479,9 +453,7 @@ class Part
 
 						$oSubPart = new self;
 
-						$oSubPart
-							->SetParseBuffer($this->iParseBuffer)
-							->ParseFromStreamRecursion($rStreamHandle, $oCallbackClass,
+						$oSubPart->ParseFromStreamRecursion($rStreamHandle, $oCallbackClass,
 								$iOffset, $sPrevBuffer, $sBuffer, $aBoundaryStack, $bIsOef, true);
 
 						$this->SubParts->append($oSubPart);
@@ -539,7 +511,7 @@ class Part
 	/**
 	 * @return resource
 	 */
-	public function Rewind()
+	public function ToStream()
 	{
 		if ($this->Body && \is_resource($this->Body))
 		{
@@ -549,14 +521,6 @@ class Part
 				\rewind($this->Body);
 			}
 		}
-	}
-
-	/**
-	 * @return resource
-	 */
-	public function ToStream()
-	{
-		$this->Rewind();
 
 		$aSubStreams = array(
 
