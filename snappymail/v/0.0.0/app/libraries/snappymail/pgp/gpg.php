@@ -42,7 +42,6 @@ class GPG
 		$debug = false;
 
 	private
-		$_commandBuffer,
 		$_message,
 		$_input,
 		$_output,
@@ -148,6 +147,7 @@ class GPG
 	public function addDecryptKey(string $fingerprint, string $passphrase) : bool
 	{
 		$this->decryptKeys[$fingerprint] = $passphrase;
+//		$this->decryptKeys[\substr($fingerprint, -16)] = $passphrase;
 		return true;
 	}
 
@@ -204,7 +204,7 @@ class GPG
 
 		$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->decryptKeys);
 
-		$result = $this->exec('--decrypt --skip-verify');
+		$result = $this->exec(['--decrypt','--skip-verify']);
 
 		$fclose && \fclose($fclose);
 
@@ -986,12 +986,12 @@ class GPG
 
 		$this->_debug('BEGIN PROCESSING');
 
-		$this->_commandBuffer = '';    // buffers input to GPG
-		$messageBuffer        = '';    // buffers input to GPG
-		$inputBuffer          = '';    // buffers input to GPG
-		$outputBuffer         = '';    // buffers output from GPG
-		$inputComplete        = false; // input stream is completely buffered
-		$messageComplete      = false; // message stream is completely buffered
+		$commandBuffer   = '';    // buffers input to GPG
+		$messageBuffer   = '';    // buffers input to GPG
+		$inputBuffer     = '';    // buffers input to GPG
+		$outputBuffer    = '';    // buffers output from GPG
+		$inputComplete   = false; // input stream is completely buffered
+		$messageComplete = false; // message stream is completely buffered
 
 		if (\is_string($this->_input)) {
 			$inputBuffer   = $this->_input;
@@ -1018,7 +1018,14 @@ class GPG
 		$delay         = 0;
 		$inputPosition = 0;
 
+		$start = \microtime(1);
+
 		while (true) {
+			// Timeout after 5 seconds
+			if (5 < \microtime(1) - $start) {
+				exit('timeout');
+			}
+
 			$inputStreams     = [];
 			$outputStreams    = [];
 			$exceptionStreams = [];
@@ -1063,7 +1070,7 @@ class GPG
 				$outputStreams[] = $this->_output;
 			}
 
-			if ($this->_commandBuffer != '' && \is_resource($fdCommand)) {
+			if ($commandBuffer != '' && \is_resource($fdCommand)) {
 				$outputStreams[] = $fdCommand;
 			}
 
@@ -1221,6 +1228,15 @@ class GPG
 						$line = \substr($line, 9);
 						$status[] = $line;
 						$this->debug && $this->_debug("\t{$line}");
+
+						$tokens = \explode(' ', $line);
+						// NEED_PASSPHRASE 0123456789ABCDEF 0123456789ABCDEF 1 0
+						if ('NEED_PASSPHRASE' === $tokens[0]) {
+							// key ?: subkey
+							$passphrase = $this->getPassphrase($tokens[1]) ?: $this->getPassphrase($tokens[2]);
+							$commandBuffer .= $passphrase . PHP_EOL;
+//							$this->_openPipes->writePipe(self::FD_COMMAND, $passphrase . PHP_EOL);
+						}
 					}
 				}
 			}
@@ -1228,13 +1244,13 @@ class GPG
 			// write command (to GPG)
 			if (\in_array($fdCommand, $outputStreams, true)) {
 				$this->_debug('GPG is ready for command data');
-				$chunk  = \substr($this->_commandBuffer, 0, self::CHUNK_SIZE);
+				$chunk  = \substr($commandBuffer, 0, self::CHUNK_SIZE);
 				$length = \strlen($chunk);
 				$this->_debug('=> about to write ' . $length . ' bytes to GPG command');
 				$length = $this->_openPipes->writePipe(self::FD_COMMAND, $chunk, $length);
 				if ($length) {
 					$this->_debug('=> wrote ' . $length);
-					$this->_commandBuffer = \substr($this->_commandBuffer, $length);
+					$commandBuffer = \substr($commandBuffer, $length);
 				} else {
 					$this->_debug('=> pipe broken and closed');
 				}
@@ -1260,16 +1276,32 @@ class GPG
 
 		$this->proc_close();
 
-		$this->_message       = null;
-		$this->_input         = null;
-		$this->_output        = null;
-		$this->_commandBuffer = '';
+		$this->_message = null;
+		$this->_input   = null;
+		$this->_output  = null;
 
 		return [
 			'output' => $outputBuffer,
 			'status' => $status,
 			'errors' => $errors
 		];
+	}
+
+	private function getPassphrase($key)
+	{
+		$passphrase  = '';
+		$keyIdLength = \strlen($key);
+		if ($keyIdLength && !empty($_ENV['PINENTRY_USER_DATA'])) {
+			$passphrases = \json_decode($_ENV['PINENTRY_USER_DATA'], true);
+			foreach ($passphrases as $keyId => $pass) {
+				$length = \min($keyIdLength, \strlen($keyId));
+				if (\substr($keyId, -$length) === \substr($key, -$length)) {
+					return $pass;
+				}
+			}
+		}
+//		throw new \Exception("Passphrase not found for {$key}");
+		return '';
 	}
 
 	private function proc_close() : int
