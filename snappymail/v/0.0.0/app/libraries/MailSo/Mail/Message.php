@@ -500,9 +500,6 @@ class Message implements \JsonSerializable
 			$gEncryptedParts = $oBodyStructure->SearchByContentType('multipart/encrypted');
 			foreach ($gEncryptedParts as $oPart) {
 				if ($oPart->IsPgpEncrypted()) {
-					if (!$oMessage->aPgpEncrypted) {
-						$oMessage->aPgpEncrypted = [];
-					}
 					$oMessage->aPgpEncrypted = [
 						'PartId' => $oPart->SubParts()[1]->PartID()
 					];
@@ -582,6 +579,19 @@ class Message implements \JsonSerializable
 						}
 						else
 						{
+							if (\str_contains($sText, '-----BEGIN PGP MESSAGE-----'))
+							{
+								$keyIds = [];
+								if (\SnappyMail\PGP\GPG::isSupported()) {
+									$GPG = new \SnappyMail\PGP\GPG('');
+									$keyIds = $GPG->getEncryptedMessageKeys($sText);
+								}
+								$oMessage->aPgpEncrypted = [
+									'PartId' => $oPart->PartID(),
+									'KeyIds' => $keyIds
+								];
+							}
+
 							if ($oPart->IsFlowedFormat())
 							{
 								$sText = Utils::DecodeFlowedFormat($sText);

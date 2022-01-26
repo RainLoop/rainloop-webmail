@@ -203,7 +203,9 @@ class GPG
 
 		$fclose = $this->setOutput($output);
 
-		$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->decryptKeys);
+		if ($this->decryptKeys) {
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->decryptKeys);
+		}
 
 		$result = $this->exec(['--decrypt','--skip-verify']);
 
@@ -728,10 +730,12 @@ class GPG
 			$arguments[] = '--textmode';
 		}
 
-		foreach ($this->signKeys as $fingerprint => $pass) {
-			$arguments[] = '--local-user ' . \escapeshellarg($fingerprint);
+		if ($this->signKeys) {
+			foreach ($this->signKeys as $fingerprint => $pass) {
+				$arguments[] = '--local-user ' . \escapeshellarg($fingerprint);
+			}
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->signKeys);
 		}
-		$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->signKeys);
 
 		$result = $this->exec($arguments);
 
@@ -904,6 +908,26 @@ class GPG
 //		echo `gpg-agent --daemon --homedir $home 2>&1`;
 	}
 
+	public function getEncryptedMessageKeys(/*string|resource*/ $data) : array
+	{
+		$this->setInput($data);
+//		$_ENV['PINENTRY_USER_DATA'] = null;
+		$result = $this->exec(['--decrypt','--skip-verify']);
+		$info = [
+			'ENC_TO' => [],
+//			'KEY_CONSIDERED' => [],
+//			'NO_SECKEY' => [],
+//			'errors' => $result['errors']
+		];
+		foreach ($result['status'] as $line) {
+			$tokens = \explode(' ', $line);
+			if (isset($info[$tokens[0]])) {
+				$info[$tokens[0]][] = $tokens[1];
+			}
+		}
+		return $info['ENC_TO'];
+	}
+
 	private function exec(array $arguments) /*: array|false*/
 	{
 		if (\version_compare($this->version, '2.2.5', '<')) {
@@ -923,7 +947,8 @@ class GPG
 //			'--no-use-agent',               // < 2.0.0
 			'--exit-on-status-write-error', // 1.4.2+
 			'--trust-model always',         // 1.3.2+ else --always-trust
-			'--pinentry-mode loopback'      // 2.1.13+
+			// If no passphrases are set, cancel them
+			'--pinentry-mode ' . (empty($_ENV['PINENTRY_USER_DATA']) ? 'cancel' : 'loopback') // 2.1.13+
 		];
 
 		if (!$this->strict) {
