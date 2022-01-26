@@ -36,8 +36,7 @@ class PartCollection extends \MailSo\Base\Collection
 			{
 				if (\count($aResult))
 				{
-					$aResult[] = Enumerations\Constants::CRLF.
-						'--'.$sBoundary.Enumerations\Constants::CRLF;
+					$aResult[] = "\r\n--{$sBoundary}\r\n";
 				}
 
 				$aResult[] = $oPart->ToStream();

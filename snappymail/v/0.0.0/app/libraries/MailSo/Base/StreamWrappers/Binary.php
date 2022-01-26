@@ -158,8 +158,8 @@ class Binary
 		{
 			$rFilter = \stream_filter_append($rStream, $sUtilsDecodeOrEncodeFunctionName,
 				\STREAM_FILTER_READ, array(
-					'line-length' => \MailSo\Mime\Enumerations\Constants::LINE_LENGTH,
-					'line-break-chars' => \MailSo\Mime\Enumerations\Constants::CRLF
+					'line-length' => 74,
+					'line-break-chars' => "\r\n"
 				));
 			return \is_resource($rFilter) ? $rStream : false;
 		}

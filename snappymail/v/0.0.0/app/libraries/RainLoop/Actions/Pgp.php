@@ -84,6 +84,11 @@ trait Pgp
 			);
 		}
 
+		if ($oPart->IsPgpSigned()) {
+//			$GPG->verifyStream($oPart->SubParts[0]->Body, \stream_get_contents($oPart->SubParts[1]->Body));
+			$oPart = $oPart->SubParts[0];
+		}
+
 		return $this->DefaultResponse(__FUNCTION__, $oPart);
 	}
 

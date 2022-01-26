@@ -150,7 +150,7 @@ class Header
 	private function wordWrapHelper(string $sValue, string $sGlue = "\r\n ") : string
 	{
 		return \trim(substr(wordwrap($this->NameWithDelimitrom().$sValue,
-			Enumerations\Constants::LINE_LENGTH, $sGlue
+			74, $sGlue
 		), \strlen($this->NameWithDelimitrom())));
 	}
 
@@ -168,8 +168,8 @@ class Header
 					'scheme' => \MailSo\Base\Enumerations\Encoding::BASE64_SHORT,
 					'input-charset' => \MailSo\Base\Enumerations\Charset::UTF_8,
 					'output-charset' => \MailSo\Base\Enumerations\Charset::UTF_8,
-					'line-length' => Enumerations\Constants::LINE_LENGTH,
-					'line-break-chars' => Enumerations\Constants::CRLF
+					'line-length' => 74,
+					'line-break-chars' => "\r\n"
 				);
 
 				return \iconv_mime_encode($this->Name(), $sResult, $aPreferences);

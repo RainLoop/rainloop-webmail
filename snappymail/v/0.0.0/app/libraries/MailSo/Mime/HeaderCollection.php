@@ -307,6 +307,6 @@ class HeaderCollection extends \MailSo\Base\Collection
 		foreach ($this as $oHeader) {
 			$aResult[] = $oHeader->EncodedValue();
 		}
-		return \implode(Enumerations\Constants::CRLF, $aResult);
+		return \implode("\r\n", $aResult);
 	}
 }

@@ -325,7 +325,7 @@ class Message
 	{
 		$this->aAlternativeParts[] = array(
 			$sContentType,
-			\preg_replace('/\\r?\\n/', Enumerations\Constants::CRLF, \trim($sData)),
+			\preg_replace('/\\r?\\n/', "\r\n", \trim($sData)),
 			\MailSo\Base\Enumerations\Encoding::QUOTED_PRINTABLE_LOWER,
 			array()
 		);

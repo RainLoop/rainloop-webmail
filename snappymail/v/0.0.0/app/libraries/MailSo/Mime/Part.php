@@ -163,6 +163,22 @@ class Part
 		return $sResult;
 	}
 
+	public function IsPgpSigned() : bool
+	{
+		// https://datatracker.ietf.org/doc/html/rfc3156#section-5
+		$header = $this->Headers->GetByName(Enumerations\Header::CONTENT_TYPE);
+		return $header
+		 && \preg_match('#multipart/signed.+protocol=["\']?application/pgp-signature#si', $header->FullValue())
+		 // The multipart/signed body MUST consist of exactly two parts.
+		 && 2 === \count($this->SubParts)
+		 && $this->SubParts[1]->IsPgpSignature();
+	}
+
+	public function IsPgpSignature() : bool
+	{
+		return \in_array($this->ContentType(), array('application/pgp-signature', 'application/pkcs7-signature'));
+	}
+
 	public static function FromFile(string $sFileName) : ?self
 	{
 		$rStreamHandle = \file_exists($sFileName) ? \fopen($sFileName, 'rb') : false;
@@ -524,13 +540,11 @@ class Part
 
 		$aSubStreams = array(
 
-			$this->Headers->ToEncodedString().
-				Enumerations\Constants::CRLF.
-				Enumerations\Constants::CRLF,
+			$this->Headers->ToEncodedString() . "\r\n\r\n",
 
 			null === $this->Body ? '' : $this->Body,
 
-			Enumerations\Constants::CRLF
+			"\r\n"
 		);
 
 		if (0 < $this->SubParts->Count())
@@ -538,7 +552,7 @@ class Part
 			$sBoundary = $this->HeaderBoundary();
 			if (\strlen($sBoundary))
 			{
-				$aSubStreams[] = '--'.$sBoundary.Enumerations\Constants::CRLF;
+				$aSubStreams[] = "--{$sBoundary}\r\n";
 
 				$rSubPartsStream = $this->SubParts->ToStream($sBoundary);
 				if (\is_resource($rSubPartsStream))
@@ -546,8 +560,7 @@ class Part
 					$aSubStreams[] = $rSubPartsStream;
 				}
 
-				$aSubStreams[] = Enumerations\Constants::CRLF.
-					'--'.$sBoundary.'--'.Enumerations\Constants::CRLF;
+				$aSubStreams[] = "\r\n--{$sBoundary}--\r\n";
 			}
 		}
 

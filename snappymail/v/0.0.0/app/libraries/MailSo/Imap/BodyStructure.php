@@ -189,13 +189,12 @@ class BodyStructure
 		 && 'application/pgp-signature' === \strtolower(\trim($this->aBodyParams['protocol']))
 		 // The multipart/signed body MUST consist of exactly two parts.
 		 && 2 === \count($this->aSubParts)
-		 &&	$this->aSubParts[1]->IsPgpSignature();
+		 && $this->aSubParts[1]->IsPgpSignature();
 	}
 
 	public function IsPgpSignature() : bool
 	{
-		return \in_array($this->sContentType,
-			array('application/pgp-signature', 'application/pkcs7-signature'));
+		return \in_array($this->sContentType, ['application/pgp-signature', 'application/pkcs7-signature']);
 	}
 
 	public function IsAttachBodyPart() : bool
