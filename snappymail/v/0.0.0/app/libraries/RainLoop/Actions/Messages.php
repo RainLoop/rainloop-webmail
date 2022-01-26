@@ -634,7 +634,7 @@ trait Messages
 											$mResult[$sTempName] = $sAttachment;
 										}
 									}
-								}, $sFolder, $iUid, true, $sMimeIndex);
+								}, $sFolder, $iUid, $sMimeIndex);
 						}
 						else
 						{

@@ -25,7 +25,7 @@ trait Raw
 			{
 				\MailSo\Base\Utils::FpassthruWithTimeLimitReset($rResource);
 			}
-		}, $sFolder, $iUid, true, $sMimeIndex);
+		}, $sFolder, $iUid, $sMimeIndex);
 	}
 
 	public function RawDownload() : bool
@@ -326,7 +326,7 @@ trait Raw
 						}
 					}
 				}
-			}, $sFolder, $iUid, true, $sMimeIndex);
+			}, $sFolder, $iUid, $sMimeIndex);
 	}
 
 	private static function loadImage(string $data, bool $bDetectImageOrientation = true, int $iThumbnailBoxSize = 0) : \SnappyMail\Image

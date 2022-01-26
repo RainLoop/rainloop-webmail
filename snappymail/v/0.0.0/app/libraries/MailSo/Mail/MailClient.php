@@ -219,7 +219,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageMimeStream($mCallback, string $sFolderName, int $iIndex, bool $bIndexIsUid = true, string $sMimeIndex = '') : bool
+	public function MessageMimeStream($mCallback, string $sFolderName, int $iIndex, string $sMimeIndex) : bool
 	{
 		if (!\is_callable($mCallback))
 		{
@@ -238,7 +238,7 @@ class MailClient
 			\strlen($sMimeIndex)
 				? FetchType::BODY_PEEK.'['.$sMimeIndex.'.MIME]'
 				: FetchType::BODY_HEADER_PEEK),
-			$iIndex, $bIndexIsUid);
+			$iIndex, true);
 
 		if (\count($aFetchResponse))
 		{
@@ -296,7 +296,7 @@ class MailClient
 							$sContentType, $sFileName, $sMimeIndex);
 					}
 				}
-			)), $iIndex, $bIndexIsUid);
+			)), $iIndex, true);
 
 		return ($aFetchResponse && 1 === \count($aFetchResponse));
 	}

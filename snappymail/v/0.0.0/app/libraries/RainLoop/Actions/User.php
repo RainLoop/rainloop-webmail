@@ -520,7 +520,7 @@ trait User
 					}
 				}
 
-			}, $sFolder, $iUid, true, $sMimeIndex);
+			}, $sFolder, $iUid, $sMimeIndex);
 
 		$aValues['FileHash'] = '';
 		if ($mResult)
