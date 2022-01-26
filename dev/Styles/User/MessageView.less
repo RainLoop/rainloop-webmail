@@ -430,28 +430,34 @@ html.rl-no-preview-pane {
 			}
 */
 		}
+	}
 
-		.b-openpgp-control {
+	.b-openpgp-encrypted {
+		color: #18F;
+	}
+	.b-openpgp-signed {
+		color: #FA0;
+	}
 
-			color: #FA0;
-			cursor: pointer;
-			display: block;
-			opacity: 0.5;
-			margin: 15px;
+	.b-openpgp-control {
 
-			&:hover {
-				opacity: 1;
-			}
+		cursor: pointer;
+		display: block;
+		opacity: 0.5;
+		margin: 15px;
 
-			&.success {
-				color: green;
-				opacity: 1;
-			}
+		&:hover {
+			opacity: 1;
+		}
 
-			&.error {
-				color: red;
-				opacity: 1;
-			}
+		&.success {
+			color: green;
+			opacity: 1;
+		}
+
+		&.error {
+			color: red;
+			opacity: 1;
 		}
 	}
 
