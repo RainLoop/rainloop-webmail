@@ -42,6 +42,8 @@ import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 import { PgpUserStore } from 'Stores/User/Pgp';
 
+const currentMessage = () => MessageUserStore.message();
+
 export class MailMessageView extends AbstractViewRight {
 	constructor() {
 		super('MailMessageView');
@@ -55,7 +57,7 @@ export class MailMessageView extends AbstractViewRight {
 
 			createCommandActionHelper = (folderType, useFolder) =>
 				createCommand(() => {
-					const message = MessageUserStore.message();
+					const message = currentMessage();
 					if (message) {
 						MessageUserStore.message(null);
 						rl.app.deleteMessagesFromFolder(folderType, message.folder, [message.uid], useFolder);
@@ -152,7 +154,7 @@ export class MailMessageView extends AbstractViewRight {
 				)
 			},
 
-			messageVisibility: () => !MessageUserStore.messageLoading() && !!MessageUserStore.message(),
+			messageVisibility: () => !MessageUserStore.messageLoading() && !!currentMessage(),
 
 			canBeRepliedOrForwarded: () => !this.isDraftFolder() && this.messageVisibility(),
 
@@ -178,17 +180,18 @@ export class MailMessageView extends AbstractViewRight {
 				return '';
 			},
 
-			pgpSigned: () => MessageUserStore.message() && !!MessageUserStore.message().pgpSigned(),
-
-			pgpEncrypted: () => MessageUserStore.message() && MessageUserStore.message().isPgpEncrypted(),
+			pgpSigned: () => currentMessage() && !!currentMessage().pgpSigned(),
+			pgpEncrypted: () => currentMessage()
+				&& currentMessage().isPgpEncrypted(),
+			pgpSupported: () => currentMessage() && PgpUserStore.isSupported(),
 
 			messageListOrViewLoading:
 				() => MessageUserStore.listIsLoading() | MessageUserStore.messageLoading()
 		});
 
 		this.addSubscribables({
-			showAttachmentControls: v => MessageUserStore.message()
-				&& MessageUserStore.message().attachments.forEach(item => item && item.checked(!!v)),
+			showAttachmentControls: v => currentMessage()
+				&& currentMessage().attachments.forEach(item => item && item.checked(!!v)),
 
 			lastReplyAction_: value => Local.set(ClientSideKeyName.LastReplyAction, value),
 
@@ -253,7 +256,7 @@ export class MailMessageView extends AbstractViewRight {
 		});
 
 		MessageUserStore.messageViewTrigger.subscribe(() => {
-			const message = MessageUserStore.message();
+			const message = currentMessage();
 			this.viewIsFlagged(message ? message.isFlagged() : false);
 		});
 
@@ -279,13 +282,13 @@ export class MailMessageView extends AbstractViewRight {
 
 	goUpCommand() {
 		dispatchEvent(new CustomEvent('mailbox.message-list.selector.go-up',
-			{detail:SettingsUserStore.usePreviewPane() || !!MessageUserStore.message()} // bForceSelect
+			{detail:SettingsUserStore.usePreviewPane() || !!currentMessage()} // bForceSelect
 		));
 	}
 
 	goDownCommand() {
 		dispatchEvent(new CustomEvent('mailbox.message-list.selector.go-down',
-			{detail:SettingsUserStore.usePreviewPane() || !!MessageUserStore.message()} // bForceSelect
+			{detail:SettingsUserStore.usePreviewPane() || !!currentMessage()} // bForceSelect
 		));
 	}
 
@@ -302,14 +305,14 @@ export class MailMessageView extends AbstractViewRight {
 	 * @returns {void}
 	 */
 	replyOrforward(sType) {
-		showMessageComposer([sType, MessageUserStore.message()]);
+		showMessageComposer([sType, currentMessage()]);
 	}
 
 	onBuild(dom) {
 		this.oMessageScrollerDom = dom.querySelector('.messageItem');
 
 		this.fullScreenMode.subscribe(value =>
-			value && MessageUserStore.message() && AppUserStore.focusedState(Scope.MessageView));
+			value && currentMessage() && AppUserStore.focusedState(Scope.MessageView));
 
 		this.showFullInfo.subscribe(value => Local.set(ClientSideKeyName.MessageHeaderFullInfo, value ? '1' : '0'));
 
@@ -359,7 +362,7 @@ export class MailMessageView extends AbstractViewRight {
 			}
 
 			if (eqs(event, '.messageItemHeader .subjectParent .flagParent')) {
-				const message = MessageUserStore.message();
+				const message = currentMessage();
 				message && rl.app.messageListAction(
 					message.folder,
 					message.isFlagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
@@ -381,7 +384,7 @@ export class MailMessageView extends AbstractViewRight {
 
 		// exit fullscreen, back
 		shortcuts.add('escape,backspace', '', Scope.MessageView, () => {
-			if (!this.viewModelDom.hidden && MessageUserStore.message()) {
+			if (!this.viewModelDom.hidden && currentMessage()) {
 				const preview = SettingsUserStore.usePreviewPane();
 				if (this.fullScreenMode()) {
 					this.fullScreenMode(false);
@@ -407,7 +410,7 @@ export class MailMessageView extends AbstractViewRight {
 
 		// reply
 		shortcuts.add('r,mailreply', '', [Scope.MessageList, Scope.MessageView], () => {
-			if (MessageUserStore.message()) {
+			if (currentMessage()) {
 				this.replyCommand();
 				return false;
 			}
@@ -416,13 +419,13 @@ export class MailMessageView extends AbstractViewRight {
 
 		// replyAll
 		shortcuts.add('a', '', [Scope.MessageList, Scope.MessageView], () => {
-			if (MessageUserStore.message()) {
+			if (currentMessage()) {
 				this.replyAllCommand();
 				return false;
 			}
 		});
 		shortcuts.add('mailreply', 'shift', [Scope.MessageList, Scope.MessageView], () => {
-			if (MessageUserStore.message()) {
+			if (currentMessage()) {
 				this.replyAllCommand();
 				return false;
 			}
@@ -430,7 +433,7 @@ export class MailMessageView extends AbstractViewRight {
 
 		// forward
 		shortcuts.add('f,mailforward', '', [Scope.MessageList, Scope.MessageView], () => {
-			if (MessageUserStore.message()) {
+			if (currentMessage()) {
 				this.forwardCommand();
 				return false;
 			}
@@ -438,7 +441,7 @@ export class MailMessageView extends AbstractViewRight {
 
 		// message information
 		shortcuts.add('i', 'meta', [Scope.MessageList, Scope.MessageView], () => {
-			if (MessageUserStore.message()) {
+			if (currentMessage()) {
 				this.showFullInfo(!this.showFullInfo());
 			}
 			return false;
@@ -446,7 +449,7 @@ export class MailMessageView extends AbstractViewRight {
 
 		// toggle message blockquotes
 		shortcuts.add('b', '', [Scope.MessageList, Scope.MessageView], () => {
-			const message = MessageUserStore.message();
+			const message = currentMessage();
 			if (message && message.body) {
 				message.body.querySelectorAll('.rlBlockquoteSwitcher').forEach(node => node.click());
 				return false;
@@ -465,7 +468,7 @@ export class MailMessageView extends AbstractViewRight {
 
 		// print
 		shortcuts.add('p,printscreen', 'meta', [Scope.MessageView, Scope.MessageList], () => {
-			MessageUserStore.message() && MessageUserStore.message().printMessage();
+			currentMessage() && currentMessage().printMessage();
 			return false;
 		});
 
@@ -481,14 +484,14 @@ export class MailMessageView extends AbstractViewRight {
 
 		// change focused state
 		shortcuts.add('arrowleft', '', Scope.MessageView, () => {
-			if (!this.fullScreenMode() && MessageUserStore.message() && SettingsUserStore.usePreviewPane()
+			if (!this.fullScreenMode() && currentMessage() && SettingsUserStore.usePreviewPane()
 			 && !this.oMessageScrollerDom.scrollLeft) {
 				AppUserStore.focusedState(Scope.MessageList);
 				return false;
 			}
 		});
 		shortcuts.add('tab', 'shift', Scope.MessageView, () => {
-			if (!this.fullScreenMode() && MessageUserStore.message() && SettingsUserStore.usePreviewPane()) {
+			if (!this.fullScreenMode() && currentMessage() && SettingsUserStore.usePreviewPane()) {
 				AppUserStore.focusedState(Scope.MessageList);
 			}
 			return false;
@@ -499,42 +502,42 @@ export class MailMessageView extends AbstractViewRight {
 	 * @returns {boolean}
 	 */
 	isDraftFolder() {
-		return MessageUserStore.message() && FolderUserStore.draftsFolder() === MessageUserStore.message().folder;
+		return currentMessage() && FolderUserStore.draftsFolder() === currentMessage().folder;
 	}
 
 	/**
 	 * @returns {boolean}
 	 */
 	isSentFolder() {
-		return MessageUserStore.message() && FolderUserStore.sentFolder() === MessageUserStore.message().folder;
+		return currentMessage() && FolderUserStore.sentFolder() === currentMessage().folder;
 	}
 
 	/**
 	 * @returns {boolean}
 	 */
 	isSpamFolder() {
-		return MessageUserStore.message() && FolderUserStore.spamFolder() === MessageUserStore.message().folder;
+		return currentMessage() && FolderUserStore.spamFolder() === currentMessage().folder;
 	}
 
 	/**
 	 * @returns {boolean}
 	 */
 	isSpamDisabled() {
-		return MessageUserStore.message() && FolderUserStore.spamFolder() === UNUSED_OPTION_VALUE;
+		return currentMessage() && FolderUserStore.spamFolder() === UNUSED_OPTION_VALUE;
 	}
 
 	/**
 	 * @returns {boolean}
 	 */
 	isArchiveFolder() {
-		return MessageUserStore.message() && FolderUserStore.archiveFolder() === MessageUserStore.message().folder;
+		return currentMessage() && FolderUserStore.archiveFolder() === currentMessage().folder;
 	}
 
 	/**
 	 * @returns {boolean}
 	 */
 	isArchiveDisabled() {
-		return MessageUserStore.message() && FolderUserStore.archiveFolder() === UNUSED_OPTION_VALUE;
+		return currentMessage() && FolderUserStore.archiveFolder() === UNUSED_OPTION_VALUE;
 	}
 
 	/**
@@ -549,8 +552,8 @@ export class MailMessageView extends AbstractViewRight {
 	}
 
 	editMessage() {
-		if (MessageUserStore.message()) {
-			showMessageComposer([ComposeType.Draft, MessageUserStore.message()]);
+		if (currentMessage()) {
+			showMessageComposer([ComposeType.Draft, currentMessage()]);
 		}
 	}
 
@@ -563,7 +566,7 @@ export class MailMessageView extends AbstractViewRight {
 	}
 
 	downloadAsZip() {
-		const hashes = (MessageUserStore.message() ? MessageUserStore.message().attachments : [])
+		const hashes = (currentMessage() ? currentMessage().attachments : [])
 			.map(item => (item && !item.isLinked && item.checked() ? item.download : ''))
 			.filter(v => v);
 		if (hashes.length) {
@@ -586,7 +589,7 @@ export class MailMessageView extends AbstractViewRight {
 	 * @returns {void}
 	 */
 	showImages() {
-		MessageUserStore.message() && MessageUserStore.message().showExternalImages();
+		currentMessage() && currentMessage().showExternalImages();
 	}
 
 	/**
@@ -602,7 +605,7 @@ export class MailMessageView extends AbstractViewRight {
 	 * @returns {void}
 	 */
 	readReceipt() {
-		let oMessage = MessageUserStore.message()
+		let oMessage = currentMessage()
 		if (oMessage && oMessage.readReceipt()) {
 			Remote.request('SendReadReceiptMessage', null, {
 				MessageFolder: oMessage.folder,
@@ -622,19 +625,50 @@ export class MailMessageView extends AbstractViewRight {
 	}
 
 	pgpDecrypt(self) {
-		const message = self.message();
-		if (message && PgpUserStore.isSupported()) {
-//			pgpClickHelper(message.body, message.plain(), message.getEmails(['from', 'to', 'cc']));
+		if (self.pgpEncrypted()) {
+			const message = self.message();
+			if (window.mailvelope) {
+				/**
+				 * https://mailvelope.github.io/mailvelope/Mailvelope.html#createEncryptedFormContainer
+				 * Creates an iframe to display an encrypted form
+				 */
+//				mailvelope.createEncryptedFormContainer('#mailvelope-form');
+				/**
+				 * https://mailvelope.github.io/mailvelope/Mailvelope.html#createDisplayContainer
+				 * Creates an iframe to display the decrypted content of the encrypted mail.
+				 */
+				let body = message.body;
+				body.textContent = '';
+				mailvelope.createDisplayContainer(
+					'#'+body.id,
+					message.plain(),
+					PgpUserStore.mailvelopeKeyring,
+					{
+						senderAddress: message.from[0].email
+					}
+				).then(status => {
+					if (status.error && status.error.message) {
+						alert(status.error.code + ': ' + status.error.message);
+					} else {
+						body.classList.add('mailvelope');
+					}
+				}, error => {
+					console.error(error);
+				});
+			}
 /*
-			pgpEncrypted: () => PgpUserStore.isSupported()
-				&& MessageUserStore.message() && MessageUserStore.message().isPgpEncrypted(),
+			else if (window.openpgp) {
+				decryptMessage(message, recipients, fCallback)
+			}
+			else if (Settings.capa(Capa.GnuPG)) {
+			}
 */
 		}
 	}
 
 	pgpVerify(self) {
-		const message = self.message();
-		if (message && PgpUserStore.isSupported()) {
+		if (self.pgpSigned()) {
+			const message = self.message();
 			PgpUserStore.hasPublicKeyForEmails([message.from[0].email]).then(mode => {
 				if ('gnupg' === mode) {
 					let params = message.pgpSigned(); // { BodyPartId: "1", SigPartId: "2", MicAlg: "pgp-sha256" }

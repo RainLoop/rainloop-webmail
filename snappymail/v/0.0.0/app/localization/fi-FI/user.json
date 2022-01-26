@@ -148,8 +148,10 @@
 		"PRINT_LABEL_ATTACHMENTS": "Liite",
 		"MESSAGE_VIEW_DESC": "Valitse viesti listasta nähdäksesi sen tässä",
 		"MESSAGE_VIEW_MOVE_DESC": "Click folder name in the left panel to select the destination.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP allekirjoitettu viesti (klikkaa verifioidaksesi)",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP salattu visti (klikkaa avataksesi salaus)",
+		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP allekirjoitettu viesti",
+		"BUTTON_PGP_VERIFY": "klikkaa verifioidaksesi",
+		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP salattu visti",
+		"BUTTON_PGP_DECRYPT": "klikkaa avataksesi salaus",
 		"LINK_DOWNLOAD_AS_ZIP": "Lataa zip-tiedostona",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"

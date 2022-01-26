@@ -148,8 +148,10 @@
 		"PRINT_LABEL_ATTACHMENTS": "Manused",
 		"MESSAGE_VIEW_DESC": "Vali nimekirjast kiri, mida siin näidata",
 		"MESSAGE_VIEW_MOVE_DESC": "Click folder name in the left panel to select the destination.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP abil signeeritud kiri (kliki verifitseerimiseks)",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP abil krüpteeritud kiri (kliki dekrüpteerimiseks)",
+		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP abil signeeritud kiri",
+		"BUTTON_PGP_VERIFY": "kliki verifitseerimiseks",
+		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP abil krüpteeritud kiri",
+		"BUTTON_PGP_DECRYPT": "kliki dekrüpteerimiseks",
 		"LINK_DOWNLOAD_AS_ZIP": "Laadi alla .zip failina",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"

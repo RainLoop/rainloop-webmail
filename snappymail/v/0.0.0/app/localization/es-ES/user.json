@@ -148,8 +148,10 @@
 		"PRINT_LABEL_ATTACHMENTS": "Adjuntos",
 		"MESSAGE_VIEW_DESC": "Seleccione un mensaje de la lista para verlo aquí.",
 		"MESSAGE_VIEW_MOVE_DESC": "Haga clic en el nombre de la carpeta del panel izquierdo para seleccionar el destino.",
-		"PGP_SIGNED_MESSAGE_DESC": "Mensaje firmado mediante OpenPGP  (click para verificar)",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "Mensaje cifrado mediante OpenPGP (click para desencriptar)",
+		"PGP_SIGNED_MESSAGE_DESC": "Mensaje firmado mediante OpenPGP",
+		"BUTTON_PGP_VERIFY": "click para verificar",
+		"PGP_ENCRYPTED_MESSAGE_DESC": "Mensaje cifrado mediante OpenPGP",
+		"BUTTON_PGP_DECRYPT": "click para desencriptar",
 		"LINK_DOWNLOAD_AS_ZIP": "Descargar todo (archivo ZIP)",
 		"SPAM_SCORE": "Puntuación de spam",
 		"HAS_VIRUS_WARNING": "ADVERTENCIA: virus detectado"

@@ -148,8 +148,10 @@
 		"PRINT_LABEL_ATTACHMENTS": "附件",
 		"MESSAGE_VIEW_DESC": "在此查看列表中选中的邮件。",
 		"MESSAGE_VIEW_MOVE_DESC": "点击左侧面板的文件夹作为目的地",
-		"PGP_SIGNED_MESSAGE_DESC": "由 OpenPGP 签名 (点击验证)",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "由 OpenPGP 加密 (点击解密)",
+		"PGP_SIGNED_MESSAGE_DESC": "由 OpenPGP 签名",
+		"BUTTON_PGP_VERIFY": "点击验证",
+		"PGP_ENCRYPTED_MESSAGE_DESC": "由 OpenPGP 加密",
+		"BUTTON_PGP_DECRYPT": "点击解密",
 		"LINK_DOWNLOAD_AS_ZIP": "下载为zip压缩包",
 		"SPAM_SCORE": "垃圾邮件分数",
 		"HAS_VIRUS_WARNING": "警告：检测到病毒"

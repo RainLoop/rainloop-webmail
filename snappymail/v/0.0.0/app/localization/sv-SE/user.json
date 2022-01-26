@@ -148,8 +148,10 @@
 		"PRINT_LABEL_ATTACHMENTS": "Bilagor",
 		"MESSAGE_VIEW_DESC": "Välj meddelande i listan att visa här.",
 		"MESSAGE_VIEW_MOVE_DESC": "Klicka på mapp till vänster för att välja mål mapp.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP-signerat meddelande (klicka för att verifiera)",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP-krypterat meddelande (klicka för att dekryptera)",
+		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP-signerat meddelande",
+		"BUTTON_PGP_VERIFY": "klicka för att verifiera",
+		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP-krypterat meddelande",
+		"BUTTON_PGP_DECRYPT": "klicka för att dekryptera",
 		"LINK_DOWNLOAD_AS_ZIP": "Ladda ner som ZIP-fil",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "VARNING: virus upptäckt"

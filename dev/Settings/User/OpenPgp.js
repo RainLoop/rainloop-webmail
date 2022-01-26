@@ -48,8 +48,11 @@ export class OpenPgpUserSettings /*extends AbstractViewSettings*/ {
 	}
 
 	onBuild() {
-		window.mailvelope
-		&& mailvelope.createSettingsContainer('#mailvelope-settings'/*[, keyring], options*/);
+		/**
+		 * Create an iframe to display the Mailvelope keyring settings.
+		 * The iframe will be injected into the container identified by selector.
+		 */
+		window.mailvelope && mailvelope.createSettingsContainer('#mailvelope-settings'/*[, keyring], options*/);
 	}
 
 	/**

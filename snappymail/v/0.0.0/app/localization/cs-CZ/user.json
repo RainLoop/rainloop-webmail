@@ -148,8 +148,10 @@
 		"PRINT_LABEL_ATTACHMENTS": "Přílohy",
 		"MESSAGE_VIEW_DESC": "Vyberte zprávu ze seznamu pro její zobrazení zde.",
 		"MESSAGE_VIEW_MOVE_DESC": "Vyberte cílovou složku v levém panelu.",
-		"PGP_SIGNED_MESSAGE_DESC": "Zpráva podepsaná OpenPGP (klikněte pro ověření)",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "Zpráva šifrovaná OpenPGP (klikněte pro dešifraci)",
+		"PGP_SIGNED_MESSAGE_DESC": "Zpráva podepsaná OpenPGP",
+		"BUTTON_PGP_VERIFY": "klikněte pro ověření",
+		"PGP_ENCRYPTED_MESSAGE_DESC": "Zpráva šifrovaná OpenPGP",
+		"BUTTON_PGP_DECRYPT": "klikněte pro dešifraci",
 		"LINK_DOWNLOAD_AS_ZIP": "Stáhnout jako zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"

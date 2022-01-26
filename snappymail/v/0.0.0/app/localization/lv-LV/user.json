@@ -148,8 +148,10 @@
 		"PRINT_LABEL_ATTACHMENTS": "Pielikumi",
 		"MESSAGE_VIEW_DESC": "Izvēlaties ziņojumu no saraksta lai to apskatītu.",
 		"MESSAGE_VIEW_MOVE_DESC": "Click folder name in the left panel to select the destination.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP signed message (click to verify)",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP encrypted message (click to decrypt)",
+		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP signed message",
+		"BUTTON_PGP_VERIFY": "click to verify",
+		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP encrypted message",
+		"BUTTON_PGP_DECRYPT": "click to decrypt",
 		"LINK_DOWNLOAD_AS_ZIP": "Download as zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"

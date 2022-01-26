@@ -148,8 +148,10 @@
 		"PRINT_LABEL_ATTACHMENTS": "Файли",
 		"MESSAGE_VIEW_DESC": "Виберіть повідомлення для перегляду.",
 		"MESSAGE_VIEW_MOVE_DESC": "Click folder name in the left panel to select the destination.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP підписане повідомлення (натисніть, щоб підтвердити)",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP шифроване повідомлення (натисніть, щоб розшифрувати)",
+		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP підписане повідомлення",
+		"BUTTON_PGP_VERIFY": "натисніть, щоб підтвердити",
+		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP шифроване повідомлення",
+		"BUTTON_PGP_DECRYPT": "натисніть, щоб розшифрувати",
 		"LINK_DOWNLOAD_AS_ZIP": "Завантажити як zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"

@@ -432,33 +432,37 @@ html.rl-no-preview-pane {
 		}
 	}
 
-	.b-openpgp-encrypted {
-		color: #18F;
-	}
-	.b-openpgp-signed {
-		color: #FA0;
-	}
-
-	.b-openpgp-control {
-
-		cursor: pointer;
-		display: block;
-		opacity: 0.5;
-		margin: 15px;
-
-		&:hover {
-			opacity: 1;
-		}
+	.openpgp-control {
+		margin: 0.5em;
+		padding: 0.5em;
 
 		&.success {
 			color: green;
-			opacity: 1;
 		}
 
 		&.error {
 			color: red;
-			opacity: 1;
 		}
+
+		span {
+			margin-right: 1em;
+		}
+
+		button {
+			cursor: pointer;
+		}
+
+		&.encrypted {
+			border: 1px dashed #18F;
+			color: #18F;
+		}
+		&.signed {
+			border: 1px dashed #FA0;
+			color: #FA0;
+		}
+	}
+	.b-text-part > iframe {
+		min-height: 50vh;
 	}
 
 	.thread-controls {

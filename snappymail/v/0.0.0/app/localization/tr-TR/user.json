@@ -148,8 +148,10 @@
 		"PRINT_LABEL_ATTACHMENTS": "Ekler",
 		"MESSAGE_VIEW_DESC": "Burada görüntülemek için listeden mesaj seçin.",
 		"MESSAGE_VIEW_MOVE_DESC": "Click folder name in the left panel to select the destination.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP imzalı mesaj (onay için tıklayın)",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP şifreli mesaj (çözmek için tıklayın)",
+		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP imzalı mesaj",
+		"BUTTON_PGP_VERIFY": "onay için tıklayın",
+		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP şifreli mesaj",
+		"BUTTON_PGP_DECRYPT": "çözmek için tıklayın",
 		"LINK_DOWNLOAD_AS_ZIP": "Download as zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"

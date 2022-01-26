@@ -148,8 +148,10 @@
 		"PRINT_LABEL_ATTACHMENTS": "Priedai",
 		"MESSAGE_VIEW_DESC": "Pasirinkite žinutę sąraše, kad matytumėte jos turinį čia.",
 		"MESSAGE_VIEW_MOVE_DESC": "Kairėje pasirinkite katalogą, į kurį norite perkelti.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP pasirašytas pranešimas (spustelkite patikrinimui)",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP šifruotas pranešimas (spustelkite iššifravimui)",
+		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP pasirašytas pranešimas",
+		"BUTTON_PGP_VERIFY": "spustelkite patikrinimui",
+		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP šifruotas pranešimas",
+		"BUTTON_PGP_DECRYPT": "spustelkite iššifravimui",
 		"LINK_DOWNLOAD_AS_ZIP": "Atsisiųsti zip archyvą",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"

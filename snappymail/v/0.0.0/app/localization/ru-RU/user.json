@@ -148,8 +148,10 @@
 		"PRINT_LABEL_ATTACHMENTS": "Файлы",
 		"MESSAGE_VIEW_DESC": "Выберите сообщение для просмотра.",
 		"MESSAGE_VIEW_MOVE_DESC": "Выберите имя папки в левой панели, чтобы переместить сообщение.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP подписанное сообщение (нажмите, чтобы подтвердить)",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP шифрованное сообщение (нажмите, чтобы расшифровать)",
+		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP подписанное сообщение",
+		"BUTTON_PGP_VERIFY": "нажмите, чтобы подтвердить",
+		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP шифрованное сообщение",
+		"BUTTON_PGP_DECRYPT": "нажмите, чтобы расшифровать",
 		"LINK_DOWNLOAD_AS_ZIP": "Сохранить как zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"

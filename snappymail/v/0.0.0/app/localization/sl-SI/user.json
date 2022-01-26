@@ -148,8 +148,10 @@
 		"PRINT_LABEL_ATTACHMENTS": "Priloge",
 		"MESSAGE_VIEW_DESC": "Izberite sporočilo s seznama za ogled.",
 		"MESSAGE_VIEW_MOVE_DESC": "Za izbor cilja kliknite na ime mape na levi strani.",
-		"PGP_SIGNED_MESSAGE_DESC": "Sporočilo, podpisano z OpenPGP  (kliknite za overovitev)",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "Sporočilo, šifrirano z OpenPGP (kliknite za dešifriranje)",
+		"PGP_SIGNED_MESSAGE_DESC": "Sporočilo, podpisano z OpenPGP",
+		"BUTTON_PGP_VERIFY": "kliknite za overovitev",
+		"PGP_ENCRYPTED_MESSAGE_DESC": "Sporočilo, šifrirano z OpenPGP",
+		"BUTTON_PGP_DECRYPT": "kliknite za dešifriranje",
 		"LINK_DOWNLOAD_AS_ZIP": "Prenesi kot .zip datoteko",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"

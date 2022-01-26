@@ -148,8 +148,10 @@
 		"PRINT_LABEL_ATTACHMENTS": "添付ファイル",
 		"MESSAGE_VIEW_DESC": "選択したメールがここに表示されます。",
 		"MESSAGE_VIEW_MOVE_DESC": "左側のパネルでフォルダ名をクリックして移動先を選択します。",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP 署名済みメッセージ (クリックして検証)",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP 暗号化メッセージ (クリックして復号化)",
+		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP 署名済みメッセージ",
+		"BUTTON_PGP_VERIFY": "クリックして検証",
+		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP 暗号化メッセージ",
+		"BUTTON_PGP_DECRYPT": "クリックして復号化",
 		"LINK_DOWNLOAD_AS_ZIP": "Zip としてダウンロード",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"

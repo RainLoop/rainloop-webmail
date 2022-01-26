@@ -148,8 +148,10 @@
 		"PRINT_LABEL_ATTACHMENTS": "Prílohy",
 		"MESSAGE_VIEW_DESC": "Vyberte správu zo zoznamu pre jej zobrazenie.",
 		"MESSAGE_VIEW_MOVE_DESC": "Zvoľte cieľ kliknutím na názov priečinka v ľavom stĺpci.",
-		"PGP_SIGNED_MESSAGE_DESC": "Správa podpísaná s OpenPGP (kliknite pre overenie)",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "Správa šifrovaná s OpenPGP (kliknite pre dešifrovanie)",
+		"PGP_SIGNED_MESSAGE_DESC": "Správa podpísaná s OpenPGP",
+		"BUTTON_PGP_VERIFY": "kliknite pre overenie",
+		"PGP_ENCRYPTED_MESSAGE_DESC": "Správa šifrovaná s OpenPGP",
+		"BUTTON_PGP_DECRYPT": "kliknite pre dešifrovanie",
 		"LINK_DOWNLOAD_AS_ZIP": "Prevziať ako zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"

@@ -148,8 +148,10 @@
 		"PRINT_LABEL_ATTACHMENTS": "Συνημμένα",
 		"MESSAGE_VIEW_DESC": "Επιλέξτε ένα μήνυμα από τη λίστα για να εμφανιστεί εδώ.",
 		"MESSAGE_VIEW_MOVE_DESC": "Click folder name in the left panel to select the destination.",
-		"PGP_SIGNED_MESSAGE_DESC": "Μήνυμα υπογεγραμμένο με OpenPGP (κάντε κλικ για έλεγχο)",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "Μήνυμα κωδικοποιημένο με OpenPGP (κάντε κλίκ για αποκωδικοποίηση)",
+		"PGP_SIGNED_MESSAGE_DESC": "Μήνυμα υπογεγραμμένο με OpenPGP",
+		"BUTTON_PGP_VERIFY": "κάντε κλικ για έλεγχο",
+		"PGP_ENCRYPTED_MESSAGE_DESC": "Μήνυμα κωδικοποιημένο με OpenPGP",
+		"BUTTON_PGP_DECRYPT": "κάντε κλίκ για αποκωδικοποίηση",
 		"LINK_DOWNLOAD_AS_ZIP": "Μεταφόρτωση σαν zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"

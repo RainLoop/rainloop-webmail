@@ -148,8 +148,10 @@
 		"PRINT_LABEL_ATTACHMENTS": "Vedhæftninger",
 		"MESSAGE_VIEW_DESC": "Vælg meddelelse i oversigten for visning.",
 		"MESSAGE_VIEW_MOVE_DESC": "Vælg modtagemappe i panelet til venstre.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP signeret meddelelse (tryk for at verificere)",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP krypteret meddelelse (tryk for at dekryptere)",
+		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP signeret meddelelse",
+		"BUTTON_PGP_VERIFY": "tryk for at verificere",
+		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP krypteret meddelelse",
+		"BUTTON_PGP_DECRYPT": "tryk for at dekryptere",
 		"LINK_DOWNLOAD_AS_ZIP": "Hent som zip-fil",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"

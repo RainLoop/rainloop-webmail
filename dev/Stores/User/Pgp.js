@@ -386,27 +386,6 @@ export const PgpUserStore = new class {
 	}
 
 	/**
-	 * Creates an iframe to display the decrypted content of the encrypted mail.
-	 * The iframe will be injected into the container identified by selector.
-	 */
-/*
-	mailvelope.createDisplayContainer(selector, armored, this.mailvelopeKeyring, {senderAddress:''}).then(status => {
-		if (status.error && status.error.message) {
-			return error_handler(status.error);
-		}
-
-		ref.hide_message(msgid);
-		$(selector).children().not('iframe').hide();
-		$(ref.gui_objects.messagebody).addClass('mailvelope');
-
-		// on success we can remove encrypted part from the attachments list
-		if (ref.env.pgp_mime_part)
-			$('#attach' + ref.env.pgp_mime_part).remove();
-
-		setTimeout(function() { $(window).resize(); }, 10);
-	}, error_handler);
-*/
-	/**
 	 * Creates an iframe with an editor for a new encrypted mail.
 	 * The iframe will be injected into the container identified by selector.
 	 * https://mailvelope.github.io/mailvelope/Editor.html
@@ -426,14 +405,6 @@ export const PgpUserStore = new class {
 	}).then(editor => {
 		editor.editorId;
 	}, error_handler)
-*/
-
-	/**
-	 * Creates an iframe to display the keyring settings.
-	 * The iframe will be injected into the container identified by selector.
-	 */
-/*
-	mailvelope.createSettingsContainer(selector [, keyring], options)
 */
 
 	/**

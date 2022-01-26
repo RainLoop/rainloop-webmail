@@ -148,8 +148,10 @@
 		"PRINT_LABEL_ATTACHMENTS": "پیوست‌ها",
 		"MESSAGE_VIEW_DESC": "پیام را در لیست جهت مشاهده انتخاب کنید",
 		"MESSAGE_VIEW_MOVE_DESC": "بر روی نام شاخه در پنل سمت راست جهت انتخاب مقصد کلیک کنید",
-		"PGP_SIGNED_MESSAGE_DESC": "پیام توسط  OpenPGP امضاء شد (برای بررسی کلیک کنید)",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "پیام توسط  OpenPGP رمزنگاری شد (برای خارج شدن از حالت رمز کلیک کنید)",
+		"PGP_SIGNED_MESSAGE_DESC": "پیام توسط  OpenPGP امضاء شد",
+		"BUTTON_PGP_VERIFY": "برای بررسی کلیک کنید",
+		"PGP_ENCRYPTED_MESSAGE_DESC": "پیام توسط  OpenPGP رمزنگاری شد",
+		"BUTTON_PGP_DECRYPT": "برای خارج شدن از حالت رمز کلیک کنید",
 		"LINK_DOWNLOAD_AS_ZIP": "دریافت با پسوند zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"

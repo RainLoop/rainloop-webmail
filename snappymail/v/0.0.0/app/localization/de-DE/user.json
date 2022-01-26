@@ -148,8 +148,10 @@
 		"PRINT_LABEL_ATTACHMENTS": "Anhänge",
 		"MESSAGE_VIEW_DESC": "Wählen Sie eine Nachricht aus der Liste aus, um sie anzuzeigen.",
 		"MESSAGE_VIEW_MOVE_DESC": "Klicke auf den Ordnernamen auf der linken Seite, um die Nachricht zu verschieben.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP-signierte Nachricht (klicken, um zu überprüfen)",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP-verschlüsselte Nachricht (klicken, um zu entschlüsseln)",
+		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP-signierte Nachricht",
+		"BUTTON_PGP_VERIFY": "klicken, um zu überprüfen",
+		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP-verschlüsselte Nachricht",
+		"BUTTON_PGP_DECRYPT": "klicken, um zu entschlüsseln",
 		"LINK_DOWNLOAD_AS_ZIP": "Als ZIP-Datei herunterladen",
 		"SPAM_SCORE": "Spam-Score",
 		"HAS_VIRUS_WARNING": "WARNUNG: Virus erkannt"
