@@ -136,6 +136,17 @@ class GnuPG
 	}
 
 	/**
+	 * Decrypts a given resource
+	 */
+	public function decryptStream(/*resource*/ $fp, /*string|resource*/ $output = null) /*: string|false */
+	{
+		if (!$fp || !\is_resource($fp)) {
+			throw new \Exception('Invalid stream resource');
+		}
+		return $this->getGPG()->decryptStream($fp, $output);
+	}
+
+	/**
 	 * Decrypts and verifies a given text
 	 */
 	public function decryptVerify(string $text, string &$plaintext) /*: array|false*/
@@ -404,4 +415,16 @@ class GnuPG
 			? $this->GnuPG->verify(\file_get_contents($filename), $signature, $plaintext)
 			: $this->GPG->verifyFile($filename, $signature, $plaintext);
 	}
+
+	/**
+	 * Verifies a given resource
+	 */
+	public function verifyStream(/*resource*/ $fp, string $signature, string &$plaintext = null) /*: string|false */
+	{
+		if (!$fp || !\is_resource($fp)) {
+			throw new \Exception('Invalid stream resource');
+		}
+		return $this->getGPG()->verifyStream($fp, $signature, $plaintext);
+	}
+
 }

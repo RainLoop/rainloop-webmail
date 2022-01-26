@@ -696,12 +696,14 @@ trait Messages
 				'text' => \preg_replace('/\\R/s', "\r\n",
 					$oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']')
 				),
-				'signature' => false
+				'signature' => ''
 			];
 		}
 
-		if (\class_exists('gnupg')) {
+		$GPG = $this->GnuPG();
+		if ($GPG) {
 			$info = $this->GnuPG()->verify($result['text'], $result['signature'])[0];
+//			$info = $this->GnuPG()->verifyStream($fp, $result['signature'])[0];
 
 			/**
 			 * https://code.woboq.org/qt5/include/gpg-error.h.html
