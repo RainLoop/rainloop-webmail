@@ -47,52 +47,28 @@
 		<a id="more-list-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-i18n="[title]GLOBAL/MORE">☰</a>
 		<ul class="dropdown-menu" role="menu" aria-labelledby="more-list-dropdown-id">
 			<li role="presentation" data-bind="click: listUnsetSeen, css: {'disabled': !hasCheckedOrSelectedLines()}">
-				<a href="#" tabindex="-1">
-					<i class="icon-none"></i>
-					<span data-i18n="MESSAGE_LIST/MENU_UNSET_SEEN"></span>
-				</a>
+				<a href="#" tabindex="-1" data-icon="" data-i18n="MESSAGE_LIST/MENU_UNSET_SEEN"></a>
 			</li>
 			<li role="presentation" data-bind="click: listSetSeen, css: {'disabled': !hasCheckedOrSelectedLines()}">
-				<a href="#" tabindex="-1">
-					<i class="icon-none"></i>
-					<span data-i18n="MESSAGE_LIST/MENU_SET_SEEN"></span>
-				</a>
+				<a href="#" tabindex="-1" data-icon="" data-i18n="MESSAGE_LIST/MENU_SET_SEEN"></a>
 			</li>
 			<li role="presentation" data-bind="click: listSetFlags, css: {'disabled': !hasCheckedOrSelectedLines()}">
-				<a href="#" tabindex="-1">
-					<i class="fontastic flagged">★</i>
-					<span data-i18n="MESSAGE_LIST/MENU_SET_FLAG"></span>
-				</a>
+				<a href="#" tabindex="-1" data-icon="★" data-i18n="MESSAGE_LIST/MENU_SET_FLAG"></a>
 			</li>
 			<li role="presentation" data-bind="click: listUnsetFlags, css: {'disabled': !hasCheckedOrSelectedLines()}">
-				<a href="#" tabindex="-1">
-					<i class="fontastic unflagged">☆</i>
-					<span data-i18n="MESSAGE_LIST/MENU_UNSET_FLAG"></span>
-				</a>
+				<a href="#" tabindex="-1" data-icon="☆" data-i18n="MESSAGE_LIST/MENU_UNSET_FLAG"></a>
 			</li>
 			<li role="presentation" data-bind="click: listSetAllSeen, css: {'disabled': !hasMessages()}">
-				<a href="#" tabindex="-1">
-					<i class="icon-none"></i>
-					<span data-i18n="MESSAGE_LIST/MENU_SET_ALL_SEEN"></span>
-				</a>
+				<a href="#" tabindex="-1" data-icon="" data-i18n="MESSAGE_LIST/MENU_SET_ALL_SEEN"></a>
 			</li>
 			<li class="dividerbar" role="presentation" data-bind="command: multyForwardCommand">
-				<a href="#" tabindex="-1">
-					<i class="fontastic">↞</i>
-					<span data-i18n="MESSAGE_LIST/BUTTON_MULTY_FORWARD"></span>
-				</a>
+				<a href="#" tabindex="-1" data-icon="↞" data-i18n="MESSAGE_LIST/BUTTON_MULTY_FORWARD"></a>
 			</li>
 			<li class="dividerbar" role="presentation" data-bind="visible: allowDangerousActions, command: deleteWithoutMoveCommand">
-				<a href="#" tabindex="-1">
-					<i class="fontastic">🗑</i>
-					<span data-i18n="MESSAGE_LIST/BUTTON_DELETE_WITHOUT_MOVE"></span>
-				</a>
+				<a href="#" tabindex="-1" data-icon="🗑" data-i18n="MESSAGE_LIST/BUTTON_DELETE_WITHOUT_MOVE"></a>
 			</li>
 			<li role="presentation" data-bind="visible: allowDangerousActions, command: clearCommand">
-				<a href="#" tabindex="-1">
-					<i class="fontastic">🔥</i>
-					<span data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER"></span>
-				</a>
+				<a href="#" tabindex="-1" data-icon="🔥" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER"></a>
 			</li>
 		</ul>
 	</div>

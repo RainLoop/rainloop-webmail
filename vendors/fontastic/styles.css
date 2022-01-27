@@ -9,6 +9,7 @@
 }
 
 .fontastic,
+[data-icon]::before,
 [class^="icon-"]::before,
 [class*=" icon-"]::before {
   font-family: "snappymail" !important;
@@ -20,6 +21,13 @@
   speak: never;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+[data-icon]::before {
+	content: attr(data-icon);
+	display: inline-block;
+	width: 1.5em;
+	height: 1em;
 }
 
 .icon-arrows-in::before {

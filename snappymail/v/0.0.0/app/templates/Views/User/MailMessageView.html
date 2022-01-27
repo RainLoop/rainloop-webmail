@@ -41,135 +41,99 @@
 		<div class="b-message-view-desc" data-i18n="MESSAGE/MESSAGE_VIEW_DESC" data-bind="visible: !message() && '' === messageError() && !hasCheckedMessages()">
 		</div>
 
-		<div class="message-fixed-button-toolbar" data-bind="visible: message">
-			<div class="btn-group" style="margin-right: -11px;">
-				<a class="btn btn-thin btn-transparent buttonReply fontastic"
-					data-bind="visible: 'reply' === lastReplyAction(), command: replyCommand" data-i18n="[title]MESSAGE/BUTTON_REPLY">←</a>
-				<a class="btn btn-thin btn-transparent buttonReplyAll fontastic"
-					data-bind="visible: 'replyall' === lastReplyAction(), command: replyAllCommand" data-i18n="[title]MESSAGE/BUTTON_REPLY_ALL">↞</a>
-				<a class="btn btn-thin btn-transparent buttonForward fontastic"
-					data-bind="visible: 'forward' === lastReplyAction(), command: forwardCommand" data-i18n="[title]MESSAGE/BUTTON_FORWARD">→</a>
-				<div class="btn-group" data-bind="registerBootstrapDropdown: true" style="display: inline-block">
-					<a class="btn btn-thin btn-transparent dropdown-toggle fontastic" id="more-view-dropdown-id" href="#" tabindex="-1">☰</a>
-					<ul class="dropdown-menu right-edge" role="menu" aria-labelledby="more-view-dropdown-id">
-						<div data-bind="visible: !isDraftFolder()">
-							<li role="presentation">
-								<a href="#" tabindex="-1" data-bind="command: replyCommand">
-									<i class="fontastic">←</i>
-									<span data-i18n="MESSAGE/BUTTON_REPLY"></span>
-								</a>
-							</li>
-							<li role="presentation">
-								<a href="#" tabindex="-1" data-bind="command: replyAllCommand">
-									<i class="fontastic">↞</i>
-									<span data-i18n="MESSAGE/BUTTON_REPLY_ALL"></span>
-								</a>
-							</li>
-							<li role="presentation">
-								<a href="#" tabindex="-1" data-bind="command: forwardCommand">
-									<i class="fontastic">→</i>
-									<span data-i18n="MESSAGE/BUTTON_FORWARD"></span>
-								</a>
-							</li>
-							<li role="presentation">
-								<a href="#" tabindex="-1" data-bind="command: editAsNewCommand">
-									<i class="fontastic">🖉</i>
-									<span data-i18n="MESSAGE/BUTTON_EDIT_AS_NEW"></span>
-								</a>
-							</li>
-							<li role="presentation">
-								<a href="#" tabindex="-1" data-bind="command: forwardAsAttachmentCommand">
-									<i class="fontastic">→</i>
-									<span data-i18n="MESSAGE/BUTTON_FORWARD_AS_ATTACHMENT"></span>
-								</a>
-							</li>
-						</div>
-						<div class="dividerbar">
-							<li role="presentation" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled()">
-								<a target="_blank" href="#" tabindex="-1" data-bind="command: archiveCommand">
-									<i class="icon-archive"></i>
-									<span data-i18n="GLOBAL/TO_ARCHIVE"></span>
-								</a>
-							</li>
-							<li role="presentation" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled()">
-								<a target="_blank" href="#" tabindex="-1" data-bind="command: spamCommand">
-									<i class="fontastic">⚠</i>
-									<span data-i18n="GLOBAL/SPAM"></span>
-								</a>
-							</li>
-							<li role="presentation" data-bind="visible: !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled()">
-								<a target="_blank" href="#" tabindex="-1" data-bind="command: notSpamCommand">
-									<i class="icon-check-mark-circle-two"></i>
-									<span data-i18n="GLOBAL/NOT_SPAM"></span>
-								</a>
-							</li>
-							<li role="presentation">
-								<a target="_blank" href="#" tabindex="-1" data-bind="command: deleteCommand">
-									<i class="fontastic">🗑</i>
-									<span data-i18n="GLOBAL/DELETE"></span>
-								</a>
-							</li>
-							<li role="presentation" data-bind="command: deleteWithoutMoveCommand">
-								<a href="#" tabindex="-1">
-									<i class="fontastic">🗑</i>
-									<span data-i18n="MESSAGE_LIST/BUTTON_DELETE_WITHOUT_MOVE"></span>
-								</a>
-							</li>
-							<li class="dividerbar" role="presentation" data-bind="visible: message() && message().hasUnsubsribeLinks()">
-								<a target="_blank" href="#" tabindex="-1" data-bind="attr: { href: viewUnsubscribeLink }">
-									<i class="fontastic">✖</i>
-									<span data-i18n="MESSAGE/BUTTON_UNSUBSCRIBE"></span>
-								</a>
-							</li>
-						</div>
-						<div data-bind="visible: allowMessageActions" class="dividerbar">
-							<li role="presentation">
-								<a target="_blank" href="#" tabindex="-1" data-bind="click: function () { message() && message().printMessage(); } ">
-									<i class="fontastic">🖨</i>
-									<span data-i18n="MESSAGE/MENU_PRINT"></span>
-								</a>
-							</li>
-							<li role="presentation">
-								<a target="_blank" href="#" tabindex="-1" data-bind="click: function () { message() && message().viewPopupMessage(); }">
-									<i class="icon-popup"></i>
-									<span data-i18n="MESSAGE/BUTTON_IN_NEW_WINDOW"></span>
-								</a>
-							</li>
-							<li role="presentation" data-bind="visible: message() && message().html() && !message().isHtml()">
-								<a target="_blank" href="#" tabindex="-1" data-bind="click: function () { message().viewHtml(); }">
-									<i class="fontastic">👁</i>
-									<span data-i18n="MESSAGE/HTML_VIEW"></span>
-								</a>
-							</li>
-							<li role="presentation" data-bind="visible: message() && message().plain() && message().isHtml()">
-								<a target="_blank" href="#" tabindex="-1" data-bind="click: function () { message().viewPlain(); }">
-									<i class="fontastic">👁</i>
-									<span data-i18n="MESSAGE/PLAIN_VIEW"></span>
-								</a>
-							</li>
-							<li class="dividerbar" role="presentation">
-								<a target="_blank" href="#" tabindex="-1" data-bind="attr: { href: viewViewLink }">
-									<i class="icon-file-code"></i>
-									<span data-i18n="MESSAGE/MENU_VIEW_ORIGINAL"></span>
-								</a>
-							</li>
-							<li role="presentation">
-								<a target="_blank" href="#" tabindex="-1" data-bind="attr: { href: viewDownloadLink }">
-									<i class="icon-download"></i>
-									<span data-i18n="MESSAGE/MENU_DOWNLOAD_ORIGINAL"></span>
-								</a>
-							</li>
-						</div>
-					</ul>
+		<div class="b-message" data-bind="visible: message">
+			<div class="message-fixed-button-toolbar">
+				<div class="btn-group" style="margin-right: -8px">
+					<a class="btn btn-thin btn-transparent buttonReply fontastic"
+						data-bind="visible: 'reply' === lastReplyAction(), command: replyCommand" data-i18n="[title]MESSAGE/BUTTON_REPLY">←</a>
+					<a class="btn btn-thin btn-transparent buttonReplyAll fontastic"
+						data-bind="visible: 'replyall' === lastReplyAction(), command: replyAllCommand" data-i18n="[title]MESSAGE/BUTTON_REPLY_ALL">↞</a>
+					<a class="btn btn-thin btn-transparent buttonForward fontastic"
+						data-bind="visible: 'forward' === lastReplyAction(), command: forwardCommand" data-i18n="[title]MESSAGE/BUTTON_FORWARD">→</a>
+					<div class="btn-group" data-bind="registerBootstrapDropdown: true" style="display: inline-block">
+						<a class="btn btn-thin btn-transparent dropdown-toggle fontastic" id="more-view-dropdown-id" href="#" tabindex="-1">☰</a>
+						<ul class="dropdown-menu right-edge" role="menu" aria-labelledby="more-view-dropdown-id">
+							<div data-bind="visible: !isDraftFolder()">
+								<li role="presentation">
+									<a href="#" tabindex="-1" data-bind="command: replyCommand" data-icon="←" data-i18n="MESSAGE/BUTTON_REPLY"></a>
+								</li>
+								<li role="presentation">
+									<a href="#" tabindex="-1" data-bind="command: replyAllCommand" data-icon="↞" data-i18n="MESSAGE/BUTTON_REPLY_ALL"></a>
+								</li>
+								<li role="presentation">
+									<a href="#" tabindex="-1" data-bind="command: forwardCommand" data-icon="→" data-i18n="MESSAGE/BUTTON_FORWARD"></a>
+								</li>
+								<li role="presentation">
+									<a href="#" tabindex="-1" data-bind="command: editAsNewCommand" data-icon="🖉" data-i18n="MESSAGE/BUTTON_EDIT_AS_NEW"></a>
+								</li>
+								<li role="presentation">
+									<a href="#" tabindex="-1" data-bind="command: forwardAsAttachmentCommand" data-icon="→" data-i18n="MESSAGE/BUTTON_FORWARD_AS_ATTACHMENT"></a>
+								</li>
+							</div>
+							<div class="dividerbar">
+								<li role="presentation" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled()">
+									<a href="#" tabindex="-1" data-bind="command: archiveCommand">
+										<i class="icon-archive"></i>
+										<span data-i18n="GLOBAL/TO_ARCHIVE"></span>
+									</a>
+								</li>
+								<li role="presentation" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled()">
+									<a href="#" tabindex="-1" data-bind="command: spamCommand" data-icon="⚠" data-i18n="GLOBAL/SPAM"></a>
+								</li>
+								<li role="presentation" data-bind="visible: !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled()">
+									<a href="#" tabindex="-1" data-bind="command: notSpamCommand">
+										<i class="icon-check-mark-circle-two"></i>
+										<span data-i18n="GLOBAL/NOT_SPAM"></span>
+									</a>
+								</li>
+								<li role="presentation">
+									<a href="#" tabindex="-1" data-bind="command: deleteCommand" data-icon="🗑" data-i18n="GLOBAL/DELETE"></a>
+								</li>
+								<li role="presentation">
+									<a href="#" tabindex="-1" data-bind="command: deleteWithoutMoveCommand" data-icon="🗑" data-i18n="MESSAGE_LIST/BUTTON_DELETE_WITHOUT_MOVE"></a>
+								</li>
+								<li class="dividerbar" role="presentation" data-bind="visible: message() && message().hasUnsubsribeLinks()">
+									<a target="_blank" href="#" tabindex="-1" data-bind="attr: { href: viewUnsubscribeLink }" data-icon="✖" data-i18n="MESSAGE/BUTTON_UNSUBSCRIBE"></a>
+								</li>
+							</div>
+							<div data-bind="visible: allowMessageActions" class="dividerbar">
+								<li role="presentation">
+									<a href="#" tabindex="-1" data-bind="click: function () { message() && message().printMessage(); } " data-icon="🖨" data-i18n="MESSAGE/MENU_PRINT"></a>
+								</li>
+								<li role="presentation">
+									<a href="#" tabindex="-1" data-bind="click: function () { message() && message().viewPopupMessage(); }">
+										<i class="icon-popup"></i>
+										<span data-i18n="MESSAGE/BUTTON_IN_NEW_WINDOW"></span>
+									</a>
+								</li>
+								<li role="presentation" data-bind="visible: message() && message().html() && !message().isHtml()">
+									<a href="#" tabindex="-1" data-bind="click: function () { message().viewHtml(); }" data-icon="👁" data-i18n="MESSAGE/HTML_VIEW"></a>
+								</li>
+								<li role="presentation" data-bind="visible: message() && message().plain() && message().isHtml()">
+									<a href="#" tabindex="-1" data-bind="click: function () { message().viewPlain(); }" data-icon="👁" data-i18n="MESSAGE/PLAIN_VIEW"></a>
+								</li>
+								<li class="dividerbar" role="presentation">
+									<a target="_blank" href="#" tabindex="-1" data-bind="attr: { href: viewViewLink }">
+										<i class="icon-file-code"></i>
+										<span data-i18n="MESSAGE/MENU_VIEW_ORIGINAL"></span>
+									</a>
+								</li>
+								<li role="presentation">
+									<a target="_blank" href="#" tabindex="-1" data-bind="attr: { href: viewDownloadLink }">
+										<i class="icon-download"></i>
+										<span data-i18n="MESSAGE/MENU_DOWNLOAD_ORIGINAL"></span>
+									</a>
+								</li>
+							</div>
+						</ul>
+					</div>
+				</div>
+
+				<div class="btn-group hide-mobile" data-bind="visible: isDraftFolder()" data-i18n="[title]MESSAGE/BUTTON_EDIT" style="margin-right: 5px">
+					<a class="btn btn-success buttonEdit fontastic" data-bind="command: messageEditCommand">🖉</a>
 				</div>
 			</div>
 
-			<div class="btn-group hide-mobile" data-bind="visible: isDraftFolder()" data-i18n="[title]MESSAGE/BUTTON_EDIT" style="margin-right: 5px">
-				<a class="btn btn-success buttonEdit fontastic" data-bind="command: messageEditCommand">🖉</a>
-			</div>
-		</div>
-
-		<div class="b-message" data-bind="visible: message">
 			<div class="messageItemHeader" data-bind="css: {'emptySubject': '' === viewSubject()}">
 				<div class="subjectParent">
 					<span class="infoParent g-ui-user-select-none fontastic" data-bind="click: function() { showFullInfo(!showFullInfo()); }">ℹ</span>
