@@ -2,14 +2,14 @@
 	<a href="#" class="close" data-bind="command: cancelCommand">×</a>
 	<h3 data-i18n="OPENPGP/POPUP_GENERATE_TITLE"></h3>
 </header>
-<form class="modal-body form-horizontal" autocomplete="off">
+<form id="openpgp-generate" class="modal-body form-horizontal" autocomplete="off" data-bind="submit: submitForm">
 	<div class="alert" data-bind="visible: '' !== submitError()">
 		<a href="#" class="close" data-bind="click: function () { submitError('') }">×</a>
 		<span data-bind="text: submitError"></span>
 	</div>
 	<div class="control-group" data-bind="css: {'error': emailError}">
 		<label data-i18n="GLOBAL/EMAIL"></label>
-		<input type="text" class="input-xlarge"
+		<input type="text" required="" class="input-xlarge"
 			autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 			list="emailaddresses" data-bind="value: email" />
 		<datalist id="emailaddresses">
@@ -20,13 +20,13 @@
 	</div>
 	<div class="control-group">
 		<label data-i18n="GLOBAL/NAME"></label>
-		<input type="text" class="input-xlarge"
+		<input type="text" required="" class="input-xlarge"
 			autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 			data-bind="value: name" />
 	</div>
 	<div class="control-group">
 		<label data-i18n="GLOBAL/PASSWORD"></label>
-		<input type="password" class="input-xlarge"
+		<input type="password" required="" class="input-xlarge"
 			autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
 			data-bind="value: password" />
 	</div>
@@ -52,8 +52,8 @@
 	</div>
 </form>
 <footer>
-	<a class="btn" data-bind="command: generateOpenPgpKeyCommand">
+	<button class="btn" form="openpgp-generate">
 		<i class="fontastic" data-bind="css: {'icon-spinner': submitRequest()}">🔑</i>
 		<span data-i18n="OPENPGP/POPUP_GENERATE_BUTTON"></span>
-	</a>
+	</button>
 </footer>

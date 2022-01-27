@@ -3,7 +3,6 @@
 import { PgpUserStore } from 'Stores/User/Pgp';
 import { IdentityUserStore } from 'Stores/User/Identity';
 
-import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 import { Capa } from 'Common/Enums';
@@ -33,13 +32,9 @@ export class OpenPgpGeneratePopupView extends AbstractViewPopup {
 		this.canGnuPG = Settings.capa(Capa.GnuPG);
 
 		this.email.subscribe(() => this.emailError(false));
-
-		decorateKoCommands(this, {
-			generateOpenPgpKeyCommand: 1
-		});
 	}
 
-	generateOpenPgpKeyCommand() {
+	submitForm() {
 		const type = this.keyType().toLowerCase(),
 			userId = {
 				name: this.name(),
@@ -60,7 +55,7 @@ export class OpenPgpGeneratePopupView extends AbstractViewPopup {
 */
 		this.emailError(!this.email().trim());
 		if (this.emailError()) {
-			return false;
+			return;
 		}
 
 		this.submitRequest(true);
@@ -81,8 +76,6 @@ export class OpenPgpGeneratePopupView extends AbstractViewPopup {
 			this.submitRequest(false);
 			this.showError(e);
 		});
-
-		return true;
 	}
 
 	showError(e) {
