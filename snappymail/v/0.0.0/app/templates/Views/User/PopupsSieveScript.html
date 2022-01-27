@@ -55,11 +55,11 @@
 						<span class="filter-sub-name" data-bind="text: nameSub()"></span>
 					</td>
 					<td>
-						<a class="btn btn-small btn-small-small btn-danger button-confirm-delete" data-bind="css: {'delete-access': deleteAccess()}, click: function(oFilter) { $root.deleteFilter(oFilter); }"
+						<a class="btn btn-small btn-small-small btn-danger button-confirm-delete" data-bind="css: {'delete-access': askDelete()}, click: function(oFilter) { $root.deleteFilter(oFilter); }"
 							data-i18n="GLOBAL/ARE_YOU_SURE"></a>
 					</td>
 					<td>
-						<span class="delete-filter fontastic" data-bind="visible: !deleteAccess() && canBeDeleted(), click: function (oFilter) { $root.filterForDeletion(oFilter); }">🗑</span>
+						<span class="delete-filter fontastic" data-bind="visible: !askDelete() && canBeDeleted(), click: function (oFilter) { $root.filterForDeletion(oFilter); }">🗑</span>
 					</td>
 				</tr>
 			</tbody>

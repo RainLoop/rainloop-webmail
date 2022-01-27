@@ -28,7 +28,7 @@ class SieveScriptPopupView extends AbstractViewPopup {
 		this.sieveCapabilities = SieveUserStore.capa.join(' ');
 		this.saving = false;
 
-		this.filterForDeletion = ko.observable(null).deleteAccessHelper();
+		this.filterForDeletion = ko.observable(null).askDeleteHelper();
 /*
 		decorateKoCommands(this, {
 			saveScriptCommand: 1

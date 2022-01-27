@@ -22,7 +22,7 @@ import { showScreenPopup } from 'Knoin/Knoin';
 import { FolderCreatePopupView } from 'View/Popup/FolderCreate';
 import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
 
-const folderForDeletion = ko.observable(null).deleteAccessHelper();
+const folderForDeletion = ko.observable(null).askDeleteHelper();
 
 export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 	constructor() {
@@ -124,7 +124,7 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 	deleteFolder(folderToRemove) {
 		if (folderToRemove
 		 && folderToRemove.canBeDeleted()
-		 && folderToRemove.deleteAccess()
+		 && folderToRemove.askDelete()
 		) {
 			if (0 < folderToRemove.privateMessageCountAll()) {
 //				FolderUserStore.folderListError(getNotification(Notification.CantDeleteNonEmptyFolder));

@@ -12,7 +12,7 @@ export class DomainsAdminSettings /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.domains = DomainAdminStore;
 
-		this.domainForDeletion = ko.observable(null).deleteAccessHelper();
+		this.domainForDeletion = ko.observable(null).askDeleteHelper();
 	}
 
 	createDomain() {

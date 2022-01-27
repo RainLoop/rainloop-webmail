@@ -43,6 +43,14 @@ const
 			}
 		}
 		return keys;
+	},
+	storeOpenPgpKeys = (keys, section) => {
+		let armoredKeys = keys.map(item => item.armor);
+		if (armoredKeys.length) {
+			storage.setItem(section, JSON.stringify(armoredKeys));
+		} else {
+			storage.removeItem(section);
+		}
 	};
 
 class OpenPgpKeyModel {
@@ -62,8 +70,8 @@ class OpenPgpKeyModel {
 		this.can_sign = !!key.getSigningKey();
 		this.emails = aEmails;
 		this.armor = armor;
-		this.deleteAccess = ko.observable(false);
-		this.openForDeletion = ko.observable(null).deleteAccessHelper();
+		this.askDelete = ko.observable(false);
+		this.openForDeletion = ko.observable(null).askDeleteHelper();
 //		key.getUserIDs()
 //		key.getPrimaryUser()
 	}
@@ -73,23 +81,15 @@ class OpenPgpKeyModel {
 	}
 
 	remove() {
-		if (this.deleteAccess()) {
-			this.openPgpKeyForDeletion(null);
-			let armoredKeys = [], itemname = publicKeysItem;
+		if (this.askDelete()) {
 			if (this.key.isPrivate()) {
-				itemname = privateKeysItem;
 				PgpUserStore.openpgpPrivateKeys.remove(this);
-				armoredKeys = PgpUserStore.openpgpPrivateKeys.map(item => item.armor);
+				storeOpenPgpKeys(PgpUserStore.openpgpPrivateKeys, privateKeysItem);
 			} else {
 				PgpUserStore.openpgpPublicKeys.remove(this);
-				armoredKeys = PgpUserStore.openpgpPublicKeys.map(item => item.armor);
+				storeOpenPgpKeys(PgpUserStore.openpgpPublicKeys, publicKeysItem);
 			}
 			delegateRunOnDestroy(this);
-			if (armoredKeys.length) {
-				storage.setItem(itemname, JSON.stringify(armoredKeys));
-			} else {
-				storage.removeItem(itemname);
-			}
 		}
 	}
 }
@@ -215,6 +215,15 @@ export const PgpUserStore = new class {
 		);
 //		storeKeys(publicKeysItem);
 //		storeKeys(privateKeysItem);
+
+		openpgp.readKey({armoredKey:keyPair.publicKey}).then(key => {
+			PgpUserStore.openpgpPublicKeys.push(new OpenPgpKeyModel(keyPair.publicKey, key));
+			storeOpenPgpKeys(PgpUserStore.openpgpPublicKeys, publicKeysItem);
+		});
+		openpgp.readKey({armoredKey:keyPair.privateKey}).then(key => {
+			PgpUserStore.openpgpPrivateKeys.push(new OpenPgpKeyModel(keyPair.privateKey, key));
+			storeOpenPgpKeys(PgpUserStore.openpgpPrivateKeys, privateKeysItem);
+		});
 	}
 
 	/**

@@ -23,7 +23,7 @@ export class FiltersUserSettings /*extends AbstractViewSettings*/ {
 			serverErrorDesc: ''
 		});
 
-		this.scriptForDeletion = ko.observable(null).deleteAccessHelper();
+		this.scriptForDeletion = ko.observable(null).askDeleteHelper();
 	}
 
 	setError(text) {

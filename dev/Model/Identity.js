@@ -21,7 +21,7 @@ export class IdentityModel extends AbstractModel {
 			signature: '',
 			signatureInsertBefore: false,
 
-			deleteAccess: false
+			askDelete: false
 		});
 
 		this.canBeDeleted = koComputable(() => !!this.id());

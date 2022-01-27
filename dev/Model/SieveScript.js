@@ -270,7 +270,7 @@ export class SieveScriptModel extends AbstractModel
 			exists: false,
 			nameError: false,
 			bodyError: false,
-			deleteAccess: false,
+			askDelete: false,
 			canBeDeleted: true,
 			hasChanges: false
 		});

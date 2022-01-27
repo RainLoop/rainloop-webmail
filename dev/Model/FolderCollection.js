@@ -218,7 +218,7 @@ export class FolderModel extends AbstractModel {
 			edited: false,
 			subscribed: true,
 			checkable: false, // Check for new messages
-			deleteAccess: false,
+			askDelete: false,
 
 			nameForEdit: '',
 			errorMsg: '',

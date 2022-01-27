@@ -68,8 +68,8 @@ export class OpenPgpGeneratePopupView extends AbstractViewPopup {
 
 		openpgp.generateKey(cfg).then(keyPair => {
 			if (keyPair) {
-				keyPair.onServer = !!this.saveServer();
-				keyPair.inGnuPG = !!this.saveGnuPG();
+				keyPair.onServer = this.saveServer() ? 1 : 0;
+				keyPair.inGnuPG = this.saveGnuPG() ? 1 : 0;
 				keyPair.uid = userId;
 				PgpUserStore.storeKeyPair(keyPair, ()=>{
 					this.submitRequest(false);

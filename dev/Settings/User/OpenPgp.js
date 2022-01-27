@@ -1,5 +1,3 @@
-import ko from 'ko';
-
 import { PgpUserStore } from 'Stores/User/Pgp';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
@@ -19,7 +17,6 @@ export class OpenPgpUserSettings /*extends AbstractViewSettings*/ {
 
 		this.openpgpkeysPublic = PgpUserStore.openpgpPublicKeys;
 		this.openpgpkeysPrivate = PgpUserStore.openpgpPrivateKeys;
-		this.openPgpKeyForDeletion = ko.observable(null).deleteAccessHelper();
 
 		this.canOpenPGP = Settings.capa(Capa.OpenPGP);
 		this.canGnuPG = Settings.capa(Capa.GnuPG);

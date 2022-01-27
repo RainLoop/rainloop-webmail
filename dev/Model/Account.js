@@ -13,7 +13,7 @@ export class AccountModel extends AbstractModel {
 
 		this.addObservables({
 //			count: count || 0,
-			deleteAccess: false,
+			askDelete: false,
 			isAdditional: isAdditional
 		});
 	}

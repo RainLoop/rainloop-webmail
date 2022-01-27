@@ -22,8 +22,8 @@ export class AccountsUserSettings /*extends AbstractViewSettings*/ {
 		this.identities = IdentityUserStore;
 		this.mainEmail = SettingsGet('MainEmail');
 
-		this.accountForDeletion = ko.observable(null).deleteAccessHelper();
-		this.identityForDeletion = ko.observable(null).deleteAccessHelper();
+		this.accountForDeletion = ko.observable(null).askDeleteHelper();
+		this.identityForDeletion = ko.observable(null).askDeleteHelper();
 	}
 
 	addNewAccount() {
@@ -49,7 +49,7 @@ export class AccountsUserSettings /*extends AbstractViewSettings*/ {
 	 * @returns {void}
 	 */
 	deleteAccount(accountToRemove) {
-		if (accountToRemove && accountToRemove.deleteAccess()) {
+		if (accountToRemove && accountToRemove.askDelete()) {
 			this.accountForDeletion(null);
 			if (accountToRemove) {
 				this.accounts.remove((account) => accountToRemove === account);
@@ -73,7 +73,7 @@ export class AccountsUserSettings /*extends AbstractViewSettings*/ {
 	 * @returns {void}
 	 */
 	deleteIdentity(identityToRemove) {
-		if (identityToRemove && identityToRemove.deleteAccess()) {
+		if (identityToRemove && identityToRemove.askDelete()) {
 			this.identityForDeletion(null);
 
 			if (identityToRemove) {

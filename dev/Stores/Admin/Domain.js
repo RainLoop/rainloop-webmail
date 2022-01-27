@@ -14,7 +14,7 @@ DomainAdminStore.fetch = () => {
 				DomainAdminStore(
 					data.Result.map(item => {
 						item.disabled = ko.observable(item.disabled);
-						item.deleteAccess = ko.observable(false);
+						item.askDelete = ko.observable(false);
 						return item;
 					})
 				);

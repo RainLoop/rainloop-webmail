@@ -38,7 +38,7 @@ export class FilterModel extends AbstractModel {
 
 		this.addObservables({
 			enabled: true,
-			deleteAccess: false,
+			askDelete: false,
 			canBeDeleted: true,
 
 			name: '',
