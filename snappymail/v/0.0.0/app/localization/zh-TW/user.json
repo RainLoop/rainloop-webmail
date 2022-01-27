@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP signed message",
 		"BUTTON_PGP_VERIFY": "click to verify",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP encrypted message",
-		"BUTTON_PGP_DECRYPT": "click to decrypt",
 		"LINK_DOWNLOAD_AS_ZIP": "Download as zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Not all attachments have been uploaded yet",
 		"BUTTON_REQUEST_READ_RECEIPT": "Request a read receipt",
 		"BUTTON_MARK_AS_IMPORTANT": "Mark as important",
-		"BUTTON_OPEN_PGP": "OpenPGP (Plain Text Only)",
 		"BUTTON_REQUEST_DSN": "Request a delivery receipt"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "一旦操作執行，不可中斷和撤銷！",
 		"TITLE_CLEARING_PROCESS": "資料夾清理中..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "導入 OpenPGP 密鑰",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "導入"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "查看 OpenPGP 密鑰",
-		"BUTTON_SELECT": "選擇"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "生成 OpenPGP 密鑰",
-		"LABEL_KEY_BIT_LENGTH": "密鑰長度",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "生成"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP Sign\/Encrypt",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "導入 OpenPGP 密鑰",
+		"POPUP_IMPORT_BUTTON": "導入",
+		"POPUP_VIEW_TITLE": "查看 OpenPGP 密鑰",
+		"POPUP_VIEW_BUTTON": "選擇",
+		"POPUP_GENERATE_TITLE": "生成 OpenPGP 密鑰",
+		"POPUP_GENERATE_BUTTON": "生成",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Sign",
 		"LABEL_ENCRYPT": "Encrypt",
-		"BUTTON_SIGN": "Sign",
-		"BUTTON_ENCRYPT": "Encrypt",
-		"BUTTON_SIGN_AND_ENCRYPT": "Sign and encrypt"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "OpenPGP Decrypt",
-		"LABEL_KEY": "Private Key",
 		"BUTTON_DECRYPT": "Decrypt"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "生成 OpenPGP 密鑰",
 		"TITLE_PRIVATE": "私有",
 		"TITLE_PUBLIC": "公開",
-		"GENERATE_ONLY_HTTPS": "HTTPS only",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
 	},
 	"SHORTCUTS_HELP": {

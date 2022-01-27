@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP ondertekend bericht",
 		"BUTTON_PGP_VERIFY": "klik om te verifiëren",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP versleuteld bericht",
-		"BUTTON_PGP_DECRYPT": "klik om te ontsleutelen",
 		"LINK_DOWNLOAD_AS_ZIP": "Download als zip",
 		"SPAM_SCORE": "Spamscore",
 		"HAS_VIRUS_WARNING": "WAARSCHUWING: virus gedetecteerd"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Toevoegen van bijlage(n) is nog niet gereed",
 		"BUTTON_REQUEST_READ_RECEIPT": "Leesbevestiging vragen",
 		"BUTTON_MARK_AS_IMPORTANT": "Markeer als belangrijk",
-		"BUTTON_OPEN_PGP": "OpenPGP (alleen bij Platte Tekst)",
 		"BUTTON_REQUEST_DSN": "Ontvangstbevestiging vragen"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "Eens in gang gezet kan het proces niet geannuleerd worden!",
 		"TITLE_CLEARING_PROCESS": "Folder aan het leegmaken..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "Importeer OpenPGP sleutel",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "Importeer"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "Bekijk OpenPGP sleutel",
-		"BUTTON_SELECT": "Selecteer"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "Genereer OpenPGP sleutels",
-		"LABEL_KEY_BIT_LENGTH": "Sleutel lengte",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Genereer"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP ondertekenen\/versleutelen",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "Importeer OpenPGP sleutel",
+		"POPUP_IMPORT_BUTTON": "Importeer",
+		"POPUP_VIEW_TITLE": "Bekijk OpenPGP sleutel",
+		"POPUP_VIEW_BUTTON": "Selecteer",
+		"POPUP_GENERATE_TITLE": "Genereer OpenPGP sleutels",
+		"POPUP_GENERATE_BUTTON": "Genereer",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Ondertekenen",
 		"LABEL_ENCRYPT": "Versleutelen",
-		"BUTTON_SIGN": "Ondertekenen",
-		"BUTTON_ENCRYPT": "Versleutelen",
-		"BUTTON_SIGN_AND_ENCRYPT": "Ondertekenen en versleutelen"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "OpenPGP Decrypt",
-		"LABEL_KEY": "Privé sleutel",
 		"BUTTON_DECRYPT": "Decrypt"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Genereer OpenPGP sleutels",
 		"TITLE_PRIVATE": "Privé sleutel",
 		"TITLE_PUBLIC": "Publieke sleutel",
-		"GENERATE_ONLY_HTTPS": "Alleen HTTPS",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
 	},
 	"SHORTCUTS_HELP": {

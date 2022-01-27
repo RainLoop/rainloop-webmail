@@ -1,6 +1,6 @@
 <header>
 	<a href="#" class="close" data-bind="command: cancelCommand">×</a>
-	<h3 data-i18n="POPUPS_IMPORT_OPEN_PGP_KEY/TITLE_IMPORT_OPEN_PGP_KEY"></h3>
+	<h3 data-i18n="OPENPGP/POPUP_IMPORT_TITLE"></h3>
 </header>
 <div class="modal-body">
 	<div class="alert"  data-bind="visible: keyError() && keyErrorMessage(), text: keyErrorMessage"></div>
@@ -9,27 +9,27 @@
 			<textarea class="inputKey input-xxlarge" rows="14" autofocus="" autocomplete="off" data-bind="value: key"></textarea>
 		</div>
 		<div class="control-group">
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'Store on server',
+					value: saveServer
+				}
+			}"></div>
 			<div data-bind="visible: canGnuPG, component: {
 				name: 'Checkbox',
 				params: {
-					label: 'Store in GnuPG',
+					label: 'Store on server in GnuPG',
 					value: saveGnuPG
-				}
-			}"></div>
-			<div data-bind="visible: canOpenPGP, component: {
-				name: 'Checkbox',
-				params: {
-					label: 'Store in OpenPGP.js',
-					value: saveOpenPGP
 				}
 			}"></div>
 		</div>
 	</div>
 </div>
 <footer>
-	<a class="btn buttonAddAccount" data-bind="command: addOpenPgpKeyCommand">
+	<a class="btn" data-bind="command: addOpenPgpKeyCommand">
 		<i class="icon-list-add"></i>
 		&nbsp;&nbsp;
-		<span data-i18n="POPUPS_IMPORT_OPEN_PGP_KEY/BUTTON_IMPORT_OPEN_PGP_KEY"></span>
+		<span data-i18n="OPENPGP/POPUP_IMPORT_BUTTON"></span>
 	</a>
 </footer>

@@ -102,6 +102,7 @@ export class MessageModel extends AbstractModel {
 			hasExternals: false,
 
 			pgpSigned: null,
+			pgpEncrypted: null,
 			isPgpEncrypted: false,
 			pgpSignedVerifyStatus: SignedVerifyStatus.None,
 			pgpSignedVerifyUser: '',
@@ -181,6 +182,7 @@ export class MessageModel extends AbstractModel {
 		this.attachments(new AttachmentCollectionModel);
 
 		this.pgpSigned(null);
+		this.pgpEncrypted(null);
 		this.isPgpEncrypted(false);
 		this.pgpSignedVerifyStatus(SignedVerifyStatus.None);
 		this.pgpSignedVerifyUser('');

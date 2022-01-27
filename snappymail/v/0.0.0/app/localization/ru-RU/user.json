@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP подписанное сообщение",
 		"BUTTON_PGP_VERIFY": "нажмите, чтобы подтвердить",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP шифрованное сообщение",
-		"BUTTON_PGP_DECRYPT": "нажмите, чтобы расшифровать",
 		"LINK_DOWNLOAD_AS_ZIP": "Сохранить как zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Не все прикреплённые файлы были загружены",
 		"BUTTON_REQUEST_READ_RECEIPT": "Запрос о прочтении письма",
 		"BUTTON_MARK_AS_IMPORTANT": "Отметить как важное",
-		"BUTTON_OPEN_PGP": "OpenPGP (только обычный текст)",
 		"BUTTON_REQUEST_DSN": "Запросить уведомление о доставке"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "После начала очистки, процесс <strong style=\"color:red\">нельзя<\/strong> будет остановить или отменить.",
 		"TITLE_CLEARING_PROCESS": "Очистка папки..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "Импорт OpenPGP ключа",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "Импорт"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "Просмотр OpenPGP ключа",
-		"BUTTON_SELECT": "Выбрать"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "Генерация OpenPGP ключа",
-		"LABEL_KEY_BIT_LENGTH": "Длина ключа",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Создать"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP подпись и шифрование",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "Импорт OpenPGP ключа",
+		"POPUP_IMPORT_BUTTON": "Импорт",
+		"POPUP_VIEW_TITLE": "Просмотр OpenPGP ключа",
+		"POPUP_VIEW_BUTTON": "Выбрать",
+		"POPUP_GENERATE_TITLE": "Генерация OpenPGP ключа",
+		"POPUP_GENERATE_BUTTON": "Создать",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Подпись",
 		"LABEL_ENCRYPT": "Шифрование",
-		"BUTTON_SIGN": "Подпись",
-		"BUTTON_ENCRYPT": "Шифрование",
-		"BUTTON_SIGN_AND_ENCRYPT": "Подпись и шифрование"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "Расшифровать (OpenPGP)",
-		"LABEL_KEY": "Приватный ключ",
 		"BUTTON_DECRYPT": "Расшифровать"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Новый OpenPGP ключ",
 		"TITLE_PRIVATE": "Приватный",
 		"TITLE_PUBLIC": "Публичный",
-		"GENERATE_ONLY_HTTPS": "HTTPS only",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Автоматически сохранять черновик"
 	},
 	"SHORTCUTS_HELP": {

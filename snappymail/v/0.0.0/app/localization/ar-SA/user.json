@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP signed message",
 		"BUTTON_PGP_VERIFY": "click to verify",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP encrypted message",
-		"BUTTON_PGP_DECRYPT": "click to decrypt",
 		"LINK_DOWNLOAD_AS_ZIP": "zip تنزيل كـ",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "لم تنتهي عملية الإرفاق بعد",
 		"BUTTON_REQUEST_READ_RECEIPT": "اطلب اعلاماً بالقراءة",
 		"BUTTON_MARK_AS_IMPORTANT": "تحديده كـ هام",
-		"BUTTON_OPEN_PGP": "OpenPGP (Plain Text Only)",
 		"BUTTON_REQUEST_DSN": "اطلب اعلاماً بايصال البريد"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "في حال بدء العملية , فلا يمكن ايقافها او الغائها",
 		"TITLE_CLEARING_PROCESS": "...يتم دمج المجلد"
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "OpenPGP استيراد مفتاح",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "استيراد"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "عرض OpenPGP key",
-		"BUTTON_SELECT": "تحديد"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "OpenPGP توليد مفتاح",
-		"LABEL_KEY_BIT_LENGTH": "طول المفتاح",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "قم بالتوليد"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP Sign\/Encrypt",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "OpenPGP استيراد مفتاح",
+		"POPUP_IMPORT_BUTTON": "استيراد",
+		"POPUP_VIEW_TITLE": "عرض OpenPGP key",
+		"POPUP_VIEW_BUTTON": "تحديد",
+		"POPUP_GENERATE_TITLE": "OpenPGP توليد مفتاح",
+		"POPUP_GENERATE_BUTTON": "قم بالتوليد",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "تسجيل",
 		"LABEL_ENCRYPT": "تشفير",
-		"BUTTON_SIGN": "تسجيل",
-		"BUTTON_ENCRYPT": "تشفير",
-		"BUTTON_SIGN_AND_ENCRYPT": "سجل و قم بالتشفير"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "OpenPGP فك تشفير",
-		"LABEL_KEY": "مفتاح خاص",
 		"BUTTON_DECRYPT": "فك تشفير"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "OpenPGP توليد مفتاح",
 		"TITLE_PRIVATE": "خاص",
 		"TITLE_PUBLIC": "عام",
-		"GENERATE_ONLY_HTTPS": "HTTPS فقط",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
 	},
 	"SHORTCUTS_HELP": {

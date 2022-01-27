@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "Zpráva podepsaná OpenPGP",
 		"BUTTON_PGP_VERIFY": "klikněte pro ověření",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "Zpráva šifrovaná OpenPGP",
-		"BUTTON_PGP_DECRYPT": "klikněte pro dešifraci",
 		"LINK_DOWNLOAD_AS_ZIP": "Stáhnout jako zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Některé přílohy ještě nebyly nahrány",
 		"BUTTON_REQUEST_READ_RECEIPT": "Vyžádat si potvrzení o přečtení",
 		"BUTTON_MARK_AS_IMPORTANT": "Označit jako důležité",
-		"BUTTON_OPEN_PGP": "OpenPGP (jen prostý text)",
 		"BUTTON_REQUEST_DSN": "Vyžádat si potvrzení o přijetí"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "Tento proces není možné přerušit.",
 		"TITLE_CLEARING_PROCESS": "Odstraňuje se složka..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "Import OpenPGP klíče",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "Import"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "Zobrazit OpenPGP klíč",
-		"BUTTON_SELECT": "Vybrat"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "Generovat OpenPGP klíče",
-		"LABEL_KEY_BIT_LENGTH": "Délka klíče",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Generovat"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP Podpis\/Šifrování",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "Import OpenPGP klíče",
+		"POPUP_IMPORT_BUTTON": "Import",
+		"POPUP_VIEW_TITLE": "Zobrazit OpenPGP klíč",
+		"POPUP_VIEW_BUTTON": "Vybrat",
+		"POPUP_GENERATE_TITLE": "Generovat OpenPGP klíče",
+		"POPUP_GENERATE_BUTTON": "Generovat",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Podpis",
 		"LABEL_ENCRYPT": "Šifrování",
-		"BUTTON_SIGN": "Podepsat",
-		"BUTTON_ENCRYPT": "Šifrovat",
-		"BUTTON_SIGN_AND_ENCRYPT": "Podepsat a šifrovat"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "OpenPGP Dešifrování",
-		"LABEL_KEY": "Soukromý klíč",
 		"BUTTON_DECRYPT": "Dešifrovat"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Generovat OpenPGP klíče",
 		"TITLE_PRIVATE": "Soukromý",
 		"TITLE_PUBLIC": "Veřejný",
-		"GENERATE_ONLY_HTTPS": "Pouze HTTPS",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automaticky uložit koncept"
 	},
 	"SHORTCUTS_HELP": {

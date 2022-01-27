@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP підписане повідомлення",
 		"BUTTON_PGP_VERIFY": "натисніть, щоб підтвердити",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP шифроване повідомлення",
-		"BUTTON_PGP_DECRYPT": "натисніть, щоб розшифрувати",
 		"LINK_DOWNLOAD_AS_ZIP": "Завантажити як zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Not all attachments have been uploaded yet",
 		"BUTTON_REQUEST_READ_RECEIPT": "Запит про прочитання листа",
 		"BUTTON_MARK_AS_IMPORTANT": "Mark as important",
-		"BUTTON_OPEN_PGP": "OpenPGP (Plain Text Only)",
 		"BUTTON_REQUEST_DSN": "Request a delivery receipt"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "Після початку очищення, процес <strong style=\"color:red\">неможливо<\/strong> буде зупинити чи відмінити.",
 		"TITLE_CLEARING_PROCESS": "Очищення теки..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "Імпорт OpenPGP ключа",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "Імпорт"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "Перегляд OpenPGP ключа",
-		"BUTTON_SELECT": "Вибрати"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "Генерація OpenPGP ключа",
-		"LABEL_KEY_BIT_LENGTH": "Довжина ключа",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Створити"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP підпис і шифрування",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "Імпорт OpenPGP ключа",
+		"POPUP_IMPORT_BUTTON": "Імпорт",
+		"POPUP_VIEW_TITLE": "Перегляд OpenPGP ключа",
+		"POPUP_VIEW_BUTTON": "Вибрати",
+		"POPUP_GENERATE_TITLE": "Генерація OpenPGP ключа",
+		"POPUP_GENERATE_BUTTON": "Створити",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Підпис",
 		"LABEL_ENCRYPT": "Шифрування",
-		"BUTTON_SIGN": "Підпис",
-		"BUTTON_ENCRYPT": "Шифрування",
-		"BUTTON_SIGN_AND_ENCRYPT": "Підпис и шифрування"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "OpenPGP Decrypt",
-		"LABEL_KEY": "Private Key",
 		"BUTTON_DECRYPT": "Дешифрувати"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Новий OpenPGP ключ",
 		"TITLE_PRIVATE": "Приватний",
 		"TITLE_PUBLIC": "Публічний",
-		"GENERATE_ONLY_HTTPS": "тільки HTTPS",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
 	},
 	"SHORTCUTS_HELP": {

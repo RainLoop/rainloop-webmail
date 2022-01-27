@@ -68,16 +68,6 @@ export const
 	staticLink = path => VERSION_PREFIX + 'static/' + path,
 
 	/**
-	 * @returns {string}
-	 */
-	openPgpJs = () => staticLink('js/min/openpgp.min.js'),
-
-	/**
-	 * @returns {string}
-	 */
-	openPgpWorkerJs = () => staticLink('js/min/openpgp.worker.min.js'),
-
-	/**
 	 * @param {string} theme
 	 * @returns {string}
 	 */

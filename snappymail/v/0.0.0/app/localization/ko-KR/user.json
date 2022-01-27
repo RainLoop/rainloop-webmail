@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP로 서명된 메세지입니다.",
 		"BUTTON_PGP_VERIFY": "인증하려면 클릭하세요",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP로 암호화된 메세지입니다.",
-		"BUTTON_PGP_DECRYPT": "복호화하려면 클릭하세요",
 		"LINK_DOWNLOAD_AS_ZIP": ".zip 파일로 다운로드",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "첨부파일이 아직 업로드되지 않았습니다.",
 		"BUTTON_REQUEST_READ_RECEIPT": "수신 확인 요청",
 		"BUTTON_MARK_AS_IMPORTANT": "중요 표시",
-		"BUTTON_OPEN_PGP": "OpenPGP (평문만)",
 		"BUTTON_REQUEST_DSN": "수신 확인 요청"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "작업이 시작되면 중지하거나 취소할 수 없습니다.",
 		"TITLE_CLEARING_PROCESS": "폴더를 비우는 중..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "OpenPGP 키 가져오기",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "가져오기"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "OpenPGP 키 보기",
-		"BUTTON_SELECT": "선택"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "OpenPGP 키 생성",
-		"LABEL_KEY_BIT_LENGTH": "키 길이",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "생성"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP 서명\/암호화",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "OpenPGP 키 가져오기",
+		"POPUP_IMPORT_BUTTON": "가져오기",
+		"POPUP_VIEW_TITLE": "OpenPGP 키 보기",
+		"POPUP_VIEW_BUTTON": "선택",
+		"POPUP_GENERATE_TITLE": "OpenPGP 키 생성",
+		"POPUP_GENERATE_BUTTON": "생성",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "로그인",
 		"LABEL_ENCRYPT": "암호화",
-		"BUTTON_SIGN": "로그인",
-		"BUTTON_ENCRYPT": "암호화",
-		"BUTTON_SIGN_AND_ENCRYPT": "서명 및 암호화"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "OpenPGP 복호화",
-		"LABEL_KEY": "비공개 키",
 		"BUTTON_DECRYPT": "복호화"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "OpenPGP 키 생성",
 		"TITLE_PRIVATE": "비공개",
 		"TITLE_PUBLIC": "공개",
-		"GENERATE_ONLY_HTTPS": "HTTPS만",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "작성 중인 메시지 자동 저장"
 	},
 	"SHORTCUTS_HELP": {

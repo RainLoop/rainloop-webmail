@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "Pesan bertanda-tangan OpenPGP",
 		"BUTTON_PGP_VERIFY": "klik untuk verifikasi",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "Pesan terenkripsi OpenPGP",
-		"BUTTON_PGP_DECRYPT": "klik untuk mendekripsi",
 		"LINK_DOWNLOAD_AS_ZIP": "Unduh sebagai berkas zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Belum semua lampiran terunggah.",
 		"BUTTON_REQUEST_READ_RECEIPT": "Minta pemberitahuan telah dibaca",
 		"BUTTON_MARK_AS_IMPORTANT": "Tandai sebagai pesan penting",
-		"BUTTON_OPEN_PGP": "OpenPGP (Teks Biasa)",
 		"BUTTON_REQUEST_DSN": "Minta pemberitahuan berhasil kirim"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "Begitu dimulai, proses tidak dapat dibatalkan atau ditunda.",
 		"TITLE_CLEARING_PROCESS": "Membersihkan folder..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "Impor kunci OpenPGP",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "Impor"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "Tampikan kunci OpenPGP",
-		"BUTTON_SELECT": "Pilih"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "Buat kunci OpenPGP",
-		"LABEL_KEY_BIT_LENGTH": "Panjang kunci",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Buat"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP Tandatangan\/Enkripsi",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "Impor kunci OpenPGP",
+		"POPUP_IMPORT_BUTTON": "Impor",
+		"POPUP_VIEW_TITLE": "Tampikan kunci OpenPGP",
+		"POPUP_VIEW_BUTTON": "Pilih",
+		"POPUP_GENERATE_TITLE": "Buat kunci OpenPGP",
+		"POPUP_GENERATE_BUTTON": "Buat",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Tandatangan",
 		"LABEL_ENCRYPT": "Enkripsi",
-		"BUTTON_SIGN": "Tandatangani",
-		"BUTTON_ENCRYPT": "Enkripsi",
-		"BUTTON_SIGN_AND_ENCRYPT": "Tandatangani dan Enkripsi"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "OpenPGP Deksipsi",
-		"LABEL_KEY": "Private Key",
 		"BUTTON_DECRYPT": "Deskripsi"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Buat kunci OpenPGP",
 		"TITLE_PRIVATE": "Pribadi",
 		"TITLE_PUBLIC": "Publik",
-		"GENERATE_ONLY_HTTPS": "Hanya HTTPS",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Simpan konsep otomatis"
 	},
 	"SHORTCUTS_HELP": {

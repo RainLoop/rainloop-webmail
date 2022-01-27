@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "Mensaje firmado mediante OpenPGP",
 		"BUTTON_PGP_VERIFY": "click para verificar",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "Mensaje cifrado mediante OpenPGP",
-		"BUTTON_PGP_DECRYPT": "click para desencriptar",
 		"LINK_DOWNLOAD_AS_ZIP": "Descargar todo (archivo ZIP)",
 		"SPAM_SCORE": "Puntuación de spam",
 		"HAS_VIRUS_WARNING": "ADVERTENCIA: virus detectado"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "No se han subido todos los archivos adjuntos.",
 		"BUTTON_REQUEST_READ_RECEIPT": "Solicitar confirmación de lectura",
 		"BUTTON_MARK_AS_IMPORTANT": "Marcar como importante",
-		"BUTTON_OPEN_PGP": "OpenPGP (solo texto plano)",
 		"BUTTON_REQUEST_DSN": "Solicitar una confirmación de entrega"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "Una vez comenzado el proceso no se puede abortar ni cancelar.",
 		"TITLE_CLEARING_PROCESS": "Purgando carpeta..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "Importar clave OpenPGP",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "Importar"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "Ver clave OpenPGP",
-		"BUTTON_SELECT": "Seleccionar"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "Generar clave OpenPGP",
-		"LABEL_KEY_BIT_LENGTH": "Longitud de la clave",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Generar"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "Firmar\/Cifrar con OpenPGP",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "Importar clave OpenPGP",
+		"POPUP_IMPORT_BUTTON": "Importar",
+		"POPUP_VIEW_TITLE": "Ver clave OpenPGP",
+		"POPUP_VIEW_BUTTON": "Seleccionar",
+		"POPUP_GENERATE_TITLE": "Generar clave OpenPGP",
+		"POPUP_GENERATE_BUTTON": "Generar",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Firmar",
 		"LABEL_ENCRYPT": "Encriptar",
-		"BUTTON_SIGN": "Firmar",
-		"BUTTON_ENCRYPT": "Encriptar",
-		"BUTTON_SIGN_AND_ENCRYPT": "Firmar y encriptar"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "Descifrar OpenPGP",
-		"LABEL_KEY": "Clave privada",
 		"BUTTON_DECRYPT": "Descifrar"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Generar llaves OpenPGP",
 		"TITLE_PRIVATE": "Privado",
 		"TITLE_PUBLIC": "Público",
-		"GENERATE_ONLY_HTTPS": "Solo HTTPS",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
 	},
 	"SHORTCUTS_HELP": {

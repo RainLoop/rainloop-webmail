@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP imzalı mesaj",
 		"BUTTON_PGP_VERIFY": "onay için tıklayın",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP şifreli mesaj",
-		"BUTTON_PGP_DECRYPT": "çözmek için tıklayın",
 		"LINK_DOWNLOAD_AS_ZIP": "Download as zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Not all attachments have been uploaded yet",
 		"BUTTON_REQUEST_READ_RECEIPT": "Okundu bilgisi iste",
 		"BUTTON_MARK_AS_IMPORTANT": "Mark as important",
-		"BUTTON_OPEN_PGP": "OpenPGP (Plain Text Only)",
 		"BUTTON_REQUEST_DSN": "Request a delivery receipt"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "Bu işlem bir kez başladıktan sonra, işlem durdurulamaz veya iptal edilemez.",
 		"TITLE_CLEARING_PROCESS": "Klasör temizleniyor..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "OpenPGP key'i içe aktar",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "İçe aktar"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "OpenPGP key'i göster",
-		"BUTTON_SELECT": "Seç"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "OpenPGP key'leri Oluştur",
-		"LABEL_KEY_BIT_LENGTH": "Key Uzunluğu",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Oluştur"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP Giriş\/Şifrele",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "OpenPGP key'i içe aktar",
+		"POPUP_IMPORT_BUTTON": "İçe aktar",
+		"POPUP_VIEW_TITLE": "OpenPGP key'i göster",
+		"POPUP_VIEW_BUTTON": "Seç",
+		"POPUP_GENERATE_TITLE": "OpenPGP key'leri Oluştur",
+		"POPUP_GENERATE_BUTTON": "Oluştur",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Giriş Yap",
 		"LABEL_ENCRYPT": "Şifrele",
-		"BUTTON_SIGN": "Giriş Yap",
-		"BUTTON_ENCRYPT": "Şifrele",
-		"BUTTON_SIGN_AND_ENCRYPT": "Giriş Yap and şifrele"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "OpenPGP Decrypt",
-		"LABEL_KEY": "Private Key",
 		"BUTTON_DECRYPT": "Decrypt"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "OpenPGP Key Oluştur",
 		"TITLE_PRIVATE": "Private",
 		"TITLE_PUBLIC": "Public",
-		"GENERATE_ONLY_HTTPS": "HTTPS only",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
 	},
 	"SHORTCUTS_HELP": {

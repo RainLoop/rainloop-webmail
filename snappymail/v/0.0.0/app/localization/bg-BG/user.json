@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "Подписано с OpenPGP",
 		"BUTTON_PGP_VERIFY": "кликни за проверка",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "Шифровано с OpenPGP",
-		"BUTTON_PGP_DECRYPT": "кликни за проверка",
 		"LINK_DOWNLOAD_AS_ZIP": "Свали като ZIP файл",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Все още не са качени всички прикрепени файлове",
 		"BUTTON_REQUEST_READ_RECEIPT": "Поискайте разписка за прочитане на съобщението",
 		"BUTTON_MARK_AS_IMPORTANT": "Отбележи като важно",
-		"BUTTON_OPEN_PGP": "OpenPGP (Чист текст)",
 		"BUTTON_REQUEST_DSN": "Уведомяване при доставка"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "Веднъж започнат, този процес не може да бъде прекратен или отказан.",
 		"TITLE_CLEARING_PROCESS": "Прочистване на папката..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "Внасяне на OpenPGP ключ",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "Внеси"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "Виж OpenPGP ключа",
-		"BUTTON_SELECT": "Избери"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "Създаване на OpenPGP ключове",
-		"LABEL_KEY_BIT_LENGTH": "Дължина на ключа",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Създай"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "Подпиши\/шифровай с OpenPGP",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "Внасяне на OpenPGP ключ",
+		"POPUP_IMPORT_BUTTON": "Внеси",
+		"POPUP_VIEW_TITLE": "Виж OpenPGP ключа",
+		"POPUP_VIEW_BUTTON": "Избери",
+		"POPUP_GENERATE_TITLE": "Създаване на OpenPGP ключове",
+		"POPUP_GENERATE_BUTTON": "Създай",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Подпиши",
 		"LABEL_ENCRYPT": "Шифровай",
-		"BUTTON_SIGN": "Подпиши",
-		"BUTTON_ENCRYPT": "Шифровай",
-		"BUTTON_SIGN_AND_ENCRYPT": "Подпиши и шифровай"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "Дешифриране с OpenPGP",
-		"LABEL_KEY": "Частен ключ",
 		"BUTTON_DECRYPT": "Дешифрирай"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Генерирай OpenPGP ключ",
 		"TITLE_PRIVATE": "Частен",
 		"TITLE_PUBLIC": "Публичен",
-		"GENERATE_ONLY_HTTPS": "Само през HTTPS",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Автоматично запазване на чернова"
 	},
 	"SHORTCUTS_HELP": {

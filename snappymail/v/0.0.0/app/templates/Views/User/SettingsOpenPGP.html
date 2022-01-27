@@ -5,7 +5,7 @@
 </button>
 <!-- ko if: canOpenPGP || canGnuPG -->
 &nbsp;&nbsp;
-<div style="display: inline-block" data-i18n="[title]SETTINGS_OPEN_PGP/GENERATE_ONLY_HTTPS">
+<div style="display: inline-block">
 	<button class="btn" data-bind="click: generateOpenPgpKey">
 		<i class="fontastic">🔑</i>
 		<span data-i18n="SETTINGS_OPEN_PGP/BUTTON_GENERATE_OPEN_PGP_KEYS"></span>
@@ -30,15 +30,12 @@
 <div class="legend">GnuPG</div>
 <table class="table table-hover list-table">
 	<tbody data-bind="foreach: gnupgkeys, i18nUpdate: gnupgkeys">
-		<tr class="open-pgp-key-item">
+		<tr>
 			<td>
-				<span data-bind="visible: can_sign" class="fontastic" data-i18n="[title]SETTINGS_OPEN_PGP/TITLE_PRIVATE">✍/🔓</span>
-			<td>
-			<td>
-				<span data-bind="visible: can_encrypt" class="fontastic" data-i18n="[title]SETTINGS_OPEN_PGP/TITLE_PUBLIC">🔒</span>
-			</td>
-			<td>
-				<!-- ko text: email --><!-- /ko -->
+				<span data-bind="visible: can_sign" class="fontastic">✍</span>
+				<span data-bind="visible: can_encrypt" class="fontastic">🔒</span>
+				<span data-bind="visible: can_decrypt" class="fontastic">🔓</span>
+				<span class="open-pgp-key-user" data-bind="text: email"></span>
 			</td>
 		</tr>
 	</tbody>
@@ -48,13 +45,14 @@
 <!-- ko if: canOpenPGP -->
 <div class="legend">OpenPGP.js</div>
 <table class="table table-hover list-table">
+	<tbody><tr><th colspan="4" data-i18n="SETTINGS_OPEN_PGP/TITLE_PRIVATE">Private keys</th></tr></tbody>
 	<tbody data-bind="foreach: openpgpkeysPrivate, i18nUpdate: openpgpkeysPrivate">
-		<tr class="open-pgp-key-item">
-			<td>
-				<span class="open-pgp-key-img fontastic" data-i18n="[title]SETTINGS_OPEN_PGP/TITLE_PRIVATE">🔒</span>
-				<span class="open-pgp-key-user" data-bind="foreach: users">
-					<span class="open-pgp-key-user-address" data-bind="text: $data" style="display:inline-block"></span>
-				</span>
+		<tr>
+			<td data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">
+				<span class="fontastic" data-i18n="[title]SETTINGS_OPEN_PGP/TITLE_PRIVATE">🔒</span>
+				<!-- ko foreach: emails -->
+				<span class="open-pgp-key-user" data-bind="text: $data"></span>
+				<!-- /ko -->
 			</td>
 			<td>
 				<a class="btn btn-small btn-small-small btn-danger button-confirm-delete" data-bind="css: {'delete-access': deleteAccess()}, click: function(openPgpKey) { $root.deleteOpenPgpKey(openPgpKey); }"
@@ -63,17 +61,16 @@
 			<td>
 				<span class="delete-open-pgp-key fontastic" data-bind="visible: !deleteAccess(), click: function (openPgpKey) { $root.openPgpKeyForDeletion(openPgpKey); }">🗑</span>
 			</td>
-			<td class="view-open-pgp-key fontastic" data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">👁</td>
 		</tr>
-	</tbody><tbody data-bind="foreach: openpgpkeysPublic, i18nUpdate: openpgpkeysPublic">
-		<tr class="open-pgp-key-item">
-			<td>
-				<span class="open-pgp-key-img fontastic" data-i18n="[title]SETTINGS_OPEN_PGP/TITLE_PUBLIC">🔑</span>
-				<span class="open-pgp-key-user" data-bind="foreach: users">
-					<div class="open-pgp-key-user-address">
-						<span data-bind="text: $data"></span> (<span class="open-pgp-key-id" data-bind="text: $parent.id"></span>)
-					</div>
-				</span>
+	</tbody>
+	<tbody><tr><th colspan="4" data-i18n="SETTINGS_OPEN_PGP/TITLE_PUBLIC">Public keys</th></tr></tbody>
+	<tbody data-bind="foreach: openpgpkeysPublic, i18nUpdate: openpgpkeysPublic">
+		<tr>
+			<td data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">
+				<span class="fontastic" data-i18n="[title]SETTINGS_OPEN_PGP/TITLE_PUBLIC">🔑</span>
+				<!-- ko foreach: emails -->
+				<span class="open-pgp-key-user" data-bind="text: $data"></span>
+				<!-- /ko -->
 			</td>
 			<td>
 				<a class="btn btn-small btn-small-small btn-danger button-confirm-delete" data-bind="css: {'delete-access': deleteAccess()}, click: function(oOpenPGP) { $root.deleteOpenPgpKey(oOpenPGP); }"
@@ -82,7 +79,6 @@
 			<td>
 				<span class="delete-open-pgp-key fontastic" data-bind="visible: !deleteAccess(), click: function (openPgpKey) { $root.openPgpKeyForDeletion(openPgpKey); }">🗑</span>
 			</td>
-			<td class="view-open-pgp-key fontastic" data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">👁</td>
 		</tr>
 	</tbody>
 </table>

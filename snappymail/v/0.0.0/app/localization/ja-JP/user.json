@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP 署名済みメッセージ",
 		"BUTTON_PGP_VERIFY": "クリックして検証",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP 暗号化メッセージ",
-		"BUTTON_PGP_DECRYPT": "クリックして復号化",
 		"LINK_DOWNLOAD_AS_ZIP": "Zip としてダウンロード",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "すべての添付ファイルがアップロードされているわけではありません。",
 		"BUTTON_REQUEST_READ_RECEIPT": "開封確認を要求する",
 		"BUTTON_MARK_AS_IMPORTANT": "重要フラグをつける",
-		"BUTTON_OPEN_PGP": "OpenPGP (プレーンテキストのみ)",
 		"BUTTON_REQUEST_DSN": "配信確認を要求する"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "一度始めると、中止やキャンセルができません。",
 		"TITLE_CLEARING_PROCESS": "フォルダを消去しています..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "OpenPGP キーをインポート",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "インポート"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "OpenPGP キーを表示",
-		"BUTTON_SELECT": "選択"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "OpenPGP キーを生成",
-		"LABEL_KEY_BIT_LENGTH": "キーの長さ",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "生成"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP 署名\/暗号化",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "OpenPGP キーをインポート",
+		"POPUP_IMPORT_BUTTON": "インポート",
+		"POPUP_VIEW_TITLE": "OpenPGP キーを表示",
+		"POPUP_VIEW_BUTTON": "選択",
+		"POPUP_GENERATE_TITLE": "OpenPGP キーを生成",
+		"POPUP_GENERATE_BUTTON": "生成",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "署名",
 		"LABEL_ENCRYPT": "暗号化",
-		"BUTTON_SIGN": "署名",
-		"BUTTON_ENCRYPT": "暗号化",
-		"BUTTON_SIGN_AND_ENCRYPT": "署名と暗号化"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "OpenPGP 復号化",
-		"LABEL_KEY": "秘密鍵",
 		"BUTTON_DECRYPT": "復号化"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "OpenPGP キーを生成",
 		"TITLE_PRIVATE": "プライベート",
 		"TITLE_PUBLIC": "パブリック",
-		"GENERATE_ONLY_HTTPS": "HTTPS only",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "下書きを自動的に保存する"
 	},
 	"SHORTCUTS_HELP": {

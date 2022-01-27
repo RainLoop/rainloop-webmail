@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP allekirjoitettu viesti",
 		"BUTTON_PGP_VERIFY": "klikkaa verifioidaksesi",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP salattu visti",
-		"BUTTON_PGP_DECRYPT": "klikkaa avataksesi salaus",
 		"LINK_DOWNLOAD_AS_ZIP": "Lataa zip-tiedostona",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Kaikkia liitetiedostoja ei ole vielä ladattu.",
 		"BUTTON_REQUEST_READ_RECEIPT": "Pyydä kuittaus",
 		"BUTTON_MARK_AS_IMPORTANT": "Merkitse tärkeäksi",
-		"BUTTON_OPEN_PGP": "OpenPGP (pelkkä teksti)",
 		"BUTTON_REQUEST_DSN": "Pyydä toimituskuittaus"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "Tätä toimintoa ei voi peruuttaa.",
 		"TITLE_CLEARING_PROCESS": "Tyhjennetään kansiota..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "Tuo OpenPGP avain",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "Tuo"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "Näytä OpenPGP avain",
-		"BUTTON_SELECT": "Valitse"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "Luo OpenPGP avain",
-		"LABEL_KEY_BIT_LENGTH": "Avaimen pituus",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Generoi"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP Allekirjoitus\/Salaus",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "Tuo OpenPGP avain",
+		"POPUP_IMPORT_BUTTON": "Tuo",
+		"POPUP_VIEW_TITLE": "Näytä OpenPGP avain",
+		"POPUP_VIEW_BUTTON": "Valitse",
+		"POPUP_GENERATE_TITLE": "Luo OpenPGP avain",
+		"POPUP_GENERATE_BUTTON": "Generoi",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Allekirjoita",
 		"LABEL_ENCRYPT": "Salaa",
-		"BUTTON_SIGN": "Allekirjoita",
-		"BUTTON_ENCRYPT": "Salaa",
-		"BUTTON_SIGN_AND_ENCRYPT": "Allekirjoita ja salaa"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "Pura OpenPGP",
-		"LABEL_KEY": "Yksityinen avain",
 		"BUTTON_DECRYPT": "Pura"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Luo OpenPGP avain",
 		"TITLE_PRIVATE": "Yksityinen",
 		"TITLE_PUBLIC": "Julkinen",
-		"GENERATE_ONLY_HTTPS": "Vain HTTPS",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
 	},
 	"SHORTCUTS_HELP": {

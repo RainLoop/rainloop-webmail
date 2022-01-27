@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP aláírt üzenet",
 		"BUTTON_PGP_VERIFY": "kattints az ellenőrzéshez",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP kódolt üzenet",
-		"BUTTON_PGP_DECRYPT": "kattints a visszafejtéshez",
 		"LINK_DOWNLOAD_AS_ZIP": "Letöltés zip fájlként",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "FIGYELEM: vírust észleltünk"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Még nem lett feltöltve minden melléklet.",
 		"BUTTON_REQUEST_READ_RECEIPT": "Olvasási visszaigazolás kérése",
 		"BUTTON_MARK_AS_IMPORTANT": "Megjelölés fontosként",
-		"BUTTON_OPEN_PGP": "OpenPGP (csak egyszerű szöveg)",
 		"BUTTON_REQUEST_DSN": "Továbbítási visszaigazolás kérés"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "Ha egyszer elindult, a folyamatot nem lehet megszakítani.",
 		"TITLE_CLEARING_PROCESS": "Mappa ürítés..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "OpenPGP kulcs importálás",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "Importálás"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "OpenPGP kulcs megtekintés",
-		"BUTTON_SELECT": "Kiválasztás"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "OpenPGP kulcs generálás",
-		"LABEL_KEY_BIT_LENGTH": "Kulcs hossz",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Generálás"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP aláírás\/titkosítás",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "OpenPGP kulcs importálás",
+		"POPUP_IMPORT_BUTTON": "Importálás",
+		"POPUP_VIEW_TITLE": "OpenPGP kulcs megtekintés",
+		"POPUP_VIEW_BUTTON": "Kiválasztás",
+		"POPUP_GENERATE_TITLE": "OpenPGP kulcs generálás",
+		"POPUP_GENERATE_BUTTON": "Generálás",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Aláírás",
 		"LABEL_ENCRYPT": "Titkosítás",
-		"BUTTON_SIGN": "Aláírás",
-		"BUTTON_ENCRYPT": "Titkosítás",
-		"BUTTON_SIGN_AND_ENCRYPT": "Aláírás és titkosítás"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "OpenPGP visszafejtés",
-		"LABEL_KEY": "Privát kulcs",
 		"BUTTON_DECRYPT": "Visszafejtés"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "OpenPGP kulcs generálás",
 		"TITLE_PRIVATE": "Privát",
 		"TITLE_PUBLIC": "Publikus",
-		"GENERATE_ONLY_HTTPS": "csak HTTPS",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Piszkozat automatikus mentése"
 	},
 	"SHORTCUTS_HELP": {

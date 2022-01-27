@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP signeret meddelelse",
 		"BUTTON_PGP_VERIFY": "tryk for at verificere",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP krypteret meddelelse",
-		"BUTTON_PGP_DECRYPT": "tryk for at dekryptere",
 		"LINK_DOWNLOAD_AS_ZIP": "Hent som zip-fil",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Overførsel af vedhæftninger igang.",
 		"BUTTON_REQUEST_READ_RECEIPT": "Bed om kvittering for læsning",
 		"BUTTON_MARK_AS_IMPORTANT": "Markér som vigtig",
-		"BUTTON_OPEN_PGP": "OpenPGP (kun plain tekst)",
 		"BUTTON_REQUEST_DSN": "Bed om kvittering for modtagelse"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "Handlingen kan ikke afbrydes når den er startet.",
 		"TITLE_CLEARING_PROCESS": "Tømmer mappe..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "Importer OpenPGP nøgle",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "Importer"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "Vis OpenPGP nøgle",
-		"BUTTON_SELECT": "Vælg"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "Generér OpenPGP nøgler",
-		"LABEL_KEY_BIT_LENGTH": "Nøglelængde",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Generér"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP signér\/krypter",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "Importer OpenPGP nøgle",
+		"POPUP_IMPORT_BUTTON": "Importer",
+		"POPUP_VIEW_TITLE": "Vis OpenPGP nøgle",
+		"POPUP_VIEW_BUTTON": "Vælg",
+		"POPUP_GENERATE_TITLE": "Generér OpenPGP nøgler",
+		"POPUP_GENERATE_BUTTON": "Generér",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Signér",
 		"LABEL_ENCRYPT": "Krypter",
-		"BUTTON_SIGN": "Signér",
-		"BUTTON_ENCRYPT": "Krypter",
-		"BUTTON_SIGN_AND_ENCRYPT": "Signér og krypter"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "OpenPGP dekrypter",
-		"LABEL_KEY": "Privat nøgle",
 		"BUTTON_DECRYPT": "Dekrypter"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Generer OpenPGP nøgler",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Offentlig",
-		"GENERATE_ONLY_HTTPS": "Kun HTTPS",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Gem kladde automatisk"
 	},
 	"SHORTCUTS_HELP": {

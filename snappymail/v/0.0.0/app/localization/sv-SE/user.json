@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP-signerat meddelande",
 		"BUTTON_PGP_VERIFY": "klicka för att verifiera",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP-krypterat meddelande",
-		"BUTTON_PGP_DECRYPT": "klicka för att dekryptera",
 		"LINK_DOWNLOAD_AS_ZIP": "Ladda ner som ZIP-fil",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "VARNING: virus upptäckt"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Alla bilagor är inte uppladddade än",
 		"BUTTON_REQUEST_READ_RECEIPT": "Begär mottagningskvitto",
 		"BUTTON_MARK_AS_IMPORTANT": "Markera som viktigt",
-		"BUTTON_OPEN_PGP": "OpenPGP (Endast enkel text)",
 		"BUTTON_REQUEST_DSN": "Begär ett leveranskvitto"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "När detta är startat kan det inte avbrytas.",
 		"TITLE_CLEARING_PROCESS": "Rensar mappen..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "Import av OpenPGP-nyckel",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "Importera"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "Visa OpenPGP-nyckel",
-		"BUTTON_SELECT": "Välj"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "Skapa OpenPGP-nycklar",
-		"LABEL_KEY_BIT_LENGTH": "Nyckellängd",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Skapa"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP signera\/kryptera",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "Import av OpenPGP-nyckel",
+		"POPUP_IMPORT_BUTTON": "Importera",
+		"POPUP_VIEW_TITLE": "Visa OpenPGP-nyckel",
+		"POPUP_VIEW_BUTTON": "Välj",
+		"POPUP_GENERATE_TITLE": "Skapa OpenPGP-nycklar",
+		"POPUP_GENERATE_BUTTON": "Skapa",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Signera",
 		"LABEL_ENCRYPT": "Kryptera",
-		"BUTTON_SIGN": "Singera",
-		"BUTTON_ENCRYPT": "Kryptera",
-		"BUTTON_SIGN_AND_ENCRYPT": "Signera och kryptera"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "OpenPGP avkryptera",
-		"LABEL_KEY": "Privat Key",
 		"BUTTON_DECRYPT": "Avkryptera"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Skapa OpenPGP-nycklar",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Publik",
-		"GENERATE_ONLY_HTTPS": "Endast HTTPS",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Spara utkast automatiskt"
 	},
 	"SHORTCUTS_HELP": {

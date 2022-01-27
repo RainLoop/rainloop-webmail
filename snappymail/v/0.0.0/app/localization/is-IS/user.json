@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "Skeyti undirritað með OpenPGP",
 		"BUTTON_PGP_VERIFY": "smelltu til að sannvotta",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "Skeyti dulritað með OpenPGP",
-		"BUTTON_PGP_DECRYPT": "smelltu til að afkóða",
 		"LINK_DOWNLOAD_AS_ZIP": "Sækja sem .zip skrá",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Ekki er búið að senda inn öll viðhengi.",
 		"BUTTON_REQUEST_READ_RECEIPT": "Biðja um staðfestingu á lestri",
 		"BUTTON_MARK_AS_IMPORTANT": "Merkja sem mikilvægt",
-		"BUTTON_OPEN_PGP": "OpenPGP (einungis hreinn texti)",
 		"BUTTON_REQUEST_DSN": "Biðja um staðfestingu á afhendingu"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "Það er ekki hægt að hætta við aðgerðina eftir að búið er að keyra hana.",
 		"TITLE_CLEARING_PROCESS": "Tæmi möppu..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "Flytja inn OpenPGP-lykil",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "Flytja inn"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "Skoða OpenPGP-lykil",
-		"BUTTON_SELECT": "Velja"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "Búa til OpenPGP-lykla",
-		"LABEL_KEY_BIT_LENGTH": "Lengd lykils",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Útbúa"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "Undirrita\/Dulrita OpenPGP",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "Flytja inn OpenPGP-lykil",
+		"POPUP_IMPORT_BUTTON": "Flytja inn",
+		"POPUP_VIEW_TITLE": "Skoða OpenPGP-lykil",
+		"POPUP_VIEW_BUTTON": "Velja",
+		"POPUP_GENERATE_TITLE": "Búa til OpenPGP-lykla",
+		"POPUP_GENERATE_BUTTON": "Útbúa",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Undirrita",
 		"LABEL_ENCRYPT": "Dulrita",
-		"BUTTON_SIGN": "Undirrita",
-		"BUTTON_ENCRYPT": "Dulrita",
-		"BUTTON_SIGN_AND_ENCRYPT": "Undirrita og dulrita"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "Afkóða OpenPGP",
-		"LABEL_KEY": "Einkalykill",
 		"BUTTON_DECRYPT": "Afkóða"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Búa til OpenPGP-lykla",
 		"TITLE_PRIVATE": "Einkalykill",
 		"TITLE_PUBLIC": "Dreifilykill",
-		"GENERATE_ONLY_HTTPS": "Einungis HTTPS",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Vista drög sjálfkrafa"
 	},
 	"SHORTCUTS_HELP": {

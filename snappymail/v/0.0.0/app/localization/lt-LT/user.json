@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP pasirašytas pranešimas",
 		"BUTTON_PGP_VERIFY": "spustelkite patikrinimui",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP šifruotas pranešimas",
-		"BUTTON_PGP_DECRYPT": "spustelkite iššifravimui",
 		"LINK_DOWNLOAD_AS_ZIP": "Atsisiųsti zip archyvą",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Dar ne visi priedai buvo įkelti",
 		"BUTTON_REQUEST_READ_RECEIPT": "Prašyti pranešti kada bus perskaitytas",
 		"BUTTON_MARK_AS_IMPORTANT": "Žymėti svarbiu",
-		"BUTTON_OPEN_PGP": "OpenPGP (Tik paprastas tekstas)",
 		"BUTTON_REQUEST_DSN": "Prašyti laiško gavimo pažymos"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "Pradėjus veiksmą, jis nebesustabdomas.",
 		"TITLE_CLEARING_PROCESS": "Valomas katalogas..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "Importuoti OpenPGP raktą",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "Importuoti"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "Peržiūrėti OpenPGP raktą",
-		"BUTTON_SELECT": "Pasirinkti"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "Sukurti OpenPGP raktą",
-		"LABEL_KEY_BIT_LENGTH": "Rakto ilgis",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Sukurti"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP Parašas\/Šifravimas",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "Importuoti OpenPGP raktą",
+		"POPUP_IMPORT_BUTTON": "Importuoti",
+		"POPUP_VIEW_TITLE": "Peržiūrėti OpenPGP raktą",
+		"POPUP_VIEW_BUTTON": "Pasirinkti",
+		"POPUP_GENERATE_TITLE": "Sukurti OpenPGP raktą",
+		"POPUP_GENERATE_BUTTON": "Sukurti",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Parašas",
 		"LABEL_ENCRYPT": "Šifravimas",
-		"BUTTON_SIGN": "Pasirašyti",
-		"BUTTON_ENCRYPT": "Šifruoti",
-		"BUTTON_SIGN_AND_ENCRYPT": "Pasirašyti ir šifruoti"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "OpenPGP Decrypt",
-		"LABEL_KEY": "Private Key",
 		"BUTTON_DECRYPT": "Decrypt"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Sukurti OpenPGP raktus",
 		"TITLE_PRIVATE": "Privatus",
 		"TITLE_PUBLIC": "Viešas",
-		"GENERATE_ONLY_HTTPS": "HTTPS only",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
 	},
 	"SHORTCUTS_HELP": {

@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP-signierte Nachricht",
 		"BUTTON_PGP_VERIFY": "klicken, um zu überprüfen",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP-verschlüsselte Nachricht",
-		"BUTTON_PGP_DECRYPT": "klicken, um zu entschlüsseln",
 		"LINK_DOWNLOAD_AS_ZIP": "Als ZIP-Datei herunterladen",
 		"SPAM_SCORE": "Spam-Score",
 		"HAS_VIRUS_WARNING": "WARNUNG: Virus erkannt"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Es wurden noch nicht alle Anhänge hochgeladen.",
 		"BUTTON_REQUEST_READ_RECEIPT": "Empfangsbestätigung anfordern",
 		"BUTTON_MARK_AS_IMPORTANT": "Als Wichtig markieren",
-		"BUTTON_OPEN_PGP": "OpenPGP (nur bei unformatiertem Text)",
 		"BUTTON_REQUEST_DSN": "Übermittlungsstatus anfordern"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "Einmal begonnen, kann dieser Vorgang nicht mehr abgebrochen oder beendet werden.",
 		"TITLE_CLEARING_PROCESS": "Ordner wird gelöscht ..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "OpenPGP-Schlüssel importieren",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "Importieren"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "OpenPGP-Schlüssel anzeigen",
-		"BUTTON_SELECT": "Auswählen"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "OpenPGP-Schlüssel generieren",
-		"LABEL_KEY_BIT_LENGTH": "Schlüssellänge",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Generieren"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP unterschreiben\/verschlüsseln",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "OpenPGP-Schlüssel importieren",
+		"POPUP_IMPORT_BUTTON": "Importieren",
+		"POPUP_VIEW_TITLE": "OpenPGP-Schlüssel anzeigen",
+		"POPUP_VIEW_BUTTON": "Auswählen",
+		"POPUP_GENERATE_TITLE": "OpenPGP-Schlüssel generieren",
+		"POPUP_GENERATE_BUTTON": "Generieren",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Unterschrift",
 		"LABEL_ENCRYPT": "Verschlüsselung",
-		"BUTTON_SIGN": "Unterschreiben",
-		"BUTTON_ENCRYPT": "Verschlüsseln",
-		"BUTTON_SIGN_AND_ENCRYPT": "Unterschreiben und verschlüsseln"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "OpenPGP Decrypt",
-		"LABEL_KEY": "Private Key",
 		"BUTTON_DECRYPT": "Decrypt"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "OpenPGP-Schlüssel generieren",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Öffentlich",
-		"GENERATE_ONLY_HTTPS": "Nur HTTPS",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
 	},
 	"SHORTCUTS_HELP": {

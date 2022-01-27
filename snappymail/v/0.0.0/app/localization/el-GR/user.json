@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "Μήνυμα υπογεγραμμένο με OpenPGP",
 		"BUTTON_PGP_VERIFY": "κάντε κλικ για έλεγχο",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "Μήνυμα κωδικοποιημένο με OpenPGP",
-		"BUTTON_PGP_DECRYPT": "κάντε κλίκ για αποκωδικοποίηση",
 		"LINK_DOWNLOAD_AS_ZIP": "Μεταφόρτωση σαν zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Δεν έχουν μεταφορτωθεί ακόμη όλα τα συνημμένα.",
 		"BUTTON_REQUEST_READ_RECEIPT": "Ζητήστε αποδεικτικό ανάγνωσης",
 		"BUTTON_MARK_AS_IMPORTANT": "Σημειώστε το σαν σημαντικό",
-		"BUTTON_OPEN_PGP": "OpenPGP (Απλό κείμενο μόνο)",
 		"BUTTON_REQUEST_DSN": "Ζητήστε αποδεικτικό παράδοσης"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "Αφού ξεκινήσει, η διαδικασία δεν σταματά ή ακυρώνεται.",
 		"TITLE_CLEARING_PROCESS": "Διαγραφή όλων των μηνυμάτων στο φάκελο..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "Εισαγωγή κλειδιού OpenPGP",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "Εισαγωγή"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "Προβολή κλειδιού OpenPGP",
-		"BUTTON_SELECT": "Επιλογή"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "Δημιουργία κλειδιών OpenPGP",
-		"LABEL_KEY_BIT_LENGTH": "Μήκος κλειδιού",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Δημιουργία"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP Υπογραφή\/Κρυπρογράφηση",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "Εισαγωγή κλειδιού OpenPGP",
+		"POPUP_IMPORT_BUTTON": "Εισαγωγή",
+		"POPUP_VIEW_TITLE": "Προβολή κλειδιού OpenPGP",
+		"POPUP_VIEW_BUTTON": "Επιλογή",
+		"POPUP_GENERATE_TITLE": "Δημιουργία κλειδιών OpenPGP",
+		"POPUP_GENERATE_BUTTON": "Δημιουργία",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Υπογραφή",
 		"LABEL_ENCRYPT": "Κρυπτογράφηση",
-		"BUTTON_SIGN": "Υπογραφή",
-		"BUTTON_ENCRYPT": "Κρυπτογράφηση",
-		"BUTTON_SIGN_AND_ENCRYPT": "Υπογραφή και κρυπτογράφηση"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "Αποκρυπτογράφηση OpenPGP",
-		"LABEL_KEY": "Προσωπικό κλειδί",
 		"BUTTON_DECRYPT": "Αποκρυπτογράφηση"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Generate OpenPGP Keys",
 		"TITLE_PRIVATE": "Private",
 		"TITLE_PUBLIC": "Public",
-		"GENERATE_ONLY_HTTPS": "HTTPS only",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
 	},
 	"SHORTCUTS_HELP": {

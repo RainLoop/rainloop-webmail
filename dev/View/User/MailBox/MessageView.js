@@ -182,7 +182,7 @@ export class MailMessageView extends AbstractViewRight {
 
 			pgpSigned: () => currentMessage() && !!currentMessage().pgpSigned(),
 			pgpEncrypted: () => currentMessage()
-				&& currentMessage().isPgpEncrypted(),
+				&& !!(currentMessage().pgpEncrypted() || currentMessage().isPgpEncrypted()),
 			pgpSupported: () => currentMessage() && PgpUserStore.isSupported(),
 
 			messageListOrViewLoading:
@@ -625,7 +625,8 @@ export class MailMessageView extends AbstractViewRight {
 	}
 
 	pgpDecrypt(self) {
-		if (self.pgpEncrypted()) {
+		const pgpInfo = self.pgpEncrypted();
+		if (pgpInfo) {
 			const message = self.message();
 			if (window.mailvelope) {
 				/**
@@ -657,10 +658,37 @@ export class MailMessageView extends AbstractViewRight {
 				});
 			}
 /*
+			else {
+				// TODO: which key to decrypt, use pgpInfo.KeyIds
+
+				PgpUserStore.getKeyForDecrypting(message.email()).then(result => {
+					console.log({canPgpSign:result});
+					this.canPgpSign(!!result)
+				});
+
 			else if (window.openpgp) {
 				decryptMessage(message, recipients, fCallback)
 			}
 			else if (Settings.capa(Capa.GnuPG)) {
+				message.
+
+				let params = {
+					Folder: message.folder,
+					Uid: message.uid,
+					PartId: message.pgpEncrypted().PartId,
+					KeyId: '',
+					Passphrase: prompt("Passphrase", ''),
+					Data: '' // optional
+				}
+				rl.app.Remote.post('GnupgDecrypt', null, params)
+					.then(data => {
+						// TODO
+						console.dir(data);
+					})
+					.catch(error => {
+						// TODO
+						console.dir(error);
+					});
 			}
 */
 		}

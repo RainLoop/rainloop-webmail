@@ -7,8 +7,8 @@ import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
-import { AddOpenPgpKeyPopupView } from 'View/Popup/AddOpenPgpKey';
-import { NewOpenPgpKeyPopupView } from 'View/Popup/NewOpenPgpKey';
+import { OpenPgpImportPopupView } from 'View/Popup/OpenPgpImport';
+import { OpenPgpGeneratePopupView } from 'View/Popup/OpenPgpGenerate';
 import { ViewOpenPgpKeyPopupView } from 'View/Popup/ViewOpenPgpKey';
 
 import { Capa } from 'Common/Enums';
@@ -22,9 +22,7 @@ export class OpenPgpUserSettings /*extends AbstractViewSettings*/ {
 		this.openpgpkeysPrivate = PgpUserStore.openpgpPrivateKeys;
 		this.openPgpKeyForDeletion = ko.observable(null).deleteAccessHelper();
 
-//		this.canOpenPGP = !!PgpUserStore.openpgpKeyring;
 		this.canOpenPGP = Settings.capa(Capa.OpenPGP);
-//		this.canGnuPG = !!PgpUserStore.gnupgKeyring;
 		this.canGnuPG = Settings.capa(Capa.GnuPG);
 		this.canMailvelope = !!window.mailvelope;
 
@@ -34,11 +32,11 @@ export class OpenPgpUserSettings /*extends AbstractViewSettings*/ {
 	}
 
 	addOpenPgpKey() {
-		showScreenPopup(AddOpenPgpKeyPopupView);
+		showScreenPopup(OpenPgpImportPopupView);
 	}
 
 	generateOpenPgpKey() {
-		showScreenPopup(NewOpenPgpKeyPopupView);
+		showScreenPopup(OpenPgpGeneratePopupView);
 	}
 
 	viewOpenPgpKey(openPgpKey) {

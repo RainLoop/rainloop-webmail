@@ -279,9 +279,9 @@ class ComposePopupView extends AbstractViewPopup {
 
 			currentIdentity: value => {
 				this.canPgpSign(false);
-				value && PgpUserStore.hasKeyForSigning(value.email()).then(result => {
+				value && PgpUserStore.getKeyForSigning(value.email()).then(result => {
 					console.log({canPgpSign:result});
-					this.canPgpSign(result)
+					this.canPgpSign(!!result)
 				});
 			},
 
@@ -458,11 +458,10 @@ class ComposePopupView extends AbstractViewPopup {
 				if ('openpgp' == sign) {
 					let privateKey;
 					try {
-						const keys = PgpUserStore.openpgpKeyring.privateKeys.getForAddress(this.currentIdentity().email());
+						const keys = PgpUserStore.getOpenPGPPrivateKeyFor(this.currentIdentity().email());
 						if (keys[0]) {
 							keys[0].decrypt(window.prompt('Password', ''));
-							privateKey = keys[0];
-							cfg.privateKeys = [privateKey];
+							cfg.privateKey = privateKey = keys[0];
 						}
 					} catch (e) {
 						console.error(e);
@@ -478,7 +477,7 @@ class ComposePopupView extends AbstractViewPopup {
 					// error 'sign and encrypt must be same engine';
 				} else if ('openpgp' == encrypt) {
 					this.allRecipients().forEach(recEmail => {
-						cfg.publicKeys = cfg.publicKeys.concat(PgpUserStore.openpgpKeyring.publicKeys.getForAddress(recEmail));
+						cfg.publicKeys = cfg.publicKeys.concat(PgpUserStore.getOpenPGPPublicKeyFor(recEmail));
 					});
 					pgpPromise = openpgp.encrypt(cfg);
 				} else if ('openpgp' == sign) {
@@ -1502,7 +1501,8 @@ class ComposePopupView extends AbstractViewPopup {
 	allRecipients() {
 		const email = new EmailModel();
 		return [
-//				this.currentIdentity.email(),
+				// From/sender is also recipient (Sent mailbox)
+				this.currentIdentity().email(),
 				this.to(),
 				this.cc(),
 				this.bcc()

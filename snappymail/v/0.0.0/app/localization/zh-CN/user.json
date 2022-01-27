@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "由 OpenPGP 签名",
 		"BUTTON_PGP_VERIFY": "点击验证",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "由 OpenPGP 加密",
-		"BUTTON_PGP_DECRYPT": "点击解密",
 		"LINK_DOWNLOAD_AS_ZIP": "下载为zip压缩包",
 		"SPAM_SCORE": "垃圾邮件分数",
 		"HAS_VIRUS_WARNING": "警告：检测到病毒"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "还有附件正在上传。",
 		"BUTTON_REQUEST_READ_RECEIPT": "要求已读回执",
 		"BUTTON_MARK_AS_IMPORTANT": "标记为“重要”",
-		"BUTTON_OPEN_PGP": "OpenPGP (仅限纯文本)",
 		"BUTTON_REQUEST_DSN": "要求送达回执"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "一旦操作执行，将不可中断和撤销！",
 		"TITLE_CLEARING_PROCESS": "文件夹清理中..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "导入 OpenPGP 密钥",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "导入"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "查看 OpenPGP 密钥",
-		"BUTTON_SELECT": "选择"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "生成 OpenPGP 密钥",
-		"LABEL_KEY_BIT_LENGTH": "密钥长度",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "生成"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP 签名\/加密",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "导入 OpenPGP 密钥",
+		"POPUP_IMPORT_BUTTON": "导入",
+		"POPUP_VIEW_TITLE": "查看 OpenPGP 密钥",
+		"POPUP_VIEW_BUTTON": "选择",
+		"POPUP_GENERATE_TITLE": "生成 OpenPGP 密钥",
+		"POPUP_GENERATE_BUTTON": "生成",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "签名",
 		"LABEL_ENCRYPT": "加密",
-		"BUTTON_SIGN": "签名",
-		"BUTTON_ENCRYPT": "加密",
-		"BUTTON_SIGN_AND_ENCRYPT": "签名并加密"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "OpenPGP 解密",
-		"LABEL_KEY": "私钥",
 		"BUTTON_DECRYPT": "解密"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "生成 OpenPGP 密钥",
 		"TITLE_PRIVATE": "私有",
 		"TITLE_PUBLIC": "公开",
-		"GENERATE_ONLY_HTTPS": "仅限HTTPS",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "自动保存草稿"
 	},
 	"SHORTCUTS_HELP": {

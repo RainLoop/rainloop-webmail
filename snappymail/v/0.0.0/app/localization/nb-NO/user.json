@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP-signert melding",
 		"BUTTON_PGP_VERIFY": "trykk for å bekrefte",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP-kryptert melding",
-		"BUTTON_PGP_DECRYPT": "trykk for å dekryptere",
 		"LINK_DOWNLOAD_AS_ZIP": "Last ned som zip-fil",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Ett eller flere vedlegg er ikke blitt lastet opp enda",
 		"BUTTON_REQUEST_READ_RECEIPT": "Be om en bekreftelse fra mottaker på at meldinga er lest",
 		"BUTTON_MARK_AS_IMPORTANT": "Marker som viktig",
-		"BUTTON_OPEN_PGP": "OpenPGP (kun ren tekst)",
 		"BUTTON_REQUEST_DSN": "Be om leveringsbekreftelse"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "Hvis du går videre, blir meldingene slettet for godt.",
 		"TITLE_CLEARING_PROCESS": "Tømmer mappe …"
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "Importer OpenPGP-nøkkel",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "Importer"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "Vis OpenPGP-nøkkel",
-		"BUTTON_SELECT": "Velg"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "Lag OpenPGP-nøkler",
-		"LABEL_KEY_BIT_LENGTH": "Nøkkellengde",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Lag"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "Signer\/krypter med OpenPGP",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "Importer OpenPGP-nøkkel",
+		"POPUP_IMPORT_BUTTON": "Importer",
+		"POPUP_VIEW_TITLE": "Vis OpenPGP-nøkkel",
+		"POPUP_VIEW_BUTTON": "Velg",
+		"POPUP_GENERATE_TITLE": "Lag OpenPGP-nøkler",
+		"POPUP_GENERATE_BUTTON": "Lag",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Signer",
 		"LABEL_ENCRYPT": "Krypter",
-		"BUTTON_SIGN": "Signer",
-		"BUTTON_ENCRYPT": "Krypter",
-		"BUTTON_SIGN_AND_ENCRYPT": "Signer og krypter"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "Dekrypter med OpenPGP",
-		"LABEL_KEY": "Privatnøkkel",
 		"BUTTON_DECRYPT": "Dekrypter"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Lag OpenPGP-nøkler",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Offentlig",
-		"GENERATE_ONLY_HTTPS": "Kun HTTPS",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Lagre utkast automatisk"
 	},
 	"SHORTCUTS_HELP": {

@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "پیام توسط  OpenPGP امضاء شد",
 		"BUTTON_PGP_VERIFY": "برای بررسی کلیک کنید",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "پیام توسط  OpenPGP رمزنگاری شد",
-		"BUTTON_PGP_DECRYPT": "برای خارج شدن از حالت رمز کلیک کنید",
 		"LINK_DOWNLOAD_AS_ZIP": "دریافت با پسوند zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "همه پیوست‌ها هنوز بارگذاری نشده است.",
 		"BUTTON_REQUEST_READ_RECEIPT": "درخواست دریافت رسید خواندن",
 		"BUTTON_MARK_AS_IMPORTANT": "علامت زدن به عنوان مهم",
-		"BUTTON_OPEN_PGP": "OpenPGP (فقط متن ساده)",
 		"BUTTON_REQUEST_DSN": "درخواست دریافت رسید تحویل درمقصد"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "زمانی که این عملیات شروع شود قابل لغو یا انصراف نیست.",
 		"TITLE_CLEARING_PROCESS": "خالی کردن شاخه..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "واردکردن کلید OpenPGP",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "وارد‌کردن"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "مشاهده کلید OpenGPG",
-		"BUTTON_SELECT": "انتخاب"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "تولید کلید‌های OpenPGP",
-		"LABEL_KEY_BIT_LENGTH": "طول کلید",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "تولید"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "امضاء\/رمزنگاری OpenPGP",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "واردکردن کلید OpenPGP",
+		"POPUP_IMPORT_BUTTON": "وارد‌کردن",
+		"POPUP_VIEW_TITLE": "مشاهده کلید OpenGPG",
+		"POPUP_VIEW_BUTTON": "انتخاب",
+		"POPUP_GENERATE_TITLE": "تولید کلید‌های OpenPGP",
+		"POPUP_GENERATE_BUTTON": "تولید",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "امضاء",
 		"LABEL_ENCRYPT": "رمزنگاری",
-		"BUTTON_SIGN": "امضاء",
-		"BUTTON_ENCRYPT": "رمزنگاری",
-		"BUTTON_SIGN_AND_ENCRYPT": "امضاء و رمزنگاری"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "رمزگشایی OpenPGP",
-		"LABEL_KEY": "کلید خصوصی",
 		"BUTTON_DECRYPT": "رمزگشایی"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "تولید کلیدهای OpenPGP",
 		"TITLE_PRIVATE": "خصوصی",
 		"TITLE_PUBLIC": "عمومی",
-		"GENERATE_ONLY_HTTPS": "تنها HTTPS",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "ذخیره خودکار پیش‌نویس"
 	},
 	"SHORTCUTS_HELP": {

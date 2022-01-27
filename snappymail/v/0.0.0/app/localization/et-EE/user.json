@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP abil signeeritud kiri",
 		"BUTTON_PGP_VERIFY": "kliki verifitseerimiseks",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP abil krüpteeritud kiri",
-		"BUTTON_PGP_DECRYPT": "kliki dekrüpteerimiseks",
 		"LINK_DOWNLOAD_AS_ZIP": "Laadi alla .zip failina",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Kõiki manuseid ei ole veel üles laetud.",
 		"BUTTON_REQUEST_READ_RECEIPT": "Palu lugemise kohta kinnitust",
 		"BUTTON_MARK_AS_IMPORTANT": "Tähista olulisena",
-		"BUTTON_OPEN_PGP": "OpenPGP (Vaid lihttekstina)",
 		"BUTTON_REQUEST_DSN": "Palu kättesaamise kohta kinnitust"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "Juba alustatud protsessi ei saa tühistada või katkestada.",
 		"TITLE_CLEARING_PROCESS": "Tühjendan kausta..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "Impordi OpenPGP võti",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "Impordi"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "Vaata OpenPGP võtit",
-		"BUTTON_SELECT": "Vali"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "Genereeri OpenPGP võtmed",
-		"LABEL_KEY_BIT_LENGTH": "Võtme pikkus",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Genereeri"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "OpenPGP allkirjastamine\/krüpteerimine",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "Impordi OpenPGP võti",
+		"POPUP_IMPORT_BUTTON": "Impordi",
+		"POPUP_VIEW_TITLE": "Vaata OpenPGP võtit",
+		"POPUP_VIEW_BUTTON": "Vali",
+		"POPUP_GENERATE_TITLE": "Genereeri OpenPGP võtmed",
+		"POPUP_GENERATE_BUTTON": "Genereeri",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Allkirjasta",
 		"LABEL_ENCRYPT": "Krüpteeri",
-		"BUTTON_SIGN": "Allkirjasta",
-		"BUTTON_ENCRYPT": "Krüpteeri",
-		"BUTTON_SIGN_AND_ENCRYPT": "Allkirjasta ja krüpteeri"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "OpenPGP dekrüpteerimine",
-		"LABEL_KEY": "Privaatne võti ",
 		"BUTTON_DECRYPT": "Dekrüpteeri"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Genereeri OpenPGP võti",
 		"TITLE_PRIVATE": "Privaatne",
 		"TITLE_PUBLIC": "Avalik",
-		"GENERATE_ONLY_HTTPS": "Ainult HTTPS",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
 	},
 	"SHORTCUTS_HELP": {

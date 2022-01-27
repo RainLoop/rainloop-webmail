@@ -1,6 +1,6 @@
 <header>
 	<a href="#" class="close" data-bind="command: cancelCommand">×</a>
-	<h3 data-i18n="POPUPS_GENERATE_OPEN_PGP_KEYS/TITLE_GENERATE_OPEN_PGP_KEYS"></h3>
+	<h3 data-i18n="OPENPGP/POPUP_GENERATE_TITLE"></h3>
 </header>
 <form class="modal-body form-horizontal" autocomplete="off">
 	<div class="alert" data-bind="visible: '' !== submitError()">
@@ -9,7 +9,14 @@
 	</div>
 	<div class="control-group" data-bind="css: {'error': emailError}">
 		<label data-i18n="GLOBAL/EMAIL"></label>
-		<select class="input-xlarge" data-bind="value: email, options: identities, optionsText: 'email', optionsValue: 'email'"></select>
+		<input type="text" class="input-xlarge"
+			autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+			list="emailaddresses" data-bind="value: email" />
+		<datalist id="emailaddresses">
+			<!-- ko foreach: identities -->
+			<option data-bind="attr:{value:email}"></option>
+			<!-- /ko -->
+		</datalist>
 	</div>
 	<div class="control-group">
 		<label data-i18n="GLOBAL/NAME"></label>
@@ -24,13 +31,29 @@
 			data-bind="value: password" />
 	</div>
 	<div class="control-group">
-		<label data-i18n="POPUPS_GENERATE_OPEN_PGP_KEYS/LABEL_KEY_BIT_LENGTH"></label>
-		<select data-bind="value: keyBitLength, options: [2048, 4096]"></select>
+		<label data-i18n="OPENPGP/LABEL_KEY_TYPE"></label>
+		<select data-bind="value: keyType, options: ['ECC', 'RSA']"></select>
+	</div>
+	<div class="control-group">
+		<div data-bind="component: {
+			name: 'Checkbox',
+			params: {
+				label: 'Store on server',
+				value: saveServer
+			}
+		}"></div>
+		<div data-bind="visible: canGnuPG, component: {
+			name: 'Checkbox',
+			params: {
+				label: 'Store on server in GnuPG',
+				value: saveGnuPG
+			}
+		}"></div>
 	</div>
 </form>
 <footer>
-	<a class="btn buttonHenerateOpenPgpKey" data-bind="command: generateOpenPgpKeyCommand">
+	<a class="btn" data-bind="command: generateOpenPgpKeyCommand">
 		<i class="fontastic" data-bind="css: {'icon-spinner': submitRequest()}">🔑</i>
-		<span data-i18n="POPUPS_GENERATE_OPEN_PGP_KEYS/BUTTON_GENERATE_OPEN_PGP_KEYS"></span>
+		<span data-i18n="OPENPGP/POPUP_GENERATE_BUTTON"></span>
 	</a>
 </footer>

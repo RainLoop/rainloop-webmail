@@ -37,15 +37,8 @@ const jsServiceWorker = () => {
 // OpenPGP
 const jsOpenPGP = () => {
 	return gulp
-		.src('vendors/openpgp-2.6.2/dist/openpgp.js')
+		.src('vendors/openpgp-5/openpgp.js')
 		.pipe(gulp.dest(config.paths.staticJS));
-};
-
-// OpenPGP Worker
-const jsOpenPGPWorker = () => {
-	return gulp
-		.src('vendors/openpgp-2.6.2/dist/openpgp.worker.min.js')
-		.pipe(gulp.dest(config.paths.staticMinJS));
 };
 
 // libs
@@ -131,6 +124,6 @@ exports.jsLint = jsLint;
 exports.js = gulp.series(
 	jsClean,
 	jsLint,
-	gulp.parallel(jsBoot, jsServiceWorker, jsOpenPGP, jsOpenPGPWorker, jsLibs, jsApp, jsAdmin),
+	gulp.parallel(jsBoot, jsServiceWorker, jsOpenPGP, jsLibs, jsApp, jsAdmin),
 	jsMin
 );

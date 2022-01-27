@@ -151,7 +151,6 @@
 		"PGP_SIGNED_MESSAGE_DESC": "Message signé par OpenPGP",
 		"BUTTON_PGP_VERIFY": "cliquer pour vérifier",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "Message chiffré par OpenPGP",
-		"BUTTON_PGP_DECRYPT": "cliquer pour déchiffrer",
 		"LINK_DOWNLOAD_AS_ZIP": "Télécharger le zip",
 		"SPAM_SCORE": "Score de spam",
 		"HAS_VIRUS_WARNING": "ATTENTION : virus détecté"
@@ -216,7 +215,6 @@
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Toutes les pièces jointes n'ont pas encore été téléchargées",
 		"BUTTON_REQUEST_READ_RECEIPT": "Demander une confirmation de lecture",
 		"BUTTON_MARK_AS_IMPORTANT": "Marquer comme important",
-		"BUTTON_OPEN_PGP": "OpenPGP (Texte non formaté uniquement)",
 		"BUTTON_REQUEST_DSN": "Demander un accusé de réception"
 	},
 	"POPUPS_ASK": {
@@ -254,30 +252,16 @@
 		"DANGER_DESC_HTML_2": "Une fois lancé, le processus ne peut pas être interrompu ou annulé.",
 		"TITLE_CLEARING_PROCESS": "Purge du dossier..."
 	},
-	"POPUPS_IMPORT_OPEN_PGP_KEY": {
-		"TITLE_IMPORT_OPEN_PGP_KEY": "Importer la clef OpenPGP",
-		"BUTTON_IMPORT_OPEN_PGP_KEY": "Importer"
-	},
-	"POPUPS_VIEW_OPEN_PGP_KEY": {
-		"TITLE_VIEW_OPEN_PGP_KEY": "Voir la clef OpenPGP",
-		"BUTTON_SELECT": "Sélectionner"
-	},
-	"POPUPS_GENERATE_OPEN_PGP_KEYS": {
-		"TITLE_GENERATE_OPEN_PGP_KEYS": "Générer les clés OpenPGP",
-		"LABEL_KEY_BIT_LENGTH": "Longueur de la clé",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Générer"
-	},
-	"POPUPS_COMPOSE_OPEN_PGP": {
-		"TITLE_COMPOSE_OPEN_PGP": "Signer\/chiffrer avec OpenPGP",
+	"OPENPGP": {
+		"POPUP_IMPORT_TITLE": "Importer la clef OpenPGP",
+		"POPUP_IMPORT_BUTTON": "Importer",
+		"POPUP_VIEW_TITLE": "Voir la clef OpenPGP",
+		"POPUP_VIEW_BUTTON": "Sélectionner",
+		"POPUP_GENERATE_TITLE": "Générer les clés OpenPGP",
+		"POPUP_GENERATE_BUTTON": "Générer",
+		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Signer",
 		"LABEL_ENCRYPT": "Chiffer",
-		"BUTTON_SIGN": "Signer",
-		"BUTTON_ENCRYPT": "Chiffrer",
-		"BUTTON_SIGN_AND_ENCRYPT": "Signer et chiffrer"
-	},
-	"POPUPS_MESSAGE_OPEN_PGP": {
-		"TITLE_MESSAGE_OPEN_PGP": "OpenPGP Decrypt",
-		"LABEL_KEY": "Clé Privée",
 		"BUTTON_DECRYPT": "Déchiffrer"
 	},
 	"POPUPS_FILTER": {
@@ -469,7 +453,6 @@
 		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Générer les clés OpenPGP",
 		"TITLE_PRIVATE": "Privée",
 		"TITLE_PUBLIC": "Publique",
-		"GENERATE_ONLY_HTTPS": "HTTPS seulement",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Brouillon sauvegardé automatiquement"
 	},
 	"SHORTCUTS_HELP": {
