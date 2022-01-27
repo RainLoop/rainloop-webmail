@@ -15,6 +15,9 @@ import { delegateRunOnDestroy } from 'Common/UtilsUser';
 
 import Remote from 'Remote/User/Fetch';
 
+import { showScreenPopup } from 'Knoin/Knoin';
+import { ViewOpenPgpKeyPopupView } from 'View/Popup/ViewOpenPgpKey';
+
 const
 	findKeyByHex = (keys, hash) =>
 		keys.find(item => item && (hash === item.id || item.ids.includes(hash)));
@@ -35,43 +38,61 @@ const
 			while (i--) {
 				key = await openpgp.readKey({armoredKey:armoredKeys[i]});
 				if (!key.err) {
-					const aEmails = [];
-					if (key.users) {
-						key.users.forEach(user => {
-							if (user.userID.email) {
-								aEmails.push(user.userID.email);
-							}
-						});
-					}
-					keys.push({
-						id: key.getKeyID().toHex(),
-						fingerprint: key.getFingerprint(),
-						can_encrypt: !!key.getEncryptionKey(),
-						can_sign: !!key.getSigningKey(),
-						emails: aEmails,
-						armor: armoredKeys[i],
-						deleteAccess: ko.observable(false)
-					});
-//					key.getUserIDs()
-//					key.getPrimaryUser()
+					keys.push(new OpenPgpKeyModel(armoredKeys[i], key));
 				}
 			}
 		}
 		return keys;
-/*
-	},
-	storeKeys = async (itemname, keys) => {
-		let armoredKeys = [], i = arrayLength(keys);
-		if (i) {
-			while (i--) {
-				armoredKeys.push(await keys[i].armor());
-			}
-			storage.setItem(itemname, JSON.stringify(armoredKeys));
-		} else {
-			storage.removeItem(itemname);
-		}
-*/
 	};
+
+class OpenPgpKeyModel {
+	constructor(armor, key) {
+		this.key = key;
+		const aEmails = [];
+		if (key.users) {
+			key.users.forEach(user => {
+				if (user.userID.email) {
+					aEmails.push(user.userID.email);
+				}
+			});
+		}
+		this.id = key.getKeyID().toHex();
+		this.fingerprint = key.getFingerprint();
+		this.can_encrypt = !!key.getEncryptionKey();
+		this.can_sign = !!key.getSigningKey();
+		this.emails = aEmails;
+		this.armor = armor;
+		this.deleteAccess = ko.observable(false);
+		this.openForDeletion = ko.observable(null).deleteAccessHelper();
+//		key.getUserIDs()
+//		key.getPrimaryUser()
+	}
+
+	view() {
+		showScreenPopup(ViewOpenPgpKeyPopupView, [this]);
+	}
+
+	remove() {
+		if (this.deleteAccess()) {
+			this.openPgpKeyForDeletion(null);
+			let armoredKeys = [], itemname = publicKeysItem;
+			if (this.key.isPrivate()) {
+				itemname = privateKeysItem;
+				PgpUserStore.openpgpPrivateKeys.remove(this);
+				armoredKeys = PgpUserStore.openpgpPrivateKeys.map(item => item.armor);
+			} else {
+				PgpUserStore.openpgpPublicKeys.remove(this);
+				armoredKeys = PgpUserStore.openpgpPublicKeys.map(item => item.armor);
+			}
+			delegateRunOnDestroy(this);
+			if (armoredKeys.length) {
+				storage.setItem(itemname, JSON.stringify(armoredKeys));
+			} else {
+				storage.removeItem(itemname);
+			}
+		}
+	}
+}
 
 export const PgpUserStore = new class {
 	constructor() {
@@ -289,33 +310,6 @@ export const PgpUserStore = new class {
 	 * OpenPGP.js
 	 */
 
-	/**
-	 * @param {OpenPgpKeyModel} openPgpKeyToRemove
-	 * @returns {void}
-	 */
-	deleteKey(openPgpKeyToRemove) {
-		const openpgpKeyring = this.openpgpKeyring;
-		if (openPgpKeyToRemove && openPgpKeyToRemove.deleteAccess() && openpgpKeyring) {
-			let items = [
-				this.openpgpPrivateKeys.find(key => openPgpKeyToRemove === key),
-				this.openpgpPublicKeys.find(key => openPgpKeyToRemove === key)
-			];
-			if (items[0]) {
-				this.openpgpPrivateKeys.remove(items[0]);
-				openpgpKeyring.privateKeys.removeForId(items[0].guid);
-				delegateRunOnDestroy(items[0]);
-			}
-			if (items[1]) {
-				this.openpgpPublicKeys.remove(items[1]);
-				openpgpKeyring.publicKeys.removeForId(items[1].guid);
-				delegateRunOnDestroy(items[1]);
-			}
-			if (items[0] || items[1]) {
-				openpgpKeyring.store();
-			}
-		}
-	}
-
 /*
 	decryptMessage(message, recipients, fCallback) {
 		if (message && message.getEncryptionKeyIds) {
@@ -385,7 +379,7 @@ export const PgpUserStore = new class {
 				// findPublicKeysBySigningKeyIds
 				const publicKeys = signingKeyIds.map(id => {
 					const key = id && id.toHex ? findKeyByHex(this.openpgpPublicKeys, id.toHex()) : null;
-					return key ? key.getNativeKeys() : [null];
+					return key ? key.key : [null];
 				}).flat().filter(v => v);
 				if (publicKeys && publicKeys.length) {
 					try {

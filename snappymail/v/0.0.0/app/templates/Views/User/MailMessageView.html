@@ -323,12 +323,12 @@
 						<div class="openpgp-control encrypted" data-bind="visible: pgpEncrypted">
 							<i class="fontastic">🔒</i>
 							<span data-i18n="MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC"></span>
-							<button data-bind="visible: pgpSupported, click: pgpDecrypt" data-i18n="OPENPGP/BUTTON_DECRYPT"></button>
+							<button class="btn" data-bind="visible: pgpSupported, click: pgpDecrypt" data-i18n="OPENPGP/BUTTON_DECRYPT"></button>
 						</div>
 						<div class="openpgp-control signed" data-bind="visible: pgpSigned">
 							<i class="fontastic">✍️</i>
 							<span data-i18n="MESSAGE/PGP_SIGNED_MESSAGE_DESC"></span>
-							<button data-bind="visible: pgpSupported, click: pgpVerify" data-i18n="MESSAGE/BUTTON_PGP_VERIFY"></button>
+							<button class="btn" data-bind="visible: pgpSupported, click: pgpVerify" data-i18n="MESSAGE/BUTTON_PGP_VERIFY"></button>
 						</div>
 
 						<div class="bodyText"

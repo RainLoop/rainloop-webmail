@@ -9,7 +9,6 @@ import { showScreenPopup } from 'Knoin/Knoin';
 
 import { OpenPgpImportPopupView } from 'View/Popup/OpenPgpImport';
 import { OpenPgpGeneratePopupView } from 'View/Popup/OpenPgpGenerate';
-import { ViewOpenPgpKeyPopupView } from 'View/Popup/ViewOpenPgpKey';
 
 import { Capa } from 'Common/Enums';
 import { Settings } from 'Common/Globals';
@@ -39,28 +38,11 @@ export class OpenPgpUserSettings /*extends AbstractViewSettings*/ {
 		showScreenPopup(OpenPgpGeneratePopupView);
 	}
 
-	viewOpenPgpKey(openPgpKey) {
-		if (openPgpKey) {
-			showScreenPopup(ViewOpenPgpKeyPopupView, [openPgpKey]);
-		}
-	}
-
 	onBuild() {
 		/**
 		 * Create an iframe to display the Mailvelope keyring settings.
 		 * The iframe will be injected into the container identified by selector.
 		 */
 		window.mailvelope && mailvelope.createSettingsContainer('#mailvelope-settings'/*[, keyring], options*/);
-	}
-
-	/**
-	 * @param {OpenPgpKeyModel} openPgpKeyToRemove
-	 * @returns {void}
-	 */
-	deleteOpenPgpKey(openPgpKeyToRemove) {
-		if (openPgpKeyToRemove && openPgpKeyToRemove.deleteAccess()) {
-			this.openPgpKeyForDeletion(null);
-			PgpUserStore.deleteKey(openPgpKeyToRemove);
-		}
 	}
 }

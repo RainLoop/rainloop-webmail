@@ -158,11 +158,6 @@ RainLoop 1.15 vs SnappyMail
 
 For a user its around 70% smaller and faster than traditional RainLoop.
 
-|OpenPGP        	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
-|---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
-|openpgp.min.js 	|  330.742	|  293.972	|102.388	| 93.030	| 84.241  	| 77.142	|
-|openpgp.worker 	|    1.499	|    1.125	|    824	|    567	|    695 	|    467	|
-
 ### CSS changes
 
 * Solve jQuery removed "features" with native css code
@@ -178,13 +173,7 @@ For a user its around 70% smaller and faster than traditional RainLoop.
 * Removed Internet Explorer from normalize.css
 * Removed node_modules/opentip/css/opentip.css
 * Removed node_modules/pikaday/css/pikaday.css
-* Removed vendors/bootstrap/less/breadcrumbs.less
-* Removed vendors/bootstrap/less/navbar.less
-* Removed vendors/bootstrap/less/popovers.less
-* Removed vendors/bootstrap/less/progress-bars.less
-* Removed vendors/bootstrap/less/scaffolding.less
-* Removed vendors/bootstrap/less/sprites.less
-* Removed vendors/bootstrap/less/tooltip.less
+* Removed unused vendors/bootstrap/less/*
 * Removed vendors/jquery-nanoscroller/nanoscroller.css
 * Removed vendors/jquery-letterfx/jquery-letterfx.min.css
 * Removed vendors/Progress.js/minified/progressjs.min.css
@@ -199,6 +188,16 @@ For a user its around 70% smaller and faster than traditional RainLoop.
 |boot.min.css	|       	|  1.071	|       	|    590	|    474	|
 |admin.css    	|       	| 30.558	|       	|  6.894	|  5.979	|
 |admin.min.css	|       	| 24.546	|       	|  6.241	|  5.489	|
+
+### PGP
+RainLoop uses the old OpenPGP.js v2
+SnappyMail v2.12 uses OpenPGP.js v5, GnuPG and Mailvelope.
+SnappyMail is able to use and generate ECDSA and EDDSA keys, where RainLoop does not.
+
+|OpenPGP        	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
+|---------------	|--------:	|--------:	|------:	|-------:	|--------:	|--------:	|
+|openpgp.min.js 	|  330.742	|  550.724	|102.388	| 170.033	| 84.241  	| 139.429	|
+|openpgp.worker 	|    1.499	|         	|    824	|        	|    695 	|        	|
 
 
 ### Squire vs CKEditor
