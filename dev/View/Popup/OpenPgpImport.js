@@ -1,6 +1,5 @@
 import { PgpUserStore } from 'Stores/User/Pgp';
 
-import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 import { Capa } from 'Common/Enums';
@@ -25,13 +24,9 @@ export class OpenPgpImportPopupView extends AbstractViewPopup {
 			this.keyError(false);
 			this.keyErrorMessage('');
 		});
-
-		decorateKoCommands(this, {
-			addOpenPgpKeyCommand: 1
-		});
 	}
 
-	addOpenPgpKeyCommand() {
+	submitForm() {
 		let keyTrimmed = this.key().trim();
 
 		if (/\n/.test(keyTrimmed)) {

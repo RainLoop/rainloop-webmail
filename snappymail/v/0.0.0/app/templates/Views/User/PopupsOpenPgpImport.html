@@ -2,30 +2,29 @@
 	<a href="#" class="close" data-bind="command: cancelCommand">×</a>
 	<h3 data-i18n="OPENPGP/POPUP_IMPORT_TITLE"></h3>
 </header>
-<div class="modal-body">
+<form id="openpgp-import" class="modal-body form-horizontal" autocomplete="off" data-bind="submit: submitForm">
 	<div class="alert"  data-bind="visible: keyError() && keyErrorMessage(), text: keyErrorMessage"></div>
-	<div class="form-horizontal">
-		<div class="control-group" data-bind="css: {'error': keyError}">
-			<textarea class="inputKey input-xxlarge" rows="14" autofocus="" autocomplete="off" data-bind="value: key"></textarea>
-		</div>
-		<div class="control-group">
-			<div data-bind="component: {
-				name: 'Checkbox',
-				params: {
-					label: 'Store on server',
-					value: saveServer
-				}
-			}"></div>
-			<div data-bind="visible: canGnuPG, component: {
-				name: 'Checkbox',
-				params: {
-					label: 'Store on server in GnuPG',
-					value: saveGnuPG
-				}
-			}"></div>
-		</div>
+	<div class="control-group" data-bind="css: {'error': keyError}">
+		<textarea class="inputKey input-xxlarge" rows="14" autofocus="" autocomplete="off" data-bind="value: key" required=""></textarea>
 	</div>
-</div>
+	<div class="control-group">
+		<div data-bind="component: {
+			name: 'Checkbox',
+			params: {
+				label: 'Store (encrypted) on server',
+				value: saveServer
+			}
+		}"></div>
+		<br/>
+		<div data-bind="visible: canGnuPG, component: {
+			name: 'Checkbox',
+			params: {
+				label: 'Store on server in GnuPG',
+				value: saveGnuPG
+			}
+		}"></div>
+	</div>
+</form>
 <footer>
-	<a class="btn" data-bind="command: addOpenPgpKeyCommand" data-icon="✚" data-i18n="OPENPGP/POPUP_IMPORT_BUTTON"></a>
+	<button class="btn" form="openpgp-import" data-icon="✚" data-i18n="OPENPGP/POPUP_IMPORT_BUTTON"></button>
 </footer>

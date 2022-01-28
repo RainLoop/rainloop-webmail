@@ -40,10 +40,11 @@
 		<div data-bind="component: {
 			name: 'Checkbox',
 			params: {
-				label: 'Store on server',
+				label: 'Store (encrypted) on server',
 				value: saveServer
 			}
 		}"></div>
+		<br/>
 		<div data-bind="visible: canGnuPG, component: {
 			name: 'Checkbox',
 			params: {
