@@ -37,7 +37,7 @@ export class OpenPgpImportPopupView extends AbstractViewPopup {
 		this.keyErrorMessage('');
 
 		if (!keyTrimmed) {
-			return false;
+			return;
 		}
 
 		let match = null,
@@ -54,15 +54,7 @@ export class OpenPgpImportPopupView extends AbstractViewPopup {
 					if (this.saveGnuPG()) {
 						PgpUserStore.gnupgImportKey(this.key());
 					}
-/*
-					if (this.canOpenPGP && this.saveOpenPGP()) {
-						if ('PRIVATE' === match[1]) {
-							err = PgpUserStore.openpgpKeyring.privateKeys.importKey(match[0]);
-						} else if ('PUBLIC' === match[1]) {
-							err = PgpUserStore.openpgpKeyring.publicKeys.importKey(match[0]);
-						}
-					}
-*/
+					PgpUserStore.openpgpImportKey(this.key());
 					if (err) {
 						this.keyError(true);
 						this.keyErrorMessage(err && err[0] ? '' + err[0] : '');
@@ -78,11 +70,10 @@ export class OpenPgpImportPopupView extends AbstractViewPopup {
 		} while (!done);
 
 		if (this.keyError()) {
-			return false;
+			return;
 		}
 
 		this.cancelCommand();
-		return true;
 	}
 
 	onShow() {

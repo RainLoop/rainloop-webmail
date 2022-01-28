@@ -223,6 +223,20 @@ export const PgpUserStore = new class {
 		return !!(window.openpgp || window.mailvelope || Settings.capa(Capa.GnuPG));
 	}
 
+	openpgpImportKey(armoredKey) {
+		openpgp && openpgp.readKey({armoredKey:armoredKey}).then(key => {
+			if (!key.err) {
+				if (key.isPrivate()) {
+					this.openpgpPrivateKeys.push(new OpenPgpKeyModel(armoredKey, key));
+					storeOpenPgpKeys(this.openpgpPrivateKeys, privateKeysItem);
+				} else {
+					this.openpgpPublicKeys.push(new OpenPgpKeyModel(armoredKey, key));
+					storeOpenPgpKeys(PgpUserStore.openpgpPublicKeys, publicKeysItem);
+				}
+			}
+		});
+	}
+
 	gnupgImportKey(key, callback) {
 		if (Settings.capa(Capa.GnuPG)) {
 			Remote.request('GnupgImportKey',
