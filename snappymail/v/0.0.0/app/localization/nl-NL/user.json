@@ -257,7 +257,7 @@
 		"POPUP_IMPORT_BUTTON": "Importeer",
 		"POPUP_VIEW_TITLE": "Bekijk OpenPGP sleutel",
 		"POPUP_VIEW_BUTTON": "Selecteer",
-		"POPUP_GENERATE_TITLE": "Genereer OpenPGP sleutels",
+		"POPUP_GENERATE_TITLE": "Genereer OpenPGP sleutel",
 		"POPUP_GENERATE_BUTTON": "Genereer",
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Ondertekenen",
@@ -450,7 +450,7 @@
 	},
 	"SETTINGS_OPEN_PGP": {
 		"BUTTON_ADD_OPEN_PGP_KEY": "Importeer OpenPGP sleutel",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Genereer OpenPGP sleutels",
+		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Genereer OpenPGP sleutel",
 		"TITLE_PRIVATE": "Privé sleutel",
 		"TITLE_PUBLIC": "Publieke sleutel",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"

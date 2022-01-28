@@ -139,12 +139,9 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 				throw new \Exception("Invalid storage type {$iStorageType}");
 		}
 
-		if ($bMkDir && !empty($sFilePath) && !\is_dir(\dirname($sFilePath)))
+		if ($bMkDir && !empty($sFilePath) && !\is_dir($sFilePath) && !\mkdir($sFilePath, 0700, true))
 		{
-			if (!\mkdir(\dirname($sFilePath), 0700, true))
-			{
-				throw new \RainLoop\Exceptions\Exception('Can\'t make storage directory "'.$sFilePath.'"');
-			}
+			throw new \RainLoop\Exceptions\Exception('Can\'t make storage directory "'.$sFilePath.'"');
 		}
 
 		return $sFilePath;
