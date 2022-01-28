@@ -218,27 +218,30 @@ class BodyStructure
 
 	public function GetHtmlAndPlainParts() : array
 	{
-		$aParts = $this->SearchByCallback(function ($oItem) {
+		$aParts = [];
+
+		$gParts = $this->SearchByCallback(function ($oItem) {
 			return ('text/html' === $oItem->sContentType || 'text/plain' === $oItem->sContentType)
 				&& !$oItem->IsAttachBodyPart();
 		});
-
-		if ($aParts->valid()) {
-			return \array_merge([$aParts->current()], \iterator_to_array($aParts));
+		foreach ($gParts as $oPart) {
+			$aParts[] = $oPart;
 		}
 
 		/**
 		 * No text found, is it encrypted?
 		 * If so, just return that.
 		 */
-		$gEncryptedParts = $this->SearchByContentType('multipart/encrypted');
-		foreach ($gEncryptedParts as $oPart) {
-			if ($oPart->IsPgpEncrypted() && $oPart->SubParts()[1]->IsInline()) {
-				return array($oPart->SubParts()[1]);
+		if (!$aParts) {
+			$gEncryptedParts = $this->SearchByContentType('multipart/encrypted');
+			foreach ($gEncryptedParts as $oPart) {
+				if ($oPart->IsPgpEncrypted() && $oPart->SubParts()[1]->IsInline()) {
+					return array($oPart->SubParts()[1]);
+				}
 			}
 		}
 
-		return [];
+		return $aParts;
 	}
 
 	public function SearchCharset() : string
