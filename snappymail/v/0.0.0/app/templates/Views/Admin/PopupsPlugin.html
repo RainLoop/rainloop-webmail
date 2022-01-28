@@ -20,12 +20,6 @@
 	</form>
 </div>
 <footer>
-	<a class="btn buttonClose" data-bind="command: cancelCommand">
-		<i class="fontastic">✖</i>
-		<span data-i18n="POPUPS_PLUGIN/BUTTON_CLOSE"></span>
-	</a>
-	<a class="btn" data-bind="command: saveCommand, visible: hasConfiguration">
-		<i class="fontastic">✔</i>
-		<span data-i18n="GLOBAL/SAVE"></span>
-	</a>
+	<a class="btn buttonClose" data-bind="command: cancelCommand" data-icon="✖" data-i18n="POPUPS_PLUGIN/BUTTON_CLOSE"></a>
+	<a class="btn" data-bind="command: saveCommand, visible: hasConfiguration" data-icon="✔" data-i18n="GLOBAL/SAVE"></a>
 </footer>

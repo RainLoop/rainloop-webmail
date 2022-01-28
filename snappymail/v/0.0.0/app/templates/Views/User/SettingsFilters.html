@@ -5,10 +5,7 @@
 		<i class="icon-spinner" style="margin-top: 5px" data-bind="visible: loading"></i>
 	</div>
 </div>
-<div class="alert alert-error g-ui-user-select-none" data-bind="visible: serverError">
-	<i class="fontastic">⚠</i>
-	<span data-bind="text: serverErrorDesc"></span>
-</div>
+<div class="alert alert-error g-ui-user-select-none" data-bind="visible: serverError" data-icon="⚠" data-bind="text: serverErrorDesc"></div>
 <table class="table table-hover list-table g-ui-user-select-none"
 	data-bind="i18nUpdate: scripts">
 	<colgroup>
@@ -33,7 +30,4 @@
 		</tr>
 	</tbody>
 </table>
-<a class="btn" data-bind="click: $root.addScript">
-	<i class="fontastic">✚</i>
-	<span data-i18n="SETTINGS_FILTERS/BUTTON_ADD_SCRIPT"></span>
-</a>
+<a class="btn" data-bind="click: $root.addScript" data-icon="✚" data-i18n="SETTINGS_FILTERS/BUTTON_ADD_SCRIPT"></a>

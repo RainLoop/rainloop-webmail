@@ -110,15 +110,11 @@
 		<!-- /ko -->
 	</div>
 	<div class="b-content" data-bind="initDom: dragOverBodyArea">
-		<div class="listThreadUidDesc" data-bind="visible: messageListThreadUid(), click: cancelThreadUid">
-			<i class="fontastic">⬅</i>
-			<span data-i18n="MESSAGE_LIST/BACK_TO_MESSAGE_LIST"></span>
-		</div>
+		<div class="listThreadUidDesc" data-bind="visible: messageListThreadUid(), click: cancelThreadUid"
+			data-icon="⬅" data-i18n="MESSAGE_LIST/BACK_TO_MESSAGE_LIST"></div>
 		<div class="listSearchDesc" data-bind="visible: messageListSearchDesc(), text: messageListSearchDesc"></div>
-		<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && !messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea">
-			<i class="fontastic">⬇</i>
-			<span data-i18n="MESSAGE_LIST/PUT_MESSAGE_HERE"></span>
-		</div>
+		<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && !messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea"
+			data-icon="⬇" data-i18n="MESSAGE_LIST/PUT_MESSAGE_HERE"></div>
 		<div class="listClear" data-bind="visible: clearListIsVisible()">
 			<a href="#" class="g-ui-link" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER" data-bind="command: clearCommand"></a>
 		</div>

@@ -49,10 +49,8 @@
 			data-bind="textInput: adminTOTP" />
 	</div>
 	<div class="control-group">
-		<a class="btn" data-bind="command: saveNewAdminPasswordCommand, css: { 'btn-success': adminPasswordUpdateSuccess, 'btn-danger': adminPasswordUpdateError }">
-			<i class="fontastic">🔑</i>
-			<span data-i18n="TAB_SECURITY/BUTTON_UPDATE_PASSWORD"></span>
-		</a>
+		<a class="btn" data-bind="command: saveNewAdminPasswordCommand, css: { 'btn-success': adminPasswordUpdateSuccess, 'btn-danger': adminPasswordUpdateError }"
+			data-icon="🔑" data-i18n="TAB_SECURITY/BUTTON_UPDATE_PASSWORD"></a>
 	</div>
 </div>
 <div class="form-horizontal">

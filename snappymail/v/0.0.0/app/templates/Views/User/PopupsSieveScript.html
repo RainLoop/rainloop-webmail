@@ -17,14 +17,8 @@
 		/>
 	</div>
 
-	<div class="alert g-ui-user-select-none" data-bind="visible: hasChanges">
-		<i class="fontastic">⚠</i>
-		<span data-i18n="POPUPS_SIEVE_SCRIPT/CHANGES_NEED_TO_BE_SAVED_DESC"></span>
-	</div>
-	<div class="alert alert-error g-ui-user-select-none" data-bind="visible: $root.saveError">
-		<i class="fontastic">⚠</i>
-		<span data-bind="text: $root.saveErrorText"></span>
-	</div>
+	<div class="alert g-ui-user-select-none" data-bind="visible: hasChanges" data-icon="⚠" data-i18n="POPUPS_SIEVE_SCRIPT/CHANGES_NEED_TO_BE_SAVED_DESC"></div>
+	<div class="alert alert-error g-ui-user-select-none" data-bind="visible: $root.saveError" data-icon="⚠" data-bind="text: $root.saveErrorText"></div>
 
 	<div class="control-group" data-bind="visible: $root.rawActive">
 		<div>
@@ -64,10 +58,7 @@
 				</tr>
 			</tbody>
 		</table>
-		<a class="btn" data-bind="click: $root.addFilter">
-			<i class="fontastic">✚</i>
-			<span data-i18n="POPUPS_SIEVE_SCRIPT/BUTTON_ADD_FILTER"></span>
-		</a>
+		<a class="btn" data-bind="click: $root.addFilter" data-icon="✚" data-i18n="POPUPS_SIEVE_SCRIPT/BUTTON_ADD_FILTER"></a>
 	</div>
 </div>
 <footer>

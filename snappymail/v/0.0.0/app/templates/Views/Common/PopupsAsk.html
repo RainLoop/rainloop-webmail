@@ -1,11 +1,5 @@
 <div class="modal-body" data-bind="html: askDesc"></div>
 <footer>
-	<button class="btn buttonYes" data-bind="click: yesClick">
-		<i class="fontastic">✔</i>
-		<span data-bind="text: yesButton"></span>
-	</button>
-	<button class="btn buttonNo" data-bind="click: noClick">
-		<i class="fontastic">✖</i>
-		<span data-bind="text: noButton"></span>
-	</button>
+	<button class="btn buttonYes" data-bind="click: yesClick, text: yesButton" data-icon="✔"></button>
+	<button class="btn buttonNo" data-bind="click: noClick, text: noButton" data-icon="✖"></button>
 </footer>

@@ -17,9 +17,7 @@
 			<div class="alert alert-error span6" data-bind="text: background.error" style="margin-left: 0"></div>
 		</div>
 		<div class="row" data-bind="visible: '' !== background.name()" style="margin-left: 0">
-			<a class="btn" data-bind="visible: '' !== background.name(), click: clearBackground">
-				<i class="fontastic">✖</i>
-			</a>
+			<a class="btn" data-bind="visible: '' !== background.name(), click: clearBackground" data-icon="✖"></a>
 			&nbsp;&nbsp;&nbsp;
 			<b data-bind="text: background.name"></b>
 		</div>

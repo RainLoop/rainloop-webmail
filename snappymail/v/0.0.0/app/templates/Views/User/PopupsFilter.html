@@ -36,10 +36,7 @@
 			<div class="control-group" data-bind="visible: 0 === conditions().length"
 				data-i18n="POPUPS_FILTER/ALL_INCOMING_MESSAGES_DESC"></div>
 			<div class="control-group">
-				<a class="btn" data-bind="click: addCondition, i18nInit: true">
-					<i class="fontastic">✚</i>
-					<span data-i18n="POPUPS_FILTER/BUTTON_ADD_CONDITION"></span>
-				</a>
+				<a class="btn" data-bind="click: addCondition, i18nInit: true" data-icon="✚" data-i18n="POPUPS_FILTER/BUTTON_ADD_CONDITION"></a>
 			</div>
 
 			<div class="legend" data-i18n="POPUPS_FILTER/LEGEND_ACTIONS"></div>
@@ -49,8 +46,5 @@
 	</div>
 </div>
 <footer>
-	<a class="btn buttonSave" data-bind="command: saveFilterCommand">
-		<i class="fontastic">✔</i>
-		<span data-i18n="GLOBAL/DONE"></span>
-	</a>
+	<a class="btn buttonSave" data-bind="command: saveFilterCommand" data-icon="✔" data-i18n="GLOBAL/DONE"></a>
 </footer>

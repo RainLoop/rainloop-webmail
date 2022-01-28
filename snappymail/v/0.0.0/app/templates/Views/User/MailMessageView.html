@@ -23,10 +23,7 @@
 	</div>
 	<div class="b-content">
 		<div class="b-message-view-backdrop" data-bind="visible: moveAction">
-			<div class="backdrop-message">
-				<i class="fontastic">📁</i>
-				<span data-i18n="MESSAGE/MESSAGE_VIEW_MOVE_DESC"></span>
-			</div>
+			<div class="backdrop-message" data-icon="📁" data-i18n="MESSAGE/MESSAGE_VIEW_MOVE_DESC"></div>
 		</div>
 		<div class="b-message-view-checked-helper" data-bind="visible: !message() && '' === messageError() && hasCheckedMessages()">
 			<span data-bind="text: printableCheckedMessageCount()"></span>
@@ -221,14 +218,10 @@
 
 					<div data-bind="visible: !messageLoadingThrottle()">
 						<div class="bodySubHeader">
-							<div class="showImages" data-bind="visible: message() && message().hasImages(), click: showImages">
-								<i class="fontastic">🖼</i>
-								<span class="text" data-i18n="MESSAGE/BUTTON_SHOW_IMAGES"></span>
-							</div>
-							<div class="readReceipt" data-bind="visible: message() && !isDraftOrSentFolder() && '' !== message().readReceipt() && !message().isReadReceipt(), click: readReceipt">
-								<i class="fontastic">✉</i>
-								<span class="text" data-i18n="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></span>
-							</div>
+							<div class="showImages" data-bind="visible: message() && message().hasImages(), click: showImages"
+								data-icon="🖼" data-i18n="MESSAGE/BUTTON_SHOW_IMAGES"></div>
+							<div class="readReceipt" data-bind="visible: message() && !isDraftOrSentFolder() && '' !== message().readReceipt() && !message().isReadReceipt(), click: readReceipt"
+								data-icon="✉" data-i18n="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></div>
 							<div class="attachmentsPlace" data-bind="visible: message() && message().attachments().hasVisible(),
 								css: {'selection-mode' : showAttachmentControls, 'unselectedAttachmentsError': highlightUnselectedAttachments}">
 								<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">
@@ -277,18 +270,15 @@
 						</div>
 
 						<div class="openpgp-control encrypted" data-bind="visible: pgpEncrypted">
-							<i class="fontastic">🔒</i>
-							<span data-i18n="MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC"></span>
+							<span data-icon="🔒" data-i18n="MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC"></span>
 							<button class="btn" data-bind="visible: pgpSupported, click: pgpDecrypt" data-i18n="OPENPGP/BUTTON_DECRYPT"></button>
 						</div>
 						<div class="openpgp-control signed" data-bind="visible: pgpSigned">
-							<i class="fontastic">✍️</i>
-							<span data-i18n="MESSAGE/PGP_SIGNED_MESSAGE_DESC"></span>
+							<span data-icon="✍" data-i18n="MESSAGE/PGP_SIGNED_MESSAGE_DESC"></span>
 							<button class="btn" data-bind="visible: pgpSupported, click: pgpVerify" data-i18n="MESSAGE/BUTTON_PGP_VERIFY"></button>
 						</div>
 
-						<div class="bodyText"
-							data-bind="initDom: messagesBodiesDom"></div>
+						<div class="bodyText" data-bind="initDom: messagesBodiesDom"></div>
 					</div>
 				</div>
 			</div>

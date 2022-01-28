@@ -26,8 +26,9 @@
 [data-icon]::before {
 	content: attr(data-icon);
 	display: inline-block;
-	width: 1.5em;
 	height: 1em;
+	margin-right: 0.5em;
+	min-width: 1em;
 }
 
 .icon-arrows-in::before {
@@ -47,9 +48,6 @@
 }
 .icon-down-mini::before {
   content: "\e01f"; /* › rotate 90 */
-}
-.icon-list-add::before {
-  content: "\e024";
 }
 .icon-warning-alt::before {
   content: "\e02a";
