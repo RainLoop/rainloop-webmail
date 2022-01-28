@@ -511,71 +511,6 @@ class Message
 		return $oAlternativePart;
 	}
 
-	private function createNewMessageSimpleOrAlternativeBody() : Part
-	{
-		$oResultPart = null;
-		if (1 < \count($this->aAlternativeParts))
-		{
-			$oResultPart = new Part;
-
-			$oResultPart->Headers->append(
-				new Header(Enumerations\Header::CONTENT_TYPE,
-					Enumerations\MimeType::MULTIPART_ALTERNATIVE.'; '.
-					(new ParameterCollection)->Add(
-						new Parameter(
-							Enumerations\Parameter::BOUNDARY,
-							$this->generateNewBoundary())
-					)->ToString()
-				)
-			);
-
-			foreach ($this->aAlternativeParts as $aAlternativeData)
-			{
-				$oAlternativePart = $this->createNewMessageAlternativePartBody($aAlternativeData);
-				if ($oAlternativePart)
-				{
-					$oResultPart->SubParts->append($oAlternativePart);
-				}
-
-				unset($oAlternativePart);
-			}
-
-		}
-		else if (1 === \count($this->aAlternativeParts))
-		{
-			$oAlternativePart = $this->createNewMessageAlternativePartBody($this->aAlternativeParts[0]);
-			if ($oAlternativePart)
-			{
-				$oResultPart = $oAlternativePart;
-			}
-		}
-
-		if (!$oResultPart)
-		{
-			if ($this->bAddEmptyTextPart)
-			{
-				$oResultPart = $this->createNewMessageAlternativePartBody(array(
-					Enumerations\MimeType::TEXT_PLAIN, null
-				));
-			}
-			else
-			{
-				$aAttachments = $this->oAttachmentCollection->getArrayCopy();
-				if (1 === \count($aAttachments) && isset($aAttachments[0]))
-				{
-					$this->oAttachmentCollection->Clear();
-
-					$oResultPart = $this->createNewMessageAlternativePartBody(array(
-						$aAttachments[0]->ContentType(), $aAttachments[0]->Resource(),
-							'', $aAttachments[0]->CustomContentTypeParams()
-					));
-				}
-			}
-		}
-
-		return $oResultPart;
-	}
-
 	private function createNewMessageRelatedBody(Part $oIncPart) : Part
 	{
 		$oResultPart = null;
@@ -672,26 +607,80 @@ class Message
 		return $oIncPart;
 	}
 
-	public function ToPart(bool $bWithoutBcc = false) : Part
-	{
-		$oPart = $this->createNewMessageSimpleOrAlternativeBody();
-		$oPart = $this->createNewMessageRelatedBody($oPart);
-		$oPart = $this->createNewMessageMixedBody($oPart);
-		$oPart = $this->setDefaultHeaders($oPart, $bWithoutBcc);
-
-		return $oPart;
-	}
-
 	/**
 	 * @return resource
 	 */
 	public function ToStream(bool $bWithoutBcc = false)
 	{
-		return $this->ToPart($bWithoutBcc)->ToStream();
-	}
+		$oPart = null;
+		if (1 < \count($this->aAlternativeParts))
+		{
+			$oPart = new Part;
 
+			$oPart->Headers->append(
+				new Header(Enumerations\Header::CONTENT_TYPE,
+					Enumerations\MimeType::MULTIPART_ALTERNATIVE.'; '.
+					(new ParameterCollection)->Add(
+						new Parameter(
+							Enumerations\Parameter::BOUNDARY,
+							$this->generateNewBoundary())
+					)->ToString()
+				)
+			);
+
+			foreach ($this->aAlternativeParts as $aAlternativeData)
+			{
+				$oAlternativePart = $this->createNewMessageAlternativePartBody($aAlternativeData);
+				if ($oAlternativePart)
+				{
+					$oPart->SubParts->append($oAlternativePart);
+				}
+
+				unset($oAlternativePart);
+			}
+
+		}
+		else if (1 === \count($this->aAlternativeParts))
+		{
+			$oAlternativePart = $this->createNewMessageAlternativePartBody($this->aAlternativeParts[0]);
+			if ($oAlternativePart)
+			{
+				$oPart = $oAlternativePart;
+			}
+		}
+
+		if (!$oPart)
+		{
+			if ($this->bAddEmptyTextPart)
+			{
+				$oPart = $this->createNewMessageAlternativePartBody(array(
+					Enumerations\MimeType::TEXT_PLAIN, null
+				));
+			}
+			else
+			{
+				$aAttachments = $this->oAttachmentCollection->getArrayCopy();
+				if (1 === \count($aAttachments) && isset($aAttachments[0]))
+				{
+					$this->oAttachmentCollection->Clear();
+
+					$oPart = $this->createNewMessageAlternativePartBody(array(
+						$aAttachments[0]->ContentType(), $aAttachments[0]->Resource(),
+							'', $aAttachments[0]->CustomContentTypeParams()
+					));
+				}
+			}
+		}
+
+		$oPart = $this->createNewMessageRelatedBody($oPart);
+		$oPart = $this->createNewMessageMixedBody($oPart);
+		$oPart = $this->setDefaultHeaders($oPart, $bWithoutBcc);
+		return $oPart->ToStream();
+	}
+/*
 	public function ToString(bool $bWithoutBcc = false) : string
 	{
 		return \stream_get_contents($this->ToStream($bWithoutBcc));
 	}
+*/
 }

@@ -63,11 +63,6 @@ class Part
 		$this->SubParts = new PartCollection;
 	}
 
-	function __destruct()
-	{
-		\MailSo\Base\ResourceRegistry::CloseMemoryResource($this->Body);
-	}
-
 	public function Boundary() : string
 	{
 		return $this->sBoundary;
@@ -532,7 +527,7 @@ class Part
 		if ($this->Body && \is_resource($this->Body))
 		{
 			$aMeta = \stream_get_meta_data($this->Body);
-			if (isset($aMeta['seekable']) && $aMeta['seekable'])
+			if (!empty($aMeta['seekable']))
 			{
 				\rewind($this->Body);
 			}

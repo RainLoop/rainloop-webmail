@@ -1068,7 +1068,7 @@ abstract class Utils
 	public static function MultipleStreamWriter($rRead, array $aWrite, int $iBufferLen = 8192, bool $bResetTimeLimit = true, bool $bFixCrLf = false, bool $bRewindOnComplete = false) : int
 	{
 		$mResult = false;
-		if ($rRead && \count($aWrite))
+		if (\is_resource($rRead) && \count($aWrite))
 		{
 			$mResult = 0;
 			while (!\feof($rRead))
@@ -1080,7 +1080,7 @@ abstract class Utils
 					break;
 				}
 
-				if (0 === $iBufferLen || '' === $sBuffer)
+				if ('' === $sBuffer)
 				{
 					break;
 				}
