@@ -1,5 +1,5 @@
 <header class="g-ui-user-select-none" data-bind="css: {'loading': saving() || sending()}">
-	<a class="btn button-send" data-bind="command: sendCommand, tooltipErrorTip: sendErrorDesc, css: {'btn-success': sendButtonSuccess, 'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
+	<a class="btn" data-bind="command: sendCommand, tooltipErrorTip: sendErrorDesc, css: {'btn-success': sendButtonSuccess, 'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
 		<i data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner': sending()}"></i>
 		<span class="hide-mobile" data-i18n="COMPOSE/BUTTON_SEND"></span>
 	</a>

@@ -93,17 +93,11 @@
 .icon-folder-add::before {
   content: "\e03c";
 }
-.icon-download::before {
-  content: "\e043";
-}
 .icon-popup::before {
   content: "\e045";
 }
 .icon-mail::before {
   content: "✉";
-}
-.icon-archive::before {
-  content: "\e05f"; /* 🗃 🗄️ */
 }
 .icon-filter::before {
   content: "\e061"; /* ⊆ */

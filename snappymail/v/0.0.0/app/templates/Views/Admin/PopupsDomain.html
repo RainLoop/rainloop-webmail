@@ -186,7 +186,7 @@
 	</form>
 </div>
 <footer>
-	<a class="btn button-test-connection" data-bind="command: testConnectionCommand, css: {
+	<a class="btn" data-bind="command: testConnectionCommand, css: {
 	   'btn-success': testingDone() && !testingImapError() && !testingSmtpError(),
 	   'btn-danger': testingDone() && (testingImapError() || testingSmtpError()) }">
 		<i class="fontastic" data-bind="css: {'icon-spinner': testing()}">ℹ</i>

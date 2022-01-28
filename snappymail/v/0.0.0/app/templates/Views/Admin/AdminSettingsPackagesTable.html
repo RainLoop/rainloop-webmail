@@ -17,9 +17,9 @@
 			</td>
 			<td data-bind="text: version"></td>
 			<td>
-				<a class="icon-download button-download" data-bind="visible: !loading() && canBeUpdated, click: function () { $root.installPackage($data); }"></a>
+				<a class="fontastic" data-bind="visible: !loading() && canBeUpdated, click: function () { $root.installPackage($data); }">📥</a>
 				&nbsp;
-				<a class="fontastic button-delete" data-bind="visible: !loading() && canBeDeleted, click: function () { $root.deletePackage($data); }">🗑</a>
+				<a class="fontastic" data-bind="visible: !loading() && canBeDeleted, click: function () { $root.deletePackage($data); }">🗑</a>
 				<i class="icon-spinner" data-bind="visible: loading"></i>
 			</td>
 		</tr>

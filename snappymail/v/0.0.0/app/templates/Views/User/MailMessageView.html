@@ -8,14 +8,12 @@
 				<a class="btn btn-success buttonEdit fontastic" data-bind="command: messageEditCommand">🖉</a>
 			</div>
 			<div class="btn-group">
-				<a class="btn button-archive" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled(), command: archiveCommand" data-i18n="[title]GLOBAL/TO_ARCHIVE">
-					<i class="icon-archive"></i>
-				</a>
-				<a class="btn button-spam fontastic" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled(), command: spamCommand" data-i18n="[title]GLOBAL/SPAM">⚠</a>
-				<a class="btn button-not-spam" data-bind="visible: !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled(), command: notSpamCommand" data-i18n="[title]GLOBAL/NOT_SPAM">
+				<a class="btn fontastic" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled(), command: archiveCommand" data-i18n="[title]GLOBAL/TO_ARCHIVE">🗄</a>
+				<a class="btn fontastic" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled(), command: spamCommand" data-i18n="[title]GLOBAL/SPAM">⚠</a>
+				<a class="btn" data-bind="visible: !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled(), command: notSpamCommand" data-i18n="[title]GLOBAL/NOT_SPAM">
 					<i class="icon-check-mark-circle-two"></i>
 				</a>
-				<a class="btn button-delete fontastic" data-bind="command: deleteCommand" data-i18n="[title]GLOBAL/DELETE">🗑</a>
+				<a class="btn fontastic" data-bind="command: deleteCommand" data-i18n="[title]GLOBAL/DELETE">🗑</a>
 			</div>
 			<div class="btn-group">
 				<a class="btn btn-thin buttonUp fontastic" data-bind="command: goUpCommand">❮</a>
@@ -72,10 +70,7 @@
 							</div>
 							<div class="dividerbar">
 								<li role="presentation" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled()">
-									<a href="#" tabindex="-1" data-bind="command: archiveCommand">
-										<i class="icon-archive"></i>
-										<span data-i18n="GLOBAL/TO_ARCHIVE"></span>
-									</a>
+									<a href="#" tabindex="-1" data-bind="command: archiveCommand" data-icon="🗄" data-i18n="GLOBAL/TO_ARCHIVE"></a>
 								</li>
 								<li role="presentation" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled()">
 									<a href="#" tabindex="-1" data-bind="command: spamCommand" data-icon="⚠" data-i18n="GLOBAL/SPAM"></a>
@@ -119,10 +114,7 @@
 									</a>
 								</li>
 								<li role="presentation">
-									<a target="_blank" href="#" tabindex="-1" data-bind="attr: { href: viewDownloadLink }">
-										<i class="icon-download"></i>
-										<span data-i18n="MESSAGE/MENU_DOWNLOAD_ORIGINAL"></span>
-									</a>
+									<a target="_blank" href="#" tabindex="-1" data-bind="attr: { href: viewDownloadLink }" data-icon="📥" data-i18n="MESSAGE/MENU_DOWNLOAD_ORIGINAL"></a>
 								</li>
 							</div>
 						</ul>

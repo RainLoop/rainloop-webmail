@@ -31,22 +31,13 @@
 			<!-- /ko -->
 
 			<li class="dividerbar" role="presentation" data-bind="visible: allowAccounts">
-				<a href="#" tabindex="-1" data-bind="click: addAccountClick">
-					<i class="fontastic">✚</i>
-					<span data-i18n="TOP_TOOLBAR/BUTTON_ADD_ACCOUNT"></span>
-				</a>
+				<a href="#" tabindex="-1" data-bind="click: addAccountClick" data-icon="✚" data-i18n="TOP_TOOLBAR/BUTTON_ADD_ACCOUNT"></a>
 			</li>
 			<li role="presentation" data-bind="visible: allowContacts">
-				<a href="#" tabindex="-1" data-bind="click: contactsClick">
-					<i class="fontastic">📇</i>
-					<span data-i18n="GLOBAL/CONTACTS"></span>
-				</a>
+				<a href="#" tabindex="-1" data-bind="click: contactsClick" data-icon="📇" data-i18n="GLOBAL/CONTACTS"></a>
 			</li>
 			<li role="presentation">
-				<a href="#" tabindex="-1" data-bind="click: settingsClick">
-					<i class="fontastic">⚙</i>
-					<span data-i18n="TOP_TOOLBAR/BUTTON_SETTINGS"></span>
-				</a>
+				<a href="#" tabindex="-1" data-bind="click: settingsClick" data-icon="⚙" data-i18n="TOP_TOOLBAR/BUTTON_SETTINGS"></a>
 			</li>
 			<li role="presentation">
 				<a href="#" tabindex="-1" data-bind="click: settingsHelp">
@@ -55,18 +46,11 @@
 				</a>
 			</li>
 			<li class="dividerbar" role="presentation">
-				<a href="#" tabindex="-1" data-bind="click: toggleLayout">
-					<i class="fontastic show-mobile">💻</i>
-					<span class="show-mobile" data-i18n="MOBILE/BUTTON_DESKTOP_VERSION"></span>
-					<i class="fontastic hide-mobile">📱</i>
-					<span class="hide-mobile" data-i18n="MOBILE/BUTTON_MOBILE_VERSION"></span>
-				</a>
+				<a href="#" tabindex="-1" data-bind="click: toggleLayout" data-icon="💻" class="show-mobile" data-i18n="MOBILE/BUTTON_DESKTOP_VERSION"></a>
+				<a href="#" tabindex="-1" data-bind="click: toggleLayout" data-icon="📱" class="hide-mobile" data-i18n="MOBILE/BUTTON_MOBILE_VERSION"></a>
 			</li>
 			<li role="presentation">
-				<a href="#" tabindex="-1" data-bind="click: logoutClick">
-					<i class="fontastic">⏻</i>
-					<span data-i18n="GLOBAL/LOGOUT"></span>
-				</a>
+				<a href="#" tabindex="-1" data-bind="click: logoutClick" data-icon="⏻" data-i18n="GLOBAL/LOGOUT"></a>
 			</li>
 		</ul>
 	</div>
