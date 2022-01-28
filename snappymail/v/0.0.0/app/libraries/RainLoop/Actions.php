@@ -1190,9 +1190,9 @@ class Actions
 
 		if ($oConfig->Get('security', 'openpgp', false)) {
 			$aResult[] = Enumerations\Capa::OPEN_PGP;
-		}
-		if (\SnappyMail\PGP\GnuPG::isSupported()) {
-			$aResult[] = Enumerations\Capa::GNUPG;
+			if (\SnappyMail\PGP\GnuPG::isSupported()) {
+				$aResult[] = Enumerations\Capa::GNUPG;
+			}
 		}
 
 		if ($bAdmin || ($oAccount && $oAccount->Domain()->UseSieve())) {
