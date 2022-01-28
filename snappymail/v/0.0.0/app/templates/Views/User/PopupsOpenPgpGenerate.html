@@ -7,9 +7,11 @@
 		<a href="#" class="close" data-bind="click: function () { submitError('') }">×</a>
 		<span data-bind="text: submitError"></span>
 	</div>
+	<!-- Disable stupid browser password autofill -->
+	<input type="password" style="display:none"/>
 	<div class="control-group" data-bind="css: {'error': emailError}">
 		<label data-i18n="GLOBAL/EMAIL"></label>
-		<input type="text" required="" class="input-xlarge"
+		<input type="email" required="" class="input-xlarge"
 			autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 			list="emailaddresses" data-bind="value: email" />
 		<datalist id="emailaddresses">

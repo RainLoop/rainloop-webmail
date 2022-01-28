@@ -87,8 +87,8 @@ class GPG
 			throw new \Exception("socket name for '{$homedir}/S.gpg-agent.extra' is too long");
 		}
 
-		if (!\is_dir($homedir)) {
-			\mkdir($homedir, 0700, true);
+		if ($homedir && !\is_dir($homedir) && !\mkdir($homedir, 0700, true)) {
+			throw new \Exception("mkdir({$homedir}) failed");
 		}
 
 		$this->options['homedir'] = $homedir;
@@ -519,11 +519,9 @@ class GPG
 	{
 		$key = $this->keyInfo($keyId, $private ? 1 : 0);
 		if (!$key) {
-			return false;
-//			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $keyId);
+			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $keyId);
 		}
 		if (!$private && $this->keyInfo($keyId, 1)) {
-			return false;
 			throw new \Exception('Delete private key first: ' . $keyId);
 		}
 

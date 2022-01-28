@@ -166,6 +166,11 @@ class GnuPG
 			: $this->GPG->decryptverifyFile($filename, $plaintext);
 	}
 
+	public function deleteKey(string $keyId, bool $private) : bool
+	{
+		return $this->getGPG()->deleteKey($keyId, $private);
+	}
+
 	/**
 	 * Encrypts a given text
 	 */
@@ -285,64 +290,21 @@ class GnuPG
 	 */
 	public function keyInfo(string $pattern) : array
 	{
-		$keys = [];
+		$keys = [
+			'public' => [],
+			'private' => []
+		];
 		// Public
-		foreach ($this->handler()->keyinfo($pattern) as $info) {
-			if (!$info['disabled'] && !$info['expired'] && !$info['revoked']) {
-				foreach ($info['uids'] as $uid)  {
-					$id = $uid['email'];
-					if (isset($keys[$id])) {
-						$keys[$id]['can_sign'] = $keys[$id]['can_sign'] || $info['can_sign'];
-						$keys[$id]['can_encrypt'] = $keys[$id]['can_encrypt'] || $info['can_encrypt'];
-					} else {
-						$keys[$id] = [
-							'name' => $uid['name'],
-							'email' => $uid['email'],
-							// Public Key tasks
-							'can_verify' => $info['can_sign'],
-							'can_encrypt' => $info['can_encrypt'],
-							// Private Key tasks
-							'can_sign' => false,
-							'can_decrypt' => false,
-							// The keys
-							'publicKeys' => [],
-							'privateKeys' => []
-						];
-					}
-					foreach ($info['subkeys'] as $key)  {
-						$keys[$id]['publicKeys'][$key['fingerprint']] = $key;
-					}
-				}
-			}
+		foreach ($this->handler()->keyinfo($pattern) as $key) {
+			$key['can_verify'] = $key['can_sign'];
+			unset($key['can_sign']);
+			$keys['public'][] = $key;
 		}
 		// Private, read https://github.com/php-gnupg/php-gnupg/issues/5
-		foreach ($this->handler()->keyinfo($pattern, 1) as $info) {
-			if (!$info['disabled'] && !$info['expired'] && !$info['revoked']) {
-				foreach ($info['uids'] as $uid)  {
-					$id = $uid['email'];
-					if (isset($keys[$id])) {
-						$keys[$id]['can_sign'] = $keys[$id]['can_sign'] || $info['can_sign'];
-						$keys[$id]['can_decrypt'] = $keys[$id]['can_decrypt'] || $info['can_encrypt'];
-					} else {
-						$keys[$id] = [
-							'name' => $uid['name'],
-							'email' => $uid['email'],
-							// Public Key tasks
-							'can_verify' => false,
-							'can_encrypt' => false,
-							// Private Key tasks
-							'can_sign' => $info['can_sign'],
-							'can_decrypt' => $info['can_encrypt'],
-							// The keys
-							'publicKeys' => [],
-							'privateKeys' => []
-						];
-					}
-					foreach ($info['subkeys'] as $key)  {
-						$keys[$id]['privateKeys'][$key['fingerprint']] = $key;
-					}
-				}
-			}
+		foreach ($this->handler()->keyinfo($pattern, 1) as $key) {
+			$key['can_decrypt'] = $key['can_encrypt'];
+			unset($key['can_encrypt']);
+			$keys['private'][] = $key;
 		}
 		return $keys;
 	}

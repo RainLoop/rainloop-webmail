@@ -13,7 +13,7 @@ trait Pgp
 	 */
 	public function GnuPG() : ?\SnappyMail\PGP\GnuPG
 	{
-		$oAccount = $this->getAccountFromToken();
+		$oAccount = $this->getMainAccountFromToken();
 		if (!$oAccount) {
 			return null;
 		}
@@ -95,9 +95,7 @@ trait Pgp
 	public function DoGnupgGetKeys() : array
 	{
 		$GPG = $this->GnuPG();
-		return $GPG
-			? $this->DefaultResponse(__FUNCTION__, $GPG->keyInfo(''))
-			: $this->FalseResponse(__FUNCTION__);
+		return $this->DefaultResponse(__FUNCTION__, $GPG ? $GPG->keyInfo('') : false);
 	}
 
 	public function DoGnupgGenerateKey() : array
@@ -112,9 +110,15 @@ trait Pgp
 				$this->GetActionParam('Passphrase', '')
 			);
 		}
-		return $fingerprint
-			? $this->DefaultResponse(__FUNCTION__, $fingerprint)
-			: $this->FalseResponse(__FUNCTION__);
+		return $this->DefaultResponse(__FUNCTION__, $fingerprint);
+	}
+
+	public function DoGnupgDeleteKey() : array
+	{
+		$GPG = $this->GnuPG();
+		$sKeyId = $this->GetActionParam('KeyId', '');
+		$bPrivate = !!$this->GetActionParam('isPrivate', 0);
+		return $this->DefaultResponse(__FUNCTION__, $GPG ? $GPG->deleteKey($sKeyId, $bPrivate) : false);
 	}
 
 	public function DoGnupgImportKey() : array
@@ -155,9 +159,7 @@ trait Pgp
 		}
 
 		$GPG = $sKey ? $this->GnuPG() : null;
-		return $GPG
-			? $this->DefaultResponse(__FUNCTION__, $GPG->import($sKey))
-			: $this->FalseResponse(__FUNCTION__);
+		return $this->DefaultResponse(__FUNCTION__, $GPG ? $GPG->import($sKey) : false);
 	}
 
 	/**
@@ -196,20 +198,54 @@ trait Pgp
 	}
 
 	/**
+	 * Used to store generated armored key pair from OpenPGP.js
+	 * Handy when using multiple browsers
+	 */
+	public function DoPgpStoreKeyPair() : array
+	{
+		$result = [
+			'onServer' => [false, false, false],
+			'inGnuPG'  => [false, false, false]
+		];
+		$publicKey  = $this->GetActionParam('publicKey', '');
+		$privateKey = $this->GetActionParam('privateKey', '');
+		$revocationCertificate = $this->GetActionParam('revocationCertificate', '');
+		if ($this->GetActionParam('onServer', '')) {
+			$result['onServer'] = [
+				$this->StorePGPKey($publicKey),
+				$this->StorePGPKey($privateKey),
+				false // $this->StorePGPKey($revocationCertificate)
+			];
+		}
+		if ($this->GetActionParam('inGnuPG', '')) {
+			$GPG = $this->GnuPG();
+			if ($GPG) {
+				$result['inGnuPG'] = [
+					$publicKey  && $GPG->import($publicKey),
+					$privateKey && $GPG->import($privateKey),
+					false // $revocationCertificate && $GPG->import($revocationCertificate)
+				];
+			}
+		}
+		return $this->DefaultResponse(__FUNCTION__, $result);
+	}
+
+	/**
 	 * Used to store key from OpenPGP.js
 	 * Handy when using multiple browsers
 	 */
 	public function DoStorePGPKey() : array
 	{
-		$oAccount = $this->getMainAccountFromToken();
-		if (!$oAccount) {
-			return null;
-		}
-
 		$key = $this->GetActionParam('Key', '');
 		$keyId = $this->GetActionParam('KeyId', '');
-		$result = false;
-		if ($key && $keyId) {
+		return $this->DefaultResponse(__FUNCTION__, ($key && $keyId && $this->StorePGPKey($key, $keyId)));
+	}
+
+	private function StorePGPKey(string $key, string $keyId = '') : bool
+	{
+		$oAccount = $this->getMainAccountFromToken();
+		if ($oAccount) {
+			$keyId = $keyId ? "0x{$keyId}" : \sha1($key);
 			$dir = $this->StorageProvider()->GenerateFilePath(
 				$oAccount,
 				\RainLoop\Providers\Storage\Enumerations\StorageType::PGP
@@ -218,15 +254,13 @@ trait Pgp
 				$hash = $oAccount->CryptKey();
 				$key = \SnappyMail\Crypt::Encrypt($key, $hash);
 				$key[] = \hash_hmac('sha1', $key[2], $hash);
-				$result = \file_put_contents("{$dir}/0x{$keyId}.key", \json_encode($key));
-			} else if (\str_contains($key, 'PGP PUBLIC KEY')) {
-				$result = \file_put_contents("{$dir}/0x{$keyId}_public.asc", $key);
+				return !!\file_put_contents("{$dir}/{$keyId}.key", \json_encode($key));
+			}
+			if (\str_contains($key, 'PGP PUBLIC KEY')) {
+				return !!\file_put_contents("{$dir}/{$keyId}_public.asc", $key);
 			}
 		}
-
-		return $result
-			? $this->TrueResponse(__FUNCTION__)
-			: $this->FalseResponse(__FUNCTION__);
+		return false;
 	}
 
 }

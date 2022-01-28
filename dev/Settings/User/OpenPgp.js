@@ -13,7 +13,8 @@ import { Settings } from 'Common/Globals';
 
 export class OpenPgpUserSettings /*extends AbstractViewSettings*/ {
 	constructor() {
-		this.gnupgkeys = PgpUserStore.gnupgKeys;
+		this.gnupgPublicKeys = PgpUserStore.gnupgPublicKeys;
+		this.gnupgPrivateKeys = PgpUserStore.gnupgPrivateKeys;
 
 		this.openpgpkeysPublic = PgpUserStore.openpgpPublicKeys;
 		this.openpgpkeysPrivate = PgpUserStore.openpgpPrivateKeys;

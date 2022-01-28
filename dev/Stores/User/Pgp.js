@@ -58,11 +58,7 @@ class OpenPgpKeyModel {
 		this.key = key;
 		const aEmails = [];
 		if (key.users) {
-			key.users.forEach(user => {
-				if (user.userID.email) {
-					aEmails.push(user.userID.email);
-				}
-			});
+			key.users.forEach(user => user.userID.email && aEmails.push(user.userID.email));
 		}
 		this.id = key.getKeyID().toHex();
 		this.fingerprint = key.getFingerprint();
@@ -101,7 +97,8 @@ export const PgpUserStore = new class {
 		 * [ {email, can_encrypt, can_sign}, ... ]
 		 */
 		this.gnupgKeyring;
-		this.gnupgKeys = ko.observableArray();
+		this.gnupgPublicKeys = ko.observableArray();
+		this.gnupgPrivateKeys = ko.observableArray();
 
 		// OpenPGP.js
 		this.openpgpPublicKeys = ko.observableArray();
@@ -159,12 +156,42 @@ export const PgpUserStore = new class {
 
 		if (Settings.capa(Capa.GnuPG)) {
 			this.gnupgKeyring = null;
-			this.gnupgKeys([]);
+			this.gnupgPublicKeys([]);
+			this.gnupgPrivateKeys([]);
 			Remote.request('GnupgGetKeys',
 				(iError, oData) => {
 					if (oData && oData.Result) {
 						this.gnupgKeyring = oData.Result;
-						this.gnupgKeys(Object.values(oData.Result));
+						const initKey = (key, isPrivate) => {
+							const aEmails = [];
+							key.id = key.subkeys[0].keyid;
+							key.uids.forEach(uid => uid.email && aEmails.push(uid.email));
+							key.emails = aEmails;
+							key.askDelete = ko.observable(false);
+							key.openForDeletion = ko.observable(null).askDeleteHelper();
+							key.remove = () => {
+								if (key.askDelete()) {
+									Remote.request('GnupgDeleteKey',
+										(iError, oData) => {
+											if (oData && oData.Result) {
+												if (isPrivate) {
+													PgpUserStore.gnupgPrivateKeys.remove(key);
+												} else {
+													PgpUserStore.gnupgPublicKeys.remove(key);
+												}
+												delegateRunOnDestroy(key);
+											}
+										}, {
+											KeyId: key.id,
+											isPrivate: isPrivate
+										}
+									);
+								}
+							}
+							return key;
+						};
+						this.gnupgPublicKeys(oData.Result.public.map(key => initKey(key, 0)));
+						this.gnupgPrivateKeys(oData.Result.private.map(key => initKey(key, 1)));
 						console.log('gnupg ready');
 					}
 				}
@@ -200,8 +227,6 @@ export const PgpUserStore = new class {
 		keyPair.revocationCertificate
 		keyPair.onServer
 		keyPair.inGnuPG
-		keyPair.uid.name
-		keyPair.uid.email
 	 */
 	storeKeyPair(keyPair, callback) {
 //		if (Settings.capa(Capa.GnuPG)) {
@@ -213,9 +238,6 @@ export const PgpUserStore = new class {
 				callback && callback(iError, oData);
 			}, keyPair
 		);
-//		storeKeys(publicKeysItem);
-//		storeKeys(privateKeysItem);
-
 		openpgp.readKey({armoredKey:keyPair.publicKey}).then(key => {
 			PgpUserStore.openpgpPublicKeys.push(new OpenPgpKeyModel(keyPair.publicKey, key));
 			storeOpenPgpKeys(PgpUserStore.openpgpPublicKeys, publicKeysItem);
