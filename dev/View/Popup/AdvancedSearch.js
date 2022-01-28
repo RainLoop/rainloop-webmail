@@ -27,9 +27,9 @@ class AdvancedSearchPopupView extends AbstractViewPopup {
 
 		this.showMultisearch = koComputable(() => FolderUserStore.hasCapability('MULTISEARCH'));
 
-		let prefix = 'SEARCH/LABEL_ADV_DATE_';
 		this.selectedDates = koComputable(() => {
 			translatorTrigger();
+			let prefix = 'SEARCH/LABEL_ADV_DATE_';
 			return [
 				{ id: -1, name: i18n(prefix + 'ALL') },
 				{ id: 3, name: i18n(prefix + '3_DAYS') },
@@ -41,9 +41,9 @@ class AdvancedSearchPopupView extends AbstractViewPopup {
 			];
 		});
 
-		prefix = 'SEARCH/LABEL_ADV_SUBFOLDERS_';
 		this.selectedTree = koComputable(() => {
 			translatorTrigger();
+			let prefix = 'SEARCH/LABEL_ADV_SUBFOLDERS_';
 			return [
 				{ id: '', name: i18n(prefix + 'NONE') },
 				{ id: 'subtree-one', name: i18n(prefix + 'SUBTREE_ONE') },
