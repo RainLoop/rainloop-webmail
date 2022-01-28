@@ -460,7 +460,7 @@ class ComposePopupView extends AbstractViewPopup {
 					try {
 						const keys = PgpUserStore.getOpenPGPPrivateKeyFor(this.currentIdentity().email());
 						if (keys[0]) {
-							keys[0].decrypt(window.prompt('Password', ''));
+							keys[0].decrypt(window.prompt('Passphrase'));
 							cfg.privateKey = privateKey = keys[0];
 						}
 					} catch (e) {

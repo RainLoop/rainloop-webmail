@@ -38,8 +38,7 @@ class GnuPG
 
 	public static function isSupported() : bool
 	{
-		return \class_exists('gnupg')
-			|| \SnappyMail\PGP\GPG::isSupported();
+		return \class_exists('gnupg') || GPG::isSupported();
 	}
 
 	private static $instance;
@@ -56,13 +55,14 @@ class GnuPG
 		return $this->GnuPG ?: $this->GPG;
 	}
 
-	public function getGPG()
+	public function getGPG(bool $throw = true) : ?GPG
 	{
 		if (!$this->GPG) {
-			if (!\SnappyMail\PGP\GPG::isSupported()) {
+			if (GPG::isSupported()) {
+				$this->GPG = new GPG($this->homedir);
+			} else if ($throw) {
 				throw new \Exception('GnuPG not supported');
 			}
-			$this->GPG = new \SnappyMail\PGP\GPG($this->homedir);
 		}
 		return $this->GPG;
 	}
@@ -214,8 +214,13 @@ class GnuPG
 	/**
 	 * Exports a key
 	 */
-	public function export(string $fingerprint) /*: string|false*/
+	public function export(string $fingerprint, string $passphrase = '') /*: string|false*/
 	{
+		if ($passphrase) {
+			return $this->getGPG()
+				->addPassphrase($fingerprint, $passphrase)
+				->exportPrivateKey($fingerprint);
+		}
 		return $this->GnuPG
 			? $this->GnuPG->export($fingerprint)
 			: $this->GPG->export($fingerprint);
@@ -258,13 +263,8 @@ class GnuPG
 	 */
 	public function generateKey(string $uid, string $passphrase) /*: string|false*/
 	{
-		if (!$this->GPG) {
-			if (!\SnappyMail\PGP\GPG::isSupported()) {
-				return false;
-			}
-			$this->GPG = new \SnappyMail\PGP\GPG($homedir);
-		}
-		return $this->GPG->generateKey($uid, $passphrase);
+		$GPG = $this->getGPG(false);
+		return $GPG ? $GPG->generateKey($uid, $passphrase) : false;
 	}
 
 	/**

@@ -187,7 +187,24 @@ export const PgpUserStore = new class {
 										}
 									);
 								}
-							}
+							};
+							key.view = () => {
+								let pass = isPrivate ? prompt('Passphrase') : true;
+								if (pass) {
+									Remote.request('GnupgExportKey',
+										(iError, oData) => {
+											if (oData && oData.Result) {
+												key.armor = oData.Result;
+												showScreenPopup(ViewOpenPgpKeyPopupView, [key]);
+											}
+										}, {
+											KeyId: key.id,
+											isPrivate: isPrivate,
+											Passphrase: isPrivate ? pass : ''
+										}
+									);
+								}
+							};
 							return key;
 						};
 						this.gnupgPublicKeys(oData.Result.public.map(key => initKey(key, 0)));

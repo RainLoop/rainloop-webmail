@@ -341,12 +341,37 @@ class GPG
 		return false;
 	}
 
+	protected function _exportKey($keyId, $private = false)
+	{
+		$keys = $this->keyInfo($keyId, $private ? 1 : 0);
+		if (!$keys) {
+			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $keyId);
+		}
+		if ($private && $this->passphrases) {
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->passphrases);
+		}
+		$result = $this->exec([
+			$private ? '--export-secret-keys' : '--export',
+			'--armor',
+			\escapeshellarg($keys[0]['subkeys'][0]['fingerprint']),
+		]);
+		return $result['output'];
+	}
+
 	/**
-	 * Exports a key
+	 * Exports a public key
 	 */
 	public function export(string $fingerprint) /*: string|false*/
 	{
-		return false;
+		return $this->_exportKey($fingerprint);
+	}
+
+	/**
+	 * Exports a private key
+	 */
+	public function exportPrivateKey(string $fingerprint) /*: string|false*/
+	{
+		return $this->_exportKey($fingerprint, true);
 	}
 
 	/**
@@ -388,7 +413,7 @@ class GPG
 
 	public function addPassphrase($keyId, $passphrase)
 	{
-		$this->passphrases[$key] = $passphrase;
+		$this->passphrases[$keyId] = $passphrase;
 		return $this;
 	}
 

@@ -98,6 +98,15 @@ trait Pgp
 		return $this->DefaultResponse(__FUNCTION__, $GPG ? $GPG->keyInfo('') : false);
 	}
 
+	public function DoGnupgExportKey() : array
+	{
+		$GPG = $this->GnuPG();
+		return $this->DefaultResponse(__FUNCTION__, $GPG ? $GPG->export(
+			$this->GetActionParam('KeyId', ''),
+			$this->GetActionParam('Passphrase', '')
+		) : false);
+	}
+
 	public function DoGnupgGenerateKey() : array
 	{
 		$fingerprint = false;
