@@ -184,11 +184,13 @@ trait Pgp
 				if ('.asc' === \substr($file, -4)) {
 					$keys[] = \file_get_contents($file);
 				} else if ('.key' === \substr($file, -4)) {
-					$data = \json_decode(\file_get_contents($file), true);
-					$mac = \array_pop($sKey);
+					$key = \json_decode(\file_get_contents($file), true);
+					$mac = \array_pop($key);
 					$hash = $oAccount->CryptKey();
-					if ($mac === \hash_hmac('sha1', $data[2], $hash)) {
-						$keys[] = \SnappyMail\Crypt::Decrypt($data, $hash);
+					if ($mac === \hash_hmac('sha1', $key[2], $hash)) {
+						$key[1] = \base64_decode($key[1]);
+						$key[2] = \base64_decode($key[2]);
+						$keys[] = \SnappyMail\Crypt::Decrypt($key, $hash);
 					}
 				}
 			}
@@ -253,6 +255,8 @@ trait Pgp
 			if (\str_contains($key, 'PGP PRIVATE KEY')) {
 				$hash = $oAccount->CryptKey();
 				$key = \SnappyMail\Crypt::Encrypt($key, $hash);
+				$key[1] = \base64_encode($key[1]);
+				$key[2] = \base64_encode($key[2]);
 				$key[] = \hash_hmac('sha1', $key[2], $hash);
 				return !!\file_put_contents("{$dir}/{$keyId}.key", \json_encode($key));
 			}

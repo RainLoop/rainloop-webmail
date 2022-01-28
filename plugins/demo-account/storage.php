@@ -37,7 +37,9 @@ class DemoStorage extends \RainLoop\Providers\Storage\FileStorage
 		} else if (StorageType::SESSION === $iStorageType) {
 			$sDataPath .= '/.sessions';
 		} else if (StorageType::PGP === $iStorageType) {
-			$sDataPath = '/.pgp';
+			$sDataPath .= '/.pgp';
+			$sDataPath = "{$this->sDataPath}/demo.pgp/.pgp";
+			$bMkDir = true;
 		}
 
 		if ($bMkDir && !\is_dir($sDataPath) && !\mkdir($sDataPath, 0700, true))
