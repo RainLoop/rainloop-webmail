@@ -257,7 +257,7 @@
 		"POPUP_IMPORT_BUTTON": "Import",
 		"POPUP_VIEW_TITLE": "View OpenPGP key",
 		"POPUP_VIEW_BUTTON": "Select",
-		"POPUP_GENERATE_TITLE": "Generate OpenPGP key",
+		"POPUP_GENERATE_TITLE": "Generate OpenPGP keys",
 		"POPUP_GENERATE_BUTTON": "Generate",
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Sign",
