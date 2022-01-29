@@ -449,8 +449,8 @@
 		"DEFAULT_IDENTITY_LABEL": "sjálfgefið"
 	},
 	"SETTINGS_OPEN_PGP": {
-		"BUTTON_ADD_OPEN_PGP_KEY": "Flytja inn OpenPGP-lykil",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Búa til OpenPGP-lykla",
+		"BUTTON_IMPORT_KEY": "Flytja inn lykil",
+		"BUTTON_GENERATE_KEY_PAIR": "Búa til lykla",
 		"TITLE_PRIVATE": "Einkalykill",
 		"TITLE_PUBLIC": "Dreifilykill",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Vista drög sjálfkrafa"

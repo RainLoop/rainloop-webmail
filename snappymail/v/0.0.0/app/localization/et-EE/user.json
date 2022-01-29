@@ -449,8 +449,8 @@
 		"DEFAULT_IDENTITY_LABEL": "vaikimisi"
 	},
 	"SETTINGS_OPEN_PGP": {
-		"BUTTON_ADD_OPEN_PGP_KEY": "Impordi OpenPGP võti",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Genereeri OpenPGP võti",
+		"BUTTON_IMPORT_KEY": "Impordi võti",
+		"BUTTON_GENERATE_KEY_PAIR": "Genereeri võti",
 		"TITLE_PRIVATE": "Privaatne",
 		"TITLE_PUBLIC": "Avalik",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"

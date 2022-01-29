@@ -449,8 +449,8 @@
 		"DEFAULT_IDENTITY_LABEL": "основной"
 	},
 	"SETTINGS_OPEN_PGP": {
-		"BUTTON_ADD_OPEN_PGP_KEY": "Ипортировать OpenPGP ключ",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Новый OpenPGP ключ",
+		"BUTTON_IMPORT_KEY": "Ипортировать ключ",
+		"BUTTON_GENERATE_KEY_PAIR": "Новый ключ",
 		"TITLE_PRIVATE": "Приватный",
 		"TITLE_PUBLIC": "Публичный",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Автоматически сохранять черновик"

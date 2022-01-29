@@ -449,8 +449,8 @@
 		"DEFAULT_IDENTITY_LABEL": "الافتراضي"
 	},
 	"SETTINGS_OPEN_PGP": {
-		"BUTTON_ADD_OPEN_PGP_KEY": "OpenPGP إستيراد مفتاح",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "OpenPGP توليد مفتاح",
+		"BUTTON_IMPORT_KEY": " إستيراد مفتاح",
+		"BUTTON_GENERATE_KEY_PAIR": " توليد مفتاح",
 		"TITLE_PRIVATE": "خاص",
 		"TITLE_PUBLIC": "عام",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"

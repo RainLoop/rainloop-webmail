@@ -449,8 +449,8 @@
 		"DEFAULT_IDENTITY_LABEL": "پیش‌فرض"
 	},
 	"SETTINGS_OPEN_PGP": {
-		"BUTTON_ADD_OPEN_PGP_KEY": "وارد کردن کلید OpenPGP",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "تولید کلیدهای OpenPGP",
+		"BUTTON_IMPORT_KEY": "وارد کردن کلید",
+		"BUTTON_GENERATE_KEY_PAIR": "تولید کلیدهای",
 		"TITLE_PRIVATE": "خصوصی",
 		"TITLE_PUBLIC": "عمومی",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "ذخیره خودکار پیش‌نویس"

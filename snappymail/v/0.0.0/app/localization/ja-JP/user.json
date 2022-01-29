@@ -449,8 +449,8 @@
 		"DEFAULT_IDENTITY_LABEL": "デフォルト"
 	},
 	"SETTINGS_OPEN_PGP": {
-		"BUTTON_ADD_OPEN_PGP_KEY": "OpenPGP キーをインポート",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "OpenPGP キーを生成",
+		"BUTTON_IMPORT_KEY": "キーをインポート",
+		"BUTTON_GENERATE_KEY_PAIR": "キーを生成",
 		"TITLE_PRIVATE": "プライベート",
 		"TITLE_PUBLIC": "パブリック",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "下書きを自動的に保存する"

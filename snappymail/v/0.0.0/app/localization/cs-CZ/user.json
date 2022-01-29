@@ -449,8 +449,8 @@
 		"DEFAULT_IDENTITY_LABEL": "výchozí"
 	},
 	"SETTINGS_OPEN_PGP": {
-		"BUTTON_ADD_OPEN_PGP_KEY": "Importovat OpenPGP klíč",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Generovat OpenPGP klíče",
+		"BUTTON_IMPORT_KEY": "Importovat klíč",
+		"BUTTON_GENERATE_KEY_PAIR": "Generovat klíče",
 		"TITLE_PRIVATE": "Soukromý",
 		"TITLE_PUBLIC": "Veřejný",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automaticky uložit koncept"

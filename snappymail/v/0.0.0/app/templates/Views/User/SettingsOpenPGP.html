@@ -1,8 +1,8 @@
 <div class="legend">OpenPGP</div>
-<button class="btn" data-bind="click: addOpenPgpKey" data-icon="✚" data-i18n="SETTINGS_OPEN_PGP/BUTTON_ADD_OPEN_PGP_KEY"></button>
+<button class="btn" data-bind="click: addOpenPgpKey" data-icon="✚" data-i18n="SETTINGS_OPEN_PGP/BUTTON_IMPORT_KEY"></button>
 <!-- ko if: canOpenPGP || canGnuPG -->
 &nbsp;&nbsp;
-<button class="btn" data-bind="click: generateOpenPgpKey" data-icon="🔑" data-i18n="SETTINGS_OPEN_PGP/BUTTON_GENERATE_OPEN_PGP_KEYS"></button>
+<button class="btn" data-bind="click: generateOpenPgpKey" data-icon="🔑" data-i18n="SETTINGS_OPEN_PGP/BUTTON_GENERATE_KEY_PAIR"></button>
 <!-- /ko -->
 
 <br />
@@ -18,7 +18,8 @@
 </div>
 <br />
 
-<details data-bind="if: canGnuPG">
+<!-- ko if: canGnuPG -->
+<details>
 <summary class="legend">GnuPG</summary>
 <table class="table table-hover list-table">
 	<tbody><tr><th colspan="4" data-i18n="SETTINGS_OPEN_PGP/TITLE_PRIVATE">Private keys</th></tr></tbody>
@@ -63,8 +64,10 @@
 	</tbody>
 </table>
 </details>
+<!-- /ko -->
 
-<details data-bind="if: canOpenPGP">
+<!-- ko if: canOpenPGP -->
+<details>
 <summary class="legend">OpenPGP.js</summary>
 <table class="table table-hover list-table">
 	<tbody><tr><th colspan="4" data-i18n="SETTINGS_OPEN_PGP/TITLE_PRIVATE">Private keys</th></tr></tbody>
@@ -107,8 +110,11 @@
 	</tbody>
 </table>
 </details>
+<!-- /ko -->
 
-<details data-bind="if: canMailvelope">
+<!-- ko if: canMailvelope -->
+<details>
 <summary class="legend">Mailvelope</summary>
 <div id="mailvelope-settings" style="height:40em"></div>
 </details>
+<!-- /ko -->

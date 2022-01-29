@@ -36,9 +36,7 @@ export const Scope = {
 	Compose: 'Compose',
 	Settings: 'Settings',
 	Menu: 'Menu',
-	ComposeOpenPgp: 'ComposeOpenPgp',
-	MessageOpenPgp: 'MessageOpenPgp',
-	ViewOpenPgpKey: 'ViewOpenPgpKey',
+	OpenPgpKey: 'OpenPgpKey',
 	KeyboardShortcutsHelp: 'KeyboardShortcutsHelp',
 	Ask: 'Ask'
 };

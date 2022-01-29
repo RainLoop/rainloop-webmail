@@ -449,8 +449,8 @@
 		"DEFAULT_IDENTITY_LABEL": "default"
 	},
 	"SETTINGS_OPEN_PGP": {
-		"BUTTON_ADD_OPEN_PGP_KEY": "OpenPGP 키 가져오기",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "OpenPGP 키 생성",
+		"BUTTON_IMPORT_KEY": "키 가져오기",
+		"BUTTON_GENERATE_KEY_PAIR": "키 생성",
 		"TITLE_PRIVATE": "비공개",
 		"TITLE_PUBLIC": "공개",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "작성 중인 메시지 자동 저장"

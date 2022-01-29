@@ -449,8 +449,8 @@
 		"DEFAULT_IDENTITY_LABEL": "standard"
 	},
 	"SETTINGS_OPEN_PGP": {
-		"BUTTON_ADD_OPEN_PGP_KEY": "Importer OpenPGP nøgle",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Generer OpenPGP nøgler",
+		"BUTTON_IMPORT_KEY": "Importer nøgle",
+		"BUTTON_GENERATE_KEY_PAIR": "Generer nøgler",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Offentlig",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Gem kladde automatisk"

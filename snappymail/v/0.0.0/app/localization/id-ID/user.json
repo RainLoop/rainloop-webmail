@@ -449,8 +449,8 @@
 		"DEFAULT_IDENTITY_LABEL": "Bawaan"
 	},
 	"SETTINGS_OPEN_PGP": {
-		"BUTTON_ADD_OPEN_PGP_KEY": "Impor kunci OpenPGP",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Buat kunci OpenPGP",
+		"BUTTON_IMPORT_KEY": "Impor kunci",
+		"BUTTON_GENERATE_KEY_PAIR": "Buat kunci",
 		"TITLE_PRIVATE": "Pribadi",
 		"TITLE_PUBLIC": "Publik",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Simpan konsep otomatis"

@@ -449,8 +449,8 @@
 		"DEFAULT_IDENTITY_LABEL": "по подразбиране"
 	},
 	"SETTINGS_OPEN_PGP": {
-		"BUTTON_ADD_OPEN_PGP_KEY": "Внеси OpenPGP ключ",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Генерирай OpenPGP ключ",
+		"BUTTON_IMPORT_KEY": "Внеси ключ",
+		"BUTTON_GENERATE_KEY_PAIR": "Генерирай ключ",
 		"TITLE_PRIVATE": "Частен",
 		"TITLE_PUBLIC": "Публичен",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Автоматично запазване на чернова"

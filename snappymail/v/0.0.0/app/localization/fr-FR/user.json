@@ -449,8 +449,8 @@
 		"DEFAULT_IDENTITY_LABEL": "défaut"
 	},
 	"SETTINGS_OPEN_PGP": {
-		"BUTTON_ADD_OPEN_PGP_KEY": "Importer la clé OpenPGP",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Générer les clés OpenPGP",
+		"BUTTON_IMPORT_KEY": "Importer la clé",
+		"BUTTON_GENERATE_KEY_PAIR": "Générer les clés",
 		"TITLE_PRIVATE": "Privée",
 		"TITLE_PUBLIC": "Publique",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Brouillon sauvegardé automatiquement"

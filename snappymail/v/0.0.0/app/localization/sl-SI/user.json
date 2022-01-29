@@ -449,8 +449,8 @@
 		"DEFAULT_IDENTITY_LABEL": "privzeto"
 	},
 	"SETTINGS_OPEN_PGP": {
-		"BUTTON_ADD_OPEN_PGP_KEY": "Uvozi OpenPGP ključ",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Generiraj OpenPGP ključe",
+		"BUTTON_IMPORT_KEY": "Uvozi ključ",
+		"BUTTON_GENERATE_KEY_PAIR": "Generiraj ključe",
 		"TITLE_PRIVATE": "Zasebni",
 		"TITLE_PUBLIC": "Javni",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Samodejno shrani osnutek"

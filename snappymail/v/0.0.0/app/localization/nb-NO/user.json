@@ -449,8 +449,8 @@
 		"DEFAULT_IDENTITY_LABEL": "Standard"
 	},
 	"SETTINGS_OPEN_PGP": {
-		"BUTTON_ADD_OPEN_PGP_KEY": "Importer OpenPGP-nøkkel",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Lag OpenPGP-nøkler",
+		"BUTTON_IMPORT_KEY": "Importer nøkkel",
+		"BUTTON_GENERATE_KEY_PAIR": "Lag nøkler",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Offentlig",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Lagre utkast automatisk"

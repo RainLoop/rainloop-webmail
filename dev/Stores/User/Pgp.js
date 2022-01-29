@@ -8,19 +8,28 @@ import { delegateRunOnDestroy } from 'Common/UtilsUser';
 
 //import { showScreenPopup } from 'Knoin/Knoin';
 
-//import { MessageOpenPgpPopupView } from 'View/Popup/MessageOpenPgp';
-
 //import { EmailModel } from 'Model/Email';
 //import { OpenPgpKeyModel } from 'Model/OpenPgpKey';
 
 import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
-import { ViewOpenPgpKeyPopupView } from 'View/Popup/ViewOpenPgpKey';
+import { OpenPgpKeyPopupView } from 'View/Popup/OpenPgpKey';
 
 const
 	findKeyByHex = (keys, hash) =>
-		keys.find(item => item && (hash === item.id || item.ids.includes(hash)));
+		keys.find(item => item && (hash === item.id || item.ids.includes(hash))),
+
+	findGnuPGKey = (keys, query, sign) =>
+		keys.find(key =>
+			key[sign ? 'can_sign' : 'can_decrypt']
+			&& (key.emails.includes(query) || key.subkeys.find(key => query == key.keyid || query == key.fingerprint))
+		),
+
+	findOpenPGPKey = (keys, query/*, sign*/) =>
+		keys.find(key =>
+			key.emails.includes(query) || query == key.id || query == key.fingerprint
+		);
 
 /**
  * OpenPGP.js v5 removed the localStorage (keyring)
@@ -34,12 +43,10 @@ const
 		let keys = [], key,
 			armoredKeys = JSON.parse(storage.getItem(itemname)),
 			i = arrayLength(armoredKeys);
-		if (i) {
-			while (i--) {
-				key = await openpgp.readKey({armoredKey:armoredKeys[i]});
-				if (!key.err) {
-					keys.push(new OpenPgpKeyModel(armoredKeys[i], key));
-				}
+		while (i--) {
+			key = await openpgp.readKey({armoredKey:armoredKeys[i]});
+			if (!key.err) {
+				keys.push(new OpenPgpKeyModel(armoredKeys[i], key));
 			}
 		}
 		return keys;
@@ -73,7 +80,7 @@ class OpenPgpKeyModel {
 	}
 
 	view() {
-		showScreenPopup(ViewOpenPgpKeyPopupView, [this]);
+		showScreenPopup(OpenPgpKeyPopupView, [this]);
 	}
 
 	remove() {
@@ -88,6 +95,11 @@ class OpenPgpKeyModel {
 			delegateRunOnDestroy(this);
 		}
 	}
+/*
+	toJSON() {
+		return this.armor;
+	}
+*/
 }
 
 export const PgpUserStore = new class {
@@ -165,6 +177,7 @@ export const PgpUserStore = new class {
 						const initKey = (key, isPrivate) => {
 							const aEmails = [];
 							key.id = key.subkeys[0].keyid;
+							key.fingerprint = key.subkeys[0].fingerprint;
 							key.uids.forEach(uid => uid.email && aEmails.push(uid.email));
 							key.emails = aEmails;
 							key.askDelete = ko.observable(false);
@@ -195,7 +208,7 @@ export const PgpUserStore = new class {
 										(iError, oData) => {
 											if (oData && oData.Result) {
 												key.armor = oData.Result;
-												showScreenPopup(ViewOpenPgpKeyPopupView, [key]);
+												showScreenPopup(OpenPgpKeyPopupView, [key]);
 											}
 										}, {
 											KeyId: key.id,
@@ -260,6 +273,14 @@ export const PgpUserStore = new class {
 		keyPair.inGnuPG
 	 */
 	storeKeyPair(keyPair, callback) {
+		openpgp.readKey({armoredKey:keyPair.publicKey}).then(key => {
+			PgpUserStore.openpgpPublicKeys.push(new OpenPgpKeyModel(keyPair.publicKey, key));
+			storeOpenPgpKeys(PgpUserStore.openpgpPublicKeys, publicKeysItem);
+		});
+		openpgp.readKey({armoredKey:keyPair.privateKey}).then(key => {
+			PgpUserStore.openpgpPrivateKeys.push(new OpenPgpKeyModel(keyPair.privateKey, key));
+			storeOpenPgpKeys(PgpUserStore.openpgpPrivateKeys, privateKeysItem);
+		});
 //		if (Settings.capa(Capa.GnuPG)) {
 		Remote.request('PgpStoreKeyPair',
 			(iError, oData) => {
@@ -269,14 +290,6 @@ export const PgpUserStore = new class {
 				callback && callback(iError, oData);
 			}, keyPair
 		);
-		openpgp.readKey({armoredKey:keyPair.publicKey}).then(key => {
-			PgpUserStore.openpgpPublicKeys.push(new OpenPgpKeyModel(keyPair.publicKey, key));
-			storeOpenPgpKeys(PgpUserStore.openpgpPublicKeys, publicKeysItem);
-		});
-		openpgp.readKey({armoredKey:keyPair.privateKey}).then(key => {
-			PgpUserStore.openpgpPrivateKeys.push(new OpenPgpKeyModel(keyPair.privateKey, key));
-			storeOpenPgpKeys(PgpUserStore.openpgpPrivateKeys, privateKeysItem);
-		});
 	}
 
 	/**
@@ -287,7 +300,9 @@ export const PgpUserStore = new class {
 		const count = recipients.length;
 		if (count) {
 			let length = this.gnupgKeyring && recipients.filter(email =>
-				this.gnupgKeyring[email] && this.gnupgKeyring[email].can_encrypt).length;
+//				(key.can_verify || key.can_encrypt) &&
+				this.gnupgPublicKeys.find(key => key.emails.includes(email))
+			).length;
 			if (length && (!all || length === count)) {
 				return 'gnupg';
 			}
@@ -299,52 +314,50 @@ export const PgpUserStore = new class {
 				return 'openpgp';
 			}
 
-			let mailvelope = this.mailvelopeKeyring && await this.mailvelopeKeyring.validKeyForAddress(recipients)
+			let keyring = this.mailvelopeKeyring,
+				mailvelope = keyring && await keyring.validKeyForAddress(recipients)
 				/*.then(LookupResult => Object.entries(LookupResult))*/;
-			mailvelope = Object.entries(mailvelope);
-			if (mailvelope && mailvelope.length
-				&& (all ? (mailvelope.filter(([, value]) => value).length === count) : mailvelope.find(([, value]) => value))
-			) {
+			mailvelope = mailvelope && Object.entries(mailvelope);
+			if (mailvelope && (all ? (mailvelope.filter(([, value]) => value).length === count) : mailvelope.length)) {
 				return 'mailvelope';
 			}
 		}
 		return false;
 	}
 
-	getGnuPGPrivateKeyFor(email, sign) {
-		let key = this.gnupgKeyring && this.gnupgKeyring[email];
-		if (key && key[sign?'can_sign':'can_decrypt']) {
+	getGnuPGPrivateKeyFor(query, sign) {
+		let key = findGnuPGKey(this.gnupgPrivateKeys, query, sign);
+		if (key) {
 			return ['gnupg', key];
 		}
 	}
 
-	getOpenPGPPrivateKeyFor(email/*, sign*/) {
-		let key = this.openpgpPrivateKeys().find(key => key.emails.includes(email));
-		if (key && key.length) {
-			return ['openpgp', key[0]];
+	getGnuPGPublicKeyFor(query, sign) {
+		let key = findGnuPGKey(this.gnupgPublicKeys, query, sign);
+		if (key) {
+			return ['gnupg', key];
 		}
 	}
 
-	getOpenPGPPublicKeyFor(email/*, sign*/) {
-		return this.gnupgKeyring && this.openpgpKeyring.publicKeys.getForAddress(email);
+	getOpenPGPPrivateKeyFor(query/*, sign*/) {
+		let key = findOpenPGPKey(this.openpgpPrivateKeys, query/*, sign*/);
+		if (key) {
+			return ['openpgp', key];
+		}
 	}
 
-	/**
-	 * Checks if signing a message is possible with given email address.
-	 * Returns the first library that can.
-	 */
+	getOpenPGPPublicKeyFor(query/*, sign*/) {
+		let key = findOpenPGPKey(this.openpgpPublicKeys, query/*, sign*/);
+		if (key) {
+			return ['openpgp', key];
+		}
+	}
+
 	async getMailvelopePrivateKeyFor(email/*, sign*/) {
 		let keyring = this.mailvelopeKeyring;
-		if (keyring) {
-			/**
-			 * Mailvelope can't find by email, so we must get the fingerprint and use that instead
-			 */
-			let keys = await keyring.validKeyForAddress([email]);
-			if (keys && keys[email] && await keyring.hasPrivateKey(keys[email].keys[0].fingerprint)) {
-				return ['mailvelope', keys[email].keys[0].fingerprint];
-			}
+		if (keyring && await keyring.hasPrivateKey({email:email})) {
+			return ['mailvelope', email];
 		}
-
 		return false;
 	}
 
@@ -359,13 +372,41 @@ export const PgpUserStore = new class {
 	}
 
 	/**
-	 * Checks if decrypting a message is possible with given email address.
+	 * Checks if decrypting a message is possible with given keyIds or email address.
 	 * Returns the first library that can.
 	 */
-	async getKeyForDecrypting(email) {
-		return await this.getMailvelopePrivateKeyFor(email)
-			|| this.getGnuPGPrivateKeyFor(email)
-			|| this.getOpenPGPPrivateKeyFor(email);
+	async getKeyForDecryption(ids, email) {
+		ids = [email].concat(ids);
+		let i = ids.length,
+			key = await this.getMailvelopePrivateKeyFor({email:email});
+		if (key) {
+			return key;
+		}
+/*      Not working, needs full fingerprint
+		while (i--) {
+			key = await this.getMailvelopePrivateKeyFor(ids[i]);
+			if (key) {
+				return key;
+			}
+			if (await keyring.hasPrivateKey(ids[i])) {
+				return ['mailvelope', ids[i]];
+			}
+		}
+		i = ids.length;
+*/
+		while (i--) {
+			key = this.getGnuPGPrivateKeyFor(ids[i]);
+			if (key) {
+				return key;
+			}
+		}
+		i = ids.length;
+		while (i--) {
+			key = this.getOpenPGPPrivateKeyFor(ids[i]);
+			if (key) {
+				return key;
+			}
+		}
 	}
 
 	/**
@@ -394,7 +435,7 @@ export const PgpUserStore = new class {
 			}
 
 			if (privateKeys && privateKeys.length) {
-				showScreenPopup(MessageOpenPgpPopupView, [
+				showScreenPopup(OpenPgpSelectorPopupView, [
 					(decryptedKey) => {
 						if (decryptedKey) {
 							message.decrypt(decryptedKey).then(

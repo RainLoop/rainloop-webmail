@@ -449,8 +449,8 @@
 		"DEFAULT_IDENTITY_LABEL": "numatytasis"
 	},
 	"SETTINGS_OPEN_PGP": {
-		"BUTTON_ADD_OPEN_PGP_KEY": "Importuoti OpenPGP raktą",
-		"BUTTON_GENERATE_OPEN_PGP_KEYS": "Sukurti OpenPGP raktus",
+		"BUTTON_IMPORT_KEY": "Importuoti raktą",
+		"BUTTON_GENERATE_KEY_PAIR": "Sukurti raktus",
 		"TITLE_PRIVATE": "Privatus",
 		"TITLE_PUBLIC": "Viešas",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"

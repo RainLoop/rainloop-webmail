@@ -625,72 +625,71 @@ export class MailMessageView extends AbstractViewRight {
 	}
 
 	pgpDecrypt(self) {
-		const pgpInfo = self.pgpEncrypted();
+		const message = self.message(),
+			pgpInfo = message && message.pgpEncrypted();
 		if (pgpInfo) {
-			const message = self.message();
-			if (window.mailvelope) {
-				/**
-				 * https://mailvelope.github.io/mailvelope/Mailvelope.html#createEncryptedFormContainer
-				 * Creates an iframe to display an encrypted form
-				 */
-//				mailvelope.createEncryptedFormContainer('#mailvelope-form');
-				/**
-				 * https://mailvelope.github.io/mailvelope/Mailvelope.html#createDisplayContainer
-				 * Creates an iframe to display the decrypted content of the encrypted mail.
-				 */
-				let body = message.body;
-				body.textContent = '';
-				mailvelope.createDisplayContainer(
-					'#'+body.id,
-					message.plain(),
-					PgpUserStore.mailvelopeKeyring,
-					{
-						senderAddress: message.from[0].email
-					}
-				).then(status => {
-					if (status.error && status.error.message) {
-						alert(status.error.code + ': ' + status.error.message);
-					} else {
-						body.classList.add('mailvelope');
-					}
-				}, error => {
-					console.error(error);
-				});
-			}
-/*
-			else {
-				// TODO: which key to decrypt, use pgpInfo.KeyIds
-
-				PgpUserStore.getKeyForDecrypting(message.email()).then(result => {
-					console.log({canPgpSign:result});
-					this.canPgpSign(!!result)
-				});
-
-			else if (window.openpgp) {
-				decryptMessage(message, recipients, fCallback)
-			}
-			else if (Settings.capa(Capa.GnuPG)) {
-				message.
-
-				let params = {
-					Folder: message.folder,
-					Uid: message.uid,
-					PartId: message.pgpEncrypted().PartId,
-					KeyId: '',
-					Passphrase: prompt("Passphrase", ''),
-					Data: '' // optional
+			// Also check message.from[0].email
+			PgpUserStore.getKeyForDecryption(pgpInfo.KeyIds, message.to[0].email).then(result => {
+				if (!result) {
+					// TODO: show error
+					alert('No decrypt key found for ids:\n\n' + pgpInfo.KeyIds.join('\n'));
+					return;
 				}
-				rl.app.Remote.post('GnupgDecrypt', null, params)
-					.then(data => {
-						// TODO
-						console.dir(data);
-					})
-					.catch(error => {
-						// TODO
-						console.dir(error);
+				if ('mailvelope' === result[0]) {
+					/**
+					* https://mailvelope.github.io/mailvelope/Mailvelope.html#createEncryptedFormContainer
+					* Creates an iframe to display an encrypted form
+					*/
+//					mailvelope.createEncryptedFormContainer('#mailvelope-form');
+					/**
+					* https://mailvelope.github.io/mailvelope/Mailvelope.html#createDisplayContainer
+					* Creates an iframe to display the decrypted content of the encrypted mail.
+					*/
+					let body = message.body;
+					body.textContent = '';
+					mailvelope.createDisplayContainer(
+						'#'+body.id,
+						message.plain(),
+						PgpUserStore.mailvelopeKeyring,
+						{
+							senderAddress: message.from[0].email
+						}
+					).then(status => {
+						if (status.error && status.error.message) {
+							alert(status.error.code + ': ' + status.error.message);
+						} else {
+							body.classList.add('mailvelope');
+						}
+					}, error => {
+						console.error(error);
 					});
-			}
-*/
+				}
+				else if ('openpgp' === result[0]) {
+					// TODO
+//					PgpUserStore.decryptMessage(message, recipients, fCallback)
+				}
+				else if ('gnupg' === result[0]) {
+					let params = {
+						Folder: message.folder,
+						Uid: message.uid,
+						PartId: pgpInfo.PartId,
+						KeyId: result[1].id,
+						Passphrase: prompt('Passphrase for ' + result[1].id + ' ' + result[1].uids[0].uid),
+						Data: '' // optional
+					}
+					if (params.Passphrase) {
+						rl.app.Remote.post('GnupgDecrypt', null, params)
+							.then(data => {
+								// TODO
+								console.dir(data);
+							})
+							.catch(error => {
+								// TODO
+								console.dir(error);
+							});
+					}
+				}
+			});
 		}
 	}
 
