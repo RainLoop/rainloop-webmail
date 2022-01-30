@@ -1,4 +1,5 @@
-import { PgpUserStore } from 'Stores/User/Pgp';
+import { GnuPGUserStore } from 'Stores/User/GnuPG';
+import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
 import Remote from 'Remote/User/Fetch';
@@ -13,14 +14,14 @@ import { Settings } from 'Common/Globals';
 
 export class OpenPgpUserSettings /*extends AbstractViewSettings*/ {
 	constructor() {
-		this.gnupgPublicKeys = PgpUserStore.gnupgPublicKeys;
-		this.gnupgPrivateKeys = PgpUserStore.gnupgPrivateKeys;
+		this.gnupgPublicKeys = GnuPGUserStore.publicKeys;
+		this.gnupgPrivateKeys = GnuPGUserStore.privateKeys;
 
-		this.openpgpkeysPublic = PgpUserStore.openpgpPublicKeys;
-		this.openpgpkeysPrivate = PgpUserStore.openpgpPrivateKeys;
+		this.openpgpkeysPublic = OpenPGPUserStore.publicKeys;
+		this.openpgpkeysPrivate = OpenPGPUserStore.privateKeys;
 
 		this.canOpenPGP = Settings.capa(Capa.OpenPGP);
-		this.canGnuPG = Settings.capa(Capa.GnuPG);
+		this.canGnuPG = GnuPGUserStore.isSupported();
 		this.canMailvelope = !!window.mailvelope;
 
 		this.allowDraftAutosave = SettingsUserStore.allowDraftAutosave;

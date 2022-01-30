@@ -29,6 +29,7 @@ import { IdentityUserStore } from 'Stores/User/Identity';
 import { AccountUserStore } from 'Stores/User/Account';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { PgpUserStore } from 'Stores/User/Pgp';
+import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 import { MessageUserStore } from 'Stores/User/Message';
 
 import Remote from 'Remote/User/Fetch';
@@ -458,10 +459,10 @@ class ComposePopupView extends AbstractViewPopup {
 				if ('openpgp' == sign) {
 					let privateKey;
 					try {
-						const keys = PgpUserStore.getOpenPGPPrivateKeyFor(this.currentIdentity().email());
-						if (keys[0]) {
-							keys[0].decrypt(window.prompt('Passphrase'));
-							cfg.privateKey = privateKey = keys[0];
+						const key = OpenPGPUserStore.getPrivateKeyFor(this.currentIdentity().email());
+						if (key) {
+							key.decrypt(window.prompt('Passphrase'));
+							cfg.privateKey = privateKey = key;
 						}
 					} catch (e) {
 						console.error(e);
@@ -477,7 +478,7 @@ class ComposePopupView extends AbstractViewPopup {
 					// error 'sign and encrypt must be same engine';
 				} else if ('openpgp' == encrypt) {
 					this.allRecipients().forEach(recEmail => {
-						cfg.publicKeys = cfg.publicKeys.concat(PgpUserStore.getOpenPGPPublicKeyFor(recEmail));
+						cfg.publicKeys = cfg.publicKeys.concat(OpenPGPUserStore.getPublicKeyFor(recEmail));
 					});
 					pgpPromise = openpgp.encrypt(cfg);
 				} else if ('openpgp' == sign) {

@@ -1,9 +1,7 @@
-import { PgpUserStore } from 'Stores/User/Pgp';
+import { GnuPGUserStore } from 'Stores/User/GnuPG';
+import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
-
-import { Capa } from 'Common/Enums';
-import { Settings } from 'Common/Globals';
 
 export class OpenPgpImportPopupView extends AbstractViewPopup {
 	constructor() {
@@ -18,7 +16,7 @@ export class OpenPgpImportPopupView extends AbstractViewPopup {
 			saveServer: true
 		});
 
-		this.canGnuPG = Settings.capa(Capa.GnuPG);
+		this.canGnuPG = GnuPGUserStore.isSupported();
 
 		this.key.subscribe(() => {
 			this.keyError(false);
@@ -50,16 +48,8 @@ export class OpenPgpImportPopupView extends AbstractViewPopup {
 			match = reg.exec(keyTrimmed);
 			if (match && 0 < count) {
 				if (match[0] && match[1] && match[2] && match[1] === match[2]) {
-					let err = null;
-					if (this.saveGnuPG()) {
-						PgpUserStore.gnupgImportKey(this.key());
-					}
-					PgpUserStore.openpgpImportKey(this.key());
-					if (err) {
-						this.keyError(true);
-						this.keyErrorMessage(err && err[0] ? '' + err[0] : '');
-						console.log(err);
-					}
+					this.saveGnuPG() && GnuPGUserStore.isSupported() && GnuPGUserStore.importKey(this.key());
+					OpenPGPUserStore.isSupported() && OpenPGPUserStore.importKey(this.key());
 				}
 
 				--count;
