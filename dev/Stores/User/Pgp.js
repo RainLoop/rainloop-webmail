@@ -131,10 +131,15 @@ export const PgpUserStore = new class {
 	 */
 	async getKeyForDecryption(ids, email) {
 		ids = [email].concat(ids);
-		let i = ids.length,
-			key = await this.getMailvelopePrivateKeyFor({email:email});
-		if (key) {
-			return key;
+		let i = ids.length, key;
+
+		try {
+			key = await this.getMailvelopePrivateKeyFor(email);
+			if (key) {
+				return key;
+			}
+		} catch (err) {
+			console.error(err);
 		}
 /*      Not working, needs full fingerprint
 		while (i--) {
@@ -148,13 +153,14 @@ export const PgpUserStore = new class {
 		}
 		i = ids.length;
 */
+/*
 		while (i--) {
 			key = this.getGnuPGPrivateKeyFor(ids[i]);
 			if (key) {
 				return key;
 			}
 		}
-
+*/
 		i = ids.length;
 		while (i--) {
 			key = this.getOpenPGPPrivateKeyFor(ids[i]);

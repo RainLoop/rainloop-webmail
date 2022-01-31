@@ -41,6 +41,7 @@ import { decorateKoCommands, createCommand } from 'Knoin/Knoin';
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 import { PgpUserStore } from 'Stores/User/Pgp';
+import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 
 const currentMessage = () => MessageUserStore.message();
 
@@ -626,6 +627,7 @@ export class MailMessageView extends AbstractViewRight {
 
 	pgpDecrypt(self) {
 		const message = self.message(),
+			sender = message && message.from[0].email,
 			pgpInfo = message && message.pgpEncrypted();
 		if (pgpInfo) {
 			// Also check message.from[0].email
@@ -652,7 +654,7 @@ export class MailMessageView extends AbstractViewRight {
 						message.plain(),
 						PgpUserStore.mailvelopeKeyring,
 						{
-							senderAddress: message.from[0].email
+							senderAddress: sender
 						}
 					).then(status => {
 						if (status.error && status.error.message) {
@@ -665,8 +667,18 @@ export class MailMessageView extends AbstractViewRight {
 					});
 				}
 				else if ('openpgp' === result[0]) {
-					// TODO
-//					PgpUserStore.decryptMessage(message, recipients, fCallback)
+					const publicKey = OpenPGPUserStore.getPublicKeyFor(sender);
+//					OpenPGPUserStore.decrypt(message.plain(), result[1].armor
+					OpenPGPUserStore.decrypt(message.plain(), result[1].key, publicKey ? publicKey.key : null).then(result => {
+						if (result) {
+							// TODO: if result.data is not cleartext then
+							// parse mime to find and verify signature
+							message.plain(result.data);
+							message.viewPlain();
+						} else {
+//							controlsHelper(dom, this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
+						}
+					});
 				}
 				else if ('gnupg' === result[0]) {
 					let params = {
@@ -695,7 +707,8 @@ export class MailMessageView extends AbstractViewRight {
 
 	pgpVerify(self) {
 		if (self.pgpSigned()) {
-			const message = self.message();
+			const message = self.message(),
+				sender = message && message.from[0].email;
 			PgpUserStore.hasPublicKeyForEmails([message.from[0].email]).then(mode => {
 				if ('gnupg' === mode) {
 					let params = message.pgpSigned(); // { BodyPartId: "1", SigPartId: "2", MicAlg: "pgp-sha256" }
@@ -713,16 +726,15 @@ export class MailMessageView extends AbstractViewRight {
 							});
 					}
 				} else if ('openpgp' === mode) {
-					let text = null;
-					try {
-						// TODO: if message.pgpSigned().SigPartId then fetch raw from server
-						text = PgpUserStore.openpgp.cleartext.readArmored(message.plain);
-					} catch (e) {
-						console.error(e);
-					}
-					if (text && text.getText && text.verify) {
-						PgpUserStore.verifyMessage(text, (validKey, signingKeyIds) => {
-							console.dir([validKey, signingKeyIds]);
+					const publicKey = OpenPGPUserStore.getPublicKeyFor(sender);
+					OpenPGPUserStore.verify(message.plain(), null/*detachedSignature*/, publicKey).then(result => {
+						if (result) {
+							// TODO: if result.data is not cleartext then
+							// parse mime to find and verify signature
+							message.plain(result.data);
+							message.viewPlain();
+							console.dir({signatures:result.signatures});
+						}
 /*
 							if (validKey) {
 								i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
@@ -738,10 +750,7 @@ export class MailMessageView extends AbstractViewRight {
 								i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') + (additional ? ' (' + additional + ')' : '');
 							}
 */
-						});
-					} else {
-//						controlsHelper(dom, this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
-					}
+					});
 				}
 			});
 		}

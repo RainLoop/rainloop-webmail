@@ -4,16 +4,13 @@
 
 import ko from 'ko';
 
-import { isArray, arrayLength } from 'Common/Utils';
+import { arrayLength } from 'Common/Utils';
 import { delegateRunOnDestroy } from 'Common/UtilsUser';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 import { OpenPgpKeyPopupView } from 'View/Popup/OpenPgpKey';
 
 const
-	findKeyByHex = (keys, hash) =>
-		keys.find(item => item && (hash === item.id || item.ids.includes(hash))),
-
 	findOpenPGPKey = (keys, query/*, sign*/) =>
 		keys.find(key =>
 			key.emails.includes(query) || query == key.id || query == key.fingerprint
@@ -162,114 +159,37 @@ export const OpenPGPUserStore = new class {
 		return findOpenPGPKey(this.publicKeys, query/*, sign*/);
 	}
 
-	decrypt(text, fCallback)
+	/**
+	 * https://docs.openpgpjs.org/#encrypt-and-decrypt-string-data-with-pgp-keys
+	 */
+	async decrypt(armoredText, privateKey, publicKey)
 	{
-/*
-	decryptMessage(message, recipients, fCallback) {
-		message = store.openpgp.message.readArmored(armoredMessage);
-		try {
-			message = store.openpgp.message.readArmored(armoredMessage);
-		} catch (e) {
-			log(e);
+		const passphrase = prompt('Passphrase');
+		if (!passphrase) {
+			return;
 		}
-		if (message && message.getText && message.verify && message.decrypt) {
-		if (message && message.getEncryptionKeyIds) {
-			// findPrivateKeysByEncryptionKeyIds
-			const encryptionKeyIds = message.getEncryptionKeyIds();
-			let privateKeys = isArray(encryptionKeyIds)
-				? encryptionKeyIds.map(id => {
-						// openpgpKeyring.publicKeys.getForId(id.toHex())
-						// openpgpKeyring.privateKeys.getForId(id.toHex())
-						const key = id && id.toHex ? findKeyByHex(this.privateKeys, id.toHex()) : null;
-						return key ? [key] : [null];
-					}).flat().filter(v => v)
-				: [];
-			if (!privateKeys.length && arrayLength(recipients)) {
-				privateKeys = recipients.map(sEmail =>
-					(sEmail
-						? this.privateKeys.filter(item => item && item.emails.includes(sEmail)) : 0)
-						|| [null]
-				).flat().validUnique(key => key.id);
-			}
-
-			if (privateKeys && privateKeys.length) {
-				showScreenPopup(OpenPgpSelectorPopupView, [
-					(decryptedKey) => {
-						if (decryptedKey) {
-							message.decrypt(decryptedKey).then(
-								(decryptedMessage) => {
-									let privateKey = null;
-									if (decryptedMessage) {
-										privateKey = findKeyByHex(this.privateKeys, decryptedKey.primaryKey.keyid.toHex());
-										if (privateKey) {
-											this.verifyMessage(decryptedMessage, (oValidKey, aSigningKeyIds) => {
-												fCallback(privateKey, decryptedMessage, oValidKey || null, aSigningKeyIds || null);
-											});
-										} else {
-											fCallback(privateKey, decryptedMessage);
-										}
-									} else {
-										fCallback(privateKey, decryptedMessage);
-									}
-								},
-								() => {
-									fCallback(null, null);
-								}
-							);
-						} else {
-							fCallback(null, null);
-						}
-					},
-					privateKeys
-				]);
-
-				return false;
-			}
-		}
-
-		fCallback(null, null);
-
-*/
+		const message = await openpgp.readMessage({ armoredMessage: armoredText });
+		const decryptedKey = await openpgp.decryptKey({
+//			privateKey: await openpgp.readPrivateKey({ armoredKey: armoredPrivateKey }),
+			privateKey: privateKey,
+			passphrase
+		});
+		return await openpgp.decrypt({
+			message,
+			verificationKeys: publicKey,
+//			expectSigned: true,
+//			signature: '', // Detached signature
+			decryptionKeys: decryptedKey
+		});
 	}
 
-	verify(message, fCallback) {
-		let text = null;
-		try {
-			// TODO: if message.pgpSigned().SigPartId then fetch raw from server
-			text = openpgp.cleartext.readArmored(message.plain);
-		} catch (e) {
-			console.error(e);
-		}
-		if (text && text.getText && text.verify) {
-		if (message && message.getSigningKeyIds) {
-			const signingKeyIds = message.getSigningKeyIds();
-			if (signingKeyIds && signingKeyIds.length) {
-				// findPublicKeysBySigningKeyIds
-				const publicKeys = signingKeyIds.map(id => {
-					const key = id && id.toHex ? findKeyByHex(this.publicKeys, id.toHex()) : null;
-					return key ? key.key : [null];
-				}).flat().filter(v => v);
-				if (publicKeys && publicKeys.length) {
-					try {
-						const result = message.verify(publicKeys),
-							valid = (isArray(result) ? result : []).find(item => item && item.valid && item.keyid);
-
-						if (valid && valid.keyid && valid.keyid && valid.keyid.toHex) {
-							fCallback(findKeyByHex(this.publicKeys, valid.keyid.toHex()));
-							return true;
-						}
-					} catch (e) {
-						console.log(e);
-					}
-				}
-
-				fCallback(null, signingKeyIds);
-				return false;
-			}
-		}
-
-		fCallback(null);
-		return false;
+	async verify(message, detachedSignature, publicKey) {
+		return await openpgp.verify({
+			message,
+			verificationKeys: publicKey,
+//			expectSigned: true, // !!detachedSignature
+			signature: detachedSignature
+		});
 	}
 
 };
