@@ -139,7 +139,7 @@ export class MailMessageList extends AbstractViewRight {
 				return c && MessageUserStore.list.length > c;
 			},
 
-			hasMessages: () => 0 < MessageUserStore.list.length,
+			hasMessages: () => 0 < MessageUserStore.list().length,
 
 			isSpamFolder: () => (FolderUserStore.spamFolder() || 0) === MessageUserStore.list().Folder,
 
