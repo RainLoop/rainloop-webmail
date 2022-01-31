@@ -51,7 +51,7 @@ class OpenPgpKeyModel {
 		if (key.users) {
 			key.users.forEach(user => user.userID.email && aEmails.push(user.userID.email));
 		}
-		this.id = key.getKeyID().toHex();
+		this.id = key.getKeyID().toHex().toUpperCase();
 		this.fingerprint = key.getFingerprint();
 		this.can_encrypt = !!key.getEncryptionKey();
 		this.can_sign = !!key.getSigningKey();

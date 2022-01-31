@@ -729,8 +729,6 @@ export class MailMessageView extends AbstractViewRight {
 					const publicKey = OpenPGPUserStore.getPublicKeyFor(sender);
 					OpenPGPUserStore.verify(message.plain(), null/*detachedSignature*/, publicKey).then(result => {
 						if (result) {
-							// TODO: if result.data is not cleartext then
-							// parse mime to find and verify signature
 							message.plain(result.data);
 							message.viewPlain();
 							console.dir({signatures:result.signatures});
