@@ -45,6 +45,39 @@ import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 
 const currentMessage = () => MessageUserStore.message();
 
+import PostalMime from '../../../../vendors/postal-mime/src/postal-mime.js';
+
+const mimeToMessage = (data, message) => {
+	// TODO: Check multipart/signed
+	const headers = data.split(/\r?\n\r?\n/)[0];
+	if (/Content-Type:.+; boundary=/.test(headers)) {
+		// https://github.com/postalsys/postal-mime
+		(new PostalMime).parse(data).then(result => {
+			/*
+			result.attachments[0] = {
+				content: ArrayBuffer
+				disposition: null
+				filename: "signature.asc"
+				mimeType: "application/pgp-signature"
+			};
+			result.headers;
+			*/
+			// TODO: parse inline attachments from result.attachments
+			// TODO: strip script tags and all other security that PHP also does
+			message.html(result.html || '');
+			message.plain(result.text || '');
+			if (result.text) {
+				message.viewPlain();
+			} else {
+				message.viewHtml();
+			}
+		});
+		return;
+	}
+	message.plain(data);
+	message.viewPlain();
+};
+
 export class MailMessageView extends AbstractViewRight {
 	constructor() {
 		super('MailMessageView');
@@ -671,10 +704,7 @@ export class MailMessageView extends AbstractViewRight {
 //					OpenPGPUserStore.decrypt(message.plain(), result[1].armor
 					OpenPGPUserStore.decrypt(message.plain(), result[1].key, publicKey ? publicKey.key : null).then(result => {
 						if (result) {
-							// TODO: if result.data is not cleartext then
-							// parse mime to find and verify signature
-							message.plain(result.data);
-							message.viewPlain();
+							mimeToMessage(result.data, message);
 						} else {
 //							controlsHelper(dom, this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
 						}
