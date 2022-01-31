@@ -95,7 +95,6 @@ export class MessageModel extends AbstractModel {
 			focused: false,
 			selected: false,
 			checked: false,
-			hasAttachments: false,
 
 			isHtml: false,
 			hasImages: false,
@@ -174,7 +173,6 @@ export class MessageModel extends AbstractModel {
 
 		this.selected(false);
 		this.checked(false);
-		this.hasAttachments(false);
 
 		this.isHtml(false);
 		this.hasImages(false);
@@ -229,7 +227,6 @@ export class MessageModel extends AbstractModel {
 			json.Priority = MessagePriority.Normal;
 		}
 		if (super.revivePropertiesFromJson(json)) {
-			this.hasAttachments(!!this.attachments.length);
 //			this.foundCIDs = isArray(json.FoundCIDs) ? json.FoundCIDs : [];
 //			this.attachments(AttachmentCollectionModel.reviveFromJson(json.Attachments, this.foundCIDs));
 
@@ -324,7 +321,7 @@ export class MessageModel extends AbstractModel {
 			forwarded: this.isForwarded(),
 			focused: this.focused(),
 			important: this.isImportant(),
-			withAttachments: this.hasAttachments(),
+			withAttachments: !!this.attachments().length,
 			emptySubject: !this.subject(),
 			// hasChildrenMessage: 1 < this.threadsLen(),
 			hasUnseenSubMessage: this.hasUnseenSubMessage(),
@@ -577,7 +574,6 @@ export class MessageModel extends AbstractModel {
 
 			this.selected(message.selected());
 			this.checked(message.checked());
-			this.hasAttachments(message.hasAttachments());
 			this.attachments(message.attachments());
 
 			this.threads(message.threads());

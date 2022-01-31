@@ -46,6 +46,7 @@ import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 const currentMessage = () => MessageUserStore.message();
 
 import PostalMime from '../../../../vendors/postal-mime/src/postal-mime.js';
+import { AttachmentModel } from 'Model/Attachment';
 
 const mimeToMessage = (data, message) => {
 	// TODO: Check multipart/signed
@@ -53,23 +54,36 @@ const mimeToMessage = (data, message) => {
 	if (/Content-Type:.+; boundary=/.test(headers)) {
 		// https://github.com/postalsys/postal-mime
 		(new PostalMime).parse(data).then(result => {
-			/*
-			result.attachments[0] = {
-				content: ArrayBuffer
-				disposition: null
-				filename: "signature.asc"
-				mimeType: "application/pgp-signature"
-			};
-			result.headers;
-			*/
-			// TODO: parse inline attachments from result.attachments
+			let html = result.html,
+				regex = /^<+|>+$/g;
+			result.attachments.forEach(data => {
+				let attachment = new AttachmentModel;
+				attachment.mimeType = data.mimeType;
+				attachment.fileName = data.filename;
+				attachment.content = data.content; // ArrayBuffer
+				attachment.cid = data.contentId || '';
+				// Parse inline attachments from result.attachments
+				if (attachment.cid) {
+					if (html) {
+						let cid = 'cid:' + attachment.cid.replace(regex, ''),
+							b64 = 'data:' + data.mimeType + ';base64,' + btoa(String.fromCharCode(...new Uint8Array(data.content)));
+						html = html
+							.replace('src="' + cid + '"', 'src="' + b64 + '"')
+							.replace("src='" + cid + "'", "src='" + b64 + "'");
+					}
+				}
+//					data.disposition
+//					data.related = true;
+				message.attachments.push(attachment);
+			});
+//			result.headers;
 			// TODO: strip script tags and all other security that PHP also does
-			message.html(result.html || '');
 			message.plain(result.text || '');
-			if (result.text) {
-				message.viewPlain();
-			} else {
+			if (html) {
+				message.html(html.replace(/<\/?script[\s\S]*?>/gi, '') || '');
 				message.viewHtml();
+			} else {
+				message.viewPlain();
 			}
 		});
 		return;
@@ -722,7 +736,7 @@ export class MailMessageView extends AbstractViewRight {
 					if (params.Passphrase) {
 						rl.app.Remote.post('GnupgDecrypt', null, params)
 							.then(data => {
-								// TODO
+								// TODO mimeToMessage(data, message)
 								console.dir(data);
 							})
 							.catch(error => {
