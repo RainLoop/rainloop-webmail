@@ -1,8 +1,8 @@
-/*! OpenPGP.js v5.1.0 - 2022-01-24 - this is LGPL licensed code, see LICENSE/our website https://openpgpjs.org/ for more information. */
+/*! OpenPGP.js v5.1.0 - 2022-01-31 - this is LGPL licensed code, see LICENSE/our website https://openpgpjs.org/ for more information. */
 var openpgp = (function (exports) {
   'use strict';
 
-  const globalThis = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+  const globalThis = window;
 
   const doneWritingPromise = Symbol('doneWritingPromise');
   const doneWritingResolve = Symbol('doneWritingResolve');
@@ -116,7 +116,7 @@ var openpgp = (function (exports) {
   const isNode = typeof globalThis.process === 'object' &&
     typeof globalThis.process.versions === 'object';
 
-  const NodeReadableStream = isNode && void('stream').Readable;
+  const NodeReadableStream$1 = isNode && void('stream').Readable;
 
   /**
    * Check whether data is a Stream, and if so of which type
@@ -130,10 +130,10 @@ var openpgp = (function (exports) {
     if (globalThis.ReadableStream && globalThis.ReadableStream.prototype.isPrototypeOf(input)) {
       return 'web';
     }
-    if (ReadableStream && ReadableStream.prototype.isPrototypeOf(input)) {
+    if (ReadableStream$1 && ReadableStream$1.prototype.isPrototypeOf(input)) {
       return 'ponyfill';
     }
-    if (NodeReadableStream && NodeReadableStream.prototype.isPrototypeOf(input)) {
+    if (NodeReadableStream$1 && NodeReadableStream$1.prototype.isPrototypeOf(input)) {
       return 'node';
     }
     if (input && input.getReader) {
@@ -178,8 +178,8 @@ var openpgp = (function (exports) {
     return result;
   }
 
-  const NodeBuffer = isNode && void('buffer').Buffer;
-  const NodeReadableStream$1 = isNode && void('stream').Readable;
+  const NodeBuffer$1 = isNode && void('buffer').Buffer;
+  const NodeReadableStream = isNode && void('stream').Readable;
 
   /**
    * Web / node stream conversion functions
@@ -187,9 +187,8 @@ var openpgp = (function (exports) {
    */
 
   let nodeToWeb;
-  let webToNode;
 
-  if (NodeReadableStream$1) {
+  if (NodeReadableStream) {
 
     /**
      * Convert a Node Readable Stream to a Web ReadableStream
@@ -198,14 +197,14 @@ var openpgp = (function (exports) {
      */
     nodeToWeb = function(nodeStream) {
       let canceled = false;
-      return new ReadableStream({
+      return new ReadableStream$1({
         start(controller) {
           nodeStream.pause();
           nodeStream.on('data', chunk => {
             if (canceled) {
               return;
             }
-            if (NodeBuffer.isBuffer(chunk)) {
+            if (NodeBuffer$1.isBuffer(chunk)) {
               chunk = new Uint8Array(chunk.buffer, chunk.byteOffset, chunk.byteLength);
             }
             controller.enqueue(chunk);
@@ -227,46 +226,6 @@ var openpgp = (function (exports) {
           nodeStream.destroy(reason);
         }
       });
-    };
-
-
-    class NodeReadable extends NodeReadableStream$1 {
-      constructor(webStream, options) {
-        super(options);
-        this._reader = getReader(webStream);
-      }
-
-      async _read(size) {
-        try {
-          while (true) {
-            const { done, value } = await this._reader.read();
-            if (done) {
-              this.push(null);
-              break;
-            }
-            if (!this.push(value) || this._cancelling) {
-              this._reading = false;
-              break;
-            }
-          }
-        } catch(e) {
-          this.emit('error', e);
-        }
-      }
-
-      _destroy(reason) {
-        this._reader.cancel(reason);
-      }
-    }
-
-    /**
-     * Convert a Web ReadableStream to a Node Readable Stream
-     * @param {ReadableStream} webStream
-     * @param {Object} options
-     * @returns {Readable}
-     */
-    webToNode = function(webStream, options) {
-      return new NodeReadable(webStream, options);
     };
 
   }
@@ -470,12 +429,12 @@ var openpgp = (function (exports) {
     return join(result);
   };
 
-  let { ReadableStream, WritableStream, TransformStream } = globalThis;
+  let { ReadableStream: ReadableStream$1, WritableStream: WritableStream$1, TransformStream: TransformStream$1 } = globalThis;
 
   let toPonyfillReadable, toNativeReadable;
 
   async function loadStreamsPonyfill() {
-    if (TransformStream) {
+    if (TransformStream$1) {
       return;
     }
 
@@ -484,17 +443,17 @@ var openpgp = (function (exports) {
       Promise.resolve().then(function () { return webStreamsAdapter; })
     ]);
 
-    ({ ReadableStream, WritableStream, TransformStream } = ponyfill);
+    ({ ReadableStream: ReadableStream$1, WritableStream: WritableStream$1, TransformStream: TransformStream$1 } = ponyfill);
 
     const { createReadableStreamWrapper } = adapter;
 
-    if (globalThis.ReadableStream && ReadableStream !== globalThis.ReadableStream) {
-      toPonyfillReadable = createReadableStreamWrapper(ReadableStream);
+    if (globalThis.ReadableStream && ReadableStream$1 !== globalThis.ReadableStream) {
+      toPonyfillReadable = createReadableStreamWrapper(ReadableStream$1);
       toNativeReadable = createReadableStreamWrapper(globalThis.ReadableStream);
     }
   }
 
-  const NodeBuffer$1 = isNode && void('buffer').Buffer;
+  const NodeBuffer = isNode && void('buffer').Buffer;
 
   /**
    * Convert data to Stream
@@ -512,7 +471,7 @@ var openpgp = (function (exports) {
     if (streamType) {
       return input;
     }
-    return new ReadableStream({
+    return new ReadableStream$1({
       start(controller) {
         controller.enqueue(input);
         controller.close();
@@ -554,8 +513,8 @@ var openpgp = (function (exports) {
     if (typeof list[0] === 'string') {
       return list.join('');
     }
-    if (NodeBuffer$1 && NodeBuffer$1.isBuffer(list[0])) {
-      return NodeBuffer$1.concat(list);
+    if (NodeBuffer && NodeBuffer.isBuffer(list[0])) {
+      return NodeBuffer.concat(list);
     }
     return concatUint8Array(list);
   }
@@ -675,7 +634,7 @@ var openpgp = (function (exports) {
    * @returns {ReadableStream} transformed stream
    */
   function transformRaw(input, options) {
-    const transformStream = new TransformStream(options);
+    const transformStream = new TransformStream$1(options);
     pipe(input, transformStream.writable);
     return transformStream.readable;
   }
@@ -690,7 +649,7 @@ var openpgp = (function (exports) {
     let backpressureChangePromiseResolve;
     let outputController;
     return {
-      readable: new ReadableStream({
+      readable: new ReadableStream$1({
         start(controller) {
           outputController = controller;
         },
@@ -703,7 +662,7 @@ var openpgp = (function (exports) {
         },
         cancel
       }, {highWaterMark: 0}),
-      writable: new WritableStream({
+      writable: new WritableStream$1({
         write: async function(chunk) {
           outputController.enqueue(chunk);
           if (!pulled) {
@@ -782,7 +741,7 @@ var openpgp = (function (exports) {
   function transformPair(input, fn) {
     if (isStream(input) && !isArrayStream(input)) {
       let incomingTransformController;
-      const incoming = new TransformStream({
+      const incoming = new TransformStream$1({
         start(controller) {
           incomingTransformController = controller;
         }
@@ -878,7 +837,7 @@ var openpgp = (function (exports) {
       return clone(input);
     }
     if (isStream(input)) {
-      return new ReadableStream({
+      return new ReadableStream$1({
         start(controller) {
           const transformed = transformPair(input, async (readable, writable) => {
             const reader = getReader(readable);
@@ -978,7 +937,7 @@ var openpgp = (function (exports) {
     if (input[externalBuffer]) {
       input = concat(input[externalBuffer].concat([input]));
     }
-    if (isUint8Array(input) && !(NodeBuffer$1 && NodeBuffer$1.isBuffer(input))) {
+    if (isUint8Array(input) && !(NodeBuffer && NodeBuffer.isBuffer(input))) {
       if (end === Infinity) end = input.length;
       return input.subarray(begin, end);
     }
@@ -1056,7 +1015,7 @@ var openpgp = (function (exports) {
   /**
    * @private
    */
-  class BigInteger {
+  class BigInteger$1 {
     /**
      * Get a BigInteger (input must be big endian for strings and arrays)
      * @param {Number|String|Uint8Array} n - Value to convert
@@ -1081,7 +1040,7 @@ var openpgp = (function (exports) {
     }
 
     clone() {
-      return new BigInteger(this.value);
+      return new BigInteger$1(this.value);
     }
 
     /**
@@ -1199,7 +1158,7 @@ var openpgp = (function (exports) {
      */
     modExp(e, n) {
       if (n.isZero()) throw Error('Modulo cannot be zero');
-      if (n.isOne()) return new BigInteger(0);
+      if (n.isOne()) return new BigInteger$1(0);
       if (e.isNegative()) throw Error('Unsopported negative exponent');
 
       let exp = e.value;
@@ -1216,7 +1175,7 @@ var openpgp = (function (exports) {
         r = lsb ? rx : r;
         x = (x * x) % n.value; // Square
       }
-      return new BigInteger(r);
+      return new BigInteger$1(r);
     }
 
 
@@ -1266,9 +1225,9 @@ var openpgp = (function (exports) {
       }
 
       return {
-        x: new BigInteger(xPrev),
-        y: new BigInteger(yPrev),
-        gcd: new BigInteger(a)
+        x: new BigInteger$1(xPrev),
+        y: new BigInteger$1(yPrev),
+        gcd: new BigInteger$1(a)
       };
     }
 
@@ -1285,7 +1244,7 @@ var openpgp = (function (exports) {
         b = a % b;
         a = tmp;
       }
-      return new BigInteger(a);
+      return new BigInteger$1(a);
     }
 
     /**
@@ -1430,9 +1389,9 @@ var openpgp = (function (exports) {
      * @returns {Number} Bit length.
      */
     bitLength() {
-      const zero = new BigInteger(0);
-      const one = new BigInteger(1);
-      const negOne = new BigInteger(-1);
+      const zero = new BigInteger$1(0);
+      const one = new BigInteger$1(1);
+      const negOne = new BigInteger$1(-1);
 
       // -1n >> -1n is -1n
       // 1n >> 1n is 0n
@@ -1450,11 +1409,11 @@ var openpgp = (function (exports) {
      * @returns {Number} Byte length.
      */
     byteLength() {
-      const zero = new BigInteger(0);
-      const negOne = new BigInteger(-1);
+      const zero = new BigInteger$1(0);
+      const negOne = new BigInteger$1(-1);
 
       const target = this.isNegative() ? negOne : zero;
-      const eight = new BigInteger(8);
+      const eight = new BigInteger$1(8);
       let len = 1;
       const tmp = this.clone();
       while (!tmp.irightShift(eight).equal(target)) {
@@ -1497,7 +1456,7 @@ var openpgp = (function (exports) {
 
   async function getBigInteger() {
     if (util.detectBigInt()) {
-      return BigInteger;
+      return BigInteger$1;
     } else {
       const { default: BigInteger } = await Promise.resolve().then(function () { return bn_interface; });
       return BigInteger;
@@ -1514,19 +1473,15 @@ var openpgp = (function (exports) {
   })();
 
   const util = {
-    isString: function(data) {
-      return typeof data === 'string' || String.prototype.isPrototypeOf(data);
-    },
+    isString: data => typeof data === 'string' || Object.prototype.isPrototypeOf.call(data, String),
 
-    isArray: function(data) {
-      return Array.prototype.isPrototypeOf(data);
-    },
+    isArray: data => Array.isArray(data),
 
     isUint8Array: isUint8Array,
 
     isStream: isStream,
 
-    readNumber: function (bytes) {
+    readNumber(bytes) {
       let n = 0;
       for (let i = 0; i < bytes.length; i++) {
         n += (256 ** i) * bytes[bytes.length - 1 - i];
@@ -1534,7 +1489,7 @@ var openpgp = (function (exports) {
       return n;
     },
 
-    writeNumber: function (n, bytes) {
+    writeNumber(n, bytes) {
       const b = new Uint8Array(bytes);
       for (let i = 0; i < bytes; i++) {
         b[i] = (n >> (8 * (bytes - i - 1))) & 0xFF;
@@ -1543,19 +1498,19 @@ var openpgp = (function (exports) {
       return b;
     },
 
-    readDate: function (bytes) {
+    readDate(bytes) {
       const n = util.readNumber(bytes);
       const d = new Date(n * 1000);
       return d;
     },
 
-    writeDate: function (time) {
+    writeDate(time) {
       const numeric = Math.floor(time.getTime() / 1000);
 
       return util.writeNumber(numeric, 4);
     },
 
-    normalizeDate: function (time = Date.now()) {
+    normalizeDate(time = Date.now()) {
       return time === null || time === Infinity ? time : new Date(Math.floor(+time / 1000) * 1000);
     },
 
@@ -1564,7 +1519,7 @@ var openpgp = (function (exports) {
      * @param {Uint8Array} bytes - Input data to parse
      * @returns {Uint8Array} Parsed MPI.
      */
-    readMPI: function (bytes) {
+    readMPI(bytes) {
       const bits = (bytes[0] << 8) | bytes[1];
       const bytelen = (bits + 7) >>> 3;
       return bytes.subarray(2, 2 + bytelen);
@@ -1588,7 +1543,7 @@ var openpgp = (function (exports) {
      * @param {Uint8Array} bin - An array of 8-bit integers to convert
      * @returns {Uint8Array} MPI-formatted Uint8Array.
      */
-    uint8ArrayToMPI: function (bin) {
+    uint8ArrayToMPI(bin) {
       const bitSize = util.uint8ArrayBitLength(bin);
       if (bitSize === 0) {
         throw new Error('Zero MPI');
@@ -1603,7 +1558,7 @@ var openpgp = (function (exports) {
      * @param {Uint8Array} bin input data (big endian)
      * @returns bit length
      */
-    uint8ArrayBitLength: function (bin) {
+    uint8ArrayBitLength(bin) {
       let i; // index of leading non-zero byte
       for (i = 0; i < bin.length; i++) if (bin[i] !== 0) break;
       if (i === bin.length) {
@@ -1618,7 +1573,7 @@ var openpgp = (function (exports) {
      * @param {String} hex - A hex string to convert
      * @returns {Uint8Array} An array of 8-bit integers.
      */
-    hexToUint8Array: function (hex) {
+    hexToUint8Array(hex) {
       const result = new Uint8Array(hex.length >> 1);
       for (let k = 0; k < hex.length >> 1; k++) {
         result[k] = parseInt(hex.substr(k << 1, 2), 16);
@@ -1631,7 +1586,7 @@ var openpgp = (function (exports) {
      * @param {Uint8Array} bytes - Array of 8-bit integers to convert
      * @returns {String} Hexadecimal representation of the array.
      */
-    uint8ArrayToHex: function (bytes) {
+    uint8ArrayToHex(bytes) {
       const r = [];
       const e = bytes.length;
       let c = 0;
@@ -1651,7 +1606,7 @@ var openpgp = (function (exports) {
      * @param {String} str - String to convert
      * @returns {Uint8Array} An array of 8-bit integers.
      */
-    stringToUint8Array: function (str) {
+    stringToUint8Array(str) {
       return transform(str, str => {
         if (!util.isString(str)) {
           throw new Error('stringToUint8Array: Data must be in the form of a string');
@@ -1670,7 +1625,7 @@ var openpgp = (function (exports) {
      * @param {Uint8Array} bytes - An array of 8-bit integers to convert
      * @returns {String} String representation of the array.
      */
-    uint8ArrayToString: function (bytes) {
+    uint8ArrayToString(bytes) {
       bytes = new Uint8Array(bytes);
       const result = [];
       const bs = 1 << 14;
@@ -1687,7 +1642,7 @@ var openpgp = (function (exports) {
      * @param {String|ReadableStream} str - The string to convert
      * @returns {Uint8Array|ReadableStream} A valid squence of utf8 bytes.
      */
-    encodeUTF8: function (str) {
+    encodeUTF8(str) {
       const encoder = new TextEncoder('utf-8');
       // eslint-disable-next-line no-inner-declarations
       function process(value, lastChunk = false) {
@@ -1701,7 +1656,7 @@ var openpgp = (function (exports) {
      * @param {Uint8Array|ReadableStream} utf8 - A valid squence of utf8 bytes
      * @returns {String|ReadableStream} A native javascript string.
      */
-    decodeUTF8: function (utf8) {
+    decodeUTF8(utf8) {
       const decoder = new TextDecoder('utf-8');
       // eslint-disable-next-line no-inner-declarations
       function process(value, lastChunk = false) {
@@ -1731,7 +1686,7 @@ var openpgp = (function (exports) {
      * @param {Uint8Array} array2 - Second array
      * @returns {Boolean} Equality.
      */
-    equalsUint8Array: function (array1, array2) {
+    equalsUint8Array(array1, array2) {
       if (!util.isUint8Array(array1) || !util.isUint8Array(array2)) {
         throw new Error('Data must be in the form of a Uint8Array');
       }
@@ -1754,7 +1709,7 @@ var openpgp = (function (exports) {
      * @param {Uint8Array} Uint8Array - To create a sum of
      * @returns {Uint8Array} 2 bytes containing the sum of all charcodes % 65535.
      */
-    writeChecksum: function (text) {
+    writeChecksum(text) {
       let s = 0;
       for (let i = 0; i < text.length; i++) {
         s = (s + text[i]) & 0xFFFF;
@@ -1767,7 +1722,7 @@ var openpgp = (function (exports) {
      * messages are only printed if
      * @param {String} str - String of the debug message
      */
-    printDebug: function (str) {
+    printDebug(str) {
       if (debugMode) {
         console.log(str);
       }
@@ -1778,14 +1733,14 @@ var openpgp = (function (exports) {
      * messages are only printed if
      * @param {String} str - String of the debug message
      */
-    printDebugError: function (error) {
+    printDebugError(error) {
       if (debugMode) {
         console.error(error);
       }
     },
 
     // returns bit length of the integer x
-    nbits: function (x) {
+    nbits(x) {
       let r = 1;
       let t = x >>> 16;
       if (t !== 0) {
@@ -1824,7 +1779,7 @@ var openpgp = (function (exports) {
      *
      * @param {Uint8Array} data
      */
-    double: function(data) {
+    double(data) {
       const doubleVar = new Uint8Array(data.length);
       const last = data.length - 1;
       for (let i = 0; i < last; i++) {
@@ -1841,7 +1796,7 @@ var openpgp = (function (exports) {
      * than 8)
      * @returns {String} Resulting array.
      */
-    shiftRight: function (array, bits) {
+    shiftRight(array, bits) {
       if (bits) {
         for (let i = array.length - 1; i >= 0; i--) {
           array[i] >>= bits;
@@ -1857,16 +1812,8 @@ var openpgp = (function (exports) {
      * Get native Web Cryptography api, only the current version of the spec.
      * @returns {Object} The SubtleCrypto api or 'undefined'.
      */
-    getWebCrypto: function() {
+    getWebCrypto() {
       return typeof globalThis !== 'undefined' && globalThis.crypto && globalThis.crypto.subtle;
-    },
-
-    /**
-     * Detect Node.js runtime.
-     */
-    detectNode: function() {
-      return typeof globalThis.process === 'object' &&
-        typeof globalThis.process.versions === 'object';
     },
 
     /**
@@ -1883,37 +1830,11 @@ var openpgp = (function (exports) {
      */
     getBigInteger,
 
-    /**
-     * Get native Node.js crypto api.
-     * @returns {Object} The crypto module or 'undefined'.
-     */
-    getNodeCrypto: function() {
-      return void('crypto');
-    },
-
-    getNodeZlib: function() {
-      return void('zlib');
-    },
-
-    /**
-     * Get native Node.js Buffer constructor. This should be used since
-     * Buffer is not available under browserify.
-     * @returns {Function} The Buffer constructor or 'undefined'.
-     */
-    getNodeBuffer: function() {
-      return ({}).Buffer;
-    },
-
-    getHardwareConcurrency: function() {
-      if (util.detectNode()) {
-        const os = void('os');
-        return os.cpus().length;
-      }
-
+    getHardwareConcurrency() {
       return navigator.hardwareConcurrency || 1;
     },
 
-    isEmailAddress: function(data) {
+    isEmailAddress(data) {
       if (!util.isString(data)) {
         return false;
       }
@@ -1925,7 +1846,7 @@ var openpgp = (function (exports) {
      * Normalize line endings to <CR><LF>
      * Support any encoding where CR=0x0D, LF=0x0A
      */
-    canonicalizeEOL: function(data) {
+    canonicalizeEOL(data) {
       const CR = 13;
       const LF = 10;
       let carryOverCR = false;
@@ -1975,7 +1896,7 @@ var openpgp = (function (exports) {
      * Convert line endings from canonicalized <CR><LF> to native <LF>
      * Support any encoding where CR=0x0D, LF=0x0A
      */
-    nativeEOL: function(data) {
+    nativeEOL(data) {
       const CR = 13;
       const LF = 10;
       let carryOverCR = false;
@@ -2010,7 +1931,7 @@ var openpgp = (function (exports) {
     /**
      * Remove trailing spaces and tabs from each line
      */
-    removeTrailingSpaces: function(text) {
+    removeTrailingSpaces(text) {
       return text.split('\n').map(line => {
         let i = line.length - 1;
         for (; i >= 0 && (line[i] === ' ' || line[i] === '\t'); i--);
@@ -2018,7 +1939,7 @@ var openpgp = (function (exports) {
       }).join('\n');
     },
 
-    wrapError: function(message, error) {
+    wrapError(message, error) {
       if (!error) {
         return new Error(message);
       }
@@ -2037,7 +1958,7 @@ var openpgp = (function (exports) {
      * @param {Array<Object>} allowedClasses
      * @returns {Object} map from enum.packet to corresponding *Packet class
      */
-    constructAllowedPackets: function(allowedClasses) {
+    constructAllowedPackets(allowedClasses) {
       const map = {};
       allowedClasses.forEach(PacketClass => {
         if (!PacketClass.tag) {
@@ -2056,7 +1977,7 @@ var openpgp = (function (exports) {
      * @return {Promise<Any>} Promise resolving to the result of the fastest fulfilled promise
      *                          or rejected with the Error of the last resolved Promise (if all promises are rejected)
      */
-    anyPromise: function(promises) {
+    anyPromise(promises) {
       return new Promise(async (resolve, reject) => {
         let exception;
         await Promise.all(promises.map(async promise => {
@@ -2077,7 +1998,7 @@ var openpgp = (function (exports) {
      * @param {Uint8Array} b
      * @returns `a` if `cond` is true, `b` otherwise
      */
-    selectUint8Array: function(cond, a, b) {
+    selectUint8Array(cond, a, b) {
       const length = Math.max(a.length, b.length);
       const result = new Uint8Array(length);
       let end = 0;
@@ -2095,7 +2016,7 @@ var openpgp = (function (exports) {
      * @param {Uint8} b
      * @returns `a` if `cond` is true, `b` otherwise
      */
-    selectUint8: function(cond, a, b) {
+    selectUint8(cond, a, b) {
       return (a & (256 - cond)) | (b & (255 + cond));
     }
   };
@@ -2112,8 +2033,6 @@ var openpgp = (function (exports) {
    * include the above copyright notice in the documentation and/or other materials
    * provided with the application or distribution.
    */
-
-  const Buffer = util.getNodeBuffer();
 
   let encodeChunk;
   let decodeChunk;
@@ -2134,7 +2053,7 @@ var openpgp = (function (exports) {
    * @returns {String | ReadableStream<String>} Radix-64 version of input string.
    * @static
    */
-  function encode(data) {
+  function encode$1(data) {
     let buf = new Uint8Array();
     return transform(data, value => {
       buf = util.concatUint8Array([buf, value]);
@@ -2158,7 +2077,7 @@ var openpgp = (function (exports) {
    * @returns {Uint8Array | ReadableStream<Uint8Array>} Binary array version of input string.
    * @static
    */
-  function decode(data) {
+  function decode$2(data) {
     let buf = '';
     return transform(data, value => {
       buf += value;
@@ -2194,7 +2113,7 @@ var openpgp = (function (exports) {
    * @returns {Uint8Array} An array of 8-bit integers.
    */
   function b64ToUint8Array(base64) {
-    return decode(base64.replace(/-/g, '+').replace(/_/g, '/'));
+    return decode$2(base64.replace(/-/g, '+').replace(/_/g, '/'));
   }
 
   /**
@@ -2204,7 +2123,7 @@ var openpgp = (function (exports) {
    * @returns {String} Base-64 encoded string.
    */
   function uint8ArrayToB64(bytes, url) {
-    let encoded = encode(bytes).replace(/[\r\n]/g, '');
+    let encoded = encode$1(bytes).replace(/[\r\n]/g, '');
     if (url) {
       encoded = encoded.replace(/[+]/g, '-').replace(/[/]/g, '_').replace(/[=]/g, '');
     }
@@ -2668,7 +2587,7 @@ var openpgp = (function (exports) {
      * @returns {Integer} enum value if it exists
      * @throws {Error} if the value is invalid
      */
-    write: function(type, e) {
+    write(type, e) {
       if (typeof e === 'number') {
         e = this.read(type, e);
       }
@@ -2687,7 +2606,7 @@ var openpgp = (function (exports) {
      * @returns {String} name of enum value if it exists
      * @throws {Error} if the value is invalid
      */
-    read: function(type, e) {
+    read(type, e) {
       if (!type[byValue]) {
         type[byValue] = [];
         Object.entries(type).forEach(([key, value]) => {
@@ -3023,7 +2942,7 @@ var openpgp = (function (exports) {
    */
   function getCheckSum(data) {
     const crc = createcrc24(data);
-    return encode(crc);
+    return encode$1(crc);
   }
 
   // https://create.stephan-brumme.com/crc32/#slicing-by-8-overview
@@ -3094,7 +3013,7 @@ var openpgp = (function (exports) {
    * @private
    * @param {Array<String>} headers - Armor headers
    */
-  function verifyHeaders(headers) {
+  function verifyHeaders$1(headers) {
     for (let i = 0; i < headers.length; i++) {
       if (!/^([^\s:]|[^\s:][^:]*[^\s:]): .+$/.test(headers[i])) {
         throw new Error('Improperly formatted armor header: ' + headers[i]);
@@ -3148,7 +3067,7 @@ var openpgp = (function (exports) {
         let text = [];
         let textDone;
         let checksum;
-        let data = decode(transformPair(input, async (readable, writable) => {
+        let data = decode$2(transformPair(input, async (readable, writable) => {
           const reader = getReader(readable);
           try {
             while (true) {
@@ -3169,7 +3088,7 @@ var openpgp = (function (exports) {
                 if (!reEmptyLine.test(line)) {
                   lastHeaders.push(line);
                 } else {
-                  verifyHeaders(lastHeaders);
+                  verifyHeaders$1(lastHeaders);
                   headersDone = true;
                   if (textDone || type !== 2) {
                     resolve({ text, data, headers, type });
@@ -3183,7 +3102,7 @@ var openpgp = (function (exports) {
                 } else {
                   text = text.join('\r\n');
                   textDone = true;
-                  verifyHeaders(lastHeaders);
+                  verifyHeaders$1(lastHeaders);
                   lastHeaders = [];
                   headersDone = false;
                 }
@@ -3279,14 +3198,14 @@ var openpgp = (function (exports) {
       case enums.armor.multipartSection:
         result.push('-----BEGIN PGP MESSAGE, PART ' + partIndex + '/' + partTotal + '-----\n');
         result.push(addheader(customComment, config));
-        result.push(encode(body));
+        result.push(encode$1(body));
         result.push('=', getCheckSum(bodyClone));
         result.push('-----END PGP MESSAGE, PART ' + partIndex + '/' + partTotal + '-----\n');
         break;
       case enums.armor.multipartLast:
         result.push('-----BEGIN PGP MESSAGE, PART ' + partIndex + '-----\n');
         result.push(addheader(customComment, config));
-        result.push(encode(body));
+        result.push(encode$1(body));
         result.push('=', getCheckSum(bodyClone));
         result.push('-----END PGP MESSAGE, PART ' + partIndex + '-----\n');
         break;
@@ -3296,35 +3215,35 @@ var openpgp = (function (exports) {
         result.push(text.replace(/^-/mg, '- -'));
         result.push('\n-----BEGIN PGP SIGNATURE-----\n');
         result.push(addheader(customComment, config));
-        result.push(encode(body));
+        result.push(encode$1(body));
         result.push('=', getCheckSum(bodyClone));
         result.push('-----END PGP SIGNATURE-----\n');
         break;
       case enums.armor.message:
         result.push('-----BEGIN PGP MESSAGE-----\n');
         result.push(addheader(customComment, config));
-        result.push(encode(body));
+        result.push(encode$1(body));
         result.push('=', getCheckSum(bodyClone));
         result.push('-----END PGP MESSAGE-----\n');
         break;
       case enums.armor.publicKey:
         result.push('-----BEGIN PGP PUBLIC KEY BLOCK-----\n');
         result.push(addheader(customComment, config));
-        result.push(encode(body));
+        result.push(encode$1(body));
         result.push('=', getCheckSum(bodyClone));
         result.push('-----END PGP PUBLIC KEY BLOCK-----\n');
         break;
       case enums.armor.privateKey:
         result.push('-----BEGIN PGP PRIVATE KEY BLOCK-----\n');
         result.push(addheader(customComment, config));
-        result.push(encode(body));
+        result.push(encode$1(body));
         result.push('=', getCheckSum(bodyClone));
         result.push('-----END PGP PRIVATE KEY BLOCK-----\n');
         break;
       case enums.armor.signature:
         result.push('-----BEGIN PGP SIGNATURE-----\n');
         result.push(addheader(customComment, config));
-        result.push(encode(body));
+        result.push(encode$1(body));
         result.push('=', getCheckSum(bodyClone));
         result.push('-----END PGP SIGNATURE-----\n');
         break;
@@ -4403,8 +4322,8 @@ var openpgp = (function (exports) {
       }
   }
 
-  const heap_pool = [];
-  const asm_pool = [];
+  const heap_pool$2 = [];
+  const asm_pool$2 = [];
   class AES {
       constructor(key, iv, padding = true, mode, heap, asm) {
           this.pos = 0;
@@ -4421,16 +4340,16 @@ var openpgp = (function (exports) {
       }
       acquire_asm(heap, asm) {
           if (this.heap === undefined || this.asm === undefined) {
-              this.heap = heap || heap_pool.pop() || _heap_init().subarray(AES_asm.HEAP_DATA);
-              this.asm = asm || asm_pool.pop() || new AES_asm(null, this.heap.buffer);
+              this.heap = heap || heap_pool$2.pop() || _heap_init().subarray(AES_asm.HEAP_DATA);
+              this.asm = asm || asm_pool$2.pop() || new AES_asm(null, this.heap.buffer);
               this.reset(this.key, this.iv);
           }
           return { heap: this.heap, asm: this.asm };
       }
       release_asm() {
           if (this.heap !== undefined && this.asm !== undefined) {
-              heap_pool.push(this.heap);
-              asm_pool.push(this.asm);
+              heap_pool$2.push(this.heap);
+              asm_pool$2.push(this.asm);
           }
           this.heap = undefined;
           this.asm = undefined;
@@ -4672,7 +4591,7 @@ var openpgp = (function (exports) {
   //des
   //this takes the key, the message, and whether to encrypt or decrypt
 
-  function des(keys, message, encrypt, mode, iv, padding) {
+  function des$1(keys, message, encrypt, mode, iv, padding) {
     //declaring this locally speeds things up a bit
     const spfunction1 = [
       0x1010400, 0, 0x10000, 0x1010404, 0x1010004, 0x10404, 0x4, 0x10000, 0x400, 0x1010400,
@@ -5091,11 +5010,11 @@ var openpgp = (function (exports) {
     }
 
     this.encrypt = function(block) {
-      return des(
+      return des$1(
         desCreateKeys(this.key[2]),
-        des(
+        des$1(
           desCreateKeys(this.key[1]),
-          des(
+          des$1(
             desCreateKeys(this.key[0]),
             block, true, 0, null, null
           ),
@@ -5115,12 +5034,12 @@ var openpgp = (function (exports) {
 
     this.encrypt = function(block, padding) {
       const keys = desCreateKeys(this.key);
-      return des(keys, block, true, 0, null, padding);
+      return des$1(keys, block, true, 0, null, padding);
     };
 
     this.decrypt = function(block, padding) {
       const keys = desCreateKeys(this.key);
-      return des(keys, block, false, 0, null, padding);
+      return des$1(keys, block, false, 0, null, padding);
     };
   }
 
@@ -6509,7 +6428,7 @@ var openpgp = (function (exports) {
    */
   const aes256 = aes(256);
   // Not in OpenPGP specifications
-  const des$1 = DES;
+  const des = DES;
   /**
    * Triple DES Block Cipher (ID 2)
    * @function
@@ -6556,7 +6475,7 @@ var openpgp = (function (exports) {
     aes128: aes128,
     aes192: aes192,
     aes256: aes256,
-    des: des$1,
+    des: des,
     tripledes: tripledes,
     cast5: cast5,
     twofish: twofish,
@@ -7561,7 +7480,7 @@ var openpgp = (function (exports) {
           f = H5;
           g = H6;
           h = H7;
-
+          
           // 0
           h = ( w0 + h + ( e>>>6 ^ e>>>11 ^ e>>>25 ^ e<<26 ^ e<<21 ^ e<<7 ) +  ( g ^ e & (f^g) ) + 0x428a2f98 )|0;
           d = ( d + h )|0;
@@ -8347,8 +8266,8 @@ var openpgp = (function (exports) {
 
   const _sha256_block_size = 64;
   const _sha256_hash_size = 32;
-  const heap_pool$2 = [];
-  const asm_pool$2 = [];
+  const heap_pool = [];
+  const asm_pool = [];
   class Sha256 extends Hash {
       constructor() {
           super();
@@ -8359,16 +8278,16 @@ var openpgp = (function (exports) {
       }
       acquire_asm() {
           if (this.heap === undefined || this.asm === undefined) {
-              this.heap = heap_pool$2.pop() || _heap_init();
-              this.asm = asm_pool$2.pop() || sha256_asm({ Uint8Array: Uint8Array }, null, this.heap.buffer);
+              this.heap = heap_pool.pop() || _heap_init();
+              this.asm = asm_pool.pop() || sha256_asm({ Uint8Array: Uint8Array }, null, this.heap.buffer);
               this.reset();
           }
           return { heap: this.heap, asm: this.asm };
       }
       release_asm() {
           if (this.heap !== undefined && this.asm !== undefined) {
-              heap_pool$2.push(this.heap);
-              asm_pool$2.push(this.asm);
+              heap_pool.push(this.heap);
+              asm_pool.push(this.asm);
           }
           this.heap = undefined;
           this.asm = undefined;
@@ -8379,14 +8298,14 @@ var openpgp = (function (exports) {
   }
   Sha256.NAME = 'sha256';
 
-  var minimalisticAssert = assert;
+  var minimalisticAssert = assert$a;
 
-  function assert(val, msg) {
+  function assert$a(val, msg) {
     if (!val)
       throw new Error(msg || 'Assertion failed');
   }
 
-  assert.equal = function assertEqual(l, r, msg) {
+  assert$a.equal = function assertEqual(l, r, msg) {
     if (l != r)
       throw new Error(msg || ('Assertion failed: ' + l + ' != ' + r));
   };
@@ -8405,31 +8324,45 @@ var openpgp = (function (exports) {
   if (typeof Object.create === 'function') {
     // implementation from standard node.js 'util' module
     module.exports = function inherits(ctor, superCtor) {
-      ctor.super_ = superCtor;
-      ctor.prototype = Object.create(superCtor.prototype, {
-        constructor: {
-          value: ctor,
-          enumerable: false,
-          writable: true,
-          configurable: true
-        }
-      });
+      if (superCtor) {
+        ctor.super_ = superCtor;
+        ctor.prototype = Object.create(superCtor.prototype, {
+          constructor: {
+            value: ctor,
+            enumerable: false,
+            writable: true,
+            configurable: true
+          }
+        });
+      }
     };
   } else {
     // old school shim for old browsers
     module.exports = function inherits(ctor, superCtor) {
-      ctor.super_ = superCtor;
-      var TempCtor = function () {};
-      TempCtor.prototype = superCtor.prototype;
-      ctor.prototype = new TempCtor();
-      ctor.prototype.constructor = ctor;
+      if (superCtor) {
+        ctor.super_ = superCtor;
+        var TempCtor = function () {};
+        TempCtor.prototype = superCtor.prototype;
+        ctor.prototype = new TempCtor();
+        ctor.prototype.constructor = ctor;
+      }
     };
   }
   });
 
   var inherits_1 = inherits_browser;
 
-  function toArray(msg, enc) {
+  function isSurrogatePair(msg, i) {
+    if ((msg.charCodeAt(i) & 0xFC00) !== 0xD800) {
+      return false;
+    }
+    if (i < 0 || i + 1 >= msg.length) {
+      return false;
+    }
+    return (msg.charCodeAt(i + 1) & 0xFC00) === 0xDC00;
+  }
+
+  function toArray$1(msg, enc) {
     if (Array.isArray(msg))
       return msg.slice();
     if (!msg)
@@ -8437,14 +8370,29 @@ var openpgp = (function (exports) {
     var res = [];
     if (typeof msg === 'string') {
       if (!enc) {
+        // Inspired by stringToUtf8ByteArray() in closure-library by Google
+        // https://github.com/google/closure-library/blob/8598d87242af59aac233270742c8984e2b2bdbe0/closure/goog/crypt/crypt.js#L117-L143
+        // Apache License 2.0
+        // https://github.com/google/closure-library/blob/master/LICENSE
+        var p = 0;
         for (var i = 0; i < msg.length; i++) {
           var c = msg.charCodeAt(i);
-          var hi = c >> 8;
-          var lo = c & 0xff;
-          if (hi)
-            res.push(hi, lo);
-          else
-            res.push(lo);
+          if (c < 128) {
+            res[p++] = c;
+          } else if (c < 2048) {
+            res[p++] = (c >> 6) | 192;
+            res[p++] = (c & 63) | 128;
+          } else if (isSurrogatePair(msg, i)) {
+            c = 0x10000 + ((c & 0x03FF) << 10) + (msg.charCodeAt(++i) & 0x03FF);
+            res[p++] = (c >> 18) | 240;
+            res[p++] = ((c >> 12) & 63) | 128;
+            res[p++] = ((c >> 6) & 63) | 128;
+            res[p++] = (c & 63) | 128;
+          } else {
+            res[p++] = (c >> 12) | 224;
+            res[p++] = ((c >> 6) & 63) | 128;
+            res[p++] = (c & 63) | 128;
+          }
         }
       } else if (enc === 'hex') {
         msg = msg.replace(/[^a-z0-9]+/ig, '');
@@ -8459,7 +8407,7 @@ var openpgp = (function (exports) {
     }
     return res;
   }
-  var toArray_1 = toArray;
+  var toArray_1 = toArray$1;
 
   function toHex(msg) {
     var res = '';
@@ -8554,37 +8502,37 @@ var openpgp = (function (exports) {
   }
   var split32_1 = split32;
 
-  function rotr32(w, b) {
+  function rotr32$1(w, b) {
     return (w >>> b) | (w << (32 - b));
   }
-  var rotr32_1 = rotr32;
+  var rotr32_1 = rotr32$1;
 
-  function rotl32(w, b) {
+  function rotl32$2(w, b) {
     return (w << b) | (w >>> (32 - b));
   }
-  var rotl32_1 = rotl32;
+  var rotl32_1 = rotl32$2;
 
-  function sum32(a, b) {
+  function sum32$3(a, b) {
     return (a + b) >>> 0;
   }
-  var sum32_1 = sum32;
+  var sum32_1 = sum32$3;
 
-  function sum32_3(a, b, c) {
+  function sum32_3$1(a, b, c) {
     return (a + b + c) >>> 0;
   }
-  var sum32_3_1 = sum32_3;
+  var sum32_3_1 = sum32_3$1;
 
-  function sum32_4(a, b, c, d) {
+  function sum32_4$2(a, b, c, d) {
     return (a + b + c + d) >>> 0;
   }
-  var sum32_4_1 = sum32_4;
+  var sum32_4_1 = sum32_4$2;
 
-  function sum32_5(a, b, c, d, e) {
+  function sum32_5$2(a, b, c, d, e) {
     return (a + b + c + d + e) >>> 0;
   }
-  var sum32_5_1 = sum32_5;
+  var sum32_5_1 = sum32_5$2;
 
-  function sum64(buf, pos, ah, al) {
+  function sum64$1(buf, pos, ah, al) {
     var bh = buf[pos];
     var bl = buf[pos + 1];
 
@@ -8593,22 +8541,22 @@ var openpgp = (function (exports) {
     buf[pos] = hi >>> 0;
     buf[pos + 1] = lo;
   }
-  var sum64_1 = sum64;
+  var sum64_1 = sum64$1;
 
-  function sum64_hi(ah, al, bh, bl) {
+  function sum64_hi$1(ah, al, bh, bl) {
     var lo = (al + bl) >>> 0;
     var hi = (lo < al ? 1 : 0) + ah + bh;
     return hi >>> 0;
   }
-  var sum64_hi_1 = sum64_hi;
+  var sum64_hi_1 = sum64_hi$1;
 
-  function sum64_lo(ah, al, bh, bl) {
+  function sum64_lo$1(ah, al, bh, bl) {
     var lo = al + bl;
     return lo >>> 0;
   }
-  var sum64_lo_1 = sum64_lo;
+  var sum64_lo_1 = sum64_lo$1;
 
-  function sum64_4_hi(ah, al, bh, bl, ch, cl, dh, dl) {
+  function sum64_4_hi$1(ah, al, bh, bl, ch, cl, dh, dl) {
     var carry = 0;
     var lo = al;
     lo = (lo + bl) >>> 0;
@@ -8621,15 +8569,15 @@ var openpgp = (function (exports) {
     var hi = ah + bh + ch + dh + carry;
     return hi >>> 0;
   }
-  var sum64_4_hi_1 = sum64_4_hi;
+  var sum64_4_hi_1 = sum64_4_hi$1;
 
-  function sum64_4_lo(ah, al, bh, bl, ch, cl, dh, dl) {
+  function sum64_4_lo$1(ah, al, bh, bl, ch, cl, dh, dl) {
     var lo = al + bl + cl + dl;
     return lo >>> 0;
   }
-  var sum64_4_lo_1 = sum64_4_lo;
+  var sum64_4_lo_1 = sum64_4_lo$1;
 
-  function sum64_5_hi(ah, al, bh, bl, ch, cl, dh, dl, eh, el) {
+  function sum64_5_hi$1(ah, al, bh, bl, ch, cl, dh, dl, eh, el) {
     var carry = 0;
     var lo = al;
     lo = (lo + bl) >>> 0;
@@ -8644,37 +8592,37 @@ var openpgp = (function (exports) {
     var hi = ah + bh + ch + dh + eh + carry;
     return hi >>> 0;
   }
-  var sum64_5_hi_1 = sum64_5_hi;
+  var sum64_5_hi_1 = sum64_5_hi$1;
 
-  function sum64_5_lo(ah, al, bh, bl, ch, cl, dh, dl, eh, el) {
+  function sum64_5_lo$1(ah, al, bh, bl, ch, cl, dh, dl, eh, el) {
     var lo = al + bl + cl + dl + el;
 
     return lo >>> 0;
   }
-  var sum64_5_lo_1 = sum64_5_lo;
+  var sum64_5_lo_1 = sum64_5_lo$1;
 
-  function rotr64_hi(ah, al, num) {
+  function rotr64_hi$1(ah, al, num) {
     var r = (al << (32 - num)) | (ah >>> num);
     return r >>> 0;
   }
-  var rotr64_hi_1 = rotr64_hi;
+  var rotr64_hi_1 = rotr64_hi$1;
 
-  function rotr64_lo(ah, al, num) {
+  function rotr64_lo$1(ah, al, num) {
     var r = (ah << (32 - num)) | (al >>> num);
     return r >>> 0;
   }
-  var rotr64_lo_1 = rotr64_lo;
+  var rotr64_lo_1 = rotr64_lo$1;
 
-  function shr64_hi(ah, al, num) {
+  function shr64_hi$1(ah, al, num) {
     return ah >>> num;
   }
-  var shr64_hi_1 = shr64_hi;
+  var shr64_hi_1 = shr64_hi$1;
 
-  function shr64_lo(ah, al, num) {
+  function shr64_lo$1(ah, al, num) {
     var r = (ah << (32 - num)) | (al >>> num);
     return r >>> 0;
   }
-  var shr64_lo_1 = shr64_lo;
+  var shr64_lo_1 = shr64_lo$1;
 
   var utils = {
   	inherits: inherits_1,
@@ -8705,7 +8653,7 @@ var openpgp = (function (exports) {
   	shr64_lo: shr64_lo_1
   };
 
-  function BlockHash() {
+  function BlockHash$4() {
     this.pending = null;
     this.pendingTotal = 0;
     this.blockSize = this.constructor.blockSize;
@@ -8717,9 +8665,9 @@ var openpgp = (function (exports) {
     this._delta8 = this.blockSize / 8;
     this._delta32 = this.blockSize / 32;
   }
-  var BlockHash_1 = BlockHash;
+  var BlockHash_1 = BlockHash$4;
 
-  BlockHash.prototype.update = function update(msg, enc) {
+  BlockHash$4.prototype.update = function update(msg, enc) {
     // Convert message to array, pad it, and join into 32bit blocks
     msg = utils.toArray(msg, enc);
     if (!this.pending)
@@ -8746,14 +8694,14 @@ var openpgp = (function (exports) {
     return this;
   };
 
-  BlockHash.prototype.digest = function digest(enc) {
+  BlockHash$4.prototype.digest = function digest(enc) {
     this.update(this._pad());
     minimalisticAssert(this.pending === null);
 
     return this._digest(enc);
   };
 
-  BlockHash.prototype._pad = function pad() {
+  BlockHash$4.prototype._pad = function pad() {
     var len = this.pendingTotal;
     var bytes = this._delta8;
     var k = bytes - ((len + this.padLength) % bytes);
@@ -8793,58 +8741,58 @@ var openpgp = (function (exports) {
     return res;
   };
 
-  var common = {
+  var common$1 = {
   	BlockHash: BlockHash_1
   };
 
-  var rotr32$1 = utils.rotr32;
+  var rotr32 = utils.rotr32;
 
-  function ft_1(s, x, y, z) {
+  function ft_1$1(s, x, y, z) {
     if (s === 0)
-      return ch32(x, y, z);
+      return ch32$1(x, y, z);
     if (s === 1 || s === 3)
       return p32(x, y, z);
     if (s === 2)
-      return maj32(x, y, z);
+      return maj32$1(x, y, z);
   }
-  var ft_1_1 = ft_1;
+  var ft_1_1 = ft_1$1;
 
-  function ch32(x, y, z) {
+  function ch32$1(x, y, z) {
     return (x & y) ^ ((~x) & z);
   }
-  var ch32_1 = ch32;
+  var ch32_1 = ch32$1;
 
-  function maj32(x, y, z) {
+  function maj32$1(x, y, z) {
     return (x & y) ^ (x & z) ^ (y & z);
   }
-  var maj32_1 = maj32;
+  var maj32_1 = maj32$1;
 
   function p32(x, y, z) {
     return x ^ y ^ z;
   }
   var p32_1 = p32;
 
-  function s0_256(x) {
-    return rotr32$1(x, 2) ^ rotr32$1(x, 13) ^ rotr32$1(x, 22);
+  function s0_256$1(x) {
+    return rotr32(x, 2) ^ rotr32(x, 13) ^ rotr32(x, 22);
   }
-  var s0_256_1 = s0_256;
+  var s0_256_1 = s0_256$1;
 
-  function s1_256(x) {
-    return rotr32$1(x, 6) ^ rotr32$1(x, 11) ^ rotr32$1(x, 25);
+  function s1_256$1(x) {
+    return rotr32(x, 6) ^ rotr32(x, 11) ^ rotr32(x, 25);
   }
-  var s1_256_1 = s1_256;
+  var s1_256_1 = s1_256$1;
 
-  function g0_256(x) {
-    return rotr32$1(x, 7) ^ rotr32$1(x, 18) ^ (x >>> 3);
+  function g0_256$1(x) {
+    return rotr32(x, 7) ^ rotr32(x, 18) ^ (x >>> 3);
   }
-  var g0_256_1 = g0_256;
+  var g0_256_1 = g0_256$1;
 
-  function g1_256(x) {
-    return rotr32$1(x, 17) ^ rotr32$1(x, 19) ^ (x >>> 10);
+  function g1_256$1(x) {
+    return rotr32(x, 17) ^ rotr32(x, 19) ^ (x >>> 10);
   }
-  var g1_256_1 = g1_256;
+  var g1_256_1 = g1_256$1;
 
-  var common$1 = {
+  var common = {
   	ft_1: ft_1_1,
   	ch32: ch32_1,
   	maj32: maj32_1,
@@ -8855,17 +8803,17 @@ var openpgp = (function (exports) {
   	g1_256: g1_256_1
   };
 
-  var sum32$1 = utils.sum32;
+  var sum32$2 = utils.sum32;
   var sum32_4$1 = utils.sum32_4;
   var sum32_5$1 = utils.sum32_5;
-  var ch32$1 = common$1.ch32;
-  var maj32$1 = common$1.maj32;
-  var s0_256$1 = common$1.s0_256;
-  var s1_256$1 = common$1.s1_256;
-  var g0_256$1 = common$1.g0_256;
-  var g1_256$1 = common$1.g1_256;
+  var ch32 = common.ch32;
+  var maj32 = common.maj32;
+  var s0_256 = common.s0_256;
+  var s1_256 = common.s1_256;
+  var g0_256 = common.g0_256;
+  var g1_256 = common.g1_256;
 
-  var BlockHash$1 = common.BlockHash;
+  var BlockHash$3 = common$1.BlockHash;
 
   var sha256_K = [
     0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
@@ -8890,7 +8838,7 @@ var openpgp = (function (exports) {
     if (!(this instanceof SHA256))
       return new SHA256();
 
-    BlockHash$1.call(this);
+    BlockHash$3.call(this);
     this.h = [
       0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
       0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
@@ -8898,7 +8846,7 @@ var openpgp = (function (exports) {
     this.k = sha256_K;
     this.W = new Array(64);
   }
-  utils.inherits(SHA256, BlockHash$1);
+  utils.inherits(SHA256, BlockHash$3);
   var _256 = SHA256;
 
   SHA256.blockSize = 512;
@@ -8912,7 +8860,7 @@ var openpgp = (function (exports) {
     for (var i = 0; i < 16; i++)
       W[i] = msg[start + i];
     for (; i < W.length; i++)
-      W[i] = sum32_4$1(g1_256$1(W[i - 2]), W[i - 7], g0_256$1(W[i - 15]), W[i - 16]);
+      W[i] = sum32_4$1(g1_256(W[i - 2]), W[i - 7], g0_256(W[i - 15]), W[i - 16]);
 
     var a = this.h[0];
     var b = this.h[1];
@@ -8925,26 +8873,26 @@ var openpgp = (function (exports) {
 
     minimalisticAssert(this.k.length === W.length);
     for (i = 0; i < W.length; i++) {
-      var T1 = sum32_5$1(h, s1_256$1(e), ch32$1(e, f, g), this.k[i], W[i]);
-      var T2 = sum32$1(s0_256$1(a), maj32$1(a, b, c));
+      var T1 = sum32_5$1(h, s1_256(e), ch32(e, f, g), this.k[i], W[i]);
+      var T2 = sum32$2(s0_256(a), maj32(a, b, c));
       h = g;
       g = f;
       f = e;
-      e = sum32$1(d, T1);
+      e = sum32$2(d, T1);
       d = c;
       c = b;
       b = a;
-      a = sum32$1(T1, T2);
+      a = sum32$2(T1, T2);
     }
 
-    this.h[0] = sum32$1(this.h[0], a);
-    this.h[1] = sum32$1(this.h[1], b);
-    this.h[2] = sum32$1(this.h[2], c);
-    this.h[3] = sum32$1(this.h[3], d);
-    this.h[4] = sum32$1(this.h[4], e);
-    this.h[5] = sum32$1(this.h[5], f);
-    this.h[6] = sum32$1(this.h[6], g);
-    this.h[7] = sum32$1(this.h[7], h);
+    this.h[0] = sum32$2(this.h[0], a);
+    this.h[1] = sum32$2(this.h[1], b);
+    this.h[2] = sum32$2(this.h[2], c);
+    this.h[3] = sum32$2(this.h[3], d);
+    this.h[4] = sum32$2(this.h[4], e);
+    this.h[5] = sum32$2(this.h[5], f);
+    this.h[6] = sum32$2(this.h[6], g);
+    this.h[7] = sum32$2(this.h[7], h);
   };
 
   SHA256.prototype._digest = function digest(enc) {
@@ -8979,19 +8927,19 @@ var openpgp = (function (exports) {
       return utils.split32(this.h.slice(0, 7), 'big');
   };
 
-  var rotr64_hi$1 = utils.rotr64_hi;
-  var rotr64_lo$1 = utils.rotr64_lo;
-  var shr64_hi$1 = utils.shr64_hi;
-  var shr64_lo$1 = utils.shr64_lo;
-  var sum64$1 = utils.sum64;
-  var sum64_hi$1 = utils.sum64_hi;
-  var sum64_lo$1 = utils.sum64_lo;
-  var sum64_4_hi$1 = utils.sum64_4_hi;
-  var sum64_4_lo$1 = utils.sum64_4_lo;
-  var sum64_5_hi$1 = utils.sum64_5_hi;
-  var sum64_5_lo$1 = utils.sum64_5_lo;
+  var rotr64_hi = utils.rotr64_hi;
+  var rotr64_lo = utils.rotr64_lo;
+  var shr64_hi = utils.shr64_hi;
+  var shr64_lo = utils.shr64_lo;
+  var sum64 = utils.sum64;
+  var sum64_hi = utils.sum64_hi;
+  var sum64_lo = utils.sum64_lo;
+  var sum64_4_hi = utils.sum64_4_hi;
+  var sum64_4_lo = utils.sum64_4_lo;
+  var sum64_5_hi = utils.sum64_5_hi;
+  var sum64_5_lo = utils.sum64_5_lo;
 
-  var BlockHash$2 = common.BlockHash;
+  var BlockHash$2 = common$1.BlockHash;
 
   var sha512_K = [
     0x428a2f98, 0xd728ae22, 0x71374491, 0x23ef65cd,
@@ -9077,12 +9025,12 @@ var openpgp = (function (exports) {
       var c3_hi = W[i - 32];  // i - 16
       var c3_lo = W[i - 31];
 
-      W[i] = sum64_4_hi$1(
+      W[i] = sum64_4_hi(
         c0_hi, c0_lo,
         c1_hi, c1_lo,
         c2_hi, c2_lo,
         c3_hi, c3_lo);
-      W[i + 1] = sum64_4_lo$1(
+      W[i + 1] = sum64_4_lo(
         c0_hi, c0_lo,
         c1_hi, c1_lo,
         c2_hi, c2_lo,
@@ -9125,13 +9073,13 @@ var openpgp = (function (exports) {
       var c4_hi = W[i];
       var c4_lo = W[i + 1];
 
-      var T1_hi = sum64_5_hi$1(
+      var T1_hi = sum64_5_hi(
         c0_hi, c0_lo,
         c1_hi, c1_lo,
         c2_hi, c2_lo,
         c3_hi, c3_lo,
         c4_hi, c4_lo);
-      var T1_lo = sum64_5_lo$1(
+      var T1_lo = sum64_5_lo(
         c0_hi, c0_lo,
         c1_hi, c1_lo,
         c2_hi, c2_lo,
@@ -9143,8 +9091,8 @@ var openpgp = (function (exports) {
       c1_hi = maj64_hi(ah, al, bh, bl, ch);
       c1_lo = maj64_lo(ah, al, bh, bl, ch, cl);
 
-      var T2_hi = sum64_hi$1(c0_hi, c0_lo, c1_hi, c1_lo);
-      var T2_lo = sum64_lo$1(c0_hi, c0_lo, c1_hi, c1_lo);
+      var T2_hi = sum64_hi(c0_hi, c0_lo, c1_hi, c1_lo);
+      var T2_lo = sum64_lo(c0_hi, c0_lo, c1_hi, c1_lo);
 
       hh = gh;
       hl = gl;
@@ -9155,8 +9103,8 @@ var openpgp = (function (exports) {
       fh = eh;
       fl = el;
 
-      eh = sum64_hi$1(dh, dl, T1_hi, T1_lo);
-      el = sum64_lo$1(dl, dl, T1_hi, T1_lo);
+      eh = sum64_hi(dh, dl, T1_hi, T1_lo);
+      el = sum64_lo(dl, dl, T1_hi, T1_lo);
 
       dh = ch;
       dl = cl;
@@ -9167,18 +9115,18 @@ var openpgp = (function (exports) {
       bh = ah;
       bl = al;
 
-      ah = sum64_hi$1(T1_hi, T1_lo, T2_hi, T2_lo);
-      al = sum64_lo$1(T1_hi, T1_lo, T2_hi, T2_lo);
+      ah = sum64_hi(T1_hi, T1_lo, T2_hi, T2_lo);
+      al = sum64_lo(T1_hi, T1_lo, T2_hi, T2_lo);
     }
 
-    sum64$1(this.h, 0, ah, al);
-    sum64$1(this.h, 2, bh, bl);
-    sum64$1(this.h, 4, ch, cl);
-    sum64$1(this.h, 6, dh, dl);
-    sum64$1(this.h, 8, eh, el);
-    sum64$1(this.h, 10, fh, fl);
-    sum64$1(this.h, 12, gh, gl);
-    sum64$1(this.h, 14, hh, hl);
+    sum64(this.h, 0, ah, al);
+    sum64(this.h, 2, bh, bl);
+    sum64(this.h, 4, ch, cl);
+    sum64(this.h, 6, dh, dl);
+    sum64(this.h, 8, eh, el);
+    sum64(this.h, 10, fh, fl);
+    sum64(this.h, 12, gh, gl);
+    sum64(this.h, 14, hh, hl);
   };
 
   SHA512.prototype._digest = function digest(enc) {
@@ -9217,9 +9165,9 @@ var openpgp = (function (exports) {
   }
 
   function s0_512_hi(xh, xl) {
-    var c0_hi = rotr64_hi$1(xh, xl, 28);
-    var c1_hi = rotr64_hi$1(xl, xh, 2);  // 34
-    var c2_hi = rotr64_hi$1(xl, xh, 7);  // 39
+    var c0_hi = rotr64_hi(xh, xl, 28);
+    var c1_hi = rotr64_hi(xl, xh, 2);  // 34
+    var c2_hi = rotr64_hi(xl, xh, 7);  // 39
 
     var r = c0_hi ^ c1_hi ^ c2_hi;
     if (r < 0)
@@ -9228,9 +9176,9 @@ var openpgp = (function (exports) {
   }
 
   function s0_512_lo(xh, xl) {
-    var c0_lo = rotr64_lo$1(xh, xl, 28);
-    var c1_lo = rotr64_lo$1(xl, xh, 2);  // 34
-    var c2_lo = rotr64_lo$1(xl, xh, 7);  // 39
+    var c0_lo = rotr64_lo(xh, xl, 28);
+    var c1_lo = rotr64_lo(xl, xh, 2);  // 34
+    var c2_lo = rotr64_lo(xl, xh, 7);  // 39
 
     var r = c0_lo ^ c1_lo ^ c2_lo;
     if (r < 0)
@@ -9239,9 +9187,9 @@ var openpgp = (function (exports) {
   }
 
   function s1_512_hi(xh, xl) {
-    var c0_hi = rotr64_hi$1(xh, xl, 14);
-    var c1_hi = rotr64_hi$1(xh, xl, 18);
-    var c2_hi = rotr64_hi$1(xl, xh, 9);  // 41
+    var c0_hi = rotr64_hi(xh, xl, 14);
+    var c1_hi = rotr64_hi(xh, xl, 18);
+    var c2_hi = rotr64_hi(xl, xh, 9);  // 41
 
     var r = c0_hi ^ c1_hi ^ c2_hi;
     if (r < 0)
@@ -9250,9 +9198,9 @@ var openpgp = (function (exports) {
   }
 
   function s1_512_lo(xh, xl) {
-    var c0_lo = rotr64_lo$1(xh, xl, 14);
-    var c1_lo = rotr64_lo$1(xh, xl, 18);
-    var c2_lo = rotr64_lo$1(xl, xh, 9);  // 41
+    var c0_lo = rotr64_lo(xh, xl, 14);
+    var c1_lo = rotr64_lo(xh, xl, 18);
+    var c2_lo = rotr64_lo(xl, xh, 9);  // 41
 
     var r = c0_lo ^ c1_lo ^ c2_lo;
     if (r < 0)
@@ -9261,9 +9209,9 @@ var openpgp = (function (exports) {
   }
 
   function g0_512_hi(xh, xl) {
-    var c0_hi = rotr64_hi$1(xh, xl, 1);
-    var c1_hi = rotr64_hi$1(xh, xl, 8);
-    var c2_hi = shr64_hi$1(xh, xl, 7);
+    var c0_hi = rotr64_hi(xh, xl, 1);
+    var c1_hi = rotr64_hi(xh, xl, 8);
+    var c2_hi = shr64_hi(xh, xl, 7);
 
     var r = c0_hi ^ c1_hi ^ c2_hi;
     if (r < 0)
@@ -9272,9 +9220,9 @@ var openpgp = (function (exports) {
   }
 
   function g0_512_lo(xh, xl) {
-    var c0_lo = rotr64_lo$1(xh, xl, 1);
-    var c1_lo = rotr64_lo$1(xh, xl, 8);
-    var c2_lo = shr64_lo$1(xh, xl, 7);
+    var c0_lo = rotr64_lo(xh, xl, 1);
+    var c1_lo = rotr64_lo(xh, xl, 8);
+    var c2_lo = shr64_lo(xh, xl, 7);
 
     var r = c0_lo ^ c1_lo ^ c2_lo;
     if (r < 0)
@@ -9283,9 +9231,9 @@ var openpgp = (function (exports) {
   }
 
   function g1_512_hi(xh, xl) {
-    var c0_hi = rotr64_hi$1(xh, xl, 19);
-    var c1_hi = rotr64_hi$1(xl, xh, 29);  // 61
-    var c2_hi = shr64_hi$1(xh, xl, 6);
+    var c0_hi = rotr64_hi(xh, xl, 19);
+    var c1_hi = rotr64_hi(xl, xh, 29);  // 61
+    var c2_hi = shr64_hi(xh, xl, 6);
 
     var r = c0_hi ^ c1_hi ^ c2_hi;
     if (r < 0)
@@ -9294,9 +9242,9 @@ var openpgp = (function (exports) {
   }
 
   function g1_512_lo(xh, xl) {
-    var c0_lo = rotr64_lo$1(xh, xl, 19);
-    var c1_lo = rotr64_lo$1(xl, xh, 29);  // 61
-    var c2_lo = shr64_lo$1(xh, xl, 6);
+    var c0_lo = rotr64_lo(xh, xl, 19);
+    var c1_lo = rotr64_lo(xl, xh, 29);  // 61
+    var c2_lo = shr64_lo(xh, xl, 6);
 
     var r = c0_lo ^ c1_lo ^ c2_lo;
     if (r < 0)
@@ -9335,21 +9283,21 @@ var openpgp = (function (exports) {
   };
 
   var rotl32$1 = utils.rotl32;
-  var sum32$2 = utils.sum32;
-  var sum32_3$1 = utils.sum32_3;
-  var sum32_4$2 = utils.sum32_4;
-  var BlockHash$3 = common.BlockHash;
+  var sum32$1 = utils.sum32;
+  var sum32_3 = utils.sum32_3;
+  var sum32_4 = utils.sum32_4;
+  var BlockHash$1 = common$1.BlockHash;
 
   function RIPEMD160() {
     if (!(this instanceof RIPEMD160))
       return new RIPEMD160();
 
-    BlockHash$3.call(this);
+    BlockHash$1.call(this);
 
     this.h = [ 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0 ];
     this.endian = 'little';
   }
-  utils.inherits(RIPEMD160, BlockHash$3);
+  utils.inherits(RIPEMD160, BlockHash$1);
   var ripemd160 = RIPEMD160;
 
   RIPEMD160.blockSize = 512;
@@ -9369,9 +9317,9 @@ var openpgp = (function (exports) {
     var Dh = D;
     var Eh = E;
     for (var j = 0; j < 80; j++) {
-      var T = sum32$2(
+      var T = sum32$1(
         rotl32$1(
-          sum32_4$2(A, f(j, B, C, D), msg[r[j] + start], K(j)),
+          sum32_4(A, f(j, B, C, D), msg[r$1[j] + start], K(j)),
           s[j]),
         E);
       A = E;
@@ -9379,9 +9327,9 @@ var openpgp = (function (exports) {
       D = rotl32$1(C, 10);
       C = B;
       B = T;
-      T = sum32$2(
+      T = sum32$1(
         rotl32$1(
-          sum32_4$2(Ah, f(79 - j, Bh, Ch, Dh), msg[rh[j] + start], Kh(j)),
+          sum32_4(Ah, f(79 - j, Bh, Ch, Dh), msg[rh[j] + start], Kh(j)),
           sh[j]),
         Eh);
       Ah = Eh;
@@ -9390,11 +9338,11 @@ var openpgp = (function (exports) {
       Ch = Bh;
       Bh = T;
     }
-    T = sum32_3$1(this.h[1], C, Dh);
-    this.h[1] = sum32_3$1(this.h[2], D, Eh);
-    this.h[2] = sum32_3$1(this.h[3], E, Ah);
-    this.h[3] = sum32_3$1(this.h[4], A, Bh);
-    this.h[4] = sum32_3$1(this.h[0], B, Ch);
+    T = sum32_3(this.h[1], C, Dh);
+    this.h[1] = sum32_3(this.h[2], D, Eh);
+    this.h[2] = sum32_3(this.h[3], E, Ah);
+    this.h[3] = sum32_3(this.h[4], A, Bh);
+    this.h[4] = sum32_3(this.h[0], B, Ch);
     this.h[0] = T;
   };
 
@@ -9444,7 +9392,7 @@ var openpgp = (function (exports) {
       return 0x00000000;
   }
 
-  var r = [
+  var r$1 = [
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     7, 4, 13, 1, 10, 6, 15, 3, 12, 0, 9, 5, 2, 14, 11, 8,
     3, 10, 14, 4, 9, 15, 8, 1, 2, 7, 0, 6, 13, 11, 5, 12,
@@ -9686,25 +9634,15 @@ var openpgp = (function (exports) {
    * @private
    */
 
-  const webCrypto = util.getWebCrypto();
-  const nodeCrypto = util.getNodeCrypto();
-
-  function nodeHash(type) {
-    return async function (data) {
-      const shasum = nodeCrypto.createHash(type);
-      return transform(data, value => {
-        shasum.update(value);
-      }, () => new Uint8Array(shasum.digest()));
-    };
-  }
+  const webCrypto$8 = util.getWebCrypto();
 
   function hashjsHash(hash, webCryptoHash) {
     return async function(data, config = defaultConfig) {
       if (isArrayStream(data)) {
         data = await readToEnd(data);
       }
-      if (!util.isStream(data) && webCrypto && webCryptoHash && data.length >= config.minBytesForWebCrypto) {
-        return new Uint8Array(await webCrypto.digest(webCryptoHash, data));
+      if (!util.isStream(data) && webCrypto$8 && webCryptoHash && data.length >= config.minBytesForWebCrypto) {
+        return new Uint8Array(await webCrypto$8.digest(webCryptoHash, data));
       }
       const hashInstance = hash();
       return transform(data, value => {
@@ -9723,27 +9661,15 @@ var openpgp = (function (exports) {
         return transform(data, value => {
           hashInstance.process(value);
         }, () => hashInstance.finish().result);
-      } else if (webCrypto && webCryptoHash && data.length >= config.minBytesForWebCrypto) {
-        return new Uint8Array(await webCrypto.digest(webCryptoHash, data));
+      } else if (webCrypto$8 && webCryptoHash && data.length >= config.minBytesForWebCrypto) {
+        return new Uint8Array(await webCrypto$8.digest(webCryptoHash, data));
       } else {
         return hash.bytes(data);
       }
     };
   }
 
-  let hashFunctions;
-  if (nodeCrypto) { // Use Node native crypto for all hash functions
-    hashFunctions = {
-      md5: nodeHash('md5'),
-      sha1: nodeHash('sha1'),
-      sha224: nodeHash('sha224'),
-      sha256: nodeHash('sha256'),
-      sha384: nodeHash('sha384'),
-      sha512: nodeHash('sha512'),
-      ripemd: nodeHash('ripemd160')
-    };
-  } else { // Use JS fallbacks
-    hashFunctions = {
+  let hashFunctions = {
       md5: md5,
       sha1: asmcryptoHash(Sha1, (!navigator.userAgent || navigator.userAgent.indexOf('Edge') === -1) && 'SHA-1'),
       sha224: hashjsHash(_224),
@@ -9752,7 +9678,6 @@ var openpgp = (function (exports) {
       sha512: hashjsHash(_512, 'SHA-512'), // asmcrypto sha512 is huge.
       ripemd: hashjsHash(ripemd160)
     };
-  }
 
   var hash = {
 
@@ -9777,7 +9702,7 @@ var openpgp = (function (exports) {
      * @param {Uint8Array} data - Data to be hashed
      * @returns {Promise<Uint8Array>} Hash value.
      */
-    digest: function(algo, data) {
+    digest(algo, data) {
       switch (algo) {
         case enums.hash.md5:
           return this.md5(data);
@@ -9803,7 +9728,7 @@ var openpgp = (function (exports) {
      * @param {module:enums.hash} algo - Hash algorithm type (See {@link https://tools.ietf.org/html/rfc4880#section-9.4|RFC 4880 9.4})
      * @returns {Integer} Size in bytes of the resulting hash.
      */
-    getHashByteLength: function(algo) {
+    getHashByteLength(algo) {
       switch (algo) {
         case enums.hash.md5:
           return 16;
@@ -9849,20 +9774,7 @@ var openpgp = (function (exports) {
 
   // Modified by ProtonTech AG
 
-  const webCrypto$1 = util.getWebCrypto();
-  const nodeCrypto$1 = util.getNodeCrypto();
-
-  const knownAlgos = nodeCrypto$1 ? nodeCrypto$1.getCiphers() : [];
-  const nodeAlgos = {
-    idea: knownAlgos.includes('idea-cfb') ? 'idea-cfb' : undefined, /* Unused, not implemented */
-    tripledes: knownAlgos.includes('des-ede3-cfb') ? 'des-ede3-cfb' : undefined,
-    cast5: knownAlgos.includes('cast5-cfb') ? 'cast5-cfb' : undefined,
-    blowfish: knownAlgos.includes('bf-cfb') ? 'bf-cfb' : undefined,
-    aes128: knownAlgos.includes('aes-128-cfb') ? 'aes-128-cfb' : undefined,
-    aes192: knownAlgos.includes('aes-192-cfb') ? 'aes-192-cfb' : undefined,
-    aes256: knownAlgos.includes('aes-256-cfb') ? 'aes-256-cfb' : undefined
-    /* twofish is not implemented in OpenSSL */
-  };
+  const webCrypto$7 = util.getWebCrypto();
 
   /**
    * CFB encryption
@@ -9873,11 +9785,8 @@ var openpgp = (function (exports) {
    * @param {Object} config - full configuration, defaults to openpgp.config
    * @returns MaybeStream<Uint8Array>
    */
-  async function encrypt(algo, key, plaintext, iv, config) {
+  async function encrypt$4(algo, key, plaintext, iv, config) {
     const algoName = enums.read(enums.symmetric, algo);
-    if (util.getNodeCrypto() && nodeAlgos[algoName]) { // Node crypto library.
-      return nodeEncrypt(algo, key, plaintext, iv);
-    }
     if (algoName.substr(0, 3) === 'aes') {
       return aesEncrypt(algo, key, plaintext, iv, config);
     }
@@ -9915,11 +9824,8 @@ var openpgp = (function (exports) {
    * @param {Uint8Array} iv
    * @returns MaybeStream<Uint8Array>
    */
-  async function decrypt(algo, key, ciphertext, iv) {
+  async function decrypt$4(algo, key, ciphertext, iv) {
     const algoName = enums.read(enums.symmetric, algo);
-    if (util.getNodeCrypto() && nodeAlgos[algoName]) { // Node crypto library.
-      return nodeDecrypt(algo, key, ciphertext, iv);
-    }
     if (algoName.substr(0, 3) === 'aes') {
       return aesDecrypt(algo, key, ciphertext, iv);
     }
@@ -9971,7 +9877,7 @@ var openpgp = (function (exports) {
     return AES_CFB.decrypt(ct, key, iv);
   }
 
-  function xorMut(a, b) {
+  function xorMut$1(a, b) {
     for (let i = 0; i < a.length; i++) {
       a[i] = a[i] ^ b[i];
     }
@@ -9979,30 +9885,18 @@ var openpgp = (function (exports) {
 
   async function webEncrypt(algo, key, pt, iv) {
     const ALGO = 'AES-CBC';
-    const _key = await webCrypto$1.importKey('raw', key, { name: ALGO }, false, ['encrypt']);
+    const _key = await webCrypto$7.importKey('raw', key, { name: ALGO }, false, ['encrypt']);
     const { blockSize } = crypto.getCipher(algo);
     const cbc_pt = util.concatUint8Array([new Uint8Array(blockSize), pt]);
-    const ct = new Uint8Array(await webCrypto$1.encrypt({ name: ALGO, iv }, _key, cbc_pt)).subarray(0, pt.length);
-    xorMut(ct, pt);
+    const ct = new Uint8Array(await webCrypto$7.encrypt({ name: ALGO, iv }, _key, cbc_pt)).subarray(0, pt.length);
+    xorMut$1(ct, pt);
     return ct;
-  }
-
-  function nodeEncrypt(algo, key, pt, iv) {
-    const algoName = enums.read(enums.symmetric, algo);
-    const cipherObj = new nodeCrypto$1.createCipheriv(nodeAlgos[algoName], key, iv);
-    return transform(pt, value => new Uint8Array(cipherObj.update(value)));
-  }
-
-  function nodeDecrypt(algo, key, ct, iv) {
-    const algoName = enums.read(enums.symmetric, algo);
-    const decipherObj = new nodeCrypto$1.createDecipheriv(nodeAlgos[algoName], key, iv);
-    return transform(ct, value => new Uint8Array(decipherObj.update(value)));
   }
 
   var cfb = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    encrypt: encrypt,
-    decrypt: decrypt
+    encrypt: encrypt$4,
+    decrypt: decrypt$4
   });
 
   class AES_CTR {
@@ -10087,8 +9981,7 @@ var openpgp = (function (exports) {
    * @private
    */
 
-  const webCrypto$2 = util.getWebCrypto();
-  const nodeCrypto$2 = util.getNodeCrypto();
+  const webCrypto$6 = util.getWebCrypto();
 
 
   /**
@@ -10104,7 +9997,7 @@ var openpgp = (function (exports) {
    * [15], which slightly simplifies implementations.
    */
 
-  const blockLength = 16;
+  const blockLength$3 = 16;
 
 
   /**
@@ -10116,8 +10009,8 @@ var openpgp = (function (exports) {
    * @param {Uint8Array} padding
    */
   function rightXORMut(data, padding) {
-    const offset = data.length - blockLength;
-    for (let i = 0; i < blockLength; i++) {
+    const offset = data.length - blockLength$3;
+    for (let i = 0; i < blockLength$3; i++) {
       data[i + offset] ^= padding[i];
     }
     return data;
@@ -10125,67 +10018,58 @@ var openpgp = (function (exports) {
 
   function pad(data, padding, padding2) {
     // if |M| in {n, 2n, 3n, ...}
-    if (data.length && data.length % blockLength === 0) {
+    if (data.length && data.length % blockLength$3 === 0) {
       // then return M xor→ B,
       return rightXORMut(data, padding);
     }
     // else return (M || 10^(n−1−(|M| mod n))) xor→ P
-    const padded = new Uint8Array(data.length + (blockLength - data.length % blockLength));
+    const padded = new Uint8Array(data.length + (blockLength$3 - data.length % blockLength$3));
     padded.set(data);
     padded[data.length] = 0b10000000;
     return rightXORMut(padded, padding2);
   }
 
-  const zeroBlock = new Uint8Array(blockLength);
+  const zeroBlock$1 = new Uint8Array(blockLength$3);
 
   async function CMAC(key) {
     const cbc = await CBC(key);
 
     // L ← E_K(0^n); B ← 2L; P ← 4L
-    const padding = util.double(await cbc(zeroBlock));
+    const padding = util.double(await cbc(zeroBlock$1));
     const padding2 = util.double(padding);
 
     return async function(data) {
       // return CBC_K(pad(M; B, P))
-      return (await cbc(pad(data, padding, padding2))).subarray(-blockLength);
+      return (await cbc(pad(data, padding, padding2))).subarray(-blockLength$3);
     };
   }
 
   async function CBC(key) {
     if (util.getWebCrypto() && key.length !== 24) { // WebCrypto (no 192 bit support) see: https://www.chromium.org/blink/webcrypto#TOC-AES-support
-      key = await webCrypto$2.importKey('raw', key, { name: 'AES-CBC', length: key.length * 8 }, false, ['encrypt']);
+      key = await webCrypto$6.importKey('raw', key, { name: 'AES-CBC', length: key.length * 8 }, false, ['encrypt']);
       return async function(pt) {
-        const ct = await webCrypto$2.encrypt({ name: 'AES-CBC', iv: zeroBlock, length: blockLength * 8 }, key, pt);
-        return new Uint8Array(ct).subarray(0, ct.byteLength - blockLength);
-      };
-    }
-    if (util.getNodeCrypto()) { // Node crypto library
-      return async function(pt) {
-        const en = new nodeCrypto$2.createCipheriv('aes-' + (key.length * 8) + '-cbc', key, zeroBlock);
-        const ct = en.update(pt);
-        return new Uint8Array(ct);
+        const ct = await webCrypto$6.encrypt({ name: 'AES-CBC', iv: zeroBlock$1, length: blockLength$3 * 8 }, key, pt);
+        return new Uint8Array(ct).subarray(0, ct.byteLength - blockLength$3);
       };
     }
     // asm.js fallback
     return async function(pt) {
-      return AES_CBC.encrypt(pt, key, false, zeroBlock);
+      return AES_CBC.encrypt(pt, key, false, zeroBlock$1);
     };
   }
 
   // OpenPGP.js - An OpenPGP implementation in javascript
 
-  const webCrypto$3 = util.getWebCrypto();
-  const nodeCrypto$3 = util.getNodeCrypto();
-  const Buffer$1 = util.getNodeBuffer();
+  const webCrypto$5 = util.getWebCrypto();
 
 
-  const blockLength$1 = 16;
-  const ivLength = blockLength$1;
-  const tagLength = blockLength$1;
+  const blockLength$2 = 16;
+  const ivLength$2 = blockLength$2;
+  const tagLength$2 = blockLength$2;
 
-  const zero = new Uint8Array(blockLength$1);
-  const one = new Uint8Array(blockLength$1); one[blockLength$1 - 1] = 1;
-  const two = new Uint8Array(blockLength$1); two[blockLength$1 - 1] = 2;
+  const zero$2 = new Uint8Array(blockLength$2);
+  const one$1 = new Uint8Array(blockLength$2); one$1[blockLength$2 - 1] = 1;
+  const two = new Uint8Array(blockLength$2); two[blockLength$2 - 1] = 2;
 
   async function OMAC(key) {
     const cmac = await CMAC(key);
@@ -10200,16 +10084,9 @@ var openpgp = (function (exports) {
       key.length !== 24 && // WebCrypto (no 192 bit support) see: https://www.chromium.org/blink/webcrypto#TOC-AES-support
       (!navigator.userAgent || navigator.userAgent.indexOf('Edge') === -1)
     ) {
-      key = await webCrypto$3.importKey('raw', key, { name: 'AES-CTR', length: key.length * 8 }, false, ['encrypt']);
+      key = await webCrypto$5.importKey('raw', key, { name: 'AES-CTR', length: key.length * 8 }, false, ['encrypt']);
       return async function(pt, iv) {
-        const ct = await webCrypto$3.encrypt({ name: 'AES-CTR', counter: iv, length: blockLength$1 * 8 }, key, pt);
-        return new Uint8Array(ct);
-      };
-    }
-    if (util.getNodeCrypto()) { // Node crypto library
-      return async function(pt, iv) {
-        const en = new nodeCrypto$3.createCipheriv('aes-' + (key.length * 8) + '-ctr', key, iv);
-        const ct = Buffer$1.concat([en.update(pt), en.final()]);
+        const ct = await webCrypto$5.encrypt({ name: 'AES-CTR', counter: iv, length: blockLength$2 * 8 }, key, pt);
         return new Uint8Array(ct);
       };
     }
@@ -10253,13 +10130,13 @@ var openpgp = (function (exports) {
           omacNonce,
           omacAdata
         ] = await Promise.all([
-          omac(zero, nonce),
-          omac(one, adata)
+          omac(zero$2, nonce),
+          omac(one$1, adata)
         ]);
         const ciphered = await ctr(plaintext, omacNonce);
         const omacCiphered = await omac(two, ciphered);
         const tag = omacCiphered; // Assumes that omac(*).length === tagLength.
-        for (let i = 0; i < tagLength; i++) {
+        for (let i = 0; i < tagLength$2; i++) {
           tag[i] ^= omacAdata[i] ^ omacNonce[i];
         }
         return util.concatUint8Array([ciphered, tag]);
@@ -10273,20 +10150,20 @@ var openpgp = (function (exports) {
        * @returns {Promise<Uint8Array>} The plaintext output.
        */
       decrypt: async function(ciphertext, nonce, adata) {
-        if (ciphertext.length < tagLength) throw new Error('Invalid EAX ciphertext');
-        const ciphered = ciphertext.subarray(0, -tagLength);
-        const ctTag = ciphertext.subarray(-tagLength);
+        if (ciphertext.length < tagLength$2) throw new Error('Invalid EAX ciphertext');
+        const ciphered = ciphertext.subarray(0, -tagLength$2);
+        const ctTag = ciphertext.subarray(-tagLength$2);
         const [
           omacNonce,
           omacAdata,
           omacCiphered
         ] = await Promise.all([
-          omac(zero, nonce),
-          omac(one, adata),
+          omac(zero$2, nonce),
+          omac(one$1, adata),
           omac(two, ciphered)
         ]);
         const tag = omacCiphered; // Assumes that omac(*).length === tagLength.
-        for (let i = 0; i < tagLength; i++) {
+        for (let i = 0; i < tagLength$2; i++) {
           tag[i] ^= omacAdata[i] ^ omacNonce[i];
         }
         if (!util.equalsUint8Array(ctTag, tag)) throw new Error('Authentication tag mismatch');
@@ -10310,13 +10187,13 @@ var openpgp = (function (exports) {
     return nonce;
   };
 
-  EAX.blockLength = blockLength$1;
-  EAX.ivLength = ivLength;
-  EAX.tagLength = tagLength;
+  EAX.blockLength = blockLength$2;
+  EAX.ivLength = ivLength$2;
+  EAX.tagLength = tagLength$2;
 
   // OpenPGP.js - An OpenPGP implementation in javascript
 
-  const blockLength$2 = 16;
+  const blockLength$1 = 16;
   const ivLength$1 = 15;
 
   // https://tools.ietf.org/html/draft-ietf-openpgp-rfc4880bis-04#section-5.16.2:
@@ -10334,7 +10211,7 @@ var openpgp = (function (exports) {
     return ntz;
   }
 
-  function xorMut$1(S, T) {
+  function xorMut(S, T) {
     for (let i = 0; i < S.length; i++) {
       S[i] ^= T[i];
     }
@@ -10342,11 +10219,11 @@ var openpgp = (function (exports) {
   }
 
   function xor(S, T) {
-    return xorMut$1(S.slice(), T);
+    return xorMut(S.slice(), T);
   }
 
-  const zeroBlock$1 = new Uint8Array(blockLength$2);
-  const one$1 = new Uint8Array([1]);
+  const zeroBlock = new Uint8Array(blockLength$1);
+  const one = new Uint8Array([1]);
 
   /**
    * Class to en/decrypt using OCB mode.
@@ -10368,7 +10245,7 @@ var openpgp = (function (exports) {
       encipher = aes.encrypt.bind(aes);
       decipher = aes.decrypt.bind(aes);
 
-      const mask_x = encipher(zeroBlock$1);
+      const mask_x = encipher(zeroBlock);
       const mask_$ = util.double(mask_x);
       mask = [];
       mask[0] = util.double(mask_$);
@@ -10379,7 +10256,7 @@ var openpgp = (function (exports) {
     }
 
     function extendKeyVariables(text, adata) {
-      const newMaxNtz = util.nbits(Math.max(text.length, adata.length) / blockLength$2 | 0) - 1;
+      const newMaxNtz = util.nbits(Math.max(text.length, adata.length) / blockLength$1 | 0) - 1;
       for (let i = maxNtz + 1; i <= newMaxNtz; i++) {
         mask[i] = util.double(mask[i - 1]);
       }
@@ -10389,34 +10266,34 @@ var openpgp = (function (exports) {
     function hash(adata) {
       if (!adata.length) {
         // Fast path
-        return zeroBlock$1;
+        return zeroBlock;
       }
 
       //
       // Consider A as a sequence of 128-bit blocks
       //
-      const m = adata.length / blockLength$2 | 0;
+      const m = adata.length / blockLength$1 | 0;
 
-      const offset = new Uint8Array(blockLength$2);
-      const sum = new Uint8Array(blockLength$2);
+      const offset = new Uint8Array(blockLength$1);
+      const sum = new Uint8Array(blockLength$1);
       for (let i = 0; i < m; i++) {
-        xorMut$1(offset, mask[ntz(i + 1)]);
-        xorMut$1(sum, encipher(xor(offset, adata)));
-        adata = adata.subarray(blockLength$2);
+        xorMut(offset, mask[ntz(i + 1)]);
+        xorMut(sum, encipher(xor(offset, adata)));
+        adata = adata.subarray(blockLength$1);
       }
 
       //
       // Process any final partial block; compute final hash value
       //
       if (adata.length) {
-        xorMut$1(offset, mask.x);
+        xorMut(offset, mask.x);
 
-        const cipherInput = new Uint8Array(blockLength$2);
+        const cipherInput = new Uint8Array(blockLength$1);
         cipherInput.set(adata, 0);
         cipherInput[adata.length] = 0b10000000;
-        xorMut$1(cipherInput, offset);
+        xorMut(cipherInput, offset);
 
-        xorMut$1(sum, encipher(cipherInput));
+        xorMut(sum, encipher(cipherInput));
       }
 
       return sum;
@@ -10434,7 +10311,7 @@ var openpgp = (function (exports) {
       //
       // Consider P as a sequence of 128-bit blocks
       //
-      const m = text.length / blockLength$2 | 0;
+      const m = text.length / blockLength$1 | 0;
 
       //
       // Key-dependent variables
@@ -10446,18 +10323,18 @@ var openpgp = (function (exports) {
       //
       //    Nonce = num2str(TAGLEN mod 128,7) || zeros(120-bitlen(N)) || 1 || N
       // Note: We assume here that tagLength mod 16 == 0.
-      const paddedNonce = util.concatUint8Array([zeroBlock$1.subarray(0, ivLength$1 - nonce.length), one$1, nonce]);
+      const paddedNonce = util.concatUint8Array([zeroBlock.subarray(0, ivLength$1 - nonce.length), one, nonce]);
       //    bottom = str2num(Nonce[123..128])
-      const bottom = paddedNonce[blockLength$2 - 1] & 0b111111;
+      const bottom = paddedNonce[blockLength$1 - 1] & 0b111111;
       //    Ktop = ENCIPHER(K, Nonce[1..122] || zeros(6))
-      paddedNonce[blockLength$2 - 1] &= 0b11000000;
+      paddedNonce[blockLength$1 - 1] &= 0b11000000;
       const kTop = encipher(paddedNonce);
       //    Stretch = Ktop || (Ktop[1..64] xor Ktop[9..72])
       const stretched = util.concatUint8Array([kTop, xor(kTop.subarray(0, 8), kTop.subarray(1, 9))]);
       //    Offset_0 = Stretch[1+bottom..128+bottom]
       const offset = util.shiftRight(stretched.subarray(0 + (bottom >> 3), 17 + (bottom >> 3)), 8 - (bottom & 7)).subarray(1);
       //    Checksum_0 = zeros(128)
-      const checksum = new Uint8Array(blockLength$2);
+      const checksum = new Uint8Array(blockLength$1);
 
       const ct = new Uint8Array(text.length + tagLength$1);
 
@@ -10468,15 +10345,15 @@ var openpgp = (function (exports) {
       let pos = 0;
       for (i = 0; i < m; i++) {
         // Offset_i = Offset_{i-1} xor L_{ntz(i)}
-        xorMut$1(offset, mask[ntz(i + 1)]);
+        xorMut(offset, mask[ntz(i + 1)]);
         // C_i = Offset_i xor ENCIPHER(K, P_i xor Offset_i)
         // P_i = Offset_i xor DECIPHER(K, C_i xor Offset_i)
-        ct.set(xorMut$1(fn(xor(offset, text)), offset), pos);
+        ct.set(xorMut(fn(xor(offset, text)), offset), pos);
         // Checksum_i = Checksum_{i-1} xor P_i
-        xorMut$1(checksum, fn === encipher ? text : ct.subarray(pos));
+        xorMut(checksum, fn === encipher ? text : ct.subarray(pos));
 
-        text = text.subarray(blockLength$2);
-        pos += blockLength$2;
+        text = text.subarray(blockLength$1);
+        pos += blockLength$1;
       }
 
       //
@@ -10484,21 +10361,21 @@ var openpgp = (function (exports) {
       //
       if (text.length) {
         // Offset_* = Offset_m xor L_*
-        xorMut$1(offset, mask.x);
+        xorMut(offset, mask.x);
         // Pad = ENCIPHER(K, Offset_*)
         const padding = encipher(offset);
         // C_* = P_* xor Pad[1..bitlen(P_*)]
         ct.set(xor(text, padding), pos);
 
         // Checksum_* = Checksum_m xor (P_* || 1 || new Uint8Array(127-bitlen(P_*)))
-        const xorInput = new Uint8Array(blockLength$2);
+        const xorInput = new Uint8Array(blockLength$1);
         xorInput.set(fn === encipher ? text : ct.subarray(pos, -tagLength$1), 0);
         xorInput[text.length] = 0b10000000;
-        xorMut$1(checksum, xorInput);
+        xorMut(checksum, xorInput);
         pos += text.length;
       }
       // Tag = ENCIPHER(K, Checksum_* xor Offset_* xor L_$) xor HASH(K,A)
-      const tag = xorMut$1(encipher(xorMut$1(xorMut$1(checksum, offset), mask.$)), hash(adata));
+      const tag = xorMut(encipher(xorMut(xorMut(checksum, offset), mask.$)), hash(adata));
 
       //
       // Assemble ciphertext
@@ -10558,7 +10435,7 @@ var openpgp = (function (exports) {
     return nonce;
   };
 
-  OCB.blockLength = blockLength$2;
+  OCB.blockLength = blockLength$1;
   OCB.ivLength = ivLength$1;
   OCB.tagLength = tagLength$1;
 
@@ -10845,12 +10722,12 @@ var openpgp = (function (exports) {
   // OpenPGP.js - An OpenPGP implementation in javascript
 
   const webCrypto$4 = util.getWebCrypto();
-  const nodeCrypto$4 = util.getNodeCrypto();
-  const Buffer$2 = util.getNodeBuffer();
+  const nodeCrypto = util.getNodeCrypto();
+  const Buffer$1 = util.getNodeBuffer();
 
-  const blockLength$3 = 16;
-  const ivLength$2 = 12; // size of the IV in bytes
-  const tagLength$2 = 16; // size of the tag in bytes
+  const blockLength = 16;
+  const ivLength = 12; // size of the IV in bytes
+  const tagLength = 16; // size of the tag in bytes
   const ALGO = 'AES-GCM';
 
   /**
@@ -10879,13 +10756,13 @@ var openpgp = (function (exports) {
           ) {
             return AES_GCM.encrypt(pt, key, iv, adata);
           }
-          const ct = await webCrypto$4.encrypt({ name: ALGO, iv, additionalData: adata, tagLength: tagLength$2 * 8 }, _key, pt);
+          const ct = await webCrypto$4.encrypt({ name: ALGO, iv, additionalData: adata, tagLength: tagLength * 8 }, _key, pt);
           return new Uint8Array(ct);
         },
 
         decrypt: async function(ct, iv, adata = new Uint8Array()) {
           if (
-            ct.length === tagLength$2 ||
+            ct.length === tagLength ||
             // iOS does not support GCM-en/decrypting empty messages
             // Also, synchronous en/decryption might be faster in this case.
             (!adata.length && navigator.userAgent && navigator.userAgent.indexOf('Edge') !== -1)
@@ -10893,7 +10770,7 @@ var openpgp = (function (exports) {
           ) {
             return AES_GCM.decrypt(ct, key, iv, adata);
           }
-          const pt = await webCrypto$4.decrypt({ name: ALGO, iv, additionalData: adata, tagLength: tagLength$2 * 8 }, _key, ct);
+          const pt = await webCrypto$4.decrypt({ name: ALGO, iv, additionalData: adata, tagLength: tagLength * 8 }, _key, ct);
           return new Uint8Array(pt);
         }
       };
@@ -10902,17 +10779,17 @@ var openpgp = (function (exports) {
     if (util.getNodeCrypto()) { // Node crypto library
       return {
         encrypt: async function(pt, iv, adata = new Uint8Array()) {
-          const en = new nodeCrypto$4.createCipheriv('aes-' + (key.length * 8) + '-gcm', key, iv);
+          const en = new nodeCrypto.createCipheriv('aes-' + (key.length * 8) + '-gcm', key, iv);
           en.setAAD(adata);
-          const ct = Buffer$2.concat([en.update(pt), en.final(), en.getAuthTag()]); // append auth tag to ciphertext
+          const ct = Buffer$1.concat([en.update(pt), en.final(), en.getAuthTag()]); // append auth tag to ciphertext
           return new Uint8Array(ct);
         },
 
         decrypt: async function(ct, iv, adata = new Uint8Array()) {
-          const de = new nodeCrypto$4.createDecipheriv('aes-' + (key.length * 8) + '-gcm', key, iv);
+          const de = new nodeCrypto.createDecipheriv('aes-' + (key.length * 8) + '-gcm', key, iv);
           de.setAAD(adata);
-          de.setAuthTag(ct.slice(ct.length - tagLength$2, ct.length)); // read auth tag at end of ciphertext
-          const pt = Buffer$2.concat([de.update(ct.slice(0, ct.length - tagLength$2)), de.final()]);
+          de.setAuthTag(ct.slice(ct.length - tagLength, ct.length)); // read auth tag at end of ciphertext
+          const pt = Buffer$1.concat([de.update(ct.slice(0, ct.length - tagLength)), de.final()]);
           return new Uint8Array(pt);
         }
       };
@@ -10946,9 +10823,9 @@ var openpgp = (function (exports) {
     return nonce;
   };
 
-  GCM.blockLength = blockLength$3;
-  GCM.ivLength = ivLength$2;
-  GCM.tagLength = tagLength$2;
+  GCM.blockLength = blockLength;
+  GCM.ivLength = ivLength;
+  GCM.tagLength = tagLength;
 
   /**
    * @fileoverview Cipher modes
@@ -11906,8 +11783,6 @@ var openpgp = (function (exports) {
 
   // GPG4Browsers - An OpenPGP implementation in javascript
 
-  const nodeCrypto$5 = util.getNodeCrypto();
-
   /**
    * Buffer for secure random numbers
    */
@@ -11985,9 +11860,6 @@ var openpgp = (function (exports) {
     const buf = new Uint8Array(length);
     if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
       crypto.getRandomValues(buf);
-    } else if (nodeCrypto$5) {
-      const bytes = nodeCrypto$5.randomBytes(buf.length);
-      buf.set(bytes);
     } else if (randomBuffer.buffer) {
       await randomBuffer.get(buf);
     } else {
@@ -12426,32 +12298,7 @@ var openpgp = (function (exports) {
 
   // GPG4Browsers - An OpenPGP implementation in javascript
 
-  const webCrypto$5 = util.getWebCrypto();
-  const nodeCrypto$6 = util.getNodeCrypto();
-  const asn1 = nodeCrypto$6 ? void('asn1.js') : undefined;
-
-  /* eslint-disable no-invalid-this */
-  const RSAPrivateKey = util.detectNode() ? asn1.define('RSAPrivateKey', function () {
-    this.seq().obj( // used for native NodeJS crypto
-      this.key('version').int(), // 0
-      this.key('modulus').int(), // n
-      this.key('publicExponent').int(), // e
-      this.key('privateExponent').int(), // d
-      this.key('prime1').int(), // p
-      this.key('prime2').int(), // q
-      this.key('exponent1').int(), // dp
-      this.key('exponent2').int(), // dq
-      this.key('coefficient').int() // u
-    );
-  }) : undefined;
-
-  const RSAPublicKey = util.detectNode() ? asn1.define('RSAPubliceKey', function () {
-    this.seq().obj( // used for native NodeJS crypto
-      this.key('modulus').int(), // n
-      this.key('publicExponent').int(), // e
-    );
-  }) : undefined;
-  /* eslint-enable no-invalid-this */
+  const webCrypto$3 = util.getWebCrypto();
 
   /** Create signature
    * @param {module:enums.hash} hashAlgo - Hash algorithm
@@ -12466,16 +12313,14 @@ var openpgp = (function (exports) {
    * @returns {Promise<Uint8Array>} RSA Signature.
    * @async
    */
-  async function sign(hashAlgo, data, n, e, d, p, q, u, hashed) {
+  async function sign$5(hashAlgo, data, n, e, d, p, q, u, hashed) {
     if (data && !util.isStream(data)) {
       if (util.getWebCrypto()) {
         try {
-          return await webSign(enums.read(enums.webHash, hashAlgo), data, n, e, d, p, q, u);
+          return await webSign$1(enums.read(enums.webHash, hashAlgo), data, n, e, d, p, q, u);
         } catch (err) {
           util.printDebugError(err);
         }
-      } else if (util.getNodeCrypto()) {
-        return nodeSign(hashAlgo, data, n, e, d, p, q, u);
       }
     }
     return bnSign(hashAlgo, n, d, hashed);
@@ -12492,16 +12337,14 @@ var openpgp = (function (exports) {
    * @returns {Boolean}
    * @async
    */
-  async function verify(hashAlgo, data, s, n, e, hashed) {
+  async function verify$5(hashAlgo, data, s, n, e, hashed) {
     if (data && !util.isStream(data)) {
       if (util.getWebCrypto()) {
         try {
-          return await webVerify(enums.read(enums.webHash, hashAlgo), data, s, n, e);
+          return await webVerify$1(enums.read(enums.webHash, hashAlgo), data, s, n, e);
         } catch (err) {
           util.printDebugError(err);
         }
-      } else if (util.getNodeCrypto()) {
-        return nodeVerify(hashAlgo, data, s, n, e);
       }
     }
     return bnVerify(hashAlgo, s, n, e, hashed);
@@ -12515,10 +12358,7 @@ var openpgp = (function (exports) {
    * @returns {Promise<Uint8Array>} RSA Ciphertext.
    * @async
    */
-  async function encrypt$1(data, n, e) {
-    if (util.getNodeCrypto()) {
-      return nodeEncrypt$1(data, n, e);
-    }
+  async function encrypt$3(data, n, e) {
     return bnEncrypt(data, n, e);
   }
 
@@ -12537,10 +12377,7 @@ var openpgp = (function (exports) {
    * @throws {Error} on decryption error, unless `randomPayload` is given
    * @async
    */
-  async function decrypt$1(data, n, e, d, p, q, u, randomPayload) {
-    if (util.getNodeCrypto()) {
-      return nodeDecrypt$1(data, n, e, d, p, q, u, randomPayload);
-    }
+  async function decrypt$3(data, n, e, d, p, q, u, randomPayload) {
     return bnDecrypt(data, n, e, d, p, q, u, randomPayload);
   }
 
@@ -12557,7 +12394,7 @@ var openpgp = (function (exports) {
    *                                  RSA private prime p, RSA private prime q, u = p ** -1 mod q
    * @async
    */
-  async function generate(bits, e) {
+  async function generate$2(bits, e) {
     const BigInteger = await util.getBigInteger();
 
     e = new BigInteger(e);
@@ -12572,11 +12409,11 @@ var openpgp = (function (exports) {
           name: 'SHA-1' // not required for actual RSA keys, but for crypto api 'sign' and 'verify'
         }
       };
-      const keyPair = await webCrypto$5.generateKey(keyGenOpt, true, ['sign', 'verify']);
+      const keyPair = await webCrypto$3.generateKey(keyGenOpt, true, ['sign', 'verify']);
 
       // export the generated keys as JsonWebKey (JWK)
       // https://tools.ietf.org/html/draft-ietf-jose-json-web-key-33
-      const jwk = await webCrypto$5.exportKey('jwk', keyPair.privateKey);
+      const jwk = await webCrypto$3.exportKey('jwk', keyPair.privateKey);
       // map JWK parameters to corresponding OpenPGP names
       return {
         n: b64ToUint8Array(jwk.n),
@@ -12587,35 +12424,6 @@ var openpgp = (function (exports) {
         q: b64ToUint8Array(jwk.p),
         // Since p and q are switched in places, u is the inverse of jwk.q
         u: b64ToUint8Array(jwk.qi)
-      };
-    } else if (util.getNodeCrypto() && nodeCrypto$6.generateKeyPair && RSAPrivateKey) {
-      const opts = {
-        modulusLength: bits,
-        publicExponent: e.toNumber(),
-        publicKeyEncoding: { type: 'pkcs1', format: 'der' },
-        privateKeyEncoding: { type: 'pkcs1', format: 'der' }
-      };
-      const prv = await new Promise((resolve, reject) => nodeCrypto$6.generateKeyPair('rsa', opts, (err, _, der) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(RSAPrivateKey.decode(der, 'der'));
-        }
-      }));
-      /**
-       * OpenPGP spec differs from DER spec, DER: `u = (inverse of q) mod p`, OpenPGP: `u = (inverse of p) mod q`.
-       * @link https://tools.ietf.org/html/rfc3447#section-3.2
-       * @link https://tools.ietf.org/html/draft-ietf-openpgp-rfc4880bis-08#section-5.6.1
-       */
-      return {
-        n: prv.modulus.toArrayLike(Uint8Array),
-        e: prv.publicExponent.toArrayLike(Uint8Array),
-        d: prv.privateExponent.toArrayLike(Uint8Array),
-        // switch p and q
-        p: prv.prime2.toArrayLike(Uint8Array),
-        q: prv.prime1.toArrayLike(Uint8Array),
-        // Since p and q are switched in places, we can keep u as defined by DER
-        u: prv.coefficient.toArrayLike(Uint8Array)
       };
     }
 
@@ -12660,7 +12468,7 @@ var openpgp = (function (exports) {
    * @returns {Promise<Boolean>} Whether params are valid.
    * @async
    */
-  async function validateParams(n, e, d, p, q, u) {
+  async function validateParams$6(n, e, d, p, q, u) {
     const BigInteger = await util.getBigInteger();
     n = new BigInteger(n);
     p = new BigInteger(p);
@@ -12710,54 +12518,21 @@ var openpgp = (function (exports) {
     return m.modExp(d, n).toUint8Array('be', n.byteLength());
   }
 
-  async function webSign(hashName, data, n, e, d, p, q, u) {
+  async function webSign$1(hashName, data, n, e, d, p, q, u) {
     /** OpenPGP keys require that p < q, and Safari Web Crypto requires that p > q.
      * We swap them in privateToJWK, so it usually works out, but nevertheless,
      * not all OpenPGP keys are compatible with this requirement.
      * OpenPGP.js used to generate RSA keys the wrong way around (p > q), and still
      * does if the underlying Web Crypto does so (e.g. old MS Edge 50% of the time).
      */
-    const jwk = await privateToJWK(n, e, d, p, q, u);
+    const jwk = await privateToJWK$1(n, e, d, p, q, u);
     const algo = {
       name: 'RSASSA-PKCS1-v1_5',
       hash: { name: hashName }
     };
-    const key = await webCrypto$5.importKey('jwk', jwk, algo, false, ['sign']);
+    const key = await webCrypto$3.importKey('jwk', jwk, algo, false, ['sign']);
     // add hash field for ms edge support
-    return new Uint8Array(await webCrypto$5.sign({ 'name': 'RSASSA-PKCS1-v1_5', 'hash': hashName }, key, data));
-  }
-
-  async function nodeSign(hashAlgo, data, n, e, d, p, q, u) {
-    const { default: BN } = await Promise.resolve().then(function () { return bn$1; });
-    const pBNum = new BN(p);
-    const qBNum = new BN(q);
-    const dBNum = new BN(d);
-    const dq = dBNum.mod(qBNum.subn(1)); // d mod (q-1)
-    const dp = dBNum.mod(pBNum.subn(1)); // d mod (p-1)
-    const sign = nodeCrypto$6.createSign(enums.read(enums.hash, hashAlgo));
-    sign.write(data);
-    sign.end();
-    const keyObject = {
-      version: 0,
-      modulus: new BN(n),
-      publicExponent: new BN(e),
-      privateExponent: new BN(d),
-      // switch p and q
-      prime1: new BN(q),
-      prime2: new BN(p),
-      // switch dp and dq
-      exponent1: dq,
-      exponent2: dp,
-      coefficient: new BN(u)
-    };
-    if (typeof nodeCrypto$6.createPrivateKey !== 'undefined') { //from version 11.6.0 Node supports der encoded key objects
-      const der = RSAPrivateKey.encode(keyObject, 'der');
-      return new Uint8Array(sign.sign({ key: der, format: 'der', type: 'pkcs1' }));
-    }
-    const pem = RSAPrivateKey.encode(keyObject, 'pem', {
-      label: 'RSA PRIVATE KEY'
-    });
-    return new Uint8Array(sign.sign(pem));
+    return new Uint8Array(await webCrypto$3.sign({ 'name': 'RSASSA-PKCS1-v1_5', 'hash': hashName }, key, data));
   }
 
   async function bnVerify(hashAlgo, s, n, e, hashed) {
@@ -12773,60 +12548,14 @@ var openpgp = (function (exports) {
     return util.equalsUint8Array(EM1, EM2);
   }
 
-  async function webVerify(hashName, data, s, n, e) {
+  async function webVerify$1(hashName, data, s, n, e) {
     const jwk = publicToJWK(n, e);
-    const key = await webCrypto$5.importKey('jwk', jwk, {
+    const key = await webCrypto$3.importKey('jwk', jwk, {
       name: 'RSASSA-PKCS1-v1_5',
       hash: { name:  hashName }
     }, false, ['verify']);
     // add hash field for ms edge support
-    return webCrypto$5.verify({ 'name': 'RSASSA-PKCS1-v1_5', 'hash': hashName }, key, s, data);
-  }
-
-  async function nodeVerify(hashAlgo, data, s, n, e) {
-    const { default: BN } = await Promise.resolve().then(function () { return bn$1; });
-
-    const verify = nodeCrypto$6.createVerify(enums.read(enums.hash, hashAlgo));
-    verify.write(data);
-    verify.end();
-    const keyObject = {
-      modulus: new BN(n),
-      publicExponent: new BN(e)
-    };
-    let key;
-    if (typeof nodeCrypto$6.createPrivateKey !== 'undefined') { //from version 11.6.0 Node supports der encoded key objects
-      const der = RSAPublicKey.encode(keyObject, 'der');
-      key = { key: der, format: 'der', type: 'pkcs1' };
-    } else {
-      key = RSAPublicKey.encode(keyObject, 'pem', {
-        label: 'RSA PUBLIC KEY'
-      });
-    }
-    try {
-      return await verify.verify(key, s);
-    } catch (err) {
-      return false;
-    }
-  }
-
-  async function nodeEncrypt$1(data, n, e) {
-    const { default: BN } = await Promise.resolve().then(function () { return bn$1; });
-
-    const keyObject = {
-      modulus: new BN(n),
-      publicExponent: new BN(e)
-    };
-    let key;
-    if (typeof nodeCrypto$6.createPrivateKey !== 'undefined') {
-      const der = RSAPublicKey.encode(keyObject, 'der');
-      key = { key: der, format: 'der', type: 'pkcs1', padding: nodeCrypto$6.constants.RSA_PKCS1_PADDING };
-    } else {
-      const pem = RSAPublicKey.encode(keyObject, 'pem', {
-        label: 'RSA PUBLIC KEY'
-      });
-      key = { key: pem, padding: nodeCrypto$6.constants.RSA_PKCS1_PADDING };
-    }
-    return new Uint8Array(nodeCrypto$6.publicEncrypt(key, data));
+    return webCrypto$3.verify({ 'name': 'RSASSA-PKCS1-v1_5', 'hash': hashName }, key, s, data);
   }
 
   async function bnEncrypt(data, n, e) {
@@ -12838,47 +12567,6 @@ var openpgp = (function (exports) {
       throw new Error('Message size cannot exceed modulus size');
     }
     return data.modExp(e, n).toUint8Array('be', n.byteLength());
-  }
-
-  async function nodeDecrypt$1(data, n, e, d, p, q, u, randomPayload) {
-    const { default: BN } = await Promise.resolve().then(function () { return bn$1; });
-
-    const pBNum = new BN(p);
-    const qBNum = new BN(q);
-    const dBNum = new BN(d);
-    const dq = dBNum.mod(qBNum.subn(1)); // d mod (q-1)
-    const dp = dBNum.mod(pBNum.subn(1)); // d mod (p-1)
-    const keyObject = {
-      version: 0,
-      modulus: new BN(n),
-      publicExponent: new BN(e),
-      privateExponent: new BN(d),
-      // switch p and q
-      prime1: new BN(q),
-      prime2: new BN(p),
-      // switch dp and dq
-      exponent1: dq,
-      exponent2: dp,
-      coefficient: new BN(u)
-    };
-    let key;
-    if (typeof nodeCrypto$6.createPrivateKey !== 'undefined') {
-      const der = RSAPrivateKey.encode(keyObject, 'der');
-      key = { key: der, format: 'der' , type: 'pkcs1', padding: nodeCrypto$6.constants.RSA_PKCS1_PADDING };
-    } else {
-      const pem = RSAPrivateKey.encode(keyObject, 'pem', {
-        label: 'RSA PRIVATE KEY'
-      });
-      key = { key: pem, padding: nodeCrypto$6.constants.RSA_PKCS1_PADDING };
-    }
-    try {
-      return new Uint8Array(nodeCrypto$6.privateDecrypt(key, data));
-    } catch (err) {
-      if (randomPayload) {
-        return randomPayload;
-      }
-      throw new Error('Decryption error');
-    }
   }
 
   async function bnDecrypt(data, n, e, d, p, q, u, randomPayload) {
@@ -12923,7 +12611,7 @@ var openpgp = (function (exports) {
    * @param {Uint8Array} q
    * @param {Uint8Array} u
    */
-  async function privateToJWK(n, e, d, p, q, u) {
+  async function privateToJWK$1(n, e, d, p, q, u) {
     const BigInteger = await util.getBigInteger();
     const pNum = new BigInteger(p);
     const qNum = new BigInteger(q);
@@ -12966,12 +12654,12 @@ var openpgp = (function (exports) {
 
   var rsa = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    sign: sign,
-    verify: verify,
-    encrypt: encrypt$1,
-    decrypt: decrypt$1,
-    generate: generate,
-    validateParams: validateParams
+    sign: sign$5,
+    verify: verify$5,
+    encrypt: encrypt$3,
+    decrypt: decrypt$3,
+    generate: generate$2,
+    validateParams: validateParams$6
   });
 
   // GPG4Browsers - An OpenPGP implementation in javascript
@@ -13036,7 +12724,7 @@ var openpgp = (function (exports) {
    * @returns {Promise<Boolean>} Whether params are valid.
    * @async
    */
-  async function validateParams$1(p, g, y, x) {
+  async function validateParams$5(p, g, y, x) {
     const BigInteger = await util.getBigInteger();
     p = new BigInteger(p);
     g = new BigInteger(g);
@@ -13101,7 +12789,7 @@ var openpgp = (function (exports) {
     __proto__: null,
     encrypt: encrypt$2,
     decrypt: decrypt$2,
-    validateParams: validateParams$1
+    validateParams: validateParams$5
   });
 
   // OpenPGP.js - An OpenPGP implementation in javascript
@@ -13190,32 +12878,19 @@ var openpgp = (function (exports) {
     if (!defaultConfig.useIndutnyElliptic) {
       throw new Error('This curve is only supported in the full build of OpenPGP.js');
     }
-    const { default: elliptic } = await Promise.resolve().then(function () { return elliptic$1; });
-    return new elliptic.ec(name);
+    const { default: elliptic$1 } = await Promise.resolve().then(function () { return elliptic; });
+    return new elliptic$1.ec(name);
   }
 
   // OpenPGP.js - An OpenPGP implementation in javascript
 
-  const webCrypto$6 = util.getWebCrypto();
-  const nodeCrypto$7 = util.getNodeCrypto();
+  const webCrypto$2 = util.getWebCrypto();
 
   const webCurves = {
     'p256': 'P-256',
     'p384': 'P-384',
     'p521': 'P-521'
   };
-  const knownCurves = nodeCrypto$7 ? nodeCrypto$7.getCurves() : [];
-  const nodeCurves = nodeCrypto$7 ? {
-    secp256k1: knownCurves.includes('secp256k1') ? 'secp256k1' : undefined,
-    p256: knownCurves.includes('prime256v1') ? 'prime256v1' : undefined,
-    p384: knownCurves.includes('secp384r1') ? 'secp384r1' : undefined,
-    p521: knownCurves.includes('secp521r1') ? 'secp521r1' : undefined,
-    ed25519: knownCurves.includes('ED25519') ? 'ED25519' : undefined,
-    curve25519: knownCurves.includes('X25519') ? 'X25519' : undefined,
-    brainpoolP256r1: knownCurves.includes('brainpoolP256r1') ? 'brainpoolP256r1' : undefined,
-    brainpoolP384r1: knownCurves.includes('brainpoolP384r1') ? 'brainpoolP384r1' : undefined,
-    brainpoolP512r1: knownCurves.includes('brainpoolP512r1') ? 'brainpoolP512r1' : undefined
-  } : {};
 
   const curves = {
     p256: {
@@ -13223,7 +12898,6 @@ var openpgp = (function (exports) {
       keyType: enums.publicKey.ecdsa,
       hash: enums.hash.sha256,
       cipher: enums.symmetric.aes128,
-      node: nodeCurves.p256,
       web: webCurves.p256,
       payloadSize: 32,
       sharedSize: 256
@@ -13233,7 +12907,6 @@ var openpgp = (function (exports) {
       keyType: enums.publicKey.ecdsa,
       hash: enums.hash.sha384,
       cipher: enums.symmetric.aes192,
-      node: nodeCurves.p384,
       web: webCurves.p384,
       payloadSize: 48,
       sharedSize: 384
@@ -13243,7 +12916,6 @@ var openpgp = (function (exports) {
       keyType: enums.publicKey.ecdsa,
       hash: enums.hash.sha512,
       cipher: enums.symmetric.aes256,
-      node: nodeCurves.p521,
       web: webCurves.p521,
       payloadSize: 66,
       sharedSize: 528
@@ -13253,14 +12925,12 @@ var openpgp = (function (exports) {
       keyType: enums.publicKey.ecdsa,
       hash: enums.hash.sha256,
       cipher: enums.symmetric.aes128,
-      node: nodeCurves.secp256k1,
       payloadSize: 32
     },
     ed25519: {
       oid: [0x06, 0x09, 0x2B, 0x06, 0x01, 0x04, 0x01, 0xDA, 0x47, 0x0F, 0x01],
       keyType: enums.publicKey.eddsa,
       hash: enums.hash.sha512,
-      node: false, // nodeCurves.ed25519 TODO
       payloadSize: 32
     },
     curve25519: {
@@ -13268,7 +12938,6 @@ var openpgp = (function (exports) {
       keyType: enums.publicKey.ecdh,
       hash: enums.hash.sha256,
       cipher: enums.symmetric.aes128,
-      node: false, // nodeCurves.curve25519 TODO
       payloadSize: 32
     },
     brainpoolP256r1: {
@@ -13276,7 +12945,6 @@ var openpgp = (function (exports) {
       keyType: enums.publicKey.ecdsa,
       hash: enums.hash.sha256,
       cipher: enums.symmetric.aes128,
-      node: nodeCurves.brainpoolP256r1,
       payloadSize: 32
     },
     brainpoolP384r1: {
@@ -13284,7 +12952,6 @@ var openpgp = (function (exports) {
       keyType: enums.publicKey.ecdsa,
       hash: enums.hash.sha384,
       cipher: enums.symmetric.aes192,
-      node: nodeCurves.brainpoolP384r1,
       payloadSize: 48
     },
     brainpoolP512r1: {
@@ -13292,7 +12959,6 @@ var openpgp = (function (exports) {
       keyType: enums.publicKey.ecdsa,
       hash: enums.hash.sha512,
       cipher: enums.symmetric.aes256,
-      node: nodeCurves.brainpoolP512r1,
       payloadSize: 64
     }
   };
@@ -13321,13 +12987,10 @@ var openpgp = (function (exports) {
       this.oid = params.oid;
       this.hash = params.hash;
       this.cipher = params.cipher;
-      this.node = params.node && curves[this.name];
       this.web = params.web && curves[this.name];
       this.payloadSize = params.payloadSize;
       if (this.web && util.getWebCrypto()) {
         this.type = 'web';
-      } else if (this.node && util.getNodeCrypto()) {
-        this.type = 'node';
       } else if (this.name === 'curve25519') {
         this.type = 'curve25519';
       } else if (this.name === 'ed25519') {
@@ -13345,8 +13008,6 @@ var openpgp = (function (exports) {
             util.printDebugError('Browser did not support generating ec key ' + err.message);
             break;
           }
-        case 'node':
-          return nodeGenKeyPair(this.name);
         case 'curve25519': {
           const privateKey = await getRandomBytes(32);
           privateKey[0] = (privateKey[0] & 127) | 64;
@@ -13392,7 +13053,7 @@ var openpgp = (function (exports) {
    * @param {module:type/oid} oid - curve oid
    * @returns {enums.hash} hash algorithm
    */
-  function getPreferredHashAlgo(oid) {
+  function getPreferredHashAlgo$1(oid) {
     return curves[enums.write(enums.curve, oid.toHex())].hash;
   }
 
@@ -13467,24 +13128,14 @@ var openpgp = (function (exports) {
 
   async function webGenKeyPair(name) {
     // Note: keys generated with ECDSA and ECDH are structurally equivalent
-    const webCryptoKey = await webCrypto$6.generateKey({ name: 'ECDSA', namedCurve: webCurves[name] }, true, ['sign', 'verify']);
+    const webCryptoKey = await webCrypto$2.generateKey({ name: 'ECDSA', namedCurve: webCurves[name] }, true, ['sign', 'verify']);
 
-    const privateKey = await webCrypto$6.exportKey('jwk', webCryptoKey.privateKey);
-    const publicKey = await webCrypto$6.exportKey('jwk', webCryptoKey.publicKey);
+    const privateKey = await webCrypto$2.exportKey('jwk', webCryptoKey.privateKey);
+    const publicKey = await webCrypto$2.exportKey('jwk', webCryptoKey.publicKey);
 
     return {
       publicKey: jwkToRawPublic(publicKey),
       privateKey: b64ToUint8Array(privateKey.d)
-    };
-  }
-
-  async function nodeGenKeyPair(name) {
-    // Note: ECDSA and ECDH key generation is structurally equivalent
-    const ecdh = nodeCrypto$7.createECDH(nodeCurves[name]);
-    await ecdh.generateKeys();
-    return {
-      publicKey: new Uint8Array(ecdh.getPublicKey()),
-      privateKey: new Uint8Array(ecdh.getPrivateKey())
     };
   }
 
@@ -13539,7 +13190,7 @@ var openpgp = (function (exports) {
    *
    * @returns {JsonWebKey} Private key in jwk format.
    */
-  function privateToJWK$1(payloadSize, name, publicKey, privateKey) {
+  function privateToJWK(payloadSize, name, publicKey, privateKey) {
     const jwk = rawPublicToJWK(payloadSize, name, publicKey);
     jwk.d = uint8ArrayToB64(privateKey, true);
     return jwk;
@@ -13547,8 +13198,7 @@ var openpgp = (function (exports) {
 
   // OpenPGP.js - An OpenPGP implementation in javascript
 
-  const webCrypto$7 = util.getWebCrypto();
-  const nodeCrypto$8 = util.getNodeCrypto();
+  const webCrypto$1 = util.getWebCrypto();
 
   /**
    * Sign a message using the provided key
@@ -13564,7 +13214,7 @@ var openpgp = (function (exports) {
    * }>} Signature of the message
    * @async
    */
-  async function sign$1(oid, hashAlgo, message, publicKey, privateKey, hashed) {
+  async function sign$4(oid, hashAlgo, message, publicKey, privateKey, hashed) {
     const curve = new Curve(oid);
     if (message && !util.isStream(message)) {
       const keyPair = { publicKey, privateKey };
@@ -13573,7 +13223,7 @@ var openpgp = (function (exports) {
           // If browser doesn't support a curve, we'll catch it
           try {
             // Need to await to make sure browser succeeds
-            return await webSign$1(curve, hashAlgo, message, keyPair);
+            return await webSign(curve, hashAlgo, message, keyPair);
           } catch (err) {
             // We do not fallback if the error is related to key integrity
             // Unfortunaley Safari does not support p521 and throws a DataError when using it
@@ -13584,13 +13234,6 @@ var openpgp = (function (exports) {
             util.printDebugError('Browser did not support signing: ' + err.message);
           }
           break;
-        }
-        case 'node': {
-          const signature = await nodeSign$1(curve, hashAlgo, message, keyPair);
-          return {
-            r: signature.r.toArrayLike(Uint8Array),
-            s: signature.s.toArrayLike(Uint8Array)
-          };
         }
       }
     }
@@ -13609,14 +13252,14 @@ var openpgp = (function (exports) {
    * @returns {Boolean}
    * @async
    */
-  async function verify$1(oid, hashAlgo, signature, message, publicKey, hashed) {
+  async function verify$4(oid, hashAlgo, signature, message, publicKey, hashed) {
     const curve = new Curve(oid);
     if (message && !util.isStream(message)) {
       switch (curve.type) {
         case 'web':
           try {
             // Need to await to make sure browser succeeds
-            return await webVerify$1(curve, hashAlgo, signature, message, publicKey);
+            return await webVerify(curve, hashAlgo, signature, message, publicKey);
           } catch (err) {
             // We do not fallback if the error is related to key integrity
             // Unfortunately Safari does not support p521 and throws a DataError when using it
@@ -13627,8 +13270,6 @@ var openpgp = (function (exports) {
             util.printDebugError('Browser did not support verifying: ' + err.message);
           }
           break;
-        case 'node':
-          return nodeVerify$1(curve, hashAlgo, signature, message, publicKey);
       }
     }
     const digest = (typeof hashAlgo === 'undefined') ? message : hashed;
@@ -13643,7 +13284,7 @@ var openpgp = (function (exports) {
    * @returns {Promise<Boolean>} Whether params are valid.
    * @async
    */
-  async function validateParams$2(oid, Q, d) {
+  async function validateParams$4(oid, Q, d) {
     const curve = new Curve(oid);
     // Reject curves x25519 and ed25519
     if (curve.keyType !== enums.publicKey.ecdsa) {
@@ -13653,14 +13294,13 @@ var openpgp = (function (exports) {
     // To speed up the validation, we try to use node- or webcrypto when available
     // and sign + verify a random message
     switch (curve.type) {
-      case 'web':
-      case 'node': {
+      case 'web': {
         const message = await getRandomBytes(8);
         const hashAlgo = enums.hash.sha256;
         const hashed = await hash.digest(hashAlgo, message);
         try {
-          const signature = await sign$1(oid, hashAlgo, message, Q, d, hashed);
-          return await verify$1(oid, hashAlgo, signature, message, Q, hashed);
+          const signature = await sign$4(oid, hashAlgo, message, Q, d, hashed);
+          return await verify$4(oid, hashAlgo, signature, message, Q, hashed);
         } catch (err) {
           return false;
         }
@@ -13693,10 +13333,10 @@ var openpgp = (function (exports) {
     return key.verify(digest, signature);
   }
 
-  async function webSign$1(curve, hashAlgo, message, keyPair) {
+  async function webSign(curve, hashAlgo, message, keyPair) {
     const len = curve.payloadSize;
-    const jwk = privateToJWK$1(curve.payloadSize, webCurves[curve.name], keyPair.publicKey, keyPair.privateKey);
-    const key = await webCrypto$7.importKey(
+    const jwk = privateToJWK(curve.payloadSize, webCurves[curve.name], keyPair.publicKey, keyPair.privateKey);
+    const key = await webCrypto$1.importKey(
       'jwk',
       jwk,
       {
@@ -13708,7 +13348,7 @@ var openpgp = (function (exports) {
       ['sign']
     );
 
-    const signature = new Uint8Array(await webCrypto$7.sign(
+    const signature = new Uint8Array(await webCrypto$1.sign(
       {
         'name': 'ECDSA',
         'namedCurve': webCurves[curve.name],
@@ -13724,9 +13364,9 @@ var openpgp = (function (exports) {
     };
   }
 
-  async function webVerify$1(curve, hashAlgo, { r, s }, message, publicKey) {
+  async function webVerify(curve, hashAlgo, { r, s }, message, publicKey) {
     const jwk = rawPublicToJWK(curve.payloadSize, webCurves[curve.name], publicKey);
-    const key = await webCrypto$7.importKey(
+    const key = await webCrypto$1.importKey(
       'jwk',
       jwk,
       {
@@ -13740,7 +13380,7 @@ var openpgp = (function (exports) {
 
     const signature = util.concatUint8Array([r, s]).buffer;
 
-    return webCrypto$7.verify(
+    return webCrypto$1.verify(
       {
         'name': 'ECDSA',
         'namedCurve': webCurves[curve.name],
@@ -13752,94 +13392,14 @@ var openpgp = (function (exports) {
     );
   }
 
-  async function nodeSign$1(curve, hashAlgo, message, keyPair) {
-    const sign = nodeCrypto$8.createSign(enums.read(enums.hash, hashAlgo));
-    sign.write(message);
-    sign.end();
-    const key = ECPrivateKey.encode({
-      version: 1,
-      parameters: curve.oid,
-      privateKey: Array.from(keyPair.privateKey),
-      publicKey: { unused: 0, data: Array.from(keyPair.publicKey) }
-    }, 'pem', {
-      label: 'EC PRIVATE KEY'
-    });
-
-    return ECDSASignature.decode(sign.sign(key), 'der');
-  }
-
-  async function nodeVerify$1(curve, hashAlgo, { r, s }, message, publicKey) {
-    const { default: BN } = await Promise.resolve().then(function () { return bn$1; });
-
-    const verify = nodeCrypto$8.createVerify(enums.read(enums.hash, hashAlgo));
-    verify.write(message);
-    verify.end();
-    const key = SubjectPublicKeyInfo.encode({
-      algorithm: {
-        algorithm: [1, 2, 840, 10045, 2, 1],
-        parameters: curve.oid
-      },
-      subjectPublicKey: { unused: 0, data: Array.from(publicKey) }
-    }, 'pem', {
-      label: 'PUBLIC KEY'
-    });
-    const signature = ECDSASignature.encode({
-      r: new BN(r), s: new BN(s)
-    }, 'der');
-
-    try {
-      return verify.verify(key, signature);
-    } catch (err) {
-      return false;
-    }
-  }
-
   // Originally written by Owen Smith https://github.com/omsmith
   // Adapted on Feb 2018 from https://github.com/Brightspace/node-jwk-to-pem/
 
-  /* eslint-disable no-invalid-this */
-
-  const asn1$1 = nodeCrypto$8 ? void('asn1.js') : undefined;
-
-  const ECDSASignature = nodeCrypto$8 ?
-    asn1$1.define('ECDSASignature', function() {
-      this.seq().obj(
-        this.key('r').int(),
-        this.key('s').int()
-      );
-    }) : undefined;
-
-  const ECPrivateKey = nodeCrypto$8 ?
-    asn1$1.define('ECPrivateKey', function() {
-      this.seq().obj(
-        this.key('version').int(),
-        this.key('privateKey').octstr(),
-        this.key('parameters').explicit(0).optional().any(),
-        this.key('publicKey').explicit(1).optional().bitstr()
-      );
-    }) : undefined;
-
-  const AlgorithmIdentifier = nodeCrypto$8 ?
-    asn1$1.define('AlgorithmIdentifier', function() {
-      this.seq().obj(
-        this.key('algorithm').objid(),
-        this.key('parameters').optional().any()
-      );
-    }) : undefined;
-
-  const SubjectPublicKeyInfo = nodeCrypto$8 ?
-    asn1$1.define('SubjectPublicKeyInfo', function() {
-      this.seq().obj(
-        this.key('algorithm').use(AlgorithmIdentifier),
-        this.key('subjectPublicKey').bitstr()
-      );
-    }) : undefined;
-
   var ecdsa = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    sign: sign$1,
-    verify: verify$1,
-    validateParams: validateParams$2
+    sign: sign$4,
+    verify: verify$4,
+    validateParams: validateParams$4
   });
 
   // OpenPGP.js - An OpenPGP implementation in javascript
@@ -13860,7 +13420,7 @@ var openpgp = (function (exports) {
    * }>} Signature of the message
    * @async
    */
-  async function sign$2(oid, hashAlgo, message, publicKey, privateKey, hashed) {
+  async function sign$3(oid, hashAlgo, message, publicKey, privateKey, hashed) {
     if (hash.getHashByteLength(hashAlgo) < hash.getHashByteLength(enums.hash.sha256)) {
       // see https://tools.ietf.org/id/draft-ietf-openpgp-rfc4880bis-10.html#section-15-7.2
       throw new Error('Hash algorithm too weak: sha256 or stronger is required for EdDSA.');
@@ -13886,7 +13446,7 @@ var openpgp = (function (exports) {
    * @returns {Boolean}
    * @async
    */
-  async function verify$2(oid, hashAlgo, { r, s }, m, publicKey, hashed) {
+  async function verify$3(oid, hashAlgo, { r, s }, m, publicKey, hashed) {
     const signature = util.concatUint8Array([r, s]);
     return naclFastLight.sign.detached.verify(hashed, signature, publicKey.subarray(1));
   }
@@ -13913,10 +13473,10 @@ var openpgp = (function (exports) {
     return util.equalsUint8Array(Q, dG);
   }
 
-  var eddsa = /*#__PURE__*/Object.freeze({
+  var eddsa$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    sign: sign$2,
-    verify: verify$2,
+    sign: sign$3,
+    verify: verify$3,
     validateParams: validateParams$3
   });
 
@@ -14063,7 +13623,7 @@ var openpgp = (function (exports) {
    * @param {Uint8Array} message - message to pad
    * @returns {Uint8Array} Padded message.
    */
-  function encode$1(message) {
+  function encode(message) {
     const c = 8 - (message.length % 8);
     const padded = new Uint8Array(message.length + c).fill(c);
     padded.set(message);
@@ -14092,7 +13652,7 @@ var openpgp = (function (exports) {
 
   var pkcs5 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    encode: encode$1,
+    encode: encode,
     decode: decode$1
   });
 
@@ -14475,7 +14035,7 @@ var openpgp = (function (exports) {
    * @returns {Promise<Boolean>} Whether the parameters are valid.
    * @async
    */
-  async function validateParams$4(algo, publicParams, privateParams) {
+  async function validateParams$2(algo, publicParams, privateParams) {
     if (!publicParams || !privateParams) {
       throw new Error('Missing key parameters');
     }
@@ -14535,7 +14095,7 @@ var openpgp = (function (exports) {
    * @returns {Promise<Uint8Array>} Random bytes as a string to be used as a key.
    * @async
    */
-  function generateSessionKey(algo) {
+  function generateSessionKey$1(algo) {
     const { keySize } = getCipher(algo);
     return getRandomBytes(keySize);
   }
@@ -14562,7 +14122,7 @@ var openpgp = (function (exports) {
     return cipher[algoName];
   }
 
-  var crypto$1 = /*#__PURE__*/Object.freeze({
+  var crypto$2 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     publicKeyEncrypt: publicKeyEncrypt,
     publicKeyDecrypt: publicKeyDecrypt,
@@ -14571,17 +14131,16 @@ var openpgp = (function (exports) {
     parseEncSessionKeyParams: parseEncSessionKeyParams,
     serializeParams: serializeParams,
     generateParams: generateParams,
-    validateParams: validateParams$4,
+    validateParams: validateParams$2,
     getPrefixRandom: getPrefixRandom,
-    generateSessionKey: generateSessionKey,
+    generateSessionKey: generateSessionKey$1,
     getAEADMode: getAEADMode,
     getCipher: getCipher
   });
 
   // OpenPGP.js - An OpenPGP implementation in javascript
 
-  const webCrypto$8 = util.getWebCrypto();
-  const nodeCrypto$9 = util.getNodeCrypto();
+  const webCrypto = util.getWebCrypto();
 
   /**
    * Validate ECDH parameters
@@ -14591,7 +14150,7 @@ var openpgp = (function (exports) {
    * @returns {Promise<Boolean>} Whether params are valid.
    * @async
    */
-  async function validateParams$5(oid, Q, d) {
+  async function validateParams$1(oid, Q, d) {
     return validateStandardParams(enums.publicKey.ecdh, oid, Q, d);
   }
 
@@ -14656,8 +14215,6 @@ var openpgp = (function (exports) {
           }
         }
         break;
-      case 'node':
-        return nodePublicEphemeralKey(curve, Q);
     }
     return ellipticPublicEphemeralKey(curve, Q);
   }
@@ -14673,8 +14230,8 @@ var openpgp = (function (exports) {
    * @returns {Promise<{publicKey: Uint8Array, wrappedKey: Uint8Array}>}
    * @async
    */
-  async function encrypt$3(oid, kdfParams, data, Q, fingerprint) {
-    const m = encode$1(data);
+  async function encrypt$1(oid, kdfParams, data, Q, fingerprint) {
+    const m = encode(data);
 
     const curve = new Curve(oid);
     const { publicKey, sharedKey } = await genPublicEphemeralKey(curve, Q);
@@ -14716,8 +14273,6 @@ var openpgp = (function (exports) {
           }
         }
         break;
-      case 'node':
-        return nodePrivateEphemeralKey(curve, V, d);
     }
     return ellipticPrivateEphemeralKey(curve, V, d);
   }
@@ -14735,7 +14290,7 @@ var openpgp = (function (exports) {
    * @returns {Promise<Uint8Array>} Value derived from session key.
    * @async
    */
-  async function decrypt$3(oid, kdfParams, V, C, Q, d, fingerprint) {
+  async function decrypt$1(oid, kdfParams, V, C, Q, d, fingerprint) {
     const curve = new Curve(oid);
     const { sharedKey } = await genPrivateEphemeralKey(curve, V, Q, d);
     const param = buildEcdhParam(enums.publicKey.ecdh, oid, kdfParams, fingerprint);
@@ -14764,8 +14319,8 @@ var openpgp = (function (exports) {
    * @async
    */
   async function webPrivateEphemeralKey(curve, V, Q, d) {
-    const recipient = privateToJWK$1(curve.payloadSize, curve.web.web, Q, d);
-    let privateKey = webCrypto$8.importKey(
+    const recipient = privateToJWK(curve.payloadSize, curve.web.web, Q, d);
+    let privateKey = webCrypto.importKey(
       'jwk',
       recipient,
       {
@@ -14776,7 +14331,7 @@ var openpgp = (function (exports) {
       ['deriveKey', 'deriveBits']
     );
     const jwk = rawPublicToJWK(curve.payloadSize, curve.web.web, V);
-    let sender = webCrypto$8.importKey(
+    let sender = webCrypto.importKey(
       'jwk',
       jwk,
       {
@@ -14787,7 +14342,7 @@ var openpgp = (function (exports) {
       []
     );
     [privateKey, sender] = await Promise.all([privateKey, sender]);
-    let S = webCrypto$8.deriveBits(
+    let S = webCrypto.deriveBits(
       {
         name: 'ECDH',
         namedCurve: curve.web.web,
@@ -14796,7 +14351,7 @@ var openpgp = (function (exports) {
       privateKey,
       curve.web.sharedSize
     );
-    let secret = webCrypto$8.exportKey(
+    let secret = webCrypto.exportKey(
       'jwk',
       privateKey
     );
@@ -14816,7 +14371,7 @@ var openpgp = (function (exports) {
    */
   async function webPublicEphemeralKey(curve, Q) {
     const jwk = rawPublicToJWK(curve.payloadSize, curve.web.web, Q);
-    let keyPair = webCrypto$8.generateKey(
+    let keyPair = webCrypto.generateKey(
       {
         name: 'ECDH',
         namedCurve: curve.web.web
@@ -14824,7 +14379,7 @@ var openpgp = (function (exports) {
       true,
       ['deriveKey', 'deriveBits']
     );
-    let recipient = webCrypto$8.importKey(
+    let recipient = webCrypto.importKey(
       'jwk',
       jwk,
       {
@@ -14835,7 +14390,7 @@ var openpgp = (function (exports) {
       []
     );
     [keyPair, recipient] = await Promise.all([keyPair, recipient]);
-    let s = webCrypto$8.deriveBits(
+    let s = webCrypto.deriveBits(
       {
         name: 'ECDH',
         namedCurve: curve.web.web,
@@ -14844,7 +14399,7 @@ var openpgp = (function (exports) {
       keyPair.privateKey,
       curve.web.sharedSize
     );
-    let p = webCrypto$8.exportKey(
+    let p = webCrypto.exportKey(
       'jwk',
       keyPair.publicKey
     );
@@ -14894,56 +14449,23 @@ var openpgp = (function (exports) {
     return { publicKey, sharedKey };
   }
 
-  /**
-   * Generate ECDHE secret from private key and public part of ephemeral key using nodeCrypto
-   *
-   * @param {Curve} curve - Elliptic curve object
-   * @param {Uint8Array} V - Public part of ephemeral key
-   * @param {Uint8Array} d - Recipient private key
-   * @returns {Promise<{secretKey: Uint8Array, sharedKey: Uint8Array}>}
-   * @async
-   */
-  async function nodePrivateEphemeralKey(curve, V, d) {
-    const recipient = nodeCrypto$9.createECDH(curve.node.node);
-    recipient.setPrivateKey(d);
-    const sharedKey = new Uint8Array(recipient.computeSecret(V));
-    const secretKey = new Uint8Array(recipient.getPrivateKey());
-    return { secretKey, sharedKey };
-  }
-
-  /**
-   * Generate ECDHE ephemeral key and secret from public key using nodeCrypto
-   *
-   * @param {Curve} curve - Elliptic curve object
-   * @param {Uint8Array} Q - Recipient public key
-   * @returns {Promise<{publicKey: Uint8Array, sharedKey: Uint8Array}>}
-   * @async
-   */
-  async function nodePublicEphemeralKey(curve, Q) {
-    const sender = nodeCrypto$9.createECDH(curve.node.node);
-    sender.generateKeys();
-    const sharedKey = new Uint8Array(sender.computeSecret(Q));
-    const publicKey = new Uint8Array(sender.getPublicKey());
-    return { publicKey, sharedKey };
-  }
-
   var ecdh = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    validateParams: validateParams$5,
-    encrypt: encrypt$3,
-    decrypt: decrypt$3
+    validateParams: validateParams$1,
+    encrypt: encrypt$1,
+    decrypt: decrypt$1
   });
 
   // OpenPGP.js - An OpenPGP implementation in javascript
 
-  var elliptic = /*#__PURE__*/Object.freeze({
+  var elliptic$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     Curve: Curve,
     ecdh: ecdh,
     ecdsa: ecdsa,
-    eddsa: eddsa,
+    eddsa: eddsa$1,
     generate: generate$1,
-    getPreferredHashAlgo: getPreferredHashAlgo
+    getPreferredHashAlgo: getPreferredHashAlgo$1
   });
 
   // GPG4Browsers - An OpenPGP implementation in javascript
@@ -14965,7 +14487,7 @@ var openpgp = (function (exports) {
    * @returns {Promise<{ r: Uint8Array, s: Uint8Array }>}
    * @async
    */
-  async function sign$3(hashAlgo, hashed, g, p, q, x) {
+  async function sign$2(hashAlgo, hashed, g, p, q, x) {
     const BigInteger = await util.getBigInteger();
     const one = new BigInteger(1);
     p = new BigInteger(p);
@@ -15024,7 +14546,7 @@ var openpgp = (function (exports) {
    * @returns {boolean}
    * @async
    */
-  async function verify$3(hashAlgo, r, s, hashed, g, p, q, y) {
+  async function verify$2(hashAlgo, r, s, hashed, g, p, q, y) {
     const BigInteger = await util.getBigInteger();
     const zero = new BigInteger(0);
     r = new BigInteger(r);
@@ -15067,7 +14589,7 @@ var openpgp = (function (exports) {
    * @returns {Promise<Boolean>} Whether params are valid.
    * @async
    */
-  async function validateParams$6(p, q, g, y, x) {
+  async function validateParams(p, q, g, y, x) {
     const BigInteger = await util.getBigInteger();
     p = new BigInteger(p);
     q = new BigInteger(q);
@@ -15122,9 +14644,9 @@ var openpgp = (function (exports) {
 
   var dsa = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    sign: sign$3,
-    verify: verify$3,
-    validateParams: validateParams$6
+    sign: sign$2,
+    verify: verify$2,
+    validateParams: validateParams
   });
 
   /**
@@ -15139,7 +14661,7 @@ var openpgp = (function (exports) {
     /** @see module:crypto/public_key/elgamal */
     elgamal: elgamal,
     /** @see module:crypto/public_key/elliptic */
-    elliptic: elliptic,
+    elliptic: elliptic$1,
     /** @see module:crypto/public_key/dsa */
     dsa: dsa,
     /** @see tweetnacl */
@@ -15217,7 +14739,7 @@ var openpgp = (function (exports) {
    * @returns {Promise<Boolean>} True if signature is valid.
    * @async
    */
-  async function verify$4(algo, hashAlgo, signature, publicParams, data, hashed) {
+  async function verify$1(algo, hashAlgo, signature, publicParams, data, hashed) {
     switch (algo) {
       case enums.publicKey.rsaEncryptSign:
       case enums.publicKey.rsaEncrypt:
@@ -15263,7 +14785,7 @@ var openpgp = (function (exports) {
    * @returns {Promise<Object>} Signature                      Object containing named signature parameters.
    * @async
    */
-  async function sign$4(algo, hashAlgo, publicKeyParams, privateKeyParams, data, hashed) {
+  async function sign$1(algo, hashAlgo, publicKeyParams, privateKeyParams, data, hashed) {
     if (!publicKeyParams || !privateKeyParams) {
       throw new Error('Missing key parameters');
     }
@@ -15299,11 +14821,11 @@ var openpgp = (function (exports) {
     }
   }
 
-  var signature = /*#__PURE__*/Object.freeze({
+  var signature$2 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     parseSignatureParams: parseSignatureParams,
-    verify: verify$4,
-    sign: sign$4
+    verify: verify$1,
+    sign: sign$1
   });
 
   /**
@@ -15329,7 +14851,7 @@ var openpgp = (function (exports) {
     /** @see module:crypto/public_key */
     publicKey: publicKey,
     /** @see module:crypto/signature */
-    signature: signature,
+    signature: signature$2,
     /** @see module:crypto/random */
     random: random,
     /** @see module:crypto/pkcs1 */
@@ -15340,7 +14862,7 @@ var openpgp = (function (exports) {
     aesKW: aesKW
   };
 
-  Object.assign(mod, crypto$1);
+  Object.assign(mod, crypto$2);
 
   var TYPED_OK = typeof Uint8Array !== "undefined" &&
     typeof Uint16Array !== "undefined" &&
@@ -15350,10 +14872,10 @@ var openpgp = (function (exports) {
   // reduce buffer size, avoiding mem copy
   function shrinkBuf(buf, size) {
       if (buf.length === size) {
-          return buf;
+          return buf; 
       }
       if (buf.subarray) {
-          return buf.subarray(0, size);
+          return buf.subarray(0, size); 
       }
       buf.length = size;
       return buf;
@@ -15478,8 +15000,8 @@ var openpgp = (function (exports) {
 
   function zero$1(buf) {
       let len = buf.length; while (--len >= 0) {
-          buf[len] = 0;
-      }
+          buf[len] = 0; 
+      } 
   }
 
   // From zutil.h
@@ -15489,8 +15011,8 @@ var openpgp = (function (exports) {
   const DYN_TREES    = 2;
   /* The three kinds of block type */
 
-  const MIN_MATCH    = 3;
-  const MAX_MATCH    = 258;
+  const MIN_MATCH$1    = 3;
+  const MAX_MATCH$1    = 258;
   /* The minimum and maximum match lengths */
 
   // From deflate.h
@@ -15498,25 +15020,25 @@ var openpgp = (function (exports) {
    * Internal compression state.
    */
 
-  const LENGTH_CODES  = 29;
+  const LENGTH_CODES$1  = 29;
   /* number of length codes, not counting the special END_BLOCK code */
 
-  const LITERALS      = 256;
+  const LITERALS$1      = 256;
   /* number of literal bytes 0..255 */
 
-  const L_CODES       = LITERALS + 1 + LENGTH_CODES;
+  const L_CODES$1       = LITERALS$1 + 1 + LENGTH_CODES$1;
   /* number of Literal or Length codes, including the END_BLOCK code */
 
-  const D_CODES       = 30;
+  const D_CODES$1       = 30;
   /* number of distance codes */
 
-  const BL_CODES      = 19;
+  const BL_CODES$1      = 19;
   /* number of codes used to transfer the bit lengths */
 
-  const HEAP_SIZE     = 2 * L_CODES + 1;
+  const HEAP_SIZE$1     = 2 * L_CODES$1 + 1;
   /* maximum heap size */
 
-  const MAX_BITS      = 15;
+  const MAX_BITS$1      = 15;
   /* All codes must not exceed MAX_BITS bits */
 
   const Buf_size      = 16;
@@ -15569,7 +15091,7 @@ var openpgp = (function (exports) {
   const DIST_CODE_LEN = 512; /* see definition of array dist_code below */
 
   // !!!! Use flat array instead of structure, Freq = i*2, Len = i*2+1
-  const static_ltree  = new Array((L_CODES + 2) * 2);
+  const static_ltree  = new Array((L_CODES$1 + 2) * 2);
   zero$1(static_ltree);
   /* The static literal tree. Since the bit lengths are imposed, there is no
    * need for the L_CODES extra codes used during heap construction. However
@@ -15577,7 +15099,7 @@ var openpgp = (function (exports) {
    * below).
    */
 
-  const static_dtree  = new Array(D_CODES * 2);
+  const static_dtree  = new Array(D_CODES$1 * 2);
   zero$1(static_dtree);
   /* The static distance tree. (Actually a trivial tree since all codes use
    * 5 bits.)
@@ -15590,15 +15112,15 @@ var openpgp = (function (exports) {
    * the 15 bit distances.
    */
 
-  const _length_code  = new Array(MAX_MATCH - MIN_MATCH + 1);
+  const _length_code  = new Array(MAX_MATCH$1 - MIN_MATCH$1 + 1);
   zero$1(_length_code);
   /* length code for each normalized match length (0 == MIN_MATCH) */
 
-  const base_length   = new Array(LENGTH_CODES);
+  const base_length   = new Array(LENGTH_CODES$1);
   zero$1(base_length);
   /* First normalized length for each code (0 = MIN_MATCH) */
 
-  const base_dist     = new Array(D_CODES);
+  const base_dist     = new Array(D_CODES$1);
   zero$1(base_dist);
   /* First normalized distance for each code (0 = distance of 1) */
 
@@ -15729,7 +15251,7 @@ var openpgp = (function (exports) {
       let f;              /* frequency */
       let overflow = 0;   /* number of elements with bit length too large */
 
-      for (bits = 0; bits <= MAX_BITS; bits++) {
+      for (bits = 0; bits <= MAX_BITS$1; bits++) {
           s.bl_count[bits] = 0;
       }
 
@@ -15738,7 +15260,7 @@ var openpgp = (function (exports) {
      */
       tree[s.heap[s.heap_max] * 2 + 1]/*.Len*/ = 0; /* root of the heap */
 
-      for (h = s.heap_max + 1; h < HEAP_SIZE; h++) {
+      for (h = s.heap_max + 1; h < HEAP_SIZE$1; h++) {
           n = s.heap[h];
           bits = tree[tree[n * 2 + 1]/*.Dad*/ * 2 + 1]/*.Len*/ + 1;
           if (bits > max_length) {
@@ -15749,7 +15271,7 @@ var openpgp = (function (exports) {
           /* We overwrite tree[n].Dad which is no longer needed */
 
           if (n > max_code) {
-              continue;
+              continue; 
           } /* not a leaf node */
 
           s.bl_count[bits]++;
@@ -15764,7 +15286,7 @@ var openpgp = (function (exports) {
           }
       }
       if (overflow === 0) {
-          return;
+          return; 
       }
 
       // Trace((stderr,"\nbit length overflow\n"));
@@ -15774,7 +15296,7 @@ var openpgp = (function (exports) {
       do {
           bits = max_length - 1;
           while (s.bl_count[bits] === 0) {
-              bits--;
+              bits--; 
           }
           s.bl_count[bits]--;      /* move one leaf down the tree */
           s.bl_count[bits + 1] += 2; /* move one overflow item as its brother */
@@ -15795,7 +15317,7 @@ var openpgp = (function (exports) {
           while (n !== 0) {
               m = s.heap[--h];
               if (m > max_code) {
-                  continue;
+                  continue; 
               }
               if (tree[m * 2 + 1]/*.Len*/ !== bits) {
                   // Trace((stderr,"code %d bits %d->%d\n", m, tree[m].Len, bits));
@@ -15821,7 +15343,7 @@ var openpgp = (function (exports) {
   //    int max_code;              /* largest code with non zero frequency */
   //    ushf *bl_count;            /* number of codes at each bit length */
   {
-      const next_code = new Array(MAX_BITS + 1); /* next code value for each bit length */
+      const next_code = new Array(MAX_BITS$1 + 1); /* next code value for each bit length */
       let code = 0;              /* running code value */
       let bits;                  /* bit index */
       let n;                     /* code index */
@@ -15829,7 +15351,7 @@ var openpgp = (function (exports) {
       /* The distribution counts are first used to generate the code values
      * without bit reversal.
      */
-      for (bits = 1; bits <= MAX_BITS; bits++) {
+      for (bits = 1; bits <= MAX_BITS$1; bits++) {
           next_code[bits] = code = code + bl_count[bits - 1] << 1;
       }
       /* Check that the bit counts in bl_count are consistent. The last code
@@ -15842,7 +15364,7 @@ var openpgp = (function (exports) {
       for (n = 0;  n <= max_code; n++) {
           const len = tree[n * 2 + 1]/*.Len*/;
           if (len === 0) {
-              continue;
+              continue; 
           }
           /* Now reverse the bits */
           tree[n * 2]/*.Code*/ = bi_reverse(next_code[len]++, len);
@@ -15862,7 +15384,7 @@ var openpgp = (function (exports) {
       let length;   /* length value */
       let code;     /* code value */
       let dist;     /* distance index */
-      const bl_count = new Array(MAX_BITS + 1);
+      const bl_count = new Array(MAX_BITS$1 + 1);
       /* number of codes at each bit length for an optimal tree */
 
       // do check in _tr_init()
@@ -15879,7 +15401,7 @@ var openpgp = (function (exports) {
 
       /* Initialize the mapping length (0..255) -> length code (0..28) */
       length = 0;
-      for (code = 0; code < LENGTH_CODES - 1; code++) {
+      for (code = 0; code < LENGTH_CODES$1 - 1; code++) {
           base_length[code] = length;
           for (n = 0; n < 1 << extra_lbits[code]; n++) {
               _length_code[length++] = code;
@@ -15902,7 +15424,7 @@ var openpgp = (function (exports) {
       }
       //Assert (dist == 256, "tr_static_init: dist != 256");
       dist >>= 7; /* from now on, all distances are divided by 128 */
-      for (; code < D_CODES; code++) {
+      for (; code < D_CODES$1; code++) {
           base_dist[code] = dist << 7;
           for (n = 0; n < 1 << extra_dbits[code] - 7; n++) {
               _dist_code[256 + dist++] = code;
@@ -15911,7 +15433,7 @@ var openpgp = (function (exports) {
       //Assert (dist == 256, "tr_static_init: 256+dist != 512");
 
       /* Construct the codes of the static literal tree */
-      for (bits = 0; bits <= MAX_BITS; bits++) {
+      for (bits = 0; bits <= MAX_BITS$1; bits++) {
           bl_count[bits] = 0;
       }
 
@@ -15940,18 +15462,18 @@ var openpgp = (function (exports) {
      * tree construction to get a canonical Huffman tree (longest code
      * all ones)
      */
-      gen_codes(static_ltree, L_CODES + 1, bl_count);
+      gen_codes(static_ltree, L_CODES$1 + 1, bl_count);
 
       /* The static distance tree is trivial: */
-      for (n = 0; n < D_CODES; n++) {
+      for (n = 0; n < D_CODES$1; n++) {
           static_dtree[n * 2 + 1]/*.Len*/ = 5;
           static_dtree[n * 2]/*.Code*/ = bi_reverse(n, 5);
       }
 
       // Now data ready and we can init static trees
-      static_l_desc = new StaticTreeDesc(static_ltree, extra_lbits, LITERALS + 1, L_CODES, MAX_BITS);
-      static_d_desc = new StaticTreeDesc(static_dtree, extra_dbits, 0,          D_CODES, MAX_BITS);
-      static_bl_desc = new StaticTreeDesc(new Array(0), extra_blbits, 0,         BL_CODES, MAX_BL_BITS);
+      static_l_desc = new StaticTreeDesc(static_ltree, extra_lbits, LITERALS$1 + 1, L_CODES$1, MAX_BITS$1);
+      static_d_desc = new StaticTreeDesc(static_dtree, extra_dbits, 0,          D_CODES$1, MAX_BITS$1);
+      static_bl_desc = new StaticTreeDesc(new Array(0), extra_blbits, 0,         BL_CODES$1, MAX_BL_BITS);
 
       //static_init_done = true;
   }
@@ -15964,14 +15486,14 @@ var openpgp = (function (exports) {
       let n; /* iterates over tree elements */
 
       /* Initialize the trees. */
-      for (n = 0; n < L_CODES;  n++) {
-          s.dyn_ltree[n * 2]/*.Freq*/ = 0;
+      for (n = 0; n < L_CODES$1;  n++) {
+          s.dyn_ltree[n * 2]/*.Freq*/ = 0; 
       }
-      for (n = 0; n < D_CODES;  n++) {
-          s.dyn_dtree[n * 2]/*.Freq*/ = 0;
+      for (n = 0; n < D_CODES$1;  n++) {
+          s.dyn_dtree[n * 2]/*.Freq*/ = 0; 
       }
-      for (n = 0; n < BL_CODES; n++) {
-          s.bl_tree[n * 2]/*.Freq*/ = 0;
+      for (n = 0; n < BL_CODES$1; n++) {
+          s.bl_tree[n * 2]/*.Freq*/ = 0; 
       }
 
       s.dyn_ltree[END_BLOCK * 2]/*.Freq*/ = 1;
@@ -16049,7 +15571,7 @@ var openpgp = (function (exports) {
           }
           /* Exit if v is smaller than both sons */
           if (smaller(tree, v, s.heap[j], s.depth)) {
-              break;
+              break; 
           }
 
           /* Exchange v with the smallest son */
@@ -16092,7 +15614,7 @@ var openpgp = (function (exports) {
               } else {
                   /* Here, lc is the match length - MIN_MATCH */
                   code = _length_code[lc];
-                  send_code(s, code + LITERALS + 1, ltree); /* send the length code */
+                  send_code(s, code + LITERALS$1 + 1, ltree); /* send the length code */
                   extra = extra_lbits[code];
                   if (extra !== 0) {
                       lc -= base_length[code];
@@ -16146,7 +15668,7 @@ var openpgp = (function (exports) {
      * heap[0] is not used.
      */
       s.heap_len = 0;
-      s.heap_max = HEAP_SIZE;
+      s.heap_max = HEAP_SIZE$1;
 
       for (n = 0; n < elems; n++) {
           if (tree[n * 2]/*.Freq*/ !== 0) {
@@ -16180,7 +15702,7 @@ var openpgp = (function (exports) {
      * establish sub-heaps of increasing lengths:
      */
       for (n = s.heap_len >> 1/*int /2*/; n >= 1; n--) {
-          pqdownheap(s, tree, n);
+          pqdownheap(s, tree, n); 
       }
 
       /* Construct the Huffman tree by repeatedly combining the least two
@@ -16261,7 +15783,7 @@ var openpgp = (function (exports) {
           } else if (curlen !== 0) {
 
               if (curlen !== prevlen) {
-                  s.bl_tree[curlen * 2]/*.Freq*/++;
+                  s.bl_tree[curlen * 2]/*.Freq*/++; 
               }
               s.bl_tree[REP_3_6 * 2]/*.Freq*/++;
 
@@ -16325,7 +15847,7 @@ var openpgp = (function (exports) {
 
           } else if (count < min_count) {
               do {
-                  send_code(s, curlen, s.bl_tree);
+                  send_code(s, curlen, s.bl_tree); 
               } while (--count !== 0);
 
           } else if (curlen !== 0) {
@@ -16385,7 +15907,7 @@ var openpgp = (function (exports) {
      * requires that at least 4 bit length codes be sent. (appnote.txt says
      * 3 but the actual value used is 4.)
      */
-      for (max_blindex = BL_CODES - 1; max_blindex >= 3; max_blindex--) {
+      for (max_blindex = BL_CODES$1 - 1; max_blindex >= 3; max_blindex--) {
           if (s.bl_tree[bl_order[max_blindex] * 2 + 1]/*.Len*/ !== 0) {
               break;
           }
@@ -16464,7 +15986,7 @@ var openpgp = (function (exports) {
         s.dyn_ltree[13 * 2]/*.Freq*/ !== 0) {
           return Z_TEXT;
       }
-      for (n = 32; n < LITERALS; n++) {
+      for (n = 32; n < LITERALS$1; n++) {
           if (s.dyn_ltree[n * 2]/*.Freq*/ !== 0) {
               return Z_TEXT;
           }
@@ -16573,7 +16095,7 @@ var openpgp = (function (exports) {
           //        s->last_lit));
 
           if (static_lenb <= opt_lenb) {
-              opt_lenb = static_lenb;
+              opt_lenb = static_lenb; 
           }
 
       } else {
@@ -16643,7 +16165,7 @@ var openpgp = (function (exports) {
           //       (ush)lc <= (ush)(MAX_MATCH-MIN_MATCH) &&
           //       (ush)d_code(dist) < (ush)D_CODES,  "_tr_tally: bad match");
 
-          s.dyn_ltree[(_length_code[lc] + LITERALS + 1) * 2]/*.Freq*/++;
+          s.dyn_ltree[(_length_code[lc] + LITERALS$1 + 1) * 2]/*.Freq*/++;
           s.dyn_dtree[d_code(dist) * 2]/*.Freq*/++;
       }
 
@@ -16767,7 +16289,7 @@ var openpgp = (function (exports) {
   const crcTable = makeTable();
 
 
-  function crc32(crc, buf, len, pos) {
+  function crc32$1(crc, buf, len, pos) {
       const t = crcTable,
           end = pos + len;
 
@@ -16817,24 +16339,24 @@ var openpgp = (function (exports) {
   const MAX_MEM_LEVEL = 9;
 
 
-  const LENGTH_CODES$1 = 29;
+  const LENGTH_CODES = 29;
   /* number of length codes, not counting the special END_BLOCK code */
-  const LITERALS$1 = 256;
+  const LITERALS = 256;
   /* number of literal bytes 0..255 */
-  const L_CODES$1 = LITERALS$1 + 1 + LENGTH_CODES$1;
+  const L_CODES = LITERALS + 1 + LENGTH_CODES;
   /* number of Literal or Length codes, including the END_BLOCK code */
-  const D_CODES$1 = 30;
+  const D_CODES = 30;
   /* number of distance codes */
-  const BL_CODES$1 = 19;
+  const BL_CODES = 19;
   /* number of codes used to transfer the bit lengths */
-  const HEAP_SIZE$1 = 2 * L_CODES$1 + 1;
+  const HEAP_SIZE = 2 * L_CODES + 1;
   /* maximum heap size */
-  const MAX_BITS$1 = 15;
+  const MAX_BITS = 15;
   /* All codes must not exceed MAX_BITS bits */
 
-  const MIN_MATCH$1 = 3;
-  const MAX_MATCH$1 = 258;
-  const MIN_LOOKAHEAD = (MAX_MATCH$1 + MIN_MATCH$1 + 1);
+  const MIN_MATCH = 3;
+  const MAX_MATCH = 258;
+  const MIN_LOOKAHEAD = (MAX_MATCH + MIN_MATCH + 1);
 
   const PRESET_DICT = 0x20;
 
@@ -16862,7 +16384,7 @@ var openpgp = (function (exports) {
     return ((f) << 1) - ((f) > 4 ? 9 : 0);
   }
 
-  function zero$2(buf) { let len = buf.length; while (--len >= 0) { buf[len] = 0; } }
+  function zero(buf) { let len = buf.length; while (--len >= 0) { buf[len] = 0; } }
 
 
   /* =========================================================================
@@ -16940,7 +16462,7 @@ var openpgp = (function (exports) {
     }
 
     else if (strm.state.wrap === 2) {
-      strm.adler = crc32(strm.adler, buf, len, start);
+      strm.adler = crc32$1(strm.adler, buf, len, start);
     }
 
     strm.next_in += len;
@@ -16978,7 +16500,7 @@ var openpgp = (function (exports) {
      * we prevent matches with the string of window index 0.
      */
 
-    const strend = s.strstart + MAX_MATCH$1;
+    const strend = s.strstart + MAX_MATCH;
     let scan_end1 = _win[scan + best_len - 1];
     let scan_end = _win[scan + best_len];
 
@@ -17041,8 +16563,8 @@ var openpgp = (function (exports) {
 
       // Assert(scan <= s->window+(unsigned)(s->window_size-1), "wild scan");
 
-      len = MAX_MATCH$1 - (strend - scan);
-      scan = strend - MAX_MATCH$1;
+      len = MAX_MATCH - (strend - scan);
+      scan = strend - MAX_MATCH;
 
       if (len > best_len) {
         s.match_start = cur_match;
@@ -17153,7 +16675,7 @@ var openpgp = (function (exports) {
       s.lookahead += n;
 
       /* Initialize the hash value now that we have some input: */
-      if (s.lookahead + s.insert >= MIN_MATCH$1) {
+      if (s.lookahead + s.insert >= MIN_MATCH) {
         str = s.strstart - s.insert;
         s.ins_h = s.window[str];
 
@@ -17164,13 +16686,13 @@ var openpgp = (function (exports) {
         //#endif
         while (s.insert) {
           /* UPDATE_HASH(s, s->ins_h, s->window[str + MIN_MATCH-1]); */
-          s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[str + MIN_MATCH$1 - 1]) & s.hash_mask;
+          s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[str + MIN_MATCH - 1]) & s.hash_mask;
 
           s.prev[str & s.w_mask] = s.head[s.ins_h];
           s.head[s.ins_h] = str;
           str++;
           s.insert--;
-          if (s.lookahead + s.insert < MIN_MATCH$1) {
+          if (s.lookahead + s.insert < MIN_MATCH) {
             break;
           }
         }
@@ -17350,9 +16872,9 @@ var openpgp = (function (exports) {
        * dictionary, and set hash_head to the head of the hash chain:
        */
       hash_head = 0/*NIL*/;
-      if (s.lookahead >= MIN_MATCH$1) {
+      if (s.lookahead >= MIN_MATCH) {
         /*** INSERT_STRING(s, s.strstart, hash_head); ***/
-        s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH$1 - 1]) & s.hash_mask;
+        s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH - 1]) & s.hash_mask;
         hash_head = s.prev[s.strstart & s.w_mask] = s.head[s.ins_h];
         s.head[s.ins_h] = s.strstart;
         /***/
@@ -17369,24 +16891,24 @@ var openpgp = (function (exports) {
         s.match_length = longest_match(s, hash_head);
         /* longest_match() sets match_start */
       }
-      if (s.match_length >= MIN_MATCH$1) {
+      if (s.match_length >= MIN_MATCH) {
         // check_match(s, s.strstart, s.match_start, s.match_length); // for debug only
 
         /*** _tr_tally_dist(s, s.strstart - s.match_start,
                        s.match_length - MIN_MATCH, bflush); ***/
-        bflush = _tr_tally(s, s.strstart - s.match_start, s.match_length - MIN_MATCH$1);
+        bflush = _tr_tally(s, s.strstart - s.match_start, s.match_length - MIN_MATCH);
 
         s.lookahead -= s.match_length;
 
         /* Insert new strings in the hash table only if the match length
          * is not too large. This saves time but degrades compression.
          */
-        if (s.match_length <= s.max_lazy_match/*max_insert_length*/ && s.lookahead >= MIN_MATCH$1) {
+        if (s.match_length <= s.max_lazy_match/*max_insert_length*/ && s.lookahead >= MIN_MATCH) {
           s.match_length--; /* string at strstart already in table */
           do {
             s.strstart++;
             /*** INSERT_STRING(s, s.strstart, hash_head); ***/
-            s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH$1 - 1]) & s.hash_mask;
+            s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH - 1]) & s.hash_mask;
             hash_head = s.prev[s.strstart & s.w_mask] = s.head[s.ins_h];
             s.head[s.ins_h] = s.strstart;
             /***/
@@ -17427,7 +16949,7 @@ var openpgp = (function (exports) {
         /***/
       }
     }
-    s.insert = ((s.strstart < (MIN_MATCH$1 - 1)) ? s.strstart : MIN_MATCH$1 - 1);
+    s.insert = ((s.strstart < (MIN_MATCH - 1)) ? s.strstart : MIN_MATCH - 1);
     if (flush === Z_FINISH) {
       /*** FLUSH_BLOCK(s, 1); ***/
       flush_block_only(s, true);
@@ -17478,9 +17000,9 @@ var openpgp = (function (exports) {
        * dictionary, and set hash_head to the head of the hash chain:
        */
       hash_head = 0/*NIL*/;
-      if (s.lookahead >= MIN_MATCH$1) {
+      if (s.lookahead >= MIN_MATCH) {
         /*** INSERT_STRING(s, s.strstart, hash_head); ***/
-        s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH$1 - 1]) & s.hash_mask;
+        s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH - 1]) & s.hash_mask;
         hash_head = s.prev[s.strstart & s.w_mask] = s.head[s.ins_h];
         s.head[s.ins_h] = s.strstart;
         /***/
@@ -17490,7 +17012,7 @@ var openpgp = (function (exports) {
        */
       s.prev_length = s.match_length;
       s.prev_match = s.match_start;
-      s.match_length = MIN_MATCH$1 - 1;
+      s.match_length = MIN_MATCH - 1;
 
       if (hash_head !== 0/*NIL*/ && s.prev_length < s.max_lazy_match &&
         s.strstart - hash_head <= (s.w_size - MIN_LOOKAHEAD)/*MAX_DIST(s)*/) {
@@ -17502,26 +17024,26 @@ var openpgp = (function (exports) {
         /* longest_match() sets match_start */
 
         if (s.match_length <= 5 &&
-          (s.strategy === Z_FILTERED || (s.match_length === MIN_MATCH$1 && s.strstart - s.match_start > 4096/*TOO_FAR*/))) {
+          (s.strategy === Z_FILTERED || (s.match_length === MIN_MATCH && s.strstart - s.match_start > 4096/*TOO_FAR*/))) {
 
           /* If prev_match is also MIN_MATCH, match_start is garbage
            * but we will ignore the current match anyway.
            */
-          s.match_length = MIN_MATCH$1 - 1;
+          s.match_length = MIN_MATCH - 1;
         }
       }
       /* If there was a match at the previous step and the current
        * match is not better, output the previous match:
        */
-      if (s.prev_length >= MIN_MATCH$1 && s.match_length <= s.prev_length) {
-        max_insert = s.strstart + s.lookahead - MIN_MATCH$1;
+      if (s.prev_length >= MIN_MATCH && s.match_length <= s.prev_length) {
+        max_insert = s.strstart + s.lookahead - MIN_MATCH;
         /* Do not insert strings in hash table beyond this. */
 
         //check_match(s, s.strstart-1, s.prev_match, s.prev_length);
 
         /***_tr_tally_dist(s, s.strstart - 1 - s.prev_match,
                        s.prev_length - MIN_MATCH, bflush);***/
-        bflush = _tr_tally(s, s.strstart - 1 - s.prev_match, s.prev_length - MIN_MATCH$1);
+        bflush = _tr_tally(s, s.strstart - 1 - s.prev_match, s.prev_length - MIN_MATCH);
         /* Insert in hash table all strings up to the end of the match.
          * strstart-1 and strstart are already inserted. If there is not
          * enough lookahead, the last two strings are not inserted in
@@ -17532,14 +17054,14 @@ var openpgp = (function (exports) {
         do {
           if (++s.strstart <= max_insert) {
             /*** INSERT_STRING(s, s.strstart, hash_head); ***/
-            s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH$1 - 1]) & s.hash_mask;
+            s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH - 1]) & s.hash_mask;
             hash_head = s.prev[s.strstart & s.w_mask] = s.head[s.ins_h];
             s.head[s.ins_h] = s.strstart;
             /***/
           }
         } while (--s.prev_length !== 0);
         s.match_available = 0;
-        s.match_length = MIN_MATCH$1 - 1;
+        s.match_length = MIN_MATCH - 1;
         s.strstart++;
 
         if (bflush) {
@@ -17587,7 +17109,7 @@ var openpgp = (function (exports) {
 
       s.match_available = 0;
     }
-    s.insert = s.strstart < MIN_MATCH$1 - 1 ? s.strstart : MIN_MATCH$1 - 1;
+    s.insert = s.strstart < MIN_MATCH - 1 ? s.strstart : MIN_MATCH - 1;
     if (flush === Z_FINISH) {
       /*** FLUSH_BLOCK(s, 1); ***/
       flush_block_only(s, true);
@@ -17627,9 +17149,9 @@ var openpgp = (function (exports) {
        * at the end of the input file. We need MAX_MATCH bytes
        * for the longest run, plus one for the unrolled loop.
        */
-      if (s.lookahead <= MAX_MATCH$1) {
+      if (s.lookahead <= MAX_MATCH) {
         fill_window(s);
-        if (s.lookahead <= MAX_MATCH$1 && flush === Z_NO_FLUSH) {
+        if (s.lookahead <= MAX_MATCH && flush === Z_NO_FLUSH) {
           return BS_NEED_MORE;
         }
         if (s.lookahead === 0) { break; } /* flush the current block */
@@ -17637,11 +17159,11 @@ var openpgp = (function (exports) {
 
       /* See how many times the previous byte repeats */
       s.match_length = 0;
-      if (s.lookahead >= MIN_MATCH$1 && s.strstart > 0) {
+      if (s.lookahead >= MIN_MATCH && s.strstart > 0) {
         scan = s.strstart - 1;
         prev = _win[scan];
         if (prev === _win[++scan] && prev === _win[++scan] && prev === _win[++scan]) {
-          strend = s.strstart + MAX_MATCH$1;
+          strend = s.strstart + MAX_MATCH;
           do {
             /*jshint noempty:false*/
           } while (prev === _win[++scan] && prev === _win[++scan] &&
@@ -17649,7 +17171,7 @@ var openpgp = (function (exports) {
           prev === _win[++scan] && prev === _win[++scan] &&
           prev === _win[++scan] && prev === _win[++scan] &&
             scan < strend);
-          s.match_length = MAX_MATCH$1 - (strend - scan);
+          s.match_length = MAX_MATCH - (strend - scan);
           if (s.match_length > s.lookahead) {
             s.match_length = s.lookahead;
           }
@@ -17658,11 +17180,11 @@ var openpgp = (function (exports) {
       }
 
       /* Emit match if have run of MIN_MATCH or longer, else emit literal */
-      if (s.match_length >= MIN_MATCH$1) {
+      if (s.match_length >= MIN_MATCH) {
         //check_match(s, s.strstart, s.strstart - 1, s.match_length);
 
         /*** _tr_tally_dist(s, 1, s.match_length - MIN_MATCH, bflush); ***/
-        bflush = _tr_tally(s, 1, s.match_length - MIN_MATCH$1);
+        bflush = _tr_tally(s, 1, s.match_length - MIN_MATCH);
 
         s.lookahead -= s.match_length;
         s.strstart += s.match_length;
@@ -17799,7 +17321,7 @@ var openpgp = (function (exports) {
     s.window_size = 2 * s.w_size;
 
     /*** CLEAR_HASH(s); ***/
-    zero$2(s.head); // Fill with NIL (= 0);
+    zero(s.head); // Fill with NIL (= 0);
 
     /* Set the default configuration parameters:
      */
@@ -17812,7 +17334,7 @@ var openpgp = (function (exports) {
     s.block_start = 0;
     s.lookahead = 0;
     s.insert = 0;
-    s.match_length = s.prev_length = MIN_MATCH$1 - 1;
+    s.match_length = s.prev_length = MIN_MATCH - 1;
     s.match_available = 0;
     s.ins_h = 0;
   }
@@ -17921,24 +17443,24 @@ var openpgp = (function (exports) {
 
       // Use flat array of DOUBLE size, with interleaved fata,
       // because JS does not support effective
-      this.dyn_ltree  = new Buf16(HEAP_SIZE$1 * 2);
-      this.dyn_dtree  = new Buf16((2 * D_CODES$1 + 1) * 2);
-      this.bl_tree    = new Buf16((2 * BL_CODES$1 + 1) * 2);
-      zero$2(this.dyn_ltree);
-      zero$2(this.dyn_dtree);
-      zero$2(this.bl_tree);
+      this.dyn_ltree  = new Buf16(HEAP_SIZE * 2);
+      this.dyn_dtree  = new Buf16((2 * D_CODES + 1) * 2);
+      this.bl_tree    = new Buf16((2 * BL_CODES + 1) * 2);
+      zero(this.dyn_ltree);
+      zero(this.dyn_dtree);
+      zero(this.bl_tree);
 
       this.l_desc   = null;         /* desc. for literal tree */
       this.d_desc   = null;         /* desc. for distance tree */
       this.bl_desc  = null;         /* desc. for bit length tree */
 
       //ush bl_count[MAX_BITS+1];
-      this.bl_count = new Buf16(MAX_BITS$1 + 1);
+      this.bl_count = new Buf16(MAX_BITS + 1);
       /* number of codes at each bit length for an optimal tree */
 
       //int heap[2*L_CODES+1];      /* heap used to build the Huffman trees */
-      this.heap = new Buf16(2 * L_CODES$1 + 1);  /* heap used to build the Huffman trees */
-      zero$2(this.heap);
+      this.heap = new Buf16(2 * L_CODES + 1);  /* heap used to build the Huffman trees */
+      zero(this.heap);
 
       this.heap_len = 0;               /* number of elements in the heap */
       this.heap_max = 0;               /* element of largest frequency */
@@ -17946,8 +17468,8 @@ var openpgp = (function (exports) {
        * The same heap array is used to build all trees.
        */
 
-      this.depth = new Buf16(2 * L_CODES$1 + 1); //uch depth[2*L_CODES+1];
-      zero$2(this.depth);
+      this.depth = new Buf16(2 * L_CODES + 1); //uch depth[2*L_CODES+1];
+      zero(this.depth);
       /* Depth of each subtree used as tie breaker for trees of equal frequency
        */
 
@@ -18100,7 +17622,7 @@ var openpgp = (function (exports) {
     s.hash_bits = memLevel + 7;
     s.hash_size = 1 << s.hash_bits;
     s.hash_mask = s.hash_size - 1;
-    s.hash_shift = ~~((s.hash_bits + MIN_MATCH$1 - 1) / MIN_MATCH$1);
+    s.hash_shift = ~~((s.hash_bits + MIN_MATCH - 1) / MIN_MATCH);
     s.window = new Buf8(s.w_size * 2);
     s.head = new Buf16(s.hash_size);
     s.prev = new Buf16(s.w_size);
@@ -18192,7 +17714,7 @@ var openpgp = (function (exports) {
             put_byte(s, (s.gzhead.extra.length >> 8) & 0xff);
           }
           if (s.gzhead.hcrc) {
-            strm.adler = crc32(strm.adler, s.pending_buf, s.pending, 0);
+            strm.adler = crc32$1(strm.adler, s.pending_buf, s.pending, 0);
           }
           s.gzindex = 0;
           s.status = EXTRA_STATE;
@@ -18236,7 +17758,7 @@ var openpgp = (function (exports) {
         while (s.gzindex < (s.gzhead.extra.length & 0xffff)) {
           if (s.pending === s.pending_buf_size) {
             if (s.gzhead.hcrc && s.pending > beg) {
-              strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+              strm.adler = crc32$1(strm.adler, s.pending_buf, s.pending - beg, beg);
             }
             flush_pending(strm);
             beg = s.pending;
@@ -18248,7 +17770,7 @@ var openpgp = (function (exports) {
           s.gzindex++;
         }
         if (s.gzhead.hcrc && s.pending > beg) {
-          strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+          strm.adler = crc32$1(strm.adler, s.pending_buf, s.pending - beg, beg);
         }
         if (s.gzindex === s.gzhead.extra.length) {
           s.gzindex = 0;
@@ -18267,7 +17789,7 @@ var openpgp = (function (exports) {
         do {
           if (s.pending === s.pending_buf_size) {
             if (s.gzhead.hcrc && s.pending > beg) {
-              strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+              strm.adler = crc32$1(strm.adler, s.pending_buf, s.pending - beg, beg);
             }
             flush_pending(strm);
             beg = s.pending;
@@ -18286,7 +17808,7 @@ var openpgp = (function (exports) {
         } while (val !== 0);
 
         if (s.gzhead.hcrc && s.pending > beg) {
-          strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+          strm.adler = crc32$1(strm.adler, s.pending_buf, s.pending - beg, beg);
         }
         if (val === 0) {
           s.gzindex = 0;
@@ -18305,7 +17827,7 @@ var openpgp = (function (exports) {
         do {
           if (s.pending === s.pending_buf_size) {
             if (s.gzhead.hcrc && s.pending > beg) {
-              strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+              strm.adler = crc32$1(strm.adler, s.pending_buf, s.pending - beg, beg);
             }
             flush_pending(strm);
             beg = s.pending;
@@ -18324,7 +17846,7 @@ var openpgp = (function (exports) {
         } while (val !== 0);
 
         if (s.gzhead.hcrc && s.pending > beg) {
-          strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+          strm.adler = crc32$1(strm.adler, s.pending_buf, s.pending - beg, beg);
         }
         if (val === 0) {
           s.status = HCRC_STATE;
@@ -18417,7 +17939,7 @@ var openpgp = (function (exports) {
            */
           if (flush === Z_FULL_FLUSH) {
             /*** CLEAR_HASH(s); ***/             /* forget history */
-            zero$2(s.head); // Fill with NIL (= 0);
+            zero(s.head); // Fill with NIL (= 0);
 
             if (s.lookahead === 0) {
               s.strstart = 0;
@@ -18527,7 +18049,7 @@ var openpgp = (function (exports) {
     if (dictLength >= s.w_size) {
       if (wrap === 0) {            /* already empty otherwise */
         /*** CLEAR_HASH(s); ***/
-        zero$2(s.head); // Fill with NIL (= 0);
+        zero(s.head); // Fill with NIL (= 0);
         s.strstart = 0;
         s.block_start = 0;
         s.insert = 0;
@@ -18547,12 +18069,12 @@ var openpgp = (function (exports) {
     strm.next_in = 0;
     strm.input = dictionary;
     fill_window(s);
-    while (s.lookahead >= MIN_MATCH$1) {
+    while (s.lookahead >= MIN_MATCH) {
       str = s.strstart;
-      n = s.lookahead - (MIN_MATCH$1 - 1);
+      n = s.lookahead - (MIN_MATCH - 1);
       do {
         /* UPDATE_HASH(s, s->ins_h, s->window[str + MIN_MATCH-1]); */
-        s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[str + MIN_MATCH$1 - 1]) & s.hash_mask;
+        s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[str + MIN_MATCH - 1]) & s.hash_mask;
 
         s.prev[str & s.w_mask] = s.head[s.ins_h];
 
@@ -18560,14 +18082,14 @@ var openpgp = (function (exports) {
         str++;
       } while (--n);
       s.strstart = str;
-      s.lookahead = MIN_MATCH$1 - 1;
+      s.lookahead = MIN_MATCH - 1;
       fill_window(s);
     }
     s.strstart += s.lookahead;
     s.block_start = s.strstart;
     s.insert = s.lookahead;
     s.lookahead = 0;
-    s.match_length = s.prev_length = MIN_MATCH$1 - 1;
+    s.match_length = s.prev_length = MIN_MATCH - 1;
     s.match_available = 0;
     strm.next_in = next;
     strm.input = input;
@@ -18588,11 +18110,11 @@ var openpgp = (function (exports) {
   // String encode/decode helpers
 
   try {
-      String.fromCharCode.apply(null, [ 0 ]);
+      String.fromCharCode.apply(null, [ 0 ]); 
   } catch (__) {
   }
   try {
-      String.fromCharCode.apply(null, new Uint8Array(1));
+      String.fromCharCode.apply(null, new Uint8Array(1)); 
   } catch (__) {
   }
 
@@ -19019,8 +18541,8 @@ var openpgp = (function (exports) {
   // 3. This notice may not be removed or altered from any source distribution.
 
   // See state defs from inflate.js
-  const BAD = 30;       /* got a data error -- remain here until reset */
-  const TYPE = 12;      /* i: waiting for type bits, including last-flag bit */
+  const BAD$1 = 30;       /* got a data error -- remain here until reset */
+  const TYPE$1 = 12;      /* i: waiting for type bits, including last-flag bit */
 
   /*
      Decode literal, length, and distance codes and write out the resulting
@@ -19166,7 +18688,7 @@ var openpgp = (function (exports) {
                           //#ifdef INFLATE_STRICT
                           if (dist > dmax) {
                               strm.msg = "invalid distance too far back";
-                              state.mode = BAD;
+                              state.mode = BAD$1;
                               break top;
                           }
                           //#endif
@@ -19179,7 +18701,7 @@ var openpgp = (function (exports) {
                               if (op > whave) {
                                   if (state.sane) {
                                       strm.msg = "invalid distance too far back";
-                                      state.mode = BAD;
+                                      state.mode = BAD$1;
                                       break top;
                                   }
 
@@ -19279,7 +18801,7 @@ var openpgp = (function (exports) {
                           continue dodist;
                       } else {
                           strm.msg = "invalid distance code";
-                          state.mode = BAD;
+                          state.mode = BAD$1;
                           break top;
                       }
 
@@ -19290,11 +18812,11 @@ var openpgp = (function (exports) {
                   continue dolen;
               } else if (op & 32) {                     /* end-of-block */
                   //Tracevv((stderr, "inflate:         end of block\n"));
-                  state.mode = TYPE;
+                  state.mode = TYPE$1;
                   break top;
               } else {
                   strm.msg = "invalid literal/length code";
-                  state.mode = BAD;
+                  state.mode = BAD$1;
                   break top;
               }
 
@@ -19319,13 +18841,13 @@ var openpgp = (function (exports) {
   }
 
   const MAXBITS = 15;
-  const ENOUGH_LENS = 852;
-  const ENOUGH_DISTS = 592;
+  const ENOUGH_LENS$1 = 852;
+  const ENOUGH_DISTS$1 = 592;
   //var ENOUGH = (ENOUGH_LENS+ENOUGH_DISTS);
 
-  const CODES = 0;
-  const LENS = 1;
-  const DISTS = 2;
+  const CODES$1 = 0;
+  const LENS$1 = 1;
+  const DISTS$1 = 2;
 
   const lbase = [ /* Length codes 257..285 base */
       3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,
@@ -19420,7 +18942,7 @@ var openpgp = (function (exports) {
       root = bits;
       for (max = MAXBITS; max >= 1; max--) {
           if (count[max] !== 0) {
-              break;
+              break; 
           }
       }
       if (root > max) {
@@ -19443,7 +18965,7 @@ var openpgp = (function (exports) {
       }
       for (min = 1; min < max; min++) {
           if (count[min] !== 0) {
-              break;
+              break; 
           }
       }
       if (root < min) {
@@ -19459,7 +18981,7 @@ var openpgp = (function (exports) {
               return -1;
           }        /* over-subscribed */
       }
-      if (left > 0 && (type === CODES || max !== 1)) {
+      if (left > 0 && (type === CODES$1 || max !== 1)) {
           return -1;                      /* incomplete set */
       }
 
@@ -19510,11 +19032,11 @@ var openpgp = (function (exports) {
       /* set up for code type */
       // poor man optimization - use if-else instead of switch,
       // to avoid deopts in old v8
-      if (type === CODES) {
+      if (type === CODES$1) {
           base = extra = work;    /* dummy value--not used */
           end = 19;
 
-      } else if (type === LENS) {
+      } else if (type === LENS$1) {
           base = lbase;
           base_index -= 257;
           extra = lext;
@@ -19539,8 +19061,8 @@ var openpgp = (function (exports) {
       const mask = used - 1;            /* mask for comparing low */
 
       /* check available table space */
-      if (type === LENS && used > ENOUGH_LENS ||
-      type === DISTS && used > ENOUGH_DISTS) {
+      if (type === LENS$1 && used > ENOUGH_LENS$1 ||
+      type === DISTS$1 && used > ENOUGH_DISTS$1) {
           return 1;
       }
 
@@ -19584,7 +19106,7 @@ var openpgp = (function (exports) {
           sym++;
           if (--count[len] === 0) {
               if (len === max) {
-                  break;
+                  break; 
               }
               len = lens[lens_index + work[sym]];
           }
@@ -19605,7 +19127,7 @@ var openpgp = (function (exports) {
               while (curr + drop < max) {
                   left -= count[curr + drop];
                   if (left <= 0) {
-                      break;
+                      break; 
                   }
                   curr++;
                   left <<= 1;
@@ -19613,8 +19135,8 @@ var openpgp = (function (exports) {
 
               /* check for enough space */
               used += 1 << curr;
-              if (type === LENS && used > ENOUGH_LENS ||
-          type === DISTS && used > ENOUGH_DISTS) {
+              if (type === LENS$1 && used > ENOUGH_LENS$1 ||
+          type === DISTS$1 && used > ENOUGH_DISTS$1) {
                   return 1;
               }
 
@@ -19643,9 +19165,9 @@ var openpgp = (function (exports) {
       return 0;
   }
 
-  const CODES$1 = 0;
-  const LENS$1 = 1;
-  const DISTS$1 = 2;
+  const CODES = 0;
+  const LENS = 1;
+  const DISTS = 2;
 
   /* STATES ====================================================================*/
   /* ===========================================================================*/
@@ -19662,7 +19184,7 @@ var openpgp = (function (exports) {
   const    HCRC = 9;       /* i: waiting for header crc (gzip) */
   const    DICTID = 10;    /* i: waiting for dictionary check value */
   const    DICT = 11;      /* waiting for inflateSetDictionary() call */
-  const        TYPE$1 = 12;      /* i: waiting for type bits, including last-flag bit */
+  const        TYPE = 12;      /* i: waiting for type bits, including last-flag bit */
   const        TYPEDO = 13;    /* i: same, but skip check to exit inflate on new block */
   const        STORED = 14;    /* i: waiting for stored size (length and complement) */
   const        COPY_ = 15;     /* i/o: same as COPY below, but only first time in */
@@ -19680,7 +19202,7 @@ var openpgp = (function (exports) {
   const    CHECK = 27;     /* i: waiting for 32-bit check value */
   const    LENGTH = 28;    /* i: waiting for 32-bit length (gzip) */
   const    DONE = 29;      /* finished check, done -- remain here until reset */
-  const    BAD$1 = 30;       /* got a data error -- remain here until reset */
+  const    BAD = 30;       /* got a data error -- remain here until reset */
   //const    MEM = 31;       /* got an inflate() memory error -- remain here until reset */
   const    SYNC = 32;      /* looking for synchronization bytes to restart inflate() */
 
@@ -19688,8 +19210,8 @@ var openpgp = (function (exports) {
 
 
 
-  const ENOUGH_LENS$1 = 852;
-  const ENOUGH_DISTS$1 = 592;
+  const ENOUGH_LENS = 852;
+  const ENOUGH_DISTS = 592;
 
 
   function zswap32(q) {
@@ -19778,8 +19300,8 @@ var openpgp = (function (exports) {
     state.hold = 0;
     state.bits = 0;
     //state.lencode = state.distcode = state.next = state.codes;
-    state.lencode = state.lendyn = new Buf32(ENOUGH_LENS$1);
-    state.distcode = state.distdyn = new Buf32(ENOUGH_DISTS$1);
+    state.lencode = state.lendyn = new Buf32(ENOUGH_LENS);
+    state.distcode = state.distdyn = new Buf32(ENOUGH_DISTS);
 
     state.sane = 1;
     state.back = -1;
@@ -19883,13 +19405,13 @@ var openpgp = (function (exports) {
       while (sym < 280) { state.lens[sym++] = 7; }
       while (sym < 288) { state.lens[sym++] = 8; }
 
-      inflate_table(LENS$1,  state.lens, 0, 288, lenfix,   0, state.work, { bits: 9 });
+      inflate_table(LENS,  state.lens, 0, 288, lenfix,   0, state.work, { bits: 9 });
 
       /* distance table */
       sym = 0;
       while (sym < 32) { state.lens[sym++] = 5; }
 
-      inflate_table(DISTS$1, state.lens, 0, 32,   distfix, 0, state.work, { bits: 5 });
+      inflate_table(DISTS, state.lens, 0, 32,   distfix, 0, state.work, { bits: 5 });
 
       /* do this just once */
       virgin = false;
@@ -19991,7 +19513,7 @@ var openpgp = (function (exports) {
     }
 
     state = strm.state;
-    if (state.mode === TYPE$1) { state.mode = TYPEDO; }    /* skip check */
+    if (state.mode === TYPE) { state.mode = TYPEDO; }    /* skip check */
 
 
     //--- LOAD() ---
@@ -20030,7 +19552,7 @@ var openpgp = (function (exports) {
             //=== CRC2(state.check, hold);
             hbuf[0] = hold & 0xff;
             hbuf[1] = (hold >>> 8) & 0xff;
-            state.check = crc32(state.check, hbuf, 2, 0);
+            state.check = crc32$1(state.check, hbuf, 2, 0);
             //===//
 
             //=== INITBITS();
@@ -20047,12 +19569,12 @@ var openpgp = (function (exports) {
           if (!(state.wrap & 1) ||   /* check if zlib header allowed */
             (((hold & 0xff)/*BITS(8)*/ << 8) + (hold >> 8)) % 31) {
             strm.msg = 'incorrect header check';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           if ((hold & 0x0f)/*BITS(4)*/ !== Z_DEFLATED) {
             strm.msg = 'unknown compression method';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           //--- DROPBITS(4) ---//
@@ -20065,13 +19587,13 @@ var openpgp = (function (exports) {
           }
           else if (len > state.wbits) {
             strm.msg = 'invalid window size';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           state.dmax = 1 << len;
           //Tracev((stderr, "inflate:   zlib header ok\n"));
           strm.adler = state.check = 1/*adler32(0L, Z_NULL, 0)*/;
-          state.mode = hold & 0x200 ? DICTID : TYPE$1;
+          state.mode = hold & 0x200 ? DICTID : TYPE;
           //=== INITBITS();
           hold = 0;
           bits = 0;
@@ -20089,12 +19611,12 @@ var openpgp = (function (exports) {
           state.flags = hold;
           if ((state.flags & 0xff) !== Z_DEFLATED) {
             strm.msg = 'unknown compression method';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           if (state.flags & 0xe000) {
             strm.msg = 'unknown header flags set';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           if (state.head) {
@@ -20104,7 +19626,7 @@ var openpgp = (function (exports) {
             //=== CRC2(state.check, hold);
             hbuf[0] = hold & 0xff;
             hbuf[1] = (hold >>> 8) & 0xff;
-            state.check = crc32(state.check, hbuf, 2, 0);
+            state.check = crc32$1(state.check, hbuf, 2, 0);
             //===//
           }
           //=== INITBITS();
@@ -20131,7 +19653,7 @@ var openpgp = (function (exports) {
             hbuf[1] = (hold >>> 8) & 0xff;
             hbuf[2] = (hold >>> 16) & 0xff;
             hbuf[3] = (hold >>> 24) & 0xff;
-            state.check = crc32(state.check, hbuf, 4, 0);
+            state.check = crc32$1(state.check, hbuf, 4, 0);
             //===
           }
           //=== INITBITS();
@@ -20157,7 +19679,7 @@ var openpgp = (function (exports) {
             //=== CRC2(state.check, hold);
             hbuf[0] = hold & 0xff;
             hbuf[1] = (hold >>> 8) & 0xff;
-            state.check = crc32(state.check, hbuf, 2, 0);
+            state.check = crc32$1(state.check, hbuf, 2, 0);
             //===//
           }
           //=== INITBITS();
@@ -20184,7 +19706,7 @@ var openpgp = (function (exports) {
               //=== CRC2(state.check, hold);
               hbuf[0] = hold & 0xff;
               hbuf[1] = (hold >>> 8) & 0xff;
-              state.check = crc32(state.check, hbuf, 2, 0);
+              state.check = crc32$1(state.check, hbuf, 2, 0);
               //===//
             }
             //=== INITBITS();
@@ -20223,7 +19745,7 @@ var openpgp = (function (exports) {
                 //        state.head.extra_max - len : copy);
               }
               if (state.flags & 0x0200) {
-                state.check = crc32(state.check, input, copy, next);
+                state.check = crc32$1(state.check, input, copy, next);
               }
               have -= copy;
               next += copy;
@@ -20249,7 +19771,7 @@ var openpgp = (function (exports) {
             } while (len && copy < have);
 
             if (state.flags & 0x0200) {
-              state.check = crc32(state.check, input, copy, next);
+              state.check = crc32$1(state.check, input, copy, next);
             }
             have -= copy;
             next += copy;
@@ -20274,7 +19796,7 @@ var openpgp = (function (exports) {
               }
             } while (len && copy < have);
             if (state.flags & 0x0200) {
-              state.check = crc32(state.check, input, copy, next);
+              state.check = crc32$1(state.check, input, copy, next);
             }
             have -= copy;
             next += copy;
@@ -20297,7 +19819,7 @@ var openpgp = (function (exports) {
             //===//
             if (hold !== (state.check & 0xffff)) {
               strm.msg = 'header crc mismatch';
-              state.mode = BAD$1;
+              state.mode = BAD;
               break;
             }
             //=== INITBITS();
@@ -20310,7 +19832,7 @@ var openpgp = (function (exports) {
             state.head.done = true;
           }
           strm.adler = state.check = 0;
-          state.mode = TYPE$1;
+          state.mode = TYPE;
           break;
         case DICTID:
           //=== NEEDBITS(32); */
@@ -20341,9 +19863,9 @@ var openpgp = (function (exports) {
             return Z_NEED_DICT;
           }
           strm.adler = state.check = 1/*adler32(0L, Z_NULL, 0)*/;
-          state.mode = TYPE$1;
+          state.mode = TYPE;
           /* falls through */
-        case TYPE$1:
+        case TYPE:
           if (flush === Z_BLOCK || flush === Z_TREES) { break inf_leave; }
           /* falls through */
         case TYPEDO:
@@ -20395,7 +19917,7 @@ var openpgp = (function (exports) {
               break;
             case 3:
               strm.msg = 'invalid block type';
-              state.mode = BAD$1;
+              state.mode = BAD;
           }
           //--- DROPBITS(2) ---//
           hold >>>= 2;
@@ -20417,7 +19939,7 @@ var openpgp = (function (exports) {
           //===//
           if ((hold & 0xffff) !== ((hold >>> 16) ^ 0xffff)) {
             strm.msg = 'invalid stored block lengths';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           state.length = hold & 0xffff;
@@ -20450,7 +19972,7 @@ var openpgp = (function (exports) {
             break;
           }
           //Tracev((stderr, "inflate:       stored end\n"));
-          state.mode = TYPE$1;
+          state.mode = TYPE;
           break;
         case TABLE:
           //=== NEEDBITS(14); */
@@ -20479,7 +20001,7 @@ var openpgp = (function (exports) {
   //#ifndef PKZIP_BUG_WORKAROUND
           if (state.nlen > 286 || state.ndist > 30) {
             strm.msg = 'too many length or distance symbols';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
   //#endif
@@ -20514,12 +20036,12 @@ var openpgp = (function (exports) {
           state.lenbits = 7;
 
           opts = { bits: state.lenbits };
-          ret = inflate_table(CODES$1, state.lens, 0, 19, state.lencode, 0, state.work, opts);
+          ret = inflate_table(CODES, state.lens, 0, 19, state.lencode, 0, state.work, opts);
           state.lenbits = opts.bits;
 
           if (ret) {
             strm.msg = 'invalid code lengths set';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           //Tracev((stderr, "inflate:       code lengths ok\n"));
@@ -20566,7 +20088,7 @@ var openpgp = (function (exports) {
                 //---//
                 if (state.have === 0) {
                   strm.msg = 'invalid bit length repeat';
-                  state.mode = BAD$1;
+                  state.mode = BAD;
                   break;
                 }
                 len = state.lens[state.have - 1];
@@ -20620,7 +20142,7 @@ var openpgp = (function (exports) {
               }
               if (state.have + copy > state.nlen + state.ndist) {
                 strm.msg = 'invalid bit length repeat';
-                state.mode = BAD$1;
+                state.mode = BAD;
                 break;
               }
               while (copy--) {
@@ -20630,12 +20152,12 @@ var openpgp = (function (exports) {
           }
 
           /* handle error breaks in while */
-          if (state.mode === BAD$1) { break; }
+          if (state.mode === BAD) { break; }
 
           /* check for end-of-block code (better have one) */
           if (state.lens[256] === 0) {
             strm.msg = 'invalid code -- missing end-of-block';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
 
@@ -20645,7 +20167,7 @@ var openpgp = (function (exports) {
           state.lenbits = 9;
 
           opts = { bits: state.lenbits };
-          ret = inflate_table(LENS$1, state.lens, 0, state.nlen, state.lencode, 0, state.work, opts);
+          ret = inflate_table(LENS, state.lens, 0, state.nlen, state.lencode, 0, state.work, opts);
           // We have separate tables & no pointers. 2 commented lines below not needed.
           // state.next_index = opts.table_index;
           state.lenbits = opts.bits;
@@ -20653,7 +20175,7 @@ var openpgp = (function (exports) {
 
           if (ret) {
             strm.msg = 'invalid literal/lengths set';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
 
@@ -20662,7 +20184,7 @@ var openpgp = (function (exports) {
           // Switch to use dynamic table
           state.distcode = state.distdyn;
           opts = { bits: state.distbits };
-          ret = inflate_table(DISTS$1, state.lens, state.nlen, state.ndist, state.distcode, 0, state.work, opts);
+          ret = inflate_table(DISTS, state.lens, state.nlen, state.ndist, state.distcode, 0, state.work, opts);
           // We have separate tables & no pointers. 2 commented lines below not needed.
           // state.next_index = opts.table_index;
           state.distbits = opts.bits;
@@ -20670,7 +20192,7 @@ var openpgp = (function (exports) {
 
           if (ret) {
             strm.msg = 'invalid distances set';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           //Tracev((stderr, 'inflate:       codes ok\n'));
@@ -20702,7 +20224,7 @@ var openpgp = (function (exports) {
             bits = state.bits;
             //---
 
-            if (state.mode === TYPE$1) {
+            if (state.mode === TYPE) {
               state.back = -1;
             }
             break;
@@ -20763,12 +20285,12 @@ var openpgp = (function (exports) {
           if (here_op & 32) {
             //Tracevv((stderr, "inflate:         end of block\n"));
             state.back = -1;
-            state.mode = TYPE$1;
+            state.mode = TYPE;
             break;
           }
           if (here_op & 64) {
             strm.msg = 'invalid literal/length code';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           state.extra = here_op & 15;
@@ -20843,7 +20365,7 @@ var openpgp = (function (exports) {
           state.back += here_bits;
           if (here_op & 64) {
             strm.msg = 'invalid distance code';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
           state.offset = here_val;
@@ -20871,7 +20393,7 @@ var openpgp = (function (exports) {
   //#ifdef INFLATE_STRICT
           if (state.offset > state.dmax) {
             strm.msg = 'invalid distance too far back';
-            state.mode = BAD$1;
+            state.mode = BAD;
             break;
           }
   //#endif
@@ -20886,7 +20408,7 @@ var openpgp = (function (exports) {
             if (copy > state.whave) {
               if (state.sane) {
                 strm.msg = 'invalid distance too far back';
-                state.mode = BAD$1;
+                state.mode = BAD;
                 break;
               }
   // (!) This block is disabled in zlib defaults,
@@ -20951,14 +20473,14 @@ var openpgp = (function (exports) {
             if (_out) {
               strm.adler = state.check =
                   /*UPDATE(state.check, put - _out, _out);*/
-                  (state.flags ? crc32(state.check, output, _out, put - _out) : adler32(state.check, output, _out, put - _out));
+                  (state.flags ? crc32$1(state.check, output, _out, put - _out) : adler32(state.check, output, _out, put - _out));
 
             }
             _out = left;
             // NB: crc32 stored as signed 32-bit int, zswap32 returns signed too
             if ((state.flags ? hold : zswap32(hold)) !== state.check) {
               strm.msg = 'incorrect data check';
-              state.mode = BAD$1;
+              state.mode = BAD;
               break;
             }
             //=== INITBITS();
@@ -20981,7 +20503,7 @@ var openpgp = (function (exports) {
             //===//
             if (hold !== (state.total & 0xffffffff)) {
               strm.msg = 'incorrect length check';
-              state.mode = BAD$1;
+              state.mode = BAD;
               break;
             }
             //=== INITBITS();
@@ -20995,7 +20517,7 @@ var openpgp = (function (exports) {
         case DONE:
           ret = Z_STREAM_END;
           break inf_leave;
-        case BAD$1:
+        case BAD:
           ret = Z_DATA_ERROR;
           break inf_leave;
         // case MEM:
@@ -21025,7 +20547,7 @@ var openpgp = (function (exports) {
     state.bits = bits;
     //---
 
-    if (state.wsize || (_out !== strm.avail_out && state.mode < BAD$1 &&
+    if (state.wsize || (_out !== strm.avail_out && state.mode < BAD &&
                         (state.mode < CHECK || flush !== Z_FINISH))) {
       if (updatewindow(strm, strm.output, strm.next_out, _out - strm.avail_out)) ;
     }
@@ -21036,10 +20558,10 @@ var openpgp = (function (exports) {
     state.total += _out;
     if (state.wrap && _out) {
       strm.adler = state.check = /*UPDATE(state.check, strm.next_out - _out, _out);*/
-        (state.flags ? crc32(state.check, output, _out, strm.next_out - _out) : adler32(state.check, output, _out, strm.next_out - _out));
+        (state.flags ? crc32$1(state.check, output, _out, strm.next_out - _out) : adler32(state.check, output, _out, strm.next_out - _out));
     }
     strm.data_type = state.bits + (state.last ? 64 : 0) +
-                      (state.mode === TYPE$1 ? 128 : 0) +
+                      (state.mode === TYPE ? 128 : 0) +
                       (state.mode === LEN_ || state.mode === COPY_ ? 256 : 0);
     if (((_in === 0 && _out === 0) || flush === Z_FINISH) && ret === Z_OK) {
       ret = Z_BUF_ERROR;
@@ -21646,7 +21168,7 @@ var openpgp = (function (exports) {
    *   Copyright (c) 2013 C. Scott Ananian
    * with the same licensing terms as Matthew Francis' original implementation.
    */
-  var crc32$1 = (function() {
+  var crc32 = (function() {
 
     /**
      * A static CRC lookup table
@@ -21816,7 +21338,7 @@ var openpgp = (function (exports) {
       this.writeCount = -1;
       return false; /* no more blocks */
     }
-    this.blockCRC = new crc32$1();
+    this.blockCRC = new crc32();
     return true;
   };
   /* XXX micro-bunzip uses (inputStream, inputBuffer, len) as arguments */
@@ -22215,7 +21737,7 @@ var openpgp = (function (exports) {
   /* Static helper functions */
   // 'input' can be a stream or a buffer
   // 'output' can be a stream or a buffer or a number (buffer size)
-  const decode$2 = function(input, output, multistream) {
+  const decode = function(input, output, multistream) {
     // make a stream from a buffer, if necessary
     var inputStream = coerceInputStream(input);
     var outputStream = coerceOutputStream(output);
@@ -22253,7 +21775,7 @@ var openpgp = (function (exports) {
     var moreBlocks = bz._get_next_block();
     if (moreBlocks) {
       /* Init the CRC for writing */
-      bz.blockCRC = new crc32$1();
+      bz.blockCRC = new crc32();
 
       /* Zero this so the current byte from before the seek is not written */
       bz.writeCopies = 0;
@@ -22315,7 +21837,7 @@ var openpgp = (function (exports) {
     Bunzip,
     Stream: stream,
     Err,
-    decode: decode$2,
+    decode,
     decodeBlock,
     table
   };
@@ -22598,7 +22120,7 @@ var openpgp = (function (exports) {
           writer = getWriter(arrayStream);
           packet = arrayStream;
         } else {
-          const transform = new TransformStream();
+          const transform = new TransformStream$1();
           writer = getWriter(transform.writable);
           packet = transform.readable;
         }
@@ -23494,7 +23016,7 @@ var openpgp = (function (exports) {
 
   // GPG4Browsers - An OpenPGP implementation in javascript
 
-  const VERSION = 3;
+  const VERSION$3 = 3;
 
   /**
    * Implementation of the One-Pass Signature Packets (Tag 4)
@@ -23553,7 +23075,7 @@ var openpgp = (function (exports) {
       let mypos = 0;
       // A one-octet version number.  The current version is 3.
       this.version = bytes[mypos++];
-      if (this.version !== VERSION) {
+      if (this.version !== VERSION$3) {
         throw new UnsupportedError(`Version ${this.version} of the one-pass signature packet is unsupported.`);
       }
 
@@ -23585,7 +23107,7 @@ var openpgp = (function (exports) {
      * @returns {Uint8Array} A Uint8Array representation of a one-pass signature packet.
      */
     write() {
-      const start = new Uint8Array([VERSION, this.signatureType, this.hashAlgorithm, this.publicKeyAlgorithm]);
+      const start = new Uint8Array([VERSION$3, this.signatureType, this.hashAlgorithm, this.publicKeyAlgorithm]);
 
       const end = new Uint8Array([this.flags]);
 
@@ -23823,7 +23345,7 @@ var openpgp = (function (exports) {
   // GPG4Browsers - An OpenPGP implementation in javascript
 
   // A Compressed Data packet can contain the following packet types
-  const allowedPackets = /*#__PURE__*/ util.constructAllowedPackets([
+  const allowedPackets$5 = /*#__PURE__*/ util.constructAllowedPackets([
     LiteralDataPacket,
     OnePassSignaturePacket,
     SignaturePacket
@@ -23913,7 +23435,7 @@ var openpgp = (function (exports) {
         throw new Error(`${compressionName} decompression not supported`);
       }
 
-      this.packets = await PacketList.fromBinary(decompressionFn(this.compressed), allowedPackets, config);
+      this.packets = await PacketList.fromBinary(decompressionFn(this.compressed), allowedPackets$5, config);
     }
 
     /**
@@ -23937,26 +23459,8 @@ var openpgp = (function (exports) {
   //////////////////////////
 
 
-  const nodeZlib = util.getNodeZlib();
-
   function uncompressed(data) {
     return data;
-  }
-
-  function node_zlib(func, create, options = {}) {
-    return function (data) {
-      if (!util.isStream(data) || isArrayStream(data)) {
-        return fromAsync(() => readToEnd(data).then(data => {
-          return new Promise((resolve, reject) => {
-            func(data, options, (err, result) => {
-              if (err) return reject(err);
-              resolve(result);
-            });
-          });
-        }));
-      }
-      return nodeToWeb(webToNode(data).pipe(create(options)));
-    };
   }
 
   function pako_zlib(constructor, options = {}) {
@@ -23982,20 +23486,12 @@ var openpgp = (function (exports) {
     };
   }
 
-  const compress_fns = nodeZlib ? {
-    zip: /*#__PURE__*/ (compressed, level) => node_zlib(nodeZlib.deflateRaw, nodeZlib.createDeflateRaw, { level })(compressed),
-    zlib: /*#__PURE__*/ (compressed, level) => node_zlib(nodeZlib.deflate, nodeZlib.createDeflate, { level })(compressed)
-  } : {
-    zip: /*#__PURE__*/ (compressed, level) => pako_zlib(Deflate, { raw: true, level })(compressed),
-    zlib: /*#__PURE__*/ (compressed, level) => pako_zlib(Deflate, { level })(compressed)
+  const compress_fns = {
+    zip:  (compressed, level) => pako_zlib(Deflate, { raw: true, level })(compressed),
+    zlib:  (compressed, level) => pako_zlib(Deflate, { level })(compressed)
   };
 
-  const decompress_fns = nodeZlib ? {
-    uncompressed: uncompressed,
-    zip: /*#__PURE__*/ node_zlib(nodeZlib.inflateRaw, nodeZlib.createInflateRaw),
-    zlib: /*#__PURE__*/ node_zlib(nodeZlib.inflate, nodeZlib.createInflate),
-    bzip2: /*#__PURE__*/ bzip2(lib_4)
-  } : {
+  const decompress_fns = {
     uncompressed: uncompressed,
     zip: /*#__PURE__*/ pako_zlib(Inflate, { raw: true }),
     zlib: /*#__PURE__*/ pako_zlib(Inflate),
@@ -24005,14 +23501,14 @@ var openpgp = (function (exports) {
   // GPG4Browsers - An OpenPGP implementation in javascript
 
   // A SEIP packet can contain the following packet types
-  const allowedPackets$1 = /*#__PURE__*/ util.constructAllowedPackets([
+  const allowedPackets$4 = /*#__PURE__*/ util.constructAllowedPackets([
     LiteralDataPacket,
     CompressedDataPacket,
     OnePassSignaturePacket,
     SignaturePacket
   ]);
 
-  const VERSION$1 = 1; // A one-octet version number of the data packet.
+  const VERSION$2 = 1; // A one-octet version number of the data packet.
 
   /**
    * Implementation of the Sym. Encrypted Integrity Protected Data Packet (Tag 18)
@@ -24030,7 +23526,7 @@ var openpgp = (function (exports) {
     }
 
     constructor() {
-      this.version = VERSION$1;
+      this.version = VERSION$2;
       this.encrypted = null;
       this.packets = null;
     }
@@ -24039,7 +23535,7 @@ var openpgp = (function (exports) {
       await parse(bytes, async reader => {
         const version = await reader.readByte();
         // - A one-octet version number. The only currently defined value is 1.
-        if (version !== VERSION$1) {
+        if (version !== VERSION$2) {
           throw new UnsupportedError(`Version ${version} of the SEIP packet is unsupported.`);
         }
 
@@ -24051,7 +23547,7 @@ var openpgp = (function (exports) {
     }
 
     write() {
-      return util.concat([new Uint8Array([VERSION$1]), this.encrypted]);
+      return util.concat([new Uint8Array([VERSION$2]), this.encrypted]);
     }
 
     /**
@@ -24113,7 +23609,7 @@ var openpgp = (function (exports) {
       if (!util.isStream(encrypted) || !config.allowUnauthenticatedStream) {
         packetbytes = await readToEnd(packetbytes);
       }
-      this.packets = await PacketList.fromBinary(packetbytes, allowedPackets$1, config);
+      this.packets = await PacketList.fromBinary(packetbytes, allowedPackets$4, config);
       return true;
     }
   }
@@ -24121,14 +23617,14 @@ var openpgp = (function (exports) {
   // OpenPGP.js - An OpenPGP implementation in javascript
 
   // An AEAD-encrypted Data packet can contain the following packet types
-  const allowedPackets$2 = /*#__PURE__*/ util.constructAllowedPackets([
+  const allowedPackets$3 = /*#__PURE__*/ util.constructAllowedPackets([
     LiteralDataPacket,
     CompressedDataPacket,
     OnePassSignaturePacket,
     SignaturePacket
   ]);
 
-  const VERSION$2 = 1; // A one-octet version number of the data packet.
+  const VERSION$1 = 1; // A one-octet version number of the data packet.
 
   /**
    * Implementation of the Symmetrically Encrypted Authenticated Encryption with
@@ -24143,7 +23639,7 @@ var openpgp = (function (exports) {
     }
 
     constructor() {
-      this.version = VERSION$2;
+      this.version = VERSION$1;
       /** @type {enums.symmetric} */
       this.cipherAlgorithm = null;
       /** @type {enums.aead} */
@@ -24162,7 +23658,7 @@ var openpgp = (function (exports) {
     async read(bytes) {
       await parse(bytes, async reader => {
         const version = await reader.readByte();
-        if (version !== VERSION$2) { // The only currently defined value is 1.
+        if (version !== VERSION$1) { // The only currently defined value is 1.
           throw new UnsupportedError(`Version ${version} of the AEAD-encrypted data packet is not supported.`);
         }
         this.cipherAlgorithm = await reader.readByte();
@@ -24194,7 +23690,7 @@ var openpgp = (function (exports) {
     async decrypt(sessionKeyAlgorithm, key, config = defaultConfig) {
       this.packets = await PacketList.fromBinary(
         await this.crypt('decrypt', key, clone(this.encrypted)),
-        allowedPackets$2,
+        allowedPackets$3,
         config
       );
     }
@@ -24244,7 +23740,7 @@ var openpgp = (function (exports) {
       const iv = this.iv;
       return transformPair(data, async (readable, writable) => {
         if (util.isStream(readable) !== 'array') {
-          const buffer = new TransformStream({}, {
+          const buffer = new TransformStream$1({}, {
             highWaterMark: util.getHardwareConcurrency() * 2 ** (this.chunkSizeByte + 6),
             size: array => array.length
           });
@@ -24299,7 +23795,7 @@ var openpgp = (function (exports) {
 
   // GPG4Browsers - An OpenPGP implementation in javascript
 
-  const VERSION$3 = 3;
+  const VERSION = 3;
 
   /**
    * Public-Key Encrypted Session Key Packets (Tag 1)
@@ -24346,7 +23842,7 @@ var openpgp = (function (exports) {
      */
     read(bytes) {
       this.version = bytes[0];
-      if (this.version !== VERSION$3) {
+      if (this.version !== VERSION) {
         throw new UnsupportedError(`Version ${this.version} of the PKESK packet is unsupported.`);
       }
       this.publicKeyID.read(bytes.subarray(1, bytes.length));
@@ -25042,7 +24538,7 @@ var openpgp = (function (exports) {
   // GPG4Browsers - An OpenPGP implementation in javascript
 
   // A SE packet can contain the following packet types
-  const allowedPackets$3 = /*#__PURE__*/ util.constructAllowedPackets([
+  const allowedPackets$2 = /*#__PURE__*/ util.constructAllowedPackets([
     LiteralDataPacket,
     CompressedDataPacket,
     OnePassSignaturePacket,
@@ -25107,7 +24603,7 @@ var openpgp = (function (exports) {
         encrypted.subarray(2, blockSize + 2)
       );
 
-      this.packets = await PacketList.fromBinary(decrypted, allowedPackets$3, config);
+      this.packets = await PacketList.fromBinary(decrypted, allowedPackets$2, config);
     }
 
     /**
@@ -26918,12 +26414,12 @@ var openpgp = (function (exports) {
   // GPG4Browsers - An OpenPGP implementation in javascript
 
   // A Signature can contain the following packets
-  const allowedPackets$4 = /*#__PURE__*/ util.constructAllowedPackets([SignaturePacket]);
+  const allowedPackets$1 = /*#__PURE__*/ util.constructAllowedPackets([SignaturePacket]);
 
   /**
    * Class that represents an OpenPGP signature.
    */
-  class Signature {
+  class Signature$2 {
     /**
      * @param {PacketList} packetlist - The signature packets
      */
@@ -26988,8 +26484,8 @@ var openpgp = (function (exports) {
       }
       input = data;
     }
-    const packetlist = await PacketList.fromBinary(input, allowedPackets$4, config);
-    return new Signature(packetlist);
+    const packetlist = await PacketList.fromBinary(input, allowedPackets$1, config);
+    return new Signature$2(packetlist);
   }
 
   /**
@@ -27073,7 +26569,7 @@ var openpgp = (function (exports) {
     const subkeySignaturePacket = new SignaturePacket();
     subkeySignaturePacket.signatureType = enums.signature.subkeyBinding;
     subkeySignaturePacket.publicKeyAlgorithm = primaryKey.algorithm;
-    subkeySignaturePacket.hashAlgorithm = await getPreferredHashAlgo$1(null, subkey, undefined, undefined, config);
+    subkeySignaturePacket.hashAlgorithm = await getPreferredHashAlgo(null, subkey, undefined, undefined, config);
     if (options.sign) {
       subkeySignaturePacket.keyFlags = [enums.keyFlags.signData];
       subkeySignaturePacket.embeddedSignature = await createSignaturePacket(dataToSign, null, subkey, {
@@ -27100,7 +26596,7 @@ var openpgp = (function (exports) {
    * @returns {Promise<enums.hash>}
    * @async
    */
-  async function getPreferredHashAlgo$1(key, keyPacket, date = new Date(), userID = {}, config) {
+  async function getPreferredHashAlgo(key, keyPacket, date = new Date(), userID = {}, config) {
     let hashAlgo = config.preferredHashAlgorithm;
     let prefAlgo = hashAlgo;
     if (key) {
@@ -27188,7 +26684,7 @@ var openpgp = (function (exports) {
     const signaturePacket = new SignaturePacket();
     Object.assign(signaturePacket, signatureProperties);
     signaturePacket.publicKeyAlgorithm = signingKeyPacket.algorithm;
-    signaturePacket.hashAlgorithm = await getPreferredHashAlgo$1(privateKey, signingKeyPacket, date, userID, config);
+    signaturePacket.hashAlgorithm = await getPreferredHashAlgo(privateKey, signingKeyPacket, date, userID, config);
     await signaturePacket.sign(signingKeyPacket, dataToSign, date, detached);
     return signaturePacket;
   }
@@ -28823,7 +28319,7 @@ var openpgp = (function (exports) {
    * @static
    * @private
    */
-  async function generate$2(options, config) {
+  async function generate(options, config) {
     options.sign = true; // primary key is always a signing key
     options = sanitizeKeyOptions(options);
     options.subkeys = options.subkeys.map((subkey, index) => sanitizeKeyOptions(options.subkeys[index], options));
@@ -28942,7 +28438,7 @@ var openpgp = (function (exports) {
       const signaturePacket = new SignaturePacket();
       signaturePacket.signatureType = enums.signature.certGeneric;
       signaturePacket.publicKeyAlgorithm = secretKeyPacket.algorithm;
-      signaturePacket.hashAlgorithm = await getPreferredHashAlgo$1(null, secretKeyPacket, undefined, undefined, config);
+      signaturePacket.hashAlgorithm = await getPreferredHashAlgo(null, secretKeyPacket, undefined, undefined, config);
       signaturePacket.keyFlags = [enums.keyFlags.certifyKeys | enums.keyFlags.signData];
       signaturePacket.preferredSymmetricAlgorithms = createPreferredAlgos([
         // prefer aes256, aes128, then aes192 (no WebCrypto support: https://www.chromium.org/blink/webcrypto#TOC-AES-support)
@@ -29671,7 +29167,7 @@ var openpgp = (function (exports) {
         const signingKey = await primaryKey.getSigningKey(signingKeyID, date, userIDs, config);
         const onePassSig = new OnePassSignaturePacket();
         onePassSig.signatureType = signatureType;
-        onePassSig.hashAlgorithm = await getPreferredHashAlgo$1(primaryKey, signingKey.keyPacket, date, userIDs, config);
+        onePassSig.hashAlgorithm = await getPreferredHashAlgo(primaryKey, signingKey.keyPacket, date, userIDs, config);
         onePassSig.publicKeyAlgorithm = signingKey.keyPacket.algorithm;
         onePassSig.issuerKeyID = signingKey.getKeyID();
         if (i === signingKeys.length - 1) {
@@ -29725,7 +29221,7 @@ var openpgp = (function (exports) {
       if (!literalDataPacket) {
         throw new Error('No literal data packet to sign.');
       }
-      return new Signature(await createSignaturePackets(literalDataPacket, signingKeys, signature, signingKeyIDs, date, userIDs, true, config));
+      return new Signature$2(await createSignaturePackets(literalDataPacket, signingKeys, signature, signingKeyIDs, date, userIDs, true, config));
     }
 
     /**
@@ -29954,7 +29450,7 @@ var openpgp = (function (exports) {
         const signaturePacket = await signaturePacketPromise;
         const packetlist = new PacketList();
         signaturePacket && packetlist.push(signaturePacket);
-        return new Signature(packetlist);
+        return new Signature$2(packetlist);
       })()
     };
 
@@ -30084,7 +29580,7 @@ var openpgp = (function (exports) {
   // GPG4Browsers - An OpenPGP implementation in javascript
 
   // A Cleartext message can contain the following packets
-  const allowedPackets$5 = /*#__PURE__*/ util.constructAllowedPackets([SignaturePacket]);
+  const allowedPackets = /*#__PURE__*/ util.constructAllowedPackets([SignaturePacket]);
 
   /**
    * Class that represents an OpenPGP cleartext signed message.
@@ -30098,10 +29594,10 @@ var openpgp = (function (exports) {
     constructor(text, signature) {
       // normalize EOL to canonical form <CR><LF>
       this.text = util.removeTrailingSpaces(text).replace(/\r?\n/g, '\r\n');
-      if (signature && !(signature instanceof Signature)) {
+      if (signature && !(signature instanceof Signature$2)) {
         throw new Error('Invalid signature input');
       }
-      this.signature = signature || new Signature(new PacketList());
+      this.signature = signature || new Signature$2(new PacketList());
     }
 
     /**
@@ -30131,7 +29627,7 @@ var openpgp = (function (exports) {
     async sign(privateKeys, signature = null, signingKeyIDs = [], date = new Date(), userIDs = [], config = defaultConfig) {
       const literalDataPacket = new LiteralDataPacket();
       literalDataPacket.setText(this.text);
-      const newSignature = new Signature(await createSignaturePackets(literalDataPacket, privateKeys, signature, signingKeyIDs, date, userIDs, true, config));
+      const newSignature = new Signature$2(await createSignaturePackets(literalDataPacket, privateKeys, signature, signingKeyIDs, date, userIDs, true, config));
       return new CleartextMessage(this.text, newSignature);
     }
 
@@ -30206,9 +29702,9 @@ var openpgp = (function (exports) {
     if (input.type !== enums.armor.signed) {
       throw new Error('No cleartext signed message.');
     }
-    const packetlist = await PacketList.fromBinary(input.data, allowedPackets$5, config);
-    verifyHeaders$1(input.headers, packetlist);
-    const signature = new Signature(packetlist);
+    const packetlist = await PacketList.fromBinary(input.data, allowedPackets, config);
+    verifyHeaders(input.headers, packetlist);
+    const signature = new Signature$2(packetlist);
     return new CleartextMessage(input.text, signature);
   }
 
@@ -30218,7 +29714,7 @@ var openpgp = (function (exports) {
    * @param {PacketList} packetlist - The packetlist with signature packets
    * @private
    */
-  function verifyHeaders$1(headers, packetlist) {
+  function verifyHeaders(headers, packetlist) {
     const checkHashAlgos = function(hashAlgos) {
       const check = packet => algo => packet.hashAlgorithm === algo;
 
@@ -30311,7 +29807,7 @@ var openpgp = (function (exports) {
    */
   async function generateKey({ userIDs = [], passphrase = '', type = 'ecc', rsaBits = 4096, curve = 'curve25519', keyExpirationTime = 0, date = new Date(), subkeys = [{}], format = 'armored', config, ...rest }) {
     config = { ...defaultConfig, ...config }; checkConfig(config);
-    userIDs = toArray$1(userIDs);
+    userIDs = toArray(userIDs);
     const unknownOptions = Object.keys(rest); if (unknownOptions.length > 0) throw new Error(`Unknown option: ${unknownOptions.join(', ')}`);
 
     if (userIDs.length === 0) {
@@ -30324,7 +29820,7 @@ var openpgp = (function (exports) {
     const options = { userIDs, passphrase, type, rsaBits, curve, keyExpirationTime, date, subkeys };
 
     try {
-      const { key, revocationCertificate } = await generate$2(options, config);
+      const { key, revocationCertificate } = await generate(options, config);
       key.getKeys().forEach(({ keyPacket }) => checkKeyRequirements(keyPacket, config));
 
       return {
@@ -30355,7 +29851,7 @@ var openpgp = (function (exports) {
    */
   async function reformatKey({ privateKey, userIDs = [], passphrase = '', keyExpirationTime = 0, date, format = 'armored', config, ...rest }) {
     config = { ...defaultConfig, ...config }; checkConfig(config);
-    userIDs = toArray$1(userIDs);
+    userIDs = toArray(userIDs);
     const unknownOptions = Object.keys(rest); if (unknownOptions.length > 0) throw new Error(`Unknown option: ${unknownOptions.join(', ')}`);
 
     if (userIDs.length === 0) {
@@ -30517,11 +30013,11 @@ var openpgp = (function (exports) {
    * @async
    * @static
    */
-  async function encrypt$4({ message, encryptionKeys, signingKeys, passwords, sessionKey, format = 'armored', signature = null, wildcard = false, signingKeyIDs = [], encryptionKeyIDs = [], date = new Date(), signingUserIDs = [], encryptionUserIDs = [], config, ...rest }) {
+  async function encrypt({ message, encryptionKeys, signingKeys, passwords, sessionKey, format = 'armored', signature = null, wildcard = false, signingKeyIDs = [], encryptionKeyIDs = [], date = new Date(), signingUserIDs = [], encryptionUserIDs = [], config, ...rest }) {
     config = { ...defaultConfig, ...config }; checkConfig(config);
     checkMessage(message); checkOutputMessageFormat(format);
-    encryptionKeys = toArray$1(encryptionKeys); signingKeys = toArray$1(signingKeys); passwords = toArray$1(passwords);
-    signingKeyIDs = toArray$1(signingKeyIDs); encryptionKeyIDs = toArray$1(encryptionKeyIDs); signingUserIDs = toArray$1(signingUserIDs); encryptionUserIDs = toArray$1(encryptionUserIDs);
+    encryptionKeys = toArray(encryptionKeys); signingKeys = toArray(signingKeys); passwords = toArray(passwords);
+    signingKeyIDs = toArray(signingKeyIDs); encryptionKeyIDs = toArray(encryptionKeyIDs); signingUserIDs = toArray(signingUserIDs); encryptionUserIDs = toArray(encryptionUserIDs);
     if (rest.detached) {
       throw new Error("The `detached` option has been removed from openpgp.encrypt, separately call openpgp.sign instead. Don't forget to remove the `privateKeys` option as well.");
     }
@@ -30586,9 +30082,9 @@ var openpgp = (function (exports) {
    * @async
    * @static
    */
-  async function decrypt$4({ message, decryptionKeys, passwords, sessionKeys, verificationKeys, expectSigned = false, format = 'utf8', signature = null, date = new Date(), config, ...rest }) {
+  async function decrypt({ message, decryptionKeys, passwords, sessionKeys, verificationKeys, expectSigned = false, format = 'utf8', signature = null, date = new Date(), config, ...rest }) {
     config = { ...defaultConfig, ...config }; checkConfig(config);
-    checkMessage(message); verificationKeys = toArray$1(verificationKeys); decryptionKeys = toArray$1(decryptionKeys); passwords = toArray$1(passwords); sessionKeys = toArray$1(sessionKeys);
+    checkMessage(message); verificationKeys = toArray(verificationKeys); decryptionKeys = toArray(decryptionKeys); passwords = toArray(passwords); sessionKeys = toArray(sessionKeys);
     if (rest.privateKeys) throw new Error('The `privateKeys` option has been removed from openpgp.decrypt, pass `decryptionKeys` instead');
     if (rest.publicKeys) throw new Error('The `publicKeys` option has been removed from openpgp.decrypt, pass `verificationKeys` instead');
     const unknownOptions = Object.keys(rest); if (unknownOptions.length > 0) throw new Error(`Unknown option: ${unknownOptions.join(', ')}`);
@@ -30648,10 +30144,10 @@ var openpgp = (function (exports) {
    * @async
    * @static
    */
-  async function sign$5({ message, signingKeys, format = 'armored', detached = false, signingKeyIDs = [], date = new Date(), signingUserIDs = [], config, ...rest }) {
+  async function sign({ message, signingKeys, format = 'armored', detached = false, signingKeyIDs = [], date = new Date(), signingUserIDs = [], config, ...rest }) {
     config = { ...defaultConfig, ...config }; checkConfig(config);
     checkCleartextOrMessage(message); checkOutputMessageFormat(format);
-    signingKeys = toArray$1(signingKeys); signingKeyIDs = toArray$1(signingKeyIDs); signingUserIDs = toArray$1(signingUserIDs);
+    signingKeys = toArray(signingKeys); signingKeyIDs = toArray(signingKeyIDs); signingUserIDs = toArray(signingUserIDs);
 
     if (rest.privateKeys) throw new Error('The `privateKeys` option has been removed from openpgp.sign, pass `signingKeys` instead');
     if (rest.armor !== undefined) throw new Error('The `armor` option has been removed from openpgp.sign, pass `format` instead.');
@@ -30717,9 +30213,9 @@ var openpgp = (function (exports) {
    * @async
    * @static
    */
-  async function verify$5({ message, verificationKeys, expectSigned = false, format = 'utf8', signature = null, date = new Date(), config, ...rest }) {
+  async function verify({ message, verificationKeys, expectSigned = false, format = 'utf8', signature = null, date = new Date(), config, ...rest }) {
     config = { ...defaultConfig, ...config }; checkConfig(config);
-    checkCleartextOrMessage(message); verificationKeys = toArray$1(verificationKeys);
+    checkCleartextOrMessage(message); verificationKeys = toArray(verificationKeys);
     if (rest.publicKeys) throw new Error('The `publicKeys` option has been removed from openpgp.verify, pass `verificationKeys` instead');
     const unknownOptions = Object.keys(rest); if (unknownOptions.length > 0) throw new Error(`Unknown option: ${unknownOptions.join(', ')}`);
 
@@ -30771,9 +30267,9 @@ var openpgp = (function (exports) {
    * @async
    * @static
    */
-  async function generateSessionKey$1({ encryptionKeys, date = new Date(), encryptionUserIDs = [], config, ...rest }) {
+  async function generateSessionKey({ encryptionKeys, date = new Date(), encryptionUserIDs = [], config, ...rest }) {
     config = { ...defaultConfig, ...config }; checkConfig(config);
-    encryptionKeys = toArray$1(encryptionKeys); encryptionUserIDs = toArray$1(encryptionUserIDs);
+    encryptionKeys = toArray(encryptionKeys); encryptionUserIDs = toArray(encryptionUserIDs);
     if (rest.publicKeys) throw new Error('The `publicKeys` option has been removed from openpgp.generateSessionKey, pass `encryptionKeys` instead');
     const unknownOptions = Object.keys(rest); if (unknownOptions.length > 0) throw new Error(`Unknown option: ${unknownOptions.join(', ')}`);
 
@@ -30807,7 +30303,7 @@ var openpgp = (function (exports) {
   async function encryptSessionKey({ data, algorithm, aeadAlgorithm, encryptionKeys, passwords, format = 'armored', wildcard = false, encryptionKeyIDs = [], date = new Date(), encryptionUserIDs = [], config, ...rest }) {
     config = { ...defaultConfig, ...config }; checkConfig(config);
     checkBinary(data); checkString(algorithm, 'algorithm'); checkOutputMessageFormat(format);
-    encryptionKeys = toArray$1(encryptionKeys); passwords = toArray$1(passwords); encryptionKeyIDs = toArray$1(encryptionKeyIDs); encryptionUserIDs = toArray$1(encryptionUserIDs);
+    encryptionKeys = toArray(encryptionKeys); passwords = toArray(passwords); encryptionKeyIDs = toArray(encryptionKeyIDs); encryptionUserIDs = toArray(encryptionUserIDs);
     if (rest.publicKeys) throw new Error('The `publicKeys` option has been removed from openpgp.encryptSessionKey, pass `encryptionKeys` instead');
     const unknownOptions = Object.keys(rest); if (unknownOptions.length > 0) throw new Error(`Unknown option: ${unknownOptions.join(', ')}`);
 
@@ -30836,7 +30332,7 @@ var openpgp = (function (exports) {
    */
   async function decryptSessionKeys({ message, decryptionKeys, passwords, date = new Date(), config, ...rest }) {
     config = { ...defaultConfig, ...config }; checkConfig(config);
-    checkMessage(message); decryptionKeys = toArray$1(decryptionKeys); passwords = toArray$1(passwords);
+    checkMessage(message); decryptionKeys = toArray(decryptionKeys); passwords = toArray(passwords);
     if (rest.privateKeys) throw new Error('The `privateKeys` option has been removed from openpgp.decryptSessionKeys, pass `decryptionKeys` instead');
     const unknownOptions = Object.keys(rest); if (unknownOptions.length > 0) throw new Error(`Unknown option: ${unknownOptions.join(', ')}`);
 
@@ -30903,7 +30399,7 @@ var openpgp = (function (exports) {
    * @returns {Array<Object>|undefined} The resulting array or undefined.
    * @private
    */
-  function toArray$1(param) {
+  function toArray(param) {
     if (param && !util.isArray(param)) {
       param = [param];
     }
@@ -30923,11 +30419,6 @@ var openpgp = (function (exports) {
     const streamType = util.isStream(data);
     if (streamType === 'array') {
       return readToEnd(data);
-    }
-    if (streaming === 'node') {
-      data = webToNode(data);
-      if (encoding !== 'binary') data.setEncoding(encoding);
-      return data;
     }
     if (streaming === 'web' && streamType === 'ponyfill') {
       return toNativeReadable(data);
@@ -30988,7 +30479,7 @@ var openpgp = (function (exports) {
       description => `Symbol(${description})`;
 
   /// <reference lib="dom" />
-  function noop() {
+  function noop$1() {
       return undefined;
   }
   function getGlobals() {
@@ -31005,10 +30496,10 @@ var openpgp = (function (exports) {
   }
   const globals = getGlobals();
 
-  function typeIsObject(x) {
+  function typeIsObject$1(x) {
       return (typeof x === 'object' && x !== null) || typeof x === 'function';
   }
-  const rethrowAssertionErrorRejection = noop;
+  const rethrowAssertionErrorRejection = noop$1;
 
   const originalPromise = Promise;
   const originalPromiseThen = Promise.prototype.then;
@@ -31463,7 +30954,7 @@ var openpgp = (function (exports) {
   }
   // Abstract operations for the readers.
   function IsReadableStreamDefaultReader(x) {
-      if (!typeIsObject(x)) {
+      if (!typeIsObject$1(x)) {
           return false;
       }
       if (!Object.prototype.hasOwnProperty.call(x, '_readRequests')) {
@@ -31606,7 +31097,7 @@ var openpgp = (function (exports) {
       return iterator;
   }
   function IsReadableStreamAsyncIterator(x) {
-      if (!typeIsObject(x)) {
+      if (!typeIsObject$1(x)) {
           return false;
       }
       if (!Object.prototype.hasOwnProperty.call(x, '_asyncIteratorImpl')) {
@@ -31897,7 +31388,7 @@ var openpgp = (function (exports) {
   }
   // Abstract operations for the ReadableByteStreamController.
   function IsReadableByteStreamController(x) {
-      if (!typeIsObject(x)) {
+      if (!typeIsObject$1(x)) {
           return false;
       }
       if (!Object.prototype.hasOwnProperty.call(x, '_controlledReadableByteStream')) {
@@ -31906,7 +31397,7 @@ var openpgp = (function (exports) {
       return true;
   }
   function IsReadableStreamBYOBRequest(x) {
-      if (!typeIsObject(x)) {
+      if (!typeIsObject$1(x)) {
           return false;
       }
       if (!Object.prototype.hasOwnProperty.call(x, '_associatedReadableByteStreamController')) {
@@ -32438,7 +31929,7 @@ var openpgp = (function (exports) {
   }
   // Abstract operations for the readers.
   function IsReadableStreamBYOBReader(x) {
-      if (!typeIsObject(x)) {
+      if (!typeIsObject$1(x)) {
           return false;
       }
       if (!Object.prototype.hasOwnProperty.call(x, '_readIntoRequests')) {
@@ -32544,7 +32035,7 @@ var openpgp = (function (exports) {
    *
    * @public
    */
-  class WritableStream$1 {
+  class WritableStream {
       constructor(rawUnderlyingSink = {}, rawStrategy = {}) {
           if (rawUnderlyingSink === undefined) {
               rawUnderlyingSink = null;
@@ -32625,14 +32116,14 @@ var openpgp = (function (exports) {
           return AcquireWritableStreamDefaultWriter(this);
       }
   }
-  Object.defineProperties(WritableStream$1.prototype, {
+  Object.defineProperties(WritableStream.prototype, {
       abort: { enumerable: true },
       close: { enumerable: true },
       getWriter: { enumerable: true },
       locked: { enumerable: true }
   });
   if (typeof SymbolPolyfill.toStringTag === 'symbol') {
-      Object.defineProperty(WritableStream$1.prototype, SymbolPolyfill.toStringTag, {
+      Object.defineProperty(WritableStream.prototype, SymbolPolyfill.toStringTag, {
           value: 'WritableStream',
           configurable: true
       });
@@ -32643,7 +32134,7 @@ var openpgp = (function (exports) {
   }
   // Throws if and only if startAlgorithm throws.
   function CreateWritableStream(startAlgorithm, writeAlgorithm, closeAlgorithm, abortAlgorithm, highWaterMark = 1, sizeAlgorithm = () => 1) {
-      const stream = Object.create(WritableStream$1.prototype);
+      const stream = Object.create(WritableStream.prototype);
       InitializeWritableStream(stream);
       const controller = Object.create(WritableStreamDefaultController.prototype);
       SetUpWritableStreamDefaultController(stream, controller, startAlgorithm, writeAlgorithm, closeAlgorithm, abortAlgorithm, highWaterMark, sizeAlgorithm);
@@ -32676,7 +32167,7 @@ var openpgp = (function (exports) {
       stream._backpressure = false;
   }
   function IsWritableStream(x) {
-      if (!typeIsObject(x)) {
+      if (!typeIsObject$1(x)) {
           return false;
       }
       if (!Object.prototype.hasOwnProperty.call(x, '_writableStreamController')) {
@@ -33030,7 +32521,7 @@ var openpgp = (function (exports) {
   }
   // Abstract operations for the WritableStreamDefaultWriter.
   function IsWritableStreamDefaultWriter(x) {
-      if (!typeIsObject(x)) {
+      if (!typeIsObject$1(x)) {
           return false;
       }
       if (!Object.prototype.hasOwnProperty.call(x, '_ownerWritableStream')) {
@@ -33167,7 +32658,7 @@ var openpgp = (function (exports) {
   }
   // Abstract operations implementing interface required by the WritableStream.
   function IsWritableStreamDefaultController(x) {
-      if (!typeIsObject(x)) {
+      if (!typeIsObject$1(x)) {
           return false;
       }
       if (!Object.prototype.hasOwnProperty.call(x, '_controlledWritableStream')) {
@@ -33527,7 +33018,7 @@ var openpgp = (function (exports) {
                   return newPromise((resolveRead, rejectRead) => {
                       ReadableStreamDefaultReaderRead(reader, {
                           _chunkSteps: chunk => {
-                              currentWrite = PerformPromiseThen(WritableStreamDefaultWriterWrite(writer, chunk), undefined, noop);
+                              currentWrite = PerformPromiseThen(WritableStreamDefaultWriterWrite(writer, chunk), undefined, noop$1);
                               resolveRead(false);
                           },
                           _closeSteps: () => resolveRead(true),
@@ -33730,7 +33221,7 @@ var openpgp = (function (exports) {
   }
   // Abstract operations for the ReadableStreamDefaultController.
   function IsReadableStreamDefaultController(x) {
-      if (!typeIsObject(x)) {
+      if (!typeIsObject$1(x)) {
           return false;
       }
       if (!Object.prototype.hasOwnProperty.call(x, '_controlledReadableStream')) {
@@ -34093,7 +33584,7 @@ var openpgp = (function (exports) {
    *
    * @public
    */
-  class ReadableStream$1 {
+  class ReadableStream {
       constructor(rawUnderlyingSource = {}, rawStrategy = {}) {
           if (rawUnderlyingSource === undefined) {
               rawUnderlyingSource = null;
@@ -34219,7 +33710,7 @@ var openpgp = (function (exports) {
           return AcquireReadableStreamAsyncIterator(this, options.preventCancel);
       }
   }
-  Object.defineProperties(ReadableStream$1.prototype, {
+  Object.defineProperties(ReadableStream.prototype, {
       cancel: { enumerable: true },
       getReader: { enumerable: true },
       pipeThrough: { enumerable: true },
@@ -34229,14 +33720,14 @@ var openpgp = (function (exports) {
       locked: { enumerable: true }
   });
   if (typeof SymbolPolyfill.toStringTag === 'symbol') {
-      Object.defineProperty(ReadableStream$1.prototype, SymbolPolyfill.toStringTag, {
+      Object.defineProperty(ReadableStream.prototype, SymbolPolyfill.toStringTag, {
           value: 'ReadableStream',
           configurable: true
       });
   }
   if (typeof SymbolPolyfill.asyncIterator === 'symbol') {
-      Object.defineProperty(ReadableStream$1.prototype, SymbolPolyfill.asyncIterator, {
-          value: ReadableStream$1.prototype.values,
+      Object.defineProperty(ReadableStream.prototype, SymbolPolyfill.asyncIterator, {
+          value: ReadableStream.prototype.values,
           writable: true,
           configurable: true
       });
@@ -34244,7 +33735,7 @@ var openpgp = (function (exports) {
   // Abstract operations for the ReadableStream.
   // Throws if and only if startAlgorithm throws.
   function CreateReadableStream(startAlgorithm, pullAlgorithm, cancelAlgorithm, highWaterMark = 1, sizeAlgorithm = () => 1) {
-      const stream = Object.create(ReadableStream$1.prototype);
+      const stream = Object.create(ReadableStream.prototype);
       InitializeReadableStream(stream);
       const controller = Object.create(ReadableStreamDefaultController.prototype);
       SetUpReadableStreamDefaultController(stream, controller, startAlgorithm, pullAlgorithm, cancelAlgorithm, highWaterMark, sizeAlgorithm);
@@ -34257,7 +33748,7 @@ var openpgp = (function (exports) {
       stream._disturbed = false;
   }
   function IsReadableStream(x) {
-      if (!typeIsObject(x)) {
+      if (!typeIsObject$1(x)) {
           return false;
       }
       if (!Object.prototype.hasOwnProperty.call(x, '_readableStreamController')) {
@@ -34282,7 +33773,7 @@ var openpgp = (function (exports) {
       }
       ReadableStreamClose(stream);
       const sourceCancelPromise = stream._readableStreamController[CancelSteps](reason);
-      return transformPromiseWith(sourceCancelPromise, noop);
+      return transformPromiseWith(sourceCancelPromise, noop$1);
   }
   function ReadableStreamClose(stream) {
       stream._state = 'closed';
@@ -34381,7 +33872,7 @@ var openpgp = (function (exports) {
       return new TypeError(`ByteLengthQueuingStrategy.prototype.${name} can only be used on a ByteLengthQueuingStrategy`);
   }
   function IsByteLengthQueuingStrategy(x) {
-      if (!typeIsObject(x)) {
+      if (!typeIsObject$1(x)) {
           return false;
       }
       if (!Object.prototype.hasOwnProperty.call(x, '_byteLengthQueuingStrategyHighWaterMark')) {
@@ -34439,7 +33930,7 @@ var openpgp = (function (exports) {
       return new TypeError(`CountQueuingStrategy.prototype.${name} can only be used on a CountQueuingStrategy`);
   }
   function IsCountQueuingStrategy(x) {
-      if (!typeIsObject(x)) {
+      if (!typeIsObject$1(x)) {
           return false;
       }
       if (!Object.prototype.hasOwnProperty.call(x, '_countQueuingStrategyHighWaterMark')) {
@@ -34491,7 +33982,7 @@ var openpgp = (function (exports) {
    *
    * @public
    */
-  class TransformStream$1 {
+  class TransformStream {
       constructor(rawTransformer = {}, rawWritableStrategy = {}, rawReadableStrategy = {}) {
           if (rawTransformer === undefined) {
               rawTransformer = null;
@@ -34541,12 +34032,12 @@ var openpgp = (function (exports) {
           return this._writable;
       }
   }
-  Object.defineProperties(TransformStream$1.prototype, {
+  Object.defineProperties(TransformStream.prototype, {
       readable: { enumerable: true },
       writable: { enumerable: true }
   });
   if (typeof SymbolPolyfill.toStringTag === 'symbol') {
-      Object.defineProperty(TransformStream$1.prototype, SymbolPolyfill.toStringTag, {
+      Object.defineProperty(TransformStream.prototype, SymbolPolyfill.toStringTag, {
           value: 'TransformStream',
           configurable: true
       });
@@ -34581,7 +34072,7 @@ var openpgp = (function (exports) {
       stream._transformStreamController = undefined;
   }
   function IsTransformStream(x) {
-      if (!typeIsObject(x)) {
+      if (!typeIsObject$1(x)) {
           return false;
       }
       if (!Object.prototype.hasOwnProperty.call(x, '_transformStreamController')) {
@@ -34675,7 +34166,7 @@ var openpgp = (function (exports) {
   }
   // Transform Stream Default Controller Abstract Operations
   function IsTransformStreamDefaultController(x) {
-      if (!typeIsObject(x)) {
+      if (!typeIsObject$1(x)) {
           return false;
       }
       if (!Object.prototype.hasOwnProperty.call(x, '_controlledTransformStream')) {
@@ -34811,14 +34302,14 @@ var openpgp = (function (exports) {
     ByteLengthQueuingStrategy: ByteLengthQueuingStrategy,
     CountQueuingStrategy: CountQueuingStrategy,
     ReadableByteStreamController: ReadableByteStreamController,
-    ReadableStream: ReadableStream$1,
+    ReadableStream: ReadableStream,
     ReadableStreamBYOBReader: ReadableStreamBYOBReader,
     ReadableStreamBYOBRequest: ReadableStreamBYOBRequest,
     ReadableStreamDefaultController: ReadableStreamDefaultController,
     ReadableStreamDefaultReader: ReadableStreamDefaultReader,
-    TransformStream: TransformStream$1,
+    TransformStream: TransformStream,
     TransformStreamDefaultController: TransformStreamDefaultController,
-    WritableStream: WritableStream$1,
+    WritableStream: WritableStream,
     WritableStreamDefaultController: WritableStreamDefaultController,
     WritableStreamDefaultWriter: WritableStreamDefaultWriter
   });
@@ -34854,16 +34345,16 @@ var openpgp = (function (exports) {
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
 
-  function assert$1(test) {
+  function assert$9(test) {
       if (!test) {
           throw new TypeError('Assertion failed');
       }
   }
 
-  function noop$1() {
+  function noop() {
       return;
   }
-  function typeIsObject$1(x) {
+  function typeIsObject(x) {
       return (typeof x === 'object' && x !== null) || typeof x === 'function';
   }
 
@@ -34885,7 +34376,7 @@ var openpgp = (function (exports) {
       return startCalled;
   }
   function isReadableStream(readable) {
-      if (!typeIsObject$1(readable)) {
+      if (!typeIsObject(readable)) {
           return false;
       }
       if (typeof readable.getReader !== 'function') {
@@ -34903,7 +34394,7 @@ var openpgp = (function (exports) {
       return true;
   }
   function isWritableStream(writable) {
-      if (!typeIsObject$1(writable)) {
+      if (!typeIsObject(writable)) {
           return false;
       }
       if (typeof writable.getWriter !== 'function') {
@@ -34921,7 +34412,7 @@ var openpgp = (function (exports) {
       return true;
   }
   function isTransformStream(transform) {
-      if (!typeIsObject$1(transform)) {
+      if (!typeIsObject(transform)) {
           return false;
       }
       if (!isReadableStream(transform.readable)) {
@@ -34962,7 +34453,7 @@ var openpgp = (function (exports) {
   }
 
   function createReadableStreamWrapper(ctor) {
-      assert$1(isReadableStreamConstructor(ctor));
+      assert$9(isReadableStreamConstructor(ctor));
       var byteSourceSupported = supportsByteSource(ctor);
       return function (readable, _a) {
           var _b = _a === void 0 ? {} : _a, type = _b.type;
@@ -34987,8 +34478,8 @@ var openpgp = (function (exports) {
   }
   function createWrappingReadableSource(readable, _a) {
       var _b = _a === void 0 ? {} : _a, type = _b.type;
-      assert$1(isReadableStream(readable));
-      assert$1(readable.locked === false);
+      assert$9(isReadableStream(readable));
+      assert$9(readable.locked === false);
       type = parseReadableType(type);
       var source;
       if (type === 'bytes') {
@@ -35025,7 +34516,7 @@ var openpgp = (function (exports) {
           this._readableStreamController = controller;
       };
       AbstractWrappingReadableStreamSource.prototype.cancel = function (reason) {
-          assert$1(this._underlyingReader !== undefined);
+          assert$9(this._underlyingReader !== undefined);
           return this._underlyingReader.cancel(reason);
       };
       AbstractWrappingReadableStreamSource.prototype._attachDefaultReader = function () {
@@ -35039,7 +34530,7 @@ var openpgp = (function (exports) {
       };
       AbstractWrappingReadableStreamSource.prototype._attachReader = function (reader) {
           var _this = this;
-          assert$1(this._underlyingReader === undefined);
+          assert$9(this._underlyingReader === undefined);
           this._underlyingReader = reader;
           var closed = this._underlyingReader.closed;
           if (!closed) {
@@ -35056,7 +34547,7 @@ var openpgp = (function (exports) {
                   _this._readableStreamController.error(reason);
               }
           })
-              .catch(noop$1);
+              .catch(noop);
       };
       AbstractWrappingReadableStreamSource.prototype._detachReader = function () {
           if (this._underlyingReader === undefined) {
@@ -35149,7 +34640,7 @@ var openpgp = (function (exports) {
           if (this._readerMode === "byob" /* BYOB */) {
               return;
           }
-          assert$1(this._supportsByob);
+          assert$9(this._supportsByob);
           this._detachReader();
           var reader = this._underlyingStream.getReader({ mode: 'byob' });
           this._readerMode = "byob" /* BYOB */;
@@ -35190,7 +34681,7 @@ var openpgp = (function (exports) {
   }(AbstractWrappingReadableStreamSource));
 
   function createWritableStreamWrapper(ctor) {
-      assert$1(isWritableStreamConstructor(ctor));
+      assert$9(isWritableStreamConstructor(ctor));
       return function (writable) {
           if (writable.constructor === ctor) {
               return writable;
@@ -35200,8 +34691,8 @@ var openpgp = (function (exports) {
       };
   }
   function createWrappingWritableSink(writable) {
-      assert$1(isWritableStream(writable));
-      assert$1(writable.locked === false);
+      assert$9(isWritableStream(writable));
+      assert$9(writable.locked === false);
       var writer = writable.getWriter();
       return new WrappingWritableStreamSink(writer);
   }
@@ -35216,7 +34707,7 @@ var openpgp = (function (exports) {
           this._errorPromise = new Promise(function (resolve, reject) {
               _this._errorPromiseReject = reject;
           });
-          this._errorPromise.catch(noop$1);
+          this._errorPromise.catch(noop);
       }
       WrappingWritableStreamSink.prototype.start = function (controller) {
           var _this = this;
@@ -35303,7 +34794,7 @@ var openpgp = (function (exports) {
   }());
 
   function createTransformStreamWrapper(ctor) {
-      assert$1(isTransformStreamConstructor(ctor));
+      assert$9(isTransformStreamConstructor(ctor));
       return function (transform) {
           if (transform.constructor === ctor) {
               return transform;
@@ -35313,10 +34804,10 @@ var openpgp = (function (exports) {
       };
   }
   function createWrappingTransformer(transform) {
-      assert$1(isTransformStream(transform));
+      assert$9(isTransformStream(transform));
       var readable = transform.readable, writable = transform.writable;
-      assert$1(readable.locked === false);
-      assert$1(writable.locked === false);
+      assert$9(readable.locked === false);
+      assert$9(writable.locked === false);
       var reader = readable.getReader();
       var writer;
       try {
@@ -35342,14 +34833,14 @@ var openpgp = (function (exports) {
           this._onError = function (reason) {
               _this._flushReject(reason);
               _this._transformStreamController.error(reason);
-              _this._reader.cancel(reason).catch(noop$1);
-              _this._writer.abort(reason).catch(noop$1);
+              _this._reader.cancel(reason).catch(noop);
+              _this._writer.abort(reason).catch(noop);
           };
           this._onTerminate = function () {
               _this._flushResolve();
               _this._transformStreamController.terminate();
               var error = new TypeError('TransformStream terminated');
-              _this._writer.abort(error).catch(noop$1);
+              _this._writer.abort(error).catch(noop);
           };
           this._reader = reader;
           this._writer = writer;
@@ -35442,7 +34933,11 @@ var openpgp = (function (exports) {
 
     var Buffer;
     try {
-      Buffer = void('buffer').Buffer;
+      if (typeof window !== 'undefined' && typeof window.Buffer !== 'undefined') {
+        Buffer = window.Buffer;
+      } else {
+        Buffer = void('buffer').Buffer;
+      }
     } catch (e) {
     }
 
@@ -35483,23 +34978,19 @@ var openpgp = (function (exports) {
       var start = 0;
       if (number[0] === '-') {
         start++;
-      }
-
-      if (base === 16) {
-        this._parseHex(number, start);
-      } else {
-        this._parseBase(number, base, start);
-      }
-
-      if (number[0] === '-') {
         this.negative = 1;
       }
 
-      this.strip();
-
-      if (endian !== 'le') return;
-
-      this._initArray(this.toArray(), base, endian);
+      if (start < number.length) {
+        if (base === 16) {
+          this._parseHex(number, start, endian);
+        } else {
+          this._parseBase(number, base, start);
+          if (endian === 'le') {
+            this._initArray(this.toArray(), base, endian);
+          }
+        }
+      }
     };
 
     BN.prototype._initNumber = function _initNumber (number, base, endian) {
@@ -35575,31 +35066,29 @@ var openpgp = (function (exports) {
       return this.strip();
     };
 
-    function parseHex (str, start, end) {
-      var r = 0;
-      var len = Math.min(str.length, end);
-      for (var i = start; i < len; i++) {
-        var c = str.charCodeAt(i) - 48;
+    function parseHex4Bits (string, index) {
+      var c = string.charCodeAt(index);
+      // 'A' - 'F'
+      if (c >= 65 && c <= 70) {
+        return c - 55;
+      // 'a' - 'f'
+      } else if (c >= 97 && c <= 102) {
+        return c - 87;
+      // '0' - '9'
+      } else {
+        return (c - 48) & 0xf;
+      }
+    }
 
-        r <<= 4;
-
-        // 'a' - 'f'
-        if (c >= 49 && c <= 54) {
-          r |= c - 49 + 0xa;
-
-        // 'A' - 'F'
-        } else if (c >= 17 && c <= 22) {
-          r |= c - 17 + 0xa;
-
-        // '0' - '9'
-        } else {
-          r |= c & 0xf;
-        }
+    function parseHexByte (string, lowerBound, index) {
+      var r = parseHex4Bits(string, index);
+      if (index - 1 >= lowerBound) {
+        r |= parseHex4Bits(string, index - 1) << 4;
       }
       return r;
     }
 
-    BN.prototype._parseHex = function _parseHex (number, start) {
+    BN.prototype._parseHex = function _parseHex (number, start, endian) {
       // Create possibly bigger array to ensure that it fits the number
       this.length = Math.ceil((number.length - start) / 6);
       this.words = new Array(this.length);
@@ -35607,25 +35096,38 @@ var openpgp = (function (exports) {
         this.words[i] = 0;
       }
 
-      var j, w;
-      // Scan 24-bit chunks and add them to the number
+      // 24-bits chunks
       var off = 0;
-      for (i = number.length - 6, j = 0; i >= start; i -= 6) {
-        w = parseHex(number, i, i + 6);
-        this.words[j] |= (w << off) & 0x3ffffff;
-        // NOTE: `0x3fffff` is intentional here, 26bits max shift + 24bit hex limb
-        this.words[j + 1] |= w >>> (26 - off) & 0x3fffff;
-        off += 24;
-        if (off >= 26) {
-          off -= 26;
-          j++;
+      var j = 0;
+
+      var w;
+      if (endian === 'be') {
+        for (i = number.length - 1; i >= start; i -= 2) {
+          w = parseHexByte(number, start, i) << off;
+          this.words[j] |= w & 0x3ffffff;
+          if (off >= 18) {
+            off -= 18;
+            j += 1;
+            this.words[j] |= w >>> 26;
+          } else {
+            off += 8;
+          }
+        }
+      } else {
+        var parseLength = number.length - start;
+        for (i = parseLength % 2 === 0 ? start + 1 : start; i < number.length; i += 2) {
+          w = parseHexByte(number, start, i) << off;
+          this.words[j] |= w & 0x3ffffff;
+          if (off >= 18) {
+            off -= 18;
+            j += 1;
+            this.words[j] |= w >>> 26;
+          } else {
+            off += 8;
+          }
         }
       }
-      if (i + 6 !== start) {
-        w = parseHex(number, start, i + 6);
-        this.words[j] |= (w << off) & 0x3ffffff;
-        this.words[j + 1] |= w >>> (26 - off) & 0x3fffff;
-      }
+
       this.strip();
     };
 
@@ -35696,6 +35198,8 @@ var openpgp = (function (exports) {
           this._iaddn(word);
         }
       }
+
+      this.strip();
     };
 
     BN.prototype.copy = function copy (dest) {
@@ -38362,7 +37866,13 @@ var openpgp = (function (exports) {
       } else if (cmp > 0) {
         r.isub(this.p);
       } else {
-        r.strip();
+        if (r.strip !== undefined) {
+          // r is BN v4 instance
+          r.strip();
+        } else {
+          // r is BN v5 instance
+          r._strip();
+        }
       }
 
       return r;
@@ -38817,11 +38327,7 @@ var openpgp = (function (exports) {
   })(module, commonjsGlobal);
   });
 
-  var bn$1 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    'default': bn,
-    __moduleExports: bn
-  });
+  var BN = bn;
 
   /**
    * @fileoverview
@@ -38834,7 +38340,7 @@ var openpgp = (function (exports) {
   /**
    * @private
    */
-  class BigInteger$1 {
+  class BigInteger {
     /**
      * Get a BigInteger (input must be big endian for strings and arrays)
      * @param {Number|String|Uint8Array} n - Value to convert
@@ -38845,11 +38351,11 @@ var openpgp = (function (exports) {
         throw new Error('Invalid BigInteger input');
       }
 
-      this.value = new bn(n);
+      this.value = new BN(n);
     }
 
     clone() {
-      const clone = new BigInteger$1(null);
+      const clone = new BigInteger(null);
       this.value.copy(clone.value);
       return clone;
     }
@@ -38858,7 +38364,7 @@ var openpgp = (function (exports) {
      * BigInteger increment in place
      */
     iinc() {
-      this.value.iadd(new bn(1));
+      this.value.iadd(new BN(1));
       return this;
     }
 
@@ -38874,7 +38380,7 @@ var openpgp = (function (exports) {
      * BigInteger decrement in place
      */
     idec() {
-      this.value.isub(new bn(1));
+      this.value.isub(new BN(1));
       return this;
     }
 
@@ -38970,7 +38476,7 @@ var openpgp = (function (exports) {
       // We use either Montgomery or normal reduction context
       // Montgomery requires coprime n and R (montogmery multiplier)
       //  bn.js picks R as power of 2, so n must be odd
-      const nred = n.isEven() ? bn.red(n.value) : bn.mont(n.value);
+      const nred = n.isEven() ? BN.red(n.value) : BN.mont(n.value);
       const x = this.clone();
       x.value = x.value.toRed(nred).redPow(e.value).fromRed();
       return x;
@@ -38988,7 +38494,7 @@ var openpgp = (function (exports) {
       if (!this.gcd(n).isOne()) {
         throw new Error('Inverse does not exist');
       }
-      return new BigInteger$1(this.value.invm(n.value));
+      return new BigInteger(this.value.invm(n.value));
     }
 
     /**
@@ -38997,7 +38503,7 @@ var openpgp = (function (exports) {
      * @returns {BigInteger} gcd
      */
     gcd(n) {
-      return new BigInteger$1(this.value.gcd(n.value));
+      return new BigInteger(this.value.gcd(n.value));
     }
 
     /**
@@ -39086,7 +38592,7 @@ var openpgp = (function (exports) {
     }
 
     isOne() {
-      return this.value.eq(new bn(1));
+      return this.value.eq(new BN(1));
     }
 
     isNegative() {
@@ -39158,10 +38664,10 @@ var openpgp = (function (exports) {
 
   var bn_interface = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    'default': BigInteger$1
+    'default': BigInteger
   });
 
-  var utils_1 = createCommonjsModule(function (module, exports) {
+  var utils_1$1 = createCommonjsModule(function (module, exports) {
 
   var utils = exports;
 
@@ -39221,7 +38727,7 @@ var openpgp = (function (exports) {
   };
   });
 
-  var utils_1$1 = createCommonjsModule(function (module, exports) {
+  var utils_1 = createCommonjsModule(function (module, exports) {
 
   var utils = exports;
 
@@ -39229,10 +38735,10 @@ var openpgp = (function (exports) {
 
 
   utils.assert = minimalisticAssert;
-  utils.toArray = utils_1.toArray;
-  utils.zero2 = utils_1.zero2;
-  utils.toHex = utils_1.toHex;
-  utils.encode = utils_1.encode;
+  utils.toArray = utils_1$1.toArray;
+  utils.zero2 = utils_1$1.zero2;
+  utils.toHex = utils_1$1.toHex;
+  utils.encode = utils_1$1.encode;
 
   // Represent num in a w-NAF form
   function getNAF(num, w) {
@@ -39342,13 +38848,13 @@ var openpgp = (function (exports) {
   utils.intFromLE = intFromLE;
   });
 
-  var r$1;
+  var r;
 
   var brorand = function rand(len) {
-    if (!r$1)
-      r$1 = new Rand(null);
+    if (!r)
+      r = new Rand(null);
 
-    return r$1.generate(len);
+    return r.generate(len);
   };
 
   function Rand(rand) {
@@ -39397,21 +38903,21 @@ var openpgp = (function (exports) {
   } else {
     // Node.js or Web worker with no crypto support
     try {
-      var crypto$2 = void('crypto');
-      if (typeof crypto$2.randomBytes !== 'function')
+      var crypto$1 = void('crypto');
+      if (typeof crypto$1.randomBytes !== 'function')
         throw new Error('Not supported');
 
       Rand.prototype._rand = function _rand(n) {
-        return crypto$2.randomBytes(n);
+        return crypto$1.randomBytes(n);
       };
     } catch (e) {
     }
   }
   brorand.Rand = Rand_1;
 
-  var getNAF = utils_1$1.getNAF;
-  var getJSF = utils_1$1.getJSF;
-  var assert$2 = utils_1$1.assert;
+  var getNAF = utils_1.getNAF;
+  var getJSF = utils_1.getJSF;
+  var assert$8 = utils_1.assert;
 
   function BaseCurve(type, conf) {
     this.type = type;
@@ -39455,7 +38961,7 @@ var openpgp = (function (exports) {
   };
 
   BaseCurve.prototype._fixedNafMul = function _fixedNafMul(p, k) {
-    assert$2(p.precomputed);
+    assert$8(p.precomputed);
     var doubles = p._getDoubles();
 
     var naf = getNAF(k, 1);
@@ -39510,7 +39016,7 @@ var openpgp = (function (exports) {
       if (i < 0)
         break;
       var z = naf[i];
-      assert$2(z !== 0);
+      assert$8(z !== 0);
       if (p.type === 'affine') {
         // J +- P
         if (z > 0)
@@ -39668,7 +39174,7 @@ var openpgp = (function (exports) {
   };
 
   BaseCurve.prototype.decodePoint = function decodePoint(bytes, enc) {
-    bytes = utils_1$1.toArray(bytes, enc);
+    bytes = utils_1.toArray(bytes, enc);
 
     var len = this.p.byteLength();
 
@@ -39676,9 +39182,9 @@ var openpgp = (function (exports) {
     if ((bytes[0] === 0x04 || bytes[0] === 0x06 || bytes[0] === 0x07) &&
         bytes.length - 1 === 2 * len) {
       if (bytes[0] === 0x06)
-        assert$2(bytes[bytes.length - 1] % 2 === 0);
+        assert$8(bytes[bytes.length - 1] % 2 === 0);
       else if (bytes[0] === 0x07)
-        assert$2(bytes[bytes.length - 1] % 2 === 1);
+        assert$8(bytes[bytes.length - 1] % 2 === 1);
 
       var res =  this.point(bytes.slice(1, 1 + len),
                             bytes.slice(1 + len, 1 + 2 * len));
@@ -39706,7 +39212,7 @@ var openpgp = (function (exports) {
   };
 
   BasePoint.prototype.encode = function encode(enc, compact) {
-    return utils_1$1.encode(this._encode(compact), enc);
+    return utils_1.encode(this._encode(compact), enc);
   };
 
   BasePoint.prototype.precompute = function precompute(power) {
@@ -39780,7 +39286,7 @@ var openpgp = (function (exports) {
     return r;
   };
 
-  var assert$3 = utils_1$1.assert;
+  var assert$7 = utils_1.assert;
 
   function ShortCurve(conf) {
     base.call(this, 'short', conf);
@@ -39825,7 +39331,7 @@ var openpgp = (function (exports) {
         lambda = lambdas[0];
       } else {
         lambda = lambdas[1];
-        assert$3(this.g.mul(lambda).x.cmp(this.g.x.redMul(beta)) === 0);
+        assert$7(this.g.mul(lambda).x.cmp(this.g.x.redMul(beta)) === 0);
       }
     }
 
@@ -40023,7 +39529,7 @@ var openpgp = (function (exports) {
     return res;
   };
 
-  function Point(curve, x, y, isRed) {
+  function Point$2(curve, x, y, isRed) {
     base.BasePoint.call(this, curve, 'affine');
     if (x === null && y === null) {
       this.x = null;
@@ -40044,17 +39550,17 @@ var openpgp = (function (exports) {
       this.inf = false;
     }
   }
-  inherits_browser(Point, base.BasePoint);
+  inherits_browser(Point$2, base.BasePoint);
 
   ShortCurve.prototype.point = function point(x, y, isRed) {
-    return new Point(this, x, y, isRed);
+    return new Point$2(this, x, y, isRed);
   };
 
   ShortCurve.prototype.pointFromJSON = function pointFromJSON(obj, red) {
-    return Point.fromJSON(this, obj, red);
+    return Point$2.fromJSON(this, obj, red);
   };
 
-  Point.prototype._getBeta = function _getBeta() {
+  Point$2.prototype._getBeta = function _getBeta() {
     if (!this.curve.endo)
       return;
 
@@ -40084,7 +39590,7 @@ var openpgp = (function (exports) {
     return beta;
   };
 
-  Point.prototype.toJSON = function toJSON() {
+  Point$2.prototype.toJSON = function toJSON() {
     if (!this.precomputed)
       return [ this.x, this.y ];
 
@@ -40100,7 +39606,7 @@ var openpgp = (function (exports) {
     } ];
   };
 
-  Point.fromJSON = function fromJSON(curve, obj, red) {
+  Point$2.fromJSON = function fromJSON(curve, obj, red) {
     if (typeof obj === 'string')
       obj = JSON.parse(obj);
     var res = curve.point(obj[0], obj[1], red);
@@ -40126,18 +39632,18 @@ var openpgp = (function (exports) {
     return res;
   };
 
-  Point.prototype.inspect = function inspect() {
+  Point$2.prototype.inspect = function inspect() {
     if (this.isInfinity())
       return '<EC Point Infinity>';
     return '<EC Point x: ' + this.x.fromRed().toString(16, 2) +
         ' y: ' + this.y.fromRed().toString(16, 2) + '>';
   };
 
-  Point.prototype.isInfinity = function isInfinity() {
+  Point$2.prototype.isInfinity = function isInfinity() {
     return this.inf;
   };
 
-  Point.prototype.add = function add(p) {
+  Point$2.prototype.add = function add(p) {
     // O + P = P
     if (this.inf)
       return p;
@@ -40166,7 +39672,7 @@ var openpgp = (function (exports) {
     return this.curve.point(nx, ny);
   };
 
-  Point.prototype.dbl = function dbl() {
+  Point$2.prototype.dbl = function dbl() {
     if (this.inf)
       return this;
 
@@ -40186,15 +39692,15 @@ var openpgp = (function (exports) {
     return this.curve.point(nx, ny);
   };
 
-  Point.prototype.getX = function getX() {
+  Point$2.prototype.getX = function getX() {
     return this.x.fromRed();
   };
 
-  Point.prototype.getY = function getY() {
+  Point$2.prototype.getY = function getY() {
     return this.y.fromRed();
   };
 
-  Point.prototype.mul = function mul(k) {
+  Point$2.prototype.mul = function mul(k) {
     k = new bn(k, 16);
     if (this.isInfinity())
       return this;
@@ -40206,7 +39712,7 @@ var openpgp = (function (exports) {
       return this.curve._wnafMul(this, k);
   };
 
-  Point.prototype.mulAdd = function mulAdd(k1, p2, k2) {
+  Point$2.prototype.mulAdd = function mulAdd(k1, p2, k2) {
     var points = [ this, p2 ];
     var coeffs = [ k1, k2 ];
     if (this.curve.endo)
@@ -40215,7 +39721,7 @@ var openpgp = (function (exports) {
       return this.curve._wnafMulAdd(1, points, coeffs, 2);
   };
 
-  Point.prototype.jmulAdd = function jmulAdd(k1, p2, k2) {
+  Point$2.prototype.jmulAdd = function jmulAdd(k1, p2, k2) {
     var points = [ this, p2 ];
     var coeffs = [ k1, k2 ];
     if (this.curve.endo)
@@ -40224,13 +39730,13 @@ var openpgp = (function (exports) {
       return this.curve._wnafMulAdd(1, points, coeffs, 2, true);
   };
 
-  Point.prototype.eq = function eq(p) {
+  Point$2.prototype.eq = function eq(p) {
     return this === p ||
            this.inf === p.inf &&
                (this.inf || this.x.cmp(p.x) === 0 && this.y.cmp(p.y) === 0);
   };
 
-  Point.prototype.neg = function neg(_precompute) {
+  Point$2.prototype.neg = function neg(_precompute) {
     if (this.inf)
       return this;
 
@@ -40254,7 +39760,7 @@ var openpgp = (function (exports) {
     return res;
   };
 
-  Point.prototype.toJ = function toJ() {
+  Point$2.prototype.toJ = function toJ() {
     if (this.inf)
       return this.curve.jpoint(null, null, null);
 
@@ -40751,7 +40257,7 @@ var openpgp = (function (exports) {
   inherits_browser(Point$1, base.BasePoint);
 
   MontCurve.prototype.decodePoint = function decodePoint(bytes, enc) {
-    var bytes = utils_1$1.toArray(bytes, enc);
+    var bytes = utils_1.toArray(bytes, enc);
 
     // TODO Curve448
     // Montgomery curve points must be represented in the compressed format
@@ -40903,7 +40409,7 @@ var openpgp = (function (exports) {
     return this.x.fromRed();
   };
 
-  var assert$4 = utils_1$1.assert;
+  var assert$6 = utils_1.assert;
 
   function EdwardsCurve(conf) {
     // NOTE: Important as we are creating point in Base.call()
@@ -40920,7 +40426,7 @@ var openpgp = (function (exports) {
     this.d = new bn(conf.d, 16).toRed(this.red);
     this.dd = this.d.redAdd(this.d);
 
-    assert$4(!this.twisted || this.c.fromRed().cmpn(1) === 0);
+    assert$6(!this.twisted || this.c.fromRed().cmpn(1) === 0);
     this.oneC = (conf.c | 0) === 1;
   }
   inherits_browser(EdwardsCurve, base);
@@ -41009,7 +40515,7 @@ var openpgp = (function (exports) {
     return lhs.cmp(rhs) === 0;
   };
 
-  function Point$2(curve, x, y, z, t) {
+  function Point(curve, x, y, z, t) {
     base.BasePoint.call(this, curve, 'projective');
     if (x === null && y === null && z === null) {
       this.x = this.curve.zero;
@@ -41040,21 +40546,21 @@ var openpgp = (function (exports) {
       }
     }
   }
-  inherits_browser(Point$2, base.BasePoint);
+  inherits_browser(Point, base.BasePoint);
 
   EdwardsCurve.prototype.pointFromJSON = function pointFromJSON(obj) {
-    return Point$2.fromJSON(this, obj);
+    return Point.fromJSON(this, obj);
   };
 
   EdwardsCurve.prototype.point = function point(x, y, z, t) {
-    return new Point$2(this, x, y, z, t);
+    return new Point(this, x, y, z, t);
   };
 
-  Point$2.fromJSON = function fromJSON(curve, obj) {
-    return new Point$2(curve, obj[0], obj[1], obj[2]);
+  Point.fromJSON = function fromJSON(curve, obj) {
+    return new Point(curve, obj[0], obj[1], obj[2]);
   };
 
-  Point$2.prototype.inspect = function inspect() {
+  Point.prototype.inspect = function inspect() {
     if (this.isInfinity())
       return '<EC Point Infinity>';
     return '<EC Point x: ' + this.x.fromRed().toString(16, 2) +
@@ -41062,14 +40568,14 @@ var openpgp = (function (exports) {
         ' z: ' + this.z.fromRed().toString(16, 2) + '>';
   };
 
-  Point$2.prototype.isInfinity = function isInfinity() {
+  Point.prototype.isInfinity = function isInfinity() {
     // XXX This code assumes that zero is always zero in red
     return this.x.cmpn(0) === 0 &&
       (this.y.cmp(this.z) === 0 ||
       (this.zOne && this.y.cmp(this.curve.c) === 0));
   };
 
-  Point$2.prototype._extDbl = function _extDbl() {
+  Point.prototype._extDbl = function _extDbl() {
     // hyperelliptic.org/EFD/g1p/auto-twisted-extended-1.html
     //     #doubling-dbl-2008-hwcd
     // 4M + 4S
@@ -41102,7 +40608,7 @@ var openpgp = (function (exports) {
     return this.curve.point(nx, ny, nz, nt);
   };
 
-  Point$2.prototype._projDbl = function _projDbl() {
+  Point.prototype._projDbl = function _projDbl() {
     // hyperelliptic.org/EFD/g1p/auto-twisted-projective.html
     //     #doubling-dbl-2008-bbjlp
     //     #doubling-dbl-2007-bl
@@ -41160,7 +40666,7 @@ var openpgp = (function (exports) {
     return this.curve.point(nx, ny, nz);
   };
 
-  Point$2.prototype.dbl = function dbl() {
+  Point.prototype.dbl = function dbl() {
     if (this.isInfinity())
       return this;
 
@@ -41171,7 +40677,7 @@ var openpgp = (function (exports) {
       return this._projDbl();
   };
 
-  Point$2.prototype._extAdd = function _extAdd(p) {
+  Point.prototype._extAdd = function _extAdd(p) {
     // hyperelliptic.org/EFD/g1p/auto-twisted-extended-1.html
     //     #addition-add-2008-hwcd-3
     // 8M
@@ -41203,7 +40709,7 @@ var openpgp = (function (exports) {
     return this.curve.point(nx, ny, nz, nt);
   };
 
-  Point$2.prototype._projAdd = function _projAdd(p) {
+  Point.prototype._projAdd = function _projAdd(p) {
     // hyperelliptic.org/EFD/g1p/auto-twisted-projective.html
     //     #addition-add-2008-bbjlp
     //     #addition-add-2007-bl
@@ -41242,7 +40748,7 @@ var openpgp = (function (exports) {
     return this.curve.point(nx, ny, nz);
   };
 
-  Point$2.prototype.add = function add(p) {
+  Point.prototype.add = function add(p) {
     if (this.isInfinity())
       return p;
     if (p.isInfinity())
@@ -41254,22 +40760,22 @@ var openpgp = (function (exports) {
       return this._projAdd(p);
   };
 
-  Point$2.prototype.mul = function mul(k) {
+  Point.prototype.mul = function mul(k) {
     if (this._hasDoubles(k))
       return this.curve._fixedNafMul(this, k);
     else
       return this.curve._wnafMul(this, k);
   };
 
-  Point$2.prototype.mulAdd = function mulAdd(k1, p, k2) {
+  Point.prototype.mulAdd = function mulAdd(k1, p, k2) {
     return this.curve._wnafMulAdd(1, [ this, p ], [ k1, k2 ], 2, false);
   };
 
-  Point$2.prototype.jmulAdd = function jmulAdd(k1, p, k2) {
+  Point.prototype.jmulAdd = function jmulAdd(k1, p, k2) {
     return this.curve._wnafMulAdd(1, [ this, p ], [ k1, k2 ], 2, true);
   };
 
-  Point$2.prototype.normalize = function normalize() {
+  Point.prototype.normalize = function normalize() {
     if (this.zOne)
       return this;
 
@@ -41284,30 +40790,30 @@ var openpgp = (function (exports) {
     return this;
   };
 
-  Point$2.prototype.neg = function neg() {
+  Point.prototype.neg = function neg() {
     return this.curve.point(this.x.redNeg(),
                             this.y,
                             this.z,
                             this.t && this.t.redNeg());
   };
 
-  Point$2.prototype.getX = function getX() {
+  Point.prototype.getX = function getX() {
     this.normalize();
     return this.x.fromRed();
   };
 
-  Point$2.prototype.getY = function getY() {
+  Point.prototype.getY = function getY() {
     this.normalize();
     return this.y.fromRed();
   };
 
-  Point$2.prototype.eq = function eq(other) {
+  Point.prototype.eq = function eq(other) {
     return this === other ||
            this.getX().cmp(other.getX()) === 0 &&
            this.getY().cmp(other.getY()) === 0;
   };
 
-  Point$2.prototype.eqXToP = function eqXToP(x) {
+  Point.prototype.eqXToP = function eqXToP(x) {
     var rx = x.toRed(this.curve.red).redMul(this.z);
     if (this.x.cmp(rx) === 0)
       return true;
@@ -41326,8 +40832,8 @@ var openpgp = (function (exports) {
   };
 
   // Compatibility with BaseCurve
-  Point$2.prototype.toP = Point$2.prototype.normalize;
-  Point$2.prototype.mixedAdd = Point$2.prototype.add;
+  Point.prototype.toP = Point.prototype.normalize;
+  Point.prototype.mixedAdd = Point.prototype.add;
 
   var curve_1 = createCommonjsModule(function (module, exports) {
 
@@ -41339,11 +40845,11 @@ var openpgp = (function (exports) {
   curve.edwards = edwards;
   });
 
-  var rotl32$2 = utils.rotl32;
-  var sum32$3 = utils.sum32;
-  var sum32_5$2 = utils.sum32_5;
-  var ft_1$1 = common$1.ft_1;
-  var BlockHash$4 = common.BlockHash;
+  var rotl32 = utils.rotl32;
+  var sum32 = utils.sum32;
+  var sum32_5 = utils.sum32_5;
+  var ft_1 = common.ft_1;
+  var BlockHash = common$1.BlockHash;
 
   var sha1_K = [
     0x5A827999, 0x6ED9EBA1,
@@ -41354,14 +40860,14 @@ var openpgp = (function (exports) {
     if (!(this instanceof SHA1))
       return new SHA1();
 
-    BlockHash$4.call(this);
+    BlockHash.call(this);
     this.h = [
       0x67452301, 0xefcdab89, 0x98badcfe,
       0x10325476, 0xc3d2e1f0 ];
     this.W = new Array(80);
   }
 
-  utils.inherits(SHA1, BlockHash$4);
+  utils.inherits(SHA1, BlockHash);
   var _1 = SHA1;
 
   SHA1.blockSize = 512;
@@ -41376,7 +40882,7 @@ var openpgp = (function (exports) {
       W[i] = msg[start + i];
 
     for(; i < W.length; i++)
-      W[i] = rotl32$2(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16], 1);
+      W[i] = rotl32(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16], 1);
 
     var a = this.h[0];
     var b = this.h[1];
@@ -41386,19 +40892,19 @@ var openpgp = (function (exports) {
 
     for (i = 0; i < W.length; i++) {
       var s = ~~(i / 20);
-      var t = sum32_5$2(rotl32$2(a, 5), ft_1$1(s, b, c, d), e, W[i], sha1_K[s]);
+      var t = sum32_5(rotl32(a, 5), ft_1(s, b, c, d), e, W[i], sha1_K[s]);
       e = d;
       d = c;
-      c = rotl32$2(b, 30);
+      c = rotl32(b, 30);
       b = a;
       a = t;
     }
 
-    this.h[0] = sum32$3(this.h[0], a);
-    this.h[1] = sum32$3(this.h[1], b);
-    this.h[2] = sum32$3(this.h[2], c);
-    this.h[3] = sum32$3(this.h[3], d);
-    this.h[4] = sum32$3(this.h[4], e);
+    this.h[0] = sum32(this.h[0], a);
+    this.h[1] = sum32(this.h[1], b);
+    this.h[2] = sum32(this.h[2], c);
+    this.h[3] = sum32(this.h[3], d);
+    this.h[4] = sum32(this.h[4], e);
   };
 
   SHA1.prototype._digest = function digest(enc) {
@@ -41469,7 +40975,7 @@ var openpgp = (function (exports) {
   var hash = exports;
 
   hash.utils = utils;
-  hash.common = common;
+  hash.common = common$1;
   hash.sha = sha;
   hash.ripemd = ripemd;
   hash.hmac = hmac;
@@ -42263,6 +41769,8 @@ var openpgp = (function (exports) {
       ]
     }
   };
+  secp256k1.doubles;
+  secp256k1.naf;
 
   var curves_1 = createCommonjsModule(function (module, exports) {
 
@@ -42272,7 +41780,7 @@ var openpgp = (function (exports) {
 
 
 
-  var assert = utils_1$1.assert;
+  var assert = utils_1.assert;
 
   function PresetCurve(options) {
     if (options.type === 'short')
@@ -42550,9 +42058,9 @@ var openpgp = (function (exports) {
     this.K = null;
     this.V = null;
 
-    var entropy = utils_1.toArray(options.entropy, options.entropyEnc || 'hex');
-    var nonce = utils_1.toArray(options.nonce, options.nonceEnc || 'hex');
-    var pers = utils_1.toArray(options.pers, options.persEnc || 'hex');
+    var entropy = utils_1$1.toArray(options.entropy, options.entropyEnc || 'hex');
+    var nonce = utils_1$1.toArray(options.nonce, options.nonceEnc || 'hex');
+    var pers = utils_1$1.toArray(options.pers, options.persEnc || 'hex');
     minimalisticAssert(entropy.length >= (this.minEntropy / 8),
            'Not enough entropy. Minimum is: ' + this.minEntropy + ' bits');
     this._init(entropy, nonce, pers);
@@ -42605,8 +42113,8 @@ var openpgp = (function (exports) {
       entropyEnc = null;
     }
 
-    entropy = utils_1.toArray(entropy, entropyEnc);
-    add = utils_1.toArray(add, addEnc);
+    entropy = utils_1$1.toArray(entropy, entropyEnc);
+    add = utils_1$1.toArray(add, addEnc);
 
     minimalisticAssert(entropy.length >= (this.minEntropy / 8),
            'Not enough entropy. Minimum is: ' + this.minEntropy + ' bits');
@@ -42628,7 +42136,7 @@ var openpgp = (function (exports) {
 
     // Optional additional data
     if (add) {
-      add = utils_1.toArray(add, addEnc || 'hex');
+      add = utils_1$1.toArray(add, addEnc || 'hex');
       this._update(add);
     }
 
@@ -42641,12 +42149,12 @@ var openpgp = (function (exports) {
     var res = temp.slice(0, len);
     this._update(add);
     this._reseed++;
-    return utils_1.encode(res, enc);
+    return utils_1$1.encode(res, enc);
   };
 
-  var assert$5 = utils_1$1.assert;
+  var assert$5 = utils_1.assert;
 
-  function KeyPair(ec, options) {
+  function KeyPair$1(ec, options) {
     this.ec = ec;
     this.priv = null;
     this.pub = null;
@@ -42657,30 +42165,30 @@ var openpgp = (function (exports) {
     if (options.pub)
       this._importPublic(options.pub, options.pubEnc);
   }
-  var key = KeyPair;
+  var key$1 = KeyPair$1;
 
-  KeyPair.fromPublic = function fromPublic(ec, pub, enc) {
-    if (pub instanceof KeyPair)
+  KeyPair$1.fromPublic = function fromPublic(ec, pub, enc) {
+    if (pub instanceof KeyPair$1)
       return pub;
 
-    return new KeyPair(ec, {
+    return new KeyPair$1(ec, {
       pub: pub,
       pubEnc: enc
     });
   };
 
-  KeyPair.fromPrivate = function fromPrivate(ec, priv, enc) {
-    if (priv instanceof KeyPair)
+  KeyPair$1.fromPrivate = function fromPrivate(ec, priv, enc) {
+    if (priv instanceof KeyPair$1)
       return priv;
 
-    return new KeyPair(ec, {
+    return new KeyPair$1(ec, {
       priv: priv,
       privEnc: enc
     });
   };
 
   // TODO: should not validate for X25519
-  KeyPair.prototype.validate = function validate() {
+  KeyPair$1.prototype.validate = function validate() {
     var pub = this.getPublic();
 
     if (pub.isInfinity())
@@ -42693,7 +42201,7 @@ var openpgp = (function (exports) {
     return { result: true, reason: null };
   };
 
-  KeyPair.prototype.getPublic = function getPublic(enc, compact) {
+  KeyPair$1.prototype.getPublic = function getPublic(enc, compact) {
     if (!this.pub)
       this.pub = this.ec.g.mul(this.priv);
 
@@ -42703,14 +42211,14 @@ var openpgp = (function (exports) {
     return this.pub.encode(enc, compact);
   };
 
-  KeyPair.prototype.getPrivate = function getPrivate(enc) {
+  KeyPair$1.prototype.getPrivate = function getPrivate(enc) {
     if (enc === 'hex')
       return this.priv.toString(16, 2);
     else
       return this.priv;
   };
 
-  KeyPair.prototype._importPrivate = function _importPrivate(key, enc) {
+  KeyPair$1.prototype._importPrivate = function _importPrivate(key, enc) {
     this.priv = new bn(key, enc || 16);
 
     // For Curve25519/Curve448 we have a specific procedure.
@@ -42726,7 +42234,7 @@ var openpgp = (function (exports) {
       this.priv = this.priv.umod(this.ec.curve.n);
   };
 
-  KeyPair.prototype._importPublic = function _importPublic(key, enc) {
+  KeyPair$1.prototype._importPublic = function _importPublic(key, enc) {
     if (key.x || key.y) {
       // Montgomery points only have an `x` coordinate.
       // Weierstrass/Edwards points on the other hand have both `x` and
@@ -42744,25 +42252,25 @@ var openpgp = (function (exports) {
   };
 
   // ECDH
-  KeyPair.prototype.derive = function derive(pub) {
+  KeyPair$1.prototype.derive = function derive(pub) {
     return pub.mul(this.priv).getX();
   };
 
   // ECDSA
-  KeyPair.prototype.sign = function sign(msg, enc, options) {
+  KeyPair$1.prototype.sign = function sign(msg, enc, options) {
     return this.ec.sign(msg, this, enc, options);
   };
 
-  KeyPair.prototype.verify = function verify(msg, signature) {
+  KeyPair$1.prototype.verify = function verify(msg, signature) {
     return this.ec.verify(msg, signature, this);
   };
 
-  KeyPair.prototype.inspect = function inspect() {
+  KeyPair$1.prototype.inspect = function inspect() {
     return '<Key priv: ' + (this.priv && this.priv.toString(16, 2)) +
            ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
   };
 
-  var assert$6 = utils_1$1.assert;
+  var assert$4 = utils_1.assert;
 
   function Signature$1(options, enc) {
     if (options instanceof Signature$1)
@@ -42771,7 +42279,7 @@ var openpgp = (function (exports) {
     if (this._importDER(options, enc))
       return;
 
-    assert$6(options.r && options.s, 'Signature without r or s');
+    assert$4(options.r && options.s, 'Signature without r or s');
     this.r = new bn(options.r, 16);
     this.s = new bn(options.s, 16);
     if (options.recoveryParam === undefined)
@@ -42813,7 +42321,7 @@ var openpgp = (function (exports) {
   }
 
   Signature$1.prototype._importDER = function _importDER(data, enc) {
-    data = utils_1$1.toArray(data, enc);
+    data = utils_1.toArray(data, enc);
     var p = new Position();
     if (data[p.place++] !== 0x30) {
       return false;
@@ -42889,10 +42397,10 @@ var openpgp = (function (exports) {
     var res = [ 0x30 ];
     constructLength(res, backHalf.length);
     res = res.concat(backHalf);
-    return utils_1$1.encode(res, enc);
+    return utils_1.encode(res, enc);
   };
 
-  var assert$7 = utils_1$1.assert;
+  var assert$3 = utils_1.assert;
 
 
 
@@ -42903,7 +42411,7 @@ var openpgp = (function (exports) {
 
     // Shortcut `elliptic.ec(curve-name)`
     if (typeof options === 'string') {
-      assert$7(curves_1.hasOwnProperty(options), 'Unknown curve ' + options);
+      assert$3(curves_1.hasOwnProperty(options), 'Unknown curve ' + options);
 
       options = curves_1[options];
     }
@@ -42927,15 +42435,15 @@ var openpgp = (function (exports) {
   var ec = EC;
 
   EC.prototype.keyPair = function keyPair(options) {
-    return new key(this, options);
+    return new key$1(this, options);
   };
 
   EC.prototype.keyFromPrivate = function keyFromPrivate(priv, enc) {
-    return key.fromPrivate(this, priv, enc);
+    return key$1.fromPrivate(this, priv, enc);
   };
 
   EC.prototype.keyFromPublic = function keyFromPublic(pub, enc) {
-    return key.fromPublic(this, pub, enc);
+    return key$1.fromPublic(this, pub, enc);
   };
 
   EC.prototype.genKeyPair = function genKeyPair(options) {
@@ -43106,7 +42614,7 @@ var openpgp = (function (exports) {
   };
 
   EC.prototype.recoverPubKey = function(msg, signature, j, enc) {
-    assert$7((3 & j) === j, 'The recovery param is more than two bits');
+    assert$3((3 & j) === j, 'The recovery param is more than two bits');
     signature = new signature$1(signature, enc);
 
     var n = this.n;
@@ -43154,9 +42662,9 @@ var openpgp = (function (exports) {
     throw new Error('Unable to find valid recovery factor');
   };
 
-  var assert$8 = utils_1$1.assert;
-  var parseBytes = utils_1$1.parseBytes;
-  var cachedProperty = utils_1$1.cachedProperty;
+  var assert$2 = utils_1.assert;
+  var parseBytes$2 = utils_1.parseBytes;
+  var cachedProperty$1 = utils_1.cachedProperty;
 
   /**
   * @param {EDDSA} eddsa - instance
@@ -43167,14 +42675,14 @@ var openpgp = (function (exports) {
   * @param {Array<Byte>} [params.pub] - public key point encoded as bytes
   *
   */
-  function KeyPair$1(eddsa, params) {
+  function KeyPair(eddsa, params) {
     this.eddsa = eddsa;
     if (params.hasOwnProperty('secret'))
-      this._secret = parseBytes(params.secret);
+      this._secret = parseBytes$2(params.secret);
     if (eddsa.isPoint(params.pub))
       this._pub = params.pub;
     else {
-      this._pubBytes = parseBytes(params.pub);
+      this._pubBytes = parseBytes$2(params.pub);
       if (this._pubBytes && this._pubBytes.length === 33 &&
           this._pubBytes[0] === 0x40)
         this._pubBytes = this._pubBytes.slice(1, 33);
@@ -43183,33 +42691,33 @@ var openpgp = (function (exports) {
     }
   }
 
-  KeyPair$1.fromPublic = function fromPublic(eddsa, pub) {
-    if (pub instanceof KeyPair$1)
+  KeyPair.fromPublic = function fromPublic(eddsa, pub) {
+    if (pub instanceof KeyPair)
       return pub;
-    return new KeyPair$1(eddsa, { pub: pub });
+    return new KeyPair(eddsa, { pub: pub });
   };
 
-  KeyPair$1.fromSecret = function fromSecret(eddsa, secret) {
-    if (secret instanceof KeyPair$1)
+  KeyPair.fromSecret = function fromSecret(eddsa, secret) {
+    if (secret instanceof KeyPair)
       return secret;
-    return new KeyPair$1(eddsa, { secret: secret });
+    return new KeyPair(eddsa, { secret: secret });
   };
 
-  KeyPair$1.prototype.secret = function secret() {
+  KeyPair.prototype.secret = function secret() {
     return this._secret;
   };
 
-  cachedProperty(KeyPair$1, 'pubBytes', function pubBytes() {
+  cachedProperty$1(KeyPair, 'pubBytes', function pubBytes() {
     return this.eddsa.encodePoint(this.pub());
   });
 
-  cachedProperty(KeyPair$1, 'pub', function pub() {
+  cachedProperty$1(KeyPair, 'pub', function pub() {
     if (this._pubBytes)
       return this.eddsa.decodePoint(this._pubBytes);
     return this.eddsa.g.mul(this.priv());
   });
 
-  cachedProperty(KeyPair$1, 'privBytes', function privBytes() {
+  cachedProperty$1(KeyPair, 'privBytes', function privBytes() {
     var eddsa = this.eddsa;
     var hash = this.hash();
     var lastIx = eddsa.encodingLength - 1;
@@ -43223,41 +42731,41 @@ var openpgp = (function (exports) {
     return a;
   });
 
-  cachedProperty(KeyPair$1, 'priv', function priv() {
+  cachedProperty$1(KeyPair, 'priv', function priv() {
     return this.eddsa.decodeInt(this.privBytes());
   });
 
-  cachedProperty(KeyPair$1, 'hash', function hash() {
+  cachedProperty$1(KeyPair, 'hash', function hash() {
     return this.eddsa.hash().update(this.secret()).digest();
   });
 
-  cachedProperty(KeyPair$1, 'messagePrefix', function messagePrefix() {
+  cachedProperty$1(KeyPair, 'messagePrefix', function messagePrefix() {
     return this.hash().slice(this.eddsa.encodingLength);
   });
 
-  KeyPair$1.prototype.sign = function sign(message) {
-    assert$8(this._secret, 'KeyPair can only verify');
+  KeyPair.prototype.sign = function sign(message) {
+    assert$2(this._secret, 'KeyPair can only verify');
     return this.eddsa.sign(message, this);
   };
 
-  KeyPair$1.prototype.verify = function verify(message, sig) {
+  KeyPair.prototype.verify = function verify(message, sig) {
     return this.eddsa.verify(message, sig, this);
   };
 
-  KeyPair$1.prototype.getSecret = function getSecret(enc) {
-    assert$8(this._secret, 'KeyPair is public only');
-    return utils_1$1.encode(this.secret(), enc);
+  KeyPair.prototype.getSecret = function getSecret(enc) {
+    assert$2(this._secret, 'KeyPair is public only');
+    return utils_1.encode(this.secret(), enc);
   };
 
-  KeyPair$1.prototype.getPublic = function getPublic(enc, compact) {
-    return utils_1$1.encode((compact ? [ 0x40 ] : []).concat(this.pubBytes()), enc);
+  KeyPair.prototype.getPublic = function getPublic(enc, compact) {
+    return utils_1.encode((compact ? [ 0x40 ] : []).concat(this.pubBytes()), enc);
   };
 
-  var key$1 = KeyPair$1;
+  var key = KeyPair;
 
-  var assert$9 = utils_1$1.assert;
-  var cachedProperty$1 = utils_1$1.cachedProperty;
-  var parseBytes$1 = utils_1$1.parseBytes;
+  var assert$1 = utils_1.assert;
+  var cachedProperty = utils_1.cachedProperty;
+  var parseBytes$1 = utils_1.parseBytes;
 
   /**
   * @param {EDDSA} eddsa - eddsa instance
@@ -43267,7 +42775,7 @@ var openpgp = (function (exports) {
   * @param {Array<Bytes>} [sig.Rencoded] - R point encoded
   * @param {Array<Bytes>} [sig.Sencoded] - S scalar encoded
   */
-  function Signature$2(eddsa, sig) {
+  function Signature(eddsa, sig) {
     this.eddsa = eddsa;
 
     if (typeof sig !== 'object')
@@ -43280,7 +42788,7 @@ var openpgp = (function (exports) {
       };
     }
 
-    assert$9(sig.R && sig.S, 'Signature without R or S');
+    assert$1(sig.R && sig.S, 'Signature without R or S');
 
     if (eddsa.isPoint(sig.R))
       this._R = sig.R;
@@ -43291,39 +42799,39 @@ var openpgp = (function (exports) {
     this._Sencoded = Array.isArray(sig.S) ? sig.S : sig.Sencoded;
   }
 
-  cachedProperty$1(Signature$2, 'S', function S() {
+  cachedProperty(Signature, 'S', function S() {
     return this.eddsa.decodeInt(this.Sencoded());
   });
 
-  cachedProperty$1(Signature$2, 'R', function R() {
+  cachedProperty(Signature, 'R', function R() {
     return this.eddsa.decodePoint(this.Rencoded());
   });
 
-  cachedProperty$1(Signature$2, 'Rencoded', function Rencoded() {
+  cachedProperty(Signature, 'Rencoded', function Rencoded() {
     return this.eddsa.encodePoint(this.R());
   });
 
-  cachedProperty$1(Signature$2, 'Sencoded', function Sencoded() {
+  cachedProperty(Signature, 'Sencoded', function Sencoded() {
     return this.eddsa.encodeInt(this.S());
   });
 
-  Signature$2.prototype.toBytes = function toBytes() {
+  Signature.prototype.toBytes = function toBytes() {
     return this.Rencoded().concat(this.Sencoded());
   };
 
-  Signature$2.prototype.toHex = function toHex() {
-    return utils_1$1.encode(this.toBytes(), 'hex').toUpperCase();
+  Signature.prototype.toHex = function toHex() {
+    return utils_1.encode(this.toBytes(), 'hex').toUpperCase();
   };
 
-  var signature$2 = Signature$2;
+  var signature = Signature;
 
-  var assert$a = utils_1$1.assert;
-  var parseBytes$2 = utils_1$1.parseBytes;
+  var assert = utils_1.assert;
+  var parseBytes = utils_1.parseBytes;
 
 
 
   function EDDSA(curve) {
-    assert$a(curve === 'ed25519', 'only tested with ed25519 so far');
+    assert(curve === 'ed25519', 'only tested with ed25519 so far');
 
     if (!(this instanceof EDDSA))
       return new EDDSA(curve);
@@ -43338,7 +42846,7 @@ var openpgp = (function (exports) {
     this.hash = hash_1.sha512;
   }
 
-  var eddsa$1 = EDDSA;
+  var eddsa = EDDSA;
 
   /**
   * @param {Array|String} message - message bytes
@@ -43346,7 +42854,7 @@ var openpgp = (function (exports) {
   * @returns {Signature} - signature
   */
   EDDSA.prototype.sign = function sign(message, secret) {
-    message = parseBytes$2(message);
+    message = parseBytes(message);
     var key = this.keyFromSecret(secret);
     var r = this.hashInt(key.messagePrefix(), message);
     var R = this.g.mul(r);
@@ -43364,7 +42872,7 @@ var openpgp = (function (exports) {
   * @returns {Boolean} - true if public key matches sig of message
   */
   EDDSA.prototype.verify = function verify(message, sig, pub) {
-    message = parseBytes$2(message);
+    message = parseBytes(message);
     sig = this.makeSignature(sig);
     var key = this.keyFromPublic(pub);
     var h = this.hashInt(sig.Rencoded(), key.pubBytes(), message);
@@ -43377,19 +42885,19 @@ var openpgp = (function (exports) {
     var hash = this.hash();
     for (var i = 0; i < arguments.length; i++)
       hash.update(arguments[i]);
-    return utils_1$1.intFromLE(hash.digest()).umod(this.curve.n);
+    return utils_1.intFromLE(hash.digest()).umod(this.curve.n);
   };
 
   EDDSA.prototype.keyPair = function keyPair(options) {
-    return new key$1(this, options);
+    return new key(this, options);
   };
 
   EDDSA.prototype.keyFromPublic = function keyFromPublic(pub) {
-    return key$1.fromPublic(this, pub);
+    return key.fromPublic(this, pub);
   };
 
   EDDSA.prototype.keyFromSecret = function keyFromSecret(secret) {
-    return key$1.fromSecret(this, secret);
+    return key.fromSecret(this, secret);
   };
 
   EDDSA.prototype.genKeyPair = function genKeyPair(options) {
@@ -43410,9 +42918,9 @@ var openpgp = (function (exports) {
   };
 
   EDDSA.prototype.makeSignature = function makeSignature(sig) {
-    if (sig instanceof signature$2)
+    if (sig instanceof signature)
       return sig;
-    return new signature$2(this, sig);
+    return new signature(this, sig);
   };
 
   /**
@@ -43430,13 +42938,13 @@ var openpgp = (function (exports) {
   };
 
   EDDSA.prototype.decodePoint = function decodePoint(bytes) {
-    bytes = utils_1$1.parseBytes(bytes);
+    bytes = utils_1.parseBytes(bytes);
 
     var lastIx = bytes.length - 1;
     var normed = bytes.slice(0, lastIx).concat(bytes[lastIx] & ~0x80);
     var xIsOdd = (bytes[lastIx] & 0x80) !== 0;
 
-    var y = utils_1$1.intFromLE(normed);
+    var y = utils_1.intFromLE(normed);
     return this.curve.pointFromY(y, xIsOdd);
   };
 
@@ -43445,7 +42953,7 @@ var openpgp = (function (exports) {
   };
 
   EDDSA.prototype.decodeInt = function decodeInt(bytes) {
-    return utils_1$1.intFromLE(bytes);
+    return utils_1.intFromLE(bytes);
   };
 
   EDDSA.prototype.isPoint = function isPoint(val) {
@@ -43456,17 +42964,17 @@ var openpgp = (function (exports) {
 
   var elliptic = exports;
 
-  elliptic.utils = utils_1$1;
+  elliptic.utils = utils_1;
   elliptic.rand = brorand;
   elliptic.curve = curve_1;
   elliptic.curves = curves_1;
 
   // Protocols
   elliptic.ec = ec;
-  elliptic.eddsa = eddsa$1;
+  elliptic.eddsa = eddsa;
   });
 
-  var elliptic$1 = /*#__PURE__*/Object.freeze({
+  var elliptic = /*#__PURE__*/Object.freeze({
     __proto__: null,
     'default': elliptic_1,
     __moduleExports: elliptic_1
@@ -43487,7 +42995,7 @@ var openpgp = (function (exports) {
   exports.PublicSubkeyPacket = PublicSubkeyPacket;
   exports.SecretKeyPacket = SecretKeyPacket;
   exports.SecretSubkeyPacket = SecretSubkeyPacket;
-  exports.Signature = Signature;
+  exports.Signature = Signature$2;
   exports.SignaturePacket = SignaturePacket;
   exports.Subkey = Subkey;
   exports.SymEncryptedIntegrityProtectedDataPacket = SymEncryptedIntegrityProtectedDataPacket;
@@ -43500,15 +43008,15 @@ var openpgp = (function (exports) {
   exports.config = defaultConfig;
   exports.createCleartextMessage = createCleartextMessage;
   exports.createMessage = createMessage;
-  exports.decrypt = decrypt$4;
+  exports.decrypt = decrypt;
   exports.decryptKey = decryptKey;
   exports.decryptSessionKeys = decryptSessionKeys;
-  exports.encrypt = encrypt$4;
+  exports.encrypt = encrypt;
   exports.encryptKey = encryptKey;
   exports.encryptSessionKey = encryptSessionKey;
   exports.enums = enums;
   exports.generateKey = generateKey;
-  exports.generateSessionKey = generateSessionKey$1;
+  exports.generateSessionKey = generateSessionKey;
   exports.readCleartextMessage = readCleartextMessage;
   exports.readKey = readKey;
   exports.readKeys = readKeys;
@@ -43518,12 +43026,12 @@ var openpgp = (function (exports) {
   exports.readSignature = readSignature;
   exports.reformatKey = reformatKey;
   exports.revokeKey = revokeKey;
-  exports.sign = sign$5;
+  exports.sign = sign;
   exports.unarmor = unarmor;
-  exports.verify = verify$5;
+  exports.verify = verify;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
   return exports;
 
-}({}));
+})({});
