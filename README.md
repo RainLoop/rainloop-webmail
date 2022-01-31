@@ -194,9 +194,14 @@ RainLoop uses the old OpenPGP.js v2
 SnappyMail v2.12 uses OpenPGP.js v5, GnuPG and Mailvelope.
 SnappyMail is able to use and generate ECDSA and EDDSA keys, where RainLoop does not.
 
+Since SnappyMail tries to achieve the best mobile experience, it forked OpenPGP.js to strip it down.
+* remove all unused Node.js
+* remove all old browsers support
+See https://github.com/the-djmaze/openpgpjs for development
+
 |OpenPGP        	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|-------:	|--------:	|--------:	|
-|openpgp.min.js 	|  330.742	|  550.724	|102.388	| 170.033	| 84.241  	| 139.429	|
+|openpgp.min.js 	|  330.742	|  540.542	|102.388	| 167.397	| 84.241  	| 137.502	|
 |openpgp.worker 	|    1.499	|         	|    824	|        	|    695 	|        	|
 
 
