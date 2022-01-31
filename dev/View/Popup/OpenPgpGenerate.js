@@ -1,6 +1,8 @@
 //import { pInt } from 'Common/Utils';
 
-import { PgpUserStore } from 'Stores/User/Pgp';
+import { GnuPGUserStore } from 'Stores/User/GnuPG';
+import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
+
 import { IdentityUserStore } from 'Stores/User/Identity';
 
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
@@ -25,8 +27,11 @@ export class OpenPgpGeneratePopupView extends AbstractViewPopup {
 			submitRequest: false,
 			submitError: '',
 
-			saveGnuPG: true,
-			saveServer: true
+			backupPublicKey: true,
+			backupPrivateKey: false,
+
+			saveGnuPGPublic: true,
+			saveGnuPGPrivate: false
 		});
 
 		this.canGnuPG = Settings.capa(Capa.GnuPG);
@@ -63,12 +68,23 @@ export class OpenPgpGeneratePopupView extends AbstractViewPopup {
 
 		openpgp.generateKey(cfg).then(keyPair => {
 			if (keyPair) {
-				keyPair.onServer = this.saveServer() ? 1 : 0;
-				keyPair.inGnuPG = this.saveGnuPG() ? 1 : 0;
-				PgpUserStore.storeKeyPair(keyPair, ()=>{
+				const fn = () => {
 					this.submitRequest(false);
 					this.cancelCommand();
-				});
+				};
+
+				OpenPGPUserStore.storeKeyPair(keyPair);
+
+				keyPair.onServer = (this.backupPublicKey() ? 1 : 0) + (this.backupPrivateKey() ? 2 : 0);
+				keyPair.inGnuPG = (this.saveGnuPGPublic() ? 1 : 0) + (this.saveGnuPGPrivate() ? 2 : 0);
+				if (keyPair.onServer || keyPair.inGnuPG) {
+					if (!this.backupPrivateKey() && !this.saveGnuPGPrivate()) {
+						delete keyPair.privateKey;
+					}
+					GnuPGUserStore.storeKeyPair(keyPair, fn);
+				} else {
+					fn();
+				}
 			}
 		})
 		.catch((e) => {

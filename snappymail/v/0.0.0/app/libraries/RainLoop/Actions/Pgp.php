@@ -214,30 +214,34 @@ trait Pgp
 	 */
 	public function DoPgpStoreKeyPair() : array
 	{
+		$publicKey  = $this->GetActionParam('publicKey', '');
+		$privateKey = $this->GetActionParam('privateKey', '');
+
 		$result = [
 			'onServer' => [false, false, false],
 			'inGnuPG'  => [false, false, false]
 		];
-		$publicKey  = $this->GetActionParam('publicKey', '');
-		$privateKey = $this->GetActionParam('privateKey', '');
-		$revocationCertificate = $this->GetActionParam('revocationCertificate', '');
-		if ($this->GetActionParam('onServer', '')) {
-			$result['onServer'] = [
-				$this->StorePGPKey($publicKey),
-				$this->StorePGPKey($privateKey),
-				false // $this->StorePGPKey($revocationCertificate)
-			];
+
+		$onServer = (int) $this->GetActionParam('onServer', 0);
+		if ($publicKey && $onServer & 1) {
+			$result['onServer'][0] = $this->StorePGPKey($publicKey);
 		}
-		if ($this->GetActionParam('inGnuPG', '')) {
+		if ($privateKey && $onServer & 2) {
+			$result['onServer'][1] = $this->StorePGPKey($privateKey);
+		}
+
+		$inGnuPG = (int) $this->GetActionParam('inGnuPG', 0);
+		if ($inGnuPG) {
 			$GPG = $this->GnuPG();
-			if ($GPG) {
-				$result['inGnuPG'] = [
-					$publicKey  && $GPG->import($publicKey),
-					$privateKey && $GPG->import($privateKey),
-					false // $revocationCertificate && $GPG->import($revocationCertificate)
-				];
+			if ($publicKey && $inGnuPG & 1) {
+				$result['inGnuPG'][0] = $GPG->import($publicKey);
+			}
+			if ($privateKey && $inGnuPG & 2) {
+				$result['inGnuPG'][1] = $GPG->import($privateKey);
 			}
 		}
+
+//		$revocationCertificate = $this->GetActionParam('revocationCertificate', '');
 		return $this->DefaultResponse(__FUNCTION__, $result);
 	}
 

@@ -40,16 +40,32 @@
 		<div data-bind="component: {
 			name: 'Checkbox',
 			params: {
-				label: 'Store (encrypted) on server',
-				value: saveServer
+				label: 'Store public key on server',
+				value: backupPublicKey
+			}
+		}"></div>
+		<br/>
+		<div data-bind="component: {
+			name: 'Checkbox',
+			params: {
+				label: 'Backup private key on server',
+				value: backupPrivateKey
 			}
 		}"></div>
 		<br/>
 		<div data-bind="visible: canGnuPG, component: {
 			name: 'Checkbox',
 			params: {
-				label: 'Store on server in GnuPG',
-				value: saveGnuPG
+				label: 'Store public key on server in GnuPG',
+				value: saveGnuPGPublic
+			}
+		}"></div>
+		<br/>
+		<div data-bind="visible: canGnuPG, component: {
+			name: 'Checkbox',
+			params: {
+				label: 'Store private key on server in GnuPG',
+				value: saveGnuPGPrivate
 			}
 		}"></div>
 	</div>

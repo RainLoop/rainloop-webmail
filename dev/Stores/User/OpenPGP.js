@@ -131,8 +131,6 @@ export const OpenPGPUserStore = new class {
 		keyPair.privateKey
 		keyPair.publicKey
 		keyPair.revocationCertificate
-		keyPair.onServer
-		keyPair.inGnuPG
 	 */
 	storeKeyPair(keyPair) {
 		openpgp.readKey({armoredKey:keyPair.publicKey}).then(key => {
@@ -164,6 +162,8 @@ export const OpenPGPUserStore = new class {
 		return findOpenPGPKey(this.publicKeys, query/*, sign*/);
 	}
 
+	decrypt(text, fCallback)
+	{
 /*
 	decryptMessage(message, recipients, fCallback) {
 		message = store.openpgp.message.readArmored(armoredMessage);
@@ -229,11 +229,18 @@ export const OpenPGPUserStore = new class {
 
 		fCallback(null, null);
 
-		return false;
-	}
 */
+	}
 
-	verifyMessage(message, fCallback) {
+	verify(message, fCallback) {
+		let text = null;
+		try {
+			// TODO: if message.pgpSigned().SigPartId then fetch raw from server
+			text = openpgp.cleartext.readArmored(message.plain);
+		} catch (e) {
+			console.error(e);
+		}
+		if (text && text.getText && text.verify) {
 		if (message && message.getSigningKeyIds) {
 			const signingKeyIds = message.getSigningKeyIds();
 			if (signingKeyIds && signingKeyIds.length) {

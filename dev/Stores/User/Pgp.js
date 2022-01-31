@@ -68,19 +68,6 @@ export const PgpUserStore = new class {
 	}
 
 	/**
-		keyPair.privateKey
-		keyPair.publicKey
-		keyPair.revocationCertificate
-		keyPair.onServer
-		keyPair.inGnuPG
-	 */
-	storeKeyPair(keyPair, callback) {
-		OpenPGPUserStore.isSupported() && OpenPGPUserStore.storeKeyPair(keyPair);
-//		if (Settings.capa(Capa.GnuPG)) {
-		GnuPGUserStore.storeKeyPair(keyPair, callback);
-	}
-
-	/**
 	 * Checks if verifying/encrypting a message is possible with given email addresses.
 	 * Returns the first library that can.
 	 */
