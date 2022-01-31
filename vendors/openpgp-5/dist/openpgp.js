@@ -2,8 +2,6 @@
 var openpgp = (function (exports) {
   'use strict';
 
-  const globalThis = window;
-
   const doneWritingPromise = Symbol('doneWritingPromise');
   const doneWritingResolve = Symbol('doneWritingResolve');
   const doneWritingReject = Symbol('doneWritingReject');
@@ -1465,13 +1463,6 @@ var openpgp = (function (exports) {
 
   // GPG4Browsers - An OpenPGP implementation in javascript
 
-  const debugMode = (() => {
-    try {
-      return process.env.NODE_ENV === 'development'; // eslint-disable-line no-process-env
-    } catch (e) {}
-    return false;
-  })();
-
   const util = {
     isString: data => typeof data === 'string' || Object.prototype.isPrototypeOf.call(data, String),
 
@@ -1717,28 +1708,6 @@ var openpgp = (function (exports) {
       return util.writeNumber(s, 2);
     },
 
-    /**
-     * Helper function to print a debug message. Debug
-     * messages are only printed if
-     * @param {String} str - String of the debug message
-     */
-    printDebug(str) {
-      if (debugMode) {
-        console.log(str);
-      }
-    },
-
-    /**
-     * Helper function to print a debug error. Debug
-     * messages are only printed if
-     * @param {String} str - String of the debug message
-     */
-    printDebugError(error) {
-      if (debugMode) {
-        console.error(error);
-      }
-    },
-
     // returns bit length of the integer x
     nbits(x) {
       let r = 1;
@@ -1813,7 +1782,7 @@ var openpgp = (function (exports) {
      * @returns {Object} The SubtleCrypto api or 'undefined'.
      */
     getWebCrypto() {
-      return typeof globalThis !== 'undefined' && globalThis.crypto && globalThis.crypto.subtle;
+      return crypto.subtle;
     },
 
     /**
@@ -3009,7 +2978,7 @@ var openpgp = (function (exports) {
         throw new Error('Improperly formatted armor header: ' + headers[i]);
       }
       if (!/^(Version|Comment|MessageID|Hash|Charset): .+$/.test(headers[i])) {
-        util.printDebugError(new Error('Unknown header: ' + headers[i]));
+        console.error(new Error('Unknown header: ' + headers[i]));
       }
     }
   }
@@ -9661,7 +9630,7 @@ var openpgp = (function (exports) {
 
   let hashFunctions = {
       md5: md5,
-      sha1: asmcryptoHash(Sha1, (!navigator.userAgent || navigator.userAgent.indexOf('Edge') === -1) && 'SHA-1'),
+      sha1: asmcryptoHash(Sha1, 'SHA-1'),
       sha224: hashjsHash(_224),
       sha256: asmcryptoHash(Sha256, 'SHA-256'),
       sha384: hashjsHash(_384, 'SHA-384'),
@@ -10035,7 +10004,7 @@ var openpgp = (function (exports) {
   }
 
   async function CBC(key) {
-    if (util.getWebCrypto() && key.length !== 24) { // WebCrypto (no 192 bit support) see: https://www.chromium.org/blink/webcrypto#TOC-AES-support
+    if (util.getWebCrypto() && key.length !== 24) { // WebCrypto (no 192 bit support) see: https://www.chromium.org/blink/webcrypto/#aes-support
       key = await webCrypto$6.importKey('raw', key, { name: 'AES-CBC', length: key.length * 8 }, false, ['encrypt']);
       return async function(pt) {
         const ct = await webCrypto$6.encrypt({ name: 'AES-CBC', iv: zeroBlock$1, length: blockLength$3 * 8 }, key, pt);
@@ -12288,7 +12257,7 @@ var openpgp = (function (exports) {
         try {
           return await webSign$1(enums.read(enums.webHash, hashAlgo), data, n, e, d, p, q, u);
         } catch (err) {
-          util.printDebugError(err);
+          console.error(err);
         }
       }
     }
@@ -12312,7 +12281,7 @@ var openpgp = (function (exports) {
         try {
           return await webVerify$1(enums.read(enums.webHash, hashAlgo), data, s, n, e);
         } catch (err) {
-          util.printDebugError(err);
+          console.error(err);
         }
       }
     }
@@ -12974,7 +12943,7 @@ var openpgp = (function (exports) {
           try {
             return await webGenKeyPair(this.name);
           } catch (err) {
-            util.printDebugError('Browser did not support generating ec key ' + err.message);
+            console.error('Browser did not support generating ec key ' + err.message);
             break;
           }
         case 'curve25519': {
@@ -13200,7 +13169,7 @@ var openpgp = (function (exports) {
             if (curve.name !== 'p521' && (err.name === 'DataError' || err.name === 'OperationError')) {
               throw err;
             }
-            util.printDebugError('Browser did not support signing: ' + err.message);
+            console.error('Browser did not support signing: ' + err.message);
           }
           break;
         }
@@ -13236,7 +13205,7 @@ var openpgp = (function (exports) {
             if (curve.name !== 'p521' && (err.name === 'DataError' || err.name === 'OperationError')) {
               throw err;
             }
-            util.printDebugError('Browser did not support verifying: ' + err.message);
+            console.error('Browser did not support verifying: ' + err.message);
           }
           break;
       }
@@ -14180,7 +14149,7 @@ var openpgp = (function (exports) {
           try {
             return await webPublicEphemeralKey(curve, Q);
           } catch (err) {
-            util.printDebugError(err);
+            console.error(err);
           }
         }
         break;
@@ -14238,7 +14207,7 @@ var openpgp = (function (exports) {
           try {
             return await webPrivateEphemeralKey(curve, V, Q, d);
           } catch (err) {
-            util.printDebugError(err);
+            console.error(err);
           }
         }
         break;
@@ -14528,13 +14497,13 @@ var openpgp = (function (exports) {
 
     if (r.lte(zero) || r.gte(q) ||
         s.lte(zero) || s.gte(q)) {
-      util.printDebug('invalid DSA Signature');
+      console.log('invalid DSA Signature');
       return false;
     }
     const h = new BigInteger(hashed.subarray(0, q.byteLength())).imod(q);
     const w = s.modInv(q); // s**-1 mod q
     if (w.isZero()) {
-      util.printDebug('invalid DSA Signature');
+      console.log('invalid DSA Signature');
       return false;
     }
 
@@ -22740,7 +22709,7 @@ var openpgp = (function (exports) {
           if (critical) {
             throw err;
           } else {
-            util.printDebug(err);
+            console.log(err);
           }
         }
       }
@@ -23190,7 +23159,7 @@ var openpgp = (function (exports) {
                   // (since we likely cannot process the message without these packets anyway).
                   await writer.abort(e);
                 }
-                util.printDebugError(e);
+                console.error(e);
               }
             });
             if (done) {
@@ -27364,7 +27333,7 @@ var openpgp = (function (exports) {
               case enums.signature.certCasual:
               case enums.signature.certPositive:
                 if (!user) {
-                  util.printDebug('Dropping certification signatures without preceding user packet');
+                  console.log('Dropping certification signatures without preceding user packet');
                   continue;
                 }
                 if (packet.issuerKeyID.equals(primaryKeyID)) {
@@ -27385,7 +27354,7 @@ var openpgp = (function (exports) {
                 break;
               case enums.signature.subkeyBinding:
                 if (!subkey) {
-                  util.printDebug('Dropping subkey binding signature without preceding subkey packet');
+                  console.log('Dropping subkey binding signature without preceding subkey packet');
                   continue;
                 }
                 subkey.bindingSignatures.push(packet);
@@ -27395,7 +27364,7 @@ var openpgp = (function (exports) {
                 break;
               case enums.signature.subkeyRevocation:
                 if (!subkey) {
-                  util.printDebug('Dropping subkey revocation signature without preceding subkey packet');
+                  console.log('Dropping subkey revocation signature without preceding subkey packet');
                   continue;
                 }
                 subkey.revocationSignatures.push(packet);
@@ -28748,7 +28717,7 @@ var openpgp = (function (exports) {
           const algo = enums.write(enums.symmetric, algorithmName);
           await symEncryptedPacket.decrypt(algo, data, config);
         } catch (e) {
-          util.printDebugError(e);
+          console.error(e);
           exception = e;
         }
       }));
@@ -28800,7 +28769,7 @@ var openpgp = (function (exports) {
               await skeskPacket.decrypt(password);
               decryptedSessionKeyPackets.push(skeskPacket);
             } catch (err) {
-              util.printDebugError(err);
+              console.error(err);
             }
           }));
         }));
@@ -28866,7 +28835,7 @@ var openpgp = (function (exports) {
                     decryptedSessionKeyPackets.push(pkeskPacketCopy);
                   } catch (err) {
                     // `decrypt` can still throw some non-security-sensitive errors
-                    util.printDebugError(err);
+                    console.error(err);
                     exception = err;
                   }
                 }));
@@ -28879,7 +28848,7 @@ var openpgp = (function (exports) {
                   }
                   decryptedSessionKeyPackets.push(pkeskPacket);
                 } catch (err) {
-                  util.printDebugError(err);
+                  console.error(err);
                   exception = err;
                 }
               }
