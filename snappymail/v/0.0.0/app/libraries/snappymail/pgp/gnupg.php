@@ -143,7 +143,9 @@ class GnuPG
 		if (!$fp || !\is_resource($fp)) {
 			throw new \Exception('Invalid stream resource');
 		}
-		return $this->getGPG()->decryptStream($fp, $output);
+		return $this->GnuPG
+			? $this->GnuPG->decrypt(\stream_get_contents($fp))
+			: $this->GPG->decryptStream($fp, $output);
 	}
 
 	/**

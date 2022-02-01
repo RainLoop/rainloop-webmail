@@ -93,20 +93,6 @@ export const PgpUserStore = new class {
 		return false;
 	}
 
-	getGnuPGPrivateKeyFor(query, sign) {
-		let key = GnuPGUserStore.getPrivateKeyFor(query, sign);
-		if (key) {
-			return ['gnupg', key];
-		}
-	}
-
-	getOpenPGPPrivateKeyFor(query/*, sign*/) {
-		let key = OpenPGPUserStore.getPrivateKeyFor(query/*, sign*/);
-		if (key) {
-			return ['openpgp', key];
-		}
-	}
-
 	async getMailvelopePrivateKeyFor(email/*, sign*/) {
 		let keyring = this.mailvelopeKeyring;
 		if (keyring && await keyring.hasPrivateKey({email:email})) {
@@ -120,54 +106,73 @@ export const PgpUserStore = new class {
 	 * Returns the first library that can.
 	 */
 	async getKeyForSigning(email) {
-		return this.getGnuPGPrivateKeyFor(email, 1)
-			|| this.getOpenPGPPrivateKeyFor(email, 1)
-			|| await this.getMailvelopePrivateKeyFor(email, 1);
+		let key = GnuPGUserStore.getPrivateKeyFor(email, 1);
+		if (key) {
+			return ['gnupg', key];
+		}
+
+		key = OpenPGPUserStore.getPrivateKeyFor(email, 1);
+		if (key) {
+			return ['openpgp', key];
+		}
+
+		return await this.getMailvelopePrivateKeyFor(email, 1);
 	}
 
-	/**
-	 * Checks if decrypting a message is possible with given keyIds or email address.
-	 * Returns the first library that can.
-	 */
-	async getKeyForDecryption(ids, email) {
-		ids = [email].concat(ids);
-		let i = ids.length, key;
+	async decrypt(message) {
+		const sender = message.from[0].email,
+			armoredText = message.plain();
 
+		if (!armoredText.includes('-----BEGIN PGP MESSAGE-----')) {
+			return;
+		}
+
+		// Try OpenPGP.js
+		let result = await OpenPGPUserStore.decrypt(armoredText, sender);
+		if (result) {
+			return result;
+		}
+
+		// Try Mailvelope (does not support inline images)
 		try {
-			key = await this.getMailvelopePrivateKeyFor(email);
+			let key = await this.getMailvelopePrivateKeyFor(message.to[0].email);
 			if (key) {
-				return key;
+				/**
+				* https://mailvelope.github.io/mailvelope/Mailvelope.html#createEncryptedFormContainer
+				* Creates an iframe to display an encrypted form
+				*/
+//				mailvelope.createEncryptedFormContainer('#mailvelope-form');
+				/**
+				* https://mailvelope.github.io/mailvelope/Mailvelope.html#createDisplayContainer
+				* Creates an iframe to display the decrypted content of the encrypted mail.
+				*/
+				const body = message.body;
+				body.textContent = '';
+				result = await mailvelope.createDisplayContainer(
+					'#'+body.id,
+					armoredText,
+					this.mailvelopeKeyring,
+					{
+						senderAddress: sender
+					}
+				);
+				if (result) {
+					if (result.error && result.error.message) {
+						if ('PWD_DIALOG_CANCEL' !== result.error.code) {
+							alert(result.error.code + ': ' + result.error.message);
+						}
+					} else {
+						body.classList.add('mailvelope');
+						return;
+					}
+				}
 			}
 		} catch (err) {
 			console.error(err);
 		}
-/*      Not working, needs full fingerprint
-		while (i--) {
-			key = await this.getMailvelopePrivateKeyFor(ids[i]);
-			if (key) {
-				return key;
-			}
-			if (await keyring.hasPrivateKey(ids[i])) {
-				return ['mailvelope', ids[i]];
-			}
-		}
-		i = ids.length;
-*/
-/*
-		while (i--) {
-			key = this.getGnuPGPrivateKeyFor(ids[i]);
-			if (key) {
-				return key;
-			}
-		}
-*/
-		i = ids.length;
-		while (i--) {
-			key = this.getOpenPGPPrivateKeyFor(ids[i]);
-			if (key) {
-				return key;
-			}
-		}
+
+		// Now try GnuPG
+		return GnuPGUserStore.decrypt(message);
 	}
 
 	/**

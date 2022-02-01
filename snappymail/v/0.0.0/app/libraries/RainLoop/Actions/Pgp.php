@@ -64,16 +64,20 @@ trait Pgp
 
 		$sData = $this->GetActionParam('Data', '');
 		$oPart = null;
+		$result = [
+			'data' => '',
+			'signatures' => []
+		];
 		if ($sData) {
 			$result = $GPG->decrypt($sData);
-			$oPart = \MailSo\Mime\Part::FromString($result);
+//			$oPart = \MailSo\Mime\Part::FromString($result);
 		} else {
 			$this->initMailClientConnection();
 			$this->MailClient()->MessageMimeStream(
-				function ($rResource) use ($GPG, $oPart) {
+				function ($rResource) use ($GPG, &$result, &$oPart) {
 					if (\is_resource($rResource)) {
-						$result = $GPG->decryptStream($rResource);
-						$oPart = \MailSo\Mime\Part::FromString($result);
+						$result['data'] = $GPG->decryptStream($rResource);
+//						$oPart = \MailSo\Mime\Part::FromString($result);
 //						$GPG->decryptStream($rResource, $rStreamHandle);
 //						$oPart = \MailSo\Mime\Part::FromStream($rStreamHandle);
 					}
@@ -84,12 +88,13 @@ trait Pgp
 			);
 		}
 
-		if ($oPart->IsPgpSigned()) {
+		if ($oPart && $oPart->IsPgpSigned()) {
 //			$GPG->verifyStream($oPart->SubParts[0]->Body, \stream_get_contents($oPart->SubParts[1]->Body));
-			$oPart = $oPart->SubParts[0];
+//			$result['signatures'] = $oPart->SubParts[0];
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $oPart);
+//		return $this->DefaultResponse(__FUNCTION__, $oPart);
+		return $this->DefaultResponse(__FUNCTION__, $result);
 	}
 
 	public function DoGnupgGetKeys() : array

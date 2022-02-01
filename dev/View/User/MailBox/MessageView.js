@@ -673,80 +673,13 @@ export class MailMessageView extends AbstractViewRight {
 	}
 
 	pgpDecrypt(self) {
-		const message = self.message(),
-			sender = message && message.from[0].email,
-			pgpInfo = message && message.pgpEncrypted();
-		if (pgpInfo) {
-			// Also check message.from[0].email
-			PgpUserStore.getKeyForDecryption(pgpInfo.KeyIds, message.to[0].email).then(result => {
-				if (!result) {
-					// TODO: show error
-					alert('No decrypt key found for ids:\n\n' + pgpInfo.KeyIds.join('\n'));
-					return;
-				}
-				if ('mailvelope' === result[0]) {
-					/**
-					* https://mailvelope.github.io/mailvelope/Mailvelope.html#createEncryptedFormContainer
-					* Creates an iframe to display an encrypted form
-					*/
-//					mailvelope.createEncryptedFormContainer('#mailvelope-form');
-					/**
-					* https://mailvelope.github.io/mailvelope/Mailvelope.html#createDisplayContainer
-					* Creates an iframe to display the decrypted content of the encrypted mail.
-					*/
-					let body = message.body;
-					body.textContent = '';
-					mailvelope.createDisplayContainer(
-						'#'+body.id,
-						message.plain(),
-						PgpUserStore.mailvelopeKeyring,
-						{
-							senderAddress: sender
-						}
-					).then(status => {
-						if (status.error && status.error.message) {
-							alert(status.error.code + ': ' + status.error.message);
-						} else {
-							body.classList.add('mailvelope');
-						}
-					}, error => {
-						console.error(error);
-					});
-				}
-				else if ('openpgp' === result[0]) {
-					const publicKey = OpenPGPUserStore.getPublicKeyFor(sender);
-//					OpenPGPUserStore.decrypt(message.plain(), result[1].armor
-					OpenPGPUserStore.decrypt(message.plain(), result[1].key, publicKey ? publicKey.key : null).then(result => {
-						if (result) {
-							mimeToMessage(result.data, message);
-						} else {
-//							controlsHelper(dom, this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
-						}
-					});
-				}
-				else if ('gnupg' === result[0]) {
-					let params = {
-						Folder: message.folder,
-						Uid: message.uid,
-						PartId: pgpInfo.PartId,
-						KeyId: result[1].id,
-						Passphrase: prompt('Passphrase for ' + result[1].id + ' ' + result[1].uids[0].uid),
-						Data: '' // optional
-					}
-					if (params.Passphrase) {
-						rl.app.Remote.post('GnupgDecrypt', null, params)
-							.then(data => {
-								// TODO mimeToMessage(data, message)
-								console.dir(data);
-							})
-							.catch(error => {
-								// TODO
-								console.dir(error);
-							});
-					}
-				}
-			});
-		}
+		const message = self.message();
+		message && PgpUserStore.decrypt(message).then(result => {
+console.dir({decrypt_result:result});
+			if (result) {
+				mimeToMessage(result.data, message);
+			}
+		});
 	}
 
 	pgpVerify(self) {

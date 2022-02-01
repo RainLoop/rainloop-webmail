@@ -162,28 +162,47 @@ export const OpenPGPUserStore = new class {
 	/**
 	 * https://docs.openpgpjs.org/#encrypt-and-decrypt-string-data-with-pgp-keys
 	 */
-	async decrypt(armoredText, privateKey, publicKey)
+	async decrypt(armoredText, sender)
 	{
-		const passphrase = prompt('Passphrase');
-		if (!passphrase) {
-			return;
+		const message = await openpgp.readMessage({ armoredMessage: armoredText }),
+			privateKeys = this.privateKeys(),
+			msgEncryptionKeyIDs = message.getEncryptionKeyIDs().map(key => key.bytes);
+		// Find private key that can decrypt message
+		let i = privateKeys.length, privateKey;
+		while (i--) {
+			if ((await privateKeys[i].key.getDecryptionKeys()).find(
+				key => msgEncryptionKeyIDs.includes(key.getKeyID().bytes)
+			)) {
+				privateKey = privateKeys[i];
+				break;
+			}
 		}
-		const message = await openpgp.readMessage({ armoredMessage: armoredText });
-		const decryptedKey = await openpgp.decryptKey({
-//			privateKey: await openpgp.readPrivateKey({ armoredKey: armoredPrivateKey }),
-			privateKey: privateKey,
-			passphrase
-		});
-		return await openpgp.decrypt({
-			message,
-			verificationKeys: publicKey,
-//			expectSigned: true,
-//			signature: '', // Detached signature
-			decryptionKeys: decryptedKey
-		});
+		if (privateKey) try {
+			// Ask passphrase of private key
+			const passphrase = prompt('OpenPGP.js Passphrase for ' + privateKey.id + ' ' + privateKey.emails[0]);
+			if (null !== passphrase) {
+				const
+					decryptedKey = await openpgp.decryptKey({
+						privateKey: privateKey.key,
+						passphrase
+					});
+
+				return await openpgp.decrypt({
+					message,
+					verificationKeys: this.getPublicKeyFor(sender),
+//					expectSigned: true,
+//					signature: '', // Detached signature
+					decryptionKeys: decryptedKey
+				});
+			}
+		} catch (err) {
+			alert(err);
+			console.error(err);
+		}
 	}
 
 	async verify(message, detachedSignature, publicKey) {
+//		message.getSigningKeyIDs();
 		return await openpgp.verify({
 			message,
 			verificationKeys: publicKey,

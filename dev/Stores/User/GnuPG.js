@@ -151,4 +151,40 @@ export const GnuPGUserStore = new class {
 	getPublicKeyFor(query, sign) {
 		return findGnuPGKey(this.publicKeys, query, sign);
 	}
+
+	async decrypt(message) {
+		const
+			pgpInfo = message.pgpEncrypted();
+		if (pgpInfo) {
+			let ids = [message.to[0].email].concat(pgpInfo.KeyIds),
+				i = ids.length, key;
+			while (i--) {
+				key = findGnuPGKey(this.privateKeys, ids[i]);
+				if (key) {
+					break;
+				}
+			}
+			if (key) {
+				// Also check message.from[0].email
+				let params = {
+					Folder: message.folder,
+					Uid: message.uid,
+					PartId: pgpInfo.PartId,
+					KeyId: key.id,
+					Passphrase: prompt('GnuPG Passphrase for ' + key.id + ' ' + key.uids[0].uid),
+					Data: '' // message.plain() optional
+				}
+				if (null !== params.Passphrase) {
+					const result = await Remote.post('GnupgDecrypt', null, params);
+					if (result && result.Result) {
+						return result.Result;
+					}
+				}
+			}
+		}
+	}
+
+	verify(/*message, fCallback*/) {
+	}
+
 };
