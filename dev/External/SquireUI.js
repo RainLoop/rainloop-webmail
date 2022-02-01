@@ -80,7 +80,7 @@ const
 				};
 			} else if (!isHtml && prevSignature.isHtml) {
 				prevSignature = {
-					body: rl.Utils.htmlToPlain(prevSignature.body),
+					body: clearHtmlLine(prevSignature.body),
 					isHtml: true
 				};
 			}
@@ -479,7 +479,7 @@ class SquireUI
 			let cl = this.container.classList;
 			cl.remove('squire-mode-'+this.mode);
 			if ('plain' == mode) {
-				this.plain.value = rl.Utils.htmlToPlain(this.squire.getHTML(), true).trim();
+				this.plain.value = clearHtmlLine(this.squire.getHTML(), true);
 			} else {
 				this.setData(rl.Utils.plainToHtml(this.plain.value, true));
 				mode = 'wysiwyg';
@@ -515,7 +515,7 @@ class SquireUI
 			} else try {
 				if ('plain' === this.mode) {
 					if (cfg.isHtml) {
-						cfg.signature = rl.Utils.htmlToPlain(cfg.signature);
+						cfg.signature = clearHtmlLine(cfg.signature);
 					}
 					this.plain.value = rl_signature_replacer(this, this.plain.value, cfg.signature, false, cfg.insertBefore);
 				} else {

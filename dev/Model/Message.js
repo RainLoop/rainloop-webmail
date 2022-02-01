@@ -4,10 +4,8 @@ import { MessagePriority } from 'Common/EnumsUser';
 import { i18n } from 'Common/Translator';
 
 import { doc } from 'Common/Globals';
-import { encodeHtml } from 'Common/Html';
+import { encodeHtml, removeColors, plainToHtml } from 'Common/Html';
 import { isArray, arrayLength, forEachObjectEntry } from 'Common/Utils';
-import { plainToHtml } from 'Common/UtilsUser';
-
 import { serverRequestRaw } from 'Common/Links';
 
 import { FolderUserStore } from 'Stores/User/Folder';
@@ -25,21 +23,6 @@ const
 	url = /(^|[\s\n]|\/?>)(https:\/\/[-A-Z0-9+\u0026\u2019#/%?=()~_|!:,.;]*[-A-Z0-9+\u0026#/%=~()_|])/gi,
 	// eslint-disable-next-line max-len
 	email = /(^|[\s\n]|\/?>)((?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x21\x23-\x5b\x5d-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x21-\x5a\x53-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])+)\]))/gi,
-
-	// Removes background and color
-	// Many e-mails incorrectly only define one, not both
-	// And in dark theme mode this kills the readability
-	removeColors = html => {
-		let l;
-		do {
-			l = html.length;
-			html = html
-				.replace(/(<[^>]+[;"'])\s*background(-[a-z]+)?\s*:[^;"']+/gi, '$1')
-				.replace(/(<[^>]+[;"'])\s*color\s*:[^;"']+/gi, '$1')
-				.replace(/(<[^>]+)\s(bg)?color=("[^"]+"|'[^']+')/gi, '$1');
-		} while (l != html.length)
-		return html;
-	},
 
 	hcont = Element.fromHTML('<div area="hidden" style="position:absolute;left:-5000px"></div>'),
 	getRealHeight = el => {

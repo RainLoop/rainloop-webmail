@@ -32,7 +32,7 @@ export class AttachmentCollectionModel extends AbstractCollectionModel
 	 * @returns {*}
 	 */
 	findByCid(cid) {
-		cid = cid.replace(/^<+|>+$/, '');
-		return this.find(item => cid === item.cidWithoutTags);
+		let regex = /^<+|>+$/g, cidc = cid.replace(regex, '');
+		return this.find(item => cid === item.cid || cidc === item.cid || cidc === item.cid.replace(regex, ''));
 	}
 }

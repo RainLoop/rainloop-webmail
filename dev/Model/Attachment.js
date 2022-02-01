@@ -25,7 +25,6 @@ export class AttachmentModel extends AbstractModel {
 		this.isLinked = false;
 		this.isThumbnail = false;
 		this.cid = '';
-		this.cidWithoutTags = '';
 		this.contentLocation = '';
 		this.download = '';
 		this.folder = '';
@@ -43,7 +42,6 @@ export class AttachmentModel extends AbstractModel {
 		const attachment = super.reviveFromJson(json);
 		if (attachment) {
 			attachment.friendlySize = FileInfo.friendlySize(json.EstimatedSize);
-			attachment.cidWithoutTags = attachment.cid.replace(/^<+/, '').replace(/>+$/, '');
 
 			attachment.fileNameExt = FileInfo.getExtension(attachment.fileName);
 			attachment.fileType = FileInfo.getType(attachment.fileNameExt, attachment.mimeType);
