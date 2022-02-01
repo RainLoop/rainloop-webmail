@@ -93,7 +93,6 @@ trait Pgp
 //			$result['signatures'] = $oPart->SubParts[0];
 		}
 
-//		return $this->DefaultResponse(__FUNCTION__, $oPart);
 		return $this->DefaultResponse(__FUNCTION__, $result);
 	}
 

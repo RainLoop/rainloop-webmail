@@ -675,8 +675,7 @@ export class MailMessageView extends AbstractViewRight {
 	pgpDecrypt(self) {
 		const message = self.message();
 		message && PgpUserStore.decrypt(message).then(result => {
-console.dir({decrypt_result:result});
-			if (result) {
+			if (result && result.data) {
 				mimeToMessage(result.data, message);
 			}
 		});
