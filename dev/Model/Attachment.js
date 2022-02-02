@@ -49,6 +49,10 @@ export class AttachmentModel extends AbstractModel {
 		return attachment;
 	}
 
+	contentId() {
+		return this.cid.replace(/^<+|>+$/g, '');
+	}
+
 	/**
 	 * @returns {boolean}
 	 */

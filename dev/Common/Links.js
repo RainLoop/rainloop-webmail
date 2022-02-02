@@ -47,6 +47,16 @@ export const
 	attachmentDownload = (download, customSpecSuffix) =>
 		serverRequestRaw('Download', download, customSpecSuffix),
 
+	proxy = url =>
+		SERVER_PREFIX + '/ProxyExternal/' + btoa(url).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''),
+/*
+		return './?/ProxyExternal/'.Utils::EncodeKeyValuesQ(array(
+			'Rnd' => \md5(\microtime(true)),
+			'Token' => Utils::GetConnectionToken(),
+			'Url' => $sUrl
+		)).'/';
+*/
+
 	/**
 	 * @param {string} type
 	 * @returns {string}

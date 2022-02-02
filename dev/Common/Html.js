@@ -1,4 +1,6 @@
-import { createElement } from 'Common/Globals';
+import { createElement, SettingsGet } from 'Common/Globals';
+import { forEachObjectEntry, pInt } from 'Common/Utils';
+import { proxy } from 'Common/Links';
 
 const
 /*
@@ -36,20 +38,303 @@ export const
 	encodeHtml = text => (text && text.toString ? text.toString() : '' + text).replace(htmlre, m => htmlmap[m]),
 
 	/**
+	 * Clears the Message Html for viewing
 	 * @param {string} text
 	 * @returns {string}
 	 */
-	clearHtml = html => {
-		html = html.replace(/(<pre[^>]*>)([\s\S]*?)(<\/pre>)/gi, aMatches => {
-			return (aMatches[1] + aMatches[2].trim() + aMatches[3].trim()).replace(/\r?\n/g, '<br>');
-		});
+	clearHtml = (html, contentLocationUrls) => {
+		const debug = false, // Config()->Get('debug', 'enable', false);
+			useProxy = !!SettingsGet('UseLocalProxyForExternalImages'),
+			detectHiddenImages = true, // !!SettingsGet('try_to_detect_hidden_images'),
+
+			result = {
+				hasExternals: false,
+				foundCIDs: [],
+				foundContentLocationUrls: []
+			},
+
+			tpl = document.createElement('template');
+		tpl.innerHTML = html
+			.replace(/(<pre[^>]*>)([\s\S]*?)(<\/pre>)/gi, aMatches => {
+				return (aMatches[1] + aMatches[2].trim() + aMatches[3].trim()).replace(/\r?\n/g, '<br>');
+			})
+			// \MailSo\Base\HtmlUtils::ClearComments()
+			.replace(/<!--[\s\S]*?-->/g, '')
+			// \MailSo\Base\HtmlUtils::ClearTags()
+			// eslint-disable-next-line max-len
+			.replace(/<\/?(link|form|center|base|meta|bgsound|keygen|source|object|embed|applet|mocha|i?frame|frameset|video|audio|area|map)(\s[\s\S]*?)?>/gi, '')
+			// GetDomFromText
+			.replace('<o:p></o:p>', '')
+			.replace('<o:p>', '<span>')
+			.replace('</o:p>', '</span>')
+			// https://github.com/the-djmaze/snappymail/issues/187
+			.replace(/<a[^>]*>(((?!<\/a).)+<a\\s)/gi, '$1')
+			// \MailSo\Base\HtmlUtils::ClearFastTags
+			.replace(/<p[^>]*><\/p>/i, '')
+			.replace(/<!doctype[^>]*>/i, '')
+			.replace(/<\?xml [^>]*\?>/i, '')
+			.trim();
+		html = '';
+
+		// convert body attributes to CSS
+		const tasks = {
+			link: value => {
+				if (/^#[a-fA-Z0-9]{3,6}$/.test(value)) {
+					tpl.content.querySelectorAll('a').forEach(node => node.style.color = value)
+				}
+			},
+			text: (value, node) => node.style.color = value,
+			topmargin: (value, node) => node.style.marginTop = pInt(value) + 'px',
+			leftmargin: (value, node) => node.style.marginLeft = pInt(value) + 'px',
+			bottommargin: (value, node) => node.style.marginBottom = pInt(value) + 'px',
+			rightmargin: (value, node) => node.style.marginRight = pInt(value) + 'px'
+		};
+
+//		if (static::Config()->Get('labs', 'strict_html_parser', true))
+		let allowedAttributes = [
+			// defaults
+			'name',
+			'dir', 'lang', 'style', 'title',
+			'background', 'bgcolor', 'alt', 'height', 'width', 'src', 'href',
+			'border', 'bordercolor', 'charset', 'direction', 'language',
+			// a
+			'coords', 'download', 'hreflang', 'shape',
+			// body
+			'alink', 'bgproperties', 'bottommargin', 'leftmargin', 'link', 'rightmargin', 'text', 'topmargin', 'vlink',
+			'marginwidth', 'marginheight', 'offset',
+			// button,
+			'disabled', 'type', 'value',
+			// col
+			'align', 'valign',
+			// font
+			'color', 'face', 'size',
+			// form
+			'novalidate',
+			// hr
+			'noshade',
+			// img
+			'hspace', 'sizes', 'srcset', 'vspace', 'usemap',
+			// input, textarea
+			'checked', 'max', 'min', 'maxlength', 'multiple', 'pattern', 'placeholder', 'readonly',
+				'required', 'step', 'wrap',
+			// label
+			'for',
+			// meter
+			'low', 'high', 'optimum',
+			// ol
+			'reversed', 'start',
+			// option
+			'selected', 'label',
+			// table
+			'cols', 'rows', 'frame', 'rules', 'summary', 'cellpadding', 'cellspacing',
+			// th
+			'abbr', 'scope',
+			// td
+			'axis', 'colspan', 'rowspan', 'headers', 'nowrap'
+		];
+
+		let disallowedAttributes = [
+			'id', 'class', 'contenteditable', 'designmode', 'formaction', 'manifest', 'action',
+			'data-bind', 'data-reactid', 'xmlns', 'srcset',
+			'fscommand', 'seeksegmenttime'
+		];
+
+		tpl.content.querySelectorAll('*').forEach(oElement => {
+			const name = oElement.tagName.toUpperCase(),
+				oStyle = oElement.style,
+				getAttribute = name => oElement.hasAttribute(name) ? oElement.getAttribute(name).trim() : '';
+
+			if (['HEAD','STYLE','SVG','SCRIPT','TITLE','INPUT','BUTTON','TEXTAREA','SELECT'].includes(name)
+			 || 'none' == oStyle.display
+			 || 'hidden' == oStyle.visibility
+//			 || (oStyle.lineHeight && 1 > parseFloat(oStyle.lineHeight)
+//			 || (oStyle.maxHeight && 1 > parseFloat(oStyle.maxHeight)
+//			 || (oStyle.maxWidth && 1 > parseFloat(oStyle.maxWidth)
+//			 || ('0' === oStyle.opacity
+			) {
+				oElement.remove();
+				return;
+			}
+
+			if ('BODY' === name) {
+				forEachObjectEntry(tasks, (name, cb) => {
+					if (oElement.hasAttribute(name)) {
+						cb(getAttribute(name), oElement);
+						oElement.removeAttribute(name);
+					}
+				});
+			}
+
+			if ('TABLE' === name && oElement.hasAttribute('width')) {
+				let value = getAttribute('width');
+				oElement.removeAttribute('width');
+				oStyle.maxWidth = value + (/^[0-9]+$/.test(value) ? 'px' : '');
+				oStyle.removeProperty('width');
+				oStyle.removeProperty('min-width');
+			}
+
+			const aAttrsForRemove = [];
+
+			if (oElement.hasAttributes()) {
+				let i = oElement.attributes.length;
+				while (i--) {
+					let sAttrName = oElement.attributes[i].name.toLowerCase();
+					if (!allowedAttributes.includes(sAttrName)
+					 || 'on' === sAttrName.slice(0, 2)
+					 || 'form' === sAttrName.slice(0, 4)
+//					 || 'data-' === sAttrName.slice(0, 5)
+//					 || sAttrName.includes(':')
+					 || disallowedAttributes.includes(sAttrName))
+					{
+						oElement.removeAttribute(sAttrName);
+						aAttrsForRemove.push(sAttrName);
+					}
+				}
+			}
+
+			if (oElement.hasAttribute('href')) {
+				let sHref = getAttribute('href');
+				if (!/^([a-z]+):/i.test(sHref) && '//' !== sHref.slice(0, 2)) {
+					oElement.setAttribute('data-x-broken-href', sHref);
+					oElement.removeAttribute('href');
+				}
+				if ('A' === name) {
+					oElement.setAttribute('rel', 'external nofollow noopener noreferrer');
+				}
+			}
+
+			// SVG xlink:href
+			/*
+			if (oElement.hasAttribute('xlink:href')) {
+				oElement.removeAttribute('xlink:href');
+			}
+			*/
+
+			if ('A' === name) {
+				oElement.setAttribute('tabindex', '-1');
+				oElement.setAttribute('target', '_blank');
+			}
+
+			let skipStyle = false;
+			if (oElement.hasAttribute('src')) {
+				let sSrc = getAttribute('src');
+				oElement.removeAttribute('src');
+
+				if (detectHiddenImages
+					&& 'IMG' === name
+					&& (('' != getAttribute('height') && 2 > pInt(getAttribute('height')))
+						|| ('' != getAttribute('width') && 2 > pInt(getAttribute('width')))
+						|| [
+							'email.microsoftemail.com/open',
+							'github.com/notifications/beacon/',
+							'mandrillapp.com/track/open',
+							'list-manage.com/track/open'
+						].filter(uri => sSrc.toLowerCase().includes(uri)).length
+				)) {
+					skipStyle = true;
+					oElement.setAttribute('style', 'display:none');
+					oElement.setAttribute('data-x-hidden-src', sSrc);
+				}
+				else if (contentLocationUrls[sSrc])
+				{
+					oElement.setAttribute('data-x-src-location', sSrc);
+					result.foundContentLocationUrls.push(sSrc);
+				}
+				else if ('cid:' === sSrc.slice(0, 4))
+				{
+					oElement.setAttribute('data-x-src-cid', sSrc.slice(4));
+					result.foundCIDs.push(sSrc.slice(4));
+				}
+				else if (/^https?:\/\//i.test(sSrc) || '//' === sSrc.slice(0, 2))
+				{
+					oElement.setAttribute('data-x-src', useProxy ? proxy(sSrc) : sSrc);
+					result.hasExternals = true;
+				}
+				else if ('data:image/' === sSrc.slice(0, 11))
+				{
+					oElement.setAttribute('src', sSrc);
+				}
+				else
+				{
+					oElement.setAttribute('data-x-broken-src', sSrc);
+				}
+			}
+
+			if (oElement.hasAttribute('background')) {
+				let sBackground = getAttribute('background');
+				if (sBackground) {
+					oStyle.backgroundImage = 'url("' + sBackground + '")';
+				}
+				oElement.removeAttribute('background');
+			}
+
+			if (oElement.hasAttribute('bgcolor')) {
+				let sBackgroundColor = getAttribute('bgcolor');
+				if (sBackgroundColor) {
+					oStyle.backgroundColor = sBackgroundColor;
+				}
+				oElement.removeAttribute('bgcolor');
+			}
+
+			if (!skipStyle) {
 /*
-		\MailSo\Base\HtmlUtils::ClearHtml(
-			$sHtml, $bHasExternals, $aFoundCIDs, $aContentLocationUrls, $aFoundContentLocationUrls,
-			$fAdditionalExternalFilter, !!$this->Config()->Get('labs', 'try_to_detect_hidden_images', false)
-		);
+				if ('fixed' === oStyle.position) {
+					oStyle.position = 'absolute';
+				}
 */
-		return html;
+				oStyle.removeProperty('behavior');
+				oStyle.removeProperty('cursor');
+
+				const urls = {
+					cid: [],    // 'data-x-style-cid'
+					remote: [], // 'data-x-style-url'
+					broken: []  // 'data-x-broken-style-src'
+				};
+				['backgroundImage', 'listStyleImage', 'content'].forEach(property => {
+					if (oStyle[property]) {
+						let value = oStyle[property],
+							found = value.match(/url\s*\(([^)]+)\)/gi);
+						if (found) {
+							oStyle[property] = null;
+							found = found[0].replace(/^["'\s]+|["'\s]+$/g, '');
+							let lowerUrl = found.toLowerCase();
+							if ('cid:' === lowerUrl.slice(0, 4)) {
+								found = found.slice(4);
+								urls.cid[property] = found
+								result.foundCIDs.push(found);
+							} else if (/http[s]?:\/\//.test(lowerUrl) || '//' === found.slice(0, 2)) {
+								result.hasExternals = true;
+								urls.remote[property] = useProxy ? proxy(found) : found;
+							} else if ('data:image/' === lowerUrl.slice(0, 11)) {
+								oStyle[property] = value;
+							} else {
+								urls.broken[property] = found;
+							}
+						}
+					}
+				});
+//				oStyle.removeProperty('background-image');
+//				oStyle.removeProperty('list-style-image');
+
+				if (urls.cid.length) {
+					oElement.setAttribute('data-x-style-cid', JSON.stringify(urls.cid));
+				}
+				if (urls.remote.length) {
+					oElement.setAttribute('data-x-style-url', JSON.stringify(urls.remote));
+				}
+				if (urls.broken.length) {
+					oElement.setAttribute('data-x-style-broken-urls', JSON.stringify(urls.broken));
+				}
+			}
+
+			if (debug && aAttrsForRemove) {
+				oElement.setAttribute('data-removed-attrs', aAttrsForRemove.join(', '));
+			}
+		});
+
+//		return tpl.content.firstChild;
+		result.html = tpl.innerHTML;
+		return result;
 	},
 
 	// Removes background and color

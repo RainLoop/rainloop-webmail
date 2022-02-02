@@ -4,7 +4,7 @@ import { MessagePriority } from 'Common/EnumsUser';
 import { i18n } from 'Common/Translator';
 
 import { doc } from 'Common/Globals';
-import { encodeHtml, removeColors, plainToHtml } from 'Common/Html';
+import { encodeHtml, removeColors, plainToHtml, clearHtml } from 'Common/Html';
 import { isArray, arrayLength, forEachObjectEntry } from 'Common/Utils';
 import { serverRequestRaw } from 'Common/Links';
 
@@ -82,6 +82,7 @@ export class MessageModel extends AbstractModel {
 			isHtml: false,
 			hasImages: false,
 			hasExternals: false,
+			hasAttachments: false,
 
 			pgpSigned: null,
 			pgpEncrypted: null,
@@ -121,7 +122,6 @@ export class MessageModel extends AbstractModel {
 		this.uid = 0;
 		this.hash = '';
 		this.requestHash = '';
-		this.externalProxy = false;
 		this.emails = [];
 		this.from = new EmailCollectionModel;
 		this.to = new EmailCollectionModel;
@@ -160,6 +160,7 @@ export class MessageModel extends AbstractModel {
 		this.isHtml(false);
 		this.hasImages(false);
 		this.hasExternals(false);
+		this.hasAttachments(false);
 		this.attachments(new AttachmentCollectionModel);
 
 		this.pgpSigned(null);
@@ -176,6 +177,11 @@ export class MessageModel extends AbstractModel {
 
 		this.hasUnseenSubMessage(false);
 		this.hasFlaggedSubMessage(false);
+	}
+
+	spamStatus() {
+		let spam = this.spamResult();
+		return spam ? i18n(this.isSpam() ? 'GLOBAL/SPAM' : 'GLOBAL/NOT_SPAM') + ': ' + spam : '';
 	}
 
 	/**
@@ -393,7 +399,27 @@ export class MessageModel extends AbstractModel {
 				html = removeColors(html);
 			}
 
-			body.innerHTML = html;
+			const contentLocationUrls = {},
+				oAttachments = this.attachments();
+			oAttachments.forEach(oAttachment => {
+				if (oAttachment.cid && oAttachment.contentLocation) {
+					contentLocationUrls[oAttachment.contentId()] = oAttachment.contentLocation;
+				}
+			});
+
+			let result = clearHtml(html, contentLocationUrls);
+			this.hasExternals(result.hasExternals);
+//			this.hasInternals = result.foundCIDs.length || result.foundContentLocationUrls.length;
+			this.hasImages(body.rlHasImages = !!result.hasExternals);
+
+			// Hide valid inline attachments in message view 'attachments' section
+			oAttachments.forEach(oAttachment => {
+				oAttachment.isLinked = result.foundCIDs.includes(oAttachment.contentId())
+					|| result.foundContentLocationUrls.includes(oAttachment.contentLocation)
+			});
+			this.hasAttachments(oAttachments.hasVisible());
+
+			body.innerHTML = result.html;
 
 			body.classList.toggle('html', 1);
 			body.classList.toggle('plain', 0);
@@ -422,12 +448,12 @@ export class MessageModel extends AbstractModel {
 						el.src = attachment.linkPreview();
 					}
 				} else if (data.xStyleCid) {
-					const name = data.xStyleCidName,
-						attachment = findAttachmentByCid(data.xStyleCid);
-					if (attachment && attachment.linkPreview && name) {
-						el.setAttribute('style', name + ": url('" + attachment.linkPreview() + "');"
-							+ (el.getAttribute('style') || ''));
-					}
+					forEachObjectEntry(JSON.parse(data.xStyleCid), (name, cid) => {
+						const attachment = findAttachmentByCid(cid);
+						if (attachment && attachment.linkPreview && name) {
+							el.style[name] = "url('" + attachment.linkPreview() + "')";
+						}
+					});
 				}
 			});
 
@@ -453,7 +479,7 @@ export class MessageModel extends AbstractModel {
 				.replace(email, '$1<a href="mailto:$2">$2</a>');
 
 			this.isHtml(false);
-			this.hasImages(this.hasExternals());
+			this.hasImages(false);
 			this.initView();
 			return true;
 		}
@@ -474,9 +500,6 @@ export class MessageModel extends AbstractModel {
 		});
 	}
 
-	/**
-	 * @param {boolean=} print = false
-	 */
 	viewPopupMessage(print) {
 		const timeStampInUTC = this.dateTimeStampInUTC() || 0,
 			ccLine = this.ccToLine(false),
@@ -501,6 +524,13 @@ export class MessageModel extends AbstractModel {
 		if (print) {
 			setTimeout(() => win.print(), 100);
 		}
+	}
+
+	/**
+	 * @param {boolean=} print = false
+	 */
+	popupMessage() {
+		this.viewPopupMessage(false);
 	}
 
 	printMessage() {
@@ -539,7 +569,7 @@ export class MessageModel extends AbstractModel {
 			this.priority(message.priority());
 
 			this.hasExternals(message.hasExternals());
-			this.externalProxy = message.externalProxy;
+			this.hasAttachments(message.hasAttachments());
 
 			this.emails = message.emails;
 
@@ -573,7 +603,7 @@ export class MessageModel extends AbstractModel {
 			this.hasImages(false);
 			body.rlHasImages = false;
 
-			let attr = this.externalProxy ? 'data-x-additional-src' : 'data-x-src';
+			let attr = 'data-x-src';
 			body.querySelectorAll('[' + attr + ']').forEach(node => {
 				if (node.matches('img')) {
 					node.loading = 'lazy';
@@ -581,11 +611,8 @@ export class MessageModel extends AbstractModel {
 				node.src = node.getAttribute(attr);
 			});
 
-			attr = this.externalProxy ? 'data-x-additional-style-url' : 'data-x-style-url';
-			body.querySelectorAll('[' + attr + ']').forEach(node => {
-				node.setAttribute('style', ((node.getAttribute('style')||'')
-					+ ';' + node.getAttribute(attr))
-					.replace(/^[;\s]+/,''));
+			body.querySelectorAll('[data-x-style-url]').forEach(node => {
+				forEachObjectEntry(JSON.parse(node.dataset.xStyleUrl), (name, url) => node.style[name] = "url('" + url + "')");
 			});
 		}
 	}

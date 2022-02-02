@@ -14,7 +14,16 @@ import {
 	MessageSetAction
 } from 'Common/EnumsUser';
 
-import { $htmlCL, leftPanelDisabled, keyScopeReal, moveAction, Settings, getFullscreenElement, exitFullscreen } from 'Common/Globals';
+import {
+	elementById,
+	$htmlCL,
+	leftPanelDisabled,
+	keyScopeReal,
+	moveAction,
+	Settings,
+	getFullscreenElement,
+	exitFullscreen
+} from 'Common/Globals';
 
 import { arrayLength, inFocus } from 'Common/Utils';
 import { mailToHelper, showMessageComposer, initFullscreen } from 'Common/UtilsUser';
@@ -43,54 +52,58 @@ import { AbstractViewRight } from 'Knoin/AbstractViews';
 import { PgpUserStore } from 'Stores/User/Pgp';
 import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 
-const currentMessage = () => MessageUserStore.message();
-
 import PostalMime from '../../../../vendors/postal-mime/src/postal-mime.js';
 import { AttachmentModel } from 'Model/Attachment';
 
-const mimeToMessage = (data, message) => {
-	// TODO: Check multipart/signed
-	const headers = data.split(/\r?\n\r?\n/)[0];
-	if (/Content-Type:.+; boundary=/.test(headers)) {
-		// https://github.com/postalsys/postal-mime
-		(new PostalMime).parse(data).then(result => {
-			let html = result.html,
-				regex = /^<+|>+$/g;
-			result.attachments.forEach(data => {
-				let attachment = new AttachmentModel;
-				attachment.mimeType = data.mimeType;
-				attachment.fileName = data.filename;
-				attachment.content = data.content; // ArrayBuffer
-				attachment.cid = data.contentId || '';
-				// Parse inline attachments from result.attachments
-				if (attachment.cid) {
-					if (html) {
-						let cid = 'cid:' + attachment.cid.replace(regex, ''),
-							b64 = 'data:' + data.mimeType + ';base64,' + btoa(String.fromCharCode(...new Uint8Array(data.content)));
-						html = html
-							.replace('src="' + cid + '"', 'src="' + b64 + '"')
-							.replace("src='" + cid + "'", "src='" + b64 + "'");
+const
+	oMessageScrollerDom = () => elementById('messageItem') || {},
+
+	currentMessage = () => MessageUserStore.message(),
+
+	mimeToMessage = (data, message) => {
+		// TODO: Check multipart/signed
+		const headers = data.split(/\r?\n\r?\n/)[0];
+		if (/Content-Type:.+; boundary=/.test(headers)) {
+			// https://github.com/postalsys/postal-mime
+			(new PostalMime).parse(data).then(result => {
+				let html = result.html,
+					regex = /^<+|>+$/g;
+				result.attachments.forEach(data => {
+					let attachment = new AttachmentModel;
+					attachment.mimeType = data.mimeType;
+					attachment.fileName = data.filename;
+					attachment.content = data.content; // ArrayBuffer
+					attachment.cid = data.contentId || '';
+					// Parse inline attachments from result.attachments
+					if (attachment.cid) {
+						if (html) {
+							let cid = 'cid:' + attachment.cid.replace(regex, ''),
+								b64 = 'data:' + data.mimeType + ';base64,' + btoa(String.fromCharCode(...new Uint8Array(data.content)));
+							html = html
+								.replace('src="' + cid + '"', 'src="' + b64 + '"')
+								.replace("src='" + cid + "'", "src='" + b64 + "'");
+						}
 					}
-				}
 //					data.disposition
 //					data.related = true;
-				message.attachments.push(attachment);
+					message.attachments.push(attachment);
+				});
+				message.hasAttachments(message.attachments.hasVisible());
+//				result.headers;
+				// TODO: strip script tags and all other security that PHP also does
+				message.plain(result.text || '');
+				if (html) {
+					message.html(html.replace(/<\/?script[\s\S]*?>/gi, '') || '');
+					message.viewHtml();
+				} else {
+					message.viewPlain();
+				}
 			});
-//			result.headers;
-			// TODO: strip script tags and all other security that PHP also does
-			message.plain(result.text || '');
-			if (html) {
-				message.html(html.replace(/<\/?script[\s\S]*?>/gi, '') || '');
-				message.viewHtml();
-			} else {
-				message.viewPlain();
-			}
-		});
-		return;
-	}
-	message.plain(data);
-	message.viewPlain();
-};
+			return;
+		}
+		message.plain(data);
+		message.viewPlain();
+	};
 
 export class MailMessageView extends AbstractViewRight {
 	constructor() {
@@ -112,14 +125,17 @@ export class MailMessageView extends AbstractViewRight {
 					}
 				}, this.messageVisibility);
 
-		this.oMessageScrollerDom = null;
-
 		this.addObservables({
 			showAttachmentControls: false,
 			downloadAsZipLoading: false,
 			lastReplyAction_: '',
 			showFullInfo: '1' === Local.get(ClientSideKeyName.MessageHeaderFullInfo),
-			moreDropdownTrigger: false
+			moreDropdownTrigger: false,
+
+			// viewer
+			viewFromShort: '',
+			viewFromDkimData: ['none', ''],
+			viewToShort: ''
 		});
 
 		this.moveAction = moveAction;
@@ -161,32 +177,7 @@ export class MailMessageView extends AbstractViewRight {
 		this.notSpamCommand = createCommandActionHelper(FolderType.NotSpam, true);
 
 		// viewer
-
-		this.viewFolder = '';
-		this.viewUid = '';
 		this.viewHash = '';
-		this.addObservables({
-			viewSubject: '',
-			viewFromShort: '',
-			viewFromDkimData: ['none', ''],
-			viewToShort: '',
-			viewFrom: '',
-			viewTo: '',
-			viewCc: '',
-			viewBcc: '',
-			viewReplyTo: '',
-			viewTimeStamp: 0,
-			viewSize: '',
-			viewSpamScore: 0,
-			viewSpamStatus: '',
-			viewLineAsCss: '',
-			viewViewLink: '',
-			viewUnsubscribeLink: '',
-			viewDownloadLink: '',
-			viewIsImportant: false,
-			viewIsFlagged: false,
-			hasVirus: null
-		});
 
 		this.addComputables({
 			allowAttachmentControls: () => this.attachmentsActions.length && Settings.capa(Capa.AttachmentsActions),
@@ -228,9 +219,6 @@ export class MailMessageView extends AbstractViewRight {
 				return '';
 			},
 
-			pgpSigned: () => currentMessage() && !!currentMessage().pgpSigned(),
-			pgpEncrypted: () => currentMessage()
-				&& !!(currentMessage().pgpEncrypted() || currentMessage().isPgpEncrypted()),
 			pgpSupported: () => currentMessage() && PgpUserStore.isSupported(),
 
 			messageListOrViewLoading:
@@ -258,36 +246,13 @@ export class MailMessageView extends AbstractViewRight {
 						this.scrollMessageToTop();
 					}
 
-					let spam = message.spamResult();
-
-					this.viewFolder = message.folder;
-					this.viewUid = message.uid;
 					this.viewHash = message.hash;
-					this.viewSubject(message.subject());
 					this.viewFromShort(message.fromToLine(true, true));
 					this.viewFromDkimData(message.fromDkimData());
 					this.viewToShort(message.toToLine(true, true));
-					this.viewFrom(message.fromToLine());
-					this.viewTo(message.toToLine());
-					this.viewCc(message.ccToLine());
-					this.viewBcc(message.bccToLine());
-					this.viewReplyTo(message.replyToToLine());
-					this.viewTimeStamp(message.dateTimeStampInUTC());
-					this.viewSize(message.friendlySize());
-					this.viewSpamScore(message.spamScore());
-					this.viewSpamStatus(spam ? i18n(message.isSpam() ? 'GLOBAL/SPAM' : 'GLOBAL/NOT_SPAM') + ': ' + spam : '');
-					this.viewLineAsCss(message.lineAsCss());
-					this.viewViewLink(message.viewLink());
-					this.viewUnsubscribeLink(message.getFirstUnsubsribeLink());
-					this.viewDownloadLink(message.downloadLink());
-					this.viewIsImportant(message.isImportant());
-					this.viewIsFlagged(message.isFlagged());
-					this.hasVirus(message.hasVirus());
 				} else {
 					MessageUserStore.selectorMessageSelected(null);
 
-					this.viewFolder = '';
-					this.viewUid = '';
 					this.viewHash = '';
 
 					this.scrollMessageToTop();
@@ -301,11 +266,6 @@ export class MailMessageView extends AbstractViewRight {
 					$htmlCL.toggle('rl-message-fullscreen', value);
 				}
 			}
-		});
-
-		MessageUserStore.messageViewTrigger.subscribe(() => {
-			const message = currentMessage();
-			this.viewIsFlagged(message ? message.isFlagged() : false);
 		});
 
 		this.lastReplyAction(Local.get(ClientSideKeyName.LastReplyAction) || ComposeType.Reply);
@@ -357,8 +317,6 @@ export class MailMessageView extends AbstractViewRight {
 	}
 
 	onBuild(dom) {
-		this.oMessageScrollerDom = dom.querySelector('.messageItem');
-
 		this.fullScreenMode.subscribe(value =>
 			value && currentMessage() && AppUserStore.focusedState(Scope.MessageView));
 
@@ -533,7 +491,7 @@ export class MailMessageView extends AbstractViewRight {
 		// change focused state
 		shortcuts.add('arrowleft', '', Scope.MessageView, () => {
 			if (!this.fullScreenMode() && currentMessage() && SettingsUserStore.usePreviewPane()
-			 && !this.oMessageScrollerDom.scrollLeft) {
+			 && !oMessageScrollerDom().scrollLeft) {
 				AppUserStore.focusedState(Scope.MessageList);
 				return false;
 			}
@@ -606,11 +564,11 @@ export class MailMessageView extends AbstractViewRight {
 	}
 
 	scrollMessageToTop() {
-		this.oMessageScrollerDom.scrollTop = (50 < this.oMessageScrollerDom.scrollTop) ? 50 : 0;
+		oMessageScrollerDom().scrollTop = (50 < oMessageScrollerDom().scrollTop) ? 50 : 0;
 	}
 
 	scrollMessageToLeft() {
-		this.oMessageScrollerDom.scrollLeft = 0;
+		oMessageScrollerDom().scrollLeft = 0;
 	}
 
 	downloadAsZip() {
@@ -637,7 +595,7 @@ export class MailMessageView extends AbstractViewRight {
 	 * @returns {void}
 	 */
 	showImages() {
-		currentMessage() && currentMessage().showExternalImages();
+		currentMessage().showExternalImages();
 	}
 
 	/**
@@ -654,7 +612,7 @@ export class MailMessageView extends AbstractViewRight {
 	 */
 	readReceipt() {
 		let oMessage = currentMessage()
-		if (oMessage && oMessage.readReceipt()) {
+		if (oMessage.readReceipt()) {
 			Remote.request('SendReadReceiptMessage', null, {
 				MessageFolder: oMessage.folder,
 				MessageUid: oMessage.uid,
@@ -672,41 +630,39 @@ export class MailMessageView extends AbstractViewRight {
 		}
 	}
 
-	pgpDecrypt(self) {
-		const message = self.message();
-		message && PgpUserStore.decrypt(message).then(result => {
+	pgpDecrypt() {
+		const oMessage = currentMessage();
+		PgpUserStore.decrypt(oMessage).then(result => {
 			if (result && result.data) {
-				mimeToMessage(result.data, message);
+				mimeToMessage(result.data, oMessage);
 			}
 		});
 	}
 
-	pgpVerify(self) {
-		if (self.pgpSigned()) {
-			const message = self.message(),
-				sender = message && message.from[0].email;
-			PgpUserStore.hasPublicKeyForEmails([message.from[0].email]).then(mode => {
+	pgpVerify() {
+		const oMessage = currentMessage();
+		if (oMessage.pgpSigned()) {
+			const sender = oMessage.from[0].email;
+			PgpUserStore.hasPublicKeyForEmails([oMessage.from[0].email]).then(mode => {
 				if ('gnupg' === mode) {
-					let params = message.pgpSigned(); // { BodyPartId: "1", SigPartId: "2", MicAlg: "pgp-sha256" }
-					if (params) {
-						params.Folder = message.folder;
-						params.Uid = message.uid;
-						rl.app.Remote.post('MessagePgpVerify', null, params)
-							.then(data => {
-								// TODO
-								console.dir(data);
-							})
-							.catch(error => {
-								// TODO
-								console.dir(error);
-							});
-					}
+					let params = oMessage.pgpSigned(); // { BodyPartId: "1", SigPartId: "2", MicAlg: "pgp-sha256" }
+					params.Folder = oMessage.folder;
+					params.Uid = oMessage.uid;
+					rl.app.Remote.post('MessagePgpVerify', null, params)
+						.then(data => {
+							// TODO
+							console.dir(data);
+						})
+						.catch(error => {
+							// TODO
+							console.dir(error);
+						});
 				} else if ('openpgp' === mode) {
 					const publicKey = OpenPGPUserStore.getPublicKeyFor(sender);
-					OpenPGPUserStore.verify(message.plain(), null/*detachedSignature*/, publicKey).then(result => {
+					OpenPGPUserStore.verify(oMessage.plain(), null/*detachedSignature*/, publicKey).then(result => {
 						if (result) {
-							message.plain(result.data);
-							message.viewPlain();
+							oMessage.plain(result.data);
+							oMessage.viewPlain();
 							console.dir({signatures:result.signatures});
 						}
 /*
@@ -714,7 +670,7 @@ export class MailMessageView extends AbstractViewRight {
 								i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
 									USER: validKey.user + ' (' + validKey.id + ')'
 								});
-								message.getText()
+								oMessage.getText()
 							} else {
 								const keyIds = arrayLength(signingKeyIds) ? signingKeyIds : null,
 									additional = keyIds

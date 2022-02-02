@@ -339,10 +339,17 @@ class ServiceActions
 		if (!empty($sData) && $this->Config()->Get('labs', 'use_local_proxy_for_external_images', false))
 		{
 			$this->oActions->verifyCacheByKey($sData);
-
 			$aData = Utils::DecodeKeyValuesQ($sData);
+			if (!\is_array($aData) && $this->oActions->GetAccount()) {
+				$aData = [
+//					'Rnd' => md5(\microtime(true)),
+					'Token' => Utils::GetConnectionToken(),
+					'Url' => \MailSo\Base\Utils::UrlSafeBase64Decode($sData)
+				];
+			}
 			if (\is_array($aData) && !empty($aData['Token']) && !empty($aData['Url']) && $aData['Token'] === Utils::GetConnectionToken())
 			{
+				\header('X-Content-Location: '.$aData['Url']);
 				$iCode = 404;
 				$sContentType = '';
 				$mResult = $this->oHttp->GetUrlAsString($aData['Url'], 'SnappyMail External Proxy', $sContentType, $iCode);
@@ -355,6 +362,8 @@ class ServiceActions
 					$this->oActions->cacheByKey($sData);
 
 					\header('Content-Type: '.$sContentType);
+					\header('Cache-Control: public');
+					\header('Expires: '.\gmdate('D, j M Y H:i:s', 2592000 + \time()).' UTC');
 					echo $mResult;
 				}
 			}

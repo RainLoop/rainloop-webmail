@@ -90,7 +90,7 @@ dialog header, dialog footer,
 
 .legend,
 #V-PopupsCompose .b-header .e-identity,
-.messageView .messageItem {
+.messageView #messageItem {
 	color: var(--main-color);
 }
 
@@ -101,17 +101,17 @@ dialog header, dialog footer,
 
 .g-ui-link,
 .messageView .messageItemHeader .informationShort a,
-.messageView .messageItem .bodyText .b-text-part a {
+.messageView #messageItem .bodyText .b-text-part a {
 	color: #6AE;
 }
 
 .messageView .messageItemHeader,
-.messageView .messageItem .pgpEncrypted,
-.messageView .messageItem .pgpSigned,
-.messageView .messageItem .readReceipt,
-.messageView .messageItem .showImages,
-.messageView .messageItem .attachmentsPlace,
-.messageView .messageItem .attachmentsControls {
+.messageView #messageItem .pgpEncrypted,
+.messageView #messageItem .pgpSigned,
+.messageView #messageItem .readReceipt,
+.messageView #messageItem .showImages,
+.messageView #messageItem .attachmentsPlace,
+.messageView #messageItem .attachmentsControls {
 	background-color: #222;
 	border-bottom-color: #444;
 }

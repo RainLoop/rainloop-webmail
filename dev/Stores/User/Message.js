@@ -374,10 +374,6 @@ export const MessageUserStore = new class {
 							+ (message.isPgpEncrypted() ? ' openpgp-encrypted' : '')
 							+ '">'
 							+ '</div>');
-
-						body.rlHasImages = !!json.HasExternals;
-						message.hasImages(body.rlHasImages);
-
 						message.body = body;
 						if (!SettingsUserStore.viewHTML() || !message.viewHtml()) {
 							message.viewPlain();
