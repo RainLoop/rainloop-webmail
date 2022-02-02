@@ -7,6 +7,8 @@ import ko from 'ko';
 import { arrayLength } from 'Common/Utils';
 import { delegateRunOnDestroy } from 'Common/UtilsUser';
 
+import Remote from 'Remote/User/Fetch';
+
 import { showScreenPopup } from 'Knoin/Knoin';
 import { OpenPgpKeyPopupView } from 'View/Popup/OpenPgpKey';
 
@@ -201,14 +203,37 @@ export const OpenPGPUserStore = new class {
 		}
 	}
 
-	async verify(message, detachedSignature, publicKey) {
-//		message.getSigningKeyIDs();
-		return await openpgp.verify({
-			message,
-			verificationKeys: publicKey,
-//			expectSigned: true, // !!detachedSignature
-			signature: detachedSignature
-		});
+	/**
+	 * https://docs.openpgpjs.org/#sign-and-verify-cleartext-messages
+	 */
+	async verify(message) {
+		const data = message.pgpSigned(), // { BodyPartId: "1", SigPartId: "2", MicAlg: "pgp-sha256" }
+			publicKey = this.publicKeys().find(key => key.emails.includes(message.from[0].email));
+		if (data && publicKey) {
+			data.Folder = message.folder;
+			data.Uid = message.uid;
+			data.GnuPG = 0;
+			let response = await Remote.post('MessagePgpVerify', null, data);
+			if (response) {
+				const signature = response.Result.signature
+					? await openpgp.readSignature({ armoredSignature: response.Result.signature })
+					: null;
+				const signedMessage = signature
+					? await openpgp.createMessage({ text: response.Result.text })
+					: await openpgp.readCleartextMessage({ cleartextMessage: response.Result.text });
+//				(signature||signedMessage).getSigningKeyIDs();
+				let result = await openpgp.verify({
+					message: signedMessage,
+					verificationKeys: publicKey.key,
+//					expectSigned: true, // !!detachedSignature
+					signature: signature
+				});
+				return {
+					fingerprint: publicKey.fingerprint,
+					success: result && !!result.signatures.length
+				};
+			}
+		}
 	}
 
 };

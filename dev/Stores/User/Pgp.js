@@ -180,6 +180,7 @@ export const PgpUserStore = new class {
 		if (/-----BEGIN PGP SIGNED MESSAGE-----/.test(plain) && /-----BEGIN PGP SIGNATURE-----/.test(plain)) {
 			let result = await OpenPGPUserStore.verify(plain);
 			console.dir(result);
+			return;
 		}
 		if (message.pgpSigned()) {
 			const sender = message.from[0].email;
@@ -188,33 +189,10 @@ export const PgpUserStore = new class {
 				return GnuPGUserStore.verify(message);
 			}
 			if ('openpgp' === mode) {
-				const publicKey = OpenPGPUserStore.getPublicKeyFor(sender);
-				OpenPGPUserStore.verify(plain, null/*detachedSignature*/, publicKey).then(result => {
-					if (result) {
-						message.plain(result.data);
-						message.viewPlain();
-						console.dir({signatures:result.signatures});
-					}
-/*
-						if (validKey) {
-							i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
-								USER: validKey.user + ' (' + validKey.id + ')'
-							});
-							message.getText()
-						} else {
-							const keyIds = arrayLength(signingKeyIds) ? signingKeyIds : null,
-								additional = keyIds
-									? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(v => v).join(', ')
-									: '';
-
-							i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') + (additional ? ' (' + additional + ')' : '');
-						}
-*/
-				});
+				return OpenPGPUserStore.verify(message);
 			}
 		}
 	}
-
 
 	/**
 	 * Creates an iframe with an editor for a new encrypted mail.

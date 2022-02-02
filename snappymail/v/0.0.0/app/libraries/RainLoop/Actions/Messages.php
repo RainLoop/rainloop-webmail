@@ -700,45 +700,47 @@ trait Messages
 			];
 		}
 
-		$GPG = $this->GnuPG();
-		if ($GPG) {
-			$info = $this->GnuPG()->verify($result['text'], $result['signature'])[0];
-//			$info = $this->GnuPG()->verifyStream($fp, $result['signature'])[0];
+		if ($this->GetActionParam('GnuPG', 1)) {
+			$GPG = $this->GnuPG();
+			if ($GPG) {
+				$info = $this->GnuPG()->verify($result['text'], $result['signature'])[0];
+//				$info = $this->GnuPG()->verifyStream($fp, $result['signature'])[0];
 
-			/**
-			 * https://code.woboq.org/qt5/include/gpg-error.h.html
-			 * status:
-				0 = GPG_ERR_NO_ERROR
-				9 = GPG_ERR_NO_PUBKEY
-				117440513 = General error
-				117440520 = Bad signature
-			 */
+				/**
+				* https://code.woboq.org/qt5/include/gpg-error.h.html
+				* status:
+					0 = GPG_ERR_NO_ERROR
+					9 = GPG_ERR_NO_PUBKEY
+					117440513 = General error
+					117440520 = Bad signature
+				*/
 
-			$summary = [
-				GNUPG_SIGSUM_VALID => 'The signature is fully valid.',
-				GNUPG_SIGSUM_GREEN => 'The signature is good but one might want to display some extra information. Check the other bits.',
-				GNUPG_SIGSUM_RED => 'The signature is bad. It might be useful to check other bits and display more information, i.e. a revoked certificate might not render a signature invalid when the message was received prior to the cause for the revocation.',
-				GNUPG_SIGSUM_KEY_REVOKED => 'The key or at least one certificate has been revoked.',
-				GNUPG_SIGSUM_KEY_EXPIRED => 'The key or one of the certificates has expired. It is probably a good idea to display the date of the expiration.',
-				GNUPG_SIGSUM_SIG_EXPIRED => 'The signature has expired.',
-				GNUPG_SIGSUM_KEY_MISSING => 'Can’t verify due to a missing key or certificate.',
-				GNUPG_SIGSUM_CRL_MISSING => 'The CRL (or an equivalent mechanism) is not available.',
-				GNUPG_SIGSUM_CRL_TOO_OLD => 'Available CRL is too old.',
-				GNUPG_SIGSUM_BAD_POLICY => 'A policy requirement was not met.',
-				GNUPG_SIGSUM_SYS_ERROR => 'A system error occurred.',
-//				GNUPG_SIGSUM_TOFU_CONFLICT = 'A TOFU conflict was detected.',
-			];
+				$summary = [
+					GNUPG_SIGSUM_VALID => 'The signature is fully valid.',
+					GNUPG_SIGSUM_GREEN => 'The signature is good but one might want to display some extra information. Check the other bits.',
+					GNUPG_SIGSUM_RED => 'The signature is bad. It might be useful to check other bits and display more information, i.e. a revoked certificate might not render a signature invalid when the message was received prior to the cause for the revocation.',
+					GNUPG_SIGSUM_KEY_REVOKED => 'The key or at least one certificate has been revoked.',
+					GNUPG_SIGSUM_KEY_EXPIRED => 'The key or one of the certificates has expired. It is probably a good idea to display the date of the expiration.',
+					GNUPG_SIGSUM_SIG_EXPIRED => 'The signature has expired.',
+					GNUPG_SIGSUM_KEY_MISSING => 'Can’t verify due to a missing key or certificate.',
+					GNUPG_SIGSUM_CRL_MISSING => 'The CRL (or an equivalent mechanism) is not available.',
+					GNUPG_SIGSUM_CRL_TOO_OLD => 'Available CRL is too old.',
+					GNUPG_SIGSUM_BAD_POLICY => 'A policy requirement was not met.',
+					GNUPG_SIGSUM_SYS_ERROR => 'A system error occurred.',
+//					GNUPG_SIGSUM_TOFU_CONFLICT = 'A TOFU conflict was detected.',
+				];
 
-			// Verified, so no need to return $result['text'] and $result['signature']
-			$result = [
-				'fingerprint' => $info['fingerprint'],
-				'validity' => $info['validity'],
-				'status' => $info['status'],
-				'summary' => $info['summary'],
-				'message' => \implode("\n", \array_filter($summary, function($k) use ($info) {
-					return $info['summary'] & $k;
-				}, ARRAY_FILTER_USE_KEY))
-			];
+				// Verified, so no need to return $result['text'] and $result['signature']
+				$result = [
+					'fingerprint' => $info['fingerprint'],
+					'validity' => $info['validity'],
+					'status' => $info['status'],
+					'summary' => $info['summary'],
+					'message' => \implode("\n", \array_filter($summary, function($k) use ($info) {
+						return $info['summary'] & $k;
+					}, ARRAY_FILTER_USE_KEY))
+				];
+			}
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $result);

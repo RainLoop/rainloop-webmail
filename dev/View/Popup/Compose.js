@@ -457,9 +457,9 @@ class ComposePopupView extends AbstractViewPopup {
 						data: params.Text,
 					};
 				if ('openpgp' == sign) {
-					let privateKey;
+					let privateKey, sender = this.currentIdentity().email();
 					try {
-						const key = OpenPGPUserStore.getPrivateKeyFor(this.currentIdentity().email());
+						const key = OpenPGPUserStore.getPrivateKeyFor(sender);
 						if (key) {
 							key.decrypt(window.prompt('Passphrase'));
 							cfg.privateKey = privateKey = key;
@@ -470,7 +470,7 @@ class ComposePopupView extends AbstractViewPopup {
 					}
 					if (!privateKey) {
 						this.sendError(true);
-						this.sendErrorDesc(i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND'));
+						this.sendErrorDesc(i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND_FOR', { EMAIL: sender }));
 						return;
 					}
 				}

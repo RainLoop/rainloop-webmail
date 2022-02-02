@@ -641,10 +641,26 @@ export class MailMessageView extends AbstractViewRight {
 	pgpVerify(/*self, event*/) {
 		const oMessage = currentMessage()/*, ctrl = event.target.closest('.openpgp-control')*/;
 		PgpUserStore.verify(oMessage).then(result => {
-			console.dir({result:result});
 			if (result) {
 				oMessage.pgpVerified(result);
 			}
+/*
+			if (result && result.success) {
+				i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
+					USER: validKey.user + ' (' + validKey.id + ')'
+				});
+				message.getText()
+			} else {
+				const keyIds = arrayLength(signingKeyIds) ? signingKeyIds : null,
+					additional = keyIds
+						? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(v => v).join(', ')
+						: '';
+
+				i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
+					ERROR: 'message'
+				}) + (additional ? ' (' + additional + ')' : '');
+			}
+*/
 		});
 	}
 
