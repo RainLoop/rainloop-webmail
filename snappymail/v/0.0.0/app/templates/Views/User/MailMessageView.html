@@ -268,7 +268,7 @@
 							<span data-icon="🔒" data-i18n="MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC"></span>
 							<button class="btn" data-bind="visible: pgpSupported, click: pgpDecrypt" data-i18n="OPENPGP/BUTTON_DECRYPT"></button>
 						</div>
-						<div class="openpgp-control signed" data-bind="visible: message().pgpSigned()">
+						<div class="openpgp-control signed" data-bind="visible: message().pgpSigned(), css: {'success': message().pgpVerified() && message().pgpVerified().success, 'error': message().pgpVerified() && !message().pgpVerified().success}">
 							<span data-icon="✍" data-i18n="MESSAGE/PGP_SIGNED_MESSAGE_DESC"></span>
 							<button class="btn" data-bind="visible: pgpSupported, click: pgpVerify" data-i18n="MESSAGE/BUTTON_PGP_VERIFY"></button>
 						</div>

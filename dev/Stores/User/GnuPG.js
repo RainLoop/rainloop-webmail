@@ -184,7 +184,21 @@ export const GnuPGUserStore = new class {
 		}
 	}
 
-	verify(/*message, fCallback*/) {
+	async verify(message) {
+		let data = message.pgpSigned(); // { BodyPartId: "1", SigPartId: "2", MicAlg: "pgp-sha256" }
+		if (data) {
+//			const sender = message.from[0].email;
+//			let mode = await this.hasPublicKeyForEmails([sender]);
+			data.Folder = message.folder;
+			data.Uid = message.uid;
+			let response = await Remote.post('MessagePgpVerify', null, data);
+			if (response && response.Result) {
+				return {
+					fingerprint: response.Result.fingerprint,
+					success: 0 == response.Result.status // GOODSIG
+				};
+			}
+		}
 	}
 
 };

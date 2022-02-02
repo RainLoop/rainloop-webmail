@@ -32,15 +32,6 @@ const
 		return result;
 	},
 
-	SignedVerifyStatus = {
-		UnknownPublicKeys: -4,
-		UnknownPrivateKey: -3,
-		Unverified: -2,
-		Error: -1,
-		None: 0,
-		Success: 1
-	},
-
 	replyHelper = (emails, unic, localEmails) => {
 		emails.forEach(email => {
 			if (undefined === unic[email.email]) {
@@ -87,8 +78,7 @@ export class MessageModel extends AbstractModel {
 			pgpSigned: null,
 			pgpEncrypted: null,
 			isPgpEncrypted: false,
-			pgpSignedVerifyStatus: SignedVerifyStatus.None,
-			pgpSignedVerifyUser: '',
+			pgpVerified: null,
 
 			readReceipt: '',
 
@@ -166,8 +156,7 @@ export class MessageModel extends AbstractModel {
 		this.pgpSigned(null);
 		this.pgpEncrypted(null);
 		this.isPgpEncrypted(false);
-		this.pgpSignedVerifyStatus(SignedVerifyStatus.None);
-		this.pgpSignedVerifyUser('');
+		this.pgpVerified(null);
 
 		this.priority(MessagePriority.Normal);
 		this.readReceipt('');

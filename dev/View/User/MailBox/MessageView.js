@@ -50,7 +50,6 @@ import { decorateKoCommands, createCommand } from 'Knoin/Knoin';
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 import { PgpUserStore } from 'Stores/User/Pgp';
-import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 
 import PostalMime from '../../../../vendors/postal-mime/src/postal-mime.js';
 import { AttachmentModel } from 'Model/Attachment';
@@ -61,11 +60,12 @@ const
 	currentMessage = () => MessageUserStore.message(),
 
 	mimeToMessage = (data, message) => {
-		// TODO: Check multipart/signed
+		// TODO: Check multipart/signed application/pgp-signature application/pgp-keys
 		const headers = data.split(/\r?\n\r?\n/)[0];
 		if (/Content-Type:.+; boundary=/.test(headers)) {
 			// https://github.com/postalsys/postal-mime
 			(new PostalMime).parse(data).then(result => {
+				// TODO: multipart/signed
 				let html = result.html,
 					regex = /^<+|>+$/g;
 				result.attachments.forEach(data => {
@@ -90,7 +90,6 @@ const
 				});
 				message.hasAttachments(message.attachments().hasVisible());
 //				result.headers;
-				// TODO: strip script tags and all other security that PHP also does
 				message.plain(result.text || '');
 				if (html) {
 					message.html(html.replace(/<\/?script[\s\S]*?>/gi, '') || '');
@@ -639,51 +638,14 @@ export class MailMessageView extends AbstractViewRight {
 		});
 	}
 
-	pgpVerify() {
-		const oMessage = currentMessage();
-		if (oMessage.pgpSigned()) {
-			const sender = oMessage.from[0].email;
-			PgpUserStore.hasPublicKeyForEmails([oMessage.from[0].email]).then(mode => {
-				if ('gnupg' === mode) {
-					let params = oMessage.pgpSigned(); // { BodyPartId: "1", SigPartId: "2", MicAlg: "pgp-sha256" }
-					params.Folder = oMessage.folder;
-					params.Uid = oMessage.uid;
-					rl.app.Remote.post('MessagePgpVerify', null, params)
-						.then(data => {
-							// TODO
-							console.dir(data);
-						})
-						.catch(error => {
-							// TODO
-							console.dir(error);
-						});
-				} else if ('openpgp' === mode) {
-					const publicKey = OpenPGPUserStore.getPublicKeyFor(sender);
-					OpenPGPUserStore.verify(oMessage.plain(), null/*detachedSignature*/, publicKey).then(result => {
-						if (result) {
-							oMessage.plain(result.data);
-							oMessage.viewPlain();
-							console.dir({signatures:result.signatures});
-						}
-/*
-							if (validKey) {
-								i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
-									USER: validKey.user + ' (' + validKey.id + ')'
-								});
-								oMessage.getText()
-							} else {
-								const keyIds = arrayLength(signingKeyIds) ? signingKeyIds : null,
-									additional = keyIds
-										? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(v => v).join(', ')
-										: '';
-
-								i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') + (additional ? ' (' + additional + ')' : '');
-							}
-*/
-					});
-				}
-			});
-		}
+	pgpVerify(/*self, event*/) {
+		const oMessage = currentMessage()/*, ctrl = event.target.closest('.openpgp-control')*/;
+		PgpUserStore.verify(oMessage).then(result => {
+			console.dir({result:result});
+			if (result) {
+				oMessage.pgpVerified(result);
+			}
+		});
 	}
 
 }

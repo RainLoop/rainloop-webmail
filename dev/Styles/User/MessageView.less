@@ -436,14 +436,6 @@ html.rl-no-preview-pane {
 		margin: 0.5em;
 		padding: 0.5em;
 
-		&.success {
-			color: green;
-		}
-
-		&.error {
-			color: red;
-		}
-
 		span {
 			margin-right: 1em;
 		}
@@ -459,6 +451,19 @@ html.rl-no-preview-pane {
 		&.signed {
 			border: 1px dashed #FA0;
 			color: #FA0;
+		}
+
+		&.success {
+			border-color: #090;
+			color: #090;
+		}
+		&.error {
+			border-color: #F00;
+			color: #F00;
+		}
+		&.error button,
+		&.success button {
+			display: none;
 		}
 	}
 	.b-text-part > iframe {
