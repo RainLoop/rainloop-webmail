@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "Cerrar componer"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "No hay una clave privada para el email %EMAIL%",
 		"GOOD_SIGNATURE": "Buena firma de %USER%",
 		"PGP_ERROR": "Error OpenPGP: %ERROR%"
 	},

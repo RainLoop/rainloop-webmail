@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "Chiudi finestra di scrittura"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "Nessuna chiave privata trovata per l'indirizzo email \"%EMAIL%\"\n",
 		"GOOD_SIGNATURE": "Firma valida da %USER%",
 		"PGP_ERROR": "Errore di OpenPGP: %ERROR%"
 	},

@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "Затвори създаването"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "Няма частен ключ за \"%EMAIL%\"",
 		"GOOD_SIGNATURE": "Валиден подпис за %USER%",
 		"PGP_ERROR": "OpenPGP грешка: %ERROR%"
 	},

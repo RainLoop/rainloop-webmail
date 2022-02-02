@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "Zamknij okno tworzenia wiadomości"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "Nie znaleziono klucza prywatnego dla adresu \"%EMAIL%\"",
 		"GOOD_SIGNATURE": "Poprawnie podpisana przez %USER%",
 		"PGP_ERROR": "Błąd OpenPGP: %ERROR%"
 	},

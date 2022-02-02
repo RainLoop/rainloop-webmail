@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "Lukk ny melding"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "Fant ingen privatnøkler for «%EMAIL%»",
 		"GOOD_SIGNATURE": "Gyldig signatur fra %USER%",
 		"PGP_ERROR": "OpenPGP-feil: %ERROR%"
 	},

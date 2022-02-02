@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "إغلاق الرسالة"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "لم يتم إيجاد المفتاح الخاص لـ \"%EMAIL%\" email",
 		"GOOD_SIGNATURE": "توقيع جيد من  %USER%",
 		"PGP_ERROR": "OpenPGP error: %ERROR%"
 	},

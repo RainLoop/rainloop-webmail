@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "Luk forfatter mode"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "Ingen privat nøgle fundet tilhørende \"%EMAIL%\"",
 		"GOOD_SIGNATURE": "Accepteret signatur for %USER\"",
 		"PGP_ERROR": "OpenPGP fejl: %ERROR%"
 	},

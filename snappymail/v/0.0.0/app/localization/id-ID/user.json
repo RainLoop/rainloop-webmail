@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "Tutup buat pesan"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "Tidak ada kunci privat untuk \"%EMAIL%\" email",
 		"GOOD_SIGNATURE": "Tandatangan sah dari user %USER%",
 		"PGP_ERROR": "Kesalahan OpenPGP: %ERROR%"
 	},

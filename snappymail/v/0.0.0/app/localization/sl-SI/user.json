@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "Zapri sestavljanje"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "Ni najdenega zasebnega ključa za naslov \"%EMAIL%\"",
 		"GOOD_SIGNATURE": "Dober podpis od %USER%",
 		"PGP_ERROR": "OpenPGP napaka: %ERROR%"
 	},

@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "Nieuw bericht venster sluiten"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "Geen privé sleutel gevonden voor e-mail adres \"%EMAIL%\"",
 		"GOOD_SIGNATURE": "Juiste handtekening van %USER%",
 		"PGP_ERROR": "OpenPGP foutmelding: %ERROR%"
 	},

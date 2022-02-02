@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "Sulge kirja koostamise aken"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "Salajast võtit aadressile \"%EMAIL%\" ei leitud",
 		"GOOD_SIGNATURE": "Korralik signatuur kasutajalt %USER%",
 		"PGP_ERROR": "OpenPGP viga: %ERROR%"
 	},

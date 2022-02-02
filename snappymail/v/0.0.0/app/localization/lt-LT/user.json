@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "Uždaryti laišką"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "Privačių raktų nerasta \"%EMAIL%\" laiškui",
 		"GOOD_SIGNATURE": "Tinkamas parašas nuo %USER%",
 		"PGP_ERROR": "OpenPGP klaida: %ERROR%"
 	},

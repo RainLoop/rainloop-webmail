@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "Sule luo viesti"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "%EMAIL% lle ei löytynyt yksityistä avainta",
 		"GOOD_SIGNATURE": "Oikea allekirjoitus %USER% lle",
 		"PGP_ERROR": "OpenPGP virhe: %ERROR%"
 	},

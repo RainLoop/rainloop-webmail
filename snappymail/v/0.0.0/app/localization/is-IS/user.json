@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "Loka ritli"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "Engir einkalyklar fundust fyrir \"%EMAIL%\" póstfangið",
 		"GOOD_SIGNATURE": "Gild undirritun frá %USER%",
 		"PGP_ERROR": "OpenPGP villa: %ERROR%"
 	},

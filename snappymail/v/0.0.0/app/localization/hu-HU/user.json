@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "Levélírás bezárása"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "Nem találtam privát kulcsot ehhez az e-mailhez: \"%EMAIL%\"",
 		"GOOD_SIGNATURE": "Jó aláírás tőle: %USER%",
 		"PGP_ERROR": "OpenPGP hiba: %ERROR%"
 	},

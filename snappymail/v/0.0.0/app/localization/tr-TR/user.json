@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "Oluşturulanı Kapat"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "Private key bulunamadı %EMAIL%",
 		"GOOD_SIGNATURE": "Geçerli imza %USER%",
 		"PGP_ERROR": "OpenPGP hatası: %ERROR%"
 	},

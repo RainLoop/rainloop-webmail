@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "Закрити повідомлення"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "Приватний ключ для \"%EMAIL%\" не знайдено",
 		"GOOD_SIGNATURE": "Підтверджена сигнатура для %USER%",
 		"PGP_ERROR": "OpenPGP помилка: %ERROR%"
 	},

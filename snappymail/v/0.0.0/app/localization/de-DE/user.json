@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "Popup schließen"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "Keine privaten Schlüssel für die E-Mail \"%EMAIL%\" gefunden",
 		"GOOD_SIGNATURE": "Gültige Unterschrift von %USER%",
 		"PGP_ERROR": "OpenPGP-Fehler: %ERROR%"
 	},

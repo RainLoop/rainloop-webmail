@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "بستن صفحه ایجاد"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "هیچ کلید خصوصی برای آدرس پست الکترونیک \"%EMAIL%\" پیدا نشد",
 		"GOOD_SIGNATURE": "امضای صحیح از %USER%",
 		"PGP_ERROR": "خطای OpenPGP: %ERROR%"
 	},

@@ -495,7 +495,6 @@
 		"LABEL_CLOSE_COMPOSE": "退出新邮件"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PRIVATE_KEY_FOUND_FOR": "无法找到 \"%EMAIL%\" 的私钥",
 		"GOOD_SIGNATURE": "来自 %USER% 的可用签名",
 		"PGP_ERROR": "OpenPGP 错误： %ERROR%"
 	},
