@@ -179,9 +179,7 @@ export const PgpUserStore = new class {
 	async verify(message) {
 		const plain = message.plain();
 		if (/-----BEGIN PGP SIGNED MESSAGE-----/.test(plain) && /-----BEGIN PGP SIGNATURE-----/.test(plain)) {
-			let result = await OpenPGPUserStore.verify(plain);
-			console.dir(result);
-			return;
+			return await OpenPGPUserStore.verify(message);
 		}
 		if (message.pgpSigned()) {
 			const sender = message.from[0].email;
