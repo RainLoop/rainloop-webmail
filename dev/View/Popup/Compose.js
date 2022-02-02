@@ -282,7 +282,7 @@ class ComposePopupView extends AbstractViewPopup {
 				this.canPgpSign(false);
 				value && PgpUserStore.getKeyForSigning(value.email()).then(result => {
 					console.log({canPgpSign:result});
-					this.canPgpSign(!!result)
+					this.canPgpSign(result)
 				});
 			},
 
@@ -405,7 +405,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 			if (!sSentFolder) {
 				showScreenPopup(FolderSystemPopupView, [SetSystemFoldersNotification.Sent]);
-			} else {
+			} else try {
 				this.sendError(false);
 				this.sending(true);
 
@@ -452,28 +452,30 @@ class ComposePopupView extends AbstractViewPopup {
 							30000
 						);
 
-				let pgpPromise = null,
-					cfg = {
-						data: params.Text,
-					};
-				if ('openpgp' == sign) {
-					let privateKey, sender = this.currentIdentity().email();
-					try {
-						const key = OpenPGPUserStore.getPrivateKeyFor(sender);
-						if (key) {
-							key.decrypt(window.prompt('Passphrase'));
-							cfg.privateKey = privateKey = key;
-						}
-					} catch (e) {
-						console.error(e);
-						privateKey = null;
-					}
-					if (!privateKey) {
-						this.sendError(true);
-						this.sendErrorDesc(i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND_FOR', { EMAIL: sender }));
-						return;
-					}
+				if (encrypt) {
+					throw 'Encryption not yet implemented';
 				}
+				if (sign && 'openpgp' != sign[0]) {
+					throw 'Signing with ' + sign[0] + ' not yet implemented';
+				}
+				if (sign && 'openpgp' == sign[0]) {
+					if (params.TextIsHtml) {
+						throw i18n('PGP_NOTIFICATIONS/PGP_ERROR', { ERROR: "Can't sign HTML" });
+					}
+					OpenPGPUserStore.signCleartext(params.Text, sign[1]).then(text => {
+						if (text) {
+							params.Text = text;
+							send();
+						} else {
+							this.sendError(true);
+							this.sendErrorDesc(i18n('PGP_NOTIFICATIONS/PGP_ERROR', { ERROR: 'Signing failed' }));
+							this.sending(false);
+						}
+					});
+				} else {
+					send();
+				}
+/*
 				if (encrypt && sign && encrypt != sign) {
 					// error 'sign and encrypt must be same engine';
 				} else if ('openpgp' == encrypt) {
@@ -498,6 +500,12 @@ class ComposePopupView extends AbstractViewPopup {
 							this.sendErrorDesc(i18n('PGP_NOTIFICATIONS/PGP_ERROR', { ERROR: '' + e }));
 						})
 					: send();
+*/
+			} catch (e) {
+				console.error(e);
+				this.sendError(true);
+				this.sendErrorDesc(e);
+				this.sending(false);
 			}
 		}
 	}

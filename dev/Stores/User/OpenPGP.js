@@ -236,4 +236,21 @@ export const OpenPGPUserStore = new class {
 		}
 	}
 
+	async signCleartext(text, privateKey) {
+		const passphrase = prompt('OpenPGP.js Passphrase for ' + privateKey.id + ' ' + privateKey.emails[0]);
+		if (null !== passphrase) {
+			privateKey = await openpgp.decryptKey({
+				privateKey: privateKey.key,
+				passphrase
+			});
+			const unsignedMessage = await openpgp.createCleartextMessage({ text: text });
+			return await openpgp.sign({
+				message: unsignedMessage, // CleartextMessage or Message object
+				signingKeys: privateKey
+//				detached: false
+			});
+		}
+		return false;
+	}
+
 };

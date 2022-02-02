@@ -106,17 +106,18 @@ export const PgpUserStore = new class {
 	 * Returns the first library that can.
 	 */
 	async getKeyForSigning(email) {
+/*
 		let key = GnuPGUserStore.getPrivateKeyFor(email, 1);
 		if (key) {
 			return ['gnupg', key];
 		}
-
-		key = OpenPGPUserStore.getPrivateKeyFor(email, 1);
+*/
+		let key = OpenPGPUserStore.getPrivateKeyFor(email, 1);
 		if (key) {
 			return ['openpgp', key];
 		}
 
-		return await this.getMailvelopePrivateKeyFor(email, 1);
+//		return await this.getMailvelopePrivateKeyFor(email, 1);
 	}
 
 	async decrypt(message) {
