@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "بستن صفحه ایجاد"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "کلید عمومی پیدا نشد",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "هیچ کلید عمومی برای آدرس پست الکترونیک \"%EMAIL%\" پیدا نشد",
-		"NO_PRIVATE_KEY_FOUND": "هیچ کلید خصوصی پیدا نشد",
 		"NO_PRIVATE_KEY_FOUND_FOR": "هیچ کلید خصوصی برای آدرس پست الکترونیک \"%EMAIL%\" پیدا نشد",
-		"ADD_A_PUBLICK_KEY": "اضافه کردن کلید عمومی",
-		"SELECT_A_PRIVATE_KEY": "انتخاب کلید خصوصی",
-		"UNVERIFIRED_SIGNATURE": "امضای تایید نشده",
-		"DECRYPTION_ERROR": "خطای رمزگشایی در OpenPGP",
 		"GOOD_SIGNATURE": "امضای صحیح از %USER%",
-		"PGP_ERROR": "خطای OpenPGP: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "لطفا قسمت FROM را مشخص نمایید",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "لطفا حداقل یک گیرنده را مشخص نمایید"
+		"PGP_ERROR": "خطای OpenPGP: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "توکن نامعتبر",

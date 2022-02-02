@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Oluşturulanı Kapat"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Public key bulunamadı",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "Public key bulunamadı %EMAIL%",
-		"NO_PRIVATE_KEY_FOUND": "Private key bulunamadı",
 		"NO_PRIVATE_KEY_FOUND_FOR": "Private key bulunamadı %EMAIL%",
-		"ADD_A_PUBLICK_KEY": "Add a public key",
-		"SELECT_A_PRIVATE_KEY": "Özel anahtari seç",
-		"UNVERIFIRED_SIGNATURE": "Doğrulanmamış imza",
-		"DECRYPTION_ERROR": "OpenPGP çözme hatası",
 		"GOOD_SIGNATURE": "Geçerli imza %USER%",
-		"PGP_ERROR": "OpenPGP hatası: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Lütfen bir gönderici belirtin",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "En az bir alıcı belirtin"
+		"PGP_ERROR": "OpenPGP hatası: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Geçersiz token",

@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "쓰기 창 닫기"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "공개 키를 찾지 못했습니다",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "\"%EMAIL%\" 이메일에 대한 공개 키를 찾지 못했습니다",
-		"NO_PRIVATE_KEY_FOUND": "비공개 키를 찾지 못했습니다",
 		"NO_PRIVATE_KEY_FOUND_FOR": "\"%EMAIL%\" 이메일에 대한 비공개 키를 찾지 못했습니다",
-		"ADD_A_PUBLICK_KEY": "공개 키 추가",
-		"SELECT_A_PRIVATE_KEY": "비밀 키 선택",
-		"UNVERIFIRED_SIGNATURE": "미인증 서명",
-		"DECRYPTION_ERROR": "OpenPGP 복호화 오류",
 		"GOOD_SIGNATURE": "%USER%(으)로부터 수신한 양호한 서명",
-		"PGP_ERROR": "OpenPGP 오류: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "보내는 사람 이메일 주소를 지정해주세요",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "최소 하나의 수신인을 지정해주세요"
+		"PGP_ERROR": "OpenPGP 오류: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "잘못된 토큰입니다.",

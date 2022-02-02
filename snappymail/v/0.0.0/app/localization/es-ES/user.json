@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Cerrar componer"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "No se encontraron claves públicas",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "No hay claves públicas encontrados para el email %MAIL%",
-		"NO_PRIVATE_KEY_FOUND": "No se encontró la clave privada",
 		"NO_PRIVATE_KEY_FOUND_FOR": "No hay una clave privada para el email %EMAIL%",
-		"ADD_A_PUBLICK_KEY": "Añadir llave pública",
-		"SELECT_A_PRIVATE_KEY": "Seleccionar una clave privada",
-		"UNVERIFIRED_SIGNATURE": "Firma no verificada",
-		"DECRYPTION_ERROR": "Error de descifrado OpenPGP",
 		"GOOD_SIGNATURE": "Buena firma de %USER%",
-		"PGP_ERROR": "Error OpenPGP: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Por favor, especifique dirección de correo electrónico PARA",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Por favor, especifique al menos un destinatario"
+		"PGP_ERROR": "Error OpenPGP: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Elemento no válido",

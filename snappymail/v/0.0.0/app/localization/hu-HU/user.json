@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Levélírás bezárása"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Nem találtam publikus kulcsokat",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "Nem találtam publikus kulcsokat ehhez az e-mailhez: \"%EMAIL%\"",
-		"NO_PRIVATE_KEY_FOUND": "Nem találtam privát kulcsot",
 		"NO_PRIVATE_KEY_FOUND_FOR": "Nem találtam privát kulcsot ehhez az e-mailhez: \"%EMAIL%\"",
-		"ADD_A_PUBLICK_KEY": "Publikus kulcs hozzáadás",
-		"SELECT_A_PRIVATE_KEY": "Privát kulcs választás",
-		"UNVERIFIRED_SIGNATURE": "Nem ellenőrzött aláírás",
-		"DECRYPTION_ERROR": "OpenPGP visszafejtési hiba",
 		"GOOD_SIGNATURE": "Jó aláírás tőle: %USER%",
-		"PGP_ERROR": "OpenPGP hiba: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Kérlek add meg a Feladó e-mail címét",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Legalább egy címzettet meg kell adni"
+		"PGP_ERROR": "OpenPGP hiba: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Érvénytelen kulcs",

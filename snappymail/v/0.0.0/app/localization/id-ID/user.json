@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Tutup buat pesan"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Tidak ada kunci publik",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "Tidak ada kunci publik untuk \"%EMAIL%\" email",
-		"NO_PRIVATE_KEY_FOUND": "Tidak ada kunci privat",
 		"NO_PRIVATE_KEY_FOUND_FOR": "Tidak ada kunci privat untuk \"%EMAIL%\" email",
-		"ADD_A_PUBLICK_KEY": "Tambah kunci publik",
-		"SELECT_A_PRIVATE_KEY": "Pilih sebuah kunci privat",
-		"UNVERIFIRED_SIGNATURE": "Tandatangan belum diverifikasi",
-		"DECRYPTION_ERROR": "Kesalahan dekripsi OpenPGP",
 		"GOOD_SIGNATURE": "Tandatangan sah dari user %USER%",
-		"PGP_ERROR": "Kesalahan OpenPGP: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Silahkan tentukan alamat ASAL email",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Silahkan tentukan setidaknya satu penerima"
+		"PGP_ERROR": "Kesalahan OpenPGP: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Token tidak sah",

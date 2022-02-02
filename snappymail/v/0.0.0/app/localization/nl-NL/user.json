@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Nieuw bericht venster sluiten"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Geen publieke sleutels gevonden",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "Geen publieke sleutels gevonden voor e-mail adres \"%EMAIL%\"",
-		"NO_PRIVATE_KEY_FOUND": "Geen privé sleutel gevonden",
 		"NO_PRIVATE_KEY_FOUND_FOR": "Geen privé sleutel gevonden voor e-mail adres \"%EMAIL%\"",
-		"ADD_A_PUBLICK_KEY": "Voeg een publieke sleutel toe",
-		"SELECT_A_PRIVATE_KEY": "Selecteer een privé sleutel",
-		"UNVERIFIRED_SIGNATURE": "Ongeverifieerde handtekening",
-		"DECRYPTION_ERROR": "OpenPGP decryptie fout",
 		"GOOD_SIGNATURE": "Juiste handtekening van %USER%",
-		"PGP_ERROR": "OpenPGP foutmelding: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Geef a.u.b. een VAN e-mail adres op",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Geef a.u.b. minimaal één ontvanger op"
+		"PGP_ERROR": "OpenPGP foutmelding: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ongeldige token",

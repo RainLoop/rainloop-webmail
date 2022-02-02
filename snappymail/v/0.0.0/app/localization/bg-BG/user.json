@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Затвори създаването"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Няма публични ключове",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "Няма публичен ключ за \"%EMAIL%\"",
-		"NO_PRIVATE_KEY_FOUND": "Няма частен ключ",
 		"NO_PRIVATE_KEY_FOUND_FOR": "Няма частен ключ за \"%EMAIL%\"",
-		"ADD_A_PUBLICK_KEY": "Добави публичен ключ",
-		"SELECT_A_PRIVATE_KEY": "Избери частен ключ",
-		"UNVERIFIRED_SIGNATURE": "Непроверен подпис",
-		"DECRYPTION_ERROR": "Грешка при дешифрирането",
 		"GOOD_SIGNATURE": "Валиден подпис за %USER%",
-		"PGP_ERROR": "OpenPGP грешка: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Моля въведете email адрес От",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Моля въведете поне един получател"
+		"PGP_ERROR": "OpenPGP грешка: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Невалиден токен",

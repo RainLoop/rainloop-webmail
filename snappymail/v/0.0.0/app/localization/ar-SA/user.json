@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "إغلاق الرسالة"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "لم يتم إيجاد المفتاح العام",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "لم يتم إيجاد مفتاح عام\"%EMAIL%\" email",
-		"NO_PRIVATE_KEY_FOUND": "لم يتم إيجاد مفتاح خاص",
 		"NO_PRIVATE_KEY_FOUND_FOR": "لم يتم إيجاد المفتاح الخاص لـ \"%EMAIL%\" email",
-		"ADD_A_PUBLICK_KEY": "Add a public key",
-		"SELECT_A_PRIVATE_KEY": "Select a private key",
-		"UNVERIFIRED_SIGNATURE": "توقيع غير موثق",
-		"DECRYPTION_ERROR": "OpenPGP خطأ فك تشفير",
 		"GOOD_SIGNATURE": "توقيع جيد من  %USER%",
-		"PGP_ERROR": "OpenPGP error: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "يرجى التأكد من الإيميل",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "يرجى تحديد مستلم واحد على الأقل"
+		"PGP_ERROR": "OpenPGP error: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "خاطىء token",

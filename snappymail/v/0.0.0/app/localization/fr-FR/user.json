@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Fermer la fenêtre d'édition"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Aucune clé publique n'a pu être trouvée",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "Aucune clé publique n'a pu être trouvée pour \"%EMAIL%\"",
-		"NO_PRIVATE_KEY_FOUND": "Aucune clé privée n'a pu être trouvée",
 		"NO_PRIVATE_KEY_FOUND_FOR": "Aucune clé privée n'a pu être trouvée pour \"%EMAIL%\"",
-		"ADD_A_PUBLICK_KEY": "Ajouter une clé publique",
-		"SELECT_A_PRIVATE_KEY": "Choisir une clé privée",
-		"UNVERIFIRED_SIGNATURE": "Signature non vérifiée",
-		"DECRYPTION_ERROR": "Erreur lors du déchiffrement OpenPGP",
 		"GOOD_SIGNATURE": "Signature valide pour %USER%",
-		"PGP_ERROR": "Erreur OpenPGP: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Merci de spécifier une adresse email pour DE",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Merci de spécifier au moins un destinataire"
+		"PGP_ERROR": "Erreur OpenPGP: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Jeton invalide",

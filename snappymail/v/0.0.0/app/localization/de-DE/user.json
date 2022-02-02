@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Popup schließen"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Keine öffentlichen Schlüssel gefunden",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "Keine öffentlichen Schlüssel für die E-Mail \"%EMAIL%\" gefunden",
-		"NO_PRIVATE_KEY_FOUND": "Keine privaten Schlüssel gefunden",
 		"NO_PRIVATE_KEY_FOUND_FOR": "Keine privaten Schlüssel für die E-Mail \"%EMAIL%\" gefunden",
-		"ADD_A_PUBLICK_KEY": "Öffentlicher Schlüssel hinzufügen",
-		"SELECT_A_PRIVATE_KEY": "Privaten Schlüssel auswählen",
-		"UNVERIFIRED_SIGNATURE": "Nich verifizierte Unterschrift",
-		"DECRYPTION_ERROR": "OpenPGP-Entschlüsselungsfehler",
 		"GOOD_SIGNATURE": "Gültige Unterschrift von %USER%",
-		"PGP_ERROR": "OpenPGP-Fehler: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Bitte die VON-E-Mail-Adresse angeben",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Bitte geben Sie mindestens einen Empfänger an"
+		"PGP_ERROR": "OpenPGP-Fehler: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ungültiger Token",

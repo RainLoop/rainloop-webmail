@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Закрити повідомлення"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Публічні ключі не знайдено",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "Публічні ключі для \"%EMAIL%\" не знайдено",
-		"NO_PRIVATE_KEY_FOUND": "Приватний ключ не знайдено",
 		"NO_PRIVATE_KEY_FOUND_FOR": "Приватний ключ для \"%EMAIL%\" не знайдено",
-		"ADD_A_PUBLICK_KEY": "Add a public key",
-		"SELECT_A_PRIVATE_KEY": "Select a private key",
-		"UNVERIFIRED_SIGNATURE": "Непідтверджена сигнатура",
-		"DECRYPTION_ERROR": "OpenPGP помилка розшифрування",
 		"GOOD_SIGNATURE": "Підтверджена сигнатура для %USER%",
-		"PGP_ERROR": "OpenPGP помилка: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Вкажіть поштову адресу відправника",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Вкажіть як мінімум одного отримувача"
+		"PGP_ERROR": "OpenPGP помилка: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Невірний токен запиту",

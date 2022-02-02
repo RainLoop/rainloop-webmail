@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Loka ritli"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Engir dreifilyklar fundust",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "Engir dreifilyklar fundust fyrir \"%EMAIL%\" póstfangið",
-		"NO_PRIVATE_KEY_FOUND": "Enginn einkalykill fannst",
 		"NO_PRIVATE_KEY_FOUND_FOR": "Engir einkalyklar fundust fyrir \"%EMAIL%\" póstfangið",
-		"ADD_A_PUBLICK_KEY": "Bættu við dreifilykli",
-		"SELECT_A_PRIVATE_KEY": "Veldu einkalykil",
-		"UNVERIFIRED_SIGNATURE": "Óstaðfest undirritun",
-		"DECRYPTION_ERROR": "OpenPGP afkóðunarvilla",
 		"GOOD_SIGNATURE": "Gild undirritun frá %USER%",
-		"PGP_ERROR": "OpenPGP villa: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Tilgreindu FRÁ tölvupóstfang",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Tiltaktu að minnsta kosti einn viðtakanda"
+		"PGP_ERROR": "OpenPGP villa: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Rangt tákn",

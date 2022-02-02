@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Chiudi finestra di scrittura"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Nessuna chiave pubblica trovata",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "Nessuna chiave pubblica trovata per l'indirizzo email \"%EMAIL%\"\n",
-		"NO_PRIVATE_KEY_FOUND": "Nessuna chiave privata trovata",
 		"NO_PRIVATE_KEY_FOUND_FOR": "Nessuna chiave privata trovata per l'indirizzo email \"%EMAIL%\"\n",
-		"ADD_A_PUBLICK_KEY": "Add a public key",
-		"SELECT_A_PRIVATE_KEY": "Seleziona una chiave privata",
-		"UNVERIFIRED_SIGNATURE": "Firma non verificata",
-		"DECRYPTION_ERROR": "Decriptazione con OpenPGP fallita",
 		"GOOD_SIGNATURE": "Firma valida da %USER%",
-		"PGP_ERROR": "Errore di OpenPGP: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Specificare il mittente",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Specificare almeno un destinatario"
+		"PGP_ERROR": "Errore di OpenPGP: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Token invalido",

@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Sulge kirja koostamise aken"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Avalikke võtmeid ei leitud",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "Avalikke võtmeid aadressile \"%EMAIL%\" ei leitud",
-		"NO_PRIVATE_KEY_FOUND": "Salajasi võtmeid ei leitud",
 		"NO_PRIVATE_KEY_FOUND_FOR": "Salajast võtit aadressile \"%EMAIL%\" ei leitud",
-		"ADD_A_PUBLICK_KEY": "Lisa avalik võti",
-		"SELECT_A_PRIVATE_KEY": "Lisa privaatne võti",
-		"UNVERIFIRED_SIGNATURE": "Verifitseerimata allkiri",
-		"DECRYPTION_ERROR": "OpenPGP dekrüpteerimise viga",
 		"GOOD_SIGNATURE": "Korralik signatuur kasutajalt %USER%",
-		"PGP_ERROR": "OpenPGP viga: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Palun määra KELLELT e-posti aadress",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Palun määra vähemalt üks saaja"
+		"PGP_ERROR": "OpenPGP viga: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Puudulik tõend",

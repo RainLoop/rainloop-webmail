@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Uždaryti laišką"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Viešų raktų nerasta",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "Viešų raktų nerasta \"%EMAIL%\" laiškui",
-		"NO_PRIVATE_KEY_FOUND": "Privačių raktų nerasta",
 		"NO_PRIVATE_KEY_FOUND_FOR": "Privačių raktų nerasta \"%EMAIL%\" laiškui",
-		"ADD_A_PUBLICK_KEY": "Add a public key",
-		"SELECT_A_PRIVATE_KEY": "Parinkti privatų raktą",
-		"UNVERIFIRED_SIGNATURE": "Nepatikrintas parašas",
-		"DECRYPTION_ERROR": "OpenPGP dekodavimo klaida",
 		"GOOD_SIGNATURE": "Tinkamas parašas nuo %USER%",
-		"PGP_ERROR": "OpenPGP klaida: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Prašome nurodyti NUO e-pašto adresą",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Nurodykite bent vieną gavėją"
+		"PGP_ERROR": "OpenPGP klaida: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Neteisingas raktas",

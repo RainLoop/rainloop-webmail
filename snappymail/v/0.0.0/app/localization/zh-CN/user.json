@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "退出新邮件"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "无法找到公钥",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "无法找到 \"%EMAIL%\" 的公钥",
-		"NO_PRIVATE_KEY_FOUND": "无法找到私钥",
 		"NO_PRIVATE_KEY_FOUND_FOR": "无法找到 \"%EMAIL%\" 的私钥",
-		"ADD_A_PUBLICK_KEY": "添加公钥",
-		"SELECT_A_PRIVATE_KEY": "选择一个私钥",
-		"UNVERIFIRED_SIGNATURE": "未验证的签名",
-		"DECRYPTION_ERROR": "OpenPGP 解密出错",
 		"GOOD_SIGNATURE": "来自 %USER% 的可用签名",
-		"PGP_ERROR": "OpenPGP 错误： %ERROR%",
-		"SPECIFY_FROM_EMAIL": "请指定发件人邮箱地址",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "请指定至少一个收件人地址"
+		"PGP_ERROR": "OpenPGP 错误： %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "无效标记",

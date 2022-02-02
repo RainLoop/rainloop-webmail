@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "作成画面を閉じる"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "公開鍵が見つかりません",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "メールアドレス \"%EMAIL%\" の公開鍵が見つかりません",
-		"NO_PRIVATE_KEY_FOUND": "秘密鍵が見つかりません",
 		"NO_PRIVATE_KEY_FOUND_FOR": "メールアドレス \"%EMAIL%\" の秘密鍵が見つかりません",
-		"ADD_A_PUBLICK_KEY": "公開鍵の追加",
-		"SELECT_A_PRIVATE_KEY": "秘密鍵を選択してください",
-		"UNVERIFIRED_SIGNATURE": "未確認の署名",
-		"DECRYPTION_ERROR": "OpenPGP 復号化エラー",
 		"GOOD_SIGNATURE": "%USER% からの正しい署名",
-		"PGP_ERROR": "OpenPGP エラー: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "FROMのメールアドレスを指定してください",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "少なくても1つの受信者を指定してください"
+		"PGP_ERROR": "OpenPGP エラー: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "無効なトークン",

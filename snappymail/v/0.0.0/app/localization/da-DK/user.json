@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Luk forfatter mode"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Ingen offentlige nøgler fundet",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "Ingen offentlige nøgler fundet tilhørende \"%EMAIL%\"",
-		"NO_PRIVATE_KEY_FOUND": "Ingen privat nøgle fundet",
 		"NO_PRIVATE_KEY_FOUND_FOR": "Ingen privat nøgle fundet tilhørende \"%EMAIL%\"",
-		"ADD_A_PUBLICK_KEY": "Tilføj privat nøgle",
-		"SELECT_A_PRIVATE_KEY": "Vælg privat nøgle",
-		"UNVERIFIRED_SIGNATURE": "Ikke verificeret signatur",
-		"DECRYPTION_ERROR": "OpenPGP dekrypteringsfejl",
 		"GOOD_SIGNATURE": "Accepteret signatur for %USER\"",
-		"PGP_ERROR": "OpenPGP fejl: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Udfyld afsenderadresse",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Angiv mindst en modtager"
+		"PGP_ERROR": "OpenPGP fejl: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ugyldigt tegn",

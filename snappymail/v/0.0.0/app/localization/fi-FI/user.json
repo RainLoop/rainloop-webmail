@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Sule luo viesti"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Julkisia avaimia ei löytynyt",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "%EMAIL% lle ei löytynyt julkisia avaimia",
-		"NO_PRIVATE_KEY_FOUND": "Ykrityistä avainta ei löytynyt",
 		"NO_PRIVATE_KEY_FOUND_FOR": "%EMAIL% lle ei löytynyt yksityistä avainta",
-		"ADD_A_PUBLICK_KEY": "Lisää julkinen avain",
-		"SELECT_A_PRIVATE_KEY": "Valitse yksityinen avain",
-		"UNVERIFIRED_SIGNATURE": "Tarkistamaton allekirjoitus",
-		"DECRYPTION_ERROR": "OpenPGP avausvierhe",
 		"GOOD_SIGNATURE": "Oikea allekirjoitus %USER% lle",
-		"PGP_ERROR": "OpenPGP virhe: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Aseta lähettäjän osoite",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Aseta vähintään yksi vastaanottaja"
+		"PGP_ERROR": "OpenPGP virhe: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Väärä suojaustunnus",

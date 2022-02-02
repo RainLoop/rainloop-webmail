@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Zapri sestavljanje"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Ni najdenih javnih ključev",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "Ni najdenih javnih ključev za naslov \"%EMAIL%\"",
-		"NO_PRIVATE_KEY_FOUND": "Ni najdenega zasebnega ključa",
 		"NO_PRIVATE_KEY_FOUND_FOR": "Ni najdenega zasebnega ključa za naslov \"%EMAIL%\"",
-		"ADD_A_PUBLICK_KEY": "Dodaj javni ključ",
-		"SELECT_A_PRIVATE_KEY": "Izberite zasebni ključ",
-		"UNVERIFIRED_SIGNATURE": "Neoverjen podpis",
-		"DECRYPTION_ERROR": "OpenPGP napaka dešifriranja",
 		"GOOD_SIGNATURE": "Dober podpis od %USER%",
-		"PGP_ERROR": "OpenPGP napaka: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Določite naslov pošiljatelja\/-ice",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Navedite vsaj enega\/-o prejemnika\/-co"
+		"PGP_ERROR": "OpenPGP napaka: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Neveljaven žeton",

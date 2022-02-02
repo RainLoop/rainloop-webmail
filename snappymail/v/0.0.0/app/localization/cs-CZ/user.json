@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Zavřít okno se zprávou"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Nenalezen žádný veřejný klíč",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "Žádný veřejný klíč pro \"%EMAIL%\" nenalezen",
-		"NO_PRIVATE_KEY_FOUND": "Nenalezen žádný soukromý klíč",
 		"NO_PRIVATE_KEY_FOUND_FOR": "Žádný soukromý klíč pro \"%EMAIL%\" nenalezen",
-		"ADD_A_PUBLICK_KEY": "Přidat veřejný klíč",
-		"SELECT_A_PRIVATE_KEY": "Vyberte soukromý klíč",
-		"UNVERIFIRED_SIGNATURE": "Neověřený podpis",
-		"DECRYPTION_ERROR": "OpenPGP chyba dešifrování",
 		"GOOD_SIGNATURE": "Ověřený podpis od %USER%",
-		"PGP_ERROR": "OpenPGP chyba: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Zadejte emailovou adresu odesílatele",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Zadejte prosím alespoň jednoho příjemce"
+		"PGP_ERROR": "OpenPGP chyba: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Neplatný token",

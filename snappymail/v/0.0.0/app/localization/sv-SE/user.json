@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Stäng fönster"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Inga publika nycklar funna",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "Inga publika nycklar funna för \"%EMAIL%\" epost",
-		"NO_PRIVATE_KEY_FOUND": "Inga privata nycklar funna",
 		"NO_PRIVATE_KEY_FOUND_FOR": "Inga privata nycklar funna för \"%EMAIL%\" epost",
-		"ADD_A_PUBLICK_KEY": "Lägg till en publicerad nyckel",
-		"SELECT_A_PRIVATE_KEY": "Välj en privat nyckel",
-		"UNVERIFIRED_SIGNATURE": "Overifierad signatur",
-		"DECRYPTION_ERROR": "OpenPGP dekrypteringsfel",
 		"GOOD_SIGNATURE": "Godkänd signatur för %USER%",
-		"PGP_ERROR": "OpenPGP-fel: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Ange FRÅN epost adress",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Ange minst en mottagare"
+		"PGP_ERROR": "OpenPGP-fel: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ogiltigt tecken",

@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Lukk ny melding"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Fant ingen offentlige nøkler",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "Fant ingen offentlige nøkler for «%EMAIL%»",
-		"NO_PRIVATE_KEY_FOUND": "Fant ingen privatnøkler",
 		"NO_PRIVATE_KEY_FOUND_FOR": "Fant ingen privatnøkler for «%EMAIL%»",
-		"ADD_A_PUBLICK_KEY": "Legg til en offentlig nøkkel",
-		"SELECT_A_PRIVATE_KEY": "Velg privatnøkkel",
-		"UNVERIFIRED_SIGNATURE": "Ubekreftet signatur",
-		"DECRYPTION_ERROR": "Feil under OpenPGP-dekryptering",
 		"GOOD_SIGNATURE": "Gyldig signatur fra %USER%",
-		"PGP_ERROR": "OpenPGP-feil: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Velg avsender-adresse",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Velg minst én mottaker"
+		"PGP_ERROR": "OpenPGP-feil: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ugyldig info",

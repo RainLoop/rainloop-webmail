@@ -495,18 +495,9 @@
 		"LABEL_CLOSE_COMPOSE": "Zamknij okno tworzenia wiadomości"
 	},
 	"PGP_NOTIFICATIONS": {
-		"NO_PUBLIC_KEYS_FOUND": "Nie znaleziono klucza publicznego",
-		"NO_PUBLIC_KEYS_FOUND_FOR": "Nie znaleziono klucza publicznego dla adresu \"%EMAIL%\"",
-		"NO_PRIVATE_KEY_FOUND": "Nie znaleziono klucza prywatnego",
 		"NO_PRIVATE_KEY_FOUND_FOR": "Nie znaleziono klucza prywatnego dla adresu \"%EMAIL%\"",
-		"ADD_A_PUBLICK_KEY": "Dodaj klucz publiczny",
-		"SELECT_A_PRIVATE_KEY": "Wybierz klucz prywatny",
-		"UNVERIFIRED_SIGNATURE": "Podpis niezweryfikowany",
-		"DECRYPTION_ERROR": "Błąd odszyfrowywania OpenPGP",
 		"GOOD_SIGNATURE": "Poprawnie podpisana przez %USER%",
-		"PGP_ERROR": "Błąd OpenPGP: %ERROR%",
-		"SPECIFY_FROM_EMAIL": "Podaj adres e-mail w polu OD",
-		"SPECIFY_AT_LEAST_ONE_RECIPIENT": "Podaj przynajmniej jednego odbiorcę"
+		"PGP_ERROR": "Błąd OpenPGP: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Nieprawidłowy token",
