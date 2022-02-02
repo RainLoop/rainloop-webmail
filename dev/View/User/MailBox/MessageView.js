@@ -88,7 +88,7 @@ const
 //					data.related = true;
 					message.attachments.push(attachment);
 				});
-				message.hasAttachments(message.attachments.hasVisible());
+				message.hasAttachments(message.attachments().hasVisible());
 //				result.headers;
 				// TODO: strip script tags and all other security that PHP also does
 				message.plain(result.text || '');
