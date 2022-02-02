@@ -461,12 +461,16 @@ export class MessageModel extends AbstractModel {
 		if (body && this.plain()) {
 			body.classList.toggle('html', 0);
 			body.classList.toggle('plain', 1);
-			body.innerHTML = plainToHtml(this.plain())
+			body.innerHTML = plainToHtml(
+				this.plain()
+					.replace(/-----BEGIN PGP SIGNATURE-----[\s\S]*/, '')
+					.replace(/-----BEGIN PGP SIGNED MESSAGE-----(\r?\n[a-z][^\r\n]+)+/i, '')
+					.trim()
+			)
 				// Strip utm_* tracking
-				.replace(/(\\?|&amp;|&)utm_[a-z]+=[a-z0-9_-]*/si, '$1')
+				.replace(/(\?|&amp;|&)utm_[a-z]+=[^?&#]*/si, '$1')
 				.replace(url, '$1<a href="$2" target="_blank">$2</a>')
 				.replace(email, '$1<a href="mailto:$2">$2</a>');
-
 			this.isHtml(false);
 			this.hasImages(false);
 			this.initView();

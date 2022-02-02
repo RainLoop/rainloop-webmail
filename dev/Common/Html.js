@@ -193,7 +193,9 @@ export const
 			}
 
 			if (oElement.hasAttribute('href')) {
-				let sHref = getAttribute('href');
+				let sHref = getAttribute('href')
+					// Strip utm_* tracking
+					.replace(/(\?|&)utm_[a-z]+=[^&?#]*/si, '$1');
 				if (!/^([a-z]+):/i.test(sHref) && '//' !== sHref.slice(0, 2)) {
 					oElement.setAttribute('data-x-broken-href', sHref);
 					oElement.removeAttribute('href');
