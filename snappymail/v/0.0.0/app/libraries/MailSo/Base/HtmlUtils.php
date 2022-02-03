@@ -72,14 +72,13 @@ abstract class HtmlUtils
 			'/<\?xml [^>]*\?>/i'
 		), '', $sText);
 
-		$sHtmlAttrs = $sBodyAttrs = '';
-		$sText = static::ClearBodyAndHtmlTag($sText, $sHtmlAttrs, $sBodyAttrs);
-
+		$sHtmlAttrs = '';
 		$aMatch = array();
 		if (\preg_match('/<html([^>]+)>/im', $sText, $aMatch) && !empty($aMatch[1])) {
 			$sHtmlAttrs = $aMatch[1];
 		}
 
+		$sBodyAttrs = '';
 		$aMatch = array();
 		if (\preg_match('/<body([^>]+)>/im', $sText, $aMatch) && !empty($aMatch[1])) {
 			$sBodyAttrs = $aMatch[1];
