@@ -177,19 +177,23 @@ export const PgpUserStore = new class {
 	}
 
 	async verify(message) {
-		const plain = message.plain();
-		if (/-----BEGIN PGP SIGNED MESSAGE-----/.test(plain) && /-----BEGIN PGP SIGNATURE-----/.test(plain)) {
-			return await OpenPGPUserStore.verify(message);
-		}
-		if (message.pgpSigned()) {
-			const sender = message.from[0].email;
-			let mode = await this.hasPublicKeyForEmails([sender]);
-			if ('gnupg' === mode) {
+		const signed = message.pgpSigned();
+		if (signed) {
+			const sender = message.from[0].email,
+				gnupg = GnuPGUserStore.hasPublicKeyForEmails([sender]),
+				openpgp = OpenPGPUserStore.hasPublicKeyForEmails([sender]);
+			// Detached signature use GnuPG first, else we must download whole message
+			if (gnupg && signed.SigPartId) {
 				return GnuPGUserStore.verify(message);
 			}
-			if ('openpgp' === mode) {
+			if (openpgp) {
 				return OpenPGPUserStore.verify(message);
 			}
+			if (gnupg) {
+				return GnuPGUserStore.verify(message);
+			}
+			// Mailvelope can't
+			// https://github.com/mailvelope/mailvelope/issues/434
 		}
 	}
 

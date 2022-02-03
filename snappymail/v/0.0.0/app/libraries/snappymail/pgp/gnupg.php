@@ -365,9 +365,18 @@ class GnuPG
 	 */
 	public function verify(string $signed_text, string $signature, string &$plaintext = null) /*: array|false*/
 	{
-		return $this->GnuPG
-			? $this->GnuPG->verify($signed_text, $signature, $plaintext)
+		$result = $this->GnuPG
+			? $this->GnuPG->verify($signed_text, $signature ?: false, $plaintext)
 			: $this->GPG->verify($signed_text, $signature, $plaintext);
+		if (!$result) {
+			if ($this->GnuPG) {
+				\error_log('gnupg_verify() failed: ' . $this->GnuPG->geterror() . "\n\n{$signed_text}\n\n{$signature}" );
+				\error_log(\print_r($this->GnuPG->geterrorinfo(),1));
+			} else {
+				\error_log('GPG->verify() failed');
+			}
+		}
+		return $result;
 	}
 
 	/**
