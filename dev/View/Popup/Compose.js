@@ -454,8 +454,8 @@ class ComposePopupView extends AbstractViewPopup {
 
 				if (this.mailvelope && 'mailvelope' === this.viewArea()) {
 					this.mailvelope.encrypt(this.allRecipients()).then(armored => {
-						params.Html = '';
-						params.Text = armored;
+						params.Text = params.Html = '';
+						params.Encrypted = armored;
 						send();
 					});
 				} else if (encrypt) {
@@ -474,7 +474,7 @@ class ComposePopupView extends AbstractViewPopup {
 							send();
 						} else {
 							this.sendError(true);
-							this.sendErrorDesc(i18n('PGP_NOTIFICATIONS/PGP_ERROR', { ERROR: 'Signing failed' }));
+							this.sendErrorDesc(i18n('PGP_NOTIFICATIONS/PGP_ERROR', { ERROR: 'Encryption failed' }));
 							this.sending(false);
 						}
 					});
@@ -489,8 +489,8 @@ class ComposePopupView extends AbstractViewPopup {
 					if (detached) {
 						// Append headers
 						params.Text = [
-							'Content-Transfer-Encoding: base64',
 							'Content-Type: text/plain; charset="utf-8"; protected-headers="v1"',
+							'Content-Transfer-Encoding: base64',
 //							'From: Demo <demo@snappymail.eu>',
 //							'To: Demo <demo@snappymail.eu>',
 //							'Subject: text detached signed'

@@ -9,6 +9,7 @@ use RainLoop\Notifications;
 use MailSo\Imap\SequenceSet;
 use MailSo\Imap\Enumerations\FetchType;
 use MailSo\Imap\Enumerations\MessageFlag;
+use MailSo\Mime\Part as MimePart;
 
 trait Messages
 {
@@ -1010,7 +1011,14 @@ trait Messages
 
 		$this->Plugins()->RunHook('filter.read-receipt-message-plain', array($oAccount, $oMessage, &$sText));
 
-		$oMessage->AddPlain($sText);
+		$oPart = new MimePart;
+		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset="utf-8"');
+		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
+		$oPart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
+			\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sText))),
+			'convert.quoted-printable-encode'
+		);
+		$this->SubParts->append($oPart);
 
 		$this->Plugins()->RunHook('filter.build-read-receipt-message', array($oMessage, $oAccount));
 
@@ -1097,25 +1105,107 @@ trait Messages
 		$aFoundDataURL = array();
 		$aFoundContentLocationUrls = array();
 
-		$sHtml = $this->GetActionParam('Html', '');
-		$sText = $this->GetActionParam('Text', '');
-		if ($sHtml) {
+		if ($sHtml = $this->GetActionParam('Html', '')) {
+			$oPart = new MimePart;
+			$oPart->Headers->AddByName(
+				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+				\MailSo\Mime\Enumerations\MimeType::MULTIPART_ALTERNATIVE
+				. '; ' . (new \MailSo\Mime\ParameterCollection)->Add(
+						new \MailSo\Mime\Parameter(\MailSo\Mime\Enumerations\Parameter::BOUNDARY, $oMessage->generateNewBoundary())
+					)->ToString()
+			);
+			$oMessage->SubParts->append($oPart);
+
 			$sHtml = \MailSo\Base\HtmlUtils::BuildHtml($sHtml, $aFoundCids, $aFoundDataURL, $aFoundContentLocationUrls);
 			$this->Plugins()->RunHook('filter.message-html', array($oAccount, $oMessage, &$sHtml));
-			$sTextConverted = \MailSo\Base\HtmlUtils::ConvertHtmlToPlain($sText);
-			$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sTextConverted));
-			$oMessage->AddPlain($sTextConverted);
-			$oMessage->AddHtml($sText);
+			$oAlternativePart = new MimePart;
+			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/html; charset=utf-8');
+			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
+			$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
+				\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sHtml))),
+				'convert.quoted-printable-encode'
+			);
+			$oPart->SubParts->append($oAlternativePart);
+
+			$sPlain = \MailSo\Base\HtmlUtils::ConvertHtmlToPlain($sHtml);
+			$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sPlain));
+			$oAlternativePart = new MimePart;
+			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset=utf-8');
+			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
+			$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
+				\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sPlain))),
+				'convert.quoted-printable-encode'
+			);
+			$oPart->SubParts->append($oAlternativePart);
+
+			unset($oAlternativePart);
+			unset($sHtml);
+			unset($sPlain);
+
+		} else if ($sEncrypted = $this->GetActionParam('Encrypted', '')) {
+			$oPart = new MimePart;
+			$oPart->Headers->AddByName(
+				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+				'multipart/encrypted; ' . (new \MailSo\Mime\ParameterCollection)->Add(
+						new \MailSo\Mime\Parameter(\MailSo\Mime\Enumerations\Parameter::BOUNDARY, $oMessage->generateNewBoundary())
+					)->ToString() . '; protocol="application/pgp-encrypted"'
+			);
+			$oMessage->SubParts->append($oPart);
+
+			$oAlternativePart = new MimePart;
+			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/pgp-encrypted');
+			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION, 'attachment');
+			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
+			$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString('Version: 1');
+			$oPart->SubParts->append($oAlternativePart);
+
+			$oAlternativePart = new MimePart;
+			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/octet-stream');
+			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION, 'inline; filename="msg.asc"');
+			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
+			$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sEncrypted)));
+			$oPart->SubParts->append($oAlternativePart);
+
+			unset($oAlternativePart);
+			unset($sEncrypted);
+
 		} else {
-			$sSignature = $this->GetActionParam('Signature', null);
-			if ($sSignature) {
-				// MimeType::MULTIPART_SIGNED
-				// MimeType::APPLICATION_PGP_SIGNATURE
-				$oMessage->AddPlain($sText);
+			$sPlain = $this->GetActionParam('Text', '');
+			if ($sSignature = $this->GetActionParam('Signature', null)) {
+				$oPart = new MimePart;
+				$oPart->Headers->AddByName(
+					\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+					'multipart/signed; ' . (new ParameterCollection)->Add(
+							new \MailSo\Mime\Parameter(\MailSo\Mime\Enumerations\Parameter::BOUNDARY, $oMessage->generateNewBoundary())
+						)->ToString() . '; micalg="pgp-sha256"; protocol="application/pgp-signature"'
+				);
+				$oMessage->SubParts->append($oPart);
+
+				$oAlternativePart = new MimePart;
+				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset="utf-8"; protected-headers="v1"');
+				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'base64');
+				$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sPlain)));
+				$oPart->SubParts->append($oAlternativePart);
+
+				$oAlternativePart = new MimePart;
+				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/pgp-signature; name="signature.asc"');
+				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
+				$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sSignature)));
+				$oPart->SubParts->append($oAlternativePart);
 			} else {
-				$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sText));
-				$oMessage->AddPlain($sText);
+				$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sPlain));
+				$oAlternativePart = new MimePart;
+				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset="utf-8"');
+				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
+				$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
+					\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sPlain))),
+					'convert.quoted-printable-encode'
+				);
+				$oMessage->SubParts->append($oAlternativePart);
 			}
+			unset($oAlternativePart);
+			unset($sSignature);
+			unset($sPlain);
 		}
 
 		$aAttachments = $this->GetActionParam('Attachments', null);

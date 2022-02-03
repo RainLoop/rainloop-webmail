@@ -15,17 +15,12 @@ namespace MailSo\Mime;
  * @category MailSo
  * @package Mime
  */
-class Message
+class Message extends Part
 {
 	/**
 	 * @var array
 	 */
 	private $aHeadersValue = array();
-
-	/**
-	 * @var array
-	 */
-	private $aAlternativeParts = array();
 
 	/**
 	 * @var AttachmentCollection
@@ -44,6 +39,7 @@ class Message
 
 	function __construct()
 	{
+		parent::__construct();
 		$this->oAttachmentCollection = new AttachmentCollection;
 	}
 
@@ -293,28 +289,7 @@ class Message
 		return $this;
 	}
 
-	public function AddPlain(string $sPlain) : self
-	{
-		return $this->AddAlternative(Enumerations\MimeType::TEXT_PLAIN, $sPlain);
-	}
-
-	public function AddHtml(string $sHtml) : self
-	{
-		return $this->AddAlternative(Enumerations\MimeType::TEXT_HTML, $sHtml);
-	}
-
-	public function AddAlternative(string $sContentType, string $sData) : self
-	{
-		$this->aAlternativeParts[] = array(
-			$sContentType,
-			\preg_replace('/\\r?\\n/', "\r\n", \trim($sData)),
-			\MailSo\Base\Enumerations\Encoding::QUOTED_PRINTABLE_LOWER,
-			array()
-		);
-		return $this;
-	}
-
-	private function generateNewBoundary() : string
+	public function generateNewBoundary() : string
 	{
 		return '--='.\MailSo\Config::$BoundaryPrefix.
 			\rand(100, 999).'_'.\rand(100000000, 999999999).'.'.\time();
@@ -447,7 +422,6 @@ class Message
 					$aAlternativeData[0].'; '.$oParameters->ToString())
 			);
 
-			$oAlternativePart->Body = null;
 			if (isset($aAlternativeData[1]))
 			{
 				if (\is_resource($aAlternativeData[1]))
@@ -493,60 +467,6 @@ class Message
 		return $oAlternativePart;
 	}
 
-	private function createNewMessageRelatedBody(Part $oIncPart) : Part
-	{
-		$oResultPart = null;
-
-		foreach ($this->oAttachmentCollection as $oAttachment) {
-			if ($oAttachment->IsLinked()) {
-				if (!$oResultPart) {
-					$oResultPart = new Part;
-					$oResultPart->Headers->append(
-						new Header(Enumerations\Header::CONTENT_TYPE,
-							Enumerations\MimeType::MULTIPART_RELATED.'; '.
-							(new ParameterCollection)->Add(
-								new Parameter(
-									Enumerations\Parameter::BOUNDARY,
-									$this->generateNewBoundary())
-							)->ToString()
-						)
-					);
-					$oResultPart->SubParts->append($oIncPart);
-				}
-
-				$oResultPart->SubParts->append($this->createNewMessageAttachmentBody($oAttachment));
-			}
-		}
-
-		return $oResultPart ?: $oIncPart;
-	}
-
-	private function createNewMessageMixedBody(Part $oIncPart) : Part
-	{
-		$oResultPart = null;
-
-		foreach ($this->oAttachmentCollection as $oAttachment) {
-			if (!$oAttachment->IsLinked()) {
-				if (!$oResultPart) {
-					$oResultPart = new Part;
-					$oResultPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE,
-						Enumerations\MimeType::MULTIPART_MIXED.'; '.
-						(new ParameterCollection)->Add(
-							new Parameter(
-								Enumerations\Parameter::BOUNDARY,
-								$this->generateNewBoundary())
-						)->ToString()
-					);
-					$oResultPart->SubParts->append($oIncPart);
-				}
-
-				$oResultPart->SubParts->append($this->createNewMessageAttachmentBody($oAttachment));
-			}
-		}
-
-		return $oResultPart ?: $oIncPart;
-	}
-
 	private function setDefaultHeaders(Part $oIncPart, bool $bWithoutBcc = false) : Part
 	{
 		if (!isset($this->aHeadersValue[Enumerations\Header::DATE]))
@@ -590,54 +510,48 @@ class Message
 	}
 
 	/**
-	 * @return resource
+	 * @return resource|bool
 	 */
 	public function ToStream(bool $bWithoutBcc = false)
 	{
-		$oPart = null;
-		if (1 < \count($this->aAlternativeParts))
+		$oResultPart = null;
+		if (\count($this->SubParts))
 		{
-			$oPart = new Part;
+			if (1 !== \count($this->SubParts)) {
+				throw new \Exception('Invalid part structure');
+			}
+			// createNewMessageRelatedBody
+			foreach ($this->oAttachmentCollection as $oAttachment) {
+				if ($oAttachment->IsLinked()) {
+					if (!$oResultPart) {
+						$oResultPart = new Part;
+						$oResultPart->Headers->append(
+							new Header(Enumerations\Header::CONTENT_TYPE,
+								Enumerations\MimeType::MULTIPART_RELATED.'; '.
+								(new ParameterCollection)->Add(
+									new Parameter(
+										Enumerations\Parameter::BOUNDARY,
+										$this->generateNewBoundary())
+								)->ToString()
+							)
+						);
+						$oResultPart->SubParts = $this->SubParts;
+						$this->SubParts = new PartCollection();
+						$this->SubParts->append($oResultPart);
+					}
 
-			$oPart->Headers->append(
-				new Header(Enumerations\Header::CONTENT_TYPE,
-					Enumerations\MimeType::MULTIPART_ALTERNATIVE.'; '.
-					(new ParameterCollection)->Add(
-						new Parameter(
-							Enumerations\Parameter::BOUNDARY,
-							$this->generateNewBoundary())
-					)->ToString()
-				)
-			);
-
-			foreach ($this->aAlternativeParts as $aAlternativeData)
-			{
-				$oAlternativePart = $this->createNewMessageAlternativePartBody($aAlternativeData);
-				if ($oAlternativePart)
-				{
-					$oPart->SubParts->append($oAlternativePart);
+					$oResultPart->SubParts->append($this->createNewMessageAttachmentBody($oAttachment));
 				}
-
-				unset($oAlternativePart);
-			}
-
-		}
-		else if (1 === \count($this->aAlternativeParts))
-		{
-			$oAlternativePart = $this->createNewMessageAlternativePartBody($this->aAlternativeParts[0]);
-			if ($oAlternativePart)
-			{
-				$oPart = $oAlternativePart;
 			}
 		}
-
-		if (!$oPart)
+		else
 		{
 			if ($this->bAddEmptyTextPart)
 			{
-				$oPart = $this->createNewMessageAlternativePartBody(array(
-					Enumerations\MimeType::TEXT_PLAIN, null
-				));
+				$oPart = new Part;
+				$oPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE, 'text/plain; charset="utf-8"');
+				$oPart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString('');
+				$this->SubParts->append($oPart);
 			}
 			else
 			{
@@ -645,18 +559,40 @@ class Message
 				if (1 === \count($aAttachments) && isset($aAttachments[0]))
 				{
 					$this->oAttachmentCollection->Clear();
-
 					$oPart = $this->createNewMessageAlternativePartBody(array(
-						$aAttachments[0]->ContentType(), $aAttachments[0]->Resource(),
-							'', $aAttachments[0]->CustomContentTypeParams()
+						$aAttachments[0]->ContentType(),
+						$aAttachments[0]->Resource(),
+						'',
+						$aAttachments[0]->CustomContentTypeParams()
 					));
+					$this->SubParts->append($oPart);
 				}
 			}
 		}
 
-		$oPart = $this->createNewMessageRelatedBody($oPart);
-		$oPart = $this->createNewMessageMixedBody($oPart);
-		$oPart = $this->setDefaultHeaders($oPart, $bWithoutBcc);
+		// createNewMessageMixedBody
+		foreach ($this->oAttachmentCollection as $oAttachment) {
+			if (!$oAttachment->IsLinked()) {
+				if (!$oResultPart) {
+					$oResultPart = new Part;
+					$oResultPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE,
+						Enumerations\MimeType::MULTIPART_MIXED.'; '.
+						(new ParameterCollection)->Add(
+							new Parameter(
+								Enumerations\Parameter::BOUNDARY,
+								$this->generateNewBoundary())
+						)->ToString()
+					);
+					$oResultPart->SubParts = $this->SubParts;
+					$this->SubParts = new PartCollection();
+					$this->SubParts->append($oResultPart);
+				}
+
+				$oResultPart->SubParts->append($this->createNewMessageAttachmentBody($oAttachment));
+			}
+		}
+
+		$oPart = $this->setDefaultHeaders($this->SubParts[0], $bWithoutBcc);
 		return $oPart->ToStream();
 	}
 /*

@@ -520,7 +520,7 @@ class Part
 	}
 
 	/**
-	 * @return resource
+	 * @return resource|bool
 	 */
 	public function ToStream()
 	{
@@ -542,7 +542,7 @@ class Part
 			"\r\n"
 		);
 
-		if (0 < $this->SubParts->Count())
+		if ($this->SubParts->Count())
 		{
 			$sBoundary = $this->HeaderBoundary();
 			if (\strlen($sBoundary))

@@ -19,7 +19,6 @@ namespace MailSo\Mime\Enumerations;
 abstract class MimeType
 {
 	const TEXT_PLAIN = 'text/plain';
-	const TEXT_HTML = 'text/html';
 
 	const MULTIPART_ALTERNATIVE = 'multipart/alternative';
 	const MULTIPART_RELATED = 'multipart/related';

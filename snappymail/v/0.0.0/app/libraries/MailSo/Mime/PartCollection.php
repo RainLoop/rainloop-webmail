@@ -24,7 +24,7 @@ class PartCollection extends \MailSo\Base\Collection
 	}
 
 	/**
-	 * @return resource
+	 * @return resource|bool|null
 	 */
 	public function ToStream(string $sBoundary)
 	{
