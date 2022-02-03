@@ -62,7 +62,7 @@ const
 	mimeToMessage = (data, message) => {
 		// TODO: Check multipart/signed application/pgp-signature application/pgp-keys
 		const headers = data.split(/\r?\n\r?\n/)[0];
-		if (/Content-Type:[\s\S]*?;\s*boundary=/.test(headers)) {
+		if (/Content-Type:[\s\S]*?/.test(headers)) {
 			// https://github.com/postalsys/postal-mime
 			(new PostalMime).parse(data).then(result => {
 				// TODO: multipart/signed
