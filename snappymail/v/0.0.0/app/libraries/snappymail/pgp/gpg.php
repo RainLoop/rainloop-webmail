@@ -1381,20 +1381,22 @@ class GPG
 
 	private static function findBinary($name) : ?string
 	{
-		$binary = \trim(`which $name`);
-		if ($binary && \is_executable($binary)) {
-			return $binary;
-		}
-		$locations = [
-			'/sw/bin/',
-			'/usr/bin/',
-			'/usr/local/bin/',
-			'/opt/local/bin/',
-			'/run/current-system/sw/bin/'
-		];
-		foreach ($locations as $location) {
-			if (\is_executable($location . $name)) {
-				return $location . $name;
+		if (!\ini_get('open_basedir')) {
+			$binary = \trim(`which $name`);
+			if ($binary && \is_executable($binary)) {
+				return $binary;
+			}
+			$locations = [
+				'/sw/bin/',
+				'/usr/bin/',
+				'/usr/local/bin/',
+				'/opt/local/bin/',
+				'/run/current-system/sw/bin/'
+			];
+			foreach ($locations as $location) {
+				if (\is_executable($location . $name)) {
+					return $location . $name;
+				}
 			}
 		}
 		return null;
