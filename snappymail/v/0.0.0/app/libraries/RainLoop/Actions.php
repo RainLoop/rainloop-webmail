@@ -782,14 +782,11 @@ class Actions
 				$aResult['ContactsPdoPassword'] = (string)APP_DUMMY;
 
 				$aResult['WeakPassword'] = \is_file($passfile);
-
-				$aResult['PhpUploadSizes'] = array(
-					'upload_max_filesize' => \ini_get('upload_max_filesize'),
-					'post_max_size' => \ini_get('post_max_size')
-				);
 			}
 
 			$aResult['Capa'] = $this->Capa(true);
+			$aResult['LanguageAdmin'] = $this->ValidateLanguage($oConfig->Get('webmail', 'language_admin', 'en'), '', true);
+			$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($UserLanguageRaw, '', true, true);
 		} else {
 			$oAccount = $this->getAccountFromToken(false);
 			if ($oAccount) {
@@ -901,16 +898,19 @@ class Actions
 			$aResult['Capa'] = $this->Capa(false, $oAccount);
 		}
 
+		if ($aResult['Auth']) {
+			$aResult['PhpUploadSizes'] = array(
+				'upload_max_filesize' => \ini_get('upload_max_filesize'),
+				'post_max_size' => \ini_get('post_max_size')
+			);
+		}
+
 		$sStaticCache = $this->StaticCache();
 
 		$aResult['Theme'] = $this->GetTheme($bAdmin);
 
 		$aResult['Language'] = $this->ValidateLanguage($sLanguage, '', false);
 		$aResult['UserLanguage'] = $this->ValidateLanguage($UserLanguageRaw, '', false, true);
-		if ($bAdmin) {
-			$aResult['LanguageAdmin'] = $this->ValidateLanguage($oConfig->Get('webmail', 'language_admin', 'en'), '', true);
-			$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($UserLanguageRaw, '', true, true);
-		}
 
 		$aResult['PluginsLink'] = '';
 		if (0 < $this->oPlugins->Count() && $this->oPlugins->HaveJs($bAdmin)) {

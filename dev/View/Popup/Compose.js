@@ -14,14 +14,14 @@ import {
 
 import { inFocus, pInt, isArray, arrayLength, forEachObjectEntry } from 'Common/Utils';
 import { delegateRunOnDestroy, initFullscreen } from 'Common/UtilsUser';
-import { encodeHtml, HtmlEditor } from 'Common/Html';
+import { encodeHtml, HtmlEditor, htmlToPlain } from 'Common/Html';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { serverRequest } from 'Common/Links';
 import { i18n, getNotification, getUploadErrorDescByCode } from 'Common/Translator';
 import { timestampToString } from 'Common/Momentor';
 import { MessageFlagsCache, setFolderHash } from 'Common/Cache';
-import { doc, Settings, SettingsGet, getFullscreenElement, exitFullscreen } from 'Common/Globals';
+import { doc, Settings, SettingsGet, getFullscreenElement, exitFullscreen, elementById } from 'Common/Globals';
 
 import { AppUserStore } from 'Stores/User/App';
 import { SettingsUserStore } from 'Stores/User/Settings';
@@ -172,21 +172,21 @@ class ComposePopupView extends AbstractViewPopup {
 			pgpEncrypt: false,
 			canPgpSign: false,
 			canPgpEncrypt: false,
+			canMailvelope: false,
 
 			draftsFolder: '',
 			draftUid: 0,
 			sending: false,
 			saving: false,
 
-			attachmentsPlace: false,
+			viewArea: 'body',
 
-			composeUploaderButton: null,
-			composeUploaderDropPlace: null,
+			composeUploaderButton: null, // initDom
+			composeUploaderDropPlace: null, // initDom
 			attacheMultipleAllowed: false,
 			addAttachmentEnabled: false,
 
-			// div.textAreaParent
-			composeEditorArea: null,
+			editorArea: null, // initDom
 
 			currentIdentity: IdentityUserStore()[0] || null
 		});
@@ -382,10 +382,10 @@ class ComposePopupView extends AbstractViewPopup {
 
 		if (this.attachmentsInProcess().length) {
 			this.attachmentsInProcessError(true);
-			this.attachmentsPlace(true);
+			this.attachmentsArea();
 		} else if (this.attachmentsInError().length) {
 			this.attachmentsInErrorError(true);
-			this.attachmentsPlace(true);
+			this.attachmentsArea();
 		}
 
 		if (!this.to().trim() && !this.cc().trim() && !this.bcc().trim()) {
@@ -452,7 +452,13 @@ class ComposePopupView extends AbstractViewPopup {
 							30000
 						);
 
-				if (encrypt) {
+				if (this.mailvelope && 'mailvelope' === this.viewArea()) {
+					this.mailvelope.encrypt(this.allRecipients()).then(armored => {
+						params.Html = '';
+						params.Text = armored;
+						send();
+					});
+				} else if (encrypt) {
 					if (params.Html) {
 						throw 'Encrypt HTML with ' + encrypt + ' not yet implemented';
 					}
@@ -557,44 +563,56 @@ class ComposePopupView extends AbstractViewPopup {
 
 			setFolderHash(FolderUserStore.draftsFolder(), '');
 
-			Remote.request('SaveMessage',
-				(iError, oData) => {
-					let result = false;
+			const
+				params = this.getMessageRequestParams(FolderUserStore.draftsFolder()),
+				save = () =>
+					Remote.request('SaveMessage',
+						(iError, oData) => {
+							let result = false;
 
-					this.saving(false);
+							this.saving(false);
 
-					if (!iError) {
-						if (oData.Result.NewFolder && oData.Result.NewUid) {
-							result = true;
+							if (!iError) {
+								if (oData.Result.NewFolder && oData.Result.NewUid) {
+									result = true;
 
-							if (this.bFromDraft) {
-								const message = MessageUserStore.message();
-								if (message && this.draftsFolder() === message.folder && this.draftUid() == message.uid) {
-									MessageUserStore.message(null);
+									if (this.bFromDraft) {
+										const message = MessageUserStore.message();
+										if (message && this.draftsFolder() === message.folder && this.draftUid() == message.uid) {
+											MessageUserStore.message(null);
+										}
+									}
+
+									this.draftsFolder(oData.Result.NewFolder);
+									this.draftUid(oData.Result.NewUid);
+
+									this.savedTime(new Date);
+
+									if (this.bFromDraft) {
+										setFolderHash(this.draftsFolder(), '');
+									}
 								}
 							}
 
-							this.draftsFolder(oData.Result.NewFolder);
-							this.draftUid(oData.Result.NewUid);
-
-							this.savedTime(new Date);
-
-							if (this.bFromDraft) {
-								setFolderHash(this.draftsFolder(), '');
+							if (!result) {
+								this.savedError(true);
+								this.savedErrorDesc(getNotification(Notification.CantSaveMessage));
 							}
-						}
-					}
 
-					if (!result) {
-						this.savedError(true);
-						this.savedErrorDesc(getNotification(Notification.CantSaveMessage));
-					}
+							this.reloadDraftFolder();
+						},
+						params,
+						200000
+					);
 
-					this.reloadDraftFolder();
-				},
-				this.getMessageRequestParams(FolderUserStore.draftsFolder()),
-				200000
-			);
+			if (this.mailvelope && 'mailvelope' === this.viewArea()) {
+				this.mailvelope.createDraft().then(armored => {
+					params.Text = armored;
+					save();
+				});
+			} else {
+				save();
+			}
 		}
 
 		return true;
@@ -736,14 +754,21 @@ class ComposePopupView extends AbstractViewPopup {
 		(getFullscreenElement() === this.oContent) && exitFullscreen();
 	}
 
+	dropMailvelope() {
+		if (this.mailvelope) {
+			elementById('mailvelope-editor').textContent = '';
+			this.mailvelope = null;
+		}
+	}
+
 	editor(fOnInit) {
-		if (fOnInit && this.composeEditorArea()) {
+		if (fOnInit && this.editorArea()) {
 			if (this.oEditor) {
 				fOnInit(this.oEditor);
 			} else {
 				// setTimeout(() => {
 				this.oEditor = new HtmlEditor(
-					this.composeEditorArea(),
+					this.editorArea(),
 					null,
 					() => fOnInit(this.oEditor),
 					bHtml => this.isHtml(!!bHtml)
@@ -1201,7 +1226,7 @@ class ComposePopupView extends AbstractViewPopup {
 					this.dragAndDropOver(false);
 				})
 				.on('onBodyDragEnter', () => {
-					this.attachmentsPlace(true);
+					this.attachmentsArea();
 					this.dragAndDropVisible(true);
 				})
 				.on('onBodyDragLeave', () => {
@@ -1231,7 +1256,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 					this.attachments.push(attachment);
 
-					this.attachmentsPlace(true);
+					this.attachmentsArea();
 
 					if (0 < size && 0 < attachmentSizeLimit && attachmentSizeLimit < size) {
 						attachment
@@ -1423,7 +1448,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 		this.attachments.push(attachment);
 
-		this.attachmentsPlace(true);
+		this.attachmentsArea();
 
 		return attachment;
 	}
@@ -1498,7 +1523,7 @@ class ComposePopupView extends AbstractViewPopup {
 		this.requestReadReceipt(false);
 		this.markAsImportant(false);
 
-		this.attachmentsPlace(false);
+		this.bodyArea();
 
 		this.aDraftInfo = null;
 		this.sInReplyTo = '';
@@ -1532,6 +1557,8 @@ class ComposePopupView extends AbstractViewPopup {
 		this.saving(false);
 
 		this.oEditor && this.oEditor.clear();
+
+		this.dropMailvelope();
 	}
 
 	/**
@@ -1541,6 +1568,43 @@ class ComposePopupView extends AbstractViewPopup {
 		return this.attachments.filter(item => item && !item.tempName()).map(
 			item => item.id
 		);
+	}
+
+	mailvelopeArea() {
+		/**
+		 * Creates an iframe with an editor for a new encrypted mail.
+		 * The iframe will be injected into the container identified by selector.
+		 * https://mailvelope.github.io/mailvelope/Editor.html
+		 */
+		let text = this.oEditor.getData(true),
+			size = SettingsGet('PhpUploadSizes')['post_max_size'],
+			quota = pInt(size);
+		switch (size.slice(-1)) {
+			case 'G': quota *= 1024; // fallthrough
+			case 'M': quota *= 1024; // fallthrough
+			case 'K': quota *= 1024;
+		}
+		this.mailvelope ||
+			mailvelope.createEditorContainer('#mailvelope-editor', PgpUserStore.mailvelopeKeyring, {
+				// https://mailvelope.github.io/mailvelope/global.html#EditorContainerOptions
+				quota: Math.max(2048, (quota / 1024)) - 48, // (text + attachments) limit in kilobytes
+				predefinedText: this.oEditor.isHtml() ? htmlToPlain(text) : text
+/*
+				signMsg: false, // if true then the mail will be signed (default: false)
+				armoredDraft: '', // Ascii Armored PGP Text Block
+				quotedMail: '', // Ascii Armored PGP Text Block mail that should be quoted
+				quotedMailIndent: true, // if true the quoted mail will be indented (default: true)
+				quotedMailHeader: '', // header to be added before the quoted mail
+				keepAttachments: false, // add attachments of quotedMail to editor (default: false)
+*/
+			}).then(editor => this.mailvelope = editor);
+		this.viewArea('mailvelope');
+	}
+	attachmentsArea() {
+		this.viewArea('attachments');
+	}
+	bodyArea() {
+		this.viewArea('body');
 	}
 
 	allRecipients() {
@@ -1555,14 +1619,22 @@ class ComposePopupView extends AbstractViewPopup {
 				email.clear();
 				email.parse(value.trim());
 				return email.email || false;
-			}).filter(v => v);
+			}).validUnique();
 	}
 
 	initPgpEncrypt() {
-		return PgpUserStore.hasPublicKeyForEmails(this.allRecipients(), 1).then(result => {
-				console.log({canPgpEncrypt:result});
-				this.canPgpEncrypt(result);
-			});
+		PgpUserStore.hasPublicKeyForEmails(this.allRecipients(), 1).then(result => {
+			console.log({canPgpEncrypt:result});
+			this.canPgpEncrypt(result);
+		});
+		PgpUserStore.mailvelopeHasPublicKeyForEmails(this.allRecipients(), 1).then(result => {
+			console.log({canMailvelope:result});
+			this.canMailvelope(result);
+			if (!result) {
+				'mailvelope' === this.viewArea() && this.bodyArea();
+//				this.dropMailvelope();
+			}
+		});
 	}
 
 	togglePgpSign() {

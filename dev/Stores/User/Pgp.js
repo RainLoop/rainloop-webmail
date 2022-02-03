@@ -67,6 +67,15 @@ export const PgpUserStore = new class {
 		return !!(OpenPGPUserStore.isSupported() || GnuPGUserStore.isSupported() || window.mailvelope);
 	}
 
+	async mailvelopeHasPublicKeyForEmails(recipients, all) {
+		const
+			keyring = this.mailvelopeKeyring,
+			mailvelope = keyring && await keyring.validKeyForAddress(recipients)
+				/*.then(LookupResult => Object.entries(LookupResult))*/,
+			entries = mailvelope && Object.entries(mailvelope);
+		return !!(entries && (all ? (entries.filter(value => value[1]).length === recipients.length) : entries.length));
+	}
+
 	/**
 	 * Checks if verifying/encrypting a message is possible with given email addresses.
 	 * Returns the first library that can.
@@ -82,11 +91,7 @@ export const PgpUserStore = new class {
 				return 'gnupg';
 			}
 
-			let keyring = this.mailvelopeKeyring,
-				mailvelope = keyring && await keyring.validKeyForAddress(recipients)
-				/*.then(LookupResult => Object.entries(LookupResult))*/;
-			mailvelope = mailvelope && Object.entries(mailvelope);
-			if (mailvelope && (all ? (mailvelope.filter(([, value]) => value).length === count) : mailvelope.length)) {
+			if (await this.mailvelopeHasPublicKeyForEmails(recipients, all)) {
 				return 'mailvelope';
 			}
 		}
@@ -198,51 +203,28 @@ export const PgpUserStore = new class {
 	}
 
 	/**
-	 * Creates an iframe with an editor for a new encrypted mail.
-	 * The iframe will be injected into the container identified by selector.
-	 * https://mailvelope.github.io/mailvelope/Editor.html
-	 */
-/*
-	mailvelope.createEditorContainer(selector, this.mailvelopeKeyring, {
-		quota: 20480, // mail content (text + attachments) limit in kilobytes (default: 20480)
-		signMsg: false, // if true then the mail will be signed (default: false)
-		armoredDraft: '', // Ascii Armored PGP Text Block
-				a PGP message, signed and encrypted with the default key of the user, will be used to restore a draft in the editor
-				The armoredDraft parameter can't be combined with the parameters: predefinedText, quotedMail... parameters, keepAttachments
-		predefinedText: '', // text that will be added to the editor
-		quotedMail: '', // Ascii Armored PGP Text Block mail that should be quoted
-		quotedMailIndent: true, // if true the quoted mail will be indented (default: true)
-		quotedMailHeader: '', // header to be added before the quoted mail
-		keepAttachments: false, // add attachments of quotedMail to editor (default: false)
-	}).then(editor => {
-		editor.editorId;
-	}, error_handler)
-*/
-
-	/**
 	 * Returns headers that should be added to an outgoing email.
 	 * So far this is only the autocrypt header.
 	 */
 /*
 	this.mailvelopeKeyring.additionalHeadersForOutgoingEmail(headers)
-*/
-
-/*
 	this.mailvelopeKeyring.addSyncHandler(syncHandlerObj)
-*/
-/*
+	this.mailvelopeKeyring.createKeyBackupContainer(selector, options)
 	this.mailvelopeKeyring.createKeyGenContainer(selector, {
 //		userIds: [],
 		keySize: 4096
 	})
-*/
 
-/*
-	exportOwnPublicKey(emailAddr).then(<AsciiArmored, Error>)
-
-	this.mailvelopeKeyring.hasPrivateKey(fingerprint)
-
+	this.mailvelopeKeyring.exportOwnPublicKey(emailAddr).then(<AsciiArmored, Error>)
 	this.mailvelopeKeyring.importPublicKey(armored)
+
+	// https://mailvelope.github.io/mailvelope/global.html#SyncHandlerObject
+	this.mailvelopeKeyring.addSyncHandler({
+		uploadSync
+		downloadSync
+		backup
+		restore
+	});
 */
 
 };
