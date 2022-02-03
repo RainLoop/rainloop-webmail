@@ -47,6 +47,8 @@ import { ContactsPopupView } from 'View/Popup/Contacts';
 import { ThemeStore } from 'Stores/Theme';
 
 const
+	base64_encode = text => btoa(text).match(/.{1,76}/g),
+
 	/**
 	 * @param {string} prefix
 	 * @param {string} subject
@@ -459,25 +461,45 @@ class ComposePopupView extends AbstractViewPopup {
 						send();
 					});
 				} else if (encrypt) {
-					if (params.Html) {
-						throw 'Encrypt HTML with ' + encrypt + ' not yet implemented';
-					}
 					if ('openpgp' != encrypt) {
 						throw 'Encryption with ' + encrypt + ' not yet implemented';
 					}
 					if (sign && 'openpgp' != sign[0]) {
 						throw 'Signing with ' + sign[0] + ' not yet implemented';
 					}
-					OpenPGPUserStore.encrypt(params.Text, this.allRecipients(), sign && sign[1]).then(text => {
-						if (text) {
-							params.Text = text;
-							send();
-						} else {
-							this.sendError(true);
-							this.sendErrorDesc(i18n('PGP_NOTIFICATIONS/PGP_ERROR', { ERROR: 'Encryption failed' }));
-							this.sending(false);
+					if (sign && sign[1]) {
+						if (params.Html) {
+							throw 'Encrypt HTML with ' + encrypt + ' not yet implemented';
 						}
-					});
+						OpenPGPUserStore.encrypt(params.Text, this.allRecipients(), sign[1]).then(armored => {
+							if (armored) {
+								params.Text = armored;
+								send();
+							} else {
+								this.sendError(true);
+								this.sendErrorDesc(i18n('PGP_NOTIFICATIONS/PGP_ERROR', { ERROR: 'Encryption failed' }));
+								this.sending(false);
+							}
+						});
+					} else {
+						let data = [
+							'Content-Transfer-Encoding: base64',
+							'Content-Type: text/'+(params.Html?'html':'plain')+'; charset="utf-8"',
+							'',
+							base64_encode(params.Html || params.Text)
+						].join("\r\n");
+						OpenPGPUserStore.encrypt(data, this.allRecipients(), sign && sign[1]).then(armored => {
+							if (armored) {
+								params.Text = params.Html = '';
+								params.Encrypted = armored;
+								send();
+							} else {
+								this.sendError(true);
+								this.sendErrorDesc(i18n('PGP_NOTIFICATIONS/PGP_ERROR', { ERROR: 'Encryption failed' }));
+								this.sending(false);
+							}
+						});
+					}
 				} else if (sign) {
 					if (params.Html) {
 						throw 'Signing HTML with ' + sign[0] + ' not yet implemented';
@@ -497,7 +519,7 @@ class ComposePopupView extends AbstractViewPopup {
 							''
 						]
 						// Now the body in base64
-						.concat(btoa(params.Text).match(/.{1,76}/g))
+						.concat(base64_encode(params.Text))
 						.join("\r\n");
 					}
 					OpenPGPUserStore.sign(params.Text, sign[1]).then(text => {
