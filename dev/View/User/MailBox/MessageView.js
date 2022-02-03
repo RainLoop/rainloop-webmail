@@ -62,7 +62,7 @@ const
 	mimeToMessage = (data, message) => {
 		// TODO: Check multipart/signed application/pgp-signature application/pgp-keys
 		const headers = data.split(/\r?\n\r?\n/)[0];
-		if (/Content-Type:.+; boundary=/.test(headers)) {
+		if (/Content-Type:[\s\S]*?;\s*boundary=/.test(headers)) {
 			// https://github.com/postalsys/postal-mime
 			(new PostalMime).parse(data).then(result => {
 				// TODO: multipart/signed
@@ -634,7 +634,7 @@ export class MailMessageView extends AbstractViewRight {
 		PgpUserStore.decrypt(oMessage).then(result => {
 			if (result && result.data) {
 				mimeToMessage(result.data, oMessage);
-				if (result.signatures) {
+				if (result.signatures && result.signatures.length) {
 					oMessage.pgpSigned(true);
 					oMessage.pgpVerified({
 						signatures: result.signatures,
