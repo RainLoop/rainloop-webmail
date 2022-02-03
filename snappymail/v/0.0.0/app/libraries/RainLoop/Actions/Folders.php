@@ -177,7 +177,7 @@ trait Folders
 				$this->Plugins()->RunHook('filter.folders-complete', array($oAccount, $oFolderCollection));
 
 				$aQuota = null;
-				if ($this->GetCapa(false, Capa::QUOTA, $this->getAccountFromToken())) {
+				if ($this->GetCapa(Capa::QUOTA)) {
 					try {
 //						$aQuota = $this->MailClient()->Quota();
 						$aQuota = $this->MailClient()->QuotaRoot();

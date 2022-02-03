@@ -160,7 +160,7 @@ trait UserAuth
 	{
 		$this->Http()->ServerNoCache();
 		$oMainAccount = $this->getMainAccountFromToken(false);
-		if ($sEmail && $oMainAccount && $this->GetCapa(false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oMainAccount)) {
+		if ($sEmail && $oMainAccount && $this->GetCapa(\RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS)) {
 			$oAccount = null;
 			if ($oMainAccount->Email() === $sEmail) {
 				$this->SetAdditionalAuthToken($oAccount);

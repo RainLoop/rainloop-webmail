@@ -36,7 +36,7 @@ trait Accounts
 
 	public function GetAccounts(MainAccount $oAccount): array
 	{
-		if ($this->GetCapa(false, Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
+		if ($this->GetCapa(Capa::ADDITIONAL_ACCOUNTS)) {
 			$sAccounts = $this->StorageProvider()->Get($oAccount,
 				StorageType::CONFIG,
 				'additionalaccounts'
@@ -76,7 +76,7 @@ trait Accounts
 	{
 		$oMainAccount = $this->getMainAccountFromToken();
 
-		if (!$this->GetCapa(false, Capa::ADDITIONAL_ACCOUNTS, $oMainAccount)) {
+		if (!$this->GetCapa(Capa::ADDITIONAL_ACCOUNTS)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
@@ -108,7 +108,7 @@ trait Accounts
 	{
 		$oMainAccount = $this->getMainAccountFromToken();
 
-		if (!$this->GetCapa(false, Capa::ADDITIONAL_ACCOUNTS, $oMainAccount)) {
+		if (!$this->GetCapa(Capa::ADDITIONAL_ACCOUNTS)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
@@ -190,7 +190,7 @@ trait Accounts
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, Capa::IDENTITIES, $oAccount)) {
+		if (!$this->GetCapa(Capa::IDENTITIES)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
@@ -254,7 +254,7 @@ trait Accounts
 	public function GetIdentities(Account $oAccount): array
 	{
 		// A custom name for a single identity is also stored in this system
-		$allowMultipleIdentities = $this->GetCapa(false, Capa::IDENTITIES, $oAccount);
+		$allowMultipleIdentities = $this->GetCapa(Capa::IDENTITIES);
 
 		// Get all identities
 		$identities = $this->IdentitiesProvider()->GetIdentities($oAccount, $allowMultipleIdentities);

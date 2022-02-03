@@ -509,7 +509,7 @@ class Actions
 	{
 		if (null === $this->oAddressBookProvider) {
 			$oDriver = null;
-			if ($this->GetCapa(false, Enumerations\Capa::CONTACTS, $oAccount)) {
+			if ($this->GetCapa(Enumerations\Capa::CONTACTS)) {
 				if ($this->oConfig->Get('contacts', 'enable', false) || $bForceEnable) {
 					$oDriver = $this->fabrica('address-book', $oAccount);
 				}
@@ -643,7 +643,7 @@ class Actions
 		$oConfig = $this->oConfig;
 
 		$aAttachmentsActions = array();
-		if ($this->GetCapa(false, Enumerations\Capa::ATTACHMENTS_ACTIONS)) {
+		if ($this->GetCapa(Enumerations\Capa::ATTACHMENTS_ACTIONS)) {
 			if (\class_exists('PharData') || \class_exists('ZipArchive')) {
 				$aAttachmentsActions[] = 'zip';
 			}
@@ -784,7 +784,6 @@ class Actions
 				$aResult['WeakPassword'] = \is_file($passfile);
 			}
 
-			$aResult['Capa'] = $this->Capa(true);
 			$aResult['LanguageAdmin'] = $this->ValidateLanguage($oConfig->Get('webmail', 'language_admin', 'en'), '', true);
 			$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($UserLanguageRaw, '', true, true);
 		} else {
@@ -867,11 +866,11 @@ class Actions
 					$aResult['AutoLogout'] = (int)$oSettings->GetConf('AutoLogout', $aResult['AutoLogout']);
 					$aResult['Layout'] = (int)$oSettings->GetConf('Layout', $aResult['Layout']);
 
-					if (!$this->GetCapa(false, Enumerations\Capa::AUTOLOGOUT, $oAccount)) {
+					if (!$this->GetCapa(Enumerations\Capa::AUTOLOGOUT)) {
 						$aResult['AutoLogout'] = 0;
 					}
 
-					if ($this->GetCapa(false, Enumerations\Capa::USER_BACKGROUND, $oAccount)) {
+					if ($this->GetCapa(Enumerations\Capa::USER_BACKGROUND)) {
 						$aResult['UserBackgroundName'] = (string)$oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
 						$aResult['UserBackgroundHash'] = (string)$oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
 					}
@@ -894,11 +893,10 @@ class Actions
 					$aResult['AdditionalLoginError'] = $this->GetSpecLogoutCustomMgsWithDeletion();
 				}
 			}
-
-			$aResult['Capa'] = $this->Capa(false, $oAccount);
 		}
 
 		if ($aResult['Auth']) {
+			$aResult['Capa'] = $this->Capa($bAdmin, $oAccount);
 			$aResult['PhpUploadSizes'] = array(
 				'upload_max_filesize' => \ini_get('upload_max_filesize'),
 				'post_max_size' => \ini_get('post_max_size')
@@ -1081,7 +1079,7 @@ class Actions
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, Enumerations\Capa::USER_BACKGROUND, $oAccount)) {
+		if (!$this->GetCapa(Enumerations\Capa::USER_BACKGROUND)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
@@ -1160,9 +1158,16 @@ class Actions
 
 	public function Capa(bool $bAdmin, ?Model\Account $oAccount = null): array
 	{
+		static $aResult;
+		if ($aResult && !$oAccount) {
+			return $aResult;
+		}
+
 		$oConfig = $this->oConfig;
 
-		$aResult = array();
+		$aResult = array(
+			Enumerations\Capa::AUTOLOGOUT
+		);
 
 		if ($oConfig->Get('capa', 'dangerous_actions', true)) {
 			$aResult[] = Enumerations\Capa::DANGEROUS_ACTIONS;
@@ -1231,14 +1236,12 @@ class Actions
 			$aResult[] = Enumerations\Capa::KOLAB;
 		}
 
-		$aResult[] = Enumerations\Capa::AUTOLOGOUT;
-
 		return $aResult;
 	}
 
-	public function GetCapa(bool $bAdmin, string $sName, ?Model\Account $oAccount = null): bool
+	public function GetCapa(string $sName, ?Model\Account $oAccount = null): bool
 	{
-		return \in_array($sName, $this->Capa($bAdmin, $oAccount));
+		return \in_array($sName, $this->Capa(false, $oAccount));
 	}
 
 	public function etag(string $sKey): string

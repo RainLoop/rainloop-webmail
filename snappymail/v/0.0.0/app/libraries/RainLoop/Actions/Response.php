@@ -210,7 +210,7 @@ trait Response
 				$mResult['Html'] = $mResponse->Html();
 				$mResult['Plain'] = $mResponse->Plain();
 
-//				$this->GetCapa(false, Capa::OPEN_PGP) || $this->GetCapa(false, Capa::GNUPG)
+//				$this->GetCapa(Capa::OPEN_PGP) || $this->GetCapa(Capa::GNUPG)
 				$mResult['isPgpEncrypted'] = $mResponse->isPgpEncrypted();
 				$mResult['PgpSigned'] = $mResponse->PgpSigned();
 				$mResult['PgpEncrypted'] = $mResponse->PgpEncrypted();
@@ -248,7 +248,7 @@ trait Response
 		{
 			$mResult = $mResponse->jsonSerialize();
 			$mResult['Framed'] = $this->isFileHasFramedPreview($mResult['FileName']);
-			$mResult['IsThumbnail'] = $this->GetCapa(false, Capa::ATTACHMENT_THUMBNAILS) && $this->isFileHasThumbnail($mResult['FileName']);
+			$mResult['IsThumbnail'] = $this->GetCapa(Capa::ATTACHMENT_THUMBNAILS) && $this->isFileHasThumbnail($mResult['FileName']);
 			$mResult['Download'] = Utils::EncodeKeyValuesQ(array(
 				'V' => APP_VERSION,
 				'Account' => $this->getAccountFromToken()->Hash(),
