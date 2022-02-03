@@ -15,8 +15,8 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Auto Domain Selection',
-		VERSION  = '2.10',
-		REQUIRED = '2.10.0',
+		VERSION  = '2.8',
+		REQUIRED = '2.8.0',
 		CATEGORY = 'General',
 		DESCRIPTION = 'Sets the IMAP/SMTP host based on the user\'s login';
 
