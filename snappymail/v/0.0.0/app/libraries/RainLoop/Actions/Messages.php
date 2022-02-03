@@ -160,6 +160,10 @@ trait Messages
 
 		$this->Plugins()->RunHook('filter.send-message', array($oMessage));
 
+/*
+		TODO: PGP encrypt/sign
+*/
+
 		$mResult = false;
 		try
 		{
@@ -995,7 +999,7 @@ trait Messages
 
 		$this->Plugins()->RunHook('filter.read-receipt-message-plain', array($oAccount, $oMessage, &$sText));
 
-		$oMessage->AddText($sText, false);
+		$oMessage->AddPlain($sText);
 
 		$this->Plugins()->RunHook('filter.build-read-receipt-message', array($oMessage, $oAccount));
 
@@ -1004,8 +1008,6 @@ trait Messages
 
 	private function buildMessage(Account $oAccount, bool $bWithDraftInfo = true) : \MailSo\Mime\Message
 	{
-		$bTextIsHtml = '1' === $this->GetActionParam('TextIsHtml', '0');
-
 		$oMessage = new \MailSo\Mime\Message();
 
 		if (!$this->Config()->Get('security', 'hide_x_mailer_header', true))
@@ -1084,18 +1086,26 @@ trait Messages
 		$aFoundDataURL = array();
 		$aFoundContentLocationUrls = array();
 
+		$sHtml = $this->GetActionParam('Html', '');
 		$sText = $this->GetActionParam('Text', '');
-		if ($bTextIsHtml) {
-			$sText = \MailSo\Base\HtmlUtils::BuildHtml($sText, $aFoundCids, $aFoundDataURL, $aFoundContentLocationUrls);
-		}
-		$this->Plugins()->RunHook($bTextIsHtml ? 'filter.message-html' : 'filter.message-plain',
-			array($oAccount, $oMessage, &$sText));
-		if ($bTextIsHtml && \strlen($sText)) {
+		if ($sHtml) {
+			$sHtml = \MailSo\Base\HtmlUtils::BuildHtml($sHtml, $aFoundCids, $aFoundDataURL, $aFoundContentLocationUrls);
+			$this->Plugins()->RunHook('filter.message-html', array($oAccount, $oMessage, &$sHtml));
 			$sTextConverted = \MailSo\Base\HtmlUtils::ConvertHtmlToPlain($sText);
 			$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sTextConverted));
-			$oMessage->AddText($sTextConverted, false);
+			$oMessage->AddPlain($sTextConverted);
+			$oMessage->AddHtml($sText);
+		} else {
+			$sSignature = $this->GetActionParam('Signature', null);
+			if ($sSignature) {
+				// MimeType::MULTIPART_SIGNED
+				// MimeType::APPLICATION_PGP_SIGNATURE
+				$oMessage->AddPlain($sText);
+			} else {
+				$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sText));
+				$oMessage->AddPlain($sText);
+			}
 		}
-		$oMessage->AddText($sText, $bTextIsHtml);
 
 		$aAttachments = $this->GetActionParam('Attachments', null);
 		if (\is_array($aAttachments))

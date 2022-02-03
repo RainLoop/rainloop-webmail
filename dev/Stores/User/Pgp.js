@@ -74,12 +74,12 @@ export const PgpUserStore = new class {
 	async hasPublicKeyForEmails(recipients, all) {
 		const count = recipients.length;
 		if (count) {
-			if (GnuPGUserStore.hasPublicKeyForEmails(recipients, all)) {
-				return 'gnupg';
-			}
-
 			if (OpenPGPUserStore.hasPublicKeyForEmails(recipients, all)) {
 				return 'openpgp';
+			}
+
+			if (GnuPGUserStore.hasPublicKeyForEmails(recipients, all)) {
+				return 'gnupg';
 			}
 
 			let keyring = this.mailvelopeKeyring,

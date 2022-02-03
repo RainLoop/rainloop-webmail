@@ -47,28 +47,15 @@ class Message
 		$this->oAttachmentCollection = new AttachmentCollection;
 	}
 
-	public function DoesNotCreateEmptyTextPart() : self
-	{
-		$this->bAddEmptyTextPart = false;
-
-		return $this;
-	}
-
-	public function DoesNotAddDefaultXMailer() : self
+	public function DoesNotAddDefaultXMailer() : void
 	{
 		$this->bAddDefaultXMailer = false;
-
-		return $this;
 	}
 
 	public function MessageId() : string
 	{
-		$sResult = '';
-		if (!empty($this->aHeadersValue[Enumerations\Header::MESSAGE_ID]))
-		{
-			$sResult = $this->aHeadersValue[Enumerations\Header::MESSAGE_ID];
-		}
-		return $sResult;
+		return empty($this->aHeadersValue[Enumerations\Header::MESSAGE_ID]) ? ''
+			: $this->aHeadersValue[Enumerations\Header::MESSAGE_ID];
 	}
 
 	public function SetMessageId(string $sMessageId) : void
@@ -314,11 +301,6 @@ class Message
 	public function AddHtml(string $sHtml) : self
 	{
 		return $this->AddAlternative(Enumerations\MimeType::TEXT_HTML, $sHtml);
-	}
-
-	public function AddText(string $sHtmlOrPlainText, bool $bIsHtml = false) : self
-	{
-		return $bIsHtml ? $this->AddHtml($sHtmlOrPlainText) : $this->AddPlain($sHtmlOrPlainText);
 	}
 
 	public function AddAlternative(string $sContentType, string $sData) : self

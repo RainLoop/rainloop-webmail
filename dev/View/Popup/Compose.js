@@ -360,8 +360,8 @@ class ComposePopupView extends AbstractViewPopup {
 			Bcc: this.bcc(),
 			ReplyTo: this.replyTo(),
 			Subject: this.subject(),
-			TextIsHtml: TextIsHtml ? 1 : 0,
-			Text: Text,
+			Html: TextIsHtml ? Text : '',
+			Text: TextIsHtml ? '' : Text,
 			DraftInfo: this.aDraftInfo,
 			InReplyTo: this.sInReplyTo,
 			References: this.sReferences,
@@ -453,18 +453,54 @@ class ComposePopupView extends AbstractViewPopup {
 						);
 
 				if (encrypt) {
-					throw 'Encryption not yet implemented';
-				}
-				if (sign && 'openpgp' != sign[0]) {
-					throw 'Signing with ' + sign[0] + ' not yet implemented';
-				}
-				if (sign && 'openpgp' == sign[0]) {
-					if (params.TextIsHtml) {
-						throw i18n('PGP_NOTIFICATIONS/PGP_ERROR', { ERROR: "Can't sign HTML" });
+					if (params.Html) {
+						throw 'Encrypt HTML with ' + encrypt + ' not yet implemented';
 					}
-					OpenPGPUserStore.signCleartext(params.Text, sign[1]).then(text => {
+					if ('openpgp' != encrypt) {
+						throw 'Encryption with ' + encrypt + ' not yet implemented';
+					}
+					if (sign && 'openpgp' != sign[0]) {
+						throw 'Signing with ' + sign[0] + ' not yet implemented';
+					}
+					OpenPGPUserStore.encrypt(params.Text, this.allRecipients(), sign && sign[1]).then(text => {
 						if (text) {
 							params.Text = text;
+							send();
+						} else {
+							this.sendError(true);
+							this.sendErrorDesc(i18n('PGP_NOTIFICATIONS/PGP_ERROR', { ERROR: 'Signing failed' }));
+							this.sending(false);
+						}
+					});
+				} else if (sign) {
+					if (params.Html) {
+						throw 'Signing HTML with ' + sign[0] + ' not yet implemented';
+					}
+					if ('openpgp' != sign[0]) {
+						throw 'Signing with ' + sign[0] + ' not yet implemented';
+					}
+					const detached = false;
+					if (detached) {
+						// Append headers
+						params.Text = [
+							'Content-Transfer-Encoding: base64',
+							'Content-Type: text/plain; charset="utf-8"; protected-headers="v1"',
+//							'From: Demo <demo@snappymail.eu>',
+//							'To: Demo <demo@snappymail.eu>',
+//							'Subject: text detached signed'
+							''
+						]
+						// Now the body in base64
+						.concat(btoa(params.Text).match(/.{1,76}/g))
+						.join("\r\n");
+					}
+					OpenPGPUserStore.sign(params.Text, sign[1]).then(text => {
+						if (text) {
+							if (detached) {
+								params.Signature = text;
+							} else {
+								params.Text = text;
+							}
 							send();
 						} else {
 							this.sendError(true);
