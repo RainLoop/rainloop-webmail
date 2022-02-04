@@ -62,7 +62,7 @@ const
 	mimeToMessage = (data, message) => {
 		// TODO: Check multipart/signed application/pgp-signature application/pgp-keys
 		const headers = data.split(/\r?\n\r?\n/)[0];
-		if (/Content-Type:[\s\S]*?/.test(headers)) {
+		if (/Content-Type:/i.test(headers)) {
 			// https://github.com/postalsys/postal-mime
 			(new PostalMime).parse(data).then(result => {
 				// TODO: multipart/signed
@@ -284,7 +284,9 @@ export class MailMessageView extends AbstractViewRight {
 	}
 
 	messageEditCommand() {
-		this.editMessage();
+		if (currentMessage()) {
+			showMessageComposer([ComposeType.Draft, currentMessage()]);
+		}
 	}
 
 	goUpCommand() {
@@ -554,12 +556,6 @@ export class MailMessageView extends AbstractViewRight {
 
 	composeClick() {
 		showMessageComposer();
-	}
-
-	editMessage() {
-		if (currentMessage()) {
-			showMessageComposer([ComposeType.Draft, currentMessage()]);
-		}
 	}
 
 	scrollMessageToTop() {

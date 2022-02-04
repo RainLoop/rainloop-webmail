@@ -614,7 +614,8 @@ export class MessageModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	bodyAsHTML() {
-		if (this.body) {
+//		if (this.body && !this.body.querySelector('iframe[src*=decrypt]')) {
+		if (this.body && !this.body.querySelector('iframe')) {
 			let clone = this.body.cloneNode(true),
 				attr = 'data-html-editor-font-wrapper';
 			clone.querySelectorAll('blockquote.rl-bq-switcher').forEach(
@@ -627,6 +628,9 @@ export class MessageModel extends AbstractModel {
 				node => node.removeAttribute(attr)
 			);
 			return clone.innerHTML;
+		}
+		if (this.isPgpEncrypted()) {
+			return this.html() || plainToHtml(this.plain());
 		}
 		return '';
 	}
