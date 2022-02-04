@@ -145,12 +145,12 @@ export const OpenPGPUserStore = new class {
 	/**
 	 * Checks if verifying/encrypting a message is possible with given email addresses.
 	 */
-	hasPublicKeyForEmails(recipients, all) {
+	hasPublicKeyForEmails(recipients) {
 		const count = recipients.length,
 			length = count ? recipients.filter(email =>
 				this.publicKeys().find(key => key.emails.includes(email))
 			).length : 0;
-		return length && (!all || length === count);
+		return length && length === count;
 	}
 
 	getPrivateKeyFor(query/*, sign*/) {

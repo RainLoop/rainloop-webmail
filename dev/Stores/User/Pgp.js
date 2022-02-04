@@ -74,32 +74,27 @@ export const PgpUserStore = new class {
 		return 0 === text.trim().indexOf('-----BEGIN PGP MESSAGE-----');
 	}
 
-	async mailvelopeHasPublicKeyForEmails(recipients, all) {
+	async mailvelopeHasPublicKeyForEmails(recipients) {
 		const
 			keyring = this.mailvelopeKeyring,
 			mailvelope = keyring && await keyring.validKeyForAddress(recipients)
 				/*.then(LookupResult => Object.entries(LookupResult))*/,
 			entries = mailvelope && Object.entries(mailvelope);
-		return !!(entries && (all ? (entries.filter(value => value[1]).length === recipients.length) : entries.length));
+		return entries && entries.filter(value => value[1]).length === recipients.length;
 	}
 
 	/**
 	 * Checks if verifying/encrypting a message is possible with given email addresses.
 	 * Returns the first library that can.
 	 */
-	async hasPublicKeyForEmails(recipients, all) {
+	async hasPublicKeyForEmails(recipients) {
 		const count = recipients.length;
 		if (count) {
-			if (OpenPGPUserStore.hasPublicKeyForEmails(recipients, all)) {
+			if (OpenPGPUserStore.hasPublicKeyForEmails(recipients)) {
 				return 'openpgp';
 			}
-
-			if (GnuPGUserStore.hasPublicKeyForEmails(recipients, all)) {
+			if (GnuPGUserStore.hasPublicKeyForEmails(recipients)) {
 				return 'gnupg';
-			}
-
-			if (await this.mailvelopeHasPublicKeyForEmails(recipients, all)) {
-				return 'mailvelope';
 			}
 		}
 		return false;

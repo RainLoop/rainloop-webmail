@@ -134,8 +134,6 @@ class ComposePopupView extends AbstractViewPopup {
 
 		this.bSkipNextHide = false;
 
-		this.capaOpenPGP = PgpUserStore.isSupported();
-
 		this.addObservables({
 			identitiesDropdownTrigger: false,
 
@@ -183,8 +181,6 @@ class ComposePopupView extends AbstractViewPopup {
 
 			viewArea: 'body',
 
-			composeUploaderButton: null, // initDom
-			composeUploaderDropPlace: null, // initDom
 			attacheMultipleAllowed: false,
 			addAttachmentEnabled: false,
 
@@ -283,7 +279,10 @@ class ComposePopupView extends AbstractViewPopup {
 			currentIdentity: value => {
 				this.canPgpSign(false);
 				value && PgpUserStore.getKeyForSigning(value.email()).then(result => {
-					console.log({canPgpSign:result});
+					console.log({
+						email: value.email(),
+						canPgpSign:result
+					});
 					this.canPgpSign(result)
 				});
 			},
@@ -1120,126 +1119,123 @@ class ComposePopupView extends AbstractViewPopup {
 		}
 	}
 
-	onBuild() {
+	onBuild(dom) {
 		// initUploader
+		const oJua = new Jua({
+				action: serverRequest('Upload'),
+				clickElement: dom.querySelector('#composeUploadButton'),
+				dragAndDropElement: dom.querySelector('.b-attachment-place')
+			}),
+			uploadCache = {},
+			attachmentSizeLimit = pInt(SettingsGet('AttachmentLimit'));
 
-		if (this.composeUploaderButton()) {
-			const oJua = new Jua({
-					action: serverRequest('Upload'),
-					clickElement: this.composeUploaderButton(),
-					dragAndDropElement: this.composeUploaderDropPlace()
-				}),
-				uploadCache = {},
-				attachmentSizeLimit = pInt(SettingsGet('AttachmentLimit'));
-
-			oJua
-				// .on('onLimitReached', (limit) => {
-				// 	alert(limit);
-				// })
-				.on('onDragEnter', () => {
-					this.dragAndDropOver(true);
-				})
-				.on('onDragLeave', () => {
-					this.dragAndDropOver(false);
-				})
-				.on('onBodyDragEnter', () => {
-					this.attachmentsArea();
-					this.dragAndDropVisible(true);
-				})
-				.on('onBodyDragLeave', () => {
-					this.dragAndDropVisible(false);
-				})
-				.on('onProgress', (id, loaded, total) => {
-					let item = uploadCache[id];
-					if (!item) {
-						item = this.getAttachmentById(id);
-						if (item) {
-							uploadCache[id] = item;
-						}
-					}
-
+		oJua
+			// .on('onLimitReached', (limit) => {
+			// 	alert(limit);
+			// })
+			.on('onDragEnter', () => {
+				this.dragAndDropOver(true);
+			})
+			.on('onDragLeave', () => {
+				this.dragAndDropOver(false);
+			})
+			.on('onBodyDragEnter', () => {
+				this.attachmentsArea();
+				this.dragAndDropVisible(true);
+			})
+			.on('onBodyDragLeave', () => {
+				this.dragAndDropVisible(false);
+			})
+			.on('onProgress', (id, loaded, total) => {
+				let item = uploadCache[id];
+				if (!item) {
+					item = this.getAttachmentById(id);
 					if (item) {
-						item.progress(Math.floor((loaded / total) * 100));
+						uploadCache[id] = item;
 					}
-				})
-				.on('onSelect', (sId, oData) => {
-					this.dragAndDropOver(false);
+				}
 
-					const fileName = undefined === oData.FileName ? '' : oData.FileName.toString(),
-						size = pInt(oData.Size, null),
-						attachment = new ComposeAttachmentModel(sId, fileName, size);
+				if (item) {
+					item.progress(Math.floor((loaded / total) * 100));
+				}
+			})
+			.on('onSelect', (sId, oData) => {
+				this.dragAndDropOver(false);
 
-					attachment.cancel = this.cancelAttachmentHelper(sId, oJua);
+				const fileName = undefined === oData.FileName ? '' : oData.FileName.toString(),
+					size = pInt(oData.Size, null),
+					attachment = new ComposeAttachmentModel(sId, fileName, size);
 
-					this.attachments.push(attachment);
+				attachment.cancel = this.cancelAttachmentHelper(sId, oJua);
 
-					this.attachmentsArea();
+				this.attachments.push(attachment);
 
-					if (0 < size && 0 < attachmentSizeLimit && attachmentSizeLimit < size) {
+				this.attachmentsArea();
+
+				if (0 < size && 0 < attachmentSizeLimit && attachmentSizeLimit < size) {
+					attachment
+						.waiting(false)
+						.uploading(true)
+						.complete(true)
+						.error(i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
+
+					return false;
+				}
+
+				return true;
+			})
+			.on('onStart', (id) => {
+				let item = uploadCache[id];
+				if (!item) {
+					item = this.getAttachmentById(id);
+					if (item) {
+						uploadCache[id] = item;
+					}
+				}
+
+				if (item) {
+					item
+						.waiting(false)
+						.uploading(true)
+						.complete(false);
+				}
+			})
+			.on('onComplete', (id, result, data) => {
+				const attachment = this.getAttachmentById(id),
+					response = (data && data.Result) || {},
+					errorCode = response.ErrorCode,
+					attachmentJson = result && response.Attachment;
+
+				let error = '';
+				if (null != errorCode) {
+					error = getUploadErrorDescByCode(errorCode);
+				} else if (!attachmentJson) {
+					error = i18n('UPLOAD/ERROR_UNKNOWN');
+				}
+
+				if (attachment) {
+					if (error) {
 						attachment
 							.waiting(false)
-							.uploading(true)
+							.uploading(false)
 							.complete(true)
-							.error(i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
-
-						return false;
-					}
-
-					return true;
-				})
-				.on('onStart', (id) => {
-					let item = uploadCache[id];
-					if (!item) {
-						item = this.getAttachmentById(id);
-						if (item) {
-							uploadCache[id] = item;
-						}
-					}
-
-					if (item) {
-						item
+							.error(error + '\n' + response.ErrorMessage);
+					} else if (attachmentJson) {
+						attachment
 							.waiting(false)
-							.uploading(true)
-							.complete(false);
-					}
-				})
-				.on('onComplete', (id, result, data) => {
-					const attachment = this.getAttachmentById(id),
-						response = (data && data.Result) || {},
-						errorCode = response.ErrorCode,
-						attachmentJson = result && response.Attachment;
+							.uploading(false)
+							.complete(true);
 
-					let error = '';
-					if (null != errorCode) {
-						error = getUploadErrorDescByCode(errorCode);
-					} else if (!attachmentJson) {
-						error = i18n('UPLOAD/ERROR_UNKNOWN');
+						attachment.initByUploadJson(attachmentJson);
 					}
 
-					if (attachment) {
-						if (error) {
-							attachment
-								.waiting(false)
-								.uploading(false)
-								.complete(true)
-								.error(error + '\n' + response.ErrorMessage);
-						} else if (attachmentJson) {
-							attachment
-								.waiting(false)
-								.uploading(false)
-								.complete(true);
-
-							attachment.initByUploadJson(attachmentJson);
-						}
-
-						if (undefined === uploadCache[id]) {
-							delete uploadCache[id];
-						}
+					if (undefined === uploadCache[id]) {
+						delete uploadCache[id];
 					}
-				});
+				}
+			});
 
-			this.addAttachmentEnabled(true);
-		}
+		this.addAttachmentEnabled(true);
 
 		shortcuts.add('q', 'meta', Scope.Compose, ()=>false);
 		shortcuts.add('w', 'meta', Scope.Compose, ()=>false);
@@ -1514,7 +1510,7 @@ class ComposePopupView extends AbstractViewPopup {
 				quotedMailHeader: '', // header to be added before the quoted mail
 				keepAttachments: false, // add attachments of quotedMail to editor (default: false)
 */
-				signMsg: confirm('Also sign this message?')
+				signMsg: this.pgpSign() || confirm('Sign this message?')
 			}).then(editor => this.mailvelope = editor);
 		}
 		this.viewArea('mailvelope');
@@ -1542,11 +1538,12 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	initPgpEncrypt() {
-		PgpUserStore.hasPublicKeyForEmails(this.allRecipients(), 1).then(result => {
+		const recipients = this.allRecipients();
+		PgpUserStore.hasPublicKeyForEmails(recipients).then(result => {
 			console.log({canPgpEncrypt:result});
 			this.canPgpEncrypt(result);
 		});
-		PgpUserStore.mailvelopeHasPublicKeyForEmails(this.allRecipients(), 1).then(result => {
+		PgpUserStore.mailvelopeHasPublicKeyForEmails(recipients).then(result => {
 			console.log({canMailvelope:result});
 			this.canMailvelope(result);
 			if (!result) {

@@ -40,7 +40,7 @@
 						<a class="btn" data-i18n="GLOBAL/BCC"
 							data-bind="visible: !showBcc(), click: function () { showBcc(true); }"></a>
 						<a class="btn fontastic" data-bind="visible: allowContacts, command: contactsCommand" data-i18n="[title]GLOBAL/CONTACTS">📇</a>
-						<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true" style="display:inline;vertical-align:top">
+						<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true" style="display:inline-block;vertical-align:top">
 							<a class="btn dropdown-toggle fontastic">☰</a>
 							<ul class="dropdown-menu right-edge" role="menu">
 								<li data-bind="click: function () { showBcc(!showBcc()); }">
@@ -79,20 +79,6 @@
 										<span data-i18n="COMPOSE/BUTTON_MARK_AS_IMPORTANT"></span>
 									</a>
 								</li>
-								<!-- ko if: capaOpenPGP -->
-								<li class="dividerbar" data-bind="click: togglePgpSign, css: {'disabled': !canPgpSign()}">
-									<a>
-										<i class="fontastic" data-bind="text: pgpSign() ? '✍' : '☐'"></i>
-										<span data-i18n="OPENPGP/LABEL_SIGN"></span>
-									</a>
-								</li>
-								<li data-bind="click: togglePgpEncrypt, css: {'disabled': !canPgpEncrypt()}">
-									<a>
-										<i class="fontastic" data-bind="text: pgpEncrypt() ? '🔒' : '☐'"></i>
-										<span data-i18n="OPENPGP/LABEL_ENCRYPT"></span>
-									</a>
-								</li>
-								<!-- /ko -->
 							</ul>
 						</div>
 					</span>
@@ -131,41 +117,45 @@
 					<input type="text" size="70" autocomplete="off" data-bind="textInput: subject" />
 				</td>
 			</tr>
-			<tr>
-				<td></td>
-				<td style="display:flex">
-					<div class="btn-group" style="flex-grow:1" id="area-toggle">
-						<button type="button" class="btn" data-bind="click: bodyArea,
-							css: { 'active': 'body' == viewArea() }">
-							<i class="icon-file-text"></i>
-						</button>
-						<button type="button" class="btn" data-bind="click: attachmentsArea,
-							css: { 'btn-danger': attachmentsInErrorCount(), 'active': 'attachments' == viewArea() },
-							tooltipErrorTip: attachmentsErrorTooltip">
-							<span data-bind="visible: attachmentsCount()">
-								<b data-bind="text: attachmentsCount"></b>
-								&nbsp;&nbsp;
-							</span>
-							<i data-bind="css: { 'icon-attachment': !attachmentsInProcessCount(), 'icon-spinner': attachmentsInProcessCount()}"></i>
-						</button>
-						<button type="button" class="btn" data-bind="visible: canMailvelope, click: mailvelopeArea, css: { 'active': 'mailvelope' == viewArea() }">
-							<i class="mailvelope-icon"></i>
-						</button>
-					</div>
-					<div class="btn-group">
-						<a class="btn"
-							style="padding-left: 10px; padding-right: 10px;"
-							data-bind="visible: addAttachmentEnabled(), initDom: composeUploaderButton" data-i18n="[title]COMPOSE/ATTACH_FILES">
-							<sup style="font-weight: bold; font-size: 100%; top: -0.3em;">+</sup><i class="icon-attachment"></i>
-						</a>
-					</div>
-				</td>
-			</tr>
 		</table>
+		<div style="display:flex">
+			<div class="btn-group" style="flex-grow:1" id="area-toggle">
+				<button type="button" class="btn" data-bind="click: bodyArea,
+					css: { 'active': 'body' == viewArea() }">
+					<i class="icon-file-text"></i>
+				</button>
+				<button type="button" class="btn" data-bind="click: attachmentsArea,
+					css: { 'btn-danger': attachmentsInErrorCount(), 'active': 'attachments' == viewArea() },
+					tooltipErrorTip: attachmentsErrorTooltip">
+					<span data-bind="visible: attachmentsCount()">
+						<b data-bind="text: attachmentsCount"></b>
+						&nbsp;&nbsp;
+					</span>
+					<i data-bind="css: { 'icon-attachment': !attachmentsInProcessCount(), 'icon-spinner': attachmentsInProcessCount()}"></i>
+				</button>
+				<button type="button" class="btn" data-bind="visible: canMailvelope, click: mailvelopeArea, css: { 'active': 'mailvelope' == viewArea() }">
+					<i class="mailvelope-icon"></i>
+				</button>
+			</div>
+			<div class="btn-group">
+				<a class="btn" data-bind="click: togglePgpSign, visible: canPgpSign, css: {'btn-success': pgpSign()}">
+					<i class="fontastic" data-bind="text: pgpSign() ? '☑' : '☐'"></i>
+					<span data-i18n="OPENPGP/LABEL_SIGN"></span>
+				</a>
+				<a class="btn" data-bind="click: togglePgpEncrypt, visible: canPgpEncrypt, css: {'btn-success': pgpEncrypt()}">
+					<i class="fontastic" data-bind="text: pgpEncrypt() ? '☑' : '☐'"></i>
+					<span data-i18n="OPENPGP/LABEL_ENCRYPT"></span>
+				</a>
+				<a class="btn fontastic" style="padding-left: 10px; padding-right: 10px;" id="composeUploadButton"
+					data-bind="visible: addAttachmentEnabled()" data-i18n="[title]COMPOSE/ATTACH_FILES">
+					⁺📎
+				</a>
+			</div>
+		</div>
 	</div>
 
 	<div class="attachmentAreaParent" data-bind="visible: 'attachments' == viewArea()">
-		<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}"
+		<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropVisible(), css: {'dragAndDropOver': dragAndDropOver}"
 			data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></div>
 		<ul class="attachmentList" data-bind="foreach: attachments">
 			<li class="attachmentItem" data-bind="attr: { 'title': title }, css: { 'waiting': waiting, 'error': '' !== error() }">
