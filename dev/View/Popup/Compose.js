@@ -337,9 +337,33 @@ class ComposePopupView extends AbstractViewPopup {
 		});
 	}
 
-	getMessageRequestParams(sSaveFolder)
+	async getMessageRequestParams(sSaveFolder, draft)
 	{
-		let TextIsHtml = this.oEditor.isHtml(),
+		let
+			identity = this.currentIdentity(),
+			params = {
+				IdentityID: identity.id(),
+				MessageFolder: this.draftsFolder(),
+				MessageUid: this.draftUid(),
+				SaveFolder: sSaveFolder,
+				To: this.to(),
+				Cc: this.cc(),
+				Bcc: this.bcc(),
+				ReplyTo: this.replyTo(),
+				Subject: this.subject(),
+				DraftInfo: this.aDraftInfo,
+				InReplyTo: this.sInReplyTo,
+				References: this.sReferences,
+				MarkAsImportant: this.markAsImportant() ? 1 : 0,
+				Attachments: this.prepareAttachmentsForSendOrSave(),
+				// Only used at send, not at save:
+				Dsn: this.requestDsn() ? 1 : 0,
+				ReadReceiptRequest: this.requestReadReceipt() ? 1 : 0
+			},
+			recipients = draft ? [identity.email()] : this.allRecipients(),
+			sign = !draft && this.pgpSign() && this.canPgpSign(),
+			encrypt = this.pgpEncrypt() && this.canPgpEncrypt(),
+			TextIsHtml = this.oEditor.isHtml(),
 			Text = this.oEditor.getData(true);
 		if (TextIsHtml) {
 			let l;
@@ -352,27 +376,37 @@ class ComposePopupView extends AbstractViewPopup {
 					.replace(/(<[^>]+)\s+data-hs-[a-z-]+=("[^"]+"|'[^']+')/gi, '$1');
 			} while (l != Text.length)
 		}
-		return {
-			IdentityID: this.currentIdentity() ? this.currentIdentity().id() : '',
-			MessageFolder: this.draftsFolder(),
-			MessageUid: this.draftUid(),
-			SaveFolder: sSaveFolder,
-			To: this.to(),
-			Cc: this.cc(),
-			Bcc: this.bcc(),
-			ReplyTo: this.replyTo(),
-			Subject: this.subject(),
-			Html: TextIsHtml ? Text : '',
-			Text: TextIsHtml ? '' : Text,
-			DraftInfo: this.aDraftInfo,
-			InReplyTo: this.sInReplyTo,
-			References: this.sReferences,
-			MarkAsImportant: this.markAsImportant() ? 1 : 0,
-			Attachments: this.prepareAttachmentsForSendOrSave(),
-			// Only used at send, not at save:
-			Dsn: this.requestDsn() ? 1 : 0,
-			ReadReceiptRequest: this.requestReadReceipt() ? 1 : 0
-		};
+		if (this.mailvelope && 'mailvelope' === this.viewArea()) {
+			params.Encrypted = draft
+				? await this.mailvelope.createDraft()
+				: await this.mailvelope.encrypt(recipients);
+		} else if (encrypt) {
+			if ('openpgp' != encrypt) {
+				throw 'Encryption with ' + encrypt + ' not yet implemented';
+			}
+			if (sign && 'openpgp' != sign[0]) {
+				throw 'Signing with ' + sign[0] + ' not yet implemented';
+			}
+			if (sign && sign[1]) {
+				if (TextIsHtml) {
+					throw 'Encrypt HTML with ' + encrypt + ' not yet implemented';
+				}
+				Text = await OpenPGPUserStore.encrypt(Text, recipients, sign[1]);
+//				throw i18n('PGP_NOTIFICATIONS/PGP_ERROR', { ERROR: 'Encryption failed' })
+			} else {
+				let data = [
+					'Content-Transfer-Encoding: base64',
+					'Content-Type: text/'+(TextIsHtml?'html':'plain')+'; charset="utf-8"',
+					'',
+					base64_encode(Text)
+				].join("\r\n");
+				params.Encrypted = await OpenPGPUserStore.encrypt(data, recipients, sign && sign[1]);
+			}
+		} else {
+			params.Html = TextIsHtml ? Text : '';
+			params.Text = TextIsHtml ? '' : Text;
+		}
+		return params;
 	}
 
 	sendCommand() {
@@ -423,148 +457,37 @@ class ComposePopupView extends AbstractViewPopup {
 
 				sSentFolder = UNUSED_OPTION_VALUE === sSentFolder ? '' : sSentFolder;
 
-				setFolderHash(this.draftsFolder(), '');
-				setFolderHash(sSentFolder, '');
-
-				const
-					params = this.getMessageRequestParams(sSentFolder),
-					sign = this.pgpSign() && this.canPgpSign(),
-					encrypt = this.pgpEncrypt() && this.canPgpEncrypt(),
-					send = () =>
-						Remote.request('SendMessage',
-							(iError, data) => {
-								this.sending(false);
-								if (this.modalVisibility()) {
-									if (iError) {
-										if (Notification.CantSaveMessage === iError) {
-											this.sendSuccessButSaveError(true);
-											this.savedErrorDesc(i18n('COMPOSE/SAVED_ERROR_ON_SEND').trim());
-										} else {
-											this.sendError(true);
-											this.sendErrorDesc(getNotification(iError, data && data.ErrorMessage)
-												|| getNotification(Notification.CantSendMessage));
-										}
-									} else {
-										this.closeCommand();
-									}
-								}
-								this.reloadDraftFolder();
-							},
-							params,
-							30000
-						);
-
-				if (this.mailvelope && 'mailvelope' === this.viewArea()) {
-					this.mailvelope.encrypt(this.allRecipients()).then(armored => {
-						params.Text = params.Html = '';
-						params.Encrypted = armored;
-						send();
-					});
-				} else if (encrypt) {
-					if ('openpgp' != encrypt) {
-						throw 'Encryption with ' + encrypt + ' not yet implemented';
-					}
-					if (sign && 'openpgp' != sign[0]) {
-						throw 'Signing with ' + sign[0] + ' not yet implemented';
-					}
-					if (sign && sign[1]) {
-						if (params.Html) {
-							throw 'Encrypt HTML with ' + encrypt + ' not yet implemented';
-						}
-						OpenPGPUserStore.encrypt(params.Text, this.allRecipients(), sign[1]).then(armored => {
-							if (armored) {
-								params.Text = armored;
-								send();
-							} else {
-								this.sendError(true);
-								this.sendErrorDesc(i18n('PGP_NOTIFICATIONS/PGP_ERROR', { ERROR: 'Encryption failed' }));
-								this.sending(false);
-							}
-						});
-					} else {
-						let data = [
-							'Content-Transfer-Encoding: base64',
-							'Content-Type: text/'+(params.Html?'html':'plain')+'; charset="utf-8"',
-							'',
-							base64_encode(params.Html || params.Text)
-						].join("\r\n");
-						OpenPGPUserStore.encrypt(data, this.allRecipients(), sign && sign[1]).then(armored => {
-							if (armored) {
-								params.Text = params.Html = '';
-								params.Encrypted = armored;
-								send();
-							} else {
-								this.sendError(true);
-								this.sendErrorDesc(i18n('PGP_NOTIFICATIONS/PGP_ERROR', { ERROR: 'Encryption failed' }));
-								this.sending(false);
-							}
-						});
-					}
-				} else if (sign) {
-					if (params.Html) {
-						throw 'Signing HTML with ' + sign[0] + ' not yet implemented';
-					}
-					if ('openpgp' != sign[0]) {
-						throw 'Signing with ' + sign[0] + ' not yet implemented';
-					}
-					const detached = false;
-					if (detached) {
-						// Append headers
-						params.Text = [
-							'Content-Type: text/plain; charset="utf-8"; protected-headers="v1"',
-							'Content-Transfer-Encoding: base64',
-//							'From: Demo <demo@snappymail.eu>',
-//							'To: Demo <demo@snappymail.eu>',
-//							'Subject: text detached signed'
-							''
-						]
-						// Now the body in base64
-						.concat(base64_encode(params.Text))
-						.join("\r\n");
-					}
-					OpenPGPUserStore.sign(params.Text, sign[1]).then(text => {
-						if (text) {
-							if (detached) {
-								params.Signature = text;
-							} else {
-								params.Text = text;
-							}
-							send();
-						} else {
-							this.sendError(true);
-							this.sendErrorDesc(i18n('PGP_NOTIFICATIONS/PGP_ERROR', { ERROR: 'Signing failed' }));
+				this.getMessageRequestParams(sSentFolder).then(params => {
+					Remote.request('SendMessage',
+						(iError, data) => {
 							this.sending(false);
-						}
-					});
-				} else {
-					send();
-				}
-/*
-				if (encrypt && sign && encrypt != sign) {
-					// error 'sign and encrypt must be same engine';
-				} else if ('openpgp' == encrypt) {
-					this.allRecipients().forEach(recEmail => {
-						cfg.publicKeys = cfg.publicKeys.concat(OpenPGPUserStore.getPublicKeyFor(recEmail));
-					});
-					pgpPromise = openpgp.encrypt(cfg);
-				} else if ('openpgp' == sign) {
-					pgpPromise = openpgp.sign(cfg);
-				} else {
-					params.Sign = sign;
-					params.Encrypt = encrypt;
-				}
-				pgpPromise
-					? pgpPromise
-						.then(mData => {
-							params.Text = mData.data;
-							send();
-						})
-						.catch(e => {
-							this.sendError(true);
-							this.sendErrorDesc(i18n('PGP_NOTIFICATIONS/PGP_ERROR', { ERROR: '' + e }));
-						})
-					: send();
-*/
+							if (this.modalVisibility()) {
+								if (iError) {
+									if (Notification.CantSaveMessage === iError) {
+										this.sendSuccessButSaveError(true);
+										this.savedErrorDesc(i18n('COMPOSE/SAVED_ERROR_ON_SEND').trim());
+									} else {
+										this.sendError(true);
+										this.sendErrorDesc(getNotification(iError, data && data.ErrorMessage)
+											|| getNotification(Notification.CantSendMessage));
+									}
+								} else {
+									this.closeCommand();
+								}
+							}
+							setFolderHash(this.draftsFolder(), '');
+							setFolderHash(sSentFolder, '');
+							this.reloadDraftFolder();
+						},
+						params,
+						30000
+					);
+				}).catch(e => {
+					console.error(e);
+					this.sendError(true);
+					this.sendErrorDesc(e);
+					this.sending(false);
+				});
 			} catch (e) {
 				console.error(e);
 				this.sendError(true);
@@ -580,64 +503,49 @@ class ComposePopupView extends AbstractViewPopup {
 		} else {
 			this.savedError(false);
 			this.saving(true);
-
 			this.autosaveStart();
+			this.getMessageRequestParams(FolderUserStore.draftsFolder(), 1).then(params => {
+				Remote.request('SaveMessage',
+					(iError, oData) => {
+						let result = false;
 
-			setFolderHash(FolderUserStore.draftsFolder(), '');
+						this.saving(false);
 
-			const
-				params = this.getMessageRequestParams(FolderUserStore.draftsFolder()),
-				save = () =>
-					Remote.request('SaveMessage',
-						(iError, oData) => {
-							let result = false;
+						if (!iError) {
+							if (oData.Result.NewFolder && oData.Result.NewUid) {
+								result = true;
 
-							this.saving(false);
-
-							if (!iError) {
-								if (oData.Result.NewFolder && oData.Result.NewUid) {
-									result = true;
-
-									if (this.bFromDraft) {
-										const message = MessageUserStore.message();
-										if (message && this.draftsFolder() === message.folder && this.draftUid() == message.uid) {
-											MessageUserStore.message(null);
-										}
-									}
-
-									this.draftsFolder(oData.Result.NewFolder);
-									this.draftUid(oData.Result.NewUid);
-
-									this.savedTime(new Date);
-
-									if (this.bFromDraft) {
-										setFolderHash(this.draftsFolder(), '');
+								if (this.bFromDraft) {
+									const message = MessageUserStore.message();
+									if (message && this.draftsFolder() === message.folder && this.draftUid() == message.uid) {
+										MessageUserStore.message(null);
 									}
 								}
+
+								this.draftsFolder(oData.Result.NewFolder);
+								this.draftUid(oData.Result.NewUid);
+
+								this.savedTime(new Date);
+
+								if (this.bFromDraft) {
+									setFolderHash(this.draftsFolder(), '');
+								}
+								setFolderHash(FolderUserStore.draftsFolder(), '');
 							}
+						}
 
-							if (!result) {
-								this.savedError(true);
-								this.savedErrorDesc(getNotification(Notification.CantSaveMessage));
-							}
+						if (!result) {
+							this.savedError(true);
+							this.savedErrorDesc(getNotification(Notification.CantSaveMessage));
+						}
 
-							this.reloadDraftFolder();
-						},
-						params,
-						200000
-					);
-
-			if (this.mailvelope && 'mailvelope' === this.viewArea()) {
-				this.mailvelope.createDraft().then(armored => {
-					params.Text = armored;
-					save();
-				});
-			} else {
-				save();
-			}
+						this.reloadDraftFolder();
+					},
+					params,
+					200000
+				);
+			});
 		}
-
-		return true;
 	}
 
 	deleteCommand() {
@@ -1229,13 +1137,13 @@ class ComposePopupView extends AbstractViewPopup {
 		// initUploader
 
 		if (this.composeUploaderButton()) {
-			const uploadCache = {},
-				attachmentSizeLimit = pInt(SettingsGet('AttachmentLimit')),
-				oJua = new Jua({
+			const oJua = new Jua({
 					action: serverRequest('Upload'),
 					clickElement: this.composeUploaderButton(),
 					dragAndDropElement: this.composeUploaderDropPlace()
-				});
+				}),
+				uploadCache = {},
+				attachmentSizeLimit = pInt(SettingsGet('AttachmentLimit'));
 
 			oJua
 				// .on('onLimitReached', (limit) => {
@@ -1593,33 +1501,35 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	mailvelopeArea() {
-		/**
-		 * Creates an iframe with an editor for a new encrypted mail.
-		 * The iframe will be injected into the container identified by selector.
-		 * https://mailvelope.github.io/mailvelope/Editor.html
-		 */
-		let text = this.oEditor.getData(true),
-			size = SettingsGet('PhpUploadSizes')['post_max_size'],
-			quota = pInt(size);
-		switch (size.slice(-1)) {
-			case 'G': quota *= 1024; // fallthrough
-			case 'M': quota *= 1024; // fallthrough
-			case 'K': quota *= 1024;
-		}
-		this.mailvelope ||
+		if (!this.mailvelope) {
+			/**
+			 * Creates an iframe with an editor for a new encrypted mail.
+			 * The iframe will be injected into the container identified by selector.
+			 * https://mailvelope.github.io/mailvelope/Editor.html
+			 */
+			let text = this.oEditor.getData(true),
+				encrypted = text.includes('-----BEGIN PGP MESSAGE-----'),
+				size = SettingsGet('PhpUploadSizes')['post_max_size'],
+				quota = pInt(size);
+			switch (size.slice(-1)) {
+				case 'G': quota *= 1024; // fallthrough
+				case 'M': quota *= 1024; // fallthrough
+				case 'K': quota *= 1024;
+			}
 			mailvelope.createEditorContainer('#mailvelope-editor', PgpUserStore.mailvelopeKeyring, {
 				// https://mailvelope.github.io/mailvelope/global.html#EditorContainerOptions
 				quota: Math.max(2048, (quota / 1024)) - 48, // (text + attachments) limit in kilobytes
-				predefinedText: this.oEditor.isHtml() ? htmlToPlain(text) : text
+				armoredDraft: encrypted ? text : '', // Ascii Armored PGP Text Block
+				predefinedText: encrypted ? '' : (this.oEditor.isHtml() ? htmlToPlain(text) : text),
 /*
-				signMsg: false, // if true then the mail will be signed (default: false)
-				armoredDraft: '', // Ascii Armored PGP Text Block
 				quotedMail: '', // Ascii Armored PGP Text Block mail that should be quoted
 				quotedMailIndent: true, // if true the quoted mail will be indented (default: true)
 				quotedMailHeader: '', // header to be added before the quoted mail
 				keepAttachments: false, // add attachments of quotedMail to editor (default: false)
 */
+				signMsg: confirm('Also sign this message?')
 			}).then(editor => this.mailvelope = editor);
+		}
 		this.viewArea('mailvelope');
 	}
 	attachmentsArea() {
