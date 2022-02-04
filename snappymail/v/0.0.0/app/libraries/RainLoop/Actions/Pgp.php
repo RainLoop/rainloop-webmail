@@ -30,6 +30,7 @@ trait Pgp
 		if (80 < \strlen($homedir)) {
 			// First try a symbolic link
 			$tmpdir = \sys_get_temp_dir() . '/snappymail';
+//			if (\RainLoop\Utils::inOpenBasedir($tmpdir) &&
 			if (\is_dir($tmpdir) || \mkdir($tmpdir, 0700, true)) {
 				$link = $tmpdir . '/' . \md5($homedir);
 				if (\is_link($link) || \symlink($homedir, $link)) {
@@ -38,11 +39,15 @@ trait Pgp
 			}
 			// Else try ~/.gnupg/ + hash(email address)
 			if (80 < \strlen($homedir)) {
-				$homedir = ($_SERVER['HOME'] ?: \exec('echo ~')) . '/.gnupg/';
+				$tmpdir = ($_SERVER['HOME'] ?: \exec('echo ~') ?: \dirname(getcwd())) . '/.gnupg/';
 				if ($oAccount instanceof \RainLoop\Model\AdditionalAccount) {
-					$homedir .= \sha1($oAccount->ParentEmail());
+					$tmpdir .= \sha1($oAccount->ParentEmail());
 				} else {
-					$homedir .= \sha1($oAccount->Email());
+					$tmpdir .= \sha1($oAccount->Email());
+				}
+//				if (\RainLoop\Utils::inOpenBasedir($tmpdir) &&
+				if (\is_dir($tmpdir) || \mkdir($tmpdir, 0700, true)) {
+					$homedir = $link;
 				}
 			}
 		}
