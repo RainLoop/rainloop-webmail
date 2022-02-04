@@ -49,8 +49,11 @@ abstract class Log
 
 	protected static function log(int $level, string $prefix, string $msg)
 	{
+		static $log_level;
 		// Default to level 4, 0 = LOG_EMERG, 7 = LOG_DEBUG
-		$log_level = \RainLoop\Api::Config()->Get('logs', 'level', \LOG_WARNING);
+		if (!$log_level) {
+			$log_level = \max(3, \RainLoop\Api::Config()->Get('logs', 'level', \LOG_WARNING));
+		}
 		if ($level <= $log_level) {
 			\RainLoop\Api::Logger()->Write(
 				$msg,

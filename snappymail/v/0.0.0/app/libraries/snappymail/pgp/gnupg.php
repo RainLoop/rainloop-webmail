@@ -370,10 +370,10 @@ class GnuPG
 			: $this->GPG->verify($signed_text, $signature, $plaintext);
 		if (!$result) {
 			if ($this->GnuPG) {
-				\error_log('gnupg_verify() failed: ' . $this->GnuPG->geterror() . "\n\n{$signed_text}\n\n{$signature}" );
-				\error_log(\print_r($this->GnuPG->geterrorinfo(),1));
+				\SnappyMail\Log::notice('gnupg_verify() failed: ' . $this->GnuPG->geterror());
+				\SnappyMail\Log::info(\print_r($this->GnuPG->geterrorinfo(),1));
 			} else {
-				\error_log('GPG->verify() failed');
+				\SnappyMail\Log::notice('GPG->verify() failed');
 			}
 		}
 		return $result;
