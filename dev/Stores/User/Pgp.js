@@ -67,6 +67,13 @@ export const PgpUserStore = new class {
 		return !!(OpenPGPUserStore.isSupported() || GnuPGUserStore.isSupported() || window.mailvelope);
 	}
 
+	/**
+	 * @returns {boolean}
+	 */
+	isEncrypted(text) {
+		return 0 === text.trim().indexOf('-----BEGIN PGP MESSAGE-----');
+	}
+
 	async mailvelopeHasPublicKeyForEmails(recipients, all) {
 		const
 			keyring = this.mailvelopeKeyring,
@@ -129,7 +136,7 @@ export const PgpUserStore = new class {
 		const sender = message.from[0].email,
 			armoredText = message.plain();
 
-		if (!armoredText.includes('-----BEGIN PGP MESSAGE-----')) {
+		if (!this.isEncrypted(armoredText)) {
 			return;
 		}
 

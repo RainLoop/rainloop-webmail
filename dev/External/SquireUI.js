@@ -35,7 +35,7 @@ const
 		addLinks: true // allow_smart_html_links
 */
 		sanitizeToDOMFragment: (html, isPaste/*, squire*/) => {
-			tpl.innerHTML = html
+			tpl.innerHTML = (html||'')
 				.replace(/<\/?(BODY|HTML)[^>]*>/gi,'')
 				.replace(/<!--[^>]+-->/g,'')
 				.replace(/<span[^>]*>\s*<\/span>/gi,'')
@@ -104,7 +104,7 @@ const
 		}
 
 		if (!skipInsert) {
-			signature = (isHtml ? '<br/><br/><signature>' : "\n\n") + signature + (isHtml ? '</signature>' : '');
+			signature = isHtml ? `<p><signature>${signature}</signature></p>` : `\n\n${signature}\n\n`;
 
 			text = insertBefore ? signature + text : text + signature;
 

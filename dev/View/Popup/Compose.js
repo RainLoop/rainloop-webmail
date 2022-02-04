@@ -364,7 +364,7 @@ class ComposePopupView extends AbstractViewPopup {
 			sign = !draft && this.pgpSign() && this.canPgpSign(),
 			encrypt = this.pgpEncrypt() && this.canPgpEncrypt(),
 			TextIsHtml = this.oEditor.isHtml(),
-			Text = this.oEditor.getData(true);
+			Text = this.oEditor.getData();
 		if (TextIsHtml) {
 			let l;
 			do {
@@ -708,36 +708,27 @@ class ComposePopupView extends AbstractViewPopup {
 		}
 	}
 
-	convertSignature(signature) {
-		let fromLine = this.oLastMessage ? this.emailArrayToStringLineHelper(this.oLastMessage.from, true) : '';
-		if (fromLine) {
-			signature = signature.replace(/{{FROM-FULL}}/g, fromLine);
-
-			if (!fromLine.includes(' ') && 0 < fromLine.indexOf('@')) {
-				fromLine = fromLine.replace(/@\S+/, '');
-			}
-
-			signature = signature.replace(/{{FROM}}/g, fromLine);
-		}
-
-		return signature
-			.replace(/\r/g, '')
-			.replace(/\s{1,2}?{{FROM}}/g, '')
-			.replace(/\s{1,2}?{{FROM-FULL}}/g, '')
-			.replace(/{{DATE}}/g, new Date().format('LLLL'))
-			.replace(/{{TIME}}/g, new Date().format('LT'))
-			.replace(/{{MOMENT:[^}]+}}/g, '');
-	}
-
 	setSignatureFromIdentity(identity) {
 		if (identity) {
 			this.editor(editor => {
-				let signature = identity.signature(),
-					isHtml = signature && ':HTML:' === signature.slice(0, 6);
-
-				editor.setSignature(
-					this.convertSignature(isHtml ? signature.slice(6) : signature),
-					isHtml, !!identity.signatureInsertBefore());
+				let signature = identity.signature() || '',
+					isHtml = ':HTML:' === signature.slice(0, 6),
+					fromLine = this.oLastMessage ? this.emailArrayToStringLineHelper(this.oLastMessage.from, true) : '';
+				if (fromLine) {
+					signature = signature.replace(/{{FROM-FULL}}/g, fromLine);
+					if (!fromLine.includes(' ') && 0 < fromLine.indexOf('@')) {
+						fromLine = fromLine.replace(/@\S+/, '');
+					}
+					signature = signature.replace(/{{FROM}}/g, fromLine);
+				}
+				signature = (isHtml ? signature.slice(6) : signature)
+					.replace(/\r/g, '')
+					.replace(/\s{1,2}?{{FROM}}/g, '')
+					.replace(/\s{1,2}?{{FROM-FULL}}/g, '')
+					.replace(/{{DATE}}/g, new Date().format('LLLL'))
+					.replace(/{{TIME}}/g, new Date().format('LT'))
+					.replace(/{{MOMENT:[^}]+}}/g, '');
+				editor.setSignature(signature, isHtml, !!identity.signatureInsertBefore());
 			});
 		}
 	}
@@ -834,7 +825,6 @@ class ComposePopupView extends AbstractViewPopup {
 			sDate = '',
 			sSubject = '',
 			sText = '',
-			sReplyTitle = '',
 			identity = null,
 			aDraftInfo = null,
 			message = null;
@@ -882,7 +872,6 @@ class ComposePopupView extends AbstractViewPopup {
 			sDate = timestampToString(message.dateTimeStampInUTC(), 'FULL');
 			sSubject = message.subject();
 			aDraftInfo = message.aDraftInfo;
-			sText = message.bodyAsHTML();
 
 			let resplyAllParts = null;
 			switch (lineComposeType) {
@@ -960,64 +949,62 @@ class ComposePopupView extends AbstractViewPopup {
 				// no default
 			}
 
+			sText = message.bodyAsHTML();
+			let encrypted;
+
 			switch (lineComposeType) {
 				case ComposeType.Reply:
 				case ComposeType.ReplyAll:
 					sFrom = message.fromToLine(false, true);
-					sReplyTitle = i18n('COMPOSE/REPLY_MESSAGE_TITLE', {
-						DATETIME: sDate,
-						EMAIL: sFrom
-					});
-
-					sText = sText.replace(/<img[^>]+>/g, '').replace(/<a\s[^>]+><\/a>/g, '').trim();
-					sText = '<br/><br/>' + sReplyTitle + ':<br/><br/><blockquote>' + sText + '</blockquote>';
-
+					sText = '<div><p>' + i18n('COMPOSE/REPLY_MESSAGE_TITLE', { DATETIME: sDate, EMAIL: sFrom })
+						+ ':</p><blockquote>'
+						+ sText.replace(/<img[^>]+>/g, '').replace(/<a\s[^>]+><\/a>/g, '').trim()
+						+ '</blockquote></div>';
 					break;
 
 				case ComposeType.Forward:
 					sFrom = message.fromToLine(false, true);
 					sTo = message.toToLine(false, true);
 					sCc = message.ccToLine(false, true);
-					sText =
-						'<br/><br/>' +
-						i18n('COMPOSE/FORWARD_MESSAGE_TOP_TITLE') +
-						'<br/>' +
-						i18n('GLOBAL/FROM') +
-						': ' +
-						sFrom +
-						'<br/>' +
-						i18n('GLOBAL/TO') +
-						': ' +
-						sTo +
-						(sCc.length ? '<br/>' + i18n('GLOBAL/CC') + ': ' + sCc : '') +
-						'<br/>' +
-						i18n('COMPOSE/FORWARD_MESSAGE_TOP_SENT') +
-						': ' +
-						encodeHtml(sDate) +
-						'<br/>' +
-						i18n('GLOBAL/SUBJECT') +
-						': ' +
-						encodeHtml(sSubject) +
-						'<br/><br/>' +
-						sText.trim() +
-						'<br/><br/>';
+					sText = '<div><p>' + i18n('COMPOSE/FORWARD_MESSAGE_TOP_TITLE') + '</p>'
+						+ i18n('GLOBAL/FROM') + ': ' + sFrom
+						+ '<br>'
+						+ i18n('GLOBAL/TO') + ': ' + sTo
+						+ (sCc.length ? '<br>' + i18n('GLOBAL/CC') + ': ' + sCc : '')
+						+ '<br>'
+						+ i18n('COMPOSE/FORWARD_MESSAGE_TOP_SENT')
+						+ ': '
+						+ encodeHtml(sDate)
+						+ '<br>'
+						+ i18n('GLOBAL/SUBJECT')
+						+ ': '
+						+ encodeHtml(sSubject)
+						+ '<br><br>'
+						+ sText.trim()
+						+ '</div>';
 					break;
 
 				case ComposeType.ForwardAsAttachment:
 					sText = '';
 					break;
-				// no default
+				default:
+					encrypted = PgpUserStore.isEncrypted(sText);
+					if (encrypted) {
+						sText = message.plain();
+					}
 			}
 
 			this.editor(editor => {
-				editor.setHtml(sText);
+				encrypted || editor.setHtml(sText);
 
-				if (
-					EditorDefaultType.PlainForced === SettingsUserStore.editorDefaultType() ||
-					(!message.isHtml() && EditorDefaultType.HtmlForced !== SettingsUserStore.editorDefaultType())
+				if (encrypted
+					|| EditorDefaultType.PlainForced === SettingsUserStore.editorDefaultType()
+					|| (!message.isHtml() && EditorDefaultType.HtmlForced !== SettingsUserStore.editorDefaultType())
 				) {
 					editor.modePlain();
 				}
+
+				!encrypted || editor.setPlain(sText);
 
 				if (identity && ComposeType.Draft !== lineComposeType && ComposeType.EditAsNew !== lineComposeType) {
 					this.setSignatureFromIdentity(identity);
@@ -1507,8 +1494,8 @@ class ComposePopupView extends AbstractViewPopup {
 			 * The iframe will be injected into the container identified by selector.
 			 * https://mailvelope.github.io/mailvelope/Editor.html
 			 */
-			let text = this.oEditor.getData(true),
-				encrypted = text.includes('-----BEGIN PGP MESSAGE-----'),
+			let text = this.oEditor.getData(),
+				encrypted = PgpUserStore.isEncrypted(text),
 				size = SettingsGet('PhpUploadSizes')['post_max_size'],
 				quota = pInt(size);
 			switch (size.slice(-1)) {

@@ -376,60 +376,57 @@ export const
 				);
 			},
 
-			convertDivs = (...args) => {
-				let divText = 1 < args.length ? args[1].trim() : '';
-				if (divText.length) {
-					divText = '\n' + divText.replace(/<div[^>]*>([\s\S\r\n]*)<\/div>/gim, convertDivs).trim() + '\n';
-				}
-
-				return divText;
-			},
-
 			convertPre = (...args) =>
 				1 < args.length
-					? args[1]
-							.toString()
-							.replace(/[\n]/gm, '<br/>')
-							.replace(/[\r]/gm, '')
+					? args[1].toString().replace(/\n/g, '<br>')
 					: '',
+
 			fixAttibuteValue = (...args) => (1 < args.length ? args[1] + encodeHtml(args[2]) : ''),
 
 			convertLinks = (...args) => (1 < args.length ? args[1].trim() : '');
 
+		html = html
+			.replace(/\r?\n/, '')
+			.replace(/<pre[^>]*>([\s\S]*?)<\/pre>/gim, convertPre)
+			.replace(/\s+/gm, ' ');
+
+		while (/<(div|tr)[\s>]/i.test(html)) {
+			html = html.replace(/\n*<(div|tr)(\s[\s\S]*?)?>\n*/gi, '\n');
+		}
+		while (/<\/(div|tr)[\s>]/i.test(html)) {
+			html = html.replace(/\n*<\/(div|tr)(\s[\s\S]*?)?>\n*/gi, '\n');
+		}
+
+		while (/<(ul|ol|p|h\d)[\s>]/i.test(html)) {
+			html = html.replace(/\n*<(ul|ol|p|h\d)(\s[\s\S]*?)?>\n*/gi, '\n\n');
+		}
+		while (/<\/(ul|ol|p|h\d)[\s>]/i.test(html)) {
+			html = html.replace(/\n*<\/(ul|ol|p|h\d)(\s[\s\S]*?)?>\n*/gi, '\n\n');
+		}
+
 		tpl.innerHTML = html
-			.replace(/<p[^>]*><\/p>/gi, '')
-			.replace(/<pre[^>]*>([\s\S\r\n\t]*)<\/pre>/gim, convertPre)
-			.replace(/[\s]+/gm, ' ')
 			.replace(/((?:href|data)\s?=\s?)("[^"]+?"|'[^']+?')/gim, fixAttibuteValue)
 			.replace(/<br[^>]*>/gim, '\n')
-			.replace(/<\/h[\d]>/gi, '\n')
-			.replace(/<\/p>/gi, '\n\n')
-			.replace(/<ul[^>]*>/gim, '\n')
-			.replace(/<\/ul>/gi, '\n')
 			.replace(/<li[^>]*>/gim, ' * ')
 			.replace(/<\/li>/gi, '\n')
-			.replace(/<\/td>/gi, '\n')
-			.replace(/<\/tr>/gi, '\n')
-			.replace(/<hr[^>]*>/gim, '\n_______________________________\n\n')
-			.replace(/<div[^>]*>([\s\S\r\n]*)<\/div>/gim, convertDivs)
+			.replace(/\n*<t[dh](\s[\s\S]*?)?>/gi, '\t')
+			.replace(/<\/t[dh](\s[\s\S]*?)?>/gi, '\n')
+			.replace(/\n*<hr[\s\S]*?>\n*/gi, '\n\n' + '⎯'.repeat(64) + '\n\n')
 			.replace(/<blockquote[^>]*>/gim, '\n__bq__start__\n')
 			.replace(/<\/blockquote>/gim, '\n__bq__end__\n')
-			.replace(/<a [^>]*>([\s\S\r\n]*?)<\/a>/gim, convertLinks)
-			.replace(/<\/div>/gi, '\n')
+			.replace(/<a [^>]*>([\s\S]*?)<\/a>/gim, convertLinks)
 			.replace(/&nbsp;/gi, ' ')
 			.replace(/&quot;/gi, '"')
-			.replace(/<[^>]*>/gm, '');
+			.replace(/<br(\s[\s\S]*?)?>/gi, '\n')
+			.replace(/<[\s\S]+?>/g, '');
 
 		text = tpl.content.textContent;
 		if (text) {
 			text = text
-			.replace(/\n[ \t]+/gm, '\n')
-			.replace(/[\n]{3,}/gm, '\n\n')
+			.replace(/\n{3,}/gm, '\n\n')
 			.replace(/&gt;/gi, '>')
 			.replace(/&lt;/gi, '<')
-			.replace(/&amp;/gi, '&')
-			// wordwrap max line length 100
-			.match(/.{1,100}(\s|$)|\S+?(\s|$)/g).join('\n');
+			.replace(/&amp;/gi, '&');
 		}
 
 		while (0 < --limit) {
@@ -506,9 +503,9 @@ export const
 			.replace(/&/g, '&amp;')
 			.replace(/>/g, '&gt;')
 			.replace(/</g, '&lt;')
-			.replace(/~~~blockquote~~~[\s]*/g, '<blockquote>')
-			.replace(/[\s]*~~~\/blockquote~~~/g, '</blockquote>')
-			.replace(/\n/g, '<br/>');
+			.replace(/~~~blockquote~~~\s*/g, '<blockquote>')
+			.replace(/\s*~~~\/blockquote~~~/g, '</blockquote>')
+			.replace(/\n/g, '<br>');
 	};
 
 export class HtmlEditor {
@@ -600,31 +597,25 @@ export class HtmlEditor {
 	 * @param {boolean=} wrapIsHtml = false
 	 * @returns {string}
 	 */
-	getData(wrapIsHtml = false) {
+	getData() {
 		let result = '';
 		if (this.editor) {
 			try {
 				if (this.isPlain() && this.editor.plugins.plain && this.editor.__plain) {
 					result = this.editor.__plain.getRawData();
 				} else {
-					result = wrapIsHtml
-						? '<div data-html-editor-font-wrapper="true" style="font-family: arial, sans-serif; font-size: 13px;">' +
-						  this.editor.getData() +
-						  '</div>'
-						: this.editor.getData();
+					result = this.editor.getData();
 				}
 			} catch (e) {} // eslint-disable-line no-empty
 		}
-
 		return result;
 	}
 
 	/**
-	 * @param {boolean=} wrapIsHtml = false
 	 * @returns {string}
 	 */
-	getDataWithHtmlMark(wrapIsHtml = false) {
-		return (this.isHtml() ? ':HTML:' : '') + this.getData(wrapIsHtml);
+	getDataWithHtmlMark() {
+		return (this.isHtml() ? ':HTML:' : '') + this.getData();
 	}
 
 	modeWysiwyg() {

@@ -616,23 +616,16 @@ export class MessageModel extends AbstractModel {
 	bodyAsHTML() {
 //		if (this.body && !this.body.querySelector('iframe[src*=decrypt]')) {
 		if (this.body && !this.body.querySelector('iframe')) {
-			let clone = this.body.cloneNode(true),
-				attr = 'data-html-editor-font-wrapper';
+			let clone = this.body.cloneNode(true);
 			clone.querySelectorAll('blockquote.rl-bq-switcher').forEach(
 				node => node.classList.remove('rl-bq-switcher','hidden-bq')
 			);
 			clone.querySelectorAll('.rlBlockquoteSwitcher').forEach(
 				node => node.remove()
 			);
-			clone.querySelectorAll('['+attr+']').forEach(
-				node => node.removeAttribute(attr)
-			);
 			return clone.innerHTML;
 		}
-		if (this.isPgpEncrypted()) {
-			return this.html() || plainToHtml(this.plain());
-		}
-		return '';
+		return this.html() || plainToHtml(this.plain());
 	}
 
 	/**
