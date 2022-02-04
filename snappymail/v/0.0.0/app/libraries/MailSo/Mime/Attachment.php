@@ -140,4 +140,82 @@ class Attachment
 	{
 		return $this->bIsLinked && \strlen($this->sCID);
 	}
+
+	public function ToPart() : Part
+	{
+		$oAttachmentPart = new Part;
+
+		$sFileName = $this->FileName();
+		$sCID = $this->CID();
+		$sContentLocation = $this->ContentLocation();
+
+		$oContentTypeParameters = null;
+		$oContentDispositionParameters = null;
+
+		if (\strlen(\trim($sFileName)))
+		{
+			$oContentTypeParameters =
+				(new ParameterCollection)->Add(new Parameter(
+					Enumerations\Parameter::NAME, $sFileName));
+
+			$oContentDispositionParameters =
+				(new ParameterCollection)->Add(new Parameter(
+					Enumerations\Parameter::FILENAME, $sFileName));
+		}
+
+		$oAttachmentPart->Headers->append(
+			new Header(Enumerations\Header::CONTENT_TYPE,
+				$this->ContentType().';'.
+				(($oContentTypeParameters) ? ' '.$oContentTypeParameters->ToString() : '')
+			)
+		);
+
+		$oAttachmentPart->Headers->append(
+			new Header(Enumerations\Header::CONTENT_DISPOSITION,
+				($this->IsInline() ? 'inline' : 'attachment').';'.
+				(($oContentDispositionParameters) ? ' '.$oContentDispositionParameters->ToString() : '')
+			)
+		);
+
+		if (\strlen($sCID))
+		{
+			$oAttachmentPart->Headers->append(
+				new Header(Enumerations\Header::CONTENT_ID, $sCID)
+			);
+		}
+
+		if (\strlen($sContentLocation))
+		{
+			$oAttachmentPart->Headers->append(
+				new Header(Enumerations\Header::CONTENT_LOCATION, $sContentLocation)
+			);
+		}
+
+		$oAttachmentPart->Body = $this->Resource();
+
+		if ('message/rfc822' !== \strtolower($this->ContentType()))
+		{
+			$oAttachmentPart->Headers->append(
+				new Header(
+					Enumerations\Header::CONTENT_TRANSFER_ENCODING,
+					\MailSo\Base\Enumerations\Encoding::BASE64_LOWER
+				)
+			);
+
+			if (\is_resource($oAttachmentPart->Body))
+			{
+				if (!\MailSo\Base\StreamWrappers\Binary::IsStreamRemembed($oAttachmentPart->Body))
+				{
+					$oAttachmentPart->Body =
+						\MailSo\Base\StreamWrappers\Binary::CreateStream($oAttachmentPart->Body,
+							\MailSo\Base\StreamWrappers\Binary::GetInlineDecodeOrEncodeFunctionName(
+								\MailSo\Base\Enumerations\Encoding::BASE64, false));
+
+					\MailSo\Base\StreamWrappers\Binary::RememberStream($oAttachmentPart->Body);
+				}
+			}
+		}
+
+		return $oAttachmentPart;
+	}
 }

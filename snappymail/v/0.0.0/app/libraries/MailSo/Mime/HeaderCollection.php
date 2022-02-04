@@ -301,12 +301,8 @@ class HeaderCollection extends \MailSo\Base\Collection
 		}
 	}
 
-	public function ToEncodedString() : string
+	public function __toString() : string
 	{
-		$aResult = array();
-		foreach ($this as $oHeader) {
-			$aResult[] = $oHeader->EncodedValue();
-		}
-		return \implode("\r\n", $aResult);
+		return \implode("\r\n", $this->getArrayCopy());
 	}
 }

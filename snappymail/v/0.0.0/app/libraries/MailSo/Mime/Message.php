@@ -17,10 +17,39 @@ namespace MailSo\Mime;
  */
 class Message extends Part
 {
+/*
+	public static $DefaultCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1;
+	public static $ForceCharset = '';
+	public $Headers;
+	public $Body = null;
+	public $SubParts;
+	private $sBoundary = '';
+*/
+
 	/**
 	 * @var array
 	 */
-	private $aHeadersValue = array();
+	private $aHeadersValue = array(
+/*
+		Enumerations\Header::BCC => '',
+		Enumerations\Header::CC => '',
+		Enumerations\Header::DATE => '',
+		Enumerations\Header::DISPOSITION_NOTIFICATION_TO => '',
+		Enumerations\Header::FROM_ => '',
+		Enumerations\Header::IN_REPLY_TO => '',
+		Enumerations\Header::MESSAGE_ID => '',
+		Enumerations\Header::MIME_VERSION => '',
+		Enumerations\Header::REFERENCES => '',
+		Enumerations\Header::REPLY_TO => '',
+		Enumerations\Header::SENDER => '',
+		Enumerations\Header::SUBJECT => '',
+		Enumerations\Header::TO_ => '',
+		Enumerations\Header::X_CONFIRM_READING_TO => '',
+		Enumerations\Header::X_DRAFT_INFO => '',
+		Enumerations\Header::X_MAILER => '',
+		Enumerations\Header::X_PRIORITY => '',
+*/
+	);
 
 	/**
 	 * @var AttachmentCollection
@@ -317,265 +346,98 @@ class Message extends Part
 				(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : '')).'@'.$sHostName.'>';
 	}
 
-	private function createNewMessageAttachmentBody(Attachment $oAttachment) : Part
-	{
-		$oAttachmentPart = new Part;
-
-		$sFileName = $oAttachment->FileName();
-		$sCID = $oAttachment->CID();
-		$sContentLocation = $oAttachment->ContentLocation();
-
-		$oContentTypeParameters = null;
-		$oContentDispositionParameters = null;
-
-		if (\strlen(\trim($sFileName)))
-		{
-			$oContentTypeParameters =
-				(new ParameterCollection)->Add(new Parameter(
-					Enumerations\Parameter::NAME, $sFileName));
-
-			$oContentDispositionParameters =
-				(new ParameterCollection)->Add(new Parameter(
-					Enumerations\Parameter::FILENAME, $sFileName));
-		}
-
-		$oAttachmentPart->Headers->append(
-			new Header(Enumerations\Header::CONTENT_TYPE,
-				$oAttachment->ContentType().';'.
-				(($oContentTypeParameters) ? ' '.$oContentTypeParameters->ToString() : '')
-			)
-		);
-
-		$oAttachmentPart->Headers->append(
-			new Header(Enumerations\Header::CONTENT_DISPOSITION,
-				($oAttachment->IsInline() ? 'inline' : 'attachment').';'.
-				(($oContentDispositionParameters) ? ' '.$oContentDispositionParameters->ToString() : '')
-			)
-		);
-
-		if (\strlen($sCID))
-		{
-			$oAttachmentPart->Headers->append(
-				new Header(Enumerations\Header::CONTENT_ID, $sCID)
-			);
-		}
-
-		if (\strlen($sContentLocation))
-		{
-			$oAttachmentPart->Headers->append(
-				new Header(Enumerations\Header::CONTENT_LOCATION, $sContentLocation)
-			);
-		}
-
-		$oAttachmentPart->Body = $oAttachment->Resource();
-
-		if ('message/rfc822' !== \strtolower($oAttachment->ContentType()))
-		{
-			$oAttachmentPart->Headers->append(
-				new Header(
-					Enumerations\Header::CONTENT_TRANSFER_ENCODING,
-					\MailSo\Base\Enumerations\Encoding::BASE64_LOWER
-				)
-			);
-
-			if (\is_resource($oAttachmentPart->Body))
-			{
-				if (!\MailSo\Base\StreamWrappers\Binary::IsStreamRemembed($oAttachmentPart->Body))
-				{
-					$oAttachmentPart->Body =
-						\MailSo\Base\StreamWrappers\Binary::CreateStream($oAttachmentPart->Body,
-							\MailSo\Base\StreamWrappers\Binary::GetInlineDecodeOrEncodeFunctionName(
-								\MailSo\Base\Enumerations\Encoding::BASE64, false));
-
-					\MailSo\Base\StreamWrappers\Binary::RememberStream($oAttachmentPart->Body);
-				}
-			}
-		}
-
-		return $oAttachmentPart;
-	}
-
-	private function createNewMessageAlternativePartBody(array $aAlternativeData) : ?Part
-	{
-		$oAlternativePart = null;
-
-		if (isset($aAlternativeData[0]))
-		{
-			$oAlternativePart = new Part;
-			$oParameters = new ParameterCollection;
-			$oParameters->append(
-				new Parameter(
-					Enumerations\Parameter::CHARSET,
-					\MailSo\Base\Enumerations\Charset::UTF_8)
-			);
-
-			if (isset($aAlternativeData[3]) && \is_array($aAlternativeData[3]) && \count($aAlternativeData[3]))
-			{
-				foreach ($aAlternativeData[3] as $sName => $sValue)
-				{
-					$oParameters->append(new Parameter($sName, $sValue));
-				}
-			}
-
-			$oAlternativePart->Headers->append(
-				new Header(Enumerations\Header::CONTENT_TYPE,
-					$aAlternativeData[0].'; '.$oParameters->ToString())
-			);
-
-			if (isset($aAlternativeData[1]))
-			{
-				if (\is_resource($aAlternativeData[1]))
-				{
-					$oAlternativePart->Body = $aAlternativeData[1];
-				}
-				else if (\is_string($aAlternativeData[1]) && \strlen($aAlternativeData[1]))
-				{
-					$oAlternativePart->Body =
-						\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString($aAlternativeData[1]);
-				}
-			}
-
-			if (isset($aAlternativeData[2]) && \strlen($aAlternativeData[2]))
-			{
-				$oAlternativePart->Headers->append(
-					new Header(Enumerations\Header::CONTENT_TRANSFER_ENCODING,
-						$aAlternativeData[2]
-					)
-				);
-
-				if (\is_resource($oAlternativePart->Body))
-				{
-					if (!\MailSo\Base\StreamWrappers\Binary::IsStreamRemembed($oAlternativePart->Body))
-					{
-						$oAlternativePart->Body =
-							\MailSo\Base\StreamWrappers\Binary::CreateStream($oAlternativePart->Body,
-								\MailSo\Base\StreamWrappers\Binary::GetInlineDecodeOrEncodeFunctionName(
-									$aAlternativeData[2], false));
-
-						\MailSo\Base\StreamWrappers\Binary::RememberStream($oAlternativePart->Body);
-					}
-				}
-			}
-
-			if (!\is_resource($oAlternativePart->Body))
-			{
-				$oAlternativePart->Body =
-					\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString('');
-			}
-		}
-
-		return $oAlternativePart;
-	}
-
-	private function setDefaultHeaders(Part $oIncPart, bool $bWithoutBcc = false) : Part
-	{
-		if (!isset($this->aHeadersValue[Enumerations\Header::DATE]))
-		{
-			$oIncPart->Headers->SetByName(Enumerations\Header::DATE, \gmdate('r'), true);
-		}
-
-		if (!isset($this->aHeadersValue[Enumerations\Header::MESSAGE_ID]))
-		{
-			$oIncPart->Headers->SetByName(Enumerations\Header::MESSAGE_ID, $this->generateNewMessageId(), true);
-		}
-
-		if (!isset($this->aHeadersValue[Enumerations\Header::X_MAILER]) && $this->bAddDefaultXMailer)
-		{
-			$oIncPart->Headers->SetByName(Enumerations\Header::X_MAILER, 'MailSo/2.0.1-djmaze', true);
-		}
-
-		if (!isset($this->aHeadersValue[Enumerations\Header::MIME_VERSION]))
-		{
-			$oIncPart->Headers->SetByName(Enumerations\Header::MIME_VERSION, '1.0', true);
-		}
-
-		foreach ($this->aHeadersValue as $sName => $mValue)
-		{
-			if (\is_object($mValue))
-			{
-				if ($mValue instanceof EmailCollection || $mValue instanceof Email ||
-					$mValue instanceof ParameterCollection)
-				{
-					$mValue = $mValue->ToString();
-				}
-			}
-
-			if (!($bWithoutBcc && \strtolower(Enumerations\Header::BCC) === \strtolower($sName)))
-			{
-				$oIncPart->Headers->SetByName($sName, (string) $mValue);
-			}
-		}
-
-		return $oIncPart;
-	}
-
 	/**
 	 * @return resource|bool
 	 */
 	public function ToStream(bool $bWithoutBcc = false)
 	{
-		$oResultPart = null;
-		if (\count($this->SubParts))
-		{
-			if (1 !== \count($this->SubParts)) {
-				throw new \Exception('Invalid part structure');
-			}
-			// createNewMessageRelatedBody
-			foreach ($this->oAttachmentCollection as $oAttachment) {
-				if ($oAttachment->IsLinked()) {
-					if (!$oResultPart) {
-						$oResultPart = new Part;
-						$oResultPart->Headers->append(
-							new Header(Enumerations\Header::CONTENT_TYPE,
-								Enumerations\MimeType::MULTIPART_RELATED.'; '.
-								(new ParameterCollection)->Add(
-									new Parameter(
-										Enumerations\Parameter::BOUNDARY,
-										$this->generateNewBoundary())
-								)->ToString()
-							)
-						);
-						$oResultPart->SubParts = $this->SubParts;
-						$this->SubParts = new PartCollection();
-						$this->SubParts->append($oResultPart);
-					}
-
-					$oResultPart->SubParts->append($this->createNewMessageAttachmentBody($oAttachment));
-				}
-			}
-		}
-		else
-		{
-			if ($this->bAddEmptyTextPart)
-			{
+		if (!\count($this->SubParts)) {
+			if ($this->bAddEmptyTextPart) {
 				$oPart = new Part;
 				$oPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE, 'text/plain; charset="utf-8"');
 				$oPart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString('');
 				$this->SubParts->append($oPart);
-			}
-			else
-			{
+			} else {
 				$aAttachments = $this->oAttachmentCollection->getArrayCopy();
-				if (1 === \count($aAttachments) && isset($aAttachments[0]))
-				{
+				if (1 === \count($aAttachments) && isset($aAttachments[0])) {
 					$this->oAttachmentCollection->Clear();
-					$oPart = $this->createNewMessageAlternativePartBody(array(
-						$aAttachments[0]->ContentType(),
-						$aAttachments[0]->Resource(),
-						'',
-						$aAttachments[0]->CustomContentTypeParams()
-					));
+
+					$oPart = new Part;
+					$oParameters = new ParameterCollection;
+					$oParameters->append(
+						new Parameter(
+							Enumerations\Parameter::CHARSET,
+							\MailSo\Base\Enumerations\Charset::UTF_8)
+					);
+					$params = $aAttachments[0]->CustomContentTypeParams();
+					if ($params && \is_array($params)) {
+						foreach ($params as $sName => $sValue) {
+							$oParameters->append(new Parameter($sName, $sValue));
+						}
+					}
+					$oPart->Headers->append(
+						new Header(Enumerations\Header::CONTENT_TYPE,
+							$aAttachments[0]->ContentType().'; '.$oParameters->ToString())
+					);
+
+					if ($resource = $aAttachments[0]->Resource()) {
+						if (\is_resource($resource)) {
+							$oPart->Body = $resource;
+						} else if (\is_string($resource) && \strlen($resource)) {
+							$oPart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString($resource);
+						}
+					}
+					if (!\is_resource($oPart->Body)) {
+						$oPart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString('');
+					}
+
 					$this->SubParts->append($oPart);
 				}
 			}
 		}
 
-		// createNewMessageMixedBody
+		$oRootPart = $oRelatedPart = null;
+		if (1 == \count($this->SubParts)) {
+			$oRootPart = $this->SubParts[0];
+			foreach ($this->oAttachmentCollection as $oAttachment) {
+				if ($oAttachment->IsLinked()) {
+					$oRelatedPart = new Part;
+					$oRelatedPart->Headers->append(
+						new Header(Enumerations\Header::CONTENT_TYPE,
+							Enumerations\MimeType::MULTIPART_RELATED.'; '.
+							(new ParameterCollection)->Add(
+								new Parameter(
+									Enumerations\Parameter::BOUNDARY,
+									$this->generateNewBoundary())
+							)->ToString()
+						)
+					);
+					$oRelatedPart->SubParts->append($oRootPart);
+					$oRootPart = $oRelatedPart;
+					break;
+				}
+			}
+		} else {
+			$oRootPart = new Part;
+			$oRootPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE,
+				Enumerations\MimeType::MULTIPART_MIXED.'; '.
+				(new ParameterCollection)->Add(
+					new Parameter(
+						Enumerations\Parameter::BOUNDARY,
+						$this->generateNewBoundary())
+				)->ToString()
+			);
+			$oRootPart->SubParts = $this->SubParts;
+		}
+
+		$oMixedPart = null;
 		foreach ($this->oAttachmentCollection as $oAttachment) {
-			if (!$oAttachment->IsLinked()) {
-				if (!$oResultPart) {
-					$oResultPart = new Part;
-					$oResultPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE,
+			if ($oRelatedPart && $oAttachment->IsLinked()) {
+				$oRelatedPart->SubParts->append($oAttachment->ToPart());
+			} else {
+				if (!$oMixedPart) {
+					$oMixedPart = new Part;
+					$oMixedPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE,
 						Enumerations\MimeType::MULTIPART_MIXED.'; '.
 						(new ParameterCollection)->Add(
 							new Parameter(
@@ -583,17 +445,44 @@ class Message extends Part
 								$this->generateNewBoundary())
 						)->ToString()
 					);
-					$oResultPart->SubParts = $this->SubParts;
-					$this->SubParts = new PartCollection();
-					$this->SubParts->append($oResultPart);
+					$oMixedPart->SubParts->append($oRootPart);
+					$oRootPart = $oMixedPart;
 				}
-
-				$oResultPart->SubParts->append($this->createNewMessageAttachmentBody($oAttachment));
+				$oMixedPart->SubParts->append($oAttachment->ToPart());
 			}
 		}
 
-		$oPart = $this->setDefaultHeaders($this->SubParts[0], $bWithoutBcc);
-		return $oPart->ToStream();
+		/**
+		 * setDefaultHeaders
+		 */
+		if (!isset($this->aHeadersValue[Enumerations\Header::DATE])) {
+			$oRootPart->Headers->SetByName(Enumerations\Header::DATE, \gmdate('r'), true);
+		}
+
+		if (!isset($this->aHeadersValue[Enumerations\Header::MESSAGE_ID])) {
+			$oRootPart->Headers->SetByName(Enumerations\Header::MESSAGE_ID, $this->generateNewMessageId(), true);
+		}
+
+		if (!isset($this->aHeadersValue[Enumerations\Header::X_MAILER]) && $this->bAddDefaultXMailer) {
+			$oRootPart->Headers->SetByName(Enumerations\Header::X_MAILER, 'SnappyMail/'.APP_VERSION, true);
+		}
+
+		if (!isset($this->aHeadersValue[Enumerations\Header::MIME_VERSION])) {
+			$oRootPart->Headers->SetByName(Enumerations\Header::MIME_VERSION, '1.0', true);
+		}
+
+		foreach ($this->aHeadersValue as $sName => $mValue) {
+			if (!($bWithoutBcc && \strtolower(Enumerations\Header::BCC) === \strtolower($sName))) {
+				if (\is_object($mValue)) {
+					if ($mValue instanceof EmailCollection || $mValue instanceof Email || $mValue instanceof ParameterCollection) {
+						$mValue = $mValue->ToString();
+					}
+				}
+				$oRootPart->Headers->SetByName($sName, (string) $mValue);
+			}
+		}
+
+		return $oRootPart->ToStream();
 	}
 /*
 	public function ToString(bool $bWithoutBcc = false) : string

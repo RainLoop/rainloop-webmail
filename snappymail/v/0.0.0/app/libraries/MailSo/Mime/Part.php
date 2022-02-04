@@ -535,7 +535,7 @@ class Part
 
 		$aSubStreams = array(
 
-			$this->Headers->ToEncodedString() . "\r\n\r\n",
+			$this->Headers . "\r\n\r\n",
 
 			null === $this->Body ? '' : $this->Body,
 

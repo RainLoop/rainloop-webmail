@@ -154,7 +154,7 @@ class Header
 		), \strlen($this->NameWithDelimitrom())));
 	}
 
-	public function EncodedValue() : string
+	public function __toString() : string
 	{
 		$sResult = $this->sFullValue;
 
