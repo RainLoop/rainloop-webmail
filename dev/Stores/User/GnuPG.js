@@ -4,8 +4,6 @@ import { Capa } from 'Common/Enums';
 import { Settings } from 'Common/Globals';
 import { delegateRunOnDestroy } from 'Common/UtilsUser';
 
-//import { showScreenPopup } from 'Knoin/Knoin';
-
 //import { EmailModel } from 'Model/Email';
 //import { OpenPgpKeyModel } from 'Model/OpenPgpKey';
 

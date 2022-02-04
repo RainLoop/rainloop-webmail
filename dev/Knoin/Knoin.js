@@ -244,7 +244,11 @@ const
 				}, 1);
 			}
 		}
-	};
+	},
+
+	getScreenPopupViewModel = ViewModelClassToShow =>
+		(buildViewModel(ViewModelClassToShow) && ViewModelClassToShow.__dom) && ViewModelClassToShow.__vm;
+
 
 export const
 	ViewType = {
@@ -271,9 +275,6 @@ export const
 		return fResult;
 	},
 
-	getScreenPopupViewModel = ViewModelClassToShow =>
-		(buildViewModel(ViewModelClassToShow) && ViewModelClassToShow.__dom) && ViewModelClassToShow.__vm,
-
 	/**
 	 * @param {Function} ViewModelClassToShow
 	 * @param {Array=} params
@@ -293,13 +294,6 @@ export const
 	},
 
 	arePopupsVisible = ko.observable(false),
-
-	/**
-	 * @param {Function} ViewModelClassToShow
-	 * @returns {boolean}
-	 */
-	isPopupVisible = ViewModelClassToShow =>
-		ViewModelClassToShow && ViewModelClassToShow.__vm && ViewModelClassToShow.__vm.modalVisibility(),
 
 	/**
 	 * @param {Array} screensClasses

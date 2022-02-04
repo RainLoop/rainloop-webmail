@@ -4,6 +4,7 @@ import { inFocus, addObservablesTo, addComputablesTo, addSubscribablesTo } from 
 import { Scope } from 'Common/Enums';
 import { keyScope, Settings, leftPanelDisabled } from 'Common/Globals';
 import { ViewType } from 'Knoin/Knoin';
+//import { showScreenPopup } from 'Knoin/Knoin';
 
 class AbstractView {
 	constructor(templateID, type)
@@ -86,6 +87,14 @@ export class AbstractViewPopup extends AbstractView
 			return true;
 		});
 	}
+}
+/*
+AbstractViewPopup.show = function(params = []) {
+	showScreenPopup(this, params);
+}
+*/
+AbstractViewPopup.hidden = function() {
+	return !this.__vm || !this.__vm.modalVisibility();
 }
 
 export class AbstractViewCenter extends AbstractView

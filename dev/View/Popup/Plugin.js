@@ -6,7 +6,7 @@ import { arrayLength } from 'Common/Utils';
 
 import Remote from 'Remote/Admin/Fetch';
 
-import { decorateKoCommands, isPopupVisible, showScreenPopup } from 'Knoin/Knoin';
+import { decorateKoCommands, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 import { AskPopupView } from 'View/Popup/Ask';
 
@@ -89,7 +89,7 @@ class PluginPopupView extends AbstractViewPopup {
 	}
 
 	tryToClosePopup() {
-		if (!isPopupVisible(AskPopupView)) {
+		if (AskPopupView.hidden()) {
 			showScreenPopup(AskPopupView, [
 				i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'),
 				() => this.modalVisibility() && this.cancelCommand()

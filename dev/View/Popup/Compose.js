@@ -37,7 +37,7 @@ import Remote from 'Remote/User/Fetch';
 import { ComposeAttachmentModel } from 'Model/ComposeAttachment';
 import { EmailModel } from 'Model/Email';
 
-import { decorateKoCommands, isPopupVisible, showScreenPopup } from 'Knoin/Knoin';
+import { decorateKoCommands, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
@@ -549,7 +549,7 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	deleteCommand() {
-		if (!isPopupVisible(AskPopupView) && this.modalVisibility()) {
+		if (AskPopupView.hidden() && this.modalVisibility()) {
 			showScreenPopup(AskPopupView, [
 				i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'),
 				() => {
@@ -1113,7 +1113,7 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	tryToClosePopup() {
-		if (!isPopupVisible(AskPopupView) && this.modalVisibility()) {
+		if (AskPopupView.hidden() && this.modalVisibility()) {
 			if (this.bSkipNextHide || (this.isEmptyForm() && !this.draftUid())) {
 				this.closeCommand();
 			} else {
