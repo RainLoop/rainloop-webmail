@@ -334,7 +334,6 @@ class ServiceActions
 
 	public function ServiceProxyExternal() : string
 	{
-		$bResult = false;
 		$sData = empty($this->aPaths[1]) ? '' : $this->aPaths[1];
 		if (!empty($sData) && $this->Config()->Get('labs', 'use_local_proxy_for_external_images', false))
 		{
@@ -350,30 +349,25 @@ class ServiceActions
 			if (\is_array($aData) && !empty($aData['Token']) && !empty($aData['Url']) && $aData['Token'] === Utils::GetConnectionToken())
 			{
 				\header('X-Content-Location: '.$aData['Url']);
-				$iCode = 404;
-				$sContentType = '';
-				$mResult = $this->oHttp->GetUrlAsString($aData['Url'], 'SnappyMail External Proxy', $sContentType, $iCode);
-
-				if (false !== $mResult && 200 === $iCode &&
-					\in_array($sContentType, array('image/png', 'image/jpeg', 'image/jpg', 'image/bmp', 'image/gif')))
-				{
-					$bResult = true;
-
+				$tmp = \tmpfile();
+				$HTTP = \SnappyMail\HTTP\Request::factory();
+				$HTTP->streamBodyTo($tmp);
+				$oResponse = $HTTP->doRequest('GET', $aData['Url']);
+				if ($oResponse && 200 === $oResponse->status
+					&& \str_starts_with($oResponse->getHeader('content-type'), 'image/')
+				) {
 					$this->oActions->cacheByKey($sData);
-
 					\header('Content-Type: '.$sContentType);
 					\header('Cache-Control: public');
 					\header('Expires: '.\gmdate('D, j M Y H:i:s', 2592000 + \time()).' UTC');
-					echo $mResult;
+					\rewind($tmp);
+					\fpassthru($tmp);
+					exit;
 				}
 			}
 		}
 
-		if (!$bResult)
-		{
-			\MailSo\Base\Http::StatusHeader(404);
-		}
-
+		\MailSo\Base\Http::StatusHeader(404);
 		return '';
 	}
 

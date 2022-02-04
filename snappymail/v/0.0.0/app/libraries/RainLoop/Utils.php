@@ -215,6 +215,23 @@ class Utils
 //		return @\parse_ini_string(\file_get_contents($sFileName), $bProcessSections) ?: array();
 	}
 
+	public static function inOpenBasedir(string $name) : string
+	{
+		static $open_basedir;
+		if (null === $open_basedir) {
+			$open_basedir = \array_filter(\explode(PATH_SEPARATOR, \ini_get('open_basedir')));
+		}
+		if ($open_basedir) {
+			foreach ($open_basedir as $dir) {
+				if (\str_starts_with($name, $dir)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * Replace control characters, ampersand, spaces and reserved characters (based on Win95 VFAT)
 	 * en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
