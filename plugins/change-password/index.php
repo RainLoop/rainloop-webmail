@@ -202,7 +202,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				break;
 		}
 
-		return $sPassword;
+		return $password;
 	}
 
 	private static function PasswordStrength(string $sPassword) : int
