@@ -176,7 +176,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$oAccount->SetPassword($sNewPassword);
 		$oActions->SetAuthToken($oAccount);
 
-		return $this->jsonResponse(__FUNCTION__, $oActions->GetSpecAuthToken());
+		return $this->jsonResponse(__FUNCTION__, $oActions->AppData(false));
 	}
 
 	public static function encrypt(string $algo, string $password)

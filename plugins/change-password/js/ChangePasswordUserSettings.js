@@ -117,7 +117,7 @@
 				this.newPassword('');
 				this.newPassword2('');
 				this.passwordUpdateSuccess(true);
-				rl.settings.set('AuthAccountHash', data.Result);
+				rl.setData(data.Result);
 			}
 		}
 	}
