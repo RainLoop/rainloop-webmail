@@ -23,7 +23,7 @@
 		"PASSWORD": "Password",
 		"REPLY_TO": "Rispondi a",
 		"SAVE": "Salva",
-		"SEARCH": "Nessun contatto trovato",
+		"SEARCH": "Cerca",
 		"SPAM": "Segnala come spam",
 		"SUBJECT": "Oggetto",
 		"TEST": "Esegui test",
@@ -136,8 +136,8 @@
 		"BUTTON_THREAD_MORE": "Più messaggi",
 		"MENU_HEADERS": "Mostra le intestazioni del messaggio",
 		"MENU_VIEW_ORIGINAL": "Visualizza sorgente",
-		"HTML_VIEW": "View HTML message",
-		"PLAIN_VIEW": "View plain text message",
+		"HTML_VIEW": "Visualizza messaggio in HTML",
+		"PLAIN_VIEW": "Visualizza in formato Testo",
 		"MENU_DOWNLOAD_ORIGINAL": "Scarica come file .eml",
 		"MENU_FILTER_SIMILAR": "Mostra messaggi come questo",
 		"MENU_PRINT": "Stampa",
@@ -152,8 +152,8 @@
 		"BUTTON_PGP_VERIFY": "clicca qui per verificarlo",
 		"PGP_ENCRYPTED_MESSAGE_DESC": "Messaggio cifrato con OpenPGP",
 		"LINK_DOWNLOAD_AS_ZIP": "Scarica come archivio ZIP",
-		"SPAM_SCORE": "Spam Score",
-		"HAS_VIRUS_WARNING": "WARNING: virus detected"
+		"SPAM_SCORE": "Punetggio Spam",
+		"HAS_VIRUS_WARNING": "AVVISO: rilevato virus"
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Avviso di lettura - %SUBJECT%",
@@ -218,7 +218,7 @@
 		"BUTTON_REQUEST_DSN": "Richiedi conferma del ricevimento"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Si",
+		"BUTTON_YES": "Sì",
 		"BUTTON_NO": "No",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Sei sicuro di voler chiudere questa finestra?",
 		"DESC_WANT_DELETE_MESSAGES": "Sei sicuro di voler eliminare il messaggio?"
@@ -299,14 +299,14 @@
 		"STOP_LABEL": "Non interrompere l'elaborazione delle regole",
 		"VACATION_SUBJECT_LABEL": "Oggetto (opzionale)",
 		"VACATION_MESSAGE_LABEL": "Messaggio",
-		"VACATION_RECIPIENTS_LABEL": "Recipients (comma separated)",
+		"VACATION_RECIPIENTS_LABEL": "Destinatari (separati da virgola)",
 		"REJECT_MESSAGE_LABEL": "Rifiuta messagio",
 		"ALL_INCOMING_MESSAGES_DESC": "Tutti i messaggi in ingresso"
 	},
 	"POPUPS_SIEVE_SCRIPT": {
-		"TITLE_CREATE": "Create Script",
-		"TITLE_EDIT": "Edit Script",
-		"BUTTON_ADD_FILTER": "Add a Filter",
+		"TITLE_CREATE": "Crea Script",
+		"TITLE_EDIT": "Modifica Script",
+		"BUTTON_ADD_FILTER": "Aggiungi un filtro",
 		"BUTTON_RAW_SCRIPT": "Use Custom User Script",
 		"CAPABILITY_LABEL": "Capabilities",
 		"CHANGES_NEED_TO_BE_SAVED_DESC": "These changes need to be saved to the server."
