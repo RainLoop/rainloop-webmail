@@ -800,8 +800,6 @@ class ComposePopupView extends AbstractViewPopup {
 						this.initOnShow(type, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText);
 					},
 					null,
-					null,
-					null,
 					false
 				]);
 			} else {

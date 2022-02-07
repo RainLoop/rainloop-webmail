@@ -11,50 +11,50 @@ class AskPopupView extends AbstractViewPopup {
 		this.addObservables({
 			askDesc: '',
 			yesButton: '',
-			noButton: ''
+			noButton: '',
+			passphrase: '',
+			askPass: false
 		});
 
 		this.fYesAction = null;
 		this.fNoAction = null;
 
-		this.bFocusYesOnShow = true;
+		this.focusOnShow = true;
 		this.bDisabeCloseOnEsc = true;
 	}
 
 	yesClick() {
 		this.cancelCommand();
 
-		isFunction(this.fYesAction) && this.fYesAction.call(null);
+		isFunction(this.fYesAction) && this.fYesAction();
 	}
 
 	noClick() {
 		this.cancelCommand();
 
-		isFunction(this.fNoAction) && this.fNoAction.call(null);
+		isFunction(this.fNoAction) && this.fNoAction();
 	}
 
 	/**
 	 * @param {string} sAskDesc
 	 * @param {Function=} fYesFunc
 	 * @param {Function=} fNoFunc
-	 * @param {string=} sYesButton
-	 * @param {string=} sNoButton
-	 * @param {boolean=} bFocusYesOnShow = true
+	 * @param {boolean=} focusOnShow = true
 	 * @returns {void}
 	 */
-	onShow(sAskDesc, fYesFunc = null, fNoFunc = null, yesButton = '', noButton = '', isFocusYesOnShow = true) {
+	onShow(sAskDesc, fYesFunc = null, fNoFunc = null, focusOnShow = true, askPass = false) {
 		this.askDesc(sAskDesc || '');
-		this.yesButton(yesButton || i18n('POPUPS_ASK/BUTTON_YES'));
-		this.noButton(noButton || i18n('POPUPS_ASK/BUTTON_NO'));
+		this.askPass(askPass);
+		this.passphrase('');
+		this.yesButton(i18n('POPUPS_ASK/BUTTON_YES'));
+		this.noButton(i18n(askPass ? 'GLOBAL/CANCEL' : 'POPUPS_ASK/BUTTON_NO'));
 		this.fYesAction = fYesFunc;
 		this.fNoAction = fNoFunc;
-		this.bFocusYesOnShow = !!isFocusYesOnShow;
+		this.focusOnShow = focusOnShow ? (askPass ? 'input[type="password"]' : '.buttonYes') : '';
 	}
 
 	onShowWithDelay() {
-		if (this.bFocusYesOnShow) {
-			this.querySelector('.buttonYes').focus();
-		}
+		this.focusOnShow && this.querySelector(this.focusOnShow).focus();
 	}
 
 	onBuild() {
@@ -78,12 +78,11 @@ class AskPopupView extends AbstractViewPopup {
 AskPopupView.password = function(sAskDesc) {
 	return new Promise(resolve => {
 		this.showModal([
-			sAskDesc + `<p>${i18n('GLOBAL/PASSWORD')}: <input type="password" autofocus=""></p>`,
-			() => resolve(this.__dom.querySelector('input[type="password"]').value),
+			sAskDesc,
+			() => resolve(this.__vm.passphrase()),
 			() => resolve(null),
-			'',
-			i18n('GLOBAL/CANCEL'),
-			false
+			true,
+			true
 		]);
 	});
 }
