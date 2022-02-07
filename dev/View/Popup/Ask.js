@@ -42,11 +42,11 @@ class AskPopupView extends AbstractViewPopup {
 	 * @param {boolean=} focusOnShow = true
 	 * @returns {void}
 	 */
-	onShow(sAskDesc, fYesFunc = null, fNoFunc = null, focusOnShow = true, askPass = false) {
+	onShow(sAskDesc, fYesFunc = null, fNoFunc = null, focusOnShow = true, askPass = false, btnText = '') {
 		this.askDesc(sAskDesc || '');
 		this.askPass(askPass);
 		this.passphrase('');
-		this.yesButton(i18n('POPUPS_ASK/BUTTON_YES'));
+		this.yesButton(i18n(btnText || 'POPUPS_ASK/BUTTON_YES'));
 		this.noButton(i18n(askPass ? 'GLOBAL/CANCEL' : 'POPUPS_ASK/BUTTON_NO'));
 		this.fYesAction = fYesFunc;
 		this.fNoAction = fNoFunc;
@@ -75,14 +75,15 @@ class AskPopupView extends AbstractViewPopup {
 	}
 }
 
-AskPopupView.password = function(sAskDesc) {
+AskPopupView.password = function(sAskDesc, btnText) {
 	return new Promise(resolve => {
 		this.showModal([
 			sAskDesc,
 			() => resolve(this.__vm.passphrase()),
 			() => resolve(null),
 			true,
-			true
+			true,
+			btnText
 		]);
 	});
 }

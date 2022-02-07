@@ -14,8 +14,8 @@ import { OpenPgpKeyPopupView } from 'View/Popup/OpenPgpKey';
 import { AskPopupView } from 'View/Popup/Ask';
 
 const
-	askPassphrase = async privateKey =>
-		await AskPopupView.password('GnuPG key<br>' + privateKey.id + ' ' + privateKey.emails[0]),
+	askPassphrase = async (privateKey, btnTxt = 'LABEL_SIGN') =>
+		await AskPopupView.password('GnuPG key<br>' + privateKey.id + ' ' + privateKey.emails[0], 'OPENPGP/'+btnTxt),
 
 	findGnuPGKey = (keys, query, sign) =>
 		keys.find(key =>
@@ -173,7 +173,7 @@ export const GnuPGUserStore = new class {
 					Uid: message.uid,
 					PartId: pgpInfo.PartId,
 					KeyId: key.id,
-					Passphrase: await askPassphrase(key),
+					Passphrase: await askPassphrase(key, 'BUTTON_DECRYPT'),
 					Data: '' // message.plain() optional
 				}
 				if (null !== params.Passphrase) {

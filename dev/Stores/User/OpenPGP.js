@@ -19,8 +19,8 @@ const
 			key.emails.includes(query) || query == key.id || query == key.fingerprint
 		),
 
-	askPassphrase = async privateKey =>
-		await AskPopupView.password('OpenPGP.js key<br>' + privateKey.id + ' ' + privateKey.emails[0]),
+	askPassphrase = async (privateKey, btnTxt = 'LABEL_SIGN') =>
+		await AskPopupView.password('OpenPGP.js key<br>' + privateKey.id + ' ' + privateKey.emails[0], 'OPENPGP/'+btnTxt),
 
 	/**
 	 * OpenPGP.js v5 removed the localStorage (keyring)
@@ -184,7 +184,7 @@ export const OpenPGPUserStore = new class {
 			}
 		}
 		if (privateKey) try {
-			const passphrase = await askPassphrase(privateKey);
+			const passphrase = await askPassphrase(privateKey, 'BUTTON_DECRYPT');
 
 			if (null !== passphrase) {
 				const
