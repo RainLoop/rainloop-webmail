@@ -3,8 +3,7 @@ import ko from 'ko';
 import { inFocus, addObservablesTo, addComputablesTo, addSubscribablesTo } from 'Common/Utils';
 import { Scope } from 'Common/Enums';
 import { keyScope, Settings, leftPanelDisabled } from 'Common/Globals';
-import { ViewType } from 'Knoin/Knoin';
-//import { showScreenPopup } from 'Knoin/Knoin';
+import { ViewType, showScreenPopup } from 'Knoin/Knoin';
 
 class AbstractView {
 	constructor(templateID, type)
@@ -88,11 +87,11 @@ export class AbstractViewPopup extends AbstractView
 		});
 	}
 }
-/*
-AbstractViewPopup.show = function(params = []) {
+
+AbstractViewPopup.showModal = function(params = []) {
 	showScreenPopup(this, params);
 }
-*/
+
 AbstractViewPopup.hidden = function() {
 	return !this.__vm || !this.__vm.modalVisibility();
 }

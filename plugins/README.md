@@ -5,6 +5,15 @@ class Plugin extends \RainLoop\Plugins\AbstractPlugin
 }
 ```
 
+JavaScript
+```javascript
+class PluginPopupView extends rl.pluginPopupView
+{
+}
+
+PluginPopupView.showModal();
+```
+
 # Hooks
 
 ```php

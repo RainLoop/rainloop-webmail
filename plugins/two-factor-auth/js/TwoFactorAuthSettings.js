@@ -117,7 +117,7 @@ class TwoFactorAuthSettings
 	}
 
 	testTwoFactor() {
-		rl.showPluginPopup(TwoFactorAuthTestPopupView, [this.twoFactorTested]);
+		TwoFactorAuthTestPopupView.showModal([this.twoFactorTested]);
 	}
 
 	clearTwoFactor() {

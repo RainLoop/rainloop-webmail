@@ -244,10 +244,7 @@ const
 				}, 1);
 			}
 		}
-	},
-
-	getScreenPopupViewModel = ViewModelClassToShow =>
-		(buildViewModel(ViewModelClassToShow) && ViewModelClassToShow.__dom) && ViewModelClassToShow.__vm;
+	};
 
 
 export const
@@ -281,7 +278,8 @@ export const
 	 * @returns {void}
 	 */
 	showScreenPopup = (ViewModelClassToShow, params = []) => {
-		const vm = getScreenPopupViewModel(ViewModelClassToShow);
+		const vm = buildViewModel(ViewModelClassToShow) && ViewModelClassToShow.__dom && ViewModelClassToShow.__vm;
+
 		if (vm) {
 			params = params || [];
 

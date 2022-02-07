@@ -56,5 +56,4 @@ rl.pluginSettingsGet = (pluginSection, name) => {
 	return plugins ? (null == plugins[name] ? null : plugins[name]) : null;
 };
 
-rl.showPluginPopup = showScreenPopup;
 rl.pluginPopupView = AbstractViewPopup;
