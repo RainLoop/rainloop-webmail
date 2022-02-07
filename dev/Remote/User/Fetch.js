@@ -18,6 +18,8 @@ import { AbstractFetchRemote } from 'Remote/AbstractFetch';
 
 import { FolderCollectionModel } from 'Model/FolderCollection';
 
+import { MessageUserStore } from 'Stores/User/Message';
+
 class RemoteUserFetch extends AbstractFetchRemote {
 
 	/**
@@ -130,7 +132,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 				UidNext: getFolderUidNext(folder) // Used to check for new messages
 			});
 		} else if (SettingsUserStore.useThreads()) {
-			rl.app.reloadFlagsCurrentMessageListAndMessageFromCache();
+			MessageUserStore.reloadFlagsAndCachedMessage();
 		}
 	}
 

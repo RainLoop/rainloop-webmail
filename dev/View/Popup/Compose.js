@@ -484,7 +484,7 @@ class ComposePopupView extends AbstractViewPopup {
 					if (isArray(flagsCache)) {
 						flagsCache.push(('forward' === this.aDraftInfo[0]) ? '$forwarded' : '\\answered');
 						MessageFlagsCache.setFor(this.aDraftInfo[2], this.aDraftInfo[1], flagsCache);
-						rl.app.reloadFlagsCurrentMessageListAndMessageFromCache();
+						MessageUserStore.reloadFlagsAndCachedMessage();
 						setFolderHash(this.aDraftInfo[2], '');
 					}
 				}
@@ -592,7 +592,11 @@ class ComposePopupView extends AbstractViewPopup {
 				i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'),
 				() => {
 					if (this.modalVisibility()) {
-						rl.app.deleteMessagesFromFolderWithoutCheck(this.draftsFolder(), [this.draftUid()]);
+						const
+							sFromFolderFullName = this.draftsFolder(),
+							aUidForRemove = [this.draftUid()];
+						rl.app.messagesDeleteHelper(sFromFolderFullName, aUidForRemove);
+						MessageUserStore.removeMessagesFromList(sFromFolderFullName, aUidForRemove);
 						this.closeCommand();
 					}
 				}

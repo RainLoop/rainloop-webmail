@@ -477,6 +477,12 @@ export const MessageUserStore = new class {
 		);
 	}
 
+	reloadFlagsAndCachedMessage() {
+		this.list.forEach(message => MessageFlagsCache.initMessage(message));
+		MessageFlagsCache.initMessage(this.message());
+		this.messageViewTrigger(!this.messageViewTrigger());
+	}
+
 	setMessageList(data, cached) {
 		const collection = MessageCollectionModel.reviveFromJson(data.Result, cached);
 		if (collection) {

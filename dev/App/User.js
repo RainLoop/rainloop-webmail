@@ -49,8 +49,6 @@ import { PgpUserStore } from 'Stores/User/Pgp';
 import { MessageUserStore } from 'Stores/User/Message';
 import { ThemeStore } from 'Stores/Theme';
 
-import * as Local from 'Storage/Client';
-
 import Remote from 'Remote/User/Fetch';
 
 import { EmailModel } from 'Model/Email';
@@ -74,11 +72,11 @@ import { timeToNode } from 'Common/Momentor';
 // Every 5 minutes
 const refreshFolders = 300000;
 
+let moveCache = {};
+
 class AppUser extends AbstractApp {
 	constructor() {
 		super(Remote);
-
-		this.moveCache = {};
 
 		this.moveOrDeleteResponseHelper = this.moveOrDeleteResponseHelper.bind(this);
 
@@ -106,14 +104,6 @@ class AppUser extends AbstractApp {
 
 	reload() {
 		(Settings.app('inIframe') ? parent : window).location.reload();
-	}
-
-	reloadFlagsCurrentMessageListAndMessageFromCache() {
-		MessageUserStore.list.forEach(message =>
-			MessageFlagsCache.initMessage(message)
-		);
-		MessageFlagsCache.initMessage(MessageUserStore.message());
-		MessageUserStore.messageViewTrigger(!MessageUserStore.messageViewTrigger());
 	}
 
 	/**
@@ -172,7 +162,7 @@ class AppUser extends AbstractApp {
 		const sTrashFolder = FolderUserStore.trashFolder(),
 			sSpamFolder = FolderUserStore.spamFolder();
 
-		forEachObjectValue(this.moveCache, item => {
+		forEachObjectValue(moveCache, item => {
 			const isSpam = sSpamFolder === item.To,
 				isTrash = sTrashFolder === item.To,
 				isHam = !isSpam && sSpamFolder === item.From && getFolderInboxName() === item.To;
@@ -192,29 +182,21 @@ class AppUser extends AbstractApp {
 			);
 		});
 
-		this.moveCache = {};
+		moveCache = {};
 	}
 
 	messagesMoveHelper(fromFolderFullName, toFolderFullName, uidsForMove) {
 		const hash = '$$' + fromFolderFullName + '$$' + toFolderFullName + '$$';
-		if (!this.moveCache[hash]) {
-			this.moveCache[hash] = {
+		if (!moveCache[hash]) {
+			moveCache[hash] = {
 				From: fromFolderFullName,
 				To: toFolderFullName,
 				Uid: []
 			};
 		}
 
-		this.moveCache[hash].Uid = this.moveCache[hash].Uid.concat(uidsForMove).unique();
+		moveCache[hash].Uid = moveCache[hash].Uid.concat(uidsForMove).unique();
 		this.messagesMoveTrigger();
-	}
-
-	messagesCopyHelper(sFromFolderFullName, sToFolderFullName, aUidForCopy) {
-		Remote.request('MessageCopy', null, {
-			FromFolder: sFromFolderFullName,
-			ToFolder: sToFolderFullName,
-			Uids: aUidForCopy.join(',')
-		});
 	}
 
 	messagesDeleteHelper(sFromFolderFullName, aUidForRemove) {
@@ -242,15 +224,6 @@ class AppUser extends AbstractApp {
 			}
 			this.reloadMessageList(!MessageUserStore.list.length);
 		}
-	}
-
-	/**
-	 * @param {string} sFromFolderFullName
-	 * @param {Array} aUidForRemove
-	 */
-	deleteMessagesFromFolderWithoutCheck(sFromFolderFullName, aUidForRemove) {
-		this.messagesDeleteHelper(sFromFolderFullName, aUidForRemove);
-		MessageUserStore.removeMessagesFromList(sFromFolderFullName, aUidForRemove);
 	}
 
 	/**
@@ -327,7 +300,11 @@ class AppUser extends AbstractApp {
 
 			if (oFromFolder && oToFolder) {
 				if (undefined === bCopy ? false : !!bCopy) {
-					this.messagesCopyHelper(oFromFolder.fullName, oToFolder.fullName, aUidForMove);
+					Remote.request('MessageCopy', null, {
+						FromFolder: oFromFolder.fullName,
+						ToFolder: oToFolder.fullName,
+						Uids: aUidForMove.join(',')
+					});
 				} else {
 					this.messagesMoveHelper(oFromFolder.fullName, oToFolder.fullName, aUidForMove);
 				}
@@ -424,7 +401,7 @@ class AppUser extends AbstractApp {
 									MessageFlagsCache.setFor(folderFromCache.fullName, message.Uid.toString(), message.Flags)
 								);
 
-								this.reloadFlagsCurrentMessageListAndMessageFromCache();
+								MessageUserStore.reloadFlagsAndCachedMessage();
 							}
 
 							MessageUserStore.initUidNextAndNewMessages(
@@ -549,7 +526,7 @@ class AppUser extends AbstractApp {
 				// no default
 			}
 
-			this.reloadFlagsCurrentMessageListAndMessageFromCache();
+			MessageUserStore.reloadFlagsAndCachedMessage();
 		}
 	}
 
@@ -567,26 +544,6 @@ class AppUser extends AbstractApp {
 				autocompleteCallback([]);
 			}
 		}, query);
-	}
-
-	/**
-	 * @param {string} sFullName
-	 * @param {boolean} bExpanded
-	 */
-	setExpandedFolder(sFullName, bExpanded) {
-		let aExpandedList = Local.get(ClientSideKeyName.ExpandedFolders);
-		if (!isArray(aExpandedList)) {
-			aExpandedList = [];
-		}
-
-		if (bExpanded) {
-			if (!aExpandedList.includes(sFullName))
-				aExpandedList.push(sFullName);
-		} else {
-			aExpandedList = aExpandedList.filter(value => value !== sFullName);
-		}
-
-		Local.set(ClientSideKeyName.ExpandedFolders, aExpandedList);
 	}
 
 	/**

@@ -488,7 +488,7 @@ export class MailMessageList extends AbstractViewRight {
 
 				Remote.messageSetSeenToAll(sFolderFullName, true, iThreadUid ? uids : null);
 
-				rl.app.reloadFlagsCurrentMessageListAndMessageFromCache();
+				MessageUserStore.reloadFlagsAndCachedMessage();
 			}
 		}
 	}

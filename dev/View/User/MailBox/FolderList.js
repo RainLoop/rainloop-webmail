@@ -18,6 +18,30 @@ import { showMessageComposer } from 'Common/UtilsUser';
 import { FolderCreatePopupView } from 'View/Popup/FolderCreate';
 import { ContactsPopupView } from 'View/Popup/Contacts';
 
+import { isArray } from 'Common/Utils';
+import { ClientSideKeyName } from 'Common/EnumsUser';
+import * as Local from 'Storage/Client';
+
+/**
+ * @param {string} sFullName
+ * @param {boolean} bExpanded
+ */
+function setExpandedFolder(sFullName, bExpanded) {
+	let aExpandedList = Local.get(ClientSideKeyName.ExpandedFolders);
+	if (!isArray(aExpandedList)) {
+		aExpandedList = [];
+	}
+
+	if (bExpanded) {
+		if (!aExpandedList.includes(sFullName))
+			aExpandedList.push(sFullName);
+	} else {
+		aExpandedList = aExpandedList.filter(value => value !== sFullName);
+	}
+
+	Local.set(ClientSideKeyName.ExpandedFolders, aExpandedList);
+}
+
 export class MailFolderList extends AbstractViewLeft {
 	constructor() {
 		super('MailFolderList');
@@ -69,7 +93,7 @@ export class MailFolderList extends AbstractViewLeft {
 				const folder = ko.dataFor(el);
 				if (folder) {
 					const collapsed = folder.collapsed();
-					rl.app.setExpandedFolder(folder.fullName, collapsed);
+					setExpandedFolder(folder.fullName, collapsed);
 
 					folder.collapsed(!collapsed);
 					event.preventDefault();
@@ -151,7 +175,7 @@ export class MailFolderList extends AbstractViewLeft {
 				folder = item && ko.dataFor(item);
 			if (folder) {
 				const collapsed = folder.collapsed();
-				rl.app.setExpandedFolder(folder.fullName, collapsed);
+				setExpandedFolder(folder.fullName, collapsed);
 				folder.collapsed(!collapsed);
 			}
 

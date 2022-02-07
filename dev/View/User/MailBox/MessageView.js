@@ -621,7 +621,7 @@ export class MailMessageView extends AbstractViewRight {
 
 			MessageFlagsCache.store(oMessage);
 
-			rl.app.reloadFlagsCurrentMessageListAndMessageFromCache();
+			MessageUserStore.reloadFlagsAndCachedMessage();
 		}
 	}
 
