@@ -380,10 +380,7 @@ export class MessageModel extends AbstractModel {
 	viewHtml() {
 		const body = this.body;
 		if (body && this.html()) {
-			let html = this.html()
-				.replace(/font-size:\s*[0-9]px/g, 'font-size:11px')
-				// Strip utm_* tracking
-				.replace(/(\\?|&amp;|&)utm_[a-z]+=[a-z0-9_-]*/si, '$1');
+			let html = this.html();
 			if (SettingsUserStore.removeColors()) {
 				html = removeColors(html);
 			}
@@ -467,8 +464,6 @@ export class MessageModel extends AbstractModel {
 					.replace(/-----BEGIN PGP SIGNED MESSAGE-----(\r?\n[a-z][^\r\n]+)+/i, '')
 					.trim()
 			)
-				// Strip utm_* tracking
-				.replace(/(\?|&amp;|&)utm_[a-z]+=[^?&#]*/si, '$1')
 				.replace(url, '$1<a href="$2" target="_blank">$2</a>')
 				.replace(email, '$1<a href="mailto:$2">$2</a>');
 			this.isHtml(false);

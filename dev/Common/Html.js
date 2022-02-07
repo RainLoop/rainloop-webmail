@@ -3,23 +3,7 @@ import { forEachObjectEntry, pInt } from 'Common/Utils';
 import { proxy } from 'Common/Links';
 
 const
-/*
-	strip_tags = (m => {
-		return (str) => str.replace(m, '');
-	})(/<\s*\/?\s*(\w+|!)[^>]*>/gi),
-
-	htmlspecialchars = ((de,se,gt,lt,sq,dq) => {
-		return (str, quote_style, double_encode) => {
-			str = (''+str)
-				.replace((!defined(double_encode)||double_encode)?de:se,'&amp;')
-				.replace(gt,'&lt;')
-				.replace(lt,'&gt;');
-			if (!is_number(quote_style)) { quote_style = 2; }
-			if (quote_style & 1) { str = str.replace(sq,'&#039;'); }
-			return (quote_style & 2) ? str.replace(dq,'&quot;') : str;
-		};
-	})(/&/g,/&(?![\w#]+;)/gi,/</g,/>/g,/'/g,/"/g),
-*/
+	tpl = createElement('template'),
 	htmlre = /[&<>"']/g,
 	htmlmap = {
 		'&': '&amp;',
@@ -27,7 +11,10 @@ const
 		'>': '&gt;',
 		'"': '&quot;',
 		"'": '&#x27;'
-	};
+	},
+
+	// Strip utm_* tracking
+	stripTracking = text => text.replace(/(\?|&amp;|&)utm_[a-z]+=[^&?#]*/si, '$1');
 
 export const
 
@@ -51,9 +38,7 @@ export const
 				hasExternals: false,
 				foundCIDs: [],
 				foundContentLocationUrls: []
-			},
-
-			tpl = document.createElement('template');
+			};
 		tpl.innerHTML = html
 			.replace(/(<pre[^>]*>)([\s\S]*?)(<\/pre>)/gi, aMatches => {
 				return (aMatches[1] + aMatches[2].trim() + aMatches[3].trim()).replace(/\r?\n/g, '<br>');
@@ -68,7 +53,7 @@ export const
 			.replace('<o:p>', '<span>')
 			.replace('</o:p>', '</span>')
 			// https://github.com/the-djmaze/snappymail/issues/187
-			.replace(/<a[^>]*>(((?!<\/a).)+<a\\s)/gi, '$1')
+			.replace(/<a(?:\s[^>]*)?>((?![\s\S]*<\/a)[\s\S]*?<a(\s[^>]*)?>)/gi, '$1')
 			// \MailSo\Base\HtmlUtils::ClearFastTags
 			.replace(/<p[^>]*><\/p>/i, '')
 			.replace(/<!doctype[^>]*>/i, '')
@@ -193,9 +178,7 @@ export const
 			}
 
 			if (oElement.hasAttribute('href')) {
-				let sHref = getAttribute('href')
-					// Strip utm_* tracking
-					.replace(/(\?|&)utm_[a-z]+=[^&?#]*/si, '$1');
+				let sHref = stripTracking(getAttribute('href'));
 				if (!/^([a-z]+):/i.test(sHref) && '//' !== sHref.slice(0, 2)) {
 					oElement.setAttribute('data-x-broken-href', sHref);
 					oElement.removeAttribute('href');
@@ -327,6 +310,10 @@ export const
 				if (urls.broken.length) {
 					oElement.setAttribute('data-x-style-broken-urls', JSON.stringify(urls.broken));
 				}
+
+				if (11 < pInt(oStyle.fontSize)) {
+					oStyle.removeProperty('font-size');
+				}
 			}
 
 			if (debug && aAttrsForRemove) {
@@ -359,35 +346,24 @@ export const
 	 * @returns {string}
 	 */
 	htmlToPlain = html => {
-		let pos = 0,
-			limit = 800,
-			iP1 = 0,
-			iP2 = 0,
-			iP3 = 0,
-			text = '';
-
 		const
-			tpl = createElement('template'),
-
-			convertBlockquote = (blockquoteText) => {
-				blockquoteText = '> ' + blockquoteText.trim().replace(/\n/gm, '\n> ');
-				return blockquoteText.replace(/(^|\n)([> ]+)/gm, (...args) =>
-					args && 2 < args.length ? args[1] + args[2].replace(/[\s]/g, '').trim() + ' ' : ''
-				);
-			},
-
-			convertPre = (...args) =>
-				1 < args.length
-					? args[1].toString().replace(/\n/g, '<br>')
-					: '',
-
-			fixAttibuteValue = (...args) => (1 < args.length ? args[1] + encodeHtml(args[2]) : ''),
-
-			convertLinks = (...args) => (1 < args.length ? args[1].trim() : '');
+			hr = '⎯'.repeat(64),
+			forEach = (selector, fn) => tpl.content.querySelectorAll(selector).forEach(fn),
+			blockquotes = node => {
+				let bq;
+				while ((bq = node.querySelector('blockquote'))) {
+					// Convert child blockquote first
+					blockquotes(bq);
+					// Convert blockquote
+					bq.innerHTML = '\n' + ('\n' + bq.innerHTML.replace(/\n{3,}/gm, '\n\n').trim() + '\n').replace(/^/gm, '&gt; ');
+					bq.replaceWith(...[...bq.childNodes]);
+				}
+			};
 
 		html = html
-			.replace(/\r?\n/, '')
-			.replace(/<pre[^>]*>([\s\S]*?)<\/pre>/gim, convertPre)
+			.replace(/<pre[^>]*>([\s\S]*?)<\/pre>/gim, (...args) =>
+				1 < args.length ? args[1].toString().replace(/\n/g, '<br>') : '')
+			.replace(/\r?\n/g, '')
 			.replace(/\s+/gm, ' ');
 
 		while (/<(div|tr)[\s>]/i.test(html)) {
@@ -397,57 +373,54 @@ export const
 			html = html.replace(/\n*<\/(div|tr)(\s[\s\S]*?)?>\n*/gi, '\n');
 		}
 
-		while (/<(ul|ol|p|h\d)[\s>]/i.test(html)) {
-			html = html.replace(/\n*<(ul|ol|p|h\d)(\s[\s\S]*?)?>\n*/gi, '\n\n');
-		}
-		while (/<\/(ul|ol|p|h\d)[\s>]/i.test(html)) {
-			html = html.replace(/\n*<\/(ul|ol|p|h\d)(\s[\s\S]*?)?>\n*/gi, '\n\n');
-		}
-
 		tpl.innerHTML = html
-			.replace(/((?:href|data)\s?=\s?)("[^"]+?"|'[^']+?')/gim, fixAttibuteValue)
-			.replace(/<br[^>]*>/gim, '\n')
-			.replace(/<li[^>]*>/gim, ' * ')
-			.replace(/<\/li>/gi, '\n')
-			.replace(/\n*<t[dh](\s[\s\S]*?)?>/gi, '\t')
-			.replace(/<\/t[dh](\s[\s\S]*?)?>/gi, '\n')
-			.replace(/\n*<hr[\s\S]*?>\n*/gi, '\n\n' + '⎯'.repeat(64) + '\n\n')
-			.replace(/<blockquote[^>]*>/gim, '\n__bq__start__\n')
-			.replace(/<\/blockquote>/gim, '\n__bq__end__\n')
-			.replace(/<a [^>]*>([\s\S]*?)<\/a>/gim, convertLinks)
-			.replace(/&nbsp;/gi, ' ')
-			.replace(/&quot;/gi, '"')
-			.replace(/<br(\s[\s\S]*?)?>/gi, '\n')
-			.replace(/<[\s\S]+?>/g, '');
+			.replace(/<t[dh](\s[\s\S]*?)?>/gi, '\t')
+			.replace(/<\/tr(\s[\s\S]*?)?>/gi, '\n');
 
-		text = tpl.content.textContent;
-		if (text) {
-			text = text
-			.replace(/\n{3,}/gm, '\n\n')
-			.replace(/&gt;/gi, '>')
-			.replace(/&lt;/gi, '<')
-			.replace(/&amp;/gi, '&');
-		}
+		// Convert line-breaks
+		forEach('br', br => br.replaceWith('\n'));
 
-		while (0 < --limit) {
-			iP1 = text.indexOf('__bq__start__', pos);
-			if (0 > iP1) {
-				break;
+		// lines
+		forEach('hr', node => node.replaceWith(`\n\n${hr}\n\n`));
+
+		// headings
+		forEach('h1,h2,h3,h4,h5,h6', h => h.replaceWith(`\n\n${'#'.repeat(h.tagName[1])} ${h.textContent}\n\n`));
+
+		// paragraphs
+		forEach('p', node => {
+			node.prepend('\n\n');
+			node.after('\n\n');
+		});
+
+		// proper indenting and numbering of (un)ordered lists
+		forEach('ol,ul', node => {
+			let prefix = '',
+				parent = node,
+				ordered = 'OL' == node.tagName,
+				i = 0;
+			while (parent && parent.parentNode && parent.parentNode.closest) {
+				parent = parent.parentNode.closest('ol,ul');
+				parent && (prefix = '    ' + prefix);
 			}
-			iP2 = text.indexOf('__bq__start__', iP1 + 5);
-			iP3 = text.indexOf('__bq__end__', iP1 + 5);
+			node.querySelectorAll(':scope > li').forEach(li => {
+				li.prepend('\n' + prefix + (ordered ? `${++i}. ` : ' * '));
+			});
+			node.prepend('\n\n');
+			node.after('\n\n');
+		});
 
-			if ((-1 === iP2 || iP3 < iP2) && iP1 < iP3) {
-				text = text.slice(0, iP1) + convertBlockquote(text.slice(iP1 + 13, iP3)) + text.slice(iP3 + 11);
-				pos = 0;
-			} else if (-1 < iP2 && iP2 < iP3) {
-				pos = iP2 - 1;
-			} else {
-				pos = 0;
-			}
-		}
+		// Convert anchors
+		forEach('a', a => a.replaceWith(a.textContent + ' ' + a.href));
 
-		return text.replace(/__bq__start__|__bq__end__/gm, '').trim();
+		// Bold
+		forEach('b,strong', b => b.replaceWith(`**${b.textContent}**`));
+		// Italic
+		forEach('i,em', i => i.replaceWith(`*${i.textContent}*`));
+
+		// Blockquotes must be last
+		blockquotes(tpl.content);
+
+		return (tpl.content.textContent || '').replace(/\n{3,}/gm, '\n\n').trim();
 	},
 
 	/**
@@ -456,8 +429,10 @@ export const
 	 * @returns {string}
 	 */
 	plainToHtml = plain => {
-		plain = plain.toString().replace(/\r/g, '');
-		plain = plain.replace(/^>[> ]>+/gm, ([match]) => (match ? match.replace(/[ ]+/g, '') : match));
+		plain = stripTracking(plain)
+			.toString()
+			.replace(/\r/g, '')
+			.replace(/^>[> ]>+/gm, ([match]) => (match ? match.replace(/[ ]+/g, '') : match));
 
 		let bIn = false,
 			bDo = true,
