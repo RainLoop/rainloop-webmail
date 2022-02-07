@@ -84,6 +84,7 @@ This fork of RainLoop has the following changes:
 * Support IMAP RFC 7628 SASL OAUTHBEARER aka XOAUTH2
 * Support IMAP4rev2 RFC 9051
 * Support Sodium and OpenSSL for encryption
+* Much better PGP support
 
 
 ### Supported browsers
@@ -138,25 +139,25 @@ RainLoop 1.15 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.158.025	|   86.116	|
-|app.js          	|4.215.733	|  423.547	|
+|admin.js        	|2.158.025	|   86.224	|
+|app.js          	|4.215.733	|  481.350	|
 |boot.js         	|  672.433	|    2.779	|
-|libs.js         	|  647.679	|  208.745	|
+|libs.js         	|  647.679	|  208.713	|
 |polyfills.js    	|  325.908	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|8.019.778	|  721.472	|
+|TOTAL           	|8.019.778	|  779.351	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
-|admin.min.js    	|  255.514	|   43.225	| 73.899	| 13.927	| 60.674  	| 12.410	|
-|app.min.js      	|  516.000	|  214.686	|140.430	| 65.385	|110.657  	| 55.574	|
+|admin.min.js    	|  255.514	|   43.142	| 73.899	| 13.913	| 60.674  	| 12.402	|
+|app.min.js      	|  516.000	|  233.602	|140.430	| 72.842	|110.657  	| 62.011	|
 |boot.min.js     	|   66.456	|    1.654	| 22.553	|    996	| 20.043  	|    814	|
-|libs.min.js     	|  574.626	|   99.476	|177.280	| 36.501	|151.855  	| 32.699	|
+|libs.min.js     	|  574.626	|   99.410	|177.280	| 36.496	|151.855  	| 32.633	|
 |polyfills.min.js	|   32.608	|        0	| 11.315	|      0	| 10.072  	|      0	|
-|TOTAL           	|1.445.204	|  359.041	|425.477	|116.809	|353.301  	|101.497	|
-|TOTAL (no admin)	|1.189.690	|  315.816	|351.061	|102.882	|292.627  	| 89.087	|
+|TOTAL           	|1.445.204	|  377.808	|425.477	|124.247	|353.301  	|107.860	|
+|TOTAL (no admin)	|1.189.690	|  334.666	|351.061	|110.334	|292.627  	| 95.458	|
 
-For a user its around 70% smaller and faster than traditional RainLoop.
+For a user its around 68% smaller and faster than traditional RainLoop.
 
 ### CSS changes
 
@@ -182,12 +183,12 @@ For a user its around 70% smaller and faster than traditional RainLoop.
 
 |css/*       	|RainLoop	|Snappy   	|RL gzip	|SM gzip	|SM brotli	|
 |------------	|-------:	|------:	|------:	|------:	|--------:	|
-|app.css     	| 340.334	| 84.579	| 46.959	| 16.311	| 14.102	|
-|app.min.css 	| 274.791	| 68.200	| 39.618	| 14.359	| 12.744	|
+|app.css     	| 340.334	| 83.221	| 46.959	| 17.038	| 14.654	|
+|app.min.css 	| 274.791	| 67.115	| 39.618	| 15.095	| 13.287	|
 |boot.css    	|       	|  1.326	|       	|    664	|    545	|
 |boot.min.css	|       	|  1.071	|       	|    590	|    474	|
-|admin.css    	|       	| 30.558	|       	|  6.894	|  5.979	|
-|admin.min.css	|       	| 24.546	|       	|  6.241	|  5.489	|
+|admin.css    	|       	| 30.589	|       	|  6.914	|  6.003	|
+|admin.min.css	|       	| 24.590	|       	|  6.258	|  5.508	|
 
 ### PGP
 RainLoop uses the old OpenPGP.js v2
@@ -201,7 +202,7 @@ See https://github.com/the-djmaze/openpgpjs for development
 
 |OpenPGP        	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|-------:	|--------:	|--------:	|
-|openpgp.min.js 	|  330.742	|  540.542	|102.388	| 167.397	| 84.241  	| 137.502	|
+|openpgp.min.js 	|  330.742	|  539.642	|102.388	| 167.112	| 84.241  	|  137.447	|
 |openpgp.worker 	|    1.499	|         	|    824	|        	|    695 	|        	|
 
 
