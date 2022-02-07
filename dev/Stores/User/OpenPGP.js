@@ -11,12 +11,16 @@ import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 import { OpenPgpKeyPopupView } from 'View/Popup/OpenPgpKey';
+import { AskPopupView } from 'View/Popup/Ask';
 
 const
 	findOpenPGPKey = (keys, query/*, sign*/) =>
 		keys.find(key =>
 			key.emails.includes(query) || query == key.id || query == key.fingerprint
 		),
+
+	askPassphrase = async privateKey =>
+		await AskPopupView.password('OpenPGP.js key<br>' + privateKey.id + ' ' + privateKey.emails[0]),
 
 	/**
 	 * OpenPGP.js v5 removed the localStorage (keyring)
@@ -180,8 +184,8 @@ export const OpenPGPUserStore = new class {
 			}
 		}
 		if (privateKey) try {
-			// Ask passphrase of private key
-			const passphrase = prompt('OpenPGP.js Passphrase for ' + privateKey.id + ' ' + privateKey.emails[0]);
+			const passphrase = await askPassphrase(privateKey);
+
 			if (null !== passphrase) {
 				const
 					publicKey = findOpenPGPKey(this.publicKeys, sender/*, sign*/),
@@ -243,7 +247,7 @@ export const OpenPGPUserStore = new class {
 	 * https://docs.openpgpjs.org/global.html#sign
 	 */
 	async sign(text, privateKey, detached) {
-		const passphrase = prompt('OpenPGP.js Passphrase for ' + privateKey.id + ' ' + privateKey.emails[0]);
+		const passphrase = await askPassphrase(privateKey);
 		if (null !== passphrase) {
 			privateKey = await openpgp.decryptKey({
 				privateKey: privateKey.key,
@@ -258,7 +262,7 @@ export const OpenPGPUserStore = new class {
 				detached: !!detached
 			});
 		}
-		return false;
+		throw 'Sign cancelled';
 	}
 
 	/**
@@ -269,7 +273,7 @@ export const OpenPGPUserStore = new class {
 		recipients = recipients.map(email => this.publicKeys().find(key => key.emails.includes(email))).filter(key => key);
 		if (count === recipients.length) {
 			if (signPrivateKey) {
-				const passphrase = prompt('OpenPGP.js Passphrase for ' + signPrivateKey.id + ' ' + signPrivateKey.emails[0]);
+				const passphrase = await askPassphrase(signPrivateKey);
 				if (null === passphrase) {
 					return;
 				}
@@ -285,6 +289,7 @@ export const OpenPGPUserStore = new class {
 //				signature
 			});
 		}
+		throw 'Encrypt failed';
 	}
 
 };

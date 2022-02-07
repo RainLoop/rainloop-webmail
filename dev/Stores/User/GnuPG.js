@@ -11,8 +11,12 @@ import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 import { OpenPgpKeyPopupView } from 'View/Popup/OpenPgpKey';
+import { AskPopupView } from 'View/Popup/Ask';
 
 const
+	askPassphrase = async privateKey =>
+		await AskPopupView.password('GnuPG key<br>' + privateKey.id + ' ' + privateKey.emails[0]),
+
 	findGnuPGKey = (keys, query, sign) =>
 		keys.find(key =>
 			key[sign ? 'can_sign' : 'can_decrypt']
@@ -169,7 +173,7 @@ export const GnuPGUserStore = new class {
 					Uid: message.uid,
 					PartId: pgpInfo.PartId,
 					KeyId: key.id,
-					Passphrase: prompt('GnuPG Passphrase for ' + key.id + ' ' + key.uids[0].uid),
+					Passphrase: await askPassphrase(key),
 					Data: '' // message.plain() optional
 				}
 				if (null !== params.Passphrase) {
@@ -197,6 +201,14 @@ export const GnuPGUserStore = new class {
 				};
 			}
 		}
+	}
+
+	async sign(/*text, privateKey, detached*/) {
+		throw 'Sign failed';
+	}
+
+	async encrypt(/*text, recipients, signPrivateKey*/) {
+		throw 'Encrypt failed';
 	}
 
 };
