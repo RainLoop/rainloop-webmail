@@ -407,18 +407,15 @@ class ComposePopupView extends AbstractViewPopup {
 			params.Encrypted = draft
 				? await this.mailvelope.createDraft()
 				: await this.mailvelope.encrypt(recipients);
-		} else if (encrypt) {
-			if ('openpgp' != encrypt) {
-				throw 'Encryption with ' + encrypt + ' not yet implemented';
-			}
-			if (sign && 'openpgp' != sign[0]) {
-				throw 'Signing with ' + sign[0] + ' not yet implemented';
-			}
+		} else if (encrypt || sign) {
 			let data = new MimePart;
 			data.headers['Content-Type'] = 'text/'+(TextIsHtml?'html':'plain')+'; charset="utf-8"';
 			data.headers['Content-Transfer-Encoding'] = 'base64';
 			data.body = base64_encode(Text);
-			if (TextIsHtml && sign && sign[1]) {
+			if (sign && sign[1]) {
+				if ('openpgp' != sign[0]) {
+					throw 'Signing with ' + sign[0] + ' not yet implemented';
+				}
 				let signed = new MimePart;
 				signed.headers['Content-Type'] =
 					'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"';
@@ -431,7 +428,14 @@ class ComposePopupView extends AbstractViewPopup {
 				signed.children.push(signature);
 				data = signed;
 			}
-			params.Encrypted = await OpenPGPUserStore.encrypt(data.toString(), recipients);
+			if (encrypt) {
+				if ('openpgp' != encrypt) {
+					throw 'Encryption with ' + encrypt + ' not yet implemented';
+				}
+				params.Encrypted = await OpenPGPUserStore.encrypt(data.toString(), recipients);
+			} else {
+				params.Signed = data.toString();
+			}
 		} else {
 			params.Html = TextIsHtml ? Text : '';
 			params.Text = TextIsHtml ? '' : Text;

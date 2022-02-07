@@ -1104,6 +1104,7 @@ trait Messages
 		$aFoundCids = array();
 		$aFoundDataURL = array();
 		$aFoundContentLocationUrls = array();
+		$oPart;
 
 		if ($sHtml = $this->GetActionParam('Html', '')) {
 			$oPart = new MimePart;
@@ -1141,6 +1142,23 @@ trait Messages
 			unset($oAlternativePart);
 			unset($sHtml);
 			unset($sPlain);
+
+		} else if ($sSigned = $this->GetActionParam('Signed', '')) {
+			$aSigned = \explode("\r\n\r\n", $sSigned, 2);
+			$sBoundary = \preg_replace('/^.+boundary="([^"]+)".+$/Dsi', '$1', $aSigned[0]);
+
+			$oPart = new MimePart;
+			$oPart->Headers->AddByName(
+				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+				'multipart/signed; ' . (new \MailSo\Mime\ParameterCollection)->Add(
+						new \MailSo\Mime\Parameter(\MailSo\Mime\Enumerations\Parameter::BOUNDARY, $sBoundary)
+					)->ToString() . '; protocol="application/pgp-signature"'
+			);
+			$oPart->Body = \str_replace("--{$sBoundary}--", '', $aSigned[1]);
+			$oMessage->SubParts->append($oPart);
+
+			unset($oAlternativePart);
+			unset($sSigned);
 
 		} else if ($sEncrypted = $this->GetActionParam('Encrypted', '')) {
 			$oPart = new MimePart;
@@ -1207,6 +1225,7 @@ trait Messages
 			unset($sSignature);
 			unset($sPlain);
 		}
+		unset($oPart);
 
 		$aAttachments = $this->GetActionParam('Attachments', null);
 		if (\is_array($aAttachments))
