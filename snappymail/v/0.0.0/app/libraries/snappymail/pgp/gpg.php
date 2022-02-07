@@ -211,7 +211,7 @@ class GPG
 
 		$fclose && \fclose($fclose);
 
-		return $output ? true : $result['output'];
+		return $output ? true : ($result ? $result['output'] : false);
 	}
 
 	/**

@@ -47,7 +47,7 @@ import { ContactsPopupView } from 'View/Popup/Contacts';
 import { ThemeStore } from 'Stores/Theme';
 
 const
-	base64_encode = text => btoa(text).match(/.{1,76}/g),
+	base64_encode = text => btoa(text).match(/.{1,76}/g).join('\r\n'),
 
 	/**
 	 * @param {string} prefix
@@ -98,6 +98,34 @@ ko.extenders.toggleSubscribe = (target, options) => {
 	target.subscribe(options[2], options[0]);
 	return target;
 };
+
+class MimePart {
+	constructor() {
+		this.headers = {};
+		this.body = '';
+		this.children = [];
+	}
+
+	toString() {
+		const hasSub = this.children.length,
+			boundary = 'part' + Jua.randomId(),
+			headers = this.headers;
+		if (hasSub) {
+			headers['Content-Type'] = headers['Content-Type'] + `; boundary="${boundary}"`;
+		}
+		let result =
+			Object.entries(headers).map(([key, value]) => `${key}: ${value}`).join('\r\n')
+			+ '\r\n\r\n'
+			+ this.body;
+		if (hasSub) {
+			this.children.forEach(part => {
+				result = result + '\r\n--' + boundary + '\r\n' + part
+			});
+			result = result + '\r\n--' + boundary + '--\r\n';
+		}
+		return result;
+	}
+}
 
 class ComposePopupView extends AbstractViewPopup {
 	constructor() {
@@ -169,8 +197,8 @@ class ComposePopupView extends AbstractViewPopup {
 			showReplyTo: false,
 
 			pgpSign: false,
-			pgpEncrypt: false,
 			canPgpSign: false,
+			pgpEncrypt: false,
 			canPgpEncrypt: false,
 			canMailvelope: false,
 
@@ -386,21 +414,24 @@ class ComposePopupView extends AbstractViewPopup {
 			if (sign && 'openpgp' != sign[0]) {
 				throw 'Signing with ' + sign[0] + ' not yet implemented';
 			}
-			if (sign && sign[1]) {
-				if (TextIsHtml) {
-					throw 'Encrypt HTML with ' + encrypt + ' not yet implemented';
-				}
-				Text = await OpenPGPUserStore.encrypt(Text, recipients, sign[1]);
-//				throw i18n('PGP_NOTIFICATIONS/PGP_ERROR', { ERROR: 'Encryption failed' })
-			} else {
-				let data = [
-					'Content-Transfer-Encoding: base64',
-					'Content-Type: text/'+(TextIsHtml?'html':'plain')+'; charset="utf-8"',
-					'',
-					base64_encode(Text)
-				].join("\r\n");
-				params.Encrypted = await OpenPGPUserStore.encrypt(data, recipients, sign && sign[1]);
+			let data = new MimePart;
+			data.headers['Content-Type'] = 'text/'+(TextIsHtml?'html':'plain')+'; charset="utf-8"';
+			data.headers['Content-Transfer-Encoding'] = 'base64';
+			data.body = base64_encode(Text);
+			if (TextIsHtml && sign && sign[1]) {
+				let signed = new MimePart;
+				signed.headers['Content-Type'] =
+					'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"';
+				signed.headers['Content-Transfer-Encoding'] = '7Bit';
+				signed.children.push(data);
+				let signature = new MimePart;
+				signature.headers['Content-Type'] = 'application/pgp-signature; name="signature.asc"';
+				signature.headers['Content-Transfer-Encoding'] = '7Bit';
+				signature.body = await OpenPGPUserStore.sign(data.toString(), sign[1], 1);
+				signed.children.push(signature);
+				data = signed;
 			}
+			params.Encrypted = await OpenPGPUserStore.encrypt(data.toString(), recipients);
 		} else {
 			params.Html = TextIsHtml ? Text : '';
 			params.Text = TextIsHtml ? '' : Text;
@@ -543,6 +574,10 @@ class ComposePopupView extends AbstractViewPopup {
 					params,
 					200000
 				);
+			}).catch(e => {
+				this.saving(false);
+				this.savedError(true);
+				this.savedErrorDesc(getNotification(Notification.CantSaveMessage) + ': ' + e);
 			});
 		}
 	}
