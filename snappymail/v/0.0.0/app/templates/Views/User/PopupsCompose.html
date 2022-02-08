@@ -142,8 +142,8 @@
 					<i class="fontastic" data-bind="text: pgpSign() ? '☑' : '☐'"></i>
 					<span data-i18n="OPENPGP/LABEL_SIGN"></span>
 				</a>
-				<a class="btn" data-bind="click: togglePgpEncrypt, visible: canPgpEncrypt, css: {'btn-success': pgpEncrypt()}">
-					<i class="fontastic" data-bind="text: pgpEncrypt() ? '☑' : '☐'"></i>
+				<a class="btn" data-bind="click: togglePgpEncrypt, visible: canPgpEncrypt, css: {'btn-success': pgpEncrypt() || 'mailvelope' == viewArea()}">
+					<i class="fontastic" data-bind="text: pgpEncrypt() || 'mailvelope' == viewArea() ? '☑' : '☐'"></i>
 					<span data-i18n="OPENPGP/LABEL_ENCRYPT"></span>
 				</a>
 				<a class="btn fontastic" style="padding-left: 10px; padding-right: 10px;" id="composeUploadButton"

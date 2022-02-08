@@ -1540,6 +1540,8 @@ class ComposePopupView extends AbstractViewPopup {
 				case 'M': quota *= 1024; // fallthrough
 				case 'K': quota *= 1024;
 			}
+			// Issue: can't select signing key
+//			this.pgpSign(this.pgpSign() || confirm('Sign this message?'));
 			mailvelope.createEditorContainer('#mailvelope-editor', PgpUserStore.mailvelopeKeyring, {
 				// https://mailvelope.github.io/mailvelope/global.html#EditorContainerOptions
 				quota: Math.max(2048, (quota / 1024)) - 48, // (text + attachments) limit in kilobytes
@@ -1550,8 +1552,9 @@ class ComposePopupView extends AbstractViewPopup {
 				quotedMailIndent: true, // if true the quoted mail will be indented (default: true)
 				quotedMailHeader: '', // header to be added before the quoted mail
 				keepAttachments: false, // add attachments of quotedMail to editor (default: false)
+				// Issue: can't select signing key
+				signMsg: this.pgpSign()
 */
-				signMsg: this.pgpSign() || confirm('Sign this message?')
 			}).then(editor => this.mailvelope = editor);
 		}
 		this.viewArea('mailvelope');

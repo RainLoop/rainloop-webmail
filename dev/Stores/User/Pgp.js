@@ -1,5 +1,5 @@
 import { Capa } from 'Common/Enums';
-import { doc, createElement, Settings } from 'Common/Globals';
+import { doc, createElement, SettingsCapa, SettingsGet } from 'Common/Globals';
 import { staticLink } from 'Common/Links';
 
 //import { showScreenPopup } from 'Knoin/Knoin';
@@ -17,7 +17,7 @@ export const PgpUserStore = new class {
 	}
 
 	init() {
-		if (Settings.capa(Capa.OpenPGP) && window.crypto && crypto.getRandomValues) {
+		if (SettingsCapa(Capa.OpenPGP) && window.crypto && crypto.getRandomValues) {
 			const script = createElement('script', {src:staticLink('js/min/openpgp.min.js')});
 			script.onload = () => this.loadKeyrings();
 			script.onerror = () => {
@@ -31,11 +31,12 @@ export const PgpUserStore = new class {
 	}
 
 	loadKeyrings(identifier) {
+		identifier = identifier || SettingsGet('Email');
 		if (window.mailvelope) {
-			var fn = keyring => {
-				this.mailvelopeKeyring = keyring;
-				console.log('mailvelope ready');
-			};
+			const fn = keyring => {
+					this.mailvelopeKeyring = keyring;
+					console.log('mailvelope ready');
+				};
 			mailvelope.getKeyring().then(fn, err => {
 				if (identifier) {
 					// attempt to create a new keyring for this app/user
@@ -52,11 +53,11 @@ export const PgpUserStore = new class {
 		}
 
 		if (OpenPGPUserStore.isSupported()) {
-			OpenPGPUserStore.loadKeyrings(identifier);
+			OpenPGPUserStore.loadKeyrings();
 		}
 
-		if (Settings.capa(Capa.GnuPG)) {
-			GnuPGUserStore.loadKeyrings(identifier);
+		if (SettingsCapa(Capa.GnuPG)) {
+			GnuPGUserStore.loadKeyrings();
 		}
 	}
 

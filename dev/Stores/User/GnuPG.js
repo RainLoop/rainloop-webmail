@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { Capa } from 'Common/Enums';
-import { Settings } from 'Common/Globals';
+import { SettingsCapa } from 'Common/Globals';
 import { delegateRunOnDestroy } from 'Common/UtilsUser';
 
 //import { EmailModel } from 'Model/Email';
@@ -34,7 +34,7 @@ export const GnuPGUserStore = new class {
 		this.privateKeys = ko.observableArray();
 	}
 
-	loadKeyrings(/*identifier*/) {
+	loadKeyrings() {
 		this.keyring = null;
 		this.publicKeys([]);
 		this.privateKeys([]);
@@ -104,7 +104,7 @@ export const GnuPGUserStore = new class {
 	 * @returns {boolean}
 	 */
 	isSupported() {
-		return Settings.capa(Capa.GnuPG);
+		return SettingsCapa(Capa.GnuPG);
 	}
 
 	importKey(key, callback) {

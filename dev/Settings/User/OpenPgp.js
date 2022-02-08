@@ -10,7 +10,7 @@ import { OpenPgpImportPopupView } from 'View/Popup/OpenPgpImport';
 import { OpenPgpGeneratePopupView } from 'View/Popup/OpenPgpGenerate';
 
 import { Capa } from 'Common/Enums';
-import { Settings } from 'Common/Globals';
+import { SettingsCapa } from 'Common/Globals';
 
 export class OpenPgpUserSettings /*extends AbstractViewSettings*/ {
 	constructor() {
@@ -20,7 +20,7 @@ export class OpenPgpUserSettings /*extends AbstractViewSettings*/ {
 		this.openpgpkeysPublic = OpenPGPUserStore.publicKeys;
 		this.openpgpkeysPrivate = OpenPGPUserStore.privateKeys;
 
-		this.canOpenPGP = Settings.capa(Capa.OpenPGP);
+		this.canOpenPGP = SettingsCapa(Capa.OpenPGP);
 		this.canGnuPG = GnuPGUserStore.isSupported();
 		this.canMailvelope = !!window.mailvelope;
 

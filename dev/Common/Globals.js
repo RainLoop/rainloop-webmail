@@ -16,6 +16,7 @@ export const
 
 	Settings = rl.settings,
 	SettingsGet = Settings.get,
+	SettingsCapa = Settings.capa,
 
 	dropdownVisibility = ko.observable(false).extend({ rateLimit: 0 }),
 
