@@ -114,7 +114,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 	toggleLayout()
 	{
 		const mobile = !ThemeStore.isMobile();
-		doc.cookie = 'rllayout=' + (mobile ? 'mobile' : 'desktop');
+		doc.cookie = 'rllayout=' + (mobile ? 'mobile' : 'desktop') + '; samesite=strict';
 		ThemeStore.isMobile(mobile);
 		leftPanelDisabled(mobile);
 	}

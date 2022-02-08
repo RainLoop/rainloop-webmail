@@ -9,11 +9,6 @@ const
 	css = eId('css'),
 	admin = app && '1' == app.dataset.admin,
 
-	getCookie = name => {
-		let data = doc.cookie.match('(^|;) ?'+name+'=([^;]*)(;|$)');
-		return data ? decodeURIComponent(data[2]) : null;
-	},
-
 	showError = msg => {
 		let div = eId('loading-error');
 		div.append(' ' + msg);
@@ -33,16 +28,14 @@ const
 //			script.async = true;
 			doc.head.append(script);
 		});
-	},
-
-	layout = getCookie('rllayout'),
-	sName = 'localStorage';
+	};
 
 if (!navigator || !navigator.cookieEnabled) {
 	doc.location.href = './?/NoCookie';
 }
 
-doc.documentElement.classList.toggle('rl-mobile', 'mobile' === layout || (!layout && 1000 > innerWidth));
+let layout = doc.cookie.match(/(^|;) ?rllayout=([^;]+)/) || '';
+doc.documentElement.classList.toggle('rl-mobile', 'mobile' === layout[2] || (!layout && 1000 > innerWidth));
 
 let RL_APP_DATA = {};
 
@@ -75,27 +68,6 @@ win.rl = {
 		rl.app.refresh();
 	}
 };
-
-// Storage
-try {
-	win[sName].setItem(sName, '');
-	win[sName].getItem(sName);
-	win[sName].removeItem(sName);
-} catch (e) {
-	console.error(e);
-	// initialise if there's already data
-	let data = getCookie(sName);
-	data = data ? JSON.parse(data) : {};
-	win[sName] = {
-		getItem: key => data[key] == null ? null : data[key],
-		setItem: (key, value) => {
-			data[key] = ''+value; // forces the value to a string
-			doc.cookie = sName+'='+encodeURIComponent(JSON.stringify(data))
-				+"; expires="+((new Date(Date.now()+(365*24*60*60*1000))).toGMTString())
-				+"; path=/; samesite=strict";
-		}
-	};
-}
 
 css.href = css.dataset.href;
 
