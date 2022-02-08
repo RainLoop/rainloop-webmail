@@ -70,9 +70,7 @@ export const GnuPGUserStore = new class {
 							}
 						};
 						key.view = () => {
-							let pass = isPrivate ? prompt('Passphrase') : true;
-							if (pass) {
-								Remote.request('GnupgExportKey',
+							const fetch = pass => Remote.request('GnupgExportKey',
 									(iError, oData) => {
 										if (oData && oData.Result) {
 											key.armor = oData.Result;
@@ -81,9 +79,15 @@ export const GnuPGUserStore = new class {
 									}, {
 										KeyId: key.id,
 										isPrivate: isPrivate,
-										Passphrase: isPrivate ? pass : ''
+										Passphrase: pass
 									}
 								);
+							if (isPrivate) {
+								askPassphrase(key, 'POPUP_VIEW_TITLE').then(passphrase => {
+									(null !== passphrase) && fetch(passphrase);
+								});
+							} else {
+								fetch('');
 							}
 						};
 						return key;
