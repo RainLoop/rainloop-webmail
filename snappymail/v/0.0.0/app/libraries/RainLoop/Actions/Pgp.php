@@ -152,16 +152,6 @@ trait Pgp
 						$sEmail = $aMatch[0];
 					}
 					if ($sEmail) {
-						/** https://wiki.gnupg.org/WKD
-							DNS:
-								openpgpkey.example.org. 300     IN      CNAME   wkd.keys.openpgp.org.
-
-							https://openpgpkey.example.com/.well-known/openpgpkey/example.com/hu/
-							else       https://example.com/.well-known/openpgpkey/hu/
-
-							An example: https://example.com/.well-known/openpgpkey/hu/it5sewh54rxz33fwmr8u6dy4bbz8itz4
-							is the direct method URL for "bernhard.reiter@example.com"
-						*/
 						$aKeys = \SnappyMail\PGP\Keyservers::index($sEmail);
 						if ($aKeys) {
 							$sKeyId = $aKeys[0]['keyid'];

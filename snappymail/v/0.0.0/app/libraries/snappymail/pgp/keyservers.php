@@ -7,6 +7,7 @@
  *
  * https://datatracker.ietf.org/doc/html/rfc4387
  * https://datatracker.ietf.org/doc/html/rfc7929
+ * https://datatracker.ietf.org/doc/html/draft-koch-openpgp-webkey-service-13
  */
 
 namespace SnappyMail\PGP;
@@ -189,4 +190,32 @@ abstract class Keyservers
 		}
 */
 	}
+
+	/** https://wiki.gnupg.org/WKD */
+	public static function wkd(string $host, string $keyid)
+	{
+/*
+		"https://{$host}/.well-known/openpgpkey/hu/{$keyid}";
+		/** https://wiki.gnupg.org/WKD
+			DNS:
+				openpgpkey.example.org. 300     IN      CNAME   wkd.keys.openpgp.org.
+
+			https://openpgpkey.example.com/.well-known/openpgpkey/example.com/hu/
+			else       https://example.com/.well-known/openpgpkey/hu/
+
+			An example: https://example.com/.well-known/openpgpkey/hu/it5sewh54rxz33fwmr8u6dy4bbz8itz4
+			is the direct method URL for "bernhard.reiter@example.com"
+		*/
+	}
+
+	public static function dns(string $host, string $keyid)
+	{
+/*
+		// Resource Record (RR) TYPE = 61
+		\dns_get_record("{$keyid}._openpgpkey.{$host}", DNS_CNAME);
+		$tlsa_record = shell_exec('timeout 5 dig +short +dnssec +time=5 TLSA ' . \escapeshellarg("{$keyid}._openpgpkey.{$host}")
+			. " 2>&1 | head -n 1");
+*/
+	}
+
 }
