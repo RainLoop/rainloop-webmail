@@ -1,5 +1,5 @@
 import { Capa, Scope } from 'Common/Enums';
-import { keyScope, leftPanelDisabled, Settings } from 'Common/Globals';
+import { keyScope, leftPanelDisabled, SettingsCapa } from 'Common/Globals';
 import { runSettingsViewModelHooks } from 'Common/Plugins';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
@@ -32,32 +32,32 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 			settingsAddViewModel(ContactsUserSettings, 'SettingsContacts', 'SETTINGS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
 		}
 
-		if (Settings.capa(Capa.AdditionalAccounts) || Settings.capa(Capa.Identities)) {
+		if (SettingsCapa(Capa.AdditionalAccounts) || SettingsCapa(Capa.Identities)) {
 			settingsAddViewModel(
 				AccountsUserSettings,
 				'SettingsAccounts',
-				Settings.capa(Capa.AdditionalAccounts)
+				SettingsCapa(Capa.AdditionalAccounts)
 					? 'SETTINGS_LABELS/LABEL_ACCOUNTS_NAME'
 					: 'SETTINGS_LABELS/LABEL_IDENTITIES_NAME',
 				'accounts'
 			);
 		}
 
-		if (Settings.capa(Capa.Sieve)) {
+		if (SettingsCapa(Capa.Sieve)) {
 			settingsAddViewModel(FiltersUserSettings, 'SettingsFilters', 'SETTINGS_LABELS/LABEL_FILTERS_NAME', 'filters');
 		}
 
-		if (Settings.capa(Capa.AutoLogout)) {
+		if (SettingsCapa(Capa.AutoLogout)) {
 			settingsAddViewModel(SecurityUserSettings, 'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
 		}
 
 		settingsAddViewModel(FoldersUserSettings, 'SettingsFolders', 'SETTINGS_LABELS/LABEL_FOLDERS_NAME', 'folders');
 
-		if (Settings.capa(Capa.Themes)) {
+		if (SettingsCapa(Capa.Themes)) {
 			settingsAddViewModel(ThemesUserSettings, 'SettingsThemes', 'SETTINGS_LABELS/LABEL_THEMES_NAME', 'themes');
 		}
 
-		if (Settings.capa(Capa.OpenPGP) || Settings.capa(Capa.GnuPG)) {
+		if (SettingsCapa(Capa.OpenPGP) || SettingsCapa(Capa.GnuPG)) {
 			settingsAddViewModel(OpenPgpUserSettings, 'SettingsOpenPGP', 'OpenPGP', 'openpgp');
 		}
 

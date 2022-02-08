@@ -12,7 +12,7 @@ import {
 } from 'Common/Utils';
 
 import { Capa, SaveSettingsStep } from 'Common/Enums';
-import { Settings, SettingsGet } from 'Common/Globals';
+import { Settings, SettingsGet, SettingsCapa } from 'Common/Globals';
 import { translatorReload, convertLangName } from 'Common/Translator';
 
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -43,11 +43,11 @@ export class GeneralAdminSettings /*extends AbstractViewSettings*/ {
 			attachmentLimitTrigger: SaveSettingsStep.Idle,
 			languageTrigger: SaveSettingsStep.Idle,
 			themeTrigger: SaveSettingsStep.Idle,
-			capaThemes: Settings.capa(Capa.Themes),
-			capaUserBackground: Settings.capa(Capa.UserBackground),
-			capaAdditionalAccounts: Settings.capa(Capa.AdditionalAccounts),
-			capaIdentities: Settings.capa(Capa.Identities),
-			capaAttachmentThumbnails: Settings.capa(Capa.AttachmentThumbnails),
+			capaThemes: SettingsCapa(Capa.Themes),
+			capaUserBackground: SettingsCapa(Capa.UserBackground),
+			capaAdditionalAccounts: SettingsCapa(Capa.AdditionalAccounts),
+			capaIdentities: SettingsCapa(Capa.Identities),
+			capaAttachmentThumbnails: SettingsCapa(Capa.AttachmentThumbnails),
 			dataFolderAccess: false
 		});
 

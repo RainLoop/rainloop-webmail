@@ -21,6 +21,7 @@ import {
 	keyScopeReal,
 	moveAction,
 	Settings,
+	SettingsCapa,
 	getFullscreenElement,
 	exitFullscreen
 } from 'Common/Globals';
@@ -139,7 +140,7 @@ export class MailMessageView extends AbstractViewRight {
 
 		this.moveAction = moveAction;
 
-		this.allowMessageActions = Settings.capa(Capa.MessageActions);
+		this.allowMessageActions = SettingsCapa(Capa.MessageActions);
 
 		const attachmentsActions = Settings.app('attachmentsActions');
 		this.attachmentsActions = ko.observableArray(arrayLength(attachmentsActions) ? attachmentsActions : []);
@@ -179,7 +180,7 @@ export class MailMessageView extends AbstractViewRight {
 		this.viewHash = '';
 
 		this.addComputables({
-			allowAttachmentControls: () => this.attachmentsActions.length && Settings.capa(Capa.AttachmentsActions),
+			allowAttachmentControls: () => this.attachmentsActions.length && SettingsCapa(Capa.AttachmentsActions),
 
 			downloadAsZipAllowed: () => this.attachmentsActions.includes('zip') && this.allowAttachmentControls(),
 

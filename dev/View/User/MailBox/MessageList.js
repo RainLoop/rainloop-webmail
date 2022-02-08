@@ -13,7 +13,7 @@ import {
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
-import { doc, leftPanelDisabled, moveAction, Settings, SettingsGet } from 'Common/Globals';
+import { doc, leftPanelDisabled, moveAction, Settings, SettingsCapa, SettingsGet } from 'Common/Globals';
 
 import { computedPaginatorHelper, showMessageComposer, folderListOptionsBuilder } from 'Common/UtilsUser';
 import { FileInfo } from 'Common/File';
@@ -58,9 +58,9 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.newMoveToFolder = !!SettingsGet('NewMoveToFolder');
 
-		this.allowSearch = Settings.capa(Capa.Search);
-		this.allowSearchAdv = Settings.capa(Capa.SearchAdv);
-		this.allowDangerousActions = Settings.capa(Capa.DangerousActions);
+		this.allowSearch = SettingsCapa(Capa.Search);
+		this.allowSearchAdv = SettingsCapa(Capa.SearchAdv);
+		this.allowDangerousActions = SettingsCapa(Capa.DangerousActions);
 
 		this.messageList = MessageUserStore.list;
 
@@ -256,7 +256,7 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	clearCommand() {
-		if (Settings.capa(Capa.DangerousActions)) {
+		if (SettingsCapa(Capa.DangerousActions)) {
 			showScreenPopup(FolderClearPopupView, [FolderUserStore.currentFolder()]);
 		}
 	}
@@ -275,7 +275,7 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	deleteWithoutMoveCommand() {
-		if (Settings.capa(Capa.DangerousActions)) {
+		if (SettingsCapa(Capa.DangerousActions)) {
 			rl.app.deleteMessagesFromFolder(
 				FolderType.Trash,
 				FolderUserStore.currentFolderFullName(),
@@ -770,7 +770,7 @@ export class MailMessageList extends AbstractViewRight {
 			return false;
 		});
 
-		if (Settings.capa(Capa.Search)) {
+		if (SettingsCapa(Capa.Search)) {
 			// search input focus
 			shortcuts.add('/', '', [Scope.MessageList, Scope.MessageView], () => {
 				this.inputMessageListSearchFocus(true);
@@ -808,7 +808,7 @@ export class MailMessageList extends AbstractViewRight {
 		shortcuts.add('arrowleft', 'meta', Scope.MessageView, ()=>false);
 		shortcuts.add('arrowright', 'meta', Scope.MessageView, ()=>false);
 
-		if (!ThemeStore.isMobile() && Settings.capa(Capa.Prefetch)) {
+		if (!ThemeStore.isMobile() && SettingsCapa(Capa.Prefetch)) {
 			ifvisible.idle(this.prefetchNextTick.bind(this));
 		}
 	}
@@ -839,7 +839,7 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	advancedSearchClick() {
-		Settings.capa(Capa.SearchAdv)
+		SettingsCapa(Capa.SearchAdv)
 			&& showScreenPopup(AdvancedSearchPopupView, [MessageUserStore.mainMessageListSearch()]);
 	}
 
