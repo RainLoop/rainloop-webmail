@@ -17,7 +17,8 @@ const
 	clr = createElement('input'),
 
 	trimLines = html => html.trim().replace(/^(<div>\s*<br\s*\/?>\s*<\/div>)+/, '').trim(),
-	clearHtmlLine = html => rl.Utils.htmlToPlain(html).trim(),
+	htmlToPlain = html => rl.Utils.htmlToPlain(html).trim(),
+	plainToHtml = text => rl.Utils.plainToHtml(text),
 
 	getFragmentOfChildren = parent => {
 		let frag = doc.createDocumentFragment();
@@ -59,66 +60,6 @@ const
 			}
 			return tpl.content;
 		}
-	},
-
-	rl_signature_replacer = (editor, text, signature, isHtml, insertBefore) => {
-		let
-			prevSignature = editor.__previous_signature,
-			skipInsert = false,
-			isEmptyText = false;
-
-		isEmptyText = !text.trim();
-		if (!isEmptyText && isHtml) {
-			isEmptyText = !clearHtmlLine(text);
-		}
-
-		if (prevSignature && !isEmptyText) {
-			if (isHtml && !prevSignature.isHtml) {
-				prevSignature = {
-					body: rl.Utils.plainToHtml(prevSignature.body),
-					isHtml: true
-				};
-			} else if (!isHtml && prevSignature.isHtml) {
-				prevSignature = {
-					body: clearHtmlLine(prevSignature.body),
-					isHtml: true
-				};
-			}
-
-			if (isHtml) {
-				var clearSig = clearHtmlLine(prevSignature.body);
-				text = text.replace(/<signature>([\s\S]*)<\/signature>/igm, all => {
-					var c = clearSig === clearHtmlLine(all);
-					if (!c) {
-						skipInsert = true;
-					}
-					return c ? '' : all;
-				});
-			} else {
-				var textLen = text.length;
-				text = text
-					.replace(prevSignature.body, '')
-					.replace(prevSignature.body, '');
-				skipInsert = textLen === text.length;
-			}
-		}
-
-		if (!skipInsert) {
-			signature = isHtml ? `<p><signature>${signature}</signature></p>` : `\n\n${signature}\n\n`;
-
-			text = insertBefore ? signature + text : text + signature;
-
-			if (10 < signature.length) {
-				prevSignature = {
-					body: signature,
-					isHtml: isHtml
-				};
-			}
-		}
-
-		editor.__previous_signature = prevSignature;
-
-		return text;
 	};
 
 clr.type = "color";
@@ -479,9 +420,9 @@ class SquireUI
 			let cl = this.container.classList;
 			cl.remove('squire-mode-'+this.mode);
 			if ('plain' == mode) {
-				this.plain.value = clearHtmlLine(this.squire.getHTML(), true);
+				this.plain.value = htmlToPlain(this.squire.getHTML(), true);
 			} else {
-				this.setData(rl.Utils.plainToHtml(this.plain.value, true));
+				this.setData(plainToHtml(this.plain.value, true));
 				mode = 'wysiwyg';
 			}
 			this.mode = mode; // 'wysiwyg' or 'plain'
@@ -511,19 +452,26 @@ class SquireUI
 			}, cfg);
 
 			if (cfg.clearCache) {
-				this.__previous_signature = null;
+				this._prev_txt_sig = null;
 			} else try {
+				const signature = cfg.isHtml ? htmlToPlain(cfg.signature) : cfg.signature;
 				if ('plain' === this.mode) {
-					if (cfg.isHtml) {
-						cfg.signature = clearHtmlLine(cfg.signature);
+					let
+						text = this.plain.value,
+						prevSignature = this._prev_txt_sig;
+					if (prevSignature) {
+						text = text.replace(prevSignature, '').trim();
 					}
-					this.plain.value = rl_signature_replacer(this, this.plain.value, cfg.signature, false, cfg.insertBefore);
+					this.plain.value = cfg.insertBefore ? '\n\n' + signature + '\n\n' + text : text + '\n\n' +  signature;
 				} else {
-					if (!cfg.isHtml) {
-						cfg.signature = rl.Utils.plainToHtml(cfg.signature);
-					}
-					this.setData(rl_signature_replacer(this, this.getData(), cfg.signature, true, cfg.insertBefore));
+					const root = this.squire.getRoot(),
+						div = createElement('div');
+					div.className = 'rl-signature';
+					div.innerHTML = cfg.isHtml ? cfg.signature : plainToHtml(cfg.signature);
+					root.querySelectorAll('div.rl-signature').forEach(node => node.remove());
+					cfg.insertBefore ? root.prepend(div) : root.append(div);
 				}
+				this._prev_txt_sig = signature;
 			} catch (e) {
 				console.error(e);
 			}
