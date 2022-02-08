@@ -35,17 +35,29 @@ class ParameterCollection extends \MailSo\Base\Collection
 
 	public function ParameterValueByName(string $sName) : string
 	{
-		$sName = \strtolower(\trim($sName));
+		$oParam = $this->getParameter($sName);
+		return $oParam ? $oParam->Value() : '';
+	}
 
-		foreach ($this as $oParam)
-		{
-			if ($sName === \strtolower($oParam->Name()))
-			{
-				return $oParam->Value();
+	public function getParameter(string $sName) : ?Parameter
+	{
+		$sName = \strtolower(\trim($sName));
+		foreach ($this as $oParam) {
+			if ($sName === \strtolower($oParam->Name())) {
+				return $oParam;
 			}
 		}
+		return null;
+	}
 
-		return '';
+	public function setParameter(string $sName, string $sValue) : void
+	{
+		$oParam = $this->getParameter($sName);
+		if ($oParam) {
+			$oParam->setValue($sValue);
+		} else {
+			parent::append(new Parameter(\trim($sName), $sValue));
+		}
 	}
 
 	public function Parse(string $sRawParams) : self

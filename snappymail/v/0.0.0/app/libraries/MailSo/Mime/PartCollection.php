@@ -17,34 +17,46 @@ namespace MailSo\Mime;
  */
 class PartCollection extends \MailSo\Base\Collection
 {
+	protected $sBoundary;
+
 	public function append($oPart, bool $bToTop = false) : void
 	{
 		assert($oPart instanceof Part);
 		parent::append($oPart, $bToTop);
 	}
 
+	private static $increment = 0;
+	public function Boundary() : string
+	{
+		if (!$this->sBoundary) {
+			$this->sBoundary =
+				\MailSo\Config::$BoundaryPrefix
+				. \SnappyMail\UUID::generate()
+				. '-' . ++static::$increment;
+
+		}
+		return $this->sBoundary;
+	}
+
+	public function SetBoundary(string $sBoundary) : void
+	{
+		$this->sBoundary = $sBoundary;
+	}
+
 	/**
 	 * @return resource|bool|null
 	 */
-	public function ToStream(string $sBoundary)
+	public function ToStream()
 	{
-		if (\strlen($sBoundary))
-		{
+		if ($this->count() && $this->sBoundary) {
 			$aResult = array();
-
-			foreach ($this as $oPart)
-			{
-				if (\count($aResult))
-				{
-					$aResult[] = "\r\n--{$sBoundary}\r\n";
-				}
-
+			foreach ($this as $oPart) {
+				$aResult[] = "\r\n--{$this->sBoundary}\r\n";
 				$aResult[] = $oPart->ToStream();
 			}
-
+			$aResult[] = "\r\n--{$this->sBoundary}--\r\n";
 			return \MailSo\Base\StreamWrappers\SubStreams::CreateStream($aResult);
 		}
-
 		return null;
 	}
 }

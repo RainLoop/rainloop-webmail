@@ -1111,9 +1111,6 @@ trait Messages
 			$oPart->Headers->AddByName(
 				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
 				\MailSo\Mime\Enumerations\MimeType::MULTIPART_ALTERNATIVE
-				. '; ' . (new \MailSo\Mime\ParameterCollection)->Add(
-						new \MailSo\Mime\Parameter(\MailSo\Mime\Enumerations\Parameter::BOUNDARY, $oMessage->generateNewBoundary())
-					)->ToString()
 			);
 			$oMessage->SubParts->append($oPart);
 
@@ -1150,12 +1147,11 @@ trait Messages
 			$oPart = new MimePart;
 			$oPart->Headers->AddByName(
 				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-				'multipart/signed; ' . (new \MailSo\Mime\ParameterCollection)->Add(
-						new \MailSo\Mime\Parameter(\MailSo\Mime\Enumerations\Parameter::BOUNDARY, $sBoundary)
-					)->ToString() . '; protocol="application/pgp-signature"'
+				'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"; boundary="'.$sBoundary.'"'
 			);
-			$oPart->Body = \str_replace("--{$sBoundary}--", '', $aSigned[1]);
+			$oPart->Body = $aSigned[1];
 			$oMessage->SubParts->append($oPart);
+			$oMessage->SubParts->SetBoundary($sBoundary);
 
 			unset($oAlternativePart);
 			unset($sSigned);
@@ -1164,9 +1160,7 @@ trait Messages
 			$oPart = new MimePart;
 			$oPart->Headers->AddByName(
 				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-				'multipart/encrypted; ' . (new \MailSo\Mime\ParameterCollection)->Add(
-						new \MailSo\Mime\Parameter(\MailSo\Mime\Enumerations\Parameter::BOUNDARY, $oMessage->generateNewBoundary())
-					)->ToString() . '; protocol="application/pgp-encrypted"'
+				'multipart/encrypted; protocol="application/pgp-encrypted"'
 			);
 			$oMessage->SubParts->append($oPart);
 
@@ -1193,9 +1187,7 @@ trait Messages
 				$oPart = new MimePart;
 				$oPart->Headers->AddByName(
 					\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-					'multipart/signed; ' . (new ParameterCollection)->Add(
-							new \MailSo\Mime\Parameter(\MailSo\Mime\Enumerations\Parameter::BOUNDARY, $oMessage->generateNewBoundary())
-						)->ToString() . '; micalg="pgp-sha256"; protocol="application/pgp-signature"'
+					'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"'
 				);
 				$oMessage->SubParts->append($oPart);
 

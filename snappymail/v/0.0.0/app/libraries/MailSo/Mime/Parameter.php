@@ -57,6 +57,11 @@ class Parameter
 		return $this->sValue;
 	}
 
+	public function setValue(string $sValue) : void
+	{
+		$this->sValue = $sValue;
+	}
+
 	public function Parse(string $sRawParam, string $sSeparator = '=') : self
 	{
 		$this->Reset();

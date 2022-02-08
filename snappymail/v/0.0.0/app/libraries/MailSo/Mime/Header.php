@@ -50,7 +50,6 @@ class Header
 	function __construct(string $sName, string $sValue = '', string $sEncodedValueForReparse = '', string $sParentCharset = '')
 	{
 		$this->sParentCharset = $sParentCharset;
-
 		$this->initInputData($sName, $sValue, $sEncodedValueForReparse);
 	}
 
@@ -60,7 +59,6 @@ class Header
 		$this->sFullValue = \trim($sValue);
 		$this->sEncodedValueForReparse = '';
 
-		$this->oParameters = null;
 		if (\strlen($sEncodedValueForReparse) && $this->IsReparsed())
 		{
 			$this->sEncodedValueForReparse = \trim($sEncodedValueForReparse);
@@ -82,6 +80,10 @@ class Header
 		else
 		{
 			$this->sValue = $this->sFullValue;
+		}
+
+		if (!$this->oParameters) {
+			$this->oParameters = new ParameterCollection();
 		}
 	}
 
@@ -147,6 +149,11 @@ class Header
 		return $this->oParameters;
 	}
 
+	public function setParameter(string $sName, string $sValue) : void
+	{
+		$this->oParameters->setParameter($sName, $sValue);
+	}
+
 	private function wordWrapHelper(string $sValue, string $sGlue = "\r\n ") : string
 	{
 		return \trim(substr(wordwrap($this->NameWithDelimitrom().$sValue,
@@ -175,7 +182,7 @@ class Header
 				return \iconv_mime_encode($this->Name(), $sResult, $aPreferences);
 			}
 		}
-		else if ($this->IsParameterized() && $this->oParameters && 0 < $this->oParameters->Count())
+		else if ($this->IsParameterized() && 0 < $this->oParameters->Count())
 		{
 			$sResult = $this->sValue.'; '.$this->oParameters->ToString(true);
 		}

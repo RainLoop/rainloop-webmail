@@ -17,15 +17,6 @@ namespace MailSo\Mime;
  */
 class Message extends Part
 {
-/*
-	public static $DefaultCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1;
-	public static $ForceCharset = '';
-	public $Headers;
-	public $Body = null;
-	public $SubParts;
-	private $sBoundary = '';
-*/
-
 	/**
 	 * @var array
 	 */
@@ -318,12 +309,6 @@ class Message extends Part
 		return $this;
 	}
 
-	public function generateNewBoundary() : string
-	{
-		return '--='.\MailSo\Config::$BoundaryPrefix.
-			\rand(100, 999).'_'.\rand(100000000, 999999999).'.'.\time();
-	}
-
 	private function generateNewMessageId(string $sHostName = '') : string
 	{
 		if (0 === \strlen($sHostName))
@@ -403,13 +388,9 @@ class Message extends Part
 				if ($oAttachment->IsLinked()) {
 					$oRelatedPart = new Part;
 					$oRelatedPart->Headers->append(
-						new Header(Enumerations\Header::CONTENT_TYPE,
-							Enumerations\MimeType::MULTIPART_RELATED.'; '.
-							(new ParameterCollection)->Add(
-								new Parameter(
-									Enumerations\Parameter::BOUNDARY,
-									$this->generateNewBoundary())
-							)->ToString()
+						new Header(
+							Enumerations\Header::CONTENT_TYPE,
+							Enumerations\MimeType::MULTIPART_RELATED
 						)
 					);
 					$oRelatedPart->SubParts->append($oRootPart);
@@ -419,13 +400,9 @@ class Message extends Part
 			}
 		} else {
 			$oRootPart = new Part;
-			$oRootPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE,
-				Enumerations\MimeType::MULTIPART_MIXED.'; '.
-				(new ParameterCollection)->Add(
-					new Parameter(
-						Enumerations\Parameter::BOUNDARY,
-						$this->generateNewBoundary())
-				)->ToString()
+			$oRootPart->Headers->AddByName(
+				Enumerations\Header::CONTENT_TYPE,
+				Enumerations\MimeType::MULTIPART_MIXED
 			);
 			$oRootPart->SubParts = $this->SubParts;
 		}
@@ -437,13 +414,9 @@ class Message extends Part
 			} else {
 				if (!$oMixedPart) {
 					$oMixedPart = new Part;
-					$oMixedPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE,
-						Enumerations\MimeType::MULTIPART_MIXED.'; '.
-						(new ParameterCollection)->Add(
-							new Parameter(
-								Enumerations\Parameter::BOUNDARY,
-								$this->generateNewBoundary())
-						)->ToString()
+					$oMixedPart->Headers->AddByName(
+						Enumerations\Header::CONTENT_TYPE,
+						Enumerations\MimeType::MULTIPART_MIXED
 					);
 					$oMixedPart->SubParts->append($oRootPart);
 					$oRootPart = $oMixedPart;
