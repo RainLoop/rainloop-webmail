@@ -1265,11 +1265,12 @@ trait Messages
 			}
 		}
 
-/*
-		// TODO: sign, but verify is still invalid
 		$sFingerprint = $this->GetActionParam('SignFingerprint', '');
 		$sPassphrase = $this->GetActionParam('SignPassphrase', '');
 		if ($sFingerprint) {
+			// TODO: but verify is still invalid
+			throw new \Exception('Sign using GnuPG not working yet');
+/*
 			$GPG = $this->GnuPG();
 			$oBody = $oMessage->GetRootPart();
 			$fp = \fopen('php://memory', 'r+b');
@@ -1301,8 +1302,8 @@ trait Messages
 			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
 			$oAlternativePart->Body = $sSignature;
 			$oPart->SubParts->append($oAlternativePart);
-		}
 */
+		}
 
 		// TODO: encrypt
 		$sFingerprints = $this->GetActionParam('EncryptFingerprints', '');
@@ -1311,7 +1312,6 @@ trait Messages
 			$oBody = $oMessage->GetRootPart();
 			$fp = \fopen('php://memory', 'r+b');
 			$resource = $oBody->ToStream();
-//			\MailSo\Base\StreamFilters\LineEndings::appendTo($resource);
 			\stream_copy_to_stream($resource, $fp);
 			foreach (\explode(',', $sFingerprints) as $sFingerprint) {
 				$GPG->addEncryptKey($sFingerprint);
@@ -1339,7 +1339,7 @@ trait Messages
 			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/octet-stream');
 			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION, 'inline; filename="msg.asc"');
 			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
-			$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sEncrypted)));
+			$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString($sEncrypted);
 			$oPart->SubParts->append($oAlternativePart);
 		}
 
