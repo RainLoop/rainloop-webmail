@@ -30,6 +30,7 @@ import { AccountUserStore } from 'Stores/User/Account';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { PgpUserStore } from 'Stores/User/Pgp';
 import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
+import { GnuPGUserStore } from 'Stores/User/GnuPG';
 import { MessageUserStore } from 'Stores/User/Message';
 
 import Remote from 'Remote/User/Fetch';
@@ -407,15 +408,12 @@ class ComposePopupView extends AbstractViewPopup {
 			params.Encrypted = draft
 				? await this.mailvelope.createDraft()
 				: await this.mailvelope.encrypt(recipients);
-		} else if (encrypt || sign) {
+		} else if ('openpgp' == encrypt || (sign && 'openpgp' == sign[0])) {
 			let data = new MimePart;
 			data.headers['Content-Type'] = 'text/'+(TextIsHtml?'html':'plain')+'; charset="utf-8"';
 			data.headers['Content-Transfer-Encoding'] = 'base64';
 			data.body = base64_encode(Text);
 			if (sign && sign[1]) {
-				if ('openpgp' != sign[0]) {
-					throw 'Signing with ' + sign[0] + ' not yet implemented';
-				}
 				let signed = new MimePart;
 				signed.headers['Content-Type'] =
 					'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"';
@@ -429,13 +427,26 @@ class ComposePopupView extends AbstractViewPopup {
 				data = signed;
 			}
 			if (encrypt) {
-				if ('openpgp' != encrypt) {
-					throw 'Encryption with ' + encrypt + ' not yet implemented';
-				}
 				params.Encrypted = await OpenPGPUserStore.encrypt(data.toString(), recipients);
 			} else {
 				params.Signed = data.toString();
 			}
+		} else if ('gnupg' == encrypt || (sign && 'gnupg' == sign[0])) {
+			params.Html = TextIsHtml ? Text : '';
+			params.Text = TextIsHtml ? '' : Text;
+/*		// TODO: sign in PHP fails
+			if (sign) {
+				params.SignFingerprint = sign[1].fingerprint;
+				params.SignPassphrase = await GnuPGUserStore.sign(sign[1]);
+			}
+*/
+			if (encrypt) {
+				params.EncryptFingerprints = GnuPGUserStore.getPublicKeyFingerprints(recipients).join(',');
+			}
+		} else if (encrypt) {
+			throw 'Encryption with ' + encrypt + ' not yet implemented';
+		} else if (sign) {
+			throw 'Signing with ' + sign[0] + ' not yet implemented';
 		} else {
 			params.Html = TextIsHtml ? Text : '';
 			params.Text = TextIsHtml ? '' : Text;

@@ -91,11 +91,11 @@ export const PgpUserStore = new class {
 	async hasPublicKeyForEmails(recipients) {
 		const count = recipients.length;
 		if (count) {
-			if (OpenPGPUserStore.hasPublicKeyForEmails(recipients)) {
-				return 'openpgp';
-			}
 			if (GnuPGUserStore.hasPublicKeyForEmails(recipients)) {
 				return 'gnupg';
+			}
+			if (OpenPGPUserStore.hasPublicKeyForEmails(recipients)) {
+				return 'openpgp';
 			}
 		}
 		return false;
@@ -114,7 +114,7 @@ export const PgpUserStore = new class {
 	 * Returns the first library that can.
 	 */
 	async getKeyForSigning(email) {
-/*
+/*		// TODO: sign in PHP fails
 		let key = GnuPGUserStore.getPrivateKeyFor(email, 1);
 		if (key) {
 			return ['gnupg', key];

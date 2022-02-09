@@ -161,10 +161,6 @@ export const OpenPGPUserStore = new class {
 		return findOpenPGPKey(this.privateKeys, query/*, sign*/);
 	}
 
-	getPublicKeyFor(query/*, sign*/) {
-		return findOpenPGPKey(this.publicKeys, query/*, sign*/);
-	}
-
 	/**
 	 * https://docs.openpgpjs.org/#encrypt-and-decrypt-string-data-with-pgp-keys
 	 */

@@ -156,7 +156,7 @@ class Header
 
 	private function wordWrapHelper(string $sValue, string $sGlue = "\r\n ") : string
 	{
-		return \trim(substr(wordwrap($this->NameWithDelimitrom().$sValue,
+		return \trim(\substr(\wordwrap($this->NameWithDelimitrom().$sValue,
 			74, $sGlue
 		), \strlen($this->NameWithDelimitrom())));
 	}

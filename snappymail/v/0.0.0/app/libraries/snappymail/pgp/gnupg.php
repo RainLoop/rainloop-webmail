@@ -2,6 +2,10 @@
 
 namespace SnappyMail\PGP;
 
+defined('GNUPG_SIG_MODE_NORMAL') || define('GNUPG_SIG_MODE_NORMAL', 0);
+defined('GNUPG_SIG_MODE_DETACH') || define('GNUPG_SIG_MODE_DETACH', 1);
+defined('GNUPG_SIG_MODE_CLEAR') || define('GNUPG_SIG_MODE_CLEAR', 2);
+
 class GnuPG
 {
 	private
@@ -193,24 +197,12 @@ class GnuPG
 			: $this->GPG->encryptFile($filename);
 	}
 
-	/**
-	 * Encrypts and signs a given text
-	 */
-	public function encryptSign(string $plaintext) /*: string|false*/
+	public function encryptStream(/*resource*/ $fp, /*string|resource*/ $output = null) /*: string|false*/
 	{
+		\rewind($fp);
 		return $this->GnuPG
-			? $this->GnuPG->encryptsign($plaintext)
-			: $this->GPG->encryptsign($plaintext);
-	}
-
-	/**
-	 * Encrypts and signs a given text
-	 */
-	public function encryptSignFile(string $filename) /*: string|false*/
-	{
-		return $this->GnuPG
-			? $this->GnuPG->encryptsign(\file_get_contents($filename))
-			: $this->GPG->encryptsignFile($filename);
+			? $this->GnuPG->encrypt(\stream_get_contents($fp))
+			: $this->GPG->encryptStream($fp);
 	}
 
 	/**
@@ -358,6 +350,17 @@ class GnuPG
 		return $this->GnuPG
 			? $this->GnuPG->sign(\file_get_contents($filename))
 			: $this->GPG->signFile($filename);
+	}
+
+	/**
+	 * Signs a given file
+	 */
+	public function signStream($fp, /*string|resource*/ $output = null) /*: array|false*/
+	{
+		\rewind($fp);
+		return $this->GnuPG
+			? $this->GnuPG->sign(\stream_get_contents($fp))
+			: $this->GPG->signStream($fp);
 	}
 
 	/**

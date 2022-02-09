@@ -33,6 +33,11 @@ class Part
 	public $Body = null;
 
 	/**
+	 * @var resource
+	 */
+	public $Raw = null;
+
+	/**
 	 * @var PartCollection
 	 */
 	public $SubParts;
@@ -166,36 +171,43 @@ class Part
 	 */
 	public function ToStream()
 	{
-		if ($this->SubParts->count()) {
-			$sBoundary = $this->HeaderBoundary();
-			if (!\strlen($sBoundary)) {
-				$this->Headers->GetByName(Enumerations\Header::CONTENT_TYPE)->setParameter(
-					Enumerations\Parameter::BOUNDARY,
-					$this->SubParts->Boundary()
-				);
-			} else {
-				$this->SubParts->SetBoundary($sBoundary);
-			}
-		}
-
-		$aSubStreams = array(
-			$this->Headers . "\r\n\r\n"
-		);
-
-		if ($this->Body) {
-			if (\is_resource($this->Body)) {
-				$aMeta = \stream_get_meta_data($this->Body);
-				if (!empty($aMeta['seekable'])) {
-					\rewind($this->Body);
+		if ($this->Raw) {
+			$aSubStreams = array(
+				$this->Raw
+			);
+		} else {
+			if ($this->SubParts->count()) {
+				$sBoundary = $this->HeaderBoundary();
+				if (!\strlen($sBoundary)) {
+					$this->Headers->GetByName(Enumerations\Header::CONTENT_TYPE)->setParameter(
+						Enumerations\Parameter::BOUNDARY,
+						$this->SubParts->Boundary()
+					);
+				} else {
+					$this->SubParts->SetBoundary($sBoundary);
 				}
 			}
-			$aSubStreams[] = $this->Body;
-		}
 
-		if ($this->SubParts->count()) {
-			$rSubPartsStream = $this->SubParts->ToStream();
-			if (\is_resource($rSubPartsStream)) {
-				$aSubStreams[] = $rSubPartsStream;
+			$aSubStreams = array(
+				$this->Headers . "\r\n"
+			);
+
+			if ($this->Body) {
+				$aSubStreams[0] .= "\r\n";
+				if (\is_resource($this->Body)) {
+					$aMeta = \stream_get_meta_data($this->Body);
+					if (!empty($aMeta['seekable'])) {
+						\rewind($this->Body);
+					}
+				}
+				$aSubStreams[] = $this->Body;
+			}
+
+			if ($this->SubParts->count()) {
+				$rSubPartsStream = $this->SubParts->ToStream();
+				if (\is_resource($rSubPartsStream)) {
+					$aSubStreams[] = $rSubPartsStream;
+				}
 			}
 		}
 

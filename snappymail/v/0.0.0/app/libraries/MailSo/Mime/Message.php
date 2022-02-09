@@ -331,16 +331,13 @@ class Message extends Part
 				(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : '')).'@'.$sHostName.'>';
 	}
 
-	/**
-	 * @return resource|bool
-	 */
-	public function ToStream(bool $bWithoutBcc = false)
+	public function GetRootPart() : Part
 	{
 		if (!\count($this->SubParts)) {
 			if ($this->bAddEmptyTextPart) {
 				$oPart = new Part;
 				$oPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE, 'text/plain; charset="utf-8"');
-				$oPart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString('');
+				$oPart->Body = '';
 				$this->SubParts->append($oPart);
 			} else {
 				$aAttachments = $this->oAttachmentCollection->getArrayCopy();
@@ -373,7 +370,7 @@ class Message extends Part
 						}
 					}
 					if (!\is_resource($oPart->Body)) {
-						$oPart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString('');
+						$oPart->Body = '';
 					}
 
 					$this->SubParts->append($oPart);
@@ -425,6 +422,16 @@ class Message extends Part
 			}
 		}
 
+		return $oRootPart;
+	}
+
+	/**
+	 * @return resource|bool
+	 */
+	public function ToStream(bool $bWithoutBcc = false)
+	{
+		$oRootPart = $this->GetRootPart();
+
 		/**
 		 * setDefaultHeaders
 		 */
@@ -455,7 +462,9 @@ class Message extends Part
 			}
 		}
 
-		return $oRootPart->ToStream();
+		$resource = $oRootPart->ToStream();
+		\MailSo\Base\StreamFilters\LineEndings::appendTo($resource);
+		return $resource;
 	}
 /*
 	public function ToString(bool $bWithoutBcc = false) : string

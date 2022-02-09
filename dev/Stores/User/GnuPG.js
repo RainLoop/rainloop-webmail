@@ -150,12 +150,16 @@ export const GnuPGUserStore = new class {
 		return length && length === count;
 	}
 
-	getPrivateKeyFor(query, sign) {
-		return findGnuPGKey(this.privateKeys, query, sign);
+	getPublicKeyFingerprints(recipients) {
+		const fingerprints = [];
+		recipients.forEach(email => {
+			fingerprints.push(this.publicKeys.find(key => key.emails.includes(email)).fingerprint);
+		});
+		return fingerprints;
 	}
 
-	getPublicKeyFor(query, sign) {
-		return findGnuPGKey(this.publicKeys, query, sign);
+	getPrivateKeyFor(query, sign) {
+		return findGnuPGKey(this.privateKeys, query, sign);
 	}
 
 	async decrypt(message) {
@@ -207,12 +211,8 @@ export const GnuPGUserStore = new class {
 		}
 	}
 
-	async sign(/*text, privateKey, detached*/) {
-		throw 'Sign failed';
-	}
-
-	async encrypt(/*text, recipients, signPrivateKey*/) {
-		throw 'Encrypt failed';
+	async sign(privateKey) {
+		return await askPassphrase(privateKey);
 	}
 
 };

@@ -161,10 +161,6 @@ trait Messages
 
 		$this->Plugins()->RunHook('filter.send-message', array($oMessage));
 
-/*
-		TODO: PGP encrypt/sign
-*/
-
 		$mResult = false;
 		try
 		{
@@ -1267,6 +1263,84 @@ trait Messages
 					);
 				}
 			}
+		}
+
+/*
+		// TODO: sign, but verify is still invalid
+		$sFingerprint = $this->GetActionParam('SignFingerprint', '');
+		$sPassphrase = $this->GetActionParam('SignPassphrase', '');
+		if ($sFingerprint) {
+			$GPG = $this->GnuPG();
+			$oBody = $oMessage->GetRootPart();
+			$fp = \fopen('php://memory', 'r+b');
+			$resource = $oBody->ToStream();
+//			\MailSo\Base\StreamFilters\LineEndings::appendTo($resource);
+			\stream_copy_to_stream($resource, $fp);
+			$GPG->addSignKey($sFingerprint, $sPassphrase);
+			$GPG->setsignmode(GNUPG_SIG_MODE_DETACH);
+			$sSignature = $GPG->signStream($fp);
+
+			$oMessage->SubParts->Clear();
+			$oMessage->Attachments()->Clear();
+
+			$oPart = new MimePart;
+			$oPart->Headers->AddByName(
+				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+				'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"'
+			);
+			$oMessage->SubParts->append($oPart);
+
+			\rewind($fp);
+			$oBody->Raw = $fp;
+			$oBody->Body = null;
+			$oBody->SubParts->Clear();
+			$oPart->SubParts->append($oBody);
+
+			$oAlternativePart = new MimePart;
+			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/pgp-signature; name="signature.asc"');
+			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
+			$oAlternativePart->Body = $sSignature;
+			$oPart->SubParts->append($oAlternativePart);
+		}
+*/
+
+		// TODO: encrypt
+		$sFingerprints = $this->GetActionParam('EncryptFingerprints', '');
+		if ($sFingerprints) {
+			$GPG = $this->GnuPG();
+			$oBody = $oMessage->GetRootPart();
+			$fp = \fopen('php://memory', 'r+b');
+			$resource = $oBody->ToStream();
+//			\MailSo\Base\StreamFilters\LineEndings::appendTo($resource);
+			\stream_copy_to_stream($resource, $fp);
+			foreach (\explode(',', $sFingerprints) as $sFingerprint) {
+				$GPG->addEncryptKey($sFingerprint);
+			}
+			$sEncrypted = $GPG->encryptStream($fp);
+
+			$oMessage->SubParts->Clear();
+			$oMessage->Attachments()->Clear();
+
+			$oPart = new MimePart;
+			$oPart->Headers->AddByName(
+				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+				'multipart/encrypted; protocol="application/pgp-encrypted"'
+			);
+			$oMessage->SubParts->append($oPart);
+
+			$oAlternativePart = new MimePart;
+			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/pgp-encrypted');
+			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION, 'attachment');
+			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
+			$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString('Version: 1');
+			$oPart->SubParts->append($oAlternativePart);
+
+			$oAlternativePart = new MimePart;
+			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/octet-stream');
+			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION, 'inline; filename="msg.asc"');
+			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
+			$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sEncrypted)));
+			$oPart->SubParts->append($oAlternativePart);
 		}
 
 		$this->Plugins()->RunHook('filter.build-message', array($oMessage));
