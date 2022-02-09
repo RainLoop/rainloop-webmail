@@ -104,25 +104,24 @@ class MimePart {
 	constructor() {
 		this.headers = {};
 		this.body = '';
+		this.boundary = '';
 		this.children = [];
 	}
 
 	toString() {
 		const hasSub = this.children.length,
-			boundary = 'part' + Jua.randomId(),
+			boundary = this.boundary || (this.boundary = 'part' + Jua.randomId()),
 			headers = this.headers;
 		if (hasSub) {
-			headers['Content-Type'] = headers['Content-Type'] + `; boundary="${boundary}"`;
+			headers['Content-Type'] += `; boundary="${boundary}"`;
 		}
-		let result =
-			Object.entries(headers).map(([key, value]) => `${key}: ${value}`).join('\r\n')
-			+ '\r\n\r\n'
-			+ this.body;
+		let result = Object.entries(headers).map(([key, value]) => `${key}: ${value}`).join('\r\n') + '\r\n';
+		if (this.body) {
+			result += '\r\n' + this.body.replace(/\r?\n/g, '\r\n');
+		}
 		if (hasSub) {
-			this.children.forEach(part => {
-				result = result + '\r\n--' + boundary + '\r\n' + part
-			});
-			result = result + '\r\n--' + boundary + '--\r\n';
+			this.children.forEach(part => result += '\r\n--' + boundary + '\r\n' + part);
+			result += '\r\n--' + boundary + '--\r\n';
 		}
 		return result;
 	}
@@ -367,7 +366,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 	async getMessageRequestParams(sSaveFolder, draft)
 	{
-		let
+		const
 			identity = this.currentIdentity(),
 			params = {
 				IdentityID: identity.id(),
@@ -391,8 +390,9 @@ class ComposePopupView extends AbstractViewPopup {
 			recipients = draft ? [identity.email()] : this.allRecipients(),
 			sign = !draft && this.pgpSign() && this.canPgpSign(),
 			encrypt = this.pgpEncrypt() && this.canPgpEncrypt(),
-			TextIsHtml = this.oEditor.isHtml(),
-			Text = this.oEditor.getData();
+			TextIsHtml = this.oEditor.isHtml();
+
+		let Text = this.oEditor.getData();
 		if (TextIsHtml) {
 			let l;
 			do {
@@ -403,53 +403,70 @@ class ComposePopupView extends AbstractViewPopup {
 					// Remove hubspot data-hs- attributes
 					.replace(/(<[^>]+)\s+data-hs-[a-z-]+=("[^"]+"|'[^']+')/gi, '$1');
 			} while (l != Text.length)
+			params.Html = Text;
+		} else {
+			params.Text = Text;
 		}
+
 		if (this.mailvelope && 'mailvelope' === this.viewArea()) {
 			params.Encrypted = draft
 				? await this.mailvelope.createDraft()
 				: await this.mailvelope.encrypt(recipients);
-		} else if ('openpgp' == encrypt || (sign && 'openpgp' == sign[0])) {
+		} else if (sign || encrypt) {
 			let data = new MimePart;
 			data.headers['Content-Type'] = 'text/'+(TextIsHtml?'html':'plain')+'; charset="utf-8"';
 			data.headers['Content-Transfer-Encoding'] = 'base64';
 			data.body = base64_encode(Text);
-			if (sign && sign[1]) {
-				let signed = new MimePart;
-				signed.headers['Content-Type'] =
-					'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"';
-				signed.headers['Content-Transfer-Encoding'] = '7Bit';
-				signed.children.push(data);
-				let signature = new MimePart;
-				signature.headers['Content-Type'] = 'application/pgp-signature; name="signature.asc"';
-				signature.headers['Content-Transfer-Encoding'] = '7Bit';
-				signature.body = await OpenPGPUserStore.sign(data.toString(), sign[1], 1);
-				signed.children.push(signature);
-				data = signed;
+			if (TextIsHtml) {
+				let alternative = new MimePart;
+				alternative.headers['Content-Type'] = 'multipart/alternative';
+				alternative.children.push(data);
+				data = new MimePart;
+				data.headers['Content-Type'] = 'text/plain; charset="utf-8"';
+				data.headers['Content-Transfer-Encoding'] = 'base64';
+				data.body = base64_encode(htmlToPlain(Text));
+				alternative.children.push(data);
+				data = alternative;
 			}
-			if (encrypt) {
-				params.Encrypted = await OpenPGPUserStore.encrypt(data.toString(), recipients);
-			} else {
-				params.Signed = data.toString();
-			}
-		} else if ('gnupg' == encrypt || (sign && 'gnupg' == sign[0])) {
-			params.Html = TextIsHtml ? Text : '';
-			params.Text = TextIsHtml ? '' : Text;
-/*		// TODO: sign in PHP fails
-			if (sign) {
-				params.SignFingerprint = sign[1].fingerprint;
-				params.SignPassphrase = await GnuPGUserStore.sign(sign[1]);
-			}
+			if (sign && !draft && sign[1]) {
+				if ('openpgp' == sign[0]) {
+					// Doesn't sign attachments
+					let signed = new MimePart;
+					signed.headers['Content-Type'] =
+						'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"';
+					signed.headers['Content-Transfer-Encoding'] = '7Bit';
+					signed.children.push(data);
+					let signature = new MimePart;
+					signature.headers['Content-Type'] = 'application/pgp-signature; name="signature.asc"';
+					signature.headers['Content-Transfer-Encoding'] = '7Bit';
+					signature.body = await OpenPGPUserStore.sign(data.toString(), sign[1], 1);
+					signed.children.push(signature);
+					data = signed;
+/*
+				} else if ('gnupg' == sign[0])) {
+					// TODO: sign in PHP fails
+					params.SignFingerprint = sign[1].fingerprint;
+					params.SignPassphrase = await GnuPGUserStore.sign(sign[1]);
 */
-			if (encrypt) {
-				params.EncryptFingerprints = GnuPGUserStore.getPublicKeyFingerprints(recipients).join(',');
+				} else {
+					throw 'Signing with ' + sign[0] + ' not yet implemented';
+				}
+				params.Signed = data.toString();
+				params.Boundary = data.boundary;
+				params.Html = params.Text = '';
 			}
-		} else if (encrypt) {
-			throw 'Encryption with ' + encrypt + ' not yet implemented';
-		} else if (sign) {
-			throw 'Signing with ' + sign[0] + ' not yet implemented';
-		} else {
-			params.Html = TextIsHtml ? Text : '';
-			params.Text = TextIsHtml ? '' : Text;
+			if (encrypt) {
+				if ('openpgp' == encrypt) {
+					// Doesn't encrypt attachments
+					params.Encrypted = await OpenPGPUserStore.encrypt(data.toString(), recipients);
+					params.Signed = '';
+				} else if ('gnupg' == encrypt) {
+					// Does encrypt attachments
+					params.EncryptFingerprints = JSON.stringify(GnuPGUserStore.getPublicKeyFingerprints(recipients));
+				} else {
+					throw 'Encryption with ' + encrypt + ' not yet implemented';
+				}
+			}
 		}
 		return params;
 	}

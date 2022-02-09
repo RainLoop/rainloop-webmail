@@ -1102,43 +1102,10 @@ trait Messages
 		$aFoundContentLocationUrls = array();
 		$oPart;
 
-		if ($sHtml = $this->GetActionParam('Html', '')) {
-			$oPart = new MimePart;
-			$oPart->Headers->AddByName(
-				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-				\MailSo\Mime\Enumerations\MimeType::MULTIPART_ALTERNATIVE
-			);
-			$oMessage->SubParts->append($oPart);
-
-			$sHtml = \MailSo\Base\HtmlUtils::BuildHtml($sHtml, $aFoundCids, $aFoundDataURL, $aFoundContentLocationUrls);
-			$this->Plugins()->RunHook('filter.message-html', array($oAccount, $oMessage, &$sHtml));
-			$oAlternativePart = new MimePart;
-			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/html; charset=utf-8');
-			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
-			$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
-				\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sHtml))),
-				'convert.quoted-printable-encode'
-			);
-			$oPart->SubParts->append($oAlternativePart);
-
-			$sPlain = \MailSo\Base\HtmlUtils::ConvertHtmlToPlain($sHtml);
-			$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sPlain));
-			$oAlternativePart = new MimePart;
-			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset=utf-8');
-			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
-			$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
-				\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sPlain))),
-				'convert.quoted-printable-encode'
-			);
-			$oPart->SubParts->append($oAlternativePart);
-
-			unset($oAlternativePart);
-			unset($sHtml);
-			unset($sPlain);
-
-		} else if ($sSigned = $this->GetActionParam('Signed', '')) {
+		if ($sSigned = $this->GetActionParam('Signed', '')) {
 			$aSigned = \explode("\r\n\r\n", $sSigned, 2);
-			$sBoundary = \preg_replace('/^.+boundary="([^"]+)".+$/Dsi', '$1', $aSigned[0]);
+//			$sBoundary = \preg_replace('/^.+boundary="([^"]+)".+$/Dsi', '$1', $aSigned[0]);
+			$sBoundary = $this->GetActionParam('Boundary', '');
 
 			$oPart = new MimePart;
 			$oPart->Headers->AddByName(
@@ -1178,40 +1145,76 @@ trait Messages
 			unset($sEncrypted);
 
 		} else {
-			$sPlain = $this->GetActionParam('Text', '');
-			if ($sSignature = $this->GetActionParam('Signature', null)) {
+			if ($sHtml = $this->GetActionParam('Html', '')) {
 				$oPart = new MimePart;
 				$oPart->Headers->AddByName(
 					\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-					'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"'
+					\MailSo\Mime\Enumerations\MimeType::MULTIPART_ALTERNATIVE
 				);
 				$oMessage->SubParts->append($oPart);
 
+				$sHtml = \MailSo\Base\HtmlUtils::BuildHtml($sHtml, $aFoundCids, $aFoundDataURL, $aFoundContentLocationUrls);
+				$this->Plugins()->RunHook('filter.message-html', array($oAccount, $oMessage, &$sHtml));
 				$oAlternativePart = new MimePart;
-				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset="utf-8"; protected-headers="v1"');
-				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'base64');
-				$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sPlain)));
+				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/html; charset=utf-8');
+				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
+				$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
+					\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sHtml))),
+					'convert.quoted-printable-encode'
+				);
 				$oPart->SubParts->append($oAlternativePart);
 
-				$oAlternativePart = new MimePart;
-				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/pgp-signature; name="signature.asc"');
-				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
-				$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sSignature)));
-				$oPart->SubParts->append($oAlternativePart);
-			} else {
+				$sPlain = \MailSo\Base\HtmlUtils::ConvertHtmlToPlain($sHtml);
 				$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sPlain));
 				$oAlternativePart = new MimePart;
-				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset="utf-8"');
+				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset=utf-8');
 				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
 				$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
 					\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sPlain))),
 					'convert.quoted-printable-encode'
 				);
-				$oMessage->SubParts->append($oAlternativePart);
+				$oPart->SubParts->append($oAlternativePart);
+
+				unset($oAlternativePart);
+				unset($sHtml);
+				unset($sPlain);
+
+			} else {
+				$sPlain = $this->GetActionParam('Text', '');
+				if ($sSignature = $this->GetActionParam('Signature', null)) {
+					$oPart = new MimePart;
+					$oPart->Headers->AddByName(
+						\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+						'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"'
+					);
+					$oMessage->SubParts->append($oPart);
+
+					$oAlternativePart = new MimePart;
+					$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset="utf-8"; protected-headers="v1"');
+					$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'base64');
+					$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sPlain)));
+					$oPart->SubParts->append($oAlternativePart);
+
+					$oAlternativePart = new MimePart;
+					$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/pgp-signature; name="signature.asc"');
+					$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
+					$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sSignature)));
+					$oPart->SubParts->append($oAlternativePart);
+				} else {
+					$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sPlain));
+					$oAlternativePart = new MimePart;
+					$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset="utf-8"');
+					$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
+					$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
+						\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sPlain))),
+						'convert.quoted-printable-encode'
+					);
+					$oMessage->SubParts->append($oAlternativePart);
+				}
+				unset($oAlternativePart);
+				unset($sSignature);
+				unset($sPlain);
 			}
-			unset($oAlternativePart);
-			unset($sSignature);
-			unset($sPlain);
 		}
 		unset($oPart);
 
@@ -1305,15 +1308,14 @@ trait Messages
 */
 		}
 
-		// TODO: encrypt
-		$sFingerprints = $this->GetActionParam('EncryptFingerprints', '');
-		if ($sFingerprints) {
+		$aFingerprints = \json_decode($this->GetActionParam('EncryptFingerprints', ''), true);
+		if ($aFingerprints) {
 			$GPG = $this->GnuPG();
 			$oBody = $oMessage->GetRootPart();
 			$fp = \fopen('php://memory', 'r+b');
 			$resource = $oBody->ToStream();
 			\stream_copy_to_stream($resource, $fp);
-			foreach (\explode(',', $sFingerprints) as $sFingerprint) {
+			foreach ($aFingerprints as $sFingerprint) {
 				$GPG->addEncryptKey($sFingerprint);
 			}
 			$sEncrypted = $GPG->encryptStream($fp);
