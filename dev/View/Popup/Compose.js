@@ -431,6 +431,7 @@ class ComposePopupView extends AbstractViewPopup {
 			if (sign && !draft && sign[1]) {
 				if ('openpgp' == sign[0]) {
 					// Doesn't sign attachments
+					params.Html = params.Text = '';
 					let signed = new MimePart;
 					signed.headers['Content-Type'] =
 						'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"';
@@ -441,19 +442,17 @@ class ComposePopupView extends AbstractViewPopup {
 					signature.headers['Content-Transfer-Encoding'] = '7Bit';
 					signature.body = await OpenPGPUserStore.sign(data.toString(), sign[1], 1);
 					signed.children.push(signature);
+					params.Signed = signed.toString();
+					params.Boundary = signed.boundary;
 					data = signed;
-/*
-				} else if ('gnupg' == sign[0])) {
+				} else if ('gnupg' == sign[0]) {
 					// TODO: sign in PHP fails
+//					params.SignData = data.toString();
 					params.SignFingerprint = sign[1].fingerprint;
 					params.SignPassphrase = await GnuPGUserStore.sign(sign[1]);
-*/
 				} else {
 					throw 'Signing with ' + sign[0] + ' not yet implemented';
 				}
-				params.Signed = data.toString();
-				params.Boundary = data.boundary;
-				params.Html = params.Text = '';
 			}
 			if (encrypt) {
 				if ('openpgp' == encrypt) {

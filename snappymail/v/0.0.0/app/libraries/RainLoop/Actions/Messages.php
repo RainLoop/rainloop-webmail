@@ -1271,21 +1271,23 @@ trait Messages
 		$sFingerprint = $this->GetActionParam('SignFingerprint', '');
 		$sPassphrase = $this->GetActionParam('SignPassphrase', '');
 		if ($sFingerprint) {
-			// TODO: but verify is still invalid
-			throw new \Exception('Sign using GnuPG not working yet');
-/*
 			$GPG = $this->GnuPG();
 			$oBody = $oMessage->GetRootPart();
 			$fp = \fopen('php://memory', 'r+b');
 			$resource = $oBody->ToStream();
-//			\MailSo\Base\StreamFilters\LineEndings::appendTo($resource);
+			$oBody->Body = null;
+			$oBody->SubParts->Clear();
+			$oMessage->SubParts->Clear();
+			$oMessage->Attachments()->Clear();
+
+			\MailSo\Base\StreamFilters\LineEndings::appendTo($resource);
 			\stream_copy_to_stream($resource, $fp);
 			$GPG->addSignKey($sFingerprint, $sPassphrase);
 			$GPG->setsignmode(GNUPG_SIG_MODE_DETACH);
 			$sSignature = $GPG->signStream($fp);
-
-			$oMessage->SubParts->Clear();
-			$oMessage->Attachments()->Clear();
+			if (!$sSignature) {
+				throw new \Exception('GnuPG sign() failed');
+			}
 
 			$oPart = new MimePart;
 			$oPart->Headers->AddByName(
@@ -1296,16 +1298,13 @@ trait Messages
 
 			\rewind($fp);
 			$oBody->Raw = $fp;
-			$oBody->Body = null;
-			$oBody->SubParts->Clear();
 			$oPart->SubParts->append($oBody);
 
-			$oAlternativePart = new MimePart;
-			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/pgp-signature; name="signature.asc"');
-			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
-			$oAlternativePart->Body = $sSignature;
-			$oPart->SubParts->append($oAlternativePart);
-*/
+			$oSignaturePart = new MimePart;
+			$oSignaturePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/pgp-signature; name="signature.asc"');
+			$oSignaturePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
+			$oSignaturePart->Body = $sSignature;
+			$oPart->SubParts->append($oSignaturePart);
 		}
 
 		$aFingerprints = \json_decode($this->GetActionParam('EncryptFingerprints', ''), true);

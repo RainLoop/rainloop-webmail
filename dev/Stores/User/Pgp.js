@@ -114,15 +114,14 @@ export const PgpUserStore = new class {
 	 * Returns the first library that can.
 	 */
 	async getKeyForSigning(email) {
-/*		// TODO: sign in PHP fails
-		let key = GnuPGUserStore.getPrivateKeyFor(email, 1);
-		if (key) {
-			return ['gnupg', key];
-		}
-*/
 		let key = OpenPGPUserStore.getPrivateKeyFor(email, 1);
 		if (key) {
 			return ['openpgp', key];
+		}
+
+		key = GnuPGUserStore.getPrivateKeyFor(email, 1);
+		if (key) {
+			return ['gnupg', key];
 		}
 
 //		return await this.getMailvelopePrivateKeyFor(email, 1);

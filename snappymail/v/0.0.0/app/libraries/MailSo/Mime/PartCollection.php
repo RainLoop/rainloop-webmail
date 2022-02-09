@@ -54,7 +54,7 @@ class PartCollection extends \MailSo\Base\Collection
 				$aResult[] = "\r\n--{$this->sBoundary}\r\n";
 				$aResult[] = $oPart->ToStream();
 			}
-			$aResult[] = "\r\n--{$this->sBoundary}--";
+			$aResult[] = "\r\n--{$this->sBoundary}--\r\n";
 			return \MailSo\Base\StreamWrappers\SubStreams::CreateStream($aResult);
 		}
 		return null;
