@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Anhänge",
 		"MESSAGE_VIEW_DESC": "Wählen Sie eine Nachricht aus der Liste aus, um sie anzuzeigen.",
 		"MESSAGE_VIEW_MOVE_DESC": "Klicke auf den Ordnernamen auf der linken Seite, um die Nachricht zu verschieben.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP-signierte Nachricht",
-		"BUTTON_PGP_VERIFY": "klicken, um zu überprüfen",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP-verschlüsselte Nachricht",
 		"LINK_DOWNLOAD_AS_ZIP": "Als ZIP-Datei herunterladen",
 		"SPAM_SCORE": "Spam-Score",
 		"HAS_VIRUS_WARNING": "WARNUNG: Virus erkannt"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Unterschrift",
 		"LABEL_ENCRYPT": "Verschlüsselung",
-		"BUTTON_DECRYPT": "Decrypt"
+		"BUTTON_DECRYPT": "Decrypt",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "OpenPGP-signierte Nachricht",
+		"ENCRYPTED_MESSAGE": "OpenPGP-verschlüsselte Nachricht",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Gültige Unterschrift von %USER%",
+		"ERROR": "OpenPGP-Fehler: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Filter erstellen?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Aktualisiere Kontenliste",
 		"DEFAULT_IDENTITY_LABEL": "Standard"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Schlüssel importieren",
 		"BUTTON_GENERATE_KEY_PAIR": "Schlüssel generieren",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Öffentlich",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Tastaturkürzel-Hilfe",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Nachricht speichern",
 		"LABEL_SEND_MESSAGE": "Nachricht senden",
 		"LABEL_CLOSE_COMPOSE": "Popup schließen"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Gültige Unterschrift von %USER%",
-		"PGP_ERROR": "OpenPGP-Fehler: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ungültiger Token",

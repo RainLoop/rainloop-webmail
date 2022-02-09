@@ -265,12 +265,12 @@
 						</div>
 
 						<div class="openpgp-control encrypted" data-bind="visible: message().pgpEncrypted() || message().isPgpEncrypted()">
-							<span data-icon="🔒" data-i18n="MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC"></span>
+							<span data-icon="🔒" data-i18n="OPENPGP/ENCRYPTED_MESSAGE"></span>
 							<button class="btn" data-bind="visible: pgpSupported, click: pgpDecrypt" data-i18n="OPENPGP/BUTTON_DECRYPT"></button>
 						</div>
 						<div class="openpgp-control signed" data-bind="visible: message().pgpSigned(), css: {'success': message().pgpVerified() && message().pgpVerified().success, 'error': message().pgpVerified() && !message().pgpVerified().success}">
-							<span data-icon="✍" data-i18n="MESSAGE/PGP_SIGNED_MESSAGE_DESC"></span>
-							<button class="btn" data-bind="visible: pgpSupported, click: pgpVerify" data-i18n="MESSAGE/BUTTON_PGP_VERIFY"></button>
+							<span data-icon="✍" data-i18n="OPENPGP/SIGNED_MESSAGE"></span>
+							<button class="btn" data-bind="visible: pgpSupported, click: pgpVerify" data-i18n="OPENPGP/BUTTON_VERIFY"></button>
 						</div>
 
 						<div class="bodyText" data-bind="initDom: messagesBodiesDom"></div>

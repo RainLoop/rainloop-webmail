@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Załączniki",
 		"MESSAGE_VIEW_DESC": "Wybierz wiadomość do wyświetlenia.",
 		"MESSAGE_VIEW_MOVE_DESC": "Kliknij nazwę folderu w lewym panelu, aby wybrać folder docelowy.",
-		"PGP_SIGNED_MESSAGE_DESC": "Wiadomość podpisana OpenPGP",
-		"BUTTON_PGP_VERIFY": "kliknij aby zweryfikować",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "Wiadomość zaszyfrowana OpenPGP",
 		"LINK_DOWNLOAD_AS_ZIP": "Pobierz jako plik zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Podpisz",
 		"LABEL_ENCRYPT": "Zaszyfruj",
-		"BUTTON_DECRYPT": "Odszyfruj"
+		"BUTTON_DECRYPT": "Odszyfruj",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "Wiadomość podpisana OpenPGP",
+		"ENCRYPTED_MESSAGE": "Wiadomość zaszyfrowana OpenPGP",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Poprawnie podpisana przez %USER%",
+		"ERROR": "Błąd OpenPGP: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Czy stworzyć filtr?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Trwa aktualizowanie listy kont",
 		"DEFAULT_IDENTITY_LABEL": "domyślna"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importuj klucz",
 		"BUTTON_GENERATE_KEY_PAIR": "Generuj klucz",
 		"TITLE_PRIVATE": "Prywatny",
 		"TITLE_PUBLIC": "Publiczny",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatycznie zapisuj szkic"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatycznie zapisuj szkic",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Pomoc dotycząca skrótów klawiaturowych",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Zapisz wiadomość",
 		"LABEL_SEND_MESSAGE": "Wyślij wiadomość",
 		"LABEL_CLOSE_COMPOSE": "Zamknij okno tworzenia wiadomości"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Poprawnie podpisana przez %USER%",
-		"PGP_ERROR": "Błąd OpenPGP: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Nieprawidłowy token",

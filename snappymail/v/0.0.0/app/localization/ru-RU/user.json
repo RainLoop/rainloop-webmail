@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Файлы",
 		"MESSAGE_VIEW_DESC": "Выберите сообщение для просмотра.",
 		"MESSAGE_VIEW_MOVE_DESC": "Выберите имя папки в левой панели, чтобы переместить сообщение.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP подписанное сообщение",
-		"BUTTON_PGP_VERIFY": "нажмите, чтобы подтвердить",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP шифрованное сообщение",
 		"LINK_DOWNLOAD_AS_ZIP": "Сохранить как zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Подпись",
 		"LABEL_ENCRYPT": "Шифрование",
-		"BUTTON_DECRYPT": "Расшифровать"
+		"BUTTON_DECRYPT": "Расшифровать",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "OpenPGP подписанное сообщение",
+		"ENCRYPTED_MESSAGE": "OpenPGP шифрованное сообщение",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Подтвержденная сигнатура для %USER%",
+		"ERROR": "OpenPGP ошибка: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Создать фильтр?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Обновление списка аккаунтов",
 		"DEFAULT_IDENTITY_LABEL": "основной"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Ипортировать ключ",
 		"BUTTON_GENERATE_KEY_PAIR": "Новый ключ",
 		"TITLE_PRIVATE": "Приватный",
 		"TITLE_PUBLIC": "Публичный",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Автоматически сохранять черновик"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Автоматически сохранять черновик",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Сочетания клавиш",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Сохранить сообщение",
 		"LABEL_SEND_MESSAGE": "Отправить сообщение",
 		"LABEL_CLOSE_COMPOSE": "Закрыть сообщение"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Подтвержденная сигнатура для %USER%",
-		"PGP_ERROR": "OpenPGP ошибка: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Неверный токен запроса",

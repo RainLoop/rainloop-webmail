@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Прикрепени файлове",
 		"MESSAGE_VIEW_DESC": "Изберете съобщение, за да го видите тук.",
 		"MESSAGE_VIEW_MOVE_DESC": "Изберете цел от папките в лявото поле",
-		"PGP_SIGNED_MESSAGE_DESC": "Подписано с OpenPGP",
-		"BUTTON_PGP_VERIFY": "кликни за проверка",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "Шифровано с OpenPGP",
 		"LINK_DOWNLOAD_AS_ZIP": "Свали като ZIP файл",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Подпиши",
 		"LABEL_ENCRYPT": "Шифровай",
-		"BUTTON_DECRYPT": "Дешифрирай"
+		"BUTTON_DECRYPT": "Дешифрирай",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "Подписано с OpenPGP",
+		"ENCRYPTED_MESSAGE": "Шифровано с OpenPGP",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Валиден подпис за %USER%",
+		"ERROR": "OpenPGP грешка: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Създай филтър?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Обновяване на списъка с акаунти",
 		"DEFAULT_IDENTITY_LABEL": "по подразбиране"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Внеси ключ",
 		"BUTTON_GENERATE_KEY_PAIR": "Генерирай ключ",
 		"TITLE_PRIVATE": "Частен",
 		"TITLE_PUBLIC": "Публичен",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Автоматично запазване на чернова"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Автоматично запазване на чернова",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Помощ за клавишните комбинации",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Запази съобщението",
 		"LABEL_SEND_MESSAGE": "Изпрати съобщението",
 		"LABEL_CLOSE_COMPOSE": "Затвори създаването"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Валиден подпис за %USER%",
-		"PGP_ERROR": "OpenPGP грешка: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Невалиден токен",

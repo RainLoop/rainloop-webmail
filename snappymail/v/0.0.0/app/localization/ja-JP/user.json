@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "添付ファイル",
 		"MESSAGE_VIEW_DESC": "選択したメールがここに表示されます。",
 		"MESSAGE_VIEW_MOVE_DESC": "左側のパネルでフォルダ名をクリックして移動先を選択します。",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP 署名済みメッセージ",
-		"BUTTON_PGP_VERIFY": "クリックして検証",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP 暗号化メッセージ",
 		"LINK_DOWNLOAD_AS_ZIP": "Zip としてダウンロード",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "署名",
 		"LABEL_ENCRYPT": "暗号化",
-		"BUTTON_DECRYPT": "復号化"
+		"BUTTON_DECRYPT": "復号化",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "OpenPGP 署名済みメッセージ",
+		"ENCRYPTED_MESSAGE": "OpenPGP 暗号化メッセージ",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "%USER% からの正しい署名",
+		"ERROR": "OpenPGP エラー: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "フィルターを作成しますか?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "更新中",
 		"DEFAULT_IDENTITY_LABEL": "デフォルト"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "キーをインポート",
 		"BUTTON_GENERATE_KEY_PAIR": "キーを生成",
 		"TITLE_PRIVATE": "プライベート",
 		"TITLE_PUBLIC": "パブリック",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "下書きを自動的に保存する"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "下書きを自動的に保存する",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "キーボード ショートカット ヘルプ",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "メッセージを保存",
 		"LABEL_SEND_MESSAGE": "メッセージを送信",
 		"LABEL_CLOSE_COMPOSE": "作成画面を閉じる"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "%USER% からの正しい署名",
-		"PGP_ERROR": "OpenPGP エラー: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "無効なトークン",

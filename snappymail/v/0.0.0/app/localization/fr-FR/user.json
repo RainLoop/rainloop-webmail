@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Pièces jointes",
 		"MESSAGE_VIEW_DESC": "Sélectionner un message dans la liste pour l'afficher ici.",
 		"MESSAGE_VIEW_MOVE_DESC": "Cliquez sur le nom du dossier dans le panneau de gauche pour sélectionner la destination.",
-		"PGP_SIGNED_MESSAGE_DESC": "Message signé par OpenPGP",
-		"BUTTON_PGP_VERIFY": "cliquer pour vérifier",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "Message chiffré par OpenPGP",
 		"LINK_DOWNLOAD_AS_ZIP": "Télécharger le zip",
 		"SPAM_SCORE": "Score de spam",
 		"HAS_VIRUS_WARNING": "ATTENTION : virus détecté"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Signer",
 		"LABEL_ENCRYPT": "Chiffer",
-		"BUTTON_DECRYPT": "Déchiffrer"
+		"BUTTON_DECRYPT": "Déchiffrer",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "Message signé par OpenPGP",
+		"ENCRYPTED_MESSAGE": "Message chiffré par OpenPGP",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Signature valide pour %USER%",
+		"ERROR": "Erreur OpenPGP: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Créer un filtre ?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Mise à jour de la liste des comptes",
 		"DEFAULT_IDENTITY_LABEL": "défaut"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importer la clé",
 		"BUTTON_GENERATE_KEY_PAIR": "Générer les clés",
 		"TITLE_PRIVATE": "Privée",
 		"TITLE_PUBLIC": "Publique",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Brouillon sauvegardé automatiquement"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Brouillon sauvegardé automatiquement",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Aide pour les raccourcis clavier",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Enregistrer le message",
 		"LABEL_SEND_MESSAGE": "Envoyer le message",
 		"LABEL_CLOSE_COMPOSE": "Fermer la fenêtre d'édition"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Signature valide pour %USER%",
-		"PGP_ERROR": "Erreur OpenPGP: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Jeton invalide",

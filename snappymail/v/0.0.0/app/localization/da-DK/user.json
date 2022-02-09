@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Vedhæftninger",
 		"MESSAGE_VIEW_DESC": "Vælg meddelelse i oversigten for visning.",
 		"MESSAGE_VIEW_MOVE_DESC": "Vælg modtagemappe i panelet til venstre.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP signeret meddelelse",
-		"BUTTON_PGP_VERIFY": "tryk for at verificere",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP krypteret meddelelse",
 		"LINK_DOWNLOAD_AS_ZIP": "Hent som zip-fil",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Signér",
 		"LABEL_ENCRYPT": "Krypter",
-		"BUTTON_DECRYPT": "Dekrypter"
+		"BUTTON_DECRYPT": "Dekrypter",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "OpenPGP signeret meddelelse",
+		"ENCRYPTED_MESSAGE": "OpenPGP krypteret meddelelse",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Accepteret signatur for %USER\"",
+		"ERROR": "OpenPGP fejl: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Opret filter?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Opdaterer...",
 		"DEFAULT_IDENTITY_LABEL": "standard"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importer nøgle",
 		"BUTTON_GENERATE_KEY_PAIR": "Generer nøgler",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Offentlig",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Gem kladde automatisk"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Gem kladde automatisk",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Hjælp til tasteturgenveje",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Gem meddelelse",
 		"LABEL_SEND_MESSAGE": "Send meddelelse",
 		"LABEL_CLOSE_COMPOSE": "Luk forfatter mode"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Accepteret signatur for %USER\"",
-		"PGP_ERROR": "OpenPGP fejl: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ugyldigt tegn",

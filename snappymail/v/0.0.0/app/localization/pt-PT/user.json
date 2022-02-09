@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Anexos",
 		"MESSAGE_VIEW_DESC": "Selecione uma mensagem na lista para ver o conteúdo aqui.",
 		"MESSAGE_VIEW_MOVE_DESC": "Click folder name in the left panel to select the destination.",
-		"PGP_SIGNED_MESSAGE_DESC": "Mensagem assinada com OpenPGP",
-		"BUTTON_PGP_VERIFY": "clique para verificar",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "Mensagem encriptada com OpenPGP",
 		"LINK_DOWNLOAD_AS_ZIP": "Transferir em arquivo zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Assinar",
 		"LABEL_ENCRYPT": "Encriptar",
-		"BUTTON_DECRYPT": "Decrypt"
+		"BUTTON_DECRYPT": "Decrypt",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "Mensagem assinada com OpenPGP",
+		"ENCRYPTED_MESSAGE": "Mensagem encriptada com OpenPGP",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Boa assinatura de %USER%",
+		"ERROR": "Erro OpenPGP: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Criar um filtro?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "A atualizar...",
 		"DEFAULT_IDENTITY_LABEL": "predefinida"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importar chave",
 		"BUTTON_GENERATE_KEY_PAIR": "Gerar chaves",
 		"TITLE_PRIVATE": "Privada",
 		"TITLE_PUBLIC": "Pública",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Ajuda para atalhos de teclado",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Guardar mensagem",
 		"LABEL_SEND_MESSAGE": "Enviar mensagem",
 		"LABEL_CLOSE_COMPOSE": "Fechar janela de composição"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Boa assinatura de %USER%",
-		"PGP_ERROR": "Erro OpenPGP: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Token inválido",

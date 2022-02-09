@@ -13,7 +13,7 @@ export class OpenPgpImportPopupView extends AbstractViewPopup {
 			keyErrorMessage: '',
 
 			saveGnuPG: true,
-			saveServer: true
+			saveServer: false
 		});
 
 		this.canGnuPG = GnuPGUserStore.isSupported();

@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Mellékletek",
 		"MESSAGE_VIEW_DESC": "Válassz egy üzenetet a listából, hogy megjelenjen itt.",
 		"MESSAGE_VIEW_MOVE_DESC": "A cél kiválasztásához a bal oldali panelen kattints a mappa nevére.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP aláírt üzenet",
-		"BUTTON_PGP_VERIFY": "kattints az ellenőrzéshez",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP kódolt üzenet",
 		"LINK_DOWNLOAD_AS_ZIP": "Letöltés zip fájlként",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "FIGYELEM: vírust észleltünk"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Aláírás",
 		"LABEL_ENCRYPT": "Titkosítás",
-		"BUTTON_DECRYPT": "Visszafejtés"
+		"BUTTON_DECRYPT": "Visszafejtés",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "OpenPGP aláírt üzenet",
+		"ENCRYPTED_MESSAGE": "OpenPGP kódolt üzenet",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Jó aláírás tőle: %USER%",
+		"ERROR": "OpenPGP hiba: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Szűrő létrehozás?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Fiók lista frissítés",
 		"DEFAULT_IDENTITY_LABEL": "default"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Kulcs importálás",
 		"BUTTON_GENERATE_KEY_PAIR": "Kulcs generálás",
 		"TITLE_PRIVATE": "Privát",
 		"TITLE_PUBLIC": "Publikus",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Piszkozat automatikus mentése"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Piszkozat automatikus mentése",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Billentyű kombináció súgó",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Üzenet mentés",
 		"LABEL_SEND_MESSAGE": "Üzenet küldés",
 		"LABEL_CLOSE_COMPOSE": "Levélírás bezárása"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Jó aláírás tőle: %USER%",
-		"PGP_ERROR": "OpenPGP hiba: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Érvénytelen kulcs",

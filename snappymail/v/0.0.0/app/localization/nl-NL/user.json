@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Bijlagen",
 		"MESSAGE_VIEW_DESC": "Selecteer een bericht in de lijst om hier te bekijken",
 		"MESSAGE_VIEW_MOVE_DESC": "Klik op de doel map in het linker paneel.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP ondertekend bericht",
-		"BUTTON_PGP_VERIFY": "klik om te verifiëren",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP versleuteld bericht",
 		"LINK_DOWNLOAD_AS_ZIP": "Download als zip",
 		"SPAM_SCORE": "Spamscore",
 		"HAS_VIRUS_WARNING": "WAARSCHUWING: virus gedetecteerd"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Ondertekenen",
 		"LABEL_ENCRYPT": "Versleutelen",
-		"BUTTON_DECRYPT": "Decrypt"
+		"BUTTON_DECRYPT": "Decrypt",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "OpenPGP ondertekend bericht",
+		"ENCRYPTED_MESSAGE": "OpenPGP versleuteld bericht",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Juiste handtekening van %USER%",
+		"ERROR": "OpenPGP foutmelding: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Filter toevoegen",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Account lijst aan het bijwerken",
 		"DEFAULT_IDENTITY_LABEL": "standaard"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importeer sleutel",
 		"BUTTON_GENERATE_KEY_PAIR": "Genereer sleutels",
 		"TITLE_PRIVATE": "Privé sleutel",
 		"TITLE_PUBLIC": "Publieke sleutel",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Hulp bij toetsenbord sneltoetsen",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Concept opslaan",
 		"LABEL_SEND_MESSAGE": "Bericht versturen",
 		"LABEL_CLOSE_COMPOSE": "Nieuw bericht venster sluiten"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Juiste handtekening van %USER%",
-		"PGP_ERROR": "OpenPGP foutmelding: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ongeldige token",

@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Ekler",
 		"MESSAGE_VIEW_DESC": "Burada görüntülemek için listeden mesaj seçin.",
 		"MESSAGE_VIEW_MOVE_DESC": "Click folder name in the left panel to select the destination.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP imzalı mesaj",
-		"BUTTON_PGP_VERIFY": "onay için tıklayın",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP şifreli mesaj",
 		"LINK_DOWNLOAD_AS_ZIP": "Download as zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Giriş Yap",
 		"LABEL_ENCRYPT": "Şifrele",
-		"BUTTON_DECRYPT": "Decrypt"
+		"BUTTON_DECRYPT": "Decrypt",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "OpenPGP imzalı mesaj",
+		"ENCRYPTED_MESSAGE": "OpenPGP şifreli mesaj",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Geçerli imza %USER%",
+		"ERROR": "OpenPGP hatası: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Create a filter?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Hesap listesi güncelleniyor",
 		"DEFAULT_IDENTITY_LABEL": "default"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Key İçe Aktar",
 		"BUTTON_GENERATE_KEY_PAIR": "Key Oluştur",
 		"TITLE_PRIVATE": "Private",
 		"TITLE_PUBLIC": "Public",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Klavye kısayolları yardım",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Mesajı Kaydet",
 		"LABEL_SEND_MESSAGE": "Mesajı Gönder",
 		"LABEL_CLOSE_COMPOSE": "Oluşturulanı Kapat"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Geçerli imza %USER%",
-		"PGP_ERROR": "OpenPGP hatası: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Geçersiz token",

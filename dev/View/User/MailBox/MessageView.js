@@ -650,7 +650,7 @@ export class MailMessageView extends AbstractViewRight {
 			}
 /*
 			if (result && result.success) {
-				i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
+				i18n('OPENPGP/GOOD_SIGNATURE', {
 					USER: validKey.user + ' (' + validKey.id + ')'
 				});
 				message.getText()
@@ -660,7 +660,7 @@ export class MailMessageView extends AbstractViewRight {
 						? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(v => v).join(', ')
 						: '';
 
-				i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
+				i18n('OPENPGP/ERROR', {
 					ERROR: 'message'
 				}) + (additional ? ' (' + additional + ')' : '');
 			}

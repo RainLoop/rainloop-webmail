@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "الملحقات",
 		"MESSAGE_VIEW_DESC": "حدد رسالة من القائمة ليتم عرضها هنا",
 		"MESSAGE_VIEW_MOVE_DESC": "Click folder name in the left panel to select the destination.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP signed message",
-		"BUTTON_PGP_VERIFY": "click to verify",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP encrypted message",
 		"LINK_DOWNLOAD_AS_ZIP": "zip تنزيل كـ",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "تسجيل",
 		"LABEL_ENCRYPT": "تشفير",
-		"BUTTON_DECRYPT": "فك تشفير"
+		"BUTTON_DECRYPT": "فك تشفير",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "OpenPGP signed message",
+		"ENCRYPTED_MESSAGE": "OpenPGP encrypted message",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "توقيع جيد من  %USER%",
+		"ERROR": "OpenPGP error: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "إنشاء عامل تصفية؟",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "..جاري التحميل",
 		"DEFAULT_IDENTITY_LABEL": "الافتراضي"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": " إستيراد مفتاح",
 		"BUTTON_GENERATE_KEY_PAIR": " توليد مفتاح",
 		"TITLE_PRIVATE": "خاص",
 		"TITLE_PUBLIC": "عام",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "مساعدة في إختصارات لوحة المفاتيح",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "حفظ الرسالة",
 		"LABEL_SEND_MESSAGE": "إرسال الرسالة",
 		"LABEL_CLOSE_COMPOSE": "إغلاق الرسالة"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "توقيع جيد من  %USER%",
-		"PGP_ERROR": "OpenPGP error: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "خاطىء token",

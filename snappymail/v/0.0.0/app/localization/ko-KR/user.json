@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "첨부파일",
 		"MESSAGE_VIEW_DESC": "목록에서 선택한 메시지가 여기에 표시됩니다.",
 		"MESSAGE_VIEW_MOVE_DESC": "왼쪽 패널에서 폴더명을 클릭하여 위치를 선택하세요.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP로 서명된 메세지입니다.",
-		"BUTTON_PGP_VERIFY": "인증하려면 클릭하세요",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP로 암호화된 메세지입니다.",
 		"LINK_DOWNLOAD_AS_ZIP": ".zip 파일로 다운로드",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "로그인",
 		"LABEL_ENCRYPT": "암호화",
-		"BUTTON_DECRYPT": "복호화"
+		"BUTTON_DECRYPT": "복호화",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "OpenPGP로 서명된 메세지입니다.",
+		"ENCRYPTED_MESSAGE": "OpenPGP로 암호화된 메세지입니다.",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "%USER%(으)로부터 수신한 양호한 서명",
+		"ERROR": "OpenPGP 오류: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "필터를 생성할까요?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "업데이트 중...",
 		"DEFAULT_IDENTITY_LABEL": "default"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "키 가져오기",
 		"BUTTON_GENERATE_KEY_PAIR": "키 생성",
 		"TITLE_PRIVATE": "비공개",
 		"TITLE_PUBLIC": "공개",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "작성 중인 메시지 자동 저장"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "작성 중인 메시지 자동 저장",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "키보드 바로가기 도움말",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "메시지 저장",
 		"LABEL_SEND_MESSAGE": "메시지 보내기",
 		"LABEL_CLOSE_COMPOSE": "쓰기 창 닫기"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "%USER%(으)로부터 수신한 양호한 서명",
-		"PGP_ERROR": "OpenPGP 오류: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "잘못된 토큰입니다.",

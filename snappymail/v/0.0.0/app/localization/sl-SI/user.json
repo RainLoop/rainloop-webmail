@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Priloge",
 		"MESSAGE_VIEW_DESC": "Izberite sporočilo s seznama za ogled.",
 		"MESSAGE_VIEW_MOVE_DESC": "Za izbor cilja kliknite na ime mape na levi strani.",
-		"PGP_SIGNED_MESSAGE_DESC": "Sporočilo, podpisano z OpenPGP",
-		"BUTTON_PGP_VERIFY": "kliknite za overovitev",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "Sporočilo, šifrirano z OpenPGP",
 		"LINK_DOWNLOAD_AS_ZIP": "Prenesi kot .zip datoteko",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Podpis",
 		"LABEL_ENCRYPT": "Šifriranje",
-		"BUTTON_DECRYPT": "Dešifriraj"
+		"BUTTON_DECRYPT": "Dešifriraj",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "Sporočilo, podpisano z OpenPGP",
+		"ENCRYPTED_MESSAGE": "Sporočilo, šifrirano z OpenPGP",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Dober podpis od %USER%",
+		"ERROR": "OpenPGP napaka: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Ustvarim filter?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Posodabljanje...",
 		"DEFAULT_IDENTITY_LABEL": "privzeto"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Uvozi ključ",
 		"BUTTON_GENERATE_KEY_PAIR": "Generiraj ključe",
 		"TITLE_PRIVATE": "Zasebni",
 		"TITLE_PUBLIC": "Javni",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Samodejno shrani osnutek"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Samodejno shrani osnutek",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Tipkovne bližnjice",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Shrani sporočilo",
 		"LABEL_SEND_MESSAGE": "Pošlji sporočilo",
 		"LABEL_CLOSE_COMPOSE": "Zapri sestavljanje"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Dober podpis od %USER%",
-		"PGP_ERROR": "OpenPGP napaka: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Neveljaven žeton",

@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Priedai",
 		"MESSAGE_VIEW_DESC": "Pasirinkite žinutę sąraše, kad matytumėte jos turinį čia.",
 		"MESSAGE_VIEW_MOVE_DESC": "Kairėje pasirinkite katalogą, į kurį norite perkelti.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP pasirašytas pranešimas",
-		"BUTTON_PGP_VERIFY": "spustelkite patikrinimui",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP šifruotas pranešimas",
 		"LINK_DOWNLOAD_AS_ZIP": "Atsisiųsti zip archyvą",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Parašas",
 		"LABEL_ENCRYPT": "Šifravimas",
-		"BUTTON_DECRYPT": "Decrypt"
+		"BUTTON_DECRYPT": "Decrypt",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "OpenPGP pasirašytas pranešimas",
+		"ENCRYPTED_MESSAGE": "OpenPGP šifruotas pranešimas",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Tinkamas parašas nuo %USER%",
+		"ERROR": "OpenPGP klaida: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Sukurti filtrą?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Atnaujinamas paskyrų sąrašas",
 		"DEFAULT_IDENTITY_LABEL": "numatytasis"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importuoti raktą",
 		"BUTTON_GENERATE_KEY_PAIR": "Sukurti raktus",
 		"TITLE_PRIVATE": "Privatus",
 		"TITLE_PUBLIC": "Viešas",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Sparčiųjų klavišų pagalba",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Išsaugoti laišką",
 		"LABEL_SEND_MESSAGE": "Siųsti laišką",
 		"LABEL_CLOSE_COMPOSE": "Uždaryti laišką"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Tinkamas parašas nuo %USER%",
-		"PGP_ERROR": "OpenPGP klaida: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Neteisingas raktas",

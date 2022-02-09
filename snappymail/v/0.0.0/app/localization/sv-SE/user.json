@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Bilagor",
 		"MESSAGE_VIEW_DESC": "Välj meddelande i listan att visa här.",
 		"MESSAGE_VIEW_MOVE_DESC": "Klicka på mapp till vänster för att välja mål mapp.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP-signerat meddelande",
-		"BUTTON_PGP_VERIFY": "klicka för att verifiera",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP-krypterat meddelande",
 		"LINK_DOWNLOAD_AS_ZIP": "Ladda ner som ZIP-fil",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "VARNING: virus upptäckt"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Signera",
 		"LABEL_ENCRYPT": "Kryptera",
-		"BUTTON_DECRYPT": "Avkryptera"
+		"BUTTON_DECRYPT": "Avkryptera",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "OpenPGP-signerat meddelande",
+		"ENCRYPTED_MESSAGE": "OpenPGP-krypterat meddelande",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Godkänd signatur för %USER%",
+		"ERROR": "OpenPGP-fel: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Skapa ett filter?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Uppdaterar kontolista",
 		"DEFAULT_IDENTITY_LABEL": "standard"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importera nyckel",
 		"BUTTON_GENERATE_KEY_PAIR": "Skapa nycklar",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Publik",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Spara utkast automatiskt"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Spara utkast automatiskt",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Tangentbordsgenvägar hjälp",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Spara meddelande",
 		"LABEL_SEND_MESSAGE": "Skicka meddelande",
 		"LABEL_CLOSE_COMPOSE": "Stäng fönster"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Godkänd signatur för %USER%",
-		"PGP_ERROR": "OpenPGP-fel: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ogiltigt tecken",

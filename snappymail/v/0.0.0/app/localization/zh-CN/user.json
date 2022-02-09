@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "附件",
 		"MESSAGE_VIEW_DESC": "在此查看列表中选中的邮件。",
 		"MESSAGE_VIEW_MOVE_DESC": "点击左侧面板的文件夹作为目的地",
-		"PGP_SIGNED_MESSAGE_DESC": "由 OpenPGP 签名",
-		"BUTTON_PGP_VERIFY": "点击验证",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "由 OpenPGP 加密",
 		"LINK_DOWNLOAD_AS_ZIP": "下载为zip压缩包",
 		"SPAM_SCORE": "垃圾邮件分数",
 		"HAS_VIRUS_WARNING": "警告：检测到病毒"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "签名",
 		"LABEL_ENCRYPT": "加密",
-		"BUTTON_DECRYPT": "解密"
+		"BUTTON_DECRYPT": "解密",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "由 OpenPGP 签名",
+		"ENCRYPTED_MESSAGE": "由 OpenPGP 加密",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "来自 %USER% 的可用签名",
+		"ERROR": "OpenPGP 错误： %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "创建筛选条件？",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "更新账户列表中",
 		"DEFAULT_IDENTITY_LABEL": "默认"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "导入 密钥",
 		"BUTTON_GENERATE_KEY_PAIR": "生成 密钥",
 		"TITLE_PRIVATE": "私有",
 		"TITLE_PUBLIC": "公开",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "自动保存草稿"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "自动保存草稿",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "快捷键说明",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "保存邮件",
 		"LABEL_SEND_MESSAGE": "发送邮件",
 		"LABEL_CLOSE_COMPOSE": "退出新邮件"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "来自 %USER% 的可用签名",
-		"PGP_ERROR": "OpenPGP 错误： %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "无效标记",

@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Συνημμένα",
 		"MESSAGE_VIEW_DESC": "Επιλέξτε ένα μήνυμα από τη λίστα για να εμφανιστεί εδώ.",
 		"MESSAGE_VIEW_MOVE_DESC": "Click folder name in the left panel to select the destination.",
-		"PGP_SIGNED_MESSAGE_DESC": "Μήνυμα υπογεγραμμένο με OpenPGP",
-		"BUTTON_PGP_VERIFY": "κάντε κλικ για έλεγχο",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "Μήνυμα κωδικοποιημένο με OpenPGP",
 		"LINK_DOWNLOAD_AS_ZIP": "Μεταφόρτωση σαν zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Υπογραφή",
 		"LABEL_ENCRYPT": "Κρυπτογράφηση",
-		"BUTTON_DECRYPT": "Αποκρυπτογράφηση"
+		"BUTTON_DECRYPT": "Αποκρυπτογράφηση",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "Μήνυμα υπογεγραμμένο με OpenPGP",
+		"ENCRYPTED_MESSAGE": "Μήνυμα κωδικοποιημένο με OpenPGP",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Good signature from %USER%",
+		"ERROR": "OpenPGP error: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Δημιουργία φίλτρου;",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Updating...",
 		"DEFAULT_IDENTITY_LABEL": "default"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Import Key",
 		"BUTTON_GENERATE_KEY_PAIR": "Generate Keys",
 		"TITLE_PRIVATE": "Private",
 		"TITLE_PUBLIC": "Public",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Keyboard shortcuts help",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Save message",
 		"LABEL_SEND_MESSAGE": "Send message",
 		"LABEL_CLOSE_COMPOSE": "Close compose"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Good signature from %USER%",
-		"PGP_ERROR": "OpenPGP error: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Invalid token",

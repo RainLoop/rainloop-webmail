@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Manused",
 		"MESSAGE_VIEW_DESC": "Vali nimekirjast kiri, mida siin näidata",
 		"MESSAGE_VIEW_MOVE_DESC": "Click folder name in the left panel to select the destination.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP abil signeeritud kiri",
-		"BUTTON_PGP_VERIFY": "kliki verifitseerimiseks",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP abil krüpteeritud kiri",
 		"LINK_DOWNLOAD_AS_ZIP": "Laadi alla .zip failina",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Allkirjasta",
 		"LABEL_ENCRYPT": "Krüpteeri",
-		"BUTTON_DECRYPT": "Dekrüpteeri"
+		"BUTTON_DECRYPT": "Dekrüpteeri",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "OpenPGP abil signeeritud kiri",
+		"ENCRYPTED_MESSAGE": "OpenPGP abil krüpteeritud kiri",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Korralik signatuur kasutajalt %USER%",
+		"ERROR": "OpenPGP viga: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Filtri loomine",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Värskendan...",
 		"DEFAULT_IDENTITY_LABEL": "vaikimisi"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Impordi võti",
 		"BUTTON_GENERATE_KEY_PAIR": "Genereeri võti",
 		"TITLE_PRIVATE": "Privaatne",
 		"TITLE_PUBLIC": "Avalik",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Klaviatuuri kombinatsioonide abi",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Salvesta kiri",
 		"LABEL_SEND_MESSAGE": "Saada kiri",
 		"LABEL_CLOSE_COMPOSE": "Sulge kirja koostamise aken"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Korralik signatuur kasutajalt %USER%",
-		"PGP_ERROR": "OpenPGP viga: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Puudulik tõend",

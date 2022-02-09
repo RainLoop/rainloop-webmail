@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Viðhengi",
 		"MESSAGE_VIEW_DESC": "Veldu skilaboð úr listanum til að skoða hér.",
 		"MESSAGE_VIEW_MOVE_DESC": "Smelltu á heiti möppu á spjaldinu til vinstri til að velja áfangastaðinn.",
-		"PGP_SIGNED_MESSAGE_DESC": "Skeyti undirritað með OpenPGP",
-		"BUTTON_PGP_VERIFY": "smelltu til að sannvotta",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "Skeyti dulritað með OpenPGP",
 		"LINK_DOWNLOAD_AS_ZIP": "Sækja sem .zip skrá",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Undirrita",
 		"LABEL_ENCRYPT": "Dulrita",
-		"BUTTON_DECRYPT": "Afkóða"
+		"BUTTON_DECRYPT": "Afkóða",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "Skeyti undirritað með OpenPGP",
+		"ENCRYPTED_MESSAGE": "Skeyti dulritað með OpenPGP",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Gild undirritun frá %USER%",
+		"ERROR": "OpenPGP villa: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Búa til síu?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Uppfæri aðgangslista",
 		"DEFAULT_IDENTITY_LABEL": "sjálfgefið"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Flytja inn lykil",
 		"BUTTON_GENERATE_KEY_PAIR": "Búa til lykla",
 		"TITLE_PRIVATE": "Einkalykill",
 		"TITLE_PUBLIC": "Dreifilykill",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Vista drög sjálfkrafa"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Vista drög sjálfkrafa",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Hjálp fyrir flýtilykla",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Vista skilaboð",
 		"LABEL_SEND_MESSAGE": "Senda skilaboð",
 		"LABEL_CLOSE_COMPOSE": "Loka ritli"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Gild undirritun frá %USER%",
-		"PGP_ERROR": "OpenPGP villa: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Rangt tákn",

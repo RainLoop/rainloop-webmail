@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Anexos",
 		"MESSAGE_VIEW_DESC": "Selecione uma mensagem para visualizá-la aqui.",
 		"MESSAGE_VIEW_MOVE_DESC": "Clique no nome da pasta no painel esquerdo para selecionar o destino.",
-		"PGP_SIGNED_MESSAGE_DESC": "Mensagem assinada com OpenPGP",
-		"BUTTON_PGP_VERIFY": "clique para verificar",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "Mensagem criptografada com OpenPGP",
 		"LINK_DOWNLOAD_AS_ZIP": "Baixar como zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Assinar",
 		"LABEL_ENCRYPT": "Criptografar",
-		"BUTTON_DECRYPT": "Decrypt"
+		"BUTTON_DECRYPT": "Decrypt",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "Mensagem assinada com OpenPGP",
+		"ENCRYPTED_MESSAGE": "Mensagem criptografada com OpenPGP",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Boa assinatura de %USER%",
+		"ERROR": "Erro OpenPGP: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Criar um filtro?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Atualizando a lista de contas",
 		"DEFAULT_IDENTITY_LABEL": "padrão"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importa chave",
 		"BUTTON_GENERATE_KEY_PAIR": "Gerar chave",
 		"TITLE_PRIVATE": "Privado",
 		"TITLE_PUBLIC": "Público",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Salvar automaticamente rascunho"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Salvar automaticamente rascunho",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Ajuda com os atalhos de teclado",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Salvar mensagem",
 		"LABEL_SEND_MESSAGE": "Enviar mensagem",
 		"LABEL_CLOSE_COMPOSE": "Fechar composição"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Boa assinatura de %USER%",
-		"PGP_ERROR": "Erro OpenPGP: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Senha inválida",

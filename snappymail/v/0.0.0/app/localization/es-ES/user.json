@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Adjuntos",
 		"MESSAGE_VIEW_DESC": "Seleccione un mensaje de la lista para verlo aquí.",
 		"MESSAGE_VIEW_MOVE_DESC": "Haga clic en el nombre de la carpeta del panel izquierdo para seleccionar el destino.",
-		"PGP_SIGNED_MESSAGE_DESC": "Mensaje firmado mediante OpenPGP",
-		"BUTTON_PGP_VERIFY": "click para verificar",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "Mensaje cifrado mediante OpenPGP",
 		"LINK_DOWNLOAD_AS_ZIP": "Descargar todo (archivo ZIP)",
 		"SPAM_SCORE": "Puntuación de spam",
 		"HAS_VIRUS_WARNING": "ADVERTENCIA: virus detectado"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Firmar",
 		"LABEL_ENCRYPT": "Encriptar",
-		"BUTTON_DECRYPT": "Descifrar"
+		"BUTTON_DECRYPT": "Descifrar",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "Mensaje firmado mediante OpenPGP",
+		"ENCRYPTED_MESSAGE": "Mensaje cifrado mediante OpenPGP",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Buena firma de %USER%",
+		"ERROR": "Error OpenPGP: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "¿Crear un filtro?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Actualizando lista de cuentas",
 		"DEFAULT_IDENTITY_LABEL": "predeterminado"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importar llave",
 		"BUTTON_GENERATE_KEY_PAIR": "Generar llaves",
 		"TITLE_PRIVATE": "Privado",
 		"TITLE_PUBLIC": "Público",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Ayuda de atajos de teclado",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Guardar aviso",
 		"LABEL_SEND_MESSAGE": "Enviar mensaje",
 		"LABEL_CLOSE_COMPOSE": "Cerrar componer"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Buena firma de %USER%",
-		"PGP_ERROR": "Error OpenPGP: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Elemento no válido",

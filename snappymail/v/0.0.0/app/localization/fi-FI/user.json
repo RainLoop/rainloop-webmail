@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Liite",
 		"MESSAGE_VIEW_DESC": "Valitse viesti listasta nähdäksesi sen tässä",
 		"MESSAGE_VIEW_MOVE_DESC": "Click folder name in the left panel to select the destination.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP allekirjoitettu viesti",
-		"BUTTON_PGP_VERIFY": "klikkaa verifioidaksesi",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP salattu visti",
 		"LINK_DOWNLOAD_AS_ZIP": "Lataa zip-tiedostona",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Allekirjoita",
 		"LABEL_ENCRYPT": "Salaa",
-		"BUTTON_DECRYPT": "Pura"
+		"BUTTON_DECRYPT": "Pura",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "OpenPGP allekirjoitettu viesti",
+		"ENCRYPTED_MESSAGE": "OpenPGP salattu visti",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Oikea allekirjoitus %USER% lle",
+		"ERROR": "OpenPGP virhe: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Luo suodatin?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Päivitetään...",
 		"DEFAULT_IDENTITY_LABEL": "oletus"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Tuo avain",
 		"BUTTON_GENERATE_KEY_PAIR": "Luo avain",
 		"TITLE_PRIVATE": "Yksityinen",
 		"TITLE_PUBLIC": "Julkinen",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Näppäimistö oikotie apu",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Tallenna viesti",
 		"LABEL_SEND_MESSAGE": "Lähetä viesti",
 		"LABEL_CLOSE_COMPOSE": "Sule luo viesti"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Oikea allekirjoitus %USER% lle",
-		"PGP_ERROR": "OpenPGP virhe: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Väärä suojaustunnus",

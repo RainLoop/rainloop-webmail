@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "پیوست‌ها",
 		"MESSAGE_VIEW_DESC": "پیام را در لیست جهت مشاهده انتخاب کنید",
 		"MESSAGE_VIEW_MOVE_DESC": "بر روی نام شاخه در پنل سمت راست جهت انتخاب مقصد کلیک کنید",
-		"PGP_SIGNED_MESSAGE_DESC": "پیام توسط  OpenPGP امضاء شد",
-		"BUTTON_PGP_VERIFY": "برای بررسی کلیک کنید",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "پیام توسط  OpenPGP رمزنگاری شد",
 		"LINK_DOWNLOAD_AS_ZIP": "دریافت با پسوند zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "امضاء",
 		"LABEL_ENCRYPT": "رمزنگاری",
-		"BUTTON_DECRYPT": "رمزگشایی"
+		"BUTTON_DECRYPT": "رمزگشایی",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "پیام توسط  OpenPGP امضاء شد",
+		"ENCRYPTED_MESSAGE": "پیام توسط  OpenPGP رمزنگاری شد",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "امضای صحیح از %USER%",
+		"ERROR": "خطای OpenPGP: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "یک فیلتر ایجاد شود؟",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "بروزرسانی...",
 		"DEFAULT_IDENTITY_LABEL": "پیش‌فرض"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "وارد کردن کلید",
 		"BUTTON_GENERATE_KEY_PAIR": "تولید کلیدهای",
 		"TITLE_PRIVATE": "خصوصی",
 		"TITLE_PUBLIC": "عمومی",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "ذخیره خودکار پیش‌نویس"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "ذخیره خودکار پیش‌نویس",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "راهنمای میانبر‌های کیبرد",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "ذخیره پیام",
 		"LABEL_SEND_MESSAGE": "فرستادن پیام",
 		"LABEL_CLOSE_COMPOSE": "بستن صفحه ایجاد"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "امضای صحیح از %USER%",
-		"PGP_ERROR": "خطای OpenPGP: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "توکن نامعتبر",

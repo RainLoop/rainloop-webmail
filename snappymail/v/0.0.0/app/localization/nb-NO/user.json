@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Vedlegg",
 		"MESSAGE_VIEW_DESC": "Trykk på en melding for å lese den",
 		"MESSAGE_VIEW_MOVE_DESC": "Trykk på mappenavn i panelet til venstre for å velge mål.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP-signert melding",
-		"BUTTON_PGP_VERIFY": "trykk for å bekrefte",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP-kryptert melding",
 		"LINK_DOWNLOAD_AS_ZIP": "Last ned som zip-fil",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Signer",
 		"LABEL_ENCRYPT": "Krypter",
-		"BUTTON_DECRYPT": "Dekrypter"
+		"BUTTON_DECRYPT": "Dekrypter",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "OpenPGP-signert melding",
+		"ENCRYPTED_MESSAGE": "OpenPGP-kryptert melding",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Gyldig signatur fra %USER%",
+		"ERROR": "OpenPGP-feil: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Vil du lage et filter?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Oppdaterer …",
 		"DEFAULT_IDENTITY_LABEL": "Standard"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importer nøkkel",
 		"BUTTON_GENERATE_KEY_PAIR": "Lag nøkler",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Offentlig",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Lagre utkast automatisk"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Lagre utkast automatisk",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Tastatursnarveier",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Lagre melding",
 		"LABEL_SEND_MESSAGE": "Send melding",
 		"LABEL_CLOSE_COMPOSE": "Lukk ny melding"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Gyldig signatur fra %USER%",
-		"PGP_ERROR": "OpenPGP-feil: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ugyldig info",

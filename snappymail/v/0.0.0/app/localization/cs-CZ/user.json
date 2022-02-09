@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Přílohy",
 		"MESSAGE_VIEW_DESC": "Vyberte zprávu ze seznamu pro její zobrazení zde.",
 		"MESSAGE_VIEW_MOVE_DESC": "Vyberte cílovou složku v levém panelu.",
-		"PGP_SIGNED_MESSAGE_DESC": "Zpráva podepsaná OpenPGP",
-		"BUTTON_PGP_VERIFY": "klikněte pro ověření",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "Zpráva šifrovaná OpenPGP",
 		"LINK_DOWNLOAD_AS_ZIP": "Stáhnout jako zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Podpis",
 		"LABEL_ENCRYPT": "Šifrování",
-		"BUTTON_DECRYPT": "Dešifrovat"
+		"BUTTON_DECRYPT": "Dešifrovat",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "Zpráva podepsaná OpenPGP",
+		"ENCRYPTED_MESSAGE": "Zpráva šifrovaná OpenPGP",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Ověřený podpis od %USER%",
+		"ERROR": "OpenPGP chyba: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Vytvořit filtr?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Aktualizace seznamu účtů",
 		"DEFAULT_IDENTITY_LABEL": "výchozí"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importovat klíč",
 		"BUTTON_GENERATE_KEY_PAIR": "Generovat klíče",
 		"TITLE_PRIVATE": "Soukromý",
 		"TITLE_PUBLIC": "Veřejný",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automaticky uložit koncept"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automaticky uložit koncept",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Klávesové zkratky",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Uložit zprávu",
 		"LABEL_SEND_MESSAGE": "Odeslat zprávu",
 		"LABEL_CLOSE_COMPOSE": "Zavřít okno se zprávou"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Ověřený podpis od %USER%",
-		"PGP_ERROR": "OpenPGP chyba: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Neplatný token",

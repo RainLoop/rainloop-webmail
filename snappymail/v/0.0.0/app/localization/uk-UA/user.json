@@ -148,9 +148,6 @@
 		"PRINT_LABEL_ATTACHMENTS": "Файли",
 		"MESSAGE_VIEW_DESC": "Виберіть повідомлення для перегляду.",
 		"MESSAGE_VIEW_MOVE_DESC": "Click folder name in the left panel to select the destination.",
-		"PGP_SIGNED_MESSAGE_DESC": "OpenPGP підписане повідомлення",
-		"BUTTON_PGP_VERIFY": "натисніть, щоб підтвердити",
-		"PGP_ENCRYPTED_MESSAGE_DESC": "OpenPGP шифроване повідомлення",
 		"LINK_DOWNLOAD_AS_ZIP": "Завантажити як zip",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected"
@@ -262,7 +259,14 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Підпис",
 		"LABEL_ENCRYPT": "Шифрування",
-		"BUTTON_DECRYPT": "Дешифрувати"
+		"BUTTON_DECRYPT": "Дешифрувати",
+		"BUTTON_VERIFY": "Verify",
+		"SIGNED_MESSAGE": "OpenPGP підписане повідомлення",
+		"ENCRYPTED_MESSAGE": "OpenPGP шифроване повідомлення",
+		"STORE_IN_GNUPG": "Store on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"GOOD_SIGNATURE": "Підтверджена сигнатура для %USER%",
+		"ERROR": "OpenPGP помилка: %ERROR%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Створити фільтер?",
@@ -448,12 +452,13 @@
 		"LOADING_PROCESS": "Оновлення списку акаунтів",
 		"DEFAULT_IDENTITY_LABEL": "default"
 	},
-	"SETTINGS_OPEN_PGP": {
+	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Імпортувати ключ",
 		"BUTTON_GENERATE_KEY_PAIR": "Новий ключ",
 		"TITLE_PRIVATE": "Приватний",
 		"TITLE_PUBLIC": "Публічний",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft"
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Сполучення клавіш",
@@ -493,10 +498,6 @@
 		"LABEL_SAVE_MESSAGE": "Зберегти повідомлення",
 		"LABEL_SEND_MESSAGE": "Надіслати повідомлення",
 		"LABEL_CLOSE_COMPOSE": "Закрити повідомлення"
-	},
-	"PGP_NOTIFICATIONS": {
-		"GOOD_SIGNATURE": "Підтверджена сигнатура для %USER%",
-		"PGP_ERROR": "OpenPGP помилка: %ERROR%"
 	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Невірний токен запиту",
