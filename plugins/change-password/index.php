@@ -6,9 +6,9 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Change Password',
-		VERSION  = '2.9',
-		RELEASE  = '2021-07-20',
-		REQUIRED = '2.9.1',
+		VERSION  = '2.12',
+		RELEASE  = '2022-02-10',
+		REQUIRED = '2.12.0',
 		CATEGORY = 'Security',
 		DESCRIPTION = 'Extension to allow users to change their passwords';
 
@@ -96,17 +96,21 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetDefaultValue(70),
 		];
 		foreach ($this->getSupportedDrivers(true) as $name => $class) {
-			$result[] = \RainLoop\Plugins\Property::NewInstance("driver_{$name}_enabled")
-				->SetLabel('Enable ' . $class::NAME)
-				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
-				->SetDescription($class::DESCRIPTION)
-				->SetDefaultValue(false);
-			$result[] = \RainLoop\Plugins\Property::NewInstance("driver_{$name}_allowed_emails")
-				->SetLabel('Allowed emails')
-				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
-				->SetDescription('Allowed emails, space as delimiter, wildcard supported. Example: user1@example.net user2@example1.net *@example2.net')
-				->SetDefaultValue('*');
-			$result = \array_merge($result, \call_user_func("{$class}::configMapping"));
+			$group = new \RainLoop\Plugins\PropertyCollection($name);
+			$props = [
+				\RainLoop\Plugins\Property::NewInstance("driver_{$name}_enabled")
+					->SetLabel('Enable ' . $class::NAME)
+					->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+					->SetDescription($class::DESCRIPTION)
+					->SetDefaultValue(false),
+				\RainLoop\Plugins\Property::NewInstance("driver_{$name}_allowed_emails")
+					->SetLabel('Allowed emails')
+					->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
+					->SetDescription('Allowed emails, space as delimiter, wildcard supported. Example: user1@example.net user2@example1.net *@example2.net')
+					->SetDefaultValue('*')
+			];
+			$group->exchangeArray(\array_merge($props, \call_user_func("{$class}::configMapping")));
+			$result[] = $group;
 		}
 		return $result;
 	}

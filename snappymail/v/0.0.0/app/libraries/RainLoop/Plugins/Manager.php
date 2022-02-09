@@ -82,7 +82,7 @@ class Manager
 				->SetName($sName)
 				->SetPath(static::getPluginPath($sName))
 				->SetPluginManager($this)
-				->SetPluginConfig(new \RainLoop\Config\Plugin($sName, $oPlugin->ConfigMap()))
+				->SetPluginConfig(new \RainLoop\Config\Plugin($sName, $oPlugin->ConfigMap(true)))
 			;
 		}
 
@@ -223,7 +223,7 @@ class Manager
 				if ($oPlugin)
 				{
 					$aConfig = array();
-					$aMap = $oPlugin->ConfigMap();
+					$aMap = $oPlugin->ConfigMap(true);
 					if (\is_array($aMap))
 					{
 						foreach ($aMap as /* @var $oPluginProperty \RainLoop\Plugins\Property */ $oPluginProperty)
@@ -468,16 +468,15 @@ class Manager
 		return false;
 	}
 
-	public function ReadLang(string $sLang, array &$aLang) : self
+	public function ReadLang(string $sLang, array &$aLang) : void
 	{
-		if ($this->bIsEnabled)
-		{
-			foreach ($this->aPlugins as $oPlugin)
-			{
-				if ($oPlugin->UseLangs())
-				{
+		if ($this->bIsEnabled) {
+			foreach ($this->aPlugins as $oPlugin) {
+				if ($oPlugin->UseLangs()) {
 					$sPath = $oPlugin->Path().'/langs/';
 					$aPLang = [];
+
+					// First get english
 					if (\is_file("{$sPath}en.ini")) {
 						$aPLang = \parse_ini_file("{$sPath}en.ini", true);
 					} else if (\is_file("{$sPath}en.json")) {
@@ -487,8 +486,8 @@ class Manager
 						$aLang = \array_replace_recursive($aLang, $aPLang);
 					}
 
-					if ('en' !== $sLang)
-					{
+					// Now get native
+					if ('en' !== $sLang) {
 						$aPLang = [];
 						if (\is_file("{$sPath}{$sLang}.ini")) {
 							$aPLang = \parse_ini_file("{$sPath}{$sLang}.ini", true);
@@ -504,8 +503,6 @@ class Manager
 				}
 			}
 		}
-
-		return $this;
 	}
 
 	public function IsEnabled() : bool

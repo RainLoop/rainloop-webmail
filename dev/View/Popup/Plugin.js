@@ -21,11 +21,11 @@ class PluginPopupView extends AbstractViewPopup {
 			readme: ''
 		});
 
-		this.configures = ko.observableArray();
+		this.config = ko.observableArray();
 
 		this.addComputables({
 			hasReadme: () => !!this.readme(),
-			hasConfiguration: () => 0 < this.configures().length
+			hasConfiguration: () => 0 < this.config().length
 		});
 
 		this.bDisabeCloseOnEsc = true;
@@ -44,7 +44,7 @@ class PluginPopupView extends AbstractViewPopup {
 			Settings: {}
 		};
 
-		this.configures.forEach(oItem => {
+		this.config.forEach(oItem => {
 			let value = oItem.value();
 			if (false === value || true === value) {
 				value = value ? 1 : 0;
@@ -64,7 +64,7 @@ class PluginPopupView extends AbstractViewPopup {
 		this.id('');
 		this.name('');
 		this.readme('');
-		this.configures([]);
+		this.config([]);
 
 		if (oPlugin) {
 			this.id(oPlugin.Id);
@@ -73,16 +73,11 @@ class PluginPopupView extends AbstractViewPopup {
 
 			const config = oPlugin.Config;
 			if (arrayLength(config)) {
-				this.configures(
-					config.map(item => ({
-						value: ko.observable(item[0]),
-						placeholder: ko.observable(item[6]),
-						Name: item[1],
-						Type: item[2],
-						Label: item[3],
-						Default: item[4],
-						Desc: item[5]
-					}))
+				this.config(
+					config.map(item => {
+						item.value = ko.observable(item.value);
+						return item;
+					})
 				);
 			}
 		}

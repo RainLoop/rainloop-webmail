@@ -5,6 +5,7 @@ namespace RainLoop\Enumerations;
 class PluginPropertyType
 {
 	const
+		GROUP = 7,
 		STRING = 0,
 		INT = 1,
 		STRING_TEXT = 2,

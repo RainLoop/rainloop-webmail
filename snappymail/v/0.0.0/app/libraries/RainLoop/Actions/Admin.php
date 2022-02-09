@@ -791,34 +791,41 @@ trait Admin
 		$mResult = false;
 		$sId = (string) $this->GetActionParam('Id', '');
 
-		if (!empty($sId))
-		{
+		if (!empty($sId)) {
 			$oPlugin = $this->Plugins()->CreatePluginByName($sId);
-			if ($oPlugin)
-			{
+			if ($oPlugin) {
 				$mResult = array(
-					 'Id' => $sId,
-					 'Name' => $oPlugin->Name(),
-					 'Readme' => $oPlugin->Description(),
-					 'Config' => array()
+					'@Object' => 'Object/Plugin',
+					'Id' => $sId,
+					'Name' => $oPlugin->Name(),
+					'Readme' => $oPlugin->Description(),
+					'Config' => array()
 				);
 
 				$aMap = $oPlugin->ConfigMap();
-				$oConfig = $oPlugin->Config();
-				if (is_array($aMap))
-				{
-					foreach ($aMap as $oItem)
-					{
-						if ($oItem && ($oItem instanceof \RainLoop\Plugins\Property))
-						{
-							$aItem = $oItem->ToArray();
-							$aItem[0] = $oConfig->Get('plugin', $oItem->Name(), '');
-							if (PluginPropertyType::PASSWORD === $oItem->Type())
-							{
-								$aItem[0] = APP_DUMMY;
+				if (\is_array($aMap)) {
+					$oConfig = $oPlugin->Config();
+					foreach ($aMap as $oItem) {
+						if ($oItem) {
+							if ($oItem instanceof \RainLoop\Plugins\Property) {
+								if (PluginPropertyType::PASSWORD === $oItem->Type()) {
+									$oItem->SetValue(APP_DUMMY);
+								} else {
+									$oItem->SetValue($oConfig->Get('plugin', $oItem->Name(), ''));
+								}
+								$mResult['Config'][] = $oItem;
+							} else if ($oItem instanceof \RainLoop\Plugins\PropertyCollection) {
+								foreach ($oItem as $oSubItem) {
+									if ($oSubItem && $oSubItem instanceof \RainLoop\Plugins\Property) {
+										if (PluginPropertyType::PASSWORD === $oSubItem->Type()) {
+											$oSubItem->SetValue(APP_DUMMY);
+										} else {
+											$oSubItem->SetValue($oConfig->Get('plugin', $oSubItem->Name(), ''));
+										}
+									}
+								}
+								$mResult['Config'][] = $oItem;
 							}
-
-							$mResult['Config'][] = $aItem;
 						}
 					}
 				}
@@ -841,7 +848,7 @@ trait Admin
 			if ($oPlugin)
 			{
 				$oConfig = $oPlugin->Config();
-				$aMap = $oPlugin->ConfigMap();
+				$aMap = $oPlugin->ConfigMap(true);
 				if (is_array($aMap))
 				{
 					$aSettings = (array) $this->GetActionParam('Settings', []);

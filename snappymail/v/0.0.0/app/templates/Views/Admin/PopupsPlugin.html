@@ -14,8 +14,18 @@
 			<a href="#" class="close" data-bind="click: function () { saveError('') }">×</a>
 			<span data-bind="text: saveError"></span>
 		</div>
-		<div data-bind="foreach: configures, visible: hasConfiguration">
+		<div data-bind="foreach: config, visible: hasConfiguration">
+			<!-- ko if: 7 == Type -->
+			<details open="">
+				<summary class="legend" data-bind="text: Label"></summary>
+				<div data-bind="foreach: config">
+					<div class="control-group" data-bind="template: { name: 'AdminSettingsPluginProperty' }"></div>
+				</div>
+			</details>
+			<!-- /ko -->
+			<!-- ko if: 7 != Type -->
 			<div class="control-group" data-bind="template: { name: 'AdminSettingsPluginProperty' }"></div>
+			<!-- /ko -->
 		</div>
 	</form>
 </div>

@@ -2,12 +2,17 @@
 
 namespace RainLoop\Plugins;
 
-class Property
+class Property implements \JsonSerializable
 {
 	/**
 	 * @var string
 	 */
 	private $sName;
+
+	/**
+	 * @var mixed
+	 */
+	private $mValue;
 
 	/**
 	 * @var string
@@ -60,6 +65,14 @@ class Property
 		$this->iType = (int) $iType;
 
 		return $this;
+	}
+
+	/**
+	 * @param mixed $mValue
+	 */
+	public function SetValue($mValue) : void
+	{
+		$this->mValue = $mValue;
 	}
 
 	/**
@@ -138,16 +151,17 @@ class Property
 		return $this->sPlaceholder;
 	}
 
-	public function ToArray() : array
+	public function jsonSerialize()
 	{
 		return array(
-			 '',
-			 $this->sName,
-			 $this->iType,
-			 $this->sLabel,
-			 $this->mDefaultValue,
-			 $this->sDesc,
-			 $this->sPlaceholder
+			'@Object' => 'Object/PluginProperty',
+			'value' => $this->mValue,
+			'placeholder' => $this->sPlaceholder,
+			'Name' => $this->sName,
+			'Type' => $this->iType,
+			'Label' => $this->sLabel,
+			'Default' => $this->mDefaultValue,
+			'Desc' => $this->sDesc
 		);
 	}
 }
