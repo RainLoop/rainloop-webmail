@@ -18,7 +18,6 @@ import {
 import {
 	doc,
 	elementById,
-	createElement,
 	$htmlCL,
 	Settings,
 	SettingsGet,
@@ -544,23 +543,6 @@ class AppUser extends AbstractApp {
 				autocompleteCallback([]);
 			}
 		}, query);
-	}
-
-	/**
-	 * @param {string} link
-	 * @returns {boolean}
-	 */
-	download(link) {
-		if (ThemeStore.isMobile()) {
-			open(link, '_self');
-			focus();
-		} else {
-			const oLink = createElement('a');
-			oLink.href = link;
-			doc.body.appendChild(oLink).click();
-			oLink.remove();
-		}
-		return true;
 	}
 
 	logout() {

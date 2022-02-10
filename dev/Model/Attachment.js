@@ -21,7 +21,6 @@ export class AttachmentModel extends AbstractModel {
 		this.fileNameExt = '';
 		this.fileType = FileType.Unknown;
 		this.friendlySize = '';
-		this.isInline = false;
 		this.isLinked = false;
 		this.isThumbnail = false;
 		this.cid = '';
@@ -29,8 +28,13 @@ export class AttachmentModel extends AbstractModel {
 		this.download = '';
 		this.folder = '';
 		this.uid = '';
+		this.url = '';
 		this.mimeIndex = '';
 		this.framed = false;
+
+		this.addObservables({
+			isInline: false
+		});
 	}
 
 	/**
@@ -124,14 +128,14 @@ export class AttachmentModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	linkDownload() {
-		return attachmentDownload(this.download);
+		return this.url || attachmentDownload(this.download);
 	}
 
 	/**
 	 * @returns {string}
 	 */
 	linkPreview() {
-		return serverRequestRaw('View', this.download);
+		return this.url || serverRequestRaw('View', this.download);
 	}
 
 	/**

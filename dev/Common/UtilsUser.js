@@ -1,11 +1,12 @@
 import { ComposeType/*, FolderType*/ } from 'Common/EnumsUser';
 import { EmailModel } from 'Model/Email';
 import { isArray } from 'Common/Utils';
-import { createElement } from 'Common/Globals';
+import { doc, createElement } from 'Common/Globals';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import * as Local from 'Storage/Client';
 import { plainToHtml } from 'Common/Html';
+import { ThemeStore } from 'Stores/Theme';
 
 export const
 
@@ -17,6 +18,24 @@ sortFolders = folders => {
 		);
 	} catch (e) {
 		console.error(e);
+	}
+},
+
+/**
+ * @param {string} link
+ * @returns {boolean}
+ */
+download = (link, name = "") => {
+	if (ThemeStore.isMobile()) {
+		open(link, '_self');
+		focus();
+	} else {
+		const oLink = createElement('a');
+		oLink.href = link;
+		oLink.target = '_blank';
+		oLink.download = name;
+		doc.body.appendChild(oLink).click();
+		oLink.remove();
 	}
 },
 

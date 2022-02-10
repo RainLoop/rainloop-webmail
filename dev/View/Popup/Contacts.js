@@ -8,7 +8,7 @@ import {
 import { ComposeType } from 'Common/EnumsUser';
 
 import { arrayLength, pInt } from 'Common/Utils';
-import { delegateRunOnDestroy, computedPaginatorHelper, showMessageComposer } from 'Common/UtilsUser';
+import { download, delegateRunOnDestroy, computedPaginatorHelper, showMessageComposer } from 'Common/UtilsUser';
 
 import { Selector } from 'Common/Selector';
 import { serverRequestRaw, serverRequest } from 'Common/Links';
@@ -317,11 +317,11 @@ class ContactsPopupView extends AbstractViewPopup {
 	}
 
 	exportVcf() {
-		rl.app.download(serverRequestRaw('ContactsVcf'));
+		download(serverRequestRaw('ContactsVcf'), 'contacts.vcf');
 	}
 
 	exportCsv() {
-		rl.app.download(serverRequestRaw('ContactsCsv'));
+		download(serverRequestRaw('ContactsCsv'), 'contacts.csv');
 	}
 
 	removeCheckedOrSelectedContactsFromList() {

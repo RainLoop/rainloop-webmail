@@ -27,7 +27,7 @@ import {
 } from 'Common/Globals';
 
 import { arrayLength, inFocus } from 'Common/Utils';
-import { mailToHelper, showMessageComposer, initFullscreen } from 'Common/UtilsUser';
+import { download, mailToHelper, showMessageComposer, initFullscreen } from 'Common/UtilsUser';
 
 import { SMAudio } from 'Common/Audio';
 
@@ -95,7 +95,7 @@ const
 					attachment.cid = cid ? cid.value : '';
 					if (cid && html) {
 						let cid = 'cid:' + attachment.contentId();
-						attachment.isInline = html.includes(cid);
+						attachment.isInline(html.includes(cid));
 						html = html
 							.replace('src="' + cid + '"', 'src="' + attachment.url + '"')
 							.replace("src='" + cid + "'", "src='" + attachment.url + "'");
@@ -379,7 +379,7 @@ export class MailMessageView extends AbstractViewRight {
 			el = eqs(event, '.attachmentsPlace .attachmentItem .attachmentNameParent');
 			if (el) {
 				const attachment = ko.dataFor(el);
-				attachment && attachment.download && rl.app.download(attachment.linkDownload());
+				attachment && attachment.linkDownload() && download(attachment.linkDownload(), attachment.fileName);
 			}
 
 			if (eqs(event, '.messageItemHeader .subjectParent .flagParent')) {
@@ -587,8 +587,9 @@ export class MailMessageView extends AbstractViewRight {
 		if (hashes.length) {
 			Remote.attachmentsActions('Zip', hashes, this.downloadAsZipLoading)
 				.then(result => {
-					if (result && result.Result && result.Result.FileHash) {
-						rl.app.download(attachmentDownload(result.Result.FileHash));
+					let hash = result && result.Result && result.Result.FileHash;
+					if (hash) {
+						download(attachmentDownload(hash), hash+'.zip');
 					} else {
 						this.downloadAsZipError(true);
 					}
