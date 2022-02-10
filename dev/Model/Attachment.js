@@ -21,7 +21,6 @@ export class AttachmentModel extends AbstractModel {
 		this.fileNameExt = '';
 		this.fileType = FileType.Unknown;
 		this.friendlySize = '';
-		this.isLinked = false;
 		this.isThumbnail = false;
 		this.cid = '';
 		this.contentLocation = '';
@@ -33,7 +32,8 @@ export class AttachmentModel extends AbstractModel {
 		this.framed = false;
 
 		this.addObservables({
-			isInline: false
+			isInline: false,
+			isLinked: false
 		});
 	}
 

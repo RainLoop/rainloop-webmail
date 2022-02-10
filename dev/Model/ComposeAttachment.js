@@ -65,8 +65,8 @@ export class ComposeAttachmentModel extends AbstractModel {
 			item.download,
 			item.fileName,
 			item.estimatedSize,
-			item.isInline,
-			item.isLinked,
+			item.isInline(),
+			item.isLinked(),
 			item.cid,
 			item.contentLocation
 		);

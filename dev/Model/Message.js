@@ -397,8 +397,10 @@ export class MessageModel extends AbstractModel {
 
 			// Hide valid inline attachments in message view 'attachments' section
 			oAttachments.forEach(oAttachment => {
-				oAttachment.isLinked = result.foundCIDs.includes(oAttachment.contentId())
-					|| result.foundContentLocationUrls.includes(oAttachment.contentLocation)
+				let cid = oAttachment.contentId(),
+					found = result.foundCIDs.includes(cid);
+				oAttachment.isInline(found);
+				oAttachment.isLinked(found || result.foundContentLocationUrls.includes(oAttachment.contentLocation));
 			});
 			this.hasAttachments(oAttachments.hasVisible());
 

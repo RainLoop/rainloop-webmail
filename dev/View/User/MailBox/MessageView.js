@@ -83,7 +83,7 @@ const
 					attachment.fileNameExt = '';
 					attachment.fileType = FileType.Unknown;
 					attachment.friendlySize = '';
-					attachment.isLinked = false;
+					attachment.isLinked(false);
 					attachment.isThumbnail = false;
 					attachment.contentLocation = '';
 					attachment.download = '';
@@ -94,11 +94,14 @@ const
 */
 					attachment.cid = cid ? cid.value : '';
 					if (cid && html) {
-						let cid = 'cid:' + attachment.contentId();
-						attachment.isInline(html.includes(cid));
-						html = html
+						let cid = 'cid:' + attachment.contentId(),
+							found = html.includes(cid);
+						attachment.isInline(found);
+						attachment.isLinked(found);
+						found && (html = html
 							.replace('src="' + cid + '"', 'src="' + attachment.url + '"')
-							.replace("src='" + cid + "'", "src='" + attachment.url + "'");
+							.replace("src='" + cid + "'", "src='" + attachment.url + "'")
+						);
 					} else {
 						message.attachments.push(attachment);
 					}
@@ -582,7 +585,7 @@ export class MailMessageView extends AbstractViewRight {
 
 	downloadAsZip() {
 		const hashes = (currentMessage() ? currentMessage().attachments : [])
-			.map(item => (item && !item.isLinked && item.checked() ? item.download : ''))
+			.map(item => (item && !item.isLinked() && item.checked() ? item.download : ''))
 			.filter(v => v);
 		if (hashes.length) {
 			Remote.attachmentsActions('Zip', hashes, this.downloadAsZipLoading)
