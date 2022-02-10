@@ -52,7 +52,7 @@ import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 import { PgpUserStore } from 'Stores/User/Pgp';
 
-import PostalMime from '../../../../vendors/postal-mime/src/postal-mime.js';
+import { ParseMime } from 'Mime/Parser';
 import { AttachmentModel } from 'Model/Attachment';
 
 const
@@ -61,44 +61,57 @@ const
 	currentMessage = () => MessageUserStore.message(),
 
 	mimeToMessage = (data, message) => {
-		// TODO: Check multipart/signed application/pgp-signature application/pgp-keys
 		const headers = data.split(/\r?\n\r?\n/)[0];
 		if (/Content-Type:/i.test(headers)) {
-			// https://github.com/postalsys/postal-mime
-			(new PostalMime).parse(data).then(result => {
-				// TODO: multipart/signed
-				let html = result.html,
-					regex = /^<+|>+$/g;
-				result.attachments.forEach(data => {
+			const struct = ParseMime(data),
+				text = struct.getByContentType('text/plain');
+			let html = struct.getByContentType('text/html');
+			html = html ? html.body : '';
+
+			// TODO: Check multipart/signed application/pgp-signature application/pgp-keys
+			struct.forEach(part => {
+				let cd = part.header('content-disposition'),
+					cid = part.header('content-id'),
+					type = part.header('content-type');
+				if (cid || cd) {
+					// if (cd && 'attachment' === cd.value) {
 					let attachment = new AttachmentModel;
-					attachment.mimeType = data.mimeType;
-					attachment.fileName = data.filename;
-					attachment.content = data.content; // ArrayBuffer
-					attachment.cid = data.contentId || '';
-					// Parse inline attachments from result.attachments
-					if (attachment.cid) {
-						if (html) {
-							let cid = 'cid:' + attachment.cid.replace(regex, ''),
-								b64 = 'data:' + data.mimeType + ';base64,' + btoa(String.fromCharCode(...new Uint8Array(data.content)));
-							html = html
-								.replace('src="' + cid + '"', 'src="' + b64 + '"')
-								.replace("src='" + cid + "'", "src='" + b64 + "'");
-						}
+					attachment.mimeType = type.value;
+					attachment.fileName = (type.name || (cd && cd.params.filename));
+					attachment.url = part.dataUrl;
+/*
+					attachment.fileNameExt = '';
+					attachment.fileType = FileType.Unknown;
+					attachment.friendlySize = '';
+					attachment.isLinked = false;
+					attachment.isThumbnail = false;
+					attachment.contentLocation = '';
+					attachment.download = '';
+					attachment.folder = '';
+					attachment.uid = '';
+					attachment.mimeIndex = part.id;
+					attachment.framed = false;
+*/
+					attachment.cid = cid ? cid.value : '';
+					if (cid && html) {
+						let cid = 'cid:' + attachment.contentId();
+						attachment.isInline = html.includes(cid);
+						html = html
+							.replace('src="' + cid + '"', 'src="' + attachment.url + '"')
+							.replace("src='" + cid + "'", "src='" + attachment.url + "'");
+					} else {
+						message.attachments.push(attachment);
 					}
-//					data.disposition
-//					data.related = true;
-					message.attachments.push(attachment);
-				});
-				message.hasAttachments(message.attachments().hasVisible());
-//				result.headers;
-				message.plain(result.text || '');
-				if (html) {
-					message.html(html.replace(/<\/?script[\s\S]*?>/gi, '') || '');
-					message.viewHtml();
-				} else {
-					message.viewPlain();
 				}
 			});
+
+			message.plain(text ? text.body : '');
+			if (html) {
+				message.html(html.replace(/<\/?script[\s\S]*?>/gi, ''));
+				message.viewHtml();
+			} else {
+				message.viewPlain();
+			}
 			return;
 		}
 		message.plain(data);
