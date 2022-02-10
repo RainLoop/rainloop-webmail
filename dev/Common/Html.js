@@ -13,6 +13,8 @@ const
 		"'": '&#x27;'
 	},
 
+	replaceWithChildren = node => node.replaceWith(...[...node.childNodes]),
+
 	// Strip utm_* tracking
 	stripTracking = text => text.replace(/(\?|&amp;|&)utm_[a-z]+=[^&?#]*/si, '$1');
 
@@ -29,8 +31,9 @@ export const
 	 * @param {string} text
 	 * @returns {string}
 	 */
-	clearHtml = (html, contentLocationUrls) => {
-		const debug = false, // Config()->Get('debug', 'enable', false);
+	cleanHtml = (html, contentLocationUrls, removeColors) => {
+		const
+			debug = false, // Config()->Get('debug', 'enable', false);
 			useProxy = !!SettingsGet('UseLocalProxyForExternalImages'),
 			detectHiddenImages = true, // !!SettingsGet('try_to_detect_hidden_images'),
 
@@ -38,7 +41,72 @@ export const
 				hasExternals: false,
 				foundCIDs: [],
 				foundContentLocationUrls: []
+			},
+
+			// convert body attributes to CSS
+			tasks = {
+				link: value => {
+					if (/^#[a-fA-Z0-9]{3,6}$/.test(value)) {
+						tpl.content.querySelectorAll('a').forEach(node => node.style.color = value)
+					}
+				},
+				text: (value, node) => node.style.color = value,
+				topmargin: (value, node) => node.style.marginTop = pInt(value) + 'px',
+				leftmargin: (value, node) => node.style.marginLeft = pInt(value) + 'px',
+				bottommargin: (value, node) => node.style.marginBottom = pInt(value) + 'px',
+				rightmargin: (value, node) => node.style.marginRight = pInt(value) + 'px'
 			};
+
+//		if (static::Config()->Get('labs', 'strict_html_parser', true))
+		let
+			value,
+			allowedAttributes = [
+				// defaults
+				'name',
+				'dir', 'lang', 'style', 'title',
+				'background', 'bgcolor', 'alt', 'height', 'width', 'src', 'href',
+				'border', 'bordercolor', 'charset', 'direction', 'language',
+				// a
+				'coords', 'download', 'hreflang', 'shape',
+				// body
+				'alink', 'bgproperties', 'bottommargin', 'leftmargin', 'link', 'rightmargin', 'text', 'topmargin', 'vlink',
+				'marginwidth', 'marginheight', 'offset',
+				// button,
+				'disabled', 'type', 'value',
+				// col
+				'align', 'valign',
+				// font
+				'color', 'face', 'size',
+				// form
+				'novalidate',
+				// hr
+				'noshade',
+				// img
+				'hspace', 'sizes', 'srcset', 'vspace', 'usemap',
+				// input, textarea
+				'checked', 'max', 'min', 'maxlength', 'multiple', 'pattern', 'placeholder', 'readonly',
+					'required', 'step', 'wrap',
+				// label
+				'for',
+				// meter
+				'low', 'high', 'optimum',
+				// ol
+				'reversed', 'start',
+				// option
+				'selected', 'label',
+				// table
+				'cols', 'rows', 'frame', 'rules', 'summary', 'cellpadding', 'cellspacing',
+				// th
+				'abbr', 'scope',
+				// td
+				'axis', 'colspan', 'rowspan', 'headers', 'nowrap'
+			],
+			disallowedAttributes = [
+				'id', 'class', 'contenteditable', 'designmode', 'formaction', 'manifest', 'action',
+				'data-bind', 'data-reactid', 'xmlns', 'srcset',
+				'fscommand', 'seeksegmenttime'
+			];
+
 		tpl.innerHTML = html
 			.replace(/(<pre[^>]*>)([\s\S]*?)(<\/pre>)/gi, aMatches => {
 				return (aMatches[1] + aMatches[2].trim() + aMatches[3].trim()).replace(/\r?\n/g, '<br>');
@@ -47,13 +115,13 @@ export const
 			.replace(/<!--[\s\S]*?-->/g, '')
 			// \MailSo\Base\HtmlUtils::ClearTags()
 			// eslint-disable-next-line max-len
-			.replace(/<\/?(link|form|center|base|meta|bgsound|keygen|source|object|embed|applet|mocha|i?frame|frameset|video|audio|area|map)(\s[\s\S]*?)?>/gi, '')
+			.replace(/<\/?(link|form|input|output|select|button|textarea|center|base|meta|bgsound|keygen|source|object|embed|applet|mocha|i?frame|frameset|video|audio|area|map)(\s[\s\S]*?)?>/gi, '')
 			// GetDomFromText
 			.replace('<o:p></o:p>', '')
 			.replace('<o:p>', '<span>')
 			.replace('</o:p>', '</span>')
 			// https://github.com/the-djmaze/snappymail/issues/187
-			.replace(/<a(?:\s[^>]*)?>((?![\s\S]*<\/a)[\s\S]*?<a(\s[^>]*)?>)/gi, '$1')
+//			.replace(/<a(?:\s[^>]*)?>((?![\s\S]*<\/a)[\s\S]*?<a(\s[^>]*)?>)/gi, '$1')
 			// \MailSo\Base\HtmlUtils::ClearFastTags
 			.replace(/<p[^>]*><\/p>/i, '')
 			.replace(/<!doctype[^>]*>/i, '')
@@ -61,73 +129,13 @@ export const
 			.trim();
 		html = '';
 
-		// convert body attributes to CSS
-		const tasks = {
-			link: value => {
-				if (/^#[a-fA-Z0-9]{3,6}$/.test(value)) {
-					tpl.content.querySelectorAll('a').forEach(node => node.style.color = value)
-				}
-			},
-			text: (value, node) => node.style.color = value,
-			topmargin: (value, node) => node.style.marginTop = pInt(value) + 'px',
-			leftmargin: (value, node) => node.style.marginLeft = pInt(value) + 'px',
-			bottommargin: (value, node) => node.style.marginBottom = pInt(value) + 'px',
-			rightmargin: (value, node) => node.style.marginRight = pInt(value) + 'px'
-		};
-
-//		if (static::Config()->Get('labs', 'strict_html_parser', true))
-		let allowedAttributes = [
-			// defaults
-			'name',
-			'dir', 'lang', 'style', 'title',
-			'background', 'bgcolor', 'alt', 'height', 'width', 'src', 'href',
-			'border', 'bordercolor', 'charset', 'direction', 'language',
-			// a
-			'coords', 'download', 'hreflang', 'shape',
-			// body
-			'alink', 'bgproperties', 'bottommargin', 'leftmargin', 'link', 'rightmargin', 'text', 'topmargin', 'vlink',
-			'marginwidth', 'marginheight', 'offset',
-			// button,
-			'disabled', 'type', 'value',
-			// col
-			'align', 'valign',
-			// font
-			'color', 'face', 'size',
-			// form
-			'novalidate',
-			// hr
-			'noshade',
-			// img
-			'hspace', 'sizes', 'srcset', 'vspace', 'usemap',
-			// input, textarea
-			'checked', 'max', 'min', 'maxlength', 'multiple', 'pattern', 'placeholder', 'readonly',
-				'required', 'step', 'wrap',
-			// label
-			'for',
-			// meter
-			'low', 'high', 'optimum',
-			// ol
-			'reversed', 'start',
-			// option
-			'selected', 'label',
-			// table
-			'cols', 'rows', 'frame', 'rules', 'summary', 'cellpadding', 'cellspacing',
-			// th
-			'abbr', 'scope',
-			// td
-			'axis', 'colspan', 'rowspan', 'headers', 'nowrap'
-		];
-
-		let disallowedAttributes = [
-			'id', 'class', 'contenteditable', 'designmode', 'formaction', 'manifest', 'action',
-			'data-bind', 'data-reactid', 'xmlns', 'srcset',
-			'fscommand', 'seeksegmenttime'
-		];
-
 		tpl.content.querySelectorAll('*').forEach(oElement => {
-			const name = oElement.tagName.toUpperCase(),
+			const name = oElement.tagName,
 				oStyle = oElement.style,
-				getAttribute = name => oElement.hasAttribute(name) ? oElement.getAttribute(name).trim() : '';
+				hasAttribute = name => oElement.hasAttribute(name),
+				getAttribute = name => hasAttribute(name) ? oElement.getAttribute(name).trim() : '',
+				setAttribute = (name, value) => oElement.setAttribute(name, value),
+				delAttribute = name => oElement.removeAttribute(name);
 
 			if (['HEAD','STYLE','SVG','SCRIPT','TITLE','INPUT','BUTTON','TEXTAREA','SELECT'].includes(name)
 			 || 'none' == oStyle.display
@@ -143,19 +151,36 @@ export const
 
 			if ('BODY' === name) {
 				forEachObjectEntry(tasks, (name, cb) => {
-					if (oElement.hasAttribute(name)) {
+					if (hasAttribute(name)) {
 						cb(getAttribute(name), oElement);
-						oElement.removeAttribute(name);
+						delAttribute(name);
 					}
 				});
 			}
 
-			if ('TABLE' === name && oElement.hasAttribute('width')) {
-				let value = getAttribute('width');
-				oElement.removeAttribute('width');
+			else if ('TABLE' === name && hasAttribute('width')) {
+				value = getAttribute('width');
+				delAttribute('width');
 				oStyle.maxWidth = value + (/^[0-9]+$/.test(value) ? 'px' : '');
 				oStyle.removeProperty('width');
-				oStyle.removeProperty('min-width');
+			}
+
+			else if ('A' === name) {
+				value = oElement.href;
+				// https://github.com/the-djmaze/snappymail/issues/187 <a> can't have block element inside
+				if (!value || oElement.querySelector('td,div,p,li')) {
+					replaceWithChildren(oElement);
+					return;
+				}
+				value = stripTracking(value);
+				if (!/^([a-z]+):/i.test(value) && '//' !== value.slice(0, 2)) {
+					setAttribute('data-x-broken-href', value);
+					delAttribute('href');
+				} else {
+					setAttribute('target', '_blank');
+					setAttribute('rel', 'external nofollow noopener noreferrer');
+				}
+				setAttribute('tabindex', '-1');
 			}
 
 			const aAttrsForRemove = [];
@@ -171,39 +196,23 @@ export const
 //					 || sAttrName.includes(':')
 					 || disallowedAttributes.includes(sAttrName))
 					{
-						oElement.removeAttribute(sAttrName);
+						delAttribute(sAttrName);
 						aAttrsForRemove.push(sAttrName);
 					}
 				}
 			}
 
-			if (oElement.hasAttribute('href')) {
-				let sHref = stripTracking(getAttribute('href'));
-				if (!/^([a-z]+):/i.test(sHref) && '//' !== sHref.slice(0, 2)) {
-					oElement.setAttribute('data-x-broken-href', sHref);
-					oElement.removeAttribute('href');
-				}
-				if ('A' === name) {
-					oElement.setAttribute('rel', 'external nofollow noopener noreferrer');
-				}
-			}
-
 			// SVG xlink:href
 			/*
-			if (oElement.hasAttribute('xlink:href')) {
-				oElement.removeAttribute('xlink:href');
+			if (hasAttribute('xlink:href')) {
+				delAttribute('xlink:href');
 			}
 			*/
 
-			if ('A' === name) {
-				oElement.setAttribute('tabindex', '-1');
-				oElement.setAttribute('target', '_blank');
-			}
-
 			let skipStyle = false;
-			if (oElement.hasAttribute('src')) {
-				let sSrc = getAttribute('src');
-				oElement.removeAttribute('src');
+			if (hasAttribute('src')) {
+				value = getAttribute('src');
+				delAttribute('src');
 
 				if (detectHiddenImages
 					&& 'IMG' === name
@@ -214,51 +223,50 @@ export const
 							'github.com/notifications/beacon/',
 							'mandrillapp.com/track/open',
 							'list-manage.com/track/open'
-						].filter(uri => sSrc.toLowerCase().includes(uri)).length
+						].filter(uri => value.toLowerCase().includes(uri)).length
 				)) {
 					skipStyle = true;
-					oElement.setAttribute('style', 'display:none');
-					oElement.setAttribute('data-x-hidden-src', sSrc);
+					setAttribute('style', 'display:none');
+					setAttribute('data-x-hidden-src', value);
 				}
-				else if (contentLocationUrls[sSrc])
+				else if (contentLocationUrls[value])
 				{
-					oElement.setAttribute('data-x-src-location', sSrc);
-					result.foundContentLocationUrls.push(sSrc);
+					setAttribute('data-x-src-location', value);
+					result.foundContentLocationUrls.push(value);
 				}
-				else if ('cid:' === sSrc.slice(0, 4))
+				else if ('cid:' === value.slice(0, 4))
 				{
-					oElement.setAttribute('data-x-src-cid', sSrc.slice(4));
-					result.foundCIDs.push(sSrc.slice(4));
+					setAttribute('data-x-src-cid', value.slice(4));
+					result.foundCIDs.push(value.slice(4));
 				}
-				else if (/^https?:\/\//i.test(sSrc) || '//' === sSrc.slice(0, 2))
+				else if (/^https?:\/\//i.test(value) || '//' === value.slice(0, 2))
 				{
-					oElement.setAttribute('data-x-src', useProxy ? proxy(sSrc) : sSrc);
+					setAttribute('data-x-src', useProxy ? proxy(value) : value);
 					result.hasExternals = true;
 				}
-				else if ('data:image/' === sSrc.slice(0, 11))
+				else if ('data:image/' === value.slice(0, 11))
 				{
-					oElement.setAttribute('src', sSrc);
+					setAttribute('src', value);
 				}
 				else
 				{
-					oElement.setAttribute('data-x-broken-src', sSrc);
+					setAttribute('data-x-broken-src', value);
 				}
 			}
 
-			if (oElement.hasAttribute('background')) {
-				let sBackground = getAttribute('background');
-				if (sBackground) {
-					oStyle.backgroundImage = 'url("' + sBackground + '")';
-				}
-				oElement.removeAttribute('background');
+			if (hasAttribute('background')) {
+				oStyle.backgroundImage = 'url("' + getAttribute('background') + '")';
+				delAttribute('background');
 			}
 
-			if (oElement.hasAttribute('bgcolor')) {
-				let sBackgroundColor = getAttribute('bgcolor');
-				if (sBackgroundColor) {
-					oStyle.backgroundColor = sBackgroundColor;
-				}
-				oElement.removeAttribute('bgcolor');
+			if (hasAttribute('bgcolor')) {
+				oStyle.backgroundColor = getAttribute('bgcolor');
+				delAttribute('bgcolor');
+			}
+
+			if (hasAttribute('color')) {
+				oStyle.color = getAttribute('color');
+				delAttribute('color');
 			}
 
 			if (!skipStyle) {
@@ -269,6 +277,7 @@ export const
 */
 				oStyle.removeProperty('behavior');
 				oStyle.removeProperty('cursor');
+				oStyle.removeProperty('min-width');
 
 				const urls = {
 					cid: [],    // 'data-x-style-cid'
@@ -302,43 +311,37 @@ export const
 //				oStyle.removeProperty('list-style-image');
 
 				if (urls.cid.length) {
-					oElement.setAttribute('data-x-style-cid', JSON.stringify(urls.cid));
+					setAttribute('data-x-style-cid', JSON.stringify(urls.cid));
 				}
 				if (urls.remote.length) {
-					oElement.setAttribute('data-x-style-url', JSON.stringify(urls.remote));
+					setAttribute('data-x-style-url', JSON.stringify(urls.remote));
 				}
 				if (urls.broken.length) {
-					oElement.setAttribute('data-x-style-broken-urls', JSON.stringify(urls.broken));
+					setAttribute('data-x-style-broken-urls', JSON.stringify(urls.broken));
 				}
 
 				if (11 < pInt(oStyle.fontSize)) {
 					oStyle.removeProperty('font-size');
 				}
+
+				// Removes background and color
+				// Many e-mails incorrectly only define one, not both
+				// And in dark theme mode this kills the readability
+				if (removeColors) {
+					oStyle.removeProperty('background-color');
+					oStyle.removeProperty('background-image');
+					oStyle.removeProperty('color');
+				}
 			}
 
-			if (debug && aAttrsForRemove) {
-				oElement.setAttribute('data-removed-attrs', aAttrsForRemove.join(', '));
+			if (debug && aAttrsForRemove.length) {
+				setAttribute('data-removed-attrs', aAttrsForRemove.join(', '));
 			}
 		});
 
 //		return tpl.content.firstChild;
 		result.html = tpl.innerHTML;
 		return result;
-	},
-
-	// Removes background and color
-	// Many e-mails incorrectly only define one, not both
-	// And in dark theme mode this kills the readability
-	removeColors = html => {
-		let l;
-		do {
-			l = html.length;
-			html = html
-				.replace(/(<[^>]+[;"'])\s*background(-[a-z]+)?\s*:[^;"']+/gi, '$1')
-				.replace(/(<[^>]+[;"'])\s*color\s*:[^;"']+/gi, '$1')
-				.replace(/(<[^>]+)\s(bg)?color=("[^"]+"|'[^']+')/gi, '$1');
-		} while (l != html.length)
-		return html;
 	},
 
 	/**
@@ -356,7 +359,7 @@ export const
 					blockquotes(bq);
 					// Convert blockquote
 					bq.innerHTML = '\n' + ('\n' + bq.innerHTML.replace(/\n{3,}/gm, '\n\n').trim() + '\n').replace(/^/gm, '&gt; ');
-					bq.replaceWith(...[...bq.childNodes]);
+					replaceWithChildren(bq);
 				}
 			};
 

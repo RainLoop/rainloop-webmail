@@ -4,7 +4,7 @@ import { MessagePriority } from 'Common/EnumsUser';
 import { i18n } from 'Common/Translator';
 
 import { doc } from 'Common/Globals';
-import { encodeHtml, removeColors, plainToHtml, clearHtml } from 'Common/Html';
+import { encodeHtml, plainToHtml, cleanHtml } from 'Common/Html';
 import { isArray, arrayLength, forEachObjectEntry } from 'Common/Utils';
 import { serverRequestRaw } from 'Common/Links';
 
@@ -380,20 +380,17 @@ export class MessageModel extends AbstractModel {
 	viewHtml() {
 		const body = this.body;
 		if (body && this.html()) {
-			let html = this.html();
-			if (SettingsUserStore.removeColors()) {
-				html = removeColors(html);
-			}
-
 			const contentLocationUrls = {},
 				oAttachments = this.attachments();
+
+			// Get contentLocationUrls
 			oAttachments.forEach(oAttachment => {
 				if (oAttachment.cid && oAttachment.contentLocation) {
 					contentLocationUrls[oAttachment.contentId()] = oAttachment.contentLocation;
 				}
 			});
 
-			let result = clearHtml(html, contentLocationUrls);
+			let result = cleanHtml(this.html(), contentLocationUrls, SettingsUserStore.removeColors());
 			this.hasExternals(result.hasExternals);
 //			this.hasInternals = result.foundCIDs.length || result.foundContentLocationUrls.length;
 			this.hasImages(body.rlHasImages = !!result.hasExternals);
