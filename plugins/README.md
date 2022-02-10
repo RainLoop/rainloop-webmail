@@ -2,6 +2,14 @@ PHP
 ```php
 class Plugin extends \RainLoop\Plugins\AbstractPlugin
 {
+	public function __construct();
+	public function Name() : string;
+	public function Description() : string;
+	public function UseLangs(?bool $bLangs = null) : bool;
+	public function Supported() : string;
+	public function Init() : void;
+	public function FilterAppDataPluginSection(bool $bAdmin, bool $bAuth, array &$aConfig) : void;
+	protected function configMapping() : array;
 }
 ```
 
