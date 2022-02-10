@@ -241,7 +241,7 @@
 											<div class="attachmentSize" data-bind="text: friendlySize"></div>
 										</div>
 										<div class="checkboxAttachment fontastic"
-												data-bind="text: checked() ? '☑' : '☐',
+												data-bind="visible: download, text: checked() ? '☑' : '☐',
 												click: function () { checked(!checked()); return false }"></div>
 									</li>
 								</ul>

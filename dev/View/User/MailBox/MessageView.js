@@ -33,6 +33,7 @@ import { SMAudio } from 'Common/Audio';
 
 import { i18n } from 'Common/Translator';
 import { attachmentDownload } from 'Common/Links';
+import { FileInfo } from 'Common/File';
 
 import { MessageFlagsCache } from 'Common/Cache';
 
@@ -77,13 +78,12 @@ const
 					// if (cd && 'attachment' === cd.value) {
 					let attachment = new AttachmentModel;
 					attachment.mimeType = type.value;
-					attachment.fileName = (type.name || (cd && cd.params.filename));
+					attachment.fileName = type.name || (cd && cd.params.filename) || '';
+					attachment.fileNameExt = attachment.fileName.replace(/^.+(\.[a-z]+)$/, '$1');
+					attachment.fileType = FileInfo.getType('', type.value);
 					attachment.url = part.dataUrl;
+					attachment.friendlySize = FileInfo.friendlySize(part.body.length);
 /*
-					attachment.fileNameExt = '';
-					attachment.fileType = FileType.Unknown;
-					attachment.friendlySize = '';
-					attachment.isLinked(false);
 					attachment.isThumbnail = false;
 					attachment.contentLocation = '';
 					attachment.download = '';
