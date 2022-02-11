@@ -1597,18 +1597,8 @@ const
 	// fixCursor method call.
 	cleanupBRs = ( node, root, keepForBlankLine ) => {
 		let brs = node.querySelectorAll( 'BR' );
-		let brBreaksLine = [];
 		let l = brs.length;
-		let i, br, parent;
-
-		// Must calculate whether the <br> breaks a line first, because if we
-		// have two <br>s next to each other, after the first one is converted
-		// to a block split, the second will be at the end of a block and
-		// therefore seem to not be a line break. But in its original context it
-		// was, so we should also convert it to a block split.
-		for ( i = 0; i < l; ++i ) {
-			brBreaksLine[i] = isLineBreak( brs[i], keepForBlankLine );
-		}
+		let br, parent;
 		while ( l-- ) {
 			br = brs[l];
 			// Cleanup may have removed it
@@ -1618,7 +1608,7 @@ const
 			// anything useful. We'll add it back later if required by the
 			// browser. If it breaks a line, wrap the content in div tags
 			// and replace the brs.
-			if ( !brBreaksLine[l] ) {
+			if ( !isLineBreak( br, keepForBlankLine ) ) {
 				detach( br );
 			} else if ( !isInline( parent ) ) {
 				fixContainer( parent, root );
@@ -4010,21 +4000,12 @@ class Squire
 				while (( node = walker.nextNode() )) {
 					// 2. Replace <br> with \n in content
 					let nodes = node.querySelectorAll( 'BR' );
-					let brBreaksLine = [];
 					let l = nodes.length;
-					let i, br;
+					let br;
 
-					// Must calculate whether the <br> breaks a line first, because if we
-					// have two <br>s next to each other, after the first one is converted
-					// to a block split, the second will be at the end of a block and
-					// therefore seem to not be a line break. But in its original context it
-					// was, so we should also convert it to a block split.
-					for ( i = 0; i < l; ++i ) {
-						brBreaksLine[i] = isLineBreak( nodes[i], false );
-					}
 					while ( l-- ) {
 						br = nodes[l];
-						if ( !brBreaksLine[l] ) {
+						if ( !isLineBreak( br, false ) ) {
 							detach( br );
 						} else {
 							br.replaceWith( doc.createTextNode( '\n' ) );
