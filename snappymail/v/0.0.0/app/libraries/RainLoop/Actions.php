@@ -626,19 +626,18 @@ class Actions
 		return $this->oLoggerAuth;
 	}
 
-	public function LoggerAuthHelper(?Model\Account $oAccount = null, array $aAdditionalParams = array()): void
+	protected function LoggerAuthHelper(?Model\Account $oAccount = null, array $aAdditionalParams = array(), bool $admin = false): void
 	{
 		$sLine = $this->oConfig->Get('logs', 'auth_logging_format', '');
 		if (!empty($sLine)) {
 			$this->LoggerAuth()->Write($this->compileLogParams($sLine, $oAccount, false, $aAdditionalParams));
 		}
-		$this->SysLogAuth($this->compileLogParams('Auth failed: ip={request:ip} user={imap:login}', $oAccount, false, $aAdditionalParams));
-	}
-
-	protected function SysLogAuth(string $message): void
-	{
-		if ($this->oConfig->Get('logs', 'auth_logging', false) && \openlog('snappymail', 0, \LOG_AUTHPRIV)) {
-			\syslog(\LOG_ERR, $message);
+		if (($this->oConfig->Get('logs', 'auth_logging', false) || $this->oConfig->Get('logs', 'auth_syslog', false))
+		 && \openlog('snappymail', 0, \LOG_AUTHPRIV)) {
+			\syslog(\LOG_ERR, $this->compileLogParams(
+				$admin ? 'Admin Auth failed: ip={request:ip} user={user:login}' : 'Auth failed: ip={request:ip} user={imap:login}',
+				$oAccount, false, $aAdditionalParams
+			));
 			\closelog();
 		}
 	}
