@@ -214,9 +214,14 @@ export const OpenPGPUserStore = new class {
 			data.Folder = message.folder;
 			data.Uid = message.uid;
 			data.GnuPG = 0;
-			let response = data.SigPartId
-				? await Remote.post('MessagePgpVerify', null, data)
-				: { Result: { text: message.plain(), signature: null } };
+			let response;
+			if (data.SigPartId) {
+				response = await Remote.post('MessagePgpVerify', null, data);
+			} else if (data.BodyPart) {
+				response = { Result: { text: data.BodyPart.raw, signature: data.SigPart.body } };
+			} else {
+				response = { Result: { text: message.plain(), signature: null } };
+			}
 			if (response) {
 				const signature = response.Result.signature
 					? await openpgp.readSignature({ armoredSignature: response.Result.signature })

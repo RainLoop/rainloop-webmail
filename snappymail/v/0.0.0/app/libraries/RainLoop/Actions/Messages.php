@@ -660,48 +660,57 @@ trait Messages
 	{
 		$sFolderName = $this->GetActionParam('Folder', '');
 		$iUid = (int) $this->GetActionParam('Uid', 0);
-		$sBodyPartId = $this->GetActionParam('BodyPartId', '');
-		$sSigPartId = $this->GetActionParam('SigPartId', '');
-//		$sMicAlg = $this->GetActionParam('MicAlg', '');
-
-		$oAccount = $this->initMailClientConnection();
-
-		$oImapClient = $this->MailClient()->ImapClient();
-		$oImapClient->FolderExamine($sFolderName);
-
-		$aParts = [
-			FetchType::BODY_PEEK.'['.$sBodyPartId.']',
-			// An empty section specification refers to the entire message, including the header.
-			// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
-			FetchType::BODY_PEEK.'['.$sBodyPartId.'.MIME]'
-		];
-		if ($sSigPartId) {
-			$aParts[] = FetchType::BODY_PEEK.'['.$sSigPartId.']';
-		}
-
-		$oFetchResponse = $oImapClient->Fetch($aParts, $iUid, true)[0];
-
-		$sBodyMime = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.'.MIME]');
-		if ($sSigPartId) {
+		$sBodyPart = $this->GetActionParam('BodyPart', '');
+		$sSigPart = $this->GetActionParam('SigPart', '');
+		if ($sBodyPart) {
 			$result = [
-				'text' => \preg_replace('/\\R/s', "\r\n",
-					$sBodyMime . $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']')
-				),
-				'signature' => preg_replace('/[^\x00-\x7F]/', '',
-					$oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sSigPartId.']')
-				)
+				'text' => \preg_replace('/\\R/s', "\r\n", $sBodyPart),
+				'signature' => $this->GetActionParam('SigPart', '')
 			];
 		} else {
-			// clearsigned text
-			$result = [
-				'text' => $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']'),
-				'signature' => ''
+			$sBodyPartId = $this->GetActionParam('BodyPartId', '');
+			$sSigPartId = $this->GetActionParam('SigPartId', '');
+//			$sMicAlg = $this->GetActionParam('MicAlg', '');
+
+			$oAccount = $this->initMailClientConnection();
+
+			$oImapClient = $this->MailClient()->ImapClient();
+			$oImapClient->FolderExamine($sFolderName);
+
+			$aParts = [
+				FetchType::BODY_PEEK.'['.$sBodyPartId.']',
+				// An empty section specification refers to the entire message, including the header.
+				// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
+				FetchType::BODY_PEEK.'['.$sBodyPartId.'.MIME]'
 			];
-			$decode = (new \MailSo\Mime\HeaderCollection($sBodyMime))->ValueByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING);
-			if ('base64' === $decode) {
-				$result['text'] = \base64_decode($result['text']);
-			} else if ('quoted-printable' === $decode) {
-				$result['text'] = \quoted_printable_decode($result['text']);
+			if ($sSigPartId) {
+				$aParts[] = FetchType::BODY_PEEK.'['.$sSigPartId.']';
+			}
+
+			$oFetchResponse = $oImapClient->Fetch($aParts, $iUid, true)[0];
+
+			$sBodyMime = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.'.MIME]');
+			if ($sSigPartId) {
+				$result = [
+					'text' => \preg_replace('/\\R/s', "\r\n",
+						$sBodyMime . $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']')
+					),
+					'signature' => preg_replace('/[^\x00-\x7F]/', '',
+						$oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sSigPartId.']')
+					)
+				];
+			} else {
+				// clearsigned text
+				$result = [
+					'text' => $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']'),
+					'signature' => ''
+				];
+				$decode = (new \MailSo\Mime\HeaderCollection($sBodyMime))->ValueByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING);
+				if ('base64' === $decode) {
+					$result['text'] = \base64_decode($result['text']);
+				} else if ('quoted-printable' === $decode) {
+					$result['text'] = \quoted_printable_decode($result['text']);
+				}
 			}
 		}
 

@@ -459,8 +459,7 @@ export class MessageModel extends AbstractModel {
 			body.classList.toggle('plain', 1);
 			body.innerHTML = plainToHtml(
 				this.plain()
-					.replace(/-----BEGIN PGP SIGNATURE-----[\s\S]*/, '')
-					.replace(/-----BEGIN PGP SIGNED MESSAGE-----(\r?\n[a-z][^\r\n]+)+/i, '')
+					.replace(/-----BEGIN PGP (SIGNED MESSAGE-----(\r?\n[a-z][^\r\n]+)+|SIGNATURE-----[\s\S]*)/, '')
 					.trim()
 			)
 				.replace(url, '$1<a href="$2" target="_blank">$2</a>')

@@ -33,7 +33,6 @@ import { SMAudio } from 'Common/Audio';
 
 import { i18n } from 'Common/Translator';
 import { attachmentDownload } from 'Common/Links';
-import { FileInfo } from 'Common/File';
 
 import { MessageFlagsCache } from 'Common/Cache';
 
@@ -53,73 +52,12 @@ import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 import { PgpUserStore } from 'Stores/User/Pgp';
 
-import { ParseMime } from 'Mime/Parser';
-import { AttachmentModel } from 'Model/Attachment';
+import { MimeToMessage } from 'Mime/Utils';
 
 const
 	oMessageScrollerDom = () => elementById('messageItem') || {},
 
-	currentMessage = () => MessageUserStore.message(),
-
-	mimeToMessage = (data, message) => {
-		const headers = data.split(/\r?\n\r?\n/)[0];
-		if (/Content-Type:/i.test(headers)) {
-			const struct = ParseMime(data),
-				text = struct.getByContentType('text/plain');
-			let html = struct.getByContentType('text/html');
-			html = html ? html.body : '';
-
-			// TODO: Check multipart/signed application/pgp-signature application/pgp-keys
-			struct.forEach(part => {
-				let cd = part.header('content-disposition'),
-					cid = part.header('content-id'),
-					type = part.header('content-type');
-				if (cid || cd) {
-					// if (cd && 'attachment' === cd.value) {
-					let attachment = new AttachmentModel;
-					attachment.mimeType = type.value;
-					attachment.fileName = type.name || (cd && cd.params.filename) || '';
-					attachment.fileNameExt = attachment.fileName.replace(/^.+(\.[a-z]+)$/, '$1');
-					attachment.fileType = FileInfo.getType('', type.value);
-					attachment.url = part.dataUrl;
-					attachment.friendlySize = FileInfo.friendlySize(part.body.length);
-/*
-					attachment.isThumbnail = false;
-					attachment.contentLocation = '';
-					attachment.download = '';
-					attachment.folder = '';
-					attachment.uid = '';
-					attachment.mimeIndex = part.id;
-					attachment.framed = false;
-*/
-					attachment.cid = cid ? cid.value : '';
-					if (cid && html) {
-						let cid = 'cid:' + attachment.contentId(),
-							found = html.includes(cid);
-						attachment.isInline(found);
-						attachment.isLinked(found);
-						found && (html = html
-							.replace('src="' + cid + '"', 'src="' + attachment.url + '"')
-							.replace("src='" + cid + "'", "src='" + attachment.url + "'")
-						);
-					} else {
-						message.attachments.push(attachment);
-					}
-				}
-			});
-
-			message.plain(text ? text.body : '');
-			if (html) {
-				message.html(html.replace(/<\/?script[\s\S]*?>/gi, ''));
-				message.viewHtml();
-			} else {
-				message.viewPlain();
-			}
-			return;
-		}
-		message.plain(data);
-		message.viewPlain();
-	};
+	currentMessage = () => MessageUserStore.message();
 
 export class MailMessageView extends AbstractViewRight {
 	constructor() {
@@ -647,7 +585,8 @@ export class MailMessageView extends AbstractViewRight {
 		const oMessage = currentMessage();
 		PgpUserStore.decrypt(oMessage).then(result => {
 			if (result && result.data) {
-				mimeToMessage(result.data, oMessage);
+				MimeToMessage(result.data, oMessage);
+				oMessage.html() ? oMessage.viewHtml() : oMessage.viewPlain();
 				if (result.signatures && result.signatures.length) {
 					oMessage.pgpSigned(true);
 					oMessage.pgpVerified({

@@ -21,7 +21,7 @@ export function ParseMime(text)
 		}
 
 		get bodyRaw() {
-			return text.slice(this.body_start, this.body_end);
+			return text.slice(this.bodyStart, this.bodyEnd);
 		}
 
 		get body() {
@@ -99,9 +99,10 @@ export function ParseMime(text)
 			part.headers = headers;
 
 			// get body
-			part.body_start = start_pos + head.length;
-			part.body_end = start_pos + mimePart.length;
+			part.bodyStart = start_pos + head.length;
+			part.bodyEnd = start_pos + mimePart.length;
 
+			// get child parts
 			let boundary = headers['content-type'].params.boundary;
 			if (boundary) {
 				part.boundary = boundary;
@@ -109,16 +110,16 @@ export function ParseMime(text)
 				let regex = new RegExp('(?:^|\r?\n)--' + boundary + '(?:--)?(?:\r?\n|$)', 'g'),
 					body = mimePart.slice(head.length),
 					bodies = body.split(regex),
-					pos = part.body_start;
+					pos = part.bodyStart;
 				[...body.matchAll(regex)].forEach(([boundary], index) => {
 					if (!index) {
-						part.body_text = bodies[0];
+						// Mostly something like: "This is a multi-part message in MIME format."
+						part.bodyText = bodies[0];
 					}
-					pos += bodies[index].length;
-					pos += boundary.length;
-					part.parts.push(ParsePart(bodies[1+index], pos, ((id ? id + '.' : '') + (1+index))));
-					if ('--' == boundary.trim().slice(-2)) {
-						// end
+					// Not the end?
+					if ('--' != boundary.trim().slice(-2)) {
+						pos += bodies[index].length + boundary.length;
+						part.parts.push(ParsePart(bodies[1+index], pos, ((id ? id + '.' : '') + (1+index))));
 					}
 				});
 			}

@@ -197,10 +197,15 @@ export const GnuPGUserStore = new class {
 	async verify(message) {
 		let data = message.pgpSigned(); // { BodyPartId: "1", SigPartId: "2", MicAlg: "pgp-sha256" }
 		if (data) {
+			data = { ...data }; // clone
 //			const sender = message.from[0].email;
 //			let mode = await this.hasPublicKeyForEmails([sender]);
 			data.Folder = message.folder;
 			data.Uid = message.uid;
+			if (data.BodyPart) {
+				data.BodyPart = data.BodyPart.raw;
+				data.SigPart = data.SigPart.body;
+			}
 			let response = await Remote.post('MessagePgpVerify', null, data);
 			if (response && response.Result) {
 				return {
