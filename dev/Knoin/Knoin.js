@@ -1,6 +1,6 @@
 import ko from 'ko';
 import { koComputable } from 'External/ko';
-import { doc, $htmlCL, elementById } from 'Common/Globals';
+import { doc, $htmlCL, elementById, fireEvent } from 'Common/Globals';
 import { isFunction, forEachObjectValue, forEachObjectEntry } from 'Common/Utils';
 
 let
@@ -137,7 +137,7 @@ const
 					vm.registerPopupKeyDown();
 				}
 
-				dispatchEvent(new CustomEvent('rl-view-model', {detail:vm}));
+				fireEvent('rl-view-model', vm);
 			} else {
 				console.log('Cannot find view model position: ' + position);
 			}

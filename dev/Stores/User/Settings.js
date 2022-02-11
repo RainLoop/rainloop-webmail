@@ -3,7 +3,7 @@ import { koComputable } from 'External/ko';
 
 import { Layout, EditorDefaultType } from 'Common/EnumsUser';
 import { pInt, addObservablesTo } from 'Common/Utils';
-import { $htmlCL, SettingsGet } from 'Common/Globals';
+import { $htmlCL, SettingsGet, fireEvent } from 'Common/Globals';
 import { ThemeStore } from 'Stores/Theme';
 
 export const SettingsUserStore = new class {
@@ -48,7 +48,7 @@ export const SettingsUserStore = new class {
 			$htmlCL.toggle('rl-no-preview-pane', Layout.NoPreview === value);
 			$htmlCL.toggle('rl-side-preview-pane', Layout.SidePreview === value);
 			$htmlCL.toggle('rl-bottom-preview-pane', Layout.BottomPreview === value);
-			dispatchEvent(new CustomEvent('rl-layout', {detail:value}));
+			fireEvent('rl-layout', value);
 		};
 		self.layout.subscribe(toggleLayout);
 		ThemeStore.isMobile.subscribe(toggleLayout);

@@ -13,7 +13,7 @@ import {
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
-import { doc, leftPanelDisabled, moveAction, Settings, SettingsCapa, SettingsGet } from 'Common/Globals';
+import { doc, leftPanelDisabled, moveAction, Settings, SettingsCapa, SettingsGet, fireEvent } from 'Common/Globals';
 
 import { computedPaginatorHelper, showMessageComposer, folderListOptionsBuilder } from 'Common/UtilsUser';
 import { FileInfo } from 'Common/File';
@@ -683,7 +683,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		shortcuts.add('enter,open', '', Scope.MessageList, () => {
 			if (MessageUserStore.message() && this.useAutoSelect()) {
-				dispatchEvent(new CustomEvent('mailbox.message-view.toggle-full-screen'));
+				fireEvent('mailbox.message-view.toggle-full-screen');
 				return false;
 			}
 		});

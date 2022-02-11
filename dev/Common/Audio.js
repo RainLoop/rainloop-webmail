@@ -1,5 +1,5 @@
 import * as Links from 'Common/Links';
-import { doc, SettingsGet } from 'Common/Globals';
+import { doc, SettingsGet, fireEvent } from 'Common/Globals';
 
 let notificator = null,
 	player = null,
@@ -12,7 +12,7 @@ let notificator = null,
 			player.src = url;
 			player.play();
 			name = name.trim();
-			dispatchEvent(new CustomEvent('audio.start', {detail:name.replace(/\.([a-z0-9]{3})$/, '') || 'audio'}));
+			fireEvent('audio.start', name.replace(/\.([a-z0-9]{3})$/, '') || 'audio');
 		}
 	},
 
@@ -89,7 +89,7 @@ export const SMAudio = new class {
 
 	pause() {
 		player && player.pause();
-		dispatchEvent(new CustomEvent('audio.stop'));
+		fireEvent('audio.stop');
 	}
 
 	playMp3(url, name) {

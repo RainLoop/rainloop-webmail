@@ -23,7 +23,8 @@ import {
 	Settings,
 	SettingsCapa,
 	getFullscreenElement,
-	exitFullscreen
+	exitFullscreen,
+	fireEvent
 } from 'Common/Globals';
 
 import { arrayLength, inFocus } from 'Common/Utils';
@@ -245,15 +246,15 @@ export class MailMessageView extends AbstractViewRight {
 	}
 
 	goUpCommand() {
-		dispatchEvent(new CustomEvent('mailbox.message-list.selector.go-up',
-			{detail:SettingsUserStore.usePreviewPane() || !!currentMessage()} // bForceSelect
-		));
+		fireEvent('mailbox.message-list.selector.go-up',
+			SettingsUserStore.usePreviewPane() || !!currentMessage() // bForceSelect
+		);
 	}
 
 	goDownCommand() {
-		dispatchEvent(new CustomEvent('mailbox.message-list.selector.go-down',
-			{detail:SettingsUserStore.usePreviewPane() || !!currentMessage()} // bForceSelect
-		));
+		fireEvent('mailbox.message-list.selector.go-down',
+			SettingsUserStore.usePreviewPane() || !!currentMessage() // bForceSelect
+		);
 	}
 
 	toggleFullScreen() {

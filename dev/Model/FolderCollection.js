@@ -4,7 +4,7 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { isArray, getKeyByValue, forEachObjectEntry, b64EncodeJSONSafe } from 'Common/Utils';
 import { ClientSideKeyName, FolderType, FolderMetadataKeys } from 'Common/EnumsUser';
 import { getFolderFromCacheList, setFolder, setFolderInboxName, setFolderHash } from 'Common/Cache';
-import { Settings, SettingsGet } from 'Common/Globals';
+import { Settings, SettingsGet, fireEvent } from 'Common/Globals';
 
 import * as Local from 'Storage/Client';
 
@@ -394,7 +394,7 @@ export class FolderModel extends AbstractModel {
 
 				messageCountUnread: unread => {
 					if (FolderType.Inbox === folder.type()) {
-						dispatchEvent(new CustomEvent('mailbox.inbox-unread-count', {detail:unread}));
+						fireEvent('mailbox.inbox-unread-count', unread);
 					}
 				}
 			});

@@ -13,7 +13,7 @@ import { KeyboardShortcutsHelpPopupView } from 'View/Popup/KeyboardShortcutsHelp
 import { AccountPopupView } from 'View/Popup/Account';
 import { ContactsPopupView } from 'View/Popup/Contacts';
 
-import { doc, Settings/*, SettingsGet*/, leftPanelDisabled } from 'Common/Globals';
+import { doc, Settings/*, SettingsGet*/, leftPanelDisabled, fireEvent } from 'Common/Globals';
 
 import { ThemeStore } from 'Stores/Theme';
 
@@ -49,7 +49,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 	}
 
 	stopPlay() {
-		dispatchEvent(new CustomEvent('audio.api.stop'));
+		fireEvent('audio.api.stop');
 	}
 
 	accountClick(account, event) {

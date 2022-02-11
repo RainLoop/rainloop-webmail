@@ -29,6 +29,8 @@ export const
 		return el;
 	},
 
+	fireEvent = (name, detail) => dispatchEvent(new CustomEvent(name, {detail:detail})),
+
 	// keys
 	keyScopeReal = ko.observable(Scope.All),
 	keyScope = value => {
