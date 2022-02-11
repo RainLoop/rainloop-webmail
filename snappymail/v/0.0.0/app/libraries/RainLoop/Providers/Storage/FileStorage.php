@@ -96,13 +96,6 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 			$iStorageType = StorageType::NOBODY;
 		} else if ($mAccount instanceof \RainLoop\Model\MainAccount) {
 			$sEmail = $mAccount->Email();
-			if (StorageType::SIGN_ME === $iStorageType) {
-				$sSubFolder = '.sign_me';
-			} else if (StorageType::SESSION === $iStorageType) {
-				$sSubFolder = '.sessions';
-			} else if (StorageType::PGP === $iStorageType) {
-				$sSubFolder = '.pgp';
-			}
 		} else if ($mAccount instanceof \RainLoop\Model\AdditionalAccount) {
 			$sEmail = $mAccount->ParentEmail();
 			if ($this->bLocal && !$bForDeleteAction) {
@@ -110,6 +103,16 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 			}
 		} else if (\is_string($mAccount)) {
 			$sEmail = $mAccount;
+		}
+
+		if ($sEmail) {
+			if (StorageType::SIGN_ME === $iStorageType) {
+				$sSubFolder = '.sign_me';
+			} else if (StorageType::SESSION === $iStorageType) {
+				$sSubFolder = '.sessions';
+			} else if (StorageType::PGP === $iStorageType) {
+				$sSubFolder = '.pgp';
+			}
 		}
 
 		$sFilePath = '';

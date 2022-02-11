@@ -221,7 +221,7 @@ trait UserAuth
 	 */
 	public function getMainAccountFromToken(bool $bThrowExceptionOnFalse = true): ?MainAccount
 	{
-		if (false === $this->oMainAuthAccount) {
+		if (false === $this->oMainAuthAccount) try {
 			$this->oMainAuthAccount = null;
 			if (isset($_COOKIE[self::AUTH_SPEC_LOGOUT_TOKEN_KEY])) {
 				Utils::ClearCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY);
@@ -241,6 +241,7 @@ trait UserAuth
 //					\MailSo\Base\Http::StatusHeader(401);
 					$this->Logout(true);
 //					$sAdditionalMessage = $this->StaticI18N('SESSION_UNDEFINED');
+					\SnappyMail\Log::notice('TOKENS', 'SESSION_TOKEN empty');
 					throw new ClientException(Notifications::InvalidToken, null, 'Session undefined');
 				}
 				$oMainAuthAccount = MainAccount::NewInstanceFromTokenArray(
@@ -270,12 +271,22 @@ trait UserAuth
 			} else {
 				$oAccount = $this->GetAccountFromSignMeToken();
 				if ($oAccount) {
+					$this->StorageProvider()->Put(
+						$oAccount,
+						StorageType::SESSION,
+						Utils::GetSessionToken(),
+						'true'
+					);
 					$this->SetAuthToken($oAccount);
 				}
 			}
 
-			if ($bThrowExceptionOnFalse && !$this->oMainAuthAccount) {
+			if (!$this->oMainAuthAccount) {
 				throw new ClientException(Notifications::InvalidToken, null, 'Account undefined');
+			}
+		} catch (\Throwable $e) {
+			if ($bThrowExceptionOnFalse) {
+				throw $e;
 			}
 		}
 
@@ -307,6 +318,7 @@ trait UserAuth
 			if (isset($aResult['e'], $aResult['u']) && \SnappyMail\UUID::isValid($aResult['u'])) {
 				return $aResult;
 			}
+			\SnappyMail\Log::notice(self::AUTH_SIGN_ME_TOKEN_KEY, 'invalid');
 		}
 		return null;
 	}
@@ -353,20 +365,25 @@ trait UserAuth
 						\base64_decode(\end($aTokenData)),
 						$sAuthToken
 					]);
-
-					$oAccount = \is_array($aAccountHash)
-						? MainAccount::NewInstanceFromTokenArray($this, $aAccountHash) : null;
-					if ($oAccount) {
-						$this->CheckMailConnection($oAccount);
-						// Update lifetime
-						$this->SetSignMeToken($oAccount);
-
-						return $oAccount;
+					if (\is_array($aAccountHash)) {
+						$oAccount = MainAccount::NewInstanceFromTokenArray($this, $aAccountHash);
+						if ($oAccount) {
+							$this->CheckMailConnection($oAccount);
+							// Update lifetime
+							$this->SetSignMeToken($oAccount);
+							return $oAccount;
+						}
+						\SnappyMail\Log::notice(self::AUTH_SIGN_ME_TOKEN_KEY, 'has no account');
+					} else {
+						\SnappyMail\Log::notice(self::AUTH_SIGN_ME_TOKEN_KEY, 'decrypt failed');
 					}
+				} else {
+					\SnappyMail\Log::notice(self::AUTH_SIGN_ME_TOKEN_KEY, "server token not found for {$aTokenData['e']}/.sign_me/{$aTokenData['u']}");
 				}
 			}
 			catch (\Throwable $oException)
 			{
+				\SnappyMail\Log::notice(self::AUTH_SIGN_ME_TOKEN_KEY, $oException->getMessage());
 			}
 		}
 
