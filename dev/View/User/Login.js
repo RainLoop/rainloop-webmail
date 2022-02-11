@@ -1,6 +1,6 @@
 import { Notification } from 'Common/Enums';
 import { ClientSideKeyName } from 'Common/EnumsUser';
-import { SettingsGet } from 'Common/Globals';
+import { SettingsGet, fireEvent } from 'Common/Globals';
 import { getNotification, translatorReload, convertLangName } from 'Common/Translator';
 
 import { LanguageStore } from 'Stores/Language';
@@ -89,7 +89,7 @@ class LoginUserView extends AbstractViewLogin {
 	submitCommand(self, event) {
 		let form = event.target.form,
 			data = new FormData(form),
-			valid = form.reportValidity();
+			valid = form.reportValidity() && fireEvent('sm-user-login', data);
 
 		this.emailError(!this.email());
 		this.passwordError(!this.password());
@@ -101,6 +101,10 @@ class LoginUserView extends AbstractViewLogin {
 			data.set('SignMe', this.signMe() ? 1 : 0);
 			Remote.request('Login',
 				(iError, oData) => {
+					fireEvent('sm-user-login-response', {
+						error: iError,
+						data: oData
+					});
 					if (iError) {
 						this.submitRequest(false);
 						if (Notification.InvalidInputArgument == iError) {
