@@ -19,7 +19,7 @@ const SignMeOff = 0,
 	SignMeUnused = 2;
 
 
-class LoginUserView extends AbstractViewLogin {
+export class LoginUserView extends AbstractViewLogin {
 	constructor() {
 		super('Login');
 
@@ -161,5 +161,3 @@ class LoginUserView extends AbstractViewLogin {
 		showScreenPopup(LanguagesPopupView, [this.language, this.languages(), LanguageStore.userLanguage()]);
 	}
 }
-
-export { LoginUserView };

@@ -1,3 +1,4 @@
+import { fireEvent } from 'Common/Globals';
 import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Fetch';
@@ -5,7 +6,7 @@ import Remote from 'Remote/Admin/Fetch';
 import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewLogin } from 'Knoin/AbstractViews';
 
-class LoginAdminView extends AbstractViewLogin {
+export class LoginAdminView extends AbstractViewLogin {
 	constructor() {
 		super('AdminLogin');
 
@@ -32,12 +33,12 @@ class LoginAdminView extends AbstractViewLogin {
 	}
 
 	submitCommand(self, event) {
-		const valid = event.target.form.reportValidity(),
-			name = this.login().trim(),
-			pass = this.password();
+		let form = event.target.form,
+			data = new FormData(form),
+			valid = form.reportValidity() && fireEvent('sm-admin-login', data);
 
-		this.loginError(!name);
-		this.passwordError(!pass);
+		this.loginError(!this.login());
+		this.passwordError(!this.password());
 		this.formError(!valid);
 
 		if (valid) {
@@ -45,21 +46,21 @@ class LoginAdminView extends AbstractViewLogin {
 
 			Remote.request('AdminLogin',
 				(iError, oData) => {
+					fireEvent('sm-admin-login-response', {
+						error: iError,
+						data: oData
+					});
 					if (iError) {
 						this.submitRequest(false);
 						this.submitError(getNotification(iError));
 					} else {
 						rl.setData(oData.Result);
 					}
-				}, {
-					Login: name,
-					Password: pass,
-					TOTP: this.totp()
-				});
+				},
+				data
+			);
 		}
 
 		return valid;
 	}
 }
-
-export { LoginAdminView };

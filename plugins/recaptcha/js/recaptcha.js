@@ -2,13 +2,16 @@
 (rl => {
 
 	rl && addEventListener('rl-view-model', e => {
-		if (e.detail && 'Login' === e.detail.viewModelTemplateID
+		const id = e.detail.viewModelTemplateID;
+		if (e.detail && ('AdminLogin' === id || 'Login' === id)
 		 && rl.pluginSettingsGet('recaptcha', 'show_captcha_on_login')) {
 			let
 				nId = null,
 				script;
 
 			const
+				mode = 'Login' === id ? 'user' : 'admin',
+
 				doc = document,
 
 				container = e.detail.viewModelDom.querySelector('#plugin-Login-BottomControlGroup'),
@@ -42,15 +45,15 @@
 
 			StartRecaptcha();
 
-			addEventListener('sm-user-login', e => {
+			addEventListener(`sm-${mode}-login`, e => {
 				if (null !== nId && window.grecaptcha) {
 					e.detail.set('RecaptchaResponse', window.grecaptcha.getResponse(nId));
 				} else {
-					e.preventDefault()
+					e.preventDefault();
 				}
 			});
 
-			addEventListener('sm-user-login-response', e => {
+			addEventListener(`sm-${mode}-login-response`, e => {
 				if (e.detail.error) {
 					if (null !== nId && window.grecaptcha) {
 						window.grecaptcha.reset(nId);
