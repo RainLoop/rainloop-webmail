@@ -212,15 +212,9 @@ trait Admin
 			!$this->Config()->ValidatePassword($sPassword)
 			|| ($totp && !\SnappyMail\TOTP::Verify($totp, $this->GetActionParam('TOTP', ''))))
 		{
-			$this->loginErrorDelay();
+			$this->SysLogAuth($this->compileLogParams('Admin Auth failed: ip={request:ip} user={user:login}'));
 			$this->LoggerAuthHelper(null, $this->getAdditionalLogParamsByUserLogin($sLogin, true));
-			if ($this->Config()->Get('logs', 'auth_logging', false)
-			 && $this->Config()->Get('security', 'allow_admin_panel', true)
-			 && \openlog('snappymail', 0, \LOG_AUTHPRIV))
-			{
-				\syslog(\LOG_ERR, $this->compileLogParams('Admin Auth failed: ip={request:ip} user='.$sLogin));
-				\closelog();
-			}
+			$this->loginErrorDelay();
 			throw new ClientException(Notifications::AuthError);
 		}
 

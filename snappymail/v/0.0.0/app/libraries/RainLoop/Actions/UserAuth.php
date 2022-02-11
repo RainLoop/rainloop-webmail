@@ -114,18 +114,15 @@ trait UserAuth
 		$oAccount = null;
 		$sClientCert = \trim($this->Config()->Get('ssl', 'client_cert', ''));
 		try {
-			if ($bMainAccount) {
-				$oAccount = MainAccount::NewInstanceFromCredentials($this, $sEmail, $sLogin, $sPassword, $sClientCert, true);
-			} else {
-				$oAccount = AdditionalAccount::NewInstanceFromCredentials($this, $sEmail, $sLogin, $sPassword, $sClientCert, true);
-			}
-
+			$oAccount = $bMainAccount
+				? MainAccount::NewInstanceFromCredentials($this, $sEmail, $sLogin, $sPassword, $sClientCert, true)
+				: AdditionalAccount::NewInstanceFromCredentials($this, $sEmail, $sLogin, $sPassword, $sClientCert, true);
 			if (!$oAccount) {
 				throw new ClientException(Notifications::AuthError);
 			}
 		} catch (\Throwable $oException) {
-			$this->loginErrorDelay();
 			$this->LoggerAuthHelper($oAccount, $this->getAdditionalLogParamsByUserLogin($sInputEmail));
+			$this->loginErrorDelay();
 			throw $oException;
 		}
 

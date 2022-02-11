@@ -632,8 +632,13 @@ class Actions
 		if (!empty($sLine)) {
 			$this->LoggerAuth()->Write($this->compileLogParams($sLine, $oAccount, false, $aAdditionalParams));
 		}
+		$this->SysLogAuth($this->compileLogParams('Auth failed: ip={request:ip} user={imap:login}', $oAccount, false, $aAdditionalParams));
+	}
+
+	protected function SysLogAuth(string $message): void
+	{
 		if ($this->oConfig->Get('logs', 'auth_logging', false) && \openlog('snappymail', 0, \LOG_AUTHPRIV)) {
-			\syslog(\LOG_ERR, $this->compileLogParams('Auth failed: ip={request:ip} user={imap:login}', $oAccount, false, $aAdditionalParams));
+			\syslog(\LOG_ERR, $message);
 			\closelog();
 		}
 	}
@@ -960,7 +965,7 @@ class Actions
 			'{smtp:login}' => $sLogin,
 			'{smtp:host}' => $sHost,
 			'{user:email}' => $sLogin,
-			'{user:login}' => \MailSo\Base\Utils::GetAccountNameFromEmail($sLogin),
+			'{user:login}' => $bAdmin ? $sLogin : \MailSo\Base\Utils::GetAccountNameFromEmail($sLogin),
 			'{user:domain}' => $sHost,
 		);
 	}
