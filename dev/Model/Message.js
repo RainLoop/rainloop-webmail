@@ -491,21 +491,18 @@ export class MessageModel extends AbstractModel {
 			ccLine = this.ccToLine(false),
 			m = 0 < timeStampInUTC ? new Date(timeStampInUTC * 1000) : null,
 			win = open(''),
-			doc = win.document;
-		doc.write(PreviewHTML
-			.replace(/{{subject}}/g, encodeHtml(this.subject()))
-			.replace('{{date}}', encodeHtml(m ? m.format('LLL') : ''))
-			.replace('{{fromCreds}}', encodeHtml(this.fromToLine(false)))
-			.replace('{{toCreds}}', encodeHtml(this.toToLine(false)))
-			.replace('{{toLabel}}', encodeHtml(i18n('GLOBAL/TO')))
-			.replace('{{ccHide}}', ccLine ? '' : 'hidden=""')
-			.replace('{{ccCreds}}', encodeHtml(ccLine))
-			.replace('{{ccLabel}}', encodeHtml(i18n('GLOBAL/CC')))
-			.replace('{{bodyClass}}', this.isHtml() ? 'html' : 'plain')
-			.replace('{{html}}', this.bodyAsHTML())
+			sdoc = win.document;
+		let subject = encodeHtml(this.subject()),
+			mode = this.isHtml() ? 'div' : 'pre',
+			cc = ccLine ? `<div>${encodeHtml(i18n('GLOBAL/CC'))}: ${encodeHtml(ccLine)}</div>` : '',
+			style = getComputedStyle(doc.querySelector('.messageView')),
+			prop = property => style.getPropertyValue(property);
+		sdoc.write(PreviewHTML
+			.replace('<title>', '<title>'+subject)
+			// eslint-disable-next-line max-len
+			.replace('<body>', `<body style="background-color:${prop('background-color')};color:${prop('color')}"><header><h1>${subject}</h1><time>${encodeHtml(m ? m.format('LLL') : '')}</time><div>${encodeHtml(this.fromToLine(false))}</div><div>${encodeHtml(i18n('GLOBAL/TO'))}: ${encodeHtml(this.toToLine(false))}</div>${cc}</header><${mode}>${this.bodyAsHTML()}</${mode}>`)
 		);
-
-		doc.close();
+		sdoc.close();
 
 		if (print) {
 			setTimeout(() => win.print(), 100);
