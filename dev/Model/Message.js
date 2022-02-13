@@ -402,7 +402,6 @@ export class MessageModel extends AbstractModel {
 				oAttachment.isInline(found);
 				oAttachment.isLinked(found || result.foundContentLocationUrls.includes(oAttachment.contentLocation));
 			});
-			this.hasAttachments(oAttachments.hasVisible());
 
 			body.innerHTML = result.html;
 
@@ -472,6 +471,7 @@ export class MessageModel extends AbstractModel {
 	}
 
 	initView() {
+		this.hasAttachments(this.attachments().hasVisible());
 		// init BlockquoteSwitcher
 		this.body.querySelectorAll('blockquote:not(.rl-bq-switcher)').forEach(node => {
 			if (node.textContent.trim() && !node.parentNode.closest('blockquote')) {
