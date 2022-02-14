@@ -10,7 +10,7 @@
 		<span class="folder-system-name" data-bind="text: manageFolderSystemName, visible: isSystemFolder"></span>
 	</td>
 	<td data-i18n="[title]SETTINGS_FOLDERS/HELP_DELETE_FOLDER">
-		<a class="btn btn-small btn-small-small btn-danger button-confirm-delete" data-bind="css: {'delete-access': askDelete()}, click: $root.deleteFolder"
+		<a class="btn btn-small btn-danger button-confirm-delete" data-bind="css: {'delete-access': askDelete()}, click: $root.deleteFolder"
 			data-i18n="GLOBAL/ARE_YOU_SURE"></a>
 		<span class="e-action fontastic" data-bind="visible: canBeDeleted() && !askDelete(), click: $root.folderForDeletion">🗑</span>
 	</td>

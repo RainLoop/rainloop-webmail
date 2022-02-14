@@ -6,7 +6,6 @@
 // Make the div behave like a button
 .btn-group {
   position: relative;
-  font-size: 0; // remove as part 1 of font-size inline-block hack
   white-space: nowrap; // prevent buttons from wrapping when in tight spaces (e.g., the table on the tests page)
 }
 
@@ -16,9 +15,6 @@
 
 // Optional: Group multiple button groups together for a toolbar
 .btn-toolbar {
-  font-size: 0; // Hack to remove whitespace that results from using inline-block
-  margin-top: 0;
-  margin-bottom: 0;
   .btn-group {
     display: inline-block;
   }
@@ -36,14 +32,6 @@
 }
 .btn-group > .btn + .btn {
   margin-left: -1px;
-}
-.btn-group > .dropdown-menu {
-  font-size: @baseFontSize; // redeclare as part 2 of font-size inline-block hack
-}
-
-// Reset fonts for other sizes
-.btn-group > .btn-small {
-  font-size: 12px;
 }
 
 // Set corners individual because sometimes a single button can be in a .btn-group and we need :first-child and :last-child to both match
