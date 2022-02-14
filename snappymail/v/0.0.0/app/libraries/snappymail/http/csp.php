@@ -15,6 +15,8 @@ class CSP
 		$img     = ["'self'", 'data:'],
 		$style   = ["'self'", "'unsafe-inline'"],
 		$frame   = [],
+
+		$report = false,
 		$report_to = [],
 		$report_only = false;
 
@@ -49,8 +51,11 @@ class CSP
 		if ($this->frame) {
 			$params[] = 'frame-src ' . \implode(' ', $this->frame);
 		}
+
 		// Deprecated
-		$params[] = 'report-uri ./?/CspReport';
+		if ($this->report) {
+			$params[] = 'report-uri ./?/CspReport';
+		}
 
 		return \implode('; ', $params);
 	}

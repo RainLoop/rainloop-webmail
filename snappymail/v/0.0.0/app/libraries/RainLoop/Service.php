@@ -241,7 +241,9 @@ abstract class Service
 	private static function setCSP(string $sScriptNonce = null) : void
 	{
 		$CSP = new \SnappyMail\HTTP\CSP(\trim(Api::Config()->Get('security', 'content_security_policy', '')));
+		$CSP->report = Api::Config()->Get('security', 'csp_report', false);
 		$CSP->report_only = Api::Config()->Get('debug', 'enable', false); // '0.0.0' === APP_VERSION
+
 		// Allow https: due to remote images in e-mails or use proxy
 		if (!Api::Config()->Get('security', 'use_local_proxy_for_external_images', '')) {
 			$CSP->img[] = 'https:';
