@@ -227,7 +227,7 @@ class Utils
 					return true;
 				}
 			}
-			\SnappyMail\Log::warning("open_basedir restriction in effect. {$name} is not within the allowed path(s): " . \ini_get('open_basedir'));
+			\SnappyMail\Log::warning('OpenBasedir', "open_basedir restriction in effect. {$name} is not within the allowed path(s): " . \ini_get('open_basedir'));
 			return false;
 		}
 		return true;
