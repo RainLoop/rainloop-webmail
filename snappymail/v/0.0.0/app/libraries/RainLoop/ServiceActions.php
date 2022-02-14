@@ -371,6 +371,11 @@ class ServiceActions
 		return '';
 	}
 
+	public function ServiceCspReport() : void
+	{
+		\SnappyMail\HTTP\CSP::logReport();
+	}
+
 	public function ServiceRaw() : string
 	{
 		$sResult = '';

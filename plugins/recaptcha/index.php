@@ -6,9 +6,9 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'reCaptcha',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '2.12',
-		RELEASE  = '2022-02-11',
-		REQUIRED = '2.12.0',
+		VERSION  = '2.12.1',
+		RELEASE  = '2022-02-14',
+		REQUIRED = '2.12.1',
 		CATEGORY = 'General',
 		LICENSE  = 'MIT',
 		DESCRIPTION = 'A CAPTCHA (v2) is a program that can generate and grade tests that humans can pass but current computer programs cannot. For example, humans can read distorted text as the one shown below, but current computer programs can\'t. More info at https://developers.google.com/recaptcha';
@@ -24,6 +24,7 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		$this->addHook('json.action-pre-call', 'AjaxActionPreCall');
 		$this->addHook('filter.json-response', 'FilterAjaxResponse');
+		$this->addHook('main.content-security-policy', 'ContentSecurityPolicy');
 	}
 
 	protected function configMapping() : array
@@ -77,7 +78,7 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function FilterAppDataPluginSection(bool $bAdmin, bool $bAuth, array &$aConfig) : void
 	{
 		if (!$bAdmin && !$bAuth) {
-			$aConfig['show_captcha_on_login'] = 1;
+			$aConfig['show_captcha_on_login'] = 1 > $this->getLimit();;
 		}
 	}
 
@@ -140,4 +141,13 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 			}
 		}
 	}
+
+	public function ContentSecurityPolicy(\SnappyMail\HTTP\CSP $CSP)
+	{
+		$CSP->script[] = 'https://www.google.com/recaptcha/';
+		$CSP->script[] = 'https://www.gstatic.com/recaptcha/';
+		$CSP->frame[] = 'https://www.google.com/recaptcha/';
+		$CSP->frame[] = 'https://recaptcha.google.com/recaptcha/';
+	}
+
 }
