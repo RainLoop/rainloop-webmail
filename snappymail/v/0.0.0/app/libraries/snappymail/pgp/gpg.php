@@ -87,6 +87,7 @@ class GPG
 			throw new \Exception("socket name for '{$homedir}/S.gpg-agent.extra' is too long");
 		}
 
+		\clearstatcache();
 		if ($homedir && !\is_dir($homedir) && !\mkdir($homedir, 0700, true)) {
 			throw new \Exception("mkdir({$homedir}) failed");
 		}
