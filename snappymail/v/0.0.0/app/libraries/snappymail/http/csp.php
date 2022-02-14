@@ -34,10 +34,7 @@ class CSP
 	function __toString() : string
 	{
 		$params = [
-			'default-src ' . \implode(' ', $this->default),
-			'script-src ' . \implode(' ', $this->script),
-			'img-src ' . \implode(' ', $this->img),
-			'style-src ' . \implode(' ', $this->style),
+			'default-src ' . \implode(' ', $this->default)
 		];
 		if ($this->script) {
 			$params[] = 'script-src ' . \implode(' ', $this->script);
