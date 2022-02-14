@@ -105,6 +105,11 @@ export const
 				'id', 'class', 'contenteditable', 'designmode', 'formaction', 'manifest', 'action',
 				'data-bind', 'data-reactid', 'xmlns', 'srcset',
 				'fscommand', 'seeksegmenttime'
+			],
+			disallowedTags = [
+				'HEAD','STYLE','SVG','SCRIPT','TITLE','LINK','BASE','META',
+				'INPUT','OUTPUT','SELECT','BUTTON','TEXTAREA',
+				'BGSOUND','KEYGEN','SOURCE','OBJECT','EMBED','APPLET','IFRAME','FRAME','FRAMESET','VIDEO','AUDIO','AREA','MAP'
 			];
 
 		tpl.innerHTML = html
@@ -113,17 +118,11 @@ export const
 			})
 			// \MailSo\Base\HtmlUtils::ClearComments()
 			.replace(/<!--[\s\S]*?-->/g, '')
-			// \MailSo\Base\HtmlUtils::ClearTags()
-			// eslint-disable-next-line max-len
-			.replace(/<\/?(link|form|input|output|select|button|textarea|center|base|meta|bgsound|keygen|source|object|embed|applet|mocha|i?frame|frameset|video|audio|area|map)(\s[\s\S]*?)?>/gi, '')
 			// GetDomFromText
 			.replace('<o:p></o:p>', '')
 			.replace('<o:p>', '<span>')
 			.replace('</o:p>', '</span>')
-			// https://github.com/the-djmaze/snappymail/issues/187
-//			.replace(/<a(?:\s[^>]*)?>((?![\s\S]*<\/a)[\s\S]*?<a(\s[^>]*)?>)/gi, '$1')
 			// \MailSo\Base\HtmlUtils::ClearFastTags
-			.replace(/<p[^>]*><\/p>/i, '')
 			.replace(/<!doctype[^>]*>/i, '')
 			.replace(/<\?xml [^>]*\?>/i, '')
 			.trim();
@@ -137,7 +136,8 @@ export const
 				setAttribute = (name, value) => oElement.setAttribute(name, value),
 				delAttribute = name => oElement.removeAttribute(name);
 
-			if (['HEAD','STYLE','SVG','SCRIPT','TITLE','INPUT','BUTTON','TEXTAREA','SELECT'].includes(name)
+			// \MailSo\Base\HtmlUtils::ClearTags()
+			if (disallowedTags.includes(name)
 			 || 'none' == oStyle.display
 			 || 'hidden' == oStyle.visibility
 //			 || (oStyle.lineHeight && 1 > parseFloat(oStyle.lineHeight)
@@ -146,6 +146,11 @@ export const
 //			 || ('0' === oStyle.opacity
 			) {
 				oElement.remove();
+				return;
+			}
+//			if (['CENTER','FORM'].includes(name)) {
+			if ('FORM' === name) {
+				replaceWithChildren(oElement);
 				return;
 			}
 
