@@ -325,7 +325,7 @@ export const
 					setAttribute('data-x-style-broken-urls', JSON.stringify(urls.broken));
 				}
 
-				if (11 < pInt(oStyle.fontSize)) {
+				if (11 > pInt(oStyle.fontSize)) {
 					oStyle.removeProperty('font-size');
 				}
 
