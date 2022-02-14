@@ -116,8 +116,6 @@ export const
 			.replace(/(<pre[^>]*>)([\s\S]*?)(<\/pre>)/gi, aMatches => {
 				return (aMatches[1] + aMatches[2].trim() + aMatches[3].trim()).replace(/\r?\n/g, '<br>');
 			})
-			// \MailSo\Base\HtmlUtils::ClearComments()
-			.replace(/<!--[\s\S]*?-->/g, '')
 			// GetDomFromText
 			.replace('<o:p></o:p>', '')
 			.replace('<o:p>', '<span>')
@@ -127,6 +125,13 @@ export const
 			.replace(/<\?xml [^>]*\?>/i, '')
 			.trim();
 		html = '';
+
+		// \MailSo\Base\HtmlUtils::ClearComments()
+		// https://github.com/the-djmaze/snappymail/issues/187
+		const nodeIterator = document.createNodeIterator(tpl.content, NodeFilter.SHOW_COMMENT);
+		while (nodeIterator.nextNode()) {
+			nodeIterator.referenceNode.remove();
+		}
 
 		tpl.content.querySelectorAll('*').forEach(oElement => {
 			const name = oElement.tagName,
@@ -172,11 +177,6 @@ export const
 
 			else if ('A' === name) {
 				value = oElement.href;
-				// https://github.com/the-djmaze/snappymail/issues/187 <a> can't have block element inside
-				if (!value || oElement.querySelector('td,div,p,li')) {
-					replaceWithChildren(oElement);
-					return;
-				}
 				value = stripTracking(value);
 				if (!/^([a-z]+):/i.test(value) && '//' !== value.slice(0, 2)) {
 					setAttribute('data-x-broken-href', value);
