@@ -55,12 +55,12 @@
 		background-color: rgba(0,0,0,0.8);
 
 		.close, .minimize-custom {
-			opacity: 1;
-			color: #fff;
 			border-color: #eee;
-
+			float: none;
 			font-size: 24px;
-			line-height: 24px;
+			opacity: 1;
+			line-height: 28px;
+			margin-left: .7em;
 		}
 
 		.btn.disabled {
@@ -75,6 +75,10 @@
 
 		.disabled.button-delete {
 			margin-left: 0;
+		}
+
+		.pull-right * {
+			vertical-align: top;
 		}
 	}
 
@@ -98,20 +102,13 @@
 			width: 4em;
 		}
 
-		.e-identity {
+		#identity-toggle {
 			color: var(--main-color);
-			font-weight: bold;
-			line-height: @baseLineHeight;
-			padding: 4px 0;
+			margin-left: 6px;
 			text-decoration: none;
-
-			&.multiply {
-				cursor: pointer;
-				border-bottom: 1px dashed var(--main-color);
-			}
-			&.multiply::after {
-				content: ' ▼';
-			}
+		}
+		#identity-toggle::after {
+			content: '▼';
 		}
 
 		textarea, input[type="text"] {
@@ -170,12 +167,7 @@
 	border: 0 solid #333;
 	border-bottom-width: 3px;
 	display: inline-block;
-	float: right;
 	height: 20px;
 	width: 16px;
-	font-size: 20px;
-	font-weight: bold;
-	line-height: 20px;
-	margin-right: 15px;
 	cursor: pointer;
 }

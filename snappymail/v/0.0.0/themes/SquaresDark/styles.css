@@ -101,7 +101,6 @@ dialog header, dialog footer,
 }
 
 .legend,
-#V-PopupsCompose .b-header .e-identity,
 .messageView #messageItem {
 	color: var(--main-color);
 }
