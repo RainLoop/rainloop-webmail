@@ -357,7 +357,7 @@ class ServiceActions
 					&& \str_starts_with($oResponse->getHeader('content-type'), 'image/')
 				) {
 					$this->oActions->cacheByKey($sData);
-					\header('Content-Type: '.$sContentType);
+					\header('Content-Type: ' . $oResponse->getHeader('content-type'));
 					\header('Cache-Control: public');
 					\header('Expires: '.\gmdate('D, j M Y H:i:s', 2592000 + \time()).' UTC');
 					\rewind($tmp);
