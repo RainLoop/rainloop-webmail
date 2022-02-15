@@ -38,7 +38,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Permitir múltiples identidades",
 		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
 		"ALERT_WARNING": "¡Atención!",
-		"HTML_ALERT_WEAK_PASSWORD": "Estas utilizando la contraseña por defecto.\n<br \/>\nDebido a razones de seguridad, debes\n<strong><a href=\"#\/security\">cambiar<\/a><\/strong>\ntu contraseña inmediatamente.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "Estas utilizando la contraseña por defecto.\n<br>\nDebido a razones de seguridad, debes\n<strong><a href=\"#\/security\">cambiar<\/a><\/strong>\ntu contraseña inmediatamente.\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Pantalla de Ingreso",
@@ -66,14 +66,14 @@
 		"BUTTON_TEST": "Probar",
 		"ALERT_NOTICE": "¡Advertencia!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "No utilices este tipo de Base de Datos para un número grande de usuarios.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "Tu sistema no soporta el uso de Contactos.\n<br \/>\nDebes instalar o habilitar el uso de <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> en tu servidor.\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Tu sistema no soporta el uso de Contactos.\n<br>\nDebes instalar o habilitar el uso de <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> en tu servidor.\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Dominios",
 		"BUTTON_ADD_DOMAIN": "Agregar dominio",
 		"BUTTON_ADD_ALIAS": "Agregar alias",
 		"DELETE_ARE_YOU_SURE": "¿Estás seguro?",
-		"HTML_DOMAINS_HELPER": "Lista de los dominios de correo al que se permite ingresar.\n<br \/>\nHaz click en el nombre de un dominio para modificarlo.\n"
+		"HTML_DOMAINS_HELPER": "Lista de los dominios de correo al que se permite ingresar.\n<br>\nHaz click en el nombre de un dominio para modificarlo.\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Seguridad",
@@ -138,7 +138,7 @@
 		"BUTTON_CLOSE": "Cerrar",
 		"BUTTON_ADD": "Agregar",
 		"BUTTON_UPDATE": "Actualizar",
-		"NEW_DOMAIN_DESC": "Esta configuración de Dominio le permitirá trabajar <br \/>con direcciones de correo tipo @<i>%NAME%<\/i>.",
+		"NEW_DOMAIN_DESC": "Esta configuración de Dominio le permitirá trabajar <br>con direcciones de correo tipo @<i>%NAME%<\/i>.",
 		"WHITE_LIST_ALERT": "Lista de dominios con que los usuarios pueden ingresar.\nUse un espacio como delimitador.\n"
 	},
 	"POPUPS_PLUGIN": {

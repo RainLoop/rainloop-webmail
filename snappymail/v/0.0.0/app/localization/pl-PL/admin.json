@@ -38,7 +38,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Zezwól na posiadanie wielu tożsamości",
 		"ALERT_DATA_ACCESS": "Katalog „data” jest osiągalny z poziomu przeglądarki WWW. Zmień konfigurację serwera www, aby ukryć ten folder z zewnątrz. Więcej informacji tutaj: ",
 		"ALERT_WARNING": "Ostrzeżenie!",
-		"HTML_ALERT_WEAK_PASSWORD": "Korzystasz z domyślnego hasła administratora.\n<br \/>\nZe względów bezpieczeństwa\n<strong><a href=\"#\/security\">zmień hasło<\/a><\/strong>\nna inne.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "Korzystasz z domyślnego hasła administratora.\n<br>\nZe względów bezpieczeństwa\n<strong><a href=\"#\/security\">zmień hasło<\/a><\/strong>\nna inne.\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Ekran logowania",
@@ -66,14 +66,14 @@
 		"BUTTON_TEST": "Testuj",
 		"ALERT_NOTICE": "Ostrzeżenie!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Nie używaj tej bazy danych z dużą ilością aktywnych użytkowników.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "Twój system nie zawiera wsparcia dla obsługi kontaktów.\n<br \/>\nMusisz zainstalować lub uruchomić na serwerze jedno z rozszerzeń <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong>.\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Twój system nie zawiera wsparcia dla obsługi kontaktów.\n<br>\nMusisz zainstalować lub uruchomić na serwerze jedno z rozszerzeń <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong>.\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Domeny",
 		"BUTTON_ADD_DOMAIN": "Dodaj domenę",
 		"BUTTON_ADD_ALIAS": "Dodaj Alias",
 		"DELETE_ARE_YOU_SURE": "Czy na pewno?",
-		"HTML_DOMAINS_HELPER": "Lista domen, do których można uzyskać dostęp poprzez tego klienta.\n<br \/>\nKliknij na nazwę, aby skonfigurować domenę.\n"
+		"HTML_DOMAINS_HELPER": "Lista domen, do których można uzyskać dostęp poprzez tego klienta.\n<br>\nKliknij na nazwę, aby skonfigurować domenę.\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Bezpieczeństwo",
@@ -138,7 +138,7 @@
 		"BUTTON_CLOSE": "Zamknij",
 		"BUTTON_ADD": "Dodaj",
 		"BUTTON_UPDATE": "Zaktualizuj",
-		"NEW_DOMAIN_DESC": "Konfiguracja tej domeny pozwala na pracę<br \/>z adresami e-mail: <i>%NAME%<\/i>",
+		"NEW_DOMAIN_DESC": "Konfiguracja tej domeny pozwala na pracę<br>z adresami e-mail: <i>%NAME%<\/i>",
 		"WHITE_LIST_ALERT": "Lista użytkowników domeny, którzy mogą uzyskać dostęp z tego webmaila.\nUżyj spacji do rozdzielenia.\n"
 	},
 	"POPUPS_PLUGIN": {

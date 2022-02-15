@@ -17,26 +17,26 @@
 				<div class="textEmail" data-bind="text: email, visible: owner"></div>
 				<input type="email" class="input-xlarge" autofocus=""
 					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="visible: !owner(), value: email, onEnter: addOrEditIdentityCommand, hasfocus: emailFocused" />
+					data-bind="visible: !owner(), value: email, onEnter: addOrEditIdentityCommand, hasfocus: emailFocused">
 			</div>
 		</div>
 		<div class="control-group">
 			<label data-i18n="GLOBAL/NAME"></label>
 			<input type="text" class="input-xlarge"
 				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-				data-bind="value: name, onEnter: addOrEditIdentityCommand" />
+				data-bind="value: name, onEnter: addOrEditIdentityCommand">
 		</div>
 		<div class="control-group" data-bind="visible: showReplyTo, css: {'error': replyToHasError}">
 			<label data-i18n="GLOBAL/REPLY_TO"></label>
 			<input type="text" class="inputReplyTo input-xlarge"
 				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-				data-bind="value: replyTo, onEnter: addOrEditIdentityCommand, hasfocus: replyToFocused" />
+				data-bind="value: replyTo, onEnter: addOrEditIdentityCommand, hasfocus: replyToFocused">
 		</div>
 		<div class="control-group" data-bind="visible: showBcc, css: {'error': bccHasError}">
 			<label data-i18n="GLOBAL/BCC"></label>
 			<input type="text" class="inputBcc input-xlarge"
 				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-				data-bind="value: bcc, onEnter: addOrEditIdentityCommand, hasfocus: bccFocused" />
+				data-bind="value: bcc, onEnter: addOrEditIdentityCommand, hasfocus: bccFocused">
 		</div>
 		<div class="control-group" data-bind="visible: !showReplyTo() || !showBcc()">
 			<div>
@@ -52,7 +52,7 @@
 			</div>
 		</div>
 	</div>
-	<hr />
+	<hr>
 	<div class="control-group g-ui-user-select-none">
 		<div data-bind="component: {
 			name: 'Checkbox',

@@ -38,7 +38,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Tillad flere identiteter",
 		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
 		"ALERT_WARNING": "Advarsler!",
-		"HTML_ALERT_WEAK_PASSWORD": "Du bruger standard admin adgangskoden.\n<br \/>\nAf sikkerhedsmæssige hensyn bør du venligst\n<strong><a href=\"#\/security\">ændre<\/a><\/strong>\nadgangskoden til noget andet snarest.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "Du bruger standard admin adgangskoden.\n<br>\nAf sikkerhedsmæssige hensyn bør du venligst\n<strong><a href=\"#\/security\">ændre<\/a><\/strong>\nadgangskoden til noget andet snarest.\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Log ind skærm",
@@ -66,14 +66,14 @@
 		"BUTTON_TEST": "Test",
 		"ALERT_NOTICE": "Underretning!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Brug ikke denne database type med større antal af aktive brugere.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "Dit system ser ikke ud til at understøtte kontakter.\n<br \/>\nDu skal installere og aktivere <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> udvidelsen på din server.\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Dit system ser ikke ud til at understøtte kontakter.\n<br>\nDu skal installere og aktivere <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> udvidelsen på din server.\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Domæner",
 		"BUTTON_ADD_DOMAIN": "Tilføj domæne",
 		"BUTTON_ADD_ALIAS": "Tilføj alias",
 		"DELETE_ARE_YOU_SURE": "Er du sikker?",
-		"HTML_DOMAINS_HELPER": "Liste over domæner webmail er tilladt adgang til.\n<br \/>\nKlik på navnet for at konfigurere domænet.\n"
+		"HTML_DOMAINS_HELPER": "Liste over domæner webmail er tilladt adgang til.\n<br>\nKlik på navnet for at konfigurere domænet.\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Sikkerhed",

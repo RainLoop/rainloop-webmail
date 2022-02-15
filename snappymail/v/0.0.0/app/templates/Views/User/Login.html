@@ -11,14 +11,14 @@
 		<input name="Email" required="" type="text" class="input-block-level" pattern="[^@\s]+(@[^\s]+)?" inputmode="email"
 			autofocus="" autocomplete="email" autocorrect="off" autocapitalize="off" spellcheck="false"
 			data-bind="textInput: email, disable: submitRequest"
-			data-i18n="[placeholder]GLOBAL/EMAIL" />
+			data-i18n="[placeholder]GLOBAL/EMAIL">
 	</div>
 	<div class="controls" data-bind="css: {'error': passwordError}">
 		<span class="fontastic">🔑</span>
 		<input name="Password" required="" type="password" class="input-block-level"
 			autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
 			data-bind="textInput: password, disable: submitRequest"
-			data-i18n="[placeholder]GLOBAL/PASSWORD" />
+			data-i18n="[placeholder]GLOBAL/PASSWORD">
 		<button class="fontastic" data-bind="command: submitCommand, visible: '' !== password()" data-i18n="[title]LOGIN/BUTTON_SIGN_IN">❯</button>
 	</div>
 	<div id="plugin-Login-BottomControlGroup"></div>

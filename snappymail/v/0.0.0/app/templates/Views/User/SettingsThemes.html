@@ -5,11 +5,11 @@
 <div data-bind="foreach: themesObjects">
 	<figure data-bind="click: function () { $root.theme(name); }, css: { 'selected': selected }">
 		<figcaption data-bind="text: nameDisplay"></figcaption>
-		<img data-bind="attr: { 'src': themePreviewSrc }" />
+		<img data-bind="attr: { 'src': themePreviewSrc }">
 	</figure>
 </div>
-<br />
-<br />
+<br>
+<br>
 <div class="form-horizontal" data-bind="visible: capaUserBackground">
 	<div class="legend" data-i18n="SETTINGS_THEMES/LEGEND_THEMES_CUSTOM"></div>
 	<div class="control-group g-ui-user-select-none">

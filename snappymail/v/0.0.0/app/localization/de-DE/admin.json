@@ -38,7 +38,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Mehrere Identitäten erlauben",
 		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
 		"ALERT_WARNING": "Warnung!",
-		"HTML_ALERT_WEAK_PASSWORD": "Sie verwenden das Standard-Admin-Passwort.\n<br \/>\nBitte <strong><a href=\"#\/security\">ändern<\/a><\/strong> Sie\naus Sicherheitsgründen das Passwort jetzt.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "Sie verwenden das Standard-Admin-Passwort.\n<br>\nBitte <strong><a href=\"#\/security\">ändern<\/a><\/strong> Sie\naus Sicherheitsgründen das Passwort jetzt.\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Anmeldebildschirm",
@@ -66,14 +66,14 @@
 		"BUTTON_TEST": "Testen",
 		"ALERT_NOTICE": "Hinweis!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Verwenden Sie diesen Datenbanktyp nicht bei einer hohen Anzahl aktiver Benutzer.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "Ihr System unterstützt keine Kontakte.\n<br \/>\nSie müssen die <strong>PDO-Erweiterung (SQLite \/ MySQL \/ PostgreSQL)<\/strong> auf Ihrem Server installieren oder aktivieren.\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Ihr System unterstützt keine Kontakte.\n<br>\nSie müssen die <strong>PDO-Erweiterung (SQLite \/ MySQL \/ PostgreSQL)<\/strong> auf Ihrem Server installieren oder aktivieren.\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Domains",
 		"BUTTON_ADD_DOMAIN": "Domain hinzufügen",
 		"BUTTON_ADD_ALIAS": "Alias hinzufügen",
 		"DELETE_ARE_YOU_SURE": "Sind Sie sicher?",
-		"HTML_DOMAINS_HELPER": "Liste der Domains, die Webmail abrufen darf.\n<br \/>\nKlicken Sie auf den Namen, um die Domain zu konfigurieren.\n"
+		"HTML_DOMAINS_HELPER": "Liste der Domains, die Webmail abrufen darf.\n<br>\nKlicken Sie auf den Namen, um die Domain zu konfigurieren.\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Sicherheit",
@@ -138,7 +138,7 @@
 		"BUTTON_CLOSE": "Schließen",
 		"BUTTON_ADD": "Hinzufügen",
 		"BUTTON_UPDATE": "Aktualisieren",
-		"NEW_DOMAIN_DESC": "Diese Domain Konfiguration wird es dir möglich machen <br \/>mit <i>%NAME%<\/i> Mailadressen zu arbeiten.",
+		"NEW_DOMAIN_DESC": "Diese Domain Konfiguration wird es dir möglich machen <br>mit <i>%NAME%<\/i> Mailadressen zu arbeiten.",
 		"WHITE_LIST_ALERT": "Liste der User, die Webmail abrufen darf.\nVerwenden Sie Leerzeichen als Trenner.\n"
 	},
 	"POPUPS_PLUGIN": {

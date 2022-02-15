@@ -8,9 +8,9 @@
 			<span data-i18n="POPUPS_DOMAIN/LABEL_NAME"></span>
 			&nbsp;
 			<span style="color: #aaa">(<span data-i18n="POPUPS_DOMAIN/NAME_HELPER"></span>)</span>
-			<br />
+			<br>
 			<input type="text" class="span4" autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-				data-bind="textInput: name" />
+				data-bind="textInput: name">
 			<div class="alert-error" data-bind="visible: '' !== savingError(), text: savingError"></div>
 		</div>
 		<div class="span5 domain-desc" data-bind="visible: '' !== domainDesc(), html: domainDesc"></div>
@@ -19,7 +19,7 @@
 	<form class="form-horizontal domain-form" action="#/" onsubmit="return false;">
 		<div class="tabs">
 
-			<input type="radio" name="helptabs" id="tab-help1" checked />
+			<input type="radio" name="helptabs" id="tab-help1" checked>
 			<label for="tab-help1" role="tab" tabindex="0"
 				data-bind="css: { 'testing-done': testingDone, 'testing-error': testingImapError }, tooltipErrorTip: testingImapErrorDesc"
 				data-i18n="POPUPS_DOMAIN/LABEL_IMAP"></label>
@@ -27,13 +27,13 @@
 				<div class="row">
 					<div class="span3">
 						<span data-i18n="POPUPS_DOMAIN/LABEL_SERVER"></span>
-						<br />
+						<br>
 						<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="textInput: imapServer, hasfocus: imapServerFocus" />
+							data-bind="textInput: imapServer, hasfocus: imapServerFocus">
 					</div>
 					<div class="span2">
 						<span data-i18n="POPUPS_DOMAIN/LABEL_SECURE"></span>
-						<br />
+						<br>
 						<select class="span2" data-bind="value: imapSecure">
 							<option value="0" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_NONE"></option>
 							<option value="1" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_SSL"></option>
@@ -42,12 +42,12 @@
 					</div>
 					<div class="span2">
 						<span data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
-						<br />
+						<br>
 						<input type="number" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-							style="width:6em" data-bind="textInput: imapPort" />
+							style="width:6em" data-bind="textInput: imapPort">
 					</div>
 				</div>
-				<br />
+				<br>
 				<div data-bind="component: {
 					name: 'Checkbox',
 					params: {
@@ -60,7 +60,7 @@
 				<span style="color: #aaa">(user@domain.com → user)</span>
 			</div>
 
-			<input type="radio" name="helptabs" id="tab-help2" />
+			<input type="radio" name="helptabs" id="tab-help2">
 			<label for="tab-help2" role="tab" tabindex="0"
 				data-bind="css: { 'testing-done': testingDone, 'testing-error': testingSmtpError }, tooltipErrorTip: testingSmtpErrorDesc"
 				data-i18n="POPUPS_DOMAIN/LABEL_SMTP"></label>
@@ -69,13 +69,13 @@
 					<div class="row">
 						<div class="span3">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_SERVER"></span>
-							<br />
+							<br>
 							<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-								data-bind="textInput: smtpServer, hasfocus: smtpServerFocus" />
+								data-bind="textInput: smtpServer, hasfocus: smtpServerFocus">
 						</div>
 						<div class="span2">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_SECURE"></span>
-							<br />
+							<br>
 							<select class="span2" data-bind="value: smtpSecure">
 								<option value="0" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_NONE"></option>
 								<option value="1" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_SSL"></option>
@@ -84,12 +84,12 @@
 						</div>
 						<div class="span2">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
-							<br />
+							<br>
 							<input type="number" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-								style="width:6em" data-bind="textInput: smtpPort" />
+								style="width:6em" data-bind="textInput: smtpPort">
 						</div>
 					</div>
-					<br />
+					<br>
 					<div data-bind="component: {
 						name: 'Checkbox',
 						params: {
@@ -107,7 +107,7 @@
 							value: smtpAuth
 						}
 					}"></div>
-					<br />
+					<br>
 				</div>
 				<div data-bind="component: {
 					name: 'Checkbox',
@@ -117,7 +117,7 @@
 						inline: true
 					}
 				}"></div>
-				<br />
+				<br>
 				<div data-bind="component: {
 					name: 'Checkbox',
 					params: {
@@ -130,7 +130,7 @@
 				<span style="color:red">(<span data-i18n="HINTS/BETA"></span>)</span>
 			</div>
 
-			<input type="radio" name="helptabs" id="tab-help3" />
+			<input type="radio" name="helptabs" id="tab-help3">
 			<label for="tab-help3" role="tab" tabindex="0"
 				data-bind="css: { 'testing-done': testingDone, 'testing-error': testingSieveError }, tooltipErrorTip: testingSieveErrorDesc">
 				<i class="icon-filter"></i>
@@ -150,13 +150,13 @@
 					<div class="row">
 						<div class="span3">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_SERVER"></span>
-							<br />
+							<br>
 							<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-								data-bind="textInput: sieveServer, hasfocus: sieveServerFocus" />
+								data-bind="textInput: sieveServer, hasfocus: sieveServerFocus">
 						</div>
 						<div class="span2">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_SECURE"></span>
-							<br />
+							<br>
 							<select class="span2" data-bind="value: sieveSecure">
 								<option value="0" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_NONE"></option>
 								<option value="1" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_SSL"></option>
@@ -165,15 +165,15 @@
 						</div>
 						<div class="span2">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
-							<br />
+							<br>
 							<input type="number" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-								style="width:6em" data-bind="textInput: sievePort" />
+								style="width:6em" data-bind="textInput: sievePort">
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<input type="radio" name="helptabs" id="tab-help4" />
+			<input type="radio" name="helptabs" id="tab-help4">
 			<label for="tab-help4" role="tab" tabindex="0" data-icon="👥" data-i18n="POPUPS_DOMAIN/BUTTON_WHITE_LIST"></label>
 			<div class="tab-content" role="tabpanel" aria-hidden="true">
 				<div class="alert" data-i18n="POPUPS_DOMAIN/WHITE_LIST_ALERT"></div>

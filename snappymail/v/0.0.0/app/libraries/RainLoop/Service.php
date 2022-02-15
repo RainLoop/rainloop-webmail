@@ -166,8 +166,8 @@ abstract class Service
 			$sAppleTouchLink = $sFaviconUrl ? '' : $oActions->StaticPath('apple-touch-icon.png');
 
 			$aTemplateParameters = array(
-				'{{BaseAppFaviconPngLinkTag}}' => $sFaviconPngLink ? '<link type="image/png" rel="shortcut icon" href="'.$sFaviconPngLink.'" />' : '',
-				'{{BaseAppFaviconTouchLinkTag}}' => $sAppleTouchLink ? '<link type="image/png" rel="apple-touch-icon" href="'.$sAppleTouchLink.'" />' : '',
+				'{{BaseAppFaviconPngLinkTag}}' => $sFaviconPngLink ? '<link type="image/png" rel="shortcut icon" href="'.$sFaviconPngLink.'">' : '',
+				'{{BaseAppFaviconTouchLinkTag}}' => $sAppleTouchLink ? '<link type="image/png" rel="apple-touch-icon" href="'.$sAppleTouchLink.'">' : '',
 				'{{BaseAppMainCssLink}}' => $oActions->StaticPath('css/'.($bAdmin ? 'admin' : 'app').$sAppCssMin.'.css'),
 				'{{BaseAppThemeCssLink}}' => $oActions->ThemeLink($bAdmin),
 				'{{BaseAppManifestLink}}' => $oActions->StaticPath('manifest.json'),
