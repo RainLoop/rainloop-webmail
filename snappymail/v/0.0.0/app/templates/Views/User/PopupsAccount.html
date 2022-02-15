@@ -10,7 +10,7 @@
 		<a href="#" class="close" data-bind="click: function () { submitError('') }">×</a>
 		<span data-bind="text: submitError"></span>
 		<div data-bind="visible: submitErrorAdditional">
-			<br />
+			<br>
 			<span data-bind="text: submitErrorAdditional"></span>
 		</div>
 	</div>
@@ -19,12 +19,12 @@
 		<strong style="margin-top: 5px;" data-bind="visible: !isNew(), text: email"></strong>
 		<input type="email" class="input-xlarge"
 			autofocus="" autocorrect="off" autocapitalize="off" spellcheck="false"
-			data-bind="visible: isNew, textInput: email, onEnter: addAccountCommand" />
+			data-bind="visible: isNew, textInput: email, onEnter: addAccountCommand">
 	</div>
 	<div class="control-group" data-bind="css: {'error': passwordError}">
 		<label data-i18n="GLOBAL/PASSWORD"></label>
 		<input type="password" class="input-xlarge" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-			data-bind="value: password, onEnter: addAccountCommand" />
+			data-bind="value: password, onEnter: addAccountCommand">
 	</div>
 </form>
 <footer>

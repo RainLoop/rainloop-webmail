@@ -602,7 +602,7 @@ class Message implements \JsonSerializable
 					}
 				}
 
-				$oMessage->sHtml = \implode('<br />', $aHtmlParts);
+				$oMessage->sHtml = \implode('<br>', $aHtmlParts);
 				$oMessage->sPlain = \trim(\implode("\n", $aPlainParts));
 
 				$oMessage->bPgpEncrypted = !$oMessage->bPgpEncrypted && false !== \stripos($oMessage->sPlain, '-----BEGIN PGP MESSAGE-----');

@@ -38,7 +38,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Több identitás engedélyezése",
 		"ALERT_DATA_ACCESS": "A RainLoop adatmappája hozzáférhető. Kérlek állítsd be úgy a webszervert, hogy az adatmappát rejtse el a külső hozzáférés elől. További tudnivalók itt:",
 		"ALERT_WARNING": "Figyelmeztetés!",
-		"HTML_ALERT_WEAK_PASSWORD": "Az alapértelmezett admin jelszót használod\n<br \/>\nBiztonsági okokból kérlek\n<strong><a href=\"#\/security\">változtasd meg<\/a><\/strong>\na jelszót valami másra!\n"
+		"HTML_ALERT_WEAK_PASSWORD": "Az alapértelmezett admin jelszót használod\n<br>\nBiztonsági okokból kérlek\n<strong><a href=\"#\/security\">változtasd meg<\/a><\/strong>\na jelszót valami másra!\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Bejelentkező képernyő",
@@ -66,14 +66,14 @@
 		"BUTTON_TEST": "Teszt",
 		"ALERT_NOTICE": "Megjegyzés!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Ne használd ezt az adatbázis típust nagy számú aktív felhasználóval.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "A rendszer nem támogatja a címtárat.\n<br \/>\nTelepítened vagy engedélyezned kell egy <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> kiterjesztést a szervereden.\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "A rendszer nem támogatja a címtárat.\n<br>\nTelepítened vagy engedélyezned kell egy <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> kiterjesztést a szervereden.\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Domainek",
 		"BUTTON_ADD_DOMAIN": "Domain hozzáadás",
 		"BUTTON_ADD_ALIAS": "Álnév hozzáadás",
 		"DELETE_ARE_YOU_SURE": "Biztos vagy benne?",
-		"HTML_DOMAINS_HELPER": "Hozzáféréshez engedélyezett domainek listája:\n<br \/>\nA domain beállításához kattints a névre.\n"
+		"HTML_DOMAINS_HELPER": "Hozzáféréshez engedélyezett domainek listája:\n<br>\nA domain beállításához kattints a névre.\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Biztonság",
@@ -138,7 +138,7 @@
 		"BUTTON_CLOSE": "Bezár",
 		"BUTTON_ADD": "Hozzáad",
 		"BUTTON_UPDATE": "Frissítés",
-		"NEW_DOMAIN_DESC": "Ez a domain konfiguráció lehetővé teszi <br \/>a <i>%NAME%<\/i> email címek használatát.",
+		"NEW_DOMAIN_DESC": "Ez a domain konfiguráció lehetővé teszi <br>a <i>%NAME%<\/i> email címek használatát.",
 		"WHITE_LIST_ALERT": "Hozzáféréshez engedélyezett domainek listája.\nElválasztáshoz használd a szóközt.\n"
 	},
 	"POPUPS_PLUGIN": {

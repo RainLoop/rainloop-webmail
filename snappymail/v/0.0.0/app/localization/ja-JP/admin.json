@@ -38,7 +38,7 @@
 		"LABEL_ALLOW_IDENTITIES": "複数の表示名を使用する",
 		"ALERT_DATA_ACCESS": "RainLoop のデータフォルダがアクセス可能になっています。外部から RainLoop のデータフォルダにアクセスできないよう、Web サーバーを設定してください。詳しくは以下をご覧ください:",
 		"ALERT_WARNING": "警告！",
-		"HTML_ALERT_WEAK_PASSWORD": "デフォルトの管理者パスワードを使用しています。\n<br \/>\nセキュリティ上の理由から、いますぐパスワードを\n<strong><a href=\"#\/security\">変更<\/a><\/strong>\nしてください。\n"
+		"HTML_ALERT_WEAK_PASSWORD": "デフォルトの管理者パスワードを使用しています。\n<br>\nセキュリティ上の理由から、いますぐパスワードを\n<strong><a href=\"#\/security\">変更<\/a><\/strong>\nしてください。\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "ログイン画面",
@@ -66,14 +66,14 @@
 		"BUTTON_TEST": "テスト",
 		"ALERT_NOTICE": "注意！",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "アクティブユーザーの数が多いとき、このデータベース・タイプを使用しないでください。",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "このシステムでは連絡先はサポートされていません。\n<br \/>\nサーバーへ<strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong>\n拡張モジュールのインストールが必要です。\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "このシステムでは連絡先はサポートされていません。\n<br>\nサーバーへ<strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong>\n拡張モジュールのインストールが必要です。\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "ドメイン",
 		"BUTTON_ADD_DOMAIN": "ドメインを追加",
 		"BUTTON_ADD_ALIAS": "エイリアスを追加",
 		"DELETE_ARE_YOU_SURE": "よろしいですか？",
-		"HTML_DOMAINS_HELPER": "ドメインの一覧は、Web メールのアクセスを許可されています。\n<br \/>\nドメインを設定するには、名前をクリックしてください。\n"
+		"HTML_DOMAINS_HELPER": "ドメインの一覧は、Web メールのアクセスを許可されています。\n<br>\nドメインを設定するには、名前をクリックしてください。\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "セキュリティ",

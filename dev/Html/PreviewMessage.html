@@ -1,31 +1,24 @@
 <html>
 <head>
 	<meta charset="utf-8"/>
-	<meta name="viewport" content="user-scalable=no"/>
-	<title>{{subject}}</title>
+	<title></title>
 	<style>
 html, body {
-	background-color: #fff;
-	color: #000;
-	font-size: 13px;
 	margin: 0;
 	padding: 0;
 }
 
 header {
-	background: #eee;
-	border-bottom: 1px solid #ccc;
-	padding: 0 15px;
+	background: rgba(125,128,128,0.3);
+	border-bottom: 1px solid #888;
 }
 
 header h1 {
-	font-size: 16px;
-	margin: 0;
+	font-size: 120%;
 }
 
 header * {
-	font-size: 12px;
-	padding: 5px 0;
+	margin: 5px 0;
 }
 
 header time {
@@ -33,30 +26,21 @@ header time {
 }
 
 blockquote {
-	border-left: 2px solid black;
+	border-left: 2px solid rgba(125,128,128,0.5);
 	margin: 0;
-	padding: 0 10px;
+	padding: 0 0 0 10px;
 }
 
-pre, .body-wrp.plain {
+pre {
 	white-space: pre-wrap;
 	word-wrap: break-word;
 	word-break: normal;
 }
 
-.body-wrp {
-	padding: 15px;
+body > * {
+	padding: 0.5em 1em;
 }
 	</style>
 </head>
-<body>
-	<header>
-		<h1>{{subject}}</h1>
-		<time>{{date}}</time>
-		<div>{{fromCreds}}</div>
-		<div>{{toLabel}}: {{toCreds}}</div>
-		<div {{ccHide}}>{{ccLabel}}: {{ccCreds}}</div>
-	</header>
-	<div class="body-wrp {{bodyClass}}">{{html}}</div>
-</body>
+<body></body>
 </html>

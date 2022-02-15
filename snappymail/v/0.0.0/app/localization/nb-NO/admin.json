@@ -38,7 +38,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Tillat bruk av flere identiteter",
 		"ALERT_DATA_ACCESS": "RainLoop-datamappa di er offentlig tiljgengelig. Sett opp webtjeneren slik at den ikke viser datamappa. Les mer her:",
 		"ALERT_WARNING": "Advarsel!",
-		"HTML_ALERT_WEAK_PASSWORD": "Du bruker forvalgt admin-passord.\n<br \/>\nAv sikkerhetshensyn bør du\n<strong><a href=\"#\/security\">endre<\/a><\/strong>\npassordet umiddelbart.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "Du bruker forvalgt admin-passord.\n<br>\nAv sikkerhetshensyn bør du\n<strong><a href=\"#\/security\">endre<\/a><\/strong>\npassordet umiddelbart.\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Innloggingsskjerm",
@@ -66,14 +66,14 @@
 		"BUTTON_TEST": "Test",
 		"ALERT_NOTICE": "Varsel!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Ikke bruk denne databasetypen hvis dette systemet har mange brukere.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "Dette systemet støtter ikke kontakter.\n<br \/>\nDu må installere eller slå på utvidelsen <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> på tjeneren.\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Dette systemet støtter ikke kontakter.\n<br>\nDu må installere eller slå på utvidelsen <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> på tjeneren.\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Domener",
 		"BUTTON_ADD_DOMAIN": "Legg til domene",
 		"BUTTON_ADD_ALIAS": "Legg til alias",
 		"DELETE_ARE_YOU_SURE": "Er du sikker?",
-		"HTML_DOMAINS_HELPER": "Liste over domener som programmet kan få tilgang til.\n<br \/>\nTrykk på et navn for å sette opp domenet.\n"
+		"HTML_DOMAINS_HELPER": "Liste over domener som programmet kan få tilgang til.\n<br>\nTrykk på et navn for å sette opp domenet.\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Sikkerhet",
@@ -138,7 +138,7 @@
 		"BUTTON_CLOSE": "Lukk",
 		"BUTTON_ADD": "Legg til",
 		"BUTTON_UPDATE": "Oppdater",
-		"NEW_DOMAIN_DESC": "Dette domeneoppsettet lar deg jobbe <br \/> med e-postadresser ved <i>%NAME%<\/i>.",
+		"NEW_DOMAIN_DESC": "Dette domeneoppsettet lar deg jobbe <br> med e-postadresser ved <i>%NAME%<\/i>.",
 		"WHITE_LIST_ALERT": "Liste over domenebrukere som programmet skal ha tilgang til.\nHold verdier adskilt med mellomrom.\n"
 	},
 	"POPUPS_PLUGIN": {

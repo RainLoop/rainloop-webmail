@@ -50,6 +50,13 @@ import { ThemeStore } from 'Stores/Theme';
 const
 	base64_encode = text => btoa(text).match(/.{1,76}/g).join('\r\n'),
 
+	email = new EmailModel(),
+	getEmail = value => {
+		email.clear();
+		email.parse(value.trim());
+		return email.email || false;
+	},
+
 	/**
 	 * @param {string} prefix
 	 * @param {string} subject
@@ -165,6 +172,7 @@ class ComposePopupView extends AbstractViewPopup {
 		this.addObservables({
 			identitiesDropdownTrigger: false,
 
+			from: '',
 			to: '',
 			cc: '',
 			bcc: '',
@@ -214,8 +222,10 @@ class ComposePopupView extends AbstractViewPopup {
 
 			editorArea: null, // initDom
 
-			currentIdentity: IdentityUserStore()[0] || null
+			currentIdentity: IdentityUserStore()[0]
 		});
+
+		this.from(IdentityUserStore()[0].formattedName());
 
 		// this.to.subscribe((v) => console.log(v));
 
@@ -289,11 +299,6 @@ class ComposePopupView extends AbstractViewPopup {
 					optText: item.formattedName()
 				})),
 
-			currentIdentityView: () => {
-				const item = this.currentIdentity();
-				return item ? item.formattedName() : 'unknown';
-			},
-
 			canBeSentOrSaved: () => !this.sending() && !this.saving()
 		});
 
@@ -304,11 +309,14 @@ class ComposePopupView extends AbstractViewPopup {
 
 			sendSuccessButSaveError: value => !value && this.savedErrorDesc(''),
 
-			currentIdentity: value => {
+			currentIdentity: value => value && this.from(value.formattedName()),
+
+			from: value => {
 				this.canPgpSign(false);
-				value && PgpUserStore.getKeyForSigning(value.email()).then(result => {
+				value = getEmail(value);
+				value && PgpUserStore.getKeyForSigning(value).then(result => {
 					console.log({
-						email: value.email(),
+						email: value,
 						canPgpSign:result
 					});
 					this.canPgpSign(result)
@@ -373,6 +381,7 @@ class ComposePopupView extends AbstractViewPopup {
 				MessageFolder: this.draftsFolder(),
 				MessageUid: this.draftUid(),
 				SaveFolder: sSaveFolder,
+				From: this.from(),
 				To: this.to(),
 				Cc: this.cc(),
 				Bcc: this.bcc(),
@@ -730,9 +739,10 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	selectIdentity(identity) {
-		if (identity && identity.item) {
-			this.currentIdentity(identity.item);
-			this.setSignatureFromIdentity(identity.item);
+		identity = identity && identity.item;
+		if (identity) {
+			this.currentIdentity(identity);
+			this.setSignatureFromIdentity(identity);
 		}
 	}
 
@@ -1594,18 +1604,14 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	allRecipients() {
-		const email = new EmailModel();
 		return [
 				// From/sender is also recipient (Sent mailbox)
-				this.currentIdentity().email(),
+//				this.currentIdentity().email(),
+				this.from(),
 				this.to(),
 				this.cc(),
 				this.bcc()
-			].join(',').split(',').map(value => {
-				email.clear();
-				email.parse(value.trim());
-				return email.email || false;
-			}).validUnique();
+			].join(',').split(',').map(value => getEmail(value.trim())).validUnique();
 	}
 
 	initPgpEncrypt() {

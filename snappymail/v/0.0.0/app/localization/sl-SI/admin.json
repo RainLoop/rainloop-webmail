@@ -38,7 +38,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Dovoli več identitet",
 		"ALERT_DATA_ACCESS": "Mapa z RainLoop podatki je prosto ogledljiva. Prosimo, nastavite strežnik, da skrije mapo pred zunanjimi dostopi. Preberite več tukaj:",
 		"ALERT_WARNING": "Pozor!",
-		"HTML_ALERT_WEAK_PASSWORD": "V uporabi je privzeto geslo administratorja\n<br \/>\nIz varnostnih razlogov\n<strong><a href=\"#\/security\">spremenite<\/a><\/strong>\ngeslo v nekaj drugega.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "V uporabi je privzeto geslo administratorja\n<br>\nIz varnostnih razlogov\n<strong><a href=\"#\/security\">spremenite<\/a><\/strong>\ngeslo v nekaj drugega.\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Prijavni zaslon",
@@ -66,14 +66,14 @@
 		"BUTTON_TEST": "Preizkus",
 		"ALERT_NOTICE": "Obvestilo!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Ta tip podatkovne baze ni priporočljiv za večje število uporabnikov.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "Sistem ne podpira stikov.\n<br \/>\nNamestite ali omogočite <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> razširitev na strežniku.\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Sistem ne podpira stikov.\n<br>\nNamestite ali omogočite <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> razširitev na strežniku.\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Domene",
 		"BUTTON_ADD_DOMAIN": "Dodaj domeno",
 		"BUTTON_ADD_ALIAS": "Dodaj vzdevek",
 		"DELETE_ARE_YOU_SURE": "Ste prepričani?",
-		"HTML_DOMAINS_HELPER": "Seznam domen, do katerih je omogočen dostop.\n<br \/>\nKliknite ime za konfiguracijo domene.\n"
+		"HTML_DOMAINS_HELPER": "Seznam domen, do katerih je omogočen dostop.\n<br>\nKliknite ime za konfiguracijo domene.\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Varnost",
@@ -138,7 +138,7 @@
 		"BUTTON_CLOSE": "Zapri",
 		"BUTTON_ADD": "Dodaj",
 		"BUTTON_UPDATE": "Posodobi",
-		"NEW_DOMAIN_DESC": "Ta konfiguiracija domene bo omogočala delo <br \/>z <i>%NAME%<\/i> e-naslovi.",
+		"NEW_DOMAIN_DESC": "Ta konfiguiracija domene bo omogočala delo <br>z <i>%NAME%<\/i> e-naslovi.",
 		"WHITE_LIST_ALERT": "Seznam uporabnikov domene, do katerih je omogočen dostop.\nUporabnike ločite s presledkom.\n"
 	},
 	"POPUPS_PLUGIN": {

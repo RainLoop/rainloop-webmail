@@ -166,8 +166,8 @@ abstract class Service
 			$sAppleTouchLink = $sFaviconUrl ? '' : $oActions->StaticPath('apple-touch-icon.png');
 
 			$aTemplateParameters = array(
-				'{{BaseAppFaviconPngLinkTag}}' => $sFaviconPngLink ? '<link type="image/png" rel="shortcut icon" href="'.$sFaviconPngLink.'" />' : '',
-				'{{BaseAppFaviconTouchLinkTag}}' => $sAppleTouchLink ? '<link type="image/png" rel="apple-touch-icon" href="'.$sAppleTouchLink.'" />' : '',
+				'{{BaseAppFaviconPngLinkTag}}' => $sFaviconPngLink ? '<link type="image/png" rel="shortcut icon" href="'.$sFaviconPngLink.'">' : '',
+				'{{BaseAppFaviconTouchLinkTag}}' => $sAppleTouchLink ? '<link type="image/png" rel="apple-touch-icon" href="'.$sAppleTouchLink.'">' : '',
 				'{{BaseAppMainCssLink}}' => $oActions->StaticPath('css/'.($bAdmin ? 'admin' : 'app').$sAppCssMin.'.css'),
 				'{{BaseAppThemeCssLink}}' => $oActions->ThemeLink($bAdmin),
 				'{{BaseAppManifestLink}}' => $oActions->StaticPath('manifest.json'),
@@ -240,23 +240,22 @@ abstract class Service
 
 	private static function setCSP(string $sScriptNonce = null) : void
 	{
-		// "img-src https:" is allowed due to remote images in e-mails
-		$sContentSecurityPolicy = \trim(Api::Config()->Get('security', 'content_security_policy', ''))
-			?: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https: http:; style-src 'self' 'unsafe-inline'";
-		if (Api::Config()->Get('security', 'use_local_proxy_for_external_images', '')) {
-			$sContentSecurityPolicy = \preg_replace('/(img-src[^;]+)\\shttps:(\\s|;|$)/D', '$1$2', $sContentSecurityPolicy);
-			$sContentSecurityPolicy = \preg_replace('/(img-src[^;]+)\\shttp:(\\s|;|$)/D', '$1$2', $sContentSecurityPolicy);
+		$CSP = new \SnappyMail\HTTP\CSP(\trim(Api::Config()->Get('security', 'content_security_policy', '')));
+		$CSP->report = Api::Config()->Get('security', 'csp_report', false);
+		$CSP->report_only = Api::Config()->Get('debug', 'enable', false); // '0.0.0' === APP_VERSION
+
+		// Allow https: due to remote images in e-mails or use proxy
+		if (!Api::Config()->Get('security', 'use_local_proxy_for_external_images', '')) {
+			$CSP->img[] = 'https:';
+			$CSP->img[] = 'http:';
 		}
 		// Internet Explorer does not support 'nonce'
-		if (!$_SERVER['HTTP_USER_AGENT'] || (!\strpos($_SERVER['HTTP_USER_AGENT'], 'Trident/') && !\strpos($_SERVER['HTTP_USER_AGENT'], 'Edge/1'))) {
-			if ($sScriptNonce) {
-				$sContentSecurityPolicy = \str_replace('script-src', "script-src 'nonce-{$sScriptNonce}'", $sContentSecurityPolicy);
-			}
-			// Knockout.js requires unsafe-inline?
-			$sContentSecurityPolicy = \preg_replace("/(script-src[^;]+)'unsafe-inline'/", '$1', $sContentSecurityPolicy);
-			// Knockout.js requires eval() for observable binding purposes
-			//$sContentSecurityPolicy = \preg_replace("/(script-src[^;]+)'unsafe-eval'/", '$1', $sContentSecurityPolicy);
+		if ($sScriptNonce && !$_SERVER['HTTP_USER_AGENT'] || (!\strpos($_SERVER['HTTP_USER_AGENT'], 'Trident/') && !\strpos($_SERVER['HTTP_USER_AGENT'], 'Edge/1'))) {
+			$CSP->script[] = "'nonce-{$sScriptNonce}'";
 		}
-		\header('Content-Security-Policy: '.$sContentSecurityPolicy);
+
+		Api::Actions()->Plugins()->RunHook('main.content-security-policy', array($CSP));
+
+		$CSP->setHeaders();
 	}
 }

@@ -38,7 +38,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Salli useat identiteetit",
 		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
 		"ALERT_WARNING": "Varoitus!",
-		"HTML_ALERT_WEAK_PASSWORD": "Sinulla on käytössäsi hallintatunnuksen oletussalasana.\n<br \/>\nTietoturvasyistä, ole ystävällinen ja\n<strong><a href=\"#\/security\">vaihda<\/a><\/strong>\nsalasanasi nyt.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "Sinulla on käytössäsi hallintatunnuksen oletussalasana.\n<br>\nTietoturvasyistä, ole ystävällinen ja\n<strong><a href=\"#\/security\">vaihda<\/a><\/strong>\nsalasanasi nyt.\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Kirjautumissivu",
@@ -66,14 +66,14 @@
 		"BUTTON_TEST": "Testi",
 		"ALERT_NOTICE": "Huomio!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Älä käytä tätä tietokantatyyppiä suurella määrällä aktiivisia käyttäjiä.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "Järjestelmäsi ei tue yhteystietoja.\n<br\/>\nAsenna tai aktivoi <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> lisäosa palvelimellasi.\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Järjestelmäsi ei tue yhteystietoja.\n<br>\nAsenna tai aktivoi <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> lisäosa palvelimellasi.\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Domainit",
 		"BUTTON_ADD_DOMAIN": "Lisää domain",
 		"BUTTON_ADD_ALIAS": "Lisää alias",
 		"DELETE_ARE_YOU_SURE": "Oletko varma?",
-		"HTML_DOMAINS_HELPER": "Lista domaineista joilla webmaililla on pääsy.\n<br\/>\nKlikkaa nimeä konfiguroidaksesi domain.\n"
+		"HTML_DOMAINS_HELPER": "Lista domaineista joilla webmaililla on pääsy.\n<br>\nKlikkaa nimeä konfiguroidaksesi domain.\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Tietoturva",
@@ -138,7 +138,7 @@
 		"BUTTON_CLOSE": "Sulje",
 		"BUTTON_ADD": "Lisää",
 		"BUTTON_UPDATE": "Päivitä",
-		"NEW_DOMAIN_DESC": "Tämän verkkotunnuksen asetukset sallivat käyttää <br\/> <i>%NAME%<i\/> säkhöpostiosoitteita.",
+		"NEW_DOMAIN_DESC": "Tämän verkkotunnuksen asetukset sallivat käyttää <br> <i>%NAME%<i> säkhöpostiosoitteita.",
 		"WHITE_LIST_ALERT": "Lista domain käyttäjistä joihin webmaililla on oikeus.\nErottele välilyönnillä.\n"
 	},
 	"POPUPS_PLUGIN": {

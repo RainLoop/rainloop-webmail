@@ -1,15 +1,15 @@
 	<label data-bind="text: Label, visible: 5 !== Type"></label>
 	<!-- ko if: 0 === Type -->
 		<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-			data-bind="value: value, attr: {placeholder: placeholder}" />
+			data-bind="value: value, attr: {placeholder: placeholder}">
 	<!-- /ko -->
 	<!-- ko if: 1 === Type -->
 		<input type="number" step="1"
-			data-bind="value: value, attr: {placeholder: placeholder}" />
+			data-bind="value: value, attr: {placeholder: placeholder}">
 	<!-- /ko -->
 	<!-- ko if: 3 === Type -->
 		<input type="password" autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-			data-bind="value: value, attr: {placeholder: placeholder}" />
+			data-bind="value: value, attr: {placeholder: placeholder}">
 	<!-- /ko -->
 	<!-- ko if: 2 === Type -->
 		<div data-bind="component: {
@@ -28,7 +28,7 @@
 	<!-- /ko -->
 	<!-- ko if: 6 === Type -->
 		<input type="url"
-			data-bind="value: value, attr: {placeholder: placeholder}" />
+			data-bind="value: value, attr: {placeholder: placeholder}">
 	<!-- /ko -->
 	<!-- ko if: '' !== Desc -->
 	<span tabindex="0" class="help-block"><span data-bind="text: Desc"></span></span>

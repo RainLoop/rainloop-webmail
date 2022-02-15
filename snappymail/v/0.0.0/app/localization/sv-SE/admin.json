@@ -38,7 +38,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Tillåt multiidentiteter",
 		"ALERT_DATA_ACCESS": "RainLoops datamapp är åtkomstbar. Var vänlig konfigurera din webb-server för att förhindra extern åtkomst och synlighet. Läs mer här: ",
 		"ALERT_WARNING": "Varning!",
-		"HTML_ALERT_WEAK_PASSWORD": "Du använder standardlösenord.\n<br \/>\nFör säkerhetsskäl\n<strong><a href=\"#\/security\">ändra<\/a><\/strong>\nlösenord till något annat\n"
+		"HTML_ALERT_WEAK_PASSWORD": "Du använder standardlösenord.\n<br>\nFör säkerhetsskäl\n<strong><a href=\"#\/security\">ändra<\/a><\/strong>\nlösenord till något annat\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Inloggningsskärm",
@@ -66,14 +66,14 @@
 		"BUTTON_TEST": "Test",
 		"ALERT_NOTICE": "Notis",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Använd inte denna typ av databas med ett stort antal aktiva användare.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "Systemet stöder inte kontakter\n<br \/>\nDu behöver installera eller aktivera <strong>SUB (SQLite\/MySQL\/PostgreSQL)<\/strong> förlängning på server.\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Systemet stöder inte kontakter\n<br>\nDu behöver installera eller aktivera <strong>SUB (SQLite\/MySQL\/PostgreSQL)<\/strong> förlängning på server.\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Domäner",
 		"BUTTON_ADD_DOMAIN": "Lägg till domän",
 		"BUTTON_ADD_ALIAS": "Lägg till Alias",
 		"DELETE_ARE_YOU_SURE": "Är du säker?",
-		"HTML_DOMAINS_HELPER": "Lista med domäner webmail tillåts access.\n<br \/>\nKlicka på namnet för att konfigurera domain.\n"
+		"HTML_DOMAINS_HELPER": "Lista med domäner webmail tillåts access.\n<br>\nKlicka på namnet för att konfigurera domain.\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Säkerhet",
@@ -138,7 +138,7 @@
 		"BUTTON_CLOSE": "Stäng",
 		"BUTTON_ADD": "Lägg till",
 		"BUTTON_UPDATE": "Uppdatera",
-		"NEW_DOMAIN_DESC": "Denna domän konfiguration gör att du kan arbeta <br \/>med <i>%NAME%<\/ i> e-postadresser.",
+		"NEW_DOMAIN_DESC": "Denna domän konfiguration gör att du kan arbeta <br>med <i>%NAME%<\/ i> e-postadresser.",
 		"WHITE_LIST_ALERT": "Lista över domänanvändare som tillåts.\nAnvända ett utrymme som avgränsare.\n"
 	},
 	"POPUPS_PLUGIN": {

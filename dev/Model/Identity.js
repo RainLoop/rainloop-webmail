@@ -34,6 +34,6 @@ export class IdentityModel extends AbstractModel {
 		const name = this.name(),
 			email = this.email();
 
-		return name ? name + ' (' + email + ')' : email;
+		return name ? name + ' <' + email + '>' : email;
 	}
 }

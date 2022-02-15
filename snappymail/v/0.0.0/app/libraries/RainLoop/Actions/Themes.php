@@ -99,25 +99,31 @@ trait Themes
 			$sTheme = \substr($sTheme, 0, -7);
 		}
 
-		$aResult = array();
-
-		$sThemeCSSFile = ($bCustomTheme ? APP_INDEX_ROOT_PATH : APP_VERSION_ROOT_PATH).'themes/'.$sTheme.'/styles.css';
-		$sThemeLessFile = ($bCustomTheme ? APP_INDEX_ROOT_PATH : APP_VERSION_ROOT_PATH).'themes/'.$sTheme.'/styles.less';
+		$mResult = array();
 
 		$sBase = ($bCustomTheme ? \RainLoop\Utils::WebPath() : \RainLoop\Utils::WebVersionPath())
 				. "themes/{$sTheme}/";
 
+		$bLess = false;
+
+		$sThemeCSSFile = ($bCustomTheme ? APP_INDEX_ROOT_PATH : APP_VERSION_ROOT_PATH).'themes/'.$sTheme.'/styles.css';
 		if (\is_file($sThemeCSSFile)) {
-			$aResult[] = \preg_replace('@(url\(["\']?)(\\./)?([a-z]+[^:a-z])@',
-				"\$1{$sBase}\$3",
-				\str_replace('@{base}', $sBase, \file_get_contents($sThemeCSSFile)));
-		} else if (\is_file($sThemeLessFile)) {
-			$aResult[] = "@base: \"{$sBase}\";";
-			$aResult[] = \file_get_contents($sThemeLessFile);
+			$mResult[] = \file_get_contents($sThemeCSSFile);
+		} else {
+			$sThemeCSSFile = \str_replace('styles.css', 'styles.less', $sThemeCSSFile);
+			if (\is_file($sThemeCSSFile)) {
+				$bLess = true;
+				$mResult[] = "@base: \"{$sBase}\";";
+				$mResult[] = \file_get_contents($sThemeCSSFile);
+			}
 		}
 
-		$aResult[] = $this->Plugins()->CompileCss($bAdmin);
+		$mResult[] = $this->Plugins()->CompileCss($bAdmin, $bLess);
 
-		return (new \LessPHP\lessc())->compile(\implode("\n", $aResult));
+		$mResult = \preg_replace('@(url\(["\']?)(\\./)?([a-z]+[^:a-z])@',
+			"\$1{$sBase}\$3",
+			\str_replace('@{base}', $sBase, \implode("\n", $mResult)));
+
+		return $bLess ? (new \LessPHP\lessc())->compile($mResult) : $mResult;
 	}
 }

@@ -38,7 +38,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Autoriser les identités multiples",
 		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
 		"ALERT_WARNING": "ATTENTION !",
-		"HTML_ALERT_WEAK_PASSWORD": "Vous utilisez le mot de passe administrateur par défaut.\n<br \/>\nPour des raisons de sécurité, veuillez\n<strong><a href=\"#\/security\">changer le mot de passe <\/a><\/strong>\ndès maintenant.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "Vous utilisez le mot de passe administrateur par défaut.\n<br>\nPour des raisons de sécurité, veuillez\n<strong><a href=\"#\/security\">changer le mot de passe <\/a><\/strong>\ndès maintenant.\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Ecran de connexion",
@@ -66,14 +66,14 @@
 		"BUTTON_TEST": "Test",
 		"ALERT_NOTICE": "Avis !",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "N'utilisez pas ce type de base de données avec un grand nombre d'utilisateurs actifs.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "Votre système ne supporte pas les contacts.\n<br \/>\nVous devez installer ou autoriser l'extension <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> sur votre serveur.\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Votre système ne supporte pas les contacts.\n<br>\nVous devez installer ou autoriser l'extension <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> sur votre serveur.\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Domaines",
 		"BUTTON_ADD_DOMAIN": "Ajouter un domaine",
 		"BUTTON_ADD_ALIAS": "Ajouter un alias",
 		"DELETE_ARE_YOU_SURE": "Êtes-vous sûr ?",
-		"HTML_DOMAINS_HELPER": "Liste des domaines autorisés.\n<br \/>\nCliquez sur le nom pour configurer le domaine.\n"
+		"HTML_DOMAINS_HELPER": "Liste des domaines autorisés.\n<br>\nCliquez sur le nom pour configurer le domaine.\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Sécurité",

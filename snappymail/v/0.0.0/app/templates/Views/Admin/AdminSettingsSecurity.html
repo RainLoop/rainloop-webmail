@@ -25,28 +25,28 @@
 	<div class="control-group">
 		<label data-i18n="TAB_SECURITY/LABEL_CURRENT_PASSWORD"></label>
 		<input type="password" autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-			data-bind="textInput: adminPassword" />
+			data-bind="textInput: adminPassword">
 	</div>
 	<div class="control-group" data-bind="css: {'error': adminLoginError}">
 		<label data-i18n="TAB_SECURITY/LABEL_NEW_LOGIN"></label>
 		<input type="text" autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false"
-			data-bind="textInput: adminLogin" />
+			data-bind="textInput: adminLogin">
 	</div>
 	<div class="control-group" data-bind="css: {'error': adminPasswordNewError}">
 		<label data-i18n="TAB_SECURITY/LABEL_NEW_PASSWORD"></label>
 		<input type="password" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-			data-bind="textInput: adminPasswordNew" />
+			data-bind="textInput: adminPasswordNew">
 	</div>
 	<div class="control-group" data-bind="css: {'error': adminPasswordNewError}">
 		<label data-i18n="TAB_SECURITY/LABEL_REPEAT_PASSWORD"></label>
 		<input type="password" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-			data-bind="textInput: adminPasswordNew2" />
+			data-bind="textInput: adminPasswordNew2">
 	</div>
 	<div class="control-group">
 		<label data-i18n="LOGIN/LABEL_TOTP"></label>
 		<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 			pattern="[A-Z2-7]{16,}"
-			data-bind="textInput: adminTOTP" />
+			data-bind="textInput: adminTOTP">
 	</div>
 	<div class="control-group">
 		<a class="btn" data-bind="command: saveNewAdminPasswordCommand, css: { 'btn-success': adminPasswordUpdateSuccess, 'btn-danger': adminPasswordUpdateError }"
@@ -67,7 +67,7 @@
 			}"></div>
 			&nbsp;&nbsp;
 			<span style="color:red">(<span data-i18n="HINTS/UNSTABLE"></span>)</span>
-			<br />
+			<br>
 			<div data-bind="component: {
 				name: 'Checkbox',
 				params: {

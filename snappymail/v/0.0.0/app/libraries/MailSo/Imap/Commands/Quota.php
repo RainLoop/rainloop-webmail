@@ -46,13 +46,13 @@ trait Quota
 			: null;
 	}
 
+	// * QUOTA "User quota" (STORAGE 1284645 2097152)\r\n
 	private function getQuotaResult(\MailSo\Imap\ResponseCollection $oResponseCollection) : array
 	{
 		$aReturn = array(0, 0);
 		foreach ($oResponseCollection as $oResponse) {
 			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
 				&& 'QUOTA' === $oResponse->StatusOrIndex
-				&& \is_array($oResponse->ResponseList)
 				&& isset($oResponse->ResponseList[3])
 				&& \is_array($oResponse->ResponseList[3])
 				&& 2 < \count($oResponse->ResponseList[3])

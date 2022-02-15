@@ -38,7 +38,7 @@
 		"LABEL_ALLOW_IDENTITIES": "允许多重身份",
 		"ALERT_DATA_ACCESS": "数据文件夹可被访问。请配置您的 Web 服务器以阻止从外部访问数据文件夹。获取更多帮助：",
 		"ALERT_WARNING": "警告！",
-		"HTML_ALERT_WEAK_PASSWORD": "您正在使用默认的管理员密码\n<br \/>\n安全起见，请立即将密码\n<strong><a href=\"#\/security\">更改<\/a><\/strong>\n为其他的字符串。\n"
+		"HTML_ALERT_WEAK_PASSWORD": "您正在使用默认的管理员密码\n<br>\n安全起见，请立即将密码\n<strong><a href=\"#\/security\">更改<\/a><\/strong>\n为其他的字符串。\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "登录界面",
@@ -66,14 +66,14 @@
 		"BUTTON_TEST": "测试",
 		"ALERT_NOTICE": "提示!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "如果有大量的活跃用户，请不要选择此数据库类型。",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "你的系统不支持联系人\n<br \/>\n你需要在你的服务器上安装或启用<strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> 组件。\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "你的系统不支持联系人\n<br>\n你需要在你的服务器上安装或启用<strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> 组件。\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "域名",
 		"BUTTON_ADD_DOMAIN": "添加域名",
 		"BUTTON_ADD_ALIAS": "添加别名",
 		"DELETE_ARE_YOU_SURE": "你确定吗？",
-		"HTML_DOMAINS_HELPER": "允许访问的域名。\n<br \/>\n点击域名进行设置。\n"
+		"HTML_DOMAINS_HELPER": "允许访问的域名。\n<br>\n点击域名进行设置。\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "安全",
@@ -138,7 +138,7 @@
 		"BUTTON_CLOSE": "关闭",
 		"BUTTON_ADD": "添加",
 		"BUTTON_UPDATE": "更新",
-		"NEW_DOMAIN_DESC": "此域名配置将允许你<br \/>和<i>%NAME%<\/i>电子邮件地址一起工作.",
+		"NEW_DOMAIN_DESC": "此域名配置将允许你<br>和<i>%NAME%<\/i>电子邮件地址一起工作.",
 		"WHITE_LIST_ALERT": "允许访问的域用户；使用空格分隔。\n"
 	},
 	"POPUPS_PLUGIN": {

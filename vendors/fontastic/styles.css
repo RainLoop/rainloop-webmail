@@ -20,13 +20,11 @@
   text-transform: none !important;
   speak: never;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 [data-icon]::before {
 	content: attr(data-icon);
 	display: inline-block;
-	height: 1em;
 	margin-right: 0.5em;
 	min-width: 1em;
 }

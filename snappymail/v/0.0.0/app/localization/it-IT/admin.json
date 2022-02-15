@@ -38,7 +38,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Permetti di registrare identità multiple",
 		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
 		"ALERT_WARNING": "Attenzione!",
-		"HTML_ALERT_WEAK_PASSWORD": "Stai usando la password di amministrazione predefinita.\n<br \/>\nPer ragioni di sicurezza,\n<strong><a href=\"#\/security\">cambiala<\/a><\/strong>\ncon una nuova password immediatamente.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "Stai usando la password di amministrazione predefinita.\n<br>\nPer ragioni di sicurezza,\n<strong><a href=\"#\/security\">cambiala<\/a><\/strong>\ncon una nuova password immediatamente.\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Schermata di accesso",
@@ -66,14 +66,14 @@
 		"BUTTON_TEST": "Verifica dati",
 		"ALERT_NOTICE": "Attenzione!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Non usare questo tipo di database con un alto numero di utenti attivi.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "Il tuo server non supporta il salvataggio dei contatti.\n<br \/>\nDevi abilitare l'estensione <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> sul tuo server.\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Il tuo server non supporta il salvataggio dei contatti.\n<br>\nDevi abilitare l'estensione <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> sul tuo server.\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Domini",
 		"BUTTON_ADD_DOMAIN": "Aggiungi dominio",
 		"BUTTON_ADD_ALIAS": "Aggiungi alias",
 		"DELETE_ARE_YOU_SURE": "Ne sei sicuro?",
-		"HTML_DOMAINS_HELPER": "Lista di domini a cui la webmail è abilitata ad accedere.\n<br \/>\nClicca su un nome per configurare quel dominio.\n"
+		"HTML_DOMAINS_HELPER": "Lista di domini a cui la webmail è abilitata ad accedere.\n<br>\nClicca su un nome per configurare quel dominio.\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Security",
@@ -138,7 +138,7 @@
 		"BUTTON_CLOSE": "Chiudi",
 		"BUTTON_ADD": "Aggiungi",
 		"BUTTON_UPDATE": "Aggiorna",
-		"NEW_DOMAIN_DESC": "La configurazione di questo dominio ti permette di lavorare <br \/>con <i>%NAME%<\/i> indirizzi email.",
+		"NEW_DOMAIN_DESC": "La configurazione di questo dominio ti permette di lavorare <br>con <i>%NAME%<\/i> indirizzi email.",
 		"WHITE_LIST_ALERT": "Lista di domini a cui gli utenti sono autorizzati ad accedere.\nUtilizzare uno spazio come separatore.\n"
 	},
 	"POPUPS_PLUGIN": {

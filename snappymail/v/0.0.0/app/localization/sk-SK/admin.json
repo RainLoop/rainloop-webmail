@@ -38,7 +38,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Povoliť viaceré identity",
 		"ALERT_DATA_ACCESS": "Adresár data je dostupný. Prosím skonfigurujte svoj webserver tak, aby bol adresár data nedostupný. Viac informácií:",
 		"ALERT_WARNING": "Upozornenie!",
-		"HTML_ALERT_WEAK_PASSWORD": "Používate predvolené administrátorské heslo.\n<br \/>\nKvôli bezpečnosti prosím\n<strong><a href=\"#\/security\">zmeňte<\/a><\/strong>\nheslo na iné.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "Používate predvolené administrátorské heslo.\n<br>\nKvôli bezpečnosti prosím\n<strong><a href=\"#\/security\">zmeňte<\/a><\/strong>\nheslo na iné.\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Prihlasovacia obrazovka",
@@ -66,14 +66,14 @@
 		"BUTTON_TEST": "Test",
 		"ALERT_NOTICE": "Notice!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Nepoužívajte tento typ databázy, ak máte veľký počet aktívnych používateľov.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "Your system doesn't support contacts.\n<br \/>\nYou need to install or enable <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> extension on your server.\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Your system doesn't support contacts.\n<br>\nYou need to install or enable <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> extension on your server.\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Domény",
 		"BUTTON_ADD_DOMAIN": "Pridať doménu",
 		"BUTTON_ADD_ALIAS": "Pridať alias",
 		"DELETE_ARE_YOU_SURE": "Ste si istí?",
-		"HTML_DOMAINS_HELPER": "List of domains webmail is allowed to access.\n<br \/>\nClick on the name to configure the domain.\n"
+		"HTML_DOMAINS_HELPER": "List of domains webmail is allowed to access.\n<br>\nClick on the name to configure the domain.\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Bezpečnosť",
@@ -138,7 +138,7 @@
 		"BUTTON_CLOSE": "Zatvoriť",
 		"BUTTON_ADD": "Pridať",
 		"BUTTON_UPDATE": "Aktualizovať",
-		"NEW_DOMAIN_DESC": "This domain configuration will allow you to work <br \/>with <i>%NAME%<\/i> email addresses.",
+		"NEW_DOMAIN_DESC": "This domain configuration will allow you to work <br>with <i>%NAME%<\/i> email addresses.",
 		"WHITE_LIST_ALERT": "List of domain users webmail is allowed to access.\nUse a space as delimiter.\n"
 	},
 	"POPUPS_PLUGIN": {

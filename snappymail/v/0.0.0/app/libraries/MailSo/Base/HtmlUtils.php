@@ -368,7 +368,7 @@ abstract class HtmlUtils
 		$sResult = static::GetTextFromDom($oDom, false);
 		unset($oDom);
 
-		return '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>'.
+		return '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'.
 			'<body>'.$sResult.'</body></html>';
 	}
 
@@ -446,12 +446,11 @@ abstract class HtmlUtils
 		$sText = \preg_replace('/[\n]{3,}/', "\n\n", $sText);
 
 		$sText = \strtr($sText, array(
-			"\n" => "<br />",
 			"\t" => "\xC2\xA0\xC2\xA0\xC2\xA0\xC2\xA0",
 			'  ' => "\xC2\xA0\xC2\xA0"
 		));
 
-		return $sText;
+		return \nl2br($sText);
 	}
 
 	public static function ConvertHtmlToPlain(string $sText) : string

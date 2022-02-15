@@ -181,6 +181,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'admin_panel_host'           => array(''),
 				'admin_panel_key'            => array('admin'),
 				'content_security_policy'    => array(''),
+				'csp_report'                 => array(false),
 				'encrypt_cipher'             => array($sCipher)
 			),
 

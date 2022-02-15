@@ -301,6 +301,10 @@ $Plugin->addHook('hook.name', 'functionName');
 		\RainLoop\Model\Account $oAccount
 		int $iLimit
 
+### main.content-security-policy
+	params:
+		\SnappyMail\HTTP\CSP $oCSP
+
 ### main.default-response
 	params:
 		string $sActionName

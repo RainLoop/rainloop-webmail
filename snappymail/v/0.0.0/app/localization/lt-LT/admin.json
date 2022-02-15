@@ -38,7 +38,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Leisti daugiau tapatybių",
 		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
 		"ALERT_WARNING": "Dėmesio!",
-		"HTML_ALERT_WEAK_PASSWORD": "Naudojate numatytąjį administratoriaus slaptažodį.\n<br \/>\nDėl Jūsų saugumo prašome\n<strong><a href=\"#\/security\">pakeiskite<\/a><\/strong>\nslaptažodį kitu.\n\n"
+		"HTML_ALERT_WEAK_PASSWORD": "Naudojate numatytąjį administratoriaus slaptažodį.\n<br>\nDėl Jūsų saugumo prašome\n<strong><a href=\"#\/security\">pakeiskite<\/a><\/strong>\nslaptažodį kitu.\n\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Prisijungimo langas",
@@ -73,7 +73,7 @@
 		"BUTTON_ADD_DOMAIN": "Pridėti Domeną",
 		"BUTTON_ADD_ALIAS": "Pridėti Alias",
 		"DELETE_ARE_YOU_SURE": "Ar jūs įsitikinę?",
-		"HTML_DOMAINS_HELPER": "Leidžiamų Domenų sąrašas\n<br\/>\nSpauskite ant pavadinimo norėdami redaguoti.\n"
+		"HTML_DOMAINS_HELPER": "Leidžiamų Domenų sąrašas\n<br>\nSpauskite ant pavadinimo norėdami redaguoti.\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Sauga",
@@ -138,7 +138,7 @@
 		"BUTTON_CLOSE": "Uždaryti",
 		"BUTTON_ADD": "Pridėti",
 		"BUTTON_UPDATE": "Atnaujinti",
-		"NEW_DOMAIN_DESC": "Šie nustatymai leis jums dirbti <br\/> su <i>%NAME%<\/i> domeno pašto adresais.",
+		"NEW_DOMAIN_DESC": "Šie nustatymai leis jums dirbti <br> su <i>%NAME%<\/i> domeno pašto adresais.",
 		"WHITE_LIST_ALERT": "Domeno vartotojų sąrašas, kuriems leista naudotis web paštu.\nNaudokite tarpo simbolį kaip skyriklį.\n"
 	},
 	"POPUPS_PLUGIN": {

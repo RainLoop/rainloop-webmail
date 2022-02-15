@@ -8,21 +8,21 @@
 		<input name="Login" required="" type="text" class="input-block-level"
 			autofocus="" autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false"
 			data-bind="textInput: login, disable: submitRequest"
-			data-i18n="[placeholder]LOGIN/LABEL_LOGIN" />
+			data-i18n="[placeholder]LOGIN/LABEL_LOGIN">
 	</div>
 	<div class="controls" data-bind="css: {'error': passwordError}">
 		<span class="fontastic">🔑</span>
 		<input name="Password" required="" type="password" class="input-block-level"
 			autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
 			data-bind="textInput: password, disable: submitRequest"
-			data-i18n="[placeholder]LOGIN/LABEL_PASSWORD" />
+			data-i18n="[placeholder]LOGIN/LABEL_PASSWORD">
 	</div>
 	<div class="controls">
 		<span class="fontastic">⏱</span>
 		<input name="TOTP" type="text" pattern="[0-9]*" inputmode="numeric" class="input-block-level"
 			autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 			data-bind="textInput: totp, disable: submitRequest"
-			data-i18n="[placeholder]LOGIN/LABEL_TOTP" />
+			data-i18n="[placeholder]LOGIN/LABEL_TOTP">
 		<button class="fontastic" data-bind="command: submitCommand" data-i18n="[title]LOGIN/BUTTON_LOGIN">❯</button>
 	</div>
 	<div id="plugin-Login-BottomControlGroup"></div>
