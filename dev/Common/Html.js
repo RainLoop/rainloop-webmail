@@ -170,9 +170,11 @@ export const
 
 			else if ('TABLE' === name && hasAttribute('width')) {
 				value = getAttribute('width');
-				delAttribute('width');
-				oStyle.maxWidth = value + (/^[0-9]+$/.test(value) ? 'px' : '');
-				oStyle.removeProperty('width');
+				if (!value.includes('%')) {
+					delAttribute('width');
+					oStyle.maxWidth = value + 'px';
+					oStyle.removeProperty('width');
+				}
 			}
 
 			else if ('A' === name) {
