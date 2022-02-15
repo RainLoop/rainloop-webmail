@@ -67,6 +67,11 @@ class Response
 		return null;
 	}
 
+	public function getHeaders() : array
+	{
+		return $this->headers;
+	}
+
 	public function getRedirectLocation() : ?string
 	{
 		if ($location = $this->getHeader('location')) {

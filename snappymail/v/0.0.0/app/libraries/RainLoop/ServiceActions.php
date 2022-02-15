@@ -351,6 +351,7 @@ class ServiceActions
 				\header('X-Content-Location: '.$aData['Url']);
 				$tmp = \tmpfile();
 				$HTTP = \SnappyMail\HTTP\Request::factory();
+				$HTTP->max_redirects = 2;
 				$HTTP->streamBodyTo($tmp);
 				$oResponse = $HTTP->doRequest('GET', $aData['Url']);
 				if ($oResponse && 200 === $oResponse->status
@@ -360,6 +361,7 @@ class ServiceActions
 					\header('Content-Type: ' . $oResponse->getHeader('content-type'));
 					\header('Cache-Control: public');
 					\header('Expires: '.\gmdate('D, j M Y H:i:s', 2592000 + \time()).' UTC');
+					\header('X-Content-Redirect-Location: '.$oResponse->final_uri);
 					\rewind($tmp);
 					\fpassthru($tmp);
 					exit;
