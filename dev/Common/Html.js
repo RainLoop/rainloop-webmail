@@ -223,8 +223,8 @@ export const
 
 				if (detectHiddenImages
 					&& 'IMG' === name
-					&& (('' != getAttribute('height') && 2 > pInt(getAttribute('height')))
-						|| ('' != getAttribute('width') && 2 > pInt(getAttribute('width')))
+					&& (('' != getAttribute('height') && 3 > pInt(getAttribute('height')))
+						|| ('' != getAttribute('width') && 3 > pInt(getAttribute('width')))
 						|| [
 							'email.microsoftemail.com/open',
 							'github.com/notifications/beacon/',
