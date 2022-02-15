@@ -167,13 +167,14 @@ class Manager
 		return $this->bIsEnabled && \count($this->aJs[$bAdminScope ? 1 : 0]);
 	}
 
-	public function CompileCss(bool $bAdminScope = false) : string
+	public function CompileCss(bool $bAdminScope, bool &$bLess) : string
 	{
 		$aResult = array();
 		if ($this->bIsEnabled) {
 			foreach ($this->aCss[$bAdminScope ? 1 : 0] as $sFile) {
 				if (\is_readable($sFile)) {
 					$aResult[] = \file_get_contents($sFile);
+					$bLess = $bLess || \str_ends_with($sFile, '.less');
 				}
 			}
 		}
