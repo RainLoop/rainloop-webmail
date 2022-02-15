@@ -158,7 +158,16 @@ export const
 				replaceWithChildren(oElement);
 				return;
 			}
-
+/*
+			// Idea to allow CSS
+			if ('STYLE' === name) {
+				msgId = '#rl-msg-061eb4d647771be4185943ce91f0039d';
+				oElement.textContent = oElement.textContent
+					.replace(/[^{}]+{/g, m => msgId + ' ' + m.replace(',', ', '+msgId+' '))
+					.replace(/(background-)color:[^};]+/g, '');
+				return;
+			}
+*/
 			if ('BODY' === name) {
 				forEachObjectEntry(tasks, (name, cb) => {
 					if (hasAttribute(name)) {
@@ -174,7 +183,6 @@ export const
 					delAttribute('width');
 					oStyle.maxWidth = value + 'px';
 					oStyle.width = '100%';
-//					oStyle.removeProperty('width');
 				}
 			}
 
