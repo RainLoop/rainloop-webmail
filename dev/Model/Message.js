@@ -73,7 +73,6 @@ export class MessageModel extends AbstractModel {
 			isHtml: false,
 			hasImages: false,
 			hasExternals: false,
-			hasAttachments: false,
 
 			pgpSigned: null,
 			pgpEncrypted: null,
@@ -95,6 +94,7 @@ export class MessageModel extends AbstractModel {
 			attachmentIconClass: () => FileInfo.getAttachmentsIconClass(this.attachments()),
 			threadsLen: () => this.threads().length,
 			isImportant: () => MessagePriority.High === this.priority(),
+			hasAttachments: () => this.attachments().hasVisible()
 
 			isDeleted: () => this.flags().includes('\\deleted'),
 			isUnseen: () => !this.flags().includes('\\seen') /* || this.flags().includes('\\unseen')*/,
@@ -150,7 +150,6 @@ export class MessageModel extends AbstractModel {
 		this.isHtml(false);
 		this.hasImages(false);
 		this.hasExternals(false);
-		this.hasAttachments(false);
 		this.attachments(new AttachmentCollectionModel);
 
 		this.pgpSigned(null);
@@ -471,7 +470,6 @@ export class MessageModel extends AbstractModel {
 	}
 
 	initView() {
-		this.hasAttachments(this.attachments().hasVisible());
 		// init BlockquoteSwitcher
 		this.body.querySelectorAll('blockquote:not(.rl-bq-switcher)').forEach(node => {
 			if (node.textContent.trim() && !node.parentNode.closest('blockquote')) {
@@ -552,7 +550,6 @@ export class MessageModel extends AbstractModel {
 			this.priority(message.priority());
 
 			this.hasExternals(message.hasExternals());
-			this.hasAttachments(message.hasAttachments());
 
 			this.emails = message.emails;
 
