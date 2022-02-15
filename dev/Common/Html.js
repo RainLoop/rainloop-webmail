@@ -173,7 +173,8 @@ export const
 				if (!value.includes('%')) {
 					delAttribute('width');
 					oStyle.maxWidth = value + 'px';
-					oStyle.removeProperty('width');
+					oStyle.width = '100%';
+//					oStyle.removeProperty('width');
 				}
 			}
 
