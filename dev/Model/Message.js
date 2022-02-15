@@ -94,7 +94,7 @@ export class MessageModel extends AbstractModel {
 			attachmentIconClass: () => FileInfo.getAttachmentsIconClass(this.attachments()),
 			threadsLen: () => this.threads().length,
 			isImportant: () => MessagePriority.High === this.priority(),
-			hasAttachments: () => this.attachments().hasVisible()
+			hasAttachments: () => this.attachments().hasVisible(),
 
 			isDeleted: () => this.flags().includes('\\deleted'),
 			isUnseen: () => !this.flags().includes('\\seen') /* || this.flags().includes('\\unseen')*/,
