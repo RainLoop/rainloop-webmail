@@ -51,7 +51,7 @@ trait Quota
 	{
 		$aReturn = array(0, 0);
 		foreach ($oResponseCollection as $oResponse) {
-			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
+			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
 				&& 'QUOTA' === $oResponse->StatusOrIndex
 				&& isset($oResponse->ResponseList[3])
 				&& \is_array($oResponse->ResponseList[3])
