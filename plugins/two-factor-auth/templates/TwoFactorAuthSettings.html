@@ -44,7 +44,7 @@
 				<span data-i18n="POPUPS_TWO_FACTOR_CFG/LABEL_TWO_FACTOR_SECRET"></span>
 			</label>
 			<div class="controls" style="padding-top: 5px;">
-				<strong data-bind="text: viewSecret"></strong>
+				<strong data-bind="text: viewSecret" style="user-select:text"></strong>
 				&nbsp;&nbsp;
 				<span class="g-ui-link" data-bind="click: hideSecret" data-i18n="POPUPS_TWO_FACTOR_CFG/BUTTON_HIDE_SECRET"></span>
 				<br />
@@ -62,7 +62,7 @@
 				<span data-i18n="POPUPS_TWO_FACTOR_CFG/LABEL_TWO_FACTOR_BACKUP_CODES"></span>
 			</label>
 			<div class="controls" style="padding-top: 5px;">
-				<pre data-bind="text: viewBackupCodes" style="width: 230px; word-break: break-word;"></pre>
+				<pre data-bind="text: viewBackupCodes" style="user-select: text; width: 230px; word-break: break-word;"></pre>
 				<br />
 				<blockquote>
 					<p class="muted width100-on-mobile" style="width: 550px" data-i18n="POPUPS_TWO_FACTOR_CFG/TWO_FACTOR_BACKUP_CODES_DESC"></p>
