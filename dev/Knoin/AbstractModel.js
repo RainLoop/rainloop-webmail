@@ -1,10 +1,5 @@
-import { isArray, isFunction, addObservablesTo, addComputablesTo, forEachObjectValue, forEachObjectEntry } from 'Common/Utils';
-
-function dispose(disposable) {
-	if (disposable && isFunction(disposable.dispose)) {
-		disposable.dispose();
-	}
-}
+import { isArray, addObservablesTo, addComputablesTo, forEachObjectValue, forEachObjectEntry } from 'Common/Utils';
+import { dispose } from 'External/ko';
 
 function typeCast(curValue, newValue) {
 	if (null != curValue) {

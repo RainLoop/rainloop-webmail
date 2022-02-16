@@ -3,12 +3,15 @@ import { doc, createElement } from 'Common/Globals';
 import { SaveSettingsStep } from 'Common/Enums';
 import { arrayLength, isFunction } from 'Common/Utils';
 
-/**
- * The value of the pureComputed observable shouldn’t vary based on the
- * number of evaluations or other “hidden” information. Its value should be
- * based solely on the values of other observables in the application
- */
-export const koComputable = fn => ko.computed(fn, {'pure':true});
+export const
+	/**
+	 * The value of the pureComputed observable shouldn’t vary based on the
+	 * number of evaluations or other “hidden” information. Its value should be
+	 * based solely on the values of other observables in the application
+	 */
+	koComputable = fn => ko.computed(fn, {'pure':true}),
+
+	dispose = disposable => disposable && isFunction(disposable.dispose) && disposable.dispose();
 
 ko.bindingHandlers.tooltipErrorTip = {
 	init: (element, fValueAccessor) => {

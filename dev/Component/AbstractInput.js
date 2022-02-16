@@ -1,16 +1,14 @@
 import ko from 'ko';
 import { pInt } from 'Common/Utils';
 import { SaveSettingsStep } from 'Common/Enums';
-import { AbstractComponent } from 'Component/Abstract';
 import { koComputable } from 'External/ko';
+import { dispose } from 'External/ko';
 
-class AbstractInput extends AbstractComponent {
+export class AbstractInput {
 	/**
 	 * @param {Object} params
 	 */
 	constructor(params) {
-		super();
-
 		this.value = params.value || '';
 		this.label = params.label || '';
 		this.enable = null == params.enable ? true : params.enable;
@@ -43,13 +41,17 @@ class AbstractInput extends AbstractComponent {
 				(size + ' settings-saved-trigger-input ' + classForTrigger()).trim()
 			);
 
-			this.disposable.push(this.trigger.subscribe(setTriggerState, this));
+			this.disposable = [
+				this.trigger.subscribe(setTriggerState, this),
+				this.className
+			];
 		} else {
 			this.className = size;
+			this.disposable = [];
 		}
+	}
 
-		this.disposable.push(this.className);
+	dispose() {
+		this.disposable.forEach(dispose);
 	}
 }
-
-export { AbstractInput };

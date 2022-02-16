@@ -1,13 +1,10 @@
 import ko from 'ko';
-import { AbstractComponent } from 'Component/Abstract';
 
-class AbstractCheckbox extends AbstractComponent {
+export class AbstractCheckbox {
 	/**
 	 * @param {Object} params = {}
 	 */
 	constructor(params = {}) {
-		super();
-
 		this.value = ko.isObservable(params.value) ? params.value
 			: ko.observable(!!params.value);
 
@@ -24,5 +21,3 @@ class AbstractCheckbox extends AbstractComponent {
 		this.enable() && this.value(!this.value());
 	}
 }
-
-export { AbstractCheckbox };

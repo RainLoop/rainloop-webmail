@@ -1,5 +1,4 @@
 import { doc, createElement } from 'Common/Globals';
-import { isArray } from 'Common/Utils';
 import { EmailModel } from 'Model/Email';
 
 const contentType = 'snappymail/emailaddress',
@@ -17,7 +16,7 @@ export class EmailAddressesComponent {
 			doc.body.append(datalist);
 		}
 
-		var self = this,
+		const self = this,
 			// In Chrome we have no access to dataTransfer.getData unless it's the 'drop' event
 			// In Chrome Mobile dataTransfer.types.includes(contentType) fails, only text/plain is set
 			validDropzone = () => dragAddress && dragAddress.li.parentNode !== self.ul,
@@ -138,20 +137,56 @@ export class EmailAddressesComponent {
 
 	_parseValue(val) {
 		if (val) {
-			var self = this,
-				values = [];
-
-			const v = val.trim(),
-				hook = (v && [',', ';', '\n'].includes(v.slice(-1)))
-					 ? EmailModel.splitEmailLine(val)
-					 : null;
-
-			values = (hook || [val]).map(value => EmailModel.parseEmailLine(value))
-					.flat(Infinity)
-					.map(item => (item.toLine ? [item.toLine(false), item] : [item, null]));
+			const self = this,
+				v = val.trim(),
+				hook = (v && [',', ';', '\n'].includes(v.slice(-1))) ? EmailModel.splitEmailLine(val) : null,
+				values = (hook || [val]).map(value => EmailModel.parseEmailLine(value))
+						.flat(Infinity)
+						.map(item => (item.toLine ? [item.toLine(false), item] : [item, null]));
 
 			if (values.length) {
-				self._setChosen(values);
+				values.forEach(a => {
+					var v = a[0].trim(),
+						exists = false,
+						lastIndex = -1,
+						obj = {
+							key : '',
+							obj : null,
+							value : ''
+						};
+
+					self._chosenValues.forEach((vv, kk) => {
+						if (vv.value === self._lastEdit) {
+							lastIndex = kk;
+						}
+
+						vv.value === v && (exists = true);
+					});
+
+					if (v !== '' && a[1] && !exists) {
+
+						obj.key = 'mi_' + Math.random().toString( 16 ).slice( 2, 10 );
+						obj.value = v;
+						obj.obj = a[1];
+
+						if (-1 < lastIndex) {
+							self._chosenValues.splice(lastIndex, 0, obj);
+						} else {
+							self._chosenValues.push(obj);
+						}
+
+						self._lastEdit = '';
+						self._renderTags();
+					}
+				});
+
+				if (values.length === 1 && values[0] === '' && self._lastEdit !== '') {
+					self._lastEdit = '';
+					self._renderTags();
+				}
+
+				self._setValue(self._buildValue());
+
 				return true;
 			}
 		}
@@ -200,56 +235,6 @@ export class EmailAddressesComponent {
 
 		self._removeTag(ev, li);
 		self._resizeInput(ev);
-	}
-
-	_setChosen(valArr) {
-		var self = this;
-
-		if (!isArray(valArr)){
-			return false;
-		}
-
-		valArr.forEach(a => {
-			var v = a[0].trim(),
-				exists = false,
-				lastIndex = -1,
-				obj = {
-					key : '',
-					obj : null,
-					value : ''
-				};
-
-			self._chosenValues.forEach((vv, kk) => {
-				if (vv.value === self._lastEdit) {
-					lastIndex = kk;
-				}
-
-				vv.value === v && (exists = true);
-			});
-
-			if (v !== '' && a && a[1] && !exists) {
-
-				obj.key = 'mi_' + Math.random().toString( 16 ).slice( 2, 10 );
-				obj.value = v;
-				obj.obj = a[1];
-
-				if (-1 < lastIndex) {
-					self._chosenValues.splice(lastIndex, 0, obj);
-				} else {
-					self._chosenValues.push(obj);
-				}
-
-				self._lastEdit = '';
-				self._renderTags();
-			}
-		});
-
-		if (valArr.length === 1 && valArr[0] === '' && self._lastEdit !== '') {
-			self._lastEdit = '';
-			self._renderTags();
-		}
-
-		self._setValue(self._buildValue());
 	}
 
 	_buildValue() {
