@@ -7,9 +7,9 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Two Factor Authentication',
-		VERSION  = '2.12',
+		VERSION  = '2.12.3',
 		RELEASE  = '2022-02-16',
-		REQUIRED = '2.12.0',
+		REQUIRED = '2.12.3',
 		CATEGORY = 'Login',
 		DESCRIPTION = 'Provides support for TOTP 2FA';
 
@@ -116,6 +116,15 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		$aResult = $this->getTwoFactorInfo($oAccount);
 		unset($aResult['BackupCodes']);
+
+		$name = \rawurlencode($oAccount->Email());
+//		$issuer = \rawurlencode(\RainLoop\API::Config()->Get('webmail', 'title', 'SnappyMail'));
+		$QR = \SnappyMail\QRCode::getMinimumQRCode(
+//			"otpauth://totp/{$issuer}:{$name}?secret={$aResult['Secret']}&issuer={$issuer}",
+			"otpauth://totp/{$name}?secret={$aResult['Secret']}",
+			\SnappyMail\QRCode::ERROR_CORRECT_LEVEL_M
+		);
+		$aResult['QRCode'] = $QR->__toString();
 
 		return $this->jsonResponse(__FUNCTION__, $aResult);
 	}

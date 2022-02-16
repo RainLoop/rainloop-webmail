@@ -45,9 +45,8 @@ class TwoFactorAuthSettings
 		this.twoFactorTested = ko.observable(false);
 
 		this.viewSecret = ko.observable('');
+		this.viewQRCode = ko.observable('');
 		this.viewBackupCodes = ko.observable('');
-		this.viewUrlTitle = ko.observable('');
-		this.viewUrl = ko.observable('');
 
 		this.viewEnable_ = ko.observable(false);
 
@@ -102,9 +101,8 @@ class TwoFactorAuthSettings
 
 	hideSecret() {
 		this.viewSecret('');
+		this.viewQRCode('');
 		this.viewBackupCodes('');
-		this.viewUrlTitle('');
-		this.viewUrl('');
 	}
 
 	createTwoFactor() {
@@ -121,10 +119,7 @@ class TwoFactorAuthSettings
 	}
 
 	clearTwoFactor() {
-		this.viewSecret('');
-		this.viewBackupCodes('');
-		this.viewUrlTitle('');
-		this.viewUrl('');
+		this.hideSecret();
 
 		this.twoFactorTested(false);
 
@@ -134,11 +129,7 @@ class TwoFactorAuthSettings
 
 	onShow(bLock) {
 		this.lock(!!bLock);
-
-		this.viewSecret('');
-		this.viewBackupCodes('');
-		this.viewUrlTitle('');
-		this.viewUrl('');
+		this.hideSecret('');
 	}
 
 	onHide() {
@@ -162,11 +153,7 @@ class TwoFactorAuthSettings
 			this.viewEnable_(false);
 			this.twoFactorStatus(false);
 			this.twoFactorTested(false);
-
-			this.viewSecret('');
-			this.viewBackupCodes('');
-			this.viewUrlTitle('');
-			this.viewUrl('');
+			this.hideSecret('');
 		} else {
 			this.viewUser(pString(oData.Result.User));
 			this.viewEnable_(!!oData.Result.Enable);
@@ -174,10 +161,8 @@ class TwoFactorAuthSettings
 			this.twoFactorTested(!!oData.Result.Tested);
 
 			this.viewSecret(pString(oData.Result.Secret));
+			this.viewQRCode(oData.Result.QRCode);
 			this.viewBackupCodes(pString(oData.Result.BackupCodes).replace(/[\s]+/g, '  '));
-
-			this.viewUrlTitle(pString(oData.Result.UrlTitle));
-			this.viewUrl(null/*qr.toDataURL({ level: 'M', size: 8, value: this.getQr() })*/);
 		}
 	}
 
@@ -186,12 +171,10 @@ class TwoFactorAuthSettings
 
 		if (iError) {
 			this.viewSecret('');
-			this.viewUrlTitle('');
-			this.viewUrl('');
+			this.viewQRCode('');
 		} else {
 			this.viewSecret(pString(data.Result.Secret));
-			this.viewUrlTitle(pString(data.Result.UrlTitle));
-			this.viewUrl(null/*qr.toDataURL({ level: 'M', size: 6, value: this.getQr() })*/);
+			this.viewQRCode(pString(data.Result.QRCode));
 		}
 	}
 

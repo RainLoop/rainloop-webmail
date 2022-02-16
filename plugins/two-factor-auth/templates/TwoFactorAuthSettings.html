@@ -52,9 +52,7 @@
 				<blockquote>
 					<p class="muted width100-on-mobile" style="width: 550px" data-i18n="POPUPS_TWO_FACTOR_CFG/TWO_FACTOR_SECRET_DESC"></p>
 				</blockquote>
-				<!-- ko if: '' !== viewUrl() -->
-				<img style="margin-left: -7px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQIW2P8DwQACgAD/il4QJ8AAAAASUVORK5CYII=" data-bind="attr: {'src': viewUrl}" />
-				<!-- /ko -->
+				<pre data-bind="text: viewQRCode" style="line-height:1;letter-spacing:-1px"></pre>
 			</div>
 		</div>
 		<div class="control-group" data-bind="visible: '' !== viewBackupCodes()">
