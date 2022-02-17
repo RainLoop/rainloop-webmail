@@ -65,6 +65,7 @@ class GPG
 
 		$signmode = 2,
 
+		// https://www.gnupg.org/documentation/manuals/gnupg/GPG-Configuration-Options.html
 		$options = [
 			'homedir' => '',
 			'keyring' => '',

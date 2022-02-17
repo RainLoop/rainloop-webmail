@@ -38,6 +38,17 @@ class GnuPG
 		} else {
 			$this->getGPG();
 		}
+
+/*
+		$conf = "{$homedir}/gpg-agent.conf";
+		if (!\file_exists($conf)) {
+			\file_put_contents($conf, 'default-cache-ttl 1');
+		}
+		$conf = "{$homedir}/gpg.conf";
+		if (!\file_exists($conf)) {
+			\file_put_contents($conf, "batch\nno-comments");
+		}
+*/
 	}
 
 	public static function isSupported() : bool

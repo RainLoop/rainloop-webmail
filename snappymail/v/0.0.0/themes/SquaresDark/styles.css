@@ -167,6 +167,7 @@ hr {
 	border-color: #666;
 }
 
+#messageItem .b-text-part blockquote,
 .b-settings-general .editMainIdentity {
     border-color: #999;
 }
