@@ -1,7 +1,7 @@
 import 'External/User/ko';
 
 import { isArray, arrayLength, pString, forEachObjectValue } from 'Common/Utils';
-import { delegateRunOnDestroy, mailToHelper, setLayoutResizer } from 'Common/UtilsUser';
+import { mailToHelper, setLayoutResizer } from 'Common/UtilsUser';
 
 import {
 	Notification,
@@ -333,8 +333,6 @@ class AppUser extends AbstractApp {
 				if (isArray(accounts)) {
 //					AccountUserStore.accounts.forEach(oAccount => counts[oAccount.email] = oAccount.count());
 
-					delegateRunOnDestroy(AccountUserStore.accounts());
-
 					AccountUserStore.accounts(
 						accounts.map(
 							sValue => new AccountModel(sValue/*, counts[sValue]*/)
@@ -345,8 +343,6 @@ class AppUser extends AbstractApp {
 				}
 
 				if (isArray(oData.Result.Identities)) {
-					delegateRunOnDestroy(IdentityUserStore());
-
 					IdentityUserStore(
 						oData.Result.Identities.map(identityData => {
 							const identity = new IdentityModel(

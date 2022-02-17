@@ -1,6 +1,6 @@
-import ko from 'ko';
+import { koArrayWithDestroy } from 'External/ko';
 
-export const IdentityUserStore = ko.observableArray();
+export const IdentityUserStore = koArrayWithDestroy();
 
 IdentityUserStore.getIDS = () => IdentityUserStore.map(item => (item ? item.id() : null))
 	.filter(value => null !== value);

@@ -1,4 +1,4 @@
-import ko from 'ko';
+import { koArrayWithDestroy } from 'External/ko';
 
 import {
 	SaveSettingsStep,
@@ -8,7 +8,7 @@ import {
 import { ComposeType } from 'Common/EnumsUser';
 
 import { arrayLength, pInt } from 'Common/Utils';
-import { download, delegateRunOnDestroy, computedPaginatorHelper, showMessageComposer } from 'Common/UtilsUser';
+import { download, computedPaginatorHelper, showMessageComposer } from 'Common/UtilsUser';
 
 import { Selector } from 'Common/Selector';
 import { serverRequestRaw, serverRequest } from 'Common/Links';
@@ -66,7 +66,7 @@ class ContactsPopupView extends AbstractViewPopup {
 
 		this.contacts = ContactUserStore;
 
-		this.viewProperties = ko.observableArray();
+		this.viewProperties = koArrayWithDestroy();
 
 		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
 
@@ -346,10 +346,7 @@ class ContactsPopupView extends AbstractViewPopup {
 			}
 
 			setTimeout(() => {
-				contacts.forEach(contact => {
-					ContactUserStore.remove(contact);
-					delegateRunOnDestroy(contact);
-				});
+				contacts.forEach(contact => ContactUserStore.remove(contact));
 			}, 500);
 		}
 	}
@@ -373,7 +370,6 @@ class ContactsPopupView extends AbstractViewPopup {
 
 	removeProperty(oProp) {
 		this.viewProperties.remove(oProp);
-		delegateRunOnDestroy(oProp);
 	}
 
 	/**
@@ -397,7 +393,6 @@ class ContactsPopupView extends AbstractViewPopup {
 
 		this.viewID(id);
 
-//		delegateRunOnDestroy(this.viewProperties());
 //		this.viewProperties([]);
 		this.viewProperties(contact.properties);
 
@@ -436,7 +431,6 @@ class ContactsPopupView extends AbstractViewPopup {
 
 				this.contactsCount(count);
 
-				delegateRunOnDestroy(ContactUserStore());
 				ContactUserStore(list);
 
 				ContactUserStore.loading(false);
@@ -516,7 +510,6 @@ class ContactsPopupView extends AbstractViewPopup {
 		this.search('');
 		this.contactsCount(0);
 
-		delegateRunOnDestroy(ContactUserStore());
 		ContactUserStore([]);
 
 		this.sLastComposeFocusedField = '';

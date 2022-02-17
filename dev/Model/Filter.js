@@ -1,7 +1,6 @@
-import ko from 'ko';
+import { koArrayWithDestroy } from 'External/ko';
 
 import { arrayLength, pString } from 'Common/Utils';
-import { delegateRunOnDestroy } from 'Common/UtilsUser';
 import { i18n } from 'Common/Translator';
 import { getFolderFromCacheList } from 'Common/Cache';
 
@@ -65,7 +64,7 @@ export class FilterModel extends AbstractModel {
 			actionType: FilterAction.MoveTo
 		});
 
-		this.conditions = ko.observableArray();
+		this.conditions = koArrayWithDestroy();
 
 		const fGetRealFolderName = (folderFullName) => {
 			const folder = getFolderFromCacheList(folderFullName);
@@ -211,7 +210,6 @@ export class FilterModel extends AbstractModel {
 
 	removeCondition(oConditionToDelete) {
 		this.conditions.remove(oConditionToDelete);
-		delegateRunOnDestroy(oConditionToDelete);
 	}
 
 	setRecipients() {

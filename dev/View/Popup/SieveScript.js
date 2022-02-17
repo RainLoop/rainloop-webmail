@@ -2,7 +2,6 @@ import ko from 'ko';
 
 import { getNotification, i18nToNodes } from 'Common/Translator';
 import { addObservablesTo } from 'External/ko';
-import { delegateRunOnDestroy } from 'Common/UtilsUser';
 
 import Remote from 'Remote/User/Fetch';
 import { FilterModel } from 'Model/Filter';
@@ -78,7 +77,6 @@ class SieveScriptPopupView extends AbstractViewPopup {
 
 	deleteFilter(filter) {
 		this.script().filters.remove(filter);
-		delegateRunOnDestroy(filter);
 	}
 
 	addFilter() {
@@ -103,7 +101,6 @@ class SieveScriptPopupView extends AbstractViewPopup {
 					filters = script.filters(),
 					index = filters.indexOf(filter);
 				if (-1 < index) {
-					delegateRunOnDestroy(filters[index]);
 					filters[index] = clonedFilter;
 					script.filters(filters);
 				}

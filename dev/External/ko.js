@@ -21,7 +21,18 @@ export const
 	addSubscribablesTo = (target, subscribables) =>
 		forEachObjectEntry(subscribables, (key, fn) => target[key].subscribe(fn)),
 
-	dispose = disposable => disposable && isFunction(disposable.dispose) && disposable.dispose();
+	dispose = disposable => disposable && isFunction(disposable.dispose) && disposable.dispose(),
+
+	// With this we don't need delegateRunOnDestroy
+	koArrayWithDestroy = data => {
+		data = ko.observableArray(data);
+		data.subscribe(changes =>
+			changes.forEach(item =>
+				'deleted' === item.status && null == item.moved && item.value.onDestroy && item.value.onDestroy()
+			)
+		, data, 'arrayChange');
+		return data;
+	};
 
 ko.bindingHandlers.tooltipErrorTip = {
 	init: (element, fValueAccessor) => {

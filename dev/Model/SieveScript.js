@@ -1,8 +1,7 @@
-import ko from 'ko';
-
 import { AbstractModel } from 'Knoin/AbstractModel';
 import { FilterModel } from 'Model/Filter';
 import { arrayLength, pString, b64EncodeJSON } from 'Common/Utils';
+import { koArrayWithDestroy } from 'External/ko';
 
 const SIEVE_FILE_NAME = 'rainloop.user';
 
@@ -275,7 +274,7 @@ export class SieveScriptModel extends AbstractModel
 			hasChanges: false
 		});
 
-		this.filters = ko.observableArray();
+		this.filters = koArrayWithDestroy();
 //		this.saving = ko.observable(false).extend({ debounce: 200 });
 
 		this.addSubscribables({

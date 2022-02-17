@@ -13,8 +13,9 @@ import {
 } from 'Common/EnumsUser';
 
 import { inFocus, pInt, isArray, arrayLength, forEachObjectEntry } from 'Common/Utils';
-import { delegateRunOnDestroy, initFullscreen } from 'Common/UtilsUser';
+import { initFullscreen } from 'Common/UtilsUser';
 import { encodeHtml, HtmlEditor, htmlToPlain } from 'Common/Html';
+import { koArrayWithDestroy } from 'External/ko';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { serverRequest } from 'Common/Links';
@@ -237,7 +238,7 @@ class ComposePopupView extends AbstractViewPopup {
 		this.bcc.focused = ko.observable(false);
 		this.bcc.focused.subscribe(value => value && (this.sLastFocusedField = 'bcc'));
 
-		this.attachments = ko.observableArray();
+		this.attachments = koArrayWithDestroy();
 
 		this.dragAndDropOver = ko.observable(false).extend({ debounce: 1 });
 		this.dragAndDropVisible = ko.observable(false).extend({ debounce: 1 });
@@ -1380,7 +1381,6 @@ class ComposePopupView extends AbstractViewPopup {
 			const attachment = this.getAttachmentById(id);
 			if (attachment) {
 				this.attachments.remove(attachment);
-				delegateRunOnDestroy(attachment);
 				oJua && oJua.cancel(id);
 			}
 		};
@@ -1535,7 +1535,6 @@ class ComposePopupView extends AbstractViewPopup {
 		this.pgpSign(false);
 		this.pgpEncrypt(false);
 
-		delegateRunOnDestroy(this.attachments());
 		this.attachments([]);
 
 		this.dragAndDropOver(false);

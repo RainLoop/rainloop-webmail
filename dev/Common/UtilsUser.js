@@ -103,17 +103,6 @@ folderListOptionsBuilder = (
 },
 
 /**
- * Call the Model/CollectionModel onDestroy() to clear knockout functions/objects
- * @param {Object|Array} objectOrObjects
- * @returns {void}
- */
-delegateRunOnDestroy = (objectOrObjects) => {
-	objectOrObjects && (isArray(objectOrObjects) ? objectOrObjects : [objectOrObjects]).forEach(
-		obj => obj.onDestroy && obj.onDestroy()
-	);
-},
-
-/**
  * @returns {function}
  */
 computedPaginatorHelper = (koCurrentPage, koPageCount) => {

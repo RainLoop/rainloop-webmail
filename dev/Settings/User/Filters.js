@@ -1,9 +1,6 @@
-import ko from 'ko';
-
 import { getNotification } from 'Common/Translator';
 import { forEachObjectValue } from 'Common/Utils';
 import { addObservablesTo } from 'External/ko';
-import { delegateRunOnDestroy } from 'Common/UtilsUser';
 
 import { SieveUserStore } from 'Stores/User/Sieve';
 import Remote from 'Remote/User/Fetch';
@@ -76,7 +73,6 @@ export class FiltersUserSettings /*extends AbstractViewSettings*/ {
 					this.setError((data && data.ErrorMessageAdditional) || getNotification(iError));
 				} else {
 					this.scripts.remove(script);
-					delegateRunOnDestroy(script);
 				}
 			},
 			{name:script.name()}

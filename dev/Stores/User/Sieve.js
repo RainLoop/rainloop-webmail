@@ -1,8 +1,8 @@
-import ko from 'ko';
+import { koArrayWithDestroy } from 'External/ko';
 
 export const SieveUserStore = {
 	// capabilities
 	capa: ko.observableArray(),
 	// Sieve scripts SieveScriptModel
-	scripts: ko.observableArray()
+	scripts: koArrayWithDestroy()
 }
