@@ -1,9 +1,9 @@
 import ko from 'ko';
-import { koComputable } from 'External/ko';
+import { koComputable, addSubscribablesTo } from 'External/ko';
 
 import { SetSystemFoldersNotification } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { defaultOptionsAfterRender, addSubscribablesTo } from 'Common/Utils';
+import { defaultOptionsAfterRender } from 'Common/Utils';
 import { folderListOptionsBuilder } from 'Common/UtilsUser';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 

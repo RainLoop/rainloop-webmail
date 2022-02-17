@@ -1,5 +1,5 @@
 import ko from 'ko';
-import { addObservablesTo } from 'Common/Utils';
+import { addObservablesTo } from 'External/ko';
 
 export const AccountUserStore = {
 	accounts: ko.observableArray(),

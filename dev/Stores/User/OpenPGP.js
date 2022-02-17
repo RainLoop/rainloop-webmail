@@ -5,7 +5,6 @@
 import ko from 'ko';
 
 import { arrayLength } from 'Common/Utils';
-import { delegateRunOnDestroy } from 'Common/UtilsUser';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -82,7 +81,6 @@ class OpenPgpKeyModel {
 				OpenPGPUserStore.publicKeys.remove(this);
 				storeOpenPgpKeys(OpenPGPUserStore.publicKeys, publicKeysItem);
 			}
-			delegateRunOnDestroy(this);
 		}
 	}
 /*

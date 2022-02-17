@@ -1,7 +1,8 @@
 import ko from 'ko';
 
 import { getNotification } from 'Common/Translator';
-import { addObservablesTo, forEachObjectValue } from 'Common/Utils';
+import { forEachObjectValue } from 'Common/Utils';
+import { addObservablesTo } from 'External/ko';
 import { delegateRunOnDestroy } from 'Common/UtilsUser';
 
 import { SieveUserStore } from 'Stores/User/Sieve';

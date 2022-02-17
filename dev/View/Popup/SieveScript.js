@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { getNotification, i18nToNodes } from 'Common/Translator';
-import { addObservablesTo } from 'Common/Utils';
+import { addObservablesTo } from 'External/ko';
 import { delegateRunOnDestroy } from 'Common/UtilsUser';
 
 import Remote from 'Remote/User/Fetch';

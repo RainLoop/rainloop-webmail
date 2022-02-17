@@ -1,5 +1,5 @@
-import { isArray, addObservablesTo, addComputablesTo, forEachObjectValue, forEachObjectEntry } from 'Common/Utils';
-import { dispose } from 'External/ko';
+import { isArray, forEachObjectValue, forEachObjectEntry } from 'Common/Utils';
+import { dispose, addObservablesTo, addComputablesTo } from 'External/ko';
 
 function typeCast(curValue, newValue) {
 	if (null != curValue) {
@@ -26,7 +26,7 @@ export class AbstractModel {
 			throw new Error("Can't instantiate AbstractModel!");
 		}
 */
-		this.subscribables = [];
+		this.disposables = [];
 	}
 
 	addObservables(observables) {
@@ -38,25 +38,26 @@ export class AbstractModel {
 	}
 
 	addSubscribables(subscribables) {
-		forEachObjectEntry(subscribables, (key, fn) => this.subscribables.push( this[key].subscribe(fn) ) );
+//		addSubscribablesTo(this, subscribables);
+		forEachObjectEntry(subscribables, (key, fn) => this.disposables.push( this[key].subscribe(fn) ) );
 	}
 
 	/** Called by delegateRunOnDestroy */
 	onDestroy() {
 		/** dispose ko subscribables */
-		this.subscribables.forEach(dispose);
+		this.disposables.forEach(dispose);
 		/** clear object entries */
 //		forEachObjectEntry(this, (key, value) => {
 		forEachObjectValue(this, value => {
 			/** clear CollectionModel */
 			let arr = ko.isObservableArray(value) ? value() : value;
-			arr && arr.onDestroy && value.onDestroy();
+			arr && arr.onDestroy && arr.onDestroy();
 			/** destroy ko.observable/ko.computed? */
-			dispose(value);
+//			dispose(value);
 			/** clear object value */
 //			this[key] = null; // TODO: issue with Contacts view
 		});
-//		this.subscribables = [];
+//		this.disposables = [];
 	}
 
 	/**

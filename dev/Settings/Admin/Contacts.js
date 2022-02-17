@@ -4,10 +4,9 @@ import { SaveSettingsStep } from 'Common/Enums';
 import { SettingsGet } from 'Common/Globals';
 import {
 	settingsSaveHelperSimpleFunction,
-	defaultOptionsAfterRender,
-	addObservablesTo,
-	addSubscribablesTo
+	defaultOptionsAfterRender
 } from 'Common/Utils';
+import { addObservablesTo, addSubscribablesTo } from 'External/ko';
 
 import Remote from 'Remote/Admin/Fetch';
 import { decorateKoCommands } from 'Knoin/Knoin';

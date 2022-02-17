@@ -3,7 +3,8 @@ import ko from 'ko';
 import { SaveSettingsStep } from 'Common/Enums';
 import { EditorDefaultType, Layout } from 'Common/EnumsUser';
 import { Settings, SettingsGet } from 'Common/Globals';
-import { isArray, settingsSaveHelperSimpleFunction, addObservablesTo, addSubscribablesTo, addComputablesTo } from 'Common/Utils';
+import { isArray, settingsSaveHelperSimpleFunction } from 'Common/Utils';
+import { addObservablesTo, addSubscribablesTo, addComputablesTo } from 'External/ko';
 import { i18n, trigger as translatorTrigger, translatorReload, convertLangName } from 'Common/Translator';
 
 import { showScreenPopup } from 'Knoin/Knoin';

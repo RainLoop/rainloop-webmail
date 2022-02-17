@@ -1,6 +1,7 @@
 import ko from 'ko';
 import { SettingsGet } from 'Common/Globals';
-import { pInt, addObservablesTo } from 'Common/Utils';
+import { pInt } from 'Common/Utils';
+import { addObservablesTo } from 'External/ko';
 import Remote from 'Remote/User/Fetch';
 
 export const ContactUserStore = ko.observableArray();

@@ -1,6 +1,6 @@
 import { SMAudio } from 'Common/Audio';
 import * as Links from 'Common/Links';
-import { addObservablesTo } from 'Common/Utils';
+import { addObservablesTo } from 'External/ko';
 import { fireEvent } from 'Common/Globals';
 
 /**

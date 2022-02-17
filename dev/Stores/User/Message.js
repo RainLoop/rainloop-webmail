@@ -4,7 +4,8 @@ import { koComputable } from 'External/ko';
 import { Scope, Notification } from 'Common/Enums';
 import { MessageSetAction } from 'Common/EnumsUser';
 import { $htmlCL, elementById } from 'Common/Globals';
-import { arrayLength, pInt, pString, addObservablesTo, addComputablesTo, addSubscribablesTo } from 'Common/Utils';
+import { arrayLength, pInt, pString } from 'Common/Utils';
+import { addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
 
 import {
 	getFolderInboxName,

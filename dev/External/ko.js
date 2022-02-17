@@ -1,7 +1,7 @@
 import { i18nToNodes } from 'Common/Translator';
 import { doc, createElement } from 'Common/Globals';
 import { SaveSettingsStep } from 'Common/Enums';
-import { arrayLength, isFunction } from 'Common/Utils';
+import { arrayLength, isFunction, forEachObjectEntry } from 'Common/Utils';
 
 export const
 	/**
@@ -10,6 +10,16 @@ export const
 	 * based solely on the values of other observables in the application
 	 */
 	koComputable = fn => ko.computed(fn, {'pure':true}),
+
+	addObservablesTo = (target, observables) =>
+		forEachObjectEntry(observables, (key, value) =>
+			target[key] = /*isArray(value) ? ko.observableArray(value) :*/ ko.observable(value) ),
+
+	addComputablesTo = (target, computables) =>
+		forEachObjectEntry(computables, (key, fn) => target[key] = koComputable(fn)),
+
+	addSubscribablesTo = (target, subscribables) =>
+		forEachObjectEntry(subscribables, (key, fn) => target[key].subscribe(fn)),
 
 	dispose = disposable => disposable && isFunction(disposable.dispose) && disposable.dispose();
 

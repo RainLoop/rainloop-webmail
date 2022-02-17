@@ -1,6 +1,7 @@
 import ko from 'ko';
 
-import { inFocus, addObservablesTo, addComputablesTo, addSubscribablesTo } from 'Common/Utils';
+import { inFocus } from 'Common/Utils';
+import { addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
 import { Scope } from 'Common/Enums';
 import { keyScope, Settings, leftPanelDisabled } from 'Common/Globals';
 import { ViewType, showScreenPopup } from 'Knoin/Knoin';

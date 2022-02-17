@@ -1,6 +1,6 @@
 import { Capa } from 'Common/Enums';
 import { Settings, SettingsGet } from 'Common/Globals';
-import { addObservablesTo, addSubscribablesTo } from 'Common/Utils';
+import { addObservablesTo, addSubscribablesTo } from 'External/ko';
 
 import Remote from 'Remote/Admin/Fetch';
 

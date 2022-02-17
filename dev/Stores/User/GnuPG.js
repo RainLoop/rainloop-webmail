@@ -2,7 +2,6 @@ import ko from 'ko';
 
 import { Capa } from 'Common/Enums';
 import { SettingsCapa } from 'Common/Globals';
-import { delegateRunOnDestroy } from 'Common/UtilsUser';
 
 //import { EmailModel } from 'Model/Email';
 //import { OpenPgpKeyModel } from 'Model/OpenPgpKey';
@@ -60,7 +59,6 @@ export const GnuPGUserStore = new class {
 											} else {
 												this.publicKeys.remove(key);
 											}
-											delegateRunOnDestroy(key);
 										}
 									}, {
 										KeyId: key.id,

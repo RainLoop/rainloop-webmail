@@ -1,6 +1,7 @@
 import { SaveSettingsStep } from 'Common/Enums';
 import { Settings, SettingsGet } from 'Common/Globals';
-import { settingsSaveHelperSimpleFunction, addObservablesTo, addSubscribablesTo } from 'Common/Utils';
+import { settingsSaveHelperSimpleFunction } from 'Common/Utils';
+import { addObservablesTo, addSubscribablesTo } from 'External/ko';
 
 import Remote from 'Remote/Admin/Fetch';
 

@@ -1,6 +1,6 @@
 import { Scope } from 'Common/Enums';
 import { keyScope, leftPanelDisabled, SettingsGet, elementById } from 'Common/Globals';
-import { addObservablesTo } from 'Common/Utils';
+import { addObservablesTo } from 'External/ko';
 import { ThemeStore } from 'Stores/Theme';
 
 export const AppUserStore = {

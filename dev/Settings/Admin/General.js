@@ -5,11 +5,10 @@ import {
 	pInt,
 	settingsSaveHelperSimpleFunction,
 	changeTheme,
-	convertThemeName,
-	addObservablesTo,
-	addSubscribablesTo,
-	addComputablesTo
+	convertThemeName
 } from 'Common/Utils';
+
+import { addObservablesTo, addSubscribablesTo, addComputablesTo } from 'External/ko';
 
 import { Capa, SaveSettingsStep } from 'Common/Enums';
 import { Settings, SettingsGet, SettingsCapa } from 'Common/Globals';

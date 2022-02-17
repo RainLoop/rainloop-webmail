@@ -4,7 +4,7 @@ import { Scope } from 'Common/Enums';
 import { moveAction } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
 import { setFolderHash } from 'Common/Cache';
-import { addComputablesTo } from 'Common/Utils';
+import { addComputablesTo } from 'External/ko';
 
 import { AppUserStore } from 'Stores/User/App';
 import { SettingsUserStore } from 'Stores/User/Settings';

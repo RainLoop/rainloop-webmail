@@ -9,7 +9,7 @@ import Remote from 'Remote/Admin/Fetch';
 import { showScreenPopup } from 'Knoin/Knoin';
 import { PluginPopupView } from 'View/Popup/Plugin';
 import { SettingsGet } from 'Common/Globals';
-import { addObservablesTo, addComputablesTo } from 'Common/Utils';
+import { addObservablesTo, addComputablesTo } from 'External/ko';
 
 export class PackagesAdminSettings /*extends AbstractViewSettings*/ {
 	constructor() {

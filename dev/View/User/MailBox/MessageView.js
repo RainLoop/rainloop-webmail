@@ -215,12 +215,15 @@ export class MailMessageView extends AbstractViewRight {
 			},
 
 			fullScreenMode: value => {
+				value && currentMessage() && AppUserStore.focusedState(Scope.MessageView);
 				if (this.oContent) {
 					value ? this.oContent.requestFullscreen() : exitFullscreen();
 				} else {
 					$htmlCL.toggle('rl-message-fullscreen', value);
 				}
-			}
+			},
+
+			showFullInfo: value => Local.set(ClientSideKeyName.MessageHeaderFullInfo, value ? '1' : '0')
 		});
 
 		this.lastReplyAction(Local.get(ClientSideKeyName.LastReplyAction) || ComposeType.Reply);
@@ -274,11 +277,6 @@ export class MailMessageView extends AbstractViewRight {
 	}
 
 	onBuild(dom) {
-		this.fullScreenMode.subscribe(value =>
-			value && currentMessage() && AppUserStore.focusedState(Scope.MessageView));
-
-		this.showFullInfo.subscribe(value => Local.set(ClientSideKeyName.MessageHeaderFullInfo, value ? '1' : '0'));
-
 		const el = dom.querySelector('.b-content');
 		this.oContent = initFullscreen(el, () => this.fullScreenMode(getFullscreenElement() === el));
 
@@ -334,7 +332,7 @@ export class MailMessageView extends AbstractViewRight {
 			}
 		});
 
-		AppUserStore.focusedState.subscribe((value) => {
+		AppUserStore.focusedState.subscribe(value => {
 			if (Scope.MessageView !== value) {
 				this.scrollMessageToTop();
 				this.scrollMessageToLeft();

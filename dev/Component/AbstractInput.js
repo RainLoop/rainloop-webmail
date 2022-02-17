@@ -41,17 +41,17 @@ export class AbstractInput {
 				(size + ' settings-saved-trigger-input ' + classForTrigger()).trim()
 			);
 
-			this.disposable = [
+			this.disposables = [
 				this.trigger.subscribe(setTriggerState, this),
 				this.className
 			];
 		} else {
 			this.className = size;
-			this.disposable = [];
+			this.disposables = [];
 		}
 	}
 
 	dispose() {
-		this.disposable.forEach(dispose);
+		this.disposables.forEach(dispose);
 	}
 }
