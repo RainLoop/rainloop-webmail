@@ -174,264 +174,6 @@ html.rl-no-preview-pane {
 		}
 	}
 
-	#messageItem {
-
-		color: #000;
-		height: 100%;
-		overflow: auto;
-		scroll-behavior: smooth;
-
-		.buttonFull {
-			display: inline-block;
-			position: fixed;
-			right: 25px;
-			bottom: 25px;
-			height: 30px;
-			width: 30px;
-			text-align: center;
-			vertical-align: middle;
-			line-height: 30px;
-			background-color: transparent;
-			background-color: #fff;
-			border: 1px solid #333;
-			color: #333;
-			z-index: 2;
-			cursor: pointer;
-			border-radius: 5px;
-			opacity: 0.5;
-
-			&:hover {
-				opacity: 0.8;
-				border-color: #666;
-				background-color: #888;
-				color: #fff;
-			}
-		}
-
-		.loading {
-			text-align: center;
-			font-size: 24px;
-			color: grey;
-			padding: 50px 0;
-		}
-
-		.showImages, .readReceipt, .pgpSigned, .pgpEncrypted {
-			cursor: pointer;
-			padding: 10px 15px;
-			border-bottom: 1px solid #ddd;
-			background-color: #eee;
-		}
-
-		.pgpInfo {
-			padding: 5px 15px;
-			border-bottom: 1px solid #ddd;
-			background-color: #fcf8e3;
-
-			&.success {
-				background-color: #e9f4ff;
-			}
-		}
-
-		.readReceipt {
-			background-color: #ffffd9;
-		}
-
-		.attachmentsPlace {
-
-			padding: 10px 10px 6px 10px;
-			background: #eee;
-			border-bottom: 1px solid #ddd;
-			position: relative;
-
-			.attachmentList {
-				margin: 0;
-			}
-
-			&:not(.selection-mode) {
-				.checkboxAttachment {
-					display: none;
-				}
-			}
-
-			&.unselectedAttachmentsError {
-				.attachmentItem {
-					box-shadow: 0 1px 4px red;
-					box-shadow: 0 1px 5px rgba(255, 0, 0, 0.4);
-					box-shadow: 0 0 0 1px rgba(255, 0, 0, 0.2), 0 1px 5px rgba(255, 0, 0, 0.3);
-				}
-			}
-
-			.controls-handle {
-				position: absolute;
-				bottom: 5px;
-				right: 8px;
-				color: #999;
-				cursor: pointer;
-			}
-		}
-
-		.attachmentsControls {
-			padding: 7px 5px 7px 14px;
-			background: #e8e8e8;
-			border-bottom: 1px solid #ddd;
-		}
-
-		.rlBlockquoteSwitcher {
-			border: 1px solid #999;
-			display: block;
-			width: 3em;
-			line-height: 1em;
-			text-align: center;
-			cursor: pointer;
-			margin: 2em 0 10px;
-
-			opacity: 0.5;
-			&:hover {
-				opacity: 1;
-			}
-		}
-
-		.b-text-part {
-
-			height: 100%;
-
-			div[data-x-div-type=html] {
-				height: 100%;
-				div[data-x-div-type=body] {
-					height: 100%;
-				}
-			}
-
-			a {
-				color: blue;
-				text-decoration: underline;
-
-				&:visited {
-					color: #609;
-				}
-				&:active {
-					color: red;
-				}
-			}
-
-			blockquote {
-				border-left: 2px solid #000;
-				padding: 0 10px;
-				margin: 0;
-			}
-
-			.rl-bq-switcher.hidden-bq {
-				display: none;
-			}
-
-			&.html {
-
-				div[data-x-div-type=body] {
-					/*padding: 15px;*/
-					margin: 15px;
-				}
-
-				img {
-					max-width: 90vw;
-				}
-				img[data-x-src]:not([src]) {
-					border: 1px solid #999;
-					position: relative;
-				}
-				img[data-x-src]:not([src])::after {
-					content: "🖼";
-					font-family: snappymail;
-					position: absolute;
-					top: 0;
-					left: 0;
-					color: #000;
-					background-color: #fff;
-				}
-				img[data-x-src]:not([src]):hover::after {
-					content: attr(data-x-src);
-					font-family: var(--fontSans);
-					font-size: 11px;
-					height: auto;
-					transform: translate(-25%,0);
-					width: auto;
-					width: -moz-fit-content;
-					width: -webkit-fit-content;
-					width: fit-content;
-					z-index: 1000;
-				}
-
-				pre, code {
-					margin: 0;
-					border: none;
-					word-break: normal;
-					word-wrap: break-word;
-				}
-
-				code {
-					border-radius: 0;
-					display: inline;
-					padding: 2px 5px;
-				}
-
-				pre {
-					border-radius: 5px;
-					display: block;
-					padding: 5px 10px;
-				}
-
-				pre > code {
-					padding: 0;
-				}
-			}
-
-			&.plain {
-
-				padding: 15px;
-				white-space: pre-wrap;
-				font-family: var(--fontMono);
-
-				pre {
-					margin: 0;
-					padding: 0;
-					border: none;
-					display: block;
-					word-break: normal;
-				}
-
-				blockquote {
-					border-left: 2px solid blue;
-					color: blue;
-				}
-
-				blockquote blockquote {
-					border-left: 2px solid green;
-					color: green;
-				}
-
-				blockquote blockquote blockquote {
-					border-left: 2px solid red;
-					color: red;
-				}
-			}
-
-/*
-			&.openpgp-signed,
-			&.openpgp-encrypted {
-				border: 1px dashed #FA0;
-
-				&.success {
-					border-color: green;
-					background-color: rgba(0, 255, 0, 0.03);
-				}
-				&.error {
-					border-color: red;
-					background-color: rgba(255, 0, 0, 0.03);
-				}
-			}
-*/
-		}
-	}
-
 	.openpgp-control {
 		margin: 0.5em;
 		padding: 0.5em;
@@ -479,6 +221,249 @@ html.rl-no-preview-pane {
 			padding-left: 10px;
 			padding-right: 10px;
 		}
+	}
+}
+
+#messageItem {
+
+	color: #000;
+	height: 100%;
+	overflow: auto;
+	scroll-behavior: smooth;
+
+	.buttonFull {
+		display: inline-block;
+		position: fixed;
+		right: 25px;
+		bottom: 25px;
+		height: 30px;
+		width: 30px;
+		text-align: center;
+		vertical-align: middle;
+		line-height: 30px;
+		background-color: transparent;
+		background-color: #fff;
+		border: 1px solid #333;
+		color: #333;
+		z-index: 2;
+		cursor: pointer;
+		border-radius: 5px;
+		opacity: 0.5;
+
+		&:hover {
+			opacity: 0.8;
+			border-color: #666;
+			background-color: #888;
+			color: #fff;
+		}
+	}
+
+	.loading {
+		text-align: center;
+		font-size: 24px;
+		color: grey;
+		padding: 50px 0;
+	}
+
+	.showImages, .readReceipt, .pgpSigned, .pgpEncrypted {
+		cursor: pointer;
+		padding: 10px 15px;
+		border-bottom: 1px solid #ddd;
+		background-color: #eee;
+	}
+
+	.pgpInfo {
+		padding: 5px 15px;
+		border-bottom: 1px solid #ddd;
+		background-color: #fcf8e3;
+
+		&.success {
+			background-color: #e9f4ff;
+		}
+	}
+
+	.readReceipt {
+		background-color: #ffffd9;
+	}
+
+	.attachmentsPlace {
+
+		padding: 10px 10px 6px 10px;
+		background: #eee;
+		border-bottom: 1px solid #ddd;
+		position: relative;
+
+		.attachmentList {
+			margin: 0;
+		}
+
+		&:not(.selection-mode) {
+			.checkboxAttachment {
+				display: none;
+			}
+		}
+
+		&.unselectedAttachmentsError {
+			.attachmentItem {
+				box-shadow: 0 1px 4px red;
+				box-shadow: 0 1px 5px rgba(255, 0, 0, 0.4);
+				box-shadow: 0 0 0 1px rgba(255, 0, 0, 0.2), 0 1px 5px rgba(255, 0, 0, 0.3);
+			}
+		}
+
+		.controls-handle {
+			position: absolute;
+			bottom: 5px;
+			right: 8px;
+			color: #999;
+			cursor: pointer;
+		}
+	}
+
+	.attachmentsControls {
+		padding: 7px 5px 7px 14px;
+		background: #e8e8e8;
+		border-bottom: 1px solid #ddd;
+	}
+
+	.rlBlockquoteSwitcher {
+		border: 1px solid #999;
+		display: block;
+		width: 3em;
+		line-height: 1em;
+		text-align: center;
+		cursor: pointer;
+		margin: 2em 0 10px;
+		opacity: 0.5;
+		&:hover {
+			opacity: 1;
+		}
+	}
+
+	.b-text-part {
+
+		height: 100%;
+		padding: 10px;
+
+		div[data-x-div-type=html] {
+			height: 100%;
+			div[data-x-div-type=body] {
+				height: 100%;
+			}
+		}
+
+		a {
+			color: blue;
+			text-decoration: underline;
+
+			&:visited {
+				color: #609;
+			}
+			&:active {
+				color: red;
+			}
+		}
+
+		blockquote {
+			border-left: 2px solid #000;
+			opacity: 0.8;
+			padding: 0 10px;
+			margin: 0;
+		}
+
+		.rl-bq-switcher.hidden-bq {
+			display: none;
+		}
+
+		&.html {
+
+			div[data-x-div-type=body] {
+				/*padding: 15px;*/
+				margin: 15px;
+			}
+
+			img {
+				max-width: 90vw;
+			}
+			img[data-x-src]:not([src]) {
+				border: 1px solid #999;
+				position: relative;
+			}
+			img[data-x-src]:not([src])::after {
+				content: "🖼";
+				font-family: snappymail;
+				position: absolute;
+				top: 0;
+				left: 0;
+				color: #000;
+				background-color: #fff;
+			}
+			img[data-x-src]:not([src]):hover::after {
+				content: attr(data-x-src);
+				font-family: var(--fontSans);
+				font-size: 11px;
+				height: auto;
+				transform: translate(-25%,0);
+				width: auto;
+				width: -moz-fit-content;
+				width: -webkit-fit-content;
+				width: fit-content;
+				z-index: 1000;
+			}
+
+			pre, code {
+				margin: 0;
+				border: none;
+				word-break: normal;
+				word-wrap: break-word;
+			}
+
+			code {
+				border-radius: 0;
+				display: inline;
+				padding: 2px 5px;
+			}
+
+			pre {
+				border-radius: 5px;
+				display: block;
+				padding: 5px 10px;
+			}
+
+			pre > code {
+				padding: 0;
+			}
+		}
+
+		&.plain {
+
+			white-space: pre-wrap;
+			font-family: var(--fontMono);
+
+			pre {
+				margin: 0;
+				padding: 0;
+				border: none;
+				display: block;
+				word-break: normal;
+			}
+		}
+
+/*
+		&.openpgp-signed,
+		&.openpgp-encrypted {
+			border: 1px dashed #FA0;
+
+			&.success {
+				border-color: green;
+				background-color: rgba(0, 255, 0, 0.03);
+			}
+			&.error {
+				border-color: red;
+				background-color: rgba(255, 0, 0, 0.03);
+			}
+		}
+*/
 	}
 }
 

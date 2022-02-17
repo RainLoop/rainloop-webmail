@@ -264,7 +264,7 @@
 							</div>
 						</div>
 
-						<div class="openpgp-control encrypted" data-bind="visible: message().pgpEncrypted() || message().isPgpEncrypted()">
+						<div class="openpgp-control encrypted" data-bind="visible: message().pgpEncrypted(), css: {'success': message().pgpDecrypted()}">
 							<span data-icon="🔒" data-i18n="OPENPGP/ENCRYPTED_MESSAGE"></span>
 							<button class="btn" data-bind="visible: pgpSupported, click: pgpDecrypt" data-i18n="OPENPGP/BUTTON_DECRYPT"></button>
 						</div>

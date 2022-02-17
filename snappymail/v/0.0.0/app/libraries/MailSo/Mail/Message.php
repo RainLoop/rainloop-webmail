@@ -78,8 +78,7 @@ class Message implements \JsonSerializable
 		$aThreads = array(),
 
 		$aPgpSigned = null,
-		$aPgpEncrypted = null,
-		$bPgpEncrypted = false;
+		$aPgpEncrypted = null;
 
 	function __construct()
 	{
@@ -104,11 +103,6 @@ class Message implements \JsonSerializable
 	public function PgpEncrypted() : ?array
 	{
 		return $this->aPgpEncrypted;
-	}
-
-	public function isPgpEncrypted() : bool
-	{
-		return $this->bPgpEncrypted || $this->aPgpEncrypted;
 	}
 
 	public function Folder() : string
@@ -491,10 +485,6 @@ class Message implements \JsonSerializable
 			$oMessage->sInReplyTo = $oFetchResponse->GetFetchEnvelopeValue(8, '');
 		}
 
-		// Content-Type: multipart/encrypted; protocol="application/pgp-encrypted"
-		$oMessage->bPgpEncrypted = ('multipart/encrypted' === \strtolower($oMessage->sContentType)
-		 && 'application/pgp-encrypted' === \strtolower($oHeaders->ParameterValue(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, \MailSo\Mime\Enumerations\Parameter::PROTOCOL)));
-
 		if ($oBodyStructure)
 		{
 			$gEncryptedParts = $oBodyStructure->SearchByContentType('multipart/encrypted');
@@ -573,25 +563,25 @@ class Message implements \JsonSerializable
 							];
 						}
 
+						if (\str_contains($sText, '-----BEGIN PGP MESSAGE-----'))
+						{
+							$keyIds = [];
+							if (\SnappyMail\PGP\GPG::isSupported()) {
+								$GPG = new \SnappyMail\PGP\GPG('');
+								$keyIds = $GPG->getEncryptedMessageKeys($sText);
+							}
+							$oMessage->aPgpEncrypted = [
+								'PartId' => $oPart->PartID(),
+								'KeyIds' => $keyIds
+							];
+						}
+
 						if ('text/html' === $oPart->ContentType())
 						{
 							$aHtmlParts[] = $sText;
 						}
 						else
 						{
-							if (\str_contains($sText, '-----BEGIN PGP MESSAGE-----'))
-							{
-								$keyIds = [];
-								if (\SnappyMail\PGP\GPG::isSupported()) {
-									$GPG = new \SnappyMail\PGP\GPG('');
-									$keyIds = $GPG->getEncryptedMessageKeys($sText);
-								}
-								$oMessage->aPgpEncrypted = [
-									'PartId' => $oPart->PartID(),
-									'KeyIds' => $keyIds
-								];
-							}
-
 							if ($oPart->IsFlowedFormat())
 							{
 								$sText = Utils::DecodeFlowedFormat($sText);
@@ -605,9 +595,7 @@ class Message implements \JsonSerializable
 				$oMessage->sHtml = \implode('<br>', $aHtmlParts);
 				$oMessage->sPlain = \trim(\implode("\n", $aPlainParts));
 
-				$oMessage->bPgpEncrypted = !$oMessage->bPgpEncrypted && false !== \stripos($oMessage->sPlain, '-----BEGIN PGP MESSAGE-----');
-
-				unset($aHtmlParts, $aPlainParts, $aMatch);
+				unset($aHtmlParts, $aPlainParts);
 			}
 
 			$gAttachmentsParts = $oBodyStructure->SearchAttachmentsParts();

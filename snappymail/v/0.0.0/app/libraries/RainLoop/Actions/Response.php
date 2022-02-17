@@ -211,7 +211,6 @@ trait Response
 				$mResult['Plain'] = $mResponse->Plain();
 
 //				$this->GetCapa(Capa::OPEN_PGP) || $this->GetCapa(Capa::GNUPG)
-				$mResult['isPgpEncrypted'] = $mResponse->isPgpEncrypted();
 				$mResult['PgpSigned'] = $mResponse->PgpSigned();
 				$mResult['PgpEncrypted'] = $mResponse->PgpEncrypted();
 

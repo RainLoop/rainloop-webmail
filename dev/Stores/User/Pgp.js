@@ -176,7 +176,7 @@ export const
 							}
 						} else {
 							body.classList.add('mailvelope');
-							return;
+							return true;
 						}
 					}
 				}

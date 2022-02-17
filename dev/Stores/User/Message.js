@@ -372,7 +372,7 @@ export const MessageUserStore = new class {
 					} else {
 						body = Element.fromHTML('<div id="' + id + '" hidden="" class="b-text-part '
 							+ (message.pgpSigned() ? ' openpgp-signed' : '')
-							+ (message.isPgpEncrypted() ? ' openpgp-encrypted' : '')
+							+ (message.pgpEncrypted() ? ' openpgp-encrypted' : '')
 							+ '">'
 							+ '</div>');
 						message.body = body;

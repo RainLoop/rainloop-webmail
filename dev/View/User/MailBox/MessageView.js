@@ -583,15 +583,18 @@ export class MailMessageView extends AbstractViewRight {
 	pgpDecrypt() {
 		const oMessage = currentMessage();
 		PgpUserStore.decrypt(oMessage).then(result => {
-			if (result && result.data) {
-				MimeToMessage(result.data, oMessage);
-				oMessage.html() ? oMessage.viewHtml() : oMessage.viewPlain();
-				if (result.signatures && result.signatures.length) {
-					oMessage.pgpSigned(true);
-					oMessage.pgpVerified({
-						signatures: result.signatures,
-						success: !!result.signatures.length
-					});
+			if (result) {
+				oMessage.pgpDecrypted(true);
+				if (result.data) {
+					MimeToMessage(result.data, oMessage);
+					oMessage.html() ? oMessage.viewHtml() : oMessage.viewPlain();
+					if (result.signatures && result.signatures.length) {
+						oMessage.pgpSigned(true);
+						oMessage.pgpVerified({
+							signatures: result.signatures,
+							success: !!result.signatures.length
+						});
+					}
 				}
 			}
 		});

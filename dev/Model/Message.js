@@ -75,9 +75,10 @@ export class MessageModel extends AbstractModel {
 			hasExternals: false,
 
 			pgpSigned: null,
-			pgpEncrypted: null,
-			isPgpEncrypted: false,
 			pgpVerified: null,
+
+			pgpEncrypted: null,
+			pgpDecrypted: false,
 
 			readReceipt: '',
 
@@ -153,9 +154,10 @@ export class MessageModel extends AbstractModel {
 		this.attachments(new AttachmentCollectionModel);
 
 		this.pgpSigned(null);
-		this.pgpEncrypted(null);
-		this.isPgpEncrypted(false);
 		this.pgpVerified(null);
+
+		this.pgpEncrypted(null);
+		this.pgpDecrypted(false);
 
 		this.priority(MessagePriority.Normal);
 		this.readReceipt('');
@@ -472,6 +474,7 @@ export class MessageModel extends AbstractModel {
 	initView() {
 		// init BlockquoteSwitcher
 		this.body.querySelectorAll('blockquote:not(.rl-bq-switcher)').forEach(node => {
+			node.removeAttribute('style')
 			if (node.textContent.trim() && !node.parentNode.closest('blockquote')) {
 				let h = node.clientHeight || getRealHeight(node);
 				if (0 === h || 100 < h) {
