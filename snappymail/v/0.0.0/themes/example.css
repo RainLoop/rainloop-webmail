@@ -3,7 +3,7 @@
 // MAIN
 	--main-color: #333;
 	--main-bg-color: #e3e3e3;
-	--main-bg-image: none;	// "images/background.png"
+	--main-bg-image: none;	// url("images/background.png");
 	--main-bg-size: auto;
 	--main-bg-repeat: repeat;
 	--link-color: #369;
