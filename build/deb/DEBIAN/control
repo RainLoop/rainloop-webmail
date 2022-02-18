@@ -1,12 +1,7 @@
 Package: snappymail
 Version: 0.0.0
-Maintainer: the-djmaze <debian@snappymail.eu>
-Depends:
- nginx | apache2 | httpd
- , php-fpm | libapache2-mod-php
- , php-json
- , php-xml
- , php-zip
+Maintainer: SnappyMail <debian@snappymail.eu>
+Depends: nginx | apache2 | httpd, php-fpm | libapache2-mod-php, php-json, php-xml, php-zip
 Suggests: php-sqlite3 | php-mysql | php-pgsql
 Architecture: all
 Homepage: https://snappymail.eu

@@ -157,7 +157,6 @@ $tar->addFile('.htaccess');
 
 $index = file_get_contents('index.php');
 $index = str_replace('0.0.0', $package->version, $index);
-$index = str_replace('source', 'community', $index);
 $zip->addFromString('index.php', $index);
 $tar->addFromString('index.php', $index);
 
@@ -236,33 +235,7 @@ pkgname = snappymail
 }
 // Debian Repository
 else if (isset($options['debian'])) {
-	$target_dir = __DIR__ . "/build/deb/snappymail_{$package->version}-1_all";
-
-	$data = file_get_contents(__DIR__ . '/build/deb/DEBIAN/control');
-	$data = preg_replace('/Version: [0-9.]+/', "Version: {$package->version}", $data);
-	$dir = $target_dir . '/DEBIAN';
-	is_dir($dir) || mkdir($dir, 0755, true);
-	file_put_contents("{$dir}/control", $data);
-
-	$dir = $target_dir . '/var/lib/snappymail';
-	is_dir($dir) || mkdir($dir, 0755, true);
-	file_put_contents($dir . '/VERSION', $package->version);
-
-	$dir = $target_dir . '/usr/share/doc/snappymail';
-	is_dir($dir) || mkdir($dir, 0755, true);
-	copy('CODE_OF_CONDUCT.md', "{$dir}/CODE_OF_CONDUCT.md");
-	copy('CONTRIBUTING.md', "{$dir}/CONTRIBUTING.md");
-	copy('README.md', "{$dir}/README.md");
-	copy('CODE_OF_CONDUCT.md', "{$dir}/CODE_OF_CONDUCT.md");
-	//usr/share/doc/snappymail/README.Debian
-	//usr/share/doc/snappymail/changelog.Debian.gz
-	//usr/share/doc/snappymail/copyright
-
-	$dir = $target_dir . '/usr/share/snappymail';
-	is_dir($dir) ? passthru('rm -dfr "'.$dir.'"') : mkdir(dirname($dir), 0755, true);
-	passthru('cp -r "' . __DIR__ . '/snappymail/v/0.0.0" "' . $dir . '"');
-
-	passthru('dpkg --build "'.$target_dir.'"');
+	require(__DIR__ . '/build/deb.php');
 }
 // Docker build
 else if ($options['docker']) {
