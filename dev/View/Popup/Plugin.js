@@ -42,14 +42,22 @@ class PluginPopupView extends AbstractViewPopup {
 		const oConfig = {
 			Id: this.id(),
 			Settings: {}
-		};
-
-		this.config.forEach(oItem => {
-			let value = oItem.value();
+		},
+		setItem = item => {
+			let value = item.value();
 			if (false === value || true === value) {
 				value = value ? 1 : 0;
 			}
-			oConfig.Settings[oItem.Name] = value;
+			oConfig.Settings[item.Name] = value;
+		};
+
+		this.config.forEach(oItem => {
+			if (7 == oItem.Type) {
+				// Group
+				oItem.config.forEach(oSubItem => setItem(oSubItem));
+			} else {
+				setItem(oItem);
+			}
 		});
 
 		this.saveError('');
@@ -75,7 +83,14 @@ class PluginPopupView extends AbstractViewPopup {
 			if (arrayLength(config)) {
 				this.config(
 					config.map(item => {
-						item.value = ko.observable(item.value);
+						if (7 == item.Type) {
+							// Group
+							item.config.forEach(subItem => {
+								subItem.value = ko.observable(subItem.value);
+							});
+						} else {
+							item.value = ko.observable(item.value);
+						}
 						return item;
 					})
 				);
