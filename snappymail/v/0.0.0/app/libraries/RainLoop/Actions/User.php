@@ -229,7 +229,7 @@ trait User
 
 	public function DoLogout() : array
 	{
-		$bMain = empty($_COOKIE[self::AUTH_ADDITIONAL_TOKEN_KEY]);
+		$bMain = true; // empty($_COOKIE[self::AUTH_ADDITIONAL_TOKEN_KEY]);
 		$this->Logout($bMain);
 		$bMain && $this->ClearSignMeData();
 		return $this->TrueResponse(__FUNCTION__);
