@@ -2,7 +2,7 @@
 	<div class="toolbar top-toolbar g-ui-user-select-none">
 		<div class="messageButtons btn-toolbar">
 			<div class="btn-group" data-i18n="[title]GLOBAL/CLOSE">
-				<a class="btn buttonClose fontastic" data-bind="command: closeMessageCommand">✖</a>
+				<a class="btn buttonClose fontastic" data-bind="click: closeMessage">✖</a>
 			</div>
 			<div class="btn-group" data-bind="visible: isDraftFolder()" data-i18n="[title]MESSAGE/BUTTON_EDIT">
 				<a class="btn btn-success buttonEdit fontastic" data-bind="command: messageEditCommand">🖉</a>
@@ -131,7 +131,7 @@
 					<b style="color: red; margin-right: 5px" data-bind="visible: message().isImportant()">!</b>
 					<span class="subject" data-bind="hidden: !message().subject(), text: message().subject, title: message().subject, event: { 'dblclick': toggleFullScreen }"></span>
 					<span class="emptySubjectText" data-i18n="MESSAGE/EMPTY_SUBJECT_TEXT" data-bind="hidden: message().subject(), event: { 'dblclick': toggleFullScreen }"></span>
-					<a href="#" class="close" data-bind="command: closeMessageCommand" style="margin-top: -8px;">×</a>
+					<a href="#" class="close" data-bind="click: closeMessage" style="margin-top: -8px;">×</a>
 				</div>
 				<div data-bind="hidden: showFullInfo(), event: { 'dblclick': toggleFullScreen }">
 					<div class="informationShort">

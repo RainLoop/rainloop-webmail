@@ -3,28 +3,28 @@
 	<h3 data-i18n="SEARCH/TITLE_ADV"></h3>
 </header>
 <div class="modal-body">
-	<form class="form-horizontal" action="#/" autocomplete="off" onsubmit="return false;" data-bind="command: searchCommand">
+	<form id="searchform" class="form-horizontal" action="#/" autocomplete="off" data-bind="submit: submitForm">
 		<div class="row">
 			<div class="span4">
 				<div class="control-group">
 					<label data-i18n="GLOBAL/FROM"></label>
 					<input type="text" autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-						data-bind="value: from, onEnter: searchCommand, onEsc: cancelCommand">
+						data-bind="value: from, onEsc: cancelCommand">
 				</div>
 				<div class="control-group">
 					<label data-i18n="GLOBAL/TO"></label>
 					<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-						data-bind="value: to, onEnter: searchCommand, onEsc: cancelCommand">
+						data-bind="value: to, onEsc: cancelCommand">
 				</div>
 				<div class="control-group">
 					<label data-i18n="GLOBAL/SUBJECT"></label>
 					<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-						data-bind="value: subject, onEnter: searchCommand, onEsc: cancelCommand">
+						data-bind="value: subject, onEsc: cancelCommand">
 				</div>
 				<div class="control-group">
 					<label data-i18n="SEARCH/LABEL_ADV_TEXT"></label>
 					<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-						data-bind="value: text, onEnter: searchCommand, onEsc: cancelCommand">
+						data-bind="value: text, onEsc: cancelCommand">
 				</div>
 			</div>
 			<div class="span4">
@@ -85,5 +85,5 @@
 	</form>
 </div>
 <footer>
-	<button type="submit" class="btn buttonAdvSearch" data-bind="command: searchCommand" data-icon="🔎" data-i18n="GLOBAL/SEARCH"></button>
+	<button type="submit" form="searchform" class="btn buttonAdvSearch" data-icon="🔎" data-i18n="GLOBAL/SEARCH"></button>
 </footer>

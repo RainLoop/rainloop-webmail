@@ -19,17 +19,11 @@ class FolderClearPopupView extends AbstractViewPopup {
 		});
 
 		this.addComputables({
-			folderFullNameForClear: () => {
+			dangerDescHtml: () => {
 				const folder = this.selectedFolder();
-				return folder ? folder.printableFullName() : '';
-			},
-
-			folderNameForClear: () => {
-				const folder = this.selectedFolder();
-				return folder ? folder.localName() : '';
-			},
-
-			dangerDescHtml: () => i18n('POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_1', { FOLDER: this.folderNameForClear() })
+//				return i18n('POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_1', { FOLDER: folder ? folder.fullName.replace(folder.delimiter, ' / ') : '' });
+				return i18n('POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_1', { FOLDER: folder ? folder.localName() : '' });
+			}
 		});
 
 		decorateKoCommands(this, {

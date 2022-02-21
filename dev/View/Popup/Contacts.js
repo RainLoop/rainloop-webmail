@@ -136,17 +136,15 @@ class ContactsPopupView extends AbstractViewPopup {
 		});
 
 		decorateKoCommands(this, {
-			newCommand: 1,
 			deleteCommand: self => 0 < self.contactsCheckedOrSelected().length,
 			newMessageCommand: self => 0 < self.contactsCheckedOrSelected().length,
-			clearCommand: 1,
 			saveCommand: self => !self.viewSaving() && !self.viewReadOnly()
 				&& (self.contactHasValidName() || self.viewProperties.find(prop => propertyIsMail(prop) && prop.isValid())),
 			syncCommand: self => !self.contacts.syncing() && !self.contacts.importing()
 		});
 	}
 
-	newCommand() {
+	newContact() {
 		this.populateViewContact(null);
 		this.currentContact(null);
 	}
@@ -207,7 +205,7 @@ class ContactsPopupView extends AbstractViewPopup {
 		return true;
 	}
 
-	clearCommand() {
+	clearSearch() {
 		this.search('');
 	}
 

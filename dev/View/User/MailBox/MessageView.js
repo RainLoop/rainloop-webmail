@@ -231,14 +231,13 @@ export class MailMessageView extends AbstractViewRight {
 		addEventListener('mailbox.message-view.toggle-full-screen', () => this.toggleFullScreen());
 
 		decorateKoCommands(this, {
-			closeMessageCommand: 1,
 			messageEditCommand: self => self.messageVisibility(),
 			goUpCommand: self => !self.messageListOrViewLoading(),
 			goDownCommand: self => !self.messageListOrViewLoading()
 		});
 	}
 
-	closeMessageCommand() {
+	closeMessage() {
 		MessageUserStore.message(null);
 	}
 

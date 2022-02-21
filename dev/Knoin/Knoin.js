@@ -328,6 +328,10 @@ export const
 		l && l.remove();
 	},
 
+	/**
+	 * Used by ko.bindingHandlers.command (template data-bind="command: ")
+	 * to enable/disable click/submit action.
+	 */
 	decorateKoCommands = (thisArg, commands) =>
 		forEachObjectEntry(commands, (key, canExecute) => {
 			let command = thisArg[key],

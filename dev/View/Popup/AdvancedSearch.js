@@ -4,7 +4,6 @@ import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import { MessageUserStore } from 'Stores/User/Message';
 
-import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 import { FolderUserStore } from 'Stores/User/Folder';
 
@@ -50,13 +49,9 @@ class AdvancedSearchPopupView extends AbstractViewPopup {
 				{ id: 'subtree', name: i18n(prefix + 'SUBTREE') }
 			];
 		});
-
-		decorateKoCommands(this, {
-			searchCommand: 1
-		});
 	}
 
-	searchCommand() {
+	submitForm() {
 		const search = this.buildSearchString();
 		if (search) {
 			MessageUserStore.mainMessageListSearch(search);

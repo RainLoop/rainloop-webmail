@@ -237,8 +237,6 @@ export class MailMessageList extends AbstractViewRight {
 		).throttle(50));
 
 		decorateKoCommands(this, {
-			clearCommand: 1,
-			reloadCommand: 1,
 			multyForwardCommand: canBeMovedHelper,
 			deleteWithoutMoveCommand: canBeMovedHelper,
 			deleteCommand: canBeMovedHelper,
@@ -252,16 +250,16 @@ export class MailMessageList extends AbstractViewRight {
 
 	changeSort(self, event) {
 		FolderUserStore.sortMode(event.target.closest('li').dataset.sort);
-		this.reloadCommand();
+		this.reload();
 	}
 
-	clearCommand() {
+	clear() {
 		if (SettingsCapa(Capa.DangerousActions)) {
 			showScreenPopup(FolderClearPopupView, [FolderUserStore.currentFolder()]);
 		}
 	}
 
-	reloadCommand() {
+	reload() {
 		if (!MessageUserStore.listIsLoading()) {
 			rl.app.reloadMessageList(false, true);
 		}
@@ -707,7 +705,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		// check mail
 		shortcuts.add('r', 'meta', [Scope.FolderList, Scope.MessageList, Scope.MessageView], () => {
-			this.reloadCommand();
+			this.reload();
 			return false;
 		});
 

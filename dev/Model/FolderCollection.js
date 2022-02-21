@@ -411,11 +411,4 @@ export class FolderModel extends AbstractModel {
 			: 'icon-none'
 		);
 	}
-
-	/**
-	 * @returns {string}
-	 */
-	printableFullName() {
-		return this.fullName.replace(this.delimiter, ' / ');
-	}
 }

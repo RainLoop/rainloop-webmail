@@ -5,7 +5,7 @@
 		<i class="icon-paper-plane"></i>
 	</a>
 	<!-- /ko -->
-	<a class="btn" data-bind="command: reloadCommand, visible: mobileCheckedStateHide()" data-i18n="[title]MESSAGE_LIST/BUTTON_RELOAD">
+	<a class="btn" data-bind="click: reload, visible: mobileCheckedStateHide()" data-i18n="[title]MESSAGE_LIST/BUTTON_RELOAD">
 		<i class="icon-spinner not-animated"></i>
 	</a>
 	<!-- ko if: !newMoveToFolder -->
@@ -62,7 +62,7 @@
 			<li class="dividerbar" role="presentation" data-bind="visible: allowDangerousActions, command: deleteWithoutMoveCommand">
 				<a href="#" tabindex="-1" data-icon="🗑" data-i18n="MESSAGE_LIST/BUTTON_DELETE_WITHOUT_MOVE"></a>
 			</li>
-			<li role="presentation" data-bind="visible: allowDangerousActions, command: clearCommand">
+			<li role="presentation" data-bind="visible: allowDangerousActions, click: clear">
 				<a href="#" tabindex="-1" data-icon="🔥" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER"></a>
 			</li>
 		</ul>
@@ -116,7 +116,7 @@
 		<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && !messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea"
 			data-icon="⬇" data-i18n="MESSAGE_LIST/PUT_MESSAGE_HERE"></div>
 		<div class="listClear" data-bind="visible: clearListIsVisible()">
-			<a href="#" class="g-ui-link" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER" data-bind="command: clearCommand"></a>
+			<a href="#" class="g-ui-link" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER" data-bind="click: clear"></a>
 		</div>
 		<div class="listError error" data-bind="visible: !dragOver() && messageListError(), text: messageListError"></div>
 		<div class="listEmptyMessage" data-bind="visible: listEmptyMessage(), text: listEmptyMessage()"></div>

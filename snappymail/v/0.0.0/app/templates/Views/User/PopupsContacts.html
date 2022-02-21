@@ -4,7 +4,7 @@
 
 	<div class="btn-toolbar">
 
-		<a class="btn" data-bind="command: newCommand" data-icon="✚" data-i18n="CONTACTS/BUTTON_ADD_CONTACT"></a>
+		<a class="btn" data-bind="click: newContact" data-icon="✚" data-i18n="CONTACTS/BUTTON_ADD_CONTACT"></a>
 
 		<a class="btn btn-success fontastic" data-bind="command: newMessageCommand">✉</a>
 
@@ -49,7 +49,7 @@
 	<div class="b-list-content g-ui-user-select-none" data-bind="css: {'hideContactListCheckbox': !useCheckboxesInList()}">
 		<div class="content">
 			<div class="listClear" data-bind="visible: viewClearSearch() && '' !== search()">
-				<span class="g-ui-link" data-i18n="CONTACTS/CLEAR_SEARCH" data-bind="command: clearCommand"></span>
+				<span class="g-ui-link" data-i18n="CONTACTS/CLEAR_SEARCH" data-bind="click: clearSearch"></span>
 			</div>
 			<div class="listEmptyList" data-bind="visible: 0 === contacts().length && '' === search() && !contacts.loading()"
 				data-i18n="CONTACTS/EMPTY_LIST"></div>
