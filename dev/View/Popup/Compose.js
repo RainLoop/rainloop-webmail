@@ -701,42 +701,29 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	findIdentityByMessage(composeType, message) {
-		let resultIndex = 1000,
-			resultIdentity = null;
-		const identities = IdentityUserStore(),
-			identitiesCache = {},
-			fEachHelper = (item) => {
-				if (item && item.email && identitiesCache[item.email]) {
-					if (!resultIdentity || resultIndex > identitiesCache[item.email][1]) {
-						resultIdentity = identitiesCache[item.email][0];
-						resultIndex = identitiesCache[item.email][1];
-					}
-				}
-			};
-
-		identities.forEach((item, index) => identitiesCache[item.email()] = [item, index]);
+		let resultIdentity = null;
+		const find = addresses => {
+			addresses = addresses.map(item => item.email);
+			return IdentityUserStore.find(item => addresses.includes(item.email()));
+		};
 
 		if (message) {
 			switch (composeType) {
-				case ComposeType.Empty:
-					break;
 				case ComposeType.Reply:
 				case ComposeType.ReplyAll:
 				case ComposeType.Forward:
 				case ComposeType.ForwardAsAttachment:
-					message.to.concat(message.cc, message.bcc).forEach(fEachHelper);
-					if (!resultIdentity) {
-						message.deliveredTo.forEach(fEachHelper);
-					}
+					resultIdentity = find(message.to.concat(message.cc, message.bcc))/* || find(message.deliveredTo)*/;
 					break;
 				case ComposeType.Draft:
-					message.from.concat(message.replyTo).forEach(fEachHelper);
+					resultIdentity = find(message.from.concat(message.replyTo));
 					break;
 				// no default
+//				case ComposeType.Empty:
 			}
 		}
 
-		return resultIdentity || identities[0] || null;
+		return resultIdentity || IdentityUserStore()[0] || null;
 	}
 
 	selectIdentity(identity) {
