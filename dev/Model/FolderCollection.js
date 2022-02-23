@@ -73,6 +73,25 @@ const
 
 export const
 	/**
+	 * @param {string} sFullName
+	 * @param {boolean} bExpanded
+	 */
+	setExpandedFolder = (sFullName, bExpanded) => {
+		let aExpandedList = Local.get(ClientSideKeyName.ExpandedFolders);
+		if (!isArray(aExpandedList)) {
+			aExpandedList = [];
+		}
+
+		if (bExpanded) {
+			aExpandedList.includes(sFullName) || aExpandedList.push(sFullName);
+		} else {
+			aExpandedList = aExpandedList.filter(value => value !== sFullName);
+		}
+
+		Local.set(ClientSideKeyName.ExpandedFolders, aExpandedList);
+	},
+
+	/**
 	 * @param {?Function} fCallback
 	 */
 	loadFolders = fCallback => {

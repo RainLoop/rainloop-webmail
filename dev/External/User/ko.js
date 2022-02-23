@@ -7,6 +7,7 @@ import { isArray } from 'Common/Utils';
 import { EmailAddressesComponent } from 'Component/EmailAddresses';
 import { ThemeStore } from 'Stores/Theme';
 import { moveMessagesToFolder } from 'Common/Folders';
+import { setExpandedFolder } from 'Model/FolderCollection';
 
 const rlContentType = 'snappymail/action',
 
@@ -133,7 +134,7 @@ ko.bindingHandlers.dropmessages = {
 					if (folder && folder.collapsed()) {
 						dragTimer.start(() => {
 							folder.collapsed(false);
-							rl.app.setExpandedFolder(folder.fullName, true);
+							setExpandedFolder(folder.fullName, true);
 						}, 500);
 					}
 				}

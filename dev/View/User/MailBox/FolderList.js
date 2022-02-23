@@ -19,31 +19,9 @@ import { showMessageComposer } from 'Common/UtilsUser';
 import { FolderCreatePopupView } from 'View/Popup/FolderCreate';
 import { ContactsPopupView } from 'View/Popup/Contacts';
 
-import { isArray } from 'Common/Utils';
-import { ClientSideKeyName } from 'Common/EnumsUser';
-import * as Local from 'Storage/Client';
-
 import { moveMessagesToFolder } from 'Common/Folders';
 
-/**
- * @param {string} sFullName
- * @param {boolean} bExpanded
- */
-function setExpandedFolder(sFullName, bExpanded) {
-	let aExpandedList = Local.get(ClientSideKeyName.ExpandedFolders);
-	if (!isArray(aExpandedList)) {
-		aExpandedList = [];
-	}
-
-	if (bExpanded) {
-		if (!aExpandedList.includes(sFullName))
-			aExpandedList.push(sFullName);
-	} else {
-		aExpandedList = aExpandedList.filter(value => value !== sFullName);
-	}
-
-	Local.set(ClientSideKeyName.ExpandedFolders, aExpandedList);
-}
+import { setExpandedFolder } from 'Model/FolderCollection';
 
 export class MailFolderList extends AbstractViewLeft {
 	constructor() {
