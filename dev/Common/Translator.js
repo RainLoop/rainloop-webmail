@@ -82,6 +82,64 @@ export const
 			element.querySelectorAll('[data-i18n]').forEach(item => i18nToNode(item))
 		, 1),
 
+	timestampToString = (timeStampInUTC, formatStr) => {
+		const now = Date.now(),
+			time = 0 < timeStampInUTC ? Math.min(now, timeStampInUTC * 1000) : (0 === timeStampInUTC ? now : 0);
+
+		if (31536000000 < time) {
+			const m = new Date(time);
+			switch (formatStr) {
+				case 'FROMNOW':
+					return m.fromNow();
+				case 'SHORT': {
+					if (4 >= (now - time) / 3600000)
+						return m.fromNow();
+					const mt = m.getTime(), date = new Date,
+						dt = date.setHours(0,0,0,0);
+					if (mt > dt)
+						return i18n('MESSAGE_LIST/TODAY_AT', {TIME: m.format('LT')});
+					if (mt > dt - 86400000)
+						return i18n('MESSAGE_LIST/YESTERDAY_AT', {TIME: m.format('LT')});
+					if (date.getFullYear() === m.getFullYear())
+						return m.format('d M');
+					return m.format('LL');
+				}
+				case 'FULL':
+					return m.format('LLL');
+				default:
+					return m.format(formatStr);
+			}
+		}
+
+		return '';
+	},
+
+	timeToNode = (element, time) => {
+		try {
+			if (time) {
+				element.dateTime = (new Date(time * 1000)).format('Y-m-d\\TH:i:s');
+			} else {
+				time = Date.parse(element.dateTime) / 1000;
+			}
+
+			let key = element.dataset.momentFormat;
+			if (key) {
+				element.textContent = timestampToString(time, key);
+			}
+
+			if ((key = element.dataset.momentFormatTitle)) {
+				element.title = timestampToString(time, key);
+			}
+		} catch (e) {
+			// prevent knockout crashes
+			console.error(e);
+		}
+	},
+
+	reloadTime = () => setTimeout(() =>
+			doc.querySelectorAll('time').forEach(element => timeToNode(element))
+			, 1),
+
 	/**
 	 * @param {Function} startCallback
 	 * @param {Function=} langCallback = null
@@ -129,7 +187,7 @@ export const
 				// reload the data
 				if (init()) {
 					i18nToNodes(doc);
-					admin || rl.app.reloadTime();
+					admin || reloadTime();
 					trigger(!trigger());
 				}
 				script.remove();

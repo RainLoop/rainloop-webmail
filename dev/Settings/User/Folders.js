@@ -9,7 +9,7 @@ import { getNotification } from 'Common/Translator';
 import { setFolder, getFolderFromCacheList, removeFolderFromCacheList } from 'Common/Cache';
 import { Capa } from 'Common/Enums';
 import { defaultOptionsAfterRender } from 'Common/Utils';
-import { sortFolders } from 'Common/UtilsUser';
+import { sortFolders } from 'Common/Folders';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
 import { FolderUserStore } from 'Stores/User/Folder';
@@ -21,6 +21,7 @@ import { showScreenPopup } from 'Knoin/Knoin';
 
 import { FolderCreatePopupView } from 'View/Popup/FolderCreate';
 import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
+import { loadFolders } from 'Model/FolderCollection';
 
 const folderForDeletion = ko.observable(null).askDeleteHelper();
 
@@ -79,8 +80,8 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 					if (folder.subFolders.length) {
 						Remote.setTrigger(FolderUserStore.foldersLoading, true);
 //						clearTimeout(Remote.foldersTimeout);
-//						Remote.foldersTimeout = setTimeout(() => Remote.foldersReload(), 500);
-						setTimeout(() => Remote.foldersReload(), 500);
+//						Remote.foldersTimeout = setTimeout(loadFolders, 500);
+						setTimeout(loadFolders, 500);
 						// TODO: rename all subfolders with folder.delimiter to prevent reload?
 					} else {
 						removeFolderFromCacheList(folder.fullName);

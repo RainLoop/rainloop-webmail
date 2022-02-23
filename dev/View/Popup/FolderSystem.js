@@ -4,7 +4,7 @@ import { koComputable, addSubscribablesTo } from 'External/ko';
 import { SetSystemFoldersNotification } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { defaultOptionsAfterRender } from 'Common/Utils';
-import { folderListOptionsBuilder } from 'Common/UtilsUser';
+import { folderListOptionsBuilder } from 'Common/Folders';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
 import { FolderUserStore } from 'Stores/User/Folder';

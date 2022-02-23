@@ -1,3 +1,4 @@
+import ko from 'ko';
 import { i18nToNodes } from 'Common/Translator';
 import { doc, createElement } from 'Common/Globals';
 import { SaveSettingsStep } from 'Common/Enums';

@@ -10,12 +10,12 @@ import * as Local from 'Storage/Client';
 
 import { AppUserStore } from 'Stores/User/App';
 import { FolderUserStore } from 'Stores/User/Folder';
-import { MessageUserStore } from 'Stores/User/Message';
+import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
 import ko from 'ko';
 
-import { sortFolders } from 'Common/UtilsUser';
+import { sortFolders } from 'Common/Folders';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
@@ -23,6 +23,8 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 import { koComputable } from 'External/ko';
 
 //import { mailBox } from 'Common/Links';
+
+import Remote from 'Remote/User/Fetch';
 
 const
 	isPosNumeric = value => null != value && /^[0-9]*$/.test(value.toString()),
@@ -40,6 +42,51 @@ const
 		Spam:    0,
 		Trash:   0,
 		Archive: 0
+	},
+
+	kolabTypes = {
+		configuration: 'CONFIGURATION',
+		event: 'CALENDAR',
+		contact: 'CONTACTS',
+		task: 'TASKS',
+		note: 'NOTES',
+		file: 'FILES',
+		journal: 'JOURNAL'
+	},
+
+	getKolabFolderName = type => kolabTypes[type] ? 'Kolab ' + i18n('SETTINGS_FOLDERS/TYPE_' + kolabTypes[type]) : '',
+
+	getSystemFolderName = (type, def) => {
+		switch (type) {
+			case FolderType.Inbox:
+			case FolderType.Sent:
+			case FolderType.Drafts:
+			case FolderType.Trash:
+			case FolderType.Archive:
+				return i18n('FOLDER_LIST/' + getKeyByValue(FolderType, type).toUpperCase() + '_NAME');
+			case FolderType.Spam:
+				return i18n('GLOBAL/SPAM');
+			// no default
+		}
+		return def;
+	};
+
+export const
+	/**
+	 * @param {?Function} fCallback
+	 */
+	loadFolders = fCallback => {
+//		clearTimeout(this.foldersTimeout);
+		Remote.abort('Folders')
+			.post('Folders', FolderUserStore.foldersLoading)
+			.then(data => {
+				data = FolderCollectionModel.reviveFromJson(data.Result);
+				data && data.storeIt();
+				fCallback && fCallback(true);
+				// Repeat every 15 minutes?
+//				this.foldersTimeout = setTimeout(loadFolders, 900000);
+			})
+			.catch(() => fCallback && setTimeout(fCallback, 1, false));
 	};
 
 export class FolderCollectionModel extends AbstractCollectionModel
@@ -163,36 +210,6 @@ export class FolderCollectionModel extends AbstractCollectionModel
 
 }
 
-function getKolabFolderName(type)
-{
-	const types = {
-		configuration: 'CONFIGURATION',
-		event: 'CALENDAR',
-		contact: 'CONTACTS',
-		task: 'TASKS',
-		note: 'NOTES',
-		file: 'FILES',
-		journal: 'JOURNAL'
-	};
-	return types[type] ? 'Kolab ' + i18n('SETTINGS_FOLDERS/TYPE_' + types[type]) : '';
-}
-
-function getSystemFolderName(type, def)
-{
-	switch (type) {
-		case FolderType.Inbox:
-		case FolderType.Sent:
-		case FolderType.Drafts:
-		case FolderType.Trash:
-		case FolderType.Archive:
-			return i18n('FOLDER_LIST/' + getKeyByValue(FolderType, type).toUpperCase() + '_NAME');
-		case FolderType.Spam:
-			return i18n('GLOBAL/SPAM');
-		// no default
-	}
-	return def;
-}
-
 export class FolderModel extends AbstractModel {
 	constructor() {
 		super();
@@ -296,7 +313,7 @@ export class FolderModel extends AbstractModel {
 				isInbox: () => FolderType.Inbox === folder.type(),
 
 				isFlagged: () => FolderUserStore.currentFolder() === folder
-					&& MessageUserStore.listSearch().includes('flagged'),
+					&& MessagelistUserStore.listSearch().includes('flagged'),
 
 				hasVisibleSubfolders: () => !!folder.subFolders().find(folder => folder.visible()),
 

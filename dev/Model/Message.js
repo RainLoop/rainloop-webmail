@@ -532,52 +532,52 @@ export class MessageModel extends AbstractModel {
 	 * @param {MessageModel} message
 	 * @returns {MessageModel}
 	 */
-	populateByMessageListItem(message) {
-		this.clear();
+	static fromMessageListItem(message) {
+		let self = new MessageModel();
 
 		if (message) {
-			this.folder = message.folder;
-			this.uid = message.uid;
-			this.hash = message.hash;
-			this.requestHash = message.requestHash;
-			this.subject(message.subject());
-			this.plain(message.plain());
-			this.html(message.html());
+			self.folder = message.folder;
+			self.uid = message.uid;
+			self.hash = message.hash;
+			self.requestHash = message.requestHash;
+			self.subject(message.subject());
+			self.plain(message.plain());
+			self.html(message.html());
 
-			this.size(message.size());
-			this.spamScore(message.spamScore());
-			this.spamResult(message.spamResult());
-			this.isSpam(message.isSpam());
-			this.hasVirus(message.hasVirus());
-			this.dateTimeStampInUTC(message.dateTimeStampInUTC());
-			this.priority(message.priority());
+			self.size(message.size());
+			self.spamScore(message.spamScore());
+			self.spamResult(message.spamResult());
+			self.isSpam(message.isSpam());
+			self.hasVirus(message.hasVirus());
+			self.dateTimeStampInUTC(message.dateTimeStampInUTC());
+			self.priority(message.priority());
 
-			this.hasExternals(message.hasExternals());
+			self.hasExternals(message.hasExternals());
 
-			this.emails = message.emails;
+			self.emails = message.emails;
 
-			this.from = message.from;
-			this.to = message.to;
-			this.cc = message.cc;
-			this.bcc = message.bcc;
-			this.replyTo = message.replyTo;
-			this.deliveredTo = message.deliveredTo;
-			this.unsubsribeLinks(message.unsubsribeLinks);
+			self.from = message.from;
+			self.to = message.to;
+			self.cc = message.cc;
+			self.bcc = message.bcc;
+			self.replyTo = message.replyTo;
+			self.deliveredTo = message.deliveredTo;
+			self.unsubsribeLinks(message.unsubsribeLinks);
 
-			this.flags(message.flags());
+			self.flags(message.flags());
 
-			this.priority(message.priority());
+			self.priority(message.priority());
 
-			this.selected(message.selected());
-			this.checked(message.checked());
-			this.attachments(message.attachments());
+			self.selected(message.selected());
+			self.checked(message.checked());
+			self.attachments(message.attachments());
 
-			this.threads(message.threads());
+			self.threads(message.threads());
 		}
 
-		this.computeSenderEmail();
+		self.computeSenderEmail();
 
-		return this;
+		return self;
 	}
 
 	showExternalImages() {

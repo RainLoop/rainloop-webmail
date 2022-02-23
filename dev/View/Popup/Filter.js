@@ -11,7 +11,7 @@ import { SieveUserStore } from 'Stores/User/Sieve';
 
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-import { folderListOptionsBuilder } from 'Common/UtilsUser';
+import { folderListOptionsBuilder } from 'Common/Folders';
 
 class FilterPopupView extends AbstractViewPopup {
 	constructor() {

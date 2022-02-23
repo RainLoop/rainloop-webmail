@@ -10,6 +10,7 @@ import { AppUserStore } from 'Stores/User/App';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { MessageUserStore } from 'Stores/User/Message';
+import { MessagelistUserStore } from 'Stores/User/Messagelist';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewLeft } from 'Knoin/AbstractViews';
@@ -21,6 +22,8 @@ import { ContactsPopupView } from 'View/Popup/Contacts';
 import { isArray } from 'Common/Utils';
 import { ClientSideKeyName } from 'Common/EnumsUser';
 import * as Local from 'Storage/Client';
+
+import { moveMessagesToFolder } from 'Common/Folders';
 
 /**
  * @param {string} sFullName
@@ -109,9 +112,9 @@ export class MailFolderList extends AbstractViewLeft {
 				if (folder) {
 					if (moveAction()) {
 						moveAction(false);
-						rl.app.moveMessagesToFolder(
+						moveMessagesToFolder(
 							FolderUserStore.currentFolderFullName(),
-							MessageUserStore.listCheckedOrSelectedUidsWithSubMails(),
+							MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails(),
 							folder.fullName,
 							event.ctrlKey
 						);

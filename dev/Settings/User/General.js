@@ -15,6 +15,7 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 import { IdentityUserStore } from 'Stores/User/Identity';
 import { NotificationUserStore } from 'Stores/User/Notification';
 import { MessageUserStore } from 'Stores/User/Message';
+import { MessagelistUserStore } from 'Stores/User/Messagelist';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -117,7 +118,7 @@ export class GeneralUserSettings /*extends AbstractViewSettings*/ {
 			showImages: value => Remote.saveSetting('ShowImages', value ? 1 : 0),
 
 			removeColors: value => {
-				let dom = MessageUserStore.messagesBodiesDom();
+				let dom = MessageUserStore.bodiesDom();
 				if (dom) {
 					dom.innerHTML = '';
 				}
@@ -137,12 +138,12 @@ export class GeneralUserSettings /*extends AbstractViewSettings*/ {
 			replySameFolder: value => Remote.saveSetting('ReplySameFolder', value ? 1 : 0),
 
 			useThreads: value => {
-				MessageUserStore.list([]);
+				MessagelistUserStore([]);
 				Remote.saveSetting('UseThreads', value ? 1 : 0);
 			},
 
 			layout: value => {
-				MessageUserStore.list([]);
+				MessagelistUserStore([]);
 				Remote.saveSetting('Layout', value, settingsSaveHelperSimpleFunction(this.layoutTrigger, this));
 			}
 		});

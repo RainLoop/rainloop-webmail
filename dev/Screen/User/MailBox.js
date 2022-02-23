@@ -10,7 +10,7 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 import { AppUserStore } from 'Stores/User/App';
 import { AccountUserStore } from 'Stores/User/Account';
 import { FolderUserStore } from 'Stores/User/Folder';
-import { MessageUserStore } from 'Stores/User/Message';
+import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { ThemeStore } from 'Stores/Theme';
 
 import { SystemDropDownUserView } from 'View/User/SystemDropDown';
@@ -70,11 +70,11 @@ export class MailBoxUserScreen extends AbstractScreen {
 
 			FolderUserStore.currentFolder(folder);
 
-			MessageUserStore.listPage(1 > page ? 1 : page);
-			MessageUserStore.listSearch(search);
-			MessageUserStore.listThreadUid((folderHash === threadUid) ? 0 : pInt(threadUid));
+			MessagelistUserStore.page(1 > page ? 1 : page);
+			MessagelistUserStore.listSearch(search);
+			MessagelistUserStore.threadUid((folderHash === threadUid) ? 0 : pInt(threadUid));
 
-			rl.app.reloadMessageList();
+			MessagelistUserStore.reload();
 		}
 	}
 

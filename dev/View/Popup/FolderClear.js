@@ -2,6 +2,7 @@ import { i18n, getNotification } from 'Common/Translator';
 import { setFolderHash } from 'Common/Cache';
 
 import { MessageUserStore } from 'Stores/User/Message';
+import { MessagelistUserStore } from 'Stores/User/Messagelist';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -38,7 +39,7 @@ class FolderClearPopupView extends AbstractViewPopup {
 		const folderToClear = this.selectedFolder();
 		if (folderToClear) {
 			MessageUserStore.message(null);
-			MessageUserStore.list([]);
+			MessagelistUserStore([]);
 
 			this.clearingProcess(true);
 
@@ -52,7 +53,7 @@ class FolderClearPopupView extends AbstractViewPopup {
 				if (iError) {
 					this.clearingError(getNotification(iError));
 				} else {
-					rl.app.reloadMessageList(true);
+					MessagelistUserStore.reload(true);
 					this.cancelCommand();
 				}
 			}, {

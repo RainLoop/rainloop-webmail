@@ -3,7 +3,7 @@ import { koComputable } from 'External/ko';
 import { Notification } from 'Common/Enums';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { defaultOptionsAfterRender } from 'Common/Utils';
-import { folderListOptionsBuilder, sortFolders } from 'Common/UtilsUser';
+import { folderListOptionsBuilder, sortFolders } from 'Common/Folders';
 import { getNotification } from 'Common/Translator';
 
 import { FolderUserStore } from 'Stores/User/Folder';

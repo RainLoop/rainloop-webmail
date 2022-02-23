@@ -72,12 +72,12 @@ export class SystemDropDownUserView extends AbstractViewRight {
 //						MessageUserStore.setMessage();
 //						MessageUserStore.purgeMessageBodyCache();
 //						MessageUserStore.hideMessageBodies();
-						MessageUserStore.list([]);
+						MessagelistUserStore([]);
 //						FolderUserStore.folderList([]);
-						Remote.foldersReload(value => {
+						loadFolders(value => {
 							if (value) {
 //								4. Change to INBOX = reload MessageList
-//								MessageUserStore.setMessageList();
+//								MessagelistUserStore.setMessageList();
 							}
 						});
 						AccountUserStore.loading(false);
@@ -126,7 +126,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 	onBuild() {
 		shortcuts.add('m,contextmenu', '', [Scope.MessageList, Scope.MessageView, Scope.Settings], () => {
 			if (!this.viewModelDom.hidden) {
-				MessageUserStore.messageFullScreenMode(false);
+				MessageUserStore.fullScreen(false);
 				this.accountMenuDropdownTrigger(true);
 				return false;
 			}

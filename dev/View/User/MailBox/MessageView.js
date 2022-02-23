@@ -42,6 +42,7 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 import { AccountUserStore } from 'Stores/User/Account';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { MessageUserStore } from 'Stores/User/Message';
+import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { ThemeStore } from 'Stores/Theme';
 
 import * as Local from 'Storage/Client';
@@ -66,10 +67,7 @@ export class MailMessageView extends AbstractViewRight {
 
 		const
 			createCommandReplyHelper = type =>
-				createCommand(() => {
-					this.lastReplyAction(type);
-					this.replyOrforward(type);
-				}, this.canBeRepliedOrForwarded),
+				createCommand(() => this.replyOrforward(type), this.canBeRepliedOrForwarded),
 
 			createCommandActionHelper = (folderType, useFolder) =>
 				createCommand(() => {
@@ -101,13 +99,12 @@ export class MailMessageView extends AbstractViewRight {
 		this.attachmentsActions = ko.observableArray(arrayLength(attachmentsActions) ? attachmentsActions : []);
 
 		this.message = MessageUserStore.message;
-		this.hasCheckedMessages = MessageUserStore.hasCheckedMessages;
-		this.messageLoadingThrottle = MessageUserStore.messageLoading;
-		this.messagesBodiesDom = MessageUserStore.messagesBodiesDom;
-		this.messageActiveDom = MessageUserStore.messageActiveDom;
-		this.messageError = MessageUserStore.messageError;
+		this.hasCheckedMessages = MessagelistUserStore.hasCheckedMessages;
+		this.messageLoadingThrottle = MessageUserStore.loading;
+		this.messagesBodiesDom = MessageUserStore.bodiesDom;
+		this.messageError = MessageUserStore.error;
 
-		this.fullScreenMode = MessageUserStore.messageFullScreenMode;
+		this.fullScreenMode = MessageUserStore.fullScreen;
 
 		this.messageListOfThreadsLoading = ko.observable(false).extend({ rateLimit: 1 });
 		this.highlightUnselectedAttachments = ko.observable(false).extend({ falseTimeout: 2000 });
@@ -148,7 +145,7 @@ export class MailMessageView extends AbstractViewRight {
 				)
 			},
 
-			messageVisibility: () => !MessageUserStore.messageLoading() && !!currentMessage(),
+			messageVisibility: () => !MessageUserStore.loading() && !!currentMessage(),
 
 			canBeRepliedOrForwarded: () => !this.isDraftFolder() && this.messageVisibility(),
 
@@ -177,7 +174,7 @@ export class MailMessageView extends AbstractViewRight {
 			pgpSupported: () => currentMessage() && PgpUserStore.isSupported(),
 
 			messageListOrViewLoading:
-				() => MessageUserStore.listIsLoading() | MessageUserStore.messageLoading()
+				() => MessagelistUserStore.isLoading() | MessageUserStore.loading()
 		});
 
 		this.addSubscribables({
@@ -187,7 +184,7 @@ export class MailMessageView extends AbstractViewRight {
 			lastReplyAction_: value => Local.set(ClientSideKeyName.LastReplyAction, value),
 
 			message: message => {
-				this.messageActiveDom(null);
+				MessageUserStore.activeDom(null);
 
 				if (message) {
 					this.showAttachmentControls(false);
@@ -206,7 +203,7 @@ export class MailMessageView extends AbstractViewRight {
 					this.viewFromDkimData(message.fromDkimData());
 					this.viewToShort(message.toToLine(true, true));
 				} else {
-					MessageUserStore.selectorMessageSelected(null);
+					MessagelistUserStore.selectedMessage(null);
 
 					this.viewHash = '';
 
@@ -272,6 +269,7 @@ export class MailMessageView extends AbstractViewRight {
 	 * @returns {void}
 	 */
 	replyOrforward(sType) {
+		this.lastReplyAction(sType);
 		showMessageComposer([sType, currentMessage()]);
 	}
 
@@ -323,7 +321,7 @@ export class MailMessageView extends AbstractViewRight {
 
 			if (eqs(event, '.messageItemHeader .subjectParent .flagParent')) {
 				const message = currentMessage();
-				message && rl.app.messageListAction(
+				message && MessagelistUserStore.setAction(
 					message.folder,
 					message.isFlagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
 					[message]
@@ -551,7 +549,7 @@ export class MailMessageView extends AbstractViewRight {
 	 * @returns {string}
 	 */
 	printableCheckedMessageCount() {
-		const cnt = MessageUserStore.listCheckedOrSelectedUidsWithSubMails().length;
+		const cnt = MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails().length;
 		return 0 < cnt ? (100 > cnt ? cnt : '99+') : '';
 	}
 
@@ -575,7 +573,7 @@ export class MailMessageView extends AbstractViewRight {
 
 			MessageFlagsCache.store(oMessage);
 
-			MessageUserStore.reloadFlagsAndCachedMessage();
+			MessagelistUserStore.reloadFlagsAndCachedMessage();
 		}
 	}
 

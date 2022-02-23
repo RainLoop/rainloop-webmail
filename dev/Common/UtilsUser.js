@@ -1,25 +1,17 @@
-import { ComposeType/*, FolderType*/ } from 'Common/EnumsUser';
+import { MessageFlagsCache, addRequestedMessage } from 'Common/Cache';
+import { MessageSetAction, ComposeType/*, FolderType*/ } from 'Common/EnumsUser';
+import { doc, createElement, elementById } from 'Common/Globals';
+import { plainToHtml } from 'Common/Html';
+import { getNotification } from 'Common/Translator';
 import { EmailModel } from 'Model/Email';
-import { isArray } from 'Common/Utils';
-import { doc, createElement } from 'Common/Globals';
-import { FolderUserStore } from 'Stores/User/Folder';
+import { MessageModel } from 'Model/Message';
+import { MessageUserStore } from 'Stores/User/Message';
+import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import * as Local from 'Storage/Client';
-import { plainToHtml } from 'Common/Html';
 import { ThemeStore } from 'Stores/Theme';
 
 export const
-
-sortFolders = folders => {
-	try {
-		let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-		folders.sort((a, b) =>
-			a.isInbox() ? -1 : (b.isInbox() ? 1 : collator.compare(a.fullName, b.fullName))
-		);
-	} catch (e) {
-		console.error(e);
-	}
-},
 
 /**
  * @param {string} link
@@ -37,69 +29,6 @@ download = (link, name = "") => {
 		doc.body.appendChild(oLink).click();
 		oLink.remove();
 	}
-},
-
-/**
- * @param {Array=} aDisabled
- * @param {Array=} aHeaderLines
- * @param {Function=} fDisableCallback
- * @param {Function=} fRenameCallback
- * @param {boolean=} bNoSelectSelectable Used in FolderCreatePopupView
- * @returns {Array}
- */
-folderListOptionsBuilder = (
-	aDisabled,
-	aHeaderLines,
-	fRenameCallback,
-	fDisableCallback,
-	bNoSelectSelectable,
-	aList = FolderUserStore.folderList()
-) => {
-	const
-		aResult = [],
-		sDeepPrefix = '\u00A0\u00A0\u00A0',
-		// FolderSystemPopupView should always be true
-		showUnsubscribed = fRenameCallback ? !SettingsUserStore.hideUnsubscribed() : true,
-
-		foldersWalk = folders => {
-			folders.forEach(oItem => {
-				if (showUnsubscribed || oItem.hasSubscriptions() || !oItem.exists) {
-					aResult.push({
-						id: oItem.fullName,
-						name:
-							sDeepPrefix.repeat(oItem.deep) +
-							fRenameCallback(oItem),
-						system: false,
-						disabled: !bNoSelectSelectable && (
-							!oItem.selectable() ||
-							aDisabled.includes(oItem.fullName) ||
-							fDisableCallback(oItem))
-					});
-				}
-
-				if (oItem.subFolders.length) {
-					foldersWalk(oItem.subFolders());
-				}
-			});
-		};
-
-
-	fDisableCallback = fDisableCallback || (() => false);
-	fRenameCallback = fRenameCallback || (oItem => oItem.name());
-	isArray(aDisabled) || (aDisabled = []);
-
-	isArray(aHeaderLines) && aHeaderLines.forEach(line =>
-		aResult.push({
-			id: line[0],
-			name: line[1],
-			system: false,
-			disabled: false
-		})
-	);
-
-	foldersWalk(aList);
-
-	return aResult;
 },
 
 /**
@@ -333,5 +262,124 @@ setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 		}
 	} else {
 		source.observer && source.observer.disconnect();
+	}
+},
+
+populateMessageBody = (oMessage, preload) => {
+	if (oMessage) {
+		preload || MessageUserStore.hideMessageBodies();
+		preload || MessageUserStore.loading(true);
+		rl.app.Remote.message((iError, oData/*, bCached*/) => {
+			if (iError) {
+				if (Notification.RequestAborted !== iError && !preload) {
+					MessageUserStore.message(null);
+					MessageUserStore.error(getNotification(iError));
+				}
+			} else {
+				oMessage = preload ? oMessage : null;
+				let
+					isNew = false,
+					json = oData && oData.Result,
+					message = oMessage || MessageUserStore.message();
+
+				if (
+					json &&
+					MessageModel.validJson(json) &&
+					message &&
+					message.folder === json.Folder
+				) {
+					const threads = message.threads(),
+						messagesDom = MessageUserStore.bodiesDom();
+					if (!oMessage && message.uid != json.Uid && threads.includes(json.Uid)) {
+						message = MessageModel.reviveFromJson(json);
+						if (message) {
+							message.threads(threads);
+							MessageFlagsCache.initMessage(message);
+
+							// Set clone
+							MessageUserStore.message(MessageModel.fromMessageListItem(message));
+							message = MessageUserStore.message();
+
+							isNew = true;
+						}
+					}
+
+					if (message && message.uid == json.Uid) {
+						oMessage || MessageUserStore.error('');
+/*
+						if (bCached) {
+							delete json.Flags;
+						}
+*/
+						isNew || message.revivePropertiesFromJson(json);
+						addRequestedMessage(message.folder, message.uid);
+						if (messagesDom) {
+							let id = 'rl-msg-' + message.hash.replace(/[^a-zA-Z0-9]/g, ''),
+								body = elementById(id);
+							if (body) {
+								message.body = body;
+								message.isHtml(body.classList.contains('html'));
+								message.hasImages(body.rlHasImages);
+							} else {
+								body = Element.fromHTML('<div id="' + id + '" hidden="" class="b-text-part '
+									+ (message.pgpSigned() ? ' openpgp-signed' : '')
+									+ (message.pgpEncrypted() ? ' openpgp-encrypted' : '')
+									+ '">'
+									+ '</div>');
+								message.body = body;
+								if (!SettingsUserStore.viewHTML() || !message.viewHtml()) {
+									message.viewPlain();
+								}
+
+								MessageUserStore.purgeMessageBodyCache();
+							}
+
+							messagesDom.append(body);
+
+							if (!oMessage) {
+								MessageUserStore.activeDom(message.body);
+								MessageUserStore.hideMessageBodies();
+								message.body.hidden = false;
+							}
+							oMessage && message.viewPopupMessage();
+						}
+
+						MessageFlagsCache.initMessage(message);
+						if (message.isUnseen()) {
+							MessageUserStore.MessageSeenTimer = setTimeout(
+								() => MessagelistUserStore.setAction(message.folder, MessageSetAction.SetSeen, [message]),
+								SettingsUserStore.messageReadDelay() * 1000 // seconds
+							);
+						}
+
+						if (message && isNew) {
+							let selectedMessage = MessagelistUserStore.selectedMessage();
+							if (
+								selectedMessage &&
+								(message.folder !== selectedMessage.folder || message.uid != selectedMessage.uid)
+							) {
+								MessagelistUserStore.selectedMessage(null);
+								if (1 === MessagelistUserStore.length) {
+									MessagelistUserStore.focusedMessage(null);
+								}
+							} else if (!selectedMessage) {
+								selectedMessage = MessagelistUserStore.find(
+									subMessage =>
+										subMessage &&
+										subMessage.folder === message.folder &&
+										subMessage.uid == message.uid
+								);
+
+								if (selectedMessage) {
+									MessagelistUserStore.selectedMessage(selectedMessage);
+									MessagelistUserStore.focusedMessage(selectedMessage);
+								}
+							}
+						}
+					}
+				}
+			}
+			preload || MessageUserStore.loading(false);
+		}, oMessage.folder, oMessage.uid);
 	}
 };

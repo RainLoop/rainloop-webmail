@@ -1,11 +1,12 @@
 import 'External/ko';
 import ko from 'ko';
 import { HtmlEditor } from 'Common/Html';
-import { timeToNode } from 'Common/Momentor';
+import { timeToNode } from 'Common/Translator';
 import { elementById } from 'Common/Globals';
 import { isArray } from 'Common/Utils';
 import { EmailAddressesComponent } from 'Component/EmailAddresses';
 import { ThemeStore } from 'Stores/Theme';
+import { moveMessagesToFolder } from 'Common/Folders';
 
 const rlContentType = 'snappymail/action',
 
@@ -145,7 +146,7 @@ ko.bindingHandlers.dropmessages = {
 			if ('messages' === getDragAction(e) && ['move','copy'].includes(e.dataTransfer.effectAllowed)) {
 				let data = dragData.data;
 				if (folder && data && data.folder && isArray(data.uids)) {
-					rl.app.moveMessagesToFolder(data.folder, data.uids, folder.fullName, data.copy && e.ctrlKey);
+					moveMessagesToFolder(data.folder, data.uids, folder.fullName, data.copy && e.ctrlKey);
 				}
 			}
 		});

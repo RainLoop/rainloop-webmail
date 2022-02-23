@@ -18,9 +18,9 @@ import { encodeHtml, HtmlEditor, htmlToPlain } from 'Common/Html';
 import { koArrayWithDestroy } from 'External/ko';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
+import { messagesDeleteHelper } from 'Common/Folders';
 import { serverRequest } from 'Common/Links';
-import { i18n, getNotification, getUploadErrorDescByCode } from 'Common/Translator';
-import { timestampToString } from 'Common/Momentor';
+import { i18n, getNotification, getUploadErrorDescByCode, timestampToString } from 'Common/Translator';
 import { MessageFlagsCache, setFolderHash } from 'Common/Cache';
 import { doc, Settings, SettingsGet, getFullscreenElement, exitFullscreen, elementById } from 'Common/Globals';
 
@@ -33,6 +33,7 @@ import { PgpUserStore } from 'Stores/User/Pgp';
 import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 import { GnuPGUserStore } from 'Stores/User/GnuPG';
 import { MessageUserStore } from 'Stores/User/Message';
+import { MessagelistUserStore } from 'Stores/User/Messagelist';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -521,7 +522,7 @@ class ComposePopupView extends AbstractViewPopup {
 					if (isArray(flagsCache)) {
 						flagsCache.push(('forward' === this.aDraftInfo[0]) ? '$forwarded' : '\\answered');
 						MessageFlagsCache.setFor(this.aDraftInfo[2], this.aDraftInfo[1], flagsCache);
-						MessageUserStore.reloadFlagsAndCachedMessage();
+						MessagelistUserStore.reloadFlagsAndCachedMessage();
 						setFolderHash(this.aDraftInfo[2], '');
 					}
 				}
@@ -632,8 +633,8 @@ class ComposePopupView extends AbstractViewPopup {
 						const
 							sFromFolderFullName = this.draftsFolder(),
 							aUidForRemove = [this.draftUid()];
-						rl.app.messagesDeleteHelper(sFromFolderFullName, aUidForRemove);
-						MessageUserStore.removeMessagesFromList(sFromFolderFullName, aUidForRemove);
+						messagesDeleteHelper(sFromFolderFullName, aUidForRemove);
+						MessagelistUserStore.removeMessagesFromList(sFromFolderFullName, aUidForRemove);
 						this.closeCommand();
 					}
 				}
@@ -684,8 +685,18 @@ class ComposePopupView extends AbstractViewPopup {
 		}, 60000);
 	}
 
+	// getAutocomplete
 	emailsSource(oData, fResponse) {
-		rl.app.getAutocomplete(oData.term, aData => fResponse(aData.map(oEmailItem => oEmailItem.toLine(false))));
+		Remote.suggestions((iError, data) => {
+			if (!iError && isArray(data.Result)) {
+				fResponse(
+					data.Result.map(item => (item && item[0] ? (new EmailModel(item[0], item[1])).toLine(false) : null))
+					.filter(v => v)
+				);
+			} else if (Notification.RequestAborted !== iError) {
+				fResponse([]);
+			}
+		}, oData.term);
 	}
 
 	reloadDraftFolder() {
@@ -693,7 +704,7 @@ class ComposePopupView extends AbstractViewPopup {
 		if (draftsFolder && UNUSED_OPTION_VALUE !== draftsFolder) {
 			setFolderHash(draftsFolder, '');
 			if (FolderUserStore.currentFolderFullName() === draftsFolder) {
-				rl.app.reloadMessageList(true);
+				MessagelistUserStore.reload(true);
 			} else {
 				rl.app.folderInformation(draftsFolder);
 			}

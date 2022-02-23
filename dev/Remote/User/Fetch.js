@@ -16,9 +16,7 @@ import { FolderUserStore } from 'Stores/User/Folder';
 
 import { AbstractFetchRemote } from 'Remote/AbstractFetch';
 
-import { FolderCollectionModel } from 'Model/FolderCollection';
-
-import { MessageUserStore } from 'Stores/User/Message';
+import { MessagelistUserStore } from 'Stores/User/Messagelist';
 
 class RemoteUserFetch extends AbstractFetchRemote {
 
@@ -132,7 +130,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 				UidNext: getFolderUidNext(folder) // Used to check for new messages
 			});
 		} else if (SettingsUserStore.useThreads()) {
-			MessageUserStore.reloadFlagsAndCachedMessage();
+			MessagelistUserStore.reloadFlagsAndCachedMessage();
 		}
 	}
 
@@ -198,23 +196,6 @@ class RemoteUserFetch extends AbstractFetchRemote {
 			'',
 			['Suggestions']
 		);
-	}
-
-	/**
-	 * @param {?Function} fCallback
-	 */
-	foldersReload(fCallback) {
-//		clearTimeout(this.foldersTimeout);
-		this.abort('Folders')
-			.post('Folders', FolderUserStore.foldersLoading)
-			.then(data => {
-				data = FolderCollectionModel.reviveFromJson(data.Result);
-				data && data.storeIt();
-				fCallback && fCallback(true);
-				// Repeat every 15 minutes?
-//				this.foldersTimeout = setTimeout(() => this.foldersReload(), 900000);
-			})
-			.catch(() => fCallback && setTimeout(fCallback, 1, false));
 	}
 
 /*
