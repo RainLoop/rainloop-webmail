@@ -10,6 +10,7 @@ import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import * as Local from 'Storage/Client';
 import { ThemeStore } from 'Stores/Theme';
+import Remote from 'Remote/User/Fetch';
 
 export const
 
@@ -269,7 +270,7 @@ populateMessageBody = (oMessage, preload) => {
 	if (oMessage) {
 		preload || MessageUserStore.hideMessageBodies();
 		preload || MessageUserStore.loading(true);
-		rl.app.Remote.message((iError, oData/*, bCached*/) => {
+		Remote.message((iError, oData/*, bCached*/) => {
 			if (iError) {
 				if (Notification.RequestAborted !== iError && !preload) {
 					MessageUserStore.message(null);

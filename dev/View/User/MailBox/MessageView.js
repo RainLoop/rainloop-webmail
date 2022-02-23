@@ -522,16 +522,19 @@ export class MailMessageView extends AbstractViewRight {
 			.map(item => (item && !item.isLinked() && item.checked() ? item.download : ''))
 			.filter(v => v);
 		if (hashes.length) {
-			Remote.attachmentsActions('Zip', hashes, this.downloadAsZipLoading)
-				.then(result => {
-					let hash = result && result.Result && result.Result.FileHash;
-					if (hash) {
-						download(attachmentDownload(hash), hash+'.zip');
-					} else {
-						this.downloadAsZipError(true);
-					}
-				})
-				.catch(() => this.downloadAsZipError(true));
+			Remote.post('AttachmentsActions', this.downloadAsZipLoading, {
+				Do: 'Zip',
+				Hashes: hashes
+			})
+			.then(result => {
+				let hash = result && result.Result && result.Result.FileHash;
+				if (hash) {
+					download(attachmentDownload(hash), hash+'.zip');
+				} else {
+					this.downloadAsZipError(true);
+				}
+			})
+			.catch(() => this.downloadAsZipError(true));
 		} else {
 			this.highlightUnselectedAttachments(true);
 		}

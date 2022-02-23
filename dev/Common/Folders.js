@@ -4,7 +4,8 @@ import {
 	setFolderHash,
 	getFolderHash,
 	getFolderInboxName,
-	getFolderFromCacheList
+	getFolderFromCacheList,
+	getFolderUidNext
 } from 'Common/Cache';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { FolderUserStore } from 'Stores/User/Folder';
@@ -23,6 +24,43 @@ sortFolders = folders => {
 		);
 	} catch (e) {
 		console.error(e);
+	}
+},
+
+/**
+ * @param {?Function} fCallback
+ * @param {string} folder
+ * @param {Array=} list = []
+ */
+fetchFolderInformation = (fCallback, folder, list = []) => {
+	let fetch = !arrayLength(list);
+	const uids = [];
+
+	if (!fetch) {
+		list.forEach(messageListItem => {
+			if (!MessageFlagsCache.getFor(messageListItem.folder, messageListItem.uid)) {
+				uids.push(messageListItem.uid);
+			}
+
+			if (messageListItem.threads.length) {
+				messageListItem.threads.forEach(uid => {
+					if (!MessageFlagsCache.getFor(messageListItem.folder, uid)) {
+						uids.push(uid);
+					}
+				});
+			}
+		});
+		fetch = uids.length;
+	}
+
+	if (fetch) {
+		Remote.request('FolderInformation', fCallback, {
+			Folder: folder,
+			FlagsUids: uids,
+			UidNext: getFolderUidNext(folder) // Used to check for new messages
+		});
+	} else if (SettingsUserStore.useThreads()) {
+		MessagelistUserStore.reloadFlagsAndCachedMessage();
 	}
 },
 

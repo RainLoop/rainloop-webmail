@@ -163,7 +163,11 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 	toggleFolderKolabType(folder, event) {
 		let type = event.target.value;
 		// TODO: append '.default' ?
-		Remote.folderSetMetadata(null, folder.fullName, FolderMetadataKeys.KolabFolderType, type);
+		Remote.request('FolderSetMetadata', null, {
+			Folder: folder.fullName,
+			Key: FolderMetadataKeys.KolabFolderType,
+			Value: type
+		});
 		folder.kolabType(type);
 	}
 

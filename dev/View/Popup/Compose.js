@@ -687,16 +687,25 @@ class ComposePopupView extends AbstractViewPopup {
 
 	// getAutocomplete
 	emailsSource(oData, fResponse) {
-		Remote.suggestions((iError, data) => {
-			if (!iError && isArray(data.Result)) {
-				fResponse(
-					data.Result.map(item => (item && item[0] ? (new EmailModel(item[0], item[1])).toLine(false) : null))
-					.filter(v => v)
-				);
-			} else if (Notification.RequestAborted !== iError) {
-				fResponse([]);
-			}
-		}, oData.term);
+		Remote.request('Suggestions',
+			(iError, data) => {
+				if (!iError && isArray(data.Result)) {
+					fResponse(
+						data.Result.map(item => (item && item[0] ? (new EmailModel(item[0], item[1])).toLine(false) : null))
+						.filter(v => v)
+					);
+				} else if (Notification.RequestAborted !== iError) {
+					fResponse([]);
+				}
+			},
+			{
+				Query: oData.term
+//				,Page: 1
+			},
+			null,
+			'',
+			['Suggestions']
+		);
 	}
 
 	reloadDraftFolder() {

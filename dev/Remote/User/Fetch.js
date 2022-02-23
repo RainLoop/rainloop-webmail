@@ -1,10 +1,9 @@
-import { arrayLength, pString, pInt, b64EncodeJSONSafe } from 'Common/Utils';
+import { pString, pInt, b64EncodeJSONSafe } from 'Common/Utils';
 
 import {
 	getFolderHash,
 	getFolderUidNext,
-	getFolderFromCacheList,
-	MessageFlagsCache
+	getFolderFromCacheList
 } from 'Common/Cache';
 
 import { SettingsGet } from 'Common/Globals';
@@ -15,8 +14,6 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 import { FolderUserStore } from 'Stores/User/Folder';
 
 import { AbstractFetchRemote } from 'Remote/AbstractFetch';
-
-import { MessagelistUserStore } from 'Stores/User/Messagelist';
 
 class RemoteUserFetch extends AbstractFetchRemote {
 
@@ -99,57 +96,6 @@ class RemoteUserFetch extends AbstractFetchRemote {
 
 	/**
 	 * @param {?Function} fCallback
-	 * @param {string} folder
-	 * @param {Array=} list = []
-	 */
-	folderInformation(fCallback, folder, list = []) {
-		let fetch = !arrayLength(list);
-		const uids = [];
-
-		if (!fetch) {
-			list.forEach(messageListItem => {
-				if (!MessageFlagsCache.getFor(messageListItem.folder, messageListItem.uid)) {
-					uids.push(messageListItem.uid);
-				}
-
-				if (messageListItem.threads.length) {
-					messageListItem.threads.forEach(uid => {
-						if (!MessageFlagsCache.getFor(messageListItem.folder, uid)) {
-							uids.push(uid);
-						}
-					});
-				}
-			});
-			fetch = uids.length;
-		}
-
-		if (fetch) {
-			this.request('FolderInformation', fCallback, {
-				Folder: folder,
-				FlagsUids: uids,
-				UidNext: getFolderUidNext(folder) // Used to check for new messages
-			});
-		} else if (SettingsUserStore.useThreads()) {
-			MessagelistUserStore.reloadFlagsAndCachedMessage();
-		}
-	}
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sFolderFullName
-	 * @param {boolean} bSetSeen
-	 * @param {Array} aThreadUids = null
-	 */
-	messageSetSeenToAll(sFolderFullName, bSetSeen, aThreadUids = null) {
-		this.request('MessageSetSeenToAll', null, {
-			Folder: sFolderFullName,
-			SetAction: bSetSeen ? 1 : 0,
-			ThreadUids: aThreadUids ? aThreadUids.join(',') : ''
-		});
-	}
-
-	/**
-	 * @param {?Function} fCallback
 	 * @param {Object} oData
 	 */
 	saveSettings(fCallback, oData) {
@@ -167,37 +113,6 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		});
 	}
 
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sFolderFullName
-	 * @param {boolean} bSubscribe
-	 */
-	folderSetMetadata(fCallback, sFolderFullName, sKey, sValue) {
-		this.request('FolderSetMetadata', fCallback, {
-			Folder: sFolderFullName,
-			Key: sKey,
-			Value: sValue
-		});
-	}
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sQuery
-	 * @param {number} iPage
-	 */
-	suggestions(fCallback, sQuery, iPage) {
-		this.request('Suggestions',
-			fCallback,
-			{
-				Query: sQuery,
-				Page: iPage
-			},
-			null,
-			'',
-			['Suggestions']
-		);
-	}
-
 /*
 	folderMove(sPrevFolderFullName, sNewFolderFullName, bSubscribe) {
 		return this.post('FolderMove', FolderUserStore.foldersRenaming, {
@@ -207,12 +122,6 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		});
 	}
 */
-	attachmentsActions(sAction, aHashes, fTrigger) {
-		return this.post('AttachmentsActions', fTrigger, {
-			Do: sAction,
-			Hashes: aHashes
-		});
-	}
 }
 
 export default new RemoteUserFetch();

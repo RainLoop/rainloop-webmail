@@ -490,7 +490,7 @@ export class MailMessageList extends AbstractViewRight {
 
 					message.flags.push('\\seen');
 //					message.flags.valueHasMutated();
-					uids.push(message.uid);
+					iThreadUid && uids.push(message.uid);
 				});
 
 				if (iThreadUid) {
@@ -501,7 +501,11 @@ export class MailMessageList extends AbstractViewRight {
 
 				MessageFlagsCache.clearFolder(sFolderFullName);
 
-				Remote.messageSetSeenToAll(sFolderFullName, true, iThreadUid ? uids : null);
+				Remote.request('MessageSetSeenToAll', null, {
+					Folder: sFolderFullName,
+					SetAction: 1,
+					ThreadUids: uids.join(',')
+				});
 
 				MessagelistUserStore.reloadFlagsAndCachedMessage();
 			}

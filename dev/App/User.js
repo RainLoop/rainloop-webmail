@@ -61,7 +61,13 @@ import { ComposePopupView } from 'View/Popup/Compose';
 import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
 import { AskPopupView } from 'View/Popup/Ask';
 
-import { folderInformationMultiply, refreshFoldersInterval, messagesMoveHelper, messagesDeleteHelper } from 'Common/Folders';
+import {
+	folderInformationMultiply,
+	refreshFoldersInterval,
+	messagesMoveHelper,
+	messagesDeleteHelper,
+	fetchFolderInformation
+} from 'Common/Folders';
 import { loadFolders } from 'Model/FolderCollection';
 
 class AppUser extends AbstractApp {
@@ -207,7 +213,7 @@ class AppUser extends AbstractApp {
 	 */
 	folderInformation(folder, list) {
 		if (folder && folder.trim()) {
-			Remote.folderInformation(
+			fetchFolderInformation(
 				(iError, data) => {
 					if (!iError && data.Result) {
 						const result = data.Result,

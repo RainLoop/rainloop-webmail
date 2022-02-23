@@ -27,7 +27,7 @@ import { MessageUserStore } from 'Stores/User/Message';
 import { NotificationUserStore } from 'Stores/User/Notification';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
-//import Remote from 'Remote/User/Fetch'; // Circular dependency
+import Remote from 'Remote/User/Fetch';
 
 const
 	isChecked = item => item.checked();
@@ -169,7 +169,7 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrenFolderCache
 
 	MessagelistUserStore.loading(true);
 	MessagelistUserStore.error('');
-	rl.app.Remote.messageList(
+	Remote.messageList(
 		(iError, oData, bCached) => {
 			if (iError) {
 				if (Notification.RequestAborted !== iError) {
@@ -279,7 +279,7 @@ MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 					folder.messageCountUnread(folder.messageCountUnread() - alreadyUnread + length);
 				}
 
-				rl.app.Remote.request('MessageSetSeen', null, {
+				Remote.request('MessageSetSeen', null, {
 					Folder: sFolderFullName,
 					Uids: rootUids.join(','),
 					SetAction: iSetAction == MessageSetAction.SetSeen ? 1 : 0
@@ -291,7 +291,7 @@ MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 				rootUids.forEach(sSubUid =>
 					MessageFlagsCache.storeBySetAction(sFolderFullName, sSubUid, iSetAction)
 				);
-				rl.app.Remote.request('MessageSetFlagged', null, {
+				Remote.request('MessageSetFlagged', null, {
 					Folder: sFolderFullName,
 					Uids: rootUids.join(','),
 					SetAction: iSetAction == MessageSetAction.SetFlag ? 1 : 0
