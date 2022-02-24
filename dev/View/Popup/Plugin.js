@@ -10,7 +10,7 @@ import { decorateKoCommands, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 import { AskPopupView } from 'View/Popup/Ask';
 
-class PluginPopupView extends AbstractViewPopup {
+export class PluginPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Plugin');
 
@@ -116,5 +116,3 @@ class PluginPopupView extends AbstractViewPopup {
 		});
 	}
 }
-
-export { PluginPopupView, PluginPopupView as default };

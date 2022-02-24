@@ -137,7 +137,7 @@ class MimePart {
 	}
 }
 
-class ComposePopupView extends AbstractViewPopup {
+export class ComposePopupView extends AbstractViewPopup {
 	constructor() {
 		super('Compose');
 
@@ -1645,5 +1645,3 @@ class ComposePopupView extends AbstractViewPopup {
 		this.pgpEncrypt(!this.pgpEncrypt()/* && this.canPgpEncrypt()*/);
 	}
 }
-
-export { ComposePopupView, ComposePopupView as default };

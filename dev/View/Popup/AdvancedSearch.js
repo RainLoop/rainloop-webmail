@@ -7,7 +7,7 @@ import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 import { FolderUserStore } from 'Stores/User/Folder';
 
-class AdvancedSearchPopupView extends AbstractViewPopup {
+export class AdvancedSearchPopupView extends AbstractViewPopup {
 	constructor() {
 		super('AdvancedSearch');
 
@@ -123,5 +123,3 @@ class AdvancedSearchPopupView extends AbstractViewPopup {
 		this.parseSearchStringValue(search);
 	}
 }
-
-export { AdvancedSearchPopupView, AdvancedSearchPopupView as default };

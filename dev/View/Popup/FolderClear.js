@@ -9,7 +9,7 @@ import Remote from 'Remote/User/Fetch';
 import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-class FolderClearPopupView extends AbstractViewPopup {
+export class FolderClearPopupView extends AbstractViewPopup {
 	constructor() {
 		super('FolderClear');
 
@@ -67,5 +67,3 @@ class FolderClearPopupView extends AbstractViewPopup {
 		this.selectedFolder(folder || null);
 	}
 }
-
-export { FolderClearPopupView, FolderClearPopupView as default };

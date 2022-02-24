@@ -27,7 +27,7 @@ const domainToParams = oDomain => ({
 			OutUsePhpMail: oDomain.smtpPhpMail() ? 1 : 0
 		});
 
-class DomainPopupView extends AbstractViewPopup {
+export class DomainPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Domain');
 
@@ -61,7 +61,7 @@ class DomainPopupView extends AbstractViewPopup {
 				if (this.edit()) {
 					result = i18n('POPUPS_DOMAIN/TITLE_EDIT_DOMAIN', { NAME: name });
 					if (aliasName) {
-						result += ' ← ' + aliasName;
+						result += ' ⫘ ' + aliasName;
 					}
 				} else {
 					result = name
@@ -281,5 +281,3 @@ class DomainPopupView extends AbstractViewPopup {
 		this.enableSmartPorts(true);
 	}
 }
-
-export { DomainPopupView, DomainPopupView as default };

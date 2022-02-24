@@ -29,7 +29,7 @@ const
 	propertyIsMail = prop => prop.isType(ContactPropertyType.Email),
 	propertyIsName = prop => prop.isType(ContactPropertyType.FirstName) || prop.isType(ContactPropertyType.LastName);
 
-class ContactsPopupView extends AbstractViewPopup {
+export class ContactsPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Contacts');
 
@@ -518,5 +518,3 @@ class ContactsPopupView extends AbstractViewPopup {
 		}
 	}
 }
-
-export { ContactsPopupView, ContactsPopupView as default };

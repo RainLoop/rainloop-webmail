@@ -5,7 +5,7 @@ import { convertLangName } from 'Common/Translator';
 
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-class LanguagesPopupView extends AbstractViewPopup {
+export class LanguagesPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Languages');
 
@@ -55,5 +55,3 @@ class LanguagesPopupView extends AbstractViewPopup {
 		this.cancelCommand();
 	}
 }
-
-export { LanguagesPopupView, LanguagesPopupView as default };

@@ -5,7 +5,7 @@ import Remote from 'Remote/User/Fetch';
 import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-class AccountPopupView extends AbstractViewPopup {
+export class AccountPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Account');
 
@@ -79,5 +79,3 @@ class AccountPopupView extends AbstractViewPopup {
 		this.submitErrorAdditional('');
 	}
 }
-
-export { AccountPopupView, AccountPopupView as default };

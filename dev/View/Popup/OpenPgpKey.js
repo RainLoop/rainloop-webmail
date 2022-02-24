@@ -1,7 +1,7 @@
 import { doc } from 'Common/Globals';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-class OpenPgpKeyPopupView extends AbstractViewPopup {
+export class OpenPgpKeyPopupView extends AbstractViewPopup {
 	constructor() {
 		super('OpenPgpKey');
 
@@ -124,5 +124,3 @@ class OpenPgpKeyPopupView extends AbstractViewPopup {
 		});
 	}
 }
-
-export { OpenPgpKeyPopupView, OpenPgpKeyPopupView as default };

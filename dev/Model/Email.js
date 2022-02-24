@@ -260,7 +260,7 @@ class Tokenizer
 	}
 }
 
-class EmailModel extends AbstractModel {
+export class EmailModel extends AbstractModel {
 	/**
 	 * @param {string=} email = ''
 	 * @param {string=} name = ''
@@ -430,5 +430,3 @@ class EmailModel extends AbstractModel {
 		return false;
 	}
 }
-
-export { EmailModel, EmailModel as default };

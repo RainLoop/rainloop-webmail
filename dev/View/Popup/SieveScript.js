@@ -12,7 +12,7 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 import { FilterPopupView } from 'View/Popup/Filter';
 
-class SieveScriptPopupView extends AbstractViewPopup {
+export class SieveScriptPopupView extends AbstractViewPopup {
 	constructor() {
 		super('SieveScript');
 
@@ -134,5 +134,3 @@ class SieveScriptPopupView extends AbstractViewPopup {
 		i18nToNodes(this.viewModelDom);
 	}
 }
-
-export { SieveScriptPopupView, SieveScriptPopupView as default };

@@ -17,7 +17,7 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 import { setFolder, getFolderFromCacheList } from 'Common/Cache';
 import { FolderModel } from 'Model/FolderCollection';
 
-class FolderCreatePopupView extends AbstractViewPopup {
+export class FolderCreatePopupView extends AbstractViewPopup {
 	constructor() {
 		super('FolderCreate');
 
@@ -91,5 +91,3 @@ class FolderCreatePopupView extends AbstractViewPopup {
 		this.selectedParentValue('');
 	}
 }
-
-export { FolderCreatePopupView, FolderCreatePopupView as default };

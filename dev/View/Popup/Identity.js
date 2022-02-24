@@ -7,7 +7,7 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 const reEmail = /^[^@\s]+@[^@\s]+$/;
 
-class IdentityPopupView extends AbstractViewPopup {
+export class IdentityPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Identity');
 
@@ -170,5 +170,3 @@ class IdentityPopupView extends AbstractViewPopup {
 		this.clearPopup();
 	}
 }
-
-export { IdentityPopupView, IdentityPopupView as default };

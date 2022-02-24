@@ -3,7 +3,7 @@ import { isFunction } from 'Common/Utils';
 
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-class AskPopupView extends AbstractViewPopup {
+export class AskPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Ask');
 
@@ -86,5 +86,3 @@ AskPopupView.password = function(sAskDesc, btnText) {
 		]);
 	});
 }
-
-export { AskPopupView, AskPopupView as default };

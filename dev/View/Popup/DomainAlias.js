@@ -7,7 +7,7 @@ import Remote from 'Remote/Admin/Fetch';
 import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-class DomainAliasPopupView extends AbstractViewPopup {
+export class DomainAliasPopupView extends AbstractViewPopup {
 	constructor() {
 		super('DomainAlias');
 
@@ -63,5 +63,3 @@ class DomainAliasPopupView extends AbstractViewPopup {
 		this.alias('');
 	}
 }
-
-export { DomainAliasPopupView, DomainAliasPopupView as default };

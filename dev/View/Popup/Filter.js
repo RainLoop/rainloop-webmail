@@ -13,7 +13,7 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 import { folderListOptionsBuilder } from 'Common/Folders';
 
-class FilterPopupView extends AbstractViewPopup {
+export class FilterPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Filter');
 
@@ -161,5 +161,3 @@ class FilterPopupView extends AbstractViewPopup {
 		this.isNew() && this.filter() && this.filter().nameFocused(true);
 	}
 }
-
-export { FilterPopupView, FilterPopupView as default };
