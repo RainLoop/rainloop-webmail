@@ -1,5 +1,6 @@
 import { koComputable } from 'External/ko';
 
+import { Notification } from 'Common/Enums';
 import { MessageSetAction } from 'Common/EnumsUser';
 import { $htmlCL } from 'Common/Globals';
 import { arrayLength, pInt, pString } from 'Common/Utils';

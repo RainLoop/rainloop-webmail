@@ -7,14 +7,9 @@ class Settings
 	/**
 	 * @var array
 	 */
-	protected $aData;
+	protected $aData = array();
 
-	public function __construct()
-	{
-		$this->aData = array();
-	}
-
-	public function InitData(array $aData) : void
+	public function __construct(array $aData)
 	{
 		$this->aData = $aData;
 	}

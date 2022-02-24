@@ -16,9 +16,7 @@ class Settings extends \RainLoop\Providers\AbstractProvider
 
 	public function Load(\RainLoop\Model\Account $oAccount) : \RainLoop\Settings
 	{
-		$oSettings = new \RainLoop\Settings();
-		$oSettings->InitData($this->oDriver->Load($oAccount));
-		return $oSettings;
+		return new \RainLoop\Settings($this->oDriver->Load($oAccount));
 	}
 
 	public function Save(\RainLoop\Model\Account $oAccount, \RainLoop\Settings $oSettings) : bool

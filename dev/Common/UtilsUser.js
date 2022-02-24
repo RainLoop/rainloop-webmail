@@ -1,4 +1,5 @@
 import { MessageFlagsCache, addRequestedMessage } from 'Common/Cache';
+import { Notification } from 'Common/Enums';
 import { MessageSetAction, ComposeType/*, FolderType*/ } from 'Common/EnumsUser';
 import { doc, createElement, elementById } from 'Common/Globals';
 import { plainToHtml } from 'Common/Html';

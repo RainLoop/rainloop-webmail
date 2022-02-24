@@ -44,7 +44,7 @@ export const
 /* 	// Without deprecated 'unescape':
 	b64EncodeJSON = data => btoa(encodeURIComponent(JSON.stringify(data)).replace(
 		/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)
-    )),
+	)),
 */
 	b64EncodeJSONSafe = data => b64EncodeJSON(data).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''),
 
