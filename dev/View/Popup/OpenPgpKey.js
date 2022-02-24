@@ -1,4 +1,3 @@
-import { Scope } from 'Common/Enums';
 import { doc } from 'Common/Globals';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
@@ -119,7 +118,7 @@ class OpenPgpKeyPopupView extends AbstractViewPopup {
 	}
 
 	onBuild() {
-		shortcuts.add('a', 'meta', Scope.OpenPgpKey, () => {
+		shortcuts.add('a', 'meta', 'OpenPgpKey', () => {
 			this.selectKey();
 			return false;
 		});

@@ -13,7 +13,7 @@ import {
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
-import { doc, leftPanelDisabled, moveAction, Settings, SettingsCapa, SettingsGet, fireEvent } from 'Common/Globals';
+import { doc, leftPanelDisabled, moveAction, Settings, SettingsCapa, SettingsGet, fireEvent, addEventsListeners } from 'Common/Globals';
 
 import { computedPaginatorHelper, showMessageComposer, populateMessageBody } from 'Common/UtilsUser';
 import { FileInfo } from 'Common/File';
@@ -642,28 +642,29 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.selector.init(dom.querySelector('.b-content'), Scope.MessageList);
 
-		dom.addEventListener('click', event => {
-			ThemeStore.isMobile() && !eqs(event, '.toggleLeft') && leftPanelDisabled(true);
+		addEventsListeners(dom, {
+			click: event => {
+				ThemeStore.isMobile() && !eqs(event, '.toggleLeft') && leftPanelDisabled(true);
 
-			if (eqs(event, '.messageList') && Scope.MessageView === AppUserStore.focusedState()) {
-				AppUserStore.focusedState(Scope.MessageList);
+				if (eqs(event, '.messageList') && Scope.MessageView === AppUserStore.focusedState()) {
+					AppUserStore.focusedState(Scope.MessageList);
+				}
+
+				let el = eqs(event, '.e-paginator a');
+				el && this.gotoPage(ko.dataFor(el));
+
+				eqs(event, '.checkboxCheckAll') && this.checkAll(!this.checkAll());
+
+				el = eqs(event, '.flagParent');
+				el && this.flagMessages(ko.dataFor(el));
+
+				el = eqs(event, '.threads-len');
+				el && this.gotoThread(ko.dataFor(el));
+			},
+			dblclick: event => {
+				let  el = eqs(event, '.actionHandle');
+				el && this.gotoThread(ko.dataFor(el));
 			}
-
-			let el = eqs(event, '.e-paginator a');
-			el && this.gotoPage(ko.dataFor(el));
-
-			eqs(event, '.checkboxCheckAll') && this.checkAll(!this.checkAll());
-
-			el = eqs(event, '.flagParent');
-			el && this.flagMessages(ko.dataFor(el));
-
-			el = eqs(event, '.threads-len');
-			el && this.gotoThread(ko.dataFor(el));
-		});
-
-		dom.addEventListener('dblclick', event => {
-			let  el = eqs(event, '.actionHandle');
-			el && this.gotoThread(ko.dataFor(el));
 		});
 
 		// initUploaderForAppend

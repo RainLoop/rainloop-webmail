@@ -4,6 +4,7 @@ import { Scope } from 'Common/Enums';
 let keyScopeFake = Scope.All;
 
 export const
+	ScopeMenu = 'Menu',
 
 	doc = document,
 
@@ -31,14 +32,20 @@ export const
 
 	fireEvent = (name, detail) => dispatchEvent(new CustomEvent(name, {detail:detail})),
 
+	addEventsListener = (element, events, fn, options) =>
+		events.forEach(event => element.addEventListener(event, fn, options)),
+
+	addEventsListeners = (element, events) =>
+		Object.entries(events).forEach(([event, fn]) => element.addEventListener(event, fn)),
+
 	// keys
 	keyScopeReal = ko.observable(Scope.All),
 	keyScope = value => {
 		if (value) {
-			if (Scope.Menu !== value) {
+			if (ScopeMenu !== value) {
 				keyScopeFake = value;
 				if (dropdownVisibility()) {
-					value = Scope.Menu;
+					value = ScopeMenu;
 				}
 			}
 			keyScopeReal(value);
@@ -50,8 +57,8 @@ export const
 
 dropdownVisibility.subscribe(value => {
 	if (value) {
-		keyScope(Scope.Menu);
-	} else if (Scope.Menu === shortcuts.getScope()) {
+		keyScope(ScopeMenu);
+	} else if (ScopeMenu === shortcuts.getScope()) {
 		keyScope(keyScopeFake);
 	}
 });

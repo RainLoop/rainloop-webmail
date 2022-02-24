@@ -1,5 +1,5 @@
 import * as Links from 'Common/Links';
-import { doc, SettingsGet, fireEvent } from 'Common/Globals';
+import { doc, SettingsGet, fireEvent, addEventsListener } from 'Common/Globals';
 
 let notificator = null,
 	player = null,
@@ -73,8 +73,7 @@ export const SMAudio = new class {
 		this.supportedOgg = canPlay('audio/ogg; codecs="vorbis"');
 		if (player) {
 			const stopFn = () => this.pause();
-			player.addEventListener('ended', stopFn);
-			player.addEventListener('error', stopFn);
+			addEventsListener(player, ['ended','error'], stopFn);
 			addEventListener('audio.api.stop', stopFn);
 		}
 	}

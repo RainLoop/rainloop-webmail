@@ -1,4 +1,3 @@
-import { Scope } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
 import { isFunction } from 'Common/Utils';
 
@@ -58,8 +57,8 @@ class AskPopupView extends AbstractViewPopup {
 	}
 
 	onBuild() {
-//		shortcuts.add('tab', 'shift', Scope.Ask, () => {
-		shortcuts.add('tab,arrowright,arrowleft', '', Scope.Ask, () => {
+//		shortcuts.add('tab', 'shift', 'Ask', () => {
+		shortcuts.add('tab,arrowright,arrowleft', '', 'Ask', () => {
 			let btn = this.querySelector('.buttonYes');
 			if (btn.matches(':focus')) {
 				btn = this.querySelector('.buttonNo');
@@ -68,7 +67,7 @@ class AskPopupView extends AbstractViewPopup {
 			return false;
 		});
 
-		shortcuts.add('escape', '', Scope.Ask, () => {
+		shortcuts.add('escape', '', 'Ask', () => {
 			this.noClick();
 			return false;
 		});

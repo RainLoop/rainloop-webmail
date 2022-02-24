@@ -19,7 +19,8 @@ import {
 	$htmlCL,
 	Settings,
 	SettingsGet,
-	leftPanelDisabled
+	leftPanelDisabled,
+	addEventsListener
 } from 'Common/Globals';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
@@ -89,7 +90,7 @@ class AppUser extends AbstractApp {
 		}, interval);
 
 		const fn = (ev=>$htmlCL.toggle('rl-ctrl-key-pressed', ev.ctrlKey)).debounce(500);
-		['keydown','keyup'].forEach(t => doc.addEventListener(t, fn));
+		addEventsListener(doc, ['keydown','keyup'], fn);
 
 		shortcuts.add('escape,enter', '', Scope.All, () => rl.Dropdowns.detectVisibility());
 	}
@@ -344,9 +345,7 @@ class AppUser extends AbstractApp {
 						}
 
 						// add pointermove ?
-						['touchstart','mousemove','keydown'].forEach(
-							t => doc.addEventListener(t, SettingsUserStore.delayLogout, {passive:true})
-						);
+						addEventsListener(doc, ['touchstart','mousemove','keydown'], SettingsUserStore.delayLogout, {passive:true});
 						SettingsUserStore.delayLogout();
 
 						// initLeftSideLayoutResizer

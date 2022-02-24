@@ -29,16 +29,10 @@ export const Capa = {
 export const Scope = {
 	All: 'all',
 	None: 'none',
-	Contacts: 'Contacts',
 	MessageList: 'MessageList',
 	FolderList: 'FolderList',
 	MessageView: 'MessageView',
-	Compose: 'Compose',
-	Settings: 'Settings',
-	Menu: 'Menu',
-	OpenPgpKey: 'OpenPgpKey',
-	KeyboardShortcutsHelp: 'KeyboardShortcutsHelp',
-	Ask: 'Ask'
+	Settings: 'Settings'
 };
 
 /**

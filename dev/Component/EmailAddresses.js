@@ -1,4 +1,4 @@
-import { doc, createElement } from 'Common/Globals';
+import { doc, createElement, addEventsListeners } from 'Common/Globals';
 import { EmailModel } from 'Model/Email';
 
 const contentType = 'snappymail/emailaddress',
@@ -41,49 +41,55 @@ export class EmailAddressesComponent {
 		// Create the elements
 		self.ul = createElement('ul',{class:"emailaddresses"});
 
-		self.ul.addEventListener('click', e => self._focus(e));
-		self.ul.addEventListener('dblclick', e => self._editTag(e));
-		self.ul.addEventListener("dragenter", fnDrag);
-		self.ul.addEventListener("dragover", fnDrag);
-		self.ul.addEventListener("drop", e => {
-			if (validDropzone() && dragAddress.value) {
-				e.preventDefault();
-				dragAddress.source._removeDraggedTag(dragAddress.li);
-				self._parseValue(dragAddress.value);
+		addEventsListeners(self.ul, {
+			click: e => self._focus(e),
+			dblclick: e => self._editTag(e),
+			dragenter: fnDrag,
+			dragover: fnDrag,
+			drop: e => {
+				if (validDropzone() && dragAddress.value) {
+					e.preventDefault();
+					dragAddress.source._removeDraggedTag(dragAddress.li);
+					self._parseValue(dragAddress.value);
+				}
 			}
 		});
 
 		self.input = createElement('input',{type:"text", list:datalist.id,
 			autocomplete:"off", autocorrect:"off", autocapitalize:"off", spellcheck:"false"});
 
-		self.input.addEventListener('focus', () => self._focusTrigger(true));
-		self.input.addEventListener('blur', () => {
-			// prevent autoComplete menu click from causing a false 'blur'
-			self._parseInput(true);
-			self._focusTrigger(false);
-		});
-		self.input.addEventListener('keydown', e => {
-			if ('Backspace' === e.key || 'ArrowLeft' === e.key) {
-				// if our input contains no value and backspace has been pressed, select the last tag
-				var lastTag = self.inputCont.previousElementSibling,
-					input = self.input;
-				if (lastTag && (!input.value
-					|| (('selectionStart' in input) && input.selectionStart === 0 && input.selectionEnd === 0))
-				) {
-					e.preventDefault();
-					lastTag.querySelector('a').focus();
-				}
-				self._updateDatalist();
-			} else if (e.key == 'Enter') {
-				e.preventDefault();
+		addEventsListeners(self.input, {
+			focus: () => {
+				self._focusTrigger(true);
+				self.input.value || self._resetDatalist();
+			},
+			blur: () => {
+				// prevent autoComplete menu click from causing a false 'blur'
 				self._parseInput(true);
+				self._focusTrigger(false);
+			},
+			keydown: e => {
+				if ('Backspace' === e.key || 'ArrowLeft' === e.key) {
+					// if our input contains no value and backspace has been pressed, select the last tag
+					var lastTag = self.inputCont.previousElementSibling,
+						input = self.input;
+					if (lastTag && (!input.value
+						|| (('selectionStart' in input) && input.selectionStart === 0 && input.selectionEnd === 0))
+					) {
+						e.preventDefault();
+						lastTag.querySelector('a').focus();
+					}
+					self._updateDatalist();
+				} else if (e.key == 'Enter') {
+					e.preventDefault();
+					self._parseInput(true);
+				}
+			},
+			input: () => {
+				self._parseInput();
+				self._updateDatalist();
 			}
 		});
-		self.input.addEventListener('input', () => {
-			self._parseInput();
-			self._updateDatalist();
-		});
-		self.input.addEventListener('focus', () => self.input.value || self._resetDatalist());
 
 		// define starting placeholder
 		if (element.placeholder) {
@@ -261,66 +267,70 @@ export class EmailAddressesComponent {
 
 				el = createElement('a',{href:'#', class:'ficon'});
 				el.append('✖');
-				el.addEventListener('click', e => self._removeTag(e, li));
-				el.addEventListener('focus', () => li.className = 'emailaddresses-selected');
-				el.addEventListener('blur', () => li.className = null);
-				el.addEventListener('keydown', e => {
-					switch (e.key) {
-						case 'Delete':
-						case 'Backspace':
-							self._removeTag(e, li);
-							break;
+				addEventsListeners(el, {
+					click: e => self._removeTag(e, li),
+					focus: () => li.className = 'emailaddresses-selected',
+					blur: () => li.className = null,
+					keydown: e => {
+						switch (e.key) {
+							case 'Delete':
+							case 'Backspace':
+								self._removeTag(e, li);
+								break;
 
-						// 'e' - edit tag (removes tag and places value into visible input
-						case 'e':
-						case 'Enter':
-							self._editTag(e);
-							break;
+							// 'e' - edit tag (removes tag and places value into visible input
+							case 'e':
+							case 'Enter':
+								self._editTag(e);
+								break;
 
-						case 'ArrowLeft':
-							// select the previous tag or input if no more tags exist
-							var previous = el.closest('li').previousElementSibling;
-							if (previous.matches('li')) {
-								previous.querySelector('a').focus();
-							} else {
-								self.focus();
-							}
-							break;
+							case 'ArrowLeft':
+								// select the previous tag or input if no more tags exist
+								var previous = el.closest('li').previousElementSibling;
+								if (previous.matches('li')) {
+									previous.querySelector('a').focus();
+								} else {
+									self.focus();
+								}
+								break;
 
-						case 'ArrowRight':
-							// select the next tag or input if no more tags exist
-							var next = el.closest('li').nextElementSibling;
-							if (next !== this.inputCont) {
-								next.querySelector('a').focus();
-							} else {
-								this.focus();
-							}
-							break;
+							case 'ArrowRight':
+								// select the next tag or input if no more tags exist
+								var next = el.closest('li').nextElementSibling;
+								if (next !== this.inputCont) {
+									next.querySelector('a').focus();
+								} else {
+									this.focus();
+								}
+								break;
 
-						case 'ArrowDown':
-							self._focus(e);
-							break;
+							case 'ArrowDown':
+								self._focus(e);
+								break;
+						}
 					}
 				});
 				li.append(el);
 
 				li.emailaddress = v;
 
-				li.addEventListener("dragstart", e => {
-					dragAddress = {
-						source: self,
-						li: li,
-						value: li.emailaddress.obj.toLine()
-					};
-//					e.dataTransfer.setData(contentType, li.emailaddress.obj.toLine());
-					e.dataTransfer.setData('text/plain', contentType);
-//					e.dataTransfer.setDragImage(li, 0, 0);
-					e.dataTransfer.effectAllowed = 'move';
-					li.style.opacity = 0.25;
-				});
-				li.addEventListener("dragend", () => {
-					dragAddress = null;
-					li.style.cssText = '';
+				addEventsListeners(li, {
+					dragstart: e => {
+						dragAddress = {
+							source: self,
+							li: li,
+							value: li.emailaddress.obj.toLine()
+						};
+//						e.dataTransfer.setData(contentType, li.emailaddress.obj.toLine());
+						e.dataTransfer.setData('text/plain', contentType);
+//						e.dataTransfer.setDragImage(li, 0, 0);
+						e.dataTransfer.effectAllowed = 'move';
+						li.style.opacity = 0.25;
+					},
+					dragend: () => {
+						dragAddress = null;
+						li.style.cssText = '';
+					}
 				});
 
 				self.inputCont.before(li);

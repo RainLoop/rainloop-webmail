@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import {
-	Scope,
 	Notification,
 	UploadErrorCode
 } from 'Common/Enums';
@@ -50,6 +49,8 @@ import { ContactsPopupView } from 'View/Popup/Contacts';
 import { ThemeStore } from 'Stores/Theme';
 
 const
+	ScopeCompose = 'Compose',
+
 	base64_encode = text => btoa(text).match(/.{1,76}/g).join('\r\n'),
 
 	email = new EmailModel(),
@@ -1323,42 +1324,42 @@ class ComposePopupView extends AbstractViewPopup {
 
 		this.addAttachmentEnabled(true);
 
-		shortcuts.add('q', 'meta', Scope.Compose, ()=>false);
-		shortcuts.add('w', 'meta', Scope.Compose, ()=>false);
+		shortcuts.add('q', 'meta', ScopeCompose, ()=>false);
+		shortcuts.add('w', 'meta', ScopeCompose, ()=>false);
 
-		shortcuts.add('contextmenu', '', Scope.Compose, e => this.popupMenu(e));
-		shortcuts.add('m', 'meta', Scope.Compose, e => this.popupMenu(e));
+		shortcuts.add('contextmenu', '', ScopeCompose, e => this.popupMenu(e));
+		shortcuts.add('m', 'meta', ScopeCompose, e => this.popupMenu(e));
 
-		shortcuts.add('escape,close', '', Scope.Compose, () => {
+		shortcuts.add('escape,close', '', ScopeCompose, () => {
 			this.skipCommand();
 			return false;
 		});
-		shortcuts.add('arrowdown', 'meta', Scope.Compose, () => {
+		shortcuts.add('arrowdown', 'meta', ScopeCompose, () => {
 			this.skipCommand();
 			return false;
 		});
 
-		shortcuts.add('s', 'meta', Scope.Compose, () => {
+		shortcuts.add('s', 'meta', ScopeCompose, () => {
 			this.saveCommand();
 			return false;
 		});
-		shortcuts.add('save', '', Scope.Compose, () => {
+		shortcuts.add('save', '', ScopeCompose, () => {
 			this.saveCommand();
 			return false;
 		});
 
 		if (Settings.app('allowCtrlEnterOnCompose')) {
-			shortcuts.add('enter', 'meta', Scope.Compose, () => {
+			shortcuts.add('enter', 'meta', ScopeCompose, () => {
 				this.sendCommand();
 				return false;
 			});
 		}
-		shortcuts.add('mailsend', '', Scope.Compose, () => {
+		shortcuts.add('mailsend', '', ScopeCompose, () => {
 			this.sendCommand();
 			return false;
 		});
 
-		shortcuts.add('escape,close', 'shift', Scope.Compose, () => {
+		shortcuts.add('escape,close', 'shift', ScopeCompose, () => {
 			this.modalVisibility() && this.tryToClosePopup();
 			return false;
 		});

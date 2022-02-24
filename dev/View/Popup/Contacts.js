@@ -1,9 +1,6 @@
 import { koArrayWithDestroy } from 'External/ko';
 
-import {
-	SaveSettingsStep,
-	Scope
-} from 'Common/Enums';
+import { SaveSettingsStep } from 'Common/Enums';
 
 import { ComposeType } from 'Common/EnumsUser';
 
@@ -26,7 +23,9 @@ import { ContactPropertyModel, ContactPropertyType } from 'Model/ContactProperty
 import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-const CONTACTS_PER_PAGE = 50,
+const
+	CONTACTS_PER_PAGE = 50,
+	ScopeContacts = 'Contacts',
 	propertyIsMail = prop => prop.isType(ContactPropertyType.Email),
 	propertyIsName = prop => prop.isType(ContactPropertyType.FirstName) || prop.isType(ContactPropertyType.LastName);
 
@@ -446,14 +445,14 @@ class ContactsPopupView extends AbstractViewPopup {
 	}
 
 	onBuild(dom) {
-		this.selector.init(dom.querySelector('.b-list-content'), Scope.Contacts);
+		this.selector.init(dom.querySelector('.b-list-content'), ScopeContacts);
 
-		shortcuts.add('delete', '', Scope.Contacts, () => {
+		shortcuts.add('delete', '', ScopeContacts, () => {
 			this.deleteCommand();
 			return false;
 		});
 
-		shortcuts.add('c,w', '', Scope.Contacts, () => {
+		shortcuts.add('c,w', '', ScopeContacts, () => {
 			this.newMessageCommand();
 			return false;
 		});

@@ -5,6 +5,10 @@ import { SaveSettingsStep } from 'Common/Enums';
 import { arrayLength, isFunction, forEachObjectEntry } from 'Common/Utils';
 
 export const
+	errorTip = (element, value) => value
+			? setTimeout(() => element.setAttribute('data-rainloopErrorTip', value), 100)
+			: element.removeAttribute('data-rainloopErrorTip'),
+
 	/**
 	 * The value of the pureComputed observable shouldn’t vary based on the
 	 * number of evaluations or other “hidden” information. Its value should be
@@ -35,118 +39,116 @@ export const
 		return data;
 	};
 
-ko.bindingHandlers.tooltipErrorTip = {
-	init: (element, fValueAccessor) => {
-		doc.addEventListener('click', () => {
-			let value = fValueAccessor();
-			ko.isObservable(value) && !ko.isComputed(value) && value('');
-			element.removeAttribute('data-rainloopErrorTip');
-		});
-	},
-	update: (element, fValueAccessor) => {
-		let value = ko.unwrap(fValueAccessor());
-		value = isFunction(value) ? value() : value;
-		if (value) {
-			setTimeout(() => element.setAttribute('data-rainloopErrorTip', value), 100);
-		} else {
-			element.removeAttribute('data-rainloopErrorTip');
+Object.assign(ko.bindingHandlers, {
+	tooltipErrorTip: {
+		init: (element, fValueAccessor) => {
+			doc.addEventListener('click', () => {
+				let value = fValueAccessor();
+				ko.isObservable(value) && !ko.isComputed(value) && value('');
+				errorTip(element);
+			});
+		},
+		update: (element, fValueAccessor) => {
+			let value = ko.unwrap(fValueAccessor());
+			value = isFunction(value) ? value() : value;
+			errorTip(element, value);
 		}
-	}
-};
+	},
 
-ko.bindingHandlers.onEnter = {
-	init: (element, fValueAccessor, fAllBindings, viewModel) => {
-		let fn = event => {
-			if ('Enter' == event.key) {
-				element.dispatchEvent(new Event('change'));
-				fValueAccessor().call(viewModel);
+	onEnter: {
+		init: (element, fValueAccessor, fAllBindings, viewModel) => {
+			let fn = event => {
+				if ('Enter' == event.key) {
+					element.dispatchEvent(new Event('change'));
+					fValueAccessor().call(viewModel);
+				}
+			};
+			element.addEventListener('keydown', fn);
+			ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeEventListener('keydown', fn));
+		}
+	},
+
+	onSpace: {
+		init: (element, fValueAccessor, fAllBindings, viewModel) => {
+			let fn = event => {
+				if (' ' == event.key) {
+					fValueAccessor().call(viewModel, event);
+				}
+			};
+			element.addEventListener('keyup', fn);
+			ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeEventListener('keyup', fn));
+		}
+	},
+
+	i18nInit: {
+		init: element => i18nToNodes(element)
+	},
+
+	i18nUpdate: {
+		update: (element, fValueAccessor) => {
+			ko.unwrap(fValueAccessor());
+			i18nToNodes(element);
+		}
+	},
+
+	title: {
+		update: (element, fValueAccessor) => element.title = ko.unwrap(fValueAccessor())
+	},
+
+	command: {
+		init: (element, fValueAccessor, fAllBindings, viewModel, bindingContext) => {
+			const command = fValueAccessor();
+
+			if (!command || !command.enabled || !command.canExecute) {
+				throw new Error('Value should be a command');
 			}
-		};
-		element.addEventListener('keydown', fn);
-		ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeEventListener('keydown', fn));
-	}
-};
 
-ko.bindingHandlers.onSpace = {
-	init: (element, fValueAccessor, fAllBindings, viewModel) => {
-		let fn = event => {
-			if (' ' == event.key) {
-				fValueAccessor().call(viewModel, event);
+			ko.bindingHandlers['FORM'==element.nodeName ? 'submit' : 'click'].init(
+				element,
+				fValueAccessor,
+				fAllBindings,
+				viewModel,
+				bindingContext
+			);
+		},
+		update: (element, fValueAccessor) => {
+			const cl = element.classList,
+				command = fValueAccessor();
+
+			let disabled = !command.enabled();
+
+			disabled = disabled || !command.canExecute();
+			cl.toggle('disabled', disabled);
+
+			if (element.matches('INPUT,TEXTAREA,BUTTON')) {
+				element.disabled = disabled;
 			}
-		};
-		element.addEventListener('keyup', fn);
-		ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeEventListener('keyup', fn));
-	}
-};
-
-ko.bindingHandlers.i18nInit = {
-	init: element => i18nToNodes(element)
-};
-
-ko.bindingHandlers.i18nUpdate = {
-	update: (element, fValueAccessor) => {
-		ko.unwrap(fValueAccessor());
-		i18nToNodes(element);
-	}
-};
-
-ko.bindingHandlers.title = {
-	update: (element, fValueAccessor) => element.title = ko.unwrap(fValueAccessor())
-};
-
-ko.bindingHandlers.command = {
-	init: (element, fValueAccessor, fAllBindings, viewModel, bindingContext) => {
-		const command = fValueAccessor();
-
-		if (!command || !command.enabled || !command.canExecute) {
-			throw new Error('Value should be a command');
 		}
-
-		ko.bindingHandlers['FORM'==element.nodeName ? 'submit' : 'click'].init(
-			element,
-			fValueAccessor,
-			fAllBindings,
-			viewModel,
-			bindingContext
-		);
 	},
-	update: (element, fValueAccessor) => {
-		const cl = element.classList,
-			command = fValueAccessor();
 
-		let disabled = !command.enabled();
-
-		disabled = disabled || !command.canExecute();
-		cl.toggle('disabled', disabled);
-
-		if (element.matches('INPUT,TEXTAREA,BUTTON')) {
-			element.disabled = disabled;
-		}
-	}
-};
-
-ko.bindingHandlers.saveTrigger = {
-	init: (element) => {
-		let icon = element;
-		if (element.matches('input,select,textarea')) {
-			element.classList.add('settings-saved-trigger-input');
-			element.after(element.saveTriggerIcon = icon = createElement('span'));
-		}
-		icon.classList.add('settings-save-trigger');
-	},
-	update: (element, fValueAccessor) => {
-		const value = parseInt(ko.unwrap(fValueAccessor()),10);
-		let cl = (element.saveTriggerIcon || element).classList;
-		if (element.saveTriggerIcon) {
-			cl.toggle('saving', value === SaveSettingsStep.Animate);
+	saveTrigger: {
+		init: (element) => {
+			let icon = element;
+			if (element.matches('input,select,textarea')) {
+				element.classList.add('settings-saved-trigger-input');
+				element.after(element.saveTriggerIcon = icon = createElement('span'));
+			}
+			icon.classList.add('settings-save-trigger');
+		},
+		update: (element, fValueAccessor) => {
+			const value = parseInt(ko.unwrap(fValueAccessor()),10);
+			let cl = (element.saveTriggerIcon || element).classList;
+			if (element.saveTriggerIcon) {
+				cl.toggle('saving', value === SaveSettingsStep.Animate);
+				cl.toggle('success', value === SaveSettingsStep.TrueResult);
+				cl.toggle('error', value === SaveSettingsStep.FalseResult);
+			}
+			cl = element.classList;
 			cl.toggle('success', value === SaveSettingsStep.TrueResult);
 			cl.toggle('error', value === SaveSettingsStep.FalseResult);
 		}
-		cl = element.classList;
-		cl.toggle('success', value === SaveSettingsStep.TrueResult);
-		cl.toggle('error', value === SaveSettingsStep.FalseResult);
 	}
-};
+});
 
 // extenders
 
