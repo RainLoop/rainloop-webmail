@@ -3,7 +3,7 @@ import { koComputable } from 'External/ko';
 
 import { pInt, settingsSaveHelperSimpleFunction } from 'Common/Utils';
 import { Capa, SaveSettingsStep } from 'Common/Enums';
-import { Settings } from 'Common/Globals';
+import { SettingsCapa } from 'Common/Globals';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import { SettingsUserStore } from 'Stores/User/Settings';
@@ -12,7 +12,7 @@ import Remote from 'Remote/User/Fetch';
 
 export class SecurityUserSettings /*extends AbstractViewSettings*/ {
 	constructor() {
-		this.capaAutoLogout = Settings.capa(Capa.AutoLogout);
+		this.capaAutoLogout = SettingsCapa(Capa.AutoLogout);
 
 		this.autoLogout = SettingsUserStore.autoLogout;
 		this.autoLogoutTrigger = ko.observable(SaveSettingsStep.Idle);

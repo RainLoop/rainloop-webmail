@@ -13,7 +13,7 @@ import { KeyboardShortcutsHelpPopupView } from 'View/Popup/KeyboardShortcutsHelp
 import { AccountPopupView } from 'View/Popup/Account';
 import { ContactsPopupView } from 'View/Popup/Contacts';
 
-import { doc, Settings/*, SettingsGet*/, leftPanelDisabled, fireEvent } from 'Common/Globals';
+import { doc, leftPanelDisabled, fireEvent, SettingsCapa } from 'Common/Globals';
 
 import { ThemeStore } from 'Stores/Theme';
 
@@ -26,7 +26,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 	constructor() {
 		super('SystemDropDown');
 
-		this.allowAccounts = Settings.capa(Capa.AdditionalAccounts);
+		this.allowAccounts = SettingsCapa(Capa.AdditionalAccounts);
 
 		this.accountEmail = AccountUserStore.email;
 

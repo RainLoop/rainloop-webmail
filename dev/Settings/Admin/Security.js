@@ -1,5 +1,5 @@
 import { Capa } from 'Common/Enums';
-import { Settings, SettingsGet } from 'Common/Globals';
+import { SettingsGet, SettingsCapa } from 'Common/Globals';
 import { addObservablesTo, addSubscribablesTo } from 'External/ko';
 
 import Remote from 'Remote/Admin/Fetch';
@@ -27,7 +27,7 @@ export class SecurityAdminSettings /*extends AbstractViewSettings*/ {
 			adminPasswordUpdateError: false,
 			adminPasswordUpdateSuccess: false,
 
-			capaOpenPGP: Settings.capa(Capa.OpenPGP)
+			capaOpenPGP: SettingsCapa(Capa.OpenPGP)
 		});
 
 		addSubscribablesTo(this, {

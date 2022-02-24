@@ -1165,89 +1165,36 @@ class Actions
 	public function Capa(bool $bAdmin, ?Model\Account $oAccount = null): array
 	{
 		static $aResult;
-		if ($aResult && !$oAccount) {
-			return $aResult;
+		if (!$aResult) {
+			$oConfig = $this->oConfig;
+			$aResult = array(
+				'AutoLogout' => true,
+				'AdditionalAccounts'   => (bool) $oConfig->Get('webmail', 'allow_additional_accounts', false),
+				'AttachmentThumbnails' => (bool) $oConfig->Get('interface', 'show_attachment_thumbnail', true),
+				'AttachmentsActions'   => (bool) $oConfig->Get('capa', 'attachments_actions', false),
+				'Contacts'             => (bool) $oConfig->Get('capa', 'contacts', true),
+				'DangerousActions'     => (bool) $oConfig->Get('capa', 'dangerous_actions', true),
+				'GnuPG'                => (bool) $oConfig->Get('security', 'openpgp', false) && \SnappyMail\PGP\GnuPG::isSupported(),
+				'Identities'           => (bool) $oConfig->Get('webmail', 'allow_additional_identities', false),
+				'Kolab'                => (bool) $oConfig->Get('labs', 'kolab_enabled', false),
+				'MessageActions'       => (bool) $oConfig->Get('capa', 'message_actions', true),
+				'OpenPGP'              => (bool) $oConfig->Get('security', 'openpgp', false),
+				'Prefetch'             => (bool) $oConfig->Get('labs', 'allow_prefetch', false),
+				'Quota'                => (bool) $oConfig->Get('capa', 'quota', true),
+				'Search'               => (bool) $oConfig->Get('capa', 'search', true),
+				'SearchAdv'            => (bool) $oConfig->Get('capa', 'search', true) && $oConfig->Get('capa', 'search_adv', true),
+				'Sieve'                => false,
+				'Themes'               => (bool) $oConfig->Get('webmail', 'allow_themes', false),
+				'UserBackground'       => (bool) $oConfig->Get('webmail', 'allow_user_background', false)
+			);
 		}
-
-		$oConfig = $this->oConfig;
-
-		$aResult = array(
-			Enumerations\Capa::AUTOLOGOUT
-		);
-
-		if ($oConfig->Get('capa', 'dangerous_actions', true)) {
-			$aResult[] = Enumerations\Capa::DANGEROUS_ACTIONS;
-		}
-
-		if ($oConfig->Get('capa', 'quota', true)) {
-			$aResult[] = Enumerations\Capa::QUOTA;
-		}
-
-		if ($oConfig->Get('webmail', 'allow_additional_accounts', false)) {
-			$aResult[] = Enumerations\Capa::ADDITIONAL_ACCOUNTS;
-		}
-
-		if ($oConfig->Get('webmail', 'allow_additional_identities', false)) {
-			$aResult[] = Enumerations\Capa::IDENTITIES;
-		}
-
-		if ($oConfig->Get('webmail', 'allow_themes', false)) {
-			$aResult[] = Enumerations\Capa::THEMES;
-		}
-
-		if ($oConfig->Get('webmail', 'allow_user_background', false)) {
-			$aResult[] = Enumerations\Capa::USER_BACKGROUND;
-		}
-
-		if ($oConfig->Get('security', 'openpgp', false)) {
-			$aResult[] = Enumerations\Capa::OPEN_PGP;
-			if (\SnappyMail\PGP\GnuPG::isSupported()) {
-				$aResult[] = Enumerations\Capa::GNUPG;
-			}
-		}
-
-		if ($bAdmin || ($oAccount && $oAccount->Domain()->UseSieve())) {
-			$aResult[] = Enumerations\Capa::SIEVE;
-		}
-
-		if ($oConfig->Get('capa', 'attachments_actions', false)) {
-			$aResult[] = Enumerations\Capa::ATTACHMENTS_ACTIONS;
-		}
-
-		if ($oConfig->Get('capa', 'message_actions', true)) {
-			$aResult[] = Enumerations\Capa::MESSAGE_ACTIONS;
-		}
-
-		if ($oConfig->Get('capa', 'contacts', true)) {
-			$aResult[] = Enumerations\Capa::CONTACTS;
-		}
-
-		if ($oConfig->Get('capa', 'search', true)) {
-			$aResult[] = Enumerations\Capa::SEARCH;
-
-			if ($oConfig->Get('capa', 'search_adv', true)) {
-				$aResult[] = Enumerations\Capa::SEARCH_ADV;
-			}
-		}
-
-		if ($oConfig->Get('interface', 'show_attachment_thumbnail', true)) {
-			$aResult[] = Enumerations\Capa::ATTACHMENT_THUMBNAILS;
-		}
-
-		if ($oConfig->Get('labs', 'allow_prefetch', false)) {
-			$aResult[] = Enumerations\Capa::PREFETCH;
-		}
-
-		if ($oConfig->Get('labs', 'kolab_enabled', false)) {
-			$aResult[] = Enumerations\Capa::KOLAB;
-		}
-
+		$aResult['Sieve'] = $bAdmin || ($oAccount && $oAccount->Domain()->UseSieve());
 		return $aResult;
 	}
 
 	public function GetCapa(string $sName, ?Model\Account $oAccount = null): bool
 	{
-		return \in_array($sName, $this->Capa(false, $oAccount));
+		return !empty($this->Capa(false, $oAccount)[$sName]);
 	}
 
 	public function etag(string $sKey): string

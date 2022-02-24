@@ -4,23 +4,22 @@ namespace RainLoop\Enumerations;
 
 class Capa
 {
-	const GNUPG = 'GNUPG';
-	const OPEN_PGP = 'OPEN_PGP';
-	const PREFETCH = 'PREFETCH';
-	const THEMES = 'THEMES';
-	const USER_BACKGROUND = 'USER_BACKGROUND';
-	const SIEVE = 'SIEVE';
-	const ATTACHMENT_THUMBNAILS = 'ATTACHMENT_THUMBNAILS';
-	const ADDITIONAL_ACCOUNTS = 'ADDITIONAL_ACCOUNTS';
-	const IDENTITIES = 'IDENTITIES';
-	const CONTACTS = 'CONTACTS';
-	const SEARCH = 'SEARCH';
-	const SEARCH_ADV = 'SEARCH_ADV';
-	const QUOTA = 'QUOTA';
-	const TEMPLATES = 'TEMPLATES';
-	const MESSAGE_ACTIONS = 'MESSAGE_ACTIONS';
-	const ATTACHMENTS_ACTIONS = 'ATTACHMENTS_ACTIONS';
-	const DANGEROUS_ACTIONS = 'DANGEROUS_ACTIONS';
-	const AUTOLOGOUT = 'AUTOLOGOUT';
-	const KOLAB = 'KOLAB';
+	const GNUPG = 'GnuPG';
+	const OPEN_PGP = 'OpenPGP';
+	const PREFETCH = 'Prefetch';
+	const THEMES = 'Themes';
+	const USER_BACKGROUND = 'UserBackground';
+	const SIEVE = 'Sieve';
+	const ATTACHMENT_THUMBNAILS = 'AttachmentThumbnails';
+	const ADDITIONAL_ACCOUNTS = 'AdditionalAccounts';
+	const IDENTITIES = 'Identities';
+	const CONTACTS = 'Contacts';
+	const SEARCH = 'Search';
+	const SEARCH_ADV = 'SearchAdv';
+	const QUOTA = 'Quota';
+	const MESSAGE_ACTIONS = 'MessageActions';
+	const ATTACHMENTS_ACTIONS = 'AttachmentsActions';
+	const DANGEROUS_ACTIONS = 'DangerousActions';
+	const AUTOLOGOUT = 'AutoLogout';
+	const KOLAB = 'Kolab';
 }

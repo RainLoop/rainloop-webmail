@@ -3,11 +3,10 @@ import { koComputable } from 'External/ko';
 
 import { Notification } from 'Common/Enums';
 import { FolderMetadataKeys } from 'Common/EnumsUser';
-import { Settings } from 'Common/Globals';
+import { SettingsCapa } from 'Common/Globals';
 import { getNotification } from 'Common/Translator';
 
 import { setFolder, getFolderFromCacheList, removeFolderFromCacheList } from 'Common/Cache';
-import { Capa } from 'Common/Enums';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { sortFolders } from 'Common/Folders';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
@@ -27,7 +26,7 @@ const folderForDeletion = ko.observable(null).askDeleteHelper();
 
 export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 	constructor() {
-		this.showKolab = koComputable(() => FolderUserStore.hasCapability('METADATA') && Settings.capa(Capa.Kolab));
+		this.showKolab = koComputable(() => FolderUserStore.hasCapability('METADATA') && SettingsCapa('Kolab'));
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 		this.kolabTypeOptions = ko.observableArray();
 		let i18nFilter = key => i18n('SETTINGS_FOLDERS/TYPE_' + key);

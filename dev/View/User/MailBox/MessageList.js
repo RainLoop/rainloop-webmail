@@ -828,7 +828,7 @@ export class MailMessageList extends AbstractViewRight {
 		shortcuts.add('arrowleft', 'meta', Scope.MessageView, ()=>false);
 		shortcuts.add('arrowright', 'meta', Scope.MessageView, ()=>false);
 
-		if (!ThemeStore.isMobile() && SettingsCapa(Capa.Prefetch)) {
+		if (!ThemeStore.isMobile() && SettingsCapa('Prefetch')) {
 			ifvisible.idle(this.prefetchNextTick.bind(this));
 		}
 	}

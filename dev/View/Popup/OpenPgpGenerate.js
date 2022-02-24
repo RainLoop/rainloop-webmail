@@ -8,7 +8,7 @@ import { IdentityUserStore } from 'Stores/User/Identity';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 import { Capa } from 'Common/Enums';
-import { Settings } from 'Common/Globals';
+import { SettingsCapa } from 'Common/Globals';
 
 export class OpenPgpGeneratePopupView extends AbstractViewPopup {
 	constructor() {
@@ -34,7 +34,7 @@ export class OpenPgpGeneratePopupView extends AbstractViewPopup {
 			saveGnuPGPrivate: false
 		});
 
-		this.canGnuPG = Settings.capa(Capa.GnuPG);
+		this.canGnuPG = SettingsCapa(Capa.GnuPG);
 
 		this.email.subscribe(() => this.emailError(false));
 	}

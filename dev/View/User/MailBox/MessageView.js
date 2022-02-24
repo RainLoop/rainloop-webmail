@@ -2,10 +2,7 @@ import ko from 'ko';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
-import {
-	Capa,
-	Scope
-} from 'Common/Enums';
+import { Scope } from 'Common/Enums';
 
 import {
 	ComposeType,
@@ -93,7 +90,7 @@ export class MailMessageView extends AbstractViewRight {
 
 		this.moveAction = moveAction;
 
-		this.allowMessageActions = SettingsCapa(Capa.MessageActions);
+		this.allowMessageActions = SettingsCapa('MessageActions');
 
 		const attachmentsActions = Settings.app('attachmentsActions');
 		this.attachmentsActions = ko.observableArray(arrayLength(attachmentsActions) ? attachmentsActions : []);
@@ -132,7 +129,7 @@ export class MailMessageView extends AbstractViewRight {
 		this.viewHash = '';
 
 		this.addComputables({
-			allowAttachmentControls: () => this.attachmentsActions.length && SettingsCapa(Capa.AttachmentsActions),
+			allowAttachmentControls: () => this.attachmentsActions.length && SettingsCapa('AttachmentsActions'),
 
 			downloadAsZipAllowed: () => this.attachmentsActions.includes('zip') && this.allowAttachmentControls(),
 

@@ -4,23 +4,16 @@
  * @enum {string}
  */
 export const Capa = {
-	GnuPG: 'GNUPG',
-	OpenPGP: 'OPEN_PGP',
-	Prefetch: 'PREFETCH',
-	Contacts: 'CONTACTS',
-	Search: 'SEARCH',
-	SearchAdv: 'SEARCH_ADV',
-	MessageActions: 'MESSAGE_ACTIONS',
-	AttachmentsActions: 'ATTACHMENTS_ACTIONS',
-	DangerousActions: 'DANGEROUS_ACTIONS',
-	Themes: 'THEMES',
-	UserBackground: 'USER_BACKGROUND',
-	Sieve: 'SIEVE',
-	AttachmentThumbnails: 'ATTACHMENT_THUMBNAILS',
-	AutoLogout: 'AUTOLOGOUT',
-	Kolab: 'KOLAB',
-	AdditionalAccounts: 'ADDITIONAL_ACCOUNTS',
-	Identities: 'IDENTITIES'
+	AdditionalAccounts: 'AdditionalAccounts',
+	AutoLogout: 'AutoLogout',
+	DangerousActions: 'DangerousActions',
+	GnuPG: 'GnuPG',
+	Identities: 'Identities',
+	OpenPGP: 'OpenPGP',
+	Search: 'Search',
+	SearchAdv: 'SearchAdv',
+	Themes: 'Themes',
+	UserBackground: 'UserBackground'
 };
 
 /**

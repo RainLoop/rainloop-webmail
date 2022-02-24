@@ -4,7 +4,7 @@ import { SaveSettingsStep, UploadErrorCode, Capa } from 'Common/Enums';
 import { changeTheme, convertThemeName } from 'Common/Utils';
 import { themePreviewLink, serverRequest } from 'Common/Links';
 import { i18n } from 'Common/Translator';
-import { Settings } from 'Common/Globals';
+import { SettingsCapa } from 'Common/Globals';
 
 import { ThemeStore } from 'Stores/Theme';
 
@@ -26,9 +26,8 @@ export class ThemesUserSettings /*extends AbstractViewSettings*/ {
 		this.themes = ThemeStore.themes;
 		this.themesObjects = ko.observableArray();
 
+		themeBackground.enabled = SettingsCapa(Capa.UserBackground);
 		this.background = themeBackground;
-
-		this.capaUserBackground = Settings.capa(Capa.UserBackground);
 
 		this.themeTrigger = ko.observable(SaveSettingsStep.Idle).extend({ debounce: 100 });
 
@@ -59,7 +58,7 @@ export class ThemesUserSettings /*extends AbstractViewSettings*/ {
 
 		// initUploader
 
-		if (themeBackground.uploaderButton() && this.capaUserBackground) {
+		if (themeBackground.uploaderButton() && themeBackground.enabled) {
 			const oJua = new Jua({
 				action: serverRequest('UploadBackground'),
 				limit: 1,
@@ -112,7 +111,7 @@ export class ThemesUserSettings /*extends AbstractViewSettings*/ {
 	}
 
 	clearBackground() {
-		if (this.capaUserBackground) {
+		if (themeBackground.enabled) {
 			Remote.request('ClearUserBackground', () => {
 				themeBackground.name('');
 				themeBackground.hash('');

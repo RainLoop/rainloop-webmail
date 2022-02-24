@@ -43,7 +43,7 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 			);
 		}
 
-		if (SettingsCapa(Capa.Sieve)) {
+		if (SettingsCapa('Sieve')) {
 			settingsAddViewModel(FiltersUserSettings, 'SettingsFilters', 'SETTINGS_LABELS/LABEL_FILTERS_NAME', 'filters');
 		}
 

@@ -45,7 +45,7 @@ win.rl = {
 		get: name => RL_APP_DATA[name],
 		set: (name, value) => RL_APP_DATA[name] = value,
 		app: name => RL_APP_DATA.System[name],
-		capa: name => name && (RL_APP_DATA.Capa || []).includes(name)
+		capa: name => name && !!(RL_APP_DATA.Capa || {})[name]
 	},
 	setWindowTitle: title =>
 		doc.title = RL_APP_DATA.Title ? (title ? title + ' - ' : '') + RL_APP_DATA.Title : (title ? '' + title : ''),

@@ -46,7 +46,7 @@ export class GeneralAdminSettings /*extends AbstractViewSettings*/ {
 			capaUserBackground: SettingsCapa(Capa.UserBackground),
 			capaAdditionalAccounts: SettingsCapa(Capa.AdditionalAccounts),
 			capaIdentities: SettingsCapa(Capa.Identities),
-			capaAttachmentThumbnails: SettingsCapa(Capa.AttachmentThumbnails),
+			capaAttachmentThumbnails: SettingsCapa('AttachmentThumbnails'),
 			dataFolderAccess: false
 		});
 
