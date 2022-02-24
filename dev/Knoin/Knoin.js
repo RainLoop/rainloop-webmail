@@ -48,7 +48,7 @@ const
 				ViewModelClass.__dom = vmDom;
 
 				if (ViewType.Popup === position) {
-					vm.cancelCommand = vm.closeCommand = createCommand(() => hideScreenPopup(ViewModelClass));
+					vm.closeCommand = createCommand(() => hideScreenPopup(ViewModelClass));
 
 					// Firefox / Safari HTMLDialogElement not defined
 					if (!vmDom.showModal) {
@@ -75,10 +75,10 @@ const
 						if (e.target === vmDom) {
 							if (vmDom.classList.contains('animate')) {
 								autofocus(vmDom);
-								vm.onShowWithDelay && vm.onShowWithDelay();
+								vm.afterShow && vm.afterShow();
 							} else {
 								vmDom.close();
-								vm.onHideWithDelay && vm.onHideWithDelay();
+								vm.afterHide && vm.afterHide();
 							}
 						}
 					};
@@ -115,12 +115,7 @@ const
 						}
 */
 					});
-					if ('ontransitionend' in vmDom) {
-						vmDom.addEventListener('transitionend', endShowHide);
-					} else {
-						// For Edge < 79 and mobile browsers
-						vm.modalVisibility.subscribe(() => ()=>setTimeout(endShowHide({target:vmDom}), 500));
-					}
+					vmDom.addEventListener('transitionend', endShowHide);
 				}
 
 				ko.applyBindingAccessorsToNode(
@@ -133,9 +128,6 @@ const
 				);
 
 				vm.onBuild && vm.onBuild(vmDom);
-				if (vm && ViewType.Popup === position) {
-					vm.registerPopupKeyDown();
-				}
 
 				fireEvent('rl-view-model', vm);
 			} else {

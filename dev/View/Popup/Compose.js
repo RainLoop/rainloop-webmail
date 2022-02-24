@@ -259,8 +259,6 @@ export class ComposePopupView extends AbstractViewPopup {
 			]
 		});
 
-		this.bDisabeCloseOnEsc = true;
-
 		this.tryToClosePopup = this.tryToClosePopup.debounce(200);
 
 		this.iTimer = 0;
@@ -641,6 +639,11 @@ export class ComposePopupView extends AbstractViewPopup {
 				}
 			]);
 		}
+	}
+
+	onClose() {
+		this.skipCommand();
+		return false;
 	}
 
 	skipCommand() {
@@ -1330,10 +1333,6 @@ export class ComposePopupView extends AbstractViewPopup {
 		shortcuts.add('contextmenu', '', ScopeCompose, e => this.popupMenu(e));
 		shortcuts.add('m', 'meta', ScopeCompose, e => this.popupMenu(e));
 
-		shortcuts.add('escape,close', '', ScopeCompose, () => {
-			this.skipCommand();
-			return false;
-		});
 		shortcuts.add('arrowdown', 'meta', ScopeCompose, () => {
 			this.skipCommand();
 			return false;
@@ -1360,7 +1359,7 @@ export class ComposePopupView extends AbstractViewPopup {
 		});
 
 		shortcuts.add('escape,close', 'shift', ScopeCompose, () => {
-			this.modalVisibility() && this.tryToClosePopup();
+			this.tryToClosePopup();
 			return false;
 		});
 

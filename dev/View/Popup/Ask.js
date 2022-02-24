@@ -19,17 +19,16 @@ export class AskPopupView extends AbstractViewPopup {
 		this.fNoAction = null;
 
 		this.focusOnShow = true;
-		this.bDisabeCloseOnEsc = true;
 	}
 
 	yesClick() {
-		this.cancelCommand();
+		this.closeCommand();
 
 		isFunction(this.fYesAction) && this.fYesAction();
 	}
 
 	noClick() {
-		this.cancelCommand();
+		this.closeCommand();
 
 		isFunction(this.fNoAction) && this.fNoAction();
 	}
@@ -52,8 +51,13 @@ export class AskPopupView extends AbstractViewPopup {
 		this.focusOnShow = focusOnShow ? (askPass ? 'input[type="password"]' : '.buttonYes') : '';
 	}
 
-	onShowWithDelay() {
+	afterShow() {
 		this.focusOnShow && this.querySelector(this.focusOnShow).focus();
+	}
+
+	onClose() {
+		this.noClick();
+		return false;
 	}
 
 	onBuild() {
@@ -64,11 +68,6 @@ export class AskPopupView extends AbstractViewPopup {
 				btn = this.querySelector('.buttonNo');
 			}
 			btn.focus();
-			return false;
-		});
-
-		shortcuts.add('escape', '', 'Ask', () => {
-			this.noClick();
 			return false;
 		});
 	}

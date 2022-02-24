@@ -57,7 +57,7 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 			MessagelistUserStore.mainSearch(search);
 		}
 
-		this.cancelCommand();
+		this.closeCommand();
 	}
 
 	parseSearchStringValue(search) {

@@ -57,36 +57,30 @@ export class AbstractViewPopup extends AbstractView
 	constructor(name)
 	{
 		super('Popups' + name, ViewType.Popup);
-		if (name in Scope) {
-			this.keyScope.scope = Scope[name];
-		}
-		this.bDisabeCloseOnEsc = false;
+		this.keyScope.scope = name;
 		this.modalVisibility = ko.observable(false).extend({ rateLimit: 0 });
-	}
-/*
-	onShowWithDelay() {}
-	onHideWithDelay() {}
 
-	cancelCommand() {}
-	closeCommand() {}
-*/
-	/**
-	 * @returns {void}
-	 */
-	registerPopupKeyDown() {
-		addEventListener('keydown', event => {
-			if (event && this.modalVisibility()) {
-				if (!this.bDisabeCloseOnEsc && 'Escape' == event.key) {
-					this.cancelCommand();
-					return false;
-				} else if ('Backspace' == event.key && !inFocus()) {
-					return false;
-				}
+		this.onClose = this.onClose.debounce(200);
+		shortcuts.add('escape,close', '', name, () => {
+			if (this.modalVisibility() && this.onClose()) {
+				this.closeCommand();
+				return false;
 			}
-
 			return true;
 		});
+		shortcuts.add('backspace', '', name, inFocus());
 	}
+
+	onClose() {
+		return true;
+	}
+
+/*
+	afterShow() {}
+	afterHide() {}
+
+	closeCommand() {}
+*/
 }
 
 AbstractViewPopup.showModal = function(params = []) {

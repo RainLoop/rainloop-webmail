@@ -157,7 +157,7 @@ export class FilterPopupView extends AbstractViewPopup {
 		}
 	}
 
-	onShowWithDelay() {
+	afterShow() {
 		this.isNew() && this.filter() && this.filter().nameFocused(true);
 	}
 }

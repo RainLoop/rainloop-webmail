@@ -63,7 +63,7 @@ export class OpenPgpImportPopupView extends AbstractViewPopup {
 			return;
 		}
 
-		this.cancelCommand();
+		this.closeCommand();
 	}
 
 	onShow() {

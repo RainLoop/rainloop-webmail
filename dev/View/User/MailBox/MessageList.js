@@ -1,15 +1,8 @@
 import ko from 'ko';
 
-import {
-	Capa,
-	Scope
-} from 'Common/Enums';
+import { Capa, Scope } from 'Common/Enums';
 
-import {
-	ComposeType,
-	FolderType,
-	MessageSetAction
-} from 'Common/EnumsUser';
+import { ComposeType, FolderType, MessageSetAction } from 'Common/EnumsUser';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 

@@ -28,10 +28,7 @@ export class PluginPopupView extends AbstractViewPopup {
 			hasConfiguration: () => 0 < this.config().length
 		});
 
-		this.bDisabeCloseOnEsc = true;
 		this.keyScope.scope = Scope.All;
-
-		this.tryToClosePopup = this.tryToClosePopup.debounce(200);
 
 		decorateKoCommands(this, {
 			saveCommand: self => self.hasConfiguration()
@@ -64,7 +61,7 @@ export class PluginPopupView extends AbstractViewPopup {
 		Remote.request('AdminPluginSettingsUpdate',
 			iError => iError
 				? this.saveError(getNotification(iError))
-				: this.cancelCommand(),
+				: this.closeCommand(),
 			oConfig);
 	}
 
@@ -98,21 +95,13 @@ export class PluginPopupView extends AbstractViewPopup {
 		}
 	}
 
-	tryToClosePopup() {
+	onClose() {
 		if (AskPopupView.hidden()) {
 			showScreenPopup(AskPopupView, [
 				i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'),
-				() => this.modalVisibility() && this.cancelCommand()
+				() => this.closeCommand()
 			]);
 		}
-	}
-
-	onBuild() {
-		shortcuts.add('escape', '', Scope.All, () => {
-			if (this.modalVisibility()) {
-				this.tryToClosePopup();
-				return false;
-			}
-		});
+		return false;
 	}
 }

@@ -49,7 +49,7 @@ export class AccountPopupView extends AbstractViewPopup {
 					this.submitErrorAdditional((data && data.ErrorMessageAdditional) || '');
 				} else {
 					rl.app.accountsAndIdentities();
-					this.cancelCommand();
+					this.closeCommand();
 				}
 			}, {
 				Email: this.email(),

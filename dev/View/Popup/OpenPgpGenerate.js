@@ -70,7 +70,7 @@ export class OpenPgpGeneratePopupView extends AbstractViewPopup {
 			if (keyPair) {
 				const fn = () => {
 					this.submitRequest(false);
-					this.cancelCommand();
+					this.closeCommand();
 				};
 
 				OpenPGPUserStore.storeKeyPair(keyPair);

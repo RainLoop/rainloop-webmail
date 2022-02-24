@@ -3,9 +3,7 @@ import 'External/User/ko';
 import { isArray, pString } from 'Common/Utils';
 import { mailToHelper, setLayoutResizer } from 'Common/UtilsUser';
 
-import {
-	Scope
-} from 'Common/Enums';
+import { Scope } from 'Common/Enums';
 
 import {
 	FolderType,

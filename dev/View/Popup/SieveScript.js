@@ -129,7 +129,7 @@ export class SieveScriptPopupView extends AbstractViewPopup {
 		this.saveError(false);
 	}
 
-	onShowWithDelay() {
+	afterShow() {
 		// Sometimes not everything is translated, try again
 		i18nToNodes(this.viewModelDom);
 	}

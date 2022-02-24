@@ -1,5 +1,5 @@
 <header>
-	<a href="#" class="close" data-bind="command: cancelCommand">×</a>
+	<a href="#" class="close" data-bind="command: closeCommand">×</a>
 	<h3 data-bind="text: headerText"></h3>
 </header>
 <div class="modal-body">
@@ -189,7 +189,7 @@
 		<i class="fontastic" data-bind="css: {'icon-spinner': testing()}">ℹ</i>
 		<span data-i18n="POPUPS_DOMAIN/BUTTON_TEST"></span>
 	</a>
-	<a class="btn buttonClose" data-bind="command: cancelCommand" data-icon="✖" data-i18n="POPUPS_DOMAIN/BUTTON_CLOSE"></a>
+	<a class="btn buttonClose" data-bind="command: closeCommand" data-icon="✖" data-i18n="POPUPS_DOMAIN/BUTTON_CLOSE"></a>
 	<a class="btn" data-bind="command: createOrAddCommand, visible: edit()">
 		<i class="fontastic" data-bind="css: {'icon-spinner': saving()}">✔</i>
 		<span data-i18n="POPUPS_DOMAIN/BUTTON_UPDATE"></span>

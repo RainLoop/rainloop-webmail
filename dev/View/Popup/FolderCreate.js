@@ -79,7 +79,7 @@ export class FolderCreatePopupView extends AbstractViewPopup {
 				}
 			);
 
-		this.cancelCommand();
+		this.closeCommand();
 	}
 
 	simpleFolderNameValidation(sName) {

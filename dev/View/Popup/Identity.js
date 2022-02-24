@@ -100,7 +100,7 @@ export class IdentityPopupView extends AbstractViewPopup {
 					this.submitError(getNotification(iError));
 				} else {
 					rl.app.accountsAndIdentities();
-					this.cancelCommand();
+					this.closeCommand();
 				}
 			}, {
 				Id: this.id,
@@ -162,11 +162,11 @@ export class IdentityPopupView extends AbstractViewPopup {
 		}
 	}
 
-	onShowWithDelay() {
+	afterShow() {
 		this.owner() || this.emailFocused(true);
 	}
 
-	onHideWithDelay() {
+	afterHide() {
 		this.clearPopup();
 	}
 }
