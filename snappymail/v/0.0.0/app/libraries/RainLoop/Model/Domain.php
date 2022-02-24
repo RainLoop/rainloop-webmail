@@ -400,52 +400,28 @@ class Domain implements \JsonSerializable
 		);
 	}
 
-	public function ToSimpleJSON() : array
-	{
-		return array(
-			'Name' => $this->sName,
-			'IncHost' => $this->sIncHost,
-			'IncPort' => $this->iIncPort,
-			'IncSecure' => $this->iIncSecure,
-			'IncShortLogin' => $this->bIncShortLogin,
-			'UseSieve' => $this->bUseSieve,
-			'SieveHost' => $this->sSieveHost,
-			'SievePort' => $this->iSievePort,
-			'SieveSecure' => $this->iSieveSecure,
-			'OutHost' => $this->sOutHost,
-			'OutPort' => $this->iOutPort,
-			'OutSecure' => $this->iOutSecure,
-			'OutShortLogin' => $this->bOutShortLogin,
-			'OutAuth' => $this->bOutAuth,
-			'OutSetSender' => $this->bOutSetSender,
-			'OutUsePhpMail' => $this->bOutUsePhpMail,
-			'WhiteList' => $this->sWhiteList,
-			'AliasName' => $this->sAliasName
-		);
-	}
-
 	public function jsonSerialize()
 	{
 		return array(
 //			'@Object' => 'Object/Domain',
-			'Name' => \MailSo\Base\Utils::IdnToUtf8($this->sName),
-			'IncHost' => \MailSo\Base\Utils::IdnToUtf8($this->sIncHost),
-			'IncPort' => $this->iIncPort,
-			'IncSecure' => $this->iIncSecure,
-			'IncShortLogin' => $this->bIncShortLogin,
-			'UseSieve' => $this->bUseSieve,
-			'SieveHost' => \MailSo\Base\Utils::IdnToUtf8($this->sSieveHost),
-			'SievePort' => $this->iSievePort,
-			'SieveSecure' => $this->iSieveSecure,
-			'OutHost' => \MailSo\Base\Utils::IdnToUtf8($this->sOutHost),
-			'OutPort' => $this->iOutPort,
-			'OutSecure' => $this->iOutSecure,
-			'OutShortLogin' => $this->bOutShortLogin,
-			'OutAuth' => $this->bOutAuth,
-			'OutSetSender' => $this->bOutSetSender,
-			'OutUsePhpMail' => $this->bOutUsePhpMail,
-			'WhiteList' => $this->sWhiteList,
-			'AliasName' => $this->sAliasName
+			'name' => \MailSo\Base\Utils::IdnToUtf8($this->sName),
+			'imapHost' => \MailSo\Base\Utils::IdnToUtf8($this->sIncHost),
+			'imapPort' => $this->iIncPort,
+			'imapSecure' => $this->iIncSecure,
+			'imapShortLogin' => $this->bIncShortLogin,
+			'useSieve' => $this->bUseSieve,
+			'sieveHost' => \MailSo\Base\Utils::IdnToUtf8($this->sSieveHost),
+			'sievePort' => $this->iSievePort,
+			'sieveSecure' => $this->iSieveSecure,
+			'smtpHost' => \MailSo\Base\Utils::IdnToUtf8($this->sOutHost),
+			'smtpPort' => $this->iOutPort,
+			'smtpSecure' => $this->iOutSecure,
+			'smtpShortLogin' => $this->bOutShortLogin,
+			'smtpAuth' => $this->bOutAuth,
+			'smtpSetSender' => $this->bOutSetSender,
+			'smtpPhpMail' => $this->bOutUsePhpMail,
+			'whiteList' => $this->sWhiteList,
+			'aliasName' => $this->sAliasName
 		);
 	}
 }
