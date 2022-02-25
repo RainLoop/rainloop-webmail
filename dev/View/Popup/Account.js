@@ -2,7 +2,6 @@ import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/User/Fetch';
 
-import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 export class AccountPopupView extends AbstractViewPopup {
@@ -26,39 +25,32 @@ export class AccountPopupView extends AbstractViewPopup {
 		this.email.subscribe(() => this.emailError(false));
 
 		this.password.subscribe(() => this.passwordError(false));
-
-		decorateKoCommands(this, {
-			addAccountCommand: self => !self.submitRequest()
-		});
 	}
 
-	addAccountCommand() {
-		this.emailError(!this.email().trim());
-		this.passwordError(!this.password().trim());
-
-		if (this.emailError() || this.passwordError()) {
-			return false;
-		}
-
-		this.submitRequest(true);
-
-		Remote.request('AccountSetup', (iError, data) => {
-				this.submitRequest(false);
-				if (iError) {
-					this.submitError(getNotification(iError));
-					this.submitErrorAdditional((data && data.ErrorMessageAdditional) || '');
-				} else {
-					rl.app.accountsAndIdentities();
-					this.closeCommand();
-				}
-			}, {
-				Email: this.email(),
-				Password: this.password(),
-				New: this.isNew() ? 1 : 0
+	submitForm() {
+		if (!this.submitRequest()) {
+			const email = this.email().trim(), pass = this.password();
+			this.emailError(!email);
+			this.passwordError(!pass);
+			if (!this.emailError() && pass) {
+				this.submitRequest(true);
+				Remote.request('AccountSetup', (iError, data) => {
+						this.submitRequest(false);
+						if (iError) {
+							this.submitError(getNotification(iError));
+							this.submitErrorAdditional((data && data.ErrorMessageAdditional) || '');
+						} else {
+							rl.app.accountsAndIdentities();
+							this.closeCommand();
+						}
+					}, {
+						Email: email,
+						Password: pass,
+						New: this.isNew() ? 1 : 0
+					}
+				);
 			}
-		);
-
-		return true;
+		}
 	}
 
 	onShow(account) {

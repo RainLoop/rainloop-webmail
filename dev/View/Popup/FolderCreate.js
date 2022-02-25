@@ -11,7 +11,6 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 
 import Remote from 'Remote/User/Fetch';
 
-import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 import { setFolder, getFolderFromCacheList } from 'Common/Cache';
@@ -42,48 +41,42 @@ export class FolderCreatePopupView extends AbstractViewPopup {
 		);
 
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
-
-		decorateKoCommands(this, {
-			createFolderCommand: self => self.simpleFolderNameValidation(self.folderName())
-		});
 	}
 
-	createFolderCommand() {
-		let parentFolderName = this.selectedParentValue();
-		if (!parentFolderName && 1 < FolderUserStore.namespace.length) {
-			parentFolderName = FolderUserStore.namespace.slice(0, FolderUserStore.namespace.length - 1);
-		}
+	submitForm() {
+		if (/^[^\\/]+$/g.test(this.folderName())) {
+			let parentFolderName = this.selectedParentValue();
+			if (!parentFolderName && 1 < FolderUserStore.namespace.length) {
+				parentFolderName = FolderUserStore.namespace.slice(0, FolderUserStore.namespace.length - 1);
+			}
 
-		Remote.abort('Folders').post('FolderCreate', FolderUserStore.foldersCreating, {
-				Folder: this.folderName(),
-				Parent: parentFolderName,
-				Subscribe: this.folderSubscribe() ? 1 : 0
-			})
-			.then(
-				data => {
-					const folder = getFolderFromCacheList(parentFolderName),
-						subFolder = FolderModel.reviveFromJson(data.Result),
-						folders = (folder ? folder.subFolders : FolderUserStore.folderList);
-					setFolder(subFolder);
-					folders.push(subFolder);
-					sortFolders(folders);
+			Remote.abort('Folders').post('FolderCreate', FolderUserStore.foldersCreating, {
+					Folder: this.folderName(),
+					Parent: parentFolderName,
+					Subscribe: this.folderSubscribe() ? 1 : 0
+				})
+				.then(
+					data => {
+						const folder = getFolderFromCacheList(parentFolderName),
+							subFolder = FolderModel.reviveFromJson(data.Result),
+							folders = (folder ? folder.subFolders : FolderUserStore.folderList);
+						setFolder(subFolder);
+						folders.push(subFolder);
+						sortFolders(folders);
 /*
-					var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-					console.log((folder ? folder.subFolders : FolderUserStore.folderList).sort(collator.compare));
+						var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+						console.log((folder ? folder.subFolders : FolderUserStore.folderList).sort(collator.compare));
 */
-				},
-				error => {
-					FolderUserStore.folderListError(
-						getNotification(error.code, '', Notification.CantCreateFolder)
-						+ '.\n' + error.message);
-				}
-			);
+					},
+					error => {
+						FolderUserStore.folderListError(
+							getNotification(error.code, '', Notification.CantCreateFolder)
+							+ '.\n' + error.message);
+					}
+				);
 
-		this.closeCommand();
-	}
-
-	simpleFolderNameValidation(sName) {
-		return /^[^\\/]+$/g.test(sName);
+			this.closeCommand();
+		}
 	}
 
 	onShow() {

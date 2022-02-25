@@ -2,7 +2,6 @@ import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/User/Fetch';
 
-import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 const reEmail = /^[^@\s]+@[^@\s]+$/;
@@ -60,60 +59,57 @@ export class IdentityPopupView extends AbstractViewPopup {
 		this.replyTo.valueHasMutated();
 		this.bcc.valueHasMutated();
 */
-		decorateKoCommands(this, {
-			addOrEditIdentityCommand: self => !self.submitRequest()
-		});
 	}
 
-	addOrEditIdentityCommand() {
-		if (this.signature && this.signature.__fetchEditorValue) {
-			this.signature.__fetchEditorValue();
-		}
-
-		if (!this.emailHasError()) {
-			this.emailHasError(!this.email().trim());
-		}
-
-		if (this.emailHasError()) {
-			if (!this.owner()) {
-				this.emailFocused(true);
+	submitForm() {
+		if (!this.submitRequest()) {
+			if (this.signature && this.signature.__fetchEditorValue) {
+				this.signature.__fetchEditorValue();
 			}
 
-			return false;
-		}
+			if (!this.emailHasError()) {
+				this.emailHasError(!this.email().trim());
+			}
 
-		if (this.replyToHasError()) {
-			this.replyToFocused(true);
-			return false;
-		}
-
-		if (this.bccHasError()) {
-			this.bccFocused(true);
-			return false;
-		}
-
-		this.submitRequest(true);
-
-		Remote.request('IdentityUpdate', iError => {
-				this.submitRequest(false);
-				if (iError) {
-					this.submitError(getNotification(iError));
-				} else {
-					rl.app.accountsAndIdentities();
-					this.closeCommand();
+			if (this.emailHasError()) {
+				if (!this.owner()) {
+					this.emailFocused(true);
 				}
-			}, {
-				Id: this.id,
-				Email: this.email(),
-				Name: this.name(),
-				ReplyTo: this.replyTo(),
-				Bcc: this.bcc(),
-				Signature: this.signature(),
-				SignatureInsertBefore: this.signatureInsertBefore() ? 1 : 0
-			}
-		);
 
-		return true;
+				return;
+			}
+
+			if (this.replyToHasError()) {
+				this.replyToFocused(true);
+				return;
+			}
+
+			if (this.bccHasError()) {
+				this.bccFocused(true);
+				return;
+			}
+
+			this.submitRequest(true);
+
+			Remote.request('IdentityUpdate', iError => {
+					this.submitRequest(false);
+					if (iError) {
+						this.submitError(getNotification(iError));
+					} else {
+						rl.app.accountsAndIdentities();
+						this.closeCommand();
+					}
+				}, {
+					Id: this.id,
+					Email: this.email(),
+					Name: this.name(),
+					ReplyTo: this.replyTo(),
+					Bcc: this.bcc(),
+					Signature: this.signature(),
+					SignatureInsertBefore: this.signatureInsertBefore() ? 1 : 0
+				}
+			);
+		}
 	}
 
 	clearPopup() {
