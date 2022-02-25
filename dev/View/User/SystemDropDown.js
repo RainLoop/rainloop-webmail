@@ -4,7 +4,7 @@ import { MessageUserStore } from 'Stores/User/Message';
 //import { FolderUserStore } from 'Stores/User/Folder';
 
 import { Capa, Scope } from 'Common/Enums';
-import { /*root,*/ settings } from 'Common/Links';
+import { root, settings } from 'Common/Links';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewRight } from 'Knoin/AbstractViews';
@@ -83,6 +83,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 						AccountUserStore.loading(false);
 */
 //						rl.route.reload();
+						location.href = root();
 						location.reload();
 					}
 				}, {Email:account.email}

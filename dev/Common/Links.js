@@ -19,7 +19,7 @@ export const
 	 * @param {string=} startupUrl
 	 * @returns {string}
 	 */
-	root = (startupUrl = '') => HASH_PREFIX + pString(startupUrl),
+	root = () => HASH_PREFIX,
 
 	/**
 	 * @returns {string}
