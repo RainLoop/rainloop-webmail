@@ -154,28 +154,20 @@ Object.assign(ko.bindingHandlers, {
 
 ko.extenders.limitedList = (target, limitedList) => {
 	const result = ko
-			.computed({
-				read: target,
-				write: (newValue) => {
-					const currentValue = ko.unwrap(target),
-						list = ko.unwrap(limitedList);
-
-					if (arrayLength(list)) {
-						if (list.includes(newValue)) {
-							target(newValue);
-						} else if (list.includes(currentValue, list)) {
-							target(currentValue + ' ');
-							target(currentValue);
-						} else {
-							target(list[0] + ' ');
-							target(list[0]);
-						}
-					} else {
-						target('');
-					}
+		.computed({
+			read: target,
+			write: newValue => {
+				let currentValue = target(),
+					list = ko.unwrap(limitedList);
+				list = arrayLength(list) ? list : [''];
+				if (!list.includes(newValue)) {
+					newValue = list.includes(currentValue, list) ? currentValue : list[0];
+					target(newValue + ' ');
 				}
-			})
-			.extend({ notify: 'always' });
+				target(newValue);
+			}
+		})
+		.extend({ notify: 'always' });
 
 	result(target());
 
