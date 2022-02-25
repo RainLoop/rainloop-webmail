@@ -103,17 +103,6 @@ const
 							vmDom.classList.remove('animate'); // trigger the transitions
 						}
 						arePopupsVisible(0 < visiblePopups.size);
-/*
-						// the old ko.bindingHandlers.modal
-						const close = vmDom.querySelector('.close'),
-							click = () => vm.modalVisibility(false);
-						if (close) {
-							close.addEventListener('click.koModal', click);
-							ko.utils.domNodeDisposal.addDisposeCallback(vmDom, () =>
-								close.removeEventListener('click.koModal', click)
-							);
-						}
-*/
 					});
 					vmDom.addEventListener('transitionend', endShowHide);
 				}

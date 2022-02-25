@@ -29,8 +29,8 @@ class AbstractView {
 
 /*
 	onBuild() {}
-	onBeforeShow() {}
-	onShow() {}
+	onBeforeShow() {} // Happens before: hidden = false
+	onShow() {}       // Happens after: hidden = false
 	onHide() {}
 */
 
@@ -71,13 +71,17 @@ export class AbstractViewPopup extends AbstractView
 		shortcuts.add('backspace', '', name, inFocus());
 	}
 
+	// Happens when user hits Escape key
 	onClose() {
 		return true;
 	}
 
 /*
-	afterShow() {}
-	afterHide() {}
+	onBeforeShow() {} // Happens before showModal()
+	onShow() {}       // Happens after showModal()
+	afterShow() {}    // Happens after showModal() animation transitionend
+	onHide() {}       // Happens before animation transitionend
+	afterHide() {}    // Happens after  animation transitionend
 
 	closeCommand() {}
 */
