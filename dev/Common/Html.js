@@ -67,44 +67,27 @@ export const
 				'background', 'bgcolor', 'alt', 'height', 'width', 'src', 'href',
 				'border', 'bordercolor', 'charset', 'direction', 'language',
 				// a
-				'coords', 'download', 'hreflang', 'shape',
+				'download', 'hreflang',
 				// body
-				'alink', 'bgproperties', 'bottommargin', 'leftmargin', 'link', 'rightmargin', 'text', 'topmargin', 'vlink',
-				'marginwidth', 'marginheight', 'offset',
-				// button,
-				'disabled', 'type', 'value',
+				'alink', 'bottommargin', 'leftmargin', 'link', 'rightmargin', 'text', 'topmargin', 'vlink',
 				// col
 				'align', 'valign',
 				// font
 				'color', 'face', 'size',
-				// form
-				'novalidate',
 				// hr
 				'noshade',
 				// img
-				'hspace', 'sizes', 'srcset', 'vspace', 'usemap',
-				// input, textarea
-				'checked', 'max', 'min', 'maxlength', 'multiple', 'pattern', 'placeholder', 'readonly',
-					'required', 'step', 'wrap',
-				// label
-				'for',
+				'hspace', 'sizes', 'srcset', 'vspace',
 				// meter
-				'low', 'high', 'optimum',
+				'low', 'high', 'optimum', 'value',
 				// ol
 				'reversed', 'start',
-				// option
-				'selected', 'label',
 				// table
 				'cols', 'rows', 'frame', 'rules', 'summary', 'cellpadding', 'cellspacing',
 				// th
 				'abbr', 'scope',
 				// td
-				'axis', 'colspan', 'rowspan', 'headers', 'nowrap'
-			],
-			disallowedAttributes = [
-				'id', 'class', 'contenteditable', 'designmode', 'formaction', 'manifest', 'action',
-				'data-bind', 'data-reactid', 'xmlns', 'srcset',
-				'fscommand', 'seeksegmenttime'
+				'colspan', 'rowspan', 'headers'
 			],
 			disallowedTags = [
 				'HEAD','STYLE','SVG','SCRIPT','TITLE','LINK','BASE','META',
@@ -168,6 +151,19 @@ export const
 				return;
 			}
 */
+			const aAttrsForRemove = [];
+
+			if (oElement.hasAttributes()) {
+				let i = oElement.attributes.length;
+				while (i--) {
+					let sAttrName = oElement.attributes[i].name.toLowerCase();
+					if (!allowedAttributes.includes(sAttrName)) {
+						delAttribute(sAttrName);
+						aAttrsForRemove.push(sAttrName);
+					}
+				}
+			}
+
 			if ('BODY' === name) {
 				forEachObjectEntry(tasks, (name, cb) => {
 					if (hasAttribute(name)) {
@@ -189,7 +185,7 @@ export const
 			else if ('A' === name) {
 				value = oElement.href;
 				value = stripTracking(value);
-				if (!/^([a-z]+):/i.test(value) && '//' !== value.slice(0, 2)) {
+				if (!/^([a-z]+):/i.test(value)) {
 					setAttribute('data-x-broken-href', value);
 					delAttribute('href');
 				} else {
@@ -197,25 +193,6 @@ export const
 					setAttribute('rel', 'external nofollow noopener noreferrer');
 				}
 				setAttribute('tabindex', '-1');
-			}
-
-			const aAttrsForRemove = [];
-
-			if (oElement.hasAttributes()) {
-				let i = oElement.attributes.length;
-				while (i--) {
-					let sAttrName = oElement.attributes[i].name.toLowerCase();
-					if (!allowedAttributes.includes(sAttrName)
-					 || 'on' === sAttrName.slice(0, 2)
-					 || 'form' === sAttrName.slice(0, 4)
-//					 || 'data-' === sAttrName.slice(0, 5)
-//					 || sAttrName.includes(':')
-					 || disallowedAttributes.includes(sAttrName))
-					{
-						delAttribute(sAttrName);
-						aAttrsForRemove.push(sAttrName);
-					}
-				}
 			}
 
 			// SVG xlink:href
