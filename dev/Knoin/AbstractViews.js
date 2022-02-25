@@ -59,8 +59,6 @@ export class AbstractViewPopup extends AbstractView
 		super('Popups' + name, ViewType.Popup);
 		this.keyScope.scope = name;
 		this.modalVisibility = ko.observable(false).extend({ rateLimit: 0 });
-
-		this.onClose = this.onClose.debounce(200);
 		shortcuts.add('escape,close', '', name, () => {
 			if (this.modalVisibility() && this.onClose()) {
 				this.closeCommand();
@@ -71,9 +69,9 @@ export class AbstractViewPopup extends AbstractView
 		shortcuts.add('backspace', '', name, inFocus());
 	}
 
-	// Happens when user hits Escape key
+	// Happens when user hits Escape or Close key
 	onClose() {
-		return true;
+		return true; // false to prevent closing
 	}
 
 /*
