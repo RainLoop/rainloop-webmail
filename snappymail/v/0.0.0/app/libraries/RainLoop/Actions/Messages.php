@@ -1167,16 +1167,9 @@ trait Messages
 
 				$sHtml = \MailSo\Base\HtmlUtils::BuildHtml($sHtml, $aFoundCids, $aFoundDataURL, $aFoundContentLocationUrls);
 				$this->Plugins()->RunHook('filter.message-html', array($oAccount, $oMessage, &$sHtml));
-				$oAlternativePart = new MimePart;
-				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/html; charset=utf-8');
-				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
-				$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
-					\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sHtml))),
-					'convert.quoted-printable-encode'
-				);
-				$oPart->SubParts->append($oAlternativePart);
 
-				$sPlain = \MailSo\Base\HtmlUtils::ConvertHtmlToPlain($sHtml);
+				// First add plain
+				$sPlain = $this->GetActionParam('Text', '') ?: \MailSo\Base\HtmlUtils::ConvertHtmlToPlain($sHtml);
 				$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sPlain));
 				$oAlternativePart = new MimePart;
 				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset=utf-8');
@@ -1186,10 +1179,20 @@ trait Messages
 					'convert.quoted-printable-encode'
 				);
 				$oPart->SubParts->append($oAlternativePart);
+				unset($sPlain);
+
+				// Now add HTML
+				$oAlternativePart = new MimePart;
+				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/html; charset=utf-8');
+				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
+				$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
+					\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sHtml))),
+					'convert.quoted-printable-encode'
+				);
+				$oPart->SubParts->append($oAlternativePart);
 
 				unset($oAlternativePart);
 				unset($sHtml);
-				unset($sPlain);
 
 			} else {
 				$sPlain = $this->GetActionParam('Text', '');

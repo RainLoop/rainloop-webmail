@@ -414,6 +414,7 @@ export class ComposePopupView extends AbstractViewPopup {
 					.replace(/(<[^>]+)\s+data-hs-[a-z-]+=("[^"]+"|'[^']+')/gi, '$1');
 			} while (l != Text.length)
 			params.Html = Text;
+			params.Text = htmlToPlain(Text);
 		} else {
 			params.Text = Text;
 		}
@@ -428,13 +429,14 @@ export class ComposePopupView extends AbstractViewPopup {
 			data.headers['Content-Transfer-Encoding'] = 'base64';
 			data.body = base64_encode(Text);
 			if (TextIsHtml) {
-				let alternative = new MimePart;
+				const alternative = new MimePart, plain = new MimePart;
 				alternative.headers['Content-Type'] = 'multipart/alternative';
-				alternative.children.push(data);
-				data = new MimePart;
-				data.headers['Content-Type'] = 'text/plain; charset="utf-8"';
-				data.headers['Content-Transfer-Encoding'] = 'base64';
-				data.body = base64_encode(htmlToPlain(Text));
+				plain.headers['Content-Type'] = 'text/plain; charset="utf-8"';
+				plain.headers['Content-Transfer-Encoding'] = 'base64';
+				plain.body = base64_encode(params.Text);
+				// First add plain
+				alternative.children.push(plain);
+				// Now add HTML
 				alternative.children.push(data);
 				data = alternative;
 			}
