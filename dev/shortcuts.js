@@ -14,14 +14,23 @@ const
 	},
 	toArray = v => Array.isArray(v) ? v : v.split(/\s*,\s*/),
 
-	// ignore keydown in any element that supports keyboard input
-	filter = node => !(!node.closest || node.closest('input,select,textarea,[contenteditable]')),
+	exec = (event, cmd) => {
+		try {
+			// call the handler and stop the event if neccessary
+			if (!event.defaultPrevented && cmd(event) === false) {
+				event.preventDefault();
+				event.stopPropagation();
+			}
+		} catch (e) {
+			console.error(e);
+		}
+	},
 
 	shortcuts = {
 		on: () => doc.addEventListener('keydown', keydown),
 		off: () => doc.removeEventListener('keydown', keydown),
 		add: (keys, modifiers, scopes, method) => {
-			if (method === undefined) {
+			if (null == method) {
 				method = scopes;
 				scopes = 'all';
 			}
@@ -54,25 +63,13 @@ const
 
 	keydown = event => {
 		let key = (event.key || '').toLowerCase().replace(' ','space'),
-			scopes = [];
-		scope[key] && scopes.push(scope[key]);
-		_scope !== 'all' && _scopes.all[key] && scopes.push(_scopes.all[key]);
-		if (scopes.length && filter(event.target)) {
+			target = event.target;
+		 // ignore keydown in any element that supports keyboard input unless it's the Escape key
+		if ('escape' === key || !target.closest || !target.closest('input,select,textarea,[contenteditable]')) {
 			let modifiers = ['alt','ctrl','meta','shift'].filter(v => event[v+'Key']).join('+');
-			scopes.forEach(actions => {
-				// for each potential shortcut
-				actions[modifiers] && actions[modifiers].forEach(cmd => {
-					try {
-						// call the handler and stop the event if neccessary
-						if (!event.defaultPrevented && cmd(event) === false) {
-							event.preventDefault();
-							event.stopPropagation();
-						}
-					} catch (e) {
-						console.error(e);
-					}
-				});
-			});
+			scope[key] && scope[key][modifiers] && scope[key][modifiers].forEach(cmd => exec(event, cmd));
+			!event.defaultPrevented && _scope !== 'all' && _scopes.all[key] && _scopes.all[key][modifiers]
+				&& _scopes.all[key][modifiers].forEach(cmd => exec(event, cmd));
 		}
 	};
 

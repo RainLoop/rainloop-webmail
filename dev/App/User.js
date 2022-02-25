@@ -3,8 +3,6 @@ import 'External/User/ko';
 import { isArray, pString } from 'Common/Utils';
 import { mailToHelper, setLayoutResizer } from 'Common/UtilsUser';
 
-import { Scope } from 'Common/Enums';
-
 import {
 	FolderType,
 	SetSystemFoldersNotification,
@@ -90,7 +88,7 @@ class AppUser extends AbstractApp {
 		const fn = (ev=>$htmlCL.toggle('rl-ctrl-key-pressed', ev.ctrlKey)).debounce(500);
 		addEventsListener(doc, ['keydown','keyup'], fn);
 
-		shortcuts.add('escape,enter', '', Scope.All, () => rl.Dropdowns.detectVisibility());
+		shortcuts.add('escape,enter', '', () => rl.Dropdowns.detectVisibility());
 	}
 
 	reload() {

@@ -16,15 +16,11 @@ addObservablesTo(AppUserStore, {
 });
 
 AppUserStore.focusedState.subscribe(value => {
-	switch (value) {
-		case Scope.MessageList:
-		case Scope.MessageView:
-		case Scope.FolderList:
+	['FolderList','MessageList','MessageView'].forEach(name => {
+		if (name === value) {
 			keyScope(value);
 			ThemeStore.isMobile() && leftPanelDisabled(Scope.FolderList !== value);
-			break;
-	}
-	['FolderList','MessageList','MessageView'].forEach(name => {
+		}
 		let dom = elementById('V-Mail'+name);
 		dom && dom.classList.toggle('focused', name === value);
 	});
