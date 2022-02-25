@@ -110,16 +110,15 @@ export const
 				'HEAD','STYLE','SVG','SCRIPT','TITLE','LINK','BASE','META',
 				'INPUT','OUTPUT','SELECT','BUTTON','TEXTAREA',
 				'BGSOUND','KEYGEN','SOURCE','OBJECT','EMBED','APPLET','IFRAME','FRAME','FRAMESET','VIDEO','AUDIO','AREA','MAP'
+			],
+			inlineTags = [
+				'A','B','EM','I','SPAN','STRONG','O:P'
 			];
 
 		tpl.innerHTML = html
 			.replace(/(<pre[^>]*>)([\s\S]*?)(<\/pre>)/gi, aMatches => {
 				return (aMatches[1] + aMatches[2].trim() + aMatches[3].trim()).replace(/\r?\n/g, '<br>');
 			})
-			// GetDomFromText
-			.replace('<o:p></o:p>', '')
-			.replace('<o:p>', '<span>')
-			.replace('</o:p>', '</span>')
 			// \MailSo\Base\HtmlUtils::ClearFastTags
 			.replace(/<!doctype[^>]*>/i, '')
 			.replace(/<\?xml [^>]*\?>/i, '')
@@ -149,12 +148,13 @@ export const
 //			 || (oStyle.maxHeight && 1 > parseFloat(oStyle.maxHeight)
 //			 || (oStyle.maxWidth && 1 > parseFloat(oStyle.maxWidth)
 //			 || ('0' === oStyle.opacity
+			 || (inlineTags.includes(name) && '' == oElement.textContent.trim())
 			) {
 				oElement.remove();
 				return;
 			}
 //			if (['CENTER','FORM'].includes(name)) {
-			if ('FORM' === name) {
+			if ('FORM' === name || 'O:P' === name) {
 				replaceWithChildren(oElement);
 				return;
 			}
@@ -374,8 +374,11 @@ export const
 					// Convert child blockquote first
 					blockquotes(bq);
 					// Convert blockquote
-					bq.innerHTML = '\n' + ('\n' + bq.innerHTML.replace(/\n{3,}/gm, '\n\n').trim() + '\n').replace(/^/gm, '&gt; ');
-					replaceWithChildren(bq);
+//					bq.innerHTML = '\n' + ('\n' + bq.innerHTML.replace(/\n{3,}/gm, '\n\n').trim() + '\n').replace(/^/gm, '&gt; ');
+//					replaceWithChildren(bq);
+					bq.replaceWith(
+						'\n' + ('\n' + bq.textContent.replace(/\n{3,}/g, '\n\n').trim() + '\n').replace(/^/gm, '> ')
+					);
 				}
 			};
 
@@ -408,7 +411,11 @@ export const
 		// paragraphs
 		forEach('p', node => {
 			node.prepend('\n\n');
-			node.after('\n\n');
+			if ('' == node.textContent.trim()) {
+				node.remove();
+			} else {
+				node.after('\n\n');
+			}
 		});
 
 		// proper indenting and numbering of (un)ordered lists
@@ -429,7 +436,10 @@ export const
 		});
 
 		// Convert anchors
-		forEach('a', a => a.replaceWith(a.textContent + ' ' + a.href));
+		forEach('a', a => {
+			let txt = a.textContent, href = a.href;
+			return a.replaceWith((txt.trim() == href ? txt : txt + ' ' + href + ' '));
+		});
 
 		// Bold
 		forEach('b,strong', b => b.replaceWith(`**${b.textContent}**`));
