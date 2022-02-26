@@ -464,12 +464,18 @@ class SquireUI
 					}
 					this.plain.value = cfg.insertBefore ? '\n\n' + signature + '\n\n' + text : text + '\n\n' +  signature;
 				} else {
-					const root = this.squire.getRoot(),
+					const squire = this.squire,
+						root = squire.getRoot(),
+						range = squire.getSelection(),
 						div = createElement('div');
 					div.className = 'rl-signature';
 					div.innerHTML = cfg.isHtml ? cfg.signature : plainToHtml(cfg.signature);
 					root.querySelectorAll('div.rl-signature').forEach(node => node.remove());
 					cfg.insertBefore ? root.prepend(div) : root.append(div);
+					// Move cursor above signature
+					range.setStart(div, 0);
+					range.setEnd(div, 0);
+					squire.setSelection( range );
 				}
 				this._prev_txt_sig = signature;
 			} catch (e) {
