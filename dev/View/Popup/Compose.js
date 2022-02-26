@@ -534,19 +534,17 @@ export class ComposePopupView extends AbstractViewPopup {
 					Remote.request('SendMessage',
 						(iError, data) => {
 							this.sending(false);
-							if (this.modalVisibility()) {
-								if (iError) {
-									if (Notification.CantSaveMessage === iError) {
-										this.sendSuccessButSaveError(true);
-										this.savedErrorDesc(i18n('COMPOSE/SAVED_ERROR_ON_SEND').trim());
-									} else {
-										this.sendError(true);
-										this.sendErrorDesc(getNotification(iError, data && data.ErrorMessage)
-											|| getNotification(Notification.CantSendMessage));
-									}
+							if (iError) {
+								if (Notification.CantSaveMessage === iError) {
+									this.sendSuccessButSaveError(true);
+									this.savedErrorDesc(i18n('COMPOSE/SAVED_ERROR_ON_SEND').trim());
 								} else {
-									this.closeCommand();
+									this.sendError(true);
+									this.sendErrorDesc(getNotification(iError, data && data.ErrorMessage)
+										|| getNotification(Notification.CantSendMessage));
 								}
+							} else {
+								this.closeCommand();
 							}
 							setFolderHash(this.draftsFolder(), '');
 							setFolderHash(sSentFolder, '');
@@ -626,21 +624,18 @@ export class ComposePopupView extends AbstractViewPopup {
 	}
 
 	deleteCommand() {
-		if (AskPopupView.hidden() && this.modalVisibility()) {
-			showScreenPopup(AskPopupView, [
-				i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'),
-				() => {
-					if (this.modalVisibility()) {
-						const
-							sFromFolderFullName = this.draftsFolder(),
-							aUidForRemove = [this.draftUid()];
-						messagesDeleteHelper(sFromFolderFullName, aUidForRemove);
-						MessagelistUserStore.removeMessagesFromList(sFromFolderFullName, aUidForRemove);
-						this.closeCommand();
-					}
-				}
-			]);
-		}
+		AskPopupView.hidden()
+		&& showScreenPopup(AskPopupView, [
+			i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'),
+			() => {
+				const
+					sFromFolderFullName = this.draftsFolder(),
+					aUidForRemove = [this.draftUid()];
+				messagesDeleteHelper(sFromFolderFullName, aUidForRemove);
+				MessagelistUserStore.removeMessagesFromList(sFromFolderFullName, aUidForRemove);
+				this.closeCommand();
+			}
+		]);
 	}
 
 	onClose() {
@@ -652,7 +647,6 @@ export class ComposePopupView extends AbstractViewPopup {
 		this.bSkipNextHide = true;
 
 		if (
-			this.modalVisibility() &&
 			!this.saving() &&
 			!this.sending() &&
 			!FolderUserStore.draftsFolderNotEnabled() &&
@@ -676,7 +670,7 @@ export class ComposePopupView extends AbstractViewPopup {
 	autosaveStart() {
 		clearTimeout(this.iTimer);
 		this.iTimer = setTimeout(()=>{
-			if (this.modalVisibility()
+			if (this.modalVisible()
 				&& !FolderUserStore.draftsFolderNotEnabled()
 				&& SettingsUserStore.allowDraftAutosave()
 				&& !this.isEmptyForm(false)
@@ -1191,7 +1185,7 @@ export class ComposePopupView extends AbstractViewPopup {
 	}
 
 	tryToClosePopup() {
-		if (AskPopupView.hidden() && this.modalVisibility()) {
+		if (AskPopupView.hidden()) {
 			if (this.bSkipNextHide || (this.isEmptyForm() && !this.draftUid())) {
 				this.closeCommand();
 			} else {
@@ -1371,7 +1365,7 @@ export class ComposePopupView extends AbstractViewPopup {
 		const el = doc.getElementById('rl-app');
 		this.oContent = initFullscreen(el, () =>
 			ThemeStore.isMobile()
-			&& this.modalVisibility()
+			&& this.modalVisible()
 			&& (getFullscreenElement() !== el)
 			&& this.skipCommand()
 		);

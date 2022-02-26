@@ -58,9 +58,9 @@ export class AbstractViewPopup extends AbstractView
 	{
 		super('Popups' + name, ViewType.Popup);
 		this.keyScope.scope = name;
-		this.modalVisibility = ko.observable(false).extend({ rateLimit: 0 });
+		this.modalVisible = ko.observable(false).extend({ rateLimit: 0 });
 		shortcuts.add('escape,close', '', name, () => {
-			if (this.modalVisibility() && this.onClose()) {
+			if (this.modalVisible() && this.onClose()) {
 				this.closeCommand();
 				return false;
 			}
@@ -90,7 +90,7 @@ AbstractViewPopup.showModal = function(params = []) {
 }
 
 AbstractViewPopup.hidden = function() {
-	return !this.__vm || !this.__vm.modalVisibility();
+	return !this.__vm || !this.__vm.modalVisible();
 }
 
 export class AbstractViewCenter extends AbstractView

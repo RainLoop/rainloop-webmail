@@ -83,7 +83,7 @@ const
 						}
 					};
 
-					vm.modalVisibility.subscribe(value => {
+					vm.modalVisible.subscribe(value => {
 						if (value) {
 							visiblePopups.add(vm);
 							vmDom.style.zIndex = 3000 + (visiblePopups.size * 2);
@@ -154,7 +154,7 @@ const
 	 */
 	hideScreenPopup = ViewModelClassToHide => {
 		if (ViewModelClassToHide && ViewModelClassToHide.__vm && ViewModelClassToHide.__dom) {
-			ViewModelClassToHide.__vm.modalVisibility(false);
+			ViewModelClassToHide.__vm.modalVisible(false);
 		}
 	},
 
@@ -266,7 +266,7 @@ export const
 
 			vm.onBeforeShow && vm.onBeforeShow(...params);
 
-			vm.modalVisibility(true);
+			vm.modalVisible(true);
 
 			vm.onShow && vm.onShow(...params);
 		}
