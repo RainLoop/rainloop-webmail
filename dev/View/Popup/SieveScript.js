@@ -35,12 +35,12 @@ export class SieveScriptPopupView extends AbstractViewPopup {
 			script = self.script();
 		if (!self.saving/* && script.hasChanges()*/) {
 			if (!script.verify()) {
-				return false;
+				return;
 			}
 
 			if (!script.exists() && SieveUserStore.scripts.find(item => item.name() === script.name())) {
 				script.nameError(true);
-				return false;
+				return;
 			}
 
 			self.saving = true;
@@ -66,8 +66,6 @@ export class SieveScriptPopupView extends AbstractViewPopup {
 				script.toJson()
 			);
 		}
-
-		return true;
 	}
 
 	deleteFilter(filter) {
@@ -80,10 +78,7 @@ export class SieveScriptPopupView extends AbstractViewPopup {
 		filter.generateID();
 		showScreenPopup(FilterPopupView, [
 			filter,
-			() => {
-				this.filters.push(filter);
-			},
-			false
+			() => this.filters.push(filter)
 		]);
 	}
 
@@ -105,13 +100,12 @@ export class SieveScriptPopupView extends AbstractViewPopup {
 	}
 
 	toggleFiltersRaw() {
-		if (!this.rawActive()) {
-			let script = this.script(),
-				changed = script.hasChanges();
+		let script = this.script(), notRaw = !this.rawActive();
+		if (notRaw) {
 			script.body(script.filtersToRaw());
-			script.hasChanges(changed);
+			script.hasChanges(script.hasChanges());
 		}
-		this.rawActive(!this.rawActive());
+		this.rawActive(notRaw);
 	}
 
 	onBuild(oDom) {
@@ -123,9 +117,10 @@ export class SieveScriptPopupView extends AbstractViewPopup {
 	}
 
 	onShow(oScript) {
+		let raw = !oScript.allowFilters();
 		this.script(oScript);
-		this.rawActive(!oScript.allowFilters());
-		this.allowToggle(oScript.allowFilters());
+		this.rawActive(raw);
+		this.allowToggle(!raw);
 		this.saveError(false);
 	}
 

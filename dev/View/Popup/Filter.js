@@ -24,8 +24,6 @@ export class FilterPopupView extends AbstractViewPopup {
 			selectedFolderValue: ''
 		});
 
-		this.fTrueCallback = null;
-
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 		this.folderSelectList = koComputable(() =>
 			folderListOptionsBuilder(
@@ -35,7 +33,7 @@ export class FilterPopupView extends AbstractViewPopup {
 			)
 		);
 
-		this.selectedFolderValue.subscribe(() => this.filter() && this.filter().actionValueError(false));
+		this.selectedFolderValue.subscribe(() => this.filter().actionValueError(false));
 
 		['actionTypeOptions','fieldOptions','typeOptions','typeOptionsSize','typeOptionsBody'].forEach(
 			key => this[key] = ko.observableArray()
@@ -47,21 +45,14 @@ export class FilterPopupView extends AbstractViewPopup {
 	}
 
 	saveFilter() {
-		if (this.filter()) {
-			if (FilterAction.MoveTo === this.filter().actionType()) {
-				this.filter().actionValue(this.selectedFolderValue());
-			}
-
-			if (!this.filter().verify()) {
-				return false;
-			}
-
-			this.fTrueCallback && this.fTrueCallback(this.filter());
-
-			this.modalVisibility() && this.closeCommand();
+		if (FilterAction.MoveTo === this.filter().actionType()) {
+			this.filter().actionValue(this.selectedFolderValue());
 		}
 
-		return true;
+		if (this.filter().verify()) {
+			this.fTrueCallback();
+			this.closeCommand();
+		}
 	}
 
 	populateOptions() {
@@ -88,9 +79,7 @@ export class FilterPopupView extends AbstractViewPopup {
 		// name: i18n('GLOBAL/NONE')});
 		const modules = SieveUserStore.capa;
 		if (modules) {
-			if (modules.includes('imap4flags')) {
-				this.allowMarkAsRead(true);
-			}
+			this.allowMarkAsRead(modules.includes('imap4flags'));
 
 			if (modules.includes('fileinto')) {
 				this.actionTypeOptions.push({
@@ -137,9 +126,7 @@ export class FilterPopupView extends AbstractViewPopup {
 	}
 
 	removeCondition(oConditionToDelete) {
-		if (this.filter()) {
-			this.filter().removeCondition(oConditionToDelete);
-		}
+		this.filter().removeCondition(oConditionToDelete);
 	}
 
 	onShow(oFilter, fTrueCallback, bEdit) {
@@ -148,16 +135,12 @@ export class FilterPopupView extends AbstractViewPopup {
 		this.fTrueCallback = fTrueCallback;
 		this.filter(oFilter);
 
-		if (oFilter) {
-			this.selectedFolderValue(oFilter.actionValue());
-		}
+		this.selectedFolderValue(oFilter.actionValue());
 
-		if (!bEdit && oFilter) {
-			oFilter.nameFocused(true);
-		}
+		bEdit || oFilter.nameFocused(true);
 	}
 
 	afterShow() {
-		this.isNew() && this.filter() && this.filter().nameFocused(true);
+		this.isNew() && this.filter().nameFocused(true);
 	}
 }
