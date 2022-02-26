@@ -275,7 +275,7 @@ const
 			try {
 				node.append( fixer );
 			} catch ( error ) {
-				self.didError({
+				didError({
 					name: 'Squire: fixCursor – ' + error,
 					message: 'Parent: ' + node.nodeName + '/' + node.innerHTML +
 						' appendChild: ' + fixer.nodeName
@@ -2632,30 +2632,6 @@ class Squire
 		return this._root;
 	}
 
-	modifyDocument ( modificationCallback ) {
-		let mutation = this._mutation;
-		if ( mutation ) {
-			if ( mutation.takeRecords().length ) {
-				this._docWasChanged();
-			}
-			mutation.disconnect();
-		}
-
-		this._ignoreAllChanges = true;
-		modificationCallback();
-		this._ignoreAllChanges = false;
-
-		if ( mutation ) {
-			mutation.observe( this._root, {
-				childList: true,
-				attributes: true,
-				characterData: true,
-				subtree: true
-			});
-			this._ignoreChange = false;
-		}
-	}
-
 	// --- Events ---
 
 	fireEvent ( type, event ) {
@@ -2765,27 +2741,6 @@ class Squire
 
 	// --- Selection and Path ---
 
-	getCursorPosition ( range ) {
-		if ( ( !range && !( range = this.getSelection() ) ) ||
-				!range.getBoundingClientRect ) {
-			return null;
-		}
-		// Get the bounding rect
-		let rect = range.getBoundingClientRect();
-		let node, parent;
-		if ( rect && !rect.top ) {
-			this._ignoreChange = true;
-			node = createElement( 'SPAN' );
-			node.textContent = ZWS;
-			insertNodeInRange( range, node );
-			rect = node.getBoundingClientRect();
-			parent = node.parentNode;
-			node.remove(  );
-			mergeInlines( parent, range );
-		}
-		return rect;
-	}
-
 	setSelection ( range ) {
 		if ( range ) {
 			this._lastRange = range;
@@ -2854,62 +2809,6 @@ class Squire
 	getSelectionClosest (selector) {
 		let range = this.getSelection();
 		return range && getClosest(range.commonAncestorContainer, this._root, selector);
-	}
-
-	selectionContains (selector) {
-		let range = this.getSelection(),
-			node = range && range.commonAncestorContainer;
-		if (node && !range.collapsed) {
-			node = node.querySelector ? node : node.parentElement;
-			// TODO: isNodeContainedInRange( range, node ) for real selection match?
-			return !!(node && node.querySelector(selector));
-		}
-		return false;
-	}
-
-	getSelectedText () {
-		let range = this.getSelection();
-		if ( !range || range.collapsed ) {
-			return '';
-		}
-		let walker = createTreeWalker(
-			range.commonAncestorContainer,
-			SHOW_ELEMENT_OR_TEXT,
-			node => isNodeContainedInRange( range, node )
-		);
-		let startContainer = range.startContainer;
-		let endContainer = range.endContainer;
-		let node = walker.currentNode = startContainer;
-		let textContent = '';
-		let addedTextInBlock = false;
-		let value;
-
-		if ( filterAccept != walker.filter.acceptNode( node ) ) {
-			node = walker.nextNode();
-		}
-
-		while ( node ) {
-			if ( node.nodeType === TEXT_NODE ) {
-				value = node.data;
-				if ( value && ( /\S/.test( value ) ) ) {
-					if ( node === endContainer ) {
-						value = value.slice( 0, range.endOffset );
-					}
-					if ( node === startContainer ) {
-						value = value.slice( range.startOffset );
-					}
-					textContent += value;
-					addedTextInBlock = true;
-				}
-			} else if ( node.nodeName === 'BR' ||
-					addedTextInBlock && !isInline( node ) ) {
-				textContent += '\n';
-				addedTextInBlock = false;
-			}
-			node = walker.nextNode();
-		}
-
-		return textContent;
 	}
 
 	getPath () {
@@ -3885,18 +3784,6 @@ class Squire
 
 	// --- Formatting ---
 
-	addStyles ( styles ) {
-		if ( styles ) {
-			let head = doc.documentElement.firstChild,
-				style = createElement( 'STYLE', {
-					type: 'text/css'
-				});
-			style.append( doc.createTextNode( styles ) );
-			head.append( style );
-		}
-		return this;
-	}
-
 	makeLink ( url, attributes ) {
 		let range = this.getSelection();
 		if ( range.collapsed ) {
@@ -3953,36 +3840,6 @@ class Squire
 				}
 			}, null, range);
 		}
-		return this.focus();
-	}
-
-	setTextColor ( color ) {
-		return this.setStyle({
-			color: color
-		});
-	}
-
-	setBackgroundColor ( color ) {
-		return this.setStyle({
-			backgroundColor: color
-		});
-	}
-
-	setTextAlignment ( alignment ) {
-		this.forEachBlock( block => {
-			block.style.textAlign = alignment || '';
-		} );
-		return this.focus();
-	}
-
-	setTextDirection ( direction ) {
-		this.forEachBlock( block => {
-			if ( direction ) {
-				block.dir = direction;
-			} else {
-				block.removeAttribute( 'dir' );
-			}
-		} );
 		return this.focus();
 	}
 
@@ -4089,83 +3946,6 @@ class Squire
 	}
 
 	// ---
-
-	removeAllFormatting ( range ) {
-		if ( !range && !( range = this.getSelection() ) || range.collapsed ) {
-			return this;
-		}
-
-		let root = this._root;
-		let stopNode = range.commonAncestorContainer;
-		while ( stopNode && !isBlock( stopNode ) ) {
-			stopNode = stopNode.parentNode;
-		}
-		if ( !stopNode ) {
-			expandRangeToBlockBoundaries( range, root );
-			stopNode = root;
-		}
-		if ( stopNode.nodeType === TEXT_NODE ) {
-			return this;
-		}
-
-		// Record undo point
-		this.saveUndoState( range );
-
-		// Avoid splitting where we're already at edges.
-		moveRangeBoundariesUpTree( range, stopNode, stopNode, root );
-
-		// Split the selection up to the block, or if whole selection in same
-		// block, expand range boundaries to ends of block and split up to root.
-		let startContainer = range.startContainer;
-		let startOffset = range.startOffset;
-		let endContainer = range.endContainer;
-		let endOffset = range.endOffset;
-
-		// Split end point first to avoid problems when end and start
-		// in same container.
-		let formattedNodes = doc.createDocumentFragment();
-		let cleanNodes = doc.createDocumentFragment();
-		let nodeAfterSplit = split( endContainer, endOffset, stopNode, root );
-		let nodeInSplit = split( startContainer, startOffset, stopNode, root );
-		let nextNode, childNodes;
-
-		// Then replace contents in split with a cleaned version of the same:
-		// blocks become default blocks, text and leaf nodes survive, everything
-		// else is obliterated.
-		while ( nodeInSplit !== nodeAfterSplit ) {
-			nextNode = nodeInSplit.nextSibling;
-			formattedNodes.append( nodeInSplit );
-			nodeInSplit = nextNode;
-		}
-		removeFormatting( this, formattedNodes, cleanNodes );
-		cleanNodes.normalize();
-		nodeInSplit = cleanNodes.firstChild;
-		nextNode = cleanNodes.lastChild;
-
-		// Restore selection
-		childNodes = stopNode.childNodes;
-		if ( nodeInSplit ) {
-			stopNode.insertBefore( cleanNodes, nodeAfterSplit );
-			startOffset = indexOf( childNodes, nodeInSplit );
-			endOffset = indexOf( childNodes, nextNode ) + 1;
-		} else {
-			startOffset = indexOf( childNodes, nodeAfterSplit );
-			endOffset = startOffset;
-		}
-
-		// Merge text nodes at edges, if possible
-		range.setStart( stopNode, startOffset );
-		range.setEnd( stopNode, endOffset );
-		mergeInlines( stopNode, range );
-
-		// And move back down the tree
-		moveRangeBoundariesDownTree( range );
-
-		this.setSelection( range );
-		this._updatePath( range, true );
-
-		return this.focus();
-	}
 
 	changeIndentationLevel (direction) {
 		let parent = this.getSelectionClosest('UL,OL,BLOCKQUOTE');

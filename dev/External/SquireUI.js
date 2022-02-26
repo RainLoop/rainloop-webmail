@@ -70,9 +70,9 @@ class SquireUI
 {
 	constructor(container) {
 		const
-			doClr = fn => () => {
+			doClr = name => () => {
 				clr.value = '';
-				clr.onchange = () => squire[fn](clr.value);
+				clr.onchange = () => squire.setStyle({[name]:clr.value});
 				clr.click();
 			},
 
@@ -114,29 +114,15 @@ class SquireUI
 				colors: {
 					textColor: {
 						html: 'A<sub>▾</sub>',
-						cmd: doClr('setTextColor'),
+						cmd: doClr('color'),
 						hint: 'Text color'
 					},
 					backgroundColor: {
 						html: '🎨', /* ▧ */
-						cmd: doClr('setBackgroundColor'),
+						cmd: doClr('backgroundColor'),
 						hint: 'Background color'
 					},
 				},
-/*
-				bidi: {
-					bdoLtr: {
-						html: '&lrm;𝐁',
-						cmd: () => this.doAction('bold','B'),
-						hint: 'Bold'
-					},
-					bdoRtl: {
-						html: '&rlm;𝐁',
-						cmd: () => this.doAction('bold','B'),
-						hint: 'Bold'
-					}
-				},
-*/
 				inline: {
 					bold: {
 						html: 'B',
