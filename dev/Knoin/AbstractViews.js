@@ -60,7 +60,7 @@ export class AbstractViewPopup extends AbstractView
 		this.keyScope.scope = name;
 		this.modalVisible = ko.observable(false).extend({ rateLimit: 0 });
 		shortcuts.add('escape,close', '', name, () => {
-			if (this.modalVisible() && this.onClose()) {
+			if (this.modalVisible() && false !== this.onClose()) {
 				this.closeCommand();
 				return false;
 			}
@@ -70,14 +70,13 @@ export class AbstractViewPopup extends AbstractView
 	}
 
 	// Happens when user hits Escape or Close key
-	onClose() {
-		return true; // false to prevent closing
-	}
+	// return false to prevent closing
+	onClose() {}
 
 /*
 	onBeforeShow() {} // Happens before showModal()
-	onShow() {}       // Happens after showModal()
-	afterShow() {}    // Happens after showModal() animation transitionend
+	onShow() {}       // Happens after  showModal()
+	afterShow() {}    // Happens after  showModal() animation transitionend
 	onHide() {}       // Happens before animation transitionend
 	afterHide() {}    // Happens after  animation transitionend
 

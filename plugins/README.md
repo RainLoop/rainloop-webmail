@@ -17,6 +17,23 @@ JavaScript
 ```javascript
 class PluginPopupView extends rl.pluginPopupView
 {
+	// Happens when DOM is created
+	onBuild(dom) {}
+
+	// Happens before showModal()
+	onBeforeShow(...params) {}
+	// Happens after showModal()
+	onShow(...params) {}
+	// Happens after showModal() animation transitionend
+	afterShow() {}
+
+	// Happens when user hits Escape or Close key
+	// return false to prevent closing, use closeCommand() manually
+	onClose() {}
+	// Happens before animation transitionend
+	onHide() {}
+	// Happens after animation transitionend
+	afterHide() {}
 }
 
 PluginPopupView.showModal();
