@@ -33,8 +33,6 @@ class TwoFactorAuthSettings
 {
 
 	constructor() {
-		this.lock = ko.observable(false);
-
 		this.processing = ko.observable(false);
 		this.clearing = ko.observable(false);
 		this.secreting = ko.observable(false);
@@ -90,10 +88,6 @@ class TwoFactorAuthSettings
 		this.onShowSecretResult = this.onShowSecretResult.bind(this);
 	}
 
-	configureTwoFactor() {
-//		showScreenPopup(require('View/Popup/TwoFactorConfiguration'));
-	}
-
 	showSecret() {
 		this.secreting(true);
 		rl.pluginRemoteRequest(this.onShowSecretResult, 'ShowTwoFactorSecret');
@@ -110,10 +104,6 @@ class TwoFactorAuthSettings
 		rl.pluginRemoteRequest(this.onResult, 'CreateTwoFactorSecret');
 	}
 
-	logout() {
-		rl.app.logout();
-	}
-
 	testTwoFactor() {
 		TwoFactorAuthTestPopupView.showModal([this.twoFactorTested]);
 	}
@@ -127,15 +117,8 @@ class TwoFactorAuthSettings
 		rl.pluginRemoteRequest(this.onResult, 'ClearTwoFactorInfo');
 	}
 
-	onShow(bLock) {
-		this.lock(!!bLock);
+	onShow() {
 		this.hideSecret('');
-	}
-
-	onHide() {
-		if (this.lock()) {
-			location.reload();
-		}
 	}
 
 	getQr() {
@@ -191,11 +174,8 @@ class TwoFactorAuthTestPopupView extends rl.pluginPopupView {
 		this.addObservables({
 			code: '',
 			codeStatus: null,
-
 			testing: false
 		});
-
-		this.koTestedTrigger = null;
 
 		ko.decorateCommands(this, {
 			testCodeCommand: self => self.code() && !self.testing()
@@ -207,25 +187,15 @@ class TwoFactorAuthTestPopupView extends rl.pluginPopupView {
 		Remote.verifyCode(iError => {
 			this.testing(false);
 			this.codeStatus(!iError);
-
-			if (this.koTestedTrigger && this.codeStatus()) {
-				this.koTestedTrigger(true);
-			}
+			this.twoFactorTested(!iError);
 		}, this.code());
 	}
 
-	clearPopup() {
+	onShow(twoFactorTested) {
 		this.code('');
 		this.codeStatus(null);
 		this.testing(false);
-
-		this.koTestedTrigger = null;
-	}
-
-	onShow(koTestedTrigger) {
-		this.clearPopup();
-
-		this.koTestedTrigger = koTestedTrigger;
+		this.twoFactorTested = twoFactorTested;
 	}
 }
 
