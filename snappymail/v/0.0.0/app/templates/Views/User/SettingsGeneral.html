@@ -42,7 +42,7 @@
 		<div>
 			<input type="number" min="10" max="50" step="1" class="span1" data-bind="textInput: messagesPerPage">
 			&nbsp;
-			<span data-bind="saveTrigger: mppTrigger"></span>
+			<span data-bind="saveTrigger: messagesPerPageTrigger"></span>
 		</div>
 	</div>
 	<div class="control-group">
@@ -77,7 +77,7 @@
 		<div>
 			<input type="number" min="0" step="1" class="span1" data-bind="textInput: messageReadDelay">
 			&nbsp;
-			<span data-i18n="SETTINGS_GENERAL/SECONDS"></label>
+			<span data-i18n="SETTINGS_GENERAL/SECONDS"></span>
 			<span data-bind="saveTrigger: messageReadDelayTrigger"></span>
 		</div>
 	</div>

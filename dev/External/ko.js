@@ -18,7 +18,7 @@ export const
 
 	addObservablesTo = (target, observables) =>
 		forEachObjectEntry(observables, (key, value) =>
-			target[key] = /*isArray(value) ? ko.observableArray(value) :*/ ko.observable(value) ),
+			target[key] || (target[key] = /*isArray(value) ? ko.observableArray(value) :*/ ko.observable(value)) ),
 
 	addComputablesTo = (target, computables) =>
 		forEachObjectEntry(computables, (key, fn) => target[key] = koComputable(fn)),

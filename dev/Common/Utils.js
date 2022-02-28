@@ -48,12 +48,6 @@ export const
 */
 	b64EncodeJSONSafe = data => b64EncodeJSON(data).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''),
 
-	settingsSaveHelperSimpleFunction = (koTrigger, context) =>
-		iError => {
-			koTrigger.call(context, iError ? SaveSettingsStep.FalseResult : SaveSettingsStep.TrueResult);
-			setTimeout(() => koTrigger.call(context, SaveSettingsStep.Idle), 1000);
-		},
-
 	changeTheme = (value, themeTrigger = ()=>0) => {
 		const themeStyle = elementById('app-theme-style'),
 			clearTimer = () => {

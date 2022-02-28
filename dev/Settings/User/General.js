@@ -3,10 +3,11 @@ import ko from 'ko';
 import { SaveSettingsStep } from 'Common/Enums';
 import { EditorDefaultType, Layout } from 'Common/EnumsUser';
 import { Settings, SettingsGet } from 'Common/Globals';
-import { isArray, settingsSaveHelperSimpleFunction } from 'Common/Utils';
-import { addObservablesTo, addSubscribablesTo, addComputablesTo } from 'External/ko';
+import { isArray } from 'Common/Utils';
+import { addSubscribablesTo, addComputablesTo } from 'External/ko';
 import { i18n, trigger as translatorTrigger, translatorReload, convertLangName } from 'Common/Translator';
 
+import { AbstractViewSettings } from 'Knoin/AbstractViews';
 import { showScreenPopup } from 'Knoin/Knoin';
 
 import { AppUserStore } from 'Stores/User/App';
@@ -22,8 +23,10 @@ import Remote from 'Remote/User/Fetch';
 import { IdentityPopupView } from 'View/Popup/Identity';
 import { LanguagesPopupView } from 'View/Popup/Languages';
 
-export class GeneralUserSettings /*extends AbstractViewSettings*/ {
+export class GeneralUserSettings extends AbstractViewSettings {
 	constructor() {
+		super();
+
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
 		this.messageReadDelay = SettingsUserStore.messageReadDelay;
@@ -48,14 +51,7 @@ export class GeneralUserSettings /*extends AbstractViewSettings*/ {
 		this.replySameFolder = SettingsUserStore.replySameFolder;
 		this.allowLanguagesOnSettings = !!SettingsGet('AllowLanguagesOnSettings');
 
-		this.languageTrigger = ko.observable(SaveSettingsStep.Idle).extend({ debounce: 100 });
-
-		addObservablesTo(this, {
-			mppTrigger: SaveSettingsStep.Idle,
-			messageReadDelayTrigger: SaveSettingsStep.Idle,
-			editorDefaultTypeTrigger: SaveSettingsStep.Idle,
-			layoutTrigger: SaveSettingsStep.Idle
-		});
+		this.languageTrigger = ko.observable(SaveSettingsStep.Idle);
 
 		this.identities = IdentityUserStore;
 
@@ -92,59 +88,51 @@ export class GeneralUserSettings /*extends AbstractViewSettings*/ {
 			}
 		});
 
+		this.addSetting('EditorDefaultType');
+		this.addSetting('MessageReadDelay');
+		this.addSetting('MessagesPerPage');
+		this.addSetting('Layout', () => MessagelistUserStore([]));
+
 		const fReloadLanguageHelper = (saveSettingsStep) => () => {
 				this.languageTrigger(saveSettingsStep);
 				setTimeout(() => this.languageTrigger(SaveSettingsStep.Idle), 1000);
-			};
+			},
+			fSaveHelper = key => value => Remote.saveSetting(key, value);
+
 		addSubscribablesTo(this, {
 			language: value => {
 				this.languageTrigger(SaveSettingsStep.Animate);
 				translatorReload(false, value)
-					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult),
-						fReloadLanguageHelper(SaveSettingsStep.FalseResult))
+					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult), fReloadLanguageHelper(SaveSettingsStep.FalseResult))
 					.then(() => Remote.saveSetting('Language', value));
 			},
 
-			editorDefaultType: value => Remote.saveSetting('EditorDefaultType', value,
-				settingsSaveHelperSimpleFunction(this.editorDefaultTypeTrigger, this)),
-
-			messageReadDelay: value => Remote.saveSetting('MessageReadDelay', value,
-				settingsSaveHelperSimpleFunction(this.messageReadDelayTrigger, this)),
-
-			messagesPerPage: value => Remote.saveSetting('MPP', value,
-				settingsSaveHelperSimpleFunction(this.mppTrigger, this)),
-
-			viewHTML: value => Remote.saveSetting('ViewHTML', value ? 1 : 0),
-			showImages: value => Remote.saveSetting('ShowImages', value ? 1 : 0),
+			viewHTML: fSaveHelper('ViewHTML'),
+			showImages: fSaveHelper('ShowImages'),
 
 			removeColors: value => {
 				let dom = MessageUserStore.bodiesDom();
 				if (dom) {
 					dom.innerHTML = '';
 				}
-				Remote.saveSetting('RemoveColors', value ? 1 : 0);
+				Remote.saveSetting('RemoveColors', value);
 			},
 
-			useCheckboxesInList: value => Remote.saveSetting('UseCheckboxesInList', value ? 1 : 0),
+			useCheckboxesInList: fSaveHelper('UseCheckboxesInList'),
 
-			enableDesktopNotification: value => Remote.saveSetting('DesktopNotifications', value ? 1 : 0),
+			enableDesktopNotification: fSaveHelper('DesktopNotifications'),
 
-			enableSoundNotification: value => Remote.saveSetting('SoundNotification', value ? 1 : 0),
+			enableSoundNotification: fSaveHelper('SoundNotification'),
 			notificationSound: value => {
 				Remote.saveSetting('NotificationSound', value);
 				Settings.set('NotificationSound', value);
 			},
 
-			replySameFolder: value => Remote.saveSetting('ReplySameFolder', value ? 1 : 0),
+			replySameFolder: fSaveHelper('ReplySameFolder'),
 
 			useThreads: value => {
 				MessagelistUserStore([]);
-				Remote.saveSetting('UseThreads', value ? 1 : 0);
-			},
-
-			layout: value => {
-				MessagelistUserStore([]);
-				Remote.saveSetting('Layout', value, settingsSaveHelperSimpleFunction(this.layoutTrigger, this));
+				Remote.saveSetting('UseThreads', value);
 			}
 		});
 	}

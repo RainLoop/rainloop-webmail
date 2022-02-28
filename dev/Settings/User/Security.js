@@ -1,21 +1,20 @@
-import ko from 'ko';
 import { koComputable } from 'External/ko';
 
-import { pInt, settingsSaveHelperSimpleFunction } from 'Common/Utils';
-import { Capa, SaveSettingsStep } from 'Common/Enums';
+import { Capa } from 'Common/Enums';
 import { SettingsCapa } from 'Common/Globals';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
+import { AbstractViewSettings } from 'Knoin/AbstractViews';
+
 import { SettingsUserStore } from 'Stores/User/Settings';
 
-import Remote from 'Remote/User/Fetch';
-
-export class SecurityUserSettings /*extends AbstractViewSettings*/ {
+export class SecurityUserSettings extends AbstractViewSettings {
 	constructor() {
+		super();
+
 		this.capaAutoLogout = SettingsCapa(Capa.AutoLogout);
 
 		this.autoLogout = SettingsUserStore.autoLogout;
-		this.autoLogoutTrigger = ko.observable(SaveSettingsStep.Idle);
 
 		let i18nLogout = (key, params) => i18n('SETTINGS_SECURITY/AUTOLOGIN_' + key, params);
 		this.autoLogoutOptions = koComputable(() => {
@@ -33,10 +32,7 @@ export class SecurityUserSettings /*extends AbstractViewSettings*/ {
 		});
 
 		if (this.capaAutoLogout) {
-			this.autoLogout.subscribe(value => Remote.saveSetting(
-				'AutoLogout', pInt(value),
-				settingsSaveHelperSimpleFunction(this.autoLogoutTrigger, this)
-			));
+			this.addSetting('AutoLogout');
 		}
 	}
 }

@@ -331,7 +331,7 @@ trait User
 			$oSettingsLocal->SetConf('Theme', $this->ValidateTheme($oConfig->Get('webmail', 'theme', 'Default')));
 		}
 
-		$this->setSettingsFromParams($oSettings, 'MPP', 'int', function ($iValue) {
+		$this->setSettingsFromParams($oSettings, 'MessagesPerPage', 'int', function ($iValue) {
 			return \min(50, \max(10, $iValue));
 		});
 
@@ -556,7 +556,7 @@ trait User
 					break;
 
 				case 'bool':
-					$oSettings->SetConf($sConfigName, !empty($sValue));
+					$oSettings->SetConf($sConfigName, !empty($sValue) && 'false' !== $sValue);
 					break;
 			}
 		}

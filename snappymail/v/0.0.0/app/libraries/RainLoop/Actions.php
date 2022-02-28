@@ -856,13 +856,16 @@ class Actions
 					if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
 						$sLanguage = (string) $oSettings->GetConf('Language', $sLanguage);
 					}
+					if (!$oSettings->GetConf('MessagesPerPage')) {
+						$oSettings->SetConf('MessagesPerPage', $oSettings->GetConf('MPP', $aResult['MessagesPerPage']));
+					}
 
 					$aResult['EditorDefaultType'] = (string)$oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']);
 					$aResult['ViewHTML'] = (bool)$oSettings->GetConf('ViewHTML', $aResult['ViewHTML']);
 					$aResult['ShowImages'] = (bool)$oSettings->GetConf('ShowImages', $aResult['ShowImages']);
 					$aResult['RemoveColors'] = (bool)$oSettings->GetConf('RemoveColors', $aResult['RemoveColors']);
 					$aResult['ContactsAutosave'] = (bool)$oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
-					$aResult['MessagesPerPage'] = (int)$oSettings->GetConf('MPP', $aResult['MessagesPerPage']);
+					$aResult['MessagesPerPage'] = (int)$oSettings->GetConf('MessagesPerPage', $aResult['MessagesPerPage']);
 					$aResult['MessageReadDelay'] = (int)$oSettings->GetConf('MessageReadDelay', $aResult['MessageReadDelay']);
 					$aResult['SoundNotification'] = (bool)$oSettings->GetConf('SoundNotification', $aResult['SoundNotification']);
 					$aResult['NotificationSound'] = (string)$oSettings->GetConf('NotificationSound', $aResult['NotificationSound']);

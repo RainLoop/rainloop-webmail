@@ -62,7 +62,7 @@ export class FoldersUserSettings /*extends AbstractViewSettings*/ {
 
 		this.folderForEdit = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'edited'] });
 
-		SettingsUserStore.hideUnsubscribed.subscribe(value => Remote.saveSetting('HideUnsubscribed', value ? 1 : 0));
+		SettingsUserStore.hideUnsubscribed.subscribe(value => Remote.saveSetting('HideUnsubscribed', value));
 	}
 
 	folderEditOnEnter(folder) {

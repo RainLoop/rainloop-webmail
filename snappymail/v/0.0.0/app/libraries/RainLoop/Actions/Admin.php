@@ -918,13 +918,13 @@ trait Admin
 						$sValue = $mStringCallback($sValue);
 					}
 
-					$oConfig->Set($sConfigSector, $sConfigName, (string)$sValue);
+					$oConfig->Set($sConfigSector, $sConfigName, $sValue);
 					break;
 
 				case 'dummy':
-					$sValue = (string)$this->GetActionParam('ContactsPdoPassword', APP_DUMMY);
+					$sValue = (string) $this->GetActionParam($sParamName, APP_DUMMY);
 					if (APP_DUMMY !== $sValue) {
-						$oConfig->Set($sConfigSector, $sConfigName, (string)$sValue);
+						$oConfig->Set($sConfigSector, $sConfigName, $sValue);
 					}
 					break;
 
@@ -934,7 +934,7 @@ trait Admin
 					break;
 
 				case 'bool':
-					$oConfig->Set($sConfigSector, $sConfigName, '1' === (string)$sValue);
+					$oConfig->Set($sConfigSector, $sConfigName, !empty($sValue) && 'false' !== $sValue);
 					break;
 			}
 		}

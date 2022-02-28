@@ -6,6 +6,9 @@ import { Scope } from 'Common/Enums';
 import { keyScope, Settings, leftPanelDisabled } from 'Common/Globals';
 import { ViewType, showScreenPopup } from 'Knoin/Knoin';
 
+import { SaveSettingsStep } from 'Common/Enums';
+import { SettingsGet } from 'Common/Globals';
+
 class AbstractView {
 	constructor(templateID, type)
 	{
@@ -117,16 +120,37 @@ export class AbstractViewRight extends AbstractView
 	}
 }
 
-/*
 export class AbstractViewSettings
 {
+/*
 	onBuild(viewModelDom) {}
 	onBeforeShow() {}
 	onShow() {}
 	onHide() {}
 	viewModelDom
-}
 */
+	addSetting(name, valueCb)
+	{
+		let prop = name = name[0].toLowerCase() + name.slice(1),
+			trigger = prop + 'Trigger';
+		addObservablesTo(this, {
+			[prop]: SettingsGet(name),
+			[trigger]: SaveSettingsStep.Idle,
+		});
+		addSubscribablesTo(this, {
+			[prop]: (value => {
+				this[trigger](SaveSettingsStep.Animate);
+				valueCb && valueCb(value);
+				rl.app.Remote.saveSetting(name, value,
+					iError => {
+						this[trigger](iError ? SaveSettingsStep.FalseResult : SaveSettingsStep.TrueResult);
+						setTimeout(() => this[trigger](SaveSettingsStep.Idle), 1000);
+					}
+				);
+			}).debounce(999),
+		});
+	}
+}
 
 export class AbstractViewLogin extends AbstractViewCenter {
 	constructor(templateID) {

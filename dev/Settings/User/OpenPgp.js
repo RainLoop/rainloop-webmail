@@ -26,7 +26,7 @@ export class OpenPgpUserSettings /*extends AbstractViewSettings*/ {
 
 		this.allowDraftAutosave = SettingsUserStore.allowDraftAutosave;
 
-		this.allowDraftAutosave.subscribe(value => Remote.saveSetting('AllowDraftAutosave', value ? 1 : 0))
+		this.allowDraftAutosave.subscribe(value => Remote.saveSetting('AllowDraftAutosave', value))
 	}
 
 	addOpenPgpKey() {

@@ -28,32 +28,32 @@
 			params: {
 				options: contactsTypesOptions,
 				value: mainContactsType,
-				trigger: contactsTypeTrigger,
+				trigger: contactsPdoTypeTrigger,
 				optionsText: 'name',
 				optionsValue: 'id'
 			}
 		}"></div>
 	</div>
-	<div data-bind="visible: 'sqlite' !== contactsType()">
+	<div data-bind="visible: 'sqlite' !== contactsPdoType()">
 		<div class="control-group">
 			<label data-i18n="TAB_CONTACTS/LABEL_STORAGE_DSN"></label>
 			<div>
 				<input type="text" class="span6" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: pdoDsn, saveTrigger: pdoDsnTrigger" placeholder="mysql:host=127.0.0.1;port=3306;dbname=snappymail">
+					data-bind="value: contactsPdoDsn, saveTrigger: contactsPdoDsnTrigger" placeholder="mysql:host=127.0.0.1;port=3306;dbname=snappymail">
 			</div>
 		</div>
 		<div class="control-group">
 			<label data-i18n="TAB_CONTACTS/LABEL_STORAGE_USER"></label>
 			<div>
 				<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: pdoUser, saveTrigger: pdoUserTrigger">
+					data-bind="value: contactsPdoUser, saveTrigger: contactsPdoUserTrigger">
 			</div>
 		</div>
 		<div class="control-group">
 			<label data-i18n="TAB_CONTACTS/LABEL_STORAGE_PASSWORD"></label>
 			<div>
 				<input type="password" autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: pdoPassword, saveTrigger: pdoPasswordTrigger">
+					data-bind="value: contactsPdoPassword, saveTrigger: contactsPdoPasswordTrigger">
 			</div>
 		</div>
 		<div class="control-group">
@@ -64,7 +64,7 @@
 			</a>
 		</div>
 	</div>
-	<div data-bind="visible: 'sqlite' === contactsType()">
+	<div data-bind="visible: 'sqlite' === contactsPdoType()">
 		<div class="control-group">
 			<div class="alert">
 				<h4 data-i18n="TAB_CONTACTS/ALERT_NOTICE"></h4>
