@@ -1,36 +1,36 @@
 
 :root {
-// MAIN
+/* MAIN */
 	--main-color: #333;
 	--main-bg-color: #e3e3e3;
-	--main-bg-image: none;	// url("images/background.png");
+	--main-bg-image: none;	/* url("images/background.png"); */
 	--main-bg-size: auto;
 	--main-bg-repeat: repeat;
 	--link-color: #369;
 
-// LOADING
-	--loading-color: #000;			// #ddd
-	--loading-text-shadow: none;		// 0px 1px 0px rgba(0, 0, 0, 0.5);
+/* LOADING */
+	--loading-color: #000;			/* #ddd */
+	--loading-text-shadow: none;		/* 0px 1px 0px rgba(0, 0, 0, 0.5); */
 
-// LOGIN
+/* LOGIN */
 	--login-color: #555;
 	--login-bg-color: #eee;
-	--login-box-shadow: none;		// 0px 2px 10px rgba(0,0,0,0.5)
+	--login-box-shadow: none;		/* 0px 2px 10px rgba(0,0,0,0.5) */
 	--login-border: 1px solid #ccc;
 	--login-border-radius: 7px;
-	--login-gradient-start: none;	// #f4f4f4
-	--login-gradient-end: none;		// #dfdfdf
+	--login-gradient-start: none;	/* #f4f4f4 */
+	--login-gradient-end: none;		/* #dfdfdf */
 
 	--spinner-color: #fff;
 
-// MENU
+/* MENU */
 	--dropdown-menu-color: #333;
 	--dropdown-menu-bg-color: #fff;
 	--dropdown-menu-hover-bg-color: #444;
 	--dropdown-menu-hover-color: #eee;
 	--dropdown-menu-disabled-color: #999;
 
-// FOLDERS
+/* FOLDERS */
 	--folders-color: #333;
 	--folders-disabled-color: #666;
 	--folders-selected-color: #eee;
@@ -42,18 +42,18 @@
 	--folders-drop-color: #eee;
 	--folders-drop-bg-color: #333;
 
-// SETTINGS
+/* SETTINGS */
 	--settings-menu-color: #333;
 	--settings-menu-selected-color: #eee;
 	--settings-menu-selected-bg-color: #333;
 	--settings-menu-hover-color: #eee;
 	--settings-menu-hover-bg-color: #333;
 
-// MESSAGE LIST
+/* MESSAGE LIST */
 	--message-list-toolbar-bg-color: #eee;
-	--message-list-toolbar-gradient-start: none;		// #f4f4f4
-	--message-list-toolbar-gradient-end: none;		// #dfdfdf
+	--message-list-toolbar-gradient-start: none;		/* #f4f4f4 */
+	--message-list-toolbar-gradient-end: none;		/* #dfdfdf */
 
-// MESSAGE
+/* MESSAGE */
 	--message-bg-color: #fff;
 }

@@ -1,30 +1,30 @@
 
 :root {
-	// MAIN
+	/* MAIN */
 	--main-color: #333;
 	--main-bg-color: #AD455C;
 	--main-bg-image: url("images/background.jpg");
 	--main-bg-size: cover;
 
-	// LOADING
+	/* LOADING */
 	--loading-color: #ddd;
 	--loading-text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
 
-	// LOGIN
+	/* LOGIN */
 	--login-color: #eee;
 	--login-bg-color: rgba(0,0,0,0.5);
 	--login-box-shadow: 0px 2px 10px rgba(0,0,0,0.5);
 	--login-border: none;
 	--login-border-radius: 7px;
 
-	// MENU
+	/* MENU */
 	--dropdown-menu-color: #333;
 	--dropdown-menu-bg-color: #fff;
 	--dropdown-menu-hover-bg-color: #48525C;
 	--dropdown-menu-hover-color: #eee;
 	--dropdown-menu-disable-color: #999;
 
-	// FOLDERS
+	/* FOLDERS */
 	--folders-color: #fff;
 	--folders-disabled-color: #aaa;
 	--folders-selected-color: #fff;
@@ -36,14 +36,14 @@
 	--folders-drop-color: #fff;
 	--folders-drop-bg-color: rgba(255,255,255,0.3);
 
-	// SETTINGS
+	/* SETTINGS */
 	--settings-menu-color: #fff;
 	--settings-menu-selected-color: #fff;
 	--settings-menu-selected-bg-color: rgba(255,255,255,0.3);
 	--settings-menu-hover-color: #fff;
 	--settings-menu-hover-bg-color: rgba(255,255,255,0.3);
 
-	// MESSAGE LIST
+	/* MESSAGE LIST */
 	--message-list-toolbar-bg-color: #eee;
 }
 
