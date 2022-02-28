@@ -29,7 +29,9 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 			\RainLoop\Plugins\Property::NewInstance('email')->SetLabel('Demo Email')
 				->SetDefaultValue('demo@domain.com'),
 			\RainLoop\Plugins\Property::NewInstance('password')->SetLabel('Demo Password')
-				->SetType(\RainLoop\Enumerations\PluginPropertyType::PASSWORD)
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::PASSWORD),
+			\RainLoop\Plugins\Property::NewInstance('recipient_delimiter')->SetLabel('recipient_delimiter')
+				->SetDefaultValue(''),
 		);
 	}
 
@@ -78,19 +80,23 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function FilterSendMessage($oMessage)
 	{
 		if ($oMessage && $this->isDemoAccount()) {
-			$sEmail = $this->Config()->Get('plugin', 'email');
+			$recipient_delimiter = $this->Config()->Get('plugin', 'recipient_delimiter');
+			$regex = '/^' . \preg_quote($this->Config()->Get('plugin', 'email')) . '$/D';
+			if ($recipient_delimiter) {
+				$regex = \str_replace('@', '('.\preg_quote($recipient_delimiter).'.+)?@', $regex);
+			}
 			foreach ($oMessage->GetTo() as $oEmail) {
-				if ($oEmail->GetEmail() !== $sEmail) {
+				if (!\preg_match($regex, $oEmail->GetEmail())) {
 					throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DemoSendMessageError);
 				}
 			}
 			foreach ($oMessage->GetCc() ?: [] as $oEmail) {
-				if ($oEmail->GetEmail() !== $sEmail) {
+				if (!\preg_match($regex, $oEmail->GetEmail())) {
 					throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DemoSendMessageError);
 				}
 			}
 			foreach ($oMessage->GetBcc() ?: [] as $oEmail) {
-				if ($oEmail->GetEmail() !== $sEmail) {
+				if (!\preg_match($regex, $oEmail->GetEmail())) {
 					throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DemoSendMessageError);
 				}
 			}

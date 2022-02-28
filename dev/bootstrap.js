@@ -5,8 +5,6 @@ import { root } from 'Common/Links';
 
 export default App => {
 
-	addEventListener('click', ()=>rl.Dropdowns.detectVisibility());
-
 	rl.app = App;
 	rl.logoutReload = App.logoutReload;
 
@@ -25,6 +23,7 @@ export default App => {
 	rl.Dropdowns.detectVisibility = (() =>
 		dropdownVisibility(!!rl.Dropdowns.find(item => item.classList.contains('show')))
 	).debounce(50);
+	addEventListener('click', ()=>rl.Dropdowns.detectVisibility());
 
 	rl.route = {
 		root: () => {
