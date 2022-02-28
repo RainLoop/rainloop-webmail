@@ -131,7 +131,7 @@ export class AbstractViewSettings
 */
 	addSetting(name, valueCb)
 	{
-		let prop = name = name[0].toLowerCase() + name.slice(1),
+		let prop = name[0].toLowerCase() + name.slice(1),
 			trigger = prop + 'Trigger';
 		addObservablesTo(this, {
 			[prop]: SettingsGet(name),
