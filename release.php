@@ -178,12 +178,6 @@ echo "{$zip_destination} created\n{$tar_destination} created\n";
 
 rename("snappymail/v/{$package->version}", 'snappymail/v/0.0.0');
 
-if (isset($options['sign'])) {
-	echo "\x1b[33;1m === PGP Sign === \x1b[0m\n";
-	passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --armor --detach-sign '.escapeshellarg($tar_destination), $return_var);
-	passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --armor --detach-sign '.escapeshellarg($zip_destination), $return_var);
-}
-
 // Arch User Repository
 if ($options['aur']) {
 	// extension_loaded('blake2')
@@ -245,5 +239,15 @@ else if ($options['docker']) {
 		passthru("{$docker} build " . __DIR__ . "/.docker/release/ --build-arg FILES_ZIP={$zip_destination} -t snappymail:{$package->version}");
 	} else {
 		echo "Docker not installed!\n";
+	}
+}
+
+if (isset($options['sign'])) {
+	echo "\x1b[33;1m === PGP Sign === \x1b[0m\n";
+	passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --armor --detach-sign '.escapeshellarg($tar_destination), $return_var);
+	passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --armor --detach-sign '.escapeshellarg($zip_destination), $return_var);
+	if (isset($options['debian'])) {
+		passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --armor --detach-sign '
+			. escapeshellarg(__DIR__ . "/build/dist/releases/webmail/{$package->version}/" . basename(DEB_DEST_DIR.'.deb')), $return_var);
 	}
 }

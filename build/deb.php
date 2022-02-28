@@ -1,4 +1,6 @@
 <?php
+echo "\x1b[33;1m === Debian === \x1b[0m\n";
+
 // Debian Repository
 define('DEB_SOURCE_DIR', __DIR__ . '/deb');
 define('DEB_DEST_DIR', DEB_SOURCE_DIR . "/snappymail_{$package->version}-1_all");
