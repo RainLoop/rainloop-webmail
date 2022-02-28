@@ -401,7 +401,7 @@ trait Messages
 
 		try
 		{
-			$this->MessageSetFlag(
+			$this->MailClient()->MessageSetFlag(
 				$this->GetActionParam('Folder', ''),
 				empty($sThreadUids) ? new SequenceSet('1:*', false) : new SequenceSet(\explode(',', $sThreadUids)),
 				MessageFlag::SEEN,
