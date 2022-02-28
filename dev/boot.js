@@ -9,6 +9,8 @@ const
 	css = eId('css'),
 	admin = app && '1' == app.dataset.admin,
 
+	cb = () => rl.app.bootstart(),
+
 	showError = msg => {
 		let div = eId('loading-error');
 		div.append(' ' + msg);
@@ -30,14 +32,14 @@ const
 		});
 	};
 
-if (!navigator || !navigator.cookieEnabled) {
+if (!navigator.cookieEnabled) {
 	doc.location.href = './?/NoCookie';
 }
 
-let layout = doc.cookie.match(/(^|;) ?rllayout=([^;]+)/) || '';
-doc.documentElement.classList.toggle('rl-mobile', 'mobile' === layout[2] || (!layout && 1000 > innerWidth));
+let RL_APP_DATA = {},
+	layout = doc.cookie.match(/(^|;) ?rllayout=([^;]+)/) || '';
 
-let RL_APP_DATA = {};
+doc.documentElement.classList.toggle('rl-mobile', 'mobile' === layout[2] || (!layout && 1000 > innerWidth));
 
 win.rl = {
 	adminArea: () => admin,
@@ -51,7 +53,6 @@ win.rl = {
 		doc.title = RL_APP_DATA.Title ? (title ? title + ' - ' : '') + RL_APP_DATA.Title : (title ? '' + title : ''),
 
 	initData: appData => {
-		const cb = () => rl.app.bootstart();
 		RL_APP_DATA = appData;
 		loadScript(appData.StaticLibJsLink)
 			.then(() => loadScript(appData.StaticAppJsLink))
