@@ -20,12 +20,12 @@
 
 <br>
 
-<div data-bind="visible: packagesAvailableForUpdate().length">
+<div data-bind="visible: packagesUpdate().length">
 	<div class="legend">
 		<span data-i18n="TAB_PACKAGES/LEGEND_AVAILABLE_FOR_UPDATE"></span>&nbsp;
-		(<span data-bind="text: packagesAvailableForUpdate().length"></span>)
+		(<span data-bind="text: packagesUpdate().length"></span>)
 	</div>
-	<div data-bind="template: { name: 'AdminSettingsPackagesTable', data: {f: packagesAvailableForUpdate} }"></div>
+	<div data-bind="template: { name: 'AdminSettingsPackagesTable', data: {f: packagesUpdate} }"></div>
 </div>
 
 <div id="packages-installed" data-bind="visible: packagesCurrent().length, css: {'disabled': !enabledPlugins()}">
@@ -33,7 +33,7 @@
 	<div data-bind="template: { name: 'AdminSettingsPackagesTable', data: {f: packagesCurrent} }"></div>
 </div>
 
-<div data-bind="visible: packagesAvailableForInstallation().length">
+<div data-bind="visible: packagesAvailable().length">
 	<div class="legend" data-i18n="TAB_PACKAGES/LEGEND_AVAILABLE_FOR_INSTALLATION"></div>
-	<div data-bind="template: { name: 'AdminSettingsPackagesTable', data: {f: packagesAvailableForInstallation} }"></div>
+	<div data-bind="template: { name: 'AdminSettingsPackagesTable', data: {f: packagesAvailable} }"></div>
 </div>

@@ -21,9 +21,9 @@ export class PackagesAdminSettings /*extends AbstractViewSettings*/ {
 		this.packages = PackageAdminStore;
 
 		addComputablesTo(this, {
-			packagesCurrent: () => PackageAdminStore.filter(item => item && item.installed && !item.canBeUpdated),
-			packagesAvailableForUpdate: () => PackageAdminStore.filter(item => item && item.installed && !!item.canBeUpdated),
-			packagesAvailableForInstallation: () => PackageAdminStore.filter(item => item && !item.installed),
+			packagesCurrent: () => PackageAdminStore().filter(item => item && item.installed && !item.canBeUpdated),
+			packagesUpdate: () => PackageAdminStore().filter(item => item && item.installed && item.canBeUpdated),
+			packagesAvailable: () => PackageAdminStore().filter(item => item && !item.installed),
 
 			visibility: () => (PackageAdminStore.loading() ? 'visible' : 'hidden')
 		});

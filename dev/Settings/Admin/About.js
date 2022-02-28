@@ -4,7 +4,7 @@ import Remote from 'Remote/Admin/Fetch';
 
 export class AboutAdminSettings /*extends AbstractViewSettings*/ {
 	constructor() {
-		this.version = ko.observable(Settings.app('version'));
+		this.version = Settings.app('version');
 		this.phpextensions = ko.observableArray();
 	}
 
