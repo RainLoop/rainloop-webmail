@@ -33,8 +33,12 @@ copy('CODE_OF_CONDUCT.md', "{$dir}/CODE_OF_CONDUCT.md");
 $dir = DEB_DEST_DIR . '/usr/share/snappymail';
 mkdir($dir, 0755, true);
 passthru('cp -r "' . dirname(__DIR__) . '/snappymail" "' . $dir . '"');
+
+rename("{$dir}/snappymail/v/0.0.0", "{$dir}/snappymail/v/{$package->version}");
+
 $data = file_get_contents('index.php');
 file_put_contents("{$dir}/index.php", str_replace('0.0.0', $package->version, $data));
+
 $data = file_get_contents('_include.php');
 file_put_contents("{$dir}/include.php", preg_replace('@(external-snappymail-data-folder/\'\);)@', "\$1\ndefine('APP_DATA_FOLDER_PATH', '/var/lib/snappymail');", $data));
 
@@ -45,4 +49,4 @@ passthru('mv '
 	. escapeshellarg(__DIR__ . "/dist/releases/webmail/{$package->version}/" . basename(DEB_DEST_DIR.'.deb'))
 );
 
-passthru('rm -dfr '.escapeshellarg(DEB_DEST_DIR));
+//passthru('rm -dfr '.escapeshellarg(DEB_DEST_DIR));
