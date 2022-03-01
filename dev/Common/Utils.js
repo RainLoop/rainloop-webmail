@@ -55,41 +55,29 @@ export const
 				__themeJson = null;
 			};
 
-		let url = themeStyle.dataset.href;
+		let url = themeStyle.dataset.href.replace(/(Admin|User)\/-\/[^/]+\//, '$1/-/' + value + '/')
+			+ 'Json/';
 
-		if (url) {
-			url = url.toString()
-				.replace(/\/-\/[^/]+\/-\//, '/-/' + value + '/-/')
-				.replace(/\/Css\/[^/]+\/User\//, '/Css/0/User/')
-				.replace(/\/Hash\/[^/]+\//, '/Hash/-/');
+		clearTimeout(__themeTimer);
 
-			if ('Json/' !== url.substr(-5)) {
-				url += 'Json/';
-			}
+		themeTrigger(SaveSettingsStep.Animate);
 
-			clearTimeout(__themeTimer);
-
-			themeTrigger(SaveSettingsStep.Animate);
-
-			if (__themeJson) {
-				__themeJson.abort();
-			}
-			let init = {};
-			if (window.AbortController) {
-				__themeJson = new AbortController();
-				init.signal = __themeJson.signal;
-			}
-			rl.fetchJSON(url, init)
-				.then(data => {
-					if (2 === arrayLength(data)) {
-						themeStyle.textContent = data[1];
-						themeStyle.dataset.href = url;
-						themeStyle.dataset.theme = data[0];
-						themeTrigger(SaveSettingsStep.TrueResult);
-					}
-				})
-				.then(clearTimer, clearTimer);
+		if (__themeJson) {
+			__themeJson.abort();
 		}
+		let init = {};
+		if (window.AbortController) {
+			__themeJson = new AbortController();
+			init.signal = __themeJson.signal;
+		}
+		rl.fetchJSON(url, init)
+			.then(data => {
+				if (2 === arrayLength(data)) {
+					themeStyle.textContent = data[1];
+					themeTrigger(SaveSettingsStep.TrueResult);
+				}
+			})
+			.then(clearTimer, clearTimer);
 	},
 
 	getKeyByValue = (o, v) => Object.keys(o).find(key => o[key] === v);

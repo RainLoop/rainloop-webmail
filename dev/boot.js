@@ -6,7 +6,6 @@ const
 	doc = document,
 	eId = id => doc.getElementById('rl-'+id),
 	app = eId('app'),
-	css = eId('css'),
 	admin = app && '1' == app.dataset.admin,
 
 	cb = () => rl.app.bootstart(),
@@ -69,8 +68,6 @@ win.rl = {
 		rl.app.refresh();
 	}
 };
-
-css.href = css.dataset.href;
 
 loadScript(`./?/${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().slice(2)}/`)
 	.then(() => 0);
