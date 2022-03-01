@@ -158,7 +158,7 @@ class Manager
 	public function Hash() : string
 	{
 		return \md5(\array_reduce($this->aPlugins, function($sResult, $oPlugin){
-			$sResult .= "|{$oPlugin->Hash()}";
+			return $sResult . "|{$oPlugin->Hash()}";
 		}, APP_VERSION));
 	}
 
