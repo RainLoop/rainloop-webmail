@@ -49,4 +49,4 @@ passthru('mv '
 	. escapeshellarg(__DIR__ . "/dist/releases/webmail/{$package->version}/" . basename(DEB_DEST_DIR.'.deb'))
 );
 
-//passthru('rm -dfr '.escapeshellarg(DEB_DEST_DIR));
+passthru('rm -dfr '.escapeshellarg(DEB_DEST_DIR));
