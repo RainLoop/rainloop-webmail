@@ -101,6 +101,7 @@ if (defined('APP_VERSION'))
 	if (!empty($sTest))
 	{
 		echo '[202] Data folder permissions error ['.$sTest.']';
+		error_log("Data folder permission error {$sTest}({$sCheckFolder})");
 		exit(202);
 	}
 
