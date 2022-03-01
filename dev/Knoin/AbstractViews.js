@@ -150,6 +150,15 @@ export class AbstractViewSettings
 			}).debounce(999),
 		});
 	}
+
+	addSettings(names)
+	{
+		names.forEach(name => {
+			let prop = name[0].toLowerCase() + name.slice(1);
+			this[prop] || (this[prop] = ko.observable(SettingsGet(name)));
+			this[prop].subscribe(value => rl.app.Remote.saveSetting(name, value));
+		});
+	}
 }
 
 export class AbstractViewLogin extends AbstractViewCenter {

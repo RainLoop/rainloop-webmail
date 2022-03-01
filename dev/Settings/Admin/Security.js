@@ -5,17 +5,17 @@ import { addObservablesTo, addSubscribablesTo } from 'External/ko';
 import Remote from 'Remote/Admin/Fetch';
 
 import { decorateKoCommands } from 'Knoin/Knoin';
+import { AbstractViewSettings } from 'Knoin/AbstractViews';
 
-export class SecurityAdminSettings /*extends AbstractViewSettings*/ {
+export class SecurityAdminSettings extends AbstractViewSettings {
 	constructor() {
+		super();
+
+		this.addSettings(['UseLocalProxyForExternalImages','VerifySslCertificate','AllowSelfSigned']);
+
 		this.weakPassword = rl.app.weakPassword;
 
 		addObservablesTo(this, {
-			useLocalProxyForExternalImages: !!SettingsGet('UseLocalProxyForExternalImages'),
-
-			verifySslCertificate: !!SettingsGet('VerifySslCertificate'),
-			allowSelfSigned: !!SettingsGet('AllowSelfSigned'),
-
 			adminLogin: SettingsGet('AdminLogin'),
 			adminLoginError: false,
 			adminPassword: '',
@@ -30,6 +30,12 @@ export class SecurityAdminSettings /*extends AbstractViewSettings*/ {
 			capaOpenPGP: SettingsCapa(Capa.OpenPGP)
 		});
 
+		const reset = () => {
+			this.adminPasswordUpdateError(false);
+			this.adminPasswordUpdateSuccess(false);
+			this.adminPasswordNewError(false);
+		};
+
 		addSubscribablesTo(this, {
 			adminPassword: () => {
 				this.adminPasswordUpdateError(false);
@@ -38,39 +44,11 @@ export class SecurityAdminSettings /*extends AbstractViewSettings*/ {
 
 			adminLogin: () => this.adminLoginError(false),
 
-			adminPasswordNew: () => {
-				this.adminPasswordUpdateError(false);
-				this.adminPasswordUpdateSuccess(false);
-				this.adminPasswordNewError(false);
-			},
+			adminPasswordNew: reset,
 
-			adminPasswordNew2: () => {
-				this.adminPasswordUpdateError(false);
-				this.adminPasswordUpdateSuccess(false);
-				this.adminPasswordNewError(false);
-			},
+			adminPasswordNew2: reset,
 
-			capaOpenPGP: value =>
-				Remote.saveConfig({
-					CapaOpenPGP: value ? 1 : 0
-				}),
-
-			useLocalProxyForExternalImages: value =>
-				Remote.saveConfig({
-					UseLocalProxyForExternalImages: value ? 1 : 0
-				}),
-
-			verifySslCertificate: value => {
-				value || this.allowSelfSigned(true);
-				Remote.saveConfig({
-					VerifySslCertificate: value ? 1 : 0
-				});
-			},
-
-			allowSelfSigned: value =>
-				Remote.saveConfig({
-					AllowSelfSigned: value ? 1 : 0
-				})
+			capaOpenPGP: value => Remote.saveSetting('CapaOpenPGP', value)
 		});
 
 		decorateKoCommands(this, {

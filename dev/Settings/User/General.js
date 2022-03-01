@@ -35,11 +35,11 @@ export class GeneralUserSettings extends AbstractViewSettings {
 		this.editorDefaultType = SettingsUserStore.editorDefaultType;
 		this.layout = SettingsUserStore.layout;
 
-		this.enableSoundNotification = NotificationUserStore.enableSoundNotification;
+		this.soundNotification = NotificationUserStore.enableSoundNotification;
 		this.notificationSound = ko.observable(SettingsGet('NotificationSound'));
 		this.notificationSounds = ko.observableArray(SettingsGet('NewMailSounds'));
 
-		this.enableDesktopNotification = NotificationUserStore.enableDesktopNotification;
+		this.desktopNotification = NotificationUserStore.enableDesktopNotification;
 		this.isDesktopNotificationAllowed = NotificationUserStore.isDesktopNotificationAllowed;
 
 		this.viewHTML = SettingsUserStore.viewHTML;
@@ -93,11 +93,13 @@ export class GeneralUserSettings extends AbstractViewSettings {
 		this.addSetting('MessagesPerPage');
 		this.addSetting('Layout', () => MessagelistUserStore([]));
 
+		this.addSettings(['ViewHTML', 'ShowImages', 'UseCheckboxesInList', 'ReplySameFolder',
+			'DesktopNotifications', 'SoundNotification']);
+
 		const fReloadLanguageHelper = (saveSettingsStep) => () => {
 				this.languageTrigger(saveSettingsStep);
 				setTimeout(() => this.languageTrigger(SaveSettingsStep.Idle), 1000);
-			},
-			fSaveHelper = key => value => Remote.saveSetting(key, value);
+			};
 
 		addSubscribablesTo(this, {
 			language: value => {
@@ -107,9 +109,6 @@ export class GeneralUserSettings extends AbstractViewSettings {
 					.then(() => Remote.saveSetting('Language', value));
 			},
 
-			viewHTML: fSaveHelper('ViewHTML'),
-			showImages: fSaveHelper('ShowImages'),
-
 			removeColors: value => {
 				let dom = MessageUserStore.bodiesDom();
 				if (dom) {
@@ -118,17 +117,10 @@ export class GeneralUserSettings extends AbstractViewSettings {
 				Remote.saveSetting('RemoveColors', value);
 			},
 
-			useCheckboxesInList: fSaveHelper('UseCheckboxesInList'),
-
-			enableDesktopNotification: fSaveHelper('DesktopNotifications'),
-
-			enableSoundNotification: fSaveHelper('SoundNotification'),
 			notificationSound: value => {
 				Remote.saveSetting('NotificationSound', value);
 				Settings.set('NotificationSound', value);
 			},
-
-			replySameFolder: fSaveHelper('ReplySameFolder'),
 
 			useThreads: value => {
 				MessagelistUserStore([]);

@@ -37,9 +37,9 @@ export class GeneralAdminSettings extends AbstractViewSettings {
 		this.theme = ThemeStore.theme;
 		this.themes = ThemeStore.themes;
 
+		this.addSettings(['AllowLanguagesOnSettings','NewMoveToFolder']);
+
 		addObservablesTo(this, {
-			allowLanguagesOnSettings: SettingsGet('AllowLanguagesOnSettings'),
-			newMoveToFolder: SettingsGet('NewMoveToFolder'),
 			attachmentLimitTrigger: SaveSettingsStep.Idle,
 			themeTrigger: SaveSettingsStep.Idle,
 			capaThemes: SettingsCapa(Capa.Themes),
@@ -97,9 +97,7 @@ export class GeneralAdminSettings extends AbstractViewSettings {
 				this.languageAdminTrigger(SaveSettingsStep.Animate);
 				translatorReload(true, value)
 					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult), fReloadLanguageHelper(SaveSettingsStep.FalseResult))
-					.then(() => Remote.saveConfig({
-						LanguageAdmin: value.trim()
-					}));
+					.then(() => Remote.saveSetting('LanguageAdmin', value));
 			},
 
 			capaAdditionalAccounts: fSaveHelper('CapaAdditionalAccounts'),
@@ -110,11 +108,7 @@ export class GeneralAdminSettings extends AbstractViewSettings {
 
 			capaThemes: fSaveHelper('CapaThemes'),
 
-			capaUserBackground: fSaveHelper('CapaUserBackground'),
-
-			allowLanguagesOnSettings: fSaveHelper('AllowLanguagesOnSettings'),
-
-			newMoveToFolder: fSaveHelper('NewMoveToFolder')
+			capaUserBackground: fSaveHelper('CapaUserBackground')
 		});
 	}
 

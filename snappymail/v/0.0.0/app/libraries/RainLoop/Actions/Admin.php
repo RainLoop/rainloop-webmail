@@ -72,29 +72,18 @@ trait Admin
 		return Utils::EncodeKeyValuesQ(array('token', $sRand));
 	}
 
-	private function setCapaFromParams(\RainLoop\Config\Application $oConfig, string $sParamName, string $sCapa) : void
+	public function DoAdminClearCache() : array
 	{
-		switch ($sCapa)
-		{
-			case Capa::ADDITIONAL_ACCOUNTS:
-				$this->setConfigFromParams($oConfig, $sParamName, 'webmail', 'allow_additional_accounts', 'bool');
-				break;
-			case Capa::IDENTITIES:
-				$this->setConfigFromParams($oConfig, $sParamName, 'webmail', 'allow_additional_identities', 'bool');
-				break;
-			case Capa::ATTACHMENT_THUMBNAILS:
-				$this->setConfigFromParams($oConfig, $sParamName, 'interface', 'show_attachment_thumbnail', 'bool');
-				break;
-			case Capa::THEMES:
-				$this->setConfigFromParams($oConfig, $sParamName, 'webmail', 'allow_themes', 'bool');
-				break;
-			case Capa::USER_BACKGROUND:
-				$this->setConfigFromParams($oConfig, $sParamName, 'webmail', 'allow_user_background', 'bool');
-				break;
-			case Capa::OPEN_PGP:
-				$this->setConfigFromParams($oConfig, $sParamName, 'security', 'openpgp', 'bool');
-				break;
+		$this->Cacher()->GC(1);
+		if (\is_dir(APP_PRIVATE_DATA . 'cache')) {
+			foreach (new \RecursiveIteratorIterator(
+				new \RecursiveDirectoryIterator(APP_PRIVATE_DATA.'cache', \FilesystemIterator::SKIP_DOTS),
+				\RecursiveIteratorIterator::CHILD_FIRST) as $sName) {
+					$sName->isDir() ? \rmdir($sName) : \unlink($sName);
+			}
+			\clearstatcache();
 		}
+		return $this->TrueResponse(__FUNCTION__);
 	}
 
 	public function DoAdminSettingsGet() : array
@@ -173,12 +162,12 @@ trait Admin
 			return \RainLoop\Providers\AddressBook\PdoAddressBook::validPdoType($sType);
 		});
 
-		$this->setCapaFromParams($oConfig, 'CapaAdditionalAccounts', Capa::ADDITIONAL_ACCOUNTS);
-		$this->setCapaFromParams($oConfig, 'CapaIdentities', Capa::IDENTITIES);
-		$this->setCapaFromParams($oConfig, 'CapaOpenPGP', Capa::OPEN_PGP);
-		$this->setCapaFromParams($oConfig, 'CapaThemes', Capa::THEMES);
-		$this->setCapaFromParams($oConfig, 'CapaUserBackground', Capa::USER_BACKGROUND);
-		$this->setCapaFromParams($oConfig, 'CapaAttachmentThumbnails', Capa::ATTACHMENT_THUMBNAILS);
+		$this->setConfigFromParams($oConfig, 'CapaAdditionalAccounts', 'webmail', 'allow_additional_accounts', 'bool');
+		$this->setConfigFromParams($oConfig, 'CapaIdentities', 'webmail', 'allow_additional_identities', 'bool');
+		$this->setConfigFromParams($oConfig, 'CapaAttachmentThumbnails', 'interface', 'show_attachment_thumbnail', 'bool');
+		$this->setConfigFromParams($oConfig, 'CapaThemes', 'webmail', 'allow_themes', 'bool');
+		$this->setConfigFromParams($oConfig, 'CapaUserBackground', 'webmail', 'allow_user_background', 'bool');
+		$this->setConfigFromParams($oConfig, 'CapaOpenPGP', 'security', 'openpgp', 'bool');
 
 		$this->setConfigFromParams($oConfig, 'DetermineUserLanguage', 'login', 'determine_user_language', 'bool');
 		$this->setConfigFromParams($oConfig, 'DetermineUserDomain', 'login', 'determine_user_domain', 'bool');

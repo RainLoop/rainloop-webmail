@@ -26,9 +26,7 @@ export class ContactsUserSettings /*extends AbstractViewSettings*/ {
 			.extend({ debounce: 500 });
 
 		this.contactsAutosave.subscribe(value =>
-			Remote.saveSettings(null, {
-				ContactsAutosave: value ? 1 : 0
-			})
+			Remote.saveSettings(null, { ContactsAutosave: value })
 		);
 
 		this.saveTrigger.subscribe(() =>

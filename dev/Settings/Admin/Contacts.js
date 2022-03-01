@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { SettingsGet } from 'Common/Globals';
 import { defaultOptionsAfterRender } from 'Common/Utils';
-import { addObservablesTo, addSubscribablesTo } from 'External/ko';
+import { addObservablesTo } from 'External/ko';
 
 import Remote from 'Remote/Admin/Fetch';
 import { decorateKoCommands } from 'Knoin/Knoin';
@@ -22,10 +22,9 @@ export class ContactsAdminSettings extends AbstractViewSettings {
 			this.testContactsErrorMessage('');
 		});
 
-		addObservablesTo(this, {
-			enableContacts: !!SettingsGet('ContactsEnable'),
-			contactsSync: !!SettingsGet('ContactsSync'),
+		this.addSettings(['ContactsEnable','ContactsSync']);
 
+		addObservablesTo(this, {
 			testing: false,
 			testContactsSuccess: false,
 			testContactsError: false,
@@ -64,18 +63,6 @@ export class ContactsAdminSettings extends AbstractViewSettings {
 				}
 			})
 			.extend({ notify: 'always' });
-
-		addSubscribablesTo(this, {
-			enableContacts: value =>
-				Remote.saveConfig({
-					ContactsEnable: value ? 1 : 0
-				}),
-
-			contactsSync: value =>
-				Remote.saveConfig({
-					ContactsSync: value ? 1 : 0
-				})
-		})
 
 		decorateKoCommands(this, {
 			testContactsCommand: self => self.contactsPdoDsn() && self.contactsPdoUser()
