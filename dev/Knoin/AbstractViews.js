@@ -3,11 +3,10 @@ import ko from 'ko';
 import { inFocus } from 'Common/Utils';
 import { addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
 import { Scope } from 'Common/Enums';
-import { keyScope, Settings, leftPanelDisabled } from 'Common/Globals';
+import { keyScope, SettingsGet, leftPanelDisabled } from 'Common/Globals';
 import { ViewType, showScreenPopup } from 'Knoin/Knoin';
 
 import { SaveSettingsStep } from 'Common/Enums';
-import { SettingsGet } from 'Common/Globals';
 
 class AbstractView {
 	constructor(templateID, type)
@@ -164,7 +163,7 @@ export class AbstractViewSettings
 export class AbstractViewLogin extends AbstractViewCenter {
 	constructor(templateID) {
 		super(templateID);
-		this.hideSubmitButton = Settings.app('hideSubmitButton');
+		this.hideSubmitButton = SettingsGet('hideSubmitButton');
 		this.formError = ko.observable(false).extend({ falseTimeout: 500 });
 	}
 
