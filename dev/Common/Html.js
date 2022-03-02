@@ -16,7 +16,7 @@ const
 	replaceWithChildren = node => node.replaceWith(...[...node.childNodes]),
 
 	// Strip utm_* tracking
-	stripTracking = text => text.replace(/(\?|&amp;|&)utm_[a-z]+=[^&?#]*/si, '$1');
+	stripTracking = text => text.replace(/([?&])utm_[a-z]+=[^&?#]*/gsi, '$1').replace(/&&+/, '');
 
 export const
 
@@ -184,11 +184,11 @@ export const
 
 			else if ('A' === name) {
 				value = oElement.href;
-				value = stripTracking(value);
 				if (!/^([a-z]+):/i.test(value)) {
 					setAttribute('data-x-broken-href', value);
 					delAttribute('href');
 				} else {
+					oElement.href = stripTracking(value);
 					setAttribute('target', '_blank');
 					setAttribute('rel', 'external nofollow noopener noreferrer');
 				}
