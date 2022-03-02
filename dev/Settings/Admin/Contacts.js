@@ -96,7 +96,7 @@ export class ContactsAdminSettings extends AbstractViewSettings {
 			}, {
 				ContactsPdoType: this.contactsPdoType(),
 				ContactsPdoDsn: this.contactsPdoDsn(),
-				ContactsPdoUser: this.contactsPdo(),
+				ContactsPdoUser: this.contactsPdoUser(),
 				ContactsPdoPassword: this.contactsPdoPassword()
 			}
 		);
