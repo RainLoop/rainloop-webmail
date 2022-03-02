@@ -40,7 +40,7 @@ $data = file_get_contents('index.php');
 file_put_contents("{$dir}/index.php", str_replace('0.0.0', $package->version, $data));
 
 $data = file_get_contents('_include.php');
-file_put_contents("{$dir}/include.php", preg_replace('@(external-snappymail-data-folder/\'\);)@', "\$1\ndefine('APP_DATA_FOLDER_PATH', '/var/lib/snappymail');", $data));
+file_put_contents("{$dir}/include.php", preg_replace('@(external-snappymail-data-folder/\'\);)@', "\$1\ndefine('APP_DATA_FOLDER_PATH', '/var/lib/snappymail/');", $data));
 
 passthru('dpkg --build '.escapeshellarg(DEB_DEST_DIR));
 
