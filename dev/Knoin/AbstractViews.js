@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { inFocus } from 'Common/Utils';
 import { addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
 import { Scope } from 'Common/Enums';
 import { keyScope, SettingsGet, leftPanelDisabled } from 'Common/Globals';
@@ -68,7 +67,6 @@ export class AbstractViewPopup extends AbstractView
 			}
 			return true;
 		});
-		shortcuts.add('backspace', '', name, inFocus());
 	}
 
 	// Happens when user hits Escape or Close key

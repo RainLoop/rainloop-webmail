@@ -11,7 +11,7 @@ import {
 	SetSystemFoldersNotification
 } from 'Common/EnumsUser';
 
-import { inFocus, pInt, isArray, arrayLength, forEachObjectEntry } from 'Common/Utils';
+import { pInt, isArray, arrayLength, forEachObjectEntry } from 'Common/Utils';
 import { initFullscreen } from 'Common/UtilsUser';
 import { encodeHtml, HtmlEditor, htmlToPlain } from 'Common/Html';
 import { koArrayWithDestroy } from 'External/ko';
@@ -1197,14 +1197,6 @@ export class ComposePopupView extends AbstractViewPopup {
 		}
 	}
 
-	popupMenu(event) {
-		if (event.ctrlKey || event.metaKey || 'ContextMenu' == event.key
-		 || (this.oEditor && !this.oEditor.hasFocus() && !inFocus())) {
-			this.identitiesDropdownTrigger(true);
-			return false;
-		}
-	}
-
 	onBuild(dom) {
 		// initUploader
 		const oJua = new Jua({
@@ -1326,8 +1318,10 @@ export class ComposePopupView extends AbstractViewPopup {
 		shortcuts.add('q', 'meta', ScopeCompose, ()=>false);
 		shortcuts.add('w', 'meta', ScopeCompose, ()=>false);
 
-		shortcuts.add('contextmenu', '', ScopeCompose, e => this.popupMenu(e));
-		shortcuts.add('m', 'meta', ScopeCompose, e => this.popupMenu(e));
+		shortcuts.add('m', 'meta', ScopeCompose, () => {
+			this.identitiesDropdownTrigger(true);
+			return false;
+		});
 
 		shortcuts.add('arrowdown', 'meta', ScopeCompose, () => {
 			this.skipCommand();

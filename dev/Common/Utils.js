@@ -29,16 +29,6 @@ export const
 		domItem && item && undefined !== item.disabled
 		&& domItem.classList.toggle('disabled', domItem.disabled = item.disabled),
 
-	inFocus = () => {
-		try {
-			return doc.activeElement && doc.activeElement.matches(
-				'input,textarea,[contenteditable]'
-			);
-		} catch (e) {
-			return false;
-		}
-	},
-
 	// unescape(encodeURIComponent()) makes the UTF-16 DOMString to an UTF-8 string
 	b64EncodeJSON = data => btoa(unescape(encodeURIComponent(JSON.stringify(data)))),
 /* 	// Without deprecated 'unescape':

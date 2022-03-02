@@ -24,7 +24,7 @@ import {
 	fireEvent
 } from 'Common/Globals';
 
-import { arrayLength, inFocus } from 'Common/Utils';
+import { arrayLength } from 'Common/Utils';
 import { download, mailToHelper, showMessageComposer, initFullscreen } from 'Common/UtilsUser';
 
 import { SMAudio } from 'Common/Audio';
@@ -333,12 +333,12 @@ export class MailMessageView extends AbstractViewRight {
 			}
 		});
 
-		keyScopeReal.subscribe(value => this.messageDomFocused(Scope.MessageView === value && !inFocus()));
+		keyScopeReal.subscribe(value => this.messageDomFocused(Scope.MessageView === value));
 
 		// initShortcuts
 
 		// exit fullscreen, back
-		shortcuts.add('escape,backspace', '', Scope.MessageView, () => {
+		shortcuts.add('escape', '', Scope.MessageView, () => {
 			if (!this.viewModelDom.hidden && currentMessage()) {
 				const preview = SettingsUserStore.usePreviewPane();
 				if (this.fullScreenMode()) {

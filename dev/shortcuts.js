@@ -63,14 +63,10 @@ const
 
 	keydown = event => {
 		let key = (event.key || '').toLowerCase().replace(' ','space'),
-			target = event.target;
-		// ignore keydown in any element that supports keyboard input unless it's the Escape key
-		if ('escape' === key || !target.closest || !target.closest('input,select,textarea,[contenteditable]')) {
-			let modifiers = ['alt','ctrl','meta','shift'].filter(v => event[v+'Key']).join('+');
-			scope[key] && scope[key][modifiers] && scope[key][modifiers].forEach(cmd => exec(event, cmd));
-			!event.defaultPrevented && _scope !== 'all' && _scopes.all[key] && _scopes.all[key][modifiers]
-				&& _scopes.all[key][modifiers].forEach(cmd => exec(event, cmd));
-		}
+			modifiers = ['alt','ctrl','meta','shift'].filter(v => event[v+'Key']).join('+');
+		scope[key] && scope[key][modifiers] && scope[key][modifiers].forEach(cmd => exec(event, cmd));
+		!event.defaultPrevented && _scope !== 'all' && _scopes.all[key] && _scopes.all[key][modifiers]
+			&& _scopes.all[key][modifiers].forEach(cmd => exec(event, cmd));
 	};
 
 win.shortcuts = shortcuts;

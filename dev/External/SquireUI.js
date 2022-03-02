@@ -354,8 +354,8 @@ class SquireUI
 			changes.redo.input.disabled = !state.canRedo;
 		});
 
-		squire.addEventListener('focus', () => shortcuts.off());
-		squire.addEventListener('blur', () => shortcuts.on());
+//		squire.addEventListener('focus', () => shortcuts.off());
+//		squire.addEventListener('blur', () => shortcuts.on());
 
 		container.append(toolbar, wysiwyg, plain);
 

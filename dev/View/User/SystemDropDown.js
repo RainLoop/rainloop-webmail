@@ -125,7 +125,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 	}
 
 	onBuild() {
-		shortcuts.add('m,contextmenu', '', [Scope.MessageList, Scope.MessageView, Scope.Settings], () => {
+		shortcuts.add('m', '', [Scope.MessageList, Scope.MessageView, Scope.Settings], () => {
 			if (!this.viewModelDom.hidden) {
 				MessageUserStore.fullScreen(false);
 				this.accountMenuDropdownTrigger(true);
