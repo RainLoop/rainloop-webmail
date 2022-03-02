@@ -191,59 +191,32 @@ abstract class HtmlUtils
 		return $sResult;
 	}
 
-	private static function ClearTags(\DOMDocument $oDom, bool $bClearStyleAndHead = true) : void
-	{
-		$aRemoveTags = array(
-			'svg', 'link', 'base', 'meta', 'title', 'x-script', 'script', 'bgsound', 'keygen', 'source',
-			'object', 'embed', 'applet', 'mocha', 'iframe', 'frame', 'frameset', 'video', 'audio', 'area', 'map'
-		);
-
-		if ($bClearStyleAndHead)
-		{
-			$aRemoveTags[] = 'head';
-			$aRemoveTags[] = 'style';
-		}
-
-		$aRemove = array();
-		$aNodes = $oDom->getElementsByTagName('*');
-		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
-		{
-			if ($oElement)
-			{
-				$sTagNameLower = \trim(\strtolower($oElement->tagName));
-				if ('' !== $sTagNameLower)
-				{
-					if (\in_array($sTagNameLower, $aRemoveTags))
-					{
-						$aRemove[] = @$oElement;
-					}
-				}
-			}
-		}
-
-		foreach ($aRemove as /* @var $oElement \DOMElement */ $oElement)
-		{
-			if (isset($oElement->parentNode))
-			{
-				@$oElement->parentNode->removeChild($oElement);
-			}
-		}
-	}
-
 	/**
 	 * Used by DoSaveMessage() and DoSendMessage()
 	 */
 	public static function BuildHtml(string $sHtml, array &$aFoundCids, array &$aFoundDataURL, array &$aFoundContentLocationUrls) : string
 	{
 		$oDom = static::GetDomFromText($sHtml);
-
-		static::ClearTags($oDom);
 		unset($sHtml);
+
+		$aRemoveTags = array(
+			'svg', 'link', 'base', 'meta', 'title', 'x-script', 'script', 'bgsound', 'keygen', 'source',
+			'object', 'embed', 'applet', 'mocha', 'iframe', 'frame', 'frameset', 'video', 'audio', 'area', 'map',
+			'head', 'style'
+		);
+
+		$aRemove = array();
 
 		$aNodes = $oDom->getElementsByTagName('*');
 		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
 		{
 			$sTagNameLower = \strtolower($oElement->tagName);
+
+			if (\in_array($sTagNameLower, $aRemoveTags))
+			{
+				$aRemove[] = @$oElement;
+				continue;
+			}
 
 			if ($oElement->hasAttribute('data-x-src-cid'))
 			{
@@ -358,6 +331,14 @@ abstract class HtmlUtils
 
 					$oElement->setAttribute('src', 'cid:'.$sHash);
 				}
+			}
+		}
+
+		foreach ($aRemove as /* @var $oElement \DOMElement */ $oElement)
+		{
+			if (isset($oElement->parentNode))
+			{
+				@$oElement->parentNode->removeChild($oElement);
 			}
 		}
 
