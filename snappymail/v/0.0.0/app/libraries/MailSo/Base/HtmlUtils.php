@@ -204,10 +204,6 @@ abstract class HtmlUtils
 			$aRemoveTags[] = 'style';
 		}
 
-		$aHtmlAllowedTags = isset(\MailSo\Config::$HtmlStrictAllowedTags) &&
-			\is_array(\MailSo\Config::$HtmlStrictAllowedTags) && \count(\MailSo\Config::$HtmlStrictAllowedTags) ?
-				\MailSo\Config::$HtmlStrictAllowedTags : null;
-
 		$aRemove = array();
 		$aNodes = $oDom->getElementsByTagName('*');
 		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
@@ -217,7 +213,7 @@ abstract class HtmlUtils
 				$sTagNameLower = \trim(\strtolower($oElement->tagName));
 				if ('' !== $sTagNameLower)
 				{
-					if (\in_array($sTagNameLower, $aRemoveTags) || ($aHtmlAllowedTags && !\in_array($sTagNameLower, $aHtmlAllowedTags)))
+					if (\in_array($sTagNameLower, $aRemoveTags))
 					{
 						$aRemove[] = @$oElement;
 					}

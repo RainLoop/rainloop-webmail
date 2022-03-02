@@ -115,8 +115,6 @@ class Api
 				});
 			}
 
-			\MailSo\Config::$HtmlStrictDebug = !!static::Config()->Get('debug', 'enable', false);
-
 			\MailSo\Config::$CheckNewMessages = !!static::Config()->Get('labs', 'check_new_messages', true);
 		}
 	}
