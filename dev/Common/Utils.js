@@ -1,5 +1,5 @@
 import { SaveSettingsStep } from 'Common/Enums';
-import { doc, elementById } from 'Common/Globals';
+import { elementById } from 'Common/Globals';
 
 let __themeTimer = 0,
 	__themeJson = null;
