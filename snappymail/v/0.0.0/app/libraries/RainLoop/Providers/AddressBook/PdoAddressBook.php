@@ -76,7 +76,7 @@ class PdoAddressBook
 		);
 	}
 
-	private function prepearDatabaseSyncData(int $iUserID) : array
+	private function prepareDatabaseSyncData(int $iUserID) : array
 	{
 		$aResult = array();
 		$oStmt = $this->prepareAndExecute('SELECT id_contact, id_contact_str, changed, deleted, etag FROM rainloop_ab_contacts WHERE id_user = :id_user', array(
@@ -119,12 +119,14 @@ class PdoAddressBook
 		$iUserID = $this->getUserId($sEmail);
 		if (0 >= $iUserID)
 		{
+			\SnappyMail\Log::warning('PdoAddressBook', 'Sync() invalid $iUserID');
 			return false;
 		}
 
 		$oClient = $this->getDavClient($sUrl, $sUser, $sPassword, $sProxy);
 		if (!$oClient)
 		{
+			\SnappyMail\Log::warning('PdoAddressBook', 'Sync() invalid DavClient');
 			return false;
 		}
 
@@ -133,10 +135,11 @@ class PdoAddressBook
 		$aRemoteSyncData = $this->prepareDavSyncData($oClient, $sPath);
 		if (false === $aRemoteSyncData)
 		{
+			\SnappyMail\Log::info('PdoAddressBook', 'Sync() no data to sync');
 			return false;
 		}
 
-		$aDatabaseSyncData = $this->prepearDatabaseSyncData($iUserID);
+		$aDatabaseSyncData = $this->prepareDatabaseSyncData($iUserID);
 
 //		$this->oLogger->WriteDump($aRemoteSyncData);
 //		$this->oLogger->WriteDump($aDatabaseSyncData);
@@ -303,7 +306,7 @@ class PdoAddressBook
 		$bVcf = 'vcf' === $sType;
 		$bCsvHeader = true;
 
-		$aDatabaseSyncData = $this->prepearDatabaseSyncData($iUserID);
+		$aDatabaseSyncData = $this->prepareDatabaseSyncData($iUserID);
 		if (\is_array($aDatabaseSyncData) && \count($aDatabaseSyncData))
 		{
 			foreach ($aDatabaseSyncData as $mData)
