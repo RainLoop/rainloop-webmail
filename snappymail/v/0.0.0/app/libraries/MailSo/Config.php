@@ -22,11 +22,6 @@ class Config
 	public static $HtmlStrictAllowedTags = null;
 
 	/**
-	 * @var array|null
-	 */
-	public static $HtmlStrictAllowedAttributes = null;
-
-	/**
 	 * @var boolean
 	 */
 	public static $HtmlStrictDebug = false;
