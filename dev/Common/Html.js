@@ -94,8 +94,8 @@ export const
 				'INPUT','OUTPUT','SELECT','BUTTON','TEXTAREA',
 				'BGSOUND','KEYGEN','SOURCE','OBJECT','EMBED','APPLET','IFRAME','FRAME','FRAMESET','VIDEO','AUDIO','AREA','MAP'
 			],
-			inlineTags = [
-				'A','B','EM','I','SPAN','STRONG','O:P'
+			nonEmptyTags = [
+				'A','B','EM','I','SPAN','STRONG','O:P','TABLE'
 			];
 
 		tpl.innerHTML = html
@@ -131,7 +131,7 @@ export const
 //			 || (oStyle.maxHeight && 1 > parseFloat(oStyle.maxHeight)
 //			 || (oStyle.maxWidth && 1 > parseFloat(oStyle.maxWidth)
 //			 || ('0' === oStyle.opacity
-			 || (inlineTags.includes(name) && '' == oElement.textContent.trim())
+			 || (nonEmptyTags.includes(name) && ('' == oElement.textContent.trim() && !oElement.querySelector('img')))
 			) {
 				oElement.remove();
 				return;
@@ -173,11 +173,14 @@ export const
 				});
 			}
 
-			else if ('TABLE' === name && hasAttribute('width')) {
-				value = getAttribute('width');
-				if (!value.includes('%')) {
+			else if ('TABLE' === name) {
+				if (hasAttribute('width')) {
+					oStyle.width = getAttribute('width');
 					delAttribute('width');
-					oStyle.maxWidth = value + 'px';
+				}
+				value = oStyle.width;
+				if (value && !value.includes('%')) {
+					oStyle.maxWidth = value;
 					oStyle.width = '100%';
 				}
 			}
