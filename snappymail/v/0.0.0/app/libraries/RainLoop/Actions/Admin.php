@@ -74,14 +74,9 @@ trait Admin
 
 	public function DoAdminClearCache() : array
 	{
-		$this->Cacher()->GC(1);
+		$this->Cacher()->GC(0);
 		if (\is_dir(APP_PRIVATE_DATA . 'cache')) {
-			foreach (new \RecursiveIteratorIterator(
-				new \RecursiveDirectoryIterator(APP_PRIVATE_DATA.'cache', \FilesystemIterator::SKIP_DOTS),
-				\RecursiveIteratorIterator::CHILD_FIRST) as $sName) {
-					$sName->isDir() ? \rmdir($sName) : \unlink($sName);
-			}
-			\clearstatcache();
+			\MailSo\Base\Utils::RecRmDir(APP_PRIVATE_DATA.'cache');
 		}
 		return $this->TrueResponse(__FUNCTION__);
 	}
