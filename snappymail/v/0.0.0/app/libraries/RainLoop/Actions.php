@@ -895,8 +895,10 @@ class Actions
 					$sLanguage = $this->ValidateLanguage($UserLanguageRaw, $sLanguage, false);
 				}
 
-				$aResult['DevEmail'] = $oConfig->Get('labs', 'dev_email', '');
-				$aResult['DevPassword'] = $oConfig->Get('labs', 'dev_password', '');
+				if ('0.0.0' === APP_VERSION) {
+					$aResult['DevEmail'] = $oConfig->Get('labs', 'dev_email', '');
+					$aResult['DevPassword'] = $oConfig->Get('labs', 'dev_password', '');
+				}
 
 				if (empty($aResult['AdditionalLoginError'])) {
 					$aResult['AdditionalLoginError'] = $this->GetSpecLogoutCustomMgsWithDeletion();
@@ -937,7 +939,6 @@ class Actions
 		// IDN
 		$aResult['Email'] = \MailSo\Base\Utils::IdnToUtf8($aResult['Email']);
 		$aResult['MailToEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['MailToEmail']);
-		$aResult['DevEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['DevEmail']);
 
 		$this->oPlugins->InitAppData($bAdmin, $aResult, $oAccount);
 
