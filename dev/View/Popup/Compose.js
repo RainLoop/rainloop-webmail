@@ -366,10 +366,10 @@ export class ComposePopupView extends AbstractViewPopup {
 
 		decorateKoCommands(this, {
 			sendCommand: self => self.canBeSentOrSaved(),
-				saveCommand: self => self.canBeSentOrSaved(),
-				deleteCommand: self => self.isDraftFolderMessage(),
-				skipCommand: self => self.canBeSentOrSaved(),
-				contactsCommand: self => self.allowContacts
+			saveCommand: self => self.canBeSentOrSaved(),
+			deleteCommand: self => self.isDraftFolderMessage(),
+			skipCommand: self => self.canBeSentOrSaved(),
+			contactsCommand: self => self.allowContacts
 		});
 	}
 

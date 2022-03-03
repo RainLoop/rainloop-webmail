@@ -136,6 +136,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 		});
 
 		decorateKoCommands(this, {
+//			closeCommand: self => !self.watchDirty(),
 			deleteCommand: self => 0 < self.contactsCheckedOrSelected().length,
 			newMessageCommand: self => 0 < self.contactsCheckedOrSelected().length,
 			saveCommand: self => !self.viewSaving() && !self.viewReadOnly()

@@ -99,7 +99,7 @@ Object.assign(ko.bindingHandlers, {
 		init: (element, fValueAccessor, fAllBindings, viewModel, bindingContext) => {
 			const command = fValueAccessor();
 
-			if (!command || !command.enabled || !command.canExecute) {
+			if (!command || !command.canExecute) {
 				throw new Error('Value should be a command');
 			}
 
@@ -115,9 +115,7 @@ Object.assign(ko.bindingHandlers, {
 			const cl = element.classList,
 				command = fValueAccessor();
 
-			let disabled = !command.enabled();
-
-			disabled = disabled || !command.canExecute();
+			let disabled = !command.canExecute();
 			cl.toggle('disabled', disabled);
 
 			if (element.matches('INPUT,TEXTAREA,BUTTON')) {

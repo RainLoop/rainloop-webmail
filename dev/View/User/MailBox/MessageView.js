@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { koComputable } from 'External/ko';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
@@ -46,7 +47,7 @@ import * as Local from 'Storage/Client';
 
 import Remote from 'Remote/User/Fetch';
 
-import { decorateKoCommands, createCommand } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 import { PgpUserStore } from 'Stores/User/Pgp';
@@ -63,6 +64,20 @@ export class MailMessageView extends AbstractViewRight {
 		super('MailMessageView');
 
 		const
+			/**
+			 * @param {Function} fExecute
+			 * @param {(Function|boolean|null)=} fCanExecute = true
+			 * @returns {Function}
+			 */
+			createCommand = (fExecute, fCanExecute) => {
+				let fResult = () => {
+						fResult.canExecute() && fExecute.call(null);
+						return false;
+					};
+				fResult.canExecute = koComputable(() => fCanExecute());
+				return fResult;
+			},
+
 			createCommandReplyHelper = type =>
 				createCommand(() => this.replyOrforward(type), this.canBeRepliedOrForwarded),
 
@@ -111,19 +126,6 @@ export class MailMessageView extends AbstractViewRight {
 		this.downloadAsZipError = ko.observable(false).extend({ falseTimeout: 7000 });
 
 		this.messageDomFocused = ko.observable(false).extend({ rateLimit: 0 });
-
-		// commands
-		this.replyCommand = createCommandReplyHelper(ComposeType.Reply);
-		this.replyAllCommand = createCommandReplyHelper(ComposeType.ReplyAll);
-		this.forwardCommand = createCommandReplyHelper(ComposeType.Forward);
-		this.forwardAsAttachmentCommand = createCommandReplyHelper(ComposeType.ForwardAsAttachment);
-		this.editAsNewCommand = createCommandReplyHelper(ComposeType.EditAsNew);
-
-		this.deleteCommand = createCommandActionHelper(FolderType.Trash, true);
-		this.deleteWithoutMoveCommand = createCommandActionHelper(FolderType.Trash, false);
-		this.archiveCommand = createCommandActionHelper(FolderType.Archive, true);
-		this.spamCommand = createCommandActionHelper(FolderType.Spam, true);
-		this.notSpamCommand = createCommandActionHelper(FolderType.NotSpam, true);
 
 		// viewer
 		this.viewHash = '';
@@ -223,6 +225,19 @@ export class MailMessageView extends AbstractViewRight {
 		this.lastReplyAction(Local.get(ClientSideKeyName.LastReplyAction) || ComposeType.Reply);
 
 		addEventListener('mailbox.message-view.toggle-full-screen', () => this.toggleFullScreen());
+
+		// commands
+		this.replyCommand = createCommandReplyHelper(ComposeType.Reply);
+		this.replyAllCommand = createCommandReplyHelper(ComposeType.ReplyAll);
+		this.forwardCommand = createCommandReplyHelper(ComposeType.Forward);
+		this.forwardAsAttachmentCommand = createCommandReplyHelper(ComposeType.ForwardAsAttachment);
+		this.editAsNewCommand = createCommandReplyHelper(ComposeType.EditAsNew);
+
+		this.deleteCommand = createCommandActionHelper(FolderType.Trash, true);
+		this.deleteWithoutMoveCommand = createCommandActionHelper(FolderType.Trash, false);
+		this.archiveCommand = createCommandActionHelper(FolderType.Archive, true);
+		this.spamCommand = createCommandActionHelper(FolderType.Spam, true);
+		this.notSpamCommand = createCommandActionHelper(FolderType.NotSpam, true);
 
 		decorateKoCommands(this, {
 			messageEditCommand: self => self.messageVisibility(),

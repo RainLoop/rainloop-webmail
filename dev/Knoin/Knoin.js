@@ -1,7 +1,7 @@
 import ko from 'ko';
 import { koComputable } from 'External/ko';
 import { doc, $htmlCL, elementById, fireEvent } from 'Common/Globals';
-import { isFunction, forEachObjectValue, forEachObjectEntry } from 'Common/Utils';
+import { forEachObjectValue, forEachObjectEntry } from 'Common/Utils';
 
 let
 	SCREENS = {},
@@ -48,7 +48,7 @@ const
 				ViewModelClass.__dom = vmDom;
 
 				if (ViewType.Popup === position) {
-					vm.closeCommand = createCommand(() => hideScreenPopup(ViewModelClass));
+					vm.closeCommand = () => hideScreenPopup(ViewModelClass);
 
 					// Firefox / Safari HTMLDialogElement not defined
 					if (!vmDom.showModal) {
@@ -237,23 +237,6 @@ export const
 	},
 
 	/**
-	 * @param {Function} fExecute
-	 * @param {(Function|boolean|null)=} fCanExecute = true
-	 * @returns {Function}
-	 */
-	createCommand = (fExecute, fCanExecute) => {
-		let fResult = () => {
-				fResult.canExecute() && fExecute.call(null);
-				return false;
-			};
-		fResult.enabled = ko.observable(true);
-		fResult.canExecute = isFunction(fCanExecute)
-			? koComputable(() => fResult.enabled() && fCanExecute())
-			: fResult.enabled;
-		return fResult;
-	},
-
-	/**
 	 * @param {Function} ViewModelClassToShow
 	 * @param {Array=} params
 	 * @returns {void}
@@ -316,15 +299,9 @@ export const
 	decorateKoCommands = (thisArg, commands) =>
 		forEachObjectEntry(commands, (key, canExecute) => {
 			let command = thisArg[key],
-				fn = (...args) => fn.enabled() && fn.canExecute() && command.apply(thisArg, args);
+				fn = (...args) => fn.canExecute() && command.apply(thisArg, args);
 
-	//		fn.__realCanExecute = canExecute;
-
-			fn.enabled = ko.observable(true);
-
-			fn.canExecute = isFunction(canExecute)
-				? koComputable(() => fn.enabled() && canExecute.call(thisArg, thisArg))
-				: koComputable(() => fn.enabled());
+			fn.canExecute = koComputable(() => canExecute.call(thisArg, thisArg));
 
 			thisArg[key] = fn;
 		});
