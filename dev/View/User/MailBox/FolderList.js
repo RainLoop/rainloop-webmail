@@ -105,7 +105,7 @@ export class MailFolderList extends AbstractViewLeft {
 							setFolderHash(folder.fullName, '');
 						}
 
-						rl.route.setHash(
+						hasher.setHash(
 							mailBox(folder.fullNameHash, 1,
 								(event.target.matches('.flag-icon') && !folder.isFlagged()) ? 'flagged' : ''
 							)
@@ -206,7 +206,7 @@ export class MailFolderList extends AbstractViewLeft {
 	}
 
 	configureFolders() {
-		rl.route.setHash(settings('folders'));
+		hasher.setHash(settings('folders'));
 	}
 
 	contactsClick() {

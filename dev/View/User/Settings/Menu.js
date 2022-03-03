@@ -18,6 +18,6 @@ export class MenuSettingsUserView extends AbstractViewLeft {
 	}
 
 	backToMailBoxClick() {
-		rl.route.setHash(mailbox(getFolderInboxName()));
+		hasher.setHash(mailbox(getFolderInboxName()));
 	}
 }

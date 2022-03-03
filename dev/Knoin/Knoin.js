@@ -173,7 +173,7 @@ const
 
 		// Close all popups
 		for (let vm of visiblePopups) {
-			vm.closeCommand();
+			false === vm.onClose() || vm.closeCommand();
 		}
 
 		if (screenName) {

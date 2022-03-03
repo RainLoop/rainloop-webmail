@@ -4,7 +4,7 @@ import { MessageUserStore } from 'Stores/User/Message';
 //import { FolderUserStore } from 'Stores/User/Folder';
 
 import { Capa, Scope } from 'Common/Enums';
-import { root, settings } from 'Common/Links';
+import { settings } from 'Common/Links';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewRight } from 'Knoin/AbstractViews';
@@ -82,9 +82,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 						});
 						AccountUserStore.loading(false);
 */
-//						rl.route.reload();
-						location.href = root();
-						location.reload();
+						rl.route.reload();
 					}
 				}, {Email:account.email}
 			);
@@ -97,7 +95,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 	}
 
 	settingsClick() {
-		rl.route.setHash(settings());
+		hasher.setHash(settings());
 	}
 
 	settingsHelp() {

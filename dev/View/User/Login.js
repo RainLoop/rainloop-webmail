@@ -115,7 +115,6 @@ export class LoginUserView extends AbstractViewLogin {
 						this.submitErrorAddidional((oData && oData.ErrorMessageAdditional) || '');
 					} else {
 						rl.setData(oData.Result);
-//						rl.route.reload();
 					}
 				},
 				data

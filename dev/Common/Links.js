@@ -2,7 +2,6 @@ import { pString, pInt } from 'Common/Utils';
 import { Settings } from 'Common/Globals';
 
 const
-	ROOT = './',
 	HASH_PREFIX = '#/',
 	SERVER_PREFIX = './?',
 	VERSION = Settings.app('version'),
@@ -24,7 +23,7 @@ export const
 	/**
 	 * @returns {string}
 	 */
-	logoutLink = () => adminPath() ? prefix() : ROOT,
+	logoutLink = () => adminPath() ? prefix() : './',
 
 	/**
 	 * @param {string} type

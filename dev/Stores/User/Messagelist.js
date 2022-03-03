@@ -31,7 +31,12 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 import Remote from 'Remote/User/Fetch';
 
 const
-	isChecked = item => item.checked();
+	isChecked = item => item.checked(),
+	replaceHash = hash => {
+		rl.route.off();
+		hasher.replaceHash(hash);
+		rl.route.on();
+	}
 
 export const MessagelistUserStore = ko.observableArray().extend({ debounce: 0 });
 
@@ -69,7 +74,7 @@ addComputablesTo(MessagelistUserStore, {
 
 	mainSearch: {
 		read: MessagelistUserStore.listSearch,
-		write: value => rl.route.setHash(
+		write: value => hasher.setHash(
 			mailBox(FolderUserStore.currentFolderFullNameHash(), 1,
 				value.toString().trim(), MessagelistUserStore.threadUid())
 		)
@@ -156,15 +161,13 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrenFolderCache
 		MessagelistUserStore.pageBeforeThread(1);
 		iOffset = 0;
 
-		rl.route.setHash(
+		replaceHash(
 			mailBox(
 				FolderUserStore.currentFolderFullNameHash(),
 				MessagelistUserStore.page(),
 				MessagelistUserStore.listSearch(),
 				MessagelistUserStore.threadUid()
-			),
-			true,
-			true
+			)
 		);
 	}
 
@@ -400,14 +403,12 @@ MessagelistUserStore.removeMessagesFromList = (
 					setHash = 1;
 				} else {
 					MessagelistUserStore.threadUid(0);
-					rl.route.setHash(
+					replaceHash(
 						mailBox(
 							FolderUserStore.currentFolderFullNameHash(),
 							MessagelistUserStore.pageBeforeThread(),
 							MessagelistUserStore.listSearch()
-						),
-						true,
-						true
+						)
 					);
 				}
 			} else if (MessagelistUserStore.threadUid() != message.uid) {
@@ -415,15 +416,13 @@ MessagelistUserStore.removeMessagesFromList = (
 				setHash = 1;
 			}
 			if (setHash) {
-				rl.route.setHash(
+				replaceHash(
 					mailBox(
 						FolderUserStore.currentFolderFullNameHash(),
 						MessagelistUserStore.page(),
 						MessagelistUserStore.listSearch(),
 						MessagelistUserStore.threadUid()
-					),
-					true,
-					true
+					)
 				);
 			}
 		}

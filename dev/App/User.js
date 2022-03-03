@@ -78,7 +78,7 @@ class AppUser extends AbstractApp {
 			const currentTime = Date.now();
 			if (currentTime > (lastTime + interval + 1000)) {
 				Remote.request('Version',
-					iError => (100 < iError) && this.reload(),
+					iError => (100 < iError) && (Settings.app('inIframe') ? parent : window).location.reload(),
 					{ Version: Settings.app('version') }
 				);
 			}
@@ -89,10 +89,6 @@ class AppUser extends AbstractApp {
 		addEventsListener(doc, ['keydown','keyup'], fn);
 
 		shortcuts.add('escape,enter', '', () => rl.Dropdowns.detectVisibility());
-	}
-
-	reload() {
-		(Settings.app('inIframe') ? parent : window).location.reload();
 	}
 
 	/**

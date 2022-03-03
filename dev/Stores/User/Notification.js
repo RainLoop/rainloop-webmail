@@ -15,7 +15,7 @@ const HTML5Notification = window.Notification,
 		if (data.Folder && data.Uid) {
 			fireEvent('mailbox.message.show', data);
 		} else if (data.Url) {
-			rl.route.setHash(data.Url);
+			hasher.setHash(data.Url);
 		}
 	};
 

@@ -766,8 +766,6 @@ export class ComposePopupView extends AbstractViewPopup {
 
 		this.to.focused(false);
 
-		rl.route.on();
-
 		(getFullscreenElement() === this.oContent) && exitFullscreen();
 	}
 
@@ -830,8 +828,6 @@ export class ComposePopupView extends AbstractViewPopup {
 	 * @param {string=} sCustomPlainText = null
 	 */
 	onShow(type, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText) {
-		rl.route.off();
-
 		this.autosaveStart();
 
 		this.viewModelDom.dataset.wysiwyg = SettingsUserStore.editorDefaultType();

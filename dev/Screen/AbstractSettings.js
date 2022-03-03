@@ -85,7 +85,7 @@ export class AbstractSettingsScreen extends AbstractScreen {
 				}, 1);
 			}
 		} else {
-			rl.route.setHash(settings(), false, true);
+			hasher.replaceHash(settings());
 		}
 	}
 

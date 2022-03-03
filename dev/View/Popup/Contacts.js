@@ -494,14 +494,10 @@ export class ContactsPopupView extends AbstractViewPopup {
 	onShow(bBackToCompose, sLastComposeFocusedField) {
 		this.bBackToCompose = !!bBackToCompose;
 		this.sLastComposeFocusedField = sLastComposeFocusedField;
-
-		rl.route.off();
 		this.reloadContactList(true);
 	}
 
 	onHide() {
-		rl.route.on();
-
 		this.currentContact(null);
 		this.emptySelection(true);
 		this.search('');

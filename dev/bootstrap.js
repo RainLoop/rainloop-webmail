@@ -27,31 +27,15 @@ export default App => {
 
 	rl.route = {
 		root: () => {
-			rl.route.setHash(root(), true);
 			rl.route.off();
+			hasher.setHash(root());
 		},
 		reload: () => {
 			rl.route.root();
 			setTimeout(() => (Settings.app('inIframe') ? parent : window).location.reload(), 100);
 		},
 		off: () => hasher.active = false,
-		on: () => hasher.active = true,
-		/**
-		 * @param {string} sHash
-		 * @param {boolean=} silence = false
-		 * @param {boolean=} replace = false
-		 * @returns {void}
-		 */
-		setHash: (hash, silence = false, replace = false) => {
-			hash = hash.replace(/^[#/]+/, '');
-			hasher.active = !silence;
-			hasher[replace ? 'replaceHash' : 'setHash'](hash);
-			if (silence) {
-				hasher.active = true;
-			} else {
-				hasher.setHash(hash);
-			}
-		}
+		on: () => hasher.active = true
 	};
 
 	rl.fetch = (resource, init, postData) => {

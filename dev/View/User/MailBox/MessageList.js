@@ -230,14 +230,14 @@ export class MailMessageList extends AbstractViewRight {
 			);
 
 			if ('INBOX' === sFolder) {
-				rl.route.setHash(mailBox(sFolder));
+				hasher.setHash(mailBox(sFolder));
 			}
 
 			if (message) {
 				this.selector.selectMessageItem(message);
 			} else {
 				if ('INBOX' !== sFolder) {
-					rl.route.setHash(mailBox(sFolder));
+					hasher.setHash(mailBox(sFolder));
 				}
 				if (sFolder && iUid) {
 					MessageUserStore.message(MessageModel.fromMessageListItem(null));
@@ -420,7 +420,7 @@ export class MailMessageList extends AbstractViewRight {
 
 	cancelThreadUid() {
 		// history.go(-1) better?
-		rl.route.setHash(
+		hasher.setHash(
 			mailBox(
 				FolderUserStore.currentFolderFullNameHash(),
 				MessagelistUserStore.pageBeforeThread(),
@@ -590,7 +590,7 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	gotoPage(page) {
-		page && rl.route.setHash(
+		page && hasher.setHash(
 			mailBox(
 				FolderUserStore.currentFolderFullNameHash(),
 				page.value,
@@ -604,7 +604,7 @@ export class MailMessageList extends AbstractViewRight {
 		if (message && 0 < message.threadsLen()) {
 			MessagelistUserStore.pageBeforeThread(MessagelistUserStore.page());
 
-			rl.route.setHash(
+			hasher.setHash(
 				mailBox(FolderUserStore.currentFolderFullNameHash(), 1, MessagelistUserStore.listSearch(), message.uid)
 			);
 		}
