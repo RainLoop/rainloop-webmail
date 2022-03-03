@@ -13,10 +13,11 @@ if (defined('APP_VERSION'))
 	$aOptional = array(
 		'cURL' => extension_loaded('curl'),
 		'exif' => extension_loaded('exif'),
-		'gnupg' => extension_loaded('gnupg'),
 		'gd' => extension_loaded('gd'),
+		'gnupg' => extension_loaded('gnupg'),
 		'gmagick' => extension_loaded('gmagick'),
 		'imagick' => extension_loaded('imagick'),
+		'iconv' => function_exists('iconv'),
 		'intl' => function_exists('idn_to_ascii'),
 		'ldap' => extension_loaded('ldap'),
 		'OpenSSL' => extension_loaded('openssl'),
