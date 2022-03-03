@@ -1,9 +1,8 @@
 import { koArrayWithDestroy } from 'External/ko';
 
 import { SaveSettingsStep } from 'Common/Enums';
-
 import { ComposeType } from 'Common/EnumsUser';
-
+import { doc } from 'Common/Globals';
 import { arrayLength, pInt } from 'Common/Utils';
 import { download, computedPaginatorHelper, showMessageComposer } from 'Common/UtilsUser';
 
@@ -20,8 +19,10 @@ import { EmailModel } from 'Model/Email';
 import { ContactModel } from 'Model/Contact';
 import { ContactPropertyModel, ContactPropertyType } from 'Model/ContactProperty';
 
-import { decorateKoCommands } from 'Knoin/Knoin';
+import { decorateKoCommands, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
+
+import { AskPopupView } from 'View/Popup/Ask';
 
 const
 	CONTACTS_PER_PAGE = 50,
@@ -448,6 +449,9 @@ export class ContactsPopupView extends AbstractViewPopup {
 		this.selector.init(dom.querySelector('.b-list-content'), ScopeContacts);
 
 		shortcuts.add('delete', '', ScopeContacts, () => {
+			if (doc.activeElement && doc.activeElement.matches('input,textarea')) {
+				return true;
+			}
 			this.deleteCommand();
 			return false;
 		});
@@ -488,6 +492,16 @@ export class ContactsPopupView extends AbstractViewPopup {
 					}
 				});
 			}
+		}
+	}
+
+	onClose() {
+		if (this.watchDirty() && AskPopupView.hidden()) {
+			showScreenPopup(AskPopupView, [
+				i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'),
+				() => this.closeCommand()
+			]);
+			return false;
 		}
 	}
 
