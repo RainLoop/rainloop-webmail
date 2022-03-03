@@ -83,7 +83,7 @@ abstract class Upgrade
 						\SnappyMail\Log::warning('UPGRADE', "ConvertInsecureAccount {$sEmail} no token");
 						continue;
 					}
-					$aAccountHash = \RainLoop\Utils::DecodeKeyValues($sToken);
+					$aAccountHash = static::DecodeKeyValues($sToken);
 					if (empty($aAccountHash[0]) || 'token' !== $aAccountHash[0] // simple token validation
 						|| 8 > \count($aAccountHash) // length checking
 					) {
@@ -128,7 +128,7 @@ abstract class Upgrade
 		if (!empty($sData)) {
 			$aData = \json_decode($sData, true);
 			if (!$aData) {
-				$aData = \RainLoop\Utils::DecodeKeyValues($sData);
+				$aData = static::DecodeKeyValues($sData);
 				if ($aData) {
 					$oActions->setContactsSyncData($oAccount, $aData);
 					return array(
@@ -143,4 +143,23 @@ abstract class Upgrade
 		return null;
 	}
 
+	/**
+	 * Decodes old less secure data
+	 */
+	private static function DecodeKeyValues(string $sData, string $sCustomKey = '') : array
+	{
+		$sData = \MailSo\Base\Utils::UrlSafeBase64Decode($sData);
+		if (!\strlen($sData)) {
+			return '';
+		}
+		$sKey = \md5(APP_SALT . $sCustomKey);
+		$sData = \is_callable('xxtea_decrypt')
+			? \xxtea_decrypt($sData, $sKey)
+			: \MailSo\Base\Xxtea::decrypt($sData, $sKey);
+		try {
+			return \json_decode($sData, true, 512, JSON_THROW_ON_ERROR) ?: array();
+		} catch (\Throwable $e) {
+			return \unserialize($sData) ?: array();
+		}
+	}
 }

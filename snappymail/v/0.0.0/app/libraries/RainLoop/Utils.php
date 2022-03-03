@@ -27,26 +27,6 @@ class Utils
 		 */
 		SESSION_TOKEN = 'smsession';
 
-	public static function EncodeKeyValues(array $aValues, string $sCustomKey = '') : string
-	{
-		return \MailSo\Base\Utils::UrlSafeBase64Encode(
-			\MailSo\Base\Crypt::Encrypt(
-				\json_encode($aValues),
-				\md5(APP_SALT.$sCustomKey)
-			)
-		);
-	}
-
-	public static function DecodeKeyValues(string $sEncodedValues, string $sCustomKey = '') : array
-	{
-		return static::unserialize(
-			\MailSo\Base\Crypt::Decrypt(
-				\MailSo\Base\Utils::UrlSafeBase64Decode($sEncodedValues),
-				\md5(APP_SALT.$sCustomKey)
-			)
-		);
-	}
-
 	public static function EncodeKeyValuesQ(array $aValues, string $sCustomKey = '') : string
 	{
 		return \SnappyMail\Crypt::EncryptUrlSafe(
@@ -61,15 +41,6 @@ class Utils
 			$sEncodedValues,
 			\sha1(APP_SALT.$sCustomKey.'Q'.static::GetSessionToken(false))
 		) ?: null;
-	}
-
-	public static function unserialize(string $sDecodedValues) : array
-	{
-		try {
-			return \json_decode($sDecodedValues, true, 512, JSON_THROW_ON_ERROR) ?: array();
-		} catch (\Throwable $e) {
-			return \unserialize($sDecodedValues) ?: array();
-		}
 	}
 
 	public static function GetSessionToken(bool $generate = true) : ?string
