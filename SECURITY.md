@@ -14,9 +14,11 @@ Currently due to the fast development only the latest version receives security 
 Please report security issues or vulnerabilities as an encrypted email to *security[at]snappymail.eu*.
 Your report should be detailed enough with clear steps to reproduce and classify the found vulnerability.
 
-You can find the PGP public key here and on the major public keyservers like [pgp.key-server.io](https://pgp.key-server.io).
+You can find the PGP public key below and on the major public keyservers like [pgp.key-server.io](https://pgp.key-server.io).
 ```
 -----BEGIN PGP PUBLIC KEY BLOCK-----
+Comment: Type: 255-bit EdDSA
+Comment: Fingerprint: 445D265124E6072671E64D0733F868A7E35E8277
 
 mDMEYiE2QRYJKwYBBAHaRw8BAQdAqMrQUm6DddWcQNo0VEjNIu3Q6CfP3nokVv2Y
 rNQ1avq0LFNuYXBweU1haWwgU2VjdXJpdHkgPHNlY3VyaXR5QHNuYXBweW1haWwu
@@ -30,9 +32,6 @@ YMXQVq4SJt7UpWABAORudfJxsBqCRKtPlZMgGTJLjcOkyFJ9C2Fx7DeN0J4I
 =nSOi
 -----END PGP PUBLIC KEY BLOCK-----
 ```
-
-Type: 255-bit EdDSA
-Fingerprint: 445D265124E6072671E64D0733F868A7E35E8277
 
 ## Publishing and Credits
 
