@@ -25,6 +25,7 @@ if (defined('APP_VERSION'))
 		'redis' => extension_loaded('redis'),
 		'Sodium' => extension_loaded('sodium'),
 		'sqlite' => extension_loaded('pdo_sqlite'),
+		'tidy' => extension_loaded('tidy'),
 		'uuid' => extension_loaded('uuid'),
 		'xxtea' => extension_loaded('xxtea'),
 		'zip' => extension_loaded('zip')

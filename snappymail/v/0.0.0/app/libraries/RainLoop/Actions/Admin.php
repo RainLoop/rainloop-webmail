@@ -690,7 +690,7 @@ trait Admin
 				'loaded' => true
 			]
 		];
-		foreach (['APCu', 'cURL','GnuPG','GD','Gmagick','Imagick','intl','LDAP','OpenSSL','pdo_mysql','pdo_pgsql','pdo_sqlite','redis','Sodium','uuid','XXTEA','Zip'] as $name) {
+		foreach (['APCu', 'cURL','GnuPG','GD','Gmagick','Imagick','intl','LDAP','OpenSSL','pdo_mysql','pdo_pgsql','pdo_sqlite','redis','Sodium','Tidy','uuid','XXTEA','Zip'] as $name) {
 			$aResult[] = [
 				'name' => $name,
 				'loaded' => \extension_loaded(\strtolower($name))
