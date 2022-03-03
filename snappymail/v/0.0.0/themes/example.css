@@ -3,23 +3,23 @@
 /* MAIN */
 	--main-color: #333;
 	--main-bg-color: #e3e3e3;
-	--main-bg-image: none;	/* url("images/background.png"); */
+	--main-bg-image: none; /* url("images/background.png"); */
 	--main-bg-size: auto;
 	--main-bg-repeat: repeat;
 	--link-color: #369;
 
 /* LOADING */
-	--loading-color: #000;			/* #ddd */
-	--loading-text-shadow: none;		/* 0px 1px 0px rgba(0, 0, 0, 0.5); */
+	--loading-color: #000;
+	--loading-text-shadow: none; /* 0px 1px 0px rgba(0, 0, 0, 0.5); */
 
 /* LOGIN */
 	--login-color: #555;
 	--login-bg-color: #eee;
-	--login-box-shadow: none;		/* 0px 2px 10px rgba(0,0,0,0.5) */
+	--login-box-shadow: none; /* 0px 2px 10px rgba(0,0,0,0.5) */
 	--login-border: 1px solid #ccc;
 	--login-border-radius: 7px;
-	--login-gradient-start: none;	/* #f4f4f4 */
-	--login-gradient-end: none;		/* #dfdfdf */
+	--login-gradient-start: none; /* #f4f4f4 */
+	--login-gradient-end: none;   /* #dfdfdf */
 
 	--spinner-color: #fff;
 
@@ -51,8 +51,8 @@
 
 /* MESSAGE LIST */
 	--message-list-toolbar-bg-color: #eee;
-	--message-list-toolbar-gradient-start: none;		/* #f4f4f4 */
-	--message-list-toolbar-gradient-end: none;		/* #dfdfdf */
+	--message-list-toolbar-gradient-start: none; /* #f4f4f4 */
+	--message-list-toolbar-gradient-end: none;   /* #dfdfdf */
 
 /* MESSAGE */
 	--message-bg-color: #fff;

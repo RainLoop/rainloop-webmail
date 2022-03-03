@@ -66,7 +66,7 @@ export class MailMessageView extends AbstractViewRight {
 		const
 			/**
 			 * @param {Function} fExecute
-			 * @param {(Function|boolean|null)=} fCanExecute = true
+			 * @param {Function} fCanExecute = true
 			 * @returns {Function}
 			 */
 			createCommand = (fExecute, fCanExecute) => {

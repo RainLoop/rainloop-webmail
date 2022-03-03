@@ -54,9 +54,8 @@ const
 					if (!vmDom.showModal) {
 						vmDom.classList.add('polyfill');
 						vmDom.showModal = () => {
-							if (!vmDom.backdrop) {
+							vmDom.backdrop ||
 								vmDom.before(vmDom.backdrop = Element.fromHTML('<div class="dialog-backdrop"></div>'));
-							}
 							vmDom.setAttribute('open','');
 							vmDom.open = true;
 							vmDom.returnValue = null;

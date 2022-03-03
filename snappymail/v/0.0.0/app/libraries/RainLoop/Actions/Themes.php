@@ -125,5 +125,6 @@ trait Themes
 			\str_replace('@{base}', $sBase, \implode("\n", $mResult)));
 
 		return $bLess ? (new \LessPHP\lessc())->compile($mResult) : $mResult;
+//			: \str_replace(';}', '}', \preg_replace('/\\s*([:;{},])\\s*/', '\1', \preg_replace('/\\s+/', ' ', \preg_replace('#/\\*.*?\\*/#s', '', $mResult))));
 	}
 }

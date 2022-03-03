@@ -92,10 +92,7 @@ class Api
 			$sSslCapath = static::Config()->Get('ssl', 'capath', '');
 
 			Utils::$CookieDefaultPath = static::Config()->Get('labs', 'cookie_default_path', '');
-			if (static::Config()->Get('labs', 'cookie_default_secure', false))
-			{
-				Utils::$CookieDefaultSecure = true;
-			}
+			Utils::$CookieDefaultSecure = !!static::Config()->Get('labs', 'cookie_default_secure', false);
 
 			if (!empty($sSslCafile) || !empty($sSslCapath))
 			{
