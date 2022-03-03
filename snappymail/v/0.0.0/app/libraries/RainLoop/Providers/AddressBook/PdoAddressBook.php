@@ -1382,11 +1382,6 @@ SQLITEINITIAL;
 
 	private function specialConvertSearchValueLower(string $sSearch, string $sEscapeSign = '=') : string
 	{
-		if (!\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_strtolower'))
-		{
-			return '';
-		}
-
 		return '%'.\str_replace(array($sEscapeSign, '_', '%'),
 			array($sEscapeSign.$sEscapeSign, $sEscapeSign.'_', $sEscapeSign.'%'),
 				(string) \mb_strtolower($sSearch, 'UTF-8')).'%';

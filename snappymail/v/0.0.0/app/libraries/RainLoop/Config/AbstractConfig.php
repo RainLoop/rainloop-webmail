@@ -45,7 +45,7 @@ abstract class AbstractConfig implements \JsonSerializable
 		$this->aData = $this->defaultValues();
 
 		$this->bUseApcCache = APP_USE_APCU_CACHE &&
-			\MailSo\Base\Utils::FunctionExistsAndEnabled(array('apcu_fetch', 'apcu_store'));
+			\MailSo\Base\Utils::FunctionsExistAndEnabled(array('apcu_fetch', 'apcu_store'));
 	}
 
 	protected abstract function defaultValues() : array;

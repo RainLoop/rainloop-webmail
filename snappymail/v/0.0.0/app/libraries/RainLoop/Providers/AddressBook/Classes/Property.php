@@ -129,7 +129,7 @@ class Property implements \JsonSerializable
 			}
 
 			// lower value for searching
-			if ($this->IsValueForLower() && \MailSo\Base\Utils::FunctionExistsAndEnabled('mb_strtolower'))
+			if ($this->IsValueForLower())
 			{
 				$this->ValueLower = (string) \mb_strtolower($this->Value, 'UTF-8');
 			}

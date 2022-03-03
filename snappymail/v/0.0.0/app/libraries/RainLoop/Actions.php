@@ -547,7 +547,7 @@ class Actions
 					break;
 
 				case ('APCU' === $sDriver) &&
-					\MailSo\Base\Utils::FunctionExistsAndEnabled(array(
+					\MailSo\Base\Utils::FunctionsExistAndEnabled(array(
 						'apcu_store', 'apcu_fetch', 'apcu_delete', 'apcu_clear_cache')):
 
 					$oDriver = new \MailSo\Cache\Drivers\APCU($sKey);

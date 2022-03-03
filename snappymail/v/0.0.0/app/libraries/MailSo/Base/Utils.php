@@ -1143,24 +1143,29 @@ abstract class Utils
 		return (false === $sResult) ? $sStr : $sResult;
 	}
 
-	public static function FunctionExistsAndEnabled($mFunctionNameOrNames) : bool
+	public static function FunctionsExistAndEnabled(array $aFunctionNames) : bool
 	{
-		if (\is_array($mFunctionNameOrNames))
-		{
-			foreach ($mFunctionNameOrNames as $sFunctionName)
-			{
-				if (!static::FunctionExistsAndEnabled($sFunctionName))
-				{
-					return false;
-				}
+		foreach ($aFunctionNames as $sFunctionName) {
+			if (!static::FunctionExistsAndEnabled($sFunctionName)) {
+				return false;
 			}
-
-			return true;
 		}
+		return true;
+	}
 
-		return !empty($mFunctionNameOrNames)
-			&& \function_exists($mFunctionNameOrNames)
-			&& \is_callable($mFunctionNameOrNames);
+	private static $disabled_functions = null;
+	public static function FunctionExistsAndEnabled(string $sFunctionName) : bool
+	{
+		if (null === static::$disabled_functions) {
+			static::$disabled_functions = \array_map('trim', \explode(',', \ini_get('disable_functions')));
+		}
+/*
+		$disabled_classes = \explode(',', \ini_get('disable_classes'));
+		\in_array($function, $disabled_classes);
+*/
+		return \function_exists($sFunctionName)
+			&& !\in_array($sFunctionName, static::$disabled_functions);
+//			&& \is_callable($mFunctionNameOrNames);
 	}
 
 	public static function ClearNullBite($mValue) : string
