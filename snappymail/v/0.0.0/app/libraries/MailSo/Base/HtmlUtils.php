@@ -17,27 +17,10 @@ namespace MailSo\Base;
  */
 abstract class HtmlUtils
 {
-	static $KOS = '@@_KOS_@@';
-
-	private static function GetElementAttributesAsArray(?\DOMElement $oElement) : array
-	{
-		$aResult = array();
-		if ($oElement && $oElement->hasAttributes() && isset($oElement->attributes) && $oElement->attributes)
-		{
-			foreach ($oElement->attributes as $oAttr)
-			{
-				if ($oAttr && !empty($oAttr->nodeName))
-				{
-					$sAttrName = \trim(\strtolower($oAttr->nodeName));
-					$aResult[$sAttrName] = $oAttr->nodeValue;
-				}
-			}
-		}
-
-		return $aResult;
-	}
-
-	private static function GetDomFromText(string $sText) : \DOMDocument
+	/**
+	 * Used by DoSaveMessage() and DoSendMessage()
+	 */
+	public static function BuildHtml(string $sHtml, array &$aFoundCids, array &$aFoundDataURL, array &$aFoundContentLocationUrls) : string
 	{
 		$bState = true;
 		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_use_internal_errors'))
@@ -45,13 +28,9 @@ abstract class HtmlUtils
 			$bState = \libxml_use_internal_errors(true);
 		}
 
-		$sText = \str_replace('<o:p></o:p>', '', $sText);
-		$sText = \str_replace('<o:p>', '<span>', $sText);
-		$sText = \str_replace('</o:p>', '</span>', $sText);
-//		$sText = \preg_replace('#<!--.*?-->#s', '', $sText);
-
-		// https://github.com/the-djmaze/snappymail/issues/187
-		$sText = \preg_replace('#<a[^>]*>(((?!</a).)+<a\\s)#si', '$1', $sText);
+		$sHtml = \str_replace('<o:p></o:p>', '', $sHtml);
+		$sHtml = \str_replace('<o:p>', '<span>', $sHtml);
+		$sHtml = \str_replace('</o:p>', '</span>', $sHtml);
 
 		if (\function_exists('tidy_repair_string')) {
 			# http://tidy.sourceforge.net/docs/quickref.html
@@ -63,44 +42,49 @@ abstract class HtmlUtils
 				'quote-nbsp' => 0,
 				'word-2000' => 1
 			);
-			$sText = \tidy_repair_string($sText, $tidyConfig, 'utf8');
+			$sHtml = \tidy_repair_string($sHtml, $tidyConfig, 'utf8');
 		}
 
-		$sText = \preg_replace(array(
+		$sHtml = \preg_replace(array(
 			'/<p[^>]*><\/p>/i',
 			'/<!doctype[^>]*>/i',
 			'/<\?xml [^>]*\?>/i'
-		), '', $sText);
+		), '', $sHtml);
 
 		$sHtmlAttrs = '';
 		$aMatch = array();
-		if (\preg_match('/<html([^>]+)>/im', $sText, $aMatch) && !empty($aMatch[1])) {
+		if (\preg_match('/<html([^>]+)>/im', $sHtml, $aMatch) && !empty($aMatch[1])) {
 			$sHtmlAttrs = $aMatch[1];
 		}
 
 		$sBodyAttrs = '';
 		$aMatch = array();
-		if (\preg_match('/<body([^>]+)>/im', $sText, $aMatch) && !empty($aMatch[1])) {
+		if (\preg_match('/<body([^>]+)>/im', $sHtml, $aMatch) && !empty($aMatch[1])) {
 			$sBodyAttrs = $aMatch[1];
 		}
 
-//		$sText = \preg_replace('/^.*<body([^>]*)>/si', '', $sText);
-		$sText = \preg_replace('/<\/?(head|body|html)(\\s[^>]*)?>/si', '', $sText);
+		$sHtml = \preg_replace('/<\/?(head|body|html)(\\s[^>]*)?>/si', '', $sHtml);
 
 		$sHtmlAttrs = \preg_replace('/xmlns:[a-z]="[^"]*"/i', '', $sHtmlAttrs);
 		$sHtmlAttrs = \preg_replace('/xmlns:[a-z]=\'[^\']*\'/i', '', $sHtmlAttrs);
 		$sHtmlAttrs = \preg_replace('/xmlns="[^"]*"/i', '', $sHtmlAttrs);
 		$sHtmlAttrs = \preg_replace('/xmlns=\'[^\']*\'/i', '', $sHtmlAttrs);
+
 		$sBodyAttrs = \preg_replace('/xmlns:[a-z]="[^"]*"/i', '', $sBodyAttrs);
 		$sBodyAttrs = \preg_replace('/xmlns:[a-z]=\'[^\']*\'/i', '', $sBodyAttrs);
 
-		$oDom = self::createDOMDocument();
-		@$oDom->loadHTML('<?xml version="1.0" encoding="utf-8"?>'.
+		$oDoc = new \DOMDocument('1.0', 'UTF-8');
+		$oDoc->encoding = 'UTF-8';
+		$oDoc->strictErrorChecking = false;
+		$oDoc->formatOutput = false;
+		$oDoc->preserveWhiteSpace = false;
+
+		@$oDoc->loadHTML('<?xml version="1.0" encoding="utf-8"?>'.
 			'<html '.\trim($sHtmlAttrs).'><head>'.
 			'<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'.
-			'<body '.\trim($sBodyAttrs).'>'.\MailSo\Base\Utils::Utf8Clear($sText).'</body></html>');
+			'<body '.\trim($sBodyAttrs).'>'.\MailSo\Base\Utils::Utf8Clear($sHtml).'</body></html>');
 
-		$oDom->normalizeDocument();
+		$oDoc->normalizeDocument();
 
 		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_clear_errors'))
 		{
@@ -112,92 +96,8 @@ abstract class HtmlUtils
 			\libxml_use_internal_errors($bState);
 		}
 
-		return $oDom;
-	}
-
-	private static function createDOMDocument() : \DOMDocument
-	{
-		$oDoc = new \DOMDocument('1.0', 'UTF-8');
-		$oDoc->encoding = 'UTF-8';
-		$oDoc->strictErrorChecking = false;
-		$oDoc->formatOutput = false;
-		$oDoc->preserveWhiteSpace = false;
-
-		return $oDoc;
-	}
-
-	private static function domToString(\DOMNode $oElem, ?\DOMDocument $oDom = null) : string
-	{
-		$sResult = '';
-		if ($oElem instanceof \DOMDocument)
-		{
-			$sResult = $oElem->saveHTML(isset($oElem->documentElement) ? $oElem->documentElement : null);
-		}
-		else if ($oDom)
-		{
-			$sResult = $oDom->saveHTML($oElem);
-		}
-		else
-		{
-			$oTempDoc = self::createDOMDocument();
-			$oTempDoc->appendChild($oTempDoc->importNode($oElem->cloneNode(true), true));
-			$sResult = $oTempDoc->saveHTML();
-		}
-
-		return \trim($sResult);
-	}
-
-	private static function GetTextFromDom(\DOMDocument $oDom, bool $bWrapByFakeHtmlAndBodyDiv = true) : string
-	{
-		$sResult = '';
-
-		$oHtml = $oDom->getElementsByTagName('html')->item(0);
-		$oBody = $oDom->getElementsByTagName('body')->item(0);
-
-		foreach ($oBody->childNodes as $oChild)
-		{
-			$sResult .= $oDom->saveHTML($oChild);
-		}
-
-		if ($bWrapByFakeHtmlAndBodyDiv)
-		{
-			$aHtmlAttrs = static::GetElementAttributesAsArray($oHtml);
-			$aBodylAttrs = static::GetElementAttributesAsArray($oBody);
-
-			$oWrapHtml = $oDom->createElement('div');
-			$oWrapHtml->setAttribute('data-x-div-type', 'html');
-			foreach ($aHtmlAttrs as $sKey => $sValue)
-			{
-				$oWrapHtml->setAttribute($sKey, $sValue);
-			}
-
-			$oWrapDom = $oDom->createElement('div', '___xxx___');
-			$oWrapDom->setAttribute('data-x-div-type', 'body');
-			foreach ($aBodylAttrs as $sKey => $sValue)
-			{
-				$oWrapDom->setAttribute($sKey, $sValue);
-			}
-
-			$oWrapHtml->appendChild($oWrapDom);
-
-			$sWrp = $oDom->saveHTML($oWrapHtml);
-
-			$sResult = \str_replace('___xxx___', $sResult, $sWrp);
-		}
-
-		$sResult = \str_replace(static::$KOS, ':', $sResult);
-		$sResult = \MailSo\Base\Utils::StripSpaces($sResult);
-
-		return $sResult;
-	}
-
-	/**
-	 * Used by DoSaveMessage() and DoSendMessage()
-	 */
-	public static function BuildHtml(string $sHtml, array &$aFoundCids, array &$aFoundDataURL, array &$aFoundContentLocationUrls) : string
-	{
-		$oDom = static::GetDomFromText($sHtml);
-		unset($sHtml);
+		$sHtml = '';
+		$oBody = $oDoc->getElementsByTagName('body')->item(0);
 
 		$aRemoveTags = array(
 			'svg', 'link', 'base', 'meta', 'title', 'x-script', 'script', 'bgsound', 'keygen', 'source',
@@ -207,7 +107,7 @@ abstract class HtmlUtils
 
 		$aRemove = array();
 
-		$aNodes = $oDom->getElementsByTagName('*');
+		$aNodes = $oBody->getElementsByTagName('*');
 		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
 		{
 			$sTagNameLower = \strtolower($oElement->tagName);
@@ -258,66 +158,45 @@ abstract class HtmlUtils
 				$oElement->removeAttribute('data-x-src');
 			}
 
-			if ($oElement->hasAttribute('data-x-href'))
-			{
-				$oElement->setAttribute('href', $oElement->getAttribute('data-x-href'));
-				$oElement->removeAttribute('data-x-href');
-			}
-
-			if ($oElement->hasAttribute('data-x-style-cid-name') && $oElement->hasAttribute('data-x-style-cid'))
-			{
-				$sCidName = $oElement->getAttribute('data-x-style-cid-name');
-				$sCid = $oElement->getAttribute('data-x-style-cid');
-
-				$oElement->removeAttribute('data-x-style-cid-name');
+			// style attribute images
+			$aCid = array();
+			if ($oElement->hasAttribute('data-x-style-cid')) {
+				$aCid = \json_decode($oElement->getAttribute('data-x-style-cid'), true);
 				$oElement->removeAttribute('data-x-style-cid');
-				if (!empty($sCidName) && !empty($sCid) && \in_array($sCidName,
-					array('background-image', 'background', 'list-style-image', 'content')))
-				{
-					$sStyles = '';
-					if ($oElement->hasAttribute('style'))
-					{
-						$sStyles = \trim(\trim($oElement->getAttribute('style')), ';');
-					}
-
-					$sBack = $sCidName.': url(cid:'.$sCid.')';
-					$sStyles = \preg_replace('/'.\preg_quote($sCidName, '/').':\s?[^;]+/i', $sBack, $sStyles);
-					if (false === \strpos($sStyles, $sBack))
-					{
-						$sStyles .= empty($sStyles) ? '': '; ';
-						$sStyles .= $sBack;
-					}
-
-					$oElement->setAttribute('style', $sStyles);
-					$aFoundCids[] = $sCid;
-				}
 			}
-
-			foreach (array(
-				'data-x-additional-src', 'data-x-additional-style-url', 'data-removed-attrs',
-				'data-original', 'data-x-div-type', 'data-wrp', 'data-bind'
-			) as $sName)
-			{
-				if ($oElement->hasAttribute($sName))
-				{
-					$oElement->removeAttribute($sName);
-				}
-			}
-
-			if ($oElement->hasAttribute('data-x-style-url'))
-			{
-				$sAddStyles = $oElement->getAttribute('data-x-style-url');
+			if ($oElement->hasAttribute('data-x-style-url')) {
+				$aCid = \array_merge($aCid, \json_decode($oElement->getAttribute('data-x-style-url'), true));
 				$oElement->removeAttribute('data-x-style-url');
-
-				if (!empty($sAddStyles))
-				{
-					$sStyles = '';
-					if ($oElement->hasAttribute('style'))
+			}
+			if ($aCid) {
+				foreach ($aCid as $sCidName => $sCid) {
+					$sCidName = \strtolower(\preg_replace('/([A-Z])/', '-\1', $sCidName));
+					if (\in_array($sCidName, array('background-image', 'list-style-image', 'content')))
 					{
-						$sStyles = \trim(\trim($oElement->getAttribute('style')), ';');
-					}
+						$sStyles = $oElement->hasAttribute('style')
+							? \trim(\trim($oElement->getAttribute('style')), ';')
+							: '';
 
-					$oElement->setAttribute('style', (empty($sStyles) ? '' : $sStyles.'; ').$sAddStyles);
+						$sBack = $sCidName.':url(cid:'.$sCid.')';
+						$sStyles = \preg_replace('/'.\preg_quote($sCidName).'\\s*:\\s*[^;]+/i', $sBack, $sStyles);
+						if (false === \strpos($sStyles, $sBack))
+						{
+							$sStyles .= ";{$sBack}";
+						}
+
+						$oElement->setAttribute('style', \trim($sStyles, ';'));
+						$aFoundCids[] = $sCid;
+					}
+				}
+			}
+
+			// Remove all remaining data-* attributes
+			if ($oElement->hasAttributes()) {
+				foreach ($oElement->attributes as $oAttr) {
+					if ('data-' === \substr(\strtolower($oAttr->nodeName), 0, 5))
+					{
+						$oElement->removeAttribute($oAttr->nodeName);
+					}
 				}
 			}
 
@@ -342,11 +221,8 @@ abstract class HtmlUtils
 			}
 		}
 
-		$sResult = static::GetTextFromDom($oDom, false);
-		unset($oDom);
-
-		return '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'.
-			'<body>'.$sResult.'</body></html>';
+		return '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'
+			. \MailSo\Base\Utils::StripSpaces($oDoc->saveHTML($oBody)) . '</html>';
 	}
 
 	public static function ConvertPlainToHtml(string $sText, bool $bLinksWithTargetBlank = true) : string

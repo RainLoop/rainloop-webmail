@@ -42,7 +42,6 @@ const
 				.replace(/<span[^>]*>\s*<\/span>/gi,'')
 				.trim();
 			tpl.querySelectorAll('a:empty,span:empty').forEach(el => el.remove());
-			tpl.querySelectorAll('[data-x-div-type]').forEach(el => el.replaceWith(getFragmentOfChildren(el)));
 			if (isPaste) {
 				tpl.querySelectorAll(removeElements).forEach(el => el.remove());
 				tpl.querySelectorAll('*').forEach(el => {
