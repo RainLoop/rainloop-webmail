@@ -116,7 +116,7 @@ class Manager
 		}
 		else
 		{
-			$this->Actions()->Logger()->Write('Cannot get installed plugins from '.APP_PLUGINS_PATH,
+			$this->oActions->Logger()->Write('Cannot get installed plugins from '.APP_PLUGINS_PATH,
 				\MailSo\Log\Enumerations\Type::ERROR);
 		}
 

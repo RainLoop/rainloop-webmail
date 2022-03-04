@@ -919,10 +919,9 @@ class Actions
 		$aResult['Language'] = $this->ValidateLanguage($sLanguage, '', false);
 		$aResult['UserLanguage'] = $this->ValidateLanguage($UserLanguageRaw, '', false, true);
 
-		$aResult['PluginsLink'] = '';
-		if (0 < $this->oPlugins->Count() && $this->oPlugins->HaveJs($bAdmin)) {
-			$aResult['PluginsLink'] = './?/Plugins/0/' . ($bAdmin ? 'Admin' : 'User') . '/' . $sStaticCache . '/';
-		}
+		$aResult['PluginsLink'] = $this->oPlugins->HaveJs($bAdmin)
+			? './?/Plugins/0/' . ($bAdmin ? 'Admin' : 'User') . '/' . $sStaticCache . '/'
+			: '';
 
 		$bAppJsDebug = $this->oConfig->Get('labs', 'use_app_debug_js', false);
 

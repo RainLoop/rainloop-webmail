@@ -146,13 +146,13 @@ abstract class Upgrade
 	/**
 	 * Decodes old less secure data
 	 */
-	private static function DecodeKeyValues(string $sData, string $sCustomKey = '') : array
+	private static function DecodeKeyValues(string $sData) : array
 	{
 		$sData = \MailSo\Base\Utils::UrlSafeBase64Decode($sData);
 		if (!\strlen($sData)) {
 			return '';
 		}
-		$sKey = \md5(APP_SALT . $sCustomKey);
+		$sKey = \md5(APP_SALT);
 		$sData = \is_callable('xxtea_decrypt')
 			? \xxtea_decrypt($sData, $sKey)
 			: \MailSo\Base\Xxtea::decrypt($sData, $sKey);

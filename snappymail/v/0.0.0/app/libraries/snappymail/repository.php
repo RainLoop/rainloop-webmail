@@ -262,38 +262,4 @@ abstract class Repository
 		return $bResult;
 	}
 
-	private static function pluginEnable(string $sName, bool $bEnable = true) : bool
-	{
-		if (!\strlen($sName))
-		{
-			return false;
-		}
-
-		$oConfig = \RainLoop\Api::Config();
-
-		$sEnabledPlugins = $oConfig->Get('plugins', 'enabled_list', '');
-		$aEnabledPlugins = \explode(',', \strtolower($sEnabledPlugins));
-		$aEnabledPlugins = \array_map('trim', $aEnabledPlugins);
-
-		$aNewEnabledPlugins = array();
-		if ($bEnable)
-		{
-			$aNewEnabledPlugins = $aEnabledPlugins;
-			$aNewEnabledPlugins[] = $sName;
-		}
-		else
-		{
-			foreach ($aEnabledPlugins as $sPlugin)
-			{
-				if ($sName !== $sPlugin && \strlen($sPlugin))
-				{
-					$aNewEnabledPlugins[] = $sPlugin;
-				}
-			}
-		}
-
-		$oConfig->Set('plugins', 'enabled_list', \trim(\implode(',', \array_unique($aNewEnabledPlugins)), ' ,'));
-
-		return $oConfig->Save();
-	}
 }
