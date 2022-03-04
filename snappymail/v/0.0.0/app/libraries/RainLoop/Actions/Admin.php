@@ -466,222 +466,6 @@ trait Admin
 		));
 	}
 
-	private function snappyMailRepo() : string
-	{
-		return 'https://snappymail.eu/repository/v2/';
-	}
-
-	private function getRepositoryDataByUrl(bool &$bReal = false) : array
-	{
-		$bReal = false;
-		$aRep = null;
-
-		$sRep = '';
-		$sRepoFile = 'packages.json';
-		$iRepTime = 0;
-
-		$sCacheKey = KeyPathHelper::RepositoryCacheFile(\SnappyMail\Repository::BASE_URL, $sRepoFile);
-		$sRep = $this->Cacher()->Get($sCacheKey);
-		if ('' !== $sRep)
-		{
-			$iRepTime = $this->Cacher()->GetTimer($sCacheKey);
-		}
-
-		if ('' === $sRep || 0 === $iRepTime || \time() - 3600 > $iRepTime)
-		{
-			$sRep = \SnappyMail\Repository::get($sRepoFile,
-				$this->Config()->Get('labs', 'curl_proxy', ''),
-				$this->Config()->Get('labs', 'curl_proxy_auth', '')
-			);
-			if ($sRep)
-			{
-				$aRep = \json_decode($sRep);
-				$bReal = \is_array($aRep) && \count($aRep);
-
-				if ($bReal)
-				{
-					$this->Cacher()->Set($sCacheKey, $sRep);
-					$this->Cacher()->SetTimer($sCacheKey);
-				}
-			}
-			else
-			{
-				throw new \Exception('Cannot read remote repository file: '.$sRepoFile);
-			}
-		}
-		else if ('' !== $sRep)
-		{
-			$aRep = \json_decode($sRep, false, 10);
-			$bReal = \is_array($aRep) && \count($aRep);
-		}
-
-		return \is_array($aRep) ? $aRep : [];
-	}
-
-	private function getRepositoryData(bool &$bReal, string &$sError) : array
-	{
-		$aResult = array();
-		try {
-			$notDev = '0.0.0' !== APP_VERSION;
-			foreach ($this->getRepositoryDataByUrl($bReal) as $oItem) {
-				if ($oItem && isset($oItem->type, $oItem->id, $oItem->name,
-					$oItem->version, $oItem->release, $oItem->file, $oItem->description))
-				{
-					if (!empty($oItem->required) && $notDev && \version_compare(APP_VERSION, $oItem->required, '<')) {
-						continue;
-					}
-
-					if (!empty($oItem->depricated) && $notDev && \version_compare(APP_VERSION, $oItem->depricated, '>=')) {
-						continue;
-					}
-
-					if ('plugin' === $oItem->type) {
-						$aResult[$oItem->id] = array(
-							'type' => $oItem->type,
-							'id' => $oItem->id,
-							'name' => $oItem->name,
-							'installed' => '',
-							'enabled' => true,
-							'version' => $oItem->version,
-							'file' => $oItem->file,
-							'release' => $oItem->release,
-							'desc' => $oItem->description,
-							'canBeDeleted' => false,
-							'canBeUpdated' => true
-						);
-					}
-				}
-			}
-		} catch (\Throwable $e) {
-			$sError = "{$e->getCode()} {$e->getMessage()}";
-			$this->Logger()->Write($sError, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
-		}
-		return $aResult;
-	}
-
-	public function DoAdminPackagesList() : array
-	{
-		$this->IsAdminLoggined();
-
-		$bReal = false;
-		$sError = '';
-		$aList = $this->getRepositoryData($bReal, $sError);
-
-		$aEnabledPlugins = \array_map('trim',
-			\explode(',', \strtolower($this->Config()->Get('plugins', 'enabled_list', '')))
-		);
-
-		$aInstalled = $this->Plugins()->InstalledPlugins();
-		foreach ($aInstalled as $aItem) {
-			if ($aItem) {
-				if (isset($aList[$aItem[0]])) {
-					$aList[$aItem[0]]['installed'] = $aItem[1];
-					$aList[$aItem[0]]['enabled'] = \in_array(\strtolower($aItem[0]), $aEnabledPlugins);
-					$aList[$aItem[0]]['canBeDeleted'] = true;
-					$aList[$aItem[0]]['canBeUpdated'] = \version_compare($aItem[1], $aList[$aItem[0]]['version'], '<');
-				} else {
-					\array_push($aList, array(
-						'type' => 'plugin',
-						'id' => $aItem[0],
-						'name' => $aItem[0],
-						'installed' => $aItem[1],
-						'enabled' => \in_array(\strtolower($aItem[0]), $aEnabledPlugins),
-						'version' => '',
-						'file' => '',
-						'release' => '',
-						'desc' => '',
-						'canBeDeleted' => true,
-						'canBeUpdated' => false
-					));
-				}
-			}
-		}
-
-//		\uksort($aList, function($a, $b){return \strcasecmp($a['name'], $b['name']);});
-
-		return $this->DefaultResponse(__FUNCTION__, array(
-			 'Real' => $bReal,
-			 'List' => \array_values($aList),
-			 'Error' => $sError
-		));
-	}
-
-	public function DoAdminPackageDelete() : array
-	{
-		$this->IsAdminLoggined();
-
-		$sId = $this->GetActionParam('Id', '');
-
-		$bResult = static::deletePackageDir($sId);
-		$this->pluginEnable($sId, false);
-
-		return $this->DefaultResponse(__FUNCTION__, $bResult);
-	}
-
-	private static function deletePackageDir(string $sId) : bool
-	{
-		$sPath = APP_PLUGINS_PATH.$sId;
-		return (!\is_dir($sPath) || \MailSo\Base\Utils::RecRmDir($sPath))
-			&& (!\is_file("{$sPath}.phar") || \unlink("{$sPath}.phar"));
-	}
-
-	public function DoAdminPackageInstall() : array
-	{
-		$this->IsAdminLoggined();
-
-		$sType = $this->GetActionParam('Type', '');
-		$sId = $this->GetActionParam('Id', '');
-		$sFile = $this->GetActionParam('File', '');
-
-		$this->Logger()->Write('Start package install: '.$sFile.' ('.$sType.')', \MailSo\Log\Enumerations\Type::INFO, 'INSTALLER');
-
-		$sRealFile = '';
-
-		$bResult = false;
-		$sTmp = null;
-		try {
-			if ('plugin' === $sType) {
-				$bReal = false;
-				$sError = '';
-				$aList = $this->getRepositoryData($bReal, $sError);
-				if ($sError) {
-					throw new \Exception($sError);
-				}
-				if (isset($aList[$sId]) && $sFile === $aList[$sId]['file']) {
-					$sRealFile = $sFile;
-					$sTmp = \SnappyMail\Repository::download($sFile,
-						$this->Config()->Get('labs', 'curl_proxy', ''),
-						$this->Config()->Get('labs', 'curl_proxy_auth', '')
-					);
-				}
-			}
-
-			if ($sTmp) {
-				$oArchive = new \PharData($sTmp, 0, $sRealFile);
-				if (static::deletePackageDir($sId)) {
-					if ('.phar' === \substr($sRealFile, -5)) {
-						$bResult = \copy($sTmp, APP_PLUGINS_PATH . \basename($sRealFile));
-					} else {
-						$bResult = $oArchive->extractTo(\rtrim(APP_PLUGINS_PATH, '\\/'));
-					}
-					if (!$bResult) {
-						throw new \Exception('Cannot extract package files: '.$oArchive->getStatusString());
-					}
-				} else {
-					throw new \Exception('Cannot remove previous plugin folder: '.$sId);
-				}
-			}
-		} catch (\Throwable $e) {
-			$this->Logger()->Write("Install package {$sRealFile} failed: {$e->getMessage()}", \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
-			throw $e;
-		} finally {
-			$sTmp && \unlink($sTmp);
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $bResult ?
-			('plugin' !== $sType ? array('Reload' => true) : true) : false);
-	}
-
 	public function DoAdminPHPExtensions() : array
 	{
 		$aResult = [
@@ -697,6 +481,31 @@ trait Admin
 			];
 		}
 		return $this->DefaultResponse(__FUNCTION__, $aResult);
+	}
+
+	public function DoAdminPackagesList() : array
+	{
+		return $this->DefaultResponse(__FUNCTION__, \SnappyMail\Repository::getPackagesList());
+	}
+
+	public function DoAdminPackageDelete() : array
+	{
+		$sId = $this->GetActionParam('Id', '');
+		$bResult = \SnappyMail\Repository::deletePackage($sId);
+		static::pluginEnable($sId, false);
+		return $this->DefaultResponse(__FUNCTION__, $bResult);
+	}
+
+	public function DoAdminPackageInstall() : array
+	{
+		$sType = $this->GetActionParam('Type', '');
+		$bResult = \SnappyMail\Repository::installPackage(
+			$sType,
+			$this->GetActionParam('Id', ''),
+			$this->GetActionParam('File', '')
+		);
+		return $this->DefaultResponse(__FUNCTION__, $bResult ?
+			('plugin' !== $sType ? array('Reload' => true) : true) : false);
 	}
 
 	private function pluginEnable(string $sName, bool $bEnable = true) : bool
@@ -875,19 +684,6 @@ trait Admin
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, true);
-	}
-
-	private function HasOneOfActionParams(array $aKeys) : bool
-	{
-		foreach ($aKeys as $sKey)
-		{
-			if ($this->HasActionParam($sKey))
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	private function setConfigFromParams(\RainLoop\Config\Application $oConfig, string $sParamName, string $sConfigSector, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null): void
