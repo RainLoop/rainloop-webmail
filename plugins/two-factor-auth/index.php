@@ -7,8 +7,8 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Two Factor Authentication',
-		VERSION  = '2.13.2',
-		RELEASE  = '2022-02-28',
+		VERSION  = '2.13.3',
+		RELEASE  = '2022-03-04',
 		REQUIRED = '2.13.2',
 		CATEGORY = 'Login',
 		DESCRIPTION = 'Provides support for TOTP 2FA';
@@ -95,7 +95,7 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->StorageProvider()->Put($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 			'two_factor',
-			\RainLoop\Utils::EncodeKeyValues(array(
+			\json_encode(array(
 				'User' => $sEmail,
 				'Enable' => false,
 				'Secret' => $sSecret,
@@ -152,7 +152,7 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$bResult = $this->StorageProvider()->Put($oAccount,
 				\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 				'two_factor',
-				\RainLoop\Utils::EncodeKeyValues(array(
+				\json_encode(array(
 					'User' => $sEmail,
 					'Enable' => '1' === \trim($this->jsonParam('Enable', '0')),
 					'Secret' => $mData['Secret'],
@@ -247,7 +247,7 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 			if ($sData)
 			{
-				$mData = \RainLoop\Utils::DecodeKeyValues($sData);
+				$mData = static::DecodeKeyValues($sData);
 			}
 		}
 
@@ -297,7 +297,7 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		if ($sData)
 		{
-			$mData = \RainLoop\Utils::DecodeKeyValues($sData);
+			$mData = static::DecodeKeyValues($sData);
 
 			if (!empty($mData['BackupCodes']))
 			{
@@ -309,11 +309,30 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 				return $this->StorageProvider()->Put($oAccount,
 					\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 					'two_factor',
-					\RainLoop\Utils::EncodeKeyValues($mData)
+					\json_encode($mData)
 				);
 			}
 		}
 
 		return false;
+	}
+
+	private static function DecodeKeyValues(string $sData) : array
+	{
+		if (!\str_contains($sData, 'User')) {
+			$sData = \MailSo\Base\Utils::UrlSafeBase64Decode($sData);
+			if (!\strlen($sData)) {
+				return '';
+			}
+			$sKey = \md5(APP_SALT);
+			$sData = \is_callable('xxtea_decrypt')
+				? \xxtea_decrypt($sData, $sKey)
+				: \MailSo\Base\Xxtea::decrypt($sData, $sKey);
+		}
+		try {
+			return \json_decode($sData, true, 512, JSON_THROW_ON_ERROR) ?: array();
+		} catch (\Throwable $e) {
+			return \unserialize($sData) ?: array();
+		}
 	}
 }
