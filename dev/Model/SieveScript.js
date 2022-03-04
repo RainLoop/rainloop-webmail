@@ -268,7 +268,6 @@ export class SieveScriptModel extends AbstractModel
 
 			exists: false,
 			nameError: false,
-			bodyError: false,
 			askDelete: false,
 			canBeDeleted: true,
 			hasChanges: false
@@ -296,8 +295,7 @@ export class SieveScriptModel extends AbstractModel
 
 	verify() {
 		this.nameError(!this.name().trim());
-		this.bodyError(this.allowFilters() ? !this.filters.length : !this.body().trim());
-		return !this.nameError() && !this.bodyError();
+		return !this.nameError();
 	}
 
 	toJson() {
