@@ -5,7 +5,7 @@ if (defined('APP_VERSION_ROOT_PATH')) {
 
 if (function_exists('sys_getloadavg')) {
 	$load = sys_getloadavg();
-	if ($load[0] > 95) {
+	if ($load && $load[0] > 95) {
 		header('HTTP/1.1 503 Service Unavailable');
 		header('Retry-After: 120');
 		exit('Mailserver too busy. Please try again later.');
