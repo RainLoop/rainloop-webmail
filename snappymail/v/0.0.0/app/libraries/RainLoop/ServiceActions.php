@@ -99,8 +99,7 @@ class ServiceActions
 			}
 			else if (!empty($sAction))
 			{
-				// if ($this->oActions instanceof ActionsAdmin)
-				if (0 === \stripos($sAction, 'Admin') && 'AdminLogin' !== $sAction && 'AdminLogout' !== $sAction) {
+				if ($this->oActions instanceof ActionsAdmin && 0 === \stripos($sAction, 'Admin') && !\in_array($sAction, ['AdminLogin', 'AdminLogout'])) {
 					$this->oActions->IsAdminLoggined();
 				}
 

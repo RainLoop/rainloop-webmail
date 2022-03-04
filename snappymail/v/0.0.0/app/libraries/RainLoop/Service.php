@@ -87,8 +87,7 @@ abstract class Service
 			$bAdmin = true;
 		}
 
-		$oActions = Api::Actions();
-//		$oActions = $bAdmin ? new ActionsAdmin() : Api::Actions();
+		$oActions = $bAdmin ? new ActionsAdmin() : Api::Actions();
 
 		$oActions->Plugins()->RunHook('filter.http-paths', array(&$aPaths));
 
