@@ -1,5 +1,5 @@
 <header>
-	<a href="#" class="close" data-bind="command: closeCommand">×</a>
+	<a href="#" class="close" data-bind="click: close">×</a>
 	<h3 data-i18n="POPUPS_DOMAIN_ALIAS/TITLE_ADD_DOMAIN_ALIAS"></h3>
 </header>
 <div class="modal-body">
@@ -31,7 +31,7 @@
 	</div>
 </div>
 <footer>
-	<a class="btn buttonClose" data-bind="command: closeCommand" data-icon="✖" data-i18n="POPUPS_DOMAIN_ALIAS/BUTTON_CLOSE"></a>
+	<a class="btn buttonClose" data-bind="click: close" data-icon="✖" data-i18n="POPUPS_DOMAIN_ALIAS/BUTTON_CLOSE"></a>
 	<a class="btn" data-bind="command: createCommand">
 		<i class="fontastic" data-bind="visible: !saving()">✚</i>
 		<i class="icon-spinner" data-bind="visible: saving"></i>

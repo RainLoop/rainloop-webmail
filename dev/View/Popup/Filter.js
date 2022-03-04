@@ -51,7 +51,7 @@ export class FilterPopupView extends AbstractViewPopup {
 
 		if (this.filter().verify()) {
 			this.fTrueCallback();
-			this.closeCommand();
+			this.close();
 		}
 	}
 

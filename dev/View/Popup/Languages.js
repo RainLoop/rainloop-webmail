@@ -52,6 +52,6 @@ export class LanguagesPopupView extends AbstractViewPopup {
 
 	changeLanguage(lang) {
 		this.fLang && this.fLang(lang);
-		this.closeCommand();
+		this.close();
 	}
 }

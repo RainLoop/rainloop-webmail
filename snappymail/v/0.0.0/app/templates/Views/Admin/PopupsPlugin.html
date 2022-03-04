@@ -1,5 +1,5 @@
 <header>
-	<a href="#" class="close" data-bind="command: closeCommand">×</a>
+	<a href="#" class="close" data-bind="click: close">×</a>
 	<h4>
 		<span data-i18n="POPUPS_PLUGIN/TITLE_PLUGIN"></span>
 		&nbsp;
@@ -30,6 +30,6 @@
 	</form>
 </div>
 <footer>
-	<a class="btn buttonClose" data-bind="command: closeCommand" data-icon="✖" data-i18n="POPUPS_PLUGIN/BUTTON_CLOSE"></a>
+	<a class="btn buttonClose" data-bind="click: close" data-icon="✖" data-i18n="POPUPS_PLUGIN/BUTTON_CLOSE"></a>
 	<a class="btn" data-bind="command: saveCommand, visible: hasConfiguration" data-icon="✔" data-i18n="GLOBAL/SAVE"></a>
 </footer>

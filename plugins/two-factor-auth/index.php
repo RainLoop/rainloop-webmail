@@ -7,9 +7,9 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Two Factor Authentication',
-		VERSION  = '2.13',
+		VERSION  = '2.13.2',
 		RELEASE  = '2022-02-28',
-		REQUIRED = '2.13.0',
+		REQUIRED = '2.13.2',
 		CATEGORY = 'Login',
 		DESCRIPTION = 'Provides support for TOTP 2FA';
 

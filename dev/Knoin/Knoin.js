@@ -30,7 +30,9 @@ const
 	buildViewModel = (ViewModelClass, vmScreen) => {
 		if (ViewModelClass && !ViewModelClass.__builded) {
 			let vmDom = null;
-			const vm = new ViewModelClass(vmScreen),
+			const
+				vm = new ViewModelClass(vmScreen),
+				id = vm.viewModelTemplateID,
 				position = vm.viewType || '',
 				dialog = ViewType.Popup === position,
 				vmPlace = position ? doc.getElementById('rl-' + position.toLowerCase()) : null;
@@ -39,16 +41,16 @@ const
 			ViewModelClass.__vm = vm;
 
 			if (vmPlace) {
-				vmDom = dialog
-					? Element.fromHTML('<dialog id="V-'+ vm.viewModelTemplateID + '"></dialog>')
-					: Element.fromHTML('<div id="V-'+ vm.viewModelTemplateID + '" hidden=""></div>');
+				vmDom = Element.fromHTML(dialog
+					? '<dialog id="V-'+ id + '"></dialog>'
+					: '<div id="V-'+ id + '" hidden=""></div>');
 				vmPlace.append(vmDom);
 
 				vm.viewModelDom = vmDom;
 				ViewModelClass.__dom = vmDom;
 
 				if (ViewType.Popup === position) {
-					vm.closeCommand = () => hideScreenPopup(ViewModelClass);
+					vm.close = () => hideScreenPopup(ViewModelClass);
 
 					// Firefox / Safari HTMLDialogElement not defined
 					if (!vmDom.showModal) {
@@ -110,7 +112,7 @@ const
 					vmDom,
 					{
 						i18nInit: true,
-						template: () => ({ name: vm.viewModelTemplateID })
+						template: () => ({ name: id })
 					},
 					vm
 				);
@@ -172,7 +174,7 @@ const
 
 		// Close all popups
 		for (let vm of visiblePopups) {
-			false === vm.onClose() || vm.closeCommand();
+			false === vm.onClose() || vm.close();
 		}
 
 		if (screenName) {

@@ -28,7 +28,7 @@ class PluginPopupView extends rl.pluginPopupView
 	afterShow() {}
 
 	// Happens when user hits Escape or Close key
-	// return false to prevent closing, use closeCommand() manually
+	// return false to prevent closing, use close() manually
 	onClose() {}
 	// Happens before animation transitionend
 	onHide() {}

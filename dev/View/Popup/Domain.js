@@ -220,7 +220,7 @@ export class DomainPopupView extends AbstractViewPopup {
 			this.savingError(getNotification(iError));
 		} else {
 			DomainAdminStore.fetch();
-			this.closeCommand();
+			this.close();
 		}
 	}
 

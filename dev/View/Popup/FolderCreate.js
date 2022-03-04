@@ -75,7 +75,7 @@ export class FolderCreatePopupView extends AbstractViewPopup {
 					}
 				);
 
-			this.closeCommand();
+			this.close();
 		}
 	}
 

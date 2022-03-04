@@ -22,13 +22,13 @@ export class AskPopupView extends AbstractViewPopup {
 	}
 
 	yesClick() {
-		this.closeCommand();
+		this.close();
 
 		isFunction(this.fYesAction) && this.fYesAction();
 	}
 
 	noClick() {
-		this.closeCommand();
+		this.close();
 
 		isFunction(this.fNoAction) && this.fNoAction();
 	}

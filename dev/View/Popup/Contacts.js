@@ -136,7 +136,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 		});
 
 		decorateKoCommands(this, {
-//			closeCommand: self => !self.watchDirty(),
+//			close: self => !self.watchDirty(),
 			deleteCommand: self => 0 < self.contactsCheckedOrSelected().length,
 			newMessageCommand: self => 0 < self.contactsCheckedOrSelected().length,
 			saveCommand: self => !self.viewSaving() && !self.viewReadOnly()
@@ -182,7 +182,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 		if (arrayLength(aE)) {
 			this.bBackToCompose = false;
 
-			this.closeCommand();
+			this.close();
 
 			switch (this.sLastComposeFocusedField) {
 				case 'cc':
@@ -500,7 +500,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 		if (this.watchDirty() && AskPopupView.hidden()) {
 			showScreenPopup(AskPopupView, [
 				i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'),
-				() => this.closeCommand()
+				() => this.close()
 			]);
 			return false;
 		}

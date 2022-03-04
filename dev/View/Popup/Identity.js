@@ -97,7 +97,7 @@ export class IdentityPopupView extends AbstractViewPopup {
 						this.submitError(getNotification(iError));
 					} else {
 						rl.app.accountsAndIdentities();
-						this.closeCommand();
+						this.close();
 					}
 				}, {
 					Id: this.id,

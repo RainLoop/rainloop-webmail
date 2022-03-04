@@ -54,7 +54,7 @@ export class FolderClearPopupView extends AbstractViewPopup {
 					this.clearingError(getNotification(iError));
 				} else {
 					MessagelistUserStore.reload(true);
-					this.closeCommand();
+					this.close();
 				}
 			}, {
 				Folder: folderToClear.fullName

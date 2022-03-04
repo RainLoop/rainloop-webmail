@@ -544,7 +544,7 @@ export class ComposePopupView extends AbstractViewPopup {
 										|| getNotification(Notification.CantSendMessage));
 								}
 							} else {
-								this.closeCommand();
+								this.close();
 							}
 							setFolderHash(this.draftsFolder(), '');
 							setFolderHash(sSentFolder, '');
@@ -633,7 +633,7 @@ export class ComposePopupView extends AbstractViewPopup {
 					aUidForRemove = [this.draftUid()];
 				messagesDeleteHelper(sFromFolderFullName, aUidForRemove);
 				MessagelistUserStore.removeMessagesFromList(sFromFolderFullName, aUidForRemove);
-				this.closeCommand();
+				this.close();
 			}
 		]);
 	}
@@ -1183,11 +1183,11 @@ export class ComposePopupView extends AbstractViewPopup {
 	tryToClosePopup() {
 		if (AskPopupView.hidden()) {
 			if (this.bSkipNextHide || (this.isEmptyForm() && !this.draftUid())) {
-				this.closeCommand();
+				this.close();
 			} else {
 				showScreenPopup(AskPopupView, [
 					i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'),
-					() => this.closeCommand()
+					() => this.close()
 				]);
 			}
 		}

@@ -42,7 +42,7 @@ export class DomainAliasPopupView extends AbstractViewPopup {
 					this.savingError(getNotification(iError));
 				} else {
 					DomainAdminStore.fetch();
-					this.closeCommand();
+					this.close();
 				}
 			}, {
 				Name: this.name(),

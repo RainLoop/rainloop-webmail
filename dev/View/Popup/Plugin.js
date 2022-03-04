@@ -61,7 +61,7 @@ export class PluginPopupView extends AbstractViewPopup {
 		Remote.request('AdminPluginSettingsUpdate',
 			iError => iError
 				? this.saveError(getNotification(iError))
-				: this.closeCommand(),
+				: this.close(),
 			oConfig);
 	}
 
@@ -99,7 +99,7 @@ export class PluginPopupView extends AbstractViewPopup {
 		if (AskPopupView.hidden()) {
 			showScreenPopup(AskPopupView, [
 				i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'),
-				() => this.closeCommand()
+				() => this.close()
 			]);
 		}
 		return false;
