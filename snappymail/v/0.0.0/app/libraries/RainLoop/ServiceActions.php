@@ -620,17 +620,15 @@ class ServiceActions
 	public function ServiceMailto() : string
 	{
 		$this->oHttp->ServerNoCache();
-
 		$sTo = \trim($_GET['to'] ?? '');
-		if (!empty($sTo) && \preg_match('/^mailto:/i', $sTo))
-		{
-			$oAccount = $this->oActions->GetAccountFromSignMeToken();
-			if ($oAccount)
-			{
-				$this->oActions->SetMailtoRequest($sTo);
-			}
+		if (!empty($sTo) && \preg_match('/^mailto:/i', $sTo)) {
+			Utils::SetCookie(\RainLoop\Actions::AUTH_MAILTO_TOKEN_KEY,
+				Utils::EncodeKeyValuesQ(array(
+					'Time' => \microtime(true),
+					'MailTo' => 'MailTo',
+					'To' => $sTo
+				)), 0);
 		}
-
 		$this->oActions->Location('./');
 		return '';
 	}

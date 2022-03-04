@@ -818,16 +818,14 @@ class Actions
 					}
 				}
 
-				if ($aResult['AccountSignMe']) {
-					$sToken = Utils::GetCookie(self::AUTH_MAILTO_TOKEN_KEY, null);
-					if (null !== $sToken) {
-						Utils::ClearCookie(self::AUTH_MAILTO_TOKEN_KEY);
+				$sToken = Utils::GetCookie(self::AUTH_MAILTO_TOKEN_KEY, null);
+				if (null !== $sToken) {
+					Utils::ClearCookie(self::AUTH_MAILTO_TOKEN_KEY);
 
-						$mMailToData = Utils::DecodeKeyValuesQ($sToken);
-						if (!empty($mMailToData['MailTo']) &&
-							'MailTo' === $mMailToData['MailTo'] && !empty($mMailToData['To'])) {
-							$aResult['MailToEmail'] = $mMailToData['To'];
-						}
+					$mMailToData = Utils::DecodeKeyValuesQ($sToken);
+					if (!empty($mMailToData['MailTo']) &&
+						'MailTo' === $mMailToData['MailTo'] && !empty($mMailToData['To'])) {
+						$aResult['MailToEmail'] = $mMailToData['To'];
 					}
 				}
 

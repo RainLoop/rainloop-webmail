@@ -317,25 +317,6 @@ class AppUser extends AbstractApp {
 
 						setTimeout(() => Remote.request('AppDelayStart'), 35000);
 
-						// When auto-login is active
-						if (
-							SettingsGet('AccountSignMe') &&
-							navigator.registerProtocolHandler
-						) {
-							setTimeout(() => {
-								try {
-									navigator.registerProtocolHandler(
-										'mailto',
-										location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
-										(SettingsGet('Title') || 'SnappyMail')
-									);
-								} catch (e) {} // eslint-disable-line no-empty
-
-								value = SettingsGet('MailToEmail');
-								value && mailToHelper(value);
-							}, 500);
-						}
-
 						// add pointermove ?
 						addEventsListener(doc, ['touchstart','mousemove','keydown'], SettingsUserStore.delayLogout, {passive:true});
 						SettingsUserStore.delayLogout();
@@ -356,6 +337,21 @@ class AppUser extends AbstractApp {
 						setInterval(reloadTime(), 60000);
 
 						PgpUserStore.init();
+
+						// When auto-login is active
+						if (navigator.registerProtocolHandler) {
+							try {
+								navigator.registerProtocolHandler(
+									'mailto',
+									location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
+									(SettingsGet('Title') || 'SnappyMail')
+								);
+							} catch (e) {} // eslint-disable-line no-empty
+						}
+						setTimeout(() => {
+							value = SettingsGet('MailToEmail');
+							value && mailToHelper(value);
+						}, 500);
 					} else {
 						this.logout();
 					}

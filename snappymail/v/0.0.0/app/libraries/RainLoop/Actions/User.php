@@ -32,18 +32,6 @@ trait User
 		return $this->oSuggestionsProvider;
 	}
 
-	public function SetMailtoRequest(string $sTo): void
-	{
-		if (!empty($sTo)) {
-			Utils::SetCookie(self::AUTH_MAILTO_TOKEN_KEY,
-				Utils::EncodeKeyValuesQ(array(
-					'Time' => \microtime(true),
-					'MailTo' => 'MailTo',
-					'To' => $sTo
-				)), 0);
-		}
-	}
-
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
