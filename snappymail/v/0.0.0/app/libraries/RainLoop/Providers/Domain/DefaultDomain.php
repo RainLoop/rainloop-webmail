@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\Domain;
 
-class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
+class DefaultDomain implements DomainInterface
 {
 	/**
 	 * @var string
@@ -22,25 +22,17 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 
 	public function codeFileName(string $sName, bool $bBack = false) : string
 	{
-		if ($bBack && 'default' === $sName)
-		{
+		if ($bBack && 'default' === $sName) {
 			return '*';
 		}
-		else if (!$bBack && '*' === $sName)
-		{
+
+		if (!$bBack && '*' === $sName) {
 			return 'default';
 		}
 
-		if ($bBack)
-		{
-			$sName = \MailSo\Base\Utils::IdnToUtf8($sName, true);
-		}
-		else
-		{
-			$sName = \MailSo\Base\Utils::IdnToAscii($sName, true);
-		}
-
-		return $bBack ? \str_replace('_wildcard_', '*', $sName) : \str_replace('*', '_wildcard_', $sName);
+		return $bBack
+			? \str_replace('_wildcard_', '*', \MailSo\Base\Utils::IdnToUtf8($sName, true))
+			: \str_replace('*', '_wildcard_', \MailSo\Base\Utils::IdnToAscii($sName, true));
 	}
 
 	private function wildcardDomainsCacheKey() : string

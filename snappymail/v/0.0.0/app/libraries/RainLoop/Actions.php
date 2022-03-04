@@ -238,7 +238,7 @@ class Actions
 					$mResult = new Providers\Login\DefaultLogin();
 					break;
 				case 'domain':
-					// Providers\Domain\DomainAdminInterface
+					// Providers\Domain\DomainInterface
 					$mResult = new Providers\Domain\DefaultDomain(APP_PRIVATE_DATA . 'domains', $this->Cacher());
 					break;
 				case 'filters':
