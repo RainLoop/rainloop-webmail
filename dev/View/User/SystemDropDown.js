@@ -13,7 +13,7 @@ import { KeyboardShortcutsHelpPopupView } from 'View/Popup/KeyboardShortcutsHelp
 import { AccountPopupView } from 'View/Popup/Account';
 import { ContactsPopupView } from 'View/Popup/Contacts';
 
-import { doc, leftPanelDisabled, fireEvent, SettingsCapa } from 'Common/Globals';
+import { doc, leftPanelDisabled, fireEvent, SettingsCapa, registerShortcut } from 'Common/Globals';
 
 import { ThemeStore } from 'Stores/Theme';
 
@@ -123,7 +123,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 	}
 
 	onBuild() {
-		shortcuts.add('m', '', [Scope.MessageList, Scope.MessageView, Scope.Settings], () => {
+		registerShortcut('m', '', [Scope.MessageList, Scope.MessageView, Scope.Settings], () => {
 			if (!this.viewModelDom.hidden) {
 				MessageUserStore.fullScreen(false);
 				this.accountMenuDropdownTrigger(true);
@@ -132,7 +132,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 		});
 
 		// shortcuts help
-		shortcuts.add('?,f1,help', '', [Scope.MessageList, Scope.MessageView, Scope.Settings], () => {
+		registerShortcut('?,f1,help', '', [Scope.MessageList, Scope.MessageView, Scope.Settings], () => {
 			if (!this.viewModelDom.hidden) {
 				showScreenPopup(KeyboardShortcutsHelpPopupView);
 				return false;

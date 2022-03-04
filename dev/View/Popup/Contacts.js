@@ -2,7 +2,7 @@ import { koArrayWithDestroy } from 'External/ko';
 
 import { SaveSettingsStep } from 'Common/Enums';
 import { ComposeType } from 'Common/EnumsUser';
-import { doc } from 'Common/Globals';
+import { registerShortcut } from 'Common/Globals';
 import { arrayLength, pInt } from 'Common/Utils';
 import { download, computedPaginatorHelper, showMessageComposer } from 'Common/UtilsUser';
 
@@ -449,15 +449,12 @@ export class ContactsPopupView extends AbstractViewPopup {
 	onBuild(dom) {
 		this.selector.init(dom.querySelector('.b-list-content'), ScopeContacts);
 
-		shortcuts.add('delete', '', ScopeContacts, () => {
-			if (doc.activeElement && doc.activeElement.matches('input,textarea')) {
-				return true;
-			}
+		registerShortcut('delete', '', ScopeContacts, () => {
 			this.deleteCommand();
 			return false;
 		});
 
-		shortcuts.add('c,w', '', ScopeContacts, () => {
+		registerShortcut('c,w', '', ScopeContacts, () => {
 			this.newMessageCommand();
 			return false;
 		});

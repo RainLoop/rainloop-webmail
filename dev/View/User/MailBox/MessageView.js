@@ -22,7 +22,8 @@ import {
 	SettingsCapa,
 	getFullscreenElement,
 	exitFullscreen,
-	fireEvent
+	fireEvent,
+	registerShortcut
 } from 'Common/Globals';
 
 import { arrayLength } from 'Common/Utils';
@@ -379,7 +380,7 @@ export class MailMessageView extends AbstractViewRight {
 		});
 
 		// reply
-		shortcuts.add('r,mailreply', '', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('r,mailreply', '', [Scope.MessageList, Scope.MessageView], () => {
 			if (currentMessage()) {
 				this.replyCommand();
 				return false;
@@ -388,13 +389,13 @@ export class MailMessageView extends AbstractViewRight {
 		});
 
 		// replyAll
-		shortcuts.add('a', '', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('a', '', [Scope.MessageList, Scope.MessageView], () => {
 			if (currentMessage()) {
 				this.replyAllCommand();
 				return false;
 			}
 		});
-		shortcuts.add('mailreply', 'shift', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('mailreply', 'shift', [Scope.MessageList, Scope.MessageView], () => {
 			if (currentMessage()) {
 				this.replyAllCommand();
 				return false;
@@ -402,7 +403,7 @@ export class MailMessageView extends AbstractViewRight {
 		});
 
 		// forward
-		shortcuts.add('f,mailforward', '', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('f,mailforward', '', [Scope.MessageList, Scope.MessageView], () => {
 			if (currentMessage()) {
 				this.forwardCommand();
 				return false;
@@ -410,7 +411,7 @@ export class MailMessageView extends AbstractViewRight {
 		});
 
 		// message information
-		shortcuts.add('i', 'meta', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('i', 'meta', [Scope.MessageList, Scope.MessageView], () => {
 			if (currentMessage()) {
 				this.showFullInfo(!this.showFullInfo());
 			}
@@ -418,7 +419,7 @@ export class MailMessageView extends AbstractViewRight {
 		});
 
 		// toggle message blockquotes
-		shortcuts.add('b', '', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('b', '', [Scope.MessageList, Scope.MessageView], () => {
 			const message = currentMessage();
 			if (message && message.body) {
 				message.body.querySelectorAll('.rlBlockquoteSwitcher').forEach(node => node.click());

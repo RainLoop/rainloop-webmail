@@ -32,6 +32,11 @@ export const
 
 	fireEvent = (name, detail) => dispatchEvent(new CustomEvent(name, {detail:detail})),
 
+	formFieldFocused = () => doc.activeElement && doc.activeElement.matches('input,textarea'),
+
+	registerShortcut = (keys, modifiers, scopes, method) =>
+		shortcuts.add(keys, modifiers, scopes, () => formFieldFocused() ? true : method()),
+
 	addEventsListener = (element, events, fn, options) =>
 		events.forEach(event => element.addEventListener(event, fn, options)),
 
