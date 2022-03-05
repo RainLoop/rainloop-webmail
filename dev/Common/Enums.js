@@ -1,37 +1,23 @@
 /* eslint quote-props: 0 */
 
-/**
- * @enum {string}
- */
-export const Capa = {
-	AdditionalAccounts: 'AdditionalAccounts',
-	AutoLogout: 'AutoLogout',
-	DangerousActions: 'DangerousActions',
-	GnuPG: 'GnuPG',
-	Identities: 'Identities',
-	OpenPGP: 'OpenPGP',
-	Search: 'Search',
-	SearchAdv: 'SearchAdv',
-	Themes: 'Themes',
-	UserBackground: 'UserBackground'
-};
+export const
 
 /**
  * @enum {string}
  */
-export const Scope = {
+Scope = {
 	All: 'all',
 	None: 'none',
 	MessageList: 'MessageList',
 	FolderList: 'FolderList',
 	MessageView: 'MessageView',
 	Settings: 'Settings'
-};
+},
 
 /**
  * @enum {number}
  */
-export const UploadErrorCode = {
+UploadErrorCode = {
 	Normal: 0,
 	FileIsTooBig: 1,
 	FilePartiallyUploaded: 3,
@@ -40,22 +26,22 @@ export const UploadErrorCode = {
 	OnSavingFile: 7,
 	FileType: 98,
 	Unknown: 99
-};
+},
 
 /**
  * @enum {number}
  */
-export const SaveSettingsStep = {
+SaveSettingsStep = {
 	Animate: -2,
 	Idle: -1,
 	TrueResult: 1,
 	FalseResult: 0
-};
+},
 
 /**
  * @enum {number}
  */
-export const Notification = {
+Notification = {
 	RequestError: 1,
 	RequestAborted: 2,
 

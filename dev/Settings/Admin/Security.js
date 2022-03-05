@@ -1,4 +1,3 @@
-import { Capa } from 'Common/Enums';
 import { SettingsGet, SettingsCapa } from 'Common/Globals';
 import { addObservablesTo, addSubscribablesTo } from 'External/ko';
 
@@ -27,7 +26,7 @@ export class SecurityAdminSettings extends AbstractViewSettings {
 			adminPasswordUpdateError: false,
 			adminPasswordUpdateSuccess: false,
 
-			capaOpenPGP: SettingsCapa(Capa.OpenPGP)
+			capaOpenPGP: SettingsCapa('OpenPGP')
 		});
 
 		const reset = () => {

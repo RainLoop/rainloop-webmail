@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { Capa, Scope } from 'Common/Enums';
+import { Scope } from 'Common/Enums';
 
 import { ComposeType, FolderType, MessageSetAction } from 'Common/EnumsUser';
 
@@ -67,9 +67,9 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.newMoveToFolder = !!SettingsGet('NewMoveToFolder');
 
-		this.allowSearch = SettingsCapa(Capa.Search);
-		this.allowSearchAdv = SettingsCapa(Capa.SearchAdv);
-		this.allowDangerousActions = SettingsCapa(Capa.DangerousActions);
+		this.allowSearch = SettingsCapa('Search');
+		this.allowSearchAdv = SettingsCapa('SearchAdv');
+		this.allowDangerousActions = SettingsCapa('DangerousActions');
 
 		this.messageList = MessagelistUserStore;
 
@@ -277,7 +277,7 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	clear() {
-		if (SettingsCapa(Capa.DangerousActions)) {
+		if (SettingsCapa('DangerousActions')) {
 			showScreenPopup(FolderClearPopupView, [FolderUserStore.currentFolder()]);
 		}
 	}
@@ -296,7 +296,7 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	deleteWithoutMoveCommand() {
-		if (SettingsCapa(Capa.DangerousActions)) {
+		if (SettingsCapa('DangerousActions')) {
 			rl.app.deleteMessagesFromFolder(
 				FolderType.Trash,
 				FolderUserStore.currentFolderFullName(),
@@ -787,7 +787,7 @@ export class MailMessageList extends AbstractViewRight {
 			return false;
 		});
 
-		if (SettingsCapa(Capa.Search)) {
+		if (SettingsCapa('Search')) {
 			// search input focus
 			shortcuts.add('/', '', [Scope.MessageList, Scope.MessageView], () => {
 				this.inputMessageListSearchFocus(true);
@@ -856,7 +856,7 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	advancedSearchClick() {
-		SettingsCapa(Capa.SearchAdv)
+		SettingsCapa('SearchAdv')
 			&& showScreenPopup(AdvancedSearchPopupView, [MessagelistUserStore.mainSearch()]);
 	}
 

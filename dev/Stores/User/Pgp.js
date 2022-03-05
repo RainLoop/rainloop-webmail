@@ -1,4 +1,3 @@
-import { Capa } from 'Common/Enums';
 import { doc, createElement, SettingsCapa, SettingsGet } from 'Common/Globals';
 import { staticLink } from 'Common/Links';
 
@@ -22,7 +21,7 @@ export const
 		}
 
 		init() {
-			if (SettingsCapa(Capa.OpenPGP) && window.crypto && crypto.getRandomValues) {
+			if (SettingsCapa('OpenPGP') && window.crypto && crypto.getRandomValues) {
 				const script = createElement('script', {src:staticLink('js/min/openpgp.min.js')});
 				script.onload = () => this.loadKeyrings();
 				script.onerror = () => {
@@ -61,7 +60,7 @@ export const
 				OpenPGPUserStore.loadKeyrings();
 			}
 
-			if (SettingsCapa(Capa.GnuPG)) {
+			if (SettingsCapa('GnuPG')) {
 				GnuPGUserStore.loadKeyrings();
 			}
 		}

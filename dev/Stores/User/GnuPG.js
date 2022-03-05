@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { Capa } from 'Common/Enums';
 import { SettingsCapa } from 'Common/Globals';
 
 //import { EmailModel } from 'Model/Email';
@@ -102,7 +101,7 @@ export const GnuPGUserStore = new class {
 	 * @returns {boolean}
 	 */
 	isSupported() {
-		return SettingsCapa(Capa.GnuPG);
+		return SettingsCapa('GnuPG');
 	}
 
 	importKey(key, callback) {

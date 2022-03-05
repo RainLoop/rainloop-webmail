@@ -8,7 +8,7 @@ import {
 
 import { addObservablesTo, addSubscribablesTo, addComputablesTo } from 'External/ko';
 
-import { Capa, SaveSettingsStep } from 'Common/Enums';
+import { SaveSettingsStep } from 'Common/Enums';
 import { Settings, SettingsGet, SettingsCapa } from 'Common/Globals';
 import { translatorReload, convertLangName } from 'Common/Translator';
 
@@ -42,10 +42,10 @@ export class GeneralAdminSettings extends AbstractViewSettings {
 		addObservablesTo(this, {
 			attachmentLimitTrigger: SaveSettingsStep.Idle,
 			themeTrigger: SaveSettingsStep.Idle,
-			capaThemes: SettingsCapa(Capa.Themes),
-			capaUserBackground: SettingsCapa(Capa.UserBackground),
-			capaAdditionalAccounts: SettingsCapa(Capa.AdditionalAccounts),
-			capaIdentities: SettingsCapa(Capa.Identities),
+			capaThemes: SettingsCapa('Themes'),
+			capaUserBackground: SettingsCapa('UserBackground'),
+			capaAdditionalAccounts: SettingsCapa('AdditionalAccounts'),
+			capaIdentities: SettingsCapa('Identities'),
 			capaAttachmentThumbnails: SettingsCapa('AttachmentThumbnails'),
 			dataFolderAccess: false
 		});

@@ -1,4 +1,4 @@
-import { Capa, Scope } from 'Common/Enums';
+import { Scope } from 'Common/Enums';
 import { keyScope, leftPanelDisabled, SettingsCapa } from 'Common/Globals';
 import { runSettingsViewModelHooks } from 'Common/Plugins';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
@@ -32,11 +32,11 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 			settingsAddViewModel(ContactsUserSettings, 'SettingsContacts', 'SETTINGS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
 		}
 
-		if (SettingsCapa(Capa.AdditionalAccounts) || SettingsCapa(Capa.Identities)) {
+		if (SettingsCapa('AdditionalAccounts') || SettingsCapa('Identities')) {
 			settingsAddViewModel(
 				AccountsUserSettings,
 				'SettingsAccounts',
-				SettingsCapa(Capa.AdditionalAccounts)
+				SettingsCapa('AdditionalAccounts')
 					? 'SETTINGS_LABELS/LABEL_ACCOUNTS_NAME'
 					: 'SETTINGS_LABELS/LABEL_IDENTITIES_NAME',
 				'accounts'
@@ -47,17 +47,17 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 			settingsAddViewModel(FiltersUserSettings, 'SettingsFilters', 'SETTINGS_LABELS/LABEL_FILTERS_NAME', 'filters');
 		}
 
-		if (SettingsCapa(Capa.AutoLogout)) {
+		if (SettingsCapa('AutoLogout')) {
 			settingsAddViewModel(SecurityUserSettings, 'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
 		}
 
 		settingsAddViewModel(FoldersUserSettings, 'SettingsFolders', 'SETTINGS_LABELS/LABEL_FOLDERS_NAME', 'folders');
 
-		if (SettingsCapa(Capa.Themes)) {
+		if (SettingsCapa('Themes')) {
 			settingsAddViewModel(ThemesUserSettings, 'SettingsThemes', 'SETTINGS_LABELS/LABEL_THEMES_NAME', 'themes');
 		}
 
-		if (SettingsCapa(Capa.OpenPGP) || SettingsCapa(Capa.GnuPG)) {
+		if (SettingsCapa('OpenPGP') || SettingsCapa('GnuPG')) {
 			settingsAddViewModel(OpenPgpUserSettings, 'SettingsOpenPGP', 'OpenPGP', 'openpgp');
 		}
 

@@ -3,7 +3,7 @@ import { AccountUserStore } from 'Stores/User/Account';
 import { MessageUserStore } from 'Stores/User/Message';
 //import { FolderUserStore } from 'Stores/User/Folder';
 
-import { Capa, Scope } from 'Common/Enums';
+import { Scope } from 'Common/Enums';
 import { settings } from 'Common/Links';
 
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -26,7 +26,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 	constructor() {
 		super('SystemDropDown');
 
-		this.allowAccounts = SettingsCapa(Capa.AdditionalAccounts);
+		this.allowAccounts = SettingsCapa('AdditionalAccounts');
 
 		this.accountEmail = AccountUserStore.email;
 

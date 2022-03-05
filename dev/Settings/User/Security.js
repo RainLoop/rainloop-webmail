@@ -1,6 +1,5 @@
 import { koComputable } from 'External/ko';
 
-import { Capa } from 'Common/Enums';
 import { SettingsCapa } from 'Common/Globals';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
@@ -12,7 +11,7 @@ export class SecurityUserSettings extends AbstractViewSettings {
 	constructor() {
 		super();
 
-		this.capaAutoLogout = SettingsCapa(Capa.AutoLogout);
+		this.capaAutoLogout = SettingsCapa('AutoLogout');
 
 		this.autoLogout = SettingsUserStore.autoLogout;
 
