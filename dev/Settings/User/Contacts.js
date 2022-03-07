@@ -5,7 +5,7 @@ import { SettingsGet } from 'Common/Globals';
 import { ContactUserStore } from 'Stores/User/Contact';
 import Remote from 'Remote/User/Fetch';
 
-export class ContactsUserSettings /*extends AbstractViewSettings*/ {
+export class UserSettingsContacts /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.contactsAutosave = ko.observable(!!SettingsGet('ContactsAutosave'));
 

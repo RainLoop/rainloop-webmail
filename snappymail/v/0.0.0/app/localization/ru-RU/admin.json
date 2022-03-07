@@ -11,7 +11,7 @@
 	"TOP_PANEL": {
 		"LABEL_ADMIN_PANEL": "Админка"
 	},
-	"TABS_LABELS": {
+	"SETTINGS_LABELS": {
 		"LABEL_GENERAL_NAME": "Основные",
 		"LABEL_LOGIN_NAME": "Логин",
 		"LABEL_BRANDING_NAME": "Брендинг",

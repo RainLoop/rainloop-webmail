@@ -10,6 +10,7 @@ class AbstractView {
 	constructor(templateID, type)
 	{
 //		Object.defineProperty(this, 'viewModelTemplateID', { value: templateID });
+//		this.viewModelTemplateID = this.constructor.name;
 		this.viewModelTemplateID = templateID;
 		this.viewType = type;
 		this.viewModelDom = null;

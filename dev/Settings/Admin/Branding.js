@@ -1,6 +1,6 @@
 import { AbstractViewSettings } from 'Knoin/AbstractViews';
 
-export class BrandingAdminSettings extends AbstractViewSettings {
+export class AdminSettingsBranding extends AbstractViewSettings {
 	constructor() {
 		super();
 		this.addSetting('Title');

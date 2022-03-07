@@ -11,7 +11,7 @@ import { showScreenPopup } from 'Knoin/Knoin';
 import { AccountPopupView } from 'View/Popup/Account';
 import { IdentityPopupView } from 'View/Popup/Identity';
 
-export class AccountsUserSettings /*extends AbstractViewSettings*/ {
+export class UserSettingsAccounts /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.allowAdditionalAccount = SettingsCapa('AdditionalAccounts');
 		this.allowIdentities = SettingsCapa('Identities');

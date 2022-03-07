@@ -11,7 +11,7 @@
 	"TOP_PANEL": {
 		"LABEL_ADMIN_PANEL": "控制面板"
 	},
-	"TABS_LABELS": {
+	"SETTINGS_LABELS": {
 		"LABEL_GENERAL_NAME": "常规",
 		"LABEL_LOGIN_NAME": "登录",
 		"LABEL_BRANDING_NAME": "Logo",

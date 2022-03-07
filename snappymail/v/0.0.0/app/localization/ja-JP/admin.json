@@ -11,7 +11,7 @@
 	"TOP_PANEL": {
 		"LABEL_ADMIN_PANEL": "管理画面"
 	},
-	"TABS_LABELS": {
+	"SETTINGS_LABELS": {
 		"LABEL_GENERAL_NAME": "全般",
 		"LABEL_LOGIN_NAME": "ログイン",
 		"LABEL_BRANDING_NAME": "ブランド化",

@@ -11,7 +11,7 @@
 	"TOP_PANEL": {
 		"LABEL_ADMIN_PANEL": "Administratoriaus valdymo skydas"
 	},
-	"TABS_LABELS": {
+	"SETTINGS_LABELS": {
 		"LABEL_GENERAL_NAME": "Pagrindiniai",
 		"LABEL_LOGIN_NAME": "Prisijungimo vardas",
 		"LABEL_BRANDING_NAME": "Įdaguoti",

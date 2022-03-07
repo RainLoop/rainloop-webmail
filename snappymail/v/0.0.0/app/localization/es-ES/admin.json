@@ -11,7 +11,7 @@
 	"TOP_PANEL": {
 		"LABEL_ADMIN_PANEL": "Panel de Control"
 	},
-	"TABS_LABELS": {
+	"SETTINGS_LABELS": {
 		"LABEL_GENERAL_NAME": "General",
 		"LABEL_LOGIN_NAME": "Ingresar",
 		"LABEL_BRANDING_NAME": "Personalización",

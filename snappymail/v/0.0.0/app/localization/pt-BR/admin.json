@@ -11,7 +11,7 @@
 	"TOP_PANEL": {
 		"LABEL_ADMIN_PANEL": "Painel Administrativo"
 	},
-	"TABS_LABELS": {
+	"SETTINGS_LABELS": {
 		"LABEL_GENERAL_NAME": "Geral",
 		"LABEL_LOGIN_NAME": "Login",
 		"LABEL_BRANDING_NAME": "Personalizar",

@@ -11,7 +11,7 @@
 	"TOP_PANEL": {
 		"LABEL_ADMIN_PANEL": "Admin-panel"
 	},
-	"TABS_LABELS": {
+	"SETTINGS_LABELS": {
 		"LABEL_GENERAL_NAME": "Generelt",
 		"LABEL_LOGIN_NAME": "Brukernavn",
 		"LABEL_BRANDING_NAME": "Utforming",

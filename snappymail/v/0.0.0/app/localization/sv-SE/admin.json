@@ -11,7 +11,7 @@
 	"TOP_PANEL": {
 		"LABEL_ADMIN_PANEL": "Adminpanel"
 	},
-	"TABS_LABELS": {
+	"SETTINGS_LABELS": {
 		"LABEL_GENERAL_NAME": "Allmän",
 		"LABEL_LOGIN_NAME": "Logga in",
 		"LABEL_BRANDING_NAME": "Branding",

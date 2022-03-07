@@ -82,20 +82,18 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 * @returns {void}
 	 */
 	onStart() {
-		if (!this.__started) {
-			super.onStart();
+		super.onStart();
 
-			addEventListener('mailbox.inbox-unread-count', e => {
-				FolderUserStore.foldersInboxUnreadCount(e.detail);
-/*				// Disabled in SystemDropDown.html
-				const email = AccountUserStore.email();
-				AccountUserStore.accounts.forEach(item =>
-					item && email === item.email && item.count(e.detail)
-				);
+		addEventListener('mailbox.inbox-unread-count', e => {
+			FolderUserStore.foldersInboxUnreadCount(e.detail);
+/*			// Disabled in SystemDropDown.html
+			const email = AccountUserStore.email();
+			AccountUserStore.accounts.forEach(item =>
+				item && email === item.email && item.count(e.detail)
+			);
 */
-				this.updateWindowTitle();
-			});
-		}
+			this.updateWindowTitle();
+		});
 	}
 
 	/**

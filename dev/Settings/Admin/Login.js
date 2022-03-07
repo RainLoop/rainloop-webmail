@@ -1,6 +1,6 @@
 import { AbstractViewSettings } from 'Knoin/AbstractViews';
 
-export class LoginAdminSettings extends AbstractViewSettings {
+export class AdminSettingsLogin extends AbstractViewSettings {
 	constructor() {
 		super();
 		this.addSetting('LoginDefaultDomain');

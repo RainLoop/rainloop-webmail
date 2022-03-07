@@ -28,7 +28,7 @@ export class AbstractSettingsScreen extends AbstractScreen {
 			);
 
 		if (RoutedSettingsViewModel) {
-			if (RoutedSettingsViewModel.__builded && RoutedSettingsViewModel.__vm) {
+			if (RoutedSettingsViewModel.__vm) {
 				settingsScreen = RoutedSettingsViewModel.__vm;
 			} else {
 				const vmPlace = elementById('rl-settings-subscreen');
@@ -43,7 +43,6 @@ export class AbstractSettingsScreen extends AbstractScreen {
 					settingsScreen.viewModelDom = viewModelDom;
 
 					RoutedSettingsViewModel.__dom = viewModelDom;
-					RoutedSettingsViewModel.__builded = true;
 					RoutedSettingsViewModel.__vm = settingsScreen;
 
 					ko.applyBindingAccessorsToNode(
@@ -132,11 +131,12 @@ export class AbstractSettingsScreen extends AbstractScreen {
  * @returns {void}
  */
 export function settingsAddViewModel(SettingsViewModelClass, template, labelName, route, isDefault = false) {
+	let name = SettingsViewModelClass.name.replace(/(User|Admin)Settings/, '');
 	SettingsViewModelClass.__rlSettingsData = {
-		label: labelName,
-		route: route,
+		label: labelName || 'SETTINGS_LABELS/LABEL_' + name.toUpperCase() + '_NAME',
+		route: route || name.toLowerCase(),
 		selected: ko.observable(false),
-		template: template,
+		template: template || SettingsViewModelClass.name,
 		isDefault: !!isDefault
 	};
 

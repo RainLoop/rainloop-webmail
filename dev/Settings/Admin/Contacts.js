@@ -8,7 +8,7 @@ import Remote from 'Remote/Admin/Fetch';
 import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewSettings } from 'Knoin/AbstractViews';
 
-export class ContactsAdminSettings extends AbstractViewSettings {
+export class AdminSettingsContacts extends AbstractViewSettings {
 	constructor() {
 		super();
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;

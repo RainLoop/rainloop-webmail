@@ -11,7 +11,7 @@
 	"TOP_PANEL": {
 		"LABEL_ADMIN_PANEL": "Administracijska plošča"
 	},
-	"TABS_LABELS": {
+	"SETTINGS_LABELS": {
 		"LABEL_GENERAL_NAME": "Splošno",
 		"LABEL_LOGIN_NAME": "Prijava",
 		"LABEL_BRANDING_NAME": "Prilagoditev",

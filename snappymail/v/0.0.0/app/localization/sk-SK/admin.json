@@ -11,7 +11,7 @@
 	"TOP_PANEL": {
 		"LABEL_ADMIN_PANEL": "Admin Panel"
 	},
-	"TABS_LABELS": {
+	"SETTINGS_LABELS": {
 		"LABEL_GENERAL_NAME": "Všeobecné",
 		"LABEL_LOGIN_NAME": "Používateľské meno",
 		"LABEL_BRANDING_NAME": "Branding",

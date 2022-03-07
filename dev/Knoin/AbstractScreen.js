@@ -26,17 +26,14 @@ export class AbstractScreen {
 	 * @returns {void}
 	 */
 	onStart() {
-		if (!this.__started) {
-			this.__started = true;
-			const routes = this.routes();
-			if (arrayLength(routes)) {
-				let route = new Crossroads(),
-					fMatcher = (this.onRoute || (()=>0)).bind(this);
+		const routes = this.routes();
+		if (arrayLength(routes)) {
+			let route = new Crossroads(),
+				fMatcher = (this.onRoute || (()=>0)).bind(this);
 
-				routes.forEach(item => item && route && (route.addRoute(item[0], fMatcher).rules = item[1]));
+			routes.forEach(item => item && route && (route.addRoute(item[0], fMatcher).rules = item[1]));
 
-				this.__cross = route;
-			}
+			this.__cross = route;
 		}
 	}
 }

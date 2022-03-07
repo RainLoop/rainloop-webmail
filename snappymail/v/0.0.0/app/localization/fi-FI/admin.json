@@ -11,7 +11,7 @@
 	"TOP_PANEL": {
 		"LABEL_ADMIN_PANEL": "Halintapaneli"
 	},
-	"TABS_LABELS": {
+	"SETTINGS_LABELS": {
 		"LABEL_GENERAL_NAME": "Yleiset",
 		"LABEL_LOGIN_NAME": "Kirjautuminen",
 		"LABEL_BRANDING_NAME": "Brändäys",

@@ -11,7 +11,7 @@
 	"TOP_PANEL": {
 		"LABEL_ADMIN_PANEL": "Beheer paneel"
 	},
-	"TABS_LABELS": {
+	"SETTINGS_LABELS": {
 		"LABEL_GENERAL_NAME": "Algemeen",
 		"LABEL_LOGIN_NAME": "Inlogscherm",
 		"LABEL_BRANDING_NAME": "Huisstijl",

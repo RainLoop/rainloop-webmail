@@ -3,7 +3,7 @@ import ko from 'ko';
 import Remote from 'Remote/Admin/Fetch';
 import { forEachObjectEntry } from 'Common/Utils';
 
-export class ConfigAdminSettings /*extends AbstractViewSettings*/ {
+export class AdminSettingsConfig /*extends AbstractViewSettings*/ {
 
 	constructor() {
 		this.config = ko.observableArray();

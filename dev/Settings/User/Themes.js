@@ -20,7 +20,7 @@ addObservablesTo(themeBackground, {
 	error: ''
 });
 
-export class ThemesUserSettings /*extends AbstractViewSettings*/ {
+export class UserSettingsThemes /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.theme = ThemeStore.theme;
 		this.themes = ThemeStore.themes;

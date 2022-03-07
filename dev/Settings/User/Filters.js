@@ -11,7 +11,7 @@ import { showScreenPopup } from 'Knoin/Knoin';
 
 import { SieveScriptPopupView } from 'View/Popup/SieveScript';
 
-export class FiltersUserSettings /*extends AbstractViewSettings*/ {
+export class UserSettingsFilters /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.scripts = SieveUserStore.scripts;
 		this.loading = ko.observable(false).extend({ debounce: 200 });

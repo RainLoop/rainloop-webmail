@@ -7,7 +7,17 @@ import { AbstractViewSettings } from 'Knoin/AbstractViews';
 
 import { SettingsUserStore } from 'Stores/User/Settings';
 
-export class SecurityUserSettings extends AbstractViewSettings {
+import { GnuPGUserStore } from 'Stores/User/GnuPG';
+import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
+
+import Remote from 'Remote/User/Fetch';
+
+import { showScreenPopup } from 'Knoin/Knoin';
+
+import { OpenPgpImportPopupView } from 'View/Popup/OpenPgpImport';
+import { OpenPgpGeneratePopupView } from 'View/Popup/OpenPgpGenerate';
+
+export class UserSettingsSecurity extends AbstractViewSettings {
 	constructor() {
 		super();
 
@@ -33,5 +43,35 @@ export class SecurityUserSettings extends AbstractViewSettings {
 		if (this.capaAutoLogout) {
 			this.addSetting('AutoLogout');
 		}
+
+		this.gnupgPublicKeys = GnuPGUserStore.publicKeys;
+		this.gnupgPrivateKeys = GnuPGUserStore.privateKeys;
+
+		this.openpgpkeysPublic = OpenPGPUserStore.publicKeys;
+		this.openpgpkeysPrivate = OpenPGPUserStore.privateKeys;
+
+		this.canOpenPGP = SettingsCapa('OpenPGP');
+		this.canGnuPG = GnuPGUserStore.isSupported();
+		this.canMailvelope = !!window.mailvelope;
+
+		this.allowDraftAutosave = SettingsUserStore.allowDraftAutosave;
+
+		this.allowDraftAutosave.subscribe(value => Remote.saveSetting('AllowDraftAutosave', value))
+	}
+
+	addOpenPgpKey() {
+		showScreenPopup(OpenPgpImportPopupView);
+	}
+
+	generateOpenPgpKey() {
+		showScreenPopup(OpenPgpGeneratePopupView);
+	}
+
+	onBuild() {
+		/**
+		 * Create an iframe to display the Mailvelope keyring settings.
+		 * The iframe will be injected into the container identified by selector.
+		 */
+		window.mailvelope && mailvelope.createSettingsContainer('#mailvelope-settings'/*[, keyring], options*/);
 	}
 }

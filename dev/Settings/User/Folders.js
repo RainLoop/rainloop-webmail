@@ -24,7 +24,7 @@ import { loadFolders } from 'Model/FolderCollection';
 
 const folderForDeletion = ko.observable(null).askDeleteHelper();
 
-export class FoldersUserSettings /*extends AbstractViewSettings*/ {
+export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.showKolab = koComputable(() => FolderUserStore.hasCapability('METADATA') && SettingsCapa('Kolab'));
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;

@@ -21,7 +21,7 @@ import { ThemeStore } from 'Stores/Theme';
 import { LanguageStore } from 'Stores/Language';
 import { LanguagesPopupView } from 'View/Popup/Languages';
 
-export class GeneralAdminSettings extends AbstractViewSettings {
+export class AdminSettingsGeneral extends AbstractViewSettings {
 	constructor() {
 		super();
 

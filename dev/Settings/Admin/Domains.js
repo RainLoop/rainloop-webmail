@@ -8,7 +8,7 @@ import Remote from 'Remote/Admin/Fetch';
 import { DomainPopupView } from 'View/Popup/Domain';
 import { DomainAliasPopupView } from 'View/Popup/DomainAlias';
 
-export class DomainsAdminSettings /*extends AbstractViewSettings*/ {
+export class AdminSettingsDomains /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.domains = DomainAdminStore;
 

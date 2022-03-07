@@ -11,7 +11,7 @@ import { PluginPopupView } from 'View/Popup/Plugin';
 import { addObservablesTo, addComputablesTo } from 'External/ko';
 import { AbstractViewSettings } from 'Knoin/AbstractViews';
 
-export class PackagesAdminSettings extends AbstractViewSettings {
+export class AdminSettingsPackages extends AbstractViewSettings {
 	constructor() {
 		super();
 

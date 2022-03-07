@@ -278,7 +278,12 @@ export const
 			}
 		});
 
-		forEachObjectValue(SCREENS, vmScreen => vmScreen.onStart());
+		forEachObjectValue(SCREENS, vmScreen => {
+			if (!vmScreen.__started) {
+				vmScreen.onStart();
+				vmScreen.__started = true;
+			}
+		});
 
 		const cross = new Crossroads();
 		cross.addRoute(/^([a-zA-Z0-9-]*)\/?(.*)$/, screenOnRoute);

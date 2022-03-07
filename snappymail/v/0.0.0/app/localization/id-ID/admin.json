@@ -11,7 +11,7 @@
 	"TOP_PANEL": {
 		"LABEL_ADMIN_PANEL": "Panel Admin"
 	},
-	"TABS_LABELS": {
+	"SETTINGS_LABELS": {
 		"LABEL_GENERAL_NAME": "Umum",
 		"LABEL_LOGIN_NAME": "Login",
 		"LABEL_BRANDING_NAME": "Branding",

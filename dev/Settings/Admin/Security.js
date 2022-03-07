@@ -6,7 +6,7 @@ import Remote from 'Remote/Admin/Fetch';
 import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewSettings } from 'Knoin/AbstractViews';
 
-export class SecurityAdminSettings extends AbstractViewSettings {
+export class AdminSettingsSecurity extends AbstractViewSettings {
 	constructor() {
 		super();
 

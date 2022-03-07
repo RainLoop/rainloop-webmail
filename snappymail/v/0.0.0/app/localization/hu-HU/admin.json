@@ -11,7 +11,7 @@
 	"TOP_PANEL": {
 		"LABEL_ADMIN_PANEL": "Adminisztrációs felület"
 	},
-	"TABS_LABELS": {
+	"SETTINGS_LABELS": {
 		"LABEL_GENERAL_NAME": "Általános",
 		"LABEL_LOGIN_NAME": "Belépés",
 		"LABEL_BRANDING_NAME": "Arculat",
