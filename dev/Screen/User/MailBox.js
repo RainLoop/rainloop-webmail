@@ -51,7 +51,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 	onShow() {
 		this.updateWindowTitle();
 
-		AppUserStore.focusedState(Scope.None);
+		AppUserStore.focusedState('none');
 		AppUserStore.focusedState(Scope.MessageList);
 
 		ThemeStore.isMobile() && leftPanelDisabled(true);

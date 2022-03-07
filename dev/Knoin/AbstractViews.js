@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
-import { Scope } from 'Common/Enums';
 import { keyScope, SettingsGet, leftPanelDisabled } from 'Common/Globals';
 import { ViewType, showScreenPopup } from 'Knoin/Knoin';
 
@@ -16,8 +15,8 @@ class AbstractView {
 		this.viewModelDom = null;
 
 		this.keyScope = {
-			scope: Scope.None,
-			previous: Scope.None,
+			scope: 'none',
+			previous: 'none',
 			set: function() {
 				this.previous = keyScope();
 				keyScope(this.scope);

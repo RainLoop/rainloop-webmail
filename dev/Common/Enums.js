@@ -6,8 +6,6 @@ export const
  * @enum {string}
  */
 Scope = {
-	All: 'all',
-	None: 'none',
 	MessageList: 'MessageList',
 	FolderList: 'FolderList',
 	MessageView: 'MessageView',

@@ -1,7 +1,6 @@
 import ko from 'ko';
-import { Scope } from 'Common/Enums';
 
-let keyScopeFake = Scope.All;
+let keyScopeFake = 'all';
 
 export const
 	ScopeMenu = 'Menu',
@@ -43,21 +42,20 @@ export const
 	addEventsListeners = (element, events) =>
 		Object.entries(events).forEach(([event, fn]) => element.addEventListener(event, fn)),
 
-	// keys
-	keyScopeReal = ko.observable(Scope.All),
+	// keys / shortcuts
+	keyScopeReal = ko.observable('all'),
 	keyScope = value => {
-		if (value) {
-			if (ScopeMenu !== value) {
-				keyScopeFake = value;
-				if (dropdownVisibility()) {
-					value = ScopeMenu;
-				}
-			}
-			keyScopeReal(value);
-			shortcuts.setScope(value);
-		} else {
+		if (!value) {
 			return keyScopeFake;
 		}
+		if (ScopeMenu !== value) {
+			keyScopeFake = value;
+			if (dropdownVisibility()) {
+				value = ScopeMenu;
+			}
+		}
+		keyScopeReal(value);
+		shortcuts.setScope(value);
 	};
 
 dropdownVisibility.subscribe(value => {

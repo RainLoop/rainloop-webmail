@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { Scope } from 'Common/Enums';
 import { getNotification, i18n } from 'Common/Translator';
 import { arrayLength } from 'Common/Utils';
 
@@ -28,7 +27,7 @@ export class PluginPopupView extends AbstractViewPopup {
 			hasConfiguration: () => 0 < this.config().length
 		});
 
-		this.keyScope.scope = Scope.All;
+		this.keyScope.scope = 'all';
 
 		decorateKoCommands(this, {
 			saveCommand: self => self.hasConfiguration()
