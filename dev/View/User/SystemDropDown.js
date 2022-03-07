@@ -53,7 +53,8 @@ export class SystemDropDownUserView extends AbstractViewRight {
 	}
 
 	accountClick(account, event) {
-		if (account && 0 === event.button) {
+		let email = account && account.email;
+		if (email && 0 === event.button && AccountUserStore.email() != email) {
 			AccountUserStore.loading(true);
 			event.preventDefault();
 			event.stopPropagation();
@@ -61,7 +62,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 				(iError/*, oData*/) => {
 					if (iError) {
 						AccountUserStore.loading(false);
-						alert(getNotification(iError).replace('%EMAIL%', account.email));
+						alert(getNotification(iError).replace('%EMAIL%', email));
 						if (account.isAdditional()) {
 							showScreenPopup(AccountPopupView, [account]);
 						}
@@ -84,7 +85,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 */
 						rl.route.reload();
 					}
-				}, {Email:account.email}
+				}, {Email:email}
 			);
 		}
 		return true;
