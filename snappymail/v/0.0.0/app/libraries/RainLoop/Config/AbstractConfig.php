@@ -67,12 +67,9 @@ abstract class AbstractConfig implements \JsonSerializable
 	 */
 	public function Get(string $sSection, string $sName, $mDefault = null)
 	{
-		$mResult = $mDefault;
-		if (isset($this->aData[$sSection][$sName][0]))
-		{
-			$mResult = $this->aData[$sSection][$sName][0];
-		}
-		return $mResult;
+		return isset($this->aData[$sSection][$sName][0])
+			? $this->aData[$sSection][$sName][0]
+			: $mDefault;
 	}
 
 	/**

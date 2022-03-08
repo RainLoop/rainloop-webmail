@@ -43,10 +43,8 @@ export const
 			clearTimer = () => {
 				__themeTimer = setTimeout(() => themeTrigger(SaveSettingsStep.Idle), 1000);
 				__themeJson = null;
-			};
-
-		let url = themeStyle.dataset.href.replace(/(Admin|User)\/-\/[^/]+\//, '$1/-/' + value + '/')
-			+ 'Json/';
+			},
+			url = themeStyle.dataset.href.replace(/(Admin|User)\/-\/[^/]+\//, '$1/-/' + value + '/') + 'Json/';
 
 		clearTimeout(__themeTimer);
 

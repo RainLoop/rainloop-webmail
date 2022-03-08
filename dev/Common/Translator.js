@@ -42,10 +42,7 @@ const
 
 	getNotificationMessage = code => {
 		let key = getKeyByValue(Notification, code);
-		if (key) {
-			key = i18nKey(key).replace('_NOTIFICATION', '_ERROR');
-			return I18N_DATA.NOTIFICATIONS[key];
-		}
+		return key ? I18N_DATA.NOTIFICATIONS[i18nKey(key).replace('_NOTIFICATION', '_ERROR')] : '';
 	};
 
 export const
