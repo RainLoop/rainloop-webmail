@@ -729,7 +729,7 @@ export class MailMessageList extends AbstractViewRight {
 		});
 
 		// check all
-		shortcuts.add('a', 'meta', Scope.MessageList, () => {
+		registerShortcut('a', 'meta', Scope.MessageList, () => {
 			this.checkAll(!(this.checkAll() && !this.isIncompleteChecked()));
 			return false;
 		});
