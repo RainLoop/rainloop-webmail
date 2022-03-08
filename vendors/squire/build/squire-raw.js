@@ -2019,7 +2019,6 @@ function onPaste ( event ) {
 	let clipboardData = event.clipboardData;
 	let items = clipboardData && clipboardData.items;
 	let choosePlain = this.isShiftDown;
-	let fireDrop = false;
 	let hasRTF = false;
 	let hasImage = false;
 	let plainItem = null;
@@ -2044,7 +2043,7 @@ function onPaste ( event ) {
 				plainItem = item;
 			} else if ( type === 'text/rtf' ) {
 				hasRTF = true;
-			} else if ( /^image\/.*/.test( type ) ) {
+			} else if ( /^image\//.test( type ) ) {
 				hasImage = true;
 			}
 		}
@@ -2059,18 +2058,15 @@ function onPaste ( event ) {
 		// the presence of text/rtf as an indicator to choose the html version
 		// over the image.
 		if ( hasImage && !( hasRTF && htmlItem ) ) {
-			event.preventDefault();
-			this.fireEvent( 'dragover', {
-				dataTransfer: clipboardData,
-				/*jshint loopfunc: true */
-				preventDefault: () => fireDrop = true
-				/*jshint loopfunc: false */
-			});
-			if ( fireDrop ) {
-				this.fireEvent( 'drop', {
-					dataTransfer: clipboardData
-				});
+/*
+			if (item.kind === 'file') {
+				event.preventDefault();
+				let reader = new FileReader();
+				reader.onload = event =>
+					self.insertHTML( '<img src="'+event.target.result+'">', true );
+				reader.readAsDataURL(item.getAsFile());
 			}
+*/
 			return;
 		}
 
@@ -2084,7 +2080,6 @@ function onPaste ( event ) {
 		} else if ( plainItem ) {
 			plainItem.getAsString( text => self.insertPlainText( text, true ) );
 		}
-		return;
 	}
 
 	// Safari (and indeed many other OS X apps) copies stuff as text/rtf
