@@ -44,7 +44,17 @@ class ChangePasswordDriverPDO
 				->SetDefaultValue(array('none', 'bcrypt', 'Argon2i', 'Argon2id', 'SHA256-CRYPT', 'SHA512-CRYPT'))
 				->SetDescription('In what way do you want the passwords to be encrypted?'),
 			\RainLoop\Plugins\Property::NewInstance('pdo_encryptprefix')->SetLabel('Encrypt prefix')
-				->SetDescription('Optional encrypted password prefix, like {ARGON2I} or {BLF-CRYPT} or {SHA512-CRYPT}')
+				->SetDescription('Optional encrypted password prefix, like {ARGON2I} or {BLF-CRYPT} or {SHA512-CRYPT}'),
+			\RainLoop\Plugins\Property::NewInstance('pdo_mysql_ssl')->SetLabel('MySQL SSL connection')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDefaultValue(false),
+			\RainLoop\Plugins\Property::NewInstance('pdo_mysql_ssl_verify')->SetLabel('MySQL SSL verify server cert')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDescription('Verify that certificate\'s Common Name of SAN matches the database server\'s hostname.')
+				->SetDefaultValue(true),
+			\RainLoop\Plugins\Property::NewInstance('pdo_mysql_ssl_ca')->SetLabel('MySQL SSL CA certificate file')
+				->SetDescription('Path to a file containing the CA certificate used to sign the server certificate, or a CA bundle. Required for SSL/TLS connections to work.')
+				->SetDefaultValue('/etc/pki/tls/certs/ca-bundle.crt')
 		);
 	}
 
@@ -52,15 +62,21 @@ class ChangePasswordDriverPDO
 	{
 		try
 		{
+			$pdo_attr = array(
+				\PDO::ATTR_EMULATE_PREPARES  => true,
+				\PDO::ATTR_PERSISTENT        => true,
+				\PDO::ATTR_ERRMODE           => \PDO::ERRMODE_EXCEPTION,
+			);
+			if ($this->oConfig->Get('plugin', 'pdo_mysql_ssl', false)) {
+				$pdo_attr[\PDO::MYSQL_ATTR_SSL_CA]                 = $this->oConfig->Get('plugin', 'pdo_mysql_ssl_ca', '');
+				$pdo_attr[\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $this->oConfig->Get('plugin', 'pdo_mysql_ssl_verify', true);
+			}
+
 			$conn = new \PDO(
 				$this->oConfig->Get('plugin', 'pdo_dsn', ''),
 				$this->oConfig->Get('plugin', 'pdo_user', ''),
 				$this->oConfig->Get('plugin', 'pdo_password', ''),
-				array(
-					\PDO::ATTR_EMULATE_PREPARES  => true,
-					\PDO::ATTR_PERSISTENT        => true,
-					\PDO::ATTR_ERRMODE           => \PDO::ERRMODE_EXCEPTION
-				)
+				$pdo_attr
 			);
 
 			$sEmail = $oAccount->Email();
