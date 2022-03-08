@@ -17,7 +17,7 @@
 	</div>
 
 	<div class="alert g-ui-user-select-none" data-bind="visible: hasChanges" data-icon="⚠" data-i18n="POPUPS_SIEVE_SCRIPT/CHANGES_NEED_TO_BE_SAVED_DESC"></div>
-	<div class="alert alert-error g-ui-user-select-none" data-bind="visible: $root.saveError" data-icon="⚠" data-bind="text: $root.saveErrorText"></div>
+	<div class="alert alert-error g-ui-user-select-none" data-bind="visible: $root.saveError, text: $root.saveErrorText" data-icon="⚠"></div>
 
 	<div class="control-group" data-bind="visible: $root.rawActive">
 		<div>
