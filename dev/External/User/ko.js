@@ -2,8 +2,9 @@ import 'External/ko';
 import ko from 'ko';
 import { HtmlEditor } from 'Common/Html';
 import { timeToNode } from 'Common/Translator';
-import { elementById, addEventsListeners } from 'Common/Globals';
+import { elementById, addEventsListeners, dropdowns } from 'Common/Globals';
 import { isArray } from 'Common/Utils';
+import { dropdownsDetectVisibility } from 'Common/UtilsUser';
 import { EmailAddressesComponent } from 'Component/EmailAddresses';
 import { ThemeStore } from 'Stores/Theme';
 import { moveMessagesToFolder } from 'Common/Folders';
@@ -231,7 +232,7 @@ Object.assign(ko.bindingHandlers, {
 
 	registerBootstrapDropdown: {
 		init: element => {
-			rl.Dropdowns.register(element);
+			dropdowns.push(element);
 			element.ddBtn = new BSN.Dropdown(element.querySelector('.dropdown-toggle'));
 		}
 	},
@@ -243,7 +244,7 @@ Object.assign(ko.bindingHandlers, {
 				el.open || el.toggle();
 	//			el.focus();
 
-				rl.Dropdowns.detectVisibility();
+				dropdownsDetectVisibility();
 				fValueAccessor()(false);
 			}
 		}

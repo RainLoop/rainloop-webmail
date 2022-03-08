@@ -1,7 +1,7 @@
 import { MessageFlagsCache, addRequestedMessage } from 'Common/Cache';
 import { Notification } from 'Common/Enums';
 import { MessageSetAction, ComposeType/*, FolderType*/ } from 'Common/EnumsUser';
-import { doc, createElement, elementById } from 'Common/Globals';
+import { doc, createElement, elementById, dropdowns, dropdownVisibility } from 'Common/Globals';
 import { plainToHtml } from 'Common/Html';
 import { getNotification } from 'Common/Translator';
 import { EmailModel } from 'Model/Email';
@@ -14,6 +14,10 @@ import { ThemeStore } from 'Stores/Theme';
 import Remote from 'Remote/User/Fetch';
 
 export const
+
+dropdownsDetectVisibility = (() =>
+	dropdownVisibility(!!dropdowns.find(item => item.classList.contains('show')))
+).debounce(50),
 
 /**
  * @param {string} link

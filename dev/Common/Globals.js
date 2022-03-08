@@ -18,6 +18,7 @@ export const
 	SettingsGet = Settings.get,
 	SettingsCapa = Settings.capa,
 
+	dropdowns = [],
 	dropdownVisibility = ko.observable(false).extend({ rateLimit: 0 }),
 
 	moveAction = ko.observable(false),

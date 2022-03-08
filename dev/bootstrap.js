@@ -1,4 +1,4 @@
-import { dropdownVisibility, Settings } from 'Common/Globals';
+import { Settings } from 'Common/Globals';
 import { i18n } from 'Common/Translator';
 
 import { root } from 'Common/Links';
@@ -17,13 +17,6 @@ export default App => {
 			Abort: 2
 		}
 	};
-
-	rl.Dropdowns = [];
-	rl.Dropdowns.register = function(element) { this.push(element); };
-	rl.Dropdowns.detectVisibility = (() =>
-		dropdownVisibility(!!rl.Dropdowns.find(item => item.classList.contains('show')))
-	).debounce(50);
-	addEventListener('click', ()=>rl.Dropdowns.detectVisibility());
 
 	rl.route = {
 		root: () => {
