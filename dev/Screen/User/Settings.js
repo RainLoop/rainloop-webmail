@@ -18,12 +18,12 @@ import { UserSettingsFolders } from 'Settings/User/Folders';
 import { UserSettingsThemes } from 'Settings/User/Themes';
 
 import { SystemDropDownUserView } from 'View/User/SystemDropDown';
-import { MenuSettingsUserView } from 'View/User/Settings/Menu';
-import { PaneSettingsUserView } from 'View/User/Settings/Pane';
+import { SettingsMenuUserView } from 'View/User/Settings/Menu';
+import { SettingsPaneUserView } from 'View/User/Settings/Pane';
 
 export class SettingsUserScreen extends AbstractSettingsScreen {
 	constructor() {
-		super([SystemDropDownUserView, MenuSettingsUserView, PaneSettingsUserView]);
+		super([SystemDropDownUserView, SettingsMenuUserView, SettingsPaneUserView]);
 
 		const views = [
 			UserSettingsGeneral

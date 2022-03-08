@@ -62,7 +62,7 @@ const
 
 export class MailMessageView extends AbstractViewRight {
 	constructor() {
-		super('MailMessageView');
+		super();
 
 		const
 			/**

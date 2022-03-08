@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
 import { keyScope, SettingsGet, leftPanelDisabled } from 'Common/Globals';
-import { ViewType, showScreenPopup } from 'Knoin/Knoin';
+import { ViewTypePopup, showScreenPopup } from 'Knoin/Knoin';
 
 import { SaveSettingsStep } from 'Common/Enums';
 
@@ -10,8 +10,7 @@ class AbstractView {
 	constructor(templateID, type)
 	{
 //		Object.defineProperty(this, 'viewModelTemplateID', { value: templateID });
-//		this.viewModelTemplateID = this.constructor.name;
-		this.viewModelTemplateID = templateID;
+		this.viewModelTemplateID = templateID || this.constructor.name.replace('UserView', '');
 		this.viewType = type;
 		this.viewModelDom = null;
 
@@ -57,7 +56,7 @@ export class AbstractViewPopup extends AbstractView
 {
 	constructor(name)
 	{
-		super('Popups' + name, ViewType.Popup);
+		super('Popups' + name, ViewTypePopup);
 		this.keyScope.scope = name;
 		this.modalVisible = ko.observable(false).extend({ rateLimit: 0 });
 		shortcuts.add('escape,close', '', name, () => {
@@ -92,19 +91,11 @@ AbstractViewPopup.hidden = function() {
 	return !this.__vm || !this.__vm.modalVisible();
 }
 
-export class AbstractViewCenter extends AbstractView
-{
-	constructor(templateID)
-	{
-		super(templateID, ViewType.Content);
-	}
-}
-
 export class AbstractViewLeft extends AbstractView
 {
 	constructor(templateID)
 	{
-		super(templateID, ViewType.Left);
+		super(templateID, 'Left');
 		this.leftPanelDisabled = leftPanelDisabled;
 	}
 }
@@ -113,7 +104,7 @@ export class AbstractViewRight extends AbstractView
 {
 	constructor(templateID)
 	{
-		super(templateID, ViewType.Right);
+		super(templateID, 'Right');
 	}
 }
 
@@ -158,9 +149,9 @@ export class AbstractViewSettings
 	}
 }
 
-export class AbstractViewLogin extends AbstractViewCenter {
+export class AbstractViewLogin extends AbstractView {
 	constructor(templateID) {
-		super(templateID);
+		super(templateID, 'Content');
 		this.hideSubmitButton = SettingsGet('hideSubmitButton');
 		this.formError = ko.observable(false).extend({ falseTimeout: 500 });
 	}

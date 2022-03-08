@@ -34,7 +34,7 @@ const
 				vm = new ViewModelClass(vmScreen),
 				id = vm.viewModelTemplateID,
 				position = vm.viewType || '',
-				dialog = ViewType.Popup === position,
+				dialog = ViewTypePopup === position,
 				vmPlace = position ? doc.getElementById('rl-' + position.toLowerCase()) : null;
 
 			ViewModelClass.__builded = true;
@@ -49,7 +49,7 @@ const
 				vm.viewModelDom = vmDom;
 				ViewModelClass.__dom = vmDom;
 
-				if (ViewType.Popup === position) {
+				if (ViewTypePopup === position) {
 					vm.close = () => hideScreenPopup(ViewModelClass);
 
 					// Firefox / Safari HTMLDialogElement not defined
@@ -133,7 +133,7 @@ const
 			if (
 				ViewModelClass.__vm &&
 				ViewModelClass.__dom &&
-				ViewType.Popup !== ViewModelClass.__vm.viewType
+				ViewTypePopup !== ViewModelClass.__vm.viewType
 			) {
 				fn(ViewModelClass.__vm, ViewModelClass.__dom);
 			}
@@ -230,12 +230,7 @@ const
 
 
 export const
-	ViewType = {
-		Popup: 'Popups',
-		Left: 'Left',
-		Right: 'Right',
-		Content: 'Content'
-	},
+	ViewTypePopup = 'Popups',
 
 	/**
 	 * @param {Function} ViewModelClassToShow

@@ -24,7 +24,7 @@ import { getNotification } from 'Common/Translator';
 
 export class SystemDropDownUserView extends AbstractViewRight {
 	constructor() {
-		super('SystemDropDown');
+		super();
 
 		this.allowAccounts = SettingsCapa('AdditionalAccounts');
 

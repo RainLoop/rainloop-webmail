@@ -21,7 +21,7 @@ const SignMeOff = 0,
 
 export class LoginUserView extends AbstractViewLogin {
 	constructor() {
-		super('Login');
+		super();
 
 		this.addObservables({
 			loadingDesc: SettingsGet('LoadingDescription'),

@@ -58,7 +58,7 @@ const
 
 export class MailMessageList extends AbstractViewRight {
 	constructor() {
-		super('MailMessageList');
+		super();
 
 		this.bPrefetch = false;
 		this.emptySubjectValue = '';

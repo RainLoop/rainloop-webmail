@@ -25,7 +25,7 @@ import { setExpandedFolder } from 'Model/FolderCollection';
 
 export class MailFolderList extends AbstractViewLeft {
 	constructor() {
-		super('MailFolderList');
+		super();
 
 		this.oContentScrollable = null;
 

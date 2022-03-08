@@ -6,7 +6,7 @@ import Remote from 'Remote/Admin/Fetch';
 import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewLogin } from 'Knoin/AbstractViews';
 
-export class LoginAdminView extends AbstractViewLogin {
+export class AdminLoginView extends AbstractViewLogin {
 	constructor() {
 		super('AdminLogin');
 
