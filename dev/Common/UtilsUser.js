@@ -123,56 +123,38 @@ computedPaginatorHelper = (koCurrentPage, koPageCount) => {
  * @param {string} mailToUrl
  * @returns {boolean}
  */
-mailToHelper = (mailToUrl) => {
-	if (
-		mailToUrl &&
-		'mailto:' ===
-			mailToUrl
-				.toString()
-				.slice(0, 7)
-				.toLowerCase()
-	) {
-		mailToUrl = mailToUrl.toString().slice(7);
+mailToHelper = mailToUrl => {
+	if (mailToUrl && 'mailto:' === mailToUrl.slice(0, 7).toLowerCase()) {
+		mailToUrl = mailToUrl.slice(7).split('?');
 
-		let to = [],
-			params = {};
-
-		const email = mailToUrl.replace(/\?.+$/, ''),
-			query = mailToUrl.replace(/^[^?]*\?/, ''),
-			toEmailModel = value => null != value ? EmailModel.parseEmailLine(decodeURIComponent(value)) : null;
-
-		query.split('&').forEach(temp => {
-			temp = temp.split('=');
-			params[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
-		});
-
-		if (null != params.to) {
-			to = Object.values(
-				toEmailModel(email + ',' + params.to).reduce((result, value) => {
-					if (value) {
-						if (result[value.email]) {
-							if (!result[value.email].name) {
-								result[value.email] = value;
-							}
-						} else {
-							result[value.email] = value;
-						}
-					}
-					return result;
-				}, {})
-			);
-		} else {
-			to = EmailModel.parseEmailLine(email);
-		}
+		const
+			email = mailToUrl[0],
+			params = new URLSearchParams(mailToUrl[1]),
+			toEmailModel = value => null != value ? EmailModel.parseEmailLine(value) : null;
 
 		showMessageComposer([
 			ComposeType.Empty,
 			null,
-			to,
-			toEmailModel(params.cc),
-			toEmailModel(params.bcc),
-			null == params.subject ? null : decodeURIComponent(params.subject),
-			null == params.body ? null : plainToHtml(decodeURIComponent(params.body))
+			params.get('to')
+				? Object.values(
+						toEmailModel(email + ',' + params.get('to')).reduce((result, value) => {
+							if (value) {
+								if (result[value.email]) {
+									if (!result[value.email].name) {
+										result[value.email] = value;
+									}
+								} else {
+									result[value.email] = value;
+								}
+							}
+							return result;
+						}, {})
+					)
+				: EmailModel.parseEmailLine(email),
+			toEmailModel(params.get('cc')),
+			toEmailModel(params.get('bcc')),
+			params.get('subject'),
+			plainToHtml(params.get('body') || '')
 		]);
 
 		return true;

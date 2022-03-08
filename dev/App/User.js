@@ -348,10 +348,7 @@ class AppUser extends AbstractApp {
 								);
 							} catch (e) {} // eslint-disable-line no-empty
 						}
-						setTimeout(() => {
-							value = SettingsGet('MailToEmail');
-							value && mailToHelper(value);
-						}, 500);
+						setTimeout(() => mailToHelper(SettingsGet('MailToEmail')), 500);
 					} else {
 						this.logout();
 					}
