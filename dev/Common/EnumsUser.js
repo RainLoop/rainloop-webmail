@@ -48,13 +48,13 @@ export const FolderSortMode = {
  * @enum {string}
  */
 export const ComposeType = {
-	Empty: 'empty',
-	Reply: 'reply',
-	ReplyAll: 'replyall',
-	Forward: 'forward',
-	ForwardAsAttachment: 'forward-as-attachment',
-	Draft: 'draft',
-	EditAsNew: 'editasnew'
+	Empty: 0,
+	Reply: 1,
+	ReplyAll: 2,
+	Forward: 3,
+	ForwardAsAttachment: 4,
+	Draft: 5,
+	EditAsNew: 6
 };
 
 /**

@@ -41,11 +41,11 @@
 			<div class="message-fixed-button-toolbar">
 				<div class="btn-group" style="margin-right: -8px">
 					<a class="btn btn-thin btn-transparent buttonReply fontastic"
-						data-bind="visible: 'reply' === lastReplyAction(), command: replyCommand" data-i18n="[title]MESSAGE/BUTTON_REPLY">←</a>
+						data-bind="visible: 1 == lastReplyAction(), command: replyCommand" data-i18n="[title]MESSAGE/BUTTON_REPLY">←</a>
 					<a class="btn btn-thin btn-transparent buttonReplyAll fontastic"
-						data-bind="visible: 'replyall' === lastReplyAction(), command: replyAllCommand" data-i18n="[title]MESSAGE/BUTTON_REPLY_ALL">↞</a>
+						data-bind="visible: 2 == lastReplyAction(), command: replyAllCommand" data-i18n="[title]MESSAGE/BUTTON_REPLY_ALL">↞</a>
 					<a class="btn btn-thin btn-transparent buttonForward fontastic"
-						data-bind="visible: 'forward' === lastReplyAction(), command: forwardCommand" data-i18n="[title]MESSAGE/BUTTON_FORWARD">→</a>
+						data-bind="visible: 3 == lastReplyAction(), command: forwardCommand" data-i18n="[title]MESSAGE/BUTTON_FORWARD">→</a>
 					<div class="btn-group" data-bind="registerBootstrapDropdown: true" style="display: inline-block">
 						<a class="btn btn-thin btn-transparent dropdown-toggle fontastic" id="more-view-dropdown-id" href="#" tabindex="-1">☰</a>
 						<ul class="dropdown-menu right-edge" role="menu" aria-labelledby="more-view-dropdown-id">
