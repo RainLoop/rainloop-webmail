@@ -35,7 +35,7 @@ export const
 	formFieldFocused = () => doc.activeElement && doc.activeElement.matches('input,textarea'),
 
 	registerShortcut = (keys, modifiers, scopes, method) =>
-		shortcuts.add(keys, modifiers, scopes, () => formFieldFocused() ? true : method()),
+		shortcuts.add(keys, modifiers, scopes, event => formFieldFocused() ? true : method(event)),
 
 	addEventsListener = (element, events, fn, options) =>
 		events.forEach(event => element.addEventListener(event, fn, options)),

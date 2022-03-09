@@ -414,7 +414,6 @@ export class MailMessageList extends AbstractViewRight {
 
 	searchEnterAction() {
 		MessagelistUserStore.mainSearch(this.sLastSearchValue);
-		this.inputMessageListSearchFocus(false);
 	}
 
 	cancelSearch() {
