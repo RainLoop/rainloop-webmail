@@ -53,7 +53,7 @@ abstract class Service
 		if ($oConfig->Get('labs', 'force_https', false) && !$oHttp->IsSecure())
 		{
 			\header('Location: https://'.$oHttp->GetHost(false, false).$oHttp->GetUrl());
-			exit(0);
+			exit;
 		}
 
 		$sQuery = \trim($_SERVER['QUERY_STRING'] ?? '');
@@ -140,6 +140,14 @@ abstract class Service
 
 		if ($bIndex)
 		{
+			if (!$bAdmin) {
+				$login = $oConfig->Get('labs', 'custom_login_link', '');
+				if ($login && !$oActions->getAccountFromToken(false)) {
+					\header("Location: {$login}");
+					exit;
+				}
+			}
+
 //			if (!\SnappyMail\HTTP\SecFetch::isEntering()) {
 			\header('Content-Type: text/html; charset=utf-8');
 			$oHttp->ServerNoCache();

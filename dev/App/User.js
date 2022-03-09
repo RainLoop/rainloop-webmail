@@ -259,7 +259,14 @@ class AppUser extends AbstractApp {
 	}
 
 	logout() {
-		Remote.request('Logout', () => rl.logoutReload());
+		Remote.request('Logout', () => {
+			const customLogoutLink = Settings.app('customLogoutLink');
+			if (customLogoutLink) {
+				((window.parent && Settings.app('inIframe')) ? window.parent : window).location.href = customLogoutLink;
+			} else {
+				rl.logoutReload()
+			}
+		});
 	}
 
 	bootstart() {
