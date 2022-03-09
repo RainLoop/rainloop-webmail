@@ -409,13 +409,6 @@ export class MessageModel extends AbstractModel {
 			body.classList.toggle('html', 1);
 			body.classList.toggle('plain', 0);
 
-			// Drop Microsoft Office style properties
-			const rgbRE = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/g,
-				hex = n => ('0' + parseInt(n).toString(16)).slice(-2);
-			body.querySelectorAll('[style*=mso]').forEach(el =>
-				el.setAttribute('style', el.style.cssText.replace(rgbRE, (m,r,g,b) => '#' + hex(r) + hex(g) + hex(b)))
-			);
-
 			// showInternalImages
 			const findAttachmentByCid = cid => this.attachments().findByCid(cid);
 			body.querySelectorAll('[data-x-src-cid],[data-x-src-location],[data-x-style-cid]').forEach(el => {

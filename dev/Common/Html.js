@@ -102,9 +102,11 @@ export const
 			.replace(/(<pre[^>]*>)([\s\S]*?)(<\/pre>)/gi, aMatches => {
 				return (aMatches[1] + aMatches[2].trim() + aMatches[3].trim()).replace(/\r?\n/g, '<br>');
 			})
-			// \MailSo\Base\HtmlUtils::ClearFastTags
-			.replace(/<!doctype[^>]*>/i, '')
-			.replace(/<\?xml [^>]*\?>/i, '')
+			.replace(/<!doctype[^>]*>/gi, '')
+			.replace(/<\?xml[^>]*\?>/gi, '')
+			// Not supported by <template> element
+			.replace(/<(\/?)body(\s[^>]*)?>/gi, '<$1div class="mail-body"$2>')
+			.replace(/<\/?(html|head)[^>]*>/gi, '')
 			.trim();
 		html = '';
 
@@ -117,11 +119,7 @@ export const
 
 		tpl.content.querySelectorAll('*').forEach(oElement => {
 			const name = oElement.tagName,
-				oStyle = oElement.style,
-				hasAttribute = name => oElement.hasAttribute(name),
-				getAttribute = name => hasAttribute(name) ? oElement.getAttribute(name).trim() : '',
-				setAttribute = (name, value) => oElement.setAttribute(name, value),
-				delAttribute = name => oElement.removeAttribute(name);
+				oStyle = oElement.style;
 
 			// \MailSo\Base\HtmlUtils::ClearTags()
 			if (disallowedTags.includes(name)
@@ -151,7 +149,23 @@ export const
 				return;
 			}
 */
-			const aAttrsForRemove = [];
+			const aAttrsForRemove = [],
+				hasAttribute = name => oElement.hasAttribute(name),
+				getAttribute = name => hasAttribute(name) ? oElement.getAttribute(name).trim() : '',
+				setAttribute = (name, value) => oElement.setAttribute(name, value),
+				delAttribute = name => oElement.removeAttribute(name);
+
+			if ('mail-body' === oElement.className) {
+				forEachObjectEntry(tasks, (name, cb) => {
+					if (hasAttribute(name)) {
+						cb(getAttribute(name), oElement);
+						delAttribute(name);
+					}
+				});
+				result.css = oElement.style.cssText;
+				replaceWithChildren(oElement);
+				return;
+			}
 
 			if (oElement.hasAttributes()) {
 				let i = oElement.attributes.length;
@@ -164,16 +178,7 @@ export const
 				}
 			}
 
-			if ('BODY' === name) {
-				forEachObjectEntry(tasks, (name, cb) => {
-					if (hasAttribute(name)) {
-						cb(getAttribute(name), oElement);
-						delAttribute(name);
-					}
-				});
-			}
-
-			else if ('TABLE' === name) {
+			if ('TABLE' === name) {
 				if (hasAttribute('width')) {
 					oStyle.width = getAttribute('width');
 					delAttribute('width');
@@ -328,6 +333,9 @@ export const
 					oStyle.removeProperty('background-image');
 					oStyle.removeProperty('color');
 				}
+
+				// Drop Microsoft Office style properties
+//				oStyle.cssText = oStyle.cssText.replace(/mso-[^:;]+:[^;]+/gi, '');
 			}
 
 			if (debug && aAttrsForRemove.length) {
@@ -336,7 +344,7 @@ export const
 		});
 
 //		return tpl.content.firstChild;
-		result.html = tpl.innerHTML;
+		result.html = tpl.innerHTML.trim();
 		return result;
 	},
 
