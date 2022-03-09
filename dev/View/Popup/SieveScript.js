@@ -12,6 +12,8 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 import { FilterPopupView } from 'View/Popup/Filter';
 
+//import { parseScript } from 'Sieve/Parser';
+
 export class SieveScriptPopupView extends AbstractViewPopup {
 	constructor() {
 		super('SieveScript');
@@ -122,6 +124,13 @@ export class SieveScriptPopupView extends AbstractViewPopup {
 		this.rawActive(raw);
 		this.allowToggle(!raw);
 		this.saveError(false);
+
+/*
+		// TODO: Sieve GUI
+		let tree = parseScript(oScript.body(), oScript.name());
+		console.dir(tree);
+		console.log(tree.join('\r\n'));
+*/
 	}
 
 	afterShow() {

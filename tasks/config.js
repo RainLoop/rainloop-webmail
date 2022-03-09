@@ -73,6 +73,9 @@ config.paths.js = {
 			'dev/External/SquireUI.js'
 		]
 	},
+	sieve: {
+		name: 'sieve.js'
+	},
 	app: {
 		name: 'app.js'
 	},

@@ -53,6 +53,15 @@ const jsLibs = () => {
 		.pipe(gulp.dest(config.paths.staticJS));
 };
 
+// sieve
+const jsSieve = async () =>
+	(await rollupJS(config.paths.js.sieve.name))
+//		.pipe(sourcemaps.write('.'))
+		.pipe(header(getHead() + '\n'))
+		.pipe(eol('\n', true))
+		.pipe(gulp.dest(config.paths.staticJS))
+		.on('error', gutil.log);
+
 // app
 const jsApp = async () =>
 	(await rollupJS(config.paths.js.app.name))
@@ -124,6 +133,6 @@ exports.jsLint = jsLint;
 exports.js = gulp.series(
 	jsClean,
 	jsLint,
-	gulp.parallel(jsBoot, jsServiceWorker, jsOpenPGP, jsLibs, jsApp, jsAdmin),
+	gulp.parallel(jsBoot, jsServiceWorker, jsOpenPGP, jsLibs, jsSieve, jsApp, jsAdmin),
 	jsMin
 );

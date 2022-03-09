@@ -246,13 +246,6 @@ function sieveScriptToFilters(script)
 			}
 		}
 	}
-/*
-	// TODO: branch sieveparser
-	// https://github.com/the-djmaze/snappymail/tree/sieveparser/dev/Sieve
-	else if (script.length && window.Sieve) {
-		let tree = window.Sieve.parseScript(script);
-	}
-*/
 	return filters;
 }
 
