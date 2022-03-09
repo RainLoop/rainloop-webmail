@@ -16,7 +16,8 @@ import {
 	Settings,
 	SettingsGet,
 	leftPanelDisabled,
-	addEventsListener
+	addEventsListener,
+	addShortcut
 } from 'Common/Globals';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
@@ -88,7 +89,7 @@ class AppUser extends AbstractApp {
 		const fn = (ev=>$htmlCL.toggle('rl-ctrl-key-pressed', ev.ctrlKey)).debounce(500);
 		addEventsListener(doc, ['keydown','keyup'], fn);
 
-		shortcuts.add('escape,enter', '', dropdownsDetectVisibility);
+		addShortcut('escape,enter', '', dropdownsDetectVisibility);
 		addEventListener('click', dropdownsDetectVisibility);
 	}
 

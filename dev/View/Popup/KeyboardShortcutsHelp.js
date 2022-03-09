@@ -1,3 +1,4 @@
+import { addShortcut } from 'Common/Globals';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 export class KeyboardShortcutsHelpPopupView extends AbstractViewPopup {
@@ -10,8 +11,8 @@ export class KeyboardShortcutsHelpPopupView extends AbstractViewPopup {
 		const tabs = dom.querySelectorAll('.tabs input'),
 			last = tabs.length - 1;
 
-//		shortcuts.add('tab', 'shift',
-		shortcuts.add('tab,arrowleft,arrowright', '',
+//		addShortcut('tab', 'shift',
+		addShortcut('tab,arrowleft,arrowright', '',
 			'KeyboardShortcutsHelp',
 			event => {
 				let next = 0;

@@ -1,5 +1,5 @@
 import ko from 'ko';
-import { addEventsListeners } from 'Common/Globals';
+import { addEventsListeners, addShortcut } from 'Common/Globals';
 import { isArray } from 'Common/Utils';
 import { koComputable } from 'External/ko';
 
@@ -266,7 +266,7 @@ export class Selector {
 				}
 			});
 
-			shortcuts.add('enter,open', '', keyScope, () => {
+			addShortcut('enter,open', '', keyScope, () => {
 				const focused = this.focusedItem();
 				if (focused && !focused.selected()) {
 					this.actionClick(focused);
@@ -274,13 +274,13 @@ export class Selector {
 				}
 			});
 
-			shortcuts.add('arrowup,arrowdown', 'meta', keyScope, () => false);
+			addShortcut('arrowup,arrowdown', 'meta', keyScope, () => false);
 
-			shortcuts.add('arrowup,arrowdown', 'shift', keyScope, event => {
+			addShortcut('arrowup,arrowdown', 'shift', keyScope, event => {
 				this.newSelectPosition(event.key, true);
 				return false;
 			});
-			shortcuts.add('arrowup,arrowdown,home,end,pageup,pagedown,space', '', keyScope, event => {
+			addShortcut('arrowup,arrowdown,home,end,pageup,pagedown,space', '', keyScope, event => {
 				this.newSelectPosition(event.key, false);
 				return false;
 			});

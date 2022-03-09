@@ -23,6 +23,7 @@ import {
 	getFullscreenElement,
 	exitFullscreen,
 	fireEvent,
+	addShortcut,
 	registerShortcut
 } from 'Common/Globals';
 
@@ -118,6 +119,7 @@ export class MailMessageView extends AbstractViewRight {
 		this.messageError = MessageUserStore.error;
 
 		this.fullScreenMode = MessageUserStore.fullScreen;
+		this.toggleFullScreen = MessageUserStore.toggleFullScreen;
 
 		this.messageListOfThreadsLoading = ko.observable(false).extend({ rateLimit: 1 });
 		this.highlightUnselectedAttachments = ko.observable(false).extend({ falseTimeout: 2000 });
@@ -225,8 +227,6 @@ export class MailMessageView extends AbstractViewRight {
 
 		this.lastReplyAction(Local.get(ClientSideKeyName.LastReplyAction) || ComposeType.Reply);
 
-		addEventListener('mailbox.message-view.toggle-full-screen', () => this.toggleFullScreen());
-
 		// commands
 		this.replyCommand = createCommandReplyHelper(ComposeType.Reply);
 		this.replyAllCommand = createCommandReplyHelper(ComposeType.ReplyAll);
@@ -269,14 +269,6 @@ export class MailMessageView extends AbstractViewRight {
 		);
 	}
 
-	toggleFullScreen() {
-		try {
-			getSelection().removeAllRanges();
-		} catch (e) {} // eslint-disable-line no-empty
-
-		this.fullScreenMode(!this.fullScreenMode());
-	}
-
 	/**
 	 * @param {string} sType
 	 * @returns {void}
@@ -288,7 +280,7 @@ export class MailMessageView extends AbstractViewRight {
 
 	onBuild(dom) {
 		const el = dom.querySelector('.b-content');
-		this.oContent = initFullscreen(el, () => this.fullScreenMode(getFullscreenElement() === el));
+		this.oContent = initFullscreen(el, () => MessageUserStore.fullScreen(getFullscreenElement() === el));
 
 		const eqs = (ev, s) => ev.target.closestWithin(s, dom);
 		dom.addEventListener('click', event => {
@@ -354,11 +346,11 @@ export class MailMessageView extends AbstractViewRight {
 		// initShortcuts
 
 		// exit fullscreen, back
-		shortcuts.add('escape', '', Scope.MessageView, () => {
+		addShortcut('escape', '', Scope.MessageView, () => {
 			if (!this.viewModelDom.hidden && currentMessage()) {
 				const preview = SettingsUserStore.usePreviewPane();
-				if (this.fullScreenMode()) {
-					this.fullScreenMode(false);
+				if (MessageUserStore.fullScreen()) {
+					MessageUserStore.fullScreen(false);
 
 					if (preview) {
 						AppUserStore.focusedState(Scope.MessageList);
@@ -374,8 +366,8 @@ export class MailMessageView extends AbstractViewRight {
 		});
 
 		// fullscreen
-		shortcuts.add('enter,open', '', Scope.MessageView, () => {
-			this.toggleFullScreen();
+		addShortcut('enter,open', '', Scope.MessageView, () => {
+			MessageUserStore.toggleFullScreen();
 			return false;
 		});
 
@@ -427,42 +419,42 @@ export class MailMessageView extends AbstractViewRight {
 			}
 		});
 
-		shortcuts.add('arrowup,arrowleft', 'meta', [Scope.MessageList, Scope.MessageView], () => {
+		addShortcut('arrowup,arrowleft', 'meta', [Scope.MessageList, Scope.MessageView], () => {
 			this.goUpCommand();
 			return false;
 		});
 
-		shortcuts.add('arrowdown,arrowright', 'meta', [Scope.MessageList, Scope.MessageView], () => {
+		addShortcut('arrowdown,arrowright', 'meta', [Scope.MessageList, Scope.MessageView], () => {
 			this.goDownCommand();
 			return false;
 		});
 
 		// print
-		shortcuts.add('p,printscreen', 'meta', [Scope.MessageView, Scope.MessageList], () => {
+		addShortcut('p,printscreen', 'meta', [Scope.MessageView, Scope.MessageList], () => {
 			currentMessage() && currentMessage().printMessage();
 			return false;
 		});
 
 		// delete
-		shortcuts.add('delete', '', Scope.MessageView, () => {
+		addShortcut('delete', '', Scope.MessageView, () => {
 			this.deleteCommand();
 			return false;
 		});
-		shortcuts.add('delete', 'shift', Scope.MessageView, () => {
+		addShortcut('delete', 'shift', Scope.MessageView, () => {
 			this.deleteWithoutMoveCommand();
 			return false;
 		});
 
 		// change focused state
-		shortcuts.add('arrowleft', '', Scope.MessageView, () => {
-			if (!this.fullScreenMode() && currentMessage() && SettingsUserStore.usePreviewPane()
+		addShortcut('arrowleft', '', Scope.MessageView, () => {
+			if (!MessageUserStore.fullScreen() && currentMessage() && SettingsUserStore.usePreviewPane()
 			 && !oMessageScrollerDom().scrollLeft) {
 				AppUserStore.focusedState(Scope.MessageList);
 				return false;
 			}
 		});
-		shortcuts.add('tab', 'shift', Scope.MessageView, () => {
-			if (!this.fullScreenMode() && currentMessage() && SettingsUserStore.usePreviewPane()) {
+		addShortcut('tab', 'shift', Scope.MessageView, () => {
+			if (!MessageUserStore.fullScreen() && currentMessage() && SettingsUserStore.usePreviewPane()) {
 				AppUserStore.focusedState(Scope.MessageList);
 			}
 			return false;

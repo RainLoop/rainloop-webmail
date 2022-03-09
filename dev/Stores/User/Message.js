@@ -41,6 +41,10 @@ export const MessageUserStore = new class {
 		this.purgeMessageBodyCache = this.purgeMessageBodyCache.throttle(30000);
 	}
 
+	toggleFullScreen() {
+		MessageUserStore.fullScreen(!MessageUserStore.fullScreen());
+	}
+
 	purgeMessageBodyCache() {
 		const messagesDom = this.bodiesDom(),
 			children = messagesDom && messagesDom.children;

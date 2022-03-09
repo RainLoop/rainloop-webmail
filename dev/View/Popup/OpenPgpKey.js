@@ -1,4 +1,4 @@
-import { doc } from 'Common/Globals';
+import { doc, addShortcut } from 'Common/Globals';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 export class OpenPgpKeyPopupView extends AbstractViewPopup {
@@ -118,7 +118,7 @@ export class OpenPgpKeyPopupView extends AbstractViewPopup {
 	}
 
 	onBuild() {
-		shortcuts.add('a', 'meta', 'OpenPgpKey', () => {
+		addShortcut('a', 'meta', 'OpenPgpKey', () => {
 			this.selectKey();
 			return false;
 		});

@@ -21,7 +21,7 @@ import { messagesDeleteHelper } from 'Common/Folders';
 import { serverRequest } from 'Common/Links';
 import { i18n, getNotification, getUploadErrorDescByCode, timestampToString } from 'Common/Translator';
 import { MessageFlagsCache, setFolderHash } from 'Common/Cache';
-import { doc, Settings, SettingsGet, getFullscreenElement, exitFullscreen, elementById } from 'Common/Globals';
+import { doc, Settings, SettingsGet, getFullscreenElement, exitFullscreen, elementById, addShortcut } from 'Common/Globals';
 
 import { AppUserStore } from 'Stores/User/App';
 import { SettingsUserStore } from 'Stores/User/Settings';
@@ -1311,40 +1311,40 @@ export class ComposePopupView extends AbstractViewPopup {
 
 		this.addAttachmentEnabled(true);
 
-		shortcuts.add('q', 'meta', ScopeCompose, ()=>false);
-		shortcuts.add('w', 'meta', ScopeCompose, ()=>false);
+		addShortcut('q', 'meta', ScopeCompose, ()=>false);
+		addShortcut('w', 'meta', ScopeCompose, ()=>false);
 
-		shortcuts.add('m', 'meta', ScopeCompose, () => {
+		addShortcut('m', 'meta', ScopeCompose, () => {
 			this.identitiesDropdownTrigger(true);
 			return false;
 		});
 
-		shortcuts.add('arrowdown', 'meta', ScopeCompose, () => {
+		addShortcut('arrowdown', 'meta', ScopeCompose, () => {
 			this.skipCommand();
 			return false;
 		});
 
-		shortcuts.add('s', 'meta', ScopeCompose, () => {
+		addShortcut('s', 'meta', ScopeCompose, () => {
 			this.saveCommand();
 			return false;
 		});
-		shortcuts.add('save', '', ScopeCompose, () => {
+		addShortcut('save', '', ScopeCompose, () => {
 			this.saveCommand();
 			return false;
 		});
 
 		if (Settings.app('allowCtrlEnterOnCompose')) {
-			shortcuts.add('enter', 'meta', ScopeCompose, () => {
+			addShortcut('enter', 'meta', ScopeCompose, () => {
 				this.sendCommand();
 				return false;
 			});
 		}
-		shortcuts.add('mailsend', '', ScopeCompose, () => {
+		addShortcut('mailsend', '', ScopeCompose, () => {
 			this.sendCommand();
 			return false;
 		});
 
-		shortcuts.add('escape,close', 'shift', ScopeCompose, () => {
+		addShortcut('escape,close', 'shift', ScopeCompose, () => {
 			this.tryToClosePopup();
 			return false;
 		});
