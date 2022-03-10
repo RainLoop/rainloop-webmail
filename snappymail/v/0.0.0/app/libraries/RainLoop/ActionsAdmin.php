@@ -2,6 +2,9 @@
 
 namespace RainLoop;
 
+use RainLoop\Enumerations\PluginPropertyType;
+use RainLoop\Exceptions\ClientException;
+
 class ActionsAdmin extends Actions
 {
 

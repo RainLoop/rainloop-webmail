@@ -2,8 +2,6 @@
 
 namespace RainLoop\Actions;
 
-use RainLoop\Enumerations\Capa;
-use RainLoop\Enumerations\PluginPropertyType;
 use RainLoop\Exceptions\ClientException;
 use RainLoop\KeyPathHelper;
 use RainLoop\Notifications;
