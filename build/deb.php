@@ -66,10 +66,10 @@ Components: main
 Description: SnappyMail repository
 Date: ' . gmdate('r') . '
 MD5Sum:
- ' . hash_file('md5', $TARGET_DIR . 'Packages.gz') . ' ' . $size . 'Packages.gz
+ ' . hash_file('md5', $TARGET_DIR . 'Packages.gz') . ' ' . $size . ' Packages.gz
 SHA1:
- ' . hash_file('sha1', $TARGET_DIR . 'Packages.gz') . ' ' . $size . 'Packages.gz
+ ' . hash_file('sha1', $TARGET_DIR . 'Packages.gz') . ' ' . $size . ' Packages.gz
 SHA256:
- ' . hash_file('sha256', $TARGET_DIR . 'Packages.gz') . ' ' . $size . 'Packages.gz
+ ' . hash_file('sha256', $TARGET_DIR . 'Packages.gz') . ' ' . $size . ' Packages.gz
 ';
 file_put_contents($TARGET_DIR . 'Release', $Release);
