@@ -54,7 +54,9 @@ passthru('mv '
 passthru('rm -dfr '.escapeshellarg(DEB_DEST_DIR));
 
 // https://github.com/the-djmaze/snappymail/issues/185#issuecomment-1059420588
-passthru('dpkg-scanpackages ' . escapeshellarg($TARGET_DIR) . ' /dev/null | gzip -9c > '.escapeshellarg($TARGET_DIR . 'Packages.gz'));
+$cwd = getcwd();
+chdir($TARGET_DIR);
+passthru('dpkg-scanpackages . /dev/null | gzip -9c > '.escapeshellarg($TARGET_DIR . 'Packages.gz'));
 $size = filesize($TARGET_DIR . 'Packages.gz');
 $Release = 'Origin: SnappyMail Repository
 Label: SnappyMail
@@ -73,3 +75,4 @@ SHA256:
  ' . hash_file('sha256', $TARGET_DIR . 'Packages.gz') . ' ' . $size . ' Packages.gz
 ';
 file_put_contents($TARGET_DIR . 'Release', $Release);
+chdir($cwd);
