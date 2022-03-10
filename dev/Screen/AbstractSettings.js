@@ -79,7 +79,7 @@ export class AbstractSettingsScreen extends AbstractScreen {
 						);
 					});
 
-					elementById('rl-settings-subscreen').scrollTop = 0;
+					(elementById('rl-settings-subscreen') || {}).scrollTop = 0;
 					// --
 				}, 1);
 			}
