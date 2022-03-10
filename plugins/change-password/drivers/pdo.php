@@ -51,7 +51,7 @@ class ChangePasswordDriverPDO
 			\RainLoop\Plugins\Property::NewInstance('pdo_mysql_ssl_verify')->SetLabel('MySQL SSL verify server cert')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDescription('Verify that certificate\'s Common Name of SAN matches the database server\'s hostname.')
-				->SetDefaultValue(true),
+				->SetDefaultValue(false),
 			\RainLoop\Plugins\Property::NewInstance('pdo_mysql_ssl_ca')->SetLabel('MySQL SSL CA certificate file')
 				->SetDescription('Path to a file containing the CA certificate used to sign the server certificate, or a CA bundle. Required for SSL/TLS connections to work.')
 				->SetDefaultValue('/etc/pki/tls/certs/ca-bundle.crt')
