@@ -42,11 +42,34 @@ file_put_contents("{$dir}/index.php", str_replace('0.0.0', $package->version, $d
 $data = file_get_contents('_include.php');
 file_put_contents("{$dir}/include.php", preg_replace('@(external-snappymail-data-folder/\'\);)@', "\$1\ndefine('APP_DATA_FOLDER_PATH', '/var/lib/snappymail/');", $data));
 
-passthru('dpkg --build '.escapeshellarg(DEB_DEST_DIR));
+passthru('dpkg --build ' . escapeshellarg(DEB_DEST_DIR));
+
+$TARGET_DIR = __DIR__ . "/dist/releases/webmail/{$package->version}/";
 
 passthru('mv '
 	. escapeshellarg(DEB_DEST_DIR.'.deb') . ' '
-	. escapeshellarg(__DIR__ . "/dist/releases/webmail/{$package->version}/" . basename(DEB_DEST_DIR.'.deb'))
+	. escapeshellarg($TARGET_DIR . basename(DEB_DEST_DIR.'.deb'))
 );
 
 passthru('rm -dfr '.escapeshellarg(DEB_DEST_DIR));
+
+// https://github.com/the-djmaze/snappymail/issues/185#issuecomment-1059420588
+passthru('dpkg-scanpackages ' . escapeshellarg($TARGET_DIR) . ' /dev/null | gzip -9c > '.escapeshellarg($TARGET_DIR . 'Packages.gz'));
+$size = filesize($TARGET_DIR . 'Packages.gz');
+$Release = 'Origin: SnappyMail Repository
+Label: SnappyMail
+Suite: stable
+Codename: stable
+Version: 1.0
+Architectures: all
+Components: main
+Description: SnappyMail repository
+Date: ' . gmdate('r') . '
+MD5Sum:
+ ' . hash_file('md5', $TARGET_DIR . 'Packages.gz') . ' ' . $size . 'Packages.gz
+SHA1:
+ ' . hash_file('sha1', $TARGET_DIR . 'Packages.gz') . ' ' . $size . 'Packages.gz
+SHA256:
+ ' . hash_file('sha256', $TARGET_DIR . 'Packages.gz') . ' ' . $size . 'Packages.gz
+';
+file_put_contents($TARGET_DIR . 'Release', $Release);

@@ -249,5 +249,12 @@ if (isset($options['sign'])) {
 	if (isset($options['debian'])) {
 		passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --armor --detach-sign '
 			. escapeshellarg(__DIR__ . "/build/dist/releases/webmail/{$package->version}/" . basename(DEB_DEST_DIR.'.deb')), $return_var);
+		// https://github.com/the-djmaze/snappymail/issues/185#issuecomment-1059420588
+		passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --digest-algo SHA512 --clearsign --output '
+			. escapeshellarg(__DIR__ . "/build/dist/releases/webmail/{$package->version}/InRelease") . ' '
+			. escapeshellarg(__DIR__ . "/build/dist/releases/webmail/{$package->version}/Release"), $return_var);
+		passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --digest-algo SHA512 -abs --output '
+			. escapeshellarg(__DIR__ . "/build/dist/releases/webmail/{$package->version}/Release.gpg") . ' '
+			. escapeshellarg(__DIR__ . "/build/dist/releases/webmail/{$package->version}/Release"), $return_var);
 	}
 }
