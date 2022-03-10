@@ -275,7 +275,7 @@ class Manager
 	public function AddCss(string $sFile, bool $bAdminScope = false) : self
 	{
 		if ($this->bIsEnabled) {
-			$this->aCss[$bAdminScope ? 1 : 0] = $sFile;
+			$this->aCss[$bAdminScope ? 1 : 0][] = $sFile;
 		}
 		return $this;
 	}
