@@ -66,7 +66,9 @@ win.rl = {
 	setData: appData => {
 		RL_APP_DATA = appData;
 		rl.app.refresh();
-	}
+	},
+
+	loadScript: loadScript
 };
 
 loadScript(`./?/${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().slice(2)}/`)

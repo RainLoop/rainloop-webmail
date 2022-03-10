@@ -1,4 +1,4 @@
-import { doc, createElement, SettingsCapa, SettingsGet } from 'Common/Globals';
+import { SettingsCapa, SettingsGet } from 'Common/Globals';
 import { staticLink } from 'Common/Links';
 
 //import { showScreenPopup } from 'Knoin/Knoin';
@@ -22,13 +22,12 @@ export const
 
 		init() {
 			if (SettingsCapa('OpenPGP') && window.crypto && crypto.getRandomValues) {
-				const script = createElement('script', {src:staticLink('js/min/openpgp.min.js')});
-				script.onload = () => this.loadKeyrings();
-				script.onerror = () => {
-					this.loadKeyrings();
-					console.error(script.src);
-				};
-				doc.head.append(script);
+				rl.loadScript(staticLink('js/min/openpgp.min.js'))
+					.then(() => this.loadKeyrings())
+					.catch(e => {
+						this.loadKeyrings();
+						console.error(e);
+					});
 			} else {
 				this.loadKeyrings();
 			}

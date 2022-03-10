@@ -55,17 +55,13 @@ export const
 				leftmargin: (value, node) => node.style.marginLeft = pInt(value) + 'px',
 				bottommargin: (value, node) => node.style.marginBottom = pInt(value) + 'px',
 				rightmargin: (value, node) => node.style.marginRight = pInt(value) + 'px'
-			};
-
-//		if (static::Config()->Get('labs', 'strict_html_parser', true))
-		let
-			value,
+			},
 			allowedAttributes = [
 				// defaults
 				'name',
 				'dir', 'lang', 'style', 'title',
 				'background', 'bgcolor', 'alt', 'height', 'width', 'src', 'href',
-				'border', 'bordercolor', 'charset', 'direction', 'language',
+				'border', 'bordercolor', 'charset', 'direction',
 				// a
 				'download', 'hreflang',
 				// body
@@ -177,6 +173,8 @@ export const
 					}
 				}
 			}
+
+			let value;
 
 			if ('TABLE' === name) {
 				if (hasAttribute('width')) {
