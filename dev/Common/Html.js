@@ -158,9 +158,6 @@ export const
 						delAttribute(name);
 					}
 				});
-				result.css = oElement.style.cssText;
-				replaceWithChildren(oElement);
-				return;
 			}
 
 			if (oElement.hasAttributes()) {
