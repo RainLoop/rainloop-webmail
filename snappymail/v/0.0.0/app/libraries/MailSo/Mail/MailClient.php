@@ -913,26 +913,21 @@ class MailClient
 			{
 				$aSearchedUids = $this->GetUids($oParams->oCacher, $sSearch,
 					$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
-
-				if (\count($aSearchedUids))
-				{
-					$aNewUids = array();
-					foreach ($aUids as $iUid)
-					{
+				if ($bUseThreads && !$oParams->iThreadUid) {
+					$aUids = \array_filter($aUids, function($iUid) use ($aSearchedUids, $aAllThreads) {
 						if (\in_array($iUid, $aSearchedUids)) {
-							$aNewUids[] = $iUid;
-						} else if ($bUseThreads && !$oParams->iThreadUid) {
-							foreach ($aAllThreads as $aMap) {
-								if (\in_array($iUid, $aMap) && \array_intersect($aSearchedUids, $aMap)) {
-									$aNewUids[] = $iUid;
-									break;
-								}
+							return true;
+						}
+						foreach ($aAllThreads as $aMap) {
+							if (\in_array($iUid, $aMap) && \array_intersect($aSearchedUids, $aMap)) {
+								return true;
 							}
 						}
-					}
-
-					$aUids = \array_unique($aNewUids);
-					unset($aNewUids);
+					});
+				} else {
+					$aUids = \array_filter($aUids, function($iUid) use ($aSearchedUids) {
+						return \in_array($iUid, $aSearchedUids);
+					});
 				}
 			}
 
