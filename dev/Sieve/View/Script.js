@@ -3,7 +3,7 @@ import { SieveScriptModel } from 'Sieve/Model/Script';
 
 import { FilterPopupView } from 'Sieve/View/Filter';
 
-//import { parseScript } from 'Sieve/Parser';
+import { parseScript } from 'Sieve/Parser';
 
 import {
 	capa,
@@ -18,7 +18,7 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 
 		this.addObservables({
 			saveError: false,
-			saveErrorText: '',
+			errorText: '',
 			rawActive: false,
 			allowToggle: false,
 			script: null
@@ -28,6 +28,15 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 		this.saving = false;
 
 		this.filterForDeletion = ko.observable(null).askDeleteHelper();
+	}
+
+	validateScript() {
+		try {
+			this.errorText('');
+			parseScript(this.script().body());
+		} catch (e) {
+			this.errorText(e.message);
+		}
 	}
 
 	saveScript() {
@@ -45,6 +54,7 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 
 			self.saving = true;
 			self.saveError(false);
+			self.errorText('');
 
 			if (self.allowToggle()) {
 				script.body(script.filtersToRaw());
@@ -56,7 +66,7 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 
 					if (iError) {
 						self.saveError(true);
-						self.saveErrorText((data && data.ErrorMessageAdditional) || getNotification(iError));
+						self.errorText((data && data.ErrorMessageAdditional) || getNotification(iError));
 					} else {
 						script.exists() || scripts.push(script);
 						script.exists(true);
@@ -125,6 +135,7 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 		this.rawActive(raw);
 		this.allowToggle(!raw);
 		this.saveError(false);
+		this.errorText('');
 
 /*
 		// TODO: Sieve GUI

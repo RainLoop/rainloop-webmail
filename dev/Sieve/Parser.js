@@ -168,7 +168,7 @@ export const parseScript = (script, name = 'script.sieve') => {
 		error = message => {
 //			throw new SyntaxError(message + ' at ' + regex.lastIndex + ' line ' + line, name, line)
 			throw new SyntaxError(message + ' on line ' + line
-				+ ' around: ' + script.substr(regex.lastIndex - 10, 20).replace(/\r\n/g, '\\r\\n'), name, line)
+				+ ' around:\n\n' + script.substr(regex.lastIndex - 20, 30), name, line)
 		},
 		pushArg = arg => {
 			command || error('Argument not part of command');

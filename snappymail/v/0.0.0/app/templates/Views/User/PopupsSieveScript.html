@@ -17,7 +17,7 @@
 	</div>
 
 	<div class="alert g-ui-user-select-none" data-bind="visible: hasChanges" data-icon="⚠" data-i18n="POPUPS_SIEVE_SCRIPT/CHANGES_NEED_TO_BE_SAVED_DESC"></div>
-	<div class="alert alert-error g-ui-user-select-none" data-bind="visible: $root.saveError, text: $root.saveErrorText" data-icon="⚠"></div>
+	<div class="alert alert-error g-ui-user-select-none" style="white-space:pre" data-bind="visible: $root.errorText, text: $root.errorText" data-icon="⚠"></div>
 
 	<div class="control-group" data-bind="visible: $root.rawActive">
 		<div>
@@ -63,6 +63,9 @@
 <footer data-bind="i18nInit: true">
 	<a class="btn" data-bind="visible: $root.allowToggle, click: function() { $root.toggleFiltersRaw(); }, css: {'active': $root.rawActive }" data-i18n="[title]POPUPS_SIEVE_SCRIPT/BUTTON_RAW_SCRIPT">
 		<i class="icon-file-code"></i>
+	</a>
+	<a class="btn" data-bind="visible: $root.rawActive, click: function() { $root.validateScript(); }">
+		Validate
 	</a>
 	<a class="btn buttonSave" data-bind="visible: hasChanges, click: function() { $root.saveScript(); }, css: {'btn-danger': $root.saveError}">
 		<i class="fontastic" data-bind="css: {'icon-spinner': $root.saving}">💾</i>
