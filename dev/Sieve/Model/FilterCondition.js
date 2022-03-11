@@ -1,6 +1,6 @@
-import { koComputable } from 'External/ko';
+import { koComputable } from 'Sieve/Utils';
 
-import { AbstractModel } from 'Knoin/AbstractModel';
+import { AbstractModel } from 'Sieve/Model/Abstract';
 
 /**
  * @enum {string}

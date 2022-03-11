@@ -9,7 +9,7 @@ export class AdminSettingsConfig /*extends AbstractViewSettings*/ {
 		this.config = ko.observableArray();
 	}
 
-	onBeforeShow() {
+	beforeShow() {
 		Remote.request('AdminSettingsGet', (iError, data) => {
 			if (!iError) {
 				const cfg = [],

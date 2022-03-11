@@ -133,6 +133,6 @@ exports.jsLint = jsLint;
 exports.js = gulp.series(
 	jsClean,
 	jsLint,
-	gulp.parallel(jsBoot, jsServiceWorker, jsOpenPGP, jsLibs/*, jsSieve*/, jsApp, jsAdmin),
+	gulp.parallel(jsBoot, jsServiceWorker, jsOpenPGP, jsLibs, jsSieve, jsApp, jsAdmin),
 	jsMin
 );

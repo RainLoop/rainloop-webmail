@@ -1,97 +1,44 @@
-import { getNotification } from 'Common/Translator';
-import { forEachObjectValue } from 'Common/Utils';
 import { addObservablesTo } from 'External/ko';
+import { staticLink } from 'Common/Links';
+import { FolderUserStore } from 'Stores/User/Folder';
 
-import { SieveUserStore } from 'Stores/User/Sieve';
-import Remote from 'Remote/User/Fetch';
-
-import { SieveScriptModel } from 'Model/SieveScript';
-
-import { showScreenPopup } from 'Knoin/Knoin';
-
-import { SieveScriptPopupView } from 'View/Popup/SieveScript';
-
+//export class UserSettingsFilters /*extends AbstractViewSettings*/ {
 export class UserSettingsFilters /*extends AbstractViewSettings*/ {
 	constructor() {
-		this.scripts = SieveUserStore.scripts;
-		this.loading = ko.observable(false).extend({ debounce: 200 });
-
+		this.scripts = ko.observableArray();
+		this.loading = ko.observable(true).extend({ debounce: 200 });
 		addObservablesTo(this, {
 			serverError: false,
 			serverErrorDesc: ''
 		});
 
+		rl.loadScript(staticLink('js/sieve.js')).then(() => {
+			const Sieve = window.Sieve;
+			Sieve.folderList = FolderUserStore.folderList;
+			Sieve.serverError.subscribe(value => this.serverError(value));
+			Sieve.serverErrorDesc.subscribe(value => this.serverErrorDesc(value));
+			Sieve.loading.subscribe(value => this.loading(value));
+			Sieve.scripts.subscribe(value => this.scripts(value));
+			Sieve.updateList();
+		}).catch(e => console.error(e));
+
 		this.scriptForDeletion = ko.observable(null).askDeleteHelper();
 	}
 
-	setError(text) {
-		this.serverError(true);
-		this.serverErrorDesc(text);
-	}
-
-	updateList() {
-		if (!this.loading()) {
-			this.loading(true);
-			this.serverError(false);
-
-			Remote.request('Filters', (iError, data) => {
-				this.loading(false);
-				this.scripts([]);
-
-				if (iError) {
-					SieveUserStore.capa([]);
-					this.setError(getNotification(iError));
-				} else {
-					SieveUserStore.capa(data.Result.Capa);
-/*
-					this.scripts(
-						data.Result.Scripts.map(aItem => SieveScriptModel.reviveFromJson(aItem)).filter(v => v)
-					);
-*/
-					forEachObjectValue(data.Result.Scripts, value => {
-						value = SieveScriptModel.reviveFromJson(value);
-						value && this.scripts.push(value)
-					});
-				}
-			});
-		}
-	}
-
 	addScript() {
-		showScreenPopup(SieveScriptPopupView, [new SieveScriptModel()]);
+		this.editScript();
 	}
 
 	editScript(script) {
-		showScreenPopup(SieveScriptPopupView, [script]);
+		window.Sieve.ScriptView.showModal(script ? [script] : null);
 	}
 
 	deleteScript(script) {
-		this.serverError(false);
-		Remote.request('FiltersScriptDelete',
-			(iError, data) => {
-				if (iError) {
-					this.setError((data && data.ErrorMessageAdditional) || getNotification(iError));
-				} else {
-					this.scripts.remove(script);
-				}
-			},
-			{name:script.name()}
-		);
+		window.Sieve.deleteScript(script);
 	}
 
 	toggleScript(script) {
-		let name = script.active() ? '' : script.name();
-		this.serverError(false);
-		Remote.request('FiltersScriptActivate',
-			(iError, data) => {
-				if (iError) {
-					this.setError((data && data.ErrorMessageAdditional) || iError)
-				} else {
-					this.scripts.forEach(script => script.active(script.name() === name));
-				}
-			},
-			{name:name}
-		);
+		window.Sieve.toggleScript(script);
 	}
 
 	onBuild(oDom) {
@@ -103,6 +50,6 @@ export class UserSettingsFilters /*extends AbstractViewSettings*/ {
 	}
 
 	onShow() {
-		this.updateList();
+		window.Sieve && window.Sieve.updateList();
 	}
 }

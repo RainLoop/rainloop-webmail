@@ -67,8 +67,8 @@ fetchFolderInformation = (fCallback, folder, list = []) => {
 /**
  * @param {Array=} aDisabled
  * @param {Array=} aHeaderLines
- * @param {Function=} fDisableCallback
  * @param {Function=} fRenameCallback
+ * @param {Function=} fDisableCallback
  * @param {boolean=} bNoSelectSelectable Used in FolderCreatePopupView
  * @returns {Array}
  */

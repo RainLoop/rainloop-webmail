@@ -69,7 +69,7 @@ export class AbstractSettingsScreen extends AbstractScreen {
 					this.oCurrentSubScreen = settingsScreen;
 
 					// show
-					settingsScreen.onBeforeShow && settingsScreen.onBeforeShow();
+					settingsScreen.beforeShow && settingsScreen.beforeShow();
 					settingsScreen.viewModelDom.hidden = false;
 					settingsScreen.onShow && settingsScreen.onShow();
 

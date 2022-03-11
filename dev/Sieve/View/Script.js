@@ -1,24 +1,22 @@
-import ko from 'ko';
+import { FilterModel } from 'Sieve/Model/Filter';
+import { SieveScriptModel } from 'Sieve/Model/Script';
 
-import { getNotification, i18nToNodes } from 'Common/Translator';
-import { addObservablesTo } from 'External/ko';
-
-import Remote from 'Remote/User/Fetch';
-import { FilterModel } from 'Model/Filter';
-import { SieveUserStore } from 'Stores/User/Sieve';
-
-import { showScreenPopup } from 'Knoin/Knoin';
-import { AbstractViewPopup } from 'Knoin/AbstractViews';
-
-import { FilterPopupView } from 'View/Popup/Filter';
+import { FilterPopupView } from 'Sieve/View/Filter';
 
 //import { parseScript } from 'Sieve/Parser';
 
-export class SieveScriptPopupView extends AbstractViewPopup {
+import {
+	capa,
+	scripts,
+	getNotification,
+	Remote
+} from 'Sieve/Utils';
+
+export class SieveScriptPopupView extends rl.pluginPopupView {
 	constructor() {
 		super('SieveScript');
 
-		addObservablesTo(this, {
+		this.addObservables({
 			saveError: false,
 			saveErrorText: '',
 			rawActive: false,
@@ -26,7 +24,7 @@ export class SieveScriptPopupView extends AbstractViewPopup {
 			script: null
 		});
 
-		this.sieveCapabilities = SieveUserStore.capa.join(' ');
+		this.sieveCapabilities = capa.join(' ');
 		this.saving = false;
 
 		this.filterForDeletion = ko.observable(null).askDeleteHelper();
@@ -40,7 +38,7 @@ export class SieveScriptPopupView extends AbstractViewPopup {
 				return;
 			}
 
-			if (!script.exists() && SieveUserStore.scripts.find(item => item.name() === script.name())) {
+			if (!script.exists() && scripts.find(item => item.name() === script.name())) {
 				script.nameError(true);
 				return;
 			}
@@ -60,7 +58,7 @@ export class SieveScriptPopupView extends AbstractViewPopup {
 						self.saveError(true);
 						self.saveErrorText((data && data.ErrorMessageAdditional) || getNotification(iError));
 					} else {
-						script.exists() || SieveUserStore.scripts.push(script);
+						script.exists() || scripts.push(script);
 						script.exists(true);
 						script.hasChanges(false);
 					}
@@ -78,7 +76,7 @@ export class SieveScriptPopupView extends AbstractViewPopup {
 		/* this = SieveScriptModel */
 		const filter = new FilterModel();
 		filter.generateID();
-		showScreenPopup(FilterPopupView, [
+		FilterPopupView.showModal([
 			filter,
 			() => this.filters.push(filter)
 		]);
@@ -86,13 +84,14 @@ export class SieveScriptPopupView extends AbstractViewPopup {
 
 	editFilter(filter) {
 		const clonedFilter = filter.cloneSelf();
-		showScreenPopup(FilterPopupView, [
+		FilterPopupView.showModal([
 			clonedFilter,
 			() => {
 				const script = this.script(),
 					filters = script.filters(),
 					index = filters.indexOf(filter);
 				if (-1 < index) {
+//					script.filters.splice(index, 1, clonedFilter);
 					filters[index] = clonedFilter;
 					script.filters(filters);
 				}
@@ -118,7 +117,9 @@ export class SieveScriptPopupView extends AbstractViewPopup {
 		});
 	}
 
-	onShow(oScript) {
+	beforeShow(oScript) {
+//	onShow(oScript) {
+		oScript = oScript || new SieveScriptModel();
 		let raw = !oScript.allowFilters();
 		this.script(oScript);
 		this.rawActive(raw);
@@ -131,10 +132,5 @@ export class SieveScriptPopupView extends AbstractViewPopup {
 		console.dir(tree);
 		console.log(tree.join('\r\n'));
 */
-	}
-
-	afterShow() {
-		// Sometimes not everything is translated, try again
-		i18nToNodes(this.viewModelDom);
 	}
 }

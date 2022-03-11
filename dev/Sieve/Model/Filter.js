@@ -1,13 +1,11 @@
-import { koArrayWithDestroy } from 'External/ko';
+import { koArrayWithDestroy } from 'Sieve/Utils';
 
-import { arrayLength, pString } from 'Common/Utils';
-import { i18n } from 'Common/Translator';
-import { getFolderFromCacheList } from 'Common/Cache';
+//import { getFolderFromCacheList } from 'Common/Cache';
 
-import { AccountUserStore } from 'Stores/User/Account';
+//import { AccountUserStore } from 'Stores/User/Account';
 
-import { FilterConditionModel } from 'Model/FilterCondition';
-import { AbstractModel } from 'Knoin/AbstractModel';
+import { FilterConditionModel } from 'Sieve/Model/FilterCondition';
+import { AbstractModel } from 'Sieve/Model/Abstract';
 
 /**
  * @enum {string}
@@ -66,9 +64,10 @@ export class FilterModel extends AbstractModel {
 
 		this.conditions = koArrayWithDestroy();
 
-		const fGetRealFolderName = (folderFullName) => {
-			const folder = getFolderFromCacheList(folderFullName);
-			return folder ? folder.fullName.replace('.' === folder.delimiter ? /\./ : /[\\/]+/, ' / ') : folderFullName;
+		const fGetRealFolderName = folderFullName => {
+//			const folder = getFolderFromCacheList(folderFullName);
+//			return folder ? folder.fullName.replace('.' === folder.delimiter ? /\./ : /[\\/]+/, ' / ') : folderFullName;
+			return folderFullName;
 		};
 
 		this.addComputables({
@@ -78,23 +77,23 @@ export class FilterModel extends AbstractModel {
 
 				switch (this.actionType()) {
 					case FilterAction.MoveTo:
-						result = i18n(root + 'MOVE_TO', {
+						result = rl.i18n(root + 'MOVE_TO', {
 							FOLDER: fGetRealFolderName(actionValue)
 						});
 						break;
 					case FilterAction.Forward:
-						result = i18n(root + 'FORWARD_TO', {
+						result = rl.i18n(root + 'FORWARD_TO', {
 							EMAIL: actionValue
 						});
 						break;
 					case FilterAction.Vacation:
-						result = i18n(root + 'VACATION_MESSAGE');
+						result = rl.i18n(root + 'VACATION_MESSAGE');
 						break;
 					case FilterAction.Reject:
-						result = i18n(root + 'REJECT');
+						result = rl.i18n(root + 'REJECT');
 						break;
 					case FilterAction.Discard:
-						result = i18n(root + 'DISCARD');
+						result = rl.i18n(root + 'DISCARD');
 						break;
 					// no default
 				}
@@ -213,7 +212,7 @@ export class FilterModel extends AbstractModel {
 	}
 
 	setRecipients() {
-		this.actionValueFourth(AccountUserStore.getEmailAddresses().join(', '));
+//		this.actionValueFourth(AccountUserStore.getEmailAddresses().join(', '));
 	}
 
 	/**
@@ -224,16 +223,10 @@ export class FilterModel extends AbstractModel {
 	static reviveFromJson(json) {
 		const filter = super.reviveFromJson(json);
 		if (filter) {
-			filter.id = pString(json.ID);
-
-			filter.conditions([]);
-
-			if (arrayLength(json.Conditions)) {
-				filter.conditions(
-					json.Conditions.map(aData => FilterConditionModel.reviveFromJson(aData)).filter(v => v)
-				);
-			}
-
+			filter.id = filter.id ? '' + filter.id : '';
+			filter.conditions(
+				json.Conditions ? json.Conditions.map(aData => FilterConditionModel.reviveFromJson(aData)).filter(v => v) : []
+			);
 			filter.actionKeep(0 != json.Keep);
 			filter.actionNoStop(0 == json.Stop);
 			filter.actionMarkAsRead(1 == json.MarkAsRead);

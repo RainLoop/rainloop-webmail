@@ -214,7 +214,7 @@ const
 						vmScreen.onShow && vmScreen.onShow();
 
 						forEachViewModel(vmScreen, (vm, dom) => {
-							vm.onBeforeShow && vm.onBeforeShow();
+							vm.beforeShow && vm.beforeShow();
 							dom.hidden = false;
 							vm.onShow && vm.onShow();
 							autofocus(dom);
@@ -243,7 +243,7 @@ export const
 		if (vm) {
 			params = params || [];
 
-			vm.onBeforeShow && vm.onBeforeShow(...params);
+			vm.beforeShow && vm.beforeShow(...params);
 
 			vm.modalVisible(true);
 

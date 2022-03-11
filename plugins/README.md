@@ -21,7 +21,7 @@ class PluginPopupView extends rl.pluginPopupView
 	onBuild(dom) {}
 
 	// Happens before showModal()
-	onBeforeShow(...params) {}
+	beforeShow(...params) {}
 	// Happens after showModal()
 	onShow(...params) {}
 	// Happens after showModal() animation transitionend

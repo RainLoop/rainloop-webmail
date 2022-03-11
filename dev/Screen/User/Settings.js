@@ -21,8 +21,6 @@ import { SystemDropDownUserView } from 'View/User/SystemDropDown';
 import { SettingsMenuUserView } from 'View/User/Settings/Menu';
 import { SettingsPaneUserView } from 'View/User/Settings/Pane';
 
-//import { staticLink } from 'Common/Links';
-
 export class SettingsUserScreen extends AbstractSettingsScreen {
 	constructor() {
 		super([SystemDropDownUserView, SettingsMenuUserView, SettingsPaneUserView]);
@@ -41,7 +39,6 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 
 		if (SettingsCapa('Sieve')) {
 			views.push(UserSettingsFilters);
-//			rl.loadScript(staticLink('js/sieve.js')).then(() => 0).catch(e => console.error(e));
 		}
 
 		if (SettingsCapa('AutoLogout') || SettingsCapa('OpenPGP') || SettingsCapa('GnuPG')) {

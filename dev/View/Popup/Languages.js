@@ -36,7 +36,7 @@ export class LanguagesPopupView extends AbstractViewPopup {
 		this.languages().forEach(item => item.selected(item.key === currentLang));
 	}
 
-	onBeforeShow() {
+	beforeShow() {
 		this.fLang = null;
 		this.userLanguage('');
 

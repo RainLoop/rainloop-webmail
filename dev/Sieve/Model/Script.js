@@ -1,7 +1,6 @@
-import { AbstractModel } from 'Knoin/AbstractModel';
-import { FilterModel } from 'Model/Filter';
-import { arrayLength, pString, b64EncodeJSON } from 'Common/Utils';
-import { koArrayWithDestroy } from 'External/ko';
+import { AbstractModel } from 'Sieve/Model/Abstract';
+import { FilterModel } from 'Sieve/Model/Filter';
+import { koArrayWithDestroy } from 'Sieve/Utils';
 
 const SIEVE_FILE_NAME = 'rainloop.user';
 
@@ -153,12 +152,12 @@ function filtersToSieveScript(filters)
 						subject = ':subject ' + quote(StripSpaces(paramValue)) + ' ';
 					}
 
-					paramValue = pString(filter.actionValueThird()).trim();
+					paramValue = (filter.actionValueThird() || '').trim();
 					if (paramValue.length) {
 						days = Math.max(1, parseInt(paramValue, 10));
 					}
 
-					paramValue = pString(filter.actionValueFourth()).trim()
+					paramValue = (filter.actionValueFourth() || '').trim()
 					if (paramValue.length) {
 						paramValue = paramValue.split(',').map(email =>
 							email.trim().length ? quote(email) : ''
@@ -214,7 +213,7 @@ function filtersToSieveScript(filters)
 			'/*',
 			'BEGIN:FILTER:' + filter.id,
 			'BEGIN:HEADER',
-			b64EncodeJSON(filter.toJson()).match(split).join(eol) + 'END:HEADER',
+			btoa(unescape(encodeURIComponent(JSON.stringify(filter.toJson())))).match(split).join(eol) + 'END:HEADER',
 			'*/',
 			filter.enabled() ? '' : '/* @Filter is disabled ',
 			filterToString(filter, require),
@@ -317,7 +316,7 @@ export class SieveScriptModel extends AbstractModel
 		if (script) {
 			if (script.allowFilters()) {
 				script.filters(
-					arrayLength(json.filters)
+					Array.isArray(json.filters) && json.filters.length
 						? json.filters.map(aData => FilterModel.reviveFromJson(aData)).filter(v => v)
 						: sieveScriptToFilters(script.body())
 				);

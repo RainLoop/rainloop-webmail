@@ -1,19 +1,77 @@
-import ko from 'ko';
-import { koComputable } from 'External/ko';
+import { FilterAction } from 'Sieve/Model/Filter';
+import { FilterConditionField, FilterConditionType } from 'Sieve/Model/FilterCondition';
+/*
+import { SettingsUserStore } from 'Stores/User/Settings';
+*/
 
-import { FilterAction } from 'Model/Filter';
-import { FilterConditionField, FilterConditionType } from 'Model/FilterCondition';
-import { SettingsGet } from 'Common/Globals';
-import { defaultOptionsAfterRender } from 'Common/Utils';
-import { i18n, initOnStartOrLangChange } from 'Common/Translator';
+import {
+	capa,
+	i18n,
+	koComputable
+} from 'Sieve/Utils';
 
-import { SieveUserStore } from 'Stores/User/Sieve';
+const
+	// import { defaultOptionsAfterRender } from 'Common/Utils';
+	defaultOptionsAfterRender = (domItem, item) =>
+		domItem && item && undefined !== item.disabled
+		&& domItem.classList.toggle('disabled', domItem.disabled = item.disabled),
 
-import { AbstractViewPopup } from 'Knoin/AbstractViews';
+	// import { folderListOptionsBuilder } from 'Common/Folders';
+	/**
+	 * @param {Array=} aDisabled
+	 * @param {Array=} aHeaderLines
+	 * @param {Function=} fRenameCallback
+	 * @returns {Array}
+	 */
+	folderListOptionsBuilder = (
+		aDisabled,
+		aHeaderLines,
+		fRenameCallback
+	) => {
+		const
+			aResult = [],
+			sDeepPrefix = '\u00A0\u00A0\u00A0',
+			showUnsubscribed = true/*!SettingsUserStore.hideUnsubscribed()*/,
 
-import { folderListOptionsBuilder } from 'Common/Folders';
+			foldersWalk = folders => {
+				folders.forEach(oItem => {
+					if (showUnsubscribed || oItem.hasSubscriptions() || !oItem.exists) {
+						aResult.push({
+							id: oItem.fullName,
+							name:
+								sDeepPrefix.repeat(oItem.deep) +
+								fRenameCallback(oItem),
+							system: false,
+							disabled: !oItem.selectable() || aDisabled.includes(oItem.fullName)
+						});
+					}
 
-export class FilterPopupView extends AbstractViewPopup {
+					if (oItem.subFolders.length) {
+						foldersWalk(oItem.subFolders());
+					}
+				});
+			};
+
+
+		fRenameCallback = fRenameCallback || (oItem => oItem.name());
+		Array.isArray(aDisabled) || (aDisabled = []);
+
+		Array.isArray(aHeaderLines) && aHeaderLines.forEach(line =>
+			aResult.push({
+				id: line[0],
+				name: line[1],
+				system: false,
+				disabled: false
+			})
+		);
+
+		// FolderUserStore.folderList()
+		foldersWalk(window.Sieve.folderList() || []);
+
+		return aResult;
+	};
+
+export class FilterPopupView extends rl.pluginPopupView {
 	constructor() {
 		super('Filter');
 
@@ -27,7 +85,7 @@ export class FilterPopupView extends AbstractViewPopup {
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 		this.folderSelectList = koComputable(() =>
 			folderListOptionsBuilder(
-				[SettingsGet('SieveAllowFileintoInbox') ? '' : 'INBOX'],
+				[rl.settings.get('SieveAllowFileintoInbox') ? '' : 'INBOX'],
 				[['', '']],
 				item => item ? item.localName() : ''
 			)
@@ -39,9 +97,7 @@ export class FilterPopupView extends AbstractViewPopup {
 			key => this[key] = ko.observableArray()
 		);
 
-		initOnStartOrLangChange(this.populateOptions.bind(this));
-
-		SieveUserStore.capa.subscribe(this.populateOptions, this);
+		this.populateOptions();
 	}
 
 	saveFilter() {
@@ -77,11 +133,10 @@ export class FilterPopupView extends AbstractViewPopup {
 
 		// this.actionTypeOptions.push({id: FilterAction.None,
 		// name: i18n('GLOBAL/NONE')});
-		const modules = SieveUserStore.capa;
-		if (modules) {
-			this.allowMarkAsRead(modules.includes('imap4flags'));
+		if (capa) {
+			this.allowMarkAsRead(capa.includes('imap4flags'));
 
-			if (modules.includes('fileinto')) {
+			if (capa.includes('fileinto')) {
 				this.actionTypeOptions.push({
 					id: FilterAction.MoveTo,
 					name: i18nFilter('ACTION_MOVE_TO')
@@ -92,22 +147,22 @@ export class FilterPopupView extends AbstractViewPopup {
 				});
 			}
 
-			if (modules.includes('reject')) {
+			if (capa.includes('reject')) {
 				this.actionTypeOptions.push({ id: FilterAction.Reject, name: i18nFilter('ACTION_REJECT') });
 			}
 
-			if (modules.includes('vacation')) {
+			if (capa.includes('vacation')) {
 				this.actionTypeOptions.push({
 					id: FilterAction.Vacation,
 					name: i18nFilter('ACTION_VACATION_MESSAGE')
 				});
 			}
 
-			if (modules.includes('body')) {
+			if (capa.includes('body')) {
 				this.fieldOptions.push({ id: FilterConditionField.Body, name: i18nFilter('FIELD_BODY') });
 			}
 
-			if (modules.includes('regex')) {
+			if (capa.includes('regex')) {
 				this.typeOptions.push({ id: FilterConditionType.Regex, name: 'Regex' });
 			}
 		}
@@ -129,7 +184,8 @@ export class FilterPopupView extends AbstractViewPopup {
 		this.filter().removeCondition(oConditionToDelete);
 	}
 
-	onShow(oFilter, fTrueCallback, bEdit) {
+	beforeShow(oFilter, fTrueCallback, bEdit) {
+//	onShow(oFilter, fTrueCallback, bEdit) {
 		this.isNew(!bEdit);
 
 		this.fTrueCallback = fTrueCallback;
@@ -138,6 +194,8 @@ export class FilterPopupView extends AbstractViewPopup {
 		this.selectedFolderValue(oFilter.actionValue());
 
 		bEdit || oFilter.nameFocused(true);
+
+		this.populateOptions();
 	}
 
 	afterShow() {

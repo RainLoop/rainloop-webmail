@@ -29,7 +29,7 @@ class AbstractView {
 
 /*
 	onBuild() {}
-	onBeforeShow() {} // Happens before: hidden = false
+	beforeShow() {} // Happens before: hidden = false
 	onShow() {}       // Happens after: hidden = false
 	onHide() {}
 */
@@ -73,7 +73,7 @@ export class AbstractViewPopup extends AbstractView
 	onClose() {}
 
 /*
-	onBeforeShow() {} // Happens before showModal()
+	beforeShow() {} // Happens before showModal()
 	onShow() {}       // Happens after  showModal()
 	afterShow() {}    // Happens after  showModal() animation transitionend
 	onHide() {}       // Happens before animation transitionend
@@ -112,7 +112,7 @@ export class AbstractViewSettings
 {
 /*
 	onBuild(viewModelDom) {}
-	onBeforeShow() {}
+	beforeShow() {}
 	onShow() {}
 	onHide() {}
 	viewModelDom
