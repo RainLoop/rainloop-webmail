@@ -1,5 +1,3 @@
-import { SieveScriptModel } from 'Sieve/Model/Script';
-
 export const
 	// import { i18n } from 'Common/Translator';
 	i18n = rl.i18n,
@@ -58,32 +56,4 @@ export const
 	setError = text => {
 		serverError(true);
 		serverErrorDesc(text);
-	},
-
-	updateList = () => {
-		if (!loading()) {
-			loading(true);
-			serverError(false);
-
-			Remote.request('Filters', (iError, data) => {
-				loading(false);
-				scripts([]);
-
-				if (iError) {
-					capa([]);
-					setError(getNotification(iError));
-				} else {
-					capa(data.Result.Capa);
-/*
-					scripts(
-						data.Result.Scripts.map(aItem => SieveScriptModel.reviveFromJson(aItem)).filter(v => v)
-					);
-*/
-					forEachObjectValue(data.Result.Scripts, value => {
-						value = SieveScriptModel.reviveFromJson(value);
-						value && scripts.push(value)
-					});
-				}
-			});
-		}
 	};
