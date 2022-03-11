@@ -1,21 +1,13 @@
-[].flat||document.location.replace('./?/BadBrowser');
+(doc => {
 
-(win => {
+[].flat || doc.location.replace('./?/BadBrowser');
+navigator.cookieEnabled || doc.location.replace('./?/NoCookie');
 
 const
-	doc = document,
 	eId = id => doc.getElementById('rl-'+id),
 	app = eId('app'),
 	admin = app && '1' == app.dataset.admin,
-
-	cb = () => rl.app.bootstart(),
-
-	showError = msg => {
-		let div = eId('loading-error');
-		div.append(' ' + msg);
-		eId('loading').hidden = true;
-		div.hidden = false;
-	},
+	layout = doc.cookie.match(/(^|;) ?rllayout=([^;]+)/) || '',
 
 	loadScript = src => {
 		if (!src) {
@@ -31,16 +23,11 @@ const
 		});
 	};
 
-if (!navigator.cookieEnabled) {
-	doc.location.href = './?/NoCookie';
-}
-
-let RL_APP_DATA = {},
-	layout = doc.cookie.match(/(^|;) ?rllayout=([^;]+)/) || '';
+let RL_APP_DATA = {};
 
 doc.documentElement.classList.toggle('rl-mobile', 'mobile' === layout[2] || (!layout && 1000 > innerWidth));
 
-win.rl = {
+window.rl = {
 	adminArea: () => admin,
 	settings: {
 		get: name => RL_APP_DATA[name],
@@ -53,8 +40,16 @@ win.rl = {
 
 	initData: appData => {
 		RL_APP_DATA = appData;
-		loadScript(appData.StaticLibJsLink)
-			.then(() => loadScript(appData.StaticAppJsLink))
+		const url = appData.StaticLibsJs,
+			cb = () => rl.app.bootstart(),
+			div = eId('loading-error'),
+			showError = msg => {
+				div.append(' ' + msg);
+				eId('loading').hidden = true;
+				div.hidden = false;
+			};
+		loadScript(url)
+			.then(() => loadScript(url.replace('/libs.', `/${admin?'admin':'app'}.`)))
 			.then(() => appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve())
 			.then(() => ('loading' !== doc.readyState) ? cb() : doc.addEventListener('DOMContentLoaded', cb))
 			.catch(e => {
@@ -74,4 +69,4 @@ win.rl = {
 loadScript(`./?/${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().slice(2)}/`)
 	.then(() => 0);
 
-})(this);
+})(document);

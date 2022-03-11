@@ -1,6 +1,6 @@
 import { addObservablesTo } from 'External/ko';
-import { staticLink } from 'Common/Links';
 import { FolderUserStore } from 'Stores/User/Folder';
+import { SettingsGet } from 'Common/Globals';
 
 //export class UserSettingsFilters /*extends AbstractViewSettings*/ {
 export class UserSettingsFilters /*extends AbstractViewSettings*/ {
@@ -12,7 +12,7 @@ export class UserSettingsFilters /*extends AbstractViewSettings*/ {
 			serverErrorDesc: ''
 		});
 
-		rl.loadScript(staticLink('js/sieve.js')).then(() => {
+		rl.loadScript(SettingsGet('StaticLibsJs').replace('/libs.', '/sieve.')).then(() => {
 			const Sieve = window.Sieve;
 			Sieve.folderList = FolderUserStore.folderList;
 			Sieve.serverError.subscribe(value => this.serverError(value));

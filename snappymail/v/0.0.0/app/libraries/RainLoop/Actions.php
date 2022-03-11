@@ -927,10 +927,8 @@ class Actions
 
 		$bAppJsDebug = $this->oConfig->Get('labs', 'use_app_debug_js', false);
 
-		$aResult['StaticLibJsLink'] = $this->StaticPath('js/' . ($bAppJsDebug ? '' : 'min/') .
+		$aResult['StaticLibsJs'] = $this->StaticPath('js/' . ($bAppJsDebug ? '' : 'min/') .
 			'libs' . ($bAppJsDebug ? '' : '.min') . '.js');
-		$aResult['StaticAppJsLink'] = $this->StaticPath('js/' . ($bAppJsDebug ? '' : 'min/') .
-			($bAdmin ? 'admin' : 'app') . ($bAppJsDebug ? '' : '.min') . '.js');
 
 		$aResult['EditorDefaultType'] = \in_array($aResult['EditorDefaultType'], array('Plain', 'Html', 'HtmlForced', 'PlainForced'))
 			? $aResult['EditorDefaultType'] : 'Plain';
