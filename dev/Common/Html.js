@@ -95,9 +95,7 @@ export const
 			];
 
 		tpl.innerHTML = html
-			.replace(/(<pre[^>]*>)([\s\S]*?)(<\/pre>)/gi, aMatches => {
-				return (aMatches[1] + aMatches[2].trim() + aMatches[3].trim()).replace(/\r?\n/g, '<br>');
-			})
+//			.replace(/<pre[^>]*>[\s\S]*?<\/pre>/gi, pre => pre.replace(/\n/g, '\n<br>'))
 			.replace(/<!doctype[^>]*>/gi, '')
 			.replace(/<\?xml[^>]*\?>/gi, '')
 			// Not supported by <template> element

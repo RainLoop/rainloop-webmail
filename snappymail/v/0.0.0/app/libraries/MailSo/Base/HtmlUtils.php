@@ -222,7 +222,7 @@ abstract class HtmlUtils
 		}
 
 		return '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'
-			. \MailSo\Base\Utils::StripSpaces($oDoc->saveHTML($oBody)) . '</html>';
+			. $oDoc->saveHTML($oBody) . '</html>';
 	}
 
 	public static function ConvertPlainToHtml(string $sText, bool $bLinksWithTargetBlank = true) : string
