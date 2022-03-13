@@ -43,5 +43,3 @@ export class BodyCommand extends GrammarTest
 		});
 	}
 }
-
-//Sieve.Commands.body = BodyCommand;

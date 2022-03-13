@@ -66,7 +66,7 @@ export class CurrentDateCommand extends GrammarTest
 {
 	constructor()
 	{
-		super('date');
+		super();
 		this.zone       = new GrammarQuotedString;
 		this.date_part  = new GrammarQuotedString;
 		this.key_list   = new GrammarStringList;
@@ -76,7 +76,7 @@ export class CurrentDateCommand extends GrammarTest
 
 	toString()
 	{
-		return 'date'
+		return 'currentdate'
 			+ (this.zone.length ? ' :zone ' + this.zone : '')
 			+ (this.comparator ? ' :comparator ' + this.comparator : '')
 			+ ' ' + this.match_type
@@ -98,9 +98,3 @@ export class CurrentDateCommand extends GrammarTest
 		});
 	}
 }
-
-/*
-Object.assign(Sieve.Commands, {
-	date: DateTestCommand,
-	currentdate: CurrentDateCommand
-*/

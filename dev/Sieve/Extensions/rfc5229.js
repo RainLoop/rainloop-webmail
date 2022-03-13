@@ -69,10 +69,3 @@ export class StringCommand extends GrammarTest
 		this.key_list = args[args.length-1];
 	}
 }
-
-/*
-Object.assign(Sieve.Commands, {
-	set: SetCommand,
-	string: StringCommand
-});
-*/

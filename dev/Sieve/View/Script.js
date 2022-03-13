@@ -43,6 +43,9 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 		let self = this,
 			script = self.script();
 		if (!self.saving/* && script.hasChanges()*/) {
+			this.errorText('');
+			self.saveError(false);
+
 			if (!script.verify()) {
 				return;
 			}
@@ -52,9 +55,14 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 				return;
 			}
 
+			try {
+				parseScript(this.script().body());
+			} catch (e) {
+				this.errorText(e.message);
+				return;
+			}
+
 			self.saving = true;
-			self.saveError(false);
-			self.errorText('');
 
 			if (self.allowToggle()) {
 				script.body(script.filtersToRaw());

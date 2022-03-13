@@ -83,9 +83,3 @@ export class DeleteHeaderCommand extends GrammarCommand
 		}
 	}
 }
-/*
-Object.assign(Sieve.Commands, {
-	addheader: AddHeaderCommand,
-	deleteheader: DeleteHeaderCommand
-});
-*/

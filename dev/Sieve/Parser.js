@@ -51,9 +51,10 @@ import {
 	TrueCommand
 } from 'Sieve/Tests';
 
-import {
-	VacationCommand
-} from 'Sieve/Extensions/rfc5230';
+import { BodyCommand } from 'Sieve/Extensions/rfc5173';
+import { EnvironmentCommand } from 'Sieve/Extensions/rfc5183';
+import { SetCommand, StringCommand } from 'Sieve/Extensions/rfc5229';
+import { VacationCommand } from 'Sieve/Extensions/rfc5230';
 
 import {
 	SetFlagCommand,
@@ -61,6 +62,10 @@ import {
 	RemoveFlagCommand,
 	HasFlagCommand
 } from 'Sieve/Extensions/rfc5232';
+
+import { SpamTestCommand, VirusTestCommand } from 'Sieve/Extensions/rfc5235';
+import { DateCommand, CurrentDateCommand } from 'Sieve/Extensions/rfc5260';
+import { AddHeaderCommand, DeleteHeaderCommand } from 'Sieve/Extensions/rfc5293';
 
 import {
 	ErejectCommand,
@@ -97,6 +102,13 @@ const
 		not: NotCommand,
 		size: SizeCommand,
 		true: TrueCommand,
+		// rfc5173
+		body: BodyCommand,
+		// rfc5183
+		environment: EnvironmentCommand,
+		// rfc5229
+		set: SetCommand,
+		string: StringCommand,
 		// rfc5230
 		vacation: VacationCommand,
 		// rfc5232
@@ -104,6 +116,15 @@ const
 		addflag: AddFlagCommand,
 		removeflag: RemoveFlagCommand,
 		hasflag: HasFlagCommand,
+		// rfc5235
+		spamtest: SpamTestCommand,
+		virustest: VirusTestCommand,
+		// rfc5260
+		date: DateCommand,
+		currentdate: CurrentDateCommand,
+		// rfc5293
+		AddHeaderCommand,
+		DeleteHeaderCommand,
 		// rfc5429
 		ereject: ErejectCommand,
 		reject: RejectCommand,

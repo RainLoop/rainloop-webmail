@@ -34,5 +34,3 @@ export class EnvironmentCommand extends GrammarTest
 		this.key_list = args[args.length-1];
 	}
 }
-
-//Sieve.Commands.environment = EnvironmentCommand;

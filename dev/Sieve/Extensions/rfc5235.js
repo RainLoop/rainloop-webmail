@@ -68,10 +68,3 @@ export class VirusTestCommand extends GrammarTest
 		});
 	}
 }
-
-/*
-Object.assign(Sieve.Commands, {
-	spamtest: SpamTestCommand,
-	virustest: VirusTestCommand
-});
-*/
