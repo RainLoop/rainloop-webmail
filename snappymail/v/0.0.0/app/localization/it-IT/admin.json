@@ -36,7 +36,7 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "Limite di grandezza degli allegati",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Permetti di possedere più account",
 		"LABEL_ALLOW_IDENTITIES": "Permetti di registrare identità multiple",
-		"ALERT_DATA_ACCESS": "La cartella Data è accessibile. Per favore configura il tuo server web per nascondere la cartella Data dagli accessi esterni. Maggiori informazioni:",
+		"ALERT_DATA_ACCESS": "La cartella 'data' è accessibile. Per favore configura il tuo server web per nascondere la cartella 'data' dagli accessi esterni. Maggiori informazioni:",
 		"ALERT_WARNING": "Attenzione!",
 		"HTML_ALERT_WEAK_PASSWORD": "Stai usando la password di amministrazione predefinita.\n<br>\nPer ragioni di sicurezza,\n<strong><a href=\"#\/security\">cambiala<\/a><\/strong>\ncon una nuova password immediatamente.\n"
 	},
@@ -46,7 +46,7 @@
 		"LABEL_DETERMINE_USER_DOMAIN": "Prova a determinare il dominio dell'utente",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Permetti di cambiare lingua all'accesso",
 		"LABEL_DETERMINE_USER_LANGUAGE": "Prova a determinare la lingua dell'utente",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Nascondi il tasto 'Accedi'"
+		"LABEL_HIDE_SUBMIT_BUTTON": "Nascondi il tasto 'Registrazione'"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Personalizzazione",
