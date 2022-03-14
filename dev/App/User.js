@@ -6,7 +6,7 @@ import { mailToHelper, setLayoutResizer, dropdownsDetectVisibility } from 'Commo
 import {
 	FolderType,
 	SetSystemFoldersNotification,
-	ClientSideKeyName
+	ClientSideKeyNameFolderListSize
 } from 'Common/EnumsUser';
 
 import {
@@ -335,7 +335,7 @@ class AppUser extends AbstractApp {
 							const left = elementById('rl-left'),
 								right = elementById('rl-right'),
 								fToggle = () =>
-									setLayoutResizer(left, right, ClientSideKeyName.FolderListSize,
+									setLayoutResizer(left, right, ClientSideKeyNameFolderListSize,
 										(ThemeStore.isMobile() || leftPanelDisabled()) ? 0 : 'Width');
 							if (left && right) {
 								fToggle();

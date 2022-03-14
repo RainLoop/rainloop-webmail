@@ -7,7 +7,9 @@ import { Scope } from 'Common/Enums';
 
 import {
 	ComposeType,
-	ClientSideKeyName,
+	ClientSideKeyNameLastReplyAction,
+	ClientSideKeyNameMessageHeaderFullInfo,
+	ClientSideKeyNameMessageAttachmentControls,
 	FolderType,
 	MessageSetAction
 } from 'Common/EnumsUser';
@@ -96,7 +98,7 @@ export class MailMessageView extends AbstractViewRight {
 			showAttachmentControls: false,
 			downloadAsZipLoading: false,
 			lastReplyAction_: '',
-			showFullInfo: '1' === Local.get(ClientSideKeyName.MessageHeaderFullInfo),
+			showFullInfo: '1' === Local.get(ClientSideKeyNameMessageHeaderFullInfo),
 			moreDropdownTrigger: false,
 
 			// viewer
@@ -124,7 +126,7 @@ export class MailMessageView extends AbstractViewRight {
 		this.messageListOfThreadsLoading = ko.observable(false).extend({ rateLimit: 1 });
 		this.highlightUnselectedAttachments = ko.observable(false).extend({ falseTimeout: 2000 });
 
-		this.showAttachmentControlsState = v => Local.set(ClientSideKeyName.MessageAttachmentControls, !!v);
+		this.showAttachmentControlsState = v => Local.set(ClientSideKeyNameMessageAttachmentControls, !!v);
 
 		this.downloadAsZipError = ko.observable(false).extend({ falseTimeout: 7000 });
 
@@ -183,14 +185,14 @@ export class MailMessageView extends AbstractViewRight {
 			showAttachmentControls: v => currentMessage()
 				&& currentMessage().attachments.forEach(item => item && item.checked(!!v)),
 
-			lastReplyAction_: value => Local.set(ClientSideKeyName.LastReplyAction, value),
+			lastReplyAction_: value => Local.set(ClientSideKeyNameLastReplyAction, value),
 
 			message: message => {
 				MessageUserStore.activeDom(null);
 
 				if (message) {
 					this.showAttachmentControls(false);
-					if (Local.get(ClientSideKeyName.MessageAttachmentControls)) {
+					if (Local.get(ClientSideKeyNameMessageAttachmentControls)) {
 						setTimeout(() => {
 							this.showAttachmentControls(true);
 						}, 50);
@@ -222,10 +224,10 @@ export class MailMessageView extends AbstractViewRight {
 				}
 			},
 
-			showFullInfo: value => Local.set(ClientSideKeyName.MessageHeaderFullInfo, value ? '1' : '0')
+			showFullInfo: value => Local.set(ClientSideKeyNameMessageHeaderFullInfo, value ? '1' : '0')
 		});
 
-		this.lastReplyAction(Local.get(ClientSideKeyName.LastReplyAction) || ComposeType.Reply);
+		this.lastReplyAction(Local.get(ClientSideKeyNameLastReplyAction) || ComposeType.Reply);
 
 		// commands
 		this.replyCommand = createCommandReplyHelper(ComposeType.Reply);

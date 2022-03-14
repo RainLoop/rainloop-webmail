@@ -1,5 +1,5 @@
 import { Notification } from 'Common/Enums';
-import { ClientSideKeyName } from 'Common/EnumsUser';
+import { ClientSideKeyNameLastSignMe } from 'Common/EnumsUser';
 import { SettingsGet, fireEvent } from 'Common/Globals';
 import { getNotification, translatorReload, convertLangName } from 'Common/Translator';
 
@@ -14,7 +14,8 @@ import { AbstractViewLogin } from 'Knoin/AbstractViews';
 
 import { LanguagesPopupView } from 'View/Popup/Languages';
 
-const SignMeOff = 0,
+const
+	SignMeOff = 0,
 	SignMeOn = 1,
 	SignMeUnused = 2;
 
@@ -120,7 +121,7 @@ export class LoginUserView extends AbstractViewLogin {
 				data
 			);
 
-			Local.set(ClientSideKeyName.LastSignMe, this.signMe() ? '-1-' : '-0-');
+			Local.set(ClientSideKeyNameLastSignMe, this.signMe() ? '-1-' : '-0-');
 		}
 
 		return valid;
@@ -129,8 +130,7 @@ export class LoginUserView extends AbstractViewLogin {
 	onBuild(dom) {
 		super.onBuild(dom);
 
-		const signMeLocal = Local.get(ClientSideKeyName.LastSignMe),
-			signMe = (SettingsGet('SignMe') || '').toLowerCase();
+		const signMe = (SettingsGet('SignMe') || '').toLowerCase();
 
 		switch (signMe) {
 			case 'defaultoff':
@@ -139,7 +139,7 @@ export class LoginUserView extends AbstractViewLogin {
 					'defaulton' === signMe ? SignMeOn : SignMeOff
 				);
 
-				switch (signMeLocal) {
+				switch (Local.get(ClientSideKeyNameLastSignMe)) {
 					case '-1-':
 						this.signMeType(SignMeOn);
 						break;

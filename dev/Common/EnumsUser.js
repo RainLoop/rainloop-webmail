@@ -72,15 +72,14 @@ export const SetSystemFoldersNotification = {
 /**
  * @enum {number}
  */
-export const ClientSideKeyName = {
-	ExpandedFolders: 3,
-	FolderListSize: 4,
-	MessageListSize: 5,
-	LastReplyAction: 6,
-	LastSignMe: 7,
-	MessageHeaderFullInfo: 9,
-	MessageAttachmentControls: 10
-};
+export const
+	ClientSideKeyNameExpandedFolders = 3,
+	ClientSideKeyNameFolderListSize = 4,
+	ClientSideKeyNameMessageListSize = 5,
+	ClientSideKeyNameLastReplyAction = 6,
+	ClientSideKeyNameLastSignMe = 7,
+	ClientSideKeyNameMessageHeaderFullInfo = 9,
+	ClientSideKeyNameMessageAttachmentControls = 10;
 
 /**
  * @enum {number}

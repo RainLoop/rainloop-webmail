@@ -2,7 +2,7 @@ import { AbstractCollectionModel } from 'Model/AbstractCollection';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { isArray, getKeyByValue, forEachObjectEntry, b64EncodeJSONSafe } from 'Common/Utils';
-import { ClientSideKeyName, FolderType, FolderMetadataKeys } from 'Common/EnumsUser';
+import { ClientSideKeyNameExpandedFolders, FolderType, FolderMetadataKeys } from 'Common/EnumsUser';
 import { getFolderFromCacheList, setFolder, setFolderInboxName, setFolderHash } from 'Common/Cache';
 import { Settings, SettingsGet, fireEvent } from 'Common/Globals';
 
@@ -77,7 +77,7 @@ export const
 	 * @param {boolean} bExpanded
 	 */
 	setExpandedFolder = (sFullName, bExpanded) => {
-		let aExpandedList = Local.get(ClientSideKeyName.ExpandedFolders);
+		let aExpandedList = Local.get(ClientSideKeyNameExpandedFolders);
 		if (!isArray(aExpandedList)) {
 			aExpandedList = [];
 		}
@@ -88,7 +88,7 @@ export const
 			aExpandedList = aExpandedList.filter(value => value !== sFullName);
 		}
 
-		Local.set(ClientSideKeyName.ExpandedFolders, aExpandedList);
+		Local.set(ClientSideKeyNameExpandedFolders, aExpandedList);
 	},
 
 	/**
@@ -127,7 +127,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 	 * @returns {FolderCollectionModel}
 	 */
 	static reviveFromJson(object) {
-		const expandedFolders = Local.get(ClientSideKeyName.ExpandedFolders);
+		const expandedFolders = Local.get(ClientSideKeyNameExpandedFolders);
 		if (object && object.SystemFolders) {
 			forEachObjectEntry(SystemFolders, key =>
 				SystemFolders[key] = SettingsGet(key+'Folder') || object.SystemFolders[FolderType[key]]

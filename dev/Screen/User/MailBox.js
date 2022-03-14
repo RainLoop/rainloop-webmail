@@ -1,5 +1,5 @@
 import { Scope } from 'Common/Enums';
-import { Layout, ClientSideKeyName } from 'Common/EnumsUser';
+import { Layout, ClientSideKeyNameMessageListSize } from 'Common/EnumsUser';
 import { doc, leftPanelDisabled, moveAction, Settings, elementById } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
 import { setLayoutResizer } from 'Common/UtilsUser';
@@ -106,7 +106,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 				bottom = elementById('V-MailMessageView'),
 				fToggle = () => {
 					let layout = SettingsUserStore.layout();
-					setLayoutResizer(top, bottom, ClientSideKeyName.MessageListSize,
+					setLayoutResizer(top, bottom, ClientSideKeyNameMessageListSize,
 						(ThemeStore.isMobile() || Layout.NoPreview === layout)
 							? 0
 							: (Layout.SidePreview === layout ? 'Width' : 'Height')
