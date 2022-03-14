@@ -18,7 +18,7 @@ https://www.iana.org/assignments/sieve-extensions/sieve-extensions.xhtml
 - [x] RFC5429 ereject / reject
 - [ ] RFC5435 enotify
 - [ ] RFC5463 ihave
-- [ ] RFC5490 mailbox / mboxmetadata / servermetadata
+- [x] RFC5490 mailbox / mboxmetadata / servermetadata
 - [ ] RFC5703 enclose / extracttext / foreverypart / mime / replace
 - [ ] RFC6131 vacation-seconds
 - [ ] RFC6134 extlists

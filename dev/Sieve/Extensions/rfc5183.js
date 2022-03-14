@@ -8,7 +8,7 @@ import {
 	GrammarTest
 } from 'Sieve/Grammar';
 
-export class EnvironmentCommand extends GrammarTest
+export class EnvironmentTest extends GrammarTest
 {
 	constructor()
 	{

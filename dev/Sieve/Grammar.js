@@ -231,7 +231,7 @@ export class GrammarTest
 {
 	constructor(identifier)
 	{
-		this.identifier = identifier || this.constructor.name.toLowerCase().replace('command', '');
+		this.identifier = identifier || this.constructor.name.toLowerCase().replace(/test$/, '');
 		// Almost every test has a comparator and match_type, so define them here
 		this.comparator = '',
 		this.match_type = ':is',

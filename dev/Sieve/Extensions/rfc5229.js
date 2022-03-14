@@ -45,7 +45,7 @@ export class SetCommand extends GrammarCommand
 	}
 }
 
-export class StringCommand extends GrammarTest
+export class StringTest extends GrammarTest
 {
 	constructor()
 	{

@@ -8,7 +8,7 @@ import {
 	GrammarTest
 } from 'Sieve/Grammar';
 
-export class SpamTestCommand extends GrammarTest
+export class SpamTestTest extends GrammarTest
 {
 	constructor()
 	{
@@ -41,7 +41,7 @@ export class SpamTestCommand extends GrammarTest
 	}
 }
 
-export class VirusTestCommand extends GrammarTest
+export class VirusTestTest extends GrammarTest
 {
 	constructor()
 	{

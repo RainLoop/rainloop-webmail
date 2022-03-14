@@ -39,38 +39,44 @@ import {
 } from 'Sieve/Commands';
 
 import {
-	AddressCommand,
-	AllOfCommand,
-	AnyOfCommand,
-	EnvelopeCommand,
-	ExistsCommand,
-	FalseCommand,
-	HeaderCommand,
-	NotCommand,
-	SizeCommand,
-	TrueCommand
+	AddressTest,
+	AllOfTest,
+	AnyOfTest,
+	EnvelopeTest,
+	ExistsTest,
+	FalseTest,
+	HeaderTest,
+	NotTest,
+	SizeTest,
+	TrueTest
 } from 'Sieve/Tests';
 
-import { BodyCommand } from 'Sieve/Extensions/rfc5173';
-import { EnvironmentCommand } from 'Sieve/Extensions/rfc5183';
-import { SetCommand, StringCommand } from 'Sieve/Extensions/rfc5229';
+import { BodyTest } from 'Sieve/Extensions/rfc5173';
+import { EnvironmentTest } from 'Sieve/Extensions/rfc5183';
+import { SetCommand, StringTest } from 'Sieve/Extensions/rfc5229';
 import { VacationCommand } from 'Sieve/Extensions/rfc5230';
 
 import {
 	SetFlagCommand,
 	AddFlagCommand,
 	RemoveFlagCommand,
-	HasFlagCommand
+	HasFlagTest
 } from 'Sieve/Extensions/rfc5232';
 
-import { SpamTestCommand, VirusTestCommand } from 'Sieve/Extensions/rfc5235';
-import { DateCommand, CurrentDateCommand } from 'Sieve/Extensions/rfc5260';
+import { SpamTestTest, VirusTestTest } from 'Sieve/Extensions/rfc5235';
+import { DateTest, CurrentDateTest } from 'Sieve/Extensions/rfc5260';
 import { AddHeaderCommand, DeleteHeaderCommand } from 'Sieve/Extensions/rfc5293';
 
 import {
 	ErejectCommand,
 	RejectCommand
 } from 'Sieve/Extensions/rfc5429';
+
+import {
+	MailboxExistsTest,
+	MetadataTest,
+	MetadataExistsTest
+} from 'Sieve/Extensions/rfc5490';
 
 import {
 	IncludeCommand,
@@ -92,42 +98,46 @@ const
 		keep: KeepCommand,
 		redirect: RedirectCommand,
 		// Test commands
-		address: AddressCommand,
-		allof: AllOfCommand,
-		anyof: AnyOfCommand,
-		envelope: EnvelopeCommand,
-		exists: ExistsCommand,
-		false: FalseCommand,
-		header: HeaderCommand,
-		not: NotCommand,
-		size: SizeCommand,
-		true: TrueCommand,
+		address: AddressTest,
+		allof: AllOfTest,
+		anyof: AnyOfTest,
+		envelope: EnvelopeTest,
+		exists: ExistsTest,
+		false: FalseTest,
+		header: HeaderTest,
+		not: NotTest,
+		size: SizeTest,
+		true: TrueTest,
 		// rfc5173
-		body: BodyCommand,
+		body: BodyTest,
 		// rfc5183
-		environment: EnvironmentCommand,
+		environment: EnvironmentTest,
 		// rfc5229
 		set: SetCommand,
-		string: StringCommand,
+		string: StringTest,
 		// rfc5230
 		vacation: VacationCommand,
 		// rfc5232
 		setflag: SetFlagCommand,
 		addflag: AddFlagCommand,
 		removeflag: RemoveFlagCommand,
-		hasflag: HasFlagCommand,
+		hasflag: HasFlagTest,
 		// rfc5235
-		spamtest: SpamTestCommand,
-		virustest: VirusTestCommand,
+		spamtest: SpamTestTest,
+		virustest: VirusTestTest,
 		// rfc5260
-		date: DateCommand,
-		currentdate: CurrentDateCommand,
+		date: DateTest,
+		currentdate: CurrentDateTest,
 		// rfc5293
 		AddHeaderCommand,
 		DeleteHeaderCommand,
 		// rfc5429
 		ereject: ErejectCommand,
 		reject: RejectCommand,
+		// rfc5490
+		mailboxexists: MailboxExistsTest,
+		metadata: MetadataTest,
+		metadataexists: MetadataExistsTest,
 		// rfc6609
 		include: IncludeCommand,
 		return: ReturnCommand
@@ -237,14 +247,14 @@ export const parseScript = (script, name = 'script.sieve') => {
 				new_command = new ConditionalCommand(value);
 			} else if (Commands[value]) {
 				if ('allof' === value || 'anyof' === value) {
-//					(command instanceof ConditionalCommand || command instanceof NotCommand) || error('Test-list not in conditional');
+//					(command instanceof ConditionalCommand || command instanceof NotTest) || error('Test-list not in conditional');
 				}
 				new_command = new Commands[value]();
 			} else {
 				console.error('Unknown command: ' + value);
 				if (command && (
 				    command instanceof ConditionalCommand
-				 || command instanceof NotCommand
+				 || command instanceof NotTest
 				 || command.tests instanceof GrammarTestList)) {
 					new_command = new GrammarTest(value);
 				} else {
@@ -253,7 +263,7 @@ export const parseScript = (script, name = 'script.sieve') => {
 			}
 
 			if (new_command instanceof GrammarTest) {
-				if (command instanceof ConditionalCommand || command instanceof NotCommand) {
+				if (command instanceof ConditionalCommand || command instanceof NotTest) {
 					// if/elsif/else new_command
 					// not new_command
 					command.test = new_command;

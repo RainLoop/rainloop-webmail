@@ -63,7 +63,7 @@ export class RemoveFlagCommand extends FlagCommand
 {
 }
 
-export class HasFlagCommand extends GrammarTest
+export class HasFlagTest extends GrammarTest
 {
 	constructor()
 	{

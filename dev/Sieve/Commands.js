@@ -102,6 +102,10 @@ export class FileIntoCommand extends GrammarCommand
 
 	toString()
 	{
+		// https://datatracker.ietf.org/doc/html/rfc3894
+		// :copy
+		// https://datatracker.ietf.org/doc/html/rfc5490#section-3.2
+		// :create
 		return 'fileinto ' + this._mailbox + ';';
 	}
 
@@ -137,6 +141,8 @@ export class RedirectCommand extends GrammarCommand
 
 	toString()
 	{
+		// https://datatracker.ietf.org/doc/html/rfc3894
+		// :copy
 		return 'redirect ' + this._address + ';';
 	}
 
