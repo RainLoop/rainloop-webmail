@@ -36,7 +36,7 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "Limite di grandezza degli allegati",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Permetti di possedere più account",
 		"LABEL_ALLOW_IDENTITIES": "Permetti di registrare identità multiple",
-		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
+		"ALERT_DATA_ACCESS": "La cartella Data è accessibile. Per favore configura il tuo server web per nascondere la cartella Data dagli accessi esterni. Maggiori informazioni:",
 		"ALERT_WARNING": "Attenzione!",
 		"HTML_ALERT_WEAK_PASSWORD": "Stai usando la password di amministrazione predefinita.\n<br>\nPer ragioni di sicurezza,\n<strong><a href=\"#\/security\">cambiala<\/a><\/strong>\ncon una nuova password immediatamente.\n"
 	},
@@ -46,7 +46,7 @@
 		"LABEL_DETERMINE_USER_DOMAIN": "Prova a determinare il dominio dell'utente",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Permetti di cambiare lingua all'accesso",
 		"LABEL_DETERMINE_USER_LANGUAGE": "Prova a determinare la lingua dell'utente",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+		"LABEL_HIDE_SUBMIT_BUTTON": "Nascondi il tasto 'Registrazione'"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Personalizzazione",
@@ -76,7 +76,7 @@
 		"HTML_DOMAINS_HELPER": "Lista di domini a cui la webmail è abilitata ad accedere.\n<br>\nClicca su un nome per configurare quel dominio.\n"
 	},
 	"TAB_SECURITY": {
-		"LEGEND_SECURITY": "Security",
+		"LEGEND_SECURITY": "Sicurezza",
 		"LABEL_USE_IMAGE_PROXY": "Usa un proxy locale per le immagini",
 		"LABEL_ALLOW_OPEN_PGP": "Abilita OpenPGP",
 		"LABEL_SHOW_PHP_INFO": "Visualizza informazioni su PHP",
@@ -91,7 +91,7 @@
 		"LABEL_ALLOW_SELF_SIGNED": "Abilita certificati autofirmati"
 	},
 	"TAB_PACKAGES": {
-		"LABEL_ENABLE_PLUGINS": "Enable extensions",
+		"LABEL_ENABLE_PLUGINS": "Abilita estensioni"
 		"LEGEND_AVAILABLE_FOR_UPDATE": "Disponibili per l'aggiornamento",
 		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Disponibili per l'installazione",
 		"LEGEND_INSTALLED_PACKAGES": "Pacchetti installati",
@@ -128,7 +128,7 @@
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Abilita script sieve",
 		"LABEL_USE_SHORT_LOGIN": "Utilizza login corto",
 		"LABEL_USE_AUTH": "Utilizza autenticazione",
-		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_SET_SENDER": "Utilizza login come mittente",
 		"LABEL_USE_PHP_MAIL": "Usa la funzione mail() di PHP",
 		"BUTTON_TEST": "Verifica",
 		"BUTTON_WHITE_LIST": "Whitelist",
@@ -147,7 +147,7 @@
 		"BUTTON_CLOSE": "Chiudi"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Yes",
+		"BUTTON_YES": "Si"
 		"BUTTON_NO": "No",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Sei sicuro di voler chiudere questa finestra?"
 	},
