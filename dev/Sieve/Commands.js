@@ -2,6 +2,8 @@
  * https://tools.ietf.org/html/rfc5228#section-2.9
  */
 
+import { capa } from 'Sieve/Utils';
+
 import {
 	GrammarCommand,
 	GrammarString,
@@ -102,11 +104,13 @@ export class FileIntoCommand extends GrammarCommand
 
 	toString()
 	{
-		// https://datatracker.ietf.org/doc/html/rfc3894
-		// :copy
-		// https://datatracker.ietf.org/doc/html/rfc5490#section-3.2
-		// :create
-		return 'fileinto ' + this._mailbox + ';';
+		return 'fileinto '
+			// https://datatracker.ietf.org/doc/html/rfc3894
+			+ ((this.copy && capa.includes('copy')) ? ':copy ' : '')
+			// https://datatracker.ietf.org/doc/html/rfc5490#section-3.2
+			+ ((this.create && capa.includes('mailbox')) ? ':create ' : '')
+			+ this._mailbox
+			+ ';';
 	}
 
 	get mailbox()
@@ -141,9 +145,11 @@ export class RedirectCommand extends GrammarCommand
 
 	toString()
 	{
-		// https://datatracker.ietf.org/doc/html/rfc3894
-		// :copy
-		return 'redirect ' + this._address + ';';
+		return 'redirect '
+			// https://datatracker.ietf.org/doc/html/rfc3894
+			+ ((this.copy && capa.includes('copy')) ? ':copy ' : '')
+			+ this._address
+			+ ';';
 	}
 
 	get address()

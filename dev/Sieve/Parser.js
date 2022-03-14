@@ -2,6 +2,8 @@
  * https://tools.ietf.org/html/rfc5228#section-8
  */
 
+import { capa, forEachObjectEntry } from 'Sieve/Utils';
+
 import {
 	BRACKET_COMMENT,
 	HASH_COMMENT,
@@ -84,7 +86,7 @@ import {
 } from 'Sieve/Extensions/rfc6609';
 
 const
-	Commands = {
+	AllCommands = {
 		// Control commands
 		if: IfCommand,
 		elsif: ElsIfCommand,
@@ -181,6 +183,17 @@ const
 
 export const parseScript = (script, name = 'script.sieve') => {
 	script = script.replace(/\r?\n/g, '\r\n');
+
+	// Only activate available commands
+	const Commands = {};
+	forEachObjectEntry(AllCommands, (key, cmd) => {
+		const requires = (new cmd).require;
+		if (!requires
+		 || (Array.isArray(requires) ? requires : [requires]).every(string => capa.includes(string))
+		) {
+			Commands[key] = cmd;
+		}
+	});
 
 	let match,
 		line = 1,

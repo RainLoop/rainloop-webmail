@@ -2,7 +2,7 @@ https://www.iana.org/assignments/sieve-extensions/sieve-extensions.xhtml
 
 - [ ] RFC2852 envelope-deliverby / redirect-deliverby
 - [ ] RFC3461 envelope-dsn / redirect-dsn
-- [ ] RFC3894 copy
+- [x] RFC3894 copy
 - [ ] RFC4790 comparator-*
 - [x] RFC5173 body
 - [x] RFC5183 environment
