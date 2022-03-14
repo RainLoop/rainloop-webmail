@@ -56,8 +56,10 @@ passthru('rm -dfr '.escapeshellarg(DEB_DEST_DIR));
 // https://github.com/the-djmaze/snappymail/issues/185#issuecomment-1059420588
 $cwd = getcwd();
 chdir($TARGET_DIR);
+passthru('dpkg-scanpackages . /dev/null > '.escapeshellarg($TARGET_DIR . 'Packages'));
 passthru('dpkg-scanpackages . /dev/null | gzip -9c > '.escapeshellarg($TARGET_DIR . 'Packages.gz'));
-$size = filesize($TARGET_DIR . 'Packages.gz');
+$size = filesize($TARGET_DIR . 'Packages');
+$gz_size = filesize($TARGET_DIR . 'Packages.gz');
 $Release = 'Origin: SnappyMail Repository
 Label: SnappyMail
 Suite: stable
@@ -68,11 +70,14 @@ Components: main
 Description: SnappyMail repository
 Date: ' . gmdate('r') . '
 MD5Sum:
- ' . hash_file('md5', $TARGET_DIR . 'Packages.gz') . ' ' . $size . ' Packages.gz
+ ' . hash_file('md5', $TARGET_DIR . 'Packages') . ' ' . $size . ' Packages
+ ' . hash_file('md5', $TARGET_DIR . 'Packages.gz') . ' ' . $gz_size . ' Packages.gz
 SHA1:
- ' . hash_file('sha1', $TARGET_DIR . 'Packages.gz') . ' ' . $size . ' Packages.gz
+ ' . hash_file('sha1', $TARGET_DIR . 'Packages') . ' ' . $size . ' Packages
+ ' . hash_file('sha1', $TARGET_DIR . 'Packages.gz') . ' ' . $gz_size . ' Packages.gz
 SHA256:
- ' . hash_file('sha256', $TARGET_DIR . 'Packages.gz') . ' ' . $size . ' Packages.gz
+ ' . hash_file('sha256', $TARGET_DIR . 'Packages') . ' ' . $size . ' Packages
+ ' . hash_file('sha256', $TARGET_DIR . 'Packages.gz') . ' ' . $gz_size . ' Packages.gz
 ';
 file_put_contents($TARGET_DIR . 'Release', $Release);
 chdir($cwd);
