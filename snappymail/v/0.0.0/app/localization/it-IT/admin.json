@@ -46,7 +46,7 @@
 		"LABEL_DETERMINE_USER_DOMAIN": "Prova a determinare il dominio dell'utente",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Permetti di cambiare lingua all'accesso",
 		"LABEL_DETERMINE_USER_LANGUAGE": "Prova a determinare la lingua dell'utente",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Nascondi il tasto 'Registrazione'"
+		"LABEL_HIDE_SUBMIT_BUTTON": "Nascondi il tasto 'Accedi'"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Personalizzazione",
