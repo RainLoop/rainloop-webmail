@@ -70,30 +70,15 @@ export class VacationCommand extends GrammarCommand
 
 	pushArguments(args)
 	{
+		this._reason.value = args.pop().value; // GrammarQuotedString
 		args.forEach((arg, i) => {
 			if (':mime' === arg) {
 				this.mime = true;
-			} else if (i === args.length-1) {
-				this._reason.value = arg.value; // GrammarQuotedString
-			} else switch (args[i-1]) {
-				case ':days':
-					this._days.value = arg.value; // GrammarNumber
-					break;
-//				case ':seconds':
-//					this._seconds.value = arg.value; // GrammarNumber
-//					break;
-				case ':subject':
-					this._subject.value = arg.value; // GrammarQuotedString
-					break;
-				case ':from':
-					this._from.value = arg.value; // GrammarQuotedString
-					break;
-				case ':addresses':
-					this.addresses = arg; // GrammarStringList
-					break;
-				case ':handle':
-					this._from.value = arg.value; // GrammarQuotedString
-					break;
+			} else if (':addresses' === args[i-1]) {
+				this.addresses = arg; // GrammarStringList
+			} else if (':' === args[i-1][0]) {
+				// :days, :seconds, :subject, :from, :handle
+				this[args[i-1].replace(':','_')].value = arg.value;
 			}
 		});
 	}

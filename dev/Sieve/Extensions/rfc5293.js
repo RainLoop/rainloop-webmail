@@ -32,9 +32,9 @@ export class AddHeaderCommand extends GrammarCommand
 
 	pushArguments(args)
 	{
+		this.value = args.pop();
+		this.field_name = args.pop();
 		this.last = args.includes(':last');
-		this.field_name = args[args.length - 2];
-		this.value = args[args.length - 1];
 	}
 }
 

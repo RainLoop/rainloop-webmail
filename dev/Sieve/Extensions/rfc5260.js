@@ -41,7 +41,9 @@ export class DateTest extends GrammarTest
 
 	pushArguments(args)
 	{
-		let l = args.length - 1;
+		this.key_list = args.pop();
+		this.date_part = args.pop();
+		this.header_name = args.pop();
 		args.forEach((arg, i) => {
 			if (':originalzone' === arg) {
 				this.originalzone = true;
@@ -51,12 +53,6 @@ export class DateTest extends GrammarTest
 				this.zone.value = arg.value;
 			} else if (':index' === args[i-1]) {
 				this.index.value = arg.value;
-			} else if (l-2 === i) {
-				this.header_name = arg;
-			} else if (l-1 === i) {
-				this.date_part = arg;
-			} else if (l === i) {
-				this.key_list = arg;
 			}
 		});
 	}
@@ -86,14 +82,11 @@ export class CurrentDateTest extends GrammarTest
 
 	pushArguments(args)
 	{
-		let l = args.length - 1;
+		this.key_list = args.pop();
+		this.date_part = args.pop();
 		args.forEach((arg, i) => {
 			if (':zone' === args[i-1]) {
 				this.zone.value = arg.value;
-			} else if (l-1 === i) {
-				this.date_part = arg;
-			} else if (l === i) {
-				this.key_list = arg;
 			}
 		});
 	}

@@ -30,7 +30,7 @@ export class EnvironmentTest extends GrammarTest
 
 	pushArguments(args)
 	{
-		this.name     = args[args.length-2];
-		this.key_list = args[args.length-1];
+		this.key_list = args.pop();
+		this.name     = args.pop();
 	}
 }

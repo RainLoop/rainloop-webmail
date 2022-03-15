@@ -4,7 +4,7 @@
 
 import {
 	GrammarTest,
-	GrammarString,
+	GrammarQuotedString,
 	GrammarStringList
 } from 'Sieve/Grammar';
 
@@ -42,8 +42,8 @@ export class MetadataTest extends GrammarTest
 	constructor()
 	{
 		super();
-		this.mailbox = new GrammarString;
-		this.annotation_name = new GrammarString;
+		this.mailbox = new GrammarQuotedString;
+		this.annotation_name = new GrammarQuotedString;
 		this.key_list = new GrammarStringList;
 	}
 
@@ -61,9 +61,9 @@ export class MetadataTest extends GrammarTest
 
 	pushArguments(args)
 	{
-		this.mailbox = args[args.length-3];
-		this.annotation_name = args[args.length-2];
-		this.key_list = args[args.length-1];
+		this.key_list = args.pop();
+		this.annotation_name = args.pop();
+		this.mailbox = args.pop();
 	}
 }
 
@@ -75,7 +75,7 @@ export class MetadataExistsTest extends GrammarTest
 	constructor()
 	{
 		super();
-		this.mailbox = new GrammarString;
+		this.mailbox = new GrammarQuotedString;
 		this.annotation_names = new GrammarStringList;
 	}
 
@@ -90,8 +90,8 @@ export class MetadataExistsTest extends GrammarTest
 
 	pushArguments(args)
 	{
-		this.mailbox = args[args.length-2];
-		this.annotation_names = args[args.length-1];
+		this.annotation_names = args.pop();
+		this.mailbox = args.pop();
 	}
 }
 
@@ -103,7 +103,7 @@ export class ServerMetadataTest extends GrammarTest
 	constructor()
 	{
 		super();
-		this.annotation_name = new GrammarString;
+		this.annotation_name = new GrammarQuotedString;
 		this.key_list = new GrammarStringList;
 	}
 
@@ -120,8 +120,8 @@ export class ServerMetadataTest extends GrammarTest
 
 	pushArguments(args)
 	{
-		this.annotation_name = args[args.length-2];
-		this.key_list = args[args.length-1];
+		this.key_list = args.pop();
+		this.annotation_name = args.pop();
 	}
 }
 
@@ -146,6 +146,6 @@ export class ServerMetadataExistsTest extends GrammarTest
 
 	pushArguments(args)
 	{
-		this.annotation_names = args[args.length-1];
+		this.annotation_names = args.pop();
 	}
 }

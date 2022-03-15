@@ -40,8 +40,8 @@ export class SetCommand extends GrammarCommand
 		[':lower', ':upper', ':lowerfirst', ':upperfirst', ':quotewildcard', ':length'].forEach(modifier => {
 			args.includes(modifier) && this.modifiers.push(modifier);
 		});
-		this._name  = args[args.length-2];
-		this._value = args[args.length-1];
+		this._value = args.pop();
+		this._name  = args.pop();
 	}
 }
 
@@ -65,7 +65,7 @@ export class StringTest extends GrammarTest
 
 	pushArguments(args)
 	{
-		this.source   = args[args.length-2];
-		this.key_list = args[args.length-1];
+		this.key_list = args.pop();
+		this.source   = args.pop();
 	}
 }

@@ -69,6 +69,7 @@ import { SpamTestTest, VirusTestTest } from 'Sieve/Extensions/rfc5235';
 import { DateTest, CurrentDateTest } from 'Sieve/Extensions/rfc5260';
 import { AddHeaderCommand, DeleteHeaderCommand } from 'Sieve/Extensions/rfc5293';
 import { ErejectCommand, RejectCommand } from 'Sieve/Extensions/rfc5429';
+import { NotifyCommand, ValidNotifyMethodTest, NotifyMethodCapabilityTest } from 'Sieve/Extensions/rfc5435';
 import { IHaveTest, ErrorCommand } from 'Sieve/Extensions/rfc5463';
 import { MailboxExistsTest, MetadataTest, MetadataExistsTest } from 'Sieve/Extensions/rfc5490';
 import { IncludeCommand, ReturnCommand } from 'Sieve/Extensions/rfc6609';
@@ -124,6 +125,10 @@ const
 		// rfc5429
 		ereject: ErejectCommand,
 		reject: RejectCommand,
+		// rfc5435
+		notify: NotifyCommand,
+		valid_notify_method: ValidNotifyMethodTest,
+		notify_method_capability: NotifyMethodCapabilityTest,
 		// rfc5463
 		ihave: IHaveTest,
 		error: ErrorCommand,

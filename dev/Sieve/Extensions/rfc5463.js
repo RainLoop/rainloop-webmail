@@ -5,7 +5,7 @@
 import {
 	GrammarCommand,
 	GrammarTest,
-	GrammarString,
+	GrammarQuotedString,
 	GrammarStringList
 } from 'Sieve/Grammar';
 
@@ -29,10 +29,7 @@ export class IHaveTest extends GrammarTest
 
 	pushArguments(args)
 	{
-		let l = args.length;
-		if (args[l-1] instanceof GrammarString) {
-			this.method = args[l-1];
-		}
+		this.capabilities = args.pop();
 	}
 }
 
@@ -44,7 +41,7 @@ export class ErrorCommand extends GrammarCommand
 	constructor()
 	{
 		super();
-		this.message = new GrammarString;
+		this.message = new GrammarQuotedString;
 	}
 
 	get require() { return 'ihave'; }
@@ -56,9 +53,6 @@ export class ErrorCommand extends GrammarCommand
 
 	pushArguments(args)
 	{
-		let l = args.length;
-		if (args[l-1] instanceof GrammarString) {
-			this.method = args[l-1];
-		}
+		this.message = args.pop();
 	}
 }
