@@ -68,22 +68,10 @@ import {
 import { SpamTestTest, VirusTestTest } from 'Sieve/Extensions/rfc5235';
 import { DateTest, CurrentDateTest } from 'Sieve/Extensions/rfc5260';
 import { AddHeaderCommand, DeleteHeaderCommand } from 'Sieve/Extensions/rfc5293';
-
-import {
-	ErejectCommand,
-	RejectCommand
-} from 'Sieve/Extensions/rfc5429';
-
-import {
-	MailboxExistsTest,
-	MetadataTest,
-	MetadataExistsTest
-} from 'Sieve/Extensions/rfc5490';
-
-import {
-	IncludeCommand,
-	ReturnCommand
-} from 'Sieve/Extensions/rfc6609';
+import { ErejectCommand, RejectCommand } from 'Sieve/Extensions/rfc5429';
+import { IHaveTest, ErrorCommand } from 'Sieve/Extensions/rfc5463';
+import { MailboxExistsTest, MetadataTest, MetadataExistsTest } from 'Sieve/Extensions/rfc5490';
+import { IncludeCommand, ReturnCommand } from 'Sieve/Extensions/rfc6609';
 
 const
 	AllCommands = {
@@ -136,6 +124,9 @@ const
 		// rfc5429
 		ereject: ErejectCommand,
 		reject: RejectCommand,
+		// rfc5463
+		ihave: IHaveTest,
+		error: ErrorCommand,
 		// rfc5490
 		mailboxexists: MailboxExistsTest,
 		metadata: MetadataTest,
