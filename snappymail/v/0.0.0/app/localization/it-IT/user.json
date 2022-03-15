@@ -58,10 +58,10 @@
 		"LABEL_ADV_DATE_3_MONTHS": "Meno di 3 mesi fa",
 		"LABEL_ADV_DATE_6_MONTHS": "Meno di 6 mesi fa",
 		"LABEL_ADV_DATE_YEAR": "Meno di un anno fa",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_ADV_SUBFOLDERS": "Sottocartelle",
+		"LABEL_ADV_SUBFOLDERS_NONE": "Nessuna",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "Tutte",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "Primo livello"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Passa a schermo intero",
@@ -110,14 +110,14 @@
 		"NEW_MESSAGE_NOTIFICATION": "Hai %COUNT% nuovi messaggi!",
 		"QUOTA_SIZE": "Stai usando <strong>%SIZE% (%PROC%%)<\/strong> su <strong>%LIMIT%<\/strong>",
 		"SORT": "Sort",
-		"SORT_DATE_ASC": "Date ascending",
-		"SORT_DATE_DESC": "Date descending",
-		"SORT_SIZE_ASC": "Size ascending",
-		"SORT_SIZE_DESC": "Size descending",
-		"SORT_SUBJECT_ASC": "Subject A-Z",
-		"SORT_SUBJECT_DESC": "Subject Z-A",
-		"SORT_FROM_ASC": "From A-Z",
-		"SORT_FROM_DESC": "From Z-A"
+		"SORT_DATE_ASC": "Data crescente",
+		"SORT_DATE_DESC": "Data decrescente",
+		"SORT_SIZE_ASC": "Dimensione crescente",
+		"SORT_SIZE_DESC": "Dimensione decrescente",
+		"SORT_SUBJECT_ASC": "Oggetto A-Z",
+		"SORT_SUBJECT_DESC": "Oggetto Z-A",
+		"SORT_FROM_ASC": "Da A-Z",
+		"SORT_FROM_DESC": "Da Z-A"
 	},
 	"MESSAGE": {
 		"BUTTON_EDIT": "Modifica",
@@ -258,13 +258,13 @@
 		"POPUP_GENERATE_BUTTON": "Genera",
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Firma",
-		"LABEL_ENCRYPT": "Cifra",
-		"BUTTON_DECRYPT": "Decrypt",
-		"BUTTON_VERIFY": "Verify",
+		"LABEL_ENCRYPT": "Criptazione",
+		"BUTTON_DECRYPT": "Decriptazione",
+		"BUTTON_VERIFY": "Verifica",
 		"SIGNED_MESSAGE": "Messaggio firmato con OpenPGP",
 		"ENCRYPTED_MESSAGE": "Messaggio cifrato con OpenPGP",
-		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"STORE_IN_GNUPG": "Salva nel server in GnuPG",
+		"BACKUP_ON_SERVER": "Salvataggio (criptato) sul server",
 		"GOOD_SIGNATURE": "Firma valida da %USER%",
 		"ERROR": "Errore di OpenPGP: %ERROR%"
 	},
@@ -281,7 +281,7 @@
 		"SELECT_ACTION_DISCARD": "Scarta",
 		"SELECT_FIELD_RECIPIENTS": "Destinatari (A oppure CC)",
 		"SELECT_FIELD_HEADER": "Intestazione",
-		"SELECT_FIELD_BODY": "Body",
+		"SELECT_FIELD_BODY": "Corpo",
 		"SELECT_FIELD_SIZE": "Dimensione",
 		"SELECT_TYPE_CONTAINS": "Contiene",
 		"SELECT_TYPE_NOT_CONTAINS": "Non contiene",
@@ -311,9 +311,9 @@
 		"TITLE_CREATE": "Crea Script",
 		"TITLE_EDIT": "Modifica Script",
 		"BUTTON_ADD_FILTER": "Aggiungi un filtro",
-		"BUTTON_RAW_SCRIPT": "Use Custom User Script",
-		"CAPABILITY_LABEL": "Capabilities",
-		"CHANGES_NEED_TO_BE_SAVED_DESC": "These changes need to be saved to the server."
+		"BUTTON_RAW_SCRIPT": "Utilizza script personalizzato dell'utente",
+		"CAPABILITY_LABEL": "Capacità",
+		"CHANGES_NEED_TO_BE_SAVED_DESC": "Queste modifiche devono essere salvate nel server."
 	},
 	"POPUPS_SYSTEM_FOLDERS": {
 		"TITLE_SYSTEM_FOLDERS": "Imposta le cartelle di sistema",
@@ -457,7 +457,7 @@
 		"TITLE_PRIVATE": "Privata",
 		"TITLE_PUBLIC": "Pubblica",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Salva automaticamente la bozza",
-		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
+		"GET_MAILVELOPE": "Installa l'estensione browser Mailvelope."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Aiuto sulle scorciatoie da tastiera",
@@ -492,7 +492,7 @@
 		"LABEL_CLOSE_MESSAGE": "Chiudi messaggio (senza anteprima messaggi)",
 		"LABEL_SWITCH_TO_LIST": "Sposta la selezione sulla lista messaggi",
 		"LABEL_OPEN_COMPOSE_POPUP": "Apri finestra di scrittura",
-		"LABEL_MINIMIZE_COMPOSE_POPUP": "Minimize compose popup",
+		"LABEL_MINIMIZE_COMPOSE_POPUP": "Minimizza finestra di scrittura",
 		"LABEL_OPEN_IDENTITIES_DROPDOWN": "Apri il menu di selezione delle identità",
 		"LABEL_SAVE_MESSAGE": "Salva messaggio",
 		"LABEL_SEND_MESSAGE": "Invia messaggio",
@@ -516,8 +516,8 @@
 		"INVALID_RECIPIENTS": "Destinatario non valido",
 		"CANT_SAVE_FILTERS": "Impossibile salvare i filtri",
 		"CANT_GET_FILTERS": "Impossibile caricare i filtri",
-		"CANT_ACTIVATE_FILTERS_SCRIPT": "Can't activate filters script",
-		"CANT_DELETE_FILTERS_SCRIPT": "Can't delete filters script",
+		"CANT_ACTIVATE_FILTERS_SCRIPT": "Impossibile attivare i filtri script",
+		"CANT_DELETE_FILTERS_SCRIPT": "Impossibile eliminare i filtri script",
 		"FILTERS_ARE_NOT_CORRECT": "I filtri non sono corretti",
 		"CANT_CREATE_FOLDER": "Impossibile creare la cartella",
 		"CANT_RENAME_FOLDER": "Impossibile rinominare la cartella",
