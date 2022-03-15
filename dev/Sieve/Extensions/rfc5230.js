@@ -3,6 +3,8 @@
  * https://tools.ietf.org/html/rfc6131
  */
 
+import { capa } from 'Sieve/Utils';
+
 import {
 	GrammarCommand,
 	GrammarNumber,
@@ -16,7 +18,7 @@ export class VacationCommand extends GrammarCommand
 	{
 		super();
 		this._days      = new GrammarNumber;
-//		this._seconds   = new GrammarNumber;
+		this._seconds   = new GrammarNumber;
 		this._subject   = new GrammarQuotedString;
 		this._from      = new GrammarQuotedString;
 		this.addresses  = new GrammarStringList;
@@ -31,10 +33,10 @@ export class VacationCommand extends GrammarCommand
 	toString()
 	{
 		let result = 'vacation';
-		if (0 < this._days.value) {
+		if (0 < this._seconds.value && capa.includes('vacation-seconds')) {
+			result += ' :seconds ' + this._seconds;
+		} else if (0 < this._days.value) {
 			result += ' :days ' + this._days;
-//		} else if (0 < this._seconds.value) {
-//			result += ' :seconds ' + this._seconds;
 		}
 		if (this._subject.length) {
 			result += ' :subject ' + this._subject;
@@ -55,14 +57,14 @@ export class VacationCommand extends GrammarCommand
 	}
 
 	get days()      { return this._days.value; }
-//	get seconds()   { return this._seconds.value; }
+	get seconds()   { return this._seconds.value; }
 	get subject()   { return this._subject.value; }
 	get from()      { return this._from.value; }
 	get handle()    { return this._handle.value; }
 	get reason()    { return this._reason.value; }
 
 	set days(int)    { this._days.value = int; }
-//	set seconds(int) { this._seconds.value = int; }
+	set seconds(int) { this._seconds.value = int; }
 	set subject(str) { this._subject.value = str; }
 	set from(str)    { this._from.value = str; }
 	set handle(str)  { this._handle.value = str; }
