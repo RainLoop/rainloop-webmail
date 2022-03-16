@@ -73,7 +73,7 @@ export class RequireCommand extends GrammarCommand
 
 	toString()
 	{
-		return 'require ' + this.capabilities.toString() + ';';
+		return 'require ' + this.capabilities + ';';
 	}
 
 	pushArguments(args)
@@ -109,12 +109,12 @@ export class FileIntoCommand extends GrammarCommand
 
 	toString()
 	{
-		return 'fileinto '
+		return 'fileinto'
 			// https://datatracker.ietf.org/doc/html/rfc3894
-			+ ((this.copy && capa.includes('copy')) ? ':copy ' : '')
+			+ ((this.copy && capa.includes('copy')) ? ' :copy' : '')
 			// https://datatracker.ietf.org/doc/html/rfc5490#section-3.2
-			+ ((this.create && capa.includes('mailbox')) ? ':create ' : '')
-			+ this._mailbox
+			+ ((this.create && capa.includes('mailbox')) ? ' :create' : '')
+			+ ' ' + this._mailbox
 			+ ';';
 	}
 
@@ -150,10 +150,13 @@ export class RedirectCommand extends GrammarCommand
 
 	toString()
 	{
-		return 'redirect '
+
+		return 'redirect'
+			// https://datatracker.ietf.org/doc/html/rfc6134#section-2.3
+//			+ ((this.list && capa.includes('extlists')) ? ' :list ' + this.list : '')
 			// https://datatracker.ietf.org/doc/html/rfc3894
-			+ ((this.copy && capa.includes('copy')) ? ':copy ' : '')
-			+ this._address
+			+ ((this.copy && capa.includes('copy')) ? ' :copy' : '')
+			+ ' ' + this._address
 			+ ';';
 	}
 

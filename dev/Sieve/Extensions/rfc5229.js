@@ -59,8 +59,8 @@ export class StringTest extends GrammarTest
 		return 'string'
 			+ ' ' + this.match_type
 			+ (this.comparator ? ' :comparator ' + this.comparator : '')
-			+ ' ' + this.source.toString()
-			+ ' ' + this.key_list.toString();
+			+ ' ' + this.source
+			+ ' ' + this.key_list;
 	}
 
 	pushArguments(args)

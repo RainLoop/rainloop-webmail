@@ -56,7 +56,7 @@ export class MetadataTest extends GrammarTest
 			+ (this.comparator ? ' :comparator ' + this.comparator : '')
 			+ ' ' + this.mailbox
 			+ ' ' + this.annotation_name
-			+ ' ' + this.key_list.toString();
+			+ ' ' + this.key_list;
 	}
 
 	pushArguments(args)
@@ -115,7 +115,7 @@ export class ServerMetadataTest extends GrammarTest
 			+ ' ' + this.match_type
 			+ (this.comparator ? ' :comparator ' + this.comparator : '')
 			+ ' ' + this.annotation_name
-			+ ' ' + this.key_list.toString();
+			+ ' ' + this.key_list;
 	}
 
 	pushArguments(args)

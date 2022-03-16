@@ -36,7 +36,7 @@ export class DateTest extends GrammarTest
 			+ ' ' + this.match_type
 			+ ' ' + this.header_name
 			+ ' ' + this.date_part
-			+ ' ' + this.key_list.toString();
+			+ ' ' + this.key_list;
 	}
 
 	pushArguments(args)
@@ -77,7 +77,7 @@ export class CurrentDateTest extends GrammarTest
 			+ (this.comparator ? ' :comparator ' + this.comparator : '')
 			+ ' ' + this.match_type
 			+ ' ' + this.date_part
-			+ ' ' + this.key_list.toString();
+			+ ' ' + this.key_list;
 	}
 
 	pushArguments(args)

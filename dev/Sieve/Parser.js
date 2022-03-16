@@ -213,6 +213,10 @@ export const parseScript = (script, name = 'script.sieve') => {
 		pushArg = arg => {
 			command || error('Argument not part of command');
 			let prev_arg = args[args.length-1];
+/*
+			// https://datatracker.ietf.org/doc/html/rfc6134#section-2.3
+			if (':is' === arg || ':contains' === arg || ':matches' === arg || (capa.includes('extlists') && ':list')) {
+*/
 			if (':is' === arg || ':contains' === arg || ':matches' === arg) {
 				command.match_type = arg;
 			} else if (':value' === prev_arg || ':count' === prev_arg) {

@@ -46,7 +46,7 @@ export class VacationCommand extends GrammarCommand
 //			result += ' :from ' + this.arguments[':from'];
 		}
 		if (this.addresses.length) {
-			result += ' :addresses ' + this.addresses.toString();
+			result += ' :addresses ' + this.addresses;
 		}
 		if (this.mime) {
 			result += ' :mime';

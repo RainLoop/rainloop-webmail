@@ -70,7 +70,7 @@ export class GrammarCommand
 			result += ' ' + arrayToString(this.arguments, ' ');
 		}
 		return result + (
-			this.commands.length ? ' ' + this.commands.toString() : ';'
+			this.commands.length ? ' ' + this.commands : ';'
 		);
 	}
 
@@ -240,6 +240,12 @@ export class GrammarTest
 
 	toString()
 	{
+/*
+		// https://datatracker.ietf.org/doc/html/rfc6134#section-2.3
+		if (':list' == this.match_type && !capa.includes('extlists')) {
+			throw 'Unsupported match-type ' + this.match_type;
+		}
+*/
 		return (this.identifier
 			+ (this.comparator ? ' :comparator ' + this.comparator : '')
 			+ (this.match_type ? ' ' + this.match_type : '')

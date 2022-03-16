@@ -71,8 +71,8 @@ export class AddressTest extends GrammarTest
 			+ (this.comparator ? ' :comparator ' + this.comparator : '')
 			+ ' ' + this.address_part
 			+ ' ' + this.match_type
-			+ ' ' + this.header_list.toString()
-			+ ' ' + this.key_list.toString();
+			+ ' ' + this.header_list
+			+ ' ' + this.key_list;
 	}
 
 	pushArguments(args)
@@ -108,7 +108,7 @@ export class AllOfTest extends GrammarTest
 
 	toString()
 	{
-		return 'allof ' + this.tests.toString();
+		return 'allof ' + this.tests;
 	}
 }
 
@@ -125,7 +125,7 @@ export class AnyOfTest extends GrammarTest
 
 	toString()
 	{
-		return 'anyof ' + this.tests.toString();
+		return 'anyof ' + this.tests;
 	}
 }
 
@@ -150,8 +150,8 @@ export class EnvelopeTest extends GrammarTest
 			+ (this.comparator ? ' :comparator ' + this.comparator : '')
 			+ ' ' + this.address_part
 			+ ' ' + this.match_type
-			+ ' ' + this.envelope_part.toString()
-			+ ' ' + this.key_list.toString();
+			+ ' ' + this.envelope_part
+			+ ' ' + this.key_list;
 	}
 
 	pushArguments(args)
@@ -195,7 +195,7 @@ export class ExistsTest extends GrammarTest
 				result += ' :anychild';
 			}
 		}
-		return result + ' ' + this.header_names.toString();
+		return result + ' ' + this.header_names;
 	}
 
 	pushArguments(args)
@@ -281,8 +281,8 @@ export class HeaderTest extends GrammarTest
 //			+ (this.last ? ' :last' : (this.index.value ? ' :index ' + this.index : ''))
 			+ (this.comparator ? ' :comparator ' + this.comparator : '')
 			+ ' ' + this.match_type
-			+ ' ' + this.header_names.toString()
-			+ ' ' + this.key_list.toString();
+			+ ' ' + this.header_names
+			+ ' ' + this.key_list;
 	}
 
 	pushArguments(args)

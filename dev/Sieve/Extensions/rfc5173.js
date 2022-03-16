@@ -25,7 +25,7 @@ export class BodyTest extends GrammarTest
 			+ (this.comparator ? ' :comparator ' + this.comparator : '')
 			+ ' ' + this.match_type
 			+ ' ' + this.body_transform
-			+ ' ' + this.key_list.toString();
+			+ ' ' + this.key_list;
 	}
 
 	pushArguments(args)
