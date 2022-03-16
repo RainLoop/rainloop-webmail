@@ -2,7 +2,7 @@
  * https://tools.ietf.org/html/rfc5228#section-8
  */
 
-import { capa, forEachObjectEntry } from 'Sieve/Utils';
+import { capa } from 'Sieve/Utils';
 
 import {
 	BRACKET_COMMENT,
@@ -57,14 +57,7 @@ import { BodyTest } from 'Sieve/Extensions/rfc5173';
 import { EnvironmentTest } from 'Sieve/Extensions/rfc5183';
 import { SetCommand, StringTest } from 'Sieve/Extensions/rfc5229';
 import { VacationCommand } from 'Sieve/Extensions/rfc5230';
-
-import {
-	SetFlagCommand,
-	AddFlagCommand,
-	RemoveFlagCommand,
-	HasFlagTest
-} from 'Sieve/Extensions/rfc5232';
-
+import { SetFlagCommand, AddFlagCommand, RemoveFlagCommand, HasFlagTest } from 'Sieve/Extensions/rfc5232';
 import { SpamTestTest, VirusTestTest } from 'Sieve/Extensions/rfc5235';
 import { DateTest, CurrentDateTest } from 'Sieve/Extensions/rfc5260';
 import { AddHeaderCommand, DeleteHeaderCommand } from 'Sieve/Extensions/rfc5293';
@@ -72,74 +65,81 @@ import { ErejectCommand, RejectCommand } from 'Sieve/Extensions/rfc5429';
 import { NotifyCommand, ValidNotifyMethodTest, NotifyMethodCapabilityTest } from 'Sieve/Extensions/rfc5435';
 import { IHaveTest, ErrorCommand } from 'Sieve/Extensions/rfc5463';
 import { MailboxExistsTest, MetadataTest, MetadataExistsTest } from 'Sieve/Extensions/rfc5490';
+import { ForEveryPartCommand, BreakCommand, ReplaceCommand, EncloseCommand, ExtractTextCommand } from 'Sieve/Extensions/rfc5703';
 import { IncludeCommand, ReturnCommand } from 'Sieve/Extensions/rfc6609';
 
 const
-	AllCommands = {
+	AllCommands = [
 		// Control commands
-		if: IfCommand,
-		elsif: ElsIfCommand,
-		else: ElseCommand,
-		conditional: ConditionalCommand,
-		require: RequireCommand,
-		stop: StopCommand,
+		IfCommand,
+		ElsIfCommand,
+		ElseCommand,
+		ConditionalCommand,
+		RequireCommand,
+		StopCommand,
 		// Action commands
-		discard: DiscardCommand,
-		fileinto: FileIntoCommand,
-		keep: KeepCommand,
-		redirect: RedirectCommand,
+		DiscardCommand,
+		FileIntoCommand,
+		KeepCommand,
+		RedirectCommand,
 		// Test commands
-		address: AddressTest,
-		allof: AllOfTest,
-		anyof: AnyOfTest,
-		envelope: EnvelopeTest,
-		exists: ExistsTest,
-		false: FalseTest,
-		header: HeaderTest,
-		not: NotTest,
-		size: SizeTest,
-		true: TrueTest,
+		AddressTest,
+		AllOfTest,
+		AnyOfTest,
+		EnvelopeTest,
+		ExistsTest,
+		FalseTest,
+		HeaderTest,
+		NotTest,
+		SizeTest,
+		TrueTest,
 		// rfc5173
-		body: BodyTest,
+		BodyTest,
 		// rfc5183
-		environment: EnvironmentTest,
+		EnvironmentTest,
 		// rfc5229
-		set: SetCommand,
-		string: StringTest,
+		SetCommand,
+		StringTest,
 		// rfc5230
-		vacation: VacationCommand,
+		VacationCommand,
 		// rfc5232
-		setflag: SetFlagCommand,
-		addflag: AddFlagCommand,
-		removeflag: RemoveFlagCommand,
-		hasflag: HasFlagTest,
+		SetFlagCommand,
+		AddFlagCommand,
+		RemoveFlagCommand,
+		HasFlagTest,
 		// rfc5235
-		spamtest: SpamTestTest,
-		virustest: VirusTestTest,
+		SpamTestTest,
+		VirusTestTest,
 		// rfc5260
-		date: DateTest,
-		currentdate: CurrentDateTest,
+		DateTest,
+		CurrentDateTest,
 		// rfc5293
 		AddHeaderCommand,
 		DeleteHeaderCommand,
 		// rfc5429
-		ereject: ErejectCommand,
-		reject: RejectCommand,
+		ErejectCommand,
+		RejectCommand,
 		// rfc5435
-		notify: NotifyCommand,
-		valid_notify_method: ValidNotifyMethodTest,
-		notify_method_capability: NotifyMethodCapabilityTest,
+		NotifyCommand,
+		ValidNotifyMethodTest,
+		NotifyMethodCapabilityTest,
 		// rfc5463
-		ihave: IHaveTest,
-		error: ErrorCommand,
+		IHaveTest,
+		ErrorCommand,
 		// rfc5490
-		mailboxexists: MailboxExistsTest,
-		metadata: MetadataTest,
-		metadataexists: MetadataExistsTest,
+		MailboxExistsTest,
+		MetadataTest,
+		MetadataExistsTest,
+		// rfc5703
+		ForEveryPartCommand,
+		BreakCommand,
+		ReplaceCommand,
+		EncloseCommand,
+		ExtractTextCommand,
 		// rfc6609
-		include: IncludeCommand,
-		return: ReturnCommand
-	},
+		IncludeCommand,
+		ReturnCommand
+	],
 
 	T_UNKNOWN           = 0,
 	T_STRING_LIST       = 1,
@@ -182,12 +182,12 @@ export const parseScript = (script, name = 'script.sieve') => {
 
 	// Only activate available commands
 	const Commands = {};
-	forEachObjectEntry(AllCommands, (key, cmd) => {
-		const requires = (new cmd).require;
+	AllCommands.forEach(cmd => {
+		const obj = new cmd, requires = obj.require;
 		if (!requires
 		 || (Array.isArray(requires) ? requires : [requires]).every(string => capa.includes(string))
 		) {
-			Commands[key] = cmd;
+			Commands[obj.identifier] = cmd;
 		}
 	});
 
@@ -260,13 +260,14 @@ export const parseScript = (script, name = 'script.sieve') => {
 				}
 				new_command = new Commands[value]();
 			} else {
-				console.error('Unknown command: ' + value);
 				if (command && (
 				    command instanceof ConditionalCommand
 				 || command instanceof NotTest
 				 || command.tests instanceof GrammarTestList)) {
+					console.error('Unknown test: ' + value);
 					new_command = new GrammarTest(value);
 				} else {
+					console.error('Unknown command: ' + value);
 					new_command = new GrammarCommand(value);
 				}
 			}
