@@ -2,7 +2,7 @@
  * https://tools.ietf.org/html/rfc5228#section-8
  */
 
-import { capa } from 'Sieve/Utils';
+import { capa, getMatchTypes } from 'Sieve/Utils';
 
 import {
 	BRACKET_COMMENT,
@@ -213,11 +213,7 @@ export const parseScript = (script, name = 'script.sieve') => {
 		pushArg = arg => {
 			command || error('Argument not part of command');
 			let prev_arg = args[args.length-1];
-/*
-			// https://datatracker.ietf.org/doc/html/rfc6134#section-2.3
-			if (':is' === arg || ':contains' === arg || ':matches' === arg || (capa.includes('extlists') && ':list')) {
-*/
-			if (':is' === arg || ':contains' === arg || ':matches' === arg) {
+			if (getMatchTypes(0).includes(arg)) {
 				command.match_type = arg;
 			} else if (':value' === prev_arg || ':count' === prev_arg) {
 				// Sieve relational [RFC5231] match types

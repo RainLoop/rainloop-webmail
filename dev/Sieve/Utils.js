@@ -56,4 +56,13 @@ export const
 	setError = text => {
 		serverError(true);
 		serverErrorDesc(text);
+	},
+
+	getMatchTypes = (validOnly = 1) => {
+		let result = [':is',':contains',':matches'];
+		// https://datatracker.ietf.org/doc/html/rfc6134#section-2.3
+		if (capa.includes('extlists') || !validOnly) {
+			result.push(':list');
+		}
+		return result;
 	};
