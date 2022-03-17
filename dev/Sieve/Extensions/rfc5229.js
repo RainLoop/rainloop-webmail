@@ -6,7 +6,7 @@ import {
 	GrammarCommand,
 	GrammarQuotedString,
 	GrammarStringList,
-	GrammarTest
+	TestCommand
 } from 'Sieve/Grammar';
 
 export class SetCommand extends GrammarCommand
@@ -45,7 +45,7 @@ export class SetCommand extends GrammarCommand
 	}
 }
 
-export class StringTest extends GrammarTest
+export class StringTest extends TestCommand
 {
 	constructor()
 	{

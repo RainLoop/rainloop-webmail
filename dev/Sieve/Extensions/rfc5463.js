@@ -4,7 +4,7 @@
 
 import {
 	GrammarCommand,
-	GrammarTest,
+	TestCommand,
 	GrammarQuotedString,
 	GrammarStringList
 } from 'Sieve/Grammar';
@@ -12,7 +12,7 @@ import {
 /**
  * https://datatracker.ietf.org/doc/html/rfc5463#section-4
  */
-export class IHaveTest extends GrammarTest
+export class IHaveTest extends TestCommand
 {
 	constructor()
 	{

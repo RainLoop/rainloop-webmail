@@ -56,7 +56,7 @@ export class GrammarCommand
 {
 	constructor(identifier)
 	{
-		this.identifier = identifier || this.constructor.name.toLowerCase().replace('command', '');
+		this.identifier = identifier || this.constructor.name.toLowerCase().replace(/(test|command|action)$/, '');
 		this.arguments = [];
 		this.commands = new GrammarCommands;
 	}
@@ -102,6 +102,114 @@ export class GrammarCommands extends Array
 		if (value instanceof GrammarCommand || value instanceof GrammarComment) {
 			super.push(value);
 		}
+	}
+}
+
+/**
+ * https://tools.ietf.org/html/rfc5228#section-3
+ */
+export class ControlCommand extends GrammarCommand
+{
+	constructor(identifier)
+	{
+		super(identifier);
+		this.commands = new GrammarCommands;
+	}
+
+	toString()
+	{
+		let result = this.identifier;
+		if (this.arguments.length) {
+			result += ' ' + arrayToString(this.arguments, ' ');
+		}
+		return result + (
+			this.commands.length ? ' ' + this.commands : ';'
+		);
+	}
+
+	getComparators()
+	{
+		return ['i;ascii-casemap'];
+	}
+
+	getMatchTypes()
+	{
+		return [':is', ':contains', ':matches'];
+	}
+
+	pushArguments(args)
+	{
+		this.arguments = args;
+	}
+}
+
+/**
+ * https://tools.ietf.org/html/rfc5228#section-4
+ */
+export class ActionCommand extends GrammarCommand
+{
+	constructor(identifier)
+	{
+		super(identifier);
+	}
+
+	toString()
+	{
+		let result = this.identifier;
+		if (this.arguments.length) {
+			result += ' ' + arrayToString(this.arguments, ' ');
+		}
+		return result + ';'
+	}
+}
+
+/**
+ * https://tools.ietf.org/html/rfc5228#section-5
+ */
+export class TestCommand extends GrammarCommand
+{
+	constructor(identifier)
+	{
+		super(identifier);
+		// Almost every test has a comparator and match_type, so define them here
+		this.comparator = '';
+		this.match_type = ':is';
+	}
+
+	toString()
+	{
+		// https://datatracker.ietf.org/doc/html/rfc6134#section-2.3
+		if (!getMatchTypes().includes(this.match_type)) {
+			throw 'Unsupported match-type ' + this.match_type;
+		}
+		return (this.identifier
+			+ (this.comparator ? ' :comparator ' + this.comparator : '')
+			+ (this.match_type ? ' ' + this.match_type : '')
+			+ ' ' + arrayToString(this.arguments, ' ')).trim();
+	}
+}
+
+/**
+ * https://tools.ietf.org/html/rfc5228#section-5.2
+ * https://tools.ietf.org/html/rfc5228#section-5.3
+ */
+export class GrammarTestList extends Array
+{
+	toString()
+	{
+		if (1 < this.length) {
+//			return '(\r\n\t' + arrayToString(this, ',\r\n\t') + '\r\n)';
+			return '(' + this.join(', ') + ')';
+		}
+		return this.length ? this[0] : '';
+	}
+
+	push(value)
+	{
+		if (!(value instanceof TestCommand)) {
+			throw 'Not an instanceof Test';
+		}
+		super.push(value);
 	}
 }
 
@@ -220,60 +328,4 @@ GrammarMultiLine.fromString = string => {
 		return new GrammarMultiLine(string[2].replace(/\r\n$/, ''), string[1]);
 	}
 	return new GrammarMultiLine();
-}
-
-/**
- * https://tools.ietf.org/html/rfc5228#section-5
- */
-export class GrammarTest
-{
-	constructor(identifier)
-	{
-		this.identifier = identifier || this.constructor.name.toLowerCase().replace(/test$/, '');
-		// Almost every test has a comparator and match_type, so define them here
-		this.comparator = '',
-		this.match_type = ':is',
-		this.arguments = [];
-	}
-
-	toString()
-	{
-		// https://datatracker.ietf.org/doc/html/rfc6134#section-2.3
-		if (!getMatchTypes().includes(this.match_type)) {
-			throw 'Unsupported match-type ' + this.match_type;
-		}
-		return (this.identifier
-			+ (this.comparator ? ' :comparator ' + this.comparator : '')
-			+ (this.match_type ? ' ' + this.match_type : '')
-			+ ' ' + arrayToString(this.arguments, ' ')).trim();
-	}
-
-	pushArguments(args)
-	{
-		this.arguments = args;
-	}
-}
-
-/**
- * https://tools.ietf.org/html/rfc5228#section-5.2
- * https://tools.ietf.org/html/rfc5228#section-5.3
- */
-export class GrammarTestList extends Array
-{
-	toString()
-	{
-		if (1 < this.length) {
-//			return '(\r\n\t' + arrayToString(this, ',\r\n\t') + '\r\n)';
-			return '(' + this.join(', ') + ')';
-		}
-		return this.length ? this[0] : '';
-	}
-
-	push(value)
-	{
-		if (!(value instanceof GrammarTest)) {
-			throw 'Not an instanceof Test';
-		}
-		super.push(value);
-	}
 }

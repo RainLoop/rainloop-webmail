@@ -7,7 +7,7 @@ import {
 	GrammarNumber,
 	GrammarQuotedString,
 	GrammarStringList,
-	GrammarTest
+	TestCommand
 } from 'Sieve/Grammar';
 
 /**
@@ -72,7 +72,7 @@ export class NotifyCommand extends GrammarCommand
 /**
  * https://datatracker.ietf.org/doc/html/rfc5435#section-4
  */
-export class ValidNotifyMethodTest extends GrammarTest
+export class ValidNotifyMethodTest extends TestCommand
 {
 	constructor()
 	{
@@ -94,7 +94,7 @@ export class ValidNotifyMethodTest extends GrammarTest
 /**
  * https://datatracker.ietf.org/doc/html/rfc5435#section-5
  */
-export class NotifyMethodCapabilityTest extends GrammarTest
+export class NotifyMethodCapabilityTest extends TestCommand
 {
 	constructor()
 	{

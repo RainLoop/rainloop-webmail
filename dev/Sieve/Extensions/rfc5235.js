@@ -5,10 +5,10 @@
 import {
 	GrammarQuotedString,
 	GrammarString,
-	GrammarTest
+	TestCommand
 } from 'Sieve/Grammar';
 
-export class SpamTestTest extends GrammarTest
+export class SpamTestTest extends TestCommand
 {
 	constructor()
 	{
@@ -41,7 +41,7 @@ export class SpamTestTest extends GrammarTest
 	}
 }
 
-export class VirusTestTest extends GrammarTest
+export class VirusTestTest extends TestCommand
 {
 	constructor()
 	{

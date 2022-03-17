@@ -6,10 +6,10 @@ import {
 	GrammarNumber,
 	GrammarQuotedString,
 	GrammarStringList,
-	GrammarTest
+	TestCommand
 } from 'Sieve/Grammar';
 
-export class DateTest extends GrammarTest
+export class DateTest extends TestCommand
 {
 	constructor()
 	{
@@ -58,7 +58,7 @@ export class DateTest extends GrammarTest
 	}
 }
 
-export class CurrentDateTest extends GrammarTest
+export class CurrentDateTest extends TestCommand
 {
 	constructor()
 	{

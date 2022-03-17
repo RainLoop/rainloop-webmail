@@ -8,7 +8,7 @@ import {
 	GrammarNumber,
 	GrammarString,
 	GrammarStringList,
-	GrammarTest,
+	TestCommand,
 	GrammarTestList
 } from 'Sieve/Grammar';
 
@@ -31,7 +31,7 @@ const
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.1
  */
-export class AddressTest extends GrammarTest
+export class AddressTest extends TestCommand
 {
 	constructor()
 	{
@@ -98,7 +98,7 @@ export class AddressTest extends GrammarTest
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.2
  */
-export class AllOfTest extends GrammarTest
+export class AllOfTest extends TestCommand
 {
 	constructor()
 	{
@@ -115,7 +115,7 @@ export class AllOfTest extends GrammarTest
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.3
  */
-export class AnyOfTest extends GrammarTest
+export class AnyOfTest extends TestCommand
 {
 	constructor()
 	{
@@ -132,7 +132,7 @@ export class AnyOfTest extends GrammarTest
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.4
  */
-export class EnvelopeTest extends GrammarTest
+export class EnvelopeTest extends TestCommand
 {
 	constructor()
 	{
@@ -169,7 +169,7 @@ export class EnvelopeTest extends GrammarTest
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.5
  */
-export class ExistsTest extends GrammarTest
+export class ExistsTest extends TestCommand
 {
 	constructor()
 	{
@@ -214,7 +214,7 @@ export class ExistsTest extends GrammarTest
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.6
  */
-export class FalseTest extends GrammarTest
+export class FalseTest extends TestCommand
 {
 	toString()
 	{
@@ -225,7 +225,7 @@ export class FalseTest extends GrammarTest
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.7
  */
-export class HeaderTest extends GrammarTest
+export class HeaderTest extends TestCommand
 {
 	constructor()
 	{
@@ -304,12 +304,12 @@ export class HeaderTest extends GrammarTest
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.8
  */
-export class NotTest extends GrammarTest
+export class NotTest extends TestCommand
 {
 	constructor()
 	{
 		super();
-		this.test = new GrammarTest;
+		this.test = new TestCommand;
 	}
 
 	toString()
@@ -326,7 +326,7 @@ export class NotTest extends GrammarTest
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.9
  */
-export class SizeTest extends GrammarTest
+export class SizeTest extends TestCommand
 {
 	constructor()
 	{
@@ -355,7 +355,7 @@ export class SizeTest extends GrammarTest
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.10
  */
-export class TrueTest extends GrammarTest
+export class TrueTest extends TestCommand
 {
 	toString()
 	{

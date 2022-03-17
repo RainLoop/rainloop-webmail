@@ -7,7 +7,7 @@ import {
 	GrammarQuotedString,
 	GrammarString,
 	GrammarStringList,
-	GrammarTest
+	TestCommand
 } from 'Sieve/Grammar';
 
 class FlagCommand extends GrammarCommand
@@ -63,7 +63,7 @@ export class RemoveFlagCommand extends FlagCommand
 {
 }
 
-export class HasFlagTest extends GrammarTest
+export class HasFlagTest extends TestCommand
 {
 	constructor()
 	{

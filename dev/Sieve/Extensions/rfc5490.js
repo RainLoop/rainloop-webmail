@@ -3,7 +3,7 @@
  */
 
 import {
-	GrammarTest,
+	TestCommand,
 	GrammarQuotedString,
 	GrammarStringList
 } from 'Sieve/Grammar';
@@ -11,7 +11,7 @@ import {
 /**
  * https://datatracker.ietf.org/doc/html/rfc5490#section-3.1
  */
-export class MailboxExistsTest extends GrammarTest
+export class MailboxExistsTest extends TestCommand
 {
 	constructor()
 	{
@@ -37,7 +37,7 @@ export class MailboxExistsTest extends GrammarTest
 /**
  * https://datatracker.ietf.org/doc/html/rfc5490#section-3.3
  */
-export class MetadataTest extends GrammarTest
+export class MetadataTest extends TestCommand
 {
 	constructor()
 	{
@@ -70,7 +70,7 @@ export class MetadataTest extends GrammarTest
 /**
  * https://datatracker.ietf.org/doc/html/rfc5490#section-3.4
  */
-export class MetadataExistsTest extends GrammarTest
+export class MetadataExistsTest extends TestCommand
 {
 	constructor()
 	{
@@ -98,7 +98,7 @@ export class MetadataExistsTest extends GrammarTest
 /**
  * https://datatracker.ietf.org/doc/html/rfc5490#section-3.3
  */
-export class ServerMetadataTest extends GrammarTest
+export class ServerMetadataTest extends TestCommand
 {
 	constructor()
 	{
@@ -128,7 +128,7 @@ export class ServerMetadataTest extends GrammarTest
 /**
  * https://datatracker.ietf.org/doc/html/rfc5490#section-3.4
  */
-export class ServerMetadataExistsTest extends GrammarTest
+export class ServerMetadataExistsTest extends TestCommand
 {
 	constructor()
 	{

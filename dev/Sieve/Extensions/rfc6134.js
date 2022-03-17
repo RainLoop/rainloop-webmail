@@ -4,13 +4,13 @@
 
 import {
 	GrammarStringList,
-	GrammarTest
+	TestCommand
 } from 'Sieve/Grammar';
 
 /**
  * https://datatracker.ietf.org/doc/html/rfc6134#section-2.7
  */
-export class ValidExtListTest extends GrammarTest
+export class ValidExtListTest extends TestCommand
 {
 	constructor()
 	{

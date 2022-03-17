@@ -5,10 +5,10 @@
 import {
 	GrammarString,
 	GrammarStringList,
-	GrammarTest
+	TestCommand
 } from 'Sieve/Grammar';
 
-export class BodyTest extends GrammarTest
+export class BodyTest extends TestCommand
 {
 	constructor()
 	{

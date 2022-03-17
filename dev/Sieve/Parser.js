@@ -23,22 +23,25 @@ import {
 	GrammarNumber,
 	GrammarQuotedString,
 	GrammarStringList,
-	GrammarTest,
+	TestCommand,
 	GrammarTestList
 } from 'Sieve/Grammar';
 
 import {
-	ConditionalCommand,
 	DiscardCommand,
+	FileIntoCommand,
+	KeepCommand,
+	RedirectCommand
+} from 'Sieve/Commands/Actions';
+
+import {
+	ConditionalCommand,
 	ElsIfCommand,
 	ElseCommand,
-	FileIntoCommand,
 	IfCommand,
-	KeepCommand,
-	RedirectCommand,
 	RequireCommand,
 	StopCommand
-} from 'Sieve/Commands';
+} from 'Sieve/Commands/Controls';
 
 import {
 	AddressTest,
@@ -51,7 +54,7 @@ import {
 	NotTest,
 	SizeTest,
 	TrueTest
-} from 'Sieve/Tests';
+} from 'Sieve/Commands/Tests';
 
 import { BodyTest } from 'Sieve/Extensions/rfc5173';
 import { EnvironmentTest } from 'Sieve/Extensions/rfc5183';
@@ -265,14 +268,14 @@ export const parseScript = (script, name = 'script.sieve') => {
 				 || command instanceof NotTest
 				 || command.tests instanceof GrammarTestList)) {
 					console.error('Unknown test: ' + value);
-					new_command = new GrammarTest(value);
+					new_command = new TestCommand(value);
 				} else {
 					console.error('Unknown command: ' + value);
 					new_command = new GrammarCommand(value);
 				}
 			}
 
-			if (new_command instanceof GrammarTest) {
+			if (new_command instanceof TestCommand) {
 				if (command instanceof ConditionalCommand || command instanceof NotTest) {
 					// if/elsif/else new_command
 					// not new_command

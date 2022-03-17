@@ -1,102 +1,20 @@
 /**
- * https://tools.ietf.org/html/rfc5228#section-2.9
+ * https://datatracker.ietf.org/doc/html/rfc5228#section-4
+ * Action commands do not take tests or blocks as arguments.
  */
 
 import { capa } from 'Sieve/Utils';
 
 import {
-	GrammarCommand,
+	ActionCommand,
 	GrammarString,
-	GrammarStringList,
 	GrammarQuotedString
 } from 'Sieve/Grammar';
 
 /**
- * https://tools.ietf.org/html/rfc5228#section-3.1
- * Usage:
- *    if <test1: test> <block1: block>
- *    elsif <test2: test> <block2: block>
- *    else <block3: block>
- */
-export class ConditionalCommand extends GrammarCommand
-{
-	constructor()
-	{
-		super();
-		this.test = null;
-	}
-
-	toString()
-	{
-		return this.identifier + ' ' + this.test + ' ' + this.commands;
-	}
-/*
-	public function pushArguments(array $args): void
-	{
-		args.forEach((arg, i) => {
-			if (':' === args[i-1][0]) {
-				this[args[i-1].replace(':','_')].value = arg.value;
-			}
-		});
-		print_r($args);
-		exit;
-	}
-*/
-}
-
-export class IfCommand extends ConditionalCommand
-{
-}
-
-export class ElsIfCommand extends ConditionalCommand
-{
-}
-
-export class ElseCommand extends ConditionalCommand
-{
-	toString()
-	{
-		return this.identifier + ' ' + this.commands;
-	}
-}
-
-/**
- * https://tools.ietf.org/html/rfc5228#section-3.2
- */
-export class RequireCommand extends GrammarCommand
-{
-	constructor()
-	{
-		super();
-		this.capabilities = new GrammarStringList();
-	}
-
-	toString()
-	{
-		return 'require ' + this.capabilities + ';';
-	}
-
-	pushArguments(args)
-	{
-		if (args[0] instanceof GrammarStringList) {
-			this.capabilities = args[0];
-		} else if (args[0] instanceof GrammarQuotedString) {
-			this.capabilities.push(args[0]);
-		}
-	}
-}
-
-/**
- * https://tools.ietf.org/html/rfc5228#section-3.3
- */
-export class StopCommand extends GrammarCommand
-{
-}
-
-/**
  * https://tools.ietf.org/html/rfc5228#section-4.1
  */
-export class FileIntoCommand extends GrammarCommand
+export class FileIntoCommand extends ActionCommand
 {
 	constructor()
 	{
@@ -139,7 +57,7 @@ export class FileIntoCommand extends GrammarCommand
 /**
  * https://tools.ietf.org/html/rfc5228#section-4.2
  */
-export class RedirectCommand extends GrammarCommand
+export class RedirectCommand extends ActionCommand
 {
 	constructor()
 	{
@@ -181,13 +99,13 @@ export class RedirectCommand extends GrammarCommand
 /**
  * https://tools.ietf.org/html/rfc5228#section-4.3
  */
-export class KeepCommand extends GrammarCommand
+export class KeepCommand extends ActionCommand
 {
 }
 
 /**
  * https://tools.ietf.org/html/rfc5228#section-4.4
  */
-export class DiscardCommand extends GrammarCommand
+export class DiscardCommand extends ActionCommand
 {
 }
