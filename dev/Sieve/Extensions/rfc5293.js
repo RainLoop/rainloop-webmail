@@ -3,14 +3,14 @@
  */
 
 import {
-	GrammarCommand,
+	ActionCommand,
 	GrammarNumber,
 	GrammarQuotedString,
 	GrammarString,
 	GrammarStringList
 } from 'Sieve/Grammar';
 
-export class AddHeaderCommand extends GrammarCommand
+export class AddHeaderCommand extends ActionCommand
 {
 	constructor()
 	{
@@ -38,7 +38,7 @@ export class AddHeaderCommand extends GrammarCommand
 	}
 }
 
-export class DeleteHeaderCommand extends GrammarCommand
+export class DeleteHeaderCommand extends ActionCommand
 {
 	constructor()
 	{

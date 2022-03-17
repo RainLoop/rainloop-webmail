@@ -3,7 +3,7 @@
  */
 
 import {
-	GrammarCommand,
+	ActionCommand,
 	GrammarNumber,
 	GrammarQuotedString,
 	GrammarStringList,
@@ -13,7 +13,7 @@ import {
 /**
  * https://datatracker.ietf.org/doc/html/rfc5435#section-3
  */
-export class NotifyCommand extends GrammarCommand
+export class NotifyCommand extends ActionCommand
 {
 	constructor()
 	{

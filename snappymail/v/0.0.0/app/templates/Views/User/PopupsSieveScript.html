@@ -20,13 +20,23 @@
 	<div class="alert alert-error g-ui-user-select-none" style="white-space:pre" data-bind="visible: $root.errorText, text: $root.errorText" data-icon="⚠"></div>
 
 	<div class="control-group" data-bind="visible: $root.rawActive">
-		<div>
-			<pre>
-				<b data-i18n="POPUPS_SIEVE_SCRIPT/CAPABILITY_LABEL"></b>:
-				<span data-bind="text: $root.sieveCapabilities"></span>
-			</pre>
-			<textarea style="width:100%;height:60vh" data-bind="value: body, valueUpdate: 'input'"></textarea>
-		</div>
+		<details>
+			<summary data-i18n="POPUPS_SIEVE_SCRIPT/CAPABILITY_LABEL"></summary>
+			<pre data-bind="text: $root.sieveCapabilities"></pre>
+		</details>
+		<details>
+			<summary>Actions</summary>
+			<pre data-bind="text: $root.availableActions"></pre>
+		</details>
+		<details>
+			<summary>Controls</summary>
+			<pre data-bind="text: $root.availableControls"></pre>
+		</details>
+		<details>
+			<summary>Tests</summary>
+			<pre data-bind="text: $root.availableTests"></pre>
+		</details>
+		<textarea style="width:100%;height:60vh" data-bind="value: body, valueUpdate: 'input'"></textarea>
 	</div>
 	<div data-bind="visible: !$root.rawActive()">
 		<table class="table table-hover list-table filters-list g-ui-user-select-none"

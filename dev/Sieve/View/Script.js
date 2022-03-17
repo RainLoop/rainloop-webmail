@@ -5,6 +5,8 @@ import { FilterPopupView } from 'Sieve/View/Filter';
 
 import { parseScript } from 'Sieve/Parser';
 
+import { availableActions, availableControls, availableTests } from 'Sieve/Commands';
+
 import {
 	capa,
 	scripts,
@@ -21,10 +23,14 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 			errorText: '',
 			rawActive: false,
 			allowToggle: false,
-			script: null
+			script: null,
+
+			sieveCapabilities: '',
+			availableActions: '',
+			availableControls: '',
+			availableTests: ''
 		});
 
-		this.sieveCapabilities = capa.join(' ');
 		this.saving = false;
 
 		this.filterForDeletion = ko.observable(null).askDeleteHelper();
@@ -137,6 +143,11 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 
 	beforeShow(oScript) {
 //	onShow(oScript) {
+		this.sieveCapabilities(capa.join(' '));
+		this.availableActions([...Object.keys(availableActions())].join(', '));
+		this.availableControls([...Object.keys(availableControls())].join(', '));
+		this.availableTests([...Object.keys(availableTests())].join(', '));
+
 		oScript = oScript || new SieveScriptModel();
 		let raw = !oScript.allowFilters();
 		this.script(oScript);

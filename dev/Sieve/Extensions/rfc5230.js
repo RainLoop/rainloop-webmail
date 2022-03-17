@@ -6,13 +6,13 @@
 import { capa } from 'Sieve/Utils';
 
 import {
-	GrammarCommand,
+	ActionCommand,
 	GrammarNumber,
 	GrammarQuotedString,
 	GrammarStringList
 } from 'Sieve/Grammar';
 
-export class VacationCommand extends GrammarCommand
+export class VacationCommand extends ActionCommand
 {
 	constructor()
 	{

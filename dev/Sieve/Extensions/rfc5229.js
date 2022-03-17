@@ -3,13 +3,13 @@
  */
 
 import {
-	GrammarCommand,
+	ActionCommand,
 	GrammarQuotedString,
 	GrammarStringList,
 	TestCommand
 } from 'Sieve/Grammar';
 
-export class SetCommand extends GrammarCommand
+export class SetCommand extends ActionCommand
 {
 	constructor()
 	{

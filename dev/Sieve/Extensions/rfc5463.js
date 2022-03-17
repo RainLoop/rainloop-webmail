@@ -3,7 +3,7 @@
  */
 
 import {
-	GrammarCommand,
+	ControlCommand,
 	TestCommand,
 	GrammarQuotedString,
 	GrammarStringList
@@ -36,7 +36,7 @@ export class IHaveTest extends TestCommand
 /**
  * https://datatracker.ietf.org/doc/html/rfc5463#section-5
  */
-export class ErrorCommand extends GrammarCommand
+export class ErrorCommand extends ControlCommand
 {
 	constructor()
 	{

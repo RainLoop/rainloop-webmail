@@ -2,7 +2,7 @@
  * https://tools.ietf.org/html/rfc5228#section-8
  */
 
-import { capa, getMatchTypes } from 'Sieve/Utils';
+import { getMatchTypes } from 'Sieve/Utils';
 
 import {
 	BRACKET_COMMENT,
@@ -27,123 +27,11 @@ import {
 	GrammarTestList
 } from 'Sieve/Grammar';
 
-import {
-	DiscardCommand,
-	FileIntoCommand,
-	KeepCommand,
-	RedirectCommand
-} from 'Sieve/Commands/Actions';
-
-import {
-	ConditionalCommand,
-	ElsIfCommand,
-	ElseCommand,
-	IfCommand,
-	RequireCommand,
-	StopCommand
-} from 'Sieve/Commands/Controls';
-
-import {
-	AddressTest,
-	AllOfTest,
-	AnyOfTest,
-	EnvelopeTest,
-	ExistsTest,
-	FalseTest,
-	HeaderTest,
-	NotTest,
-	SizeTest,
-	TrueTest
-} from 'Sieve/Commands/Tests';
-
-import { BodyTest } from 'Sieve/Extensions/rfc5173';
-import { EnvironmentTest } from 'Sieve/Extensions/rfc5183';
-import { SetCommand, StringTest } from 'Sieve/Extensions/rfc5229';
-import { VacationCommand } from 'Sieve/Extensions/rfc5230';
-import { SetFlagCommand, AddFlagCommand, RemoveFlagCommand, HasFlagTest } from 'Sieve/Extensions/rfc5232';
-import { SpamTestTest, VirusTestTest } from 'Sieve/Extensions/rfc5235';
-import { DateTest, CurrentDateTest } from 'Sieve/Extensions/rfc5260';
-import { AddHeaderCommand, DeleteHeaderCommand } from 'Sieve/Extensions/rfc5293';
-import { ErejectCommand, RejectCommand } from 'Sieve/Extensions/rfc5429';
-import { NotifyCommand, ValidNotifyMethodTest, NotifyMethodCapabilityTest } from 'Sieve/Extensions/rfc5435';
-import { IHaveTest, ErrorCommand } from 'Sieve/Extensions/rfc5463';
-import { MailboxExistsTest, MetadataTest, MetadataExistsTest } from 'Sieve/Extensions/rfc5490';
-import { ForEveryPartCommand, BreakCommand, ReplaceCommand, EncloseCommand, ExtractTextCommand } from 'Sieve/Extensions/rfc5703';
-import { IncludeCommand, ReturnCommand } from 'Sieve/Extensions/rfc6609';
+import { availableCommands } from 'Sieve/Commands';
+import { ConditionalCommand, RequireCommand } from 'Sieve/Commands/Controls';
+import { NotTest } from 'Sieve/Commands/Tests';
 
 const
-	AllCommands = [
-		// Control commands
-		IfCommand,
-		ElsIfCommand,
-		ElseCommand,
-		ConditionalCommand,
-		RequireCommand,
-		StopCommand,
-		// Action commands
-		DiscardCommand,
-		FileIntoCommand,
-		KeepCommand,
-		RedirectCommand,
-		// Test commands
-		AddressTest,
-		AllOfTest,
-		AnyOfTest,
-		EnvelopeTest,
-		ExistsTest,
-		FalseTest,
-		HeaderTest,
-		NotTest,
-		SizeTest,
-		TrueTest,
-		// rfc5173
-		BodyTest,
-		// rfc5183
-		EnvironmentTest,
-		// rfc5229
-		SetCommand,
-		StringTest,
-		// rfc5230
-		VacationCommand,
-		// rfc5232
-		SetFlagCommand,
-		AddFlagCommand,
-		RemoveFlagCommand,
-		HasFlagTest,
-		// rfc5235
-		SpamTestTest,
-		VirusTestTest,
-		// rfc5260
-		DateTest,
-		CurrentDateTest,
-		// rfc5293
-		AddHeaderCommand,
-		DeleteHeaderCommand,
-		// rfc5429
-		ErejectCommand,
-		RejectCommand,
-		// rfc5435
-		NotifyCommand,
-		ValidNotifyMethodTest,
-		NotifyMethodCapabilityTest,
-		// rfc5463
-		IHaveTest,
-		ErrorCommand,
-		// rfc5490
-		MailboxExistsTest,
-		MetadataTest,
-		MetadataExistsTest,
-		// rfc5703
-		ForEveryPartCommand,
-		BreakCommand,
-		ReplaceCommand,
-		EncloseCommand,
-		ExtractTextCommand,
-		// rfc6609
-		IncludeCommand,
-		ReturnCommand
-	],
-
 	T_UNKNOWN           = 0,
 	T_STRING_LIST       = 1,
 	T_QUOTED_STRING     = 2,
@@ -184,15 +72,7 @@ export const parseScript = (script, name = 'script.sieve') => {
 	script = script.replace(/\r?\n/g, '\r\n');
 
 	// Only activate available commands
-	const Commands = {};
-	AllCommands.forEach(cmd => {
-		const obj = new cmd, requires = obj.require;
-		if (!requires
-		 || (Array.isArray(requires) ? requires : [requires]).every(string => capa.includes(string))
-		) {
-			Commands[obj.identifier] = cmd;
-		}
-	});
+	const Commands = availableCommands();
 
 	let match,
 		line = 1,

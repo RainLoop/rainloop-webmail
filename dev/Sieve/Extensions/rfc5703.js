@@ -3,7 +3,8 @@
  */
 
 import {
-	GrammarCommand,
+	ActionCommand,
+	ControlCommand,
 	GrammarNumber,
 	GrammarQuotedString,
 	GrammarString,
@@ -13,7 +14,7 @@ import {
 /**
  * https://datatracker.ietf.org/doc/html/rfc5703#section-3
  */
-export class ForEveryPartCommand extends GrammarCommand
+export class ForEveryPartCommand extends ControlCommand
 {
 	constructor()
 	{
@@ -57,7 +58,7 @@ export class BreakCommand extends ForEveryPartCommand
 /**
  * https://datatracker.ietf.org/doc/html/rfc5703#section-5
  */
-export class ReplaceCommand extends GrammarCommand
+export class ReplaceCommand extends ActionCommand
 {
 	constructor()
 	{
@@ -103,7 +104,7 @@ export class ReplaceCommand extends GrammarCommand
 /**
  * https://datatracker.ietf.org/doc/html/rfc5703#section-6
  */
-export class EncloseCommand extends GrammarCommand
+export class EncloseCommand extends ActionCommand
 {
 	constructor()
 	{
@@ -140,7 +141,7 @@ export class EncloseCommand extends GrammarCommand
 /**
  * https://datatracker.ietf.org/doc/html/rfc5703#section-7
  */
-export class ExtractTextCommand extends GrammarCommand
+export class ExtractTextCommand extends ActionCommand
 {
 	constructor()
 	{

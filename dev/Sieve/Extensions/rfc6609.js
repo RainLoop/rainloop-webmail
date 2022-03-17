@@ -3,11 +3,12 @@
  */
 
 import {
-	GrammarCommand,
-	GrammarQuotedString
+	ControlCommand,
+	GrammarQuotedString,
+	GrammarStringList
 } from 'Sieve/Grammar';
 
-export class IncludeCommand extends GrammarCommand
+export class IncludeCommand extends ControlCommand
 {
 	constructor()
 	{
@@ -22,7 +23,7 @@ export class IncludeCommand extends GrammarCommand
 
 	toString()
 	{
-		return this.identifier
+		return 'include'
 			+ (this.global ? ' :global' : '')
 			+ (this.once ? ' :once' : '')
 			+ (this.optional ? ' :optional' : '')
@@ -41,7 +42,28 @@ export class IncludeCommand extends GrammarCommand
 	}
 }
 
-export class ReturnCommand extends GrammarCommand
+export class ReturnCommand extends ControlCommand
 {
 	get require() { return 'include'; }
+}
+
+export class GlobalCommand extends ControlCommand
+{
+	constructor()
+	{
+		super();
+		this.value = new GrammarStringList;
+	}
+
+	get require() { return ['include', 'variables']; }
+
+	toString()
+	{
+		return 'global ' + this.value + ';';
+	}
+
+	pushArguments(args)
+	{
+		this.value = args.pop();
+	}
 }

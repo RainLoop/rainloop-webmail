@@ -3,7 +3,7 @@
  */
 
 import {
-	GrammarCommand,
+	ActionCommand,
 	GrammarQuotedString,
 	GrammarString
 } from 'Sieve/Grammar';
@@ -11,7 +11,7 @@ import {
 /**
  * https://tools.ietf.org/html/rfc5429#section-2.1
  */
-export class ErejectCommand extends GrammarCommand
+export class ErejectCommand extends ActionCommand
 {
 	constructor()
 	{
@@ -47,7 +47,7 @@ export class ErejectCommand extends GrammarCommand
 /**
  * https://tools.ietf.org/html/rfc5429#section-2.2
  */
-export class RejectCommand extends GrammarCommand
+export class RejectCommand extends ActionCommand
 {
 	constructor()
 	{

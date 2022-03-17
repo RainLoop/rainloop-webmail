@@ -4,7 +4,7 @@
  */
 
 import {
-	GrammarCommand,
+	ControlCommand,
 	GrammarStringList,
 	GrammarQuotedString
 } from 'Sieve/Grammar';
@@ -16,7 +16,7 @@ import {
  *    elsif <test2: test> <block2: block>
  *    else <block3: block>
  */
-export class ConditionalCommand extends GrammarCommand
+export class ConditionalCommand extends ControlCommand
 {
 	constructor()
 	{
@@ -61,7 +61,7 @@ export class ElseCommand extends ConditionalCommand
 /**
  * https://tools.ietf.org/html/rfc5228#section-3.2
  */
-export class RequireCommand extends GrammarCommand
+export class RequireCommand extends ControlCommand
 {
 	constructor()
 	{
@@ -87,6 +87,6 @@ export class RequireCommand extends GrammarCommand
 /**
  * https://tools.ietf.org/html/rfc5228#section-3.3
  */
-export class StopCommand extends GrammarCommand
+export class StopCommand extends ControlCommand
 {
 }
