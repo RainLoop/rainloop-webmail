@@ -40,86 +40,83 @@ class Actions
 	/**
 	 * @var \MailSo\Base\Http
 	 */
-	private $oHttp = null;
+	protected $oHttp = null;
 
 	/**
 	 * @var array
 	 */
-	private $aCurrentActionParams = array();
+	protected $aCurrentActionParams = array();
 
 	/**
 	 * @var \MailSo\Mail\MailClient
 	 */
-	private $oMailClient = null;
+	protected $oMailClient = null;
 
 	/**
 	 * @var \RainLoop\Plugins\Manager
 	 */
-	private $oPlugins = null;
+	protected $oPlugins = null;
 
 	/**
 	 * @var \MailSo\Log\Logger
 	 */
-	private $oLogger = null;
+	protected $oLogger = null;
 
 	/**
 	 * @var \MailSo\Log\Logger
 	 */
-	private $oLoggerAuth;
+	protected $oLoggerAuth;
 
 	/**
 	 * @var array of \MailSo\Cache\CacheClient
 	 */
-	private $aCachers = array();
+	protected $aCachers = array();
 
 	/**
 	 * @var \RainLoop\Providers\Storage
 	 */
-	private $oStorageProvider = null;
+	protected $oStorageProvider = null;
 
 	/**
 	 * @var \RainLoop\Providers\Storage
 	 */
-	private $oLocalStorageProvider = null;
+	protected $oLocalStorageProvider = null;
 
 	/**
 	 * @var \RainLoop\Providers\Files
 	 */
-	private $oFilesProvider = null;
+	protected $oFilesProvider = null;
 
 	/**
 	 * @var \RainLoop\Providers\Domain
 	 */
-	private $oDomainProvider = null;
+	protected $oDomainProvider = null;
 
 	/**
 	 * @var \RainLoop\Providers\Settings
 	 */
-	private $oSettingsProvider = null;
+	protected $oSettingsProvider = null;
 
 	/**
 	 * @var \RainLoop\Providers\Settings
 	 */
-	private $oLocalSettingsProvider = null;
+	protected $oLocalSettingsProvider = null;
 
 	/**
 	 * @var \RainLoop\Providers\AddressBook
 	 */
-	private $oAddressBookProvider = null;
+	protected $oAddressBookProvider = null;
 
 	/**
 	 * @var \RainLoop\Config\Application
 	 */
-	private $oConfig = null;
+	protected $oConfig = null;
 
 	/**
 	 * @var bool
 	 */
-	private $bIsJson = false;
+	protected $bIsJson = false;
 
-	/**
-	 * @access private
-	 */
 	function __construct()
 	{
 		$this->oConfig = API::Config();
@@ -210,7 +207,7 @@ class Actions
 	/**
 	 * @return mixed
 	 */
-	private function fabrica(string $sName, ?Model\Account $oAccount = null)
+	protected function fabrica(string $sName, ?Model\Account $oAccount = null)
 	{
 		$mResult = null;
 		$this->oPlugins->RunHook('main.fabrica', array($sName, &$mResult), false);
@@ -295,7 +292,7 @@ class Actions
 		}
 	}
 
-	private function compileLogParams(string $sLine, ?Model\Account $oAccount = null, bool $bUrlEncode = false, array $aAdditionalParams = array()): string
+	protected function compileLogParams(string $sLine, ?Model\Account $oAccount = null, bool $bUrlEncode = false, array $aAdditionalParams = array()): string
 	{
 		$aClear = array();
 
@@ -402,7 +399,7 @@ class Actions
 		return $sLine;
 	}
 
-	private function compileLogFileName(string $sFileName): string
+	protected function compileLogFileName(string $sFileName): string
 	{
 		$sFileName = \trim($sFileName);
 
@@ -958,7 +955,7 @@ class Actions
 		}
 	}
 
-	private function getAdditionalLogParamsByUserLogin(string $sLogin, bool $bAdmin = false): array
+	protected function getAdditionalLogParamsByUserLogin(string $sLogin, bool $bAdmin = false): array
 	{
 		$sHost = $bAdmin ? $this->Http()->GetHost(false, true, true) : \MailSo\Base\Utils::GetDomainFromEmail($sLogin);
 		return array(
@@ -996,7 +993,7 @@ class Actions
 		return \MailSo\Base\Utils::ClearFileName(\MailSo\Base\Utils::Utf8Clear($sClearedFileName));
 	}
 
-	private function getUploadErrorMessageByCode(int $iError, int &$iClientError): string
+	protected function getUploadErrorMessageByCode(int $iError, int &$iClientError): string
 	{
 		$sError = '';
 		$iClientError = UploadError::NORMAL;
@@ -1236,7 +1233,7 @@ class Actions
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	private function initMailClientConnection(): ?Model\Account
+	protected function initMailClientConnection(): ?Model\Account
 	{
 		$oAccount = null;
 
@@ -1257,7 +1254,7 @@ class Actions
 		return $oAccount;
 	}
 
-	private function getDecodedRawKeyValue(string $sRawKey): array
+	protected function getDecodedRawKeyValue(string $sRawKey): array
 	{
 		return empty($sRawKey) ? array() : Utils::DecodeKeyValuesQ($sRawKey);
 	}
