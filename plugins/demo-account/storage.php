@@ -9,7 +9,7 @@ class DemoStorage extends \RainLoop\Providers\Storage\FileStorage
 	/**
 	 * @param \RainLoop\Model\Account|string|null $mAccount
 	 */
-	public function GenerateFilePath($mAccount, int $iStorageType, bool $bMkDir = false, bool $bForDeleteAction = false) : string
+	public function GenerateFilePath($mAccount, int $iStorageType, bool $bMkDir = false) : string
 	{
 		$sEmail = '';
 		if ($mAccount instanceof \RainLoop\Model\MainAccount) {
@@ -18,7 +18,7 @@ class DemoStorage extends \RainLoop\Providers\Storage\FileStorage
 			$sEmail = $mAccount;
 		}
 		if ($sEmail != $this->sDemoEmail) {
-			return parent::GenerateFilePath($mAccount, $iStorageType, $bMkDir, $bForDeleteAction);
+			return parent::GenerateFilePath($mAccount, $iStorageType, $bMkDir);
 		}
 
 		$sDataPath = "{$this->sDataPath}/demo";

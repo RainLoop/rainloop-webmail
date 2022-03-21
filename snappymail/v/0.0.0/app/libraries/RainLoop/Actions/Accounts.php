@@ -225,7 +225,7 @@ trait Accounts
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $this->StorageProvider()->Put(
-			$this->getMainAccountFromToken(),
+			$this->getAccountFromToken(),
 			StorageType::CONFIG,
 			'identities_order',
 			\json_encode(array(
@@ -280,7 +280,7 @@ trait Accounts
 
 		if ($old) {
 			$this->StorageProvider()->Put(
-				$this->getMainAccountFromToken(),
+				$oAccount,
 				StorageType::CONFIG,
 				'identities_order',
 				\json_encode(array('Identities' => empty($order['Identities']) ? [] : $order['Identities']))

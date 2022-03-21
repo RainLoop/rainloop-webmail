@@ -87,7 +87,7 @@ export class UserSettingsAccounts /*extends AbstractViewSettings*/ {
 	accountsAndIdentitiesAfterMove() {
 		Remote.request('AccountsAndIdentitiesSortOrder', null, {
 			Accounts: AccountUserStore.getEmailAddresses().filter(v => v != SettingsGet('MainEmail')),
-			Identities: IdentityUserStore.getIDS()
+			Identities: IdentityUserStore.map(item => (item ? item.id() : ""))
 		});
 	}
 

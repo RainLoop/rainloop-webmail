@@ -77,7 +77,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	 */
 	public function DeleteStorage($mAccount) : bool
 	{
-		$sPath = $this->generateFileName($mAccount, StorageType::CONFIG, '', false, true);
+		$sPath = $this->generateFileName($mAccount, StorageType::CONFIG, '');
 		if ($sPath && \is_dir($sPath)) {
 			\MailSo\Base\Utils::RecRmDir($sPath);
 		}
@@ -89,7 +89,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 		return $this->bLocal;
 	}
 
-	public function GenerateFilePath($mAccount, int $iStorageType, bool $bMkDir = false, bool $bForDeleteAction = false) : string
+	public function GenerateFilePath($mAccount, int $iStorageType, bool $bMkDir = false) : string
 	{
 		$sEmail = $sSubFolder = '';
 		if (null === $mAccount) {
@@ -98,9 +98,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 			$sEmail = $mAccount->Email();
 		} else if ($mAccount instanceof \RainLoop\Model\AdditionalAccount) {
 			$sEmail = $mAccount->ParentEmail();
-			if ($this->bLocal && !$bForDeleteAction) {
-				$sSubFolder = $mAccount->Email();
-			}
+			$sSubFolder = $mAccount->Email();
 		} else if (\is_string($mAccount)) {
 			$sEmail = $mAccount;
 		}
@@ -153,9 +151,9 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	/**
 	 * @param \RainLoop\Model\Account|string|null $mAccount
 	 */
-	protected function generateFileName($mAccount, int $iStorageType, string $sKey, bool $bMkDir = false, bool $bForDeleteAction = false) : string
+	protected function generateFileName($mAccount, int $iStorageType, string $sKey, bool $bMkDir = false) : string
 	{
-		$sFilePath = $this->GenerateFilePath($mAccount, $iStorageType, $bMkDir, $bForDeleteAction);
+		$sFilePath = $this->GenerateFilePath($mAccount, $iStorageType, $bMkDir);
 		if ($sFilePath) {
 			if (StorageType::NOBODY === $iStorageType) {
 				$sFilePath .= \sha1($sKey ?: \time());
