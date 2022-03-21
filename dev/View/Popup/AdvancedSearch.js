@@ -91,7 +91,7 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 		if (-1 < this.selectedDateValue()) {
 			let d = new Date();
 			d.setDate(d.getDate() - this.selectedDateValue());
-			append('date', d.format('Y.m.d') + '/');
+			append('since', d.toISOString().split('T')[0]);
 		}
 
 		let result = new URLSearchParams(data).toString();

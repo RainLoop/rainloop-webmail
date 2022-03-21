@@ -752,7 +752,7 @@ class MailClient
 
 		$bUseSortIfSupported = $bUseSortIfSupported && !\strlen($sSearch) && $this->oImapClient->IsSupported('SORT');
 
-		$sSearchCriterias = \MailSo\Imap\SearchCriterias::fromString($this->oImapClient, $sFolderName, $sSearch, 0, $bUseCacheAfterSearch);
+		$sSearchCriterias = \MailSo\Imap\SearchCriterias::fromString($this->oImapClient, $sFolderName, $sSearch, $bUseCacheAfterSearch);
 		if ($bUseCacheAfterSearch && $oCacher && $oCacher->IsInited())
 		{
 			$sSerializedHash = 'GetUids/'.

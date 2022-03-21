@@ -19,7 +19,7 @@ namespace MailSo\Imap;
 abstract class SearchCriterias
 {
 	const
-		RegEx = 'in|e?mail|from|to|subject|has|is|date|text|body|size|larger|bigger|smaller|maxsize|minsize';
+		RegEx = 'in|e?mail|from|to|subject|has|is|date|since|before|text|body|size|larger|bigger|smaller|maxsize|minsize';
 
 	/**
 		https://datatracker.ietf.org/doc/html/rfc3501#section-6.4.4
@@ -51,7 +51,7 @@ abstract class SearchCriterias
 		✔ HEADER <field-name> <string>
 			Messages that have a header with the specified field-name (as
 			defined in [RFC-2822]) and that contains the specified string
-			in the text of the header (what comes after the colon).  If the
+			in the text of the header (what comes after the colon). If the
 			string to search is zero-length, this matches all messages that
 			have a header line with the specified field-name regardless of
 			the contents.
@@ -107,7 +107,7 @@ abstract class SearchCriterias
 
 		☐ UID <sequence set>
 			Messages with unique identifiers corresponding to the specified
-			unique identifier set.  Sequence set ranges are permitted.
+			unique identifier set. Sequence set ranges are permitted.
 
 		☐ UNKEYWORD <flag>
 			Messages that do not have the specified keyword flag set.
@@ -127,7 +127,7 @@ abstract class SearchCriterias
 		X RECENT
 	*/
 
-	public static function fromString(\MailSo\Imap\ImapClient $oImapClient, string $sFolderName, string $sSearch, int $iTimeZoneOffset = 0, bool &$bUseCache = true) : string
+	public static function fromString(\MailSo\Imap\ImapClient $oImapClient, string $sFolderName, string $sSearch, bool &$bUseCache = true) : string
 	{
 		$bUseCache = true;
 		$iTimeFilter = 0;
@@ -190,6 +190,7 @@ abstract class SearchCriterias
 					switch ($sName) {
 						case 'FROM':
 						case 'SUBJECT':
+						case 'BODY': // $sValue = \trim(\MailSo\Base\Utils::StripSpaces($sValue), '"');
 							$aCriteriasResult[] = $sName;
 							$aCriteriasResult[] = $sValue;
 							break;
@@ -199,11 +200,6 @@ abstract class SearchCriterias
 							$aCriteriasResult[] = 'TO';
 							$aCriteriasResult[] = $sValue;
 							$aCriteriasResult[] = 'CC';
-							$aCriteriasResult[] = $sValue;
-
-						case 'BODY':
-//							$sMainText = \trim(\MailSo\Base\Utils::StripSpaces($sMainText), '"');
-							$aCriteriasResult[] = 'BODY';
 							$aCriteriasResult[] = $sValue;
 							break;
 
@@ -227,35 +223,41 @@ abstract class SearchCriterias
 						case 'LARGER':
 						case 'SMALLER':
 							$aCriteriasResult[] = $sName;
-							$aCriteriasResult[] =  static::parseFriendlySize($sRawValue);
+							$aCriteriasResult[] = static::parseFriendlySize($sRawValue);
+							break;
+
+						case 'SINCE':
+							$sValue = static::parseSearchDate($sRawValue);
+							if ($sValue) {
+								$iTimeFilter = \max($iTimeFilter, $sValue);
+							}
+							break;
+						case 'BEFORE':
+							$sValue = static::parseSearchDate($sRawValue);
+							if ($sValue) {
+								$aCriteriasResult[] = 'BEFORE';
+								$aCriteriasResult[] = \gmdate('j-M-Y', $sValue);
+							}
 							break;
 
 						case 'DATE':
 							$iDateStampFrom = $iDateStampTo = 0;
-							$sDate = $sRawValue;
-							$aDate = \explode('/', $sDate);
+							$aDate = \explode('/', $sRawValue);
 							if (2 === \count($aDate)) {
 								if (\strlen($aDate[0])) {
-									$iDateStampFrom = static::parseSearchDate($aDate[0], $iTimeZoneOffset);
+									$iDateStampFrom = static::parseSearchDate($aDate[0]);
 								}
-
 								if (\strlen($aDate[1])) {
-									$iDateStampTo = static::parseSearchDate($aDate[1], $iTimeZoneOffset);
+									$iDateStampTo = static::parseSearchDate($aDate[1]);
 									$iDateStampTo += 60 * 60 * 24;
 								}
-							} else {
-								if (\strlen($sDate)) {
-									$iDateStampFrom = static::parseSearchDate($sDate, $iTimeZoneOffset);
-									$iDateStampTo = $iDateStampFrom + 60 * 60 * 24;
-								}
+							} else if (\strlen($sRawValue)) {
+								$iDateStampFrom = static::parseSearchDate($sRawValue);
+								$iDateStampTo = $iDateStampFrom + 60 * 60 * 24;
 							}
 
 							if (0 < $iDateStampFrom) {
-								$aCriteriasResult[] = 'SINCE';
-								$aCriteriasResult[] = \gmdate('j-M-Y', $iTimeFilter > $iDateStampFrom ?
-									$iTimeFilter : $iDateStampFrom);
-
-								$iTimeFilter = 0;
+								$iTimeFilter = \max($iTimeFilter, $iDateStampFrom);
 							}
 
 							if (0 < $iDateStampTo) {
@@ -268,11 +270,13 @@ abstract class SearchCriterias
 			}
 		}
 
-		$sCriteriasResult = \trim(\implode(' ', $aCriteriasResult));
-
 		if (0 < $iTimeFilter) {
-			$sCriteriasResult .= ' SINCE '.\gmdate('j-M-Y', $iTimeFilter);
+			$aCriteriasResult[] = 'SINCE';
+//			$aCriteriasResult[] = \gmdate('j-M-Y', $iTimeFilter);
+			$aCriteriasResult[] = \gmdate('j-M-Y', $iTimeFilter);
 		}
+
+		$sCriteriasResult = \trim(\implode(' ', $aCriteriasResult));
 
 		$sCriteriasResult = \trim($sCriteriasResult);
 		if (\MailSo\Config::$MessageListUndeletedOnly) {
@@ -295,11 +299,11 @@ abstract class SearchCriterias
 			? '{'.\strlen($sSearch).'}'."\r\n".$sSearch : $oImapClient->EscapeString($sSearch);
 	}
 
-	private static function parseSearchDate(string $sDate, int $iTimeZoneOffset) : int
+	private static function parseSearchDate(string $sDate) : int
 	{
 		if (\strlen($sDate)) {
-			$oDateTime = \DateTime::createFromFormat('Y.m.d', $sDate, \MailSo\Base\DateTimeHelper::GetUtcTimeZoneObject());
-			return $oDateTime ? $oDateTime->getTimestamp() - $iTimeZoneOffset : 0;
+			$oDateTime = \DateTime::createFromFormat('Y-m-d', $sDate, \MailSo\Base\DateTimeHelper::GetUtcTimeZoneObject());
+			return $oDateTime ? $oDateTime->getTimestamp() : 0;
 		}
 		return 0;
 	}
@@ -340,6 +344,8 @@ abstract class SearchCriterias
 				$sName = 'SMALLER';
 			}
 			switch ($sName) {
+				case 'DATE':
+					$mValue = \rtrim($mValue,'/') . '/';
 				case 'BODY':
 				case 'EMAIL':
 				case 'FROM':
@@ -348,7 +354,8 @@ abstract class SearchCriterias
 				case 'IN':
 				case 'SMALLER':
 				case 'LARGER':
-				case 'DATE':
+				case 'SINCE':
+				case 'BEFORE':
 					if (\strlen($mValue)) {
 						$aResult[$sName] = $mValue;
 					}
@@ -431,6 +438,8 @@ abstract class SearchCriterias
 						foreach (\explode(',', \strtoupper($mMatch[2][$iIndex])) as $sName) {
 							$aResult[\trim($sName)] = true;
 						}
+					} else if ('DATE' === $sName) {
+						$aResult[$sName] = \str_replace('.', '-', $mMatch[2][$iIndex]);
 					} else {
 						$aResult[$sName] = $mMatch[2][$iIndex];
 					}
