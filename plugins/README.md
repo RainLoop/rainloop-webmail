@@ -193,6 +193,8 @@ $Plugin->addHook('hook.name', 'functionName');
 	params:
 		\MailSo\Mime\Message $oMessage
 
+	Happens before send/save message
+
 ### filter.build-read-receipt-message
 	params:
 		\MailSo\Mime\Message $oMessage
@@ -223,11 +225,15 @@ $Plugin->addHook('hook.name', 'functionName');
 		\MailSo\Mime\Message $oMessage
 		string &$sTextConverted
 
+	Happens before send/save message
+
 ### filter.message-plain
 	params:
 		\RainLoop\Model\Account $oAccount
 		\MailSo\Mime\Message $oMessage
 		string &$sTextConverted
+
+	Happens before send/save message
 
 ### filter.message-rcpt
 	params:
@@ -244,13 +250,19 @@ $Plugin->addHook('hook.name', 'functionName');
 	params:
 		\MailSo\Mime\Message $oMessage
 
+	Happens when reading message
+
 ### filter.save-message
 	params:
 		\MailSo\Mime\Message $oMessage
 
+	Happens before save message
+
 ### filter.send-message
 	params:
 		\MailSo\Mime\Message $oMessage
+
+	Happens before send message
 
 ### filter.send-message-stream
 	params:
@@ -321,6 +333,9 @@ $Plugin->addHook('hook.name', 'functionName');
 ### main.content-security-policy
 	params:
 		\SnappyMail\HTTP\CSP $oCSP
+
+	Allows you to edit the policy, like:
+	`$oCSP->script[] = "'strict-dynamic'";`
 
 ### main.default-response
 	params:
