@@ -157,6 +157,7 @@ class Socket extends \SnappyMail\HTTP\Request
 					"\r\n" === \fread($sock, 2);
 				} else {
 					\fwrite($this->stream, \fread($sock, 1024));
+//					\stream_copy_to_stream($sock, $this->stream);
 				}
 			}
 		} else {

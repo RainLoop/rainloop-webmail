@@ -38,7 +38,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Povolit další identity",
 		"ALERT_DATA_ACCESS": "Adresář s RainLoop daty je veřejně přístupný. Nakonfigurujte prosím webový server tak, aby skryl adresář data z externího přístupu. Více zde:",
 		"ALERT_WARNING": "Upozornění!",
-		"HTML_ALERT_WEAK_PASSWORD": "Používáte výchozí administrátorské heslo.\n<br \/>\nZ bezpečnostních důvodů jej prosím\n<strong><a href=\"#\/security\">změňte<\/a><\/strong>.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "Používáte výchozí administrátorské heslo.\n<br>\nZ bezpečnostních důvodů jej prosím\n<strong><a href=\"#\/security\">změňte<\/a><\/strong>.\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Přihlašovací obrazovka",
@@ -66,14 +66,14 @@
 		"BUTTON_TEST": "Test",
 		"ALERT_NOTICE": "Upozornění!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Nepoužívejte tento typ databáze při velkém počtu aktivních uživatelů.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "Váš systém nepodporuje kontakty.\n<br \/>\nJe potřeba nainstalovat nebo povolit <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong>\nrozšíření na vašem serveru.\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Váš systém nepodporuje kontakty.\n<br>\nJe potřeba nainstalovat nebo povolit <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong>\nrozšíření na vašem serveru.\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Domény",
 		"BUTTON_ADD_DOMAIN": "Přidat Doménu",
 		"BUTTON_ADD_ALIAS": "Přidat alias",
 		"DELETE_ARE_YOU_SURE": "Jste si jistí?",
-		"HTML_DOMAINS_HELPER": "Seznam domén, ke kterým je možné přistupovat přes webmail.\n<br \/>\nKlikněte na jméno domény pro její konfiguraci.\n"
+		"HTML_DOMAINS_HELPER": "Seznam domén, ke kterým je možné přistupovat přes webmail.\n<br>\nKlikněte na jméno domény pro její konfiguraci.\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Zabezpečení",

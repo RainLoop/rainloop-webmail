@@ -5,17 +5,15 @@
 <a class="btn" data-bind="click: createDomain" data-icon="✚" data-i18n="TAB_DOMAINS/BUTTON_ADD_DOMAIN"></a>
 &nbsp;&nbsp;
 <a class="btn" data-bind="click: createDomainAlias" data-icon="✚" data-i18n="TAB_DOMAINS/BUTTON_ADD_ALIAS"></a>
-<br />
-<br />
-<blockquote>
-	<p class="muted" data-i18n="[html]TAB_DOMAINS/HTML_DOMAINS_HELPER"></p>
-</blockquote>
+<br>
+<br>
+<p data-i18n="[html]TAB_DOMAINS/HTML_DOMAINS_HELPER"></p>
 <table class="table table-hover b-admin-domains-list-table" data-bind="i18nUpdate: domains">
 	<colgroup>
-		<col />
-		<col style="width: 140px" />
-		<col style="width: 1%" />
-		<col style="width: 1%" />
+		<col>
+		<col style="width: 140px">
+		<col style="width: 1%">
+		<col style="width: 1%">
 	</colgroup>
 	<tbody data-bind="foreach: domains">
 		<tr data-bind="css: {'disabled': disabled }">
@@ -24,7 +22,7 @@
 				<span class="domain-alias" data-bind="if: alias">(alias)</span>
 			</td>
 			<td>
-				<a class="btn btn-small btn-small-small btn-danger button-confirm-delete" data-bind="css: {'delete-access': askDelete()}, click: function(oDomain) { $root.deleteDomain(oDomain); }"
+				<a class="btn btn-small btn-danger button-confirm-delete" data-bind="css: {'delete-access': askDelete()}, click: function(oDomain) { $root.deleteDomain(oDomain); }"
 					data-i18n="TAB_DOMAINS/DELETE_ARE_YOU_SURE"></a>
 			</td>
 			<td>

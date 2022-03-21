@@ -51,6 +51,14 @@ trait Folders
 			array($this->EscapeFolderName($sFolderName)));
 //		$this->FolderCheck();
 //		$this->FolderUnselect();
+
+		// Will this workaround solve Dovecot issue #124 ?
+		try {
+			$this->FolderRename($sFolderName, "{$sFolderName}-dummy");
+			$this->FolderRename("{$sFolderName}-dummy", $sFolderName);
+		} catch (\Throwable $e) {
+		}
+
 		return $this;
 	}
 

@@ -1041,6 +1041,9 @@ trait Messages
 			$oMessage->DoesNotAddDefaultXMailer();
 		}
 
+		$sFrom = $this->GetActionParam('From', '');
+		$oMessage->SetFrom(\MailSo\Mime\Email::Parse($sFrom));
+/*
 		$oFromIdentity = $this->GetIdentityByID($oAccount, $this->GetActionParam('IdentityID', ''));
 		if ($oFromIdentity)
 		{
@@ -1054,7 +1057,7 @@ trait Messages
 		{
 			$oMessage->SetFrom(\MailSo\Mime\Email::Parse($oAccount->Email()));
 		}
-
+*/
 		$oFrom = $oMessage->GetFrom();
 		$oMessage->RegenerateMessageId($oFrom ? $oFrom->GetDomain() : '');
 

@@ -51,7 +51,6 @@ trait User
 	{
 		$sEmail = \MailSo\Base\Utils::Trim($this->GetActionParam('Email', ''));
 		$sPassword = $this->GetActionParam('Password', '');
-		$sLanguage = $this->GetActionParam('Language', '');
 		$bSignMe = !empty($this->GetActionParam('SignMe', 0));
 
 		$oAccount = null;
@@ -63,7 +62,8 @@ trait User
 
 		$this->SetAuthToken($oAccount);
 
-		if ($oAccount && \strlen($sLanguage))
+		$sLanguage = $this->GetActionParam('Language', '');
+		if ($oAccount && $sLanguage)
 		{
 			$oSettings = $this->SettingsProvider()->Load($oAccount);
 			if ($oSettings)

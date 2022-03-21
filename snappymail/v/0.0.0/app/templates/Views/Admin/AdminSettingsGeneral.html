@@ -1,14 +1,14 @@
 <div class="row" data-bind="visible: weakPassword">
 	<div class="alert alert-warning span8" style="margin-top: 10px;">
 		<h4 data-i18n="TAB_GENERAL/ALERT_WARNING"></h4>
-		<br />
+		<br>
 		<div data-i18n="[html]TAB_GENERAL/HTML_ALERT_WEAK_PASSWORD"></div>
 	</div>
 </div>
 <div class="row" data-bind="visible: dataFolderAccess">
 	<div class="alert alert-error span8" style="margin-top: 10px;">
 		<h4 data-i18n="TAB_GENERAL/ALERT_WARNING"></h4>
-		<br />
+		<br>
 		<span data-i18n="TAB_GENERAL/ALERT_DATA_ACCESS"></span>
 		&nbsp;
 		<a href="https://www.rainloop.net/docs/installation/#notice"
@@ -90,12 +90,12 @@
 	<div class="control-group">
 		<label data-i18n="TAB_GENERAL/LABEL_ATTACHMENT_SIZE_LIMIT"></label>
 		<div>
-			<input type="number" min="1" step="1" class="span1" data-bind="textInput: mainAttachmentLimit"/>
+			<input type="number" min="1" step="1" class="span1" data-bind="textInput: mainAttachmentLimit">
 			&nbsp;
 			<span data-i18n="MB"></span>
 			<span data-bind="saveTrigger: attachmentLimitTrigger"></span>
-			<br />
-			<br />
+			<br>
+			<br>
 			<div class="alert alert-info">
 				<b>PHP:</b>&nbsp;<!-- ko text: uploadDataDesc --><!-- /ko -->
 			</div>

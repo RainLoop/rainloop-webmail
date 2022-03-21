@@ -8,12 +8,12 @@
 		<span data-bind="text: submitError"></span>
 	</div>
 	<!-- Disable stupid browser password autofill -->
-	<input type="password" style="display:none"/>
+	<input type="password" style="display:none">
 	<div class="control-group" data-bind="css: {'error': emailError}">
 		<label data-i18n="GLOBAL/EMAIL"></label>
 		<input type="email" required="" class="input-xlarge"
 			autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-			list="emailaddresses" data-bind="value: email" />
+			list="emailaddresses" data-bind="value: email">
 		<datalist id="emailaddresses">
 			<!-- ko foreach: identities -->
 			<option data-bind="attr:{value:email}"></option>
@@ -24,13 +24,13 @@
 		<label data-i18n="GLOBAL/NAME"></label>
 		<input type="text" required="" class="input-xlarge"
 			autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-			data-bind="value: name" />
+			data-bind="value: name">
 	</div>
 	<div class="control-group">
 		<label data-i18n="GLOBAL/PASSWORD"></label>
 		<input type="password" required="" class="input-xlarge"
 			autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-			data-bind="value: password" />
+			data-bind="value: password">
 	</div>
 	<div class="control-group">
 		<label data-i18n="OPENPGP/LABEL_KEY_TYPE"></label>
@@ -44,7 +44,7 @@
 				value: backupPublicKey
 			}
 		}"></div>
-		<br/>
+		<br>
 		<div data-bind="component: {
 			name: 'Checkbox',
 			params: {
@@ -52,7 +52,7 @@
 				value: backupPrivateKey
 			}
 		}"></div>
-		<br/>
+		<br>
 		<div data-bind="visible: canGnuPG, component: {
 			name: 'Checkbox',
 			params: {
@@ -60,7 +60,7 @@
 				value: saveGnuPGPublic
 			}
 		}"></div>
-		<br/>
+		<br>
 		<div data-bind="visible: canGnuPG, component: {
 			name: 'Checkbox',
 			params: {

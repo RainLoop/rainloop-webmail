@@ -26,6 +26,13 @@ if (!function_exists('str_starts_with')) {
 		return 0 === strncmp($haystack, $needle, strlen($needle));
 	}
 }
+if (!function_exists('str_ends_with')) {
+	function str_ends_with(string $haystack, string $needle) : bool
+	{
+		$length = strlen($needle);
+		return $length ? substr($haystack, -$length) === $needle : true;
+	}
+}
 
 if (!defined('APP_VERSION')) {
 	define('APP_VERSION', basename(__DIR__));

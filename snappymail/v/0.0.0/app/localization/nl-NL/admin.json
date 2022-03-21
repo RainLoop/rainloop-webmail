@@ -38,7 +38,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Meerdere identiteiten toestaan",
 		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
 		"ALERT_WARNING": "Waarschuwing!",
-		"HTML_ALERT_WEAK_PASSWORD": "U gebruikt het standaard beheer wachtwoord.\n<br \/>\n<strong><a href=\"#\/security\">Wijzig<\/a><\/strong>\na.u.b. voor uw veiligheid direct het wachtwoord.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "U gebruikt het standaard beheer wachtwoord.\n<br>\n<strong><a href=\"#\/security\">Wijzig<\/a><\/strong>\na.u.b. voor uw veiligheid direct het wachtwoord.\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Inlogscherm",
@@ -66,14 +66,14 @@
 		"BUTTON_TEST": "Test",
 		"ALERT_NOTICE": "Aandacht!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Gegruik deze database soort niet met een groot aantal actieve gebrukers.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "Uw systeem ondersteund geen contactpersonen.\n<br \/>\nU moet een <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> extentie op uw server installeren of activeren.\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Uw systeem ondersteund geen contactpersonen.\n<br>\nU moet een <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> extentie op uw server installeren of activeren.\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Domeinen",
 		"BUTTON_ADD_DOMAIN": "Domein toevoegen",
 		"BUTTON_ADD_ALIAS": "Voeg alias toe",
 		"DELETE_ARE_YOU_SURE": "Weet u het zeker?",
-		"HTML_DOMAINS_HELPER": "Lijst van toegestane domeinen.\n<br \/>\nKlik op de domeinnaam om deze te configureren.\n"
+		"HTML_DOMAINS_HELPER": "Lijst van toegestane domeinen.\n<br>\nKlik op de domeinnaam om deze te configureren.\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Beveiliging",
@@ -138,7 +138,7 @@
 		"BUTTON_CLOSE": "Annuleer",
 		"BUTTON_ADD": "Toevoegen",
 		"BUTTON_UPDATE": "Update",
-		"NEW_DOMAIN_DESC": "Dit domein stelt u in staat om <br \/>met <i>%NAME%<\/i> e-mail adressen te werken.",
+		"NEW_DOMAIN_DESC": "Dit domein stelt u in staat om <br>met <i>%NAME%<\/i> e-mail adressen te werken.",
 		"WHITE_LIST_ALERT": "Lijst van gebruikers die dit domein mogen gebruiken.\nGebruik een spatie als scheidingsteken.\n"
 	},
 	"POPUPS_PLUGIN": {

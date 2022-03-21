@@ -129,6 +129,7 @@ abstract class Request
 				throw new \RuntimeException("Fetching URL not allowed: {$url}");
 			}
 
+			$this->stream && \rewind($this->stream);
 			$result = $this->__doRequest($method, $url, $body, \array_merge($this->headers, $extra_headers));
 
 			// http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3

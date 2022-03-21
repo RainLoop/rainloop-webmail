@@ -105,29 +105,33 @@ export const
 				'id', 'class', 'contenteditable', 'designmode', 'formaction', 'manifest', 'action',
 				'data-bind', 'data-reactid', 'xmlns', 'srcset',
 				'fscommand', 'seeksegmenttime'
+			],
+			disallowedTags = [
+				'HEAD','STYLE','SVG','SCRIPT','TITLE','LINK','BASE','META',
+				'INPUT','OUTPUT','SELECT','BUTTON','TEXTAREA',
+				'BGSOUND','KEYGEN','SOURCE','OBJECT','EMBED','APPLET','IFRAME','FRAME','FRAMESET','VIDEO','AUDIO','AREA','MAP'
 			];
 
 		tpl.innerHTML = html
 			.replace(/(<pre[^>]*>)([\s\S]*?)(<\/pre>)/gi, aMatches => {
 				return (aMatches[1] + aMatches[2].trim() + aMatches[3].trim()).replace(/\r?\n/g, '<br>');
 			})
-			// \MailSo\Base\HtmlUtils::ClearComments()
-			.replace(/<!--[\s\S]*?-->/g, '')
-			// \MailSo\Base\HtmlUtils::ClearTags()
-			// eslint-disable-next-line max-len
-			.replace(/<\/?(link|form|input|output|select|button|textarea|center|base|meta|bgsound|keygen|source|object|embed|applet|mocha|i?frame|frameset|video|audio|area|map)(\s[\s\S]*?)?>/gi, '')
 			// GetDomFromText
 			.replace('<o:p></o:p>', '')
 			.replace('<o:p>', '<span>')
 			.replace('</o:p>', '</span>')
-			// https://github.com/the-djmaze/snappymail/issues/187
-//			.replace(/<a(?:\s[^>]*)?>((?![\s\S]*<\/a)[\s\S]*?<a(\s[^>]*)?>)/gi, '$1')
 			// \MailSo\Base\HtmlUtils::ClearFastTags
-			.replace(/<p[^>]*><\/p>/i, '')
 			.replace(/<!doctype[^>]*>/i, '')
 			.replace(/<\?xml [^>]*\?>/i, '')
 			.trim();
 		html = '';
+
+		// \MailSo\Base\HtmlUtils::ClearComments()
+		// https://github.com/the-djmaze/snappymail/issues/187
+		const nodeIterator = document.createNodeIterator(tpl.content, NodeFilter.SHOW_COMMENT);
+		while (nodeIterator.nextNode()) {
+			nodeIterator.referenceNode.remove();
+		}
 
 		tpl.content.querySelectorAll('*').forEach(oElement => {
 			const name = oElement.tagName,
@@ -137,7 +141,8 @@ export const
 				setAttribute = (name, value) => oElement.setAttribute(name, value),
 				delAttribute = name => oElement.removeAttribute(name);
 
-			if (['HEAD','STYLE','SVG','SCRIPT','TITLE','INPUT','BUTTON','TEXTAREA','SELECT'].includes(name)
+			// \MailSo\Base\HtmlUtils::ClearTags()
+			if (disallowedTags.includes(name)
 			 || 'none' == oStyle.display
 			 || 'hidden' == oStyle.visibility
 //			 || (oStyle.lineHeight && 1 > parseFloat(oStyle.lineHeight)
@@ -148,7 +153,21 @@ export const
 				oElement.remove();
 				return;
 			}
-
+//			if (['CENTER','FORM'].includes(name)) {
+			if ('FORM' === name) {
+				replaceWithChildren(oElement);
+				return;
+			}
+/*
+			// Idea to allow CSS
+			if ('STYLE' === name) {
+				msgId = '#rl-msg-061eb4d647771be4185943ce91f0039d';
+				oElement.textContent = oElement.textContent
+					.replace(/[^{}]+{/g, m => msgId + ' ' + m.replace(',', ', '+msgId+' '))
+					.replace(/(background-)color:[^};]+/g, '');
+				return;
+			}
+*/
 			if ('BODY' === name) {
 				forEachObjectEntry(tasks, (name, cb) => {
 					if (hasAttribute(name)) {
@@ -160,18 +179,15 @@ export const
 
 			else if ('TABLE' === name && hasAttribute('width')) {
 				value = getAttribute('width');
-				delAttribute('width');
-				oStyle.maxWidth = value + (/^[0-9]+$/.test(value) ? 'px' : '');
-				oStyle.removeProperty('width');
+				if (!value.includes('%')) {
+					delAttribute('width');
+					oStyle.maxWidth = value + 'px';
+					oStyle.width = '100%';
+				}
 			}
 
 			else if ('A' === name) {
 				value = oElement.href;
-				// https://github.com/the-djmaze/snappymail/issues/187 <a> can't have block element inside
-				if (!value || oElement.querySelector('td,div,p,li')) {
-					replaceWithChildren(oElement);
-					return;
-				}
 				value = stripTracking(value);
 				if (!/^([a-z]+):/i.test(value) && '//' !== value.slice(0, 2)) {
 					setAttribute('data-x-broken-href', value);
@@ -216,8 +232,8 @@ export const
 
 				if (detectHiddenImages
 					&& 'IMG' === name
-					&& (('' != getAttribute('height') && 2 > pInt(getAttribute('height')))
-						|| ('' != getAttribute('width') && 2 > pInt(getAttribute('width')))
+					&& (('' != getAttribute('height') && 3 > pInt(getAttribute('height')))
+						|| ('' != getAttribute('width') && 3 > pInt(getAttribute('width')))
 						|| [
 							'email.microsoftemail.com/open',
 							'github.com/notifications/beacon/',
@@ -320,7 +336,7 @@ export const
 					setAttribute('data-x-style-broken-urls', JSON.stringify(urls.broken));
 				}
 
-				if (11 < pInt(oStyle.fontSize)) {
+				if (11 > pInt(oStyle.fontSize)) {
 					oStyle.removeProperty('font-size');
 				}
 

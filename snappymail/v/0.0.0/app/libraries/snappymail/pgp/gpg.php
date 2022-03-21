@@ -81,17 +81,7 @@ class GPG
 
 	function __construct(string $homedir)
 	{
-		$homedir = \rtrim($homedir, '/\\');
-		// BSD 4.4 max length
-		if (104 <= \strlen($homedir . '/S.gpg-agent.extra')) {
-			throw new \Exception("socket name for '{$homedir}/S.gpg-agent.extra' is too long");
-		}
-
-		if ($homedir && !\is_dir($homedir) && !\mkdir($homedir, 0700, true)) {
-			throw new \Exception("mkdir({$homedir}) failed");
-		}
-
-		$this->options['homedir'] = $homedir;
+		$this->options['homedir'] = \rtrim($homedir, '/\\');
 
 		// the random seed file makes subsequent actions faster so only disable it if we have to.
 		if ($this->options['homedir'] && !\is_writeable($this->options['homedir'])) {

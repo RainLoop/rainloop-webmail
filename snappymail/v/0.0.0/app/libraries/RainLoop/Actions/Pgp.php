@@ -28,6 +28,7 @@ trait Pgp
 		 * BSD 4.4 max length = 104
 		 */
 		if (80 < \strlen($homedir)) {
+			\clearstatcache();
 			// First try a symbolic link
 			$tmpdir = \sys_get_temp_dir() . '/snappymail';
 //			if (\RainLoop\Utils::inOpenBasedir($tmpdir) &&
@@ -39,7 +40,7 @@ trait Pgp
 			}
 			// Else try ~/.gnupg/ + hash(email address)
 			if (80 < \strlen($homedir)) {
-				$tmpdir = ($_SERVER['HOME'] ?: \exec('echo ~') ?: \dirname(getcwd())) . '/.gnupg/';
+				$tmpdir = ($_SERVER['HOME'] ?: \exec('echo ~') ?: \dirname(\getcwd())) . '/.gnupg/';
 				if ($oAccount instanceof \RainLoop\Model\AdditionalAccount) {
 					$tmpdir .= \sha1($oAccount->ParentEmail());
 				} else {
@@ -49,6 +50,10 @@ trait Pgp
 				if (\is_dir($tmpdir) || \mkdir($tmpdir, 0700, true)) {
 					$homedir = $link;
 				}
+			}
+
+			if (104 <= \strlen($homedir . '/S.gpg-agent.extra')) {
+				throw new \Exception("socket name for '{$homedir}/S.gpg-agent.extra' is too long");
 			}
 		}
 

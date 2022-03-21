@@ -848,11 +848,13 @@ class Actions
 					$aResult['ReplySameFolder'] = (bool)$oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
 				}
 
+				if ($oConfig->Get('login', 'determine_user_language', true)) {
+					$sLanguage = $this->ValidateLanguage($UserLanguageRaw, $sLanguage, false);
+				}
+
 				if ($oSettings instanceof Settings) {
 					if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
-						$sLanguage = (string)$oSettings->GetConf('Language',
-							$oConfig->Get('login', 'determine_user_language', true) ? $UserLanguageRaw : $sLanguage
-						);
+						$sLanguage = (string) $oSettings->GetConf('Language', $sLanguage);
 					}
 
 					$aResult['EditorDefaultType'] = (string)$oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']);
