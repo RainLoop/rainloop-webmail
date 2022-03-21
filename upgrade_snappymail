@@ -25,7 +25,12 @@ tar -czf backup_snappymail_`date +%Y%m%d`.tar.gz $YOUR_SERVER_FOLDER
 
 # Download last release to /tmp
 cd /tmp
-curl -L -s $GITHUB_URL | grep -m 1 "href.*snappymail.*tar.gz" | sed "s/^.*href=\"//g" | sed "s/\".*$//g" | wget --base=http://github.com -i - -O snappy.tar.gz
+DOWNLOAD_DATA=`curl -L -s $GITHUB_URL | grep -m 1 "href.*snappymail.*tar.gz" | sed "s/^.*href=\"//g" | sed "s/\".*$//g"`
+echo $DOWNLOAD_DATA | wget --base=http://github.com -i - -O snappy.tar.gz
+
+# Get Versions
+OLD_VERSION=`cat $YOUR_SERVER_FOLDER"data/VERSION"`
+NEW_VERSION=`echo $DOWNLOAD_DATA | grep -o "v.*/"`
 
 # extract last release to folder
 tar -xzvf snappy.tar.gz -C $YOUR_SERVER_FOLDER
@@ -35,4 +40,4 @@ find $YOUR_SERVER_FOLDER -type d -exec chmod 755 {} \;
 find $YOUR_SERVER_FOLDER -type f -exec chmod 644 {} \;
 chown -R www-data:www-data $YOUR_SERVER_FOLDER
 
-echo -e "\033[1;32mFinished upgrading snappymail ... \033[0m"
+echo -e "\033[1;32mFinished with snappymail-upgrade from $OLD_VERSION to ${NEW_VERSION:1:-1}... \033[0m"
