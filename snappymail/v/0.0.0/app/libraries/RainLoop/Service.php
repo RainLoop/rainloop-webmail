@@ -256,10 +256,7 @@ abstract class Service
 			$CSP->img[] = 'https:';
 			$CSP->img[] = 'http:';
 		}
-		// Internet Explorer does not support 'nonce'
-		if ($sScriptNonce && !$_SERVER['HTTP_USER_AGENT'] || (!\strpos($_SERVER['HTTP_USER_AGENT'], 'Trident/') && !\strpos($_SERVER['HTTP_USER_AGENT'], 'Edge/1'))) {
-			$CSP->script[] = "'nonce-{$sScriptNonce}'";
-		}
+		$CSP->script[] = "'nonce-{$sScriptNonce}'";
 
 		Api::Actions()->Plugins()->RunHook('main.content-security-policy', array($CSP));
 
