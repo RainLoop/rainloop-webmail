@@ -313,9 +313,9 @@ abstract class SearchCriterias
 		$sSize = \preg_replace('/[^0-9KM]/', '', \strtoupper($sSize));
 		$iResult = \intval($sSize);
 		switch (\substr($sSize, -1)) {
-			case 'K':
-				$iResult *= 1024;
 			case 'M':
+				$iResult *= 1024;
+			case 'K':
 				$iResult *= 1024;
 		}
 		return $iResult;
