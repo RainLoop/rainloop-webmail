@@ -1,6 +1,5 @@
 import { AppUserStore } from 'Stores/User/App';
 import { AccountUserStore } from 'Stores/User/Account';
-import { MessageUserStore } from 'Stores/User/Message';
 //import { FolderUserStore } from 'Stores/User/Folder';
 
 import { Scope } from 'Common/Enums';
@@ -126,7 +125,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 	onBuild() {
 		registerShortcut('m', '', [Scope.MessageList, Scope.MessageView, Scope.Settings], () => {
 			if (!this.viewModelDom.hidden) {
-				MessageUserStore.fullScreen(false);
+//				exitFullscreen();
 				this.accountMenuDropdownTrigger(true);
 				return false;
 			}

@@ -9,7 +9,8 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { doc, leftPanelDisabled, moveAction,
 	Settings, SettingsCapa, SettingsGet,
 	addEventsListeners,
-	addShortcut, registerShortcut, formFieldFocused
+	addShortcut, registerShortcut, formFieldFocused,
+	isFullscreen, toggleFullscreen
 } from 'Common/Globals';
 
 import { computedPaginatorHelper, showMessageComposer, populateMessageBody } from 'Common/UtilsUser';
@@ -699,7 +700,7 @@ export class MailMessageList extends AbstractViewRight {
 				return false;
 			}
 			if (MessageUserStore.message() && this.useAutoSelect()) {
-				MessageUserStore.toggleFullScreen();
+				isFullscreen() || toggleFullscreen();
 				return false;
 			}
 		});

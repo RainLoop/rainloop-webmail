@@ -12,7 +12,6 @@ import {
 } from 'Common/EnumsUser';
 
 import { pInt, isArray, arrayLength, forEachObjectEntry } from 'Common/Utils';
-import { initFullscreen } from 'Common/UtilsUser';
 import { encodeHtml, HtmlEditor, htmlToPlain } from 'Common/Html';
 import { koArrayWithDestroy } from 'External/ko';
 
@@ -21,7 +20,7 @@ import { messagesDeleteHelper } from 'Common/Folders';
 import { serverRequest } from 'Common/Links';
 import { i18n, getNotification, getUploadErrorDescByCode, timestampToString } from 'Common/Translator';
 import { MessageFlagsCache, setFolderHash } from 'Common/Cache';
-import { doc, Settings, SettingsGet, getFullscreenElement, exitFullscreen, elementById, addShortcut } from 'Common/Globals';
+import { Settings, SettingsGet, elementById, addShortcut/*, exitFullscreen, isFullscreen, toggleFullscreen*/ } from 'Common/Globals';
 
 import { AppUserStore } from 'Stores/User/App';
 import { SettingsUserStore } from 'Stores/User/Settings';
@@ -45,9 +44,11 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
 import { AskPopupView } from 'View/Popup/Ask';
 import { ContactsPopupView } from 'View/Popup/Contacts';
-
+/*
 import { ThemeStore } from 'Stores/Theme';
 
+let alreadyFullscreen;
+*/
 const
 	ScopeCompose = 'Compose',
 
@@ -766,7 +767,7 @@ export class ComposePopupView extends AbstractViewPopup {
 
 		this.to.focused(false);
 
-		(getFullscreenElement() === this.oContent) && exitFullscreen();
+//		alreadyFullscreen || exitFullscreen();
 	}
 
 	dropMailvelope() {
@@ -856,8 +857,9 @@ export class ComposePopupView extends AbstractViewPopup {
 			this.initOnShow(type, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText);
 		}
 
-//		(navigator.standalone || matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches) &&
-		ThemeStore.isMobile() && this.oContent.requestFullscreen && this.oContent.requestFullscreen();
+		// Chrome bug #298
+//		alreadyFullscreen = isFullscreen();
+//		alreadyFullscreen || (ThemeStore.isMobile() && toggleFullscreen());
 	}
 
 	/**
@@ -1350,15 +1352,6 @@ export class ComposePopupView extends AbstractViewPopup {
 		});
 
 		this.editor(editor => editor[this.isPlainEditor()?'modePlain':'modeWysiwyg']());
-
-		// Fullscreen must be on app, else other popups fail
-		const el = doc.getElementById('rl-app');
-		this.oContent = initFullscreen(el, () =>
-			ThemeStore.isMobile()
-			&& this.modalVisible()
-			&& (getFullscreenElement() !== el)
-			&& this.skipCommand()
-		);
 	}
 
 	/**

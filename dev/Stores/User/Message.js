@@ -1,5 +1,5 @@
 import { Scope } from 'Common/Enums';
-import { elementById } from 'Common/Globals';
+import { elementById, exitFullscreen } from 'Common/Globals';
 import { addObservablesTo, addSubscribablesTo } from 'External/ko';
 
 import { AppUserStore } from 'Stores/User/App';
@@ -12,7 +12,6 @@ export const MessageUserStore = new class {
 			message: null,
 			error: '',
 			loading: false,
-			fullScreen: false,
 
 			// Cache mail bodies
 			bodiesDom: null,
@@ -31,18 +30,13 @@ export const MessageUserStore = new class {
 					}
 				} else {
 					AppUserStore.focusedState(Scope.MessageList);
-
-					this.fullScreen(false);
+					exitFullscreen();
 					this.hideMessageBodies();
 				}
 			},
 		});
 
 		this.purgeMessageBodyCache = this.purgeMessageBodyCache.throttle(30000);
-	}
-
-	toggleFullScreen() {
-		MessageUserStore.fullScreen(!MessageUserStore.fullScreen());
 	}
 
 	purgeMessageBodyCache() {

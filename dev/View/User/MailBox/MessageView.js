@@ -16,21 +16,19 @@ import {
 
 import {
 	elementById,
-	$htmlCL,
 	leftPanelDisabled,
 	keyScopeReal,
 	moveAction,
 	Settings,
 	SettingsCapa,
-	getFullscreenElement,
-	exitFullscreen,
 	fireEvent,
 	addShortcut,
-	registerShortcut
+	registerShortcut,
+	isFullscreen, exitFullscreen, toggleFullscreen
 } from 'Common/Globals';
 
 import { arrayLength } from 'Common/Utils';
-import { download, mailToHelper, showMessageComposer, initFullscreen } from 'Common/UtilsUser';
+import { download, mailToHelper, showMessageComposer } from 'Common/UtilsUser';
 
 import { SMAudio } from 'Common/Audio';
 
@@ -120,8 +118,8 @@ export class MailMessageView extends AbstractViewRight {
 		this.messagesBodiesDom = MessageUserStore.bodiesDom;
 		this.messageError = MessageUserStore.error;
 
-		this.fullScreenMode = MessageUserStore.fullScreen;
-		this.toggleFullScreen = MessageUserStore.toggleFullScreen;
+		this.fullScreenMode = isFullscreen;
+		this.toggleFullScreen = toggleFullscreen;
 
 		this.messageListOfThreadsLoading = ko.observable(false).extend({ rateLimit: 1 });
 		this.highlightUnselectedAttachments = ko.observable(false).extend({ falseTimeout: 2000 });
@@ -215,15 +213,6 @@ export class MailMessageView extends AbstractViewRight {
 				}
 			},
 
-			fullScreenMode: value => {
-				value && currentMessage() && AppUserStore.focusedState(Scope.MessageView);
-				if (this.oContent) {
-					value ? this.oContent.requestFullscreen() : exitFullscreen();
-				} else {
-					$htmlCL.toggle('rl-message-fullscreen', value);
-				}
-			},
-
 			showFullInfo: value => Local.set(ClientSideKeyNameMessageHeaderFullInfo, value ? '1' : '0')
 		});
 
@@ -281,9 +270,6 @@ export class MailMessageView extends AbstractViewRight {
 	}
 
 	onBuild(dom) {
-		const el = dom.querySelector('.b-content');
-		this.oContent = initFullscreen(el, () => MessageUserStore.fullScreen(getFullscreenElement() === el));
-
 		const eqs = (ev, s) => ev.target.closestWithin(s, dom);
 		dom.addEventListener('click', event => {
 			ThemeStore.isMobile() && leftPanelDisabled(true);
@@ -351,9 +337,8 @@ export class MailMessageView extends AbstractViewRight {
 		addShortcut('escape', '', Scope.MessageView, () => {
 			if (!this.viewModelDom.hidden && currentMessage()) {
 				const preview = SettingsUserStore.usePreviewPane();
-				if (MessageUserStore.fullScreen()) {
-					MessageUserStore.fullScreen(false);
-
+				if (isFullscreen()) {
+					exitFullscreen();
 					if (preview) {
 						AppUserStore.focusedState(Scope.MessageList);
 					}
@@ -369,7 +354,7 @@ export class MailMessageView extends AbstractViewRight {
 
 		// fullscreen
 		addShortcut('enter,open', '', Scope.MessageView, () => {
-			MessageUserStore.toggleFullScreen();
+			isFullscreen() || toggleFullscreen();
 			return false;
 		});
 
@@ -449,14 +434,14 @@ export class MailMessageView extends AbstractViewRight {
 
 		// change focused state
 		addShortcut('arrowleft', '', Scope.MessageView, () => {
-			if (!MessageUserStore.fullScreen() && currentMessage() && SettingsUserStore.usePreviewPane()
+			if (!isFullscreen() && currentMessage() && SettingsUserStore.usePreviewPane()
 			 && !oMessageScrollerDom().scrollLeft) {
 				AppUserStore.focusedState(Scope.MessageList);
 				return false;
 			}
 		});
 		addShortcut('tab', 'shift', Scope.MessageView, () => {
-			if (!MessageUserStore.fullScreen() && currentMessage() && SettingsUserStore.usePreviewPane()) {
+			if (!isFullscreen() && currentMessage() && SettingsUserStore.usePreviewPane()) {
 				AppUserStore.focusedState(Scope.MessageList);
 			}
 			return false;

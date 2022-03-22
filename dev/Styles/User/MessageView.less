@@ -234,8 +234,8 @@ html.rl-no-preview-pane {
 	.buttonFull {
 		display: inline-block;
 		position: fixed;
-		right: 25px;
-		bottom: 25px;
+		right: 8px;
+		bottom: 8px;
 		height: 30px;
 		width: 30px;
 		text-align: center;
@@ -483,13 +483,15 @@ html.rl-bottom-preview-pane .messageView {
 	}
 }
 
-html.rl-message-fullscreen {
+html.rl-fullscreen {
 
 	#rl-left {
 		display: none !important;
 	}
 
 	#rl-right {
+		left: 0 !important;
+
 		#V-MailMessageList,
 		#V-SettingsPane,
 		#V-SystemDropDown,
@@ -498,15 +500,21 @@ html.rl-message-fullscreen {
 		}
 	}
 
+	#V-SystemDropDown,
+	.messageView .top-toolbar {
+		display: none;
+	}
+
+	.messageView {
+		border: 0;
+	}
+
 	.messageView .b-content {
-		position: fixed !important;
-		margin: 5px !important;
-		top: 0 !important;
-		left: 0 !important;
-		right: 0 !important;
-		bottom: 0 !important;
-		z-index: 10000 !important;
-		border: 1px solid @rlMainDarkColor  !important;
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		border: 0;
 	}
 }
 

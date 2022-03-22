@@ -26,17 +26,6 @@
 	left: @rlLeftWidth;
 }
 
-html.rl-mobile {
-
-	&:not(.rl-left-panel-disabled) #rl-right {
-		right: -150px;
-	}
-
-	&.rl-left-panel-disabled #rl-right {
-		left: 5px !important;
-	}
-}
-
 /*
 .resizable::after {
 	background-color: #aaa;
@@ -255,7 +244,7 @@ html.rl-left-panel-disabled {
 	}
 
 	#rl-right {
-		left: 60px !important;
+		left: 60px;
 	}
 }
 
@@ -311,5 +300,16 @@ html:not(.rl-mobile) .show-mobile {
 			font-size: 25px;
 			cursor: default;
 		}
+	}
+}
+
+html.rl-mobile {
+
+	&:not(.rl-left-panel-disabled) #rl-right {
+		right: -150px;
+	}
+
+	&.rl-left-panel-disabled #rl-right {
+		left: 5px;
 	}
 }
