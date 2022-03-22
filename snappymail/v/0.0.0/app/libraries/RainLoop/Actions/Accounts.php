@@ -215,8 +215,8 @@ trait Accounts
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
-		$oAccount = $this->getMainAccountFromToken();
-		if (1 < \count($aAccounts)) {
+		if (\is_array($aAccounts) && 1 < \count($aAccounts)) {
+			$oAccount = $this->getMainAccountFromToken();
 			$aAccounts = \array_filter(\array_merge(
 				\array_fill_keys($aAccounts, null),
 				$this->GetAccounts($oAccount)
