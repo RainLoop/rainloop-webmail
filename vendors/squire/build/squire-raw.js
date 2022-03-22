@@ -34,7 +34,6 @@ const
 	isMac = /Mac OS X/.test( ua ),
 	isIOS = /iP(?:ad|hone|od)/.test( ua ) || ( isMac && !!navigator.maxTouchPoints ),
 
-	isGecko = /Gecko\//.test( ua ),
 	isWebKit = /WebKit\//.test( ua ),
 
 	ctrlKey = isMac ? 'meta-' : 'ctrl-',
@@ -1460,6 +1459,28 @@ const
 
 	blacklist = /^(?:HEAD|META|STYLE)/,
 
+	// Previous node in post-order.
+	previousPONode = walker => {
+		let current = walker.currentNode,
+			root = walker.root,
+			nodeType = walker.nodeType, // whatToShow?
+			filter = walker.filter,
+			node;
+		while ( current ) {
+			node = current.lastChild;
+			while ( !node && current && current !== root) {
+				node = current.previousSibling;
+				if ( !node ) { current = current.parentNode; }
+			}
+			if ( node && ( typeToBitArray[ node.nodeType ] & nodeType ) && filter( node ) ) {
+				walker.currentNode = node;
+				return node;
+			}
+			current = node;
+		}
+		return null;
+	},
+
 	/*
 		Two purposes:
 
@@ -1513,7 +1534,7 @@ const
 					// before the start of a new block we don't trim
 					if ( startsWithWS ) {
 						walker.currentNode = child;
-						while ( sibling = walker.previousPONode() ) {
+						while ( sibling = previousPONode(walker) ) {
 							nodeName = sibling.nodeName;
 							if ( nodeName === 'IMG' ||
 									( nodeName === '#text' &&
@@ -1842,53 +1863,10 @@ const
 	escapeHTML = text => text.replace( '&', '&amp;' )
 	   .replace( '<', '&lt;' )
 	   .replace( '>', '&gt;' )
-	   .replace( '"', '&quot;' ),
-
-	removeFormatting = ( self, root, clean ) => {
-		let node, next;
-		for ( node = root.firstChild; node; node = next ) {
-			next = node.nextSibling;
-			if ( isInline( node ) ) {
-				if ( node.nodeType === TEXT_NODE || node.nodeName === 'BR' || node.nodeName === 'IMG' ) {
-					clean.append( node );
-					continue;
-				}
-			} else if ( isBlock( node ) ) {
-				clean.append( self.createDefaultBlock([
-					removeFormatting(
-						self, node, doc.createDocumentFragment() )
-				]));
-				continue;
-			}
-			removeFormatting( self, node, clean );
-		}
-		return clean;
-	};
+	   .replace( '"', '&quot;' );
 
 let contentWalker,
 	nodeCategoryCache = new WeakMap();
-
-// Previous node in post-order.
-TreeWalker.prototype.previousPONode = function () {
-	let current = this.currentNode,
-		root = this.root,
-		nodeType = this.nodeType, // whatToShow?
-		filter = this.filter,
-		node;
-	while ( current ) {
-		node = current.lastChild;
-		while ( !node && current && current !== root) {
-			node = current.previousSibling;
-			if ( !node ) { current = current.parentNode; }
-		}
-		if ( node && ( typeToBitArray[ node.nodeType ] & nodeType ) && filter( node ) ) {
-			this.currentNode = node;
-			return node;
-		}
-		current = node;
-	}
-	return null;
-};
 
 function onKey ( event ) {
 	if ( event.defaultPrevented ) {
@@ -2009,30 +1987,20 @@ function onCopy ( event ) {
 	}
 }
 
-// Need to monitor for shift key like this, as event.shiftKey is not available
-// in paste event.
-function monitorShiftKey ( event ) {
-	this.isShiftDown = event.shiftKey;
-}
-
 function onPaste ( event ) {
 	let clipboardData = event.clipboardData;
 	let items = clipboardData && clipboardData.items;
-	let choosePlain = this.isShiftDown;
-	let hasRTF = false;
-	let hasImage = false;
+	let imageItem = null;
 	let plainItem = null;
 	let htmlItem = null;
 	let self = this;
-	let l, item, type, types, data;
+	let type;
 
 	// Current HTML5 Clipboard interface
 	// ---------------------------------
 	// https://html.spec.whatwg.org/multipage/interaction.html
 	if ( items ) {
-		l = items.length;
-		while ( l-- ) {
-			item = items[l];
+		[...items].forEach(item => {
 			type = item.type;
 			if ( type === 'text/html' ) {
 				htmlItem = item;
@@ -2041,70 +2009,23 @@ function onPaste ( event ) {
 			// plain text.
 			} else if ( type === 'text/plain' || type === 'text/uri-list' ) {
 				plainItem = item;
-			} else if ( type === 'text/rtf' ) {
-				hasRTF = true;
-			} else if ( /^image\//.test( type ) ) {
-				hasImage = true;
+			} else if ( item.kind === 'file' && /^image\/(png|jpeg|webp)/.test( type ) ) {
+				imageItem = item;
 			}
-		}
-
-		// Treat image paste as a drop of an image file. When you copy
-		// an image in Chrome/Firefox (at least), it copies the image data
-		// but also an HTML version (referencing the original URL of the image)
-		// and a plain text version.
-		//
-		// However, when you copy in Excel, you get html, rtf, text, image;
-		// in this instance you want the html version! So let's try using
-		// the presence of text/rtf as an indicator to choose the html version
-		// over the image.
-		if ( hasImage && !( hasRTF && htmlItem ) ) {
-/*
-			if (item.kind === 'file') {
-				event.preventDefault();
+		});
+		if (htmlItem || plainItem || imageItem) {
+			event.preventDefault();
+			if ( htmlItem && ( !self.isShiftDown || !plainItem ) ) {
+				htmlItem.getAsString( html => self.insertHTML( html, true ) );
+			} else if ( plainItem ) {
+				plainItem.getAsString( text => self.insertPlainText( text, true ) );
+			} else if ( imageItem ) {
 				let reader = new FileReader();
 				reader.onload = event =>
 					self.insertHTML( '<img src="'+event.target.result+'">', true );
-				reader.readAsDataURL(item.getAsFile());
+				reader.readAsDataURL(imageItem.getAsFile());
 			}
-*/
-			return;
 		}
-
-		// Edge only provides access to plain text as of 2016-03-11 and gives no
-		// indication there should be an HTML part. However, it does support
-		// access to image data, so we check for that first. Otherwise though,
-		// fall through to fallback clipboard handling methods
-		event.preventDefault();
-		if ( htmlItem && ( !choosePlain || !plainItem ) ) {
-			htmlItem.getAsString( html => self.insertHTML( html, true ) );
-		} else if ( plainItem ) {
-			plainItem.getAsString( text => self.insertPlainText( text, true ) );
-		}
-	}
-
-	// Safari (and indeed many other OS X apps) copies stuff as text/rtf
-	// rather than text/html; even from a webpage in Safari. The only way
-	// to get an HTML version is to fallback to letting the browser insert
-	// the content. Same for getting image data. *Sigh*.
-	types = clipboardData && clipboardData.types;
-	if ( types && (
-			types.includes( 'text/html' ) || (
-				!isGecko &&
-				types.includes( 'text/plain') &&
-				!types.includes( 'text/rtf' ))
-			)) {
-		event.preventDefault();
-		// Abiword on Linux copies a plain text and html version, but the HTML
-		// version is the empty string! So always try to get HTML, but if none,
-		// insert plain text instead. On iOS, Facebook (and possibly other
-		// apps?) copy links as type text/uri-list, but also insert a **blank**
-		// text/plain item onto the clipboard. Why? Who knows.
-		if ( !choosePlain && ( data = clipboardData.getData( 'text/html' ) ) ) {
-			this.insertHTML( data, true );
-		} else if ( data = clipboardData.getData( 'text/plain' ) || clipboardData.getData( 'text/uri-list' ) ) {
-			this.insertPlainText( data, true );
-		}
-		return;
 	}
 }
 
@@ -2113,21 +2034,7 @@ function onPaste ( event ) {
 // save an undo state and hope for the best.
 function onDrop ( event ) {
 	let types = event.dataTransfer.types;
-	let l = types.length;
-	let hasData = false;
-	while ( l-- ) {
-		switch ( types[l] ) {
-		case 'text/plain':
-		case 'text/html':
-			hasData = true;
-			break;
-		default:
-			return;
-		}
-	}
-
-//	if ( types.includes('text/plain') || types.includes('text/html') ) {
-	if ( hasData ) {
+	if ( types.includes('text/plain') || types.includes('text/html') ) {
 		this.saveUndoState();
 	}
 }
@@ -2568,7 +2475,8 @@ class Squire
 			.addEventListener( 'focus', () => this._restoreSelection && this.setSelection( this._lastRange ) )
 			.addEventListener( 'cut', onCut )
 			.addEventListener( 'copy', onCopy )
-			.addEventListener( 'keydown keyup', monitorShiftKey )
+			// Need to monitor for shift key like this, as event.shiftKey is not available in paste event.
+			.addEventListener( 'keydown keyup', event => this.isShiftDown = event.shiftKey )
 			.addEventListener( 'paste', onPaste )
 			.addEventListener( 'drop', onDrop )
 			.addEventListener( 'keydown', onKey )
