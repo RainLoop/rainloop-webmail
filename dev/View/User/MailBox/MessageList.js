@@ -9,13 +9,13 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { doc, leftPanelDisabled, moveAction,
 	Settings, SettingsCapa, SettingsGet,
 	addEventsListeners,
-	addShortcut, registerShortcut, formFieldFocused,
-	isFullscreen, toggleFullscreen
+	addShortcut, registerShortcut, formFieldFocused
 } from 'Common/Globals';
 
 import { computedPaginatorHelper, showMessageComposer, populateMessageBody } from 'Common/UtilsUser';
 import { FileInfo } from 'Common/File';
 import { folderListOptionsBuilder, moveMessagesToFolder } from 'Common/Folders';
+import { isFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
 import { mailBox, serverRequest } from 'Common/Links';
 import { Selector } from 'Common/Selector';

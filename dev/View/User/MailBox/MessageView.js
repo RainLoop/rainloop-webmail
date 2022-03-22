@@ -23,12 +23,12 @@ import {
 	SettingsCapa,
 	fireEvent,
 	addShortcut,
-	registerShortcut,
-	isFullscreen, exitFullscreen, toggleFullscreen
+	registerShortcut
 } from 'Common/Globals';
 
 import { arrayLength } from 'Common/Utils';
 import { download, mailToHelper, showMessageComposer } from 'Common/UtilsUser';
+import { isFullscreen, exitFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
 import { SMAudio } from 'Common/Audio';
 

@@ -11,13 +11,6 @@ export const
 
 	elementById = id => doc.getElementById(id),
 
-	// Fullscreen must be on app, else other popups fail
-	app = doc.getElementById('rl-app'),
-	appFullscreen = () => (doc.fullscreenElement || doc.webkitFullscreenElement) === app,
-	exitFullscreen = () => appFullscreen() && (doc.exitFullscreen || doc.webkitExitFullscreen).call(doc),
-	isFullscreen = ko.observable(false),
-	toggleFullscreen = () => isFullscreen() ? exitFullscreen() : app.requestFullscreen(),
-
 	Settings = rl.settings,
 	SettingsGet = Settings.get,
 	SettingsCapa = Settings.capa,
@@ -64,20 +57,6 @@ export const
 		keyScopeReal(value);
 		shortcuts.setScope(value);
 	};
-
-if (app) {
-	let event = 'fullscreenchange';
-	if (!app.requestFullscreen && app.webkitRequestFullscreen) {
-		app.requestFullscreen = app.webkitRequestFullscreen;
-		event = 'webkit'+event;
-	}
-	if (app.requestFullscreen) {
-		doc.addEventListener(event, () => {
-			isFullscreen(appFullscreen());
-			$htmlCL.toggle('rl-fullscreen', appFullscreen());
-		});
-	}
-}
 
 dropdownVisibility.subscribe(value => {
 	if (value) {

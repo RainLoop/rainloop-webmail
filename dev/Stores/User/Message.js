@@ -1,5 +1,6 @@
 import { Scope } from 'Common/Enums';
-import { elementById, exitFullscreen } from 'Common/Globals';
+import { elementById } from 'Common/Globals';
+import { exitFullscreen } from 'Common/Fullscreen';
 import { addObservablesTo, addSubscribablesTo } from 'External/ko';
 
 import { AppUserStore } from 'Stores/User/App';
