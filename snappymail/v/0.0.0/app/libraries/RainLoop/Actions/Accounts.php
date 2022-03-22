@@ -224,7 +224,7 @@ trait Accounts
 			$this->SetAccounts($oAccount, $aAccounts);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $this->StorageProvider()->Put(
+		return $this->DefaultResponse(__FUNCTION__, $this->LocalStorageProvider()->Put(
 			$this->getAccountFromToken(),
 			StorageType::CONFIG,
 			'identities_order',
@@ -260,7 +260,7 @@ trait Accounts
 		$identities = $this->IdentitiesProvider()->GetIdentities($oAccount, $allowMultipleIdentities);
 
 		// Sort identities
-		$orderString = $this->StorageProvider()->Get($oAccount, StorageType::CONFIG, 'identities_order');
+		$orderString = $this->LocalStorageProvider()->Get($oAccount, StorageType::CONFIG, 'identities_order');
 		$old = false;
 		if (!$orderString) {
 			$orderString = $this->StorageProvider()->Get($oAccount, StorageType::CONFIG, 'accounts_identities_order');
@@ -279,7 +279,7 @@ trait Accounts
 		}
 
 		if ($old) {
-			$this->StorageProvider()->Put(
+			$this->LocalStorageProvider()->Put(
 				$oAccount,
 				StorageType::CONFIG,
 				'identities_order',

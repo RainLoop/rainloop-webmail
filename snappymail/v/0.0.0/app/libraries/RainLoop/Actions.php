@@ -225,10 +225,12 @@ class Actions
 						APP_PRIVATE_DATA . 'storage', 'storage-local' === $sName);
 					break;
 				case 'settings':
+					// RainLoop\Providers\Settings\ISettings
+					$mResult = new Providers\Settings\DefaultSettings($this->StorageProvider());
+					break;
 				case 'settings-local':
 					// RainLoop\Providers\Settings\ISettings
-					$mResult = new Providers\Settings\DefaultSettings(
-						$this->StorageProvider('settings-local' === $sName));
+					$mResult = new Providers\Settings\DefaultSettings($this->LocalStorageProvider());
 					break;
 				case 'login':
 					// Providers\Login\LoginInterface
@@ -267,7 +269,7 @@ class Actions
 
 		// Always give the file provider as last for identities, it is the override
 		if ('identities' === $sName) {
-			$mResult[] = new Providers\Identities\FileIdentities($this->StorageProvider(true));
+			$mResult[] = new Providers\Identities\FileIdentities($this->LocalStorageProvider());
 		}
 
 		foreach (\is_array($mResult) ? $mResult : array($mResult) as $oItem) {
@@ -444,23 +446,22 @@ class Actions
 		return $this->oMailClient;
 	}
 
-	public function StorageProvider(bool $bLocal = false): Providers\Storage
+	// Stores data in AdditionalAccount else MainAccount
+	public function LocalStorageProvider(): Providers\Storage
 	{
-		if ($bLocal) {
-			if (!$this->oLocalStorageProvider) {
-				$this->oLocalStorageProvider = new Providers\Storage(
-					$this->fabrica('storage-local'));
-			}
-
-			return $this->oLocalStorageProvider;
-		} else {
-			if (!$this->oStorageProvider) {
-				$this->oStorageProvider = new Providers\Storage(
-					$this->fabrica('storage'));
-			}
-
-			return $this->oStorageProvider;
+		if (!$this->oLocalStorageProvider) {
+			$this->oLocalStorageProvider = new Providers\Storage($this->fabrica('storage-local'));
 		}
+		return $this->oLocalStorageProvider;
+	}
+
+	// Stores data in MainAccount
+	public function StorageProvider(): Providers\Storage
+	{
+		if (!$this->oStorageProvider) {
+			$this->oStorageProvider = new Providers\Storage($this->fabrica('storage'));
+		}
+		return $this->oStorageProvider;
 	}
 
 	public function SettingsProvider(bool $bLocal = false): Providers\Settings

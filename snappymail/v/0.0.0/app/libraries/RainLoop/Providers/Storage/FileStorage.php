@@ -98,7 +98,9 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 			$sEmail = $mAccount->Email();
 		} else if ($mAccount instanceof \RainLoop\Model\AdditionalAccount) {
 			$sEmail = $mAccount->ParentEmail();
-			$sSubFolder = $mAccount->Email();
+			if ($this->bLocal) {
+				$sSubFolder = $mAccount->Email();
+			}
 		} else if (\is_string($mAccount)) {
 			$sEmail = $mAccount;
 		}
