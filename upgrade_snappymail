@@ -1,43 +1,43 @@
 #!/bin/bash
 
-if [[ $(id -u) -ne 0 ]] ; then echo "Please run as root" ; exit 1 ; fi
-
-GITHUB_URL="https://github.com/the-djmaze/snappymail/releases/latest"
-YOUR_SERVER_FOLDER="/var/www/snappy.somesite.com/"
-
 # UPGRADING Snappymail
 #
 # I've found this to be working fine when upgrading my Snappymail. The
 # commands should be used at your own risk. I take no responsibility.
 #
-# This example assumes that Snappymail is installed in the following
-# folder;
-#
-#     /var/www/snappy.somesite.com/ -- see $YOUR_SERVER_FOLDER
-#
-# Change the path to match your setup. 
+# The script can only be run from the  SnappyMail install directory!
 #
 # By Uwe Bieling <pychi@gmx.de>
+# and Jordan S (https://github.com/jas8522)
+
+if [[ $(id -u) -ne 0 ]] ; then echo -e "\033[1;31mPlease run as root\033[0m" ; exit 1 ; fi
+
+dir=$(pwd)
+if [ ! -d "$dir/snappymail/v" ] ; then echo -e "\033[1;31mThis script can only be run from the SnappyMail install directory\033[0m" ; exit 1 ; fi
+
+LATEST_URL="https://snappymail.eu/repository/latest.tar.gz"
+
+OWNERGROUP=`stat -c "%U:%G" snappymail`
+OLD_VERSION=`grep "define('APP_VERSION" index.php | awk -F\' '{print $4}'`
 
 # Safty First ... make a backup
-cd $YOUR_SERVER_FOLDER && cd ..
-tar -czf backup_snappymail_`date +%Y%m%d`.tar.gz $YOUR_SERVER_FOLDER
+DSTAMP=`date +%Y-%m-%d`
+echo -e "\033[1;33mBacking up snappymail $OLD_VERSION to ../backup_snappymail_${DSTAMP}.tar.gz\033[0m"
+tar -czf ../backup_snappymail_${DSTAMP}.tar.gz .
 
 # Download last release to /tmp
-cd /tmp
-DOWNLOAD_DATA=`curl -L -s $GITHUB_URL | grep -m 1 "href.*snappymail.*tar.gz" | sed "s/^.*href=\"//g" | sed "s/\".*$//g"`
-echo $DOWNLOAD_DATA | wget --base=http://github.com -i - -O snappy.tar.gz
+echo -e "\033[1;33mDownloading last release\033[0m"
+wget $LATEST_URL -O /tmp/snappymail_latest.tar.gz
+NEW_VERSION=`tar -tf /tmp/snappymail_latest.tar.gz | grep "snappymail/v/.*/index.php" | awk -F/ '{print $3}'`
 
-# Get Versions
-OLD_VERSION=`cat $YOUR_SERVER_FOLDER"data/VERSION"`
-NEW_VERSION=`echo $DOWNLOAD_DATA | grep -o "v.*/"`
-
-# extract last release to folder
-tar -xzvf snappy.tar.gz -C $YOUR_SERVER_FOLDER
+echo -e "\033[1;33mInstalling $NEW_VERSION\033[0m"
+tar -xzf /tmp/snappymail_latest.tar.gz
 
 # set permissions
-find $YOUR_SERVER_FOLDER -type d -exec chmod 755 {} \;
-find $YOUR_SERVER_FOLDER -type f -exec chmod 644 {} \;
-chown -R www-data:www-data $YOUR_SERVER_FOLDER
+echo -e "\033[1;33mSet permissions\033[0m"
+find . -type d -exec chmod 755 {} \;
+find . -type f -exec chmod 644 {} \;
+chmod u+x upgrade_snappymail
+chown -R $OWNERGROUP *
 
-echo -e "\033[1;32mFinished with snappymail-upgrade from $OLD_VERSION to ${NEW_VERSION:1:-1}... \033[0m"
+echo -e "\033[1;32mFinished with snappymail upgrade from $OLD_VERSION to $NEW_VERSION... \033[0m"
