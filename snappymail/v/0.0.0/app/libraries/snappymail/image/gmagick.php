@@ -28,6 +28,20 @@ class GMagick extends \Gmagick implements \SnappyMail\Image
 		return $gmagick;
 	}
 
+	public static function createFromStream($fp)
+	{
+		if (!\method_exists($gmagick, 'getImageOrientation')) {
+			$data = \stream_get_contents($fp);
+			return static::createFromString($data);
+		}
+		$gmagick = new static();
+		if (!$gmagick->readimagefile($fp)) {
+			throw new \InvalidArgumentException('Failed to load image');
+		}
+		$gmagick->orientation = $gmagick->getImageOrientation();
+		return $gmagick;
+	}
+
 	public function getOrientation() : int
 	{
 		return $this->orientation;

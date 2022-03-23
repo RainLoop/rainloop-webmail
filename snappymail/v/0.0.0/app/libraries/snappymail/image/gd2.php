@@ -55,6 +55,12 @@ class GD2 implements \SnappyMail\Image
 		return $gd2;
 	}
 
+	public static function createFromStream($fp)
+	{
+		$data = \stream_get_contents($fp);
+		return static::createFromString($data);
+	}
+
 	public function getOrientation() : int
 	{
 		return $this->orientation;
