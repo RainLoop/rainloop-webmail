@@ -1455,16 +1455,15 @@ var openpgp = (function (exports) {
   async function getBigInteger() {
     if (util.detectBigInt()) {
       return BigInteger$1;
-    } else {
-      const { default: BigInteger } = await Promise.resolve().then(function () { return bn_interface; });
-      return BigInteger;
     }
+    const { default: BigInteger } = await Promise.resolve().then(function () { return bn_interface; });
+    return BigInteger;
   }
 
   // GPG4Browsers - An OpenPGP implementation in javascript
 
   const util = {
-    isString: data => typeof data === 'string' || Object.prototype.isPrototypeOf.call(data, String),
+    isString: data => null != data && (typeof data === 'string' || Object.prototype.isPrototypeOf.call(data, String)),
 
     isArray: data => Array.isArray(data),
 
@@ -7439,7 +7438,7 @@ var openpgp = (function (exports) {
           f = H5;
           g = H6;
           h = H7;
-          
+
           // 0
           h = ( w0 + h + ( e>>>6 ^ e>>>11 ^ e>>>25 ^ e<<26 ^ e<<21 ^ e<<7 ) +  ( g ^ e & (f^g) ) + 0x428a2f98 )|0;
           d = ( d + h )|0;
@@ -14810,10 +14809,10 @@ var openpgp = (function (exports) {
   // reduce buffer size, avoiding mem copy
   function shrinkBuf(buf, size) {
       if (buf.length === size) {
-          return buf; 
+          return buf;
       }
       if (buf.subarray) {
-          return buf.subarray(0, size); 
+          return buf.subarray(0, size);
       }
       buf.length = size;
       return buf;
@@ -14938,8 +14937,8 @@ var openpgp = (function (exports) {
 
   function zero$1(buf) {
       let len = buf.length; while (--len >= 0) {
-          buf[len] = 0; 
-      } 
+          buf[len] = 0;
+      }
   }
 
   // From zutil.h
@@ -15209,7 +15208,7 @@ var openpgp = (function (exports) {
           /* We overwrite tree[n].Dad which is no longer needed */
 
           if (n > max_code) {
-              continue; 
+              continue;
           } /* not a leaf node */
 
           s.bl_count[bits]++;
@@ -15224,7 +15223,7 @@ var openpgp = (function (exports) {
           }
       }
       if (overflow === 0) {
-          return; 
+          return;
       }
 
       // Trace((stderr,"\nbit length overflow\n"));
@@ -15234,7 +15233,7 @@ var openpgp = (function (exports) {
       do {
           bits = max_length - 1;
           while (s.bl_count[bits] === 0) {
-              bits--; 
+              bits--;
           }
           s.bl_count[bits]--;      /* move one leaf down the tree */
           s.bl_count[bits + 1] += 2; /* move one overflow item as its brother */
@@ -15255,7 +15254,7 @@ var openpgp = (function (exports) {
           while (n !== 0) {
               m = s.heap[--h];
               if (m > max_code) {
-                  continue; 
+                  continue;
               }
               if (tree[m * 2 + 1]/*.Len*/ !== bits) {
                   // Trace((stderr,"code %d bits %d->%d\n", m, tree[m].Len, bits));
@@ -15302,7 +15301,7 @@ var openpgp = (function (exports) {
       for (n = 0;  n <= max_code; n++) {
           const len = tree[n * 2 + 1]/*.Len*/;
           if (len === 0) {
-              continue; 
+              continue;
           }
           /* Now reverse the bits */
           tree[n * 2]/*.Code*/ = bi_reverse(next_code[len]++, len);
@@ -15425,13 +15424,13 @@ var openpgp = (function (exports) {
 
       /* Initialize the trees. */
       for (n = 0; n < L_CODES$1;  n++) {
-          s.dyn_ltree[n * 2]/*.Freq*/ = 0; 
+          s.dyn_ltree[n * 2]/*.Freq*/ = 0;
       }
       for (n = 0; n < D_CODES$1;  n++) {
-          s.dyn_dtree[n * 2]/*.Freq*/ = 0; 
+          s.dyn_dtree[n * 2]/*.Freq*/ = 0;
       }
       for (n = 0; n < BL_CODES$1; n++) {
-          s.bl_tree[n * 2]/*.Freq*/ = 0; 
+          s.bl_tree[n * 2]/*.Freq*/ = 0;
       }
 
       s.dyn_ltree[END_BLOCK * 2]/*.Freq*/ = 1;
@@ -15509,7 +15508,7 @@ var openpgp = (function (exports) {
           }
           /* Exit if v is smaller than both sons */
           if (smaller(tree, v, s.heap[j], s.depth)) {
-              break; 
+              break;
           }
 
           /* Exchange v with the smallest son */
@@ -15640,7 +15639,7 @@ var openpgp = (function (exports) {
      * establish sub-heaps of increasing lengths:
      */
       for (n = s.heap_len >> 1/*int /2*/; n >= 1; n--) {
-          pqdownheap(s, tree, n); 
+          pqdownheap(s, tree, n);
       }
 
       /* Construct the Huffman tree by repeatedly combining the least two
@@ -15721,7 +15720,7 @@ var openpgp = (function (exports) {
           } else if (curlen !== 0) {
 
               if (curlen !== prevlen) {
-                  s.bl_tree[curlen * 2]/*.Freq*/++; 
+                  s.bl_tree[curlen * 2]/*.Freq*/++;
               }
               s.bl_tree[REP_3_6 * 2]/*.Freq*/++;
 
@@ -15785,7 +15784,7 @@ var openpgp = (function (exports) {
 
           } else if (count < min_count) {
               do {
-                  send_code(s, curlen, s.bl_tree); 
+                  send_code(s, curlen, s.bl_tree);
               } while (--count !== 0);
 
           } else if (curlen !== 0) {
@@ -16033,7 +16032,7 @@ var openpgp = (function (exports) {
           //        s->last_lit));
 
           if (static_lenb <= opt_lenb) {
-              opt_lenb = static_lenb; 
+              opt_lenb = static_lenb;
           }
 
       } else {
@@ -18048,11 +18047,11 @@ var openpgp = (function (exports) {
   // String encode/decode helpers
 
   try {
-      String.fromCharCode.apply(null, [ 0 ]); 
+      String.fromCharCode.apply(null, [ 0 ]);
   } catch (__) {
   }
   try {
-      String.fromCharCode.apply(null, new Uint8Array(1)); 
+      String.fromCharCode.apply(null, new Uint8Array(1));
   } catch (__) {
   }
 
@@ -18880,7 +18879,7 @@ var openpgp = (function (exports) {
       root = bits;
       for (max = MAXBITS; max >= 1; max--) {
           if (count[max] !== 0) {
-              break; 
+              break;
           }
       }
       if (root > max) {
@@ -18903,7 +18902,7 @@ var openpgp = (function (exports) {
       }
       for (min = 1; min < max; min++) {
           if (count[min] !== 0) {
-              break; 
+              break;
           }
       }
       if (root < min) {
@@ -19044,7 +19043,7 @@ var openpgp = (function (exports) {
           sym++;
           if (--count[len] === 0) {
               if (len === max) {
-                  break; 
+                  break;
               }
               len = lens[lens_index + work[sym]];
           }
@@ -19065,7 +19064,7 @@ var openpgp = (function (exports) {
               while (curr + drop < max) {
                   left -= count[curr + drop];
                   if (left <= 0) {
-                      break; 
+                      break;
                   }
                   curr++;
                   left <<= 1;
@@ -28260,7 +28259,7 @@ var openpgp = (function (exports) {
   async function generate(options, config) {
     options.sign = true; // primary key is always a signing key
     options = sanitizeKeyOptions(options);
-    options.subkeys = options.subkeys.map((subkey, index) => sanitizeKeyOptions(options.subkeys[index], options));
+    options.subkeys = options.subkeys.map((subkey, index) => sanitizeKeyOptions(subkey, options));
     let promises = [generateSecretKey(options, config)];
     promises = promises.concat(options.subkeys.map(options => generateSecretSubkey(options, config)));
     const packets = await Promise.all(promises);

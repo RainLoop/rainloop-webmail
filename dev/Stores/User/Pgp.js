@@ -1,5 +1,5 @@
 import { SettingsCapa, SettingsGet } from 'Common/Globals';
-import { staticLink } from 'Common/Links';
+//import { staticLink } from 'Common/Links';
 
 //import { showScreenPopup } from 'Knoin/Knoin';
 
@@ -22,7 +22,8 @@ export const
 
 		init() {
 			if (SettingsCapa('OpenPGP') && window.crypto && crypto.getRandomValues) {
-				rl.loadScript(staticLink('js/min/openpgp.min.js'))
+				rl.loadScript(SettingsGet('StaticLibsJs').replace('/libs.', '/openpgp.'))
+//				rl.loadScript(staticLink('js/min/openpgp.min.js'))
 					.then(() => this.loadKeyrings())
 					.catch(e => {
 						this.loadKeyrings();
