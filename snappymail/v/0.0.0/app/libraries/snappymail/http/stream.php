@@ -3,7 +3,7 @@
 namespace SnappyMail\HTTP;
 
 /**
- * Can be used with JavaScript AbstractFetchRemote.streamPerLine(fCallback, sGetAdd)
+ * Can be used with JavaScript AbstractFetchRemote.streamPerLine(fCallback, sGetAdd, postData)
  */
 
 abstract class Stream

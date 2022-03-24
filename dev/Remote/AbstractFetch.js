@@ -81,36 +81,37 @@ export class AbstractFetchRemote
 	 * Can be used to stream lines of json encoded data, but does not work on all servers.
 	 * Apache needs 'flushpackets' like in <Proxy "fcgi://...." flushpackets=on></Proxy>
 	 */
-	streamPerLine(fCallback, sGetAdd) {
-		rl.fetch(getURL(sGetAdd))
+	streamPerLine(fCallback, sGetAdd, postData) {
+		rl.fetch(getURL(sGetAdd), {}, postData)
 		.then(response => response.body)
 		.then(body => {
-			// Firefox TextDecoderStream is not defined
-		//	const reader = body.pipeThrough(new TextDecoderStream()).getReader();
-			const reader = body.getReader(),
-				re = /\r\n|\n|\r/gm,
-				utf8decoder = new TextDecoder();
 			let buffer = '';
-			function processText({ done, value }) {
-				buffer += value ? utf8decoder.decode(value, {stream: true}) : '';
-				for (;;) {
-					let result = re.exec(buffer);
-					if (!result) {
-						if (done) {
-							break;
+			const
+				// Firefox TextDecoderStream is not defined
+//				reader = body.pipeThrough(new TextDecoderStream()).getReader();
+				reader = body.getReader(),
+				re = /\r\n|\n|\r/gm,
+				utf8decoder = new TextDecoder(),
+				processText = ({ done, value }) => {
+					buffer += value ? utf8decoder.decode(value, {stream: true}) : '';
+					for (;;) {
+						let result = re.exec(buffer);
+						if (!result) {
+							if (done) {
+								break;
+							}
+							reader.read().then(processText);
+							return;
 						}
-						reader.read().then(processText);
-						return;
+						fCallback(buffer.slice(0, result.index));
+						buffer = buffer.slice(result.index + 1);
+						re.lastIndex = 0;
 					}
-					fCallback(buffer.slice(0, result.index));
-					buffer = buffer.slice(result.index + 1);
-					re.lastIndex = 0;
-				}
-				if (buffer.length) {
-					// last line didn't end in a newline char
-					fCallback(buffer);
-				}
-			}
+					if (buffer.length) {
+						// last line didn't end in a newline char
+						fCallback(buffer);
+					}
+				};
 			reader.read().then(processText);
 		})
 	}
