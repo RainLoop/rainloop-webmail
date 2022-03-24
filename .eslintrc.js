@@ -53,6 +53,7 @@ module.exports = {
 				ignoreTrailingComments: true,
 				ignorePattern: '(^\\s*(const|let|var)\\s.+=\\s*require\\s*\\(|^import\\s.+\\sfrom\\s.+;$)'
 			}
-		]
+		],
+		'no-constant-condition': ["error", { "checkLoops": false }]
 	}
 };
