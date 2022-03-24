@@ -30,11 +30,6 @@
 		right: 6px;
 	}
 
-	.attachmentSize {
-		font-size: 12px;
-		opacity: 0.5;
-	}
-
 	&.error {
 		.iconMain, .iconPreview, .attachmentSize, .attachmentName {
 			color: red;
@@ -73,16 +68,23 @@
 	}
 
 	.attachmentNameParent {
-
-		position: relative;
-
-		margin-left: 60px;
-		padding: 4px 4px 3px 6px;
-		min-width: 90px;
-
-		cursor: pointer;
-
 		border-left: 1px solid #ddd;
+		cursor: pointer;
+		margin-left: 60px;
+		min-width: 90px;
+		padding: 4px 4px 3px 6px;
+		position: relative;
+	}
+
+	.attachmentName {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.attachmentSize {
+		font-size: 12px;
+		opacity: 0.5;
 	}
 
 	.iconMain, .iconPreview {
