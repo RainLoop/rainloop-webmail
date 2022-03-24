@@ -24,14 +24,16 @@ dropdownsDetectVisibility = (() =>
  * @returns {boolean}
  */
 download = (link, name = "") => {
-	if (ThemeStore.isMobile()) {
-		open(link, '_self');
+	// Firefox 98 issue https://github.com/the-djmaze/snappymail/issues/301
+	if (ThemeStore.isMobile() || /firefox/i.test(navigator.userAgent)) {
+		open(link, '_blank');
 		focus();
 	} else {
-		const oLink = createElement('a');
-		oLink.href = link;
-		oLink.target = '_blank';
-		oLink.download = name;
+		const oLink = createElement('a', {
+			href: link,
+			target: '_blank',
+			download: name
+		});
 		doc.body.appendChild(oLink).click();
 		oLink.remove();
 	}
