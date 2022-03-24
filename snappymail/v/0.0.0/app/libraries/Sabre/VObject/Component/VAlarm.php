@@ -1,71 +1,74 @@
 <?php
 
 namespace Sabre\VObject\Component;
+
+use DateTimeImmutable;
+use DateTimeInterface;
 use Sabre\VObject;
+use Sabre\VObject\InvalidDataException;
 
 /**
- * VAlarm component
+ * VAlarm component.
  *
  * This component contains some additional functionality specific for VALARMs.
  *
- * @copyright Copyright (C) 2007-2013 fruux GmbH (https://fruux.com/).
+ * @copyright Copyright (C) fruux GmbH (https://fruux.com/)
  * @author Evert Pot (http://evertpot.com/)
- * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
+ * @license http://sabre.io/license/ Modified BSD License
  */
-class VAlarm extends VObject\Component {
-
+class VAlarm extends VObject\Component
+{
     /**
      * Returns a DateTime object when this alarm is going to trigger.
      *
      * This ignores repeated alarm, only the first trigger is returned.
      *
-     * @return DateTime
+     * @return DateTimeImmutable
      */
-    public function getEffectiveTriggerTime() {
-
+    public function getEffectiveTriggerTime()
+    {
         $trigger = $this->TRIGGER;
-        if(!isset($trigger['VALUE']) || strtoupper($trigger['VALUE']) === 'DURATION') {
+        if (!isset($trigger['VALUE']) || 'DURATION' === strtoupper($trigger['VALUE'])) {
             $triggerDuration = VObject\DateTimeParser::parseDuration($this->TRIGGER);
-            $related = (isset($trigger['RELATED']) && strtoupper($trigger['RELATED']) == 'END') ? 'END' : 'START';
+            $related = (isset($trigger['RELATED']) && 'END' == strtoupper($trigger['RELATED'])) ? 'END' : 'START';
 
             $parentComponent = $this->parent;
-            if ($related === 'START') {
-
-                if ($parentComponent->name === 'VTODO') {
+            if ('START' === $related) {
+                if ('VTODO' === $parentComponent->name) {
                     $propName = 'DUE';
                 } else {
                     $propName = 'DTSTART';
                 }
 
-                $effectiveTrigger = clone $parentComponent->$propName->getDateTime();
-                $effectiveTrigger->add($triggerDuration);
+                $effectiveTrigger = $parentComponent->$propName->getDateTime();
+                $effectiveTrigger = $effectiveTrigger->add($triggerDuration);
             } else {
-                if ($parentComponent->name === 'VTODO') {
+                if ('VTODO' === $parentComponent->name) {
                     $endProp = 'DUE';
-                } elseif ($parentComponent->name === 'VEVENT') {
+                } elseif ('VEVENT' === $parentComponent->name) {
                     $endProp = 'DTEND';
                 } else {
-                    throw new \LogicException('time-range filters on VALARM components are only supported when they are a child of VTODO or VEVENT');
+                    throw new InvalidDataException('time-range filters on VALARM components are only supported when they are a child of VTODO or VEVENT');
                 }
 
                 if (isset($parentComponent->$endProp)) {
-                    $effectiveTrigger = clone $parentComponent->$endProp->getDateTime();
-                    $effectiveTrigger->add($triggerDuration);
+                    $effectiveTrigger = $parentComponent->$endProp->getDateTime();
+                    $effectiveTrigger = $effectiveTrigger->add($triggerDuration);
                 } elseif (isset($parentComponent->DURATION)) {
-                    $effectiveTrigger = clone $parentComponent->DTSTART->getDateTime();
+                    $effectiveTrigger = $parentComponent->DTSTART->getDateTime();
                     $duration = VObject\DateTimeParser::parseDuration($parentComponent->DURATION);
-                    $effectiveTrigger->add($duration);
-                    $effectiveTrigger->add($triggerDuration);
+                    $effectiveTrigger = $effectiveTrigger->add($duration);
+                    $effectiveTrigger = $effectiveTrigger->add($triggerDuration);
                 } else {
-                    $effectiveTrigger = clone $parentComponent->DTSTART->getDateTime();
-                    $effectiveTrigger->add($triggerDuration);
+                    $effectiveTrigger = $parentComponent->DTSTART->getDateTime();
+                    $effectiveTrigger = $effectiveTrigger->add($triggerDuration);
                 }
             }
         } else {
             $effectiveTrigger = $trigger->getDateTime();
         }
-        return $effectiveTrigger;
 
+        return $effectiveTrigger;
     }
 
     /**
@@ -75,34 +78,61 @@ class VAlarm extends VObject\Component {
      * The rules used to determine if an event falls within the specified
      * time-range is based on the CalDAV specification.
      *
-     * @param \DateTime $start
-     * @param \DateTime $end
+     * @param DateTime $start
+     * @param DateTime $end
+     *
      * @return bool
      */
-    public function isInTimeRange(\DateTime $start, \DateTime $end) {
-
+    public function isInTimeRange(DateTimeInterface $start, DateTimeInterface $end)
+    {
         $effectiveTrigger = $this->getEffectiveTriggerTime();
 
         if (isset($this->DURATION)) {
             $duration = VObject\DateTimeParser::parseDuration($this->DURATION);
-            $repeat = (string)$this->repeat;
+            $repeat = (string) $this->REPEAT;
             if (!$repeat) {
                 $repeat = 1;
             }
 
-            $period = new \DatePeriod($effectiveTrigger, $duration, (int)$repeat);
+            $period = new \DatePeriod($effectiveTrigger, $duration, (int) $repeat);
 
-            foreach($period as $occurrence) {
-
+            foreach ($period as $occurrence) {
                 if ($start <= $occurrence && $end > $occurrence) {
                     return true;
                 }
             }
+
             return false;
         } else {
-            return ($start <= $effectiveTrigger && $end > $effectiveTrigger);
+            return $start <= $effectiveTrigger && $end > $effectiveTrigger;
         }
-
     }
 
+    /**
+     * A simple list of validation rules.
+     *
+     * This is simply a list of properties, and how many times they either
+     * must or must not appear.
+     *
+     * Possible values per property:
+     *   * 0 - Must not appear.
+     *   * 1 - Must appear exactly once.
+     *   * + - Must appear at least once.
+     *   * * - Can appear any number of times.
+     *   * ? - May appear, but not more than once.
+     *
+     * @var array
+     */
+    public function getValidationRules()
+    {
+        return [
+            'ACTION' => 1,
+            'TRIGGER' => 1,
+
+            'DURATION' => '?',
+            'REPEAT' => '?',
+
+            'ATTACH' => '?',
+        ];
+    }
 }

@@ -2,23 +2,22 @@
 
 namespace Sabre\VObject\Property;
 
-use
-    Sabre\VObject\Property;
+use Sabre\VObject\Property;
 
 /**
- * Boolean property
+ * Boolean property.
  *
- * This object represents BOOLEAN values. These are always the case-insenstive
+ * This object represents BOOLEAN values. These are always the case-insensitive
  * string TRUE or FALSE.
  *
  * Automatic conversion to PHP's true and false are done.
  *
- * @copyright Copyright (C) 2007-2013 fruux GmbH. All rights reserved.
+ * @copyright Copyright (C) fruux GmbH (https://fruux.com/)
  * @author Evert Pot (http://evertpot.com/)
- * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
+ * @license http://sabre.io/license/ Modified BSD License
  */
-class Boolean extends Property {
-
+class Boolean extends Property
+{
     /**
      * Sets a raw value coming from a mimedir (iCalendar/vCard) file.
      *
@@ -26,13 +25,11 @@ class Boolean extends Property {
      * not yet done, but parameters are not included.
      *
      * @param string $val
-     * @return void
      */
-    public function setRawMimeDirValue($val) {
-
-        $val = strtoupper($val)==='TRUE'?true:false;
+    public function setRawMimeDirValue($val)
+    {
+        $val = 'TRUE' === strtoupper($val) ? true : false;
         $this->setValue($val);
-
     }
 
     /**
@@ -40,10 +37,9 @@ class Boolean extends Property {
      *
      * @return string
      */
-    public function getRawMimeDirValue() {
-
-        return $this->value?'TRUE':'FALSE';
-
+    public function getRawMimeDirValue()
+    {
+        return $this->value ? 'TRUE' : 'FALSE';
     }
 
     /**
@@ -54,10 +50,23 @@ class Boolean extends Property {
      *
      * @return string
      */
-    public function getValueType() {
-
+    public function getValueType()
+    {
         return 'BOOLEAN';
-
     }
 
+    /**
+     * Hydrate data from a XML subtree, as it would appear in a xCard or xCal
+     * object.
+     */
+    public function setXmlValue(array $value)
+    {
+        $value = array_map(
+            function ($value) {
+                return 'true' === $value;
+            },
+            $value
+        );
+        parent::setXmlValue($value);
+    }
 }

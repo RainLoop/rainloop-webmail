@@ -3,17 +3,17 @@
 namespace Sabre\VObject;
 
 /**
- * iCalendar/vCard/jCal/jCard reader object.
+ * iCalendar/vCard/jCal/jCard/xCal/xCard reader object.
  *
  * This object provides a few (static) convenience methods to quickly access
  * the parsers.
  *
- * @copyright Copyright (C) 2007-2013 fruux GmbH (https://fruux.com/).
+ * @copyright Copyright (C) fruux GmbH (https://fruux.com/)
  * @author Evert Pot (http://evertpot.com/)
- * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
+ * @license http://sabre.io/license/ Modified BSD License
  */
-class Reader {
-
+class Reader
+{
     /**
      * If this option is passed to the reader, it will be less strict about the
      * validity of the lines.
@@ -35,16 +35,18 @@ class Reader {
      * You can either supply a string, or a readable stream for input.
      *
      * @param string|resource $data
-     * @param int $options
+     * @param int             $options
+     * @param string          $charset
+     *
      * @return Document
      */
-    static function read($data, $options = 0) {
-
+    public static function read($data, $options = 0, $charset = 'UTF-8')
+    {
         $parser = new Parser\MimeDir();
+        $parser->setCharset($charset);
         $result = $parser->parse($data, $options);
 
         return $result;
-
     }
 
     /**
@@ -53,21 +55,41 @@ class Reader {
      * The options argument is a bitfield. Pass any of the OPTIONS constant to
      * alter the parsers' behaviour.
      *
-     * You can either a string, a readable stream, or an array for it's input.
+     * You can either a string, a readable stream, or an array for its input.
      * Specifying the array is useful if json_decode was already called on the
      * input.
      *
      * @param string|resource|array $data
-     * @param int $options
-     * @return Node
+     * @param int                   $options
+     *
+     * @return Document
      */
-    static function readJson($data, $options = 0) {
-
+    public static function readJson($data, $options = 0)
+    {
         $parser = new Parser\Json();
         $result = $parser->parse($data, $options);
 
         return $result;
-
     }
 
+    /**
+     * Parses a xCard or xCal object, and returns the top component.
+     *
+     * The options argument is a bitfield. Pass any of the OPTIONS constant to
+     * alter the parsers' behaviour.
+     *
+     * You can either supply a string, or a readable stream for input.
+     *
+     * @param string|resource $data
+     * @param int             $options
+     *
+     * @return Document
+     */
+    public static function readXML($data, $options = 0)
+    {
+        $parser = new Parser\XML();
+        $result = $parser->parse($data, $options);
+
+        return $result;
+    }
 }

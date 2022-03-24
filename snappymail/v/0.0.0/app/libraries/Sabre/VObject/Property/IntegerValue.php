@@ -2,21 +2,20 @@
 
 namespace Sabre\VObject\Property;
 
-use
-    Sabre\VObject\Property;
+use Sabre\VObject\Property;
 
 /**
- * Integer property
+ * Integer property.
  *
  * This object represents INTEGER values. These are always a single integer.
- * They may be preceeded by either + or -.
+ * They may be preceded by either + or -.
  *
- * @copyright Copyright (C) 2007-2013 fruux GmbH. All rights reserved.
+ * @copyright Copyright (C) fruux GmbH (https://fruux.com/)
  * @author Evert Pot (http://evertpot.com/)
- * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
+ * @license http://sabre.io/license/ Modified BSD License
  */
-class Integer extends Property {
-
+class IntegerValue extends Property
+{
     /**
      * Sets a raw value coming from a mimedir (iCalendar/vCard) file.
      *
@@ -24,12 +23,10 @@ class Integer extends Property {
      * not yet done, but parameters are not included.
      *
      * @param string $val
-     * @return void
      */
-    public function setRawMimeDirValue($val) {
-
-        $this->setValue((int)$val);
-
+    public function setRawMimeDirValue($val)
+    {
+        $this->setValue((int) $val);
     }
 
     /**
@@ -37,10 +34,9 @@ class Integer extends Property {
      *
      * @return string
      */
-    public function getRawMimeDirValue() {
-
+    public function getRawMimeDirValue()
+    {
         return $this->value;
-
     }
 
     /**
@@ -51,10 +47,9 @@ class Integer extends Property {
      *
      * @return string
      */
-    public function getValueType() {
-
-        return "INTEGER";
-
+    public function getValueType()
+    {
+        return 'INTEGER';
     }
 
     /**
@@ -64,9 +59,18 @@ class Integer extends Property {
      *
      * @return array
      */
-    public function getJsonValue() {
+    public function getJsonValue()
+    {
+        return [(int) $this->getValue()];
+    }
 
-        return array((int)$this->getValue());
-
+    /**
+     * Hydrate data from a XML subtree, as it would appear in a xCard or xCal
+     * object.
+     */
+    public function setXmlValue(array $value)
+    {
+        $value = array_map('intval', $value);
+        parent::setXmlValue($value);
     }
 }

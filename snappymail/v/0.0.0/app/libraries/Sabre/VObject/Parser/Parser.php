@@ -7,12 +7,12 @@ namespace Sabre\VObject\Parser;
  *
  * This class serves as a base-class for the different parsers.
  *
- * @copyright Copyright (C) 2007-2013 fruux GmbH. All rights reserved.
+ * @copyright Copyright (C) fruux GmbH (https://fruux.com/)
  * @author Evert Pot (http://evertpot.com/)
- * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
+ * @license http://sabre.io/license/ Modified BSD License
  */
-abstract class Parser {
-
+abstract class Parser
+{
     /**
      * Turning on this option makes the parser more forgiving.
      *
@@ -29,7 +29,7 @@ abstract class Parser {
     const OPTION_IGNORE_INVALID_LINES = 2;
 
     /**
-     * Bitmask of parser options
+     * Bitmask of parser options.
      *
      * @var int
      */
@@ -41,11 +41,10 @@ abstract class Parser {
      * Optionally, it's possible to parse the input stream here.
      *
      * @param mixed $input
-     * @param int $options Any parser options (OPTION constants).
-     * @return void
+     * @param int   $options any parser options (OPTION constants)
      */
-    public function __construct($input = null, $options = 0) {
-
+    public function __construct($input = null, $options = 0)
+    {
         if (!is_null($input)) {
             $this->setInput($input);
         }
@@ -61,17 +60,16 @@ abstract class Parser {
      * If either input or options are not supplied, the defaults will be used.
      *
      * @param mixed $input
-     * @param int|null $options
+     * @param int   $options
+     *
      * @return array
      */
-    abstract public function parse($input = null, $options = null);
+    abstract public function parse($input = null, $options = 0);
 
     /**
-     * Sets the input data
+     * Sets the input data.
      *
      * @param mixed $input
-     * @return void
      */
     abstract public function setInput($input);
-
 }

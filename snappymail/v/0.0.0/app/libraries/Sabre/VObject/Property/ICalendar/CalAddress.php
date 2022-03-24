@@ -2,27 +2,26 @@
 
 namespace Sabre\VObject\Property\ICalendar;
 
-use
-    Sabre\VObject\Property\Text;
+use Sabre\VObject\Property\Text;
 
 /**
- * CalAddress property
+ * CalAddress property.
  *
  * This object encodes CAL-ADDRESS values, as defined in rfc5545
  *
- * @copyright Copyright (C) 2007-2013 fruux GmbH. All rights reserved.
+ * @copyright Copyright (C) fruux GmbH (https://fruux.com/)
  * @author Evert Pot (http://evertpot.com/)
- * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
+ * @license http://sabre.io/license/ Modified BSD License
  */
-class CalAddress extends Text {
-
+class CalAddress extends Text
+{
     /**
      * In case this is a multi-value property. This string will be used as a
      * delimiter.
      *
-     * @var string|null
+     * @var string
      */
-    public $delimiter = null;
+    public $delimiter = '';
 
     /**
      * Returns the type of value.
@@ -32,10 +31,29 @@ class CalAddress extends Text {
      *
      * @return string
      */
-    public function getValueType() {
-
+    public function getValueType()
+    {
         return 'CAL-ADDRESS';
-
     }
 
+    /**
+     * This returns a normalized form of the value.
+     *
+     * This is primarily used right now to turn mixed-cased schemes in user
+     * uris to lower-case.
+     *
+     * Evolution in particular tends to encode mailto: as MAILTO:.
+     *
+     * @return string
+     */
+    public function getNormalizedValue()
+    {
+        $input = $this->getValue();
+        if (!strpos($input, ':')) {
+            return $input;
+        }
+        list($schema, $everythingElse) = explode(':', $input, 2);
+
+        return strtolower($schema).':'.$everythingElse;
+    }
 }
