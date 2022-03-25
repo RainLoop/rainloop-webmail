@@ -30,7 +30,7 @@ class GMagick extends \Gmagick implements \SnappyMail\Image
 
 	public static function createFromStream($fp)
 	{
-		if (!\method_exists($gmagick, 'getImageOrientation')) {
+		if (!\method_exists('Gmagick', 'getImageOrientation')) {
 			$data = \stream_get_contents($fp);
 			return static::createFromString($data);
 		}
