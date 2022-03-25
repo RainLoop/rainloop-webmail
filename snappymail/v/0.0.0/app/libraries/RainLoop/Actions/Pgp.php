@@ -275,10 +275,10 @@ trait Pgp
 				$key[1] = \base64_encode($key[1]);
 				$key[2] = \base64_encode($key[2]);
 				$key[] = \hash_hmac('sha1', $key[2], $hash);
-				return !!\file_put_contents("{$dir}/{$keyId}.key", \json_encode($key));
+				return !!\file_put_contents("{$dir}{$keyId}.key", \json_encode($key));
 			}
 			if (\str_contains($key, 'PGP PUBLIC KEY')) {
-				return !!\file_put_contents("{$dir}/{$keyId}_public.asc", $key);
+				return !!\file_put_contents("{$dir}{$keyId}_public.asc", $key);
 			}
 		}
 		return false;
