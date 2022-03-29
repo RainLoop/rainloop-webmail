@@ -25,7 +25,6 @@ export class AdminSettingsDomains /*extends AbstractViewSettings*/ {
 
 	deleteDomain(domain) {
 		DomainAdminStore.remove(domain);
-		Remote.domainDelete(DomainAdminStore.fetch, domain.name);
 		Remote.request('AdminDomainDelete', DomainAdminStore.fetch, {
 			Name: domain.name
 		});
