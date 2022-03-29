@@ -369,7 +369,6 @@ $Plugin->addHook('hook.name', 'functionName');
 ## mailbox
 ### mailbox.message-list.selector.go-up
 ### mailbox.message-list.selector.go-down
-### mailbox.message-view.toggle-full-screen
 ### mailbox.inbox-unread-count
 ### mailbox.message.show
 ## audio
