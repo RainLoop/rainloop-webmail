@@ -260,7 +260,7 @@ export class EmailAddressesComponent {
 
 		self._chosenValues.forEach(v => {
 			if (v.obj) {
-				let li = createElement('li',{title:v.obj.toLine(false, false, true),draggable:'true'}),
+				let li = createElement('li',{title:v.obj.toLine(),draggable:'true'}),
 					el = createElement('span');
 				el.append(v.obj.toLine(true, false, true));
 				li.append(el);
