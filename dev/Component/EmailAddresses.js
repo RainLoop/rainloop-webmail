@@ -148,7 +148,7 @@ export class EmailAddressesComponent {
 				hook = (v && [',', ';', '\n'].includes(v.slice(-1))) ? EmailModel.splitEmailLine(val) : null,
 				values = (hook || [val]).map(value => EmailModel.parseEmailLine(value))
 						.flat(Infinity)
-						.map(item => (item.toLine ? [item.toLine(false), item] : [item, null]));
+						.map(item => (item.toLine ? [item.toLine(), item] : [item, null]));
 
 			if (values.length) {
 				values.forEach(a => {

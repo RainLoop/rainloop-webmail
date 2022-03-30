@@ -388,7 +388,7 @@ export class EmailModel extends AbstractModel {
 					exists = true;
 				}
 
-				result.push(address ? address.toLine(false) : item.name);
+				result.push(address ? address.toLine() : item.name);
 			});
 
 			return exists ? result : null;

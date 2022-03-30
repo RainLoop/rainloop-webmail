@@ -693,7 +693,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			(iError, data) => {
 				if (!iError && isArray(data.Result)) {
 					fResponse(
-						data.Result.map(item => (item && item[0] ? (new EmailModel(item[0], item[1])).toLine(false) : null))
+						data.Result.map(item => (item && item[0] ? (new EmailModel(item[0], item[1])).toLine() : null))
 						.filter(v => v)
 					);
 				} else if (Notification.RequestAborted !== iError) {
@@ -870,7 +870,7 @@ export class ComposePopupView extends AbstractViewPopup {
 	addEmailsTo(fKoValue, emails) {
 		if (arrayLength(emails)) {
 			const value = fKoValue().trim(),
-				values = emails.map(item => item ? item.toLine(false) : null)
+				values = emails.map(item => item ? item.toLine() : null)
 					.validUnique();
 
 			fKoValue(value + (value ? ', ' :  '') + values.join(', ').trim());
