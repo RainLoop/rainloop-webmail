@@ -58,18 +58,12 @@
 			margin-left: .7em;
 		}
 
-		.btn.disabled {
-			&.button-delete {
-				visibility: hidden;
-			}
-		}
-
 		.button-save, .button-delete, .saved-text {
 			margin-left: 8px;
 		}
 
-		.disabled.button-delete {
-			margin-left: 0;
+		.button-delete.disabled {
+			visibility: hidden;
 		}
 
 		.pull-right * {
@@ -106,11 +100,8 @@
 			content: '▼';
 		}
 
-		textarea, input[type="text"] {
+		input[type="text"] {
 			width: 100%;
-		}
-		textarea {
-			height: 40px;
 		}
 
 		.error-desc {
