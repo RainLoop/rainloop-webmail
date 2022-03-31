@@ -14,7 +14,8 @@ const rlContentType = 'snappymail/action',
 
 	// In Chrome we have no access to dataTransfer.getData unless it's the 'drop' event
 	// In Chrome Mobile dataTransfer.types.includes(rlContentType) fails, only text/plain is set
-	getDragAction = () => dragData ? dragData.action : false,
+	dragMessages = () => dragData && 'messages' === dragData.action,
+	dragSortable = () => dragData && 'sortable' === dragData.action,
 	setDragAction = (e, action, effect, data, img) => {
 		dragData = {
 			action: action,
@@ -71,16 +72,17 @@ Object.assign(ko.bindingHandlers, {
 
 	emailsTags: {
 		init: (element, fValueAccessor, fAllBindings) => {
-			const fValue = fValueAccessor();
+			const fValue = fValueAccessor(),
+				focused = fValue.focused;
 
 			element.addresses = new EmailAddressesComponent(element, {
-				focusCallback: value => fValue.focused && fValue.focused(!!value),
+				focusCallback: value => focused && focused(!!value),
 				autoCompleteSource: fAllBindings.get('autoCompleteSource'),
 				onChange: value => fValue(value)
 			});
 
-			if (fValue.focused && fValue.focused.subscribe) {
-				fValue.focused.subscribe(value =>
+			if (focused) {
+				focused.subscribe(value =>
 					element.addresses[value ? 'focus' : 'blur']()
 				);
 			}
@@ -132,7 +134,7 @@ Object.assign(ko.bindingHandlers, {
 					dragTimer.stop();
 				},
 				fnHover = e => {
-					if ('messages' === getDragAction(e)) {
+					if (dragMessages()) {
 						fnStop(e);
 						element.classList.add('droppableHover');
 						if (folder && folder.collapsed()) {
@@ -149,7 +151,7 @@ Object.assign(ko.bindingHandlers, {
 				dragleave: fnStop,
 				drop: e => {
 					fnStop(e);
-					if ('messages' === getDragAction(e) && ['move','copy'].includes(e.dataTransfer.effectAllowed)) {
+					if (dragMessages() && ['move','copy'].includes(e.dataTransfer.effectAllowed)) {
 						let data = dragData.data;
 						if (folder && data && data.folder && isArray(data.uids)) {
 							moveMessagesToFolder(data.folder, data.uids, folder.fullName, data.copy && e.ctrlKey);
@@ -165,7 +167,7 @@ Object.assign(ko.bindingHandlers, {
 			let options = ko.unwrap(fValueAccessor()) || {},
 				parent = element.parentNode,
 				fnHover = e => {
-					if ('sortable' === getDragAction(e)) {
+					if (dragSortable()) {
 						e.preventDefault();
 						let node = (e.target.closest ? e.target : e.target.parentNode).closest('[draggable]');
 						if (node && node !== dragData.data && parent.contains(node)) {
@@ -189,9 +191,9 @@ Object.assign(ko.bindingHandlers, {
 					setDragAction(e, 'sortable', 'move', element, element);
 					element.style.opacity = 0.25;
 				},
-				dragend: e => {
+				dragend: () => {
 					element.style.opacity = null;
-					if ('sortable' === getDragAction(e)) {
+					if (dragSortable()) {
 						dragData.data.style.cssText = '';
 						let row = parent.rows[options.list.indexOf(ko.dataFor(element))];
 						if (row != dragData.data) {
@@ -207,7 +209,7 @@ Object.assign(ko.bindingHandlers, {
 					dragenter: fnHover,
 					dragover: fnHover,
 					drop: e => {
-						if ('sortable' === getDragAction(e)) {
+						if (dragSortable()) {
 							e.preventDefault();
 							let data = ko.dataFor(dragData.data),
 								from = options.list.indexOf(data),

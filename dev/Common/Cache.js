@@ -25,7 +25,7 @@ export const
 	 * @param {string} uid
 	 * @returns {string}
 	 */
-	getMessageKey = (folderFullName, uid) => `${folderFullName}#${uid}`,
+	getMessageKey = (folderFullName, uid) => folderFullName + '#' + uid,
 
 	/**
 	 * @param {string} folder

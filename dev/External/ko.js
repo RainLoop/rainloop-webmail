@@ -169,10 +169,6 @@ ko.extenders.limitedList = (target, limitedList) => {
 
 	result(target());
 
-	if (!result.valueHasMutated) {
-		result.valueHasMutated = () => target.valueHasMutated();
-	}
-
 	return result;
 };
 
