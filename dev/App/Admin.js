@@ -10,10 +10,14 @@ import { LoginAdminScreen } from 'Screen/Admin/Login';
 import { startScreens } from 'Knoin/Knoin';
 import { AbstractApp } from 'App/Abstract';
 
-class AdminApp extends AbstractApp {
+export class AdminApp extends AbstractApp {
 	constructor() {
 		super(Remote);
 		this.weakPassword = ko.observable(false);
+	}
+
+	refresh() {
+		this.start();
 	}
 
 	start() {
@@ -28,5 +32,3 @@ class AdminApp extends AbstractApp {
 		}
 	}
 }
-
-export default new AdminApp();

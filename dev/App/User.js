@@ -1,6 +1,6 @@
 import 'External/User/ko';
 
-import { isArray, pString } from 'Common/Utils';
+import { isArray, pString, changeTheme } from 'Common/Utils';
 import { mailToHelper, setLayoutResizer, dropdownsDetectVisibility } from 'Common/UtilsUser';
 
 import {
@@ -41,6 +41,7 @@ import { FolderUserStore } from 'Stores/User/Folder';
 import { PgpUserStore } from 'Stores/User/Pgp';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { ThemeStore } from 'Stores/Theme';
+import { LanguageStore } from 'Stores/Language';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -68,7 +69,7 @@ import {
 } from 'Common/Folders';
 import { loadFolders } from 'Model/FolderCollection';
 
-class AppUser extends AbstractApp {
+export class AppUser extends AbstractApp {
 	constructor() {
 		super(Remote);
 
@@ -91,6 +92,13 @@ class AppUser extends AbstractApp {
 
 		addShortcut('escape,enter', '', dropdownsDetectVisibility);
 		addEventListener('click', dropdownsDetectVisibility);
+	}
+
+	refresh() {
+		LanguageStore.language(SettingsGet('Language'));
+		ThemeStore.populate();
+		changeTheme(SettingsGet('Theme'));
+		this.start();
 	}
 
 	/**
@@ -376,5 +384,3 @@ class AppUser extends AbstractApp {
 		showScreenPopup(ComposePopupView, params);
 	}
 }
-
-export default new AppUser();

@@ -1,7 +1,6 @@
 import ko from 'ko';
 
-import { Settings, SettingsGet } from 'Common/Globals';
-import { changeTheme } from 'Common/Utils';
+import { Settings } from 'Common/Globals';
 
 import { logoutLink } from 'Common/Links';
 import { i18nToNodes, initOnStartOrLangChange } from 'Common/Translator';
@@ -31,17 +30,6 @@ export class AbstractApp {
 		} else {
 			rl.route.reload();
 		}
-	}
-
-	refresh() {
-//		rl.adminArea() || !translatorReload(false, );
-		rl.adminArea() || (
-			LanguageStore.language(SettingsGet('Language'))
-			& ThemeStore.populate()
-			& changeTheme(SettingsGet('Theme'))
-		);
-
-		this.start();
 	}
 
 	bootstart() {
