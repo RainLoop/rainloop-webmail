@@ -66,7 +66,26 @@ const
 		/* T_NUMBER            */ NUMBER,
 		/* T_WHITESPACE        */ '(?: |\\r\\n|\\t)+',
 		/* T_UNKNOWN           */ '[^ \\r\\n\\t]+'
-	].join(')|(') + ')';
+	].join(')|(') + ')',
+
+	TokenError = [
+		/* T_STRING_LIST       */ '',
+		/* T_QUOTED_STRING     */ '',
+		/* T_MULTILINE_STRING  */ '',
+		/* T_HASH_COMMENT      */ '',
+		/* T_BRACKET_COMMENT   */ '',
+		/* T_BLOCK_START       */ 'Block start not part of control command',
+		/* T_BLOCK_END         */ 'Block end has no matching block start',
+		/* T_LEFT_PARENTHESIS  */ 'Test start not part of anyof/allof test',
+		/* T_RIGHT_PARENTHESIS */ 'Test end not part of test-list',
+		/* T_COMMA             */ 'Comma not part of test-list',
+		/* T_SEMICOLON         */ 'Semicolon not at end of command',
+		/* T_TAG               */ '',
+		/* T_IDENTIFIER        */ '',
+		/* T_NUMBER            */ '',
+		/* T_WHITESPACE        */ '',
+		/* T_UNKNOWN           */ ''
+	];
 
 export const parseScript = (script, name = 'script.sieve') => {
 	script = script.replace(/\r?\n/g, '\r\n');
@@ -118,7 +137,10 @@ export const parseScript = (script, name = 'script.sieve') => {
 			}
 		};
 
-	levels.last = () => levels[levels.length - 1];
+	levels.up = () => {
+		levels.pop();
+		return levels[levels.length - 1];
+	};
 
 	while ((match = regex.exec(script))) {
 		// the last element in match will contain the matched value and the key will be the type
@@ -226,13 +248,12 @@ export const parseScript = (script, name = 'script.sieve') => {
 
 		// Command end
 		case T_SEMICOLON:
-			command || error('Semicolon not at end of command');
+			command || error(TokenError[type]);
 			pushArgs();
 			if (command instanceof RequireCommand) {
 				command.capabilities.forEach(string => requires.push(string.value));
 			}
-			levels.pop();
-			command = levels.last();
+			command = levels.up();
 			break;
 
 		// Command block
@@ -241,41 +262,26 @@ export const parseScript = (script, name = 'script.sieve') => {
 			// https://tools.ietf.org/html/rfc5228#section-2.9
 			// Action commands do not take tests or blocks
 			while (command && !(command instanceof ConditionalCommand)) {
-				levels.pop();
-				command = levels.last();
+				command = levels.up();
 			}
-			command || error('Block start not part of control command');
+			command || error(TokenError[type]);
 			break;
 		case T_BLOCK_END:
-			(command instanceof ConditionalCommand) || error('Block end has no matching block start');
-			levels.pop();
+			(command instanceof ConditionalCommand) || error(TokenError[type]);
 //			prev_command = command;
-			command = levels.last();
+			command = levels.up();
 			break;
 
 		// anyof / allof ( ... , ... )
 		case T_LEFT_PARENTHESIS:
-			pushArgs();
-			while (command && !(command.tests instanceof GrammarTestList)) {
-				levels.pop();
-				command = levels.last();
-			}
-			command || error('Test start not part of anyof/allof test');
-			break;
 		case T_RIGHT_PARENTHESIS:
-			pushArgs();
-			levels.pop();
-			command = levels.last();
-			(command.tests instanceof GrammarTestList) || error('Test end not part of test-list');
-			break;
 		case T_COMMA:
 			pushArgs();
 			// Must be inside PARENTHESIS aka test-list
 			while (command && !(command.tests instanceof GrammarTestList)) {
-				levels.pop();
-				command = levels.last();
+				command = levels.up();
 			}
-			command || error('Comma not part of test-list');
+			command || error(TokenError[type]);
 			break;
 
 		case T_UNKNOWN:
