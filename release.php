@@ -84,10 +84,6 @@ if (!isset($options['skip-gulp'])) {
 		unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/boot.js.br');
 		unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/min/boot.min.js.br');
 	}
-
-	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/openpgp.js');
-	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/openpgp.js.br');
-	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/openpgp.js.gz');
 }
 
 // Temporary rename folder to speed up PharData
