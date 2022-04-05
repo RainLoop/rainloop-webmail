@@ -51,7 +51,7 @@ window.rl = {
 		loadScript(url)
 			.then(() => loadScript(url.replace('/libs.', `/${admin?'admin':'app'}.`)))
 			.then(() => appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve())
-			.then(() => ('loading' !== doc.readyState) ? cb() : doc.addEventListener('DOMContentLoaded', cb))
+			.then(() => ('complete' == doc.readyState) ? cb() : doc.addEventListener('DOMContentLoaded', cb))
 			.catch(e => {
 				showError(e.message);
 				throw e;
