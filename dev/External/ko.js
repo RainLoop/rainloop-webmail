@@ -80,10 +80,6 @@ Object.assign(ko.bindingHandlers, {
 		}
 	},
 
-	i18nInit: {
-		init: element => i18nToNodes(element)
-	},
-
 	i18nUpdate: {
 		update: (element, fValueAccessor) => {
 			ko.unwrap(fValueAccessor());

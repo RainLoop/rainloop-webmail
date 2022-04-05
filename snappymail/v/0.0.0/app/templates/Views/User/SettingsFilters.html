@@ -6,15 +6,14 @@
 	</div>
 </div>
 <div class="alert alert-error g-ui-user-select-none" data-bind="visible: serverError" data-icon="⚠" data-bind="text: serverErrorDesc"></div>
-<table class="table table-hover list-table g-ui-user-select-none"
-	data-bind="i18nUpdate: scripts">
+<table class="table table-hover list-table g-ui-user-select-none">
 	<colgroup>
 		<col style="width: 30px">
 		<col>
 		<col style="width: 140px">
 		<col style="width: 1em">
 	</colgroup>
-	<tbody data-bind="foreach: scripts">
+	<tbody data-bind="foreach: scripts, i18nUpdate: scripts">
 		<tr class="script-item">
 			<td>
 				<span class="disabled-script fontastic" data-bind="click: function (oScript) { $root.toggleScript(oScript); }, text: active() ? '☑' : '☐'"></span>

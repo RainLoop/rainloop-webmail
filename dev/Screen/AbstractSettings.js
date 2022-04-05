@@ -5,6 +5,7 @@ import { settings } from 'Common/Links';
 import { createElement, elementById } from 'Common/Globals';
 
 import { AbstractScreen } from 'Knoin/AbstractScreen';
+import { i18nToNodes } from 'Common/Translator';
 
 const VIEW_MODELS = [];
 
@@ -28,36 +29,33 @@ export class AbstractSettingsScreen extends AbstractScreen {
 			);
 
 		if (RoutedSettingsViewModel) {
+			const vmPlace = elementById('rl-settings-subscreen');
 			if (RoutedSettingsViewModel.__vm) {
 				settingsScreen = RoutedSettingsViewModel.__vm;
+			} else if (vmPlace) {
+				viewModelDom = createElement('div',{
+					id: 'V-Settings-' + RoutedSettingsViewModel.name.replace(/(User|Admin)Settings/,''),
+					hidden: ''
+				})
+				vmPlace.append(viewModelDom);
+
+				settingsScreen = new RoutedSettingsViewModel();
+				settingsScreen.viewModelDom = viewModelDom;
+
+				RoutedSettingsViewModel.__dom = viewModelDom;
+				RoutedSettingsViewModel.__vm = settingsScreen;
+
+				ko.applyBindingAccessorsToNode(
+					viewModelDom,
+					{
+						template: () => ({ name: RoutedSettingsViewModel.__rlSettingsData.template })
+					},
+					settingsScreen
+				);
+
+				settingsScreen.onBuild && settingsScreen.onBuild(viewModelDom);
 			} else {
-				const vmPlace = elementById('rl-settings-subscreen');
-				if (vmPlace) {
-					viewModelDom = createElement('div',{
-						id: 'V-Settings-' + RoutedSettingsViewModel.name.replace(/(User|Admin)Settings/,''),
-						hidden: ''
-					})
-					vmPlace.append(viewModelDom);
-
-					settingsScreen = new RoutedSettingsViewModel();
-					settingsScreen.viewModelDom = viewModelDom;
-
-					RoutedSettingsViewModel.__dom = viewModelDom;
-					RoutedSettingsViewModel.__vm = settingsScreen;
-
-					ko.applyBindingAccessorsToNode(
-						viewModelDom,
-						{
-							i18nInit: true,
-							template: () => ({ name: RoutedSettingsViewModel.__rlSettingsData.template })
-						},
-						settingsScreen
-					);
-
-					settingsScreen.onBuild && settingsScreen.onBuild(viewModelDom);
-				} else {
-					console.log('Cannot find sub settings view model position: SettingsSubScreen');
-				}
+				console.log('Cannot find sub settings view model position: SettingsSubScreen');
 			}
 
 			if (settingsScreen) {
@@ -70,6 +68,7 @@ export class AbstractSettingsScreen extends AbstractScreen {
 
 					// show
 					settingsScreen.beforeShow && settingsScreen.beforeShow();
+					i18nToNodes(settingsScreen.viewModelDom);
 					settingsScreen.viewModelDom.hidden = false;
 					settingsScreen.onShow && settingsScreen.onShow();
 
@@ -79,7 +78,7 @@ export class AbstractSettingsScreen extends AbstractScreen {
 						);
 					});
 
-					(elementById('rl-settings-subscreen') || {}).scrollTop = 0;
+					(vmPlace || {}).scrollTop = 0;
 					// --
 				}, 1);
 			}

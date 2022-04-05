@@ -2,6 +2,7 @@ import ko from 'ko';
 import { koComputable } from 'External/ko';
 import { doc, $htmlCL, elementById, fireEvent } from 'Common/Globals';
 import { forEachObjectValue, forEachObjectEntry } from 'Common/Utils';
+import { i18nToNodes } from 'Common/Translator';
 
 let
 	SCREENS = {},
@@ -86,6 +87,7 @@ const
 
 					vm.modalVisible.subscribe(value => {
 						if (value) {
+							i18nToNodes(vmDom);
 							visiblePopups.add(vm);
 							vmDom.style.zIndex = 3000 + (visiblePopups.size * 2);
 							vmDom.showModal();
@@ -111,7 +113,6 @@ const
 				ko.applyBindingAccessorsToNode(
 					vmDom,
 					{
-						i18nInit: true,
 						template: () => ({ name: id })
 					},
 					vm
@@ -215,6 +216,7 @@ const
 
 						forEachViewModel(vmScreen, (vm, dom) => {
 							vm.beforeShow && vm.beforeShow();
+							i18nToNodes(dom);
 							dom.hidden = false;
 							vm.onShow && vm.onShow();
 							autofocus(dom);

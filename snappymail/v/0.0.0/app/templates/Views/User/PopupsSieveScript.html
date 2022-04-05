@@ -1,5 +1,5 @@
 <!-- ko with: script -->
-<header data-bind="i18nInit: true">
+<header>
 	<a href="#" class="close" data-bind="click: $root.close">×</a>
 	<h3>
 		<span data-i18n="POPUPS_SIEVE_SCRIPT/TITLE_CREATE" data-bind="visible: !exists()"></span>
@@ -7,7 +7,7 @@
 		<span data-bind="visible: exists">: <!-- ko text: name--><!-- /ko --></span>
 	</h3>
 </header>
-<div class="modal-body" data-bind="i18nInit: true">
+<div class="modal-body">
 
 	<div class="control-group" data-bind="css: {'error': nameError}, hidden: exists">
 		<input type="text" class="span5"
@@ -39,8 +39,7 @@
 		<textarea style="width:100%;height:60vh" data-bind="value: body, valueUpdate: 'input'"></textarea>
 	</div>
 	<div data-bind="visible: !$root.rawActive()">
-		<table class="table table-hover list-table filters-list g-ui-user-select-none"
-			data-bind="i18nUpdate: filters">
+		<table class="table table-hover list-table filters-list g-ui-user-select-none">
 			<colgroup>
 				<col style="width: 30px">
 				<col style="width: 16px">
@@ -70,7 +69,7 @@
 		<a class="btn" data-bind="click: $root.addFilter" data-icon="✚" data-i18n="POPUPS_SIEVE_SCRIPT/BUTTON_ADD_FILTER"></a>
 	</div>
 </div>
-<footer data-bind="i18nInit: true">
+<footer>
 	<a class="btn" data-bind="visible: $root.allowToggle, click: function() { $root.toggleFiltersRaw(); }, css: {'active': $root.rawActive }" data-i18n="[title]POPUPS_SIEVE_SCRIPT/BUTTON_RAW_SCRIPT">
 		<i class="icon-file-code"></i>
 	</a>
