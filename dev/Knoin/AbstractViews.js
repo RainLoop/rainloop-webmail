@@ -74,10 +74,10 @@ export class AbstractViewPopup extends AbstractView
 
 /*
 	beforeShow() {} // Happens before showModal()
-	onShow() {}       // Happens after  showModal()
-	afterShow() {}    // Happens after  showModal() animation transitionend
-	onHide() {}       // Happens before animation transitionend
-	afterHide() {}    // Happens after  animation transitionend
+	onShow() {}     // Happens after  showModal()
+	afterShow() {}  // Happens after  showModal() animation transitionend
+	onHide() {}     // Happens before animation transitionend
+	afterHide() {}  // Happens after  animation transitionend
 
 	close() {}
 */
