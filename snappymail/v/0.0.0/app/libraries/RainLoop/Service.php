@@ -38,8 +38,8 @@ abstract class Service
 		\header('Referrer-Policy: no-referrer');
 		\header('X-Content-Type-Options: nosniff');
 
-		// Google FLoC
-		\header('Permissions-Policy: interest-cohort=()');
+		// Google FLoC, obsolete
+//		\header('Permissions-Policy: interest-cohort=()');
 
 		static::setCSP();
 

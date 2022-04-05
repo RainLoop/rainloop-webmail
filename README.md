@@ -74,7 +74,6 @@ This fork of RainLoop has the following changes:
 * Added support to load plugins as .phar
 * Replaced old Sabre library
 * AddressBook Contacts support MySQL/MariaDB utf8mb4
-* Prevent Google FLoC
 * Added [Fetch Metadata Request Headers](https://www.w3.org/TR/fetch-metadata/) checks
 * Reduced excessive DOM size
 * Support [Kolab groupware](https://kolab.org/)
