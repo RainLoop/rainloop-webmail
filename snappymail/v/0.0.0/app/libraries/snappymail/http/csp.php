@@ -8,6 +8,7 @@ namespace SnappyMail\HTTP;
 class CSP
 {
 	public
+		$base = ["'self'"],
 		$default = ["'self'"],
 		// Knockout.js requires unsafe-inline?
 		// Knockout.js requires eval() for observable binding purposes
@@ -34,6 +35,7 @@ class CSP
 	function __toString() : string
 	{
 		$params = [
+			'base-uri ' . \implode(' ', $this->base),
 			'default-src ' . \implode(' ', $this->default)
 		];
 		if ($this->script) {
