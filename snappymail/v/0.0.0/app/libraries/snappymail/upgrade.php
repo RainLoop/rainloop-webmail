@@ -162,4 +162,49 @@ abstract class Upgrade
 			return \unserialize($sData) ?: array();
 		}
 	}
+
+	public static function backup() : string
+	{
+//		$tar_destination = APP_DATA_FOLDER_PATH . APP_VERSION . '.tar';
+		$tar_destination = APP_DATA_FOLDER_PATH . 'backup-' . \date('YmdHis') . '.tar';
+		$tar = new \PharData($tar_destination);
+		$files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(APP_DATA_FOLDER_PATH . '_data_'), \RecursiveIteratorIterator::SELF_FIRST);
+		$l = \strlen(APP_DATA_FOLDER_PATH);
+		foreach ($files as $file) {
+			$file = \str_replace('\\', '/', $file);
+			if (\is_file($file) && !\strpos($file, '/cache/')) {
+				$tar->addFile($file, \substr($file, $l));
+			}
+		}
+		$tar->compress(\Phar::GZ);
+		\unlink($tar_destination);
+		return $tar_destination . '.gz';
+	}
+
+	public static function core() : bool
+	{
+		$this->IsAdminLoggined();
+
+		$bResult = false;
+		if (\version_compare(APP_VERSION, '2.0', '>')
+		 && \is_writable(\dirname(APP_VERSION_ROOT_PATH))
+		 && \is_writable(APP_INDEX_ROOT_PATH . 'index.php')
+		) {
+			$sTmp = null;
+			try {
+				$sTmp = Repository::downloadCore($info->file);
+				if ($sTmp) {
+					static::backup();
+					$oArchive = new \PharData($sTmp, 0);
+					$bResult = $oArchive->extractTo(\rtrim(APP_VERSION_ROOT_PATH, '\\/'));
+					if (!$bResult) {
+						throw new \Exception('Cannot extract core files: '.$oArchive->getStatusString());
+					}
+				}
+			} finally {
+				$sTmp && \unlink($sTmp);
+			}
+		}
+		return $bResult;
+	}
 }

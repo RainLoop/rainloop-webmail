@@ -448,6 +448,33 @@ class ActionsAdmin extends Actions
 			('plugin' !== $sType ? array('Reload' => true) : true) : false);
 	}
 
+	// /?admin/Backup
+	public function DoAdminBackup() : void
+	{
+		try {
+			$this->IsAdminLoggined();
+			$file = \SnappyMail\Upgrade::backup();
+			\header('Content-Type: application/gzip');
+			\header('Content-Disposition: attachment; filename="' . \basename($file) . '"');
+			\header('Content-Transfer-Encoding: binary');
+			\header('Content-Length: ' . \filesize($file));
+			$fp = \fopen($file, 'rb');
+			\fpassthru($fp);
+			\unlink($file);
+		} catch (\Throwable $e) {
+			if (102 == $e->getCode()) {
+				\MailSo\Base\Http::StatusHeader(403);
+			}
+			echo $e->getMessage();
+		}
+		exit;
+	}
+
+	public function DoAdminUpgradeCore() : array
+	{
+		return $this->DefaultResponse(__FUNCTION__, \SnappyMail\Upgrade::core());
+	}
+
 	public function DoAdminPluginDisable() : array
 	{
 		$this->IsAdminLoggined();

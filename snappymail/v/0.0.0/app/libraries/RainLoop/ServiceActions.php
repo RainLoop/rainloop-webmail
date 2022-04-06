@@ -74,6 +74,16 @@ class ServiceActions
 		return $this;
 	}
 
+/*
+	public function ServiceBackup() : void
+	{
+		if (\method_exists($this->oActions, 'DoAdminBackup')) {
+			$this->oActions->DoAdminBackup();
+		}
+		exit;
+	}
+*/
+
 	public function ServiceJson() : string
 	{
 		\ob_start();

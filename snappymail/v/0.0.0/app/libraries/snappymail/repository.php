@@ -7,11 +7,11 @@ abstract class Repository
 	// snappyMailRepo
 	const BASE_URL = 'https://snappymail.eu/repository/v2/';
 
-	private static function get(string $path, string $proxy, string $proxy_auth) : string
+	private static function get(string $path) : string
 	{
 		$oHTTP = HTTP\Request::factory(/*'socket' or 'curl'*/);
-		$oHTTP->proxy = $proxy;
-		$oHTTP->proxy_auth = $proxy_auth;
+		$oHTTP->proxy = \RainLoop\Api::Config()->Get('labs', 'curl_proxy', '');
+		$oHTTP->proxy_auth = \RainLoop\Api::Config()->Get('labs', 'curl_proxy_auth', '');
 		$oHTTP->max_response_kb = 0;
 		$oHTTP->timeout = 15; // timeout in seconds.
 		$oResponse = $oHTTP->doRequest('GET', static::BASE_URL . $path);
@@ -26,16 +26,17 @@ abstract class Repository
 
 //	$aRep = \json_decode($sRep);
 
-	private static function download(string $path, string $proxy, string $proxy_auth) : string
+	private static function download(string $path) : string
 	{
 		$sTmp = APP_PRIVATE_DATA . \md5(\microtime(true).$path) . \preg_replace('/^.*?(\\.[a-z\\.]+)$/Di', '$1', $path);
 		$pDest = \fopen($sTmp, 'w+b');
 		if (!$pDest) {
 			throw new \Exception('Cannot create temp file: '.$sTmp);
 		}
+
 		$oHTTP = HTTP\Request::factory(/*'socket' or 'curl'*/);
-		$oHTTP->proxy = $proxy;
-		$oHTTP->proxy_auth = $proxy_auth;
+		$oHTTP->proxy = \RainLoop\Api::Config()->Get('labs', 'curl_proxy', '');
+		$oHTTP->proxy_auth = \RainLoop\Api::Config()->Get('labs', 'curl_proxy_auth', '');
 		$oHTTP->max_response_kb = 0;
 		$oHTTP->timeout = 15; // timeout in seconds.
 		$oHTTP->streamBodyTo($pDest);
@@ -81,10 +82,7 @@ abstract class Repository
 
 		if ('' === $sRep || 0 === $iRepTime || \time() - 3600 > $iRepTime)
 		{
-			$sRep = static::get($sRepoFile,
-				\RainLoop\Api::Config()->Get('labs', 'curl_proxy', ''),
-				\RainLoop\Api::Config()->Get('labs', 'curl_proxy_auth', '')
-			);
+			$sRep = static::get($sRepoFile);
 			if ($sRep)
 			{
 				$aRep = \json_decode($sRep);
@@ -148,6 +146,21 @@ abstract class Repository
 			\RainLoop\Api::Logger()->Write($sError, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 		}
 		return $aResult;
+	}
+
+	public static function getLatestCoreInfo()
+	{
+		\RainLoop\Api::Actions()->IsAdminLoggined();
+		$sRep = static::get('core.json');
+		return $sRep ? \json_decode($sRep) : null;
+	}
+
+	public static function downloadCore(string $path) : ?string
+	{
+		$info = static::getLatestCoreInfo();
+		return \version_compare(APP_VERSION, $info->version, '<')
+			? static::download($info->file) // '../latest.tar.gz'
+			: null;
 	}
 
 	public static function getPackagesList() : array
@@ -230,26 +243,22 @@ abstract class Repository
 				}
 				if (isset($aList[$sId]) && $sFile === $aList[$sId]['file']) {
 					$sRealFile = $sFile;
-					$sTmp = static::download($sFile,
-						\RainLoop\Api::Config()->Get('labs', 'curl_proxy', ''),
-						\RainLoop\Api::Config()->Get('labs', 'curl_proxy_auth', '')
-					);
+					$sTmp = static::download($sFile);
 				}
 			}
 
 			if ($sTmp) {
 				$oArchive = new \PharData($sTmp, 0, $sRealFile);
-				if (static::deletePackageDir($sId)) {
-					if ('.phar' === \substr($sRealFile, -5)) {
-						$bResult = \copy($sTmp, APP_PLUGINS_PATH . \basename($sRealFile));
-					} else {
-						$bResult = $oArchive->extractTo(\rtrim(APP_PLUGINS_PATH, '\\/'));
-					}
-					if (!$bResult) {
-						throw new \Exception('Cannot extract package files: '.$oArchive->getStatusString());
-					}
-				} else {
+				if (!static::deletePackageDir($sId)) {
 					throw new \Exception('Cannot remove previous plugin folder: '.$sId);
+				}
+				if ('.phar' === \substr($sRealFile, -5)) {
+					$bResult = \copy($sTmp, APP_PLUGINS_PATH . \basename($sRealFile));
+				} else {
+					$bResult = $oArchive->extractTo(\rtrim(APP_PLUGINS_PATH, '\\/'));
+				}
+				if (!$bResult) {
+					throw new \Exception('Cannot extract package files: '.$oArchive->getStatusString());
 				}
 			}
 		} catch (\Throwable $e) {
