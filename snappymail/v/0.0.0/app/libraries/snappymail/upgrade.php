@@ -196,7 +196,7 @@ abstract class Upgrade
 				if ($sTmp) {
 					static::backup();
 					$oArchive = new \PharData($sTmp, 0);
-					$bResult = $oArchive->extractTo(\rtrim(APP_VERSION_ROOT_PATH, '\\/'));
+					$bResult = $oArchive->extractTo(\rtrim(APP_VERSION_ROOT_PATH, '\\/'), null, true);
 					if (!$bResult) {
 						throw new \Exception('Cannot extract core files: '.$oArchive->getStatusString());
 					}
