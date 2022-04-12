@@ -631,7 +631,7 @@ class ServiceActions
 		$this->oHttp->ServerNoCache();
 		$sTo = \trim($_GET['to'] ?? '');
 		if (!empty($sTo) && \preg_match('/^mailto:/i', $sTo)) {
-			Utils::SetCookie(\RainLoop\Actions::AUTH_MAILTO_TOKEN_KEY,
+			Utils::SetCookie(Actions::AUTH_MAILTO_TOKEN_KEY,
 				Utils::EncodeKeyValuesQ(array(
 					'Time' => \microtime(true),
 					'MailTo' => 'MailTo',
@@ -660,7 +660,6 @@ class ServiceActions
 
 		$oException = null;
 		$oAccount = null;
-		$bLogout = true;
 
 		$sSsoHash = $_REQUEST['hash'] ?? '';
 		if (!empty($sSsoHash))
@@ -714,9 +713,9 @@ class ServiceActions
 							}
 						}
 
-						$this->oActions->SetAuthToken($oAccount);
-
-						$bLogout = !($oAccount instanceof Model\MainAccount);
+						if ($oAccount instanceof Model\MainAccount) {
+							$this->oActions->SetAuthToken($oAccount);
+						}
 					}
 					catch (\Throwable $oException)
 					{
@@ -724,11 +723,6 @@ class ServiceActions
 					}
 				}
 			}
-		}
-
-		if ($bLogout)
-		{
-			$this->oActions->SetAuthLogoutToken();
 		}
 
 		$this->oActions->Location('./');
@@ -739,7 +733,6 @@ class ServiceActions
 	{
 		$oException = null;
 		$oAccount = null;
-		$bLogout = true;
 
 		$sEmail = $_ENV['REMOTE_USER'] ?? '';
 		$sPassword = $_ENV['REMOTE_PASSWORD'] ?? '';
@@ -749,8 +742,9 @@ class ServiceActions
 			try
 			{
 				$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
-				$this->oActions->SetAuthToken($oAccount);
-				$bLogout = !($oAccount instanceof Model\MainAccount);
+				if ($oAccount instanceof Model\MainAccount) {
+					$this->oActions->SetAuthToken($oAccount);
+				}
 			}
 			catch (\Throwable $oException)
 			{
@@ -758,9 +752,54 @@ class ServiceActions
 			}
 		}
 
-		if ($bLogout)
-		{
-			$this->oActions->SetAuthLogoutToken();
+		$this->oActions->Location('./');
+		return '';
+	}
+
+	public function ServiceExternalLogin() : string
+	{
+		$this->oHttp->ServerNoCache();
+
+		$oException = null;
+		$oAccount = null;
+
+		if ($this->oActions->Config()->Get('labs', 'allow_external_login', false)) {
+			$sEmail = \trim($this->oHttp->GetRequest('Email', ''));
+			$sPassword = $this->oHttp->GetRequest('Password', '');
+
+			try
+			{
+				$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
+				if ($oAccount instanceof Model\MainAccount) {
+					$this->oActions->SetAuthToken($oAccount);
+				} else {
+					$oAccount = null;
+				}
+			}
+			catch (\Throwable $oException)
+			{
+				$this->Logger()->WriteException($oException);
+			}
+		}
+
+		if ('json' === \strtolower($this->oHttp->GetRequest('Output', ''))) {
+			\header('Content-Type: application/json; charset=utf-8');
+
+			$aResult = array(
+				'Action' => 'ExternalLogin',
+				'Result' => $oAccount ? true : false,
+				'ErrorCode' => 0
+			);
+
+			if (!$oAccount) {
+				if ($oException instanceof Exceptions\ClientException) {
+					$aResult['ErrorCode'] = $oException->getCode();
+				} else {
+					$aResult['ErrorCode'] = Notifications::AuthError;
+				}
+			}
+
+			return \MailSo\Base\Utils::Php2js($aResult, $this->Logger());
 		}
 
 		$this->oActions->Location('./');
