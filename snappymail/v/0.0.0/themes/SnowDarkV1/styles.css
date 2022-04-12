@@ -72,8 +72,7 @@
 }
 
 .thm-message-list-top-toolbar, .thm-message-list-bottom-toolbar {
-    background-color: #111 !important /*linear-gradient(to bottom,#444,#111) !important*/;
-    /*background-repeat: repeat-x !important;*/
+    background-color: #111 !important;
 	color: var(--main-color);
 }
 
