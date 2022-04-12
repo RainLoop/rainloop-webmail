@@ -1,6 +1,7 @@
 {
 	"GLOBAL": {
-		"SAVE": "Saugoti"
+		"SAVE": "Saugoti",
+		"UPDATE": "Atnaujinti"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prisijungimo vardas",
@@ -100,7 +101,13 @@
 	"TAB_ABOUT": {
 		"LEGEND_ABOUT": "Apie",
 		"LABEL_TAG_HINT": "Paprastas, modernus ir greitas web pašto klientas",
-		"LABEL_ALL_RIGHTS_RESERVED": "Visos teisės saugomos."
+		"LABEL_ALL_RIGHTS_RESERVED": "Visos teisės saugomos.",
+		"HINT_READ_CHANGE_LOG": "Prašom perskaityti pasikeitimų eigą prieš atnaujinant.",
+		"HINT_IS_UP_TO_DATE": "RainLoop naujausios laidos.",
+		"HTML_NEW_VERSION": "Nauja <b>%VERSION%</b> versija jau prieinama.",
+		"LABEL_UPDATING": "Atnaujinama",
+		"LABEL_CHECKING": "Ieškau atnaujinimų",
+		"BUTTON_RELEASES": "Releases"
 	},
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Pridėti Alias",

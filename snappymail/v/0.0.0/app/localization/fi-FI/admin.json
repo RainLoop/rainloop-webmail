@@ -1,6 +1,7 @@
 {
 	"GLOBAL": {
-		"SAVE": "Tallenna"
+		"SAVE": "Tallenna",
+		"UPDATE": "Päivitä"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Tunnus",
@@ -100,7 +101,13 @@
 	"TAB_ABOUT": {
 		"LEGEND_ABOUT": "Tietoja",
 		"LABEL_TAG_HINT": "Helppo, moderni ja nopea web-pohjainen sähköpostiohjelma",
-		"LABEL_ALL_RIGHTS_RESERVED": "Kaikki oikeudet pidätetään."
+		"LABEL_ALL_RIGHTS_RESERVED": "Kaikki oikeudet pidätetään.",
+		"HINT_READ_CHANGE_LOG": "Lue muutosloki ennen päivitystä.",
+		"HINT_IS_UP_TO_DATE": "RainLoop on ajan tasalla.",
+		"HTML_NEW_VERSION": "Uusi versio <b>%VERSION%</b> on saatavissa.",
+		"LABEL_UPDATING": "Päivitetään",
+		"LABEL_CHECKING": "Tarkastetaan päivityksiä",
+		"BUTTON_RELEASES": "Releases"
 	},
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Lisää Alias",

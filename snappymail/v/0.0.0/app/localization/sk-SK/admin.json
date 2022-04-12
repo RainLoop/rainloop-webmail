@@ -1,6 +1,7 @@
 {
 	"GLOBAL": {
-		"SAVE": "Uložiť"
+		"SAVE": "Uložiť",
+		"UPDATE": "Aktualizovať"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prihlasovanie",
@@ -100,7 +101,13 @@
 	"TAB_ABOUT": {
 		"LEGEND_ABOUT": "O programe",
 		"LABEL_TAG_HINT": "Jednoduchý, moderný a rýchly webmail klient",
-		"LABEL_ALL_RIGHTS_RESERVED": "Všetky práva vyhradené."
+		"LABEL_ALL_RIGHTS_RESERVED": "Všetky práva vyhradené.",
+		"HINT_READ_CHANGE_LOG": "Prosím prečítajte si zoznam zmien pred aktualizáciou.",
+		"HINT_IS_UP_TO_DATE": "RainLoop je aktuálny.",
+		"HTML_NEW_VERSION": "Dostupná nová <b>%VERSION%</b> verzia.",
+		"LABEL_UPDATING": "Aktualizujem",
+		"LABEL_CHECKING": "Kontrolujem aktualizácie",
+		"BUTTON_RELEASES": "Releases"
 	},
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Pridať alias",

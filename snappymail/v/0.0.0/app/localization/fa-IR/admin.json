@@ -1,6 +1,7 @@
 {
 	"GLOBAL": {
-		"SAVE": "ذخیره"
+		"SAVE": "ذخیره",
+		"UPDATE": "بروزرسانی"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ورود",
@@ -100,7 +101,13 @@
 	"TAB_ABOUT": {
 		"LEGEND_ABOUT": "درباره",
 		"LABEL_TAG_HINT": "یک رابط کاربری پست الکترونیک ساده، پیشرفته و سریع",
-		"LABEL_ALL_RIGHTS_RESERVED": "همه حقوق محفوظ هست"
+		"LABEL_ALL_RIGHTS_RESERVED": "همه حقوق محفوظ هست",
+		"HINT_READ_CHANGE_LOG": "فایل وقایع را قبل از بروزرسانی بخوانید.",
+		"HINT_IS_UP_TO_DATE": "RainLoop بروز هست",
+		"HTML_NEW_VERSION": "نسخه <b>%VERSION%</b>  در دسترس هست",
+		"LABEL_UPDATING": "در حال بروزرسانی",
+		"LABEL_CHECKING": "چک کردن برای بروزرسانی",
+		"BUTTON_RELEASES": "Releases"
 	},
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "اضافه کردن نام مستعار",

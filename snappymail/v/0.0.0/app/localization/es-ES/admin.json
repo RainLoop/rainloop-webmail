@@ -1,6 +1,7 @@
 {
 	"GLOBAL": {
-		"SAVE": "Guardar"
+		"SAVE": "Guardar",
+		"UPDATE": "Actualizar"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Ingresar",
@@ -100,7 +101,13 @@
 	"TAB_ABOUT": {
 		"LEGEND_ABOUT": "Acerca",
 		"LABEL_TAG_HINT": "Moderno, simple y rápido cliente web de correo electrónico",
-		"LABEL_ALL_RIGHTS_RESERVED": "Todos los Derechos Reservados."
+		"LABEL_ALL_RIGHTS_RESERVED": "Todos los Derechos Reservados.",
+		"HINT_READ_CHANGE_LOG": "Revisa la lista de cambios antes de actualizar.",
+		"HINT_IS_UP_TO_DATE": "RainLoop está actualizado.",
+		"HTML_NEW_VERSION": "Nueva versión ( <b>%VERSION%</b> ) está disponible.",
+		"LABEL_UPDATING": "Actualizando",
+		"LABEL_CHECKING": "Buscando actualizaciones",
+		"BUTTON_RELEASES": "Releases"
 	},
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Agregar alias",

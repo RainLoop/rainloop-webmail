@@ -1,6 +1,7 @@
 {
 	"GLOBAL": {
-		"SAVE": "Shrani"
+		"SAVE": "Shrani",
+		"UPDATE": "Posodobi"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prijava",
@@ -100,7 +101,13 @@
 	"TAB_ABOUT": {
 		"LEGEND_ABOUT": "Več o",
 		"LABEL_TAG_HINT": "Preprost, sodoben, in hiter spletni e-poštni odjemalec",
-		"LABEL_ALL_RIGHTS_RESERVED": "Vse pravice pridržane."
+		"LABEL_ALL_RIGHTS_RESERVED": "Vse pravice pridržane.",
+		"HINT_READ_CHANGE_LOG": "Preberite dnevnik sprememb pred posodobitvijo.",
+		"HINT_IS_UP_TO_DATE": "Ni novih posodobitev.",
+		"HTML_NEW_VERSION": "Na voljo je nova verzija <b>%VERSION%</b>.",
+		"LABEL_UPDATING": "Posodabljanje",
+		"LABEL_CHECKING": "Preverjanje za posdodobitve",
+		"BUTTON_RELEASES": "Releases"
 	},
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Dodajanje domene",

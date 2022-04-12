@@ -1,177 +1,184 @@
 {
 	"GLOBAL": {
-		"SAVE": "Salva"
+		"SAVE": "Save",
+		"UPDATE": "Aggiorna"
 	},
 	"LOGIN": {
-		"LABEL_LOGIN": "Nome utente",
+		"LABEL_LOGIN": "Login",
 		"LABEL_PASSWORD": "Password",
 		"LABEL_TOTP": "TOTP code",
-		"BUTTON_LOGIN": "Accedi all'amministrazione"
+		"BUTTON_LOGIN": "Log into the admin panel"
 	},
 	"TOP_PANEL": {
-		"LABEL_ADMIN_PANEL": "Amministrazione"
+		"LABEL_ADMIN_PANEL": "Admin Panel"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Generali",
-		"LABEL_LOGIN_NAME": "Accesso",
-		"LABEL_BRANDING_NAME": "Personalizzazione",
-		"LABEL_CONTACTS_NAME": "Contatti",
-		"LABEL_DOMAINS_NAME": "Domini",
-		"LABEL_SECURITY_NAME": "Sicurezza",
-		"LABEL_PACKAGES_NAME": "Pacchetti",
+		"LABEL_GENERAL_NAME": "General",
+		"LABEL_LOGIN_NAME": "Login",
+		"LABEL_BRANDING_NAME": "Branding",
+		"LABEL_CONTACTS_NAME": "Contacts",
+		"LABEL_DOMAINS_NAME": "Domains",
+		"LABEL_SECURITY_NAME": "Security",
+		"LABEL_PACKAGES_NAME": "Extensions",
 		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "Informazioni"
+		"LABEL_ABOUT_NAME": "About"
 	},
 	"TAB_GENERAL": {
-		"LEGEND_INTERFACE": "Interfaccia",
-		"LABEL_LANGUAGE": "Lingua",
-		"LABEL_LANGUAGE_ADMIN": "Lingua (amministrazione)",
-		"LABEL_THEME": "Tema",
-		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Permetti di cambiare lingua all'accesso",
-		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Permetti di cambiare tema dalle impostazioni",
-		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Permetti di scegliere lo sfondo dalle impostazioni",
-		"LABEL_NEW_FOLDER_MOVE": "Nuovo bottone \"Sposta in\"",
-		"LABEL_SHOW_THUMBNAILS": "Visualizza anteprime degli allegati",
-		"LEGEND_MAIN": "Principale",
-		"LABEL_ATTACHMENT_SIZE_LIMIT": "Limite di grandezza degli allegati",
-		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Permetti di possedere più account",
-		"LABEL_ALLOW_IDENTITIES": "Permetti di registrare identità multiple",
-		"ALERT_DATA_ACCESS": "La cartella 'data' è accessibile. Per favore configura il tuo server web per nascondere la cartella 'data' dagli accessi esterni. Maggiori informazioni:",
-		"ALERT_WARNING": "Attenzione!",
-		"HTML_ALERT_WEAK_PASSWORD": "Stai usando la password di amministrazione predefinita.\n<br>\nPer ragioni di sicurezza,\n<strong><a href=\"#\/security\">cambiala<\/a><\/strong>\ncon una nuova password immediatamente.\n"
+		"LEGEND_INTERFACE": "Interface",
+		"LABEL_LANGUAGE": "Language",
+		"LABEL_LANGUAGE_ADMIN": "Language (admin)",
+		"LABEL_THEME": "Theme",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Allow language selection on settings screen",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Allow theme selection on settings screen",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Allow background selection on settings screen",
+		"LABEL_NEW_FOLDER_MOVE": "New \"move to folder\" button",
+		"LABEL_SHOW_THUMBNAILS": "Show thumbnails (attachments)",
+		"LEGEND_MAIN": "Main",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Attachment size limit",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Allow additional accounts",
+		"LABEL_ALLOW_IDENTITIES": "Allow multiple identities",
+		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
+		"ALERT_WARNING": "Warning!",
+		"HTML_ALERT_WEAK_PASSWORD": "You are using the default admin password.\n<br>\nFor security reasons please\n<strong><a href=\"#\/security\">change<\/a><\/strong>\npassword to something else now.\n"
 	},
 	"TAB_LOGIN": {
-		"LEGEND_LOGIN_SCREEN": "Schermata di accesso",
-		"LABEL_DEFAULT_DOMAIN": "Dominio predefinito",
-		"LABEL_DETERMINE_USER_DOMAIN": "Prova a determinare il dominio dell'utente",
-		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Permetti di cambiare lingua all'accesso",
-		"LABEL_DETERMINE_USER_LANGUAGE": "Prova a determinare la lingua dell'utente",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Nascondi il tasto 'Registrazione'"
+		"LEGEND_LOGIN_SCREEN": "Login Screen",
+		"LABEL_DEFAULT_DOMAIN": "Default Domain",
+		"LABEL_DETERMINE_USER_DOMAIN": "Try to determine user domain",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Allow language selection on login screen",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Try to determine user language",
+		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
 	},
 	"TAB_BRANDING": {
-		"LEGEND_BRANDING": "Personalizzazione",
-		"LABEL_PAGE_TITLE": "Titolo della pagina",
-		"LABEL_LOADING_DESCRIPTION": "Messaggio di caricamento",
+		"LEGEND_BRANDING": "Branding",
+		"LABEL_PAGE_TITLE": "Page Title",
+		"LABEL_LOADING_DESCRIPTION": "Loading Description",
 		"LABEL_FAVICON_URL": "Favicon"
 	},
 	"TAB_CONTACTS": {
-		"LEGEND_CONTACTS": "Contatti",
-		"LEGEND_STORAGE": "Metodo di salvataggio (PDO)",
-		"LABEL_ENABLE_CONTACTS": "Abilita contatti",
-		"LABEL_ALLOW_SYNC": "Abilita la sincronizzazione dei contatti (con un server CardDAV esterno)",
-		"LABEL_STORAGE_TYPE": "Tipo",
-		"LABEL_STORAGE_DSN": "DSN",
-		"LABEL_STORAGE_USER": "Nome utente",
+		"LEGEND_CONTACTS": "Contacts",
+		"LEGEND_STORAGE": "Storage (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Enable contacts",
+		"LABEL_ALLOW_SYNC": "Allow contacts sync (with external CardDAV server)",
+		"LABEL_STORAGE_TYPE": "Type",
+		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_USER": "User",
 		"LABEL_STORAGE_PASSWORD": "Password",
-		"BUTTON_TEST": "Verifica dati",
-		"ALERT_NOTICE": "Attenzione!",
-		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Non usare questo tipo di database con un alto numero di utenti attivi.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "Il tuo server non supporta il salvataggio dei contatti.\n<br>\nDevi abilitare l'estensione <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> sul tuo server.\n"
+		"BUTTON_TEST": "Test",
+		"ALERT_NOTICE": "Notice!",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Don't use this database type with a large number of active users.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Your system doesn't support contacts.\n<br>\nYou need to install or enable <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> extension on your server.\n"
 	},
 	"TAB_DOMAINS": {
-		"LEGEND_DOMAINS": "Domini",
-		"BUTTON_ADD_DOMAIN": "Aggiungi dominio",
-		"BUTTON_ADD_ALIAS": "Aggiungi alias",
-		"DELETE_ARE_YOU_SURE": "Ne sei sicuro?",
-		"HTML_DOMAINS_HELPER": "Lista di domini a cui la webmail è abilitata ad accedere.\n<br>\nClicca su un nome per configurare quel dominio.\n"
+		"LEGEND_DOMAINS": "Domains",
+		"BUTTON_ADD_DOMAIN": "Add Domain",
+		"BUTTON_ADD_ALIAS": "Add Alias",
+		"DELETE_ARE_YOU_SURE": "Are you sure?",
+		"HTML_DOMAINS_HELPER": "List of domains webmail is allowed to access.\n<br>\nClick on the name to configure the domain.\n"
 	},
 	"TAB_SECURITY": {
-		"LEGEND_SECURITY": "Sicurezza",
-		"LABEL_USE_IMAGE_PROXY": "Usa un proxy locale per le immagini",
-		"LABEL_ALLOW_OPEN_PGP": "Abilita OpenPGP",
-		"LABEL_SHOW_PHP_INFO": "Visualizza informazioni su PHP",
-		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Dati di accesso al pannello di controllo",
-		"LABEL_CURRENT_PASSWORD": "Password corrente",
-		"LABEL_NEW_LOGIN": "Nuovo nome utente",
-		"LABEL_NEW_PASSWORD": "Nuova password",
-		"LABEL_REPEAT_PASSWORD": "Ripeti nuova password",
-		"BUTTON_UPDATE_PASSWORD": "Aggiorna password",
+		"LEGEND_SECURITY": "Security",
+		"LABEL_USE_IMAGE_PROXY": "Use local proxy for external images",
+		"LABEL_ALLOW_OPEN_PGP": "Allow OpenPGP",
+		"LABEL_SHOW_PHP_INFO": "Show PHP information",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Admin Panel Access Credentials",
+		"LABEL_CURRENT_PASSWORD": "Current password",
+		"LABEL_NEW_LOGIN": "New login",
+		"LABEL_NEW_PASSWORD": "New password",
+		"LABEL_REPEAT_PASSWORD": "Repeat",
+		"BUTTON_UPDATE_PASSWORD": "Update Password",
 		"LEGEND_SSL": "SSL",
-		"LABEL_REQUIRE_VERIFICATION": "Richiedi verifica dei certificati SSL (IMAP\/SMTP)",
-		"LABEL_ALLOW_SELF_SIGNED": "Abilita certificati autofirmati"
+		"LABEL_REQUIRE_VERIFICATION": "Require verification of SSL certificate used (IMAP\/SMTP)",
+		"LABEL_ALLOW_SELF_SIGNED": "Allow self signed certificates"
 	},
 	"TAB_PACKAGES": {
-		"LABEL_ENABLE_PLUGINS": "Abilita estensioni"
-		"LEGEND_AVAILABLE_FOR_UPDATE": "Disponibili per l'aggiornamento",
-		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Disponibili per l'installazione",
-		"LEGEND_INSTALLED_PACKAGES": "Pacchetti installati",
-		"ALERT_CANNOT_ACCESS_REPOSITORY": "Impossibile accedere al repository in questo momento."
+		"LABEL_ENABLE_PLUGINS": "Enable extensions",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Available for Update",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Available for Installation",
+		"LEGEND_INSTALLED_PACKAGES": "Installed Extensions",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Cannot access the repository at the moment."
 	},
 	"TAB_ABOUT": {
-		"LEGEND_ABOUT": "Informazioni",
-		"LABEL_TAG_HINT": "Semplice, moderno e veloce client email online",
-		"LABEL_ALL_RIGHTS_RESERVED": "Tutti i diritti riservati."
+		"LEGEND_ABOUT": "About",
+		"LABEL_TAG_HINT": "Simple, modern & fast web-based email client",
+		"LABEL_ALL_RIGHTS_RESERVED": "All Rights Reserved.",
+		"HINT_READ_CHANGE_LOG": "Leggere il changelog prima di effettuare l'aggiornamento.",
+		"HINT_IS_UP_TO_DATE": "RainLoop è aggiornato.",
+		"HTML_NEW_VERSION": "La nuova versione <b>%VERSION%</b> è disponibile.",
+		"LABEL_UPDATING": "Aggiornamento in corso...",
+		"LABEL_CHECKING": "Controllo della presenza di aggiornamenti...",
+		"BUTTON_RELEASES": "Releases"
 	},
 	"POPUPS_DOMAIN_ALIAS": {
-		"TITLE_ADD_DOMAIN_ALIAS": "Aggiungi alias",
+		"TITLE_ADD_DOMAIN_ALIAS": "Add Alias",
 		"LABEL_ALIAS": "Alias",
-		"LABEL_DOMAIN": "Dominio",
-		"BUTTON_CLOSE": "Chiudi",
-		"BUTTON_ADD": "Aggiungi"
+		"LABEL_DOMAIN": "Domain",
+		"BUTTON_CLOSE": "Close",
+		"BUTTON_ADD": "Add"
 	},
 	"POPUPS_DOMAIN": {
-		"TITLE_ADD_DOMAIN": "Aggiungi dominio",
-		"TITLE_ADD_DOMAIN_WITH_NAME": "Aggiungi il dominio \"%NAME%\"",
-		"TITLE_EDIT_DOMAIN": "Modifica il dominio \"%NAME%\"",
-		"LABEL_NAME": "Nome dominio",
-		"NAME_HELPER": "asterischi supportati",
+		"TITLE_ADD_DOMAIN": "Add Domain",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Add Domain \"%NAME%\"",
+		"TITLE_EDIT_DOMAIN": "Edit Domain \"%NAME%\"",
+		"LABEL_NAME": "Name",
+		"NAME_HELPER": "wildcard supported",
 		"LABEL_IMAP": "IMAP",
 		"LABEL_SMTP": "SMTP",
 		"LABEL_SIEVE": "SIEVE",
 		"LABEL_SERVER": "Server",
-		"LABEL_PORT": "porta",
-		"LABEL_SECURE": "Sicuro",
-		"LABEL_WHITE_LIST": "Whitelist",
-		"SECURE_OPTION_NONE": "Nessuna",
+		"LABEL_PORT": "Port",
+		"LABEL_SECURE": "Secure",
+		"LABEL_WHITE_LIST": "White List",
+		"SECURE_OPTION_NONE": "None",
 		"SECURE_OPTION_SSL": "SSL\/TLS",
 		"SECURE_OPTION_STARTTLS": "STARTTLS",
-		"LABEL_ALLOW_SIEVE_SCRIPTS": "Abilita script sieve",
-		"LABEL_USE_SHORT_LOGIN": "Utilizza login corto",
-		"LABEL_USE_AUTH": "Utilizza autenticazione",
-		"LABEL_SET_SENDER": "Utilizza login come mittente",
-		"LABEL_USE_PHP_MAIL": "Usa la funzione mail() di PHP",
-		"BUTTON_TEST": "Verifica",
-		"BUTTON_WHITE_LIST": "Whitelist",
-		"BUTTON_SIEVE_CONFIGURATION": "Configurazione di Sieve",
-		"BUTTON_BACK_TO_IMAP": "Torna alle impostazioni IMAP",
-		"BUTTON_BACK": "Indietro",
-		"BUTTON_CLOSE": "Chiudi",
-		"BUTTON_ADD": "Aggiungi",
-		"BUTTON_UPDATE": "Aggiorna",
-		"NEW_DOMAIN_DESC": "La configurazione di questo dominio ti permette di lavorare <br>con <i>%NAME%<\/i> indirizzi email.",
-		"WHITE_LIST_ALERT": "Lista di domini a cui gli utenti sono autorizzati ad accedere.\nUtilizzare uno spazio come separatore.\n"
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Allow sieve scripts",
+		"LABEL_USE_SHORT_LOGIN": "Use short login",
+		"LABEL_USE_AUTH": "Use authentication",
+		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_USE_PHP_MAIL": "Use php mail() function",
+		"BUTTON_TEST": "Test",
+		"BUTTON_WHITE_LIST": "White List",
+		"BUTTON_SIEVE_CONFIGURATION": "Sieve configuration",
+		"BUTTON_BACK_TO_IMAP": "Back to IMAP settings",
+		"BUTTON_BACK": "Back",
+		"BUTTON_CLOSE": "Close",
+		"BUTTON_ADD": "Add",
+		"BUTTON_UPDATE": "Update",
+		"NEW_DOMAIN_DESC": "This domain configuration will allow you to work <br>with <i>%NAME%<\/i> email addresses.",
+		"WHITE_LIST_ALERT": "List of domain users webmail is allowed to access.\nUse a space as delimiter.\n"
 	},
 	"POPUPS_PLUGIN": {
-		"TITLE_PLUGIN": "Plugin",
-		"DESC_NOTHING_TO_CONFIGURE": "Niente da configurare",
-		"BUTTON_CLOSE": "Chiudi"
+		"TITLE_PLUGIN": "Extension",
+		"DESC_NOTHING_TO_CONFIGURE": "Nothing to configure",
+		"BUTTON_CLOSE": "Close"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Si"
+		"BUTTON_YES": "Yes",
 		"BUTTON_NO": "No",
-		"DESC_WANT_CLOSE_THIS_WINDOW": "Sei sicuro di voler chiudere questa finestra?"
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Are you sure you want to close this window?"
 	},
 	"POPUPS_LANGUAGES": {
-		"TITLE_LANGUAGES": "Scegli la tua lingua"
+		"TITLE_LANGUAGES": "Choose your language"
 	},
 	"HINTS": {
 		"BETA": "beta",
-		"UNSTABLE": "instabile",
-		"WARNING": "Attenzione!"
+		"UNSTABLE": "unstable",
+		"WARNING": "Warning!"
 	},
 	"ERRORS": {
-		"DOMAIN_ALREADY_EXISTS": "Il dominio esiste già",
-		"UNKNOWN_ERROR": "Errore sconosciuto"
+		"DOMAIN_ALREADY_EXISTS": "Domain already exists",
+		"UNKNOWN_ERROR": "Unknown error"
 	},
 	"NOTIFICATIONS": {
-		"INVALID_TOKEN": "Token invalido",
-		"AUTH_ERROR": "Autenticazione fallita",
-		"DOMAIN_ALREADY_EXISTS": "Il dominio già esiste",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Impossibile salvare le impostazioni",
-		"CANT_INSTALL_PACKAGE": "Impossibile installare il pacchetto",
-		"CANT_DELETE_PACKAGE": "Impossibile rimuovere il pacchetto",
-		"INVALID_PLUGIN_PACKAGE": "Pacchetto non valido",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Pacchetto non supportato",
-		"UNKNOWN_ERROR": "Errore sconosciuto"
+		"INVALID_TOKEN": "Invalid token",
+		"AUTH_ERROR": "Authentication failed",
+		"DOMAIN_ALREADY_EXISTS": "Domain already exists",
+		"CANT_SAVE_PLUGIN_SETTINGS": "Can't save settings",
+		"CANT_INSTALL_PACKAGE": "Failed to install extension",
+		"CANT_DELETE_PACKAGE": "Failed to remove extension",
+		"INVALID_PLUGIN_PACKAGE": "Invalid extension package",
+		"UNSUPPORTED_PLUGIN_PACKAGE": "Unsupported extension package",
+		"UNKNOWN_ERROR": "Unknown error"
 	}
 }

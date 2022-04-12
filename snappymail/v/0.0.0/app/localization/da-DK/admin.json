@@ -1,6 +1,7 @@
 {
 	"GLOBAL": {
-		"SAVE": "Gem"
+		"SAVE": "Gem",
+		"UPDATE": "Opdater"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Log ind",
@@ -100,7 +101,13 @@
 	"TAB_ABOUT": {
 		"LEGEND_ABOUT": "Om",
 		"LABEL_TAG_HINT": "Simpel, moderne & hurtig web-baseret e-mail klient",
-		"LABEL_ALL_RIGHTS_RESERVED": "alle rettigheder forbeholdes."
+		"LABEL_ALL_RIGHTS_RESERVED": "alle rettigheder forbeholdes.",
+		"HINT_READ_CHANGE_LOG": "Læs ændrings listen før der opdateres.",
+		"HINT_IS_UP_TO_DATE": "RainLoop is up to date.",
+		"HTML_NEW_VERSION": "Ny  <b>%VERSION%</b> version tilgængelig",
+		"LABEL_UPDATING": "Opdatere",
+		"LABEL_CHECKING": "Tjekker for opdateringer",
+		"BUTTON_RELEASES": "Releases"
 	},
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Tilføj alias",

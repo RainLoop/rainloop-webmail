@@ -148,19 +148,32 @@ abstract class Repository
 		return $aResult;
 	}
 
+	/**
+	 * return object
+			$info->version
+			$info->file
+			$info->warnings
+	 */
 	public static function getLatestCoreInfo()
 	{
 		\RainLoop\Api::Actions()->IsAdminLoggined();
 		$sRep = static::get('core.json');
-		return $sRep ? \json_decode($sRep) : null;
+		return $sRep ? \json_decode($sRep, false, 3, JSON_THROW_ON_ERROR) : null;
 	}
 
-	public static function downloadCore(string $path) : ?string
+	public static function downloadCore() : ?string
 	{
 		$info = static::getLatestCoreInfo();
-		return \version_compare(APP_VERSION, $info->version, '<')
+		return ($info && \version_compare(APP_VERSION, $info->version, '<'))
 			? static::download($info->file) // '../latest.tar.gz'
 			: null;
+	}
+
+	public static function canUpdateCore() : bool
+	{
+		return \version_compare(APP_VERSION, '2.0', '>')
+			&& \is_writable(\dirname(APP_VERSION_ROOT_PATH))
+			&& \is_writable(APP_INDEX_ROOT_PATH . 'index.php');
 	}
 
 	public static function getPackagesList() : array

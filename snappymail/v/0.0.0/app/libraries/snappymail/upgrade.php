@@ -183,23 +183,26 @@ abstract class Upgrade
 
 	public static function core() : bool
 	{
-		$this->IsAdminLoggined();
-
 		$bResult = false;
-		if (\version_compare(APP_VERSION, '2.0', '>')
-		 && \is_writable(\dirname(APP_VERSION_ROOT_PATH))
-		 && \is_writable(APP_INDEX_ROOT_PATH . 'index.php')
-		) {
+		if (Repository::canUpdateCore()) {
 			$sTmp = null;
 			try {
-				$sTmp = Repository::downloadCore($info->file);
-				if ($sTmp) {
-					static::backup();
-					$oArchive = new \PharData($sTmp, 0);
-					$bResult = $oArchive->extractTo(\rtrim(APP_VERSION_ROOT_PATH, '\\/'), null, true);
-					if (!$bResult) {
-						throw new \Exception('Cannot extract core files: '.$oArchive->getStatusString());
-					}
+				static::backup();
+
+				$sTmp = Repository::downloadCore();
+				if (!$sTmp) {
+					throw new \Exception('Failed to download latest SnappyMail');
+				}
+				$target = \rtrim(APP_INDEX_ROOT_PATH, '\\/');
+				$oArchive = new \PharData($sTmp, 0, null, \Phar::GZ);
+				\error_log('Extract to ' . $target);
+//				$bResult = $oArchive->extractTo($target, null, true);
+				$bResult = $oArchive->extractTo($target, 'snappymail/')
+					&& $oArchive->extractTo($target, 'index.php', true);
+				if ($bResult) {
+					\error_log('Update success');
+				} else {
+					throw new \Exception('Extract core files failed');
 				}
 			} finally {
 				$sTmp && \unlink($sTmp);

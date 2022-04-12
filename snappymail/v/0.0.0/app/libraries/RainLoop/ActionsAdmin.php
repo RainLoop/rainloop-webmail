@@ -470,6 +470,48 @@ class ActionsAdmin extends Actions
 		exit;
 	}
 
+	public function DoAdminUpdateInfo() : array
+	{
+		$this->IsAdminLoggined();
+
+		$info = \SnappyMail\Repository::getLatestCoreInfo();
+
+		$sVersion = empty($info->version) ? '' : $info->version;
+
+		$bShowWarning = false;
+		if (!empty($info->warnings) && APP_VERSION !== APP_DEV_VERSION) {
+			foreach ($info->warnings as $sWarningVersion) {
+				$sWarningVersion = \trim($sWarningVersion);
+
+				if (\version_compare(APP_VERSION, $sWarningVersion, '<')
+				 && \version_compare($sVersion, $sWarningVersion, '>='))
+				{
+					$bShowWarning = true;
+					break;
+				}
+			}
+		}
+
+		$aWarnings = [];
+		if (!\version_compare(APP_VERSION, '2.0', '>')) {
+			$aWarnings[] = APP_VERSION;
+		}
+		if (!\is_writable(\dirname(APP_VERSION_ROOT_PATH))) {
+			$aWarnings[] = 'Can not write into: ' . \dirname(APP_VERSION_ROOT_PATH);
+		}
+		if (!\is_writable(APP_INDEX_ROOT_PATH . 'index.php')) {
+			$aWarnings[] = 'Can not edit: ' . APP_INDEX_ROOT_PATH . 'index.php';
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, array(
+			 'Updatable' => \SnappyMail\Repository::canUpdateCore(),
+			 'Warning' => $bShowWarning,
+			 'Version' => $sVersion,
+			 'VersionCompare' => \version_compare(APP_VERSION, $sVersion),
+			 'Warnings' => $aWarnings
+		));
+	}
+
 	public function DoAdminUpgradeCore() : array
 	{
 		return $this->DefaultResponse(__FUNCTION__, \SnappyMail\Upgrade::core());

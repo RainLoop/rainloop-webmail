@@ -1,6 +1,7 @@
 {
 	"GLOBAL": {
-		"SAVE": "Spara"
+		"SAVE": "Spara",
+		"UPDATE": "Uppdatera"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logga in",
@@ -100,7 +101,13 @@
 	"TAB_ABOUT": {
 		"LEGEND_ABOUT": "Om",
 		"LABEL_TAG_HINT": "Enkel, modern & snabb e-postklient",
-		"LABEL_ALL_RIGHTS_RESERVED": "Alla rättigheter förbehållna."
+		"LABEL_ALL_RIGHTS_RESERVED": "Alla rättigheter förbehållna.",
+		"HINT_READ_CHANGE_LOG": "Vänligen läs ändringsloggen innan du uppdaterar.",
+		"HINT_IS_UP_TO_DATE": "RainLoop är aktuell.",
+		"HTML_NEW_VERSION": "Ny <b>%VERSION%</b> version är tillgänglig",
+		"LABEL_UPDATING": "Uppdaterar",
+		"LABEL_CHECKING": "Letar efter uppdaterar",
+		"BUTTON_RELEASES": "Releases"
 	},
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Lägg till Alias",
