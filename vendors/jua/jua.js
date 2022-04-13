@@ -46,20 +46,15 @@
 		 */
 		getDataFromFile = oFile =>
 		{
-			let
-				iSize = oFile.size || 0,
-				sType = oFile.type || ''
-			;
-
-			return (sType && iSize)
-			? {
-				FileName: (oFile.name || '').replace(/^.*\/([^/]*)$/, '$1'),
-				Size: iSize,
-				Type: sType,
-				Folder: '',
-				File : oFile
-			}
-			: null; // Folder
+			return oFile.size
+				? {
+					FileName: (oFile.name || '').replace(/^.*\/([^/]*)$/, '$1'),
+					Size: oFile.size,
+					Type: oFile.type,
+					Folder: '',
+					File : oFile
+				}
+				: null; // Folder
 		},
 
 		eventContainsFiles = oEvent =>
