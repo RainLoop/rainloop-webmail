@@ -242,7 +242,7 @@
 								oEvent.files || oEvent.dataTransfer.files,
 								oFile => {
 									if (oFile) {
-										self.addNewFile(oFile);
+										self.addFile(oFile);
 										timerStop();
 									}
 								},
@@ -286,18 +286,10 @@
 		/**
 		 * @param {Object} oFileInfo
 		 */
-		addNewFile(oFileInfo)
+		addFile(oFileInfo)
 		{
-			this.addFile('jua-uid-' + Jua.randomId(16) + '-' + (Date.now().toString()), oFileInfo);
-		}
-
-		/**
-		 * @param {string} sUid
-		 * @param {Object} oFileInfo
-		 */
-		addFile(sUid, oFileInfo)
-		{
-			const fOnSelect = this.getEvent('onSelect');
+			const sUid = 'jua-uid-' + Jua.randomId(16) + '-' + (Date.now().toString()),
+				fOnSelect = this.getEvent('onSelect');
 			if (oFileInfo && (!fOnSelect || (false !== fOnSelect(sUid, oFileInfo))))
 			{
 				this.oUids[sUid] = true;
@@ -404,7 +396,7 @@
 
 				oInput.addEventListener('input', () => {
 					const fFileCallback = oFile => {
-						self.addNewFile(oFile);
+						self.addFile(oFile);
 						setTimeout(() => {
 							oInput.remove();
 							oClickElement.removeEventListener('click', onClick);

@@ -1203,7 +1203,6 @@ export class ComposePopupView extends AbstractViewPopup {
 				clickElement: dom.querySelector('#composeUploadButton'),
 				dragAndDropElement: dom.querySelector('.b-attachment-place')
 			}),
-			uploadCache = {},
 			attachmentSizeLimit = pInt(SettingsGet('AttachmentLimit'));
 
 		oJua
@@ -1224,14 +1223,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				this.dragAndDropVisible(false);
 			})
 			.on('onProgress', (id, loaded, total) => {
-				let item = uploadCache[id];
-				if (!item) {
-					item = this.getAttachmentById(id);
-					if (item) {
-						uploadCache[id] = item;
-					}
-				}
-
+				let item = this.getAttachmentById(id);
 				if (item) {
 					item.progress(Math.floor((loaded / total) * 100));
 				}
@@ -1239,15 +1231,15 @@ export class ComposePopupView extends AbstractViewPopup {
 			.on('onSelect', (sId, oData) => {
 				this.dragAndDropOver(false);
 
-				const fileName = undefined === oData.FileName ? '' : oData.FileName.toString(),
+				const
 					size = pInt(oData.Size, null),
-					attachment = new ComposeAttachmentModel(sId, fileName, size);
+					attachment = new ComposeAttachmentModel(
+						sId,
+						oData.FileName ? oData.FileName.toString() : '',
+						size
+					);
 
-				attachment.cancel = this.cancelAttachmentHelper(sId, oJua);
-
-				this.attachments.push(attachment);
-
-				this.attachmentsArea();
+				this.addAttachment(attachment, 1, oJua);
 
 				if (0 < size && 0 < attachmentSizeLimit && attachmentSizeLimit < size) {
 					attachment
@@ -1261,15 +1253,8 @@ export class ComposePopupView extends AbstractViewPopup {
 
 				return true;
 			})
-			.on('onStart', (id) => {
-				let item = uploadCache[id];
-				if (!item) {
-					item = this.getAttachmentById(id);
-					if (item) {
-						uploadCache[id] = item;
-					}
-				}
-
+			.on('onStart', id => {
+				let item = this.getAttachmentById(id);
 				if (item) {
 					item
 						.waiting(false)
@@ -1302,12 +1287,10 @@ export class ComposePopupView extends AbstractViewPopup {
 							.waiting(false)
 							.uploading(false)
 							.complete(true);
-
-						attachment.initByUploadJson(attachmentJson);
-					}
-
-					if (undefined === uploadCache[id]) {
-						delete uploadCache[id];
+						attachment.fileName(attachmentJson.Name);
+						attachment.size(attachmentJson.Size ? pInt(attachmentJson.Size) : 0);
+						attachment.tempName(attachmentJson.TempName ? attachmentJson.TempName : '');
+						attachment.isInline = false;
 					}
 				}
 			});
@@ -1363,16 +1346,6 @@ export class ComposePopupView extends AbstractViewPopup {
 		return this.attachments.find(item => item && id === item.id);
 	}
 
-	cancelAttachmentHelper(id, oJua) {
-		return () => {
-			const attachment = this.getAttachmentById(id);
-			if (attachment) {
-				this.attachments.remove(attachment);
-				oJua && oJua.cancel(id);
-			}
-		};
-	}
-
 	/**
 	 * @returns {Object}
 	 */
@@ -1396,16 +1369,20 @@ export class ComposePopupView extends AbstractViewPopup {
 			temp = '.eml' === temp.slice(-4).toLowerCase() ? temp : temp + '.eml';
 
 			const attachment = new ComposeAttachmentModel(message.requestHash, temp, message.size());
-
 			attachment.fromMessage = true;
-			attachment.cancel = this.cancelAttachmentHelper(message.requestHash);
-			attachment
-				.waiting(false)
-				.uploading(true)
-				.complete(true);
-
-			this.attachments.push(attachment);
+			attachment.complete(true);
+			this.addAttachment(attachment);
 		}
+	}
+
+	addAttachment(attachment, view, oJua) {
+		oJua || attachment.waiting(false).uploading(true);
+		attachment.cancel = () => {
+			this.attachments.remove(attachment);
+			oJua && oJua.cancel(attachment.id);
+		};
+		this.attachments.push(attachment);
+		view && this.attachmentsArea();
 	}
 
 	/**
@@ -1416,18 +1393,7 @@ export class ComposePopupView extends AbstractViewPopup {
 	 */
 	addAttachmentHelper(url, name, size) {
 		const attachment = new ComposeAttachmentModel(url, name, size);
-
-		attachment.fromMessage = false;
-		attachment.cancel = this.cancelAttachmentHelper(url);
-		attachment
-			.waiting(false)
-			.uploading(true)
-			.complete(false);
-
-		this.attachments.push(attachment);
-
-		this.attachmentsArea();
-
+		this.addAttachment(attachment, 1);
 		return attachment;
 	}
 
@@ -1456,14 +1422,17 @@ export class ComposePopupView extends AbstractViewPopup {
 					}
 
 					if (add) {
-						const attachment = ComposeAttachmentModel.fromAttachment(item);
-						attachment.cancel = this.cancelAttachmentHelper(item.download);
-						attachment
-							.waiting(false)
-							.uploading(true)
-							.complete(false);
-
-						this.attachments.push(attachment);
+						const attachment = new ComposeAttachmentModel(
+							item.download,
+							item.fileName,
+							item.estimatedSize,
+							item.isInline(),
+							item.isLinked(),
+							item.cid,
+							item.contentLocation
+						);
+						attachment.fromMessage = true;
+						this.addAttachment(attachment);
 					}
 				});
 			}

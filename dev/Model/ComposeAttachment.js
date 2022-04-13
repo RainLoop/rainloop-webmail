@@ -1,4 +1,3 @@
-import { pInt } from 'Common/Utils';
 import { FileInfo } from 'Common/File';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
@@ -57,39 +56,6 @@ export class ComposeAttachmentModel extends AbstractModel {
 			mimeType: () => FileInfo.getContentType(this.fileName()),
 			fileExt: () => FileInfo.getExtension(this.fileName())
 		});
-	}
-
-	static fromAttachment(item)
-	{
-		const attachment = new ComposeAttachmentModel(
-			item.download,
-			item.fileName,
-			item.estimatedSize,
-			item.isInline(),
-			item.isLinked(),
-			item.cid,
-			item.contentLocation
-		);
-		attachment.fromMessage = true;
-		return attachment;
-	}
-
-	/**
-	 * @param {FetchJsonComposeAttachment} json
-	 * @returns {boolean}
-	 */
-	initByUploadJson(json) {
-		let bResult = false;
-		if (json) {
-			this.fileName(json.Name);
-			this.size(undefined === json.Size ? 0 : pInt(json.Size));
-			this.tempName(undefined === json.TempName ? '' : json.TempName);
-			this.isInline = false;
-
-			bResult = true;
-		}
-
-		return bResult;
 	}
 
 	/**
