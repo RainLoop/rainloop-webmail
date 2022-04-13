@@ -174,6 +174,12 @@ echo "{$zip_destination} created\n{$tar_destination} created\n";
 
 rename("snappymail/v/{$package->version}", 'snappymail/v/0.0.0');
 
+file_put_contents("{$destPath}core.json", '{
+	"version": "'.$package->version.'",
+	"file": "../latest.tar.gz",
+	"warnings": []
+}');
+
 // Arch User Repository
 if ($options['aur']) {
 	// extension_loaded('blake2')
