@@ -73,15 +73,9 @@
 
 	class Queue extends Array
 	{
-		constructor(limit) {
-			super();
-			this.limit = parseInt(limit || 0, 10);
-		}
 		push(fn, ...args) {
-			if (this.limit > this.length) {
-				super.push([fn, args]);
-				this.call();
-			}
+			super.push([fn, args]);
+			this.call();
 		}
 		call() {
 			if (!this.running) {
@@ -134,7 +128,7 @@
 					hidden: {},
 					limit: 0
 				}, options || {});
-			self.oQueue = new Queue(1 == options.limit ? 1 : 2);
+			self.oQueue = new Queue();
 
 			if (el) {
 				el.style.position = 'relative';
@@ -390,7 +384,7 @@
 				oInput.type = 'file';
 				oInput.tabIndex = -1;
 				oInput.style.display = 'none';
-				oInput.multiple = 1 < limit;
+				oInput.multiple = 1 != limit;
 
 				oClickElement.addEventListener('click', onClick);
 
