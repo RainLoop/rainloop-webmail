@@ -140,6 +140,11 @@ class Message implements \JsonSerializable
 		return $this->iSpamScore;
 	}
 
+	private function setSpamScore($value) : void
+	{
+		$this->iSpamScore = \intval(\max(0, \min(100, $value)));
+	}
+
 	public function SpamResult() : string
 	{
 		return $this->sSpamResult;
@@ -402,7 +407,7 @@ class Message implements \JsonSerializable
 			if ($spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAMD_RESULT)) {
 				if (\preg_match('/\\[([\\d\\.-]+)\\s*\\/\\s*([\\d\\.]+)\\];/', $spam, $match)) {
 					if ($threshold = \floatval($match[2])) {
-						$oMessage->iSpamScore = \intval(\max(0, \min(100, 100 * \floatval($match[1]) / $threshold)));
+						$oMessage->setSpamScore(100 * \floatval($match[1]) / $threshold);
 						$oMessage->sSpamResult = "{$match[1]} / {$match[2]}";
 					}
 				}
@@ -411,14 +416,14 @@ class Message implements \JsonSerializable
 				$oMessage->sSpamResult = $spam;
 				$oMessage->bIsSpam = !!\preg_match('/yes|spam/', $spam);
 				if (\preg_match('/spamicity=([\\d\\.]+)/', $spam, $spamicity)) {
-					$oMessage->iSpamScore = \intval(\max(0, \min(100, \floatval($spamicity[1]))));
+					$oMessage->setSpamScore(\floatval($spamicity[1]));
 				}
 			} else if ($spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAM_STATUS)) {
 				$oMessage->sSpamResult = $spam;
 				if (\preg_match('/(?:hits|score)=([\\d\\.-]+)/', $spam, $value)
 				 && \preg_match('/required=([\\d\\.-]+)/', $spam, $required)) {
 					if ($threshold = \floatval($required[1])) {
-						$oMessage->iSpamScore = \intval(\max(0, \min(100, 100 * \floatval($value[1]) / $threshold)));
+						$oMessage->setSpamScore(100 * \floatval($value[1]) / $threshold);
 						$oMessage->sSpamResult = "{$value[1]} / {$required[1]}";
 					}
 				}
@@ -624,7 +629,7 @@ class Message implements \JsonSerializable
 			'Subject' => \trim(Utils::Utf8Clear($this->sSubject)),
 			'MessageId' => $this->sMessageId,
 			'Size' => $this->iSize,
-			'SpamScore' => $this->iSpamScore,
+			'SpamScore' => $this->bIsSpam ? 100 : $this->iSpamScore,
 			'SpamResult' => $this->sSpamResult,
 			'IsSpam' => $this->bIsSpam,
 			'HasVirus' => $this->bHasVirus,
