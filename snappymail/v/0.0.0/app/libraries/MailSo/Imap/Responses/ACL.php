@@ -31,7 +31,7 @@ class ACL implements \JsonSerializable
 			return \in_array($right->value, $this->rights);
 		}
 	*/
-	public function hasRight(string $right)
+	public function hasRight(string $right) : bool
 	{
 		$const = '\\MailSo\\Imap\\Enumerations\\FolderACL::' . \strtoupper($right);
 		if (\defined($const)) {
