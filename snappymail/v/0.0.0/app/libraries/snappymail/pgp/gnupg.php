@@ -25,8 +25,7 @@ class GnuPG
 		$this->homedir = $homedir;
 //		\putenv("GNUPGHOME={$homedir}");
 
-//		if (\version_compare(\phpversion('gnupg'), '1.5', '>=')) {
-		if (\class_exists('gnupg')) {
+		if (\class_exists('gnupg') && \version_compare(\phpversion('gnupg'), '1.5', '>=')) {
 			$this->GnuPG = new \gnupg([
 				// It is the file name of the executable program implementing this protocol which is usually path of the gpg executable.
 //				'file_name' => '/usr/bin/gpg',
