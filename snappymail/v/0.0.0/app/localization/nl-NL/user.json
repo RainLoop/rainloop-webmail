@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Server synchronisatie inschakelen",
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Adresboek URL",
-		"LABEL_CONTACTS_SYNC_USER": "Gebruikersnaam"
+		"LABEL_CONTACTS_SYNC_USER": "Gebruikersnaam",
+		"SYNC_NO": "Nee",
+		"SYNC_YES": "Ja",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Thema's",

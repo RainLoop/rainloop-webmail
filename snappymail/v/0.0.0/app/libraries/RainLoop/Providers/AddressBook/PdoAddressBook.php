@@ -112,18 +112,18 @@ class PdoAddressBook
 		return $aResult;
 	}
 
-	public function Sync(string $sEmail, string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : bool
+	public function Sync(array $oConfig) : bool
 	{
 		$this->SyncDatabase();
 
-		$iUserID = $this->getUserId($sEmail);
+		$iUserID = $this->getUserId($oConfig['Email']);
 		if (0 >= $iUserID)
 		{
 			\SnappyMail\Log::warning('PdoAddressBook', 'Sync() invalid $iUserID');
 			return false;
 		}
 
-		$oClient = $this->getDavClient($sUrl, $sUser, $sPassword, $sProxy);
+		$oClient = $this->getDavClient($oConfig['Url'], $oConfig['User'], $oConfig['Password'], $oConfig['Proxy']);
 		if (!$oClient)
 		{
 			\SnappyMail\Log::warning('PdoAddressBook', 'Sync() invalid DavClient');
@@ -144,18 +144,18 @@ class PdoAddressBook
 //		$this->oLogger->WriteDump($aRemoteSyncData);
 //		$this->oLogger->WriteDump($aDatabaseSyncData);
 
-		//+++del (from carddav)
-		foreach ($aDatabaseSyncData as $sKey => $aData)
-		{
-			if ($aData['deleted'] &&
-				isset($aRemoteSyncData[$sKey], $aRemoteSyncData[$sKey]['vcf']))
+		// Delete remote when Mode = read + write
+		if (1 === $oConfig['Mode']) {
+			foreach ($aDatabaseSyncData as $sKey => $aData)
 			{
-				$this->davClientRequest($oClient, 'DELETE', $sPath.$aRemoteSyncData[$sKey]['vcf']);
+				if ($aData['deleted'] && isset($aRemoteSyncData[$sKey], $aRemoteSyncData[$sKey]['vcf']))
+				{
+					$this->davClientRequest($oClient, 'DELETE', $sPath.$aRemoteSyncData[$sKey]['vcf']);
+				}
 			}
 		}
-		//---del
 
-		//+++del (from db)
+		// Delete from db
 		$aIdsForDeletedion = array();
 		foreach ($aDatabaseSyncData as $sKey => $aData)
 		{
@@ -164,12 +164,10 @@ class PdoAddressBook
 				$aIdsForDeletedion[] = $aData['id_contact'];
 			}
 		}
-
 		if (\count($aIdsForDeletedion))
 		{
-			$this->DeleteContacts($sEmail, $aIdsForDeletedion, false);
+			$this->DeleteContacts($oConfig['Email'], $aIdsForDeletedion, false);
 		}
-		//---del
 
 		$this->flushDeletedContacts($iUserID);
 
@@ -186,7 +184,7 @@ class PdoAddressBook
 			)
 			{
 				$mID = $aData['id_contact'];
-				$oContact = $this->GetContactByID($sEmail, $mID, false);
+				$oContact = $this->GetContactByID($oConfig['Email'], $mID, false);
 				if ($oContact)
 				{
 					$sExsistensBody = '';
@@ -202,17 +200,20 @@ class PdoAddressBook
 //						$this->oLogger->WriteDump($sExsistensBody);
 					}
 
-					$oResponse = $this->davClientRequest($oClient, 'PUT',
-						$sPath.(\strlen($mExsistenRemoteID) ? $mExsistenRemoteID : $oContact->CardDavNameUri()),
-						$oContact->ToVCard($sExsistensBody, $this->oLogger)."\r\n\r\n");
-					if ($oResponse)
-					{
-						$sEtag = \trim(\trim($oResponse->getHeader('etag')), '"\'');
-						$sDate = \trim($oResponse->getHeader('date'));
-						if (!empty($sEtag))
+					// Add remote when Mode = read + write
+					if (1 === $oConfig['Mode']) {
+						$oResponse = $this->davClientRequest($oClient, 'PUT',
+							$sPath.(\strlen($mExsistenRemoteID) ? $mExsistenRemoteID : $oContact->CardDavNameUri()),
+							$oContact->ToVCard($sExsistensBody, $this->oLogger)."\r\n\r\n");
+						if ($oResponse)
 						{
-							$iChanged = empty($sDate) ? \time() : \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($sDate);
-							$this->updateContactEtagAndTime($iUserID, $mID, $sEtag, $iChanged);
+							$sEtag = \trim(\trim($oResponse->getHeader('etag')), '"\'');
+							$sDate = \trim($oResponse->getHeader('date'));
+							if (!empty($sEtag))
+							{
+								$iChanged = empty($sDate) ? \time() : \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($sDate);
+								$this->updateContactEtagAndTime($iUserID, $mID, $sEtag, $iChanged);
+							}
 						}
 					}
 				}
@@ -268,7 +269,7 @@ class PdoAddressBook
 							$oContact = null;
 							if ($mExsistenContactID)
 							{
-								$oContact = $this->GetContactByID($sEmail, $mExsistenContactID);
+								$oContact = $this->GetContactByID($oConfig['Email'], $mExsistenContactID);
 							}
 							if (!$oContact)
 							{
@@ -280,7 +281,7 @@ class PdoAddressBook
 								\trim(\trim($oResponse->getHeader('etag')), '"\'')
 							);
 
-							$this->ContactSave($sEmail, $oContact);
+							$this->ContactSave($oConfig['Email'], $oContact);
 							unset($oContact);
 //						} else if ($this->oLogger) {
 //							$this->oLogger->WriteDump($sBody);

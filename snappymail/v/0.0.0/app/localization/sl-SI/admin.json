@@ -104,7 +104,7 @@
 		"LABEL_ALL_RIGHTS_RESERVED": "Vse pravice pridržane.",
 		"HINT_READ_CHANGE_LOG": "Preberite dnevnik sprememb pred posodobitvijo.",
 		"HINT_IS_UP_TO_DATE": "Ni novih posodobitev.",
-		"HTML_NEW_VERSION": "Na voljo je nova verzija <b>%VERSION%</b>.",
+		"HTML_NEW_VERSION": "Na voljo je nova verzija <b>%VERSION%<\/b>.",
 		"LABEL_UPDATING": "Posodabljanje",
 		"LABEL_CHECKING": "Preverjanje za posdodobitve",
 		"BUTTON_RELEASES": "Releases"

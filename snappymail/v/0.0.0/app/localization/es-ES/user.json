@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Activar la sincronización remota",
 		"LABEL_CONTACTS_SYNC_SERVER": "Servidor",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Libreta de direcciones URL",
-		"LABEL_CONTACTS_SYNC_USER": "Usuario"
+		"LABEL_CONTACTS_SYNC_USER": "Usuario",
+		"SYNC_NO": "No",
+		"SYNC_YES": "Sí",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Temas",

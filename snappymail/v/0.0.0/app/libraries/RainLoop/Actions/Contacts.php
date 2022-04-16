@@ -15,19 +15,16 @@ trait Contacts
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
-		$bEnabled = '1' === (string) $this->GetActionParam('Enable', '0');
-		$sUrl = $this->GetActionParam('Url', '');
-		$sUser = $this->GetActionParam('User', '');
 		$sPassword = $this->GetActionParam('Password', '');
 
 		$mData = $this->getContactsSyncData($oAccount);
 
 		$bResult = $this->setContactsSyncData($oAccount, array(
-			'Enable' => $bEnabled,
-			'User' => $sUser,
+			'Mode' => \intval($this->GetActionParam('Mode', '0')),
+			'User' => $this->GetActionParam('User', ''),
 			'Password' => APP_DUMMY === $sPassword && isset($mData['Password'])
 				? $mData['Password'] : (APP_DUMMY === $sPassword ? '' : $sPassword),
-			'Url' => $sUrl
+			'Url' => $this->GetActionParam('Url', '')
 		));
 
 		return $this->DefaultResponse(__FUNCTION__, $bResult);
@@ -42,11 +39,16 @@ trait Contacts
 		if ($oAddressBookProvider && $oAddressBookProvider->IsActive())
 		{
 			$mData = $this->getContactsSyncData($oAccount);
-			if (isset($mData['Enable'], $mData['User'], $mData['Password'], $mData['Url']) && $mData['Enable'])
+			if (isset($mData['User'], $mData['Password'], $mData['Url']) && !empty($mData['Mode']))
 			{
-				$bResult = $oAddressBookProvider->Sync(
-					$this->GetMainEmail($oAccount),
-					$mData['Url'], $mData['User'], $mData['Password']);
+				$bResult = $oAddressBookProvider->Sync([
+					'Email' => $this->GetMainEmail($oAccount),
+					'Url' => $mData['Url'],
+					'User' => $mData['User'],
+					'Password' => $mData['Password'],
+					'Mode' => $mData['Mode'],
+					'Proxy' => ''
+				]);
 			}
 		}
 
@@ -236,6 +238,9 @@ trait Contacts
 
 	public function setContactsSyncData(\RainLoop\Model\Account $oAccount, array $aData) : bool
 	{
+		if (!isset($aData['Mode'])) {
+			$aData['Mode'] = empty($aData['Enable']) ? 0 : 1;
+		}
 		$oMainAccount = $this->getMainAccountFromToken();
 		if ($aData['Password']) {
 			$aData['Password'] = \SnappyMail\Crypt::EncryptToJSON($aData['Password'], $oMainAccount->CryptKey());
@@ -271,6 +276,9 @@ trait Contacts
 							$oMainAccount->CryptKey()
 						);
 					}
+				}
+				if (!isset($aData['Mode'])) {
+					$aData['Mode'] = empty($aData['Enable']) ? 0 : 1;
 				}
 				return $aData;
 			}

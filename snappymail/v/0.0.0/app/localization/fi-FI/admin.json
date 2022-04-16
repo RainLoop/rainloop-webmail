@@ -104,7 +104,7 @@
 		"LABEL_ALL_RIGHTS_RESERVED": "Kaikki oikeudet pidätetään.",
 		"HINT_READ_CHANGE_LOG": "Lue muutosloki ennen päivitystä.",
 		"HINT_IS_UP_TO_DATE": "RainLoop on ajan tasalla.",
-		"HTML_NEW_VERSION": "Uusi versio <b>%VERSION%</b> on saatavissa.",
+		"HTML_NEW_VERSION": "Uusi versio <b>%VERSION%<\/b> on saatavissa.",
 		"LABEL_UPDATING": "Päivitetään",
 		"LABEL_CHECKING": "Tarkastetaan päivityksiä",
 		"BUTTON_RELEASES": "Releases"

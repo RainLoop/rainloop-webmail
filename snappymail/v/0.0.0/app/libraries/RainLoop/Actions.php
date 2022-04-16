@@ -803,7 +803,7 @@ class Actions
 				$aResult['ContactsSyncIsAllowed'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
 				$aResult['ContactsSyncInterval'] = (int)$oConfig->Get('contacts', 'sync_interval', 20);
 
-				$aResult['EnableContactsSync'] = false;
+				$aResult['ContactsSyncMode'] = 0;
 				$aResult['ContactsSyncUrl'] = '';
 				$aResult['ContactsSyncUser'] = '';
 				$aResult['ContactsSyncPassword'] = '';
@@ -811,7 +811,7 @@ class Actions
 				if ($aResult['ContactsIsAllowed'] && $aResult['ContactsSyncIsAllowed']) {
 					$mData = $this->getContactsSyncData($oAccount);
 					if (\is_array($mData)) {
-						$aResult['EnableContactsSync'] = isset($mData['Enable']) ? !!$mData['Enable'] : false;
+						$aResult['ContactsSyncMode'] = isset($mData['Mode']) ? $mData['Mode'] : 0;
 						$aResult['ContactsSyncUrl'] = isset($mData['Url']) ? \trim($mData['Url']) : '';
 						$aResult['ContactsSyncUser'] = isset($mData['User']) ? \trim($mData['User']) : '';
 						$aResult['ContactsSyncPassword'] = APP_DUMMY;

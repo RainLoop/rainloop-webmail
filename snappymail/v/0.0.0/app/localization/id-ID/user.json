@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Nyalakan sinkronisasi remote",
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "URL Buku alamat",
-		"LABEL_CONTACTS_SYNC_USER": "User"
+		"LABEL_CONTACTS_SYNC_USER": "User",
+		"SYNC_NO": "Tidak",
+		"SYNC_YES": "Ya",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Tema",

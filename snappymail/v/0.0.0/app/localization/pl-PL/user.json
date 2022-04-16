@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Włącz zdalną synchronizację",
 		"LABEL_CONTACTS_SYNC_SERVER": "Serwer",
 		"LABEL_CONTACTS_SYNC_AB_URL": "URL książki adresowej",
-		"LABEL_CONTACTS_SYNC_USER": "Użytkownik"
+		"LABEL_CONTACTS_SYNC_USER": "Użytkownik",
+		"SYNC_NO": "Nie",
+		"SYNC_YES": "Tak",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Motywy",

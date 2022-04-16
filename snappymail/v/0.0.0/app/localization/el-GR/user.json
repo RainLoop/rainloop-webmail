@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Ενεργοποίηση απομακρυσμένου συγχρονισμού",
 		"LABEL_CONTACTS_SYNC_SERVER": "Εξυπηρετητής",
 		"LABEL_CONTACTS_SYNC_AB_URL": "URL του καταλόγου διεθύνσεων",
-		"LABEL_CONTACTS_SYNC_USER": "Χρήστης"
+		"LABEL_CONTACTS_SYNC_USER": "Χρήστης",
+		"SYNC_NO": "Όχι",
+		"SYNC_YES": "Ναι",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Θέματα",

@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Aktivoi etä-synkronointi",
 		"LABEL_CONTACTS_SYNC_SERVER": "Palvelin",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Osoitekirjan URL",
-		"LABEL_CONTACTS_SYNC_USER": "Käyttäjä"
+		"LABEL_CONTACTS_SYNC_USER": "Käyttäjä",
+		"SYNC_NO": "Ei",
+		"SYNC_YES": "Kyllä",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Teemat",

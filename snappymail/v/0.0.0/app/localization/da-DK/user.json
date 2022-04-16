@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Aktivér synkronisering",
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Adressebogs URL",
-		"LABEL_CONTACTS_SYNC_USER": "Bruger"
+		"LABEL_CONTACTS_SYNC_USER": "Bruger",
+		"SYNC_NO": "Nej",
+		"SYNC_YES": "Ja",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Temaer",

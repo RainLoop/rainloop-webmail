@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Enable remote synchronization",
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Addressbook URL",
-		"LABEL_CONTACTS_SYNC_USER": "User"
+		"LABEL_CONTACTS_SYNC_USER": "User",
+		"SYNC_NO": "No",
+		"SYNC_YES": "Yes",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Themes",

@@ -104,7 +104,7 @@
 		"LABEL_ALL_RIGHTS_RESERVED": "alle rettigheder forbeholdes.",
 		"HINT_READ_CHANGE_LOG": "Læs ændrings listen før der opdateres.",
 		"HINT_IS_UP_TO_DATE": "RainLoop is up to date.",
-		"HTML_NEW_VERSION": "Ny  <b>%VERSION%</b> version tilgængelig",
+		"HTML_NEW_VERSION": "Ny  <b>%VERSION%<\/b> version tilgængelig",
 		"LABEL_UPDATING": "Opdatere",
 		"LABEL_CHECKING": "Tjekker for opdateringer",
 		"BUTTON_RELEASES": "Releases"

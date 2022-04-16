@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Slå på fjernstyrt synkronisering",
 		"LABEL_CONTACTS_SYNC_SERVER": "Tjener",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Nettadresse til adressebok",
-		"LABEL_CONTACTS_SYNC_USER": "Bruker"
+		"LABEL_CONTACTS_SYNC_USER": "Bruker",
+		"SYNC_NO": "Nei",
+		"SYNC_YES": "Ja",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Tema",

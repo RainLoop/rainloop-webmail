@@ -37,9 +37,6 @@ export class ContactsPopupView extends AbstractViewPopup {
 		this.bBackToCompose = false;
 		this.sLastComposeFocusedField = '';
 
-		this.allowContactsSync = ContactUserStore.allowSync;
-		this.enableContactsSync = ContactUserStore.enableSync;
-
 		this.addObservables({
 			search: '',
 			contactsCount: 0,
@@ -123,6 +120,8 @@ export class ContactsPopupView extends AbstractViewPopup {
 			},
 
 			contactsCheckedOrSelectedUids: () => this.contactsCheckedOrSelected().map(contact => contact.id),
+
+			contactsSyncEnabled: () => ContactUserStore.allowSync() && ContactUserStore.syncMode(),
 
 			viewHash: () => '' + this.viewProperties.map(property => property.value && property.value()).join('')
 		});

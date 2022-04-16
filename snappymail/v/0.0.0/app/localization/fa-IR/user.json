@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "فعال‌سازی همگام‌سازی از راه دور",
 		"LABEL_CONTACTS_SYNC_SERVER": "سرور",
 		"LABEL_CONTACTS_SYNC_AB_URL": "تارنمای آدرس‌بوک",
-		"LABEL_CONTACTS_SYNC_USER": "کاربر"
+		"LABEL_CONTACTS_SYNC_USER": "کاربر",
+		"SYNC_NO": "خیر",
+		"SYNC_YES": "بلی",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "پوسته‌ها",

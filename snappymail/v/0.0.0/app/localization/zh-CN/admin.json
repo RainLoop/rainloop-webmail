@@ -104,7 +104,7 @@
 		"LABEL_ALL_RIGHTS_RESERVED": "保留所有权利",
 		"HINT_READ_CHANGE_LOG": "请在更新前阅读更新日志",
 		"HINT_IS_UP_TO_DATE": "RainLoop已经是最新版本的",
-		"HTML_NEW_VERSION": "有新的<b>%VERSION%</b> 版本可用.",
+		"HTML_NEW_VERSION": "有新的<b>%VERSION%<\/b> 版本可用.",
 		"LABEL_UPDATING": "更新中",
 		"LABEL_CHECKING": "检查更新",
 		"BUTTON_RELEASES": "Releases"

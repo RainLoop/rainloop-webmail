@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Omogoči oddaljeno sinhronizacijo",
 		"LABEL_CONTACTS_SYNC_SERVER": "Strežnik",
 		"LABEL_CONTACTS_SYNC_AB_URL": "URL imenika",
-		"LABEL_CONTACTS_SYNC_USER": "Uporabnik"
+		"LABEL_CONTACTS_SYNC_USER": "Uporabnik",
+		"SYNC_NO": "Ne",
+		"SYNC_YES": "Da",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Teme",

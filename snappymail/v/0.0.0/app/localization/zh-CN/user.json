@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "启用远程同步",
 		"LABEL_CONTACTS_SYNC_SERVER": "服务器",
 		"LABEL_CONTACTS_SYNC_AB_URL": "地址簿 URL",
-		"LABEL_CONTACTS_SYNC_USER": "用户名"
+		"LABEL_CONTACTS_SYNC_USER": "用户名",
+		"SYNC_NO": "否",
+		"SYNC_YES": "是",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "主题",

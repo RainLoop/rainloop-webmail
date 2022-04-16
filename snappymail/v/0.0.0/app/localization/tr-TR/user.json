@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Uzaktan eşleştirme etkin",
 		"LABEL_CONTACTS_SYNC_SERVER": "Sunucu",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Adres Defteri URL",
-		"LABEL_CONTACTS_SYNC_USER": "Kullanıcı Adı"
+		"LABEL_CONTACTS_SYNC_USER": "Kullanıcı Adı",
+		"SYNC_NO": "Hayır",
+		"SYNC_YES": "Evet",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Temalar",

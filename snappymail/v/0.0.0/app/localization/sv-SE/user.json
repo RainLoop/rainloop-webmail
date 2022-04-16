@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Aktivera fjärrsynkronisering",
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Adressboks-URL",
-		"LABEL_CONTACTS_SYNC_USER": "Användare"
+		"LABEL_CONTACTS_SYNC_USER": "Användare",
+		"SYNC_NO": "Nej",
+		"SYNC_YES": "Ja",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Teman",

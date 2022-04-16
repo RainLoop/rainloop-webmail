@@ -104,7 +104,7 @@
 		"LABEL_ALL_RIGHTS_RESERVED": "Todos os direitos reservados.",
 		"HINT_READ_CHANGE_LOG": "Por favor, leia o registro de alterações antes de atualizar.",
 		"HINT_IS_UP_TO_DATE": "RainLoop está atualizado.",
-		"HTML_NEW_VERSION": "Está disponível uma nova versão: <b>%VERSION%</b>.",
+		"HTML_NEW_VERSION": "Está disponível uma nova versão: <b>%VERSION%<\/b>.",
 		"LABEL_UPDATING": "Atualizando",
 		"LABEL_CHECKING": "Checar por atualizações",
 		"BUTTON_RELEASES": "Releases"

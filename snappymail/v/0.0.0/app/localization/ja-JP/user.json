@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "リモート同期を有効化",
 		"LABEL_CONTACTS_SYNC_SERVER": "サーバー",
 		"LABEL_CONTACTS_SYNC_AB_URL": "アドレス帳 URL",
-		"LABEL_CONTACTS_SYNC_USER": "ユーザー"
+		"LABEL_CONTACTS_SYNC_USER": "ユーザー",
+		"SYNC_NO": "いいえ",
+		"SYNC_YES": "はい",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "テーマ",

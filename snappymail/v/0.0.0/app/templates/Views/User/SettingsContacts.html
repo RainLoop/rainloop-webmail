@@ -13,35 +13,30 @@
 <div class="form-horizontal" data-bind="visible: allowContactsSync">
 	<div class="legend" data-i18n="SETTINGS_CONTACTS/LEGEND_CONTACTS_SYNC"></div>
 	<div class="control-group">
+		<label data-i18n="SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_ENABLE"></label>
 		<div data-bind="component: {
-			name: 'Checkbox',
+			name: 'Select',
 			params: {
-				label: 'SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_ENABLE',
-				value: enableContactsSync
+				options: syncModeOptions,
+				value: syncMode,
+				optionsText: 'name',
+				optionsValue: 'id'
 			}
 		}"></div>
-<!-- TODO: https://github.com/the-djmaze/snappymail/issues/293
-<select>
-	<option value="0">No</option>
-	<option value="1">Yes, read + write</option>
-	<option value="2">Yes, read</option>
-</select>
--->
 	</div>
 	<div class="control-group">
 		<label data-i18n="SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_AB_URL"></label>
 		<input type="text" class="input-xxlarge" autocomplete="off" autocorrect="off" autocapitalize="off"
-			spellcheck="false" data-bind="value: contactsSyncUrl" placeholder="https://">
+			spellcheck="false" data-bind="value: syncUrl" placeholder="https://">
 	</div>
 	<div class="control-group">
 		<label data-i18n="SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_USER"></label>
 		<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-			data-bind="value: contactsSyncUser">
+			data-bind="value: syncUser">
 	</div>
 	<div class="control-group">
 		<label data-i18n="GLOBAL/PASSWORD"></label>
 		<input type="password" autocomplete="current-password" autocorrect="off" autocapitalize="off"
-			spellcheck="false" data-bind="value: contactsSyncPass">
+			spellcheck="false" data-bind="value: syncPass">
 	</div>
-
 </div>

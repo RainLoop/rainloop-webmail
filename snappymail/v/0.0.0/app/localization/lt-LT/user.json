@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Įjungti nuotolinį sinchronizavimą",
 		"LABEL_CONTACTS_SYNC_SERVER": "Serveris",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Adresų knygos URL adresas",
-		"LABEL_CONTACTS_SYNC_USER": "Vartotojas"
+		"LABEL_CONTACTS_SYNC_USER": "Vartotojas",
+		"SYNC_NO": "Ne",
+		"SYNC_YES": "Taip",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Temos",

@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "원격 동기화 활성화",
 		"LABEL_CONTACTS_SYNC_SERVER": "서버",
 		"LABEL_CONTACTS_SYNC_AB_URL": "주소록 URL",
-		"LABEL_CONTACTS_SYNC_USER": "사용자"
+		"LABEL_CONTACTS_SYNC_USER": "사용자",
+		"SYNC_NO": "아니요",
+		"SYNC_YES": "예",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "테마",

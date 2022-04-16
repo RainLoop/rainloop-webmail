@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Включить синхронизация",
 		"LABEL_CONTACTS_SYNC_SERVER": "Сервер",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Адресная книга (URL)",
-		"LABEL_CONTACTS_SYNC_USER": "Пользователь"
+		"LABEL_CONTACTS_SYNC_USER": "Пользователь",
+		"SYNC_NO": "Нет",
+		"SYNC_YES": "Да",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Темы Оформления",

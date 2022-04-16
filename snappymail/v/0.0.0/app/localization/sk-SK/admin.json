@@ -104,7 +104,7 @@
 		"LABEL_ALL_RIGHTS_RESERVED": "Všetky práva vyhradené.",
 		"HINT_READ_CHANGE_LOG": "Prosím prečítajte si zoznam zmien pred aktualizáciou.",
 		"HINT_IS_UP_TO_DATE": "RainLoop je aktuálny.",
-		"HTML_NEW_VERSION": "Dostupná nová <b>%VERSION%</b> verzia.",
+		"HTML_NEW_VERSION": "Dostupná nová <b>%VERSION%<\/b> verzia.",
 		"LABEL_UPDATING": "Aktualizujem",
 		"LABEL_CHECKING": "Kontrolujem aktualizácie",
 		"BUTTON_RELEASES": "Releases"

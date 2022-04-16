@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Activer la synchronisation à distance",
 		"LABEL_CONTACTS_SYNC_SERVER": "Serveur",
 		"LABEL_CONTACTS_SYNC_AB_URL": "URL du carnet d'adresses",
-		"LABEL_CONTACTS_SYNC_USER": "Utilisateur"
+		"LABEL_CONTACTS_SYNC_USER": "Utilisateur",
+		"SYNC_NO": "Non",
+		"SYNC_YES": "Oui",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Thèmes",

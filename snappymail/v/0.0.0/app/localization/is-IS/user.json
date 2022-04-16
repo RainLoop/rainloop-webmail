@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Virkja fjartengda samstillingu",
 		"LABEL_CONTACTS_SYNC_SERVER": "Þjónn",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Slóð á nafnaskrá",
-		"LABEL_CONTACTS_SYNC_USER": "Notandi"
+		"LABEL_CONTACTS_SYNC_USER": "Notandi",
+		"SYNC_NO": "Nei",
+		"SYNC_YES": "Já",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Þemu",

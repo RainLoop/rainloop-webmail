@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Разрешаване на отдалечено синхронизиране",
 		"LABEL_CONTACTS_SYNC_SERVER": "Сървър",
 		"LABEL_CONTACTS_SYNC_AB_URL": "URL на адресната книга",
-		"LABEL_CONTACTS_SYNC_USER": "Потребител"
+		"LABEL_CONTACTS_SYNC_USER": "Потребител",
+		"SYNC_NO": "Не",
+		"SYNC_YES": "Да",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Теми",

@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Távoli szinkronizálás engedélyezése",
 		"LABEL_CONTACTS_SYNC_SERVER": "Szerver",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Címtár URL",
-		"LABEL_CONTACTS_SYNC_USER": "Felhasználó"
+		"LABEL_CONTACTS_SYNC_USER": "Felhasználó",
+		"SYNC_NO": "Nem",
+		"SYNC_YES": "Igen",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Témák",

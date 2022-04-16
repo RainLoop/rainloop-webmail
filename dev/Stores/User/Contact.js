@@ -12,7 +12,7 @@ ContactUserStore.syncing = ko.observable(false).extend({ debounce: 200 });
 
 addObservablesTo(ContactUserStore, {
 	allowSync: false, // Admin setting
-	enableSync: false,
+	syncMode: 0,
 	syncUrl: '',
 	syncUser: '',
 	syncPass: ''
@@ -23,7 +23,7 @@ addObservablesTo(ContactUserStore, {
  * @returns {void}
  */
 ContactUserStore.sync = fResultFunc => {
-	if (ContactUserStore.enableSync()
+	if (ContactUserStore.syncMode()
 	 && !ContactUserStore.importing()
 	 && !ContactUserStore.syncing()
 	) {
@@ -39,7 +39,7 @@ ContactUserStore.init = () => {
 	let value = !!SettingsGet('ContactsSyncIsAllowed');
 	ContactUserStore.allowSync(value);
 	if (value) {
-		ContactUserStore.enableSync(!!SettingsGet('EnableContactsSync'));
+		ContactUserStore.syncMode(SettingsGet('ContactsSyncMode'));
 		ContactUserStore.syncUrl(SettingsGet('ContactsSyncUrl'));
 		ContactUserStore.syncUser(SettingsGet('ContactsSyncUser'));
 		ContactUserStore.syncPass(SettingsGet('ContactsSyncPassword'));

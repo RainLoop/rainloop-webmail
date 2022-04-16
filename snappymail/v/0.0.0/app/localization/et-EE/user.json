@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Luba väline sünkroniseerimine",
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Aadressiraamatu URL",
-		"LABEL_CONTACTS_SYNC_USER": "Kasutaja"
+		"LABEL_CONTACTS_SYNC_USER": "Kasutaja",
+		"SYNC_NO": "Ei",
+		"SYNC_YES": "Jah",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Teemad",

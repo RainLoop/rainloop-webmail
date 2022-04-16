@@ -41,9 +41,9 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 			$this->oDriver->IsSharingAllowed();
 	}
 
-	public function Sync(string $sEmail, string $sUrl, string $sUser, string $sPassword) : bool
+	public function Sync(array $oConfig) : bool
 	{
-		return $this->IsActive() ? $this->oDriver->Sync($sEmail, $sUrl, $sUser, $sPassword) : false;
+		return $this->IsActive() ? $this->oDriver->Sync($oConfig) : false;
 	}
 
 	public function Export(string $sEmail, string $sType = 'vcf') : bool

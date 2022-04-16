@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "تفعيل التزامن عن بعد",
 		"LABEL_CONTACTS_SYNC_SERVER": "المخدم",
 		"LABEL_CONTACTS_SYNC_AB_URL": "وصلة دفتر العناوين",
-		"LABEL_CONTACTS_SYNC_USER": "المستخدم"
+		"LABEL_CONTACTS_SYNC_USER": "المستخدم",
+		"SYNC_NO": "لا",
+		"SYNC_YES": "نعم",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "المظاهر العامة",

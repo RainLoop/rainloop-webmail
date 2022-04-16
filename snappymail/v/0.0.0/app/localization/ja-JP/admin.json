@@ -104,7 +104,7 @@
 		"LABEL_ALL_RIGHTS_RESERVED": "All Rights Reserved.",
 		"HINT_READ_CHANGE_LOG": "更新する前に変更ログをお読みください。",
 		"HINT_IS_UP_TO_DATE": "RainLoopは最新のものです。",
-		"HTML_NEW_VERSION": "新しいバージョン  <b>%VERSION%</b> があります",
+		"HTML_NEW_VERSION": "新しいバージョン  <b>%VERSION%<\/b> があります",
 		"LABEL_UPDATING": "更新中",
 		"LABEL_CHECKING": "アップデートの確認",
 		"BUTTON_RELEASES": "Releases"

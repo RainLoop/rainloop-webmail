@@ -31,7 +31,7 @@
 						<span data-i18n="CONTACTS/BUTTON_EXPORT_VCARD"></span>
 					</a>
 				</li>
-				<li class="dividerbar" role="presentation" data-bind="visible: enableContactsSync() && allowContactsSync()">
+				<li class="dividerbar" role="presentation" data-bind="visible: contactsSyncEnabled">
 					<a href="#" tabindex="-1" data-bind="command: syncCommand">
 						<i class="fontastic" data-bind="css: {'icon-spinner': contacts.syncing}">⇆</i>
 						<span data-i18n="CONTACTS/BUTTON_SYNC"></span>

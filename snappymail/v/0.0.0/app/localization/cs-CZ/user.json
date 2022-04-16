@@ -404,7 +404,10 @@
 		"LABEL_CONTACTS_SYNC_ENABLE": "Povolit vzdálenou synchronizaci",
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "URL adresáře",
-		"LABEL_CONTACTS_SYNC_USER": "Uživatel"
+		"LABEL_CONTACTS_SYNC_USER": "Uživatel",
+		"SYNC_NO": "Ne",
+		"SYNC_YES": "Ano",
+		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Motivy",

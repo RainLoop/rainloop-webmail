@@ -104,7 +104,7 @@
 		"LABEL_ALL_RIGHTS_RESERVED": "Hak Cipta",
 		"HINT_READ_CHANGE_LOG": "Mohon baca log perubahan sebelum melakukan pembaruan",
 		"HINT_IS_UP_TO_DATE": "RainLoop sudah terbaru",
-		"HTML_NEW_VERSION": "Versi  <b>%VERSION%</b> baru tersedia",
+		"HTML_NEW_VERSION": "Versi  <b>%VERSION%<\/b> baru tersedia",
 		"LABEL_UPDATING": "Memperbarui",
 		"LABEL_CHECKING": "Memeriksa pembaruan",
 		"BUTTON_RELEASES": "Releases"

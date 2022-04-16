@@ -104,7 +104,7 @@
 		"LABEL_ALL_RIGHTS_RESERVED": "همه حقوق محفوظ هست",
 		"HINT_READ_CHANGE_LOG": "فایل وقایع را قبل از بروزرسانی بخوانید.",
 		"HINT_IS_UP_TO_DATE": "RainLoop بروز هست",
-		"HTML_NEW_VERSION": "نسخه <b>%VERSION%</b>  در دسترس هست",
+		"HTML_NEW_VERSION": "نسخه <b>%VERSION%<\/b>  در دسترس هست",
 		"LABEL_UPDATING": "در حال بروزرسانی",
 		"LABEL_CHECKING": "چک کردن برای بروزرسانی",
 		"BUTTON_RELEASES": "Releases"
