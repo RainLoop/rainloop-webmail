@@ -58,6 +58,7 @@ class GPG
 		$curves = [],
 		$pubkey_types = [],
 		$compressions = [],
+		$passphrases = [],
 
 		$proc_resource,
 
