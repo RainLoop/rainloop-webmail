@@ -48,7 +48,9 @@ export class OpenPgpImportPopupView extends AbstractViewPopup {
 			match = reg.exec(keyTrimmed);
 			if (match && 0 < count) {
 				if (match[0] && match[1] && match[2] && match[1] === match[2]) {
-					this.saveGnuPG() && GnuPGUserStore.isSupported() && GnuPGUserStore.importKey(this.key());
+					this.saveGnuPG() && GnuPGUserStore.isSupported() && GnuPGUserStore.importKey(this.key(), (iError, oData) => {
+						iError && alert(oData.ErrorMessage);
+					});
 					OpenPGPUserStore.isSupported() && OpenPGPUserStore.importKey(this.key());
 				}
 

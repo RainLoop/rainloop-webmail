@@ -52,11 +52,15 @@ export const GnuPGUserStore = new class {
 							if (key.askDelete()) {
 								Remote.request('GnupgDeleteKey',
 									(iError, oData) => {
-										if (oData && oData.Result) {
-											if (isPrivate) {
-												this.privateKeys.remove(key);
-											} else {
-												this.publicKeys.remove(key);
+										if (oData) {
+											if (iError) {
+												alert(oData.ErrorMessage);
+											} else if (oData.Result) {
+												if (isPrivate) {
+													this.privateKeys.remove(key);
+												} else {
+													this.publicKeys.remove(key);
+												}
 											}
 										}
 									}, {
@@ -107,8 +111,8 @@ export const GnuPGUserStore = new class {
 	importKey(key, callback) {
 		Remote.request('GnupgImportKey',
 			(iError, oData) => {
-				if (oData && oData.Result) {
-//					this.gnupgKeyring = oData.Result;
+				if (oData && oData.Result/* && (oData.Result.imported || oData.Result.secretimported)*/) {
+					this.loadKeyrings();
 				}
 				callback && callback(iError, oData);
 			}, {
