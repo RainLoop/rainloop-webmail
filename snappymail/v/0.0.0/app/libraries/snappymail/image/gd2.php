@@ -29,6 +29,11 @@ class GD2 implements \SnappyMail\Image
 		return $this->getImageBlob();
 	}
 
+	public function valid() : bool
+	{
+		return $this->img && 0 < \imagesx($this->img);
+	}
+
 	public static function createFromString(string &$data)
 	{
 		if (!($imginfo = \getimagesizefromstring($data))) {

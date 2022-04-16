@@ -14,6 +14,11 @@ class GMagick extends \Gmagick implements \SnappyMail\Image
 		$this->clear();
 	}
 
+	public function valid() : bool
+	{
+		return 0 < $this->getImageWidth();
+	}
+
 	public static function createFromString(string &$data)
 	{
 		$gmagick = new static();

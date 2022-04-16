@@ -11,6 +11,11 @@ class IMagick extends \Imagick implements \SnappyMail\Image
 		$this->clear();
 	}
 
+	public function valid() : bool
+	{
+		return 0 < $this->getImageWidth();
+	}
+
 	public static function createFromString(string &$data)
 	{
 		$imagick = new static();

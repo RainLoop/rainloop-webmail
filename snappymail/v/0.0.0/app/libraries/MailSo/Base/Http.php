@@ -253,7 +253,8 @@ class Http
 				403 => 'Forbidden',
 				404 => 'Not Found',
 				405 => 'Method Not Allowed',
-				416 => 'Requested range not satisfiable'
+				416 => 'Requested range not satisfiable',
+				500 => 'Internal Server Error'
 			);
 
 			$sHeaderText = (0 === \strlen($sCustomStatusText) && isset($aStatus[$iStatus]) ? $aStatus[$iStatus] : $sCustomStatusText);

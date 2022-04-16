@@ -207,37 +207,32 @@ trait Raw
 					if (!$bDownload)
 					{
 						$bDetectImageOrientation = !!$self->Config()->Get('labs', 'detect_image_exif_orientation', false);
-						if ($bThumbnail)
+						try
 						{
-							try
+							if ($bThumbnail)
 							{
 								$oImage = static::loadImage($rResource, $bDetectImageOrientation, 60);
 								\header('Content-Disposition: inline; '.
 									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileName.'_thumb60x60.png')));
 								$oImage->show('png');
 //								$oImage->show('webp'); // Little Britain: "Safari says NO"
+								exit;
 							}
-							catch (\Throwable $oException)
-							{
-								$self->Logger()->WriteExceptionShort($oException);
-							}
-							exit;
-						}
-						else if ($bDetectImageOrientation &&
-							\in_array($sContentType, array('image/png', 'image/jpeg', 'image/jpg', 'image/webp')))
-						{
-							try
+							else if ($bDetectImageOrientation &&
+								\in_array($sContentType, array('image/png', 'image/jpeg', 'image/jpg', 'image/webp')))
 							{
 								$oImage = static::loadImage($rResource, $bDetectImageOrientation);
 								\header('Content-Disposition: inline; '.
 									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileName)));
 								$oImage->show();
 //								$oImage->show('webp'); // Little Britain: "Safari says NO"
+								exit;
 							}
-							catch (\Throwable $oException)
-							{
-								$self->Logger()->WriteExceptionShort($oException);
-							}
+						}
+						catch (\Throwable $oException)
+						{
+							$self->Logger()->WriteExceptionShort($oException);
+							\MailSo\Base\Http::StatusHeader(500);
 							exit;
 						}
 					}
@@ -305,6 +300,10 @@ trait Raw
 		else { return null; }
 		$handler = 'SnappyMail\\Image\\'.$handler.'::createFromStream';
 		$oImage = $handler($resource);
+
+		if (!$oImage->valid()) {
+			throw new \Exception('Loading image failed');
+		}
 
 		// rotateImageByOrientation
 		if ($bDetectImageOrientation) {

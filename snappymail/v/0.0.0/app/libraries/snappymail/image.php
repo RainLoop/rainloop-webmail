@@ -13,4 +13,6 @@ interface Image
 	public function rotate(float $degrees) : bool;
 
 	public function show(?string $format = null) : void;
+
+	public function valid() : bool;
 }
