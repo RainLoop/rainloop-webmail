@@ -51,18 +51,10 @@ window.rl = {
 		loadScript(url)
 			.then(() => loadScript(url.replace('/libs.', `/${admin?'admin':'app'}.`)))
 			.then(() => appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve())
-			.then(() => {
-				if ('complete' == doc.readyState) {
-					cb();
-				} else {
-					let poll = setInterval(()=>{
-						if ('complete' == doc.readyState) {
-							clearInterval(poll);
-							cb();
-						}
-					}, 50);
-				}
-			})
+			.then(() => rl.app.bootstart
+					? cb()
+					: doc.addEventListener('readystatechange', () => 'complete' == doc.readyState && cb())
+			)
 			.catch(e => {
 				showError(e.message);
 				throw e;
