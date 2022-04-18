@@ -206,7 +206,7 @@ trait Raw
 
 					if (!$bDownload)
 					{
-						$bDetectImageOrientation = $self->Config()->Get('labs', 'image_exif_rotate', false)
+						$bDetectImageOrientation = $self->Config()->Get('labs', 'image_exif_auto_rotate', false)
 							// Mostly only JPEG has EXIF metadata
 							&& 'image/jpeg' == $sContentType;
 						try
