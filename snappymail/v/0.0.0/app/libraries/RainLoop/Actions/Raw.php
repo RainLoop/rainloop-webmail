@@ -206,7 +206,9 @@ trait Raw
 
 					if (!$bDownload)
 					{
-						$bDetectImageOrientation = !!$self->Config()->Get('labs', 'detect_image_exif_orientation', false);
+						$bDetectImageOrientation = $self->Config()->Get('labs', 'image_exif_rotate', false)
+							// Mostly only JPEG has EXIF metadata
+							&& 'image/jpeg' == $sContentType;
 						try
 						{
 							if ($bThumbnail)
@@ -218,8 +220,7 @@ trait Raw
 //								$oImage->show('webp'); // Little Britain: "Safari says NO"
 								exit;
 							}
-							else if ($bDetectImageOrientation &&
-								\in_array($sContentType, array('image/png', 'image/jpeg', 'image/jpg', 'image/webp')))
+							else if ($bDetectImageOrientation)
 							{
 								$oImage = static::loadImage($rResource, $bDetectImageOrientation);
 								\header('Content-Disposition: inline; '.
@@ -292,7 +293,7 @@ trait Raw
 			}, $sFolder, $iUid, $sMimeIndex);
 	}
 
-	private static function loadImage($resource, bool $bDetectImageOrientation = true, int $iThumbnailBoxSize = 0) : \SnappyMail\Image
+	private static function loadImage($resource, bool $bDetectImageOrientation = false, int $iThumbnailBoxSize = 0) : \SnappyMail\Image
 	{
 		if (\extension_loaded('gmagick'))      { $handler = 'gmagick'; }
 		else if (\extension_loaded('imagick')) { $handler = 'imagick'; }
