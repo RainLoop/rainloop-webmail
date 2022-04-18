@@ -38,8 +38,7 @@ class GPG
 		FD_MESSAGE = 5;
 
 	public
-		$strict = false,
-		$debug = false;
+		$strict = false;
 
 	private
 		$_message,
@@ -900,9 +899,7 @@ class GPG
 
 	private function _debug(string $msg) : void
 	{
-		if ($this->debug) {
-			echo $msg . "\n";
-		}
+		\SnappyMail\Log::debug('GPG', $msg);
 	}
 
 	private function setInput(&$input) : void
@@ -953,7 +950,7 @@ class GPG
 	private function exec(array $arguments) /*: array|false*/
 	{
 		if (\version_compare($this->version, '2.2.5', '<')) {
-			// Too old (<2018)
+			\SnappyMail\Log::error('GPG', "{$this->version} too old");
 			return false;
 		}
 
@@ -1071,7 +1068,13 @@ class GPG
 		while (true) {
 			// Timeout after 5 seconds
 			if (5 < \microtime(1) - $start) {
-				exit('timeout');
+				$errors[] = 'timeout';
+				return [
+					'output' => '',
+					'status' => $status,
+					'errors' => $errors
+				];
+				exit;
 			}
 
 			$inputStreams     = [];
@@ -1257,7 +1260,7 @@ class GPG
 				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from GPG error');
 				foreach ($this->_openPipes->readPipeLines(self::FD_ERROR) as $line) {
 					$errors[] = $line;
-					$this->debug && $this->_debug("\t{$line}");
+					$this->_debug("\t{$line}");
 				}
 			}
 
@@ -1271,7 +1274,7 @@ class GPG
 					if ('[GNUPG:] ' == \substr($line, 0, 9)) {
 						$line = \substr($line, 9);
 						$status[] = $line;
-						$this->debug && $this->_debug("\t{$line}");
+						$this->_debug("\t{$line}");
 
 						$tokens = \explode(' ', $line);
 						// NEED_PASSPHRASE 0123456789ABCDEF 0123456789ABCDEF 1 0
