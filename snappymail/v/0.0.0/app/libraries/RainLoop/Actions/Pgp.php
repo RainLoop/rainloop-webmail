@@ -23,6 +23,13 @@ trait Pgp
 			\RainLoop\Providers\Storage\Enumerations\StorageType::PGP
 		)) . '/.gnupg';
 
+		if (!\is_dir($homedir)) {
+			\mkdir($homedir, 0700, true);
+		}
+		if (!\is_writable($homedir)) {
+			throw new \Exception("gpg homedir '{$homedir}' not writable");
+		}
+
 		/**
 		 * Workaround error: socket name for '/very/long/path/to/.gnupg/S.gpg-agent.extra' is too long
 		 * BSD 4.4 max length = 104

@@ -85,7 +85,7 @@ class GPG
 		$this->options['homedir'] = \rtrim($homedir, '/\\');
 
 		// the random seed file makes subsequent actions faster so only disable it if we have to.
-		if ($this->options['homedir'] && !\is_writeable($this->options['homedir'])) {
+		if ($this->options['homedir'] && !\is_writable($this->options['homedir'])) {
 			$this->options['no-random-seed-file'] = true;
 		}
 
