@@ -444,6 +444,9 @@ class GPG
 			}
 		}
 		if (!$fingerprint) {
+			if (!empty($result['errors'])) {
+				\SnappyMail\Log::error('GPG', \implode("\n\t", $result['errors']));
+			}
 			return false;
 		}
 
@@ -486,7 +489,7 @@ class GPG
 		$result = $this->exec($arguments);
 
 		foreach ($result['status'] as $line) {
-			if (\strpos($line, 'IMPORT_RES')) {
+			if (false !== \strpos($line, 'IMPORT_RES')) {
 				$line = \explode(' ', \explode('IMPORT_RES ', $line)[1]);
 				return [
 					'imported' => (int) $line[2],
@@ -500,6 +503,10 @@ class GPG
 					'fingerprint' => ''
 				];
 			}
+		}
+
+		if (!empty($result['errors'][0])) {
+			\SnappyMail\Log::warning('GPG', $result['errors'][0]);
 		}
 
 		return false;
