@@ -100,6 +100,7 @@ abstract class Driver
 		$this->aCache = array();
 
 		$this->aPrefixes = array(
+			\MailSo\Log\Enumerations\Type::DEBUG => '[DEBUG]',
 			\MailSo\Log\Enumerations\Type::INFO => '[DATA]',
 			\MailSo\Log\Enumerations\Type::SECURE => '[SECURE]',
 			\MailSo\Log\Enumerations\Type::NOTE => '[NOTE]',
@@ -152,12 +153,7 @@ abstract class Driver
 
 	public function WriteOnTimeoutOnly(int $iTimeout) : self
 	{
-		$this->iWriteOnTimeoutOnly = (int) $iTimeout;
-		if (0 > $this->iWriteOnTimeoutOnly)
-		{
-			$this->iWriteOnTimeoutOnly = 0;
-		}
-
+		$this->iWriteOnTimeoutOnly = \max(0, (int) $iTimeout);
 		return $this;
 	}
 
@@ -225,7 +221,7 @@ abstract class Driver
 	final public function Write(string $sDesc, int $iType = \MailSo\Log\Enumerations\Type::INFO, string $sName = '', bool $bDiplayCrLf = false)
 	{
 		$bResult = true;
-		if (!$this->bFlushCache && ($this->bWriteOnErrorOnly || $this->bWriteOnPhpErrorOnly || 0 < $this->iWriteOnTimeoutOnly))
+		if (!$this->bFlushCache && ($this->bWriteOnErrorOnly || $this->bWriteOnPhpErrorOnly || $this->iWriteOnTimeoutOnly))
 		{
 			$bErrorPhp = false;
 
@@ -267,7 +263,7 @@ abstract class Driver
 				$bResult = $this->localWriteImplementation($this->aCache, $bDiplayCrLf);
 				$this->aCache = array();
 			}
-			else if (0 < $this->iWriteOnTimeoutOnly && \time() - $_SERVER['REQUEST_TIME_FLOAT'] > $this->iWriteOnTimeoutOnly)
+			else if ($this->iWriteOnTimeoutOnly && \time() - $_SERVER['REQUEST_TIME_FLOAT'] > $this->iWriteOnTimeoutOnly)
 			{
 				$sFlush = '--- FlushLogCache: WriteOnTimeoutOnly ['.(\time() - $_SERVER['REQUEST_TIME_FLOAT']).'sec]';
 				if (isset($this->aCache[0]) && empty($this->aCache[0]))
@@ -313,7 +309,7 @@ abstract class Driver
 
 	final public function WriteEmptyLine() : void
 	{
-		if (!$this->bFlushCache && ($this->bWriteOnErrorOnly || $this->bWriteOnPhpErrorOnly || 0 < $this->iWriteOnTimeoutOnly))
+		if (!$this->bFlushCache && ($this->bWriteOnErrorOnly || $this->bWriteOnPhpErrorOnly || $this->iWriteOnTimeoutOnly))
 		{
 			$this->aCache[] = '';
 		}

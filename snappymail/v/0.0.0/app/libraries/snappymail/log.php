@@ -44,7 +44,7 @@ abstract class Log
 			\LOG_WARNING => Type::WARNING,
 			\LOG_NOTICE  => Type::NOTICE,
 			\LOG_INFO    => Type::INFO,
-			\LOG_DEBUG   => Type::INFO
+			\LOG_DEBUG   => Type::DEBUG
 		];
 
 	protected static function log(int $level, string $prefix, string $msg)

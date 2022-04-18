@@ -18,17 +18,19 @@ namespace MailSo\Log\Enumerations;
  */
 abstract class Type
 {
-	const INFO = 0;
-	const NOTICE = 1;
-	const WARNING = 2;
-	const ERROR = 3;
-	const SECURE = 4;
-	const NOTE = 5;
-	const TIME = 6;
-	const MEMORY = 7;
-	const TIME_DELTA = 8;
+	const
+		INFO = 0,
+		NOTICE = 1,
+		WARNING = 2,
+		ERROR = 3,
+		SECURE = 4,
+		NOTE = 5,
+		TIME = 6,
+		MEMORY = 7,
+		TIME_DELTA = 8,
+		DEBUG = 9,
 
-	const NOTICE_PHP = 11;
-	const WARNING_PHP = 12;
-	const ERROR_PHP = 13;
+		NOTICE_PHP = 11,
+		WARNING_PHP = 12,
+		ERROR_PHP = 13;
 }
