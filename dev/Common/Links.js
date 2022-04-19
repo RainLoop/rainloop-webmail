@@ -47,7 +47,8 @@ export const
 		serverRequestRaw('Download', download, customSpecSuffix),
 
 	proxy = url =>
-		SERVER_PREFIX + '/ProxyExternal/' + btoa(url.replace(/ /g, '%20')).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''),
+		SERVER_PREFIX + '/ProxyExternal/'
+			+ btoa(url.replace(/ /g, '%20')).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''),
 
 	/**
 	 * @param {string} type

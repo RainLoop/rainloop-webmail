@@ -98,9 +98,11 @@ abstract class Crypt
 			$salt = \random_bytes(16);
 			$result = ['xxtea', $salt, static::XxteaEncrypt($data, $salt, $key)];
 		}
+/*
 		if (static::{"{$result[0]}Decrypt"}($result[2], $result[1], $key) !== $data) {
 			throw new \Exception('Encrypt/Decrypt mismatch');
 		}
+*/
 		return $result;
 	}
 
