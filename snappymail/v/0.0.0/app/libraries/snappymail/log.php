@@ -61,14 +61,16 @@ abstract class Log
 				$prefix
 			);
 /*
-			\error_log($prefix . ' ' . static::$levels[$level] . ': ' . $msg);
-
-			\RainLoop\Api::Config()->Get('logs', 'syslog');
-			if (\openlog('snappymail', \LOG_ODELAY, \LOG_USER)) {
+			if (\RainLoop\Api::Config()->Get('logs', 'syslog') && \openlog('snappymail', \LOG_ODELAY, \LOG_USER)) {
 				\syslog($level, "{$prefix} {$msg}");
 				\closelog();
 			}
 */
+		}
+		if (($level < \LOG_WARNING && \error_reporting() & \E_ERROR)
+		 || ($level == \LOG_WARNING && \error_reporting() & \E_WARNING)
+		 || ($level > \LOG_WARNING && \error_reporting() & \E_ERROR)) {
+			\error_log($prefix . ' ' . static::$levels[$level] . ': ' . $msg);
 		}
 	}
 }
