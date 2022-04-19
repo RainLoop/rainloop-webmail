@@ -344,28 +344,19 @@ class ServiceActions
 	public function ServiceProxyExternal() : string
 	{
 		$sData = empty($this->aPaths[1]) ? '' : $this->aPaths[1];
-		if (!empty($sData) && $this->Config()->Get('labs', 'use_local_proxy_for_external_images', false))
-		{
+		if ($sData && $this->Config()->Get('labs', 'use_local_proxy_for_external_images', false)) {
 			$this->oActions->verifyCacheByKey($sData);
-			$aData = Utils::DecodeKeyValuesQ($sData);
-			if (!\is_array($aData) && $this->oActions->GetAccount()) {
-				$aData = [
-//					'Rnd' => md5(\microtime(true)),
-					'Token' => Utils::GetConnectionToken(),
-					'Url' => \MailSo\Base\Utils::UrlSafeBase64Decode($sData)
-				];
-			}
-			if (\is_array($aData) && !empty($aData['Token']) && !empty($aData['Url']) && $aData['Token'] === Utils::GetConnectionToken())
-			{
-				\header('X-Content-Location: '.$aData['Url']);
+			$sUrl = \MailSo\Base\Utils::UrlSafeBase64Decode($sData);
+			if (!empty($sUrl)) {
+				\header('X-Content-Location: '.$sUrl);
 				$tmp = \tmpfile();
 				$HTTP = \SnappyMail\HTTP\Request::factory();
 				$HTTP->max_redirects = 2;
 				$HTTP->streamBodyTo($tmp);
-				$oResponse = $HTTP->doRequest('GET', $aData['Url']);
+				$oResponse = $HTTP->doRequest('GET', $sUrl);
 				if ($oResponse && 200 === $oResponse->status
 					&& \str_starts_with($oResponse->getHeader('content-type'), 'image/')
-				) {
+				) try {
 					$this->oActions->cacheByKey($sData);
 					\header('Content-Type: ' . $oResponse->getHeader('content-type'));
 					\header('Cache-Control: public');
@@ -374,6 +365,10 @@ class ServiceActions
 					\rewind($tmp);
 					\fpassthru($tmp);
 					exit;
+				} catch (\Throwable $e) {
+					$msg = \get_class($HTTP) . ': ' . $e->getMessage();
+					\SnappyMail\Log::error('Proxy', $msg);
+//					\error_log(\get_class($HTTP) . ': ' . $e->getMessage());
 				}
 			}
 		}

@@ -76,9 +76,9 @@ class Response
 	{
 		if ($location = $this->getHeader('location')) {
 			$uri = \is_array($location) ? $location[0] : $location;
-			if (!\preg_match('#^[a-z][a-z0-9\\+\\.\\-]+://[^/]+#i', $uri)) {
+			if (!\preg_match('#^([a-z][a-z0-9\\+\\.\\-]+:)?//[^/]+#i', $uri)) {
 				// no host
-				\preg_match('#^([a-z][a-z0-9\\+\\.\\-]+://[^/]+)(/[^\\?\\#]*)#i', $this->final_uri, $match);
+				\preg_match('#^((?:[a-z][a-z0-9\\+\\.\\-]+:)?//[^/]+)(/[^\\?\\#]*)#i', $this->final_uri, $match);
 				if ('/' === $uri[0]) {
 					// absolute path
 					$uri = $match[1] . $uri;
@@ -87,6 +87,9 @@ class Response
 					$rpos = \strrpos($match[2], '/');
 					$uri  = $match[1] . \substr($match[2], 0, $rpos+1) . $uri;
 				}
+			}
+			if ('//' === \substr($uri, 0, 2)) {
+				$uri = \explode(':', $this->request_uri)[0] . ':' . $uri;
 			}
 			return $uri;
 		}

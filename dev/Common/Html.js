@@ -236,7 +236,7 @@ export const
 					setAttribute('data-x-src-cid', value.slice(4));
 					result.foundCIDs.push(value.slice(4));
 				}
-				else if (/^https?:\/\//i.test(value) || '//' === value.slice(0, 2))
+				else if (/^(https?:)?\/\//i.test(value))
 				{
 					setAttribute('data-x-src', useProxy ? proxy(value) : value);
 					result.hasExternals = true;
