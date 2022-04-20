@@ -23,7 +23,7 @@
 #	Header set Cache-Control "public, max-age=31536000"
 #	Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data:; style-src 'self' 'unsafe-inline'"
 #	Header set Referrer-Policy "no-referrer"
-	Header set Strict-Transport-Security "max-age=31536000"
+#	Header set Strict-Transport-Security "max-age=31536000"
 	Header set imagetoolbar "no"
 #	Header set X-Content-Type-Options "nosniff"
 #	Header set X-Frame-Options "DENY"
