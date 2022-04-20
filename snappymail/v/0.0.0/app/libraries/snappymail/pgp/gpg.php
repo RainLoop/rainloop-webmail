@@ -720,7 +720,7 @@ class GPG
 
 	protected function _sign(/*string|resource*/ $input, /*string|resource*/ $output = null, bool $textmode = true) /*: string|false*/
 	{
-		if (!$this->hasSignKeys()) {
+		if (empty($this->signKeys)) {
 			throw new \Exception('No signing keys specified.');
 		}
 
@@ -904,6 +904,14 @@ class GPG
 
 	private function setInput(&$input) : void
 	{
+		if (\is_resource($input)) {
+			// https://github.com/the-djmaze/snappymail/issues/331
+			// $meta['stream_type'] == MEMORY or $meta['wrapper_data'] == MailSo\Base\StreamWrappers\Literal
+			$meta = \stream_get_meta_data($input);
+			if ('STDIO' != $meta['stream_type']) {
+				$input = \stream_get_contents($input);
+			}
+		}
 		$this->_input =& $input;
 	}
 
@@ -1150,7 +1158,7 @@ class GPG
 				$inputStreams,
 				$outputStreams,
 				$exceptionStreams,
-				null
+				5
 			);
 
 			$this->_debug('=> got ' . $ready);

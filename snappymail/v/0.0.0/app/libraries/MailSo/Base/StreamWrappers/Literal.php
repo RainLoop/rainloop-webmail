@@ -57,6 +57,11 @@ class Literal
 		return \fopen(self::STREAM_NAME.'://'.$sHashName, 'rb');
 	}
 
+	public function stream_cast(int $cast_as) /*: resource*/
+	{
+		return false; // $this->rStream;
+	}
+
 	public function stream_open(string $sPath) : bool
 	{
 		$this->iPos = 0;
