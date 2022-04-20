@@ -3,6 +3,20 @@ import { i18n } from 'Common/Translator';
 
 import { root } from 'Common/Links';
 
+import { isArray } from 'Common/Utils';
+const FormDataToObject = formData => {
+	var object = {};
+	formData.forEach((value, key) => {
+		if (!Reflect.has(object, key)){
+			object[key] = value;
+		} else {
+			isArray(object[key]) || (object[key] = [object[key]]);
+			object[key].push(value);
+		}
+	});
+	return object;
+};
+
 export default App => {
 
 	rl.app = App;
@@ -42,23 +56,10 @@ export default App => {
 		}, init);
 		if (postData) {
 			init.method = 'POST';
-			init.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
-			const buildFormData = (formData, data, parentKey) => {
-				if (data && typeof data === 'object' && !(data instanceof Date || data instanceof File)) {
-					Object.keys(data).forEach(key =>
-						buildFormData(formData, data[key], parentKey ? `${parentKey}[${key}]` : key)
-					);
-				} else {
-					formData.set(parentKey, data == null ? '' : data);
-				}
-				return formData;
-			};
-			postData = (postData instanceof FormData)
-				? postData
-				: buildFormData(new FormData(), postData);
-			postData.set('XToken', Settings.app('token'));
-//			init.body = JSON.stringify(Object.fromEntries(postData));
-			init.body = new URLSearchParams(postData);
+			init.headers['Content-Type'] = 'application/json';
+			postData = (postData instanceof FormData) ? FormDataToObject(postData) : postData;
+			postData.XToken = Settings.app('token');
+			init.body = JSON.stringify(postData);
 		}
 
 		return fetch(resource, init);

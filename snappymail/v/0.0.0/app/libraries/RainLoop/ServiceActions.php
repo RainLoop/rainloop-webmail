@@ -91,6 +91,8 @@ class ServiceActions
 		$aResponseItem = null;
 		$oException = null;
 
+		$_POST = \json_decode(\file_get_contents('php://input'), true);
+
 		$sAction = $_POST['Action'] ?? null;
 		if (empty($sAction) && $this->oHttp->IsGet() && !empty($this->aPaths[2]))
 		{
