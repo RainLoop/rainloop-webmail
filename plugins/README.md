@@ -367,9 +367,9 @@ $Plugin->addHook('hook.name', 'functionName');
 # JavaScript Events
 
 ## mailbox
+### mailbox.inbox-unread-count
 ### mailbox.message-list.selector.go-up
 ### mailbox.message-list.selector.go-down
-### mailbox.inbox-unread-count
 ### mailbox.message.show
 ## audio
 ### audio.start
@@ -380,3 +380,12 @@ $Plugin->addHook('hook.name', 'functionName');
 ### rl-layout
 ### rl-view-model
 	event.detail = the ViewModel class
+
+### sm-admin-login
+	event.detail = FormData
+### sm-admin-login-response
+	event.detail = { error: int, data: {JSON response} }
+### sm-user-login
+	event.detail = FormData
+### sm-user-login-response
+	event.detail = { error: int, data: {JSON response} }
