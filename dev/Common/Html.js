@@ -174,7 +174,7 @@ export const
 
 			let value;
 
-			if ('TABLE' === name) {
+//			if ('TABLE' === name || 'TD' === name) {
 				if (hasAttribute('width')) {
 					oStyle.width = getAttribute('width');
 					delAttribute('width');
@@ -184,9 +184,8 @@ export const
 					oStyle.maxWidth = value;
 					oStyle.width = '100%';
 				}
-			}
-
-			else if ('A' === name) {
+//			} else
+			if ('A' === name) {
 				value = oElement.href;
 				if (!/^([a-z]+):/i.test(value)) {
 					setAttribute('data-x-broken-href', value);
