@@ -230,8 +230,6 @@ export class ComposePopupView extends AbstractViewPopup {
 			currentIdentity: IdentityUserStore()[0]
 		});
 
-		this.from(IdentityUserStore()[0].formattedName());
-
 		// this.to.subscribe((v) => console.log(v));
 
 		// Used by ko.bindingHandlers.emailsTags
@@ -373,6 +371,8 @@ export class ComposePopupView extends AbstractViewPopup {
 			skipCommand: self => self.canBeSentOrSaved(),
 			contactsCommand: self => self.allowContacts
 		});
+
+		this.from(IdentityUserStore()[0].formattedName());
 	}
 
 	async getMessageRequestParams(sSaveFolder, draft)
