@@ -185,6 +185,18 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'encrypt_cipher'             => array($sCipher)
 			),
 
+			'admin_panel' => array(
+/*
+				'enabled'  => array(true, 'Access settings'),
+				'login'    => array('admin', 'Login and password for web admin panel'),
+				'password' => array(''),
+				'totp'     => array(''),
+				'host'     => array(''),
+				'key'      => array('admin'),
+*/
+				'allow_update' => array(false)
+			),
+
 			'ssl' => array(
 				'verify_certificate' => array(false, 'Require verification of SSL certificate used.'),
 				'allow_self_signed'  => array(true, 'Allow self-signed certificates. Requires verify_certificate.'),

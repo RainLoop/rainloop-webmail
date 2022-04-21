@@ -173,7 +173,8 @@ abstract class Repository
 	{
 		return \version_compare(APP_VERSION, '2.0', '>')
 			&& \is_writable(\dirname(APP_VERSION_ROOT_PATH))
-			&& \is_writable(APP_INDEX_ROOT_PATH . 'index.php');
+			&& \is_writable(APP_INDEX_ROOT_PATH . 'index.php')
+			&& \RainLoop\Api::Config()->Get('admin_panel', 'allow_update', false);
 	}
 
 	public static function getPackagesList() : array
