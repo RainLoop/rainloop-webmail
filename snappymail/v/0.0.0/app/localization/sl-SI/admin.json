@@ -1,6 +1,9 @@
 {
 	"GLOBAL": {
+		"ADD": "Dodaj",
+		"CLOSE": "Zapri",
 		"SAVE": "Shrani",
+		"TEST": "Preizkus",
 		"UPDATE": "Posodobi"
 	},
 	"LOGIN": {
@@ -64,7 +67,6 @@
 		"LABEL_STORAGE_DSN": "Ime podatkovnega vira (DSN)",
 		"LABEL_STORAGE_USER": "Uporabnik",
 		"LABEL_STORAGE_PASSWORD": "Geslo",
-		"BUTTON_TEST": "Preizkus",
 		"ALERT_NOTICE": "Obvestilo!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Ta tip podatkovne baze ni priporočljiv za večje število uporabnikov.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Sistem ne podpira stikov.\n<br>\nNamestite ali omogočite <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> razširitev na strežniku.\n"
@@ -112,9 +114,7 @@
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Dodajanje domene",
 		"LABEL_ALIAS": "Vzdevek",
-		"LABEL_DOMAIN": "Domena",
-		"BUTTON_CLOSE": "Zapri",
-		"BUTTON_ADD": "Dodaj"
+		"LABEL_DOMAIN": "Domena"
 	},
 	"POPUPS_DOMAIN": {
 		"TITLE_ADD_DOMAIN": "Dodajanje domene",
@@ -137,21 +137,17 @@
 		"LABEL_USE_AUTH": "Uporaba overjanja",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_USE_PHP_MAIL": "Uporaba php mail() funkcije",
-		"BUTTON_TEST": "Preizkus",
 		"BUTTON_WHITE_LIST": "Dodaj na belo listo",
 		"BUTTON_SIEVE_CONFIGURATION": "Konfiguriraj Sieve",
 		"BUTTON_BACK_TO_IMAP": "Nazaj na nastavitve IMAP",
 		"BUTTON_BACK": "Nazaj",
-		"BUTTON_CLOSE": "Zapri",
-		"BUTTON_ADD": "Dodaj",
 		"BUTTON_UPDATE": "Posodobi",
 		"NEW_DOMAIN_DESC": "Ta konfiguiracija domene bo omogočala delo <br>z <i>%NAME%<\/i> e-naslovi.",
 		"WHITE_LIST_ALERT": "Seznam uporabnikov domene, do katerih je omogočen dostop.\nUporabnike ločite s presledkom.\n"
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Vtičnik",
-		"DESC_NOTHING_TO_CONFIGURE": "Ni nastavitev za spreminjati",
-		"BUTTON_CLOSE": "Zapri"
+		"DESC_NOTHING_TO_CONFIGURE": "Ni nastavitev za spreminjati"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

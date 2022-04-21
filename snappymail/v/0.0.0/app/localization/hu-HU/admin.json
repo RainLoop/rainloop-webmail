@@ -1,6 +1,9 @@
 {
 	"GLOBAL": {
+		"ADD": "Hozzáad",
+		"CLOSE": "Bezár",
 		"SAVE": "Mentés",
+		"TEST": "Teszt",
 		"UPDATE": "Frissítés"
 	},
 	"LOGIN": {
@@ -64,7 +67,6 @@
 		"LABEL_STORAGE_DSN": "DSN",
 		"LABEL_STORAGE_USER": "Felhasználó",
 		"LABEL_STORAGE_PASSWORD": "Jelszó",
-		"BUTTON_TEST": "Teszt",
 		"ALERT_NOTICE": "Megjegyzés!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Ne használd ezt az adatbázis típust nagy számú aktív felhasználóval.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "A rendszer nem támogatja a címtárat.\n<br>\nTelepítened vagy engedélyezned kell egy <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> kiterjesztést a szervereden.\n"
@@ -112,9 +114,7 @@
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Álnév hozzáadás",
 		"LABEL_ALIAS": "Álnév",
-		"LABEL_DOMAIN": "Domain",
-		"BUTTON_CLOSE": "Bezár",
-		"BUTTON_ADD": "Hozzáad"
+		"LABEL_DOMAIN": "Domain"
 	},
 	"POPUPS_DOMAIN": {
 		"TITLE_ADD_DOMAIN": "Domain hozzáadás",
@@ -137,21 +137,17 @@
 		"LABEL_USE_AUTH": "Hitelesítés használata",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_USE_PHP_MAIL": "A PHP mail() funkció használata",
-		"BUTTON_TEST": "Teszt",
 		"BUTTON_WHITE_LIST": "Fehér lista",
 		"BUTTON_SIEVE_CONFIGURATION": "SIEVE beállítás",
 		"BUTTON_BACK_TO_IMAP": "Vissza az IMAP beállításokhoz",
 		"BUTTON_BACK": "Vissza",
-		"BUTTON_CLOSE": "Bezár",
-		"BUTTON_ADD": "Hozzáad",
 		"BUTTON_UPDATE": "Frissítés",
 		"NEW_DOMAIN_DESC": "Ez a domain konfiguráció lehetővé teszi <br>a <i>%NAME%<\/i> email címek használatát.",
 		"WHITE_LIST_ALERT": "Hozzáféréshez engedélyezett domainek listája.\nElválasztáshoz használd a szóközt.\n"
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Bővítményt",
-		"DESC_NOTHING_TO_CONFIGURE": "Nincs mit beállítani",
-		"BUTTON_CLOSE": "Bezár"
+		"DESC_NOTHING_TO_CONFIGURE": "Nincs mit beállítani"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Igen",

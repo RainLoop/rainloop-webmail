@@ -1,6 +1,9 @@
 {
 	"GLOBAL": {
+		"ADD": "Lisää",
+		"CLOSE": "Sulje",
 		"SAVE": "Tallenna",
+		"TEST": "Testi",
 		"UPDATE": "Päivitä"
 	},
 	"LOGIN": {
@@ -64,7 +67,6 @@
 		"LABEL_STORAGE_DSN": "Dsn",
 		"LABEL_STORAGE_USER": "Käyttäjä",
 		"LABEL_STORAGE_PASSWORD": "Salasana",
-		"BUTTON_TEST": "Testi",
 		"ALERT_NOTICE": "Huomio!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Älä käytä tätä tietokantatyyppiä suurella määrällä aktiivisia käyttäjiä.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Järjestelmäsi ei tue yhteystietoja.\n<br>\nAsenna tai aktivoi <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> lisäosa palvelimellasi.\n"
@@ -112,9 +114,7 @@
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Lisää Alias",
 		"LABEL_ALIAS": "Alias",
-		"LABEL_DOMAIN": "Verkkotunnus",
-		"BUTTON_CLOSE": "Sulje",
-		"BUTTON_ADD": "Lisää"
+		"LABEL_DOMAIN": "Verkkotunnus"
 	},
 	"POPUPS_DOMAIN": {
 		"TITLE_ADD_DOMAIN": "Lisää verkkotunnus",
@@ -137,21 +137,17 @@
 		"LABEL_USE_AUTH": "Käytä tunnistautumista",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_USE_PHP_MAIL": "Käytä php mail() funktiota",
-		"BUTTON_TEST": "Test",
 		"BUTTON_WHITE_LIST": "Sallitut Lista",
 		"BUTTON_SIEVE_CONFIGURATION": "Sieve asetukset",
 		"BUTTON_BACK_TO_IMAP": "Takaisin IMAP asetuksiin",
 		"BUTTON_BACK": "Takaisin",
-		"BUTTON_CLOSE": "Sulje",
-		"BUTTON_ADD": "Lisää",
 		"BUTTON_UPDATE": "Päivitä",
 		"NEW_DOMAIN_DESC": "Tämän verkkotunnuksen asetukset sallivat käyttää <br> <i>%NAME%<i> säkhöpostiosoitteita.",
 		"WHITE_LIST_ALERT": "Lista domain käyttäjistä joihin webmaililla on oikeus.\nErottele välilyönnillä.\n"
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Lisäosa",
-		"DESC_NOTHING_TO_CONFIGURE": "Ei mitään asetettavaa",
-		"BUTTON_CLOSE": "Sulje"
+		"DESC_NOTHING_TO_CONFIGURE": "Ei mitään asetettavaa"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

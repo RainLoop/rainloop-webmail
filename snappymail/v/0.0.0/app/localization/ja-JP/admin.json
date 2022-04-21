@@ -1,6 +1,9 @@
 {
 	"GLOBAL": {
+		"ADD": "追加",
+		"CLOSE": "閉じる",
 		"SAVE": "保存",
+		"TEST": "テスト",
 		"UPDATE": "更新"
 	},
 	"LOGIN": {
@@ -64,7 +67,6 @@
 		"LABEL_STORAGE_DSN": "Dsn",
 		"LABEL_STORAGE_USER": "ユーザー",
 		"LABEL_STORAGE_PASSWORD": "パスワード",
-		"BUTTON_TEST": "テスト",
 		"ALERT_NOTICE": "注意！",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "アクティブユーザーの数が多いとき、このデータベース・タイプを使用しないでください。",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "このシステムでは連絡先はサポートされていません。\n<br>\nサーバーへ<strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong>\n拡張モジュールのインストールが必要です。\n"
@@ -112,9 +114,7 @@
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "エイリアスを追加",
 		"LABEL_ALIAS": "エイリアス",
-		"LABEL_DOMAIN": "ドメイン",
-		"BUTTON_CLOSE": "閉じる",
-		"BUTTON_ADD": "追加"
+		"LABEL_DOMAIN": "ドメイン"
 	},
 	"POPUPS_DOMAIN": {
 		"TITLE_ADD_DOMAIN": "ドメインを追加",
@@ -137,21 +137,17 @@
 		"LABEL_USE_AUTH": "認証を使用する",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_USE_PHP_MAIL": "PHP mail() 関数を使用する",
-		"BUTTON_TEST": "接続テスト",
 		"BUTTON_WHITE_LIST": "ホワイトリスト",
 		"BUTTON_SIEVE_CONFIGURATION": "SIEVE 設定",
 		"BUTTON_BACK_TO_IMAP": "IMAP 設定に戻る",
 		"BUTTON_BACK": "戻る",
-		"BUTTON_CLOSE": "閉じる",
-		"BUTTON_ADD": "追加",
 		"BUTTON_UPDATE": "更新",
 		"NEW_DOMAIN_DESC": "このドメイン設定を使用すると、 <i>%NAME%<\/i>  メールアドレスで動作するようになります。",
 		"WHITE_LIST_ALERT": "ドメインの一覧は、Web メールのアクセスを許可されています。\n区切り文字としてスペースを使用してください。\n"
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "プラグイン",
-		"DESC_NOTHING_TO_CONFIGURE": "何も設定されていません",
-		"BUTTON_CLOSE": "閉じる"
+		"DESC_NOTHING_TO_CONFIGURE": "何も設定されていません"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

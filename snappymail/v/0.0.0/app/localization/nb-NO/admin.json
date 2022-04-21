@@ -1,6 +1,9 @@
 {
 	"GLOBAL": {
+		"ADD": "Legg til",
+		"CLOSE": "Lukk",
 		"SAVE": "Lagre",
+		"TEST": "Test",
 		"UPDATE": "Oppdater"
 	},
 	"LOGIN": {
@@ -64,7 +67,6 @@
 		"LABEL_STORAGE_DSN": "Dsn",
 		"LABEL_STORAGE_USER": "Bruker",
 		"LABEL_STORAGE_PASSWORD": "Passord",
-		"BUTTON_TEST": "Test",
 		"ALERT_NOTICE": "Varsel!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Ikke bruk denne databasetypen hvis dette systemet har mange brukere.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Dette systemet støtter ikke kontakter.\n<br>\nDu må installere eller slå på utvidelsen <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> på tjeneren.\n"
@@ -112,9 +114,7 @@
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Legg til alias",
 		"LABEL_ALIAS": "Alias",
-		"LABEL_DOMAIN": "Domene",
-		"BUTTON_CLOSE": "Lukk",
-		"BUTTON_ADD": "Legg til"
+		"LABEL_DOMAIN": "Domene"
 	},
 	"POPUPS_DOMAIN": {
 		"TITLE_ADD_DOMAIN": "Legg til domene",
@@ -137,21 +137,17 @@
 		"LABEL_USE_AUTH": "Bruk autentisering",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_USE_PHP_MAIL": "Bruk php-funksjonen «mail()»",
-		"BUTTON_TEST": "Test",
 		"BUTTON_WHITE_LIST": "Hvitliste",
 		"BUTTON_SIEVE_CONFIGURATION": "Sieve-oppsett",
 		"BUTTON_BACK_TO_IMAP": "Tilbake til IMAP-innstillinger",
 		"BUTTON_BACK": "Tilbake",
-		"BUTTON_CLOSE": "Lukk",
-		"BUTTON_ADD": "Legg til",
 		"BUTTON_UPDATE": "Oppdater",
 		"NEW_DOMAIN_DESC": "Dette domeneoppsettet lar deg jobbe <br> med e-postadresser ved <i>%NAME%<\/i>.",
 		"WHITE_LIST_ALERT": "Liste over domenebrukere som programmet skal ha tilgang til.\nHold verdier adskilt med mellomrom.\n"
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Tillegg",
-		"DESC_NOTHING_TO_CONFIGURE": "Ingenting å sette opp",
-		"BUTTON_CLOSE": "Lukk"
+		"DESC_NOTHING_TO_CONFIGURE": "Ingenting å sette opp"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

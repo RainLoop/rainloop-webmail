@@ -1,6 +1,9 @@
 {
 	"GLOBAL": {
+		"ADD": "Přidat",
+		"CLOSE": "Zavřít",
 		"SAVE": "Uložit",
+		"TEST": "Test",
 		"UPDATE": "Aktualizovat"
 	},
 	"LOGIN": {
@@ -64,7 +67,6 @@
 		"LABEL_STORAGE_DSN": "Dsn",
 		"LABEL_STORAGE_USER": "Uživatel",
 		"LABEL_STORAGE_PASSWORD": "Heslo",
-		"BUTTON_TEST": "Test",
 		"ALERT_NOTICE": "Upozornění!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Nepoužívejte tento typ databáze při velkém počtu aktivních uživatelů.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Váš systém nepodporuje kontakty.\n<br>\nJe potřeba nainstalovat nebo povolit <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong>\nrozšíření na vašem serveru.\n"
@@ -112,9 +114,7 @@
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Přidat alias",
 		"LABEL_ALIAS": "Alias",
-		"LABEL_DOMAIN": "Doména",
-		"BUTTON_CLOSE": "Zavřít",
-		"BUTTON_ADD": "Přidat"
+		"LABEL_DOMAIN": "Doména"
 	},
 	"POPUPS_DOMAIN": {
 		"TITLE_ADD_DOMAIN": "Přidat Doménu",
@@ -137,21 +137,17 @@
 		"LABEL_USE_AUTH": "Používat autorizaci",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_USE_PHP_MAIL": "Používat php mail() funkci",
-		"BUTTON_TEST": "Test",
 		"BUTTON_WHITE_LIST": "White List",
 		"BUTTON_SIEVE_CONFIGURATION": "SIEVE konfigurace",
 		"BUTTON_BACK_TO_IMAP": "Zpět na IMAP nastavení",
 		"BUTTON_BACK": "Zpět",
-		"BUTTON_CLOSE": "Zavřít",
-		"BUTTON_ADD": "Přidat",
 		"BUTTON_UPDATE": "Aktualizovat",
 		"NEW_DOMAIN_DESC": "Konfigurace této domény umožní používat <i>%NAME%<\/i> adresy.",
 		"WHITE_LIST_ALERT": "Seznam domén s povoleným uživatelským přístupem\nPoužijte mezeru pro jejich oddělení.\n"
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Plugin",
-		"DESC_NOTHING_TO_CONFIGURE": "Není zde nic ke konfiguraci",
-		"BUTTON_CLOSE": "Zavřít"
+		"DESC_NOTHING_TO_CONFIGURE": "Není zde nic ke konfiguraci"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

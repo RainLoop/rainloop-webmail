@@ -187,15 +187,15 @@
 	   'btn-success': testingDone() && !testingImapError() && !testingSmtpError(),
 	   'btn-danger': testingDone() && (testingImapError() || testingSmtpError()) }">
 		<i class="fontastic" data-bind="css: {'icon-spinner': testing()}">ℹ</i>
-		<span data-i18n="POPUPS_DOMAIN/BUTTON_TEST"></span>
+		<span data-i18n="GLOBAL/TEST"></span>
 	</a>
-	<a class="btn buttonClose" data-bind="click: close" data-icon="✖" data-i18n="POPUPS_DOMAIN/BUTTON_CLOSE"></a>
+	<a class="btn buttonClose" data-bind="click: close" data-icon="✖" data-i18n="GLOBAL/CLOSE"></a>
 	<a class="btn" data-bind="command: createOrAddCommand, visible: edit()">
 		<i class="fontastic" data-bind="css: {'icon-spinner': saving()}">✔</i>
-		<span data-i18n="POPUPS_DOMAIN/BUTTON_UPDATE"></span>
+		<span data-i18n="GLOBAL/UPDATE"></span>
 	</a>
 	<a class="btn" data-bind="command: createOrAddCommand, visible: !edit()">
 		<i class="fontastic" data-bind="css: {'icon-spinner': saving()}">✚</i>
-		<span data-i18n="POPUPS_DOMAIN/BUTTON_ADD"></span>
+		<span data-i18n="GLOBAL/ADD"></span>
 	</a>
 </footer>

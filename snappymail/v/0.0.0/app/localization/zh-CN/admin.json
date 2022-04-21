@@ -1,6 +1,9 @@
 {
 	"GLOBAL": {
+		"ADD": "添加",
+		"CLOSE": "关闭",
 		"SAVE": "保存",
+		"TEST": "测试",
 		"UPDATE": "更新"
 	},
 	"LOGIN": {
@@ -64,7 +67,6 @@
 		"LABEL_STORAGE_DSN": "Dsn",
 		"LABEL_STORAGE_USER": "用户",
 		"LABEL_STORAGE_PASSWORD": "密码",
-		"BUTTON_TEST": "测试",
 		"ALERT_NOTICE": "提示!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "如果有大量的活跃用户，请不要选择此数据库类型。",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "你的系统不支持联系人\n<br>\n你需要在你的服务器上安装或启用<strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> 组件。\n"
@@ -112,9 +114,7 @@
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "添加别名",
 		"LABEL_ALIAS": "别名",
-		"LABEL_DOMAIN": "域名",
-		"BUTTON_CLOSE": "关闭",
-		"BUTTON_ADD": "添加"
+		"LABEL_DOMAIN": "域名"
 	},
 	"POPUPS_DOMAIN": {
 		"TITLE_ADD_DOMAIN": "添加域名",
@@ -137,21 +137,17 @@
 		"LABEL_USE_AUTH": "使用认证",
 		"LABEL_SET_SENDER": "使用登录名作为发件人",
 		"LABEL_USE_PHP_MAIL": "使用 php mail() 函数",
-		"BUTTON_TEST": "测试",
 		"BUTTON_WHITE_LIST": "白名单",
 		"BUTTON_SIEVE_CONFIGURATION": "筛选设置",
 		"BUTTON_BACK_TO_IMAP": "回到 IMAP 设置",
 		"BUTTON_BACK": "返回",
-		"BUTTON_CLOSE": "关闭",
-		"BUTTON_ADD": "添加",
 		"BUTTON_UPDATE": "更新",
 		"NEW_DOMAIN_DESC": "此域名配置将允许你<br>和<i>%NAME%<\/i>电子邮件地址一起工作.",
 		"WHITE_LIST_ALERT": "允许访问的域用户；使用空格分隔。\n"
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "插件",
-		"DESC_NOTHING_TO_CONFIGURE": "无可用配置",
-		"BUTTON_CLOSE": "关闭"
+		"DESC_NOTHING_TO_CONFIGURE": "无可用配置"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "是",

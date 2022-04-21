@@ -1,6 +1,9 @@
 {
 	"GLOBAL": {
+		"ADD": "Adicionar",
+		"CLOSE": "Fechar",
 		"SAVE": "Salvar",
+		"TEST": "Testar",
 		"UPDATE": "Atualizar"
 	},
 	"LOGIN": {
@@ -64,7 +67,6 @@
 		"LABEL_STORAGE_DSN": "Dsn",
 		"LABEL_STORAGE_USER": "Usuário",
 		"LABEL_STORAGE_PASSWORD": "Senha",
-		"BUTTON_TEST": "Testar",
 		"ALERT_NOTICE": "Aviso!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Não use este tipo de banco de dados com um grande número de usuários ativos.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "O seu sistema não suporta o uso dos contatos.\n<br>\nVocê precisa instalar ou habilitar a extensão <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> em seu servidor.\n"
@@ -112,9 +114,7 @@
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Adicionar apelido (Alias)",
 		"LABEL_ALIAS": "Apelido (Alias)",
-		"LABEL_DOMAIN": "Domínio",
-		"BUTTON_CLOSE": "Fechar",
-		"BUTTON_ADD": "Adicionar"
+		"LABEL_DOMAIN": "Domínio"
 	},
 	"POPUPS_DOMAIN": {
 		"TITLE_ADD_DOMAIN": "Adicionar Domínio",
@@ -137,21 +137,17 @@
 		"LABEL_USE_AUTH": "Usar autenticação",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_USE_PHP_MAIL": "Usar função php mail()",
-		"BUTTON_TEST": "Testar",
 		"BUTTON_WHITE_LIST": "Lista branca",
 		"BUTTON_SIEVE_CONFIGURATION": "Configurações Sieve",
 		"BUTTON_BACK_TO_IMAP": "Voltar para as configurações IMAP",
 		"BUTTON_BACK": "Voltar",
-		"BUTTON_CLOSE": "Fechar",
-		"BUTTON_ADD": "Adicionar",
 		"BUTTON_UPDATE": "Atualizar",
 		"NEW_DOMAIN_DESC": "Esta configuração de domínio lhe permitirá trabalhar <br> com endereços de e-mail do <i>%NAME%<\/i>.",
 		"WHITE_LIST_ALERT": "Filtrar com lista dos únicos usuários do domínio que terão acesso ao webmail.\nUse um espaço como delimitador.\n"
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Plugin",
-		"DESC_NOTHING_TO_CONFIGURE": "Nada para configurar",
-		"BUTTON_CLOSE": "Fechar"
+		"DESC_NOTHING_TO_CONFIGURE": "Nada para configurar"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

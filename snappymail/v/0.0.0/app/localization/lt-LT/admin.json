@@ -1,6 +1,9 @@
 {
 	"GLOBAL": {
+		"ADD": "Pridėti",
+		"CLOSE": "Uždaryti",
 		"SAVE": "Saugoti",
+		"TEST": "Bandymas",
 		"UPDATE": "Atnaujinti"
 	},
 	"LOGIN": {
@@ -64,7 +67,6 @@
 		"LABEL_STORAGE_DSN": "Dsn",
 		"LABEL_STORAGE_USER": "Vartotojas",
 		"LABEL_STORAGE_PASSWORD": "Slaptažodis",
-		"BUTTON_TEST": "Bandymas",
 		"ALERT_NOTICE": "Pastaba!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Nenaudokite šio duomenų bazės tipo, jei turite daug aktyvių vartotojų",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Jūsų sistema nepalaiko kontaktų sąrašo.\nReikia įdiegti ar įjungti <strong>PDO (SĄLite \/ MySQL \/ PostgreSQL)<\/strong> plėtinius jūsų serveryje.\n"
@@ -112,9 +114,7 @@
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Pridėti Alias",
 		"LABEL_ALIAS": "Alias",
-		"LABEL_DOMAIN": "Domenas",
-		"BUTTON_CLOSE": "Uždaryti",
-		"BUTTON_ADD": "Pridėti"
+		"LABEL_DOMAIN": "Domenas"
 	},
 	"POPUPS_DOMAIN": {
 		"TITLE_ADD_DOMAIN": "Pridėti Domeną",
@@ -137,21 +137,17 @@
 		"LABEL_USE_AUTH": "Naudoti autentifikavimą ",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_USE_PHP_MAIL": "Naudoti php mail() funkciją",
-		"BUTTON_TEST": "Bandyti",
 		"BUTTON_WHITE_LIST": "Baltas sąrašas",
 		"BUTTON_SIEVE_CONFIGURATION": "Sieve konfiguracija",
 		"BUTTON_BACK_TO_IMAP": "Atgal į IMAP nustatymus",
 		"BUTTON_BACK": "Atgal",
-		"BUTTON_CLOSE": "Uždaryti",
-		"BUTTON_ADD": "Pridėti",
 		"BUTTON_UPDATE": "Atnaujinti",
 		"NEW_DOMAIN_DESC": "Šie nustatymai leis jums dirbti <br> su <i>%NAME%<\/i> domeno pašto adresais.",
 		"WHITE_LIST_ALERT": "Domeno vartotojų sąrašas, kuriems leista naudotis web paštu.\nNaudokite tarpo simbolį kaip skyriklį.\n"
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Įskiepis",
-		"DESC_NOTHING_TO_CONFIGURE": "Nėra ką konfiguruoti",
-		"BUTTON_CLOSE": "Uždaryti"
+		"DESC_NOTHING_TO_CONFIGURE": "Nėra ką konfiguruoti"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

@@ -1,6 +1,9 @@
 {
 	"GLOBAL": {
+		"ADD": "Lägg till",
+		"CLOSE": "Stäng",
 		"SAVE": "Spara",
+		"TEST": "Test",
 		"UPDATE": "Uppdatera"
 	},
 	"LOGIN": {
@@ -64,7 +67,6 @@
 		"LABEL_STORAGE_DSN": "Dsn",
 		"LABEL_STORAGE_USER": "Användare",
 		"LABEL_STORAGE_PASSWORD": "Lösenord",
-		"BUTTON_TEST": "Test",
 		"ALERT_NOTICE": "Notis",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Använd inte denna typ av databas med ett stort antal aktiva användare.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Systemet stöder inte kontakter\n<br>\nDu behöver installera eller aktivera <strong>SUB (SQLite\/MySQL\/PostgreSQL)<\/strong> förlängning på server.\n"
@@ -112,9 +114,7 @@
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Lägg till Alias",
 		"LABEL_ALIAS": "Alias",
-		"LABEL_DOMAIN": "Domän",
-		"BUTTON_CLOSE": "Stäng",
-		"BUTTON_ADD": "Lägg till"
+		"LABEL_DOMAIN": "Domän"
 	},
 	"POPUPS_DOMAIN": {
 		"TITLE_ADD_DOMAIN": "Lägg till domän",
@@ -137,21 +137,17 @@
 		"LABEL_USE_AUTH": "Använd autentisering",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_USE_PHP_MAIL": "Använd php mail() funktionen",
-		"BUTTON_TEST": "Test",
 		"BUTTON_WHITE_LIST": "Vitlista",
 		"BUTTON_SIEVE_CONFIGURATION": "sil-konfiguration",
 		"BUTTON_BACK_TO_IMAP": "Tillbaka till IMAP inställningar",
 		"BUTTON_BACK": "Tillbaka",
-		"BUTTON_CLOSE": "Stäng",
-		"BUTTON_ADD": "Lägg till",
 		"BUTTON_UPDATE": "Uppdatera",
 		"NEW_DOMAIN_DESC": "Denna domän konfiguration gör att du kan arbeta <br>med <i>%NAME%<\/ i> e-postadresser.",
 		"WHITE_LIST_ALERT": "Lista över domänanvändare som tillåts.\nAnvända ett utrymme som avgränsare.\n"
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Tillägget",
-		"DESC_NOTHING_TO_CONFIGURE": "Inget att konfigurera",
-		"BUTTON_CLOSE": "Stäng"
+		"DESC_NOTHING_TO_CONFIGURE": "Inget att konfigurera"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Ja",

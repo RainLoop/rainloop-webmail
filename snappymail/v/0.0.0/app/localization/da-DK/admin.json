@@ -1,6 +1,9 @@
 {
 	"GLOBAL": {
+		"ADD": "Tilføj",
+		"CLOSE": "Luk",
 		"SAVE": "Gem",
+		"TEST": "Test",
 		"UPDATE": "Opdater"
 	},
 	"LOGIN": {
@@ -64,7 +67,6 @@
 		"LABEL_STORAGE_DSN": "Dsn",
 		"LABEL_STORAGE_USER": "Bruger",
 		"LABEL_STORAGE_PASSWORD": "Adgangskode",
-		"BUTTON_TEST": "Test",
 		"ALERT_NOTICE": "Underretning!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Brug ikke denne database type med større antal af aktive brugere.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Dit system ser ikke ud til at understøtte kontakter.\n<br>\nDu skal installere og aktivere <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> udvidelsen på din server.\n"
@@ -112,9 +114,7 @@
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Tilføj alias",
 		"LABEL_ALIAS": "Alias",
-		"LABEL_DOMAIN": "Domæne",
-		"BUTTON_CLOSE": "Luk",
-		"BUTTON_ADD": "Tilføj"
+		"LABEL_DOMAIN": "Domæne"
 	},
 	"POPUPS_DOMAIN": {
 		"TITLE_ADD_DOMAIN": "Tilføj domæne",
@@ -137,21 +137,17 @@
 		"LABEL_USE_AUTH": "Brug godkendelse",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_USE_PHP_MAIL": "Brug php mail()",
-		"BUTTON_TEST": "Test",
 		"BUTTON_WHITE_LIST": "Whitelist",
 		"BUTTON_SIEVE_CONFIGURATION": "Sieve opsætning",
 		"BUTTON_BACK_TO_IMAP": "Tilbage til IMAP indstillinger",
 		"BUTTON_BACK": "Tilbage",
-		"BUTTON_CLOSE": "Luk",
-		"BUTTON_ADD": "Tilføj",
 		"BUTTON_UPDATE": "Opdater",
 		"NEW_DOMAIN_DESC": "Denne domæne konfiguration tillader <i>%NAME%<\/i> e-mail adresser.",
 		"WHITE_LIST_ALERT": "Liste med godkendte domæne for webmail opsætning.\nBrug mellemrum til at separere domæner.\n"
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Tilføjelse",
-		"DESC_NOTHING_TO_CONFIGURE": "Intet at opsætte",
-		"BUTTON_CLOSE": "Luk"
+		"DESC_NOTHING_TO_CONFIGURE": "Intet at opsætte"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

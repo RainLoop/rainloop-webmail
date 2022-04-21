@@ -1,6 +1,9 @@
 {
 	"GLOBAL": {
+		"ADD": "Toevoegen",
+		"CLOSE": "Sluiten",
 		"SAVE": "Opslaan",
+		"TEST": "Test",
 		"UPDATE": "Updaten"
 	},
 	"LOGIN": {
@@ -64,7 +67,6 @@
 		"LABEL_STORAGE_DSN": "Dsn",
 		"LABEL_STORAGE_USER": "Gebruikersnaam",
 		"LABEL_STORAGE_PASSWORD": "Wachtwoord",
-		"BUTTON_TEST": "Test",
 		"ALERT_NOTICE": "Aandacht!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Gegruik deze database soort niet met een groot aantal actieve gebrukers.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Uw systeem ondersteund geen contactpersonen.\n<br>\nU moet een <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> extentie op uw server installeren of activeren.\n"
@@ -112,9 +114,7 @@
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Voeg alias toe",
 		"LABEL_ALIAS": "Alias",
-		"LABEL_DOMAIN": "Domein",
-		"BUTTON_CLOSE": "Sluiten",
-		"BUTTON_ADD": "Toevoegen"
+		"LABEL_DOMAIN": "Domein"
 	},
 	"POPUPS_DOMAIN": {
 		"TITLE_ADD_DOMAIN": "Voeg domein toe",
@@ -137,21 +137,17 @@
 		"LABEL_USE_AUTH": "Gebruik authenticatie",
 		"LABEL_SET_SENDER": "Gebruik login als verzender",
 		"LABEL_USE_PHP_MAIL": "Gebruik php mail() functie",
-		"BUTTON_TEST": "Test",
 		"BUTTON_WHITE_LIST": "Witte lijst",
 		"BUTTON_SIEVE_CONFIGURATION": "Sieve configuratie",
 		"BUTTON_BACK_TO_IMAP": "Terug naar IMAP instellingen",
 		"BUTTON_BACK": "Terug",
-		"BUTTON_CLOSE": "Annuleer",
-		"BUTTON_ADD": "Toevoegen",
 		"BUTTON_UPDATE": "Update",
 		"NEW_DOMAIN_DESC": "Dit domein stelt u in staat om <br>met <i>%NAME%<\/i> e-mail adressen te werken.",
 		"WHITE_LIST_ALERT": "Lijst van gebruikers die dit domein mogen gebruiken.\nGebruik een spatie als scheidingsteken.\n"
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Extensie",
-		"DESC_NOTHING_TO_CONFIGURE": "Niets om te configureren",
-		"BUTTON_CLOSE": "Annuleer"
+		"DESC_NOTHING_TO_CONFIGURE": "Niets om te configureren"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Ja",

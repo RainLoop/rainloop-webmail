@@ -1,6 +1,9 @@
 {
 	"GLOBAL": {
+		"ADD": "Add",
+		"CLOSE": "Close",
 		"SAVE": "Save",
+		"TEST": "Test",
 		"UPDATE": "Update"
 	},
 	"LOGIN": {
@@ -64,7 +67,6 @@
 		"LABEL_STORAGE_DSN": "Dsn",
 		"LABEL_STORAGE_USER": "User",
 		"LABEL_STORAGE_PASSWORD": "Password",
-		"BUTTON_TEST": "Test",
 		"ALERT_NOTICE": "Notice!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Don't use this database type with a large number of active users.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Your system doesn't support contacts.\n<br>\nYou need to install or enable <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> extension on your server.\n"
@@ -112,9 +114,7 @@
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Add Alias",
 		"LABEL_ALIAS": "Alias",
-		"LABEL_DOMAIN": "Domain",
-		"BUTTON_CLOSE": "Close",
-		"BUTTON_ADD": "Add"
+		"LABEL_DOMAIN": "Domain"
 	},
 	"POPUPS_DOMAIN": {
 		"TITLE_ADD_DOMAIN": "Add Domain",
@@ -137,21 +137,17 @@
 		"LABEL_USE_AUTH": "Use authentication",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_USE_PHP_MAIL": "Use php mail() function",
-		"BUTTON_TEST": "Test",
 		"BUTTON_WHITE_LIST": "White List",
 		"BUTTON_SIEVE_CONFIGURATION": "Sieve configuration",
 		"BUTTON_BACK_TO_IMAP": "Back to IMAP settings",
 		"BUTTON_BACK": "Back",
-		"BUTTON_CLOSE": "Close",
-		"BUTTON_ADD": "Add",
 		"BUTTON_UPDATE": "Update",
 		"NEW_DOMAIN_DESC": "This domain configuration will allow you to work <br>with <i>%NAME%<\/i> email addresses.",
 		"WHITE_LIST_ALERT": "List of domain users webmail is allowed to access.\nUse a space as delimiter.\n"
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Extension",
-		"DESC_NOTHING_TO_CONFIGURE": "Nothing to configure",
-		"BUTTON_CLOSE": "Close"
+		"DESC_NOTHING_TO_CONFIGURE": "Nothing to configure"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

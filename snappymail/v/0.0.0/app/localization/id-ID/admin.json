@@ -1,6 +1,9 @@
 {
 	"GLOBAL": {
+		"ADD": "Tambah",
+		"CLOSE": "Tutup",
 		"SAVE": "Simpan",
+		"TEST": "Ujicoba",
 		"UPDATE": "Pembaruan"
 	},
 	"LOGIN": {
@@ -64,7 +67,6 @@
 		"LABEL_STORAGE_DSN": "Dsn",
 		"LABEL_STORAGE_USER": "User",
 		"LABEL_STORAGE_PASSWORD": "Password",
-		"BUTTON_TEST": "Ujicoba",
 		"ALERT_NOTICE": "Perhatian!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Jangan gunakan tipe database ini untuk jumlah user aktif yang besar.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Sistem anda tidak mendukung kontak\n<br>\nAnda harus memasang atau mengaktifkan <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> extension pada server anda.\n"
@@ -112,9 +114,7 @@
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Tambah Alias",
 		"LABEL_ALIAS": "Alias",
-		"LABEL_DOMAIN": "Domain",
-		"BUTTON_CLOSE": "Tutup",
-		"BUTTON_ADD": "Tambah"
+		"LABEL_DOMAIN": "Domain"
 	},
 	"POPUPS_DOMAIN": {
 		"TITLE_ADD_DOMAIN": "Tambah Domain",
@@ -137,21 +137,17 @@
 		"LABEL_USE_AUTH": "Gunakan otentikasi",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_USE_PHP_MAIL": "Gunakan fungsi mail() PHP",
-		"BUTTON_TEST": "Ujicoba",
 		"BUTTON_WHITE_LIST": "Daftar Putih",
 		"BUTTON_SIEVE_CONFIGURATION": "Konfigurasi Sieve",
 		"BUTTON_BACK_TO_IMAP": "Kembali ke pengaturan IMAP",
 		"BUTTON_BACK": "Kembali",
-		"BUTTON_CLOSE": "Tutup",
-		"BUTTON_ADD": "Tambah",
 		"BUTTON_UPDATE": "Perbarui",
 		"NEW_DOMAIN_DESC": "Domain ini mengizinkan anda bekerja dengan alamat email <br>juga<i>%NAME%<\/i> ",
 		"WHITE_LIST_ALERT": "Daftar domain webmail user yang diizinkan diakses.\nGunakan spasi untuk pemisahnya\n"
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Plugin",
-		"DESC_NOTHING_TO_CONFIGURE": "Tidak ada yang dikonfigurasi",
-		"BUTTON_CLOSE": "Tutup"
+		"DESC_NOTHING_TO_CONFIGURE": "Tidak ada yang dikonfigurasi"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",

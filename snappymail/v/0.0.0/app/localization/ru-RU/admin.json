@@ -1,6 +1,9 @@
 {
 	"GLOBAL": {
+		"ADD": "Добавить",
+		"CLOSE": "Закрыть",
 		"SAVE": "Сохранить",
+		"TEST": "Тест",
 		"UPDATE": "Обновить"
 	},
 	"LOGIN": {
@@ -64,7 +67,6 @@
 		"LABEL_STORAGE_DSN": "Dsn",
 		"LABEL_STORAGE_USER": "Пользователь",
 		"LABEL_STORAGE_PASSWORD": "Пароль",
-		"BUTTON_TEST": "Тест",
 		"ALERT_NOTICE": "Внимание!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Не используйте этот тип базы данных с большим числом активных пользователей.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Ваша система не поддерживает контакты.\n<br>\nВам необходимо установить или включить <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> расширения на вашем сервере.\n"
@@ -112,9 +114,7 @@
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Добавить Алиас",
 		"LABEL_ALIAS": "Алиас",
-		"LABEL_DOMAIN": "Домен",
-		"BUTTON_CLOSE": "Закрыть",
-		"BUTTON_ADD": "Добавить"
+		"LABEL_DOMAIN": "Домен"
 	},
 	"POPUPS_DOMAIN": {
 		"TITLE_ADD_DOMAIN": "Добавить домен",
@@ -137,21 +137,17 @@
 		"LABEL_USE_AUTH": "Использовать аутентификацию",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_USE_PHP_MAIL": "Использовать mail() функцию",
-		"BUTTON_TEST": "Тест",
 		"BUTTON_WHITE_LIST": "Белый список",
 		"BUTTON_SIEVE_CONFIGURATION": "настройки Sieve",
 		"BUTTON_BACK_TO_IMAP": "Назад к IMAP настройкам",
 		"BUTTON_BACK": "Назад",
-		"BUTTON_CLOSE": "Закрыть",
-		"BUTTON_ADD": "Добавить",
 		"BUTTON_UPDATE": "Обновить",
 		"NEW_DOMAIN_DESC": "Эта конфигурация позволит вам работать <br>с <i>%NAME%<\/i> адресами.",
 		"WHITE_LIST_ALERT": "Список пользователей домена к которым разрешен доступ.\nИспользуйте пробел в качестве разделителя.\n"
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Плагин",
-		"DESC_NOTHING_TO_CONFIGURE": "Без настроек",
-		"BUTTON_CLOSE": "Закрыть"
+		"DESC_NOTHING_TO_CONFIGURE": "Без настроек"
 	},
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Yes",
