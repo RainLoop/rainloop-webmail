@@ -908,7 +908,7 @@ class GPG
 			// https://github.com/the-djmaze/snappymail/issues/331
 			// $meta['stream_type'] == MEMORY or $meta['wrapper_data'] == MailSo\Base\StreamWrappers\Literal
 			$meta = \stream_get_meta_data($input);
-			if ('STDIO' != $meta['stream_type']) {
+			if (!\in_array($meta['stream_type'], ['STDIO', 'TEMP'])) {
 /*
 				$fp = \fopen('php://temp');
 				\stream_copy_to_stream($input, $fp);

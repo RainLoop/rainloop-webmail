@@ -1288,7 +1288,6 @@ trait Messages
 		if ($sFingerprint) {
 			$GPG = $this->GnuPG();
 			$oBody = $oMessage->GetRootPart();
-			$fp = \fopen('php://temp', 'r+b');
 			$resource = $oBody->ToStream();
 			$oBody->Body = null;
 			$oBody->SubParts->Clear();
@@ -1296,6 +1295,7 @@ trait Messages
 			$oMessage->Attachments()->Clear();
 
 			\MailSo\Base\StreamFilters\LineEndings::appendTo($resource);
+			$fp = \fopen('php://temp', 'r+b');
 			\stream_copy_to_stream($resource, $fp);
 			$GPG->addSignKey($sFingerprint, $sPassphrase);
 			$GPG->setsignmode(GNUPG_SIG_MODE_DETACH);

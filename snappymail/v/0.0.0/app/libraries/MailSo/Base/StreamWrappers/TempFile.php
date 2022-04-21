@@ -31,7 +31,7 @@ class TempFile
 	/**
 	 * @var resource
 	 */
-	private $rSream;
+	private $rStream;
 
 	/**
 	 * @return resource|bool
@@ -59,14 +59,14 @@ class TempFile
 			if (isset(self::$aStreams[$sHashName]) &&
 				\is_resource(self::$aStreams[$sHashName]))
 			{
-				$this->rSream = self::$aStreams[$sHashName];
-				\fseek($this->rSream, 0);
+				$this->rStream = self::$aStreams[$sHashName];
+				\fseek($this->rStream, 0);
 				$bResult = true;
 			}
 			else
 			{
-				$this->rSream = \fopen('php://temp', 'r+b');
-				self::$aStreams[$sHashName] = $this->rSream;
+				$this->rStream = \fopen('php://temp', 'r+b');
+				self::$aStreams[$sHashName] = $this->rStream;
 
 				$bResult = true;
 			}
@@ -82,37 +82,37 @@ class TempFile
 
 	public function stream_flush() : bool
 	{
-		return \fflush($this->rSream);
+		return \fflush($this->rStream);
 	}
 
 	public function stream_read(int $iLen) : string
 	{
-		return \fread($this->rSream, $iLen);
+		return \fread($this->rStream, $iLen);
 	}
 
 	public function stream_write(string $sInputString) : int
 	{
-		return \fwrite($this->rSream, $sInputString);
+		return \fwrite($this->rStream, $sInputString);
 	}
 
 	public function stream_tell() : int
 	{
-		return \ftell($this->rSream);
+		return \ftell($this->rStream);
 	}
 
 	public function stream_eof() : bool
 	{
-		return \feof($this->rSream);
+		return \feof($this->rStream);
 	}
 
 	public function stream_stat() : array
 	{
-		return \fstat($this->rSream);
+		return \fstat($this->rStream);
 	}
 
 	public function stream_seek(int $iOffset, int $iWhence = SEEK_SET) : int
 	{
-		return \fseek($this->rSream, $iOffset, $iWhence);
+		return \fseek($this->rStream, $iOffset, $iWhence);
 	}
 }
 
