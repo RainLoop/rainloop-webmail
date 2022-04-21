@@ -909,6 +909,11 @@ class GPG
 			// $meta['stream_type'] == MEMORY or $meta['wrapper_data'] == MailSo\Base\StreamWrappers\Literal
 			$meta = \stream_get_meta_data($input);
 			if ('STDIO' != $meta['stream_type']) {
+/*
+				$fp = \fopen('php://temp');
+				\stream_copy_to_stream($input, $fp);
+				$input = $fp;
+*/
 				$input = \stream_get_contents($input);
 			}
 		}
@@ -937,6 +942,7 @@ class GPG
 
 	public function getEncryptedMessageKeys(/*string|resource*/ $data) : array
 	{
+		$this->_debug('BEGIN DETECT MESSAGE KEY IDs');
 		$this->setInput($data);
 //		$_ENV['PINENTRY_USER_DATA'] = null;
 		$result = $this->exec(['--decrypt','--skip-verify']);
@@ -952,6 +958,7 @@ class GPG
 				$info[$tokens[0]][] = $tokens[1];
 			}
 		}
+		$this->_debug('END DETECT MESSAGE KEY IDs');
 		return $info['ENC_TO'];
 	}
 
@@ -1013,7 +1020,7 @@ class GPG
 			self::FD_MESSAGE => array('pipe', 'rb')  // message
 		];
 
-		$this->_debug('OPENING GPG SUBPROCESS WITH THE FOLLOWING COMMAND:');
+		$this->_debug('OPENING SUBPROCESS WITH THE FOLLOWING COMMAND:');
 		$this->_debug($commandLine);
 
 		// Don't localize GnuPG results.
@@ -1032,7 +1039,7 @@ class GPG
 		);
 
 		if (!\is_resource($this->proc_resource)) {
-			throw new \Exception('Unable to open GPG process.');
+			throw new \Exception('Unable to open process.');
 		}
 
 		$this->_openPipes = new GpgProcPipes($proc_pipes);
@@ -1100,7 +1107,7 @@ class GPG
 
 			// close GPG input pipe if there is no more data
 			if ('' == $inputBuffer && $inputComplete) {
-				$this->_debug('=> closing GPG input pipe');
+				$this->_debug('=> closing input pipe');
 				$this->_openPipes->close(self::FD_INPUT);
 			}
 
@@ -1139,7 +1146,7 @@ class GPG
 				}
 			} else if ($messageComplete) {
 				// close GPG message pipe if there is no more data
-				$this->_debug('=> closing GPG message pipe');
+				$this->_debug('=> closing message pipe');
 				$this->_openPipes->close(self::FD_MESSAGE);
 			}
 
@@ -1181,10 +1188,10 @@ class GPG
 
 			// write input (to GPG)
 			if (\in_array($fdInput, $outputStreams, true)) {
-				$this->_debug('GPG is ready for input');
+				$this->_debug('ready for input');
 				$chunk  = \substr($inputBuffer, $inputPosition, self::CHUNK_SIZE);
 				$length = \strlen($chunk);
-				$this->_debug('=> about to write ' . $length . ' bytes to GPG input');
+				$this->_debug('=> about to write ' . $length . ' bytes to input');
 				$length = $this->_openPipes->writePipe(self::FD_INPUT, $chunk, $length);
 				if ($length) {
 					$this->_debug('=> wrote ' . $length . ' bytes');
@@ -1214,8 +1221,8 @@ class GPG
 
 			// write message (to GPG)
 			if (\in_array($fdMessage, $outputStreams, true)) {
-				$this->_debug('GPG is ready for message data');
-				$this->_debug('=> about to write ' . \min(self::CHUNK_SIZE, \strlen($messageBuffer)) . ' bytes to GPG message');
+				$this->_debug('ready for message data');
+				$this->_debug('=> about to write ' . \min(self::CHUNK_SIZE, \strlen($messageBuffer)) . ' bytes to message');
 				$length = $this->_openPipes->writePipe(self::FD_MESSAGE, $messageBuffer, self::CHUNK_SIZE);
 				if ($length) {
 					$this->_debug('=> wrote ' . $length . ' bytes');
@@ -1237,8 +1244,8 @@ class GPG
 
 			// read output (from GPG)
 			if (\in_array($fdOutput, $inputStreams, true)) {
-				$this->_debug('GPG output stream ready for reading');
-				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from GPG output');
+				$this->_debug('output stream ready for reading');
+				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from output');
 				$chunk         = \fread($fdOutput, self::CHUNK_SIZE);
 				$length        = \strlen($chunk);
 				$outputBuffer .= $chunk;
@@ -1264,8 +1271,8 @@ class GPG
 
 			// read error (from GPG)
 			if (\in_array($fdError, $inputStreams, true)) {
-				$this->_debug('GPG error stream ready for reading');
-				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from GPG error');
+				$this->_debug('error stream ready for reading');
+				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from error');
 				foreach ($this->_openPipes->readPipeLines(self::FD_ERROR) as $line) {
 					$errors[] = $line;
 					$this->_debug("\t{$line}");
@@ -1274,8 +1281,8 @@ class GPG
 
 			// read status (from GPG)
 			if (\in_array($fdStatus, $inputStreams, true)) {
-				$this->_debug('GPG status stream ready for reading');
-				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from GPG status');
+				$this->_debug('status stream ready for reading');
+				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from status');
 				// pass lines to status handlers
 				foreach ($this->_openPipes->readPipeLines(self::FD_STATUS) as $line) {
 					// only pass lines beginning with magic prefix
@@ -1297,10 +1304,10 @@ class GPG
 
 			// write command (to GPG)
 			if (\in_array($fdCommand, $outputStreams, true)) {
-				$this->_debug('GPG is ready for command data');
+				$this->_debug('ready for command data');
 				$chunk  = \substr($commandBuffer, 0, self::CHUNK_SIZE);
 				$length = \strlen($chunk);
-				$this->_debug('=> about to write ' . $length . ' bytes to GPG command');
+				$this->_debug('=> about to write ' . $length . ' bytes to command');
 				$length = $this->_openPipes->writePipe(self::FD_COMMAND, $chunk, $length);
 				if ($length) {
 					$this->_debug('=> wrote ' . $length);
@@ -1366,7 +1373,7 @@ class GPG
 		$_ENV['PINENTRY_USER_DATA'] = null;
 
 		if (\is_resource($this->proc_resource)) {
-			$this->_debug('CLOSING GPG SUBPROCESS');
+			$this->_debug('CLOSING SUBPROCESS');
 
 			// close remaining open pipes
 			$this->_openPipes->closeAll();
