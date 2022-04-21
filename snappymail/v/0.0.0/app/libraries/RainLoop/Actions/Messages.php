@@ -1288,7 +1288,7 @@ trait Messages
 		if ($sFingerprint) {
 			$GPG = $this->GnuPG();
 			$oBody = $oMessage->GetRootPart();
-			$fp = \fopen('php://memory', 'r+b');
+			$fp = \fopen('php://temp', 'r+b');
 			$resource = $oBody->ToStream();
 			$oBody->Body = null;
 			$oBody->SubParts->Clear();
@@ -1326,7 +1326,7 @@ trait Messages
 		if ($aFingerprints) {
 			$GPG = $this->GnuPG();
 			$oBody = $oMessage->GetRootPart();
-			$fp = \fopen('php://memory', 'r+b');
+			$fp = \fopen('php://temp', 'r+b');
 			$resource = $oBody->ToStream();
 			\stream_copy_to_stream($resource, $fp);
 			foreach ($aFingerprints as $sFingerprint) {

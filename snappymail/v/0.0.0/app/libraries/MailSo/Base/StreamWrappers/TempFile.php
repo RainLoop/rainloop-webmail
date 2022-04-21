@@ -38,8 +38,12 @@ class TempFile
 	 */
 	public static function CreateStream(string $sHash, string &$sFileName = '')
 	{
-		$sFileName = self::STREAM_NAME.'://'.$sHash;
-		return fopen($sFileName, 'r+b');
+		return \fopen(self::STREAM_NAME.'://'.$sHash, 'r+b');
+	}
+
+	public function stream_cast(int $cast_as) /*: resource*/
+	{
+		return $this->rStream;
 	}
 
 	public function stream_open(string $sPath) : bool
@@ -61,7 +65,7 @@ class TempFile
 			}
 			else
 			{
-				$this->rSream = \fopen('php://memory', 'r+b');
+				$this->rSream = \fopen('php://temp', 'r+b');
 				self::$aStreams[$sHashName] = $this->rSream;
 
 				$bResult = true;
