@@ -106,6 +106,8 @@ class MailClient
 			MimeHeader::AUTHENTICATION_RESULTS,
 			MimeHeader::X_DKIM_AUTHENTICATION_RESULTS,
 			MimeHeader::LIST_UNSUBSCRIBE,
+			// https://autocrypt.org/level1.html#the-autocrypt-header
+			MimeHeader::AUTOCRYPT,
 			// SPAM
 			MimeHeader::X_SPAM_STATUS,
 //			MimeHeader::X_SPAM_FLAG,

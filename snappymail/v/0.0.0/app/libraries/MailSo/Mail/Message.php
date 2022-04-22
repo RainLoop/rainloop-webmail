@@ -73,6 +73,9 @@ class Message implements \JsonSerializable
 
 		$sReadReceipt = '',
 
+		// https://autocrypt.org/level1.html#the-autocrypt-header
+		$sAutocrypt = '',
+
 		$aUnsubsribeLinks = array(),
 
 		$aThreads = array(),
@@ -472,6 +475,8 @@ class Message implements \JsonSerializable
 					$oMessage->aDraftInfo = array($sType, $iUid, $sFolder);
 				}
 			}
+
+			$oMessage->sAutocrypt = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::AUTOCRYPT);
 		}
 		else if ($oFetchResponse->GetEnvelope())
 		{
@@ -648,6 +653,7 @@ class Message implements \JsonSerializable
 			'Threads' => $this->aThreads,
 			'UnsubsribeLinks' => $this->aUnsubsribeLinks,
 			'ReadReceipt' => '',
+			'Autocrypt' => $this->sAutocrypt,
 
 			'Attachments' => $this->oAttachments ? $this->oAttachments->SpecData() : null,
 

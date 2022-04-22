@@ -88,5 +88,8 @@ abstract class Header
 		IMPORTANCE = 'Importance',
 		X_PRIORITY = 'X-Priority',
 
+		// https://autocrypt.org/level1.html#the-autocrypt-header
+		AUTOCRYPT = 'Autocrypt',
+
 		LIST_UNSUBSCRIBE = 'List-Unsubscribe';
 }
