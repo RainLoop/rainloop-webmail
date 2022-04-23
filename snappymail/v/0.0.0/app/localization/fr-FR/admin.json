@@ -24,7 +24,7 @@
 		"LABEL_SECURITY_NAME": "Sécurité",
 		"LABEL_PACKAGES_NAME": "Extensions",
 		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "A propos"
+		"LABEL_ABOUT_NAME": "À propos"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Interface",
@@ -45,7 +45,7 @@
 		"HTML_ALERT_WEAK_PASSWORD": "Vous utilisez le mot de passe administrateur par défaut.\n<br>\nPour des raisons de sécurité, veuillez\n<strong><a href=\"#\/security\">changer le mot de passe <\/a><\/strong>\ndès maintenant.\n"
 	},
 	"TAB_LOGIN": {
-		"LEGEND_LOGIN_SCREEN": "Ecran de connexion",
+		"LEGEND_LOGIN_SCREEN": "Écran de connexion",
 		"LABEL_DEFAULT_DOMAIN": "Domaine par défaut",
 		"LABEL_DETERMINE_USER_DOMAIN": "Deviner le domaine de l'utilisateur",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Permettre la sélection de la langue sur l'écran de connexion",
@@ -101,7 +101,7 @@
 		"ALERT_CANNOT_ACCESS_REPOSITORY": "Impossible d'accéder au dépôt pour l'instant."
 	},
 	"TAB_ABOUT": {
-		"LEGEND_ABOUT": "A propos",
+		"LEGEND_ABOUT": "À propos",
 		"LABEL_TAG_HINT": "Un client webmail simple, moderne et rapide ",
 		"LABEL_ALL_RIGHTS_RESERVED": "Tous droits réservés.",
 		"HINT_READ_CHANGE_LOG": "Veuillez lire le journal des modifications avant de faire la mise à jour.",
