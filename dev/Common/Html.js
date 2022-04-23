@@ -187,6 +187,15 @@ export const
 						oStyle.width = '100%';
 					}
 				}
+				if (hasAttribute('height')) {
+					value = getAttribute('height');
+					oStyle.height = value.includes('%') ? value : value + 'px';
+					delAttribute('height');
+				}
+				value = oStyle.removeProperty('height');
+				if (value && !value.includes('%')) {
+					oStyle.maxHeight = value;
+				}
 //			} else
 			if ('A' === name) {
 				value = oElement.href;
