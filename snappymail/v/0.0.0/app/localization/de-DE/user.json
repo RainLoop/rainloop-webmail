@@ -6,7 +6,7 @@
 		"BCC": "BCC",
 		"CANCEL": "Abbrechen",
 		"CC": "CC",
-		"CLEAR": "Bereinigen",
+		"CLEAR": "Entfernen",
 		"CLOSE": "Schließen",
 		"CONTACTS": "Kontakte",
 		"DELETE": "Löschen",
@@ -40,7 +40,7 @@
 		"BUTTON_HELP": "Hilfe"
 	},
 	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "mobile Version",
+		"BUTTON_MOBILE_VERSION": "Mobile Version",
 		"BUTTON_DESKTOP_VERSION": "Desktop Version"
 	},
 	"SEARCH": {
@@ -136,8 +136,8 @@
 		"BUTTON_THREAD_MORE": "Mehr Nachrichten",
 		"MENU_HEADERS": "Kopfzeilen anzeigen",
 		"MENU_VIEW_ORIGINAL": "Original anzeigen",
-		"HTML_VIEW": "View HTML message",
-		"PLAIN_VIEW": "View plain text message",
+		"HTML_VIEW": "Zeige Nachricht als HTML",
+		"PLAIN_VIEW": "Zeige Nachricht als plain text",
 		"MENU_DOWNLOAD_ORIGINAL": "Als .eml-Datei herunterladen",
 		"MENU_FILTER_SIMILAR": "Ähnliche Nachrichten",
 		"MENU_PRINT": "Drucken",
@@ -387,8 +387,8 @@
 		"LABEL_USE_THREADS": "Als Unterhaltungen anzeigen",
 		"LABEL_REPLY_SAME_FOLDER": "Antworten im gleichen Ordner wie die Nachricht, auf die geantwortet wurde, abspeichern",
 		"LABEL_SHOW_IMAGES": "In der Nachricht enthaltene Bilder immer anzeigen",
-		"LABEL_PREFER_HTML": "Prefer HTML to plain text",
-		"LABEL_PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
+		"LABEL_PREFER_HTML": "HTML gegenüber Klartext bevorzugen",
+		"LABEL_PREFER_HTML_INFO": "Nachrichten können manchmal in beiden Formaten empfangen werden. Diese Option setzt, ob die Nachricht standardmäßig in HTML oder als Klartext angezeigt wird.",
 		"LABEL_REMOVE_COLORS": "Entferne Hintergrund- und Textfarben aus der Nachricht",
 		"LABEL_MESSAGE_PER_PAGE": "Nachrichten pro Seite",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Nachricht als gelesen markieren nach",
@@ -407,7 +407,7 @@
 		"LABEL_CONTACTS_SYNC_USER": "Benutzer",
 		"SYNC_NO": "Nein",
 		"SYNC_YES": "Ja",
-		"SYNC_READ": "Read only"
+		"SYNC_READ": "Nur lesend"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Themen",
@@ -459,8 +459,8 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Schlüssel generieren",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Öffentlich",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
-		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Entwurf automatisch speichern",
+		"GET_MAILVELOPE": "Lade das Mailvelope Browser Addon herunter."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Tastaturkürzel-Hilfe",
