@@ -174,7 +174,7 @@ export const
 
 			let value;
 
-//			if ('TABLE' === name || 'TD' === name) {
+//			if ('TABLE' === name || 'TD' === name || 'TH' === name) {
 				if (hasAttribute('width')) {
 					value = getAttribute('width');
 					oStyle.width = value.includes('%') ? value : value + 'px';
@@ -183,7 +183,9 @@ export const
 				value = oStyle.width;
 				if (value && !value.includes('%')) {
 					oStyle.maxWidth = value;
-					oStyle.width = '100%';
+					if ('TD' !== name && 'TH' !== name) {
+						oStyle.width = '100%';
+					}
 				}
 //			} else
 			if ('A' === name) {
