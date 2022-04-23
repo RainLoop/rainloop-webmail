@@ -176,7 +176,8 @@ export const
 
 //			if ('TABLE' === name || 'TD' === name) {
 				if (hasAttribute('width')) {
-					oStyle.width = getAttribute('width');
+					value = getAttribute('width');
+					oStyle.width = value.includes('%') ? value : value + 'px';
 					delAttribute('width');
 				}
 				value = oStyle.width;
