@@ -24,7 +24,7 @@ mkdir($dir, 0755, true);
 copy('CODE_OF_CONDUCT.md', "{$dir}/CODE_OF_CONDUCT.md");
 copy('CONTRIBUTING.md', "{$dir}/CONTRIBUTING.md");
 copy('README.md', "{$dir}/README.md");
-copy('CODE_OF_CONDUCT.md', "{$dir}/CODE_OF_CONDUCT.md");
+//copy('CODE_OF_CONDUCT.md', "{$dir}/CODE_OF_CONDUCT.md");
 //usr/share/doc/snappymail/README.Debian
 //usr/share/doc/snappymail/changelog.Debian.gz
 //usr/share/doc/snappymail/copyright
