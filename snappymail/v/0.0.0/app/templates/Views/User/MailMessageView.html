@@ -245,7 +245,7 @@
 												click: function () { checked(!checked()); return false }"></div>
 									</li>
 								</ul>
-								<i class="fontastic controls-handle" data-bind="visible: allowAttachmentControls() && !showAttachmentControls(), click: function () { showAttachmentControls(true); showAttachmentControlsState(true); }">⚙</i>
+								<i class="fontastic controls-handle" data-bind="visible: allowAttachmentControls() && !showAttachmentControls(), click: toggleAttachmentControls">⚙</i>
 							</div>
 
 							<div class="attachmentsControls"
@@ -259,8 +259,7 @@
 										data-i18n="MESSAGE/LINK_DOWNLOAD_AS_ZIP"></span>
 								</span>
 
-								<a href="#" class="close" style="margin-right: 5px;"
-									data-bind="click: function () { showAttachmentControls(false); showAttachmentControlsState(false); }">×</a>
+								<a href="#" class="close" style="margin-right: 5px;" data-bind="click: toggleAttachmentControls">×</a>
 							</div>
 						</div>
 

@@ -93,7 +93,7 @@ export class MailMessageView extends AbstractViewRight {
 				}, this.messageVisibility);
 
 		this.addObservables({
-			showAttachmentControls: false,
+			showAttachmentControls: !!Local.get(ClientSideKeyNameMessageAttachmentControls),
 			downloadAsZipLoading: false,
 			lastReplyAction_: '',
 			showFullInfo: '1' === Local.get(ClientSideKeyNameMessageHeaderFullInfo),
@@ -124,8 +124,6 @@ export class MailMessageView extends AbstractViewRight {
 		this.messageListOfThreadsLoading = ko.observable(false).extend({ rateLimit: 1 });
 		this.highlightUnselectedAttachments = ko.observable(false).extend({ falseTimeout: 2000 });
 
-		this.showAttachmentControlsState = v => Local.set(ClientSideKeyNameMessageAttachmentControls, !!v);
-
 		this.downloadAsZipError = ko.observable(false).extend({ falseTimeout: 7000 });
 
 		this.messageDomFocused = ko.observable(false).extend({ rateLimit: 0 });
@@ -134,7 +132,7 @@ export class MailMessageView extends AbstractViewRight {
 		this.viewHash = '';
 
 		this.addComputables({
-			allowAttachmentControls: () => this.attachmentsActions.length && SettingsCapa('AttachmentsActions'),
+			allowAttachmentControls: () => arrayLength(attachmentsActions) && SettingsCapa('AttachmentsActions'),
 
 			downloadAsZipAllowed: () => this.attachmentsActions.includes('zip') && this.allowAttachmentControls(),
 
@@ -180,26 +178,15 @@ export class MailMessageView extends AbstractViewRight {
 		});
 
 		this.addSubscribables({
-			showAttachmentControls: v => currentMessage()
-				&& currentMessage().attachments.forEach(item => item && item.checked(!!v)),
-
 			lastReplyAction_: value => Local.set(ClientSideKeyNameLastReplyAction, value),
 
 			message: message => {
 				MessageUserStore.activeDom(null);
 
 				if (message) {
-					this.showAttachmentControls(false);
-					if (Local.get(ClientSideKeyNameMessageAttachmentControls)) {
-						setTimeout(() => {
-							this.showAttachmentControls(true);
-						}, 50);
-					}
-
 					if (this.viewHash !== message.hash) {
 						this.scrollMessageToTop();
 					}
-
 					this.viewHash = message.hash;
 					this.viewFromShort(message.fromToLine(true, true));
 					this.viewFromDkimData(message.fromDkimData());
@@ -507,6 +494,12 @@ export class MailMessageView extends AbstractViewRight {
 
 	scrollMessageToLeft() {
 		oMessageScrollerDom().scrollLeft = 0;
+	}
+
+	toggleAttachmentControls() {
+		const b = !this.showAttachmentControls();
+		this.showAttachmentControls(b);
+		Local.set(ClientSideKeyNameMessageAttachmentControls, b);
 	}
 
 	downloadAsZip() {

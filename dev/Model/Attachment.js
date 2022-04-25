@@ -14,7 +14,7 @@ export class AttachmentModel extends AbstractModel {
 	constructor() {
 		super();
 
-		this.checked = ko.observable(false);
+		this.checked = ko.observable(true);
 
 		this.mimeType = '';
 		this.fileName = '';
