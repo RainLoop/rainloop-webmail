@@ -7,9 +7,9 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Two Factor Authentication',
-		VERSION  = '2.13.3',
-		RELEASE  = '2022-03-04',
-		REQUIRED = '2.13.2',
+		VERSION  = '2.15.0',
+		RELEASE  = '2022-04-25',
+		REQUIRED = '2.15.0',
 		CATEGORY = 'Login',
 		DESCRIPTION = 'Provides support for TOTP 2FA';
 
@@ -21,6 +21,7 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addJs('js/TwoFactorAuthSettings.js');
 
 		$this->addHook('login.success', 'DoLogin');
+		$this->addHook('filter.app-data', 'FilterAppData');
 
 		$this->addJsonHook('GetTwoFactorInfo', 'DoGetTwoFactorInfo');
 		$this->addJsonHook('CreateTwoFactorSecret', 'DoCreateTwoFactorSecret');
@@ -31,6 +32,23 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		$this->addTemplate('templates/TwoFactorAuthSettings.html');
 		$this->addTemplate('templates/PopupsTwoFactorAuthTest.html');
+	}
+
+	public function configMapping() : array
+	{
+		return [
+			\RainLoop\Plugins\Property::NewInstance("force_two_factor_auth")
+//				->SetLabel('PLUGIN_TWO_FACTOR/LABEL_FORCE')
+				->SetLabel('Enforce 2-Step Verification')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL),
+		];
+	}
+
+	public function FilterAppData($bAdmin, &$aResult)
+	{
+		if (!$bAdmin && \is_array($aResult)/* && isset($aResult['Auth']) && !$aResult['Auth']*/) {
+			$aResult['RequireTwoFactor'] = $this->Config()->Get('plugin', 'force_two_factor_auth', false);
+		}
 	}
 
 	public function DoLogin(MainAccount $oAccount)
