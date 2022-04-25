@@ -13,7 +13,7 @@ export const
 
 	Settings = rl.settings,
 	SettingsGet = Settings.get,
-	SettingsCapa = Settings.capa,
+	SettingsCapa = name => name && !!(SettingsGet('Capa') || {})[name],
 
 	dropdowns = [],
 	dropdownVisibility = ko.observable(false).extend({ rateLimit: 0 }),
