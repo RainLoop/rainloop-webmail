@@ -663,7 +663,6 @@ class Actions
 			'useImapThread' => (bool)$oConfig->Get('labs', 'use_imap_thread', false),
 			'allowAppendMessage' => (bool)$oConfig->Get('labs', 'allow_message_append', false),
 			'folderSpecLimit' => (int)$oConfig->Get('labs', 'folders_spec_limit', 50),
-			'faviconStatus' => (bool)$oConfig->Get('labs', 'favicon_status', true),
 			'listPermanentFiltered' => '' !== \trim($oConfig->Get('labs', 'imap_message_list_permanent_filter', '')),
 			'themes' => $this->GetThemes(),
 			'languages' => \SnappyMail\L10n::getLanguages(false),
