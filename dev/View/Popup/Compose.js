@@ -63,6 +63,71 @@ const
 	},
 
 	/**
+	 * @param {Array} aList
+	 * @param {boolean} bFriendly
+	 * @returns {string}
+	 */
+	emailArrayToStringLineHelper = (aList, bFriendly) =>
+		aList.map(item => item.toLine(bFriendly)).join(', '),
+
+	reloadDraftFolder = () => {
+		const draftsFolder = FolderUserStore.draftsFolder();
+		if (draftsFolder && UNUSED_OPTION_VALUE !== draftsFolder) {
+			setFolderHash(draftsFolder, '');
+			if (FolderUserStore.currentFolderFullName() === draftsFolder) {
+				MessagelistUserStore.reload(true);
+			} else {
+				rl.app.folderInformation(draftsFolder);
+			}
+		}
+	},
+
+	findIdentityByMessage = (composeType, message) => {
+		let resultIdentity = null;
+		const find = addresses => {
+			addresses = addresses.map(item => item.email);
+			return IdentityUserStore.find(item => addresses.includes(item.email()));
+		};
+
+		if (message) {
+			switch (composeType) {
+				case ComposeType.Reply:
+				case ComposeType.ReplyAll:
+				case ComposeType.Forward:
+				case ComposeType.ForwardAsAttachment:
+					resultIdentity = find(message.to.concat(message.cc, message.bcc))/* || find(message.deliveredTo)*/;
+					break;
+				case ComposeType.Draft:
+					resultIdentity = find(message.from.concat(message.replyTo));
+					break;
+				// no default
+//				case ComposeType.Empty:
+			}
+		}
+
+		return resultIdentity || IdentityUserStore()[0] || null;
+	},
+
+	/**
+	 * @param {Function} fKoValue
+	 * @param {Array} emails
+	 */
+	addEmailsTo = (fKoValue, emails) => {
+		if (arrayLength(emails)) {
+			const value = fKoValue().trim(),
+				values = emails.map(item => item ? item.toLine() : null)
+					.validUnique();
+
+			fKoValue(value + (value ? ', ' :  '') + values.join(', ').trim());
+		}
+	},
+
+	isPlainEditor = () => {
+		let type = SettingsUserStore.editorDefaultType();
+		return EditorDefaultType.Html !== type && EditorDefaultType.HtmlForced !== type;
+	},
+
+	/**
 	 * @param {string} prefix
 	 * @param {string} subject
 	 * @returns {string}
@@ -550,7 +615,7 @@ export class ComposePopupView extends AbstractViewPopup {
 							}
 							setFolderHash(this.draftsFolder(), '');
 							setFolderHash(sSentFolder, '');
-							this.reloadDraftFolder();
+							reloadDraftFolder();
 						},
 						params,
 						30000
@@ -612,7 +677,7 @@ export class ComposePopupView extends AbstractViewPopup {
 							this.savedErrorDesc(getNotification(Notification.CantSaveMessage));
 						}
 
-						this.reloadDraftFolder();
+						reloadDraftFolder();
 					},
 					params,
 					200000
@@ -710,44 +775,6 @@ export class ComposePopupView extends AbstractViewPopup {
 		);
 	}
 
-	reloadDraftFolder() {
-		const draftsFolder = FolderUserStore.draftsFolder();
-		if (draftsFolder && UNUSED_OPTION_VALUE !== draftsFolder) {
-			setFolderHash(draftsFolder, '');
-			if (FolderUserStore.currentFolderFullName() === draftsFolder) {
-				MessagelistUserStore.reload(true);
-			} else {
-				rl.app.folderInformation(draftsFolder);
-			}
-		}
-	}
-
-	findIdentityByMessage(composeType, message) {
-		let resultIdentity = null;
-		const find = addresses => {
-			addresses = addresses.map(item => item.email);
-			return IdentityUserStore.find(item => addresses.includes(item.email()));
-		};
-
-		if (message) {
-			switch (composeType) {
-				case ComposeType.Reply:
-				case ComposeType.ReplyAll:
-				case ComposeType.Forward:
-				case ComposeType.ForwardAsAttachment:
-					resultIdentity = find(message.to.concat(message.cc, message.bcc))/* || find(message.deliveredTo)*/;
-					break;
-				case ComposeType.Draft:
-					resultIdentity = find(message.from.concat(message.replyTo));
-					break;
-				// no default
-//				case ComposeType.Empty:
-			}
-		}
-
-		return resultIdentity || IdentityUserStore()[0] || null;
-	}
-
 	selectIdentity(identity) {
 		identity = identity && identity.item;
 		if (identity) {
@@ -800,7 +827,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			this.editor(editor => {
 				let signature = identity.signature() || '',
 					isHtml = ':HTML:' === signature.slice(0, 6),
-					fromLine = this.oLastMessage ? this.emailArrayToStringLineHelper(this.oLastMessage.from, true) : '';
+					fromLine = this.oLastMessage ? emailArrayToStringLineHelper(this.oLastMessage.from, true) : '';
 				if (fromLine) {
 					signature = signature.replace(/{{FROM-FULL}}/g, fromLine);
 					if (!fromLine.includes(' ') && 0 < fromLine.indexOf('@')) {
@@ -846,9 +873,9 @@ export class ComposePopupView extends AbstractViewPopup {
 					false
 				]);
 			} else {
-				this.addEmailsTo(this.to, aToEmails);
-				this.addEmailsTo(this.cc, aCcEmails);
-				this.addEmailsTo(this.bcc, aBccEmails);
+				addEmailsTo(this.to, aToEmails);
+				addEmailsTo(this.cc, aCcEmails);
+				addEmailsTo(this.bcc, aBccEmails);
 
 				if (sCustomSubject && !this.subject()) {
 					this.subject(sCustomSubject);
@@ -861,36 +888,6 @@ export class ComposePopupView extends AbstractViewPopup {
 		// Chrome bug #298
 //		alreadyFullscreen = isFullscreen();
 //		alreadyFullscreen || (ThemeStore.isMobile() && toggleFullscreen());
-	}
-
-	/**
-	 * @param {Function} fKoValue
-	 * @param {Array} emails
-	 */
-	addEmailsTo(fKoValue, emails) {
-		if (arrayLength(emails)) {
-			const value = fKoValue().trim(),
-				values = emails.map(item => item ? item.toLine() : null)
-					.validUnique();
-
-			fKoValue(value + (value ? ', ' :  '') + values.join(', ').trim());
-		}
-	}
-
-	/**
-	 *
-	 * @param {Array} aList
-	 * @param {boolean} bFriendly
-	 * @returns {string}
-	 */
-	emailArrayToStringLineHelper(aList, bFriendly) {
-		bFriendly = !!bFriendly;
-		return aList.map(item => item.toLine(bFriendly)).join(', ');
-	}
-
-	isPlainEditor() {
-		let type = SettingsUserStore.editorDefaultType();
-		return EditorDefaultType.Html !== type && EditorDefaultType.HtmlForced !== type;
 	}
 
 	/**
@@ -935,21 +932,21 @@ export class ComposePopupView extends AbstractViewPopup {
 
 		this.reset();
 
-		identity = this.findIdentityByMessage(lineComposeType, message);
+		identity = findIdentityByMessage(lineComposeType, message);
 		if (identity) {
 			excludeEmail[identity.email()] = true;
 		}
 
 		if (arrayLength(aToEmails)) {
-			this.to(this.emailArrayToStringLineHelper(aToEmails));
+			this.to(emailArrayToStringLineHelper(aToEmails));
 		}
 
 		if (arrayLength(aCcEmails)) {
-			this.cc(this.emailArrayToStringLineHelper(aCcEmails));
+			this.cc(emailArrayToStringLineHelper(aCcEmails));
 		}
 
 		if (arrayLength(aBccEmails)) {
-			this.bcc(this.emailArrayToStringLineHelper(aBccEmails));
+			this.bcc(emailArrayToStringLineHelper(aBccEmails));
 		}
 
 		if (lineComposeType && message) {
@@ -957,13 +954,12 @@ export class ComposePopupView extends AbstractViewPopup {
 			sSubject = message.subject();
 			aDraftInfo = message.aDraftInfo;
 
-			let resplyAllParts = null;
 			switch (lineComposeType) {
 				case ComposeType.Empty:
 					break;
 
 				case ComposeType.Reply:
-					this.to(this.emailArrayToStringLineHelper(message.replyEmails(excludeEmail)));
+					this.to(emailArrayToStringLineHelper(message.replyEmails(excludeEmail)));
 					this.subject(replySubjectAdd('Re', sSubject));
 					this.prepareMessageAttachments(message, lineComposeType);
 					this.aDraftInfo = ['reply', message.uid, message.folder];
@@ -971,16 +967,17 @@ export class ComposePopupView extends AbstractViewPopup {
 					this.sReferences = (this.sInReplyTo + ' ' + message.sReferences).trim();
 					break;
 
-				case ComposeType.ReplyAll:
-					resplyAllParts = message.replyAllEmails(excludeEmail);
-					this.to(this.emailArrayToStringLineHelper(resplyAllParts[0]));
-					this.cc(this.emailArrayToStringLineHelper(resplyAllParts[1]));
+				case ComposeType.ReplyAll: {
+					let parts = message.replyAllEmails(excludeEmail);
+					this.to(emailArrayToStringLineHelper(parts[0]));
+					this.cc(emailArrayToStringLineHelper(parts[1]));
 					this.subject(replySubjectAdd('Re', sSubject));
 					this.prepareMessageAttachments(message, lineComposeType);
 					this.aDraftInfo = ['reply', message.uid, message.folder];
 					this.sInReplyTo = message.sMessageId;
 					this.sReferences = (this.sInReplyTo + ' ' + message.references).trim();
 					break;
+				}
 
 				case ComposeType.Forward:
 					this.subject(replySubjectAdd('Fwd', sSubject));
@@ -999,10 +996,10 @@ export class ComposePopupView extends AbstractViewPopup {
 					break;
 
 				case ComposeType.Draft:
-					this.to(this.emailArrayToStringLineHelper(message.to));
-					this.cc(this.emailArrayToStringLineHelper(message.cc));
-					this.bcc(this.emailArrayToStringLineHelper(message.bcc));
-					this.replyTo(this.emailArrayToStringLineHelper(message.replyTo));
+					this.to(emailArrayToStringLineHelper(message.to));
+					this.cc(emailArrayToStringLineHelper(message.cc));
+					this.bcc(emailArrayToStringLineHelper(message.bcc));
+					this.replyTo(emailArrayToStringLineHelper(message.replyTo));
 
 					this.bFromDraft = true;
 
@@ -1018,10 +1015,10 @@ export class ComposePopupView extends AbstractViewPopup {
 					break;
 
 				case ComposeType.EditAsNew:
-					this.to(this.emailArrayToStringLineHelper(message.to));
-					this.cc(this.emailArrayToStringLineHelper(message.cc));
-					this.bcc(this.emailArrayToStringLineHelper(message.bcc));
-					this.replyTo(this.emailArrayToStringLineHelper(message.replyTo));
+					this.to(emailArrayToStringLineHelper(message.to));
+					this.cc(emailArrayToStringLineHelper(message.cc));
+					this.bcc(emailArrayToStringLineHelper(message.bcc));
+					this.replyTo(emailArrayToStringLineHelper(message.replyTo));
 
 					this.subject(sSubject);
 					this.prepareMessageAttachments(message, lineComposeType);
@@ -1104,7 +1101,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			this.editor(editor => {
 				editor.setHtml(sText);
 
-				if (this.isPlainEditor()) {
+				if (isPlainEditor()) {
 					editor.modePlain();
 				}
 
@@ -1118,7 +1115,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			oMessageOrArray.forEach(item => this.addMessageAsAttachment(item));
 
 			this.editor(editor => {
-				if (this.isPlainEditor()) {
+				if (isPlainEditor()) {
 					editor.setPlain('')
 				} else {
 					editor.setHtml('');
@@ -1335,7 +1332,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			return false;
 		});
 
-		this.editor(editor => editor[this.isPlainEditor()?'modePlain':'modeWysiwyg']());
+		this.editor(editor => editor[isPlainEditor()?'modePlain':'modeWysiwyg']());
 	}
 
 	/**
