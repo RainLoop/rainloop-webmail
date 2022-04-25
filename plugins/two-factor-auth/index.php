@@ -99,11 +99,24 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 				'User' => $sEmail,
 				'Enable' => false,
 				'Secret' => $sSecret,
+				'QRCode' => static::getQRCode($sEmail, $sSecret),
 				'BackupCodes' => \implode(' ', $aCodes)
 			))
 		);
 
 		return $this->jsonResponse(__FUNCTION__, $this->getTwoFactorInfo($oAccount));
+	}
+
+	private static function getQRCode(string $email, string $secret) : string
+	{
+		$email = \rawurlencode($email);
+//		$issuer = \rawurlencode(\RainLoop\API::Config()->Get('webmail', 'title', 'SnappyMail'));
+		$QR = \SnappyMail\QRCode::getMinimumQRCode(
+//			"otpauth://totp/{$issuer}:{$email}?secret={$secret}&issuer={$issuer}",
+			"otpauth://totp/{$email}?secret={$secret}",
+			\SnappyMail\QRCode::ERROR_CORRECT_LEVEL_M
+		);
+		return $QR->__toString();
 	}
 
 	public function DoShowTwoFactorSecret() : array
@@ -117,14 +130,7 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$aResult = $this->getTwoFactorInfo($oAccount);
 		unset($aResult['BackupCodes']);
 
-		$name = \rawurlencode($oAccount->Email());
-//		$issuer = \rawurlencode(\RainLoop\API::Config()->Get('webmail', 'title', 'SnappyMail'));
-		$QR = \SnappyMail\QRCode::getMinimumQRCode(
-//			"otpauth://totp/{$issuer}:{$name}?secret={$aResult['Secret']}&issuer={$issuer}",
-			"otpauth://totp/{$name}?secret={$aResult['Secret']}",
-			\SnappyMail\QRCode::ERROR_CORRECT_LEVEL_M
-		);
-		$aResult['QRCode'] = $QR->__toString();
+		$aResult['QRCode'] = static::getQRCode($oAccount->Email(), $aResult['Secret']);
 
 		return $this->jsonResponse(__FUNCTION__, $aResult);
 	}
@@ -232,7 +238,6 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 			'IsSet' => false,
 			'Enable' => false,
 			'Secret' => '',
-			'UrlTitle' => '',
 			'BackupCodes' => ''
 		);
 
@@ -259,7 +264,7 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$aResult['Enable'] = isset($mData['Enable']) ? !!$mData['Enable'] : false;
 			$aResult['Secret'] = $mData['Secret'];
 			$aResult['BackupCodes'] = $mData['BackupCodes'];
-			$aResult['UrlTitle'] = $this->Config()->Get('webmail', 'title', '');
+			$aResult['QRCode'] = static::getQRCode($oAccount->Email(), $mData['Secret']);
 		}
 
 		if ($bRemoveSecret)
@@ -267,11 +272,6 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 			if (isset($aResult['Secret']))
 			{
 				unset($aResult['Secret']);
-			}
-
-			if (isset($aResult['UrlTitle']))
-			{
-				unset($aResult['UrlTitle']);
 			}
 
 			if (isset($aResult['BackupCodes']))
