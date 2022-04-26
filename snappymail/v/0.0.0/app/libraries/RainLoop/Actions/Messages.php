@@ -664,7 +664,7 @@ trait Messages
 		$sSigPart = $this->GetActionParam('SigPart', '');
 		if ($sBodyPart) {
 			$result = [
-				'text' => \preg_replace('/\\R/s', "\r\n", $sBodyPart),
+				'text' => \preg_replace('/\\r?\\n/su', "\r\n", $sBodyPart),
 				'signature' => $this->GetActionParam('SigPart', '')
 			];
 		} else {
@@ -692,7 +692,7 @@ trait Messages
 			$sBodyMime = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.'.MIME]');
 			if ($sSigPartId) {
 				$result = [
-					'text' => \preg_replace('/\\R/s', "\r\n",
+					'text' => \preg_replace('/\\r?\\n/su', "\r\n",
 						$sBodyMime . $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']')
 					),
 					'signature' => preg_replace('/[^\x00-\x7F]/', '',
@@ -1020,7 +1020,7 @@ trait Messages
 		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset="utf-8"');
 		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
 		$oPart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
-			\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sText))),
+			\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sText))),
 			'convert.quoted-printable-encode'
 		);
 		$this->SubParts->append($oPart);
@@ -1150,7 +1150,7 @@ trait Messages
 			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/octet-stream');
 			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION, 'inline; filename="msg.asc"');
 			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
-			$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sEncrypted)));
+			$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sEncrypted)));
 			$oPart->SubParts->append($oAlternativePart);
 
 			unset($oAlternativePart);
@@ -1175,7 +1175,7 @@ trait Messages
 				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset=utf-8');
 				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
 				$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
-					\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sPlain))),
+					\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sPlain))),
 					'convert.quoted-printable-encode'
 				);
 				$oPart->SubParts->append($oAlternativePart);
@@ -1186,7 +1186,7 @@ trait Messages
 				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/html; charset=utf-8');
 				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
 				$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
-					\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sHtml))),
+					\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sHtml))),
 					'convert.quoted-printable-encode'
 				);
 				$oPart->SubParts->append($oAlternativePart);
@@ -1207,13 +1207,13 @@ trait Messages
 					$oAlternativePart = new MimePart;
 					$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset="utf-8"; protected-headers="v1"');
 					$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'base64');
-					$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sPlain)));
+					$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sPlain)));
 					$oPart->SubParts->append($oAlternativePart);
 
 					$oAlternativePart = new MimePart;
 					$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/pgp-signature; name="signature.asc"');
 					$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
-					$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sSignature)));
+					$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sSignature)));
 					$oPart->SubParts->append($oAlternativePart);
 				} else {
 					$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sPlain));
@@ -1221,7 +1221,7 @@ trait Messages
 					$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset="utf-8"');
 					$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
 					$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
-						\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\R/', "\r\n", \trim($sPlain))),
+						\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sPlain))),
 						'convert.quoted-printable-encode'
 					);
 					$oMessage->SubParts->append($oAlternativePart);

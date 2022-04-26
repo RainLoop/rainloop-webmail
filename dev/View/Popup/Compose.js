@@ -53,7 +53,7 @@ let alreadyFullscreen;
 const
 	ScopeCompose = 'Compose',
 
-	base64_encode = text => btoa(text).match(/.{1,76}/g).join('\r\n'),
+	base64_encode = text => btoa(unescape(encodeURIComponent(text))).match(/.{1,76}/g).join('\r\n'),
 
 	email = new EmailModel(),
 	getEmail = value => {
