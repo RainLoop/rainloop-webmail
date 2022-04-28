@@ -27,7 +27,8 @@
 		"SPAM": "Märgi rämpspostiks",
 		"SUBJECT": "Pealkiri",
 		"TEST": "Kontrolli",
-		"TO": "Saaja"
+		"TO": "Saaja",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logi sisse",

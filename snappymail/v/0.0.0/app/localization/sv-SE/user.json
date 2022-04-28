@@ -27,7 +27,8 @@
 		"SPAM": "Spam",
 		"SUBJECT": "Ämne",
 		"TEST": "Test",
-		"TO": "Till"
+		"TO": "Till",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Användarnamn",

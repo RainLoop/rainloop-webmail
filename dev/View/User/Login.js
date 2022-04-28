@@ -36,7 +36,7 @@ export class LoginUserView extends AbstractViewLogin {
 
 			submitRequest: false,
 			submitError: '',
-			submitErrorAddidional: '',
+			submitErrorAdditional: '',
 
 			langRequest: false,
 
@@ -62,7 +62,7 @@ export class LoginUserView extends AbstractViewLogin {
 
 			password: () => this.passwordError(false),
 
-			submitError: value => value || this.submitErrorAddidional(''),
+			submitError: value => value || this.submitErrorAdditional(''),
 
 			signMeType: iValue => this.signMe(SignMeOn === iValue),
 
@@ -113,7 +113,7 @@ export class LoginUserView extends AbstractViewLogin {
 						}
 						this.submitError(getNotification(iError, (oData ? oData.ErrorMessage : ''),
 							Notification.UnknownNotification));
-						this.submitErrorAddidional((oData && oData.ErrorMessageAdditional) || '');
+						this.submitErrorAdditional((oData && oData.ErrorMessageAdditional) || '');
 					} else {
 						rl.setData(oData.Result);
 					}

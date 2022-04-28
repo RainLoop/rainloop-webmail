@@ -27,7 +27,8 @@
 		"SPAM": "스팸",
 		"SUBJECT": "제목",
 		"TEST": "테스트",
-		"TO": "받는 사람"
+		"TO": "받는 사람",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "아이디",

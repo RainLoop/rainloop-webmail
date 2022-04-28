@@ -27,7 +27,8 @@
 		"SPAM": "هرزنامه",
 		"SUBJECT": "موضوع",
 		"TEST": "تست",
-		"TO": "به"
+		"TO": "به",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ورود",

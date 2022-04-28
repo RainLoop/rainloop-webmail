@@ -27,7 +27,8 @@
 		"SPAM": "Ruslpóstur",
 		"SUBJECT": "Viðfangsefni",
 		"TEST": "Prófa",
-		"TO": "Til"
+		"TO": "Til",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Innskráning",

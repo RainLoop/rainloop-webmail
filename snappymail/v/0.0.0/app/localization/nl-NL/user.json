@@ -27,7 +27,8 @@
 		"SPAM": "Ongewenste e-mail",
 		"SUBJECT": "Onderwerp",
 		"TEST": "Test",
-		"TO": "Naar"
+		"TO": "Naar",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Inlognaam",

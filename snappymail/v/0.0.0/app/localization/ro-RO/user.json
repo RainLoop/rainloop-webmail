@@ -27,7 +27,8 @@
 		"SPAM": "SPAM",
 		"SUBJECT": "Subiect",
 		"TEST": "Test",
-		"TO": "către"
+		"TO": "către",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Conectare",

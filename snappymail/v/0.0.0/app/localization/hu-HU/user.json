@@ -27,7 +27,8 @@
 		"SPAM": "Levélszemét",
 		"SUBJECT": "Tárgy",
 		"TEST": "Tesztelés",
-		"TO": "Címzett"
+		"TO": "Címzett",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Bejelentkezés",

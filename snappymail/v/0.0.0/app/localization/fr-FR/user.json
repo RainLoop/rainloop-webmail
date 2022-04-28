@@ -27,7 +27,8 @@
 		"SPAM": "Indésirable",
 		"SUBJECT": "Sujet",
 		"TEST": "Test",
-		"TO": "À"
+		"TO": "À",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Identifiant",

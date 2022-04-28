@@ -27,7 +27,8 @@
 		"SPAM": "الإبلاغ عن الرسائل غير المرغوب فيها",
 		"SUBJECT": "الموضوع",
 		"TEST": "تجريب",
-		"TO": "الى"
+		"TO": "الى",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "تسيجيل الدخول",

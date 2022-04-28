@@ -27,7 +27,8 @@
 		"SPAM": "Spam",
 		"SUBJECT": "Predmet",
 		"TEST": "Test",
-		"TO": "Príjemca"
+		"TO": "Príjemca",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Používateľské meno",

@@ -27,7 +27,8 @@
 		"SPAM": "Merkitse roskapostiksi",
 		"SUBJECT": "Aihe",
 		"TEST": "Testaa",
-		"TO": "Vastaanottaja"
+		"TO": "Vastaanottaja",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Tunnus",

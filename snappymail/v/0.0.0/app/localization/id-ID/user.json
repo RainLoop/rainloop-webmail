@@ -27,7 +27,8 @@
 		"SPAM": "Spam",
 		"SUBJECT": "Judul",
 		"TEST": "Uji",
-		"TO": "Kepada"
+		"TO": "Kepada",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",

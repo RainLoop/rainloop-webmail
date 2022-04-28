@@ -27,7 +27,8 @@
 		"SPAM": "迷惑メールにする",
 		"SUBJECT": "件名",
 		"TEST": "テスト",
-		"TO": "宛先"
+		"TO": "宛先",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ログイン",

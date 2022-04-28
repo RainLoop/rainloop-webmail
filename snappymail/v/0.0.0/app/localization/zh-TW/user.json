@@ -27,7 +27,8 @@
 		"SPAM": "垃圾郵件",
 		"SUBJECT": "主題",
 		"TEST": "測試",
-		"TO": "發送到"
+		"TO": "發送到",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登錄",

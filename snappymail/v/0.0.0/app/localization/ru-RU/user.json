@@ -27,7 +27,8 @@
 		"SPAM": "В спам",
 		"SUBJECT": "Тема",
 		"TEST": "Тест",
-		"TO": "Кому"
+		"TO": "Кому",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Логин",

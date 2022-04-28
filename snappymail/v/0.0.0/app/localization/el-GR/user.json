@@ -27,7 +27,8 @@
 		"SPAM": "Ανεπιθύμητο",
 		"SUBJECT": "Θέμα",
 		"TEST": "Τεστ",
-		"TO": "Προς"
+		"TO": "Προς",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Είσοδος",

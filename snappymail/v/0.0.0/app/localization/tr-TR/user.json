@@ -27,7 +27,8 @@
 		"SPAM": "Spam",
 		"SUBJECT": "Konu",
 		"TEST": "Test",
-		"TO": "Kime"
+		"TO": "Kime",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Giriş",

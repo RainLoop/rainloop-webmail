@@ -27,7 +27,8 @@
 		"SPAM": "Søppelpost",
 		"SUBJECT": "Emne",
 		"TEST": "Test",
-		"TO": "Til"
+		"TO": "Til",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logg inn",

@@ -27,7 +27,8 @@
 		"SPAM": "Spams",
 		"SUBJECT": "Tēma",
 		"TEST": "Test",
-		"TO": "Kam"
+		"TO": "Kam",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Ielogoties",

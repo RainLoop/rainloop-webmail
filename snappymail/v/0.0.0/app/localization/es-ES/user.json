@@ -27,7 +27,8 @@
 		"SPAM": "Es correo deseado",
 		"SUBJECT": "Asunto",
 		"TEST": "Probar",
-		"TO": "Para"
+		"TO": "Para",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",

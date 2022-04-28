@@ -27,7 +27,8 @@
 		"SPAM": "这是垃圾邮件",
 		"SUBJECT": "主题",
 		"TEST": "测试",
-		"TO": "发送到"
+		"TO": "发送到",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登录",

@@ -27,7 +27,8 @@
 		"SPAM": "Oznacz jako SPAM",
 		"SUBJECT": "Temat",
 		"TEST": "Testuj",
-		"TO": "Do"
+		"TO": "Do",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",

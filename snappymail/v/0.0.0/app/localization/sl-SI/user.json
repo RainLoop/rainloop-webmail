@@ -27,7 +27,8 @@
 		"SPAM": "Vsiljena pošta",
 		"SUBJECT": "Zadeva",
 		"TEST": "Preizkusi",
-		"TO": "Za"
+		"TO": "Za",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prijava",

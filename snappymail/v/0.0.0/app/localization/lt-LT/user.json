@@ -27,7 +27,8 @@
 		"SPAM": "Žymėti kaip šlamštas",
 		"SUBJECT": "Tema",
 		"TEST": "Bandyti",
-		"TO": "Kam"
+		"TO": "Kam",
+		"SERVER_MESSAGE": "Server message"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prisijungimo vardas",
