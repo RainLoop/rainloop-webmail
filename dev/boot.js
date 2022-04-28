@@ -1,6 +1,5 @@
 (doc => {
 
-[].flat || doc.location.replace('./?/BadBrowser');
 navigator.cookieEnabled || doc.location.replace('./?/NoCookie');
 
 const
@@ -8,6 +7,7 @@ const
 	app = eId('app'),
 	admin = app && '1' == app.dataset.admin,
 	layout = doc.cookie.match(/(^|;) ?rllayout=([^;]+)/) || '',
+	badBrowser = () => doc.location.replace('./?/BadBrowser'),
 
 	loadScript = src => {
 		if (!src) {
@@ -22,6 +22,8 @@ const
 			doc.head.append(script);
 		});
 	};
+
+[].flat || badBrowser();
 
 let RL_APP_DATA = {};
 
@@ -42,7 +44,7 @@ window.rl = {
 	initData: appData => {
 		RL_APP_DATA = appData;
 		const url = appData.StaticLibsJs,
-			cb = () => rl.app.bootstart(),
+			cb = () => rl.app ? rl.app.bootstart() : badBrowser(),
 			div = eId('loading-error'),
 			showError = msg => {
 				div.append(' ' + msg);
@@ -52,7 +54,7 @@ window.rl = {
 		loadScript(url)
 			.then(() => loadScript(url.replace('/libs.', `/${admin?'admin':'app'}.`)))
 			.then(() => appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve())
-			.then(() => rl.app.bootstart
+			.then(() => rl.app
 					? cb()
 					: doc.addEventListener('readystatechange', () => 'complete' == doc.readyState && cb())
 			)
