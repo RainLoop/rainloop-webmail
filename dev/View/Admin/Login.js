@@ -35,7 +35,7 @@ export class AdminLoginView extends AbstractViewLogin {
 	submitCommand(self, event) {
 		let form = event.target.form,
 			data = new FormData(form),
-			valid = form.reportValidity() && fireEvent('sm-admin-login', data);
+			valid = form.reportValidity() && fireEvent('sm-admin-login', data, 1);
 
 		this.loginError(!this.login());
 		this.passwordError(!this.password());

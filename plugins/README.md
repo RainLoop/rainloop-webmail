@@ -383,9 +383,15 @@ $Plugin->addHook('hook.name', 'functionName');
 
 ### sm-admin-login
 	event.detail = FormData
+	cancelable using preventDefault()
 ### sm-admin-login-response
 	event.detail = { error: int, data: {JSON response} }
 ### sm-user-login
 	event.detail = FormData
+	cancelable using preventDefault()
 ### sm-user-login-response
 	event.detail = { error: int, data: {JSON response} }
+
+### sm-show-screen
+	event.detail = 'screenname'
+	cancelable using preventDefault()

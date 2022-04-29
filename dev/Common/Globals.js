@@ -27,7 +27,9 @@ export const
 		return el;
 	},
 
-	fireEvent = (name, detail) => dispatchEvent(new CustomEvent(name, {detail:detail})),
+	fireEvent = (name, detail, cancelable) => dispatchEvent(
+		new CustomEvent(name, {detail:detail, cancelable: !!cancelable})
+	),
 
 	formFieldFocused = () => doc.activeElement && doc.activeElement.matches('input,textarea'),
 

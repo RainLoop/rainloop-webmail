@@ -173,59 +173,62 @@ const
 			screenName = defaultScreenName;
 		}
 
-		// Close all popups
-		for (let vm of visiblePopups) {
-			false === vm.onClose() || vm.close();
-		}
+		if (fireEvent('sm-show-screen', screenName, 1)) {
 
-		if (screenName) {
-			vmScreen = screen(screenName);
-			if (!vmScreen) {
-				vmScreen = screen(defaultScreenName);
-				if (vmScreen) {
-					subPart = screenName + '/' + subPart;
-					screenName = defaultScreenName;
-				}
+			// Close all popups
+			for (let vm of visiblePopups) {
+				false === vm.onClose() || vm.close();
 			}
 
-			if (vmScreen && vmScreen.__started) {
-				isSameScreen = currentScreen && vmScreen === currentScreen;
-
-				if (!vmScreen.__builded) {
-					vmScreen.__builded = true;
-
-					vmScreen.viewModels.forEach(ViewModelClass =>
-						buildViewModel(ViewModelClass, vmScreen)
-					);
-
-					vmScreen.onBuild && vmScreen.onBuild();
+			if (screenName) {
+				vmScreen = screen(screenName);
+				if (!vmScreen) {
+					vmScreen = screen(defaultScreenName);
+					if (vmScreen) {
+						subPart = screenName + '/' + subPart;
+						screenName = defaultScreenName;
+					}
 				}
 
-				setTimeout(() => {
-					// hide screen
-					if (currentScreen && !isSameScreen) {
-						hideScreen(currentScreen);
+				if (vmScreen && vmScreen.__started) {
+					isSameScreen = currentScreen && vmScreen === currentScreen;
+
+					if (!vmScreen.__builded) {
+						vmScreen.__builded = true;
+
+						vmScreen.viewModels.forEach(ViewModelClass =>
+							buildViewModel(ViewModelClass, vmScreen)
+						);
+
+						vmScreen.onBuild && vmScreen.onBuild();
 					}
-					// --
 
-					currentScreen = vmScreen;
+					setTimeout(() => {
+						// hide screen
+						if (currentScreen && !isSameScreen) {
+							hideScreen(currentScreen);
+						}
+						// --
 
-					// show screen
-					if (!isSameScreen) {
-						vmScreen.onShow && vmScreen.onShow();
+						currentScreen = vmScreen;
 
-						forEachViewModel(vmScreen, (vm, dom) => {
-							vm.beforeShow && vm.beforeShow();
-							i18nToNodes(dom);
-							dom.hidden = false;
-							vm.onShow && vm.onShow();
-							autofocus(dom);
-						});
-					}
-					// --
+						// show screen
+						if (!isSameScreen) {
+							vmScreen.onShow && vmScreen.onShow();
 
-					vmScreen.__cross && vmScreen.__cross.parse(subPart);
-				}, 1);
+							forEachViewModel(vmScreen, (vm, dom) => {
+								vm.beforeShow && vm.beforeShow();
+								i18nToNodes(dom);
+								dom.hidden = false;
+								vm.onShow && vm.onShow();
+								autofocus(dom);
+							});
+						}
+						// --
+
+						vmScreen.__cross && vmScreen.__cross.parse(subPart);
+					}, 1);
+				}
 			}
 		}
 	};

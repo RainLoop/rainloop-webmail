@@ -90,7 +90,7 @@ export class LoginUserView extends AbstractViewLogin {
 	submitCommand(self, event) {
 		let form = event.target.form,
 			data = new FormData(form),
-			valid = form.reportValidity() && fireEvent('sm-user-login', data);
+			valid = form.reportValidity() && fireEvent('sm-user-login', data, 1);
 
 		this.emailError(!this.email());
 		this.passwordError(!this.password());
