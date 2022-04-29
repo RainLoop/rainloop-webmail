@@ -8,8 +8,8 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 	const
 		NAME     = 'Two Factor Authentication',
 		VERSION  = '2.15.0',
-		RELEASE  = '2022-04-25',
-		REQUIRED = '2.15.0',
+		RELEASE  = '2022-04-29',
+		REQUIRED = '2.15.1',
 		CATEGORY = 'Login',
 		DESCRIPTION = 'Provides support for TOTP 2FA';
 
@@ -47,7 +47,13 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function FilterAppData($bAdmin, &$aResult)
 	{
 		if (!$bAdmin && \is_array($aResult)/* && isset($aResult['Auth']) && !$aResult['Auth']*/) {
-			$aResult['RequireTwoFactor'] = $this->Config()->Get('plugin', 'force_two_factor_auth', false);
+			$aResult['RequireTwoFactor'] = (bool) $this->Config()->Get('plugin', 'force_two_factor_auth', false);
+
+			$aResult['SetupTwoFactor'] = false;
+			if ($aResult['RequireTwoFactor'] && !empty($aResult['Auth'])) {
+				$aData = $this->getTwoFactorInfo($this->getMainAccountFromToken());
+				$aResult['SetupTwoFactor'] = empty($aResult['IsSet']) || empty($mData['Enable']);
+			}
 		}
 	}
 
@@ -55,7 +61,7 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		if ($this->TwoFactorAuthProvider($oAccount)) {
 			$aData = $this->getTwoFactorInfo($oAccount);
-			if ($aData && isset($aData['IsSet'], $aData['Enable']) && !empty($aData['Secret']) && $aData['IsSet'] && $aData['Enable']) {
+			if (isset($aData['IsSet'], $aData['Enable']) && !empty($aData['Secret']) && $aData['IsSet'] && $aData['Enable']) {
 				$sCode = \trim($this->jsonParam('totp_code', ''));
 				if (empty($sCode)) {
 					$this->Logger()->Write("TFA: Code required for {$oAccount->Email()}");

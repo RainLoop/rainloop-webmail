@@ -56,11 +56,12 @@ class TwoFactorAuthSettings
 					value = !!value;
 					if (value && this.twoFactorTested()) {
 						this.viewEnable_(value);
-						Remote.enableTwoFactor(fn, value);
+						Remote.enableTwoFactor(iError => {
+							fn(iError);
+							rl.settings.get('RequireTwoFactor') && rl.settings.set('SetupTwoFactor', !!iError);
+						}, value);
 					} else {
-						if (!value) {
-							this.viewEnable_(value);
-						}
+						value || this.viewEnable_(value);
 						Remote.enableTwoFactor(fn, false);
 					}
 				}

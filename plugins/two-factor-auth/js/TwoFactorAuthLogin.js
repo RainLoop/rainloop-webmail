@@ -1,8 +1,15 @@
 
 (rl => {
 
+	const
+		forceTOTP = () => {
+			if (rl.settings.get('SetupTwoFactor')) {
+				setTimeout(() => document.location.hash = '#/settings/two-factor-auth', 50);
+			}
+		};
+
 	addEventListener('rl-view-model', e => {
-		if (e.detail && 'Login' === e.detail.viewModelTemplateID) {
+		if ('Login' === e.detail.viewModelTemplateID) {
 			const container = e.detail.viewModelDom.querySelector('#plugin-Login-BottomControlGroup'),
 				placeholder = 'PLUGIN_2FA/LABEL_TWO_FACTOR_CODE';
 			if (container) {
@@ -19,13 +26,10 @@
 	});
 
 	// https://github.com/the-djmaze/snappymail/issues/349
-	let code;
-	addEventListener('sm-user-login', e => {
-		code = e.detail.get('totp_code');
-	});
-	addEventListener('sm-user-login-response', e => {
-		if (e.detail && !e.detail.error && rl.settings.get('RequireTwoFactor') && !code) {
-			document.location.hash = '#/settings/two-factor-auth';
+	addEventListener('sm-show-screen', e => {
+		if ('settings' !== e.detail && rl.settings.get('SetupTwoFactor')) {
+			e.preventDefault();
+			forceTOTP();
 		}
 	});
 
