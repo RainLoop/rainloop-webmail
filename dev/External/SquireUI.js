@@ -452,14 +452,17 @@ class SquireUI
 					const squire = this.squire,
 						root = squire.getRoot(),
 						range = squire.getSelection(),
+						br = createElement('br'),
 						div = createElement('div');
 					div.className = 'rl-signature';
 					div.innerHTML = cfg.isHtml ? cfg.signature : plainToHtml(cfg.signature);
 					root.querySelectorAll('div.rl-signature').forEach(node => node.remove());
 					cfg.insertBefore ? root.prepend(div) : root.append(div);
 					// Move cursor above signature
-					range.setStart(div, 0);
-					range.setEnd(div, 0);
+					div.before(br);
+					div.before(br.cloneNode());
+					range.setStart(br, 0);
+					range.setEnd(br, 0);
 					squire.setSelection( range );
 				}
 				this._prev_txt_sig = signature;
