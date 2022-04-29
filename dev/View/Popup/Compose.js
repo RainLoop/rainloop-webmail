@@ -1037,17 +1037,17 @@ export class ComposePopupView extends AbstractViewPopup {
 				case ComposeType.Reply:
 				case ComposeType.ReplyAll:
 					sFrom = message.fromToLine(false, true);
-					sText = '<div><p>' + i18n('COMPOSE/REPLY_MESSAGE_TITLE', { DATETIME: sDate, EMAIL: sFrom })
+					sText = '<br><br><p>' + i18n('COMPOSE/REPLY_MESSAGE_TITLE', { DATETIME: sDate, EMAIL: sFrom })
 						+ ':</p><blockquote>'
 						+ sText.replace(/<img[^>]+>/g, '').replace(/<a\s[^>]+><\/a>/g, '').trim()
-						+ '</blockquote></div>';
+						+ '</blockquote>';
 					break;
 
 				case ComposeType.Forward:
 					sFrom = message.fromToLine(false, true);
 					sTo = message.toToLine(false, true);
 					sCc = message.ccToLine(false, true);
-					sText = '<div><p>' + i18n('COMPOSE/FORWARD_MESSAGE_TOP_TITLE') + '</p>'
+					sText = '<br><br><p>' + i18n('COMPOSE/FORWARD_MESSAGE_TOP_TITLE') + '</p><div>'
 						+ i18n('GLOBAL/FROM') + ': ' + sFrom
 						+ '<br>'
 						+ i18n('GLOBAL/TO') + ': ' + sTo

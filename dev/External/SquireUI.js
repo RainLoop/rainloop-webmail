@@ -451,7 +451,6 @@ class SquireUI
 				} else {
 					const squire = this.squire,
 						root = squire.getRoot(),
-						range = squire.getSelection(),
 						br = createElement('br'),
 						div = createElement('div');
 					div.className = 'rl-signature';
@@ -461,9 +460,7 @@ class SquireUI
 					// Move cursor above signature
 					div.before(br);
 					div.before(br.cloneNode());
-					range.setStart(br, 0);
-					range.setEnd(br, 0);
-					squire.setSelection( range );
+					this.setCursorAt(br);
 				}
 				this._prev_txt_sig = signature;
 			} catch (e) {
@@ -478,7 +475,18 @@ class SquireUI
 
 	setData(html) {
 //		this.plain.value = html;
-		this.squire.setHTML(trimLines(html));
+		const squire = this.squire,
+			root = squire.getRoot();
+		squire.setHTML(trimLines(html));
+		this.setCursorAt(root);
+	}
+
+	setCursorAt(node) {
+		const squire = this.squire,
+			range = squire.getSelection();
+		range.setStart(node, 0);
+		range.setEnd(node, 0);
+		squire.setSelection( range );
 	}
 
 	focus() {
