@@ -52,7 +52,6 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				}
 			}
 		} else {
-//			foreach (\glob(__DIR__ . '/../change-password-*', GLOB_ONLYDIR) as $file) {
 			foreach (\glob(__DIR__ . '/drivers/*.php') as $file) {
 				$name = \basename($file, '.php');
 				$class = 'ChangePasswordDriver' . $name;
@@ -69,6 +68,25 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				{
 					\trigger_error("ERROR {$class}: " . $oException->getMessage());
 				}
+			}
+		}
+
+		foreach (\glob(__DIR__ . '/../change-password-*', GLOB_ONLYDIR) as $file) {
+			$name = \str_replace('change-password-', '', \basename($file));
+			$class = "ChangePassword{$name}Driver";
+			$file .= '/driver.php';
+			try
+			{
+				if (\is_readable($file) && ($all || $this->Config()->Get('plugin', "driver_{$name}_enabled", false))) {
+					require_once $file;
+					if ($class::isSupported()) {
+						yield $name => $class;
+					}
+				}
+			}
+			catch (\Throwable $oException)
+			{
+				\trigger_error("ERROR {$class}: " . $oException->getMessage());
 			}
 		}
 	}

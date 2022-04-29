@@ -1,14 +1,13 @@
 <?php
 
-class ChangePasswordDriverISPConfig
+class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 {
 	const
 		NAME        = 'Poppassd',
 		DESCRIPTION = 'Change passwords using Poppassd.';
 
 	private
-		$oConfig = null,
-		$oLogger = null;
+		$oConfig = null;
 
 	function __construct(\RainLoop\Config\Plugin $oConfig, \MailSo\Log\Logger $oLogger)
 	{
@@ -44,17 +43,41 @@ class ChangePasswordDriverISPConfig
 
 		try
 		{
-			$oPoppassdClient = new PoppassdClient();
-			if ($this->oLogger) {
-				$oPoppassdClient->SetLogger($this->oLogger);
-			}
-			$oPoppassdClient->Connect(
+			$this->Connect(
 				$this->oConfig->Get('plugin', 'poppassd_host', ''),
 				(int) $this->oConfig->Get('plugin', 'poppassd_port', 106)
 			);
-			$oPoppassdClient->Login($oAccount->Login(), $sPrevPassword)
-				->NewPass($sNewPassword)
-				->Disconnect()
+
+			if ($this->bIsLoggined) {
+				$this->writeLogException(
+					new \RuntimeException('Already authenticated for this session'),
+					\MailSo\Log\Enumerations\Type::ERROR, true);
+			}
+
+			$sLogin = \trim($sLogin);
+
+			try
+			{
+				$this->sendRequestWithCheck('user', \trim($sLogin), true);
+				$this->sendRequestWithCheck('pass', $sPassword, true);
+			}
+			catch (\Throwable $oException)
+			{
+				$this->writeLogException($oException, \MailSo\Log\Enumerations\Type::NOTICE, true);
+			}
+
+			$this->bIsLoggined = true;
+
+			if ($this->bIsLoggined) {
+				$this->sendRequestWithCheck('newpass', $sNewPassword);
+			} else {
+				$this->writeLogException(
+					new \RuntimeException('Required login'),
+					\MailSo\Log\Enumerations\Type::ERROR, true);
+			}
+
+
+			$this->Disconnect()
 			;
 
 			return true;
@@ -65,10 +88,7 @@ class ChangePasswordDriverISPConfig
 
 		return false;
 	}
-}
 
-class PoppassdClient extends \MailSo\Net\NetClient
-{
 	private
 		$bIsLoggined = false,
 		$iRequestTime = 0;
@@ -83,51 +103,12 @@ class PoppassdClient extends \MailSo\Net\NetClient
 		$this->validateResponse();
 	}
 
-	public function Login(string $sLogin, string $sPassword) : self
-	{
-		if ($this->bIsLoggined) {
-			$this->writeLogException(
-				new \RuntimeException('Already authenticated for this session'),
-				\MailSo\Log\Enumerations\Type::ERROR, true);
-		}
-
-		$sLogin = \trim($sLogin);
-		$sPassword = $sPassword;
-
-		try
-		{
-			$this->sendRequestWithCheck('user', $sLogin, true);
-			$this->sendRequestWithCheck('pass', $sPassword, true);
-		}
-		catch (\Throwable $oException)
-		{
-			$this->writeLogException($oException, \MailSo\Log\Enumerations\Type::NOTICE, true);
-		}
-
-		$this->bIsLoggined = true;
-
-		return $this;
-	}
-
 	public function Logout() : void
 	{
 		if ($this->bIsLoggined) {
 			$this->sendRequestWithCheck('quit');
 		}
 		$this->bIsLoggined = false;
-	}
-
-	public function NewPass(string $sNewPassword) : self
-	{
-		if ($this->bIsLoggined) {
-			$this->sendRequestWithCheck('newpass', $sNewPassword);
-		} else {
-			$this->writeLogException(
-				new \RuntimeException('Required login'),
-				\MailSo\Log\Enumerations\Type::ERROR, true);
-		}
-
-		return $this;
 	}
 
 	private function secureRequestParams($sCommand, $sAddToCommand) : ?string
@@ -144,9 +125,10 @@ class PoppassdClient extends \MailSo\Net\NetClient
 		return null;
 	}
 
-	private function sendRequest(string $sCommand, string $sAddToCommand = '') : self
+	private function sendRequestWithCheck(string $sCommand, string $sAddToCommand = '', bool $bAuthRequestValidate = false) : void
 	{
-		if (!\strlen(\trim($sCommand))) {
+		$sCommand = \trim($sCommand);
+		if (!\strlen($sCommand)) {
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException(),
 				\MailSo\Log\Enumerations\Type::ERROR, true);
@@ -154,7 +136,6 @@ class PoppassdClient extends \MailSo\Net\NetClient
 
 		$this->IsConnected(true);
 
-		$sCommand = \trim($sCommand);
 		$sRealCommand = $sCommand . (\strlen($sAddToCommand) ? ' '.$sAddToCommand : '');
 
 		$sFakeCommand = '';
@@ -166,15 +147,7 @@ class PoppassdClient extends \MailSo\Net\NetClient
 		$this->iRequestTime = \microtime(true);
 		$this->sendRaw($sRealCommand, true, $sFakeCommand);
 
-		return $this;
-	}
-
-	private function sendRequestWithCheck(string $sCommand, string $sAddToCommand = '', bool $bAuthRequestValidate = false) : self
-	{
-		$this->sendRequest($sCommand, $sAddToCommand);
 		$this->validateResponse($bAuthRequestValidate);
-
-		return $this;
 	}
 
 	private function validateResponse(bool $bAuthRequestValidate = false) : self
