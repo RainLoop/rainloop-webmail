@@ -39,13 +39,16 @@
 		<!-- ko if: message -->
 		<div class="b-message" data-bind="i18nUpdate: message">
 			<div class="message-fixed-button-toolbar">
-				<div class="btn-group" style="margin-right: -8px">
-					<a class="btn btn-thin btn-transparent buttonReply fontastic"
-						data-bind="visible: 1 == lastReplyAction(), command: replyCommand" data-i18n="[title]MESSAGE/BUTTON_REPLY">←</a>
-					<a class="btn btn-thin btn-transparent buttonReplyAll fontastic"
-						data-bind="visible: 2 == lastReplyAction(), command: replyAllCommand" data-i18n="[title]MESSAGE/BUTTON_REPLY_ALL">↞</a>
-					<a class="btn btn-thin btn-transparent buttonForward fontastic"
-						data-bind="visible: 3 == lastReplyAction(), command: forwardCommand" data-i18n="[title]MESSAGE/BUTTON_FORWARD">→</a>
+				<a class="btn btn-success buttonEdit fontastic hide-mobile" data-bind="visible: isDraftFolder(), command: messageEditCommand">🖉</a>
+				<div class="btn-group" style="margin-right: -8px; display: inline;">
+					<span data-bind="visible: canBeRepliedOrForwarded">
+						<a class="btn btn-thin btn-transparent buttonReply fontastic"
+							data-bind="visible: 1 == lastReplyAction(), command: replyCommand" data-i18n="[title]MESSAGE/BUTTON_REPLY">←</a>
+						<a class="btn btn-thin btn-transparent buttonReplyAll fontastic"
+							data-bind="visible: 2 == lastReplyAction(), command: replyAllCommand" data-i18n="[title]MESSAGE/BUTTON_REPLY_ALL">↞</a>
+						<a class="btn btn-thin btn-transparent buttonForward fontastic"
+							data-bind="visible: 3 == lastReplyAction(), command: forwardCommand" data-i18n="[title]MESSAGE/BUTTON_FORWARD">→</a>
+					</span>
 					<div class="btn-group" data-bind="registerBootstrapDropdown: true" style="display: inline-block">
 						<a class="btn btn-thin btn-transparent dropdown-toggle fontastic" id="more-view-dropdown-id" href="#" tabindex="-1">☰</a>
 						<ul class="dropdown-menu right-edge" role="menu" aria-labelledby="more-view-dropdown-id">
@@ -66,7 +69,7 @@
 									<a href="#" tabindex="-1" data-bind="command: forwardAsAttachmentCommand" data-icon="→" data-i18n="MESSAGE/BUTTON_FORWARD_AS_ATTACHMENT"></a>
 								</li>
 							</div>
-							<div class="dividerbar">
+							<div data-bind="attr: { css: isDraftFolder() ? 'dividerbar' : ''}">
 								<li role="presentation" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled()">
 									<a href="#" tabindex="-1" data-bind="command: archiveCommand" data-icon="🗄" data-i18n="GLOBAL/TO_ARCHIVE"></a>
 								</li>
@@ -117,10 +120,6 @@
 							</div>
 						</ul>
 					</div>
-				</div>
-
-				<div class="btn-group hide-mobile" data-bind="visible: isDraftFolder()" data-i18n="[title]MESSAGE/BUTTON_EDIT" style="margin-right: 5px">
-					<a class="btn btn-success buttonEdit fontastic" data-bind="command: messageEditCommand">🖉</a>
 				</div>
 			</div>
 
