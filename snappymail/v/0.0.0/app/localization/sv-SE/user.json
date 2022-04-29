@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Textredigerare",
 		"LABEL_EDITOR_HTML": "HTML",
 		"LABEL_EDITOR_PLAIN": "Oformaterad text",
-		"LABEL_EDITOR_HTML_FORCED": "HTML (tvinga)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Oformaterad text (tvinga)",
 		"LABEL_VIEW_OPTIONS": "Visa alternativ",
 		"LABEL_USE_PREVIEW_PANE": "Avänd förhandsgranskningsfönster",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Visa kryssrutor i listan",

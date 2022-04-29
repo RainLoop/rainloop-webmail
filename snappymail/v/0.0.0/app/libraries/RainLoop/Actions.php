@@ -734,7 +734,7 @@ class Actions
 			'NotificationSound' => 'new-mail',
 			'DesktopNotifications' => true,
 			'Layout' => (int) $oConfig->Get('defaults', 'view_layout', Enumerations\Layout::SIDE_PREVIEW),
-			'EditorDefaultType' => (string) $oConfig->Get('defaults', 'view_editor_type', ''),
+			'EditorDefaultType' => \str_replace('Forced', '', $oConfig->Get('defaults', 'view_editor_type', '')),
 			'UseCheckboxesInList' => (bool) $oConfig->Get('defaults', 'view_use_checkboxes', true),
 			'AutoLogout' => (int) $oConfig->Get('defaults', 'autologout', 30),
 			'UseThreads' => (bool) $oConfig->Get('defaults', 'mail_use_threads', false),
@@ -857,7 +857,7 @@ class Actions
 						$oSettings->SetConf('MessagesPerPage', $oSettings->GetConf('MPP', $aResult['MessagesPerPage']));
 					}
 
-					$aResult['EditorDefaultType'] = (string)$oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']);
+					$aResult['EditorDefaultType'] = \str_replace('Forced', '', $oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']));
 					$aResult['ViewHTML'] = (bool)$oSettings->GetConf('ViewHTML', $aResult['ViewHTML']);
 					$aResult['ShowImages'] = (bool)$oSettings->GetConf('ShowImages', $aResult['ShowImages']);
 					$aResult['RemoveColors'] = (bool)$oSettings->GetConf('RemoveColors', $aResult['RemoveColors']);
@@ -926,9 +926,6 @@ class Actions
 
 		$aResult['StaticLibsJs'] = $this->StaticPath('js/' . ($bAppJsDebug ? '' : 'min/') .
 			'libs' . ($bAppJsDebug ? '' : '.min') . '.js');
-
-		$aResult['EditorDefaultType'] = \in_array($aResult['EditorDefaultType'], array('Plain', 'Html', 'HtmlForced', 'PlainForced'))
-			? $aResult['EditorDefaultType'] : 'Plain';
 
 		// IDN
 		$aResult['Email'] = \MailSo\Base\Utils::IdnToUtf8($aResult['Email']);

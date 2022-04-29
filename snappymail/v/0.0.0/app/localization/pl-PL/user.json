@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Format wiadomości",
 		"LABEL_EDITOR_HTML": "HTML",
 		"LABEL_EDITOR_PLAIN": "zwykły tekst",
-		"LABEL_EDITOR_HTML_FORCED": "HTML (wymuszony)",
-		"LABEL_EDITOR_PLAIN_FORCED": "zwykły tekst (wymuszony)",
 		"LABEL_VIEW_OPTIONS": "Opcje wyświetlania",
 		"LABEL_USE_PREVIEW_PANE": "Wyświetl okno podglądu",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Pokazuj pola zaznaczenia na listach",

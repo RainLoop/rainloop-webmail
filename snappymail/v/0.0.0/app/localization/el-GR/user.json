@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Προεπιλεγμένος συντάκτης κειμένου",
 		"LABEL_EDITOR_HTML": "Html",
 		"LABEL_EDITOR_PLAIN": "Απλό",
-		"LABEL_EDITOR_HTML_FORCED": "Html (επιβολή)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Απλό (επιβολή)",
 		"LABEL_VIEW_OPTIONS": "Επιλογές προβολής",
 		"LABEL_USE_PREVIEW_PANE": "Χρήση προεπισκόπησης ",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Εμφάνιση των κουτιών επιλογής σε λίστα",

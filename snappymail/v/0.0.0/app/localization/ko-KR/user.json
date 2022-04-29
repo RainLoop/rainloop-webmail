@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "기본 텍스트 편집기",
 		"LABEL_EDITOR_HTML": "HTML",
 		"LABEL_EDITOR_PLAIN": "평문",
-		"LABEL_EDITOR_HTML_FORCED": "HTML (강제 적용)",
-		"LABEL_EDITOR_PLAIN_FORCED": "평문 (강제 적용)",
 		"LABEL_VIEW_OPTIONS": "보기 옵션",
 		"LABEL_USE_PREVIEW_PANE": "미리보기 창 사용",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "목록에서 확인상자 표시",

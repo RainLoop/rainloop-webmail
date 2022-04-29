@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Privzeta vrsta besedila",
 		"LABEL_EDITOR_HTML": "HTML",
 		"LABEL_EDITOR_PLAIN": "Navadno besedilo",
-		"LABEL_EDITOR_HTML_FORCED": "HTML (obvezno)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Navadno besedilo (obvezno)",
 		"LABEL_VIEW_OPTIONS": "Možnosti ogleda",
 		"LABEL_USE_PREVIEW_PANE": "Uporabi polje za predogled",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Na seznamu pokaži kvadratke za izbor",

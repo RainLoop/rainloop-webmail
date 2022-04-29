@@ -105,9 +105,7 @@ export const MessagePriority = {
  */
 export const EditorDefaultType = {
 	Html: 'Html',
-	Plain: 'Plain',
-	HtmlForced: 'HtmlForced',
-	PlainForced: 'PlainForced'
+	Plain: 'Plain'
 };
 
 /**

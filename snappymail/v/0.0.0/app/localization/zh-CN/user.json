@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "默认格式",
 		"LABEL_EDITOR_HTML": "html文本",
 		"LABEL_EDITOR_PLAIN": "普通文本",
-		"LABEL_EDITOR_HTML_FORCED": "强制HTML文本",
-		"LABEL_EDITOR_PLAIN_FORCED": "强制普通文本",
 		"LABEL_VIEW_OPTIONS": "视图选项",
 		"LABEL_USE_PREVIEW_PANE": "使用预览",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "列表中显示多选框",

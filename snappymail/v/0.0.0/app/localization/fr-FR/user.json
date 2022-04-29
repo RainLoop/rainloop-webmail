@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Éditeur de texte par défaut",
 		"LABEL_EDITOR_HTML": "HTML",
 		"LABEL_EDITOR_PLAIN": "Non-formaté",
-		"LABEL_EDITOR_HTML_FORCED": "HTML (forcé)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Non-formaté (forcé)",
 		"LABEL_VIEW_OPTIONS": "Voir les options",
 		"LABEL_USE_PREVIEW_PANE": "Utiliser le panneau de prévisualisation",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Afficher des cases à cocher dans la liste",

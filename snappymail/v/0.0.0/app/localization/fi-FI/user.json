@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Oletus tekstieditori",
 		"LABEL_EDITOR_HTML": "Html",
 		"LABEL_EDITOR_PLAIN": "Pelkkä teksti",
-		"LABEL_EDITOR_HTML_FORCED": "Html (pakotettu)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Pelkkä teksti (pakotettu)",
 		"LABEL_VIEW_OPTIONS": "Näyttö-valinnat",
 		"LABEL_USE_PREVIEW_PANE": "Käytä esikatselua",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Näytä valintaruudut listassa",

@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Standaard tekst editor",
 		"LABEL_EDITOR_HTML": "HTML",
 		"LABEL_EDITOR_PLAIN": "Platte tekst",
-		"LABEL_EDITOR_HTML_FORCED": "Html (geforceerd)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Platte tekst (geforceerd)",
 		"LABEL_VIEW_OPTIONS": "Bekijk opties",
 		"LABEL_USE_PREVIEW_PANE": "Toon leesvenster",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Toon selectievakjes in de lijst",

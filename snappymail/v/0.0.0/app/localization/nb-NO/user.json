@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Standard tekstbehandler",
 		"LABEL_EDITOR_HTML": "Html",
 		"LABEL_EDITOR_PLAIN": "Ren tekst",
-		"LABEL_EDITOR_HTML_FORCED": "Html (tvungen)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Ren tekst (tvungen)",
 		"LABEL_VIEW_OPTIONS": "Vis valg",
 		"LABEL_USE_PREVIEW_PANE": "Bruk forhåndsvisningsrute",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Vis avkrysningsbokser i liste",

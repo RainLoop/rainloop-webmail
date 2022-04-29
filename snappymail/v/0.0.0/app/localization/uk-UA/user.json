@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Редактор тексту за змовчуванням",
 		"LABEL_EDITOR_HTML": "Форматований",
 		"LABEL_EDITOR_PLAIN": "Простий",
-		"LABEL_EDITOR_HTML_FORCED": "Html (forced)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Plain (forced)",
 		"LABEL_VIEW_OPTIONS": "Відображення",
 		"LABEL_USE_PREVIEW_PANE": "Використовувати трьохколонний режим відображення",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Показувати чекбокси у списках",

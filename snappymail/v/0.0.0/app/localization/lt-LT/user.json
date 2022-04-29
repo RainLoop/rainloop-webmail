@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Numatytas teksto redaktorius",
 		"LABEL_EDITOR_HTML": "Html",
 		"LABEL_EDITOR_PLAIN": "Paprastas",
-		"LABEL_EDITOR_HTML_FORCED": "Html (priverstinis)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Paprastas (priverstinis)",
 		"LABEL_VIEW_OPTIONS": "Peržiūros parinktys",
 		"LABEL_USE_PREVIEW_PANE": "Naudokite peržiūros sritį",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Rodyti žymėjimo langelius sąraše",

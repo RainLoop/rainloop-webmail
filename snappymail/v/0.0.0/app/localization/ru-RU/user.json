@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Редактор текста по умолчанию",
 		"LABEL_EDITOR_HTML": "Форматированный",
 		"LABEL_EDITOR_PLAIN": "Простой",
-		"LABEL_EDITOR_HTML_FORCED": "Форматированный (форсированный)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Простой (форсированный)",
 		"LABEL_VIEW_OPTIONS": "Отображение",
 		"LABEL_USE_PREVIEW_PANE": "Использовать трехколоночный режим отображения",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Показывать чекбоксы в списках",

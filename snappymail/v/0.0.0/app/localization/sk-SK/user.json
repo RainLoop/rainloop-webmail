@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Predvolený editor správ",
 		"LABEL_EDITOR_HTML": "Html",
 		"LABEL_EDITOR_PLAIN": "Text",
-		"LABEL_EDITOR_HTML_FORCED": "Html (forced)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Plain (forced)",
 		"LABEL_VIEW_OPTIONS": "Možnosti zobrazenia",
 		"LABEL_USE_PREVIEW_PANE": "Používať panel rýchleho zobrazenia",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Zobrazenie zaštkrtávacích políčok v zozname",

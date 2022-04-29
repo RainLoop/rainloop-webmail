@@ -18,9 +18,7 @@ export const SettingsUserStore = new class {
 		self.editorDefaultType = ko.observable('Html').extend({
 			limitedList: [
 				EditorDefaultType.Html,
-				EditorDefaultType.Plain,
-				EditorDefaultType.HtmlForced,
-				EditorDefaultType.PlainForced
+				EditorDefaultType.Plain
 			]
 		});
 

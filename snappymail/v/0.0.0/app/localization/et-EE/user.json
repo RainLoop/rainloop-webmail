@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Vaikimisi tekstiredaktor",
 		"LABEL_EDITOR_HTML": "HTML",
 		"LABEL_EDITOR_PLAIN": "Lihttekst",
-		"LABEL_EDITOR_HTML_FORCED": "HTML (kohustuslik)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Lihttekst (kohustuslik)",
 		"LABEL_VIEW_OPTIONS": "Vaate seaded",
 		"LABEL_USE_PREVIEW_PANE": "Kasuta eelvaadet",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Kuva nimekirjas valikukastikesi",

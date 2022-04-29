@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Galvenais teksta editors",
 		"LABEL_EDITOR_HTML": "Html",
 		"LABEL_EDITOR_PLAIN": "Teksts",
-		"LABEL_EDITOR_HTML_FORCED": "Html (forced)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Plain (forced)",
 		"LABEL_VIEW_OPTIONS": "Apskates opcijas",
 		"LABEL_USE_PREVIEW_PANE": "Lietot priekšskatu",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Rādīt checkboxes sarakstā",

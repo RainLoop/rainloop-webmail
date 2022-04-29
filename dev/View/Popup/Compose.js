@@ -124,7 +124,7 @@ const
 
 	isPlainEditor = () => {
 		let type = SettingsUserStore.editorDefaultType();
-		return EditorDefaultType.Html !== type && EditorDefaultType.HtmlForced !== type;
+		return EditorDefaultType.Html !== type;
 	},
 
 	/**
@@ -1079,8 +1079,8 @@ export class ComposePopupView extends AbstractViewPopup {
 				encrypted || editor.setHtml(sText);
 
 				if (encrypted
-					|| EditorDefaultType.PlainForced === SettingsUserStore.editorDefaultType()
-					|| (!message.isHtml() && EditorDefaultType.HtmlForced !== SettingsUserStore.editorDefaultType())
+					|| EditorDefaultType.Plain === SettingsUserStore.editorDefaultType()
+					|| !message.isHtml()
 				) {
 					editor.modePlain();
 				}

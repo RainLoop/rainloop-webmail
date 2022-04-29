@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "ویرایشگر پیش‌فرض",
 		"LABEL_EDITOR_HTML": "تحت فرمت Html",
 		"LABEL_EDITOR_PLAIN": "ساده",
-		"LABEL_EDITOR_HTML_FORCED": "Html (اجباری)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Plain (اجباری)",
 		"LABEL_VIEW_OPTIONS": "مشاهده گزینه‌ها",
 		"LABEL_USE_PREVIEW_PANE": "استفاده از پنجره پیش‌نمایش",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "نمایش چک‌باکس در لیست",

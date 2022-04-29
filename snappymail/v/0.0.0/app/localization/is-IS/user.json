@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Sjálfgefinn textaritill",
 		"LABEL_EDITOR_HTML": "HTML",
 		"LABEL_EDITOR_PLAIN": "Venjulegt",
-		"LABEL_EDITOR_HTML_FORCED": "HTML (þvingað)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Einfalt (þvingað)",
 		"LABEL_VIEW_OPTIONS": "Valkostir skoðunar",
 		"LABEL_USE_PREVIEW_PANE": "Nota forskoðunarham",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Sýna valkassa í listanum",

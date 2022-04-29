@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "メール形式",
 		"LABEL_EDITOR_HTML": "Html",
 		"LABEL_EDITOR_PLAIN": "プレーンテキスト",
-		"LABEL_EDITOR_HTML_FORCED": "Html (強制)",
-		"LABEL_EDITOR_PLAIN_FORCED": "プレーンテキスト (強制)",
 		"LABEL_VIEW_OPTIONS": "表示",
 		"LABEL_USE_PREVIEW_PANE": "プレビューペインを使用する",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "リストにチェックボックスを表示",

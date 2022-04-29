@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Текстов редактор по подразбиране",
 		"LABEL_EDITOR_HTML": "HTML",
 		"LABEL_EDITOR_PLAIN": "Чист текст",
-		"LABEL_EDITOR_HTML_FORCED": "HTML (задължително)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Чист текст (задължително)",
 		"LABEL_VIEW_OPTIONS": "Настройки на изгледа",
 		"LABEL_USE_PREVIEW_PANE": "Използвай поле за преглед",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Показавай отметките в списъка",

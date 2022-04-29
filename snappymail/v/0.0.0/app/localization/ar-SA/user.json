@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "المحرر النصي الأساسي",
 		"LABEL_EDITOR_HTML": "Html",
 		"LABEL_EDITOR_PLAIN": "عادي",
-		"LABEL_EDITOR_HTML_FORCED": "Html (إجباري)",
-		"LABEL_EDITOR_PLAIN_FORCED": "عادي (إجباري)",
 		"LABEL_VIEW_OPTIONS": "إظهار الخيارات",
 		"LABEL_USE_PREVIEW_PANE": "استخدام جزئية العرض الجانبي",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "عرض مربعات التحديد في القائمة",

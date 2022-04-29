@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Standard-Texteditor",
 		"LABEL_EDITOR_HTML": "HTML",
 		"LABEL_EDITOR_PLAIN": "Unformatierter Text",
-		"LABEL_EDITOR_HTML_FORCED": "HTML (erzwungen)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Unformatierter Text (erzwungen)",
 		"LABEL_VIEW_OPTIONS": "Optionen anzeigen",
 		"LABEL_USE_PREVIEW_PANE": "Vorschaufenster nutzen",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Kontrollkästchen in der Liste anzeigen",

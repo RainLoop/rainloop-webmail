@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Editor de texto predeterminado",
 		"LABEL_EDITOR_HTML": "HTML",
 		"LABEL_EDITOR_PLAIN": "Texto plano",
-		"LABEL_EDITOR_HTML_FORCED": "Html (forzado)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Texto plano (forzado)",
 		"LABEL_VIEW_OPTIONS": "Ver opciones",
 		"LABEL_USE_PREVIEW_PANE": "Utilice el panel de vista previa",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Mostrar casillas de verificación en la lista",

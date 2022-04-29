@@ -380,8 +380,6 @@
 		"LABEL_EDITOR": "Alapértelmezett szövegszerkesztő",
 		"LABEL_EDITOR_HTML": "HTML",
 		"LABEL_EDITOR_PLAIN": "Egyszerű",
-		"LABEL_EDITOR_HTML_FORCED": "HTML (kényszerített)",
-		"LABEL_EDITOR_PLAIN_FORCED": "Egyszerű (kényszerített)",
 		"LABEL_VIEW_OPTIONS": "Nézet beállítások",
 		"LABEL_USE_PREVIEW_PANE": "Előnézeti ablak használata",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Jelölőnégyzetek megjelenítése a listában",
