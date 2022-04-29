@@ -117,7 +117,12 @@
 				this.newPassword('');
 				this.newPassword2('');
 				this.passwordUpdateSuccess(true);
+/*
+				const refresh = rl.app.refresh;
+				rl.app.refresh = ()=>{};
 				rl.setData(data.Result);
+				rl.app.refresh = refresh;
+*/
 			}
 		}
 	}
