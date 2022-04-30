@@ -37,7 +37,7 @@ foreach (glob(ROOT_DIR . '/plugins/*', GLOB_NOSORT | GLOB_ONLYDIR) as $dir) {
 			echo "+ {$name} {$version}\n";
 			$manifest_item['type'] = 'plugin';
 			$manifest_item['id']   = $name;
-			$manifest_item['file'] = "{$dir}-{$version}.tgz";
+			$manifest_item['file'] = "plugins/{$name}-{$version}.tgz";
 			ksort($manifest_item);
 			$manifest[$name] = $manifest_item;
 			$tar_destination = PLUGINS_DEST_DIR . "/{$name}-{$version}.tar";
