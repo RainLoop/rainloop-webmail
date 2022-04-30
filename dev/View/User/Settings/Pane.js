@@ -25,7 +25,7 @@ export class SettingsPaneUserView extends AbstractViewRight {
 		);
 	}
 
-	backToMailBoxClick() {
+	backToInbox() {
 		hasher.setHash(mailbox(getFolderInboxName()));
 	}
 }
