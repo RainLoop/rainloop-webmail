@@ -59,7 +59,7 @@ window.rl = {
 					: doc.addEventListener('readystatechange', () => 'complete' == doc.readyState && cb())
 			)
 			.catch(e => {
-				showError(e.message);
+				showError(e);
 				throw e;
 			});
 	},
