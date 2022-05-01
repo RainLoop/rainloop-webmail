@@ -88,6 +88,7 @@ class MessageCollection extends \MailSo\Base\Collection
 		throw new \BadMethodCallException('disallowed');
 	}
 
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 		return array_merge(parent::jsonSerialize(), array(

@@ -163,6 +163,7 @@ class Attachment implements \JsonSerializable
 		return $this;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 		return array(

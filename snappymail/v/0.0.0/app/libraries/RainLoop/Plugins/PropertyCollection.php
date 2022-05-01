@@ -15,6 +15,7 @@ class PropertyCollection extends \ArrayObject implements \JsonSerializable
 		$this->sLabel = $sLabel;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 		return array(

@@ -588,6 +588,7 @@ class Contact implements \JsonSerializable
 		return true;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 		$properties = array();

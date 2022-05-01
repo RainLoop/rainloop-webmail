@@ -31,6 +31,7 @@ class Tag implements \JsonSerializable
 		$this->ReadOnly = false;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 		return array(

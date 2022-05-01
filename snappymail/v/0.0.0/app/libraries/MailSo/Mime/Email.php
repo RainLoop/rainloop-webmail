@@ -254,6 +254,7 @@ class Email implements \JsonSerializable
 		return \trim($sReturn);
 	}
 
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 		return array(

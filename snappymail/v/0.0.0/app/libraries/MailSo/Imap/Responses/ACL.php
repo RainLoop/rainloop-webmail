@@ -40,6 +40,7 @@ class ACL implements \JsonSerializable
 		return \in_array($right, $this->rights);
 	}
 
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 		return $this->rights;

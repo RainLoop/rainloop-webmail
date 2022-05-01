@@ -625,6 +625,7 @@ class Message implements \JsonSerializable
 		return $oMessage;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 		return array(

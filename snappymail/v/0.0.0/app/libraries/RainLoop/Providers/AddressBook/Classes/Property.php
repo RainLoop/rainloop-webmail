@@ -146,6 +146,7 @@ class Property implements \JsonSerializable
 		}
 	}
 
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 		// Simple hack

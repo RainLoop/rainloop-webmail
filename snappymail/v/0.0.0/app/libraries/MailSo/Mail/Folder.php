@@ -201,6 +201,7 @@ class Folder implements \JsonSerializable
 		return $this->oImapFolder->GetMetadata($sName);
 	}
 
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 /*

@@ -151,6 +151,7 @@ class Property implements \JsonSerializable
 		return $this->sPlaceholder;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 		return array(

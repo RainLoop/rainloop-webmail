@@ -74,6 +74,7 @@ class FilterCondition implements \JsonSerializable
 		return $aResult;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 		return array(

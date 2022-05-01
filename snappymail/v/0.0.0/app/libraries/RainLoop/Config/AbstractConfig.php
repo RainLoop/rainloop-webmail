@@ -55,6 +55,7 @@ abstract class AbstractConfig implements \JsonSerializable
 		return \is_array($this->aData) && \count($this->aData);
 	}
 
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 		return $this->aData;

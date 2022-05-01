@@ -204,6 +204,7 @@ class Filter implements \JsonSerializable
 		return !empty($this->aConditions);
 	}
 
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 		return array(

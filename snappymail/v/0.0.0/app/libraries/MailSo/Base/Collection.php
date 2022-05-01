@@ -74,6 +74,7 @@ abstract class Collection extends \ArrayObject implements \JsonSerializable
 		return $this;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 		$aNames = \explode('\\', \get_class($this));

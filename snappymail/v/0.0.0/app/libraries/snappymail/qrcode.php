@@ -654,10 +654,8 @@ abstract class QRUtil {
 				}
 			}
 		}
-		$ratio = \abs(100 * $darkCount / $moduleCount / $moduleCount - 50) / 5;
-		$lostPoint += $ratio * 10;
 
-		return $lostPoint;
+		return $lostPoint + \intval(\abs(100 * $darkCount / $moduleCount / $moduleCount - 50) * 10 / 5);
 	}
 
 	static function getBCHTypeInfo($data)

@@ -130,6 +130,7 @@ abstract class Account implements \JsonSerializable
 		$this->sProxyAuthPassword = $sProxyAuthPassword;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 		return array(
