@@ -4,9 +4,10 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Contacts suggestions (LDAP)',
-		VERSION = '2.1',
+		VERSION = '2.9',
 		CATEGORY = 'Security',
-		DESCRIPTION = 'Get contacts suggestions from LDAP.';
+		DESCRIPTION = 'Get contacts suggestions from LDAP.',
+		REQUIRED = '2.9.1';
 
 	public function Init() : void
 	{
