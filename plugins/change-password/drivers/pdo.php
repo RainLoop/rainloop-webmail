@@ -107,6 +107,7 @@ class ChangePasswordDriverPDO
 		}
 		catch (\Exception $oException)
 		{
+			\SnappyMail\Log::error('change-password', $oException->getMessage());
 			if ($this->oLogger) {
 				$this->oLogger->WriteException($oException);
 			}

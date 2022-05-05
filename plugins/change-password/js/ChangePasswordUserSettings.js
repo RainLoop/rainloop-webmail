@@ -63,9 +63,28 @@
 			} else {
 				this.reset(true);
 				rl.pluginRemoteRequest(
-					(...args) => {
-						console.dir(...args);
-						this.onChangePasswordResponse(...args);
+					(iError, data) {
+						this.reset(false);
+						if (iError) {
+							this.passwordUpdateError(true);
+							if (131 === iError) {
+								// Notification.CurrentPasswordIncorrect
+								this.currentPasswordError(true);
+							}
+							this.errorDescription((data && rl.i18n(data.ErrorMessageAdditional))
+								|| rl.i18n('NOTIFICATIONS/COULD_NOT_SAVE_NEW_PASSWORD'));
+						} else {
+							this.currentPassword('');
+							this.newPassword('');
+							this.newPassword2('');
+							this.passwordUpdateSuccess(true);
+/*
+							const refresh = rl.app.refresh;
+							rl.app.refresh = ()=>{};
+							rl.setData(data.Result);
+							rl.app.refresh = refresh;
+*/
+						}
 					},
 					'ChangePassword',
 					{
@@ -100,30 +119,6 @@
 			this.currentPassword('');
 			this.newPassword('');
 			this.newPassword2('');
-		}
-
-		onChangePasswordResponse(iError, data) {
-			this.reset(false);
-			if (iError) {
-				this.passwordUpdateError(true);
-				if (131 === iError) {
-					// Notification.CurrentPasswordIncorrect
-					this.currentPasswordError(true);
-				}
-				this.errorDescription((data && rl.i18n(data.ErrorMessageAdditional))
-					|| rl.i18n('NOTIFICATIONS/COULD_NOT_SAVE_NEW_PASSWORD'));
-			} else {
-				this.currentPassword('');
-				this.newPassword('');
-				this.newPassword2('');
-				this.passwordUpdateSuccess(true);
-/*
-				const refresh = rl.app.refresh;
-				rl.app.refresh = ()=>{};
-				rl.setData(data.Result);
-				rl.app.refresh = refresh;
-*/
-			}
 		}
 	}
 
