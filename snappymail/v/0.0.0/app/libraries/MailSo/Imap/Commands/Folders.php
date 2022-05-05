@@ -504,8 +504,9 @@ trait Folders
 		}
 
 		// RFC 5464
-		if ($bMetadata && !$aMetadata) {
+		if ($bMetadata && !$aMetadata /*&& 50 < \count($aReturn)*/) {
 			foreach ($aReturn as $oFolder) {
+//				if (2 > \substr_count($oFolder->FullName(), $oFolder->Delimiter()))
 				try {
 					$oFolder->SetAllMetadata(
 						$this->getMetadata($oFolder->FullName(), ['/shared', '/private'], ['DEPTH'=>'infinity'])
