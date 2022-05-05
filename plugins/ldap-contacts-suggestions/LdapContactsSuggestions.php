@@ -224,8 +224,8 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 				'{email:domain}' => $sDomain,
 				'{login}' => $oAccount->Login(),
 				'{imap:login}' => $oAccount->Login(),
-				'{imap:host}' => $oAccount->DomainIncHost(),
-				'{imap:port}' => $oAccount->DomainIncPort()
+				'{imap:host}' => $oAccount->Domain()->IncHost(),
+				'{imap:port}' => $oAccount->Domain()->IncPort()
 			));
 
 			$aObjectClasses = empty($this->sObjectClasses) ? array() : \explode(',', $this->sObjectClasses);
