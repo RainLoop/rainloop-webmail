@@ -94,7 +94,7 @@ Supported are:
 
 * Chrome 69+
 * Edge 79+
-* Firefox 69+
+* Firefox 78+
 * Opera 56+
 * Safari 12+
 
