@@ -105,9 +105,6 @@ class Folder
 		return 'INBOX' === \strtoupper($this->sFullName) || \in_array('\\inbox', $this->aFlagsLowerCase);
 	}
 
-	/**
-	 * @param mixed $mData
-	 */
 	public function SetMetadata(string $sName, string $sData) : void
 	{
 		$this->aMetadata[$sName] = $sData;
@@ -118,17 +115,11 @@ class Folder
 		$this->aMetadata = $aMetadata;
 	}
 
-	/**
-	 * @return mixed
-	 */
 	public function GetMetadata(string $sName) : ?string
 	{
 		return isset($this->aMetadata[$sName]) ? $this->aMetadata[$sName] : null;
 	}
 
-	/**
-	 * @return array
-	 */
 	public function Metadata() : array
 	{
 		return $this->aMetadata;

@@ -67,6 +67,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @var bool
 	 */
 	public $__FORCE_SELECT_ON_EXAMINE__ = false;
+	public $__DISABLE_METADATA = false;
 
 	/**
 	 * @var bool
@@ -92,7 +93,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl, $bAllowSelfSigned, $sClientCert);
 
-		$this->aCapabilityItems = $this->getResponse('*')->getCapabilityResult();
+		$this->setCapabilities($this->getResponse('*'));
 
 		if ($this->IsSupported('STARTTLS') && \MailSo\Net\Enumerations\ConnectionSecurityType::UseStartTLS($this->iSecurityType))
 		{
@@ -225,7 +226,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					));
 			}
 
-			$this->aCapabilityItems = $oResponse->getCapabilityResult();
+			$this->setCapabilities($oResponse);
 
 			if (\strlen($sProxyAuthUser))
 			{
@@ -285,10 +286,19 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function Capability() : ?array
 	{
 		if (!$this->aCapabilityItems) {
-			$this->aCapabilityItems = $this->SendRequestGetResponse('CAPABILITY')
-				->getCapabilityResult();
+			$this->setCapabilities($this->SendRequestGetResponse('CAPABILITY'));
 		}
 		return $this->aCapabilityItems;
+	}
+
+	private function setCapabilities(ResponseCollection $oResponseCollection) : void
+	{
+		$aList = $oResponseCollection->getCapabilityResult();
+		if ($aList && $this->__DISABLE_METADATA) {
+			// Issue #365: Many folders on Cyrus IMAP breaks login
+			$aList = \array_diff($aList, ['METADATA']);
+		}
+		$this->aCapabilityItems = $aList;
 	}
 
 	/**

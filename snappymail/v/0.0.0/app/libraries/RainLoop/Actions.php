@@ -1234,6 +1234,7 @@ class Actions
 			}
 
 			$this->MailClient()->ImapClient()->__FORCE_SELECT_ON_EXAMINE__ = !!$this->oConfig->Get('labs', 'use_imap_force_selection');
+			$this->MailClient()->ImapClient()->__DISABLE_METADATA = !!$this->oConfig->Get('labs', 'imap_disable_metadata');
 		}
 
 		return $oAccount;
