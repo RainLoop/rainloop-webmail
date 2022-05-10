@@ -202,7 +202,7 @@ export class EmailAddressesComponent {
 	_resizeInput() {
 		let input = this.input;
 		if (input.clientWidth < input.scrollWidth) {
-			input.style.width = Math.min(500, Math.max(200, input.scrollWidth)) + 'px';
+			input.style.width = (input.scrollWidth + 20) + 'px';
 		}
 	}
 
