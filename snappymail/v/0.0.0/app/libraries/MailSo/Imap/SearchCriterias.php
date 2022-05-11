@@ -293,7 +293,7 @@ abstract class SearchCriterias
 		return $sCriteriasResult ?: 'ALL';
 	}
 
-	private static function escapeSearchString(\MailSo\Imap\ImapClient $oImapClient, string $sSearch) : string
+	public static function escapeSearchString(\MailSo\Imap\ImapClient $oImapClient, string $sSearch) : string
 	{
 		return !\MailSo\Base\Utils::IsAscii($sSearch)
 			? '{'.\strlen($sSearch).'}'."\r\n".$sSearch : $oImapClient->EscapeString($sSearch);

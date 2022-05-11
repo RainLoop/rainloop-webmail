@@ -180,44 +180,20 @@ class Contact implements \JsonSerializable
 		return $this->IdContactStr.'.vcf';
 	}
 
-	public function ToVCard(string $sPreVCard = '', $oLogger = null) : string
+	public function GetUID() : string
 	{
-		$this->UpdateDependentValues();
-
-		if ("\xef\xbb\xbf" === \substr($sPreVCard, 0, 3))
-		{
-			$sPreVCard = \substr($sPreVCard, 3);
-		}
-
-		$oVCard = null;
-		if (\strlen($sPreVCard))
-		{
-			try
-			{
-				$oVCard = \Sabre\VObject\Reader::read($sPreVCard);
-			}
-			catch (\Throwable $oExc)
-			{
-				if ($oLogger)
-				{
-					$oLogger->WriteException($oExc);
-					$oLogger->WriteDump($sPreVCard);
-				}
+		foreach ($this->Properties as $oProperty) {
+			if ($oProperty && PropertyType::UID == $oProperty->Type) {
+				return $oProperty->Value;
 			}
 		}
+		return $this->IdContactStr;
+	}
 
-//		if ($oLogger)
-//		{
-//			$oLogger->WriteDump($sPreVCard);
-//		}
-
-		if (!$oVCard)
-		{
-			$oVCard = new \Sabre\VObject\Component\VCard();
-		}
-
+	private function fillVCard(\Sabre\VObject\Component\VCard $oVCard) : void
+	{
 		$oVCard->VERSION = '3.0';
-		$oVCard->PRODID = '-//RainLoop//'.APP_VERSION.'//EN';
+		$oVCard->PRODID = '-//SnappyMail//'.APP_VERSION.'//EN';
 
 		unset($oVCard->FN, $oVCard->EMAIL, $oVCard->TEL, $oVCard->URL, $oVCard->NICKNAME);
 
@@ -282,8 +258,68 @@ class Contact implements \JsonSerializable
 		$oVCard->UID = empty($sUid) ? $this->IdContactStr : $sUid;
 		$oVCard->N = array($sLastName, $sFirstName, $sMiddleName, $sPrefix, $sSuffix);
 		$oVCard->REV = \gmdate('Ymd', $this->Changed).'T'.\gmdate('His', $this->Changed).'Z';
+	}
+
+	public function ToVCard(string $sPreVCard = '', $oLogger = null) : string
+	{
+		$this->UpdateDependentValues();
+
+		if ("\xef\xbb\xbf" === \substr($sPreVCard, 0, 3)) {
+			$sPreVCard = \substr($sPreVCard, 3);
+		}
+
+		$oVCard = null;
+
+		if (\strlen($sPreVCard)) {
+			try
+			{
+				$oVCard = \Sabre\VObject\Reader::read($sPreVCard);
+			}
+			catch (\Throwable $oExc)
+			{
+				if ($oLogger) {
+					$oLogger->WriteException($oExc);
+					$oLogger->WriteDump($sPreVCard);
+				}
+			}
+		}
+
+//		if ($oLogger) {
+//			$oLogger->WriteDump($sPreVCard);
+//		}
+
+		$oVCard = $oVCard ?: new \Sabre\VObject\Component\VCard();
+
+		$this->fillVCard($oVCard);
 
 		return (string) $oVCard->serialize();
+	}
+
+	public function ToXCard(string $sPreVCard = '', $oLogger = null) : string
+	{
+		$this->UpdateDependentValues();
+
+		$oVCard = null;
+
+		if (\strlen($sPreVCard)) {
+			try
+			{
+				$oVCard = \Sabre\VObject\Reader::readXML($sPreVCard);
+			}
+			catch (\Throwable $oExc)
+			{
+				if ($oLogger) {
+					$oLogger->WriteException($oExc);
+					$oLogger->WriteDump($sPreVCard);
+				}
+			}
+		}
+
+		$oVCard = $oVCard ?: new \Sabre\VObject\Component\VCard();
+
+		$this->fillVCard($oVCard);
+
+		return (string) \Sabre\VObject\Writer::writeXml($oVCard);
 	}
 
 	public function ToCsv(bool $bWithHeader = false) : string

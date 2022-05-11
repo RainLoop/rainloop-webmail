@@ -14,9 +14,9 @@ interface AddressBookInterface
 
 	public function ContactSave(string $sEmail, Classes\Contact $oContact) : bool;
 
-	public function DeleteContacts(string $sEmail, array $aContactIds, bool $bSyncDb = true) : bool;
+	public function DeleteContacts(string $sEmail, array $aContactIds) : bool;
 
-	public function DeleteAllContacts(string $sEmail, bool $bSyncDb = true) : bool;
+	public function DeleteAllContacts(string $sEmail) : bool;
 
 	public function GetContacts(string $sEmail, int $iOffset = 0, int $iLimit = 20, string $sSearch = '', int &$iResultCount = 0) : array;
 

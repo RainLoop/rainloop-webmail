@@ -267,6 +267,7 @@ class Actions
 						$sDsn = $sDsnType . ':' . \preg_replace('/^[a-z]+:/', '', $sDsn);
 					}
 					$mResult = new Providers\AddressBook\PdoAddressBook($sDsn, $sUser, $sPassword, $sDsnType);
+//					$mResult = new Providers\AddressBook\KolabAddressBook($this->MailClient()->ImapClient());
 					break;
 				case 'identities':
 				case 'suggestions':

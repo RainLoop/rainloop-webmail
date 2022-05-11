@@ -308,7 +308,7 @@ class PdoAddressBook
 		$bCsvHeader = true;
 
 		$aDatabaseSyncData = $this->prepareDatabaseSyncData($iUserID);
-		if (\is_array($aDatabaseSyncData) && \count($aDatabaseSyncData))
+		if (\count($aDatabaseSyncData))
 		{
 			foreach ($aDatabaseSyncData as $mData)
 			{
@@ -476,12 +476,9 @@ class PdoAddressBook
 		return true;
 	}
 
-	public function DeleteAllContacts(string $sEmail, bool $bSyncDb = true) : bool
+	public function DeleteAllContacts(string $sEmail) : bool
 	{
-		if ($bSyncDb)
-		{
-			$this->SyncDatabase();
-		}
+		$this->SyncDatabase();
 
 		$iUserID = $this->getUserId($sEmail);
 
