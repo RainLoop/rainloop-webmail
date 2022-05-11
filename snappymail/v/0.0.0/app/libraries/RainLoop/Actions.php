@@ -663,8 +663,6 @@ class Actions
 		return \array_merge(array(
 			'version' => APP_VERSION,
 			'admin' => $bAdmin,
-			'webPath' => Utils::WebPath(),
-			'webVersionPath' => Utils::WebVersionPath(),
 			'token' => $oConfig->Get('security', 'csrf_protection', false) ? Utils::GetCsrfToken() : '',
 			'inIframe' => (bool)$oConfig->Get('labs', 'in_iframe', false),
 			'allowHtmlEditorBitiButtons' => (bool)$oConfig->Get('labs', 'allow_html_editor_biti_buttons', false),

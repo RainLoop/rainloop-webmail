@@ -5,7 +5,7 @@ const
 	HASH_PREFIX = '#/',
 	SERVER_PREFIX = './?',
 	VERSION = Settings.app('version'),
-	VERSION_PREFIX = () => Settings.app('webVersionPath') || 'snappymail/v/' + VERSION + '/',
+	VERSION_PREFIX = 'snappymail/v/' + VERSION + '/',
 
 	adminPath = () => rl.adminArea() && !Settings.app('adminHostUse'),
 
@@ -68,17 +68,17 @@ export const
 	 * @param {string} path
 	 * @returns {string}
 	 */
-	staticLink = path => VERSION_PREFIX() + 'static/' + path,
+	staticLink = path => VERSION_PREFIX + 'static/' + path,
 
 	/**
 	 * @param {string} theme
 	 * @returns {string}
 	 */
 	themePreviewLink = theme => {
-		let prefix = VERSION_PREFIX();
+		let prefix = VERSION_PREFIX;
 		if ('@custom' === theme.slice(-7)) {
 			theme = theme.slice(0, theme.length - 7).trim();
-			prefix = Settings.app('webPath') || '';
+			prefix = '';
 		}
 
 		return prefix + 'themes/' + encodeURI(theme) + '/images/preview.png';
