@@ -172,7 +172,7 @@ class ServiceActions
 		{
 			\SnappyMail\Log::warning('SERVICE', $oException->getMessage());
 			if ($e = $oException->getPrevious()) {
-				\SnappyMail\Log::warning('SERVICE', "\t{$e->getMessage()} @ {$e->getFile()}#{$e->getLine()}");
+				\SnappyMail\Log::warning('SERVICE', "- {$e->getMessage()} @ {$e->getFile()}#{$e->getLine()}");
 			}
 
 			$aResponseItem = $this->oActions->ExceptionResponse(

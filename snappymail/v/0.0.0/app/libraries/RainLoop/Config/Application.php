@@ -127,7 +127,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'title'                       => array('SnappyMail Webmail', 'Text displayed as page title'),
 				'loading_description'         => array('SnappyMail', 'Text displayed on startup'),
-				'favicon_url'                 => array('', ''),
+				'favicon_url'                 => array(''),
 				'app_path'                    => array(''),
 
 				'theme'                       => array('Default', 'Theme used by default'),
@@ -138,8 +138,8 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'language_admin'              => array('en', 'Admin Panel interface language'),
 				'allow_languages_on_settings' => array(true, 'Allow language selection on settings screen'),
 
-				'allow_additional_accounts'   => array(true, ''),
-				'allow_additional_identities' => array(true, ''),
+				'allow_additional_accounts'   => array(true),
+				'allow_additional_identities' => array(true),
 
 				'messages_per_page'           => array(20, 'Number of messages displayed on page by default'),
 				'message_read_delay'          => array(5, 'Mark message read after N seconds'),
@@ -149,7 +149,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 			),
 
 			'interface' => array(
-				'show_attachment_thumbnail' => array(true, ''),
+				'show_attachment_thumbnail' => array(true),
 				'new_move_to_folder_button' => array(true)
 			),
 
@@ -157,10 +157,10 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'enable'            => array(false, 'Enable contacts'),
 				'allow_sync'        => array(false),
 				'sync_interval'     => array(20),
-				'type'              => array('sqlite', ''),
-				'pdo_dsn'           => array('host=127.0.0.1;port=3306;dbname=snappymail', ''),
-				'pdo_user'          => array('root', ''),
-				'pdo_password'      => array('', ''),
+				'type'              => array('sqlite'),
+				'pdo_dsn'           => array('host=127.0.0.1;port=3306;dbname=snappymail'),
+				'pdo_user'          => array('root'),
+				'pdo_password'      => array(''),
 				'suggestions_limit' => array(30)
 			),
 
@@ -218,17 +218,17 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 			'login' => array(
 
-				'default_domain' => array('', ''),
+				'default_domain' => array(''),
 
 				'allow_languages_on_login' => array(true,
 					'Allow language selection on webmail login screen'),
 
-				'determine_user_language' => array(true, ''),
-				'determine_user_domain' => array(false, ''),
+				'determine_user_language' => array(true),
+				'determine_user_domain' => array(false),
 
 				'hide_submit_button' => array(false),
 
-				'login_lowercase' => array(true, ''),
+				'login_lowercase' => array(true),
 
 				'sign_me_auto' => array(\RainLoop\Enumerations\SignMeType::DEFAULT_OFF,
 					'This option allows webmail to remember the logged in user
