@@ -128,6 +128,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'title'                       => array('SnappyMail Webmail', 'Text displayed as page title'),
 				'loading_description'         => array('SnappyMail', 'Text displayed on startup'),
 				'favicon_url'                 => array('', ''),
+				'app_path'                    => array(''),
 
 				'theme'                       => array('Default', 'Theme used by default'),
 				'allow_themes'                => array(true, 'Allow theme selection on settings screen'),

@@ -148,8 +148,8 @@ class Utils
 	{
 		static $sAppPath;
 		if (!$sAppPath) {
-			$sAppPath = \preg_replace('#index\\.php.*$#D', '', $_SERVER['SCRIPT_NAME']);
-//			$sAppPath = Api::Config()->Get('labs', 'app_default_path', '');
+			$sAppPath = Api::Config()->Get('webmail', 'app_path', '')
+				?: \preg_replace('#index\\.php.*$#D', '', $_SERVER['SCRIPT_NAME']);
 		}
 		return $sAppPath;
 	}
