@@ -172,7 +172,10 @@ abstract class NetClient
 				'verify_host' => $bVerifySsl,
 				'verify_peer' => $bVerifySsl,
 				'verify_peer_name' => $bVerifySsl,
-				'allow_self_signed' => $bVerifySsl ? $bAllowSelfSigned : true
+				'allow_self_signed' => $bVerifySsl ? $bAllowSelfSigned : true,
+//				'ciphers' => 'HIGH:!SSLv2:!SSLv3',
+				'SNI_enabled' => true,
+//				'disable_compression' => true
 			)
 		);
 
@@ -224,29 +227,23 @@ abstract class NetClient
 		}
 	}
 
-	public function EnableCrypto()
+	public function EnableCrypto(bool $insecure = true)
 	{
 		$bError = true;
-		if ($this->rConnect &&
-			\MailSo\Base\Utils::FunctionExistsAndEnabled('stream_socket_enable_crypto'))
-		{
-			switch (true)
-			{
-				case defined('STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT') && OPENSSL_VERSION_NUMBER >= 0x10101000 &&
-					\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT | STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT):
-				case defined('STREAM_CRYPTO_METHOD_ANY_CLIENT') &&
-					\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_ANY_CLIENT):
-				case defined('STREAM_CRYPTO_METHOD_TLS_CLIENT') &&
-					\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_TLS_CLIENT):
-				case defined('STREAM_CRYPTO_METHOD_SSLv23_CLIENT') &&
-					\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_SSLv23_CLIENT):
-					$bError = false;
-					break;
+		if ($this->rConnect && \MailSo\Base\Utils::FunctionExistsAndEnabled('stream_socket_enable_crypto')) {
+			$crypto_method = STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
+			if (\defined('STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT') && OPENSSL_VERSION_NUMBER >= 0x10101000) {
+				$crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT;
+			}
+			if ($insecure) {
+				$crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_0_CLIENT | STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT;
+			}
+			if (\stream_socket_enable_crypto($this->rConnect, true, $crypto_method)) {
+				$bError = false;
 			}
 		}
 
-		if ($bError)
-		{
+		if ($bError) {
 			$this->writeLogException(
 				new \MailSo\Net\Exceptions\Exception('Cannot enable STARTTLS.'),
 				\MailSo\Log\Enumerations\Type::ERROR, true);
