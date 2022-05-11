@@ -334,12 +334,9 @@ class PdoAddressBook
 		return true;
 	}
 
-	public function ContactSave(string $sEmail, Classes\Contact $oContact, bool $bSyncDb = true) : bool
+	public function ContactSave(string $sEmail, Classes\Contact $oContact) : bool
 	{
-		if ($bSyncDb)
-		{
-			$this->SyncDatabase();
-		}
+		$this->SyncDatabase();
 
 		$iUserID = $this->getUserId($sEmail);
 
@@ -1298,7 +1295,7 @@ SQLITEINITIAL;
 		return $aResult;
 	}
 
-	public function SyncDatabase() : bool
+	private function SyncDatabase() : bool
 	{
 		static $mCache = null;
 		if (null !== $mCache)
@@ -1397,5 +1394,56 @@ SQLITEINITIAL;
 	protected function getPdoAccessData() : array
 	{
 		return array($this->sDsnType, $this->sDsn, $this->sUser, $this->sPassword);
+	}
+
+	protected function getUserId(string $sEmail, bool $bSkipInsert = false, bool $bCache = true) : int
+	{
+		static $aCache = array();
+		if ($bCache && isset($aCache[$sEmail]))
+		{
+			return $aCache[$sEmail];
+		}
+
+		$sEmail = \MailSo\Base\Utils::IdnToAscii(\trim($sEmail), true);
+		if (empty($sEmail))
+		{
+			throw new \InvalidArgumentException('Empty Email argument');
+		}
+
+		$oStmt = $this->prepareAndExecute('SELECT id_user FROM rainloop_users WHERE rl_email = :rl_email',
+			array(
+				':rl_email' => array($sEmail, \PDO::PARAM_STR)
+			)
+		);
+
+		$mRow = $oStmt->fetch(\PDO::FETCH_ASSOC);
+		if ($mRow && isset($mRow['id_user']) && \is_numeric($mRow['id_user']))
+		{
+			$iResult = (int) $mRow['id_user'];
+			if (0 >= $iResult)
+			{
+				throw new \Exception('id_user <= 0');
+			}
+
+			if ($bCache)
+			{
+				$aCache[$sEmail] = $iResult;
+			}
+
+			return $iResult;
+		}
+
+		if (!$bSkipInsert)
+		{
+			$oStmt->closeCursor();
+
+			$oStmt = $this->prepareAndExecute('INSERT INTO rainloop_users (rl_email) VALUES (:rl_email)',
+				array(':rl_email' => array($sEmail, \PDO::PARAM_STR))
+			);
+
+			return $this->getUserId($sEmail, true);
+		}
+
+		throw new \Exception('id_user = 0');
 	}
 }
