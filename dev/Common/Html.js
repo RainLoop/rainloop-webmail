@@ -17,6 +17,7 @@ const
 
 	// Strip tracking
 	stripTracking = text => text
+		.replace(/tracking\.(printabout\.nl[^?]+)\?.*/gsi, (...m) => m[1])
 		.replace(/^.+awstrack\.me\/.+(https:%2F%2F[^/]+)/gsi, (...m) => decodeURIComponent(m[1]))
 		.replace(/([?&])utm_[a-z]+=[^&?#]*/gsi, '$1')
 		.replace(/&&+/, '');
