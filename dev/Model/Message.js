@@ -381,59 +381,14 @@ export class MessageModel extends AbstractModel {
 	viewHtml() {
 		const body = this.body;
 		if (body && this.html()) {
-			const contentLocationUrls = {},
-				oAttachments = this.attachments();
-
-			// Get contentLocationUrls
-			oAttachments.forEach(oAttachment => {
-				if (oAttachment.cid && oAttachment.contentLocation) {
-					contentLocationUrls[oAttachment.contentId()] = oAttachment.contentLocation;
-				}
-			});
-
-			let result = cleanHtml(this.html(), contentLocationUrls, SettingsUserStore.removeColors());
+			let result = cleanHtml(this.html(), this.attachments(), SettingsUserStore.removeColors());
 			this.hasExternals(result.hasExternals);
-//			this.hasInternals = result.foundCIDs.length || result.foundContentLocationUrls.length;
 			this.hasImages(body.rlHasImages = !!result.hasExternals);
-
-			// Hide valid inline attachments in message view 'attachments' section
-			oAttachments.forEach(oAttachment => {
-				let cid = oAttachment.contentId(),
-					found = result.foundCIDs.includes(cid);
-				oAttachment.isInline(found);
-				oAttachment.isLinked(found || result.foundContentLocationUrls.includes(oAttachment.contentLocation));
-			});
 
 			body.innerHTML = result.html;
 
 			body.classList.toggle('html', 1);
 			body.classList.toggle('plain', 0);
-
-			// showInternalImages
-			const findAttachmentByCid = cid => this.attachments().findByCid(cid);
-			body.querySelectorAll('[data-x-src-cid],[data-x-src-location],[data-x-style-cid]').forEach(el => {
-				const data = el.dataset;
-				if (data.xSrcCid) {
-					const attachment = findAttachmentByCid(data.xSrcCid);
-					if (attachment && attachment.download) {
-						el.src = attachment.linkPreview();
-					}
-				} else if (data.xSrcLocation) {
-					const attachment = this.attachments.find(item => data.xSrcLocation === item.contentLocation)
-						|| findAttachmentByCid(data.xSrcLocation);
-					if (attachment && attachment.download) {
-						el.loading = 'lazy';
-						el.src = attachment.linkPreview();
-					}
-				} else if (data.xStyleCid) {
-					forEachObjectEntry(JSON.parse(data.xStyleCid), (name, cid) => {
-						const attachment = findAttachmentByCid(cid);
-						if (attachment && attachment.linkPreview && name) {
-							el.style[name] = "url('" + attachment.linkPreview() + "')";
-						}
-					});
-				}
-			});
 
 			if (SettingsUserStore.showImages()) {
 				this.showExternalImages();
@@ -608,7 +563,8 @@ export class MessageModel extends AbstractModel {
 			);
 			return clone.innerHTML;
 		}
-		return this.html() || plainToHtml(this.plain());
+		let result = cleanHtml(this.html(), this.attachments(), SettingsUserStore.removeColors())
+		return result.html || plainToHtml(this.plain());
 	}
 
 	/**

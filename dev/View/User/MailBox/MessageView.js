@@ -56,6 +56,8 @@ import { PgpUserStore } from 'Stores/User/Pgp';
 
 import { MimeToMessage } from 'Mime/Utils';
 
+import { MessageModel } from 'Model/Message';
+
 const
 	oMessageScrollerDom = () => elementById('messageItem') || {},
 
@@ -296,7 +298,23 @@ export class MailMessageView extends AbstractViewRight {
 			el = eqs(event, '.attachmentsPlace .attachmentItem .attachmentNameParent');
 			if (el) {
 				const attachment = ko.dataFor(el);
-				attachment && attachment.linkDownload() && download(attachment.linkDownload(), attachment.fileName);
+				if (attachment && attachment.linkDownload()) {
+					if ('message/rfc822' == attachment.mimeType) {
+						// TODO
+						rl.fetch(attachment.linkDownload()).then(response => {
+							if (response.ok) {
+								response.text().then(text => {
+									const oMessage = new MessageModel();
+									MimeToMessage(text, oMessage);
+									// cleanHTML
+									oMessage.viewPopupMessage();
+								});
+							}
+						});
+					} else {
+						download(attachment.linkDownload(), attachment.fileName);
+					}
+				}
 			}
 
 			if (eqs(event, '.messageItemHeader .subjectParent .flagParent')) {

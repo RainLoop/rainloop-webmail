@@ -35,16 +35,20 @@ export const
 	 * @param {string} text
 	 * @returns {string}
 	 */
-	cleanHtml = (html, contentLocationUrls, removeColors) => {
+	cleanHtml = (html, oAttachments, removeColors) => {
 		const
 			debug = false, // Config()->Get('debug', 'enable', false);
 			useProxy = !!SettingsGet('UseLocalProxyForExternalImages'),
 			detectHiddenImages = true, // !!SettingsGet('try_to_detect_hidden_images'),
 
 			result = {
-				hasExternals: false,
-				foundCIDs: [],
-				foundContentLocationUrls: []
+				hasExternals: false
+			},
+
+			findAttachmentByCid = cid => oAttachments.findByCid(cid),
+			findLocationByCid = cid => {
+				const attachment = findAttachmentByCid(cid);
+				return attachment && attachment.contentLocation ? attachment : 0;
 			},
 
 			// convert body attributes to CSS
@@ -223,6 +227,8 @@ export const
 				value = getAttribute('src');
 				delAttribute('src');
 
+				let attachment;
+
 				if (detectHiddenImages
 					&& 'IMG' === name
 					&& (('' != getAttribute('height') && 3 > pInt(getAttribute('height')))
@@ -238,15 +244,22 @@ export const
 					setAttribute('style', 'display:none');
 					setAttribute('data-x-hidden-src', value);
 				}
-				else if (contentLocationUrls[value])
+				else if ((attachment = findLocationByCid(value)))
 				{
-					setAttribute('data-x-src-location', value);
-					result.foundContentLocationUrls.push(value);
+					if (attachment.download) {
+						oElement.loading = 'lazy';
+						oElement.src = attachment.linkPreview();
+						attachment.isLinked(true);
+					}
 				}
 				else if ('cid:' === value.slice(0, 4))
 				{
-					setAttribute('data-x-src-cid', value.slice(4));
-					result.foundCIDs.push(value.slice(4));
+					attachment = findAttachmentByCid(value.slice(4));
+					if (attachment && attachment.download) {
+						oElement.src = attachment.linkPreview();
+						attachment.isInline(true);
+						attachment.isLinked(true);
+					}
 				}
 				else if (/^(https?:)?\/\//i.test(value))
 				{
@@ -289,7 +302,6 @@ export const
 				oStyle.removeProperty('min-width');
 
 				const urls = {
-					cid: [],    // 'data-x-style-cid'
 					remote: [], // 'data-x-style-url'
 					broken: []  // 'data-x-broken-style-src'
 				};
@@ -302,9 +314,12 @@ export const
 							found = found[0].replace(/^["'\s]+|["'\s]+$/g, '');
 							let lowerUrl = found.toLowerCase();
 							if ('cid:' === lowerUrl.slice(0, 4)) {
-								found = found.slice(4);
-								urls.cid[property] = found
-								result.foundCIDs.push(found);
+								const attachment = findAttachmentByCid(found);
+								if (attachment && attachment.linkPreview && name) {
+									oStyle[property] = "url('" + attachment.linkPreview() + "')";
+									attachment.isInline(true);
+									attachment.isLinked(true);
+								}
 							} else if (/http[s]?:\/\//.test(lowerUrl) || '//' === found.slice(0, 2)) {
 								result.hasExternals = true;
 								urls.remote[property] = useProxy ? proxy(found) : found;
@@ -319,9 +334,6 @@ export const
 //				oStyle.removeProperty('background-image');
 //				oStyle.removeProperty('list-style-image');
 
-				if (urls.cid.length) {
-					setAttribute('data-x-style-cid', JSON.stringify(urls.cid));
-				}
 				if (urls.remote.length) {
 					setAttribute('data-x-style-url', JSON.stringify(urls.remote));
 				}
