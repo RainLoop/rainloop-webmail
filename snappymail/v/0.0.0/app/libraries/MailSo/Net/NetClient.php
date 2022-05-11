@@ -175,7 +175,8 @@ abstract class NetClient
 				'allow_self_signed' => $bVerifySsl ? $bAllowSelfSigned : true,
 //				'ciphers' => 'HIGH:!SSLv2:!SSLv3',
 				'SNI_enabled' => true,
-//				'disable_compression' => true
+//				'disable_compression' => true,
+				'security_level' => 1
 			)
 		);
 
