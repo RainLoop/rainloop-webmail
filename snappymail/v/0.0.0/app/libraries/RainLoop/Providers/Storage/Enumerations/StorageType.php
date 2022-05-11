@@ -10,4 +10,5 @@ class StorageType
 	const SIGN_ME = 4;
 	const SESSION = 5;
 	const PGP = 6;
+	const ROOT = 7;
 }

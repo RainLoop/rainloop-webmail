@@ -255,6 +255,14 @@ class Actions
 					if ('sqlite' === $sDsnType) {
 						$sUser = $sPassword = '';
 						$sDsn = 'sqlite:' . APP_PRIVATE_DATA . 'AddressBook.sqlite';
+/*
+						// TODO: use local db?
+						$homedir = $this->StorageProvider()->GenerateFilePath(
+							$oAccount,
+							\RainLoop\Providers\Storage\Enumerations\StorageType::ROOT
+						);
+						$sDsn = 'sqlite:' . $homedir . '/AddressBook.sqlite';
+*/
 					} else {
 						$sDsn = $sDsnType . ':' . \preg_replace('/^[a-z]+:/', '', $sDsn);
 					}

@@ -18,10 +18,10 @@ trait Pgp
 			return null;
 		}
 
-		$homedir = \dirname($this->StorageProvider()->GenerateFilePath(
+		$homedir = $this->StorageProvider()->GenerateFilePath(
 			$oAccount,
-			\RainLoop\Providers\Storage\Enumerations\StorageType::PGP
-		)) . '/.gnupg';
+			\RainLoop\Providers\Storage\Enumerations\StorageType::ROOT
+		) . '/.gnupg';
 
 		if (!\is_dir($homedir)) {
 			\mkdir($homedir, 0700, true);

@@ -112,6 +112,8 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 				$sSubFolder = '.sessions';
 			} else if (StorageType::PGP === $iStorageType) {
 				$sSubFolder = '.pgp';
+			} else if (StorageType::ROOT === $iStorageType) {
+				$sSubFolder = '';
 			}
 		}
 
@@ -125,6 +127,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 			case StorageType::SESSION:
 			case StorageType::CONFIG:
 			case StorageType::PGP:
+			case StorageType::ROOT:
 				if (empty($sEmail)) {
 					return '';
 				}
