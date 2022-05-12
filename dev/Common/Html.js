@@ -446,7 +446,9 @@ export const
 		// Convert anchors
 		forEach('a', a => {
 			let txt = a.textContent, href = a.href;
-			return a.replaceWith((txt.trim() == href ? txt : txt + ' ' + href + ' '));
+			return a.replaceWith(
+				txt.trim() == href || href.includes('mailto:') ? txt : txt + ' ' + href + ' '
+			);
 		});
 
 		// Bold
