@@ -148,8 +148,9 @@ class Utils
 	{
 		static $sAppPath;
 		if (!$sAppPath) {
-			$sAppPath = Api::Config()->Get('webmail', 'app_path', '')
-				?: \preg_replace('#index\\.php.*$#D', '', $_SERVER['SCRIPT_NAME']);
+			$sAppPath = \rtrim(Api::Config()->Get('webmail', 'app_path', '')
+				?: \preg_replace('#index\\.php.*$#D', '', $_SERVER['SCRIPT_NAME']),
+			'/') . '/';
 		}
 		return $sAppPath;
 	}
@@ -159,9 +160,9 @@ class Utils
 		return self::WebPath().'snappymail/v/'.APP_VERSION.'/';
 	}
 
-	public static function WebStaticPath() : string
+	public static function WebStaticPath(string $path = '') : string
 	{
-		return self::WebVersionPath().'static/';
+		return self::WebVersionPath() . 'static/' . $path;
 	}
 
 	public static function RemoveSuggestionDuplicates(array $aSuggestions) : array

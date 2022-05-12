@@ -169,15 +169,15 @@ abstract class Service
 
 			$sFaviconUrl = (string) $oConfig->Get('webmail', 'favicon_url', '');
 
-			$sFaviconPngLink = $sFaviconUrl ? $sFaviconUrl : $oActions->StaticPath('apple-touch-icon.png');
-			$sAppleTouchLink = $sFaviconUrl ? '' : $oActions->StaticPath('apple-touch-icon.png');
+			$sFaviconPngLink = $sFaviconUrl ? $sFaviconUrl : Utils::WebStaticPath('apple-touch-icon.png');
+			$sAppleTouchLink = $sFaviconUrl ? '' : Utils::WebStaticPath('apple-touch-icon.png');
 
 			$aTemplateParameters = array(
 				'{{BaseAppFaviconPngLinkTag}}' => $sFaviconPngLink ? '<link type="image/png" rel="shortcut icon" href="'.$sFaviconPngLink.'">' : '',
 				'{{BaseAppFaviconTouchLinkTag}}' => $sAppleTouchLink ? '<link type="image/png" rel="apple-touch-icon" href="'.$sAppleTouchLink.'">' : '',
-				'{{BaseAppMainCssLink}}' => $oActions->StaticPath('css/'.($bAdmin ? 'admin' : 'app').$sAppCssMin.'.css'),
+				'{{BaseAppMainCssLink}}' => Utils::WebStaticPath('css/'.($bAdmin ? 'admin' : 'app').$sAppCssMin.'.css'),
 				'{{BaseAppThemeCssLink}}' => $oActions->ThemeLink($bAdmin),
-				'{{BaseAppManifestLink}}' => $oActions->StaticPath('manifest.json'),
+				'{{BaseAppManifestLink}}' => Utils::WebStaticPath('manifest.json'),
 				'{{LoadingDescriptionEsc}}' => \htmlspecialchars($oConfig->Get('webmail', 'loading_description', 'SnappyMail'), ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
 				'{{BaseAppAdmin}}' => $bAdmin ? 1 : 0
 			);

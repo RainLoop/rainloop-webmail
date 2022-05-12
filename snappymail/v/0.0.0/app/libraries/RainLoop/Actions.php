@@ -919,7 +919,7 @@ class Actions
 
 		$bAppJsDebug = $this->oConfig->Get('labs', 'use_app_debug_js', false);
 
-		$aResult['StaticLibsJs'] = $this->StaticPath('js/' . ($bAppJsDebug ? '' : 'min/') .
+		$aResult['StaticLibsJs'] = Utils::WebStaticPath('js/' . ($bAppJsDebug ? '' : 'min/') .
 			'libs' . ($bAppJsDebug ? '' : '.min') . '.js');
 
 		// IDN
@@ -1295,11 +1295,6 @@ class Actions
 	{
 		$this->oLogger->Write('Location: ' . $sUrl);
 		\header('Location: ' . $sUrl);
-	}
-
-	public function StaticPath(string $sPath): string
-	{
-		return Utils::WebStaticPath() . $sPath;
 	}
 
 }
