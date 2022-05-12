@@ -140,6 +140,13 @@ class ImapClient extends \MailSo\Net\NetClient
 				break;
 			}
 		}
+		if (!$type) {
+			throw new \Exception('No supported SASL mechanism found, remote server wants: '
+				. \implode(', ', \array_filter($this->Capability() ?: [], function($var){
+					return \str_starts_with($var, 'AUTH=');
+				}))
+			);
+		}
 
 		$SASL = \SnappyMail\SASL::factory($type);
 		$SASL->base64 = true;
