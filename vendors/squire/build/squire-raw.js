@@ -1523,6 +1523,7 @@ const
 						preserveWS || ( nodeName === 'PRE' ) );
 				}
 			} else {
+/*
 				if ( nodeType === TEXT_NODE ) {
 					data = child.data;
 					startsWithWS = !notWS.test( data.charAt( 0 ) );
@@ -1571,6 +1572,7 @@ const
 				child.remove(  );
 				--i;
 				--l;
+*/
 			}
 		}
 		return node;
