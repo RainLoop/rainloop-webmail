@@ -268,7 +268,7 @@ abstract class Account implements \JsonSerializable
 				'Login' => $this->IncLogin(),
 				'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
 				'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true),
-				'InitialAuthPlain' => !!$oConfig->Get('ssl', 'sieve_auth_plain_initial', true)
+				'InitialAuthPlain' => !!$oConfig->Get('labs', 'sieve_auth_plain_initial', true)
 			)
 		);
 
