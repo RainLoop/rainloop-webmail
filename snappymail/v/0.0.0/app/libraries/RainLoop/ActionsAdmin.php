@@ -295,11 +295,11 @@ class ActionsAdmin extends Actions
 				$oImapClient->SetTimeOuts($iConnectionTimeout);
 
 				$iTime = \microtime(true);
-				$oImapClient->Connect($oDomain->IncHost(), $oDomain->IncPort(), $oDomain->IncSecure(),
-					!!$this->Config()->Get('ssl', 'verify_certificate', false),
-					!!$this->Config()->Get('ssl', 'allow_self_signed', true),
-					$this->Config()->Get('ssl', 'client_cert', '')
-				);
+				$oSettings = new \MailSo\Net\ConnectSettings;
+				$oSettings->host = $oDomain->IncHost();
+				$oSettings->port = $oDomain->IncPort();
+				$oSettings->type = $oDomain->IncSecure();
+				$oImapClient->Connect($oSettings);
 
 				$oImapClient->Disconnect();
 				$bImapResult = true;
@@ -336,11 +336,11 @@ class ActionsAdmin extends Actions
 					$oSmtpClient->SetTimeOuts($iConnectionTimeout);
 
 					$iTime = \microtime(true);
-					$oSmtpClient->Connect($oDomain->OutHost(), $oDomain->OutPort(), $oDomain->OutSecure(),
-						!!$this->Config()->Get('ssl', 'verify_certificate', false),
-						!!$this->Config()->Get('ssl', 'allow_self_signed', true),
-						'', \MailSo\Smtp\SmtpClient::EhloHelper()
-					);
+					$oSettings = new \MailSo\Net\ConnectSettings;
+					$oSettings->host = $oDomain->OutHost();
+					$oSettings->port = $oDomain->OutPort();
+					$oSettings->type = $oDomain->OutSecure();
+					$oSmtpClient->Connect($oSettings, \MailSo\Smtp\SmtpClient::EhloHelper());
 
 					$oSmtpClient->Disconnect();
 					$bSmtpResult = true;
@@ -370,10 +370,11 @@ class ActionsAdmin extends Actions
 					$oSieveClient->SetTimeOuts($iConnectionTimeout);
 
 					$iTime = \microtime(true);
-					$oSieveClient->Connect($oDomain->SieveHost(), $oDomain->SievePort(), $oDomain->SieveSecure(),
-						!!$this->Config()->Get('ssl', 'verify_certificate', false),
-						!!$this->Config()->Get('ssl', 'allow_self_signed', true)
-					);
+					$oSettings = new \MailSo\Net\ConnectSettings;
+					$oSettings->host = $oDomain->SieveHost();
+					$oSettings->port = $oDomain->SievePort();
+					$oSettings->type = $oDomain->SieveSecure();
+					$oSieveClient->Connect($oSettings);
 
 					$oSieveClient->Disconnect();
 					$bSieveResult = true;

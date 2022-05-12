@@ -84,14 +84,11 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function Connect(string $sServerName, int $iPort = 143,
-		int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
-		bool $bVerifySsl = false, bool $bAllowSelfSigned = true,
-		string $sClientCert = '') : void
+	public function Connect(\MailSo\Net\ConnectSettings $oSettings) : void
 	{
 		$this->aTagTimeouts['*'] = \microtime(true);
 
-		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl, $bAllowSelfSigned, $sClientCert);
+		parent::Connect($oSettings);
 
 		$this->setCapabilities($this->getResponse('*'));
 

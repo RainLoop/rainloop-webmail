@@ -62,11 +62,9 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Sieve\Exceptions\ResponseException
 	 */
-	public function Connect(string $sServerName, int $iPort,
-		int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
-		bool $bVerifySsl = false, bool $bAllowSelfSigned = true, string $sClientCert = '') : void
+	public function Connect(\MailSo\Net\ConnectSettings $oSettings) : void
 	{
-		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl, $bAllowSelfSigned);
+		parent::Connect($oSettings);
 
 		$aResponse = $this->parseResponse();
 		$this->validateResponse($aResponse);

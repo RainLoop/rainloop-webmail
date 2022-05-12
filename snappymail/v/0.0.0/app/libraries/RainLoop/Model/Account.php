@@ -34,11 +34,6 @@ abstract class Account implements \JsonSerializable
 	private $sProxyAuthPassword = '';
 
 	/**
-	 * @var string
-	 */
-	private $sClientCert;
-
-	/**
 	 * @var \RainLoop\Model\Domain
 	 */
 	private $oDomain;
@@ -95,11 +90,6 @@ abstract class Account implements \JsonSerializable
 		return $this->IncPassword();
 	}
 
-	public function ClientCert() : string
-	{
-		return $this->sClientCert;
-	}
-
 	public function Domain() : Domain
 	{
 		return $this->oDomain;
@@ -138,15 +128,14 @@ abstract class Account implements \JsonSerializable
 			$this->sEmail,            // 1
 			$this->sLogin,            // 2
 			$this->sPassword,         // 3
-			$this->sClientCert,       // 4
+			'',                       // 4 sClientCert
 			$this->sProxyAuthUser,    // 5
 			$this->sProxyAuthPassword // 6
 		);
 	}
 
 	public static function NewInstanceFromCredentials(\RainLoop\Actions $oActions,
-		string $sEmail, string $sLogin, string $sPassword, string $sClientCert = '',
-		bool $bThrowException = false): ?self
+		string $sEmail, string $sLogin, string $sPassword, bool $bThrowException = false): ?self
 	{
 		$oAccount = null;
 		if ($sEmail && $sLogin && $sPassword) {
@@ -159,7 +148,6 @@ abstract class Account implements \JsonSerializable
 					$oAccount->sLogin = \MailSo\Base\Utils::IdnToAscii($sLogin);
 					$oAccount->sPassword = $sPassword;
 					$oAccount->oDomain = $oDomain;
-					$oAccount->sClientCert = $sClientCert;
 
 					$oActions->Plugins()->RunHook('filter.account', array($oAccount));
 
@@ -188,7 +176,6 @@ abstract class Account implements \JsonSerializable
 				$aAccountHash[1] ?: '',
 				$aAccountHash[2] ?: '',
 				$aAccountHash[3] ?: '',
-				$aAccountHash[4] ?: '',
 				$bThrowExceptionOnFalse
 			);
 
@@ -212,31 +199,38 @@ abstract class Account implements \JsonSerializable
 	{
 		$oImapClient = $oMailClient->ImapClient();
 
-		$aImapCredentials = \array_merge(
+		$aCredentials = \array_merge(
 			$this->Domain()->ImapSettings(),
 			array(
 				'Login' => $this->IncLogin(),
 				'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
-				'ClientCert' => $this->ClientCert(),
-				'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true)
+				'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true),
+				'ClientCert' => \trim($oConfig->Get('ssl', 'client_cert', ''))
 			)
 		);
 
-		$oPlugins->RunHook('imap.before-connect', array($this, $oImapClient, &$aImapCredentials));
-		if ($aImapCredentials['UseConnect']) {
-			$oImapClient->Connect($aImapCredentials['Host'], $aImapCredentials['Port'],
-					$aImapCredentials['Secure'], $aImapCredentials['VerifySsl'],
-					$aImapCredentials['AllowSelfSigned'], $aImapCredentials['ClientCert']);
-
+		$oPlugins->RunHook('imap.before-connect', array($this, $oImapClient, &$aCredentials));
+		if ($aCredentials['UseConnect']) {
+			$oSettings = new \MailSo\Net\ConnectSettings;
+			$oSettings->host = $aCredentials['Host'];
+			$oSettings->port = $aCredentials['Port'];
+			$oSettings->type = $aCredentials['Secure'];
+			$oSettings->ssl['verify_peer'] = !!$aCredentials['VerifySsl'];
+			$oSettings->ssl['verify_peer_name'] = !!$aCredentials['VerifySsl'];
+			$oSettings->ssl['allow_self_signed'] = !!$aCredentials['AllowSelfSigned'];
+			if ($aCredentials['ClientCert']) {
+				$oSettings->ssl['local_cert'] = $aCredentials['ClientCert'];
+			}
+			$oImapClient->Connect($oSettings);
 		}
-		$oPlugins->RunHook('imap.after-connect', array($this, $oImapClient, $aImapCredentials));
+		$oPlugins->RunHook('imap.after-connect', array($this, $oImapClient, $aCredentials));
 
-		return $this->netClientLogin($oImapClient, $oConfig, $oPlugins, $aImapCredentials);
+		return $this->netClientLogin($oImapClient, $oConfig, $oPlugins, $aCredentials);
 	}
 
 	public function OutConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Smtp\SmtpClient $oSmtpClient, \RainLoop\Config\Application $oConfig, bool &$bUsePhpMail = false) : bool
 	{
-		$aSmtpCredentials = \array_merge(
+		$aCredentials = \array_merge(
 			$this->Domain()->SmtpSettings(),
 			array(
 				'UseConnect' => !$bUsePhpMail,
@@ -247,23 +241,28 @@ abstract class Account implements \JsonSerializable
 			)
 		);
 
-		$oPlugins->RunHook('smtp.before-connect', array($this, $oSmtpClient, &$aSmtpCredentials));
-		$bUsePhpMail = $aSmtpCredentials['UsePhpMail'];
-		$aSmtpCredentials['UseAuth'] = $aSmtpCredentials['UseAuth'] && !$aSmtpCredentials['UsePhpMail'];
-		if ($aSmtpCredentials['UseConnect'] && !$aSmtpCredentials['UsePhpMail']) {
-			$oSmtpClient->Connect($aSmtpCredentials['Host'], $aSmtpCredentials['Port'],
-				$aSmtpCredentials['Secure'], $aSmtpCredentials['VerifySsl'], $aSmtpCredentials['AllowSelfSigned'],
-				'', $aSmtpCredentials['Ehlo']
-			);
-		}
-		$oPlugins->RunHook('smtp.after-connect', array($this, $oSmtpClient, $aSmtpCredentials));
+		$oPlugins->RunHook('smtp.before-connect', array($this, $oSmtpClient, &$aCredentials));
+		$bUsePhpMail = $aCredentials['UsePhpMail'];
+		$aCredentials['UseAuth'] = $aCredentials['UseAuth'] && !$aCredentials['UsePhpMail'];
 
-		return $this->netClientLogin($oSmtpClient, $oConfig, $oPlugins, $aSmtpCredentials);
+		if ($aCredentials['UseConnect'] && !$aCredentials['UsePhpMail']) {
+			$oSettings = new \MailSo\Net\ConnectSettings;
+			$oSettings->host = $aCredentials['Host'];
+			$oSettings->port = $aCredentials['Port'];
+			$oSettings->type = $aCredentials['Secure'];
+			$oSettings->ssl['verify_peer'] = !!$aCredentials['VerifySsl'];
+			$oSettings->ssl['verify_peer_name'] = !!$aCredentials['VerifySsl'];
+			$oSettings->ssl['allow_self_signed'] = !!$aCredentials['AllowSelfSigned'];
+			$oSmtpClient->Connect($oSettings, $aCredentials['Ehlo']);
+		}
+		$oPlugins->RunHook('smtp.after-connect', array($this, $oSmtpClient, $aCredentials));
+
+		return $this->netClientLogin($oSmtpClient, $oConfig, $oPlugins, $aCredentials);
 	}
 
 	public function SieveConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Sieve\ManageSieveClient $oSieveClient, \RainLoop\Config\Application $oConfig)
 	{
-		$aSieveCredentials = \array_merge(
+		$aCredentials = \array_merge(
 			$this->Domain()->SieveSettings(),
 			array(
 				'Login' => $this->IncLogin(),
@@ -273,15 +272,20 @@ abstract class Account implements \JsonSerializable
 			)
 		);
 
-		$oPlugins->RunHook('sieve.before-connect', array($this, $oSieveClient, &$aSieveCredentials));
-		if ($aSieveCredentials['UseConnect']) {
-			$oSieveClient->Connect($aSieveCredentials['Host'], $aSieveCredentials['Port'],
-				$aSieveCredentials['Secure'], $aSieveCredentials['VerifySsl'], $aSieveCredentials['AllowSelfSigned']
-			);
+		$oPlugins->RunHook('sieve.before-connect', array($this, $oSieveClient, &$aCredentials));
+		if ($aCredentials['UseConnect']) {
+			$oSettings = new \MailSo\Net\ConnectSettings;
+			$oSettings->host = $aCredentials['Host'];
+			$oSettings->port = $aCredentials['Port'];
+			$oSettings->type = $aCredentials['Secure'];
+			$oSettings->ssl['verify_peer'] = !!$aCredentials['VerifySsl'];
+			$oSettings->ssl['verify_peer_name'] = !!$aCredentials['VerifySsl'];
+			$oSettings->ssl['allow_self_signed'] = !!$aCredentials['AllowSelfSigned'];
+			$oSieveClient->Connect($oSettings);
 		}
-		$oPlugins->RunHook('sieve.after-connect', array($this, $oSieveClient, $aSieveCredentials));
+		$oPlugins->RunHook('sieve.after-connect', array($this, $oSieveClient, $aCredentials));
 
-		return $this->netClientLogin($oSieveClient, $oConfig, $oPlugins, $aSieveCredentials);
+		return $this->netClientLogin($oSieveClient, $oConfig, $oPlugins, $aCredentials);
 	}
 
 	private function netClientLogin(\MailSo\Net\NetClient $oClient, \RainLoop\Config\Application $oConfig, \RainLoop\Plugins\Manager $oPlugins, array $aCredentials) : bool

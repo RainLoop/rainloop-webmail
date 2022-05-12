@@ -112,11 +112,10 @@ trait UserAuth
 		$this->Logger()->AddSecret($sPassword);
 
 		$oAccount = null;
-		$sClientCert = \trim($this->Config()->Get('ssl', 'client_cert', ''));
 		try {
 			$oAccount = $bMainAccount
-				? MainAccount::NewInstanceFromCredentials($this, $sEmail, $sLogin, $sPassword, $sClientCert, true)
-				: AdditionalAccount::NewInstanceFromCredentials($this, $sEmail, $sLogin, $sPassword, $sClientCert, true);
+				? MainAccount::NewInstanceFromCredentials($this, $sEmail, $sLogin, $sPassword, true)
+				: AdditionalAccount::NewInstanceFromCredentials($this, $sEmail, $sLogin, $sPassword, true);
 			if (!$oAccount) {
 				throw new ClientException(Notifications::AuthError);
 			}

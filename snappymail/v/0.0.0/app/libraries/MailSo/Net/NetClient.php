@@ -120,13 +120,10 @@ abstract class NetClient
 	 * @throws \MailSo\Net\Exceptions\SocketAlreadyConnectedException
 	 * @throws \MailSo\Net\Exceptions\SocketCanNotConnectToHostException
 	 */
-	public function Connect(string $sServerName, int $iPort,
-		int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
-		bool $bVerifySsl = false, bool $bAllowSelfSigned = true,
-		string $sClientCert = '') : void
+	public function Connect(ConnectSettings $oSettings)
 	{
-		if (!\strlen(\trim($sServerName)) || !\MailSo\Base\Validator::PortInt($iPort))
-		{
+		$oSettings->host = \trim($oSettings->host);
+		if (!\strlen($oSettings->host) || !\MailSo\Base\Validator::PortInt($oSettings->port)) {
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
@@ -139,14 +136,12 @@ abstract class NetClient
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
-		$sServerName = \trim($sServerName);
-
 		$sErrorStr = '';
 		$iErrorNo = 0;
 
-		$this->sConnectedHost = $sServerName;
-		$this->iConnectedPort = $iPort;
-		$this->iSecurityType = $iSecurityType;
+		$this->sConnectedHost = $oSettings->host;
+		$this->iConnectedPort = $oSettings->port;
+		$this->iSecurityType = $oSettings->type;
 		$this->bSecure = \MailSo\Net\Enumerations\ConnectionSecurityType::UseSSL(
 			$this->iConnectedPort, $this->iSecurityType);
 
@@ -168,22 +163,8 @@ abstract class NetClient
 			\MailSo\Log\Enumerations\Type::NOTE);
 
 		$aStreamContextSettings = array(
-			'ssl' => array(
-				'verify_host' => $bVerifySsl,
-				'verify_peer' => $bVerifySsl,
-				'verify_peer_name' => $bVerifySsl,
-				'allow_self_signed' => $bVerifySsl ? $bAllowSelfSigned : true,
-//				'ciphers' => 'HIGH:!SSLv2:!SSLv3',
-				'SNI_enabled' => true,
-//				'disable_compression' => true,
-				'security_level' => 1
-			)
+			'ssl' => $oSettings->ssl
 		);
-
-		if (!empty($sClientCert))
-		{
-			$aStreamContextSettings['ssl']['local_cert'] = $sClientCert;
-		}
 
 		\MailSo\Hooks::Run('Net.NetClient.StreamContextSettings/Filter', array(&$aStreamContextSettings));
 
@@ -228,7 +209,7 @@ abstract class NetClient
 		}
 	}
 
-	public function EnableCrypto(bool $insecure = true)
+	public function EnableCrypto(bool $insecure = false)
 	{
 		$bError = true;
 		if ($this->rConnect && \MailSo\Base\Utils::FunctionExistsAndEnabled('stream_socket_enable_crypto')) {
