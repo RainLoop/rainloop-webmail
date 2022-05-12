@@ -8,7 +8,9 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 {
 	use CardDAV;
 
-	protected $sFolderName;
+	protected
+		$oImapClient,
+		$sFolderName;
 
 	function __construct(\MailSo\Imap\ImapClient $oImapClient)
 	{
@@ -21,9 +23,11 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		if ($metadata && 'contact' !== \array_shift($metadata)) {
 			// Throw error
 //			$this->oImapClient->FolderList() : array
+			return false;
 		}
 		$this->oImapClient->FolderSelect($sFolderName);
 		$this->sFolderName = $sFolderName;
+		return true;
 	}
 
 	public function IsSupported() : bool
@@ -84,10 +88,15 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		$oMessage->SubParts->append($oPart);
 
 		// Search in IMAP folder:
-		$email = \MailSo\Imap\SearchCriterias::escapeSearchString($sEmail);
 		$aUids = $this->oImapClient->MessageSimpleSearch("SUBJECT {$sUID}");
-//		$aUids = $this->oImapClient->MessageSimpleSearch("OR SUBJECT {$sUID} FROM {$email}");
-//		$aUids = $this->oImapClient->MessageSimpleSearch("OR SUBJECT {$sUID} FROM {$email} BODY {$email}");
+/*
+		$email = \MailSo\Imap\SearchCriterias::escapeSearchString($this->oImapClient, $sEmail);
+		$aUids = $this->oImapClient->MessageSimpleSearch("OR SUBJECT {$sUID} FROM {$email}");
+		$aUids = $this->oImapClient->MessageSimpleSearch("OR SUBJECT {$sUID} FROM {$email} BODY {$email}");
+
+		$aUids = $this->oImapClient->MessageSimpleSearch('HEADER Subject '.$sUID);
+		return 1 === \count($aUids) && \is_numeric($aUids[0]) ? (int) $aUids[0] : null;
+*/
 
 		if ($aUids) {
 			// Replace Message
@@ -141,8 +150,27 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 
 	public function GetSuggestions(string $sEmail, string $sSearch, int $iLimit = 20) : array
 	{
-		// TODO
-		return [];
+		$sSearch = \trim($sSearch);
+		if (2 > \strlen($sSearch) || !$this->SetFolder(/*TODO 'Contacts'*/)) {
+			return [];
+		}
+
+		$sSearch = \MailSo\Imap\SearchCriterias::escapeSearchString($this->oImapClient, $sSearch);
+		$aUids = \array_slice(
+			$this->oImapClient->MessageSimpleSearch("FROM {$sSearch}"),
+			0, $iLimit
+		);
+
+		$aResult = [];
+		foreach ($this->oImapClient->Fetch(['BODY.PEEK[HEADER.FIELDS (FROM)]'], \implode(',', $aUids), true) as $oFetchResponse) {
+			$oHeaders = new \MailSo\Mime\HeaderCollection($oFetchResponse->GetHeaderFieldsValue());
+			$oFrom = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::FROM_, true);
+			foreach ($oFrom as $oMail) {
+				$aResult[] = [$oMail->GetEmail(), $oMail->GetDisplayName()];
+			}
+		}
+
+		return $aResult;
 	}
 
 	public function IncFrec(string $sEmail, array $aEmails, bool $bCreateAuto = true) : bool
