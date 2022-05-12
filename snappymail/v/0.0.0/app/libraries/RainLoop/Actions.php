@@ -779,7 +779,7 @@ class Actions
 				$aResult['ContactsPdoUser'] = (string)$oConfig->Get('contacts', 'pdo_user', '');
 				$aResult['ContactsPdoPassword'] = (string)APP_DUMMY;
 
-				$aResult['WeakPassword'] = \is_file($passfile);
+				$aResult['WeakPassword'] = \is_file(APP_PRIVATE_DATA.'admin_password.txt');
 			}
 
 			$aResult['LanguageAdmin'] = $this->ValidateLanguage($oConfig->Get('webmail', 'language_admin', 'en'), '', true);
