@@ -21,7 +21,7 @@ export function MimeToMessage(data, message)
 			message.subject(struct.headers.subject.value);
 		}
 		['from','to'].forEach(name => {
-			if (struct.headers[name]) {
+			if (struct.headers[name] && !message[name].length) {
 				let mail = new EmailModel;
 				mail.parse(struct.headers[name].value);
 				message[name].push(mail);
