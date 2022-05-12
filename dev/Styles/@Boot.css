@@ -1,5 +1,5 @@
 :root {
-	--fontSans: "DejaVu Sans", Verdana, Geneva, "Bitstream Vera Sans", "DejaVu LGC Sans", Arial, sans-serif;
+	--fontSans: Verdana, Geneva, "Bitstream Vera Sans", "DejaVu LGC Sans", Arial, sans-serif;
 	--fontSerif: "Nimbus Roman No9 L", "Times New Roman", Times, FreeSerif, serif;
 	--fontMono: "Liberation Mono", Monaco, Menlo, Consolas, "Courier New", FreeMono, Courier, monospace;
 }
