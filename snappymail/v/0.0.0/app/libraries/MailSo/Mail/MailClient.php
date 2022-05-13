@@ -1024,8 +1024,7 @@ class MailClient
 
 		$this->oImapClient->FolderExamine($sFolderName);
 
-		$aUids = $this->oImapClient->MessageSimpleSearch(
-			'HEADER Message-ID '.$sMessageId, true);
+		$aUids = $this->oImapClient->MessageSimpleSearch('HEADER Message-ID '.$sMessageId);
 
 		return 1 === \count($aUids) && \is_numeric($aUids[0]) ? (int) $aUids[0] : null;
 	}
