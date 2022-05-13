@@ -762,6 +762,16 @@ class Actions
 				$aResult['ContactsPdoPassword'] = (string)APP_DUMMY;
 
 				$aResult['WeakPassword'] = \is_file(APP_PRIVATE_DATA.'admin_password.txt');
+			} else {
+				$passfile = APP_PRIVATE_DATA.'admin_password.txt';
+				$sPassword = $oConfig->Get('security', 'admin_password', '');
+				if (!$sPassword) {
+					$sPassword = \substr(\base64_encode(\random_bytes(16)), 0, 12);
+					Utils::saveFile($passfile, $sPassword . "\n");
+//					\chmod($passfile, 0600);
+					$oConfig->SetPassword($sPassword);
+					$oConfig->Save();
+				}
 			}
 
 			$aResult['LanguageAdmin'] = $this->ValidateLanguage($oConfig->Get('webmail', 'language_admin', 'en'), '', true);

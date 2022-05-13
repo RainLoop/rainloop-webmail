@@ -177,11 +177,6 @@ abstract class AbstractConfig implements \JsonSerializable
 		return false;
 	}
 
-	public function IsFileExists() : bool
-	{
-		return \file_exists($this->sFile);
-	}
-
 	public function Load() : bool
 	{
 		if (\file_exists($this->sFile) && \is_readable($this->sFile))
@@ -233,7 +228,7 @@ abstract class AbstractConfig implements \JsonSerializable
 			}
 		}
 
-		return false;
+		return $this->Save();
 	}
 
 	public function Save() : bool
