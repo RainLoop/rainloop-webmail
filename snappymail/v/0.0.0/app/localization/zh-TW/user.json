@@ -500,6 +500,9 @@
 		"LABEL_SEND_MESSAGE": "Send message",
 		"LABEL_CLOSE_COMPOSE": "Close compose"
 	},
+	"KOLAB": {
+		"CONTACTS_FOLDER": "Contacts Folder"
+	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "無效標記",
 		"AUTH_ERROR": "認證失敗",

@@ -248,26 +248,8 @@ class Actions
 					break;
 				case 'address-book':
 					// Providers\AddressBook\AddressBookInterface
-					$sDsn = \trim($this->oConfig->Get('contacts', 'pdo_dsn', ''));
-					$sUser = \trim($this->oConfig->Get('contacts', 'pdo_user', ''));
-					$sPassword = (string)$this->oConfig->Get('contacts', 'pdo_password', '');
-					$sDsnType = Providers\AddressBook\PdoAddressBook::validPdoType($this->oConfig->Get('contacts', 'type', 'sqlite'));
-					if ('sqlite' === $sDsnType) {
-						$sUser = $sPassword = '';
-						$sDsn = 'sqlite:' . APP_PRIVATE_DATA . 'AddressBook.sqlite';
-/*
-						// TODO: use local db?
-						$homedir = $this->StorageProvider()->GenerateFilePath(
-							$oAccount,
-							\RainLoop\Providers\Storage\Enumerations\StorageType::ROOT
-						);
-						$sDsn = 'sqlite:' . $homedir . '/AddressBook.sqlite';
-*/
-					} else {
-						$sDsn = $sDsnType . ':' . \preg_replace('/^[a-z]+:/', '', $sDsn);
-					}
-					$mResult = new Providers\AddressBook\PdoAddressBook($sDsn, $sUser, $sPassword, $sDsnType);
-//					$mResult = new Providers\AddressBook\KolabAddressBook($this->MailClient()->ImapClient());
+					$mResult = new Providers\AddressBook\PdoAddressBook();
+//					$mResult = new Providers\AddressBook\KolabAddressBook();
 					break;
 				case 'identities':
 				case 'suggestions':
@@ -750,7 +732,7 @@ class Actions
 			'ContactsAutosave' => (bool) $oConfig->Get('defaults', 'contacts_autosave', true),
 			'HideUnsubscribed' => false,
 			'MainEmail' => '',
-			'InterfaceAnimation' => true,
+			'KolabContactFolder' => '',
 			'UserBackgroundName' => '',
 			'UserBackgroundHash' => ''
 		);
@@ -838,6 +820,7 @@ class Actions
 					$aResult['HideUnsubscribed'] = (bool)$oSettingsLocal->GetConf('HideUnsubscribed', $aResult['HideUnsubscribed']);
 					$aResult['UseThreads'] = (bool)$oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
 					$aResult['ReplySameFolder'] = (bool)$oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
+					$aResult['KolabContactFolder'] = (string)$oSettingsLocal->GetConf('KolabContactFolder', $aResult['KolabContactFolder']);
 				}
 
 				if ($oConfig->Get('login', 'determine_user_language', true)) {
@@ -1166,7 +1149,7 @@ class Actions
 				'DangerousActions'     => (bool) $oConfig->Get('capa', 'dangerous_actions', true),
 				'GnuPG'                => (bool) $oConfig->Get('security', 'openpgp', false) && \SnappyMail\PGP\GnuPG::isSupported(),
 				'Identities'           => (bool) $oConfig->Get('webmail', 'allow_additional_identities', false),
-				'Kolab'                => (bool) $oConfig->Get('labs', 'kolab_enabled', false),
+				'Kolab'                => (bool) $oConfig->Get('labs', 'kolab_enabled', false) /* && ImapClient->IsSupported('METADATA')*/,
 				'MessageActions'       => (bool) $oConfig->Get('capa', 'message_actions', true),
 				'OpenPGP'              => (bool) $oConfig->Get('security', 'openpgp', false),
 				'Prefetch'             => (bool) $oConfig->Get('labs', 'allow_prefetch', false),

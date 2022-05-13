@@ -500,6 +500,9 @@
 		"LABEL_SEND_MESSAGE": "Nachricht senden",
 		"LABEL_CLOSE_COMPOSE": "Popup schließen"
 	},
+	"KOLAB": {
+		"CONTACTS_FOLDER": "Contacts Folder"
+	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ungültiger Token",
 		"AUTH_ERROR": "Authentifizierung fehlgeschlagen",

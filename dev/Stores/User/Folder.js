@@ -6,7 +6,7 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { forEachObjectEntry } from 'Common/Utils';
 import { addObservablesTo, addSubscribablesTo, addComputablesTo } from 'External/ko';
 import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
-import { Settings } from 'Common/Globals';
+import { Settings, SettingsCapa } from 'Common/Globals';
 //import Remote from 'Remote/User/Fetch'; // Circular dependency
 
 export const FolderUserStore = new class {
@@ -115,6 +115,10 @@ export const FolderUserStore = new class {
 	 */
 	hasCapability(name) {
 		return this.capabilities().includes(name);
+	}
+
+	allowKolab() {
+		return FolderUserStore.hasCapability('METADATA') && SettingsCapa('Kolab');
 	}
 
 	/**

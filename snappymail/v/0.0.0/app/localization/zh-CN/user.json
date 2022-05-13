@@ -500,6 +500,9 @@
 		"LABEL_SEND_MESSAGE": "发送邮件",
 		"LABEL_CLOSE_COMPOSE": "退出新邮件"
 	},
+	"KOLAB": {
+		"CONTACTS_FOLDER": "Contacts Folder"
+	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "无效标记",
 		"AUTH_ERROR": "认证失败",

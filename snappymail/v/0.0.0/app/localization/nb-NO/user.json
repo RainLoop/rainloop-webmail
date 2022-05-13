@@ -500,6 +500,9 @@
 		"LABEL_SEND_MESSAGE": "Send melding",
 		"LABEL_CLOSE_COMPOSE": "Lukk ny melding"
 	},
+	"KOLAB": {
+		"CONTACTS_FOLDER": "Contacts Folder"
+	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ugyldig info",
 		"AUTH_ERROR": "Autentisering mislyktes",

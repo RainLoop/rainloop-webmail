@@ -4,6 +4,7 @@ import { koComputable } from 'External/ko';
 import { SettingsGet } from 'Common/Globals';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 import { ContactUserStore } from 'Stores/User/Contact';
+import { FolderUserStore } from 'Stores/User/Folder';
 import Remote from 'Remote/User/Fetch';
 
 export class UserSettingsContacts /*extends AbstractViewSettings*/ {
@@ -48,5 +49,33 @@ export class UserSettingsContacts /*extends AbstractViewSettings*/ {
 				Password: ContactUserStore.syncPass()
 			})
 		);
+
+		this.kolabContactFolder = ko.observable(SettingsGet('KolabContactFolder'));
+		this.kolabContactFolder.subscribe(value =>
+			Remote.saveSettings(null, { KolabContactFolder: value })
+		);
+		this.showKolab = FolderUserStore.allowKolab();
+		this.folderSelectList = koComputable(() => {
+			const
+				aResult = [{
+					id: '',
+					name: '',
+				}],
+				foldersWalk = folders => {
+					folders.forEach(oItem => {
+						if ('contact' === oItem.kolabType()) {
+							aResult.push({
+								id: oItem.fullName,
+								name: oItem.fullName
+							});
+						}
+						if (oItem.subFolders.length) {
+							foldersWalk(oItem.subFolders());
+						}
+					});
+				};
+			foldersWalk(FolderUserStore.folderList());
+			return aResult;
+		});
 	}
 }

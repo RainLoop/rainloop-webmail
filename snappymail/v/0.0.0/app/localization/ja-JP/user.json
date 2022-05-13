@@ -500,6 +500,9 @@
 		"LABEL_SEND_MESSAGE": "メッセージを送信",
 		"LABEL_CLOSE_COMPOSE": "作成画面を閉じる"
 	},
+	"KOLAB": {
+		"CONTACTS_FOLDER": "Contacts Folder"
+	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "無効なトークン",
 		"AUTH_ERROR": "認証に失敗しました",

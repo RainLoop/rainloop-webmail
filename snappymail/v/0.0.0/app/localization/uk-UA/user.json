@@ -500,6 +500,9 @@
 		"LABEL_SEND_MESSAGE": "Надіслати повідомлення",
 		"LABEL_CLOSE_COMPOSE": "Закрити повідомлення"
 	},
+	"KOLAB": {
+		"CONTACTS_FOLDER": "Contacts Folder"
+	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Невірний токен запиту",
 		"AUTH_ERROR": "Не вдалося авторизуватися",

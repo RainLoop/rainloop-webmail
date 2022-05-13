@@ -500,6 +500,9 @@
 		"LABEL_SEND_MESSAGE": "Kirim pesan",
 		"LABEL_CLOSE_COMPOSE": "Tutup buat pesan"
 	},
+	"KOLAB": {
+		"CONTACTS_FOLDER": "Contacts Folder"
+	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Token tidak sah",
 		"AUTH_ERROR": "Otentikasi gagal",

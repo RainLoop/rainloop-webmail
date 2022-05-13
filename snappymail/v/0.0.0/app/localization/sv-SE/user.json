@@ -500,6 +500,9 @@
 		"LABEL_SEND_MESSAGE": "Skicka meddelande",
 		"LABEL_CLOSE_COMPOSE": "Stäng fönster"
 	},
+	"KOLAB": {
+		"CONTACTS_FOLDER": "Contacts Folder"
+	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ogiltigt tecken",
 		"AUTH_ERROR": "Autentisering misslyckades",

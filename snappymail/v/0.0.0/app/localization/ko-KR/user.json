@@ -500,6 +500,9 @@
 		"LABEL_SEND_MESSAGE": "메시지 보내기",
 		"LABEL_CLOSE_COMPOSE": "쓰기 창 닫기"
 	},
+	"KOLAB": {
+		"CONTACTS_FOLDER": "Contacts Folder"
+	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "잘못된 토큰입니다.",
 		"AUTH_ERROR": "인증에 실패했습니다",

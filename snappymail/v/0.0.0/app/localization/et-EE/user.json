@@ -500,6 +500,9 @@
 		"LABEL_SEND_MESSAGE": "Saada kiri",
 		"LABEL_CLOSE_COMPOSE": "Sulge kirja koostamise aken"
 	},
+	"KOLAB": {
+		"CONTACTS_FOLDER": "Contacts Folder"
+	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Puudulik tõend",
 		"AUTH_ERROR": "Autentimine ebaõnnestus",

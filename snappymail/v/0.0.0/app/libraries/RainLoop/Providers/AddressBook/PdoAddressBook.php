@@ -30,8 +30,28 @@ class PdoAddressBook
 	 */
 	private $sPassword;
 
-	public function __construct(string $sDsn, string $sUser = '', string $sPassword = '', string $sDsnType = 'mysql')
+	public function __construct()
 	{
+		$oConfig = \RainLoop\Api::Config();
+		$sDsnType = static::validPdoType($oConfig->Get('contacts', 'type', 'sqlite'));
+		if ('sqlite' === $sDsnType) {
+			$sUser = $sPassword = '';
+			$sDsn = 'sqlite:' . APP_PRIVATE_DATA . 'AddressBook.sqlite';
+/*
+			// TODO: use local db?
+			$homedir = \RainLoop\Api::Actions()->StorageProvider()->GenerateFilePath(
+				$oAccount,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::ROOT
+			);
+			$sDsn = 'sqlite:' . $homedir . '/AddressBook.sqlite';
+*/
+		} else {
+			$sDsn = \trim($oConfig->Get('contacts', 'pdo_dsn', ''));
+			$sUser = \trim($oConfig->Get('contacts', 'pdo_user', ''));
+			$sPassword = (string)$oConfig->Get('contacts', 'pdo_password', '');
+			$sDsn = $sDsnType . ':' . \preg_replace('/^[a-z]+:/', '', $sDsn);
+		}
+
 		$this->sDsn = $sDsn;
 		$this->sUser = $sUser;
 		$this->sPassword = $sPassword;
