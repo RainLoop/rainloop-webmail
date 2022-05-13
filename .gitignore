@@ -12,6 +12,7 @@
 /.docker/dev/mail/config
 /.docker/dev/nginx/ssl/*
 !/.docker/dev/nginx/ssl/.gitempty
+/.docker/release/snappymail-*.zip
 /dist
 /data
 /MULTIPLY
