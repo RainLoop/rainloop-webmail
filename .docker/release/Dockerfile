@@ -1,7 +1,11 @@
 # Inspired by the original Rainloop dockerfile from youtous on GitLab
-FROM php:7.4-fpm-buster
+FROM php:8.1-fpm-bullseye
 
 ARG FILES_ZIP
+
+# can be x86_64 or aarch64
+ARG ARCH=x86_64
+
 LABEL org.label-schema.description="SnappyMail webmail client image using nginx, php-fpm based on Debian Buster"
 
 ENV UID=991 GID=991 UPLOAD_MAX_SIZE=25M LOG_TO_STDERR=true MEMORY_LIMIT=128M SECURE_COOKIES=true
@@ -25,7 +29,7 @@ RUN mkdir -p /usr/share/man/man1/ /usr/share/man/man3/ /usr/share/man/man7/ && \
 
 # Install PHP extensions
 RUN php -m && \
-    docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
+    docker-php-ext-configure ldap --with-libdir=lib/$ARCH-linux-gnu/ && \
     docker-php-ext-configure intl && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install ldap opcache pdo_mysql pdo_pgsql zip intl gd && \
