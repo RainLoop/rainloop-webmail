@@ -295,25 +295,9 @@ class Contact implements \JsonSerializable
 		return (string) $oVCard->serialize();
 	}
 
-	public function ToXCard(string $sPreVCard = '', $oLogger = null) : string
+	public function ToXCard(?\Sabre\VObject\Component\VCard $oVCard = null, $oLogger = null) : string
 	{
 		$this->UpdateDependentValues();
-
-		$oVCard = null;
-
-		if (\strlen($sPreVCard)) {
-			try
-			{
-				$oVCard = \Sabre\VObject\Reader::readXML($sPreVCard);
-			}
-			catch (\Throwable $oExc)
-			{
-				if ($oLogger) {
-					$oLogger->WriteException($oExc);
-					$oLogger->WriteDump($sPreVCard);
-				}
-			}
-		}
 
 		$oVCard = $oVCard ?: new \Sabre\VObject\Component\VCard();
 

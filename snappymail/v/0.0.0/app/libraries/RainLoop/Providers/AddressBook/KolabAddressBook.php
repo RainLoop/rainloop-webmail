@@ -62,12 +62,27 @@ class KolabAddressBook implements AddressBookInterface
 		return false;
 	}
 
+	public function fetchXCardFromMessage(\MailSo\Mail\Message $oMessage) : ?\Sabre\VObject\Component\VCard
+	{
+		$xCard = null;
+		foreach ($oMessage->Attachments() ?: [] as $oAttachment)  {
+			if ('application/vcard+xml' === $oAttachment->MimeType()) {
+				$result = $this->MailClient()->MessageMimeStream(function ($rResource) use (&$xCard) {
+					if (\is_resource($rResource)) {
+						$xCard = \Sabre\VObject\Reader::readXML($rResource);
+					}
+				}, $this->FolderName(), $oMessage->Uid(), $oAttachment->MimeIndex());
+				break;
+			}
+		}
+		return $xCard;
+	}
+
 	protected function MessageAsContact(\MailSo\Mail\Message $oMessage) : ?Classes\Contact
 	{
 		$oContact = new Classes\Contact;
 		$oContact->IdContact = $oMessage->Uid();
-		$oContact->IdContactStr = $oMessage->Subject();
-//			$oContact->Display = isset($aItem['display']) ? (string) $aItem['display'] : '';
+//		$oContact->Display = isset($aItem['display']) ? (string) $aItem['display'] : '';
 		$oContact->Changed = $oMessage->HeaderTimeStampInUTC();
 
 		$oFrom = $oMessage->From();
@@ -76,30 +91,23 @@ class KolabAddressBook implements AddressBookInterface
 			$oProperty = new Classes\Property(PropertyType::EMAIl, $oMail->GetEmail());
 			$oContact->Properties[] = $oProperty;
 			$oProperty = new Classes\Property(PropertyType::FULLNAME, $oMail->GetDisplayName());
-//				$oProperty = new Classes\Property(PropertyType::FULLNAME, $oMail->ToString());
+//			$oProperty = new Classes\Property(PropertyType::FULLNAME, $oMail->ToString());
 			$oContact->Properties[] = $oProperty;
-//				$oProperty = new Classes\Property(PropertyType::NICK_NAME, $oMail->GetDisplayName());
-//				$oContact->Properties[] = $oProperty;
-
-			$oContact->UpdateDependentValues();
-/*
-			// TODO extract xCard attachment
-			$oMessage->ContentType() = multipart/mixed
-			$oMessage->Attachments() : ?AttachmentCollection
-				[0] => MailSo\Mail\Attachment(
-					[oBodyStructure:MailSo\Mail\Attachment:private] => MailSo\Imap\BodyStructure(
-						[sContentType:MailSo\Imap\BodyStructure:private] => application/vcard+xml
-						[sCharset:MailSo\Imap\BodyStructure:private] =>
-						[aBodyParams:MailSo\Imap\BodyStructure:private] => Array(
-							[name] => kolab.xml
-						)
-						[sMailEncodingName:MailSo\Imap\BodyStructure:private] => quoted-printable
-						[sDisposition:MailSo\Imap\BodyStructure:private] => attachment
-						[sFileName:MailSo\Imap\BodyStructure:private] => kolab.xml
-						[iSize:MailSo\Imap\BodyStructure:private] => 1043
-						[sPartID:MailSo\Imap\BodyStructure:private] => 2
-*/
+//			$oProperty = new Classes\Property(PropertyType::NICK_NAME, $oMail->GetDisplayName());
+//			$oContact->Properties[] = $oProperty;
 		}
+
+		// Fetch xCard attachment and populate $oContact with it
+		$xCard = $this->fetchXCardFromMessage($oMessage);
+		if ($xCard instanceof \Sabre\VObject\Component\VCard) {
+			$oContact->PopulateByVCard($xCard);
+		}
+
+		// Reset, else it is 'urn:uuid:01234567-89AB-CDEF-0123-456789ABCDEF'
+//		$oContact->IdContactStr = $oMessage->Subject();
+
+		$oContact->UpdateDependentValues();
+
 		return $oContact;
 	}
 
@@ -132,11 +140,29 @@ class KolabAddressBook implements AddressBookInterface
 
 		$oContact->PopulateDisplayAndFullNameValue();
 
-		$sUID = $oContact->GetUID();
+		$iUID = $oContact->IdContact;
+		$sUUID = $oContact->GetUID();
+
+		$oPrevMessage = $this->MailClient()->Message($this->FolderName(), $iUID);
+		$oVCard = $oPrevMessage ? $this->fetchXCardFromMessage($oPrevMessage) : null;
 
 		$oMessage = new \MailSo\Mime\Message();
-		$oMessage->SetFrom(new \MailSo\Mime\Email($sEmail, $oContact->Display));
-		$oMessage->SetSubject($sUID);
+
+		$sEmail = '';
+		if (isset($oVCard->EMAIL)) {
+			foreach ($oVCard->EMAIL as $oProp) {
+				$oTypes = $oProp ? $oProp['TYPE'] : null;
+				$sValue = $oProp ? \trim($oProp->getValue()) : '';
+				if ($sValue && (!$sEmail || ($oTypes && $oTypes->has('PREF')))) {
+					$sEmail = $sValue;
+				}
+			}
+			if ($sEmail) {
+				$oMessage->SetFrom(new \MailSo\Mime\Email($sEmail, $oContact->Display));
+			}
+		}
+
+		$oMessage->SetSubject($sUUID);
 //		$oMessage->SetDate(\time());
 		$oMessage->Headers->AddByName('X-Kolab-Type', 'application/x-vnd.kolab.contact');
 		$oMessage->Headers->AddByName('X-Kolab-Mime-Version', '3.0');
@@ -156,31 +182,18 @@ class KolabAddressBook implements AddressBookInterface
 		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/vcard+xml; name="kolab.xml"');
 //		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
 		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION, 'attachment; filename="kolab.xml"');
-		$oPart->Body = $oContact->ToXCard($sPreVCard = '', $oLogger);
+		$oPart->Body = $oContact->ToXCard($oVCard/*, $oLogger*/);
 		$oMessage->SubParts->append($oPart);
 
-		// Search in IMAP folder:
-		$aUids = $this->ImapClient()->MessageSimpleSearch("SUBJECT {$sUID}");
-/*
-		$email = \MailSo\Imap\SearchCriterias::escapeSearchString($this->ImapClient(), $sEmail);
-		$aUids = $this->ImapClient()->MessageSimpleSearch("OR SUBJECT {$sUID} FROM {$email}");
-		$aUids = $this->ImapClient()->MessageSimpleSearch("OR SUBJECT {$sUID} FROM {$email} BODY {$email}");
-
-		$aUids = $this->ImapClient()->MessageSimpleSearch('HEADER Subject '.$sUID);
-		return 1 === \count($aUids) && \is_numeric($aUids[0]) ? (int) $aUids[0] : null;
-*/
-
-		if ($aUids) {
+		if ($oPrevMessage) {
 			// Replace Message
 			if (false && $this->ImapClient()->IsSupported('REPLACE')) {
 				// UID REPLACE
 			} else {
-				$oRange = new \MailSo\Imap\SequenceSet($aUids[0]);
-				$this->ImapClient()->MessageStoreFlag($oRange,
-					array(\MailSo\Imap\Enumerations\MessageFlag::DELETED),
-					\MailSo\Imap\Enumerations\StoreAction::ADD_FLAGS_SILENT
+				$this->MailClient()->MessageDelete(
+					$this->FolderName(),
+					new \MailSo\Imap\SequenceSet([$iUID])
 				);
-				$this->ImapClient()->FolderExpunge($oRange);
 			}
 		}
 
