@@ -6,8 +6,6 @@ interface AddressBookInterface
 {
 	public function IsSupported() : bool;
 
-	public function IsSharingAllowed() : bool;
-
 	public function Sync(array $oConfig) : bool;
 
 	public function Export(string $sEmail, string $sType = 'vcf') : bool;

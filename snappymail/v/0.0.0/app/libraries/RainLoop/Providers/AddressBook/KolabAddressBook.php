@@ -12,60 +12,101 @@ class KolabAddressBook implements AddressBookInterface
 		$oImapClient,
 		$sFolderName;
 
+	protected function MailClient() : \MailSo\Mail\MailClient
+	{
+		$oActions = \RainLoop\Api::Actions();
+		$oMailClient = $oActions->MailClient();
+		if (!$oMailClient->IsLoggined()) {
+			$oActions->getAccountFromToken()->IncConnectAndLoginHelper($oActions->Plugins(), $oMailClient, $oActions->Config());
+		}
+		return $oMailClient;
+	}
+
 	protected function ImapClient() : \MailSo\Imap\ImapClient
 	{
 		if (!$this->oImapClient /*&&\RainLoop\Api::Config()->Get('labs', 'kolab_enabled', false)*/) {
-			$oActions = \RainLoop\Api::Actions();
-			$oMailClient = $oActions->MailClient();
-			if (!$oMailClient->IsLoggined()) {
-				$oActions->getAccountFromToken()->IncConnectAndLoginHelper($oActions->Plugins(), $oMailClient, $oActions->Config());
-			}
-			$this->oImapClient = $oMailClient->ImapClient();
+			$this->oImapClient = $this->MailClient()->ImapClient();
 		}
 		return $this->oImapClient;
 	}
 
-	public function FolderName() : string
+	protected function FolderName() : string
 	{
 		if (!\is_string($this->sFolderName)) {
 			$oActions = \RainLoop\Api::Actions();
 			$oAccount = $oActions->getAccountFromToken();
-			$this->sFolderName = (string) $oActions->SettingsProvider(true)->Load($oAccount)->GetConf('KolabContactFolder', '');
+			$sFolderName = (string) $oActions->SettingsProvider(true)->Load($oAccount)->GetConf('KolabContactFolder', '');
+
+			$metadata = $this->ImapClient()->FolderGetMetadata($sFolderName, [\MailSo\Imap\Enumerations\MetadataKeys::KOLAB_CTYPE]);
+			if (!$metadata || 'contact' !== \array_shift($metadata)) {
+				$sFolderName = '';
+//				throw new \Exception("Invalid kolab contact folder: {$sFolderName}");
+			}
+
+			$this->sFolderName = $sFolderName;
 		}
 		return $this->sFolderName;
 	}
 
-	public function SelectFolder() : bool
+	protected function SelectFolder() : bool
 	{
 		try {
 			$sFolderName = $this->FolderName();
-			if (!$sFolderName) {
-				return false;
+			if ($sFolderName) {
+				$this->ImapClient()->FolderSelect($sFolderName);
+				return true;
 			}
-
-			$metadata = $this->ImapClient()->FolderGetMetadata($sFolderName, [\MailSo\Imap\Enumerations\MetadataKeys::KOLAB_CTYPE]);
-			if (!$metadata || 'contact' !== \array_shift($metadata)) {
-				throw new \Exception("Invalid kolab contact folder: {$sFolderName}");
-			}
-
-			$this->ImapClient()->FolderSelect($sFolderName);
-			$this->sFolderName = $sFolderName;
-			return true;
 		} catch (\Throwable $e) {
 			\trigger_error("KolabAddressBook {$sFolderName} error: {$e->getMessage()}");
 		}
 		return false;
 	}
 
+	protected function MessageAsContact(\MailSo\Mail\Message $oMessage) : ?Classes\Contact
+	{
+		$oContact = new Classes\Contact;
+		$oContact->IdContact = $oMessage->Uid();
+		$oContact->IdContactStr = $oMessage->Subject();
+//			$oContact->Display = isset($aItem['display']) ? (string) $aItem['display'] : '';
+		$oContact->Changed = $oMessage->HeaderTimeStampInUTC();
+
+		$oFrom = $oMessage->From();
+		if ($oFrom) {
+			$oMail = $oFrom[0];
+			$oProperty = new Classes\Property(PropertyType::EMAIl, $oMail->GetEmail());
+			$oContact->Properties[] = $oProperty;
+			$oProperty = new Classes\Property(PropertyType::FULLNAME, $oMail->GetDisplayName());
+//				$oProperty = new Classes\Property(PropertyType::FULLNAME, $oMail->ToString());
+			$oContact->Properties[] = $oProperty;
+//				$oProperty = new Classes\Property(PropertyType::NICK_NAME, $oMail->GetDisplayName());
+//				$oContact->Properties[] = $oProperty;
+
+			$oContact->UpdateDependentValues();
+/*
+			// TODO extract xCard attachment
+			$oMessage->ContentType() = multipart/mixed
+			$oMessage->Attachments() : ?AttachmentCollection
+				[0] => MailSo\Mail\Attachment(
+					[oBodyStructure:MailSo\Mail\Attachment:private] => MailSo\Imap\BodyStructure(
+						[sContentType:MailSo\Imap\BodyStructure:private] => application/vcard+xml
+						[sCharset:MailSo\Imap\BodyStructure:private] =>
+						[aBodyParams:MailSo\Imap\BodyStructure:private] => Array(
+							[name] => kolab.xml
+						)
+						[sMailEncodingName:MailSo\Imap\BodyStructure:private] => quoted-printable
+						[sDisposition:MailSo\Imap\BodyStructure:private] => attachment
+						[sFileName:MailSo\Imap\BodyStructure:private] => kolab.xml
+						[iSize:MailSo\Imap\BodyStructure:private] => 1043
+						[sPartID:MailSo\Imap\BodyStructure:private] => 2
+*/
+		}
+		return $oContact;
+	}
+
 	public function IsSupported() : bool
 	{
 		// Check $this->ImapClient()->IsSupported('METADATA')
 		return true;
-	}
-
-	public function IsSharingAllowed() : bool
-	{
-		return $this->IsSupported() && false; // TODO
 	}
 
 	public function Sync(array $oConfig) : bool
@@ -157,13 +198,18 @@ class KolabAddressBook implements AddressBookInterface
 
 	public function DeleteContacts(string $sEmail, array $aContactIds) : bool
 	{
-		// TODO
+		$this->MailClient()->MessageDelete(
+			$this->FolderName(),
+			new \MailSo\Imap\SequenceSet($aContactIds)
+		);
 		return false;
 	}
 
 	public function DeleteAllContacts(string $sEmail) : bool
 	{
-		// TODO
+		// Called by \RainLoop\Api::ClearUserData()
+		// Not needed as the contacts are inside IMAP mailbox
+//		$this->MailClient()->FolderClear($this->FolderName());
 		return false;
 	}
 
@@ -191,45 +237,9 @@ class KolabAddressBook implements AddressBookInterface
 
 		try
 		{
-			$oMessageList = \RainLoop\Api::Actions()->MailClient()->MessageList($oParams);
+			$oMessageList = $this->MailClient()->MessageList($oParams);
 			foreach ($oMessageList as $oMessage) {
-				$oContact = new Classes\Contact;
-				$oContact->IdContact = $oMessage->Uid();
-				$oContact->IdContactStr = $oMessage->Subject();
-//				$oContact->Display = isset($aItem['display']) ? (string) $aItem['display'] : '';
-				$oContact->Changed = $oMessage->HeaderTimeStampInUTC();
-
-				$oFrom = $oMessage->From();
-				if ($oFrom) {
-					$oMail = $oFrom[0];
-					$oProperty = new Classes\Property(PropertyType::EMAIl, $oMail->GetEmail());
-					$oContact->Properties[] = $oProperty;
-					$oProperty = new Classes\Property(PropertyType::FULLNAME, $oMail->GetDisplayName());
-//					$oProperty = new Classes\Property(PropertyType::FULLNAME, $oMail->ToString());
-					$oContact->Properties[] = $oProperty;
-//					$oProperty = new Classes\Property(PropertyType::NICK_NAME, $oMail->GetDisplayName());
-//					$oContact->Properties[] = $oProperty;
-
-					$oContact->UpdateDependentValues();
-					$aResult[] = $oContact;
-	/*
-					// TODO extract xCard attachment
-					$oMessage->ContentType() = multipart/mixed
-					$oMessage->Attachments() : ?AttachmentCollection
-						[0] => MailSo\Mail\Attachment(
-							[oBodyStructure:MailSo\Mail\Attachment:private] => MailSo\Imap\BodyStructure(
-								[sContentType:MailSo\Imap\BodyStructure:private] => application/vcard+xml
-								[sCharset:MailSo\Imap\BodyStructure:private] =>
-								[aBodyParams:MailSo\Imap\BodyStructure:private] => Array(
-									[name] => kolab.xml
-								)
-								[sMailEncodingName:MailSo\Imap\BodyStructure:private] => quoted-printable
-								[sDisposition:MailSo\Imap\BodyStructure:private] => attachment
-								[sFileName:MailSo\Imap\BodyStructure:private] => kolab.xml
-								[iSize:MailSo\Imap\BodyStructure:private] => 1043
-								[sPartID:MailSo\Imap\BodyStructure:private] => 2
-	*/
-				}
+				$aResult[] = $this->MessageAsContact($oMessage);
 			}
 		}
 		catch (\Throwable $oException)
@@ -243,8 +253,12 @@ class KolabAddressBook implements AddressBookInterface
 
 	public function GetContactByID(string $sEmail, $mID, bool $bIsStrID = false) : ?Classes\Contact
 	{
-		// TODO
-		return null;
+		if ($bIsStrID) {
+			$oMessage = null;
+		} else {
+			$oMessage = $this->MailClient()->Message($this->FolderName(), $mID);
+		}
+		return $oMessage ? $this->MessageAsContact($oMessage) : null;
 	}
 
 	public function GetSuggestions(string $sEmail, string $sSearch, int $iLimit = 20) : array

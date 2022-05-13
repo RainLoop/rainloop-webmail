@@ -19,26 +19,12 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	public function Test() : string
 	{
 		\sleep(1);
-		return $this->oDriver instanceof \RainLoop\Providers\AddressBook\AddressBookInterface ?
-			$this->oDriver->Test() : 'Personal address book driver is not allowed';
+		return $this->oDriver ? $this->oDriver->Test() : 'Personal address book driver is not allowed';
 	}
 
 	public function IsActive() : bool
 	{
-		return $this->oDriver instanceof \RainLoop\Providers\AddressBook\AddressBookInterface &&
-			$this->oDriver->IsSupported();
-	}
-
-	public function IsSupported() : bool
-	{
-		return $this->oDriver instanceof \RainLoop\Providers\AddressBook\AddressBookInterface &&
-			$this->oDriver->IsSupported();
-	}
-
-	public function IsSharingAllowed() : bool
-	{
-		return $this->oDriver instanceof \RainLoop\Providers\AddressBook\AddressBookInterface &&
-			$this->oDriver->IsSharingAllowed();
+		return $this->oDriver && $this->oDriver->IsSupported();
 	}
 
 	public function Sync(array $oConfig) : bool

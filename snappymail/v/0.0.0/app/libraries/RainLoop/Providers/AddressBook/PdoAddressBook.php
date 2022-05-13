@@ -72,11 +72,6 @@ class PdoAddressBook
 		return \is_array($aDrivers) && \in_array($this->sDsnType, $aDrivers);
 	}
 
-	public function IsSharingAllowed() : bool
-	{
-		return $this->IsSupported() && false; // TODO
-	}
-
 	private function flushDeletedContacts(int $iUserID) : bool
 	{
 		return !!$this->prepareAndExecute('DELETE FROM rainloop_ab_contacts WHERE id_user = :id_user AND deleted = 1', array(
