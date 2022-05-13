@@ -1,5 +1,7 @@
 <?php
 
+use MailSo\Net\ConnectSettings;
+
 class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 {
 	const
@@ -43,10 +45,10 @@ class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 
 		try
 		{
-			$this->Connect(
-				$this->oConfig->Get('plugin', 'poppassd_host', ''),
-				(int) $this->oConfig->Get('plugin', 'poppassd_port', 106)
-			);
+			$oSettings = new ConnectSettings;
+			$oSettings->host = $this->oConfig->Get('plugin', 'poppassd_host', '');
+			$oSettings->port = (int) $this->oConfig->Get('plugin', 'poppassd_port', 106);
+			$this->Connect($oSettings);
 
 			if ($this->bIsLoggined) {
 				$this->writeLogException(
@@ -77,8 +79,7 @@ class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 			}
 
 
-			$this->Disconnect()
-			;
+			$this->Disconnect();
 
 			return true;
 		}
@@ -93,13 +94,10 @@ class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 		$bIsLoggined = false,
 		$iRequestTime = 0;
 
-	public function Connect(string $sServerName, int $iPort,
-		int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
-		bool $bVerifySsl = false, bool $bAllowSelfSigned = true,
-		string $sClientCert = '') : void
+	public function Connect(ConnectSettings $oSettings) : void
 	{
 		$this->iRequestTime = \microtime(true);
-		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl, $bAllowSelfSigned, $sClientCert);
+		parent::Connect($oSettings);
 		$this->validateResponse();
 	}
 

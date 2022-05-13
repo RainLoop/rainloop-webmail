@@ -120,7 +120,7 @@ abstract class NetClient
 	 * @throws \MailSo\Net\Exceptions\SocketAlreadyConnectedException
 	 * @throws \MailSo\Net\Exceptions\SocketCanNotConnectToHostException
 	 */
-	public function Connect(ConnectSettings $oSettings)
+	public function Connect(ConnectSettings $oSettings) : void
 	{
 		$oSettings->host = \trim($oSettings->host);
 		if (!\strlen($oSettings->host) || !\MailSo\Base\Validator::PortInt($oSettings->port)) {
