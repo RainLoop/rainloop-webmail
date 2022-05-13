@@ -245,7 +245,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			// RFC 6855 || RFC 5738
 			$this->UTF8 = $this->IsSupported('UTF8=ONLY') || $this->IsSupported('UTF8=ACCEPT');
 			if ($this->UTF8) {
-				$this->Enable('ENABLE', 'UTF8=ACCEPT');
+				$this->Enable('UTF8=ACCEPT');
 			}
 		}
 		catch (Exceptions\NegativeResponseException $oException)
