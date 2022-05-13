@@ -13,9 +13,10 @@ class ExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 		LICENSE  = 'MIT',
 		DESCRIPTION = '';
 
-/*
 	public function Init() : void
 	{
+		$this->addHook('main.fabrica', 'MainFabrica');
+/*
 		$this->addCss(string $sFile, bool $bAdminScope = false);
 		$this->addJs(string $sFile, bool $bAdminScope = false);
 		$this->addHook(string $sHookName, string $sFunctionName);
@@ -29,8 +30,36 @@ class ExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		$this->addTemplate(string $sFile, bool $bAdminScope = false);
 		$this->addTemplateHook(string $sName, string $sPlace, string $sLocalTemplateName, bool $bPrepend = false);
-	}
 */
+	}
+
+	/**
+	 * @param mixed $mResult
+	 */
+	public function MainFabrica(string $sName, &$mResult)
+	{
+		switch ($sName) {
+			case 'files':
+			case 'storage':
+			case 'storage-local':
+			case 'settings':
+			case 'settings-local':
+			case 'login':
+			case 'domain':
+			case 'filters':
+			case 'address-book':
+			case 'identities':
+				break;
+
+			case 'suggestions':
+				if (!\is_array($mResult)) {
+					$mResult = array();
+				}
+				require_once __DIR__ . '/ContactsSuggestions.php';
+				$mResult[] = new \Plugins\Example\ContactSuggestions();
+				break;
+		}
+	}
 
 /*
 	public function Config() : \RainLoop\Config\Plugin
