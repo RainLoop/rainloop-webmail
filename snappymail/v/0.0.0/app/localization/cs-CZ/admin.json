@@ -40,7 +40,7 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "Limit velikosti přílohy",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Povolit přidávat další účty",
 		"LABEL_ALLOW_IDENTITIES": "Povolit další identity",
-		"ALERT_DATA_ACCESS": "Adresář s RainLoop daty je veřejně přístupný. Nakonfigurujte prosím webový server tak, aby skryl adresář data z externího přístupu. Více zde:",
+		"ALERT_DATA_ACCESS": "Adresář s SnappyMail daty je veřejně přístupný. Nakonfigurujte prosím webový server tak, aby skryl adresář data z externího přístupu. Více zde:",
 		"ALERT_WARNING": "Upozornění!",
 		"HTML_ALERT_WEAK_PASSWORD": "Používáte výchozí administrátorské heslo.\n<br>\nZ bezpečnostních důvodů jej prosím\n<strong><a href=\"#\/security\">změňte<\/a><\/strong>.\n"
 	},

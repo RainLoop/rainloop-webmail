@@ -40,7 +40,7 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "Omejitev velikosti prilog",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Dovoli dodatne račune",
 		"LABEL_ALLOW_IDENTITIES": "Dovoli več identitet",
-		"ALERT_DATA_ACCESS": "Mapa z RainLoop podatki je prosto ogledljiva. Prosimo, nastavite strežnik, da skrije mapo pred zunanjimi dostopi. Preberite več tukaj:",
+		"ALERT_DATA_ACCESS": "Mapa z SnappyMail podatki je prosto ogledljiva. Prosimo, nastavite strežnik, da skrije mapo pred zunanjimi dostopi. Preberite več tukaj:",
 		"ALERT_WARNING": "Pozor!",
 		"HTML_ALERT_WEAK_PASSWORD": "V uporabi je privzeto geslo administratorja\n<br>\nIz varnostnih razlogov\n<strong><a href=\"#\/security\">spremenite<\/a><\/strong>\ngeslo v nekaj drugega.\n"
 	},
