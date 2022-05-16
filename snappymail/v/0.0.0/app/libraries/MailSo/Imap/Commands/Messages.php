@@ -118,7 +118,7 @@ trait Messages
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageAppendStream(string $sFolderName, $rMessageAppendStream, int $iStreamSize, array $aFlagsList = null, int &$iUid = null, int $iDateTime = 0) : ?int
+	public function MessageAppendStream(string $sFolderName, $rMessageAppendStream, int $iStreamSize, array $aFlagsList = null, int $iDateTime = 0) : ?int
 	{
 		$aParams = array(
 			$this->EscapeFolderName($sFolderName),
@@ -138,27 +138,34 @@ trait Messages
 
 		$this->SendRequestGetResponse('APPEND', $aParams);
 
+		return $this->writeMessageStream($rMessageAppendStream);
+	}
+
+	private function writeMessageStream($rMessageStream) : ?int
+	{
 		$this->writeLog('Write to connection stream', LogType::NOTE);
 
-		\MailSo\Base\Utils::MultipleStreamWriter($rMessageAppendStream, array($this->ConnectionResource()));
+		\MailSo\Base\Utils::MultipleStreamWriter($rMessageStream, array($this->ConnectionResource()));
 
 		$this->sendRaw('');
-		$oResponse = $this->getResponse();
-
-		if (null !== $iUid) {
-			$oLast = $oResponse->getLast();
-			if ($oLast
-			 && ResponseType::TAGGED === $oLast->ResponseType
-			 && \is_array($oLast->OptionalResponse)
-			 && !empty($oLast->OptionalResponse[2])
-			 && \is_numeric($oLast->OptionalResponse[2])
-			 && 'APPENDUID' === \strtoupper($oLast->OptionalResponse[0])
+		$oResponses = $this->getResponse();
+		/**
+		 * Can be tagged
+			 S: A003 OK [APPENDUID 1 2001] APPEND completed
+		 * Or untagged
+			 S: * OK [APPENDUID 1 2001] Replacement Message ready
+		 */
+		foreach ($oResponses as $oResponse) {
+			if (\is_array($oResponse->OptionalResponse)
+			 && !empty($oResponse->OptionalResponse[2])
+			 && \is_numeric($oResponse->OptionalResponse[2])
+			 && 'APPENDUID' === \strtoupper($oResponse->OptionalResponse[0])
 			) {
-				$iUid = (int) $oLast->OptionalResponse[2];
+				return (int) $oResponse->OptionalResponse[2];
 			}
 		}
 
-		return $iUid;
+		return null;
 	}
 
 	/**
@@ -204,6 +211,55 @@ trait Messages
 			$oRange->UID ? 'UID MOVE' : 'MOVE',
 			array((string) $oRange, $this->EscapeFolderName($sToFolder))
 		);
+	}
+
+	/**
+	 * RFC 8508 REPLACE
+	 * Replaces message in specified folder
+	 * When $iUid < 1 it only appends the message
+	 *
+	 * @param resource $rMessageStream
+	 *
+	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function MessageReplaceStream(string $sFolderName, int $iUid, $rMessageStream, int $iStreamSize, array $aFlagsList = null, int $iDateTime = 0) : ?int
+	{
+		if (1 > $iUid || !$this->IsSupported('REPLACE')) {
+			$this->FolderSelect($sFolderName);
+			$iNewUid = $this->MessageAppendStream($sFolderName, $rMessageStream, $iStreamSize, $aFlagsList, $iDateTime);
+			if ($iUid) {
+				$oRange = new SequenceSet([$iUid]);
+				$this->MessageStoreFlag($oRange,
+					array(\MailSo\Imap\Enumerations\MessageFlag::DELETED),
+					\MailSo\Imap\Enumerations\StoreAction::ADD_FLAGS_SILENT
+				);
+				$this->FolderExpunge($oRange);
+			}
+			return $iNewUid;
+		}
+
+		$aParams = array(
+			$iUid,
+			$this->EscapeFolderName($sFolderName),
+			$aFlagsList
+		);
+		if (0 < $iDateTime) {
+			$aParams[] = $this->EscapeString(\gmdate('d-M-Y H:i:s', $iDateTime).' +0000');
+		}
+
+/*
+		// RFC 3516 || RFC 6855 section-4
+		if ($this->IsSupported('BINARY') || $this->IsSupported('UTF8=ACCEPT')) {
+			$aParams[] = '~{'.$iStreamSize.'}';
+		}
+*/
+		$aParams[] = '{'.$iStreamSize.'}';
+
+		$this->SendRequestGetResponse('UID REPLACE', $aParams);
+
+		return $this->writeMessageStream($rMessageStream);
 	}
 
 	/**

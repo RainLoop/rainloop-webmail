@@ -141,10 +141,14 @@ class KolabAddressBook implements AddressBookInterface
 		$oContact->PopulateDisplayAndFullNameValue();
 
 		$iUID = $oContact->IdContact;
-		$sUUID = $oContact->GetUID();
 
 		$oPrevMessage = $this->MailClient()->Message($this->FolderName(), $iUID);
-		$oVCard = $oPrevMessage ? $this->fetchXCardFromMessage($oPrevMessage) : null;
+		if ($oPrevMessage) {
+			$oVCard = $this->fetchXCardFromMessage($oPrevMessage);
+		} else {
+			$oVCard = null;
+			$iUID = 0;
+		}
 
 		$oMessage = new \MailSo\Mime\Message();
 
@@ -162,7 +166,7 @@ class KolabAddressBook implements AddressBookInterface
 			}
 		}
 
-		$oMessage->SetSubject($sUUID);
+		$oMessage->SetSubject($oContact->GetUID());
 //		$oMessage->SetDate(\time());
 		$oMessage->Headers->AddByName('X-Kolab-Type', 'application/x-vnd.kolab.contact');
 		$oMessage->Headers->AddByName('X-Kolab-Mime-Version', '3.0');
@@ -185,25 +189,13 @@ class KolabAddressBook implements AddressBookInterface
 		$oPart->Body = $oContact->ToXCard($oVCard/*, $oLogger*/);
 		$oMessage->SubParts->append($oPart);
 
-		if ($oPrevMessage) {
-			// Replace Message
-			if (false && $this->ImapClient()->IsSupported('REPLACE')) {
-				// UID REPLACE
-			} else {
-				$this->MailClient()->MessageDelete(
-					$this->FolderName(),
-					new \MailSo\Imap\SequenceSet([$iUID])
-				);
-			}
-		}
-
 		// Store Message
 		$rMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
 		$iMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
 			$oMessage->ToStream(false), array($rMessageStream), 8192, true, true);
 		if (false !== $iMessageStreamSize) {
 			\rewind($rMessageStream);
-			$this->ImapClient()->MessageAppendStream($this->sFolderName, $rMessageStream, $iMessageStreamSize);
+			$this->ImapClient()->MessageReplaceStream($this->sFolderName, $iUID, $rMessageStream, $iMessageStreamSize);
 		}
 
 		return true;
@@ -211,10 +203,14 @@ class KolabAddressBook implements AddressBookInterface
 
 	public function DeleteContacts(string $sEmail, array $aContactIds) : bool
 	{
-		$this->MailClient()->MessageDelete(
-			$this->FolderName(),
-			new \MailSo\Imap\SequenceSet($aContactIds)
-		);
+		try {
+			$this->MailClient()->MessageDelete(
+				$this->FolderName(),
+				new \MailSo\Imap\SequenceSet($aContactIds)
+			);
+			return true;
+		} catch (\Throwable $e) {
+		}
 		return false;
 	}
 

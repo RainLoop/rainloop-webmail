@@ -401,8 +401,8 @@ class MailClient
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
-		$this->oImapClient->MessageAppendStream(
-			$sFolderToSave, $rMessageStream, $iMessageStreamSize, $aAppendFlags, $iUid);
+		$iUid = $this->oImapClient->MessageAppendStream(
+			$sFolderToSave, $rMessageStream, $iMessageStreamSize, $aAppendFlags);
 
 		return $this;
 	}
