@@ -147,11 +147,19 @@ abstract class Utils
 		return \in_array(\strtoupper($sEncoding), $aSupportedEncodings);
 	}
 
+	private static $RenameEncoding = [
+		'SHIFT_JIS' => 'SJIS'
+	];
+
 	public static function MbConvertEncoding(string $sInputString, ?string $sInputFromEncoding, string $sInputToEncoding) : string
 	{
 		if ($sInputFromEncoding) {
 			$sInputFromEncoding = \strtoupper($sInputFromEncoding);
+			if (isset(static::$RenameEncoding[$sInputFromEncoding])) {
+				$sInputFromEncoding = static::$RenameEncoding[$sInputFromEncoding];
+			}
 			if (!static::MbSupportedEncoding($sInputFromEncoding)) {
+				\error_log("Unsupported encoding {$sInputFromEncoding}");
 				$sInputFromEncoding = null;
 //				return $sInputString;
 /*
