@@ -40,7 +40,7 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "Maksimal størrelse på vedlegg",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Tillat bruk av flere kontoer",
 		"LABEL_ALLOW_IDENTITIES": "Tillat bruk av flere identiteter",
-		"ALERT_DATA_ACCESS": "RainLoop-datamappa di er offentlig tiljgengelig. Sett opp webtjeneren slik at den ikke viser datamappa. Les mer her:",
+		"ALERT_DATA_ACCESS": "SnappyMail-datamappa di er offentlig tiljgengelig. Sett opp webtjeneren slik at den ikke viser datamappa. Les mer her:",
 		"ALERT_WARNING": "Advarsel!",
 		"HTML_ALERT_WEAK_PASSWORD": "Du bruker forvalgt admin-passord.\n<br>\nAv sikkerhetshensyn bør du\n<strong><a href=\"#\/security\">endre<\/a><\/strong>\npassordet umiddelbart.\n"
 	},

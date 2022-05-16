@@ -24,7 +24,7 @@
 		"LABEL_SECURITY_NAME": "セキュリティ",
 		"LABEL_PACKAGES_NAME": "パッケージ",
 		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "RainLoop について"
+		"LABEL_ABOUT_NAME": "SnappyMail について"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "インターフェース",
@@ -40,7 +40,7 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "添付サイズ制限",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "追加のアカウントを使用する",
 		"LABEL_ALLOW_IDENTITIES": "複数の表示名を使用する",
-		"ALERT_DATA_ACCESS": "RainLoop のデータフォルダがアクセス可能になっています。外部から RainLoop のデータフォルダにアクセスできないよう、Web サーバーを設定してください。詳しくは以下をご覧ください:",
+		"ALERT_DATA_ACCESS": "SnappyMail のデータフォルダがアクセス可能になっています。外部から SnappyMail のデータフォルダにアクセスできないよう、Web サーバーを設定してください。詳しくは以下をご覧ください:",
 		"ALERT_WARNING": "警告！",
 		"HTML_ALERT_WEAK_PASSWORD": "デフォルトの管理者パスワードを使用しています。\n<br>\nセキュリティ上の理由から、いますぐパスワードを\n<strong><a href=\"#\/security\">変更<\/a><\/strong>\nしてください。\n"
 	},
@@ -101,7 +101,7 @@
 		"ALERT_CANNOT_ACCESS_REPOSITORY": "現時点でリポジトリにアクセスすることはできません。"
 	},
 	"TAB_ABOUT": {
-		"LEGEND_ABOUT": "RainLoop について",
+		"LEGEND_ABOUT": "SnappyMail について",
 		"LABEL_TAG_HINT": "シンプル・モダン・高速なウェブベースのメールクライアント",
 		"LABEL_ALL_RIGHTS_RESERVED": "All Rights Reserved.",
 		"HINT_READ_CHANGE_LOG": "更新する前に変更ログをお読みください。",
