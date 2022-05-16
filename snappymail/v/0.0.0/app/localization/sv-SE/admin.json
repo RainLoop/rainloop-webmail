@@ -40,7 +40,7 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "Bilagor storlek",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Tillåt ytterligare konton",
 		"LABEL_ALLOW_IDENTITIES": "Tillåt multiidentiteter",
-		"ALERT_DATA_ACCESS": "RainLoops datamapp är åtkomstbar. Var vänlig konfigurera din webb-server för att förhindra extern åtkomst och synlighet. Läs mer här: ",
+		"ALERT_DATA_ACCESS": "SnappyMails datamapp är åtkomstbar. Var vänlig konfigurera din webb-server för att förhindra extern åtkomst och synlighet. Läs mer här: ",
 		"ALERT_WARNING": "Varning!",
 		"HTML_ALERT_WEAK_PASSWORD": "Du använder standardlösenord.\n<br>\nFör säkerhetsskäl\n<strong><a href=\"#\/security\">ändra<\/a><\/strong>\nlösenord till något annat\n"
 	},

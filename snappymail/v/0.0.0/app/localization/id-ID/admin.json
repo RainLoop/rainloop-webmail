@@ -40,7 +40,7 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "Batas ukuran lampiran",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Izinkan akun tambahan",
 		"LABEL_ALLOW_IDENTITIES": "Izinkan identitas jamak",
-		"ALERT_DATA_ACCESS": "Data foldel RainLoop bisa diakses. Silahkan atur web server anda untuk menyembunyikan folder data dari akses eksternal. Baca selengkapnya di sini:",
+		"ALERT_DATA_ACCESS": "Data foldel SnappyMail bisa diakses. Silahkan atur web server anda untuk menyembunyikan folder data dari akses eksternal. Baca selengkapnya di sini:",
 		"ALERT_WARNING": "Peringatan!",
 		"HTML_ALERT_WEAK_PASSWORD": "Anda menggunakan password admin bawaan.\n<br>\nAtas alasan keamanan, mohon\n<strong><a href=\"#\/security\">mengganti<\/a><\/strong>\npassword dengan frasa yang lainnya segera.\n"
 	},
