@@ -842,7 +842,7 @@ export class ComposePopupView extends AbstractViewPopup {
 					.replace(/{{DATE}}/g, new Date().format('LLLL'))
 					.replace(/{{TIME}}/g, new Date().format('LT'))
 					.replace(/{{MOMENT:[^}]+}}/g, '');
-				editor.setSignature(signature, isHtml, !!identity.signatureInsertBefore());
+				signature.length && editor.setSignature(signature, isHtml, !!identity.signatureInsertBefore());
 			});
 		}
 	}

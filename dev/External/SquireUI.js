@@ -460,7 +460,6 @@ class SquireUI
 					// Move cursor above signature
 					div.before(br);
 					div.before(br.cloneNode());
-					this.setCursorAt(br);
 				}
 				this._prev_txt_sig = signature;
 			} catch (e) {
@@ -475,14 +474,9 @@ class SquireUI
 
 	setData(html) {
 //		this.plain.value = html;
-		const squire = this.squire,
-			root = squire.getRoot();
+		const squire = this.squire;
 		squire.setHTML(trimLines(html));
-		this.setCursorAt(root);
-	}
-
-	setCursorAt(node) {
-		const squire = this.squire,
+		const node = squire.getRoot(),
 			range = squire.getSelection();
 		range.setStart(node, 0);
 		range.setEnd(node, 0);
