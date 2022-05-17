@@ -43,7 +43,7 @@ export class UserSettingsFilters /*extends AbstractViewSettings*/ {
 
 	onBuild(oDom) {
 		oDom.addEventListener('click', event => {
-			const el = event.target.closestWithin('.script-item .e-action', oDom),
+			const el = event.target.closestWithin('.script-item .script-name', oDom),
 				script = el && ko.dataFor(el);
 			script && this.editScript(script);
 		});
