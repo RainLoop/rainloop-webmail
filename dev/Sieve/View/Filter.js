@@ -186,19 +186,13 @@ export class FilterPopupView extends rl.pluginPopupView {
 
 	beforeShow(oFilter, fTrueCallback, bEdit) {
 //	onShow(oFilter, fTrueCallback, bEdit) {
+		this.populateOptions();
+
 		this.isNew(!bEdit);
 
 		this.fTrueCallback = fTrueCallback;
 		this.filter(oFilter);
 
 		this.selectedFolderValue(oFilter.actionValue());
-
-		bEdit || oFilter.nameFocused(true);
-
-		this.populateOptions();
-	}
-
-	afterShow() {
-		this.isNew() && this.filter().nameFocused(true);
 	}
 }

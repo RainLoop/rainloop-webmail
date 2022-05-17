@@ -40,7 +40,6 @@ export class FilterModel extends AbstractModel {
 
 			name: '',
 			nameError: false,
-			nameFocused: false,
 
 			conditionsType: FilterRulesType.Any,
 
