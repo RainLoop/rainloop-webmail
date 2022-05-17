@@ -354,6 +354,8 @@
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "筛选器",
+		"SIMPLE": "Simple",
+		"ADVANCED": "Advanced",
 		"BUTTON_ADD_SCRIPT": "Add a Script",
 		"SUBNAME_MOVE_TO": "移动到 \"%FOLDER%\"",
 		"SUBNAME_FORWARD_TO": "转发到 \"%EMAIL%\"",

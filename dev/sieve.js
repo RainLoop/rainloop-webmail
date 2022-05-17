@@ -46,7 +46,7 @@ window.Sieve = {
 */
 					forEachObjectValue(data.Result.Scripts, value => {
 						value = SieveScriptModel.reviveFromJson(value);
-						value && scripts.push(value)
+						value && (value.allowFilters() ? scripts.unshift(value) : scripts.push(value))
 					});
 				}
 			});

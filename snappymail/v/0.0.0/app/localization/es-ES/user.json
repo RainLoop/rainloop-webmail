@@ -354,6 +354,8 @@
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filtros",
+		"SIMPLE": "Simple",
+		"ADVANCED": "Advanced",
 		"BUTTON_ADD_SCRIPT": "Añadir un Script",
 		"SUBNAME_MOVE_TO": "Mover a \"%FOLDER%\"",
 		"SUBNAME_FORWARD_TO": "Reenviar a \"%EMAIL%\"",
