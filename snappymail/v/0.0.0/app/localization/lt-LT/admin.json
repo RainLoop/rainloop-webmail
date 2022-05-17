@@ -49,8 +49,7 @@
 		"LABEL_DEFAULT_DOMAIN": "Numatytasis Domenas",
 		"LABEL_DETERMINE_USER_DOMAIN": "Bandyti nuspėti vartotojo domeną",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Leisti kalbų keitimą prisijungimo lange",
-		"LABEL_DETERMINE_USER_LANGUAGE": "bandyti nuspėti vartotojo kalbą",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+		"LABEL_DETERMINE_USER_LANGUAGE": "bandyti nuspėti vartotojo kalbą"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Prekės ženklo derinimas",

@@ -152,7 +152,6 @@ export class AbstractViewSettings
 export class AbstractViewLogin extends AbstractView {
 	constructor(templateID) {
 		super(templateID, 'Content');
-		this.hideSubmitButton = SettingsGet('hideSubmitButton');
 		this.formError = ko.observable(false).extend({ falseTimeout: 500 });
 	}
 

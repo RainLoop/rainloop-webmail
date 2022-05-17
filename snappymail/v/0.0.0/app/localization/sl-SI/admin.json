@@ -49,8 +49,7 @@
 		"LABEL_DEFAULT_DOMAIN": "Privzeta domena",
 		"LABEL_DETERMINE_USER_DOMAIN": "Poskusi ugotoviti domeno uporabnika",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Dovoli izbor jezika na prijavnem zaslonu",
-		"LABEL_DETERMINE_USER_LANGUAGE": "Poskusi ugotoviti jezik uporabnika",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+		"LABEL_DETERMINE_USER_LANGUAGE": "Poskusi ugotoviti jezik uporabnika"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Prilagoditev",

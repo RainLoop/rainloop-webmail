@@ -696,7 +696,6 @@ class Actions
 			'LoadingDescription' => $oConfig->Get('webmail', 'loading_description', 'SnappyMail'),
 			'FaviconUrl' => $oConfig->Get('webmail', 'favicon_url', ''),
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
-			'hideSubmitButton' => (bool)$oConfig->Get('login', 'hide_submit_button', true),
 			'DetermineUserLanguage' => (bool)$oConfig->Get('login', 'determine_user_language', true),
 			'DetermineUserDomain' => (bool)$oConfig->Get('login', 'determine_user_domain', false),
 			'SieveAllowFileintoInbox' => (bool)$oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false),

@@ -49,8 +49,7 @@
 		"LABEL_DEFAULT_DOMAIN": "デフォルトドメイン",
 		"LABEL_DETERMINE_USER_DOMAIN": "ユーザードメインを自動で選ぶ",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "ログイン画面で言語選択を使用する",
-		"LABEL_DETERMINE_USER_LANGUAGE": "ユーザー言語を自動で選ぶ",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+		"LABEL_DETERMINE_USER_LANGUAGE": "ユーザー言語を自動で選ぶ"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "ブランド化",

@@ -49,8 +49,7 @@
 		"LABEL_DEFAULT_DOMAIN": "Standaard domein",
 		"LABEL_DETERMINE_USER_DOMAIN": "Probeer gebruikersdomein te bepalen",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Sta taal selectie toe in het login scherm",
-		"LABEL_DETERMINE_USER_LANGUAGE": "Probeer gebruiker taal te bepalen",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Verberg de 'Aanmelden' knop"
+		"LABEL_DETERMINE_USER_LANGUAGE": "Probeer gebruiker taal te bepalen"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Huisstijl",

@@ -49,8 +49,7 @@
 		"LABEL_DEFAULT_DOMAIN": "دامنه پیش‌فرض",
 		"LABEL_DETERMINE_USER_DOMAIN": "برای تشخیص دامنه کاربر تلاش شود",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "انتخاب زبان در صفحه ورود",
-		"LABEL_DETERMINE_USER_LANGUAGE": "برای تشخیص زبان کاربر تلاش شود",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+		"LABEL_DETERMINE_USER_LANGUAGE": "برای تشخیص زبان کاربر تلاش شود"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "برندسازی",

@@ -49,8 +49,7 @@
 		"LABEL_DEFAULT_DOMAIN": "Основной домен",
 		"LABEL_DETERMINE_USER_DOMAIN": "Пытаться определить домен пользователя",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Разрешить выбор языка на странице входа",
-		"LABEL_DETERMINE_USER_LANGUAGE": "Пытаться определить язык пользователя",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+		"LABEL_DETERMINE_USER_LANGUAGE": "Пытаться определить язык пользователя"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Брендинг",

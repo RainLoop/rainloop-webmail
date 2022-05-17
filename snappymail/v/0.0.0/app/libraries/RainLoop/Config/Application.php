@@ -227,8 +227,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'determine_user_language' => array(true),
 				'determine_user_domain' => array(false),
 
-				'hide_submit_button' => array(false),
-
 				'login_lowercase' => array(true),
 
 				'sign_me_auto' => array(\RainLoop\Enumerations\SignMeType::DEFAULT_OFF,

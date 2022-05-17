@@ -4,6 +4,6 @@ export class AdminSettingsLogin extends AbstractViewSettings {
 	constructor() {
 		super();
 		this.addSetting('LoginDefaultDomain');
-		this.addSettings(['DetermineUserLanguage','DetermineUserDomain','AllowLanguagesOnLogin','hideSubmitButton']);
+		this.addSettings(['DetermineUserLanguage','DetermineUserDomain','AllowLanguagesOnLogin']);
 	}
 }

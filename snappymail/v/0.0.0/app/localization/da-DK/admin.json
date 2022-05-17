@@ -49,8 +49,7 @@
 		"LABEL_DEFAULT_DOMAIN": "Standard domæne",
 		"LABEL_DETERMINE_USER_DOMAIN": "Forsøg at bestemme brugerens domæne",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Tillad sprogvalg ved log ind",
-		"LABEL_DETERMINE_USER_LANGUAGE": "Forsøg at bestemme brugerens sprog",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+		"LABEL_DETERMINE_USER_LANGUAGE": "Forsøg at bestemme brugerens sprog"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Branding",

@@ -49,8 +49,7 @@
 		"LABEL_DEFAULT_DOMAIN": "Predvolená doména",
 		"LABEL_DETERMINE_USER_DOMAIN": "Pokúsiť sa určiť doménu používateľa",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Povoliť výber jazyka na prihlasovacej obrazovke",
-		"LABEL_DETERMINE_USER_LANGUAGE": "Pokúsiť sa určiť používateľov jazyk",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+		"LABEL_DETERMINE_USER_LANGUAGE": "Pokúsiť sa určiť používateľov jazyk"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Vlastné označenie",

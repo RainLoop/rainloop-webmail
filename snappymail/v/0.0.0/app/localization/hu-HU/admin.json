@@ -49,8 +49,7 @@
 		"LABEL_DEFAULT_DOMAIN": "Alapértelmezett domain",
 		"LABEL_DETERMINE_USER_DOMAIN": "Próbálja megállapítani a felhasználó domainjét",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Nyel választás engedélyezése a bejelentkező képernyőn",
-		"LABEL_DETERMINE_USER_LANGUAGE": "Próbálja megállapítani a felhasználó nyelvét",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+		"LABEL_DETERMINE_USER_LANGUAGE": "Próbálja megállapítani a felhasználó nyelvét"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Arculat",

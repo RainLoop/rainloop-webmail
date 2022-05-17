@@ -49,8 +49,7 @@
 		"LABEL_DEFAULT_DOMAIN": "Domínio padrão",
 		"LABEL_DETERMINE_USER_DOMAIN": "Tentar determinar o domínio do usuário",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Permitir escolha do idioma na tela de entrada",
-		"LABEL_DETERMINE_USER_LANGUAGE": "Tentar determinar o idioma do usuário",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+		"LABEL_DETERMINE_USER_LANGUAGE": "Tentar determinar o idioma do usuário"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Personalização",

@@ -49,8 +49,7 @@
 		"LABEL_DEFAULT_DOMAIN": "Domain bawaan",
 		"LABEL_DETERMINE_USER_DOMAIN": "Coba untuk memeriksa user domain",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Izinkan pemilihan bahasa di laman login",
-		"LABEL_DETERMINE_USER_LANGUAGE": "Coba untuk memeriksa bahasa user",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+		"LABEL_DETERMINE_USER_LANGUAGE": "Coba untuk memeriksa bahasa user"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Branding",

@@ -49,8 +49,7 @@
 		"LABEL_DEFAULT_DOMAIN": "默认域名",
 		"LABEL_DETERMINE_USER_DOMAIN": "尝试判断用户使用的域名",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "允许在登录界面选择语言",
-		"LABEL_DETERMINE_USER_LANGUAGE": "尝试判断用户使用语言",
-		"LABEL_HIDE_SUBMIT_BUTTON": "隐藏“登录”按钮"
+		"LABEL_DETERMINE_USER_LANGUAGE": "尝试判断用户使用语言"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Logo",

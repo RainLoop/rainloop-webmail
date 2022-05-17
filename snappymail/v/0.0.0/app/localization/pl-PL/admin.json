@@ -49,8 +49,7 @@
 		"LABEL_DEFAULT_DOMAIN": "Domyślna domena",
 		"LABEL_DETERMINE_USER_DOMAIN": "Spróbuj określić domenę użytkownika",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Zezwól na zmianę języka na ekranie logowania",
-		"LABEL_DETERMINE_USER_LANGUAGE": "Spróbuj określić język użytkownika",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+		"LABEL_DETERMINE_USER_LANGUAGE": "Spróbuj określić język użytkownika"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Personalizacja",

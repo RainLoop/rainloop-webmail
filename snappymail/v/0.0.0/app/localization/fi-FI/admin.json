@@ -49,8 +49,7 @@
 		"LABEL_DEFAULT_DOMAIN": "Oletus domain",
 		"LABEL_DETERMINE_USER_DOMAIN": "Koita päätellä käyttäjän domain",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Salli kielivalinta kirjautumissivulla",
-		"LABEL_DETERMINE_USER_LANGUAGE": "Koita päätellä käyttäjän kieli",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+		"LABEL_DETERMINE_USER_LANGUAGE": "Koita päätellä käyttäjän kieli"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Brändäys",

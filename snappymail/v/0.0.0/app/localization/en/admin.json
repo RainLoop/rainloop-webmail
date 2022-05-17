@@ -49,8 +49,7 @@
 		"LABEL_DEFAULT_DOMAIN": "Default Domain",
 		"LABEL_DETERMINE_USER_DOMAIN": "Try to determine user domain",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Allow language selection on login screen",
-		"LABEL_DETERMINE_USER_LANGUAGE": "Try to determine user language",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
+		"LABEL_DETERMINE_USER_LANGUAGE": "Try to determine user language"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Branding",
