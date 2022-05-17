@@ -110,7 +110,7 @@ abstract class HtmlUtils
 		$aNodes = $oBody->getElementsByTagName('*');
 		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
 		{
-			$sTagNameLower = \strtolower($oElement->tagName);
+			$sTagNameLower = \strtolower($oElement->nodeName);
 
 			if (\in_array($sTagNameLower, $aRemoveTags))
 			{
