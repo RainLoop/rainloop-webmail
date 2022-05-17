@@ -32,7 +32,7 @@ export class ConditionalCommand extends ControlCommand
 	public function pushArguments(array $args): void
 	{
 		args.forEach((arg, i) => {
-			if (':' === args[i-1][0]) {
+			if (i && ':' === args[i-1][0]) {
 				this[args[i-1].replace(':','_')].value = arg.value;
 			}
 		});

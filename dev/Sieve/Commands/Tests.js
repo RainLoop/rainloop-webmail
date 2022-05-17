@@ -88,7 +88,7 @@ export class AddressTest extends TestCommand
 				this.mime = true;
 			} else if (':anychild' === arg) {
 				this.anychild = true;
-			} else if (':index' === args[i-1]) {
+			} else if (i && ':index' === args[i-1]) {
 				this.index.value = arg.value;
 			}
 		});
@@ -205,7 +205,7 @@ export class ExistsTest extends TestCommand
 			if (':mime' === arg) {
 				this.mime = true;
 			} else if (':anychild' === arg) {
-				this.mime = true;
+				this.anychild = true;
 			}
 		});
 	}
@@ -294,7 +294,7 @@ export class HeaderTest extends TestCommand
 				this.address_part = arg;
 			} else if (':last' === arg) {
 				this.last = true;
-			} else if (':index' === args[i-1]) {
+			} else if (i && ':index' === args[i-1]) {
 				this.index.value = arg.value;
 			}
 		});

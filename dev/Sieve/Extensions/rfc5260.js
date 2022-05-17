@@ -49,9 +49,9 @@ export class DateTest extends TestCommand
 				this.originalzone = true;
 			} else if (':last' === arg) {
 				this.last = true;
-			} else if (':zone' === args[i-1]) {
+			} else if (i && ':zone' === args[i-1]) {
 				this.zone.value = arg.value;
-			} else if (':index' === args[i-1]) {
+			} else if (i && ':index' === args[i-1]) {
 				this.index.value = arg.value;
 			}
 		});
@@ -85,7 +85,7 @@ export class CurrentDateTest extends TestCommand
 		this.key_list = args.pop();
 		this.date_part = args.pop();
 		args.forEach((arg, i) => {
-			if (':zone' === args[i-1]) {
+			if (i && ':zone' === args[i-1]) {
 				this.zone.value = arg.value;
 			}
 		});

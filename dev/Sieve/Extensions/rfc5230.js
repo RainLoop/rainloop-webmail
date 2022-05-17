@@ -77,9 +77,9 @@ export class VacationCommand extends ActionCommand
 		args.forEach((arg, i) => {
 			if (':mime' === arg) {
 				this.mime = true;
-			} else if (':addresses' === args[i-1]) {
+			} else if (i && ':addresses' === args[i-1]) {
 				this.addresses = arg; // GrammarStringList
-			} else if (':' === args[i-1][0]) {
+			} else if (i && ':' === args[i-1][0]) {
 				// :days, :seconds, :subject, :from, :handle
 				this[args[i-1].replace(':','_')].value = arg.value;
 			}

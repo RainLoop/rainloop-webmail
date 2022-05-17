@@ -93,7 +93,7 @@ export class ReplaceCommand extends ActionCommand
 		args.forEach((arg, i) => {
 			if (':mime' === arg) {
 				this.mime = true;
-			} else if (':' === args[i-1][0]) {
+			} else if (i && ':' === args[i-1][0]) {
 				// :subject, :from
 				this[args[i-1].replace(':','_')].value = arg.value;
 			}
@@ -130,7 +130,7 @@ export class EncloseCommand extends ActionCommand
 	pushArguments(args)
 	{
 		args.forEach((arg, i) => {
-			if (':' === args[i-1][0]) {
+			if (i && ':' === args[i-1][0]) {
 				// :subject, :headers
 				this[args[i-1].replace(':','_')].value = arg.value;
 			}
@@ -170,7 +170,7 @@ export class ExtractTextCommand extends ActionCommand
 			args.includes(modifier) && this.modifiers.push(modifier);
 		});
 		args.forEach((arg, i) => {
-			if (':' === args[i-1][0]) {
+			if (i && ':' === args[i-1][0]) {
 				// :first
 				this[args[i-1].replace(':','_')].value = arg.value;
 			}

@@ -34,7 +34,7 @@ export class BodyTest extends TestCommand
 			if (':raw' === arg || ':text' === arg) {
 				this.body_transform = arg;
 			} else if (arg instanceof GrammarStringList || arg instanceof GrammarString) {
-				if (':content' === args[i-1]) {
+				if (i && ':content' === args[i-1]) {
 					this.body_transform = ':content ' + arg;
 				} else {
 					this[args[i+1] ? 'content_list' : 'key_list'] = arg;

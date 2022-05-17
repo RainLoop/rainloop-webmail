@@ -59,9 +59,9 @@ export class NotifyCommand extends ActionCommand
 	{
 		this._method.value = args.pop().value; // GrammarQuotedString
 		args.forEach((arg, i) => {
-			if (':options' === args[i-1]) {
+			if (i && ':options' === args[i-1]) {
 				this.options = arg; // GrammarStringList
-			} else if (':' === args[i-1][0]) {
+			} else if (i && ':' === args[i-1][0]) {
 				// :from, :importance, :message
 				this[args[i-1].replace(':','_')].value = arg.value;
 			}
