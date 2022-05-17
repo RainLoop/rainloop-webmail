@@ -1012,7 +1012,12 @@ const
 	rangeDoesStartAtBlockBoundary = ( range, root ) => {
 		let startContainer = range.startContainer;
 		let startOffset = range.startOffset;
+		let startBlock = getStartBlockOfRange( range, root );
 		let nodeAfterCursor;
+
+		if (!startBlock) {
+			return false;
+		}
 
 		// If in the middle or end of a text node, we're not at the boundary.
 		if ( startContainer.nodeType === TEXT_NODE ) {
