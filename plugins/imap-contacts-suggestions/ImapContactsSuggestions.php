@@ -1,9 +1,9 @@
 <?php
 
-class KolabContactsSuggestions implements \RainLoop\Providers\Suggestions\ISuggestions
+class ImapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISuggestions
 {
 	// TODO: make setting
-	public $sFolderName = 'Contacts';
+	public $sFolderName = 'INBOX';
 
 	public function Process(\RainLoop\Model\Account $oAccount, string $sQuery, int $iLimit = 20): array
 	{
@@ -20,12 +20,6 @@ class KolabContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugge
 		}
 		$oImapClient = $oMailClient->ImapClient();
 
-		$metadata = $oImapClient->FolderGetMetadata($this->sFolderName, [\MailSo\Imap\Enumerations\MetadataKeys::KOLAB_CTYPE]);
-		if ($metadata && 'contact' !== \array_shift($metadata)) {
-			// Throw error
-//			$oImapClient->FolderList() : array
-			return [];
-		}
 		$oImapClient->FolderSelect($this->sFolderName);
 
 		$sQuery = \MailSo\Imap\SearchCriterias::escapeSearchString($oImapClient, $sQuery);

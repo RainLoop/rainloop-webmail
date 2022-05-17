@@ -1,13 +1,13 @@
 <?php
 
-class KolabPlugin extends \RainLoop\Plugins\AbstractPlugin
+class ImapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
-		NAME = 'Kolab',
+		NAME = 'Contacts suggestions (IMAP folder)',
 		VERSION = '0.1',
-		RELEASE  = '2022-05-13',
+		RELEASE  = '2022-05-17',
 		CATEGORY = 'Security',
-		DESCRIPTION = 'Get contacts suggestions from Kolab.',
+		DESCRIPTION = 'Get contacts suggestions from IMAP folder.',
 		REQUIRED = '2.15.2';
 
 	public function Init() : void
@@ -29,10 +29,10 @@ class KolabPlugin extends \RainLoop\Plugins\AbstractPlugin
 			if (!\is_array($mResult)) {
 				$mResult = array();
 			}
-//			$sFolder = \trim($this->Config()->Get('plugin', 'mailbox', ''));
+//			$sFolder = \trim($this->Config()->Get('plugin', 'mailbox', 'INBOX'));
 //			if ($sFolder) {
-				include_once __DIR__ . '/KolabContactsSuggestions.php';
-				$mResult[] = new KolabContactsSuggestions();
+				include_once __DIR__ . '/ImapContactsSuggestions.php';
+				$mResult[] = new ImapContactsSuggestions();
 //			}
 		}
 	}
