@@ -58,7 +58,7 @@ class KolabPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function FilterAppData($bAdmin, &$aResult) : void
 	{
 //		if ImapClient->IsSupported('METADATA')
-		if (\is_array($aResult) && !empty($aResult['Auth'])) {
+		if (!$bAdmin && \is_array($aResult) && !empty($aResult['Auth'])) {
 			$aResult['Capa']['Kolab'] = true;
 			$aResult['KolabContactFolder'] = (string) $this->Settings()->GetConf('KolabContactFolder', '');
 		}
