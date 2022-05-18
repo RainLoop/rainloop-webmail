@@ -239,7 +239,7 @@ else if ($options['docker']) {
 	$zip_filename = "snappymail-{$package->version}.zip";
 	copy($zip_destination, "./.docker/release/{$zip_filename}");
 	if ($docker) {
-		passthru("{$docker} build " . __DIR__ . "/.docker/release/ --build-arg FILES_ZIP={$zip_filename} -t snappymail:{$package->version}");
+		passthru("{$docker} build --pull " . __DIR__ . "/.docker/release/ --build-arg FILES_ZIP={$zip_filename} -t snappymail:{$package->version}");
 	} else {
 		echo "Docker not installed!\n";
 	}
