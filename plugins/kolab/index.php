@@ -4,10 +4,10 @@ class KolabPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Kolab',
-		VERSION = '0.1',
-		RELEASE  = '2022-05-13',
-		CATEGORY = 'Security',
-		DESCRIPTION = 'Get contacts suggestions from Kolab.',
+		VERSION = '0.2',
+		RELEASE  = '2022-05-18',
+		CATEGORY = 'Contacts',
+		DESCRIPTION = 'Use an Address Book of Kolab.',
 		REQUIRED = '2.15.4';
 
 	public function Init() : void
@@ -82,8 +82,11 @@ class KolabPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 */
 		if ('address-book' === $sName) {
-			require_once __DIR__ . '/KolabAddressBook.php';
-			$mResult = new KolabAddressBook();
+			$sFolderName = $this->Settings()->GetConf('KolabContactFolder', '');
+			if ($sFolderName) {
+				require_once __DIR__ . '/KolabAddressBook.php';
+				$mResult = new KolabAddressBook($sFolderName);
+			}
 		}
 	}
 }

@@ -12,6 +12,17 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		$oImapClient,
 		$sFolderName;
 
+	function __construct(string $sFolderName)
+	{
+		$metadata = $this->ImapClient()->FolderGetMetadata($sFolderName, [\MailSo\Imap\Enumerations\MetadataKeys::KOLAB_CTYPE]);
+		if (!$metadata || 'contact' !== \array_shift($metadata)) {
+			$sFolderName = '';
+//			throw new \Exception("Invalid kolab contact folder: {$sFolderName}");
+		}
+
+		$this->sFolderName = $sFolderName;
+	}
+
 	protected function MailClient() : \MailSo\Mail\MailClient
 	{
 		$oActions = \RainLoop\Api::Actions();
@@ -30,39 +41,21 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		return $this->oImapClient;
 	}
 
-	protected function FolderName() : string
-	{
-		if (!\is_string($this->sFolderName)) {
-			$oActions = \RainLoop\Api::Actions();
-			$oAccount = $oActions->getAccountFromToken();
-			$sFolderName = (string) $oActions->SettingsProvider(true)->Load($oAccount)->GetConf('KolabContactFolder', '');
-
-			$metadata = $this->ImapClient()->FolderGetMetadata($sFolderName, [\MailSo\Imap\Enumerations\MetadataKeys::KOLAB_CTYPE]);
-			if (!$metadata || 'contact' !== \array_shift($metadata)) {
-				$sFolderName = '';
-//				throw new \Exception("Invalid kolab contact folder: {$sFolderName}");
-			}
-
-			$this->sFolderName = $sFolderName;
-		}
-		return $this->sFolderName;
-	}
-
 	protected function SelectFolder() : bool
 	{
-		try {
-			$sFolderName = $this->FolderName();
-			if ($sFolderName) {
+		$sFolderName = $this->sFolderName;
+		if ($sFolderName) {
+			try {
 				$this->ImapClient()->FolderSelect($sFolderName);
 				return true;
+			} catch (\Throwable $e) {
+				\trigger_error("KolabAddressBook {$sFolderName} error: {$e->getMessage()}");
 			}
-		} catch (\Throwable $e) {
-			\trigger_error("KolabAddressBook {$sFolderName} error: {$e->getMessage()}");
 		}
 		return false;
 	}
 
-	public function fetchXCardFromMessage(\MailSo\Mail\Message $oMessage) : ?\Sabre\VObject\Component\VCard
+	protected function fetchXCardFromMessage(\MailSo\Mail\Message $oMessage) : ?\Sabre\VObject\Component\VCard
 	{
 		$xCard = null;
 		foreach ($oMessage->Attachments() ?: [] as $oAttachment)  {
@@ -71,7 +64,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 					if (\is_resource($rResource)) {
 						$xCard = \Sabre\VObject\Reader::readXML($rResource);
 					}
-				}, $this->FolderName(), $oMessage->Uid(), $oAttachment->MimeIndex());
+				}, $this->sFolderName, $oMessage->Uid(), $oAttachment->MimeIndex());
 				break;
 			}
 		}
@@ -142,7 +135,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 
 		$iUID = $oContact->IdContact;
 
-		$oPrevMessage = $this->MailClient()->Message($this->FolderName(), $iUID);
+		$oPrevMessage = $this->MailClient()->Message($this->sFolderName, $iUID);
 		if ($oPrevMessage) {
 			$oVCard = $this->fetchXCardFromMessage($oPrevMessage);
 		} else {
@@ -205,7 +198,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 	{
 		try {
 			$this->MailClient()->MessageDelete(
-				$this->FolderName(),
+				$this->sFolderName,
 				new \MailSo\Imap\SequenceSet($aContactIds)
 			);
 			return true;
@@ -218,14 +211,14 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 	{
 		// Called by \RainLoop\Api::ClearUserData()
 		// Not needed as the contacts are inside IMAP mailbox
-//		$this->MailClient()->FolderClear($this->FolderName());
+//		$this->MailClient()->FolderClear($this->sFolderName);
 		return false;
 	}
 
 	public function GetContacts(string $sEmail, int $iOffset = 0, int $iLimit = 20, string $sSearch = '', int &$iResultCount = 0) : array
 	{
 		$oParams = new \MailSo\Mail\MessageListParams;
-		$oParams->sFolderName = $this->FolderName();
+		$oParams->sFolderName = $this->sFolderName;
 		$oParams->iOffset = $iOffset;
 		$oParams->iLimit = $iLimit;
 		if ($sSearch) {
@@ -265,7 +258,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		if ($bIsStrID) {
 			$oMessage = null;
 		} else {
-			$oMessage = $this->MailClient()->Message($this->FolderName(), $mID);
+			$oMessage = $this->MailClient()->Message($this->sFolderName, $mID);
 		}
 		return $oMessage ? $this->MessageAsContact($oMessage) : null;
 	}
