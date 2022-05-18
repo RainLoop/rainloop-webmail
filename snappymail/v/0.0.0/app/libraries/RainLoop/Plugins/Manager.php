@@ -109,7 +109,9 @@ class Manager
 				if ($sClassName) {
 					$aList[] = array(
 						$sName,
-						$sClassName::VERSION
+						$sClassName::VERSION,
+						$sClassName::NAME,
+						$sClassName::DESCRIPTION
 					);
 				}
 			}

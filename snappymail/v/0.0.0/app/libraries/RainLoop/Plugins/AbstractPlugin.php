@@ -260,7 +260,7 @@ abstract class AbstractPlugin
 	{
 		return $this->oPluginManager
 			? $this->oPluginManager->Actions()->GetActionParam($sKey, $mDefault)
-			: '';
+			: $mDefault;
 	}
 
 	final public function getUserSettings() : array

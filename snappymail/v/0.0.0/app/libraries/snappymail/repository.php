@@ -201,13 +201,13 @@ abstract class Repository
 					\array_push($aList, array(
 						'type' => 'plugin',
 						'id' => $aItem[0],
-						'name' => $aItem[0],
+						'name' => $aItem[2],
 						'installed' => $aItem[1],
 						'enabled' => \in_array(\strtolower($aItem[0]), $aEnabledPlugins),
 						'version' => '',
 						'file' => '',
 						'release' => '',
-						'desc' => '',
+						'desc' => $aItem[3],
 						'canBeDeleted' => true,
 						'canBeUpdated' => false
 					));
