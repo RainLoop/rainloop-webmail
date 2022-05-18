@@ -1,12 +1,12 @@
 <?php
 
-namespace RainLoop\Providers\AddressBook;
-
+use RainLoop\Providers\AddressBook\Classes\Contact;
+use RainLoop\Providers\AddressBook\Classes\Property;
 use RainLoop\Providers\AddressBook\Enumerations\PropertyType;
 
-class KolabAddressBook implements AddressBookInterface
+class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInterface
 {
-	use CardDAV;
+	use \RainLoop\Providers\AddressBook\CardDAV;
 
 	protected
 		$oImapClient,
@@ -24,7 +24,7 @@ class KolabAddressBook implements AddressBookInterface
 
 	protected function ImapClient() : \MailSo\Imap\ImapClient
 	{
-		if (!$this->oImapClient /*&&\RainLoop\Api::Config()->Get('labs', 'kolab_enabled', false)*/) {
+		if (!$this->oImapClient) {
 			$this->oImapClient = $this->MailClient()->ImapClient();
 		}
 		return $this->oImapClient;
@@ -78,9 +78,9 @@ class KolabAddressBook implements AddressBookInterface
 		return $xCard;
 	}
 
-	protected function MessageAsContact(\MailSo\Mail\Message $oMessage) : ?Classes\Contact
+	protected function MessageAsContact(\MailSo\Mail\Message $oMessage) : ?Contact
 	{
-		$oContact = new Classes\Contact;
+		$oContact = new Contact;
 		$oContact->IdContact = $oMessage->Uid();
 //		$oContact->Display = isset($aItem['display']) ? (string) $aItem['display'] : '';
 		$oContact->Changed = $oMessage->HeaderTimeStampInUTC();
@@ -88,12 +88,12 @@ class KolabAddressBook implements AddressBookInterface
 		$oFrom = $oMessage->From();
 		if ($oFrom) {
 			$oMail = $oFrom[0];
-			$oProperty = new Classes\Property(PropertyType::EMAIl, $oMail->GetEmail());
+			$oProperty = new Property(PropertyType::EMAIl, $oMail->GetEmail());
 			$oContact->Properties[] = $oProperty;
-			$oProperty = new Classes\Property(PropertyType::FULLNAME, $oMail->GetDisplayName());
-//			$oProperty = new Classes\Property(PropertyType::FULLNAME, $oMail->ToString());
+			$oProperty = new Property(PropertyType::FULLNAME, $oMail->GetDisplayName());
+//			$oProperty = new Property(PropertyType::FULLNAME, $oMail->ToString());
 			$oContact->Properties[] = $oProperty;
-//			$oProperty = new Classes\Property(PropertyType::NICK_NAME, $oMail->GetDisplayName());
+//			$oProperty = new Property(PropertyType::NICK_NAME, $oMail->GetDisplayName());
 //			$oContact->Properties[] = $oProperty;
 		}
 
@@ -129,7 +129,7 @@ class KolabAddressBook implements AddressBookInterface
 		return false;
 	}
 
-	public function ContactSave(string $sEmail, Classes\Contact $oContact) : bool
+	public function ContactSave(string $sEmail, Contact $oContact) : bool
 	{
 		// TODO
 //		$emails = $oContact->GetEmails();
@@ -237,7 +237,7 @@ class KolabAddressBook implements AddressBookInterface
 
 		if (!\strlen($oParams->sFolderName)) {
 //			return [];
-			throw new ClientException(Notifications::CantGetMessageList);
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList);
 		}
 
 		$this->ImapClient();
@@ -254,13 +254,13 @@ class KolabAddressBook implements AddressBookInterface
 		catch (\Throwable $oException)
 		{
 			throw $oException;
-			throw new ClientException(Notifications::CantGetMessageList, $oException);
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList, $oException);
 		}
 
 		return $aResult;
 	}
 
-	public function GetContactByID(string $sEmail, $mID, bool $bIsStrID = false) : ?Classes\Contact
+	public function GetContactByID(string $sEmail, $mID, bool $bIsStrID = false) : ?Contact
 	{
 		if ($bIsStrID) {
 			$oMessage = null;

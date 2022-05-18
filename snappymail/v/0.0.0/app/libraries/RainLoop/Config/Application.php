@@ -208,7 +208,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 			),
 
 			'capa' => array(
-				'contacts' => array(true),
 				'quota' => array(true),
 				'search' => array(true),
 				'search_adv' => array(true),
@@ -400,7 +399,6 @@ Enables caching in the system'),
 				'check_new_messages' => array(true),
 				'replace_env_in_configuration' => array(''),
 				'boundary_prefix' => array(''),
-				'kolab_enabled' => array(false),
 				'dev_email' => array(''),
 				'dev_password' => array('')
 			),

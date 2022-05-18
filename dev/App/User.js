@@ -92,6 +92,8 @@ export class AppUser extends AbstractApp {
 
 		addShortcut('escape,enter', '', dropdownsDetectVisibility);
 		addEventListener('click', dropdownsDetectVisibility);
+
+		this.folderList = FolderUserStore.folderList;
 	}
 
 	refresh() {

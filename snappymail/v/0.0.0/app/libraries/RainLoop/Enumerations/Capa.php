@@ -21,5 +21,4 @@ class Capa
 	const ATTACHMENTS_ACTIONS = 'AttachmentsActions';
 	const DANGEROUS_ACTIONS = 'DangerousActions';
 	const AUTOLOGOUT = 'AutoLogout';
-	const KOLAB = 'Kolab';
 }

@@ -249,7 +249,6 @@ class Actions
 				case 'address-book':
 					// Providers\AddressBook\AddressBookInterface
 					$mResult = new Providers\AddressBook\PdoAddressBook();
-//					$mResult = new Providers\AddressBook\KolabAddressBook();
 					break;
 				case 'identities':
 				case 'suggestions':
@@ -498,10 +497,9 @@ class Actions
 	{
 		if (null === $this->oAddressBookProvider) {
 			$oDriver = null;
-			if ($this->GetCapa(Enumerations\Capa::CONTACTS)) {
-				if ($this->oConfig->Get('contacts', 'enable', false) || $bForceEnable) {
-					$oDriver = $this->fabrica('address-book', $oAccount);
-				}
+//			if ($bForceEnable || $this->oConfig->Get('contacts', 'enable', false)) {
+			if ($bForceEnable || $this->GetCapa(Enumerations\Capa::CONTACTS)) {
+				$oDriver = $this->fabrica('address-book', $oAccount);
 			}
 
 			$this->oAddressBookProvider = new Providers\AddressBook($oDriver);
@@ -731,7 +729,6 @@ class Actions
 			'ContactsAutosave' => (bool) $oConfig->Get('defaults', 'contacts_autosave', true),
 			'HideUnsubscribed' => false,
 			'MainEmail' => '',
-			'KolabContactFolder' => '',
 			'UserBackgroundName' => '',
 			'UserBackgroundHash' => ''
 		);
@@ -829,7 +826,6 @@ class Actions
 					$aResult['HideUnsubscribed'] = (bool)$oSettingsLocal->GetConf('HideUnsubscribed', $aResult['HideUnsubscribed']);
 					$aResult['UseThreads'] = (bool)$oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
 					$aResult['ReplySameFolder'] = (bool)$oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
-					$aResult['KolabContactFolder'] = (string)$oSettingsLocal->GetConf('KolabContactFolder', $aResult['KolabContactFolder']);
 				}
 
 				if ($oConfig->Get('login', 'determine_user_language', true)) {
@@ -1154,11 +1150,11 @@ class Actions
 				'AdditionalAccounts'   => (bool) $oConfig->Get('webmail', 'allow_additional_accounts', false),
 				'AttachmentThumbnails' => (bool) $oConfig->Get('interface', 'show_attachment_thumbnail', true),
 				'AttachmentsActions'   => (bool) $oConfig->Get('capa', 'attachments_actions', false),
-				'Contacts'             => (bool) $oConfig->Get('capa', 'contacts', true),
+				'Contacts'             => (bool) $oConfig->Get('contacts', 'enable', false),
 				'DangerousActions'     => (bool) $oConfig->Get('capa', 'dangerous_actions', true),
 				'GnuPG'                => (bool) $oConfig->Get('security', 'openpgp', false) && \SnappyMail\PGP\GnuPG::isSupported(),
 				'Identities'           => (bool) $oConfig->Get('webmail', 'allow_additional_identities', false),
-				'Kolab'                => (bool) $oConfig->Get('labs', 'kolab_enabled', false) /* && ImapClient->IsSupported('METADATA')*/,
+				'Kolab'                => false, // See Kolab plugin
 				'MessageActions'       => (bool) $oConfig->Get('capa', 'message_actions', true),
 				'OpenPGP'              => (bool) $oConfig->Get('security', 'openpgp', false),
 				'Prefetch'             => (bool) $oConfig->Get('labs', 'allow_prefetch', false),
