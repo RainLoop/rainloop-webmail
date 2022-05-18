@@ -136,11 +136,6 @@ export class ControlCommand extends GrammarCommand
 	{
 		return [':is', ':contains', ':matches'];
 	}
-
-	pushArguments(args)
-	{
-		this.arguments = args;
-	}
 }
 
 /**
