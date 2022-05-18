@@ -110,6 +110,9 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		return true;
 	}
 
+	/**
+	 * Sync with davClient
+	 */
 	public function Sync(array $oConfig) : bool
 	{
 		// TODO
@@ -118,8 +121,44 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 
 	public function Export(string $sEmail, string $sType = 'vcf') : bool
 	{
-		// TODO
-		return false;
+		$bVcf = 'vcf' === $sType;
+		$bCsvHeader = true;
+
+		if (!\strlen($this->sFolderName)) {
+//			return false;
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList);
+		}
+
+		$this->ImapClient();
+
+		try
+		{
+			$oParams = new \MailSo\Mail\MessageListParams;
+			$oParams->sFolderName = $this->sFolderName;
+//			$oParams->iOffset = 0;
+			$oParams->iLimit = 999; // Is the max
+			$oMessageList = $this->MailClient()->MessageList($oParams);
+			foreach ($oMessageList as $oMessage) {
+				if ($bVcf) {
+					$xCard = $this->fetchXCardFromMessage($oMessage);
+					if ($xCard instanceof \Sabre\VObject\Component\VCard) {
+						echo $xCard->serialize();
+					}
+				} else {
+					$oContact = $this->MessageAsContact($oMessage);
+					if ($oContact) {
+						echo $oContact->ToCsv($bCsvHeader);
+						$bCsvHeader = false;
+					}
+				}
+			}
+		}
+		catch (\Throwable $oException)
+		{
+			throw $oException;
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList, $oException);
+		}
+		return true;
 	}
 
 	public function ContactSave(string $sEmail, Contact $oContact) : bool
@@ -217,18 +256,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 
 	public function GetContacts(string $sEmail, int $iOffset = 0, int $iLimit = 20, string $sSearch = '', int &$iResultCount = 0) : array
 	{
-		$oParams = new \MailSo\Mail\MessageListParams;
-		$oParams->sFolderName = $this->sFolderName;
-		$oParams->iOffset = $iOffset;
-		$oParams->iLimit = $iLimit;
-		if ($sSearch) {
-			$oParams->sSearch = 'from='.$sSearch;
-		}
-		$oParams->sSort = 'FROM';
-//		$oParams->iPrevUidNext = $this->GetActionParam('UidNext', 0);
-//		$oParams->bUseThreads = false;
-
-		if (!\strlen($oParams->sFolderName)) {
+		if (!\strlen($this->sFolderName)) {
 //			return [];
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList);
 		}
@@ -239,6 +267,17 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 
 		try
 		{
+			$oParams = new \MailSo\Mail\MessageListParams;
+			$oParams->sFolderName = $this->sFolderName;
+			$oParams->iOffset = $iOffset;
+			$oParams->iLimit = $iLimit;
+			if ($sSearch) {
+				$oParams->sSearch = 'from='.$sSearch;
+			}
+			$oParams->sSort = 'FROM';
+//			$oParams->iPrevUidNext = $this->GetActionParam('UidNext', 0);
+//			$oParams->bUseThreads = false;
+
 			$oMessageList = $this->MailClient()->MessageList($oParams);
 			foreach ($oMessageList as $oMessage) {
 				$aResult[] = $this->MessageAsContact($oMessage);
