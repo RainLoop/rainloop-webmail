@@ -37,7 +37,7 @@
 
 	<div class="legend" data-i18n="POPUPS_FILTER/LEGEND_ACTIONS"></div>
 	<select class="span3" data-bind="options: $root.actionTypeOptions, value: actionType, optionsText: 'name', optionsValue: 'id'"></select>
-	<div data-bind="template: {'name': actionTemplate()}"></div>
+	<div data-bind="template: {'name': actionTemplate()}, i18nUpdate: actionTemplate"></div>
 </div>
 <footer>
 	<a class="btn buttonSave" data-bind="click: saveFilter" data-icon="✔" data-i18n="GLOBAL/DONE"></a>
