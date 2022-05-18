@@ -297,10 +297,11 @@ trait Contacts
 		\header('Accept-Ranges: none');
 		\header('Content-Transfer-Encoding: binary');
 
-		$this->oHttp->ServerNoCache();
+		$this->Http()->ServerNoCache();
 
-		return $this->AddressBookProvider($oAccount)->IsActive() ?
-			$this->AddressBookProvider($oAccount)->Export($this->GetMainEmail($oAccount), 'vcf') : false;
+		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
+		return $oAddressBookProvider->IsActive() ?
+			$oAddressBookProvider->Export($this->GetMainEmail($oAccount), 'vcf') : false;
 	}
 
 	public function RawContactsCsv() : bool
@@ -312,10 +313,11 @@ trait Contacts
 		\header('Accept-Ranges: none');
 		\header('Content-Transfer-Encoding: binary');
 
-		$this->oHttp->ServerNoCache();
+		$this->Http()->ServerNoCache();
 
-		return $this->AddressBookProvider($oAccount)->IsActive() ?
-			$this->AddressBookProvider($oAccount)->Export($this->GetMainEmail($oAccount), 'csv') : false;
+		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
+		return $oAddressBookProvider->IsActive() ?
+			$oAddressBookProvider->Export($this->GetMainEmail($oAccount), 'csv') : false;
 	}
 
 	private function importContactsFromVcfFile(\RainLoop\Model\Account $oAccount, /*resource*/ $rFile): int

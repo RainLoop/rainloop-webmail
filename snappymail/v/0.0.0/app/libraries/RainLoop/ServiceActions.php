@@ -394,28 +394,33 @@ class ServiceActions
 		try
 		{
 			$sRawError = 'Invalid action';
-			if (0 !== \strlen($sAction))
+			if (\strlen($sAction))
 			{
-				$sMethodName = 'Raw'.$sAction;
-				if (\method_exists($this->oActions, $sMethodName))
-				{
-					\header('X-Raw-Action: '.$sMethodName);
-					\header('Content-Security-Policy: script-src \'none\'; child-src \'none\'');
-
-					$sRawError = '';
-					$this->oActions->SetActionParams(array(
-						'RawKey' => empty($this->aPaths[3]) ? '' : $this->aPaths[3],
-						'Params' => $this->aPaths
-					), $sMethodName);
-
-					if (!$this->oActions->{$sMethodName}())
+				try {
+					$sMethodName = 'Raw'.$sAction;
+					if (\method_exists($this->oActions, $sMethodName))
 					{
-						$sRawError = 'False result';
+						\header('X-Raw-Action: '.$sMethodName);
+						\header('Content-Security-Policy: script-src \'none\'; child-src \'none\'');
+
+						$sRawError = '';
+						$this->oActions->SetActionParams(array(
+							'RawKey' => empty($this->aPaths[3]) ? '' : $this->aPaths[3],
+							'Params' => $this->aPaths
+						), $sMethodName);
+
+						if (!$this->oActions->{$sMethodName}())
+						{
+							$sRawError = 'False result';
+						}
 					}
-				}
-				else
-				{
-					$sRawError = 'Unknown action "'.$sAction.'"';
+					else
+					{
+						$sRawError = 'Unknown action "'.$sAction.'"';
+					}
+				} catch (\Throwable $e) {
+//					error_log(print_r($e,1));
+					$sRawError = $e->getMessage();
 				}
 			}
 			else
