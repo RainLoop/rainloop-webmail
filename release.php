@@ -236,9 +236,10 @@ else if (isset($options['debian'])) {
 // Docker build
 else if ($options['docker']) {
 	echo "\x1b[33;1m === Docker === \x1b[0m\n";
-	copy($zip_destination, "./.docker/release/snappymail-{$package->version}.zip");
+	$zip_filename = "snappymail-{$package->version}.zip";
+	copy($zip_destination, "./.docker/release/{$zip_filename}");
 	if ($docker) {
-		passthru("{$docker} build " . __DIR__ . "/.docker/release/ --build-arg FILES_ZIP={$zip_destination} -t snappymail:{$package->version}");
+		passthru("{$docker} build --pull " . __DIR__ . "/.docker/release/ --build-arg FILES_ZIP={$zip_filename} -t snappymail:{$package->version}");
 	} else {
 		echo "Docker not installed!\n";
 	}
