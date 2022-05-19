@@ -27,24 +27,24 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 		return $this->oDriver && $this->oDriver->IsSupported();
 	}
 
-	public function Sync(array $oConfig) : bool
+	public function Sync() : bool
 	{
-		return $this->IsActive() ? $this->oDriver->Sync($oConfig) : false;
+		return $this->IsActive() ? $this->oDriver->Sync() : false;
 	}
 
-	public function Export(string $sEmail, string $sType = 'vcf') : bool
+	public function Export(string $sType = 'vcf') : bool
 	{
-		return $this->IsActive() ? $this->oDriver->Export($sEmail, $sType) : false;
+		return $this->IsActive() ? $this->oDriver->Export($sType) : false;
 	}
 
-	public function ContactSave(string $sEmail, \RainLoop\Providers\AddressBook\Classes\Contact $oContact) : bool
+	public function ContactSave(\RainLoop\Providers\AddressBook\Classes\Contact $oContact) : bool
 	{
-		return $this->IsActive() ? $this->oDriver->ContactSave($sEmail, $oContact) : false;
+		return $this->IsActive() ? $this->oDriver->ContactSave($oContact) : false;
 	}
 
-	public function DeleteContacts(string $sEmail, array $aContactIds) : bool
+	public function DeleteContacts(array $aContactIds) : bool
 	{
-		return $this->IsActive() ? $this->oDriver->DeleteContacts($sEmail, $aContactIds) : false;
+		return $this->IsActive() ? $this->oDriver->DeleteContacts($aContactIds) : false;
 	}
 
 	public function DeleteAllContacts(string $sEmail) : bool
@@ -52,28 +52,27 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 		return $this->IsActive() ? $this->oDriver->DeleteAllContacts($sEmail) : false;
 	}
 
-	public function GetContacts(string $sEmail, int $iOffset = 0, int $iLimit = 20, string $sSearch = '', int &$iResultCount = 0) : array
+	public function GetContacts(int $iOffset = 0, int $iLimit = 20, string $sSearch = '', int &$iResultCount = 0) : array
 	{
-		return $this->IsActive() ? $this->oDriver->GetContacts($sEmail,
-			$iOffset, $iLimit, $sSearch, $iResultCount) : array();
+		return $this->IsActive() ? $this->oDriver->GetContacts($iOffset, $iLimit, $sSearch, $iResultCount) : array();
 	}
 
-	public function GetContactByID(string $sEmail, $mID, bool $bIsStrID = false) : ?\RainLoop\Providers\AddressBook\Classes\Contact
+	public function GetContactByID($mID, bool $bIsStrID = false) : ?\RainLoop\Providers\AddressBook\Classes\Contact
 	{
-		return $this->IsActive() ? $this->oDriver->GetContactByID($sEmail, $mID, $bIsStrID) : null;
+		return $this->IsActive() ? $this->oDriver->GetContactByID($mID, $bIsStrID) : null;
 	}
 
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	public function GetSuggestions(string $sEmail, string $sSearch, int $iLimit = 20) : array
+	public function GetSuggestions(string $sSearch, int $iLimit = 20) : array
 	{
-		return $this->IsActive() ? $this->oDriver->GetSuggestions($sEmail, $sSearch, $iLimit) : array();
+		return $this->IsActive() ? $this->oDriver->GetSuggestions($sSearch, $iLimit) : array();
 	}
 
-	public function IncFrec(string $sEmail, array $aEmails, bool $bCreateAuto = true) : bool
+	public function IncFrec(array $aEmails, bool $bCreateAuto = true) : bool
 	{
-		return $this->IsActive() ? $this->oDriver->IncFrec($sEmail, $aEmails, $bCreateAuto) : false;
+		return $this->IsActive() ? $this->oDriver->IncFrec($aEmails, $bCreateAuto) : false;
 	}
 
 	private function csvNameToTypeConvertor(string $sCsvName) : int
@@ -156,7 +155,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 		return !empty($sCsvNameLower) && isset($aMap[$sCsvNameLower]) ? $aMap[$sCsvNameLower] : PropertyType::UNKNOWN;
 	}
 
-	public function ImportCsvArray(string $sEmail, array $aCsvData) : int
+	public function ImportCsvArray(array $aCsvData) : int
 	{
 		$iCount = 0;
 		if ($this->IsActive() && \count($aCsvData))
@@ -190,7 +189,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 
 				if ($oContact && \count($oContact->Properties))
 				{
-					if ($this->ContactSave($sEmail, $oContact))
+					if ($this->ContactSave($oContact))
 					{
 						$iCount++;
 					}
@@ -205,7 +204,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 		return $iCount;
 	}
 
-	public function ImportVcfFile(string $sEmail, string $sVcfData) : int
+	public function ImportVcfFile(string $sVcfData) : int
 	{
 		$iCount = 0;
 
@@ -243,7 +242,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 
 						if (\count($oContact->Properties))
 						{
-							if ($this->ContactSave($sEmail, $oContact))
+							if ($this->ContactSave($oContact))
 							{
 								$iCount++;
 							}

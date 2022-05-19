@@ -308,9 +308,9 @@ trait Messages
 					$oSettings = $this->SettingsProvider()->Load($oAccount);
 
 					$this->AddressBookProvider($oAccount)->IncFrec(
-						$this->GetMainEmail($oAccount), \array_values($aArrayToFrec),
-							!!$oSettings->GetConf('ContactsAutosave',
-								!!$oConfig->Get('defaults', 'contacts_autosave', true)));
+						\array_values($aArrayToFrec),
+						!!$oSettings->GetConf('ContactsAutosave', !!$oConfig->Get('defaults', 'contacts_autosave', true))
+					);
 				}
 			}
 		}

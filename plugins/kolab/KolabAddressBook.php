@@ -110,16 +110,21 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		return true;
 	}
 
+	public function SetEmail(string $sEmail) : bool
+	{
+		return true;
+	}
+
 	/**
 	 * Sync with davClient
 	 */
-	public function Sync(array $oConfig) : bool
+	public function Sync() : bool
 	{
 		// TODO
 		return false;
 	}
 
-	public function Export(string $sEmail, string $sType = 'vcf') : bool
+	public function Export(string $sType = 'vcf') : bool
 	{
 		$bVcf = 'vcf' === $sType;
 		$bCsvHeader = true;
@@ -161,11 +166,8 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		return true;
 	}
 
-	public function ContactSave(string $sEmail, Contact $oContact) : bool
+	public function ContactSave(Contact $oContact) : bool
 	{
-		// TODO
-//		$emails = $oContact->GetEmails();
-
 		if (!$this->SelectFolder()) {
 			return false;
 		}
@@ -233,13 +235,26 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		return true;
 	}
 
-	public function DeleteContacts(string $sEmail, array $aContactIds) : bool
+	public function DeleteContacts(array $aContactIds) : bool
 	{
 		try {
 			$this->MailClient()->MessageDelete(
 				$this->sFolderName,
 				new \MailSo\Imap\SequenceSet($aContactIds)
 			);
+/*
+			// Delete remote when Mode = read + write
+			if (1 === $oConfig['Mode']) {
+				$oClient = $this->getDavClient();
+				if ($oClient) {
+					$sPath = $oClient->__UrlPath__;
+					$aRemoteSyncData = $this->prepareDavSyncData($oClient, $sPath);
+					if ($aRemoteSyncData && isset($aRemoteSyncData[$sKey], $aRemoteSyncData[$sKey]['vcf'])) {
+						$this->davClientRequest($oClient, 'DELETE', $sPath.$aRemoteSyncData[$sKey]['vcf']);
+					}
+				}
+			}
+*/
 			return true;
 		} catch (\Throwable $e) {
 		}
@@ -254,7 +269,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		return false;
 	}
 
-	public function GetContacts(string $sEmail, int $iOffset = 0, int $iLimit = 20, string $sSearch = '', int &$iResultCount = 0) : array
+	public function GetContacts(int $iOffset = 0, int $iLimit = 20, string $sSearch = '', int &$iResultCount = 0) : array
 	{
 		if (!\strlen($this->sFolderName)) {
 //			return [];
@@ -292,7 +307,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		return $aResult;
 	}
 
-	public function GetContactByID(string $sEmail, $mID, bool $bIsStrID = false) : ?Contact
+	public function GetContactByID($mID, bool $bIsStrID = false) : ?Contact
 	{
 		if ($bIsStrID) {
 			$oMessage = null;
@@ -302,7 +317,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		return $oMessage ? $this->MessageAsContact($oMessage) : null;
 	}
 
-	public function GetSuggestions(string $sEmail, string $sSearch, int $iLimit = 20) : array
+	public function GetSuggestions(string $sSearch, int $iLimit = 20) : array
 	{
 		$sSearch = \trim($sSearch);
 		if (2 > \strlen($sSearch) || !$this->SelectFolder()) {
@@ -327,26 +342,14 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		return $aResult;
 	}
 
-	public function IncFrec(string $sEmail, array $aEmails, bool $bCreateAuto = true) : bool
+	public function IncFrec(array $aEmails, bool $bCreateAuto = true) : bool
 	{
 		return false;
 	}
 
 	public function Test() : string
 	{
-		$sResult = '';
-		try
-		{
-//			$sResult = 'Unknown error';
-		}
-		catch (\Throwable $oException)
-		{
-			$sResult = $oException->getMessage();
-			if (!\is_string($sResult) || empty($sResult)) {
-				$sResult = 'Unknown error';
-			}
-		}
-
-		return $sResult;
+		// Nothing to test
+		return '';
 	}
 }

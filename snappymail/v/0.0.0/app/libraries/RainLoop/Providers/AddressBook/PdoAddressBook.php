@@ -10,6 +10,8 @@ class PdoAddressBook
 {
 	use CardDAV;
 
+	private $iUserID = 0;
+
 	/**
 	 * @var string
 	 */
@@ -72,6 +74,12 @@ class PdoAddressBook
 		return \is_array($aDrivers) && \in_array($this->sDsnType, $aDrivers);
 	}
 
+	public function SetEmail(string $sEmail) : bool
+	{
+		$this->iUserID = $this->getUserId($sEmail);
+		return 0 < $this->iUserID;
+	}
+
 	private function flushDeletedContacts(int $iUserID) : bool
 	{
 		return !!$this->prepareAndExecute('DELETE FROM rainloop_ab_contacts WHERE id_user = :id_user AND deleted = 1', array(
@@ -127,18 +135,17 @@ class PdoAddressBook
 		return $aResult;
 	}
 
-	public function Sync(array $oConfig) : bool
+	public function Sync() : bool
 	{
 		$this->SyncDatabase();
 
-		$iUserID = $this->getUserId($oConfig['Email']);
-		if (0 >= $iUserID)
+		if (1 > $this->iUserID)
 		{
 			\SnappyMail\Log::warning('PdoAddressBook', 'Sync() invalid $iUserID');
 			return false;
 		}
 
-		$oClient = $this->getDavClient($oConfig['Url'], $oConfig['User'], $oConfig['Password'], $oConfig['Proxy']);
+		$oClient = $this->getDavClient();
 		if (!$oClient)
 		{
 			\SnappyMail\Log::warning('PdoAddressBook', 'Sync() invalid DavClient');
@@ -154,13 +161,13 @@ class PdoAddressBook
 			return false;
 		}
 
-		$aDatabaseSyncData = $this->prepareDatabaseSyncData($iUserID);
+		$aDatabaseSyncData = $this->prepareDatabaseSyncData($this->iUserID);
 
 //		$this->oLogger->WriteDump($aRemoteSyncData);
 //		$this->oLogger->WriteDump($aDatabaseSyncData);
 
 		// Delete remote when Mode = read + write
-		if (1 === $oConfig['Mode']) {
+		if ($this->isDAVReadWrite()) {
 			foreach ($aDatabaseSyncData as $sKey => $aData)
 			{
 				if ($aData['deleted'] && isset($aRemoteSyncData[$sKey], $aRemoteSyncData[$sKey]['vcf']))
@@ -181,10 +188,10 @@ class PdoAddressBook
 		}
 		if (\count($aIdsForDeletedion))
 		{
-			$this->DeleteContacts($oConfig['Email'], $aIdsForDeletedion, false);
+			$this->DeleteContacts($aIdsForDeletedion, false);
 		}
 
-		$this->flushDeletedContacts($iUserID);
+		$this->flushDeletedContacts($this->iUserID);
 
 		//+++new or newer (from db)
 		foreach ($aDatabaseSyncData as $sKey => $aData)
@@ -199,7 +206,7 @@ class PdoAddressBook
 			)
 			{
 				$mID = $aData['id_contact'];
-				$oContact = $this->GetContactByID($oConfig['Email'], $mID, false);
+				$oContact = $this->GetContactByID($mID);
 				if ($oContact)
 				{
 					$sExsistensBody = '';
@@ -216,7 +223,7 @@ class PdoAddressBook
 					}
 
 					// Add remote when Mode = read + write
-					if (1 === $oConfig['Mode']) {
+					if ($this->isDAVReadWrite()) {
 						$oResponse = $this->davClientRequest($oClient, 'PUT',
 							$sPath.(\strlen($mExsistenRemoteID) ? $mExsistenRemoteID : $oContact->CardDavNameUri()),
 							$oContact->ToVCard($sExsistensBody, $this->oLogger)."\r\n\r\n");
@@ -227,7 +234,7 @@ class PdoAddressBook
 							if (!empty($sEtag))
 							{
 								$iChanged = empty($sDate) ? \time() : \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($sDate);
-								$this->updateContactEtagAndTime($iUserID, $mID, $sEtag, $iChanged);
+								$this->updateContactEtagAndTime($this->iUserID, $mID, $sEtag, $iChanged);
 							}
 						}
 					}
@@ -284,7 +291,7 @@ class PdoAddressBook
 							$oContact = null;
 							if ($mExsistenContactID)
 							{
-								$oContact = $this->GetContactByID($oConfig['Email'], $mExsistenContactID);
+								$oContact = $this->GetContactByID($mExsistenContactID);
 							}
 							if (!$oContact)
 							{
@@ -296,7 +303,7 @@ class PdoAddressBook
 								\trim(\trim($oResponse->getHeader('etag')), '"\'')
 							);
 
-							$this->ContactSave($oConfig['Email'], $oContact);
+							$this->ContactSave($oContact);
 							unset($oContact);
 //						} else if ($this->oLogger) {
 //							$this->oLogger->WriteDump($sBody);
@@ -309,27 +316,25 @@ class PdoAddressBook
 		return true;
 	}
 
-	public function Export(string $sEmail, string $sType = 'vcf') : bool
+	public function Export(string $sType = 'vcf') : bool
 	{
 		$this->SyncDatabase();
 
-		$iUserID = $this->getUserId($sEmail);
-		if (0 >= $iUserID)
-		{
+		if (1 > $this->iUserID) {
 			return false;
 		}
 
 		$bVcf = 'vcf' === $sType;
 		$bCsvHeader = true;
 
-		$aDatabaseSyncData = $this->prepareDatabaseSyncData($iUserID);
+		$aDatabaseSyncData = $this->prepareDatabaseSyncData($this->iUserID);
 		if (\count($aDatabaseSyncData))
 		{
 			foreach ($aDatabaseSyncData as $mData)
 			{
 				if ($mData && isset($mData['id_contact'], $mData['deleted']) && !$mData['deleted'])
 				{
-					$oContact = $this->GetContactByID($sEmail, $mData['id_contact']);
+					$oContact = $this->GetContactByID($mData['id_contact']);
 					if ($oContact)
 					{
 						if ($bVcf)
@@ -349,11 +354,9 @@ class PdoAddressBook
 		return true;
 	}
 
-	public function ContactSave(string $sEmail, Classes\Contact $oContact) : bool
+	public function ContactSave(Classes\Contact $oContact) : bool
 	{
 		$this->SyncDatabase();
-
-		$iUserID = $this->getUserId($sEmail);
 
 		$iIdContact = \strlen($oContact->IdContact) && \is_numeric($oContact->IdContact) ? (int) $oContact->IdContact : 0;
 
@@ -367,14 +370,14 @@ class PdoAddressBook
 			$aFreq = array();
 			if ($bUpdate)
 			{
-				$aFreq = $this->getContactFreq($iUserID, $iIdContact);
+				$aFreq = $this->getContactFreq($this->iUserID, $iIdContact);
 
 				$sSql = 'UPDATE rainloop_ab_contacts SET id_contact_str = :id_contact_str, display = :display, changed = :changed, etag = :etag '.
 					'WHERE id_user = :id_user AND id_contact = :id_contact';
 
 				$this->prepareAndExecute($sSql,
 					array(
-						':id_user' => array($iUserID, \PDO::PARAM_INT),
+						':id_user' => array($this->iUserID, \PDO::PARAM_INT),
 						':id_contact' => array($iIdContact, \PDO::PARAM_INT),
 						':id_contact_str' => array($oContact->IdContactStr, \PDO::PARAM_STR),
 						':display' => array($oContact->Display, \PDO::PARAM_STR),
@@ -387,7 +390,7 @@ class PdoAddressBook
 				$this->prepareAndExecute(
 					'DELETE FROM rainloop_ab_properties WHERE id_user = :id_user AND id_contact = :id_contact',
 					array(
-						':id_user' => array($iUserID, \PDO::PARAM_INT),
+						':id_user' => array($this->iUserID, \PDO::PARAM_INT),
 						':id_contact' => array($iIdContact, \PDO::PARAM_INT)
 					)
 				);
@@ -401,7 +404,7 @@ class PdoAddressBook
 
 				$this->prepareAndExecute($sSql,
 					array(
-						':id_user' => array($iUserID, \PDO::PARAM_INT),
+						':id_user' => array($this->iUserID, \PDO::PARAM_INT),
 						':id_contact_str' => array($oContact->IdContactStr, \PDO::PARAM_STR),
 						':display' => array($oContact->Display, \PDO::PARAM_STR),
 						':changed' => array($oContact->Changed, \PDO::PARAM_INT),
@@ -430,7 +433,7 @@ class PdoAddressBook
 
 					$aParams[] = array(
 						':id_contact' => array($iIdContact, \PDO::PARAM_INT),
-						':id_user' => array($iUserID, \PDO::PARAM_INT),
+						':id_user' => array($this->iUserID, \PDO::PARAM_INT),
 						':prop_type' => array($oProp->Type, \PDO::PARAM_INT),
 						':prop_type_str' => array($oProp->TypeStr, \PDO::PARAM_STR),
 						':prop_value' => array($oProp->Value, \PDO::PARAM_STR),
@@ -459,14 +462,12 @@ class PdoAddressBook
 		return 0 < $iIdContact;
 	}
 
-	public function DeleteContacts(string $sEmail, array $aContactIds, bool $bSyncDb = true) : bool
+	public function DeleteContacts(array $aContactIds, bool $bSyncDb = true) : bool
 	{
 		if ($bSyncDb)
 		{
 			$this->SyncDatabase();
 		}
-
-		$iUserID = $this->getUserId($sEmail);
 
 		$aContactIds = \array_filter(\array_map('intval', $aContactIds));
 
@@ -476,12 +477,12 @@ class PdoAddressBook
 		}
 
 		$sIDs = \implode(',', $aContactIds);
-		$aParams = array(':id_user' => array($iUserID, \PDO::PARAM_INT));
+		$aParams = array(':id_user' => array($this->iUserID, \PDO::PARAM_INT));
 
 		$this->prepareAndExecute('DELETE FROM rainloop_ab_properties WHERE id_user = :id_user AND id_contact IN ('.$sIDs.')', $aParams);
 
 		$aParams = array(
-			':id_user' => array($iUserID, \PDO::PARAM_INT),
+			':id_user' => array($this->iUserID, \PDO::PARAM_INT),
 			':changed' => array(\time(), \PDO::PARAM_INT)
 		);
 
@@ -491,13 +492,11 @@ class PdoAddressBook
 		return true;
 	}
 
-	public function DeleteAllContacts(string $sEmail) : bool
+	public function DeleteAllContacts() : bool
 	{
 		$this->SyncDatabase();
 
-		$iUserID = $this->getUserId($sEmail);
-
-		$aParams = array(':id_user' => array($iUserID, \PDO::PARAM_INT));
+		$aParams = array(':id_user' => array($this->iUserID, \PDO::PARAM_INT));
 
 		$this->prepareAndExecute('DELETE FROM rainloop_ab_properties WHERE id_user = :id_user', $aParams);
 		$this->prepareAndExecute('DELETE FROM rainloop_ab_contacts WHERE id_user = :id_user', $aParams);
@@ -505,15 +504,13 @@ class PdoAddressBook
 		return true;
 	}
 
-	public function GetContacts(string $sEmail, int $iOffset = 0, int $iLimit = 20, string $sSearch = '', int &$iResultCount = 0) : array
+	public function GetContacts(int $iOffset = 0, int $iLimit = 20, string $sSearch = '', int &$iResultCount = 0) : array
 	{
 		$this->SyncDatabase();
 
 		$iOffset = 0 <= $iOffset ? $iOffset : 0;
 		$iLimit = 0 < $iLimit ? (int) $iLimit : 20;
 		$sSearch = \trim($sSearch);
-
-		$iUserID = $this->getUserId($sEmail);
 
 		$iCount = 0;
 		$aSearchIds = array();
@@ -537,7 +534,7 @@ class PdoAddressBook
 				') GROUP BY id_contact, id_prop';
 
 			$aParams = array(
-				':id_user' => array($iUserID, \PDO::PARAM_INT),
+				':id_user' => array($this->iUserID, \PDO::PARAM_INT),
 				':search' => array($this->specialConvertSearchValue($sSearch, '='), \PDO::PARAM_STR)
 			);
 
@@ -578,7 +575,7 @@ class PdoAddressBook
 				'WHERE id_user = :id_user';
 
 			$aParams = array(
-				':id_user' => array($iUserID, \PDO::PARAM_INT)
+				':id_user' => array($this->iUserID, \PDO::PARAM_INT)
 			);
 
 			$oStmt = $this->prepareAndExecute($sSql, $aParams);
@@ -600,7 +597,7 @@ class PdoAddressBook
 			$sSql = 'SELECT * FROM rainloop_ab_contacts WHERE deleted = 0 AND id_user = :id_user';
 
 			$aParams = array(
-				':id_user' => array($iUserID, \PDO::PARAM_INT)
+				':id_user' => array($this->iUserID, \PDO::PARAM_INT)
 			);
 
 			if (\count($aSearchIds))
@@ -633,7 +630,7 @@ class PdoAddressBook
 							$oContact->IdContactStr = isset($aItem['id_contact_str']) ? (string) $aItem['id_contact_str'] : '';
 							$oContact->Display = isset($aItem['display']) ? (string) $aItem['display'] : '';
 							$oContact->Changed = isset($aItem['changed']) ? (int) $aItem['changed'] : 0;
-							$oContact->ReadOnly = $iUserID !== (isset($aItem['id_user']) ? (int) $aItem['id_user'] : 0);
+							$oContact->ReadOnly = $this->iUserID !== (isset($aItem['id_user']) ? (int) $aItem['id_user'] : 0);
 
 							$oContact->IdPropertyFromSearch = isset($aPropertyFromSearchIds[$iIdContact]) &&
 								0 < $aPropertyFromSearchIds[$iIdContact] ? $aPropertyFromSearchIds[$iIdContact] : 0;
@@ -698,16 +695,14 @@ class PdoAddressBook
 	/**
 	 * @param mixed $mID
 	 */
-	public function GetContactByID(string $sEmail, $mID, bool $bIsStrID = false) : ?Classes\Contact
+	public function GetContactByID($mID, bool $bIsStrID = false) : ?Classes\Contact
 	{
 		$mID = \trim($mID);
-
-		$iUserID = $this->getUserId($sEmail);
 
 		$sSql = 'SELECT * FROM rainloop_ab_contacts WHERE deleted = 0 AND id_user = :id_user';
 
 		$aParams = array(
-			':id_user' => array($iUserID, \PDO::PARAM_INT)
+			':id_user' => array($this->iUserID, \PDO::PARAM_INT)
 		);
 
 		if ($bIsStrID)
@@ -744,7 +739,7 @@ class PdoAddressBook
 						$oContact->IdContactStr = isset($aItem['id_contact_str']) ? (string) $aItem['id_contact_str'] : '';
 						$oContact->Display = isset($aItem['display']) ? (string) $aItem['display'] : '';
 						$oContact->Changed = isset($aItem['changed']) ? (int) $aItem['changed'] : 0;
-						$oContact->ReadOnly = $iUserID !== (isset($aItem['id_user']) ? (int) $aItem['id_user'] : 0);
+						$oContact->ReadOnly = $this->iUserID !== (isset($aItem['id_user']) ? (int) $aItem['id_user'] : 0);
 						$oContact->Etag = empty($aItem['etag']) ? '' : (string) $aItem['etag'];
 					}
 				}
@@ -798,7 +793,7 @@ class PdoAddressBook
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	public function GetSuggestions(string $sEmail, string $sSearch, int $iLimit = 20) : array
+	public function GetSuggestions(string $sSearch, int $iLimit = 20) : array
 	{
 		$sSearch = \trim($sSearch);
 		if (0 === \strlen($sSearch))
@@ -807,8 +802,6 @@ class PdoAddressBook
 		}
 
 		$this->SyncDatabase();
-
-		$iUserID = $this->getUserId($sEmail);
 
 		$sTypes = implode(',', array(
 			PropertyType::EMAIl, PropertyType::FIRST_NAME, PropertyType::LAST_NAME, PropertyType::NICK_NAME
@@ -824,7 +817,7 @@ class PdoAddressBook
 		;
 
 		$aParams = array(
-			':id_user' => array($iUserID, \PDO::PARAM_INT),
+			':id_user' => array($this->iUserID, \PDO::PARAM_INT),
 			':limit' => array($iLimit, \PDO::PARAM_INT),
 			':search' => array($this->specialConvertSearchValue($sSearch, '='), \PDO::PARAM_STR)
 		);
@@ -993,7 +986,7 @@ class PdoAddressBook
 		return array();
 	}
 
-	public function IncFrec(string $sEmail, array $aEmails, bool $bCreateAuto = true) : bool
+	public function IncFrec(array $aEmails, bool $bCreateAuto = true) : bool
 	{
 		$self = $this;
 		$aEmailsObjects = \array_map(function ($mItem) {
@@ -1016,7 +1009,6 @@ class PdoAddressBook
 		}
 
 		$this->SyncDatabase();
-		$iUserID = $this->getUserId($sEmail);
 
 		$aExists = array();
 		$aEmailsToCreate = array();
@@ -1026,7 +1018,7 @@ class PdoAddressBook
 		{
 			$sSql = 'SELECT prop_value FROM rainloop_ab_properties WHERE id_user = :id_user AND prop_type = :prop_type';
 			$oStmt = $this->prepareAndExecute($sSql, array(
-				':id_user' => array($iUserID, \PDO::PARAM_INT),
+				':id_user' => array($this->iUserID, \PDO::PARAM_INT),
 				':prop_type' => array(PropertyType::EMAIl, \PDO::PARAM_INT)
 			));
 
@@ -1126,7 +1118,7 @@ class PdoAddressBook
 
 				if (\count($oContact->Properties))
 				{
-					$this->ContactSave($sEmail, $oContact);
+					$this->ContactSave($oContact);
 				}
 
 				$oContact->Clear();
@@ -1149,7 +1141,7 @@ class PdoAddressBook
 		}
 
 		return !!$this->prepareAndExecute($sSql, array(
-			':id_user' => array($iUserID, \PDO::PARAM_INT),
+			':id_user' => array($this->iUserID, \PDO::PARAM_INT),
 			':prop_type' => array(PropertyType::EMAIl, \PDO::PARAM_INT)
 		));
 	}

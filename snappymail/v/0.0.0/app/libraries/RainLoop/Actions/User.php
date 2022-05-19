@@ -399,7 +399,7 @@ trait User
 				$oAddressBookProvider = $this->AddressBookProvider($oAccount);
 				if ($oAddressBookProvider && $oAddressBookProvider->IsActive())
 				{
-					$aSuggestions = $oAddressBookProvider->GetSuggestions($this->GetMainEmail($oAccount), $sQuery, $iLimit);
+					$aSuggestions = $oAddressBookProvider->GetSuggestions($sQuery, $iLimit);
 					if (!\count($aResult))
 					{
 						$aResult = $aSuggestions;

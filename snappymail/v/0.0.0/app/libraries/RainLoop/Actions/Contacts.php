@@ -32,31 +32,11 @@ trait Contacts
 
 	public function DoContactsSync() : array
 	{
-		$bResult = false;
 		$oAccount = $this->getAccountFromToken();
-
 		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-		if ($oAddressBookProvider && $oAddressBookProvider->IsActive())
-		{
-			$mData = $this->getContactsSyncData($oAccount);
-			if (isset($mData['User'], $mData['Password'], $mData['Url']) && !empty($mData['Mode']))
-			{
-				$bResult = $oAddressBookProvider->Sync([
-					'Email' => $this->GetMainEmail($oAccount),
-					'Url' => $mData['Url'],
-					'User' => $mData['User'],
-					'Password' => $mData['Password'],
-					'Mode' => $mData['Mode'],
-					'Proxy' => ''
-				]);
-			}
-		}
-
-		if (!$bResult)
-		{
+		if (!$oAddressBookProvider || !$oAddressBookProvider->Sync()) {
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ContactsSyncError);
 		}
-
 		return $this->TrueResponse(__FUNCTION__);
 	}
 
@@ -77,8 +57,7 @@ trait Contacts
 		if ($oAbp->IsActive())
 		{
 			$iResultCount = 0;
-			$mResult = $oAbp->GetContacts($this->GetMainEmail($oAccount),
-				$iOffset, $iLimit, $sSearch, $iResultCount);
+			$mResult = $oAbp->GetContacts($iOffset, $iLimit, $sSearch, $iResultCount);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
@@ -100,7 +79,7 @@ trait Contacts
 		$bResult = false;
 		if (\count($aFilteredUids) && $this->AddressBookProvider($oAccount)->IsActive())
 		{
-			$bResult = $this->AddressBookProvider($oAccount)->DeleteContacts($this->GetMainEmail($oAccount), $aFilteredUids);
+			$bResult = $this->AddressBookProvider($oAccount)->DeleteContacts($aFilteredUids);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $bResult);
@@ -121,7 +100,7 @@ trait Contacts
 			$oContact = null;
 			if (\strlen($sUid))
 			{
-				$oContact = $oAddressBookProvider->GetContactByID($this->GetMainEmail($oAccount), $sUid);
+				$oContact = $oAddressBookProvider->GetContactByID($sUid);
 			}
 
 			if (!$oContact)
@@ -161,7 +140,7 @@ trait Contacts
 
 			$oContact->PopulateDisplayAndFullNameValue(true);
 
-			$bResult = $oAddressBookProvider->ContactSave($this->GetMainEmail($oAccount), $oContact);
+			$bResult = $oAddressBookProvider->ContactSave($oContact);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
@@ -301,7 +280,7 @@ trait Contacts
 
 		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
 		return $oAddressBookProvider->IsActive() ?
-			$oAddressBookProvider->Export($this->GetMainEmail($oAccount), 'vcf') : false;
+			$oAddressBookProvider->Export('vcf') : false;
 	}
 
 	public function RawContactsCsv() : bool
@@ -317,7 +296,7 @@ trait Contacts
 
 		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
 		return $oAddressBookProvider->IsActive() ?
-			$oAddressBookProvider->Export($this->GetMainEmail($oAccount), 'csv') : false;
+			$oAddressBookProvider->Export('csv') : false;
 	}
 
 	private function importContactsFromVcfFile(\RainLoop\Model\Account $oAccount, /*resource*/ $rFile): int
@@ -333,10 +312,7 @@ trait Contacts
 
 				if (is_string($sFile) && 5 < \strlen($sFile)) {
 					$this->Logger()->Write('Import contacts from vcf');
-					$iCount = $oAddressBookProvider->ImportVcfFile(
-						$this->GetMainEmail($oAccount),
-						$sFile
-					);
+					$iCount = $oAddressBookProvider->ImportVcfFile($sFile);
 				}
 			}
 		}
@@ -379,10 +355,7 @@ trait Contacts
 
 				if (\count($aData)) {
 					$this->oLogger->Write('Import contacts from csv');
-					$iCount = $oAddressBookProvider->ImportCsvArray(
-						$this->GetMainEmail($oAccount),
-						$aData
-					);
+					$iCount = $oAddressBookProvider->ImportCsvArray($aData);
 				}
 			}
 		}

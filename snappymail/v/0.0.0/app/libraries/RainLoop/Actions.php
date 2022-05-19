@@ -501,7 +501,10 @@ class Actions
 			if ($bForceEnable || $this->GetCapa(Enumerations\Capa::CONTACTS)) {
 				$oDriver = $this->fabrica('address-book', $oAccount);
 			}
-
+			if ($oAccount && $oDriver) {
+				$oDriver->SetEmail($this->GetMainEmail($oAccount));
+				$oDriver->setDAVClientConfig($this->getContactsSyncData($oAccount));
+			}
 			$this->oAddressBookProvider = new Providers\AddressBook($oDriver);
 			$this->oAddressBookProvider->SetLogger($this->oLogger);
 		}

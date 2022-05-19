@@ -6,6 +6,22 @@ use SnappyMail\DAV\Client as DAVClient;
 
 trait CardDAV
 {
+	private $aDAVConfig = ['Mode' => 0];
+
+	public function setDAVClientConfig(?array $aConfig)
+	{
+		if (isset($aConfig['User'], $aConfig['Password'], $aConfig['Url']) && !empty($aConfig['Mode'])) {
+			$this->aDAVConfig = $aConfig;
+		} else {
+			$this->aDAVConfig = ['Mode' => 0];
+		}
+	}
+
+	protected function isDAVReadWrite()
+	{
+		return 1 == $this->aDAVConfig['Mode'];
+	}
+
 	protected function prepareDavSyncData(DAVClient $oClient, string $sPath)
 	{
 		$mResult = false;
@@ -401,8 +417,16 @@ trait CardDAV
 		return $oClient;
 	}
 
-	protected function getDavClient(string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : ?DAVClient
+	protected function getDavClient() : ?DAVClient
 	{
+		if (!$this->aDAVConfig['Mode']) {
+			return null;
+		}
+		$sUrl = $aConfig['Url'];
+		$sUser = $aConfig['User'];
+		$sPassword = $aConfig['Password'];
+		$sProxy = '';
+
 		$aMatch = array();
 		$sUserAddressBookNameName = '';
 

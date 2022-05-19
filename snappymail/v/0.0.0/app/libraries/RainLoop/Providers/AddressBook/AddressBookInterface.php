@@ -6,23 +6,25 @@ interface AddressBookInterface
 {
 	public function IsSupported() : bool;
 
-	public function Sync(array $oConfig) : bool;
+	public function SetEmail(string $sEmail) : bool;
 
-	public function Export(string $sEmail, string $sType = 'vcf') : bool;
+	public function Sync() : bool;
 
-	public function ContactSave(string $sEmail, Classes\Contact $oContact) : bool;
+	public function Export(string $sType = 'vcf') : bool;
 
-	public function DeleteContacts(string $sEmail, array $aContactIds) : bool;
+	public function ContactSave(Classes\Contact $oContact) : bool;
+
+	public function DeleteContacts(array $aContactIds) : bool;
 
 	public function DeleteAllContacts(string $sEmail) : bool;
 
-	public function GetContacts(string $sEmail, int $iOffset = 0, int $iLimit = 20, string $sSearch = '', int &$iResultCount = 0) : array;
+	public function GetContacts(int $iOffset = 0, int $iLimit = 20, string $sSearch = '', int &$iResultCount = 0) : array;
 
-	public function GetContactByID(string $sEmail, $mID, bool $bIsStrID = false) : ?Classes\Contact;
+	public function GetContactByID($mID, bool $bIsStrID = false) : ?Classes\Contact;
 
-	public function GetSuggestions(string $sEmail, string $sSearch, int $iLimit = 20) : array;
+	public function GetSuggestions(string $sSearch, int $iLimit = 20) : array;
 
-	public function IncFrec(string $sEmail, array $aEmails, bool $bCreateAuto = true) : bool;
+	public function IncFrec(array $aEmails, bool $bCreateAuto = true) : bool;
 
 	public function Test() : string;
 }
