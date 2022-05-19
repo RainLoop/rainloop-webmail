@@ -23,7 +23,7 @@
 		"LABEL_DOMAINS_NAME": "Domaines",
 		"LABEL_SECURITY_NAME": "Sécurité",
 		"LABEL_PACKAGES_NAME": "Extensions",
-		"LABEL_CONFIG_NAME": "Config",
+		"LABEL_CONFIG_NAME": "Configuration",
 		"LABEL_ABOUT_NAME": "À propos"
 	},
 	"TAB_GENERAL": {
