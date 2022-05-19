@@ -2,33 +2,21 @@
 
 namespace RainLoop;
 
-class Api
+abstract class Api
 {
 
-	function __construct()
-	{
-	}
-
-	public static function RunResult() : bool
-	{
-		return true;
-	}
-
-	/**
-	 * @staticvar bool $bOne
-	 */
 	public static function Handle() : bool
 	{
-		static $bOne = null;
-		if (null === $bOne)
+		static $bOne = false;
+		if (!$bOne)
 		{
 			static::SetupDefaultMailSoConfig();
-			$bOne = static::RunResult();
+			$bOne = true;
 		}
 		return $bOne;
 	}
 
-	final public static function Actions() : Actions
+	public static function Actions() : Actions
 	{
 		static $oActions = null;
 		if (null === $oActions)
@@ -153,10 +141,10 @@ class Api
 				$oStorageProvider->DeleteStorage($sEmail);
 			}
 
-			if (static::Actions()->AddressBookProvider() &&
-				static::Actions()->AddressBookProvider()->IsActive())
+			$oAddressBookProvider = static::Actions()->AddressBookProvider();
+			if ($oAddressBookProvider)
 			{
-				static::Actions()->AddressBookProvider()->DeleteAllContacts($sEmail);
+				$oAddressBookProvider->DeleteAllContacts($sEmail);
 			}
 
 			return true;
