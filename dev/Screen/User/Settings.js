@@ -52,7 +52,10 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 		}
 
 		views.forEach((item, index) =>
-			settingsAddViewModel(item, item.name.replace('User', ''), 0, 0, 0 === index)
+			settingsAddViewModel(item, item.name.replace('User', ''),
+				(item === UserSettingsAccounts && !SettingsCapa('AdditionalAccounts'))
+					? 'SETTINGS_ACCOUNTS/LEGEND_IDENTITIES' : 0,
+				0, 0 === index)
 		);
 
 		runSettingsViewModelHooks(false);
