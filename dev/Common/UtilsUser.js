@@ -24,6 +24,7 @@ dropdownsDetectVisibility = (() =>
  * @returns {boolean}
  */
 download = (link, name = "") => {
+	console.log('download: '+link);
 	// Firefox 98 issue https://github.com/the-djmaze/snappymail/issues/301
 	if (ThemeStore.isMobile() || /firefox/i.test(navigator.userAgent)) {
 		open(link, '_blank');
