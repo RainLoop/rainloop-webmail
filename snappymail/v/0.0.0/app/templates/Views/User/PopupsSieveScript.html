@@ -47,7 +47,7 @@
 				<col style="width: 140px">
 				<col style="width: 1em">
 			</colgroup>
-			<tbody data-bind="foreach: filters">
+			<tbody data-bind="foreach: filters, i18nUpdate: filters">
 				<tr class="filter-item" draggable="true" data-bind="sortableItem: { list: $parent.filters }">
 					<td class="fontastic" data-bind="click: function () { $parent.hasChanges(true); enabled(!enabled()); }, text: enabled() ? '☑' : '☐'"></td>
 					<td class="drag-wrapper fontastic drag-handle">⬍</td>
