@@ -492,11 +492,13 @@ class PdoAddressBook
 		return true;
 	}
 
-	public function DeleteAllContacts() : bool
+	public function DeleteAllContacts(string $sEmail) : bool
 	{
 		$this->SyncDatabase();
 
-		$aParams = array(':id_user' => array($this->iUserID, \PDO::PARAM_INT));
+		$iUserID = $this->getUserId($sEmail);
+
+		$aParams = array(':id_user' => array($iUserID, \PDO::PARAM_INT));
 
 		$this->prepareAndExecute('DELETE FROM rainloop_ab_properties WHERE id_user = :id_user', $aParams);
 		$this->prepareAndExecute('DELETE FROM rainloop_ab_contacts WHERE id_user = :id_user', $aParams);
