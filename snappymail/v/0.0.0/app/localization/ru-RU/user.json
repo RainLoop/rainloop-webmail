@@ -502,9 +502,6 @@
 		"LABEL_SEND_MESSAGE": "Отправить сообщение",
 		"LABEL_CLOSE_COMPOSE": "Закрыть сообщение"
 	},
-	"KOLAB": {
-		"CONTACTS_FOLDER": "Contacts Folder"
-	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Неверный токен запроса",
 		"AUTH_ERROR": "Не удалось авторизоваться",

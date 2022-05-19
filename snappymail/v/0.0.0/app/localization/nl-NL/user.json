@@ -502,9 +502,6 @@
 		"LABEL_SEND_MESSAGE": "Bericht versturen",
 		"LABEL_CLOSE_COMPOSE": "Nieuw bericht venster sluiten"
 	},
-	"KOLAB": {
-		"CONTACTS_FOLDER": "Contacts Folder"
-	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ongeldige token",
 		"AUTH_ERROR": "Authenticatie mislukt",

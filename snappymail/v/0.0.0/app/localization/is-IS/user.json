@@ -502,9 +502,6 @@
 		"LABEL_SEND_MESSAGE": "Senda skilaboð",
 		"LABEL_CLOSE_COMPOSE": "Loka ritli"
 	},
-	"KOLAB": {
-		"CONTACTS_FOLDER": "Contacts Folder"
-	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Rangt tákn",
 		"AUTH_ERROR": "Auðkenning mistókst",

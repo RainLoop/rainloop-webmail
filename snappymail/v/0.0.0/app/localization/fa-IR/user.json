@@ -502,9 +502,6 @@
 		"LABEL_SEND_MESSAGE": "فرستادن پیام",
 		"LABEL_CLOSE_COMPOSE": "بستن صفحه ایجاد"
 	},
-	"KOLAB": {
-		"CONTACTS_FOLDER": "Contacts Folder"
-	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "توکن نامعتبر",
 		"AUTH_ERROR": "احراز هویت با موفقیت همراه نبود",

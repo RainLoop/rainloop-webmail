@@ -502,9 +502,6 @@
 		"LABEL_SEND_MESSAGE": "إرسال الرسالة",
 		"LABEL_CLOSE_COMPOSE": "إغلاق الرسالة"
 	},
-	"KOLAB": {
-		"CONTACTS_FOLDER": "Contacts Folder"
-	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "خاطىء token",
 		"AUTH_ERROR": "خطأ في كلمة السر \\اسم المستخدم",

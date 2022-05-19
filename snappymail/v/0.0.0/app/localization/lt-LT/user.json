@@ -502,9 +502,6 @@
 		"LABEL_SEND_MESSAGE": "Siųsti laišką",
 		"LABEL_CLOSE_COMPOSE": "Uždaryti laišką"
 	},
-	"KOLAB": {
-		"CONTACTS_FOLDER": "Contacts Folder"
-	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Neteisingas raktas",
 		"AUTH_ERROR": "Autorizacija nepavyko",

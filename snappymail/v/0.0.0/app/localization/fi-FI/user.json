@@ -502,9 +502,6 @@
 		"LABEL_SEND_MESSAGE": "Lähetä viesti",
 		"LABEL_CLOSE_COMPOSE": "Sule luo viesti"
 	},
-	"KOLAB": {
-		"CONTACTS_FOLDER": "Contacts Folder"
-	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Väärä suojaustunnus",
 		"AUTH_ERROR": "Tunnistusvirhe",

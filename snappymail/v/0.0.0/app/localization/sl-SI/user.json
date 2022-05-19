@@ -502,9 +502,6 @@
 		"LABEL_SEND_MESSAGE": "Pošlji sporočilo",
 		"LABEL_CLOSE_COMPOSE": "Zapri sestavljanje"
 	},
-	"KOLAB": {
-		"CONTACTS_FOLDER": "Contacts Folder"
-	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Neveljaven žeton",
 		"AUTH_ERROR": "Spodletelo overjanje",

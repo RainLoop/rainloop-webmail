@@ -502,9 +502,6 @@
 		"LABEL_SEND_MESSAGE": "Mesajı Gönder",
 		"LABEL_CLOSE_COMPOSE": "Oluşturulanı Kapat"
 	},
-	"KOLAB": {
-		"CONTACTS_FOLDER": "Contacts Folder"
-	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Geçersiz token",
 		"AUTH_ERROR": "Kimlik doğrulama başarısız oldu",

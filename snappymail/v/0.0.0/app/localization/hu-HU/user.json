@@ -502,9 +502,6 @@
 		"LABEL_SEND_MESSAGE": "Üzenet küldés",
 		"LABEL_CLOSE_COMPOSE": "Levélírás bezárása"
 	},
-	"KOLAB": {
-		"CONTACTS_FOLDER": "Contacts Folder"
-	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Érvénytelen kulcs",
 		"AUTH_ERROR": "Érvénytelen hitelesítés",

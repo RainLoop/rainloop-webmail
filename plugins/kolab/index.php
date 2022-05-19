@@ -5,7 +5,7 @@ class KolabPlugin extends \RainLoop\Plugins\AbstractPlugin
 	const
 		NAME = 'Kolab',
 		VERSION = '0.2',
-		RELEASE  = '2022-05-18',
+		RELEASE  = '2022-05-19',
 		CATEGORY = 'Contacts',
 		DESCRIPTION = 'Use an Address Book of Kolab.',
 		REQUIRED = '2.15.4';
@@ -14,6 +14,8 @@ class KolabPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 //		\RainLoop\Api::Config()->Set('contacts', 'enable', true);
 		if (\RainLoop\Api::Config()->Get('contacts', 'enable', false)) {
+			$this->UseLangs(true);
+
 			$this->addHook('filter.app-data', 'FilterAppData');
 			$this->addHook('main.fabrica', 'MainFabrica');
 

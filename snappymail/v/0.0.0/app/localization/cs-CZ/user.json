@@ -502,9 +502,6 @@
 		"LABEL_SEND_MESSAGE": "Odeslat zprávu",
 		"LABEL_CLOSE_COMPOSE": "Zavřít okno se zprávou"
 	},
-	"KOLAB": {
-		"CONTACTS_FOLDER": "Contacts Folder"
-	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Neplatný token",
 		"AUTH_ERROR": "Ověření selhalo",

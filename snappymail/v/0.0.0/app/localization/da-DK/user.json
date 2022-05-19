@@ -502,9 +502,6 @@
 		"LABEL_SEND_MESSAGE": "Send meddelelse",
 		"LABEL_CLOSE_COMPOSE": "Luk forfatter mode"
 	},
-	"KOLAB": {
-		"CONTACTS_FOLDER": "Contacts Folder"
-	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Ugyldigt tegn",
 		"AUTH_ERROR": "Godkendelse fejlede",

@@ -502,9 +502,6 @@
 		"LABEL_SEND_MESSAGE": "Send message",
 		"LABEL_CLOSE_COMPOSE": "Close compose"
 	},
-	"KOLAB": {
-		"CONTACTS_FOLDER": "Contacts Folder"
-	},
 	"NOTIFICATIONS": {
 		"INVALID_TOKEN": "Invalid token",
 		"AUTH_ERROR": "Authentication failed",
