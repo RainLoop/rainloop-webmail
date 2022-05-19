@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
-import { keyScope, SettingsGet, leftPanelDisabled } from 'Common/Globals';
+import { keyScope, SettingsGet, leftPanelDisabled, elementById } from 'Common/Globals';
 import { ViewTypePopup, showScreenPopup } from 'Knoin/Knoin';
 
 import { SaveSettingsStep } from 'Common/Enums';
@@ -160,7 +160,14 @@ export class AbstractViewLogin extends AbstractView {
 	}
 
 	onShow() {
+		elementById('rl-left').hidden = true;
+		elementById('rl-right').hidden = true;
 		rl.route.off();
+	}
+
+	onHide() {
+		elementById('rl-left').hidden = false;
+		elementById('rl-right').hidden = false;
 	}
 
 	submitForm() {
