@@ -152,12 +152,12 @@ function filtersToSieveScript(filters)
 						subject = ':subject ' + quote(StripSpaces(paramValue)) + ' ';
 					}
 
-					paramValue = (filter.actionValueThird() || '').trim();
+					paramValue = ('' + (filter.actionValueThird() || '')).trim();
 					if (paramValue.length) {
 						days = Math.max(1, parseInt(paramValue, 10));
 					}
 
-					paramValue = (filter.actionValueFourth() || '').trim()
+					paramValue = ('' + (filter.actionValueFourth() || '')).trim()
 					if (paramValue.length) {
 						paramValue = paramValue.split(',').map(email =>
 							email.trim().length ? quote(email) : ''
