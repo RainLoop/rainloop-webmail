@@ -4,6 +4,11 @@ namespace SnappyMail\HTTP;
 
 /**
  * Can be used with JavaScript AbstractFetchRemote.streamPerLine(fCallback, sGetAdd, postData)
+ *
+ * Apache mod_fastcgi needs the -flush option
+ * Apache mod_proxy_fcgi needs 'flushpackets' like in <Proxy "fcgi://...." flushpackets=on></Proxy>
+ * We can't control them in PHP
+ * We can control ending the response with \fastcgi_finish_request(), but that makes it a background process
  */
 
 abstract class Stream
@@ -28,11 +33,6 @@ abstract class Stream
 
 		// Nginx: disable fastcgi_buffering and disable gzip for this request.
 		\header('X-Accel-Buffering: no');
-
-		// Apache mod_fastcgi needs the -flush option
-		// Apache mod_proxy_fcgi needs 'flushpackets' like in <Proxy "fcgi://...." flushpackets=on></Proxy>
-		// We can't control them here
-		// We can control ending the response with \fastcgi_finish_request()
 
 		if (!$binary) {
 			\header('Content-Type: text/plain');
