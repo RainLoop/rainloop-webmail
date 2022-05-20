@@ -261,11 +261,11 @@
 		"LABEL_SIGN": "Signer",
 		"LABEL_ENCRYPT": "Chiffer",
 		"BUTTON_DECRYPT": "Déchiffrer",
-		"BUTTON_VERIFY": "Verify",
+		"BUTTON_VERIFY": "Vérifier",
 		"SIGNED_MESSAGE": "Message signé par OpenPGP",
 		"ENCRYPTED_MESSAGE": "Message chiffré par OpenPGP",
-		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"STORE_IN_GNUPG": "Stocker sur le serveur dans GnuPG",
+		"BACKUP_ON_SERVER": "Stocker (chiffré) sur le serveur",
 		"GOOD_SIGNATURE": "Signature valide pour %USER%",
 		"ERROR": "Erreur OpenPGP: %ERROR%"
 	},
@@ -309,8 +309,8 @@
 		"ALL_INCOMING_MESSAGES_DESC": "Tous les messages entrants"
 	},
 	"POPUPS_SIEVE_SCRIPT": {
-		"TITLE_CREATE": "Create Script",
-		"TITLE_EDIT": "Edit Script",
+		"TITLE_CREATE": "Créer un script",
+		"TITLE_EDIT": "Éditer un script",
 		"BUTTON_ADD_FILTER": "Ajouter un filtre",
 		"BUTTON_RAW_SCRIPT": "Utiliser le script d'un utilisateur",
 		"CAPABILITY_LABEL": "Capacité",
@@ -355,7 +355,7 @@
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filtres",
 		"SIMPLE": "Simple",
-		"ADVANCED": "Advanced",
+		"ADVANCED": "Avancé",
 		"BUTTON_ADD_SCRIPT": "Ajouter un Script",
 		"SUBNAME_MOVE_TO": "Déplacer vers \"%FOLDER%\"",
 		"SUBNAME_FORWARD_TO": "Faire suivre à \"%EMAIL%\"",
@@ -408,7 +408,7 @@
 		"LABEL_CONTACTS_SYNC_USER": "Utilisateur",
 		"SYNC_NO": "Non",
 		"SYNC_YES": "Oui",
-		"SYNC_READ": "Read only"
+		"SYNC_READ": "Lecture seulement"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Thèmes",
@@ -461,7 +461,7 @@
 		"TITLE_PRIVATE": "Privée",
 		"TITLE_PUBLIC": "Publique",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Brouillon sauvegardé automatiquement",
-		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
+		"GET_MAILVELOPE": "Obtenez le module complémentaire de navigateur Mailvelope"
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Aide pour les raccourcis clavier",
@@ -520,8 +520,8 @@
 		"INVALID_RECIPIENTS": "Destinataires invalides",
 		"CANT_SAVE_FILTERS": "Impossible d'enregistrer les filtres",
 		"CANT_GET_FILTERS": "Impossible d'obtenir les filtres",
-		"CANT_ACTIVATE_FILTERS_SCRIPT": "Can't activate filters script",
-		"CANT_DELETE_FILTERS_SCRIPT": "Can't delete filters script",
+		"CANT_ACTIVATE_FILTERS_SCRIPT": "Impossible d'activer le script des filtres",
+		"CANT_DELETE_FILTERS_SCRIPT": "Impossible de supprimer le script des filtres",
 		"FILTERS_ARE_NOT_CORRECT": "Les filtres ne sont pas corrects",
 		"CANT_CREATE_FOLDER": "Impossible de créer le dossier",
 		"CANT_RENAME_FOLDER": "Impossible de renommer le dossier",
