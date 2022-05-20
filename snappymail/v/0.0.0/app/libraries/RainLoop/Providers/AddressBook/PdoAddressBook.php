@@ -154,12 +154,15 @@ class PdoAddressBook
 
 		$sPath = $oClient->__UrlPath__;
 
+		$time = \microtime(true);
 		$aRemoteSyncData = $this->prepareDavSyncData($oClient, $sPath);
 		if (false === $aRemoteSyncData)
 		{
 			\SnappyMail\Log::info('PdoAddressBook', 'Sync() no data to sync');
 			return false;
 		}
+		$time = \microtime(true) - $time;
+		\SnappyMail\HTTP\Stream::JSON(['messsage'=>"Fetched remote data in {$time} seconds"]);
 
 		$aDatabaseSyncData = $this->prepareDatabaseSyncData($this->iUserID);
 
