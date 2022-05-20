@@ -45,7 +45,7 @@ foreach (glob(ROOT_DIR . '/plugins/*', GLOB_NOSORT | GLOB_ONLYDIR) as $dir) {
 			@unlink($tgz_destination);
 			@unlink("{$tar_destination}.gz");
 			$tar = new PharData($tar_destination);
-			$tar->buildFromDirectory('./plugins/', '/' . \preg_quote("./plugins/{$name}", '/') . '/');
+			$tar->buildFromDirectory('./plugins/', '/' . \preg_quote("./plugins/{$name}/", '/') . '/');
 			$tar->compress(Phar::GZ);
 			unlink($tar_destination);
 			rename("{$tar_destination}.gz", $tgz_destination);
