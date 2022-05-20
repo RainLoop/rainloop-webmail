@@ -180,6 +180,17 @@ class Contact implements \JsonSerializable
 		return $this->IdContactStr.'.vcf';
 	}
 
+	public function SetUID(string $value) : void
+	{
+		foreach ($this->Properties as $oProperty) {
+			if ($oProperty && PropertyType::UID == $oProperty->Type) {
+				$oProperty->Value = $value;
+				return;
+			}
+		}
+		$this->Properties[] = new Property(PropertyType::UID, $value);
+	}
+
 	public function GetUID() : string
 	{
 		foreach ($this->Properties as $oProperty) {
@@ -187,13 +198,13 @@ class Contact implements \JsonSerializable
 				return $oProperty->Value;
 			}
 		}
-		return $this->IdContactStr;
+		return '';
 	}
 
-	private function fillVCard(\Sabre\VObject\Component\VCard $oVCard) : void
+	public function fillVCard(\Sabre\VObject\Component\VCard $oVCard) : void
 	{
 		$oVCard->VERSION = '3.0';
-		$oVCard->PRODID = '-//SnappyMail//'.APP_VERSION.'//EN';
+		$oVCard->PRODID = 'SnappyMail-'.APP_VERSION;
 
 		unset($oVCard->FN, $oVCard->EMAIL, $oVCard->TEL, $oVCard->URL, $oVCard->NICKNAME);
 
@@ -255,7 +266,7 @@ class Contact implements \JsonSerializable
 			}
 		}
 
-		$oVCard->UID = empty($sUid) ? $this->IdContactStr : $sUid;
+		$oVCard->UID = $sUid ?: \SnappyMail\UUID::generate();
 		$oVCard->N = array($sLastName, $sFirstName, $sMiddleName, $sPrefix, $sSuffix);
 		$oVCard->REV = \gmdate('Ymd', $this->Changed).'T'.\gmdate('His', $this->Changed).'Z';
 	}
@@ -293,17 +304,6 @@ class Contact implements \JsonSerializable
 		$this->fillVCard($oVCard);
 
 		return (string) $oVCard->serialize();
-	}
-
-	public function ToXCard(?\Sabre\VObject\Component\VCard $oVCard = null, $oLogger = null) : string
-	{
-		$this->UpdateDependentValues();
-
-		$oVCard = $oVCard ?: new \Sabre\VObject\Component\VCard();
-
-		$this->fillVCard($oVCard);
-
-		return (string) \Sabre\VObject\Writer::writeXml($oVCard);
 	}
 
 	public function ToCsv(bool $bWithHeader = false) : string
@@ -599,9 +599,9 @@ class Contact implements \JsonSerializable
 		}
 
 		$this->IdContactStr = $oVCard->UID ? (string) $oVCard->UID : \SnappyMail\UUID::generate();
-		$aProperties[] = new Property(PropertyType::UID, $this->IdContactStr);
 
 		$this->Properties = $aProperties;
+		$this->SetUID($this->IdContactStr);
 
 		$this->UpdateDependentValues();
 

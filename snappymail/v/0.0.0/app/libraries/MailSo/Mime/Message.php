@@ -57,6 +57,8 @@ class Message extends Part
 	 */
 	private $bAddDefaultXMailer = true;
 
+	public $messageIdRequired = true;
+
 	function __construct()
 	{
 		parent::__construct();
@@ -439,11 +441,11 @@ class Message extends Part
 			$oRootPart->Headers->SetByName(Enumerations\Header::DATE, \gmdate('r'), true);
 		}
 
-		if (!isset($this->aHeadersValue[Enumerations\Header::MESSAGE_ID])) {
+		if ($this->messageIdRequired && !isset($this->aHeadersValue[Enumerations\Header::MESSAGE_ID])) {
 			$oRootPart->Headers->SetByName(Enumerations\Header::MESSAGE_ID, $this->generateNewMessageId(), true);
 		}
 
-		if (!isset($this->aHeadersValue[Enumerations\Header::X_MAILER]) && $this->bAddDefaultXMailer) {
+		if ($this->bAddDefaultXMailer && !isset($this->aHeadersValue[Enumerations\Header::X_MAILER])) {
 			$oRootPart->Headers->SetByName(Enumerations\Header::X_MAILER, 'SnappyMail/'.APP_VERSION, true);
 		}
 

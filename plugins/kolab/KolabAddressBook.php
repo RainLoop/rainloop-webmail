@@ -58,15 +58,19 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 	protected function fetchXCardFromMessage(\MailSo\Mail\Message $oMessage) : ?\Sabre\VObject\Component\VCard
 	{
 		$xCard = null;
-		foreach ($oMessage->Attachments() ?: [] as $oAttachment)  {
-			if ('application/vcard+xml' === $oAttachment->MimeType()) {
-				$result = $this->MailClient()->MessageMimeStream(function ($rResource) use (&$xCard) {
-					if (\is_resource($rResource)) {
-						$xCard = \Sabre\VObject\Reader::readXML($rResource);
-					}
-				}, $this->sFolderName, $oMessage->Uid(), $oAttachment->MimeIndex());
-				break;
+		try {
+			foreach ($oMessage->Attachments() ?: [] as $oAttachment)  {
+				if ('application/vcard+xml' === $oAttachment->MimeType()) {
+					$result = $this->MailClient()->MessageMimeStream(function ($rResource) use (&$xCard) {
+						if (\is_resource($rResource)) {
+							$xCard = \Sabre\VObject\Reader::readXML($rResource);
+						}
+					}, $this->sFolderName, $oMessage->Uid(), $oAttachment->MimeIndex());
+					break;
+				}
 			}
+		} catch (\Throwable $e) {
+			\error_log("KolabAddressBook message {$oMessage->Uid()} error: {$e->getMessage()}");
 		}
 		return $xCard;
 	}
@@ -183,11 +187,28 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 			$oVCard = null;
 			$iUID = 0;
 		}
+		$oVCard = $oVCard ?: new \Sabre\VObject\Component\VCard();
+		$oContact->UpdateDependentValues();
+		$oContact->fillVCard($oVCard);
+		$sUid = (string) $oVCard->UID;
+		$sUid = \str_replace('urn:uuid:', '', $sUid ?: $oContact->GetUID());
+		if (!\SnappyMail\UUID::isValid($sUid)) {
+			$sUid = \SnappyMail\UUID::generate();
+		}
+		$oContact->IdContactStr = $sUid;
+		$oContact->SetUID($sUid);
+		$oVCard->UID = new \Sabre\VObject\Property\Uri($oVCard, 'uid', 'urn:uuid:' . $sUid);
+
+		if (!\count($oVCard->select('x-kolab-version'))) {
+			$oVCard->add(new \Sabre\VObject\Property\Text($oVCard, 'x-kolab-version', '3.1.0'));
+		}
 
 		$oMessage = new \MailSo\Mime\Message();
+		$oMessage->DoesNotAddDefaultXMailer();
+		$oMessage->messageIdRequired = false;
 
 		$sEmail = '';
-		if (isset($oVCard->EMAIL)) {
+		if ($oVCard && isset($oVCard->EMAIL)) {
 			foreach ($oVCard->EMAIL as $oProp) {
 				$oTypes = $oProp ? $oProp['TYPE'] : null;
 				$sValue = $oProp ? \trim($oProp->getValue()) : '';
@@ -200,27 +221,27 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 			}
 		}
 
-		$oMessage->SetSubject($oContact->GetUID());
+		$oMessage->SetSubject($sUid);
 //		$oMessage->SetDate(\time());
-		$oMessage->Headers->AddByName('X-Kolab-Type', 'application/x-vnd.kolab.contact');
-		$oMessage->Headers->AddByName('X-Kolab-Mime-Version', '3.0');
-//		$oMessage->Headers->AddByName('User-Agent', 'SnappyMail');
+		$oMessage->SetCustomHeader('X-Kolab-Type', 'application/x-vnd.kolab.contact');
+		$oMessage->SetCustomHeader('X-Kolab-Mime-Version', '3.0');
+		$oMessage->SetCustomHeader('User-Agent', 'SnappyMail');
 
 		$oPart = new \MailSo\Mime\Part;
-		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain');
+		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset="us-ascii"');
 		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
 		$oPart->Body = "This is a Kolab Groupware object.\r\n"
 			. "To view this object you will need an email client that can understand the Kolab Groupware format.\r\n"
 			. "For a list of such email clients please visit\r\n"
-			. "http://www.kolab.org/get-kolab";
+			. "http://www.kolab.org/get-kolab\r\n";
 		$oMessage->SubParts->append($oPart);
 
 		// Now the vCard
 		$oPart = new \MailSo\Mime\Part;
 		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/vcard+xml; name="kolab.xml"');
-//		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
+		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
 		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION, 'attachment; filename="kolab.xml"');
-		$oPart->Body = $oContact->ToXCard($oVCard/*, $oLogger*/);
+		$oPart->Body = \quoted_printable_encode(\preg_replace('/\r?\n/s', "\r\n", \Sabre\VObject\Writer::writeXml($oVCard)));
 		$oMessage->SubParts->append($oPart);
 
 		// Store Message
