@@ -37,7 +37,7 @@ class ChangePasswordDriverPDO
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::PASSWORD),
 			\RainLoop\Plugins\Property::NewInstance('pdo_sql')->SetLabel('Statement')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
-				->SetDescription('SQL statement (allowed wildcards :email, :oldpass, :newpass, :domain, :username).')
+				->SetDescription('SQL statement (allowed wildcards :email, :oldpass, :newpass, :domain, :username, :login_name).')
 				->SetDefaultValue('UPDATE table SET password = :newpass WHERE domain = :domain AND username = :username and oldpass = :oldpass'),
 			\RainLoop\Plugins\Property::NewInstance('pdo_encrypt')->SetLabel('Encryption')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::SELECTION)
@@ -88,7 +88,8 @@ class ChangePasswordDriverPDO
 				':oldpass' => $encrypt_prefix . \ChangePasswordPlugin::encrypt($encrypt, $sPrevPassword),
 				':newpass' => $encrypt_prefix . \ChangePasswordPlugin::encrypt($encrypt, $sNewPassword),
 				':domain' => \MailSo\Base\Utils::GetDomainFromEmail($sEmail),
-				':username' => \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail)
+				':username' => \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail),
+				':login_name' => $oAccount->Login()
 			);
 
 			$sql = $this->oConfig->Get('plugin', 'pdo_sql', '');
