@@ -63,7 +63,7 @@
 			} else {
 				this.reset(true);
 				rl.pluginRemoteRequest(
-					(iError, data) {
+					(iError, data) => {
 						this.reset(false);
 						if (iError) {
 							this.passwordUpdateError(true);
