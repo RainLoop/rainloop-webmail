@@ -56,11 +56,9 @@ class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 					\MailSo\Log\Enumerations\Type::ERROR, true);
 			}
 
-			$sLogin = \trim($sLogin);
-
 			try
 			{
-				$this->sendRequestWithCheck('user', \trim($sLogin), true);
+				$this->sendRequestWithCheck('user', $oAccount->Login(), true);
 				$this->sendRequestWithCheck('pass', $sPassword, true);
 			}
 			catch (\Throwable $oException)
