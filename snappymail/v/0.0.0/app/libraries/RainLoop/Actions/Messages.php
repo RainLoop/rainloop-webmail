@@ -986,8 +986,9 @@ trait Messages
 
 		$oMessage = new \MailSo\Mime\Message();
 
-		if (!$this->Config()->Get('security', 'hide_x_mailer_header', true))
-		{
+		if ($this->Config()->Get('security', 'hide_x_mailer_header', true)) {
+			$oMessage->DoesNotAddDefaultXMailer();
+		} else {
 			$oMessage->SetXMailer('SnappyMail/'.APP_VERSION);
 		}
 
@@ -1034,11 +1035,10 @@ trait Messages
 	{
 		$oMessage = new \MailSo\Mime\Message();
 
-		if (!$this->Config()->Get('security', 'hide_x_mailer_header', true))
-		{
-			$oMessage->SetXMailer('SnappyMail/'.APP_VERSION);
-		} else {
+		if ($this->Config()->Get('security', 'hide_x_mailer_header', true)) {
 			$oMessage->DoesNotAddDefaultXMailer();
+		} else {
+			$oMessage->SetXMailer('SnappyMail/'.APP_VERSION);
 		}
 
 		$sFrom = $this->GetActionParam('From', '');
