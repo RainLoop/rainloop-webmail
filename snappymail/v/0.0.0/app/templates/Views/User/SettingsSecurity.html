@@ -44,8 +44,8 @@
 	<tbody data-bind="foreach: gnupgPrivateKeys, i18nUpdate: gnupgPrivateKeys">
 		<tr>
 			<td data-bind="click: view">
-				<span data-bind="visible: can_sign" class="fontastic">✍</span>
-				<span data-bind="visible: can_decrypt" class="fontastic">🔓</span>
+				<span data-bind="visible: can_sign" class="fontastic" data-i18n="[title]OPENPGP/LABEL_SIGN">✍</span>
+				<span data-bind="visible: can_decrypt" class="fontastic" data-i18n="[title]OPENPGP/BUTTON_DECRYPT">🔓</span>
 				<span class="key-id" data-bind="text: id"></span>
 				<!-- ko foreach: emails -->
 				<span class="key-user" data-bind="text: $data"></span>
@@ -64,8 +64,8 @@
 	<tbody data-bind="foreach: gnupgPublicKeys, i18nUpdate: gnupgPublicKeys">
 		<tr>
 			<td data-bind="click: view">
-				<span data-bind="visible: can_verify" class="fontastic">✔</span>
-				<span data-bind="visible: can_encrypt" class="fontastic">🔒</span>
+				<span data-bind="visible: can_verify" class="fontastic" data-i18n="[title]OPENPGP/BUTTON_VERIFY">✔</span>
+				<span data-bind="visible: can_encrypt" class="fontastic" data-i18n="[title]OPENPGP/LABEL_ENCRYPT">🔒</span>
 				<span class="key-id" data-bind="text: id"></span>
 				<!-- ko foreach: emails -->
 				<span class="key-user" data-bind="text: $data"></span>
