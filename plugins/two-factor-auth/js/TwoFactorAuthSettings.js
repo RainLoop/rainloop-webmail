@@ -106,7 +106,12 @@ class TwoFactorAuthSettings
 	}
 
 	testTwoFactor() {
-		TwoFactorAuthTestPopupView.showModal([this.twoFactorTested]);
+		TwoFactorAuthTestPopupView.showModal([
+			() => {
+				this.twoFactorTested(true);
+				this.viewEnable(true);
+			}
+		]);
 	}
 
 	clearTwoFactor() {
@@ -188,15 +193,15 @@ class TwoFactorAuthTestPopupView extends rl.pluginPopupView {
 		Remote.verifyCode(iError => {
 			this.testing(false);
 			this.codeStatus(!iError);
-			this.twoFactorTested(!iError);
+			iError || (this.onSuccess() | this.close());
 		}, this.code());
 	}
 
-	onShow(twoFactorTested) {
+	onShow(onSuccess) {
 		this.code('');
 		this.codeStatus(null);
 		this.testing(false);
-		this.twoFactorTested = twoFactorTested;
+		this.onSuccess = onSuccess;
 	}
 }
 

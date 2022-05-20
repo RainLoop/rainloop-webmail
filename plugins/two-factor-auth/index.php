@@ -7,9 +7,9 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Two Factor Authentication',
-		VERSION  = '2.15.1',
-		RELEASE  = '2022-05-02',
-		REQUIRED = '2.15.1',
+		VERSION  = '2.16',
+		RELEASE  = '2022-05-20',
+		REQUIRED = '2.15.2',
 		CATEGORY = 'Login',
 		DESCRIPTION = 'Provides support for TOTP 2FA';
 
@@ -52,7 +52,7 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$aResult['SetupTwoFactor'] = false;
 			if ($aResult['RequireTwoFactor'] && !empty($aResult['Auth'])) {
 				$aData = $this->getTwoFactorInfo($this->getMainAccountFromToken());
-				$aResult['SetupTwoFactor'] = empty($aResult['IsSet']) || empty($mData['Enable']);
+				$aResult['SetupTwoFactor'] = empty($aData['IsSet']) || empty($aData['Enable']) || empty($aData['Secret']);
 			}
 		}
 	}
