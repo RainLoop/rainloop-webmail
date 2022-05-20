@@ -172,6 +172,7 @@ class PdoAddressBook
 			{
 				if ($aData['deleted'] && isset($aRemoteSyncData[$sKey], $aRemoteSyncData[$sKey]['vcf']))
 				{
+					\SnappyMail\HTTP\Stream::JSON(['messsage'=>"Delete remote {$sKey}"]);
 					$this->davClientRequest($oClient, 'DELETE', $sPath.$aRemoteSyncData[$sKey]['vcf']);
 				}
 			}
@@ -188,6 +189,7 @@ class PdoAddressBook
 		}
 		if (\count($aIdsForDeletedion))
 		{
+			\SnappyMail\HTTP\Stream::JSON(['messsage'=>'Delete local ' . \implode(', ', $aIdsForDeletedion)]);
 			$this->DeleteContacts($aIdsForDeletedion, false);
 		}
 
@@ -205,6 +207,7 @@ class PdoAddressBook
 				)
 			)
 			{
+				\SnappyMail\HTTP\Stream::JSON(['messsage'=>"Update remote {$sKey}"]);
 				$mID = $aData['id_contact'];
 				$oContact = $this->GetContactByID($mID);
 				if ($oContact)
@@ -254,6 +257,7 @@ class PdoAddressBook
 					$aDatabaseSyncData[$sKey]['changed'] < $aData['changed'])
 			)
 			{
+				\SnappyMail\HTTP\Stream::JSON(['messsage'=>"Update local {$sKey}"]);
 				$mExsistenContactID = isset($aDatabaseSyncData[$sKey]['id_contact']) ?
 					$aDatabaseSyncData[$sKey]['id_contact'] : '';
 

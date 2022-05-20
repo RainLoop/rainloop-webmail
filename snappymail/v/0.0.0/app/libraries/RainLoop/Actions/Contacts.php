@@ -34,7 +34,13 @@ trait Contacts
 	{
 		$oAccount = $this->getAccountFromToken();
 		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-		if (!$oAddressBookProvider || !$oAddressBookProvider->Sync()) {
+		if (!$oAddressBookProvider) {
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ContactsSyncError);
+		}
+		\ignore_user_abort(true);
+		\SnappyMail\HTTP\Stream::start(/*$binary = false*/);
+		\SnappyMail\HTTP\Stream::JSON(['messsage'=>'start']);
+		if (!$oAddressBookProvider->Sync()) {
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ContactsSyncError);
 		}
 		return $this->TrueResponse(__FUNCTION__);

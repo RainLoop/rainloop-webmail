@@ -28,10 +28,19 @@ ContactUserStore.sync = fResultFunc => {
 	 && !ContactUserStore.syncing()
 	) {
 		ContactUserStore.syncing(true);
-		Remote.request('ContactsSync', (iError, oData) => {
-			ContactUserStore.syncing(false);
-			fResultFunc && fResultFunc(iError, oData);
-		}, null, 200000);
+		Remote.streamPerLine(line => {
+			try {
+				line = JSON.parse(line);
+				if ('ContactsSync' === line.Action) {
+					ContactUserStore.syncing(false);
+					fResultFunc && fResultFunc(line.ErrorCode, line);
+				}
+			} catch (e) {
+				ContactUserStore.syncing(false);
+				console.error(e);
+				fResultFunc && fResultFunc(Notification.UnknownError);
+			}
+		}, 'ContactsSync');
 	}
 };
 
