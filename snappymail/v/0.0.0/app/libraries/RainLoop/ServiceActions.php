@@ -170,7 +170,7 @@ class ServiceActions
 		}
 		catch (\Throwable $oException)
 		{
-			\SnappyMail\Log::warning('SERVICE', $oException->getMessage());
+			\SnappyMail\Log::warning('SERVICE', "{$oException->getMessage()}\r\n{$oException->getTraceAsString()}");
 			if ($e = $oException->getPrevious()) {
 				\SnappyMail\Log::warning('SERVICE', "- {$e->getMessage()} @ {$e->getFile()}#{$e->getLine()}");
 			}
