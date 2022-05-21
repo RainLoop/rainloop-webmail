@@ -22,7 +22,7 @@ abstract class Stream
 		if ($i = \ob_get_level()) {
 			# Clear buffers:
 			while ($i-- && \ob_end_clean());
-//			if (!\ob_get_level()) \header('Content-Encoding: ');
+//			\ob_get_level() || \header('Content-Encoding: ');
 		}
 		// https://www.w3.org/TR/edge-arch/
 		// We just fake Drupal https://www.drupal.org/docs/8/core/modules/big-pipe/bigpipe-environment-requirements

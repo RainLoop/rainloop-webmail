@@ -124,64 +124,64 @@ trait User
 							$oZip = new \ZipArchive();
 							$oZip->open($sZipFileName, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::OVERWRITE);
 							$oZip->setArchiveComment('SnappyMail/'.APP_VERSION);
-
-							foreach ($aData as $aItem)
-							{
+							foreach ($aData as $aItem) {
 								$sFileName = (string) (isset($aItem['FileName']) ? $aItem['FileName'] : 'file.dat');
 								$sFileHash = (string) (isset($aItem['FileHash']) ? $aItem['FileHash'] : '');
-
-								if (!empty($sFileHash))
-								{
+								if (!empty($sFileHash)) {
 									$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $sFileHash);
-									if (!$oZip->addFile($sFullFileNameHash, $sFileName))
-									{
+									if (!$oZip->addFile($sFullFileNameHash, $sFileName)) {
 										$bError = true;
 									}
 								}
 							}
 
-							if (!$bError)
-							{
+							if (!$bError) {
 								$bError = !$oZip->close();
-							}
-							else
-							{
+							} else {
 								$oZip->close();
 							}
+/*
+						} else {
+							@\unlink($sZipFileName);
+							$oZip = new \SnappyMail\Stream\ZIP($sZipFileName);
+//							$oZip->setArchiveComment('SnappyMail/'.APP_VERSION);
+							foreach ($aData as $aItem) {
+								$sFileName = (string) (isset($aItem['FileName']) ? $aItem['FileName'] : 'file.dat');
+								$sFileHash = (string) (isset($aItem['FileHash']) ? $aItem['FileHash'] : '');
+								if (!empty($sFileHash)) {
+									$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $sFileHash);
+									if (!$oZip->addFile($sFullFileNameHash, $sFileName)) {
+										$bError = true;
+									}
+								}
+							}
+							$oZip->close();
+*/
 						} else {
 							@\unlink($sZipFileName);
 							$oZip = new \PharData($sZipFileName . '.zip', 0, null, \Phar::ZIP);
 							$oZip->compressFiles(\Phar::GZ);
-
-							foreach ($aData as $aItem)
-							{
+							foreach ($aData as $aItem) {
 								$sFileName = (isset($aItem['FileName']) ? (string) $aItem['FileName'] : 'file.dat');
 								$sFileHash = (isset($aItem['FileHash']) ? (string) $aItem['FileHash'] : '');
-
-								if ($sFileHash)
-								{
+								if ($sFileHash) {
 									$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $sFileHash);
 									$oZip->addFile($sFullFileNameHash, $sFileName);
 								}
 							}
-
 							$oZip->compressFiles(\Phar::GZ);
-
 							unset($oZip);
 							\rename($sZipFileName . '.zip', $sZipFileName);
 						}
 
-						foreach ($aData as $aItem)
-						{
+						foreach ($aData as $aItem) {
 							$sFileHash = (isset($aItem['FileHash']) ? (string) $aItem['FileHash'] : '');
-							if ($sFileHash)
-							{
+							if ($sFileHash) {
 								$oFilesProvider->Clear($oAccount, $sFileHash);
 							}
 						}
 
-						if (!$bError)
-						{
+						if (!$bError) {
 							$mResult = array(
 								'FileHash' => Utils::EncodeKeyValuesQ(array(
 									'V' => APP_VERSION,
