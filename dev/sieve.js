@@ -58,7 +58,7 @@ window.Sieve = {
 		Remote.request('FiltersScriptDelete',
 			(iError, data) => {
 				if (iError) {
-					setError((data && data.ErrorMessageAdditional) || getNotification(iError));
+					setError(data?.ErrorMessageAdditional || getNotification(iError));
 				} else {
 					scripts.remove(script);
 				}
@@ -73,7 +73,7 @@ window.Sieve = {
 		Remote.request('FiltersScriptActivate',
 			(iError, data) => {
 				if (iError) {
-					setError((data && data.ErrorMessageAdditional) || iError)
+					setError(data?.ErrorMessageAdditional || iError)
 				} else {
 					scripts.forEach(script => script.active(script.name() === name));
 				}

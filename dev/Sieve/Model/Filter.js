@@ -65,7 +65,7 @@ export class FilterModel extends AbstractModel {
 
 		const fGetRealFolderName = folderFullName => {
 //			const folder = getFolderFromCacheList(folderFullName);
-//			return folder ? folder.fullName.replace('.' === folder.delimiter ? /\./ : /[\\/]+/, ' / ') : folderFullName;
+//			return folder?.fullName.replace('.' === folder.delimiter ? /\./ : /[\\/]+/, ' / ') : folderFullName;
 			return folderFullName;
 		};
 
@@ -222,9 +222,9 @@ export class FilterModel extends AbstractModel {
 	static reviveFromJson(json) {
 		const filter = super.reviveFromJson(json);
 		if (filter) {
-			filter.id = filter.id ? '' + filter.id : '';
+			filter.id = '' + (filter.id || '');
 			filter.conditions(
-				json.Conditions ? json.Conditions.map(aData => FilterConditionModel.reviveFromJson(aData)).filter(v => v) : []
+				(json.Conditions || []).map(aData => FilterConditionModel.reviveFromJson(aData)).filter(v => v)
 			);
 			filter.actionKeep(0 != json.Keep);
 			filter.actionNoStop(0 == json.Stop);

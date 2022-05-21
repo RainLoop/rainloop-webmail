@@ -87,7 +87,7 @@ export class FilterPopupView extends rl.pluginPopupView {
 			folderListOptionsBuilder(
 				[rl.settings.get('SieveAllowFileintoInbox') ? '' : 'INBOX'],
 				[['', '']],
-				item => item ? item.localName() : ''
+				item => item?.localName() || ''
 			)
 		);
 

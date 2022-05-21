@@ -12,7 +12,7 @@ export const
 		data = ko.observableArray(data);
 		data.subscribe(changes =>
 			changes.forEach(item =>
-				'deleted' === item.status && null == item.moved && item.value.onDestroy && item.value.onDestroy()
+				'deleted' === item.status && null == item.moved && item.value.onDestroy?.()
 			)
 		, data, 'arrayChange');
 		return data;
@@ -22,7 +22,7 @@ export const
 	koComputable = fn => ko.computed(fn, {'pure':true}),
 
 	arrayToString = (arr, separator) =>
-		arr.map(item => item.toString ? item.toString() : item).join(separator),
+		arr.map(item => item.toString?.() || item).join(separator),
 /*
 	getNotificationMessage = code => {
 		let key = getKeyByValue(Notification, code);

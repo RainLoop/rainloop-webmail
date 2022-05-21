@@ -46,14 +46,13 @@ export class AbstractModel {
 	onDestroy() {
 		/** dispose ko subscribables */
 		this.disposables.forEach(disposable => {
-			disposable && typeof disposable.dispose === 'function' && disposable.dispose();
+			typeof disposable?.dispose === 'function' && disposable.dispose();
 		});
 		/** clear object entries */
 //		forEachObjectEntry(this, (key, value) => {
 		forEachObjectValue(this, value => {
 			/** clear CollectionModel */
-			let arr = ko.isObservableArray(value) ? value() : value;
-			arr && arr.onDestroy && arr.onDestroy();
+			(ko.isObservableArray(value) ? value() : value)?.onDestroy?.();
 			/** destroy ko.observable/ko.computed? */
 //			dispose(value);
 			/** clear object value */
@@ -78,7 +77,7 @@ export class AbstractModel {
 	 */
 	static reviveFromJson(json) {
 		let obj = this.validJson(json) ? new this() : null;
-		obj && obj.revivePropertiesFromJson(json);
+		obj?.revivePropertiesFromJson(json);
 		return obj;
 	}
 
