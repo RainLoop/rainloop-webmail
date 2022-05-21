@@ -96,7 +96,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 
 		// Fetch xCard attachment and populate $oContact with it
 		$xCard = $this->fetchXCardFromMessage($oMessage);
-		if ($xCard instanceof \Sabre\VObject\Component\VCard) {
+		if ($xCard) {
 			$oContact->PopulateByVCard($xCard);
 		}
 
@@ -150,7 +150,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 			foreach ($oMessageList as $oMessage) {
 				if ($bVcf) {
 					$xCard = $this->fetchXCardFromMessage($oMessage);
-					if ($xCard instanceof \Sabre\VObject\Component\VCard) {
+					if ($xCard) {
 						echo $xCard->serialize();
 					}
 				} else {
@@ -176,21 +176,21 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 			return false;
 		}
 
-		$oContact->PopulateDisplayAndFullNameValue();
+		$id = $oContact->IdContact;
 
-		$iUID = $oContact->IdContact;
-
-		$oPrevMessage = $this->MailClient()->Message($this->sFolderName, $iUID);
+		$oPrevMessage = $this->MailClient()->Message($this->sFolderName, $id);
 		if ($oPrevMessage) {
 			$oVCard = $this->fetchXCardFromMessage($oPrevMessage);
 		} else {
 			$oVCard = null;
-			$iUID = 0;
+			$id = 0;
 		}
 		$oVCard = $oVCard ?: new \Sabre\VObject\Component\VCard();
+		$sUid = (string) $oVCard->UID;
+
+		$oContact->PopulateDisplayAndFullNameValue();
 		$oContact->UpdateDependentValues();
 		$oContact->fillVCard($oVCard);
-		$sUid = (string) $oVCard->UID;
 		$sUid = \str_replace('urn:uuid:', '', $sUid ?: $oContact->GetUID());
 		if (!\SnappyMail\UUID::isValid($sUid)) {
 			$sUid = \SnappyMail\UUID::generate();
@@ -241,7 +241,9 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/vcard+xml; name="kolab.xml"');
 		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
 		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION, 'attachment; filename="kolab.xml"');
-		$oPart->Body = \quoted_printable_encode(\preg_replace('/\r?\n/s', "\r\n", \Sabre\VObject\Writer::writeXml($oVCard)));
+		$oPart->Body = \quoted_printable_encode(\preg_replace('/\r?\n/s', "\r\n",
+			\str_replace('encoding="UTF-8"', 'encoding="UTF-8" standalone="no" ', \Sabre\VObject\Writer::writeXml($oVCard))
+		));
 		$oMessage->SubParts->append($oPart);
 
 		// Store Message
@@ -250,7 +252,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 			$oMessage->ToStream(false), array($rMessageStream), 8192, true, true);
 		if (false !== $iMessageStreamSize) {
 			\rewind($rMessageStream);
-			$this->ImapClient()->MessageReplaceStream($this->sFolderName, $iUID, $rMessageStream, $iMessageStreamSize);
+			$this->ImapClient()->MessageReplaceStream($this->sFolderName, $id, $rMessageStream, $iMessageStreamSize);
 		}
 
 		return true;
