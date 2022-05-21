@@ -62,6 +62,7 @@ This fork of RainLoop has the following changes:
 * Embed boot.js and boot.css into index.html
 * Ongoing removal of old JavaScript code (things are native these days)
 * Added modified [Squire](https://github.com/neilj/Squire) HTML editor as replacement for CKEditor
+* Updated [Sabre/VObject](https://github.com/sabre-io/vobject)
 * Split Admin specific JavaScript code from User code
 * Split Sieve specific JavaScript code from User code
 * JSON reviver
