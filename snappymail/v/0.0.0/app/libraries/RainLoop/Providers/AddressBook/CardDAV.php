@@ -422,9 +422,9 @@ trait CardDAV
 		if (!$this->aDAVConfig['Mode']) {
 			return null;
 		}
-		$sUrl = $aConfig['Url'];
-		$sUser = $aConfig['User'];
-		$sPassword = $aConfig['Password'];
+		$sUrl = $this->aDAVConfig['Url'];
+		$sUser = $this->aDAVConfig['User'];
+		$sPassword = $this->aDAVConfig['Password'];
 		$sProxy = '';
 
 		$aMatch = array();
