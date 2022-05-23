@@ -95,7 +95,7 @@ class DefaultDomain implements DomainInterface
 		if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini') &&
 			(!$bCheckDisabled || 0 === \strlen($sDisabled) || false === \strpos(','.$sDisabled.',', ','.\MailSo\Base\Utils::IdnToAscii($sName, true).',')))
 		{
-			$aDomain = \RainLoop\Utils::CustomParseIniFile($this->sDomainPath.'/'.$sRealFileName.'.ini');
+			$aDomain = \parse_ini_file($this->sDomainPath.'/'.$sRealFileName.'.ini') ?: array();
 //			if ($bCheckAliases && !empty($aDomain['alias']))
 //			{
 //				$oDomain = $this->Load($aDomain['alias'], false, false, false);

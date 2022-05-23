@@ -181,12 +181,6 @@ class Utils
 		return array_values($aResult);
 	}
 
-	public static function CustomParseIniFile(string $sFileName, bool $bProcessSections = false) : array
-	{
-		return @\parse_ini_file($sFileName, !!$bProcessSections) ?: array();
-//		return @\parse_ini_string(\file_get_contents($sFileName), $bProcessSections) ?: array();
-	}
-
 	public static function inOpenBasedir(string $name) : string
 	{
 		static $open_basedir;

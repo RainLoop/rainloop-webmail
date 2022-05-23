@@ -186,8 +186,8 @@ abstract class AbstractConfig implements \JsonSerializable
 				return true;
 			}
 
-			$aData = \RainLoop\Utils::CustomParseIniFile($this->sFile, true);
-			if (\count($aData))
+			$aData = \parse_ini_file($this->sFile, true);
+			if ($aSubData && \count($aSubData))
 			{
 				foreach ($aData as $sSectionKey => $aSectionValue)
 				{
@@ -204,8 +204,8 @@ abstract class AbstractConfig implements \JsonSerializable
 
 				if (\file_exists($this->sAdditionalFile) && \is_readable($this->sAdditionalFile))
 				{
-					$aSubData = \RainLoop\Utils::CustomParseIniFile($this->sAdditionalFile, true);
-					if (\is_array($aSubData) && \count($aSubData))
+					$aSubData = \parse_ini_file($this->sAdditionalFile, true);
+					if ($aSubData && \count($aSubData))
 					{
 						foreach ($aSubData as $sSectionKey => $aSectionValue)
 						{
