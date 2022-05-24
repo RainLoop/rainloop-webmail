@@ -901,10 +901,12 @@ class MailClient
 					$aUids = $this->GetUids($oParams->oCacher, '',
 						$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported, $oParams->sSort);
 					// Remove all threaded UID's except the most recent of each thread
+					$threadedUids = [];
 					foreach ($aAllThreads as $aMap) {
 						unset($aMap[\array_key_last($aMap)]);
-						$aUids = \array_diff($aUids, $aMap);
+						$threadedUids = \array_merge($threadedUids, $aMap);
 					}
+					$aUids = \array_diff($aUids, $threadedUids);
 				}
 			} else {
 				$aUids = $this->GetUids($oParams->oCacher, '',
