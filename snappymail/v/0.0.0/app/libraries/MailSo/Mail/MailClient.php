@@ -918,15 +918,14 @@ class MailClient
 				$aSearchedUids = $this->GetUids($oParams->oCacher, $sSearch,
 					$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
 				if ($bUseThreads && !$oParams->iThreadUid) {
-					$aUids = \array_filter($aUids, function($iUid) use ($aSearchedUids, $aAllThreads) {
-						if (\in_array($iUid, $aSearchedUids)) {
-							return true;
-						}
-						foreach ($aAllThreads as $aMap) {
-							if (\in_array($iUid, $aMap) && \array_intersect($aSearchedUids, $aMap)) {
-								return true;
+					$matchingThreadUids = [];
+					foreach ($aAllThreads as $aMap) {
+							if (\array_intersect($aSearchedUids, $aMap)) {
+									$matchingThreadUids = \array_merge($matchingThreadUids, $aMap);
 							}
-						}
+					}
+					$aUids = \array_filter($aUids, function($iUid) use ($aSearchedUids, $matchingThreadUids) {
+						return \in_array($iUid, $aSearchedUids) || \in_array($iUid, $matchingThreadUids);
 					});
 				} else {
 					$aUids = \array_filter($aUids, function($iUid) use ($aSearchedUids) {
