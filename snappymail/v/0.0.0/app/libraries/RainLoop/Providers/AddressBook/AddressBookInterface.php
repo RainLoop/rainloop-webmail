@@ -24,6 +24,10 @@ interface AddressBookInterface
 
 	public function GetSuggestions(string $sSearch, int $iLimit = 20) : array;
 
+	/**
+	 * Add/increment email address usage
+	 * Handy for "most used" sorting suggestions in PdoAddressBook
+	 */
 	public function IncFrec(array $aEmails, bool $bCreateAuto = true) : bool;
 
 	public function Test() : string;

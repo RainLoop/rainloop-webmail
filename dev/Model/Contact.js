@@ -1,21 +1,63 @@
-import { arrayLength } from 'Common/Utils';
-import { ContactPropertyModel, ContactPropertyType } from 'Model/ContactProperty';
 import { AbstractModel } from 'Knoin/AbstractModel';
+
+import { JCard } from 'DAV/JCard';
+//import { VCardProperty } from 'DAV/VCardProperty';
+
+const nProps = [
+	'surName',
+	'givenName',
+	'middleName',
+	'namePrefix',
+	'nameSuffix'
+];
 
 export class ContactModel extends AbstractModel {
 	constructor() {
 		super();
 
-		this.id = 0;
-		this.display = '';
 		this.properties = [];
-		this.readOnly = false;
+		this.jCard = new JCard();
 
 		this.addObservables({
 			focused: false,
 			selected: false,
 			checked: false,
-			deleted: false
+			deleted: false,
+			readOnly: false,
+
+			id: 0,
+			givenName:  '', // FirstName
+			surName:    '', // LastName
+			middleName: '', // MiddleName
+			namePrefix: '', // NamePrefix
+			nameSuffix: '', // NameSuffix
+			nickname: null
+		});
+//		this.email = koArrayWithDestroy();
+		this.email = ko.observableArray();
+		this.tel   = ko.observableArray();
+		this.url   = ko.observableArray();
+
+		this.addComputables({
+			hasValidName: () => !!(this.givenName() || this.surName()),
+
+			fullName: () => (this.givenName() + ' ' + this.surName()).trim(),
+
+			display: () => {
+				let a = this.jCard.getOne('fn')?.value,
+					b = this.fullName(),
+					c = this.jCard.getOne('email')?.value,
+					d = this.nickname();
+				return a || b || c || d;
+			}
+/*
+			fullName: {
+				read: () => this.givenName() + " " + this.surName(),
+				write: value => {
+					this.jCard.set('fn', value/*, params, group* /)
+				}
+			}
+*/
 		});
 	}
 
@@ -23,23 +65,15 @@ export class ContactModel extends AbstractModel {
 	 * @returns {Array|null}
 	 */
 	getNameAndEmailHelper() {
-		let name = '',
-			email = '';
-
-		if (arrayLength(this.properties)) {
-			this.properties.forEach(property => {
-				if (property) {
-					if (ContactPropertyType.FirstName === property.type()) {
-						name = (property.value() + ' ' + name).trim();
-					} else if (ContactPropertyType.LastName === property.type()) {
-						name = (name + ' ' + property.value()).trim();
-					} else if (!email && ContactPropertyType.Email === property.type()) {
-						email = property.value();
-					}
-				}
-			});
-		}
-
+		let name = (this.givenName() + ' ' + this.surName()).trim(),
+			email = this.email()[0];
+/*
+//		this.jCard.getOne('fn')?.notEmpty() ||
+		this.jCard.parseFullName({set:true});
+//		let name = this.jCard.getOne('nickname'),
+		let name = this.jCard.getOne('fn'),
+			email = this.jCard.getOne('email');
+*/
 		return email ? [email, name] : null;
 	}
 
@@ -52,45 +86,30 @@ export class ContactModel extends AbstractModel {
 		const contact = super.reviveFromJson(json);
 		if (contact) {
 			let list = [];
-			if (arrayLength(json.properties)) {
-				json.properties.forEach(property => {
-					property = ContactPropertyModel.reviveFromJson(property);
-					property && list.push(property);
+
+			let jCard = new JCard(json.jCard),
+				props = jCard.getOne('n')?.value;
+			props && props.forEach((value, index) =>
+				value && contact[nProps[index]](value)
+			);
+
+			props = jCard.getOne('nickname');
+			props && contact.nickname(props.value);
+
+			['email', 'tel', 'url'].forEach(field => {
+				props = jCard.get(field);
+				props && props.forEach(prop => {
+					contact[field].push({
+						value: ko.observable(prop.value)
+//						type: prop.params.type
+					});
 				});
-			}
+			});
+
 			contact.properties = list;
-			contact.initDefaultProperties();
+			contact.jCard = jCard;
 		}
 		return contact;
-	}
-
-	initDefaultProperties() {
-		let list = this.properties;
-		list.sort((p1,p2) =>{
-			if (p2.type() == ContactPropertyType.FirstName) {
-				return 1;
-			}
-			if (p1.type() == ContactPropertyType.FirstName || p1.type() == ContactPropertyType.LastName) {
-				return -1;
-			}
-			if (p2.type() == ContactPropertyType.LastName) {
-				return 1;
-			}
-			return 0;
-		});
-		let found = list.find(prop => prop.type() == ContactPropertyType.LastName);
-		if (!found) {
-			found = new ContactPropertyModel(ContactPropertyType.LastName);
-			list.unshift(found);
-		}
-		found.placeholder('CONTACTS/PLACEHOLDER_ENTER_LAST_NAME');
-		found = list.find(prop => prop.type() == ContactPropertyType.FirstName);
-		if (!found) {
-			found = new ContactPropertyModel(ContactPropertyType.FirstName);
-			list.unshift(found);
-		}
-		found.placeholder('CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME');
-		this.properties = list;
 	}
 
 	/**
@@ -98,6 +117,71 @@ export class ContactModel extends AbstractModel {
 	 */
 	generateUid() {
 		return ''+this.id;
+	}
+
+	addEmail() {
+		// home, work
+		this.email.push({
+			value: ko.observable('')
+//			type: prop.params.type
+		});
+	}
+
+	addTel() {
+		// home, work, text, voice, fax, cell, video, pager, textphone, iana-token, x-name
+		this.tel.push({
+			value: ko.observable('')
+//			type: prop.params.type
+		});
+	}
+
+	addUrl() {
+		// home, work
+		this.url.push({
+			value: ko.observable('')
+//			type: prop.params.type
+		});
+	}
+
+	addNickname() {
+		// home, work
+		this.nickname() || this.nickname('');
+	}
+
+	toJSON()
+	{
+		let jCard = this.jCard;
+		jCard.set('n', [
+			this.surName(),
+			this.givenName(),
+			this.middleName(),
+			this.namePrefix(),
+			this.nameSuffix()
+		]/*, params, group*/);
+//		jCard.parseFullName({set:true});
+
+		this.nickname() ? jCard.set('nickname', this.nickname()/*, params, group*/) : jCard.remove('nickname');
+
+		['email', 'tel', 'url'].forEach(field => {
+			let values = this[field].map(item => item.value());
+			jCard.get(field).forEach(prop => {
+				let i = values.indexOf(prop.value);
+				if (0 > i || !prop.value) {
+					jCard.remove(prop);
+				} else {
+					values.splice(i, 1);
+				}
+			});
+			values.forEach(value => value && jCard.add(field, value));
+		});
+
+		// Done by server
+//		jCard.set('rev', '2022-05-21T10:59:52Z')
+
+		return {
+			Uid: this.id,
+			jCard: JSON.stringify(jCard)
+		};
 	}
 
 	/**

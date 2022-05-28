@@ -17,7 +17,6 @@ import Remote from 'Remote/User/Fetch';
 
 import { EmailModel } from 'Model/Email';
 import { ContactModel } from 'Model/Contact';
-import { ContactPropertyModel, ContactPropertyType } from 'Model/ContactProperty';
 
 import { decorateKoCommands, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
@@ -25,10 +24,9 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 import { AskPopupView } from 'View/Popup/Ask';
 
 const
+	viewProperties = koArrayWithDestroy(),
 	CONTACTS_PER_PAGE = 50,
-	ScopeContacts = 'Contacts',
-	propertyIsMail = prop => prop.isType(ContactPropertyType.Email),
-	propertyIsName = prop => prop.isType(ContactPropertyType.FirstName) || prop.isType(ContactPropertyType.LastName);
+	ScopeContacts = 'Contacts';
 
 export class ContactsPopupView extends AbstractViewPopup {
 	constructor() {
@@ -47,10 +45,8 @@ export class ContactsPopupView extends AbstractViewPopup {
 
 			contactsPage: 1,
 
-			emptySelection: true,
 			viewClearSearch: false,
 
-			viewID: '',
 			viewReadOnly: false,
 
 			viewSaveTrigger: SaveSettingsStep.Idle,
@@ -58,12 +54,12 @@ export class ContactsPopupView extends AbstractViewPopup {
 			viewSaving: false,
 
 			watchDirty: false,
-			watchHash: false
+			watchHash: false,
+
+			contact: null
 		});
 
 		this.contacts = ContactUserStore;
-
-		this.viewProperties = koArrayWithDestroy();
 
 		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
 
@@ -78,37 +74,19 @@ export class ContactsPopupView extends AbstractViewPopup {
 
 		this.selector.on('ItemSelect', contact => {
 			this.populateViewContact(contact);
-			if (!contact) {
-				this.emptySelection(true);
-			}
 		});
 
 		this.selector.on('ItemGetUid', contact => contact ? contact.generateUid() : '');
 
 		this.bDropPageAfterDelete = false;
 
-		// this.saveCommandDebounce = this.saveCommand.bind(this).debounce(1000);
-
 		const
-//			propertyFocused = property => !property.isValid() && !property.focused(),
 			pagecount = () => Math.max(1, Math.ceil(this.contactsCount() / CONTACTS_PER_PAGE));
 
 		this.addComputables({
 			contactsPageCount: pagecount,
 
 			contactsPaginator: computedPaginatorHelper(this.contactsPage, pagecount),
-
-			viewPropertiesNames: () => this.viewProperties.filter(propertyIsName),
-
-			viewPropertiesEmails: () => this.viewProperties.filter(propertyIsMail),
-
-			viewPropertiesOther: () => this.viewProperties.filter(property => property.isType(ContactPropertyType.Nick)),
-
-			viewPropertiesWeb: () => this.viewProperties.filter(property => property.isType(ContactPropertyType.Web)),
-
-			viewPropertiesPhones: () => this.viewProperties.filter(property => property.isType(ContactPropertyType.Phone)),
-
-			contactHasValidName: () => !!this.viewProperties.find(prop => propertyIsName(prop) && prop.isValid()),
 
 			contactsCheckedOrSelected: () => {
 				const checked = ContactUserStore.filter(item => item.checked && item.checked()),
@@ -119,11 +97,11 @@ export class ContactsPopupView extends AbstractViewPopup {
 					: checked;
 			},
 
-			contactsCheckedOrSelectedUids: () => this.contactsCheckedOrSelected().map(contact => contact.id),
+			contactsCheckedOrSelectedUids: () => this.contactsCheckedOrSelected().map(contact => contact.id()),
 
 			contactsSyncEnabled: () => ContactUserStore.allowSync() && ContactUserStore.syncMode(),
 
-			viewHash: () => '' + this.viewProperties.map(property => property.value && property.value()).join('')
+			viewHash: () => '' + viewProperties.map(property => property.value && property.value()).join('')
 		});
 
 		this.search.subscribe(() => this.reloadContactList());
@@ -134,12 +112,14 @@ export class ContactsPopupView extends AbstractViewPopup {
 			}
 		});
 
+		this.saveCommand = this.saveCommand.bind(this);
+
 		decorateKoCommands(this, {
 //			close: self => !self.watchDirty(),
 			deleteCommand: self => 0 < self.contactsCheckedOrSelected().length,
 			newMessageCommand: self => 0 < self.contactsCheckedOrSelected().length,
 			saveCommand: self => !self.viewSaving() && !self.viewReadOnly()
-				&& (self.contactHasValidName() || self.viewProperties.find(prop => propertyIsMail(prop) && prop.isValid())),
+				&& (self.contact()?.hasValidName() || self.contact()?.email().length),
 			syncCommand: self => !self.contacts.syncing() && !self.contacts.importing()
 		});
 	}
@@ -151,7 +131,6 @@ export class ContactsPopupView extends AbstractViewPopup {
 
 	deleteCommand() {
 		this.deleteSelectedContacts();
-		this.emptySelection(true);
 	}
 
 	newMessageCommand() {
@@ -213,22 +192,20 @@ export class ContactsPopupView extends AbstractViewPopup {
 		this.viewSaving(true);
 		this.viewSaveTrigger(SaveSettingsStep.Animate);
 
-		const requestUid = Jua.randomId();
+		const
+			contact = this.contact(),
+			requestUid = Jua.randomId();
 
 		Remote.request('ContactSave',
 			(iError, oData) => {
 				let res = false;
 				this.viewSaving(false);
 
-				if (
-					!iError &&
-					oData.Result.RequestUid === requestUid &&
-					0 < pInt(oData.Result.ResultID)
+				if (!iError
+				 && oData.Result.RequestUid === requestUid
+				 && oData.Result.ResultID
 				) {
-					if (!this.viewID()) {
-						this.viewID(pInt(oData.Result.ResultID));
-					}
-
+					contact.id(oData.Result.ResultID);
 					this.reloadContactList(); // TODO: remove when e-contact-foreach is dynamic
 					res = true;
 				}
@@ -243,8 +220,9 @@ export class ContactsPopupView extends AbstractViewPopup {
 				}
 			}, {
 				RequestUid: requestUid,
-				Uid: this.viewID(),
-				Properties: this.viewProperties.map(oItem => oItem.toJSON())
+				Contact: contact
+//				Uid: contact.id(),
+//				jCard: contact.jCard
 			}
 		);
 	}
@@ -255,63 +233,6 @@ export class ContactsPopupView extends AbstractViewPopup {
 
 			this.reloadContactList(true);
 		});
-	}
-
-	getPropertyPlaceholder(type) {
-		let result = '';
-		switch (type) {
-			case ContactPropertyType.LastName:
-				result = 'CONTACTS/PLACEHOLDER_ENTER_LAST_NAME';
-				break;
-			case ContactPropertyType.FirstName:
-				result = 'CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME';
-				break;
-			case ContactPropertyType.Nick:
-				result = 'CONTACTS/PLACEHOLDER_ENTER_NICK_NAME';
-				break;
-			// no default
-		}
-
-		return result;
-	}
-
-	addNewProperty(type, typeStr) {
-		this.viewProperties.push(
-			new ContactPropertyModel(type, typeStr || '', '', true, this.getPropertyPlaceholder(type))
-		);
-	}
-
-	addNewOrFocusProperty(type, typeStr) {
-		const item = this.viewProperties.find(prop => prop.isType(type));
-		if (item) {
-			item.focused(true);
-		} else {
-			this.addNewProperty(type, typeStr);
-		}
-	}
-
-	addNewEmail() {
-		this.addNewProperty(ContactPropertyType.Email, 'Home');
-	}
-
-	addNewPhone() {
-		this.addNewProperty(ContactPropertyType.Phone, 'Mobile');
-	}
-
-	addNewWeb() {
-		this.addNewProperty(ContactPropertyType.Web);
-	}
-
-	addNewNickname() {
-		this.addNewOrFocusProperty(ContactPropertyType.Nick);
-	}
-
-	addNewNotes() {
-		this.addNewOrFocusProperty(ContactPropertyType.Note);
-	}
-
-	addNewBirthday() {
-		this.addNewOrFocusProperty(ContactPropertyType.Birthday);
 	}
 
 	exportVcf() {
@@ -330,7 +251,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 
 		if (contacts.length) {
 			contacts.forEach(contact => {
-				if (currentContact && currentContact.id === contact.id) {
+				if (currentContact && currentContact.id() === contact.id()) {
 					currentContact = null;
 					this.currentContact(null);
 				}
@@ -366,33 +287,19 @@ export class ContactsPopupView extends AbstractViewPopup {
 		}
 	}
 
-	removeProperty(oProp) {
-		this.viewProperties.remove(oProp);
-	}
-
 	/**
 	 * @param {?ContactModel} contact
 	 */
 	populateViewContact(contact) {
-		let id = '';
-
 		this.watchHash(false);
 
-		this.emptySelection(false);
-		this.viewReadOnly(false);
-
-		if (contact) {
-			id = contact.id;
-			this.viewReadOnly(!!contact.readOnly);
-		} else {
+		if (!contact) {
 			contact = new ContactModel;
-			contact.initDefaultProperties();
 		}
+		this.viewReadOnly(contact.readOnly());
+		this.contact(contact);
 
-		this.viewID(id);
-
-//		this.viewProperties([]);
-		this.viewProperties(contact.properties);
+		viewProperties(contact.properties);
 
 		this.watchDirty(false);
 		this.watchHash(true);
@@ -509,8 +416,8 @@ export class ContactsPopupView extends AbstractViewPopup {
 	}
 
 	onHide() {
+		this.contact(null);
 		this.currentContact(null);
-		this.emptySelection(true);
 		this.search('');
 		this.contactsCount(0);
 

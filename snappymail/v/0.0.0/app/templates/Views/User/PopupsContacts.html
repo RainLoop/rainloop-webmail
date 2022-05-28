@@ -72,40 +72,41 @@
 			<!-- ko template: { name: 'Paginator', data: contactsPaginator } --><!-- /ko -->
 		</div>
 	</div>
-	<div class="b-view-content-toolbar btn-toolbar" data-bind="css: {'read-only': viewReadOnly}">
+	<div class="b-view-content-toolbar btn-toolbar" data-bind="css: {'read-only': viewReadOnly}, i18nUpdate: contact">
+		<!-- ko with: contact -->
 		<div class="btn-group">
-			<button class="btn button-save-contact" data-bind="visible: !emptySelection(), command: saveCommand, css: {'dirty': watchDirty}">
-				<i data-bind="css: {'icon-ok': !viewSaving(), 'icon-spinner': viewSaving()}"></i>
-				<span data-i18n="CONTACTS/BUTTON_CREATE_CONTACT" data-bind="visible: '' === viewID()"></span>
-				<span data-i18n="CONTACTS/BUTTON_UPDATE_CONTACT" data-bind="visible: '' !== viewID()"></span>
+			<button class="btn button-save-contact" data-bind="command: $root.saveCommand, css: {'dirty': $root.watchDirty}">
+				<i data-bind="css: {'icon-ok': !$root.viewSaving(), 'icon-spinner': $root.viewSaving()}"></i>
+				<span data-i18n="CONTACTS/BUTTON_CREATE_CONTACT" data-bind="visible: !id"></span>
+				<span data-i18n="CONTACTS/BUTTON_UPDATE_CONTACT" data-bind="visible: id"></span>
 			</button>
 		</div>
-		<div class="btn-group dropdown" data-bind="visible: !emptySelection(), registerBootstrapDropdown: true">
+		<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true">
 			<a id="button-add-prop-dropdown-id" href="#" tabindex="-1" class="btn dropdown-toggle">
 				<span data-i18n="CONTACTS/ADD_MENU_LABEL"></span>
 				<span class="caret"></span>
 			</a>
 			<ul class="dropdown-menu right-edge" style="text-align: left" tabindex="-1" role="menu" aria-labelledby="button-add-prop-dropdown-id">
 				<li role="presentation">
-					<a href="#" tabindex="-1" data-bind="click: addNewEmail">
+					<a href="#" tabindex="-1" data-bind="click: addEmail">
 						<i class="icon-none"></i>
 						<span data-i18n="GLOBAL/EMAIL"></span>
 					</a>
 				</li>
 				<li role="presentation">
-					<a href="#" tabindex="-1" data-bind="click: addNewPhone">
+					<a href="#" tabindex="-1" data-bind="click: addTel">
 						<i class="icon-none"></i>
 						<span data-i18n="CONTACTS/ADD_MENU_PHONE"></span>
 					</a>
 				</li>
 				<li role="presentation">
-					<a href="#" tabindex="-1" data-bind="click: addNewWeb">
+					<a href="#" tabindex="-1" data-bind="click: addUrl">
 						<i class="icon-none"></i>
 						<span data-i18n="CONTACTS/ADD_MENU_URL"></span>
 					</a>
 				</li>
 				<li class="dividerbar" role="presentation">
-					<a href="#" tabindex="-1" data-bind="click: addNewNickname">
+					<a href="#" tabindex="-1" data-bind="click: addNickname">
 						<i class="icon-none"></i>
 						<span data-i18n="CONTACTS/ADD_MENU_NICKNAME"></span>
 					</a>
@@ -118,81 +119,82 @@
 				</li>-->
 			</ul>
 		</div>
+		<!-- /ko -->
 	</div>
 	<div class="b-view-content" data-bind="css: {'read-only': viewReadOnly}">
-		<div class="b-contact-view-desc" data-bind="visible: emptySelection"
+		<div class="b-contact-view-desc" data-bind="visible: !contact"
 			data-i18n="CONTACTS/CONTACT_VIEW_DESC"></div>
-		<div data-bind="visible: !emptySelection()">
+		<div data-bind="visible: contact, i18nUpdate: contact">
 			<div class="form-horizontal top-part">
-				<div class="control-group" data-bind="visible: !viewReadOnly() || contactHasValidName()">
+				<div class="control-group" data-bind="visible: !viewReadOnly() || hasValidName()">
 					<label class="fontastic iconsize24">👤</label>
 					<div>
-						<div data-bind="foreach: viewPropertiesNames">
-							<div class="property-line">
-								<span data-bind="text: value"></span>
-								<input type="text"
-									autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-									data-bind="value: value, hasfocus: focused, valueUpdate: 'keyup', attr: {'placeholder': placeholderValue}">
-							</div>
+						<!-- ko with: contact -->
+						<div class="property-line">
+							<span data-bind="text: givenName"></span>
+							<input type="text"
+								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+								data-bind="value: givenName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME">
 						</div>
-						<div data-bind="visible: viewPropertiesOther().length, foreach: viewPropertiesOther">
-							<div class="property-line">
-								<!-- ko if: !largeValue() -->
-								<span data-bind="text: value"></span>
-								<input type="text"
-									autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-									data-bind="value: value, hasfocus: focused, valueUpdate: 'keyup', attr: {'placeholder': placeholderValue}">
-								<!-- /ko -->
-								<!-- ko if: largeValue -->
-								<span data-bind="text: value"></span>
-								<textarea
-									autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-									data-bind="value: value, hasfocus: focused, valueUpdate: 'keyup', attr: {'placeholder': placeholderValue}"></textarea>
-								<!-- /ko -->
-							</div>
+						<div class="property-line">
+							<span data-bind="text: surName"></span>
+							<input type="text"
+								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+								data-bind="value: surName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_LAST_NAME">
 						</div>
+						<div class="property-line" data-bind="visible: null != nickname()">
+							<span data-bind="text: nickname"></span>
+							<input type="text"
+								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+								data-bind="value: nickname" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_NICK_NAME">
+						</div>
+						<!-- /ko -->
 					</div>
 				</div>
-				<div class="control-group" data-bind="visible: !viewReadOnly() || viewPropertiesEmails().length">
+				<!-- ko with: contact -->
+				<div class="control-group" data-bind="email().length">
 					<label class="fontastic iconsize24" data-i18n="[title]GLOBAL/EMAIL">@</label>
 					<div>
-						<div data-bind="foreach: viewPropertiesEmails">
+						<div data-bind="foreach: email">
 							<div class="property-line">
 								<span data-bind="text: value"></span>
 								<input type="text"
 									autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-									data-bind="value: value, hasfocus: focused, valueUpdate: 'keyup'">
+									data-bind="value: value">
 							</div>
 						</div>
-						<a href="#" class="g-ui-link add-link" data-bind="visible: !viewReadOnly(), click: addNewEmail" data-i18n="CONTACTS/LINK_ADD_EMAIL"></a>
+						<a href="#" class="btn fontastic" data-bind="visible: !readOnly(), click: addEmail">✚</a>
 					</div>
 				</div>
-				<div class="control-group" data-bind="visible: viewPropertiesPhones().length">
+				<div class="control-group" data-bind="visible: tel().length">
 					<label class="fontastic iconsize24" data-i18n="[title]CONTACTS/LABEL_PHONE">📞</label>
 					<div>
-						<div data-bind="foreach: viewPropertiesPhones">
+						<div data-bind="foreach: tel">
 							<div class="property-line">
 								<span data-bind="text: value"></span>
 								<input type="text"
 									autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-									data-bind="value: value, hasfocus: focused, valueUpdate: 'keyup'">
+									data-bind="value: value">
 							</div>
 						</div>
+						<a href="#" class="btn fontastic" data-bind="visible: !readOnly(), click: $root.addTel">✚</a>
 					</div>
 				</div>
-				<div class="control-group" data-bind="visible: viewPropertiesWeb().length">
+				<div class="control-group" data-bind="visible: url().length">
 					<label class="fontastic iconsize24" data-i18n="[title]CONTACTS/LABEL_WEB">🌍</label>
 					<div>
-						<div data-bind="foreach: viewPropertiesWeb">
+						<div data-bind="foreach: url">
 							<div class="property-line">
 								<span data-bind="text: value"></span>
 								<input type="text" placeholder="https://"
 									autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-									data-bind="value: value, hasfocus: focused, valueUpdate: 'keyup'">
+									data-bind="value: value">
 							</div>
 						</div>
+						<a href="#" class="btn fontastic" data-bind="visible: !readOnly(), click: $root.addUrl">✚</a>
 					</div>
 				</div>
+				<!-- /ko -->
 			</div>
 <!--
 			<div class="e-read-only-sign fontastic iconsize24" data-i18n="[title]CONTACTS/LABEL_READ_ONLY">🔒</div>

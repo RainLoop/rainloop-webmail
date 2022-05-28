@@ -99,59 +99,27 @@ trait Contacts
 
 		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
 		$sRequestUid = \trim($this->GetActionParam('RequestUid', ''));
-		if ($oAddressBookProvider && $oAddressBookProvider->IsActive() && \strlen($sRequestUid))
-		{
-			$sUid = \trim($this->GetActionParam('Uid', ''));
-
-			$oContact = null;
-			if (\strlen($sUid))
-			{
-				$oContact = $oAddressBookProvider->GetContactByID($sUid);
-			}
-
-			if (!$oContact)
-			{
-				$oContact = new \RainLoop\Providers\AddressBook\Classes\Contact();
-				if (\strlen($sUid))
-				{
-					$oContact->IdContact = $sUid;
-				}
-			}
-
-			$oContact->Properties = array();
-			$aProperties = $this->GetActionParam('Properties', array());
-			if (\is_array($aProperties))
-			{
-				foreach ($aProperties as $aItem)
-				{
-					if ($aItem && isset($aItem['type'], $aItem['value'])
-					 && \is_numeric($aItem['type']) && (int) $aItem['type']
-					 && \RainLoop\Providers\AddressBook\Enumerations\PropertyType::FULLNAME != $aItem['type']
-					 && \strlen(\trim($aItem['value'])))
-					{
-						$oProp = new \RainLoop\Providers\AddressBook\Classes\Property();
-						$oProp->Type = (int) $aItem['type'];
-						$oProp->Value = \trim($aItem['value']);
-						$oProp->TypeStr = $aItem['typeStr'] ?? '';
-
-						$oContact->Properties[] = $oProp;
+		if ($oAddressBookProvider && $oAddressBookProvider->IsActive() && \strlen($sRequestUid)) {
+			$aContact = $this->GetActionParam('Contact');
+			if (\is_array($aContact) && isset($aContact['Uid'], $aContact['jCard'])) {
+				$vCard = \Sabre\VObject\Reader::readJson($aContact['jCard']);
+				if ($vCard && $vCard instanceof \Sabre\VObject\Component\VCard) {
+					$vCard->REV = \gmdate('Ymd\\THis\\Z');
+					$vCard->PRODID = 'SnappyMail-'.APP_VERSION;
+					$sUid = \trim($aContact['Uid']);
+					$oContact = $sUid ? $oAddressBookProvider->GetContactByID($sUid) : null;
+					if (!$oContact) {
+						$oContact = new \RainLoop\Providers\AddressBook\Classes\Contact();
 					}
+					$oContact->setVCard($vCard);
+					$bResult = $oAddressBookProvider->ContactSave($oContact);
 				}
 			}
-
-			if (!empty($oContact->Etag))
-			{
-				$oContact->Etag = \md5($oContact->ToVCard());
-			}
-
-			$oContact->PopulateDisplayAndFullNameValue(true);
-
-			$bResult = $oAddressBookProvider->ContactSave($oContact);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'RequestUid' => $sRequestUid,
-			'ResultID' => $bResult ? $oContact->IdContact : '',
+			'ResultID' => $bResult ? $oContact->id : '',
 			'Result' => $bResult
 		));
 	}

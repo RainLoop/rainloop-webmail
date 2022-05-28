@@ -9,7 +9,7 @@ class Property implements \JsonSerializable
 	/**
 	 * @var int
 	 */
-	public $IdProperty;
+	public $IdProperty = 0;
 
 	/**
 	 * @var int
@@ -29,40 +29,23 @@ class Property implements \JsonSerializable
 	/**
 	 * @var string
 	 */
-	public $ValueLower;
+	public $ValueLower = '';
 
 	/**
 	 * @var string
 	 */
-	public $ValueCustom;
+	public $ValueCustom = '';
 
 	/**
 	 * @var int
 	 */
-	public $Frec;
+	public $Frec = 0;
 
-	public function __construct(
-		$iType = \RainLoop\Providers\AddressBook\Enumerations\PropertyType::UNKNOWN, $sValue = '', $sTypeStr = '')
+	public function __construct(int $iType = PropertyType::UNKNOWN, string $sValue = '', string $sTypeStr = '')
 	{
-		$this->Clear();
-
 		$this->Type = $iType;
 		$this->Value = $sValue;
 		$this->TypeStr = $sTypeStr;
-	}
-
-	public function Clear() : void
-	{
-		$this->IdProperty = 0;
-
-		$this->Type = PropertyType::UNKNOWN;
-		$this->TypeStr = '';
-
-		$this->Value = '';
-		$this->ValueLower = '';
-		$this->ValueCustom = '';
-
-		$this->Frec = 0;
 	}
 
 	public function IsName() : bool

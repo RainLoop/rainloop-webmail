@@ -75,35 +75,21 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		return $xCard;
 	}
 
-	protected function MessageAsContact(\MailSo\Mail\Message $oMessage) : ?Contact
+	protected function MessageAsContact(\MailSo\Mail\Message $oMessage) : Contact
 	{
 		$oContact = new Contact;
-		$oContact->IdContact = $oMessage->Uid();
-//		$oContact->Display = isset($aItem['display']) ? (string) $aItem['display'] : '';
+		$oContact->id = $oMessage->Uid();
 		$oContact->Changed = $oMessage->HeaderTimeStampInUTC();
-
-		$oFrom = $oMessage->From();
-		if ($oFrom) {
-			$oMail = $oFrom[0];
-			$oProperty = new Property(PropertyType::EMAIl, $oMail->GetEmail());
-			$oContact->Properties[] = $oProperty;
-			$oProperty = new Property(PropertyType::FULLNAME, $oMail->GetDisplayName());
-//			$oProperty = new Property(PropertyType::FULLNAME, $oMail->ToString());
-			$oContact->Properties[] = $oProperty;
-//			$oProperty = new Property(PropertyType::NICK_NAME, $oMail->GetDisplayName());
-//			$oContact->Properties[] = $oProperty;
-		}
 
 		// Fetch xCard attachment and populate $oContact with it
 		$xCard = $this->fetchXCardFromMessage($oMessage);
 		if ($xCard) {
-			$oContact->PopulateByVCard($xCard);
+			$oContact->setVCard($xCard);
 		}
 
 		// Reset, else it is 'urn:uuid:01234567-89AB-CDEF-0123-456789ABCDEF'
-//		$oContact->IdContactStr = $oMessage->Subject();
-
-		$oContact->UpdateDependentValues();
+		$oContact->IdContactStr = $oMessage->Subject();
+		$oContact->IdContactStr = \str_replace('urn:uuid:', '', $oContact->IdContactStr);
 
 		return $oContact;
 	}
@@ -155,10 +141,8 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 					}
 				} else {
 					$oContact = $this->MessageAsContact($oMessage);
-					if ($oContact) {
-						echo $oContact->ToCsv($bCsvHeader);
-						$bCsvHeader = false;
-					}
+					echo \RainLoop\Providers\AddressBook\Utils::VCardToCsv($oContact, $bCsvHeader);
+					$bCsvHeader = false;
 				}
 			}
 		}
@@ -176,32 +160,35 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 			return false;
 		}
 
-		$id = $oContact->IdContact;
+		$id = $oContact->id;
+		$sUID = '';
+
+		$oVCard = $oContact->vCard;
 
 		$oPrevMessage = $this->MailClient()->Message($this->sFolderName, $id);
 		if ($oPrevMessage) {
-			$oVCard = $this->fetchXCardFromMessage($oPrevMessage);
+			$sUID = $oPrevMessage->Subject();
+			if (!$sUID) {
+				$oVCard = $this->fetchXCardFromMessage($oPrevMessage);
+				$sUID = \str_replace('urn:uuid:', '', $oVCard->UID);
+			}
 		} else {
-			$oVCard = null;
 			$id = 0;
 		}
-		$oVCard = $oVCard ?: new \Sabre\VObject\Component\VCard();
-		$sUid = (string) $oVCard->UID;
 
-		$oContact->PopulateDisplayAndFullNameValue();
-		$oContact->UpdateDependentValues();
-		$oContact->fillVCard($oVCard);
-		$sUid = \str_replace('urn:uuid:', '', $sUid ?: $oContact->GetUID());
-		if (!\SnappyMail\UUID::isValid($sUid)) {
-			$sUid = \SnappyMail\UUID::generate();
+		if (!$sUID || !\SnappyMail\UUID::isValid($sUID)) {
+			$sUID = \SnappyMail\UUID::generate();
 		}
-		$oContact->IdContactStr = $sUid;
-		$oContact->SetUID($sUid);
-		$oVCard->UID = new \Sabre\VObject\Property\Uri($oVCard, 'uid', 'urn:uuid:' . $sUid);
+		$oVCard->UID = new \Sabre\VObject\Property\Uri($oVCard, 'uid', 'urn:uuid:' . $sUID);
+		$oContact->IdContactStr = $sUID;
 
 		if (!\count($oVCard->select('x-kolab-version'))) {
 			$oVCard->add(new \Sabre\VObject\Property\Text($oVCard, 'x-kolab-version', '3.1.0'));
 		}
+
+		$oVCard->VERSION = '3.0';
+//		$oVCard->PRODID = 'SnappyMail-'.APP_VERSION;
+		$oVCard->KIND = 'individual';
 
 		$oMessage = new \MailSo\Mime\Message();
 		$oMessage->DoesNotAddDefaultXMailer();
@@ -217,11 +204,11 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 				}
 			}
 			if ($sEmail) {
-				$oMessage->SetFrom(new \MailSo\Mime\Email($sEmail, $oContact->Display));
+				$oMessage->SetFrom(new \MailSo\Mime\Email($sEmail, (string) $oVCard->FN));
 			}
 		}
 
-		$oMessage->SetSubject($sUid);
+		$oMessage->SetSubject($sUID);
 //		$oMessage->SetDate(\time());
 		$oMessage->SetCustomHeader('X-Kolab-Type', 'application/x-vnd.kolab.contact');
 		$oMessage->SetCustomHeader('X-Kolab-Mime-Version', '3.0');
@@ -233,7 +220,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		$oPart->Body = "This is a Kolab Groupware object.\r\n"
 			. "To view this object you will need an email client that can understand the Kolab Groupware format.\r\n"
 			. "For a list of such email clients please visit\r\n"
-			. "http://www.kolab.org/get-kolab\r\n";
+			. "https://en.wikipedia.org/wiki/Kolab\r\n";
 		$oMessage->SubParts->append($oPart);
 
 		// Now the vCard
