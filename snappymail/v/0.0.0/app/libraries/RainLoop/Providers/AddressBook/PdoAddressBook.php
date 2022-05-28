@@ -1423,6 +1423,8 @@ SQLITEINITIAL;
 			throw new \InvalidArgumentException('Empty Email argument');
 		}
 
+		$this->SyncDatabase();
+
 		$oStmt = $this->prepareAndExecute('SELECT id_user FROM rainloop_users WHERE rl_email = :rl_email',
 			array(
 				':rl_email' => array($sEmail, \PDO::PARAM_STR)
