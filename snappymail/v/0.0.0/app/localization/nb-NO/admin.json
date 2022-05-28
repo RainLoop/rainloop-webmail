@@ -9,7 +9,7 @@
 	"LOGIN": {
 		"LABEL_LOGIN": "Brukernavn",
 		"LABEL_PASSWORD": "Passord",
-		"LABEL_TOTP": "TOTP code",
+		"LABEL_TOTP": "TOTP-kode",
 		"BUTTON_LOGIN": "Logg inn på admin-panel"
 	},
 	"TOP_PANEL": {
@@ -23,7 +23,7 @@
 		"LABEL_DOMAINS_NAME": "Domener",
 		"LABEL_SECURITY_NAME": "Sikkerhet",
 		"LABEL_PACKAGES_NAME": "Pakker",
-		"LABEL_CONFIG_NAME": "Config",
+		"LABEL_CONFIG_NAME": "Oppsett",
 		"LABEL_ABOUT_NAME": "Om"
 	},
 	"TAB_GENERAL": {
@@ -46,7 +46,7 @@
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Innloggingsskjerm",
-		"LABEL_DEFAULT_DOMAIN": "Standard-domene",
+		"LABEL_DEFAULT_DOMAIN": "Standarddomene",
 		"LABEL_DETERMINE_USER_DOMAIN": "Prøv å finne brukerens domene",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "La brukere velge språk på innloggingsskjerm",
 		"LABEL_DETERMINE_USER_LANGUAGE": "Prøv å finne brukerens språk"
@@ -93,11 +93,11 @@
 		"LABEL_ALLOW_SELF_SIGNED": "Tillat selvutstedt sertifikat"
 	},
 	"TAB_PACKAGES": {
-		"LABEL_ENABLE_PLUGINS": "Enable extensions",
+		"LABEL_ENABLE_PLUGINS": "Slå på utvidelser",
 		"LEGEND_AVAILABLE_FOR_UPDATE": "Tilgjengelig for oppdatering",
 		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Tilgjengelig for installasjon",
 		"LEGEND_INSTALLED_PACKAGES": "Installerte pakker",
-		"ALERT_CANNOT_ACCESS_REPOSITORY": "Fikk ikke tilgang til pakkelageret."
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Fikk ikke tilgang til pakkelager."
 	},
 	"TAB_ABOUT": {
 		"LEGEND_ABOUT": "Om",
@@ -108,7 +108,7 @@
 		"HTML_NEW_VERSION": "Versjon <b>%VERSION%<\/b> er nå tilgjengelig.",
 		"LABEL_UPDATING": "Oppdaterer",
 		"LABEL_CHECKING": "Ser etter oppdateringer",
-		"BUTTON_RELEASES": "Releases"
+		"BUTTON_RELEASES": "Utgivelser"
 	},
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Legg til alias",

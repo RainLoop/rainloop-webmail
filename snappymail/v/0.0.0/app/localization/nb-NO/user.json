@@ -28,7 +28,7 @@
 		"SUBJECT": "Emne",
 		"TEST": "Test",
 		"TO": "Til",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Tjenermelding"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logg inn",
@@ -61,12 +61,12 @@
 		"LABEL_ADV_DATE_YEAR": "Inntil 1 år gamle",
 		"LABEL_ADV_SUBFOLDERS": "Subfolders",
 		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_ADV_SUBFOLDERS_SUBTREE": "Alle",
+		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "Ett nivå"
 	},
 	"PREVIEW_POPUP": {
-		"FULLSCREEN": "Toggle fullscreen",
-		"ZOOM": "Zoom in\/out",
+		"FULLSCREEN": "Fullskjerm av/på",
+		"ZOOM": "Zoom inn\/ut",
 		"CLOSE": "Lukk (Esc)",
 		"GALLERY_PREV": "Forrige (venstre piltast)",
 		"GALLERY_NEXT": "Neste (høyre piltast)",
@@ -82,7 +82,7 @@
 		"ARCHIVE_NAME": "Arkiv"
 	},
 	"QUOTA": {
-		"TITLE": "Kvote bruk"
+		"TITLE": "Kvotebruk"
 	},
 	"MESSAGE_LIST": {
 		"BUTTON_RELOAD": "Hent nye meldinger",
@@ -111,14 +111,14 @@
 		"NEW_MESSAGE_NOTIFICATION": "Du har %count% nye meldinger",
 		"QUOTA_SIZE": "Bruker <strong> %SIZE% ( %PROC%% ) <\/strong> av <strong> %LIMIT% <\/strong>",
 		"SORT": "Sort",
-		"SORT_DATE_ASC": "Date ascending",
-		"SORT_DATE_DESC": "Date descending",
-		"SORT_SIZE_ASC": "Size ascending",
-		"SORT_SIZE_DESC": "Size descending",
-		"SORT_SUBJECT_ASC": "Subject A-Z",
-		"SORT_SUBJECT_DESC": "Subject Z-A",
-		"SORT_FROM_ASC": "From A-Z",
-		"SORT_FROM_DESC": "From Z-A"
+		"SORT_DATE_ASC": "Dato, stigende",
+		"SORT_DATE_DESC": "Dato, synkende",
+		"SORT_SIZE_ASC": "Størrelse, stigende",
+		"SORT_SIZE_DESC": "Størrelse, synkende",
+		"SORT_SUBJECT_ASC": "Emne, A-Z",
+		"SORT_SUBJECT_DESC": "Emne, Z-A",
+		"SORT_FROM_ASC": "Fra A til Z",
+		"SORT_FROM_DESC": "Fra Z til A"
 	},
 	"MESSAGE": {
 		"BUTTON_EDIT": "Rediger",
@@ -137,8 +137,8 @@
 		"BUTTON_THREAD_MORE": "Flere meldinger",
 		"MENU_HEADERS": "Vis meldingshoder",
 		"MENU_VIEW_ORIGINAL": "Vis original",
-		"HTML_VIEW": "View HTML message",
-		"PLAIN_VIEW": "View plain text message",
+		"HTML_VIEW": "Vis HTML-melding",
+		"PLAIN_VIEW": "Vis ren tekst",
 		"MENU_DOWNLOAD_ORIGINAL": "Last ned som .eml-fil",
 		"MENU_FILTER_SIMILAR": "Filtrer slike meldinger",
 		"MENU_PRINT": "Skriv ut",
@@ -150,8 +150,8 @@
 		"MESSAGE_VIEW_DESC": "Trykk på en melding for å lese den",
 		"MESSAGE_VIEW_MOVE_DESC": "Trykk på mappenavn i panelet til venstre for å velge mål.",
 		"LINK_DOWNLOAD_AS_ZIP": "Last ned som zip-fil",
-		"SPAM_SCORE": "Spam Score",
-		"HAS_VIRUS_WARNING": "WARNING: virus detected"
+		"SPAM_SCORE": "Søppelvurdering",
+		"HAS_VIRUS_WARNING": "ADVARSEL: virus oppdaget"
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Lesebekreftelse (meldinga er lest) - %SUBJECT%",
@@ -282,7 +282,7 @@
 		"SELECT_ACTION_DISCARD": "Forkast",
 		"SELECT_FIELD_RECIPIENTS": "Hoved- eller kopimottaker",
 		"SELECT_FIELD_HEADER": "Meldingshode",
-		"SELECT_FIELD_BODY": "Body",
+		"SELECT_FIELD_BODY": "Brødtekst",
 		"SELECT_FIELD_SIZE": "Størrelse",
 		"SELECT_TYPE_CONTAINS": "Inneholder",
 		"SELECT_TYPE_NOT_CONTAINS": "Inneholder ikke",
@@ -295,7 +295,7 @@
 		"SELECT_TYPE_OVER": "Større enn",
 		"SELECT_TYPE_UNDER": "Mindre enn",
 		"SELECT_TYPE_TEXT": "Text",
-		"SELECT_TYPE_RAW": "Raw",
+		"SELECT_TYPE_RAW": "Rå",
 		"SELECT_MATCH_ANY": "Samsvarer med én av følgende regler",
 		"SELECT_MATCH_ALL": "Samsvarer med alle følgende regler",
 		"MARK_AS_READ_LABEL": "Merk som lest",
@@ -309,12 +309,12 @@
 		"ALL_INCOMING_MESSAGES_DESC": "Alle inngående meldinger"
 	},
 	"POPUPS_SIEVE_SCRIPT": {
-		"TITLE_CREATE": "Create Script",
-		"TITLE_EDIT": "Edit Script",
-		"BUTTON_ADD_FILTER": "Add a Filter",
-		"BUTTON_RAW_SCRIPT": "Use Custom User Script",
-		"CAPABILITY_LABEL": "Capabilities",
-		"CHANGES_NEED_TO_BE_SAVED_DESC": "These changes need to be saved to the server."
+		"TITLE_CREATE": "Lag skript",
+		"TITLE_EDIT": "Rediger skript",
+		"BUTTON_ADD_FILTER": "Legg til filter",
+		"BUTTON_RAW_SCRIPT": "Bruk selvvalgt skript",
+		"CAPABILITY_LABEL": "Muligheter",
+		"CHANGES_NEED_TO_BE_SAVED_DESC": "Endringer må lagres på tjeneren."
 	},
 	"POPUPS_SYSTEM_FOLDERS": {
 		"TITLE_SYSTEM_FOLDERS": "Velg systemmapper",
@@ -354,9 +354,9 @@
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filtre",
-		"SIMPLE": "Simple",
-		"ADVANCED": "Advanced",
-		"BUTTON_ADD_SCRIPT": "Add a Script",
+		"SIMPLE": "Enkel",
+		"ADVANCED": "Avansert",
+		"BUTTON_ADD_SCRIPT": "Legg til skript",
 		"SUBNAME_MOVE_TO": "Flytt til «%FOLDER%»",
 		"SUBNAME_FORWARD_TO": "Videresend til «%EMAIL%»",
 		"SUBNAME_REJECT": "Avvis",
@@ -380,7 +380,7 @@
 		"LABEL_LAYOUT_VERTICAL_SPLIT": "Vertikal deling",
 		"LABEL_LAYOUT_HORIZONTAL_SPLIT": "Horisontal deling",
 		"LABEL_EDITOR": "Standard tekstbehandler",
-		"LABEL_EDITOR_HTML": "Html",
+		"LABEL_EDITOR_HTML": "HTML",
 		"LABEL_EDITOR_PLAIN": "Ren tekst",
 		"LABEL_VIEW_OPTIONS": "Vis valg",
 		"LABEL_USE_PREVIEW_PANE": "Bruk forhåndsvisningsrute",
@@ -388,16 +388,16 @@
 		"LABEL_USE_THREADS": "Bruk tråder",
 		"LABEL_REPLY_SAME_FOLDER": "Legg svar i samme mappe som opprinnelig melding",
 		"LABEL_SHOW_IMAGES": "Vis alltid eksterne bilder i meldingstekst",
-		"LABEL_PREFER_HTML": "Prefer HTML to plain text",
-		"LABEL_PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
-		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
+		"LABEL_PREFER_HTML": "Foretrekk HTML fremfor",
+		"LABEL_PREFER_HTML_INFO": "Meldinger kan ankomme i både HTML og ren tekst. Dette valget styrer hvilken av dem du vil se.",
+		"LABEL_REMOVE_COLORS": "Fjern bakgrunn og tekstfarger fra brødtekst",
 		"LABEL_MESSAGE_PER_PAGE": "Meldinger per side",
-		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
-		"SECONDS": "seconds",
+		"LABEL_MARK_MESSAGE_READ_AFTER": "Marker melding som lest etter",
+		"SECONDS": "sekunder",
 		"LABEL_NOTIFICATIONS": "Varsler",
 		"LABEL_SOUND_NOTIFICATION": "Lydvarsel",
 		"LABEL_CHROME_NOTIFICATION_DESC": "Vis sprettopp-varsel om nye meldinger",
-		"LABEL_CHROME_NOTIFICATION_DESC_DENIED": "(Blokkert av nettleser)"
+		"LABEL_CHROME_NOTIFICATION_DESC_DENIED": "(blokkert av nettleser)"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Legg til mottakere i adresseboka automatisk",
@@ -408,7 +408,7 @@
 		"LABEL_CONTACTS_SYNC_USER": "Bruker",
 		"SYNC_NO": "Nei",
 		"SYNC_YES": "Ja",
-		"SYNC_READ": "Read only"
+		"SYNC_READ": "Skrivebeskyttet"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Tema",
@@ -437,14 +437,14 @@
 		"HELP_DELETE_FOLDER": "Slett mappe",
 		"HELP_SHOW_HIDE_FOLDER": "Vis\/skjul mappe",
 		"HELP_CHECK_FOR_NEW_MESSAGES": "Se\/ikke se etter nye meldinger",
-		"HIDE_UNSUBSCRIBED": "Hide unsubscribed folders",
-		"TYPE_CALENDAR": "Calendar",
-		"TYPE_CONFIGURATION": "Configuration",
-		"TYPE_CONTACTS": "Contacts",
-		"TYPE_FILES": "Files",
+		"HIDE_UNSUBSCRIBED": "Skjul mapper som bruker ikke abonnerer på",
+		"TYPE_CALENDAR": "Kalender",
+		"TYPE_CONFIGURATION": "Oppsett",
+		"TYPE_CONTACTS": "Kontakter",
+		"TYPE_FILES": "Filer",
 		"TYPE_JOURNAL": "Journal",
-		"TYPE_NOTES": "Notes",
-		"TYPE_TASKS": "Tasks"
+		"TYPE_NOTES": "Notater",
+		"TYPE_TASKS": "Oppgaver"
 	},
 	"SETTINGS_ACCOUNTS": {
 		"LEGEND_ACCOUNTS": "Kontoer",
@@ -461,7 +461,7 @@
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Offentlig",
 		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Lagre utkast automatisk",
-		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
+		"GET_MAILVELOPE": "Få nettlesertillegg Mailvelope."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Tastatursnarveier",
