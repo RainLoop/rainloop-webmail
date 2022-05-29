@@ -20,6 +20,11 @@ class Contact implements \JsonSerializable
 	public $IdContactStr = '';
 
 	/**
+	 * @var string
+	 */
+//	public $Display;
+
+	/**
 	 * @var int
 	 */
 	public $Changed;
@@ -28,6 +33,12 @@ class Contact implements \JsonSerializable
 	 * @var bool
 	 */
 	public $ReadOnly = false;
+
+	/**
+	 * @var string
+	 * Used for CardDAV synchronization
+	 */
+	public $Etag = '';
 
 	/**
 	 * @var \Sabre\VObject\Component\VCard

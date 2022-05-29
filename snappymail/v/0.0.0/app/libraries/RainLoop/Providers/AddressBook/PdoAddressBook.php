@@ -110,14 +110,12 @@ class PdoAddressBook
 						$sKeyID = $aItem['id_contact_str'];
 
 						$aResult[$sKeyID] = array(
-							'deleted' => '1' === (string) $aItem['deleted'],
+							'deleted' => !empty($aItem['deleted']),
 							'id_contact' => $aItem['id_contact'],
 							'uid' => $sKeyID,
 							'etag' => $aItem['etag'],
-							'changed' => (int) $aItem['changed'],
+							'changed' => (int) $aItem['changed']
 						);
-
-						$aResult[$sKeyID]['changed_'] = \gmdate('c', $aResult[$sKeyID]['changed']);
 					}
 				}
 			}
@@ -128,10 +126,6 @@ class PdoAddressBook
 
 	public function Sync() : bool
 	{
-/*		TODO: broken
-
-		$this->SyncDatabase();
-
 		if (1 > $this->iUserID) {
 			\SnappyMail\Log::warning('PdoAddressBook', 'Sync() invalid $iUserID');
 			return false;
@@ -162,32 +156,35 @@ class PdoAddressBook
 		// Delete remote when Mode = read + write
 		if ($this->isDAVReadWrite()) {
 			foreach ($aDatabaseSyncData as $sKey => $aData) {
-				if ($aData['deleted'] && isset($aRemoteSyncData[$sKey], $aRemoteSyncData[$sKey]['vcf'])) {
-					\SnappyMail\HTTP\Stream::JSON(['messsage'=>"Delete remote {$sKey}"]);
-					$this->davClientRequest($oClient, 'DELETE', $sPath.$aRemoteSyncData[$sKey]['vcf']);
+				if ($aData['deleted']) {
+					unset($aDatabaseSyncData[$sKey]);
+					if (isset($aRemoteSyncData[$sKey], $aRemoteSyncData[$sKey]['vcf'])) {
+						\SnappyMail\HTTP\Stream::JSON(['messsage'=>"Delete remote {$sKey}"]);
+						$this->davClientRequest($oClient, 'DELETE', $sPath.$aRemoteSyncData[$sKey]['vcf']);
+					}
 				}
 			}
 		}
 
 		// Delete from db
-		$aIdsForDeletedion = array();
+		$aIdsForDeletion = array();
 		foreach ($aDatabaseSyncData as $sKey => $aData) {
-			if (!$aData['deleted'] && !empty($aData['etag']) && !isset($aRemoteSyncData[$sKey])) {
-				$aIdsForDeletedion[] = $aData['id_contact'];
+			if (!empty($aData['etag']) && !isset($aRemoteSyncData[$sKey])) {
+				$aIdsForDeletion[] = $aData['id_contact'];
 			}
 		}
-		if (\count($aIdsForDeletedion)) {
-			\SnappyMail\HTTP\Stream::JSON(['messsage'=>'Delete local ' . \implode(', ', $aIdsForDeletedion)]);
-			$this->DeleteContacts($aIdsForDeletedion, false);
+		if (\count($aIdsForDeletion)) {
+			\SnappyMail\HTTP\Stream::JSON(['messsage'=>'Delete local ' . \implode(', ', $aIdsForDeletion)]);
+			$this->DeleteContacts($aIdsForDeletion);
+			unset($aIdsForDeletion);
 		}
 
 		$this->flushDeletedContacts();
 
 		//+++new or newer (from db)
 		foreach ($aDatabaseSyncData as $sKey => $aData) {
-			if (!$aData['deleted'] &&
-				(empty($aData['etag']) && !isset($aRemoteSyncData[$sKey])) // new
-					||
+			if ((empty($aData['etag']) && !isset($aRemoteSyncData[$sKey])) // new
+				||
 				(!empty($aData['etag']) && isset($aRemoteSyncData[$sKey]) && // newer
 					$aRemoteSyncData[$sKey]['etag'] !== $aData['etag'] &&
 					$aRemoteSyncData[$sKey]['changed'] < $aData['changed']
@@ -244,7 +241,7 @@ class PdoAddressBook
 					$aDatabaseSyncData[$sKey]['changed'] < $aData['changed'])
 			) {
 				\SnappyMail\HTTP\Stream::JSON(['messsage'=>"Update local {$sKey}"]);
-				$mExsistenContactID = isset($aDatabaseSyncData[$sKey]['id_contact']) ?
+				$mExistingContactID = isset($aDatabaseSyncData[$sKey]['id_contact']) ?
 					$aDatabaseSyncData[$sKey]['id_contact'] : '';
 
 				$oResponse = $this->davClientRequest($oClient, 'GET', $sPath.$aData['vcf']);
@@ -272,8 +269,8 @@ class PdoAddressBook
 							$oVCard->UID = $aData['uid'];
 
 							$oContact = null;
-							if ($mExsistenContactID) {
-								$oContact = $this->GetContactByID($mExsistenContactID);
+							if ($mExistingContactID) {
+								$oContact = $this->GetContactByID($mExistingContactID);
 							}
 							if (!$oContact) {
 								$oContact = new Classes\Contact();
@@ -281,7 +278,7 @@ class PdoAddressBook
 
 							$oContact->setVCard($oVCard);
 
-							$sEtag = \trim(\trim($oResponse->getHeader('etag')), '"\'');
+							$sEtag = \trim($oResponse->getHeader('etag'), " \n\r\t\v\x00\"'");
 							if (!empty($sEtag)) {
 								$oContact->Etag = $sEtag;
 							}
@@ -295,14 +292,12 @@ class PdoAddressBook
 				}
 			}
 		}
-*/
+
 		return true;
 	}
 
 	public function Export(string $sType = 'vcf') : bool
 	{
-		$this->SyncDatabase();
-
 		if (1 > $this->iUserID) {
 			return false;
 		}
@@ -332,13 +327,17 @@ class PdoAddressBook
 
 	public function ContactSave(Classes\Contact $oContact) : bool
 	{
-		$this->SyncDatabase();
+		if (1 > $this->iUserID) {
+			return false;
+		}
 
 		$iIdContact = \strlen($oContact->id) && \is_numeric($oContact->id) ? (int) $oContact->id : 0;
 
 		$bUpdate = 0 < $iIdContact;
 
 		$oContact->Changed = \time();
+//		$oContact->vCard->REV = \gmdate('Ymd\\THis\\Z', $oContact->Changed);
+//		$oContact->REV = \time();
 
 		try {
 			$sFullName = (string) $oContact->vCard->FN;
@@ -356,7 +355,7 @@ class PdoAddressBook
 						':id_contact_str' => array($oContact->IdContactStr, \PDO::PARAM_STR),
 						':display' => array($sFullName, \PDO::PARAM_STR),
 						':changed' => array($oContact->Changed, \PDO::PARAM_INT),
-						':etag' => array(''/*$oContact->Etag*/, \PDO::PARAM_STR)
+						':etag' => array($oContact->Etag, \PDO::PARAM_STR)
 					)
 				);
 
@@ -378,7 +377,7 @@ class PdoAddressBook
 						':id_contact_str' => array($oContact->IdContactStr, \PDO::PARAM_STR),
 						':display' => array($sFullName, \PDO::PARAM_STR),
 						':changed' => array($oContact->Changed, \PDO::PARAM_INT),
-						':etag' => array(''/*$oContact->Etag*/, \PDO::PARAM_STR)
+						':etag' => array($oContact->Etag, \PDO::PARAM_STR)
 					)
 				);
 
@@ -425,10 +424,10 @@ class PdoAddressBook
 		return 0 < $iIdContact;
 	}
 
-	public function DeleteContacts(array $aContactIds, bool $bSyncDb = true) : bool
+	public function DeleteContacts(array $aContactIds) : bool
 	{
-		if ($bSyncDb) {
-			$this->SyncDatabase();
+		if (1 > $this->iUserID) {
+			return false;
 		}
 
 		$aContactIds = \array_filter(\array_map('intval', $aContactIds));
@@ -455,8 +454,6 @@ class PdoAddressBook
 
 	public function DeleteAllContacts(string $sEmail) : bool
 	{
-		$this->SyncDatabase();
-
 		$iUserID = $this->getUserId($sEmail);
 
 		$aParams = array(':id_user' => array($iUserID, \PDO::PARAM_INT));
@@ -481,18 +478,17 @@ class PdoAddressBook
 						$oContact = new Classes\Contact();
 						$oContact->id = (string) $iIdContact;
 						$oContact->IdContactStr = (string) $aItem['id_contact_str'];
+//						$oContact->Display = (string) $aItem['display'];
 						$oContact->Changed = (int) $aItem['changed'];
+						$oContact->Etag = (int) $aItem['etag'];
 						if (!empty($aItem['jcard'])) {
-							$oContact->FN = (string) $aItem['display'];
 							$oContact->setVCard(
 								\Sabre\VObject\Reader::readJson($aItem['jcard'])
 							);
+//							$oContact->vCard->FN = (string) $aItem['display'];
 //							$oContact->vCard->REV = \gmdate('Ymd\\THis\\Z', $oContact->Changed);
 						} else {
 							$aIdContacts[] = $iIdContact;
-							if (!empty($aItem['display'])) {
-//								$oContact->vCard->FN = (string) $aItem['display'];
-							}
 						}
 						$aContacts[$iIdContact] = $oContact;
 					}
@@ -608,7 +604,9 @@ class PdoAddressBook
 
 	public function GetContacts(int $iOffset = 0, int $iLimit = 20, string $sSearch = '', int &$iResultCount = 0) : array
 	{
-		$this->SyncDatabase();
+		if (1 > $this->iUserID) {
+			return [];
+		}
 
 		$aSearchIds = array();
 
@@ -658,6 +656,7 @@ class PdoAddressBook
 				c.id_contact_str,
 				c.display,
 				c.changed,
+				c.etag,
 				p.prop_value as jcard
 			FROM rainloop_ab_contacts AS c
 			LEFT JOIN rainloop_ab_properties AS p ON (p.id_contact = c.id_contact AND p.prop_type = :prop_type)
@@ -694,6 +693,7 @@ class PdoAddressBook
 			c.id_contact_str,
 			c.display,
 			c.changed,
+			c.etag,
 			p.prop_value as jcard
 		FROM rainloop_ab_contacts AS c
 		LEFT JOIN rainloop_ab_properties AS p ON (p.id_contact = c.id_contact AND p.prop_type = :prop_type)
@@ -729,12 +729,14 @@ class PdoAddressBook
 	 */
 	public function GetSuggestions(string $sSearch, int $iLimit = 20) : array
 	{
+		if (1 > $this->iUserID) {
+			return [];
+		}
+
 		$sSearch = \trim($sSearch);
 		if (!\strlen($sSearch)) {
 			throw new \InvalidArgumentException('Empty Search argument');
 		}
-
-		$this->SyncDatabase();
 
 		$sTypes = \implode(',', static::$aSearchInFields);
 
@@ -889,6 +891,10 @@ class PdoAddressBook
 
 	public function IncFrec(array $aEmails, bool $bCreateAuto = true) : bool
 	{
+		if (1 > $this->iUserID) {
+			return false;
+		}
+
 		$self = $this;
 		$aEmailsObjects = \array_map(function ($mItem) {
 			$oResult = null;
@@ -908,8 +914,6 @@ class PdoAddressBook
 		if (!\count($aEmailsObjects)) {
 			throw new \InvalidArgumentException('Empty Emails argument');
 		}
-
-		$this->SyncDatabase();
 
 		$aExists = array();
 		$aEmailsToCreate = array();
