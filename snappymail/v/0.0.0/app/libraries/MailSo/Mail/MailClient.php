@@ -521,21 +521,19 @@ class MailClient
 	 */
 	public function FolderInformation(string $sFolderName, int $iPrevUidNext = 0, SequenceSet $oRange = null) : array
 	{
-		$aFlags = array();
-
 		list($iCount, $iUnseenCount, $iUidNext, $iHighestModSeq, $iAppendLimit, $sMailboxId) = $this->initFolderValues($sFolderName);
 
-		if ($oRange && \count($oRange))
-		{
-			$this->oImapClient->FolderExamine($sFolderName);
+		$aFlags = array();
+		if ($oRange && \count($oRange)) {
+			$oInfo = $this->oImapClient->FolderExamine($sFolderName);
+			// $oInfo->PermanentFlags
 
 			$aFetchResponse = $this->oImapClient->Fetch(array(
 				FetchType::UID,
 				FetchType::FLAGS
 			), (string) $oRange, $oRange->UID);
 
-			foreach ($aFetchResponse as $oFetchResponse)
-			{
+			foreach ($aFetchResponse as $oFetchResponse) {
 				$iUid = (int) $oFetchResponse->GetFetchValue(FetchType::UID);
 				$aLowerFlags = \array_map('strtolower', $oFetchResponse->GetFetchValue(FetchType::FLAGS));
 				$aFlags[] = array(
@@ -830,15 +828,19 @@ class MailClient
 
 		list($iMessageRealCount, $iMessageUnseenCount, $iUidNext, $iHighestModSeq) = $this->initFolderValues($oParams->sFolderName);
 
-		$this->oImapClient->FolderExamine($oParams->sFolderName);
+		// Don't use FolderExamine, else PERMANENTFLAGS is empty
+		$oInfo = $this->oImapClient->FolderSelect($oParams->sFolderName);
 
 		$oMessageCollection = new MessageCollection;
 		$oMessageCollection->FolderName = $oParams->sFolderName;
+		$oMessageCollection->FolderInfo = $oInfo;
 		$oMessageCollection->Offset = $oParams->iOffset;
 		$oMessageCollection->Limit = $oParams->iLimit;
 		$oMessageCollection->Search = $sSearch;
 		$oMessageCollection->ThreadUid = $oParams->iThreadUid;
 		$oMessageCollection->Filtered = '' !== \MailSo\Config::$MessageListPermanentFilter;
+		$oMessageCollection->MessageCount = $iMessageRealCount;
+		$oMessageCollection->MessageUnseenCount = $iMessageUnseenCount;
 
 		$aUids = array();
 		$aAllThreads = [];
@@ -934,8 +936,6 @@ class MailClient
 				}
 			}
 
-			$oMessageCollection->MessageCount = $iMessageRealCount;
-			$oMessageCollection->MessageUnseenCount = $iMessageUnseenCount;
 			$oMessageCollection->MessageResultCount = \count($aUids);
 
 			if (\count($aUids))
@@ -953,9 +953,6 @@ class MailClient
 				$this->oLogger->Write('List optimization (count: '.$iMessageRealCount.
 					', limit:'.\MailSo\Config::$MessageListCountLimitTrigger.')');
 			}
-
-			$oMessageCollection->MessageCount = $iMessageRealCount;
-			$oMessageCollection->MessageUnseenCount = $iMessageUnseenCount;
 
 			if (\strlen($sSearch))
 			{

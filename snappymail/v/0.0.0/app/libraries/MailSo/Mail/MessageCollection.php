@@ -67,6 +67,9 @@ class MessageCollection extends \MailSo\Base\Collection
 	 */
 	public $ThreadUid = 0;
 
+	// MailSo\Imap\FolderInformation
+	public $FolderInfo = null;
+
 	/**
 	 * @var array
 	 */
@@ -97,6 +100,7 @@ class MessageCollection extends \MailSo\Base\Collection
 			'MessageResultCount' => $this->MessageResultCount,
 			'Folder' => $this->FolderName,
 			'FolderHash' => $this->FolderHash,
+			'FolderInfo' => $this->FolderInfo,
 			'UidNext' => $this->UidNext,
 			'ThreadUid' => $this->ThreadUid,
 			'NewMessages' => $this->NewMessages,

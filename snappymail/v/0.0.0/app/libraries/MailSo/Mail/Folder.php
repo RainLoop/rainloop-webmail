@@ -228,6 +228,7 @@ class Folder implements \JsonSerializable
 			'Selectable' => $this->IsSelectable(),
 			'Flags' => $this->FlagsLowerCase(),
 //			'Extended' => $aExtended,
+//			'PermanentFlags' => $this->oImapFolder->PermanentFlags,
 			'Metadata' => $this->oImapFolder->Metadata()
 		);
 	}

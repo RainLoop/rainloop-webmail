@@ -426,13 +426,12 @@ trait Folders
 			);
 			$aInboxInformation['Flags'] = $aInboxInformation['MessagesFlags'];
 			unset($aInboxInformation['MessagesFlags']);
+			return $this->DefaultResponse(__FUNCTION__, $aInboxInformation);
 		}
 		catch (\Throwable $oException)
 		{
 			throw new ClientException(Notifications::MailServerError, $oException);
 		}
-
-		return $this->DefaultResponse(__FUNCTION__, $aInboxInformation);
 	}
 
 	/**
