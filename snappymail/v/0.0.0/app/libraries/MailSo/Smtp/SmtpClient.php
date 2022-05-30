@@ -120,7 +120,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		$sPassword = $aCredentials['Password'];
 
 		$type = '';
-		$aCredentials['SASLMechanisms'][] = 'LOGIN';
+		array_unshift($aCredentials['SASLMechanisms'],'LOGIN');
 		foreach ($aCredentials['SASLMechanisms'] as $sasl_type) {
 			if ($this->IsAuthSupported($sasl_type) && \SnappyMail\SASL::isSupported($sasl_type)) {
 				$type = $sasl_type;
