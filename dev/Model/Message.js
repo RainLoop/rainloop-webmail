@@ -306,6 +306,9 @@ export class MessageModel extends AbstractModel {
 			hasUnseenSubMessage: this.hasUnseenSubMessage(),
 			hasFlaggedSubMessage: this.hasFlaggedSubMessage()
 		}, (key, value) => value && classes.push(key));
+		this.flags().forEach(value => {
+			'\\' !== value[0] && classes.push('flag-'+value);
+		});
 		return classes.join(' ');
 	}
 
