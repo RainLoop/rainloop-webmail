@@ -7,6 +7,8 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * https://www.iana.org/assignments/imap-jmap-keywords/imap-jmap-keywords.xhtml
  */
 
 namespace MailSo\Imap\Enumerations;

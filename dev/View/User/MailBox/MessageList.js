@@ -571,21 +571,12 @@ export class MailMessageList extends AbstractViewRight {
 
 	seenMessagesFast(seen) {
 		const checked = MessagelistUserStore.listCheckedOrSelected();
-		if (checked.length) {
-			if (undefined === seen) {
-				const unseen = checked.filter(message => message.isUnseen());
-				listAction(
-					checked[0].folder,
-					unseen.length ? MessageSetAction.SetSeen : MessageSetAction.UnsetSeen,
-					checked
-				);
-			} else {
-				listAction(
-					checked[0].folder,
-					seen ? MessageSetAction.SetSeen : MessageSetAction.UnsetSeen,
-					checked
-				);
-			}
+		if (checked.length && null != seen) {
+			listAction(
+				checked[0].folder,
+				seen ? MessageSetAction.SetSeen : MessageSetAction.UnsetSeen,
+				checked
+			);
 		}
 	}
 

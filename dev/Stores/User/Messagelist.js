@@ -332,11 +332,7 @@ MessagelistUserStore.removeMessagesFromList = (
 				? messageList.filter(item => item && uidForRemove.includes(pInt(item.uid)))
 				: [];
 
-	messages.forEach(item => {
-		if (item && item.isUnseen()) {
-			++unseenCount;
-		}
-	});
+	messages.forEach(item => item && item.isUnseen() && ++unseenCount);
 
 	if (fromFolder && !copy) {
 		fromFolder.messageCountAll(

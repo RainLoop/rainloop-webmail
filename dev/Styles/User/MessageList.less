@@ -216,7 +216,7 @@ html:not(rl-mobile) {
 		margin-right:5px
 	}
 
-	&.deleted-mark {
+	&.flag-\\deleted {
 		opacity: .7;
 		.subjectParent {
 			text-decoration: line-through;
@@ -242,8 +242,6 @@ html:not(rl-mobile) {
 	.attachmentParent {
 		position: relative;
 		margin: 2px 10px 0 5px;
-		color: #666;
-		text-shadow: 0 1px 0 #eee;
 	}
 
 	.senderParent, .subjectParent {
@@ -340,15 +338,15 @@ html:not(rl-mobile) {
 	.flagParent {
 		padding: 0 10px 0 5px;
 	}
-	&.flagged .flagParent::after,
+	&.flag-\\flagged .flagParent::after,
 	&.hasFlaggedSubMessage .flagParent::after {
 		color: orange;
 		content: '★'; /*⚑*/
 	}
-	&:not(.flagged):not(.hasFlaggedSubMessage) .flagParent::after {
+	&:not(.flag-\\flagged):not(.hasFlaggedSubMessage) .flagParent::after {
 		content: '☆'; /*⚐*/
 	}
-	&:not(.flagged):not(.hasFlaggedSubMessage) .flagParent:not(:hover) {
+	&:not(.flag-\\flagged):not(.hasFlaggedSubMessage) .flagParent:not(:hover) {
 		opacity: 0.5;
 	}
 }
@@ -443,6 +441,19 @@ html:not(.rl-mobile):not(.rl-side-preview-pane) {
 			flex: 1 1 auto;
 		}
 	}
+}
+
+.senderParent::before {
+	font-family: snappymail;
+}
+.flag-\\answered .senderParent::before {
+	content: '← ';
+}
+.flag-\$forwarded .senderParent::before {
+	content: '→ ';
+}
+.flag-\\answered.flag-\$forwarded .senderParent::before {
+	content: '←→ ';
 }
 
 /* Thunderbird labels */
