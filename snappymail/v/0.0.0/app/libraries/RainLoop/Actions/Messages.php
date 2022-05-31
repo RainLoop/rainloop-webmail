@@ -187,16 +187,10 @@ trait Messages
 							{
 								case 'reply':
 								case 'reply-all':
-									$this->MailClient()->MessageSetFlag($sDraftInfoFolder, new SequenceSet($iDraftInfoUid),
-										MessageFlag::ANSWERED);
+									$this->MailClient()->MessageSetFlag($sDraftInfoFolder, new SequenceSet($iDraftInfoUid), MessageFlag::ANSWERED);
 									break;
 								case 'forward':
-									$sForwardedFlag = $this->Config()->Get('labs', 'imap_forwarded_flag', '');
-									if (\strlen($sForwardedFlag))
-									{
-										$this->MailClient()->MessageSetFlag($sDraftInfoFolder, new SequenceSet($iDraftInfoUid),
-											$sForwardedFlag);
-									}
+									$this->MailClient()->MessageSetFlag($sDraftInfoFolder, new SequenceSet($iDraftInfoUid), MessageFlag::FORWARDED);
 									break;
 							}
 						}
@@ -351,22 +345,18 @@ trait Messages
 
 					$mResult = true;
 
-					$sReadReceiptFlag = $this->Config()->Get('labs', 'imap_read_receipt_flag', '');
-					if (!empty($sReadReceiptFlag))
+					$sFolderFullName = $this->GetActionParam('MessageFolder', '');
+					$iUid = (int) $this->GetActionParam('MessageUid', 0);
+
+					$this->Cacher($oAccount)->Set(\RainLoop\KeyPathHelper::ReadReceiptCache($oAccount->Email(), $sFolderFullName, $iUid), '1');
+
+					if (\strlen($sFolderFullName) && 0 < $iUid)
 					{
-						$sFolderFullName = $this->GetActionParam('MessageFolder', '');
-						$iUid = (int) $this->GetActionParam('MessageUid', 0);
-
-						$this->Cacher($oAccount)->Set(\RainLoop\KeyPathHelper::ReadReceiptCache($oAccount->Email(), $sFolderFullName, $iUid), '1');
-
-						if (\strlen($sFolderFullName) && 0 < $iUid)
+						try
 						{
-							try
-							{
-								$this->MailClient()->MessageSetFlag($sFolderFullName, new SequenceSet($iUid), $sReadReceiptFlag, true, true);
-							}
-							catch (\Throwable $oException) {}
+							$this->MailClient()->MessageSetFlag($sFolderFullName, new SequenceSet($iUid), MessageFlag::MDNSENT, true, true);
 						}
+						catch (\Throwable $oException) {}
 					}
 				}
 			}
@@ -523,15 +513,33 @@ trait Messages
 
 		$sFromFolder = $this->GetActionParam('FromFolder', '');
 		$sToFolder = $this->GetActionParam('ToFolder', '');
-		$bMarkAsRead = !empty($this->GetActionParam('MarkAsRead', '0'));
 
 		$oUids = new SequenceSet(\explode(',', (string) $this->GetActionParam('Uids', '')));
 
-		if ($bMarkAsRead)
+		if (!empty($this->GetActionParam('MarkAsRead', '0')))
 		{
 			try
 			{
 				$this->MailClient()->MessageSetFlag($sFromFolder, $oUids, MessageFlag::SEEN);
+			}
+			catch (\Throwable $oException)
+			{
+				unset($oException);
+			}
+		}
+
+		$sLearning = $this->GetActionParam('Learning', '');
+		if ($sLearning)
+		{
+			try
+			{
+				if ('SPAM' === $sLearning) {
+					$this->MailClient()->MessageSetFlag($sFromFolder, $oUids, MessageFlag::JUNK);
+					$this->MailClient()->MessageSetFlag($sFromFolder, $oUids, MessageFlag::NOTJUNK, false);
+				} else if ('HAM' === $sLearning) {
+					$this->MailClient()->MessageSetFlag($sFromFolder, $oUids, MessageFlag::NOTJUNK);
+					$this->MailClient()->MessageSetFlag($sFromFolder, $oUids, MessageFlag::JUNK, false);
+				}
 			}
 			catch (\Throwable $oException)
 			{

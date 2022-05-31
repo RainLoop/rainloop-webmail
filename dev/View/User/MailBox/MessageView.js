@@ -566,20 +566,20 @@ export class MailMessageView extends AbstractViewRight {
 	readReceipt() {
 		let oMessage = currentMessage()
 		if (oMessage.readReceipt()) {
-			Remote.request('SendReadReceiptMessage', null, {
+			Remote.request('SendReadReceiptMessage', iError => {
+				if (!iError) {
+					oMessage.flags.push('$mdnsent');
+//					oMessage.flags.valueHasMutated();
+					MessageFlagsCache.store(oMessage);
+					MessagelistUserStore.reloadFlagsAndCachedMessage();
+				}
+			}, {
 				MessageFolder: oMessage.folder,
 				MessageUid: oMessage.uid,
 				ReadReceipt: oMessage.readReceipt(),
 				Subject: i18n('READ_RECEIPT/SUBJECT', { SUBJECT: oMessage.subject() }),
 				Text: i18n('READ_RECEIPT/BODY', { 'READ-RECEIPT': AccountUserStore.email() })
 			});
-
-			oMessage.flags.push('$mdnsent');
-//			oMessage.flags.valueHasMutated();
-
-			MessageFlagsCache.store(oMessage);
-
-			MessagelistUserStore.reloadFlagsAndCachedMessage();
 		}
 	}
 

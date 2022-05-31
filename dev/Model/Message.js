@@ -307,9 +307,17 @@ export class MessageModel extends AbstractModel {
 			hasFlaggedSubMessage: this.hasFlaggedSubMessage()
 		}, (key, value) => value && classes.push(key));
 		this.flags().forEach(value => {
-			'\\' !== value[0] && classes.push('flag-'+value);
+			'\\' !== value[0] && '$forwarded' !== value && classes.push('flag-'+value);
 		});
 		return classes.join(' ');
+	}
+
+	/**
+	 * @return array
+	 * https://datatracker.ietf.org/doc/html/rfc5788
+	 */
+	keywords() {
+		return this.flags().filter(value => '\\' !== value[0]);
 	}
 
 	/**
