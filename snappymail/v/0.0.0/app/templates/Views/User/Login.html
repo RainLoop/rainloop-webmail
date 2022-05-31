@@ -24,12 +24,7 @@
 			data-i18n="[placeholder]GLOBAL/PASSWORD">
 	</div>
 	<div id="plugin-Login-BottomControlGroup"></div>
-	<div class="controls">
-		<button class="btn btn-large btn-block buttonLogin"
-			data-bind="command: submitCommand"
-			data-i18n="LOGIN/BUTTON_SIGN_IN"></button>
-	</div>
-	<div style="display: flex">
+	<div class="controls" style="display: flex">
 		<div class="signMeLabel" data-bind="visible: signMeVisibility, component: {
 			name: 'CheckboxSimple',
 			params: {
@@ -44,5 +39,10 @@
 				🌍
 			</a>
 		</div>
+	</div>
+	<div>
+		<button class="btn btn-large btn-block buttonLogin"
+			data-bind="command: submitCommand"
+			data-i18n="LOGIN/BUTTON_SIGN_IN"></button>
 	</div>
 </form>
