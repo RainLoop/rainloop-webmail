@@ -279,6 +279,8 @@ trait Messages
 		 *     $sStoreAction[] = (UNCHANGEDSINCE $modsequence)
 		 */
 
+		$aInputStoreItems = \array_map('\\MailSo\\Base\\Utils::Utf8ToUtf7Modified', $aInputStoreItems);
+
 		return $this->SendRequestGetResponse(
 			$oRange->UID ? 'UID STORE' : 'STORE',
 			array((string) $oRange, $sStoreAction, $aInputStoreItems)

@@ -293,7 +293,7 @@ class Message implements \JsonSerializable
 		$oMessage->sFolder = $sFolder;
 		$oMessage->iUid = (int) $oFetchResponse->GetFetchValue(FetchType::UID);
 		$oMessage->iSize = (int) $oFetchResponse->GetFetchValue(FetchType::RFC822_SIZE);
-		$oMessage->aFlagsLowerCase = \array_map('strtolower', $aFlags ?: []);
+		$oMessage->aFlagsLowerCase = \array_map('mb_strtolower', \array_map('\\MailSo\\Base\\Utils::Utf7ModifiedToUtf8', $aFlags ?: []));
 
 		$oMessage->iInternalTimeStampInUTC =
 			\MailSo\Base\DateTimeHelper::ParseInternalDateString($sInternalDate);
