@@ -18,8 +18,8 @@ namespace MailSo\Imap\Enumerations;
  */
 abstract class StoreAction
 {
-	const SET_FLAGS = 'FLAGS';
-	const SET_FLAGS_SILENT = 'FLAGS.SILENT';
+//	const SET_FLAGS = 'FLAGS';
+//	const SET_FLAGS_SILENT = 'FLAGS.SILENT';
 	const ADD_FLAGS = '+FLAGS';
 	const ADD_FLAGS_SILENT = '+FLAGS.SILENT';
 	const REMOVE_FLAGS = '-FLAGS';

@@ -618,23 +618,20 @@ class MailClient
 
 		$this->oImapClient->FolderExamine($sFolderName);
 
-		$aThreadUids = array();
+		$aResult = array();
 		try
 		{
-			$aThreadUids = $this->oImapClient->MessageSimpleThread($sSearchHash);
+			foreach ($this->oImapClient->MessageSimpleThread($sSearchHash) as $mItem) {
+				// Flatten to single level
+				$aMap = [];
+				\array_walk_recursive($mItem, function($a) use (&$aMap) { $aMap[] = $a; });
+				$aResult[] = $aMap;
+			}
 		}
 		catch (\MailSo\Imap\Exceptions\RuntimeException $oException)
 		{
 			\SnappyMail\Log::warning('MessageListThreadsMap ' . $oException->getMessage());
 			unset($oException);
-		}
-
-		// Flatten to single levels
-		$aResult = array();
-		foreach ($aThreadUids as $mItem) {
-			$aMap = [];
-			\array_walk_recursive($mItem, function($a) use (&$aMap) { $aMap[] = $a; });
-			$aResult[] = $aMap;
 		}
 
 		if ($oCacher && $oCacher->IsInited() && !empty($sSerializedHashKey))

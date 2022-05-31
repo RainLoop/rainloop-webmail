@@ -41,7 +41,7 @@ class THREAD extends Request
 		parent::__construct($oImapClient);
 	}
 
-	public function SendRequestGetResponse() : array
+	public function SendRequestIterateResponse() : iterable
 	{
 		if (!$this->oImapClient->IsSupported(\strtoupper("THREAD={$this->sAlgorithm}"))) {
 			$this->oImapClient->writeLogException(
@@ -58,7 +58,6 @@ class THREAD extends Request
 			)
 		);
 
-		$aReturn = array();
 		foreach ($this->oImapClient->yieldUntaggedResponses() as $oResponse) {
 			$iOffset = ($this->bUid && 'UID' === $oResponse->StatusOrIndex && !empty($oResponse->ResponseList[2]) && 'THREAD' === $oResponse->ResponseList[2]) ? 1 : 0;
 			if (('THREAD' === $oResponse->StatusOrIndex || $iOffset)
@@ -69,12 +68,11 @@ class THREAD extends Request
 				for ($iIndex = 2 + $iOffset; $iIndex < $iLen; ++$iIndex) {
 					$aNewValue = $this->validateThreadItem($oResponse->ResponseList[$iIndex]);
 					if (\is_array($aNewValue)) {
-						$aReturn[] = $aNewValue;
+						yield $aNewValue;
 					}
 				}
 			}
 		}
-		return $aReturn;
 	}
 
 	/**
