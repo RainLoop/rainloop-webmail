@@ -25,10 +25,7 @@
 		<div class="b-message-view-backdrop" data-bind="visible: moveAction">
 			<div class="backdrop-message" data-icon="📁" data-i18n="MESSAGE/MESSAGE_VIEW_MOVE_DESC"></div>
 		</div>
-		<div class="b-message-view-checked-helper" data-bind="visible: !message() && '' === messageError() && hasCheckedMessages()">
-			<span data-bind="text: printableCheckedMessageCount()"></span>
-			<i class="fontastic">✉</i>
-		</div>
+		<div class="b-message-view-checked-helper" data-bind="visible: !message() && '' === messageError() && hasCheckedMessages(), text: printableCheckedMessageCount()"></div>
 
 		<div class="b-message-view-desc error" data-bind="visible: !message() && '' !== messageError() && !hasCheckedMessages(), text: messageError()">
 		</div>
