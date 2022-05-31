@@ -123,9 +123,6 @@ export class MailMessageView extends AbstractViewRight {
 		this.fullScreenMode = isFullscreen;
 		this.toggleFullScreen = toggleFullscreen;
 
-		this.messageListOfThreadsLoading = ko.observable(false).extend({ rateLimit: 1 });
-		this.highlightUnselectedAttachments = ko.observable(false).extend({ falseTimeout: 2000 });
-
 		this.downloadAsZipError = ko.observable(false).extend({ falseTimeout: 7000 });
 
 		this.messageDomFocused = ko.observable(false).extend({ rateLimit: 0 });
@@ -136,7 +133,10 @@ export class MailMessageView extends AbstractViewRight {
 		this.addComputables({
 			allowAttachmentControls: () => arrayLength(attachmentsActions) && SettingsCapa('AttachmentsActions'),
 
-			downloadAsZipAllowed: () => this.attachmentsActions.includes('zip') && this.allowAttachmentControls(),
+			downloadAsZipAllowed: () => this.attachmentsActions.includes('zip')
+				&& (currentMessage() ? currentMessage().attachments : [])
+					.filter(item => item && !item.isLinked() && item.checked() && item.download)
+					.length,
 
 			lastReplyAction: {
 				read: this.lastReplyAction_,
@@ -538,8 +538,6 @@ export class MailMessageView extends AbstractViewRight {
 				}
 			})
 			.catch(() => this.downloadAsZipError(true));
-		} else {
-			this.highlightUnselectedAttachments(true);
 		}
 	}
 
@@ -566,20 +564,20 @@ export class MailMessageView extends AbstractViewRight {
 	readReceipt() {
 		let oMessage = currentMessage()
 		if (oMessage.readReceipt()) {
-			Remote.request('SendReadReceiptMessage', null, {
+			Remote.request('SendReadReceiptMessage', iError => {
+				if (!iError) {
+					oMessage.flags.push('$mdnsent');
+//					oMessage.flags.valueHasMutated();
+					MessageFlagsCache.store(oMessage);
+					MessagelistUserStore.reloadFlagsAndCachedMessage();
+				}
+			}, {
 				MessageFolder: oMessage.folder,
 				MessageUid: oMessage.uid,
 				ReadReceipt: oMessage.readReceipt(),
 				Subject: i18n('READ_RECEIPT/SUBJECT', { SUBJECT: oMessage.subject() }),
 				Text: i18n('READ_RECEIPT/BODY', { 'READ-RECEIPT': AccountUserStore.email() })
 			});
-
-			oMessage.flags.push('$mdnsent');
-//			oMessage.flags.valueHasMutated();
-
-			MessageFlagsCache.store(oMessage);
-
-			MessagelistUserStore.reloadFlagsAndCachedMessage();
 		}
 	}
 

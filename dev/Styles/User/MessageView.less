@@ -42,13 +42,10 @@ html.rl-no-preview-pane {
 		line-height: 70px;
 		padding-top: 100px;
 		color: #999;
-
-		.icon-mail {
-			font-size: 100px;
-			font-size: 50px;
-			line-height: 90px;
-			padding-left: 10px;
-		}
+	}
+	.b-message-view-checked-helper::after {
+		content: ' ✉';
+		font-family: snappymail;
 	}
 
 	.b-message-view-desc {
@@ -300,14 +297,6 @@ html.rl-no-preview-pane {
 		&:not(.selection-mode) {
 			.checkboxAttachment {
 				display: none;
-			}
-		}
-
-		&.unselectedAttachmentsError {
-			.attachmentItem {
-				box-shadow: 0 1px 4px red;
-				box-shadow: 0 1px 5px rgba(255, 0, 0, 0.4);
-				box-shadow: 0 0 0 1px rgba(255, 0, 0, 0.2), 0 1px 5px rgba(255, 0, 0, 0.3);
 			}
 		}
 

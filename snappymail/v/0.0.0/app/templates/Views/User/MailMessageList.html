@@ -133,11 +133,7 @@
 
 					<div class="flagParent fontastic"></div>
 
-					<div class="senderParent actionHandle" data-bind="attr: {'title': senderClearEmailsString}">
-						<!-- ko if: isAnswered --><i class="replyFlag fontastic">←</i><!-- /ko -->
-						<!-- ko if: isForwarded --><i class="forwardFlag fontastic">→</i><!-- /ko -->
-						<!-- ko text: senderEmailsString --><!-- /ko -->
-					</div>
+					<div class="senderParent actionHandle" data-bind="attr: {'title': senderClearEmailsString}, text: senderEmailsString"></div>
 
 					<div class="attachmentParent actionHandle">
 						<i data-bind="css: attachmentIconClass"></i>

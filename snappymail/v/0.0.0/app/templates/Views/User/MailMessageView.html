@@ -25,10 +25,7 @@
 		<div class="b-message-view-backdrop" data-bind="visible: moveAction">
 			<div class="backdrop-message" data-icon="📁" data-i18n="MESSAGE/MESSAGE_VIEW_MOVE_DESC"></div>
 		</div>
-		<div class="b-message-view-checked-helper" data-bind="visible: !message() && '' === messageError() && hasCheckedMessages()">
-			<span data-bind="text: printableCheckedMessageCount()"></span>
-			<i class="fontastic">✉</i>
-		</div>
+		<div class="b-message-view-checked-helper" data-bind="visible: !message() && '' === messageError() && hasCheckedMessages(), text: printableCheckedMessageCount()"></div>
 
 		<div class="b-message-view-desc error" data-bind="visible: !message() && '' !== messageError() && !hasCheckedMessages(), text: messageError()">
 		</div>
@@ -63,10 +60,10 @@
 									<a href="#" tabindex="-1" data-bind="command: forwardCommand" data-icon="→" data-i18n="MESSAGE/BUTTON_FORWARD"></a>
 								</li>
 								<li role="presentation">
-									<a href="#" tabindex="-1" data-bind="command: editAsNewCommand" data-icon="🖉" data-i18n="MESSAGE/BUTTON_EDIT_AS_NEW"></a>
+									<a href="#" tabindex="-1" data-bind="command: forwardAsAttachmentCommand" data-icon="→" data-i18n="MESSAGE/BUTTON_FORWARD_AS_ATTACHMENT"></a>
 								</li>
 								<li role="presentation">
-									<a href="#" tabindex="-1" data-bind="command: forwardAsAttachmentCommand" data-icon="→" data-i18n="MESSAGE/BUTTON_FORWARD_AS_ATTACHMENT"></a>
+									<a href="#" tabindex="-1" data-bind="command: editAsNewCommand" data-icon="🖉" data-i18n="MESSAGE/BUTTON_EDIT_AS_NEW"></a>
 								</li>
 							</div>
 							<div data-bind="attr: { css: isDraftFolder() ? 'dividerbar' : ''}">
@@ -216,8 +213,7 @@
 								data-icon="🖼" data-i18n="MESSAGE/BUTTON_SHOW_IMAGES"></div>
 							<div class="readReceipt" data-bind="visible: !isDraftOrSentFolder() && '' !== message().readReceipt() && !message().isReadReceipt(), click: readReceipt"
 								data-icon="✉" data-i18n="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></div>
-							<div class="attachmentsPlace" data-bind="visible: message().hasAttachments(),
-								css: {'selection-mode' : showAttachmentControls, 'unselectedAttachmentsError': highlightUnselectedAttachments}">
+							<div class="attachmentsPlace" data-bind="visible: message().hasAttachments(), css: {'selection-mode' : showAttachmentControls}">
 								<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">
 									<li class="attachmentItem" draggable="true"
 											data-bind="visible: !isLinked(), event: { 'dragstart': eventDragStart }, attr: { 'title': fileName }, css: {'checked': checked}">
@@ -244,7 +240,7 @@
 												click: function () { checked(!checked()); return false }"></div>
 									</li>
 								</ul>
-								<i class="fontastic controls-handle" data-bind="visible: allowAttachmentControls() && !showAttachmentControls(), click: toggleAttachmentControls">⚙</i>
+								<i class="fontastic controls-handle" data-bind="visible: allowAttachmentControls(), click: toggleAttachmentControls">⚙</i>
 							</div>
 
 							<div class="attachmentsControls"
@@ -257,8 +253,6 @@
 									<span class="g-ui-link" data-bind="click: downloadAsZip"
 										data-i18n="MESSAGE/LINK_DOWNLOAD_AS_ZIP"></span>
 								</span>
-
-								<a href="#" class="close" style="margin-right: 5px;" data-bind="click: toggleAttachmentControls">×</a>
 							</div>
 						</div>
 

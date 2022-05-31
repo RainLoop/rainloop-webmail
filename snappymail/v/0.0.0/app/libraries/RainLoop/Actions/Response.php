@@ -194,10 +194,12 @@ trait Response
 				'FileName' => (\strlen($sSubject) ? \MailSo\Base\Utils::ClearXss($sSubject) : 'message-'.$mResult['Uid']) . '.eml'
 			));
 
-			$sForwardedFlag = \strtolower($this->Config()->Get('labs', 'imap_forwarded_flag', ''));
-			$sReadReceiptFlag = \strtolower($this->Config()->Get('labs', 'imap_read_receipt_flag', ''));
-			\strlen($sForwardedFlag) && \in_array($sForwardedFlag, $mResult['Flags']) && \array_push($mResult['Flags'], '$forwarded');
-			\strlen($sReadReceiptFlag) && \in_array($sReadReceiptFlag, $mResult['Flags']) && \array_push($mResult['Flags'], '$mdnsent');
+			// https://datatracker.ietf.org/doc/html/rfc5788#section-3.4.1
+			$key = \array_search('$readreceipt', $mResult['Flags']);
+			if (false !== $key) {
+				$mResult['Flags'][$key] = '$mdnsent';
+			}
+
 			$mResult['Flags'] = \array_unique($mResult['Flags']);
 
 			if ('Message' === $sParent)
@@ -220,6 +222,7 @@ trait Response
 
 				if (\strlen($mResult['ReadReceipt']) && !\in_array('$forwarded', $mResult['Flags']))
 				{
+					// \in_array('$mdnsent', $mResult['Flags'])
 					if (\strlen($mResult['ReadReceipt']))
 					{
 						try

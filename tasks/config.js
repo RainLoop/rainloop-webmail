@@ -1,6 +1,5 @@
 /* SnappyMail Webmail (c) SnappyMail Team | Licensed under AGPL 3 */
 const path = require('path');
-const { argv } = require('yargs');
 
 const config = {
 	head: {

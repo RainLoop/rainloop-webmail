@@ -402,12 +402,12 @@ trait Messages
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageSimpleThread(string $sSearchCriterias = 'ALL', bool $bReturnUid = true) : array
+	public function MessageSimpleThread(string $sSearchCriterias = 'ALL', bool $bReturnUid = true) : iterable
 	{
 		$oThread = new \MailSo\Imap\Requests\THREAD($this);
 		$oThread->sCriterias = $sSearchCriterias;
 		$oThread->bUid = $bReturnUid;
-		return $oThread->SendRequestGetResponse();
+		yield from $oThread->SendRequestIterateResponse();
 	}
 
 	private function getSimpleESearchOrESortResult(bool $bReturnUid) : array

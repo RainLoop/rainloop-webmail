@@ -28,9 +28,7 @@ trait Quota
 	 */
 	public function Quota(string $sRootName = '') : ?array
 	{
-		return $this->IsSupported('QUOTA')
-			? $this->getQuotaResult($this->SendRequestGetResponse("GETQUOTA {$this->EscapeFolderName($sRootName)}"))
-			: null;
+		return $this->getQuota(false, $sRootName);
 	}
 
 	/**
@@ -41,18 +39,19 @@ trait Quota
 	 */
 	public function QuotaRoot(string $sFolderName = 'INBOX') : ?array
 	{
-		return $this->IsSupported('QUOTA')
-			? $this->getQuotaResult($this->SendRequestGetResponse("GETQUOTAROOT {$this->EscapeFolderName($sFolderName)}"))
-			: null;
+		return $this->getQuota(true, $sFolderName);
 	}
 
 	// * QUOTA "User quota" (STORAGE 1284645 2097152)\r\n
-	private function getQuotaResult(\MailSo\Imap\ResponseCollection $oResponseCollection) : array
+	private function getQuota(bool $root, string $sFolderName) : ?array
 	{
+		if (!$this->IsSupported('QUOTA')) {
+			return null;
+		}
+		$oResponseCollection = $this->SendRequestGetResponse(($root?'GETQUOTAROOT':'GETQUOTA') . " {$this->EscapeFolderName($sFolderName)}");
 		$aReturn = array(0, 0);
-		foreach ($oResponseCollection as $oResponse) {
-			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
-				&& 'QUOTA' === $oResponse->StatusOrIndex
+		foreach ($this->yieldUntaggedResponses() as $oResponse) {
+			if ('QUOTA' === $oResponse->StatusOrIndex
 				&& isset($oResponse->ResponseList[3])
 				&& \is_array($oResponse->ResponseList[3])
 				&& 2 < \count($oResponse->ResponseList[3])

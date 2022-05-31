@@ -97,11 +97,8 @@ export class MessageModel extends AbstractModel {
 			isImportant: () => MessagePriority.High === this.priority(),
 			hasAttachments: () => this.attachments().hasVisible(),
 
-			isDeleted: () => this.flags().includes('\\deleted'),
-			isUnseen: () => !this.flags().includes('\\seen') /* || this.flags().includes('\\unseen')*/,
+			isUnseen: () => !this.flags().includes('\\seen'),
 			isFlagged: () => this.flags().includes('\\flagged'),
-			isAnswered: () => this.flags().includes('\\answered'),
-			isForwarded: () => this.flags().includes('$forwarded'),
 			isReadReceipt: () => this.flags().includes('$mdnsent')
 //			isJunk: () => this.flags().includes('$junk') && !this.flags().includes('$nonjunk'),
 //			isPhishing: () => this.flags().includes('$phishing')
@@ -291,13 +288,9 @@ export class MessageModel extends AbstractModel {
 		let classes = [];
 		forEachObjectEntry({
 			deleted: this.deleted(),
-			'deleted-mark': this.isDeleted(),
 			selected: this.selected(),
 			checked: this.checked(),
-			flagged: this.isFlagged(),
 			unseen: this.isUnseen(),
-			answered: this.isAnswered(),
-			forwarded: this.isForwarded(),
 			focused: this.focused(),
 			important: this.isImportant(),
 			withAttachments: !!this.attachments().length,
@@ -306,7 +299,16 @@ export class MessageModel extends AbstractModel {
 			hasUnseenSubMessage: this.hasUnseenSubMessage(),
 			hasFlaggedSubMessage: this.hasFlaggedSubMessage()
 		}, (key, value) => value && classes.push(key));
+		this.flags().forEach(value => classes.push('flag-'+value));
 		return classes.join(' ');
+	}
+
+	/**
+	 * @return array
+	 * https://datatracker.ietf.org/doc/html/rfc5788
+	 */
+	keywords() {
+		return this.flags().filter(value => '\\' !== value[0]);
 	}
 
 	/**
@@ -565,21 +567,6 @@ export class MessageModel extends AbstractModel {
 		}
 		let result = cleanHtml(this.html(), this.attachments(), SettingsUserStore.removeColors())
 		return result.html || plainToHtml(this.plain());
-	}
-
-	/**
-	 * @returns {string}
-	 */
-	flagHash() {
-		return [
-			this.deleted(),
-			this.isDeleted(),
-			this.isUnseen(),
-			this.isFlagged(),
-			this.isAnswered(),
-			this.isForwarded(),
-			this.isReadReceipt()
-		].join(',');
 	}
 
 }

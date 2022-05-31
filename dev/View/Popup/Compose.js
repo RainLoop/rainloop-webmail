@@ -20,7 +20,7 @@ import { messagesDeleteHelper } from 'Common/Folders';
 import { serverRequest } from 'Common/Links';
 import { i18n, getNotification, getUploadErrorDescByCode, timestampToString } from 'Common/Translator';
 import { MessageFlagsCache, setFolderHash } from 'Common/Cache';
-import { Settings, SettingsGet, elementById, addShortcut } from 'Common/Globals';
+import { Settings, SettingsCapa, SettingsGet, elementById, addShortcut } from 'Common/Globals';
 //import { exitFullscreen, isFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
 import { AppUserStore } from 'Stores/User/App';
@@ -236,6 +236,7 @@ export class ComposePopupView extends AbstractViewPopup {
 		this.sLastFocusedField = 'to';
 
 		this.allowContacts = AppUserStore.allowContacts();
+		this.allowIdentities = SettingsCapa('Identities');
 
 		this.bSkipNextHide = false;
 

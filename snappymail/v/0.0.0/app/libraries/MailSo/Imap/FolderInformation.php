@@ -15,7 +15,7 @@ namespace MailSo\Imap;
  * @category MailSo
  * @package Imap
  */
-class FolderInformation
+class FolderInformation implements \JsonSerializable
 {
 	use Traits\Status;
 
@@ -36,6 +36,7 @@ class FolderInformation
 
 	/**
 	 * @var array
+	 * NOTE: Empty when FolderExamine is used
 	 */
 	public $PermanentFlags = array();
 
@@ -56,5 +57,24 @@ class FolderInformation
 		return \in_array('\\*', $this->PermanentFlags) ||
 			\in_array($sFlag, $this->PermanentFlags) ||
 			\in_array($sFlag, $this->Flags);
+	}
+
+	public function jsonSerialize()
+	{
+		return array(
+			'Name' => $this->FolderName,
+			'Flags' => $this->Flags,
+			'PermanentFlags' => $this->PermanentFlags,
+/*
+			'Messages' => $this->MESSAGES,
+			'Unseen' => $this->UNSEEN,
+			'Recent'        => $this->RECENT,
+			'UidNext'       => $this->UIDNEXT,
+			'UidValidity'   => $this->UIDVALIDITY,
+			'Highestmodseq' => $this->HIGHESTMODSEQ,
+			'Appendlimit'   => $this->APPENDLIMIT,
+			'Mailboxid'     => $this->MAILBOXID,
+*/
+		);
 	}
 }

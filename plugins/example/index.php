@@ -31,6 +31,22 @@ class ExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addTemplate(string $sFile, bool $bAdminScope = false);
 		$this->addTemplateHook(string $sName, string $sPlace, string $sLocalTemplateName, bool $bPrepend = false);
 */
+
+//		$this->addHook('login.credentials', 'FilterLoginCredentials');
+
+
+		$this->UseLangs(true); // start use langs folder
+
+		// User Settings tab
+		$this->addJs('js/ExampleUserSettings.js'); // add js file
+		$this->addJsonHook('JsonGetExampleUserData', 'JsonGetExampleUserData');
+		$this->addJsonHook('JsonSaveExampleUserData', 'JsonSaveExampleUserData');
+		$this->addTemplate('templates/ExampleUserSettingsTab.html');
+
+		// Admin Settings tab
+		$this->addJs('js/ExampleAdminSettings.js', true); // add js file
+		$this->addJsonHook('JsonAdminGetData', 'JsonAdminGetData');
+		$this->addTemplate('templates/ExampleAdminSettingsTab.html', true);
 	}
 
 	/**
@@ -59,6 +75,77 @@ class ExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 				$mResult[] = new \Plugins\Example\ContactSuggestions();
 				break;
 		}
+	}
+
+	public function JsonAdminGetData()
+	{
+		return $this->jsonResponse(__FUNCTION__, array(
+			'PHP' => \phpversion()
+		));
+	}
+
+	/**
+	 * @param string $sEmail
+	 * @param string $sLogin
+	 * @param string $sPassword
+	 *
+	 * @throws \RainLoop\Exceptions\ClientException
+	 */
+	public function FilterLoginCredentials(&$sEmail, &$sLogin, &$sPassword)
+	{
+		// Your custom php logic
+		// You may change login credentials
+		if ('demo@snappymail.eu' === $sEmail)
+		{
+			$sEmail = 'user@snappymail.eu';
+			$sLogin = 'user@snappymail.eu';
+			$sPassword = 'super-duper-password';
+		}
+		else
+		{
+			// or throw auth exeption
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
+			// or
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountNotAllowed);
+			// or
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DomainNotAllowed);
+		}
+	}
+
+	/**
+	 * @return array
+	 */
+	public function JsonGetExampleUserData()
+	{
+		$aSettings = $this->getUserSettings();
+
+		$sUserFacebook = isset($aSettings['UserFacebook']) ? $aSettings['UserFacebook'] : '';
+		$sUserSkype = isset($aSettings['UserSkype']) ? $aSettings['UserSkype'] : '';
+
+		// or get user's data from your custom storage ( DB / LDAP / ... ).
+
+		\sleep(1);
+		return $this->jsonResponse(__FUNCTION__, array(
+			'UserFacebook' => $sUserFacebook,
+			'UserSkype' => $sUserSkype
+		));
+	}
+
+	/**
+	 * @return array
+	 */
+	public function JsonSaveExampleUserData()
+	{
+		$sUserFacebook = $this->jsonParam('UserFacebook');
+		$sUserSkype = $this->jsonParam('UserSkype');
+
+		// or put user's data to your custom storage ( DB / LDAP / ... ).
+
+		\sleep(1);
+		return $this->jsonResponse(__FUNCTION__, $this->saveUserSettings(array(
+			'UserFacebook' => $sUserFacebook,
+			'UserSkype' => $sUserSkype
+		)));
 	}
 
 /*

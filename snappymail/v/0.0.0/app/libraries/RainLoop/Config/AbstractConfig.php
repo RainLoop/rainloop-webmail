@@ -187,7 +187,7 @@ abstract class AbstractConfig implements \JsonSerializable
 			}
 
 			$aData = \parse_ini_file($this->sFile, true);
-			if ($aSubData && \count($aSubData))
+			if ($aData && \count($aData))
 			{
 				foreach ($aData as $sSectionKey => $aSectionValue)
 				{

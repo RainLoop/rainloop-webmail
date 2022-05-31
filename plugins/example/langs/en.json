@@ -1,0 +1,15 @@
+{
+	"SETTINGS_EXAMPLE_ADMIN_EXAMPLE_TAB_PLUGIN": {
+		"TAB_NAME": "Example Extension Tab",
+		"LEGEND_EXAMPLE": "Example Extension Tab (Example)",
+		"LABEL_PHP_VERSION": "PHP version"
+	},
+	"SETTINGS_EXAMPLE_PLUGIN": {
+		"TAB_NAME": "Example Extension",
+		"LEGEND_EXAMPLE": "Example Extension (Example)",
+		"LABEL_PHP_VERSION": "PHP version",
+		"LABEL_SKYPE": "Skype",
+		"LABEL_FACEBOOK": "Facebook",
+		"BUTTON_SAVE": "Save"
+	}
+}
