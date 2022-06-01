@@ -239,8 +239,8 @@ export class AppUser extends AbstractApp {
 								MessageFlagsCache.clearFolder(folderFromCache.fullName);
 							}
 
-							if (result.Flags.length) {
-								result.Flags.forEach(message =>
+							if (result.MessagesFlags.length) {
+								result.MessagesFlags.forEach(message =>
 									MessageFlagsCache.setFor(folderFromCache.fullName, message.Uid.toString(), message.Flags)
 								);
 

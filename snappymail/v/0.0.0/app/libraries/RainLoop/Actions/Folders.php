@@ -424,8 +424,6 @@ trait Folders
 				(int) $this->GetActionParam('UidNext', 0),
 				new \MailSo\Imap\SequenceSet($this->GetActionParam('FlagsUids', []))
 			);
-			$aInboxInformation['Flags'] = $aInboxInformation['MessagesFlags'];
-			unset($aInboxInformation['MessagesFlags']);
 			return $this->DefaultResponse(__FUNCTION__, $aInboxInformation);
 		}
 		catch (\Throwable $oException)

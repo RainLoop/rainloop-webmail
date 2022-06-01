@@ -31,6 +31,7 @@ class FolderInformation implements \JsonSerializable
 
 	/**
 	 * @var array
+	 * Message flags
 	 */
 	public $Flags = array();
 
