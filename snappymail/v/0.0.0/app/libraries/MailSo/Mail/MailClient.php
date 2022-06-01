@@ -546,8 +546,8 @@ class MailClient
 		return array(
 			'Folder' => $sFolderName,
 			'Hash' => $this->GenerateFolderHash($sFolderName, $iCount, $iUidNext, $iHighestModSeq),
-			'MessageCount' => $iCount,
-			'MessageUnseenCount' => $iUnseenCount,
+			'totalEmails' => $iCount,
+			'unreadEmails' => $iUnseenCount,
 			'UidNext' => $iUidNext,
 			'MessagesFlags' => $aFlags,
 			'HighestModSeq' => $iHighestModSeq,
@@ -836,8 +836,8 @@ class MailClient
 		$oMessageCollection->Search = $sSearch;
 		$oMessageCollection->ThreadUid = $oParams->iThreadUid;
 		$oMessageCollection->Filtered = '' !== \MailSo\Config::$MessageListPermanentFilter;
-		$oMessageCollection->MessageCount = $iMessageRealCount;
-		$oMessageCollection->MessageUnseenCount = $iMessageUnseenCount;
+		$oMessageCollection->totalEmails = $iMessageRealCount;
+		$oMessageCollection->unreadEmails = $iMessageUnseenCount;
 
 		$aUids = array();
 		$aAllThreads = [];

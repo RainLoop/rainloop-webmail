@@ -229,11 +229,11 @@ export class AppUser extends AbstractApp {
 
 							setFolderHash(result.Folder, result.Hash);
 
-							folderFromCache.messageCountAll(result.MessageCount);
+							folderFromCache.messageCountAll(result.totalEmails);
 
-							let unreadCountChange = (folderFromCache.messageCountUnread() !== result.MessageUnseenCount);
+							let unreadCountChange = (folderFromCache.messageCountUnread() !== result.unreadEmails);
 
-							folderFromCache.messageCountUnread(result.MessageUnseenCount);
+							folderFromCache.messageCountUnread(result.unreadEmails);
 
 							if (unreadCountChange) {
 								MessageFlagsCache.clearFolder(folderFromCache.fullName);

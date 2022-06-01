@@ -457,8 +457,8 @@ trait Folders
 							$aResult[] = [
 								'Folder' => $aInboxInformation['Folder'],
 								'Hash' => $aInboxInformation['Hash'],
-								'MessageCount' => $aInboxInformation['MessageCount'],
-								'MessageUnseenCount' => $aInboxInformation['MessageUnseenCount'],
+								'totalEmails' => $aInboxInformation['totalEmails'],
+								'unreadEmails' => $aInboxInformation['unreadEmails'],
 							];
 						}
 					}

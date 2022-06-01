@@ -17,8 +17,8 @@ export class MessageCollectionModel extends AbstractCollectionModel
 		this.Folder
 		this.FolderHash
 		this.Limit
-		this.MessageCount
-		this.MessageUnseenCount
+		this.totalEmails
+		this.unreadEmails
 		this.MessageResultCount
 		this.NewMessages
 		this.Offset

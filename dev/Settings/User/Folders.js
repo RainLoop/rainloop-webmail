@@ -71,7 +71,7 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 			Remote.abort('Folders').post('FolderRename', FolderUserStore.foldersRenaming, {
 					Folder: folder.fullName,
 					NewFolderName: nameToEdit,
-					Subscribe: folder.subscribed() ? 1 : 0
+					Subscribe: folder.isSubscribed() ? 1 : 0
 				})
 				.then(data => {
 					folder.name(nameToEdit/*data.Name*/);
@@ -138,7 +138,7 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 							() => {
 //								folderToRemove.flags.push('\\nonexistent');
 								folderToRemove.selectable(false);
-//								folderToRemove.subscribed(false);
+//								folderToRemove.isSubscribed(false);
 //								folderToRemove.checkable(false);
 								if (!folderToRemove.subFolders.length) {
 									removeFolderFromCacheList(folderToRemove.fullName);
@@ -170,12 +170,12 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 	}
 
 	toggleFolderSubscription(folder) {
-		let subscribe = !folder.subscribed();
+		let subscribe = !folder.isSubscribed();
 		Remote.request('FolderSubscribe', null, {
 			Folder: folder.fullName,
 			Subscribe: subscribe ? 1 : 0
 		});
-		folder.subscribed(subscribe);
+		folder.isSubscribed(subscribe);
 	}
 
 	toggleFolderCheckable(folder) {

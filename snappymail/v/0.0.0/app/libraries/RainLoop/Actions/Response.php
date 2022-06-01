@@ -266,21 +266,24 @@ trait Response
 
 		if ($mResponse instanceof \MailSo\Mail\Folder)
 		{
-			$aExtended = null;
+			$aResult = $mResponse->jsonSerialize();
+
 			$aStatus = $mResponse->Status();
 			if ($aStatus && isset($aStatus['MESSAGES'], $aStatus['UNSEEN'], $aStatus['UIDNEXT'])) {
-				$aExtended = array(
-					'MessageCount' => (int) $aStatus['MESSAGES'],
-					'MessageUnseenCount' => (int) $aStatus['UNSEEN'],
-					'UidNext' => (int) $aStatus['UIDNEXT'],
-					'Hash' => $this->MailClient()->GenerateFolderHash(
-						$mResponse->FullName(), $aStatus['MESSAGES'], $aStatus['UIDNEXT'],
-							empty($aStatus['HIGHESTMODSEQ']) ? 0 : $aStatus['HIGHESTMODSEQ'])
+				$aResult = \array_merge(
+					$aResult,
+					[
+						'totalEmails' => (int) $aStatus['MESSAGES'],
+						'unreadEmails' => (int) $aStatus['UNSEEN'],
+						'UidNext' => (int) $aStatus['UIDNEXT'],
+						'Hash' => $this->MailClient()->GenerateFolderHash(
+							$mResponse->FullName(), $aStatus['MESSAGES'], $aStatus['UIDNEXT'],
+								empty($aStatus['HIGHESTMODSEQ']) ? 0 : $aStatus['HIGHESTMODSEQ'])
+					]
 				);
 			}
 
-			if (null === $this->aCheckableFolder)
-			{
+			if (null === $this->aCheckableFolder) {
 				$aCheckable = \json_decode(
 					$this->SettingsProvider(true)
 					->Load($this->getAccountFromToken())
@@ -288,14 +291,9 @@ trait Response
 				);
 				$this->aCheckableFolder = \is_array($aCheckable) ? $aCheckable : array();
 			}
+			$aResult['Checkable'] = \in_array($mResponse->FullName(), $this->aCheckableFolder);
 
-			return \array_merge(
-				$mResponse->jsonSerialize(),
-				array(
-					'Checkable' => \in_array($mResponse->FullName(), $this->aCheckableFolder),
-					'Extended' => $aExtended,
-				)
-			);
+			return $aResult;
 		}
 
 		if ($mResponse instanceof \MailSo\Base\Collection)

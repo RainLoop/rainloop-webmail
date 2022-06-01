@@ -67,9 +67,8 @@ class FolderInformation implements \JsonSerializable
 			'Flags' => $this->Flags,
 			'PermanentFlags' => $this->PermanentFlags,
 /*
-			'Messages' => $this->MESSAGES,
-			'Unseen' => $this->UNSEEN,
-			'Recent'        => $this->RECENT,
+			'totalEmails'   => $this->MESSAGES,
+			'unreadEmails'  => $this->UNSEEN,
 			'UidNext'       => $this->UIDNEXT,
 			'UidValidity'   => $this->UIDVALIDITY,
 			'Highestmodseq' => $this->HIGHESTMODSEQ,

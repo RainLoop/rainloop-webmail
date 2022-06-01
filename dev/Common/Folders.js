@@ -148,11 +148,11 @@ folderInformationMultiply = (boot = false) => {
 
 						setFolderHash(item.Folder, item.Hash);
 
-						folder.messageCountAll(item.MessageCount);
+						folder.messageCountAll(item.totalEmails);
 
-						let unreadCountChange = folder.messageCountUnread() !== item.MessageUnseenCount;
+						let unreadCountChange = folder.messageCountUnread() !== item.unreadEmails;
 
-						folder.messageCountUnread(item.MessageUnseenCount);
+						folder.messageCountUnread(item.unreadEmails);
 
 						if (unreadCountChange) {
 							MessageFlagsCache.clearFolder(folder.fullName);

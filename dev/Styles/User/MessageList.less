@@ -338,13 +338,13 @@ html:not(rl-mobile) {
 	.flagParent {
 		padding: 0 10px 0 5px;
 	}
+	.flagParent::after {
+		content: '☆'; /*⚐*/
+	}
 	&.flag-\\flagged .flagParent::after,
 	&.hasFlaggedSubMessage .flagParent::after {
 		color: orange;
 		content: '★'; /*⚑*/
-	}
-	&:not(.flag-\\flagged):not(.hasFlaggedSubMessage) .flagParent::after {
-		content: '☆'; /*⚐*/
 	}
 	&:not(.flag-\\flagged):not(.hasFlaggedSubMessage) .flagParent:not(:hover) {
 		opacity: 0.5;

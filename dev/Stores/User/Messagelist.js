@@ -193,17 +193,17 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrenFolderCache
 
 						setFolderHash(collection.Folder, collection.FolderHash);
 
-						if (null != collection.MessageCount) {
-							folder.messageCountAll(collection.MessageCount);
+						if (null != collection.totalEmails) {
+							folder.messageCountAll(collection.totalEmails);
 						}
 
-						if (null != collection.MessageUnseenCount) {
-							if (pInt(folder.messageCountUnread()) !== pInt(collection.MessageUnseenCount)) {
+						if (null != collection.unreadEmails) {
+							if (pInt(folder.messageCountUnread()) !== pInt(collection.unreadEmails)) {
 								unreadCountChange = true;
 								MessageFlagsCache.clearFolder(folder.fullName);
 							}
 
-							folder.messageCountUnread(collection.MessageUnseenCount);
+							folder.messageCountUnread(collection.unreadEmails);
 						}
 
 						MessagelistUserStore.initUidNextAndNewMessages(folder.fullName, collection.UidNext, collection.NewMessages);

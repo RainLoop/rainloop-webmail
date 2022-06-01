@@ -158,19 +158,18 @@ export class FolderCollectionModel extends AbstractCollectionModel
 				|| !isArray(expandedFolders)
 				|| !expandedFolders.includes(oCacheFolder.fullName));
 
-			if (oFolder.Extended) {
-				if (oFolder.Extended.Hash) {
-					setFolderHash(oCacheFolder.fullName, oFolder.Extended.Hash);
-				}
-
-				if (null != oFolder.Extended.MessageCount) {
-					oCacheFolder.messageCountAll(oFolder.Extended.MessageCount);
-				}
-
-				if (null != oFolder.Extended.MessageUnseenCount) {
-					oCacheFolder.messageCountUnread(oFolder.Extended.MessageUnseenCount);
-				}
+			if (oFolder.Hash) {
+				setFolderHash(oCacheFolder.fullName, oFolder.Hash);
 			}
+
+			if (null != oFolder.totalEmails) {
+				oCacheFolder.messageCountAll(oFolder.totalEmails);
+			}
+
+			if (null != oFolder.unreadEmails) {
+				oCacheFolder.messageCountUnread(oFolder.unreadEmails);
+			}
+
 			return oCacheFolder;
 		});
 
@@ -252,7 +251,7 @@ export class FolderModel extends AbstractModel {
 			focused: false,
 			selected: false,
 			edited: false,
-			subscribed: true,
+			isSubscribed: true,
 			checkable: false, // Check for new messages
 			askDelete: false,
 
@@ -336,7 +335,7 @@ export class FolderModel extends AbstractModel {
 
 				hasVisibleSubfolders: () => !!folder.subFolders().find(folder => folder.visible()),
 
-				hasSubscriptions: () => folder.subscribed() | !!folder.subFolders().find(
+				hasSubscriptions: () => folder.isSubscribed() | !!folder.subFolders().find(
 						oFolder => {
 							const subscribed = oFolder.hasSubscriptions();
 							return !oFolder.isSystemFolder() && subscribed;
@@ -359,13 +358,13 @@ export class FolderModel extends AbstractModel {
 				 * - hasVisibleSubfolders()
 				 * Or when all below conditions are true:
 				 * - selectable()
-				 * - subscribed() OR hideUnsubscribed = false
+				 * - isSubscribed() OR hideUnsubscribed = false
 				 * - FolderType.User
 				 * - not kolabType()
 				 */
 				visible: () => {
 					const selectable = folder.canBeSelected(),
-						visible = (folder.subscribed() | !SettingsUserStore.hideUnsubscribed()) && selectable;
+						visible = (folder.isSubscribed() | !SettingsUserStore.hideUnsubscribed()) && selectable;
 					return folder.hasVisibleSubfolders() | visible;
 				},
 
