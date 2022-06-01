@@ -183,7 +183,7 @@ trait Response
 				$mResult[$prop] = $this->responseObject($mResult[$prop], $sParent);
 			}
 
-			$sSubject = $mResult['Subject'];
+			$sSubject = $mResult['subject'];
 			$mResult['Hash'] = \md5($mResult['Folder'].$mResult['Uid']);
 			$mResult['RequestHash'] = Utils::EncodeKeyValuesQ(array(
 				'V' => APP_VERSION,

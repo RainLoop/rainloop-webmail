@@ -575,7 +575,7 @@ export class MailMessageView extends AbstractViewRight {
 				MessageFolder: oMessage.folder,
 				MessageUid: oMessage.uid,
 				ReadReceipt: oMessage.readReceipt(),
-				Subject: i18n('READ_RECEIPT/SUBJECT', { SUBJECT: oMessage.subject() }),
+				subject: i18n('READ_RECEIPT/SUBJECT', { SUBJECT: oMessage.subject() }),
 				Text: i18n('READ_RECEIPT/BODY', { 'READ-RECEIPT': AccountUserStore.email() })
 			});
 		}

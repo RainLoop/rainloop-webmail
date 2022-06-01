@@ -504,7 +504,7 @@ class MailClient
 					$aNewMessages[] = array(
 						'Folder' => $sFolderName,
 						'Uid' => $iUid,
-						'Subject' => $oHeaders->ValueByName(MimeHeader::SUBJECT, !$sContentTypeCharset),
+						'subject' => $oHeaders->ValueByName(MimeHeader::SUBJECT, !$sContentTypeCharset),
 						'From' => $oHeaders->GetAsEmailCollection(MimeHeader::FROM_, !$sContentTypeCharset)
 					);
 				}

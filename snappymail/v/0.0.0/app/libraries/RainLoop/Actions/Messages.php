@@ -982,7 +982,7 @@ trait Messages
 	private function buildReadReceiptMessage(Account $oAccount) : \MailSo\Mime\Message
 	{
 		$sReadReceipt = $this->GetActionParam('ReadReceipt', '');
-		$sSubject = $this->GetActionParam('Subject', '');
+		$sSubject = $this->GetActionParam('subject', '');
 		$sText = $this->GetActionParam('Text', '');
 
 		$oIdentity = $this->GetIdentityByID($oAccount, '', true);
@@ -1084,7 +1084,7 @@ trait Messages
 			$oMessage->SetPriority(\MailSo\Mime\Enumerations\MessagePriority::HIGH);
 		}
 
-		$oMessage->SetSubject($this->GetActionParam('Subject', ''));
+		$oMessage->SetSubject($this->GetActionParam('subject', ''));
 
 		$oToEmails = new \MailSo\Mime\EmailCollection($this->GetActionParam('To', ''));
 		if ($oToEmails->count()) {

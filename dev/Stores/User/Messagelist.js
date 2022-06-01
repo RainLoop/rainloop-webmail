@@ -134,7 +134,7 @@ MessagelistUserStore.initUidNextAndNewMessages = (folder, uidNext, newMessages) 
 				newMessages.forEach(item => {
 					NotificationUserStore.displayDesktopNotification(
 						EmailCollectionModel.reviveFromJson(item.From).toString(),
-						item.Subject,
+						item.subject,
 						{ Folder: item.Folder, Uid: item.Uid }
 					);
 				});

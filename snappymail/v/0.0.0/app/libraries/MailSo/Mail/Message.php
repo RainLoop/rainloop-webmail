@@ -632,9 +632,8 @@ class Message implements \JsonSerializable
 			'@Object' => 'Object/Message',
 			'Folder' => $this->sFolder,
 			'Uid' => $this->iUid,
-			'Subject' => \trim(Utils::Utf8Clear($this->sSubject)),
+			'subject' => \trim(Utils::Utf8Clear($this->sSubject)),
 			'MessageId' => $this->sMessageId,
-			'Size' => $this->iSize,
 			'SpamScore' => $this->bIsSpam ? 100 : $this->iSpamScore,
 			'SpamResult' => $this->sSpamResult,
 			'IsSpam' => $this->bIsSpam,
@@ -658,7 +657,12 @@ class Message implements \JsonSerializable
 
 			'Attachments' => $this->oAttachments ? $this->oAttachments->SpecData() : null,
 
-			'Flags' => $this->aFlagsLowerCase
+			'Flags' => $this->aFlagsLowerCase,
+
+			// https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.1
+			'size' => $this->iSize,
+			'receivedAt' => \gmdate('Y-m-d\\TH:i:s\\Z', $this->iInternalTimeStampInUTC)
+//			'keywords' => \array_fill_keys($this->aFlagsLowerCase, true)
 		);
 	}
 }
