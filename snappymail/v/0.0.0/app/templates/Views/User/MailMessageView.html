@@ -195,9 +195,9 @@
 					</table>
 				</div>
 				<div class="hasVirus" data-bind="visible: message().hasVirus()" data-i18n="MESSAGE/HAS_VIRUS_WARNING"></div>
-				<div class="informationShort">
+				<div class="messageTags">
 					<span data-i18n="MESSAGE/TAGS"></span>:
-					<span data-bind="html: message().tags()"></span>
+					<span data-bind="html: message().tagsToHTML()"></span>
 				</div>
 			</div>
 			<div id="messageItem" data-bind="css: message().lineAsCss()">

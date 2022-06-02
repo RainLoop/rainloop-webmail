@@ -152,16 +152,16 @@
 		"LINK_DOWNLOAD_AS_ZIP": "Als ZIP-Datei herunterladen",
 		"SPAM_SCORE": "Spam-Score",
 		"HAS_VIRUS_WARNING": "WARNUNG: Virus erkannt",
-		"TAGS": "Tags"
+		"TAGS": "Stichworte"
 	},
 	"MESSAGE_TAGS": {
-		"$important": "Important",
-		"$todo": "To Do",
-		"$label1": "Important",
-		"$label2": "Work",
-		"$label3": "Personal",
-		"$label4": "To Do",
-		"$label5": "Later"
+		"$important": "Wichtig",
+		"$todo": "Machen",
+		"$label1": "Wichtig",
+		"$label2": "Arbeit",
+		"$label3": "Persönlich",
+		"$label4": "Machen",
+		"$label5": "Später"
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Empfangsbestätigung (angezeigt) - %SUBJECT%",

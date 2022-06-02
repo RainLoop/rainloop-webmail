@@ -155,12 +155,12 @@
 		"TAGS": "Tags"
 	},
 	"MESSAGE_TAGS": {
-		"$important": "Important",
-		"$todo": "To Do",
-		"$label1": "Important",
-		"$label2": "Work",
-		"$label3": "Personal",
-		"$label4": "To Do",
+		"$important": "Belangrijk",
+		"$todo": "Te doen",
+		"$label1": "Belangrijk",
+		"$label2": "Werk",
+		"$label3": "Persoonlijk",
+		"$label4": "Te doen",
 		"$label5": "Later"
 	},
 	"READ_RECEIPT": {

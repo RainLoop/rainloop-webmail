@@ -103,10 +103,10 @@ export class MessageModel extends AbstractModel {
 //			isJunk: () => this.flags().includes('$junk') && !this.flags().includes('$nonjunk'),
 //			isPhishing: () => this.flags().includes('$phishing'),
 
-			tags: () => this.flags().map(value =>
+			tagsToHTML: () => this.flags().map(value =>
 					('\\' == value[0] || '$forwarded' == value)
 					? ''
-					: '<span class="msgflag-'+value+'">' + i18n('MESSAGE_TAGS/'+value,0,value) + '</span>'
+					: '<span class="focused msgflag-'+value+'">' + i18n('MESSAGE_TAGS/'+value,0,value) + '</span>'
 				).join(' ')
 		});
 	}
