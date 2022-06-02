@@ -96,6 +96,8 @@ trait Status
 	{
 		if ('EXISTS' === $name) {
 			$name = 'MESSAGES';
+		} else if ('X-GUID' === $name) {
+			$name = 'MAILBOXID';
 		}
 		if (\property_exists(__TRAIT__, $name)) {
 			if ('MAILBOXID' !== $name) {

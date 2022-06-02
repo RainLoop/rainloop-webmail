@@ -63,6 +63,7 @@ class FolderInformation implements \JsonSerializable
 	public function jsonSerialize()
 	{
 		return array(
+			'id' => $this->MAILBOXID,
 			'Name' => $this->FolderName,
 			'Flags' => $this->Flags,
 			'PermanentFlags' => $this->PermanentFlags,
@@ -73,7 +74,6 @@ class FolderInformation implements \JsonSerializable
 			'UidValidity'   => $this->UIDVALIDITY,
 			'Highestmodseq' => $this->HIGHESTMODSEQ,
 			'Appendlimit'   => $this->APPENDLIMIT,
-			'Mailboxid'     => $this->MAILBOXID,
 */
 		);
 	}

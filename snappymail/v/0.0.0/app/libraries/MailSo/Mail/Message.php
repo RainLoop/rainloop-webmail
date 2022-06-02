@@ -37,6 +37,12 @@ class Message implements \JsonSerializable
 		$aFlagsLowerCase = [],
 
 		/**
+		 * https://www.rfc-editor.org/rfc/rfc8474#section-5
+		 */
+		$sEmailId = '',
+		$sThreadId = '',
+
+		/**
 		 * @var \MailSo\Mime\EmailCollection
 		 */
 		$oFrom = null,
@@ -287,16 +293,21 @@ class Message implements \JsonSerializable
 			$oBodyStructure = $oFetchResponse->GetFetchBodyStructure();
 		}
 
-		$sInternalDate = $oFetchResponse->GetFetchValue(FetchType::INTERNALDATE);
 		$aFlags = $oFetchResponse->GetFetchValue(FetchType::FLAGS);
 
 		$oMessage->sFolder = $sFolder;
 		$oMessage->iUid = (int) $oFetchResponse->GetFetchValue(FetchType::UID);
 		$oMessage->iSize = (int) $oFetchResponse->GetFetchValue(FetchType::RFC822_SIZE);
 		$oMessage->aFlagsLowerCase = \array_map('mb_strtolower', \array_map('\\MailSo\\Base\\Utils::Utf7ModifiedToUtf8', $aFlags ?: []));
+		$oMessage->iInternalTimeStampInUTC = \MailSo\Base\DateTimeHelper::ParseInternalDateString(
+			$oFetchResponse->GetFetchValue(FetchType::INTERNALDATE)
+		);
 
-		$oMessage->iInternalTimeStampInUTC =
-			\MailSo\Base\DateTimeHelper::ParseInternalDateString($sInternalDate);
+		$oMessage->sEmailId = $oFetchResponse->GetFetchValue(FetchType::EMAILID)
+//			?: $oFetchResponse->GetFetchValue('X-GUID')
+			?: $oFetchResponse->GetFetchValue('X-GM-MSGID');
+		$oMessage->sThreadId = $oFetchResponse->GetFetchValue(FetchType::THREADID)
+			?: $oFetchResponse->GetFetchValue('X-GM-THRID');
 
 		$sCharset = $oBodyStructure ? Utils::NormalizeCharset($oBodyStructure->SearchCharset()) : '';
 
@@ -660,9 +671,13 @@ class Message implements \JsonSerializable
 			'Flags' => $this->aFlagsLowerCase,
 
 			// https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.1
+			'id' => $this->sEmailId,
+//			'blobId' => $this->sEmailIdBlob,
+			'threadId' => $this->sThreadId,
+//			'mailboxIds' => ['mailboxid'=>true],
+//			'keywords' => \array_fill_keys($this->aFlagsLowerCase, true),
 			'size' => $this->iSize,
 			'receivedAt' => \gmdate('Y-m-d\\TH:i:s\\Z', $this->iInternalTimeStampInUTC)
-//			'keywords' => \array_fill_keys($this->aFlagsLowerCase, true)
 		);
 	}
 }

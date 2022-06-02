@@ -119,6 +119,10 @@ trait Folders
 		}
 		if ($this->IsSupported('OBJECTID')) {
 			$aStatusItems[] = FolderResponseStatus::MAILBOXID;
+/*
+		} else if ($this->IsSupported('X-DOVECOT')) {
+			$aFetchItems[] = 'X-GUID';
+*/
 		}
 
 		$oFolderInfo = $this->oCurrentFolderInfo;
@@ -341,6 +345,9 @@ trait Folders
 //						$oResult->IsWritable = true;
 					} else if ('NOMODSEQ' === $key) {
 						// https://datatracker.ietf.org/doc/html/rfc4551#section-3.1.2
+					} else if ('MAILBOXID' === $key) {
+						// https://www.rfc-editor.org/rfc/rfc8474#section-4.2
+						$oResult->MAILBOXID = $oResponse->OptionalResponse[1];
 					}
 				}
 
@@ -409,7 +416,11 @@ trait Folders
 			}
 			// RFC 8474
 			if ($this->IsSupported('OBJECTID')) {
-				$aTypes[] = FolderStatus::MAILBOXID;
+				$aL[] = FolderStatus::MAILBOXID;
+/*
+			} else if ($this->IsSupported('X-DOVECOT')) {
+				$aL[] = 'X-GUID';
+*/
 			}
 
 			$aReturnParams[] = 'STATUS';

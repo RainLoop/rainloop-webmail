@@ -269,17 +269,12 @@ trait Response
 			$aResult = $mResponse->jsonSerialize();
 
 			$aStatus = $mResponse->Status();
-			if ($aStatus && isset($aStatus['MESSAGES'], $aStatus['UNSEEN'], $aStatus['UIDNEXT'])) {
-				$aResult = \array_merge(
-					$aResult,
-					[
-						'totalEmails' => (int) $aStatus['MESSAGES'],
-						'unreadEmails' => (int) $aStatus['UNSEEN'],
-						'UidNext' => (int) $aStatus['UIDNEXT'],
-						'Hash' => $this->MailClient()->GenerateFolderHash(
-							$mResponse->FullName(), $aStatus['MESSAGES'], $aStatus['UIDNEXT'],
-								empty($aStatus['HIGHESTMODSEQ']) ? 0 : $aStatus['HIGHESTMODSEQ'])
-					]
+			if ($aStatus && isset($aStatus['MESSAGES'], $aStatus['UIDNEXT'])) {
+				$aResult['Hash'] = $this->MailClient()->GenerateFolderHash(
+					$mResponse->FullName(),
+					$aStatus['MESSAGES'],
+					$aStatus['UIDNEXT'],
+					empty($aStatus['HIGHESTMODSEQ']) ? 0 : $aStatus['HIGHESTMODSEQ']
 				);
 			}
 

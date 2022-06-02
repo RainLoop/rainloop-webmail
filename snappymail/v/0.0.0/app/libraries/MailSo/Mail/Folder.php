@@ -229,7 +229,12 @@ class Folder implements \JsonSerializable
 			'Flags' => $this->FlagsLowerCase(),
 //			'Extended' => $aExtended,
 //			'PermanentFlags' => $this->oImapFolder->PermanentFlags,
-			'Metadata' => $this->oImapFolder->Metadata()
+			'Metadata' => $this->oImapFolder->Metadata(),
+			'UidNext' => $this->oImapFolder->UIDNEXT,
+			// RFC 8621
+			'totalEmails' => $this->oImapFolder->MESSAGES,
+			'unreadEmails' => $this->oImapFolder->UNSEEN,
+			'id' => $this->oImapFolder->MAILBOXID
 		);
 	}
 }
