@@ -29,7 +29,7 @@
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Oberfläche",
 		"LABEL_LANGUAGE": "Sprache",
-		"LABEL_LANGUAGE_ADMIN": "Sprache (Admin)",
+		"LABEL_LANGUAGE_ADMIN": "Sprache (Adminpanel)",
 		"LABEL_THEME": "Thema",
 		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Sprachauswahl in den Einstellungen zulassen",
 		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Themenauswahl in den Einstellungen zulassen",
@@ -40,9 +40,9 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "Größenlimit für Anhänge",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Zusätzliche Konten erlauben",
 		"LABEL_ALLOW_IDENTITIES": "Mehrere Identitäten erlauben",
-		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
+		"ALERT_DATA_ACCESS": "Auf den \"Data\"-Ordner kann zugegriffen werden. Konfiguriere den Ordner so, dass von extern nicht zugegriffen werden kann. Weitere Informationen:",
 		"ALERT_WARNING": "Warnung!",
-		"HTML_ALERT_WEAK_PASSWORD": "Sie verwenden das Standard-Admin-Passwort.\n<br>\nBitte <strong><a href=\"#\/security\">ändern<\/a><\/strong> Sie\naus Sicherheitsgründen das Passwort jetzt.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "Sie verwenden das Standard-Admin-Passwort.\n<br>\nBitte <strong><a href=\"#\/security\">ändern<\/a><\/strong> Sie\n das Passwort aus Sicherheitsgründen!\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Anmeldebildschirm",
@@ -61,7 +61,7 @@
 		"LEGEND_CONTACTS": "Kontakte",
 		"LEGEND_STORAGE": "Speicher (PDO)",
 		"LABEL_ENABLE_CONTACTS": "Kontakte aktivieren",
-		"LABEL_ALLOW_SYNC": "Kontakte-Synchronisierung erlauben (mit externem CardDAV-Server)",
+		"LABEL_ALLOW_SYNC": "Synchronisierung von Kontakten erlauben (mit externem CardDAV-Server)",
 		"LABEL_STORAGE_TYPE": "Typ",
 		"LABEL_STORAGE_DSN": "DSN",
 		"LABEL_STORAGE_USER": "Benutzer",
@@ -89,7 +89,7 @@
 		"LABEL_REPEAT_PASSWORD": "Wiederholen",
 		"BUTTON_UPDATE_PASSWORD": "Passwort aktualisieren",
 		"LEGEND_SSL": "SSL",
-		"LABEL_REQUIRE_VERIFICATION": "Verlangen, dass das verwendete SSL-Zertifikat beglaubigt ist (IMAP\/SMTP)",
+		"LABEL_REQUIRE_VERIFICATION": "Verlangen, dass das verwendete SSL-Zertifikat signiert ist (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Selbst-signierte Zertifikate erlauben"
 	},
 	"TAB_PACKAGES": {
@@ -97,17 +97,17 @@
 		"LEGEND_AVAILABLE_FOR_UPDATE": "Zur Aktualisierung verfügbar",
 		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Zur Installation verfügbar",
 		"LEGEND_INSTALLED_PACKAGES": "Installierte Erweiterungen",
-		"ALERT_CANNOT_ACCESS_REPOSITORY": "Kann momentan nicht auf das Repository zugreifen."
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Momentan kann nicht auf das Repository zugegriffen werden."
 	},
 	"TAB_ABOUT": {
 		"LEGEND_ABOUT": "Über",
 		"LABEL_TAG_HINT": "Einfacher, moderner und schneller webbasierter E-Mail-Client",
 		"LABEL_ALL_RIGHTS_RESERVED": "Alle Rechte vorbehalten.",
-		"HINT_READ_CHANGE_LOG": "Bitte Lesen Sie das Änderungsprotokoll vor dem Update.",
+		"HINT_READ_CHANGE_LOG": "Bitte Lesen Sie das Changelog vor dem Update.",
 		"HINT_IS_UP_TO_DATE": "SnappyMail ist auf dem neusten Stand.",
 		"HTML_NEW_VERSION": "Neue Version <b>%VERSION%<\/b> verfügbar.",
 		"LABEL_UPDATING": "Aktualisiere",
-		"LABEL_CHECKING": "Prüfe auf Aktualisierungen",
+		"LABEL_CHECKING": "Überprüfe auf Aktualisierungen",
 		"BUTTON_RELEASES": "Releases"
 	},
 	"POPUPS_DOMAIN_ALIAS": {
@@ -142,7 +142,7 @@
 		"BUTTON_BACK": "Zurück",
 		"BUTTON_UPDATE": "Aktualisieren",
 		"NEW_DOMAIN_DESC": "Diese Domain Konfiguration wird es dir möglich machen <br>mit <i>%NAME%<\/i> Mailadressen zu arbeiten.",
-		"WHITE_LIST_ALERT": "Liste der User, die Webmail abrufen darf.\nVerwenden Sie Leerzeichen als Trenner.\n"
+		"WHITE_LIST_ALERT": "Liste der User, die Webmail abrufen darf.\nVerwenden Sie Leerzeichen als Trennsymbol.\n"
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Erweiterung",
