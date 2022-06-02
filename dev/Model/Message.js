@@ -99,9 +99,15 @@ export class MessageModel extends AbstractModel {
 
 			isUnseen: () => !this.flags().includes('\\seen'),
 			isFlagged: () => this.flags().includes('\\flagged'),
-			isReadReceipt: () => this.flags().includes('$mdnsent')
+			isReadReceipt: () => this.flags().includes('$mdnsent'),
 //			isJunk: () => this.flags().includes('$junk') && !this.flags().includes('$nonjunk'),
-//			isPhishing: () => this.flags().includes('$phishing')
+//			isPhishing: () => this.flags().includes('$phishing'),
+
+			tags: () => this.flags().map(value =>
+					('\\' == value[0] || '$forwarded' == value)
+					? ''
+					: '<span class="msgflag-'+value+'">' + i18n('MESSAGE_TAGS/'+value,0,value) + '</span>'
+				).join(' ')
 		});
 	}
 
@@ -299,7 +305,7 @@ export class MessageModel extends AbstractModel {
 			hasUnseenSubMessage: this.hasUnseenSubMessage(),
 			hasFlaggedSubMessage: this.hasFlaggedSubMessage()
 		}, (key, value) => value && classes.push(key));
-		this.flags().forEach(value => classes.push('flag-'+value));
+		this.flags().forEach(value => classes.push('msgflag-'+value));
 		return classes.join(' ');
 	}
 

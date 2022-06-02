@@ -151,7 +151,17 @@
 		"MESSAGE_VIEW_MOVE_DESC": "Klicke auf den Ordnernamen auf der linken Seite, um die Nachricht zu verschieben.",
 		"LINK_DOWNLOAD_AS_ZIP": "Als ZIP-Datei herunterladen",
 		"SPAM_SCORE": "Spam-Score",
-		"HAS_VIRUS_WARNING": "WARNUNG: Virus erkannt"
+		"HAS_VIRUS_WARNING": "WARNUNG: Virus erkannt",
+		"TAGS": "Tags"
+	},
+	"MESSAGE_TAGS": {
+		"$important": "Important",
+		"$todo": "To Do",
+		"$label1": "Important",
+		"$label2": "Work",
+		"$label3": "Personal",
+		"$label4": "To Do",
+		"$label5": "Later"
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Empfangsbestätigung (angezeigt) - %SUBJECT%",

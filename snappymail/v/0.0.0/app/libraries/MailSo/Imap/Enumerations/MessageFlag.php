@@ -27,9 +27,13 @@ abstract class MessageFlag
 		FLAGGED = '\\Flagged',
 		ANSWERED = '\\Answered',
 		DRAFT = '\\Draft',
-		// https://datatracker.ietf.org/doc/html/rfc9051#section-2.3.2
-		FORWARDED = '$Forwarded',
+		// https://datatracker.ietf.org/doc/html/rfc3503
 		MDNSENT = '$MDNSent',
+		// https://datatracker.ietf.org/doc/html/rfc8457
+		DRAFT = '$Important',
+		// https://datatracker.ietf.org/doc/html/rfc5788
+		FORWARDED = '$Forwarded',
+		// https://datatracker.ietf.org/doc/html/rfc9051#section-2.3.2
 		JUNK = '$Junk',
 		NOTJUNK = '$NotJunk',
 		PHISHING = '$Phishing';

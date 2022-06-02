@@ -216,13 +216,6 @@ html:not(rl-mobile) {
 		margin-right:5px
 	}
 
-	&.flag-\\deleted {
-		opacity: .7;
-		.subjectParent {
-			text-decoration: line-through;
-		}
-	}
-
 	&.deleted {
 		opacity: .3;
 	}
@@ -341,13 +334,32 @@ html:not(rl-mobile) {
 	.flagParent::after {
 		content: '☆'; /*⚐*/
 	}
-	&.flag-\\flagged .flagParent::after,
+	&.msgflag-\\flagged .flagParent::after,
 	&.hasFlaggedSubMessage .flagParent::after {
 		color: orange;
 		content: '★'; /*⚑*/
 	}
-	&:not(.flag-\\flagged):not(.hasFlaggedSubMessage) .flagParent:not(:hover) {
+	&:not(.msgflag-\\flagged):not(.hasFlaggedSubMessage) .flagParent:not(:hover) {
 		opacity: 0.5;
+	}
+
+	.senderParent::before {
+		font-family: snappymail;
+	}
+	&.msgflag-\\answered .senderParent::before {
+		content: '← ';
+	}
+	&.msgflag-\$forwarded .senderParent::before {
+		content: '→ ';
+	}
+	&.msgflag-\\answered.msgflag-\$forwarded .senderParent::before {
+		content: '←→ ';
+	}
+	&.msgflag-\\deleted {
+		opacity: .7;
+		.subjectParent {
+			text-decoration: line-through;
+		}
 	}
 }
 
@@ -442,35 +454,3 @@ html:not(.rl-mobile):not(.rl-side-preview-pane) {
 		}
 	}
 }
-
-.senderParent::before {
-	font-family: snappymail;
-}
-.flag-\\answered .senderParent::before {
-	content: '← ';
-}
-.flag-\$forwarded .senderParent::before {
-	content: '→ ';
-}
-.flag-\\answered.flag-\$forwarded .senderParent::before {
-	content: '←→ ';
-}
-
-/* Thunderbird labels */
-/*
-.flag-\$label5 .checkboxMessage { background-color: #808; }
-.flag-\$label4 .checkboxMessage { background-color: #00F; }
-.flag-\$label3 .checkboxMessage { background-color: #080; }
-.flag-\$label2 .checkboxMessage { background-color: #FA0; }
-.flag-\$label1 .checkboxMessage { background-color: #F00; }
-*/
-.messageListItem.flag-\$label5.focused { background-color: rgba(255,   0, 255, 0.30); }
-.messageListItem.flag-\$label4.focused { background-color: rgba( 64,  64, 255, 0.30); }
-.messageListItem.flag-\$label3.focused { background-color: rgba(  0, 255,   0, 0.30); }
-.messageListItem.flag-\$label2.focused { background-color: rgba(255, 170,   0, 0.30); }
-.messageListItem.flag-\$label1.focused { background-color: rgba(255,   0,   0, 0.30); }
-.messageListItem.flag-\$label5:not(.focused) { color: #939; }
-.messageListItem.flag-\$label4:not(.focused) { color: #33F; }
-.messageListItem.flag-\$label3:not(.focused) { color: #090; }
-.messageListItem.flag-\$label2:not(.focused) { color: #F90; }
-.messageListItem.flag-\$label1:not(.focused) { color: #F00; }

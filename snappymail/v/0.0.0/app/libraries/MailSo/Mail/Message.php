@@ -639,6 +639,14 @@ class Message implements \JsonSerializable
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
+/*
+		// JMAP-only RFC8621 keywords (RFC5788)
+		$keywords = \array_fill_keys(\str_replace(
+			['\\draft', '\\seen', '\\flagged', '\\answered'],
+			[ '$draft',  '$seen',  '$flagged',  '$answered'],
+			$this->aFlagsLowerCase
+		), true);
+*/
 		return array(
 			'@Object' => 'Object/Message',
 			'Folder' => $this->sFolder,
@@ -675,7 +683,7 @@ class Message implements \JsonSerializable
 //			'blobId' => $this->sEmailIdBlob,
 			'threadId' => $this->sThreadId,
 //			'mailboxIds' => ['mailboxid'=>true],
-//			'keywords' => \array_fill_keys($this->aFlagsLowerCase, true),
+//			'keywords' => $keywords,
 			'size' => $this->iSize,
 			'receivedAt' => \gmdate('Y-m-d\\TH:i:s\\Z', $this->iInternalTimeStampInUTC)
 		);
