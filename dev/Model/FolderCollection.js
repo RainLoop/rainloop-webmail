@@ -263,11 +263,17 @@ export class FolderModel extends AbstractModel {
 
 			kolabType: null,
 
-			collapsed: true
+			collapsed: true,
+
+			tagsAllowed: false
 		});
 
+		this.flags = ko.observableArray();
+		this.permanentFlags = ko.observableArray();
+
 		this.addSubscribables({
-			kolabType: sValue => this.metadata[FolderMetadataKeys.KolabFolderType] = sValue
+			kolabType: sValue => this.metadata[FolderMetadataKeys.KolabFolderType] = sValue,
+			permanentFlags: aValue => this.tagsAllowed(aValue.includes('\\*'))
 		});
 
 		this.subFolders = ko.observableArray(new FolderCollectionModel);
@@ -296,9 +302,20 @@ export class FolderModel extends AbstractModel {
 				}
 			})
 			.extend({ notify: 'always' });
-
-		this.flags = ko.observableArray();
-		this.permanentFlags = ko.observableArray();
+/*
+		https://www.rfc-editor.org/rfc/rfc8621.html#section-2
+		"myRights": {
+			"mayAddItems": true,
+			"mayRename": false,
+			"maySubmit": true,
+			"mayDelete": false,
+			"maySetKeywords": true,
+			"mayRemoveItems": true,
+			"mayCreateChild": true,
+			"maySetSeen": true,
+			"mayReadItems": true
+		},
+*/
 	}
 
 	/**

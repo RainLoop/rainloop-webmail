@@ -147,6 +147,8 @@ export class MailMessageView extends AbstractViewRight {
 				)
 			},
 
+			tagsAllowed: () => FolderUserStore.currentFolder() ? FolderUserStore.currentFolder().tagsAllowed() : false,
+
 			messageVisibility: () => !MessageUserStore.loading() && !!currentMessage(),
 
 			canBeRepliedOrForwarded: () => !this.isDraftFolder() && this.messageVisibility(),

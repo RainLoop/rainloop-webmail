@@ -113,11 +113,21 @@ export class MessageModel extends AbstractModel {
 		this.flags = ko.observableArray();
 
 		const ignoredTags = [
+			'$forwarded',
+			// Mailo
+			'sent',
+			// KMail
 			'$sent',
 			'$signed',
 			'$error',
 			'$queued',
-			'$forwarded'
+			// GMail
+			'$replied',
+			'$attachment',
+			'$notphishing',
+			'$phishing',
+			'junk',
+			'nonjunk'
 		];
 
 		this.addComputables({

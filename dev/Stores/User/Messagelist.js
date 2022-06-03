@@ -206,6 +206,11 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrenFolderCache
 						}
 
 						folder.flags(folderInfo.Flags);
+						folderInfo.PermanentFlags.sort((a, b) => {
+							a = a.toUpperCase();
+							b = b.toUpperCase();
+							return (a < b) ? -1 : ((a > b) ? 1 : 0);
+						});
 						folder.permanentFlags(folderInfo.PermanentFlags);
 
 						MessagelistUserStore.initUidNextAndNewMessages(folder.fullName, folderInfo.UidNext, collection.NewMessages);
