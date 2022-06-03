@@ -66,7 +66,7 @@
 									<a href="#" tabindex="-1" data-bind="command: editAsNewCommand" data-icon="🖉" data-i18n="MESSAGE/BUTTON_EDIT_AS_NEW"></a>
 								</li>
 							</div>
-							<div data-bind="attr: { css: isDraftFolder() ? 'dividerbar' : ''}">
+							<div data-bind="attr: { class: isDraftFolder() ? 'dividerbar' : ''}">
 								<li role="presentation" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled()">
 									<a href="#" tabindex="-1" data-bind="command: archiveCommand" data-icon="🗄" data-i18n="GLOBAL/TO_ARCHIVE"></a>
 								</li>
@@ -198,6 +198,14 @@
 				<div class="messageTags">
 					<span data-i18n="MESSAGE/TAGS"></span>:
 					<span data-bind="html: message().tagsToHTML()"></span>
+					<div class="btn-group" data-bind="registerBootstrapDropdown: true" style="display: inline-block">
+						<a class="btn btn-thin btn-transparent dropdown-toggle fontastic" id="tags-dropdown-id" href="#" tabindex="-1">☰</a>
+						<ul class="dropdown-menu right-edge" role="menu" aria-labelledby="tags-dropdown-id" data-bind="foreach: message().tagOptions()">
+							<li role="presentation">
+								<a href="#" tabindex="-1" data-icon="☐" data-bind="click: toggle, text: label, title: value, attr: { class: css, 'data-icon': checked ? '☑' : '☐' }"></a>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 			<div id="messageItem" data-bind="css: message().lineAsCss()">
@@ -218,7 +226,7 @@
 							<div class="readReceipt" data-bind="visible: !isDraftOrSentFolder() && '' !== message().readReceipt() && !message().isReadReceipt(), click: readReceipt"
 								data-icon="✉" data-i18n="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></div>
 							<div class="attachmentsPlace" data-bind="visible: message().hasAttachments(), css: {'selection-mode' : showAttachmentControls}">
-								<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">
+								<ul class="attachmentList" data-bind="foreach: message().attachments()">
 									<li class="attachmentItem" draggable="true"
 											data-bind="visible: !isLinked(), event: { 'dragstart': eventDragStart }, attr: { 'title': fileName }, css: {'checked': checked}">
 										<div class="attachmentIconParent" data-bind="css: { 'hasPreview': hasPreview(), 'hasPreplay': hasPreplay(), 'isImage': isImage() }">

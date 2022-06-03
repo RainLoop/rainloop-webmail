@@ -103,13 +103,16 @@ trait Folders
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
+	 *
+	 * https://datatracker.ietf.org/doc/html/rfc9051#section-6.3.11
 	 */
 	public function FolderStatus(string $sFolderName) : FolderInformation
 	{
 		$aStatusItems = array(
 			FolderResponseStatus::MESSAGES,
 			FolderResponseStatus::UNSEEN,
-			FolderResponseStatus::UIDNEXT
+			FolderResponseStatus::UIDNEXT,
+			FolderResponseStatus::UIDVALIDITY
 		);
 		if ($this->IsSupported('CONDSTORE')) {
 			$aStatusItems[] = FolderResponseStatus::HIGHESTMODSEQ;
@@ -121,10 +124,14 @@ trait Folders
 			$aStatusItems[] = FolderResponseStatus::MAILBOXID;
 /*
 		} else if ($this->IsSupported('X-DOVECOT')) {
-			$aFetchItems[] = 'X-GUID';
+			$aStatusItems[] = 'X-GUID';
 */
 		}
-
+/*		// STATUS SIZE can take a significant amount of time, therefore not active
+		if ($this->IsSupported('IMAP4rev2')) {
+			$aStatusItems[] = FolderResponseStatus::SIZE;
+		}
+*/
 		$oFolderInfo = $this->oCurrentFolderInfo;
 		$bReselect = false;
 		$bWritable = false;
@@ -276,6 +283,9 @@ trait Folders
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
+	 *
+	 * REQUIRED IMAP4rev2 untagged responses:  FLAGS, EXISTS, LIST
+	 * REQUIRED IMAP4rev2 OK untagged responses:  PERMANENTFLAGS, UIDNEXT, UIDVALIDITY
 	 */
 	protected function selectOrExamineFolder(string $sFolderName, bool $bIsWritable, bool $bReSelectSameFolders) : FolderInformation
 	{
@@ -345,9 +355,6 @@ trait Folders
 //						$oResult->IsWritable = true;
 					} else if ('NOMODSEQ' === $key) {
 						// https://datatracker.ietf.org/doc/html/rfc4551#section-3.1.2
-					} else if ('MAILBOXID' === $key) {
-						// https://www.rfc-editor.org/rfc/rfc8474#section-4.2
-						$oResult->MAILBOXID = $oResponse->OptionalResponse[1];
 					}
 				}
 

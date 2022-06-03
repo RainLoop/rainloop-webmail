@@ -83,7 +83,14 @@ trait Status
 		 * This response also occurs as a result of a CREATE, SELECT or EXAMINE command.
 		 * @var string
 		 */
-		$MAILBOXID;
+		$MAILBOXID,
+
+		/**
+		 * RFC 9051
+		 * The total size of the mailbox in octets.
+		 * @var int
+		 */
+		$SIZE;
 
 	public function getStatusItems() : array
 	{
@@ -150,7 +157,9 @@ trait Status
 			}
 			// SELECT or EXAMINE command
 			else if (\is_numeric($oResponse->ResponseList[1]) && \is_string($oResponse->ResponseList[2])) {
-				$bResult = $this->setStatus($oResponse->ResponseList[2], $oResponse->ResponseList[1]);
+				if ('UNSEEN' !== $oResponse->ResponseList[2]) {
+					$bResult |= $this->setStatus($oResponse->ResponseList[2], $oResponse->ResponseList[1]);
+				}
 			}
 		}
 

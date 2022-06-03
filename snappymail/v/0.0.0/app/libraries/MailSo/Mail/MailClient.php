@@ -131,8 +131,7 @@ class MailClient
 	public function MessageSetFlag(string $sFolderName, SequenceSet $oRange, string $sMessageFlag, bool $bSetAction = true, bool $bSkipUnsupportedFlag = false) : void
 	{
 		if (\count($oRange)) {
-			$oFolderInfo = $this->oImapClient->FolderSelect($sFolderName);
-			if ($oFolderInfo->IsFlagSupported($sMessageFlag)) {
+			if ($this->oImapClient->FolderSelect($sFolderName)->IsFlagSupported($sMessageFlag)) {
 				$sStoreAction = $bSetAction ? StoreAction::ADD_FLAGS_SILENT : StoreAction::REMOVE_FLAGS_SILENT;
 				$this->oImapClient->MessageStoreFlag($oRange, array($sMessageFlag), $sStoreAction);
 			} else if (!$bSkipUnsupportedFlag) {
@@ -522,11 +521,11 @@ class MailClient
 	public function FolderInformation(string $sFolderName, int $iPrevUidNext = 0, SequenceSet $oRange = null) : array
 	{
 		list($iCount, $iUnseenCount, $iUidNext, $iHighestModSeq, $iAppendLimit, $sMailboxId) = $this->initFolderValues($sFolderName);
+//		$oInfo = $this->oImapClient->FolderSelect($sFolderName);
 
 		$aFlags = array();
 		if ($oRange && \count($oRange)) {
 			$oInfo = $this->oImapClient->FolderExamine($sFolderName);
-			// $oInfo->PermanentFlags
 
 			$aFetchResponse = $this->oImapClient->Fetch(array(
 				FetchType::UID,
@@ -545,14 +544,16 @@ class MailClient
 
 		return array(
 			'Folder' => $sFolderName,
-			'Hash' => $this->GenerateFolderHash($sFolderName, $iCount, $iUidNext, $iHighestModSeq),
 			'totalEmails' => $iCount,
 			'unreadEmails' => $iUnseenCount,
 			'UidNext' => $iUidNext,
-			'MessagesFlags' => $aFlags,
 			'HighestModSeq' => $iHighestModSeq,
 			'AppendLimit' => $iAppendLimit,
 			'MailboxId' => $sMailboxId,
+//			'Flags' => $oInfo->Flags,
+//			'PermanentFlags' => $oInfo->PermanentFlags,
+			'Hash' => $this->GenerateFolderHash($sFolderName, $iCount, $iUidNext, $iHighestModSeq),
+			'MessagesFlags' => $aFlags,
 			'NewMessages' => $this->getFolderNextMessageInformation($sFolderName, $iPrevUidNext, $iUidNext)
 		);
 	}
@@ -823,21 +824,20 @@ class MailClient
 
 		$sSearch = \trim($oParams->sSearch);
 
-		list($iMessageRealCount, $iMessageUnseenCount, $iUidNext, $iHighestModSeq) = $this->initFolderValues($oParams->sFolderName);
-
-		// Don't use FolderExamine, else PERMANENTFLAGS is empty
-		$oInfo = $this->oImapClient->FolderSelect($oParams->sFolderName);
-
 		$oMessageCollection = new MessageCollection;
 		$oMessageCollection->FolderName = $oParams->sFolderName;
-		$oMessageCollection->FolderInfo = $oInfo;
 		$oMessageCollection->Offset = $oParams->iOffset;
 		$oMessageCollection->Limit = $oParams->iLimit;
 		$oMessageCollection->Search = $sSearch;
 		$oMessageCollection->ThreadUid = $oParams->iThreadUid;
 		$oMessageCollection->Filtered = '' !== \MailSo\Config::$MessageListPermanentFilter;
-		$oMessageCollection->totalEmails = $iMessageRealCount;
-		$oMessageCollection->unreadEmails = $iMessageUnseenCount;
+
+		list($iMessageRealCount, $iMessageUnseenCount, $iUidNext, $iHighestModSeq) = $this->initFolderValues($oParams->sFolderName);
+		// Don't use FolderExamine, else PERMANENTFLAGS is empty in Dovecot
+		$oInfo = $this->oImapClient->FolderSelect($oParams->sFolderName);
+		$oInfo->UNSEEN = $iMessageUnseenCount;
+		$oInfo->HIGHESTMODSEQ = $iHighestModSeq;
+		$oMessageCollection->FolderInfo = $oInfo;
 
 		$aUids = array();
 		$aAllThreads = [];
@@ -858,14 +858,14 @@ class MailClient
 		}
 
 		$oMessageCollection->FolderHash = $this->GenerateFolderHash(
-			$oParams->sFolderName, $iMessageRealCount, $iUidNext, $iHighestModSeq);
-
-		$oMessageCollection->UidNext = $iUidNext;
+			$oParams->sFolderName, $iMessageRealCount, $iUidNext, $oInfo->HIGHESTMODSEQ ?: 0
+		);
 
 		if (!$oParams->iThreadUid)
 		{
 			$oMessageCollection->NewMessages = $this->getFolderNextMessageInformation(
-				$oParams->sFolderName, $oParams->iPrevUidNext, $iUidNext);
+				$oParams->sFolderName, $oParams->iPrevUidNext, $iUidNext
+			);
 		}
 
 		$bSearch = false;
@@ -1256,17 +1256,13 @@ class MailClient
 	 */
 	public function FolderClear(string $sFolderFullName) : self
 	{
-		$oFolderInformation = $this->oImapClient->FolderSelect($sFolderFullName);
-		if (0 < $oFolderInformation->MESSAGES)
-		{
+		if (0 < $this->oImapClient->FolderSelect($sFolderFullName)->MESSAGES) {
 			$this->oImapClient->MessageStoreFlag(new SequenceSet('1:*', false),
 				array(MessageFlag::DELETED),
 				StoreAction::ADD_FLAGS_SILENT
 			);
-
 			$this->oImapClient->FolderExpunge();
 		}
-
 		return $this;
 	}
 
@@ -1275,13 +1271,10 @@ class MailClient
 	 */
 	public function FolderSubscribe(string $sFolderFullName, bool $bSubscribe) : self
 	{
-		if (!\strlen($sFolderFullName))
-		{
+		if (!\strlen($sFolderFullName)) {
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
-
 		$this->oImapClient->{$bSubscribe ? 'FolderSubscribe' : 'FolderUnsubscribe'}($sFolderFullName);
-
 		return $this;
 	}
 

@@ -125,7 +125,7 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 		 && folderToRemove.canBeDeleted()
 		 && folderToRemove.askDelete()
 		) {
-			if (0 < folderToRemove.privateMessageCountAll()) {
+			if (0 < folderToRemove.totalEmails()) {
 //				FolderUserStore.folderListError(getNotification(Notification.CantDeleteNonEmptyFolder));
 				folderToRemove.errorMsg(getNotification(Notification.CantDeleteNonEmptyFolder));
 			} else {

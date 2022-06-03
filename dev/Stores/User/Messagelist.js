@@ -186,27 +186,29 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrenFolderCache
 					let unreadCountChange = false;
 
 					const
-						folder = getFolderFromCacheList(collection.Folder);
-
+						folder = getFolderFromCacheList(collection.Folder),
+						folderInfo = collection.FolderInfo;
 					if (folder && !bCached) {
 						folder.expires = Date.now();
 
 						setFolderHash(collection.Folder, collection.FolderHash);
 
-						if (null != collection.totalEmails) {
-							folder.messageCountAll(collection.totalEmails);
+						if (null != folderInfo.totalEmails) {
+							folder.totalEmails(folderInfo.totalEmails);
 						}
 
-						if (null != collection.unreadEmails) {
-							if (pInt(folder.messageCountUnread()) !== pInt(collection.unreadEmails)) {
+						if (null != folderInfo.unreadEmails) {
+							if (pInt(folder.unreadEmails()) !== pInt(folderInfo.unreadEmails)) {
 								unreadCountChange = true;
 								MessageFlagsCache.clearFolder(folder.fullName);
 							}
-
-							folder.messageCountUnread(collection.unreadEmails);
+							folder.unreadEmails(folderInfo.unreadEmails);
 						}
 
-						MessagelistUserStore.initUidNextAndNewMessages(folder.fullName, collection.UidNext, collection.NewMessages);
+						folder.flags(folderInfo.Flags);
+						folder.permanentFlags(folderInfo.PermanentFlags);
+
+						MessagelistUserStore.initUidNextAndNewMessages(folder.fullName, folderInfo.UidNext, collection.NewMessages);
 					}
 
 					MessagelistUserStore.count(collection.MessageResultCount);
@@ -280,7 +282,7 @@ MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 
 				folder = getFolderFromCacheList(sFolderFullName);
 				if (folder) {
-					folder.messageCountUnread(folder.messageCountUnread() - alreadyUnread + length);
+					folder.unreadEmails(folder.unreadEmails() - alreadyUnread + length);
 				}
 
 				Remote.request('MessageSetSeen', null, {
@@ -335,13 +337,13 @@ MessagelistUserStore.removeMessagesFromList = (
 	messages.forEach(item => item && item.isUnseen() && ++unseenCount);
 
 	if (fromFolder && !copy) {
-		fromFolder.messageCountAll(
-			0 <= fromFolder.messageCountAll() - uidForRemove.length ? fromFolder.messageCountAll() - uidForRemove.length : 0
+		fromFolder.totalEmails(
+			0 <= fromFolder.totalEmails() - uidForRemove.length ? fromFolder.totalEmails() - uidForRemove.length : 0
 		);
 
 		if (0 < unseenCount) {
-			fromFolder.messageCountUnread(
-				0 <= fromFolder.messageCountUnread() - unseenCount ? fromFolder.messageCountUnread() - unseenCount : 0
+			fromFolder.unreadEmails(
+				0 <= fromFolder.unreadEmails() - unseenCount ? fromFolder.unreadEmails() - unseenCount : 0
 			);
 		}
 	}
@@ -351,9 +353,9 @@ MessagelistUserStore.removeMessagesFromList = (
 			unseenCount = 0;
 		}
 
-		toFolder.messageCountAll(toFolder.messageCountAll() + uidForRemove.length);
+		toFolder.totalEmails(toFolder.totalEmails() + uidForRemove.length);
 		if (0 < unseenCount) {
-			toFolder.messageCountUnread(toFolder.messageCountUnread() + unseenCount);
+			toFolder.unreadEmails(toFolder.unreadEmails() + unseenCount);
 		}
 
 		toFolder.actionBlink(true);

@@ -62,19 +62,27 @@ class FolderInformation implements \JsonSerializable
 
 	public function jsonSerialize()
 	{
-		return array(
+		$result = array(
 			'id' => $this->MAILBOXID,
 			'Name' => $this->FolderName,
 			'Flags' => $this->Flags,
 			'PermanentFlags' => $this->PermanentFlags,
-/*
-			'totalEmails'   => $this->MESSAGES,
-			'unreadEmails'  => $this->UNSEEN,
-			'UidNext'       => $this->UIDNEXT,
-			'UidValidity'   => $this->UIDVALIDITY,
-			'Highestmodseq' => $this->HIGHESTMODSEQ,
-			'Appendlimit'   => $this->APPENDLIMIT,
-*/
+			'UidNext' => $this->UIDNEXT,
+			'UidValidity' => $this->UIDVALIDITY
 		);
+		if (isset($this->MESSAGES)) {
+			$result['totalEmails'] = $this->MESSAGES;
+			$result['unreadEmails'] = $this->UNSEEN;
+		}
+		if (isset($this->HIGHESTMODSEQ)) {
+			$result['Highestmodseq'] = $this->HIGHESTMODSEQ;
+		}
+		if (isset($this->HIGHESTMODSEQ)) {
+			$result['Appendlimit'] = $this->APPENDLIMIT;
+		}
+		if (isset($this->SIZE)) {
+			$result['Size'] = $this->SIZE;
+		}
+		return $result;
 	}
 }

@@ -18,6 +18,8 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 
 import PreviewHTML from 'Html/PreviewMessage.html';
 
+import Remote from 'Remote/User/Fetch';
+
 const
 	// eslint-disable-next-line max-len
 	url = /(^|[\s\n]|\/?>)(https:\/\/[-A-Z0-9+\u0026\u2019#/%?=()~_|!:,.;]*[-A-Z0-9+\u0026#/%=~()_|])/gi,
@@ -30,6 +32,25 @@ const
 		const result = hcont.clientHeight;
 		hcont.innerHTML = '';
 		return result;
+	},
+
+	toggleTag = (message, keyword) => {
+		const lower = keyword.toLowerCase(),
+			isSet = message.flags().includes(lower);
+		Remote.request('MessageSetKeyword', iError => {
+			if (!iError) {
+				if (isSet) {
+					message.flags.remove(lower);
+				} else {
+					message.flags.push(lower);
+				}
+			}
+		}, {
+			Folder: message.folder,
+			Uids: message.uid,
+			Keyword: keyword,
+			SetAction: isSet ? 0 : 1
+		})
 	},
 
 	replyHelper = (emails, unic, localEmails) => {
@@ -91,6 +112,14 @@ export class MessageModel extends AbstractModel {
 		this.unsubsribeLinks = ko.observableArray();
 		this.flags = ko.observableArray();
 
+		const ignoredTags = [
+			'$sent',
+			'$signed',
+			'$error',
+			'$queued',
+			'$forwarded'
+		];
+
 		this.addComputables({
 			attachmentIconClass: () => FileInfo.getAttachmentsIconClass(this.attachments()),
 			threadsLen: () => this.threads().length,
@@ -107,7 +136,25 @@ export class MessageModel extends AbstractModel {
 					('\\' == value[0] || '$forwarded' == value)
 					? ''
 					: '<span class="focused msgflag-'+value+'">' + i18n('MESSAGE_TAGS/'+value,0,value) + '</span>'
-				).join(' ')
+				).join(' '),
+
+			tagOptions: () => {
+				const tagOptions = [];
+				FolderUserStore.currentFolder().permanentFlags.forEach(value => {
+					let lower = value.toLowerCase();
+					if ('\\' != value[0] && !ignoredTags.includes(lower)) {
+						tagOptions.push({
+							css: 'msgflag-' + lower,
+							value: value,
+							checked: this.flags().includes(lower),
+							label: i18n('MESSAGE_TAGS/'+lower, 0, lower),
+							toggle: (/*obj*/) => toggleTag(this, value)
+						});
+					}
+				});
+				return tagOptions
+			}
+
 		});
 	}
 

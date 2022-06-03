@@ -487,9 +487,9 @@ export class MailMessageList extends AbstractViewRight {
 				});
 
 				if (iThreadUid) {
-					folder.messageCountUnread(Math.max(0, folder.messageCountUnread() - cnt));
+					folder.unreadEmails(Math.max(0, folder.unreadEmails() - cnt));
 				} else {
-					folder.messageCountUnread(0);
+					folder.unreadEmails(0);
 				}
 
 				MessageFlagsCache.clearFolder(sFolderFullName);

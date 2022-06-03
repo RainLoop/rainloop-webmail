@@ -38,13 +38,13 @@ fetchFolderInformation = (fCallback, folder, list = []) => {
 
 	if (!fetch) {
 		list.forEach(messageListItem => {
-			if (!MessageFlagsCache.getFor(messageListItem.folder, messageListItem.uid)) {
+			if (!MessageFlagsCache.getFor(folder, messageListItem.uid)) {
 				uids.push(messageListItem.uid);
 			}
 
 			if (messageListItem.threads.length) {
 				messageListItem.threads.forEach(uid => {
-					if (!MessageFlagsCache.getFor(messageListItem.folder, uid)) {
+					if (!MessageFlagsCache.getFor(folder, uid)) {
 						uids.push(uid);
 					}
 				});
@@ -148,11 +148,11 @@ folderInformationMultiply = (boot = false) => {
 
 						setFolderHash(item.Folder, item.Hash);
 
-						folder.messageCountAll(item.totalEmails);
+						folder.totalEmails(item.totalEmails);
 
-						let unreadCountChange = folder.messageCountUnread() !== item.unreadEmails;
+						let unreadCountChange = folder.unreadEmails() !== item.unreadEmails;
 
-						folder.messageCountUnread(item.unreadEmails);
+						folder.unreadEmails(item.unreadEmails);
 
 						if (unreadCountChange) {
 							MessageFlagsCache.clearFolder(folder.fullName);

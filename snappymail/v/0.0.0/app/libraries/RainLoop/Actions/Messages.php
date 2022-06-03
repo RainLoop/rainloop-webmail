@@ -411,6 +411,11 @@ trait Messages
 		return $this->messageSetFlag(MessageFlag::FLAGGED, __FUNCTION__, true);
 	}
 
+	public function DoMessageSetKeyword() : array
+	{
+		return $this->messageSetFlag($this->GetActionParam('Keyword', ''), __FUNCTION__, true);
+	}
+
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */

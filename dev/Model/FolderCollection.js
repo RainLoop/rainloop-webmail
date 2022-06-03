@@ -163,11 +163,11 @@ export class FolderCollectionModel extends AbstractCollectionModel
 			}
 
 			if (null != oFolder.totalEmails) {
-				oCacheFolder.messageCountAll(oFolder.totalEmails);
+				oCacheFolder.totalEmails(oFolder.totalEmails);
 			}
 
 			if (null != oFolder.unreadEmails) {
-				oCacheFolder.messageCountUnread(oFolder.unreadEmails);
+				oCacheFolder.unreadEmails(oFolder.unreadEmails);
 			}
 
 			return oCacheFolder;
@@ -258,8 +258,8 @@ export class FolderModel extends AbstractModel {
 			nameForEdit: '',
 			errorMsg: '',
 
-			privateMessageCountAll: 0,
-			privateMessageCountUnread: 0,
+			totalEmailsValue: 0,
+			unreadEmailsValue: 0,
 
 			kolabType: null,
 
@@ -272,6 +272,33 @@ export class FolderModel extends AbstractModel {
 
 		this.subFolders = ko.observableArray(new FolderCollectionModel);
 		this.actionBlink = ko.observable(false).extend({ falseTimeout: 1000 });
+
+		this.totalEmails = koComputable({
+				read: this.totalEmailsValue,
+				write: (iValue) => {
+					if (isPosNumeric(iValue)) {
+						this.totalEmailsValue(iValue);
+					} else {
+						this.totalEmailsValue.valueHasMutated();
+					}
+				}
+			})
+			.extend({ notify: 'always' });
+
+		this.unreadEmails = koComputable({
+				read: this.unreadEmailsValue,
+				write: (value) => {
+					if (isPosNumeric(value)) {
+						this.unreadEmailsValue(value);
+					} else {
+						this.unreadEmailsValue.valueHasMutated();
+					}
+				}
+			})
+			.extend({ notify: 'always' });
+
+		this.flags = ko.observableArray();
+		this.permanentFlags = ko.observableArray();
 	}
 
 	/**
@@ -301,30 +328,6 @@ export class FolderModel extends AbstractModel {
 			folder.parentName = path.join(folder.delimiter);
 
 			type && 'mail' != type && folder.kolabType(type);
-
-			folder.messageCountAll = koComputable({
-					read: folder.privateMessageCountAll,
-					write: (iValue) => {
-						if (isPosNumeric(iValue)) {
-							folder.privateMessageCountAll(iValue);
-						} else {
-							folder.privateMessageCountAll.valueHasMutated();
-						}
-					}
-				})
-				.extend({ notify: 'always' });
-
-			folder.messageCountUnread = koComputable({
-					read: folder.privateMessageCountUnread,
-					write: (value) => {
-						if (isPosNumeric(value)) {
-							folder.privateMessageCountUnread(value);
-						} else {
-							folder.privateMessageCountUnread.valueHasMutated();
-						}
-					}
-				})
-				.extend({ notify: 'always' });
 
 			folder.addComputables({
 
@@ -371,8 +374,8 @@ export class FolderModel extends AbstractModel {
 				hidden: () => !folder.selectable() && (folder.isSystemFolder() | !folder.hasVisibleSubfolders()),
 
 				printableUnreadCount: () => {
-					const count = folder.messageCountAll(),
-						unread = folder.messageCountUnread(),
+					const count = folder.totalEmails(),
+						unread = folder.unreadEmails(),
 						type = folder.type();
 
 					if (count) {
@@ -412,7 +415,7 @@ export class FolderModel extends AbstractModel {
 					return '';
 				},
 
-				hasUnreadMessages: () => 0 < folder.messageCountUnread() && folder.printableUnreadCount(),
+				hasUnreadMessages: () => 0 < folder.unreadEmails() && folder.printableUnreadCount(),
 
 				hasSubscribedUnreadMessagesSubfolders: () =>
 					!!folder.subFolders().find(
@@ -427,7 +430,7 @@ export class FolderModel extends AbstractModel {
 
 				edited: value => value && folder.nameForEdit(folder.name()),
 
-				messageCountUnread: unread => {
+				unreadEmails: unread => {
 					if (FolderType.Inbox === folder.type()) {
 						fireEvent('mailbox.inbox-unread-count', unread);
 					}

@@ -16,15 +16,16 @@ export class MessageCollectionModel extends AbstractCollectionModel
 		this.Filtered
 		this.Folder
 		this.FolderHash
-		this.Limit
+		this.FolderInfo
 		this.totalEmails
 		this.unreadEmails
 		this.MessageResultCount
+		this.UidNext
+		this.ThreadUid
 		this.NewMessages
 		this.Offset
+		this.Limit
 		this.Search
-		this.ThreadUid
-		this.UidNext
 	}
 */
 

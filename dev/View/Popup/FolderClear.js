@@ -43,8 +43,8 @@ export class FolderClearPopupView extends AbstractViewPopup {
 
 			this.clearingProcess(true);
 
-			folderToClear.messageCountAll(0);
-			folderToClear.messageCountUnread(0);
+			folderToClear.totalEmails(0);
+			folderToClear.unreadEmails(0);
 
 			setFolderHash(folderToClear.fullName, '');
 
