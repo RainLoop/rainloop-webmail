@@ -77,7 +77,7 @@ class FolderInformation implements \JsonSerializable
 		if (isset($this->HIGHESTMODSEQ)) {
 			$result['Highestmodseq'] = $this->HIGHESTMODSEQ;
 		}
-		if (isset($this->HIGHESTMODSEQ)) {
+		if (isset($this->APPENDLIMIT)) {
 			$result['Appendlimit'] = $this->APPENDLIMIT;
 		}
 		if (isset($this->SIZE)) {
