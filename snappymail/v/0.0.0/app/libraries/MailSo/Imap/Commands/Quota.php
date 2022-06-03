@@ -48,7 +48,7 @@ trait Quota
 		if (!$this->IsSupported('QUOTA')) {
 			return null;
 		}
-		$oResponseCollection = $this->SendRequestGetResponse(($root?'GETQUOTAROOT':'GETQUOTA') . " {$this->EscapeFolderName($sFolderName)}");
+		$oResponseCollection = $this->SendRequest(($root?'GETQUOTAROOT':'GETQUOTA') . " {$this->EscapeFolderName($sFolderName)}");
 		$aReturn = array(0, 0);
 		foreach ($this->yieldUntaggedResponses() as $oResponse) {
 			if ('QUOTA' === $oResponse->StatusOrIndex
