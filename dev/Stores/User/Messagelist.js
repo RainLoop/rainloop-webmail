@@ -260,27 +260,25 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 	messages = messages || MessagelistUserStore.listChecked();
 
-	let folder = null,
+	let folder,
 		alreadyUnread = 0,
 		rootUids = messages.map(oMessage => oMessage && oMessage.uid ? oMessage.uid : null)
 			.validUnique(),
 		length = rootUids.length;
 
 	if (sFolderFullName && length) {
+		rootUids.forEach(sSubUid =>
+			alreadyUnread += MessageFlagsCache.storeBySetAction(sFolderFullName, sSubUid, iSetAction)
+		);
 		switch (iSetAction) {
 			case MessageSetAction.SetSeen:
 				length = 0;
 				// fallthrough is intentionally
 			case MessageSetAction.UnsetSeen:
-				rootUids.forEach(sSubUid =>
-					alreadyUnread += MessageFlagsCache.storeBySetAction(sFolderFullName, sSubUid, iSetAction)
-				);
-
 				folder = getFolderFromCacheList(sFolderFullName);
 				if (folder) {
 					folder.unreadEmails(folder.unreadEmails() - alreadyUnread + length);
 				}
-
 				Remote.request('MessageSetSeen', null, {
 					Folder: sFolderFullName,
 					Uids: rootUids.join(','),
@@ -290,9 +288,6 @@ MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 
 			case MessageSetAction.SetFlag:
 			case MessageSetAction.UnsetFlag:
-				rootUids.forEach(sSubUid =>
-					MessageFlagsCache.storeBySetAction(sFolderFullName, sSubUid, iSetAction)
-				);
 				Remote.request('MessageSetFlagged', null, {
 					Folder: sFolderFullName,
 					Uids: rootUids.join(','),

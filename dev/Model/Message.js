@@ -18,6 +18,7 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 
 import PreviewHTML from 'Html/PreviewMessage.html';
 
+//import { MessageFlagsCache } from 'Common/Cache';
 import Remote from 'Remote/User/Fetch';
 
 const
@@ -44,6 +45,7 @@ const
 				} else {
 					message.flags.push(lower);
 				}
+//				MessageFlagsCache.setFor(message.folder, message.uid, message.flags());
 			}
 		}, {
 			Folder: message.folder,

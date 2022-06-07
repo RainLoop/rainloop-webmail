@@ -128,16 +128,12 @@ export class MessageFlagsCache
 			}
 
 			if (thread.length) {
-				const unseenSubUid = thread.find(iSubUid =>
+				message.hasUnseenSubMessage(!!thread.find(iSubUid =>
 					(uid !== iSubUid) && !this.hasFlag(message.folder, iSubUid, '\\seen')
-				);
-
-				const flaggedSubUid = thread.find(iSubUid =>
+				));
+				message.hasFlaggedSubMessage(!!thread.find(iSubUid =>
 					(uid !== iSubUid) && this.hasFlag(message.folder, iSubUid, '\\flagged')
-				);
-
-				message.hasUnseenSubMessage(!!unseenSubUid);
-				message.hasFlaggedSubMessage(!!flaggedSubUid);
+				));
 			}
 		}
 	}
