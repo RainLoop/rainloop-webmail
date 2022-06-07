@@ -2,10 +2,8 @@ import { isArray, arrayLength } from 'Common/Utils';
 import {
 	MessageFlagsCache,
 	setFolderHash,
-	getFolderHash,
 	getFolderInboxName,
-	getFolderFromCacheList,
-	getFolderUidNext
+	getFolderFromCacheList
 } from 'Common/Cache';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { FolderUserStore } from 'Stores/User/Folder';
@@ -34,7 +32,8 @@ sortFolders = folders => {
  */
 fetchFolderInformation = (fCallback, folder, list = []) => {
 	let fetch = !arrayLength(list);
-	const uids = [];
+	const uids = [],
+		folderFromCache = getFolderFromCacheList(folder);
 
 	if (!fetch) {
 		list.forEach(messageListItem => {
@@ -57,7 +56,7 @@ fetchFolderInformation = (fCallback, folder, list = []) => {
 		Remote.request('FolderInformation', fCallback, {
 			Folder: folder,
 			FlagsUids: uids,
-			UidNext: getFolderUidNext(folder) // Used to check for new messages
+			UidNext: (folderFromCache && folderFromCache.uidNext) || 0 // Used to check for new messages
 		});
 	} else if (SettingsUserStore.useThreads()) {
 		MessagelistUserStore.reloadFlagsAndCachedMessage();
@@ -140,25 +139,23 @@ folderInformationMultiply = (boot = false) => {
 			if (!iError && arrayLength(oData.Result)) {
 				const utc = Date.now();
 				oData.Result.forEach(item => {
-					const hash = getFolderHash(item.Folder),
-						folder = getFolderFromCacheList(item.Folder);
+					const folder = getFolderFromCacheList(item.Folder);
 
 					if (folder) {
+						const oldHash = folder.hash,
+							unreadCountChange = folder.unreadEmails() !== item.unreadEmails;
+
+//						folder.revivePropertiesFromJson(item);
 						folder.expires = utc;
-
-						setFolderHash(item.Folder, item.Hash);
-
+						folder.hash = item.Hash;
 						folder.totalEmails(item.totalEmails);
-
-						let unreadCountChange = folder.unreadEmails() !== item.unreadEmails;
-
 						folder.unreadEmails(item.unreadEmails);
 
 						if (unreadCountChange) {
 							MessageFlagsCache.clearFolder(folder.fullName);
 						}
 
-						if (!hash || item.Hash !== hash) {
+						if (!oldHash || item.Hash !== oldHash) {
 							if (folder.fullName === FolderUserStore.currentFolderFullName()) {
 								MessagelistUserStore.reload();
 							}

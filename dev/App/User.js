@@ -24,8 +24,6 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import {
 	MessageFlagsCache,
-	setFolderHash,
-	getFolderHash,
 	getFolderInboxName,
 	getFolderFromCacheList
 } from 'Common/Cache';
@@ -222,17 +220,16 @@ export class AppUser extends AbstractApp {
 				(iError, data) => {
 					if (!iError && data.Result) {
 						const result = data.Result,
-							hash = getFolderHash(result.Folder),
 							folderFromCache = getFolderFromCacheList(result.Folder);
 						if (folderFromCache) {
+							const oldHash = folderFromCache.hash,
+								unreadCountChange = (folderFromCache.unreadEmails() !== result.unreadEmails);
+
+//							folderFromCache.revivePropertiesFromJson(result);
 							folderFromCache.expires = Date.now();
-
-							setFolderHash(result.Folder, result.Hash);
-
+							folderFromCache.uidNext = result.UidNext;
+							folderFromCache.hash = result.Hash;
 							folderFromCache.totalEmails(result.totalEmails);
-
-							let unreadCountChange = (folderFromCache.unreadEmails() !== result.unreadEmails);
-
 							folderFromCache.unreadEmails(result.unreadEmails);
 
 							if (unreadCountChange) {
@@ -247,13 +244,9 @@ export class AppUser extends AbstractApp {
 								MessagelistUserStore.reloadFlagsAndCachedMessage();
 							}
 
-							MessagelistUserStore.initUidNextAndNewMessages(
-								folderFromCache.fullName,
-								result.UidNext,
-								result.NewMessages
-							);
+							MessagelistUserStore.notifyNewMessages(folderFromCache.fullName, result.NewMessages);
 
-							if (!hash || unreadCountChange || result.Hash !== hash) {
+							if (!oldHash || unreadCountChange || result.Hash !== oldHash) {
 								if (folderFromCache.fullName === FolderUserStore.currentFolderFullName()) {
 									MessagelistUserStore.reload();
 								} else if (getFolderInboxName() === folderFromCache.fullName) {

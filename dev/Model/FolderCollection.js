@@ -3,7 +3,7 @@ import { AbstractCollectionModel } from 'Model/AbstractCollection';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { isArray, getKeyByValue, forEachObjectEntry, b64EncodeJSONSafe } from 'Common/Utils';
 import { ClientSideKeyNameExpandedFolders, FolderType, FolderMetadataKeys } from 'Common/EnumsUser';
-import { getFolderFromCacheList, setFolder, setFolderInboxName, setFolderHash } from 'Common/Cache';
+import { getFolderFromCacheList, setFolder, setFolderInboxName } from 'Common/Cache';
 import { Settings, SettingsGet, fireEvent } from 'Common/Globals';
 
 import * as Local from 'Storage/Client';
@@ -138,13 +138,24 @@ export class FolderCollectionModel extends AbstractCollectionModel
 			let oCacheFolder = getFolderFromCacheList(oFolder.FullName),
 				type = FolderType[getKeyByValue(SystemFolders, oFolder.FullName)];
 
-			if (!oCacheFolder) {
+			if (oCacheFolder) {
+//				oCacheFolder.revivePropertiesFromJson(oFolder);
+				if (oFolder.Hash) {
+					oCacheFolder.hash = oFolder.Hash;
+				}
+				if (null != oFolder.totalEmails) {
+					oCacheFolder.totalEmails(oFolder.totalEmails);
+				}
+				if (null != oFolder.unreadEmails) {
+					oCacheFolder.unreadEmails(oFolder.unreadEmails);
+				}
+			} else {
 				oCacheFolder = FolderModel.reviveFromJson(oFolder);
 				if (!oCacheFolder)
 					return null;
 
 				if (1 == type) {
-					oCacheFolder.type(FolderType.Inbox);
+					oCacheFolder.type(type);
 					setFolderInboxName(oFolder.FullName);
 				}
 				setFolder(oCacheFolder);
@@ -157,18 +168,6 @@ export class FolderCollectionModel extends AbstractCollectionModel
 			oCacheFolder.collapsed(!expandedFolders
 				|| !isArray(expandedFolders)
 				|| !expandedFolders.includes(oCacheFolder.fullName));
-
-			if (oFolder.Hash) {
-				setFolderHash(oCacheFolder.fullName, oFolder.Hash);
-			}
-
-			if (null != oFolder.totalEmails) {
-				oCacheFolder.totalEmails(oFolder.totalEmails);
-			}
-
-			if (null != oFolder.unreadEmails) {
-				oCacheFolder.unreadEmails(oFolder.unreadEmails);
-			}
 
 			return oCacheFolder;
 		});
@@ -240,8 +239,9 @@ export class FolderModel extends AbstractModel {
 
 		this.exists = true;
 
-//		this.hash = '';
-//		this.uidNext = 0;
+		this.hash = '';
+//		this.id = null;
+		this.uidNext = null;
 
 		this.addObservables({
 			name: '',

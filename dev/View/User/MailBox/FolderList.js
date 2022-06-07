@@ -3,7 +3,7 @@ import ko from 'ko';
 import { Scope } from 'Common/Enums';
 import { moveAction, addShortcut } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
-import { setFolderHash } from 'Common/Cache';
+//import { setFolderHash } from 'Common/Cache';
 import { addComputablesTo } from 'External/ko';
 
 import { AppUserStore } from 'Stores/User/App';
@@ -100,11 +100,11 @@ export class MailFolderList extends AbstractViewLeft {
 						if (!SettingsUserStore.usePreviewPane()) {
 							MessageUserStore.message(null);
 						}
-
+/*
 						if (folder.fullName === FolderUserStore.currentFolderFullName()) {
 							setFolderHash(folder.fullName, '');
 						}
-
+*/
 						hasher.setHash(
 							mailBox(folder.fullNameHash, 1,
 								(event.target.matches('.flag-icon') && !folder.isFlagged()) ? 'flagged' : ''

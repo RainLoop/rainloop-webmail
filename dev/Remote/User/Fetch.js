@@ -1,8 +1,6 @@
 import { pString, pInt, b64EncodeJSONSafe } from 'Common/Utils';
 
 import {
-	getFolderHash,
-	getFolderUidNext,
 	getFolderFromCacheList
 } from 'Common/Cache';
 
@@ -25,13 +23,14 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	messageList(fCallback, params, bSilent = false) {
 		const
 			sFolderFullName = pString(params.Folder),
-			folderHash = getFolderHash(sFolderFullName);
+			folder = getFolderFromCacheList(sFolderFullName),
+			folderHash = (folder && folder.hash) || '';
 
 		params = Object.assign({
 			Offset: 0,
 			Limit: SettingsUserStore.messagesPerPage(),
 			Search: '',
-			UidNext: getFolderUidNext(sFolderFullName), // Used to check for new messages
+			UidNext: (folder && folder.uidNext) || 0, // Used to check for new messages
 			Sort: FolderUserStore.sortMode(),
 			Hash: folderHash + SettingsGet('AccountHash')
 		}, params);

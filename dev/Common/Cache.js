@@ -4,7 +4,6 @@ import { isArray } from 'Common/Utils';
 let FOLDERS_CACHE = {},
 	FOLDERS_NAME_CACHE = {},
 	MESSAGE_FLAGS_CACHE = {},
-	NEW_MESSAGE_CACHE = {},
 	REQUESTED_MESSAGE_CACHE = {},
 	inboxFolderName = 'INBOX';
 
@@ -16,7 +15,6 @@ export const
 		FOLDERS_CACHE = {};
 		FOLDERS_NAME_CACHE = {};
 		MESSAGE_FLAGS_CACHE = {};
-		NEW_MESSAGE_CACHE = {};
 		REQUESTED_MESSAGE_CACHE = {};
 	},
 
@@ -39,29 +37,6 @@ export const
 	 * @returns {boolean}
 	 */
 	hasRequestedMessage = (folder, uid) => true === REQUESTED_MESSAGE_CACHE[getMessageKey(folder, uid)],
-
-	/**
-	 * @param {string} folderFullName
-	 * @param {string} uid
-	 */
-	addNewMessageCache = (folderFullName, uid) => NEW_MESSAGE_CACHE[getMessageKey(folderFullName, uid)] = true,
-
-	/**
-	 * @param {string} folderFullName
-	 * @param {string} uid
-	 */
-	hasNewMessageAndRemoveFromCache = (folderFullName, uid) => {
-		if (NEW_MESSAGE_CACHE[getMessageKey(folderFullName, uid)]) {
-			NEW_MESSAGE_CACHE[getMessageKey(folderFullName, uid)] = null;
-			return true;
-		}
-		return false;
-	},
-
-	/**
-	 * @returns {void}
-	 */
-	clearNewMessageCache = () => NEW_MESSAGE_CACHE = {},
 
 	/**
 	 * @returns {string}
@@ -93,31 +68,10 @@ export const
 
 	/**
 	 * @param {string} folderFullName
-	 * @returns {string}
-	 */
-	getFolderHash = folderFullName =>
-		FOLDERS_CACHE[folderFullName] ? FOLDERS_CACHE[folderFullName].hash : '',
-
-	/**
-	 * @param {string} folderFullName
 	 * @param {string} folderHash
 	 */
 	setFolderHash = (folderFullName, folderHash) =>
 		FOLDERS_CACHE[folderFullName] && (FOLDERS_CACHE[folderFullName].hash = folderHash),
-
-	/**
-	 * @param {string} folderFullName
-	 * @returns {string}
-	 */
-	getFolderUidNext = folderFullName =>
-		FOLDERS_CACHE[folderFullName] ? FOLDERS_CACHE[folderFullName].uidNext : 0,
-
-	/**
-	 * @param {string} folderFullName
-	 * @param {string} uidNext
-	 */
-	setFolderUidNext = (folderFullName, uidNext) =>
-		FOLDERS_CACHE[folderFullName] && (FOLDERS_CACHE[folderFullName].uidNext = uidNext),
 
 	/**
 	 * @param {string} folderFullName

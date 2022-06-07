@@ -8,12 +8,9 @@ import { addObservablesTo, addComputablesTo } from 'External/ko';
 
 import {
 	getFolderInboxName,
-	addNewMessageCache,
-	setFolderUidNext,
 	getFolderFromCacheList,
 	setFolderHash,
-	MessageFlagsCache,
-	clearNewMessageCache
+	MessageFlagsCache
 } from 'Common/Cache';
 
 import { mailBox } from 'Common/Links';
@@ -114,45 +111,40 @@ MessagelistUserStore.hasCheckedOrSelected = koComputable(() =>
 		|| MessagelistUserStore.find(item => item.checked()))
 	).extend({ rateLimit: 50 });
 
-MessagelistUserStore.initUidNextAndNewMessages = (folder, uidNext, newMessages) => {
-	if (getFolderInboxName() === folder && uidNext) {
-		if (arrayLength(newMessages)) {
-			newMessages.forEach(item => addNewMessageCache(folder, item.Uid));
+MessagelistUserStore.notifyNewMessages = (folder, newMessages) => {
+	if (getFolderInboxName() === folder && arrayLength(newMessages)) {
 
-			NotificationUserStore.playSoundNotification();
+		NotificationUserStore.playSoundNotification();
 
-			const len = newMessages.length;
-			if (3 < len) {
+		const len = newMessages.length;
+		if (3 < len) {
+			NotificationUserStore.displayDesktopNotification(
+				AccountUserStore.email(),
+				i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
+					COUNT: len
+				}),
+				{ Url: mailBox(newMessages[0].Folder) }
+			);
+		} else {
+			newMessages.forEach(item => {
 				NotificationUserStore.displayDesktopNotification(
-					AccountUserStore.email(),
-					i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
-						COUNT: len
-					}),
-					{ Url: mailBox(newMessages[0].Folder) }
+					EmailCollectionModel.reviveFromJson(item.From).toString(),
+					item.subject,
+					{ Folder: item.Folder, Uid: item.Uid }
 				);
-			} else {
-				newMessages.forEach(item => {
-					NotificationUserStore.displayDesktopNotification(
-						EmailCollectionModel.reviveFromJson(item.From).toString(),
-						item.subject,
-						{ Folder: item.Folder, Uid: item.Uid }
-					);
-				});
-			}
+			});
 		}
-
-		setFolderUidNext(folder, uidNext);
 	}
 }
 
 /**
  * @param {boolean=} bDropPagePosition = false
- * @param {boolean=} bDropCurrenFolderCache = false
+ * @param {boolean=} bDropCurrentFolderCache = false
  */
-MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrenFolderCache = false) => {
+MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCache = false) => {
 	let iOffset = (MessagelistUserStore.page() - 1) * SettingsUserStore.messagesPerPage();
 
-	if (bDropCurrenFolderCache) {
+	if (bDropCurrentFolderCache) {
 		setFolderHash(FolderUserStore.currentFolderFullName(), '');
 	}
 
@@ -189,9 +181,10 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrenFolderCache
 						folder = getFolderFromCacheList(collection.Folder),
 						folderInfo = collection.FolderInfo;
 					if (folder && !bCached) {
+//						folder.revivePropertiesFromJson(result);
 						folder.expires = Date.now();
-
-						setFolderHash(collection.Folder, collection.FolderHash);
+						folder.uidNext = folderInfo.UidNext;
+						folder.hash = collection.FolderHash;
 
 						if (null != folderInfo.totalEmails) {
 							folder.totalEmails(folderInfo.totalEmails);
@@ -213,7 +206,7 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrenFolderCache
 						});
 						folder.permanentFlags(folderInfo.PermanentFlags);
 
-						MessagelistUserStore.initUidNextAndNewMessages(folder.fullName, folderInfo.UidNext, collection.NewMessages);
+						MessagelistUserStore.notifyNewMessages(folder.fullName, collection.NewMessages);
 					}
 
 					MessagelistUserStore.count(collection.MessageResultCount);
@@ -237,8 +230,6 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrenFolderCache
 
 					MessagelistUserStore(collection);
 					MessagelistUserStore.isIncomplete(false);
-
-					clearNewMessageCache();
 
 					if (folder && (bCached || unreadCountChange || SettingsUserStore.useThreads())) {
 						rl.app.folderInformation(folder.fullName, collection);
@@ -341,19 +332,24 @@ MessagelistUserStore.removeMessagesFromList = (
 
 	messages.forEach(item => item && item.isUnseen() && ++unseenCount);
 
-	if (fromFolder && !copy) {
-		fromFolder.totalEmails(
-			0 <= fromFolder.totalEmails() - uidForRemove.length ? fromFolder.totalEmails() - uidForRemove.length : 0
-		);
-
-		if (0 < unseenCount) {
-			fromFolder.unreadEmails(
-				0 <= fromFolder.unreadEmails() - unseenCount ? fromFolder.unreadEmails() - unseenCount : 0
+	if (fromFolder) {
+		fromFolder.hash = '';
+		if (!copy) {
+			fromFolder.totalEmails(
+				0 <= fromFolder.totalEmails() - uidForRemove.length ? fromFolder.totalEmails() - uidForRemove.length : 0
 			);
+
+			if (0 < unseenCount) {
+				fromFolder.unreadEmails(
+					0 <= fromFolder.unreadEmails() - unseenCount ? fromFolder.unreadEmails() - unseenCount : 0
+				);
+			}
 		}
 	}
 
 	if (toFolder) {
+		toFolder.hash = '';
+
 		if (trashFolder === toFolder.fullName || spamFolder === toFolder.fullName) {
 			unseenCount = 0;
 		}
@@ -383,14 +379,6 @@ MessagelistUserStore.removeMessagesFromList = (
 
 			setTimeout(() => messages.forEach(item => messageList.remove(item)), 350);
 		}
-	}
-
-	if (fromFolderFullName) {
-		setFolderHash(fromFolderFullName, '');
-	}
-
-	if (toFolderFullName) {
-		setFolderHash(toFolderFullName, '');
 	}
 
 	if (MessagelistUserStore.threadUid()) {
