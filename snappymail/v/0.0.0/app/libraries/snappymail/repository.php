@@ -179,7 +179,7 @@ abstract class Repository
 
 	public static function getPackagesList() : array
 	{
-		\RainLoop\Api::Actions()->IsAdminLoggined();
+		empty($_ENV['SNAPPYMAIL_INCLUDE_AS_API']) && \RainLoop\Api::Actions()->IsAdminLoggined();
 
 		$bReal = false;
 		$sError = '';
@@ -239,7 +239,7 @@ abstract class Repository
 
 	public static function installPackage(string $sType, string $sId, string $sFile) : bool
 	{
-		\RainLoop\Api::Actions()->IsAdminLoggined();
+		empty($_ENV['SNAPPYMAIL_INCLUDE_AS_API']) && \RainLoop\Api::Actions()->IsAdminLoggined();
 
 		\RainLoop\Api::Logger()->Write('Start package install: '.$sFile.' ('.$sType.')', \MailSo\Log\Enumerations\Type::INFO, 'INSTALLER');
 
