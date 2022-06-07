@@ -1,5 +1,6 @@
 import * as Links from 'Common/Links';
 import { doc, SettingsGet, fireEvent, addEventsListener } from 'Common/Globals';
+import { addObservablesTo } from 'External/ko';
 
 let notificator = null,
 	player = null,
@@ -50,7 +51,7 @@ let notificator = null,
 			audioCtx.resume();
 		}
 		unlockEvents.forEach(type => doc.removeEventListener(type, unlock, true));
-//		setTimeout(()=>Audio.playNotification(1),1);
+//		setTimeout(()=>SMAudio.playNotification(0,1),1);
 	};
 
 if (audioCtx) {
@@ -76,6 +77,10 @@ export const SMAudio = new class {
 			addEventsListener(player, ['ended','error'], stopFn);
 			addEventListener('audio.api.stop', stopFn);
 		}
+
+		addObservablesTo(this, {
+			notifications: false
+		});
 	}
 
 	paused() {
@@ -103,18 +108,23 @@ export const SMAudio = new class {
 		this.supportedWav && play(url, name);
 	}
 
-	playNotification(silent) {
-		if ('running' == audioCtx.state && (this.supportedMp3 || this.supportedOgg)) {
-			notificator = notificator || createNewObject();
-			if (notificator) {
-				notificator.src = Links.staticLink('sounds/'
-					+ SettingsGet('NotificationSound')
-					+ (this.supportedMp3 ? '.mp3' : '.ogg'));
-				notificator.volume = silent ? 0.01 : 1;
-				notificator.play();
+	/**
+	 * Used with SoundNotification setting
+	 */
+	playNotification(force, silent) {
+		if (force || this.notifications()) {
+			if ('running' == audioCtx.state && (this.supportedMp3 || this.supportedOgg)) {
+				notificator = notificator || createNewObject();
+				if (notificator) {
+					notificator.src = Links.staticLink('sounds/'
+						+ SettingsGet('NotificationSound')
+						+ (this.supportedMp3 ? '.mp3' : '.ogg'));
+					notificator.volume = silent ? 0.01 : 1;
+					notificator.play();
+				}
+			} else {
+				console.log('No audio: ' + audioCtx.state);
 			}
-		} else {
-			console.log('No audio: ' + audioCtx.state);
 		}
 	}
 };

@@ -1,5 +1,6 @@
 import { koComputable } from 'External/ko';
 
+import { SMAudio } from 'Common/Audio';
 import { Notification } from 'Common/Enums';
 import { MessageSetAction } from 'Common/EnumsUser';
 import { $htmlCL } from 'Common/Globals';
@@ -114,11 +115,11 @@ MessagelistUserStore.hasCheckedOrSelected = koComputable(() =>
 MessagelistUserStore.notifyNewMessages = (folder, newMessages) => {
 	if (getFolderInboxName() === folder && arrayLength(newMessages)) {
 
-		NotificationUserStore.playSoundNotification();
+		SMAudio.playNotification();
 
 		const len = newMessages.length;
 		if (3 < len) {
-			NotificationUserStore.displayDesktopNotification(
+			NotificationUserStore.display(
 				AccountUserStore.email(),
 				i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
 					COUNT: len
@@ -127,7 +128,7 @@ MessagelistUserStore.notifyNewMessages = (folder, newMessages) => {
 			);
 		} else {
 			newMessages.forEach(item => {
-				NotificationUserStore.displayDesktopNotification(
+				NotificationUserStore.display(
 					EmailCollectionModel.reviveFromJson(item.From).toString(),
 					item.subject,
 					{ Folder: item.Folder, Uid: item.Uid }

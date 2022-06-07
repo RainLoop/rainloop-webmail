@@ -1,5 +1,6 @@
 import 'External/User/ko';
 
+import { SMAudio } from 'Common/Audio';
 import { isArray, pString, changeTheme } from 'Common/Utils';
 import { mailToHelper, setLayoutResizer, dropdownsDetectVisibility } from 'Common/UtilsUser';
 
@@ -289,8 +290,8 @@ export class AppUser extends AbstractApp {
 		if (SettingsGet('Auth')) {
 			rl.setWindowTitle(i18n('GLOBAL/LOADING'));
 
-			NotificationUserStore.enableSoundNotification(!!SettingsGet('SoundNotification'));
-			NotificationUserStore.enableDesktopNotification(!!SettingsGet('DesktopNotifications'));
+			SMAudio.notifications(!!SettingsGet('SoundNotification'));
+			NotificationUserStore.enabled(!!SettingsGet('DesktopNotifications'));
 
 			AccountUserStore.email(SettingsGet('Email'));
 
