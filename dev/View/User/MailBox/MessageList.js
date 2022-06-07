@@ -24,9 +24,7 @@ import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 
 import {
 	getFolderFromCacheList,
-	MessageFlagsCache,
-	hasRequestedMessage,
-	addRequestedMessage
+	MessageFlagsCache
 } from 'Common/Cache';
 
 import { AppUserStore } from 'Stores/User/App';
@@ -61,7 +59,6 @@ export class MailMessageList extends AbstractViewRight {
 	constructor() {
 		super();
 
-		this.bPrefetch = false;
 		this.emptySubjectValue = '';
 
 		this.iGoToUpOrDownTimeout = 0;
@@ -817,35 +814,6 @@ export class MailMessageList extends AbstractViewRight {
 		addShortcut('arrowright', 'meta', Scope.MessageView, ()=>false);
 
 		addShortcut('f', 'meta', Scope.MessageList, ()=>this.advancedSearchClick());
-
-		if (!ThemeStore.isMobile() && SettingsCapa('Prefetch')) {
-			ifvisible.idle(this.prefetchNextTick.bind(this));
-		}
-	}
-
-	prefetchNextTick() {
-		if (!this.bPrefetch && !ifvisible.now() && !this.viewModelDom.hidden) {
-			const message = MessagelistUserStore.find(
-				item => item && !hasRequestedMessage(item.folder, item.uid)
-			);
-			if (message) {
-				this.bPrefetch = true;
-
-				addRequestedMessage(message.folder, message.uid);
-
-				Remote.message(
-					iError => {
-						const next = !iError;
-						setTimeout(() => {
-							this.bPrefetch = false;
-							next && this.prefetchNextTick();
-						}, 1000);
-					},
-					message.folder,
-					message.uid
-				);
-			}
-		}
 	}
 
 	advancedSearchClick() {

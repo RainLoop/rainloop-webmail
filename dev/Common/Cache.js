@@ -4,7 +4,6 @@ import { isArray } from 'Common/Utils';
 let FOLDERS_CACHE = {},
 	FOLDERS_NAME_CACHE = {},
 	MESSAGE_FLAGS_CACHE = {},
-	REQUESTED_MESSAGE_CACHE = {},
 	inboxFolderName = 'INBOX';
 
 export const
@@ -15,7 +14,6 @@ export const
 		FOLDERS_CACHE = {};
 		FOLDERS_NAME_CACHE = {};
 		MESSAGE_FLAGS_CACHE = {};
-		REQUESTED_MESSAGE_CACHE = {};
 	},
 
 	/**
@@ -24,19 +22,6 @@ export const
 	 * @returns {string}
 	 */
 	getMessageKey = (folderFullName, uid) => folderFullName + '#' + uid,
-
-	/**
-	 * @param {string} folder
-	 * @param {string} uid
-	 */
-	addRequestedMessage = (folder, uid) => REQUESTED_MESSAGE_CACHE[getMessageKey(folder, uid)] = true,
-
-	/**
-	 * @param {string} folder
-	 * @param {string} uid
-	 * @returns {boolean}
-	 */
-	hasRequestedMessage = (folder, uid) => true === REQUESTED_MESSAGE_CACHE[getMessageKey(folder, uid)],
 
 	/**
 	 * @returns {string}

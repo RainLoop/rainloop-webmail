@@ -1,4 +1,4 @@
-import { MessageFlagsCache, addRequestedMessage } from 'Common/Cache';
+import { MessageFlagsCache } from 'Common/Cache';
 import { Notification } from 'Common/Enums';
 import { MessageSetAction, ComposeType/*, FolderType*/ } from 'Common/EnumsUser';
 import { doc, createElement, elementById, dropdowns, dropdownVisibility } from 'Common/Globals';
@@ -290,7 +290,6 @@ populateMessageBody = (oMessage, preload) => {
 						}
 */
 						isNew || message.revivePropertiesFromJson(json);
-						addRequestedMessage(message.folder, message.uid);
 						if (messagesDom) {
 							let id = 'rl-msg-' + message.hash.replace(/[^a-zA-Z0-9]/g, ''),
 								body = elementById(id);

@@ -1165,7 +1165,6 @@ class Actions
 				'Kolab'                => false, // See Kolab plugin
 				'MessageActions'       => (bool) $oConfig->Get('capa', 'message_actions', true),
 				'OpenPGP'              => (bool) $oConfig->Get('security', 'openpgp', false),
-				'Prefetch'             => (bool) $oConfig->Get('labs', 'allow_prefetch', false),
 				'Quota'                => (bool) $oConfig->Get('capa', 'quota', true),
 				'Search'               => (bool) $oConfig->Get('capa', 'search', true),
 				'SearchAdv'            => (bool) $oConfig->Get('capa', 'search', true) && $oConfig->Get('capa', 'search_adv', true),

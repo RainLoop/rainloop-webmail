@@ -337,7 +337,6 @@ Enables caching in the system'),
 			),
 
 			'labs' => array(
-				'allow_prefetch' => array(false),
 				'cache_system_data' => array(true),
 				'date_from_headers' => array(true),
 				'autocreate_system_folders' => array(false),
