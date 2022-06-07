@@ -484,18 +484,6 @@ trait Messages
 			throw new ClientException(Notifications::CantDeleteMessage, $oException);
 		}
 
-		if ($this->Config()->Get('labs', 'use_imap_unselect', true))
-		{
-			try
-			{
-				$this->MailClient()->FolderUnselect();
-			}
-			catch (\Throwable $oException)
-			{
-				unset($oException);
-			}
-		}
-
 		$sHash = '';
 		try
 		{
@@ -562,18 +550,6 @@ trait Messages
 		catch (\Throwable $oException)
 		{
 			throw new ClientException(Notifications::CantMoveMessage, $oException);
-		}
-
-		if ($this->Config()->Get('labs', 'use_imap_unselect', true))
-		{
-			try
-			{
-				$this->MailClient()->FolderUnselect();
-			}
-			catch (\Throwable $oException)
-			{
-				unset($oException);
-			}
 		}
 
 		$sHash = '';
