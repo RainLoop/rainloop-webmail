@@ -160,8 +160,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$bResult = false;
 		$oConfig = $this->Config();
 		foreach ($this->getSupportedDrivers() as $name => $class) {
-			$sFoundedValue = '';
-			if (\RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $oConfig->Get('plugin', "driver_{$name}_allowed_emails"), $sFoundedValue)) {
+			if (\RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $oConfig->Get('plugin', "driver_{$name}_allowed_emails"))) {
 				$name = $class::NAME;
 				$oLogger = $oActions->Logger();
 				try
