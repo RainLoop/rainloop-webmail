@@ -186,7 +186,9 @@ class ServiceActions
 
 		$this->Plugins()->RunHook('filter.json-response', array($sAction, &$aResponseItem));
 
-		\header('Content-Type: application/json; charset=utf-8');
+		if (!\headers_sent()) {
+			\header('Content-Type: application/json; charset=utf-8');
+		}
 
 		$sResult = \MailSo\Base\Utils::Php2js($aResponseItem, $this->Logger());
 

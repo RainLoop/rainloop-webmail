@@ -42,7 +42,7 @@ abstract class Stream
 	public static function JSON($data)
 	{
 		echo \MailSo\Base\Utils::Php2js($data) . "\n";
-		\ob_flush();
+//		\ob_flush();
 		\flush();
 	}
 }
