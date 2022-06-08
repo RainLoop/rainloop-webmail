@@ -30,8 +30,10 @@ class OverrideSmtpCredentialsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$sHost = \trim($this->Config()->Get('plugin', 'smtp_host', ''));
 			$sWhiteList = \trim($this->Config()->Get('plugin', 'override_users', ''));
 
-			if (0 < strlen($sWhiteList) && 0 < \strlen($sHost) && \RainLoop\Plugins\Helper::ValidateWildcardValues($sEmail, $sWhiteList))
+			$sFoundValue = '';
+			if (0 < strlen($sWhiteList) && 0 < \strlen($sHost) && \RainLoop\Plugins\Helper::ValidateWildcardValues($sEmail, $sWhiteList, $sFoundValue))
 			{
+				\SnappyMail\LOG::debug('SMTP Override', "{$sEmail} matched {$sFoundValue}");
 				$aSmtpCredentials['Host'] = $sHost;
 				$aSmtpCredentials['Port'] = (int) $this->Config()->Get('plugin', 'smtp_port', 25);
 
@@ -52,6 +54,10 @@ class OverrideSmtpCredentialsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$aSmtpCredentials['UseAuth'] = (bool) $this->Config()->Get('plugin', 'smtp_auth', true);
 				$aSmtpCredentials['Login'] = \trim($this->Config()->Get('plugin', 'smtp_user', ''));
 				$aSmtpCredentials['Password'] = (string) $this->Config()->Get('plugin', 'smtp_password', '');
+			}
+			else
+			{
+				\SnappyMail\LOG::debug('SMTP Override', "{$sEmail} no match");
 			}
 		}
 	}
