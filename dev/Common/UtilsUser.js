@@ -1,7 +1,7 @@
 import { MessageFlagsCache } from 'Common/Cache';
 import { Notification } from 'Common/Enums';
 import { MessageSetAction, ComposeType/*, FolderType*/ } from 'Common/EnumsUser';
-import { doc, createElement, elementById, dropdowns, dropdownVisibility } from 'Common/Globals';
+import { doc, createElement, elementById, dropdowns, dropdownVisibility, SettingsGet } from 'Common/Globals';
 import { plainToHtml } from 'Common/Html';
 import { getNotification } from 'Common/Translator';
 import { EmailModel } from 'Model/Email';
@@ -183,18 +183,26 @@ setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 	}
 //	source.classList.toggle('resizable', mode);
 	if (mode) {
-		const length = Local.get(sClientSideKeyName+mode);
+		const length = Local.get(sClientSideKeyName + mode) || SettingsGet('Resizer' + sClientSideKeyName + mode),
+			setTarget = () => {
+				let value;
+				if ('Width' == source.layoutResizer.mode) {
+					value = source.offsetWidth;
+					target.style.left = value + 'px';
+				} else {
+					value = source.offsetHeight;
+					target.style.top = (4 + source.offsetTop + value) + 'px';
+				}
+				return value;
+			};
 		if (!source.layoutResizer) {
 			const resizer = createElement('div', {'class':'resizer'}),
 				size = {},
 				store = () => {
-					if ('Width' == resizer.mode) {
-						target.style.left = source.offsetWidth + 'px';
-						Local.set(resizer.key+resizer.mode, source.offsetWidth);
-					} else {
-						target.style.top = (4 + source.offsetTop + source.offsetHeight) + 'px';
-						Local.set(resizer.key+resizer.mode, source.offsetHeight);
-					}
+					let value = setTarget(),
+						prop = resizer.key + resizer.mode;
+					Local.set(prop, value);
+//					Remote.saveSettings(0, {['Resizer' + prop]:value}); // TODO: needs delay
 				},
 				cssint = s => {
 					let value = getComputedStyle(source, null)[s].replace('px', '');
@@ -236,7 +244,8 @@ setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 		source.layoutResizer.key = sClientSideKeyName;
 		source.observer && source.observer.observe(source, { box: 'border-box' });
 		if (length) {
-			source.style[mode] = length + 'px';
+			source.style[mode.toLowerCase()] = length + 'px';
+			setTarget();
 		}
 	} else {
 		source.observer && source.observer.disconnect();
