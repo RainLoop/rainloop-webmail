@@ -35,6 +35,24 @@ const
 		return result;
 	},
 
+	ignoredTags = [
+		'$forwarded',
+		// Mailo
+		'sent',
+		// KMail
+		'$sent',
+		'$signed',
+		'$error',
+		'$queued',
+		// GMail
+		'$replied',
+		'$attachment',
+		'$notphishing',
+		'$phishing',
+		'junk',
+		'nonjunk'
+	],
+
 	toggleTag = (message, keyword) => {
 		const lower = keyword.toLowerCase(),
 			isSet = message.flags().includes(lower);
@@ -114,24 +132,6 @@ export class MessageModel extends AbstractModel {
 		this.unsubsribeLinks = ko.observableArray();
 		this.flags = ko.observableArray();
 
-		const ignoredTags = [
-			'$forwarded',
-			// Mailo
-			'sent',
-			// KMail
-			'$sent',
-			'$signed',
-			'$error',
-			'$queued',
-			// GMail
-			'$replied',
-			'$attachment',
-			'$notphishing',
-			'$phishing',
-			'junk',
-			'nonjunk'
-		];
-
 		this.addComputables({
 			attachmentIconClass: () => FileInfo.getAttachmentsIconClass(this.attachments()),
 			threadsLen: () => this.threads().length,
@@ -145,7 +145,7 @@ export class MessageModel extends AbstractModel {
 //			isPhishing: () => this.flags().includes('$phishing'),
 
 			tagsToHTML: () => this.flags().map(value =>
-					('\\' == value[0] || '$forwarded' == value)
+					('\\' == value[0] || ignoredTags.includes(value))
 					? ''
 					: '<span class="focused msgflag-'+value+'">' + i18n('MESSAGE_TAGS/'+value,0,value) + '</span>'
 				).join(' '),

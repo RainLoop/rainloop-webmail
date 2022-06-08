@@ -200,12 +200,19 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 						}
 
 						folder.flags(folderInfo.Flags);
-						folderInfo.PermanentFlags.sort((a, b) => {
+						let flags = folderInfo.PermanentFlags;
+						if (flags.includes('\\*')) {
+							let i = 6;
+							while (--i) {
+								flags.includes('$label'+i) || flags.push('$label'+i);
+							}
+						}
+						flags.sort((a, b) => {
 							a = a.toUpperCase();
 							b = b.toUpperCase();
 							return (a < b) ? -1 : ((a > b) ? 1 : 0);
 						});
-						folder.permanentFlags(folderInfo.PermanentFlags);
+						folder.permanentFlags(flags);
 
 						MessagelistUserStore.notifyNewMessages(folder.fullName, collection.NewMessages);
 					}
