@@ -237,11 +237,11 @@ abstract class Repository
 			&& (!\is_file("{$sPath}.phar") || \unlink("{$sPath}.phar"));
 	}
 
-	public static function installPackage(string $sType, string $sId, string $sFile) : bool
+	public static function installPackage(string $sType, string $sId, string $sFile = '') : bool
 	{
 		empty($_ENV['SNAPPYMAIL_INCLUDE_AS_API']) && \RainLoop\Api::Actions()->IsAdminLoggined();
 
-		\RainLoop\Api::Logger()->Write('Start package install: '.$sFile.' ('.$sType.')', \MailSo\Log\Enumerations\Type::INFO, 'INSTALLER');
+		\RainLoop\Api::Logger()->Write('Start package install: '.$sId.' ('.$sType.')', \MailSo\Log\Enumerations\Type::INFO, 'INSTALLER');
 
 		$sRealFile = '';
 
@@ -255,9 +255,9 @@ abstract class Repository
 				if ($sError) {
 					throw new \Exception($sError);
 				}
-				if (isset($aList[$sId]) && $sFile === $aList[$sId]['file']) {
-					$sRealFile = $sFile;
-					$sTmp = static::download($sFile);
+				if (isset($aList[$sId]) && (!$sFile || $sFile === $aList[$sId]['file'])) {
+					$sRealFile = $aList[$sId]['file'];
+					$sTmp = static::download($aList[$sId]['file']);
 				}
 			}
 
