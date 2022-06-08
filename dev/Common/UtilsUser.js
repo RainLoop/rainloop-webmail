@@ -181,12 +181,13 @@ setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 		target.removeAttribute('style');
 		source.removeAttribute('style');
 	}
+	source.observer && source.observer.disconnect();
 //	source.classList.toggle('resizable', mode);
 	if (mode) {
 		const length = Local.get(sClientSideKeyName + mode) || SettingsGet('Resizer' + sClientSideKeyName + mode),
-			setTarget = () => {
+			setTargetPos = mode => {
 				let value;
-				if ('Width' == source.layoutResizer.mode) {
+				if ('Width' == mode) {
 					value = source.offsetWidth;
 					target.style.left = value + 'px';
 				} else {
@@ -195,14 +196,19 @@ setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 				}
 				return value;
 			};
+		if (length) {
+			source.style[mode.toLowerCase()] = length + 'px';
+			setTargetPos(mode);
+		}
 		if (!source.layoutResizer) {
 			const resizer = createElement('div', {'class':'resizer'}),
+				save = (data => Remote.saveSettings(0, data)).debounce(500),
 				size = {},
 				store = () => {
-					let value = setTarget(),
+					const value = setTargetPos(resizer.mode),
 						prop = resizer.key + resizer.mode;
-					Local.set(prop, value);
-//					Remote.saveSettings(0, {['Resizer' + prop]:value}); // TODO: needs delay
+					(value == Local.get(prop)) || Local.set(prop, value);
+					(value == SettingsGet('Resizer' + prop)) || save({['Resizer' + prop]: value});
 				},
 				cssint = s => {
 					let value = getComputedStyle(source, null)[s].replace('px', '');
@@ -243,12 +249,6 @@ setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 		source.layoutResizer.mode = mode;
 		source.layoutResizer.key = sClientSideKeyName;
 		source.observer && source.observer.observe(source, { box: 'border-box' });
-		if (length) {
-			source.style[mode.toLowerCase()] = length + 'px';
-			setTarget();
-		}
-	} else {
-		source.observer && source.observer.disconnect();
 	}
 },
 

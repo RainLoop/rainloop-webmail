@@ -862,6 +862,9 @@ class Actions
 					$aResult['AllowDraftAutosave'] = (bool)$oSettings->GetConf('AllowDraftAutosave', $aResult['AllowDraftAutosave']);
 					$aResult['AutoLogout'] = (int)$oSettings->GetConf('AutoLogout', $aResult['AutoLogout']);
 					$aResult['Layout'] = (int)$oSettings->GetConf('Layout', $aResult['Layout']);
+					$aResult['Resizer4Width'] = (int)$oSettings->GetConf('Resizer4Width', 0);
+					$aResult['Resizer5Width'] = (int)$oSettings->GetConf('Resizer5Width', 0);
+					$aResult['Resizer5Height'] = (int)$oSettings->GetConf('Resizer5Height', 0);
 
 					if (!$this->GetCapa(Enumerations\Capa::AUTOLOGOUT)) {
 						$aResult['AutoLogout'] = 0;

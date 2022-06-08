@@ -342,6 +342,10 @@ trait User
 		$this->setSettingsFromParams($oSettings, 'AutoLogout', 'int');
 		$this->setSettingsFromParams($oSettings, 'MessageReadDelay', 'int');
 
+		$this->setSettingsFromParams($oSettings, 'Resizer4Width', 'int');
+		$this->setSettingsFromParams($oSettings, 'Resizer5Width', 'int');
+		$this->setSettingsFromParams($oSettings, 'Resizer5Height', 'int');
+
 		$this->setSettingsFromParams($oSettingsLocal, 'UseThreads', 'bool');
 		$this->setSettingsFromParams($oSettingsLocal, 'ReplySameFolder', 'bool');
 		$this->setSettingsFromParams($oSettingsLocal, 'HideUnsubscribed', 'bool');
