@@ -121,7 +121,7 @@ export class MessageFlagsCache
 		if (message) {
 			const uid = message.uid,
 				flags = this.getFor(message.folder, uid),
-				thread = message.threads;
+				thread = message.threads();
 
 			if (isArray(flags)) {
 				message.flags(flags);
@@ -142,9 +142,7 @@ export class MessageFlagsCache
 	 * @param {(MessageModel|null)} message
 	 */
 	static store(message) {
-		if (message) {
-			this.setFor(message.folder, message.uid, message.flags());
-		}
+		message && this.setFor(message.folder, message.uid, message.flags());
 	}
 
 	/**
