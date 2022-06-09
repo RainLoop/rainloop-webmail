@@ -36,23 +36,37 @@ const
 	},
 
 	ignoredTags = [
+		// rfc5788
 		'$forwarded',
 		'$mdnsent',
-		'$readreceipt',
+		'$submitpending',
+		'$submitted',
+		// rfc9051
+		'$junk',
+		'$notjunk',
+		'$phishing',
 		// Mailo
 		'sent',
 		// KMail
+		'$attachment',
+		'$encrypted',
+		'$error',
+		'$ignored',
+		'$invitation',
+		'$queued',
+		'$replied',
 		'$sent',
 		'$signed',
-		'$error',
-		'$queued',
+		'$todo',
+		'$watched',
 		// GMail
 		'$replied',
 		'$attachment',
 		'$notphishing',
-		'$phishing',
 		'junk',
-		'nonjunk'
+		'nonjunk',
+		// Others
+		'$readreceipt'
 	],
 
 	toggleTag = (message, keyword) => {

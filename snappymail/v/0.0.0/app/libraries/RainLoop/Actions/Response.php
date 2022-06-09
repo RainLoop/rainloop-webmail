@@ -199,6 +199,11 @@ trait Response
 			if (false !== $key) {
 				$mResult['Flags'][$key] = '$mdnsent';
 			}
+			// KMail
+			$key = \array_search('$replied', $mResult['Flags']);
+			if (false !== $key) {
+				$mResult['Flags'][$key] = '\\answered';
+			}
 
 			$mResult['Flags'] = \array_unique($mResult['Flags']);
 
