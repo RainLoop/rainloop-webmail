@@ -37,6 +37,8 @@ const
 
 	ignoredTags = [
 		'$forwarded',
+		'$mdnsent',
+		'$readreceipt',
 		// Mailo
 		'sent',
 		// KMail

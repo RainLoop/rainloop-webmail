@@ -152,15 +152,15 @@
 		"LINK_DOWNLOAD_AS_ZIP": "Télécharger le zip",
 		"SPAM_SCORE": "Score de spam",
 		"HAS_VIRUS_WARNING": "ATTENTION : virus détecté",
-		"TAGS": "Balises"
+		"TAGS": "Etiquettes"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Important",
-		"$todo": "Faire",
+		"$todo": "À faire",
 		"$label1": "Important",
 		"$label2": "Travailler",
 		"$label3": "Personnel",
-		"$label4": "Faire",
+		"$label4": "À faire",
 		"$label5": "Plus tard"
 	},
 	"READ_RECEIPT": {
