@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Tải lại",
+	"NO_SCRIPT_TITLE": "Chế độ hỗ trợ JavaScript cần được bật cho ứng dụng này.",
+	"NO_SCRIPT_DESC": "Trình duyệt của bạn đang không hỗ trợ JavaScript.\nXin hãy bật chế độ hỗ trợ JavaScript trong cài đặt trình duyệt của bạn và thử lại.\n",
+	"NO_COOKIE_TITLE": "Chức năng hỗ trợ cookie cần được bật cho ứng dụng này.",
+	"NO_COOKIE_DESC": "Trình duyệt của bạn đang không hỗ trợ cookie.\nXin hãy bật chế độ hỗ trợ cookie trong cài đặt trình duyệt của bạn và thử lại.\n",
+	"BAD_BROWSER_TITLE": "Trình duyệt của bạn đã quá cũ và hiện không còn được hỗ trợ.",
+	"BAD_BROWSER_DESC": "Để sử dụng tất cả những tính năng cho ứng dụng này,\nhãy tải và cài đặt một trong những trình duyệt sau:\n"
+}
