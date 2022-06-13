@@ -47,7 +47,7 @@
 */
 
 // Paul Irish requestAnimationFrame polyfill
-(function(window) {
+(window => {
     var lastTime = 0;
     var vendors = ['webkit', 'moz'];
     for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
@@ -57,11 +57,10 @@
     }
 
     if (!window.requestAnimationFrame)
-        window.requestAnimationFrame = function(callback, element) {
+        window.requestAnimationFrame = callback => {
             var currTime = new Date().getTime();
             var timeToCall = window.Math.max(0, 16 - (currTime - lastTime));
-            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
-              timeToCall);
+            var id = window.setTimeout(() => callback(currTime + timeToCall), timeToCall);
             lastTime = currTime + timeToCall;
             return id;
         };
@@ -70,7 +69,7 @@
         window.cancelAnimationFrame = function(id) {
             clearTimeout(id);
         };
-}(window));
+})(window);
 
 var snowFall = (function(){
 	function jSnow(){
@@ -248,27 +247,13 @@ var snowFall = (function(){
 				cancelAnimationFrame(snowTimeout);
 			}
 		};
-	};
+	}
 	return{
-		snow : function(elements, options){
+		snow : (elements, options) => {
 			if(typeof(options) === 'string'){
-				if(elements.length > 0){
-					for(var i = 0; i < elements.length; i++){
-						if(elements[i].snow){
-							elements[i].snow.clear();
-						}
-					}
-				}else{
-					elements.snow.clear();
-				}
+				elements.snow.clear();
 			}else{
-				if(elements.length > 0){
-					for(var i = 0; i < elements.length; i++){
-						new jSnow().snow(elements[i], options);
-					}
-				}else{
-					new jSnow().snow(elements, options);
-				}
+				new jSnow().snow(elements, options);
 			}
 		}
 	};
