@@ -152,7 +152,7 @@
 		"LINK_DOWNLOAD_AS_ZIP": "Télécharger le zip",
 		"SPAM_SCORE": "Score de spam",
 		"HAS_VIRUS_WARNING": "ATTENTION : virus détecté",
-		"TAGS": "Etiquettes"
+		"TAGS": "Étiquettes"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Important",
