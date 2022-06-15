@@ -181,6 +181,7 @@ export const
 			let value;
 
 //			if ('TABLE' === name || 'TD' === name || 'TH' === name) {
+			if (!oStyle.backgroundImage) {
 				if (hasAttribute('width')) {
 					value = getAttribute('width');
 					oStyle.width = value.includes('%') ? value : value + 'px';
@@ -202,6 +203,7 @@ export const
 				if (value && !value.includes('%')) {
 					oStyle.maxHeight = value;
 				}
+			}
 //			} else
 			if ('A' === name) {
 				value = oElement.href;
@@ -302,17 +304,16 @@ export const
 				oStyle.removeProperty('cursor');
 				oStyle.removeProperty('min-width');
 
-				const urls = {
-					remote: [], // 'data-x-style-url'
-					broken: []  // 'data-x-broken-style-src'
-				};
+				const
+					urls_remote = [], // 'data-x-style-url'
+					urls_broken = []; // 'data-x-broken-style-src'
 				['backgroundImage', 'listStyleImage', 'content'].forEach(property => {
 					if (oStyle[property]) {
 						let value = oStyle[property],
-							found = value.match(/url\s*\(([^)]+)\)/gi);
+							found = value.match(/url\s*\(([^)]+)\)/i);
 						if (found) {
 							oStyle[property] = null;
-							found = found[0].replace(/^["'\s]+|["'\s]+$/g, '');
+							found = found[1].replace(/^["'\s]+|["'\s]+$/g, '');
 							let lowerUrl = found.toLowerCase();
 							if ('cid:' === lowerUrl.slice(0, 4)) {
 								const attachment = findAttachmentByCid(found);
@@ -321,13 +322,13 @@ export const
 									attachment.isInline(true);
 									attachment.isLinked(true);
 								}
-							} else if (/http[s]?:\/\//.test(lowerUrl) || '//' === found.slice(0, 2)) {
+							} else if (/^(https?:)?\/\//.test(lowerUrl)) {
 								result.hasExternals = true;
-								urls.remote[property] = useProxy ? proxy(found) : found;
+								urls_remote.push([property, useProxy ? proxy(found) : value]);
 							} else if ('data:image/' === lowerUrl.slice(0, 11)) {
 								oStyle[property] = value;
 							} else {
-								urls.broken[property] = found;
+								urls_broken.push([property, found]);
 							}
 						}
 					}
@@ -335,11 +336,11 @@ export const
 //				oStyle.removeProperty('background-image');
 //				oStyle.removeProperty('list-style-image');
 
-				if (urls.remote.length) {
-					setAttribute('data-x-style-url', JSON.stringify(urls.remote));
+				if (urls_remote.length) {
+					setAttribute('data-x-style-url', JSON.stringify(urls_remote));
 				}
-				if (urls.broken.length) {
-					setAttribute('data-x-style-broken-urls', JSON.stringify(urls.broken));
+				if (urls_broken.length) {
+					setAttribute('data-x-style-broken-urls', JSON.stringify(urls_broken));
 				}
 
 				if (11 > pInt(oStyle.fontSize)) {

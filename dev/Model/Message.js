@@ -626,7 +626,7 @@ export class MessageModel extends AbstractModel {
 			});
 
 			body.querySelectorAll('[data-x-style-url]').forEach(node => {
-				forEachObjectEntry(JSON.parse(node.dataset.xStyleUrl), (name, url) => node.style[name] = "url('" + url + "')");
+				JSON.parse(node.dataset.xStyleUrl).forEach(data => node.style[data[0]] = "url('" + data[1] + "')");
 			});
 		}
 	}
