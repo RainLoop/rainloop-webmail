@@ -35,12 +35,12 @@ class Utils
 		);
 	}
 
-	public static function DecodeKeyValuesQ(string $sEncodedValues, string $sCustomKey = '') : ?array
+	public static function DecodeKeyValuesQ(string $sEncodedValues, string $sCustomKey = '') : array
 	{
 		return \SnappyMail\Crypt::DecryptUrlSafe(
 			$sEncodedValues,
 			\sha1(APP_SALT.$sCustomKey.'Q'.static::GetSessionToken(false))
-		) ?: null;
+		) ?: array();
 	}
 
 	public static function GetSessionToken(bool $generate = true) : ?string

@@ -605,7 +605,7 @@ trait Messages
 				{
 					if ($aValues = \RainLoop\Utils::DecodeKeyValuesQ($sAttachment))
 					{
-						$sFolder = isset($aValues['Folder']) ? $aValues['Folder'] : '';
+						$sFolder = isset($aValues['Folder']) ? (string) $aValues['Folder'] : '';
 						$iUid = isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0;
 						$sMimeIndex = isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : '';
 
