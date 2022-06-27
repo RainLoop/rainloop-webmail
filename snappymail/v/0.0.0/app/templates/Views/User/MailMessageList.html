@@ -139,19 +139,11 @@
 						<i data-bind="css: attachmentIconClass"></i>
 					</div>
 
-					<div class="subjectParent actionHandle">
-						<!-- ko if: isImportant --><b class="importantMark">!</b><!-- /ko -->
-						<!-- ko text: subject || $root.emptySubjectValue --><!-- /ko -->
-					</div>
+					<div class="subjectParent actionHandle" data-bind="css: {'priorityHigh': isImportant}, text: subject || $root.emptySubjectValue"></div>
 
 					<div class="sizeParent actionHandle" data-bind="text: friendlySize()"></div>
 
-					<div class="threads-len" data-bind="visible: 1 < threadsLen()">
-						<span>
-							<!-- ko text: threadsLen --><!-- /ko -->
-							›
-						</span>
-					</div>
+					<div class="threads-len" data-bind="visible: 1 < threadsLen(), text: threadsLen"></div>
 
 					<time class="actionHandle" data-moment-format="SHORT" data-moment-format-title="FULL" data-bind="moment: dateTimeStampInUTC"></time>
 				</div>

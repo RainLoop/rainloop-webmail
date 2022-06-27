@@ -211,9 +211,11 @@ html:not(rl-mobile) {
 		border-left-color: #ccc;
 	}
 
-	.importantMark {
-		color:red;
-		margin-right:5px
+	.priorityHigh::before {
+		content: '!'; /*❗*/
+		color: red;
+		font-weight: bolder;
+		margin-right: 5px;
 	}
 
 	&.deleted {
@@ -269,7 +271,7 @@ html:not(rl-mobile) {
 		opacity: 0.5;
 	}
 
-	.threads-len span {
+	.threads-len {
 		border-radius: 6px;
 		border: 1px solid #ccc;
 		font-size: 11px;
@@ -279,6 +281,9 @@ html:not(rl-mobile) {
 			background-color: rgba(127,127,127,0.3);
 			border-color: #666;
 		}
+	}
+	.threads-len::after {
+		content: ' ›';
 	}
 
 	.replyFlag, .forwardFlag {
@@ -322,10 +327,6 @@ html:not(rl-mobile) {
 		border-bottom-color: rgba(57, 140, 242, 0.2);
 		border-left-color: #398CF2;
 		z-index: 101;
-
-		+ .messageListItem {
-			border-bottom-color: rgba(57, 140, 242, 0.3);
-		}
 	}
 
 	.flagParent {
