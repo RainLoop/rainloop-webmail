@@ -125,29 +125,25 @@
 			<i class="icon-spinner"></i>
 			<span data-i18n="GLOBAL/LOADING"></span>
 		</div>
-		<div data-bind="dragmessages: getDragData">
-			<div class="messageListPlace" data-bind="foreach: messageList">
+		<div class="messageListPlace" data-bind="dragmessages: getDragData, foreach: messageList">
+			<div class="messageListItem" data-bind="css: lineAsCss()">
+				<div class="checkboxMessage fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
 
-				<div class="messageListItem" data-bind="css: lineAsCss()">
-					<div class="checkboxMessage fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
+				<div class="flagParent fontastic"></div>
 
-					<div class="flagParent fontastic"></div>
+				<div class="senderParent actionHandle" data-bind="attr: {'title': senderClearEmailsString}, text: senderEmailsString"></div>
 
-					<div class="senderParent actionHandle" data-bind="attr: {'title': senderClearEmailsString}, text: senderEmailsString"></div>
-
-					<div class="attachmentParent actionHandle">
-						<i data-bind="css: attachmentIconClass"></i>
-					</div>
-
-					<div class="subjectParent actionHandle" data-bind="css: {'priorityHigh': isImportant}, text: subject || $root.emptySubjectValue"></div>
-
-					<div class="sizeParent actionHandle" data-bind="text: friendlySize()"></div>
-
-					<div class="threads-len" data-bind="visible: 1 < threadsLen(), text: threadsLen"></div>
-
-					<time class="actionHandle" data-moment-format="SHORT" data-moment-format-title="FULL" data-bind="moment: dateTimeStampInUTC"></time>
+				<div class="attachmentParent actionHandle">
+					<i data-bind="css: attachmentIconClass"></i>
 				</div>
 
+				<div class="subjectParent actionHandle" data-bind="css: {'priorityHigh': isImportant}, text: subject || $root.emptySubjectValue"></div>
+
+				<div class="sizeParent actionHandle" data-bind="text: friendlySize()"></div>
+
+				<div class="threads-len" data-bind="visible: 1 < threadsLen(), text: threadsLen"></div>
+
+				<time class="actionHandle" data-moment-format="SHORT" data-moment-format-title="FULL" data-bind="moment: dateTimeStampInUTC"></time>
 			</div>
 		</div>
 		<div id="messagesDragImage"><span class="text"></span>&nbsp;<i class="icon-mail"></i></div>
