@@ -99,43 +99,66 @@ class Utils
 	 */
 	public static function GetCookie(string $sName, $mDefault = null)
 	{
-		return isset($_COOKIE[$sName]) ? $_COOKIE[$sName] : $mDefault;
+		if (isset($_COOKIE[$sName])) {
+			$aParts = [];
+			foreach (\array_keys($_COOKIE) as $sCookieName) {
+				if (\strtok($sCookieName, '~') === $sName) {
+					$aParts[$sCookieName] = $_COOKIE[$sCookieName];
+				}
+			}
+			\ksort($aParts);
+			return \implode('', $aParts);
+		}
+		return $mDefault;
 	}
 
 	public static function GetSecureCookie(string $sName)
 	{
-		return isset($_COOKIE[$sName]) && 1024 > \strlen($_COOKIE[$sName])
-			? \SnappyMail\Crypt::DecryptFromJSON(\MailSo\Base\Utils::UrlSafeBase64Decode($_COOKIE[$sName]))
+		return isset($_COOKIE[$sName])
+			? \SnappyMail\Crypt::DecryptFromJSON(\MailSo\Base\Utils::UrlSafeBase64Decode(static::GetCookie($sName)))
 			: null;
 	}
 
 	public static function SetCookie(string $sName, string $sValue = '', int $iExpire = 0, bool $bHttpOnly = true)
 	{
 		$sPath = static::$CookieDefaultPath;
+		$sPath = $sPath && \strlen($sPath) ? $sPath : '/';
 		$_COOKIE[$sName] = $sValue;
-		\setcookie($sName, $sValue, array(
-			'expires' => $iExpire,
-			'path' => $sPath && \strlen($sPath) ? $sPath : '/',
-//			'domain' => $sDomain,
-			'secure' => isset($_SERVER['HTTPS']) || static::$CookieDefaultSecure,
-			'httponly' => $bHttpOnly,
-			'samesite' => 'Strict'
-		));
+		// https://github.com/the-djmaze/snappymail/issues/451
+		// The 4K browser limit is for the entire cookie, including name, value, expiry date etc.
+		$iMaxSize = 4000 - \strlen($sPath . $sName);
+		if ($iMaxSize < \strlen($sValue)) {
+			throw new \Exception("Cookie '{$sName}' value too long");
+		}
+		foreach (\str_split($sValue, $iMaxSize) as $i => $sPart) {
+			\setcookie($i ? "{$sName}~{$i}" : $sName, $sPart, array(
+				'expires' => $iExpire,
+				'path' => $sPath,
+//				'domain' => $sDomain,
+				'secure' => isset($_SERVER['HTTPS']) || static::$CookieDefaultSecure,
+				'httponly' => $bHttpOnly,
+				'samesite' => 'Strict'
+			));
+		}
 	}
 
 	public static function ClearCookie(string $sName)
 	{
 		if (isset($_COOKIE[$sName])) {
 			$sPath = static::$CookieDefaultPath;
-			unset($_COOKIE[$sName]);
-			\setcookie($sName, '', array(
-				'expires' => \time() - 3600 * 24 * 30,
-				'path' => $sPath && \strlen($sPath) ? $sPath : '/',
-//				'domain' => null,
-				'secure' => isset($_SERVER['HTTPS']) || static::$CookieDefaultSecure,
-				'httponly' => true,
-				'samesite' => 'Strict'
-			));
+			foreach (\array_keys($_COOKIE) as $sCookieName) {
+				if (\strtok($sCookieName, '~') === $sName) {
+					unset($_COOKIE[$sCookieName]);
+					\setcookie($sCookieName, '', array(
+						'expires' => \time() - 3600 * 24 * 30,
+						'path' => $sPath && \strlen($sPath) ? $sPath : '/',
+//						'domain' => null,
+						'secure' => isset($_SERVER['HTTPS']) || static::$CookieDefaultSecure,
+						'httponly' => true,
+						'samesite' => 'Strict'
+					));
+				}
+			}
 		}
 	}
 
