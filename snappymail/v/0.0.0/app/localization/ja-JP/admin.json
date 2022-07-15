@@ -9,7 +9,7 @@
 	"LOGIN": {
 		"LABEL_LOGIN": "ログイン",
 		"LABEL_PASSWORD": "パスワード",
-		"LABEL_TOTP": "TOTP code",
+		"LABEL_TOTP": "TOTPコード",
 		"BUTTON_LOGIN": "管理画面へログイン"
 	},
 	"TOP_PANEL": {
@@ -23,7 +23,7 @@
 		"LABEL_DOMAINS_NAME": "ドメイン",
 		"LABEL_SECURITY_NAME": "セキュリティ",
 		"LABEL_PACKAGES_NAME": "パッケージ",
-		"LABEL_CONFIG_NAME": "Config",
+		"LABEL_CONFIG_NAME": "詳細",
 		"LABEL_ABOUT_NAME": "SnappyMailについて"
 	},
 	"TAB_GENERAL": {
@@ -93,7 +93,7 @@
 		"LABEL_ALLOW_SELF_SIGNED": "自己署名証明書を使う"
 	},
 	"TAB_PACKAGES": {
-		"LABEL_ENABLE_PLUGINS": "Enable extensions",
+		"LABEL_ENABLE_PLUGINS": "プラグインを有効化",
 		"LEGEND_AVAILABLE_FOR_UPDATE": "更新があります",
 		"LEGEND_AVAILABLE_FOR_INSTALLATION": "インストール可能なパッケージ",
 		"LEGEND_INSTALLED_PACKAGES": "インストールされたパッケージ",
@@ -134,8 +134,8 @@
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "SIEVEスクリプトを使用する",
 		"LABEL_USE_SHORT_LOGIN": "短いログイン名を使う",
 		"LABEL_USE_AUTH": "認証を使用する",
-		"LABEL_SET_SENDER": "Use login as sender",
-		"LABEL_USE_PHP_MAIL": "PHP mail()関数を使用する",
+		"LABEL_SET_SENDER": "ログイン名を送信者として使う",
+		"LABEL_USE_PHP_MAIL": "PHPのmail()関数を使用する",
 		"BUTTON_WHITE_LIST": "ホワイトリスト",
 		"BUTTON_SIEVE_CONFIGURATION": "SIEVE設定",
 		"BUTTON_BACK_TO_IMAP": "IMAP 設定に戻る",
@@ -149,8 +149,8 @@
 		"DESC_NOTHING_TO_CONFIGURE": "何も設定されていません"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Yes",
-		"BUTTON_NO": "No",
+		"BUTTON_YES": "はい",
+		"BUTTON_NO": "いいえ",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "このウィンドウを閉じてもよろしいですか？"
 	},
 	"POPUPS_LANGUAGES": {
