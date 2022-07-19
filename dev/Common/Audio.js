@@ -46,11 +46,11 @@ let notificator = null,
 		'keydown','keyup'
 	],
 	unlock = () => {
+		unlockEvents.forEach(type => doc.removeEventListener(type, unlock, true));
 		if (audioCtx) {
 			console.log('AudioContext ' + audioCtx.state);
 			audioCtx.resume();
 		}
-		unlockEvents.forEach(type => doc.removeEventListener(type, unlock, true));
 //		setTimeout(()=>SMAudio.playNotification(0,1),1);
 	};
 
