@@ -2,7 +2,7 @@
 
 use \RainLoop\Exceptions\ClientException;
 
-class ChangePasswordPoppassdPlugin extends \RainLoop\Plugins\AbstractPlugin
+class ChangePasswordFroxlorPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Change Password Froxlor',
