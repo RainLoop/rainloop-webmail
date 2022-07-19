@@ -155,7 +155,6 @@ trait Messages
 
 		$sSentFolder = $this->GetActionParam('SaveFolder', '');
 		$aDraftInfo = $this->GetActionParam('DraftInfo', null);
-		$bDsn = '1' === (string) $this->GetActionParam('Dsn', '0');
 
 		$oMessage = $this->buildMessage($oAccount, false);
 
@@ -173,6 +172,7 @@ trait Messages
 
 				if (false !== $iMessageStreamSize)
 				{
+					$bDsn = !empty($this->GetActionParam('Dsn', 0));
 					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize, $bDsn, true);
 
 					if (\is_array($aDraftInfo) && 3 === \count($aDraftInfo))
@@ -1055,13 +1055,13 @@ trait Messages
 			$oMessage->SetReplyTo($oReplyTo);
 		}
 
-		if ('1' === $this->GetActionParam('ReadReceiptRequest', '0')) {
+		if (!empty($this->GetActionParam('ReadReceiptRequest', 0))) {
 			// Read Receipts Reference Main Account Email, Not Identities #147
 //			$oMessage->SetReadReceipt(($oFromIdentity ?: $oAccount)->Email());
 			$oMessage->SetReadReceipt($oFrom->GetEmail());
 		}
 
-		if ('1' === $this->GetActionParam('MarkAsImportant', '0')) {
+		if (!empty($this->GetActionParam('MarkAsImportant', 0))) {
 			$oMessage->SetPriority(\MailSo\Mime\Enumerations\MessagePriority::HIGH);
 		}
 
