@@ -428,20 +428,19 @@ class MailClient
 
 	protected function initFolderValues(string $sFolderName) : array
 	{
-		$aFolderStatus = $this->oImapClient->FolderStatus($sFolderName)->getStatusItems();
-
+		$oFolderStatus = $this->oImapClient->FolderStatus($sFolderName);
 		return [
-			\max(0, $aFolderStatus[FolderResponseStatus::MESSAGES] ?: 0),
+			\max(0, $oFolderStatus->MESSAGES ?: 0),
 
-			\max(0, $aFolderStatus[FolderResponseStatus::UNSEEN] ?: 0),
+			\max(0, $oFolderStatus->UNSEEN ?: 0),
 
-			\max(0, $aFolderStatus[FolderResponseStatus::UIDNEXT] ?: 0),
+			\max(0, $oFolderStatus->UIDNEXT ?: 0),
 
-			\max(0, $aFolderStatus[FolderResponseStatus::HIGHESTMODSEQ] ?: 0),
+			\max(0, $oFolderStatus->HIGHESTMODSEQ ?: 0),
 
-			$aFolderStatus[FolderResponseStatus::APPENDLIMIT] ?: $this->oImapClient->AppendLimit(),
+			$oFolderStatus->APPENDLIMIT ?: $this->oImapClient->AppendLimit(),
 
-			$aFolderStatus[FolderResponseStatus::MAILBOXID] ?: ''
+			$oFolderStatus->MAILBOXID ?: ''
 		];
 	}
 
@@ -521,8 +520,13 @@ class MailClient
 	public function FolderInformation(string $sFolderName, int $iPrevUidNext = 0, SequenceSet $oRange = null) : array
 	{
 		list($iCount, $iUnseenCount, $iUidNext, $iHighestModSeq, $iAppendLimit, $sMailboxId) = $this->initFolderValues($sFolderName);
-//		$oInfo = $this->oImapClient->FolderSelect($sFolderName);
-
+/*
+		// Don't use FolderExamine, else PERMANENTFLAGS is empty in Dovecot
+		$oInfo = $this->oImapClient->FolderSelect($sFolderName);
+		$oInfo->UNSEEN = $iUnseenCount;
+		$oInfo->HIGHESTMODSEQ = $iHighestModSeq;
+		$oInfo->Hash = $this->GenerateFolderHash($oInfo->FolderName, $oInfo->MESSAGES, $oInfo->UIDNEXT, $oInfo->HIGHESTMODSEQ);
+*/
 		$aFlags = array();
 		if ($oRange && \count($oRange)) {
 			$oInfo = $this->oImapClient->FolderExamine($sFolderName);
@@ -837,6 +841,7 @@ class MailClient
 		$oInfo = $this->oImapClient->FolderSelect($oParams->sFolderName);
 		$oInfo->UNSEEN = $iMessageUnseenCount;
 		$oInfo->HIGHESTMODSEQ = $iHighestModSeq;
+//		$oInfo->Hash = $this->GenerateFolderHash($oInfo->FolderName, $oInfo->MESSAGES, $oInfo->UIDNEXT, $oInfo->HIGHESTMODSEQ);
 		$oMessageCollection->FolderInfo = $oInfo;
 
 		$aUids = array();

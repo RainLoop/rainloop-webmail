@@ -162,6 +162,7 @@ trait Folders
 
 		if ($bReselect) {
 			$this->selectOrExamineFolder($sFolderName, $bWritable, false);
+//			$this->oCurrentFolderInfo->UNSEEN = $oInfo->UNSEEN;
 		}
 
 		return $oInfo;
