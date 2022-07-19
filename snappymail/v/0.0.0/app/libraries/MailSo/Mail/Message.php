@@ -428,9 +428,9 @@ class Message implements \JsonSerializable
 				$oMessage->bIsSpam = false !== \stripos($oMessage->sSubject, '*** SPAM ***');
 			} else if ($spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_BOGOSITY)) {
 				$oMessage->sSpamResult = $spam;
-				$oMessage->bIsSpam = !!\preg_match('/yes|spam/', $spam);
+				$oMessage->bIsSpam = !\str_contains($spam, 'Ham');
 				if (\preg_match('/spamicity=([\\d\\.]+)/', $spam, $spamicity)) {
-					$oMessage->setSpamScore(\floatval($spamicity[1]));
+					$oMessage->setSpamScore(100 * \floatval($spamicity[1]));
 				}
 			} else if ($spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAM_STATUS)) {
 				$oMessage->sSpamResult = $spam;
