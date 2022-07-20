@@ -409,9 +409,6 @@ export const
 			.replace(/<t[dh](\s[\s\S]*?)?>/gi, '\t')
 			.replace(/<\/tr(\s[\s\S]*?)?>/gi, '\n');
 
-		// Convert line-breaks
-		forEach('br', br => br.replaceWith('\n'));
-
 		// lines
 		forEach('hr', node => node.replaceWith(`\n\n${hr}\n\n`));
 
@@ -458,10 +455,17 @@ export const
 		// Italic
 		forEach('i,em', i => i.replaceWith(`*${i.textContent}*`));
 
+		// Convert line-breaks
+		tpl.innerHTML = tpl.innerHTML
+			.replace(/\n{3,}/gm, '\n\n')
+			.replace(/\n<br[^>]*>/g, '\n')
+			.replace(/<br[^>]*>\n/g, '\n');
+		forEach('br', br => br.replaceWith('\n'));
+
 		// Blockquotes must be last
 		blockquotes(tpl.content);
 
-		return (tpl.content.textContent || '').replace(/\n{3,}/gm, '\n\n').trim();
+		return (tpl.content.textContent || '').trim();
 	},
 
 	/**
