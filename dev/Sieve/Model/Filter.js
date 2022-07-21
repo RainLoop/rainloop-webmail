@@ -233,8 +233,8 @@ export class FilterModel extends AbstractModel {
 		return filter;
 	}
 
-	cloneSelf() {
-		const filter = new FilterModel();
+	assignTo(target) {
+		const filter = target || new FilterModel();
 
 		filter.id = this.id;
 

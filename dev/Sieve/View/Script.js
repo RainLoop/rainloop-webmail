@@ -102,12 +102,12 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 		filter.generateID();
 		FilterPopupView.showModal([
 			filter,
-			() => this.filters.push(filter)
+			() => this.filters.push(filter.assignTo())
 		]);
 	}
 
 	editFilter(filter) {
-		const clonedFilter = filter.cloneSelf();
+		const clonedFilter = filter.assignTo();
 		FilterPopupView.showModal([
 			clonedFilter,
 			() => {
@@ -115,8 +115,7 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 					filters = script.filters(),
 					index = filters.indexOf(filter);
 				if (-1 < index) {
-//					script.filters.splice(index, 1, clonedFilter);
-					filters[index] = clonedFilter;
+					clonedFilter.assignTo(filter);
 					script.filters(filters);
 				}
 			},
