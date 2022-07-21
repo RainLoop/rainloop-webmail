@@ -4,14 +4,14 @@ namespace RainLoop\Providers;
 
 use RainLoop\Providers\AddressBook\Enumerations\PropertyType as PropertyType;
 
-class AddressBook extends \RainLoop\Providers\AbstractProvider
+class AddressBook extends AbstractProvider
 {
 	/**
 	 * @var \RainLoop\Providers\AddressBook\AddressBookInterface
 	 */
 	private $oDriver;
 
-	public function __construct(?\RainLoop\Providers\AddressBook\AddressBookInterface $oDriver)
+	public function __construct(?AddressBook\AddressBookInterface $oDriver)
 	{
 		$this->oDriver = $oDriver;
 	}
@@ -37,7 +37,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 		return $this->IsActive() ? $this->oDriver->Export($sType) : false;
 	}
 
-	public function ContactSave(\RainLoop\Providers\AddressBook\Classes\Contact $oContact) : bool
+	public function ContactSave(AddressBook\Classes\Contact $oContact) : bool
 	{
 		return $this->IsActive() ? $this->oDriver->ContactSave($oContact) : false;
 	}
@@ -57,7 +57,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 		return $this->IsActive() ? $this->oDriver->GetContacts($iOffset, $iLimit, $sSearch, $iResultCount) : array();
 	}
 
-	public function GetContactByID($mID, bool $bIsStrID = false) : ?\RainLoop\Providers\AddressBook\Classes\Contact
+	public function GetContactByID($mID, bool $bIsStrID = false) : ?AddressBook\Classes\Contact
 	{
 		return $this->IsActive() ? $this->oDriver->GetContactByID($mID, $bIsStrID) : null;
 	}
@@ -160,7 +160,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 		$iCount = 0;
 		if ($this->IsActive() && \count($aCsvData))
 		{
-			$oContact = new \RainLoop\Providers\AddressBook\Classes\Contact();
+			$oContact = new AddressBook\Classes\Contact();
 			foreach ($aCsvData as $aItem)
 			{
 				\MailSo\Base\Utils::ResetTimeLimit();
@@ -177,7 +177,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 
 						if (PropertyType::UNKNOWN !== $iType)
 						{
-							$oProp = new \RainLoop\Providers\AddressBook\Classes\Property();
+							$oProp = new AddressBook\Classes\Property();
 							$oProp->Type = $iType;
 							$oProp->Value = $sItemValue;
 							$oProp->TypeStr = \is_array($mData) && !empty($mData[1]) ? $mData[1] : '';
@@ -228,7 +228,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 
 			if ($oVCardSplitter)
 			{
-				$oContact = new \RainLoop\Providers\AddressBook\Classes\Contact();
+				$oContact = new AddressBook\Classes\Contact();
 
 				$oVCard = null;
 

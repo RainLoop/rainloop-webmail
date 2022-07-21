@@ -6,7 +6,7 @@ use RainLoop\Providers\AddressBook\Enumerations\PropertyType;
 
 class PdoAddressBook
 	extends \RainLoop\Common\PdoAbstract
-	implements \RainLoop\Providers\AddressBook\AddressBookInterface
+	implements AddressBookInterface
 {
 	use CardDAV;
 
