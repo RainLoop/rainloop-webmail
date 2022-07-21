@@ -60,6 +60,7 @@ abstract class Crypt
 			} catch (\Throwable $e) {
 				\trigger_error(__CLASS__ . "::{$fn}(): " . $e->getMessage());
 			}
+//			\trigger_error(__CLASS__ . '::Decrypt() invalid $data or $key');
 		} else {
 //			\trigger_error(__CLASS__ . '::Decrypt() invalid $data');
 		}

@@ -1,4 +1,3 @@
-import { SMAudio } from 'Common/Audio';
 import * as Links from 'Common/Links';
 import { addObservablesTo } from 'External/ko';
 import { fireEvent } from 'Common/Globals';
@@ -37,36 +36,24 @@ if (WorkerNotifications && ServiceWorkerRegistration && ServiceWorkerRegistratio
 export const NotificationUserStore = new class {
 	constructor() {
 		addObservablesTo(this, {
-			enableSoundNotification: false,
-
-			enableDesktopNotification: false,/*.extend({ notify: 'always' })*/
-
-			isDesktopNotificationAllowed: !NotificationsDenied()
+			enabled: false,/*.extend({ notify: 'always' })*/
+			allowed: !NotificationsDenied()
 		});
 
-		this.enableDesktopNotification.subscribe(value => {
+		this.enabled.subscribe(value => {
 			DesktopNotifications = !!value;
 			if (value && HTML5Notification && !NotificationsGranted()) {
 				HTML5Notification.requestPermission(() =>
-					this.isDesktopNotificationAllowed(!NotificationsDenied())
+					this.allowed(!NotificationsDenied())
 				);
 			}
 		});
 	}
 
 	/**
-	 * Used with SoundNotification setting
-	 */
-	playSoundNotification(skipSetting) {
-		if (skipSetting ? true : this.enableSoundNotification()) {
-			SMAudio.playNotification();
-		}
-	}
-
-	/**
 	 * Used with DesktopNotifications setting
 	 */
-	displayDesktopNotification(title, text, messageData, imageSrc) {
+	display(title, text, messageData, imageSrc) {
 		if (DesktopNotifications && NotificationsGranted()) {
 			const options = {
 				body: text,

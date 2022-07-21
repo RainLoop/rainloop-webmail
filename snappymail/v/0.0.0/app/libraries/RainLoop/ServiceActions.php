@@ -186,7 +186,9 @@ class ServiceActions
 
 		$this->Plugins()->RunHook('filter.json-response', array($sAction, &$aResponseItem));
 
-		\header('Content-Type: application/json; charset=utf-8');
+		if (!\headers_sent()) {
+			\header('Content-Type: application/json; charset=utf-8');
+		}
 
 		$sResult = \MailSo\Base\Utils::Php2js($aResponseItem, $this->Logger());
 
@@ -765,8 +767,8 @@ class ServiceActions
 		$oAccount = null;
 
 		if ($this->oActions->Config()->Get('labs', 'allow_external_login', false)) {
-			$sEmail = \trim($this->oHttp->GetRequest('Email', ''));
-			$sPassword = $this->oHttp->GetRequest('Password', '');
+			$sEmail = \trim($_POST['Email']);
+			$sPassword = $_POST['Password'];
 
 			try
 			{
@@ -783,7 +785,7 @@ class ServiceActions
 			}
 		}
 
-		if ('json' === \strtolower($this->oHttp->GetRequest('Output', ''))) {
+		if ('json' === \strtolower($_POST['Output'])) {
 			\header('Content-Type: application/json; charset=utf-8');
 
 			$aResult = array(

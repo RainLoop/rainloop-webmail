@@ -151,7 +151,17 @@
 		"MESSAGE_VIEW_MOVE_DESC": "点击左侧面板的文件夹作为目的地",
 		"LINK_DOWNLOAD_AS_ZIP": "下载为zip压缩包",
 		"SPAM_SCORE": "垃圾邮件分数",
-		"HAS_VIRUS_WARNING": "警告：检测到病毒"
+		"HAS_VIRUS_WARNING": "警告：检测到病毒",
+		"TAGS": "Tags"
+	},
+	"MESSAGE_TAGS": {
+		"$important": "Important",
+		"$todo": "To Do",
+		"$label1": "Important",
+		"$label2": "Work",
+		"$label3": "Personal",
+		"$label4": "To Do",
+		"$label5": "Later"
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "送达回执 - %SUBJECT%",

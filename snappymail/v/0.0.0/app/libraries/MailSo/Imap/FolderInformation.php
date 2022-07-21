@@ -31,6 +31,7 @@ class FolderInformation implements \JsonSerializable
 
 	/**
 	 * @var array
+	 * Message flags
 	 */
 	public $Flags = array();
 
@@ -61,20 +62,27 @@ class FolderInformation implements \JsonSerializable
 
 	public function jsonSerialize()
 	{
-		return array(
+		$result = array(
+			'id' => $this->MAILBOXID,
 			'Name' => $this->FolderName,
 			'Flags' => $this->Flags,
 			'PermanentFlags' => $this->PermanentFlags,
-/*
-			'Messages' => $this->MESSAGES,
-			'Unseen' => $this->UNSEEN,
-			'Recent'        => $this->RECENT,
-			'UidNext'       => $this->UIDNEXT,
-			'UidValidity'   => $this->UIDVALIDITY,
-			'Highestmodseq' => $this->HIGHESTMODSEQ,
-			'Appendlimit'   => $this->APPENDLIMIT,
-			'Mailboxid'     => $this->MAILBOXID,
-*/
+			'UidNext' => $this->UIDNEXT,
+			'UidValidity' => $this->UIDVALIDITY
 		);
+		if (isset($this->MESSAGES)) {
+			$result['totalEmails'] = $this->MESSAGES;
+			$result['unreadEmails'] = $this->UNSEEN;
+		}
+		if (isset($this->HIGHESTMODSEQ)) {
+			$result['Highestmodseq'] = $this->HIGHESTMODSEQ;
+		}
+		if (isset($this->APPENDLIMIT)) {
+			$result['Appendlimit'] = $this->APPENDLIMIT;
+		}
+		if (isset($this->SIZE)) {
+			$result['Size'] = $this->SIZE;
+		}
+		return $result;
 	}
 }

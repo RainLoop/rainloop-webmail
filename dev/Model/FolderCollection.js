@@ -3,7 +3,7 @@ import { AbstractCollectionModel } from 'Model/AbstractCollection';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { isArray, getKeyByValue, forEachObjectEntry, b64EncodeJSONSafe } from 'Common/Utils';
 import { ClientSideKeyNameExpandedFolders, FolderType, FolderMetadataKeys } from 'Common/EnumsUser';
-import { getFolderFromCacheList, setFolder, setFolderInboxName, setFolderHash } from 'Common/Cache';
+import { getFolderFromCacheList, setFolder, setFolderInboxName } from 'Common/Cache';
 import { Settings, SettingsGet, fireEvent } from 'Common/Globals';
 
 import * as Local from 'Storage/Client';
@@ -138,13 +138,24 @@ export class FolderCollectionModel extends AbstractCollectionModel
 			let oCacheFolder = getFolderFromCacheList(oFolder.FullName),
 				type = FolderType[getKeyByValue(SystemFolders, oFolder.FullName)];
 
-			if (!oCacheFolder) {
+			if (oCacheFolder) {
+//				oCacheFolder.revivePropertiesFromJson(oFolder);
+				if (oFolder.Hash) {
+					oCacheFolder.hash = oFolder.Hash;
+				}
+				if (null != oFolder.totalEmails) {
+					oCacheFolder.totalEmails(oFolder.totalEmails);
+				}
+				if (null != oFolder.unreadEmails) {
+					oCacheFolder.unreadEmails(oFolder.unreadEmails);
+				}
+			} else {
 				oCacheFolder = FolderModel.reviveFromJson(oFolder);
 				if (!oCacheFolder)
 					return null;
 
 				if (1 == type) {
-					oCacheFolder.type(FolderType.Inbox);
+					oCacheFolder.type(type);
 					setFolderInboxName(oFolder.FullName);
 				}
 				setFolder(oCacheFolder);
@@ -158,19 +169,6 @@ export class FolderCollectionModel extends AbstractCollectionModel
 				|| !isArray(expandedFolders)
 				|| !expandedFolders.includes(oCacheFolder.fullName));
 
-			if (oFolder.Extended) {
-				if (oFolder.Extended.Hash) {
-					setFolderHash(oCacheFolder.fullName, oFolder.Extended.Hash);
-				}
-
-				if (null != oFolder.Extended.MessageCount) {
-					oCacheFolder.messageCountAll(oFolder.Extended.MessageCount);
-				}
-
-				if (null != oFolder.Extended.MessageUnseenCount) {
-					oCacheFolder.messageCountUnread(oFolder.Extended.MessageUnseenCount);
-				}
-			}
 			return oCacheFolder;
 		});
 
@@ -241,8 +239,9 @@ export class FolderModel extends AbstractModel {
 
 		this.exists = true;
 
-//		this.hash = '';
-//		this.uidNext = 0;
+		this.hash = '';
+//		this.id = null;
+		this.uidNext = null;
 
 		this.addObservables({
 			name: '',
@@ -252,27 +251,71 @@ export class FolderModel extends AbstractModel {
 			focused: false,
 			selected: false,
 			edited: false,
-			subscribed: true,
+			isSubscribed: true,
 			checkable: false, // Check for new messages
 			askDelete: false,
 
 			nameForEdit: '',
 			errorMsg: '',
 
-			privateMessageCountAll: 0,
-			privateMessageCountUnread: 0,
+			totalEmailsValue: 0,
+			unreadEmailsValue: 0,
 
 			kolabType: null,
 
-			collapsed: true
+			collapsed: true,
+
+			tagsAllowed: false
 		});
 
+		this.flags = ko.observableArray();
+		this.permanentFlags = ko.observableArray();
+
 		this.addSubscribables({
-			kolabType: sValue => this.metadata[FolderMetadataKeys.KolabFolderType] = sValue
+			kolabType: sValue => this.metadata[FolderMetadataKeys.KolabFolderType] = sValue,
+			permanentFlags: aValue => this.tagsAllowed(aValue.includes('\\*'))
 		});
 
 		this.subFolders = ko.observableArray(new FolderCollectionModel);
 		this.actionBlink = ko.observable(false).extend({ falseTimeout: 1000 });
+
+		this.totalEmails = koComputable({
+				read: this.totalEmailsValue,
+				write: (iValue) => {
+					if (isPosNumeric(iValue)) {
+						this.totalEmailsValue(iValue);
+					} else {
+						this.totalEmailsValue.valueHasMutated();
+					}
+				}
+			})
+			.extend({ notify: 'always' });
+
+		this.unreadEmails = koComputable({
+				read: this.unreadEmailsValue,
+				write: (value) => {
+					if (isPosNumeric(value)) {
+						this.unreadEmailsValue(value);
+					} else {
+						this.unreadEmailsValue.valueHasMutated();
+					}
+				}
+			})
+			.extend({ notify: 'always' });
+/*
+		https://www.rfc-editor.org/rfc/rfc8621.html#section-2
+		"myRights": {
+			"mayAddItems": true,
+			"mayRename": false,
+			"maySubmit": true,
+			"mayDelete": false,
+			"maySetKeywords": true,
+			"mayRemoveItems": true,
+			"mayCreateChild": true,
+			"maySetSeen": true,
+			"mayReadItems": true
+		},
+*/
 	}
 
 	/**
@@ -303,30 +346,6 @@ export class FolderModel extends AbstractModel {
 
 			type && 'mail' != type && folder.kolabType(type);
 
-			folder.messageCountAll = koComputable({
-					read: folder.privateMessageCountAll,
-					write: (iValue) => {
-						if (isPosNumeric(iValue)) {
-							folder.privateMessageCountAll(iValue);
-						} else {
-							folder.privateMessageCountAll.valueHasMutated();
-						}
-					}
-				})
-				.extend({ notify: 'always' });
-
-			folder.messageCountUnread = koComputable({
-					read: folder.privateMessageCountUnread,
-					write: (value) => {
-						if (isPosNumeric(value)) {
-							folder.privateMessageCountUnread(value);
-						} else {
-							folder.privateMessageCountUnread.valueHasMutated();
-						}
-					}
-				})
-				.extend({ notify: 'always' });
-
 			folder.addComputables({
 
 				isInbox: () => FolderType.Inbox === folder.type(),
@@ -336,7 +355,7 @@ export class FolderModel extends AbstractModel {
 
 				hasVisibleSubfolders: () => !!folder.subFolders().find(folder => folder.visible()),
 
-				hasSubscriptions: () => folder.subscribed() | !!folder.subFolders().find(
+				hasSubscriptions: () => folder.isSubscribed() | !!folder.subFolders().find(
 						oFolder => {
 							const subscribed = oFolder.hasSubscriptions();
 							return !oFolder.isSystemFolder() && subscribed;
@@ -359,21 +378,21 @@ export class FolderModel extends AbstractModel {
 				 * - hasVisibleSubfolders()
 				 * Or when all below conditions are true:
 				 * - selectable()
-				 * - subscribed() OR hideUnsubscribed = false
+				 * - isSubscribed() OR hideUnsubscribed = false
 				 * - FolderType.User
 				 * - not kolabType()
 				 */
 				visible: () => {
 					const selectable = folder.canBeSelected(),
-						visible = (folder.subscribed() | !SettingsUserStore.hideUnsubscribed()) && selectable;
+						visible = (folder.isSubscribed() | !SettingsUserStore.hideUnsubscribed()) && selectable;
 					return folder.hasVisibleSubfolders() | visible;
 				},
 
 				hidden: () => !folder.selectable() && (folder.isSystemFolder() | !folder.hasVisibleSubfolders()),
 
 				printableUnreadCount: () => {
-					const count = folder.messageCountAll(),
-						unread = folder.messageCountUnread(),
+					const count = folder.totalEmails(),
+						unread = folder.unreadEmails(),
 						type = folder.type();
 
 					if (count) {
@@ -413,7 +432,7 @@ export class FolderModel extends AbstractModel {
 					return '';
 				},
 
-				hasUnreadMessages: () => 0 < folder.messageCountUnread() && folder.printableUnreadCount(),
+				hasUnreadMessages: () => 0 < folder.unreadEmails() && folder.printableUnreadCount(),
 
 				hasSubscribedUnreadMessagesSubfolders: () =>
 					!!folder.subFolders().find(
@@ -428,7 +447,7 @@ export class FolderModel extends AbstractModel {
 
 				edited: value => value && folder.nameForEdit(folder.name()),
 
-				messageCountUnread: unread => {
+				unreadEmails: unread => {
 					if (FolderType.Inbox === folder.type()) {
 						fireEvent('mailbox.inbox-unread-count', unread);
 					}

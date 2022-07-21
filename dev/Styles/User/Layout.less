@@ -142,6 +142,13 @@ html.rl-side-preview-pane {
 	}
 }
 
+#top-system-dropdown-id::after,
+#move-dropdown-id.dropdown-toggle::after,
+#button-add-prop-dropdown-id::after {
+	content: '▼';
+	font-size: 80%;
+}
+
 .dropdown-menu * + .dividerbar {
 	margin-top: 9px;
 	padding-top: 9px;
@@ -166,9 +173,6 @@ html.rl-side-preview-pane {
 
 .btn-group.open .btn.btn-transparent.dropdown-toggle {
 	color: #BD362F;
-	.caret {
-		border-top-color: #BD362F;
-	}
 }
 
 .btn-group > .btn.single {

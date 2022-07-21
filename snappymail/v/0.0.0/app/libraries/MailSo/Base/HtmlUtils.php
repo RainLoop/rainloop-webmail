@@ -31,7 +31,7 @@ abstract class HtmlUtils
 		$sHtml = \str_replace('<o:p></o:p>', '', $sHtml);
 		$sHtml = \str_replace('<o:p>', '<span>', $sHtml);
 		$sHtml = \str_replace('</o:p>', '</span>', $sHtml);
-
+/*
 		if (\function_exists('tidy_repair_string')) {
 			# http://tidy.sourceforge.net/docs/quickref.html
 			$tidyConfig = array(
@@ -44,7 +44,7 @@ abstract class HtmlUtils
 			);
 			$sHtml = \tidy_repair_string($sHtml, $tidyConfig, 'utf8');
 		}
-
+*/
 		$sHtml = \preg_replace(array(
 			'/<p[^>]*><\/p>/i',
 			'/<!doctype[^>]*>/i',

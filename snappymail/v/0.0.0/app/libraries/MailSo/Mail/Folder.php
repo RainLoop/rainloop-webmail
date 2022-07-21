@@ -209,8 +209,8 @@ class Folder implements \JsonSerializable
 		$aStatus = $this->oImapFolder->getStatusItems();
 		if ($aStatus && isset($aStatus['MESSAGES'], $aStatus['UNSEEN'], $aStatus['UIDNEXT'])) {
 			$aExtended = array(
-				'MessageCount' => (int) $aStatus['MESSAGES'],
-				'MessageUnseenCount' => (int) $aStatus['UNSEEN'],
+				'totalEmails' => (int) $aStatus['MESSAGES'],
+				'unreadEmails' => (int) $aStatus['UNSEEN'],
 				'UidNext' => (int) $aStatus['UIDNEXT'],
 //				'Hash' => $this->MailClient()->GenerateFolderHash(
 //					$this->FullName(), $aStatus['MESSAGES'], $aStatus['UIDNEXT'],
@@ -223,13 +223,18 @@ class Folder implements \JsonSerializable
 			'Name' => $this->Name(),
 			'FullName' => $this->FullName(),
 			'Delimiter' => (string) $this->Delimiter(),
-			'Subscribed' => $this->bSubscribed,
+			'isSubscribed' => $this->bSubscribed,
 			'Exists' => $this->bExists,
 			'Selectable' => $this->IsSelectable(),
 			'Flags' => $this->FlagsLowerCase(),
 //			'Extended' => $aExtended,
 //			'PermanentFlags' => $this->oImapFolder->PermanentFlags,
-			'Metadata' => $this->oImapFolder->Metadata()
+			'Metadata' => $this->oImapFolder->Metadata(),
+			'UidNext' => $this->oImapFolder->UIDNEXT,
+			// RFC 8621
+			'totalEmails' => $this->oImapFolder->MESSAGES,
+			'unreadEmails' => $this->oImapFolder->UNSEEN,
+			'id' => $this->oImapFolder->MAILBOXID
 		);
 	}
 }

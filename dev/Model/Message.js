@@ -18,6 +18,9 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 
 import PreviewHTML from 'Html/PreviewMessage.html';
 
+//import { MessageFlagsCache } from 'Common/Cache';
+import Remote from 'Remote/User/Fetch';
+
 const
 	// eslint-disable-next-line max-len
 	url = /(^|[\s\n]|\/?>)(https:\/\/[-A-Z0-9+\u0026\u2019#/%?=()~_|!:,.;]*[-A-Z0-9+\u0026#/%=~()_|])/gi,
@@ -30,6 +33,60 @@ const
 		const result = hcont.clientHeight;
 		hcont.innerHTML = '';
 		return result;
+	},
+
+	ignoredTags = [
+		// rfc5788
+		'$forwarded',
+		'$mdnsent',
+		'$submitpending',
+		'$submitted',
+		// rfc9051
+		'$junk',
+		'$notjunk',
+		'$phishing',
+		// Mailo
+		'sent',
+		// KMail
+		'$attachment',
+		'$encrypted',
+		'$error',
+		'$ignored',
+		'$invitation',
+		'$queued',
+		'$replied',
+		'$sent',
+		'$signed',
+		'$todo',
+		'$watched',
+		// GMail
+		'$replied',
+		'$attachment',
+		'$notphishing',
+		'junk',
+		'nonjunk',
+		// Others
+		'$readreceipt'
+	],
+
+	toggleTag = (message, keyword) => {
+		const lower = keyword.toLowerCase(),
+			isSet = message.flags().includes(lower);
+		Remote.request('MessageSetKeyword', iError => {
+			if (!iError) {
+				if (isSet) {
+					message.flags.remove(lower);
+				} else {
+					message.flags.push(lower);
+				}
+//				MessageFlagsCache.setFor(message.folder, message.uid, message.flags());
+			}
+		}, {
+			Folder: message.folder,
+			Uids: message.uid,
+			Keyword: keyword,
+			SetAction: isSet ? 0 : 1
+		})
 	},
 
 	replyHelper = (emails, unic, localEmails) => {
@@ -99,9 +156,33 @@ export class MessageModel extends AbstractModel {
 
 			isUnseen: () => !this.flags().includes('\\seen'),
 			isFlagged: () => this.flags().includes('\\flagged'),
-			isReadReceipt: () => this.flags().includes('$mdnsent')
+			isReadReceipt: () => this.flags().includes('$mdnsent'),
 //			isJunk: () => this.flags().includes('$junk') && !this.flags().includes('$nonjunk'),
-//			isPhishing: () => this.flags().includes('$phishing')
+//			isPhishing: () => this.flags().includes('$phishing'),
+
+			tagsToHTML: () => this.flags().map(value =>
+					('\\' == value[0] || ignoredTags.includes(value))
+					? ''
+					: '<span class="focused msgflag-'+value+'">' + i18n('MESSAGE_TAGS/'+value,0,value) + '</span>'
+				).join(' '),
+
+			tagOptions: () => {
+				const tagOptions = [];
+				FolderUserStore.currentFolder().permanentFlags.forEach(value => {
+					let lower = value.toLowerCase();
+					if ('\\' != value[0] && !ignoredTags.includes(lower)) {
+						tagOptions.push({
+							css: 'msgflag-' + lower,
+							value: value,
+							checked: this.flags().includes(lower),
+							label: i18n('MESSAGE_TAGS/'+lower, 0, lower),
+							toggle: (/*obj*/) => toggleTag(this, value)
+						});
+					}
+				});
+				return tagOptions
+			}
+
 		});
 	}
 
@@ -299,7 +380,7 @@ export class MessageModel extends AbstractModel {
 			hasUnseenSubMessage: this.hasUnseenSubMessage(),
 			hasFlaggedSubMessage: this.hasFlaggedSubMessage()
 		}, (key, value) => value && classes.push(key));
-		this.flags().forEach(value => classes.push('flag-'+value));
+		this.flags().forEach(value => classes.push('msgflag-'+value));
 		return classes.join(' ');
 	}
 
@@ -545,7 +626,7 @@ export class MessageModel extends AbstractModel {
 			});
 
 			body.querySelectorAll('[data-x-style-url]').forEach(node => {
-				forEachObjectEntry(JSON.parse(node.dataset.xStyleUrl), (name, url) => node.style[name] = "url('" + url + "')");
+				JSON.parse(node.dataset.xStyleUrl).forEach(data => node.style[data[0]] = "url('" + data[1] + "')");
 			});
 		}
 	}

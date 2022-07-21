@@ -335,7 +335,7 @@ class Parameter extends Node
      */
     public function xmlSerialize(Xml\Writer $writer)
     {
-        foreach (is_array($this->value) ? $this->value : explode(',', $this->value) as $value) {
+        foreach (explode(',', $this->value) as $value) {
             $writer->writeElement('text', $value);
         }
     }

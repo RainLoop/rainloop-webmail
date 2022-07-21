@@ -1,5 +1,6 @@
 import 'External/User/ko';
 
+import { SMAudio } from 'Common/Audio';
 import { isArray, pString, changeTheme } from 'Common/Utils';
 import { mailToHelper, setLayoutResizer, dropdownsDetectVisibility } from 'Common/UtilsUser';
 
@@ -24,8 +25,6 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import {
 	MessageFlagsCache,
-	setFolderHash,
-	getFolderHash,
 	getFolderInboxName,
 	getFolderFromCacheList
 } from 'Common/Cache';
@@ -222,38 +221,33 @@ export class AppUser extends AbstractApp {
 				(iError, data) => {
 					if (!iError && data.Result) {
 						const result = data.Result,
-							hash = getFolderHash(result.Folder),
 							folderFromCache = getFolderFromCacheList(result.Folder);
 						if (folderFromCache) {
+							const oldHash = folderFromCache.hash,
+								unreadCountChange = (folderFromCache.unreadEmails() !== result.unreadEmails);
+
+//							folderFromCache.revivePropertiesFromJson(result);
 							folderFromCache.expires = Date.now();
-
-							setFolderHash(result.Folder, result.Hash);
-
-							folderFromCache.messageCountAll(result.MessageCount);
-
-							let unreadCountChange = (folderFromCache.messageCountUnread() !== result.MessageUnseenCount);
-
-							folderFromCache.messageCountUnread(result.MessageUnseenCount);
+							folderFromCache.uidNext = result.UidNext;
+							folderFromCache.hash = result.Hash;
+							folderFromCache.totalEmails(result.totalEmails);
+							folderFromCache.unreadEmails(result.unreadEmails);
 
 							if (unreadCountChange) {
 								MessageFlagsCache.clearFolder(folderFromCache.fullName);
 							}
 
-							if (result.Flags.length) {
-								result.Flags.forEach(message =>
+							if (result.MessagesFlags.length) {
+								result.MessagesFlags.forEach(message =>
 									MessageFlagsCache.setFor(folderFromCache.fullName, message.Uid.toString(), message.Flags)
 								);
 
 								MessagelistUserStore.reloadFlagsAndCachedMessage();
 							}
 
-							MessagelistUserStore.initUidNextAndNewMessages(
-								folderFromCache.fullName,
-								result.UidNext,
-								result.NewMessages
-							);
+							MessagelistUserStore.notifyNewMessages(folderFromCache.fullName, result.NewMessages);
 
-							if (!hash || unreadCountChange || result.Hash !== hash) {
+							if (!oldHash || unreadCountChange || result.Hash !== oldHash) {
 								if (folderFromCache.fullName === FolderUserStore.currentFolderFullName()) {
 									MessagelistUserStore.reload();
 								} else if (getFolderInboxName() === folderFromCache.fullName) {
@@ -296,8 +290,8 @@ export class AppUser extends AbstractApp {
 		if (SettingsGet('Auth')) {
 			rl.setWindowTitle(i18n('GLOBAL/LOADING'));
 
-			NotificationUserStore.enableSoundNotification(!!SettingsGet('SoundNotification'));
-			NotificationUserStore.enableDesktopNotification(!!SettingsGet('DesktopNotifications'));
+			SMAudio.notifications(!!SettingsGet('SoundNotification'));
+			NotificationUserStore.enabled(!!SettingsGet('DesktopNotifications'));
 
 			AccountUserStore.email(SettingsGet('Email'));
 

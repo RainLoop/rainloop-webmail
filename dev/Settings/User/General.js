@@ -1,5 +1,6 @@
 import ko from 'ko';
 
+import { SMAudio } from 'Common/Audio';
 import { SaveSettingsStep } from 'Common/Enums';
 import { EditorDefaultType, Layout } from 'Common/EnumsUser';
 import { Settings, SettingsGet } from 'Common/Globals';
@@ -35,12 +36,12 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.editorDefaultType = SettingsUserStore.editorDefaultType;
 		this.layout = SettingsUserStore.layout;
 
-		this.soundNotification = NotificationUserStore.enableSoundNotification;
+		this.soundNotification = SMAudio.notifications;
 		this.notificationSound = ko.observable(SettingsGet('NotificationSound'));
 		this.notificationSounds = ko.observableArray(SettingsGet('NewMailSounds'));
 
-		this.desktopNotification = NotificationUserStore.enableDesktopNotification;
-		this.isDesktopNotificationAllowed = NotificationUserStore.isDesktopNotificationAllowed;
+		this.desktopNotification = NotificationUserStore.enabled;
+		this.isDesktopNotificationAllowed = NotificationUserStore.allowed;
 
 		this.viewHTML = SettingsUserStore.viewHTML;
 		this.showImages = SettingsUserStore.showImages;
@@ -133,11 +134,11 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 	}
 
 	testSoundNotification() {
-		NotificationUserStore.playSoundNotification(true);
+		SMAudio.playNotification(true);
 	}
 
 	testSystemNotification() {
-		NotificationUserStore.displayDesktopNotification('SnappyMail', 'Test notification');
+		NotificationUserStore.display('SnappyMail', 'Test notification');
 	}
 
 	selectLanguage() {

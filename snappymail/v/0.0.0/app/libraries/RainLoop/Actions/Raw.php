@@ -14,15 +14,14 @@ trait Raw
 		$sRawKey = (string) $this->GetActionParam('RawKey', '');
 		$aValues = $this->getDecodedRawKeyValue($sRawKey);
 
-		$sFolder = isset($aValues['Folder']) ? $aValues['Folder'] : '';
-		$iUid = (isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0);
-		$sMimeIndex = (string) (isset($aValues['MimeIndex']) ? $aValues['MimeIndex'] : '');
+		$sFolder = isset($aValues['Folder']) ? (string) $aValues['Folder'] : '';
+		$iUid = isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0;
+		$sMimeIndex = isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : '';
 
 		\header('Content-Type: text/plain');
 
 		return $this->MailClient()->MessageMimeStream(function ($rResource) {
-			if (\is_resource($rResource))
-			{
+			if (\is_resource($rResource)) {
 				\MailSo\Base\Utils::FpassthruWithTimeLimitReset($rResource);
 			}
 		}, $sFolder, $iUid, $sMimeIndex);
@@ -132,7 +131,7 @@ trait Raw
 			$bIsRangeRequest = true;
 		}
 
-		$sFolder = isset($aValues['Folder']) ? $aValues['Folder'] : '';
+		$sFolder = isset($aValues['Folder']) ? (string) $aValues['Folder'] : '';
 		$iUid = isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0;
 		$sMimeIndex = isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : '';
 

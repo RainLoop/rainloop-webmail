@@ -151,7 +151,17 @@
 		"MESSAGE_VIEW_MOVE_DESC": "Klik op de doel map in het linker paneel.",
 		"LINK_DOWNLOAD_AS_ZIP": "Download als zip",
 		"SPAM_SCORE": "Spamscore",
-		"HAS_VIRUS_WARNING": "WAARSCHUWING: virus gedetecteerd"
+		"HAS_VIRUS_WARNING": "WAARSCHUWING: virus gedetecteerd",
+		"TAGS": "Tags"
+	},
+	"MESSAGE_TAGS": {
+		"$important": "Belangrijk",
+		"$todo": "Te doen",
+		"$label1": "Belangrijk",
+		"$label2": "Werk",
+		"$label3": "Persoonlijk",
+		"$label4": "Te doen",
+		"$label5": "Later"
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Ontvangstbevestiging (weergegeven) - %SUBJECT%",

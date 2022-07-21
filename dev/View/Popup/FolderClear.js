@@ -1,5 +1,4 @@
 import { i18n, getNotification } from 'Common/Translator';
-import { setFolderHash } from 'Common/Cache';
 
 import { MessageUserStore } from 'Stores/User/Message';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
@@ -43,10 +42,9 @@ export class FolderClearPopupView extends AbstractViewPopup {
 
 			this.clearingProcess(true);
 
-			folderToClear.messageCountAll(0);
-			folderToClear.messageCountUnread(0);
-
-			setFolderHash(folderToClear.fullName, '');
+			folderToClear.totalEmails(0);
+			folderToClear.unreadEmails(0);
+			folderToClear.hash = '';
 
 			Remote.request('FolderClear', iError => {
 				this.clearingProcess(false);

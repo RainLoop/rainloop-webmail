@@ -6,7 +6,6 @@ class Capa
 {
 	const GNUPG = 'GnuPG';
 	const OPEN_PGP = 'OpenPGP';
-	const PREFETCH = 'Prefetch';
 	const THEMES = 'Themes';
 	const USER_BACKGROUND = 'UserBackground';
 	const SIEVE = 'Sieve';

@@ -188,7 +188,7 @@ html:not(rl-mobile) {
 	flex-wrap: wrap;
 
 	position: relative;
-	font-size: 12px;
+	font-size: 13px;
 	overflow: hidden;
 	cursor: pointer;
 
@@ -211,16 +211,11 @@ html:not(rl-mobile) {
 		border-left-color: #ccc;
 	}
 
-	.importantMark {
-		color:red;
-		margin-right:5px
-	}
-
-	&.flag-\\deleted {
-		opacity: .7;
-		.subjectParent {
-			text-decoration: line-through;
-		}
+	.priorityHigh::before {
+		content: '!'; /*❗*/
+		color: red;
+		font-weight: bolder;
+		margin-right: 5px;
 	}
 
 	&.deleted {
@@ -276,7 +271,7 @@ html:not(rl-mobile) {
 		opacity: 0.5;
 	}
 
-	.threads-len span {
+	.threads-len {
 		border-radius: 6px;
 		border: 1px solid #ccc;
 		font-size: 11px;
@@ -286,6 +281,9 @@ html:not(rl-mobile) {
 			background-color: rgba(127,127,127,0.3);
 			border-color: #666;
 		}
+	}
+	.threads-len::after {
+		content: ' ›';
 	}
 
 	.replyFlag, .forwardFlag {
@@ -329,25 +327,40 @@ html:not(rl-mobile) {
 		border-bottom-color: rgba(57, 140, 242, 0.2);
 		border-left-color: #398CF2;
 		z-index: 101;
-
-		+ .messageListItem {
-			border-bottom-color: rgba(57, 140, 242, 0.3);
-		}
 	}
 
 	.flagParent {
 		padding: 0 10px 0 5px;
 	}
-	&.flag-\\flagged .flagParent::after,
+	.flagParent::after {
+		content: '☆'; /*⚐*/
+	}
+	&.msgflag-\\flagged .flagParent::after,
 	&.hasFlaggedSubMessage .flagParent::after {
 		color: orange;
 		content: '★'; /*⚑*/
 	}
-	&:not(.flag-\\flagged):not(.hasFlaggedSubMessage) .flagParent::after {
-		content: '☆'; /*⚐*/
-	}
-	&:not(.flag-\\flagged):not(.hasFlaggedSubMessage) .flagParent:not(:hover) {
+	&:not(.msgflag-\\flagged):not(.hasFlaggedSubMessage) .flagParent:not(:hover) {
 		opacity: 0.5;
+	}
+
+	.senderParent::before {
+		font-family: snappymail;
+	}
+	&.msgflag-\\answered .senderParent::before {
+		content: '← ';
+	}
+	&.msgflag-\$forwarded .senderParent::before {
+		content: '→ ';
+	}
+	&.msgflag-\\answered.msgflag-\$forwarded .senderParent::before {
+		content: '←→ ';
+	}
+	&.msgflag-\\deleted {
+		opacity: .7;
+		.subjectParent {
+			text-decoration: line-through;
+		}
 	}
 }
 
@@ -442,35 +455,3 @@ html:not(.rl-mobile):not(.rl-side-preview-pane) {
 		}
 	}
 }
-
-.senderParent::before {
-	font-family: snappymail;
-}
-.flag-\\answered .senderParent::before {
-	content: '← ';
-}
-.flag-\$forwarded .senderParent::before {
-	content: '→ ';
-}
-.flag-\\answered.flag-\$forwarded .senderParent::before {
-	content: '←→ ';
-}
-
-/* Thunderbird labels */
-/*
-.flag-\$label5 .checkboxMessage { background-color: #808; }
-.flag-\$label4 .checkboxMessage { background-color: #00F; }
-.flag-\$label3 .checkboxMessage { background-color: #080; }
-.flag-\$label2 .checkboxMessage { background-color: #FA0; }
-.flag-\$label1 .checkboxMessage { background-color: #F00; }
-*/
-.messageListItem.flag-\$label5.focused { background-color: rgba(255,   0, 255, 0.30); }
-.messageListItem.flag-\$label4.focused { background-color: rgba( 64,  64, 255, 0.30); }
-.messageListItem.flag-\$label3.focused { background-color: rgba(  0, 255,   0, 0.30); }
-.messageListItem.flag-\$label2.focused { background-color: rgba(255, 170,   0, 0.30); }
-.messageListItem.flag-\$label1.focused { background-color: rgba(255,   0,   0, 0.30); }
-.messageListItem.flag-\$label5:not(.focused) { color: #939; }
-.messageListItem.flag-\$label4:not(.focused) { color: #33F; }
-.messageListItem.flag-\$label3:not(.focused) { color: #090; }
-.messageListItem.flag-\$label2:not(.focused) { color: #F90; }
-.messageListItem.flag-\$label1:not(.focused) { color: #F00; }

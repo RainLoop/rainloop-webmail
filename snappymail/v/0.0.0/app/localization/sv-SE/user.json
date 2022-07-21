@@ -151,7 +151,17 @@
 		"MESSAGE_VIEW_MOVE_DESC": "Klicka på mapp till vänster för att välja mål mapp.",
 		"LINK_DOWNLOAD_AS_ZIP": "Ladda ner som ZIP-fil",
 		"SPAM_SCORE": "Spam Score",
-		"HAS_VIRUS_WARNING": "VARNING: virus upptäckt"
+		"HAS_VIRUS_WARNING": "VARNING: virus upptäckt",
+		"TAGS": "Tags"
+	},
+	"MESSAGE_TAGS": {
+		"$important": "Important",
+		"$todo": "To Do",
+		"$label1": "Important",
+		"$label2": "Work",
+		"$label3": "Personal",
+		"$label4": "To Do",
+		"$label5": "Later"
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Mottagar kvitto (visad) - %SUBJECT%",

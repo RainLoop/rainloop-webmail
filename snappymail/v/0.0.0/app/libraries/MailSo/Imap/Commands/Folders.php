@@ -103,13 +103,16 @@ trait Folders
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
+	 *
+	 * https://datatracker.ietf.org/doc/html/rfc9051#section-6.3.11
 	 */
 	public function FolderStatus(string $sFolderName) : FolderInformation
 	{
 		$aStatusItems = array(
 			FolderResponseStatus::MESSAGES,
 			FolderResponseStatus::UNSEEN,
-			FolderResponseStatus::UIDNEXT
+			FolderResponseStatus::UIDNEXT,
+			FolderResponseStatus::UIDVALIDITY
 		);
 		if ($this->IsSupported('CONDSTORE')) {
 			$aStatusItems[] = FolderResponseStatus::HIGHESTMODSEQ;
@@ -119,8 +122,16 @@ trait Folders
 		}
 		if ($this->IsSupported('OBJECTID')) {
 			$aStatusItems[] = FolderResponseStatus::MAILBOXID;
+/*
+		} else if ($this->IsSupported('X-DOVECOT')) {
+			$aStatusItems[] = 'X-GUID';
+*/
 		}
-
+/*		// STATUS SIZE can take a significant amount of time, therefore not active
+		if ($this->IsSupported('IMAP4rev2')) {
+			$aStatusItems[] = FolderResponseStatus::SIZE;
+		}
+*/
 		$oFolderInfo = $this->oCurrentFolderInfo;
 		$bReselect = false;
 		$bWritable = false;
@@ -151,6 +162,7 @@ trait Folders
 
 		if ($bReselect) {
 			$this->selectOrExamineFolder($sFolderName, $bWritable, false);
+//			$this->oCurrentFolderInfo->UNSEEN = $oInfo->UNSEEN;
 		}
 
 		return $oInfo;
@@ -272,6 +284,9 @@ trait Folders
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
+	 *
+	 * REQUIRED IMAP4rev2 untagged responses:  FLAGS, EXISTS, LIST
+	 * REQUIRED IMAP4rev2 OK untagged responses:  PERMANENTFLAGS, UIDNEXT, UIDVALIDITY
 	 */
 	protected function selectOrExamineFolder(string $sFolderName, bool $bIsWritable, bool $bReSelectSameFolders) : FolderInformation
 	{
@@ -333,7 +348,7 @@ trait Folders
 					$key = $oResponse->OptionalResponse[0];
 					if (\count($oResponse->OptionalResponse) > 1) {
 						if ('PERMANENTFLAGS' === $key && \is_array($oResponse->OptionalResponse[1])) {
-							$oResult->PermanentFlags = $oResponse->OptionalResponse[1];
+							$oResult->PermanentFlags = \array_map('\\MailSo\\Base\\Utils::Utf7ModifiedToUtf8', $oResponse->OptionalResponse[1]);
 						}
 					} else if ('READ-ONLY' === $key) {
 //						$oResult->IsWritable = false;
@@ -348,7 +363,7 @@ trait Folders
 				else if (\count($oResponse->ResponseList) > 2
 				 && 'FLAGS' === $oResponse->ResponseList[1]
 				 && \is_array($oResponse->ResponseList[2])) {
-					$oResult->Flags = $oResponse->ResponseList[2];
+					$oResult->Flags = \array_map('\\MailSo\\Base\\Utils::Utf7ModifiedToUtf8', $oResponse->ResponseList[2]);
 				}
 			}
 		}
@@ -409,7 +424,11 @@ trait Folders
 			}
 			// RFC 8474
 			if ($this->IsSupported('OBJECTID')) {
-				$aTypes[] = FolderStatus::MAILBOXID;
+				$aL[] = FolderStatus::MAILBOXID;
+/*
+			} else if ($this->IsSupported('X-DOVECOT')) {
+				$aL[] = 'X-GUID';
+*/
 			}
 
 			$aReturnParams[] = 'STATUS';

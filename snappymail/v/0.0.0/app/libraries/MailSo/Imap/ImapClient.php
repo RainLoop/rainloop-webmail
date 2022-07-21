@@ -293,6 +293,9 @@ class ImapClient extends \MailSo\Net\NetClient
 		if (!$this->aCapabilityItems) {
 			$this->setCapabilities($this->SendRequestGetResponse('CAPABILITY'));
 		}
+/*
+		$this->aCapabilityItems[] = 'X-DOVECOT';
+*/
 		return $this->aCapabilityItems;
 	}
 

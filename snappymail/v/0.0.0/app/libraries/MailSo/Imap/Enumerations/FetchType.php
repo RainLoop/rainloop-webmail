@@ -53,6 +53,9 @@ abstract class FetchType
 	const BINARY_SIZE = 'BINARY.SIZE';
 	// RFC 4551
 	const MODSEQ = 'MODSEQ';
+	// RFC 8474
+	const EMAILID = 'EMAILID';
+	const THREADID = 'THREADID';
 
 	public static function BuildBodyCustomHeaderRequest(array $aHeaders, bool $bPeek = true) : string
 	{

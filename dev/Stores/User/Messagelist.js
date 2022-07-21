@@ -1,5 +1,6 @@
 import { koComputable } from 'External/ko';
 
+import { SMAudio } from 'Common/Audio';
 import { Notification } from 'Common/Enums';
 import { MessageSetAction } from 'Common/EnumsUser';
 import { $htmlCL } from 'Common/Globals';
@@ -8,12 +9,9 @@ import { addObservablesTo, addComputablesTo } from 'External/ko';
 
 import {
 	getFolderInboxName,
-	addNewMessageCache,
-	setFolderUidNext,
 	getFolderFromCacheList,
 	setFolderHash,
-	MessageFlagsCache,
-	clearNewMessageCache
+	MessageFlagsCache
 } from 'Common/Cache';
 
 import { mailBox } from 'Common/Links';
@@ -114,45 +112,40 @@ MessagelistUserStore.hasCheckedOrSelected = koComputable(() =>
 		|| MessagelistUserStore.find(item => item.checked()))
 	).extend({ rateLimit: 50 });
 
-MessagelistUserStore.initUidNextAndNewMessages = (folder, uidNext, newMessages) => {
-	if (getFolderInboxName() === folder && uidNext) {
-		if (arrayLength(newMessages)) {
-			newMessages.forEach(item => addNewMessageCache(folder, item.Uid));
+MessagelistUserStore.notifyNewMessages = (folder, newMessages) => {
+	if (getFolderInboxName() === folder && arrayLength(newMessages)) {
 
-			NotificationUserStore.playSoundNotification();
+		SMAudio.playNotification();
 
-			const len = newMessages.length;
-			if (3 < len) {
-				NotificationUserStore.displayDesktopNotification(
-					AccountUserStore.email(),
-					i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
-						COUNT: len
-					}),
-					{ Url: mailBox(newMessages[0].Folder) }
+		const len = newMessages.length;
+		if (3 < len) {
+			NotificationUserStore.display(
+				AccountUserStore.email(),
+				i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
+					COUNT: len
+				}),
+				{ Url: mailBox(newMessages[0].Folder) }
+			);
+		} else {
+			newMessages.forEach(item => {
+				NotificationUserStore.display(
+					EmailCollectionModel.reviveFromJson(item.From).toString(),
+					item.subject,
+					{ Folder: item.Folder, Uid: item.Uid }
 				);
-			} else {
-				newMessages.forEach(item => {
-					NotificationUserStore.displayDesktopNotification(
-						EmailCollectionModel.reviveFromJson(item.From).toString(),
-						item.Subject,
-						{ Folder: item.Folder, Uid: item.Uid }
-					);
-				});
-			}
+			});
 		}
-
-		setFolderUidNext(folder, uidNext);
 	}
 }
 
 /**
  * @param {boolean=} bDropPagePosition = false
- * @param {boolean=} bDropCurrenFolderCache = false
+ * @param {boolean=} bDropCurrentFolderCache = false
  */
-MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrenFolderCache = false) => {
+MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCache = false) => {
 	let iOffset = (MessagelistUserStore.page() - 1) * SettingsUserStore.messagesPerPage();
 
-	if (bDropCurrenFolderCache) {
+	if (bDropCurrentFolderCache) {
 		setFolderHash(FolderUserStore.currentFolderFullName(), '');
 	}
 
@@ -186,27 +179,42 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrenFolderCache
 					let unreadCountChange = false;
 
 					const
-						folder = getFolderFromCacheList(collection.Folder);
-
+						folder = getFolderFromCacheList(collection.Folder),
+						folderInfo = collection.FolderInfo;
 					if (folder && !bCached) {
+//						folder.revivePropertiesFromJson(result);
 						folder.expires = Date.now();
+						folder.uidNext = folderInfo.UidNext;
+						folder.hash = collection.FolderHash;
 
-						setFolderHash(collection.Folder, collection.FolderHash);
-
-						if (null != collection.MessageCount) {
-							folder.messageCountAll(collection.MessageCount);
+						if (null != folderInfo.totalEmails) {
+							folder.totalEmails(folderInfo.totalEmails);
 						}
 
-						if (null != collection.MessageUnseenCount) {
-							if (pInt(folder.messageCountUnread()) !== pInt(collection.MessageUnseenCount)) {
+						if (null != folderInfo.unreadEmails) {
+							if (pInt(folder.unreadEmails()) !== pInt(folderInfo.unreadEmails)) {
 								unreadCountChange = true;
 								MessageFlagsCache.clearFolder(folder.fullName);
 							}
-
-							folder.messageCountUnread(collection.MessageUnseenCount);
+							folder.unreadEmails(folderInfo.unreadEmails);
 						}
 
-						MessagelistUserStore.initUidNextAndNewMessages(folder.fullName, collection.UidNext, collection.NewMessages);
+						folder.flags(folderInfo.Flags);
+						let flags = folderInfo.PermanentFlags;
+						if (flags.includes('\\*')) {
+							let i = 6;
+							while (--i) {
+								flags.includes('$label'+i) || flags.push('$label'+i);
+							}
+						}
+						flags.sort((a, b) => {
+							a = a.toUpperCase();
+							b = b.toUpperCase();
+							return (a < b) ? -1 : ((a > b) ? 1 : 0);
+						});
+						folder.permanentFlags(flags);
+
+						MessagelistUserStore.notifyNewMessages(folder.fullName, collection.NewMessages);
 					}
 
 					MessagelistUserStore.count(collection.MessageResultCount);
@@ -230,8 +238,6 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrenFolderCache
 
 					MessagelistUserStore(collection);
 					MessagelistUserStore.isIncomplete(false);
-
-					clearNewMessageCache();
 
 					if (folder && (bCached || unreadCountChange || SettingsUserStore.useThreads())) {
 						rl.app.folderInformation(folder.fullName, collection);
@@ -262,27 +268,25 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrenFolderCache
 MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 	messages = messages || MessagelistUserStore.listChecked();
 
-	let folder = null,
+	let folder,
 		alreadyUnread = 0,
 		rootUids = messages.map(oMessage => oMessage && oMessage.uid ? oMessage.uid : null)
 			.validUnique(),
 		length = rootUids.length;
 
 	if (sFolderFullName && length) {
+		rootUids.forEach(sSubUid =>
+			alreadyUnread += MessageFlagsCache.storeBySetAction(sFolderFullName, sSubUid, iSetAction)
+		);
 		switch (iSetAction) {
 			case MessageSetAction.SetSeen:
 				length = 0;
 				// fallthrough is intentionally
 			case MessageSetAction.UnsetSeen:
-				rootUids.forEach(sSubUid =>
-					alreadyUnread += MessageFlagsCache.storeBySetAction(sFolderFullName, sSubUid, iSetAction)
-				);
-
 				folder = getFolderFromCacheList(sFolderFullName);
 				if (folder) {
-					folder.messageCountUnread(folder.messageCountUnread() - alreadyUnread + length);
+					folder.unreadEmails(folder.unreadEmails() - alreadyUnread + length);
 				}
-
 				Remote.request('MessageSetSeen', null, {
 					Folder: sFolderFullName,
 					Uids: rootUids.join(','),
@@ -292,9 +296,6 @@ MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 
 			case MessageSetAction.SetFlag:
 			case MessageSetAction.UnsetFlag:
-				rootUids.forEach(sSubUid =>
-					MessageFlagsCache.storeBySetAction(sFolderFullName, sSubUid, iSetAction)
-				);
 				Remote.request('MessageSetFlagged', null, {
 					Folder: sFolderFullName,
 					Uids: rootUids.join(','),
@@ -334,26 +335,31 @@ MessagelistUserStore.removeMessagesFromList = (
 
 	messages.forEach(item => item && item.isUnseen() && ++unseenCount);
 
-	if (fromFolder && !copy) {
-		fromFolder.messageCountAll(
-			0 <= fromFolder.messageCountAll() - uidForRemove.length ? fromFolder.messageCountAll() - uidForRemove.length : 0
-		);
-
-		if (0 < unseenCount) {
-			fromFolder.messageCountUnread(
-				0 <= fromFolder.messageCountUnread() - unseenCount ? fromFolder.messageCountUnread() - unseenCount : 0
+	if (fromFolder) {
+		fromFolder.hash = '';
+		if (!copy) {
+			fromFolder.totalEmails(
+				0 <= fromFolder.totalEmails() - uidForRemove.length ? fromFolder.totalEmails() - uidForRemove.length : 0
 			);
+
+			if (0 < unseenCount) {
+				fromFolder.unreadEmails(
+					0 <= fromFolder.unreadEmails() - unseenCount ? fromFolder.unreadEmails() - unseenCount : 0
+				);
+			}
 		}
 	}
 
 	if (toFolder) {
+		toFolder.hash = '';
+
 		if (trashFolder === toFolder.fullName || spamFolder === toFolder.fullName) {
 			unseenCount = 0;
 		}
 
-		toFolder.messageCountAll(toFolder.messageCountAll() + uidForRemove.length);
+		toFolder.totalEmails(toFolder.totalEmails() + uidForRemove.length);
 		if (0 < unseenCount) {
-			toFolder.messageCountUnread(toFolder.messageCountUnread() + unseenCount);
+			toFolder.unreadEmails(toFolder.unreadEmails() + unseenCount);
 		}
 
 		toFolder.actionBlink(true);
@@ -376,14 +382,6 @@ MessagelistUserStore.removeMessagesFromList = (
 
 			setTimeout(() => messages.forEach(item => messageList.remove(item)), 350);
 		}
-	}
-
-	if (fromFolderFullName) {
-		setFolderHash(fromFolderFullName, '');
-	}
-
-	if (toFolderFullName) {
-		setFolderHash(toFolderFullName, '');
 	}
 
 	if (MessagelistUserStore.threadUid()) {

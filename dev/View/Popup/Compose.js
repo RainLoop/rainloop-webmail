@@ -455,7 +455,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				Cc: this.cc(),
 				Bcc: this.bcc(),
 				ReplyTo: this.replyTo(),
-				Subject: this.subject(),
+				subject: this.subject(),
 				DraftInfo: this.aDraftInfo,
 				InReplyTo: this.sInReplyTo,
 				References: this.sReferences,

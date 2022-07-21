@@ -37,6 +37,12 @@ class Message implements \JsonSerializable
 		$aFlagsLowerCase = [],
 
 		/**
+		 * https://www.rfc-editor.org/rfc/rfc8474#section-5
+		 */
+		$sEmailId = '',
+		$sThreadId = '',
+
+		/**
 		 * @var \MailSo\Mime\EmailCollection
 		 */
 		$oFrom = null,
@@ -287,16 +293,21 @@ class Message implements \JsonSerializable
 			$oBodyStructure = $oFetchResponse->GetFetchBodyStructure();
 		}
 
-		$sInternalDate = $oFetchResponse->GetFetchValue(FetchType::INTERNALDATE);
 		$aFlags = $oFetchResponse->GetFetchValue(FetchType::FLAGS);
 
 		$oMessage->sFolder = $sFolder;
 		$oMessage->iUid = (int) $oFetchResponse->GetFetchValue(FetchType::UID);
 		$oMessage->iSize = (int) $oFetchResponse->GetFetchValue(FetchType::RFC822_SIZE);
-		$oMessage->aFlagsLowerCase = \array_map('strtolower', $aFlags ?: []);
+		$oMessage->aFlagsLowerCase = \array_map('mb_strtolower', \array_map('\\MailSo\\Base\\Utils::Utf7ModifiedToUtf8', $aFlags ?: []));
+		$oMessage->iInternalTimeStampInUTC = \MailSo\Base\DateTimeHelper::ParseInternalDateString(
+			$oFetchResponse->GetFetchValue(FetchType::INTERNALDATE)
+		);
 
-		$oMessage->iInternalTimeStampInUTC =
-			\MailSo\Base\DateTimeHelper::ParseInternalDateString($sInternalDate);
+		$oMessage->sEmailId = $oFetchResponse->GetFetchValue(FetchType::EMAILID)
+//			?: $oFetchResponse->GetFetchValue('X-GUID')
+			?: $oFetchResponse->GetFetchValue('X-GM-MSGID');
+		$oMessage->sThreadId = $oFetchResponse->GetFetchValue(FetchType::THREADID)
+			?: $oFetchResponse->GetFetchValue('X-GM-THRID');
 
 		$sCharset = $oBodyStructure ? Utils::NormalizeCharset($oBodyStructure->SearchCharset()) : '';
 
@@ -417,9 +428,9 @@ class Message implements \JsonSerializable
 				$oMessage->bIsSpam = false !== \stripos($oMessage->sSubject, '*** SPAM ***');
 			} else if ($spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_BOGOSITY)) {
 				$oMessage->sSpamResult = $spam;
-				$oMessage->bIsSpam = !!\preg_match('/yes|spam/', $spam);
+				$oMessage->bIsSpam = !\str_contains($spam, 'Ham');
 				if (\preg_match('/spamicity=([\\d\\.]+)/', $spam, $spamicity)) {
-					$oMessage->setSpamScore(\floatval($spamicity[1]));
+					$oMessage->setSpamScore(100 * \floatval($spamicity[1]));
 				}
 			} else if ($spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAM_STATUS)) {
 				$oMessage->sSpamResult = $spam;
@@ -628,13 +639,20 @@ class Message implements \JsonSerializable
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
+/*
+		// JMAP-only RFC8621 keywords (RFC5788)
+		$keywords = \array_fill_keys(\str_replace(
+			['\\draft', '\\seen', '\\flagged', '\\answered'],
+			[ '$draft',  '$seen',  '$flagged',  '$answered'],
+			$this->aFlagsLowerCase
+		), true);
+*/
 		return array(
 			'@Object' => 'Object/Message',
 			'Folder' => $this->sFolder,
 			'Uid' => $this->iUid,
-			'Subject' => \trim(Utils::Utf8Clear($this->sSubject)),
+			'subject' => \trim(Utils::Utf8Clear($this->sSubject)),
 			'MessageId' => $this->sMessageId,
-			'Size' => $this->iSize,
 			'SpamScore' => $this->bIsSpam ? 100 : $this->iSpamScore,
 			'SpamResult' => $this->sSpamResult,
 			'IsSpam' => $this->bIsSpam,
@@ -658,7 +676,16 @@ class Message implements \JsonSerializable
 
 			'Attachments' => $this->oAttachments ? $this->oAttachments->SpecData() : null,
 
-			'Flags' => $this->aFlagsLowerCase
+			'Flags' => $this->aFlagsLowerCase,
+
+			// https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.1
+			'id' => $this->sEmailId,
+//			'blobId' => $this->sEmailIdBlob,
+			'threadId' => $this->sThreadId,
+//			'mailboxIds' => ['mailboxid'=>true],
+//			'keywords' => $keywords,
+			'size' => $this->iSize,
+			'receivedAt' => \gmdate('Y-m-d\\TH:i:s\\Z', $this->iInternalTimeStampInUTC)
 		);
 	}
 }

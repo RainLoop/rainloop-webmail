@@ -1,7 +1,7 @@
-import { MessageFlagsCache, addRequestedMessage } from 'Common/Cache';
+import { MessageFlagsCache } from 'Common/Cache';
 import { Notification } from 'Common/Enums';
 import { MessageSetAction, ComposeType/*, FolderType*/ } from 'Common/EnumsUser';
-import { doc, createElement, elementById, dropdowns, dropdownVisibility } from 'Common/Globals';
+import { doc, createElement, elementById, dropdowns, dropdownVisibility, SettingsGet } from 'Common/Globals';
 import { plainToHtml } from 'Common/Html';
 import { getNotification } from 'Common/Translator';
 import { EmailModel } from 'Model/Email';
@@ -181,20 +181,34 @@ setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 		target.removeAttribute('style');
 		source.removeAttribute('style');
 	}
+	source.observer && source.observer.disconnect();
 //	source.classList.toggle('resizable', mode);
 	if (mode) {
-		const length = Local.get(sClientSideKeyName+mode);
+		const length = Local.get(sClientSideKeyName + mode) || SettingsGet('Resizer' + sClientSideKeyName + mode),
+			setTargetPos = mode => {
+				let value;
+				if ('Width' == mode) {
+					value = source.offsetWidth;
+					target.style.left = value + 'px';
+				} else {
+					value = source.offsetHeight;
+					target.style.top = (4 + source.offsetTop + value) + 'px';
+				}
+				return value;
+			};
+		if (length) {
+			source.style[mode.toLowerCase()] = length + 'px';
+			setTargetPos(mode);
+		}
 		if (!source.layoutResizer) {
 			const resizer = createElement('div', {'class':'resizer'}),
+				save = (data => Remote.saveSettings(0, data)).debounce(500),
 				size = {},
 				store = () => {
-					if ('Width' == resizer.mode) {
-						target.style.left = source.offsetWidth + 'px';
-						Local.set(resizer.key+resizer.mode, source.offsetWidth);
-					} else {
-						target.style.top = (4 + source.offsetTop + source.offsetHeight) + 'px';
-						Local.set(resizer.key+resizer.mode, source.offsetHeight);
-					}
+					const value = setTargetPos(resizer.mode),
+						prop = resizer.key + resizer.mode;
+					(value == Local.get(prop)) || Local.set(prop, value);
+					(value == SettingsGet('Resizer' + prop)) || save({['Resizer' + prop]: value});
 				},
 				cssint = s => {
 					let value = getComputedStyle(source, null)[s].replace('px', '');
@@ -235,11 +249,6 @@ setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 		source.layoutResizer.mode = mode;
 		source.layoutResizer.key = sClientSideKeyName;
 		source.observer && source.observer.observe(source, { box: 'border-box' });
-		if (length) {
-			source.style[mode] = length + 'px';
-		}
-	} else {
-		source.observer && source.observer.disconnect();
 	}
 },
 
@@ -290,7 +299,6 @@ populateMessageBody = (oMessage, preload) => {
 						}
 */
 						isNew || message.revivePropertiesFromJson(json);
-						addRequestedMessage(message.folder, message.uid);
 						if (messagesDom) {
 							let id = 'rl-msg-' + message.hash.replace(/[^a-zA-Z0-9]/g, ''),
 								body = elementById(id);

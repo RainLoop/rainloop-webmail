@@ -82,18 +82,18 @@ class DefaultDomain implements DomainInterface
 	{
 		$mResult = null;
 
-		$sDisabled = '';
+		$aDisabled = [];
 		$sFoundValue = '';
 
 		$sRealFileName = $this->codeFileName($sName);
 
-		if (\file_exists($this->sDomainPath.'/disabled'))
-		{
-			$sDisabled = \file_get_contents($this->sDomainPath.'/disabled');
+		if (\file_exists($this->sDomainPath.'/disabled')) {
+			$aDisabled = \explode(',', \file_get_contents($this->sDomainPath.'/disabled'));
 		}
+		$bCheckDisabled = $bCheckDisabled && 0 < \count($aDisabled);
 
 		if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini') &&
-			(!$bCheckDisabled || 0 === \strlen($sDisabled) || false === \strpos(','.$sDisabled.',', ','.\MailSo\Base\Utils::IdnToAscii($sName, true).',')))
+			(!$bCheckDisabled || !\in_array(\MailSo\Base\Utils::IdnToAscii($sName, true), $aDisabled)))
 		{
 			$aDomain = \parse_ini_file($this->sDomainPath.'/'.$sRealFileName.'.ini') ?: array();
 //			if ($bCheckAliases && !empty($aDomain['alias']))
@@ -109,7 +109,7 @@ class DefaultDomain implements DomainInterface
 			$mResult = \RainLoop\Model\Domain::NewInstanceFromDomainConfigArray($sName, $aDomain);
 		}
 		else if ($bCheckAliases && \file_exists($this->sDomainPath.'/'.$sRealFileName.'.alias') &&
-			(!$bCheckDisabled || 0 === \strlen($sDisabled) || false === \strpos(','.$sDisabled.',', ','.\MailSo\Base\Utils::IdnToAscii($sName, true).',')))
+			(!$bCheckDisabled || !\in_array(\MailSo\Base\Utils::IdnToAscii($sName, true), $aDisabled)))
 		{
 			$sAlias = \trim(\file_get_contents($this->sDomainPath.'/'.$sRealFileName.'.alias'));
 			if (!empty($sAlias))
@@ -126,16 +126,12 @@ class DefaultDomain implements DomainInterface
 		else if ($bFindWithWildCard)
 		{
 			$sNames = $this->getWildcardDomainsLine();
-			if (\strlen($sNames))
-			{
-				if (\RainLoop\Plugins\Helper::ValidateWildcardValues(
-					\MailSo\Base\Utils::IdnToUtf8($sName, true), $sNames, $sFoundValue) && \strlen($sFoundValue))
-				{
-					if (!$bCheckDisabled || 0 === \strlen($sDisabled) || false === \strpos(','.$sDisabled.',', ','.$sFoundValue.','))
-					{
-						$mResult = $this->Load($sFoundValue, false);
-					}
-				}
+			if (\strlen($sNames)
+			 && \RainLoop\Plugins\Helper::ValidateWildcardValues(\MailSo\Base\Utils::IdnToUtf8($sName, true), $sNames, $sFoundValue)
+			 && \strlen($sFoundValue)
+			 && (!$bCheckDisabled || !\in_array($sFoundValue, $aDisabled))
+			) {
+				$mResult = $this->Load($sFoundValue, false);
 			}
 		}
 

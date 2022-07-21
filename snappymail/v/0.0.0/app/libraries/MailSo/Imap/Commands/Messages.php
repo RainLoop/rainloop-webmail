@@ -78,6 +78,23 @@ trait Messages
 						break;
 				}
 			}
+			if ($this->IsSupported('OBJECTID')) {
+				$aFetchItems[] = FetchType::EMAILID;
+				$aFetchItems[] = FetchType::THREADID;
+			} else if ($this->IsSupported('X-GM-EXT-1')) {
+				// https://developers.google.com/gmail/imap/imap-extensions
+				$aFetchItems[] = 'X-GM-MSGID';
+				$aFetchItems[] = 'X-GM-THRID';
+/*
+			} else if ($this->IsSupported('X-DOVECOT')) {
+				$aFetchItems[] = 'X-GUID';
+*/
+			}
+/*
+			if ($this->IsSupported('X-GM-EXT-1') && \in_array(FetchType::FLAGS, $aFetchItems)) {
+				$aFetchItems[] = 'X-GM-LABELS';
+			}
+*/
 
 			$aParams = array($sIndexRange, $aFetchItems);
 
@@ -278,6 +295,8 @@ trait Messages
 		 *   https://datatracker.ietf.org/doc/html/rfc4551#section-3.2
 		 *     $sStoreAction[] = (UNCHANGEDSINCE $modsequence)
 		 */
+
+		$aInputStoreItems = \array_map('\\MailSo\\Base\\Utils::Utf8ToUtf7Modified', $aInputStoreItems);
 
 		return $this->SendRequestGetResponse(
 			$oRange->UID ? 'UID STORE' : 'STORE',

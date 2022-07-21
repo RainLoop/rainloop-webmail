@@ -151,7 +151,17 @@
 		"MESSAGE_VIEW_MOVE_DESC": "Cliquez sur le nom du dossier dans le panneau de gauche pour sélectionner la destination.",
 		"LINK_DOWNLOAD_AS_ZIP": "Télécharger le zip",
 		"SPAM_SCORE": "Score de spam",
-		"HAS_VIRUS_WARNING": "ATTENTION : virus détecté"
+		"HAS_VIRUS_WARNING": "ATTENTION : virus détecté",
+		"TAGS": "Étiquettes"
+	},
+	"MESSAGE_TAGS": {
+		"$important": "Important",
+		"$todo": "À faire",
+		"$label1": "Important",
+		"$label2": "Travail",
+		"$label3": "Personnel",
+		"$label4": "À faire",
+		"$label5": "Plus tard"
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Accusé de réception (affiché) - %SUBJECT%",

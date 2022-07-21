@@ -19,7 +19,8 @@ const
 	stripTracking = text => text
 		.replace(/tracking\.(printabout\.nl[^?]+)\?.*/gsi, (...m) => m[1])
 		.replace(/^.+awstrack\.me\/.+(https:%2F%2F[^/]+)/gsi, (...m) => decodeURIComponent(m[1]))
-		.replace(/([?&])utm_[a-z]+=[^&?#]*/gsi, '$1')
+		.replace(/([?&])utm_[a-z]+=[^&?#]*/gsi, '$1') // Urchin Tracking Module
+		.replace(/([?&])ec_[a-z]+=[^&?#]*/gsi, '$1')  // Sitecore
 		.replace(/&&+/, '');
 
 export const
@@ -99,7 +100,7 @@ export const
 				'BGSOUND','KEYGEN','SOURCE','OBJECT','EMBED','APPLET','IFRAME','FRAME','FRAMESET','VIDEO','AUDIO','AREA','MAP'
 			],
 			nonEmptyTags = [
-				'A','B','EM','I','SPAN','STRONG','O:P','TABLE'
+				'A','B','EM','I','SPAN','STRONG','TABLE'
 			];
 
 		tpl.innerHTML = html
@@ -131,13 +132,12 @@ export const
 //			 || (oStyle.maxHeight && 1 > parseFloat(oStyle.maxHeight)
 //			 || (oStyle.maxWidth && 1 > parseFloat(oStyle.maxWidth)
 //			 || ('0' === oStyle.opacity
-			 || (nonEmptyTags.includes(name) && ('' == oElement.textContent.trim() && !oElement.querySelector('img')))
 			) {
 				oElement.remove();
 				return;
 			}
 //			if (['CENTER','FORM'].includes(name)) {
-			if ('FORM' === name || 'O:P' === name) {
+			if ('FORM' === name || 'O:P' === name || (nonEmptyTags.includes(name) && ('' == oElement.textContent.trim()))) {
 				replaceWithChildren(oElement);
 				return;
 			}
@@ -180,6 +180,7 @@ export const
 			let value;
 
 //			if ('TABLE' === name || 'TD' === name || 'TH' === name) {
+			if (!oStyle.backgroundImage) {
 				if (hasAttribute('width')) {
 					value = getAttribute('width');
 					oStyle.width = value.includes('%') ? value : value + 'px';
@@ -201,6 +202,7 @@ export const
 				if (value && !value.includes('%')) {
 					oStyle.maxHeight = value;
 				}
+			}
 //			} else
 			if ('A' === name) {
 				value = oElement.href;
@@ -301,17 +303,16 @@ export const
 				oStyle.removeProperty('cursor');
 				oStyle.removeProperty('min-width');
 
-				const urls = {
-					remote: [], // 'data-x-style-url'
-					broken: []  // 'data-x-broken-style-src'
-				};
+				const
+					urls_remote = [], // 'data-x-style-url'
+					urls_broken = []; // 'data-x-broken-style-src'
 				['backgroundImage', 'listStyleImage', 'content'].forEach(property => {
 					if (oStyle[property]) {
 						let value = oStyle[property],
-							found = value.match(/url\s*\(([^)]+)\)/gi);
+							found = value.match(/url\s*\(([^)]+)\)/i);
 						if (found) {
 							oStyle[property] = null;
-							found = found[0].replace(/^["'\s]+|["'\s]+$/g, '');
+							found = found[1].replace(/^["'\s]+|["'\s]+$/g, '');
 							let lowerUrl = found.toLowerCase();
 							if ('cid:' === lowerUrl.slice(0, 4)) {
 								const attachment = findAttachmentByCid(found);
@@ -320,13 +321,13 @@ export const
 									attachment.isInline(true);
 									attachment.isLinked(true);
 								}
-							} else if (/http[s]?:\/\//.test(lowerUrl) || '//' === found.slice(0, 2)) {
+							} else if (/^(https?:)?\/\//.test(lowerUrl)) {
 								result.hasExternals = true;
-								urls.remote[property] = useProxy ? proxy(found) : found;
+								urls_remote.push([property, useProxy ? proxy(found) : value]);
 							} else if ('data:image/' === lowerUrl.slice(0, 11)) {
 								oStyle[property] = value;
 							} else {
-								urls.broken[property] = found;
+								urls_broken.push([property, found]);
 							}
 						}
 					}
@@ -334,11 +335,11 @@ export const
 //				oStyle.removeProperty('background-image');
 //				oStyle.removeProperty('list-style-image');
 
-				if (urls.remote.length) {
-					setAttribute('data-x-style-url', JSON.stringify(urls.remote));
+				if (urls_remote.length) {
+					setAttribute('data-x-style-url', JSON.stringify(urls_remote));
 				}
-				if (urls.broken.length) {
-					setAttribute('data-x-style-broken-urls', JSON.stringify(urls.broken));
+				if (urls_broken.length) {
+					setAttribute('data-x-style-broken-urls', JSON.stringify(urls_broken));
 				}
 
 				if (11 > pInt(oStyle.fontSize)) {
@@ -407,9 +408,6 @@ export const
 			.replace(/<t[dh](\s[\s\S]*?)?>/gi, '\t')
 			.replace(/<\/tr(\s[\s\S]*?)?>/gi, '\n');
 
-		// Convert line-breaks
-		forEach('br', br => br.replaceWith('\n'));
-
 		// lines
 		forEach('hr', node => node.replaceWith(`\n\n${hr}\n\n`));
 
@@ -456,10 +454,17 @@ export const
 		// Italic
 		forEach('i,em', i => i.replaceWith(`*${i.textContent}*`));
 
+		// Convert line-breaks
+		tpl.innerHTML = tpl.innerHTML
+			.replace(/\n{3,}/gm, '\n\n')
+			.replace(/\n<br[^>]*>/g, '\n')
+			.replace(/<br[^>]*>\n/g, '\n');
+		forEach('br', br => br.replaceWith('\n'));
+
 		// Blockquotes must be last
 		blockquotes(tpl.content);
 
-		return (tpl.content.textContent || '').replace(/\n{3,}/gm, '\n\n').trim();
+		return (tpl.content.textContent || '').trim();
 	},
 
 	/**

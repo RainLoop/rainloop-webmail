@@ -138,7 +138,7 @@ export const FolderUserStore = new class {
 						folder.selectable() &&
 						folder.exists &&
 						timeout > folder.expires &&
-						(folder.isSystemFolder() || (folder.subscribed() && (folder.checkable() || !bDisplaySpecSetting)))
+						(folder.isSystemFolder() || (folder.isSubscribed() && (folder.checkable() || !bDisplaySpecSetting)))
 					) {
 						timeouts.push([folder.expires, folder.fullName]);
 					}

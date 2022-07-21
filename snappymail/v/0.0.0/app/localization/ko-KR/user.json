@@ -151,7 +151,17 @@
 		"MESSAGE_VIEW_MOVE_DESC": "왼쪽 패널에서 폴더명을 클릭하여 위치를 선택하세요.",
 		"LINK_DOWNLOAD_AS_ZIP": ".zip 파일로 다운로드",
 		"SPAM_SCORE": "Spam Score",
-		"HAS_VIRUS_WARNING": "WARNING: virus detected"
+		"HAS_VIRUS_WARNING": "WARNING: virus detected",
+		"TAGS": "Tags"
+	},
+	"MESSAGE_TAGS": {
+		"$important": "Important",
+		"$todo": "To Do",
+		"$label1": "Important",
+		"$label2": "Work",
+		"$label3": "Personal",
+		"$label4": "To Do",
+		"$label5": "Later"
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "수신 확인 (표시됨) - %SUBJECT%",

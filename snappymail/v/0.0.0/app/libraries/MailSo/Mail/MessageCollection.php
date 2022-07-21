@@ -25,16 +25,6 @@ class MessageCollection extends \MailSo\Base\Collection
 	/**
 	 * @var int
 	 */
-	public $MessageCount = 0;
-
-	/**
-	 * @var int
-	 */
-	public $MessageUnseenCount = 0;
-
-	/**
-	 * @var int
-	 */
 	public $MessageResultCount = 0;
 
 	/**
@@ -56,11 +46,6 @@ class MessageCollection extends \MailSo\Base\Collection
 	 * @var string
 	 */
 	public $Search = '';
-
-	/**
-	 * @var int
-	 */
-	public $UidNext = 0;
 
 	/**
 	 * @var int
@@ -95,13 +80,10 @@ class MessageCollection extends \MailSo\Base\Collection
 	public function jsonSerialize()
 	{
 		return array_merge(parent::jsonSerialize(), array(
-			'MessageCount' => $this->MessageCount,
-			'MessageUnseenCount' => $this->MessageUnseenCount,
 			'MessageResultCount' => $this->MessageResultCount,
 			'Folder' => $this->FolderName,
 			'FolderHash' => $this->FolderHash,
 			'FolderInfo' => $this->FolderInfo,
-			'UidNext' => $this->UidNext,
 			'ThreadUid' => $this->ThreadUid,
 			'NewMessages' => $this->NewMessages,
 			'Filtered' => $this->Filtered,

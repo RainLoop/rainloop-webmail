@@ -342,6 +342,10 @@ trait User
 		$this->setSettingsFromParams($oSettings, 'AutoLogout', 'int');
 		$this->setSettingsFromParams($oSettings, 'MessageReadDelay', 'int');
 
+		$this->setSettingsFromParams($oSettings, 'Resizer4Width', 'int');
+		$this->setSettingsFromParams($oSettings, 'Resizer5Width', 'int');
+		$this->setSettingsFromParams($oSettings, 'Resizer5Height', 'int');
+
 		$this->setSettingsFromParams($oSettingsLocal, 'UseThreads', 'bool');
 		$this->setSettingsFromParams($oSettingsLocal, 'ReplySameFolder', 'bool');
 		$this->setSettingsFromParams($oSettingsLocal, 'HideUnsubscribed', 'bool');
@@ -476,12 +480,12 @@ trait User
 	{
 		$aValues = $this->getDecodedRawKeyValue($sHash);
 
-		$sFolder = isset($aValues['Folder']) ? $aValues['Folder'] : '';
+		$sFolder = isset($aValues['Folder']) ? (string) $aValues['Folder'] : '';
 		$iUid = isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0;
-		$sMimeIndex = (string) isset($aValues['MimeIndex']) ? $aValues['MimeIndex'] : '';
+		$sMimeIndex = isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : '';
 
-		$sContentTypeIn = (string) isset($aValues['MimeType']) ? $aValues['MimeType'] : '';
-		$sFileNameIn = (string) isset($aValues['FileName']) ? $aValues['FileName'] : '';
+		$sContentTypeIn = isset($aValues['MimeType']) ? (string) $aValues['MimeType'] : '';
+		$sFileNameIn = isset($aValues['FileName']) ? (string) $aValues['FileName'] : '';
 
 		$oFileProvider = $this->FilesProvider();
 

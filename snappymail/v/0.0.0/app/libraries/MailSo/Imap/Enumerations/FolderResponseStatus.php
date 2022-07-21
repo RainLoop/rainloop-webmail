@@ -30,4 +30,6 @@ abstract class FolderResponseStatus
 	const APPENDLIMIT = 'APPENDLIMIT';
 	// RFC 8474
 	const MAILBOXID = 'MAILBOXID';
+	// RFC 9051 IMAP4rev2
+	const SIZE = 'SIZE';
 }

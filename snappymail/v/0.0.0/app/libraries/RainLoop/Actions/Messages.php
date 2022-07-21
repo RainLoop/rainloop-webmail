@@ -155,7 +155,6 @@ trait Messages
 
 		$sSentFolder = $this->GetActionParam('SaveFolder', '');
 		$aDraftInfo = $this->GetActionParam('DraftInfo', null);
-		$bDsn = '1' === (string) $this->GetActionParam('Dsn', '0');
 
 		$oMessage = $this->buildMessage($oAccount, false);
 
@@ -173,6 +172,7 @@ trait Messages
 
 				if (false !== $iMessageStreamSize)
 				{
+					$bDsn = !empty($this->GetActionParam('Dsn', 0));
 					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize, $bDsn, true);
 
 					if (\is_array($aDraftInfo) && 3 === \count($aDraftInfo))
@@ -411,6 +411,11 @@ trait Messages
 		return $this->messageSetFlag(MessageFlag::FLAGGED, __FUNCTION__, true);
 	}
 
+	public function DoMessageSetKeyword() : array
+	{
+		return $this->messageSetFlag($this->GetActionParam('Keyword', ''), __FUNCTION__, true);
+	}
+
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
@@ -477,18 +482,6 @@ trait Messages
 		catch (\Throwable $oException)
 		{
 			throw new ClientException(Notifications::CantDeleteMessage, $oException);
-		}
-
-		if ($this->Config()->Get('labs', 'use_imap_unselect', true))
-		{
-			try
-			{
-				$this->MailClient()->FolderUnselect();
-			}
-			catch (\Throwable $oException)
-			{
-				unset($oException);
-			}
 		}
 
 		$sHash = '';
@@ -559,18 +552,6 @@ trait Messages
 			throw new ClientException(Notifications::CantMoveMessage, $oException);
 		}
 
-		if ($this->Config()->Get('labs', 'use_imap_unselect', true))
-		{
-			try
-			{
-				$this->MailClient()->FolderUnselect();
-			}
-			catch (\Throwable $oException)
-			{
-				unset($oException);
-			}
-		}
-
 		$sHash = '';
 		try
 		{
@@ -624,7 +605,7 @@ trait Messages
 				{
 					if ($aValues = \RainLoop\Utils::DecodeKeyValuesQ($sAttachment))
 					{
-						$sFolder = isset($aValues['Folder']) ? $aValues['Folder'] : '';
+						$sFolder = isset($aValues['Folder']) ? (string) $aValues['Folder'] : '';
 						$iUid = isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0;
 						$sMimeIndex = isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : '';
 
@@ -982,7 +963,7 @@ trait Messages
 	private function buildReadReceiptMessage(Account $oAccount) : \MailSo\Mime\Message
 	{
 		$sReadReceipt = $this->GetActionParam('ReadReceipt', '');
-		$sSubject = $this->GetActionParam('Subject', '');
+		$sSubject = $this->GetActionParam('subject', '');
 		$sText = $this->GetActionParam('Text', '');
 
 		$oIdentity = $this->GetIdentityByID($oAccount, '', true);
@@ -1074,17 +1055,17 @@ trait Messages
 			$oMessage->SetReplyTo($oReplyTo);
 		}
 
-		if ('1' === $this->GetActionParam('ReadReceiptRequest', '0')) {
+		if (!empty($this->GetActionParam('ReadReceiptRequest', 0))) {
 			// Read Receipts Reference Main Account Email, Not Identities #147
 //			$oMessage->SetReadReceipt(($oFromIdentity ?: $oAccount)->Email());
 			$oMessage->SetReadReceipt($oFrom->GetEmail());
 		}
 
-		if ('1' === $this->GetActionParam('MarkAsImportant', '0')) {
+		if (!empty($this->GetActionParam('MarkAsImportant', 0))) {
 			$oMessage->SetPriority(\MailSo\Mime\Enumerations\MessagePriority::HIGH);
 		}
 
-		$oMessage->SetSubject($this->GetActionParam('Subject', ''));
+		$oMessage->SetSubject($this->GetActionParam('subject', ''));
 
 		$oToEmails = new \MailSo\Mime\EmailCollection($this->GetActionParam('To', ''));
 		if ($oToEmails->count()) {
