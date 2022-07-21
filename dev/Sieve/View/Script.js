@@ -110,15 +110,7 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 		const clonedFilter = filter.assignTo();
 		FilterPopupView.showModal([
 			clonedFilter,
-			() => {
-				const script = this.script(),
-					filters = script.filters(),
-					index = filters.indexOf(filter);
-				if (-1 < index) {
-					clonedFilter.assignTo(filter);
-					script.filters(filters);
-				}
-			},
+			() => clonedFilter.assignTo(filter),
 			true
 		]);
 	}
