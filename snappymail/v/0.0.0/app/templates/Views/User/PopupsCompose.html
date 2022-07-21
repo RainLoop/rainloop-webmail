@@ -17,7 +17,7 @@
 		<a class="btn fontastic" data-bind="visible: allowContacts, command: contactsCommand" data-i18n="[title]GLOBAL/CONTACTS">📇</a>
 		<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true" style="display:inline-block;vertical-align:top">
 			<a class="btn dropdown-toggle fontastic">☰</a>
-			<ul class="dropdown-menu right-edge" role="menu">
+			<menu class="dropdown-menu right-edge" role="menu">
 				<li data-bind="click: function () { showBcc(!showBcc()); }">
 					<a>
 						<i class="fontastic" data-bind="text: showBcc() ? '☑' : '☐'"></i>
@@ -54,7 +54,7 @@
 						<span data-i18n="COMPOSE/BUTTON_MARK_AS_IMPORTANT"></span>
 					</a>
 				</li>
-			</ul>
+			</menu>
 		</div>
 		<a class="minimize-custom" data-bind="click: skipCommand" data-i18n="[title]COMPOSE/BUTTON_MINIMIZE"></a>
 		<a class="close" data-bind="click: tryToClosePopup" data-i18n="[title]GLOBAL/CANCEL">×</a>
@@ -73,11 +73,11 @@
 					<!-- ko if: 1 < identitiesOptions().length -->
 					<div class="dropdown" style="display:inline-block" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: identitiesDropdownTrigger">
 						<a class="dropdown-toggle" href="#" tabindex="-1" id="identity-toggle" role="button"></a>
-						<ul class="dropdown-menu right-edge" role="menu" aria-labelledby="identity-toggle" data-bind="foreach: identitiesOptions">
+						<menu class="dropdown-menu right-edge" role="menu" aria-labelledby="identity-toggle" data-bind="foreach: identitiesOptions">
 							<li role="presentation">
 								<a tabindex="-1" href="#" data-bind="click: function (oIdentity) { $root.selectIdentity(oIdentity); return true; }, text: optText"></a>
 							</li>
-						</ul>
+						</menu>
 					</div>
 					<!-- /ko -->
 				</td>

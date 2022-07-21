@@ -15,11 +15,11 @@
 			<i class="fontastic hidden-on-ctrl-btn">📁</i>
 			<span class="caret"></span>
 		</a>
-		<ul class="dropdown-menu" role="menu" aria-labelledby="move-dropdown-id" role="menu" data-bind="foreach: folderMenuForMove">
+		<menu class="dropdown-menu" role="menu" aria-labelledby="move-dropdown-id" role="menu" data-bind="foreach: folderMenuForMove">
 			<li role="presentation" data-bind="css: { 'disabled': disabled }, click: function (mdata, oEvent) { if (!disabled) $root.moveSelectedMessagesToFolder(id, oEvent && !!oEvent.ctrlKey); }">
 				<a href="#" tabindex="-1" data-bind="text: name"></a>
 			</li>
-		</ul>
+		</menu>
 	</div>
 	<!-- /ko -->
 	<!-- ko if: newMoveToFolder -->
@@ -40,7 +40,7 @@
 	</div>
 	<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: moreDropdownTrigger">
 		<a id="more-list-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-i18n="[title]GLOBAL/MORE">☰</a>
-		<ul class="dropdown-menu" role="menu" aria-labelledby="more-list-dropdown-id">
+		<menu class="dropdown-menu" role="menu" aria-labelledby="more-list-dropdown-id">
 			<li role="presentation" data-bind="click: listUnsetSeen, css: {'disabled': !hasCheckedOrSelectedLines()}">
 				<a href="#" tabindex="-1" data-icon="" data-i18n="MESSAGE_LIST/MENU_UNSET_SEEN"></a>
 			</li>
@@ -65,11 +65,11 @@
 			<li role="presentation" data-bind="visible: allowDangerousActions, click: clear">
 				<a href="#" tabindex="-1" data-icon="🔥" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER"></a>
 			</li>
-		</ul>
+		</menu>
 	</div>
 	<div class="btn-group dropdown sortFolder" data-bind="visible: sortSupported() && mobileCheckedStateHide(), registerBootstrapDropdown: true, openDropdownTrigger: sortDropdownTrigger">
 		<a id="sort-list-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-i18n="[title]MESSAGE_LIST/SORT" data-bind="text: sortText">⬇</a>
-		<ul class="dropdown-menu" role="menu" aria-labelledby="sort-list-dropdown-id">
+		<menu class="dropdown-menu" role="menu" aria-labelledby="sort-list-dropdown-id">
 			<li role="presentation" data-sort="" data-bind="click: changeSort">
 				<a href="#" tabindex="-1" data-icon="📅⬇" data-i18n="MESSAGE_LIST/SORT_DATE_DESC"></a>
 			</li>
@@ -94,7 +94,7 @@
 			<li role="presentation" data-sort="REVERSE FROM" data-bind="click: changeSort">
 				<a href="#" tabindex="-1" data-icon="@⬆" data-i18n="MESSAGE_LIST/SORT_FROM_DESC"></a>
 			</li>
-		</ul>
+		</menu>
 	</div>
 </div>
 

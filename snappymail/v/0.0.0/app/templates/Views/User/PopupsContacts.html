@@ -12,7 +12,7 @@
 
 		<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true, visible: !contacts.importing() && !contacts.syncing()">
 			<a id="contacts-more-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1">☰</a>
-			<ul class="dropdown-menu right-edge" role="menu" aria-labelledby="contacts-more-dropdown-id">
+			<menu class="dropdown-menu right-edge" role="menu" aria-labelledby="contacts-more-dropdown-id">
 				<li role="presentation">
 					<a href="#" tabindex="-1" data-bind="initDom: importUploaderButton">
 						<i data-bind="css: {'icon-import': !contacts.importing(), 'icon-spinner': contacts.importing}"></i>
@@ -37,7 +37,7 @@
 						<span data-i18n="CONTACTS/BUTTON_SYNC"></span>
 					</a>
 				</li>
-			</ul>
+			</menu>
 		</div>
 		<span data-bind="visible: contacts.importing() || contacts.syncing()" class="btn"><i class="icon-spinner"></i></span>
 	</div>
@@ -85,7 +85,7 @@
 				<span data-i18n="CONTACTS/ADD_MENU_LABEL"></span>
 				<span class="caret"></span>
 			</a>
-			<ul class="dropdown-menu right-edge" style="text-align: left" tabindex="-1" role="menu" aria-labelledby="button-add-prop-dropdown-id">
+			<menu class="dropdown-menu right-edge" style="text-align: left" tabindex="-1" role="menu" aria-labelledby="button-add-prop-dropdown-id">
 				<li role="presentation">
 					<a href="#" tabindex="-1" data-bind="click: addNewEmail">
 						<i class="icon-none"></i>
@@ -116,7 +116,7 @@
 						<span data-i18n="CONTACTS/ADD_MENU_ADDRESS"></span>
 					</a>
 				</li>-->
-			</ul>
+			</menu>
 		</div>
 	</div>
 	<div class="b-view-content" data-bind="css: {'read-only': viewReadOnly}">

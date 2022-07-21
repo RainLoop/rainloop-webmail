@@ -48,7 +48,7 @@
 					</span>
 					<div class="btn-group" data-bind="registerBootstrapDropdown: true" style="display: inline-block">
 						<a class="btn btn-thin btn-transparent dropdown-toggle fontastic" id="more-view-dropdown-id" href="#" tabindex="-1">☰</a>
-						<ul class="dropdown-menu right-edge" role="menu" aria-labelledby="more-view-dropdown-id">
+						<menu class="dropdown-menu right-edge" role="menu" aria-labelledby="more-view-dropdown-id">
 							<div data-bind="visible: !isDraftFolder()">
 								<li role="presentation">
 									<a href="#" tabindex="-1" data-bind="command: replyCommand" data-icon="←" data-i18n="MESSAGE/BUTTON_REPLY"></a>
@@ -115,7 +115,7 @@
 									<a target="_blank" href="#" tabindex="-1" data-bind="attr: { href: downloadLink() }" data-icon="📥" data-i18n="MESSAGE/MENU_DOWNLOAD_ORIGINAL"></a>
 								</li>
 							</div>
-						</ul>
+						</menu>
 					</div>
 				</div>
 			</div>
@@ -201,11 +201,11 @@
 					<span data-bind="html: message().tagsToHTML()"></span>
 					<div class="btn-group" data-bind="registerBootstrapDropdown: true" style="display: inline-block">
 						<a class="btn btn-thin btn-transparent dropdown-toggle fontastic" id="tags-dropdown-id" href="#" tabindex="-1">☰</a>
-						<ul class="dropdown-menu right-edge" role="menu" aria-labelledby="tags-dropdown-id" data-bind="foreach: message().tagOptions()">
+						<menu class="dropdown-menu right-edge" role="menu" aria-labelledby="tags-dropdown-id" data-bind="foreach: message().tagOptions()">
 							<li role="presentation">
 								<a href="#" tabindex="-1" data-icon="☐" data-bind="click: toggle, text: label, title: value, attr: { class: css, 'data-icon': checked ? '☑' : '☐' }"></a>
 							</li>
-						</ul>
+						</menu>
 					</div>
 				</div>
 				<!-- /ko -->
