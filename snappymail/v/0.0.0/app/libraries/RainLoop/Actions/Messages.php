@@ -790,7 +790,7 @@ trait Messages
 				$oSmtpClient->SetTimeOuts(10, (int) \RainLoop\Api::Config()->Get('labs', 'smtp_timeout', 60));
 
 				$bUsePhpMail = false;
-				$oAccount->OutConnectAndLoginHelper($this->Plugins(), $oSmtpClient, $this->Config(), $bUsePhpMail);
+				$oAccount->SmtpConnectAndLoginHelper($this->Plugins(), $oSmtpClient, $this->Config(), $bUsePhpMail);
 
 				if ($bUsePhpMail)
 				{

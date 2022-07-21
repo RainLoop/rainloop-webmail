@@ -434,7 +434,7 @@ trait UserAuth
 	protected function CheckMailConnection(Account $oAccount, bool $bAuthLog = false): void
 	{
 		try {
-			$oAccount->IncConnectAndLoginHelper($this->Plugins(), $this->MailClient(), $this->Config());
+			$oAccount->ImapConnectAndLoginHelper($this->Plugins(), $this->MailClient(), $this->Config());
 		} catch (ClientException $oException) {
 			throw $oException;
 		} catch (\MailSo\Net\Exceptions\ConnectionException $oException) {
