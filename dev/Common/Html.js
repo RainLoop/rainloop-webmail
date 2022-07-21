@@ -100,7 +100,7 @@ export const
 				'BGSOUND','KEYGEN','SOURCE','OBJECT','EMBED','APPLET','IFRAME','FRAME','FRAMESET','VIDEO','AUDIO','AREA','MAP'
 			],
 			nonEmptyTags = [
-				'A','B','EM','I','SPAN','STRONG','O:P','TABLE'
+				'A','B','EM','I','SPAN','STRONG','TABLE'
 			];
 
 		tpl.innerHTML = html
@@ -132,13 +132,12 @@ export const
 //			 || (oStyle.maxHeight && 1 > parseFloat(oStyle.maxHeight)
 //			 || (oStyle.maxWidth && 1 > parseFloat(oStyle.maxWidth)
 //			 || ('0' === oStyle.opacity
-			 || (nonEmptyTags.includes(name) && ('' == oElement.textContent.trim() && !oElement.querySelector('img')))
 			) {
 				oElement.remove();
 				return;
 			}
 //			if (['CENTER','FORM'].includes(name)) {
-			if ('FORM' === name || 'O:P' === name) {
+			if ('FORM' === name || 'O:P' === name || (nonEmptyTags.includes(name) && ('' == oElement.textContent.trim()))) {
 				replaceWithChildren(oElement);
 				return;
 			}
