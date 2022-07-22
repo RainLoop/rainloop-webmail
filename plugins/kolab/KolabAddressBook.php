@@ -75,7 +75,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		return $xCard;
 	}
 
-	protected function MessageAsContact(\MailSo\Mail\Message $oMessage) : ?Contact
+	protected function MessageAsContact(\MailSo\Mail\Message $oMessage) : Contact
 	{
 		$oContact = new Contact;
 		$oContact->IdContact = $oMessage->Uid();
@@ -155,10 +155,8 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 					}
 				} else {
 					$oContact = $this->MessageAsContact($oMessage);
-					if ($oContact) {
-						echo $oContact->ToCsv($bCsvHeader);
-						$bCsvHeader = false;
-					}
+					echo $oContact->ToCsv($bCsvHeader);
+					$bCsvHeader = false;
 				}
 			}
 		}
