@@ -1,6 +1,5 @@
 import { koArrayWithDestroy } from 'External/ko';
 
-import { SaveSettingsStep } from 'Common/Enums';
 import { ComposeType } from 'Common/EnumsUser';
 import { registerShortcut } from 'Common/Globals';
 import { arrayLength, pInt } from 'Common/Utils';
@@ -52,8 +51,6 @@ export class ContactsPopupView extends AbstractViewPopup {
 
 			viewID: '',
 			viewReadOnly: false,
-
-			viewSaveTrigger: SaveSettingsStep.Idle,
 
 			viewSaving: false,
 
@@ -211,7 +208,6 @@ export class ContactsPopupView extends AbstractViewPopup {
 
 	saveCommand() {
 		this.viewSaving(true);
-		this.viewSaveTrigger(SaveSettingsStep.Animate);
 
 		const requestUid = Jua.randomId();
 
@@ -233,13 +229,8 @@ export class ContactsPopupView extends AbstractViewPopup {
 					res = true;
 				}
 
-				setTimeout(() =>
-					this.viewSaveTrigger(res ? SaveSettingsStep.TrueResult : SaveSettingsStep.FalseResult)
-				, 350);
-
 				if (res) {
 					this.watchDirty(false);
-					setTimeout(() => this.viewSaveTrigger(SaveSettingsStep.Idle), 1000);
 				}
 			}, {
 				RequestUid: requestUid,
