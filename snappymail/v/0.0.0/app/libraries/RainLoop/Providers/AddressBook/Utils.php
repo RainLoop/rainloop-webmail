@@ -1,0 +1,139 @@
+<?php
+
+namespace RainLoop\Providers\AddressBook;
+
+use
+	RainLoop\Providers\AddressBook\Enumerations\PropertyType,
+	RainLoop\Providers\AddressBook\Classes\Property
+;
+
+
+class Utils
+{
+	private static function csvNameToTypeConvertor(string $sCsvName) : int
+	{
+		static $aMap = null;
+		if (null === $aMap)
+		{
+			$aMap = array(
+				'Title' => PropertyType::FULLNAME,
+				'Name' => PropertyType::FULLNAME,
+				'FullName' => PropertyType::FULLNAME,
+				'DisplayName' => PropertyType::FULLNAME,
+				'GivenName' => PropertyType::FULLNAME,
+				'First' => PropertyType::FIRST_NAME,
+				'FirstName' => PropertyType::FIRST_NAME,
+				'Middle' => PropertyType::MIDDLE_NAME,
+				'MiddleName' => PropertyType::MIDDLE_NAME,
+				'Last' => PropertyType::LAST_NAME,
+				'LastName' => PropertyType::LAST_NAME,
+				'Suffix' => PropertyType::NAME_SUFFIX,
+				'NameSuffix' => PropertyType::NAME_SUFFIX,
+				'Prefix' => PropertyType::NAME_PREFIX,
+				'NamePrefix' => PropertyType::NAME_PREFIX,
+				'ShortName' => PropertyType::NICK_NAME,
+				'NickName' => PropertyType::NICK_NAME,
+				'BusinessFax' => array(PropertyType::PHONE, 'Work,Fax'),
+				'BusinessFax2' => array(PropertyType::PHONE, 'Work,Fax'),
+				'BusinessFax3' => array(PropertyType::PHONE, 'Work,Fax'),
+				'BusinessPhone' => array(PropertyType::PHONE, 'Work'),
+				'BusinessPhone2' => array(PropertyType::PHONE, 'Work'),
+				'BusinessPhone3' => array(PropertyType::PHONE, 'Work'),
+				'CompanyPhone' => array(PropertyType::PHONE, 'Work'),
+				'CompanyMainPhone' => array(PropertyType::PHONE, 'Work'),
+				'HomeFax' => array(PropertyType::PHONE, 'Home,Fax'),
+				'HomeFax2' => array(PropertyType::PHONE, 'Home,Fax'),
+				'HomeFax3' => array(PropertyType::PHONE, 'Home,Fax'),
+				'HomePhone' => array(PropertyType::PHONE, 'Home'),
+				'HomePhone2' => array(PropertyType::PHONE, 'Home'),
+				'HomePhone3' => array(PropertyType::PHONE, 'Home'),
+				'Mobile' => array(PropertyType::PHONE, 'Mobile'),
+				'MobilePhone' => array(PropertyType::PHONE, 'Mobile'),
+				'BusinessMobile' => array(PropertyType::PHONE, 'Work,Mobile'),
+				'BusinessMobilePhone' => array(PropertyType::PHONE, 'Work,Mobile'),
+				'OtherFax' => array(PropertyType::PHONE, 'Other,Fax'),
+				'OtherPhone' => array(PropertyType::PHONE, 'Other'),
+				'PrimaryPhone' => array(PropertyType::PHONE, 'Pref,Home'),
+				'Email' => array(PropertyType::EMAIl, 'Home'),
+				'Email2' => array(PropertyType::EMAIl, 'Home'),
+				'Email3' => array(PropertyType::EMAIl, 'Home'),
+				'HomeEmail' => array(PropertyType::EMAIl, 'Home'),
+				'HomeEmail2' => array(PropertyType::EMAIl, 'Home'),
+				'HomeEmail3' => array(PropertyType::EMAIl, 'Home'),
+				'PrimaryEmail' => array(PropertyType::EMAIl, 'Home'),
+				'PrimaryEmail2' => array(PropertyType::EMAIl, 'Home'),
+				'PrimaryEmail3' => array(PropertyType::EMAIl, 'Home'),
+				'EmailAddress' => array(PropertyType::EMAIl, 'Home'),
+				'Email2Address' => array(PropertyType::EMAIl, 'Home'),
+				'Email3Address' => array(PropertyType::EMAIl, 'Home'),
+				'OtherEmail' => array(PropertyType::EMAIl, 'Other'),
+				'BusinessEmail' => array(PropertyType::EMAIl, 'Work'),
+				'BusinessEmail2' => array(PropertyType::EMAIl, 'Work'),
+				'BusinessEmail3' => array(PropertyType::EMAIl, 'Work'),
+				'PersonalEmail' => array(PropertyType::EMAIl, 'Home'),
+				'PersonalEmail2' => array(PropertyType::EMAIl, 'Home'),
+				'PersonalEmail3' => array(PropertyType::EMAIl, 'Home'),
+				'Notes' => PropertyType::NOTE,
+				'Web' => PropertyType::WEB_PAGE,
+				'BusinessWeb' => array(PropertyType::WEB_PAGE, 'Work'),
+				'WebPage' => PropertyType::WEB_PAGE,
+				'BusinessWebPage' => array(PropertyType::WEB_PAGE, 'Work'),
+				'WebSite' => PropertyType::WEB_PAGE,
+				'BusinessWebSite' => array(PropertyType::WEB_PAGE, 'Work'),
+				'PersonalWebSite' => PropertyType::WEB_PAGE
+			);
+
+			$aMap = \array_change_key_case($aMap, CASE_LOWER);
+		}
+
+		$sCsvNameLower = \MailSo\Base\Utils::IsAscii($sCsvName) ? \preg_replace('/[\s\-]+/', '', \strtolower($sCsvName)) : '';
+		return !empty($sCsvNameLower) && isset($aMap[$sCsvNameLower]) ? $aMap[$sCsvNameLower] : PropertyType::UNKNOWN;
+	}
+
+	public static function CsvArrayToContacts(array $aCsvData) : iterable
+	{
+		foreach ($aCsvData as $aItem) {
+			$oContact = new Classes\Contact();
+			\MailSo\Base\Utils::ResetTimeLimit();
+			foreach ($aItem as $sItemName => $sItemValue) {
+				$sItemName = \trim($sItemName);
+				$sItemValue = \trim($sItemValue);
+				if (!empty($sItemName) && !empty($sItemValue)) {
+					$mData = static::csvNameToTypeConvertor($sItemName);
+					$iType = \is_array($mData) ? $mData[0] : $mData;
+					if (PropertyType::UNKNOWN !== $iType) {
+						$oProp = new Classes\Property();
+						$oProp->Type = $iType;
+						$oProp->Value = $sItemValue;
+						$oProp->TypeStr = \is_array($mData) && !empty($mData[1]) ? $mData[1] : '';
+						$oContact->Properties[] = $oProp;
+					}
+				}
+			}
+			if (\count($oContact->Properties)) {
+				yield $oContact;
+			}
+		}
+	}
+
+	public static function VcfFileToContacts(string $sVcfData) : iterable
+	{
+		$sVcfData = \trim($sVcfData);
+		if ("\xef\xbb\xbf" === \substr($sVcfData, 0, 3)) {
+			$sVcfData = \substr($sVcfData, 3);
+		}
+		$oVCardSplitter = new \Sabre\VObject\Splitter\VCard($sVcfData);
+		if ($oVCardSplitter) {
+			while ($oVCard = $oVCardSplitter->getNext()) {
+				if ($oVCard instanceof \Sabre\VObject\Component\VCard) {
+					\MailSo\Base\Utils::ResetTimeLimit();
+					$oContact = new Classes\Contact();
+					$oContact->PopulateByVCard($oVCard);
+					if (\count($oContact->Properties)) {
+						yield $oContact;
+					}
+				}
+			}
+		}
+	}
+}
