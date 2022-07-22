@@ -84,9 +84,9 @@ class AddressBook extends AbstractProvider
 	{
 		$iCount = 0;
 		if ($this->IsActive()) {
-			foreach (Utils::CsvArrayToVCards($aCsvData) as $oContact) {
+			foreach (AddressBook\Utils::CsvArrayToContacts($aCsvData) as $oContact) {
 				if ($this->ContactSave($oContact)) {
-					$iCount++;
+					++$iCount;
 				}
 			}
 		}
@@ -99,7 +99,7 @@ class AddressBook extends AbstractProvider
 		if ($this->IsActive()) {
 			try
 			{
-				foreach (Utils::VcfFileToVCards($sVcfData) as $oContact) {
+				foreach (AddressBook\Utils::VcfFileToContacts($sVcfData) as $oContact) {
 					if ($this->ContactSave($oContact)) {
 						++$iCount;
 					}

@@ -193,7 +193,7 @@ class Utils
 	/**
 	 * TODO: broken
 	 */
-	public static function CsvArrayToVCards(array $aCsvData) : iterable
+	public static function CsvArrayToContacts(array $aCsvData) : iterable
 	{
 		foreach ($aCsvData as $aItem) {
 			$oContact = new Classes\Contact();
@@ -299,7 +299,7 @@ class Utils
 		return $sResult;
 	}
 
-	public static function VcfFileToVCards(string $sVcfData) : iterable
+	public static function VcfFileToContacts(string $sVcfData) : iterable
 	{
 		$sVcfData = \trim($sVcfData);
 		if ("\xef\xbb\xbf" === \substr($sVcfData, 0, 3)) {
