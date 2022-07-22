@@ -1231,7 +1231,7 @@ class Actions
 			$oAccount = $this->getAccountFromToken();
 
 			try {
-				$oAccount->IncConnectAndLoginHelper($this->oPlugins, $this->MailClient(), $this->oConfig);
+				$oAccount->ImapConnectAndLoginHelper($this->oPlugins, $this->MailClient(), $this->oConfig);
 			} catch (\MailSo\Net\Exceptions\ConnectionException $oException) {
 				throw new Exceptions\ClientException(Notifications::ConnectionError, $oException);
 			} catch (\Throwable $oException) {

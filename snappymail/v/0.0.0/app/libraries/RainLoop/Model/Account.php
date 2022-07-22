@@ -195,7 +195,7 @@ abstract class Account implements \JsonSerializable
 		return null;
 	}
 
-	public function IncConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Mail\MailClient $oMailClient, \RainLoop\Config\Application $oConfig) : bool
+	public function ImapConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Mail\MailClient $oMailClient, \RainLoop\Config\Application $oConfig) : bool
 	{
 		$oImapClient = $oMailClient->ImapClient();
 		$oImapClient->__FORCE_SELECT_ON_EXAMINE__ = !!$oConfig->Get('labs', 'use_imap_force_selection');
@@ -230,7 +230,7 @@ abstract class Account implements \JsonSerializable
 		return $this->netClientLogin($oImapClient, $oConfig, $oPlugins, $aCredentials);
 	}
 
-	public function OutConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Smtp\SmtpClient $oSmtpClient, \RainLoop\Config\Application $oConfig, bool &$bUsePhpMail = false) : bool
+	public function SmtpConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Smtp\SmtpClient $oSmtpClient, \RainLoop\Config\Application $oConfig, bool &$bUsePhpMail = false) : bool
 	{
 		$aCredentials = \array_merge(
 			$this->Domain()->SmtpSettings(),
