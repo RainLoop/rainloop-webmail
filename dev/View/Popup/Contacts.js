@@ -23,7 +23,6 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 import { AskPopupView } from 'View/Popup/Ask';
 
 const
-	viewProperties = koArrayWithDestroy(),
 	CONTACTS_PER_PAGE = 50,
 	ScopeContacts = 'Contacts';
 
@@ -38,20 +37,15 @@ export class ContactsPopupView extends AbstractViewPopup {
 			search: '',
 			contactsCount: 0,
 
-			currentContact: null,
+			selectorContact: null,
 
-			importUploaderButton: null,
+			importButton: null,
 
 			contactsPage: 1,
 
-			viewClearSearch: false,
-
-			viewReadOnly: false,
-
 			viewSaving: false,
 
-			watchDirty: false,
-			watchHash: false,
+			hasChanges: false,
 
 			contact: null
 		});
@@ -62,7 +56,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 
 		this.selector = new Selector(
 			ContactUserStore,
-			this.currentContact,
+			this.selectorContact,
 			null,
 			'.e-contact-item .actionHandle',
 			'.e-contact-item .checkboxItem',
@@ -87,7 +81,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 
 			contactsCheckedOrSelected: () => {
 				const checked = ContactUserStore.filter(item => item.checked && item.checked()),
-					selected = this.currentContact();
+					selected = this.selectorContact();
 
 				return selected
 					? [...checked, selected].unique()
@@ -96,34 +90,27 @@ export class ContactsPopupView extends AbstractViewPopup {
 
 			contactsCheckedOrSelectedUids: () => this.contactsCheckedOrSelected().map(contact => contact.id()),
 
-			contactsSyncEnabled: () => ContactUserStore.allowSync() && ContactUserStore.syncMode(),
-
-			viewHash: () => '' + viewProperties.map(property => property.value && property.value()).join('')
+			contactsSyncEnabled: () => ContactUserStore.allowSync() && ContactUserStore.syncMode()
 		});
 
 		this.search.subscribe(() => this.reloadContactList());
 
-		this.viewHash.subscribe(() => {
-			if (this.watchHash() && !this.viewReadOnly() && !this.watchDirty()) {
-				this.watchDirty(true);
-			}
-		});
-
 		this.saveCommand = this.saveCommand.bind(this);
 
+//		this.hasChanges(!!contact()?.toJSON().jCard);
+
 		decorateKoCommands(this, {
-//			close: self => !self.watchDirty(),
+//			close: self => !self.hasChanges(),
 			deleteCommand: self => 0 < self.contactsCheckedOrSelected().length,
 			newMessageCommand: self => 0 < self.contactsCheckedOrSelected().length,
-			saveCommand: self => !self.viewSaving() && !self.viewReadOnly()
-				&& (self.contact()?.hasValidName() || self.contact()?.email().length),
+			saveCommand: self => !self.viewSaving() && !self.hasChanges(),
 			syncCommand: self => !self.contacts.syncing() && !self.contacts.importing()
 		});
 	}
 
 	newContact() {
 		this.populateViewContact(null);
-		this.currentContact(null);
+		this.selectorContact(null);
 	}
 
 	deleteCommand() {
@@ -207,7 +194,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 				}
 
 				if (res) {
-					this.watchDirty(false);
+					this.hasChanges(false);
 				}
 			}, {
 				RequestUid: requestUid,
@@ -237,14 +224,14 @@ export class ContactsPopupView extends AbstractViewPopup {
 	removeCheckedOrSelectedContactsFromList() {
 		const contacts = this.contactsCheckedOrSelected();
 
-		let currentContact = this.currentContact(),
+		let selectorContact = this.selectorContact(),
 			count = ContactUserStore.length;
 
 		if (contacts.length) {
 			contacts.forEach(contact => {
-				if (currentContact && currentContact.id() === contact.id()) {
-					currentContact = null;
-					this.currentContact(null);
+				if (selectorContact && selectorContact.id() === contact.id()) {
+					selectorContact = null;
+					this.selectorContact(null);
 				}
 
 				contact.deleted(true);
@@ -282,18 +269,12 @@ export class ContactsPopupView extends AbstractViewPopup {
 	 * @param {?ContactModel} contact
 	 */
 	populateViewContact(contact) {
-		this.watchHash(false);
-
 		if (!contact) {
 			contact = new ContactModel;
 		}
-		this.viewReadOnly(contact.readOnly());
 		this.contact(contact);
 
-		viewProperties(contact.properties);
-
-		this.watchDirty(false);
-		this.watchHash(true);
+		this.hasChanges(false);
 	}
 
 	/**
@@ -330,7 +311,6 @@ export class ContactsPopupView extends AbstractViewPopup {
 				ContactUserStore(list);
 
 				ContactUserStore.loading(false);
-				this.viewClearSearch(!!this.search());
 			},
 			{
 				Offset: offset,
@@ -368,12 +348,12 @@ export class ContactsPopupView extends AbstractViewPopup {
 
 		// initUploader
 
-		if (this.importUploaderButton()) {
+		if (this.importButton()) {
 			const j = new Jua({
 				action: serverRequest('UploadContacts'),
 				limit: 1,
 				disableDocumentDropPrevent: true,
-				clickElement: this.importUploaderButton()
+				clickElement: this.importButton()
 			});
 
 			if (j) {
@@ -391,7 +371,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 	}
 
 	onClose() {
-		if (this.watchDirty() && AskPopupView.hidden()) {
+		if (this.hasChanges() && AskPopupView.hidden()) {
 			showScreenPopup(AskPopupView, [
 				i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'),
 				() => this.close()
@@ -408,17 +388,15 @@ export class ContactsPopupView extends AbstractViewPopup {
 
 	onHide() {
 		this.contact(null);
-		this.currentContact(null);
+		this.selectorContact(null);
 		this.search('');
 		this.contactsCount(0);
 
 		ContactUserStore([]);
 
 		this.sLastComposeFocusedField = '';
-
 		if (this.bBackToCompose) {
 			this.bBackToCompose = false;
-
 			showMessageComposer();
 		}
 	}
