@@ -11,28 +11,28 @@
 		<a class="btn fontastic" data-bind="command: deleteCommand">🗑</a>
 
 		<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true, visible: !contacts.importing() && !contacts.syncing()">
-			<a id="contacts-more-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1">☰</a>
+			<a id="contacts-more-dropdown-id" class="btn dropdown-toggle fontastic" href="#">☰</a>
 			<menu class="dropdown-menu right-edge" role="menu" aria-labelledby="contacts-more-dropdown-id">
 				<li role="presentation">
-					<a href="#" tabindex="-1" data-bind="initDom: importButton">
+					<a href="#" data-bind="initDom: importButton">
 						<i data-bind="css: {'icon-import': !contacts.importing(), 'icon-spinner': contacts.importing}"></i>
 						<span data-i18n="CONTACTS/BUTTON_IMPORT"></span>
 					</a>
 				</li>
 				<li class="dividerbar" role="presentation">
-					<a href="#" tabindex="-1" data-bind="click: exportCsv">
+					<a href="#" data-bind="click: exportCsv">
 						<i class="icon-export"></i>
 						<span data-i18n="CONTACTS/BUTTON_EXPORT_CSV"></span>
 					</a>
 				</li>
 				<li role="presentation">
-					<a href="#" tabindex="-1" data-bind="click: exportVcf">
+					<a href="#" data-bind="click: exportVcf">
 						<i class="icon-export"></i>
 						<span data-i18n="CONTACTS/BUTTON_EXPORT_VCARD"></span>
 					</a>
 				</li>
 				<li class="dividerbar" role="presentation" data-bind="visible: contactsSyncEnabled">
-					<a href="#" tabindex="-1" data-bind="command: syncCommand">
+					<a href="#" data-bind="command: syncCommand">
 						<i class="fontastic" data-bind="css: {'icon-spinner': contacts.syncing}">⇆</i>
 						<span data-i18n="CONTACTS/BUTTON_SYNC"></span>
 					</a>
@@ -76,41 +76,41 @@
 		<!-- ko with: contact -->
 		<div class="btn-group">
 			<button class="btn button-save-contact" data-bind="visible: !readOnly(), command: $root.saveCommand, css: {'dirty': $root.hasChanges}">
-				<i data-bind="css: {'icon-ok': !$root.viewSaving(), 'icon-spinner': $root.viewSaving()}"></i>
+				<i data-bind="css: {'icon-ok': !$root.isSaving(), 'icon-spinner': $root.isSaving()}"></i>
 				<span data-i18n="CONTACTS/BUTTON_CREATE_CONTACT" data-bind="visible: !id()"></span>
 				<span data-i18n="CONTACTS/BUTTON_UPDATE_CONTACT" data-bind="visible: id"></span>
 			</button>
 		</div>
 		<div class="btn-group dropdown" data-bind="visible: !readOnly(), registerBootstrapDropdown: true">
-			<a id="button-add-prop-dropdown-id" href="#" tabindex="-1" class="btn dropdown-toggle" data-i18n="CONTACTS/ADD_MENU_LABEL"></a>
-			<menu class="dropdown-menu right-edge" style="text-align: left" tabindex="-1" role="menu" aria-labelledby="button-add-prop-dropdown-id">
+			<a id="button-add-prop-dropdown-id" href="#" class="btn dropdown-toggle" data-i18n="CONTACTS/ADD_MENU_LABEL"></a>
+			<menu class="dropdown-menu right-edge" style="text-align: left" role="menu" aria-labelledby="button-add-prop-dropdown-id">
 				<li role="presentation">
-					<a href="#" tabindex="-1" data-bind="click: addEmail">
+					<a href="#" data-bind="click: addEmail">
 						<i class="icon-none"></i>
 						<span data-i18n="GLOBAL/EMAIL"></span>
 					</a>
 				</li>
 				<li role="presentation">
-					<a href="#" tabindex="-1" data-bind="click: addTel">
+					<a href="#" data-bind="click: addTel">
 						<i class="icon-none"></i>
 						<span data-i18n="CONTACTS/ADD_MENU_PHONE"></span>
 					</a>
 				</li>
 				<li role="presentation">
-					<a href="#" tabindex="-1" data-bind="click: addUrl">
+					<a href="#" data-bind="click: addUrl">
 						<i class="icon-none"></i>
 						<span data-i18n="CONTACTS/ADD_MENU_URL"></span>
 					</a>
 				</li>
 				<li class="dividerbar" role="presentation">
-					<a href="#" tabindex="-1" data-bind="click: addNickname">
+					<a href="#" data-bind="click: addNickname">
 						<i class="icon-none"></i>
 						<span data-i18n="CONTACTS/ADD_MENU_NICKNAME"></span>
 					</a>
 				</li>
 <!--
 				<li role="presentation">
-					<a href="#" tabindex="-1" data-bind="click: addNewAddress">
+					<a href="#" data-bind="click: addNewAddress">
 						<span data-i18n="CONTACTS/ADD_MENU_ADDRESS"></span>
 					</a>
 				</li>-->

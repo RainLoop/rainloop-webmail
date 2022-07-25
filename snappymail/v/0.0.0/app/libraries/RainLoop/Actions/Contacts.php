@@ -98,8 +98,7 @@ trait Contacts
 		$bResult = false;
 
 		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-		$sRequestUid = \trim($this->GetActionParam('RequestUid', ''));
-		if ($oAddressBookProvider && $oAddressBookProvider->IsActive() && \strlen($sRequestUid)) {
+		if ($oAddressBookProvider && $oAddressBookProvider->IsActive()) {
 			$aContact = $this->GetActionParam('Contact');
 			if (\is_array($aContact) && isset($aContact['Uid'], $aContact['jCard'])) {
 				$vCard = \Sabre\VObject\Reader::readJson($aContact['jCard']);
@@ -118,7 +117,6 @@ trait Contacts
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
-			'RequestUid' => $sRequestUid,
 			'ResultID' => $bResult ? $oContact->id : '',
 			'Result' => $bResult
 		));

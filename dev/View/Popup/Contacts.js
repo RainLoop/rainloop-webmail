@@ -43,7 +43,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 
 			contactsPage: 1,
 
-			viewSaving: false,
+			isSaving: false,
 
 			hasChanges: false,
 
@@ -103,7 +103,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 //			close: self => !self.hasChanges(),
 			deleteCommand: self => 0 < self.contactsCheckedOrSelected().length,
 			newMessageCommand: self => 0 < self.contactsCheckedOrSelected().length,
-			saveCommand: self => !self.viewSaving() && !self.hasChanges(),
+			saveCommand: self => !self.isSaving() && !self.hasChanges(),
 			syncCommand: self => !self.contacts.syncing() && !self.contacts.importing()
 		});
 	}
@@ -173,31 +173,17 @@ export class ContactsPopupView extends AbstractViewPopup {
 	}
 
 	saveCommand() {
-		this.viewSaving(true);
-
-		const
-			contact = this.contact(),
-			requestUid = Jua.randomId();
-
+		this.isSaving(true);
+		const contact = this.contact();
 		Remote.request('ContactSave',
 			(iError, oData) => {
-				let res = false;
-				this.viewSaving(false);
-
-				if (!iError
-				 && oData.Result.RequestUid === requestUid
-				 && oData.Result.ResultID
-				) {
+				this.isSaving(false);
+				if (!iError && oData.Result.ResultID) {
 					contact.id(oData.Result.ResultID);
 					this.reloadContactList(); // TODO: remove when e-contact-foreach is dynamic
-					res = true;
-				}
-
-				if (res) {
 					this.hasChanges(false);
 				}
 			}, {
-				RequestUid: requestUid,
 				Contact: contact
 //				Uid: contact.id(),
 //				jCard: contact.jCard
@@ -208,7 +194,6 @@ export class ContactsPopupView extends AbstractViewPopup {
 	syncCommand() {
 		ContactUserStore.sync(iError => {
 			iError && alert(getNotification(iError));
-
 			this.reloadContactList(true);
 		});
 	}
