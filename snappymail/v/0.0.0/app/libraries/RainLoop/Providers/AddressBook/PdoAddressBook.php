@@ -302,7 +302,7 @@ class PdoAddressBook
 			return false;
 		}
 
-		$bVcf = 'vcf' === $sType;
+		$rCsv = 'csv' === $sType ? \fopen('php://output', 'w') : null;
 		$bCsvHeader = true;
 
 		$aDatabaseSyncData = $this->prepareDatabaseSyncData();
@@ -311,11 +311,11 @@ class PdoAddressBook
 				if ($mData && isset($mData['id_contact'], $mData['deleted']) && !$mData['deleted']) {
 					$oContact = $this->GetContactByID($mData['id_contact']);
 					if ($oContact) {
-						if ($bVcf) {
-							echo $oContact->vCard->serialize();
-						} else {
-							echo Utils::VCardToCsv($oContact, $bCsvHeader);
+						if ($rCsv) {
+							Utils::VCardToCsv($rCsv, $oContact, $bCsvHeader);
 							$bCsvHeader = false;
+						} else {
+							echo $oContact->vCard->serialize();
 						}
 					}
 				}

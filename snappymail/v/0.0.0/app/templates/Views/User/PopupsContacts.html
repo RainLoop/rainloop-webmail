@@ -139,6 +139,26 @@
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="value: surName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_LAST_NAME">
 						</div>
+<!--
+						<div class="property-line">
+							<span data-bind="text: middleName"></span>
+							<input type="text"
+								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+								data-bind="value: middleName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_MIDDLE_NAME">
+						</div>
+						<div class="property-line">
+							<span data-bind="text: namePrefix"></span>
+							<input type="text"
+								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+								data-bind="value: namePrefix" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_NAME_PREFIX">
+						</div>
+						<div class="property-line">
+							<span data-bind="text: nameSuffix"></span>
+							<input type="text"
+								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+								data-bind="value: nameSuffix" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_NAME_SUFFIX">
+						</div>
+-->
 						<div class="property-line" data-bind="visible: null != nickname()">
 							<span data-bind="text: nickname"></span>
 							<input type="text"
@@ -172,7 +192,7 @@
 									data-bind="value: value">
 							</div>
 						</div>
-						<a href="#" class="btn fontastic" data-bind="visible: !readOnly(), click: $root.addTel">✚</a>
+						<a href="#" class="btn fontastic" data-bind="visible: !readOnly(), click: addTel">✚</a>
 					</div>
 				</div>
 				<div class="control-group" data-bind="visible: url().length">
@@ -186,7 +206,7 @@
 									data-bind="value: value">
 							</div>
 						</div>
-						<a href="#" class="btn fontastic" data-bind="visible: !readOnly(), click: $root.addUrl">✚</a>
+						<a href="#" class="btn fontastic" data-bind="visible: !readOnly(), click: addUrl">✚</a>
 					</div>
 				</div>
 			</div>

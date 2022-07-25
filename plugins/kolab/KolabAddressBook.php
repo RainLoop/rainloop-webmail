@@ -116,7 +116,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 
 	public function Export(string $sType = 'vcf') : bool
 	{
-		$bVcf = 'vcf' === $sType;
+		$rCsv = 'csv' === $sType ? \fopen('php://output', 'w') : null;
 		$bCsvHeader = true;
 
 		if (!\strlen($this->sFolderName)) {
@@ -134,15 +134,12 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 			$oParams->iLimit = 999; // Is the max
 			$oMessageList = $this->MailClient()->MessageList($oParams);
 			foreach ($oMessageList as $oMessage) {
-				if ($bVcf) {
-					$xCard = $this->fetchXCardFromMessage($oMessage);
-					if ($xCard) {
-						echo $xCard->serialize();
-					}
-				} else {
+				if ($rCsv) {
 					$oContact = $this->MessageAsContact($oMessage);
-					echo \RainLoop\Providers\AddressBook\Utils::VCardToCsv($oContact, $bCsvHeader);
+					\RainLoop\Providers\AddressBook\Utils::VCardToCsv($rCsv, $oContact, $bCsvHeader);
 					$bCsvHeader = false;
+				} else if ($xCard = $this->fetchXCardFromMessage($oMessage)) {
+					echo $xCard->serialize();
 				}
 			}
 		}

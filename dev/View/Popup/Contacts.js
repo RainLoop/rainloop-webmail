@@ -1,5 +1,3 @@
-import { koArrayWithDestroy } from 'External/ko';
-
 import { ComposeType } from 'Common/EnumsUser';
 import { registerShortcut } from 'Common/Globals';
 import { arrayLength, pInt } from 'Common/Utils';

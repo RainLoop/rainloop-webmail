@@ -11,6 +11,69 @@ const nProps = [
 	'nameSuffix'
 ];
 
+/*
+const propertyMap = [
+	// vCard 2.1 properties and up
+	'N' => 'Text',
+	'FN' => 'FlatText',
+	'PHOTO' => 'Binary',
+	'BDAY' => 'DateAndOrTime',
+	'ADR' => 'Text',
+	'TEL' => 'FlatText',
+	'EMAIL' => 'FlatText',
+	'GEO' => 'FlatText',
+	'TITLE' => 'FlatText',
+	'ROLE' => 'FlatText',
+	'LOGO' => 'Binary',
+	'ORG' => 'Text',
+	'NOTE' => 'FlatText',
+	'REV' => 'TimeStamp',
+	'SOUND' => 'FlatText',
+	'URL' => 'Uri',
+	'UID' => 'FlatText',
+	'VERSION' => 'FlatText',
+	'KEY' => 'FlatText',
+	'TZ' => 'Text',
+
+	// vCard 3.0 properties
+	'CATEGORIES' => 'Text',
+	'SORT-STRING' => 'FlatText',
+	'PRODID' => 'FlatText',
+	'NICKNAME' => 'Text',
+
+	// rfc2739 properties
+	'FBURL' => 'Uri',
+	'CAPURI' => 'Uri',
+	'CALURI' => 'Uri',
+	'CALADRURI' => 'Uri',
+
+	// rfc4770 properties
+	'IMPP' => 'Uri',
+
+	// vCard 4.0 properties
+	'SOURCE' => 'Uri',
+	'XML' => 'FlatText',
+	'ANNIVERSARY' => 'DateAndOrTime',
+	'CLIENTPIDMAP' => 'Text',
+	'LANG' => 'LanguageTag',
+	'GENDER' => 'Text',
+	'KIND' => 'FlatText',
+	'MEMBER' => 'Uri',
+	'RELATED' => 'Uri',
+
+	// rfc6474 properties
+	'BIRTHPLACE' => 'FlatText',
+	'DEATHPLACE' => 'FlatText',
+	'DEATHDATE' => 'DateAndOrTime',
+
+	// rfc6715 properties
+	'EXPERTISE' => 'FlatText',
+	'HOBBY' => 'FlatText',
+	'INTEREST' => 'FlatText',
+	'ORG-DIRECTORY' => 'FlatText
+];
+*/
+
 export class ContactModel extends AbstractModel {
 	constructor() {
 		super();

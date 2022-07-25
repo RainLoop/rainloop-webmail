@@ -110,136 +110,129 @@ class Utils
 		}
 	}
 
-	private static function csvNameToTypeConvertor(string $sCsvName) : int
-	{
-		static $aMap = null;
-		if (null === $aMap)
-		{
-			$aMap = array(
-				'Title' => PropertyType::FULLNAME,
-				'Name' => PropertyType::FULLNAME,
-				'FullName' => PropertyType::FULLNAME,
-				'DisplayName' => PropertyType::FULLNAME,
-				'GivenName' => PropertyType::FIRST_NAME,
-				'First' => PropertyType::FIRST_NAME,
-				'FirstName' => PropertyType::FIRST_NAME,
-				'Middle' => PropertyType::MIDDLE_NAME,
-				'MiddleName' => PropertyType::MIDDLE_NAME,
-				'Last' => PropertyType::LAST_NAME,
-				'LastName' => PropertyType::LAST_NAME,
-				'Suffix' => PropertyType::NAME_SUFFIX,
-				'NameSuffix' => PropertyType::NAME_SUFFIX,
-				'Prefix' => PropertyType::NAME_PREFIX,
-				'NamePrefix' => PropertyType::NAME_PREFIX,
-				'ShortName' => PropertyType::NICK_NAME,
-				'NickName' => PropertyType::NICK_NAME,
-				'BusinessFax' => array(PropertyType::PHONE, 'Work,Fax'),
-				'BusinessFax2' => array(PropertyType::PHONE, 'Work,Fax'),
-				'BusinessFax3' => array(PropertyType::PHONE, 'Work,Fax'),
-				'BusinessPhone' => array(PropertyType::PHONE, 'Work'),
-				'BusinessPhone2' => array(PropertyType::PHONE, 'Work'),
-				'BusinessPhone3' => array(PropertyType::PHONE, 'Work'),
-				'CompanyPhone' => array(PropertyType::PHONE, 'Work'),
-				'CompanyMainPhone' => array(PropertyType::PHONE, 'Work'),
-				'HomeFax' => array(PropertyType::PHONE, 'Home,Fax'),
-				'HomeFax2' => array(PropertyType::PHONE, 'Home,Fax'),
-				'HomeFax3' => array(PropertyType::PHONE, 'Home,Fax'),
-				'HomePhone' => array(PropertyType::PHONE, 'Home'),
-				'HomePhone2' => array(PropertyType::PHONE, 'Home'),
-				'HomePhone3' => array(PropertyType::PHONE, 'Home'),
-				'Mobile' => array(PropertyType::PHONE, 'Mobile'),
-				'MobilePhone' => array(PropertyType::PHONE, 'Mobile'),
-				'BusinessMobile' => array(PropertyType::PHONE, 'Work,Mobile'),
-				'BusinessMobilePhone' => array(PropertyType::PHONE, 'Work,Mobile'),
-				'OtherFax' => array(PropertyType::PHONE, 'Other,Fax'),
-				'OtherPhone' => array(PropertyType::PHONE, 'Other'),
-				'PrimaryPhone' => array(PropertyType::PHONE, 'Pref,Home'),
-				'Email' => array(PropertyType::EMAIl, 'Home'),
-				'Email2' => array(PropertyType::EMAIl, 'Home'),
-				'Email3' => array(PropertyType::EMAIl, 'Home'),
-				'HomeEmail' => array(PropertyType::EMAIl, 'Home'),
-				'HomeEmail2' => array(PropertyType::EMAIl, 'Home'),
-				'HomeEmail3' => array(PropertyType::EMAIl, 'Home'),
-				'PrimaryEmail' => array(PropertyType::EMAIl, 'Home'),
-				'PrimaryEmail2' => array(PropertyType::EMAIl, 'Home'),
-				'PrimaryEmail3' => array(PropertyType::EMAIl, 'Home'),
-				'EmailAddress' => array(PropertyType::EMAIl, 'Home'),
-				'Email2Address' => array(PropertyType::EMAIl, 'Home'),
-				'Email3Address' => array(PropertyType::EMAIl, 'Home'),
-				'OtherEmail' => array(PropertyType::EMAIl, 'Other'),
-				'BusinessEmail' => array(PropertyType::EMAIl, 'Work'),
-				'BusinessEmail2' => array(PropertyType::EMAIl, 'Work'),
-				'BusinessEmail3' => array(PropertyType::EMAIl, 'Work'),
-				'PersonalEmail' => array(PropertyType::EMAIl, 'Home'),
-				'PersonalEmail2' => array(PropertyType::EMAIl, 'Home'),
-				'PersonalEmail3' => array(PropertyType::EMAIl, 'Home'),
-				'Notes' => PropertyType::NOTE,
-				'Web' => PropertyType::WEB_PAGE,
-				'BusinessWeb' => array(PropertyType::WEB_PAGE, 'Work'),
-				'WebPage' => PropertyType::WEB_PAGE,
-				'BusinessWebPage' => array(PropertyType::WEB_PAGE, 'Work'),
-				'WebSite' => PropertyType::WEB_PAGE,
-				'BusinessWebSite' => array(PropertyType::WEB_PAGE, 'Work'),
-				'PersonalWebSite' => PropertyType::WEB_PAGE
-			);
+	private static $aMap = array(
+		'title'               => 'FN',
+		'name'                => 'FN',
+		'fullname'            => 'FN',
+		'displayname'         => 'FN',
+		'last'                => 0,
+		'lastname'            => 0,
+		'givenname'           => 1,
+		'first'               => 1,
+		'firstname'           => 1,
+		'middle'              => 2,
+		'middlename'          => 2,
+		'prefix'              => 3,
+		'nameprefix'          => 3,
+		'suffix'              => 4,
+		'namesuffix'          => 4,
+		'shortname'           => 'NICKNAME',
+		'nickname'            => 'NICKNAME',
+		'businessphone'       => array('TEL', 'WORK'),
+		'businessphone2'      => array('TEL', 'WORK'),
+		'businessphone3'      => array('TEL', 'WORK'),
+		'companyphone'        => array('TEL', 'WORK'),
+		'companymainphone'    => array('TEL', 'WORK'),
+		'homephone'           => array('TEL', 'HOME'),
+		'homephone2'          => array('TEL', 'HOME'),
+		'homephone3'          => array('TEL', 'HOME'),
+		'mobile'              => array('TEL', 'CELL'),
+		'mobilephone'         => array('TEL', 'CELL'),
+		'businessmobile'      => array('TEL', 'WORK,CELL'),
+		'businessmobilephone' => array('TEL', 'WORK,CELL'),
+		'otherphone'          => 'TEL',
+		'primaryphone'        => array('TEL', 'PREF,HOME'),
+		'email'               => array('EMAIL', 'HOME'),
+		'email2'              => array('EMAIL', 'HOME'),
+		'email3'              => array('EMAIL', 'HOME'),
+		'homeemail'           => array('EMAIL', 'HOME'),
+		'homeemail2'          => array('EMAIL', 'HOME'),
+		'homeemail3'          => array('EMAIL', 'HOME'),
+		'primaryemail'        => array('EMAIL', 'HOME'),
+		'primaryemail2'       => array('EMAIL', 'HOME'),
+		'primaryemail3'       => array('EMAIL', 'HOME'),
+		'emailaddress'        => array('EMAIL', 'HOME'),
+		'email2address'       => array('EMAIL', 'HOME'),
+		'email3address'       => array('EMAIL', 'HOME'),
+		'otheremail'          => 'EMAIL',
+		'businessemail'       => array('EMAIL', 'WORK'),
+		'businessemail2'      => array('EMAIL', 'WORK'),
+		'businessemail3'      => array('EMAIL', 'WORK'),
+		'personalemail'       => array('EMAIL', 'HOME'),
+		'personalemail2'      => array('EMAIL', 'HOME'),
+		'personalemail3'      => array('EMAIL', 'HOME'),
+		'notes'               => 'NOTE',
+		'web'                 => 'URL',
+		'businessweb'         => array('URL', 'WORK'),
+		'webpage'             => 'URL',
+		'businesswebpage'     => array('URL', 'WORK'),
+		'website'             => 'URL',
+		'businesswebsite'     => array('URL', 'WORK'),
+		'personalwebsite'     => 'URL',
+		'birthday'            => 'BDAY'
+	);
 
-			$aMap = \array_change_key_case($aMap, CASE_LOWER);
-		}
-
-		$sCsvNameLower = \MailSo\Base\Utils::IsAscii($sCsvName) ? \preg_replace('/[\s\-]+/', '', \strtolower($sCsvName)) : '';
-		return !empty($sCsvNameLower) && isset($aMap[$sCsvNameLower]) ? $aMap[$sCsvNameLower] : PropertyType::UNKNOWN;
-	}
-
-	/**
-	 * TODO: broken
-	 */
 	public static function CsvArrayToContacts(array $aCsvData) : iterable
 	{
 		foreach ($aCsvData as $aItem) {
-			$oContact = new Classes\Contact();
 			\MailSo\Base\Utils::ResetTimeLimit();
+			$iCount = 0;
+			$oVCard = new \Sabre\VObject\Component\VCard;
+			$aName = ['','','','',''];
 			foreach ($aItem as $sItemName => $sItemValue) {
-				$sItemName = \trim($sItemName);
+				$sItemName = \strtoupper(\trim(\preg_replace('/[\s\-]+/', '', $sItemName)));
 				$sItemValue = \trim($sItemValue);
 				if (!empty($sItemName) && !empty($sItemValue)) {
-					$mData = static::csvNameToTypeConvertor($sItemName);
-					$iType = \is_array($mData) ? $mData[0] : $mData;
-					if (PropertyType::UNKNOWN !== $iType) {
-						$oProp = new Classes\Property();
-						$oProp->Type = $iType;
-						$oProp->Value = $sItemValue;
-						$oProp->TypeStr = \is_array($mData) && !empty($mData[1]) ? $mData[1] : '';
-//						$oContact->Properties[] = $oProp;
+					if (\array_key_exists($sItemName, \Sabre\VObject\Component\VCard::$propertyMap)) {
+						$mData = $sItemName;
+					} else {
+						$sItemName = \strtolower($sItemName);
+						$mData = !empty($sItemName) && isset($aMap[$sItemName]) ? $aMap[$sItemName] : null;
+					}
+					if ($mData) {
+						$mType = \is_array($mData) ? $mData[0] : $mData;
+						++$iCount;
+						if (\is_int($mType)) {
+							$aName[$mType] = $sItemValue;
+						} else if (\is_array($mData)) {
+							$oVCard->add($mType, $sItemValue, ['type' => $mData[1]]);
+						} else if ('FN' === $mType || 'NICKNAME' === $mType) {
+							$oVCard->$mType = $sItemValue;
+						} else {
+							$oVCard->add($mType, $sItemValue);
+						}
 					}
 				}
 			}
-			if (\count($oContact->Properties)) {
+			if ($iCount) {
+				if ('' !== \implode('', $aName)) {
+					$oVCard->N = $aName;
+				}
+				$oContact = new Classes\Contact();
+				$oContact->setVCard($oVCard);
 				yield $oContact;
 			}
 		}
 	}
 
-	/**
-	 * TODO: broken
-	 */
-	public static function VCardToCsv(Classes\Contact $oContact, bool $bWithHeader = false) : string
+	public static function VCardToCsv($stream, Classes\Contact $oContact, bool $bWithHeader = false)/* : int|false*/
 	{
 		$aData = array();
 		if ($bWithHeader) {
-			$aData[] = array(
+			\fputcsv($stream, array(
 				'Title', 'First Name', 'Middle Name', 'Last Name', 'Nick Name', 'Display Name',
 				'Company', 'Department', 'Job Title', 'Office Location',
-				'E-mail Address', 'Notes', 'Web Page', 'Birthday',
-				'Other Email', 'Other Phone', 'Other Mobile', 'Mobile Phone',
-				'Home Email',		'Home Phone',		'Home Fax',
-				'Home Street',		'Home City',		'Home State',		'Home Postal Code',			'Home Country',
-				'Business Email',	'Business Phone',	'Business Fax',
-				'Business Street',	'Business City',	'Business State',	'Business Postal Code',		'Business Country'
-			);
+				'E-mail Address', 'Notes', 'Web Page', 'Birthday', 'Mobile Phone',
+				'Home Email', 'Home Phone',
+				'Home Street', 'Home City', 'Home State', 'Home Postal Code', 'Home Country',
+				'Business Email', 'Business Phone',
+				'Business Street', 'Business City', 'Business State', 'Business Postal Code', 'Business Country'
+			));
 		}
 
 		$oVCard = $oContact->vCard;
 
+		$aName = isset($oVCard->N) ? $oVCard->N->getParts() : ['','','','',''];
 
 		$adrHome = $oVCard->getByType('ADR', 'HOME');
 		$adrHome = $adrHome ? $adrHome->getParts() : ['','','','','','',''];
@@ -247,11 +240,11 @@ class Utils
 		$adrWork = $oVCard->getByType('ADR', 'WORK');
 		$adrWork = $adrWork ? $adrWork->getParts() : ['','','','','','',''];
 
-		$aValues = array(
-			'',                         // Title
-			'',                         // First Name
-			'',                         // Middle Name
-			'',                         // Last Name
+		return \fputcsv($stream, array(
+			(string) $oVCard->FN,       // Title
+			$aName[1],                  // First Name
+			$aName[2],                  // Middle Name
+			$aName[0],                  // Last Name
 			(string) $oVCard->NICKNAME, // Nick Name
 			(string) $oVCard->FN,       // Display Name
 			(string) $oVCard->ORG,      // Company
@@ -261,15 +254,11 @@ class Utils
 			(string) $oVCard->EMAIL,    // E-mail Address
 			(string) $oVCard->NOTE,     // Notes
 			(string) $oVCard->URL,      // Web Page
-			'',                         // Birthday
-			'',                         // Other Email
-			'',                         // Other Phone
-			'',                         // Other Mobile
+			(string) $oVCard->BDAY,     // Birthday
 			(string) $oVCard->getByType('TEL', 'CELL'),   // Mobile Phone
 			// Home
 			(string) $oVCard->getByType('EMAIL', 'HOME'), // Email
 			(string) $oVCard->getByType('TEL', 'HOME'),   // Phone
-			'',                         // Fax,
 			\trim($adrHome[1]."\n".$adrHome[2]), // extended address + street address
 			$adrHome[3],                // City
 			$adrHome[4],                // State
@@ -278,25 +267,12 @@ class Utils
 			// Business
 			(string) $oVCard->getByType('EMAIL', 'WORK'), // Email
 			(string) $oVCard->getByType('TEL', 'WORK'),   // Phone
-			'',                         // Fax
 			\trim($adrWork[1]."\n".$adrWork[2]), // extended address + street address
 			$adrWork[3],                // City
 			$adrWork[4],                // State
 			$adrWork[5],                // Postal Code
 			$adrWork[6]                 // Country
-		);
-
-		$aData[] = \array_map(function ($sValue) {
-			$sValue = \trim($sValue);
-			return \preg_match('/[\r\n,"]/', $sValue) ? '"'.\str_replace('"', '""', $sValue).'"' : $sValue;
-		}, $aValues);
-
-		$sResult = '';
-		foreach ($aData as $aSubData) {
-			$sResult .= \implode(',', $aSubData)."\r\n";
-		}
-
-		return $sResult;
+		));
 	}
 
 	public static function VcfFileToContacts(string $sVcfData) : iterable
