@@ -29,7 +29,8 @@ export class ContactModel extends AbstractModel {
 			surName:    '', // LastName
 			middleName: '', // MiddleName
 			namePrefix: '', // NamePrefix
-			nameSuffix: ''  // NameSuffix
+			nameSuffix: '',  // NameSuffix
+			nickname: null
 		});
 //		this.email = koArrayWithDestroy();
 		this.email = ko.observableArray();
@@ -40,15 +41,6 @@ export class ContactModel extends AbstractModel {
 			hasValidName: () => !!(this.givenName() || this.surName()),
 
 			fullName: () => (this.givenName() + ' ' + this.surName()).trim(),
-
-			nickname: {
-				read: () => {
-					let prop = this.jCard.getOne('nickname');
-					return prop && prop.value;
-				},
-				write: value =>
-					value ? this.jCard.set('nickname', value/*, params, group*/) : this.jCard.remove('nickname')
-			},
 
 			display: () => {
 				let a = this.jCard.getOne('fn')?.value,
@@ -97,6 +89,9 @@ export class ContactModel extends AbstractModel {
 			props && props.forEach((value, index) =>
 				value && contact[nProps[index]](value)
 			);
+
+			props = jCard.getOne('nickname');
+			props && contact.nickname(props.value);
 
 			['email', 'tel', 'url'].forEach(field => {
 				props = jCard.get(field);
@@ -160,6 +155,8 @@ export class ContactModel extends AbstractModel {
 			this.nameSuffix()
 		]/*, params, group*/);
 //		jCard.parseFullName({set:true});
+
+		this.nickname() ? jCard.set('nickname', this.nickname()/*, params, group*/) : jCard.remove('nickname');
 
 		['email', 'tel', 'url'].forEach(field => {
 			let values = this[field].map(item => item.value());
