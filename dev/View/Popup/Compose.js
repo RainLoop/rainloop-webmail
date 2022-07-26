@@ -754,7 +754,7 @@ export class ComposePopupView extends AbstractViewPopup {
 	}
 
 	// getAutocomplete
-	emailsSource(oData, fResponse) {
+	emailsSource(value, fResponse) {
 		Remote.request('Suggestions',
 			(iError, data) => {
 				if (!iError && isArray(data.Result)) {
@@ -767,7 +767,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				}
 			},
 			{
-				Query: oData.term
+				Query: value
 //				,Page: 1
 			},
 			null,
