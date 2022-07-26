@@ -16,7 +16,7 @@ class ImapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 		$oMailClient = $oActions->MailClient();
 		if (!$oMailClient->IsLoggined()) {
 			$oAccount = $oActions->getAccountFromToken();
-			$oAccount->IncConnectAndLoginHelper($oActions->Plugins(), $oMailClient, $oActions->Config());
+			$oAccount->ImapConnectAndLoginHelper($oActions->Plugins(), $oMailClient, $oActions->Config());
 		}
 		$oImapClient = $oMailClient->ImapClient();
 

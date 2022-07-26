@@ -113,7 +113,7 @@ export class EmailAddressesComponent {
 				if (datalist.inputValue !== value) {
 					datalist.inputValue = value;
 					value.length && self.options.autoCompleteSource(
-						{term:value},
+						value,
 						items => {
 							self._resetDatalist();
 							items && items.forEach(item => datalist.append(new Option(item)));
