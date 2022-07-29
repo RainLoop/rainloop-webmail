@@ -23,13 +23,14 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
- - Browser [e.g. chromium 89, firefox 86, safari 14]
- - SnappyMail Version [e.g. 2.3.4]
+**Please complete the following information:**
+- Browser: [e.g. chromium 100, firefox 100, safari 14, mobile]
+- IMAP daemon: [e.g. courier, dovecot]
+- PHP version:
+- SnappyMail Version:
 
-**Mobile (please complete the following information):**
- - Browser [e.g. stock browser, chrome 87, firefox 86, safari 14]
- - SnappyMail Version [e.g. 2.3.4]
+**[Debug/logging information](https://github.com/the-djmaze/snappymail/wiki/FAQ#how-do-i-enable-logging)**
+Place them here (few lines) or as attachments (many lines)
 
 **Additional context**
 Add any other context about the problem here.
