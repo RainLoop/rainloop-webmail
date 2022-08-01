@@ -30,11 +30,11 @@ checkResponseError = data => {
 
 oRequests = {},
 
-abort = (sAction, bClearOnly) => {
+abort = (sAction, sReason, bClearOnly) => {
 	if (oRequests[sAction]) {
 		if (!bClearOnly && oRequests[sAction].abort) {
 //			oRequests[sAction].__aborted = true;
-			oRequests[sAction].abort();
+			oRequests[sAction].abort(sReason || 'AbortError');
 		}
 
 		oRequests[sAction] = null;
@@ -54,11 +54,14 @@ fetchJSON = (action, sGetAdd, params, timeout, jsonCallback) => {
 	if (window.AbortController) {
 		abort(action);
 		const controller = new AbortController();
-		timeout && setTimeout(() => controller.abort(), timeout);
 		oRequests[action] = controller;
 		init.signal = controller.signal;
+		timeout && setTimeout(() => abort(action, 'TimeoutError'), timeout);
 	}
-	return rl.fetchJSON(getURL(sGetAdd), init, sGetAdd ? null : params).then(jsonCallback);
+	return rl.fetchJSON(getURL(sGetAdd), init, sGetAdd ? null : params).then(jsonCallback).catch(err => {
+		err.reason = init.signal.reason;
+		return Promise.reject(err);
+	});
 };
 
 class FetchError extends Error
@@ -72,7 +75,7 @@ class FetchError extends Error
 export class AbstractFetchRemote
 {
 	abort(sAction, bClearOnly) {
-		abort(sAction, bClearOnly);
+		abort(sAction, 0, bClearOnly);
 		return this;
 	}
 
@@ -147,7 +150,7 @@ export class AbstractFetchRemote
 					if (oRequests[sAction].__aborted) {
 						iError = 2;
 					}
-					abort(sAction, true);
+					abort(sAction, 0, true);
 				}
 
 				if (!iError && data) {
@@ -174,7 +177,7 @@ export class AbstractFetchRemote
 			}
 		)
 		.catch(err => {
-			console.error(err);
+			console.error({fetchError:err});
 			fCallback && fCallback(err.name == 'AbortError' ? 2 : 1, err);
 		});
 	}
@@ -199,7 +202,7 @@ export class AbstractFetchRemote
 		this.setTrigger(fTrigger, true);
 		return fetchJSON(action, '', params, pInt(timeOut, 30000),
 			data => {
-				abort(action, true);
+				abort(action, 0, true);
 
 				if (!data) {
 					return Promise.reject(new FetchError(Notification.JsonParse));
