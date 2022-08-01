@@ -175,7 +175,7 @@ export class AbstractFetchRemote
 		)
 		.catch(err => {
 			console.error(err);
-			fCallback && fCallback(err.name == 'AbortError' ? 2 : 1);
+			fCallback && fCallback(err.name == 'AbortError' ? 2 : 1, err);
 		});
 	}
 
