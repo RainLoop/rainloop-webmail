@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Telefon",
 		"LABEL_WEB": "Web",
 		"LABEL_BIRTHDAY": "Narozeniny",
-		"LINK_ADD_EMAIL": "Přidat email",
-		"LINK_ADD_PHONE": "Přidat telefon",
 		"LINK_BIRTHDAY": "Narozeniny",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Zadejte zobrazované jméno",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Zadejte příjmení",
@@ -394,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Text",
 		"LABEL_VIEW_OPTIONS": "Možnosti zobrazení",
 		"LABEL_USE_PREVIEW_PANE": "Používáte panel rychlého zobrazení",
+		"HIDE_DELETED_MESSAGES": "Skrýt zprávy označené ke smazání",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Zobrazení zaškrtávacích políček v seznamu",
 		"LABEL_USE_THREADS": "Zobrazit jako konverzace",
 		"LABEL_REPLY_SAME_FOLDER": "Ukládat odpovědi do složky se zprávou, které se týkají",
@@ -513,6 +512,9 @@
 		"LABEL_CLOSE_COMPOSE": "Zavřít okno se zprávou"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Neplatný token",
 		"AUTH_ERROR": "Ověření selhalo",
 		"CONNECTION_ERROR": "Nepodařilo se připojit k serveru",

@@ -166,6 +166,9 @@
 		"UNKNOWN_ERROR": "Neznáma chyba"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Neplatný token",
 		"AUTH_ERROR": "Overenie zlyhalo",
 		"DOMAIN_ALREADY_EXISTS": "Táto Doména už existuje",

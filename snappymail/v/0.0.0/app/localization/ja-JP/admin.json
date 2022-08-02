@@ -166,6 +166,9 @@
 		"UNKNOWN_ERROR": "不明なエラー"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "無効なトークン",
 		"AUTH_ERROR": "認証に失敗しました",
 		"DOMAIN_ALREADY_EXISTS": "ドメインが既に存在しています",

@@ -166,6 +166,9 @@
 		"UNKNOWN_ERROR": "خطای نامشخص"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "توکن نامعتبر",
 		"AUTH_ERROR": "احراز هویت انجام نشد",
 		"DOMAIN_ALREADY_EXISTS": "دامنه در حال حاضر موجود است",

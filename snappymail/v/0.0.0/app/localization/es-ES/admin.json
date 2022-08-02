@@ -166,6 +166,9 @@
 		"UNKNOWN_ERROR": "Error desconocido"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Token inválido",
 		"AUTH_ERROR": "Autenticación fallida",
 		"DOMAIN_ALREADY_EXISTS": "El Dominio ya existe",

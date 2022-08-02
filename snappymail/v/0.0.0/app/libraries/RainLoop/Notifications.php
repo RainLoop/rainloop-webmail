@@ -4,6 +4,12 @@ namespace RainLoop;
 
 class Notifications
 {
+/*
+	RequestError = 1;
+	RequestAborted = 2;
+	RequestTimeout = 3;
+*/
+
 	const InvalidToken = 101;
 	const AuthError = 102;
 

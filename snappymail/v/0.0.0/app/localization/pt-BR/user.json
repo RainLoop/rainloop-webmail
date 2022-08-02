@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Telefone",
 		"LABEL_WEB": "Web",
 		"LABEL_BIRTHDAY": "Aniversário",
-		"LINK_ADD_EMAIL": "Adicionar um endereço e-mail",
-		"LINK_ADD_PHONE": "Adicionar um telefone",
 		"LINK_BIRTHDAY": "Aniversário",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Digite o nome de exibição",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Digite o sobrenome",
@@ -394,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Texto Simples",
 		"LABEL_VIEW_OPTIONS": "Opções de Visualização",
 		"LABEL_USE_PREVIEW_PANE": "Usar painel de pré-visualização",
+		"HIDE_DELETED_MESSAGES": "Ocultar mensagens marcadas para exclusão",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Exibir caixas de seleção na lista",
 		"LABEL_USE_THREADS": "Agrupar mensagens por conversa",
 		"LABEL_REPLY_SAME_FOLDER": "Colocar resposta na mesma pasta da mensagem respondida",
@@ -513,6 +512,9 @@
 		"LABEL_CLOSE_COMPOSE": "Fechar composição"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Senha inválida",
 		"AUTH_ERROR": "Falha na autenticação",
 		"CONNECTION_ERROR": "Não foi possível conectar-se ao servidor",

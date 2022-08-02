@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Telepon",
 		"LABEL_WEB": "Web",
 		"LABEL_BIRTHDAY": "Tanggal lahir",
-		"LINK_ADD_EMAIL": "Tambah alamat email",
-		"LINK_ADD_PHONE": "Tambah telepon",
 		"LINK_BIRTHDAY": "Tanggal lahir",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Isi nama tampilan",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Isi nama belakang ",
@@ -394,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Polos",
 		"LABEL_VIEW_OPTIONS": "Tampilkan Opsi",
 		"LABEL_USE_PREVIEW_PANE": "Gunakan panel pratinjau",
+		"HIDE_DELETED_MESSAGES": "Sembunyikan pesan yang ditandai untuk dihapus",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Tampilkan centang dalam daftar",
 		"LABEL_USE_THREADS": "Gunakan tread",
 		"LABEL_REPLY_SAME_FOLDER": "Tempatkan pesan balasan di folder pesan yang dibalas",
@@ -513,6 +512,9 @@
 		"LABEL_CLOSE_COMPOSE": "Tutup buat pesan"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Token tidak sah",
 		"AUTH_ERROR": "Otentikasi gagal",
 		"CONNECTION_ERROR": "Tidak terhubung ke server",

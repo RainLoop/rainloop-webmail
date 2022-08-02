@@ -46,6 +46,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.viewHTML = SettingsUserStore.viewHTML;
 		this.showImages = SettingsUserStore.showImages;
 		this.removeColors = SettingsUserStore.removeColors;
+		this.hideDeleted = SettingsUserStore.hideDeleted;
 		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
 		this.threadsAllowed = AppUserStore.threadsAllowed;
 		this.useThreads = SettingsUserStore.useThreads;
@@ -92,7 +93,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.addSetting('MessagesPerPage');
 		this.addSetting('Layout', () => MessagelistUserStore([]));
 
-		this.addSettings(['ViewHTML', 'ShowImages', 'UseCheckboxesInList', 'ReplySameFolder',
+		this.addSettings(['ViewHTML', 'ShowImages', 'HideDeleted', 'UseCheckboxesInList', 'ReplySameFolder',
 			'DesktopNotifications', 'SoundNotification']);
 
 		const fReloadLanguageHelper = (saveSettingsStep) => () => {

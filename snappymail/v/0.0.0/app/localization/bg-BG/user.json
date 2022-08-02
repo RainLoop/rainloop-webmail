@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Телефон",
 		"LABEL_WEB": "Страница",
 		"LABEL_BIRTHDAY": "Рожден ден",
-		"LINK_ADD_EMAIL": "Добави имейл адрес",
-		"LINK_ADD_PHONE": "Добави телефон",
 		"LINK_BIRTHDAY": "Рожден ден",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Въвеждете името, което ще се показва",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Въведете фамилия",
@@ -394,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Чист текст",
 		"LABEL_VIEW_OPTIONS": "Настройки на изгледа",
 		"LABEL_USE_PREVIEW_PANE": "Използвай поле за преглед",
+		"HIDE_DELETED_MESSAGES": "Скриване на съобщенията, маркирани за изтриване",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Показавай отметките в списъка",
 		"LABEL_USE_THREADS": "Използвай групиране на съобщенията",
 		"LABEL_REPLY_SAME_FOLDER": "Постави отговорите с папката на отговаряното съобщение",
@@ -513,6 +512,9 @@
 		"LABEL_CLOSE_COMPOSE": "Затвори създаването"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Невалиден токен",
 		"AUTH_ERROR": "Неуспешно удостоверяване",
 		"CONNECTION_ERROR": "Не може да се свърже със сървъра",

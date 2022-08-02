@@ -700,10 +700,11 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function GetUids(?\MailSo\Cache\CacheClient $oCacher, string $sSearch,
+	private function GetUids(MessageListParams $oParams, string $sSearch,
 		string $sFolderName, string $sFolderHash,
 		bool $bUseSortIfSupported = false, string $sSort = '') : array
 	{
+		$oCacher = $oParams->oCacher;
 		/* TODO: Validate $sSort
 			ARRIVAL
 				Internal date and time of the message.  This differs from the
@@ -754,7 +755,7 @@ class MailClient
 
 		$bUseSortIfSupported = $bUseSortIfSupported && !\strlen($sSearch) && $this->oImapClient->IsSupported('SORT');
 
-		$sSearchCriterias = \MailSo\Imap\SearchCriterias::fromString($this->oImapClient, $sFolderName, $sSearch, $bUseCacheAfterSearch);
+		$sSearchCriterias = \MailSo\Imap\SearchCriterias::fromString($this->oImapClient, $sFolderName, $sSearch, $oParams->bHideDeleted, $bUseCacheAfterSearch);
 		if ($bUseCacheAfterSearch && $oCacher && $oCacher->IsInited())
 		{
 			$sSerializedHash = 'GetUids/'.
@@ -902,7 +903,7 @@ class MailClient
 				}
 				else
 				{
-					$aUids = $this->GetUids($oParams->oCacher, '',
+					$aUids = $this->GetUids($oParams, '',
 						$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported, $oParams->sSort);
 					// Remove all threaded UID's except the most recent of each thread
 					$threadedUids = [];
@@ -913,13 +914,13 @@ class MailClient
 					$aUids = \array_diff($aUids, $threadedUids);
 				}
 			} else {
-				$aUids = $this->GetUids($oParams->oCacher, '',
+				$aUids = $this->GetUids($oParams, '',
 					$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported, $oParams->sSort);
 			}
 
 			if ($aUids && \strlen($sSearch))
 			{
-				$aSearchedUids = $this->GetUids($oParams->oCacher, $sSearch,
+				$aSearchedUids = $this->GetUids($oParams, $sSearch,
 					$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
 				if ($bUseThreads && !$oParams->iThreadUid) {
 					$matchingThreadUids = [];
@@ -958,7 +959,7 @@ class MailClient
 
 			if (\strlen($sSearch))
 			{
-				$aUids = $this->GetUids($oParams->oCacher, $sSearch,
+				$aUids = $this->GetUids($oParams, $sSearch,
 					$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
 
 				$oMessageCollection->MessageResultCount = \count($aUids);

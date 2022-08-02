@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Telefoon",
 		"LABEL_WEB": "Web",
 		"LABEL_BIRTHDAY": "Geboortedatum",
-		"LINK_ADD_EMAIL": "E-mail adres toevoegen",
-		"LINK_ADD_PHONE": "Telefoonnummer toevoegen",
 		"LINK_BIRTHDAY": "Geboortedatum",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Weergeven als",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Achternaam",
@@ -394,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Platte tekst",
 		"LABEL_VIEW_OPTIONS": "Bekijk opties",
 		"LABEL_USE_PREVIEW_PANE": "Toon leesvenster",
+		"HIDE_DELETED_MESSAGES": "Berichten verbergen die zijn gemarkeerd voor verwijdering",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Toon selectievakjes in de lijst",
 		"LABEL_USE_THREADS": "Groepeer berichten",
 		"LABEL_REPLY_SAME_FOLDER": "Plaats antwoorden in de map van het originele bericht",
@@ -513,6 +512,9 @@
 		"LABEL_CLOSE_COMPOSE": "Nieuw bericht venster sluiten"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Ongeldige token",
 		"AUTH_ERROR": "Authenticatie mislukt",
 		"CONNECTION_ERROR": "Kan geen verbinding maken met de Server",

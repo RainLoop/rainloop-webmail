@@ -54,7 +54,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		this.request('MessageList',
 			fCallback,
 			params,
-			30000,
+			60000, // 60 seconds before aborting
 			sGetAdd,
 			bSilent ? [] : ['MessageList']
 		);

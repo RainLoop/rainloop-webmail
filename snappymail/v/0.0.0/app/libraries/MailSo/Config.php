@@ -27,11 +27,6 @@ class Config
 	public static $MessageListCountLimitTrigger = 0;
 
 	/**
-	 * @var bool
-	 */
-	public static $MessageListUndeletedOnly = true;
-
-	/**
 	 * @var int
 	 */
 	public static $MessageListDateFilter = 0;

@@ -19,6 +19,7 @@ class MessageListParams
 		$oCacher = null, // ?\MailSo\Cache\CacheClient
 		$bUseSortIfSupported = false, // bool
 		$bUseThreads = false, // bool
+		$bHideDeleted = true, // bool
 		$sSort = ''; // string
 
 	protected

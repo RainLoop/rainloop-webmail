@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "SĐT",
 		"LABEL_WEB": "Trang web",
 		"LABEL_BIRTHDAY": "Ngày sinh",
-		"LINK_ADD_EMAIL": "Thêm địa chỉ email",
-		"LINK_ADD_PHONE": "Thêm số điện thoại",
 		"LINK_BIRTHDAY": "Ngày sinh",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Nhập tên hiển thị",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Nhập họ",
@@ -394,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Dạng chữ viết thường",
 		"LABEL_VIEW_OPTIONS": "Xem những lựa chọn",
 		"LABEL_USE_PREVIEW_PANE": "Dùng bảng xem trước thư",
+		"HIDE_DELETED_MESSAGES": "Ẩn các tin nhắn được đánh dấu để xóa",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Hiển thị ô đánh dấu dưới dạng danh sách",
 		"LABEL_USE_THREADS": "Nối thư qua lại cùng một tiêu đề thành một chuỗi hội thoại",
 		"LABEL_REPLY_SAME_FOLDER": "Đặt thư phản hồi gửi đi vào chung thư mục của bức thư nhận được",
@@ -513,6 +512,9 @@
 		"LABEL_CLOSE_COMPOSE": "Đóng bảng viết thư"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Token không hợp lệ",
 		"AUTH_ERROR": "Xác minh thất bại",
 		"CONNECTION_ERROR": "Không thể kết nối với máy chủ",

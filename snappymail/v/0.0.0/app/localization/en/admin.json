@@ -166,6 +166,9 @@
 		"UNKNOWN_ERROR": "Unknown error"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Invalid token",
 		"AUTH_ERROR": "Authentication failed",
 		"DOMAIN_ALREADY_EXISTS": "Domain already exists",

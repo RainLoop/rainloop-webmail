@@ -166,6 +166,9 @@
 		"UNKNOWN_ERROR": "Tuntematon virhe"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Väärä token",
 		"AUTH_ERROR": "Tunnistautuminen epäonnistui",
 		"DOMAIN_ALREADY_EXISTS": "Verkkotunnus on jo olemassa",

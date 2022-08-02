@@ -30,11 +30,11 @@ checkResponseError = data => {
 
 oRequests = {},
 
-abort = (sAction, bClearOnly) => {
+abort = (sAction, sReason, bClearOnly) => {
 	if (oRequests[sAction]) {
 		if (!bClearOnly && oRequests[sAction].abort) {
 //			oRequests[sAction].__aborted = true;
-			oRequests[sAction].abort();
+			oRequests[sAction].abort(sReason || 'AbortError');
 		}
 
 		oRequests[sAction] = null;
@@ -43,22 +43,23 @@ abort = (sAction, bClearOnly) => {
 },
 
 fetchJSON = (action, sGetAdd, params, timeout, jsonCallback) => {
-	sGetAdd = pString(sGetAdd);
 	params = params || {};
 	if (params instanceof FormData) {
 		params.set('Action', action);
 	} else {
 		params.Action = action;
 	}
-	let init = {};
-	if (window.AbortController) {
-		abort(action);
-		const controller = new AbortController();
-		timeout && setTimeout(() => controller.abort(), timeout);
-		oRequests[action] = controller;
-		init.signal = controller.signal;
-	}
-	return rl.fetchJSON(getURL(sGetAdd), init, sGetAdd ? null : params).then(jsonCallback);
+	abort(action);
+	const controller = new AbortController(),
+		signal = controller.signal;
+	oRequests[action] = controller;
+	// Currently there is no way to combine multiple signals, so AbortSignal.timeout() not possible
+	timeout && setTimeout(() => abort(action, 'TimeoutError'), timeout);
+	return rl.fetchJSON(getURL(sGetAdd), {signal: signal}, sGetAdd ? null : params).then(jsonCallback).catch(err => {
+		err.aborted = signal.aborted;
+		err.reason = signal.reason;
+		return Promise.reject(err);
+	});
 };
 
 class FetchError extends Error
@@ -71,8 +72,8 @@ class FetchError extends Error
 
 export class AbstractFetchRemote
 {
-	abort(sAction, bClearOnly) {
-		abort(sAction, bClearOnly);
+	abort(sAction) {
+		abort(sAction);
 		return this;
 	}
 
@@ -133,7 +134,7 @@ export class AbstractFetchRemote
 			abortActions.forEach(actionToAbort => abort(actionToAbort));
 		}
 
-		fetchJSON(sAction, sGetAdd,
+		fetchJSON(sAction, pString(sGetAdd),
 			params,
 			undefined === iTimeout ? 30000 : pInt(iTimeout),
 			data => {
@@ -147,7 +148,7 @@ export class AbstractFetchRemote
 					if (oRequests[sAction].__aborted) {
 						iError = 2;
 					}
-					abort(sAction, true);
+					abort(sAction, 0, 1);
 				}
 
 				if (!iError && data) {
@@ -174,8 +175,11 @@ export class AbstractFetchRemote
 			}
 		)
 		.catch(err => {
-			console.error(err);
-			fCallback && fCallback(err.name == 'AbortError' ? 2 : 1);
+			console.error({fetchError:err});
+			fCallback && fCallback(
+				'TimeoutError' == err.reason ? 3 : (err.name == 'AbortError' ? 2 : 1),
+				err
+			);
 		});
 	}
 
@@ -199,7 +203,7 @@ export class AbstractFetchRemote
 		this.setTrigger(fTrigger, true);
 		return fetchJSON(action, '', params, pInt(timeOut, 30000),
 			data => {
-				abort(action, true);
+				abort(action, 0, 1);
 
 				if (!data) {
 					return Promise.reject(new FetchError(Notification.JsonParse));

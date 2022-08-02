@@ -166,6 +166,9 @@
 		"UNKNOWN_ERROR": "Ukendt fejl"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Ugyldigt tegn",
 		"AUTH_ERROR": "Godkendelse fejlede",
 		"DOMAIN_ALREADY_EXISTS": "Domæne eksisterer allerede",

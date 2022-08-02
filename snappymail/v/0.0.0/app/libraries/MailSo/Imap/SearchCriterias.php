@@ -127,7 +127,7 @@ abstract class SearchCriterias
 		X RECENT
 	*/
 
-	public static function fromString(\MailSo\Imap\ImapClient $oImapClient, string $sFolderName, string $sSearch, bool &$bUseCache = true) : string
+	public static function fromString(\MailSo\Imap\ImapClient $oImapClient, string $sFolderName, string $sSearch, bool $bHideDeleted, bool &$bUseCache = true) : string
 	{
 		$bUseCache = true;
 		$iTimeFilter = 0;
@@ -216,6 +216,10 @@ abstract class SearchCriterias
 						case 'UNFLAGGED':
 						case 'SEEN':
 						case 'UNSEEN':
+						case 'ANSWERED':
+						case 'UNANSWERED':
+						case 'DELETED':
+						case 'UNDELETED':
 							$aCriteriasResult[] = $sName;
 							$bUseCache = false;
 							break;
@@ -276,19 +280,15 @@ abstract class SearchCriterias
 			$aCriteriasResult[] = \gmdate('j-M-Y', $iTimeFilter);
 		}
 
-		$sCriteriasResult = \trim(\implode(' ', $aCriteriasResult));
-
-		$sCriteriasResult = \trim($sCriteriasResult);
-		if (\MailSo\Config::$MessageListUndeletedOnly) {
-			$sCriteriasResult = \trim($sCriteriasResult.' UNDELETED');
+		if ($bHideDeleted && !\in_array('DELETED', $aCriteriasResult) && !\in_array('UNDELETED', $aCriteriasResult)) {
+			$aCriteriasResult['UNDELETED'] = true;
 		}
 
-		$sCriteriasResult = \trim($sCriteriasResult);
 		if (\MailSo\Config::$MessageListPermanentFilter) {
-			$sCriteriasResult = \trim($sCriteriasResult.' '.\MailSo\Config::$MessageListPermanentFilter);
+			$aCriteriasResult[] = \MailSo\Config::$MessageListPermanentFilter;
 		}
 
-		$sCriteriasResult = \trim($sCriteriasResult);
+		$sCriteriasResult = \trim(\implode(' ', $aCriteriasResult));
 
 		return $sCriteriasResult ?: 'ALL';
 	}
@@ -366,6 +366,10 @@ abstract class SearchCriterias
 				case 'UNFLAGGED':
 				case 'SEEN':
 				case 'UNSEEN':
+				case 'ANSWERED':
+				case 'UNANSWERED':
+				case 'DELETED':
+				case 'UNDELETED':
 					$aResult[$sName] = true;
 					break;
 			}

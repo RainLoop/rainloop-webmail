@@ -42,6 +42,7 @@ SaveSettingsStep = {
 Notification = {
 	RequestError: 1,
 	RequestAborted: 2,
+	RequestTimeout: 3,
 
 	// Global
 	InvalidToken: 101,

@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Telefon",
 		"LABEL_WEB": "Hjemmeside",
 		"LABEL_BIRTHDAY": "Fødselsdag",
-		"LINK_ADD_EMAIL": "Tilføj e-mail adresse",
-		"LINK_ADD_PHONE": "Tilføj telefonnummer",
 		"LINK_BIRTHDAY": "Fødselsdag",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Indtast kaldenavn",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Indtast efternavn",
@@ -394,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Plain",
 		"LABEL_VIEW_OPTIONS": "Visningsindstillinger",
 		"LABEL_USE_PREVIEW_PANE": "Brug preview panel",
+		"HIDE_DELETED_MESSAGES": "Skjul beskeder, der er markeret til sletning",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Vis afkrydsningsfelt i oversigten",
 		"LABEL_USE_THREADS": "Brug samtaler",
 		"LABEL_REPLY_SAME_FOLDER": "Placer svar i samme mappe som oprindelig meddelelse",
@@ -513,6 +512,9 @@
 		"LABEL_CLOSE_COMPOSE": "Luk forfatter mode"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Ugyldigt tegn",
 		"AUTH_ERROR": "Godkendelse fejlede",
 		"CONNECTION_ERROR": "Kan ikke kontakte server",

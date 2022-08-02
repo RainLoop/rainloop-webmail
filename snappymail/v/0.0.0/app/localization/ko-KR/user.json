@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "전화",
 		"LABEL_WEB": "홈페이지",
 		"LABEL_BIRTHDAY": "생일",
-		"LINK_ADD_EMAIL": "이메일 주소 추가",
-		"LINK_ADD_PHONE": "전화번호 추가",
 		"LINK_BIRTHDAY": "생일",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "표시명을 입력하세요",
 		"PLACEHOLDER_ENTER_LAST_NAME": "성을 입력하세요",
@@ -394,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "평문",
 		"LABEL_VIEW_OPTIONS": "보기 옵션",
 		"LABEL_USE_PREVIEW_PANE": "미리보기 창 사용",
+		"HIDE_DELETED_MESSAGES": "삭제 표시된 메시지 숨기기",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "목록에서 확인상자 표시",
 		"LABEL_USE_THREADS": "대화형 목록 사용",
 		"LABEL_REPLY_SAME_FOLDER": "회신 메시지를 원본과 동일한 폴더 위치에 저장",
@@ -513,6 +512,9 @@
 		"LABEL_CLOSE_COMPOSE": "쓰기 창 닫기"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "잘못된 토큰입니다.",
 		"AUTH_ERROR": "인증에 실패했습니다",
 		"CONNECTION_ERROR": "서버에 연결할 수 없습니다.",

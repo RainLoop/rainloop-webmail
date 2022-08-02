@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Téléphone",
 		"LABEL_WEB": "Web",
 		"LABEL_BIRTHDAY": "Anniversaire",
-		"LINK_ADD_EMAIL": "Ajouter une adresse email",
-		"LINK_ADD_PHONE": "Ajouter un numéro de téléphone",
 		"LINK_BIRTHDAY": "Anniversaire",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Entrez le nom à afficher",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Entrez votre nom",
@@ -394,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Non-formaté",
 		"LABEL_VIEW_OPTIONS": "Voir les options",
 		"LABEL_USE_PREVIEW_PANE": "Utiliser le panneau de prévisualisation",
+		"HIDE_DELETED_MESSAGES": "Masquer les messages marqués pour suppression",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Afficher des cases à cocher dans la liste",
 		"LABEL_USE_THREADS": "Regrouper en conversations",
 		"LABEL_REPLY_SAME_FOLDER": "Placer les réponses dans le dossier du message",
@@ -513,6 +512,9 @@
 		"LABEL_CLOSE_COMPOSE": "Fermer la fenêtre d'édition"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Jeton invalide",
 		"AUTH_ERROR": "L'authentification a échoué",
 		"CONNECTION_ERROR": "Serveur injoignable",

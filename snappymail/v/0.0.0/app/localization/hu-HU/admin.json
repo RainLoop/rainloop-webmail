@@ -166,6 +166,9 @@
 		"UNKNOWN_ERROR": "Ismeretlen hiba"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Érvénytelen token",
 		"AUTH_ERROR": "Sikertelen hitelesítés",
 		"DOMAIN_ALREADY_EXISTS": "A domain már létezik",

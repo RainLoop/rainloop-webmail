@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Sími",
 		"LABEL_WEB": "Vefsíða",
 		"LABEL_BIRTHDAY": "Afmælisdagur",
-		"LINK_ADD_EMAIL": "Bæta við tölvupóstfangi",
-		"LINK_ADD_PHONE": "Bæta við síma",
 		"LINK_BIRTHDAY": "Afmælisdagur",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Settu inn birtingarnafn",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Settu inn kenninafn",
@@ -394,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Venjulegt",
 		"LABEL_VIEW_OPTIONS": "Valkostir skoðunar",
 		"LABEL_USE_PREVIEW_PANE": "Nota forskoðunarham",
+		"HIDE_DELETED_MESSAGES": "Fela skilaboð merkt til eyðingar",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Sýna valkassa í listanum",
 		"LABEL_USE_THREADS": "Nota þræði",
 		"LABEL_REPLY_SAME_FOLDER": "Setja svör í möppu skilaboðanna sem er verið að svara",
@@ -513,6 +512,9 @@
 		"LABEL_CLOSE_COMPOSE": "Loka ritli"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Rangt tákn",
 		"AUTH_ERROR": "Auðkenning mistókst",
 		"CONNECTION_ERROR": "Get ekki tengst á netþjón",

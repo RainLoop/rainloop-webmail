@@ -35,6 +35,7 @@ export const SettingsUserStore = new class {
 			useThreads: 0,
 			replySameFolder: 0,
 			hideUnsubscribed: 0,
+			hideDeleted: 1,
 			autoLogout: 0
 		});
 
@@ -83,5 +84,6 @@ export const SettingsUserStore = new class {
 		self.replySameFolder(SettingsGet('ReplySameFolder'));
 
 		self.hideUnsubscribed(SettingsGet('HideUnsubscribed'));
+		self.hideDeleted(SettingsGet('HideDeleted'));
 	}
 };

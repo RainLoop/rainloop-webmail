@@ -166,6 +166,9 @@
 		"UNKNOWN_ERROR": "Onbekende fout"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Onjuiste token",
 		"AUTH_ERROR": "Authenticatie mislukt",
 		"DOMAIN_ALREADY_EXISTS": "Domein bestaat al",

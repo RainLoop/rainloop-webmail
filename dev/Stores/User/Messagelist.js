@@ -171,8 +171,8 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 			if (iError) {
 				if (Notification.RequestAborted !== iError) {
 					MessagelistUserStore([]);
-					MessagelistUserStore.error(getNotification(iError));
 				}
+				MessagelistUserStore.error(getNotification(iError));
 			} else {
 				const collection = MessageCollectionModel.reviveFromJson(oData.Result, bCached);
 				if (collection) {
@@ -387,7 +387,7 @@ MessagelistUserStore.removeMessagesFromList = (
 	if (MessagelistUserStore.threadUid()) {
 		if (
 			messageList.length &&
-			!!messageList.find(item => !!(item && item.deleted() && item.uid == MessagelistUserStore.threadUid()))
+			messageList.find(item => item && item.deleted() && item.uid == MessagelistUserStore.threadUid())
 		) {
 			const message = messageList.find(item => item && !item.deleted());
 			let setHash;

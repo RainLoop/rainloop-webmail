@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Telefon",
 		"LABEL_WEB": "Nettside",
 		"LABEL_BIRTHDAY": "Bursdag",
-		"LINK_ADD_EMAIL": "Legg til e-postadresse",
-		"LINK_ADD_PHONE": "Legg til telefon",
 		"LINK_BIRTHDAY": "Bursdag",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Visningsnavn",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Etternavn",
@@ -394,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Ren tekst",
 		"LABEL_VIEW_OPTIONS": "Vis valg",
 		"LABEL_USE_PREVIEW_PANE": "Bruk forhåndsvisningsrute",
+		"HIDE_DELETED_MESSAGES": "Skjul meldinger som er merket for sletting",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Vis avkrysningsbokser i liste",
 		"LABEL_USE_THREADS": "Bruk tråder",
 		"LABEL_REPLY_SAME_FOLDER": "Legg svar i samme mappe som opprinnelig melding",
@@ -513,6 +512,9 @@
 		"LABEL_CLOSE_COMPOSE": "Lukk ny melding"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Ugyldig info",
 		"AUTH_ERROR": "Autentisering mislyktes",
 		"CONNECTION_ERROR": "Klarte ikke å koble til tjeneren",

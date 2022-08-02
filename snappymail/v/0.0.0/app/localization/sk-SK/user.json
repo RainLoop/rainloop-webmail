@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Telefón",
 		"LABEL_WEB": "Web",
 		"LABEL_BIRTHDAY": "Dátum narodenia",
-		"LINK_ADD_EMAIL": "Pridať emailovú adresu",
-		"LINK_ADD_PHONE": "Pridať telefón",
 		"LINK_BIRTHDAY": "Dátum narodenia",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Zadajte Zobrazované meno",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Zadajte priezvisko",
@@ -394,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Text",
 		"LABEL_VIEW_OPTIONS": "Možnosti zobrazenia",
 		"LABEL_USE_PREVIEW_PANE": "Používať panel rýchleho zobrazenia",
+		"HIDE_DELETED_MESSAGES": "Skryť správy označené na odstránenie",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Zobrazenie zaštkrtávacích políčok v zozname",
 		"LABEL_USE_THREADS": "Zobraziť ako konverzácie",
 		"LABEL_REPLY_SAME_FOLDER": "Umiestňovať odpovede do priečinka so správou ktorej sa týkajú",
@@ -513,6 +512,9 @@
 		"LABEL_CLOSE_COMPOSE": "Close compose"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Neplatný token",
 		"AUTH_ERROR": "Overenie zlyhalo",
 		"CONNECTION_ERROR": "Nepodarilo sa pripojiť k serveru",
