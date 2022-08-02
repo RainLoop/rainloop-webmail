@@ -240,7 +240,7 @@ class HtmlUtils
 			}
 
 			$rand_str = base64_encode(random_bytes(32));
-            $oWrapDom = $oDom->createElement('div', $rand_str);
+                        $oWrapDom = $oDom->createElement('div', $rand_str);
 			$oWrapDom->setAttribute('data-x-div-type', 'body');
 			foreach ($aBodylAttrs as $sKey => $sValue)
 			{
@@ -248,10 +248,8 @@ class HtmlUtils
 			}
 
 			$oWrapHtml->appendChild($oWrapDom);
-
 			$sWrp = $oDom->saveHTML($oWrapHtml);
-
-		    $sResult = \str_replace($rand_str, $sResult, $sWrp);
+            $sResult = \str_replace($rand_str, $sResult, $sWrp);
 		}
 
 		$sResult = \str_replace(\MailSo\Base\HtmlUtils::$KOS, ':', $sResult);
@@ -1108,7 +1106,7 @@ class HtmlUtils
 				$oElement->removeAttribute('xlink:href');
 			}
 
-			if (\in_array($sTagNameLower, array('a', 'form', 'area')))
+            if (\in_array($sTagNameLower, array('a', 'form', 'area')))
 			{
 				$oElement->setAttribute('target', '_blank');
 			}
