@@ -166,6 +166,9 @@
 		"UNKNOWN_ERROR": "Lỗi chưa xác định"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Token không hợp lệ",
 		"AUTH_ERROR": "Xác minh thất bại",
 		"DOMAIN_ALREADY_EXISTS": "Tên miền đã tồn tại",

@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Telefon",
 		"LABEL_WEB": "Veebileht",
 		"LABEL_BIRTHDAY": "Sünnipäev",
-		"LINK_ADD_EMAIL": "Lisa e-posti aadress",
-		"LINK_ADD_PHONE": "Lisa telefon",
 		"LINK_BIRTHDAY": "Sünnipäev",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Sisesta kuvatav nimi",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Sisesta perenimi",
@@ -513,6 +511,9 @@
 		"LABEL_CLOSE_COMPOSE": "Sulge kirja koostamise aken"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Puudulik tõend",
 		"AUTH_ERROR": "Autentimine ebaõnnestus",
 		"CONNECTION_ERROR": "Serveriga ühendumine ebaõnnestus",

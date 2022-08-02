@@ -166,6 +166,9 @@
 		"UNKNOWN_ERROR": "未知错误"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "无效标记",
 		"AUTH_ERROR": "认证失败",
 		"DOMAIN_ALREADY_EXISTS": "域名已经存在",

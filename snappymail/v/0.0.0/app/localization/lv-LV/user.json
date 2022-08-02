@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Phone",
 		"LABEL_WEB": "Web",
 		"LABEL_BIRTHDAY": "Birthday",
-		"LINK_ADD_EMAIL": "Add an email address",
-		"LINK_ADD_PHONE": "Add a phone",
 		"LINK_BIRTHDAY": "Birthday",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Enter display name",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Enter last name",
@@ -513,6 +511,9 @@
 		"LABEL_CLOSE_COMPOSE": "Close compose"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Nepareizs tokens",
 		"AUTH_ERROR": "Autorizācija neizdevās",
 		"CONNECTION_ERROR": "Nevar savienoties ar serveri",

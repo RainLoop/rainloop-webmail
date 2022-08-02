@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Telefoon",
 		"LABEL_WEB": "Web",
 		"LABEL_BIRTHDAY": "Geboortedatum",
-		"LINK_ADD_EMAIL": "E-mail adres toevoegen",
-		"LINK_ADD_PHONE": "Telefoonnummer toevoegen",
 		"LINK_BIRTHDAY": "Geboortedatum",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Weergeven als",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Achternaam",
@@ -513,6 +511,9 @@
 		"LABEL_CLOSE_COMPOSE": "Nieuw bericht venster sluiten"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Ongeldige token",
 		"AUTH_ERROR": "Authenticatie mislukt",
 		"CONNECTION_ERROR": "Kan geen verbinding maken met de Server",

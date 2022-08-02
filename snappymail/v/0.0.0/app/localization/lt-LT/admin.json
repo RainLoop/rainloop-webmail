@@ -166,6 +166,9 @@
 		"UNKNOWN_ERROR": "Nežinoma klaida"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Neteisingas raktas",
 		"AUTH_ERROR": "Autorizacija nepavyko",
 		"DOMAIN_ALREADY_EXISTS": "Toks domenas jau yra",

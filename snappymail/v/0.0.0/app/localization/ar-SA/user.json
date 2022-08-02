@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "رقم الهاتف",
 		"LABEL_WEB": "الموقع",
 		"LABEL_BIRTHDAY": "تاريخ الميلاد",
-		"LINK_ADD_EMAIL": "قم باضافة البريد الالكتروني",
-		"LINK_ADD_PHONE": "قم باضافة رقم الهاتف",
 		"LINK_BIRTHDAY": "تاريخ الميلاد",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "ادخل الاسم المعروض",
 		"PLACEHOLDER_ENTER_LAST_NAME": "ادخل اسم العائلة",
@@ -513,6 +511,9 @@
 		"LABEL_CLOSE_COMPOSE": "إغلاق الرسالة"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "خاطىء token",
 		"AUTH_ERROR": "خطأ في كلمة السر \\اسم المستخدم",
 		"CONNECTION_ERROR": "لايمكن الإتصال بالمخدم",

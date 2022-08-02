@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Telefonas",
 		"LABEL_WEB": "Tinklapis",
 		"LABEL_BIRTHDAY": "Gimtadienis",
-		"LINK_ADD_EMAIL": "Pridėti elektroninio pašto adresą",
-		"LINK_ADD_PHONE": "Pridėti telefono Nr.",
 		"LINK_BIRTHDAY": "Gimtadienis",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Įveskite rodomą vardą",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Įveskite pavardę",
@@ -513,6 +511,9 @@
 		"LABEL_CLOSE_COMPOSE": "Uždaryti laišką"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Neteisingas raktas",
 		"AUTH_ERROR": "Autorizacija nepavyko",
 		"CONNECTION_ERROR": "Nepavyskta prisijungti prie serverio",

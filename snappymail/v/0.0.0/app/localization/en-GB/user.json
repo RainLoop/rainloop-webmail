@@ -511,6 +511,9 @@
 		"LABEL_CLOSE_COMPOSE": "Close compose"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Invalid token",
 		"AUTH_ERROR": "Authentication failed",
 		"CONNECTION_ERROR": "Can't connect to server",

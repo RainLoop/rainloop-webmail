@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "電話",
 		"LABEL_WEB": "網站",
 		"LABEL_BIRTHDAY": "生日",
-		"LINK_ADD_EMAIL": "添加 Email 地址",
-		"LINK_ADD_PHONE": "添加電話",
 		"LINK_BIRTHDAY": "生日",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "顯示名稱",
 		"PLACEHOLDER_ENTER_LAST_NAME": "姓",
@@ -513,6 +511,9 @@
 		"LABEL_CLOSE_COMPOSE": "Close compose"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "無效標記",
 		"AUTH_ERROR": "認證失敗",
 		"CONNECTION_ERROR": "無法連接伺服器",

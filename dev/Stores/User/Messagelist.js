@@ -171,10 +171,8 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 			if (iError) {
 				if (Notification.RequestAborted !== iError) {
 					MessagelistUserStore([]);
-					MessagelistUserStore.error(getNotification(iError));
-				} else if ('TimeoutError' === oData.reason) {
-					MessagelistUserStore.error(oData.reason);
 				}
+				MessagelistUserStore.error(getNotification(iError));
 			} else {
 				const collection = MessageCollectionModel.reviveFromJson(oData.Result, bCached);
 				if (collection) {

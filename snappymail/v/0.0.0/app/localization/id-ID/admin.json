@@ -166,6 +166,9 @@
 		"UNKNOWN_ERROR": "Kesalahan tidak diketahui"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Token invalid",
 		"AUTH_ERROR": "Otentikasi gagal",
 		"DOMAIN_ALREADY_EXISTS": "Domain sudah ada",

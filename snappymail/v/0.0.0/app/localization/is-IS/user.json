@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Sími",
 		"LABEL_WEB": "Vefsíða",
 		"LABEL_BIRTHDAY": "Afmælisdagur",
-		"LINK_ADD_EMAIL": "Bæta við tölvupóstfangi",
-		"LINK_ADD_PHONE": "Bæta við síma",
 		"LINK_BIRTHDAY": "Afmælisdagur",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Settu inn birtingarnafn",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Settu inn kenninafn",
@@ -513,6 +511,9 @@
 		"LABEL_CLOSE_COMPOSE": "Loka ritli"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Rangt tákn",
 		"AUTH_ERROR": "Auðkenning mistókst",
 		"CONNECTION_ERROR": "Get ekki tengst á netþjón",

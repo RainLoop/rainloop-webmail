@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Telefone",
 		"LABEL_WEB": "Web",
 		"LABEL_BIRTHDAY": "Aniversário",
-		"LINK_ADD_EMAIL": "Adicionar um endereço e-mail",
-		"LINK_ADD_PHONE": "Adicionar um telefone",
 		"LINK_BIRTHDAY": "Aniversário",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Digite o nome de exibição",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Digite o sobrenome",
@@ -513,6 +511,9 @@
 		"LABEL_CLOSE_COMPOSE": "Fechar composição"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Senha inválida",
 		"AUTH_ERROR": "Falha na autenticação",
 		"CONNECTION_ERROR": "Não foi possível conectar-se ao servidor",

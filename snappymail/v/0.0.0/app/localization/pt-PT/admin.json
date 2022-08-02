@@ -105,7 +105,7 @@
 		"LABEL_ALL_RIGHTS_RESERVED": "Todos os direitos reservados.",
 		"HINT_READ_CHANGE_LOG": "Por favor leia a lista de modificações antes de atualizar.",
 		"HINT_IS_UP_TO_DATE": "SnappyMail está atualizado.",
-		"HTML_NEW_VERSION": "Nova versão <b>%VERSION%</b> está disponível.",
+		"HTML_NEW_VERSION": "Nova versão <b>%VERSION%<\/b> está disponível.",
 		"LABEL_UPDATING": "A atualizar",
 		"LABEL_CHECKING": "A procurar atualizações",
 		"BUTTON_RELEASES": "Lançamentos"
@@ -166,6 +166,9 @@
 		"UNKNOWN_ERROR": "Erro desconhecido"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Token inválido",
 		"AUTH_ERROR": "Falha na autenticação",
 		"DOMAIN_ALREADY_EXISTS": "O domínio já existe",

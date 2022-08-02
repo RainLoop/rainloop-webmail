@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Телефон",
 		"LABEL_WEB": "Сайт",
 		"LABEL_BIRTHDAY": "День рождения",
-		"LINK_ADD_EMAIL": "Добавьте адрес электронной почты",
-		"LINK_ADD_PHONE": "Добавьте телефон",
 		"LINK_BIRTHDAY": "День рождения",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Введите полное имя",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Введите имя",
@@ -513,6 +511,9 @@
 		"LABEL_CLOSE_COMPOSE": "Закрыть сообщение"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Неверный токен запроса",
 		"AUTH_ERROR": "Не удалось авторизоваться",
 		"CONNECTION_ERROR": "Ошибка соединения с сервером.",

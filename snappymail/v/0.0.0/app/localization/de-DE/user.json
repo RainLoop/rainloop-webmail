@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Telefon",
 		"LABEL_WEB": "Web",
 		"LABEL_BIRTHDAY": "Geburtstag",
-		"LINK_ADD_EMAIL": "E-Mail-Adresse hinzufügen",
-		"LINK_ADD_PHONE": "Nummer hinzufügen",
 		"LINK_BIRTHDAY": "Geburtstag",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Anzeigename eingeben",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Nachnamen eingeben",
@@ -513,6 +511,9 @@
 		"LABEL_CLOSE_COMPOSE": "Popup schließen"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Ungültiger Token",
 		"AUTH_ERROR": "Authentifizierung fehlgeschlagen",
 		"CONNECTION_ERROR": "Serververbindung kann nicht hergestellt werden",

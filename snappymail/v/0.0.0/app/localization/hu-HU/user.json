@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Telefonszám",
 		"LABEL_WEB": "Web",
 		"LABEL_BIRTHDAY": "Születésnap",
-		"LINK_ADD_EMAIL": "Adj meg egy e-mail címet",
-		"LINK_ADD_PHONE": "Adj meg egy telefonszámot",
 		"LINK_BIRTHDAY": "Születésnap",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Add meg a megjelenítendő nevet",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Add meg a vezetéknevet",
@@ -513,6 +511,9 @@
 		"LABEL_CLOSE_COMPOSE": "Levélírás bezárása"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Érvénytelen kulcs",
 		"AUTH_ERROR": "Érvénytelen hitelesítés",
 		"CONNECTION_ERROR": "Nem lehet kapcsolódni a szerverhez",

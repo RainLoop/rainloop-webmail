@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "تلفن",
 		"LABEL_WEB": "تارنما",
 		"LABEL_BIRTHDAY": "تاریخ تولد",
-		"LINK_ADD_EMAIL": "اضافه کردن آدرس پست الکترونیک",
-		"LINK_ADD_PHONE": "اضافه کردن تلفن",
 		"LINK_BIRTHDAY": "تاریخ تولد",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "ورود نام",
 		"PLACEHOLDER_ENTER_LAST_NAME": "ورود نام خانوادگی",
@@ -513,6 +511,9 @@
 		"LABEL_CLOSE_COMPOSE": "بستن صفحه ایجاد"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "توکن نامعتبر",
 		"AUTH_ERROR": "احراز هویت با موفقیت همراه نبود",
 		"CONNECTION_ERROR": "عدم اتصال به سرور",

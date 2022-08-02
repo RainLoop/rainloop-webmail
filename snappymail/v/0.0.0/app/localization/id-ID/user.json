@@ -185,8 +185,6 @@
 		"LABEL_PHONE": "Telepon",
 		"LABEL_WEB": "Web",
 		"LABEL_BIRTHDAY": "Tanggal lahir",
-		"LINK_ADD_EMAIL": "Tambah alamat email",
-		"LINK_ADD_PHONE": "Tambah telepon",
 		"LINK_BIRTHDAY": "Tanggal lahir",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Isi nama tampilan",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Isi nama belakang ",
@@ -513,6 +511,9 @@
 		"LABEL_CLOSE_COMPOSE": "Tutup buat pesan"
 	},
 	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ABORTED": "Request is aborted",
+		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Token tidak sah",
 		"AUTH_ERROR": "Otentikasi gagal",
 		"CONNECTION_ERROR": "Tidak terhubung ke server",
