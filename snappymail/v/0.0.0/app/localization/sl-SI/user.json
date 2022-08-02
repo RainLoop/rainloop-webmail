@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Navadno besedilo",
 		"LABEL_VIEW_OPTIONS": "Možnosti ogleda",
 		"LABEL_USE_PREVIEW_PANE": "Uporabi polje za predogled",
+		"HIDE_DELETED_MESSAGES": "Skrij sporočila, označena za brisanje",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Na seznamu pokaži kvadratke za izbor",
 		"LABEL_USE_THREADS": "Uporabi niti",
 		"LABEL_REPLY_SAME_FOLDER": "Shrani odgovore v mapo sporočila, na katerega se odgovarja",

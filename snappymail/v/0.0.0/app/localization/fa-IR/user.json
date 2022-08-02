@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "ساده",
 		"LABEL_VIEW_OPTIONS": "مشاهده گزینه‌ها",
 		"LABEL_USE_PREVIEW_PANE": "استفاده از پنجره پیش‌نمایش",
+		"HIDE_DELETED_MESSAGES": "پنهان کردن پیام های علامت گذاری شده برای حذف",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "نمایش چک‌باکس در لیست",
 		"LABEL_USE_THREADS": "استفاده از حالت موضوعی",
 		"LABEL_REPLY_SAME_FOLDER": " جوابها را در پوشه‌ای که پیامها در آن جواب داده شده است قراردهید",

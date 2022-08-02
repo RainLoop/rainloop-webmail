@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Unformatierter Text",
 		"LABEL_VIEW_OPTIONS": "Optionen anzeigen",
 		"LABEL_USE_PREVIEW_PANE": "Vorschaufenster nutzen",
+		"HIDE_DELETED_MESSAGES": "Zum Löschen markierte Nachrichten ausblenden",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Kontrollkästchen in der Liste anzeigen",
 		"LABEL_USE_THREADS": "Als Unterhaltungen anzeigen",
 		"LABEL_REPLY_SAME_FOLDER": "Antworten im gleichen Ordner wie die Nachricht, auf die geantwortet wurde, abspeichern",

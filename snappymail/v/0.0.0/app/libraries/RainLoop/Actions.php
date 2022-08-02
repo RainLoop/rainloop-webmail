@@ -736,6 +736,7 @@ class Actions
 			'ReplySameFolder' => (bool) $oConfig->Get('defaults', 'mail_reply_same_folder', false),
 			'ContactsAutosave' => (bool) $oConfig->Get('defaults', 'contacts_autosave', true),
 			'HideUnsubscribed' => false,
+			'HideDeleted' => true,
 			'MainEmail' => '',
 			'UserBackgroundName' => '',
 			'UserBackgroundHash' => ''
@@ -834,6 +835,7 @@ class Actions
 					$aResult['HideUnsubscribed'] = (bool)$oSettingsLocal->GetConf('HideUnsubscribed', $aResult['HideUnsubscribed']);
 					$aResult['UseThreads'] = (bool)$oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
 					$aResult['ReplySameFolder'] = (bool)$oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
+					$aResult['HideDeleted'] = (bool)$oSettingsLocal->GetConf('HideDeleted', $aResult['HideDeleted']);
 				}
 
 				if ($oConfig->Get('login', 'determine_user_language', true)) {

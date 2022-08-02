@@ -61,7 +61,7 @@ trait Messages
 			throw new ClientException(Notifications::CantGetMessageList);
 		}
 
-		$this->initMailClientConnection();
+		$oAccount = $this->initMailClientConnection();
 
 		try
 		{
@@ -71,6 +71,11 @@ trait Messages
 
 			$oParams->oCacher = $this->cacherForUids();
 			$oParams->bUseSortIfSupported = !!$this->Config()->Get('labs', 'use_imap_sort', true);
+
+			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
+			if ($oSettingsLocal instanceof \RainLoop\Settings) {
+				$oParams->bHideDeleted = empty($oSettingsLocal->GetConf('HideDeleted', 1));
+			}
 
 			$oMessageList = $this->MailClient()->MessageList($oParams);
 		}

@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Plain",
 		"LABEL_VIEW_OPTIONS": "View options",
 		"LABEL_USE_PREVIEW_PANE": "Use preview pane",
+		"HIDE_DELETED_MESSAGES": "Hide messages marked for deletion",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Display checkboxes in list",
 		"LABEL_USE_THREADS": "Use threads",
 		"LABEL_REPLY_SAME_FOLDER": "Place replies in the folder of the message being replied to",

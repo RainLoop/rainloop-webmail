@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Egyszerű",
 		"LABEL_VIEW_OPTIONS": "Nézet beállítások",
 		"LABEL_USE_PREVIEW_PANE": "Előnézeti ablak használata",
+		"HIDE_DELETED_MESSAGES": "A törlésre megjelölt üzenetek elrejtése",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Jelölőnégyzetek megjelenítése a listában",
 		"LABEL_USE_THREADS": "Szálak használata",
 		"LABEL_REPLY_SAME_FOLDER": "Válaszüzenetek elhelyezése az eredeti üzenet mappájában",

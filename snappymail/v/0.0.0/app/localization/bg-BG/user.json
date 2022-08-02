@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Чист текст",
 		"LABEL_VIEW_OPTIONS": "Настройки на изгледа",
 		"LABEL_USE_PREVIEW_PANE": "Използвай поле за преглед",
+		"HIDE_DELETED_MESSAGES": "Скриване на съобщенията, маркирани за изтриване",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Показавай отметките в списъка",
 		"LABEL_USE_THREADS": "Използвай групиране на съобщенията",
 		"LABEL_REPLY_SAME_FOLDER": "Постави отговорите с папката на отговаряното съобщение",

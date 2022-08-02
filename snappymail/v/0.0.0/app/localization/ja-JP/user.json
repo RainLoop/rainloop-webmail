@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "プレーンテキスト",
 		"LABEL_VIEW_OPTIONS": "表示",
 		"LABEL_USE_PREVIEW_PANE": "プレビューペインを使用する",
+		"HIDE_DELETED_MESSAGES": "削除のマークが付いたメッセージを非表示にする",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "リストにチェックボックスを表示",
 		"LABEL_USE_THREADS": "スレッドを使う",
 		"LABEL_REPLY_SAME_FOLDER": "返信したメッセージのフォルダに送信メールを置く",

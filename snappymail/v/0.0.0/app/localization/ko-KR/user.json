@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "평문",
 		"LABEL_VIEW_OPTIONS": "보기 옵션",
 		"LABEL_USE_PREVIEW_PANE": "미리보기 창 사용",
+		"HIDE_DELETED_MESSAGES": "삭제 표시된 메시지 숨기기",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "목록에서 확인상자 표시",
 		"LABEL_USE_THREADS": "대화형 목록 사용",
 		"LABEL_REPLY_SAME_FOLDER": "회신 메시지를 원본과 동일한 폴더 위치에 저장",

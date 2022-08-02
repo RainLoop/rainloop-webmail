@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "zwykły tekst",
 		"LABEL_VIEW_OPTIONS": "Opcje wyświetlania",
 		"LABEL_USE_PREVIEW_PANE": "Wyświetl okno podglądu",
+		"HIDE_DELETED_MESSAGES": "Ukryj wiadomości oznaczone do usunięcia",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Pokazuj pola zaznaczenia na listach",
 		"LABEL_USE_THREADS": "Używaj wątków",
 		"LABEL_REPLY_SAME_FOLDER": "Umieść odpowiedzi w folderach, z których pochodzą wiadomości",

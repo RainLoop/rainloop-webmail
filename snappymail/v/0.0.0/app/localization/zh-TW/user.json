@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Plain",
 		"LABEL_VIEW_OPTIONS": "視圖選項",
 		"LABEL_USE_PREVIEW_PANE": "使用預覽",
+		"HIDE_DELETED_MESSAGES": "隐藏标记为删除的邮件",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "清單中顯示多選框",
 		"LABEL_USE_THREADS": "使用對話",
 		"LABEL_REPLY_SAME_FOLDER": "將回復的郵件放置到其回復的郵件所在資料夾",

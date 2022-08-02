@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Απλό",
 		"LABEL_VIEW_OPTIONS": "Επιλογές προβολής",
 		"LABEL_USE_PREVIEW_PANE": "Χρήση προεπισκόπησης ",
+		"HIDE_DELETED_MESSAGES": "Απόκρυψη μηνυμάτων που έχουν επισημανθεί για διαγραφή",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Εμφάνιση των κουτιών επιλογής σε λίστα",
 		"LABEL_USE_THREADS": "Χρήση νημάτων",
 		"LABEL_REPLY_SAME_FOLDER": "Τοποθέτηση απαντήσεων στο φάκελο που ανήκει το μήνυμα που απαντάται",

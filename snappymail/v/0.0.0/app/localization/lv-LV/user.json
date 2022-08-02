@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Teksts",
 		"LABEL_VIEW_OPTIONS": "Apskates opcijas",
 		"LABEL_USE_PREVIEW_PANE": "Lietot priekšskatu",
+		"HIDE_DELETED_MESSAGES": "Slēpt ziņojumus, kas atzīmēti dzēšanai",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Rādīt checkboxes sarakstā",
 		"LABEL_USE_THREADS": "Lietot saraksti",
 		"LABEL_REPLY_SAME_FOLDER": "Atbildes ziņojumus ielikt mapē kurā atrodas vēstule uz kuru tiek atbildēts.",

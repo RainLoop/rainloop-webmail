@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Pelkkä teksti",
 		"LABEL_VIEW_OPTIONS": "Näyttö-valinnat",
 		"LABEL_USE_PREVIEW_PANE": "Käytä esikatselua",
+		"HIDE_DELETED_MESSAGES": "Piilota poistettavaksi merkityt viestit",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Näytä valintaruudut listassa",
 		"LABEL_USE_THREADS": "Käytä keskustelunäkymää",
 		"LABEL_REPLY_SAME_FOLDER": "Siirrä vastaukset samaan kansioon vastattavien kanssa",

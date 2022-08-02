@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Texto plano",
 		"LABEL_VIEW_OPTIONS": "Ver opciones",
 		"LABEL_USE_PREVIEW_PANE": "Utilice el panel de vista previa",
+		"HIDE_DELETED_MESSAGES": "Ocultar mensajes marcados para borrar",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Mostrar casillas de verificación en la lista",
 		"LABEL_USE_THREADS": "Usar hilos de conversación",
 		"LABEL_REPLY_SAME_FOLDER": "Coloque las respuestas en la carpeta del mensaje que esta respondiendo.",

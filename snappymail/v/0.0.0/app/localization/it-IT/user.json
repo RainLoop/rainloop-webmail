@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Testo semplice",
 		"LABEL_VIEW_OPTIONS": "Impostazioni di visualizzazione",
 		"LABEL_USE_PREVIEW_PANE": "Mostra l'anteprima del messaggio",
+		"HIDE_DELETED_MESSAGES": "Nascondi i messaggi contrassegnati per l'eliminazione",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Mostra le caselle di spunta nella lista",
 		"LABEL_USE_THREADS": "Usa le conversazioni",
 		"LABEL_REPLY_SAME_FOLDER": "Posiziona le risposte nella cartella del messaggio a cui si è risposto",

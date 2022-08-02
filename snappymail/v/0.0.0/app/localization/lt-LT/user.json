@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Paprastas",
 		"LABEL_VIEW_OPTIONS": "Peržiūros parinktys",
 		"LABEL_USE_PREVIEW_PANE": "Naudokite peržiūros sritį",
+		"HIDE_DELETED_MESSAGES": "Slėpti pranešimus, pažymėtus ištrinti",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Rodyti žymėjimo langelius sąraše",
 		"LABEL_USE_THREADS": "Naudoti gijas",
 		"LABEL_REPLY_SAME_FOLDER": "Atsakymus dėti į katalogą, kuriame yra pradinė žinutė",

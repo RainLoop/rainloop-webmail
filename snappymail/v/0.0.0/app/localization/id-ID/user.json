@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Polos",
 		"LABEL_VIEW_OPTIONS": "Tampilkan Opsi",
 		"LABEL_USE_PREVIEW_PANE": "Gunakan panel pratinjau",
+		"HIDE_DELETED_MESSAGES": "Sembunyikan pesan yang ditandai untuk dihapus",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Tampilkan centang dalam daftar",
 		"LABEL_USE_THREADS": "Gunakan tread",
 		"LABEL_REPLY_SAME_FOLDER": "Tempatkan pesan balasan di folder pesan yang dibalas",

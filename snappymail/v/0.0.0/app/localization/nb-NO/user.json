@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Ren tekst",
 		"LABEL_VIEW_OPTIONS": "Vis valg",
 		"LABEL_USE_PREVIEW_PANE": "Bruk forhåndsvisningsrute",
+		"HIDE_DELETED_MESSAGES": "Skjul meldinger som er merket for sletting",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Vis avkrysningsbokser i liste",
 		"LABEL_USE_THREADS": "Bruk tråder",
 		"LABEL_REPLY_SAME_FOLDER": "Legg svar i samme mappe som opprinnelig melding",

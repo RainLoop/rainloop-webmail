@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Простий",
 		"LABEL_VIEW_OPTIONS": "Відображення",
 		"LABEL_USE_PREVIEW_PANE": "Використовувати трьохколонний режим відображення",
+		"HIDE_DELETED_MESSAGES": "Приховати повідомлення, позначені для видалення",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Показувати чекбокси у списках",
 		"LABEL_USE_THREADS": "Згортати листи у листуваннях",
 		"LABEL_REPLY_SAME_FOLDER": "Поміщати відповіді в ту ж теку, де знаходиться оригінал",

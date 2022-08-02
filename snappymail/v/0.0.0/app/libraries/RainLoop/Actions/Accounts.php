@@ -159,6 +159,7 @@ trait Accounts
 				$aResult['HideUnsubscribed'] = (bool) $oSettingsLocal->GetConf('HideUnsubscribed', false);
 				$aResult['UseThreads'] = (bool) $oSettingsLocal->GetConf('UseThreads', $oConfig->Get('defaults', 'mail_use_threads', false));
 				$aResult['ReplySameFolder'] = (bool) $oSettingsLocal->GetConf('ReplySameFolder', $oConfig->Get('defaults', 'mail_reply_same_folder', false));
+				$aResult['HideDeleted'] = (bool) $oSettingsLocal->GetConf('HideDeleted', true);
 			}
 //			$this->Plugins()->InitAppData($bAdmin, $aResult, $oAccount);
 

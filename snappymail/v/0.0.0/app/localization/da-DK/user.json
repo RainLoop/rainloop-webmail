@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Plain",
 		"LABEL_VIEW_OPTIONS": "Visningsindstillinger",
 		"LABEL_USE_PREVIEW_PANE": "Brug preview panel",
+		"HIDE_DELETED_MESSAGES": "Skjul beskeder, der er markeret til sletning",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Vis afkrydsningsfelt i oversigten",
 		"LABEL_USE_THREADS": "Brug samtaler",
 		"LABEL_REPLY_SAME_FOLDER": "Placer svar i samme mappe som oprindelig meddelelse",

@@ -392,6 +392,7 @@
 		"LABEL_EDITOR_PLAIN": "Text",
 		"LABEL_VIEW_OPTIONS": "Možnosti zobrazení",
 		"LABEL_USE_PREVIEW_PANE": "Používáte panel rychlého zobrazení",
+		"HIDE_DELETED_MESSAGES": "Skrýt zprávy označené ke smazání",
 		"LABEL_USE_CHECKBOXES_IN_LIST": "Zobrazení zaškrtávacích políček v seznamu",
 		"LABEL_USE_THREADS": "Zobrazit jako konverzace",
 		"LABEL_REPLY_SAME_FOLDER": "Ukládat odpovědi do složky se zprávou, které se týkají",
