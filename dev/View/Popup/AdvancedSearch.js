@@ -16,6 +16,7 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 			to: '',
 			subject: '',
 			text: '',
+			repliedValue: -1,
 			selectedDateValue: -1,
 			selectedTreeValue: '',
 
@@ -26,9 +27,18 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 
 		this.showMultisearch = koComputable(() => FolderUserStore.hasCapability('MULTISEARCH'));
 
+		this.repliedOptions = koComputable(() => {
+			translatorTrigger();
+			return [
+				{ id: -1, name: '' },
+				{ id: 1, name: i18n('GLOBAL/YES') },
+				{ id: 0, name: i18n('GLOBAL/NO') }
+			];
+		});
+
 		this.selectedDates = koComputable(() => {
 			translatorTrigger();
-			let prefix = 'SEARCH/LABEL_ADV_DATE_';
+			let prefix = 'SEARCH/LABEL_DATE_';
 			return [
 				{ id: -1, name: i18n(prefix + 'ALL') },
 				{ id: 3, name: i18n(prefix + '3_DAYS') },
@@ -42,7 +52,7 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 
 		this.selectedTree = koComputable(() => {
 			translatorTrigger();
-			let prefix = 'SEARCH/LABEL_ADV_SUBFOLDERS_';
+			let prefix = 'SEARCH/LABEL_SUBFOLDERS_';
 			return [
 				{ id: '', name: i18n(prefix + 'NONE') },
 				{ id: 'subtree-one', name: i18n(prefix + 'SUBTREE_ONE') },
@@ -105,6 +115,12 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 		if (this.starred()) {
 			result += '&flagged';
 		}
+		if (1 == this.repliedValue()) {
+			result += '&answered';
+		}
+		if (0 == this.repliedValue()) {
+			result += '&unanswered';
+		}
 
 		return result.replace(/^&+/, '');
 	}
@@ -115,6 +131,7 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 		this.subject('');
 		this.text('');
 
+		this.repliedValue(-1);
 		this.selectedDateValue(-1);
 		this.hasAttachment(false);
 		this.starred(false);

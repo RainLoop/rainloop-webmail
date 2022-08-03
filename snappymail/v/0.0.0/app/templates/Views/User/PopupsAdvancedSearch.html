@@ -21,14 +21,14 @@
 					data-bind="value: subject">
 			</div>
 			<div class="control-group">
-				<label data-i18n="SEARCH/LABEL_ADV_TEXT"></label>
+				<label data-i18n="SEARCH/LABEL_TEXT"></label>
 				<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 					data-bind="value: text">
 			</div>
 		</div>
 		<div class="span4">
 			<div class="control-group">
-				<label data-i18n="SEARCH/LABEL_ADV_DATE"></label>
+				<label data-i18n="SEARCH/LABEL_DATE"></label>
 				<div data-bind="component: {
 					name: 'Select',
 					params: {
@@ -39,9 +39,21 @@
 					}
 				}"></div>
 			</div>
+			<div class="control-group">
+				<label data-i18n="SEARCH/LABEL_REPLIED"></label>
+				<div data-bind="component: {
+					name: 'Select',
+					params: {
+						options: repliedOptions,
+						value: repliedValue,
+						optionsText: 'name',
+						optionsValue: 'id'
+					}
+				}"></div>
+			</div>
 			<!-- ko if: showMultisearch -->
 			<div class="control-group">
-				<label data-i18n="SEARCH/LABEL_ADV_SUBFOLDERS"></label>
+				<label data-i18n="SEARCH/LABEL_SUBFOLDERS"></label>
 				<div data-bind="component: {
 					name: 'Select',
 					params: {
@@ -59,21 +71,21 @@
 					<div data-bind="component: {
 						name: 'Checkbox',
 						params: {
-							label: 'SEARCH/LABEL_ADV_UNSEEN',
+							label: 'SEARCH/LABEL_UNSEEN',
 							value: unseen
 						}
 					}"></div>
 					<div data-bind="component: {
 						name: 'Checkbox',
 						params: {
-							label: 'SEARCH/LABEL_ADV_FLAGGED',
+							label: 'SEARCH/LABEL_FLAGGED',
 							value: starred
 						}
 					}"></div>
 					<div data-bind="component: {
 						name: 'Checkbox',
 						params: {
-							label: 'SEARCH/LABEL_ADV_HAS_ATTACHMENT',
+							label: 'SEARCH/LABEL_HAS_ATTACHMENT',
 							value: hasAttachment
 						}
 					}"></div>

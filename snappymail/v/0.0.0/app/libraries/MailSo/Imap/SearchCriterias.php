@@ -116,8 +116,8 @@ abstract class SearchCriterias
 		✔ UNFLAGGED
 		✔ SEEN
 		✔ UNSEEN
-		☐ ANSWERED
-		☐ UNANSWERED
+		✔ ANSWERED
+		✔ UNANSWERED
 		☐ DELETED
 		☐ UNDELETED
 		☐ DRAFT
