@@ -387,7 +387,7 @@ abstract class SearchCriterias
 		$aCache = array();
 
 		$sSearch = \MailSo\Base\Utils::StripSpaces($sSearch);
-		$sSearch = \trim(\preg_replace('/('.static::RegEx.'): /i', '\\1:', $sSearch));
+		$sSearch = \trim(\preg_replace('/('.static::RegEx.'):\\s+/i', '\\1:', $sSearch));
 
 		$mMatch = array();
 		if (\preg_match_all('/".*?(?<!\\\)"/', $sSearch, $mMatch)) {
@@ -414,7 +414,7 @@ abstract class SearchCriterias
 			}
 		}
 
-		if (\preg_match_all('/('.static::RegEx.'):([^\s]*)/i', $sSearch, $mMatch)) {
+		if (\preg_match_all('/('.static::RegEx.'):([^\\s]*)/i', $sSearch, $mMatch)) {
 			if (\is_array($mMatch[0])) {
 				foreach ($mMatch[0] as $sToken) {
 					$sSearch = \str_replace($sToken, '', $sSearch);
