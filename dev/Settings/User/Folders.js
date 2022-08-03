@@ -1,5 +1,4 @@
 import ko from 'ko';
-import { koComputable } from 'External/ko';
 
 import { Notification } from 'Common/Enums';
 import { FolderMetadataKeys } from 'Common/EnumsUser';
@@ -48,14 +47,7 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 		this.folderListError = FolderUserStore.folderListError;
 		this.hideUnsubscribed = SettingsUserStore.hideUnsubscribed;
 
-		this.loading = koComputable(() => {
-			const loading = FolderUserStore.foldersLoading(),
-				creating = FolderUserStore.foldersCreating(),
-				deleting = FolderUserStore.foldersDeleting(),
-				renaming = FolderUserStore.foldersRenaming();
-
-			return loading || creating || deleting || renaming;
-		});
+		this.loading = FolderUserStore.foldersChanging;
 
 		this.folderForDeletion = folderForDeletion;
 

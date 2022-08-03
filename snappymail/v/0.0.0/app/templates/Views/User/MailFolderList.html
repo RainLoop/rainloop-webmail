@@ -7,7 +7,7 @@
 		<a class="btn buttonContacts fontastic" data-bind="visible: allowContacts, click: contactsClick" data-i18n="[title]GLOBAL/CONTACTS">📇</a>
 	</div>
 	<div class="b-content">
-		<ul class="b-folders-system" data-bind="foreach: folderListSystem">
+		<ul class="b-folders-system" data-bind="foreach: systemFolders">
 			<li>
 				<a data-bind="dropmessages: $data,
 					css: { 'selected': selected, 'selectable': selectable, 'anim-action-class': actionBlink, 'is-flagged': isFlagged },
@@ -32,7 +32,7 @@
 		</div>
 		<div class="btn-group hide-on-panel-disabled">
 			<a class="btn" data-bind="click: createFolder" data-i18n="[title]POPUPS_CREATE_FOLDER/TITLE_CREATE_FOLDER">
-				<i data-bind="css: {'icon-folder-add': !foldersChanging(), 'icon-spinner': foldersChanging()}"></i>
+				<i class="icon-folder-add"></i>
 			</a>
 			<a class="btn fontastic" data-bind="click: configureFolders">⚙</a>
 		</div>

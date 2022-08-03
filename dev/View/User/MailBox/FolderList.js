@@ -31,9 +31,7 @@ export class MailFolderList extends AbstractViewLeft {
 
 		this.composeInEdit = AppUserStore.composeInEdit;
 
-		this.folderList = FolderUserStore.folderList;
-		this.folderListSystem = FolderUserStore.folderListSystem;
-		this.foldersChanging = FolderUserStore.foldersChanging;
+		this.systemFolders = FolderUserStore.systemFolders;
 
 		this.moveAction = moveAction;
 

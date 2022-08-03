@@ -19,7 +19,7 @@ export class FolderSystemPopupView extends AbstractViewPopup {
 
 		this.folderSelectList = koComputable(() =>
 			folderListOptionsBuilder(
-				FolderUserStore.folderListSystemNames(),
+				FolderUserStore.systemFoldersNames(),
 				[
 					['', i18n('POPUPS_SYSTEM_FOLDERS/SELECT_CHOOSE_ONE')],
 					[UNUSED_OPTION_VALUE, i18n('POPUPS_SYSTEM_FOLDERS/SELECT_UNUSE_NAME')]

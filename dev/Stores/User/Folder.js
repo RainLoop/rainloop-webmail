@@ -64,7 +64,7 @@ export const FolderUserStore = new class {
 			foldersChanging: () =>
 				self.foldersLoading() | self.foldersCreating() | self.foldersDeleting() | self.foldersRenaming(),
 
-			folderListSystemNames: () => {
+			systemFoldersNames: () => {
 				const list = [getFolderInboxName()],
 				others = [self.sentFolder(), self.draftsFolder(), self.spamFolder(), self.trashFolder(), self.archiveFolder()];
 
@@ -74,8 +74,8 @@ export const FolderUserStore = new class {
 				return list;
 			},
 
-			folderListSystem: () =>
-				self.folderListSystemNames().map(name => getFolderFromCacheList(name)).filter(v => v)
+			systemFolders: () =>
+				self.systemFoldersNames().map(name => getFolderFromCacheList(name)).filter(v => v)
 		});
 
 		const
