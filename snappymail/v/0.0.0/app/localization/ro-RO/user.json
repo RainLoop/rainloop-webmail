@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Răspuns"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Toggle fullscreen",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Nu am găsit nimic.",
 		"SEARCH_RESULT_FOR": "Rezultat căutare \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "înapoi la lista de mesaje",
-		"EMPTY_SUBJECT_TEXT": "(nici un subiect)",
 		"PUT_MESSAGE_HERE": "EROARE! CONTACTAȚI ADIMISTRATORUL! (trimiteți un prt.scr)",
 		"TODAY_AT": "azi %TIME%",
 		"YESTERDAY_AT": "ieri %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Request a delivery receipt"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Da",
-		"BUTTON_NO": "Nu",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Sigur doriți să închideți această fereastră?",
 		"DESC_WANT_DELETE_MESSAGES": "Sigur doriți să ștergeți mesajul(e)?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Addressbook URL",
 		"LABEL_CONTACTS_SYNC_USER": "User",
-		"SYNC_NO": "Nu",
-		"SYNC_YES": "Da",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

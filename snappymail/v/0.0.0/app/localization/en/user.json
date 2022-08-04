@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Answered"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Toggle fullscreen",
@@ -226,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Request a delivery receipt"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Yes",
-		"BUTTON_NO": "No",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Are you sure you want to close this window?",
 		"DESC_WANT_DELETE_MESSAGES": "Are you sure you want to delete the message(s)?"
 	},
@@ -417,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Addressbook URL",
 		"LABEL_CONTACTS_SYNC_USER": "User",
-		"SYNC_NO": "No",
-		"SYNC_YES": "Yes",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "Alle",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "Ett nivå",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Besvart"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Fullskjerm av\/på",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Søket ga ingen treff.",
 		"SEARCH_RESULT_FOR": "Søketreff for «%SEARCH%»",
 		"BACK_TO_MESSAGE_LIST": "tilbake til meldingsliste",
-		"EMPTY_SUBJECT_TEXT": "(uten emne)",
 		"PUT_MESSAGE_HERE": "Dra en melding hit for å vise den i lista",
 		"TODAY_AT": "i dag, %TIME%",
 		"YESTERDAY_AT": "i går, %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Be om leveringsbekreftelse"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Ja",
-		"BUTTON_NO": "Nei",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Er du sikker på at du vil lukke dette vinduet?",
 		"DESC_WANT_DELETE_MESSAGES": "Er du sikker på at du vil slette meldingen(e)?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Tjener",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Nettadresse til adressebok",
 		"LABEL_CONTACTS_SYNC_USER": "Bruker",
-		"SYNC_NO": "Nei",
-		"SYNC_YES": "Ja",
 		"SYNC_READ": "Skrivebeskyttet"
 	},
 	"SETTINGS_THEMES": {

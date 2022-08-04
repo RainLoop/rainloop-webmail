@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "أجاب"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "إعداد افتراضي لوضع ملء الشاشة",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "ليست هناك أية رسائل تطابق بحثك.",
 		"SEARCH_RESULT_FOR": "نتيجة البحث لـ \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "العودة الى قائمة الرسائل",
-		"EMPTY_SUBJECT_TEXT": "(لايوجدموضوع)",
 		"PUT_MESSAGE_HERE": "حرك الرسالة الى هنا.. لكي تراها في قائمة الرسائل",
 		"TODAY_AT": "اليوم عند  %TIME%",
 		"YESTERDAY_AT": "البارحة عند  %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "اطلب اعلاماً بايصال البريد"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "نعم",
-		"BUTTON_NO": "لا",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "هل أنت متأكد من رغبتك باغلاق هذه النافذة؟",
 		"DESC_WANT_DELETE_MESSAGES": "هل أنت متأكد من رغبتك بحذف هذه الرسائل؟"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "المخدم",
 		"LABEL_CONTACTS_SYNC_AB_URL": "وصلة دفتر العناوين",
 		"LABEL_CONTACTS_SYNC_USER": "المستخدم",
-		"SYNC_NO": "لا",
-		"SYNC_YES": "نعم",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

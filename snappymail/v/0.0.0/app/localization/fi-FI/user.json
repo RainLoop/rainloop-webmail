@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Vastattu"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Koko ruutu",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Yhtään viestiä ei löytynyt ehdoillasi.",
 		"SEARCH_RESULT_FOR": "Hakutulokset haulle \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "Takaisin viestilistaan",
-		"EMPTY_SUBJECT_TEXT": "(Ei aihetta)",
 		"PUT_MESSAGE_HERE": "Pudota viesti tähän nähdäksesi sen listassa",
 		"TODAY_AT": "tänään klo %TIME%",
 		"YESTERDAY_AT": "eilen klo %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Pyydä toimituskuittaus"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Kyllä",
-		"BUTTON_NO": "Ei",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Haluatko varmasti sulkea tämän ikkunan?",
 		"DESC_WANT_DELETE_MESSAGES": "Haluatko varmasti poistaa viestin\/viestit?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Palvelin",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Osoitekirjan URL",
 		"LABEL_CONTACTS_SYNC_USER": "Käyttäjä",
-		"SYNC_NO": "Ei",
-		"SYNC_YES": "Kyllä",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

@@ -16,13 +16,12 @@ export class UserSettingsContacts /*extends AbstractViewSettings*/ {
 		this.syncUser = ContactUserStore.syncUser;
 		this.syncPass = ContactUserStore.syncPass;
 
-		const i18nSyncMode = key => i18n('SETTINGS_CONTACTS/SYNC_' + key);
 		this.syncModeOptions = koComputable(() => {
 			translatorTrigger();
 			return [
-				{ id: 0, name: i18nSyncMode('NO') },
-				{ id: 1, name: i18nSyncMode('YES') },
-				{ id: 2, name: i18nSyncMode('READ') },
+				{ id: 0, name: i18n('GLOBAL/NO') },
+				{ id: 1, name: i18n('GLOBAL/YES') },
+				{ id: 2, name: i18n('SETTINGS_CONTACTS/SYNC_READ') },
 			];
 		});
 

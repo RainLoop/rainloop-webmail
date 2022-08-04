@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "Nessuna",
 		"LABEL_SUBFOLDERS_SUBTREE": "Tutte",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "Primo livello",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Risposto"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Passa a schermo intero",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Nessun messaggio corrisponde alla tua ricerca",
 		"SEARCH_RESULT_FOR": "Risultati di ricerca per \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "ritorna alla lista dei messaggi",
-		"EMPTY_SUBJECT_TEXT": "(Nessun oggetto)",
 		"PUT_MESSAGE_HERE": "Trascina il messaggio qui per vederlo nella lista",
 		"TODAY_AT": "oggi alle %TIME%",
 		"YESTERDAY_AT": "ieri alle %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Richiedi conferma del ricevimento"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Sì",
-		"BUTTON_NO": "No",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Sei sicuro di voler chiudere questa finestra?",
 		"DESC_WANT_DELETE_MESSAGES": "Sei sicuro di voler eliminare il messaggio?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Indirizzo della rubrica",
 		"LABEL_CONTACTS_SYNC_USER": "Utente",
-		"SYNC_NO": "No",
-		"SYNC_YES": "Sì",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Svarað"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Víxla heilskjá af\/á",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Engin skilaboð stemmdu við leitina þína.",
 		"SEARCH_RESULT_FOR": "Leitarniðurstöður fyrir \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "til baka í skilaboðalista",
-		"EMPTY_SUBJECT_TEXT": "(Ekkert viðfangsefni)",
 		"PUT_MESSAGE_HERE": "Slepptu skilaboðum hér til að skoða það í listanum",
 		"TODAY_AT": "í dag kl. %TIME%",
 		"YESTERDAY_AT": "í gær kl. %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Biðja um staðfestingu á afhendingu"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Já",
-		"BUTTON_NO": "Nei",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Ertu viss um að þú viljir loka þessum glugga?",
 		"DESC_WANT_DELETE_MESSAGES": "Ertu viss um að þú viljir eyða skeytunum?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Þjónn",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Slóð á nafnaskrá",
 		"LABEL_CONTACTS_SYNC_USER": "Notandi",
-		"SYNC_NO": "Nei",
-		"SYNC_YES": "Já",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Odpovězeno"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Celá obrazovka",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Vašemu vyhledávání neodpovídají žádné zprávy.",
 		"SEARCH_RESULT_FOR": "Výsledky vyhledávání pro \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "Zpět na seznam zpráv",
-		"EMPTY_SUBJECT_TEXT": "(Bez předmětu)",
 		"PUT_MESSAGE_HERE": "Přesuňte zprávu sem pro její zobrazení v seznamu",
 		"TODAY_AT": "Dnes v %TIME%",
 		"YESTERDAY_AT": "Včera v %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Vyžádat si potvrzení o přijetí"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Ano",
-		"BUTTON_NO": "Ne",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Opravdu chcete zavřít toto okno?",
 		"DESC_WANT_DELETE_MESSAGES": "Opravdu chcete odstranit tyto zprávy?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "URL adresáře",
 		"LABEL_CONTACTS_SYNC_USER": "Uživatel",
-		"SYNC_NO": "Ne",
-		"SYNC_YES": "Ano",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "已回答"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Toggle fullscreen",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "未找到您想要的。",
 		"SEARCH_RESULT_FOR": "搜索 \"%SEARCH%\" 的結果",
 		"BACK_TO_MESSAGE_LIST": "back to message list",
-		"EMPTY_SUBJECT_TEXT": "(無主題)",
 		"PUT_MESSAGE_HERE": "在這裡查看郵件",
 		"TODAY_AT": "今日於 %TIME%",
 		"YESTERDAY_AT": "昨天 %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Request a delivery receipt"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "是",
-		"BUTTON_NO": "否",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "你確定要關閉此窗口嗎?",
 		"DESC_WANT_DELETE_MESSAGES": "你確定你要刪除這條消息嗎?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "伺服器",
 		"LABEL_CONTACTS_SYNC_AB_URL": "地址簿URL",
 		"LABEL_CONTACTS_SYNC_USER": "用戶名",
-		"SYNC_NO": "否",
-		"SYNC_YES": "是",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

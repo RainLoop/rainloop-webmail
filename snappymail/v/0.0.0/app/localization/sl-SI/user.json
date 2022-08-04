@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Odgovoril"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Preklopi celozaslonski pogled",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Brez ujemanj.",
 		"SEARCH_RESULT_FOR": "Ujemanja za \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "nazaj na seznam sporočil",
-		"EMPTY_SUBJECT_TEXT": "(Brez zadeve)",
 		"PUT_MESSAGE_HERE": "Spustite sporočilo tu za ogled na seznamu",
 		"TODAY_AT": "danes ob %TIME%",
 		"YESTERDAY_AT": "včeraj ob %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Zahtevaj potrdilo o dostavi"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Da",
-		"BUTTON_NO": "Ne",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Želite zapreti to okno?",
 		"DESC_WANT_DELETE_MESSAGES": "Želite izbrisati sporočilo\/-a?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Strežnik",
 		"LABEL_CONTACTS_SYNC_AB_URL": "URL imenika",
 		"LABEL_CONTACTS_SYNC_USER": "Uporabnik",
-		"SYNC_NO": "Ne",
-		"SYNC_YES": "Da",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

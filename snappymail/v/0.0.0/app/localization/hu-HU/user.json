@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Válaszolt"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Teljes képernyő váltása",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Nincs a keresésnek megfelelő levél.",
 		"SEARCH_RESULT_FOR": "Keresési eredmények ehhez: \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "vissza az üzenetlistához",
-		"EMPTY_SUBJECT_TEXT": "(Nincs tárgy)",
 		"PUT_MESSAGE_HERE": "Húzz ide egy üzenetet, hogy megjelenjen a listában",
 		"TODAY_AT": "ma ekkor: %TIME%",
 		"YESTERDAY_AT": "tegnap ekkor: %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Továbbítási visszaigazolás kérés"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Igen",
-		"BUTTON_NO": "Nem",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Biztos, hogy be akarod zárni ezt az ablakot?",
 		"DESC_WANT_DELETE_MESSAGES": "Biztos, hogy törölni akarod az üzenete(ke)t?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Szerver",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Címtár URL",
 		"LABEL_CONTACTS_SYNC_USER": "Felhasználó",
-		"SYNC_NO": "Nem",
-		"SYNC_YES": "Igen",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

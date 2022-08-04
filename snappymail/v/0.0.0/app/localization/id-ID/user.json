@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Dijawab"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Beralih ke layar penuh",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Tidak ada pesan yang sesuai dengan pencarian",
 		"SEARCH_RESULT_FOR": "Hasil pencarian untuk \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "Kembali ke daftar pesan",
-		"EMPTY_SUBJECT_TEXT": "(Tanpa Judul)",
 		"PUT_MESSAGE_HERE": "Taruh pesan di sini untuk melihatnya dalam daftar",
 		"TODAY_AT": "hari ini pada %TIME%",
 		"YESTERDAY_AT": "Kemarin pada  %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Minta pemberitahuan berhasil kirim"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Ya",
-		"BUTTON_NO": "Tidak",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Anda yakin untuk menutup jendela ini?",
 		"DESC_WANT_DELETE_MESSAGES": "Anda yakin menghapus permanen pesan ini?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "URL Buku alamat",
 		"LABEL_CONTACTS_SYNC_USER": "User",
-		"SYNC_NO": "Tidak",
-		"SYNC_YES": "Ya",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

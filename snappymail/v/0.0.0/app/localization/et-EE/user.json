@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Vastatud"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Täisekraan sisse\/välja",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Otsingule ei vastanud ühtegi kirja",
 		"SEARCH_RESULT_FOR": "Vasted otsingule \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "tagasi kirjade nimekirja",
-		"EMPTY_SUBJECT_TEXT": "(Pealkiri puudub)",
 		"PUT_MESSAGE_HERE": "Sikuta siia kiri, mida soovid nimekirjas näha",
 		"TODAY_AT": "täna kell %TIME%",
 		"YESTERDAY_AT": "eile kell %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Palu kättesaamise kohta kinnitust"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Jah",
-		"BUTTON_NO": "Ei",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Kas oled kindel, et soovid akna sulgeda?",
 		"DESC_WANT_DELETE_MESSAGES": "Kas oled kindel, et soovid sõnumi(d) kustutada?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Aadressiraamatu URL",
 		"LABEL_CONTACTS_SYNC_USER": "Kasutaja",
-		"SYNC_NO": "Ei",
-		"SYNC_YES": "Jah",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

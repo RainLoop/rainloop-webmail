@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Odebrano"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Pełny ekran",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Brak wiadomości spełniających kryteria wyszukiwania.",
 		"SEARCH_RESULT_FOR": "Wyniki wyszukiwania dla \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "powrót do listy wiadomości",
-		"EMPTY_SUBJECT_TEXT": "(Brak tematu)",
 		"PUT_MESSAGE_HERE": "Upuść wiadomość tutaj, aby zobaczyć ją na liście",
 		"TODAY_AT": "dzisiaj o %TIME%",
 		"YESTERDAY_AT": "wczoraj o %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Żądaj potwierdzenia dostarczenia wiadomości"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Tak",
-		"BUTTON_NO": "Nie",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Na pewno chcesz zamknąć to okno?",
 		"DESC_WANT_DELETE_MESSAGES": "Na pewno chcesz usunąć wiadomość(-ci)?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Serwer",
 		"LABEL_CONTACTS_SYNC_AB_URL": "URL książki adresowej",
 		"LABEL_CONTACTS_SYNC_USER": "Użytkownik",
-		"SYNC_NO": "Nie",
-		"SYNC_YES": "Tak",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

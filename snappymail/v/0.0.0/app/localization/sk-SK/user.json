@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Odpovedané"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Prepnúť na celú obrazovku",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Vášmu vyhľadávaniu nezodpovedajú žiadne správy.",
 		"SEARCH_RESULT_FOR": "Výsledky vyhľadávania pre \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "späť do zoznamu správ",
-		"EMPTY_SUBJECT_TEXT": "(Bez predmetu)",
 		"PUT_MESSAGE_HERE": "Pusťte správu tu pre jej zobrazenie v zozname",
 		"TODAY_AT": "dnes o %TIME%",
 		"YESTERDAY_AT": "včera o %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Vyžiadať potvrdenie o doručení"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Áno",
-		"BUTTON_NO": "Nie",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Ste si istý že chcete zatvoriť toto okno?",
 		"DESC_WANT_DELETE_MESSAGES": "Ste si istý že chcete odstrániť tieto správy?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Addressbook URL",
 		"LABEL_CONTACTS_SYNC_USER": "User",
-		"SYNC_NO": "Nie",
-		"SYNC_YES": "Áno",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

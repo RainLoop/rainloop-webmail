@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Atsakyta"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Perjungti viso ekrano režimą",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Nėra pranešimų, atitinkančių jūsų paiešką.",
 		"SEARCH_RESULT_FOR": "Ieškoti \"%SEARCH%\" rezultatuose",
 		"BACK_TO_MESSAGE_LIST": "grįžti į sąrašą",
-		"EMPTY_SUBJECT_TEXT": "(Be temos)",
 		"PUT_MESSAGE_HERE": "Įkelkite žinutę čia, kad matytumėte ją sąraše",
 		"TODAY_AT": "šiandien %TIME%",
 		"YESTERDAY_AT": "vakar %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Prašyti laiško gavimo pažymos"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Taip",
-		"BUTTON_NO": "Ne",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Ar tikrai norite uždaryti šį langą??",
 		"DESC_WANT_DELETE_MESSAGES": "Ar tikrai norite ištrinti pranešimą(us)?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Serveris",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Adresų knygos URL adresas",
 		"LABEL_CONTACTS_SYNC_USER": "Vartotojas",
-		"SYNC_NO": "Ne",
-		"SYNC_YES": "Taip",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

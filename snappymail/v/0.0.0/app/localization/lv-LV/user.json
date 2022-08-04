@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Atbildēja"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Toggle fullscreen",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Neviens ziņojums neatbilda jūsu meklētajiem kritērijiem.",
 		"SEARCH_RESULT_FOR": "Meklēšanas rezultāti: \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "back to message list",
-		"EMPTY_SUBJECT_TEXT": "(Nav virsraksta)",
 		"PUT_MESSAGE_HERE": "Ievelciet ziņojumus šeit lai tos apskatītu.",
 		"TODAY_AT": "šodien %TIME%",
 		"YESTERDAY_AT": "vakardien %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Request a delivery receipt"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Jā",
-		"BUTTON_NO": "Nē",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Are you sure you want to close this window?",
 		"DESC_WANT_DELETE_MESSAGES": "Are you sure you want to delete the message(s)?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Addressbook URL",
 		"LABEL_CONTACTS_SYNC_USER": "User",
-		"SYNC_NO": "Nē",
-		"SYNC_YES": "Jā",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

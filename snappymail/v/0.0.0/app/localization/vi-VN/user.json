@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "Trống",
 		"LABEL_SUBFOLDERS_SUBTREE": "Tất cả",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "Một cấp độ",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Đã trả lời"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Đóng\/mở toàn màn hình",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Không tìm thấy thư trùng khớp.",
 		"SEARCH_RESULT_FOR": "Kết quả tìm kiếm cho \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "trở về danh sách thư",
-		"EMPTY_SUBJECT_TEXT": "(Chưa có tiêu đề)",
 		"PUT_MESSAGE_HERE": "Bỏ thư vào đây để xem nó trong danh sách",
 		"TODAY_AT": "hôm nay lúc %TIME%",
 		"YESTERDAY_AT": "hôm qua lúc %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Yêu cầu thông báo thư đã gửi thành công"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Ok",
-		"BUTTON_NO": "Không",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Bạn có chắc muốn đóng bảng này chứ?",
 		"DESC_WANT_DELETE_MESSAGES": "Bạn có chắc muốn xóa thư này chứ?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Máy chủ",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Đường link của sổ địa chỉ",
 		"LABEL_CONTACTS_SYNC_USER": "Người dùng",
-		"SYNC_NO": "Không",
-		"SYNC_YES": "Ok",
 		"SYNC_READ": "Chỉ cho phép đọc"
 	},
 	"SETTINGS_THEMES": {

@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Respondidas"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Em tela cheia",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Nenhuma mensagem corresponde a sua pesquisa.",
 		"SEARCH_RESULT_FOR": "Resultados de pesquisa para \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "Voltar para a lista de mensagens",
-		"EMPTY_SUBJECT_TEXT": "(Sem assunto)",
 		"PUT_MESSAGE_HERE": "Coloque a mensagem aqui para vê-la na lista",
 		"TODAY_AT": "Hoje as %TIME%",
 		"YESTERDAY_AT": "Ontem as %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Pedir recibo de entrega"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Sim",
-		"BUTTON_NO": "Não",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Você tem certeza que deseja fechar esta janela?",
 		"DESC_WANT_DELETE_MESSAGES": "Você tem certeza de que deseja excluir essa(s) mensagem(s)?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Servidor",
 		"LABEL_CONTACTS_SYNC_AB_URL": "URL da lista de contatos",
 		"LABEL_CONTACTS_SYNC_USER": "Usuário",
-		"SYNC_NO": "Não",
-		"SYNC_YES": "Sim",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

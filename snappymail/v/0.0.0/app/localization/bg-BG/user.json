@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Отговорено"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "На цял екран",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Няма съобщения, които да отговарят на търсенето.",
 		"SEARCH_RESULT_FOR": "Резултати от търсенето за \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "Обратно при съобщенията",
-		"EMPTY_SUBJECT_TEXT": "(Няма заглавие)",
 		"PUT_MESSAGE_HERE": "Пуснете съобщението тук, за да го видите в списъка",
 		"TODAY_AT": "днес в %TIME%",
 		"YESTERDAY_AT": "вчера в %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Уведомяване при доставка"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Да",
-		"BUTTON_NO": "Не",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Сигурни ли сте, че желаете да затворите този прозорец?",
 		"DESC_WANT_DELETE_MESSAGES": "Сигурни ли сте, че желаете да изтриете съобщението\/съобщенията?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Сървър",
 		"LABEL_CONTACTS_SYNC_AB_URL": "URL на адресната книга",
 		"LABEL_CONTACTS_SYNC_USER": "Потребител",
-		"SYNC_NO": "Не",
-		"SYNC_YES": "Да",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

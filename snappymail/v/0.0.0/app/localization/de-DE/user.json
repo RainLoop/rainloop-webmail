@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "Keine",
 		"LABEL_SUBFOLDERS_SUBTREE": "Alle",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Antwortete"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Vollbild umschalten",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Keine Treffer für Ihre Suche.",
 		"SEARCH_RESULT_FOR": "Suchergebnisse für \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "Zurück zur Nachrichtenliste",
-		"EMPTY_SUBJECT_TEXT": "(Kein Betreff)",
 		"PUT_MESSAGE_HERE": "Ziehen Sie die Nachricht hierhin, um sie in der Liste anzuzeigen",
 		"TODAY_AT": "Heute um %TIME%",
 		"YESTERDAY_AT": "Gestern um %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Übermittlungsstatus anfordern"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Ja",
-		"BUTTON_NO": "Nein",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Sind Sie sicher, dass Sie dieses Fenster schließen möchten?",
 		"DESC_WANT_DELETE_MESSAGES": "Sind Sie sicher, dass Sie diese Nachricht(en) löschen möchten?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Adressbuch-URL",
 		"LABEL_CONTACTS_SYNC_USER": "Benutzer",
-		"SYNC_NO": "Nein",
-		"SYNC_YES": "Ja",
 		"SYNC_READ": "Nur lesend"
 	},
 	"SETTINGS_THEMES": {

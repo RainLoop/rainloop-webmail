@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Ответил"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Полный экран",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Письма не найдены.",
 		"SEARCH_RESULT_FOR": "Результат поиска \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "back to message list",
-		"EMPTY_SUBJECT_TEXT": "(Без темы)",
 		"PUT_MESSAGE_HERE": "Киньте сообщение сюда, чтобы посмотреть его в списке",
 		"TODAY_AT": "сегодня в %TIME%",
 		"YESTERDAY_AT": "вчера в %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Запросить уведомление о доставке"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Да",
-		"BUTTON_NO": "Нет",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Вы уверены, что хотите закрыть это окно?",
 		"DESC_WANT_DELETE_MESSAGES": "Вы уверены, что хотите удалить сообщение(я)?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Сервер",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Адресная книга (URL)",
 		"LABEL_CONTACTS_SYNC_USER": "Пользователь",
-		"SYNC_NO": "Нет",
-		"SYNC_YES": "Да",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

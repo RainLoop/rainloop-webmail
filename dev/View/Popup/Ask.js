@@ -44,8 +44,8 @@ export class AskPopupView extends AbstractViewPopup {
 		this.askDesc(sAskDesc || '');
 		this.askPass(askPass);
 		this.passphrase('');
-		this.yesButton(i18n(btnText || 'POPUPS_ASK/BUTTON_YES'));
-		this.noButton(i18n(askPass ? 'GLOBAL/CANCEL' : 'POPUPS_ASK/BUTTON_NO'));
+		this.yesButton(i18n(btnText || 'GLOBAL/YES'));
+		this.noButton(i18n(askPass ? 'GLOBAL/CANCEL' : 'GLOBAL/NO'));
 		this.fYesAction = fYesFunc;
 		this.fNoAction = fNoFunc;
 		this.focusOnShow = focusOnShow ? (askPass ? 'input[type="password"]' : '.buttonYes') : '';

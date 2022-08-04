@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Besvarede"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Fuld skærm",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Ingen meddelelser passede på søgningen.",
 		"SEARCH_RESULT_FOR": "Resultat for søgningen på \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "Tilbage til meddelelsesoversigt",
-		"EMPTY_SUBJECT_TEXT": "(Intet emne)",
 		"PUT_MESSAGE_HERE": "Slip meddelelse her for visning i oversigten",
 		"TODAY_AT": "i dag klokken %TIME%",
 		"YESTERDAY_AT": "i går klokken %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Bed om kvittering for modtagelse"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Ja",
-		"BUTTON_NO": "Nej",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Vil du lukke vinduet?",
 		"DESC_WANT_DELETE_MESSAGES": "Vil du slette denne\/disse meddelelse(r)?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Adressebogs URL",
 		"LABEL_CONTACTS_SYNC_USER": "Bruger",
-		"SYNC_NO": "Nej",
-		"SYNC_YES": "Ja",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

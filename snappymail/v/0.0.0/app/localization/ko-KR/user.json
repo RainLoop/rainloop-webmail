@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Odgovoreno"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "전체화면으로 보기",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "검색 조건에 맞는 결과가 없습니다..",
 		"SEARCH_RESULT_FOR": "\"%SEARCH%\"에 대한 검색 결과",
 		"BACK_TO_MESSAGE_LIST": "메시지 목록으로 돌아가기",
-		"EMPTY_SUBJECT_TEXT": "(제목 없음)",
 		"PUT_MESSAGE_HERE": "목록에 표시할 메시지를 여기로 끌어다 놓으세요.",
 		"TODAY_AT": "오늘 %TIME%",
 		"YESTERDAY_AT": "어제 %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "수신 확인 요청"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "예",
-		"BUTTON_NO": "아니요",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "정말로 이 페이지를 닫으시겠습니까 ?",
 		"DESC_WANT_DELETE_MESSAGES": "정말로 선택한 메세지를 삭제하시겠습니까 ?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "서버",
 		"LABEL_CONTACTS_SYNC_AB_URL": "주소록 URL",
 		"LABEL_CONTACTS_SYNC_USER": "사용자",
-		"SYNC_NO": "아니요",
-		"SYNC_YES": "예",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

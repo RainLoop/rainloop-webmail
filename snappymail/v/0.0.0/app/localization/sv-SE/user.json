@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "Svarade"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Växla fullskärmsläge",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "Inga meddelanden matchar din sökning.",
 		"SEARCH_RESULT_FOR": "Sök resultat för \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "Tillbaka till meddelanden",
-		"EMPTY_SUBJECT_TEXT": "(Inget ämne)",
 		"PUT_MESSAGE_HERE": "Släpp meddelandet för att se det i listan",
 		"TODAY_AT": "idag kl %TIME%",
 		"YESTERDAY_AT": "igår kl %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "Begär ett leveranskvitto"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Ja",
-		"BUTTON_NO": "Nej",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Vill du stänga detta fönster?",
 		"DESC_WANT_DELETE_MESSAGES": "Är du säker att du vill ta bort meddelandet?"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Adressboks-URL",
 		"LABEL_CONTACTS_SYNC_USER": "Användare",
-		"SYNC_NO": "Nej",
-		"SYNC_YES": "Ja",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

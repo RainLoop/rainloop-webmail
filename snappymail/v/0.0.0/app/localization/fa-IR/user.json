@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "None",
 		"LABEL_SUBFOLDERS_SUBTREE": "All",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "جواب داد"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "ضامن تمام صفحه",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "پیامی مطابق جستجوی شما پیدا نشد",
 		"SEARCH_RESULT_FOR": "نتایج جستجو مطابق \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "برگشت به لیست پیام‌ها",
-		"EMPTY_SUBJECT_TEXT": "(بدون موضوع)",
 		"PUT_MESSAGE_HERE": "برای دیدن پیام در این لیست آن را به اینجا بکشید",
 		"TODAY_AT": "امروز در %TIME%",
 		"YESTERDAY_AT": " دیروز در %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "درخواست دریافت رسید تحویل درمقصد"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "بلی",
-		"BUTTON_NO": "خیر",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "آیا از بستن این پنجره مطمئن هستید؟",
 		"DESC_WANT_DELETE_MESSAGES": "آیا از حذف این پیام(ها) اطمینان دارید؟"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "سرور",
 		"LABEL_CONTACTS_SYNC_AB_URL": "تارنمای آدرس‌بوک",
 		"LABEL_CONTACTS_SYNC_USER": "کاربر",
-		"SYNC_NO": "خیر",
-		"SYNC_YES": "بلی",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

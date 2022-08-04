@@ -65,7 +65,7 @@
 		"LABEL_SUBFOLDERS_NONE": "なし",
 		"LABEL_SUBFOLDERS_SUBTREE": "全て",
 		"LABEL_SUBFOLDERS_SUBTREE_ONE": "一段のみ",
-		"LABEL_REPLIED": "Replied"
+		"LABEL_REPLIED": "回答済み"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "フルスクリーン",
@@ -107,7 +107,6 @@
 		"EMPTY_SEARCH_LIST": "検索条件に一致するメールは見つかりませんでした。高度な検索を試してみてください。",
 		"SEARCH_RESULT_FOR": "\"%SEARCH%\"の検索結果",
 		"BACK_TO_MESSAGE_LIST": "メッセージ一覧に戻る",
-		"EMPTY_SUBJECT_TEXT": "(件名なし)",
 		"PUT_MESSAGE_HERE": "ここにメッセージをドロップ",
 		"TODAY_AT": "今日 %TIME%",
 		"YESTERDAY_AT": "昨日 %TIME%",
@@ -227,8 +226,6 @@
 		"BUTTON_REQUEST_DSN": "配信確認を要求する"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "はい",
-		"BUTTON_NO": "いいえ",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "このウインドウを閉じていいですか？",
 		"DESC_WANT_DELETE_MESSAGES": "メッセージを削除していいですか？"
 	},
@@ -418,8 +415,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "サーバー",
 		"LABEL_CONTACTS_SYNC_AB_URL": "アドレス帳URL",
 		"LABEL_CONTACTS_SYNC_USER": "ユーザー",
-		"SYNC_NO": "いいえ",
-		"SYNC_YES": "はい",
 		"SYNC_READ": "読み取り専用"
 	},
 	"SETTINGS_THEMES": {
