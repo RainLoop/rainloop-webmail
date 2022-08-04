@@ -4,7 +4,10 @@
 		"CLOSE": "Zapri",
 		"SAVE": "Shrani",
 		"TEST": "Preizkus",
-		"UPDATE": "Posodobi"
+		"UPDATE": "Posodobi",
+		"USERNAME": "Username",
+		"PASSWORD": "Password",
+		"CANCEL": "Cancel"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prijava",

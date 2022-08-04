@@ -4,7 +4,10 @@
 		"CLOSE": "Lukk",
 		"SAVE": "Lagre",
 		"TEST": "Test",
-		"UPDATE": "Oppdater"
+		"UPDATE": "Oppdater",
+		"USERNAME": "Username",
+		"PASSWORD": "Password",
+		"CANCEL": "Cancel"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Brukernavn",

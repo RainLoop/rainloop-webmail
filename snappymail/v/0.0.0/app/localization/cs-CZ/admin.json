@@ -4,7 +4,10 @@
 		"CLOSE": "Zavřít",
 		"SAVE": "Uložit",
 		"TEST": "Test",
-		"UPDATE": "Aktualizovat"
+		"UPDATE": "Aktualizovat",
+		"USERNAME": "Username",
+		"PASSWORD": "Password",
+		"CANCEL": "Cancel"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",

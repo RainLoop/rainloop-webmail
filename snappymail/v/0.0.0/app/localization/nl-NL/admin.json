@@ -4,7 +4,10 @@
 		"CLOSE": "Sluiten",
 		"SAVE": "Opslaan",
 		"TEST": "Test",
-		"UPDATE": "Updaten"
+		"UPDATE": "Updaten",
+		"USERNAME": "Username",
+		"PASSWORD": "Password",
+		"CANCEL": "Cancel"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Inlognaam",

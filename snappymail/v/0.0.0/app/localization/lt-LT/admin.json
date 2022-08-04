@@ -4,7 +4,10 @@
 		"CLOSE": "Uždaryti",
 		"SAVE": "Saugoti",
 		"TEST": "Bandymas",
-		"UPDATE": "Atnaujinti"
+		"UPDATE": "Atnaujinti",
+		"USERNAME": "Username",
+		"PASSWORD": "Password",
+		"CANCEL": "Cancel"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prisijungimo vardas",

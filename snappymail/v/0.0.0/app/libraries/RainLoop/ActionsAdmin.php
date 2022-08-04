@@ -300,6 +300,14 @@ class ActionsAdmin extends Actions
 				$oSettings->type = $oDomain->IncSecure();
 				$oImapClient->Connect($oSettings);
 
+				$sUsername = $this->GetActionParam('username', '');
+				if ($sUsername) {
+					$oImapClient->Login([
+						'Login' => $sUsername,
+						'Password' => $this->GetActionParam('password', '')
+					]);
+				}
+
 				$oImapClient->Disconnect();
 				$bImapResult = true;
 			}

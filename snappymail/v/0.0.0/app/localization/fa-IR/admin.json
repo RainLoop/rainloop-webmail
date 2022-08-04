@@ -4,7 +4,10 @@
 		"CLOSE": "بستن",
 		"SAVE": "ذخیره",
 		"TEST": "تست",
-		"UPDATE": "بروزرسانی"
+		"UPDATE": "بروزرسانی",
+		"USERNAME": "Username",
+		"PASSWORD": "Password",
+		"CANCEL": "Cancel"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ورود",

@@ -4,7 +4,10 @@
 		"CLOSE": "Bezár",
 		"SAVE": "Mentés",
 		"TEST": "Teszt",
-		"UPDATE": "Frissítés"
+		"UPDATE": "Frissítés",
+		"USERNAME": "Username",
+		"PASSWORD": "Password",
+		"CANCEL": "Cancel"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Belépés",

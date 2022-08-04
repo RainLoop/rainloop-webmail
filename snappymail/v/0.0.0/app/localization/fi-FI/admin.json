@@ -4,7 +4,10 @@
 		"CLOSE": "Sulje",
 		"SAVE": "Tallenna",
 		"TEST": "Testi",
-		"UPDATE": "Päivitä"
+		"UPDATE": "Päivitä",
+		"USERNAME": "Username",
+		"PASSWORD": "Password",
+		"CANCEL": "Cancel"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Tunnus",

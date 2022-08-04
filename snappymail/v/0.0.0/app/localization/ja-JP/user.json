@@ -20,6 +20,7 @@
 		"NAME": "受信トレイ",
 		"NONE": "なし",
 		"NOT_SPAM": "迷惑メールを解除",
+		"USERNAME": "Username",
 		"PASSWORD": "パスワード",
 		"REPLY_TO": "Reply-To",
 		"SAVE": "保存",

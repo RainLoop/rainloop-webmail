@@ -4,7 +4,10 @@
 		"CLOSE": "Stäng",
 		"SAVE": "Spara",
 		"TEST": "Test",
-		"UPDATE": "Uppdatera"
+		"UPDATE": "Uppdatera",
+		"USERNAME": "Username",
+		"PASSWORD": "Password",
+		"CANCEL": "Cancel"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logga in",

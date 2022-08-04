@@ -4,7 +4,10 @@
 		"CLOSE": "Zatvoriť",
 		"SAVE": "Uložiť",
 		"TEST": "Test",
-		"UPDATE": "Aktualizovať"
+		"UPDATE": "Aktualizovať",
+		"USERNAME": "Username",
+		"PASSWORD": "Password",
+		"CANCEL": "Cancel"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prihlasovanie",

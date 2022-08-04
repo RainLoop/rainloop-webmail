@@ -1,7 +1,11 @@
 <div class="modal-body">
 	<div data-bind="html: askDesc"></div>
-	<form class="form-horizontal" data-bind="visible: askPass, submit: yesClick" style="margin: 2em 0 0">
-	<div class="control-group">
+	<form class="form-horizontal" data-bind="visible: askPass() || askUsername(), submit: yesClick" style="margin: 2em 0 0">
+	<div class="control-group" data-bind="visible: askUsername">
+		<label data-i18n="GLOBAL/USERNAME"></label>
+		<input type="text" data-bind="value: username">
+	</div>
+	<div class="control-group" data-bind="visible: askPass">
 		<label data-i18n="GLOBAL/PASSWORD"></label>
 		<input type="password" data-bind="value: passphrase">
 	</div>

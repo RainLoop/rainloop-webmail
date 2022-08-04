@@ -8,6 +8,8 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 import { DomainAdminStore } from 'Stores/Admin/Domain';
 
+import { AskPopupView } from 'View/Popup/Ask';
+
 const domainToParams = oDomain => ({
 			Name: oDomain.name(),
 
@@ -179,39 +181,46 @@ export class DomainPopupView extends AbstractViewPopup {
 
 	testConnectionCommand() {
 		this.clearTesting(false);
-		this.testing(true);
+		// https://github.com/the-djmaze/snappymail/issues/477
+		AskPopupView.credentials('IMAP', 'GLOBAL/TEST').then(credentials => {
+			if (credentials) {
+				this.testing(true);
+				const params = domainToParams(this);
+				params.username = credentials.username;
+				params.password = credentials.password;
+				Remote.request('AdminDomainTest',
+					(iError, oData) => {
+						this.testing(false);
+						if (iError) {
+							this.testingImapError(true);
+							this.testingSieveError(true);
+							this.testingSmtpError(true);
+						} else {
+							this.testingDone(true);
+							this.testingImapError(true !== oData.Result.Imap);
+							this.testingSieveError(true !== oData.Result.Sieve);
+							this.testingSmtpError(true !== oData.Result.Smtp);
 
-		Remote.request('AdminDomainTest',
-			(iError, oData) => {
-				this.testing(false);
-				if (iError) {
-					this.testingImapError(true);
-					this.testingSieveError(true);
-					this.testingSmtpError(true);
-				} else {
-					this.testingDone(true);
-					this.testingImapError(true !== oData.Result.Imap);
-					this.testingSieveError(true !== oData.Result.Sieve);
-					this.testingSmtpError(true !== oData.Result.Smtp);
+							if (this.testingImapError() && oData.Result.Imap) {
+								this.testingImapErrorDesc('');
+								this.testingImapErrorDesc(oData.Result.Imap);
+							}
 
-					if (this.testingImapError() && oData.Result.Imap) {
-						this.testingImapErrorDesc('');
-						this.testingImapErrorDesc(oData.Result.Imap);
-					}
+							if (this.testingSieveError() && oData.Result.Sieve) {
+								this.testingSieveErrorDesc('');
+								this.testingSieveErrorDesc(oData.Result.Sieve);
+							}
 
-					if (this.testingSieveError() && oData.Result.Sieve) {
-						this.testingSieveErrorDesc('');
-						this.testingSieveErrorDesc(oData.Result.Sieve);
-					}
-
-					if (this.testingSmtpError() && oData.Result.Smtp) {
-						this.testingSmtpErrorDesc('');
-						this.testingSmtpErrorDesc(oData.Result.Smtp);
-					}
-				}
-			},
-			domainToParams(this)
-		);
+							if (this.testingSmtpError() && oData.Result.Smtp) {
+								this.testingSmtpErrorDesc('');
+								this.testingSmtpErrorDesc(oData.Result.Smtp);
+							}
+						}
+					},
+					params
+				);
+			}
+		});
 	}
 
 	onDomainCreateOrSaveResponse(iError) {

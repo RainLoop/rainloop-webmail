@@ -4,7 +4,10 @@
 		"CLOSE": "Cerrar",
 		"SAVE": "Guardar",
 		"TEST": "Probar",
-		"UPDATE": "Actualizar"
+		"UPDATE": "Actualizar",
+		"USERNAME": "Username",
+		"PASSWORD": "Password",
+		"CANCEL": "Cancel"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Ingresar",

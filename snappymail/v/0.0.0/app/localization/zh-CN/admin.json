@@ -4,7 +4,10 @@
 		"CLOSE": "关闭",
 		"SAVE": "保存",
 		"TEST": "测试",
-		"UPDATE": "更新"
+		"UPDATE": "更新",
+		"USERNAME": "Username",
+		"PASSWORD": "Password",
+		"CANCEL": "Cancel"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登录",

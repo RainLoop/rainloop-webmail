@@ -4,7 +4,10 @@
 		"CLOSE": "Đóng",
 		"SAVE": "Lưu",
 		"TEST": "Thử",
-		"UPDATE": "Cập nhật"
+		"UPDATE": "Cập nhật",
+		"USERNAME": "Username",
+		"PASSWORD": "Password",
+		"CANCEL": "Cancel"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Đăng nhập",

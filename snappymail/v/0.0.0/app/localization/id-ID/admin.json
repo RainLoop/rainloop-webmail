@@ -4,7 +4,10 @@
 		"CLOSE": "Tutup",
 		"SAVE": "Simpan",
 		"TEST": "Ujicoba",
-		"UPDATE": "Pembaruan"
+		"UPDATE": "Pembaruan",
+		"USERNAME": "Username",
+		"PASSWORD": "Password",
+		"CANCEL": "Cancel"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",

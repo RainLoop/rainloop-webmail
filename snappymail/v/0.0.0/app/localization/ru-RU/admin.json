@@ -4,7 +4,10 @@
 		"CLOSE": "Закрыть",
 		"SAVE": "Сохранить",
 		"TEST": "Тест",
-		"UPDATE": "Обновить"
+		"UPDATE": "Обновить",
+		"USERNAME": "Username",
+		"PASSWORD": "Password",
+		"CANCEL": "Cancel"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Логин",

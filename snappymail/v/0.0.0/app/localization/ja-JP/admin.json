@@ -4,7 +4,10 @@
 		"CLOSE": "閉じる",
 		"SAVE": "保存",
 		"TEST": "テスト",
-		"UPDATE": "更新"
+		"UPDATE": "更新",
+		"USERNAME": "Username",
+		"PASSWORD": "Password",
+		"CANCEL": "Cancel"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ログイン",

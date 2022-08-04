@@ -4,7 +4,10 @@
 		"CLOSE": "Luk",
 		"SAVE": "Gem",
 		"TEST": "Test",
-		"UPDATE": "Opdater"
+		"UPDATE": "Opdater",
+		"USERNAME": "Username",
+		"PASSWORD": "Password",
+		"CANCEL": "Cancel"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Log ind",
