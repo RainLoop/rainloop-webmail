@@ -120,13 +120,12 @@
 				</div>
 			</div>
 
-			<div class="messageItemHeader" data-bind="css: {'emptySubject': '' === message().subject()}">
+			<div class="messageItemHeader">
 				<div class="subjectParent">
 					<span class="infoParent g-ui-user-select-none fontastic" data-bind="click: function() { showFullInfo(!showFullInfo()); }">ℹ</span>
 					<span class="flagParent g-ui-user-select-none flagOff fontastic" data-bind="text: message().isFlagged() ? '★' : '☆', css: {'flagOn': message().isFlagged(), 'flagOff': !message().isFlagged()}"></span>
 					<b style="color: red; margin-right: 5px" data-bind="visible: message().isImportant()">!</b>
-					<span class="subject" data-bind="hidden: !message().subject(), text: message().subject, title: message().subject, event: { 'dblclick': toggleFullScreen }"></span>
-					<span class="emptySubjectText" data-i18n="MESSAGE/EMPTY_SUBJECT_TEXT" data-bind="hidden: message().subject(), event: { 'dblclick': toggleFullScreen }"></span>
+					<span class="subject" data-bind="text: message().subject, title: message().subject, event: { 'dblclick': toggleFullScreen }"></span>
 					<a href="#" class="close" data-bind="click: closeMessage" style="margin-top: -8px;">×</a>
 				</div>
 				<div data-bind="hidden: showFullInfo(), event: { 'dblclick': toggleFullScreen }">

@@ -246,6 +246,11 @@ html:not(rl-mobile) {
 		white-space: nowrap;
 	}
 
+	.subjectParent:empty {
+		font-style: italic;
+		opacity: 0.5;
+	}
+
 	.threadsCountParent {
 		display: inline;
 		overflow: hidden;
@@ -264,11 +269,6 @@ html:not(rl-mobile) {
 
 	.threadsCountParent:hover {
 		border-color: #666;
-	}
-
-	&.emptySubject .subjectParent {
-		font-style: italic;
-		opacity: 0.5;
 	}
 
 	.threads-len {

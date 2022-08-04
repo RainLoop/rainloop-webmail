@@ -375,7 +375,6 @@ export class MessageModel extends AbstractModel {
 			focused: this.focused(),
 			important: this.isImportant(),
 			withAttachments: !!this.attachments().length,
-			emptySubject: !this.subject(),
 			// hasChildrenMessage: 1 < this.threadsLen(),
 			hasUnseenSubMessage: this.hasUnseenSubMessage(),
 			hasFlaggedSubMessage: this.hasFlaggedSubMessage()

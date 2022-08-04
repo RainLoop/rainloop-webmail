@@ -20,7 +20,7 @@ import { isFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 import { mailBox, serverRequest } from 'Common/Links';
 import { Selector } from 'Common/Selector';
 
-import { i18n, initOnStartOrLangChange } from 'Common/Translator';
+import { i18n } from 'Common/Translator';
 
 import {
 	getFolderFromCacheList,
@@ -55,13 +55,13 @@ const
 	 */
 	listAction = (...args) => MessagelistUserStore.setAction(...args);
 
+let
+	iGoToUpOrDownTimeout = 0,
+	sLastSearchValue = '';
+
 export class MailMessageList extends AbstractViewRight {
 	constructor() {
 		super();
-
-		this.emptySubjectValue = '';
-
-		this.iGoToUpOrDownTimeout = 0;
 
 		this.newMoveToFolder = !!SettingsGet('NewMoveToFolder');
 
@@ -76,18 +76,9 @@ export class MailMessageList extends AbstractViewRight {
 		this.isMobile = ThemeStore.isMobile;
 		this.leftPanelDisabled = leftPanelDisabled;
 
-		this.messageListSearch = MessagelistUserStore.listSearch;
-		this.messageListError = MessagelistUserStore.error;
-
 		this.popupVisibility = arePopupsVisible;
 
 		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
-
-		this.messageListThreadUid = MessagelistUserStore.endThreadUid;
-
-		this.messageListIsLoading = MessagelistUserStore.isLoading;
-
-		initOnStartOrLangChange(() => this.emptySubjectValue = i18n('MESSAGE_LIST/EMPTY_SUBJECT_TEXT'));
 
 		this.userUsageProc = FolderUserStore.quotaPercentage;
 
@@ -99,14 +90,12 @@ export class MailMessageList extends AbstractViewRight {
 			dragOverArea: null,
 			dragOverBodyArea: null,
 
-			inputMessageListSearchFocus: false
+			focusSearch: false
 		});
 
 		// append drag and drop
 		this.dragOver = ko.observable(false).extend({ throttle: 1 });
 		this.dragOverEnter = ko.observable(false).extend({ throttle: 1 });
-
-		this.sLastSearchValue = '';
 
 		this.addComputables({
 
@@ -136,9 +125,9 @@ export class MailMessageList extends AbstractViewRight {
 				}
 			},
 
-			inputProxyMessageListSearch: {
+			inputSearch: {
 				read: MessagelistUserStore.mainSearch,
-				write: value => this.sLastSearchValue = value
+				write: value => sLastSearchValue = value
 			},
 
 			isIncompleteChecked: () => {
@@ -146,33 +135,28 @@ export class MailMessageList extends AbstractViewRight {
 				return c && MessagelistUserStore().length > c;
 			},
 
-			hasMessages: () => 0 < MessagelistUserStore().length,
-
 			isSpamFolder: () => (FolderUserStore.spamFolder() || 0) === MessagelistUserStore().Folder,
-
-			isSpamDisabled: () => UNUSED_OPTION_VALUE === FolderUserStore.spamFolder(),
 
 			isTrashFolder: () => (FolderUserStore.trashFolder() || 0) === MessagelistUserStore().Folder,
 
 			isDraftFolder: () => (FolderUserStore.draftsFolder() || 0) === MessagelistUserStore().Folder,
 
-			isSentFolder: () => (FolderUserStore.sentFolder() || 0) === MessagelistUserStore().Folder,
+			archiveAllowed: () =>
+				(FolderUserStore.archiveFolder() || 0) !== MessagelistUserStore().Folder
+				&& UNUSED_OPTION_VALUE !== FolderUserStore.archiveFolder()
+				&& !this.isDraftFolder(),
 
-			isArchiveFolder: () => (FolderUserStore.archiveFolder() || 0) === MessagelistUserStore().Folder,
+			spamAllowed: () => UNUSED_OPTION_VALUE !== FolderUserStore.spamFolder()
+				&& (FolderUserStore.sentFolder() || 0) !== MessagelistUserStore().Folder
+				&& !this.isDraftFolder(),
 
-			isArchiveDisabled: () => UNUSED_OPTION_VALUE === FolderUserStore.archiveFolder(),
+			isSpamVisible: () => !this.isSpamFolder() && this.spamAllowed(),
 
-			isArchiveVisible: () => !this.isArchiveFolder() && !this.isArchiveDisabled() && !this.isDraftFolder(),
+			isUnSpamVisible: () => this.isSpamFolder() && this.spamAllowed(),
 
-			isSpamVisible: () =>
-				!this.isSpamFolder() && !this.isSpamDisabled() && !this.isDraftFolder() && !this.isSentFolder(),
+			mobileCheckedStateShow: () => ThemeStore.isMobile() ? MessagelistUserStore.listChecked().length : 1,
 
-			isUnSpamVisible: () =>
-				this.isSpamFolder() && !this.isSpamDisabled() && !this.isDraftFolder() && !this.isSentFolder(),
-
-			mobileCheckedStateShow: () => ThemeStore.isMobile() ? 0 < MessagelistUserStore.listChecked().length : true,
-
-			mobileCheckedStateHide: () => ThemeStore.isMobile() ? !MessagelistUserStore.listChecked().length : true,
+			mobileCheckedStateHide: () => ThemeStore.isMobile() ? !MessagelistUserStore.listChecked().length : 1,
 
 			sortText: () => {
 				let mode = FolderUserStore.sortMode(),
@@ -187,8 +171,6 @@ export class MailMessageList extends AbstractViewRight {
 				return (mode.includes('SIZE') ? '✉' : '📅') + (desc ? '⬇' : '⬆');
 			}
 		});
-
-		this.hasCheckedOrSelectedLines = MessagelistUserStore.hasCheckedOrSelected,
 
 		this.selector = new Selector(
 			MessagelistUserStore,
@@ -364,8 +346,8 @@ export class MailMessageList extends AbstractViewRight {
 			return false;
 		}
 
-		clearTimeout(this.iGoToUpOrDownTimeout);
-		this.iGoToUpOrDownTimeout = setTimeout(() => {
+		clearTimeout(iGoToUpOrDownTimeout);
+		iGoToUpOrDownTimeout = setTimeout(() => {
 			let prev, next, temp, current;
 
 			this.messageListPaginator().find(item => {
@@ -412,7 +394,7 @@ export class MailMessageList extends AbstractViewRight {
 
 	cancelSearch() {
 		MessagelistUserStore.mainSearch('');
-		this.inputMessageListSearchFocus(false);
+		this.focusSearch(false);
 	}
 
 	cancelThreadUid() {
@@ -684,7 +666,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		addShortcut('enter,open', '', Scope.MessageList, () => {
 			if (formFieldFocused()) {
-				MessagelistUserStore.mainSearch(this.sLastSearchValue);
+				MessagelistUserStore.mainSearch(sLastSearchValue);
 				return false;
 			}
 			if (MessageUserStore.message() && this.useAutoSelect()) {
@@ -778,7 +760,7 @@ export class MailMessageList extends AbstractViewRight {
 		if (SettingsCapa('Search')) {
 			// search input focus
 			addShortcut('/', '', [Scope.MessageList, Scope.MessageView], () => {
-				this.inputMessageListSearchFocus(true);
+				this.focusSearch(true);
 				return false;
 			});
 		}
