@@ -142,22 +142,25 @@ if (defined('APP_VERSION'))
 
 	if (!file_exists(APP_PRIVATE_DATA.'domains/disabled') && is_dir(APP_PRIVATE_DATA.'domains'))
 	{
-		$sFile = $sNewFile = '';
 		$aFiles = glob(APP_VERSION_ROOT_PATH.'app/domains/*');
-		if ($aFiles)
-		{
-			foreach ($aFiles as $sFile)
-			{
-				if (is_file($sFile))
-				{
+		if ($aFiles) {
+			foreach ($aFiles as $sFile) {
+				if (is_file($sFile)) {
 					$sNewFile = APP_PRIVATE_DATA.'domains/'.basename($sFile);
-					if (!file_exists($sNewFile))
-					{
+					if (!file_exists($sNewFile)) {
 						copy($sFile, $sNewFile);
 					}
 				}
 			}
 		}
-		unset($aFiles, $sFile, $sNewFile);
+		/*
+		$sNewFile = APP_PRIVATE_DATA.'domains/'.gethostname().'.ini';
+		if (!file_exists($sNewFile)) {
+			\file_put_contents(
+				$sNewFile,
+				\str_replace('short_login = Off', 'short_login = On', \file_get_contents(APP_VERSION_ROOT_PATH.'app/domains/default.ini'))
+			);
+		}
+		*/
 	}
 }
