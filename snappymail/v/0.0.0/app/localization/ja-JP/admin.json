@@ -5,9 +5,9 @@
 		"SAVE": "保存",
 		"TEST": "テスト",
 		"UPDATE": "更新",
-		"USERNAME": "Username",
-		"PASSWORD": "Password",
-		"CANCEL": "Cancel"
+		"USERNAME": "ユーザー名",
+		"PASSWORD": "パスワード",
+		"CANCEL": "キャンセル"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ログイン",
@@ -169,9 +169,9 @@
 		"UNKNOWN_ERROR": "不明なエラー"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
+		"REQUEST_ERROR": "要求は失敗しました",
+		"REQUEST_ABORTED": "要求は中断されました",
+		"REQUEST_TIMEOUT": "要求はタイムアウトしました",
 		"INVALID_TOKEN": "無効なトークン",
 		"AUTH_ERROR": "認証に失敗しました",
 		"DOMAIN_ALREADY_EXISTS": "ドメインが既に存在しています",
