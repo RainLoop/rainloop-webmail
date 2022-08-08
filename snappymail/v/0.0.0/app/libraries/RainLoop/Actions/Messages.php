@@ -74,7 +74,7 @@ trait Messages
 
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 			if ($oSettingsLocal instanceof \RainLoop\Settings) {
-				$oParams->bHideDeleted = empty($oSettingsLocal->GetConf('HideDeleted', 1));
+				$oParams->bHideDeleted = !empty($oSettingsLocal->GetConf('HideDeleted', 1));
 			}
 
 			$oMessageList = $this->MailClient()->MessageList($oParams);

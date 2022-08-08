@@ -280,7 +280,7 @@ abstract class SearchCriterias
 		}
 
 		if ($bHideDeleted && !\in_array('DELETED', $aCriteriasResult) && !\in_array('UNDELETED', $aCriteriasResult)) {
-			$aCriteriasResult['UNDELETED'] = true;
+			$aCriteriasResult[] = 'UNDELETED';
 		}
 
 		if (\MailSo\Config::$MessageListPermanentFilter) {
