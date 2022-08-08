@@ -178,16 +178,20 @@ export const OpenPGPUserStore = new class {
 			}
 		}
 		if (privateKey) try {
-			const passphrase = await askPassphrase(privateKey, 'BUTTON_DECRYPT');
-
-			if (null !== passphrase) {
-				const
-					publicKey = findOpenPGPKey(this.publicKeys, sender/*, sign*/),
+			let decryptedKey;
+			if (privateKey.key.isDecrypted()) {
+				decryptedKey = privateKey;
+			} else {
+				const passphrase = await askPassphrase(privateKey, 'BUTTON_DECRYPT');
+				if (null !== passphrase) {
 					decryptedKey = await openpgp.decryptKey({
 						privateKey: privateKey.key,
 						passphrase
 					});
-
+				}
+			}
+			if (decryptedKey) {
+				const publicKey = findOpenPGPKey(this.publicKeys, sender/*, sign*/);
 				return await openpgp.decrypt({
 					message,
 					verificationKeys: publicKey && publicKey.key,
