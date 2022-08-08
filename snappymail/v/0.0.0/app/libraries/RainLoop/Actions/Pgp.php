@@ -18,10 +18,10 @@ trait Pgp
 			return null;
 		}
 
-		$homedir = $this->StorageProvider()->GenerateFilePath(
+		$homedir = \rtrim($this->StorageProvider()->GenerateFilePath(
 			$oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::ROOT
-		) . '/.gnupg';
+		), '/') . '/.gnupg';
 
 		if (!\is_dir($homedir)) {
 			\mkdir($homedir, 0700, true);
@@ -43,6 +43,8 @@ trait Pgp
 				$link = $tmpdir . '/' . \md5($homedir);
 				if (\is_link($link) || \symlink($homedir, $link)) {
 					$homedir = $link;
+				} else {
+					\error_log("symlink('{$homedir}', '{$link}') failed");
 				}
 			}
 			// Else try ~/.gnupg/ + hash(email address)
