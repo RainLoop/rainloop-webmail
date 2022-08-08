@@ -748,7 +748,7 @@ class MailClient
 
 		$aResultUids = false;
 		$bUidsFromCacher = false;
-		$bUseCacheAfterSearch = true;
+		$bUseCacheAfterSearch = $oCacher && $oCacher->IsInited();
 
 		$sSerializedHash = '';
 		$sSerializedLog = '';
@@ -756,25 +756,23 @@ class MailClient
 		$bUseSortIfSupported = $bUseSortIfSupported && !\strlen($sSearch) && $this->oImapClient->IsSupported('SORT');
 
 		$sSearchCriterias = \MailSo\Imap\SearchCriterias::fromString($this->oImapClient, $sFolderName, $sSearch, $oParams->bHideDeleted, $bUseCacheAfterSearch);
-		if ($bUseCacheAfterSearch && $oCacher && $oCacher->IsInited())
-		{
+		// Disabled for now as there are many cases that change the result
+		$bUseCacheAfterSearch = false;
+		if ($bUseCacheAfterSearch) {
 			$sSerializedHash = 'GetUids/'.
 				($bUseSortIfSupported ? 'S' . $sSort : 'N').'/'.
 				$this->GenerateImapClientHash().'/'.
 				$sFolderName.'/'.$sSearchCriterias;
 			$sSerializedLog = '"'.$sFolderName.'" / '.$sSearchCriterias.'';
 
-//			$sSerialized = $oCacher->Get($sSerializedHash);
-			if (!empty($sSerialized))
-			{
+			$sSerialized = $oCacher->Get($sSerializedHash);
+			if (!empty($sSerialized)) {
 				$aSerialized = \json_decode($sSerialized, true);
 				if (\is_array($aSerialized) && isset($aSerialized['FolderHash'], $aSerialized['Uids']) &&
 					$sFolderHash === $aSerialized['FolderHash'] &&
 					\is_array($aSerialized['Uids'])
-				)
-				{
-					if ($this->oLogger)
-					{
+				) {
+					if ($this->oLogger) {
 						$this->oLogger->Write('Get Serialized UIDS from cache ('.$sSerializedLog.') [count:'.\count($aSerialized['Uids']).']');
 					}
 
@@ -784,8 +782,7 @@ class MailClient
 			}
 		}
 
-		if (!\is_array($aResultUids))
-		{
+		if (!$bUidsFromCacher) {
 			if ($bUseSortIfSupported) {
 //				$this->oImapClient->IsSupported('ESORT')
 //				$aResultUids = $this->oImapClient->MessageSimpleESort(array($sSort ?: 'REVERSE DATE'), $sSearchCriterias)['ALL'];
@@ -796,15 +793,13 @@ class MailClient
 				$aResultUids = $this->oImapClient->MessageSimpleSearch($sSearchCriterias,        true, \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? '' : 'UTF-8');
 			}
 
-			if (!$bUidsFromCacher && $bUseCacheAfterSearch && \is_array($aResultUids) && $oCacher && $oCacher->IsInited() && \strlen($sSerializedHash))
-			{
+			if ($bUseCacheAfterSearch) {
 				$oCacher->Set($sSerializedHash, \json_encode(array(
 					'FolderHash' => $sFolderHash,
 					'Uids' => $aResultUids
 				)));
 
-				if ($this->oLogger)
-				{
+				if ($this->oLogger) {
 					$this->oLogger->Write('Save Serialized UIDS to cache ('.$sSerializedLog.') [count:'.\count($aResultUids).']');
 				}
 			}

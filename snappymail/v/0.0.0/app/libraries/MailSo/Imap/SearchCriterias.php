@@ -129,7 +129,6 @@ abstract class SearchCriterias
 
 	public static function fromString(\MailSo\Imap\ImapClient $oImapClient, string $sFolderName, string $sSearch, bool $bHideDeleted, bool &$bUseCache = true) : string
 	{
-		$bUseCache = true;
 		$iTimeFilter = 0;
 		$aCriteriasResult = array();
 
