@@ -82,7 +82,7 @@
 		"INBOX_NAME": "Inbox",
 		"SENT_NAME": "Sent",
 		"DRAFTS_NAME": "Drafts",
-		"TRASH_NAME": "Trash",
+		"TRASH_NAME": "Bin",
 		"ARCHIVE_NAME": "Archive"
 	},
 	"QUOTA": {
@@ -332,7 +332,7 @@
 		"NOTIFICATION_SENT": "You haven't selected \"Sent\" system folder messages are put to after sending.\nIf you don't want to save sent message, please select \"Do not use\" option.\n",
 		"NOTIFICATION_DRAFTS": "You haven't selected \"Drafts\" system folder messages are saved to while composing.",
 		"NOTIFICATION_SPAM": "You haven't selected \"Spam\" system folder spamed messages are placed to.\nIf you wish to remove messages permanently, please select \"Do not use\" option.\n",
-		"NOTIFICATION_TRASH": "You haven't selected \"Trash\" system folder deleted messages are placed to.\nIf you wish to remove messages permanently, please select \"Do not use\" option.\n",
+		"NOTIFICATION_TRASH": "You haven't selected \"Bin\" system folder deleted messages are placed to.\nIf you wish to remove messages permanently, please select \"Do not use\" option.\n",
 		"NOTIFICATION_ARCHIVE": "You haven't selected \"Archive\" system folder achived messages are placed to."
 	},
 	"TITLES": {
