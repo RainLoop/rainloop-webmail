@@ -851,6 +851,11 @@ class Actions
 					}
 
 					$aResult['EditorDefaultType'] = \str_replace('Forced', '', $oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']));
+					$aResult['requestReadReceipt'] = (bool) $oSettings->GetConf('requestReadReceipt', false);
+					$aResult['requestDsn'] = (bool) $oSettings->GetConf('requestDsn', false);
+					$aResult['pgpSign'] = (bool) $oSettings->GetConf('pgpSign', false);
+					$aResult['pgpEncrypt'] = (bool) $oSettings->GetConf('pgpEncrypt', false);
+
 					$aResult['ViewHTML'] = (bool)$oSettings->GetConf('ViewHTML', $aResult['ViewHTML']);
 					$aResult['ShowImages'] = (bool)$oSettings->GetConf('ShowImages', $aResult['ShowImages']);
 					$aResult['RemoveColors'] = (bool)$oSettings->GetConf('RemoveColors', $aResult['RemoveColors']);

@@ -36,7 +36,12 @@ export const SettingsUserStore = new class {
 			replySameFolder: 0,
 			hideUnsubscribed: 0,
 			hideDeleted: 1,
-			autoLogout: 0
+			autoLogout: 0,
+
+			requestReadReceipt: 0,
+			requestDsn: 0,
+			pgpSign: 0,
+			pgpEncrypt: 0
 		});
 
 		self.init();
@@ -85,5 +90,10 @@ export const SettingsUserStore = new class {
 
 		self.hideUnsubscribed(SettingsGet('HideUnsubscribed'));
 		self.hideDeleted(SettingsGet('HideDeleted'));
+
+		self.requestReadReceipt(SettingsGet('requestReadReceipt'));
+		self.requestDsn(SettingsGet('requestDsn'));
+		self.pgpSign(SettingsGet('pgpSign'));
+		self.pgpEncrypt(SettingsGet('pgpEncrypt'));
 	}
 };

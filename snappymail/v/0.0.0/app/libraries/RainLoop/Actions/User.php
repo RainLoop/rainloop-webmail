@@ -330,6 +330,11 @@ trait User
 		});
 
 		$this->setSettingsFromParams($oSettings, 'EditorDefaultType', 'string');
+		$this->setSettingsFromParams($oSettings, 'requestReadReceipt', 'bool');
+		$this->setSettingsFromParams($oSettings, 'requestDsn', 'bool');
+		$this->setSettingsFromParams($oSettings, 'pgpSign', 'bool');
+		$this->setSettingsFromParams($oSettings, 'pgpEncrypt', 'bool');
+
 		$this->setSettingsFromParams($oSettings, 'ViewHTML', 'bool');
 		$this->setSettingsFromParams($oSettings, 'ShowImages', 'bool');
 		$this->setSettingsFromParams($oSettings, 'RemoveColors', 'bool');

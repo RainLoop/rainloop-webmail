@@ -1463,8 +1463,8 @@ export class ComposePopupView extends AbstractViewPopup {
 		this.replyTo('');
 		this.subject('');
 
-		this.requestDsn(false);
-		this.requestReadReceipt(false);
+		this.requestDsn(SettingsUserStore.requestDsn());
+		this.requestReadReceipt(SettingsUserStore.requestReadReceipt());
 		this.markAsImportant(false);
 
 		this.bodyArea();
@@ -1485,8 +1485,8 @@ export class ComposePopupView extends AbstractViewPopup {
 		this.showBcc(false);
 		this.showReplyTo(false);
 
-		this.pgpSign(false);
-		this.pgpEncrypt(false);
+		this.pgpSign(SettingsUserStore.pgpSign());
+		this.pgpEncrypt(SettingsUserStore.pgpEncrypt());
 
 		this.attachments([]);
 
