@@ -1,4 +1,3 @@
-import { encodeHtml } from 'Common/Html';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
@@ -333,45 +332,13 @@ export class EmailModel extends AbstractModel {
 
 	/**
 	 * @param {boolean} friendlyView = false
-	 * @param {boolean=} wrapWithLink = false
-	 * @param {boolean=} useEncodeHtml = false
 	 * @returns {string}
 	 */
-	toLine(friendlyView, wrapWithLink, useEncodeHtml) {
-		let result = '',
-			toLink = (to, txt) => '<a href="mailto:' + to + '" target="_blank" tabindex="-1">' + encodeHtml(txt) + '</a>';
-		if (this.email) {
-			if (friendlyView && this.name) {
-				result = wrapWithLink
-					? toLink(
-						encodeHtml(this.email) + '?to=' + encodeURIComponent('"' + this.name + '" <' + this.email + '>'),
-						this.name
-					)
-					: (useEncodeHtml ? encodeHtml(this.name) : this.name);
-			} else {
-				result = this.email;
-				if (this.name) {
-					if (wrapWithLink) {
-						result =
-							encodeHtml('"' + this.name + '" <')
-							+ toLink(
-								encodeHtml(this.email) + '?to=' + encodeURIComponent('"' + this.name + '" <' + this.email + '>'),
-								result
-							)
-							+ encodeHtml('>');
-					} else {
-						result = '"' + this.name + '" <' + result + '>';
-						if (useEncodeHtml) {
-							result = encodeHtml(result);
-						}
-					}
-				} else if (wrapWithLink) {
-					result = toLink(encodeHtml(this.email), this.email);
-				}
-			}
-		}
-
-		return result;
+	toLine(friendlyView) {
+		let result = this.email;
+		return (result && this.name)
+			? (friendlyView ? this.name : '"' + this.name + '" <' + result + '>')
+			: result;
 	}
 
 	static splitEmailLine(line) {

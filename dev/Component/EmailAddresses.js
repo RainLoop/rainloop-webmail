@@ -262,7 +262,7 @@ export class EmailAddressesComponent {
 			if (v.obj) {
 				let li = createElement('li',{title:v.obj.toLine(),draggable:'true'}),
 					el = createElement('span');
-				el.append(v.obj.toLine(true, false, true));
+				el.append(v.obj.toLine(true));
 				li.append(el);
 
 				el = createElement('a',{href:'#', class:'ficon'});
