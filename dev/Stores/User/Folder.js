@@ -157,13 +157,14 @@ export const FolderUserStore = new class {
 			const folder = getFolderFromCacheList(aItem[1]);
 			if (folder) {
 				folder.expires = utc;
+//				result.indexOf(aItem[1]) ||
 				result.push(aItem[1]);
 			}
 
 			return limit <= result.length;
 		});
 
-		return result.filter((value, index, self) => self.indexOf(value) == index);
+		return result;
 	}
 
 	saveSystemFolders(folders) {
