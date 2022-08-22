@@ -78,7 +78,7 @@
 		<span data-i18n="POPUPS_SIEVE_SCRIPT/VALIDATE"></span>
 	</a>
 -->
-	<a class="btn buttonSave" data-bind="visible: hasChanges, click: function() { $root.saveScript(); }, css: {'btn-danger': $root.saveError}">
+	<a class="btn buttonSave" data-bind="click: function() { $root.saveScript(); }, css: {'btn-danger': $root.saveError}">
 		<i class="fontastic" data-bind="css: {'icon-spinner': $root.saving}">💾</i>
 		<span data-i18n="GLOBAL/SAVE"></span>
 	</a>
