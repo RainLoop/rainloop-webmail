@@ -16,7 +16,7 @@ import { encodeHtml, HtmlEditor, htmlToPlain } from 'Common/Html';
 import { koArrayWithDestroy } from 'External/ko';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { messagesDeleteHelper } from 'Common/Folders';
+import { folderInformation, messagesDeleteHelper } from 'Common/Folders';
 import { serverRequest } from 'Common/Links';
 import { i18n, getNotification, getUploadErrorDescByCode, timestampToString } from 'Common/Translator';
 import { MessageFlagsCache, setFolderHash } from 'Common/Cache';
@@ -77,7 +77,7 @@ const
 			if (FolderUserStore.currentFolderFullName() === draftsFolder) {
 				MessagelistUserStore.reload(true);
 			} else {
-				rl.app.folderInformation(draftsFolder);
+				folderInformation(draftsFolder);
 			}
 		}
 	},

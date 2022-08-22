@@ -130,6 +130,58 @@ folderListOptionsBuilder = (
 refreshFoldersInterval = 300000,
 
 /**
+ * @param {string} folder
+ * @param {Array=} list = []
+ */
+folderInformation = (folder, list) => {
+	if (folder && folder.trim()) {
+		fetchFolderInformation(
+			(iError, data) => {
+				if (!iError && data.Result) {
+					const result = data.Result,
+						folderFromCache = getFolderFromCacheList(result.Folder);
+					if (folderFromCache) {
+						const oldHash = folderFromCache.hash,
+							unreadCountChange = (folderFromCache.unreadEmails() !== result.unreadEmails);
+
+//							folderFromCache.revivePropertiesFromJson(result);
+						folderFromCache.expires = Date.now();
+						folderFromCache.uidNext = result.UidNext;
+						folderFromCache.hash = result.Hash;
+						folderFromCache.totalEmails(result.totalEmails);
+						folderFromCache.unreadEmails(result.unreadEmails);
+
+						if (unreadCountChange) {
+							MessageFlagsCache.clearFolder(folderFromCache.fullName);
+						}
+
+						if (result.MessagesFlags.length) {
+							result.MessagesFlags.forEach(message =>
+								MessageFlagsCache.setFor(folderFromCache.fullName, message.Uid.toString(), message.Flags)
+							);
+
+							MessagelistUserStore.reloadFlagsAndCachedMessage();
+						}
+
+						MessagelistUserStore.notifyNewMessages(folderFromCache.fullName, result.NewMessages);
+
+						if (!oldHash || unreadCountChange || result.Hash !== oldHash) {
+							if (folderFromCache.fullName === FolderUserStore.currentFolderFullName()) {
+								MessagelistUserStore.reload();
+							} else if (getFolderInboxName() === folderFromCache.fullName) {
+								Remote.messageList(null, {Folder: getFolderInboxName()}, true);
+							}
+						}
+					}
+				}
+			},
+			folder,
+			list
+		);
+	}
+},
+
+/**
  * @param {boolean=} boot = false
  */
 folderInformationMultiply = (boot = false) => {
@@ -162,7 +214,7 @@ folderInformationMultiply = (boot = false) => {
 						} else if (unreadCountChange
 						 && folder.fullName === FolderUserStore.currentFolderFullName()
 						 && MessagelistUserStore.length) {
-							rl.app.folderInformation(folder.fullName, MessagelistUserStore());
+							folderInformation(folder.fullName, MessagelistUserStore());
 						}
 					}
 				});
