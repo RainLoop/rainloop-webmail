@@ -17,7 +17,7 @@ function filtersToSieveScript(filters)
 			''
 		];
 
-	const quote = string => '"' + string.trim().replace(/(\\|")/, '\\\\$1') + '"';
+	const quote = string => '"' + string.trim().replace(/(\\|")/g, '\\$1') + '"';
 	const StripSpaces = string => string.replace(/\s+/, ' ').trim();
 
 	// conditionToSieveScript
