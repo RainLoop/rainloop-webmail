@@ -284,7 +284,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 				\array_pop($aResponse);
 			}
 
-			$sScript = \implode("\n", $aResponse);
+			$sScript = \implode("\r\n", $aResponse);
 		}
 
 		return $sScript;
@@ -296,6 +296,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 */
 	public function PutScript(string $sScriptName, string $sScriptSource) : self
 	{
+		$sScriptSource = \preg_replace('/\r?\n/', "\r\n", $sScriptSource);
 		$this->sendRequest('PUTSCRIPT "'.$sScriptName.'" {'.\strlen($sScriptSource).'+}');
 		$this->sendRequestWithCheck($sScriptSource);
 
@@ -308,6 +309,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 */
 	public function CheckScript(string $sScriptSource) : self
 	{
+		$sScriptSource = \preg_replace('/\r?\n/', "\r\n", $sScriptSource);
 		$this->sendRequest('CHECKSCRIPT {'.\strlen($sScriptSource).'+}');
 		$this->sendRequestWithCheck($sScriptSource);
 
