@@ -1030,7 +1030,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				// no default
 			}
 
-			sText = message.bodyAsHTML();
+			sText = message.bodyAsHTML().replace(/<img[^>]+>/g, '').replace(/<a\s[^>]+><\/a>/g, '');
 			let encrypted;
 
 			switch (lineComposeType) {
@@ -1039,7 +1039,7 @@ export class ComposePopupView extends AbstractViewPopup {
 					sFrom = message.fromToLine(false, true);
 					sText = '<br><br><p>' + i18n('COMPOSE/REPLY_MESSAGE_TITLE', { DATETIME: sDate, EMAIL: sFrom })
 						+ ':</p><blockquote>'
-						+ sText.replace(/<img[^>]+>/g, '').replace(/<a\s[^>]+><\/a>/g, '').trim()
+						+ sText.trim()
 						+ '</blockquote>';
 					break;
 
