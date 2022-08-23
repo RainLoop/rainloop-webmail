@@ -294,8 +294,9 @@ export class SieveScriptModel extends AbstractModel
 		return {
 			name: this.name(),
 			active: this.active() ? 1 : 0,
-			body: this.body(),
-			filters: this.filters.map(item => item.toJson())
+			body: this.body()
+//			body: this.allowFilters() ? this.body() : this.filtersToRaw()
+//			filters: this.filters.map(item => item.toJson())
 		};
 	}
 

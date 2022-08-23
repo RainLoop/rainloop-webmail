@@ -41,12 +41,12 @@ class Filters extends \RainLoop\Providers\AbstractProvider
 		}
 	}
 
-	public function Save(\RainLoop\Model\Account $oAccount, string $sScriptName, array $aFilters, string $sRaw = '') : bool
+	public function Save(\RainLoop\Model\Account $oAccount, string $sScriptName, string $sRaw) : bool
 	{
 		try
 		{
 			return $this->IsActive()
-				? $this->oDriver->Save($oAccount, $sScriptName, $aFilters, $sRaw)
+				? $this->oDriver->Save($oAccount, $sScriptName, $sRaw)
 				: false;
 		}
 		catch (\Throwable $oException)
