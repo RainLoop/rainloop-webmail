@@ -90,7 +90,6 @@
 		"LABEL_NEW_LOGIN": "新的登录用户名",
 		"LABEL_NEW_PASSWORD": "新密码",
 		"LABEL_REPEAT_PASSWORD": "重复输入新密码",
-		"BUTTON_UPDATE_PASSWORD": "更新密码",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "要求验证 SSL 证书（IMAP\/SMTP）",
 		"LABEL_ALLOW_SELF_SIGNED": "允许自签名证书"

@@ -90,7 +90,6 @@
 		"LABEL_NEW_LOGIN": "Uusi tunnus",
 		"LABEL_NEW_PASSWORD": "Uusi salasana",
 		"LABEL_REPEAT_PASSWORD": "Toista",
-		"BUTTON_UPDATE_PASSWORD": "Päivitä salasana",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Vaadi SSL sertifikaatin varmistus (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Salli itse-allekirjoitetut sertifikaatit"

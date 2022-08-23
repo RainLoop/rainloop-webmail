@@ -90,7 +90,6 @@
 		"LABEL_NEW_LOGIN": "نام کاربری جدید",
 		"LABEL_NEW_PASSWORD": "گذرواژه جدید",
 		"LABEL_REPEAT_PASSWORD": "تکرار",
-		"BUTTON_UPDATE_PASSWORD": "بروز‌رسانی گذرواژه",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "به بررسی گواهینامه SSL نیاز داشته باشد (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "به گواهی‌نامه‌هایی که توسط خودشان امضاء شده‌اند اجازه بده"

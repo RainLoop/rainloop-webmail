@@ -90,7 +90,6 @@
 		"LABEL_NEW_LOGIN": "Novo uporabniško ime",
 		"LABEL_NEW_PASSWORD": "Novo geslo",
 		"LABEL_REPEAT_PASSWORD": "Ponovno",
-		"BUTTON_UPDATE_PASSWORD": "Posodobi geslo",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Obvezno overjanje uporabljenega SSL certifikata (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Dovoli samopodpisane certifikate"

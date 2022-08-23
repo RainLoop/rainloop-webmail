@@ -90,7 +90,6 @@
 		"LABEL_NEW_LOGIN": "新しいログイン名",
 		"LABEL_NEW_PASSWORD": "新しいパスワード",
 		"LABEL_REPEAT_PASSWORD": "再入力",
-		"BUTTON_UPDATE_PASSWORD": "パスワード更新",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "(IMAP\/SMTP)のSSL証明書の検証を有効にする",
 		"LABEL_ALLOW_SELF_SIGNED": "自己署名証明書を使う"

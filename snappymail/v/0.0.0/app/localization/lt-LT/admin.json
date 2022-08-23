@@ -90,7 +90,6 @@
 		"LABEL_NEW_LOGIN": "Naujas prisijungimo vardas",
 		"LABEL_NEW_PASSWORD": "Naujas slaptažodis",
 		"LABEL_REPEAT_PASSWORD": "Pakartokite",
-		"BUTTON_UPDATE_PASSWORD": "Atnaujinti slaptažodį",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Reikalauti SSL sertifikato (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Leisti pačių sukurtus sertifikatus"

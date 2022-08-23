@@ -90,7 +90,6 @@
 		"LABEL_NEW_LOGIN": "Đăng nhập mới",
 		"LABEL_NEW_PASSWORD": "Mật khẩu mới",
 		"LABEL_REPEAT_PASSWORD": "Lập lại mật khẩu",
-		"BUTTON_UPDATE_PASSWORD": "Cập nhật mật khẩu",
 		"LEGEND_SSL": "Chứng chỉ số SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Yêu cầu xác minh chứng chỉ SSL được dùng (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Cho phép chứng chỉ tự ký"

@@ -90,7 +90,6 @@
 		"LABEL_NEW_LOGIN": "Nyt log ind",
 		"LABEL_NEW_PASSWORD": "Ny adgangskode",
 		"LABEL_REPEAT_PASSWORD": "Gentag",
-		"BUTTON_UPDATE_PASSWORD": "Opdater adgangskode",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Kræv verifikation af brugt SSL certifikat (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Tillad selvsignerede certifikater"

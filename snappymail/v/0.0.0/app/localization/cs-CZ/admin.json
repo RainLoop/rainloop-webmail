@@ -90,7 +90,6 @@
 		"LABEL_NEW_LOGIN": "Nový login",
 		"LABEL_NEW_PASSWORD": "Nové heslo",
 		"LABEL_REPEAT_PASSWORD": "Znovu",
-		"BUTTON_UPDATE_PASSWORD": "Aktualizovat heslo",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Vyžadovat ověření SSL certifikátu (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Povolit self-signed certifikáty"

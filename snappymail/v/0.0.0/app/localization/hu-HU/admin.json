@@ -90,7 +90,6 @@
 		"LABEL_NEW_LOGIN": "Új felhasználó",
 		"LABEL_NEW_PASSWORD": "Új jelszó",
 		"LABEL_REPEAT_PASSWORD": "Újra",
-		"BUTTON_UPDATE_PASSWORD": "Jelszó frissítés",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "A használt (IMAP\/SMTP) tanúsítvány ellenőrzés megkövetelése",
 		"LABEL_ALLOW_SELF_SIGNED": "Saját aláírt tanúsítványok engedélyezése"

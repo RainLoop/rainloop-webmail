@@ -90,7 +90,6 @@
 		"LABEL_NEW_LOGIN": "Nuevo login",
 		"LABEL_NEW_PASSWORD": "Nueva contraseña",
 		"LABEL_REPEAT_PASSWORD": "Re-ingresar",
-		"BUTTON_UPDATE_PASSWORD": "Actualizar contraseña",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Requerir verificación del certificado SSL (IMAP \/ SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Permitir certificados auto-firmados"

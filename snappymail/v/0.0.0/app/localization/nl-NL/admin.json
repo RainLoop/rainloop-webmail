@@ -90,7 +90,6 @@
 		"LABEL_NEW_LOGIN": "Nieuwe gebruikersnaam",
 		"LABEL_NEW_PASSWORD": "Nieuw wachtwoord",
 		"LABEL_REPEAT_PASSWORD": "Herhaal nieuw wachtwoord",
-		"BUTTON_UPDATE_PASSWORD": "Gegevens bijwerken",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Verificatie van SSL certificaten (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Sta zelf ondertekende certificaten toe"

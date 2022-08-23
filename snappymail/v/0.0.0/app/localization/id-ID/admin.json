@@ -90,7 +90,6 @@
 		"LABEL_NEW_LOGIN": "Login baru",
 		"LABEL_NEW_PASSWORD": "Password baru",
 		"LABEL_REPEAT_PASSWORD": "Ulangi",
-		"BUTTON_UPDATE_PASSWORD": "Perbarui Password",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Diperlukan verifikasi sertifikat SSL dengan (IMAP\/SMTP) ",
 		"LABEL_ALLOW_SELF_SIGNED": "Izinkan sertifikat yang dibuat sendiri"

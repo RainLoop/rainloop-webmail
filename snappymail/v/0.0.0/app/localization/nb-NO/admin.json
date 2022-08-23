@@ -90,7 +90,6 @@
 		"LABEL_NEW_LOGIN": "Nytt brukernavn",
 		"LABEL_NEW_PASSWORD": "Nytt passord",
 		"LABEL_REPEAT_PASSWORD": "Gjenta",
-		"BUTTON_UPDATE_PASSWORD": "Oppdater passord",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Krev bekreftelse av SSL-sertifikat (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Tillat selvutstedt sertifikat"

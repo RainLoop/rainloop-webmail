@@ -90,7 +90,6 @@
 		"LABEL_NEW_LOGIN": "Новый логин",
 		"LABEL_NEW_PASSWORD": "Новый пароль",
 		"LABEL_REPEAT_PASSWORD": "Повторить пароль",
-		"BUTTON_UPDATE_PASSWORD": "Обновить пароль",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Требовать проверку SSL сертификата для IMAP и SMTP",
 		"LABEL_ALLOW_SELF_SIGNED": "Разрешить cамоподписанные сертификаты"
