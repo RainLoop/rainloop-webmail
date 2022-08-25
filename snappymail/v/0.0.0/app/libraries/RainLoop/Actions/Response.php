@@ -179,7 +179,7 @@ trait Response
 			}
 
 			// \MailSo\Mime\EmailCollection
-			foreach (['ReplyTo','From','To','Cc','Bcc','Sender','DeliveredTo','ReplyTo'] as $prop) {
+			foreach (['ReplyTo','From','To','Cc','Bcc','Sender','DeliveredTo'] as $prop) {
 				$mResult[$prop] = $this->responseObject($mResult[$prop], $sParent);
 			}
 
