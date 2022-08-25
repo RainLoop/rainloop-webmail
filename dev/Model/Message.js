@@ -89,11 +89,15 @@ const
 		})
 	},
 
+	/**
+	 * @param {EmailCollectionModel} emails
+	 * @param {Object} unic
+	 * @param {Map} localEmails
+	 */
 	replyHelper = (emails, unic, localEmails) => {
 		emails.forEach(email => {
-			if (undefined === unic[email.email]) {
-				unic[email.email] = true;
-				localEmails.push(email);
+			if (!unic[email.email] && !localEmails.has(email.email)) {
+				localEmails.set(email.email, email);
 			}
 		});
 	};
@@ -414,50 +418,36 @@ export class MessageModel extends AbstractModel {
 
 	/**
 	 * @param {Object} excludeEmails
-	 * @param {boolean=} last = false
 	 * @returns {Array}
 	 */
-	replyEmails(excludeEmails, last) {
-		const result = [],
-			unic = undefined === excludeEmails ? {} : excludeEmails;
-
+	replyEmails(excludeEmails) {
+		const
+			result = new Map(),
+			unic = excludeEmails || {};
 		replyHelper(this.replyTo, unic, result);
-		if (!result.length) {
-			replyHelper(this.from, unic, result);
-		}
-
-		if (!result.length && !last) {
-			return this.replyEmails({}, true);
-		}
-
-		return result;
+		result.size || replyHelper(this.from, unic, result);
+		return result.size ? [...result.values()] : [this.to[0]];
 	}
 
 	/**
 	 * @param {Object} excludeEmails
-	 * @param {boolean=} last = false
 	 * @returns {Array.<Array>}
 	 */
-	replyAllEmails(excludeEmails, last) {
-		let data = [];
-		const toResult = [],
-			ccResult = [],
-			unic = undefined === excludeEmails ? {} : excludeEmails;
+	replyAllEmails(excludeEmails) {
+		const
+			toResult = new Map(),
+			ccResult = new Map(),
+			unic = excludeEmails || {};
 
 		replyHelper(this.replyTo, unic, toResult);
-		if (!toResult.length) {
+		if (!toResult.size) {
 			replyHelper(this.from, unic, toResult);
 		}
-
 		replyHelper(this.to, unic, toResult);
+
 		replyHelper(this.cc, unic, ccResult);
 
-		if (!toResult.length && !last) {
-			data = this.replyAllEmails({}, true);
-			return [data[0], ccResult];
-		}
-
-		return [toResult, ccResult];
+		return [...toResult.values(), ...ccResult.values()];
 	}
 
 	viewHtml() {
