@@ -241,7 +241,7 @@ export const
 					)) {
 						skipStyle = true;
 						setAttribute('style', 'display:none');
-						setAttribute('data-x-hidden-src', value);
+						setAttribute('data-x-src-hidden', value);
 					}
 					else if ((attachment = findLocationByCid(value)))
 					{
@@ -253,7 +253,9 @@ export const
 					}
 					else if ('cid:' === value.slice(0, 4))
 					{
-						attachment = findAttachmentByCid(value.slice(4));
+						value = value.slice(4);
+						setAttribute('data-x-src-cid', value);
+						attachment = findAttachmentByCid(value);
 						if (attachment && attachment.download) {
 							oElement.src = attachment.linkPreview();
 							attachment.isInline(true);
@@ -267,16 +269,16 @@ export const
 					}
 					else if ('data:image/' === value.slice(0, 11))
 					{
-						setAttribute('src', value);
+						oElement.src = value;
 					}
 					else
 					{
-						setAttribute('data-x-broken-src', value);
+						setAttribute('data-x-src-broken', value);
 					}
 				}
 				else
 				{
-					setAttribute('data-x-broken-src', value);
+					setAttribute('data-x-src-broken', value);
 				}
 			}
 

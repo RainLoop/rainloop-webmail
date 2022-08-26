@@ -20,7 +20,7 @@ import { folderInformation, messagesDeleteHelper } from 'Common/Folders';
 import { serverRequest } from 'Common/Links';
 import { i18n, getNotification, getUploadErrorDescByCode, timestampToString } from 'Common/Translator';
 import { MessageFlagsCache, setFolderHash } from 'Common/Cache';
-import { Settings, SettingsCapa, SettingsGet, elementById, addShortcut } from 'Common/Globals';
+import { Settings, SettingsCapa, SettingsGet, elementById, addShortcut, createElement } from 'Common/Globals';
 //import { exitFullscreen, isFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
 import { AppUserStore } from 'Stores/User/App';
@@ -50,8 +50,12 @@ import { ThemeStore } from 'Stores/Theme';
 
 let alreadyFullscreen;
 */
+let oLastMessage;
+
 const
 	ScopeCompose = 'Compose',
+
+	tpl = createElement('template'),
 
 	base64_encode = text => btoa(unescape(encodeURIComponent(text))).match(/.{1,76}/g).join('\r\n'),
 
@@ -226,7 +230,6 @@ export class ComposePopupView extends AbstractViewPopup {
 			}
 		};
 
-		this.oLastMessage = null;
 		this.oEditor = null;
 		this.aDraftInfo = null;
 		this.sInReplyTo = '';
@@ -828,7 +831,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			this.editor(editor => {
 				let signature = identity.signature() || '',
 					isHtml = ':HTML:' === signature.slice(0, 6),
-					fromLine = this.oLastMessage ? emailArrayToStringLineHelper(this.oLastMessage.from, true) : '';
+					fromLine = oLastMessage ? emailArrayToStringLineHelper(oLastMessage.from, true) : '';
 				if (fromLine) {
 					signature = signature.replace(/{{FROM-FULL}}/g, fromLine);
 					if (!fromLine.includes(' ') && 0 < fromLine.indexOf('@')) {
@@ -909,24 +912,20 @@ export class ComposePopupView extends AbstractViewPopup {
 			sText = '',
 			identity = null,
 			aDraftInfo = null,
-			message = null;
+			message = 1 === arrayLength(oMessageOrArray)
+				? oMessageOrArray[0]
+				: (isArray(oMessageOrArray) ? null : oMessageOrArray);
 
-		const excludeEmail = {},
+		const
+//			excludeEmail = new Set(),
+			excludeEmail = {},
 			mEmail = AccountUserStore.email(),
 			lineComposeType = sType || ComposeType.Empty;
 
-		if (oMessageOrArray) {
-			message =
-				1 === arrayLength(oMessageOrArray)
-					? oMessageOrArray[0]
-					: isArray(oMessageOrArray)
-					? null
-					: oMessageOrArray;
-		}
+		oLastMessage = message;
 
-		this.oLastMessage = message;
-
-		if (null !== mEmail) {
+		if (mEmail) {
+//			excludeEmail.add(mEmail);
 			excludeEmail[mEmail] = true;
 		}
 
@@ -934,6 +933,7 @@ export class ComposePopupView extends AbstractViewPopup {
 
 		identity = findIdentityByMessage(lineComposeType, message);
 		if (identity) {
+//			excludeEmail.add(identity.email());
 			excludeEmail[identity.email()] = true;
 		}
 
@@ -1030,8 +1030,14 @@ export class ComposePopupView extends AbstractViewPopup {
 				// no default
 			}
 
-			sText = message.bodyAsHTML().replace(/<img[^>]+>/g, '').replace(/<a\s[^>]+><\/a>/g, '');
 			let encrypted;
+
+			// https://github.com/the-djmaze/snappymail/issues/491
+			tpl.innerHTML = message.bodyAsHTML();
+			tpl.content.querySelectorAll('img').forEach(img =>
+				img.dataset.xSrcCid || img.dataset.xSrc || img.replaceWith(img.alt || img.title)
+			);
+			sText = tpl.innerHTML.trim();
 
 			switch (lineComposeType) {
 				case ComposeType.Reply:
@@ -1068,6 +1074,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				case ComposeType.ForwardAsAttachment:
 					sText = '';
 					break;
+
 				default:
 					encrypted = PgpUserStore.isEncrypted(sText);
 					if (encrypted) {
@@ -1131,7 +1138,8 @@ export class ComposePopupView extends AbstractViewPopup {
 			this.setFocusInPopup();
 		}
 
-		const downloads = this.getAttachmentsDownloadsForUpload();
+		// item.CID item.isInline item.isLinked
+		const downloads = this.attachments.filter(item => item && !item.tempName()).map(item => item.id);
 		if (arrayLength(downloads)) {
 			Remote.request('MessageUploadAttachments',
 				(iError, oData) => {
@@ -1402,35 +1410,22 @@ export class ComposePopupView extends AbstractViewPopup {
 		if (message) {
 			if (ComposeType.ForwardAsAttachment === type) {
 				this.addMessageAsAttachment(message);
-			} else {
+			} else if ([
+				ComposeType.Reply, ComposeType.ReplyAll,
+				ComposeType.Forward, ComposeType.Draft, ComposeType.EditAsNew
+			].includes(type)) {
 				message.attachments.forEach(item => {
-					let add = false;
-					switch (type) {
-						case ComposeType.Reply:
-						case ComposeType.ReplyAll:
-							break;
-
-						case ComposeType.Forward:
-						case ComposeType.Draft:
-						case ComposeType.EditAsNew:
-							add = true;
-							break;
-						// no default
-					}
-
-					if (add) {
-						const attachment = new ComposeAttachmentModel(
-							item.download,
-							item.fileName,
-							item.estimatedSize,
-							item.isInline(),
-							item.isLinked(),
-							item.cid,
-							item.contentLocation
-						);
-						attachment.fromMessage = true;
-						this.addAttachment(attachment);
-					}
+					const attachment = new ComposeAttachmentModel(
+						item.download,
+						item.fileName,
+						item.estimatedSize,
+						item.isInline(),
+						item.isLinked(),
+						item.cid,
+						item.contentLocation
+					);
+					attachment.fromMessage = true;
+					this.addAttachment(attachment);
 				});
 			}
 		}
@@ -1502,15 +1497,6 @@ export class ComposePopupView extends AbstractViewPopup {
 		this.oEditor && this.oEditor.clear();
 
 		this.dropMailvelope();
-	}
-
-	/**
-	 * @returns {Array}
-	 */
-	getAttachmentsDownloadsForUpload() {
-		return this.attachments.filter(item => item && !item.tempName()).map(
-			item => item.id
-		);
 	}
 
 	mailvelopeArea() {
