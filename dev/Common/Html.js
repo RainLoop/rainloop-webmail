@@ -39,7 +39,6 @@ export const
 	cleanHtml = (html, oAttachments, removeColors) => {
 		const
 			debug = false, // Config()->Get('debug', 'enable', false);
-			useProxy = !!SettingsGet('UseLocalProxyForExternalImages'),
 			detectHiddenImages = true, // !!SettingsGet('try_to_detect_hidden_images'),
 
 			result = {
@@ -229,48 +228,52 @@ export const
 				value = getAttribute('src');
 				delAttribute('src');
 
-				let attachment;
-
-				if (detectHiddenImages
-					&& 'IMG' === name
-					&& (('' != getAttribute('height') && 3 > pInt(getAttribute('height')))
-						|| ('' != getAttribute('width') && 3 > pInt(getAttribute('width')))
-						|| [
-							'email.microsoftemail.com/open',
-							'github.com/notifications/beacon/',
-							'mandrillapp.com/track/open',
-							'list-manage.com/track/open'
-						].filter(uri => value.toLowerCase().includes(uri)).length
-				)) {
-					skipStyle = true;
-					setAttribute('style', 'display:none');
-					setAttribute('data-x-hidden-src', value);
-				}
-				else if ((attachment = findLocationByCid(value)))
-				{
-					if (attachment.download) {
-						oElement.loading = 'lazy';
-						oElement.src = attachment.linkPreview();
-						attachment.isLinked(true);
+				if ('IMG' === name) {
+					let attachment;
+					if (detectHiddenImages
+						&& (('' != getAttribute('height') && 3 > pInt(getAttribute('height')))
+							|| ('' != getAttribute('width') && 3 > pInt(getAttribute('width')))
+							|| [
+								'email.microsoftemail.com/open',
+								'github.com/notifications/beacon/',
+								'mandrillapp.com/track/open',
+								'list-manage.com/track/open'
+							].filter(uri => value.toLowerCase().includes(uri)).length
+					)) {
+						skipStyle = true;
+						setAttribute('style', 'display:none');
+						setAttribute('data-x-hidden-src', value);
 					}
-				}
-				else if ('cid:' === value.slice(0, 4))
-				{
-					attachment = findAttachmentByCid(value.slice(4));
-					if (attachment && attachment.download) {
-						oElement.src = attachment.linkPreview();
-						attachment.isInline(true);
-						attachment.isLinked(true);
+					else if ((attachment = findLocationByCid(value)))
+					{
+						if (attachment.download) {
+							oElement.loading = 'lazy';
+							oElement.src = attachment.linkPreview();
+							attachment.isLinked(true);
+						}
 					}
-				}
-				else if (/^(https?:)?\/\//i.test(value))
-				{
-					setAttribute('data-x-src', useProxy ? proxy(value) : value);
-					result.hasExternals = true;
-				}
-				else if ('data:image/' === value.slice(0, 11))
-				{
-					setAttribute('src', value);
+					else if ('cid:' === value.slice(0, 4))
+					{
+						attachment = findAttachmentByCid(value.slice(4));
+						if (attachment && attachment.download) {
+							oElement.src = attachment.linkPreview();
+							attachment.isInline(true);
+							attachment.isLinked(true);
+						}
+					}
+					else if (/^(https?:)?\/\//i.test(value))
+					{
+						setAttribute('data-x-src', value);
+						result.hasExternals = true;
+					}
+					else if ('data:image/' === value.slice(0, 11))
+					{
+						setAttribute('src', value);
+					}
+					else
+					{
+						setAttribute('data-x-broken-src', value);
+					}
 				}
 				else
 				{
@@ -323,7 +326,7 @@ export const
 								}
 							} else if (/^(https?:)?\/\//.test(lowerUrl)) {
 								result.hasExternals = true;
-								urls_remote.push([property, useProxy ? proxy(found) : value]);
+								urls_remote.push([property, found]);
 							} else if ('data:image/' === lowerUrl.slice(0, 11)) {
 								oStyle[property] = value;
 							} else {

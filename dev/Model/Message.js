@@ -3,10 +3,10 @@ import ko from 'ko';
 import { MessagePriority } from 'Common/EnumsUser';
 import { i18n } from 'Common/Translator';
 
-import { doc } from 'Common/Globals';
+import { doc, SettingsGet } from 'Common/Globals';
 import { encodeHtml, plainToHtml, cleanHtml } from 'Common/Html';
 import { isArray, arrayLength, forEachObjectEntry } from 'Common/Utils';
-import { serverRequestRaw } from 'Common/Links';
+import { serverRequestRaw, proxy } from 'Common/Links';
 
 import { FolderUserStore } from 'Stores/User/Folder';
 import { SettingsUserStore } from 'Stores/User/Settings';
@@ -606,16 +606,18 @@ export class MessageModel extends AbstractModel {
 			this.hasImages(false);
 			body.rlHasImages = false;
 
-			let attr = 'data-x-src';
-			body.querySelectorAll('[' + attr + ']').forEach(node => {
-				if (node.matches('img')) {
-					node.loading = 'lazy';
-				}
-				node.src = node.getAttribute(attr);
+			let attr = 'data-x-src',
+				src, useProxy = !!SettingsGet('UseLocalProxyForExternalImages');
+			body.querySelectorAll('img[' + attr + ']').forEach(node => {
+				node.loading = 'lazy';
+				src = node.getAttribute(attr);
+				node.src = useProxy ? proxy(src) : src;
 			});
 
 			body.querySelectorAll('[data-x-style-url]').forEach(node => {
-				JSON.parse(node.dataset.xStyleUrl).forEach(data => node.style[data[0]] = "url('" + data[1] + "')");
+				JSON.parse(node.dataset.xStyleUrl).forEach(data =>
+					node.style[data[0]] = "url('" + (useProxy ? proxy(data[1]) : data[1]) + "')"
+				);
 			});
 		}
 	}
