@@ -1,6 +1,5 @@
-import { createElement, SettingsGet } from 'Common/Globals';
+import { createElement } from 'Common/Globals';
 import { forEachObjectEntry, pInt } from 'Common/Utils';
-import { proxy } from 'Common/Links';
 
 const
 	tpl = createElement('template'),
