@@ -90,17 +90,17 @@ $sData = is_file(APP_DATA_FOLDER_PATH.'DATA.php') ? file_get_contents(APP_DATA_F
 define('APP_PRIVATE_DATA', APP_DATA_FOLDER_PATH.'_data_'.($sData ? md5($sData) : '').'/'.APP_PRIVATE_DATA_NAME.'/');
 define('APP_PLUGINS_PATH', APP_PRIVATE_DATA.'plugins/');
 
-ini_set('default_charset', 'UTF-8');
-ini_set('internal_encoding', 'UTF-8');
-mb_internal_encoding('UTF-8');
-mb_language('uni');
-
 // installation checking data folder
 if (APP_VERSION !== (is_file(APP_DATA_FOLDER_PATH.'INSTALLED') ? file_get_contents(APP_DATA_FOLDER_PATH.'INSTALLED') : '')
  || !is_dir(APP_PRIVATE_DATA))
 {
 	include APP_VERSION_ROOT_PATH.'setup.php';
 }
+
+ini_set('default_charset', 'UTF-8');
+ini_set('internal_encoding', 'UTF-8');
+mb_internal_encoding('UTF-8');
+mb_language('uni');
 
 $sSalt = is_file(APP_DATA_FOLDER_PATH.'SALT.php') ? trim(file_get_contents(APP_DATA_FOLDER_PATH.'SALT.php')) : '';
 if (!$sSalt) {
