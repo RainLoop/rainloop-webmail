@@ -668,6 +668,19 @@ class ActionsAdmin extends Actions
 		return $this->DefaultResponse(__FUNCTION__, true);
 	}
 
+	public function DoAdminQRCode() : array
+	{
+		$user = (string) $this->GetActionParam('username', '');
+		$secret = (string) $this->GetActionParam('TOTP', '');
+		$issuer = \rawurlencode(\RainLoop\API::Config()->Get('webmail', 'title', 'SnappyMail'));
+		$QR = \SnappyMail\QRCode::getMinimumQRCode(
+			"otpauth://totp/{$issuer}:{$user}?secret={$secret}&issuer={$issuer}",
+//			"otpauth://totp/{$user}?secret={$secret}",
+			\SnappyMail\QRCode::ERROR_CORRECT_LEVEL_M
+		);
+		return $this->DefaultResponse(__FUNCTION__, $QR->__toString());
+	}
+
 	private function setAdminAuthToken(string $sToken) : void
 	{
 		Utils::SetCookie(static::$AUTH_ADMIN_TOKEN_KEY, $sToken, 0);

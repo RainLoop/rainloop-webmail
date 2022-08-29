@@ -21,27 +21,46 @@ export class AdminSettingsSecurity extends AbstractViewSettings {
 			adminPasswordNew: '',
 			adminPasswordNew2: '',
 			adminPasswordNewError: false,
-			adminTOTP: SettingsGet('AdminTOTP'),
+			adminTOTP: '',
 
-			adminPasswordUpdateError: false,
-			adminPasswordUpdateSuccess: false,
+			saveError: false,
+			saveSuccess: false,
+
+			viewQRCode: '',
 
 			capaOpenPGP: SettingsCapa('OpenPGP')
 		});
 
 		const reset = () => {
-			this.adminPasswordUpdateError(false);
-			this.adminPasswordUpdateSuccess(false);
+			this.saveError(false);
+			this.saveSuccess(false);
 			this.adminPasswordNewError(false);
 		};
 
 		addSubscribablesTo(this, {
 			adminPassword: () => {
-				this.adminPasswordUpdateError(false);
-				this.adminPasswordUpdateSuccess(false);
+				this.saveError(false);
+				this.saveSuccess(false);
 			},
 
 			adminLogin: () => this.adminLoginError(false),
+
+			adminTOTP: value => {
+				let l = value.length;
+				if (16 <= l && 0 == value.length * 5 % 8) {
+					Remote.request('AdminQRCode', (iError, data) => {
+						if (!iError) {
+							console.dir({data:data});
+							this.viewQRCode(data.Result);
+						}
+					}, {
+						'username': this.adminLogin(),
+						'TOTP': this.adminTOTP()
+					});
+				} else {
+					this.viewQRCode('');
+				}
+			},
 
 			adminPasswordNew: reset,
 
@@ -49,6 +68,8 @@ export class AdminSettingsSecurity extends AbstractViewSettings {
 
 			capaOpenPGP: value => Remote.saveSetting('CapaOpenPGP', value)
 		});
+
+		this.adminTOTP(SettingsGet('AdminTOTP'));
 
 		decorateKoCommands(this, {
 			saveNewAdminPasswordCommand: self => self.adminLogin().trim() && self.adminPassword()
@@ -66,18 +87,18 @@ export class AdminSettingsSecurity extends AbstractViewSettings {
 			return false;
 		}
 
-		this.adminPasswordUpdateError(false);
-		this.adminPasswordUpdateSuccess(false);
+		this.saveError(false);
+		this.saveSuccess(false);
 
 		Remote.request('AdminPasswordUpdate', (iError, data) => {
 			if (iError) {
-				this.adminPasswordUpdateError(true);
+				this.saveError(true);
 			} else {
 				this.adminPassword('');
 				this.adminPasswordNew('');
 				this.adminPasswordNew2('');
 
-				this.adminPasswordUpdateSuccess(true);
+				this.saveSuccess(true);
 
 				this.weakPassword(!!data.Result.Weak);
 			}

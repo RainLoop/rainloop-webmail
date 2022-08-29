@@ -49,7 +49,11 @@
 			data-bind="textInput: adminTOTP">
 	</div>
 	<div class="control-group">
-		<a class="btn" data-bind="command: saveNewAdminPasswordCommand, css: { 'btn-success': adminPasswordUpdateSuccess, 'btn-danger': adminPasswordUpdateError }"
+		<label></label>
+		<pre data-bind="text: viewQRCode" style="font-family:var(--fontMono);font-size:11px;letter-spacing:-1px;line-height:1;"></pre>
+	</div>
+	<div class="control-group">
+		<a class="btn" data-bind="command: saveNewAdminPasswordCommand, css: { 'btn-success': saveSuccess, 'btn-danger': saveError }"
 			data-icon="🔑" data-i18n="GLOBAL/SAVE"></a>
 	</div>
 </div>
