@@ -181,29 +181,25 @@ class ActionsAdmin extends Actions
 		$bResult = false;
 		$oConfig = $this->Config();
 
-		$sLogin = \trim($this->GetActionParam('Login', ''));
 		$sPassword = $this->GetActionParam('Password', '');
 		$this->Logger()->AddSecret($sPassword);
 
 		$sNewPassword = $this->GetActionParam('NewPassword', '');
-		if (\strlen(\trim($sNewPassword)))
-		{
+		if (\strlen($sNewPassword)) {
 			$this->Logger()->AddSecret($sNewPassword);
 		}
 
 		$passfile = APP_PRIVATE_DATA.'admin_password.txt';
 
-		$oConfig->Set('security', 'admin_totp', $this->GetActionParam('TOTP', ''));
-
-		if ($oConfig->ValidatePassword($sPassword))
-		{
-			if (\strlen($sLogin))
-			{
+		if ($oConfig->ValidatePassword($sPassword)) {
+			$sLogin = \trim($this->GetActionParam('Login', ''));
+			if (\strlen($sLogin)) {
 				$oConfig->Set('security', 'admin_login', $sLogin);
 			}
 
-			if (\strlen(\trim($sNewPassword)))
-			{
+			$oConfig->Set('security', 'admin_totp', $this->GetActionParam('TOTP', ''));
+
+			if (\strlen($sNewPassword)) {
 				$oConfig->SetPassword($sNewPassword);
 				if (\is_file($passfile) && \trim(\file_get_contents($passfile)) !== $sNewPassword) {
 					\unlink($passfile);

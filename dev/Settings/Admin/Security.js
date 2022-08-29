@@ -71,11 +71,11 @@ export class AdminSettingsSecurity extends AbstractViewSettings {
 		this.adminTOTP(SettingsGet('AdminTOTP'));
 
 		decorateKoCommands(this, {
-			saveNewAdminPasswordCommand: self => self.adminLogin().trim() && self.adminPassword()
+			saveAdminUserCommand: self => self.adminLogin().trim() && self.adminPassword()
 		});
 	}
 
-	saveNewAdminPasswordCommand() {
+	saveAdminUserCommand() {
 		if (!this.adminLogin().trim()) {
 			this.adminLoginError(true);
 			return false;
