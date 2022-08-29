@@ -87,7 +87,6 @@
 		"LABEL_SHOW_PHP_INFO": "显示 PHP 信息",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "管理员面板访问凭据",
 		"LABEL_CURRENT_PASSWORD": "当前密码",
-		"LABEL_NEW_LOGIN": "新的登录用户名",
 		"LABEL_NEW_PASSWORD": "新密码",
 		"LABEL_REPEAT_PASSWORD": "重复输入新密码",
 		"LEGEND_SSL": "SSL",

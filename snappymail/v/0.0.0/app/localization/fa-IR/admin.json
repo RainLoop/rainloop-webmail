@@ -87,7 +87,6 @@
 		"LABEL_SHOW_PHP_INFO": "نمایش اطلاعات PHP",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "اعتبار مجوز دسترسی به صفحه مدیریت",
 		"LABEL_CURRENT_PASSWORD": "گذرواژه فعلی",
-		"LABEL_NEW_LOGIN": "نام کاربری جدید",
 		"LABEL_NEW_PASSWORD": "گذرواژه جدید",
 		"LABEL_REPEAT_PASSWORD": "تکرار",
 		"LEGEND_SSL": "SSL",

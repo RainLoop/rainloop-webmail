@@ -87,7 +87,6 @@
 		"LABEL_SHOW_PHP_INFO": "Hiển thị thông tin PHP",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Thông tin truy cập bảng quản trị",
 		"LABEL_CURRENT_PASSWORD": "Mật khẩu hiện tại",
-		"LABEL_NEW_LOGIN": "Đăng nhập mới",
 		"LABEL_NEW_PASSWORD": "Mật khẩu mới",
 		"LABEL_REPEAT_PASSWORD": "Lập lại mật khẩu",
 		"LEGEND_SSL": "Chứng chỉ số SSL",

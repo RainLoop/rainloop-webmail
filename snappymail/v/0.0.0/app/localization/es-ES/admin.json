@@ -87,7 +87,6 @@
 		"LABEL_SHOW_PHP_INFO": "Mostrar información de PHP",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Credenciales de Acceso al panel de control",
 		"LABEL_CURRENT_PASSWORD": "Contraseña actual",
-		"LABEL_NEW_LOGIN": "Nuevo login",
 		"LABEL_NEW_PASSWORD": "Nueva contraseña",
 		"LABEL_REPEAT_PASSWORD": "Re-ingresar",
 		"LEGEND_SSL": "SSL",

@@ -87,7 +87,6 @@
 		"LABEL_SHOW_PHP_INFO": "Näytä PHP tiedot",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Hallintapaneeli kirjautumistiedot",
 		"LABEL_CURRENT_PASSWORD": "Nykyinen salasana",
-		"LABEL_NEW_LOGIN": "Uusi tunnus",
 		"LABEL_NEW_PASSWORD": "Uusi salasana",
 		"LABEL_REPEAT_PASSWORD": "Toista",
 		"LEGEND_SSL": "SSL",
