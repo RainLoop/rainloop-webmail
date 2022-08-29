@@ -98,7 +98,7 @@ export const
 				'BGSOUND','KEYGEN','SOURCE','OBJECT','EMBED','APPLET','IFRAME','FRAME','FRAMESET','VIDEO','AUDIO','AREA','MAP'
 			],
 			nonEmptyTags = [
-				'A','B','EM','I','SPAN','STRONG','TABLE'
+				'A','B','EM','I','SPAN','STRONG'
 			];
 
 		tpl.innerHTML = html
