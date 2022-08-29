@@ -5,9 +5,9 @@
 		"SAVE": "Gem",
 		"TEST": "Test",
 		"UPDATE": "Opdater",
-		"USERNAME": "Username",
-		"PASSWORD": "Password",
-		"CANCEL": "Cancel"
+		"USERNAME": "Brugernavn",
+		"PASSWORD": "Adgangskode",
+		"CANCEL": "Annuller"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Log ind",

@@ -5,9 +5,9 @@
 		"SAVE": "Lagre",
 		"TEST": "Test",
 		"UPDATE": "Oppdater",
-		"USERNAME": "Username",
-		"PASSWORD": "Password",
-		"CANCEL": "Cancel"
+		"USERNAME": "Brukernavn",
+		"PASSWORD": "Passord",
+		"CANCEL": "Avbryt"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Brukernavn",

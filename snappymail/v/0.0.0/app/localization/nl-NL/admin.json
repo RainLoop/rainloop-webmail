@@ -5,9 +5,9 @@
 		"SAVE": "Opslaan",
 		"TEST": "Test",
 		"UPDATE": "Updaten",
-		"USERNAME": "Username",
-		"PASSWORD": "Password",
-		"CANCEL": "Cancel"
+		"USERNAME": "Gebruikersnaam",
+		"PASSWORD": "Wachtwoord",
+		"CANCEL": "Annuleer"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Inlognaam",

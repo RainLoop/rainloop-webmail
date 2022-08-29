@@ -5,9 +5,9 @@
 		"SAVE": "Uložit",
 		"TEST": "Test",
 		"UPDATE": "Aktualizovat",
-		"USERNAME": "Username",
-		"PASSWORD": "Password",
-		"CANCEL": "Cancel"
+		"USERNAME": "Uživatelské jméno",
+		"PASSWORD": "Heslo",
+		"CANCEL": "Zrušit"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",

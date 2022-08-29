@@ -5,9 +5,9 @@
 		"SAVE": "Spara",
 		"TEST": "Test",
 		"UPDATE": "Uppdatera",
-		"USERNAME": "Username",
-		"PASSWORD": "Password",
-		"CANCEL": "Cancel"
+		"USERNAME": "Användarnamn",
+		"PASSWORD": "Lösenord",
+		"CANCEL": "Avbryt"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logga in",

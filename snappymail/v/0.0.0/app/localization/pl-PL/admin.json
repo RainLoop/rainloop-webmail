@@ -5,9 +5,9 @@
 		"SAVE": "Zapisz",
 		"TEST": "Testuj",
 		"UPDATE": "Zaktualizuj",
-		"USERNAME": "Username",
-		"PASSWORD": "Password",
-		"CANCEL": "Cancel"
+		"USERNAME": "Nazwa użytkownika",
+		"PASSWORD": "Hasło",
+		"CANCEL": "Anuluj"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",

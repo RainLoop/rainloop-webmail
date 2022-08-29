@@ -5,9 +5,9 @@
 		"SAVE": "Saugoti",
 		"TEST": "Bandymas",
 		"UPDATE": "Atnaujinti",
-		"USERNAME": "Username",
-		"PASSWORD": "Password",
-		"CANCEL": "Cancel"
+		"USERNAME": "Vartotojo vardas",
+		"PASSWORD": "Slaptažodis",
+		"CANCEL": "Atšaukti"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prisijungimo vardas",

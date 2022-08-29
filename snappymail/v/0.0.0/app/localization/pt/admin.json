@@ -5,9 +5,9 @@
 		"SAVE": "Guardar",
 		"TEST": "Testar",
 		"UPDATE": "Atualizar",
-		"USERNAME": "Username",
-		"PASSWORD": "Password",
-		"CANCEL": "Cancel"
+		"USERNAME": "Nome de usuário",
+		"PASSWORD": "Palavra-passe",
+		"CANCEL": "Cancelar"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Utilizador",

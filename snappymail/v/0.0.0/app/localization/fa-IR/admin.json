@@ -5,9 +5,9 @@
 		"SAVE": "ذخیره",
 		"TEST": "تست",
 		"UPDATE": "بروزرسانی",
-		"USERNAME": "Username",
-		"PASSWORD": "Password",
-		"CANCEL": "Cancel"
+		"USERNAME": "نام کاربری",
+		"PASSWORD": "گذرواژه",
+		"CANCEL": "انصراف"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ورود",

@@ -5,9 +5,9 @@
 		"SAVE": "Simpan",
 		"TEST": "Ujicoba",
 		"UPDATE": "Pembaruan",
-		"USERNAME": "Username",
-		"PASSWORD": "Password",
-		"CANCEL": "Cancel"
+		"USERNAME": "Nama belakang",
+		"PASSWORD": "Sandi",
+		"CANCEL": "Batal"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",

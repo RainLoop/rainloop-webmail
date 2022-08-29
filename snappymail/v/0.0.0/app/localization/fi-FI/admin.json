@@ -5,9 +5,9 @@
 		"SAVE": "Tallenna",
 		"TEST": "Testi",
 		"UPDATE": "Päivitä",
-		"USERNAME": "Username",
-		"PASSWORD": "Password",
-		"CANCEL": "Cancel"
+		"USERNAME": "Käyttäjätunnus",
+		"PASSWORD": "Salasana",
+		"CANCEL": "Peruuta"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Tunnus",

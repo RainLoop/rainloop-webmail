@@ -5,9 +5,9 @@
 		"SAVE": "Mentés",
 		"TEST": "Teszt",
 		"UPDATE": "Frissítés",
-		"USERNAME": "Username",
-		"PASSWORD": "Password",
-		"CANCEL": "Cancel"
+		"USERNAME": "Felhasználónév",
+		"PASSWORD": "Jelszó",
+		"CANCEL": "Mégse"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Belépés",

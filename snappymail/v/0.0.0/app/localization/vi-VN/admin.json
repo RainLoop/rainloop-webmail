@@ -5,9 +5,9 @@
 		"SAVE": "Lưu",
 		"TEST": "Thử",
 		"UPDATE": "Cập nhật",
-		"USERNAME": "Username",
-		"PASSWORD": "Password",
-		"CANCEL": "Cancel"
+		"USERNAME": "Tên tài khoản",
+		"PASSWORD": "Mật khẩu",
+		"CANCEL": "Hủy"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Đăng nhập",
