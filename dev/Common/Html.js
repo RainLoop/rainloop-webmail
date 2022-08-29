@@ -136,7 +136,7 @@ export const
 			}
 //			if (['CENTER','FORM'].includes(name)) {
 			if ('FORM' === name || 'O:P' === name || (nonEmptyTags.includes(name) && ('' == oElement.textContent.trim()))) {
-				replaceWithChildren(oElement);
+				('A' !== name || !oElement.querySelector('IMG')) && replaceWithChildren(oElement);
 				return;
 			}
 /*
