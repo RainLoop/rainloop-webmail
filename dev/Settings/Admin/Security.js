@@ -46,8 +46,7 @@ export class AdminSettingsSecurity extends AbstractViewSettings {
 			adminLogin: () => this.adminLoginError(false),
 
 			adminTOTP: value => {
-				let l = value.length;
-				if (16 <= l && 0 == value.length * 5 % 8) {
+				if (/[A-Z2-7]{16,}/.test(value) && 0 == value.length * 5 % 8) {
 					Remote.request('AdminQRCode', (iError, data) => {
 						if (!iError) {
 							console.dir({data:data});
