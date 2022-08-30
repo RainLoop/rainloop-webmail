@@ -447,7 +447,7 @@ export class MessageModel extends AbstractModel {
 
 		replyHelper(this.cc, unic, ccResult);
 
-		return [...toResult.values(), ...ccResult.values()];
+		return [[...toResult.values()], [...ccResult.values()]];
 	}
 
 	viewHtml() {
