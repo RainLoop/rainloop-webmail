@@ -2,8 +2,15 @@
 define('ROOT_DIR', dirname(__DIR__));
 define('PLUGINS_DEST_DIR', __DIR__ . '/dist/releases/plugins');
 
-$destPath = __DIR__ . 'build/dist/releases/plugins/';
 is_dir(PLUGINS_DEST_DIR) || mkdir(PLUGINS_DEST_DIR, 0777, true);
+$files = new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator(PLUGINS_DEST_DIR, RecursiveDirectoryIterator::SKIP_DOTS),
+    RecursiveIteratorIterator::CHILD_FIRST
+);
+foreach ($files as $fileinfo) {
+    $fileinfo->isDir() || unlink($fileinfo->getRealPath());
+}
+
 $manifest = [];
 require ROOT_DIR . '/snappymail/v/0.0.0/app/libraries/RainLoop/Plugins/AbstractPlugin.php';
 $keys = [
@@ -38,8 +45,6 @@ foreach (glob(ROOT_DIR . '/plugins/*', GLOB_NOSORT | GLOB_ONLYDIR) as $dir) {
 			$manifest_item['type'] = 'plugin';
 			$manifest_item['id']   = $name;
 			$manifest_item['file'] = "plugins/{$name}-{$version}.tgz";
-			ksort($manifest_item);
-			$manifest[$name] = $manifest_item;
 			$tar_destination = PLUGINS_DEST_DIR . "/{$name}-{$version}.tar";
 			$tgz_destination = PLUGINS_DEST_DIR . "/{$name}-{$version}.tgz";
 			@unlink($tgz_destination);
@@ -58,6 +63,13 @@ foreach (glob(ROOT_DIR . '/plugins/*', GLOB_NOSORT | GLOB_ONLYDIR) as $dir) {
 				unlink($phar_destination);
 				rename("{$phar_destination}.gz", $phar_destination);
 			}
+			if (isset($options['sign'])) {
+				passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --armor --detach-sign '.escapeshellarg($tgz_destination), $return_var);
+				$manifest_item['pgp_sig'] = trim(preg_replace('/-----(BEGIN|END) PGP SIGNATURE-----/', '', file_get_contents($tgz_destination.'.asc')));
+			}
+			ksort($manifest_item);
+			$manifest[$name] = $manifest_item;
+
 		} else {
 			echo "- {$name} {$version}\n";
 		}
