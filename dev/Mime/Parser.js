@@ -9,11 +9,11 @@ export function ParseMime(text)
 	class MimePart
 	{
 		header(name) {
-			return this.headers && this.headers[name];
+			return this.headers[name];
 		}
 
 		headerValue(name) {
-			return (this.header(name) || {value:null}).value;
+			return this.header(name)?.value;
 		}
 
 		get raw() {
@@ -26,12 +26,17 @@ export function ParseMime(text)
 
 		get body() {
 			let body = this.bodyRaw,
+//				charset = this.header('content-type')?.params.charset,
 				encoding = this.headerValue('content-transfer-encoding');
 			if ('quoted-printable' == encoding) {
 				body = body.replace(/=\r?\n/g, '').replace(QPDecodeIn, QPDecodeOut);
 			} else if ('base64' == encoding) {
 				body = atob(body.replace(/\r?\n/g, ''));
 			}
+/*
+			// https://developer.mozilla.org/en-US/docs/Web/API/Encoding_API/Encodings
+			return (new TextDecoder(charset)).decode((new TextEncoder()).encode(body));
+*/
 			return body;
 		}
 
@@ -73,7 +78,8 @@ export function ParseMime(text)
 
 	const ParsePart = (mimePart, start_pos = 0, id = '') =>
 	{
-		let part = new MimePart;
+		let part = new MimePart,
+			headers = {};
 		if (id) {
 			part.id = id;
 			part.start = start_pos;
@@ -84,7 +90,6 @@ export function ParseMime(text)
 		let head = mimePart.match(/^[\s\S]+?\r?\n\r?\n/);
 		if (head) {
 			head = head[0];
-			let headers = {};
 			head.replace(/\r?\n\s+/g, ' ').split(/\r?\n/).forEach(header => {
 				let match = header.match(/^([^:]+):\s*([^;]+)/),
 					params = {};
@@ -96,7 +101,6 @@ export function ParseMime(text)
 					params: params
 				};
 			});
-			part.headers = headers;
 
 			// get body
 			part.bodyStart = start_pos + head.length;
@@ -124,6 +128,8 @@ export function ParseMime(text)
 				});
 			}
 		}
+
+		part.headers = headers;
 
 		return part;
 	};
