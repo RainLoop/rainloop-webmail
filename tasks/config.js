@@ -1,4 +1,4 @@
-/* SnappyMail Webmail (c) SnappyMail Team | Licensed under AGPL 3 */
+/* SnappyMail Webmail (c) SnappyMail Team | Licensed under MIT */
 const path = require('path');
 
 const config = {
