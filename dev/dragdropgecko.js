@@ -163,6 +163,17 @@
 			return false;
 		};
 
+/*
+		doc.addEventListener('pointerdown', e => {
+			doc.addEventListener('pointermove', e => {
+				e.clientX
+			});
+			doc.setPointerCapture(e.pointerId);
+		});
+		doc.addEventListener('pointerup', e => {
+			doc.releasePointerCapture(e.pointerId);
+		});
+*/
 		doc.addEventListener('touchstart', e => {
 			// clear all variables
 			reset();
