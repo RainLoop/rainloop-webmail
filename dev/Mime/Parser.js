@@ -8,6 +8,20 @@ export function ParseMime(text)
 {
 	class MimePart
 	{
+/*
+		constructor() {
+			this.id = 0;
+			this.start = 0;
+			this.end = 0;
+			this.parts = [];
+			this.bodyStart = 0;
+			this.bodyEnd = 0;
+			this.boundary = '';
+			this.bodyText = '';
+			this.headers = {};
+		}
+*/
+
 		header(name) {
 			return this.headers[name];
 		}
@@ -34,8 +48,12 @@ export function ParseMime(text)
 				body = atob(body.replace(/\r?\n/g, ''));
 			}
 /*
-			// https://developer.mozilla.org/en-US/docs/Web/API/Encoding_API/Encodings
-			return (new TextDecoder(charset)).decode((new TextEncoder()).encode(body));
+			try {
+				// https://developer.mozilla.org/en-US/docs/Web/API/Encoding_API/Encodings
+				return new TextDecoder(charset).decode(Uint8Array.from(body, c => c.charCodeAt(0)));
+//				return new TextDecoder(charset).decode(new TextEncoder().encode(body));
+			} catch (e) {
+			}
 */
 			return body;
 		}
@@ -56,21 +74,17 @@ export function ParseMime(text)
 
 		forEach(fn) {
 			fn(this);
-			if (this.parts) {
-				this.parts.forEach(part => part.forEach(fn));
-			}
+			this.parts.forEach(part => part.forEach(fn));
 		}
 
 		getByContentType(type) {
 			if (type == this.headerValue('content-type')) {
 				return this;
 			}
-			if (this.parts) {
-				let i = 0, p = this.parts, part;
-				for (i; i < p.length; ++i) {
-					if ((part = p[i].getByContentType(type))) {
-						return part;
-					}
+			let i = 0, p = this.parts, part;
+			for (i; i < p.length; ++i) {
+				if ((part = p[i].getByContentType(type))) {
+					return part;
 				}
 			}
 		}
@@ -85,6 +99,7 @@ export function ParseMime(text)
 			part.start = start_pos;
 			part.end = start_pos + mimePart.length;
 		}
+		part.parts = [];
 
 		// get headers
 		let head = mimePart.match(/^[\s\S]+?\r?\n\r?\n/);
@@ -110,7 +125,6 @@ export function ParseMime(text)
 			let boundary = headers['content-type'].params.boundary;
 			if (boundary) {
 				part.boundary = boundary;
-				part.parts = [];
 				let regex = new RegExp('(?:^|\r?\n)--' + boundary + '(?:--)?(?:\r?\n|$)', 'g'),
 					body = mimePart.slice(head.length),
 					bodies = body.split(regex),
