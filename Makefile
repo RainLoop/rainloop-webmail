@@ -61,8 +61,6 @@ rl-watch-js:
 
 rl-build:
 	@docker compose run --no-deps --rm node gulp all
-rl-build-pro:
-	@docker compose run --no-deps --rm node gulp all --pro
 
 yarn-install:
 	@docker compose run --no-deps --rm node yarn install

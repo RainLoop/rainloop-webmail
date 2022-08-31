@@ -12,7 +12,6 @@ module.exports = {
 		es6: true
 	},
 	globals: {
-		'RL_COMMUNITY': true,
 		'RL_ES6': true
 	},
 	// http://eslint.org/docs/rules/

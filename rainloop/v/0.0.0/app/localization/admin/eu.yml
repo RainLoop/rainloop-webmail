@@ -4,7 +4,6 @@ eu:
     LABEL_PASSWORD: "Pasahitza"
     BUTTON_LOGIN: "Hasi saioa administrazio panelean"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Administrazio panela"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Orokorra"
@@ -71,7 +70,6 @@ eu:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Bat ere ez"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Behin"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Beti"
-    HTML_ALERT_PREMIUM: "Funtzionalitate hau <strong><a href=\"#/licensing\">Premium</a></strong> erabiltzaileentzat soilik dago eskuragarri."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Kontaktuak"
     LEGEND_STORAGE: "Biltegiratzea (PDO)"
@@ -146,22 +144,6 @@ eu:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Instalatzeko erabilgarri"
     LEGEND_INSTALLED_PACKAGES: "Instalatutako paketeak"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Une honetan ezin da sartu errepositorioan "
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Zure domeinua"
-    LABEL_VERSION: "Bertsioa"
-    LABEL_CHECKING: "Frogatzen"
-    TYPE_BASIC_HINT: "Domeinu honek ez dauka lizentziarik erabilera komertzialerako (eginbide gehigarriekin)"
-    TYPE_BASIC_HINT_2: "Domeinu hau ezin da lizentziatu"
-    HTML_ALERT_TOP_1: "RainLoop Webmail-ek honako lizentzia dauka"
-    HTML_ALERT_TOP_2: "<b>Erabili</b> dezakezu zure proiektu <b>pertsonaletarako</b>."
-    HTML_ALERT_TOP_3: |
-        <b>RainLoop Webmail</b>-aren erabilera komertzialak
-        (eginbide gehigarriekin) <a href="http://www.rainloop.net/purchase/" target="_blank">harpidetza</a> behar du.
-    TYPE_PREMIUM_LIFETIME: "Iraupena"
-    LABEL_SUB_EXPIRES: "Harpidetza iraungitzen da"
-    BUTTON_ACTIVATE: "Aktibatu harpidetza domeinu honetarako"
-    BUTTON_PURCHASE: "Erosketa"
-    BUTTON_TRIAL: "Proba"
   TAB_ABOUT:
     LEGEND_ABOUT: "Honi buruz"
     LABEL_TAG_HINT: "Web-posta bezero sinple, moderno eta azkarra"

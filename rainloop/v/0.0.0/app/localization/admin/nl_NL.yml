@@ -4,7 +4,6 @@ nl_NL:
     LABEL_PASSWORD: "Wachtwoord"
     BUTTON_LOGIN: "Aanmelden in het beheer paneel"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Beheer paneel"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Algemeen"
@@ -70,7 +69,6 @@ nl_NL:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Nooit"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Eenmalig"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Altijd"
-    HTML_ALERT_PREMIUM: "Deze functionaliteit is alleen beschikbaar voor <strong><a href=\"#/licensing\">Premium</a></strong> abonnees.\n"
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Contactpersonen"
     LEGEND_STORAGE: "Opslag (PDO)"
@@ -145,21 +143,6 @@ nl_NL:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Gereed voor installatie"
     LEGEND_INSTALLED_PACKAGES: "Geïnstalleerde pakketten"
     ALERT_CANNOT_ACCESS_REPOSITORY: "De installatie bron is op het moment niet beschikbaar."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Uw domein"
-    LABEL_VERSION: "Versie"
-    LABEL_CHECKING: "Controleren"
-    TYPE_BASIC_HINT: "Dit domein is niet gelicentieerd voor commercieel gebruik (met aditionele functies)."
-    TYPE_BASIC_HINT_2: "Dit domein kan niet worden gelicentieerd."
-    HTML_ALERT_TOP_1: "RainLoop Webmail is gelicentieerd onder de"
-    HTML_ALERT_TOP_2: "U staat u <b>vrij</b> om dit voor uw <b>persoonlijk</b> project te gebruiken."
-    HTML_ALERT_TOP_3: |
-        Voor commercieel gebruik (met additionele functies) van <b>RainLoop Webmail</b> moet u een <a href=http://www.rainloop.net/purchase/ target=_blank>activatie code</a>.
-    TYPE_PREMIUM_LIFETIME: "Levenslang"
-    LABEL_SUB_EXPIRES: "Activatie verloopt"
-    BUTTON_ACTIVATE: "Activeer de activatie code voor dit domein."
-    BUTTON_PURCHASE: "Aanschaffen"
-    BUTTON_TRIAL: "Proefperiode"
   TAB_ABOUT:
     LEGEND_ABOUT: "Over"
     LABEL_TAG_HINT: "Simpel, modern en snelle web-based e-mail client"

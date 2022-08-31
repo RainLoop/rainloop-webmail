@@ -4,7 +4,6 @@ zh_CN:
     LABEL_PASSWORD: "密码"
     BUTTON_LOGIN: "登录到控制面板"
   TOP_PANEL:
-    LABEL_PREMIUM: "高级"
     LABEL_ADMIN_PANEL: "控制面板"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "常规"
@@ -71,7 +70,6 @@ zh_CN:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "无"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "一次"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "永远"
-    HTML_ALERT_PREMIUM: "此功能仅限于<strong><a href=\"#/licensing\">高级</a></strong> 订阅者."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "联系人"
     LEGEND_STORAGE: "存储(PDO)"
@@ -146,21 +144,6 @@ zh_CN:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "可用于安装"
     LEGEND_INSTALLED_PACKAGES: "已安装的插件包"
     ALERT_CANNOT_ACCESS_REPOSITORY: "目前无法使用仓库"
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "你的域名"
-    LABEL_VERSION: "版本"
-    LABEL_CHECKING: "检查中"
-    TYPE_BASIC_HINT: "此域名不被许可用于商业用途(包括额外功能)."
-    TYPE_BASIC_HINT_2: "此域名无法被许可"
-    HTML_ALERT_TOP_1: "RainLoop Webmail位于的许可证下"
-    HTML_ALERT_TOP_2: "你可以<b>自由地</b>将它用于你的 <b>私人</b> 项目."
-    HTML_ALERT_TOP_3: |
-        商业版的<b>RainLoop Webmail</b>自带更多功能，需要<a href="http://www.rainloop.net/purchase/" target="_blank">订阅</a>。
-    TYPE_PREMIUM_LIFETIME: "永久"
-    LABEL_SUB_EXPIRES: "订阅失效"
-    BUTTON_ACTIVATE: "为此域名启用订阅密钥"
-    BUTTON_PURCHASE: "订购"
-    BUTTON_TRIAL: "试用"
   TAB_ABOUT:
     LEGEND_ABOUT: "关于"
     LABEL_TAG_HINT: "简洁,现代化&快捷的基于网络的邮件客户端"

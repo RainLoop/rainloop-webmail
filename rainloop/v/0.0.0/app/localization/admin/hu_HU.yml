@@ -4,7 +4,6 @@ hu_HU:
     LABEL_PASSWORD: "Jelszó"
     BUTTON_LOGIN: "Bejelentkezés az admin felületre"
   TOP_PANEL:
-    LABEL_PREMIUM: "Prémuim"
     LABEL_ADMIN_PANEL: "Adminisztrációs felület"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Általános"
@@ -71,7 +70,6 @@ hu_HU:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Semmi"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Egyszer"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Mindig"
-    HTML_ALERT_PREMIUM: "Ez a funkció csak a <strong><a href=\"#/licensing\">Prémium</a></strong> előfizetők számára érhető el."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Névjegyek"
     LEGEND_STORAGE: "Tárhely (PDO)"
@@ -146,21 +144,6 @@ hu_HU:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Telepíthető"
     LEGEND_INSTALLED_PACKAGES: "Telepített csomagok"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Jelenleg nem lehet csatlakozni a tárolóhoz"
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Domained"
-    LABEL_VERSION: "Verzió"
-    LABEL_CHECKING: "Ellenőrzés"
-    TYPE_BASIC_HINT: "Ez a domain nem licencelt kereskedelmi használatra (hozzáadott funkciókkal)."
-    TYPE_BASIC_HINT_2: "Ez a domain nem licencelhető."
-    HTML_ALERT_TOP_1: "RainLoop Webmail licence:"
-    HTML_ALERT_TOP_2: "<strong>Szabadon</strong> felhasználható a <strong>személyes</strong> projektjeidhez."
-    HTML_ALERT_TOP_3: |
-        A <b>RainLoop Webmail</b> kereskedelmi használatához (további funkciókkal) <a href="http://www.rainloop.net/purchase/" target="_blank">előfizetés</a> szükséges.
-    TYPE_PREMIUM_LIFETIME: "Örökös"
-    LABEL_SUB_EXPIRES: "Előfizetés lejár"
-    BUTTON_ACTIVATE: "Előfizetési kulcs aktiválása ehhez a domainhez"
-    BUTTON_PURCHASE: "Vásárlás"
-    BUTTON_TRIAL: "Próba"
   TAB_ABOUT:
     LEGEND_ABOUT: "Névjegy"
     LABEL_TAG_HINT: "Egyszerű, modern és gyors webes email kliens"

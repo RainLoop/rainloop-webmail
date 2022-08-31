@@ -16,9 +16,6 @@ class AbstractAppStore {
 		});
 
 		this.interfaceAnimation.valueHasMutated();
-
-		this.prem = ko.observable(false);
-		this.community = ko.observable(true);
 	}
 
 	populate() {
@@ -27,9 +24,6 @@ class AbstractAppStore {
 		this.newMoveToFolder(!!Settings.settingsGet('NewMoveToFolder'));
 
 		this.interfaceAnimation(!!Settings.settingsGet('InterfaceAnimation'));
-
-		this.prem(!!Settings.settingsGet('PremType'));
-		this.community(!!Settings.settingsGet('Community'));
 	}
 }
 

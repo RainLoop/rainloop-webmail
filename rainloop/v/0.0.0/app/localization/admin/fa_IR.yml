@@ -4,7 +4,6 @@ fa_IR:
     LABEL_PASSWORD: "گذرواژه"
     BUTTON_LOGIN: "ورود به صفحه مدیریت"
   TOP_PANEL:
-    LABEL_PREMIUM: "پریمیوم"
     LABEL_ADMIN_PANEL: "صفحه مدیریت"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "عمومی"
@@ -72,7 +71,6 @@ fa_IR:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "هیچ‌کدام"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "یک‌بار"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "همیشه"
-    HTML_ALERT_PREMIUM: "این قابلیت برای نسخه <strong><a href=\"#/licensing\">Premium</a></strong> مشترکین در دسترس هست."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "تماس‌ها"
     LEGEND_STORAGE: "فضای‌ ذخیره‌سازی (pdo)"
@@ -147,21 +145,6 @@ fa_IR:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "برای نصب در دسترس هست"
     LEGEND_INSTALLED_PACKAGES: "بسته‌های نصب شده"
     ALERT_CANNOT_ACCESS_REPOSITORY: "در این لحظه دسترسی به مخزن امکان‌پذیر نیست"
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "دامنه شما"
-    LABEL_VERSION: "نسخه"
-    LABEL_CHECKING: "در حال چک کردن"
-    TYPE_BASIC_HINT: "این دامنه مجوز استفاده تجاری را ندارد (با قابلیت‌های بیشتر)"
-    TYPE_BASIC_HINT_2: "به این دامنه مجوز داده نشده است."
-    HTML_ALERT_TOP_1: "وبمیل RainLoop تحت مجوز"
-    HTML_ALERT_TOP_2: " شما <b>برای استفاده از آن </b> آزاد <b>personal</b> projects. هستید"
-    HTML_ALERT_TOP_3: |
-        استفاده تجاری (با قابلیت‌های بیشتر) از <b>RainLoop Webmail</b> نیاز به پرداخت <a href="http://www.rainloop.net/purchase/" target="_blank">حق اشتراک</a> دارد.
-    TYPE_PREMIUM_LIFETIME: "مادام العمر"
-    LABEL_SUB_EXPIRES: "انقضای حق اشتراک"
-    BUTTON_ACTIVATE: "فعال‌کردن حق اشتراک این دامنه"
-    BUTTON_PURCHASE: "خرید"
-    BUTTON_TRIAL: "آزمایشی"
   TAB_ABOUT:
     LEGEND_ABOUT: "درباره"
     LABEL_TAG_HINT: "یک رابط کاربری پست الکترونیک ساده، پیشرفته و سریع"

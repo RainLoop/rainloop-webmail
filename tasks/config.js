@@ -1,15 +1,13 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL 3 */
+/* RainLoop Webmail (c) RainLoop Team | Licensed under MIT */
 const path = require('path');
 const { argv } = require('yargs');
 
 const config = {
 	head: {
-		rainloop: '/* RainLoop Webmail (c) RainLoop Team | Licensed under RainLoop Software License */',
-		agpl: '/* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL v3 */'
+		mit: '/* RainLoop Webmail (c) RainLoop Team | Licensed under MIT */'
 	},
 	devVersion: '0.0.0',
 	releasesPath: 'build/dist/releases',
-	community: !argv.pro,
 	source: !!argv.source,
 	watch: false,
 	watchInterval: 1000,
@@ -20,7 +18,6 @@ const config = {
 	cleanPath: '',
 	zipSrcPath: '',
 	zipFile: '',
-	// zipFileShort: '',
 
 	paths: {}
 };

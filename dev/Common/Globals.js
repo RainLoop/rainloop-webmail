@@ -27,11 +27,6 @@ $hcont
 export const startMicrotime = new window.Date().getTime();
 
 /**
- * @type {boolean}
- */
-export const community = RL_COMMUNITY;
-
-/**
  * @type {?}
  */
 export const dropdownVisibility = ko.observable(false).extend({ rateLimit: 0 });

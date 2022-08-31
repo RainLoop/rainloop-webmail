@@ -4,7 +4,6 @@ de_DE:
     LABEL_PASSWORD: "Passwort"
     BUTTON_LOGIN: "Im Adminpanel anmelden"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Adminpanel"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Allgemein"
@@ -70,7 +69,6 @@ de_DE:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Nie"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Einmal"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Immer"
-    HTML_ALERT_PREMIUM: "Diese Funktionalität ist für <strong><a href=\"#/licensing\">Premium</a></strong>-Abonnenten verfügbar."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Kontakte"
     LEGEND_STORAGE: "Speicher (PDO)"
@@ -145,22 +143,6 @@ de_DE:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Zur Installation verfügbar"
     LEGEND_INSTALLED_PACKAGES: "Installierte Pakete"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Auf das Plugin-Repository kann derzeit nicht zugegriffen werden."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Ihre Domain"
-    LABEL_VERSION: "Version"
-    LABEL_CHECKING: "Überprüfe"
-    TYPE_BASIC_HINT: "Diese Domain ist nicht für die kommerzielle Nutzung (mit zusätzlichen Funktionen) lizenziert."
-    TYPE_BASIC_HINT_2: "Diese Domain kann nicht lizenziert werden."
-    HTML_ALERT_TOP_1: "RainLoop Webmail steht unter folgender Lizenz:"
-    HTML_ALERT_TOP_2: "Sie <b>dürfen</b> es für <b>persönliche</b> Projekte nutzen."
-    HTML_ALERT_TOP_3: |
-        Kommerzielle Nutzung (mit zusätzlichen Funktionen) von <b>RainLoop Webmail</b> erfordert eine
-        <a href=http://www.rainloop.net/purchase/ target=_blank>Subscription</a>.
-    TYPE_PREMIUM_LIFETIME: "Lebenszeit"
-    LABEL_SUB_EXPIRES: "Ablauf der Subscription"
-    BUTTON_ACTIVATE: "Subscription-Schlüssel für diese Domain aktivieren"
-    BUTTON_PURCHASE: "Erwerben"
-    BUTTON_TRIAL: "Testversion"
   TAB_ABOUT:
     LEGEND_ABOUT: "Über"
     LABEL_TAG_HINT: "Einfacher, moderner und schneller webbasierter E-Mail-Client"

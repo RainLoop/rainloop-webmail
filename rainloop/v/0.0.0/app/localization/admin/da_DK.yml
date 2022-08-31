@@ -4,7 +4,6 @@ da_DK:
     LABEL_PASSWORD: "Adgangskode"
     BUTTON_LOGIN: "Log ind i administrationspanelet"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Admin Panel"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Generelt"
@@ -70,7 +69,6 @@ da_DK:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Ingen"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "én enkelt gang"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Altid"
-    HTML_ALERT_PREMIUM: "Denne funktionalitet er tilgængelig for <strong><a href=\"#/licensing\">Premium</a></strong> abonnenter."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Kontakter"
     LEGEND_STORAGE: "Lagring (PDO)"
@@ -145,22 +143,6 @@ da_DK:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Installation tilgængelig"
     LEGEND_INSTALLED_PACKAGES: "Installerede pakker"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Kan ikke tilgå depotet lige nu."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Dit domæne"
-    LABEL_VERSION: "Version"
-    LABEL_CHECKING: "Tjekker"
-    TYPE_BASIC_HINT: "Dette domæne er ikke licenseret til kommercielt brug (med ekstra funktioner)."
-    TYPE_BASIC_HINT_2: "Dette domæne kan ikke licenseret."
-    HTML_ALERT_TOP_1: "RainLoop Webmail er licenseret under"
-    HTML_ALERT_TOP_2: "Du er velkommen til at bruge det til personlige projekter."
-    HTML_ALERT_TOP_3: |
-        Kommercielt brug (med ekstra funktioner) af <b>RainLoop Webmail</b> kræver et
-        <a href="http://www.rainloop.net/purchase/" target="_blank">abonnement</a>.
-    TYPE_PREMIUM_LIFETIME: "Livstid"
-    LABEL_SUB_EXPIRES: "Abonnement udløber"
-    BUTTON_ACTIVATE: "Aktiver abonnements kode for dette domæne"
-    BUTTON_PURCHASE: "Køb"
-    BUTTON_TRIAL: "Prøv"
   TAB_ABOUT:
     LEGEND_ABOUT: "Om"
     LABEL_TAG_HINT: "Simpel, moderne & hurtig web-baseret e-mail klient"

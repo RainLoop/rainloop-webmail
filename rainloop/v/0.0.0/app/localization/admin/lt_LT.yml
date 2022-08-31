@@ -4,7 +4,6 @@ lt_LT:
     LABEL_PASSWORD: "Slaptažodis"
     BUTTON_LOGIN: "Prisijungti prie valdymo skydo"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Administratoriaus valdymo skydas"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Pagrindiniai"
@@ -71,7 +70,6 @@ lt_LT:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Nieko"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Kartą"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Visada"
-    HTML_ALERT_PREMIUM: "Ši funkcija leidžiama tik <strong><a href=\"#/licensing\">Premium</a></strong> vartotojams."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Kontaktai"
     LEGEND_STORAGE: "Saugykla (PDO)"
@@ -145,22 +143,6 @@ lt_LT:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Galima diegti"
     LEGEND_INSTALLED_PACKAGES: "Įdiegti paketai"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Šiuo momentu negaliu prisijungti prie saugyklos."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Jūsų domenas"
-    LABEL_VERSION: "Versija"
-    LABEL_CHECKING: "Tikrinu"
-    TYPE_BASIC_HINT: "Šis domenas nelicencijuotas komerciniam naudojimui (su papildomomis galimybėmis)"
-    TYPE_BASIC_HINT_2: "Šis domenas negali būti licencijuotas."
-    HTML_ALERT_TOP_1: "RainLoop Webmail licencijuotas"
-    HTML_ALERT_TOP_2: "Jūs galite <b>nemokamai</b> naudoti savo <b>asmeniniams</b> projektams."
-    HTML_ALERT_TOP_3: |
-        Komerciniam <b>RainLoop Webmail</b> naudojimui (su papildomomis galimybėmis) turite įsigyti
-        <a href="http://www.rainloop.net/purchase/" target="_blank">prenumeratą</a>.
-    TYPE_PREMIUM_LIFETIME: "Visam laikui"
-    LABEL_SUB_EXPIRES: "Prenumerata baigiasi"
-    BUTTON_ACTIVATE: "Aktyvuoti prenumeratos raktą šiam domenui"
-    BUTTON_PURCHASE: "Pirkti"
-    BUTTON_TRIAL: "Bandomasis"
   TAB_ABOUT:
     LEGEND_ABOUT: "Apie"
     LABEL_TAG_HINT: "Paprastas, modernus ir greitas web pašto klientas"

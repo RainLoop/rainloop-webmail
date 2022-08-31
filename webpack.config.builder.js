@@ -55,7 +55,7 @@ const babelLoaderOptions = function() {
 };
 
 process.noDeprecation = true;
-module.exports = function(publicPath, pro, mode) {
+module.exports = function(publicPath, mode) {
 	return {
 		mode: mode || 'development',
 		devtool: 'inline-source-map',
@@ -80,7 +80,6 @@ module.exports = function(publicPath, pro, mode) {
 		},
 		plugins: [
 			new webpack.DefinePlugin({
-				'RL_COMMUNITY': !pro,
 				'process.env.NODE_ENV': JSON.stringify('production'),
 				'process.env': {
 					NODE_ENV: JSON.stringify('production')

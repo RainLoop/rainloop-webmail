@@ -4,7 +4,6 @@ fi_FI:
     LABEL_PASSWORD: "Salasana"
     BUTTON_LOGIN: "Kirjaudu hallintapaneliin"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Halintapaneli"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Yleiset"
@@ -69,7 +68,6 @@ fi_FI:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Ei mitään"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Kerran"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Aina"
-    HTML_ALERT_PREMIUM: "Tämä toiminto on saatavissa vain <strong><a href=\"#/licensing\">Premium</a></strong> tilaajille."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Yhteystiedot"
     LEGEND_STORAGE: "Tallennus (PDO)"
@@ -144,22 +142,6 @@ fi_FI:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Voidaan asentaa"
     LEGEND_INSTALLED_PACKAGES: "Aennetut pakkaukset"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Pääsy varastoon ei toimi tällä hetkellä."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Sinun domain"
-    LABEL_VERSION: "Versio"
-    LABEL_CHECKING: "Tarkastaa"
-    TYPE_BASIC_HINT: "Tämä domain ei ole lisensoitu kaupalliseen käyttöön (lisäominaisuuksilla)."
-    TYPE_BASIC_HINT_2: "Tätä verkkotunnusta ei voi lisensoida."
-    HTML_ALERT_TOP_1: "RainLoop Webmail on lisensoitu"
-    HTML_ALERT_TOP_2: "Voit käyttää <b>ilmaiseksi omissa</b> projekteissasi. "
-    HTML_ALERT_TOP_3: |
-        <b>RainLoop Webmail</b>in kaupallinen käyttö (lisäominaisuuksilla) vaatii
-        <a href="http://www.rainloop.net/purchase/" target="_blank">tilauksen</a>.
-    TYPE_PREMIUM_LIFETIME: "Kesto"
-    LABEL_SUB_EXPIRES: "Tilaus päättyy"
-    BUTTON_ACTIVATE: "Aktivoi Tilaus Avain tälle verkkotunnukselle"
-    BUTTON_PURCHASE: "Osta"
-    BUTTON_TRIAL: "Koeaika"
   TAB_ABOUT:
     LEGEND_ABOUT: "Tietoja"
     LABEL_TAG_HINT: "Helppo, moderni ja nopea web-pohjainen sähköpostiohjelma"

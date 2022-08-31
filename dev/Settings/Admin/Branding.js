@@ -6,14 +6,11 @@ import { settingsSaveHelperSimpleFunction, trim } from 'Common/Utils';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Ajax';
-import AppStore from 'Stores/Admin/App';
 
 import { settingsGet } from 'Storage/Settings';
 
 class BrandingAdminSettings {
 	constructor() {
-		this.capa = AppStore.prem;
-
 		this.title = ko.observable(settingsGet('Title')).idleTrigger();
 		this.loadingDesc = ko.observable(settingsGet('LoadingDescription')).idleTrigger();
 		this.faviconUrl = ko.observable(settingsGet('FaviconUrl')).idleTrigger();
@@ -36,8 +33,6 @@ class BrandingAdminSettings {
 				{ optValue: 'always', optText: i18n('TAB_BRANDING/OPTION_WELCOME_PAGE_DISPLAY_ALWAYS') }
 			];
 		});
-
-		this.community = RL_COMMUNITY || AppStore.community();
 	}
 
 	onBuild() {
@@ -61,6 +56,86 @@ class BrandingAdminSettings {
 			this.faviconUrl.subscribe((value) => {
 				Remote.saveAdminConfig(f3, {
 					'FaviconUrl': trim(value)
+				});
+			});
+		}, Magics.Time50ms);
+
+		_.delay(() => {
+			const f1 = settingsSaveHelperSimpleFunction(this.loginLogo.trigger, this),
+				f2 = settingsSaveHelperSimpleFunction(this.loginDescription.trigger, this),
+				f3 = settingsSaveHelperSimpleFunction(this.loginCss.trigger, this),
+				f4 = settingsSaveHelperSimpleFunction(this.userLogo.trigger, this),
+				f5 = settingsSaveHelperSimpleFunction(this.userLogoTitle.trigger, this),
+				f6 = settingsSaveHelperSimpleFunction(this.loginBackground.trigger, this),
+				f7 = settingsSaveHelperSimpleFunction(this.userCss.trigger, this),
+				f8 = settingsSaveHelperSimpleFunction(this.welcomePageUrl.trigger, this),
+				f9 = settingsSaveHelperSimpleFunction(this.welcomePageDisplay.trigger, this),
+				f10 = settingsSaveHelperSimpleFunction(this.userLogoMessage.trigger, this),
+				f11 = settingsSaveHelperSimpleFunction(this.userIframeMessage.trigger, this);
+
+			this.loginLogo.subscribe((value) => {
+				Remote.saveAdminConfig(f1, {
+					'LoginLogo': trim(value)
+				});
+			});
+
+			this.loginDescription.subscribe((value) => {
+				Remote.saveAdminConfig(f2, {
+					'LoginDescription': trim(value)
+				});
+			});
+
+			this.loginCss.subscribe((value) => {
+				Remote.saveAdminConfig(f3, {
+					'LoginCss': trim(value)
+				});
+			});
+
+			this.userLogo.subscribe((value) => {
+				Remote.saveAdminConfig(f4, {
+					'UserLogo': trim(value)
+				});
+			});
+
+			this.userLogoTitle.subscribe((value) => {
+				Remote.saveAdminConfig(f5, {
+					'UserLogoTitle': trim(value)
+				});
+			});
+
+			this.userLogoMessage.subscribe((value) => {
+				Remote.saveAdminConfig(f10, {
+					'UserLogoMessage': trim(value)
+				});
+			});
+
+			this.userIframeMessage.subscribe((value) => {
+				Remote.saveAdminConfig(f11, {
+					'UserIframeMessage': trim(value)
+				});
+			});
+
+			this.loginBackground.subscribe((value) => {
+				Remote.saveAdminConfig(f6, {
+					'LoginBackground': trim(value)
+				});
+			});
+
+			this.userCss.subscribe((value) => {
+				Remote.saveAdminConfig(f7, {
+					'UserCss': trim(value)
+				});
+			});
+
+			this.welcomePageUrl.subscribe((value) => {
+				Remote.saveAdminConfig(f8, {
+					'WelcomePageUrl': trim(value)
+				});
+			});
+
+			this.welcomePageDisplay.subscribe((value) => {
+				Remote.saveAdminConfig(f9, {
+					'WelcomePageDisplay': trim(value)
 				});
 			});
 		}, Magics.Time50ms);

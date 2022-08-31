@@ -1,4 +1,4 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL 3 */
+/* RainLoop Webmail (c) RainLoop Team | Licensed under MIT */
 /* eslint-disable consistent-return */
 const gulp = require('gulp');
 const fs = require('node-fs');
@@ -6,7 +6,7 @@ const chmod = require('gulp-chmod');
 
 const pkg = require('../package.json');
 const { config } = require('./config');
-const { copy, zip, del } = require('./common');
+const { zip, del } = require('./common');
 
 const rainloopCopy = () => {
 	const versionFull = pkg.version,
@@ -32,23 +32,14 @@ const rainloopSetup = (done) => {
 		fs
 			.readFileSync('index.php', 'utf8')
 			.replace("'APP_VERSION', '0.0.0'", "'APP_VERSION', '" + versionFull + "'")
-			.replace(
-				"'APP_VERSION_TYPE', 'source'",
-				"'APP_VERSION_TYPE', '" + (config.community ? 'community' : 'standard') + "'"
-			)
 	);
 
 	fs.writeFileSync(dist + 'rainloop/v/' + versionFull + '/index.php.root', fs.readFileSync(dist + 'index.php'));
 
-	if (config.community) {
-		require('rimraf').sync(dist + 'rainloop/v/' + versionFull + '/app/libraries/RainLoop/Providers/Prem.php');
-	}
-
 	config.destPath = config.releasesPath + '/webmail/' + versionFull + '/';
 	config.cleanPath = dist;
 	config.zipSrcPath = dist;
-	config.zipFile = 'rainloop-' + (config.community ? 'community-' : '') + versionFull + '.zip';
-	// config.zipFileShort = 'rainloop-' + (config.community ? 'community-' : '') + 'latest.zip';
+	config.zipFile = 'rainloop-legacy-' + versionFull + '.zip';
 
 	config.rainloopBuilded = true;
 
@@ -71,8 +62,6 @@ const rainloopClean = (done) => {
 	done();
 };
 
-// const rainloopShortName = (done) => copy(config.destPath + config.zipFile, config.destPath + config.zipFileShort, done);
-
 exports.rainloopBuild = gulp.series(rainloopCopy, rainloopSetup);
 
-exports.rainloop = gulp.series(exports.rainloopBuild, rainloopZip, rainloopClean /*, rainloopShortName*/);
+exports.rainloop = gulp.series(exports.rainloopBuild, rainloopZip, rainloopClean);

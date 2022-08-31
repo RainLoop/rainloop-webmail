@@ -4,7 +4,6 @@ sv_SE:
     LABEL_PASSWORD: "Lösenord"
     BUTTON_LOGIN: "Logga in till admin-panelen"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Adminpanel"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Allmän"
@@ -71,7 +70,6 @@ sv_SE:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Ingen"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "En gång"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Alltid"
-    HTML_ALERT_PREMIUM: "Denna funktion är tillgänglig för <strong> <a href=\"#/licensing\"> Premium </a> </ strong> abonnenter."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Kontakter"
     LEGEND_STORAGE: "Storage (PDO)"
@@ -146,22 +144,6 @@ sv_SE:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Tillåt installation"
     LEGEND_INSTALLED_PACKAGES: "installerade paket"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Det går inte att komma åt arkivet för tillfället."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Din domän"
-    LABEL_VERSION: "Version"
-    LABEL_CHECKING: "Kontroll"
-    TYPE_BASIC_HINT: "Denna domän är inte godkänt för kommersiellt bruk (med ytterligare funktioner)."
-    TYPE_BASIC_HINT_2: "Denna domän kan inte licensieras."
-    HTML_ALERT_TOP_1: "RainLoop Webmail är licensierat under"
-    HTML_ALERT_TOP_2: "Du är <b>gratis</ b> för att använda den för dina <b>personliga</ b> projekt."
-    HTML_ALERT_TOP_3: |
-        Kommersiellt bruk (med ytterligare funktioner) av <b>RainLoop Webmail</ b> kräver att få
-        <a href="http://www.rainloop.net/purchase/" target="_blank"> prenumerations</a>.
-    TYPE_PREMIUM_LIFETIME: "Livstid"
-    LABEL_SUB_EXPIRES: "Abonnemang löper ut"
-    BUTTON_ACTIVATE: "Aktivera prenumerationsnyckel för den här domänen"
-    BUTTON_PURCHASE: "Inköp"
-    BUTTON_TRIAL: "Rättegång"
   TAB_ABOUT:
     LEGEND_ABOUT: "Om"
     LABEL_TAG_HINT: "Enkel, modern & snabb e-postklient"

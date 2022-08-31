@@ -4,7 +4,6 @@ namespace RainLoop\Enumerations;
 
 class Capa
 {
-	const PREM = 'PREM';
 	const TWO_FACTOR = 'TWO_FACTOR';
 	const TWO_FACTOR_FORCE = 'TWO_FACTOR_FORCE';
 	const OPEN_PGP = 'OPEN_PGP';
