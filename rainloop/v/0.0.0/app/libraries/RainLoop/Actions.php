@@ -112,9 +112,9 @@ class Actions
 	private $oTwoFactorAuthProvider;
 
 	/**
-	 * @var \RainLoop\Providers\Prem
+	 * @var \RainLoop\Providers\Version
 	 */
-	private $oPremProvider;
+	private $oVersionProvider;
 
 	/**
 	 * @var \RainLoop\Config\Application
@@ -157,7 +157,7 @@ class Actions
 		$this->oSuggestionsProvider = null;
 		$this->oChangePasswordProvider = null;
 		$this->oTwoFactorAuthProvider = null;
-		$this->oPremProvider = null;
+		$this->oVersionProvider = null;
 
 		$this->sSpecAuthToken = '';
 		$this->sUpdateAuthToken = '';
@@ -841,25 +841,18 @@ class Actions
 	}
 
 	/**
-	 * @return \RainLoop\Providers\Prem
+	 * @return \RainLoop\Providers\Version
 	 */
-	public function PremProvider()
+	public function VersionProvider()
 	{
-		if (null === $this->oPremProvider)
+		if (null === $this->oVersionProvider)
 		{
-			if (\file_exists(APP_VERSION_ROOT_PATH.'app/libraries/RainLoop/Providers/Prem.php'))
-			{
-				$this->oPremProvider = new \RainLoop\Providers\Prem(
-					$this->Config(), $this->Logger(), $this->Cacher(null, true)
-				);
-			}
-			else
-			{
-				$this->oPremProvider = false;
-			}
+			$this->oVersionProvider = new \RainLoop\Providers\Version(
+				$this->Config(), $this->Logger()
+			);
 		}
 
-		return $this->oPremProvider;
+		return $this->oVersionProvider;
 	}
 
 	/**
@@ -1429,14 +1422,6 @@ class Actions
 	}
 
 	/**
-	 * @return bool
-	 */
-	public function IsOpen()
-	{
-		return !$this->PremProvider();
-	}
-
-	/**
 	 * @param bool $bAdmin = false
 	 * @param bool $bMobile = false
 	 * @param bool $bMobileDevice = false
@@ -1482,7 +1467,7 @@ class Actions
 			'customLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
 			'forgotPasswordLinkUrl' => \trim($oConfig->Get('login', 'forgot_password_link_url', '')),
 			'registrationLinkUrl' => \trim($oConfig->Get('login', 'registration_link_url', '')),
-			'hideSubmitButton' => (bool) $oConfig->Get('login', 'hide_submit_button', true),
+			'hideSubmitButton' => (bool) $oConfig->Get('login', 'hide_submit_button', false),
 			'jsHash' => \md5(\RainLoop\Utils::GetConnectionToken()),
 			'useImapThread' => (bool) $oConfig->Get('labs', 'use_imap_thread', false),
 			'useImapSubscribe' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
@@ -1496,7 +1481,6 @@ class Actions
 			'themes' => $this->GetThemes($bMobile, false),
 			'languages' => $this->GetLanguages(false),
 			'languagesAdmin' => $this->GetLanguages(true),
-			'appVersionType' => APP_VERSION_TYPE,
 			'attachmentsActions' => $aAttachmentsActions
 		), $bAdmin ? array(
 			'adminHostUse' => '' !== $oConfig->Get('security', 'admin_panel_host', ''),
@@ -1561,8 +1545,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 			'ContactsIsAllowed' => false,
 			'ChangePasswordIsAllowed' => false,
 			'RequireTwoFactor' => false,
-			'Community' => true,
-			'PremType' => false,
 			'Admin' => array(),
 			'Capa' => array(),
 			'Plugins' => array(),
@@ -1574,11 +1556,17 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 			$aResult['AuthAccountHash'] = $sAuthAccountHash;
 		}
 
-		$oPremProvider = $this->PremProvider();
-		if ($oPremProvider)
-		{
-			$oPremProvider->PopulateAppData($aResult);
-		}
+		$aResult['LoginLogo'] = $oConfig->Get('branding', 'login_logo', '');
+		$aResult['LoginBackground'] = $oConfig->Get('branding', 'login_background', '');
+		$aResult['LoginCss'] = $oConfig->Get('branding', 'login_css', '');
+		$aResult['LoginDescription'] = $oConfig->Get('branding', 'login_desc', '');
+		$aResult['UserLogo'] = $oConfig->Get('branding', 'user_logo', '');
+		$aResult['UserLogoTitle'] = $oConfig->Get('branding', 'user_logo_title', '');
+		$aResult['UserLogoMessage'] = $oConfig->Get('branding', 'user_logo_message', '');
+		$aResult['UserIframeMessage'] = $oConfig->Get('branding', 'user_iframe_message', '');
+		$aResult['UserCss'] = $oConfig->Get('branding', 'user_css', '');
+		$aResult['WelcomePageUrl'] = $oConfig->Get('branding', 'welcome_page_url', '');
+		$aResult['WelcomePageDisplay'] = \strtolower($oConfig->Get('branding', 'welcome_page_display', 'none'));
 
 		if ('' !== $aResult['LoadingDescription'] && 'RainLoop' !== $aResult['LoadingDescription'])
 		{
@@ -1810,9 +1798,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 
 				$aResult['AllowDropboxSocial'] = (bool) $oConfig->Get('social', 'dropbox_enable', false);
 				$aResult['DropboxApiKey'] = (string) $oConfig->Get('social', 'dropbox_api_key', '');
-
-				$aResult['SubscriptionEnabled'] = (bool) \MailSo\Base\Utils::ValidateDomain($aResult['AdminDomain'], true);
-//					|| \MailSo\Base\Utils::ValidateIP($aResult['AdminDomain']);
 
 				$aResult['WeakPassword'] = (bool) $oConfig->ValidatePassword('12345');
 				$aResult['CoreAccess'] = (bool) $this->rainLoopCoreAccess();
@@ -3638,11 +3623,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 		}
 		else if ($bVersionsCache)
 		{
-			$oPremProvider = $this->PremProvider();
-			if ($oPremProvider)
-			{
-				$oPremProvider->ClearOldVersion();
-			}
+			$this->VersionProvider()->ClearOldVersion();
 		}
 
 		$this->Plugins()->RunHook('service.app-delay-start-end');
@@ -3884,11 +3865,19 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 		$this->setConfigFromParams($oConfig, 'DropboxEnable', 'social', 'dropbox_enable', 'bool');
 		$this->setConfigFromParams($oConfig, 'DropboxApiKey', 'social', 'dropbox_api_key', 'string');
 
-		$oPremProvider = $this->PremProvider();
-		if ($oPremProvider)
-		{
-			$oPremProvider->PremSection($this, $oConfig);
-		}
+		$this->setConfigFromParams($oConfig, 'LoginLogo', 'branding', 'login_logo', 'string');
+		$this->setConfigFromParams($oConfig, 'LoginBackground', 'branding', 'login_background', 'string');
+		$this->setConfigFromParams($oConfig, 'LoginDescription', 'branding', 'login_desc', 'string');
+		$this->setConfigFromParams($oConfig, 'LoginCss', 'branding', 'login_css', 'string');
+
+		$this->setConfigFromParams($oConfig, 'UserLogo', 'branding', 'user_logo', 'string');
+		$this->setConfigFromParams($oConfig, 'UserLogoTitle', 'branding', 'user_logo_title', 'string');
+		$this->setConfigFromParams($oConfig, 'UserLogoMessage', 'branding', 'user_logo_message', 'string');
+		$this->setConfigFromParams($oConfig, 'UserIframeMessage', 'branding', 'user_iframe_message', 'string');
+		$this->setConfigFromParams($oConfig, 'UserCss', 'branding', 'user_css', 'string');
+
+		$this->setConfigFromParams($oConfig, 'WelcomePageUrl', 'branding', 'welcome_page_url', 'string');
+		$this->setConfigFromParams($oConfig, 'WelcomePageDisplay', 'branding', 'welcome_page_display', 'string');
 
 		return $this->DefaultResponse(__FUNCTION__, $oConfig->Save());
 	}
@@ -3971,48 +3960,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 	public function DoAdminLicensing()
 	{
 		$this->IsAdminLoggined();
-
-		$bForce = '1' === (string) $this->GetActionParam('Force', '0');
-
-		$mResult = false;
-		$iErrorCode = -1;
-
-		$oPremProvider = $this->PremProvider();
-
-		if ($oPremProvider && 2 < \strlen(APP_SITE))
-		{
-			$sValue = $oPremProvider->Fetcher($bForce);
-
-			$this->requestSleep();
-
-			$iExpired = 0;
-			if ($oPremProvider->Parser($sValue, $iExpired))
-			{
-				$mResult = array(
-					'Banned' => false,
-					'Expired' => $iExpired,
-				);
-			}
-			else if ($sValue === 'NO' || \preg_match('/^EXPIRED:[\d]+$/', $sValue))
-			{
-				$iErrorCode = -1;
-			}
-			else if ($sValue === 'TOO_MANY_CONNECTIONS')
-			{
-				$iErrorCode = -1;
-			}
-			else
-			{
-				$iErrorCode = \RainLoop\Notifications::LicensingServerIsUnavailable;
-			}
-		}
-
-		if (0 < $iErrorCode && !$mResult)
-		{
-			throw new \RainLoop\Exceptions\ClientException($iErrorCode);
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $mResult);
+		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::LicensingServerIsUnavailable);
 	}
 
 	/**
@@ -4021,50 +3969,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 	public function DoAdminLicensingActivate()
 	{
 		$this->IsAdminLoggined();
-
-		$sDomain = (string) $this->GetActionParam('Domain', '');
-		$sKey = (string) $this->GetActionParam('Key', '');
-
-		$mResult = false;
-		$iErrorCode = -1;
-
-		$oPrem = $this->PremProvider();
-
-		if ($oPrem && 2 < \strlen($sDomain) && 2 < \strlen($sKey) && $sDomain === APP_SITE)
-		{
-			$iCode = 0;
-			$sValue = $oPrem->Activate($sDomain, $sKey, $iCode);
-
-			$this->requestSleep();
-
-			$aMatch = array();
-			if ('OK' === $sValue)
-			{
-				$mResult = true;
-			}
-			else if ('TOO_MANY_CONNECTIONS' === $sValue)
-			{
-				$mResult = 'Too many connections. Please try again later.';
-			}
-			else if (\preg_match('/^ERROR:(.+)$/', $sValue, $aMatch) && !empty($aMatch[1]))
-			{
-				$mResult = trim($aMatch[1]);
-
-				$this->Logger()->Write('Activation error for: '.$sKey.' ('.$sDomain.')', \MailSo\Log\Enumerations\Type::ERROR);
-				$this->Logger()->Write($mResult, \MailSo\Log\Enumerations\Type::ERROR);
-			}
-			else
-			{
-				$iErrorCode = \RainLoop\Notifications::LicensingServerIsUnavailable;
-			}
-		}
-
-		if (0 < $iErrorCode && !$mResult)
-		{
-			throw new \RainLoop\Exceptions\ClientException($iErrorCode);
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $mResult);
+		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::LicensingServerIsUnavailable);
 	}
 
 	/**
@@ -4670,7 +4575,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 
 		$bRainLoopUpdatable = $this->rainLoopUpdatable();
 		$bRainLoopAccess = $this->rainLoopCoreAccess();
-		$oPremProvider = $this->PremProvider();
 
 		$aData = array();
 		if ($bRainLoopUpdatable && $bRainLoopAccess)
@@ -4679,9 +4583,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 		}
 
 		$bResult = false;
-		if ($bReal && $oPremProvider && !empty($aData['file']))
+		if ($bReal && !empty($aData['file']))
 		{
-			$bResult = $oPremProvider->UpdateCore($this, $aData['file']);
+			$bResult = $this->VersionProvider()->UpdateCore($this, $aData['file']);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $bResult);
@@ -9701,9 +9605,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 	 */
 	public function StaticPath($sPath)
 	{
-		$sKey = defined('APP_VERSION_TYPE') && 0 < strlen(APP_VERSION_TYPE) ? APP_VERSION_TYPE :
-			($this->IsOpen() ? 'community' : 'standard');
-
+		$sKey = 'legacy';
 		$sResult = \RainLoop\Utils::WebStaticPath().$sPath;
 		return $sResult.(false === \strpos($sResult, '?') ? '?' : '&').$sKey;
 	}

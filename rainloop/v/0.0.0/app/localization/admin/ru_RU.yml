@@ -4,7 +4,6 @@ ru_RU:
     LABEL_PASSWORD: "Пароль"
     BUTTON_LOGIN: "Войти в админ панель"
   TOP_PANEL:
-    LABEL_PREMIUM: "Премиум"
     LABEL_ADMIN_PANEL: "Админка"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Основные"
@@ -70,7 +69,6 @@ ru_RU:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Никогда"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Один раз"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Всегда"
-    HTML_ALERT_PREMIUM: "Эти функции доступны для <strong><a href=\"#/licensing\">премиум</a></strong> подписчиков."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Контакты"
     LEGEND_STORAGE: "Хранилище (PDO)"
@@ -145,22 +143,6 @@ ru_RU:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Доступно для установки"
     LEGEND_INSTALLED_PACKAGES: "Установленные пакеты"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Не удается получить доступ к хранилищу пакетов в данный момент."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Ваш домен"
-    LABEL_VERSION: "Версия"
-    LABEL_CHECKING: "Проверка"
-    TYPE_BASIC_HINT: "Этот домен не имеет лицензию для коммерческого использования (с дополнительными функциями)."
-    TYPE_BASIC_HINT_2: "Этот домен не может быть лицензирован."
-    HTML_ALERT_TOP_1: "Код RainLoop Webmail лицензирован под"
-    HTML_ALERT_TOP_2: "Вы можете <b>свободно</b> использовать его в своих <b>личных</b> проектах."
-    HTML_ALERT_TOP_3: |
-        Коммерческое использование (с дополнительными функциями) <b>RainLoop Webmail</b> требует получение
-        <a href=http://www.rainloop.net/purchase/ target=_blank>лицензии</a>.
-    TYPE_PREMIUM_LIFETIME: "бесконечная"
-    LABEL_SUB_EXPIRES: "Подписка истекает"
-    BUTTON_ACTIVATE: "Активировать ключ для этого домена"
-    BUTTON_PURCHASE: "Купить"
-    BUTTON_TRIAL: "Пробная лицензия"
   TAB_ABOUT:
     LEGEND_ABOUT: "О программе"
     LABEL_TAG_HINT: "Простой, современный и быстрый веб-клиент электронной почты\n"

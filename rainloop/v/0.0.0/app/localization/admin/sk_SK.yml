@@ -4,7 +4,6 @@ sk_SK:
     LABEL_PASSWORD: "Heslo"
     BUTTON_LOGIN: "Prihlásiť sa do admin panelu"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Admin Panel"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Všeobecné"
@@ -117,15 +116,6 @@ sk_SK:
     LEGEND_AVAILABLE_FOR_UPDATE: "Dostupné na aktualizáciu"
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Dostupné na inštaláciu"
     LEGEND_INSTALLED_PACKAGES: "Nainštalované balíčky"
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Vaša doména"
-    LABEL_VERSION: "Verzia"
-    LABEL_CHECKING: "Kontrolujem"
-    TYPE_BASIC_HINT_2: "Táto doména nemôže byť licencovaná"
-    HTML_ALERT_TOP_1: "RainLoop Webmail je licencovaný pod"
-    TYPE_PREMIUM_LIFETIME: "Doživotná"
-    BUTTON_PURCHASE: "Kúpiť"
-    BUTTON_TRIAL: "Skúšobná verzia"
   TAB_ABOUT:
     LEGEND_ABOUT: "O programe"
     LABEL_TAG_HINT: "Jednoduchý, moderný a rýchly webmail klient"

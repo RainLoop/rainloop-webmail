@@ -22,8 +22,8 @@ Information about installing the product, check the [documentation page](http://
 
 ## License
 
-**RainLoop Webmail (Community edition)** is released under
-**GNU AFFERO GENERAL PUBLIC LICENSE Version 3 (AGPL)**.
-http://www.gnu.org/licenses/agpl-3.0.html
+**RainLoop Webmail (Legacy edition)** is released under
+**MIT License**.
+https://choosealicense.com/licenses/mit/
 
-Copyright (c) 2019 Rainloop Team
+Copyright (c) 2022 Rainloop Team

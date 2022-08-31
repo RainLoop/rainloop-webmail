@@ -3,8 +3,8 @@
   "title": "RainLoop Webmail",
   "description": "Simple, modern & fast web-based email client",
   "private": true,
-  "version": "1.16.0",
-  "ownCloudVersion": "5.4.0",
+  "version": "1.17.0",
+  "ownCloudVersion": "5.5.0",
   "homepage": "https://www.rainloop.net",
   "author": {
     "name": "RainLoop Team",
@@ -18,18 +18,13 @@
   "scripts": {
     "watch-css": "gulp watchCss",
     "watch-js": "webpack --color --watch",
-    "build": "gulp all",
-    "build-pro": "gulp all --pro"
+    "build": "gulp all"
   },
   "license": "SEE LICENSE IN LICENSE",
   "licenses": [
     {
-      "type": "AGPL 3.0",
-      "ulr": "http://www.gnu.org/licenses/agpl-3.0.html"
-    },
-    {
-      "type": "RainLoop Software License",
-      "ulr": "https://www.rainloop.net/licensing/"
+      "type": "MIT",
+      "ulr": "https://choosealicense.com/licenses/mit/"
     }
   ],
   "bugs": {

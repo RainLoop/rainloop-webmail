@@ -1,4 +1,4 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL 3 */
+/* RainLoop Webmail (c) RainLoop Team | Licensed under MIT */
 /* eslint-disable consistent-return */
 
 const gulp = require('gulp');
@@ -48,7 +48,7 @@ const owncloudSetup = (done) => {
 			.replace('<version>0.0</version>', '<version>' + versionFull + '</version>')
 			.replace(
 				'<licence></licence>',
-				'<licence>' + (config.community ? 'AGPLv3' : 'RainLoop Software License') + '</licence>'
+				'<licence>MIT</licence>'
 			)
 	);
 
@@ -58,8 +58,7 @@ const owncloudSetup = (done) => {
 	config.destPath = config.releasesPath + '/owncloud/' + versionFull + '/';
 	config.cleanPath = dist;
 	config.zipSrcPath = dist;
-	config.zipFile = 'rainloop-owncloud-app-' + (config.community ? '' : 'standard-') + versionFull + '.zip';
-	// config.zipFileShort = 'rainloop' + (config.community ? '' : '-standard') + '.zip';
+	config.zipFile = 'rainloop-owncloud-app-legacy-' + versionFull + '.zip';
 
 	done();
 };
@@ -80,10 +79,6 @@ const owncloudClean = (done) => {
 	done();
 };
 
-// const owncloudShortname = (done) => {
-// 	copy(config.destPath + config.zipFile, config.destPath + config.zipFileShort, done);
-// };
-
 exports.owncloud = gulp.series(
 	owncloudCopy,
 	rainloopBuild,
@@ -92,5 +87,4 @@ exports.owncloud = gulp.series(
 	owncloudSetup,
 	owncloudZip,
 	owncloudClean
-	// owncloudShortname
 );

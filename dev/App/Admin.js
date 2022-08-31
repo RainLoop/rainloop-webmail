@@ -4,9 +4,8 @@ import ko from 'ko';
 import progressJs from 'progressJs';
 
 import { root } from 'Common/Links';
-import { getNotification } from 'Common/Translator';
-import { StorageResultType, Notification } from 'Common/Enums';
-import { pInt, isNormal, isArray, inArray, isUnd } from 'Common/Utils';
+import { StorageResultType } from 'Common/Enums';
+import { pInt, isArray, isUnd } from 'Common/Utils';
 
 import * as Settings from 'Storage/Settings';
 
@@ -14,7 +13,6 @@ import AppStore from 'Stores/Admin/App';
 import CapaStore from 'Stores/Admin/Capa';
 import DomainStore from 'Stores/Admin/Domain';
 import PluginStore from 'Stores/Admin/Plugin';
-import LicenseStore from 'Stores/Admin/License';
 import PackageStore from 'Stores/Admin/Package';
 import CoreStore from 'Stores/Admin/Core';
 import Remote from 'Remote/Admin/Ajax';
@@ -148,40 +146,6 @@ class AdminApp extends AbstractApp {
 				CoreStore.coreVersionCompare(-2);
 			}
 		});
-	}
-
-	/**
-	 * @param {boolean=} force = false
-	 */
-	reloadLicensing(force = false) {
-		LicenseStore.licensingProcess(true);
-		LicenseStore.licenseError('');
-		Remote.licensing((result, data) => {
-			LicenseStore.licensingProcess(false);
-			if (StorageResultType.Success === result && data && data.Result && isNormal(data.Result.Expired)) {
-				LicenseStore.licenseValid(true);
-				LicenseStore.licenseExpired(pInt(data.Result.Expired));
-				LicenseStore.licenseError('');
-				LicenseStore.licensing(true);
-				AppStore.prem(true);
-			} else {
-				if (
-					data &&
-					data.ErrorCode &&
-					-1 < inArray(pInt(data.ErrorCode), [Notification.LicensingServerIsUnavailable, Notification.LicensingExpired])
-				) {
-					LicenseStore.licenseError(getNotification(pInt(data.ErrorCode)));
-					LicenseStore.licensing(true);
-				} else {
-					if (StorageResultType.Abort === result) {
-						LicenseStore.licenseError(getNotification(Notification.LicensingServerIsUnavailable));
-						LicenseStore.licensing(true);
-					} else {
-						LicenseStore.licensing(false);
-					}
-				}
-			}
-		}, force);
 	}
 
 	bootend(bootendCallback = null) {

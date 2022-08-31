@@ -4,7 +4,6 @@ nb_NO:
     LABEL_PASSWORD: "Passord"
     BUTTON_LOGIN: "Logg inn på admin-panel"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Admin-panel"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Generelt"
@@ -71,7 +70,6 @@ nb_NO:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Ingen"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Én gang"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Alltid"
-    HTML_ALERT_PREMIUM: "Denne funksjonaliteten er bare tilgjengelig for <strong><a href=\"#/licensing\">Premium</a></strong>-brukere."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Kontakter"
     LEGEND_STORAGE: "Lagring (PDO)"
@@ -146,22 +144,6 @@ nb_NO:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Tilgjengelig for installasjon"
     LEGEND_INSTALLED_PACKAGES: "Installerte pakker"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Fikk ikke tilgang til pakkelageret."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Domenenavn"
-    LABEL_VERSION: "Versjon"
-    LABEL_CHECKING: "Sjekker"
-    TYPE_BASIC_HINT: "Dette domenet har ikke lisens for kommersiell bruk (med ekstrafunksjoner)."
-    TYPE_BASIC_HINT_2: "Dette domenet kan ikke brukes med lisens for ekstrafunksjoner."
-    HTML_ALERT_TOP_1: "RainLoop Webmail er utgitt på betingelsene i"
-    HTML_ALERT_TOP_2: "Du står <b>fritt</b> til å bruke programmet til <b>personlige</b> formål."
-    HTML_ALERT_TOP_3: |
-        Hvis du vil bruke <b>RainLoop Webmail</b> kommersielt (med ekstrafunksjoner), må du kjøpe et
-        <a href=http://www.rainloop.net/purchase/ target=_blank>abonnement</a>.
-    TYPE_PREMIUM_LIFETIME: "Livstid"
-    LABEL_SUB_EXPIRES: "Abonnement utgår"
-    BUTTON_ACTIVATE: "Ta i bruk abonnementsnøkkel for dette domenet"
-    BUTTON_PURCHASE: "Kjøp"
-    BUTTON_TRIAL: "Prøv"
   TAB_ABOUT:
     LEGEND_ABOUT: "Om"
     LABEL_TAG_HINT: "Rask, enkel, moderne og web-basert e-postklient"

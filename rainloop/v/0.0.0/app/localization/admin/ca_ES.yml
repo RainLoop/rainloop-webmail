@@ -4,7 +4,6 @@ ca_ES:
     LABEL_PASSWORD: "Contrasenya"
     BUTTON_LOGIN: "Entreu al tauler d'administració"
   TOP_PANEL:
-    LABEL_PREMIUM: "Prèmium"
     LABEL_ADMIN_PANEL: "Tauler d'administració"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "General"
@@ -71,7 +70,6 @@ ca_ES:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Cap"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Un cop"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Sempre"
-    HTML_ALERT_PREMIUM: "Aquesta funcionalitat està disponible per als subscriptors de <strong><a href=\"#/licensing\">Prèmium</a></strong>."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Contactes"
     LEGEND_STORAGE: "Emmagatzeatge (PDO)"
@@ -146,22 +144,6 @@ ca_ES:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Disponible per instal·lar"
     LEGEND_INSTALLED_PACKAGES: "Paquets instal·lats"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Ara no es pot accedir al repositori."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Domini"
-    LABEL_VERSION: "Versió"
-    LABEL_CHECKING: "Es comprova"
-    TYPE_BASIC_HINT: "Aquest domini no té llicència per a l'ús comercial (amb funcions addicionals)."
-    TYPE_BASIC_HINT_2: "Aquest domini no pot tenir llicència."
-    HTML_ALERT_TOP_1: "El RainLoop Webmail té llicència de"
-    HTML_ALERT_TOP_2: "Teniu <b>llibertat</b> per usar-lo per als vostres projectes <b>personals</b>."
-    HTML_ALERT_TOP_3: |
-        L'ús comercial (amb funcions addicionals) del <b>RainLoop Webmail</b> requereix obtenir una
-        <a href="http://www.rainloop.net/purchase/" target="_blank">subscripció</a>.
-    TYPE_PREMIUM_LIFETIME: "Per sempre"
-    LABEL_SUB_EXPIRES: "La subscripció caduca"
-    BUTTON_ACTIVATE: "Activa la clau de subscripció per a aquest domini"
-    BUTTON_PURCHASE: "Compreu-la"
-    BUTTON_TRIAL: "Proveu-la"
   TAB_ABOUT:
     LEGEND_ABOUT: "Quant a"
     LABEL_TAG_HINT: "Client de correu electrònic senzill, modern i ràpid basat en la web"

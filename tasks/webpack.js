@@ -1,4 +1,4 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL 3 */
+/* RainLoop Webmail (c) RainLoop Team | Licensed under MIT */
 const webpack = require('webpack');
 const gutil = require('gulp-util');
 
@@ -34,5 +34,5 @@ const webpackCallback = (done) => (err, stats) => {
 };
 
 exports.webpack = (done) => {
-	webpack(webpackCfgBuilder(config.paths.staticJS, !config.community, 'production'), webpackCallback(done));
+	webpack(webpackCfgBuilder(config.paths.staticJS, 'production'), webpackCallback(done));
 };

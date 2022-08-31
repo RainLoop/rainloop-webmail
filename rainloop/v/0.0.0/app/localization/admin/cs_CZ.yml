@@ -4,7 +4,6 @@ cs_CZ:
     LABEL_PASSWORD: "Heslo"
     BUTTON_LOGIN: "Přihlásit do administrace"
   TOP_PANEL:
-    LABEL_PREMIUM: "Prémium"
     LABEL_ADMIN_PANEL: "Administrační panel"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Základní"
@@ -70,7 +69,6 @@ cs_CZ:
     OPTION_WELCOME_PAGE_DISPLAY_NONE: "Nikdy"
     OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Jednou"
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Vždy"
-    HTML_ALERT_PREMIUM: "Tato funkce je dostupná pouze pro <strong><a href=\"#/licensing\">Prémiovou</a></strong> verzi."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Kontakty"
     LEGEND_STORAGE: "Úložiště (PDO)"
@@ -146,23 +144,6 @@ cs_CZ:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Dostupné pro instalaci"
     LEGEND_INSTALLED_PACKAGES: "Nainstalované balíčky"
     ALERT_CANNOT_ACCESS_REPOSITORY: "V tento moment se nelze připojit k repozitáři."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Vaše doména"
-    LABEL_VERSION: "Verze"
-    LABEL_CHECKING: "Kontrolování"
-    TYPE_BASIC_HINT: "Tato doména není licencována pro komerční užití."
-    TYPE_BASIC_HINT_2: "Tato doména nemůže být licencována."
-    HTML_ALERT_TOP_1: "RainLoop Webmail je licencován pod"
-    HTML_ALERT_TOP_2: "Můžete tento nástroj <b>volně</b> používat pro vaše <b>osobní</b> projekty."
-    HTML_ALERT_TOP_3: |
-        Komerční užívání (s přidanými doplňky) <b>RainLoop Webmail</b> vyžaduje získání
-
-        <a href="http://www.rainloop.net/purchase/" target="_blank">licence</a>.
-    TYPE_PREMIUM_LIFETIME: "Lifetime"
-    LABEL_SUB_EXPIRES: "Licence vyprší"
-    BUTTON_ACTIVATE: "Aktivační licenční klíč pro tuto doménu"
-    BUTTON_PURCHASE: "Koupit"
-    BUTTON_TRIAL: "Trial"
   TAB_ABOUT:
     LEGEND_ABOUT: "Info"
     LABEL_TAG_HINT: "Jednoduchý, moderní a rychlý webový emailový klient"

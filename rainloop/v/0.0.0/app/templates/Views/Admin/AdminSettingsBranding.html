@@ -43,7 +43,7 @@
 		</div>
 	</div>
 	<br />
-	<ul class="nav nav-tabs" data-bind="visible: !community">
+	<ul class="nav nav-tabs">
 		<li class="active">
 			<a class="i18n" data-i18n="TAB_BRANDING/LEGEND_LOGIN"
 			   href="#branding-login-section-id" data-toggle="tab"></a>
@@ -57,12 +57,12 @@
 			   href="#branding-welcome-page-section-id" data-toggle="tab"></a>
 		</li>
 	</ul>
-	<br  />
-	<div class="row" data-bind="visible: !community">
+	<br />
+	<div class="row">
 		<div class="tab-content span12">
 			<div class="tab-pane active" id="branding-login-section-id">
 
-<div class="form-horizontal" data-bind="css: {'disabled-form': !capa()}">
+<div class="form-horizontal">
 	<div class="control-group">
 		<label class="control-label" data-i18n="TAB_BRANDING/LABEL_LOGIN_LOGO"></label>
 		<div class="controls">
@@ -72,8 +72,7 @@
 					value: loginLogo,
 					trigger: loginLogo.trigger,
 					placeholder: 'https://',
-					size: 5,
-					enable: capa
+					size: 5
 				}
 			}"></div>
 		</div>
@@ -86,8 +85,7 @@
 				params: {
 					value: loginDescription,
 					trigger: loginDescription.trigger,
-					size: 5,
-					enable: capa
+					size: 5
 				}
 			}"></div>
 		</div>
@@ -101,8 +99,7 @@
 					value: loginBackground,
 					trigger: loginBackground.trigger,
 					placeholder: 'https://',
-					size: 5,
-					enable: capa
+					size: 5
 				}
 			}"></div>
 		</div>
@@ -116,7 +113,6 @@
 					value: loginCss,
 					trigger: loginCss.trigger,
 					width: 495,
-					enable: capa,
 					rows: 7
 				}
 			}"></div>
@@ -127,7 +123,7 @@
 			</div>
 			<div class="tab-pane" id="branding-user-section-id">
 
-<div class="form-horizontal" data-bind="css: {'disabled-form': !capa()}">
+<div class="form-horizontal">
 	<div class="control-group">
 		<label class="control-label" data-i18n="TAB_BRANDING/LABEL_USER_LOGO"></label>
 		<div class="controls">
@@ -137,8 +133,7 @@
 					value: userLogo,
 					trigger: userLogo.trigger,
 					placeholder: 'https://',
-					size: 5,
-					enable: capa
+					size: 5
 				}
 			}"></div>
 		</div>
@@ -151,8 +146,7 @@
 				params: {
 					value: userLogoTitle,
 					trigger: userLogoTitle.trigger,
-					size: 5,
-					enable: capa
+					size: 5
 				}
 			}"></div>
 		</div>
@@ -166,8 +160,7 @@
 					value: userLogoMessage,
 					trigger: userLogoMessage.trigger,
 					placeholder: 'https://',
-					size: 5,
-					enable: capa
+					size: 5
 				}
 			}"></div>
 		</div>
@@ -181,7 +174,6 @@
 					value: userCss,
 					trigger: userCss.trigger,
 					width: 495,
-					enable: capa,
 					rows: 7
 				}
 			}"></div>
@@ -192,7 +184,7 @@
 			</div>
 			<div class="tab-pane" id="branding-welcome-page-section-id">
 
-<div class="form-horizontal" data-bind="css: {'disabled-form': !capa()}">
+<div class="form-horizontal">
 	<div class="control-group">
 		<label class="control-label" data-i18n="TAB_BRANDING/LABEL_WELCOME_PAGE_URL"></label>
 		<div class="controls">
@@ -202,8 +194,7 @@
 					value: welcomePageUrl,
 					trigger: welcomePageUrl.trigger,
 					placeholder: 'https://',
-					size: 5,
-					enable: capa
+					size: 5
 				}
 			}"></div>
 		</div>
@@ -219,8 +210,7 @@
 					trigger: welcomePageDisplay.trigger,
 					optionsText: 'optText',
 					optionsValue: 'optValue',
-					size: 2,
-					enable: capa
+					size: 2
 				}
 			}"></div>
 		</div>
@@ -230,9 +220,4 @@
 			</div>
 		</div>
 	</div>
-
-	<div class="row" data-bind="visible: !capa() && !community">
-		<div class="alert span8" style="margin-top: 10px;" data-i18n="[html]TAB_BRANDING/HTML_ALERT_PREMIUM"></div>
-	</div>
-
 </div>

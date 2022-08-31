@@ -1,4 +1,4 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL 3 */
+/* RainLoop Webmail (c) RainLoop Team | Licensed under MIT */
 const gulp = require('gulp');
 const rimraf = require('gulp-rimraf');
 const fs = require('node-fs');
@@ -18,6 +18,6 @@ exports.zip = (srcDir, destDir, fileName) =>
 		.pipe(require('gulp-zip')(fileName))
 		.pipe(gulp.dest(destDir));
 
-exports.getHead = () => (!config.community ? config.head.rainloop : config.head.agpl);
+exports.getHead = () => config.head.mit;
 
 exports.cleanStatic = () => exports.del(config.paths.static);

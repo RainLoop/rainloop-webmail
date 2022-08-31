@@ -29,7 +29,3 @@
 
 1. Edit data/\_data_/\_default_/configs/application.ini
 2. Set 'cache_system_data' to Off
-
----
-
-If you have any questions, open an issue or email support@rainloop.net.
