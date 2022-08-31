@@ -43,7 +43,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		['layout', 'messageReadDelay', 'messagesPerPage',
 		 'editorDefaultType', 'requestReadReceipt', 'requestDsn', 'pgpSign', 'pgpEncrypt',
 		 'viewHTML', 'showImages', 'removeColors', 'hideDeleted',
-		 'useCheckboxesInList', 'useThreads', 'replySameFolder'
+		 'useCheckboxesInList', 'useThreads', 'replySameFolder', 'msgDefaultAction'
 		].forEach(name => this[name] = SettingsUserStore[name]);
 
 		this.allowLanguagesOnSettings = !!SettingsGet('AllowLanguagesOnSettings');
@@ -73,6 +73,14 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 				];
 			},
 
+			msgDefaultActions: () => {
+				translatorTrigger();
+				return [
+					{ id: 1, name: i18n('MESSAGE/BUTTON_REPLY') }, // ComposeType.Reply,
+					{ id: 2, name: i18n('MESSAGE/BUTTON_REPLY_ALL') } // ComposeType.ReplyAll
+				];
+			},
+
 			layoutTypes: () => {
 				translatorTrigger();
 				return [
@@ -84,6 +92,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		});
 
 		this.addSetting('EditorDefaultType');
+		this.addSetting('MsgDefaultAction');
 		this.addSetting('MessageReadDelay');
 		this.addSetting('MessagesPerPage');
 		this.addSetting('Layout', () => MessagelistUserStore([]));

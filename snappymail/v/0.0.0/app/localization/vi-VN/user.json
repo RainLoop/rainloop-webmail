@@ -403,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Loại bỏ hình nền và màu chữ trong phần thân của thư",
 		"LABEL_MESSAGE_PER_PAGE": "Số thư hiển thị trên trang",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Đánh dấu thư là để đọc sau",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "giây",
 		"LABEL_NOTIFICATIONS": "Thông báo",
 		"LABEL_SOUND_NOTIFICATION": "Thông báo âm thanh",

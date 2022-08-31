@@ -403,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Supprimer les couleurs d'arrière-plan et de texte du message",
 		"LABEL_MESSAGE_PER_PAGE": "Messages par page",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Marquer le message comme lu après",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "secondes",
 		"LABEL_NOTIFICATIONS": "Notifications",
 		"LABEL_SOUND_NOTIFICATION": "Son de notification",

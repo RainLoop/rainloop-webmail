@@ -346,6 +346,7 @@ trait User
 		$this->setSettingsFromParams($oSettings, 'AllowDraftAutosave', 'bool');
 		$this->setSettingsFromParams($oSettings, 'AutoLogout', 'int');
 		$this->setSettingsFromParams($oSettings, 'MessageReadDelay', 'int');
+		$this->setSettingsFromParams($oSettings, 'MsgDefaultAction', 'int');
 
 		$this->setSettingsFromParams($oSettings, 'Resizer4Width', 'int');
 		$this->setSettingsFromParams($oSettings, 'Resizer5Width', 'int');

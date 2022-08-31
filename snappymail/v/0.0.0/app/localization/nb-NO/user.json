@@ -403,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Fjern bakgrunn og tekstfarger fra brødtekst",
 		"LABEL_MESSAGE_PER_PAGE": "Meldinger per side",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Marker melding som lest etter",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "sekunder",
 		"LABEL_NOTIFICATIONS": "Varsler",
 		"LABEL_SOUND_NOTIFICATION": "Lydvarsel",

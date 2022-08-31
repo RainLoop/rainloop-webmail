@@ -724,6 +724,7 @@ class Actions
 			'RemoveColors' => (bool) $oConfig->Get('defaults', 'remove_colors', false),
 			'MessagesPerPage' => (int) $oConfig->Get('webmail', 'messages_per_page', 25),
 			'MessageReadDelay' => (int) $oConfig->Get('webmail', 'message_read_delay', 5),
+			'MsgDefaultAction' => 1,
 			'SoundNotification' => true,
 			'NotificationSound' => 'new-mail',
 			'DesktopNotifications' => true,
@@ -862,6 +863,7 @@ class Actions
 					$aResult['ContactsAutosave'] = (bool)$oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
 					$aResult['MessagesPerPage'] = (int)$oSettings->GetConf('MessagesPerPage', $aResult['MessagesPerPage']);
 					$aResult['MessageReadDelay'] = (int)$oSettings->GetConf('MessageReadDelay', $aResult['MessageReadDelay']);
+					$aResult['MsgDefaultAction'] = (int)$oSettings->GetConf('MsgDefaultAction', $aResult['MsgDefaultAction']);
 					$aResult['SoundNotification'] = (bool)$oSettings->GetConf('SoundNotification', $aResult['SoundNotification']);
 					$aResult['NotificationSound'] = (string)$oSettings->GetConf('NotificationSound', $aResult['NotificationSound']);
 					$aResult['DesktopNotifications'] = (bool)$oSettings->GetConf('DesktopNotifications', $aResult['DesktopNotifications']);

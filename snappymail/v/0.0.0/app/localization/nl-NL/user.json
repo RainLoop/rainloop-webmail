@@ -403,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Verwijder achtergrond- en tekstkleuren uit het bericht",
 		"LABEL_MESSAGE_PER_PAGE": "Berichten op pagina",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Bericht markeren als gelezen na",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconden",
 		"LABEL_NOTIFICATIONS": "Notificaties",
 		"LABEL_SOUND_NOTIFICATION": "Notificatie geluid",

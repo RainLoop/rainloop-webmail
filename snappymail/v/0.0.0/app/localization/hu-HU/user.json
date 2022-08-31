@@ -403,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Üzenetek egy oldalon",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Jelölje meg az üzenetet olvasottként",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "másodperc után",
 		"LABEL_NOTIFICATIONS": "Értesítések",
 		"LABEL_SOUND_NOTIFICATION": "Hangos értesítés",

@@ -1,7 +1,7 @@
 import ko from 'ko';
 import { koComputable } from 'External/ko';
 
-import { Layout, EditorDefaultType } from 'Common/EnumsUser';
+import { Layout, EditorDefaultType, ComposeType } from 'Common/EnumsUser';
 import { pInt } from 'Common/Utils';
 import { addObservablesTo } from 'External/ko';
 import { $htmlCL, SettingsGet, fireEvent } from 'Common/Globals';
@@ -19,6 +19,13 @@ export const SettingsUserStore = new class {
 			limitedList: [
 				EditorDefaultType.Html,
 				EditorDefaultType.Plain
+			]
+		});
+
+		self.msgDefaultAction = ko.observable(1).extend({
+			limitedList: [
+				ComposeType.Reply,
+				ComposeType.ReplyAll
 			]
 		});
 
@@ -79,6 +86,7 @@ export const SettingsUserStore = new class {
 		self.messagesPerPage(pInt(SettingsGet('MessagesPerPage')));
 		self.messageReadDelay(pInt(SettingsGet('MessageReadDelay')));
 		self.autoLogout(pInt(SettingsGet('AutoLogout')));
+		self.msgDefaultAction(SettingsGet('MsgDefaultAction'));
 
 		self.viewHTML(SettingsGet('ViewHTML'));
 		self.showImages(SettingsGet('ShowImages'));

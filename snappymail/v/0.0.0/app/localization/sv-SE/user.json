@@ -403,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Meddelanden per sida",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Markera meddelandet som läst efter",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "sekunder",
 		"LABEL_NOTIFICATIONS": "Aviseringar",
 		"LABEL_SOUND_NOTIFICATION": "Ljudnotifikation",

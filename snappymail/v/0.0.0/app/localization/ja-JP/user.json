@@ -403,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "本文の文字色及び背景色の設定を無視する",
 		"LABEL_MESSAGE_PER_PAGE": "1ページに表示する件数",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "メッセージが既読となるまでの秒数",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "秒",
 		"LABEL_NOTIFICATIONS": "通知設定",
 		"LABEL_SOUND_NOTIFICATION": "サウンド通知",

@@ -7,7 +7,6 @@ import { Scope } from 'Common/Enums';
 
 import {
 	ComposeType,
-	ClientSideKeyNameLastReplyAction,
 	ClientSideKeyNameMessageHeaderFullInfo,
 	ClientSideKeyNameMessageAttachmentControls,
 	FolderType,
@@ -94,10 +93,11 @@ export class MailMessageView extends AbstractViewRight {
 					}
 				}, this.messageVisibility);
 
+		this.msgDefaultAction = SettingsUserStore.msgDefaultAction;
+
 		this.addObservables({
 			showAttachmentControls: !!Local.get(ClientSideKeyNameMessageAttachmentControls),
 			downloadAsZipLoading: false,
-			lastReplyAction_: '',
 			showFullInfo: '1' === Local.get(ClientSideKeyNameMessageHeaderFullInfo),
 			moreDropdownTrigger: false,
 
@@ -138,15 +138,6 @@ export class MailMessageView extends AbstractViewRight {
 					.filter(item => item && !item.isLinked() && item.checked() && item.download)
 					.length,
 
-			lastReplyAction: {
-				read: this.lastReplyAction_,
-				write: value => this.lastReplyAction_(
-					[ComposeType.Reply, ComposeType.ReplyAll, ComposeType.Forward].includes(value)
-						? ComposeType.Reply
-						: value
-				)
-			},
-
 			tagsAllowed: () => FolderUserStore.currentFolder() ? FolderUserStore.currentFolder().tagsAllowed() : false,
 
 			messageVisibility: () => !MessageUserStore.loading() && !!currentMessage(),
@@ -182,8 +173,6 @@ export class MailMessageView extends AbstractViewRight {
 		});
 
 		this.addSubscribables({
-			lastReplyAction_: value => Local.set(ClientSideKeyNameLastReplyAction, value),
-
 			message: message => {
 				MessageUserStore.activeDom(null);
 
@@ -206,8 +195,6 @@ export class MailMessageView extends AbstractViewRight {
 
 			showFullInfo: value => Local.set(ClientSideKeyNameMessageHeaderFullInfo, value ? '1' : '0')
 		});
-
-		this.lastReplyAction(Local.get(ClientSideKeyNameLastReplyAction) || ComposeType.Reply);
 
 		// commands
 		this.replyCommand = createCommandReplyHelper(ComposeType.Reply);
@@ -256,7 +243,6 @@ export class MailMessageView extends AbstractViewRight {
 	 * @returns {void}
 	 */
 	replyOrforward(sType) {
-		this.lastReplyAction(sType);
 		showMessageComposer([sType, currentMessage()]);
 	}
 
