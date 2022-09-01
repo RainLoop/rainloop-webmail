@@ -12,6 +12,6 @@ exports.copy = (sFile, sNewFile, done) => {
 	done();
 };
 
-exports.getHead = () => config.head.mit;
+exports.getHead = () => config.head.agpl;
 
 exports.cleanStatic = () => del(config.paths.static);

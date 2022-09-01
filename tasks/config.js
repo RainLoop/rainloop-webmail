@@ -3,7 +3,7 @@ const path = require('path');
 
 const config = {
 	head: {
-		mit: '/* SnappyMail Webmail (c) SnappyMail | Licensed under MIT */'
+		agpl: '/* SnappyMail Webmail (c) SnappyMail | Licensed under AGPL v3 */'
 	},
 	devVersion: '0.0.0',
 

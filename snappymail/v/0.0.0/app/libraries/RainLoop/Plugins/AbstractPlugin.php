@@ -12,7 +12,7 @@ abstract class AbstractPlugin
 		RELEASE  = '2020-11-01',
 		REQUIRED = '2.0.0',
 		CATEGORY = 'General',
-		LICENSE  = 'MIT',
+		LICENSE  = 'AGPL v3',
 		DESCRIPTION = '';
 
 	/**
