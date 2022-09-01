@@ -24,9 +24,9 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 		this.packages = PackageAdminStore;
 
 		addComputablesTo(this, {
-			packagesCurrent: () => PackageAdminStore().filter(item => item && item.installed && !item.canBeUpdated),
-			packagesUpdate: () => PackageAdminStore().filter(item => item && item.installed && item.canBeUpdated),
-			packagesAvailable: () => PackageAdminStore().filter(item => item && !item.installed),
+			packagesCurrent: () => PackageAdminStore().filter(item => item?.installed && !item.canBeUpdated),
+			packagesUpdate: () => PackageAdminStore().filter(item => item?.installed && item.canBeUpdated),
+			packagesAvailable: () => PackageAdminStore().filter(item => !item?.installed),
 
 			visibility: () => (PackageAdminStore.loading() ? 'visible' : 'hidden')
 		});
@@ -59,7 +59,7 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 	requestHelper(packageToRequest, install) {
 		return (iError, data) => {
 			PackageAdminStore.forEach(item => {
-				if (item && packageToRequest && item.loading && item.loading() && packageToRequest.file === item.file) {
+				if (packageToRequest && item?.loading() && packageToRequest.file === item.file) {
 					packageToRequest.loading(false);
 					item.loading(false);
 				}
@@ -113,7 +113,7 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 				if (iError) {
 					plugin.enabled(disable);
 					this.packagesError(
-						(Notification.UnsupportedPluginPackage === iError && data && data.ErrorMessage)
+						(Notification.UnsupportedPluginPackage === iError && data?.ErrorMessage)
 						? data.ErrorMessage
 						: getNotification(iError)
 					);

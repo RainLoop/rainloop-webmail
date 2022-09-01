@@ -57,7 +57,7 @@ export class AdminSettingsAbout /*extends AbstractViewSettings*/ {
 		this.coreChecking(true);
 		Remote.request('AdminUpdateInfo', (iError, data) => {
 			this.coreChecking(false);
-			if (!iError && data && data.Result) {
+			if (!iError && data?.Result) {
 				this.coreReal(true);
 				this.coreUpdatable(!!data.Result.Updatable);
 				this.coreWarning(!!data.Result.Warning);
@@ -79,7 +79,7 @@ export class AdminSettingsAbout /*extends AbstractViewSettings*/ {
 				this.coreUpdating(false);
 				this.coreVersion('');
 				this.coreVersionCompare(-2);
-				if (!iError && data && data.Result) {
+				if (!iError && data?.Result) {
 					this.coreReal(true);
 					window.location.reload();
 				} else {
