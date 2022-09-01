@@ -613,19 +613,20 @@ export class MailMessageList extends AbstractViewRight {
 					AppUserStore.focusedState(Scope.MessageList);
 				}
 
-				let el = eqs(event, '.e-paginator a');
-				el && this.gotoPage(ko.dataFor(el));
+				let data = ko.dataFor(el),
+					el = eqs(event, '.e-paginator a');
+				el && this.gotoPage(data);
 
 				eqs(event, '.checkboxCheckAll') && this.checkAll(!this.checkAll());
 
 				el = eqs(event, '.flagParent');
-				el && this.flagMessages(ko.dataFor(el));
+				el && this.flagMessages(data);
 
 				el = eqs(event, '.threads-len');
-				el && this.gotoThread(ko.dataFor(el));
+				el && this.gotoThread(data);
 			},
 			dblclick: event => {
-				let  el = eqs(event, '.actionHandle');
+				let el = eqs(event, '.actionHandle');
 				el && this.gotoThread(ko.dataFor(el));
 			}
 		});
@@ -717,15 +718,10 @@ export class MailMessageList extends AbstractViewRight {
 		});
 
 		registerShortcut('t', '', [Scope.MessageList], () => {
-			let message = MessagelistUserStore.selectedMessage();
-			if (!message) {
-				message = MessagelistUserStore.focusedMessage();
-			}
-
+			let message = MessagelistUserStore.selectedMessage() || MessagelistUserStore.focusedMessage();
 			if (message && 0 < message.threadsLen()) {
 				this.gotoThread(message);
 			}
-
 			return false;
 		});
 
