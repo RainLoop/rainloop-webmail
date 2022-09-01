@@ -58,7 +58,7 @@ en_GB:
     SENT_NAME: "Sent"
     DRAFTS_NAME: "Drafts"
     SPAM_NAME: "Spam"
-    TRASH_NAME: "Trash"
+    TRASH_NAME: "Bin"
     ARCHIVE_NAME: "Archive"
   QUOTA:
     TITLE: "Quota usage"
@@ -361,7 +361,7 @@ en_GB:
     LABEL_SENT: "Sent"
     LABEL_DRAFTS: "Drafts"
     LABEL_SPAM: "Spam"
-    LABEL_TRASH: "Trash"
+    LABEL_TRASH: "Bin"
     LABEL_ARCHIVE: "Archive"
     BUTTON_CANCEL: "Cancel"
     BUTTON_CLOSE: "Close"
@@ -373,7 +373,7 @@ en_GB:
         You haven't selected "Spam" system folder spamed messages are placed to.
         If you wish to remove messages permanently, please select "Do not use" option.
     NOTIFICATION_TRASH: |
-        You haven't selected "Trash" system folder deleted messages are placed to.
+        You haven't selected "Bin" system folder deleted messages are placed to.
         If you wish to remove messages permanently, please select "Do not use" option.
     NOTIFICATION_ARCHIVE: "You haven't selected \"Archive\" system folder achived messages are placed to."
   POPUPS_TWO_FACTOR_CFG:
