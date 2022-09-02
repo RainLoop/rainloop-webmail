@@ -249,7 +249,7 @@ messagesMoveHelper = (fromFolderFullName, toFolderFullName, uidsForMove) => {
 		isSpam = sSpamFolder === toFolderFullName,
 		isHam = !isSpam && sSpamFolder === fromFolderFullName && getFolderInboxName() === toFolderFullName;
 
-	Remote.request('MessageMove',
+	Remote.abort('MessageList').request('MessageMove',
 		moveOrDeleteResponseHelper,
 		{
 			FromFolder: fromFolderFullName,
@@ -257,23 +257,17 @@ messagesMoveHelper = (fromFolderFullName, toFolderFullName, uidsForMove) => {
 			Uids: uidsForMove.join(','),
 			MarkAsRead: (isSpam || FolderUserStore.trashFolder() === toFolderFullName) ? 1 : 0,
 			Learning: isSpam ? 'SPAM' : isHam ? 'HAM' : ''
-		},
-		null,
-		'',
-		['MessageList']
+		}
 	);
 },
 
 messagesDeleteHelper = (sFromFolderFullName, aUidForRemove) => {
-	Remote.request('MessageDelete',
+	Remote.abort('MessageList').request('MessageDelete',
 		moveOrDeleteResponseHelper,
 		{
 			Folder: sFromFolderFullName,
 			Uids: aUidForRemove.join(',')
-		},
-		null,
-		'',
-		['MessageList']
+		}
 	);
 },
 

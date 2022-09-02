@@ -403,7 +403,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 		}
 
 		ContactUserStore.loading(true);
-		Remote.request('Contacts',
+		Remote.abort('Contacts').request('Contacts',
 			(iError, data) => {
 				let count = 0,
 					list = [];
@@ -429,10 +429,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 				Offset: offset,
 				Limit: CONTACTS_PER_PAGE,
 				Search: this.search()
-			},
-			null,
-			'',
-			['Contacts']
+			}
 		);
 	}
 

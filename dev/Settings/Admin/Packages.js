@@ -59,7 +59,7 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 	requestHelper(packageToRequest, install) {
 		return (iError, data) => {
 			PackageAdminStore.forEach(item => {
-				if (packageToRequest && item?.loading() && packageToRequest.file === item.file) {
+				if (packageToRequest && item?.loading?.() && packageToRequest.file === item.file) {
 					packageToRequest.loading(false);
 					item.loading(false);
 				}
@@ -109,7 +109,7 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 		let disable = plugin.enabled();
 		plugin.enabled(!disable);
 		Remote.request('AdminPluginDisable',
-		(iError, data) => {
+			(iError, data) => {
 				if (iError) {
 					plugin.enabled(disable);
 					this.packagesError(

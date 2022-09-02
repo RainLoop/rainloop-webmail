@@ -758,7 +758,7 @@ export class ComposePopupView extends AbstractViewPopup {
 
 	// getAutocomplete
 	emailsSource(value, fResponse) {
-		Remote.request('Suggestions',
+		Remote.abort('Suggestions').request('Suggestions',
 			(iError, data) => {
 				if (!iError && isArray(data.Result)) {
 					fResponse(
@@ -772,10 +772,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			{
 				Query: value
 //				,Page: 1
-			},
-			null,
-			'',
-			['Suggestions']
+			}
 		);
 	}
 

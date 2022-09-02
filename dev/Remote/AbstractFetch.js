@@ -123,16 +123,13 @@ export class AbstractFetchRemote
 	 * @param {Object=} oParameters
 	 * @param {?number=} iTimeout
 	 * @param {string=} sGetAdd = ''
-	 * @param {Array=} aAbortActions = []
 	 */
 	request(sAction, fCallback, params, iTimeout, sGetAdd, abortActions) {
 		params = params || {};
 
 		const start = Date.now();
 
-		if (sAction && abortActions) {
-			abortActions.forEach(actionToAbort => abort(actionToAbort));
-		}
+		abortActions && console.error('abortActions is obsolete');
 
 		fetchJSON(sAction, pString(sGetAdd),
 			params,

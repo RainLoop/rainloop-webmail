@@ -51,12 +51,12 @@ class RemoteUserFetch extends AbstractFetchRemote {
 			params = {};
 		}
 
+		bSilent || this.abort('MessageList');
 		this.request('MessageList',
 			fCallback,
 			params,
 			60000, // 60 seconds before aborting
-			sGetAdd,
-			bSilent ? [] : ['MessageList']
+			sGetAdd
 		);
 	}
 
@@ -71,7 +71,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		iUid = pInt(iUid);
 
 		if (getFolderFromCacheList(sFolderFullName) && 0 < iUid) {
-			this.request('Message',
+			this.abort('Message').request('Message',
 				fCallback,
 				{},
 				null,
@@ -83,8 +83,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 						iUid,
 						AppUserStore.threadsAllowed() && SettingsUserStore.useThreads() ? 1 : 0,
 						SettingsGet('AccountHash')
-					]),
-				['Message']
+					])
 			);
 
 			return true;
