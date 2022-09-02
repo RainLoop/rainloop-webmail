@@ -613,8 +613,8 @@ export class MailMessageList extends AbstractViewRight {
 					AppUserStore.focusedState(Scope.MessageList);
 				}
 
-				let data = ko.dataFor(el),
-					el = eqs(event, '.e-paginator a');
+				let el = eqs(event, '.e-paginator a'),
+					data = ko.dataFor(el);
 				el && this.gotoPage(data);
 
 				eqs(event, '.checkboxCheckAll') && this.checkAll(!this.checkAll());
