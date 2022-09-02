@@ -127,39 +127,39 @@
 				<div class="control-group" data-bind="visible: !readOnly() || hasValidName()">
 					<label class="fontastic iconsize24">👤</label>
 					<div>
-						<div class="property-line">
+						<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME">
 							<span data-bind="text: givenName"></span>
 							<input type="text"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="value: givenName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME">
 						</div>
-						<div class="property-line">
+						<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_LAST_NAME">
 							<span data-bind="text: surName"></span>
 							<input type="text"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="value: surName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_LAST_NAME">
 						</div>
 <!--
-						<div class="property-line">
+						<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_MIDDLE_NAME">
 							<span data-bind="text: middleName"></span>
 							<input type="text"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="value: middleName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_MIDDLE_NAME">
 						</div>
-						<div class="property-line">
+						<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_NAME_PREFIX">
 							<span data-bind="text: namePrefix"></span>
 							<input type="text"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="value: namePrefix" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_NAME_PREFIX">
 						</div>
-						<div class="property-line">
+						<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_NAME_SUFFIX">
 							<span data-bind="text: nameSuffix"></span>
 							<input type="text"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="value: nameSuffix" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_NAME_SUFFIX">
 						</div>
 -->
-						<div class="property-line" data-bind="visible: null != nickname()">
+						<div class="property-line" data-bind="visible: null != nickname()" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_NICK_NAME">
 							<span data-bind="text: nickname"></span>
 							<input type="text"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
