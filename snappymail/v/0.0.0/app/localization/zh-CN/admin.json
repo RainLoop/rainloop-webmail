@@ -4,7 +4,10 @@
 		"CLOSE": "关闭",
 		"SAVE": "保存",
 		"TEST": "测试",
-		"UPDATE": "更新"
+		"UPDATE": "更新",
+		"USERNAME": "用户名",
+		"PASSWORD": "密码",
+		"CANCEL": "取消"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登录",
@@ -84,10 +87,8 @@
 		"LABEL_SHOW_PHP_INFO": "显示 PHP 信息",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "管理员面板访问凭据",
 		"LABEL_CURRENT_PASSWORD": "当前密码",
-		"LABEL_NEW_LOGIN": "新的登录用户名",
 		"LABEL_NEW_PASSWORD": "新密码",
 		"LABEL_REPEAT_PASSWORD": "重复输入新密码",
-		"BUTTON_UPDATE_PASSWORD": "更新密码",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "要求验证 SSL 证书（IMAP\/SMTP）",
 		"LABEL_ALLOW_SELF_SIGNED": "允许自签名证书"

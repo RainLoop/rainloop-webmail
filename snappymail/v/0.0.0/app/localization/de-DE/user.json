@@ -20,6 +20,7 @@
 		"NAME": "Name",
 		"NONE": "Keine",
 		"NOT_SPAM": "Kein Spam",
+		"USERNAME": "Nutzername",
 		"PASSWORD": "Passwort",
 		"REPLY_TO": "Antwort an",
 		"SAVE": "Speichern",
@@ -28,7 +29,9 @@
 		"SUBJECT": "Betreff",
 		"TEST": "Testen",
 		"TO": "An",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "Ja",
+		"NO": "Nein"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Erweiterte Suche",
-		"LABEL_ADV_TEXT": "Text",
-		"LABEL_ADV_HAS_ATTACHMENT": "Anhang vorhanden",
-		"LABEL_ADV_HAS_ATTACHMENTS": "Anhänge vorhanden",
-		"LABEL_ADV_FLAGGED": "Markiert",
-		"LABEL_ADV_UNSEEN": "Ungelesen",
-		"LABEL_ADV_DATE": "Datum",
-		"LABEL_ADV_DATE_ALL": "Alle",
-		"LABEL_ADV_DATE_3_DAYS": "Nicht älter als 3 Tage",
-		"LABEL_ADV_DATE_7_DAYS": "Nicht älter als 1 Woche",
-		"LABEL_ADV_DATE_MONTH": "Nicht älter als 1 Monat",
-		"LABEL_ADV_DATE_3_MONTHS": "Nicht älter als 3 Monate",
-		"LABEL_ADV_DATE_6_MONTHS": "Nicht älter als 6 Monate",
-		"LABEL_ADV_DATE_YEAR": "Nicht älter als 1 Jahr",
-		"LABEL_ADV_SUBFOLDERS": "Unterordner",
-		"LABEL_ADV_SUBFOLDERS_NONE": "Keine",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "Alle",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "Text",
+		"LABEL_HAS_ATTACHMENT": "Anhang vorhanden",
+		"LABEL_HAS_ATTACHMENTS": "Anhänge vorhanden",
+		"LABEL_FLAGGED": "Markiert",
+		"LABEL_UNSEEN": "Ungelesen",
+		"LABEL_DATE": "Datum",
+		"LABEL_DATE_ALL": "Alle",
+		"LABEL_DATE_3_DAYS": "Nicht älter als 3 Tage",
+		"LABEL_DATE_7_DAYS": "Nicht älter als 1 Woche",
+		"LABEL_DATE_MONTH": "Nicht älter als 1 Monat",
+		"LABEL_DATE_3_MONTHS": "Nicht älter als 3 Monate",
+		"LABEL_DATE_6_MONTHS": "Nicht älter als 6 Monate",
+		"LABEL_DATE_YEAR": "Nicht älter als 1 Jahr",
+		"LABEL_SUBFOLDERS": "Unterordner",
+		"LABEL_SUBFOLDERS_NONE": "Keine",
+		"LABEL_SUBFOLDERS_SUBTREE": "Alle",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "Antwortete"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Vollbild umschalten",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "Keine Treffer für Ihre Suche.",
 		"SEARCH_RESULT_FOR": "Suchergebnisse für \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "Zurück zur Nachrichtenliste",
-		"EMPTY_SUBJECT_TEXT": "(Kein Betreff)",
 		"PUT_MESSAGE_HERE": "Ziehen Sie die Nachricht hierhin, um sie in der Liste anzuzeigen",
 		"TODAY_AT": "Heute um %TIME%",
 		"YESTERDAY_AT": "Gestern um %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "Übermittlungsstatus anfordern"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Ja",
-		"BUTTON_NO": "Nein",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Sind Sie sicher, dass Sie dieses Fenster schließen möchten?",
 		"DESC_WANT_DELETE_MESSAGES": "Sind Sie sicher, dass Sie diese Nachricht(en) löschen möchten?"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Entferne Hintergrund- und Textfarben aus der Nachricht",
 		"LABEL_MESSAGE_PER_PAGE": "Nachrichten pro Seite",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Nachricht als gelesen markieren nach",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "Sekunden",
 		"LABEL_NOTIFICATIONS": "Benachrichtigungen",
 		"LABEL_SOUND_NOTIFICATION": "Benachrichtigungston",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Adressbuch-URL",
 		"LABEL_CONTACTS_SYNC_USER": "Benutzer",
-		"SYNC_NO": "Nein",
-		"SYNC_YES": "Ja",
 		"SYNC_READ": "Nur lesend"
 	},
 	"SETTINGS_THEMES": {

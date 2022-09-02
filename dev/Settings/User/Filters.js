@@ -50,6 +50,6 @@ export class UserSettingsFilters /*extends AbstractViewSettings*/ {
 	}
 
 	onShow() {
-		window.Sieve && window.Sieve.updateList();
+		window.Sieve?.updateList();
 	}
 }

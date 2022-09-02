@@ -38,7 +38,7 @@ export const GnuPGUserStore = new class {
 		this.privateKeys([]);
 		Remote.request('GnupgGetKeys',
 			(iError, oData) => {
-				if (oData && oData.Result) {
+				if (oData?.Result) {
 					this.keyring = oData.Result;
 					const initKey = (key, isPrivate) => {
 						const aEmails = [];
@@ -73,7 +73,7 @@ export const GnuPGUserStore = new class {
 						key.view = () => {
 							const fetch = pass => Remote.request('GnupgExportKey',
 									(iError, oData) => {
-										if (oData && oData.Result) {
+										if (oData?.Result) {
 											key.armor = oData.Result;
 											showScreenPopup(OpenPgpKeyPopupView, [key]);
 										}
@@ -111,10 +111,10 @@ export const GnuPGUserStore = new class {
 	importKey(key, callback) {
 		Remote.request('GnupgImportKey',
 			(iError, oData) => {
-				if (oData && oData.Result/* && (oData.Result.imported || oData.Result.secretimported)*/) {
+				if (oData?.Result/* && (oData.Result.imported || oData.Result.secretimported)*/) {
 					this.loadKeyrings();
 				}
-				callback && callback(iError, oData);
+				callback?.(iError, oData);
 			}, {
 				Key: key
 			}
@@ -131,10 +131,10 @@ export const GnuPGUserStore = new class {
 	storeKeyPair(keyPair, callback) {
 		Remote.request('PgpStoreKeyPair',
 			(iError, oData) => {
-				if (oData && oData.Result) {
+				if (oData?.Result) {
 //					this.gnupgKeyring = oData.Result;
 				}
-				callback && callback(iError, oData);
+				callback?.(iError, oData);
 			}, keyPair
 		);
 	}
@@ -187,7 +187,7 @@ export const GnuPGUserStore = new class {
 				}
 				if (null !== params.Passphrase) {
 					const result = await Remote.post('GnupgDecrypt', null, params);
-					if (result && result.Result) {
+					if (result?.Result) {
 						return result.Result;
 					}
 				}
@@ -208,7 +208,7 @@ export const GnuPGUserStore = new class {
 				data.SigPart = data.SigPart.body;
 			}
 			let response = await Remote.post('MessagePgpVerify', null, data);
-			if (response && response.Result) {
+			if (response?.Result) {
 				return {
 					fingerprint: response.Result.fingerprint,
 					success: 0 == response.Result.status // GOODSIG

@@ -25,19 +25,6 @@
 		}"></div>
 	</div>
 	<div class="control-group">
-		<label data-i18n="SETTINGS_GENERAL/LABEL_EDITOR"></label>
-		<div data-bind="component: {
-			name: 'Select',
-			params: {
-				options: editorDefaultTypes,
-				value: editorDefaultType,
-				trigger: editorDefaultTypeTrigger,
-				optionsText: 'name',
-				optionsValue: 'id'
-			}
-		}"></div>
-	</div>
-	<div class="control-group">
 		<label data-i18n="SETTINGS_GENERAL/LABEL_MESSAGE_PER_PAGE"></label>
 		<div>
 			<input type="number" min="10" max="50" step="1" class="span1" data-bind="textInput: messagesPerPage">
@@ -78,6 +65,53 @@
 		</div>
 	</div>
 
+	<div class="legend" data-i18n="SHORTCUTS_HELP/TAB_COMPOSE"></div>
+	<div class="control-group">
+		<label data-i18n="SETTINGS_GENERAL/LABEL_EDITOR"></label>
+		<div data-bind="component: {
+			name: 'Select',
+			params: {
+				options: editorDefaultTypes,
+				value: editorDefaultType,
+				trigger: editorDefaultTypeTrigger,
+				optionsText: 'name',
+				optionsValue: 'id'
+			}
+		}"></div>
+	</div>
+	<div class="control-group">
+		<div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'COMPOSE/BUTTON_REQUEST_READ_RECEIPT',
+					value: requestReadReceipt
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'COMPOSE/BUTTON_REQUEST_DSN',
+					value: requestDsn
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'OPENPGP/LABEL_SIGN',
+					value: pgpSign
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'OPENPGP/LABEL_ENCRYPT',
+					value: pgpEncrypt
+				}
+			}"></div>
+		</div>
+	</div>
+
 	<div class="legend" data-i18n="SHORTCUTS_HELP/TAB_MESSAGE_VIEW"></div>
 	<div class="control-group">
 		<label data-i18n="SETTINGS_GENERAL/LABEL_MARK_MESSAGE_READ_AFTER"></label>
@@ -87,6 +121,19 @@
 			<span data-i18n="SETTINGS_GENERAL/SECONDS"></span>
 			<span data-bind="saveTrigger: messageReadDelayTrigger"></span>
 		</div>
+	</div>
+	<div class="control-group">
+		<label data-i18n="SETTINGS_GENERAL/LABEL_MSG_DEFAULT_ACTION"></label>
+		<div data-bind="component: {
+			name: 'Select',
+			params: {
+				options: msgDefaultActions,
+				value: msgDefaultAction,
+				trigger: msgDefaultActionTrigger,
+				optionsText: 'name',
+				optionsValue: 'id'
+			}
+		}"></div>
 	</div>
 	<div class="control-group">
 		<div>

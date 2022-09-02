@@ -4,7 +4,10 @@
 		"CLOSE": "Fechar",
 		"SAVE": "Guardar",
 		"TEST": "Testar",
-		"UPDATE": "Atualizar"
+		"UPDATE": "Atualizar",
+		"USERNAME": "Nome de usuário",
+		"PASSWORD": "Palavra-passe",
+		"CANCEL": "Cancelar"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Utilizador",
@@ -84,10 +87,8 @@
 		"LABEL_SHOW_PHP_INFO": "Mostrar informação do PHP",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Credenciais de acesso ao Painel de Admin",
 		"LABEL_CURRENT_PASSWORD": "Palavra-passe atual",
-		"LABEL_NEW_LOGIN": "Novo nome",
 		"LABEL_NEW_PASSWORD": "Nova palavra-passe",
 		"LABEL_REPEAT_PASSWORD": "Repetir",
-		"BUTTON_UPDATE_PASSWORD": "Atualizar a palavra-passe",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Obrigar a verificação dos certificados SSL utilizados (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Permitir certificados autoassinados"

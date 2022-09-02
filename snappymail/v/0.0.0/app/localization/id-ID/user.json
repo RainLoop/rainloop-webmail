@@ -20,6 +20,7 @@
 		"NAME": "Kotak Masuk",
 		"NONE": "Tidak ada",
 		"NOT_SPAM": "Bukan Spam",
+		"USERNAME": "Nama belakang",
 		"PASSWORD": "Sandi",
 		"REPLY_TO": "Balas-Ke",
 		"SAVE": "Simpan",
@@ -28,7 +29,9 @@
 		"SUBJECT": "Judul",
 		"TEST": "Uji",
 		"TO": "Kepada",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "Ya",
+		"NO": "Tidak"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Pencarian Rinci",
-		"LABEL_ADV_TEXT": "Teks",
-		"LABEL_ADV_HAS_ATTACHMENT": "Memiliki lampiran",
-		"LABEL_ADV_HAS_ATTACHMENTS": "Memiliki lampiran",
-		"LABEL_ADV_FLAGGED": "Ditandai",
-		"LABEL_ADV_UNSEEN": "Belum dilihat",
-		"LABEL_ADV_DATE": "Tanggal",
-		"LABEL_ADV_DATE_ALL": "Semua",
-		"LABEL_ADV_DATE_3_DAYS": "Sudah 3 hari lalu",
-		"LABEL_ADV_DATE_7_DAYS": "Sudah 1 bulan lalu",
-		"LABEL_ADV_DATE_MONTH": "Lebih dari 1 bulan lalu",
-		"LABEL_ADV_DATE_3_MONTHS": "Lebih dari 3 bulan lalu",
-		"LABEL_ADV_DATE_6_MONTHS": "Lebih dari 6 bulan lalu",
-		"LABEL_ADV_DATE_YEAR": "Lebih dari 1 tahun lalu",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "Teks",
+		"LABEL_HAS_ATTACHMENT": "Memiliki lampiran",
+		"LABEL_HAS_ATTACHMENTS": "Memiliki lampiran",
+		"LABEL_FLAGGED": "Ditandai",
+		"LABEL_UNSEEN": "Belum dilihat",
+		"LABEL_DATE": "Tanggal",
+		"LABEL_DATE_ALL": "Semua",
+		"LABEL_DATE_3_DAYS": "Sudah 3 hari lalu",
+		"LABEL_DATE_7_DAYS": "Sudah 1 bulan lalu",
+		"LABEL_DATE_MONTH": "Lebih dari 1 bulan lalu",
+		"LABEL_DATE_3_MONTHS": "Lebih dari 3 bulan lalu",
+		"LABEL_DATE_6_MONTHS": "Lebih dari 6 bulan lalu",
+		"LABEL_DATE_YEAR": "Lebih dari 1 tahun lalu",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "Dijawab"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Beralih ke layar penuh",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "Tidak ada pesan yang sesuai dengan pencarian",
 		"SEARCH_RESULT_FOR": "Hasil pencarian untuk \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "Kembali ke daftar pesan",
-		"EMPTY_SUBJECT_TEXT": "(Tanpa Judul)",
 		"PUT_MESSAGE_HERE": "Taruh pesan di sini untuk melihatnya dalam daftar",
 		"TODAY_AT": "hari ini pada %TIME%",
 		"YESTERDAY_AT": "Kemarin pada  %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "Minta pemberitahuan berhasil kirim"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Ya",
-		"BUTTON_NO": "Tidak",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Anda yakin untuk menutup jendela ini?",
 		"DESC_WANT_DELETE_MESSAGES": "Anda yakin menghapus permanen pesan ini?"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Pesan di halaman",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "Notifikasi",
 		"LABEL_SOUND_NOTIFICATION": "Notifikasi suara",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "URL Buku alamat",
 		"LABEL_CONTACTS_SYNC_USER": "User",
-		"SYNC_NO": "Tidak",
-		"SYNC_YES": "Ya",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

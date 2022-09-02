@@ -181,29 +181,25 @@ class ActionsAdmin extends Actions
 		$bResult = false;
 		$oConfig = $this->Config();
 
-		$sLogin = \trim($this->GetActionParam('Login', ''));
 		$sPassword = $this->GetActionParam('Password', '');
 		$this->Logger()->AddSecret($sPassword);
 
 		$sNewPassword = $this->GetActionParam('NewPassword', '');
-		if (\strlen(\trim($sNewPassword)))
-		{
+		if (\strlen($sNewPassword)) {
 			$this->Logger()->AddSecret($sNewPassword);
 		}
 
 		$passfile = APP_PRIVATE_DATA.'admin_password.txt';
 
-		$oConfig->Set('security', 'admin_totp', $this->GetActionParam('TOTP', ''));
-
-		if ($oConfig->ValidatePassword($sPassword))
-		{
-			if (\strlen($sLogin))
-			{
+		if ($oConfig->ValidatePassword($sPassword)) {
+			$sLogin = \trim($this->GetActionParam('Login', ''));
+			if (\strlen($sLogin)) {
 				$oConfig->Set('security', 'admin_login', $sLogin);
 			}
 
-			if (\strlen(\trim($sNewPassword)))
-			{
+			$oConfig->Set('security', 'admin_totp', $this->GetActionParam('TOTP', ''));
+
+			if (\strlen($sNewPassword)) {
 				$oConfig->SetPassword($sNewPassword);
 				if (\is_file($passfile) && \trim(\file_get_contents($passfile)) !== $sNewPassword) {
 					\unlink($passfile);
@@ -299,6 +295,14 @@ class ActionsAdmin extends Actions
 				$oSettings->port = $oDomain->IncPort();
 				$oSettings->type = $oDomain->IncSecure();
 				$oImapClient->Connect($oSettings);
+
+				$sUsername = $this->GetActionParam('username', '');
+				if ($sUsername) {
+					$oImapClient->Login([
+						'Login' => $sUsername,
+						'Password' => $this->GetActionParam('password', '')
+					]);
+				}
 
 				$oImapClient->Disconnect();
 				$bImapResult = true;
@@ -658,6 +662,19 @@ class ActionsAdmin extends Actions
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, true);
+	}
+
+	public function DoAdminQRCode() : array
+	{
+		$user = (string) $this->GetActionParam('username', '');
+		$secret = (string) $this->GetActionParam('TOTP', '');
+		$issuer = \rawurlencode(\RainLoop\API::Config()->Get('webmail', 'title', 'SnappyMail'));
+		$QR = \SnappyMail\QRCode::getMinimumQRCode(
+			"otpauth://totp/{$issuer}:{$user}?secret={$secret}&issuer={$issuer}",
+//			"otpauth://totp/{$user}?secret={$secret}",
+			\SnappyMail\QRCode::ERROR_CORRECT_LEVEL_M
+		);
+		return $this->DefaultResponse(__FUNCTION__, $QR->__toString());
 	}
 
 	private function setAdminAuthToken(string $sToken) : void

@@ -270,8 +270,7 @@ MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 
 	let folder,
 		alreadyUnread = 0,
-		rootUids = messages.map(oMessage => oMessage && oMessage.uid ? oMessage.uid : null)
-			.validUnique(),
+		rootUids = messages.map(oMessage => oMessage?.uid).validUnique(),
 		length = rootUids.length;
 
 	if (sFolderFullName && length) {
@@ -333,7 +332,7 @@ MessagelistUserStore.removeMessagesFromList = (
 				? messageList.filter(item => item && uidForRemove.includes(pInt(item.uid)))
 				: [];
 
-	messages.forEach(item => item && item.isUnseen() && ++unseenCount);
+	messages.forEach(item => item?.isUnseen() && ++unseenCount);
 
 	if (fromFolder) {
 		fromFolder.hash = '';
@@ -387,7 +386,7 @@ MessagelistUserStore.removeMessagesFromList = (
 	if (MessagelistUserStore.threadUid()) {
 		if (
 			messageList.length &&
-			messageList.find(item => item && item.deleted() && item.uid == MessagelistUserStore.threadUid())
+			messageList.find(item => item?.deleted() && item.uid == MessagelistUserStore.threadUid())
 		) {
 			const message = messageList.find(item => item && !item.deleted());
 			let setHash;

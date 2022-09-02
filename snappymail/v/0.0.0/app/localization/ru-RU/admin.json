@@ -4,7 +4,10 @@
 		"CLOSE": "Закрыть",
 		"SAVE": "Сохранить",
 		"TEST": "Тест",
-		"UPDATE": "Обновить"
+		"UPDATE": "Обновить",
+		"USERNAME": "Имя пользователя",
+		"PASSWORD": "Пароль",
+		"CANCEL": "Отменить"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Логин",
@@ -84,10 +87,8 @@
 		"LABEL_SHOW_PHP_INFO": "Показать PHP информацию",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Admin Panel Access Credentials",
 		"LABEL_CURRENT_PASSWORD": "Текущий пароль",
-		"LABEL_NEW_LOGIN": "Новый логин",
 		"LABEL_NEW_PASSWORD": "Новый пароль",
 		"LABEL_REPEAT_PASSWORD": "Повторить пароль",
-		"BUTTON_UPDATE_PASSWORD": "Обновить пароль",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Требовать проверку SSL сертификата для IMAP и SMTP",
 		"LABEL_ALLOW_SELF_SIGNED": "Разрешить cамоподписанные сертификаты"

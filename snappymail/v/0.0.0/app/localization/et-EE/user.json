@@ -20,6 +20,7 @@
 		"NAME": "Saabunud kirjad",
 		"NONE": "Puuduvad",
 		"NOT_SPAM": "Ei ole rämpspost",
+		"USERNAME": "Kasutajanimi",
 		"PASSWORD": "Salasõna",
 		"REPLY_TO": "Vastuse saaja",
 		"SAVE": "Salvesta",
@@ -28,7 +29,9 @@
 		"SUBJECT": "Pealkiri",
 		"TEST": "Kontrolli",
 		"TO": "Saaja",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "Jah",
+		"NO": "Ei"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logi sisse",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Täpsem otsing",
-		"LABEL_ADV_TEXT": "Tekst",
-		"LABEL_ADV_HAS_ATTACHMENT": "Manusega",
-		"LABEL_ADV_HAS_ATTACHMENTS": "Manustega",
-		"LABEL_ADV_FLAGGED": "Lipuga tähistatud",
-		"LABEL_ADV_UNSEEN": "Lugemata",
-		"LABEL_ADV_DATE": "Kuupäev",
-		"LABEL_ADV_DATE_ALL": "Kõik",
-		"LABEL_ADV_DATE_3_DAYS": "Kuni 3 päeva vanune",
-		"LABEL_ADV_DATE_7_DAYS": "Kuni 1 nädal vanune",
-		"LABEL_ADV_DATE_MONTH": "Kuni 1 kuu vanune",
-		"LABEL_ADV_DATE_3_MONTHS": "Kuni 3 kuu vanune ",
-		"LABEL_ADV_DATE_6_MONTHS": "Kuni 6 kuu vanune",
-		"LABEL_ADV_DATE_YEAR": "Kuni 1 aasta vanune",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "Tekst",
+		"LABEL_HAS_ATTACHMENT": "Manusega",
+		"LABEL_HAS_ATTACHMENTS": "Manustega",
+		"LABEL_FLAGGED": "Lipuga tähistatud",
+		"LABEL_UNSEEN": "Lugemata",
+		"LABEL_DATE": "Kuupäev",
+		"LABEL_DATE_ALL": "Kõik",
+		"LABEL_DATE_3_DAYS": "Kuni 3 päeva vanune",
+		"LABEL_DATE_7_DAYS": "Kuni 1 nädal vanune",
+		"LABEL_DATE_MONTH": "Kuni 1 kuu vanune",
+		"LABEL_DATE_3_MONTHS": "Kuni 3 kuu vanune ",
+		"LABEL_DATE_6_MONTHS": "Kuni 6 kuu vanune",
+		"LABEL_DATE_YEAR": "Kuni 1 aasta vanune",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "Vastatud"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Täisekraan sisse\/välja",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "Otsingule ei vastanud ühtegi kirja",
 		"SEARCH_RESULT_FOR": "Vasted otsingule \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "tagasi kirjade nimekirja",
-		"EMPTY_SUBJECT_TEXT": "(Pealkiri puudub)",
 		"PUT_MESSAGE_HERE": "Sikuta siia kiri, mida soovid nimekirjas näha",
 		"TODAY_AT": "täna kell %TIME%",
 		"YESTERDAY_AT": "eile kell %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "Palu kättesaamise kohta kinnitust"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Jah",
-		"BUTTON_NO": "Ei",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Kas oled kindel, et soovid akna sulgeda?",
 		"DESC_WANT_DELETE_MESSAGES": "Kas oled kindel, et soovid sõnumi(d) kustutada?"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Lehel kuvatavate kirjade arv",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "Teavitused",
 		"LABEL_SOUND_NOTIFICATION": "Teavitused heliga",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Aadressiraamatu URL",
 		"LABEL_CONTACTS_SYNC_USER": "Kasutaja",
-		"SYNC_NO": "Ei",
-		"SYNC_YES": "Jah",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

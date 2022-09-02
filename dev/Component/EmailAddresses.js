@@ -2,7 +2,7 @@ import { doc, createElement, addEventsListeners } from 'Common/Globals';
 import { EmailModel } from 'Model/Email';
 
 const contentType = 'snappymail/emailaddress',
-	getAddressKey = li => li && li.emailaddress && li.emailaddress.key;
+	getAddressKey = li => li?.emailaddress?.key;
 
 let dragAddress, datalist;
 
@@ -19,7 +19,7 @@ export class EmailAddressesComponent {
 		const self = this,
 			// In Chrome we have no access to dataTransfer.getData unless it's the 'drop' event
 			// In Chrome Mobile dataTransfer.types.includes(contentType) fails, only text/plain is set
-			validDropzone = () => dragAddress && dragAddress.li.parentNode !== self.ul,
+			validDropzone = () => dragAddress?.li.parentNode !== self.ul,
 			fnDrag = e => validDropzone() && e.preventDefault();
 
 		self.element = element;
@@ -116,7 +116,7 @@ export class EmailAddressesComponent {
 						value,
 						items => {
 							self._resetDatalist();
-							items && items.forEach(item => datalist.append(new Option(item)));
+							items?.forEach(item => datalist.append(new Option(item)));
 						}
 					)
 				}
@@ -262,7 +262,7 @@ export class EmailAddressesComponent {
 			if (v.obj) {
 				let li = createElement('li',{title:v.obj.toLine(),draggable:'true'}),
 					el = createElement('span');
-				el.append(v.obj.toLine(true, false, true));
+				el.append(v.obj.toLine(true));
 				li.append(el);
 
 				el = createElement('a',{href:'#', class:'ficon'});

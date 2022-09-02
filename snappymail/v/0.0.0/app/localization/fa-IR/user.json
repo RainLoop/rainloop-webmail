@@ -20,6 +20,7 @@
 		"NAME": "صندوق ورودی",
 		"NONE": "هیچ‌کدام",
 		"NOT_SPAM": "هرزنامه نیست",
+		"USERNAME": "نام کاربری",
 		"PASSWORD": "گذرواژه",
 		"REPLY_TO": "پاسخ به",
 		"SAVE": "ذخیره کن",
@@ -28,7 +29,9 @@
 		"SUBJECT": "موضوع",
 		"TEST": "تست",
 		"TO": "به",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "بلی",
+		"NO": "خیر"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ورود",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "جستجوی پیشرفته",
-		"LABEL_ADV_TEXT": "متن",
-		"LABEL_ADV_HAS_ATTACHMENT": "داشتن پیوست",
-		"LABEL_ADV_HAS_ATTACHMENTS": "داشتن پیوست‌ها",
-		"LABEL_ADV_FLAGGED": "پرچم",
-		"LABEL_ADV_UNSEEN": "خوانده نشده",
-		"LABEL_ADV_DATE": "تاریخ",
-		"LABEL_ADV_DATE_ALL": "همه",
-		"LABEL_ADV_DATE_3_DAYS": "تا 3 روز گذشته",
-		"LABEL_ADV_DATE_7_DAYS": "تا 1 هفته گذشته",
-		"LABEL_ADV_DATE_MONTH": "تا 1 ماه گذشته",
-		"LABEL_ADV_DATE_3_MONTHS": "تا 3 ماه گذشته",
-		"LABEL_ADV_DATE_6_MONTHS": "تا 6 ماه گذشته",
-		"LABEL_ADV_DATE_YEAR": "تا 1 سال گذشته",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "متن",
+		"LABEL_HAS_ATTACHMENT": "داشتن پیوست",
+		"LABEL_HAS_ATTACHMENTS": "داشتن پیوست‌ها",
+		"LABEL_FLAGGED": "پرچم",
+		"LABEL_UNSEEN": "خوانده نشده",
+		"LABEL_DATE": "تاریخ",
+		"LABEL_DATE_ALL": "همه",
+		"LABEL_DATE_3_DAYS": "تا 3 روز گذشته",
+		"LABEL_DATE_7_DAYS": "تا 1 هفته گذشته",
+		"LABEL_DATE_MONTH": "تا 1 ماه گذشته",
+		"LABEL_DATE_3_MONTHS": "تا 3 ماه گذشته",
+		"LABEL_DATE_6_MONTHS": "تا 6 ماه گذشته",
+		"LABEL_DATE_YEAR": "تا 1 سال گذشته",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "جواب داد"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "ضامن تمام صفحه",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "پیامی مطابق جستجوی شما پیدا نشد",
 		"SEARCH_RESULT_FOR": "نتایج جستجو مطابق \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "برگشت به لیست پیام‌ها",
-		"EMPTY_SUBJECT_TEXT": "(بدون موضوع)",
 		"PUT_MESSAGE_HERE": "برای دیدن پیام در این لیست آن را به اینجا بکشید",
 		"TODAY_AT": "امروز در %TIME%",
 		"YESTERDAY_AT": " دیروز در %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "درخواست دریافت رسید تحویل درمقصد"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "بلی",
-		"BUTTON_NO": "خیر",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "آیا از بستن این پنجره مطمئن هستید؟",
 		"DESC_WANT_DELETE_MESSAGES": "آیا از حذف این پیام(ها) اطمینان دارید؟"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "پیام‌ها در صفحه",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "اطلاعیه‌ها",
 		"LABEL_SOUND_NOTIFICATION": "آگاه‌سازی با صدا",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "سرور",
 		"LABEL_CONTACTS_SYNC_AB_URL": "تارنمای آدرس‌بوک",
 		"LABEL_CONTACTS_SYNC_USER": "کاربر",
-		"SYNC_NO": "خیر",
-		"SYNC_YES": "بلی",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

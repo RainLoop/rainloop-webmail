@@ -42,7 +42,7 @@ export const MessageUserStore = new class {
 
 	purgeMessageBodyCache() {
 		const messagesDom = this.bodiesDom(),
-			children = messagesDom && messagesDom.children;
+			children = messagesDom?.children;
 		if (children) {
 			while (15 < children.length) {
 				children[0].remove();

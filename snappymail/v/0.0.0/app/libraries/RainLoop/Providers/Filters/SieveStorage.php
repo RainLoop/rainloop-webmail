@@ -81,22 +81,11 @@ class SieveStorage implements FiltersInterface
 		);
 	}
 
-	public function Save(\RainLoop\Model\Account $oAccount, string $sScriptName, array $aFilters, string $sRaw = '') : bool
+	public function Save(\RainLoop\Model\Account $oAccount, string $sScriptName, string $sRaw) : bool
 	{
-		if ($aFilters && !$sRaw) {
-			$sRaw = Sieve::collectionToFileString($aFilters);
-		}
 		$oSieveClient = $this->getConnection($oAccount);
 		if ($oSieveClient) {
-			if (empty($sRaw)) {
-				$aList = $oSieveClient->ListScripts();
-				if (isset($aList[$sScriptName])) {
-					$oSieveClient->DeleteScript($sScriptName);
-				}
-			} else {
-				$oSieveClient->PutScript($sScriptName, $sRaw);
-			}
-			$oSieveClient->Disconnect();
+			$oSieveClient->PutScript($sScriptName, $sRaw);
 			return true;
 		}
 		return false;
@@ -129,7 +118,9 @@ class SieveStorage implements FiltersInterface
 	{
 		$oSieveClient = $this->getConnection($oAccount);
 		if ($oSieveClient) {
-			$oSieveClient->DeleteScript(\trim($sScriptName));
+			if (isset($oSieveClient->ListScripts()[$sScriptName])) {
+				$oSieveClient->DeleteScript(\trim($sScriptName));
+			}
 			return true;
 		}
 		return false;

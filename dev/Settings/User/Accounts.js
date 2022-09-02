@@ -30,7 +30,7 @@ export class UserSettingsAccounts /*extends AbstractViewSettings*/ {
 	}
 
 	editAccount(account) {
-		if (account && account.isAdditional()) {
+		if (account?.isAdditional()) {
 			showScreenPopup(AccountPopupView, [account]);
 		}
 	}
@@ -48,7 +48,7 @@ export class UserSettingsAccounts /*extends AbstractViewSettings*/ {
 	 * @returns {void}
 	 */
 	deleteAccount(accountToRemove) {
-		if (accountToRemove && accountToRemove.askDelete()) {
+		if (accountToRemove?.askDelete()) {
 			this.accountForDeletion(null);
 			if (accountToRemove) {
 				this.accounts.remove((account) => accountToRemove === account);
@@ -72,7 +72,7 @@ export class UserSettingsAccounts /*extends AbstractViewSettings*/ {
 	 * @returns {void}
 	 */
 	deleteIdentity(identityToRemove) {
-		if (identityToRemove && identityToRemove.askDelete()) {
+		if (identityToRemove?.askDelete()) {
 			this.identityForDeletion(null);
 
 			if (identityToRemove) {

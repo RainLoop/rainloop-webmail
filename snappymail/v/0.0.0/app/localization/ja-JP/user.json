@@ -20,6 +20,7 @@
 		"NAME": "受信トレイ",
 		"NONE": "なし",
 		"NOT_SPAM": "迷惑メールを解除",
+		"USERNAME": "ユーザー名",
 		"PASSWORD": "パスワード",
 		"REPLY_TO": "Reply-To",
 		"SAVE": "保存",
@@ -28,7 +29,9 @@
 		"SUBJECT": "件名",
 		"TEST": "テスト",
 		"TO": "宛先",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "はい",
+		"NO": "いいえ"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ログイン",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "高度な検索",
-		"LABEL_ADV_TEXT": "キーワード",
-		"LABEL_ADV_HAS_ATTACHMENT": "添付ファイルあり",
-		"LABEL_ADV_HAS_ATTACHMENTS": "添付ファイルあり",
-		"LABEL_ADV_FLAGGED": "スター付き",
-		"LABEL_ADV_UNSEEN": "未読メール",
-		"LABEL_ADV_DATE": "日付",
-		"LABEL_ADV_DATE_ALL": "全て",
-		"LABEL_ADV_DATE_3_DAYS": "3日前まで",
-		"LABEL_ADV_DATE_7_DAYS": "1週間前まで",
-		"LABEL_ADV_DATE_MONTH": "1ヶ月前まで",
-		"LABEL_ADV_DATE_3_MONTHS": "3ヶ月前まで",
-		"LABEL_ADV_DATE_6_MONTHS": "6ヶ月前まで",
-		"LABEL_ADV_DATE_YEAR": "1年前まで",
-		"LABEL_ADV_SUBFOLDERS": "サブフォルダ",
-		"LABEL_ADV_SUBFOLDERS_NONE": "なし",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "全て",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "一段のみ"
+		"LABEL_TEXT": "キーワード",
+		"LABEL_HAS_ATTACHMENT": "添付ファイルあり",
+		"LABEL_HAS_ATTACHMENTS": "添付ファイルあり",
+		"LABEL_FLAGGED": "スター付き",
+		"LABEL_UNSEEN": "未読メール",
+		"LABEL_DATE": "日付",
+		"LABEL_DATE_ALL": "全て",
+		"LABEL_DATE_3_DAYS": "3日前まで",
+		"LABEL_DATE_7_DAYS": "1週間前まで",
+		"LABEL_DATE_MONTH": "1ヶ月前まで",
+		"LABEL_DATE_3_MONTHS": "3ヶ月前まで",
+		"LABEL_DATE_6_MONTHS": "6ヶ月前まで",
+		"LABEL_DATE_YEAR": "1年前まで",
+		"LABEL_SUBFOLDERS": "サブフォルダ",
+		"LABEL_SUBFOLDERS_NONE": "なし",
+		"LABEL_SUBFOLDERS_SUBTREE": "全て",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "一段のみ",
+		"LABEL_REPLIED": "回答済み"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "フルスクリーン",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "検索条件に一致するメールは見つかりませんでした。高度な検索を試してみてください。",
 		"SEARCH_RESULT_FOR": "\"%SEARCH%\"の検索結果",
 		"BACK_TO_MESSAGE_LIST": "メッセージ一覧に戻る",
-		"EMPTY_SUBJECT_TEXT": "(件名なし)",
 		"PUT_MESSAGE_HERE": "ここにメッセージをドロップ",
 		"TODAY_AT": "今日 %TIME%",
 		"YESTERDAY_AT": "昨日 %TIME%",
@@ -213,7 +216,7 @@
 		"ATTACH_FILES": "ファイルを添付",
 		"ATTACH_DROP_FILES_DESC": "ここにファイルをドロップ",
 		"REPLY_MESSAGE_TITLE": "%DATETIME%, %EMAIL% wrote",
-		"FORWARD_MESSAGE_TOP_TITLE": "-------- Forwarded message -------",
+		"FORWARD_MESSAGE_TOP_TITLE": "-------- 転送されたメッセージ -------",
 		"FORWARD_MESSAGE_TOP_SENT": "送信済み",
 		"EMPTY_TO_ERROR_DESC": "少なくとも一つの受信者を指定してください",
 		"NO_ATTACHMENTS_HERE_DESC": "添付ファイルがありません",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "配信確認を要求する"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "はい",
-		"BUTTON_NO": "いいえ",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "このウインドウを閉じていいですか？",
 		"DESC_WANT_DELETE_MESSAGES": "メッセージを削除していいですか？"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "本文の文字色及び背景色の設定を無視する",
 		"LABEL_MESSAGE_PER_PAGE": "1ページに表示する件数",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "メッセージが既読となるまでの秒数",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "秒",
 		"LABEL_NOTIFICATIONS": "通知設定",
 		"LABEL_SOUND_NOTIFICATION": "サウンド通知",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "サーバー",
 		"LABEL_CONTACTS_SYNC_AB_URL": "アドレス帳URL",
 		"LABEL_CONTACTS_SYNC_USER": "ユーザー",
-		"SYNC_NO": "いいえ",
-		"SYNC_YES": "はい",
 		"SYNC_READ": "読み取り専用"
 	},
 	"SETTINGS_THEMES": {
@@ -512,9 +512,9 @@
 		"LABEL_CLOSE_COMPOSE": "作成画面を閉じる"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
+		"REQUEST_ERROR": "要求は失敗しました",
+		"REQUEST_ABORTED": "要求は中断されました",
+		"REQUEST_TIMEOUT": "要求はタイムアウトしました",
 		"INVALID_TOKEN": "無効なトークン",
 		"AUTH_ERROR": "認証に失敗しました",
 		"CONNECTION_ERROR": "サーバーへ接続できません",

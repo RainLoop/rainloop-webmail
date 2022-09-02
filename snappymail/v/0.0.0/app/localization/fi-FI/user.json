@@ -20,6 +20,7 @@
 		"NAME": "Postilaatikko",
 		"NONE": "Ei mitään",
 		"NOT_SPAM": "Ei roskapostia",
+		"USERNAME": "Käyttäjätunnus",
 		"PASSWORD": "Salasana",
 		"REPLY_TO": "Vastaa",
 		"SAVE": "Tallenna",
@@ -28,7 +29,9 @@
 		"SUBJECT": "Aihe",
 		"TEST": "Testaa",
 		"TO": "Vastaanottaja",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "Kyllä",
+		"NO": "Ei"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Tunnus",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Tarkka haku",
-		"LABEL_ADV_TEXT": "Teksti",
-		"LABEL_ADV_HAS_ATTACHMENT": "Sisältää liitteen",
-		"LABEL_ADV_HAS_ATTACHMENTS": "Sisältää liitteitä",
-		"LABEL_ADV_FLAGGED": "Merkitty",
-		"LABEL_ADV_UNSEEN": "Ei luettu",
-		"LABEL_ADV_DATE": "Pvm",
-		"LABEL_ADV_DATE_ALL": "Kaikki",
-		"LABEL_ADV_DATE_3_DAYS": "3 päivän ajalta",
-		"LABEL_ADV_DATE_7_DAYS": "1 viikon ajalta",
-		"LABEL_ADV_DATE_MONTH": "1 kk ajalta",
-		"LABEL_ADV_DATE_3_MONTHS": "3 kk ajalta",
-		"LABEL_ADV_DATE_6_MONTHS": "6 kk ajalta",
-		"LABEL_ADV_DATE_YEAR": "1 vuoden ajalta",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "Teksti",
+		"LABEL_HAS_ATTACHMENT": "Sisältää liitteen",
+		"LABEL_HAS_ATTACHMENTS": "Sisältää liitteitä",
+		"LABEL_FLAGGED": "Merkitty",
+		"LABEL_UNSEEN": "Ei luettu",
+		"LABEL_DATE": "Pvm",
+		"LABEL_DATE_ALL": "Kaikki",
+		"LABEL_DATE_3_DAYS": "3 päivän ajalta",
+		"LABEL_DATE_7_DAYS": "1 viikon ajalta",
+		"LABEL_DATE_MONTH": "1 kk ajalta",
+		"LABEL_DATE_3_MONTHS": "3 kk ajalta",
+		"LABEL_DATE_6_MONTHS": "6 kk ajalta",
+		"LABEL_DATE_YEAR": "1 vuoden ajalta",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "Vastattu"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Koko ruutu",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "Yhtään viestiä ei löytynyt ehdoillasi.",
 		"SEARCH_RESULT_FOR": "Hakutulokset haulle \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "Takaisin viestilistaan",
-		"EMPTY_SUBJECT_TEXT": "(Ei aihetta)",
 		"PUT_MESSAGE_HERE": "Pudota viesti tähän nähdäksesi sen listassa",
 		"TODAY_AT": "tänään klo %TIME%",
 		"YESTERDAY_AT": "eilen klo %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "Pyydä toimituskuittaus"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Kyllä",
-		"BUTTON_NO": "Ei",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Haluatko varmasti sulkea tämän ikkunan?",
 		"DESC_WANT_DELETE_MESSAGES": "Haluatko varmasti poistaa viestin\/viestit?"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Viestiä sivulla",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "Ilmoitukset",
 		"LABEL_SOUND_NOTIFICATION": "Äänimerkit",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Palvelin",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Osoitekirjan URL",
 		"LABEL_CONTACTS_SYNC_USER": "Käyttäjä",
-		"SYNC_NO": "Ei",
-		"SYNC_YES": "Kyllä",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

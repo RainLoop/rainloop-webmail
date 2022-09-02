@@ -13,8 +13,7 @@ import {
 const
 	// import { defaultOptionsAfterRender } from 'Common/Utils';
 	defaultOptionsAfterRender = (domItem, item) =>
-		domItem && item && undefined !== item.disabled
-		&& domItem.classList.toggle('disabled', domItem.disabled = item.disabled),
+		item && undefined !== item.disabled && domItem?.classList.toggle('disabled', domItem.disabled = item.disabled),
 
 	// import { folderListOptionsBuilder } from 'Common/Folders';
 	/**

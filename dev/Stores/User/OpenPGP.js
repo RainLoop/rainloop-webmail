@@ -18,8 +18,21 @@ const
 			key.emails.includes(query) || query == key.id || query == key.fingerprint
 		),
 
-	askPassphrase = async (privateKey, btnTxt = 'LABEL_SIGN') =>
-		await AskPopupView.password('OpenPGP.js key<br>' + privateKey.id + ' ' + privateKey.emails[0], 'OPENPGP/'+btnTxt),
+	decryptKey = async (privateKey, btnTxt = 'LABEL_SIGN') => {
+		if (privateKey.key.isDecrypted()) {
+			return privateKey.key;
+		}
+		const passphrase = await AskPopupView.password(
+			'OpenPGP.js key<br>' + privateKey.id + ' ' + privateKey.emails[0],
+			'OPENPGP/'+btnTxt
+		);
+		if (null !== passphrase) {
+			return await openpgp.decryptKey({
+				privateKey: privateKey.key,
+				passphrase
+			});
+		}
+	},
 
 	/**
 	 * OpenPGP.js v5 removed the localStorage (keyring)
@@ -178,19 +191,12 @@ export const OpenPGPUserStore = new class {
 			}
 		}
 		if (privateKey) try {
-			const passphrase = await askPassphrase(privateKey, 'BUTTON_DECRYPT');
-
-			if (null !== passphrase) {
-				const
-					publicKey = findOpenPGPKey(this.publicKeys, sender/*, sign*/),
-					decryptedKey = await openpgp.decryptKey({
-						privateKey: privateKey.key,
-						passphrase
-					});
-
+			const decryptedKey = await decryptKey(privateKey, 'BUTTON_DECRYPT');
+			if (decryptedKey) {
+				const publicKey = findOpenPGPKey(this.publicKeys, sender/*, sign*/);
 				return await openpgp.decrypt({
 					message,
-					verificationKeys: publicKey && publicKey.key,
+					verificationKeys: publicKey?.key,
 //					expectSigned: true,
 //					signature: '', // Detached signature
 					decryptionKeys: decryptedKey
@@ -246,18 +252,14 @@ export const OpenPGPUserStore = new class {
 	 * https://docs.openpgpjs.org/global.html#sign
 	 */
 	async sign(text, privateKey, detached) {
-		const passphrase = await askPassphrase(privateKey);
-		if (null !== passphrase) {
-			privateKey = await openpgp.decryptKey({
-				privateKey: privateKey.key,
-				passphrase
-			});
+		const signingKey = await decryptKey(privateKey);
+		if (signingKey) {
 			const message = detached
 				? await openpgp.createMessage({ text: text })
 				: await openpgp.createCleartextMessage({ text: text });
 			return await openpgp.sign({
 				message: message,
-				signingKeys: privateKey,
+				signingKeys: signingKey,
 				detached: !!detached
 			});
 		}
@@ -272,14 +274,10 @@ export const OpenPGPUserStore = new class {
 		recipients = recipients.map(email => this.publicKeys().find(key => key.emails.includes(email))).filter(key => key);
 		if (count === recipients.length) {
 			if (signPrivateKey) {
-				const passphrase = await askPassphrase(signPrivateKey);
-				if (null === passphrase) {
+				signPrivateKey = await decryptKey(signPrivateKey);
+				if (!signPrivateKey) {
 					return;
 				}
-				signPrivateKey = await openpgp.decryptKey({
-					privateKey: signPrivateKey.key,
-					passphrase
-				});
 			}
 			return await openpgp.encrypt({
 				message: await openpgp.createMessage({ text: text }),

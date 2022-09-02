@@ -20,6 +20,7 @@
 		"NAME": "البريد الوارد",
 		"NONE": "None",
 		"NOT_SPAM": "ليست رسائل غير مرغوب فيها",
+		"USERNAME": "اسم المستخدم",
 		"PASSWORD": "كلمة السر",
 		"REPLY_TO": "الرد-الى",
 		"SAVE": "حفظ",
@@ -28,7 +29,9 @@
 		"SUBJECT": "الموضوع",
 		"TEST": "تجريب",
 		"TO": "الى",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "نعم",
+		"NO": "لا"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "تسيجيل الدخول",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "البحث المطور",
-		"LABEL_ADV_TEXT": "النص",
-		"LABEL_ADV_HAS_ATTACHMENT": "يحتوي على مرفق",
-		"LABEL_ADV_HAS_ATTACHMENTS": "يحتوي مرفقات",
-		"LABEL_ADV_FLAGGED": "عليه علم",
-		"LABEL_ADV_UNSEEN": "لم يقرأ",
-		"LABEL_ADV_DATE": "التاريخ",
-		"LABEL_ADV_DATE_ALL": "الكل",
-		"LABEL_ADV_DATE_3_DAYS": "منذ 3 أيام",
-		"LABEL_ADV_DATE_7_DAYS": "منذ أسبوع",
-		"LABEL_ADV_DATE_MONTH": "منذ شهر",
-		"LABEL_ADV_DATE_3_MONTHS": "منذ 3 أشهر",
-		"LABEL_ADV_DATE_6_MONTHS": "منذ 6 أشهر",
-		"LABEL_ADV_DATE_YEAR": "منذ سنة",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "النص",
+		"LABEL_HAS_ATTACHMENT": "يحتوي على مرفق",
+		"LABEL_HAS_ATTACHMENTS": "يحتوي مرفقات",
+		"LABEL_FLAGGED": "عليه علم",
+		"LABEL_UNSEEN": "لم يقرأ",
+		"LABEL_DATE": "التاريخ",
+		"LABEL_DATE_ALL": "الكل",
+		"LABEL_DATE_3_DAYS": "منذ 3 أيام",
+		"LABEL_DATE_7_DAYS": "منذ أسبوع",
+		"LABEL_DATE_MONTH": "منذ شهر",
+		"LABEL_DATE_3_MONTHS": "منذ 3 أشهر",
+		"LABEL_DATE_6_MONTHS": "منذ 6 أشهر",
+		"LABEL_DATE_YEAR": "منذ سنة",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "أجاب"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "إعداد افتراضي لوضع ملء الشاشة",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "ليست هناك أية رسائل تطابق بحثك.",
 		"SEARCH_RESULT_FOR": "نتيجة البحث لـ \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "العودة الى قائمة الرسائل",
-		"EMPTY_SUBJECT_TEXT": "(لايوجدموضوع)",
 		"PUT_MESSAGE_HERE": "حرك الرسالة الى هنا.. لكي تراها في قائمة الرسائل",
 		"TODAY_AT": "اليوم عند  %TIME%",
 		"YESTERDAY_AT": "البارحة عند  %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "اطلب اعلاماً بايصال البريد"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "نعم",
-		"BUTTON_NO": "لا",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "هل أنت متأكد من رغبتك باغلاق هذه النافذة؟",
 		"DESC_WANT_DELETE_MESSAGES": "هل أنت متأكد من رغبتك بحذف هذه الرسائل؟"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "الرسائل في الصفحة",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "التنبيهات",
 		"LABEL_SOUND_NOTIFICATION": "صوت التنبيهات",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "المخدم",
 		"LABEL_CONTACTS_SYNC_AB_URL": "وصلة دفتر العناوين",
 		"LABEL_CONTACTS_SYNC_USER": "المستخدم",
-		"SYNC_NO": "لا",
-		"SYNC_YES": "نعم",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

@@ -20,6 +20,7 @@
 		"NAME": "Innboks",
 		"NONE": "Ingen",
 		"NOT_SPAM": "Ikke søppelpost",
+		"USERNAME": "Brukernavn",
 		"PASSWORD": "Passord",
 		"REPLY_TO": "Svar til",
 		"SAVE": "Lagre",
@@ -28,7 +29,9 @@
 		"SUBJECT": "Emne",
 		"TEST": "Test",
 		"TO": "Til",
-		"SERVER_MESSAGE": "Tjenermelding"
+		"SERVER_MESSAGE": "Tjenermelding",
+		"YES": "Ja",
+		"NO": "Nei"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logg inn",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Avansert søk",
-		"LABEL_ADV_TEXT": "Tekst",
-		"LABEL_ADV_HAS_ATTACHMENT": "Har vedlegg",
-		"LABEL_ADV_HAS_ATTACHMENTS": "Har vedlegg",
-		"LABEL_ADV_FLAGGED": "Stjernemerket",
-		"LABEL_ADV_UNSEEN": "Ulest",
-		"LABEL_ADV_DATE": "Dato",
-		"LABEL_ADV_DATE_ALL": "Alle",
-		"LABEL_ADV_DATE_3_DAYS": "Inntil 3 dager gamle",
-		"LABEL_ADV_DATE_7_DAYS": "Inntil 1 uke gamle",
-		"LABEL_ADV_DATE_MONTH": "Inntil 1 måned gamle",
-		"LABEL_ADV_DATE_3_MONTHS": "Inntil 3 måneder gamle",
-		"LABEL_ADV_DATE_6_MONTHS": "Inntil 6 måneder gamle",
-		"LABEL_ADV_DATE_YEAR": "Inntil 1 år gamle",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "Alle",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "Ett nivå"
+		"LABEL_TEXT": "Tekst",
+		"LABEL_HAS_ATTACHMENT": "Har vedlegg",
+		"LABEL_HAS_ATTACHMENTS": "Har vedlegg",
+		"LABEL_FLAGGED": "Stjernemerket",
+		"LABEL_UNSEEN": "Ulest",
+		"LABEL_DATE": "Dato",
+		"LABEL_DATE_ALL": "Alle",
+		"LABEL_DATE_3_DAYS": "Inntil 3 dager gamle",
+		"LABEL_DATE_7_DAYS": "Inntil 1 uke gamle",
+		"LABEL_DATE_MONTH": "Inntil 1 måned gamle",
+		"LABEL_DATE_3_MONTHS": "Inntil 3 måneder gamle",
+		"LABEL_DATE_6_MONTHS": "Inntil 6 måneder gamle",
+		"LABEL_DATE_YEAR": "Inntil 1 år gamle",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "Alle",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "Ett nivå",
+		"LABEL_REPLIED": "Besvart"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Fullskjerm av\/på",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "Søket ga ingen treff.",
 		"SEARCH_RESULT_FOR": "Søketreff for «%SEARCH%»",
 		"BACK_TO_MESSAGE_LIST": "tilbake til meldingsliste",
-		"EMPTY_SUBJECT_TEXT": "(uten emne)",
 		"PUT_MESSAGE_HERE": "Dra en melding hit for å vise den i lista",
 		"TODAY_AT": "i dag, %TIME%",
 		"YESTERDAY_AT": "i går, %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "Be om leveringsbekreftelse"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Ja",
-		"BUTTON_NO": "Nei",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Er du sikker på at du vil lukke dette vinduet?",
 		"DESC_WANT_DELETE_MESSAGES": "Er du sikker på at du vil slette meldingen(e)?"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Fjern bakgrunn og tekstfarger fra brødtekst",
 		"LABEL_MESSAGE_PER_PAGE": "Meldinger per side",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Marker melding som lest etter",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "sekunder",
 		"LABEL_NOTIFICATIONS": "Varsler",
 		"LABEL_SOUND_NOTIFICATION": "Lydvarsel",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Tjener",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Nettadresse til adressebok",
 		"LABEL_CONTACTS_SYNC_USER": "Bruker",
-		"SYNC_NO": "Nei",
-		"SYNC_YES": "Ja",
 		"SYNC_READ": "Skrivebeskyttet"
 	},
 	"SETTINGS_THEMES": {

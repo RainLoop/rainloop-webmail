@@ -4,7 +4,10 @@
 		"CLOSE": "Stäng",
 		"SAVE": "Spara",
 		"TEST": "Test",
-		"UPDATE": "Uppdatera"
+		"UPDATE": "Uppdatera",
+		"USERNAME": "Användarnamn",
+		"PASSWORD": "Lösenord",
+		"CANCEL": "Avbryt"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logga in",
@@ -84,10 +87,8 @@
 		"LABEL_SHOW_PHP_INFO": "Visa PHP-information",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Administrativsuppgifter",
 		"LABEL_CURRENT_PASSWORD": "Nuvarande lösenord",
-		"LABEL_NEW_LOGIN": "Ny inloggning",
 		"LABEL_NEW_PASSWORD": "Nytt lösenord",
 		"LABEL_REPEAT_PASSWORD": "Upprepa",
-		"BUTTON_UPDATE_PASSWORD": "Uppdatera lösenord",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Kräver verifiering av SSL-certifikat som används (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Låt självsignerade certifikat"

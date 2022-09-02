@@ -142,7 +142,7 @@ export const
 	 * @param {Function=} langCallback = null
 	 */
 	initOnStartOrLangChange = (startCallback, langCallback = null) => {
-		startCallback && startCallback();
+		startCallback?.();
 		startCallback && trigger.subscribe(startCallback);
 		langCallback && trigger.subscribe(langCallback);
 	},

@@ -70,7 +70,7 @@
 	</div>
 </div>
 <footer>
-	<a class="btn" data-bind="visible: $root.allowToggle, click: function() { $root.toggleFiltersRaw(); }, css: {'active': $root.rawActive }" data-i18n="[title]POPUPS_SIEVE_SCRIPT/BUTTON_RAW_SCRIPT">
+	<a class="btn" data-bind="visible: allowFilters(), click: function() { $root.toggleFiltersRaw(); }, css: {'active': $root.rawActive }" data-i18n="[title]POPUPS_SIEVE_SCRIPT/BUTTON_RAW_SCRIPT">
 		<i class="icon-file-code"></i>
 	</a>
 <!--
@@ -78,7 +78,7 @@
 		<span data-i18n="POPUPS_SIEVE_SCRIPT/VALIDATE"></span>
 	</a>
 -->
-	<a class="btn buttonSave" data-bind="visible: hasChanges, click: function() { $root.saveScript(); }, css: {'btn-danger': $root.saveError}">
+	<a class="btn buttonSave" data-bind="click: function() { $root.saveScript(); }, css: {'btn-danger': $root.saveError}">
 		<i class="fontastic" data-bind="css: {'icon-spinner': $root.saving}">💾</i>
 		<span data-i18n="GLOBAL/SAVE"></span>
 	</a>

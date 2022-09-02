@@ -68,10 +68,10 @@
   content: "\e033";
 }
 .icon-file-text::before {
-  content: "\e034";
+  content: "\e034"; /* 🖹 | 🖺 */
 }
 .icon-file-image::before {
-  content: "\e036";
+  content: "\e036"; /* 🖻 */
 }
 .icon-file-certificate::before {
   content: "\e038";

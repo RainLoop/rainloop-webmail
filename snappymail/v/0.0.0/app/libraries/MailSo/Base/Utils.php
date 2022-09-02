@@ -59,10 +59,7 @@ abstract class Utils
 				return 'iso-8859-8';
 		}
 
-		$sEncoding = \preg_replace('/^cp-([\d])/', 'cp$1', $sEncoding);
-		$sEncoding = \preg_replace('/^windows?12/', 'windows-12', $sEncoding);
-
-		return $sEncoding;
+		return \preg_replace('/^(cp-?|windows?)(12[\d])/', 'windows-$1', $sEncoding);
 	}
 
 	public static function NormalizeCharsetByValue(string $sCharset, string $sValue) : string
@@ -159,14 +156,13 @@ abstract class Utils
 				$sInputFromEncoding = static::$RenameEncoding[$sInputFromEncoding];
 			}
 			if (!static::MbSupportedEncoding($sInputFromEncoding)) {
+				if (\function_exists('iconv')) {
+					$sResult = \iconv($sInputFromEncoding, "{$sInputToEncoding}//IGNORE", $sInputString);
+					return (false !== $sResult) ? $sResult : $sInputString;
+				}
 				\error_log("Unsupported encoding {$sInputFromEncoding}");
 				$sInputFromEncoding = null;
 //				return $sInputString;
-/*
-				if (\function_exists('iconv')) {
-					return \iconv($sInputFromEncoding, $sInputToEncoding, $sInputString);
-				}
-*/
 			}
 		}
 
@@ -179,12 +175,10 @@ abstract class Utils
 
 	public static function ConvertEncoding(string $sInputString, string $sInputFromEncoding, string $sInputToEncoding) : string
 	{
-		$sResult = $sInputString;
-
 		$sFromEncoding = static::NormalizeCharset($sInputFromEncoding);
 		$sToEncoding = static::NormalizeCharset($sInputToEncoding);
 
-		if ('' === \trim($sResult) || ($sFromEncoding === $sToEncoding && Enumerations\Charset::UTF_8 !== $sFromEncoding))
+		if ('' === \trim($sInputString) || ($sFromEncoding === $sToEncoding && Enumerations\Charset::UTF_8 !== $sFromEncoding))
 		{
 			return $sInputString;
 		}

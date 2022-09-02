@@ -22,16 +22,14 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 			saveError: false,
 			errorText: '',
 			rawActive: false,
-			allowToggle: false,
 			script: null,
+			saving: false,
 
 			sieveCapabilities: '',
 			availableActions: '',
 			availableControls: '',
 			availableTests: ''
 		});
-
-		this.saving = false;
 
 		this.filterForDeletion = ko.observable(null).askDeleteHelper();
 	}
@@ -48,7 +46,7 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 	saveScript() {
 		let self = this,
 			script = self.script();
-		if (!self.saving/* && script.hasChanges()*/) {
+		if (!self.saving()/* && script.hasChanges()*/) {
 			this.errorText('');
 			self.saveError(false);
 
@@ -62,21 +60,21 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 			}
 
 			try {
-				parseScript(this.script().body());
+				parseScript(script.body());
 			} catch (e) {
 				this.errorText(e.message);
 				return;
 			}
 
-			self.saving = true;
+			self.saving(true);
 
-			if (self.allowToggle()) {
+			if (script.allowFilters()) {
 				script.body(script.filtersToRaw());
 			}
 
 			Remote.request('FiltersScriptSave',
 				(iError, data) => {
-					self.saving = false;
+					self.saving(false);
 
 					if (iError) {
 						self.saveError(true);
@@ -85,6 +83,7 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 						script.exists() || scripts.push(script);
 						script.exists(true);
 						script.hasChanges(false);
+//						this.close();
 					}
 				},
 				script.toJson()
@@ -110,17 +109,18 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 		const clonedFilter = filter.assignTo();
 		FilterPopupView.showModal([
 			clonedFilter,
-			() => clonedFilter.assignTo(filter),
+			() => {
+				clonedFilter.assignTo(filter);
+				const script = this.script();
+				script.hasChanges(script.body() != script.filtersToRaw());
+			},
 			true
 		]);
 	}
 
 	toggleFiltersRaw() {
-		let script = this.script(), notRaw = !this.rawActive();
-		if (notRaw) {
-			script.body(script.filtersToRaw());
-			script.hasChanges(script.hasChanges());
-		}
+		const script = this.script(), notRaw = !this.rawActive();
+		notRaw && script.body(script.filtersToRaw());
 		this.rawActive(notRaw);
 	}
 
@@ -140,10 +140,8 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 		this.availableTests([...Object.keys(availableTests())].join(', '));
 
 		oScript = oScript || new SieveScriptModel();
-		let raw = !oScript.allowFilters();
 		this.script(oScript);
-		this.rawActive(raw);
-		this.allowToggle(!raw);
+		this.rawActive(!oScript.allowFilters());
 		this.saveError(false);
 		this.errorText('');
 

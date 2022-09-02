@@ -64,9 +64,8 @@ const
 	keydown = event => {
 		let key = (event.key || '').toLowerCase().replace(' ','space'),
 			modifiers = ['alt','ctrl','meta','shift'].filter(v => event[v+'Key']).join('+');
-		scope[key] && scope[key][modifiers] && scope[key][modifiers].forEach(cmd => exec(event, cmd));
-		!event.defaultPrevented && _scope !== 'all' && _scopes.all[key] && _scopes.all[key][modifiers]
-			&& _scopes.all[key][modifiers].forEach(cmd => exec(event, cmd));
+		scope[key]?.[modifiers]?.forEach(cmd => exec(event, cmd));
+		!event.defaultPrevented && _scope !== 'all' && _scopes.all[key]?.[modifiers]?.forEach(cmd => exec(event, cmd));
 	};
 
 win.shortcuts = shortcuts;

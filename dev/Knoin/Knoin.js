@@ -10,10 +10,7 @@ let
 	defaultScreenName = '';
 
 const
-	autofocus = dom => {
-		const af = dom.querySelector('[autofocus]');
-		af && af.focus();
-	},
+	autofocus = dom => dom.querySelector('[autofocus]')?.focus(),
 
 	visiblePopups = new Set,
 
@@ -21,7 +18,7 @@ const
 	 * @param {string} screenName
 	 * @returns {?Object}
 	 */
-	screen = screenName => screenName && null != SCREENS[screenName] ? SCREENS[screenName] : null,
+	screen = screenName => (screenName && SCREENS[screenName]) || null,
 
 	/**
 	 * @param {Function} ViewModelClass
@@ -77,10 +74,10 @@ const
 						if (e.target === vmDom) {
 							if (vmDom.classList.contains('animate')) {
 								autofocus(vmDom);
-								vm.afterShow && vm.afterShow();
+								vm.afterShow?.();
 							} else {
 								vmDom.close();
-								vm.afterHide && vm.afterHide();
+								vm.afterHide?.();
 							}
 						}
 					};
@@ -101,7 +98,7 @@ const
 							});
 						} else {
 							visiblePopups.delete(vm);
-							vm.onHide && vm.onHide();
+							vm.onHide?.();
 							vm.keyScope.unset();
 							vmDom.classList.remove('animate'); // trigger the transitions
 						}
@@ -118,7 +115,7 @@ const
 					vm
 				);
 
-				vm.onBuild && vm.onBuild(vmDom);
+				vm.onBuild?.(vmDom);
 
 				fireEvent('rl-view-model', vm);
 			} else {
@@ -142,10 +139,10 @@ const
 	},
 
 	hideScreen = (screenToHide, destroy) => {
-		screenToHide.onHide && screenToHide.onHide();
+		screenToHide.onHide?.();
 		forEachViewModel(screenToHide, (vm, dom) => {
 			dom.hidden = true;
-			vm.onHide && vm.onHide();
+			vm.onHide?.();
 			destroy && vm.viewModelDom.remove();
 		});
 	},
@@ -155,7 +152,7 @@ const
 	 * @returns {void}
 	 */
 	hideScreenPopup = ViewModelClassToHide => {
-		if (ViewModelClassToHide && ViewModelClassToHide.__vm && ViewModelClassToHide.__dom) {
+		if (ViewModelClassToHide?.__vm && ViewModelClassToHide?.__dom) {
 			ViewModelClassToHide.__vm.modalVisible(false);
 		}
 	},
@@ -190,7 +187,7 @@ const
 					}
 				}
 
-				if (vmScreen && vmScreen.__started) {
+				if (vmScreen?.__started) {
 					isSameScreen = currentScreen && vmScreen === currentScreen;
 
 					if (!vmScreen.__builded) {
@@ -200,7 +197,7 @@ const
 							buildViewModel(ViewModelClass, vmScreen)
 						);
 
-						vmScreen.onBuild && vmScreen.onBuild();
+						vmScreen.onBuild?.();
 					}
 
 					setTimeout(() => {
@@ -214,19 +211,19 @@ const
 
 						// show screen
 						if (!isSameScreen) {
-							vmScreen.onShow && vmScreen.onShow();
+							vmScreen.onShow?.();
 
 							forEachViewModel(vmScreen, (vm, dom) => {
-								vm.beforeShow && vm.beforeShow();
+								vm.beforeShow?.();
 								i18nToNodes(dom);
 								dom.hidden = false;
-								vm.onShow && vm.onShow();
+								vm.onShow?.();
 								autofocus(dom);
 							});
 						}
 						// --
 
-						vmScreen.__cross && vmScreen.__cross.parse(subPart);
+						vmScreen.__cross?.parse(subPart);
 					}, 1);
 				}
 			}
@@ -248,11 +245,11 @@ export const
 		if (vm) {
 			params = params || [];
 
-			vm.beforeShow && vm.beforeShow(...params);
+			vm.beforeShow?.(...params);
 
 			vm.modalVisible(true);
 
-			vm.onShow && vm.onShow(...params);
+			vm.onShow?.(...params);
 		}
 	},
 
@@ -295,7 +292,7 @@ export const
 
 		const c = elementById('rl-content'), l = elementById('rl-loading');
 		c && (c.hidden = false);
-		l && l.remove();
+		l?.remove();
 	},
 
 	/**

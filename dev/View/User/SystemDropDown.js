@@ -52,7 +52,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 	}
 
 	accountClick(account, event) {
-		let email = account && account.email;
+		let email = account?.email;
 		if (email && 0 === event.button && AccountUserStore.email() != email) {
 			AccountUserStore.loading(true);
 			event.preventDefault();

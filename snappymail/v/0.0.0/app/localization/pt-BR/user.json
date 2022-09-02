@@ -20,6 +20,7 @@
 		"NAME": "Caixa de Entrada",
 		"NONE": "Nenhum",
 		"NOT_SPAM": "Não é Lixo Eletrônico",
+		"USERNAME": "Nome de usuário",
 		"PASSWORD": "Senha",
 		"REPLY_TO": "Responder para",
 		"SAVE": "Salvar",
@@ -28,7 +29,9 @@
 		"SUBJECT": "Assunto",
 		"TEST": "Testar",
 		"TO": "Para",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "Sim",
+		"NO": "Não"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Usuário",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Pesquisa Avançada",
-		"LABEL_ADV_TEXT": "Texto",
-		"LABEL_ADV_HAS_ATTACHMENT": "Com anexo",
-		"LABEL_ADV_HAS_ATTACHMENTS": "Com anexos",
-		"LABEL_ADV_FLAGGED": "Sinalizada",
-		"LABEL_ADV_UNSEEN": "Não Lida",
-		"LABEL_ADV_DATE": "Data",
-		"LABEL_ADV_DATE_ALL": "Qualquer",
-		"LABEL_ADV_DATE_3_DAYS": "Até 3 dias atrás",
-		"LABEL_ADV_DATE_7_DAYS": "Até 1 semana atrás",
-		"LABEL_ADV_DATE_MONTH": "Até 1 mês atrás",
-		"LABEL_ADV_DATE_3_MONTHS": "Até 3 meses atrás",
-		"LABEL_ADV_DATE_6_MONTHS": "Até 6 meses atrás",
-		"LABEL_ADV_DATE_YEAR": "Até 1 ano atrás",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "Texto",
+		"LABEL_HAS_ATTACHMENT": "Com anexo",
+		"LABEL_HAS_ATTACHMENTS": "Com anexos",
+		"LABEL_FLAGGED": "Sinalizada",
+		"LABEL_UNSEEN": "Não Lida",
+		"LABEL_DATE": "Data",
+		"LABEL_DATE_ALL": "Qualquer",
+		"LABEL_DATE_3_DAYS": "Até 3 dias atrás",
+		"LABEL_DATE_7_DAYS": "Até 1 semana atrás",
+		"LABEL_DATE_MONTH": "Até 1 mês atrás",
+		"LABEL_DATE_3_MONTHS": "Até 3 meses atrás",
+		"LABEL_DATE_6_MONTHS": "Até 6 meses atrás",
+		"LABEL_DATE_YEAR": "Até 1 ano atrás",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "Respondidas"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Em tela cheia",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "Nenhuma mensagem corresponde a sua pesquisa.",
 		"SEARCH_RESULT_FOR": "Resultados de pesquisa para \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "Voltar para a lista de mensagens",
-		"EMPTY_SUBJECT_TEXT": "(Sem assunto)",
 		"PUT_MESSAGE_HERE": "Coloque a mensagem aqui para vê-la na lista",
 		"TODAY_AT": "Hoje as %TIME%",
 		"YESTERDAY_AT": "Ontem as %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "Pedir recibo de entrega"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Sim",
-		"BUTTON_NO": "Não",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Você tem certeza que deseja fechar esta janela?",
 		"DESC_WANT_DELETE_MESSAGES": "Você tem certeza de que deseja excluir essa(s) mensagem(s)?"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Mensagens por Página",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "Notificações",
 		"LABEL_SOUND_NOTIFICATION": "Notificação sonora",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Servidor",
 		"LABEL_CONTACTS_SYNC_AB_URL": "URL da lista de contatos",
 		"LABEL_CONTACTS_SYNC_USER": "Usuário",
-		"SYNC_NO": "Não",
-		"SYNC_YES": "Sim",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

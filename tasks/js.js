@@ -1,4 +1,4 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL 3 */
+/* RainLoop Webmail (c) RainLoop Team | Licensed under MIT */
 const gulp = require('gulp');
 
 const concat = require('gulp-concat'),

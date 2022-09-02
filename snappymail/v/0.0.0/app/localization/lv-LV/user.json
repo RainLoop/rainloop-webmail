@@ -20,6 +20,7 @@
 		"NAME": "Iesūtne",
 		"NONE": "None",
 		"NOT_SPAM": "Not Spam",
+		"USERNAME": "Lietotājvārds",
 		"PASSWORD": "Parole",
 		"REPLY_TO": "Reply-To",
 		"SAVE": "Saglabāt",
@@ -28,7 +29,9 @@
 		"SUBJECT": "Tēma",
 		"TEST": "Test",
 		"TO": "Kam",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "Jā",
+		"NO": "Nē"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Ielogoties",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Papildus meklēšana",
-		"LABEL_ADV_TEXT": "Teksts",
-		"LABEL_ADV_HAS_ATTACHMENT": "Ir pielikums",
-		"LABEL_ADV_HAS_ATTACHMENTS": "Ir pielikumi",
-		"LABEL_ADV_FLAGGED": "Atzīmētie",
-		"LABEL_ADV_UNSEEN": "Unseen",
-		"LABEL_ADV_DATE": "Datums",
-		"LABEL_ADV_DATE_ALL": "Viss periods",
-		"LABEL_ADV_DATE_3_DAYS": "Līdz 3 dienas vecs",
-		"LABEL_ADV_DATE_7_DAYS": "Līdz 1 nedēļu vecs",
-		"LABEL_ADV_DATE_MONTH": "Līdz 1 mēnesi vecs",
-		"LABEL_ADV_DATE_3_MONTHS": "Līdz 3 mēnešus vecs",
-		"LABEL_ADV_DATE_6_MONTHS": "Līdz 6 mēnešus vecs",
-		"LABEL_ADV_DATE_YEAR": "Līdz 1 gadu vecs",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "Teksts",
+		"LABEL_HAS_ATTACHMENT": "Ir pielikums",
+		"LABEL_HAS_ATTACHMENTS": "Ir pielikumi",
+		"LABEL_FLAGGED": "Atzīmētie",
+		"LABEL_UNSEEN": "Unseen",
+		"LABEL_DATE": "Datums",
+		"LABEL_DATE_ALL": "Viss periods",
+		"LABEL_DATE_3_DAYS": "Līdz 3 dienas vecs",
+		"LABEL_DATE_7_DAYS": "Līdz 1 nedēļu vecs",
+		"LABEL_DATE_MONTH": "Līdz 1 mēnesi vecs",
+		"LABEL_DATE_3_MONTHS": "Līdz 3 mēnešus vecs",
+		"LABEL_DATE_6_MONTHS": "Līdz 6 mēnešus vecs",
+		"LABEL_DATE_YEAR": "Līdz 1 gadu vecs",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "Atbildēja"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Toggle fullscreen",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "Neviens ziņojums neatbilda jūsu meklētajiem kritērijiem.",
 		"SEARCH_RESULT_FOR": "Meklēšanas rezultāti: \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "back to message list",
-		"EMPTY_SUBJECT_TEXT": "(Nav virsraksta)",
 		"PUT_MESSAGE_HERE": "Ievelciet ziņojumus šeit lai tos apskatītu.",
 		"TODAY_AT": "šodien %TIME%",
 		"YESTERDAY_AT": "vakardien %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "Request a delivery receipt"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Jā",
-		"BUTTON_NO": "Nē",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Are you sure you want to close this window?",
 		"DESC_WANT_DELETE_MESSAGES": "Are you sure you want to delete the message(s)?"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Ziņojumi lapā",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "Paziņojumi",
 		"LABEL_SOUND_NOTIFICATION": "Sound notification",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Addressbook URL",
 		"LABEL_CONTACTS_SYNC_USER": "User",
-		"SYNC_NO": "Nē",
-		"SYNC_YES": "Jā",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

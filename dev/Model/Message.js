@@ -3,10 +3,10 @@ import ko from 'ko';
 import { MessagePriority } from 'Common/EnumsUser';
 import { i18n } from 'Common/Translator';
 
-import { doc } from 'Common/Globals';
+import { doc, SettingsGet } from 'Common/Globals';
 import { encodeHtml, plainToHtml, cleanHtml } from 'Common/Html';
 import { isArray, arrayLength, forEachObjectEntry } from 'Common/Utils';
-import { serverRequestRaw } from 'Common/Links';
+import { serverRequestRaw, proxy } from 'Common/Links';
 
 import { FolderUserStore } from 'Stores/User/Folder';
 import { SettingsUserStore } from 'Stores/User/Settings';
@@ -89,11 +89,15 @@ const
 		})
 	},
 
+	/**
+	 * @param {EmailCollectionModel} emails
+	 * @param {Object} unic
+	 * @param {Map} localEmails
+	 */
 	replyHelper = (emails, unic, localEmails) => {
 		emails.forEach(email => {
-			if (undefined === unic[email.email]) {
-				unic[email.email] = true;
-				localEmails.push(email);
+			if (!unic[email.email] && !localEmails.has(email.email)) {
+				localEmails.set(email.email, email);
 			}
 		});
 	};
@@ -319,7 +323,7 @@ export class MessageModel extends AbstractModel {
 	 */
 	fromDkimData() {
 		let result = ['none', ''];
-		if (1 === arrayLength(this.from) && this.from[0] && this.from[0].dkimStatus) {
+		if (1 === arrayLength(this.from) && this.from[0]?.dkimStatus) {
 			result = [this.from[0].dkimStatus, this.from[0].dkimValue || ''];
 		}
 
@@ -375,7 +379,6 @@ export class MessageModel extends AbstractModel {
 			focused: this.focused(),
 			important: this.isImportant(),
 			withAttachments: !!this.attachments().length,
-			emptySubject: !this.subject(),
 			// hasChildrenMessage: 1 < this.threadsLen(),
 			hasUnseenSubMessage: this.hasUnseenSubMessage(),
 			hasFlaggedSubMessage: this.hasFlaggedSubMessage()
@@ -396,7 +399,7 @@ export class MessageModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	fromAsSingleEmail() {
-		return isArray(this.from) && this.from[0] ? this.from[0].email : '';
+		return (isArray(this.from) && this.from[0]?.email) || '';
 	}
 
 	/**
@@ -415,50 +418,36 @@ export class MessageModel extends AbstractModel {
 
 	/**
 	 * @param {Object} excludeEmails
-	 * @param {boolean=} last = false
 	 * @returns {Array}
 	 */
-	replyEmails(excludeEmails, last) {
-		const result = [],
-			unic = undefined === excludeEmails ? {} : excludeEmails;
-
+	replyEmails(excludeEmails) {
+		const
+			result = new Map(),
+			unic = excludeEmails || {};
 		replyHelper(this.replyTo, unic, result);
-		if (!result.length) {
-			replyHelper(this.from, unic, result);
-		}
-
-		if (!result.length && !last) {
-			return this.replyEmails({}, true);
-		}
-
-		return result;
+		result.size || replyHelper(this.from, unic, result);
+		return result.size ? [...result.values()] : [this.to[0]];
 	}
 
 	/**
 	 * @param {Object} excludeEmails
-	 * @param {boolean=} last = false
 	 * @returns {Array.<Array>}
 	 */
-	replyAllEmails(excludeEmails, last) {
-		let data = [];
-		const toResult = [],
-			ccResult = [],
-			unic = undefined === excludeEmails ? {} : excludeEmails;
+	replyAllEmails(excludeEmails) {
+		const
+			toResult = new Map(),
+			ccResult = new Map(),
+			unic = excludeEmails || {};
 
 		replyHelper(this.replyTo, unic, toResult);
-		if (!toResult.length) {
+		if (!toResult.size) {
 			replyHelper(this.from, unic, toResult);
 		}
-
 		replyHelper(this.to, unic, toResult);
+
 		replyHelper(this.cc, unic, ccResult);
 
-		if (!toResult.length && !last) {
-			data = this.replyAllEmails({}, true);
-			return [data[0], ccResult];
-		}
-
-		return [toResult, ccResult];
+		return [[...toResult.values()], [...ccResult.values()]];
 	}
 
 	viewHtml() {
@@ -617,16 +606,18 @@ export class MessageModel extends AbstractModel {
 			this.hasImages(false);
 			body.rlHasImages = false;
 
-			let attr = 'data-x-src';
-			body.querySelectorAll('[' + attr + ']').forEach(node => {
-				if (node.matches('img')) {
-					node.loading = 'lazy';
-				}
-				node.src = node.getAttribute(attr);
+			let attr = 'data-x-src',
+				src, useProxy = !!SettingsGet('UseLocalProxyForExternalImages');
+			body.querySelectorAll('img[' + attr + ']').forEach(node => {
+				node.loading = 'lazy';
+				src = node.getAttribute(attr);
+				node.src = useProxy ? proxy(src) : src;
 			});
 
 			body.querySelectorAll('[data-x-style-url]').forEach(node => {
-				JSON.parse(node.dataset.xStyleUrl).forEach(data => node.style[data[0]] = "url('" + data[1] + "')");
+				JSON.parse(node.dataset.xStyleUrl).forEach(data =>
+					node.style[data[0]] = "url('" + (useProxy ? proxy(data[1]) : data[1]) + "')"
+				);
 			});
 		}
 	}

@@ -4,7 +4,10 @@
 		"CLOSE": "Uždaryti",
 		"SAVE": "Saugoti",
 		"TEST": "Bandymas",
-		"UPDATE": "Atnaujinti"
+		"UPDATE": "Atnaujinti",
+		"USERNAME": "Vartotojo vardas",
+		"PASSWORD": "Slaptažodis",
+		"CANCEL": "Atšaukti"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prisijungimo vardas",
@@ -84,10 +87,8 @@
 		"LABEL_SHOW_PHP_INFO": "Rodyti PHP informaciją",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Valdymo skydo prieigos rekvizitai",
 		"LABEL_CURRENT_PASSWORD": "Dabartinis slaptažodis",
-		"LABEL_NEW_LOGIN": "Naujas prisijungimo vardas",
 		"LABEL_NEW_PASSWORD": "Naujas slaptažodis",
 		"LABEL_REPEAT_PASSWORD": "Pakartokite",
-		"BUTTON_UPDATE_PASSWORD": "Atnaujinti slaptažodį",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Reikalauti SSL sertifikato (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Leisti pačių sukurtus sertifikatus"

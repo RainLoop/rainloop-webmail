@@ -53,7 +53,7 @@ export class AbstractSettingsScreen extends AbstractScreen {
 					settingsScreen
 				);
 
-				settingsScreen.onBuild && settingsScreen.onBuild(viewModelDom);
+				settingsScreen.onBuild?.(viewModelDom);
 			} else {
 				console.log('Cannot find sub settings view model position: SettingsSubScreen');
 			}
@@ -67,10 +67,10 @@ export class AbstractSettingsScreen extends AbstractScreen {
 					this.oCurrentSubScreen = settingsScreen;
 
 					// show
-					settingsScreen.beforeShow && settingsScreen.beforeShow();
+					settingsScreen.beforeShow?.();
 					i18nToNodes(settingsScreen.viewModelDom);
 					settingsScreen.viewModelDom.hidden = false;
-					settingsScreen.onShow && settingsScreen.onShow();
+					settingsScreen.onShow?.();
 
 					this.menu.forEach(item => {
 						item.selected(
@@ -90,7 +90,7 @@ export class AbstractSettingsScreen extends AbstractScreen {
 	onHide() {
 		let subScreen = this.oCurrentSubScreen;
 		if (subScreen) {
-			subScreen.onHide && subScreen.onHide();
+			subScreen.onHide?.();
 			subScreen.viewModelDom.hidden = true;
 		}
 	}

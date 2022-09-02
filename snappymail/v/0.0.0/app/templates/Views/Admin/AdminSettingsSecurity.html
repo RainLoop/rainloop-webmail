@@ -22,15 +22,15 @@
 </div>
 <div class="form-horizontal">
 	<div class="legend" data-i18n="TAB_SECURITY/LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS"></div>
+	<div class="control-group" data-bind="css: {'error': adminLoginError}">
+		<label data-i18n="GLOBAL/USERNAME"></label>
+		<input type="text" autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false"
+			data-bind="textInput: adminLogin">
+	</div>
 	<div class="control-group">
 		<label data-i18n="TAB_SECURITY/LABEL_CURRENT_PASSWORD"></label>
 		<input type="password" autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
 			data-bind="textInput: adminPassword">
-	</div>
-	<div class="control-group" data-bind="css: {'error': adminLoginError}">
-		<label data-i18n="TAB_SECURITY/LABEL_NEW_LOGIN"></label>
-		<input type="text" autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false"
-			data-bind="textInput: adminLogin">
 	</div>
 	<div class="control-group" data-bind="css: {'error': adminPasswordNewError}">
 		<label data-i18n="TAB_SECURITY/LABEL_NEW_PASSWORD"></label>
@@ -49,8 +49,12 @@
 			data-bind="textInput: adminTOTP">
 	</div>
 	<div class="control-group">
-		<a class="btn" data-bind="command: saveNewAdminPasswordCommand, css: { 'btn-success': adminPasswordUpdateSuccess, 'btn-danger': adminPasswordUpdateError }"
-			data-icon="🔑" data-i18n="TAB_SECURITY/BUTTON_UPDATE_PASSWORD"></a>
+		<label></label>
+		<pre data-bind="text: viewQRCode" style="font-family:var(--fontMono);font-size:11px;letter-spacing:-1px;line-height:1;"></pre>
+	</div>
+	<div class="control-group">
+		<a class="btn" data-bind="command: saveAdminUserCommand, css: { 'btn-success': saveSuccess, 'btn-danger': saveError }"
+			data-icon="🔑" data-i18n="GLOBAL/SAVE"></a>
 	</div>
 </div>
 <div class="form-horizontal">

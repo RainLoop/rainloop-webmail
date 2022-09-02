@@ -38,7 +38,7 @@ export class AccountPopupView extends AbstractViewPopup {
 						this.submitRequest(false);
 						if (iError) {
 							this.submitError(getNotification(iError));
-							this.submitErrorAdditional((data && data.ErrorMessageAdditional) || '');
+							this.submitErrorAdditional(data?.ErrorMessageAdditional);
 						} else {
 							rl.app.accountsAndIdentities();
 							this.close();
@@ -54,7 +54,7 @@ export class AccountPopupView extends AbstractViewPopup {
 	}
 
 	onShow(account) {
-		if (account && account.isAdditional()) {
+		if (account?.isAdditional()) {
 			this.isNew(false);
 			this.email(account.email);
 		} else {

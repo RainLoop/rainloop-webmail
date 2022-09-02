@@ -20,6 +20,7 @@
 		"NAME": "Přijaté",
 		"NONE": "Žádný",
 		"NOT_SPAM": "Není to spam",
+		"USERNAME": "Uživatelské jméno",
 		"PASSWORD": "Heslo",
 		"REPLY_TO": "Adresa odpovědi",
 		"SAVE": "Uložit",
@@ -28,7 +29,9 @@
 		"SUBJECT": "Předmět",
 		"TEST": "Test",
 		"TO": "Příjemce",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "Ano",
+		"NO": "Ne"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Uživatelské jméno",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Rozšířené hledání",
-		"LABEL_ADV_TEXT": "Text",
-		"LABEL_ADV_HAS_ATTACHMENT": "S přílohou",
-		"LABEL_ADV_HAS_ATTACHMENTS": "S přílohami",
-		"LABEL_ADV_FLAGGED": "Označené hvězdičkou",
-		"LABEL_ADV_UNSEEN": "Nepřečtené",
-		"LABEL_ADV_DATE": "Datum",
-		"LABEL_ADV_DATE_ALL": "Kdykoliv",
-		"LABEL_ADV_DATE_3_DAYS": "Ne starší než 3 dny",
-		"LABEL_ADV_DATE_7_DAYS": "Ne starší než týden",
-		"LABEL_ADV_DATE_MONTH": "Ne starší než měsíc",
-		"LABEL_ADV_DATE_3_MONTHS": "Ne starší než 3 měsíce",
-		"LABEL_ADV_DATE_6_MONTHS": "Ne starší než 6 měsíců",
-		"LABEL_ADV_DATE_YEAR": "Ne starší než 1 rok",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "Text",
+		"LABEL_HAS_ATTACHMENT": "S přílohou",
+		"LABEL_HAS_ATTACHMENTS": "S přílohami",
+		"LABEL_FLAGGED": "Označené hvězdičkou",
+		"LABEL_UNSEEN": "Nepřečtené",
+		"LABEL_DATE": "Datum",
+		"LABEL_DATE_ALL": "Kdykoliv",
+		"LABEL_DATE_3_DAYS": "Ne starší než 3 dny",
+		"LABEL_DATE_7_DAYS": "Ne starší než týden",
+		"LABEL_DATE_MONTH": "Ne starší než měsíc",
+		"LABEL_DATE_3_MONTHS": "Ne starší než 3 měsíce",
+		"LABEL_DATE_6_MONTHS": "Ne starší než 6 měsíců",
+		"LABEL_DATE_YEAR": "Ne starší než 1 rok",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "Odpovězeno"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Celá obrazovka",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "Vašemu vyhledávání neodpovídají žádné zprávy.",
 		"SEARCH_RESULT_FOR": "Výsledky vyhledávání pro \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "Zpět na seznam zpráv",
-		"EMPTY_SUBJECT_TEXT": "(Bez předmětu)",
 		"PUT_MESSAGE_HERE": "Přesuňte zprávu sem pro její zobrazení v seznamu",
 		"TODAY_AT": "Dnes v %TIME%",
 		"YESTERDAY_AT": "Včera v %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "Vyžádat si potvrzení o přijetí"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Ano",
-		"BUTTON_NO": "Ne",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Opravdu chcete zavřít toto okno?",
 		"DESC_WANT_DELETE_MESSAGES": "Opravdu chcete odstranit tyto zprávy?"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Zpráv na stranu",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "Notifikace",
 		"LABEL_SOUND_NOTIFICATION": "Zvukové notifikace",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "URL adresáře",
 		"LABEL_CONTACTS_SYNC_USER": "Uživatel",
-		"SYNC_NO": "Ne",
-		"SYNC_YES": "Ano",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

@@ -70,7 +70,7 @@
 		htmlDrag = b => doc.documentElement.classList.toggle('firefox-drag', b),
 
 		setDragImage = (src, xOffset, yOffset) => {
-			img && img.remove();
+			img?.remove();
 			if (src) {
 				// create drag image from custom element or drag source
 				img = src.cloneNode(true);
@@ -85,7 +85,7 @@
 			if (dragSource) {
 				clearInterval(holdInterval);
 				// dispose of drag image element
-				img && img.remove();
+				img?.remove();
 				isDragging && dispatchEvent(lastTouch, 'dragend', dragSource);
 				img = dragSource = lastTouch = lastTarget = dataTransfer = holdInterval = null;
 				isDragging = allowDrop = false;
@@ -163,6 +163,17 @@
 			return false;
 		};
 
+/*
+		doc.addEventListener('pointerdown', e => {
+			doc.addEventListener('pointermove', e => {
+				e.clientX
+			});
+			doc.setPointerCapture(e.pointerId);
+		});
+		doc.addEventListener('pointerup', e => {
+			doc.releasePointerCapture(e.pointerId);
+		});
+*/
 		doc.addEventListener('touchstart', e => {
 			// clear all variables
 			reset();

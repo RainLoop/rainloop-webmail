@@ -1,7 +1,7 @@
 import ko from 'ko';
 import { koComputable } from 'External/ko';
 
-import { Layout, EditorDefaultType } from 'Common/EnumsUser';
+import { Layout, EditorDefaultType, ComposeType } from 'Common/EnumsUser';
 import { pInt } from 'Common/Utils';
 import { addObservablesTo } from 'External/ko';
 import { $htmlCL, SettingsGet, fireEvent } from 'Common/Globals';
@@ -22,6 +22,13 @@ export const SettingsUserStore = new class {
 			]
 		});
 
+		self.msgDefaultAction = ko.observable(1).extend({
+			limitedList: [
+				ComposeType.Reply,
+				ComposeType.ReplyAll
+			]
+		});
+
 		self.messagesPerPage = ko.observable(25).extend({ debounce: 999 });
 
 		self.messageReadDelay = ko.observable(5).extend({ debounce: 999 });
@@ -36,7 +43,12 @@ export const SettingsUserStore = new class {
 			replySameFolder: 0,
 			hideUnsubscribed: 0,
 			hideDeleted: 1,
-			autoLogout: 0
+			autoLogout: 0,
+
+			requestReadReceipt: 0,
+			requestDsn: 0,
+			pgpSign: 0,
+			pgpEncrypt: 0
 		});
 
 		self.init();
@@ -74,6 +86,7 @@ export const SettingsUserStore = new class {
 		self.messagesPerPage(pInt(SettingsGet('MessagesPerPage')));
 		self.messageReadDelay(pInt(SettingsGet('MessageReadDelay')));
 		self.autoLogout(pInt(SettingsGet('AutoLogout')));
+		self.msgDefaultAction(SettingsGet('MsgDefaultAction'));
 
 		self.viewHTML(SettingsGet('ViewHTML'));
 		self.showImages(SettingsGet('ShowImages'));
@@ -85,5 +98,10 @@ export const SettingsUserStore = new class {
 
 		self.hideUnsubscribed(SettingsGet('HideUnsubscribed'));
 		self.hideDeleted(SettingsGet('HideDeleted'));
+
+		self.requestReadReceipt(SettingsGet('requestReadReceipt'));
+		self.requestDsn(SettingsGet('requestDsn'));
+		self.pgpSign(SettingsGet('pgpSign'));
+		self.pgpEncrypt(SettingsGet('pgpEncrypt'));
 	}
 };

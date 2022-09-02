@@ -68,7 +68,7 @@ export class AdminSettingsGeneral extends AbstractViewSettings {
 
 		this.uploadData = SettingsGet('PhpUploadSizes');
 		this.uploadDataDesc =
-			this.uploadData && (this.uploadData.upload_max_filesize || this.uploadData.post_max_size)
+			(this.uploadData?.upload_max_filesize || this.uploadData?.post_max_size)
 				? [
 						this.uploadData.upload_max_filesize
 							? 'upload_max_filesize = ' + this.uploadData.upload_max_filesize + '; '

@@ -176,8 +176,8 @@ class SquireUI
 					quote: {
 						html: '"',
 						cmd: () => {
-							let parent = this.getParentNodeName('UL,OL');
-							(parent && 'BLOCKQUOTE' == parent) ? squire.decreaseQuoteLevel() : squire.increaseQuoteLevel();
+							let parent = squire.getSelectionClosest('UL,OL,BLOCKQUOTE')?.nodeName;
+							('BLOCKQUOTE' == parent) ? squire.decreaseQuoteLevel() : squire.increaseQuoteLevel();
 						},
 						hint: 'Blockquote'
 					},
@@ -198,11 +198,10 @@ class SquireUI
 					link: {
 						html: '🔗',
 						cmd: () => {
-							if ('A' === this.getParentNodeName()) {
-								squire.removeLink();
-							} else {
-								let url = prompt("Link","https://");
-								url != null && url.length && squire.makeLink(url);
+							let node = squire.getSelectionClosest('A'),
+								url = prompt("Link", node?.href || "https://");
+							if (url != null) {
+								url.length ? squire.makeLink(url) : (node && squire.removeLink());
 							}
 						},
 						hint: 'Link'
@@ -210,12 +209,9 @@ class SquireUI
 					imageUrl: {
 						html: '🖼️',
 						cmd: () => {
-							if ('IMG' === this.getParentNodeName()) {
-//								squire.removeLink();
-							} else {
-								let src = prompt("Image","https://");
-								src != null && src.length && squire.insertImage(src);
-							}
+							let node = squire.getSelectionClosest('IMG'),
+								src = prompt("Image", node?.src || "https://");
+							src.length ? squire.insertImage(src) : (node && squire.detach(node));
 						},
 						hint: 'Image URL'
 					},
@@ -385,15 +381,10 @@ class SquireUI
 		this.squire.focus();
 	}
 
-	getParentNodeName(selector) {
-		let parent = this.squire.getSelectionClosest(selector);
-		return parent ? parent.nodeName : null;
-	}
-
 	doList(type) {
-		let parent = this.getParentNodeName('UL,OL'),
+		let parent = this.squire.getSelectionClosest('UL,OL')?.nodeName,
 			fn = {UL:'makeUnorderedList',OL:'makeOrderedList'};
-		(parent && parent == type) ? this.squire.removeList() : this.squire[fn[type]]();
+		(parent == type) ? this.squire.removeList() : this.squire[fn[type]]();
 	}
 
 	testPresenceinSelection(format, validation) {
@@ -412,7 +403,7 @@ class SquireUI
 			}
 			this.mode = mode; // 'wysiwyg' or 'plain'
 			cl.add('squire-mode-'+mode);
-			this.onModeChange && this.onModeChange();
+			this.onModeChange?.();
 			setTimeout(()=>this.focus(),1);
 		}
 	}

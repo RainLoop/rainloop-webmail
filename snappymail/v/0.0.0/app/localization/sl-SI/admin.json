@@ -4,7 +4,10 @@
 		"CLOSE": "Zapri",
 		"SAVE": "Shrani",
 		"TEST": "Preizkus",
-		"UPDATE": "Posodobi"
+		"UPDATE": "Posodobi",
+		"USERNAME": "Uporabniško ime",
+		"PASSWORD": "Geslo",
+		"CANCEL": "Prekliči"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prijava",
@@ -84,10 +87,8 @@
 		"LABEL_SHOW_PHP_INFO": "Prikaz PHP informacij",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Prijavni podatki za administracijsko ploščo",
 		"LABEL_CURRENT_PASSWORD": "Trenutno geslo",
-		"LABEL_NEW_LOGIN": "Novo uporabniško ime",
 		"LABEL_NEW_PASSWORD": "Novo geslo",
 		"LABEL_REPEAT_PASSWORD": "Ponovno",
-		"BUTTON_UPDATE_PASSWORD": "Posodobi geslo",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Obvezno overjanje uporabljenega SSL certifikata (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Dovoli samopodpisane certifikate"

@@ -20,6 +20,7 @@
 		"NAME": "Intrări",
 		"NONE": "None",
 		"NOT_SPAM": "Not SPAM",
+		"USERNAME": "Nume de utilizator",
 		"PASSWORD": "Parolă",
 		"REPLY_TO": "Reply-To",
 		"SAVE": "Salvează",
@@ -28,7 +29,9 @@
 		"SUBJECT": "Subiect",
 		"TEST": "Test",
 		"TO": "către",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "Da",
+		"NO": "Nu"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Conectare",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Căutare avansată",
-		"LABEL_ADV_TEXT": "Conținut",
-		"LABEL_ADV_HAS_ATTACHMENT": "Are atașament",
-		"LABEL_ADV_HAS_ATTACHMENTS": "Atașamente",
-		"LABEL_ADV_FLAGGED": "Importante",
-		"LABEL_ADV_UNSEEN": "Necitit",
-		"LABEL_ADV_DATE": "Data",
-		"LABEL_ADV_DATE_ALL": "Tot timpul",
-		"LABEL_ADV_DATE_3_DAYS": "З zile",
-		"LABEL_ADV_DATE_7_DAYS": "7 zile",
-		"LABEL_ADV_DATE_MONTH": "în această lună",
-		"LABEL_ADV_DATE_3_MONTHS": "3 luni",
-		"LABEL_ADV_DATE_6_MONTHS": "6 luni",
-		"LABEL_ADV_DATE_YEAR": "în acest an",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "Conținut",
+		"LABEL_HAS_ATTACHMENT": "Are atașament",
+		"LABEL_HAS_ATTACHMENTS": "Atașamente",
+		"LABEL_FLAGGED": "Importante",
+		"LABEL_UNSEEN": "Necitit",
+		"LABEL_DATE": "Data",
+		"LABEL_DATE_ALL": "Tot timpul",
+		"LABEL_DATE_3_DAYS": "З zile",
+		"LABEL_DATE_7_DAYS": "7 zile",
+		"LABEL_DATE_MONTH": "în această lună",
+		"LABEL_DATE_3_MONTHS": "3 luni",
+		"LABEL_DATE_6_MONTHS": "6 luni",
+		"LABEL_DATE_YEAR": "în acest an",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "Răspuns"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Toggle fullscreen",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "Nu am găsit nimic.",
 		"SEARCH_RESULT_FOR": "Rezultat căutare \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "înapoi la lista de mesaje",
-		"EMPTY_SUBJECT_TEXT": "(nici un subiect)",
 		"PUT_MESSAGE_HERE": "EROARE! CONTACTAȚI ADIMISTRATORUL! (trimiteți un prt.scr)",
 		"TODAY_AT": "azi %TIME%",
 		"YESTERDAY_AT": "ieri %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "Request a delivery receipt"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Da",
-		"BUTTON_NO": "Nu",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Sigur doriți să închideți această fereastră?",
 		"DESC_WANT_DELETE_MESSAGES": "Sigur doriți să ștergeți mesajul(e)?"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Mesaje pe o pagină",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "Notificări",
 		"LABEL_SOUND_NOTIFICATION": "Sound notification",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Addressbook URL",
 		"LABEL_CONTACTS_SYNC_USER": "User",
-		"SYNC_NO": "Nu",
-		"SYNC_YES": "Da",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

@@ -12,7 +12,7 @@ export class AbstractCollectionModel extends Array
 	}
 
 	onDestroy() {
-		this.forEach(item => item.onDestroy && item.onDestroy());
+		this.forEach(item => item.onDestroy?.());
 	}
 
 	/**

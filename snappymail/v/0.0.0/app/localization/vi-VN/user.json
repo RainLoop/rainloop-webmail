@@ -20,6 +20,7 @@
 		"NAME": "Tên gọi",
 		"NONE": "Trống",
 		"NOT_SPAM": "Không phải thư rác",
+		"USERNAME": "Tên tài khoản",
 		"PASSWORD": "Mật khẩu",
 		"REPLY_TO": "Nhận thư phản hồi về",
 		"SAVE": "Lưu",
@@ -28,7 +29,9 @@
 		"SUBJECT": "Tiêu đề",
 		"TEST": "Thử nghiệm",
 		"TO": "Gửi đến",
-		"SERVER_MESSAGE": "Tin nhắn từ máy chủ"
+		"SERVER_MESSAGE": "Tin nhắn từ máy chủ",
+		"YES": "Ok",
+		"NO": "Không"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Đăng nhập",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Tìm kiếm nâng cao",
-		"LABEL_ADV_TEXT": "Nội dung trong mail",
-		"LABEL_ADV_HAS_ATTACHMENT": "Có đính kèm",
-		"LABEL_ADV_HAS_ATTACHMENTS": "Có đính kèm",
-		"LABEL_ADV_FLAGGED": "Được đánh dấu sao",
-		"LABEL_ADV_UNSEEN": "Chưa được xem",
-		"LABEL_ADV_DATE": "Ngày",
-		"LABEL_ADV_DATE_ALL": "Tất cả",
-		"LABEL_ADV_DATE_3_DAYS": "Khoảng 3 ngày trước",
-		"LABEL_ADV_DATE_7_DAYS": "Khoảng 1 tuần trước",
-		"LABEL_ADV_DATE_MONTH": "Khoảng 1 tháng trước",
-		"LABEL_ADV_DATE_3_MONTHS": "Khoảng 3 tháng trước",
-		"LABEL_ADV_DATE_6_MONTHS": "Khoảng 6 tháng trước",
-		"LABEL_ADV_DATE_YEAR": "Khoảng 1 năm trước",
-		"LABEL_ADV_SUBFOLDERS": "Thư mục con",
-		"LABEL_ADV_SUBFOLDERS_NONE": "Trống",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "Tất cả",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "Một cấp độ"
+		"LABEL_TEXT": "Nội dung trong mail",
+		"LABEL_HAS_ATTACHMENT": "Có đính kèm",
+		"LABEL_HAS_ATTACHMENTS": "Có đính kèm",
+		"LABEL_FLAGGED": "Được đánh dấu sao",
+		"LABEL_UNSEEN": "Chưa được xem",
+		"LABEL_DATE": "Ngày",
+		"LABEL_DATE_ALL": "Tất cả",
+		"LABEL_DATE_3_DAYS": "Khoảng 3 ngày trước",
+		"LABEL_DATE_7_DAYS": "Khoảng 1 tuần trước",
+		"LABEL_DATE_MONTH": "Khoảng 1 tháng trước",
+		"LABEL_DATE_3_MONTHS": "Khoảng 3 tháng trước",
+		"LABEL_DATE_6_MONTHS": "Khoảng 6 tháng trước",
+		"LABEL_DATE_YEAR": "Khoảng 1 năm trước",
+		"LABEL_SUBFOLDERS": "Thư mục con",
+		"LABEL_SUBFOLDERS_NONE": "Trống",
+		"LABEL_SUBFOLDERS_SUBTREE": "Tất cả",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "Một cấp độ",
+		"LABEL_REPLIED": "Đã trả lời"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Đóng\/mở toàn màn hình",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "Không tìm thấy thư trùng khớp.",
 		"SEARCH_RESULT_FOR": "Kết quả tìm kiếm cho \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "trở về danh sách thư",
-		"EMPTY_SUBJECT_TEXT": "(Chưa có tiêu đề)",
 		"PUT_MESSAGE_HERE": "Bỏ thư vào đây để xem nó trong danh sách",
 		"TODAY_AT": "hôm nay lúc %TIME%",
 		"YESTERDAY_AT": "hôm qua lúc %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "Yêu cầu thông báo thư đã gửi thành công"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Ok",
-		"BUTTON_NO": "Không",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Bạn có chắc muốn đóng bảng này chứ?",
 		"DESC_WANT_DELETE_MESSAGES": "Bạn có chắc muốn xóa thư này chứ?"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Loại bỏ hình nền và màu chữ trong phần thân của thư",
 		"LABEL_MESSAGE_PER_PAGE": "Số thư hiển thị trên trang",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Đánh dấu thư là để đọc sau",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "giây",
 		"LABEL_NOTIFICATIONS": "Thông báo",
 		"LABEL_SOUND_NOTIFICATION": "Thông báo âm thanh",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Máy chủ",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Đường link của sổ địa chỉ",
 		"LABEL_CONTACTS_SYNC_USER": "Người dùng",
-		"SYNC_NO": "Không",
-		"SYNC_YES": "Ok",
 		"SYNC_READ": "Chỉ cho phép đọc"
 	},
 	"SETTINGS_THEMES": {

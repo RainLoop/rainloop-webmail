@@ -22,7 +22,7 @@ PackageAdminStore.fetch = () => {
 
 			const loading = {};
 			PackageAdminStore.forEach(item => {
-				if (item && item.loading()) {
+				if (item?.loading()) {
 					loading[item.file] = item;
 				}
 			});

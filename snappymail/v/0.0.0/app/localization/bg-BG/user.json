@@ -20,6 +20,7 @@
 		"NAME": "Вх. кутия",
 		"NONE": "Няма",
 		"NOT_SPAM": "Не е спам",
+		"USERNAME": "Потребителско име",
 		"PASSWORD": "Парола",
 		"REPLY_TO": "Отговори на",
 		"SAVE": "Запази",
@@ -28,7 +29,9 @@
 		"SUBJECT": "Заглавие",
 		"TEST": "Тест",
 		"TO": "До",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "Да",
+		"NO": "Не"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Логин",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Разширено търсене",
-		"LABEL_ADV_TEXT": "Текст",
-		"LABEL_ADV_HAS_ATTACHMENT": "Има приложен файл",
-		"LABEL_ADV_HAS_ATTACHMENTS": "Има приложени файлове",
-		"LABEL_ADV_FLAGGED": "Отбелязано с флаг",
-		"LABEL_ADV_UNSEEN": "Невидяно",
-		"LABEL_ADV_DATE": "Дата",
-		"LABEL_ADV_DATE_ALL": "Всички",
-		"LABEL_ADV_DATE_3_DAYS": "До 3 дена",
-		"LABEL_ADV_DATE_7_DAYS": "До 1 седмица",
-		"LABEL_ADV_DATE_MONTH": "До 1 месец",
-		"LABEL_ADV_DATE_3_MONTHS": "До 3 месеца",
-		"LABEL_ADV_DATE_6_MONTHS": "До 6 месеца",
-		"LABEL_ADV_DATE_YEAR": "До 1 година",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "Текст",
+		"LABEL_HAS_ATTACHMENT": "Има приложен файл",
+		"LABEL_HAS_ATTACHMENTS": "Има приложени файлове",
+		"LABEL_FLAGGED": "Отбелязано с флаг",
+		"LABEL_UNSEEN": "Невидяно",
+		"LABEL_DATE": "Дата",
+		"LABEL_DATE_ALL": "Всички",
+		"LABEL_DATE_3_DAYS": "До 3 дена",
+		"LABEL_DATE_7_DAYS": "До 1 седмица",
+		"LABEL_DATE_MONTH": "До 1 месец",
+		"LABEL_DATE_3_MONTHS": "До 3 месеца",
+		"LABEL_DATE_6_MONTHS": "До 6 месеца",
+		"LABEL_DATE_YEAR": "До 1 година",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "Отговорено"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "На цял екран",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "Няма съобщения, които да отговарят на търсенето.",
 		"SEARCH_RESULT_FOR": "Резултати от търсенето за \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "Обратно при съобщенията",
-		"EMPTY_SUBJECT_TEXT": "(Няма заглавие)",
 		"PUT_MESSAGE_HERE": "Пуснете съобщението тук, за да го видите в списъка",
 		"TODAY_AT": "днес в %TIME%",
 		"YESTERDAY_AT": "вчера в %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "Уведомяване при доставка"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Да",
-		"BUTTON_NO": "Не",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Сигурни ли сте, че желаете да затворите този прозорец?",
 		"DESC_WANT_DELETE_MESSAGES": "Сигурни ли сте, че желаете да изтриете съобщението\/съобщенията?"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Съобщения на страница",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "Известия",
 		"LABEL_SOUND_NOTIFICATION": "Звуково известяване",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Сървър",
 		"LABEL_CONTACTS_SYNC_AB_URL": "URL на адресната книга",
 		"LABEL_CONTACTS_SYNC_USER": "Потребител",
-		"SYNC_NO": "Не",
-		"SYNC_YES": "Да",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

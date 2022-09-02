@@ -107,6 +107,8 @@ abstract class HtmlUtils
 
 		$aRemove = array();
 
+		$sIdRight = \md5(\microtime());
+
 		$aNodes = $oBody->getElementsByTagName('*');
 		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
 		{
@@ -114,56 +116,30 @@ abstract class HtmlUtils
 
 			if (\in_array($sTagNameLower, $aRemoveTags))
 			{
-				$aRemove[] = @$oElement;
+				$aRemove[] = $oElement;
 				continue;
 			}
 
-			if ($oElement->hasAttribute('data-x-src-cid'))
-			{
+			// images
+			if ($oElement->hasAttribute('data-x-src-broken') || $oElement->hasAttribute('data-x-src-hidden')) {
+				$aRemove[] = $oElement;
+				continue;
+			}
+			if ($oElement->hasAttribute('data-x-src-cid')) {
 				$sCid = $oElement->getAttribute('data-x-src-cid');
 				$oElement->removeAttribute('data-x-src-cid');
-
-				if (!empty($sCid))
-				{
+				if (!empty($sCid)) {
 					$aFoundCids[] = $sCid;
-
-					@$oElement->removeAttribute('src');
 					$oElement->setAttribute('src', 'cid:'.$sCid);
 				}
 			}
-
-			if ($oElement->hasAttribute('data-x-src-location'))
-			{
-				$sSrc = $oElement->getAttribute('data-x-src-location');
-				$oElement->removeAttribute('data-x-src-location');
-
-				if (!empty($sSrc))
-				{
-					$aFoundContentLocationUrls[] = $sSrc;
-
-					@$oElement->removeAttribute('src');
-					$oElement->setAttribute('src', $sSrc);
-				}
-			}
-
-			if ($oElement->hasAttribute('data-x-broken-src'))
-			{
-				$oElement->setAttribute('src', $oElement->getAttribute('data-x-broken-src'));
-				$oElement->removeAttribute('data-x-broken-src');
-			}
-
-			if ($oElement->hasAttribute('data-x-src'))
-			{
+			if ($oElement->hasAttribute('data-x-src')) {
 				$oElement->setAttribute('src', $oElement->getAttribute('data-x-src'));
 				$oElement->removeAttribute('data-x-src');
 			}
 
 			// style attribute images
 			$aCid = array();
-			if ($oElement->hasAttribute('data-x-style-cid')) {
-				$aCid = \json_decode($oElement->getAttribute('data-x-style-cid'), true);
-				$oElement->removeAttribute('data-x-style-cid');
-			}
 			if ($oElement->hasAttribute('data-x-style-url')) {
 				$aCid = \array_merge($aCid, \json_decode($oElement->getAttribute('data-x-style-url'), true));
 				$oElement->removeAttribute('data-x-style-url');
@@ -205,7 +181,7 @@ abstract class HtmlUtils
 				$sSrc = $oElement->getAttribute('src');
 				if ('data:image/' === \strtolower(\substr($sSrc, 0, 11)))
 				{
-					$sHash = \md5($sSrc);
+					$sHash = \md5($sSrc) . '@' . $sIdRight;
 					$aFoundDataURL[$sHash] = $sSrc;
 
 					$oElement->setAttribute('src', 'cid:'.$sHash);

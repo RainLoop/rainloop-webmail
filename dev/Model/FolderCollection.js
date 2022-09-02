@@ -100,8 +100,8 @@ export const
 			.post('Folders', FolderUserStore.foldersLoading)
 			.then(data => {
 				data = FolderCollectionModel.reviveFromJson(data.Result);
-				data && data.storeIt();
-				fCallback && fCallback(true);
+				data?.storeIt();
+				fCallback?.(true);
 				// Repeat every 15 minutes?
 //				this.foldersTimeout = setTimeout(loadFolders, 900000);
 			})
@@ -128,7 +128,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 	 */
 	static reviveFromJson(object) {
 		const expandedFolders = Local.get(ClientSideKeyNameExpandedFolders);
-		if (object && object.SystemFolders) {
+		if (object?.SystemFolders) {
 			forEachObjectEntry(SystemFolders, key =>
 				SystemFolders[key] = SettingsGet(key+'Folder') || object.SystemFolders[FolderType[key]]
 			);

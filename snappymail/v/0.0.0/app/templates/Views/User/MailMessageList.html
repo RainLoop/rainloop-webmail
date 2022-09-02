@@ -30,7 +30,7 @@
 	</div>
 	<!-- /ko -->
 	<div class="btn-group" data-bind="visible: mobileCheckedStateShow()">
-		<a class="btn fontastic" data-bind="visible: isArchiveVisible, command: archiveCommand" data-i18n="[title]GLOBAL/TO_ARCHIVE">🗄</a>
+		<a class="btn fontastic" data-bind="visible: archiveAllowed, command: archiveCommand" data-i18n="[title]GLOBAL/TO_ARCHIVE">🗄</a>
 		<a class="btn fontastic" data-bind="visible: isSpamVisible, command: spamCommand" data-i18n="[title]GLOBAL/SPAM">⚠</a>
 		<a class="btn" data-bind="visible: isUnSpamVisible, command: notSpamCommand" data-i18n="[title]GLOBAL/NOT_SPAM">
 			<i class="icon-check-mark-circle-two"></i>
@@ -40,19 +40,19 @@
 	<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: moreDropdownTrigger">
 		<a id="more-list-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-i18n="[title]GLOBAL/MORE">☰</a>
 		<menu class="dropdown-menu" role="menu" aria-labelledby="more-list-dropdown-id">
-			<li role="presentation" data-bind="click: listUnsetSeen, css: {'disabled': !hasCheckedOrSelectedLines()}">
+			<li role="presentation" data-bind="click: listUnsetSeen, css: {'disabled': !messageList.hasCheckedOrSelected()}">
 				<a href="#" tabindex="-1" data-icon="" data-i18n="MESSAGE_LIST/MENU_UNSET_SEEN"></a>
 			</li>
-			<li role="presentation" data-bind="click: listSetSeen, css: {'disabled': !hasCheckedOrSelectedLines()}">
+			<li role="presentation" data-bind="click: listSetSeen, css: {'disabled': !messageList.hasCheckedOrSelected()}">
 				<a href="#" tabindex="-1" data-icon="" data-i18n="MESSAGE_LIST/MENU_SET_SEEN"></a>
 			</li>
-			<li role="presentation" data-bind="click: listSetFlags, css: {'disabled': !hasCheckedOrSelectedLines()}">
+			<li role="presentation" data-bind="click: listSetFlags, css: {'disabled': !messageList.hasCheckedOrSelected()}">
 				<a href="#" tabindex="-1" data-icon="★" data-i18n="MESSAGE_LIST/MENU_SET_FLAG"></a>
 			</li>
-			<li role="presentation" data-bind="click: listUnsetFlags, css: {'disabled': !hasCheckedOrSelectedLines()}">
+			<li role="presentation" data-bind="click: listUnsetFlags, css: {'disabled': !messageList.hasCheckedOrSelected()}">
 				<a href="#" tabindex="-1" data-icon="☆" data-i18n="MESSAGE_LIST/MENU_UNSET_FLAG"></a>
 			</li>
-			<li role="presentation" data-bind="click: listSetAllSeen, css: {'disabled': !hasMessages()}">
+			<li role="presentation" data-bind="click: listSetAllSeen, css: {'disabled': !messageList().length}">
 				<a href="#" tabindex="-1" data-icon="" data-i18n="MESSAGE_LIST/MENU_SET_ALL_SEEN"></a>
 			</li>
 			<li class="dividerbar" role="presentation" data-bind="command: multyForwardCommand">
@@ -102,25 +102,25 @@
 		<i class="checkboxCheckAll fontastic" data-bind="text: checkAll() ? (isIncompleteChecked() ? '▣' : '☑') : '☐'"></i>
 		<!-- ko if: allowSearch -->
 		<div class="search-input-wrp">
-			<input type="search" class="inputSearch" tabindex="-1" placeholder="Search" autocorrect="off" autocapitalize="off" data-i18n="[placeholder]GLOBAL/SEARCH" data-bind="textInput: inputProxyMessageListSearch, hasfocus: inputMessageListSearchFocus">
+			<input type="search" class="inputSearch" tabindex="-1" placeholder="Search" autocorrect="off" autocapitalize="off" data-i18n="[placeholder]GLOBAL/SEARCH" data-bind="textInput: inputSearch, hasfocus: focusSearch">
 			<a class="closeSearch" data-bind="click: cancelSearch, visible: messageListSearchDesc()">×</a>
 		</div>
 		<a class="btn buttonMoreSearch" data-bind="visible: allowSearchAdv, click: advancedSearchClick">▼</a>
 		<!-- /ko -->
 	</div>
 	<div class="b-content" data-bind="initDom: dragOverBodyArea">
-		<div class="listThreadUidDesc" data-bind="visible: messageListThreadUid(), click: cancelThreadUid"
+		<div class="listThreadUidDesc" data-bind="visible: messageList.threadUid(), click: cancelThreadUid"
 			data-icon="⬅" data-i18n="MESSAGE_LIST/BACK_TO_MESSAGE_LIST"></div>
 		<div class="listSearchDesc" data-bind="visible: messageListSearchDesc(), text: messageListSearchDesc"></div>
-		<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && !messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea"
+		<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && !messageList.error() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea"
 			data-icon="⬇" data-i18n="MESSAGE_LIST/PUT_MESSAGE_HERE"></div>
 		<div class="listClear" data-bind="visible: clearListIsVisible()">
 			<a href="#" class="g-ui-link" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER" data-bind="click: clear"></a>
 		</div>
-		<div class="listError error" data-bind="visible: !dragOver() && messageListError(), text: messageListError"></div>
+		<div class="listError error" data-bind="visible: !dragOver() && messageList.error(), text: messageList.error"></div>
 		<div class="listEmptyMessage" data-bind="visible: listEmptyMessage(), text: listEmptyMessage()"></div>
 		<div class="listLoading" data-bind="visible: !dragOver() && !messageList().length &&
-			messageListIsLoading() && !messageListError()">
+			messageList.isLoading() && !messageList.error()">
 			<i class="icon-spinner"></i>
 			<span data-i18n="GLOBAL/LOADING"></span>
 		</div>
@@ -136,7 +136,7 @@
 					<i data-bind="css: attachmentIconClass"></i>
 				</div>
 
-				<div class="subjectParent actionHandle" data-bind="css: {'priorityHigh': isImportant}, text: subject || $root.emptySubjectValue"></div>
+				<div class="subjectParent actionHandle" data-bind="css: {'priorityHigh': isImportant}, text: subject"></div>
 
 				<div class="sizeParent actionHandle" data-bind="text: friendlySize()"></div>
 

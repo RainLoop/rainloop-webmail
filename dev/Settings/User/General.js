@@ -30,11 +30,6 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
-		this.messageReadDelay = SettingsUserStore.messageReadDelay;
-		this.messagesPerPage = SettingsUserStore.messagesPerPage;
-
-		this.editorDefaultType = SettingsUserStore.editorDefaultType;
-		this.layout = SettingsUserStore.layout;
 
 		this.soundNotification = SMAudio.notifications;
 		this.notificationSound = ko.observable(SettingsGet('NotificationSound'));
@@ -43,14 +38,14 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.desktopNotification = NotificationUserStore.enabled;
 		this.isDesktopNotificationAllowed = NotificationUserStore.allowed;
 
-		this.viewHTML = SettingsUserStore.viewHTML;
-		this.showImages = SettingsUserStore.showImages;
-		this.removeColors = SettingsUserStore.removeColors;
-		this.hideDeleted = SettingsUserStore.hideDeleted;
-		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
 		this.threadsAllowed = AppUserStore.threadsAllowed;
-		this.useThreads = SettingsUserStore.useThreads;
-		this.replySameFolder = SettingsUserStore.replySameFolder;
+
+		['layout', 'messageReadDelay', 'messagesPerPage',
+		 'editorDefaultType', 'requestReadReceipt', 'requestDsn', 'pgpSign', 'pgpEncrypt',
+		 'viewHTML', 'showImages', 'removeColors', 'hideDeleted',
+		 'useCheckboxesInList', 'useThreads', 'replySameFolder', 'msgDefaultAction'
+		].forEach(name => this[name] = SettingsUserStore[name]);
+
 		this.allowLanguagesOnSettings = !!SettingsGet('AllowLanguagesOnSettings');
 
 		this.languageTrigger = ko.observable(SaveSettingsStep.Idle);
@@ -78,6 +73,14 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 				];
 			},
 
+			msgDefaultActions: () => {
+				translatorTrigger();
+				return [
+					{ id: 1, name: i18n('MESSAGE/BUTTON_REPLY') }, // ComposeType.Reply,
+					{ id: 2, name: i18n('MESSAGE/BUTTON_REPLY_ALL') } // ComposeType.ReplyAll
+				];
+			},
+
 			layoutTypes: () => {
 				translatorTrigger();
 				return [
@@ -89,11 +92,13 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		});
 
 		this.addSetting('EditorDefaultType');
+		this.addSetting('MsgDefaultAction');
 		this.addSetting('MessageReadDelay');
 		this.addSetting('MessagesPerPage');
 		this.addSetting('Layout', () => MessagelistUserStore([]));
 
 		this.addSettings(['ViewHTML', 'ShowImages', 'HideDeleted', 'UseCheckboxesInList', 'ReplySameFolder',
+			'requestReadReceipt', 'requestDsn', 'pgpSign', 'pgpEncrypt',
 			'DesktopNotifications', 'SoundNotification']);
 
 		const fReloadLanguageHelper = (saveSettingsStep) => () => {

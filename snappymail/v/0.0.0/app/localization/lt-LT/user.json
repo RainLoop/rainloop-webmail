@@ -20,6 +20,7 @@
 		"NAME": "Gautieji",
 		"NONE": "Nieko",
 		"NOT_SPAM": "Ne šlamštas",
+		"USERNAME": "Vartotojo vardas",
 		"PASSWORD": "Slaptažodis",
 		"REPLY_TO": "Kam atsakyti",
 		"SAVE": "Išsaugoti",
@@ -28,7 +29,9 @@
 		"SUBJECT": "Tema",
 		"TEST": "Bandyti",
 		"TO": "Kam",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "Taip",
+		"NO": "Ne"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prisijungimo vardas",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Detali paieška",
-		"LABEL_ADV_TEXT": "Laiško Tekstas",
-		"LABEL_ADV_HAS_ATTACHMENT": "Turi priedą",
-		"LABEL_ADV_HAS_ATTACHMENTS": "Turi priedą",
-		"LABEL_ADV_FLAGGED": "Pažymėtas",
-		"LABEL_ADV_UNSEEN": "Neskaitytas",
-		"LABEL_ADV_DATE": "Data",
-		"LABEL_ADV_DATE_ALL": "Visi",
-		"LABEL_ADV_DATE_3_DAYS": "Nesenesni kaip 3 dienų",
-		"LABEL_ADV_DATE_7_DAYS": "Nesenesni kaip 1 savaitės",
-		"LABEL_ADV_DATE_MONTH": "Nesenesni kaip 1 mėnesio",
-		"LABEL_ADV_DATE_3_MONTHS": "Nesenesni kaip 3 mėnesių",
-		"LABEL_ADV_DATE_6_MONTHS": "Nesenesni kaip 6 mėnesių",
-		"LABEL_ADV_DATE_YEAR": "Nesenesni kaip 1 metų",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "Laiško Tekstas",
+		"LABEL_HAS_ATTACHMENT": "Turi priedą",
+		"LABEL_HAS_ATTACHMENTS": "Turi priedą",
+		"LABEL_FLAGGED": "Pažymėtas",
+		"LABEL_UNSEEN": "Neskaitytas",
+		"LABEL_DATE": "Data",
+		"LABEL_DATE_ALL": "Visi",
+		"LABEL_DATE_3_DAYS": "Nesenesni kaip 3 dienų",
+		"LABEL_DATE_7_DAYS": "Nesenesni kaip 1 savaitės",
+		"LABEL_DATE_MONTH": "Nesenesni kaip 1 mėnesio",
+		"LABEL_DATE_3_MONTHS": "Nesenesni kaip 3 mėnesių",
+		"LABEL_DATE_6_MONTHS": "Nesenesni kaip 6 mėnesių",
+		"LABEL_DATE_YEAR": "Nesenesni kaip 1 metų",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "Atsakyta"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Perjungti viso ekrano režimą",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "Nėra pranešimų, atitinkančių jūsų paiešką.",
 		"SEARCH_RESULT_FOR": "Ieškoti \"%SEARCH%\" rezultatuose",
 		"BACK_TO_MESSAGE_LIST": "grįžti į sąrašą",
-		"EMPTY_SUBJECT_TEXT": "(Be temos)",
 		"PUT_MESSAGE_HERE": "Įkelkite žinutę čia, kad matytumėte ją sąraše",
 		"TODAY_AT": "šiandien %TIME%",
 		"YESTERDAY_AT": "vakar %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "Prašyti laiško gavimo pažymos"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Taip",
-		"BUTTON_NO": "Ne",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Ar tikrai norite uždaryti šį langą??",
 		"DESC_WANT_DELETE_MESSAGES": "Ar tikrai norite ištrinti pranešimą(us)?"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Žinučių lape",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "Pranešimai",
 		"LABEL_SOUND_NOTIFICATION": "Garsinis pranešimas",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Serveris",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Adresų knygos URL adresas",
 		"LABEL_CONTACTS_SYNC_USER": "Vartotojas",
-		"SYNC_NO": "Ne",
-		"SYNC_YES": "Taip",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

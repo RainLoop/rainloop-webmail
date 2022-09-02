@@ -20,6 +20,7 @@
 		"NAME": "收件箱",
 		"NONE": "None",
 		"NOT_SPAM": "Not Spam",
+		"USERNAME": "用户名",
 		"PASSWORD": "密碼",
 		"REPLY_TO": "Reply-To",
 		"SAVE": "保存",
@@ -28,7 +29,9 @@
 		"SUBJECT": "主題",
 		"TEST": "測試",
 		"TO": "發送到",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "是",
+		"NO": "否"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登錄",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "高級搜索",
-		"LABEL_ADV_TEXT": "內容",
-		"LABEL_ADV_HAS_ATTACHMENT": "有附件",
-		"LABEL_ADV_HAS_ATTACHMENTS": "有附件",
-		"LABEL_ADV_FLAGGED": "標記",
-		"LABEL_ADV_UNSEEN": "Unseen",
-		"LABEL_ADV_DATE": "日期",
-		"LABEL_ADV_DATE_ALL": "所有郵件",
-		"LABEL_ADV_DATE_3_DAYS": "3天以內",
-		"LABEL_ADV_DATE_7_DAYS": "1周以內",
-		"LABEL_ADV_DATE_MONTH": "1月以內",
-		"LABEL_ADV_DATE_3_MONTHS": "3月以內",
-		"LABEL_ADV_DATE_6_MONTHS": "半年以內",
-		"LABEL_ADV_DATE_YEAR": "1年以內",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "內容",
+		"LABEL_HAS_ATTACHMENT": "有附件",
+		"LABEL_HAS_ATTACHMENTS": "有附件",
+		"LABEL_FLAGGED": "標記",
+		"LABEL_UNSEEN": "Unseen",
+		"LABEL_DATE": "日期",
+		"LABEL_DATE_ALL": "所有郵件",
+		"LABEL_DATE_3_DAYS": "3天以內",
+		"LABEL_DATE_7_DAYS": "1周以內",
+		"LABEL_DATE_MONTH": "1月以內",
+		"LABEL_DATE_3_MONTHS": "3月以內",
+		"LABEL_DATE_6_MONTHS": "半年以內",
+		"LABEL_DATE_YEAR": "1年以內",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "已回答"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Toggle fullscreen",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "未找到您想要的。",
 		"SEARCH_RESULT_FOR": "搜索 \"%SEARCH%\" 的結果",
 		"BACK_TO_MESSAGE_LIST": "back to message list",
-		"EMPTY_SUBJECT_TEXT": "(無主題)",
 		"PUT_MESSAGE_HERE": "在這裡查看郵件",
 		"TODAY_AT": "今日於 %TIME%",
 		"YESTERDAY_AT": "昨天 %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "Request a delivery receipt"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "是",
-		"BUTTON_NO": "否",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "你確定要關閉此窗口嗎?",
 		"DESC_WANT_DELETE_MESSAGES": "你確定你要刪除這條消息嗎?"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "封郵件每頁",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "通知",
 		"LABEL_SOUND_NOTIFICATION": "Sound notification",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "伺服器",
 		"LABEL_CONTACTS_SYNC_AB_URL": "地址簿URL",
 		"LABEL_CONTACTS_SYNC_USER": "用戶名",
-		"SYNC_NO": "否",
-		"SYNC_YES": "是",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

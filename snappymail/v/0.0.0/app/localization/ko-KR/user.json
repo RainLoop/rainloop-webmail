@@ -20,6 +20,7 @@
 		"NAME": "받은 편지함",
 		"NONE": "없음",
 		"NOT_SPAM": "스팸 아님",
+		"USERNAME": "사용자 이름",
 		"PASSWORD": "비밀번호",
 		"REPLY_TO": "회신 주소",
 		"SAVE": "저장",
@@ -28,7 +29,9 @@
 		"SUBJECT": "제목",
 		"TEST": "테스트",
 		"TO": "받는 사람",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "예",
+		"NO": "아니요"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "아이디",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "고급 검색",
-		"LABEL_ADV_TEXT": "본문",
-		"LABEL_ADV_HAS_ATTACHMENT": "첨부파일이 있음",
-		"LABEL_ADV_HAS_ATTACHMENTS": "첨부파일이 있음",
-		"LABEL_ADV_FLAGGED": "중요",
-		"LABEL_ADV_UNSEEN": "읽지 않음",
-		"LABEL_ADV_DATE": "날짜",
-		"LABEL_ADV_DATE_ALL": "모두",
-		"LABEL_ADV_DATE_3_DAYS": "3일 이내",
-		"LABEL_ADV_DATE_7_DAYS": "1주일 이내",
-		"LABEL_ADV_DATE_MONTH": "1개월 이내",
-		"LABEL_ADV_DATE_3_MONTHS": "3개월 이내",
-		"LABEL_ADV_DATE_6_MONTHS": "6개월 이내",
-		"LABEL_ADV_DATE_YEAR": "1년 이내",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "본문",
+		"LABEL_HAS_ATTACHMENT": "첨부파일이 있음",
+		"LABEL_HAS_ATTACHMENTS": "첨부파일이 있음",
+		"LABEL_FLAGGED": "중요",
+		"LABEL_UNSEEN": "읽지 않음",
+		"LABEL_DATE": "날짜",
+		"LABEL_DATE_ALL": "모두",
+		"LABEL_DATE_3_DAYS": "3일 이내",
+		"LABEL_DATE_7_DAYS": "1주일 이내",
+		"LABEL_DATE_MONTH": "1개월 이내",
+		"LABEL_DATE_3_MONTHS": "3개월 이내",
+		"LABEL_DATE_6_MONTHS": "6개월 이내",
+		"LABEL_DATE_YEAR": "1년 이내",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "Odgovoreno"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "전체화면으로 보기",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "검색 조건에 맞는 결과가 없습니다..",
 		"SEARCH_RESULT_FOR": "\"%SEARCH%\"에 대한 검색 결과",
 		"BACK_TO_MESSAGE_LIST": "메시지 목록으로 돌아가기",
-		"EMPTY_SUBJECT_TEXT": "(제목 없음)",
 		"PUT_MESSAGE_HERE": "목록에 표시할 메시지를 여기로 끌어다 놓으세요.",
 		"TODAY_AT": "오늘 %TIME%",
 		"YESTERDAY_AT": "어제 %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "수신 확인 요청"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "예",
-		"BUTTON_NO": "아니요",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "정말로 이 페이지를 닫으시겠습니까 ?",
 		"DESC_WANT_DELETE_MESSAGES": "정말로 선택한 메세지를 삭제하시겠습니까 ?"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "페이지 당 메시지 개수",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "알림",
 		"LABEL_SOUND_NOTIFICATION": "소리 알림",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "서버",
 		"LABEL_CONTACTS_SYNC_AB_URL": "주소록 URL",
 		"LABEL_CONTACTS_SYNC_USER": "사용자",
-		"SYNC_NO": "아니요",
-		"SYNC_YES": "예",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

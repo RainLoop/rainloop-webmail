@@ -20,6 +20,7 @@
 		"NAME": "名称",
 		"NONE": "无",
 		"NOT_SPAM": "这不是垃圾邮件",
+		"USERNAME": "用户名",
 		"PASSWORD": "密码",
 		"REPLY_TO": "回复",
 		"SAVE": "保存",
@@ -28,7 +29,9 @@
 		"SUBJECT": "主题",
 		"TEST": "测试",
 		"TO": "发送到",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "是",
+		"NO": "否"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登录",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "高级搜索",
-		"LABEL_ADV_TEXT": "内容",
-		"LABEL_ADV_HAS_ATTACHMENT": "有附件",
-		"LABEL_ADV_HAS_ATTACHMENTS": "有附件",
-		"LABEL_ADV_FLAGGED": "标记",
-		"LABEL_ADV_UNSEEN": "不可见",
-		"LABEL_ADV_DATE": "日期",
-		"LABEL_ADV_DATE_ALL": "所有邮件",
-		"LABEL_ADV_DATE_3_DAYS": "3天以内",
-		"LABEL_ADV_DATE_7_DAYS": "1周以内",
-		"LABEL_ADV_DATE_MONTH": "1个月以内",
-		"LABEL_ADV_DATE_3_MONTHS": "3个月以内",
-		"LABEL_ADV_DATE_6_MONTHS": "半年以内",
-		"LABEL_ADV_DATE_YEAR": "1年以内",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "内容",
+		"LABEL_HAS_ATTACHMENT": "有附件",
+		"LABEL_HAS_ATTACHMENTS": "有附件",
+		"LABEL_FLAGGED": "标记",
+		"LABEL_UNSEEN": "不可见",
+		"LABEL_DATE": "日期",
+		"LABEL_DATE_ALL": "所有邮件",
+		"LABEL_DATE_3_DAYS": "3天以内",
+		"LABEL_DATE_7_DAYS": "1周以内",
+		"LABEL_DATE_MONTH": "1个月以内",
+		"LABEL_DATE_3_MONTHS": "3个月以内",
+		"LABEL_DATE_6_MONTHS": "半年以内",
+		"LABEL_DATE_YEAR": "1年以内",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "已回答"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "切换全屏",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "未找到您想要的。",
 		"SEARCH_RESULT_FOR": "搜索 \"%SEARCH%\" 的结果",
 		"BACK_TO_MESSAGE_LIST": "回到信息列表",
-		"EMPTY_SUBJECT_TEXT": "(无主题)",
 		"PUT_MESSAGE_HERE": "在这里查看邮件",
 		"TODAY_AT": "今日于 %TIME%",
 		"YESTERDAY_AT": "昨天 %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "要求送达回执"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "是",
-		"BUTTON_NO": "否",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "你确定要关闭此窗口吗？",
 		"DESC_WANT_DELETE_MESSAGES": "你确定你要删除这条消息吗？"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "从消息中删除背景和文本颜色",
 		"LABEL_MESSAGE_PER_PAGE": "封邮件每页",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "将消息标记为已读",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "秒",
 		"LABEL_NOTIFICATIONS": "通知",
 		"LABEL_SOUND_NOTIFICATION": "提示音",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "服务器",
 		"LABEL_CONTACTS_SYNC_AB_URL": "地址簿 URL",
 		"LABEL_CONTACTS_SYNC_USER": "用户名",
-		"SYNC_NO": "否",
-		"SYNC_YES": "是",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

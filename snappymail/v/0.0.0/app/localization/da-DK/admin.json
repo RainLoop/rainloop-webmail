@@ -4,7 +4,10 @@
 		"CLOSE": "Luk",
 		"SAVE": "Gem",
 		"TEST": "Test",
-		"UPDATE": "Opdater"
+		"UPDATE": "Opdater",
+		"USERNAME": "Brugernavn",
+		"PASSWORD": "Adgangskode",
+		"CANCEL": "Annuller"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Log ind",
@@ -84,10 +87,8 @@
 		"LABEL_SHOW_PHP_INFO": "Vis PHP informationer",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Admin Panel Adgangsoplysninger",
 		"LABEL_CURRENT_PASSWORD": "Nuværende adgangskode",
-		"LABEL_NEW_LOGIN": "Nyt log ind",
 		"LABEL_NEW_PASSWORD": "Ny adgangskode",
 		"LABEL_REPEAT_PASSWORD": "Gentag",
-		"BUTTON_UPDATE_PASSWORD": "Opdater adgangskode",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Kræv verifikation af brugt SSL certifikat (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Tillad selvsignerede certifikater"

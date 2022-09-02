@@ -76,7 +76,6 @@ export const
 	ClientSideKeyNameExpandedFolders = 3,
 	ClientSideKeyNameFolderListSize = 4,
 	ClientSideKeyNameMessageListSize = 5,
-	ClientSideKeyNameLastReplyAction = 6,
 	ClientSideKeyNameLastSignMe = 7,
 	ClientSideKeyNameMessageHeaderFullInfo = 9,
 	ClientSideKeyNameMessageAttachmentControls = 10;

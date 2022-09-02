@@ -4,7 +4,7 @@ import { addObservablesTo } from 'External/ko';
 
 let notificator = null,
 	player = null,
-	canPlay = type => player && !!player.canPlayType(type).replace('no', ''),
+	canPlay = type => !!player?.canPlayType(type).replace('no', ''),
 
 	audioCtx = window.AudioContext || window.webkitAudioContext,
 
@@ -92,7 +92,7 @@ export const SMAudio = new class {
 	}
 
 	pause() {
-		player && player.pause();
+		player?.pause();
 		fireEvent('audio.stop');
 	}
 

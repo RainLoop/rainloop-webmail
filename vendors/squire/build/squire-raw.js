@@ -143,7 +143,7 @@ const
 		return node.nodeName === tag && Object.entries(attributes).every(([k,v]) => node.getAttribute(k) === v);
 	},
 	getClosest = ( node, root, selector ) => {
-		node = (!node || node.closest ? node : node.parentElement);
+		node = (node && !node.closest) ? node.parentElement : node;
 		node = node && node.closest(selector);
 		return (node && root.contains(node)) ? node : null;
 	},

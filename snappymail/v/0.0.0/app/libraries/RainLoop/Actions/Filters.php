@@ -39,25 +39,12 @@ trait Filters
 
 		$sName = $this->GetActionParam('name', '');
 
-		$aFilters = array();
-		if (\RainLoop\Providers\Filters\SieveStorage::SIEVE_FILE_NAME === $sName) {
-			$aIncFilters = $this->GetActionParam('filters', array());
-			foreach ($aIncFilters as $aFilter) {
-				if (\is_array($aFilter)) {
-					$oFilter = new \RainLoop\Providers\Filters\Classes\Filter();
-					if ($oFilter->FromJSON($aFilter)) {
-						$aFilters[] = $oFilter;
-					}
-				}
-			}
-		}
-
 		if ($this->GetActionParam('active', false)) {
 //			$this->FiltersProvider()->ActivateScript($oAccount, $sName);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $this->FiltersProvider()->Save(
-			$oAccount, $sName, $aFilters, $this->GetActionParam('body', '')
+			$oAccount, $sName, $this->GetActionParam('body', '')
 		));
 	}
 

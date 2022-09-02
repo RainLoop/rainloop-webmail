@@ -20,6 +20,7 @@
 		"NAME": "Inkorg",
 		"NONE": "Ingen",
 		"NOT_SPAM": "Inte spam",
+		"USERNAME": "Användarnamn",
 		"PASSWORD": "Lösenord",
 		"REPLY_TO": "Svara till",
 		"SAVE": "Spara",
@@ -28,7 +29,9 @@
 		"SUBJECT": "Ämne",
 		"TEST": "Test",
 		"TO": "Till",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "Ja",
+		"NO": "Nej"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Användarnamn",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Avancerad sök",
-		"LABEL_ADV_TEXT": "Text",
-		"LABEL_ADV_HAS_ATTACHMENT": "Har bilaga",
-		"LABEL_ADV_HAS_ATTACHMENTS": "Har bilagor",
-		"LABEL_ADV_FLAGGED": "Flaggad",
-		"LABEL_ADV_UNSEEN": "Oläst",
-		"LABEL_ADV_DATE": "Datum",
-		"LABEL_ADV_DATE_ALL": "Alla",
-		"LABEL_ADV_DATE_3_DAYS": "Upp till 3 dagar gammalt",
-		"LABEL_ADV_DATE_7_DAYS": "Upp till 1 vecka gammalt",
-		"LABEL_ADV_DATE_MONTH": "Upp till 1 månad gammalt",
-		"LABEL_ADV_DATE_3_MONTHS": "Upp till 3 månader gammalt",
-		"LABEL_ADV_DATE_6_MONTHS": "Upp till 6 månader gammalt",
-		"LABEL_ADV_DATE_YEAR": "Upp till 1 år gammalt",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "Text",
+		"LABEL_HAS_ATTACHMENT": "Har bilaga",
+		"LABEL_HAS_ATTACHMENTS": "Har bilagor",
+		"LABEL_FLAGGED": "Flaggad",
+		"LABEL_UNSEEN": "Oläst",
+		"LABEL_DATE": "Datum",
+		"LABEL_DATE_ALL": "Alla",
+		"LABEL_DATE_3_DAYS": "Upp till 3 dagar gammalt",
+		"LABEL_DATE_7_DAYS": "Upp till 1 vecka gammalt",
+		"LABEL_DATE_MONTH": "Upp till 1 månad gammalt",
+		"LABEL_DATE_3_MONTHS": "Upp till 3 månader gammalt",
+		"LABEL_DATE_6_MONTHS": "Upp till 6 månader gammalt",
+		"LABEL_DATE_YEAR": "Upp till 1 år gammalt",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "Svarade"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Växla fullskärmsläge",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "Inga meddelanden matchar din sökning.",
 		"SEARCH_RESULT_FOR": "Sök resultat för \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "Tillbaka till meddelanden",
-		"EMPTY_SUBJECT_TEXT": "(Inget ämne)",
 		"PUT_MESSAGE_HERE": "Släpp meddelandet för att se det i listan",
 		"TODAY_AT": "idag kl %TIME%",
 		"YESTERDAY_AT": "igår kl %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "Begär ett leveranskvitto"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Ja",
-		"BUTTON_NO": "Nej",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Vill du stänga detta fönster?",
 		"DESC_WANT_DELETE_MESSAGES": "Är du säker att du vill ta bort meddelandet?"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Meddelanden per sida",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Markera meddelandet som läst efter",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "sekunder",
 		"LABEL_NOTIFICATIONS": "Aviseringar",
 		"LABEL_SOUND_NOTIFICATION": "Ljudnotifikation",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Adressboks-URL",
 		"LABEL_CONTACTS_SYNC_USER": "Användare",
-		"SYNC_NO": "Nej",
-		"SYNC_YES": "Ja",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

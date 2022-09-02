@@ -6,7 +6,7 @@ import { fireEvent } from 'Common/Globals';
  * Might not work due to the new ServiceWorkerRegistration.showNotification
  */
 const HTML5Notification = window.Notification,
-	HTML5NotificationStatus = () => (HTML5Notification && HTML5Notification.permission) || 'denied',
+	HTML5NotificationStatus = () => HTML5Notification?.permission || 'denied',
 	NotificationsDenied = () => 'denied' === HTML5NotificationStatus(),
 	NotificationsGranted = () => 'granted' === HTML5NotificationStatus(),
 	dispatchMessage = data => {
@@ -26,7 +26,7 @@ if (WorkerNotifications && ServiceWorkerRegistration && ServiceWorkerRegistratio
 	/* Listen for close requests from the ServiceWorker */
 	WorkerNotifications.addEventListener('message', event => {
 		const obj = JSON.parse(event.data);
-		obj && 'notificationclick' === obj.action && dispatchMessage(obj.data);
+		'notificationclick' === obj?.action && dispatchMessage(obj.data);
 	});
 } else {
 	WorkerNotifications = null;
@@ -60,7 +60,7 @@ export const NotificationUserStore = new class {
 				icon: imageSrc || Links.staticLink('css/images/icon-message-notification.png'),
 				data: messageData
 			};
-			if (messageData && messageData.Uid) {
+			if (messageData?.Uid) {
 				options.tag = messageData.Uid;
 			}
 			if (WorkerNotifications) {
@@ -83,7 +83,7 @@ export const NotificationUserStore = new class {
 				.catch(e => console.error(e));
 			} else {
 				const notification = new HTML5Notification(title, options);
-				notification.show && notification.show();
+				notification.show?.();
 				notification.onclick = messageData ? () => dispatchMessage(messageData) : null;
 				setTimeout(() => notification.close(), 7000);
 			}

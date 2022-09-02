@@ -56,7 +56,7 @@ fetchFolderInformation = (fCallback, folder, list = []) => {
 		Remote.request('FolderInformation', fCallback, {
 			Folder: folder,
 			FlagsUids: uids,
-			UidNext: (folderFromCache && folderFromCache.uidNext) || 0 // Used to check for new messages
+			UidNext: folderFromCache?.uidNext || 0 // Used to check for new messages
 		});
 	} else if (SettingsUserStore.useThreads()) {
 		MessagelistUserStore.reloadFlagsAndCachedMessage();
@@ -130,6 +130,58 @@ folderListOptionsBuilder = (
 refreshFoldersInterval = 300000,
 
 /**
+ * @param {string} folder
+ * @param {Array=} list = []
+ */
+folderInformation = (folder, list) => {
+	if (folder?.trim()) {
+		fetchFolderInformation(
+			(iError, data) => {
+				if (!iError && data.Result) {
+					const result = data.Result,
+						folderFromCache = getFolderFromCacheList(result.Folder);
+					if (folderFromCache) {
+						const oldHash = folderFromCache.hash,
+							unreadCountChange = (folderFromCache.unreadEmails() !== result.unreadEmails);
+
+//							folderFromCache.revivePropertiesFromJson(result);
+						folderFromCache.expires = Date.now();
+						folderFromCache.uidNext = result.UidNext;
+						folderFromCache.hash = result.Hash;
+						folderFromCache.totalEmails(result.totalEmails);
+						folderFromCache.unreadEmails(result.unreadEmails);
+
+						if (unreadCountChange) {
+							MessageFlagsCache.clearFolder(folderFromCache.fullName);
+						}
+
+						if (result.MessagesFlags.length) {
+							result.MessagesFlags.forEach(message =>
+								MessageFlagsCache.setFor(folderFromCache.fullName, message.Uid.toString(), message.Flags)
+							);
+
+							MessagelistUserStore.reloadFlagsAndCachedMessage();
+						}
+
+						MessagelistUserStore.notifyNewMessages(folderFromCache.fullName, result.NewMessages);
+
+						if (!oldHash || unreadCountChange || result.Hash !== oldHash) {
+							if (folderFromCache.fullName === FolderUserStore.currentFolderFullName()) {
+								MessagelistUserStore.reload();
+							} else if (getFolderInboxName() === folderFromCache.fullName) {
+								Remote.messageList(null, {Folder: getFolderInboxName()}, true);
+							}
+						}
+					}
+				}
+			},
+			folder,
+			list
+		);
+	}
+},
+
+/**
  * @param {boolean=} boot = false
  */
 folderInformationMultiply = (boot = false) => {
@@ -162,7 +214,7 @@ folderInformationMultiply = (boot = false) => {
 						} else if (unreadCountChange
 						 && folder.fullName === FolderUserStore.currentFolderFullName()
 						 && MessagelistUserStore.length) {
-							rl.app.folderInformation(folder.fullName, MessagelistUserStore());
+							folderInformation(folder.fullName, MessagelistUserStore());
 						}
 					}
 				});
@@ -197,7 +249,7 @@ messagesMoveHelper = (fromFolderFullName, toFolderFullName, uidsForMove) => {
 		isSpam = sSpamFolder === toFolderFullName,
 		isHam = !isSpam && sSpamFolder === fromFolderFullName && getFolderInboxName() === toFolderFullName;
 
-	Remote.request('MessageMove',
+	Remote.abort('MessageList').request('MessageMove',
 		moveOrDeleteResponseHelper,
 		{
 			FromFolder: fromFolderFullName,
@@ -205,23 +257,17 @@ messagesMoveHelper = (fromFolderFullName, toFolderFullName, uidsForMove) => {
 			Uids: uidsForMove.join(','),
 			MarkAsRead: (isSpam || FolderUserStore.trashFolder() === toFolderFullName) ? 1 : 0,
 			Learning: isSpam ? 'SPAM' : isHam ? 'HAM' : ''
-		},
-		null,
-		'',
-		['MessageList']
+		}
 	);
 },
 
 messagesDeleteHelper = (sFromFolderFullName, aUidForRemove) => {
-	Remote.request('MessageDelete',
+	Remote.abort('MessageList').request('MessageDelete',
 		moveOrDeleteResponseHelper,
 		{
 			Folder: sFromFolderFullName,
 			Uids: aUidForRemove.join(',')
-		},
-		null,
-		'',
-		['MessageList']
+		}
 	);
 },
 

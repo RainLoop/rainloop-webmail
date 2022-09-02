@@ -131,7 +131,7 @@ computedPaginatorHelper = (koCurrentPage, koPageCount) => {
  * @returns {boolean}
  */
 mailToHelper = mailToUrl => {
-	if (mailToUrl && 'mailto:' === mailToUrl.slice(0, 7).toLowerCase()) {
+	if ('mailto:' === mailToUrl?.slice(0, 7).toLowerCase()) {
 		mailToUrl = mailToUrl.slice(7).split('?');
 
 		const
@@ -181,7 +181,7 @@ setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 		target.removeAttribute('style');
 		source.removeAttribute('style');
 	}
-	source.observer && source.observer.disconnect();
+	source.observer?.disconnect();
 //	source.classList.toggle('resizable', mode);
 	if (mode) {
 		const length = Local.get(sClientSideKeyName + mode) || SettingsGet('Resizer' + sClientSideKeyName + mode),
@@ -248,7 +248,7 @@ setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 		}
 		source.layoutResizer.mode = mode;
 		source.layoutResizer.key = sClientSideKeyName;
-		source.observer && source.observer.observe(source, { box: 'border-box' });
+		source.observer?.observe(source, { box: 'border-box' });
 	}
 },
 
@@ -266,7 +266,7 @@ populateMessageBody = (oMessage, preload) => {
 				oMessage = preload ? oMessage : null;
 				let
 					isNew = false,
-					json = oData && oData.Result,
+					json = oData?.Result,
 					message = oMessage || MessageUserStore.message();
 
 				if (

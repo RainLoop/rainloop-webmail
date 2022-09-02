@@ -4,7 +4,10 @@
 		"CLOSE": "Sluiten",
 		"SAVE": "Opslaan",
 		"TEST": "Test",
-		"UPDATE": "Updaten"
+		"UPDATE": "Updaten",
+		"USERNAME": "Gebruikersnaam",
+		"PASSWORD": "Wachtwoord",
+		"CANCEL": "Annuleer"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Inlognaam",
@@ -84,10 +87,8 @@
 		"LABEL_SHOW_PHP_INFO": "PHP informatie tonen",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Toegangsgegevens beheer paneel",
 		"LABEL_CURRENT_PASSWORD": "Huidig wachtwoord",
-		"LABEL_NEW_LOGIN": "Nieuwe gebruikersnaam",
 		"LABEL_NEW_PASSWORD": "Nieuw wachtwoord",
 		"LABEL_REPEAT_PASSWORD": "Herhaal nieuw wachtwoord",
-		"BUTTON_UPDATE_PASSWORD": "Gegevens bijwerken",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Verificatie van SSL certificaten (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Sta zelf ondertekende certificaten toe"

@@ -4,7 +4,10 @@
 		"CLOSE": "Lukk",
 		"SAVE": "Lagre",
 		"TEST": "Test",
-		"UPDATE": "Oppdater"
+		"UPDATE": "Oppdater",
+		"USERNAME": "Brukernavn",
+		"PASSWORD": "Passord",
+		"CANCEL": "Avbryt"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Brukernavn",
@@ -84,10 +87,8 @@
 		"LABEL_SHOW_PHP_INFO": "Vis PHP-informasjon",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Akkreditiver for admin-panel",
 		"LABEL_CURRENT_PASSWORD": "Gjeldende passord",
-		"LABEL_NEW_LOGIN": "Nytt brukernavn",
 		"LABEL_NEW_PASSWORD": "Nytt passord",
 		"LABEL_REPEAT_PASSWORD": "Gjenta",
-		"BUTTON_UPDATE_PASSWORD": "Oppdater passord",
 		"LEGEND_SSL": "SSL",
 		"LABEL_REQUIRE_VERIFICATION": "Krev bekreftelse av SSL-sertifikat (IMAP\/SMTP)",
 		"LABEL_ALLOW_SELF_SIGNED": "Tillat selvutstedt sertifikat"

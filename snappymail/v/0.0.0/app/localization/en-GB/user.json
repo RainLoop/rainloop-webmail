@@ -20,6 +20,7 @@
 		"NAME": "Name",
 		"NONE": "None",
 		"NOT_SPAM": "Not Spam",
+		"USERNAME": "Username",
 		"PASSWORD": "Password",
 		"REPLY_TO": "Reply-To",
 		"SAVE": "Save",
@@ -28,7 +29,9 @@
 		"SUBJECT": "Subject",
 		"TEST": "Test",
 		"TO": "To",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "Yes",
+		"NO": "No"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Advanced Search",
-		"LABEL_ADV_TEXT": "Text",
-		"LABEL_ADV_HAS_ATTACHMENT": "Has attachment",
-		"LABEL_ADV_HAS_ATTACHMENTS": "Has attachments",
-		"LABEL_ADV_FLAGGED": "Flagged",
-		"LABEL_ADV_UNSEEN": "Unseen",
-		"LABEL_ADV_DATE": "Date",
-		"LABEL_ADV_DATE_ALL": "All",
-		"LABEL_ADV_DATE_3_DAYS": "Up to 3 days old",
-		"LABEL_ADV_DATE_7_DAYS": "Up to 1 week old",
-		"LABEL_ADV_DATE_MONTH": "Up to 1 month old",
-		"LABEL_ADV_DATE_3_MONTHS": "Up to 3 months old",
-		"LABEL_ADV_DATE_6_MONTHS": "Up to 6 months old",
-		"LABEL_ADV_DATE_YEAR": "Up to 1 year old",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "Text",
+		"LABEL_HAS_ATTACHMENT": "Has attachment",
+		"LABEL_HAS_ATTACHMENTS": "Has attachments",
+		"LABEL_FLAGGED": "Flagged",
+		"LABEL_UNSEEN": "Unseen",
+		"LABEL_DATE": "Date",
+		"LABEL_DATE_ALL": "All",
+		"LABEL_DATE_3_DAYS": "Up to 3 days old",
+		"LABEL_DATE_7_DAYS": "Up to 1 week old",
+		"LABEL_DATE_MONTH": "Up to 1 month old",
+		"LABEL_DATE_3_MONTHS": "Up to 3 months old",
+		"LABEL_DATE_6_MONTHS": "Up to 6 months old",
+		"LABEL_DATE_YEAR": "Up to 1 year old",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "Answered"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Toggle fullscreen",
@@ -78,7 +82,7 @@
 		"INBOX_NAME": "Inbox",
 		"SENT_NAME": "Sent",
 		"DRAFTS_NAME": "Drafts",
-		"TRASH_NAME": "Trash",
+		"TRASH_NAME": "Bin",
 		"ARCHIVE_NAME": "Archive"
 	},
 	"QUOTA": {
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "No messages matched your search.",
 		"SEARCH_RESULT_FOR": "Search results for \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "back to message list",
-		"EMPTY_SUBJECT_TEXT": "(No subject)",
 		"PUT_MESSAGE_HERE": "Drop message here to view it in the list",
 		"TODAY_AT": "today at %TIME%",
 		"YESTERDAY_AT": "yesterday at %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "Request a delivery receipt"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Yes",
-		"BUTTON_NO": "No",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Are you sure you want to close this window?",
 		"DESC_WANT_DELETE_MESSAGES": "Are you sure you want to delete the message(s)?"
 	},
@@ -331,7 +332,7 @@
 		"NOTIFICATION_SENT": "You haven't selected \"Sent\" system folder messages are put to after sending.\nIf you don't want to save sent message, please select \"Do not use\" option.\n",
 		"NOTIFICATION_DRAFTS": "You haven't selected \"Drafts\" system folder messages are saved to while composing.",
 		"NOTIFICATION_SPAM": "You haven't selected \"Spam\" system folder spamed messages are placed to.\nIf you wish to remove messages permanently, please select \"Do not use\" option.\n",
-		"NOTIFICATION_TRASH": "You haven't selected \"Trash\" system folder deleted messages are placed to.\nIf you wish to remove messages permanently, please select \"Do not use\" option.\n",
+		"NOTIFICATION_TRASH": "You haven't selected \"Bin\" system folder deleted messages are placed to.\nIf you wish to remove messages permanently, please select \"Do not use\" option.\n",
 		"NOTIFICATION_ARCHIVE": "You haven't selected \"Archive\" system folder achived messages are placed to."
 	},
 	"TITLES": {
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Messages on page",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "Notifications",
 		"LABEL_SOUND_NOTIFICATION": "Sound notification",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Addressbook URL",
 		"LABEL_CONTACTS_SYNC_USER": "User",
-		"SYNC_NO": "No",
-		"SYNC_YES": "Yes",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

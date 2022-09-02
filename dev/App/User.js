@@ -24,7 +24,6 @@ import {
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import {
-	MessageFlagsCache,
 	getFolderInboxName,
 	getFolderFromCacheList
 } from 'Common/Cache';
@@ -60,11 +59,11 @@ import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
 import { AskPopupView } from 'View/Popup/Ask';
 
 import {
+	folderInformation,
 	folderInformationMultiply,
 	refreshFoldersInterval,
 	messagesMoveHelper,
-	messagesDeleteHelper,
-	fetchFolderInformation
+	messagesDeleteHelper
 } from 'Common/Folders';
 import { loadFolders } from 'Model/FolderCollection';
 
@@ -216,51 +215,7 @@ export class AppUser extends AbstractApp {
 	 * @param {Array=} list = []
 	 */
 	folderInformation(folder, list) {
-		if (folder && folder.trim()) {
-			fetchFolderInformation(
-				(iError, data) => {
-					if (!iError && data.Result) {
-						const result = data.Result,
-							folderFromCache = getFolderFromCacheList(result.Folder);
-						if (folderFromCache) {
-							const oldHash = folderFromCache.hash,
-								unreadCountChange = (folderFromCache.unreadEmails() !== result.unreadEmails);
-
-//							folderFromCache.revivePropertiesFromJson(result);
-							folderFromCache.expires = Date.now();
-							folderFromCache.uidNext = result.UidNext;
-							folderFromCache.hash = result.Hash;
-							folderFromCache.totalEmails(result.totalEmails);
-							folderFromCache.unreadEmails(result.unreadEmails);
-
-							if (unreadCountChange) {
-								MessageFlagsCache.clearFolder(folderFromCache.fullName);
-							}
-
-							if (result.MessagesFlags.length) {
-								result.MessagesFlags.forEach(message =>
-									MessageFlagsCache.setFor(folderFromCache.fullName, message.Uid.toString(), message.Flags)
-								);
-
-								MessagelistUserStore.reloadFlagsAndCachedMessage();
-							}
-
-							MessagelistUserStore.notifyNewMessages(folderFromCache.fullName, result.NewMessages);
-
-							if (!oldHash || unreadCountChange || result.Hash !== oldHash) {
-								if (folderFromCache.fullName === FolderUserStore.currentFolderFullName()) {
-									MessagelistUserStore.reload();
-								} else if (getFolderInboxName() === folderFromCache.fullName) {
-									Remote.messageList(null, {Folder: getFolderInboxName()}, true);
-								}
-							}
-						}
-					}
-				},
-				folder,
-				list
-			);
-		}
+		folderInformation(folder, list);
 	}
 
 	logout() {
@@ -309,9 +264,9 @@ export class AppUser extends AbstractApp {
 						setInterval(() => {
 							const cF = FolderUserStore.currentFolderFullName(),
 								iF = getFolderInboxName();
-							this.folderInformation(iF);
+							folderInformation(iF);
 							if (iF !== cF) {
-								this.folderInformation(cF);
+								folderInformation(cF);
 							}
 							folderInformationMultiply();
 						}, refreshFoldersInterval);
@@ -323,7 +278,7 @@ export class AppUser extends AbstractApp {
 						setTimeout(() => {
 							const cF = FolderUserStore.currentFolderFullName();
 							if (getFolderInboxName() !== cF) {
-								this.folderInformation(cF);
+								folderInformation(cF);
 							}
 							FolderUserStore.hasCapability('LIST-STATUS') || folderInformationMultiply(true);
 						}, 1000);

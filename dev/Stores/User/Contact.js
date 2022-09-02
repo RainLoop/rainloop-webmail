@@ -33,12 +33,12 @@ ContactUserStore.sync = fResultFunc => {
 				line = JSON.parse(line);
 				if ('ContactsSync' === line.Action) {
 					ContactUserStore.syncing(false);
-					fResultFunc && fResultFunc(line.ErrorCode, line);
+					fResultFunc?.(line.ErrorCode, line);
 				}
 			} catch (e) {
 				ContactUserStore.syncing(false);
 				console.error(e);
-				fResultFunc && fResultFunc(Notification.UnknownError);
+				fResultFunc?.(Notification.UnknownError);
 			}
 		}, 'ContactsSync');
 	}

@@ -1,10 +1,10 @@
 import { Scope } from 'Common/Enums';
 import { Layout, ClientSideKeyNameMessageListSize } from 'Common/EnumsUser';
-import { doc, leftPanelDisabled, moveAction, Settings, elementById } from 'Common/Globals';
+import { doc, createElement, leftPanelDisabled, moveAction, Settings, elementById } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
 import { setLayoutResizer } from 'Common/UtilsUser';
 import { getFolderFromCacheList, getFolderFullName, getFolderInboxName } from 'Common/Cache';
-import { i18n } from 'Common/Translator';
+import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
 import { AppUserStore } from 'Stores/User/App';
@@ -22,6 +22,12 @@ import { AbstractScreen } from 'Knoin/AbstractScreen';
 
 export class MailBoxUserScreen extends AbstractScreen {
 	constructor() {
+		var styleSheet = createElement('style');
+		doc.head.appendChild(styleSheet);
+		initOnStartOrLangChange(() =>
+			styleSheet.innerText = '.subjectParent:empty::after,.subjectParent .subject:empty::after'
+			+'{content:"'+i18n('MESSAGE/EMPTY_SUBJECT_TEXT')+'"}'
+		);
 		super('mailbox', [
 			SystemDropDownUserView,
 			MailFolderList,
@@ -89,7 +95,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 /*			// Disabled in SystemDropDown.html
 			const email = AccountUserStore.email();
 			AccountUserStore.accounts.forEach(item =>
-				item && email === item.email && item.count(e.detail)
+				email === item?.email && item?.count(e.detail)
 			);
 */
 			this.updateWindowTitle();

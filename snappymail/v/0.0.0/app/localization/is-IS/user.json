@@ -20,6 +20,7 @@
 		"NAME": "Innhólf",
 		"NONE": "Ekkert",
 		"NOT_SPAM": "Ekki ruslpóstur",
+		"USERNAME": "Notendanafn",
 		"PASSWORD": "Lykilorð",
 		"REPLY_TO": "Svara-til",
 		"SAVE": "Vista",
@@ -28,7 +29,9 @@
 		"SUBJECT": "Viðfangsefni",
 		"TEST": "Prófa",
 		"TO": "Til",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "Já",
+		"NO": "Nei"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Innskráning",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Ítarleg leit",
-		"LABEL_ADV_TEXT": "Texti",
-		"LABEL_ADV_HAS_ATTACHMENT": "Er með viðhengi",
-		"LABEL_ADV_HAS_ATTACHMENTS": "Er með viðhengi",
-		"LABEL_ADV_FLAGGED": "Flaggað",
-		"LABEL_ADV_UNSEEN": "Ólesið",
-		"LABEL_ADV_DATE": "Dagsetning",
-		"LABEL_ADV_DATE_ALL": "Allt",
-		"LABEL_ADV_DATE_3_DAYS": "Allt að 3 daga gömlu",
-		"LABEL_ADV_DATE_7_DAYS": "Allt að viku gömlu",
-		"LABEL_ADV_DATE_MONTH": "Allt að mánaðar gömlu",
-		"LABEL_ADV_DATE_3_MONTHS": "Allt að 3 mánaða gömlu",
-		"LABEL_ADV_DATE_6_MONTHS": "Allt að 6 mánaða gömlu",
-		"LABEL_ADV_DATE_YEAR": "Allt að 1 árs gömlu",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "Texti",
+		"LABEL_HAS_ATTACHMENT": "Er með viðhengi",
+		"LABEL_HAS_ATTACHMENTS": "Er með viðhengi",
+		"LABEL_FLAGGED": "Flaggað",
+		"LABEL_UNSEEN": "Ólesið",
+		"LABEL_DATE": "Dagsetning",
+		"LABEL_DATE_ALL": "Allt",
+		"LABEL_DATE_3_DAYS": "Allt að 3 daga gömlu",
+		"LABEL_DATE_7_DAYS": "Allt að viku gömlu",
+		"LABEL_DATE_MONTH": "Allt að mánaðar gömlu",
+		"LABEL_DATE_3_MONTHS": "Allt að 3 mánaða gömlu",
+		"LABEL_DATE_6_MONTHS": "Allt að 6 mánaða gömlu",
+		"LABEL_DATE_YEAR": "Allt að 1 árs gömlu",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "Svarað"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Víxla heilskjá af\/á",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "Engin skilaboð stemmdu við leitina þína.",
 		"SEARCH_RESULT_FOR": "Leitarniðurstöður fyrir \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "til baka í skilaboðalista",
-		"EMPTY_SUBJECT_TEXT": "(Ekkert viðfangsefni)",
 		"PUT_MESSAGE_HERE": "Slepptu skilaboðum hér til að skoða það í listanum",
 		"TODAY_AT": "í dag kl. %TIME%",
 		"YESTERDAY_AT": "í gær kl. %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "Biðja um staðfestingu á afhendingu"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Já",
-		"BUTTON_NO": "Nei",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Ertu viss um að þú viljir loka þessum glugga?",
 		"DESC_WANT_DELETE_MESSAGES": "Ertu viss um að þú viljir eyða skeytunum?"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Skilaboð á síðu",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "Tilkynningar",
 		"LABEL_SOUND_NOTIFICATION": "Tilkynningarhljóð",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Þjónn",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Slóð á nafnaskrá",
 		"LABEL_CONTACTS_SYNC_USER": "Notandi",
-		"SYNC_NO": "Nei",
-		"SYNC_YES": "Já",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

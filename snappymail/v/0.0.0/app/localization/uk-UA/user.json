@@ -20,6 +20,7 @@
 		"NAME": "Вхідні",
 		"NONE": "None",
 		"NOT_SPAM": "Не спам",
+		"USERNAME": "Ім'я користувача",
 		"PASSWORD": "Пароль",
 		"REPLY_TO": "Reply-To",
 		"SAVE": "Зберегти",
@@ -28,7 +29,9 @@
 		"SUBJECT": "Тема",
 		"TEST": "Тест",
 		"TO": "Кому",
-		"SERVER_MESSAGE": "Server message"
+		"SERVER_MESSAGE": "Server message",
+		"YES": "Так",
+		"NO": "Ні"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Логін",
@@ -46,23 +49,24 @@
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Розширений пошук листів",
-		"LABEL_ADV_TEXT": "Текст",
-		"LABEL_ADV_HAS_ATTACHMENT": "З файлами",
-		"LABEL_ADV_HAS_ATTACHMENTS": "З файлами",
-		"LABEL_ADV_FLAGGED": "Відмічені",
-		"LABEL_ADV_UNSEEN": "Непрочитані",
-		"LABEL_ADV_DATE": "Дата",
-		"LABEL_ADV_DATE_ALL": "За весь час",
-		"LABEL_ADV_DATE_3_DAYS": "За три дні",
-		"LABEL_ADV_DATE_7_DAYS": "За тиждень",
-		"LABEL_ADV_DATE_MONTH": "За місяць",
-		"LABEL_ADV_DATE_3_MONTHS": "За 3 місяці",
-		"LABEL_ADV_DATE_6_MONTHS": "За півроку",
-		"LABEL_ADV_DATE_YEAR": "За рік",
-		"LABEL_ADV_SUBFOLDERS": "Subfolders",
-		"LABEL_ADV_SUBFOLDERS_NONE": "None",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_ADV_SUBFOLDERS_SUBTREE_ONE": "One level"
+		"LABEL_TEXT": "Текст",
+		"LABEL_HAS_ATTACHMENT": "З файлами",
+		"LABEL_HAS_ATTACHMENTS": "З файлами",
+		"LABEL_FLAGGED": "Відмічені",
+		"LABEL_UNSEEN": "Непрочитані",
+		"LABEL_DATE": "Дата",
+		"LABEL_DATE_ALL": "За весь час",
+		"LABEL_DATE_3_DAYS": "За три дні",
+		"LABEL_DATE_7_DAYS": "За тиждень",
+		"LABEL_DATE_MONTH": "За місяць",
+		"LABEL_DATE_3_MONTHS": "За 3 місяці",
+		"LABEL_DATE_6_MONTHS": "За півроку",
+		"LABEL_DATE_YEAR": "За рік",
+		"LABEL_SUBFOLDERS": "Subfolders",
+		"LABEL_SUBFOLDERS_NONE": "None",
+		"LABEL_SUBFOLDERS_SUBTREE": "All",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_REPLIED": "відповів"
 	},
 	"PREVIEW_POPUP": {
 		"FULLSCREEN": "Toggle fullscreen",
@@ -104,7 +108,6 @@
 		"EMPTY_SEARCH_LIST": "Листи не знайдено.",
 		"SEARCH_RESULT_FOR": "Результат пошуку \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "повернутись до списку листів",
-		"EMPTY_SUBJECT_TEXT": "(Без теми)",
 		"PUT_MESSAGE_HERE": "Киньте повідомлення сюди, щоб подивитися його в списку",
 		"TODAY_AT": "сьогодні в %TIME%",
 		"YESTERDAY_AT": "вчора в %TIME%",
@@ -224,8 +227,6 @@
 		"BUTTON_REQUEST_DSN": "Request a delivery receipt"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Так",
-		"BUTTON_NO": "Ні",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Ви впевнені, що хочете закрити це вікно?",
 		"DESC_WANT_DELETE_MESSAGES": "Ви впевнені, що хочете видалити повідомлення?"
 	},
@@ -402,6 +403,7 @@
 		"LABEL_REMOVE_COLORS": "Remove background and text colors from message body",
 		"LABEL_MESSAGE_PER_PAGE": "Повідомлень на одній сторінці",
 		"LABEL_MARK_MESSAGE_READ_AFTER": "Mark message as read after",
+		"LABEL_MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
 		"LABEL_NOTIFICATIONS": "Сповіщення",
 		"LABEL_SOUND_NOTIFICATION": "Звукове сповіщення",
@@ -415,8 +417,6 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Сервер",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Адресна книга (URL)",
 		"LABEL_CONTACTS_SYNC_USER": "Користувач",
-		"SYNC_NO": "Ні",
-		"SYNC_YES": "Так",
 		"SYNC_READ": "Read only"
 	},
 	"SETTINGS_THEMES": {

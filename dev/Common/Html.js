@@ -1,6 +1,5 @@
-import { createElement, SettingsGet } from 'Common/Globals';
+import { createElement } from 'Common/Globals';
 import { forEachObjectEntry, pInt } from 'Common/Utils';
-import { proxy } from 'Common/Links';
 
 const
 	tpl = createElement('template'),
@@ -29,7 +28,7 @@ export const
 	 * @param {string} text
 	 * @returns {string}
 	 */
-	encodeHtml = text => (text && text.toString ? text.toString() : '' + text).replace(htmlre, m => htmlmap[m]),
+	encodeHtml = text => (text?.toString?.() || '' + text).replace(htmlre, m => htmlmap[m]),
 
 	/**
 	 * Clears the Message Html for viewing
@@ -39,7 +38,6 @@ export const
 	cleanHtml = (html, oAttachments, removeColors) => {
 		const
 			debug = false, // Config()->Get('debug', 'enable', false);
-			useProxy = !!SettingsGet('UseLocalProxyForExternalImages'),
 			detectHiddenImages = true, // !!SettingsGet('try_to_detect_hidden_images'),
 
 			result = {
@@ -49,7 +47,7 @@ export const
 			findAttachmentByCid = cid => oAttachments.findByCid(cid),
 			findLocationByCid = cid => {
 				const attachment = findAttachmentByCid(cid);
-				return attachment && attachment.contentLocation ? attachment : 0;
+				return attachment?.contentLocation ? attachment : 0;
 			},
 
 			// convert body attributes to CSS
@@ -100,7 +98,7 @@ export const
 				'BGSOUND','KEYGEN','SOURCE','OBJECT','EMBED','APPLET','IFRAME','FRAME','FRAMESET','VIDEO','AUDIO','AREA','MAP'
 			],
 			nonEmptyTags = [
-				'A','B','EM','I','SPAN','STRONG','TABLE'
+				'A','B','EM','I','SPAN','STRONG'
 			];
 
 		tpl.innerHTML = html
@@ -138,7 +136,7 @@ export const
 			}
 //			if (['CENTER','FORM'].includes(name)) {
 			if ('FORM' === name || 'O:P' === name || (nonEmptyTags.includes(name) && ('' == oElement.textContent.trim()))) {
-				replaceWithChildren(oElement);
+				('A' !== name || !oElement.querySelector('IMG')) && replaceWithChildren(oElement);
 				return;
 			}
 /*
@@ -229,52 +227,58 @@ export const
 				value = getAttribute('src');
 				delAttribute('src');
 
-				let attachment;
-
-				if (detectHiddenImages
-					&& 'IMG' === name
-					&& (('' != getAttribute('height') && 3 > pInt(getAttribute('height')))
-						|| ('' != getAttribute('width') && 3 > pInt(getAttribute('width')))
-						|| [
-							'email.microsoftemail.com/open',
-							'github.com/notifications/beacon/',
-							'mandrillapp.com/track/open',
-							'list-manage.com/track/open'
-						].filter(uri => value.toLowerCase().includes(uri)).length
-				)) {
-					skipStyle = true;
-					setAttribute('style', 'display:none');
-					setAttribute('data-x-hidden-src', value);
-				}
-				else if ((attachment = findLocationByCid(value)))
-				{
-					if (attachment.download) {
-						oElement.loading = 'lazy';
-						oElement.src = attachment.linkPreview();
-						attachment.isLinked(true);
+				if ('IMG' === name) {
+					let attachment;
+					if (detectHiddenImages
+						&& (('' != getAttribute('height') && 3 > pInt(getAttribute('height')))
+							|| ('' != getAttribute('width') && 3 > pInt(getAttribute('width')))
+							|| [
+								'email.microsoftemail.com/open',
+								'github.com/notifications/beacon/',
+								'mandrillapp.com/track/open',
+								'list-manage.com/track/open'
+							].filter(uri => value.toLowerCase().includes(uri)).length
+					)) {
+						skipStyle = true;
+						setAttribute('style', 'display:none');
+						setAttribute('data-x-src-hidden', value);
 					}
-				}
-				else if ('cid:' === value.slice(0, 4))
-				{
-					attachment = findAttachmentByCid(value.slice(4));
-					if (attachment && attachment.download) {
-						oElement.src = attachment.linkPreview();
-						attachment.isInline(true);
-						attachment.isLinked(true);
+					else if ((attachment = findLocationByCid(value)))
+					{
+						if (attachment.download) {
+							oElement.loading = 'lazy';
+							oElement.src = attachment.linkPreview();
+							attachment.isLinked(true);
+						}
 					}
-				}
-				else if (/^(https?:)?\/\//i.test(value))
-				{
-					setAttribute('data-x-src', useProxy ? proxy(value) : value);
-					result.hasExternals = true;
-				}
-				else if ('data:image/' === value.slice(0, 11))
-				{
-					setAttribute('src', value);
+					else if ('cid:' === value.slice(0, 4))
+					{
+						value = value.slice(4);
+						setAttribute('data-x-src-cid', value);
+						attachment = findAttachmentByCid(value);
+						if (attachment?.download) {
+							oElement.src = attachment.linkPreview();
+							attachment.isInline(true);
+							attachment.isLinked(true);
+						}
+					}
+					else if (/^(https?:)?\/\//i.test(value))
+					{
+						setAttribute('data-x-src', value);
+						result.hasExternals = true;
+					}
+					else if ('data:image/' === value.slice(0, 11))
+					{
+						oElement.src = value;
+					}
+					else
+					{
+						setAttribute('data-x-src-broken', value);
+					}
 				}
 				else
 				{
-					setAttribute('data-x-broken-src', value);
+					setAttribute('data-x-src-broken', value);
 				}
 			}
 
@@ -316,14 +320,14 @@ export const
 							let lowerUrl = found.toLowerCase();
 							if ('cid:' === lowerUrl.slice(0, 4)) {
 								const attachment = findAttachmentByCid(found);
-								if (attachment && attachment.linkPreview && name) {
+								if (attachment?.linkPreview && name) {
 									oStyle[property] = "url('" + attachment.linkPreview() + "')";
 									attachment.isInline(true);
 									attachment.isLinked(true);
 								}
 							} else if (/^(https?:)?\/\//.test(lowerUrl)) {
 								result.hasExternals = true;
-								urls_remote.push([property, useProxy ? proxy(found) : value]);
+								urls_remote.push([property, found]);
 							} else if ('data:image/' === lowerUrl.slice(0, 11)) {
 								oStyle[property] = value;
 							} else {
@@ -430,9 +434,8 @@ export const
 				parent = node,
 				ordered = 'OL' == node.tagName,
 				i = 0;
-			while (parent && parent.parentNode && parent.parentNode.closest) {
-				parent = parent.parentNode.closest('ol,ul');
-				parent && (prefix = '    ' + prefix);
+			while ((parent = parent?.parentNode?.closest('ol,ul'))) {
+				prefix = '    ' + prefix;
 			}
 			node.querySelectorAll(':scope > li').forEach(li => {
 				li.prepend('\n' + prefix + (ordered ? `${++i}. ` : ' * '));
@@ -563,7 +566,7 @@ export class HtmlEditor {
 			editor.on('focus', () => this.blurTimer && clearTimeout(this.blurTimer));
 			editor.on('mode', () => {
 				this.blurTrigger();
-				this.onModeChange && this.onModeChange(!this.isPlain());
+				this.onModeChange?.(!this.isPlain());
 			});
 		}
 	}
@@ -571,7 +574,7 @@ export class HtmlEditor {
 	blurTrigger() {
 		if (this.onBlur) {
 			clearTimeout(this.blurTimer);
-			this.blurTimer = setTimeout(() => this.onBlur && this.onBlur(), 200);
+			this.blurTimer = setTimeout(() => this.onBlur?.(), 200);
 		}
 	}
 
@@ -681,7 +684,7 @@ export class HtmlEditor {
 
 	hasFocus() {
 		try {
-			return this.editor && !!this.editor.focusManager.hasFocus;
+			return !!this.editor?.focusManager.hasFocus;
 		} catch (e) {
 			return false;
 		}

@@ -49,7 +49,7 @@ fetchJSON = (action, sGetAdd, params, timeout, jsonCallback) => {
 	} else {
 		params.Action = action;
 	}
-	abort(action);
+//	abort(action);
 	const controller = new AbortController(),
 		signal = controller.signal;
 	oRequests[action] = controller;
@@ -123,23 +123,20 @@ export class AbstractFetchRemote
 	 * @param {Object=} oParameters
 	 * @param {?number=} iTimeout
 	 * @param {string=} sGetAdd = ''
-	 * @param {Array=} aAbortActions = []
 	 */
 	request(sAction, fCallback, params, iTimeout, sGetAdd, abortActions) {
 		params = params || {};
 
 		const start = Date.now();
 
-		if (sAction && abortActions) {
-			abortActions.forEach(actionToAbort => abort(actionToAbort));
-		}
+		abortActions && console.error('abortActions is obsolete');
 
 		fetchJSON(sAction, pString(sGetAdd),
 			params,
 			undefined === iTimeout ? 30000 : pInt(iTimeout),
 			data => {
 				let cached = false;
-				if (data && data.Time) {
+				if (data?.Time) {
 					cached = pInt(data.Time) > Date.now() - start;
 				}
 
@@ -194,7 +191,7 @@ export class AbstractFetchRemote
 		if (trigger) {
 			value = !!value;
 			(isArray(trigger) ? trigger : [trigger]).forEach(fTrigger => {
-				fTrigger && fTrigger(value);
+				fTrigger?.(value);
 			});
 		}
 	}
@@ -210,12 +207,12 @@ export class AbstractFetchRemote
 				}
 /*
 				let isCached = false, type = '';
-				if (data && data.Time) {
+				if (data?.Time) {
 					isCached = pInt(data.Time) > microtime() - start;
 				}
 				// backward capability
 				switch (true) {
-					case 'success' === textStatus && data && data.Result && action === data.Action:
+					case 'success' === textStatus && data?.Result && action === data.Action:
 						type = AbstractFetchRemote.SUCCESS;
 						break;
 					case 'abort' === textStatus && (!data || !data.__aborted__):

@@ -26,14 +26,14 @@ export const
 	addSubscribablesTo = (target, subscribables) =>
 		forEachObjectEntry(subscribables, (key, fn) => target[key].subscribe(fn)),
 
-	dispose = disposable => disposable && isFunction(disposable.dispose) && disposable.dispose(),
+	dispose = disposable => isFunction(disposable?.dispose) && disposable.dispose(),
 
 	// With this we don't need delegateRunOnDestroy
 	koArrayWithDestroy = data => {
 		data = ko.observableArray(data);
 		data.subscribe(changes =>
 			changes.forEach(item =>
-				'deleted' === item.status && null == item.moved && item.value.onDestroy && item.value.onDestroy()
+				'deleted' === item.status && null == item.moved && item.value.onDestroy?.()
 			)
 		, data, 'arrayChange');
 		return data;
@@ -172,12 +172,12 @@ ko.extenders.toggleSubscribeProperty = (target, options) => {
 	const prop = options[1];
 	if (prop) {
 		target.subscribe(
-			prev => prev && prev[prop] && prev[prop](false),
+			prev => prev?.[prop]?.(false),
 			options[0],
 			'beforeChange'
 		);
 
-		target.subscribe(next => next && next[prop] && next[prop](true), options[0]);
+		target.subscribe(next => next?.[prop]?.(true), options[0]);
 	}
 
 	return target;

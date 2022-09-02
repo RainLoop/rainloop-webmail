@@ -330,6 +330,11 @@ trait User
 		});
 
 		$this->setSettingsFromParams($oSettings, 'EditorDefaultType', 'string');
+		$this->setSettingsFromParams($oSettings, 'requestReadReceipt', 'bool');
+		$this->setSettingsFromParams($oSettings, 'requestDsn', 'bool');
+		$this->setSettingsFromParams($oSettings, 'pgpSign', 'bool');
+		$this->setSettingsFromParams($oSettings, 'pgpEncrypt', 'bool');
+
 		$this->setSettingsFromParams($oSettings, 'ViewHTML', 'bool');
 		$this->setSettingsFromParams($oSettings, 'ShowImages', 'bool');
 		$this->setSettingsFromParams($oSettings, 'RemoveColors', 'bool');
@@ -341,6 +346,7 @@ trait User
 		$this->setSettingsFromParams($oSettings, 'AllowDraftAutosave', 'bool');
 		$this->setSettingsFromParams($oSettings, 'AutoLogout', 'int');
 		$this->setSettingsFromParams($oSettings, 'MessageReadDelay', 'int');
+		$this->setSettingsFromParams($oSettings, 'MsgDefaultAction', 'int');
 
 		$this->setSettingsFromParams($oSettings, 'Resizer4Width', 'int');
 		$this->setSettingsFromParams($oSettings, 'Resizer5Width', 'int');

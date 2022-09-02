@@ -17,7 +17,6 @@ import { SieveScriptPopupView } from 'Sieve/View/Script';
 window.Sieve = {
 	capa: capa,
 	scripts: scripts,
-	setError: setError,
 	loading: loading,
 	serverError: serverError,
 	serverErrorDesc: serverErrorDesc,

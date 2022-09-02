@@ -78,7 +78,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 			contactsPaginator: computedPaginatorHelper(this.contactsPage, pagecount),
 
 			contactsCheckedOrSelected: () => {
-				const checked = ContactUserStore.filter(item => item.checked && item.checked()),
+				const checked = ContactUserStore.filter(item => item.checked?.()),
 					selected = this.selectorContact();
 
 				return selected
@@ -128,7 +128,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 					const data = oItem.getNameAndEmailHelper(),
 						email = data ? new EmailModel(data[0], data[1]) : null;
 
-					if (email && email.validate()) {
+					if (email?.validate()) {
 						return email;
 					}
 				}
@@ -235,7 +235,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 		if (this.contactsCheckedOrSelected().length) {
 			Remote.request('ContactsDelete',
 				(iError, oData) => {
-					if (500 < (!iError && oData && oData.Time ? pInt(oData.Time) : 0)) {
+					if (500 < (!iError && oData?.Time) ? pInt(oData.Time) : 0) {
 						this.reloadContactList(this.bDropPageAfterDelete);
 					} else {
 						setTimeout(() => this.reloadContactList(this.bDropPageAfterDelete), 500);
@@ -274,7 +274,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 		}
 
 		ContactUserStore.loading(true);
-		Remote.request('Contacts',
+		Remote.abort('Contacts').request('Contacts',
 			(iError, data) => {
 				let count = 0,
 					list = [];
@@ -299,10 +299,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 				Offset: offset,
 				Limit: CONTACTS_PER_PAGE,
 				Search: this.search()
-			},
-			null,
-			'',
-			['Contacts']
+			}
 		);
 	}
 

@@ -17,7 +17,7 @@ function filtersToSieveScript(filters)
 			''
 		];
 
-	const quote = string => '"' + string.trim().replace(/(\\|")/, '\\\\$1') + '"';
+	const quote = string => '"' + string.trim().replace(/(\\|")/g, '\\$1') + '"';
 	const StripSpaces = string => string.replace(/\s+/, ' ').trim();
 
 	// conditionToSieveScript
@@ -294,8 +294,9 @@ export class SieveScriptModel extends AbstractModel
 		return {
 			name: this.name(),
 			active: this.active() ? 1 : 0,
-			body: this.body(),
-			filters: this.filters.map(item => item.toJson())
+			body: this.body()
+//			body: this.allowFilters() ? this.body() : this.filtersToRaw()
+//			filters: this.filters.map(item => item.toJson())
 		};
 	}
 
