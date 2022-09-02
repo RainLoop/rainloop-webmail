@@ -162,7 +162,7 @@ export class AbstractFetchRemote
 					}
 				}
 
-				fCallback?.(
+				fCallback && fCallback(
 					iError,
 					data,
 					cached,
@@ -173,7 +173,7 @@ export class AbstractFetchRemote
 		)
 		.catch(err => {
 			console.error({fetchError:err});
-			fCallback?.(
+			fCallback && fCallback(
 				'TimeoutError' == err.reason ? 3 : (err.name == 'AbortError' ? 2 : 1),
 				err
 			);
