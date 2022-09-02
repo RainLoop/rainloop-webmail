@@ -49,7 +49,7 @@ fetchJSON = (action, sGetAdd, params, timeout, jsonCallback) => {
 	} else {
 		params.Action = action;
 	}
-	abort(action);
+//	abort(action);
 	const controller = new AbortController(),
 		signal = controller.signal;
 	oRequests[action] = controller;
