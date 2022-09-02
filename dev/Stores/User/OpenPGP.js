@@ -196,7 +196,7 @@ export const OpenPGPUserStore = new class {
 				const publicKey = findOpenPGPKey(this.publicKeys, sender/*, sign*/);
 				return await openpgp.decrypt({
 					message,
-					verificationKeys: publicKey && publicKey.key,
+					verificationKeys: publicKey?.key,
 //					expectSigned: true,
 //					signature: '', // Detached signature
 					decryptionKeys: decryptedKey

@@ -30,7 +30,7 @@ export class EmailCollectionModel extends AbstractCollectionModel
 	toStringClear() {
 		const result = [];
 		this.forEach(email => {
-			if (email && email.email && email.name) {
+			if (email?.email && email?.name) {
 				result.push(email.email);
 			}
 		});

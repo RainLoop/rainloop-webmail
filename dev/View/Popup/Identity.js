@@ -63,9 +63,7 @@ export class IdentityPopupView extends AbstractViewPopup {
 
 	submitForm() {
 		if (!this.submitRequest()) {
-			if (this.signature && this.signature.__fetchEditorValue) {
-				this.signature.__fetchEditorValue();
-			}
+			this.signature?.__fetchEditorValue?.();
 
 			if (!this.emailHasError()) {
 				this.emailHasError(!this.email().trim());

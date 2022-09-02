@@ -169,7 +169,7 @@ export const
 						}
 					);
 					if (result) {
-						if (result.error && result.error.message) {
+						if (result.error?.message) {
 							if ('PWD_DIALOG_CANCEL' !== result.error.code) {
 								alert(result.error.code + ': ' + result.error.message);
 							}

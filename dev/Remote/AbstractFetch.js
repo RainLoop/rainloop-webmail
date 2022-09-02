@@ -136,7 +136,7 @@ export class AbstractFetchRemote
 			undefined === iTimeout ? 30000 : pInt(iTimeout),
 			data => {
 				let cached = false;
-				if (data && data.Time) {
+				if (data?.Time) {
 					cached = pInt(data.Time) > Date.now() - start;
 				}
 
@@ -162,7 +162,7 @@ export class AbstractFetchRemote
 					}
 				}
 
-				fCallback && fCallback(
+				fCallback?.(
 					iError,
 					data,
 					cached,
@@ -173,7 +173,7 @@ export class AbstractFetchRemote
 		)
 		.catch(err => {
 			console.error({fetchError:err});
-			fCallback && fCallback(
+			fCallback?.(
 				'TimeoutError' == err.reason ? 3 : (err.name == 'AbortError' ? 2 : 1),
 				err
 			);
@@ -191,7 +191,7 @@ export class AbstractFetchRemote
 		if (trigger) {
 			value = !!value;
 			(isArray(trigger) ? trigger : [trigger]).forEach(fTrigger => {
-				fTrigger && fTrigger(value);
+				fTrigger?.(value);
 			});
 		}
 	}
@@ -207,12 +207,12 @@ export class AbstractFetchRemote
 				}
 /*
 				let isCached = false, type = '';
-				if (data && data.Time) {
+				if (data?.Time) {
 					isCached = pInt(data.Time) > microtime() - start;
 				}
 				// backward capability
 				switch (true) {
-					case 'success' === textStatus && data && data.Result && action === data.Action:
+					case 'success' === textStatus && data?.Result && action === data.Action:
 						type = AbstractFetchRemote.SUCCESS;
 						break;
 					case 'abort' === textStatus && (!data || !data.__aborted__):

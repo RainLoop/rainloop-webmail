@@ -14,8 +14,8 @@ const rlContentType = 'snappymail/action',
 
 	// In Chrome we have no access to dataTransfer.getData unless it's the 'drop' event
 	// In Chrome Mobile dataTransfer.types.includes(rlContentType) fails, only text/plain is set
-	dragMessages = () => dragData && 'messages' === dragData.action,
-	dragSortable = () => dragData && 'sortable' === dragData.action,
+	dragMessages = () => 'messages' === dragData?.action,
+	dragSortable = () => 'sortable' === dragData?.action,
 	setDragAction = (e, action, effect, data, img) => {
 		dragData = {
 			action: action,
@@ -45,8 +45,8 @@ Object.assign(ko.bindingHandlers, {
 			let editor = null;
 
 			const fValue = fValueAccessor(),
-				fUpdateEditorValue = () => fValue && fValue.__editor && fValue.__editor.setHtmlOrPlain(fValue()),
-				fUpdateKoValue = () => fValue && fValue.__editor && fValue(fValue.__editor.getDataWithHtmlMark()),
+				fUpdateEditorValue = () => fValue?.__editor?.setHtmlOrPlain(fValue()),
+				fUpdateKoValue = () => fValue?.__editor && fValue(fValue.__editor.getDataWithHtmlMark()),
 				fOnReady = () => {
 					fValue.__editor = editor;
 					fUpdateEditorValue();
@@ -76,7 +76,7 @@ Object.assign(ko.bindingHandlers, {
 				focused = fValue.focused;
 
 			element.addresses = new EmailAddressesComponent(element, {
-				focusCallback: value => focused && focused(!!value),
+				focusCallback: value => focused?.(!!value),
 				autoCompleteSource: fAllBindings.get('autoCompleteSource'),
 				onChange: value => fValue(value)
 			});
@@ -137,7 +137,7 @@ Object.assign(ko.bindingHandlers, {
 					if (dragMessages()) {
 						fnStop(e);
 						element.classList.add('droppableHover');
-						if (folder && folder.collapsed()) {
+						if (folder?.collapsed()) {
 							dragTimer.start(() => {
 								folder.collapsed(false);
 								setExpandedFolder(folder.fullName, true);
@@ -153,7 +153,7 @@ Object.assign(ko.bindingHandlers, {
 					fnStop(e);
 					if (dragMessages() && ['move','copy'].includes(e.dataTransfer.effectAllowed)) {
 						let data = dragData.data;
-						if (folder && data && data.folder && isArray(data.uids)) {
+						if (folder && data?.folder && isArray(data.uids)) {
 							moveMessagesToFolder(data.folder, data.uids, folder.fullName, data.copy && e.ctrlKey);
 						}
 					}
@@ -220,7 +220,7 @@ Object.assign(ko.bindingHandlers, {
 								options.list(arr);
 							}
 							dragData = null;
-							options.afterMove && options.afterMove();
+							options.afterMove?.();
 						}
 					}
 				});

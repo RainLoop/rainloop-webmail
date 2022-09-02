@@ -74,7 +74,7 @@ export class UserSettingsThemes /*extends AbstractViewSettings*/ {
 				.on('onComplete', (id, result, data) => {
 					themeBackground.loading(false);
 
-					if (result && id && data && data.Result && data.Result.Name && data.Result.Hash) {
+					if (result && id && data?.Result?.Name && data?.Result?.Hash) {
 						themeBackground.name(data.Result.Name);
 						themeBackground.hash(data.Result.Hash);
 					} else {
@@ -94,11 +94,7 @@ export class UserSettingsThemes /*extends AbstractViewSettings*/ {
 							}
 						}
 
-						if (!errorMsg && data.ErrorMessage) {
-							errorMsg = data.ErrorMessage;
-						}
-
-						themeBackground.error(errorMsg || i18n('SETTINGS_THEMES/ERROR_UNKNOWN'));
+						themeBackground.error(errorMsg || data.ErrorMessage || i18n('SETTINGS_THEMES/ERROR_UNKNOWN'));
 					}
 
 					return true;

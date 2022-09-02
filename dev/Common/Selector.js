@@ -422,7 +422,7 @@ export class Selector {
 			lineUid = '';
 
 		const uid = this.getItemUid(item);
-		if (event && event.shiftKey) {
+		if (event?.shiftKey) {
 			if (uid && this.sLastUid && uid !== this.sLastUid) {
 				list = this.list();
 				checked = item.checked();

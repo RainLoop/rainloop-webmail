@@ -80,15 +80,9 @@ export const FolderUserStore = new class {
 
 		const
 			subscribeRemoveSystemFolder = observable => {
-				observable.subscribe(() => {
-					const folder = getFolderFromCacheList(observable());
-					folder && folder.type(FolderType.User);
-				}, self, 'beforeChange');
+				observable.subscribe(() => getFolderFromCacheList(observable())?.type(FolderType.User), self, 'beforeChange');
 			},
-			fSetSystemFolderType = type => value => {
-				const folder = getFolderFromCacheList(value);
-				folder && folder.type(type);
-			};
+			fSetSystemFolderType = type => value => getFolderFromCacheList(value)?.type(type);
 
 		subscribeRemoveSystemFolder(self.sentFolder);
 		subscribeRemoveSystemFolder(self.draftsFolder);
@@ -134,8 +128,7 @@ export const FolderUserStore = new class {
 			fSearchFunction = (list) => {
 				list.forEach(folder => {
 					if (
-						folder &&
-						folder.selectable() &&
+						folder?.selectable() &&
 						folder.exists &&
 						timeout > folder.expires &&
 						(folder.isSystemFolder() || (folder.isSubscribed() && (folder.checkable() || !bDisplaySpecSetting)))
@@ -143,7 +136,7 @@ export const FolderUserStore = new class {
 						timeouts.push([folder.expires, folder.fullName]);
 					}
 
-					if (folder && folder.subFolders.length) {
+					if (folder?.subFolders.length) {
 						fSearchFunction(folder.subFolders());
 					}
 				});

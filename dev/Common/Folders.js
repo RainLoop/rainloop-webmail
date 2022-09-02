@@ -56,7 +56,7 @@ fetchFolderInformation = (fCallback, folder, list = []) => {
 		Remote.request('FolderInformation', fCallback, {
 			Folder: folder,
 			FlagsUids: uids,
-			UidNext: (folderFromCache && folderFromCache.uidNext) || 0 // Used to check for new messages
+			UidNext: folderFromCache?.uidNext || 0 // Used to check for new messages
 		});
 	} else if (SettingsUserStore.useThreads()) {
 		MessagelistUserStore.reloadFlagsAndCachedMessage();
@@ -134,7 +134,7 @@ refreshFoldersInterval = 300000,
  * @param {Array=} list = []
  */
 folderInformation = (folder, list) => {
-	if (folder && folder.trim()) {
+	if (folder?.trim()) {
 		fetchFolderInformation(
 			(iError, data) => {
 				if (!iError && data.Result) {

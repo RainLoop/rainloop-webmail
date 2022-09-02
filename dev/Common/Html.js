@@ -28,7 +28,7 @@ export const
 	 * @param {string} text
 	 * @returns {string}
 	 */
-	encodeHtml = text => (text && text.toString ? text.toString() : '' + text).replace(htmlre, m => htmlmap[m]),
+	encodeHtml = text => (text?.toString?.() || '' + text).replace(htmlre, m => htmlmap[m]),
 
 	/**
 	 * Clears the Message Html for viewing
@@ -47,7 +47,7 @@ export const
 			findAttachmentByCid = cid => oAttachments.findByCid(cid),
 			findLocationByCid = cid => {
 				const attachment = findAttachmentByCid(cid);
-				return attachment && attachment.contentLocation ? attachment : 0;
+				return attachment?.contentLocation ? attachment : 0;
 			},
 
 			// convert body attributes to CSS
@@ -256,7 +256,7 @@ export const
 						value = value.slice(4);
 						setAttribute('data-x-src-cid', value);
 						attachment = findAttachmentByCid(value);
-						if (attachment && attachment.download) {
+						if (attachment?.download) {
 							oElement.src = attachment.linkPreview();
 							attachment.isInline(true);
 							attachment.isLinked(true);
@@ -320,7 +320,7 @@ export const
 							let lowerUrl = found.toLowerCase();
 							if ('cid:' === lowerUrl.slice(0, 4)) {
 								const attachment = findAttachmentByCid(found);
-								if (attachment && attachment.linkPreview && name) {
+								if (attachment?.linkPreview && name) {
 									oStyle[property] = "url('" + attachment.linkPreview() + "')";
 									attachment.isInline(true);
 									attachment.isLinked(true);
@@ -434,9 +434,8 @@ export const
 				parent = node,
 				ordered = 'OL' == node.tagName,
 				i = 0;
-			while (parent && parent.parentNode && parent.parentNode.closest) {
-				parent = parent.parentNode.closest('ol,ul');
-				parent && (prefix = '    ' + prefix);
+			while ((parent = parent?.parentNode?.closest('ol,ul'))) {
+				prefix = '    ' + prefix;
 			}
 			node.querySelectorAll(':scope > li').forEach(li => {
 				li.prepend('\n' + prefix + (ordered ? `${++i}. ` : ' * '));
@@ -567,7 +566,7 @@ export class HtmlEditor {
 			editor.on('focus', () => this.blurTimer && clearTimeout(this.blurTimer));
 			editor.on('mode', () => {
 				this.blurTrigger();
-				this.onModeChange && this.onModeChange(!this.isPlain());
+				this.onModeChange?.(!this.isPlain());
 			});
 		}
 	}
@@ -575,7 +574,7 @@ export class HtmlEditor {
 	blurTrigger() {
 		if (this.onBlur) {
 			clearTimeout(this.blurTimer);
-			this.blurTimer = setTimeout(() => this.onBlur && this.onBlur(), 200);
+			this.blurTimer = setTimeout(() => this.onBlur?.(), 200);
 		}
 	}
 
@@ -685,7 +684,7 @@ export class HtmlEditor {
 
 	hasFocus() {
 		try {
-			return this.editor && !!this.editor.focusManager.hasFocus;
+			return !!this.editor?.focusManager.hasFocus;
 		} catch (e) {
 			return false;
 		}

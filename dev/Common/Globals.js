@@ -31,7 +31,7 @@ export const
 		new CustomEvent(name, {detail:detail, cancelable: !!cancelable})
 	),
 
-	formFieldFocused = () => doc.activeElement && doc.activeElement.matches('input,textarea'),
+	formFieldFocused = () => doc.activeElement?.matches('input,textarea'),
 
 	addShortcut = (...args) => shortcuts.add(...args),
 

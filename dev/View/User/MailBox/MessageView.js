@@ -134,8 +134,8 @@ export class MailMessageView extends AbstractViewRight {
 			allowAttachmentControls: () => arrayLength(attachmentsActions) && SettingsCapa('AttachmentsActions'),
 
 			downloadAsZipAllowed: () => this.attachmentsActions.includes('zip')
-				&& (currentMessage() ? currentMessage().attachments : [])
-					.filter(item => item && !item.isLinked() && item.checked() && item.download)
+				&& (currentMessage()?.attachments || [])
+					.filter(item => item?.download && !item?.isLinked() && item?.checked())
 					.length,
 
 			tagsAllowed: () => FolderUserStore.currentFolder() ? FolderUserStore.currentFolder().tagsAllowed() : false,
@@ -286,7 +286,7 @@ export class MailMessageView extends AbstractViewRight {
 			el = eqs(event, '.attachmentsPlace .attachmentItem .attachmentNameParent');
 			if (el) {
 				const attachment = ko.dataFor(el);
-				if (attachment && attachment.linkDownload()) {
+				if (attachment?.linkDownload()) {
 					if ('message/rfc822' == attachment.mimeType) {
 						// TODO
 						rl.fetch(attachment.linkDownload()).then(response => {
@@ -393,7 +393,7 @@ export class MailMessageView extends AbstractViewRight {
 		// toggle message blockquotes
 		registerShortcut('b', '', [Scope.MessageList, Scope.MessageView], () => {
 			const message = currentMessage();
-			if (message && message.body) {
+			if (message?.body) {
 				message.body.querySelectorAll('.rlBlockquoteSwitcher').forEach(node => node.click());
 				return false;
 			}
@@ -411,7 +411,7 @@ export class MailMessageView extends AbstractViewRight {
 
 		// print
 		addShortcut('p,printscreen', 'meta', [Scope.MessageView, Scope.MessageList], () => {
-			currentMessage() && currentMessage().printMessage();
+			currentMessage()?.printMessage();
 			return false;
 		});
 
@@ -510,7 +510,7 @@ export class MailMessageView extends AbstractViewRight {
 
 	downloadAsZip() {
 		const hashes = (currentMessage() ? currentMessage().attachments : [])
-			.map(item => (item && !item.isLinked() && item.checked() ? item.download : ''))
+			.map(item => item?.checked() && !item?.isLinked() ? item.download : '')
 			.filter(v => v);
 		if (hashes.length) {
 			Remote.post('AttachmentsActions', this.downloadAsZipLoading, {
@@ -518,7 +518,7 @@ export class MailMessageView extends AbstractViewRight {
 				Hashes: hashes
 			})
 			.then(result => {
-				let hash = result && result.Result && result.Result.FileHash;
+				let hash = result?.Result?.FileHash;
 				if (hash) {
 					download(attachmentDownload(hash), hash+'.zip');
 				} else {
@@ -577,7 +577,7 @@ export class MailMessageView extends AbstractViewRight {
 				if (result.data) {
 					MimeToMessage(result.data, oMessage);
 					oMessage.html() ? oMessage.viewHtml() : oMessage.viewPlain();
-					if (result.signatures && result.signatures.length) {
+					if (result.signatures?.length) {
 						oMessage.pgpSigned(true);
 						oMessage.pgpVerified({
 							signatures: result.signatures,
@@ -596,7 +596,7 @@ export class MailMessageView extends AbstractViewRight {
 				oMessage.pgpVerified(result);
 			}
 /*
-			if (result && result.success) {
+			if (result?.success) {
 				i18n('OPENPGP/GOOD_SIGNATURE', {
 					USER: validKey.user + ' (' + validKey.id + ')'
 				});
@@ -604,7 +604,7 @@ export class MailMessageView extends AbstractViewRight {
 			} else {
 				const keyIds = arrayLength(signingKeyIds) ? signingKeyIds : null,
 					additional = keyIds
-						? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(v => v).join(', ')
+						? keyIds.map(item => item?.toHex?.()).filter(v => v).join(', ')
 						: '';
 
 				i18n('OPENPGP/ERROR', {

@@ -26,8 +26,7 @@ export const
 		.trim(),
 
 	defaultOptionsAfterRender = (domItem, item) =>
-		domItem && item && undefined !== item.disabled
-		&& domItem.classList.toggle('disabled', domItem.disabled = item.disabled),
+		item && undefined !== item.disabled && domItem?.classList.toggle('disabled', domItem.disabled = item.disabled),
 
 	// unescape(encodeURIComponent()) makes the UTF-16 DOMString to an UTF-8 string
 	b64EncodeJSON = data => btoa(unescape(encodeURIComponent(JSON.stringify(data)))),

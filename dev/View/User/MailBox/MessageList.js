@@ -210,7 +210,7 @@ export class MailMessageList extends AbstractViewRight {
 			const sFolder = e.detail.Folder, iUid = e.detail.Uid;
 
 			const message = MessagelistUserStore.find(
-				item => item && sFolder === item.folder && iUid == item.uid
+				item => sFolder === item?.folder && iUid == item?.uid
 			);
 
 			if ('INBOX' === sFolder) {
@@ -326,7 +326,7 @@ export class MailMessageList extends AbstractViewRight {
 
 	moveNewCommand(vm, event) {
 		if (this.newMoveToFolder && this.mobileCheckedStateShow()) {
-			if (vm && event && event.preventDefault) {
+			if (vm && event?.preventDefault) {
 				event.preventDefault();
 				event.stopPropagation();
 			}
@@ -428,7 +428,7 @@ export class MailMessageList extends AbstractViewRight {
 
 	getDragData(event) {
 		const item = ko.dataFor(doc.elementFromPoint(event.clientX, event.clientY));
-		item && item.checked && item.checked(true);
+		item?.checked?.(true);
 		const uids = MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails();
 		item && !uids.includes(item.uid) && uids.push(item.uid);
 		return uids.length ? {
@@ -571,7 +571,7 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	gotoThread(message) {
-		if (message && 0 < message.threadsLen()) {
+		if (0 < message?.threadsLen()) {
 			MessagelistUserStore.pageBeforeThread(MessagelistUserStore.page());
 
 			hasher.setHash(
@@ -718,7 +718,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		registerShortcut('t', '', [Scope.MessageList], () => {
 			let message = MessagelistUserStore.selectedMessage() || MessagelistUserStore.focusedMessage();
-			if (message && 0 < message.threadsLen()) {
+			if (0 < message?.threadsLen()) {
 				this.gotoThread(message);
 			}
 			return false;

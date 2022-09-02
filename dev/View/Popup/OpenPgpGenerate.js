@@ -94,7 +94,7 @@ export class OpenPgpGeneratePopupView extends AbstractViewPopup {
 
 	showError(e) {
 		console.log(e);
-		if (e && e.message) {
+		if (e?.message) {
 			this.submitError(e.message);
 		}
 	}

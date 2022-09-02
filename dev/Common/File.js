@@ -256,7 +256,7 @@ export const FileInfo = {
 				.map(item => item ? FileInfo.getIconClass(FileInfo.getExtension(item.fileName), item.mimeType) : '')
 				.validUnique();
 
-			return (icons && 1 === icons.length && 'icon-file' !== icons[0])
+			return (1 === icons?.length && 'icon-file' !== icons[0])
 				 ? icons[0]
 				 : 'icon-attachment';
 		}

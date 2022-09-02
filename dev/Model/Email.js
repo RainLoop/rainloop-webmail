@@ -283,7 +283,7 @@ export class EmailModel extends AbstractModel {
 	 */
 	static reviveFromJson(json) {
 		const email = super.reviveFromJson(json);
-		email && email.clearDuplicateName();
+		email?.clearDuplicateName();
 		return email;
 	}
 
@@ -351,7 +351,7 @@ export class EmailModel extends AbstractModel {
 					? new EmailModel(item.address.replace(/^[<]+(.*)[>]+$/g, '$1'), item.name || '')
 					: null;
 
-				if (address && address.email) {
+				if (address?.email) {
 					exists = true;
 				}
 

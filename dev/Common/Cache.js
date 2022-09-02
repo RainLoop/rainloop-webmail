@@ -37,8 +37,7 @@ export const
 	 * @param {string} folderHash
 	 * @returns {string}
 	 */
-	getFolderFullName = folderHash =>
-		folderHash && FOLDERS_NAME_CACHE[folderHash] ? FOLDERS_NAME_CACHE[folderHash] : '',
+	getFolderFullName = folderHash => (folderHash && FOLDERS_NAME_CACHE[folderHash]) || '',
 
 	/**
 	 * @param {string} folderHash
@@ -79,9 +78,7 @@ export class MessageFlagsCache
 	 * @returns {bool}
 	 */
 	static hasFlag(folderFullName, uid, flag) {
-		return MESSAGE_FLAGS_CACHE[folderFullName]
-			&& MESSAGE_FLAGS_CACHE[folderFullName][uid]
-			&& MESSAGE_FLAGS_CACHE[folderFullName][uid].includes(flag);
+		return MESSAGE_FLAGS_CACHE[folderFullName]?.[uid]?.includes(flag);
 	}
 
 	/**
@@ -90,7 +87,7 @@ export class MessageFlagsCache
 	 * @returns {?Array}
 	 */
 	static getFor(folderFullName, uid) {
-		return MESSAGE_FLAGS_CACHE[folderFullName] && MESSAGE_FLAGS_CACHE[folderFullName][uid];
+		return MESSAGE_FLAGS_CACHE[folderFullName]?.[uid];
 	}
 
 	/**

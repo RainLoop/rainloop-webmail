@@ -248,7 +248,7 @@ export class DomainPopupView extends AbstractViewPopup {
 		if (oDomain) {
 			this.enableSmartPorts(false);
 			this.edit(true);
-			forEachObjectEntry(oDomain, (key, value) => this[key] && this[key](value));
+			forEachObjectEntry(oDomain, (key, value) => this[key]?.(value));
 			this.enableSmartPorts(true);
 		}
 	}

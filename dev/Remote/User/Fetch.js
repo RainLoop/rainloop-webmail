@@ -24,13 +24,13 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		const
 			sFolderFullName = pString(params.Folder),
 			folder = getFolderFromCacheList(sFolderFullName),
-			folderHash = (folder && folder.hash) || '';
+			folderHash = folder?.hash || '';
 
 		params = Object.assign({
 			Offset: 0,
 			Limit: SettingsUserStore.messagesPerPage(),
 			Search: '',
-			UidNext: (folder && folder.uidNext) || 0, // Used to check for new messages
+			UidNext: folder?.uidNext || 0, // Used to check for new messages
 			Sort: FolderUserStore.sortMode(),
 			Hash: folderHash + SettingsGet('AccountHash')
 		}, params);

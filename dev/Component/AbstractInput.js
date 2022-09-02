@@ -12,7 +12,7 @@ export class AbstractInput {
 		this.value = params.value || '';
 		this.label = params.label || '';
 		this.enable = null == params.enable ? true : params.enable;
-		this.trigger = params.trigger && params.trigger.subscribe ? params.trigger : null;
+		this.trigger = params.trigger?.subscribe ? params.trigger : null;
 		this.placeholder = params.placeholder || '';
 
 		this.labeled = null != params.label;

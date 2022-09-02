@@ -82,7 +82,7 @@ export class MailFolderList extends AbstractViewLeft {
 			}
 
 			el = eqs(event, 'a');
-			if (el && el.matches('.selectable')) {
+			if (el?.matches('.selectable')) {
 				event.preventDefault();
 				const folder = ko.dataFor(el);
 				if (folder) {
@@ -170,10 +170,10 @@ export class MailFolderList extends AbstractViewLeft {
 
 		AppUserStore.focusedState.subscribe(value => {
 			let el = qs('li a.focused');
-			el && el.classList.remove('focused');
+			el?.classList.remove('focused');
 			if (Scope.FolderList === value) {
 				el = qs('li a.selected');
-				el && el.classList.add('focused');
+				el?.classList.add('focused');
 			}
 		});
 	}

@@ -128,7 +128,7 @@ export class AbstractViewSettings
 		addSubscribablesTo(this, {
 			[prop]: (value => {
 				this[trigger](SaveSettingsStep.Animate);
-				valueCb && valueCb(value);
+				valueCb?.(value);
 				rl.app.Remote.saveSetting(name, value,
 					iError => {
 						this[trigger](iError ? SaveSettingsStep.FalseResult : SaveSettingsStep.TrueResult);

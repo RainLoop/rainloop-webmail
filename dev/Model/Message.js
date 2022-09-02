@@ -323,7 +323,7 @@ export class MessageModel extends AbstractModel {
 	 */
 	fromDkimData() {
 		let result = ['none', ''];
-		if (1 === arrayLength(this.from) && this.from[0] && this.from[0].dkimStatus) {
+		if (1 === arrayLength(this.from) && this.from[0]?.dkimStatus) {
 			result = [this.from[0].dkimStatus, this.from[0].dkimValue || ''];
 		}
 
@@ -399,7 +399,7 @@ export class MessageModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	fromAsSingleEmail() {
-		return isArray(this.from) && this.from[0] ? this.from[0].email : '';
+		return (isArray(this.from) && this.from[0]?.email) || '';
 	}
 
 	/**

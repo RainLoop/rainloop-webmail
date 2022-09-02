@@ -49,10 +49,7 @@ export function runSettingsViewModelHooks(admin) {
  * @param {string} name
  * @returns {?}
  */
-rl.pluginSettingsGet = (pluginSection, name) => {
-	let plugins = SettingsGet('Plugins');
-	plugins = plugins && null != plugins[pluginSection] ? plugins[pluginSection] : null;
-	return plugins ? (null == plugins[name] ? null : plugins[name]) : null;
-};
+rl.pluginSettingsGet = (pluginSection, name) =>
+	SettingsGet('Plugins')?.[pluginSection]?.[name];
 
 rl.pluginPopupView = AbstractViewPopup;

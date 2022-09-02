@@ -213,8 +213,8 @@ export class ComposePopupView extends AbstractViewPopup {
 		super('Compose');
 
 		const fEmailOutInHelper = (context, identity, name, isIn) => {
-			if (identity && context && identity[name]() && (isIn ? true : context[name]())) {
-				const identityEmail = identity[name]();
+			const identityEmail = context && identity?.[name]();
+			if (identityEmail && (isIn ? true : context[name]())) {
 				let list = context[name]().trim().split(',');
 
 				list = list.filter(email => {
@@ -222,9 +222,7 @@ export class ComposePopupView extends AbstractViewPopup {
 					return email && identityEmail.trim() !== email;
 				});
 
-				if (isIn) {
-					list.push(identityEmail);
-				}
+				isIn && list.push(identityEmail);
 
 				context[name](list.join(','));
 			}
@@ -355,7 +353,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			},
 
 			attachmentsInProcess: () => this.attachments.filter(item => item && !item.complete()),
-			attachmentsInError: () => this.attachments.filter(item => item && item.error()),
+			attachmentsInError: () => this.attachments.filter(item => item?.error()),
 
 			attachmentsCount: () => this.attachments.length,
 			attachmentsInErrorCount: () => this.attachmentsInError.length,
@@ -511,7 +509,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				alternative.children.push(data);
 				data = alternative;
 			}
-			if (sign && !draft && sign[1]) {
+			if (!draft && sign?.[1]) {
 				if ('openpgp' == sign[0]) {
 					// Doesn't sign attachments
 					params.Html = params.Text = '';
@@ -611,7 +609,7 @@ export class ComposePopupView extends AbstractViewPopup {
 									this.savedErrorDesc(i18n('COMPOSE/SAVED_ERROR_ON_SEND').trim());
 								} else {
 									this.sendError(true);
-									this.sendErrorDesc(getNotification(iError, data && data.ErrorMessage)
+									this.sendErrorDesc(getNotification(iError, data?.ErrorMessage)
 										|| getNotification(Notification.CantSendMessage));
 								}
 							} else {
@@ -762,7 +760,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			(iError, data) => {
 				if (!iError && isArray(data.Result)) {
 					fResponse(
-						data.Result.map(item => (item && item[0] ? (new EmailModel(item[0], item[1])).toLine() : null))
+						data.Result.map(item => (item?.[0] ? (new EmailModel(item[0], item[1])).toLine() : null))
 						.filter(v => v)
 					);
 				} else if (Notification.RequestAborted !== iError) {
@@ -777,7 +775,7 @@ export class ComposePopupView extends AbstractViewPopup {
 	}
 
 	selectIdentity(identity) {
-		identity = identity && identity.item;
+		identity = identity?.item;
 		if (identity) {
 			this.currentIdentity(identity);
 			this.setSignatureFromIdentity(identity);
@@ -1153,7 +1151,7 @@ export class ComposePopupView extends AbstractViewPopup {
 						});
 					} else {
 						this.attachments.forEach(attachment => {
-							if (attachment && attachment.fromMessage) {
+							if (attachment?.fromMessage) {
 								attachment
 									.waiting(false)
 									.uploading(false)
@@ -1180,7 +1178,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			if (!this.to()) {
 				this.to.focused(true);
 			} else if (!this.to.focused()) {
-				this.oEditor && this.oEditor.focus();
+				this.oEditor?.focus();
 			}
 		}, 100);
 	}
@@ -1266,7 +1264,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			})
 			.on('onComplete', (id, result, data) => {
 				const attachment = this.getAttachmentById(id),
-					response = (data && data.Result) || {},
+					response = data?.Result || {},
 					errorCode = response.ErrorCode,
 					attachmentJson = result && response.Attachment;
 
@@ -1354,7 +1352,7 @@ export class ComposePopupView extends AbstractViewPopup {
 	prepareAttachmentsForSendOrSave() {
 		const result = {};
 		this.attachments.forEach(item => {
-			if (item && item.complete() && item.tempName() && item.enabled()) {
+			if (item?.complete() && item?.tempName() && item?.enabled()) {
 				result[item.tempName()] = [item.fileName(), item.isInline ? '1' : '0', item.CID, item.contentLocation];
 			}
 		});
@@ -1381,7 +1379,7 @@ export class ComposePopupView extends AbstractViewPopup {
 		oJua || attachment.waiting(false).uploading(true);
 		attachment.cancel = () => {
 			this.attachments.remove(attachment);
-			oJua && oJua.cancel(attachment.id);
+			oJua?.cancel(attachment.id);
 		};
 		this.attachments.push(attachment);
 		view && this.attachmentsArea();
@@ -1435,7 +1433,7 @@ export class ComposePopupView extends AbstractViewPopup {
 	isEmptyForm(includeAttachmentInProgress = true) {
 		const withoutAttachment = includeAttachmentInProgress
 			? !this.attachments.length
-			: !this.attachments.some(item => item && item.complete());
+			: !this.attachments.some(item => item?.complete());
 
 		return (
 			!this.to.length &&
@@ -1491,7 +1489,7 @@ export class ComposePopupView extends AbstractViewPopup {
 		this.sending(false);
 		this.saving(false);
 
-		this.oEditor && this.oEditor.clear();
+		this.oEditor?.clear();
 
 		this.dropMailvelope();
 	}

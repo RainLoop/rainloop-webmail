@@ -95,7 +95,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 /*			// Disabled in SystemDropDown.html
 			const email = AccountUserStore.email();
 			AccountUserStore.accounts.forEach(item =>
-				item && email === item.email && item.count(e.detail)
+				email === item?.email && item?.count(e.detail)
 			);
 */
 			this.updateWindowTitle();

@@ -108,7 +108,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 			contactHasValidName: () => !!this.viewProperties.find(prop => propertyIsName(prop) && prop.isValid()),
 
 			contactsCheckedOrSelected: () => {
-				const checked = ContactUserStore.filter(item => item.checked && item.checked()),
+				const checked = ContactUserStore.filter(item => item.checked?.()),
 					selected = this.currentContact();
 
 				return selected
@@ -120,7 +120,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 
 			contactsSyncEnabled: () => ContactUserStore.allowSync() && ContactUserStore.syncMode(),
 
-			viewHash: () => '' + this.viewProperties.map(property => property.value && property.value()).join('')
+			viewHash: () => '' + this.viewProperties.map(property => property.value?.()).join('')
 		});
 
 		this.search.subscribe(() => this.reloadContactList());
@@ -164,7 +164,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 					const data = oItem.getNameAndEmailHelper(),
 						email = data ? new EmailModel(data[0], data[1]) : null;
 
-					if (email && email.validate()) {
+					if (email?.validate()) {
 						return email;
 					}
 				}
@@ -344,7 +344,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 		if (this.contactsCheckedOrSelected().length) {
 			Remote.request('ContactsDelete',
 				(iError, oData) => {
-					if (500 < (!iError && oData && oData.Time ? pInt(oData.Time) : 0)) {
+					if (500 < (!iError && oData?.Time) ? pInt(oData.Time) : 0) {
 						this.reloadContactList(this.bDropPageAfterDelete);
 					} else {
 						setTimeout(() => this.reloadContactList(this.bDropPageAfterDelete), 500);
