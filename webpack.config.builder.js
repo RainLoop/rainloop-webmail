@@ -114,7 +114,7 @@ module.exports = function(publicPath, mode) {
 				},
 				{
 					test: /\.css/,
-					loaders: ['style-loader', 'css-loader'],
+					use: ['style-loader', 'css-loader'],
 					include: [devPath]
 				},
 				{
