@@ -1,0 +1,74 @@
+[{
+    "request": {
+        "method": "GET",
+        "url": "https:\/\/api.unsplash.com\/categories\/2",
+        "headers": {
+            "Host": "api.unsplash.com",
+            "Accept-Encoding": null,
+            "User-Agent": "GuzzleHttp\/6.0.2 curl\/7.38.0 PHP\/5.6.11",
+            "Authorization": "Bearer 582c5d7ebe28bd707751a43c8e22dc5c0a4ba0a60dbe69d520677f47b7cfcc1b",
+            "Accept": null
+        }
+    },
+    "response": {
+        "status": {
+            "http_version": "1.1",
+            "code": "200",
+            "message": "OK"
+        },
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Request-Method": "*",
+            "Cache-Control": "max-age=7200, public",
+            "Content-Type": "application\/json",
+            "Content-Length": "166",
+            "ETag": "W\/\"0185fc5699c64d30a2be3ea05b02adfa\"",
+            "X-Request-Id": "ba037cc4-dd45-48a0-a03f-c2fb6c15bf6d",
+            "X-RateLimit-Limit": "5000",
+            "X-RateLimit-Remaining": "4984",
+            "X-Runtime": "0.028218",
+            "Connection": "keep-alive",
+            "Server": "thin"
+        },
+        "body": "{\"id\":2,\"title\":\"Buildings\",\"photo_count\":4738,\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/categories\/2\",\"photos\":\"https:\/\/api.unsplash.com:80\/categories\/2\/photos\"}}"
+    }
+},{
+    "request": {
+        "method": "GET",
+        "url": "https:\/\/api.unsplash.com\/categories\/3",
+        "headers": {
+            "Host": "api.unsplash.com",
+            "Accept-Encoding": null,
+            "User-Agent": "GuzzleHttp\/6.2.1 curl\/7.50.3 PHP\/5.6.27",
+            "Authorization": "Bearer 582c5d7ebe28bd707751a43c8e22dc5c0a4ba0a60dbe69d520677f47b7cfcc1b",
+            "Accept": null
+        }
+    },
+    "response": {
+        "status": {
+            "http_version": "1.1",
+            "code": "403",
+            "message": "Forbidden"
+        },
+        "headers": {
+            "Server": "Cowboy",
+            "X-Ratelimit-Limit": "100",
+            "X-Ratelimit-Remaining": "0",
+            "X-Request-Id": "0bb91f82-2683-4f8a-ad26-62db754569f2",
+            "X-Runtime": "0.191253",
+            "Strict-Transport-Security": "max-age=31536000",
+            "Via": "1.1 vegur, 1.1 varnish, 1.1 varnish",
+            "Fastly-Debug-Digest": "118a44c8f4313da7b96315796fd94e0a0bb44ff893010105fae9bb2eb6275dd3",
+            "Content-Length": "19",
+            "Accept-Ranges": "bytes",
+            "Date": "Mon, 20 Mar 2017 20:56:24 GMT",
+            "Connection": "keep-alive",
+            "X-Served-By": "cache-iad2139-IAD, cache-ord1732-ORD",
+            "X-Cache": "MISS, MISS",
+            "X-Cache-Hits": "0, 0",
+            "X-Timer": "S1490043384.493334,VS0,VE224",
+            "Vary": "Origin"
+        },
+        "body": "Rate Limit Exceeded"
+    }
+}]
