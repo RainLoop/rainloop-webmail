@@ -26,9 +26,9 @@ class Service
      * Values may also be a callable. In that case the function will be called
      * directly.
      *
-     * @var array
+     * @phpstan-var array<string, class-string|callable|object>
      */
-    public $elementMap = [];
+    public array $elementMap = [];
 
     /**
      * This is a list of namespaces that you want to give default prefixes.
@@ -36,9 +36,9 @@ class Service
      * You must make sure you create this entire list before starting to write.
      * They should be registered on the root element.
      *
-     * @var array
+     * @phpstan-var array<string, class-string|string|null>
      */
-    public $namespaceMap = [];
+    public array $namespaceMap = [];
 
     /**
      * This is a list of custom serializers for specific classes.
@@ -56,16 +56,14 @@ class Service
      *
      * function (Writer $writer, object $value)
      *
-     * @var array
+     * @phpstan-var array<class-string, callable(Writer, object):mixed>
      */
-    public $classMap = [];
+    public array $classMap = [];
 
     /**
      * A bitmask of the LIBXML_* constants.
-     *
-     * @var int
      */
-    public $options = 0;
+    public int $options = 0;
 
     /**
      * Returns a fresh XML Reader.
@@ -107,7 +105,7 @@ class Service
      *
      * @throws ParseException
      *
-     * @return array|object|string
+     * @return array<string, mixed>|object|string
      */
     public function parse($input, string $contextUri = null, string &$rootElementName = null)
     {
@@ -151,7 +149,7 @@ class Service
      *
      * @throws ParseException
      *
-     * @return array|object|string
+     * @return array<string, mixed>|object|string
      */
     public function expect($rootElementName, $input, string $contextUri = null)
     {
@@ -200,11 +198,9 @@ class Service
      * This allows an implementor to easily create URI's relative to the root
      * of the domain.
      *
-     * @param string|array|object|XmlSerializable $value
-     *
-     * @return string
+     * @param string|array<string, mixed>|object|XmlSerializable $value
      */
-    public function write(string $rootElementName, $value, string $contextUri = null)
+    public function write(string $rootElementName, $value, string $contextUri = null): string
     {
         $w = $this->getWriter();
         $w->openMemory();
@@ -239,8 +235,10 @@ class Service
      * These can easily be mapped by calling:
      *
      * $service->mapValueObject('{http://example.org}author', 'Author');
+     *
+     * @param class-string $className
      */
-    public function mapValueObject(string $elementName, string $className)
+    public function mapValueObject(string $elementName, string $className): void
     {
         list($namespace) = self::parseClarkNotation($elementName);
 
@@ -248,7 +246,7 @@ class Service
             return \Sabre\Xml\Deserializer\valueObject($reader, $className, $namespace);
         };
         $this->classMap[$className] = function (Writer $writer, $valueObject) use ($namespace) {
-            return \Sabre\Xml\Serializer\valueObject($writer, $valueObject, $namespace);
+            \Sabre\Xml\Serializer\valueObject($writer, $valueObject, $namespace);
         };
         $this->valueObjectMap[$className] = $elementName;
     }
@@ -262,11 +260,9 @@ class Service
      * The ValueObject must have been previously registered using
      * mapValueObject().
      *
-     * @param object $object
-     *
-     * @throws \InvalidArgumentException
+     *@throws \InvalidArgumentException
      */
-    public function writeValueObject($object, string $contextUri = null)
+    public function writeValueObject(object $object, string $contextUri = null): string
     {
         if (!isset($this->valueObjectMap[get_class($object)])) {
             throw new \InvalidArgumentException('"'.get_class($object).'" is not a registered value object class. Register your class with mapValueObject.');
@@ -286,6 +282,8 @@ class Service
      * If the string was invalid, it will throw an InvalidArgumentException.
      *
      * @throws \InvalidArgumentException
+     *
+     * @return array{string|null, string}
      */
     public static function parseClarkNotation(string $str): array
     {
@@ -307,6 +305,8 @@ class Service
 
     /**
      * A list of classes and which XML elements they map to.
+     *
+     * @var array<class-string, string>
      */
-    protected $valueObjectMap = [];
+    protected array $valueObjectMap = [];
 }

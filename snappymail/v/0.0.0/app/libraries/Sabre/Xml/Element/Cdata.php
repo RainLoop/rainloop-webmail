@@ -23,10 +23,8 @@ class Cdata implements Xml\XmlSerializable
 {
     /**
      * CDATA element value.
-     *
-     * @var string
      */
-    protected $value;
+    protected string $value;
 
     /**
      * Constructor.
@@ -52,7 +50,7 @@ class Cdata implements Xml\XmlSerializable
      *
      * If you are opening new elements, you must also close them again.
      */
-    public function xmlSerialize(Xml\Writer $writer)
+    public function xmlSerialize(Xml\Writer $writer): void
     {
         $writer->writeCData($this->value);
     }

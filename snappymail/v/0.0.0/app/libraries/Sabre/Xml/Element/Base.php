@@ -28,6 +28,8 @@ class Base implements Xml\Element
 
     /**
      * Constructor.
+     *
+     * @param mixed $value
      */
     public function __construct($value = null)
     {
@@ -50,7 +52,7 @@ class Base implements Xml\Element
      *
      * If you are opening new elements, you must also close them again.
      */
-    public function xmlSerialize(Xml\Writer $writer)
+    public function xmlSerialize(Xml\Writer $writer): void
     {
         $writer->write($this->value);
     }

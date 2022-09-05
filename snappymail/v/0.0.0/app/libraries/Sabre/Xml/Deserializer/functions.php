@@ -54,6 +54,8 @@ use Sabre\Xml\Reader;
  *
  * Attributes will be removed from the top-level elements. If elements with
  * the same name appear twice in the list, only the last one will be kept.
+ *
+ * @phpstan-return array<string, mixed>
  */
 function keyValue(Reader $reader, string $namespace = null): array
 {
@@ -143,6 +145,7 @@ function keyValue(Reader $reader, string $namespace = null): array
  * ];
  *
  * @return string[]
+ * @phpstan-return list<string>
  */
 function enum(Reader $reader, string $namespace = null): array
 {
@@ -189,9 +192,12 @@ function enum(Reader $reader, string $namespace = null): array
  * This is primarily used by the mapValueObject function from the Service
  * class, but it can also easily be used for more specific situations.
  *
- * @return object
+ * @template C of object
+ *
+ * @param class-string<C> $className
+ * @phpstan-return C
  */
-function valueObject(Reader $reader, string $className, string $namespace)
+function valueObject(Reader $reader, string $className, string $namespace): object
 {
     $valueObject = new $className();
     if ($reader->isEmptyElement) {
@@ -250,6 +256,8 @@ function valueObject(Reader $reader, string $className, string $namespace)
  *
  * $childElementName must either be a a clark-notation element name, or if no
  * namespace is used, the bare element name.
+ *
+ * @phpstan-return list<mixed>
  */
 function repeatingElements(Reader $reader, string $childElementName): array
 {
@@ -268,7 +276,7 @@ function repeatingElements(Reader $reader, string $childElementName): array
 }
 
 /**
- * This deserializer helps you to deserialize structures which contain mixed content like this:.
+ * This deserializer helps you to deserialize structures which contain mixed content.
  *
  * <p>some text <extref>and a inline tag</extref>and even more text</p>
  *
@@ -285,6 +293,8 @@ function repeatingElements(Reader $reader, string $childElementName): array
  * ]
  *
  * In strict XML documents you wont find this kind of markup but in html this is a quite common pattern.
+ *
+ * @return array<mixed>
  */
 function mixedContent(Reader $reader): array
 {

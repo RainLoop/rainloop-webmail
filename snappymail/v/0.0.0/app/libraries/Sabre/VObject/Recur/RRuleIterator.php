@@ -25,6 +25,13 @@ use Sabre\VObject\Property;
 class RRuleIterator implements Iterator
 {
     /**
+     * Constant denoting the upper limit on how long into the future
+     * we want to iterate. The value is a unix timestamp and currently
+     * corresponds to the datetime 9999-12-31 11:59:59 UTC.
+     */
+    const dateUpperLimit = 253402300799;
+
+    /**
      * Creates the Iterator.
      *
      * @param string|array $rrule
@@ -366,6 +373,12 @@ class RRuleIterator implements Iterator
 
             // Current hour of the day
             $currentHour = $this->currentDate->format('G');
+
+            if ($this->currentDate->getTimestamp() > self::dateUpperLimit) {
+                $this->currentDate = null;
+
+                return;
+            }
         } while (
             ($this->byDay && !in_array($currentDay, $recurrenceDays)) ||
             ($this->byHour && !in_array($currentHour, $recurrenceHours)) ||
@@ -486,7 +499,7 @@ class RRuleIterator implements Iterator
 
             // To prevent running this forever (better: until we hit the max date of DateTimeImmutable) we simply
             // stop at 9999-12-31. Looks like the year 10000 problem is not solved in php ....
-            if ($this->currentDate->getTimestamp() > 253402300799) {
+            if ($this->currentDate->getTimestamp() > self::dateUpperLimit) {
                 $this->currentDate = null;
 
                 return;
@@ -589,11 +602,12 @@ class RRuleIterator implements Iterator
                     // loop through all YearDay and Days to check all the combinations
                     foreach ($this->byYearDay as $byYearDay) {
                         $date = clone $this->currentDate;
-                        $date = $date->setDate($currentYear, 1, 1);
                         if ($byYearDay > 0) {
-                            $date = $date->add(new \DateInterval('P'.$byYearDay.'D'));
+                            $date = $date->setDate($currentYear, 1, 1);
+                            $date = $date->add(new \DateInterval('P'.($byYearDay - 1).'D'));
                         } else {
-                            $date = $date->sub(new \DateInterval('P'.abs($byYearDay).'D'));
+                            $date = $date->setDate($currentYear, 12, 31);
+                            $date = $date->sub(new \DateInterval('P'.abs($byYearDay + 1).'D'));
                         }
 
                         if ($date > $this->currentDate && in_array($date->format('N'), $dayOffsets)) {
@@ -658,6 +672,14 @@ class RRuleIterator implements Iterator
                     (int) $currentMonth,
                     (int) $currentDayOfMonth
                 );
+
+                // To prevent running this forever (better: until we hit the max date of DateTimeImmutable) we simply
+                // stop at 9999-12-31. Looks like the year 10000 problem is not solved in php ....
+                if ($this->currentDate->getTimestamp() > self::dateUpperLimit) {
+                    $this->currentDate = null;
+
+                    return;
+                }
             }
 
             // If we made it here, it means we got a valid occurrence

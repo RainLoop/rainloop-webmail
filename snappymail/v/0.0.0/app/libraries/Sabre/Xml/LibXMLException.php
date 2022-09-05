@@ -23,7 +23,7 @@ class LibXMLException extends ParseException
      *
      * @var \LibXMLError[]
      */
-    protected $errors;
+    protected array $errors;
 
     /**
      * Creates the exception.
@@ -31,7 +31,6 @@ class LibXMLException extends ParseException
      * You should pass a list of LibXMLError objects in its constructor.
      *
      * @param LibXMLError[] $errors
-     * @param Throwable     $previousException
      */
     public function __construct(array $errors, int $code = 0, Throwable $previousException = null)
     {
@@ -41,6 +40,8 @@ class LibXMLException extends ParseException
 
     /**
      * Returns the LibXML errors.
+     *
+     * @return LibXMLError[]
      */
     public function getErrors(): array
     {

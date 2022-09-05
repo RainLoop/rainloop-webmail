@@ -52,11 +52,12 @@ class Parameter extends Node
      */
     public function __construct(Document $root, $name, $value = null)
     {
-        $this->name = strtoupper($name);
         $this->root = $root;
         if (is_null($name)) {
             $this->noName = true;
             $this->name = static::guessParameterNameByValue($value);
+        } else {
+            $this->name = strtoupper($name);
         }
 
         // If guessParameterNameByValue() returns an empty string
