@@ -151,6 +151,10 @@ class Json extends Parser
             unset($parameters['group']);
         }
 
+        if ('X-CRYPTO' === $propertyName) {
+            $propertyType = 'X-CRYPTO';
+        }
+
         $prop = $this->root->createProperty($propertyName, null, $parameters, $valueType);
         $prop->setJsonValue($value);
 

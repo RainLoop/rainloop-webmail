@@ -136,6 +136,8 @@ class VCard extends VObject\Document
         'HOBBY' => VObject\Property\FlatText::class,
         'INTEREST' => VObject\Property\FlatText::class,
         'ORG-DIRECTORY' => VObject\Property\FlatText::class,
+
+        'X-CRYPTO' => VObject\Property\XCrypto::class,
     ];
 
     /**

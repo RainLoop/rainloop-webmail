@@ -272,6 +272,27 @@ class XML extends Parser
                     }
                     break;
 
+                case 'xcard:x-crypto':
+                    foreach ($xmlProperty['value'] as $i => $xmlPropertyChild) {
+                        if (is_array($xmlPropertyChild)) {
+                            $propertyParameterValues = [];
+                            foreach ($xmlPropertyChild['value'] as $xmlParameter) {
+                                if (is_array($xmlParameter['value'])) {
+                                    foreach ($xmlParameter['value'] as $xmlParameterValues) {
+                                        $propertyParameterValues[] = $xmlParameterValues['value'];
+                                    }
+                                } else {
+                                    $propertyParameterValues[] = $xmlParameter['value'];
+                                }
+                            }
+                            $propertyParameters[static::getTagName($xmlPropertyChild['name'])]
+                                = implode(',', $propertyParameterValues);
+                        }
+                        array_splice($xmlProperty['value'], $i, 1);
+                    }
+                    $propertyType = 'X-CRYPTO';
+                    break;
+
                 default:
                     $propertyType = static::getTagName($xmlProperty['value'][0]['name']);
 
