@@ -70,30 +70,6 @@ function valueObject(Writer $writer, object $valueObject, string $namespace): vo
 }
 
 /**
- * This serializer helps you serialize xml structures that look like
- * this:.
- *
- * <collection>
- *    <item>...</item>
- *    <item>...</item>
- *    <item>...</item>
- * </collection>
- *
- * In that previous example, this serializer just serializes the item element,
- * and this could be called like this:
- *
- * repeatingElements($writer, $items, '{}item');
- *
- * @param array<int,mixed> $items
- */
-function repeatingElements(Writer $writer, array $items, string $childElementName): void
-{
-    foreach ($items as $item) {
-        $writer->writeElement($childElementName, $item);
-    }
-}
-
-/**
  * This function is the 'default' serializer that is able to serialize most
  * things, and delegates to other serializers if needed.
  *
