@@ -96,6 +96,7 @@ class Writer extends XMLWriter
      */
     public function write($value): void
     {
+        require_once __DIR__ . '/Serializer/functions.php';
         Serializer\standardSerializer($this, $value);
     }
 

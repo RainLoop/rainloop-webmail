@@ -72,6 +72,7 @@ class Elements implements Xml\Element
      */
     public function xmlSerialize(Xml\Writer $writer): void
     {
+        require_once __DIR__ . '/../Serializer/functions.php';
         Serializer\enum($writer, $this->value);
     }
 
@@ -97,6 +98,7 @@ class Elements implements Xml\Element
      */
     public static function xmlDeserialize(Xml\Reader $reader): array
     {
+        require_once __DIR__ . '/../Deserializer/functions.php';
         return Deserializer\enum($reader);
     }
 }

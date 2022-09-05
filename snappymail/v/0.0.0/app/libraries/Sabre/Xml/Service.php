@@ -242,9 +242,11 @@ class Service
     {
         list($namespace) = self::parseClarkNotation($elementName);
 
+        require_once __DIR__ . '/Deserializer/functions.php';
         $this->elementMap[$elementName] = function (Reader $reader) use ($className, $namespace) {
             return \Sabre\Xml\Deserializer\valueObject($reader, $className, $namespace);
         };
+        require_once __DIR__ . '/Serializer/functions.php';
         $this->classMap[$className] = function (Writer $writer, $valueObject) use ($namespace) {
             \Sabre\Xml\Serializer\valueObject($writer, $valueObject, $namespace);
         };
