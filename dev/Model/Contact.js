@@ -32,7 +32,7 @@ const propertyMap = [
 	'URL' => 'Uri',
 	'UID' => 'FlatText',
 	'VERSION' => 'FlatText',
-	'KEY' => 'FlatText',
+	'KEY' => 'FlatText', // <uri>data:application/pgp-keys;base64,AZaz09==</uri>
 	'TZ' => 'Text',
 
 	// vCard 3.0 properties
@@ -71,6 +71,21 @@ const propertyMap = [
 	'HOBBY' => 'FlatText',
 	'INTEREST' => 'FlatText',
 	'ORG-DIRECTORY' => 'FlatText
+
+    <x-crypto>
+      <allowed>
+        <text>PGP/INLINE</text>
+        <text>PGP/MIME</text>
+        <text>S/MIME</text>
+        <text>S/MIMEOpaque</text>
+      </allowed>
+      <signpref>
+        <text>Ask | Never | IfPossible | Always</text>
+      </signpref>
+      <encryptpref>
+        <text>Ask | Never | IfPossible | Always</text>
+      </encryptpref>
+    </x-crypto>
 ];
 */
 
@@ -247,20 +262,9 @@ export class ContactModel extends AbstractModel {
 	 * @return string
 	 */
 	lineAsCss() {
-		const result = [];
-		if (this.deleted()) {
-			result.push('deleted');
-		}
-		if (this.selected()) {
-			result.push('selected');
-		}
-		if (this.checked()) {
-			result.push('checked');
-		}
-		if (this.focused()) {
-			result.push('focused');
-		}
-
-		return result.join(' ');
+		return (this.selected() ? 'selected' : '')
+			+ (this.deleted() ? ' deleted' : '')
+			+ (this.checked() ? ' checked' : '')
+			+ (this.focused() ? ' focused' : '');
 	}
 }

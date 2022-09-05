@@ -279,7 +279,10 @@ export class ContactsPopupView extends AbstractViewPopup {
 				let count = 0,
 					list = [];
 
-				if (!iError && arrayLength(data.Result.List)) {
+				if (iError) {
+//					console.error(data);
+					alert(data?.ErrorMessage || getNotification(iError));
+				} else if (arrayLength(data.Result.List)) {
 					data.Result.List.forEach(item => {
 						item = ContactModel.reviveFromJson(item);
 						item && list.push(item);
