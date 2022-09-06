@@ -62,24 +62,18 @@ const
 							vmDom.backdrop.hidden = false;
 						};
 						vmDom.close = v => {
-							vmDom.backdrop.hidden = true;
-							vmDom.returnValue = v;
-							vmDom.removeAttribute('open', null);
-							vmDom.open = false;
+//							if (vmDom.dispatchEvent(new CustomEvent('cancel', {cancelable:true}))) {
+								vmDom.backdrop.hidden = true;
+								vmDom.returnValue = v;
+								vmDom.removeAttribute('open', null);
+								vmDom.open = false;
+								vmDom.dispatchEvent(new CustomEvent('close'));
+//							}
 						};
-/*
-						shortcuts.add('escape', '', vm.keyScope.scope, () => {
-							if (vmDom.open && false !== this.onClose()) {
-								this.close();
-								return false;
-							}
-							return true; Issue with supported modal close
-						});
-*/
 					}
 					// https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/cancel_event
 //					vmDom.addEventListener('cancel', event => (false === vm.onClose() && event.preventDefault()));
-//					vmDom.addEventListener('close', () => false !== vm.onClose());
+//					vmDom.addEventListener('close', () => vm.modalVisible(false));
 
 					// show/hide popup/modal
 					const endShowHide = e => {
@@ -98,10 +92,10 @@ const
 						if (value) {
 							i18nToNodes(vmDom);
 							visiblePopups.add(vm);
-							vmDom.style.zIndex = 3000 + (visiblePopups.size * 2);
+							vmDom.style.zIndex = 3001 + (visiblePopups.size * 2);
 							vmDom.showModal();
 							if (vmDom.backdrop) {
-								vmDom.backdrop.style.zIndex = 3000 + visiblePopups.size;
+								vmDom.backdrop.style.zIndex = 3000 + (visiblePopups.size * 2);
 							}
 							vm.keyScope.set();
 							requestAnimationFrame(() => { // wait just before the next paint
