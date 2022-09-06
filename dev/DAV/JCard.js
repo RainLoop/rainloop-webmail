@@ -79,12 +79,12 @@ export class JCard {
 	 * @param arg the field, or a VCardProperty object
 	 * @param value the value for the VCardProperty object
 	 * @param params the parameters for the VCardProperty object
-	 * @param group the group for the VCardProperty object
+	 * @param type the type for the VCardProperty object
 	 */
-	set(arg, value, params, group)
+	set(arg, value, params, type)
 	{
 		if (typeof arg === 'string') {
-			arg = new VCardProperty(String(arg), value, params, group);
+			arg = new VCardProperty(String(arg), value, params, type);
 		}
 		if (!(arg instanceof VCardProperty)) {
 			throw new Error('invalid argument of VCard.set(), expects string arguments or a VCardProperty');
@@ -94,11 +94,11 @@ export class JCard {
 		return arg;
 	}
 
-	add(arg, value, params, group)
+	add(arg, value, params, type)
 	{
 		// string arguments
 		if (typeof arg === 'string') {
-			arg = new VCardProperty(String(arg), value, params, group);
+			arg = new VCardProperty(String(arg), value, params, type);
 		}
 		if (!(arg instanceof VCardProperty)) {
 			throw new Error('invalid argument of VCard.add(), expects string arguments or a VCardProperty');

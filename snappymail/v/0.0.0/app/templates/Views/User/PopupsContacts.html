@@ -72,58 +72,19 @@
 			<!-- ko template: { name: 'Paginator', data: contactsPaginator } --><!-- /ko -->
 		</div>
 	</div>
-	<div class="b-view-content-toolbar btn-toolbar" data-bind="i18nUpdate: contact">
-		<!-- ko with: contact -->
-		<div class="btn-group">
-			<button class="btn button-save-contact" data-bind="visible: !readOnly(), command: $root.saveCommand, css: {'dirty': $root.hasChanges}">
-				<i data-bind="css: {'icon-ok': !$root.isSaving(), 'icon-spinner': $root.isSaving()}"></i>
-				<span data-i18n="CONTACTS/BUTTON_CREATE_CONTACT" data-bind="visible: !id()"></span>
-				<span data-i18n="CONTACTS/BUTTON_UPDATE_CONTACT" data-bind="visible: id"></span>
-			</button>
-		</div>
-		<div class="btn-group dropdown" data-bind="visible: !readOnly(), registerBootstrapDropdown: true">
-			<a id="button-add-prop-dropdown-id" href="#" class="btn dropdown-toggle" data-i18n="CONTACTS/ADD_MENU_LABEL"></a>
-			<menu class="dropdown-menu right-edge" style="text-align: left" role="menu" aria-labelledby="button-add-prop-dropdown-id">
-				<li role="presentation">
-					<a href="#" data-bind="click: addEmail">
-						<i class="icon-none"></i>
-						<span data-i18n="GLOBAL/EMAIL"></span>
-					</a>
-				</li>
-				<li role="presentation">
-					<a href="#" data-bind="click: addTel">
-						<i class="icon-none"></i>
-						<span data-i18n="CONTACTS/ADD_MENU_PHONE"></span>
-					</a>
-				</li>
-				<li role="presentation">
-					<a href="#" data-bind="click: addUrl">
-						<i class="icon-none"></i>
-						<span data-i18n="CONTACTS/ADD_MENU_URL"></span>
-					</a>
-				</li>
-				<li class="dividerbar" role="presentation">
-					<a href="#" data-bind="click: addNickname">
-						<i class="icon-none"></i>
-						<span data-i18n="CONTACTS/ADD_MENU_NICKNAME"></span>
-					</a>
-				</li>
-<!--
-				<li role="presentation">
-					<a href="#" data-bind="click: addNewAddress">
-						<span data-i18n="CONTACTS/ADD_MENU_ADDRESS"></span>
-					</a>
-				</li>-->
-			</menu>
-		</div>
-		<!-- /ko -->
-	</div>
-	<div class="b-view-content">
-		<div class="b-contact-view-desc" data-bind="visible: !contact"
+	<div class="b-view-content" data-bind="css: {'read-only': contact() && contact().readOnly()}">
+		<div class="b-contact-view-desc" data-bind="visible: !contact()"
 			data-i18n="CONTACTS/CONTACT_VIEW_DESC"></div>
-		<div data-bind="visible: contact, i18nUpdate: contact">
+		<div class="tabs" data-bind="visible: contact, i18nUpdate: contact">
 			<!-- ko with: contact -->
-			<div class="form-horizontal top-part" data-bind="css: {'read-only': readOnly}">
+			<input type="radio" name="contacttabs" id="tab-contact" checked>
+			<label for="tab-contact"
+				role="tab"
+				aria-selected="true"
+				aria-controls="panel1"
+				tabindex="0"
+				data-i18n="CONTACTS/TAB_CONTACT"></label>
+			<div class="form-horizontal tab-content" role="tabpanel" aria-hidden="false">
 				<div class="control-group" data-bind="visible: !readOnly() || hasValidName()">
 					<label class="fontastic iconsize24">👤</label>
 					<div>
@@ -210,10 +171,107 @@
 					</div>
 				</div>
 			</div>
-			<!-- /ko -->
 <!--
-			<div class="e-read-only-sign fontastic iconsize24" data-i18n="[title]CONTACTS/LABEL_READ_ONLY">🔒</div>
+			<input type="radio" name="contacttabs" id="tab-contact-locations">
+			<label for="tab-contact-locations"
+				role="tab"
+				aria-selected="false"
+				aria-controls="panel3"
+				tabindex="0"
+				data-i18n="CONTACTS/TAB_LOCATIONS"></label>
+			<div class="form-horizontal tab-content" role="tabpanel" aria-hidden="false">
+				<div data-bind="foreach: adr">
+					<div class="control-group">
+						<div data-bind="text: type"></div>
+						<div data-bind="text: street"></div>
+						<div data-bind="text: street_ext"></div>
+						<div data-bind="text: locality"></div>
+						<div data-bind="text: region"></div>
+						<div data-bind="text: postcode"></div>
+						<div data-bind="text: pobox"></div>
+						<div data-bind="text: country"></div>
+						<div data-bind="text: preferred"></div>
+					</div>
+				</div>
+			</div>
 -->
+			<input type="radio" name="contacttabs" id="tab-contact-crypto">
+			<label for="tab-contact-crypto"
+				role="tab"
+				aria-selected="false"
+				aria-controls="panel3"
+				tabindex="0"
+				data-i18n="CONTACTS/TAB_CRYPTO"></label>
+			<div class="form-horizontal tab-content" role="tabpanel" aria-hidden="false">
+				<div class="control-group">
+					<label>Sign</label>
+					<select name="x-crypto[signpref]" data-bind="value: signpref">
+						<option value="Ask" data-i18n="CONTACTS/ASK"></option>
+						<option value="Never" data-i18n="CONTACTS/NEVER"></option>
+						<option value="Always" data-i18n="CONTACTS/ALWAYS"></option>
+						<option value="IfPossible" data-i18n="CONTACTS/ALWAYS_IF_POSSIBLE"></option>
+					</select>
+				</div>
+				<div class="control-group">
+					<label>Encrypt</label>
+					<select name="x-crypto[encryptpref]" data-bind="value: encryptpref">
+						<option value="Ask" data-i18n="CONTACTS/ASK"></option>
+						<option value="Never" data-i18n="CONTACTS/NEVER"></option>
+						<option value="Always" data-i18n="CONTACTS/ALWAYS"></option>
+						<option value="IfPossible" data-i18n="CONTACTS/ALWAYS_IF_POSSIBLE"></option>
+					</select>
+				</div>
+			</div>
+			<!-- /ko -->
 		</div>
+	</div>
+	<div class="b-view-content-toolbar btn-toolbar" data-bind="i18nUpdate: contact">
+		<!-- ko with: contact -->
+		<div class="btn-group">
+			<button class="btn button-save-contact" data-bind="visible: !readOnly(), command: $root.saveCommand, css: {'dirty': $root.hasChanges}">
+				<i data-bind="css: {'icon-ok': !$root.isSaving(), 'icon-spinner': $root.isSaving()}"></i>
+				<span data-i18n="CONTACTS/BUTTON_CREATE_CONTACT" data-bind="visible: !id()"></span>
+				<span data-i18n="CONTACTS/BUTTON_UPDATE_CONTACT" data-bind="visible: id"></span>
+			</button>
+		</div>
+		<div class="btn-group dropdown" data-bind="visible: !readOnly(), registerBootstrapDropdown: true">
+			<a id="button-add-prop-dropdown-id" href="#" class="btn dropdown-toggle" data-i18n="CONTACTS/ADD_MENU_LABEL"></a>
+			<menu class="dropdown-menu right-edge" style="text-align: left" role="menu" aria-labelledby="button-add-prop-dropdown-id">
+				<li role="presentation">
+					<a href="#" data-bind="click: addEmail">
+						<i class="icon-none"></i>
+						<span data-i18n="GLOBAL/EMAIL"></span>
+					</a>
+				</li>
+				<li role="presentation">
+					<a href="#" data-bind="click: addTel">
+						<i class="icon-none"></i>
+						<span data-i18n="CONTACTS/ADD_MENU_PHONE"></span>
+					</a>
+				</li>
+				<li role="presentation">
+					<a href="#" data-bind="click: addUrl">
+						<i class="icon-none"></i>
+						<span data-i18n="CONTACTS/ADD_MENU_URL"></span>
+					</a>
+				</li>
+				<li class="dividerbar" role="presentation">
+					<a href="#" data-bind="click: addNickname">
+						<i class="icon-none"></i>
+						<span data-i18n="CONTACTS/ADD_MENU_NICKNAME"></span>
+					</a>
+				</li>
+<!--
+				<li role="presentation">
+					<a href="#" data-bind="click: addNewAddress">
+						<span data-i18n="CONTACTS/ADD_MENU_ADDRESS"></span>
+					</a>
+				</li>-->
+			</menu>
+		</div>
+<!--
+		<div class="read-only-sign fontastic iconsize24" data-bind="visible: readOnly" data-i18n="[title]CONTACTS/LABEL_READ_ONLY">🔒</div>
+-->
+		<!-- /ko -->
 	</div>
 </div>

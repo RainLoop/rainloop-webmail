@@ -174,6 +174,13 @@
 		"SEARCHING_DESC": "Пошук..."
 	},
 	"CONTACTS": {
+		"TAB_CONTACT": "Contact",
+		"TAB_LOCATIONS": "Locations",
+		"TAB_CRYPTO": "Crypto",
+		"ASK": "Ask",
+		"NEVER": "Never",
+		"ALWAYS": "Always",
+		"ALWAYS_IF_POSSIBLE": "Always if possible",
 		"BUTTON_ADD_CONTACT": "Додати контакт",
 		"BUTTON_CREATE_CONTACT": "Зберегти",
 		"BUTTON_UPDATE_CONTACT": "Оновити",

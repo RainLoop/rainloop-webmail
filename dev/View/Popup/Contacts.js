@@ -107,7 +107,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 	}
 
 	newContact() {
-		this.populateViewContact(null);
+		this.populateViewContact();
 		this.selectorContact(null);
 	}
 
@@ -252,11 +252,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 	 * @param {?ContactModel} contact
 	 */
 	populateViewContact(contact) {
-		if (!contact) {
-			contact = new ContactModel;
-		}
-		this.contact(contact);
-
+		this.contact(contact || new ContactModel);
 		this.hasChanges(false);
 	}
 

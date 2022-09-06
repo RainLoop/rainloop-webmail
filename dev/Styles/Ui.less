@@ -99,9 +99,10 @@ tr:hover .drag-handle {
 
 .tabs {
     display: grid;
+    grid-auto-columns: minmax(0, 1fr);
 }
 
-.tabs input[type="radio"] {
+.tabs > input[type="radio"] {
 	position: absolute;
 	top: 0;
 	left: -9999px;
@@ -109,7 +110,7 @@ tr:hover .drag-handle {
 }
 
 // Actual tabs
-.tabs label {
+.tabs > label {
 	border: 1px solid transparent;
 	border-radius: 4px 4px 0 0;
 	cursor: pointer;
@@ -124,9 +125,9 @@ tr:hover .drag-handle {
 		opacity: 0.8;
 	}
 }
-.tabs [id^="tab"]:checked + label {
+.tabs > [id^="tab"]:checked + label {
 	background-color: @white;
-	border-color: #ddd #ddd transparent #ddd;
+	border-color: rgba(128,128,128,.5) rgba(128,128,128,.5) transparent rgba(128,128,128,.5);
 	opacity: 1;
 	z-index: 1;
 }
@@ -140,6 +141,6 @@ tr:hover .drag-handle {
 	visibility: hidden;
 }
 
-.tabs [id^="tab"]:checked + label + .tab-content {
+.tabs > [id^="tab"]:checked + label + .tab-content {
 	visibility: visible;
 }

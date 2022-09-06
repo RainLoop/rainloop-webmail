@@ -2,11 +2,6 @@
 
 namespace RainLoop\Providers\AddressBook\Classes;
 
-use
-	RainLoop\Providers\AddressBook\Enumerations\PropertyType,
-	RainLoop\Providers\AddressBook\Classes\Property
-;
-
 class Contact implements \JsonSerializable
 {
 	/**

@@ -2,7 +2,11 @@
 
 namespace RainLoop\Providers\AddressBook;
 
-use RainLoop\Providers\AddressBook\Enumerations\PropertyType;
+use
+	Sabre\VObject\Component\VCard,
+	RainLoop\Providers\AddressBook\Classes\Contact,
+	RainLoop\Providers\AddressBook\Enumerations\PropertyType
+;
 
 class PdoAddressBook
 	extends \RainLoop\Common\PdoAbstract
@@ -265,7 +269,7 @@ class PdoAddressBook
 							}
 						}
 
-						if ($oVCard instanceof \Sabre\VObject\Component\VCard) {
+						if ($oVCard instanceof VCard) {
 							$oVCard->UID = $aData['uid'];
 
 							$oContact = null;
@@ -273,7 +277,7 @@ class PdoAddressBook
 								$oContact = $this->GetContactByID($mExistingContactID);
 							}
 							if (!$oContact) {
-								$oContact = new Classes\Contact();
+								$oContact = new Contact();
 							}
 
 							$oContact->setVCard($oVCard);
@@ -325,7 +329,7 @@ class PdoAddressBook
 		return true;
 	}
 
-	public function ContactSave(Classes\Contact $oContact) : bool
+	public function ContactSave(Contact $oContact) : bool
 	{
 		if (1 > $this->iUserID) {
 			return false;
@@ -390,9 +394,9 @@ class PdoAddressBook
 
 			if (0 < $iIdContact) {
 				$aParams = array();
-				foreach (Utils::VCardToProperties($oContact->vCard) as /* @var $oProp Classes\Property */ $oProp) {
+				foreach (Legacy::VCardToProperties($oContact->vCard) as /* @var $oProp Classes\Property */ $oProp) {
 					$iFreq = $oProp->Frec;
-					if ($oProp->IsEmail() && isset($aFreq[$oProp->Value])) {
+					if (PropertyType::EMAIl === $oProp->Type && isset($aFreq[$oProp->Value])) {
 						$iFreq = $aFreq[$oProp->Value];
 					}
 					$aParams[] = array(
@@ -401,8 +405,8 @@ class PdoAddressBook
 						':prop_type' => array($oProp->Type, \PDO::PARAM_INT),
 						':prop_type_str' => array($oProp->TypeStr, \PDO::PARAM_STR),
 						':prop_value' => array($oProp->Value, \PDO::PARAM_STR),
-						':prop_value_lower' => array($oProp->ValueLower, \PDO::PARAM_STR),
-						':prop_value_custom' => array($oProp->ValueCustom, \PDO::PARAM_STR),
+						':prop_value_lower' => array(\mb_strtolower($oProp->Value, 'UTF-8'), \PDO::PARAM_STR),
+						':prop_value_custom' => array('', \PDO::PARAM_STR),
 						':prop_frec' => array($iFreq, \PDO::PARAM_INT),
 					);
 				}
@@ -475,7 +479,7 @@ class PdoAddressBook
 				foreach ($aFetch as $aItem) {
 					$iIdContact = $aItem && isset($aItem['id_contact']) ? (int) $aItem['id_contact'] : 0;
 					if (0 < $iIdContact) {
-						$oContact = new Classes\Contact();
+						$oContact = new Contact();
 						$oContact->id = (string) $iIdContact;
 						$oContact->IdContactStr = (string) $aItem['id_contact_str'];
 //						$oContact->Display = (string) $aItem['display'];
@@ -523,7 +527,7 @@ class PdoAddressBook
 										$iPrevId = $iId;
 									}
 									if (!isset($aVCards[$iId])) {
-										$aVCards[$iId] = new \Sabre\VObject\Component\VCard;
+										$aVCards[$iId] = new VCard;
 									}
 									$oVCard = $aVCards[$iId];
 									$oVCard->VERSION = '4.0';
@@ -684,7 +688,7 @@ class PdoAddressBook
 	/**
 	 * @param mixed $mID
 	 */
-	public function GetContactByID($mID, bool $bIsStrID = false) : ?Classes\Contact
+	public function GetContactByID($mID, bool $bIsStrID = false) : ?Contact
 	{
 		$mID = \trim($mID);
 
@@ -962,16 +966,12 @@ class PdoAddressBook
 
 		if (\count($aEmailsToCreate)) {
 			foreach ($aEmailsToCreate as $oEmail) {
-				$oContact = new Classes\Contact();
-
+				$oVCard = new VCard;
+				$bValid = false;
 				if ('' !== \trim($oEmail->GetEmail())) {
-					$oPropEmail = new Classes\Property();
-					$oPropEmail->Type = Enumerations\PropertyType::EMAIl;
-					$oPropEmail->Value = \trim($oEmail->GetEmail(true));
-
-					$oContact->Properties[] = $oPropEmail;
+					$oVCard->add('EMAIL', \trim($oEmail->GetEmail(true)));
+					$bValid = true;
 				}
-
 				if ('' !== \trim($oEmail->GetDisplayName())) {
 					$sFirst = $sLast = '';
 					$sFullName = $oEmail->GetDisplayName();
@@ -982,25 +982,14 @@ class PdoAddressBook
 					} else {
 						$sFirst = $sFullName;
 					}
-
-					if (\strlen($sFirst)) {
-						$oPropName = new Classes\Property();
-						$oPropName->Type = Enumerations\PropertyType::FIRST_NAME;
-						$oPropName->Value = \trim($sFirst);
-
-						$oContact->Properties[] = $oPropName;
-					}
-
-					if (\strlen($sLast)) {
-						$oPropName = new Classes\Property();
-						$oPropName->Type = Enumerations\PropertyType::LAST_NAME;
-						$oPropName->Value = \trim($sLast);
-
-						$oContact->Properties[] = $oPropName;
+					if (\strlen($sFirst) || \strlen($sLast)) {
+						$oVCard->N = array($sLast, $sFirst, '', '', '');
+						$bValid = true;
 					}
 				}
-
-				if (\count($oContact->Properties)) {
+				if ($bValid) {
+					$oContact = new Contact();
+					$oContact->setVCard($oVCard);
 					$this->ContactSave($oContact);
 				}
 			}

@@ -174,6 +174,13 @@
 		"SEARCHING_DESC": "Söker..."
 	},
 	"CONTACTS": {
+		"TAB_CONTACT": "Contact",
+		"TAB_LOCATIONS": "Locations",
+		"TAB_CRYPTO": "Crypto",
+		"ASK": "Ask",
+		"NEVER": "Never",
+		"ALWAYS": "Always",
+		"ALWAYS_IF_POSSIBLE": "Always if possible",
 		"BUTTON_ADD_CONTACT": "Lägg till",
 		"BUTTON_CREATE_CONTACT": "Ny",
 		"BUTTON_UPDATE_CONTACT": "Uppdatera",

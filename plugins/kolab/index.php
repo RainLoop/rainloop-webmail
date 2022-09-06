@@ -4,11 +4,11 @@ class KolabPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Kolab',
-		VERSION = '1.1',
-		RELEASE  = '2022-05-20',
+		VERSION = '2.0',
+		RELEASE  = '2022-09-06',
 		CATEGORY = 'Contacts',
 		DESCRIPTION = 'Use an Address Book of Kolab.',
-		REQUIRED = '2.16.2';
+		REQUIRED = '2.18.0';
 
 	public function Init() : void
 	{

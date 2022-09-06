@@ -1,8 +1,6 @@
 <?php
 
 use RainLoop\Providers\AddressBook\Classes\Contact;
-use RainLoop\Providers\AddressBook\Classes\Property;
-use RainLoop\Providers\AddressBook\Enumerations\PropertyType;
 
 class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInterface
 {
@@ -297,6 +295,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 				$oParams->sSearch = 'from='.$sSearch;
 			}
 			$oParams->sSort = 'FROM';
+			$oParams->bUseSortIfSupported = !!\RainLoop\Api::Actions()->Config()->Get('labs', 'use_imap_sort', true);
 //			$oParams->iPrevUidNext = $this->GetActionParam('UidNext', 0);
 //			$oParams->bUseThreads = false;
 

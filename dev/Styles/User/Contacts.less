@@ -11,7 +11,7 @@
 	max-height: 700px;
 
 	.control-group {
-		label {
+		label.iconsize24 {
 			padding-top: 0;
 			width: 50px;
 		}
@@ -135,12 +135,12 @@
 	.b-view-content-toolbar {
 		padding: 7px;
 		position: absolute;
-		top: 0;
+		bottom: 0;
 		right: 0;
 		left: @contacts-popup-left-width;
 		height: 30px;
 		text-align: right;
-		border-bottom: 1px solid rgba(128,128,128,0.4);
+		border-top: 1px solid rgba(128,128,128,0.4);
 
 		.button-save-contact {
 			&.dirty:enabled {
@@ -148,12 +148,17 @@
 				font-weight: bold;
 			}
 		}
+
+		.dropdown-menu.right-edge {
+			top: auto;
+			bottom: 100%;
+		}
 	}
 
 	.b-view-content {
 		position: absolute;
-		top: 45px;
-		bottom: 0;
+		top: 0;
+		bottom: 45px;
 		left: @contacts-popup-left-width;
 		right: 0;
 		overflow: auto;
@@ -176,17 +181,8 @@
 			color: #999;
 		}
 
-		.top-part {
-			padding-top: 20px;
-		}
-
 		.property-line {
 			margin-bottom: 5px;
-		}
-
-		.top-row {
-			padding: 10px 0;
-			height: 30px;
 		}
 
 		input, textarea {
@@ -206,43 +202,28 @@
 				border-color: #999;
 			}
 		}
+	}
 
-		.hasError {
-			input {
-				color: #ee5f5b;
-				border-color: #ee5f5b;
-			}
+	.read-only-sign {
+		display: none;
+		position: absolute;
+		top: 20px;
+		right: 40px;
+	}
+
+	.read-only {
+		span, .e-read-only-sign {
+			display: inline-block;
 		}
 
-		.e-save-trigger {
-			position: absolute;
-			top: 25px;
-			left: 10px;
-		}
-
-		.e-read-only-sign {
+		input, textarea {
 			display: none;
-			position: absolute;
-			top: 20px;
-			right: 40px;
 		}
+	}
 
-		.e-share-sign {
-			position: absolute;
-			top: 20px;
-			right: 20px;
-			cursor: pointer;
-		}
-
-		&.read-only {
-			span, .e-read-only-sign {
-				display: inline-block;
-			}
-
-			input, textarea, .e-share-sign {
-				display: none;
-			}
-		}
+	.tab-content {
+		grid-column-end: 3;
+		padding-top: 20px;
 	}
 }
 

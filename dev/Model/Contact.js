@@ -108,12 +108,16 @@ export class ContactModel extends AbstractModel {
 			middleName: '', // MiddleName
 			namePrefix: '', // NamePrefix
 			nameSuffix: '',  // NameSuffix
-			nickname: null
+			nickname: null,
+
+			encryptpref: '',
+			signpref: ''
 		});
 //		this.email = koArrayWithDestroy();
 		this.email = ko.observableArray();
 		this.tel   = ko.observableArray();
 		this.url   = ko.observableArray();
+		this.adr   = ko.observableArray();
 
 		this.addComputables({
 			hasValidName: () => !!(this.givenName() || this.surName()),
@@ -156,7 +160,7 @@ export class ContactModel extends AbstractModel {
 
 	/**
 	 * @static
-	 * @param {FetchJsonContact} json
+	 * @param {jCard} json
 	 * @returns {?ContactModel}
 	 */
 	static reviveFromJson(json) {
@@ -180,6 +184,26 @@ export class ContactModel extends AbstractModel {
 					});
 				});
 			});
+
+			props = jCard.get('adr');
+			props && props.forEach(prop => {
+				contact.adr.push({
+					street: ko.observable(prop.value[2]),
+					street_ext: ko.observable(prop.value[1]),
+					locality: ko.observable(prop.value[3]),
+					region: ko.observable(prop.value[4]),
+					postcode: ko.observable(prop.value[5]),
+					pobox: ko.observable(prop.value[0]),
+					country: ko.observable(prop.value[6]),
+					preferred: ko.observable(prop.params.pref),
+					type: ko.observable(prop.params.type) // HOME | WORK
+				});
+			});
+
+			props = jCard.getOne('x-Crypto');
+			contact.signpref(props?.params.signpref || 'Ask');
+			contact.encryptpref(props?.params.encryptpref || 'Ask');
+//			contact.encryptpref(props?.params.allowed || 'PGP/INLINE,PGP/MIME,S/MIME,S/MIMEOpaque');
 
 			contact.jCard = jCard;
 		}
@@ -248,6 +272,12 @@ export class ContactModel extends AbstractModel {
 			});
 			values.forEach(value => value && jCard.add(field, value));
 		});
+
+		jCard.set('x-Crypto', '', {
+			allowed: 'PGP/INLINE,PGP/MIME,S/MIME,S/MIMEOpaque',
+			signpref: this.signpref(),
+			encryptpref: this.encryptpref()
+		}, 'x-crypto');
 
 		// Done by server
 //		jCard.set('rev', '2022-05-21T10:59:52Z')
