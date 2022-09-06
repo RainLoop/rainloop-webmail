@@ -62,9 +62,9 @@ export class AbstractViewPopup extends AbstractView
 		shortcuts.add('escape,close', '', name, () => {
 			if (this.modalVisible() && false !== this.onClose()) {
 				this.close();
-				return false;
 			}
-			return true;
+			return false;
+//			return true; Issue with supported modal close
 		});
 	}
 

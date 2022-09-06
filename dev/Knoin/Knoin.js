@@ -50,7 +50,7 @@ const
 				if (ViewTypePopup === position) {
 					vm.close = () => hideScreenPopup(ViewModelClass);
 
-					// Firefox / Safari HTMLDialogElement not defined
+					// Firefox < 98 / Safari < 15.4 HTMLDialogElement not defined
 					if (!vmDom.showModal) {
 						vmDom.classList.add('polyfill');
 						vmDom.showModal = () => {
@@ -67,7 +67,19 @@ const
 							vmDom.removeAttribute('open', null);
 							vmDom.open = false;
 						};
+/*
+						shortcuts.add('escape', '', vm.keyScope.scope, () => {
+							if (vmDom.open && false !== this.onClose()) {
+								this.close();
+								return false;
+							}
+							return true; Issue with supported modal close
+						});
+*/
 					}
+					// https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/cancel_event
+//					vmDom.addEventListener('cancel', event => (false === vm.onClose() && event.preventDefault()));
+//					vmDom.addEventListener('close', () => false !== vm.onClose());
 
 					// show/hide popup/modal
 					const endShowHide = e => {
@@ -174,7 +186,7 @@ const
 
 			// Close all popups
 			for (let vm of visiblePopups) {
-				false === vm.onClose() || vm.close();
+				(false === vm.onClose()) || vm.close();
 			}
 
 			if (screenName) {
