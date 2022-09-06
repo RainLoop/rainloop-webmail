@@ -64,6 +64,15 @@ class Contact implements \JsonSerializable
 */
 	public function setVCard(\Sabre\VObject\Component\VCard $oVCard) : void
 	{
+		// KDE KAddressBook entry and used by SnappyMail
+		// https://github.com/sabre-io/vobject/issues/589
+		$oVCard->select('X-CRYPTO')
+		|| $oVCard->add('X-CRYPTO', '', [
+			'allowed' => 'PGP/INLINE,PGP/MIME,S/MIME,S/MIMEOpaque',
+			'signpref' => 'Ask',
+			'encryptpref' => 'Ask'
+		]);
+
 		$aWarnings = $oVCard->validate(3);
 //		\error_log(\print_r($aWarnings,1));
 		$this->vCard = $oVCard;
