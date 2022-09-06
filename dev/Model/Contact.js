@@ -94,6 +94,7 @@ export class ContactModel extends AbstractModel {
 			namePrefix: '', // NamePrefix
 			nameSuffix: '',  // NameSuffix
 			nickname: null,
+			note: null,
 
 			// Business
 			org: '',
@@ -162,7 +163,7 @@ export class ContactModel extends AbstractModel {
 				value && contact[nProps[index]](value)
 			);
 
-			['nickname', 'title'].forEach(field => {
+			['nickname', 'note', 'title'].forEach(field => {
 				props = jCard.getOne(field);
 				props && contact[field](props.value);
 			});
@@ -243,6 +244,10 @@ export class ContactModel extends AbstractModel {
 		this.nickname() || this.nickname('');
 	}
 
+	addNote() {
+		this.note() || this.note('');
+	}
+
 	hasChanges()
 	{
 		return this.toJSON().jCard != JSON.stringify(this.jCard);
@@ -260,7 +265,7 @@ export class ContactModel extends AbstractModel {
 		]/*, params, group*/);
 //		jCard.parseFullName({set:true});
 
-		['nickname', 'title'].forEach(field =>
+		['nickname', 'note', 'title'].forEach(field =>
 			this[field]() ? jCard.set(field, this[field]()/*, params, group*/) : jCard.remove(field)
 		);
 
@@ -269,7 +274,8 @@ export class ContactModel extends AbstractModel {
 			if (this.department()) {
 				org.push(this.department());
 			}
-			jCard.set('org', org);
+			let prop = jCard.getOne('org');
+			prop ? prop.value = org : jCard.set('org', org);
 		} else {
 			jCard.remove('');
 		}
