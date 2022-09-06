@@ -93,7 +93,7 @@ export class ContactModel extends AbstractModel {
 	constructor() {
 		super();
 
-		this.jCard = new JCard();
+		this.jCard = ['vcard',[]];
 
 		this.addObservables({
 			focused: false,
@@ -122,14 +122,13 @@ export class ContactModel extends AbstractModel {
 		this.addComputables({
 			hasValidName: () => !!(this.givenName() || this.surName()),
 
-			fullName: () => (this.givenName() + ' ' + this.surName()).trim(),
+			fullName: () => [this.namePrefix(), this.givenName(), this.middleName(), this.surName()].join(' ').trim(),
 
 			display: () => {
-				let a = this.jCard.getOne('fn')?.value,
-					b = this.fullName(),
-					c = this.jCard.getOne('email')?.value,
-					d = this.nickname();
-				return a || b || c || d;
+				let a = this.fullName(),
+					b = this.email()?.[0]?.value,
+					c = this.nickname();
+				return a || b || c;
 			}
 /*
 			fullName: {
@@ -200,12 +199,12 @@ export class ContactModel extends AbstractModel {
 				});
 			});
 
-			props = jCard.getOne('x-Crypto');
+			props = jCard.getOne('x-crypto');
 			contact.signpref(props?.params.signpref || 'Ask');
 			contact.encryptpref(props?.params.encryptpref || 'Ask');
 //			contact.encryptpref(props?.params.allowed || 'PGP/INLINE,PGP/MIME,S/MIME,S/MIMEOpaque');
 
-			contact.jCard = jCard;
+			contact.jCard = json.jCard;
 		}
 		return contact;
 	}
@@ -246,9 +245,14 @@ export class ContactModel extends AbstractModel {
 		this.nickname() || this.nickname('');
 	}
 
+	hasChanges()
+	{
+		return this.toJSON().jCard != JSON.stringify(this.jCard);
+	}
+
 	toJSON()
 	{
-		let jCard = this.jCard;
+		let jCard = new JCard(this.jCard);
 		jCard.set('n', [
 			this.surName(),
 			this.givenName(),
@@ -273,7 +277,7 @@ export class ContactModel extends AbstractModel {
 			values.forEach(value => value && jCard.add(field, value));
 		});
 
-		jCard.set('x-Crypto', '', {
+		jCard.set('x-crypto', '', {
 			allowed: 'PGP/INLINE,PGP/MIME,S/MIME,S/MIMEOpaque',
 			signpref: this.signpref(),
 			encryptpref: this.encryptpref()

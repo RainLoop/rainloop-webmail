@@ -15,7 +15,7 @@ import Remote from 'Remote/User/Fetch';
 import { EmailModel } from 'Model/Email';
 import { ContactModel } from 'Model/Contact';
 
-import { decorateKoCommands, showScreenPopup } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 import { AskPopupView } from 'View/Popup/Ask';
@@ -43,8 +43,6 @@ export class ContactsPopupView extends AbstractViewPopup {
 
 			isSaving: false,
 
-			hasChanges: false,
-
 			contact: null
 		});
 
@@ -61,9 +59,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 			'.e-contact-item.focused'
 		);
 
-		this.selector.on('ItemSelect', contact => {
-			this.populateViewContact(contact);
-		});
+		this.selector.on('ItemSelect', contact => this.populateViewContact(contact));
 
 		this.selector.on('ItemGetUid', contact => contact ? contact.generateUid() : '');
 
@@ -95,13 +91,10 @@ export class ContactsPopupView extends AbstractViewPopup {
 
 		this.saveCommand = this.saveCommand.bind(this);
 
-//		this.hasChanges(!!contact()?.toJSON().jCard);
-
 		decorateKoCommands(this, {
-//			close: self => !self.hasChanges(),
 			deleteCommand: self => 0 < self.contactsCheckedOrSelected().length,
 			newMessageCommand: self => 0 < self.contactsCheckedOrSelected().length,
-			saveCommand: self => !self.isSaving() && !self.hasChanges(),
+			saveCommand: self => !self.isSaving(),
 			syncCommand: self => !self.contacts.syncing() && !self.contacts.importing()
 		});
 	}
@@ -171,22 +164,29 @@ export class ContactsPopupView extends AbstractViewPopup {
 	}
 
 	saveCommand() {
-		this.isSaving(true);
-		const contact = this.contact();
-		Remote.request('ContactSave',
-			(iError, oData) => {
-				this.isSaving(false);
-				if (!iError && oData.Result.ResultID) {
-					contact.id(oData.Result.ResultID);
-					this.reloadContactList(); // TODO: remove when e-contact-foreach is dynamic
-					this.hasChanges(false);
-				}
-			}, {
-				Contact: contact
-//				Uid: contact.id(),
-//				jCard: contact.jCard
-			}
-		);
+		this.saveContact(this.contact());
+	}
+
+	saveContact(contact) {
+		const data = contact.toJSON();
+		if (data.jCard != JSON.stringify(contact.jCard)) {
+			this.isSaving(true);
+			Remote.request('ContactSave',
+				(iError, oData) => {
+					this.isSaving(false);
+					if (iError) {
+						alert(oData?.ErrorMessage || getNotification(iError));
+					} else if (oData.Result.ResultID) {
+						if (contact.id()) {
+							contact.id(oData.Result.ResultID);
+							contact.jCard = JSON.parse(data.jCard);
+						} else {
+							this.reloadContactList(); // TODO: remove when e-contact-foreach is dynamic
+						}
+					}
+				}, data
+			);
+		}
 	}
 
 	syncCommand() {
@@ -252,8 +252,14 @@ export class ContactsPopupView extends AbstractViewPopup {
 	 * @param {?ContactModel} contact
 	 */
 	populateViewContact(contact) {
+		const oldContact = this.contact();
+		if (oldContact?.hasChanges()) {
+			AskPopupView.showModal([
+				i18n('GLOBAL/SAVE_CHANGES'),
+				() => this.saveContact(oldContact)
+			]);
+		}
 		this.contact(contact || new ContactModel);
-		this.hasChanges(false);
 	}
 
 	/**
@@ -349,10 +355,16 @@ export class ContactsPopupView extends AbstractViewPopup {
 		}
 	}
 
+	tryToClose() {
+		(false === this.onClose()) || this.close();
+	}
+
 	onClose() {
-		if (this.hasChanges() && AskPopupView.hidden()) {
-			showScreenPopup(AskPopupView, [
-				i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'),
+		const contact = this.contact();
+		if (AskPopupView.hidden() && contact?.hasChanges()) {
+			AskPopupView.showModal([
+				i18n('GLOBAL/SAVE_CHANGES'),
+				() => this.close() | this.saveContact(contact),
 				() => this.close()
 			]);
 			return false;

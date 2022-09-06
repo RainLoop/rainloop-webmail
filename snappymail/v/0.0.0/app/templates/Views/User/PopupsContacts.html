@@ -1,6 +1,6 @@
 <header class="b-header-toolbar g-ui-user-select-none">
 
-	<a href="#" class="close" data-bind="click: close">×</a>
+	<a href="#" class="close" data-bind="click: tryToClose">×</a>
 
 	<div class="btn-toolbar">
 
@@ -228,7 +228,7 @@
 	<div class="b-view-content-toolbar btn-toolbar" data-bind="i18nUpdate: contact">
 		<!-- ko with: contact -->
 		<div class="btn-group">
-			<button class="btn button-save-contact" data-bind="visible: !readOnly(), command: $root.saveCommand, css: {'dirty': $root.hasChanges}">
+			<button class="btn button-save-contact" data-bind="visible: !readOnly(), command: $root.saveCommand">
 				<i data-bind="css: {'icon-ok': !$root.isSaving(), 'icon-spinner': $root.isSaving()}"></i>
 				<span data-i18n="CONTACTS/BUTTON_CREATE_CONTACT" data-bind="visible: !id()"></span>
 				<span data-i18n="CONTACTS/BUTTON_UPDATE_CONTACT" data-bind="visible: id"></span>

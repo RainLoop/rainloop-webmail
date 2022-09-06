@@ -2,12 +2,6 @@
  * Inspired by https://github.com/mcpar-land/vcfer
  */
 
-const
-	camelCase = str =>
-		str.replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) =>
-			index === 0 ? word.toLowerCase() : word.toUpperCase()
-		).replace(/\s+/g, '');
-
 export class VCardProperty {
 
 	/**
@@ -68,7 +62,7 @@ export class VCardProperty {
 	parseFromJCardProperty(jCardProp)
 	{
 		jCardProp = JSON.parse(JSON.stringify(jCardProp));
-		this.field = camelCase(jCardProp[0]);
+		this.field = jCardProp[0].toLowerCase();
 		this.params = jCardProp[1];
 		this.type = jCardProp[2];
 		this.value = jCardProp[3];

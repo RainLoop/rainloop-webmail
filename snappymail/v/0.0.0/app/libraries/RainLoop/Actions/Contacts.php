@@ -97,15 +97,14 @@ trait Contacts
 
 		$bResult = false;
 
-		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-		if ($oAddressBookProvider && $oAddressBookProvider->IsActive()) {
-			$aContact = $this->GetActionParam('Contact');
-			if (\is_array($aContact) && isset($aContact['Uid'], $aContact['jCard'])) {
-				$vCard = \Sabre\VObject\Reader::readJson($aContact['jCard']);
+		if ($this->HasActionParam('Uid') && $this->HasActionParam('jCard')) {
+			$oAddressBookProvider = $this->AddressBookProvider($oAccount);
+			if ($oAddressBookProvider && $oAddressBookProvider->IsActive()) {
+				$vCard = \Sabre\VObject\Reader::readJson($this->GetActionParam('jCard'));
 				if ($vCard && $vCard instanceof \Sabre\VObject\Component\VCard) {
 					$vCard->REV = \gmdate('Ymd\\THis\\Z');
 					$vCard->PRODID = 'SnappyMail-'.APP_VERSION;
-					$sUid = \trim($aContact['Uid']);
+					$sUid = \trim($this->GetActionParam('Uid'));
 					$oContact = $sUid ? $oAddressBookProvider->GetContactByID($sUid) : null;
 					if (!$oContact) {
 						$oContact = new \RainLoop\Providers\AddressBook\Classes\Contact();
