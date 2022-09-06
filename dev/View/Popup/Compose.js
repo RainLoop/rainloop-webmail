@@ -326,7 +326,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			]
 		});
 
-		this.tryToClosePopup = this.tryToClosePopup.debounce(200);
+		this.tryToClose = this.tryToClose.debounce(200);
 
 		this.iTimer = 0;
 
@@ -724,7 +724,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			this.saveCommand();
 		}
 
-		this.tryToClosePopup();
+		this.tryToClose();
 	}
 
 	contactsCommand() {
@@ -1183,7 +1183,7 @@ export class ComposePopupView extends AbstractViewPopup {
 		}, 100);
 	}
 
-	tryToClosePopup() {
+	tryToClose() {
 		if (AskPopupView.hidden()) {
 			if (this.bSkipNextHide || (this.isEmptyForm() && !this.draftUid())) {
 				this.close();
@@ -1331,7 +1331,7 @@ export class ComposePopupView extends AbstractViewPopup {
 		});
 
 		addShortcut('escape,close', 'shift', ScopeCompose, () => {
-			this.tryToClosePopup();
+			this.tryToClose();
 			return false;
 		});
 
