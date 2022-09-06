@@ -92,39 +92,39 @@
 							<span data-bind="text: givenName"></span>
 							<input type="text"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-								data-bind="value: givenName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME">
+								data-bind="textInput: givenName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME">
 						</div>
 						<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_LAST_NAME">
 							<span data-bind="text: surName"></span>
 							<input type="text"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-								data-bind="value: surName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_LAST_NAME">
+								data-bind="textInput: surName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_LAST_NAME">
 						</div>
 <!--
 						<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_MIDDLE_NAME">
 							<span data-bind="text: middleName"></span>
 							<input type="text"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-								data-bind="value: middleName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_MIDDLE_NAME">
+								data-bind="textInput: middleName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_MIDDLE_NAME">
 						</div>
 						<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_NAME_PREFIX">
 							<span data-bind="text: namePrefix"></span>
 							<input type="text"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-								data-bind="value: namePrefix" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_NAME_PREFIX">
+								data-bind="textInput: namePrefix" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_NAME_PREFIX">
 						</div>
 						<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_NAME_SUFFIX">
 							<span data-bind="text: nameSuffix"></span>
 							<input type="text"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-								data-bind="value: nameSuffix" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_NAME_SUFFIX">
+								data-bind="textInput: nameSuffix" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_NAME_SUFFIX">
 						</div>
 -->
 						<div class="property-line" data-bind="visible: null != nickname()" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_NICK_NAME">
 							<span data-bind="text: nickname"></span>
 							<input type="text"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-								data-bind="value: nickname" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_NICK_NAME">
+								data-bind="textInput: nickname" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_NICK_NAME">
 						</div>
 					</div>
 				</div>
@@ -136,7 +136,7 @@
 								<span data-bind="text: value"></span>
 								<input type="text"
 									autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-									data-bind="value: value">
+									data-bind="textInput: value">
 							</div>
 						</div>
 						<a href="#" class="btn fontastic" data-bind="visible: !readOnly(), click: addEmail">✚</a>
@@ -150,7 +150,7 @@
 								<span data-bind="text: value"></span>
 								<input type="text"
 									autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-									data-bind="value: value">
+									data-bind="textInput: value">
 							</div>
 						</div>
 						<a href="#" class="btn fontastic" data-bind="visible: !readOnly(), click: addTel">✚</a>
@@ -164,7 +164,7 @@
 								<span data-bind="text: value"></span>
 								<input type="text" placeholder="https://"
 									autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-									data-bind="value: value">
+									data-bind="textInput: value">
 							</div>
 						</div>
 						<a href="#" class="btn fontastic" data-bind="visible: !readOnly(), click: addUrl">✚</a>
@@ -176,7 +176,7 @@
 			<label for="tab-contact-locations"
 				role="tab"
 				aria-selected="false"
-				aria-controls="panel3"
+				aria-controls="panel2"
 				tabindex="0"
 				data-i18n="CONTACTS/TAB_LOCATIONS"></label>
 			<div class="form-horizontal tab-content" role="tabpanel" aria-hidden="false">
@@ -195,16 +195,47 @@
 				</div>
 			</div>
 -->
-			<input type="radio" name="contacttabs" id="tab-contact-crypto">
-			<label for="tab-contact-crypto"
+			<input type="radio" name="contacttabs" id="tab-contact-business">
+			<label for="tab-contact-business"
 				role="tab"
 				aria-selected="false"
 				aria-controls="panel3"
 				tabindex="0"
+				data-i18n="CONTACTS/TAB_BUSINESS"></label>
+			<div class="form-horizontal tab-content" role="tabpanel" aria-hidden="false">
+				<div class="control-group">
+					<label data-i18n="CONTACTS/LABEL_ORGANIZATION"></label>
+					<span data-bind="text: org"></span>
+					<input type="text"
+						autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						data-bind="textInput: org">
+				</div>
+				<div class="control-group">
+					<label data-i18n="CONTACTS/LABEL_DEPARTMENT"></label>
+					<span data-bind="text: department"></span>
+					<input type="text"
+						autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						data-bind="textInput: department">
+				</div>
+				<div class="control-group">
+					<label data-i18n="CONTACTS/LABEL_TITLE"></label>
+					<span data-bind="text: title"></span>
+					<input type="text"
+						autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						data-bind="textInput: title">
+				</div>
+			</div>
+
+			<input type="radio" name="contacttabs" id="tab-contact-crypto">
+			<label for="tab-contact-crypto"
+				role="tab"
+				aria-selected="false"
+				aria-controls="panel4"
+				tabindex="0"
 				data-i18n="CONTACTS/TAB_CRYPTO"></label>
 			<div class="form-horizontal tab-content" role="tabpanel" aria-hidden="false">
 				<div class="control-group">
-					<label>Sign</label>
+					<label data-i18n="OPENPGP/LABEL_SIGN"></label>
 					<select name="x-crypto[signpref]" data-bind="value: signpref">
 						<option value="Ask" data-i18n="CONTACTS/ASK"></option>
 						<option value="Never" data-i18n="CONTACTS/NEVER"></option>
@@ -213,7 +244,7 @@
 					</select>
 				</div>
 				<div class="control-group">
-					<label>Encrypt</label>
+					<label data-i18n="OPENPGP/LABEL_ENCRYPT"></label>
 					<select name="x-crypto[encryptpref]" data-bind="value: encryptpref">
 						<option value="Ask" data-i18n="CONTACTS/ASK"></option>
 						<option value="Never" data-i18n="CONTACTS/NEVER"></option>

@@ -71,21 +71,6 @@ const propertyMap = [
 	'HOBBY' => 'FlatText',
 	'INTEREST' => 'FlatText',
 	'ORG-DIRECTORY' => 'FlatText
-
-    <x-crypto>
-      <allowed>
-        <text>PGP/INLINE</text>
-        <text>PGP/MIME</text>
-        <text>S/MIME</text>
-        <text>S/MIMEOpaque</text>
-      </allowed>
-      <signpref>
-        <text>Ask | Never | IfPossible | Always</text>
-      </signpref>
-      <encryptpref>
-        <text>Ask | Never | IfPossible | Always</text>
-      </encryptpref>
-    </x-crypto>
 ];
 */
 
@@ -110,6 +95,12 @@ export class ContactModel extends AbstractModel {
 			nameSuffix: '',  // NameSuffix
 			nickname: null,
 
+			// Business
+			org: '',
+			department: '',
+			title: '',
+
+			// Crypto
 			encryptpref: '',
 			signpref: ''
 		});
@@ -171,8 +162,15 @@ export class ContactModel extends AbstractModel {
 				value && contact[nProps[index]](value)
 			);
 
-			props = jCard.getOne('nickname');
-			props && contact.nickname(props.value);
+			['nickname', 'title'].forEach(field => {
+				props = jCard.getOne(field);
+				props && contact[field](props.value);
+			});
+
+			if ((props = jCard.getOne('org')?.value)) {
+				contact.org(props[0]);
+				contact.department(props[1] || '');
+			}
 
 			['email', 'tel', 'url'].forEach(field => {
 				props = jCard.get(field);
@@ -262,7 +260,19 @@ export class ContactModel extends AbstractModel {
 		]/*, params, group*/);
 //		jCard.parseFullName({set:true});
 
-		this.nickname() ? jCard.set('nickname', this.nickname()/*, params, group*/) : jCard.remove('nickname');
+		['nickname', 'title'].forEach(field =>
+			this[field]() ? jCard.set(field, this[field]()/*, params, group*/) : jCard.remove(field)
+		);
+
+		if (this.org()) {
+			let org = [this.org()];
+			if (this.department()) {
+				org.push(this.department());
+			}
+			jCard.set('org', org);
+		} else {
+			jCard.remove('');
+		}
 
 		['email', 'tel', 'url'].forEach(field => {
 			let values = this[field].map(item => item.value());
