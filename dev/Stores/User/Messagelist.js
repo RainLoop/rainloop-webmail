@@ -6,6 +6,7 @@ import { MessageSetAction } from 'Common/EnumsUser';
 import { $htmlCL } from 'Common/Globals';
 import { arrayLength, pInt, pString } from 'Common/Utils';
 import { addObservablesTo, addComputablesTo } from 'External/ko';
+import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import {
 	getFolderInboxName,
@@ -45,6 +46,7 @@ addObservablesTo(MessagelistUserStore, {
 	page: 1,
 	pageBeforeThread: 1,
 	error: '',
+//	Folder: '',
 
 	endHash: '',
 	endThreadUid: 0,
@@ -67,6 +69,28 @@ addComputablesTo(MessagelistUserStore, {
 		$htmlCL.toggle('list-loading', value);
 		return value;
 	},
+
+	isArchiveFolder: () => FolderUserStore.archiveFolder() === MessagelistUserStore().Folder,
+
+	isDraftFolder: () => FolderUserStore.draftsFolder() === MessagelistUserStore().Folder,
+
+	isSentFolder: () => FolderUserStore.sentFolder() === MessagelistUserStore().Folder,
+
+	isSpamFolder: () => FolderUserStore.spamFolder() === MessagelistUserStore().Folder,
+
+	isTrashFolder: () => FolderUserStore.trashFolder() === MessagelistUserStore().Folder,
+
+	archiveAllowed: () => ![UNUSED_OPTION_VALUE, MessagelistUserStore().Folder].includes(FolderUserStore.archiveFolder())
+		&& !MessagelistUserStore.isDraftFolder(),
+
+	spamAllowed: () => !(UNUSED_OPTION_VALUE === FolderUserStore.spamFolder()
+//		| MessagelistUserStore.isArchiveFolder()
+		| MessagelistUserStore.isSentFolder()
+		| MessagelistUserStore.isDraftFolder()),
+
+	isSpamAllowed: () => MessagelistUserStore.spamAllowed() && !MessagelistUserStore.isSpamFolder(),
+
+	isUnSpamAllowed: () => MessagelistUserStore.spamAllowed() && MessagelistUserStore.isSpamFolder(),
 
 	pageCount: () => Math.max(1, Math.ceil(MessagelistUserStore.count() / SettingsUserStore.messagesPerPage())),
 

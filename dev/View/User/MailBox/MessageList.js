@@ -4,8 +4,6 @@ import { Scope } from 'Common/Enums';
 
 import { ComposeType, FolderType, MessageSetAction } from 'Common/EnumsUser';
 
-import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-
 import { doc, leftPanelDisabled, moveAction,
 	Settings, SettingsCapa, SettingsGet,
 	addEventsListeners,
@@ -70,6 +68,9 @@ export class MailMessageList extends AbstractViewRight {
 		this.allowDangerousActions = SettingsCapa('DangerousActions');
 
 		this.messageList = MessagelistUserStore;
+		this.archiveAllowed = MessagelistUserStore.archiveAllowed;
+		this.isSpamAllowed = MessagelistUserStore.isSpamAllowed;
+		this.isUnSpamAllowed = MessagelistUserStore.isUnSpamAllowed;
 
 		this.composeInEdit = AppUserStore.composeInEdit;
 
@@ -134,25 +135,6 @@ export class MailMessageList extends AbstractViewRight {
 				const c = MessagelistUserStore.listChecked().length;
 				return c && MessagelistUserStore().length > c;
 			},
-
-			isSpamFolder: () => (FolderUserStore.spamFolder() || 0) === MessagelistUserStore().Folder,
-
-			isTrashFolder: () => (FolderUserStore.trashFolder() || 0) === MessagelistUserStore().Folder,
-
-			isDraftFolder: () => (FolderUserStore.draftsFolder() || 0) === MessagelistUserStore().Folder,
-
-			archiveAllowed: () =>
-				(FolderUserStore.archiveFolder() || 0) !== MessagelistUserStore().Folder
-				&& UNUSED_OPTION_VALUE !== FolderUserStore.archiveFolder()
-				&& !this.isDraftFolder(),
-
-			spamAllowed: () => UNUSED_OPTION_VALUE !== FolderUserStore.spamFolder()
-				&& (FolderUserStore.sentFolder() || 0) !== MessagelistUserStore().Folder
-				&& !this.isDraftFolder(),
-
-			isSpamVisible: () => !this.isSpamFolder() && this.spamAllowed(),
-
-			isUnSpamVisible: () => this.isSpamFolder() && this.spamAllowed(),
 
 			mobileCheckedStateShow: () => ThemeStore.isMobile() ? MessagelistUserStore.listChecked().length : 1,
 
@@ -596,7 +578,7 @@ export class MailMessageList extends AbstractViewRight {
 			!MessagelistUserStore.error() &&
 			!MessagelistUserStore.endThreadUid() &&
 			MessagelistUserStore().length &&
-			(this.isSpamFolder() || this.isTrashFolder())
+			(MessagelistUserStore.isSpamFolder() || MessagelistUserStore.isTrashFolder())
 		);
 	}
 

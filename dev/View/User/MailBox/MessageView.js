@@ -1,7 +1,4 @@
 import ko from 'ko';
-import { koComputable } from 'External/ko';
-
-import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import { Scope } from 'Common/Enums';
 
@@ -74,10 +71,10 @@ export class MailMessageView extends AbstractViewRight {
 			 */
 			createCommand = (fExecute, fCanExecute) => {
 				let fResult = () => {
-						fResult.canExecute() && fExecute.call(null);
+						fCanExecute() && fExecute.call(null);
 						return false;
 					};
-				fResult.canExecute = koComputable(() => fCanExecute());
+				fResult.canExecute = fCanExecute;
 				return fResult;
 			},
 
@@ -114,8 +111,13 @@ export class MailMessageView extends AbstractViewRight {
 		const attachmentsActions = Settings.app('attachmentsActions');
 		this.attachmentsActions = ko.observableArray(arrayLength(attachmentsActions) ? attachmentsActions : []);
 
-		this.message = MessageUserStore.message;
 		this.hasCheckedMessages = MessagelistUserStore.hasCheckedMessages;
+		this.isDraftFolder = MessagelistUserStore.isDraftFolder;
+		this.archiveAllowed = MessagelistUserStore.archiveAllowed;
+		this.isSpamAllowed = MessagelistUserStore.isSpamAllowed;
+		this.isUnSpamAllowed = MessagelistUserStore.isUnSpamAllowed;
+
+		this.message = MessageUserStore.message;
 		this.messageLoadingThrottle = MessageUserStore.loading;
 		this.messagesBodiesDom = MessageUserStore.bodiesDom;
 		this.messageError = MessageUserStore.error;
@@ -142,7 +144,7 @@ export class MailMessageView extends AbstractViewRight {
 
 			messageVisibility: () => !MessageUserStore.loading() && !!currentMessage(),
 
-			canBeRepliedOrForwarded: () => !this.isDraftFolder() && this.messageVisibility(),
+			canBeRepliedOrForwarded: () => !MessagelistUserStore.isDraftFolder() && this.messageVisibility(),
 
 			viewFromDkimVisibility: () => 'none' !== this.viewFromDkimData()[0],
 
@@ -444,50 +446,8 @@ export class MailMessageView extends AbstractViewRight {
 	/**
 	 * @returns {boolean}
 	 */
-	isDraftFolder() {
-		return currentMessage() && FolderUserStore.draftsFolder() === currentMessage().folder;
-	}
-
-	/**
-	 * @returns {boolean}
-	 */
-	isSentFolder() {
-		return currentMessage() && FolderUserStore.sentFolder() === currentMessage().folder;
-	}
-
-	/**
-	 * @returns {boolean}
-	 */
-	isSpamFolder() {
-		return currentMessage() && FolderUserStore.spamFolder() === currentMessage().folder;
-	}
-
-	/**
-	 * @returns {boolean}
-	 */
-	isSpamDisabled() {
-		return currentMessage() && FolderUserStore.spamFolder() === UNUSED_OPTION_VALUE;
-	}
-
-	/**
-	 * @returns {boolean}
-	 */
-	isArchiveFolder() {
-		return currentMessage() && FolderUserStore.archiveFolder() === currentMessage().folder;
-	}
-
-	/**
-	 * @returns {boolean}
-	 */
-	isArchiveDisabled() {
-		return currentMessage() && FolderUserStore.archiveFolder() === UNUSED_OPTION_VALUE;
-	}
-
-	/**
-	 * @returns {boolean}
-	 */
 	isDraftOrSentFolder() {
-		return this.isDraftFolder() || this.isSentFolder();
+		return MessagelistUserStore.isDraftFolder() || MessagelistUserStore.isSentFolder();
 	}
 
 	composeClick() {
