@@ -12,6 +12,8 @@ import { koComputable } from 'External/ko';
 		UpOrDown
 */
 
+let shiftStart;
+
 export class Selector {
 	/**
 	 * @param {koProperty} koList
@@ -316,22 +318,31 @@ export class Selector {
 	 */
 	newSelectPosition(sEventKey, bShiftKey, bForceSelect) {
 		let isArrow = 'ArrowUp' === sEventKey || 'ArrowDown' === sEventKey,
-			result = null;
+			result;
 
 		const pageStep = 10,
 			list = this.list(),
 			listLen = list.length,
 			focused = this.focusedItem();
 
-		if (listLen) {
+		if (' ' === sEventKey) {
+			focused?.checked(!focused.checked());
+		} else if (listLen) {
 			if (focused) {
 				if (isArrow) {
 					let i = list.indexOf(focused);
+					shiftStart = bShiftKey ? (-1 < shiftStart ? shiftStart : i) : -1;
+					shiftStart == i && focused.checked(true);
 					if ('ArrowUp' == sEventKey) {
-						i > 0 && (result = list[i-1]);
-					} else if (++i < listLen) {
-						result = list[i];
+						bShiftKey && shiftStart < i && focused.checked(false);
+						i > 0 && (result = list[--i]);
+					} else {
+						bShiftKey && shiftStart > i && focused.checked(false);
+						if (++i < listLen) {
+							result = list[i];
+						}
 					}
+					bShiftKey && result?.checked(true);
 					result || this.oCallbacks.UpOrDown?.('ArrowUp' === sEventKey);
 				} else if ('Home' === sEventKey) {
 					result = list[0];
@@ -359,26 +370,14 @@ export class Selector {
 			) {
 				result = list[list.length - 1];
 			}
-		}
 
-		if (result) {
-			this.focusedItem(result);
-
-			if (focused && ((bShiftKey && isArrow) || ' ' === sEventKey)) {
-				focused.checked(!focused.checked());
+			if (result) {
+				this.focusedItem(result);
+				if ((this.autoSelect() || bForceSelect) && !this.isListChecked()) {
+					this.selectedItem(result);
+				}
+				this.scrollToFocused();
 			}
-
-			if (' ' !== sEventKey && (this.autoSelect() || bForceSelect) && !this.isListChecked()) {
-				this.selectedItem(result);
-			}
-
-			this.scrollToFocused();
-		} else if (focused) {
-			if ((bShiftKey && isArrow) || ' ' === sEventKey) {
-				focused.checked(!focused.checked());
-			}
-
-			this.focusedItem(focused);
 		}
 	}
 
