@@ -31,7 +31,6 @@ export class Selector {
 	) {
 		this.list = koList;
 		this.listChecked = koComputable(() => this.list.filter(item => item.checked())).extend({ rateLimit: 0 });
-		this.isListChecked = koComputable(() => 0 < this.listChecked().length);
 
 		this.focusedItem = koFocusedItem || ko.observable(null);
 		this.selectedItem = koSelectedItem || ko.observable(null);
@@ -67,10 +66,7 @@ export class Selector {
 
 		this.selectedItem.subscribe((item) => {
 			if (item) {
-				if (this.isListChecked()) {
-					this.listChecked().forEach(subItem => subItem.checked(false));
-				}
-
+				this.list.forEach(subItem => subItem.checked(false));
 				if (this.selectedItemUseCallback) {
 					itemSelectedThrottle(item);
 				}
@@ -218,11 +214,15 @@ export class Selector {
 		});
 	}
 
+	isListChecked() {
+		return this.list.find(item => item.checked());
+	}
+
 	itemSelected(item) {
 		if (this.isListChecked()) {
-			item || (this.oCallbacks.ItemSelect || (()=>0))(null);
+			item || this.oCallbacks.ItemSelect?.(null);
 		} else if (item) {
-			(this.oCallbacks.ItemSelect || (()=>0))(item);
+			this.oCallbacks.ItemSelect?.(item);
 		}
 	}
 
@@ -260,7 +260,7 @@ export class Selector {
 						const item = getItem(this.sItemSelector);
 						if (item) {
 							this.focusedItem(item);
-							(this.oCallbacks.MiddleClick || (()=>0))(item);
+							this.oCallbacks.MiddleClick?.(item);
 						}
 					}
 				}
@@ -332,7 +332,7 @@ export class Selector {
 					} else if (++i < listLen) {
 						result = list[i];
 					}
-					result || (this.oCallbacks.UpOrDown || (()=>0))('ArrowUp' === sEventKey);
+					result || this.oCallbacks.UpOrDown?.('ArrowUp' === sEventKey);
 				} else if ('Home' === sEventKey) {
 					result = list[0];
 				} else if ('End' === sEventKey) {
