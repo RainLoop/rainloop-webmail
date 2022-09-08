@@ -112,10 +112,10 @@ export class MailMessageView extends AbstractViewRight {
 		this.attachmentsActions = ko.observableArray(arrayLength(attachmentsActions) ? attachmentsActions : []);
 
 		this.hasCheckedMessages = MessagelistUserStore.hasCheckedMessages;
-		this.isDraftFolder = MessagelistUserStore.isDraftFolder;
 		this.archiveAllowed = MessagelistUserStore.archiveAllowed;
-		this.isSpamAllowed = MessagelistUserStore.isSpamAllowed;
-		this.isUnSpamAllowed = MessagelistUserStore.isUnSpamAllowed;
+		this.canMarkAsSpam = MessagelistUserStore.canMarkAsSpam;
+		this.isDraftFolder = MessagelistUserStore.isDraftFolder;
+		this.isSpamFolder = MessagelistUserStore.isSpamFolder;
 
 		this.message = MessageUserStore.message;
 		this.messageLoadingThrottle = MessageUserStore.loading;

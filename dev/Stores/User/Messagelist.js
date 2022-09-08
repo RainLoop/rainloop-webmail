@@ -83,14 +83,11 @@ addComputablesTo(MessagelistUserStore, {
 	archiveAllowed: () => ![UNUSED_OPTION_VALUE, MessagelistUserStore().Folder].includes(FolderUserStore.archiveFolder())
 		&& !MessagelistUserStore.isDraftFolder(),
 
-	spamAllowed: () => !(UNUSED_OPTION_VALUE === FolderUserStore.spamFolder()
+	canMarkAsSpam: () => !(UNUSED_OPTION_VALUE === FolderUserStore.spamFolder()
 //		| MessagelistUserStore.isArchiveFolder()
 		| MessagelistUserStore.isSentFolder()
-		| MessagelistUserStore.isDraftFolder()),
-
-	isSpamAllowed: () => MessagelistUserStore.spamAllowed() && !MessagelistUserStore.isSpamFolder(),
-
-	isUnSpamAllowed: () => MessagelistUserStore.spamAllowed() && MessagelistUserStore.isSpamFolder(),
+		| MessagelistUserStore.isDraftFolder()
+		| MessagelistUserStore.isSpamFolder()),
 
 	pageCount: () => Math.max(1, Math.ceil(MessagelistUserStore.count() / SettingsUserStore.messagesPerPage())),
 

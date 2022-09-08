@@ -67,8 +67,8 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.messageList = MessagelistUserStore;
 		this.archiveAllowed = MessagelistUserStore.archiveAllowed;
-		this.isSpamAllowed = MessagelistUserStore.isSpamAllowed;
-		this.isUnSpamAllowed = MessagelistUserStore.isUnSpamAllowed;
+		this.canMarkAsSpam = MessagelistUserStore.canMarkAsSpam;
+		this.isSpamFolder = MessagelistUserStore.isSpamFolder;
 
 		this.composeInEdit = AppUserStore.composeInEdit;
 
