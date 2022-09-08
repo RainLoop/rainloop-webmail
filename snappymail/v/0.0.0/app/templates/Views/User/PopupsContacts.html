@@ -120,7 +120,7 @@
 								data-bind="textInput: nameSuffix" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_NAME_SUFFIX">
 						</div>
 -->
-						<div class="property-line" data-bind="visible: null != nickname()" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_NICK_NAME">
+						<div class="property-line" data-bind="visible: null != nickname()" data-i18n="[title]CONTACTS/ADD_MENU_NICKNAME">
 							<span data-bind="text: nickname"></span>
 							<input type="text"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
@@ -143,7 +143,7 @@
 					</div>
 				</div>
 				<div class="control-group" data-bind="visible: tel().length">
-					<label class="fontastic iconsize24" data-i18n="[title]CONTACTS/LABEL_PHONE">📞</label>
+					<label class="fontastic iconsize24" data-i18n="[title]CONTACTS/ADD_MENU_PHONE">📞</label>
 					<div>
 						<div data-bind="foreach: tel">
 							<div class="property-line">
@@ -157,7 +157,7 @@
 					</div>
 				</div>
 				<div class="control-group" data-bind="visible: url().length">
-					<label class="fontastic iconsize24" data-i18n="[title]CONTACTS/LABEL_WEB">🌍</label>
+					<label class="fontastic iconsize24" data-i18n="[title]CONTACTS/ADD_MENU_URL">🌍</label>
 					<div>
 						<div data-bind="foreach: url">
 							<div class="property-line">
@@ -168,6 +168,15 @@
 							</div>
 						</div>
 						<a href="#" class="btn fontastic" data-bind="visible: !readOnly(), click: addUrl">✚</a>
+					</div>
+				</div>
+				<div class="control-group" data-bind="visible: null != note()">
+					<label class="fontastic iconsize24" data-i18n="[title]CONTACTS/ADD_MENU_NOTE">🖉</label>
+					<div class="property-line">
+						<span data-bind="text: note"></span>
+						<input type="text"
+							autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							data-bind="textInput: note">
 					</div>
 				</div>
 			</div>
@@ -268,7 +277,7 @@
 		<div class="btn-group dropdown" data-bind="visible: !readOnly(), registerBootstrapDropdown: true">
 			<a id="button-add-prop-dropdown-id" href="#" class="btn dropdown-toggle" data-i18n="CONTACTS/ADD_MENU_LABEL"></a>
 			<menu class="dropdown-menu right-edge" style="text-align: left" role="menu" aria-labelledby="button-add-prop-dropdown-id">
-				<li role="presentation">
+				<li role="presentation" data-bind="visible: null == nickname()">
 					<a href="#" data-bind="click: addNickname">
 						<i class="icon-none"></i>
 						<span data-i18n="CONTACTS/ADD_MENU_NICKNAME"></span>
@@ -292,14 +301,14 @@
 						<span data-i18n="CONTACTS/ADD_MENU_URL"></span>
 					</a>
 				</li>
-<!--
-				<li class="dividerbar" role="presentation">
+				<li role="presentation" data-bind="visible: null == note()">
 					<a href="#" data-bind="click: addNote">
-						<i class="icon-none"></i>
-						<span data-i18n="CONTACTS/ADD_MENU_NOTES"></span>
+						<i class="fontastic">🖉</i>
+						<span data-i18n="CONTACTS/ADD_MENU_NOTE"></span>
 					</a>
 				</li>
-				<li role="presentation">
+<!--
+				<li class="dividerbar" role="presentation">
 					<a href="#" data-bind="click: addNewAddress">
 						<span data-i18n="CONTACTS/ADD_MENU_ADDRESS"></span>
 					</a>

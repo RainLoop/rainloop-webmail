@@ -199,14 +199,15 @@ export class ContactsPopupView extends AbstractViewPopup {
 	 * @param {?ContactModel} contact
 	 */
 	populateViewContact(contact) {
-		const oldContact = this.contact();
+		const oldContact = this.contact(),
+			fn = () => this.contact(contact);
 		if (oldContact?.hasChanges()) {
 			AskPopupView.showModal([
 				i18n('GLOBAL/SAVE_CHANGES'),
-				() => this.saveContact(oldContact)
+				() => this.saveContact(oldContact) | fn(),
+				fn
 			]);
-		}
-		this.contact(contact);
+		} else fn();
 	}
 
 	/**

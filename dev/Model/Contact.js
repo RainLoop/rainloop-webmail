@@ -250,7 +250,7 @@ export class ContactModel extends AbstractModel {
 
 	hasChanges()
 	{
-		return this.toJSON().jCard != JSON.stringify(this.jCard);
+		return this.email().filter(v => v.length).length && this.toJSON().jCard != JSON.stringify(this.jCard);
 	}
 
 	toJSON()
