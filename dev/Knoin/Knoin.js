@@ -52,7 +52,6 @@ const
 
 					// Firefox < 98 / Safari < 15.4 HTMLDialogElement not defined
 					if (!vmDom.showModal) {
-						vmDom.classList.add('polyfill');
 						vmDom.showModal = () => {
 							vmDom.backdrop ||
 								vmDom.before(vmDom.backdrop = Element.fromHTML('<div class="dialog-backdrop"></div>'));
@@ -67,7 +66,7 @@ const
 								vmDom.returnValue = v;
 								vmDom.removeAttribute('open', null);
 								vmDom.open = false;
-								vmDom.dispatchEvent(new CustomEvent('close'));
+//								vmDom.dispatchEvent(new CustomEvent('close'));
 //							}
 						};
 					}

@@ -13,7 +13,10 @@ use Sabre\VObject\Property;
  * @copyright Copyright (C) SnappyMail (https://snappymail.eu/)
  * @author DJMaze (https://snappymail.eu/)
  * @license http://sabre.io/license/ Modified BSD License
+ *
+ * https://github.com/sabre-io/vobject/issues/589
  */
+
 class XCrypto extends Property
 //class XCrypto extends Text
 {

@@ -31,7 +31,7 @@ export class AbstractScreen {
 			let route = new Crossroads(),
 				fMatcher = (this.onRoute || (()=>0)).bind(this);
 
-			routes.forEach(item => item && route && (route.addRoute(item[0], fMatcher).rules = item[1]));
+			routes.forEach(item => item && (route.addRoute(item[0], fMatcher).rules = item[1]));
 
 			this.__cross = route;
 		}
