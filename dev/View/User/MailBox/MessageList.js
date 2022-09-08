@@ -63,8 +63,6 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.newMoveToFolder = !!SettingsGet('NewMoveToFolder');
 
-		this.allowSearch = SettingsCapa('Search');
-		this.allowSearchAdv = SettingsCapa('SearchAdv');
 		this.allowDangerousActions = SettingsCapa('DangerousActions');
 
 		this.messageList = MessagelistUserStore;
@@ -776,8 +774,7 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	advancedSearchClick() {
-		SettingsCapa('SearchAdv')
-			&& showScreenPopup(AdvancedSearchPopupView, [MessagelistUserStore.mainSearch()]);
+		showScreenPopup(AdvancedSearchPopupView, [MessagelistUserStore.mainSearch()]);
 	}
 
 	quotaTooltip() {

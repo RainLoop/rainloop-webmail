@@ -209,8 +209,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 			'capa' => array(
 				'quota' => array(true),
-				'search' => array(true),
-				'search_adv' => array(true),
 				'dangerous_actions' => array(true),
 				'message_actions' => array(true),
 				'attachments_actions' => array(true)

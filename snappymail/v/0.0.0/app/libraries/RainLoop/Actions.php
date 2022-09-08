@@ -1178,8 +1178,6 @@ class Actions
 				'MessageActions'       => (bool) $oConfig->Get('capa', 'message_actions', true),
 				'OpenPGP'              => (bool) $oConfig->Get('security', 'openpgp', false),
 				'Quota'                => (bool) $oConfig->Get('capa', 'quota', true),
-				'Search'               => (bool) $oConfig->Get('capa', 'search', true),
-				'SearchAdv'            => (bool) $oConfig->Get('capa', 'search', true) && $oConfig->Get('capa', 'search_adv', true),
 				'Sieve'                => false,
 				'Themes'               => (bool) $oConfig->Get('webmail', 'allow_themes', false),
 				'UserBackground'       => (bool) $oConfig->Get('webmail', 'allow_user_background', false)
