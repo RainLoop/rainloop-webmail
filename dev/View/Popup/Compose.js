@@ -239,8 +239,6 @@ export class ComposePopupView extends AbstractViewPopup {
 		this.allowContacts = AppUserStore.allowContacts();
 		this.allowIdentities = SettingsCapa('Identities');
 
-		this.bSkipNextHide = false;
-
 		this.addObservables({
 			identitiesDropdownTrigger: false,
 
@@ -442,115 +440,6 @@ export class ComposePopupView extends AbstractViewPopup {
 		this.from(IdentityUserStore()[0].formattedName());
 	}
 
-	async getMessageRequestParams(sSaveFolder, draft)
-	{
-		const
-			identity = this.currentIdentity(),
-			params = {
-				IdentityID: identity.id(),
-				MessageFolder: this.draftsFolder(),
-				MessageUid: this.draftUid(),
-				SaveFolder: sSaveFolder,
-				From: this.from(),
-				To: this.to(),
-				Cc: this.cc(),
-				Bcc: this.bcc(),
-				ReplyTo: this.replyTo(),
-				subject: this.subject(),
-				DraftInfo: this.aDraftInfo,
-				InReplyTo: this.sInReplyTo,
-				References: this.sReferences,
-				MarkAsImportant: this.markAsImportant() ? 1 : 0,
-				Attachments: this.prepareAttachmentsForSendOrSave(),
-				// Only used at send, not at save:
-				Dsn: this.requestDsn() ? 1 : 0,
-				ReadReceiptRequest: this.requestReadReceipt() ? 1 : 0
-			},
-			recipients = draft ? [identity.email()] : this.allRecipients(),
-			sign = !draft && this.pgpSign() && this.canPgpSign(),
-			encrypt = this.pgpEncrypt() && this.canPgpEncrypt(),
-			TextIsHtml = this.oEditor.isHtml();
-
-		let Text = this.oEditor.getData();
-		if (TextIsHtml) {
-			let l;
-			do {
-				l = Text.length;
-				Text = Text
-					// Remove Microsoft Office styling
-					.replace(/(<[^>]+[;"'])\s*mso-[a-z-]+\s*:[^;"']+/gi, '$1')
-					// Remove hubspot data-hs- attributes
-					.replace(/(<[^>]+)\s+data-hs-[a-z-]+=("[^"]+"|'[^']+')/gi, '$1');
-			} while (l != Text.length)
-			params.Html = Text;
-			params.Text = htmlToPlain(Text);
-		} else {
-			params.Text = Text;
-		}
-
-		if (this.mailvelope && 'mailvelope' === this.viewArea()) {
-			params.Encrypted = draft
-				? await this.mailvelope.createDraft()
-				: await this.mailvelope.encrypt(recipients);
-		} else if (sign || encrypt) {
-			let data = new MimePart;
-			data.headers['Content-Type'] = 'text/'+(TextIsHtml?'html':'plain')+'; charset="utf-8"';
-			data.headers['Content-Transfer-Encoding'] = 'base64';
-			data.body = base64_encode(Text);
-			if (TextIsHtml) {
-				const alternative = new MimePart, plain = new MimePart;
-				alternative.headers['Content-Type'] = 'multipart/alternative';
-				plain.headers['Content-Type'] = 'text/plain; charset="utf-8"';
-				plain.headers['Content-Transfer-Encoding'] = 'base64';
-				plain.body = base64_encode(params.Text);
-				// First add plain
-				alternative.children.push(plain);
-				// Now add HTML
-				alternative.children.push(data);
-				data = alternative;
-			}
-			if (!draft && sign?.[1]) {
-				if ('openpgp' == sign[0]) {
-					// Doesn't sign attachments
-					params.Html = params.Text = '';
-					let signed = new MimePart;
-					signed.headers['Content-Type'] =
-						'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"';
-					signed.headers['Content-Transfer-Encoding'] = '7Bit';
-					signed.children.push(data);
-					let signature = new MimePart;
-					signature.headers['Content-Type'] = 'application/pgp-signature; name="signature.asc"';
-					signature.headers['Content-Transfer-Encoding'] = '7Bit';
-					signature.body = await OpenPGPUserStore.sign(data.toString(), sign[1], 1);
-					signed.children.push(signature);
-					params.Signed = signed.toString();
-					params.Boundary = signed.boundary;
-					data = signed;
-				} else if ('gnupg' == sign[0]) {
-					// TODO: sign in PHP fails
-//					params.SignData = data.toString();
-					params.SignFingerprint = sign[1].fingerprint;
-					params.SignPassphrase = await GnuPGUserStore.sign(sign[1]);
-				} else {
-					throw 'Signing with ' + sign[0] + ' not yet implemented';
-				}
-			}
-			if (encrypt) {
-				if ('openpgp' == encrypt) {
-					// Doesn't encrypt attachments
-					params.Encrypted = await OpenPGPUserStore.encrypt(data.toString(), recipients);
-					params.Signed = '';
-				} else if ('gnupg' == encrypt) {
-					// Does encrypt attachments
-					params.EncryptFingerprints = JSON.stringify(GnuPGUserStore.getPublicKeyFingerprints(recipients));
-				} else {
-					throw 'Encryption with ' + encrypt + ' not yet implemented';
-				}
-			}
-		}
-		return params;
-	}
-
 	sendCommand() {
 		let sSentFolder = FolderUserStore.sentFolder();
 
@@ -713,7 +602,7 @@ export class ComposePopupView extends AbstractViewPopup {
 	}
 
 	skipCommand() {
-		this.bSkipNextHide = true;
+		ComposePopupView.inEdit(true);
 
 		if (
 			!this.saving() &&
@@ -786,11 +675,7 @@ export class ComposePopupView extends AbstractViewPopup {
 		// Stop autosave
 		clearTimeout(this.iTimer);
 
-		AppUserStore.composeInEdit(this.bSkipNextHide);
-
-		this.bSkipNextHide || this.reset();
-
-		this.bSkipNextHide = false;
+		ComposePopupView.inEdit() || this.reset();
 
 		this.to.focused(false);
 
@@ -860,7 +745,7 @@ export class ComposePopupView extends AbstractViewPopup {
 
 		this.viewModelDom.dataset.wysiwyg = SettingsUserStore.editorDefaultType();
 
-		if (AppUserStore.composeInEdit()) {
+		if (ComposePopupView.inEdit()) {
 			type = type || ComposeType.Empty;
 			if (ComposeType.Empty !== type) {
 				showScreenPopup(AskPopupView, [
@@ -884,6 +769,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			this.initOnShow(type, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText);
 		}
 
+		ComposePopupView.inEdit(false);
 		// Chrome bug #298
 //		alreadyFullscreen = isFullscreen();
 //		alreadyFullscreen || (ThemeStore.isMobile() && toggleFullscreen());
@@ -1185,7 +1071,7 @@ export class ComposePopupView extends AbstractViewPopup {
 
 	tryToClose() {
 		if (AskPopupView.hidden()) {
-			if (this.bSkipNextHide || (this.isEmptyForm() && !this.draftUid())) {
+			if (ComposePopupView.inEdit() || (this.isEmptyForm() && !this.draftUid())) {
 				this.close();
 			} else {
 				showScreenPopup(AskPopupView, [
@@ -1570,4 +1456,119 @@ export class ComposePopupView extends AbstractViewPopup {
 	togglePgpEncrypt() {
 		this.pgpEncrypt(!this.pgpEncrypt()/* && this.canPgpEncrypt()*/);
 	}
+
+	async getMessageRequestParams(sSaveFolder, draft)
+	{
+		const
+			identity = this.currentIdentity(),
+			params = {
+				IdentityID: identity.id(),
+				MessageFolder: this.draftsFolder(),
+				MessageUid: this.draftUid(),
+				SaveFolder: sSaveFolder,
+				From: this.from(),
+				To: this.to(),
+				Cc: this.cc(),
+				Bcc: this.bcc(),
+				ReplyTo: this.replyTo(),
+				subject: this.subject(),
+				DraftInfo: this.aDraftInfo,
+				InReplyTo: this.sInReplyTo,
+				References: this.sReferences,
+				MarkAsImportant: this.markAsImportant() ? 1 : 0,
+				Attachments: this.prepareAttachmentsForSendOrSave(),
+				// Only used at send, not at save:
+				Dsn: this.requestDsn() ? 1 : 0,
+				ReadReceiptRequest: this.requestReadReceipt() ? 1 : 0
+			},
+			recipients = draft ? [identity.email()] : this.allRecipients(),
+			sign = !draft && this.pgpSign() && this.canPgpSign(),
+			encrypt = this.pgpEncrypt() && this.canPgpEncrypt(),
+			TextIsHtml = this.oEditor.isHtml();
+
+		let Text = this.oEditor.getData();
+		if (TextIsHtml) {
+			let l;
+			do {
+				l = Text.length;
+				Text = Text
+					// Remove Microsoft Office styling
+					.replace(/(<[^>]+[;"'])\s*mso-[a-z-]+\s*:[^;"']+/gi, '$1')
+					// Remove hubspot data-hs- attributes
+					.replace(/(<[^>]+)\s+data-hs-[a-z-]+=("[^"]+"|'[^']+')/gi, '$1');
+			} while (l != Text.length)
+			params.Html = Text;
+			params.Text = htmlToPlain(Text);
+		} else {
+			params.Text = Text;
+		}
+
+		if (this.mailvelope && 'mailvelope' === this.viewArea()) {
+			params.Encrypted = draft
+				? await this.mailvelope.createDraft()
+				: await this.mailvelope.encrypt(recipients);
+		} else if (sign || encrypt) {
+			let data = new MimePart;
+			data.headers['Content-Type'] = 'text/'+(TextIsHtml?'html':'plain')+'; charset="utf-8"';
+			data.headers['Content-Transfer-Encoding'] = 'base64';
+			data.body = base64_encode(Text);
+			if (TextIsHtml) {
+				const alternative = new MimePart, plain = new MimePart;
+				alternative.headers['Content-Type'] = 'multipart/alternative';
+				plain.headers['Content-Type'] = 'text/plain; charset="utf-8"';
+				plain.headers['Content-Transfer-Encoding'] = 'base64';
+				plain.body = base64_encode(params.Text);
+				// First add plain
+				alternative.children.push(plain);
+				// Now add HTML
+				alternative.children.push(data);
+				data = alternative;
+			}
+			if (!draft && sign?.[1]) {
+				if ('openpgp' == sign[0]) {
+					// Doesn't sign attachments
+					params.Html = params.Text = '';
+					let signed = new MimePart;
+					signed.headers['Content-Type'] =
+						'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"';
+					signed.headers['Content-Transfer-Encoding'] = '7Bit';
+					signed.children.push(data);
+					let signature = new MimePart;
+					signature.headers['Content-Type'] = 'application/pgp-signature; name="signature.asc"';
+					signature.headers['Content-Transfer-Encoding'] = '7Bit';
+					signature.body = await OpenPGPUserStore.sign(data.toString(), sign[1], 1);
+					signed.children.push(signature);
+					params.Signed = signed.toString();
+					params.Boundary = signed.boundary;
+					data = signed;
+				} else if ('gnupg' == sign[0]) {
+					// TODO: sign in PHP fails
+//					params.SignData = data.toString();
+					params.SignFingerprint = sign[1].fingerprint;
+					params.SignPassphrase = await GnuPGUserStore.sign(sign[1]);
+				} else {
+					throw 'Signing with ' + sign[0] + ' not yet implemented';
+				}
+			}
+			if (encrypt) {
+				if ('openpgp' == encrypt) {
+					// Doesn't encrypt attachments
+					params.Encrypted = await OpenPGPUserStore.encrypt(data.toString(), recipients);
+					params.Signed = '';
+				} else if ('gnupg' == encrypt) {
+					// Does encrypt attachments
+					params.EncryptFingerprints = JSON.stringify(GnuPGUserStore.getPublicKeyFingerprints(recipients));
+				} else {
+					throw 'Encryption with ' + encrypt + ' not yet implemented';
+				}
+			}
+		}
+		return params;
+	}
 }
+
+/**
+ * When view is closed and reopened, fill it with previous data.
+ * This, for example, happens when opening Contacts view to select recipients
+ */
+ComposePopupView.inEdit = ko.observable(false);

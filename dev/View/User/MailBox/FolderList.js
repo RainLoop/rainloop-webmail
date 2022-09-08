@@ -18,6 +18,7 @@ import { AbstractViewLeft } from 'Knoin/AbstractViews';
 import { showMessageComposer } from 'Common/UtilsUser';
 import { FolderCreatePopupView } from 'View/Popup/FolderCreate';
 import { ContactsPopupView } from 'View/Popup/Contacts';
+import { ComposePopupView } from 'View/Popup/Compose';
 
 import { moveMessagesToFolder } from 'Common/Folders';
 
@@ -29,7 +30,7 @@ export class MailFolderList extends AbstractViewLeft {
 
 		this.oContentScrollable = null;
 
-		this.composeInEdit = AppUserStore.composeInEdit;
+		this.composeInEdit = ComposePopupView.inEdit;
 
 		this.systemFolders = FolderUserStore.systemFolders;
 

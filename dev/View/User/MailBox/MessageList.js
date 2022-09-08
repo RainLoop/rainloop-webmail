@@ -39,6 +39,7 @@ import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 import { FolderClearPopupView } from 'View/Popup/FolderClear';
 import { AdvancedSearchPopupView } from 'View/Popup/AdvancedSearch';
+import { ComposePopupView } from 'View/Popup/Compose';
 
 import { MessageModel } from 'Model/Message';
 
@@ -70,7 +71,7 @@ export class MailMessageList extends AbstractViewRight {
 		this.canMarkAsSpam = MessagelistUserStore.canMarkAsSpam;
 		this.isSpamFolder = MessagelistUserStore.isSpamFolder;
 
-		this.composeInEdit = AppUserStore.composeInEdit;
+		this.composeInEdit = ComposePopupView.inEdit;
 
 		this.isMobile = ThemeStore.isMobile;
 		this.leftPanelDisabled = leftPanelDisabled;

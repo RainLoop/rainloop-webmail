@@ -9,9 +9,7 @@ export const AppUserStore = {
 addObservablesTo(AppUserStore, {
 	focusedState: 'none',
 
-	threadsAllowed: false,
-
-	composeInEdit: false
+	threadsAllowed: false
 });
 
 AppUserStore.focusedState.subscribe(value => {
