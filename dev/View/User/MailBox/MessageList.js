@@ -352,13 +352,12 @@ export class MailMessageList extends AbstractViewRight {
 				return false;
 			});
 
-			if (!SettingsUserStore.usePreviewPane() && !MessageUserStore.message()) {
-				this.selector.iFocusedNextHelper = up ? -1 : 1;
-			} else {
-				this.selector.iSelectNextHelper = up ? -1 : 1;
-			}
-
 			if (up ? prev : next) {
+				if (SettingsUserStore.usePreviewPane() || MessageUserStore.message()) {
+					this.selector.iSelectNextHelper = up ? -1 : 1;
+				} else {
+					this.selector.iFocusedNextHelper = up ? -1 : 1;
+				}
 				this.selector.unselect();
 				this.gotoPage(up ? prev : next);
 			}

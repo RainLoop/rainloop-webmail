@@ -31,17 +31,18 @@ export class Selector {
 		sItemCheckedSelector,
 		sItemFocusedSelector
 	) {
+		koFocusedItem = (koFocusedItem || ko.observable(null)).extend({ toggleSubscribeProperty: [this, 'focused'] });
+		koSelectedItem = (koSelectedItem || ko.observable(null)).extend({ toggleSubscribeProperty: [null, 'selected'] });
+
 		this.list = koList;
-		this.listChecked = koComputable(() => this.list.filter(item => item.checked())).extend({ rateLimit: 0 });
+		this.listChecked = koComputable(() => koList.filter(item => item.checked())).extend({ rateLimit: 0 });
 
-		this.focusedItem = koFocusedItem || ko.observable(null);
-		this.selectedItem = koSelectedItem || ko.observable(null);
-
-		this.selectedItemUseCallback = true;
+		this.focusedItem = koFocusedItem;
+		this.selectedItem = koSelectedItem;
 
 		this.iSelectNextHelper = 0;
 		this.iFocusedNextHelper = 0;
-		this.oContentScrollable;
+//		this.oContentScrollable = null;
 
 		this.sItemSelector = sItemSelector;
 		this.sItemCheckedSelector = sItemCheckedSelector;
@@ -52,54 +53,57 @@ export class Selector {
 
 		const itemSelectedThrottle = (item => this.itemSelected(item)).debounce(300);
 
-		this.listChecked.subscribe((items) => {
+		this.listChecked.subscribe(items => {
 			if (items.length) {
-				if (null === this.selectedItem()) {
-					if (this.selectedItem.valueHasMutated) {
-						this.selectedItem.valueHasMutated();
+				if (null === koSelectedItem()) {
+					if (koSelectedItem.valueHasMutated) {
+						koSelectedItem.valueHasMutated();
 					}
 				} else {
-					this.selectedItem(null);
+					koSelectedItem(null);
 				}
-			} else if (this.autoSelect() && this.focusedItem()) {
-				this.selectedItem(this.focusedItem());
+			} else if (this.autoSelect() && koFocusedItem()) {
+				koSelectedItem(koFocusedItem());
 			}
 		}, this);
 
-		this.selectedItem.subscribe((item) => {
+		let selectedItemUseCallback = true;
+
+		koSelectedItem.subscribe(item => {
 			if (item) {
-				this.list.forEach(subItem => subItem.checked(false));
-				if (this.selectedItemUseCallback) {
+				koList.forEach(subItem => subItem.checked(false));
+				if (selectedItemUseCallback) {
 					itemSelectedThrottle(item);
 				}
-			} else if (this.selectedItemUseCallback) {
-				this.itemSelected(null);
+			} else if (selectedItemUseCallback) {
+				this.itemSelected();
 			}
 		}, this);
 
-		this.selectedItem = this.selectedItem.extend({ toggleSubscribeProperty: [this, 'selected'] });
-		this.focusedItem = this.focusedItem.extend({ toggleSubscribeProperty: [null, 'focused'] });
+		koFocusedItem.subscribe(item => item && (this.sLastUid = this.getItemUid(item)), this);
 
-		this.focusedItem.subscribe(item => item && (this.sLastUid = this.getItemUid(item)), this);
+		/**
+		 * Below code is used to keep checked/focused/selected states when array is refreshed.
+		 */
 
 		let aCache = [],
 			aCheckedCache = [],
 			mFocused = null,
 			mSelected = null;
 
-		this.list.subscribe(
+		// Before removing old list
+		koList.subscribe(
 			items => {
 				if (isArray(items)) {
 					items.forEach(item => {
-						if (item) {
-							const uid = this.getItemUid(item);
-
+						const uid = this.getItemUid(item);
+						if (uid) {
 							aCache.push(uid);
 							item.checked() && aCheckedCache.push(uid);
-							if (null === mFocused && item.focused()) {
+							if (!mFocused && item.focused()) {
 								mFocused = uid;
 							}
-							if (null === mSelected && item.selected()) {
+							if (!mSelected && item.selected()) {
 								mSelected = uid;
 							}
 						}
@@ -110,102 +114,70 @@ export class Selector {
 			'beforeChange'
 		);
 
-		this.list.subscribe((aItems) => {
-			let temp = null,
-				getNext = false,
-				isNextFocused = mFocused,
-				isChecked = false,
-				isSelected = false,
-				len = 0;
+		koList.subscribe(aItems => {
+			selectedItemUseCallback = false;
 
-			const uids = [];
-
-			this.selectedItemUseCallback = false;
-
-			this.focusedItem(null);
-			this.selectedItem(null);
+			koFocusedItem(null);
+			koSelectedItem(null);
 
 			if (isArray(aItems)) {
-				len = aCheckedCache.length;
+				let temp,
+					isChecked;
 
 				aItems.forEach(item => {
 					const uid = this.getItemUid(item);
-					uids.push(uid);
+					if (uid) {
 
-					if (null !== mFocused && mFocused === uid) {
-						this.focusedItem(item);
-						mFocused = null;
-					}
+						if (mFocused === uid) {
+							koFocusedItem(item);
+							mFocused = null;
+						}
 
-					if (0 < len && aCheckedCache.includes(uid)) {
-						isChecked = true;
-						item.checked(true);
-						--len;
-					}
+						if (aCheckedCache.includes(uid)) {
+							item.checked(true);
+							isChecked = true;
+						}
 
-					if (!isChecked && null !== mSelected && mSelected === uid) {
-						isSelected = true;
-						this.selectedItem(item);
-						mSelected = null;
+						if (!isChecked && mSelected === uid) {
+							koSelectedItem(item);
+							mSelected = null;
+						}
 					}
 				});
 
-				this.selectedItemUseCallback = true;
-
-				if (!isChecked && !isSelected && this.autoSelect()) {
-					if (this.focusedItem()) {
-						this.selectedItem(this.focusedItem());
-					} else if (aItems.length) {
-						if (null !== isNextFocused) {
-							getNext = false;
-							isNextFocused = aCache.find(sUid => {
-								if (getNext && uids.includes(sUid)) {
-									return sUid;
-								}
-								if (isNextFocused === sUid) {
-									getNext = true;
-								}
-								return false;
-							});
-
-							if (isNextFocused) {
-								temp = aItems.find(oItem => isNextFocused === this.getItemUid(oItem));
-							}
-						}
-
-						this.selectedItem(temp || null);
-						this.focusedItem(this.selectedItem());
-					}
-				}
+				selectedItemUseCallback = true;
 
 				if (
-					(0 !== this.iSelectNextHelper || 0 !== this.iFocusedNextHelper) &&
+					(this.iSelectNextHelper || this.iFocusedNextHelper) &&
 					aItems.length &&
-					!this.focusedItem()
+					!koFocusedItem()
 				) {
 					temp = null;
-					if (0 !== this.iFocusedNextHelper) {
-						temp = aItems[-1 === this.iFocusedNextHelper ? aItems.length - 1 : 0] || null;
+					if (this.iFocusedNextHelper) {
+						temp = aItems[-1 === this.iFocusedNextHelper ? aItems.length - 1 : 0];
 					}
 
-					if (!temp && 0 !== this.iSelectNextHelper) {
-						temp = aItems[-1 === this.iSelectNextHelper ? aItems.length - 1 : 0] || null;
+					if (!temp && this.iSelectNextHelper) {
+						temp = aItems[-1 === this.iSelectNextHelper ? aItems.length - 1 : 0];
 					}
 
 					if (temp) {
-						if (0 !== this.iSelectNextHelper) {
-							this.selectedItem(temp || null);
+						if (this.iSelectNextHelper) {
+							koSelectedItem(temp);
 						}
 
-						this.focusedItem(temp || null);
+						koFocusedItem(temp);
 
 						this.scrollToFocused();
-
 						setTimeout(this.scrollToFocused, 100);
 					}
 
 					this.iSelectNextHelper = 0;
 					this.iFocusedNextHelper = 0;
+				}
+
+				if (!isChecked && !koSelectedItem() && koFocusedItem() && this.autoSelect()) {
+					koSelectedItem(koFocusedItem());
 				}
 			}
 
@@ -213,6 +185,7 @@ export class Selector {
 			aCheckedCache = [];
 			mFocused = null;
 			mSelected = null;
+			selectedItemUseCallback = true;
 		});
 	}
 
@@ -297,14 +270,7 @@ export class Selector {
 	 * @returns {string}
 	 */
 	getItemUid(item) {
-		let uid = '';
-
-		const getItemUidCallback = this.oCallbacks.ItemGetUid || null;
-		if (getItemUidCallback && item) {
-			uid = getItemUidCallback(item);
-		}
-
-		return uid.toString();
+		return ((item && this.oCallbacks.ItemGetUid?.(item)) || '').toString();
 	}
 
 	/**
@@ -321,25 +287,28 @@ export class Selector {
 			listLen = list.length,
 			focused = this.focusedItem();
 
+		bShiftKey || (shiftStart = -1);
+
 		if (' ' === sEventKey) {
 			focused?.checked(!focused.checked());
 		} else if (listLen) {
 			if (focused) {
 				if (isArrow) {
-					let i = list.indexOf(focused);
-					shiftStart = bShiftKey ? (-1 < shiftStart ? shiftStart : i) : -1;
-					shiftStart == i && focused.checked(true);
-					if ('ArrowUp' == sEventKey) {
-						bShiftKey && shiftStart < i && focused.checked(false);
+					let i = list.indexOf(focused),
+						up = 'ArrowUp' == sEventKey;
+					if (bShiftKey) {
+						shiftStart = -1 < shiftStart ? shiftStart : i;
+						shiftStart == i
+							? focused.checked(true)
+							: ((up ? shiftStart < i : shiftStart > i) && focused.checked(false));
+					}
+					if (up) {
 						i > 0 && (result = list[--i]);
-					} else {
-						bShiftKey && shiftStart > i && focused.checked(false);
-						if (++i < listLen) {
-							result = list[i];
-						}
+					} else if (++i < listLen) {
+						result = list[i];
 					}
 					bShiftKey && result?.checked(true);
-					result || this.oCallbacks.UpOrDown?.('ArrowUp' === sEventKey);
+					result || this.oCallbacks.UpOrDown?.(up);
 				} else if ('Home' === sEventKey) {
 					result = list[0];
 				} else if ('End' === sEventKey) {
@@ -442,7 +411,7 @@ export class Selector {
 			}
 		}
 
-		this.sLastUid = uid || '';
+		this.sLastUid = uid;
 	}
 
 	/**

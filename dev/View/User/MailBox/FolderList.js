@@ -28,7 +28,7 @@ export class MailFolderList extends AbstractViewLeft {
 	constructor() {
 		super();
 
-		this.oContentScrollable = null;
+//		this.oContentScrollable = null;
 
 		this.composeInEdit = ComposePopupView.inEdit;
 
