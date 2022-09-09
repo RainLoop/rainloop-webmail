@@ -260,7 +260,7 @@ export class Selector {
 	 * @returns {boolean}
 	 */
 	autoSelect() {
-		return !!(this.oCallbacks.AutoSelect || (()=>1))() && this.focusedItem();
+		return (this.oCallbacks.AutoSelect || (()=>1))() && this.focusedItem();
 	}
 
 	/**
@@ -268,7 +268,7 @@ export class Selector {
 	 * @returns {string}
 	 */
 	getItemUid(item) {
-		return ((item && this.oCallbacks.ItemGetUid?.(item)) || '').toString();
+		return (item && this.oCallbacks.ItemGetUid?.(item)?.toString()) || '';
 	}
 
 	/**
@@ -350,16 +350,15 @@ export class Selector {
 	scrollToFocused() {
 		const scrollable = this.oContentScrollable;
 		if (scrollable) {
-			let block, focused = scrollable.querySelector(this.sItemFocusedSelector);
+			let focused = scrollable.querySelector(this.sItemFocusedSelector);
 			if (focused) {
 				const fRect = focused.getBoundingClientRect(),
 					sRect = scrollable.getBoundingClientRect();
 				if (fRect.top < sRect.top) {
-					block = 'start';
+					focused.scrollIntoView(true);
 				} else if (fRect.bottom > sRect.bottom) {
-					block = 'end';
+					focused.scrollIntoView(false);
 				}
-				block && focused.scrollIntoView(block === 'start');
 			} else {
 				scrollable.scrollTop = 0;
 			}
@@ -373,45 +372,6 @@ export class Selector {
 		this.oContentScrollable && (this.oContentScrollable.scrollTop = 0);
 	}
 
-	eventClickFunction(item, event) {
-		let index = 0,
-			length = 0,
-			changeRange = false,
-			isInRange = false,
-			list = [],
-			checked = false,
-			listItem = null,
-			lineUid = '';
-
-		const uid = this.getItemUid(item);
-		if (event?.shiftKey) {
-			if (uid && this.sLastUid && uid !== this.sLastUid) {
-				list = this.list();
-				checked = item.checked();
-
-				for (index = 0, length = list.length; index < length; index++) {
-					listItem = list[index];
-					lineUid = this.getItemUid(listItem);
-
-					changeRange = false;
-					if (lineUid === this.sLastUid || lineUid === uid) {
-						changeRange = true;
-					}
-
-					if (changeRange) {
-						isInRange = !isInRange;
-					}
-
-					if (isInRange || changeRange) {
-						listItem.checked(checked);
-					}
-				}
-			}
-		}
-
-		this.sLastUid = uid;
-	}
-
 	/**
 	 * @param {Object} item
 	 * @param {Object=} event
@@ -420,17 +380,33 @@ export class Selector {
 		if (item) {
 			let click = true;
 			if (event) {
-				if (event.shiftKey && !(event.ctrlKey || event.metaKey) && !event.altKey) {
+				if (event.shiftKey && !event.ctrlKey && !event.metaKey && !event.altKey) {
 					click = false;
-					if (!this.sLastUid) {
-						this.sLastUid = this.getItemUid(item);
-					}
+					this.sLastUid || (this.sLastUid = this.getItemUid(item));
 
 					item.checked(!item.checked());
-					this.eventClickFunction(item, event);
+
+					const uid = this.getItemUid(item);
+					if (uid && this.sLastUid && uid !== this.sLastUid) {
+						let changeRange = false,
+							isInRange = false,
+							checked = item.checked(),
+							lineUid = '';
+						this.list().forEach(listItem => {
+							lineUid = this.getItemUid(listItem);
+							changeRange = (lineUid === this.sLastUid || lineUid === uid);
+							if (isInRange || changeRange) {
+								if (changeRange) {
+									isInRange = !isInRange;
+								}
+								listItem.checked(checked);
+							}
+						});
+					}
+					this.sLastUid = uid;
 
 					this.focusedItem(item);
-				} else if ((event.ctrlKey || event.metaKey) && !event.shiftKey && !event.altKey) {
+				} else if (!event.shiftKey && (event.ctrlKey || event.metaKey) && !event.altKey) {
 					click = false;
 					this.focusedItem(item);
 
@@ -442,9 +418,7 @@ export class Selector {
 				}
 			}
 
-			if (click) {
-				this.selectMessageItem(item);
-			}
+			click && this.selectMessageItem(item);
 		}
 	}
 
