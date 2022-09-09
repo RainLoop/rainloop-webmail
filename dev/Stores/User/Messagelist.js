@@ -120,18 +120,21 @@ addComputablesTo(MessagelistUserStore, {
 });
 
 MessagelistUserStore.listChecked = koComputable(
-	() => MessagelistUserStore.filter(isChecked)).extend({ rateLimit: 0 }
-);
+	() => MessagelistUserStore.filter(isChecked)
+).extend({ rateLimit: 0 });
 
-MessagelistUserStore.hasCheckedMessages = koComputable(
+// Also used by Selector
+MessagelistUserStore.hasChecked = koComputable(
+	// Issue: not all are observed?
 	() => !!MessagelistUserStore.find(isChecked)
 ).extend({ rateLimit: 0 });
 
 MessagelistUserStore.hasCheckedOrSelected = koComputable(() =>
-		!!(MessagelistUserStore.selectedMessage()
-		|| MessagelistUserStore.focusedMessage()
-		|| MessagelistUserStore.find(item => item.checked()))
-	).extend({ rateLimit: 50 });
+	!!(MessagelistUserStore.selectedMessage()
+	| MessagelistUserStore.focusedMessage()
+	// Issue: not all are observed?
+	| MessagelistUserStore.find(isChecked))
+).extend({ rateLimit: 50 });
 
 MessagelistUserStore.notifyNewMessages = (folder, newMessages) => {
 	if (getFolderInboxName() === folder && arrayLength(newMessages)) {

@@ -81,9 +81,11 @@ export class ContactModel extends AbstractModel {
 		this.jCard = ['vcard',[]];
 
 		this.addObservables({
+			// Also used by Selector
 			focused: false,
 			selected: false,
 			checked: false,
+
 			deleted: false,
 			readOnly: false,
 

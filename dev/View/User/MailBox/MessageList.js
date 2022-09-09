@@ -118,7 +118,7 @@ export class MailMessageList extends AbstractViewRight {
 				MessagelistUserStore.pageCount),
 
 			checkAll: {
-				read: () => 0 < MessagelistUserStore.listChecked().length,
+				read: () => MessagelistUserStore.hasChecked(),
 				write: (value) => {
 					value = !!value;
 					MessagelistUserStore.forEach(message => message.checked(value));
@@ -135,9 +135,9 @@ export class MailMessageList extends AbstractViewRight {
 				return c && MessagelistUserStore().length > c;
 			},
 
-			mobileCheckedStateShow: () => ThemeStore.isMobile() ? MessagelistUserStore.listChecked().length : 1,
+			mobileCheckedStateShow: () => ThemeStore.isMobile() ? MessagelistUserStore.hasChecked() : 1,
 
-			mobileCheckedStateHide: () => ThemeStore.isMobile() ? !MessagelistUserStore.listChecked().length : 1,
+			mobileCheckedStateHide: () => ThemeStore.isMobile() ? !MessagelistUserStore.hasChecked() : 1,
 
 			sortText: () => {
 				let mode = FolderUserStore.sortMode(),
@@ -323,7 +323,7 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	goToUpOrDown(up) {
-		if (MessagelistUserStore.listChecked().length) {
+		if (MessagelistUserStore.hasChecked()) {
 			return false;
 		}
 

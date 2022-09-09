@@ -1,7 +1,7 @@
 import ko from 'ko';
 import { SettingsGet } from 'Common/Globals';
 import { pInt } from 'Common/Utils';
-import { addObservablesTo, koArrayWithDestroy } from 'External/ko';
+import { koComputable, addObservablesTo, koArrayWithDestroy } from 'External/ko';
 import Remote from 'Remote/User/Fetch';
 
 export const ContactUserStore = koArrayWithDestroy();
@@ -17,6 +17,12 @@ addObservablesTo(ContactUserStore, {
 	syncUser: '',
 	syncPass: ''
 });
+
+// Also used by Selector
+ContactUserStore.hasChecked = koComputable(
+	// Issue: not all are observed?
+	() => !!ContactUserStore.find(item => item.checked())
+);
 
 /**
  * @param {Function} fResultFunc

@@ -127,6 +127,7 @@ export class MessageModel extends AbstractModel {
 
 			deleted: false,
 
+			// Also used by Selector
 			focused: false,
 			selected: false,
 			checked: false,

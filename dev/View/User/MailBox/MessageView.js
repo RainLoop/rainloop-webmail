@@ -111,7 +111,7 @@ export class MailMessageView extends AbstractViewRight {
 		const attachmentsActions = Settings.app('attachmentsActions');
 		this.attachmentsActions = ko.observableArray(arrayLength(attachmentsActions) ? attachmentsActions : []);
 
-		this.hasCheckedMessages = MessagelistUserStore.hasCheckedMessages;
+		this.hasCheckedMessages = MessagelistUserStore.hasChecked;
 		this.archiveAllowed = MessagelistUserStore.archiveAllowed;
 		this.canMarkAsSpam = MessagelistUserStore.canMarkAsSpam;
 		this.isDraftFolder = MessagelistUserStore.isDraftFolder;

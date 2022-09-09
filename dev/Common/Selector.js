@@ -216,12 +216,8 @@ export class Selector {
 		});
 	}
 
-	isListChecked() {
-		return this.list.find(item => item.checked());
-	}
-
 	itemSelected(item) {
-		if (this.isListChecked()) {
+		if (this.list.hasChecked()) {
 			item || this.oCallbacks.ItemSelect?.(null);
 		} else if (item) {
 			this.oCallbacks.ItemSelect?.(item);
@@ -373,7 +369,7 @@ export class Selector {
 
 			if (result) {
 				this.focusedItem(result);
-				if ((this.autoSelect() || bForceSelect) && !this.isListChecked()) {
+				if ((this.autoSelect() || bForceSelect) && !this.list.hasChecked()) {
 					this.selectedItem(result);
 				}
 				this.scrollToFocused();

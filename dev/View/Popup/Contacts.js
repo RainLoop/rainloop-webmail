@@ -71,7 +71,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 			),
 
 			contactsCheckedOrSelected: () => {
-				const checked = ContactUserStore.filter(item => item.checked?.()),
+				const checked = ContactUserStore.filter(item => item.checked()),
 					selected = this.selectorContact();
 				return checked.length ? checked : (selected ? [selected] : []);
 			},
