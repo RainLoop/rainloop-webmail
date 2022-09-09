@@ -55,17 +55,15 @@ export class Selector {
 
 		this.listChecked.subscribe(items => {
 			if (items.length) {
-				if (null === koSelectedItem()) {
-					if (koSelectedItem.valueHasMutated) {
-						koSelectedItem.valueHasMutated();
-					}
-				} else {
+				if (koSelectedItem()) {
 					koSelectedItem(null);
+				} else {
+					koSelectedItem.valueHasMutated?.();
 				}
-			} else if (this.autoSelect() && koFocusedItem()) {
+			} else if (this.autoSelect()) {
 				koSelectedItem(koFocusedItem());
 			}
-		}, this);
+		});
 
 		let selectedItemUseCallback = true;
 
@@ -78,9 +76,9 @@ export class Selector {
 			} else if (selectedItemUseCallback) {
 				this.itemSelected();
 			}
-		}, this);
+		});
 
-		koFocusedItem.subscribe(item => item && (this.sLastUid = this.getItemUid(item)), this);
+		koFocusedItem.subscribe(item => item && (this.sLastUid = this.getItemUid(item)));
 
 		/**
 		 * Below code is used to keep checked/focused/selected states when array is refreshed.
@@ -176,7 +174,7 @@ export class Selector {
 					this.iFocusedNextHelper = 0;
 				}
 
-				if (!isChecked && !koSelectedItem() && koFocusedItem() && this.autoSelect()) {
+				if (this.autoSelect() && !isChecked && !koSelectedItem()) {
 					koSelectedItem(koFocusedItem());
 				}
 			}
@@ -262,7 +260,7 @@ export class Selector {
 	 * @returns {boolean}
 	 */
 	autoSelect() {
-		return !!(this.oCallbacks.AutoSelect || (()=>1))();
+		return !!(this.oCallbacks.AutoSelect || (()=>1))() && this.focusedItem();
 	}
 
 	/**

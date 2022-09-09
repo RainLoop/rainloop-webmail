@@ -35,7 +35,8 @@ const
 		rl.route.off();
 		hasher.replaceHash(hash);
 		rl.route.on();
-	}
+	},
+	disableAutoSelect = ko.observable(false).extend({ falseTimeout: 500 });
 
 export const MessagelistUserStore = ko.observableArray().extend({ debounce: 0 });
 
@@ -58,8 +59,6 @@ addObservablesTo(MessagelistUserStore, {
 	selectedMessage: null,
 	focusedMessage: null
 });
-
-MessagelistUserStore.disableAutoSelect = ko.observable(false).extend({ falseTimeout: 500 });
 
 // Computed Observables
 
@@ -162,6 +161,11 @@ MessagelistUserStore.notifyNewMessages = (folder, newMessages) => {
 	}
 }
 
+MessagelistUserStore.canAutoSelect = () =>
+	!/is:unseen/.test(MessagelistUserStore.mainSearch())
+	&& !disableAutoSelect()
+	&& SettingsUserStore.usePreviewPane();
+
 /**
  * @param {boolean=} bDropPagePosition = false
  * @param {boolean=} bDropCurrentFolderCache = false
@@ -258,7 +262,7 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 						MessageUserStore.message(null);
 					}
 
-					MessagelistUserStore.disableAutoSelect(true);
+					disableAutoSelect(true);
 
 					MessagelistUserStore(collection);
 					MessagelistUserStore.isIncomplete(false);

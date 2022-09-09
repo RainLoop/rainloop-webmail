@@ -175,7 +175,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.selector.on('ItemGetUid', message => (message ? message.generateUid() : ''));
 
-		this.selector.on('AutoSelect', () => this.useAutoSelect());
+		this.selector.on('AutoSelect', () => MessagelistUserStore.canAutoSelect());
 
 		this.selector.on('UpOrDown', v => this.goToUpOrDown(v));
 
@@ -364,12 +364,6 @@ export class MailMessageList extends AbstractViewRight {
 		}, 350);
 
 		return true;
-	}
-
-	useAutoSelect() {
-		return !MessagelistUserStore.disableAutoSelect()
-			&& !/is:unseen/.test(MessagelistUserStore.mainSearch())
-			&& SettingsUserStore.usePreviewPane();
 	}
 
 	cancelSearch() {
@@ -649,7 +643,7 @@ export class MailMessageList extends AbstractViewRight {
 				MessagelistUserStore.mainSearch(sLastSearchValue);
 				return false;
 			}
-			if (MessageUserStore.message() && this.useAutoSelect()) {
+			if (MessageUserStore.message() && MessagelistUserStore.canAutoSelect()) {
 				isFullscreen() || toggleFullscreen();
 				return false;
 			}

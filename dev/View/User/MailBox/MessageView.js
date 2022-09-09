@@ -57,7 +57,7 @@ import { MessageModel } from 'Model/Message';
 const
 	oMessageScrollerDom = () => elementById('messageItem') || {},
 
-	currentMessage = () => MessageUserStore.message();
+	currentMessage = MessageUserStore.message;
 
 export class MailMessageView extends AbstractViewRight {
 	constructor() {
@@ -85,7 +85,7 @@ export class MailMessageView extends AbstractViewRight {
 				createCommand(() => {
 					const message = currentMessage();
 					if (message) {
-						MessageUserStore.message(null);
+						currentMessage(null);
 						rl.app.deleteMessagesFromFolder(folderType, message.folder, [message.uid], useFolder);
 					}
 				}, this.messageVisibility);
@@ -219,24 +219,22 @@ export class MailMessageView extends AbstractViewRight {
 	}
 
 	closeMessage() {
-		MessageUserStore.message(null);
+		currentMessage(null);
 	}
 
 	messageEditCommand() {
-		if (currentMessage()) {
-			showMessageComposer([ComposeType.Draft, currentMessage()]);
-		}
+		currentMessage() && showMessageComposer([ComposeType.Draft, currentMessage()]);
 	}
 
 	goUpCommand() {
 		fireEvent('mailbox.message-list.selector.go-up',
-			SettingsUserStore.usePreviewPane() || !!currentMessage() // bForceSelect
+			!!currentMessage() // bForceSelect
 		);
 	}
 
 	goDownCommand() {
 		fireEvent('mailbox.message-list.selector.go-down',
-			SettingsUserStore.usePreviewPane() || !!currentMessage() // bForceSelect
+			!!currentMessage() // bForceSelect
 		);
 	}
 
@@ -338,7 +336,7 @@ export class MailMessageView extends AbstractViewRight {
 						AppUserStore.focusedState(Scope.MessageList);
 					}
 				} else if (!preview) {
-					MessageUserStore.message(null);
+					currentMessage(null);
 				} else {
 					AppUserStore.focusedState(Scope.MessageList);
 				}
