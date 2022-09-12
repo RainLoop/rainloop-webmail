@@ -5,11 +5,10 @@
     ko.components = {
         get: (componentName, callback) => {
             if (loadedDefinitionsCache.has(componentName)) {
-                ko.tasks.schedule(() => callback(loadedDefinitionsCache.get(componentName)));
+                callback(loadedDefinitionsCache.get(componentName));
             } else {
                 // Join the loading process that is already underway, or start a new one.
-                var subscribable = loadingSubscribablesCache[componentName],
-                    completedAsync;
+                var subscribable = loadingSubscribablesCache[componentName];
                 if (subscribable) {
                     subscribable.subscribe(callback);
                 } else {
@@ -27,15 +26,8 @@
                         //
                         // You can bypass the 'always asynchronous' feature by putting the synchronous:true
                         // flag on your component configuration when you register it.
-                        if (completedAsync) {
-                            // Note that notifySubscribers ignores any dependencies read within the callback.
-                            // See comment in loaderRegistryBehaviors.js for reasoning
-                            subscribable.notifySubscribers(definition);
-                        } else {
-                            ko.tasks.schedule(() => subscribable.notifySubscribers(definition));
-                        }
+                        subscribable.notifySubscribers(definition);
                     });
-                    completedAsync = true;
                 }
             }
         },
