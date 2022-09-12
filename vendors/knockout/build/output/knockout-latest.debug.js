@@ -233,63 +233,6 @@ ko.cleanNode = ko.utils.domNodeDisposal.cleanNode; // Shorthand name for conveni
 ko.removeNode = ko.utils.domNodeDisposal.removeNode; // Shorthand name for convenience
 ko.exportSymbol('utils.domNodeDisposal', ko.utils.domNodeDisposal);
 ko.exportSymbol('utils.domNodeDisposal.addDisposeCallback', ko.utils.domNodeDisposal.addDisposeCallback);
-ko.tasks = (() => {
-    var taskQueue = [],
-        taskQueueLength = 0,
-        nextIndexToProcess = 0,
-
-    processTasks = () => {
-        if (taskQueueLength) {
-            // Each mark represents the end of a logical group of tasks and the number of these groups is
-            // limited to prevent unchecked recursion.
-            var mark = taskQueueLength, countMarks = 0;
-
-            // nextIndexToProcess keeps track of where we are in the queue; processTasks can be called recursively without issue
-            for (var task; nextIndexToProcess < taskQueueLength; ) {
-                if (task = taskQueue[nextIndexToProcess++]) {
-                    if (nextIndexToProcess > mark) {
-                        if (++countMarks >= 5000) {
-                            nextIndexToProcess = taskQueueLength;   // skip all tasks remaining in the queue since any of them could be causing the recursion
-                            setTimeout(() => {
-                                throw Error(`'Too much recursion' after processing ${countMarks} task groups.`)
-                            }, 0)
-                            break;
-                        }
-                        mark = taskQueueLength;
-                    }
-                    try {
-                        task();
-                    } catch (ex) {
-                        setTimeout(() => { throw ex }, 0);
-                    }
-                }
-            }
-        }
-    },
-
-    scheduledProcess = () => {
-        processTasks();
-
-        // Reset the queue
-        nextIndexToProcess = taskQueueLength = taskQueue.length = 0;
-    },
-
-    // Chrome 27+, Firefox 14+, IE 11+, Opera 15+, Safari 6.1+
-    // From https://github.com/petkaantonov/bluebird * Copyright (c) 2014 Petka Antonov * License: MIT
-    scheduler = (callback => {
-        var div = document.createElement("div");
-        new MutationObserver(callback).observe(div, {attributes: true});
-        return () => div.classList.toggle("foo");
-    })(scheduledProcess);
-
-    return {
-        schedule: func => {
-            taskQueueLength || scheduler(scheduledProcess);
-
-            taskQueue[taskQueueLength++] = func;
-        }
-    };
-})();
 ko.extenders = {
     'debounce': (target, timeout) => target.limit(callback => debounce(callback, timeout)),
 
@@ -2291,11 +2234,10 @@ ko.expressionRewriting = (() => {
     ko.components = {
         get: (componentName, callback) => {
             if (loadedDefinitionsCache.has(componentName)) {
-                ko.tasks.schedule(() => callback(loadedDefinitionsCache.get(componentName)));
+                callback(loadedDefinitionsCache.get(componentName));
             } else {
                 // Join the loading process that is already underway, or start a new one.
-                var subscribable = loadingSubscribablesCache[componentName],
-                    completedAsync;
+                var subscribable = loadingSubscribablesCache[componentName];
                 if (subscribable) {
                     subscribable.subscribe(callback);
                 } else {
@@ -2313,15 +2255,8 @@ ko.expressionRewriting = (() => {
                         //
                         // You can bypass the 'always asynchronous' feature by putting the synchronous:true
                         // flag on your component configuration when you register it.
-                        if (completedAsync) {
-                            // Note that notifySubscribers ignores any dependencies read within the callback.
-                            // See comment in loaderRegistryBehaviors.js for reasoning
-                            subscribable.notifySubscribers(definition);
-                        } else {
-                            ko.tasks.schedule(() => subscribable.notifySubscribers(definition));
-                        }
+                        subscribable.notifySubscribers(definition);
                     });
-                    completedAsync = true;
                 }
             }
         },
