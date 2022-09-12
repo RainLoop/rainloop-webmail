@@ -211,11 +211,10 @@ html:not(rl-mobile) {
 		border-left-color: #ccc;
 	}
 
-	.priorityHigh::before {
-		content: '!'; /*❗*/
+	&.priorityHigh .subjectParent::before {
+		content: '! '; /*❗*/
 		color: red;
 		font-weight: bolder;
-		margin-right: 5px;
 	}
 
 	&.deleted {

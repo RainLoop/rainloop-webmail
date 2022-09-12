@@ -34,7 +34,7 @@
 		</div>
 
 		<!-- ko if: message -->
-		<div class="b-message" data-bind="i18nUpdate: message">
+		<div class="b-message" data-bind="i18nUpdate: message, css: message().lineAsCss(0)">
 			<div class="message-fixed-button-toolbar">
 				<a class="btn btn-success buttonEdit fontastic hide-mobile" data-bind="visible: isDraftFolder(), command: messageEditCommand">🖉</a>
 				<div class="btn-group" style="margin-right: -8px; display: inline;">
@@ -122,7 +122,6 @@
 				<div class="subjectParent">
 					<span class="infoParent g-ui-user-select-none fontastic" data-bind="click: function() { showFullInfo(!showFullInfo()); }">ℹ</span>
 					<span class="flagParent g-ui-user-select-none flagOff fontastic" data-bind="text: message().isFlagged() ? '★' : '☆', css: {'flagOn': message().isFlagged(), 'flagOff': !message().isFlagged()}"></span>
-					<b style="color: red; margin-right: 5px" data-bind="visible: message().isImportant()">!</b>
 					<span class="subject" data-bind="text: message().subject, title: message().subject, event: { 'dblclick': toggleFullScreen }"></span>
 					<a href="#" class="close" data-bind="click: closeMessage" style="margin-top: -8px;">×</a>
 				</div>
@@ -207,7 +206,7 @@
 				</div>
 				<!-- /ko -->
 			</div>
-			<div id="messageItem" data-bind="css: message().lineAsCss()">
+			<div id="messageItem">
 				<div tabindex="0" data-bind="hasfocus: messageDomFocused">
 
 					<span class="buttonFull" data-bind="click: toggleFullScreen">

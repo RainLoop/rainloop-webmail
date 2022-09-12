@@ -26,6 +26,12 @@ html.rl-no-preview-pane {
 		color: #fff;
 	}
 
+	.priorityHigh .subject::before {
+		content: '! '; /*❗*/
+		color: red;
+		font-weight: bolder;
+	}
+
 	.b-content {
 		height: 100%;
 	}
@@ -79,7 +85,6 @@ html.rl-no-preview-pane {
 	.flagParent {
 
 		cursor: pointer;
-		margin: 0 0.25em;
 
 		.flagOn {
 			color: orange;
@@ -106,6 +111,10 @@ html.rl-no-preview-pane {
 		padding: 10px;
 		flex-shrink: 0;
 
+		.fontastic + span {
+			margin-left: 0.25em;
+		}
+
 		.subjectParent {
 			display: flex;
 			font-size: 18px;
@@ -118,6 +127,7 @@ html.rl-no-preview-pane {
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
+			margin: 0 0.25em;
 		}
 		.subject:empty {
 			font-style: italic;

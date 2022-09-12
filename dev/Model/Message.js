@@ -156,7 +156,6 @@ export class MessageModel extends AbstractModel {
 		this.addComputables({
 			attachmentIconClass: () => FileInfo.getAttachmentsIconClass(this.attachments()),
 			threadsLen: () => this.threads().length,
-			isImportant: () => MessagePriority.High === this.priority(),
 			hasAttachments: () => this.attachments().hasVisible(),
 
 			isUnseen: () => !this.flags().includes('\\seen'),
@@ -370,7 +369,7 @@ export class MessageModel extends AbstractModel {
 	/**
 	 * @return string
 	 */
-	lineAsCss() {
+	lineAsCss(flags=1) {
 		let classes = [];
 		forEachObjectEntry({
 			deleted: this.deleted(),
@@ -378,13 +377,13 @@ export class MessageModel extends AbstractModel {
 			checked: this.checked(),
 			unseen: this.isUnseen(),
 			focused: this.focused(),
-			important: this.isImportant(),
+			priorityHigh: this.priority() === MessagePriority.High,
 			withAttachments: !!this.attachments().length,
 			// hasChildrenMessage: 1 < this.threadsLen(),
 			hasUnseenSubMessage: this.hasUnseenSubMessage(),
 			hasFlaggedSubMessage: this.hasFlaggedSubMessage()
 		}, (key, value) => value && classes.push(key));
-		this.flags().forEach(value => classes.push('msgflag-'+value));
+		flags && this.flags().forEach(value => classes.push('msgflag-'+value));
 		return classes.join(' ');
 	}
 
