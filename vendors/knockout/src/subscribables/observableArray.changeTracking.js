@@ -2,7 +2,7 @@ const arrayChangeEventName = 'arrayChange';
 ko.extenders['trackArrayChanges'] = (target, options) => {
     // Use the provided options--each call to trackArrayChanges overwrites the previously set options
     target.compareArrayOptions = {};
-    if (options && typeof options == "object") {
+    if (typeof options == "object") {
         ko.utils.extend(target.compareArrayOptions, options);
     }
     target.compareArrayOptions['sparse'] = true;
@@ -81,7 +81,7 @@ ko.extenders['trackArrayChanges'] = (target, options) => {
                 cachedDiff = null;
                 pendingChanges = 0;
 
-                if (changes && changes.length) {
+                if (changes?.length) {
                     target.notifySubscribers(changes, arrayChangeEventName);
                 }
             }

@@ -1,12 +1,11 @@
 (() => {
     var loadingSubscribablesCache = Object.create(null), // Tracks component loads that are currently in flight
-        loadedDefinitionsCache = Object.create(null);    // Tracks component loads that have already completed
+        loadedDefinitionsCache = new Map();    // Tracks component loads that have already completed
 
     ko.components = {
         get: (componentName, callback) => {
-            var cachedDefinition = loadedDefinitionsCache[componentName];
-            if (cachedDefinition) {
-                ko.tasks.schedule(() => callback(cachedDefinition.definition) );
+            if (loadedDefinitionsCache.has(componentName)) {
+                ko.tasks.schedule(() => callback(loadedDefinitionsCache.get(componentName)));
             } else {
                 // Join the loading process that is already underway, or start a new one.
                 var subscribable = loadingSubscribablesCache[componentName],
@@ -18,8 +17,8 @@
                     subscribable = loadingSubscribablesCache[componentName] = new ko.subscribable();
                     subscribable.subscribe(callback);
 
-                    beginLoadingComponent(componentName, definition => {
-                        loadedDefinitionsCache[componentName] = { definition: definition };
+                    loadComponent(componentName, definition => {
+                        loadedDefinitionsCache.set(componentName, definition);
                         delete loadingSubscribablesCache[componentName];
 
                         // For API consistency, all loads complete asynchronously. However we want to avoid
@@ -40,9 +39,6 @@
                 }
             }
         },
-
-        clearCachedDefinition: componentName =>
-            delete loadedDefinitionsCache[componentName],
 
         register: (componentName, config) => {
             if (!config) {
@@ -67,70 +63,53 @@
     // 1. To supply configuration objects from some other source (e.g., conventions)
     // 2. Or, to resolve configuration objects by loading viewmodels/templates via arbitrary logic.
 
-    var defaultConfigRegistry = Object.create(null);
-    var createViewModelKey = 'createViewModel';
+    var defaultConfigRegistry = Object.create(null),
+        createViewModelKey = 'createViewModel',
+        throwError = (componentName, message) => { throw new Error(`Component '${componentName}': ${message}`) },
 
-    // Takes a config object of the form { template: ..., viewModel: ... }, and asynchronously convert it
-    // into the standard component definition format:
-    //    { template: <ArrayOfDomNodes>, createViewModel: function(params, componentInfo) { ... } }.
-    // Since both template and viewModel may need to be resolved asynchronously, both tasks are performed
-    // in parallel, and the results joined when both are ready. We don't depend on any promises infrastructure,
-    // so this is implemented manually below.
-    function loadComponent(componentName, callback) {
-        var result = {},
-            config = defaultConfigRegistry[componentName] || {},
-            templateConfig = config['template'],
-            viewModelConfig = config['viewModel'];
+        // Takes a config object of the form { template: ..., viewModel: ... }, and asynchronously convert it
+        // into the standard component definition format:
+        //    { template: <ArrayOfDomNodes>, createViewModel: function(params, componentInfo) { ... } }.
+        // Since both template and viewModel may need to be resolved asynchronously, both tasks are performed
+        // in parallel, and the results joined when both are ready. We don't depend on any promises infrastructure,
+        // so this is implemented manually below.
+        loadComponent = (componentName, callback) => {
+            // Try the candidates
+            var result = {},
+                config = defaultConfigRegistry[componentName] || {},
+                templateConfig = config['template'],
+                viewModelConfig = config['viewModel'];
 
-        if (templateConfig) {
-            if (!templateConfig['element']) {
-                throwError(componentName, 'Unknown template value: ' + templateConfig);
+            if (templateConfig) {
+                if (!templateConfig['element']) {
+                    throwError(componentName, 'Unknown template value: ' + templateConfig);
+                }
+                // Element ID - find it, then copy its child nodes
+                var element = templateConfig['element'];
+                var elemInstance = document.getElementById(element);
+                if (!elemInstance) {
+                    throwError(componentName, 'Cannot find element with ID ' + element);
+                }
+                if (!elemInstance.matches('TEMPLATE')) {
+                    throwError(componentName, 'Template Source Element not a <template>');
+                }
+                // For browsers with proper <template> element support (i.e., where the .content property
+                // gives a document fragment), use that document fragment.
+                result['template'] = ko.utils.cloneNodes(elemInstance.content.childNodes);
             }
-            // Element ID - find it, then copy its child nodes
-            var element = templateConfig['element'];
-            var elemInstance = document.getElementById(element);
-            if (!elemInstance) {
-                throwError(componentName, 'Cannot find element with ID ' + element);
+
+            if (viewModelConfig) {
+                if (typeof viewModelConfig[createViewModelKey] !== 'function') {
+                    throwError(componentName, 'Unknown viewModel value: ' + viewModelConfig);
+                }
+                // Already a factory function - use it as-is
+                result[createViewModelKey] = viewModelConfig[createViewModelKey];
             }
-            if (!elemInstance.matches('TEMPLATE')) {
-                throwError(componentName, 'Template Source Element not a <template>');
-            }
-            // For browsers with proper <template> element support (i.e., where the .content property
-            // gives a document fragment), use that document fragment.
-            result['template'] = ko.utils.cloneNodes(elemInstance.content.childNodes);
-        }
 
-        if (viewModelConfig) {
-            if (typeof viewModelConfig[createViewModelKey] !== 'function') {
-                throwError(componentName, 'Unknown viewModel value: ' + viewModelConfig);
-            }
-            // Already a factory function - use it as-is
-            result[createViewModelKey] = viewModelConfig[createViewModelKey];
-        }
-
-        if (result['template'] && result[createViewModelKey]) {
-            callback(result);
-        } else {
-            callback(null);
-        }
-    }
-
-    function throwError(componentName, message) {
-        throw new Error(`Component '${componentName}': ${message}`)
-    }
-
-    function beginLoadingComponent(componentName, callback) {
-        // Try the candidates
-        var found = false;
-        loadComponent(componentName, result => {
-            // This candidate returned a value. Use it.
-            (found = result != null) && callback(result);
-        });
-        if (!found) {
-            // No candidates returned a value
-            callback(null);
-        }
-    }
+            // Did candidate return a value?
+            var found = (result['template'] && result[createViewModelKey]);
+            callback(found ? result : null);
+        };
 
     ko.exportSymbol('components', ko.components);
     ko.exportSymbol('components.register', ko.components.register);

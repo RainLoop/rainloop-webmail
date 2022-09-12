@@ -18,23 +18,9 @@ ko.utils.findMovesInArrayComparison = (left, right, limitFailedCompares) => {
 };
 
 ko.utils.compareArrays = (() => {
-    var statusNotInOld = 'added', statusNotInNew = 'deleted';
+    var statusNotInOld = 'added', statusNotInNew = 'deleted',
 
-    // Simple calculation based on Levenshtein distance.
-    function compareArrays(oldArray, newArray, options) {
-        // For backward compatibility, if the third arg is actually a bool, interpret
-        // it as the old parameter 'dontLimitMoves'. Newer code should use { dontLimitMoves: true }.
-        options = (typeof options === 'boolean') ? { 'dontLimitMoves': options } : (options || {});
-        oldArray = oldArray || [];
-        newArray = newArray || [];
-
-        if (oldArray.length < newArray.length)
-            return compareSmallArrayToBigArray(oldArray, newArray, statusNotInOld, statusNotInNew, options);
-        else
-            return compareSmallArrayToBigArray(newArray, oldArray, statusNotInNew, statusNotInOld, options);
-    }
-
-    function compareSmallArrayToBigArray(smlArray, bigArray, statusNotInSml, statusNotInBig, options) {
+    compareSmallArrayToBigArray = (smlArray, bigArray, statusNotInSml, statusNotInBig, options) => {
         var myMin = Math.min,
             myMax = Math.max,
             editDistanceMatrix = [],
@@ -94,7 +80,18 @@ ko.utils.compareArrays = (() => {
         ko.utils.findMovesInArrayComparison(notInBig, notInSml, !options['dontLimitMoves'] && smlIndexMax * 10);
 
         return editScript.reverse();
-    }
+    };
 
-    return compareArrays;
+    // Simple calculation based on Levenshtein distance.
+    return (oldArray, newArray, options) => {
+        // For backward compatibility, if the third arg is actually a bool, interpret
+        // it as the old parameter 'dontLimitMoves'. Newer code should use { dontLimitMoves: true }.
+        options = (typeof options === 'boolean') ? { 'dontLimitMoves': options } : (options || {});
+        oldArray = oldArray || [];
+        newArray = newArray || [];
+
+        return (oldArray.length < newArray.length)
+            ? compareSmallArrayToBigArray(oldArray, newArray, statusNotInOld, statusNotInNew, options)
+            : compareSmallArrayToBigArray(newArray, oldArray, statusNotInNew, statusNotInOld, options);
+    };
 })();

@@ -34,7 +34,7 @@
             while (n--) {
                 route = routes[n];
                 if ((!i || route.greedy) && route.match(request)) {
-                    route.callback && route.callback(...route._getParamsArray(request));
+                    route.callback?.(...route._getParamsArray(request));
                     ++i;
                 }
             }
@@ -68,14 +68,14 @@
                 var val = values[key],
                     isValid = false;
                 if (key === 'normalize_'
-                 || (val == null && this._optionalParamsIds && this._optionalParamsIds.indexOf(key) !== -1)) {
+                 || (val == null && this._optionalParamsIds?.includes(key))) {
                     isValid = true;
                 }
                 else if (validationRule instanceof RegExp) {
                     isValid = validationRule.test(val);
                 }
                 else if (Array.isArray(validationRule)) {
-                    isValid = validationRule.indexOf(val) !== -1;
+                    isValid = validationRule.includes(val);
                 }
                 else if (isFunction(validationRule)) {
                     isValid = validationRule(val, request, values);
@@ -133,7 +133,7 @@
 
         captureVals = (regex, pattern) => {
             var vals = [], match;
-            while (match = regex.exec(pattern)) {
+            while ((match = regex.exec(pattern))) {
                 vals.push(match[1]);
             }
             return vals;
@@ -141,9 +141,7 @@
 
         getParamValues = (request, regexp) => {
             var vals = regexp.exec(request);
-            if (vals) {
-                vals.shift();
-            }
+            vals?.shift();
             return vals;
         },
         compilePattern = pattern => {

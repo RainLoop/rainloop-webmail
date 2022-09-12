@@ -63,8 +63,8 @@ module.exports = function(grunt) {
     function buildMin(output, done) {
         var cc = require('closure-compiler');
         var options = {
-			language_in:'ECMASCRIPT_2018',
-			language_out:'ECMASCRIPT_2018',
+			language_in:'ECMASCRIPT_2020',
+			language_out:'ECMASCRIPT_2020',
             compilation_level: 'ADVANCED_OPTIMIZATIONS',
             output_wrapper: '(()=>{%output%})();'
         };

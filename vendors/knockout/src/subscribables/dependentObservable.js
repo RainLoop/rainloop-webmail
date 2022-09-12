@@ -41,14 +41,13 @@ ko.computed = (evaluatorFunctionOrOptions, options) => {
             // Writing a value
             writeFunction(...arguments);
             return this; // Permits chained assignments
-        } else {
-            // Reading the value
-            state.isDisposed || ko.dependencyDetection.registerDependency(computedObservable);
-            if (state.isDirty || (state.isSleeping && computedObservable.haveDependenciesChanged())) {
-                computedObservable.evaluateImmediate();
-            }
-            return state.latestValue;
         }
+        // Reading the value
+        state.isDisposed || ko.dependencyDetection.registerDependency(computedObservable);
+        if (state.isDirty || (state.isSleeping && computedObservable.haveDependenciesChanged())) {
+            computedObservable.evaluateImmediate();
+        }
+        return state.latestValue;
     }
 
     computedObservable[computedState] = state;
@@ -101,9 +100,7 @@ ko.computed = (evaluatorFunctionOrOptions, options) => {
 
 // Utility function that disposes a given dependencyTracking entry
 function computedDisposeDependencyCallback(id, entryToDispose) {
-    if (entryToDispose !== null && entryToDispose.dispose) {
-        entryToDispose.dispose();
-    }
+    entryToDispose?.dispose?.();
 }
 
 // This function gets called each time a dependency is detected while evaluating a computed.
@@ -192,8 +189,8 @@ var computedFn = {
     },
     markDirty: function () {
         // Process "dirty" events if we can handle delayed notifications
-        if (this._evalDelayed && !this[computedState].isBeingEvaluated) {
-            this._evalDelayed(false /*isChange*/);
+        if (!this[computedState].isBeingEvaluated) {
+            this._evalDelayed?.(false /*isChange*/);
         }
     },
     isActive: function () {
@@ -214,7 +211,7 @@ var computedFn = {
     evaluatePossiblyAsync: function () {
         var computedObservable = this,
             throttleEvaluationTimeout = computedObservable['throttleEvaluation'];
-        if (throttleEvaluationTimeout && throttleEvaluationTimeout >= 0) {
+        if (throttleEvaluationTimeout >= 0) {
             clearTimeout(this[computedState].evaluationTimeoutInstance);
             this[computedState].evaluationTimeoutInstance = setTimeout(() =>
                 computedObservable.evaluateImmediate(true /*notifyChange*/)
@@ -244,7 +241,7 @@ var computedFn = {
             return;
         }
 
-        if (state.disposeWhenNodeIsRemoved && !ko.utils.domNodeIsAttachedToDocument(state.disposeWhenNodeIsRemoved) || disposeWhen && disposeWhen()) {
+        if (state.disposeWhenNodeIsRemoved && !ko.utils.domNodeIsAttachedToDocument(state.disposeWhenNodeIsRemoved) || disposeWhen?.()) {
             // See comment above about suppressDisposalUntilDisposeWhenReturnsFalse
             if (!state.suppressDisposalUntilDisposeWhenReturnsFalse) {
                 computedObservable.dispose();
@@ -366,7 +363,7 @@ var computedFn = {
         var state = this[computedState];
         if (!state.isSleeping && state.dependencyTracking) {
             ko.utils.objectForEach(state.dependencyTracking, (id, dependency) =>
-                dependency.dispose && dependency.dispose()
+                dependency.dispose?.()
             );
         }
         if (state.disposeWhenNodeIsRemoved && state.domNodeDisposalCallback) {

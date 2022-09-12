@@ -33,11 +33,11 @@
     }
   ],
   "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-cli": "~0.1.0"
+    "grunt": "^1.5.3",
+    "grunt-cli": "^1.4.3"
   },
   "dependencies": {
-    "closure-compiler": "^0.2.12",
-    "google-closure-compiler": "^20200830.0.0"
+    "closure-compiler": "0.2.12",
+    "google-closure-compiler": "^20220905.0.0"
   }
 }

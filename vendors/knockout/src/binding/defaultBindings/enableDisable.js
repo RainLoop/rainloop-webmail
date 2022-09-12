@@ -3,7 +3,7 @@ ko.bindingHandlers['enable'] = {
         var value = ko.utils.unwrapObservable(valueAccessor());
         if (value && element.disabled)
             element.removeAttribute("disabled");
-        else if ((!value) && (!element.disabled))
+        else if (!value && !element.disabled)
             element.disabled = true;
     }
 };

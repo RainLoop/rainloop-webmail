@@ -5,7 +5,9 @@
 	*/
 
 (doc => {
-	const setFocus = element => element.focus ? element.focus() : element.setActive();
+	const
+		setFocus = element => element.focus ? element.focus() : element.setActive(),
+		isArrow = e => 'ArrowUp' === e.key || 'ArrowDown' === e.key;
 
 	this.BSN = {
 		Dropdown: function(toggleBtn) {
@@ -13,11 +15,11 @@
 			const self = this,
 				parent = toggleBtn.parentNode,
 				preventEmptyAnchor = e => {
-					const t = e.target, href = t.href || (t.parentNode && t.parentNode.href);
-					(href && href.slice(-1) === '#') && e.preventDefault();
+					const t = e.target;
+					('#' === (t.href || t.parentNode?.href)?.slice(-1)) && e.preventDefault();
 				},
 				open = bool => {
-					menu && menu.classList.toggle('show', bool);
+					menu?.classList.toggle('show', bool);
 					parent.classList.toggle('show', bool);
 					toggleBtn.setAttribute('aria-expanded', bool);
 					toggleBtn.open = bool;
@@ -28,14 +30,14 @@
 					}
 				},
 				toggleEvents = () => {
-					let action = (toggleBtn.open ? 'add' : 'remove') + 'EventListener';
+					const action = (toggleBtn.open ? 'add' : 'remove') + 'EventListener';
 					doc[action]('click',dismissHandler);
 					doc[action]('keydown',preventScroll);
 					doc[action]('keyup',keyHandler);
 					doc[action]('focus',dismissHandler);
 				},
 				dismissHandler = e => {
-					let eventTarget = e.target;
+					const eventTarget = e.target;
 					if ((!menu.contains(eventTarget) && !toggleBtn.contains(eventTarget)) || e.type !== 'focus') {
 						self.hide();
 						preventEmptyAnchor(e);
@@ -45,18 +47,19 @@
 					self.show();
 					preventEmptyAnchor(e);
 				},
-				preventScroll = e => (e.key === 'ArrowUp' || e.key === 'ArrowDown') && e.preventDefault(),
+				preventScroll = e => isArrow(e) && e.preventDefault(),
 				keyHandler = e => {
-					if (e.key === 'Escape') {
+					if ('Escape' === e.key) {
 						self.toggle();
-					} else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+					} else if (isArrow(e)) {
 						let activeItem = doc.activeElement,
 							isMenuButton = activeItem === toggleBtn,
 							idx = isMenuButton ? 0 : menuItems.indexOf(activeItem);
 						if (parent.contains(activeItem)) {
 							if (!isMenuButton) {
-								idx = e.key === 'ArrowUp' ? (idx > 1 ? idx-1 : 0)
-									: e.key === 'ArrowDown' ? (idx < menuItems.length-1 ? idx+1 : idx) : idx;
+								idx = 'ArrowUp' === e.key
+									? (idx > 1 ? idx-1 : 0)
+									: (idx < menuItems.length-1 ? idx+1 : idx);
 							}
 							menuItems[idx] && setFocus(menuItems[idx]);
 						} else {

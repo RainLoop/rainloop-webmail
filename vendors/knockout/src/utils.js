@@ -9,7 +9,7 @@ ko.utils = {
         // Ensure it's a real array, as we're about to reparent the nodes and
         // we don't want the underlying collection to change while we're doing that.
         var nodesArray = [...nodes];
-        var templateDocument = (nodesArray[0] && nodesArray[0].ownerDocument) || document;
+        var templateDocument = nodesArray[0]?.ownerDocument || document;
 
         var container = templateDocument.createElement('div');
         nodesArray.forEach(node => container.append(ko.cleanNode(node)));
@@ -80,7 +80,7 @@ ko.utils = {
         node.ownerDocument.documentElement.contains(node.nodeType !== 1 ? node.parentNode : node),
 
     triggerEvent: (element, eventType) => {
-        if (!(element && element.nodeType))
+        if (!element?.nodeType)
             throw new Error("element must be a DOM node when calling triggerEvent");
 
         element.dispatchEvent(new Event(eventType));

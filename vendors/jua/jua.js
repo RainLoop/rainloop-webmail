@@ -10,7 +10,7 @@
 		 */
 		getDataFromFiles = (aItems, fFileCallback, iLimit, fLimitCallback) =>
 		{
-			if (aItems && aItems.length)
+			if (aItems?.length)
 			{
 				let
 					oFile,
@@ -261,7 +261,7 @@
 		 */
 		runEvent(sName, ...aArgs)
 		{
-			this.oEvents[sName] && this.oEvents[sName].apply(null, aArgs);
+			this.oEvents[sName]?.apply(null, aArgs);
 		}
 
 		/**
@@ -392,7 +392,7 @@
 							self.generateNewInput(oClickElement);
 						}, 10);
 					};
-					if (oInput.files && oInput.files.length) {
+					if (oInput.files?.length) {
 						getDataFromFiles(oInput.files, fFileCallback,
 							limit,
 							self.getEvent('onLimitReached')

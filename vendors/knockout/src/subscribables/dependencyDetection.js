@@ -34,11 +34,11 @@ ko.dependencyDetection = {
         }
     },
 
-    getDependenciesCount: () => currentFrame && currentFrame.computed.getDependenciesCount(),
+    getDependenciesCount: () => currentFrame?.computed.getDependenciesCount(),
 
-    isInitial: () => currentFrame && currentFrame.isInitial,
+    isInitial: () => currentFrame?.isInitial,
 
-    computed: () => currentFrame && currentFrame.computed
+    computed: () => currentFrame?.computed
 };
 
 })();

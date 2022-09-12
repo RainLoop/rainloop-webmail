@@ -16,9 +16,6 @@ ko.bindingHandlers['attr'] = {
                 namespace ? element.removeAttributeNS(namespace, attrName) : element.removeAttribute(attrName);
             } else {
                 attrValue = attrValue.toString();
-            }
-
-            if (!toRemove) {
                 namespace ? element.setAttributeNS(namespace, attrName, attrValue) : element.setAttribute(attrName, attrValue);
             }
 

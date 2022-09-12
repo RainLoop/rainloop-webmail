@@ -197,4 +197,4 @@ ko.subscribable['fn'] = ko_subscribable_fn;
 
 
 ko.isSubscribable = instance =>
-    instance != null && typeof instance.subscribe == "function" && typeof instance.notifySubscribers == "function";
+    typeof instance?.subscribe == "function" && typeof instance.notifySubscribers == "function";

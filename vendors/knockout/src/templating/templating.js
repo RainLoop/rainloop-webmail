@@ -28,78 +28,78 @@
                 nextInQueue = ko.virtualElements.nextSibling(node);
                 action(node, nextInQueue);
             }
-        };
+        },
 
-    function activateBindingsOnContinuousNodeArray(continuousNodeArray, bindingContext) {
-        // To be used on any nodes that have been rendered by a template and have been inserted into some parent element
-        // Walks through continuousNodeArray (which *must* be continuous, i.e., an uninterrupted sequence of sibling nodes, because
-        // the algorithm for walking them relies on this), and for each top-level item in the virtual-element sense,
-        // (1) Does a regular "applyBindings" to associate bindingContext with this node and to activate any non-memoized bindings
-        // (2) Unmemoizes any memos in the DOM subtree (e.g., to activate bindings that had been memoized during template rewriting)
+        activateBindingsOnContinuousNodeArray = (continuousNodeArray, bindingContext) => {
+            // To be used on any nodes that have been rendered by a template and have been inserted into some parent element
+            // Walks through continuousNodeArray (which *must* be continuous, i.e., an uninterrupted sequence of sibling nodes, because
+            // the algorithm for walking them relies on this), and for each top-level item in the virtual-element sense,
+            // (1) Does a regular "applyBindings" to associate bindingContext with this node and to activate any non-memoized bindings
+            // (2) Unmemoizes any memos in the DOM subtree (e.g., to activate bindings that had been memoized during template rewriting)
 
-        if (continuousNodeArray.length) {
-            var firstNode = continuousNodeArray[0],
-                lastNode = continuousNodeArray[continuousNodeArray.length - 1],
-                parentNode = firstNode.parentNode;
+            if (continuousNodeArray.length) {
+                var firstNode = continuousNodeArray[0],
+                    lastNode = continuousNodeArray[continuousNodeArray.length - 1],
+                    parentNode = firstNode.parentNode;
 
-            // Need to applyBindings *before* unmemoziation, because unmemoization might introduce extra nodes (that we don't want to re-bind)
-            // whereas a regular applyBindings won't introduce new memoized nodes
-            invokeForEachNodeInContinuousRange(firstNode, lastNode, node => {
-                if (node.nodeType === 1 || node.nodeType === 8)
-                    ko.applyBindings(bindingContext, node);
-            });
+                // Need to applyBindings *before* unmemoziation, because unmemoization might introduce extra nodes (that we don't want to re-bind)
+                // whereas a regular applyBindings won't introduce new memoized nodes
+                invokeForEachNodeInContinuousRange(firstNode, lastNode, node => {
+                    if (node.nodeType === 1 || node.nodeType === 8)
+                        ko.applyBindings(bindingContext, node);
+                });
 
-            // Make sure any changes done by applyBindings or unmemoize are reflected in the array
-            ko.utils.fixUpContinuousNodeArray(continuousNodeArray, parentNode);
-        }
-    }
-
-    function getFirstNodeFromPossibleArray(nodeOrNodeArray) {
-        return nodeOrNodeArray.nodeType ? nodeOrNodeArray
-                                        : nodeOrNodeArray.length > 0 ? nodeOrNodeArray[0]
-                                        : null;
-    }
-
-    function executeTemplate(targetNodeOrNodeArray, renderMode, template, bindingContext) {
-        var firstTargetNode = targetNodeOrNodeArray && getFirstNodeFromPossibleArray(targetNodeOrNodeArray);
-        var templateDocument = (firstTargetNode || template || {}).ownerDocument;
-
-        var renderedNodesArray = renderTemplateSource(makeTemplateSource(template, templateDocument));
-
-        // Loosely check result is an array of DOM nodes
-        if ((typeof renderedNodesArray.length != "number") || (renderedNodesArray.length > 0 && typeof renderedNodesArray[0].nodeType != "number"))
-            throw new Error("Template engine must return an array of DOM nodes");
-
-        var haveAddedNodesToParent = false;
-        switch (renderMode) {
-            case "replaceChildren":
-                ko.virtualElements.setDomNodeChildren(targetNodeOrNodeArray, renderedNodesArray);
-                haveAddedNodesToParent = true;
-                break;
-            case "ignoreTargetNode": break;
-            default:
-                throw new Error("Unknown renderMode: " + renderMode);
-        }
-
-        if (haveAddedNodesToParent) {
-            activateBindingsOnContinuousNodeArray(renderedNodesArray, bindingContext);
-            if (renderMode == "replaceChildren") {
-                ko.bindingEvent.notify(targetNodeOrNodeArray, ko.bindingEvent.childrenComplete);
+                // Make sure any changes done by applyBindings or unmemoize are reflected in the array
+                ko.utils.fixUpContinuousNodeArray(continuousNodeArray, parentNode);
             }
-        }
+        },
 
-        return renderedNodesArray;
-    }
+        getFirstNodeFromPossibleArray = (nodeOrNodeArray) => {
+            return nodeOrNodeArray.nodeType ? nodeOrNodeArray
+                                            : nodeOrNodeArray.length > 0 ? nodeOrNodeArray[0]
+                                            : null;
+        },
 
-    function resolveTemplateName(template, data, context) {
-        // The template can be specified as:
-        if (ko.isObservable(template)) {
-            // 1. An observable, with string value
-            return template();
-        }
-        // 2. A function of (data, context) returning a string ELSE 3. A string
-        return (typeof template === 'function') ? template(data, context) : template;
-    }
+        executeTemplate = (targetNodeOrNodeArray, renderMode, template, bindingContext) => {
+            var firstTargetNode = targetNodeOrNodeArray && getFirstNodeFromPossibleArray(targetNodeOrNodeArray);
+            var templateDocument = (firstTargetNode || template || {}).ownerDocument;
+
+            var renderedNodesArray = renderTemplateSource(makeTemplateSource(template, templateDocument));
+
+            // Loosely check result is an array of DOM nodes
+            if ((typeof renderedNodesArray.length != "number") || (renderedNodesArray.length > 0 && typeof renderedNodesArray[0].nodeType != "number"))
+                throw new Error("Template engine must return an array of DOM nodes");
+
+            var haveAddedNodesToParent = false;
+            switch (renderMode) {
+                case "replaceChildren":
+                    ko.virtualElements.setDomNodeChildren(targetNodeOrNodeArray, renderedNodesArray);
+                    haveAddedNodesToParent = true;
+                    break;
+                case "ignoreTargetNode": break;
+                default:
+                    throw new Error("Unknown renderMode: " + renderMode);
+            }
+
+            if (haveAddedNodesToParent) {
+                activateBindingsOnContinuousNodeArray(renderedNodesArray, bindingContext);
+                if (renderMode == "replaceChildren") {
+                    ko.bindingEvent.notify(targetNodeOrNodeArray, ko.bindingEvent.childrenComplete);
+                }
+            }
+
+            return renderedNodesArray;
+        },
+
+        resolveTemplateName = (template, data, context) => {
+            // The template can be specified as:
+            if (ko.isObservable(template)) {
+                // 1. An observable, with string value
+                return template();
+            }
+            // 2. A function of (data, context) returning a string ELSE 3. A string
+            return (typeof template === 'function') ? template(data, context) : template;
+        };
 
     ko.renderTemplate = function (template, dataOrBindingContext, options, targetNodeOrNodeArray, renderMode) {
         options = options || {};
@@ -113,7 +113,7 @@
             return ko.computed( // So the DOM is automatically updated when any dependency changes
                 () => {
                     // Ensure we've got a proper binding context to work with
-                    var bindingContext = (dataOrBindingContext && (dataOrBindingContext instanceof ko.bindingContext))
+                    var bindingContext = (dataOrBindingContext instanceof ko.bindingContext)
                         ? dataOrBindingContext
                         : new ko.bindingContext(dataOrBindingContext, null, null, null, { "exportDependencies": true });
 
@@ -174,23 +174,21 @@
             subscription.disposeWhenNodeIsRemoved(targetNode);
 
             return subscription;
-        } else {
-            return ko.computed(() => {
-                var unwrappedArray = ko.utils.unwrapObservable(arrayOrObservableArray) || [];
-                if (typeof unwrappedArray.length == "undefined") // Coerce single value into array
-                    unwrappedArray = [unwrappedArray];
-
-                setDomNodeChildrenFromArrayMapping(unwrappedArray);
-
-            }, { disposeWhenNodeIsRemoved: targetNode });
         }
+        return ko.computed(() => {
+            var unwrappedArray = ko.utils.unwrapObservable(arrayOrObservableArray) || [];
+            if (typeof unwrappedArray.length == "undefined") // Coerce single value into array
+                unwrappedArray = [unwrappedArray];
+
+            setDomNodeChildrenFromArrayMapping(unwrappedArray);
+
+        }, { disposeWhenNodeIsRemoved: targetNode });
     };
 
     var templateComputedDomDataKey = ko.utils.domData.nextKey();
     function disposeOldComputedAndStoreNewOne(element, newComputed) {
         var oldComputed = ko.utils.domData.get(element, templateComputedDomDataKey);
-        if (oldComputed && (typeof(oldComputed.dispose) == 'function'))
-            oldComputed.dispose();
+        oldComputed?.dispose?.();
         ko.utils.domData.set(element, templateComputedDomDataKey, (newComputed && (!newComputed.isActive || newComputed.isActive())) ? newComputed : undefined);
     }
 
@@ -214,7 +212,7 @@
 
                 // If the nodes are already attached to a KO-generated container, we reuse that container without moving the
                 // elements to a new one (we check only the first node, as the nodes are always moved together)
-                let container = nodes[0] && nodes[0].parentNode;
+                let container = nodes[0]?.parentNode;
                 if (!container || !ko.utils.domData.get(container, cleanContainerDomDataKey)) {
                     container = ko.utils.moveCleanedNodesToContainerElement(nodes);
                     ko.utils.domData.set(container, cleanContainerDomDataKey, true);
@@ -224,7 +222,7 @@
             } else {
                 // It's an anonymous template - store the element contents, then clear the element
                 var templateNodes = ko.virtualElements.childNodes(element);
-                if (templateNodes.length > 0) {
+                if (templateNodes.length) {
                     let container = ko.utils.moveCleanedNodesToContainerElement(templateNodes); // This also removes the nodes from their current parent
                     new ko.templateSources.anonymousTemplate(element).nodes(container);
                 } else {

@@ -13,10 +13,17 @@
     ko.bindingContext = class {
         constructor(dataItemOrAccessor, parentContext, dataItemAlias, extendCallback, options)
         {
+            var self = this,
+                shouldInheritData = dataItemOrAccessor === inheritParentVm,
+                realDataItemOrAccessor = shouldInheritData ? undefined : dataItemOrAccessor,
+                isFunc = typeof(realDataItemOrAccessor) == "function" && !ko.isObservable(realDataItemOrAccessor),
+                subscribable,
+                dataDependency = options && options['dataDependency'],
+
             // The binding context object includes static properties for the current, parent, and root view models.
             // If a view model is actually stored in an observable, the corresponding binding context object, and
             // any child contexts, must be updated when the view model is changed.
-            function updateContext() {
+            updateContext = () => {
                 // Most of the time, the context will directly get a view model object, but if a function is given,
                 // we call the function to retrieve the view model. If the function accesses any observables or returns
                 // an observable, the dependency is tracked, and those observables can later cause the binding
@@ -71,14 +78,7 @@
                 }
 
                 return self['$data'];
-            }
-
-            var self = this,
-                shouldInheritData = dataItemOrAccessor === inheritParentVm,
-                realDataItemOrAccessor = shouldInheritData ? undefined : dataItemOrAccessor,
-                isFunc = typeof(realDataItemOrAccessor) == "function" && !ko.isObservable(realDataItemOrAccessor),
-                subscribable,
-                dataDependency = options && options['dataDependency'];
+            };
 
             if (options && options['exportDependencies']) {
                 // The "exportDependencies" option means that the calling code will track any dependencies and re-create

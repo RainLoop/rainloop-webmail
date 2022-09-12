@@ -5,17 +5,15 @@ ko.bindingHandlers['options'] = {
             throw new Error("options binding applies only to SELECT elements");
 
         // Remove all existing <option>s.
-        while (element.length > 0) {
-            element.remove(0);
+        let l = element.length;
+        while (l--) {
+            element.remove(l);
         }
 
         // Ensures that the binding processor doesn't try to bind the options
         return { 'controlsDescendantBindings': true };
     },
     'update': (element, valueAccessor, allBindings) => {
-        function selectedOptions() {
-            return Array.from(element.options).filter(node => node.selected);
-        }
 
         var selectWasPreviouslyEmpty = element.length == 0,
             multiple = element.multiple,
@@ -25,7 +23,36 @@ ko.bindingHandlers['options'] = {
             arrayToDomNodeChildrenOptions = {},
             captionValue,
             filteredArray,
-            previousSelectedValues = [];
+            previousSelectedValues = [],
+
+            selectedOptions = () => Array.from(element.options).filter(node => node.selected),
+
+            applyToObject = (object, predicate, defaultValue) => {
+                var predicateType = typeof predicate;
+                if (predicateType == "function")    // Given a function; run it against the data value
+                    return predicate(object);
+                else if (predicateType == "string") // Given a string; treat it as a property name on the data value
+                    return object[predicate];
+                                                    // Given no optionsText arg; use the data value itself
+                    return defaultValue;
+            },
+
+            setSelectionCallback = (arrayEntry, newOptions) => {
+                if (itemUpdate && valueAllowUnset) {
+                    // The model value is authoritative, so make sure its value is the one selected
+                    ko.bindingEvent.notify(element, ko.bindingEvent.childrenComplete);
+                } else if (previousSelectedValues.length) {
+                    // IE6 doesn't like us to assign selection to OPTION nodes before they're added to the document.
+                    // That's why we first added them without selection. Now it's time to set the selection.
+                    var isSelected = previousSelectedValues.includes(ko.selectExtensions.readValue(newOptions[0]));
+                    newOptions[0].selected = isSelected;
+
+                    // If this option was changed from being selected during a single-item update, notify the change
+                    if (itemUpdate && !isSelected) {
+                        ko.dependencyDetection.ignore(ko.utils.triggerEvent, null, [element, "change"]);
+                    }
+                }
+            };
 
         if (!valueAllowUnset) {
             if (multiple) {
@@ -54,22 +81,12 @@ ko.bindingHandlers['options'] = {
             // If a falsy value is provided (e.g. null), we'll simply empty the select element
         }
 
-        function applyToObject(object, predicate, defaultValue) {
-            var predicateType = typeof predicate;
-            if (predicateType == "function")    // Given a function; run it against the data value
-                return predicate(object);
-            else if (predicateType == "string") // Given a string; treat it as a property name on the data value
-                return object[predicate];
-            else                                // Given no optionsText arg; use the data value itself
-                return defaultValue;
-        }
-
         // The following functions can run at two different times:
         // The first is when the whole array is being updated directly from this binding handler.
         // The second is when an observable value for a specific array entry is updated.
         // oldOptions will be empty in the first case, but will be filled with the previously generated option in the second.
-        var itemUpdate = false;
-        function optionForArrayItem(arrayEntry, index, oldOptions) {
+        var itemUpdate = false,
+        optionForArrayItem = (arrayEntry, index, oldOptions) => {
             if (oldOptions.length) {
                 previousSelectedValues = !valueAllowUnset && oldOptions[0].selected ? [ ko.selectExtensions.readValue(oldOptions[0]) ] : [];
                 itemUpdate = true;
@@ -88,28 +105,11 @@ ko.bindingHandlers['options'] = {
                 ko.utils.setTextContent(option, optionText);
             }
             return [option];
-        }
+        };
 
         // By using a beforeRemove callback, we delay the removal until after new items are added. This fixes a selection
         // problem in IE<=8 and Firefox. See https://github.com/knockout/knockout/issues/1208
         arrayToDomNodeChildrenOptions['beforeRemove'] = option => element.removeChild(option);
-
-        function setSelectionCallback(arrayEntry, newOptions) {
-            if (itemUpdate && valueAllowUnset) {
-                // The model value is authoritative, so make sure its value is the one selected
-                ko.bindingEvent.notify(element, ko.bindingEvent.childrenComplete);
-            } else if (previousSelectedValues.length) {
-                // IE6 doesn't like us to assign selection to OPTION nodes before they're added to the document.
-                // That's why we first added them without selection. Now it's time to set the selection.
-                var isSelected = previousSelectedValues.includes(ko.selectExtensions.readValue(newOptions[0]));
-                newOptions[0].selected = isSelected;
-
-                // If this option was changed from being selected during a single-item update, notify the change
-                if (itemUpdate && !isSelected) {
-                    ko.dependencyDetection.ignore(ko.utils.triggerEvent, null, [element, "change"]);
-                }
-            }
-        }
 
         var callback = setSelectionCallback;
         if (allBindings['has']('optionsAfterRender') && typeof allBindings.get('optionsAfterRender') == "function") {
@@ -123,25 +123,23 @@ ko.bindingHandlers['options'] = {
 
         if (!valueAllowUnset) {
             // Determine if the selection has changed as a result of updating the options list
-            var selectionChanged;
+            var selectionChanged, prevLength = previousSelectedValues.length;
             if (multiple) {
                 // For a multiple-select box, compare the new selection count to the previous one
                 // But if nothing was selected before, the selection can't have changed
-                selectionChanged = previousSelectedValues.length && selectedOptions().length < previousSelectedValues.length;
+                selectionChanged = prevLength && selectedOptions().length < prevLength;
             } else {
                 // For a single-select box, compare the current value to the previous value
                 // But if nothing was selected before or nothing is selected now, just look for a change in selection
-                selectionChanged = (previousSelectedValues.length && element.selectedIndex >= 0)
+                selectionChanged = (prevLength && element.selectedIndex >= 0)
                     ? (ko.selectExtensions.readValue(element.options[element.selectedIndex]) !== previousSelectedValues[0])
-                    : (previousSelectedValues.length || element.selectedIndex >= 0);
+                    : (prevLength || element.selectedIndex >= 0);
             }
 
             // Ensure consistency between model value and selected option.
             // If the dropdown was changed so that selection is no longer the same,
             // notify the value or selectedOptions binding.
-            if (selectionChanged) {
-                ko.dependencyDetection.ignore(ko.utils.triggerEvent, null, [element, "change"]);
-            }
+            selectionChanged && ko.dependencyDetection.ignore(ko.utils.triggerEvent, null, [element, "change"]);
         }
 
         if (valueAllowUnset || ko.dependencyDetection.isInitial()) {

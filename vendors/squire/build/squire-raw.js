@@ -144,7 +144,7 @@ const
 	},
 	getClosest = ( node, root, selector ) => {
 		node = (node && !node.closest) ? node.parentElement : node;
-		node = node && node.closest(selector);
+		node = node?.closest(selector);
 		return (node && root.contains(node)) ? node : null;
 	},
 	getNearest = ( node, root, tag, attributes ) => {
@@ -188,8 +188,7 @@ const
 
 	detach = node => {
 //		node.remove();
-		let parent = node.parentNode;
-		parent && parent.removeChild( node );
+		node.parentNode?.removeChild( node );
 		return node;
 	},
 
@@ -254,8 +253,7 @@ const
 
 		if ( isInline( node ) ) {
 			child = node.firstChild;
-			while ( isWebKit && child &&
-					child.nodeType === TEXT_NODE && !child.data ) {
+			while ( isWebKit && child?.nodeType === TEXT_NODE && !child.data ) {
 				child.remove(  );
 				child = node.firstChild;
 			}
@@ -317,9 +315,7 @@ const
 				}
 				wrapper = null;
 			}
-			if ( isContainer( child ) ) {
-				fixContainer( child, root );
-			}
+			isContainer( child ) && fixContainer( child, root );
 		}
 /*
 		// Not live
@@ -349,9 +345,7 @@ const
 			}
 		});
 */
-		if ( wrapper ) {
-			container.append( fixCursor( wrapper, root ) );
-		}
+		wrapper && container.append( fixCursor( wrapper, root ) );
 		return container;
 	},
 
@@ -488,7 +482,7 @@ const
 
 		// Remove extra <BR> fixer if present.
 		last = block.lastChild;
-		if ( last && last.nodeName === 'BR' ) {
+		if ( last?.nodeName === 'BR' ) {
 			last.remove(  );
 			--offset;
 		}
@@ -648,10 +642,8 @@ const
 		// Merge text nodes if adjacent. IE10 in particular will not focus
 		// between two text nodes
 		after = common.childNodes[ startOffset ];
-		before = after && after.previousSibling;
-		if ( before &&
-				before.nodeType === TEXT_NODE &&
-				after.nodeType === TEXT_NODE ) {
+		before = after?.previousSibling;
+		if ( before?.nodeType === TEXT_NODE && after.nodeType === TEXT_NODE ) {
 			startContainer = before;
 			startOffset = before.length;
 			beforeText = before.data;
@@ -822,7 +814,7 @@ const
 			if ( nodeAfterSplit && isContainer( nodeAfterSplit ) ) {
 				mergeContainers( nodeAfterSplit, root );
 			}
-			nodeAfterSplit = nodeBeforeSplit && nodeBeforeSplit.nextSibling;
+			nodeAfterSplit = nodeBeforeSplit?.nextSibling;
 			if ( nodeAfterSplit && isContainer( nodeAfterSplit ) ) {
 				mergeContainers( nodeAfterSplit, root );
 			}
@@ -872,7 +864,7 @@ const
 			while ( endContainer.nodeType !== TEXT_NODE ) {
 				child = endContainer.childNodes[ endOffset - 1 ];
 				if ( !child || isLeaf( child ) ) {
-					if ( maySkipBR && child && child.nodeName === 'BR' ) {
+					if ( maySkipBR && child?.nodeName === 'BR' ) {
 						--endOffset;
 						maySkipBR = false;
 						continue;
@@ -1295,7 +1287,7 @@ const
 				break;
 			}
 
-			while ( child && child.nodeType === TEXT_NODE && !child.data ) {
+			while ( child?.nodeType === TEXT_NODE && !child.data ) {
 				next = child.nextSibling;
 				if ( !next || next.nodeName === 'BR' ) {
 					break;
@@ -1327,7 +1319,7 @@ const
 	toggleList = ( type, methodIfNotInList ) => ( self, event ) => {
 		event.preventDefault();
 		let parent = self.getSelectionClosest('UL,OL');
-		if (parent && type == parent.nodeName) {
+		if (type == parent?.nodeName) {
 			self.removeList();
 		} else {
 			self[ methodIfNotInList ]();
@@ -1680,7 +1672,7 @@ const
 		base = base || {};
 		extras && Object.entries(extras).forEach(([prop,value])=>{
 			if ( mayOverride || !( prop in base ) ) {
-				base[ prop ] = ( value && value.constructor === Object ) ?
+				base[ prop ] = ( value?.constructor === Object ) ?
 					mergeObjects( base[ prop ], value, mayOverride ) :
 					value;
 			}
@@ -1996,7 +1988,7 @@ function onCopy ( event ) {
 
 function onPaste ( event ) {
 	let clipboardData = event.clipboardData;
-	let items = clipboardData && clipboardData.items;
+	let items = clipboardData?.items;
 	let imageItem = null;
 	let plainItem = null;
 	let htmlItem = null;
@@ -2198,7 +2190,7 @@ let keyHandlers = {
 			cursorOffset = range.endOffset;
 			if ( cursorContainer.nodeType === ELEMENT_NODE ) {
 				nodeAfterCursor = cursorContainer.childNodes[ cursorOffset ];
-				if ( nodeAfterCursor && nodeAfterCursor.nodeName === 'IMG' ) {
+				if ( nodeAfterCursor?.nodeName === 'IMG' ) {
 					event.preventDefault();
 					detach( nodeAfterCursor );
 					moveRangeBoundariesDownTree( range );
@@ -2665,7 +2657,7 @@ class Squire
 					win.focus();
 				}
 				let sel = win.getSelection();
-				if ( sel && sel.setBaseAndExtent ) {
+				if ( sel?.setBaseAndExtent ) {
 					sel.setBaseAndExtent(
 						range.startContainer,
 						range.startOffset,
@@ -2690,7 +2682,7 @@ class Squire
 		let range, startContainer, endContainer, node;
 		// If not focused, always rely on cached range; another function may
 		// have set it but the DOM is not modified until focus again
-		if ( this._isFocused && sel && sel.rangeCount ) {
+		if ( this._isFocused && sel?.rangeCount ) {
 			range = sel.getRangeAt( 0 ).cloneRange();
 			startContainer = range.startContainer;
 			endContainer = range.endContainer;
@@ -2841,7 +2833,7 @@ class Squire
 						endContainer =
 							startContainer.childNodes[ range.startOffset - 1 ];
 					}
-					if ( endContainer && endContainer.nodeType === TEXT_NODE ) {
+					if ( endContainer?.nodeType === TEXT_NODE ) {
 						range.setStart( endContainer, 0 );
 						range.collapse( true );
 					}
@@ -3647,7 +3639,7 @@ class Squire
 			let text, event;
 			if ( !node || node.nodeType !== TEXT_NODE ) {
 				text = doc.createTextNode( '' );
-				node && node.childNodes[ offset ].before( text );
+				node?.childNodes[ offset ].before( text );
 				node = text;
 				offset = 0;
 			}
@@ -3735,7 +3727,7 @@ class Squire
 		let start = range ? range.startContainer : 0;
 		let end = range ? range.endContainer : 0;
 		// When the selection is all the text inside an element, set style on the element itself
-		if ( start && TEXT_NODE === start.nodeType && 0 === range.startOffset && start === end && end.length === range.endOffset ) {
+		if ( TEXT_NODE === start?.nodeType && 0 === range.startOffset && start === end && end.length === range.endOffset ) {
 			this.saveUndoState( range );
 			setStyle( start.parentNode, style );
 			this.setSelection( range );
