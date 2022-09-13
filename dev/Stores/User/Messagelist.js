@@ -193,17 +193,18 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 	}
 
 	MessagelistUserStore.loading(true);
-	MessagelistUserStore.error('');
 	Remote.messageList(
 		(iError, oData, bCached) => {
+			let error = '';
 			if (iError) {
+				error = getNotification(iError);
 				if (Notification.RequestAborted !== iError) {
 					MessagelistUserStore([]);
 				}
-				MessagelistUserStore.error(getNotification(iError));
 			} else {
 				const collection = MessageCollectionModel.reviveFromJson(oData.Result, bCached);
 				if (collection) {
+					error = '';
 					let unreadCountChange = false;
 
 					const
@@ -273,8 +274,9 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 				} else {
 					MessagelistUserStore.count(0);
 					MessagelistUserStore([]);
-					MessagelistUserStore.error(getNotification(Notification.CantGetMessageList));
+					error = getNotification(Notification.CantGetMessageList);
 				}
+				MessagelistUserStore.error(error);
 			}
 			MessagelistUserStore.loading(false);
 		},
