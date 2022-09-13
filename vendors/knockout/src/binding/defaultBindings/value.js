@@ -9,11 +9,19 @@ ko.bindingHandlers['value'] = {
             return;
         }
 
-        var eventsToCatch = new Set;
-        var requestedEventsToCatch = allBindings.get("valueUpdate");
-        var elementValueBeforeEvent = null;
-        var registerEventHandler = (event, handler) =>
-            element.addEventListener(event, handler);
+        var eventsToCatch = new Set,
+            requestedEventsToCatch = allBindings.get("valueUpdate"),
+            elementValueBeforeEvent = null,
+            updateFromModel,
+            registerEventHandler = (event, handler) =>
+                element.addEventListener(event, handler),
+
+            valueUpdateHandler = () => {
+                elementValueBeforeEvent = null;
+                var modelValue = valueAccessor();
+                var elementValue = ko.selectExtensions.readValue(element);
+                ko.expressionRewriting.writeValueToProperty(modelValue, allBindings, 'value', elementValue);
+            };
 
         if (requestedEventsToCatch) {
             // Allow both individual event names, and arrays of event names
@@ -23,13 +31,6 @@ ko.bindingHandlers['value'] = {
                 requestedEventsToCatch.forEach(item => eventsToCatch.add(item));
             }
             eventsToCatch.delete("change");  // We'll subscribe to "change" events later
-        }
-
-        var valueUpdateHandler = () => {
-            elementValueBeforeEvent = null;
-            var modelValue = valueAccessor();
-            var elementValue = ko.selectExtensions.readValue(element);
-            ko.expressionRewriting.writeValueToProperty(modelValue, allBindings, 'value', elementValue);
         }
 
         eventsToCatch.forEach(eventName => {
@@ -53,8 +54,6 @@ ko.bindingHandlers['value'] = {
             }
             registerEventHandler(eventName, handler);
         });
-
-        var updateFromModel;
 
         if (isInputElement && element.type == "file") {
             // For file input elements, can only write the empty string

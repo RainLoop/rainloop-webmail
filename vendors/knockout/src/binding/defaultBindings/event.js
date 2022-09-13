@@ -12,12 +12,11 @@ function makeEventHandlerShortcut(eventName) {
 
 ko.bindingHandlers['event'] = {
     'init' : (element, valueAccessor, allBindings, viewModel, bindingContext) => {
-        var eventsToHandle = valueAccessor() || {};
-        ko.utils.objectForEach(eventsToHandle, eventName => {
+        ko.utils.objectForEach(valueAccessor() || {}, eventName => {
             if (typeof eventName == "string") {
                 element.addEventListener(eventName, (...args) => {
-                    var handlerReturnValue;
-                    var handlerFunction = valueAccessor()[eventName];
+                    var handlerReturnValue,
+                        handlerFunction = valueAccessor()[eventName];
                     if (handlerFunction) {
                         try {
                             viewModel = bindingContext['$data'];

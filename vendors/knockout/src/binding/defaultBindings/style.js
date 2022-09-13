@@ -1,7 +1,6 @@
 ko.bindingHandlers['style'] = {
     'update': (element, valueAccessor) => {
-        var value = ko.utils.unwrapObservable(valueAccessor() || {});
-        ko.utils.objectForEach(value, (styleName, styleValue) => {
+        ko.utils.objectForEach(ko.utils.unwrapObservable(valueAccessor() || {}), (styleName, styleValue) => {
             styleValue = ko.utils.unwrapObservable(styleValue);
 
             if (styleValue == null || styleValue === false) {

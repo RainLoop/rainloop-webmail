@@ -20,13 +20,9 @@
                 var nodesToReplaceArray = mappedNodes.nodeType ? [mappedNodes] : mappedNodes;
                 if (nodesToReplaceArray.length > 0) {
                     var insertionPoint = nodesToReplaceArray[0],
-                        parent = insertionPoint.parentNode,
-                        i, j;
-                    for (i = 0, j = newMappedNodes.length; i < j; i++)
-                        parent.insertBefore(newMappedNodes[i], insertionPoint);
-                    for (i = 0, j = nodesToReplaceArray.length; i < j; i++) {
-                        ko.removeNode(nodesToReplaceArray[i]);
-                    }
+                        parent = insertionPoint.parentNode;
+                    newMappedNodes.forEach(node => parent.insertBefore(node, insertionPoint));
+                    nodesToReplaceArray.forEach(node => ko.removeNode(node));
                 }
                 if (callbackAfterAddingNodes)
                     ko.dependencyDetection.ignore(callbackAfterAddingNodes, null, [valueToMap, newMappedNodes, index]);
@@ -78,9 +74,7 @@
 
             callCallback = (callback, items) => {
                 if (callback) {
-                    for (var i = 0, n = items.length; i < n; i++) {
-                        items[i] && items[i].mappedNodes.forEach(node => callback(node, i, items[i].arrayEntry));
-                    }
+                    items.forEach(item => item?.mappedNodes.forEach(node => callback(node, i, item.arrayEntry)));
                 }
             };
 

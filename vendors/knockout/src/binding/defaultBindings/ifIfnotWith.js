@@ -25,13 +25,12 @@ function makeWithIfBinding(bindingKey, isWith, isNot) {
                 if (shouldDisplay) {
                     contextOptions['dataDependency'] = ko.dependencyDetection.computed();
 
-                    if (isWith) {
-                        childContext = bindingContext['createChildContext'](typeof value == "function" ? value : valueAccessor, contextOptions);
-                    } else if (ko.dependencyDetection.getDependenciesCount()) {
-                        childContext = bindingContext['extend'](null, contextOptions);
-                    } else {
-                        childContext = bindingContext;
-                    }
+                    childContext = isWith
+                        ? bindingContext['createChildContext'](typeof value == "function" ? value : valueAccessor, contextOptions)
+                        : (ko.dependencyDetection.getDependenciesCount()
+                            ? bindingContext['extend'](null, contextOptions)
+                            : bindingContext
+                        );
                 }
 
                 // Save a copy of the inner nodes on the initial update, but only if we have dependencies.
@@ -40,9 +39,7 @@ function makeWithIfBinding(bindingKey, isWith, isNot) {
                 }
 
                 if (shouldDisplay) {
-                    if (!isInitial) {
-                        ko.virtualElements.setDomNodeChildren(element, ko.utils.cloneNodes(savedNodes));
-                    }
+                    isInitial || ko.virtualElements.setDomNodeChildren(element, ko.utils.cloneNodes(savedNodes));
 
                     ko.applyBindingsToDescendants(childContext, element);
                 } else {
