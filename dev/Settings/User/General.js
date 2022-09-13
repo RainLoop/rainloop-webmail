@@ -95,7 +95,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.addSetting('MsgDefaultAction');
 		this.addSetting('MessageReadDelay');
 		this.addSetting('MessagesPerPage');
-		this.addSetting('Layout', () => MessagelistUserStore([]));
+		this.addSetting('Layout');
 
 		this.addSettings(['ViewHTML', 'ShowImages', 'HideDeleted', 'UseCheckboxesInList', 'ReplySameFolder',
 			'requestReadReceipt', 'requestDsn', 'pgpSign', 'pgpEncrypt',
