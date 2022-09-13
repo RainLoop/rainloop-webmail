@@ -129,10 +129,10 @@ MessagelistUserStore.hasChecked = koComputable(
 ).extend({ rateLimit: 0 });
 
 MessagelistUserStore.hasCheckedOrSelected = koComputable(() =>
-	!!(MessagelistUserStore.selectedMessage()
-	| MessagelistUserStore.focusedMessage()
+	!!MessagelistUserStore.selectedMessage()
+	| !!MessagelistUserStore.focusedMessage()
 	// Issue: not all are observed?
-	| MessagelistUserStore.find(isChecked))
+	| !!MessagelistUserStore.find(isChecked)
 ).extend({ rateLimit: 50 });
 
 MessagelistUserStore.notifyNewMessages = (folder, newMessages) => {
