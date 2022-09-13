@@ -22,25 +22,17 @@ ko.extenders['trackArrayChanges'] = (target, options) => {
 
     // Watch "subscribe" calls, and for array change events, ensure change tracking is enabled
     target.beforeSubscriptionAdd = event => {
-        if (underlyingBeforeSubscriptionAddFunction) {
-            underlyingBeforeSubscriptionAddFunction.call(target, event);
-        }
+        underlyingBeforeSubscriptionAddFunction?.call(target, event);
         if (event === arrayChangeEventName) {
             trackChanges();
         }
     };
     // Watch "dispose" calls, and for array change events, ensure change tracking is disabled when all are disposed
     target.afterSubscriptionRemove = event => {
-        if (underlyingAfterSubscriptionRemoveFunction) {
-            underlyingAfterSubscriptionRemoveFunction.call(target, event);
-        }
+        underlyingAfterSubscriptionRemoveFunction?.call(target, event);
         if (event === arrayChangeEventName && !target.hasSubscriptionsForEvent(arrayChangeEventName)) {
-            if (changeSubscription) {
-                changeSubscription.dispose();
-            }
-            if (spectateSubscription) {
-                spectateSubscription.dispose();
-            }
+            changeSubscription?.dispose();
+            spectateSubscription?.dispose();
             spectateSubscription = changeSubscription = null;
             trackingChanges = false;
             previousContents = undefined;
@@ -48,23 +40,6 @@ ko.extenders['trackArrayChanges'] = (target, options) => {
     };
 
     function trackChanges() {
-        if (trackingChanges) {
-            // Whenever there's a new subscription and there are pending notifications, make sure all previous
-            // subscriptions are notified of the change so that all subscriptions are in sync.
-            notifyChanges();
-            return;
-        }
-
-        trackingChanges = true;
-
-        // Track how many times the array actually changed value
-        spectateSubscription = target.subscribe(() => ++pendingChanges, null, "spectate");
-
-        // Each time the array changes value, capture a clone so that on the next
-        // change it's possible to produce a diff
-        previousContents = [].concat(target.peek() || []);
-        cachedDiff = null;
-        changeSubscription = target.subscribe(notifyChanges);
 
         function notifyChanges() {
             if (pendingChanges) {
@@ -86,6 +61,24 @@ ko.extenders['trackArrayChanges'] = (target, options) => {
                 }
             }
         }
+
+        if (trackingChanges) {
+            // Whenever there's a new subscription and there are pending notifications, make sure all previous
+            // subscriptions are notified of the change so that all subscriptions are in sync.
+            notifyChanges();
+            return;
+        }
+
+        trackingChanges = true;
+
+        // Track how many times the array actually changed value
+        spectateSubscription = target.subscribe(() => ++pendingChanges, null, "spectate");
+
+        // Each time the array changes value, capture a clone so that on the next
+        // change it's possible to produce a diff
+        previousContents = [].concat(target.peek() || []);
+        cachedDiff = null;
+        changeSubscription = target.subscribe(notifyChanges);
     }
 
     function getChanges(previousContents, currentContents) {
@@ -126,20 +119,19 @@ ko.extenders['trackArrayChanges'] = (target, options) => {
             case 'pop':
                 offset = arrayLength - 1;
             case 'shift':
-                if (arrayLength) {
-                    pushDiff('deleted', rawArray[offset], offset);
-                }
+                arrayLength && pushDiff('deleted', rawArray[offset], offset);
                 break;
 
             case 'splice':
                 // Negative start index means 'from end of array'. After that we clamp to [0...arrayLength].
                 // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
-                var startIndex = Math.min(Math.max(0, args[0] < 0 ? arrayLength + args[0] : args[0]), arrayLength),
-                    endDeleteIndex = argsLength === 1 ? arrayLength : Math.min(startIndex + (args[1] || 0), arrayLength),
-                    endAddIndex = startIndex + argsLength - 2,
+                var index = Math.min(Math.max(0, args[0] < 0 ? arrayLength + args[0] : args[0]), arrayLength),
+                    endDeleteIndex = argsLength === 1 ? arrayLength : Math.min(index + (args[1] || 0), arrayLength),
+                    endAddIndex = index + argsLength - 2,
                     endIndex = Math.max(endDeleteIndex, endAddIndex),
-                    additions = [], deletions = [];
-                for (let index = startIndex, argsIndex = 2; index < endIndex; ++index, ++argsIndex) {
+                    additions = [], deletions = [],
+                    argsIndex = 2;
+                for (; index < endIndex; ++index, ++argsIndex) {
                     if (index < endDeleteIndex)
                         deletions.push(pushDiff('deleted', rawArray[index], index));
                     if (index < endAddIndex)

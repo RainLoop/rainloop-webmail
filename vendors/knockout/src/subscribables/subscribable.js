@@ -14,9 +14,8 @@ class koSubscription
     dispose() {
         var self = this;
         if (!self._isDisposed) {
-            if (self._domNodeDisposalCallback) {
-                ko.utils.domNodeDisposal.removeDisposeCallback(self._node, self._domNodeDisposalCallback);
-            }
+            self._domNodeDisposalCallback
+            && ko.utils.domNodeDisposal.removeDisposeCallback(self._node, self._domNodeDisposalCallback);
             self._isDisposed = true;
             self._disposeCallback();
 
@@ -53,15 +52,12 @@ var ko_subscribable_fn = {
 
         var subscription = new koSubscription(self, boundCallback, () => {
             self._subscriptions.get(event).delete(subscription);
-            if (self.afterSubscriptionRemove)
-                self.afterSubscriptionRemove(event);
+            self.afterSubscriptionRemove?.(event);
         });
 
-        if (self.beforeSubscriptionAdd)
-            self.beforeSubscriptionAdd(event);
+        self.beforeSubscriptionAdd?.(event);
 
-        if (!self._subscriptions.has(event))
-            self._subscriptions.set(event, new Set);
+        self._subscriptions.has(event) || self._subscriptions.set(event, new Set);
         self._subscriptions.get(event).add(subscription);
 
         return subscription;
@@ -107,13 +103,13 @@ var ko_subscribable_fn = {
         if (!self._origNotifySubscribers) {
             self._origNotifySubscribers = self.notifySubscribers;
             // Moved out of "limit" to avoid the extra closure
-            self.notifySubscribers = function(value, event) {
+            self.notifySubscribers = (value, event) => {
                 if (!event || event === defaultEvent) {
-                    this._limitChange(value);
-                } else if (event === 'beforeChange') {
-                    this._limitBeforeChange(value);
+                    self._limitChange(value);
+                } else if (event === beforeChange) {
+                    self._limitBeforeChange(value);
                 } else {
-                    this._origNotifySubscribers(value, event);
+                    self._origNotifySubscribers(value, event);
                 }
             }
         }

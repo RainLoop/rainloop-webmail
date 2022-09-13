@@ -49,55 +49,57 @@
             array = [array];
 
         options = options || {};
-        var lastMappingResult = ko.utils.domData.get(domNode, lastMappingResultDomDataKey);
-        var isFirstExecution = !lastMappingResult;
+        var lastMappingResult = ko.utils.domData.get(domNode, lastMappingResultDomDataKey),
+            isFirstExecution = !lastMappingResult,
 
-        // Build the new mapping result
-        var newMappingResult = [];
-        var lastMappingResultIndex = 0;
-        var currentArrayIndex = 0;
+            // Build the new mapping result
+            newMappingResult = [],
+            lastMappingResultIndex = 0,
+            currentArrayIndex = 0,
 
-        var nodesToDelete = [];
-        var itemsToMoveFirstIndexes = [];
-        var itemsForBeforeRemoveCallbacks = [];
-        var mapData;
-        var countWaitingForRemove = 0;
+            nodesToDelete = [],
+            itemsToMoveFirstIndexes = [],
+            itemsForBeforeRemoveCallbacks = [],
+            mapData,
+            countWaitingForRemove = 0,
 
-        function itemAdded(value) {
-            mapData = { arrayEntry: value, indexObservable: ko.observable(currentArrayIndex++) };
-            newMappingResult.push(mapData);
-        }
+            itemAdded = value => {
+                mapData = { arrayEntry: value, indexObservable: ko.observable(currentArrayIndex++) };
+                newMappingResult.push(mapData);
+            },
 
-        function itemMovedOrRetained(oldPosition) {
-            mapData = lastMappingResult[oldPosition];
-            // Since updating the index might change the nodes, do so before calling fixUpContinuousNodeArray
-            mapData.indexObservable(currentArrayIndex++);
-            ko.utils.fixUpContinuousNodeArray(mapData.mappedNodes, domNode);
-            newMappingResult.push(mapData);
-        }
+            itemMovedOrRetained = oldPosition => {
+                mapData = lastMappingResult[oldPosition];
+                // Since updating the index might change the nodes, do so before calling fixUpContinuousNodeArray
+                mapData.indexObservable(currentArrayIndex++);
+                ko.utils.fixUpContinuousNodeArray(mapData.mappedNodes, domNode);
+                newMappingResult.push(mapData);
+            },
 
-        function callCallback(callback, items) {
-            if (callback) {
-                for (var i = 0, n = items.length; i < n; i++) {
-                    items[i] && items[i].mappedNodes.forEach(node => callback(node, i, items[i].arrayEntry));
+            callCallback = (callback, items) => {
+                if (callback) {
+                    for (var i = 0, n = items.length; i < n; i++) {
+                        items[i] && items[i].mappedNodes.forEach(node => callback(node, i, items[i].arrayEntry));
+                    }
                 }
-            }
-        }
+            };
 
         if (isFirstExecution) {
             array.forEach(itemAdded);
         } else {
             if (!editScript || (lastMappingResult && lastMappingResult['_countWaitingForRemove'])) {
                 // Compare the provided array against the previous one
-                var lastArray = Array.prototype.map.call(lastMappingResult, x => x.arrayEntry),
-                    compareOptions = {
+                editScript = ko.utils.compareArrays(
+                    Array.prototype.map.call(lastMappingResult, x => x.arrayEntry),
+                    array,
+                    {
                         'dontLimitMoves': options['dontLimitMoves'],
                         'sparse': true
-                    };
-                editScript = ko.utils.compareArrays(lastArray, array, compareOptions);
+                    });
             }
 
-            for (let i = 0, editScriptItem, movedIndex, itemIndex; editScriptItem = editScript[i]; i++) {
+            let movedIndex, itemIndex;
+            editScript.forEach(editScriptItem => {
                 movedIndex = editScriptItem['moved'];
                 itemIndex = editScriptItem['index'];
                 switch (editScriptItem['status']) {
@@ -145,7 +147,7 @@
                         }
                         break;
                 }
-            }
+            });
 
             while (currentArrayIndex < array.length) {
                 itemMovedOrRetained(lastMappingResultIndex++);
@@ -162,7 +164,11 @@
         // Next remove nodes for deleted items (or just clean if there's a beforeRemove callback)
         nodesToDelete.forEach(options['beforeRemove'] ? ko.cleanNode : ko.removeNode);
 
-        var i, j, lastNode, nodeToInsert, mappedNodes, activeElement;
+        var i, lastNode, mappedNodes, activeElement,
+            insertNode = nodeToInsert => {
+                ko.virtualElements.insertAfter(domNode, nodeToInsert, lastNode);
+                lastNode = nodeToInsert;
+            };
 
         // Since most browsers remove the focus from an element when it's moved to another location,
         // save the focused element and try to restore it later.
@@ -173,27 +179,24 @@
             while ((i = itemsToMoveFirstIndexes.shift()) != undefined) {
                 mapData = newMappingResult[i];
                 for (lastNode = undefined; i; ) {
-                    if ((mappedNodes = newMappingResult[--i].mappedNodes) && mappedNodes.length) {
+                    mappedNodes = newMappingResult[--i].mappedNodes;
+                    if (mappedNodes?.length) {
                         lastNode = mappedNodes[mappedNodes.length - 1];
                         break;
                     }
                 }
-                for (j = 0; nodeToInsert = mapData.mappedNodes[j]; lastNode = nodeToInsert, j++) {
-                    ko.virtualElements.insertAfter(domNode, nodeToInsert, lastNode);
-                }
+                mapData.mappedNodes.forEach(insertNode);
             }
         }
 
         // Next add/reorder the remaining items (will include deleted items if there's a beforeRemove callback)
-        for (i = 0; mapData = newMappingResult[i]; i++) {
+        newMappingResult.forEach(mapData => {
             // Get nodes for newly added items
-            if (!mapData.mappedNodes)
-                ko.utils.extend(mapData, mapNodeAndRefreshWhenChanged(domNode, mapping, mapData.arrayEntry, callbackAfterAddingNodes, mapData.indexObservable));
+            mapData.mappedNodes
+            || ko.utils.extend(mapData, mapNodeAndRefreshWhenChanged(domNode, mapping, mapData.arrayEntry, callbackAfterAddingNodes, mapData.indexObservable));
 
             // Put nodes in the right place if they aren't there already
-            for (j = 0; nodeToInsert = mapData.mappedNodes[j]; lastNode = nodeToInsert, j++) {
-                ko.virtualElements.insertAfter(domNode, nodeToInsert, lastNode);
-            }
+            mapData.mappedNodes.forEach(insertNode);
 
             // Run the callbacks for newly added nodes (for example, to apply bindings, etc.)
             if (!mapData.initialized && callbackAfterAddingNodes) {
@@ -201,11 +204,11 @@
                 mapData.initialized = true;
                 lastNode = mapData.mappedNodes[mapData.mappedNodes.length - 1];     // get the last node again since it may have been changed by a preprocessor
             }
-        }
+        });
 
         // Restore the focused element if it had lost focus
-        if (activeElement && domNode.ownerDocument.activeElement != activeElement) {
-            activeElement.focus();
+        if (domNode.ownerDocument.activeElement != activeElement) {
+            activeElement?.focus();
         }
 
         // If there's a beforeRemove callback, call it after reordering.
@@ -218,10 +221,6 @@
         // Replace the stored values of deleted items with a dummy value. This provides two benefits: it marks this item
         // as already "removed" so we won't call beforeRemove for it again, and it ensures that the item won't match up
         // with an actual item in the array and appear as "retained" or "moved".
-        for (i = 0; i < itemsForBeforeRemoveCallbacks.length; ++i) {
-            if (itemsForBeforeRemoveCallbacks[i]) {
-                itemsForBeforeRemoveCallbacks[i].arrayEntry = deletedItemDummyValue;
-            }
-        }
+        itemsForBeforeRemoveCallbacks.forEach(callback => callback && (callback.arrayEntry = deletedItemDummyValue));
     }
 })();

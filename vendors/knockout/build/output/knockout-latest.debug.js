@@ -299,9 +299,8 @@ class koSubscription
     dispose() {
         var self = this;
         if (!self._isDisposed) {
-            if (self._domNodeDisposalCallback) {
-                ko.utils.domNodeDisposal.removeDisposeCallback(self._node, self._domNodeDisposalCallback);
-            }
+            self._domNodeDisposalCallback
+            && ko.utils.domNodeDisposal.removeDisposeCallback(self._node, self._domNodeDisposalCallback);
             self._isDisposed = true;
             self._disposeCallback();
 
@@ -338,15 +337,12 @@ var ko_subscribable_fn = {
 
         var subscription = new koSubscription(self, boundCallback, () => {
             self._subscriptions.get(event).delete(subscription);
-            if (self.afterSubscriptionRemove)
-                self.afterSubscriptionRemove(event);
+            self.afterSubscriptionRemove?.(event);
         });
 
-        if (self.beforeSubscriptionAdd)
-            self.beforeSubscriptionAdd(event);
+        self.beforeSubscriptionAdd?.(event);
 
-        if (!self._subscriptions.has(event))
-            self._subscriptions.set(event, new Set);
+        self._subscriptions.has(event) || self._subscriptions.set(event, new Set);
         self._subscriptions.get(event).add(subscription);
 
         return subscription;
@@ -392,13 +388,13 @@ var ko_subscribable_fn = {
         if (!self._origNotifySubscribers) {
             self._origNotifySubscribers = self.notifySubscribers;
             // Moved out of "limit" to avoid the extra closure
-            self.notifySubscribers = function(value, event) {
+            self.notifySubscribers = (value, event) => {
                 if (!event || event === defaultEvent) {
-                    this._limitChange(value);
-                } else if (event === 'beforeChange') {
-                    this._limitBeforeChange(value);
+                    self._limitChange(value);
+                } else if (event === beforeChange) {
+                    self._limitBeforeChange(value);
                 } else {
-                    this._origNotifySubscribers(value, event);
+                    self._origNotifySubscribers(value, event);
                 }
             }
         }
@@ -701,25 +697,17 @@ ko.extenders['trackArrayChanges'] = (target, options) => {
 
     // Watch "subscribe" calls, and for array change events, ensure change tracking is enabled
     target.beforeSubscriptionAdd = event => {
-        if (underlyingBeforeSubscriptionAddFunction) {
-            underlyingBeforeSubscriptionAddFunction.call(target, event);
-        }
+        underlyingBeforeSubscriptionAddFunction?.call(target, event);
         if (event === arrayChangeEventName) {
             trackChanges();
         }
     };
     // Watch "dispose" calls, and for array change events, ensure change tracking is disabled when all are disposed
     target.afterSubscriptionRemove = event => {
-        if (underlyingAfterSubscriptionRemoveFunction) {
-            underlyingAfterSubscriptionRemoveFunction.call(target, event);
-        }
+        underlyingAfterSubscriptionRemoveFunction?.call(target, event);
         if (event === arrayChangeEventName && !target.hasSubscriptionsForEvent(arrayChangeEventName)) {
-            if (changeSubscription) {
-                changeSubscription.dispose();
-            }
-            if (spectateSubscription) {
-                spectateSubscription.dispose();
-            }
+            changeSubscription?.dispose();
+            spectateSubscription?.dispose();
             spectateSubscription = changeSubscription = null;
             trackingChanges = false;
             previousContents = undefined;
@@ -727,23 +715,6 @@ ko.extenders['trackArrayChanges'] = (target, options) => {
     };
 
     function trackChanges() {
-        if (trackingChanges) {
-            // Whenever there's a new subscription and there are pending notifications, make sure all previous
-            // subscriptions are notified of the change so that all subscriptions are in sync.
-            notifyChanges();
-            return;
-        }
-
-        trackingChanges = true;
-
-        // Track how many times the array actually changed value
-        spectateSubscription = target.subscribe(() => ++pendingChanges, null, "spectate");
-
-        // Each time the array changes value, capture a clone so that on the next
-        // change it's possible to produce a diff
-        previousContents = [].concat(target.peek() || []);
-        cachedDiff = null;
-        changeSubscription = target.subscribe(notifyChanges);
 
         function notifyChanges() {
             if (pendingChanges) {
@@ -765,6 +736,24 @@ ko.extenders['trackArrayChanges'] = (target, options) => {
                 }
             }
         }
+
+        if (trackingChanges) {
+            // Whenever there's a new subscription and there are pending notifications, make sure all previous
+            // subscriptions are notified of the change so that all subscriptions are in sync.
+            notifyChanges();
+            return;
+        }
+
+        trackingChanges = true;
+
+        // Track how many times the array actually changed value
+        spectateSubscription = target.subscribe(() => ++pendingChanges, null, "spectate");
+
+        // Each time the array changes value, capture a clone so that on the next
+        // change it's possible to produce a diff
+        previousContents = [].concat(target.peek() || []);
+        cachedDiff = null;
+        changeSubscription = target.subscribe(notifyChanges);
     }
 
     function getChanges(previousContents, currentContents) {
@@ -805,20 +794,19 @@ ko.extenders['trackArrayChanges'] = (target, options) => {
             case 'pop':
                 offset = arrayLength - 1;
             case 'shift':
-                if (arrayLength) {
-                    pushDiff('deleted', rawArray[offset], offset);
-                }
+                arrayLength && pushDiff('deleted', rawArray[offset], offset);
                 break;
 
             case 'splice':
                 // Negative start index means 'from end of array'. After that we clamp to [0...arrayLength].
                 // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
-                var startIndex = Math.min(Math.max(0, args[0] < 0 ? arrayLength + args[0] : args[0]), arrayLength),
-                    endDeleteIndex = argsLength === 1 ? arrayLength : Math.min(startIndex + (args[1] || 0), arrayLength),
-                    endAddIndex = startIndex + argsLength - 2,
+                var index = Math.min(Math.max(0, args[0] < 0 ? arrayLength + args[0] : args[0]), arrayLength),
+                    endDeleteIndex = argsLength === 1 ? arrayLength : Math.min(index + (args[1] || 0), arrayLength),
+                    endAddIndex = index + argsLength - 2,
                     endIndex = Math.max(endDeleteIndex, endAddIndex),
-                    additions = [], deletions = [];
-                for (let index = startIndex, argsIndex = 2; index < endIndex; ++index, ++argsIndex) {
+                    additions = [], deletions = [],
+                    argsIndex = 2;
+                for (; index < endIndex; ++index, ++argsIndex) {
                     if (index < endDeleteIndex)
                         deletions.push(pushDiff('deleted', rawArray[index], index));
                     if (index < endAddIndex)
@@ -898,8 +886,6 @@ ko.computed = (evaluatorFunctionOrOptions, options) => {
         state.pure = true;
         state.isSleeping = true;     // Starts off sleeping; will awake on the first subscription
         ko.utils.extend(computedObservable, pureComputedOverrides);
-    } else if (options['deferEvaluation']) {
-        ko.utils.extend(computedObservable, deferEvaluationOverrides);
     }
 
     if (state.disposeWhenNodeIsRemoved) {
@@ -917,10 +903,8 @@ ko.computed = (evaluatorFunctionOrOptions, options) => {
         }
     }
 
-    // Evaluate, unless sleeping or deferEvaluation is true
-    if (!state.isSleeping && !options['deferEvaluation']) {
-        computedObservable.evaluateImmediate();
-    }
+    // Evaluate, unless sleeping
+    state.isSleeping || computedObservable.evaluateImmediate();
 
     // Attach a DOM node disposal callback so that the computed will be proactively disposed as soon as the node is
     // removed using ko.removeNode. But skip if isActive is false (there will never be any dependencies to dispose).
@@ -1063,16 +1047,13 @@ var computedFn = {
             disposeWhen = state.disposeWhen,
             changed = false;
 
-        if (state.isBeingEvaluated) {
-            // If the evaluation of a ko.computed causes side effects, it's possible that it will trigger its own re-evaluation.
-            // This is not desirable (it's hard for a developer to realise a chain of dependencies might cause this, and they almost
-            // certainly didn't intend infinite re-evaluations). So, for predictability, we simply prevent ko.computeds from causing
-            // their own re-evaluation. Further discussion at https://github.com/SteveSanderson/knockout/pull/387
-            return;
-        }
-
+        // If the evaluation of a ko.computed causes side effects, it's possible that it will trigger its own re-evaluation.
+        // This is not desirable (it's hard for a developer to realise a chain of dependencies might cause this, and they almost
+        // certainly didn't intend infinite re-evaluations). So, for predictability, we simply prevent ko.computeds from causing
+        // their own re-evaluation. Further discussion at https://github.com/SteveSanderson/knockout/pull/387
+        if (state.isBeingEvaluated
         // Do not evaluate (and possibly capture new dependencies) if disposed
-        if (state.isDisposed) {
+         || state.isDisposed) {
             return;
         }
 
@@ -1087,8 +1068,8 @@ var computedFn = {
             state.suppressDisposalUntilDisposeWhenReturnsFalse = false;
         }
 
-        state.isBeingEvaluated = true;
         try {
+            state.isBeingEvaluated = true;
             changed = this.evaluateImmediate_CallReadWithDependencyDetection(notifyChange);
         } finally {
             state.isBeingEvaluated = false;
@@ -1159,7 +1140,7 @@ var computedFn = {
         return changed;
     },
     peek: function (evaluate) {
-        // By default, peek won't re-evaluate, except while the computed is sleeping or to get the initial value when "deferEvaluation" is set.
+        // By default, peek won't re-evaluate, except while the computed is sleeping.
         // Pass in true to evaluate if needed.
         var state = this[computedState];
         if ((state.isDirty && (evaluate || !state.dependenciesCount)) || (state.isSleeping && this.haveDependenciesChanged())) {
@@ -1168,30 +1149,31 @@ var computedFn = {
         return state.latestValue;
     },
     limit: function (limitFunction) {
+        var self = this;
         // Override the limit function with one that delays evaluation as well
-        ko.subscribable['fn'].limit.call(this, limitFunction);
-        this._evalIfChanged = function () {
-            if (!this[computedState].isSleeping) {
-                if (this[computedState].isStale) {
-                    this.evaluateImmediate();
+        ko.subscribable['fn'].limit.call(self, limitFunction);
+        self._evalIfChanged = () => {
+            if (!self[computedState].isSleeping) {
+                if (self[computedState].isStale) {
+                    self.evaluateImmediate();
                 } else {
-                    this[computedState].isDirty = false;
+                    self[computedState].isDirty = false;
                 }
             }
-            return this[computedState].latestValue;
+            return self[computedState].latestValue;
         };
-        this._evalDelayed = function (isChange) {
-            this._limitBeforeChange(this[computedState].latestValue);
+        self._evalDelayed = isChange => {
+            self._limitBeforeChange(self[computedState].latestValue);
 
             // Mark as dirty
-            this[computedState].isDirty = true;
+            self[computedState].isDirty = true;
             if (isChange) {
-                this[computedState].isStale = true;
+                self[computedState].isStale = true;
             }
 
             // Pass the observable to the "limit" code, which will evaluate it when
             // it's time to do the notification.
-            this._limitChange(this, !isChange /* isDirty */);
+            self._limitChange(self, !isChange /* isDirty */);
         };
     },
     dispose: function () {
@@ -1285,15 +1267,6 @@ var pureComputedOverrides = {
     }
 };
 
-var deferEvaluationOverrides = {
-    beforeSubscriptionAdd: function (event) {
-        // This will force a computed with deferEvaluation to evaluate when the first subscription is registered.
-        if (event == 'change' || event == 'beforeChange') {
-            this.peek();
-        }
-    }
-};
-
 // Note that for browsers that don't support proto assignment, the
 // inheritance chain is created manually in the ko.computed constructor
 Object.setPrototypeOf(computedFn, ko.subscribable['fn']);
@@ -1325,11 +1298,13 @@ ko.pureComputed = (evaluatorFunctionOrOptions) => {
         readValue : element => {
             switch (element.nodeName) {
                 case 'OPTION':
-                    if (element[hasDomDataExpandoProperty] === true)
-                        return ko.utils.domData.get(element, ko.bindingHandlers.options.optionValueDomDataKey);
-                    return element.value;
+                    return (element[hasDomDataExpandoProperty] === true)
+                        ? ko.utils.domData.get(element, ko.bindingHandlers.options.optionValueDomDataKey)
+                        : element.value;
                 case 'SELECT':
-                    return element.selectedIndex >= 0 ? ko.selectExtensions.readValue(element.options[element.selectedIndex]) : undefined;
+                    return element.selectedIndex >= 0
+                        ? ko.selectExtensions.readValue(element.options[element.selectedIndex])
+                        : undefined;
                 default:
                     return element.value;
             }
@@ -1354,8 +1329,9 @@ ko.pureComputed = (evaluatorFunctionOrOptions) => {
                     break;
                 case 'SELECT':
                     // A blank string or null value will select the caption
-                    var selection = -1, noValue = ("" === value || null == value);
-                    for (var i = 0, n = element.options.length, optionValue; i < n; ++i) {
+                    var selection = -1, noValue = ("" === value || null == value),
+                        i = element.options.length, optionValue;
+                    while (i--) {
                         optionValue = ko.selectExtensions.readValue(element.options[i]);
                         // Include special check to handle selecting a caption with a blank string value
                         if (optionValue == value || (optionValue === "" && noValue)) {
@@ -1552,9 +1528,7 @@ ko.expressionRewriting = (() => {
         //                      it is !== existing value on that writable observable
         writeValueToProperty: (property, allBindings, key, value, checkIfDifferent) => {
             if (!property || !ko.isObservable(property)) {
-                var propWriters = allBindings.get('_ko_property_writers');
-                if (propWriters && propWriters[key])
-                    propWriters[key](value);
+                allBindings.get('_ko_property_writers')?.[key]?.(value);
             } else if (ko.isWriteableObservable(property) && (!checkIfDifferent || property.peek() !== value)) {
                 property(value);
             }
@@ -1761,7 +1735,7 @@ ko.expressionRewriting = (() => {
                 realDataItemOrAccessor = shouldInheritData ? undefined : dataItemOrAccessor,
                 isFunc = typeof(realDataItemOrAccessor) == "function" && !ko.isObservable(realDataItemOrAccessor),
                 subscribable,
-                dataDependency = options && options['dataDependency'],
+                dataDependency = options?.['dataDependency'],
 
             // The binding context object includes static properties for the current, parent, and root view models.
             // If a view model is actually stored in an observable, the corresponding binding context object, and
@@ -1807,12 +1781,11 @@ ko.expressionRewriting = (() => {
                 // The extendCallback function is provided when creating a child context or extending a context.
                 // It handles the specific actions needed to finish setting up the binding context. Actions in this
                 // function could also add dependencies to this binding context.
-                if (extendCallback)
-                    extendCallback(self, parentContext, dataItem);
+                extendCallback?.(self, parentContext, dataItem);
 
                 // When a "parent" context is given and we don't already have a dependency on its context, register a dependency on it.
                 // Thus whenever the parent context is updated, this context will also be updated.
-                if (parentContext && parentContext[contextSubscribable] && !ko.dependencyDetection.computed().hasAncestorDependency(parentContext[contextSubscribable])) {
+                if (parentContext?.[contextSubscribable] && !ko.dependencyDetection.computed().hasAncestorDependency(parentContext[contextSubscribable])) {
                     parentContext[contextSubscribable]();
                 }
 
@@ -1823,7 +1796,7 @@ ko.expressionRewriting = (() => {
                 return self['$data'];
             };
 
-            if (options && options['exportDependencies']) {
+            if (options?.['exportDependencies']) {
                 // The "exportDependencies" option means that the calling code will track any dependencies and re-create
                 // the binding context when they change.
                 updateContext();
@@ -1881,7 +1854,7 @@ ko.expressionRewriting = (() => {
 
     function asyncContextDispose(node) {
         var bindingInfo = ko.utils.domData.get(node, boundElementDomDataKey),
-            asyncContext = bindingInfo && bindingInfo.asyncContext;
+            asyncContext = bindingInfo?.asyncContext;
         if (asyncContext) {
             bindingInfo.asyncContext = null;
             asyncContext.notifyAncestor();
@@ -1895,25 +1868,19 @@ ko.expressionRewriting = (() => {
             this.asyncDescendants = new Set;
             this.childrenComplete = false;
 
-            if (!bindingInfo.asyncContext) {
-                ko.utils.domNodeDisposal.addDisposeCallback(node, asyncContextDispose);
-            }
+            bindingInfo.asyncContext || ko.utils.domNodeDisposal.addDisposeCallback(node, asyncContextDispose);
 
-            if (ancestorBindingInfo && ancestorBindingInfo.asyncContext) {
+            if (ancestorBindingInfo?.asyncContext) {
                 ancestorBindingInfo.asyncContext.asyncDescendants.add(node);
                 this.ancestorBindingInfo = ancestorBindingInfo;
             }
         }
         notifyAncestor() {
-            if (this.ancestorBindingInfo && this.ancestorBindingInfo.asyncContext) {
-                this.ancestorBindingInfo.asyncContext.descendantComplete(this.node);
-            }
+            this.ancestorBindingInfo?.asyncContext?.descendantComplete(this.node);
         }
         descendantComplete(node) {
             this.asyncDescendants.delete(node);
-            if (!this.asyncDescendants.size && this.childrenComplete) {
-                this.completeChildren();
-            }
+            this.asyncDescendants.size || this.completeChildren?.();
         }
         completeChildren() {
             this.childrenComplete = true;
@@ -1935,7 +1902,7 @@ ko.expressionRewriting = (() => {
             if (!bindingInfo.eventSubscribable) {
                 bindingInfo.eventSubscribable = new ko.subscribable;
             }
-            if (options && options['notifyImmediately'] && bindingInfo.notifiedEvents[event]) {
+            if (options?.['notifyImmediately'] && bindingInfo.notifiedEvents[event]) {
                 ko.dependencyDetection.ignore(callback, context, [node]);
             }
             return bindingInfo.eventSubscribable.subscribe(callback, context, event);
@@ -1945,13 +1912,11 @@ ko.expressionRewriting = (() => {
             var bindingInfo = ko.utils.domData.get(node, boundElementDomDataKey);
             if (bindingInfo) {
                 bindingInfo.notifiedEvents[event] = true;
-                if (bindingInfo.eventSubscribable) {
-                    bindingInfo.eventSubscribable.notifySubscribers(node, event);
-                }
+                bindingInfo.eventSubscribable?.notifySubscribers(node, event);
                 if (event == ko.bindingEvent.childrenComplete) {
                     if (bindingInfo.asyncContext) {
                         bindingInfo.asyncContext.completeChildren();
-                    } else if (bindingInfo.asyncContext === undefined && bindingInfo.eventSubscribable && bindingInfo.eventSubscribable.hasSubscriptionsForEvent(ko.bindingEvent.descendantsComplete)) {
+                    } else if (bindingInfo.asyncContext === undefined && bindingInfo.eventSubscribable?.hasSubscriptionsForEvent(ko.bindingEvent.descendantsComplete)) {
                         // It's currently an error to register a descendantsComplete handler for a node that was never registered as completing asynchronously.
                         // That's because without the asyncContext, we don't have a way to know that all descendants have completed.
                         throw new Error("descendantsComplete event not supported for bindings on this node");
@@ -2003,8 +1968,7 @@ ko.expressionRewriting = (() => {
         // Perf optimisation: Apply bindings only if...
         // (1) We need to store the binding info for the node (all element nodes)
         // (2) It might have bindings (e.g., it has a data-bind attribute, or it's a marker for a containerless template)
-        var shouldApplyBindings = isElement || ko.bindingProvider.nodeHasBindings(nodeVerified);
-        if (shouldApplyBindings)
+        if (isElement || ko.bindingProvider.nodeHasBindings(nodeVerified))
             bindingContextForDescendants = applyBindingsToNodeInternal(nodeVerified, null, bindingContext)['bindingContextForDescendants'];
 
         // Don't want bindings that operate on text nodes to mutate <script> and <textarea> contents,
@@ -2012,7 +1976,7 @@ ko.expressionRewriting = (() => {
         // Also bindings should not operate on <template> elements since this breaks in Internet Explorer
         // and because such elements' contents are always intended to be bound in a different context
         // from where they appear in the document.
-        if (bindingContextForDescendants && nodeVerified.matches && !nodeVerified.matches('SCRIPT,TEXTAREA,TEMPLATE')) {
+        if (bindingContextForDescendants && !nodeVerified.matches?.('SCRIPT,TEXTAREA,TEMPLATE')) {
             applyBindingsToDescendantsInternal(bindingContextForDescendants, nodeVerified);
         }
     }
@@ -2079,12 +2043,8 @@ ko.expressionRewriting = (() => {
                     bindings = sourceBindings ? sourceBindings(bindingContext, node) : ko.bindingProvider.getBindingAccessors(node, bindingContext);
                     // Register a dependency on the binding context to support observable view models.
                     if (bindings) {
-                        if (bindingContext[contextSubscribable]) {
-                            bindingContext[contextSubscribable]();
-                        }
-                        if (bindingContext[contextDataDependency]) {
-                            bindingContext[contextDataDependency]();
-                        }
+                        bindingContext[contextSubscribable]?.();
+                        bindingContext[contextDataDependency]?.();
                     }
                     return bindings;
                 },
@@ -2117,9 +2077,7 @@ ko.expressionRewriting = (() => {
                     var callback = bindings[ko.bindingEvent.childrenComplete]();
                     if (callback) {
                         var nodes = ko.virtualElements.childNodes(node);
-                        if (nodes.length) {
-                            callback(nodes, ko.dataFor(nodes[0]));
-                        }
+                        nodes.length && callback(nodes, ko.dataFor(nodes[0]));
                     }
                 });
             }
@@ -3439,21 +3397,20 @@ makeEventHandlerShortcut('click');
 })();
 // Go through the items that have been added and deleted and try to find matches between them.
 ko.utils.findMovesInArrayComparison = (left, right, limitFailedCompares) => {
-    if (left.length && right.length) {
-        var failedCompares, l, r, leftItem, rightItem;
-        for (failedCompares = l = 0; (!limitFailedCompares || failedCompares < limitFailedCompares) && (leftItem = left[l]); ++l) {
-            for (r = 0; rightItem = right[r]; ++r) {
-                if (leftItem['value'] === rightItem['value']) {
-                    leftItem['moved'] = rightItem['index'];
-                    rightItem['moved'] = leftItem['index'];
-                    right.splice(r, 1);         // This item is marked as moved; so remove it from right list
-                    failedCompares = r = 0;     // Reset failed compares count because we're checking for consecutive failures
-                    break;
-                }
-            }
-            failedCompares += r;
+    var failedCompares = 0, r, l = right.length;
+    l && left.every(leftItem => {
+        r = right.findIndex(rightItem => leftItem['value'] === rightItem['value']);
+        if (r >= 0) {
+            leftItem['moved'] = right[r]['index'];
+            right[r]['moved'] = leftItem['index'];
+            right.splice(r, 1);         // This item is marked as moved; so remove it from right list
+//            right[r] = null;
+            failedCompares = r = 0;     // Reset failed compares count because we're checking for consecutive failures
+            --l;
         }
-    }
+        failedCompares += l;
+        return l && (!limitFailedCompares || failedCompares < limitFailedCompares);
+    });
 };
 
 ko.utils.compareArrays = (() => {
@@ -3463,15 +3420,15 @@ ko.utils.compareArrays = (() => {
         var myMin = Math.min,
             myMax = Math.max,
             editDistanceMatrix = [],
-            smlIndex, smlIndexMax = smlArray.length,
+            smlIndex = -1, smlIndexMax = smlArray.length,
             bigIndex, bigIndexMax = bigArray.length,
             compareRange = (bigIndexMax - smlIndexMax) || 1,
             maxDistance = smlIndexMax + bigIndexMax + 1,
-            thisRow, lastRow,
+            thisRow, prevRow,
             bigIndexMaxForRow, bigIndexMinForRow;
 
-        for (smlIndex = 0; smlIndex <= smlIndexMax; smlIndex++) {
-            lastRow = thisRow;
+        while (++smlIndex <= smlIndexMax) {
+            prevRow = thisRow;
             editDistanceMatrix.push(thisRow = []);
             bigIndexMaxForRow = myMin(bigIndexMax, smlIndex + compareRange);
             bigIndexMinForRow = myMax(0, smlIndex - 1);
@@ -3481,9 +3438,9 @@ ko.utils.compareArrays = (() => {
                 else if (!smlIndex)  // Top row - transform empty array into new array via additions
                     thisRow[bigIndex] = bigIndex + 1;
                 else if (smlArray[smlIndex - 1] === bigArray[bigIndex - 1])
-                    thisRow[bigIndex] = lastRow[bigIndex - 1];                  // copy value (no edit)
+                    thisRow[bigIndex] = prevRow[bigIndex - 1];                  // copy value (no edit)
                 else {
-                    var northDistance = lastRow[bigIndex] || maxDistance;       // not in big (deletion)
+                    var northDistance = prevRow[bigIndex] || maxDistance;       // not in big (deletion)
                     var westDistance = thisRow[bigIndex - 1] || maxDistance;    // not in small (addition)
                     thisRow[bigIndex] = myMin(northDistance, westDistance) + 1;
                 }
@@ -3491,7 +3448,9 @@ ko.utils.compareArrays = (() => {
         }
 
         var editScript = [], meMinusOne, notInSml = [], notInBig = [];
-        for (smlIndex = smlIndexMax, bigIndex = bigIndexMax; smlIndex || bigIndex;) {
+        smlIndex = smlIndexMax;
+        bigIndex = bigIndexMax
+        while (smlIndex || bigIndex) {
             meMinusOne = editDistanceMatrix[smlIndex][bigIndex] - 1;
             if (bigIndex && meMinusOne === editDistanceMatrix[smlIndex][bigIndex-1]) {
                 notInSml.push(editScript[editScript.length] = {     // added
@@ -3585,55 +3544,57 @@ ko.utils.compareArrays = (() => {
             array = [array];
 
         options = options || {};
-        var lastMappingResult = ko.utils.domData.get(domNode, lastMappingResultDomDataKey);
-        var isFirstExecution = !lastMappingResult;
+        var lastMappingResult = ko.utils.domData.get(domNode, lastMappingResultDomDataKey),
+            isFirstExecution = !lastMappingResult,
 
-        // Build the new mapping result
-        var newMappingResult = [];
-        var lastMappingResultIndex = 0;
-        var currentArrayIndex = 0;
+            // Build the new mapping result
+            newMappingResult = [],
+            lastMappingResultIndex = 0,
+            currentArrayIndex = 0,
 
-        var nodesToDelete = [];
-        var itemsToMoveFirstIndexes = [];
-        var itemsForBeforeRemoveCallbacks = [];
-        var mapData;
-        var countWaitingForRemove = 0;
+            nodesToDelete = [],
+            itemsToMoveFirstIndexes = [],
+            itemsForBeforeRemoveCallbacks = [],
+            mapData,
+            countWaitingForRemove = 0,
 
-        function itemAdded(value) {
-            mapData = { arrayEntry: value, indexObservable: ko.observable(currentArrayIndex++) };
-            newMappingResult.push(mapData);
-        }
+            itemAdded = value => {
+                mapData = { arrayEntry: value, indexObservable: ko.observable(currentArrayIndex++) };
+                newMappingResult.push(mapData);
+            },
 
-        function itemMovedOrRetained(oldPosition) {
-            mapData = lastMappingResult[oldPosition];
-            // Since updating the index might change the nodes, do so before calling fixUpContinuousNodeArray
-            mapData.indexObservable(currentArrayIndex++);
-            ko.utils.fixUpContinuousNodeArray(mapData.mappedNodes, domNode);
-            newMappingResult.push(mapData);
-        }
+            itemMovedOrRetained = oldPosition => {
+                mapData = lastMappingResult[oldPosition];
+                // Since updating the index might change the nodes, do so before calling fixUpContinuousNodeArray
+                mapData.indexObservable(currentArrayIndex++);
+                ko.utils.fixUpContinuousNodeArray(mapData.mappedNodes, domNode);
+                newMappingResult.push(mapData);
+            },
 
-        function callCallback(callback, items) {
-            if (callback) {
-                for (var i = 0, n = items.length; i < n; i++) {
-                    items[i] && items[i].mappedNodes.forEach(node => callback(node, i, items[i].arrayEntry));
+            callCallback = (callback, items) => {
+                if (callback) {
+                    for (var i = 0, n = items.length; i < n; i++) {
+                        items[i] && items[i].mappedNodes.forEach(node => callback(node, i, items[i].arrayEntry));
+                    }
                 }
-            }
-        }
+            };
 
         if (isFirstExecution) {
             array.forEach(itemAdded);
         } else {
             if (!editScript || (lastMappingResult && lastMappingResult['_countWaitingForRemove'])) {
                 // Compare the provided array against the previous one
-                var lastArray = Array.prototype.map.call(lastMappingResult, x => x.arrayEntry),
-                    compareOptions = {
+                editScript = ko.utils.compareArrays(
+                    Array.prototype.map.call(lastMappingResult, x => x.arrayEntry),
+                    array,
+                    {
                         'dontLimitMoves': options['dontLimitMoves'],
                         'sparse': true
-                    };
-                editScript = ko.utils.compareArrays(lastArray, array, compareOptions);
+                    });
             }
 
-            for (let i = 0, editScriptItem, movedIndex, itemIndex; editScriptItem = editScript[i]; i++) {
+            let movedIndex, itemIndex;
+            editScript.forEach(editScriptItem => {
                 movedIndex = editScriptItem['moved'];
                 itemIndex = editScriptItem['index'];
                 switch (editScriptItem['status']) {
@@ -3681,7 +3642,7 @@ ko.utils.compareArrays = (() => {
                         }
                         break;
                 }
-            }
+            });
 
             while (currentArrayIndex < array.length) {
                 itemMovedOrRetained(lastMappingResultIndex++);
@@ -3698,7 +3659,11 @@ ko.utils.compareArrays = (() => {
         // Next remove nodes for deleted items (or just clean if there's a beforeRemove callback)
         nodesToDelete.forEach(options['beforeRemove'] ? ko.cleanNode : ko.removeNode);
 
-        var i, j, lastNode, nodeToInsert, mappedNodes, activeElement;
+        var i, lastNode, mappedNodes, activeElement,
+            insertNode = nodeToInsert => {
+                ko.virtualElements.insertAfter(domNode, nodeToInsert, lastNode);
+                lastNode = nodeToInsert;
+            };
 
         // Since most browsers remove the focus from an element when it's moved to another location,
         // save the focused element and try to restore it later.
@@ -3714,22 +3679,18 @@ ko.utils.compareArrays = (() => {
                         break;
                     }
                 }
-                for (j = 0; nodeToInsert = mapData.mappedNodes[j]; lastNode = nodeToInsert, j++) {
-                    ko.virtualElements.insertAfter(domNode, nodeToInsert, lastNode);
-                }
+                mapData.mappedNodes.forEach(insertNode);
             }
         }
 
         // Next add/reorder the remaining items (will include deleted items if there's a beforeRemove callback)
-        for (i = 0; mapData = newMappingResult[i]; i++) {
+        newMappingResult.forEach(mapData => {
             // Get nodes for newly added items
-            if (!mapData.mappedNodes)
-                ko.utils.extend(mapData, mapNodeAndRefreshWhenChanged(domNode, mapping, mapData.arrayEntry, callbackAfterAddingNodes, mapData.indexObservable));
+            mapData.mappedNodes
+            || ko.utils.extend(mapData, mapNodeAndRefreshWhenChanged(domNode, mapping, mapData.arrayEntry, callbackAfterAddingNodes, mapData.indexObservable));
 
             // Put nodes in the right place if they aren't there already
-            for (j = 0; nodeToInsert = mapData.mappedNodes[j]; lastNode = nodeToInsert, j++) {
-                ko.virtualElements.insertAfter(domNode, nodeToInsert, lastNode);
-            }
+            mapData.mappedNodes.forEach(insertNode);
 
             // Run the callbacks for newly added nodes (for example, to apply bindings, etc.)
             if (!mapData.initialized && callbackAfterAddingNodes) {
@@ -3737,11 +3698,11 @@ ko.utils.compareArrays = (() => {
                 mapData.initialized = true;
                 lastNode = mapData.mappedNodes[mapData.mappedNodes.length - 1];     // get the last node again since it may have been changed by a preprocessor
             }
-        }
+        });
 
         // Restore the focused element if it had lost focus
-        if (activeElement && domNode.ownerDocument.activeElement != activeElement) {
-            activeElement.focus();
+        if (domNode.ownerDocument.activeElement != activeElement) {
+            activeElement?.focus();
         }
 
         // If there's a beforeRemove callback, call it after reordering.
@@ -3754,11 +3715,7 @@ ko.utils.compareArrays = (() => {
         // Replace the stored values of deleted items with a dummy value. This provides two benefits: it marks this item
         // as already "removed" so we won't call beforeRemove for it again, and it ensures that the item won't match up
         // with an actual item in the array and appear as "retained" or "moved".
-        for (i = 0; i < itemsForBeforeRemoveCallbacks.length; ++i) {
-            if (itemsForBeforeRemoveCallbacks[i]) {
-                itemsForBeforeRemoveCallbacks[i].arrayEntry = deletedItemDummyValue;
-            }
-        }
+        itemsForBeforeRemoveCallbacks.forEach(callback => callback && (callback.arrayEntry = deletedItemDummyValue));
     }
 })();
 	window['ko'] = koExports;

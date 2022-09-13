@@ -63,8 +63,6 @@ ko.computed = (evaluatorFunctionOrOptions, options) => {
         state.pure = true;
         state.isSleeping = true;     // Starts off sleeping; will awake on the first subscription
         ko.utils.extend(computedObservable, pureComputedOverrides);
-    } else if (options['deferEvaluation']) {
-        ko.utils.extend(computedObservable, deferEvaluationOverrides);
     }
 
     if (state.disposeWhenNodeIsRemoved) {
@@ -82,10 +80,8 @@ ko.computed = (evaluatorFunctionOrOptions, options) => {
         }
     }
 
-    // Evaluate, unless sleeping or deferEvaluation is true
-    if (!state.isSleeping && !options['deferEvaluation']) {
-        computedObservable.evaluateImmediate();
-    }
+    // Evaluate, unless sleeping
+    state.isSleeping || computedObservable.evaluateImmediate();
 
     // Attach a DOM node disposal callback so that the computed will be proactively disposed as soon as the node is
     // removed using ko.removeNode. But skip if isActive is false (there will never be any dependencies to dispose).
@@ -228,16 +224,13 @@ var computedFn = {
             disposeWhen = state.disposeWhen,
             changed = false;
 
-        if (state.isBeingEvaluated) {
-            // If the evaluation of a ko.computed causes side effects, it's possible that it will trigger its own re-evaluation.
-            // This is not desirable (it's hard for a developer to realise a chain of dependencies might cause this, and they almost
-            // certainly didn't intend infinite re-evaluations). So, for predictability, we simply prevent ko.computeds from causing
-            // their own re-evaluation. Further discussion at https://github.com/SteveSanderson/knockout/pull/387
-            return;
-        }
-
+        // If the evaluation of a ko.computed causes side effects, it's possible that it will trigger its own re-evaluation.
+        // This is not desirable (it's hard for a developer to realise a chain of dependencies might cause this, and they almost
+        // certainly didn't intend infinite re-evaluations). So, for predictability, we simply prevent ko.computeds from causing
+        // their own re-evaluation. Further discussion at https://github.com/SteveSanderson/knockout/pull/387
+        if (state.isBeingEvaluated
         // Do not evaluate (and possibly capture new dependencies) if disposed
-        if (state.isDisposed) {
+         || state.isDisposed) {
             return;
         }
 
@@ -252,8 +245,8 @@ var computedFn = {
             state.suppressDisposalUntilDisposeWhenReturnsFalse = false;
         }
 
-        state.isBeingEvaluated = true;
         try {
+            state.isBeingEvaluated = true;
             changed = this.evaluateImmediate_CallReadWithDependencyDetection(notifyChange);
         } finally {
             state.isBeingEvaluated = false;
@@ -324,7 +317,7 @@ var computedFn = {
         return changed;
     },
     peek: function (evaluate) {
-        // By default, peek won't re-evaluate, except while the computed is sleeping or to get the initial value when "deferEvaluation" is set.
+        // By default, peek won't re-evaluate, except while the computed is sleeping.
         // Pass in true to evaluate if needed.
         var state = this[computedState];
         if ((state.isDirty && (evaluate || !state.dependenciesCount)) || (state.isSleeping && this.haveDependenciesChanged())) {
@@ -333,30 +326,31 @@ var computedFn = {
         return state.latestValue;
     },
     limit: function (limitFunction) {
+        var self = this;
         // Override the limit function with one that delays evaluation as well
-        ko.subscribable['fn'].limit.call(this, limitFunction);
-        this._evalIfChanged = function () {
-            if (!this[computedState].isSleeping) {
-                if (this[computedState].isStale) {
-                    this.evaluateImmediate();
+        ko.subscribable['fn'].limit.call(self, limitFunction);
+        self._evalIfChanged = () => {
+            if (!self[computedState].isSleeping) {
+                if (self[computedState].isStale) {
+                    self.evaluateImmediate();
                 } else {
-                    this[computedState].isDirty = false;
+                    self[computedState].isDirty = false;
                 }
             }
-            return this[computedState].latestValue;
+            return self[computedState].latestValue;
         };
-        this._evalDelayed = function (isChange) {
-            this._limitBeforeChange(this[computedState].latestValue);
+        self._evalDelayed = isChange => {
+            self._limitBeforeChange(self[computedState].latestValue);
 
             // Mark as dirty
-            this[computedState].isDirty = true;
+            self[computedState].isDirty = true;
             if (isChange) {
-                this[computedState].isStale = true;
+                self[computedState].isStale = true;
             }
 
             // Pass the observable to the "limit" code, which will evaluate it when
             // it's time to do the notification.
-            this._limitChange(this, !isChange /* isDirty */);
+            self._limitChange(self, !isChange /* isDirty */);
         };
     },
     dispose: function () {
@@ -447,15 +441,6 @@ var pureComputedOverrides = {
             this.evaluateImmediate();
         }
         return ko.subscribable['fn'].getVersion.call(this);
-    }
-};
-
-var deferEvaluationOverrides = {
-    beforeSubscriptionAdd: function (event) {
-        // This will force a computed with deferEvaluation to evaluate when the first subscription is registered.
-        if (event == 'change' || event == 'beforeChange') {
-            this.peek();
-        }
     }
 };
 

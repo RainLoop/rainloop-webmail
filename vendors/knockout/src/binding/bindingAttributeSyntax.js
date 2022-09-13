@@ -18,7 +18,7 @@
                 realDataItemOrAccessor = shouldInheritData ? undefined : dataItemOrAccessor,
                 isFunc = typeof(realDataItemOrAccessor) == "function" && !ko.isObservable(realDataItemOrAccessor),
                 subscribable,
-                dataDependency = options && options['dataDependency'],
+                dataDependency = options?.['dataDependency'],
 
             // The binding context object includes static properties for the current, parent, and root view models.
             // If a view model is actually stored in an observable, the corresponding binding context object, and
@@ -64,12 +64,11 @@
                 // The extendCallback function is provided when creating a child context or extending a context.
                 // It handles the specific actions needed to finish setting up the binding context. Actions in this
                 // function could also add dependencies to this binding context.
-                if (extendCallback)
-                    extendCallback(self, parentContext, dataItem);
+                extendCallback?.(self, parentContext, dataItem);
 
                 // When a "parent" context is given and we don't already have a dependency on its context, register a dependency on it.
                 // Thus whenever the parent context is updated, this context will also be updated.
-                if (parentContext && parentContext[contextSubscribable] && !ko.dependencyDetection.computed().hasAncestorDependency(parentContext[contextSubscribable])) {
+                if (parentContext?.[contextSubscribable] && !ko.dependencyDetection.computed().hasAncestorDependency(parentContext[contextSubscribable])) {
                     parentContext[contextSubscribable]();
                 }
 
@@ -80,7 +79,7 @@
                 return self['$data'];
             };
 
-            if (options && options['exportDependencies']) {
+            if (options?.['exportDependencies']) {
                 // The "exportDependencies" option means that the calling code will track any dependencies and re-create
                 // the binding context when they change.
                 updateContext();
@@ -138,7 +137,7 @@
 
     function asyncContextDispose(node) {
         var bindingInfo = ko.utils.domData.get(node, boundElementDomDataKey),
-            asyncContext = bindingInfo && bindingInfo.asyncContext;
+            asyncContext = bindingInfo?.asyncContext;
         if (asyncContext) {
             bindingInfo.asyncContext = null;
             asyncContext.notifyAncestor();
@@ -152,25 +151,19 @@
             this.asyncDescendants = new Set;
             this.childrenComplete = false;
 
-            if (!bindingInfo.asyncContext) {
-                ko.utils.domNodeDisposal.addDisposeCallback(node, asyncContextDispose);
-            }
+            bindingInfo.asyncContext || ko.utils.domNodeDisposal.addDisposeCallback(node, asyncContextDispose);
 
-            if (ancestorBindingInfo && ancestorBindingInfo.asyncContext) {
+            if (ancestorBindingInfo?.asyncContext) {
                 ancestorBindingInfo.asyncContext.asyncDescendants.add(node);
                 this.ancestorBindingInfo = ancestorBindingInfo;
             }
         }
         notifyAncestor() {
-            if (this.ancestorBindingInfo && this.ancestorBindingInfo.asyncContext) {
-                this.ancestorBindingInfo.asyncContext.descendantComplete(this.node);
-            }
+            this.ancestorBindingInfo?.asyncContext?.descendantComplete(this.node);
         }
         descendantComplete(node) {
             this.asyncDescendants.delete(node);
-            if (!this.asyncDescendants.size && this.childrenComplete) {
-                this.completeChildren();
-            }
+            this.asyncDescendants.size || this.completeChildren?.();
         }
         completeChildren() {
             this.childrenComplete = true;
@@ -192,7 +185,7 @@
             if (!bindingInfo.eventSubscribable) {
                 bindingInfo.eventSubscribable = new ko.subscribable;
             }
-            if (options && options['notifyImmediately'] && bindingInfo.notifiedEvents[event]) {
+            if (options?.['notifyImmediately'] && bindingInfo.notifiedEvents[event]) {
                 ko.dependencyDetection.ignore(callback, context, [node]);
             }
             return bindingInfo.eventSubscribable.subscribe(callback, context, event);
@@ -202,13 +195,11 @@
             var bindingInfo = ko.utils.domData.get(node, boundElementDomDataKey);
             if (bindingInfo) {
                 bindingInfo.notifiedEvents[event] = true;
-                if (bindingInfo.eventSubscribable) {
-                    bindingInfo.eventSubscribable.notifySubscribers(node, event);
-                }
+                bindingInfo.eventSubscribable?.notifySubscribers(node, event);
                 if (event == ko.bindingEvent.childrenComplete) {
                     if (bindingInfo.asyncContext) {
                         bindingInfo.asyncContext.completeChildren();
-                    } else if (bindingInfo.asyncContext === undefined && bindingInfo.eventSubscribable && bindingInfo.eventSubscribable.hasSubscriptionsForEvent(ko.bindingEvent.descendantsComplete)) {
+                    } else if (bindingInfo.asyncContext === undefined && bindingInfo.eventSubscribable?.hasSubscriptionsForEvent(ko.bindingEvent.descendantsComplete)) {
                         // It's currently an error to register a descendantsComplete handler for a node that was never registered as completing asynchronously.
                         // That's because without the asyncContext, we don't have a way to know that all descendants have completed.
                         throw new Error("descendantsComplete event not supported for bindings on this node");
@@ -260,8 +251,7 @@
         // Perf optimisation: Apply bindings only if...
         // (1) We need to store the binding info for the node (all element nodes)
         // (2) It might have bindings (e.g., it has a data-bind attribute, or it's a marker for a containerless template)
-        var shouldApplyBindings = isElement || ko.bindingProvider.nodeHasBindings(nodeVerified);
-        if (shouldApplyBindings)
+        if (isElement || ko.bindingProvider.nodeHasBindings(nodeVerified))
             bindingContextForDescendants = applyBindingsToNodeInternal(nodeVerified, null, bindingContext)['bindingContextForDescendants'];
 
         // Don't want bindings that operate on text nodes to mutate <script> and <textarea> contents,
@@ -269,7 +259,7 @@
         // Also bindings should not operate on <template> elements since this breaks in Internet Explorer
         // and because such elements' contents are always intended to be bound in a different context
         // from where they appear in the document.
-        if (bindingContextForDescendants && nodeVerified.matches && !nodeVerified.matches('SCRIPT,TEXTAREA,TEMPLATE')) {
+        if (bindingContextForDescendants && !nodeVerified.matches?.('SCRIPT,TEXTAREA,TEMPLATE')) {
             applyBindingsToDescendantsInternal(bindingContextForDescendants, nodeVerified);
         }
     }
@@ -336,12 +326,8 @@
                     bindings = sourceBindings ? sourceBindings(bindingContext, node) : ko.bindingProvider.getBindingAccessors(node, bindingContext);
                     // Register a dependency on the binding context to support observable view models.
                     if (bindings) {
-                        if (bindingContext[contextSubscribable]) {
-                            bindingContext[contextSubscribable]();
-                        }
-                        if (bindingContext[contextDataDependency]) {
-                            bindingContext[contextDataDependency]();
-                        }
+                        bindingContext[contextSubscribable]?.();
+                        bindingContext[contextDataDependency]?.();
                     }
                     return bindings;
                 },
@@ -374,9 +360,7 @@
                     var callback = bindings[ko.bindingEvent.childrenComplete]();
                     if (callback) {
                         var nodes = ko.virtualElements.childNodes(node);
-                        if (nodes.length) {
-                            callback(nodes, ko.dataFor(nodes[0]));
-                        }
+                        nodes.length && callback(nodes, ko.dataFor(nodes[0]));
                     }
                 });
             }

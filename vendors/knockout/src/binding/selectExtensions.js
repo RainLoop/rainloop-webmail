@@ -8,11 +8,13 @@
         readValue : element => {
             switch (element.nodeName) {
                 case 'OPTION':
-                    if (element[hasDomDataExpandoProperty] === true)
-                        return ko.utils.domData.get(element, ko.bindingHandlers.options.optionValueDomDataKey);
-                    return element.value;
+                    return (element[hasDomDataExpandoProperty] === true)
+                        ? ko.utils.domData.get(element, ko.bindingHandlers.options.optionValueDomDataKey)
+                        : element.value;
                 case 'SELECT':
-                    return element.selectedIndex >= 0 ? ko.selectExtensions.readValue(element.options[element.selectedIndex]) : undefined;
+                    return element.selectedIndex >= 0
+                        ? ko.selectExtensions.readValue(element.options[element.selectedIndex])
+                        : undefined;
                 default:
                     return element.value;
             }
@@ -37,8 +39,9 @@
                     break;
                 case 'SELECT':
                     // A blank string or null value will select the caption
-                    var selection = -1, noValue = ("" === value || null == value);
-                    for (var i = 0, n = element.options.length, optionValue; i < n; ++i) {
+                    var selection = -1, noValue = ("" === value || null == value),
+                        i = element.options.length, optionValue;
+                    while (i--) {
                         optionValue = ko.selectExtensions.readValue(element.options[i]);
                         // Include special check to handle selecting a caption with a blank string value
                         if (optionValue == value || (optionValue === "" && noValue)) {
