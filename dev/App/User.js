@@ -40,6 +40,7 @@ import { PgpUserStore } from 'Stores/User/Pgp';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { ThemeStore } from 'Stores/Theme';
 import { LanguageStore } from 'Stores/Language';
+import { MessageUserStore } from 'Stores/User/Message';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -234,7 +235,7 @@ export class AppUser extends AbstractApp {
 
 		addEventListener('resize', () => leftPanelDisabled(ThemeStore.isMobile() || 1000 > innerWidth));
 		addEventListener('beforeunload', event => {
-			if (arePopupsVisible()) {
+			if (arePopupsVisible() || (ThemeStore.isMobile() && MessageUserStore.message())) {
 				event.preventDefault();
 				return event.returnValue = "Are you sure you want to exit?";
 			}
