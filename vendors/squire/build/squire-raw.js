@@ -91,16 +91,12 @@ const
 			return UNKNOWN;
 		}
 
-		let nodeCategory;
-		if ( !Array.prototype.every.call( node.childNodes, isInline ) ) {
+		let nodeCategory =
+			Array.prototype.every.call( node.childNodes, isInline )
+			? ( inlineNodeNames.test( node.nodeName ) ? INLINE : BLOCK )
 			// Malformed HTML can have block tags inside inline tags. Need to treat
 			// these as containers rather than inline. See #239.
-			nodeCategory = CONTAINER;
-		} else if ( inlineNodeNames.test( node.nodeName ) ) {
-			nodeCategory = INLINE;
-		} else /*if ( blockElementNames.test( node.nodeName ) )*/ {
-			nodeCategory = BLOCK;
-		}
+			: CONTAINER;
 		nodeCategoryCache.set( node, nodeCategory );
 		return nodeCategory;
 	},
@@ -135,12 +131,11 @@ const
 			node.nodeName === node2.nodeName &&
 			node.nodeName !== 'A' &&
 			node.className === node2.className &&
-			( ( !node.style && !node2.style ) ||
-			  node.style.cssText === node2.style.cssText )
+			node.style?.cssText === node2.style?.cssText
 		);
 	},
 	hasTagAttributes = ( node, tag, attributes ) => {
-		return node.nodeName === tag && Object.entries(attributes).every(([k,v]) => node.getAttribute(k) === v);
+		return node.nodeName === tag && Object.entries(attributes || {}).every(([k,v]) => node.getAttribute(k) === v);
 	},
 	getClosest = ( node, root, selector ) => {
 		node = (node && !node.closest) ? node.parentElement : node;
@@ -1455,7 +1450,7 @@ const
 	allowedBlock = /^(?:A(?:DDRESS|RTICLE|SIDE|UDIO)|BLOCKQUOTE|CAPTION|D(?:[DLT]|IV)|F(?:IGURE|IGCAPTION|OOTER)|H[1-6]|HEADER|L(?:ABEL|EGEND|I)|O(?:L|UTPUT)|P(?:RE)?|SECTION|T(?:ABLE|BODY|D|FOOT|H|HEAD|R)|COL(?:GROUP)?|UL)$/,
 
 	blacklist = /^(?:HEAD|META|STYLE)/,
-
+/*
 	// Previous node in post-order.
 	previousPONode = walker => {
 		let current = walker.currentNode,
@@ -1477,7 +1472,7 @@ const
 		}
 		return null;
 	},
-
+*/
 	/*
 		Two purposes:
 
@@ -1487,14 +1482,14 @@ const
 	*/
 	cleanTree = ( node, config, preserveWS ) => {
 		let children = node.childNodes,
-			nonInlineParent, i, l, child, nodeName, nodeType, childLength,
-			startsWithWS, endsWithWS, data, sibling;
+			nonInlineParent, i, l, child, nodeName, nodeType, childLength;
+//			startsWithWS, endsWithWS, data, sibling;
 
 		nonInlineParent = node;
 		while ( isInline( nonInlineParent ) ) {
 			nonInlineParent = nonInlineParent.parentNode;
 		}
-		let walker = createTreeWalker( nonInlineParent, SHOW_ELEMENT_OR_TEXT );
+//		let walker = createTreeWalker( nonInlineParent, SHOW_ELEMENT_OR_TEXT );
 
 		for ( i = 0, l = children.length; i < l; ++i ) {
 			child = children[i];
@@ -1519,8 +1514,8 @@ const
 					cleanTree( child, config,
 						preserveWS || ( nodeName === 'PRE' ) );
 				}
-			} else {
 /*
+			} else {
 				if ( nodeType === TEXT_NODE ) {
 					data = child.data;
 					startsWithWS = !notWS.test( data.charAt( 0 ) );
@@ -1585,7 +1580,7 @@ const
 			child = children[l];
 			if ( child.nodeType === ELEMENT_NODE && !isLeaf( child ) ) {
 				removeEmptyInlines( child );
-				if ( isInline( child ) && !child.firstChild ) {
+				if ( !child.firstChild && isInline( child ) ) {
 					child.remove(  );
 				}
 			} else if ( child.nodeType === TEXT_NODE && !child.data ) {
@@ -1598,8 +1593,7 @@ const
 
 	notWSTextNode = node => node.nodeType === ELEMENT_NODE ? node.nodeName === 'BR' : notWS.test( node.data ),
 	isLineBreak = ( br, isLBIfEmptyBlock ) => {
-		let block = br.parentNode;
-		let walker;
+		let walker, block = br.parentNode;
 		while ( isInline( block ) ) {
 			block = block.parentNode;
 		}
@@ -1657,8 +1651,7 @@ const
 		node.setAttribute( 'style',
 			'position:fixed;overflow:hidden;bottom:100%;right:100%;' );
 		body.append( node );
-		text = node.innerText || node.textContent;
-		text = text.replace( NBSP, ' ' ); // Replace nbsp with regular space
+		text = (node.innerText || node.textContent).replace( NBSP, ' ' ); // Replace nbsp with regular space
 		node.remove(  );
 
 		if ( text !== html ) {
@@ -1748,7 +1741,7 @@ const
 			nodeAfterSplit = split( node, offset, block.parentNode, self._root );
 
 		// Make sure the new node is the correct type.
-		if ( !hasTagAttributes( nodeAfterSplit, splitTag, {} ) ) {
+		if ( !hasTagAttributes( nodeAfterSplit, splitTag ) ) {
 			block = createElement( splitTag );
 			if ( nodeAfterSplit.dir ) {
 				block.dir = nodeAfterSplit.dir;
@@ -2148,34 +2141,31 @@ let keyHandlers = {
 		// If at end of block, merge next into this block
 		else if ( rangeDoesEndAtBlockBoundary( range, root ) ) {
 			event.preventDefault();
-			current = getStartBlockOfRange( range, root );
-			if ( !current ) {
-				return;
-			}
-			// In case inline data has somehow got between blocks.
-			fixContainer( current.parentNode, root );
-			// Now get next block
-			next = getNextBlock( current, root );
-			// Must not be at the very end of the text area.
-			if ( next ) {
-				// If not editable, just delete whole block.
-				if ( !next.isContentEditable ) {
-					detachUneditableNode( next, root );
-					return;
+			if ( current = getStartBlockOfRange( range, root ) ) {
+				// In case inline data has somehow got between blocks.
+				fixContainer( current.parentNode, root );
+				// Now get next block
+				// Must not be at the very end of the text area.
+				if ( next = getNextBlock( current, root ) ) {
+					// If not editable, just delete whole block.
+					if ( !next.isContentEditable ) {
+						detachUneditableNode( next, root );
+						return;
+					}
+					// Otherwise merge.
+					mergeWithBlock( current, next, range, root );
+					// If deleted line between containers, merge newly adjacent
+					// containers.
+					next = current.parentNode;
+					while ( next !== root && !next.nextSibling ) {
+						next = next.parentNode;
+					}
+					if ( next !== root && ( next = next.nextSibling ) ) {
+						mergeContainers( next, root );
+					}
+					self.setSelection( range );
+					self._updatePath( range, true );
 				}
-				// Otherwise merge.
-				mergeWithBlock( current, next, range, root );
-				// If deleted line between containers, merge newly adjacent
-				// containers.
-				next = current.parentNode;
-				while ( next !== root && !next.nextSibling ) {
-					next = next.parentNode;
-				}
-				if ( next !== root && ( next = next.nextSibling ) ) {
-					mergeContainers( next, root );
-				}
-				self.setSelection( range );
-				self._updatePath( range, true );
 			}
 		}
 		// Otherwise, leave to browser but check afterwards whether it has
@@ -2237,18 +2227,18 @@ let keyHandlers = {
 		}
 	},
 	space: ( self, _, range ) => {
-		let node;
 		let root = self._root;
 		self._recordUndoState( range, false );
 		if ( self._config.addLinks ) {
 			addLinks( range.startContainer, root, self );
 		}
 		self._getRangeAndRemoveBookmark( range );
-
+/*
 		// If the cursor is at the end of a link (<a>foo|</a>) then move it
 		// outside of the link (<a>foo</a>|) so that the space is not part of
 		// the link text.
-		node = range.endContainer;
+		// SnappyMail: disabled as it fails in Firefox
+		let node = range.endContainer;
 		if ( range.collapsed && range.endOffset === getLength( node ) ) {
 			do {
 				if ( node.nodeName === 'A' ) {
@@ -2258,6 +2248,7 @@ let keyHandlers = {
 			} while ( !node.nextSibling &&
 				( node = node.parentNode ) && node !== root );
 		}
+*/
 		// Delete the selection if not collapsed
 		if ( !range.collapsed ) {
 			deleteContentsOfRange( range, root );
@@ -2590,8 +2581,6 @@ class Squire
 
 	addEventListener ( type, fn ) {
 		type.split(/\s+/).forEach(type=>{
-			let handlers = this._events[ type ],
-				target = this._root;
 			if ( !fn ) {
 				didError({
 					name: 'Squire: addEventListener with null or undefined fn',
@@ -2599,14 +2588,12 @@ class Squire
 				});
 				return this;
 			}
+			let handlers = this._events[ type ];
 			if ( !handlers ) {
 				handlers = this._events[ type ] = [];
-				if ( !customEvents[ type ] ) {
-					if ( type === 'selectionchange' ) {
-						target = doc;
-					}
-					target.addEventListener( type, this, {capture:true,passive:'touchstart'===type} );
-				}
+				customEvents[ type ]
+				|| ( type === 'selectionchange' ? doc : this._root )
+					.addEventListener( type, this, {capture:true,passive:'touchstart'===type} );
 			}
 			handlers.push( fn );
 		});
@@ -2615,7 +2602,6 @@ class Squire
 
 	removeEventListener ( type, fn ) {
 		let handlers = this._events[ type ];
-		let target = this._root;
 		let l;
 		if ( handlers ) {
 			if ( fn ) {
@@ -2630,12 +2616,9 @@ class Squire
 			}
 			if ( !handlers.length ) {
 				delete this._events[ type ];
-				if ( !customEvents[ type ] ) {
-					if ( type === 'selectionchange' ) {
-						target = doc;
-					}
-					target.removeEventListener( type, this, true );
-				}
+				customEvents[ type ]
+				|| ( type === 'selectionchange' ? doc : this._root)
+					.removeEventListener( type, this, true );
 			}
 		}
 		return this;
@@ -2679,7 +2662,7 @@ class Squire
 	getSelection () {
 		let sel = win.getSelection();
 		let root = this._root;
-		let range, startContainer, endContainer, node;
+		let range, startContainer, endContainer;
 		// If not focused, always rely on cached range; another function may
 		// have set it but the DOM is not modified until focus again
 		if ( this._isFocused && sel?.rangeCount ) {
@@ -2698,10 +2681,9 @@ class Squire
 			this._lastRange = range;
 		} else {
 			range = this._lastRange;
-			node = range.commonAncestorContainer;
 			// Check the editor is in the live document; if not, the range has
 			// probably been rewritten by the browser and is bogus
-			if ( !doc.contains( node ) ) {
+			if ( !doc.contains( range.commonAncestorContainer ) ) {
 				range = null;
 			}
 		}
@@ -2735,26 +2717,25 @@ class Squire
 	// --- Path change events ---
 
 	_updatePath ( range, force ) {
-		if ( !range ) {
-			return;
-		}
-		let anchor = range.startContainer,
-			focus = range.endContainer,
-			newPath;
-		if ( force || anchor !== this._lastAnchorNode ||
-				focus !== this._lastFocusNode ) {
-			this._lastAnchorNode = anchor;
-			this._lastFocusNode = focus;
-			newPath = ( anchor && focus ) ? ( anchor === focus ) ?
-				getPath( focus, this._root, this._config ) : '(selection)' : '';
-			if ( this._path !== newPath ) {
-				this._path = newPath;
-				this.fireEvent( 'pathChange', { path: newPath } );
+		if ( range ) {
+			let anchor = range.startContainer,
+				focus = range.endContainer,
+				newPath;
+			if ( force || anchor !== this._lastAnchorNode ||
+					focus !== this._lastFocusNode ) {
+				this._lastAnchorNode = anchor;
+				this._lastFocusNode = focus;
+				newPath = ( anchor && focus ) ? ( anchor === focus ?
+					getPath( focus, this._root, this._config ) : '(selection)' ) : '';
+				if ( this._path !== newPath ) {
+					this._path = newPath;
+					this.fireEvent( 'pathChange', { path: newPath } );
+				}
 			}
+			this.fireEvent( range.collapsed ? 'cursor' : 'select', {
+				range: range
+			});
 		}
-		this.fireEvent( range.collapsed ? 'cursor' : 'select', {
-			range: range
-		});
 	}
 
 	// --- Focus ---
@@ -2879,7 +2860,6 @@ class Squire
 	hasFormat ( tag, attributes, range ) {
 		// 1. Normalise the arguments and get selection
 		tag = tag.toUpperCase();
-		if ( !attributes ) { attributes = {}; }
 		if ( !range && !( range = this.getSelection() ) ) {
 			return false;
 		}
@@ -2980,7 +2960,7 @@ class Squire
 		// it round the range and focus it.
 		let root = this._root;
 		let el, walker, startContainer, endContainer, startOffset, endOffset,
-			node, needsFormat, block;
+			node, block;
 
 		if ( range.collapsed ) {
 			el = fixCursor( createElement( tag, attributes ), root );
@@ -3034,51 +3014,48 @@ class Squire
 				startOffset = 0;
 			}
 
-			// If there are no interesting nodes in the selection, abort
-			if ( !startContainer ) {
-				return range;
-			}
-
-			do {
-				node = walker.currentNode;
-				needsFormat = !getNearest( node, root, tag, attributes );
-				if ( needsFormat ) {
-					// <br> can never be a container node, so must have a text node
-					// if node == (end|start)Container
-					if ( node === endContainer && node.length > endOffset ) {
-						node.splitText( endOffset );
-					}
-					if ( node === startContainer && startOffset ) {
-						node = node.splitText( startOffset );
-						if ( endContainer === startContainer ) {
-							endContainer = node;
-							endOffset -= startOffset;
+			// If there are interesting nodes in the selection
+			if ( startContainer ) {
+				do {
+					node = walker.currentNode;
+					if ( !getNearest( node, root, tag, attributes ) ) {
+						// <br> can never be a container node, so must have a text node
+						// if node == (end|start)Container
+						if ( node === endContainer && node.length > endOffset ) {
+							node.splitText( endOffset );
 						}
-						startContainer = node;
-						startOffset = 0;
+						if ( node === startContainer && startOffset ) {
+							node = node.splitText( startOffset );
+							if ( endContainer === startContainer ) {
+								endContainer = node;
+								endOffset -= startOffset;
+							}
+							startContainer = node;
+							startOffset = 0;
+						}
+						el = createElement( tag, attributes );
+						node.replaceWith( el );
+						el.append( node );
 					}
-					el = createElement( tag, attributes );
-					node.replaceWith( el );
-					el.append( node );
-				}
-			} while ( walker.nextNode() );
+				} while ( walker.nextNode() );
 
-			// If we don't finish inside a text node, offset may have changed.
-			if ( endContainer.nodeType !== TEXT_NODE ) {
-				if ( node.nodeType === TEXT_NODE ) {
-					endContainer = node;
-					endOffset = node.length;
-				} else {
-					// If <br>, we must have just wrapped it, so it must have only
-					// one child
-					endContainer = node.parentNode;
-					endOffset = 1;
+				// If we don't finish inside a text node, offset may have changed.
+				if ( endContainer.nodeType !== TEXT_NODE ) {
+					if ( node.nodeType === TEXT_NODE ) {
+						endContainer = node;
+						endOffset = node.length;
+					} else {
+						// If <br>, we must have just wrapped it, so it must have only
+						// one child
+						endContainer = node.parentNode;
+						endOffset = 1;
+					}
 				}
+
+				// Now set the selection to as it was before
+				range = createRange(
+					startContainer, startOffset, endContainer, endOffset );
 			}
-
-			// Now set the selection to as it was before
-			range = createRange(
-				startContainer, startOffset, endContainer, endOffset );
 		}
 		return range;
 	}
@@ -3154,15 +3131,11 @@ class Squire
 				el => isNodeContainedInRange( range, el ) && hasTagAttributes( el, tag, attributes )
 			);
 
-		if ( !partial ) {
-			formatTags.forEach( node => examineNode( node, node ) );
-		}
+		partial || formatTags.forEach( node => examineNode( node, node ) );
 
 		// Now wrap unselected nodes in the tag
-		toWrap.forEach( item => {
-			// [ exemplar, node ] tuple
-			let el = item[0].cloneNode( false ),
-				node = item[1];
+		toWrap.forEach( ([exemplar, node]) => {
+			let el = exemplar.cloneNode( false );
 			node.replaceWith( el );
 			el.append( node );
 		});
@@ -3171,9 +3144,7 @@ class Squire
 
 		// Merge adjacent inlines:
 		this._getRangeAndRemoveBookmark( range );
-		if ( fixer ) {
-			range.collapse( false );
-		}
+		fixer && range.collapse( false );
 		mergeInlines( root, range );
 
 		return range;
@@ -3190,205 +3161,172 @@ class Squire
 
 	changeFormat ( add, remove, range, partial ) {
 		// Normalise the arguments and get selection
-		if ( !range && !( range = this.getSelection() ) ) {
-			return this;
+		if ( range || ( range = this.getSelection() ) ) {
+			// Save undo checkpoint
+			this.saveUndoState( range );
+
+			if ( remove ) {
+				range = this._removeFormat( remove.tag.toUpperCase(),
+					remove.attributes || {}, range, partial );
+			}
+
+			if ( add ) {
+				range = this._addFormat( add.tag.toUpperCase(),
+					add.attributes || {}, range );
+			}
+
+			this.setSelection( range );
+			this._updatePath( range, true );
 		}
-
-		// Save undo checkpoint
-		this.saveUndoState( range );
-
-		if ( remove ) {
-			range = this._removeFormat( remove.tag.toUpperCase(),
-				remove.attributes || {}, range, partial );
-		}
-
-		if ( add ) {
-			range = this._addFormat( add.tag.toUpperCase(),
-				add.attributes || {}, range );
-		}
-
-		this.setSelection( range );
-		this._updatePath( range, true );
-
 		return this;
 	}
 
 	// --- Block formatting ---
 
 	forEachBlock ( fn, range ) {
-		if ( !range && !( range = this.getSelection() ) ) {
-			return this;
+		if ( range || ( range = this.getSelection() ) ) {
+			// Save undo checkpoint
+			this.saveUndoState( range );
+
+			let root = this._root;
+			let start = getStartBlockOfRange( range, root );
+			let end = getEndBlockOfRange( range, root );
+			if ( start && end ) {
+				do {
+					if ( fn( start ) || start === end ) { break; }
+				} while ( start = getNextBlock( start, root ) );
+			}
+
+			this.setSelection( range );
+
+			// Path may have changed
+			this._updatePath( range, true );
 		}
-
-		// Save undo checkpoint
-		this.saveUndoState( range );
-
-		let root = this._root;
-		let start = getStartBlockOfRange( range, root );
-		let end = getEndBlockOfRange( range, root );
-		if ( start && end ) {
-			do {
-				if ( fn( start ) || start === end ) { break; }
-			} while ( start = getNextBlock( start, root ) );
-		}
-
-		this.setSelection( range );
-
-		// Path may have changed
-		this._updatePath( range, true );
-
 		return this;
 	}
 
 	modifyBlocks ( modify, range ) {
-		if ( !range && !( range = this.getSelection() ) ) {
-			return this;
+		if ( range || ( range = this.getSelection() ) ) {
+			// 1. Save undo checkpoint and bookmark selection
+			this._recordUndoState( range );
+
+			let root = this._root;
+			let frag;
+
+			// 2. Expand range to block boundaries
+			expandRangeToBlockBoundaries( range, root );
+
+			// 3. Remove range.
+			moveRangeBoundariesUpTree( range, root, root, root );
+			frag = extractContentsOfRange( range, root, root );
+
+			// 4. Modify tree of fragment and reinsert.
+			insertNodeInRange( range, modify.call( this, frag ) );
+
+			// 5. Merge containers at edges
+			if ( range.endOffset < range.endContainer.childNodes.length ) {
+				mergeContainers( range.endContainer.childNodes[ range.endOffset ], root );
+			}
+			mergeContainers( range.startContainer.childNodes[ range.startOffset ], root );
+
+			// 6. Restore selection
+			this._getRangeAndRemoveBookmark( range );
+			this.setSelection( range );
+			this._updatePath( range, true );
 		}
-
-		// 1. Save undo checkpoint and bookmark selection
-		this._recordUndoState( range );
-
-		let root = this._root;
-		let frag;
-
-		// 2. Expand range to block boundaries
-		expandRangeToBlockBoundaries( range, root );
-
-		// 3. Remove range.
-		moveRangeBoundariesUpTree( range, root, root, root );
-		frag = extractContentsOfRange( range, root, root );
-
-		// 4. Modify tree of fragment and reinsert.
-		insertNodeInRange( range, modify.call( this, frag ) );
-
-		// 5. Merge containers at edges
-		if ( range.endOffset < range.endContainer.childNodes.length ) {
-			mergeContainers( range.endContainer.childNodes[ range.endOffset ], root );
-		}
-		mergeContainers( range.startContainer.childNodes[ range.startOffset ], root );
-
-		// 6. Restore selection
-		this._getRangeAndRemoveBookmark( range );
-		this.setSelection( range );
-		this._updatePath( range, true );
-
 		return this;
 	}
 
 	increaseListLevel ( range ) {
-		if ( !range && !( range = this.getSelection() ) ) {
-			return this.focus();
+		if ( range || ( range = this.getSelection() ) ) {
+			let root = this._root;
+			let listSelection = getListSelection( range, root );
+			if ( listSelection ) {
+				let list = listSelection[0];
+				let startLi = listSelection[1];
+				let endLi = listSelection[2];
+				if ( startLi && startLi !== list.firstChild ) {
+					// Save undo checkpoint and bookmark selection
+					this._recordUndoState( range );
+
+					// Increase list depth
+					let type = list.nodeName;
+					let newParent = startLi.previousSibling;
+					let next;
+					if ( newParent.nodeName !== type ) {
+						newParent = createElement( type );
+						startLi.before( newParent );
+					}
+					do {
+						next = startLi === endLi ? null : startLi.nextSibling;
+						newParent.append( startLi );
+					} while ( ( startLi = next ) );
+					next = newParent.nextSibling;
+					next && mergeContainers( next, root );
+
+					// Restore selection
+					this._getRangeAndRemoveBookmark( range );
+					this.setSelection( range );
+					this._updatePath( range, true );
+				}
+			}
 		}
-
-		let root = this._root;
-		let listSelection = getListSelection( range, root );
-		if ( !listSelection ) {
-			return this.focus();
-		}
-
-		let list = listSelection[0];
-		let startLi = listSelection[1];
-		let endLi = listSelection[2];
-		if ( !startLi || startLi === list.firstChild ) {
-			return this.focus();
-		}
-
-		// Save undo checkpoint and bookmark selection
-		this._recordUndoState( range );
-
-		// Increase list depth
-		let type = list.nodeName;
-		let newParent = startLi.previousSibling;
-		let next;
-		if ( newParent.nodeName !== type ) {
-			newParent = createElement( type );
-			startLi.before( newParent );
-		}
-		do {
-			next = startLi === endLi ? null : startLi.nextSibling;
-			newParent.append( startLi );
-		} while ( ( startLi = next ) );
-		next = newParent.nextSibling;
-		if ( next ) {
-			mergeContainers( next, root );
-		}
-
-		// Restore selection
-		this._getRangeAndRemoveBookmark( range );
-		this.setSelection( range );
-		this._updatePath( range, true );
-
 		return this.focus();
 	}
 
 	decreaseListLevel ( range ) {
-		if ( !range && !( range = this.getSelection() ) ) {
-			return this.focus();
-		}
+		if ( range || ( range = this.getSelection() ) ) {
+			let root = this._root;
+			let listSelection = getListSelection( range, root );
+			if ( listSelection ) {
+				let list = listSelection[0];
+				let startLi = listSelection[1] || list.firstChild;
+				let endLi = listSelection[2] || list.lastChild;
+				let newParent, next, insertBefore, makeNotList;
 
-		let root = this._root;
-		let listSelection = getListSelection( range, root );
-		if ( !listSelection ) {
-			return this.focus();
-		}
+				// Save undo checkpoint and bookmark selection
+				this._recordUndoState( range );
 
-		let list = listSelection[0];
-		let startLi = listSelection[1];
-		let endLi = listSelection[2];
-		let newParent, next, insertBefore, makeNotList;
-		if ( !startLi ) {
-			startLi = list.firstChild;
-		}
-		if ( !endLi ) {
-			endLi = list.lastChild;
-		}
+				if ( startLi ) {
+					// Find the new parent list node
+					newParent = list.parentNode;
 
-		// Save undo checkpoint and bookmark selection
-		this._recordUndoState( range );
+					// Split list if necesary
+					insertBefore = !endLi.nextSibling ?
+						list.nextSibling :
+						split( list, endLi.nextSibling, newParent, root );
 
-		if ( startLi ) {
-			// Find the new parent list node
-			newParent = list.parentNode;
+					if ( newParent !== root && newParent.nodeName === 'LI' ) {
+						newParent = newParent.parentNode;
+						while ( insertBefore ) {
+							next = insertBefore.nextSibling;
+							endLi.append( insertBefore );
+							insertBefore = next;
+						}
+						insertBefore = list.parentNode.nextSibling;
+					}
 
-			// Split list if necesary
-			insertBefore = !endLi.nextSibling ?
-				list.nextSibling :
-				split( list, endLi.nextSibling, newParent, root );
-
-			if ( newParent !== root && newParent.nodeName === 'LI' ) {
-				newParent = newParent.parentNode;
-				while ( insertBefore ) {
-					next = insertBefore.nextSibling;
-					endLi.append( insertBefore );
-					insertBefore = next;
+					makeNotList = !/^[OU]L$/.test( newParent.nodeName );
+					do {
+						next = startLi === endLi ? null : startLi.nextSibling;
+						startLi.remove(  );
+						if ( makeNotList && startLi.nodeName === 'LI' ) {
+							startLi = this.createDefaultBlock([ empty( startLi ) ]);
+						}
+						newParent.insertBefore( startLi, insertBefore );
+					} while (( startLi = next ));
 				}
-				insertBefore = list.parentNode.nextSibling;
+
+				list.firstChild || detach( list );
+
+				insertBefore && mergeContainers( insertBefore, root );
+
+				// Restore selection
+				this._getRangeAndRemoveBookmark( range );
+				this.setSelection( range );
+				this._updatePath( range, true );
 			}
-
-			makeNotList = !/^[OU]L$/.test( newParent.nodeName );
-			do {
-				next = startLi === endLi ? null : startLi.nextSibling;
-				startLi.remove(  );
-				if ( makeNotList && startLi.nodeName === 'LI' ) {
-					startLi = this.createDefaultBlock([ empty( startLi ) ]);
-				}
-				newParent.insertBefore( startLi, insertBefore );
-			} while (( startLi = next ));
 		}
-
-		if ( !list.firstChild ) {
-			detach( list );
-		}
-
-		if ( insertBefore ) {
-			mergeContainers( insertBefore, root );
-		}
-
-		// Restore selection
-		this._getRangeAndRemoveBookmark( range );
-		this.setSelection( range );
-		this._updatePath( range, true );
-
 		return this.focus();
 	}
 
@@ -3429,9 +3367,7 @@ class Squire
 			this._saveRangeToBookmark( range );
 		}
 		html = this._getHTML().replace( /\u200B/g, '' );
-		if ( range ) {
-			this._getRangeAndRemoveBookmark( range );
-		}
+		range && this._getRangeAndRemoveBookmark( range );
 		return html;
 	}
 
@@ -3602,9 +3538,7 @@ class Squire
 				fixCursor( node, root );
 			}
 
-			if ( isPaste ) {
-				this.fireEvent( 'willPaste', event );
-			}
+			isPaste && this.fireEvent( 'willPaste', event );
 
 			if ( !event.defaultPrevented ) {
 				insertTreeFragmentIntoRange( range, event.fragment, root );
@@ -3621,9 +3555,7 @@ class Squire
 			this.setSelection( range );
 			this._updatePath( range, true );
 			// Safari sometimes loses focus after paste. Weird.
-			if ( isPaste ) {
-				this.focus();
-			}
+			isPaste && this.focus();
 		} catch ( error ) {
 			didError( error );
 		}
@@ -3637,7 +3569,7 @@ class Squire
 			let node = range.startContainer;
 			let offset = range.startOffset;
 			let text, event;
-			if ( !node || node.nodeType !== TEXT_NODE ) {
+			if ( node?.nodeType !== TEXT_NODE ) {
 				text = doc.createTextNode( '' );
 				node?.childNodes[ offset ].before( text );
 				node = text;
@@ -3650,9 +3582,7 @@ class Squire
 				},
 				defaultPrevented: false
 			};
-			if ( isPaste ) {
-				this.fireEvent( 'willPaste', event );
-			}
+			isPaste && this.fireEvent( 'willPaste', event );
 
 			if ( !event.defaultPrevented ) {
 				plainText = event.text;
@@ -3668,11 +3598,10 @@ class Squire
 		let tag = config.blockTag;
 		let closeBlock  = '</' + tag + '>';
 		let openBlock = '<' + tag + '>';
-		let i, l, line;
+		let i = lines.length, line;
 
-		for ( i = 0, l = lines.length; i < l; ++i ) {
-			line = lines[i];
-			line = escapeHTML( line ).replace( / (?= )/g, '&nbsp;' );
+		while (i--) {
+			line = escapeHTML( lines[i] ).replace( / (?= )/g, '&nbsp;' );
 			// We don't wrap the first line in the block, so if it gets inserted
 			// into a blank line it keeps that line's formatting.
 			// Wrap each line in <div></div>
@@ -3724,7 +3653,7 @@ class Squire
 
 	setStyle ( style ) {
 		let range = this.getSelection();
-		let start = range ? range.startContainer : 0;
+		let start = range?.startContainer || {};
 		let end = range ? range.endContainer : 0;
 		// When the selection is all the text inside an element, set style on the element itself
 		if ( TEXT_NODE === start?.nodeType && 0 === range.startOffset && start === end && end.length === range.endOffset ) {
@@ -3758,24 +3687,15 @@ class Squire
 				// 1. Extract inline content; drop all blocks and contains.
 				while (( node = walker.nextNode() )) {
 					// 2. Replace <br> with \n in content
-					let nodes = node.querySelectorAll( 'BR' );
-					let l = nodes.length;
-					let br;
-
-					while ( l-- ) {
-						br = nodes[l];
+					node.querySelectorAll( 'BR' ).forEach( br => {
 						if ( !isLineBreak( br, false ) ) {
 							detach( br );
 						} else {
 							br.replaceWith( doc.createTextNode( '\n' ) );
 						}
-					}
+					});
 					// 3. Remove <code>; its format clashes with <pre>
-					nodes = node.querySelectorAll( 'CODE' );
-					l = nodes.length;
-					while ( l-- ) {
-						detach( nodes[l] );
-					}
+					node.querySelectorAll( 'CODE' ).forEach( el => detach( el ) );
 					if ( output.childNodes.length ) {
 						output.append( doc.createTextNode( '\n' ) );
 					}
@@ -3868,8 +3788,7 @@ class Squire
 	decreaseQuoteLevel ( range ) {
 		this.modifyBlocks(
 			frag => {
-				var blockquotes = frag.querySelectorAll( 'blockquote' );
-				Array.prototype.filter.call( blockquotes, el =>
+				Array.prototype.filter.call( frag.querySelectorAll( 'blockquote' ), el =>
 					!getClosest( el.parentNode, frag, 'BLOCKQUOTE' )
 				).forEach( el => el.replaceWith( empty( el ) ) );
 				return frag;
@@ -3891,19 +3810,15 @@ class Squire
 
 	removeList () {
 		this.modifyBlocks( frag => {
-			let lists = frag.querySelectorAll( 'UL, OL' ),
-				items =  frag.querySelectorAll( 'LI' ),
-				root = this._root,
-				i, l, list, listFrag, item;
-			for ( i = 0, l = lists.length; i < l; ++i ) {
-				list = lists[i];
+			let root = this._root,
+				listFrag;
+			frag.querySelectorAll( 'UL, OL' ).forEach( list => {
 				listFrag = empty( list );
 				fixContainer( listFrag, root );
 				list.replaceWith( listFrag );
-			}
+			});
 
-			for ( i = 0, l = items.length; i < l; ++i ) {
-				item = items[i];
+			frag.querySelectorAll( 'LI' ).forEach( item => {
 				if ( isBlock( item ) ) {
 					item.replaceWith(
 						this.createDefaultBlock([ empty( item ) ])
@@ -3912,7 +3827,7 @@ class Squire
 					fixContainer( item, root );
 					item.replaceWith( empty( item ) );
 				}
-			}
+			});
 
 			return frag;
 		});
