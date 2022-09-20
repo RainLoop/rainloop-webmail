@@ -157,8 +157,11 @@ class PdoAddressBook
 //		$this->oLogger->WriteDump($aRemoteSyncData);
 //		$this->oLogger->WriteDump($aDatabaseSyncData);
 
+		$bReadWrite = $this->isDAVReadWrite();
+
 		// Delete remote when Mode = read + write
-		if ($this->isDAVReadWrite()) {
+		if ($bReadWrite) {
+			\SnappyMail\Log::info('PdoAddressBook', 'Sync() is import and export');
 			foreach ($aDatabaseSyncData as $sKey => $aData) {
 				if ($aData['deleted']) {
 					unset($aDatabaseSyncData[$sKey]);
@@ -168,6 +171,8 @@ class PdoAddressBook
 					}
 				}
 			}
+		} else {
+			\SnappyMail\Log::info('PdoAddressBook', 'Sync() is import only');
 		}
 
 		// Delete from db
@@ -210,7 +215,7 @@ class PdoAddressBook
 					}
 
 					// Add remote when Mode = read + write
-					if ($sExsistensBody && $this->isDAVReadWrite()) {
+					if ($sExsistensBody && $bReadWrite) {
 						$oResponse = $this->davClientRequest($oClient, 'PUT',
 							$sPath.(\strlen($mExsistenRemoteID) ? $mExsistenRemoteID : $oContact->IdContactStr.'.vcf'),
 							$oContact->vCard->serialize() . "\r\n\r\n");
