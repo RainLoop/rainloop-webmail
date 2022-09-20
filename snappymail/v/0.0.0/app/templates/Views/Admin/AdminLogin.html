@@ -2,25 +2,25 @@
 	<a href="#" class="close" data-bind="click: function () { submitError('') }">×</a>
 	<span data-bind="text: submitError"></span>
 </div>
-<form action="#/" data-bind="submit: submitForm, css: {'errorAnimated': formError, 'submitting': submitRequest()}">
+<form action="#/" spellcheck="false" data-bind="submit: submitForm, css: {'errorAnimated': formError, 'submitting': submitRequest()}">
 	<div class="controls" data-bind="css: {'error': loginError}">
 		<span class="fontastic">👤</span>
 		<input name="Login" required="" type="text" class="input-block-level"
-			autofocus="" autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false"
+			autofocus="" autocomplete="username" autocorrect="off" autocapitalize="off"
 			data-bind="textInput: login, disable: submitRequest"
 			data-i18n="[placeholder]LOGIN/LABEL_LOGIN">
 	</div>
 	<div class="controls" data-bind="css: {'error': passwordError}">
 		<span class="fontastic">🔑</span>
 		<input name="Password" required="" type="password" class="input-block-level"
-			autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+			autocomplete="current-password" autocorrect="off" autocapitalize="off"
 			data-bind="textInput: password, disable: submitRequest"
 			data-i18n="[placeholder]LOGIN/LABEL_PASSWORD">
 	</div>
 	<div class="controls">
 		<span class="fontastic">⏱</span>
 		<input name="TOTP" type="text" pattern="[0-9]*" inputmode="numeric" class="input-block-level"
-			autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+			autocomplete="off" autocorrect="off" autocapitalize="off"
 			data-bind="textInput: totp, disable: submitRequest"
 			data-i18n="[placeholder]LOGIN/LABEL_TOTP">
 	</div>

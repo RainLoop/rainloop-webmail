@@ -2,20 +2,20 @@
 	<a href="#" class="close" data-bind="click: close">×</a>
 	<h3 data-bind="text: headerText"></h3>
 </header>
-<div class="modal-body">
-	<div class="row" data-bind="visible: !edit()" style="margin-bottom: 20px;">
+<form class="modal-body" action="#/" spellcheck="false" onsubmit="return false;">
+	<div class="row" data-bind="hidden: edit" style="margin-bottom: 20px;">
 		<div class="span5">
 			<span data-i18n="POPUPS_DOMAIN/LABEL_NAME"></span>
 			<span style="opacity:0.7"> (<span data-i18n="POPUPS_DOMAIN/NAME_HELPER"></span>)</span>
 			<br>
-			<input type="text" class="span4" autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+			<input type="text" class="span4" autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off"
 				data-bind="textInput: name">
-			<div class="alert-error" data-bind="visible: '' !== savingError(), text: savingError"></div>
+			<div class="alert-error" data-bind="visible: savingError, text: savingError"></div>
 		</div>
-		<div class="span5 domain-desc" data-bind="visible: '' !== domainDesc(), html: domainDesc"></div>
+		<div class="span5 domain-desc" data-bind="visible: domainDesc, html: domainDesc"></div>
 	</div>
 
-	<form class="form-horizontal domain-form" action="#/" onsubmit="return false;">
+	<div class="form-horizontal domain-form">
 		<div class="tabs">
 
 			<input type="radio" name="helptabs" id="tab-help1" checked>
@@ -27,7 +27,7 @@
 					<div class="span3">
 						<span data-i18n="POPUPS_DOMAIN/LABEL_SERVER"></span>
 						<br>
-						<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off"
 							data-bind="textInput: imapHost, hasfocus: imapHostFocus">
 					</div>
 					<div class="span2">
@@ -42,7 +42,7 @@
 					<div class="span2">
 						<span data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
 						<br>
-						<input type="number" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						<input type="number" autocomplete="off" autocorrect="off" autocapitalize="off"
 							style="width:6em" data-bind="textInput: imapPort">
 					</div>
 				</div>
@@ -68,7 +68,7 @@
 						<div class="span3">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_SERVER"></span>
 							<br>
-							<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off"
 								data-bind="textInput: smtpHost, hasfocus: smtpHostFocus">
 						</div>
 						<div class="span2">
@@ -83,7 +83,7 @@
 						<div class="span2">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
 							<br>
-							<input type="number" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							<input type="number" autocomplete="off" autocorrect="off" autocapitalize="off"
 								style="width:6em" data-bind="textInput: smtpPort">
 						</div>
 					</div>
@@ -147,7 +147,7 @@
 						<div class="span3">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_SERVER"></span>
 							<br>
-							<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off"
 								data-bind="textInput: sieveHost, hasfocus: sieveHostFocus">
 						</div>
 						<div class="span2">
@@ -162,7 +162,7 @@
 						<div class="span2">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
 							<br>
-							<input type="number" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							<input type="number" autocomplete="off" autocorrect="off" autocapitalize="off"
 								style="width:6em" data-bind="textInput: sievePort">
 						</div>
 					</div>
@@ -176,8 +176,8 @@
 				<textarea class="input-xxlarge" style="width: 100%" rows="8" data-bind="value: whiteList" tabindex="-1"></textarea>
 			</div>
 		</div>
-	</form>
-</div>
+	</div>
+</form>
 <footer>
 	<a class="btn" data-bind="command: testConnectionCommand, css: {
 	   'btn-success': testingDone() && !testingImapError() && !testingSmtpError(),

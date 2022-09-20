@@ -2,7 +2,7 @@
 	<a href="#" class="close" data-bind="click: close">×</a>
 	<h3 data-i18n="POPUPS_CREATE_FOLDER/TITLE_CREATE_FOLDER"></h3>
 </header>
-<form id="createfolderform" class="modal-body form-horizontal" autocomplete="off" data-bind="submit: submitForm">
+<form id="createfolderform" class="modal-body form-horizontal" autocomplete="off" spellcheck="false" data-bind="submit: submitForm">
 	<div class="control-group">
 		<label data-i18n="POPUPS_CREATE_FOLDER/LABEL_PARENT"></label>
 		<select data-bind="options: parentFolderSelectList, value: selectedParentValue,
@@ -11,7 +11,7 @@
 	<div class="control-group">
 		<label data-i18n="GLOBAL/NAME"></label>
 		<input type="text"
-			autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+			autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off"
 			required="" pattern="^[^\\/]+$" data-bind="textInput: folderName">
 	</div>
 	<div class="control-group" data-bind="component: {

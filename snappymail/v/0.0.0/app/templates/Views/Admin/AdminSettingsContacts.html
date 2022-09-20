@@ -4,7 +4,7 @@
 		<div data-i18n="[html]TAB_CONTACTS/HTML_ALERT_DOES_NOT_SUPPORTED"></div>
 	</div>
 </div>
-<div class="form-horizontal" data-bind="visible: contactsSupported">
+<form class="form-horizontal" spellcheck="false" data-bind="visible: contactsSupported">
 	<div class="legend" data-i18n="TAB_CONTACTS/LEGEND_CONTACTS"></div>
 	<div class="control-group">
 		<div>
@@ -18,8 +18,8 @@
 			}"></div>
 		</div>
 	</div>
-</div>
-<div class="form-horizontal" data-bind="visible: contactsSupported">
+</form>
+<form class="form-horizontal" spellcheck="false" data-bind="visible: contactsSupported">
 	<div class="legend" data-i18n="TAB_CONTACTS/LEGEND_STORAGE"></div>
 	<div class="control-group">
 		<label data-i18n="TAB_CONTACTS/LABEL_STORAGE_TYPE"></label>
@@ -38,21 +38,21 @@
 		<div class="control-group">
 			<label data-i18n="TAB_CONTACTS/LABEL_STORAGE_DSN"></label>
 			<div>
-				<input type="text" class="span6" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+				<input type="text" class="span6" autocomplete="off" autocorrect="off" autocapitalize="off"
 					data-bind="value: contactsPdoDsn, saveTrigger: contactsPdoDsnTrigger" placeholder="mysql:host=127.0.0.1;port=3306;dbname=snappymail">
 			</div>
 		</div>
 		<div class="control-group">
 			<label data-i18n="TAB_CONTACTS/LABEL_STORAGE_USER"></label>
 			<div>
-				<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+				<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off"
 					data-bind="value: contactsPdoUser, saveTrigger: contactsPdoUserTrigger">
 			</div>
 		</div>
 		<div class="control-group">
 			<label data-i18n="TAB_CONTACTS/LABEL_STORAGE_PASSWORD"></label>
 			<div>
-				<input type="password" autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+				<input type="password" autocomplete="current-password" autocorrect="off" autocapitalize="off"
 					data-bind="value: contactsPdoPassword, saveTrigger: contactsPdoPasswordTrigger">
 			</div>
 		</div>
@@ -80,4 +80,4 @@
 		</div>
 	</div>
 	<div class="alert span8" data-bind="text: testContactsErrorMessage, visible: '' !== testContactsErrorMessage()"></div>
-</div>
+</form>

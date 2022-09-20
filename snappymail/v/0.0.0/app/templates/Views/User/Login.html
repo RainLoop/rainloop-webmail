@@ -7,19 +7,19 @@
 		<!-- ko text: submitErrorAdditional --><!-- /ko -->
 	</p>
 </div>
-<form action="#/"
+<form action="#/"  spellcheck="false"
 	data-bind="submit: submitForm, css: {'errorAnimated': formError, 'submitting': submitRequest()}">
 	<div class="controls" data-bind="css: {'error': emailError}">
 		<span class="fontastic">✉</span>
 		<input name="Email" required="" type="text" class="input-block-level" pattern="[^@\s]+(@[^\s]+)?" inputmode="email"
-			autofocus="" autocomplete="email" autocorrect="off" autocapitalize="off" spellcheck="false"
+			autofocus="" autocomplete="email" autocorrect="off" autocapitalize="off"
 			data-bind="textInput: email, disable: submitRequest"
 			data-i18n="[placeholder]GLOBAL/EMAIL">
 	</div>
 	<div class="controls" data-bind="css: {'error': passwordError}">
 		<span class="fontastic">🔑</span>
 		<input name="Password" required="" type="password" class="input-block-level"
-			autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+			autocomplete="current-password" autocorrect="off" autocapitalize="off"
 			data-bind="textInput: password, disable: submitRequest"
 			data-i18n="[placeholder]GLOBAL/PASSWORD">
 	</div>

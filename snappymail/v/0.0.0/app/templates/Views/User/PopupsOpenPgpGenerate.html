@@ -2,7 +2,7 @@
 	<a href="#" class="close" data-bind="click: close">×</a>
 	<h3 data-i18n="OPENPGP/POPUP_GENERATE_TITLE"></h3>
 </header>
-<form id="openpgp-generate" class="modal-body form-horizontal" autocomplete="off" data-bind="submit: submitForm">
+<form id="openpgp-generate" class="modal-body form-horizontal" autocomplete="off" spellcheck="false" data-bind="submit: submitForm">
 	<div class="alert" data-bind="visible: '' !== submitError()">
 		<a href="#" class="close" data-bind="click: function () { submitError('') }">×</a>
 		<span data-bind="text: submitError"></span>
@@ -12,7 +12,7 @@
 	<div class="control-group" data-bind="css: {'error': emailError}">
 		<label data-i18n="GLOBAL/EMAIL"></label>
 		<input type="email" required="" class="input-xlarge"
-			autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+			autocomplete="off" autocorrect="off" autocapitalize="off"
 			list="emailaddresses" data-bind="value: email">
 		<datalist id="emailaddresses">
 			<!-- ko foreach: identities -->
@@ -23,13 +23,13 @@
 	<div class="control-group">
 		<label data-i18n="GLOBAL/NAME"></label>
 		<input type="text" required="" class="input-xlarge"
-			autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+			autocomplete="off" autocorrect="off" autocapitalize="off"
 			data-bind="value: name">
 	</div>
 	<div class="control-group">
 		<label data-i18n="GLOBAL/PASSWORD"></label>
 		<input type="password" required="" class="input-xlarge"
-			autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+			autocomplete="new-password" autocorrect="off" autocapitalize="off"
 			data-bind="value: password">
 	</div>
 	<div class="control-group">

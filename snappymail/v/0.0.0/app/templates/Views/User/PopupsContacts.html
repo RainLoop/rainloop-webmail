@@ -44,7 +44,7 @@
 </header>
 <div class="modal-body">
 	<div class="b-list-toolbar">
-		<input type="search" class="e-search" placeholder="Search" autofocus="" autocorrect="off" autocapitalize="off" data-i18n="[placeholder]GLOBAL/SEARCH" data-bind="value: search">
+		<input type="search" class="e-search" placeholder="Search" autofocus="" autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n="[placeholder]GLOBAL/SEARCH" data-bind="value: search">
 	</div>
 	<div class="b-list-content g-ui-user-select-none" data-bind="css: {'hideContactListCheckbox': !useCheckboxesInList()}">
 		<div class="content">
@@ -72,7 +72,7 @@
 			<!-- ko template: { name: 'Paginator', data: contactsPaginator } --><!-- /ko -->
 		</div>
 	</div>
-	<div class="b-view-content" data-bind="css: {'read-only': contact() && contact().readOnly()}">
+	<form class="b-view-content" spellcheck="false" data-bind="css: {'read-only': contact() && contact().readOnly()}">
 		<div class="b-contact-view-desc" data-bind="visible: !contact()"
 			data-i18n="CONTACTS/CONTACT_VIEW_DESC"></div>
 		<div class="tabs" data-bind="visible: contact, i18nUpdate: contact">
@@ -91,39 +91,39 @@
 						<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME">
 							<span data-bind="text: givenName"></span>
 							<input type="text"
-								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+								autocomplete="off" autocorrect="off" autocapitalize="off"
 								data-bind="textInput: givenName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME">
 						</div>
 						<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_LAST_NAME">
 							<span data-bind="text: surName"></span>
 							<input type="text"
-								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+								autocomplete="off" autocorrect="off" autocapitalize="off"
 								data-bind="textInput: surName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_LAST_NAME">
 						</div>
 <!--
 						<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_MIDDLE_NAME">
 							<span data-bind="text: middleName"></span>
 							<input type="text"
-								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+								autocomplete="off" autocorrect="off" autocapitalize="off"
 								data-bind="textInput: middleName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_MIDDLE_NAME">
 						</div>
 						<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_NAME_PREFIX">
 							<span data-bind="text: namePrefix"></span>
 							<input type="text"
-								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+								autocomplete="off" autocorrect="off" autocapitalize="off"
 								data-bind="textInput: namePrefix" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_NAME_PREFIX">
 						</div>
 						<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_NAME_SUFFIX">
 							<span data-bind="text: nameSuffix"></span>
 							<input type="text"
-								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+								autocomplete="off" autocorrect="off" autocapitalize="off"
 								data-bind="textInput: nameSuffix" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_NAME_SUFFIX">
 						</div>
 -->
 						<div class="property-line" data-bind="visible: null != nickname()" data-i18n="[title]CONTACTS/ADD_MENU_NICKNAME">
 							<span data-bind="text: nickname"></span>
 							<input type="text"
-								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+								autocomplete="off" autocorrect="off" autocapitalize="off"
 								data-bind="textInput: nickname" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_NICK_NAME">
 						</div>
 					</div>
@@ -135,7 +135,7 @@
 							<div class="property-line">
 								<span data-bind="text: value"></span>
 								<input type="text"
-									autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+									autocomplete="off" autocorrect="off" autocapitalize="off"
 									data-bind="textInput: value">
 							</div>
 						</div>
@@ -149,7 +149,7 @@
 							<div class="property-line">
 								<span data-bind="text: value"></span>
 								<input type="text"
-									autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+									autocomplete="off" autocorrect="off" autocapitalize="off"
 									data-bind="textInput: value">
 							</div>
 						</div>
@@ -163,7 +163,7 @@
 							<div class="property-line">
 								<span data-bind="text: value"></span>
 								<input type="text" placeholder="https://"
-									autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+									autocomplete="off" autocorrect="off" autocapitalize="off"
 									data-bind="textInput: value">
 							</div>
 						</div>
@@ -175,7 +175,7 @@
 					<div class="property-line">
 						<span data-bind="text: note"></span>
 						<input type="text"
-							autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							autocomplete="off" autocorrect="off" autocapitalize="off"
 							data-bind="textInput: note">
 					</div>
 				</div>
@@ -216,21 +216,21 @@
 					<label data-i18n="CONTACTS/LABEL_ORGANIZATION"></label>
 					<span data-bind="text: org"></span>
 					<input type="text"
-						autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						autocomplete="off" autocorrect="off" autocapitalize="off"
 						data-bind="textInput: org">
 				</div>
 				<div class="control-group">
 					<label data-i18n="CONTACTS/LABEL_DEPARTMENT"></label>
 					<span data-bind="text: department"></span>
 					<input type="text"
-						autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						autocomplete="off" autocorrect="off" autocapitalize="off"
 						data-bind="textInput: department">
 				</div>
 				<div class="control-group">
 					<label data-i18n="CONTACTS/LABEL_TITLE"></label>
 					<span data-bind="text: title"></span>
 					<input type="text"
-						autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						autocomplete="off" autocorrect="off" autocapitalize="off"
 						data-bind="textInput: title">
 				</div>
 			</div>
@@ -264,7 +264,7 @@
 			</div>
 			<!-- /ko -->
 		</div>
-	</div>
+	</form>
 	<div class="b-view-content-toolbar btn-toolbar" data-bind="i18nUpdate: contact">
 		<!-- ko with: contact -->
 		<div class="btn-group">

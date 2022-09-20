@@ -18,7 +18,7 @@ export class EmailAddressesComponent {
 
 		const self = this,
 			input = createElement('input',{type:"text", list:datalist.id,
-				autocomplete:"off", autocorrect:"off", autocapitalize:"off", spellcheck:"false"}),
+				autocomplete:"off", autocorrect:"off", autocapitalize:"off"}),
 			// In Chrome we have no access to dataTransfer.getData unless it's the 'drop' event
 			// In Chrome Mobile dataTransfer.types.includes(contentType) fails, only text/plain is set
 			validDropzone = () => dragAddress?.li.parentNode !== self.ul,

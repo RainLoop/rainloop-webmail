@@ -8,6 +8,5 @@ export class TextAreaComponent extends AbstractInput {
 		super(params);
 
 		this.rows = params.rows || 5;
-		this.spellcheck = !!params.spellcheck;
 	}
 }
