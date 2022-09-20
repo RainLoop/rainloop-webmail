@@ -6,8 +6,8 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Change Password',
-		VERSION  = '2.16.1',
-		RELEASE  = '2022-05-20',
+		VERSION  = '2.16.2',
+		RELEASE  = '2022-09-20',
 		REQUIRED = '2.12.0',
 		CATEGORY = 'Security',
 		DESCRIPTION = 'Extension to allow users to change their passwords';
@@ -195,7 +195,9 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 
 		$oAccount->SetPassword($sNewPassword);
-		$oActions->SetAuthToken($oAccount);
+		if ($oAccount instanceof \RainLoop\Model\MainAccount) {
+			$oActions->SetAuthToken($oAccount);
+		}
 
 		return $this->jsonResponse(__FUNCTION__, $oActions->AppData(false));
 	}
