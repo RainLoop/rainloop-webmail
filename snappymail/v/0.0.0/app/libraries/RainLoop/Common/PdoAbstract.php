@@ -243,19 +243,12 @@ abstract class PdoAbstract
 		return $oPdo ? $oPdo->quote((string) $sValue, \PDO::PARAM_STR) : '\'\'';
 	}
 
-	protected function getSystemValue(string $sName, bool $bReturnIntValue = true) : int
+	protected function getVersion(string $sName) : ?int
 	{
 		$oPdo = $this->getPDO();
 		if ($oPdo)
 		{
-			if ($bReturnIntValue)
-			{
-				$sQuery = 'SELECT value_int FROM rainloop_system WHERE sys_name = ?';
-			}
-			else
-			{
-				$sQuery = 'SELECT value_str FROM rainloop_system WHERE sys_name = ?';
-			}
+			$sQuery = 'SELECT value_int FROM rainloop_system WHERE sys_name = ?';
 
 			$this->writeLog($sQuery);
 
@@ -263,22 +256,17 @@ abstract class PdoAbstract
 			if ($oStmt->execute(array($sName)))
 			{
 				$mRow = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
-				$sKey = $bReturnIntValue ? 'value_int' : 'value_str';
-				if ($mRow && isset($mRow[0][$sKey]))
+				$sKey = 'value_int';
+				if ($mRow && isset($mRow[0]['value_int']))
 				{
-					return $bReturnIntValue ? (int) $mRow[0][$sKey] : (string) $mRow[0][$sKey];
+					return $bReturnIntValue ? (int) $mRow[0]['value_int'] : (string) $mRow[0]['value_int'];
 				}
 
 				return $bReturnIntValue ? 0 : '';
 			}
 		}
 
-		return false;
-	}
-
-	protected function getVersion(string $sName) : int
-	{
-		return $this->getSystemValue($sName.'_version', true);
+		return null;
 	}
 
 	protected function setVersion(string $sName, int $iVersion) : bool
@@ -326,7 +314,6 @@ abstract class PdoAbstract
 id bigint UNSIGNED NOT NULL AUTO_INCREMENT,
 sys_name varchar(50) NOT NULL,
 value_int int UNSIGNED NOT NULL DEFAULT 0,
-value_str varchar(128) NOT NULL DEFAULT \'\',
 PRIMARY KEY(id),
 INDEX sys_name_rainloop_system_index (sys_name)
 ) ENGINE=INNODB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;';
@@ -341,8 +328,7 @@ INDEX rl_email_rainloop_users_index (rl_email)
 				case 'pgsql':
 					$aQ[] = 'CREATE TABLE rainloop_system (
 sys_name varchar(50) NOT NULL,
-value_int integer NOT NULL DEFAULT 0,
-value_str varchar(128) NOT NULL DEFAULT \'\'
+value_int integer NOT NULL DEFAULT 0
 );';
 					$aQ[] = 'CREATE INDEX sys_name_rainloop_system_index ON rainloop_system (sys_name);';
 					$aQ[] = 'CREATE SEQUENCE id_user START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;';
@@ -356,8 +342,7 @@ rl_email varchar(128) NOT NULL DEFAULT \'\'
 				case 'sqlite':
 					$aQ[] = 'CREATE TABLE rainloop_system (
 sys_name text NOT NULL,
-value_int integer NOT NULL DEFAULT 0,
-value_str text NOT NULL DEFAULT \'\'
+value_int integer NOT NULL DEFAULT 0
 );';
 					$aQ[] = 'CREATE INDEX sys_name_rainloop_system_index ON rainloop_system (sys_name);';
 					$aQ[] = 'CREATE TABLE rainloop_users (
