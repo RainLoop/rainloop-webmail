@@ -319,7 +319,7 @@ INDEX sys_name_rainloop_system_index (sys_name)
 ) ENGINE=INNODB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;';
 					$aQ[] = 'CREATE TABLE IF NOT EXISTS rainloop_users (
 id_user int UNSIGNED NOT NULL AUTO_INCREMENT,
-rl_email varchar(128) NOT NULL DEFAULT \'\',
+rl_email varchar(254) NOT NULL DEFAULT \'\',
 PRIMARY KEY(id_user),
 INDEX rl_email_rainloop_users_index (rl_email)
 ) ENGINE=INNODB;';
@@ -334,7 +334,7 @@ value_int integer NOT NULL DEFAULT 0
 					$aQ[] = 'CREATE SEQUENCE id_user START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;';
 					$aQ[] = 'CREATE TABLE rainloop_users (
 id_user integer DEFAULT nextval(\'id_user\'::text) PRIMARY KEY,
-rl_email varchar(128) NOT NULL DEFAULT \'\'
+rl_email varchar(254) NOT NULL DEFAULT \'\'
 );';
 					$aQ[] = 'CREATE INDEX rl_email_rainloop_users_index ON rainloop_users (rl_email);';
 					break;
