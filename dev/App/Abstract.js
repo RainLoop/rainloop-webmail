@@ -10,7 +10,6 @@ import { ThemeStore } from 'Stores/Theme';
 
 import { InputComponent } from 'Component/Input';
 import { SelectComponent } from 'Component/Select';
-import { TextAreaComponent } from 'Component/TextArea';
 import { CheckboxMaterialDesignComponent } from 'Component/MaterialDesign/Checkbox';
 import { CheckboxComponent } from 'Component/Checkbox';
 
@@ -49,7 +48,6 @@ export class AbstractApp {
 
 		register('Input', InputComponent);
 		register('Select', SelectComponent);
-		register('TextArea', TextAreaComponent);
 		register('Checkbox', CheckboxMaterialDesignComponent, 'CheckboxMaterialDesignComponent');
 		register('CheckboxSimple', CheckboxComponent, 'CheckboxComponent');
 
