@@ -57,7 +57,7 @@ trait Pgp
 					$tmpdir .= \sha1($oAccount->Email());
 				}
 //				if (\RainLoop\Utils::inOpenBasedir($tmpdir) &&
-				if (\is_dir($tmpdir) || \mkdir($tmpdir, 0700, true)) {
+				if (\is_dir($tmpdir) || \is_link($tmpdir) || \symlink($homedir, $tmpdir) || \mkdir($tmpdir, 0700, true)) {
 					$homedir = $tmpdir;
 				}
 			}
