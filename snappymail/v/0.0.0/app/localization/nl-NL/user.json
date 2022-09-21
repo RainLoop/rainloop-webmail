@@ -263,7 +263,7 @@
 	"POPUPS_CLEAR_FOLDER": {
 		"TITLE_CLEAR_FOLDER": "Alle inhoud van deze map verwijderen?",
 		"DANGER_DESC_WARNING": "Opgelet!",
-		"DANGER_DESC_HTML_1": "Deze actie verwijdert alle e-mails in de map <strong>%FOLDER%<\/strong>!",
+		"DANGER_DESC_HTML_1": "Deze actie verwijdert alle e-mails uit de map '<strong>%FOLDER%<\/strong>'!",
 		"DANGER_DESC_HTML_2": "Eens in gang gezet kan het proces niet geannuleerd worden!",
 		"TITLE_CLEARING_PROCESS": "Folder aan het leegmaken..."
 	},

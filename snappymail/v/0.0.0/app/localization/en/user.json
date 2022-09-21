@@ -263,7 +263,7 @@
 	"POPUPS_CLEAR_FOLDER": {
 		"TITLE_CLEAR_FOLDER": "Purge all messages from the folder?",
 		"DANGER_DESC_WARNING": "Warning!",
-		"DANGER_DESC_HTML_1": "This action will result in removing all mails from <strong>%FOLDER%<\/strong> folder completely.",
+		"DANGER_DESC_HTML_1": "This action will result in removing all mails from '<strong>%FOLDER%<\/strong>' folder completely.",
 		"DANGER_DESC_HTML_2": "Once started, the process cannot be aborted or canceled.",
 		"TITLE_CLEARING_PROCESS": "Purging the folder..."
 	},

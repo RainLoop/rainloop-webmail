@@ -4,6 +4,7 @@ import { forEachObjectEntry, pInt } from 'Common/Utils';
 const
 	tpl = createElement('template'),
 	htmlre = /[&<>"']/g,
+	httpre = /^(https?:)?\/\//i,
 	htmlmap = {
 		'&': '&amp;',
 		'<': '&lt;',
@@ -262,7 +263,7 @@ export const
 							attachment.isLinked(true);
 						}
 					}
-					else if (/^(https?:)?\/\//i.test(value))
+					else if (httpre.test(value))
 					{
 						setAttribute('data-x-src', value);
 						result.hasExternals = true;
@@ -325,7 +326,7 @@ export const
 									attachment.isInline(true);
 									attachment.isLinked(true);
 								}
-							} else if (/^(https?:)?\/\//.test(lowerUrl)) {
+							} else if (httpre.test(lowerUrl)) {
 								result.hasExternals = true;
 								urls_remote.push([property, found]);
 							} else if ('data:image/' === lowerUrl.slice(0, 11)) {
