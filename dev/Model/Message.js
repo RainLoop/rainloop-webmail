@@ -22,10 +22,11 @@ import PreviewHTML from 'Html/PreviewMessage.html';
 import Remote from 'Remote/User/Fetch';
 
 const
-	// eslint-disable-next-line max-len
 	url = /(^|[\s\n]|\/?>)(https:\/\/[-A-Z0-9+\u0026\u2019#/%?=()~_|!:,.;]*[-A-Z0-9+\u0026#/%=~()_|])/gi,
 	// eslint-disable-next-line max-len
 	email = /(^|[\s\n]|\/?>)((?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x21\x23-\x5b\x5d-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x21-\x5a\x53-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])+)\]))/gi,
+	// rfc3966
+	tel = /(^|[\s\n]|\/?>)(tel:(\+[0-9().-]+|[0-9*#().-]+(;phone-context=\+[0-9+().-]+)?))/g,
 
 	hcont = Element.fromHTML('<div area="hidden" style="position:absolute;left:-5000px"></div>'),
 	getRealHeight = el => {
@@ -483,7 +484,8 @@ export class MessageModel extends AbstractModel {
 					.trim()
 			)
 				.replace(url, '$1<a href="$2" target="_blank">$2</a>')
-				.replace(email, '$1<a href="mailto:$2">$2</a>');
+				.replace(email, '$1<a href="mailto:$2">$2</a>')
+				.replace(tel, '$1<a href="$2">$2</a>');
 			this.isHtml(false);
 			this.hasImages(false);
 			this.initView();
