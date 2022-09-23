@@ -1,19 +1,18 @@
 .attachmentItem {
 
-	position: relative;
-
+	background-color: rgba(128, 128, 128, 0.1);
+	border: 0;
+	border-radius: 3px;
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 1px 5px rgba(0, 0, 0, 0.1);
 	display: inline-block;
+	list-style: none;
+	line-height: 24px;
 	margin: 5px;
+	min-height: 50px;
 	max-width: 200px;
 	min-width: 60px;
 	overflow: hidden;
-	list-style: none;
-	line-height: 24px;
-	border: 0;
-	background-color: rgba(128, 128, 128, 0.1);
-	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 1px 5px rgba(0, 0, 0, 0.1);
-
-	border-radius: 3px;
+	position: relative;
 
 	&.waiting {
 		opacity: 0.6;
