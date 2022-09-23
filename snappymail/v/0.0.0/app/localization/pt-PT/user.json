@@ -357,7 +357,8 @@
 		"ERROR_UNKNOWN": "Ocorreu um erro desconhecido durante o carregamento do ficheiro"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAINT_TEXT": "HTML <-> TEXTO"
+		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEXTO",
+		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
 		"LABEL_PERSONAL_NAME": "Pessoal",

@@ -80,7 +80,7 @@ class SquireUI
 					plain: {
 						html: '〈〉',
 						cmd: () => this.setMode('plain' == this.mode ? 'wysiwyg' : 'plain'),
-						hint: i18n('EDITOR/TEXT_SWITCHER_PLAINT_TEXT', 'Plain')
+						hint: i18n('EDITOR/TEXT_SWITCHER_PLAIN_TEXT', 'Plain')
 					}
 				},
 				font: {
@@ -238,6 +238,11 @@ class SquireUI
 						cmd: () => squire.redo(),
 						key: 'Y',
 						hint: 'Redo'
+					},
+					source: {
+						html: '👁',
+						cmd: () => this.setMode('source' == this.mode ? 'wysiwyg' : 'source'),
+						hint: i18n('EDITOR/TEXT_SWITCHER_SOURCE', 'Source')
 					}
 				}
 			},
@@ -393,12 +398,14 @@ class SquireUI
 
 	setMode(mode) {
 		if (this.mode != mode) {
-			let cl = this.container.classList;
+			let cl = this.container.classList, source = 'source' == this.mode;
 			cl.remove('squire-mode-'+this.mode);
 			if ('plain' == mode) {
-				this.plain.value = htmlToPlain(this.squire.getHTML(), true);
+				this.plain.value = htmlToPlain(source ? this.plain.value : this.squire.getHTML(), true);
+			} else if ('source' == mode) {
+				this.plain.value = this.squire.getHTML();
 			} else {
-				this.setData(plainToHtml(this.plain.value, true));
+				this.setData(source ? this.plain.value : plainToHtml(this.plain.value, true));
 				mode = 'wysiwyg';
 			}
 			this.mode = mode; // 'wysiwyg' or 'plain'

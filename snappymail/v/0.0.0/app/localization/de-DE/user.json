@@ -357,7 +357,8 @@
 		"ERROR_UNKNOWN": "Ein unbekannter Fehler trat beim Hochladen auf"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAINT_TEXT": "HTML <-> TEXT"
+		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEXT",
+		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
 		"LABEL_PERSONAL_NAME": "Persönlich",

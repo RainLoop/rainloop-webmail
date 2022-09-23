@@ -357,7 +357,8 @@
 		"ERROR_UNKNOWN": "Si è verificato un errore sconosciuto durante il caricamento del file"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAINT_TEXT": "HTML <-> Testo semplice"
+		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> Testo semplice",
+		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
 		"LABEL_PERSONAL_NAME": "Personali",

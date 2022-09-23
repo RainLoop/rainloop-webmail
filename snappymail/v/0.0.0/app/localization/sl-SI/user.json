@@ -357,7 +357,8 @@
 		"ERROR_UNKNOWN": "Neznana napaka pri nalaganju datoteke"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAINT_TEXT": "HTML <-> Navadno besedilo"
+		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> Navadno besedilo",
+		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
 		"LABEL_PERSONAL_NAME": "Osebno",

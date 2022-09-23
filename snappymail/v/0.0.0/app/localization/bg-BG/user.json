@@ -357,7 +357,8 @@
 		"ERROR_UNKNOWN": "Възникна неизвестна грешка при качването на файла"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAINT_TEXT": "HTML <-> ТЕКСТ"
+		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> ТЕКСТ",
+		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
 		"LABEL_PERSONAL_NAME": "Лични",

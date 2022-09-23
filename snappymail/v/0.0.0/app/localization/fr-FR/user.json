@@ -357,7 +357,8 @@
 		"ERROR_UNKNOWN": "Une erreur inconnue de téléversement de fichier s'est produite"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAINT_TEXT": "HTML <-> Non-formaté"
+		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> Non-formaté",
+		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
 		"LABEL_PERSONAL_NAME": "Personnel",

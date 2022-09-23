@@ -357,7 +357,8 @@
 		"ERROR_UNKNOWN": "Bị một lỗi chưa xác định khi tải tập tin lên"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAINT_TEXT": "DẠNG HTML <-> DẠNG CHỮ VIẾT THƯỜNG"
+		"TEXT_SWITCHER_PLAIN_TEXT": "DẠNG HTML <-> DẠNG CHỮ VIẾT THƯỜNG",
+		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
 		"LABEL_PERSONAL_NAME": "Cá nhân",
