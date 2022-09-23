@@ -23,7 +23,7 @@ export function ParseMime(text)
 */
 
 		header(name) {
-			return this.headers[name];
+			return this.headers?.[name];
 		}
 
 		headerValue(name) {
@@ -93,6 +93,7 @@ export function ParseMime(text)
 	const ParsePart = (mimePart, start_pos = 0, id = '') =>
 	{
 		let part = new MimePart,
+			head = mimePart.match(/^[\s\S]+?\r?\n\r?\n/)?.[0],
 			headers = {};
 		if (id) {
 			part.id = id;
@@ -102,19 +103,19 @@ export function ParseMime(text)
 		part.parts = [];
 
 		// get headers
-		let head = mimePart.match(/^[\s\S]+?\r?\n\r?\n/);
 		if (head) {
-			head = head[0];
 			head.replace(/\r?\n\s+/g, ' ').split(/\r?\n/).forEach(header => {
 				let match = header.match(/^([^:]+):\s*([^;]+)/),
 					params = {};
-				[...header.matchAll(/;\s*([^;=]+)=\s*"?([^;"]+)"?/g)].forEach(param =>
-					params[param[1].trim().toLowerCase()] = param[2].trim()
-				);
-				headers[match[1].trim().toLowerCase()] = {
-					value: match[2].trim(),
-					params: params
-				};
+				if (match) {
+					[...header.matchAll(/;\s*([^;=]+)=\s*"?([^;"]+)"?/g)].forEach(param =>
+						params[param[1].trim().toLowerCase()] = param[2].trim()
+					);
+					headers[match[1].trim().toLowerCase()] = {
+						value: match[2].trim(),
+						params: params
+					};
+				}
 			});
 
 			// get body
@@ -122,7 +123,7 @@ export function ParseMime(text)
 			part.bodyEnd = start_pos + mimePart.length;
 
 			// get child parts
-			let boundary = headers['content-type'].params.boundary;
+			let boundary = headers['content-type']?.params.boundary;
 			if (boundary) {
 				part.boundary = boundary;
 				let regex = new RegExp('(?:^|\r?\n)--' + boundary + '(?:--)?(?:\r?\n|$)', 'g'),
@@ -141,9 +142,9 @@ export function ParseMime(text)
 					}
 				});
 			}
-		}
 
-		part.headers = headers;
+			part.headers = headers;
+		}
 
 		return part;
 	};
