@@ -454,7 +454,7 @@ export class MessageModel extends AbstractModel {
 	viewHtml() {
 		const body = this.body;
 		if (body && this.html()) {
-			let result = cleanHtml(this.html(), this.attachments(), SettingsUserStore.removeColors());
+			let result = cleanHtml(this.html(), this.attachments());
 			this.hasExternals(result.hasExternals);
 			this.hasImages(body.rlHasImages = !!result.hasExternals);
 
@@ -629,8 +629,7 @@ export class MessageModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	bodyAsHTML() {
-//		if (this.body && !this.body.querySelector('iframe[src*=decrypt]')) {
-		if (this.body && !this.body.querySelector('iframe')) {
+		if (this.body) {
 			let clone = this.body.cloneNode(true);
 			clone.querySelectorAll('blockquote.rl-bq-switcher').forEach(
 				node => node.classList.remove('rl-bq-switcher','hidden-bq')
@@ -640,7 +639,7 @@ export class MessageModel extends AbstractModel {
 			);
 			return clone.innerHTML;
 		}
-		let result = cleanHtml(this.html(), this.attachments(), SettingsUserStore.removeColors())
+		let result = cleanHtml(this.html(), this.attachments())
 		return result.html || plainToHtml(this.plain());
 	}
 

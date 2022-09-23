@@ -1,5 +1,6 @@
 import { createElement } from 'Common/Globals';
 import { forEachObjectEntry, pInt } from 'Common/Utils';
+import { SettingsUserStore } from 'Stores/User/Settings';
 
 const
 	tpl = createElement('template'),
@@ -36,7 +37,7 @@ export const
 	 * @param {string} text
 	 * @returns {string}
 	 */
-	cleanHtml = (html, oAttachments, removeColors) => {
+	cleanHtml = (html, oAttachments) => {
 		const
 			debug = false, // Config()->Get('debug', 'enable', false);
 			detectHiddenImages = true, // !!SettingsGet('try_to_detect_hidden_images'),
@@ -354,7 +355,7 @@ export const
 				// Removes background and color
 				// Many e-mails incorrectly only define one, not both
 				// And in dark theme mode this kills the readability
-				if (removeColors) {
+				if (SettingsUserStore.removeColors()) {
 					oStyle.removeProperty('background-color');
 					oStyle.removeProperty('background-image');
 					oStyle.removeProperty('color');
