@@ -211,7 +211,7 @@ export const
 				} else {
 					oElement.href = stripTracking(value);
 					setAttribute('target', '_blank');
-					setAttribute('rel', 'external nofollow noopener noreferrer');
+//					setAttribute('rel', 'external nofollow noopener noreferrer');
 				}
 				setAttribute('tabindex', '-1');
 			}
