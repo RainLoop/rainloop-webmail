@@ -252,69 +252,63 @@ setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 	}
 },
 
-populateMessageBody = (oMessage, preload) => {
+populateMessageBody = (oMessage, popup) => {
 	if (oMessage) {
-		preload || MessageUserStore.hideMessageBodies();
-		preload || MessageUserStore.loading(true);
+		popup || MessageUserStore.hideMessageBodies();
+		popup || MessageUserStore.loading(true);
 		Remote.message((iError, oData/*, bCached*/) => {
 			if (iError) {
-				if (Notification.RequestAborted !== iError && !preload) {
+				if (Notification.RequestAborted !== iError && !popup) {
 					MessageUserStore.message(null);
 					MessageUserStore.error(getNotification(iError));
 				}
 			} else {
-				oMessage = preload ? oMessage : null;
-				let
-					isNew = false,
-					json = oData?.Result,
-					message = oMessage || MessageUserStore.message();
+				let json = oData?.Result;
 
 				if (
 					json &&
 					MessageModel.validJson(json) &&
-					message &&
-					message.folder === json.Folder
+					oMessage.folder === json.Folder
 				) {
-					const threads = message.threads(),
+					const threads = oMessage.threads(),
+						isNew = !popup && oMessage.uid != json.Uid && threads.includes(json.Uid),
 						messagesDom = MessageUserStore.bodiesDom();
-					if (!oMessage && message.uid != json.Uid && threads.includes(json.Uid)) {
-						message = MessageModel.reviveFromJson(json);
-						if (message) {
-							message.threads(threads);
-							MessageFlagsCache.initMessage(message);
+					if (isNew) {
+						oMessage = MessageModel.reviveFromJson(json);
+						if (oMessage) {
+							oMessage.threads(threads);
+							MessageFlagsCache.initMessage(oMessage);
 
 							// Set clone
-							MessageUserStore.message(MessageModel.fromMessageListItem(message));
-							message = MessageUserStore.message();
-
-							isNew = true;
+							MessageUserStore.message(MessageModel.fromMessageListItem(oMessage));
+							oMessage = MessageUserStore.message();
 						}
 					}
 
-					if (message && message.uid == json.Uid) {
-						oMessage || MessageUserStore.error('');
+					if (oMessage && oMessage.uid == json.Uid) {
+						popup || MessageUserStore.error('');
 /*
 						if (bCached) {
 							delete json.Flags;
 						}
 */
-						isNew || message.revivePropertiesFromJson(json);
+						isNew || oMessage.revivePropertiesFromJson(json);
 						if (messagesDom) {
-							let id = 'rl-msg-' + message.hash.replace(/[^a-zA-Z0-9]/g, ''),
+							let id = 'rl-msg-' + oMessage.hash.replace(/[^a-zA-Z0-9]/g, ''),
 								body = elementById(id);
 							if (body) {
-								message.body = body;
-								message.isHtml(body.classList.contains('html'));
-								message.hasImages(body.rlHasImages);
+								oMessage.body = body;
+								oMessage.isHtml(body.classList.contains('html'));
+								oMessage.hasImages(body.rlHasImages);
 							} else {
 								body = Element.fromHTML('<div id="' + id + '" hidden="" class="b-text-part '
-									+ (message.pgpSigned() ? ' openpgp-signed' : '')
-									+ (message.pgpEncrypted() ? ' openpgp-encrypted' : '')
+									+ (oMessage.pgpSigned() ? ' openpgp-signed' : '')
+									+ (oMessage.pgpEncrypted() ? ' openpgp-encrypted' : '')
 									+ '">'
 									+ '</div>');
-								message.body = body;
-								if (!SettingsUserStore.viewHTML() || !message.viewHtml()) {
-									message.viewPlain();
+								oMessage.body = body;
+								if (!SettingsUserStore.viewHTML() || !oMessage.viewHtml()) {
+									oMessage.viewPlain();
 								}
 
 								MessageUserStore.purgeMessageBodyCache();
@@ -322,27 +316,27 @@ populateMessageBody = (oMessage, preload) => {
 
 							messagesDom.append(body);
 
-							if (!oMessage) {
-								MessageUserStore.activeDom(message.body);
+							if (!popup) {
+								MessageUserStore.activeDom(body);
 								MessageUserStore.hideMessageBodies();
-								message.body.hidden = false;
+								oMessage.body.hidden = false;
 							}
-							oMessage && message.viewPopupMessage();
+							popup && oMessage.viewPopupMessage();
 						}
 
-						MessageFlagsCache.initMessage(message);
-						if (message.isUnseen()) {
+						MessageFlagsCache.initMessage(oMessage);
+						if (oMessage.isUnseen()) {
 							MessageUserStore.MessageSeenTimer = setTimeout(
-								() => MessagelistUserStore.setAction(message.folder, MessageSetAction.SetSeen, [message]),
+								() => MessagelistUserStore.setAction(oMessage.folder, MessageSetAction.SetSeen, [oMessage]),
 								SettingsUserStore.messageReadDelay() * 1000 // seconds
 							);
 						}
 
-						if (message && isNew) {
+						if (isNew) {
 							let selectedMessage = MessagelistUserStore.selectedMessage();
 							if (
 								selectedMessage &&
-								(message.folder !== selectedMessage.folder || message.uid != selectedMessage.uid)
+								(oMessage.folder !== selectedMessage.folder || oMessage.uid != selectedMessage.uid)
 							) {
 								MessagelistUserStore.selectedMessage(null);
 								if (1 === MessagelistUserStore.length) {
@@ -352,8 +346,8 @@ populateMessageBody = (oMessage, preload) => {
 								selectedMessage = MessagelistUserStore.find(
 									subMessage =>
 										subMessage &&
-										subMessage.folder === message.folder &&
-										subMessage.uid == message.uid
+										subMessage.folder === oMessage.folder &&
+										subMessage.uid == oMessage.uid
 								);
 
 								if (selectedMessage) {
@@ -365,7 +359,7 @@ populateMessageBody = (oMessage, preload) => {
 					}
 				}
 			}
-			preload || MessageUserStore.loading(false);
+			popup || MessageUserStore.loading(false);
 		}, oMessage.folder, oMessage.uid);
 	}
 };
