@@ -256,13 +256,12 @@ abstract class PdoAbstract
 			if ($oStmt->execute(array($sName)))
 			{
 				$mRow = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
-				$sKey = 'value_int';
 				if ($mRow && isset($mRow[0]['value_int']))
 				{
-					return $bReturnIntValue ? (int) $mRow[0]['value_int'] : (string) $mRow[0]['value_int'];
+					return (int) $mRow[0]['value_int'];
 				}
 
-				return $bReturnIntValue ? 0 : '';
+				return 0;
 			}
 		}
 
