@@ -14,42 +14,28 @@ export class AccountPopupView extends AbstractViewPopup {
 			email: '',
 			password: '',
 
-			emailError: false,
-			passwordError: false,
-
 			submitRequest: false,
 			submitError: '',
 			submitErrorAdditional: ''
 		});
-
-		this.email.subscribe(() => this.emailError(false));
-
-		this.password.subscribe(() => this.passwordError(false));
 	}
 
-	submitForm() {
-		if (!this.submitRequest()) {
-			const email = this.email().trim(), pass = this.password();
-			this.emailError(!email);
-			this.passwordError(!pass);
-			if (!this.emailError() && pass) {
-				this.submitRequest(true);
-				Remote.request('AccountSetup', (iError, data) => {
-						this.submitRequest(false);
-						if (iError) {
-							this.submitError(getNotification(iError));
-							this.submitErrorAdditional(data?.ErrorMessageAdditional);
-						} else {
-							rl.app.accountsAndIdentities();
-							this.close();
-						}
-					}, {
-						Email: email,
-						Password: pass,
-						New: this.isNew() ? 1 : 0
+	submitForm(form) {
+		if (!this.submitRequest() && form.reportValidity()) {
+			const data = new FormData(form);
+			data.set('New', this.isNew() ? 1 : 0);
+			this.submitRequest(true);
+			Remote.request('AccountSetup', (iError, data) => {
+					this.submitRequest(false);
+					if (iError) {
+						this.submitError(getNotification(iError));
+						this.submitErrorAdditional(data?.ErrorMessageAdditional);
+					} else {
+						rl.app.accountsAndIdentities();
+						this.close();
 					}
-				);
-			}
+				}, data
+			);
 		}
 	}
 
@@ -62,9 +48,6 @@ export class AccountPopupView extends AbstractViewPopup {
 			this.email('');
 		}
 		this.password('');
-
-		this.emailError(false);
-		this.passwordError(false);
 
 		this.submitRequest(false);
 		this.submitError('');

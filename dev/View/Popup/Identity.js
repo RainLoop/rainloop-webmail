@@ -4,8 +4,6 @@ import Remote from 'Remote/User/Fetch';
 
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-const reEmail = /^[^@\s]+@[^@\s]+$/;
-
 export class IdentityPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Identity');
@@ -17,13 +15,11 @@ export class IdentityPopupView extends AbstractViewPopup {
 
 			email: '',
 			emailFocused: false,
-			emailHasError: false,
 
 			name: '',
 
 			replyTo: '',
 			replyToFocused: false,
-			replyToHasError: false,
 
 			bcc: '',
 			bccFocused: false,
@@ -40,15 +36,12 @@ export class IdentityPopupView extends AbstractViewPopup {
 		});
 
 		this.addSubscribables({
-			email: value => this.emailHasError(value && !reEmail.test(value)),
 			replyTo: value => {
-				this.replyToHasError(value && !reEmail.test(value));
 				if (false === this.showReplyTo() && value.length) {
 					this.showReplyTo(true);
 				}
 			},
 			bcc: value => {
-				this.bccHasError(value && !reEmail.test(value));
 				if (false === this.showBcc() && value.length) {
 					this.showBcc(true);
 				}
@@ -61,34 +54,14 @@ export class IdentityPopupView extends AbstractViewPopup {
 */
 	}
 
-	submitForm() {
-		if (!this.submitRequest()) {
+	submitForm(form) {
+		if (!this.submitRequest() && form.reportValidity()) {
 			this.signature?.__fetchEditorValue?.();
-
-			if (!this.emailHasError()) {
-				this.emailHasError(!this.email().trim());
-			}
-
-			if (this.emailHasError()) {
-				if (!this.owner()) {
-					this.emailFocused(true);
-				}
-
-				return;
-			}
-
-			if (this.replyToHasError()) {
-				this.replyToFocused(true);
-				return;
-			}
-
-			if (this.bccHasError()) {
-				this.bccFocused(true);
-				return;
-			}
-
 			this.submitRequest(true);
-
+			const data = new FormData(form);
+			data.set('Id', this.id);
+			data.set('Signature', this.signature());
+			data.set('SignatureInsertBefore', this.signatureInsertBefore() ? 1 : 0);
 			Remote.request('IdentityUpdate', iError => {
 					this.submitRequest(false);
 					if (iError) {
@@ -97,47 +70,20 @@ export class IdentityPopupView extends AbstractViewPopup {
 						rl.app.accountsAndIdentities();
 						this.close();
 					}
-				}, {
-					Id: this.id,
-					Email: this.email(),
-					Name: this.name(),
-					ReplyTo: this.replyTo(),
-					Bcc: this.bcc(),
-					Signature: this.signature(),
-					SignatureInsertBefore: this.signatureInsertBefore() ? 1 : 0
-				}
+				}, data
 			);
 		}
-	}
-
-	clearPopup() {
-		this.id = '';
-		this.edit(false);
-		this.owner(false);
-
-		this.name('');
-		this.email('');
-		this.replyTo('');
-		this.bcc('');
-		this.signature('');
-		this.signatureInsertBefore(false);
-
-		this.emailHasError(false);
-		this.replyToHasError(false);
-		this.bccHasError(false);
-
-		this.showBcc(false);
-		this.showReplyTo(false);
-
-		this.submitRequest(false);
-		this.submitError('');
 	}
 
 	/**
 	 * @param {?IdentityModel} oIdentity
 	 */
 	onShow(identity) {
-		this.clearPopup();
+		this.showBcc(false);
+		this.showReplyTo(false);
+
+		this.submitRequest(false);
+		this.submitError('');
 
 		if (identity) {
 			this.edit(true);
@@ -152,15 +98,21 @@ export class IdentityPopupView extends AbstractViewPopup {
 
 			this.owner(!this.id);
 		} else {
+			this.edit(false);
+
 			this.id = Jua.randomId();
+			this.name('');
+			this.email('');
+			this.replyTo('');
+			this.bcc('');
+			this.signature('');
+			this.signatureInsertBefore(false);
+
+			this.owner(false);
 		}
 	}
 
 	afterShow() {
 		this.owner() || this.emailFocused(true);
-	}
-
-	afterHide() {
-		this.clearPopup();
 	}
 }

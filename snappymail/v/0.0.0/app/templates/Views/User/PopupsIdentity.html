@@ -1,9 +1,7 @@
 <header class="g-ui-user-select-none">
 	<a href="#" class="close" data-bind="click: close">×</a>
-	<h3>
-		<span data-bind="visible: !edit()" data-i18n="POPUPS_IDENTITY/TITLE_ADD_IDENTITY"></span>
-		<span data-bind="visible: edit" data-i18n="POPUPS_IDENTITY/TITLE_UPDATE_IDENTITY"></span>
-	</h3>
+	<h3 data-bind="visible: !edit()" data-i18n="POPUPS_IDENTITY/TITLE_ADD_IDENTITY"></h3>
+	<h3 data-bind="visible: edit" data-i18n="POPUPS_IDENTITY/TITLE_UPDATE_IDENTITY"></h3>
 </header>
 <form id="identityform" class="modal-body" autocomplete="off" spellcheck="false" data-bind="submit: submitForm">
 	<div class="form-horizontal g-ui-user-select-none">
@@ -11,30 +9,30 @@
 			<a href="#" class="close" data-bind="click: function () { submitError('') }">×</a>
 			<span data-bind="text: submitError"></span>
 		</div>
-		<div class="control-group" data-bind="css: {'error': emailHasError}">
+		<div class="control-group">
 			<label data-i18n="GLOBAL/EMAIL"></label>
 			<div>
 				<div class="textEmail" data-bind="text: email, visible: owner"></div>
-				<input type="email" class="input-xlarge" autofocus=""
+				<input name="Email" type="email" class="input-xlarge" autofocus=""
 					autocomplete="off" autocorrect="off" autocapitalize="off"
-					data-bind="visible: !owner(), value: email, hasfocus: emailFocused">
+					data-bind="visible: !owner(), value: email, hasfocus: emailFocused, attr: {required: !owner()}">
 			</div>
 		</div>
 		<div class="control-group">
 			<label data-i18n="GLOBAL/NAME"></label>
-			<input type="text" class="input-xlarge"
+			<input name="Name" type="text" class="input-xlarge"
 				autocomplete="off" autocorrect="off" autocapitalize="off"
 				data-bind="value: name">
 		</div>
-		<div class="control-group" data-bind="visible: showReplyTo, css: {'error': replyToHasError}">
+		<div class="control-group" data-bind="visible: showReplyTo">
 			<label data-i18n="GLOBAL/REPLY_TO"></label>
-			<input type="text" class="inputReplyTo input-xlarge"
+			<input name="ReplyTo" type="email" class="inputReplyTo input-xlarge"
 				autocomplete="off" autocorrect="off" autocapitalize="off"
 				data-bind="value: replyTo, hasfocus: replyToFocused">
 		</div>
-		<div class="control-group" data-bind="visible: showBcc, css: {'error': bccHasError}">
+		<div class="control-group" data-bind="visible: showBcc">
 			<label data-i18n="GLOBAL/BCC"></label>
-			<input type="text" class="inputBcc input-xlarge"
+			<input name="Bcc" type="email" class="inputBcc input-xlarge"
 				autocomplete="off" autocorrect="off" autocapitalize="off"
 				data-bind="value: bcc, hasfocus: bccFocused">
 		</div>
