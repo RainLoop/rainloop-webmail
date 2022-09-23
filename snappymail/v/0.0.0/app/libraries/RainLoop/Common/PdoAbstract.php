@@ -248,17 +248,17 @@ abstract class PdoAbstract
 		$oPdo = $this->getPDO();
 		if ($oPdo)
 		{
-			$sQuery = 'SELECT value_int FROM rainloop_system WHERE sys_name = ?';
+			$sQuery = 'SELECT MAX(value_int) FROM rainloop_system WHERE sys_name = ?';
 
 			$this->writeLog($sQuery);
 
 			$oStmt = $oPdo->prepare($sQuery);
-			if ($oStmt->execute(array($sName)))
+			if ($oStmt->execute(array($sName.'_version')))
 			{
-				$mRow = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
-				if ($mRow && isset($mRow[0]['value_int']))
+				$mRow = $oStmt->fetch(\PDO::FETCH_NUM);
+				if ($mRow && isset($mRow[0]))
 				{
-					return (int) $mRow[0]['value_int'];
+					return (int) $mRow[0];
 				}
 
 				return 0;
@@ -314,7 +314,7 @@ id bigint UNSIGNED NOT NULL AUTO_INCREMENT,
 sys_name varchar(50) NOT NULL,
 value_int int UNSIGNED NOT NULL DEFAULT 0,
 PRIMARY KEY(id),
-INDEX sys_name_rainloop_system_index (sys_name)
+UNIQUE INDEX sys_name_rainloop_system_index (sys_name)
 ) ENGINE=INNODB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;';
 					$aQ[] = 'CREATE TABLE IF NOT EXISTS rainloop_users (
 id_user int UNSIGNED NOT NULL AUTO_INCREMENT,
