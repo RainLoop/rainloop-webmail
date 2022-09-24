@@ -14,11 +14,6 @@
 		<input type="email" required="" class="input-xlarge"
 			autocomplete="off" autocorrect="off" autocapitalize="off"
 			list="emailaddresses" data-bind="value: email">
-		<datalist id="emailaddresses">
-			<!-- ko foreach: identities -->
-			<option data-bind="attr:{value:email}"></option>
-			<!-- /ko -->
-		</datalist>
 	</div>
 	<div class="control-group">
 		<label data-i18n="GLOBAL/NAME"></label>
@@ -69,6 +64,11 @@
 			}
 		}"></div>
 	</div>
+	<datalist id="emailaddresses">
+		<!-- ko foreach: identities -->
+		<option data-bind="attr:{value:email}"></option>
+		<!-- /ko -->
+	</datalist>
 </form>
 <footer>
 	<button class="btn" form="openpgp-generate">
