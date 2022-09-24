@@ -18,7 +18,7 @@
 		RewriteCond "%{REQUEST_FILENAME}\.gz" -s
 		RewriteRule "^(.+\.css)$" "$1\.gz" [L,T=text/css,QSA]
 
-		<FilesMatch "(\.js\.br|\.css\.br)$">
+		<FilesMatch "\.(js|css)\.br$">
 			SetEnv no-gzip 1
 			SetEnv no-brotli 1
 			# Serve correct encoding type.
@@ -28,7 +28,7 @@
 			Header append Vary Accept-Encoding
 		</FilesMatch>
 
-		<FilesMatch "(\.js\.gz|\.css\.gz)$">
+		<FilesMatch "\.(js|css)\.gz$">
 			SetEnv no-gzip 1
 			SetEnv no-brotli 1
 			# Serve correct encoding type.
@@ -38,11 +38,11 @@
 			Header append Vary Accept-Encoding
 		</FilesMatch>
 
-		<FilesMatch "(\.js\.br|\.js\.gz)$">
+		<FilesMatch "\.js\.(br|gz)$">
 			Header set Content-Type "application/javascript; charset=utf-8"
 			ForceType application/javascript
 		</FilesMatch>
-		<FilesMatch "(\.css\.br|\.css\.gz)$">
+		<FilesMatch "\.css\.(br|gz)$">
 			Header set Content-Type "text/css; charset=utf-8"
 			ForceType text/css
 		</FilesMatch>
