@@ -497,8 +497,9 @@ export class MessageModel extends AbstractModel {
 	initView() {
 		// init BlockquoteSwitcher
 		this.body.querySelectorAll('blockquote:not(.rl-bq-switcher)').forEach(node => {
-			node.removeAttribute('style')
-			if (node.textContent.trim() && !node.parentNode.closest?.('blockquote')) {
+			if (node.textContent.trim()) {
+//			if (node.textContent.trim() && !node.parentNode.closest('blockquote')) {
+				node.removeAttribute('style')
 				let h = node.clientHeight || getRealHeight(node);
 				if (0 === h || 100 < h) {
 					const el = Element.fromHTML('<span class="rlBlockquoteSwitcher">•••</span>');
