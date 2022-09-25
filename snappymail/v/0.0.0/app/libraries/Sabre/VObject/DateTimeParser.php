@@ -304,7 +304,7 @@ class DateTimeParser
                     (?: \.[0-9]{3})? # milliseconds
                     (?P<timezone> # timezone offset
 
-                        Z | (?: \+|-)(?: [0-9]{2}:[0-9]{2})
+                        Z | (?: \+|-)(?: [0-9]{2}:?[0-9]{2})
 
                     )?
 
@@ -406,7 +406,7 @@ class DateTimeParser
                 (?: \.[0-9]{3})? # milliseconds
                 (?P<timezone> # timezone offset
 
-                    Z | (?: \+|-)(?: [0-9]{2}:[0-9]{2})
+                    Z | (?: \+|-)(?: [0-9]{2}:?[0-9]{2})
 
                 )?
                 $/x';
