@@ -3,6 +3,7 @@ import { Settings, SettingsGet } from 'Common/Globals';
 import { isArray } from 'Common/Utils';
 
 export const LanguageStore = {
+	language: ko.observable(''),
 	languages: ko.observableArray(),
 	userLanguage: ko.observable(''),
 
@@ -13,6 +14,3 @@ export const LanguageStore = {
 		this.userLanguage(SettingsGet('UserLanguage'));
 	}
 }
-
-LanguageStore.language = ko.observable('')
-	.extend({ limitedList: LanguageStore.languages });

@@ -30,9 +30,7 @@ export class AdminSettingsGeneral extends AbstractViewSettings {
 
 		const aLanguagesAdmin = Settings.app('languagesAdmin');
 		this.languagesAdmin = ko.observableArray(isArray(aLanguagesAdmin) ? aLanguagesAdmin : []);
-		this.languageAdmin = ko
-			.observable(SettingsGet('LanguageAdmin'))
-			.extend({ limitedList: this.languagesAdmin });
+		this.languageAdmin = ko.observable(SettingsGet('LanguageAdmin'));
 
 		this.theme = ThemeStore.theme;
 		this.themes = ThemeStore.themes;

@@ -126,10 +126,7 @@ const
 		}
 	},
 
-	isPlainEditor = () => {
-		let type = SettingsUserStore.editorDefaultType();
-		return EditorDefaultType.Html !== type;
-	},
+	isPlainEditor = () => EditorDefaultType.Plain === SettingsUserStore.editorDefaultType(),
 
 	/**
 	 * @param {string} prefix
@@ -966,10 +963,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			this.editor(editor => {
 				encrypted || editor.setHtml(sText);
 
-				if (encrypted
-					|| EditorDefaultType.Plain === SettingsUserStore.editorDefaultType()
-					|| !message.isHtml()
-				) {
+				if (encrypted || this.isPlainEditor() || !message.isHtml()) {
 					editor.modePlain();
 				}
 

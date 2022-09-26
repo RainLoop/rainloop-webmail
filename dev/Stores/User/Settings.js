@@ -1,7 +1,7 @@
 import ko from 'ko';
 import { koComputable } from 'External/ko';
 
-import { Layout, EditorDefaultType, ComposeType } from 'Common/EnumsUser';
+import { Layout } from 'Common/EnumsUser';
 import { pInt } from 'Common/Utils';
 import { addObservablesTo } from 'External/ko';
 import { $htmlCL, SettingsGet, fireEvent } from 'Common/Globals';
@@ -10,24 +10,6 @@ import { ThemeStore } from 'Stores/Theme';
 export const SettingsUserStore = new class {
 	constructor() {
 		const self = this;
-
-		self.layout = ko
-			.observable(1)
-			.extend({ limitedList: Object.values(Layout) });
-
-		self.editorDefaultType = ko.observable('Html').extend({
-			limitedList: [
-				EditorDefaultType.Html,
-				EditorDefaultType.Plain
-			]
-		});
-
-		self.msgDefaultAction = ko.observable(1).extend({
-			limitedList: [
-				ComposeType.Reply,
-				ComposeType.ReplyAll
-			]
-		});
 
 		self.messagesPerPage = ko.observable(25).extend({ debounce: 999 });
 
@@ -48,7 +30,11 @@ export const SettingsUserStore = new class {
 			requestReadReceipt: 0,
 			requestDsn: 0,
 			pgpSign: 0,
-			pgpEncrypt: 0
+			pgpEncrypt: 0,
+
+			layout: 1,
+			editorDefaultType: 'Html',
+			msgDefaultAction: 1
 		});
 
 		self.init();

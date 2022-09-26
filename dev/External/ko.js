@@ -2,7 +2,7 @@ import ko from 'ko';
 import { i18nToNodes } from 'Common/Translator';
 import { doc, createElement } from 'Common/Globals';
 import { SaveSettingsStep } from 'Common/Enums';
-import { arrayLength, isFunction, forEachObjectEntry } from 'Common/Utils';
+import { isFunction, forEachObjectEntry } from 'Common/Utils';
 
 export const
 	errorTip = (element, value) => value
@@ -145,28 +145,6 @@ Object.assign(ko.bindingHandlers, {
 });
 
 // extenders
-
-ko.extenders.limitedList = (target, limitedList) => {
-	const result = ko
-		.computed({
-			read: target,
-			write: newValue => {
-				let currentValue = target(),
-					list = ko.unwrap(limitedList);
-				list = arrayLength(list) ? list : [''];
-				if (!list.includes(newValue)) {
-					newValue = list.includes(currentValue, list) ? currentValue : list[0];
-					target(newValue + ' ');
-				}
-				target(newValue);
-			}
-		})
-		.extend({ notify: 'always' });
-
-	result(target());
-
-	return result;
-};
 
 ko.extenders.toggleSubscribeProperty = (target, options) => {
 	const prop = options[1];
