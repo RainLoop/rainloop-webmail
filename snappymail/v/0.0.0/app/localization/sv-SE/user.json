@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Vidarebefordra till \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Avvisa",
 		"SUBNAME_VACATION_MESSAGE": "semestermeddelande",
-		"SUBNAME_DISCARD": "Kassera",
-		"LOADING_PROCESS": "Uppdaterar filter listan"
+		"SUBNAME_DISCARD": "Kassera"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Säkerhet",

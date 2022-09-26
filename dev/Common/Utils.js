@@ -1,4 +1,4 @@
-import { SaveSettingsStep } from 'Common/Enums';
+import { SaveSettingStatus } from 'Common/Enums';
 import { elementById } from 'Common/Globals';
 
 let __themeTimer = 0,
@@ -40,14 +40,14 @@ export const
 	changeTheme = (value, themeTrigger = ()=>0) => {
 		const themeStyle = elementById('app-theme-style'),
 			clearTimer = () => {
-				__themeTimer = setTimeout(() => themeTrigger(SaveSettingsStep.Idle), 1000);
+				__themeTimer = setTimeout(() => themeTrigger(SaveSettingStatus.Idle), 1000);
 				__themeJson = null;
 			},
 			url = themeStyle.dataset.href.replace(/(Admin|User)\/-\/[^/]+\//, '$1/-/' + value + '/') + 'Json/';
 
 		clearTimeout(__themeTimer);
 
-		themeTrigger(SaveSettingsStep.Animate);
+		themeTrigger(SaveSettingStatus.Saving);
 
 		if (__themeJson) {
 			__themeJson.abort();
@@ -61,7 +61,7 @@ export const
 			.then(data => {
 				if (2 === arrayLength(data)) {
 					themeStyle.textContent = data[1];
-					themeTrigger(SaveSettingsStep.TrueResult);
+					themeTrigger(SaveSettingStatus.Success);
 				}
 			})
 			.then(clearTimer, clearTimer);

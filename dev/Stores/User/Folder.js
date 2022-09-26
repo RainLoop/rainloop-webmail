@@ -1,7 +1,7 @@
 import ko from 'ko';
 import { koComputable } from 'External/ko';
 
-import { FolderType, FolderSortMode } from 'Common/EnumsUser';
+import { FolderType } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { forEachObjectEntry } from 'Common/Utils';
 import { addObservablesTo, addSubscribablesTo, addComputablesTo } from 'External/ko';
@@ -44,7 +44,7 @@ export const FolderUserStore = new class {
 			foldersInboxUnreadCount: 0
 		});
 
-		self.sortMode = ko.observable('').extend({ limitedList: Object.values(FolderSortMode) });
+		self.sortMode = ko.observable('');
 
 		self.namespace = '';
 

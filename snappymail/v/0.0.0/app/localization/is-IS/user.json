@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Áframsenda til \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Hafna",
 		"SUBNAME_VACATION_MESSAGE": "Skilaboð vegna fría",
-		"SUBNAME_DISCARD": "Henda",
-		"LOADING_PROCESS": "Uppfæri síulista"
+		"SUBNAME_DISCARD": "Henda"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Öryggi",

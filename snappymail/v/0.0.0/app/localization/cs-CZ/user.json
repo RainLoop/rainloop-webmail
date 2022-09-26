@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Přeposlat to \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Odmítnout",
 		"SUBNAME_VACATION_MESSAGE": "Odpověď v nepřítomnosti",
-		"SUBNAME_DISCARD": "Zahodit",
-		"LOADING_PROCESS": "Aktualizovat seznam filtrů"
+		"SUBNAME_DISCARD": "Zahodit"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Zabezpečení",

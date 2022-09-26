@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Encaminhar para \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Rejeitar",
 		"SUBNAME_VACATION_MESSAGE": "Mensagem de férias",
-		"SUBNAME_DISCARD": "Descartar",
-		"LOADING_PROCESS": "Atualizando Lista de filtros"
+		"SUBNAME_DISCARD": "Descartar"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Segurança",

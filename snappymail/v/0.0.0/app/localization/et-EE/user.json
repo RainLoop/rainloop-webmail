@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Edasta aadressile \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Lükka tagasi",
 		"SUBNAME_VACATION_MESSAGE": "Puhkuse teade",
-		"SUBNAME_DISCARD": "Hülga",
-		"LOADING_PROCESS": "Värskendan filtrite nimekirja"
+		"SUBNAME_DISCARD": "Hülga"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Turvalisus",

@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Doorsturen naar \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Afwijzen",
 		"SUBNAME_VACATION_MESSAGE": "Afwezigheidsbericht",
-		"SUBNAME_DISCARD": "Gooi weg",
-		"LOADING_PROCESS": "Bezig met updaten van de filter lijst"
+		"SUBNAME_DISCARD": "Gooi weg"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Beveiliging",

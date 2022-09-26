@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Chuyển tiếp đến \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Từ chối",
 		"SUBNAME_VACATION_MESSAGE": "Thư thông báo bạn đang nghỉ lễ",
-		"SUBNAME_DISCARD": "Loại bỏ",
-		"LOADING_PROCESS": "Đang cập nhật danh sách tấm lọc thư"
+		"SUBNAME_DISCARD": "Loại bỏ"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "An ninh",

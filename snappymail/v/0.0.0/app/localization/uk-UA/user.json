@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Forward to \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Reject",
 		"SUBNAME_VACATION_MESSAGE": "Повідомлення про відпустку",
-		"SUBNAME_DISCARD": "Відклонити",
-		"LOADING_PROCESS": "Updating filter list"
+		"SUBNAME_DISCARD": "Відклонити"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Безпека",

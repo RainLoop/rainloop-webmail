@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Препрати към \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Откажи",
 		"SUBNAME_VACATION_MESSAGE": "Съобщение в отпуска",
-		"SUBNAME_DISCARD": "Отхвърли",
-		"LOADING_PROCESS": "Обнови списъка с филтри"
+		"SUBNAME_DISCARD": "Отхвърли"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Сигурност",

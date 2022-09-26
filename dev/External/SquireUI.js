@@ -78,8 +78,13 @@ class SquireUI
 			actions = {
 				mode: {
 					plain: {
-						html: '〈〉',
-						cmd: () => this.setMode('plain' == this.mode ? 'wysiwyg' : 'plain'),
+//						html: '〈〉',
+//						cmd: () => this.setMode('plain' == this.mode ? 'wysiwyg' : 'plain'),
+						select: [
+							[i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML'),'wysiwyg'],
+							[i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN'),'plain']
+						],
+						cmd: s => this.setMode('plain' == s.value ? 'plain' : 'wysiwyg'),
 						hint: i18n('EDITOR/TEXT_SWITCHER_PLAIN_TEXT', 'Plain')
 					}
 				},
@@ -299,8 +304,9 @@ class SquireUI
 					input.className = 'btn';
 					if (Array.isArray(cfg.select)) {
 						cfg.select.forEach(value => {
-							var option = new Option(value, value);
-							option.style[action] = value;
+							value = Array.isArray(value) ? value : [value, value];
+							var option = new Option(value[0], value[1]);
+							option.style[action] = value[1];
 							input.append(option);
 						});
 					} else {
@@ -346,6 +352,8 @@ class SquireUI
 			}
 			toolgroup.children.length && toolbar.append(toolgroup);
 		}
+
+		this.modeSelect = actions.mode.plain.input;
 
 		let changes = actions.changes;
 		changes.undo.input.disabled = changes.redo.input.disabled = true;
@@ -413,6 +421,7 @@ class SquireUI
 			this.onModeChange?.();
 			setTimeout(()=>this.focus(),1);
 		}
+		this.modeSelect.selectedIndex = 'plain' == this.mode ? 1 : 0;
 	}
 
 	// CKeditor gimmicks used by HtmlEditor

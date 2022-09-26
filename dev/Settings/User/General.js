@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { SMAudio } from 'Common/Audio';
-import { SaveSettingsStep } from 'Common/Enums';
+import { SaveSettingStatus } from 'Common/Enums';
 import { EditorDefaultType, Layout } from 'Common/EnumsUser';
 import { Settings, SettingsGet } from 'Common/Globals';
 import { isArray } from 'Common/Utils';
@@ -48,7 +48,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 
 		this.allowLanguagesOnSettings = !!SettingsGet('AllowLanguagesOnSettings');
 
-		this.languageTrigger = ko.observable(SaveSettingsStep.Idle);
+		this.languageTrigger = ko.observable(SaveSettingStatus.Idle);
 
 		this.identities = IdentityUserStore;
 
@@ -103,14 +103,14 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 
 		const fReloadLanguageHelper = (saveSettingsStep) => () => {
 				this.languageTrigger(saveSettingsStep);
-				setTimeout(() => this.languageTrigger(SaveSettingsStep.Idle), 1000);
+				setTimeout(() => this.languageTrigger(SaveSettingStatus.Idle), 1000);
 			};
 
 		addSubscribablesTo(this, {
 			language: value => {
-				this.languageTrigger(SaveSettingsStep.Animate);
+				this.languageTrigger(SaveSettingStatus.Saving);
 				translatorReload(false, value)
-					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult), fReloadLanguageHelper(SaveSettingsStep.FalseResult))
+					.then(fReloadLanguageHelper(SaveSettingStatus.Success), fReloadLanguageHelper(SaveSettingStatus.Failed))
 					.then(() => Remote.saveSetting('Language', value));
 			},
 

@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "\"%EMAIL%\"(으)로 전달",
 		"SUBNAME_REJECT": "거부",
 		"SUBNAME_VACATION_MESSAGE": "부재 중 메시지",
-		"SUBNAME_DISCARD": "Discard",
-		"LOADING_PROCESS": "필터 목록 업데이트 중"
+		"SUBNAME_DISCARD": "Discard"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "보안",

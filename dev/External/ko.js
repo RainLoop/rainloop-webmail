@@ -1,8 +1,8 @@
 import ko from 'ko';
 import { i18nToNodes } from 'Common/Translator';
 import { doc, createElement } from 'Common/Globals';
-import { SaveSettingsStep } from 'Common/Enums';
-import { arrayLength, isFunction, forEachObjectEntry } from 'Common/Utils';
+import { SaveSettingStatus } from 'Common/Enums';
+import { isFunction, forEachObjectEntry } from 'Common/Utils';
 
 export const
 	errorTip = (element, value) => value
@@ -65,6 +65,19 @@ Object.assign(ko.bindingHandlers, {
 			};
 			element.addEventListener('keydown', fn);
 			ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeEventListener('keydown', fn));
+		}
+	},
+
+	onEsc: {
+		init: (element, fValueAccessor, fAllBindings, viewModel) => {
+			let fn = event => {
+				if ('Escape' == event.key) {
+					element.dispatchEvent(new Event('change'));
+					fValueAccessor().call(viewModel);
+				}
+			};
+			element.addEventListener('keyup', fn);
+			ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeEventListener('keyup', fn));
 		}
 	},
 
@@ -133,40 +146,18 @@ Object.assign(ko.bindingHandlers, {
 			const value = parseInt(ko.unwrap(fValueAccessor()),10);
 			let cl = (element.saveTriggerIcon || element).classList;
 			if (element.saveTriggerIcon) {
-				cl.toggle('saving', value === SaveSettingsStep.Animate);
-				cl.toggle('success', value === SaveSettingsStep.TrueResult);
-				cl.toggle('error', value === SaveSettingsStep.FalseResult);
+				cl.toggle('saving', value === SaveSettingStatus.Saving);
+				cl.toggle('success', value === SaveSettingStatus.Success);
+				cl.toggle('error', value === SaveSettingStatus.Failed);
 			}
 			cl = element.classList;
-			cl.toggle('success', value === SaveSettingsStep.TrueResult);
-			cl.toggle('error', value === SaveSettingsStep.FalseResult);
+			cl.toggle('success', value === SaveSettingStatus.Success);
+			cl.toggle('error', value === SaveSettingStatus.Failed);
 		}
 	}
 });
 
 // extenders
-
-ko.extenders.limitedList = (target, limitedList) => {
-	const result = ko
-		.computed({
-			read: target,
-			write: newValue => {
-				let currentValue = target(),
-					list = ko.unwrap(limitedList);
-				list = arrayLength(list) ? list : [''];
-				if (!list.includes(newValue)) {
-					newValue = list.includes(currentValue, list) ? currentValue : list[0];
-					target(newValue + ' ');
-				}
-				target(newValue);
-			}
-		})
-		.extend({ notify: 'always' });
-
-	result(target());
-
-	return result;
-};
 
 ko.extenders.toggleSubscribeProperty = (target, options) => {
 	const prop = options[1];

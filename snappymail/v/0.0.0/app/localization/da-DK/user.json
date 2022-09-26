@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Videresend til \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Afvis",
 		"SUBNAME_VACATION_MESSAGE": "Feriemeddelelse",
-		"SUBNAME_DISCARD": "Kassér",
-		"LOADING_PROCESS": "Opdater oversigten over filtre"
+		"SUBNAME_DISCARD": "Kassér"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Sikkerhed",

@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "ارسال به \"%EMAIL%\"",
 		"SUBNAME_REJECT": "برگشت‌زدن",
 		"SUBNAME_VACATION_MESSAGE": "پیام تعطیلات",
-		"SUBNAME_DISCARD": "دور انداختن",
-		"LOADING_PROCESS": "بروزرسانی لیست فیلتر"
+		"SUBNAME_DISCARD": "دور انداختن"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "امنیت",

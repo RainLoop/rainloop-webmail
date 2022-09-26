@@ -1,6 +1,6 @@
 import ko from 'ko';
 import { pInt } from 'Common/Utils';
-import { SaveSettingsStep } from 'Common/Enums';
+import { SaveSettingStatus } from 'Common/Enums';
 import { koComputable } from 'External/ko';
 import { dispose } from 'External/ko';
 
@@ -23,10 +23,10 @@ export class AbstractInput {
 				classForTrigger = ko.observable(''),
 				setTriggerState = value => {
 					switch (pInt(value)) {
-						case SaveSettingsStep.TrueResult:
+						case SaveSettingStatus.Success:
 							classForTrigger('success');
 							break;
-						case SaveSettingsStep.FalseResult:
+						case SaveSettingStatus.Failed:
 							classForTrigger('error');
 							break;
 						default:

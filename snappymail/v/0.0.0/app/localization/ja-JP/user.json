@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "\"%EMAIL%\"へ転送",
 		"SUBNAME_REJECT": "拒否",
 		"SUBNAME_VACATION_MESSAGE": "バケーションメッセージ",
-		"SUBNAME_DISCARD": "破棄",
-		"LOADING_PROCESS": "フィルターリストの更新中"
+		"SUBNAME_DISCARD": "破棄"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "セキュリティ",

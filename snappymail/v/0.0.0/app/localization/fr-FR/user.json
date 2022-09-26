@@ -379,8 +379,7 @@
 		"SUBNAME_FORWARD_TO": "Faire suivre à \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Rejeter",
 		"SUBNAME_VACATION_MESSAGE": "Message d'absence",
-		"SUBNAME_DISCARD": "Exclure",
-		"LOADING_PROCESS": "Mise à jour de la liste de filtres"
+		"SUBNAME_DISCARD": "Exclure"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Sécurité",

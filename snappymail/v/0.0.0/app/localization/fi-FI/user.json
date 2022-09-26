@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Välitä osoitteeseen \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Hylkää",
 		"SUBNAME_VACATION_MESSAGE": "Lomaviesti",
-		"SUBNAME_DISCARD": "Poista",
-		"LOADING_PROCESS": "Asetetaan suodattimet"
+		"SUBNAME_DISCARD": "Poista"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Turvallisuus",

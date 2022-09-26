@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Teruskan ke \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Tolak",
 		"SUBNAME_VACATION_MESSAGE": "Pesan liburan",
-		"SUBNAME_DISCARD": "Buang",
-		"LOADING_PROCESS": "Perbarui daftar filter"
+		"SUBNAME_DISCARD": "Buang"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Keamanan",

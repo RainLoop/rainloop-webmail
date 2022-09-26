@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Posreduj na \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Zavrni",
 		"SUBNAME_VACATION_MESSAGE": "Sporočilo odsotnosti",
-		"SUBNAME_DISCARD": "Zavrzi",
-		"LOADING_PROCESS": "Posodabljanje seznama filtrov"
+		"SUBNAME_DISCARD": "Zavrzi"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Varnost",

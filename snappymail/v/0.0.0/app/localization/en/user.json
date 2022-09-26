@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Forward to \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Reject",
 		"SUBNAME_VACATION_MESSAGE": "Vacation message",
-		"SUBNAME_DISCARD": "Discard",
-		"LOADING_PROCESS": "Updating filter list"
+		"SUBNAME_DISCARD": "Discard"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Security",

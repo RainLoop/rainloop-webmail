@@ -4,6 +4,7 @@ import { isArray } from 'Common/Utils';
 import { serverRequestRaw } from 'Common/Links';
 
 export const ThemeStore = {
+	theme: ko.observable(''),
 	themes: ko.observableArray(),
 	userBackgroundName: ko.observable(''),
 	userBackgroundHash: ko.observable(''),
@@ -22,8 +23,6 @@ export const ThemeStore = {
 		leftPanelDisabled(ThemeStore.isMobile());
 	}
 };
-
-ThemeStore.theme = ko.observable('').extend({ limitedList: ThemeStore.themes });
 
 ThemeStore.isMobile.subscribe(value => $htmlCL.toggle('rl-mobile', value));
 
