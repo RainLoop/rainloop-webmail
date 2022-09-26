@@ -51,14 +51,13 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 
 		this.folderForDeletion = folderForDeletion;
 
-		this.folderForEdit = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'edited'] });
+		this.folderForEdit = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'editing'] });
 
 		SettingsUserStore.hideUnsubscribed.subscribe(value => Remote.saveSetting('HideUnsubscribed', value));
 	}
 
 	folderEditOnEnter(folder) {
-		const nameToEdit = folder ? folder.nameForEdit().trim() : '';
-
+		const nameToEdit = folder?.nameForEdit().trim();
 		if (nameToEdit && folder.name() !== nameToEdit) {
 			Remote.abort('Folders').post('FolderRename', FolderUserStore.foldersRenaming, {
 					Folder: folder.fullName,
@@ -88,13 +87,13 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 				});
 		}
 
-		folder.edited(false);
+//		this.folderForEdit(null);
+		folder.editing(false);
 	}
 
 	folderEditOnEsc(folder) {
-		if (folder) {
-			folder.edited(false);
-		}
+//		this.folderForEdit(null);
+		folder?.editing(false);
 	}
 
 	onShow() {

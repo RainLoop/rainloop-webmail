@@ -250,7 +250,7 @@ export class FolderModel extends AbstractModel {
 
 			focused: false,
 			selected: false,
-			edited: false,
+			editing: false,
 			isSubscribed: true,
 			checkable: false, // Check for new messages
 			askDelete: false,
@@ -443,9 +443,7 @@ export class FolderModel extends AbstractModel {
 			});
 
 			folder.addSubscribables({
-				name: value => folder.nameForEdit(value),
-
-				edited: value => value && folder.nameForEdit(folder.name()),
+				editing: value => value && folder.nameForEdit(folder.name()),
 
 				unreadEmails: unread => {
 					if (FolderType.Inbox === folder.type()) {

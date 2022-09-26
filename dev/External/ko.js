@@ -68,6 +68,19 @@ Object.assign(ko.bindingHandlers, {
 		}
 	},
 
+	onEsc: {
+		init: (element, fValueAccessor, fAllBindings, viewModel) => {
+			let fn = event => {
+				if ('Escape' == event.key) {
+					element.dispatchEvent(new Event('change'));
+					fValueAccessor().call(viewModel);
+				}
+			};
+			element.addEventListener('keyup', fn);
+			ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeEventListener('keyup', fn));
+		}
+	},
+
 	onSpace: {
 		init: (element, fValueAccessor, fAllBindings, viewModel) => {
 			let fn = event => {
