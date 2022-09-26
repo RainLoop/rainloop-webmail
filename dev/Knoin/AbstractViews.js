@@ -4,7 +4,7 @@ import { addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External
 import { keyScope, SettingsGet, leftPanelDisabled, elementById } from 'Common/Globals';
 import { ViewTypePopup, showScreenPopup } from 'Knoin/Knoin';
 
-import { SaveSettingsStep } from 'Common/Enums';
+import { SaveSettingStatus } from 'Common/Enums';
 
 class AbstractView {
 	constructor(templateID, type)
@@ -123,16 +123,16 @@ export class AbstractViewSettings
 			trigger = prop + 'Trigger';
 		addObservablesTo(this, {
 			[prop]: SettingsGet(name),
-			[trigger]: SaveSettingsStep.Idle,
+			[trigger]: SaveSettingStatus.Idle,
 		});
 		addSubscribablesTo(this, {
 			[prop]: (value => {
-				this[trigger](SaveSettingsStep.Animate);
+				this[trigger](SaveSettingStatus.Saving);
 				valueCb?.(value);
 				rl.app.Remote.saveSetting(name, value,
 					iError => {
-						this[trigger](iError ? SaveSettingsStep.FalseResult : SaveSettingsStep.TrueResult);
-						setTimeout(() => this[trigger](SaveSettingsStep.Idle), 1000);
+						this[trigger](iError ? SaveSettingStatus.Failed : SaveSettingStatus.Success);
+						setTimeout(() => this[trigger](SaveSettingStatus.Idle), 1000);
 					}
 				);
 			}).debounce(999),

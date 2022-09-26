@@ -1,6 +1,6 @@
 import { addObservablesTo } from 'External/ko';
 
-import { SaveSettingsStep, UploadErrorCode } from 'Common/Enums';
+import { SaveSettingStatus, UploadErrorCode } from 'Common/Enums';
 import { changeTheme, convertThemeName } from 'Common/Utils';
 import { themePreviewLink, serverRequest } from 'Common/Links';
 import { i18n } from 'Common/Translator';
@@ -29,7 +29,7 @@ export class UserSettingsThemes /*extends AbstractViewSettings*/ {
 		themeBackground.enabled = SettingsCapa('UserBackground');
 		this.background = themeBackground;
 
-		this.themeTrigger = ko.observable(SaveSettingsStep.Idle).extend({ debounce: 100 });
+		this.themeTrigger = ko.observable(SaveSettingStatus.Idle).extend({ debounce: 100 });
 
 		ThemeStore.theme.subscribe(value => {
 			this.themesObjects.forEach(theme => {

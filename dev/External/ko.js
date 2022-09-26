@@ -1,7 +1,7 @@
 import ko from 'ko';
 import { i18nToNodes } from 'Common/Translator';
 import { doc, createElement } from 'Common/Globals';
-import { SaveSettingsStep } from 'Common/Enums';
+import { SaveSettingStatus } from 'Common/Enums';
 import { isFunction, forEachObjectEntry } from 'Common/Utils';
 
 export const
@@ -146,13 +146,13 @@ Object.assign(ko.bindingHandlers, {
 			const value = parseInt(ko.unwrap(fValueAccessor()),10);
 			let cl = (element.saveTriggerIcon || element).classList;
 			if (element.saveTriggerIcon) {
-				cl.toggle('saving', value === SaveSettingsStep.Animate);
-				cl.toggle('success', value === SaveSettingsStep.TrueResult);
-				cl.toggle('error', value === SaveSettingsStep.FalseResult);
+				cl.toggle('saving', value === SaveSettingStatus.Saving);
+				cl.toggle('success', value === SaveSettingStatus.Success);
+				cl.toggle('error', value === SaveSettingStatus.Failed);
 			}
 			cl = element.classList;
-			cl.toggle('success', value === SaveSettingsStep.TrueResult);
-			cl.toggle('error', value === SaveSettingsStep.FalseResult);
+			cl.toggle('success', value === SaveSettingStatus.Success);
+			cl.toggle('error', value === SaveSettingStatus.Failed);
 		}
 	}
 });

@@ -29,11 +29,11 @@ UploadErrorCode = {
 /**
  * @enum {number}
  */
-SaveSettingsStep = {
-	Animate: -2,
+SaveSettingStatus = {
+	Saving: -2,
 	Idle: -1,
-	TrueResult: 1,
-	FalseResult: 0
+	Success: 1,
+	Failed: 0
 },
 
 /**

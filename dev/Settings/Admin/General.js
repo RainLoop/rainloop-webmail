@@ -8,7 +8,7 @@ import {
 
 import { addObservablesTo, addSubscribablesTo, addComputablesTo } from 'External/ko';
 
-import { SaveSettingsStep } from 'Common/Enums';
+import { SaveSettingStatus } from 'Common/Enums';
 import { Settings, SettingsGet, SettingsCapa } from 'Common/Globals';
 import { translatorReload, convertLangName } from 'Common/Translator';
 
@@ -38,8 +38,8 @@ export class AdminSettingsGeneral extends AbstractViewSettings {
 		this.addSettings(['AllowLanguagesOnSettings','NewMoveToFolder']);
 
 		addObservablesTo(this, {
-			attachmentLimitTrigger: SaveSettingsStep.Idle,
-			themeTrigger: SaveSettingsStep.Idle,
+			attachmentLimitTrigger: SaveSettingStatus.Idle,
+			themeTrigger: SaveSettingStatus.Idle,
 			capaThemes: SettingsCapa('Themes'),
 			capaUserBackground: SettingsCapa('UserBackground'),
 			capaAdditionalAccounts: SettingsCapa('AdditionalAccounts'),
@@ -82,19 +82,19 @@ export class AdminSettingsGeneral extends AbstractViewSettings {
 			languageAdminFullName: () => convertLangName(this.languageAdmin())
 		});
 
-		this.languageAdminTrigger = ko.observable(SaveSettingsStep.Idle).extend({ debounce: 100 });
+		this.languageAdminTrigger = ko.observable(SaveSettingStatus.Idle).extend({ debounce: 100 });
 
 		const fReloadLanguageHelper = (saveSettingsStep) => () => {
 				this.languageAdminTrigger(saveSettingsStep);
-				setTimeout(() => this.languageAdminTrigger(SaveSettingsStep.Idle), 1000);
+				setTimeout(() => this.languageAdminTrigger(SaveSettingStatus.Idle), 1000);
 			},
 			fSaveHelper = key => value => Remote.saveSetting(key, value);
 
 		addSubscribablesTo(this, {
 			languageAdmin: value => {
-				this.languageAdminTrigger(SaveSettingsStep.Animate);
+				this.languageAdminTrigger(SaveSettingStatus.Saving);
 				translatorReload(true, value)
-					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult), fReloadLanguageHelper(SaveSettingsStep.FalseResult))
+					.then(fReloadLanguageHelper(SaveSettingStatus.Success), fReloadLanguageHelper(SaveSettingStatus.Failed))
 					.then(() => Remote.saveSetting('LanguageAdmin', value));
 			},
 
