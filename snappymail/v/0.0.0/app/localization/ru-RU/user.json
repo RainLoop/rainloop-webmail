@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Переслать на \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Не принимать",
 		"SUBNAME_VACATION_MESSAGE": "Сообщение автоответчика",
-		"SUBNAME_DISCARD": "Уничтожить",
-		"LOADING_PROCESS": "Обновление списка фильтров"
+		"SUBNAME_DISCARD": "Уничтожить"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Безопасность",

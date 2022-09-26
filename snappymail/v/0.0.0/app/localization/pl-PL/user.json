@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Przekaż do \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Odrzuć",
 		"SUBNAME_VACATION_MESSAGE": "Wiadomość urlopowa",
-		"SUBNAME_DISCARD": "Porzuć",
-		"LOADING_PROCESS": "Aktualizowanie listy filtrów"
+		"SUBNAME_DISCARD": "Porzuć"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Bezpieczeństwo",

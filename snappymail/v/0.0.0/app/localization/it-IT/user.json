@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Inoltra a \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Rifiuta",
 		"SUBNAME_VACATION_MESSAGE": "Messaggio fuori-ufficio",
-		"SUBNAME_DISCARD": "Scarta",
-		"LOADING_PROCESS": "Aggiornamento lista filtri"
+		"SUBNAME_DISCARD": "Scarta"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Sicurezza",

@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "转发到 \"%EMAIL%\"",
 		"SUBNAME_REJECT": "拒绝",
 		"SUBNAME_VACATION_MESSAGE": "假期自动回复",
-		"SUBNAME_DISCARD": "取消",
-		"LOADING_PROCESS": "正在更新筛选规则列表"
+		"SUBNAME_DISCARD": "取消"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "安全",

@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "\"%EMAIL%\" إعادة توجيه الى",
 		"SUBNAME_REJECT": "رفض",
 		"SUBNAME_VACATION_MESSAGE": "رسالة العطلة",
-		"SUBNAME_DISCARD": "تجاهل",
-		"LOADING_PROCESS": "تحديث قائمة عوامل التصفية"
+		"SUBNAME_DISCARD": "تجاهل"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "الأمان",

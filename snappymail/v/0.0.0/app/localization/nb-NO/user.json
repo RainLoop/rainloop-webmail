@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Videresend til «%EMAIL%»",
 		"SUBNAME_REJECT": "Avvis",
 		"SUBNAME_VACATION_MESSAGE": "Feriemelding",
-		"SUBNAME_DISCARD": "Forkast",
-		"LOADING_PROCESS": "Oppdater filterliste"
+		"SUBNAME_DISCARD": "Forkast"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Sikkerhet",

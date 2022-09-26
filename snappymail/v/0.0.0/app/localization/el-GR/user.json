@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Προώθηση στο \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Απόρριψη",
 		"SUBNAME_VACATION_MESSAGE": "Μήνυμα διακοπών",
-		"SUBNAME_DISCARD": "Απόρριψη",
-		"LOADING_PROCESS": "Ενημέρωση λίστας φίλτρων"
+		"SUBNAME_DISCARD": "Απόρριψη"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Ασφάλεια",

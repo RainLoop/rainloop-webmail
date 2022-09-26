@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Továbbítás ide: \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Visszautasít",
 		"SUBNAME_VACATION_MESSAGE": "Vakáció üzenet",
-		"SUBNAME_DISCARD": "Elvetés",
-		"LOADING_PROCESS": "Szűrő lista frissítése"
+		"SUBNAME_DISCARD": "Elvetés"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Biztonság",

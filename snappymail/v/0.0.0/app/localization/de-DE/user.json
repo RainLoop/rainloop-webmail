@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "Weiterleiten nach \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Ablehnen",
 		"SUBNAME_VACATION_MESSAGE": "Urlaubsbenachrichtigung",
-		"SUBNAME_DISCARD": "Verwerfen",
-		"LOADING_PROCESS": "Aktualisiere Filterliste"
+		"SUBNAME_DISCARD": "Verwerfen"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Sicherheit",

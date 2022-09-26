@@ -378,8 +378,7 @@
 		"SUBNAME_FORWARD_TO": "persiūsti \"%EMAIL%\"",
 		"SUBNAME_REJECT": "Atmesti",
 		"SUBNAME_VACATION_MESSAGE": "Atostogų žinutė",
-		"SUBNAME_DISCARD": "Nepaisyti",
-		"LOADING_PROCESS": "Atnaujinamas filtrų sąrašas"
+		"SUBNAME_DISCARD": "Nepaisyti"
 	},
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Sauga",
