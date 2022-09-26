@@ -43,7 +43,7 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "Taille limite des pièces jointes",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Autoriser les comptes supplémentaires",
 		"LABEL_ALLOW_IDENTITIES": "Autoriser les identités multiples",
-		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
+		"ALERT_DATA_ACCESS": "Le dossier de données est accessible. Veuillez configurer votre serveur web afin qu'il soit masqué à tout accès externe. Plus d'informations ici :",
 		"ALERT_WARNING": "ATTENTION !",
 		"HTML_ALERT_WEAK_PASSWORD": "Vous utilisez le mot de passe administrateur par défaut.\n<br>\nPour des raisons de sécurité, veuillez\n<strong><a href=\"#\/security\">changer le mot de passe <\/a><\/strong>\ndès maintenant.\n"
 	},
@@ -55,10 +55,10 @@
 		"LABEL_DETERMINE_USER_LANGUAGE": "Deviner la langue de l'utilisateur"
 	},
 	"TAB_BRANDING": {
-		"LEGEND_BRANDING": "Logo & Marque",
+		"LEGEND_BRANDING": "Favicône & Titre",
 		"LABEL_PAGE_TITLE": "Titre de la page",
 		"LABEL_LOADING_DESCRIPTION": "Description pendant le chargement",
-		"LABEL_FAVICON_URL": "Favicon"
+		"LABEL_FAVICON_URL": "Favicône"
 	},
 	"TAB_CONTACTS": {
 		"LEGEND_CONTACTS": "Contacts",
@@ -69,7 +69,7 @@
 		"LABEL_STORAGE_DSN": "Dsn",
 		"LABEL_STORAGE_USER": "Utilisateur",
 		"LABEL_STORAGE_PASSWORD": "Mot de passe",
-		"ALERT_NOTICE": "Avis !",
+		"ALERT_NOTICE": "Note !",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "N'utilisez pas ce type de base de données avec un grand nombre d'utilisateurs actifs.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Votre système ne supporte pas les contacts.\n<br>\nVous devez installer ou autoriser l'extension <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> sur votre serveur.\n"
 	},
@@ -121,7 +121,7 @@
 		"TITLE_ADD_DOMAIN_WITH_NAME": "Ajouter le domaine \"%NAME%\"",
 		"TITLE_EDIT_DOMAIN": "Modifier le domaine \"%NAME%\"",
 		"LABEL_NAME": "Nom",
-		"NAME_HELPER": "Jokers autorisés",
+		"NAME_HELPER": "Caractères jokers autorisés",
 		"LABEL_IMAP": "IMAP",
 		"LABEL_SMTP": "SMTP",
 		"LABEL_SIEVE": "SIEVE",
@@ -167,9 +167,9 @@
 		"UNKNOWN_ERROR": "Erreur inconnue"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
+		"REQUEST_ERROR": "La requête a échouée",
+		"REQUEST_ABORTED": "La requête a été annulée",
+		"REQUEST_TIMEOUT": "La requête a expirée",
 		"INVALID_TOKEN": "Jeton invalide",
 		"AUTH_ERROR": "L'authentification a échoué",
 		"DOMAIN_ALREADY_EXISTS": "Le domaine existe déjà",
