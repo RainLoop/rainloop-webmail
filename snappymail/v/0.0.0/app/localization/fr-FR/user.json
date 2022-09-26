@@ -51,8 +51,7 @@
 	"SEARCH": {
 		"TITLE_ADV": "Recherche avancée",
 		"LABEL_TEXT": "Texte",
-		"LABEL_HAS_ATTACHMENT": "Pièce jointe",
-		"LABEL_HAS_ATTACHMENTS": "Pièces jointes",
+		"LABEL_HAS_ATTACHMENT": "Pièce jointe(s)",
 		"LABEL_FLAGGED": "Signalé",
 		"LABEL_UNSEEN": "Non lu",
 		"LABEL_DATE": "Date",
