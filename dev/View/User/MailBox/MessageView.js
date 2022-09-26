@@ -394,7 +394,7 @@ export class MailMessageView extends AbstractViewRight {
 		registerShortcut('b', '', [Scope.MessageList, Scope.MessageView], () => {
 			const message = currentMessage();
 			if (message?.body) {
-				message.body.querySelectorAll('.rlBlockquoteSwitcher').forEach(node => node.click());
+				message.body.querySelectorAll('.sm-bq-switcher > summary').forEach(node => node.click());
 				return false;
 			}
 		});

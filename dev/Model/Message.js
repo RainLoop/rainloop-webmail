@@ -496,16 +496,13 @@ export class MessageModel extends AbstractModel {
 
 	initView() {
 		// init BlockquoteSwitcher
-		this.body.querySelectorAll('blockquote:not(.rl-bq-switcher)').forEach(node => {
+		this.body.querySelectorAll('blockquote').forEach(node => {
 			if (node.textContent.trim()) {
-//			if (node.textContent.trim() && !node.parentNode.closest('blockquote')) {
-				node.removeAttribute('style')
 				let h = node.clientHeight || getRealHeight(node);
 				if (0 === h || 100 < h) {
-					const el = Element.fromHTML('<span class="rlBlockquoteSwitcher">•••</span>');
-					node.classList.add('rl-bq-switcher','hidden-bq');
-					node.before(el);
-					el.addEventListener('click', () => node.classList.toggle('hidden-bq'));
+					const el = Element.fromHTML('<details class="sm-bq-switcher"><summary>•••</summary></details>');
+					node.replaceWith(el);
+					el.append(node);
 				}
 			}
 		});
@@ -613,7 +610,6 @@ export class MessageModel extends AbstractModel {
 			let attr = 'data-x-src',
 				src, useProxy = !!SettingsGet('UseLocalProxyForExternalImages');
 			body.querySelectorAll('img[' + attr + ']').forEach(node => {
-				node.loading = 'lazy';
 				src = node.getAttribute(attr);
 				node.src = useProxy ? proxy(src) : src;
 			});
@@ -632,11 +628,8 @@ export class MessageModel extends AbstractModel {
 	bodyAsHTML() {
 		if (this.body) {
 			let clone = this.body.cloneNode(true);
-			clone.querySelectorAll('blockquote.rl-bq-switcher').forEach(
-				node => node.classList.remove('rl-bq-switcher','hidden-bq')
-			);
-			clone.querySelectorAll('.rlBlockquoteSwitcher').forEach(
-				node => node.remove()
+			clone.querySelectorAll('.sm-bq-switcher').forEach(
+				node => node.replaceWith(node.lastElementChild)
 			);
 			return clone.innerHTML;
 		}
