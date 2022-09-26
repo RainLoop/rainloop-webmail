@@ -51,8 +51,7 @@
 	"SEARCH": {
 		"TITLE_ADV": "Geavanceerd zoeken",
 		"LABEL_TEXT": "Tekst",
-		"LABEL_HAS_ATTACHMENT": "Heeft bijlage",
-		"LABEL_HAS_ATTACHMENTS": "Heeft bijlages",
+		"LABEL_HAS_ATTACHMENT": "Heeft bijlage(s)",
 		"LABEL_FLAGGED": "Gemarkeerd",
 		"LABEL_UNSEEN": "Ongelezen",
 		"LABEL_DATE": "Datum",
@@ -64,9 +63,9 @@
 		"LABEL_DATE_6_MONTHS": "Tot 6 maanden oud",
 		"LABEL_DATE_YEAR": "Tot 1 jaar oud",
 		"LABEL_SUBFOLDERS": "Subfolders",
-		"LABEL_SUBFOLDERS_NONE": "None",
-		"LABEL_SUBFOLDERS_SUBTREE": "All",
-		"LABEL_SUBFOLDERS_SUBTREE_ONE": "One level",
+		"LABEL_SUBFOLDERS_NONE": "Geen",
+		"LABEL_SUBFOLDERS_SUBTREE": "Alle",
+		"LABEL_SUBFOLDERS_SUBTREE_ONE": "Één niveau",
 		"LABEL_REPLIED": "Beantwoord"
 	},
 	"PREVIEW_POPUP": {
@@ -141,8 +140,8 @@
 		"BUTTON_THREAD_MORE": "Meer berichten",
 		"MENU_HEADERS": "Toon berichtkoppen",
 		"MENU_VIEW_ORIGINAL": "Toon origineel",
-		"HTML_VIEW": "View HTML message",
-		"PLAIN_VIEW": "View plain text message",
+		"HTML_VIEW": "Bekijk HTML bericht",
+		"PLAIN_VIEW": "Bekijk platte text bericht",
 		"MENU_DOWNLOAD_ORIGINAL": "Download als .eml bestand",
 		"MENU_FILTER_SIMILAR": "Filter gelijksoortige berichten",
 		"MENU_PRINT": "Afdrukken",
@@ -358,7 +357,7 @@
 	},
 	"EDITOR": {
 		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEKST",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"TEXT_SWITCHER_SOURCE": "HTML <-> BRONCODE"
 	},
 	"SETTINGS_LABELS": {
 		"LABEL_PERSONAL_NAME": "Persoonlijk",
@@ -478,8 +477,8 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Genereer sleutels",
 		"TITLE_PRIVATE": "Privé sleutel",
 		"TITLE_PUBLIC": "Publieke sleutel",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
-		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
+		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatisch opslaan as concept",
+		"GET_MAILVELOPE": "Verkrijg Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
 		"LEGEND_SHORTCUTS_HELP": "Hulp bij toetsenbord sneltoetsen",
@@ -514,16 +513,16 @@
 		"LABEL_CLOSE_MESSAGE": "Bericht sluiten (leesvenster uitgeschakeld)",
 		"LABEL_SWITCH_TO_LIST": "Schakel focus terug naar berichtenlijst",
 		"LABEL_OPEN_COMPOSE_POPUP": "Open nieuw bericht venster",
-		"LABEL_MINIMIZE_COMPOSE_POPUP": "Minimize compose popup",
+		"LABEL_MINIMIZE_COMPOSE_POPUP": "Minimaliseer nieuw bericht venster",
 		"LABEL_OPEN_IDENTITIES_DROPDOWN": "Open identiteiten menu",
 		"LABEL_SAVE_MESSAGE": "Concept opslaan",
 		"LABEL_SEND_MESSAGE": "Bericht versturen",
 		"LABEL_CLOSE_COMPOSE": "Nieuw bericht venster sluiten"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
+		"REQUEST_ERROR": "Verzoek mislukt",
+		"REQUEST_ABORTED": "Verzoek is afgebroken",
+		"REQUEST_TIMEOUT": "Verzoek time-out",
 		"INVALID_TOKEN": "Ongeldige token",
 		"AUTH_ERROR": "Authenticatie mislukt",
 		"CONNECTION_ERROR": "Kan geen verbinding maken met de Server",
@@ -554,7 +553,7 @@
 		"DEMO_ACCOUNT_ERROR": "Vanwege beveiliging is deze actie niet toegestaan voor deze account!",
 		"ACCOUNT_ALREADY_EXISTS": "Account bestaat al",
 		"ACCOUNT_DOES_NOT_EXIST": "Account bestaat niet.",
-		"ACCOUNT_SWITCH_FAILED": "Switch to account \"%EMAIL%\" failed",
+		"ACCOUNT_SWITCH_FAILED": "Overschakelen naar account \"%EMAIL%\" mislukt",
 		"MAIL_SERVER_ERROR": "Fout bij toegang tot de mail Server",
 		"INVALID_INPUT_ARGUMENT": "Ongeldig invoer argument",
 		"UNKNOWN_ERROR": "Er is een onbekende fout opgetreden"
