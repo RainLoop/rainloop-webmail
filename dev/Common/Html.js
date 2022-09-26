@@ -230,6 +230,7 @@ export const
 				delAttribute('src');
 
 				if ('IMG' === name) {
+					oElement.loading = 'lazy';
 					let attachment;
 					if (detectHiddenImages
 						&& (('' != getAttribute('height') && 3 > pInt(getAttribute('height')))
@@ -248,7 +249,6 @@ export const
 					else if ((attachment = findLocationByCid(value)))
 					{
 						if (attachment.download) {
-							oElement.loading = 'lazy';
 							oElement.src = attachment.linkPreview();
 							attachment.isLinked(true);
 						}
