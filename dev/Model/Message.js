@@ -95,13 +95,12 @@ const
 	 * @param {Object} unic
 	 * @param {Map} localEmails
 	 */
-	replyHelper = (emails, unic, localEmails) => {
+	replyHelper = (emails, unic, localEmails) =>
 		emails.forEach(email => {
 			if (!unic[email.email] && !localEmails.has(email.email)) {
 				localEmails.set(email.email, email);
 			}
 		});
-	};
 
 doc.body.append(hcont);
 
@@ -441,9 +440,8 @@ export class MessageModel extends AbstractModel {
 			unic = excludeEmails || {};
 
 		replyHelper(this.replyTo, unic, toResult);
-		if (!toResult.size) {
-			replyHelper(this.from, unic, toResult);
-		}
+		toResult.size || replyHelper(this.from, unic, toResult);
+
 		replyHelper(this.to, unic, toResult);
 
 		replyHelper(this.cc, unic, ccResult);

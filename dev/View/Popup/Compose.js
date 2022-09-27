@@ -86,30 +86,9 @@ const
 		}
 	},
 
-	findIdentityByMessage = (composeType, message) => {
-		let resultIdentity = null;
-		const find = addresses => {
-			addresses = addresses.map(item => item.email);
-			return IdentityUserStore.find(item => addresses.includes(item.email()));
-		};
-
-		if (message) {
-			switch (composeType) {
-				case ComposeType.Reply:
-				case ComposeType.ReplyAll:
-				case ComposeType.Forward:
-				case ComposeType.ForwardAsAttachment:
-					resultIdentity = find(message.to.concat(message.cc, message.bcc))/* || find(message.deliveredTo)*/;
-					break;
-				case ComposeType.Draft:
-					resultIdentity = find(message.from.concat(message.replyTo));
-					break;
-				// no default
-//				case ComposeType.Empty:
-			}
-		}
-
-		return resultIdentity || IdentityUserStore()[0] || null;
+	findIdentity = addresses => {
+		addresses = addresses.map(item => item.email);
+		return IdentityUserStore.find(item => addresses.includes(item.email()));
 	},
 
 	/**
@@ -664,7 +643,7 @@ export class ComposePopupView extends AbstractViewPopup {
 		identity = identity?.item;
 		if (identity) {
 			this.currentIdentity(identity);
-			this.setSignatureFromIdentity(identity);
+			this.setSignature(identity);
 		}
 	}
 
@@ -703,8 +682,8 @@ export class ComposePopupView extends AbstractViewPopup {
 		}
 	}
 
-	setSignatureFromIdentity(identity) {
-		if (identity) {
+	setSignature(identity, msgComposeType) {
+		if (identity && ComposeType.Draft !== msgComposeType && ComposeType.EditAsNew !== msgComposeType) {
 			this.editor(editor => {
 				let signature = identity.signature() || '',
 					isHtml = ':HTML:' === signature.slice(0, 6),
@@ -798,7 +777,7 @@ export class ComposePopupView extends AbstractViewPopup {
 //			excludeEmail = new Set(),
 			excludeEmail = {},
 			mEmail = AccountUserStore.email(),
-			lineComposeType = sType || ComposeType.Empty;
+			msgComposeType = sType || ComposeType.Empty;
 
 		oLastMessage = message;
 
@@ -809,7 +788,23 @@ export class ComposePopupView extends AbstractViewPopup {
 
 		this.reset();
 
-		identity = findIdentityByMessage(lineComposeType, message);
+		if (message) {
+			switch (msgComposeType) {
+				case ComposeType.Reply:
+				case ComposeType.ReplyAll:
+				case ComposeType.Forward:
+				case ComposeType.ForwardAsAttachment:
+					identity = findIdentity(message.to.concat(message.cc, message.bcc))
+						/* || findIdentity(message.deliveredTo)*/;
+					break;
+				case ComposeType.Draft:
+					identity = findIdentity(message.from.concat(message.replyTo));
+					break;
+				// no default
+//				case ComposeType.Empty:
+			}
+		}
+		identity = identity || IdentityUserStore()[0];
 		if (identity) {
 //			excludeEmail.add(identity.email());
 			excludeEmail[identity.email()] = true;
@@ -827,47 +822,32 @@ export class ComposePopupView extends AbstractViewPopup {
 			this.bcc(emailArrayToStringLineHelper(aBccEmails));
 		}
 
-		if (lineComposeType && message) {
+		if (msgComposeType && message) {
 			sDate = timestampToString(message.dateTimeStampInUTC(), 'FULL');
 			sSubject = message.subject();
 			aDraftInfo = message.draftInfo;
 
-			switch (lineComposeType) {
-				case ComposeType.Empty:
-					break;
-
+			switch (msgComposeType) {
 				case ComposeType.Reply:
-					this.to(emailArrayToStringLineHelper(message.replyEmails(excludeEmail)));
+				case ComposeType.ReplyAll:
+					if (ComposeType.Reply === msgComposeType) {
+						this.to(emailArrayToStringLineHelper(message.replyEmails(excludeEmail)));
+					} else {
+						let parts = message.replyAllEmails(excludeEmail);
+						this.to(emailArrayToStringLineHelper(parts[0]));
+						this.cc(emailArrayToStringLineHelper(parts[1]));
+					}
 					this.subject(replySubjectAdd('Re', sSubject));
-					this.prepareMessageAttachments(message, lineComposeType);
+					this.prepareMessageAttachments(message, msgComposeType);
 					this.aDraftInfo = ['reply', message.uid, message.folder];
 					this.sInReplyTo = message.messageId;
 					this.sReferences = (message.messageId + ' ' + message.references).trim();
 					break;
-
-				case ComposeType.ReplyAll: {
-					let parts = message.replyAllEmails(excludeEmail);
-					this.to(emailArrayToStringLineHelper(parts[0]));
-					this.cc(emailArrayToStringLineHelper(parts[1]));
-					this.subject(replySubjectAdd('Re', sSubject));
-					this.prepareMessageAttachments(message, lineComposeType);
-					this.aDraftInfo = ['reply', message.uid, message.folder];
-					this.sInReplyTo = message.messageId;
-					this.sReferences = (message.messageId + ' ' + message.references).trim();
-					break;
-				}
 
 				case ComposeType.Forward:
-					this.subject(replySubjectAdd('Fwd', sSubject));
-					this.prepareMessageAttachments(message, lineComposeType);
-					this.aDraftInfo = ['forward', message.uid, message.folder];
-					this.sInReplyTo = message.messageId;
-					this.sReferences = (message.messageId + ' ' + message.references).trim();
-					break;
-
 				case ComposeType.ForwardAsAttachment:
 					this.subject(replySubjectAdd('Fwd', sSubject));
-					this.prepareMessageAttachments(message, lineComposeType);
+					this.prepareMessageAttachments(message, msgComposeType);
 					this.aDraftInfo = ['forward', message.uid, message.folder];
 					this.sInReplyTo = message.messageId;
 					this.sReferences = (message.messageId + ' ' + message.references).trim();
@@ -885,7 +865,7 @@ export class ComposePopupView extends AbstractViewPopup {
 					this.draftUid(message.uid);
 
 					this.subject(sSubject);
-					this.prepareMessageAttachments(message, lineComposeType);
+					this.prepareMessageAttachments(message, msgComposeType);
 
 					this.aDraftInfo = 3 === arrayLength(aDraftInfo) ? aDraftInfo : null;
 					this.sInReplyTo = message.inReplyTo;
@@ -899,12 +879,15 @@ export class ComposePopupView extends AbstractViewPopup {
 					this.replyTo(emailArrayToStringLineHelper(message.replyTo));
 
 					this.subject(sSubject);
-					this.prepareMessageAttachments(message, lineComposeType);
+					this.prepareMessageAttachments(message, msgComposeType);
 
 					this.aDraftInfo = 3 === arrayLength(aDraftInfo) ? aDraftInfo : null;
 					this.sInReplyTo = message.inReplyTo;
 					this.sReferences = message.references;
 					break;
+
+//				case ComposeType.Empty:
+//					break;
 				// no default
 			}
 
@@ -917,7 +900,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			);
 			sText = tpl.innerHTML.trim();
 
-			switch (lineComposeType) {
+			switch (msgComposeType) {
 				case ComposeType.Reply:
 				case ComposeType.ReplyAll:
 					sFrom = message.fromToLine(false, true);
@@ -962,51 +945,26 @@ export class ComposePopupView extends AbstractViewPopup {
 
 			this.editor(editor => {
 				encrypted || editor.setHtml(sText);
-
 				if (encrypted || this.isPlainEditor() || !message.isHtml()) {
 					editor.modePlain();
 				}
-
-				!encrypted || editor.setPlain(sText);
-
-				if (identity && ComposeType.Draft !== lineComposeType && ComposeType.EditAsNew !== lineComposeType) {
-					this.setSignatureFromIdentity(identity);
-				}
-
+				encrypted && editor.setPlain(sText);
+				this.setSignature(identity, msgComposeType);
 				this.setFocusInPopup();
 			});
-		} else if (ComposeType.Empty === lineComposeType) {
+		} else if (ComposeType.Empty === msgComposeType) {
 			this.subject(null != sCustomSubject ? '' + sCustomSubject : '');
-
-			sText = null != sCustomPlainText ? '' + sCustomPlainText : '';
-
 			this.editor(editor => {
-				editor.setHtml(sText);
-
-				if (isPlainEditor()) {
-					editor.modePlain();
-				}
-
-				if (identity) {
-					this.setSignatureFromIdentity(identity);
-				}
-
+				editor.setHtml(sCustomPlainText ? '' + sCustomPlainText : '');
+				isPlainEditor() && editor.modePlain();
+				this.setSignature(identity);
 				this.setFocusInPopup();
 			});
 		} else if (arrayLength(oMessageOrArray)) {
 			oMessageOrArray.forEach(item => this.addMessageAsAttachment(item));
-
 			this.editor(editor => {
-				if (isPlainEditor()) {
-					editor.setPlain('')
-				} else {
-					editor.setHtml('');
-				}
-
-				if (identity && ComposeType.Draft !== lineComposeType && ComposeType.EditAsNew !== lineComposeType) {
-					this.setSignatureFromIdentity(identity);
-				}
-
+				isPlainEditor() ? editor.setPlain('') : editor.setHtml('');
+				this.setSignature(identity, msgComposeType);
 				this.setFocusInPopup();
 			});
 		} else {
@@ -1048,16 +1006,17 @@ export class ComposePopupView extends AbstractViewPopup {
 			);
 		}
 
-		if (identity) {
-			this.currentIdentity(identity);
-		}
+		this.currentIdentity(identity);
 	}
 
 	setFocusInPopup() {
 		setTimeout(() => {
 			if (!this.to()) {
 				this.to.focused(true);
-			} else if (!this.to.focused()) {
+			// TODO https://github.com/the-djmaze/snappymail/issues/501#issuecomment-1255906243
+//			} else if (!this.subject()) {
+//				this.subject.focus();
+			} else {
 				this.oEditor?.focus();
 			}
 		}, 100);
