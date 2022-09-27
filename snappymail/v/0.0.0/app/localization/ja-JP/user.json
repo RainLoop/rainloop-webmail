@@ -454,6 +454,7 @@
 		"HELP_SHOW_HIDE_FOLDER": "フォルダーの表示\/非表示",
 		"HELP_CHECK_FOR_NEW_MESSAGES": "新しいメッセージをチェックする\/しない",
 		"HIDE_UNSUBSCRIBED": "購読していないフォルダを隠す",
+		"UNHIDE_KOLAB_FOLDERS": "Unhide Kolab folders",
 		"TYPE_CALENDAR": "Calendar",
 		"TYPE_CONFIGURATION": "Configuration",
 		"TYPE_CONTACTS": "Contacts",

@@ -454,6 +454,7 @@
 		"HELP_SHOW_HIDE_FOLDER": "Näytä\/Piilota kansio",
 		"HELP_CHECK_FOR_NEW_MESSAGES": "Tarkista\/Älä tarkista uudet viestit",
 		"HIDE_UNSUBSCRIBED": "Hide unsubscribed folders",
+		"UNHIDE_KOLAB_FOLDERS": "Unhide Kolab folders",
 		"TYPE_CALENDAR": "Calendar",
 		"TYPE_CONFIGURATION": "Configuration",
 		"TYPE_CONTACTS": "Contacts",

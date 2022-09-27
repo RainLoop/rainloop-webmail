@@ -46,6 +46,7 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 		this.folderListOptimized = FolderUserStore.folderListOptimized;
 		this.folderListError = FolderUserStore.folderListError;
 		this.hideUnsubscribed = SettingsUserStore.hideUnsubscribed;
+		this.unhideKolabFolders = SettingsUserStore.unhideKolabFolders;
 
 		this.loading = FolderUserStore.foldersChanging;
 
@@ -54,6 +55,7 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 		this.folderForEdit = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'editing'] });
 
 		SettingsUserStore.hideUnsubscribed.subscribe(value => Remote.saveSetting('HideUnsubscribed', value));
+		SettingsUserStore.unhideKolabFolders.subscribe(value => Remote.saveSetting('UnhideKolabFolders', value));
 	}
 
 	folderEditOnEnter(folder) {

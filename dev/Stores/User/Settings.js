@@ -25,6 +25,7 @@ export const SettingsUserStore = new class {
 			replySameFolder: 0,
 			hideUnsubscribed: 0,
 			hideDeleted: 1,
+			unhideKolabFolders: 0,
 			autoLogout: 0,
 
 			requestReadReceipt: 0,
@@ -84,6 +85,7 @@ export const SettingsUserStore = new class {
 
 		self.hideUnsubscribed(SettingsGet('HideUnsubscribed'));
 		self.hideDeleted(SettingsGet('HideDeleted'));
+		self.unhideKolabFolders(SettingsGet('UnhideKolabFolders'));
 
 		self.requestReadReceipt(SettingsGet('requestReadReceipt'));
 		self.requestDsn(SettingsGet('requestDsn'));

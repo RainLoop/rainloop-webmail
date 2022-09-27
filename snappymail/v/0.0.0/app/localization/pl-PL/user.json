@@ -454,6 +454,7 @@
 		"HELP_SHOW_HIDE_FOLDER": "Pokaż\/ukryj folder",
 		"HELP_CHECK_FOR_NEW_MESSAGES": "Sprawdzaj\/nie sprawdzaj nowych wiadomości",
 		"HIDE_UNSUBSCRIBED": "Hide unsubscribed folders",
+		"UNHIDE_KOLAB_FOLDERS": "Unhide Kolab folders",
 		"TYPE_CALENDAR": "Calendar",
 		"TYPE_CONFIGURATION": "Configuration",
 		"TYPE_CONTACTS": "Contacts",

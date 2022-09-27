@@ -364,7 +364,8 @@ export class FolderModel extends AbstractModel {
 
 				canBeEdited: () => FolderType.User === folder.type() && folder.exists/* && folder.selectable()*/,
 
-				isSystemFolder: () => FolderType.User !== folder.type() /*| !!folder.kolabType()*/,
+				isSystemFolder: () => FolderType.User !== folder.type()
+					| (FolderUserStore.allowKolab() && !!folder.kolabType() & !SettingsUserStore.unhideKolabFolders()),
 
 				canBeSelected: () => folder.selectable() && !folder.isSystemFolder(),
 

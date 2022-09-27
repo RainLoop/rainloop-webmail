@@ -356,6 +356,7 @@ trait User
 		$this->setSettingsFromParams($oSettingsLocal, 'ReplySameFolder', 'bool');
 		$this->setSettingsFromParams($oSettingsLocal, 'HideUnsubscribed', 'bool');
 		$this->setSettingsFromParams($oSettingsLocal, 'HideDeleted', 'bool');
+		$this->setSettingsFromParams($oSettingsLocal, 'UnhideKolabFolders', 'bool');
 
 		return $this->DefaultResponse(__FUNCTION__,
 			$this->SettingsProvider()->Save($oAccount, $oSettings) &&
