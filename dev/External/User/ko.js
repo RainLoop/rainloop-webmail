@@ -150,7 +150,7 @@ Object.assign(ko.bindingHandlers, {
 					if (dragMessages() && ['move','copy'].includes(e.dataTransfer.effectAllowed)) {
 						let data = dragData.data;
 						if (folder && data?.folder && data.size) {
-							moveMessagesToFolder(data.folder, data, folder.fullName, data.copy && e.ctrlKey);
+							moveMessagesToFolder(data.folder, data, folder.fullName, /*data.copy &&*/ e.ctrlKey);
 						}
 					}
 				}
