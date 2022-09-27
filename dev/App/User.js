@@ -86,8 +86,7 @@ export class AppUser extends AbstractApp {
 			lastTime = currentTime;
 		}, interval);
 
-		const fn = (ev=>$htmlCL.toggle('rl-ctrl-key-pressed', ev.ctrlKey)).debounce(500);
-		addEventsListener(doc, ['keydown','keyup'], fn);
+		addEventsListener(doc, ['keydown','keyup'], (ev=>$htmlCL.toggle('rl-ctrl-key-pressed', ev.ctrlKey)).debounce(500));
 
 		addShortcut('escape,enter', '', dropdownsDetectVisibility);
 		addEventListener('click', dropdownsDetectVisibility);
@@ -116,6 +115,7 @@ export class AppUser extends AbstractApp {
 			case FolderType.Spam:
 				oMoveFolder = getFolderFromCacheList(FolderUserStore.spamFolder());
 				nSetSystemFoldersNotification = SetSystemFoldersNotification.Spam;
+				bDelete = bDelete || UNUSED_OPTION_VALUE === FolderUserStore.spamFolder();
 				break;
 			case FolderType.NotSpam:
 				oMoveFolder = getFolderFromCacheList(getFolderInboxName());
@@ -123,30 +123,21 @@ export class AppUser extends AbstractApp {
 			case FolderType.Trash:
 				oMoveFolder = getFolderFromCacheList(FolderUserStore.trashFolder());
 				nSetSystemFoldersNotification = SetSystemFoldersNotification.Trash;
+				bDelete = bDelete || UNUSED_OPTION_VALUE === FolderUserStore.trashFolder()
+					|| sFromFolderFullName === FolderUserStore.spamFolder()
+					|| sFromFolderFullName === FolderUserStore.trashFolder();
 				break;
 			case FolderType.Archive:
 				oMoveFolder = getFolderFromCacheList(FolderUserStore.archiveFolder());
 				nSetSystemFoldersNotification = SetSystemFoldersNotification.Archive;
+				bDelete = bDelete || UNUSED_OPTION_VALUE === FolderUserStore.archiveFolder();
 				break;
 			// no default
 		}
 
-		if (!bDelete && (
-			(FolderType.Spam === iFolderType && UNUSED_OPTION_VALUE === FolderUserStore.spamFolder()) ||
-			(FolderType.Trash === iFolderType && UNUSED_OPTION_VALUE === FolderUserStore.trashFolder()) ||
-			(FolderType.Archive === iFolderType && UNUSED_OPTION_VALUE === FolderUserStore.archiveFolder())
-		)) {
-			bDelete = true;
-		}
-
 		if (!oMoveFolder && !bDelete) {
 			showScreenPopup(FolderSystemPopupView, [nSetSystemFoldersNotification]);
-		} else if (
-			bDelete ||
-			(FolderType.Trash === iFolderType &&
-				(sFromFolderFullName === FolderUserStore.spamFolder()
-				 || sFromFolderFullName === FolderUserStore.trashFolder()))
-		) {
+		} else if (bDelete) {
 			showScreenPopup(AskPopupView, [
 				i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'),
 				() => {
