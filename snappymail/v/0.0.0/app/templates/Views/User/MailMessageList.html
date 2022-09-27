@@ -106,11 +106,11 @@
 		</div>
 		<a class="btn buttonMoreSearch" data-bind="click: advancedSearchClick">▼</a>
 	</div>
-	<div class="b-content" data-bind="initDom: dragOverBodyArea">
+	<div class="b-content">
 		<div class="listThreadUidDesc" data-bind="visible: messageList.threadUid(), click: cancelThreadUid"
 			data-icon="⬅" data-i18n="MESSAGE_LIST/BACK_TO_MESSAGE_LIST"></div>
 		<div class="listSearchDesc" data-bind="visible: messageListSearchDesc(), text: messageListSearchDesc"></div>
-		<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && !messageList.error() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea"
+		<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && !messageList.error() && !popupVisibility(), 'dragOverEnter': dragOverEnter }"
 			data-icon="⬇" data-i18n="MESSAGE_LIST/PUT_MESSAGE_HERE"></div>
 		<div class="listClear" data-bind="visible: clearListIsVisible()">
 			<a href="#" class="g-ui-link" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER" data-bind="click: clear"></a>

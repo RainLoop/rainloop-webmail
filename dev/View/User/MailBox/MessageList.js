@@ -87,9 +87,6 @@ export class MailMessageList extends AbstractViewRight {
 			moreDropdownTrigger: false,
 			sortDropdownTrigger: false,
 
-			dragOverArea: null,
-			dragOverBodyArea: null,
-
 			focusSearch: false
 		});
 
@@ -575,9 +572,10 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	onBuild(dom) {
-		const eqs = (ev, s) => ev.target.closestWithin(s, dom);
+		const b_content = dom.querySelector('.b-content'),
+			eqs = (ev, s) => ev.target.closestWithin(s, dom);
 
-		this.selector.init(dom.querySelector('.b-content'), Scope.MessageList);
+		this.selector.init(b_content, Scope.MessageList);
 
 		addEventsListeners(dom, {
 			click: event => {
@@ -606,7 +604,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		// initUploaderForAppend
 
-		if (Settings.app('allowAppendMessage') && this.dragOverArea()) {
+		if (Settings.app('allowAppendMessage')) {
 			const oJua = new Jua({
 				action: serverRequest('Append'),
 				name: 'AppendFile',
@@ -614,8 +612,8 @@ export class MailMessageList extends AbstractViewRight {
 				hidden: {
 					Folder: () => FolderUserStore.currentFolderFullName()
 				},
-				dragAndDropElement: this.dragOverArea(),
-				dragAndDropBodyElement: this.dragOverBodyArea()
+				dragAndDropElement: dom.querySelector('.listDragOver'),
+				dragAndDropBodyElement: b_content
 			});
 
 			this.dragOver.subscribe(value => value && this.selector.scrollToTop());
