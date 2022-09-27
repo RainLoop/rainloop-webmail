@@ -107,11 +107,11 @@ addComputablesTo(MessagelistUserStore, {
 	},
 
 	listCheckedOrSelectedUidsWithSubMails: () => {
-		let result = [];
+		let result = new Set;
 		MessagelistUserStore.listCheckedOrSelected().forEach(message => {
-			result.push(message.uid);
+			result.add(message.uid);
 			if (1 < message.threadsLen()) {
-				result = result.concat(message.threads()).unique();
+				message.threads().forEach(result.add, result);
 			}
 		});
 		return result;
@@ -340,15 +340,13 @@ MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 
 /**
  * @param {string} fromFolderFullName
- * @param {Array} uidForRemove
+ * @param {Set} oUids
  * @param {string=} toFolderFullName = ''
  * @param {boolean=} copy = false
  */
 MessagelistUserStore.removeMessagesFromList = (
-	fromFolderFullName, uidForRemove, toFolderFullName = '', copy = false
+	fromFolderFullName, oUids, toFolderFullName = '', copy = false
 ) => {
-	uidForRemove = uidForRemove.map(mValue => pInt(mValue));
-
 	let unseenCount = 0,
 		messageList = MessagelistUserStore,
 		currentMessage = MessageUserStore.message();
@@ -359,7 +357,7 @@ MessagelistUserStore.removeMessagesFromList = (
 		toFolder = toFolderFullName ? getFolderFromCacheList(toFolderFullName) : null,
 		messages =
 			FolderUserStore.currentFolderFullName() === fromFolderFullName
-				? messageList.filter(item => item && uidForRemove.includes(pInt(item.uid)))
+				? messageList.filter(item => item && oUids.has(item.uid))
 				: [];
 
 	messages.forEach(item => item?.isUnseen() && ++unseenCount);
@@ -368,7 +366,7 @@ MessagelistUserStore.removeMessagesFromList = (
 		fromFolder.hash = '';
 		if (!copy) {
 			fromFolder.totalEmails(
-				0 <= fromFolder.totalEmails() - uidForRemove.length ? fromFolder.totalEmails() - uidForRemove.length : 0
+				0 <= fromFolder.totalEmails() - oUids.size ? fromFolder.totalEmails() - oUids.size : 0
 			);
 
 			if (0 < unseenCount) {
@@ -386,7 +384,7 @@ MessagelistUserStore.removeMessagesFromList = (
 			unseenCount = 0;
 		}
 
-		toFolder.totalEmails(toFolder.totalEmails() + uidForRemove.length);
+		toFolder.totalEmails(toFolder.totalEmails() + oUids.size);
 		if (0 < unseenCount) {
 			toFolder.unreadEmails(toFolder.unreadEmails() + unseenCount);
 		}

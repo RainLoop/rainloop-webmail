@@ -105,10 +105,10 @@ export class AppUser extends AbstractApp {
 	/**
 	 * @param {number} iFolderType
 	 * @param {string} sFromFolderFullName
-	 * @param {Array} aUidForRemove
+	 * @param {Set} oUids
 	 * @param {boolean=} bDelete = false
 	 */
-	moveMessagesToFolderType(iFolderType, sFromFolderFullName, aUidForRemove, bDelete) {
+	moveMessagesToFolderType(iFolderType, sFromFolderFullName, oUids, bDelete) {
 		let oMoveFolder = null,
 			nSetSystemFoldersNotification = null;
 
@@ -150,13 +150,13 @@ export class AppUser extends AbstractApp {
 			showScreenPopup(AskPopupView, [
 				i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'),
 				() => {
-					messagesDeleteHelper(sFromFolderFullName, aUidForRemove);
-					MessagelistUserStore.removeMessagesFromList(sFromFolderFullName, aUidForRemove);
+					messagesDeleteHelper(sFromFolderFullName, oUids);
+					MessagelistUserStore.removeMessagesFromList(sFromFolderFullName, oUids);
 				}
 			]);
 		} else if (oMoveFolder) {
-			messagesMoveHelper(sFromFolderFullName, oMoveFolder.fullName, aUidForRemove);
-			MessagelistUserStore.removeMessagesFromList(sFromFolderFullName, aUidForRemove, oMoveFolder.fullName);
+			messagesMoveHelper(sFromFolderFullName, oMoveFolder.fullName, oUids);
+			MessagelistUserStore.removeMessagesFromList(sFromFolderFullName, oUids, oMoveFolder.fullName);
 		}
 	}
 

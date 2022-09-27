@@ -3,7 +3,6 @@ import ko from 'ko';
 import { HtmlEditor } from 'Common/Html';
 import { timeToNode } from 'Common/Translator';
 import { elementById, addEventsListeners, dropdowns } from 'Common/Globals';
-import { isArray } from 'Common/Utils';
 import { dropdownsDetectVisibility } from 'Common/UtilsUser';
 import { EmailAddressesComponent } from 'Component/EmailAddresses';
 import { ThemeStore } from 'Stores/Theme';
@@ -97,7 +96,7 @@ Object.assign(ko.bindingHandlers, {
 				let data = fValueAccessor()(e);
 				dragImage || (dragImage = elementById('messagesDragImage'));
 				if (data && dragImage && !ThemeStore.isMobile()) {
-					dragImage.querySelector('.text').textContent = data.uids.length;
+					dragImage.querySelector('.text').textContent = data.size;
 					let img = dragImage.querySelector('i');
 					img.classList.toggle('icon-copy', e.ctrlKey);
 					img.classList.toggle('icon-mail', !e.ctrlKey);
@@ -107,7 +106,7 @@ Object.assign(ko.bindingHandlers, {
 					dragImage.style.top = e.clientY + 'px';
 					dragImage.style.right = 'auto';
 
-					setDragAction(e, 'messages', e.ctrlKey ? 'copy' : 'move', data, dragImage);
+					setDragAction(e, 'messages', data.copy ? 'copy' : 'move', data, dragImage);
 
 					// Remove the Chrome visibility
 					dragImage.style.cssText = '';
@@ -150,8 +149,8 @@ Object.assign(ko.bindingHandlers, {
 					fnStop(e);
 					if (dragMessages() && ['move','copy'].includes(e.dataTransfer.effectAllowed)) {
 						let data = dragData.data;
-						if (folder && data?.folder && isArray(data.uids)) {
-							moveMessagesToFolder(data.folder, data.uids, folder.fullName, data.copy && e.ctrlKey);
+						if (folder && data?.folder && data.size) {
+							moveMessagesToFolder(data.folder, data, folder.fullName, data.copy && e.ctrlKey);
 						}
 					}
 				}

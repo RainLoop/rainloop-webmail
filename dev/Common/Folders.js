@@ -254,7 +254,7 @@ messagesMoveHelper = (fromFolderFullName, toFolderFullName, uidsForMove) => {
 		{
 			FromFolder: fromFolderFullName,
 			ToFolder: toFolderFullName,
-			Uids: uidsForMove.join(','),
+			Uids: [...uidsForMove].join(','),
 			MarkAsRead: (isSpam || FolderUserStore.trashFolder() === toFolderFullName) ? 1 : 0,
 			Learning: isSpam ? 'SPAM' : isHam ? 'HAM' : ''
 		}
@@ -266,19 +266,19 @@ messagesDeleteHelper = (sFromFolderFullName, aUidForRemove) => {
 		moveOrDeleteResponseHelper,
 		{
 			Folder: sFromFolderFullName,
-			Uids: aUidForRemove.join(',')
+			Uids: [...aUidForRemove].join(',')
 		}
 	);
 },
 
 /**
  * @param {string} sFromFolderFullName
- * @param {Array} aUidForMove
+ * @param {Set} oUids
  * @param {string} sToFolderFullName
  * @param {boolean=} bCopy = false
  */
-moveMessagesToFolder = (sFromFolderFullName, aUidForMove, sToFolderFullName, bCopy) => {
-	if (sFromFolderFullName !== sToFolderFullName && arrayLength(aUidForMove)) {
+moveMessagesToFolder = (sFromFolderFullName, oUids, sToFolderFullName, bCopy) => {
+	if (sFromFolderFullName !== sToFolderFullName && oUids?.size) {
 		const oFromFolder = getFolderFromCacheList(sFromFolderFullName),
 			oToFolder = getFolderFromCacheList(sToFolderFullName);
 
@@ -287,13 +287,13 @@ moveMessagesToFolder = (sFromFolderFullName, aUidForMove, sToFolderFullName, bCo
 				Remote.request('MessageCopy', null, {
 					FromFolder: oFromFolder.fullName,
 					ToFolder: oToFolder.fullName,
-					Uids: aUidForMove.join(',')
+					Uids: [...oUids].join(',')
 				});
 			} else {
-				messagesMoveHelper(oFromFolder.fullName, oToFolder.fullName, aUidForMove);
+				messagesMoveHelper(oFromFolder.fullName, oToFolder.fullName, oUids);
 			}
 
-			MessagelistUserStore.removeMessagesFromList(oFromFolder.fullName, aUidForMove, oToFolder.fullName, bCopy);
+			MessagelistUserStore.removeMessagesFromList(oFromFolder.fullName, oUids, oToFolder.fullName, bCopy);
 			return true;
 		}
 	}

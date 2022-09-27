@@ -499,7 +499,7 @@ export class MailMessageView extends AbstractViewRight {
 	 * @returns {string}
 	 */
 	printableCheckedMessageCount() {
-		const cnt = MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails().length;
+		const cnt = MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails().size;
 		return 0 < cnt ? (100 > cnt ? cnt : '99+') : '';
 	}
 

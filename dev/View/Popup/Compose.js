@@ -564,9 +564,9 @@ export class ComposePopupView extends AbstractViewPopup {
 			() => {
 				const
 					sFromFolderFullName = this.draftsFolder(),
-					aUidForRemove = [this.draftUid()];
-				messagesDeleteHelper(sFromFolderFullName, aUidForRemove);
-				MessagelistUserStore.removeMessagesFromList(sFromFolderFullName, aUidForRemove);
+					oUids = new Set([this.draftUid()]);
+				messagesDeleteHelper(sFromFolderFullName, oUids);
+				MessagelistUserStore.removeMessagesFromList(sFromFolderFullName, oUids);
 				this.close();
 			}
 		]);

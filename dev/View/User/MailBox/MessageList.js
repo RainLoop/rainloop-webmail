@@ -384,12 +384,9 @@ export class MailMessageList extends AbstractViewRight {
 		const item = ko.dataFor(doc.elementFromPoint(event.clientX, event.clientY));
 		item?.checked?.(true);
 		const uids = MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails();
-		item && !uids.includes(item.uid) && uids.push(item.uid);
-		return uids.length ? {
-			copy: event.ctrlKey,
-			folder: FolderUserStore.currentFolderFullName(),
-			uids: uids
-		} : null;
+		uids.copy = event.ctrlKey; // dropEffect
+		uids.folder = FolderUserStore.currentFolderFullName();
+		return uids;
 	}
 
 	listSetSeen() {
