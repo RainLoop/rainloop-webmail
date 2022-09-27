@@ -52,7 +52,15 @@ const
 	 * @param {Array=} aMessages = null
 	 * @returns {void}
 	 */
-	listAction = (...args) => MessagelistUserStore.setAction(...args);
+	listAction = (...args) => MessagelistUserStore.setAction(...args),
+
+	moveMessagesToFolderType = (toFolderType, bDelete) =>
+		rl.app.moveMessagesToFolderType(
+			toFolderType,
+			FolderUserStore.currentFolderFullName(),
+			MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails(),
+			bDelete
+		);
 
 let
 	iGoToUpOrDownTimeout = 0,
@@ -218,7 +226,7 @@ export class MailMessageList extends AbstractViewRight {
 		).throttle(50));
 
 		decorateKoCommands(this, {
-			multyForwardCommand: canBeMovedHelper,
+			forwardCommand: canBeMovedHelper,
 			deleteWithoutMoveCommand: canBeMovedHelper,
 			deleteCommand: canBeMovedHelper,
 			archiveCommand: canBeMovedHelper,
@@ -246,7 +254,7 @@ export class MailMessageList extends AbstractViewRight {
 		}
 	}
 
-	multyForwardCommand() {
+	forwardCommand() {
 		showMessageComposer([
 			ComposeType.ForwardAsAttachment,
 			MessagelistUserStore.listCheckedOrSelected()
@@ -255,49 +263,24 @@ export class MailMessageList extends AbstractViewRight {
 
 	deleteWithoutMoveCommand() {
 		if (SettingsCapa('DangerousActions')) {
-			rl.app.deleteMessagesFromFolder(
-				FolderType.Trash,
-				FolderUserStore.currentFolderFullName(),
-				MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails(),
-				false
-			);
+			moveMessagesToFolderType(FolderType.Trash, true);
 		}
 	}
 
 	deleteCommand() {
-		rl.app.deleteMessagesFromFolder(
-			FolderType.Trash,
-			FolderUserStore.currentFolderFullName(),
-			MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails(),
-			true
-		);
+		moveMessagesToFolderType(FolderType.Trash);
 	}
 
 	archiveCommand() {
-		rl.app.deleteMessagesFromFolder(
-			FolderType.Archive,
-			FolderUserStore.currentFolderFullName(),
-			MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails(),
-			true
-		);
+		moveMessagesToFolderType(FolderType.Archive);
 	}
 
 	spamCommand() {
-		rl.app.deleteMessagesFromFolder(
-			FolderType.Spam,
-			FolderUserStore.currentFolderFullName(),
-			MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails(),
-			true
-		);
+		moveMessagesToFolderType(FolderType.Spam);
 	}
 
 	notSpamCommand() {
-		rl.app.deleteMessagesFromFolder(
-			FolderType.NotSpam,
-			FolderUserStore.currentFolderFullName(),
-			MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails(),
-			true
-		);
+		moveMessagesToFolderType(FolderType.NotSpam);
 	}
 
 	moveCommand() {}
@@ -720,7 +703,7 @@ export class MailMessageList extends AbstractViewRight {
 		});
 
 		addShortcut('f,mailforward', 'shift', [Scope.MessageList, Scope.MessageView], () => {
-			this.multyForwardCommand();
+			this.forwardCommand();
 			return false;
 		});
 

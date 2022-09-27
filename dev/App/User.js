@@ -103,16 +103,16 @@ export class AppUser extends AbstractApp {
 	}
 
 	/**
-	 * @param {number} iDeleteType
+	 * @param {number} iFolderType
 	 * @param {string} sFromFolderFullName
 	 * @param {Array} aUidForRemove
-	 * @param {boolean=} bUseFolder = true
+	 * @param {boolean=} bDelete = false
 	 */
-	deleteMessagesFromFolder(iDeleteType, sFromFolderFullName, aUidForRemove, bUseFolder) {
+	moveMessagesToFolderType(iFolderType, sFromFolderFullName, aUidForRemove, bDelete) {
 		let oMoveFolder = null,
 			nSetSystemFoldersNotification = null;
 
-		switch (iDeleteType) {
+		switch (iFolderType) {
 			case FolderType.Spam:
 				oMoveFolder = getFolderFromCacheList(FolderUserStore.spamFolder());
 				nSetSystemFoldersNotification = SetSystemFoldersNotification.Spam;
@@ -131,22 +131,19 @@ export class AppUser extends AbstractApp {
 			// no default
 		}
 
-		bUseFolder = undefined === bUseFolder ? true : !!bUseFolder;
-		if (bUseFolder) {
-			if (
-				(FolderType.Spam === iDeleteType && UNUSED_OPTION_VALUE === FolderUserStore.spamFolder()) ||
-				(FolderType.Trash === iDeleteType && UNUSED_OPTION_VALUE === FolderUserStore.trashFolder()) ||
-				(FolderType.Archive === iDeleteType && UNUSED_OPTION_VALUE === FolderUserStore.archiveFolder())
-			) {
-				bUseFolder = false;
-			}
+		if (!bDelete && (
+			(FolderType.Spam === iFolderType && UNUSED_OPTION_VALUE === FolderUserStore.spamFolder()) ||
+			(FolderType.Trash === iFolderType && UNUSED_OPTION_VALUE === FolderUserStore.trashFolder()) ||
+			(FolderType.Archive === iFolderType && UNUSED_OPTION_VALUE === FolderUserStore.archiveFolder())
+		)) {
+			bDelete = true;
 		}
 
-		if (!oMoveFolder && bUseFolder) {
+		if (!oMoveFolder && !bDelete) {
 			showScreenPopup(FolderSystemPopupView, [nSetSystemFoldersNotification]);
 		} else if (
-			!bUseFolder ||
-			(FolderType.Trash === iDeleteType &&
+			bDelete ||
+			(FolderType.Trash === iFolderType &&
 				(sFromFolderFullName === FolderUserStore.spamFolder()
 				 || sFromFolderFullName === FolderUserStore.trashFolder()))
 		) {

@@ -81,12 +81,12 @@ export class MailMessageView extends AbstractViewRight {
 			createCommandReplyHelper = type =>
 				createCommand(() => this.replyOrforward(type), this.canBeRepliedOrForwarded),
 
-			createCommandActionHelper = (folderType, useFolder) =>
+			createCommandActionHelper = (folderType, bDelete) =>
 				createCommand(() => {
 					const message = currentMessage();
 					if (message) {
 						currentMessage(null);
-						rl.app.deleteMessagesFromFolder(folderType, message.folder, [message.uid], useFolder);
+						rl.app.moveMessagesToFolderType(folderType, message.folder, [message.uid], bDelete);
 					}
 				}, this.messageVisibility);
 
@@ -205,11 +205,11 @@ export class MailMessageView extends AbstractViewRight {
 		this.forwardAsAttachmentCommand = createCommandReplyHelper(ComposeType.ForwardAsAttachment);
 		this.editAsNewCommand = createCommandReplyHelper(ComposeType.EditAsNew);
 
-		this.deleteCommand = createCommandActionHelper(FolderType.Trash, true);
-		this.deleteWithoutMoveCommand = createCommandActionHelper(FolderType.Trash, false);
-		this.archiveCommand = createCommandActionHelper(FolderType.Archive, true);
-		this.spamCommand = createCommandActionHelper(FolderType.Spam, true);
-		this.notSpamCommand = createCommandActionHelper(FolderType.NotSpam, true);
+		this.deleteCommand = createCommandActionHelper(FolderType.Trash);
+		this.deleteWithoutMoveCommand = createCommandActionHelper(FolderType.Trash, true);
+		this.archiveCommand = createCommandActionHelper(FolderType.Archive);
+		this.spamCommand = createCommandActionHelper(FolderType.Spam);
+		this.notSpamCommand = createCommandActionHelper(FolderType.NotSpam);
 
 		decorateKoCommands(this, {
 			messageEditCommand: self => self.messageVisibility(),
