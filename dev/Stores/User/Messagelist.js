@@ -102,8 +102,8 @@ addComputablesTo(MessagelistUserStore, {
 		const
 			selectedMessage = MessagelistUserStore.selectedMessage(),
 			focusedMessage = MessagelistUserStore.focusedMessage(),
-			checked = MessagelistUserStore.filter(item => isChecked(item) || item === selectedMessage);
-		return checked.length ? checked : (focusedMessage ? [focusedMessage] : []);
+			checked = MessagelistUserStore.filter(item => isChecked(item));
+		return checked.length ? checked : (selectedMessage || focusedMessage ? [selectedMessage || focusedMessage] : []);
 	},
 
 	listCheckedOrSelectedUidsWithSubMails: () => {
