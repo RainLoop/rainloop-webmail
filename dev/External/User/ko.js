@@ -52,7 +52,7 @@ Object.assign(ko.bindingHandlers, {
 					fUpdateEditorValue();
 				};
 
-			if (ko.isObservable(fValue) && HtmlEditor) {
+			if (ko.isObservable(fValue)) {
 				editor = new HtmlEditor(element, fUpdateKoValue, fOnReady, fUpdateKoValue);
 
 				fValue.__fetchEditorValue = fUpdateKoValue;
@@ -81,11 +81,9 @@ Object.assign(ko.bindingHandlers, {
 				onChange: value => fValue(value)
 			});
 
-			if (focused) {
-				focused.subscribe(value =>
-					element.addresses[value ? 'focus' : 'blur']()
-				);
-			}
+			focused?.subscribe(value =>
+				element.addresses[value ? 'focus' : 'blur']()
+			);
 		},
 		update: (element, fValueAccessor) => {
 			element.addresses.value = ko.unwrap(fValueAccessor());

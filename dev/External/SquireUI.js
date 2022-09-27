@@ -476,7 +476,7 @@ class SquireUI
 	}
 
 	getData() {
-		return trimLines(this.squire.getHTML());
+		return 'source' == this.mode ? this.plain.value : trimLines(this.squire.getHTML());
 	}
 
 	setData(html) {
