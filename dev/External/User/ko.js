@@ -117,7 +117,6 @@ Object.assign(ko.bindingHandlers, {
 
 			}, false);
 			element.addEventListener("dragend", () => dragData = null);
-			element.setAttribute('draggable', true);
 		}
 	},
 
