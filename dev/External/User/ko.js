@@ -97,16 +97,13 @@ Object.assign(ko.bindingHandlers, {
 				dragImage || (dragImage = elementById('messagesDragImage'));
 				if (data && dragImage && !ThemeStore.isMobile()) {
 					dragImage.querySelector('.text').textContent = data.size;
-					let img = dragImage.querySelector('i');
-					img.classList.toggle('icon-copy', e.ctrlKey);
-					img.classList.toggle('icon-mail', !e.ctrlKey);
 
 					// Else Chrome doesn't show it
 					dragImage.style.left = e.clientX + 'px';
 					dragImage.style.top = e.clientY + 'px';
 					dragImage.style.right = 'auto';
 
-					setDragAction(e, 'messages', data.copy ? 'copy' : 'move', data, dragImage);
+					setDragAction(e, 'messages', 'copyMove', data, dragImage);
 
 					// Remove the Chrome visibility
 					dragImage.style.cssText = '';
@@ -132,6 +129,7 @@ Object.assign(ko.bindingHandlers, {
 				fnHover = e => {
 					if (dragMessages()) {
 						fnStop(e);
+						e.dataTransfer.dropEffect = e.ctrlKey ? 'copy' : 'move';
 						element.classList.add('droppableHover');
 						if (folder?.collapsed()) {
 							dragTimer.start(() => {
@@ -147,10 +145,10 @@ Object.assign(ko.bindingHandlers, {
 				dragleave: fnStop,
 				drop: e => {
 					fnStop(e);
-					if (dragMessages() && ['move','copy'].includes(e.dataTransfer.effectAllowed)) {
+					if (dragMessages() && 'copyMove' == e.dataTransfer.effectAllowed) {
 						let data = dragData.data;
 						if (folder && data?.folder && data.size) {
-							moveMessagesToFolder(data.folder, data, folder.fullName, /*data.copy &&*/ e.ctrlKey);
+							moveMessagesToFolder(data.folder, data, folder.fullName, e.ctrlKey);
 						}
 					}
 				}
