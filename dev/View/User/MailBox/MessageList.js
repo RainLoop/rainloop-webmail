@@ -4,7 +4,7 @@ import { Scope } from 'Common/Enums';
 
 import { ComposeType, FolderType, MessageSetAction } from 'Common/EnumsUser';
 
-import { doc, leftPanelDisabled, moveAction,
+import { leftPanelDisabled, moveAction,
 	Settings, SettingsCapa, SettingsGet,
 	addEventsListeners,
 	addShortcut, registerShortcut, formFieldFocused
@@ -378,14 +378,6 @@ export class MailMessageList extends AbstractViewRight {
 		}
 
 		return false;
-	}
-
-	getDragData(event) {
-		const item = ko.dataFor(doc.elementFromPoint(event.clientX, event.clientY));
-		item?.checked?.(true);
-		const uids = MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails();
-		uids.folder = FolderUserStore.currentFolderFullName();
-		return uids;
 	}
 
 	listSetSeen() {

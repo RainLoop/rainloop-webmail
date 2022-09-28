@@ -2,12 +2,14 @@ import 'External/ko';
 import ko from 'ko';
 import { HtmlEditor } from 'Common/Html';
 import { timeToNode } from 'Common/Translator';
-import { elementById, addEventsListeners, dropdowns } from 'Common/Globals';
+import { doc, elementById, addEventsListeners, dropdowns } from 'Common/Globals';
 import { dropdownsDetectVisibility } from 'Common/UtilsUser';
 import { EmailAddressesComponent } from 'Component/EmailAddresses';
 import { ThemeStore } from 'Stores/Theme';
 import { moveMessagesToFolder } from 'Common/Folders';
 import { setExpandedFolder } from 'Model/FolderCollection';
+import { FolderUserStore } from 'Stores/User/Folder';
+import { MessagelistUserStore } from 'Stores/User/Messagelist';
 
 const rlContentType = 'snappymail/action',
 
@@ -89,21 +91,23 @@ Object.assign(ko.bindingHandlers, {
 		}
 	},
 
-	// Start dragging selected messages
+	// Start dragging checked messages
 	dragmessages: {
-		init: (element, fValueAccessor) => {
+		init: element => {
 			element.addEventListener("dragstart", e => {
-				let data = fValueAccessor()(e);
 				dragImage || (dragImage = elementById('messagesDragImage'));
-				if (data && dragImage && !ThemeStore.isMobile()) {
-					dragImage.querySelector('.text').textContent = data.size;
+				if (dragImage && !ThemeStore.isMobile()) {
+					ko.dataFor(doc.elementFromPoint(e.clientX, e.clientY))?.checked?.(true);
 
-					// Else Chrome doesn't show it
+					const uids = MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails();
+					dragImage.querySelector('.text').textContent = uids.size;
+
+					// Make sure Chrome shows it
 					dragImage.style.left = e.clientX + 'px';
 					dragImage.style.top = e.clientY + 'px';
 					dragImage.style.right = 'auto';
 
-					setDragAction(e, 'messages', 'copyMove', data, dragImage);
+					setDragAction(e, 'messages', 'copyMove', uids, dragImage);
 
 					// Remove the Chrome visibility
 					dragImage.style.cssText = '';
@@ -131,7 +135,7 @@ Object.assign(ko.bindingHandlers, {
 						fnStop(e);
 						e.dataTransfer.dropEffect = e.ctrlKey ? 'copy' : 'move';
 						element.classList.add('droppableHover');
-						if (folder?.collapsed()) {
+						if (folder.collapsed()) {
 							dragTimer.start(() => {
 								folder.collapsed(false);
 								setExpandedFolder(folder.fullName, true);
@@ -139,17 +143,14 @@ Object.assign(ko.bindingHandlers, {
 						}
 					}
 				};
-			addEventsListeners(element, {
+			folder && addEventsListeners(element, {
 				dragenter: fnHover,
 				dragover: fnHover,
 				dragleave: fnStop,
 				drop: e => {
 					fnStop(e);
 					if (dragMessages() && 'copyMove' == e.dataTransfer.effectAllowed) {
-						let data = dragData.data;
-						if (folder && data?.folder && data.size) {
-							moveMessagesToFolder(data.folder, data, folder.fullName, e.ctrlKey);
-						}
+						moveMessagesToFolder(FolderUserStore.currentFolderFullName(), dragData.data, folder.fullName, e.ctrlKey);
 					}
 				}
 			});
