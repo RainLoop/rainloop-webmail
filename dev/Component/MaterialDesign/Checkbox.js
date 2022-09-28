@@ -1,3 +1,18 @@
-import { AbstractCheckbox } from 'Component/AbstractCheckbox';
+export class CheckboxMaterialDesignComponent {
+	constructor(params = {}) {
+		this.value = ko.isObservable(params.value) ? params.value
+			: ko.observable(!!params.value);
 
-export class CheckboxMaterialDesignComponent extends AbstractCheckbox {}
+		this.enable = ko.isObservable(params.enable) ? params.enable
+			: ko.observable(undefined === params.enable || !!params.enable);
+
+		this.label = params.label;
+		this.inline = params.inline;
+
+		this.labeled = null != params.label;
+	}
+
+	click() {
+		this.enable() && this.value(!this.value());
+	}
+}

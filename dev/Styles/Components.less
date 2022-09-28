@@ -41,23 +41,6 @@
 		outline: 1px dotted;
 	}
 
-	&.e-checkbox {
-
-		cursor: pointer;
-		margin-bottom: 6px;
-		margin-left: -2px;
-		padding: 2px;
-
-		&:focus {
-			outline: 1px dotted;
-		}
-
-		&.disabled {
-			cursor: not-allowed;
-			opacity: 0.5;
-		}
-	}
-
 	span {
 		margin-left: 0.5em;
 		white-space: normal;
@@ -66,6 +49,23 @@
 	select + span {
 		line-height: 1.43em;
 		padding: 4px 0;
+	}
+}
+
+.e-checkbox {
+
+	cursor: pointer;
+	margin-bottom: 6px;
+	margin-left: -2px;
+	padding: 2px;
+
+	&:focus {
+		outline: 1px dotted;
+	}
+
+	&.disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
 	}
 }
 

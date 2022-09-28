@@ -11,7 +11,6 @@ import { ThemeStore } from 'Stores/Theme';
 import { InputComponent } from 'Component/Input';
 import { SelectComponent } from 'Component/Select';
 import { CheckboxMaterialDesignComponent } from 'Component/MaterialDesign/Checkbox';
-import { CheckboxComponent } from 'Component/Checkbox';
 
 export class AbstractApp {
 	/**
@@ -49,7 +48,6 @@ export class AbstractApp {
 		register('Input', InputComponent);
 		register('Select', SelectComponent);
 		register('Checkbox', CheckboxMaterialDesignComponent, 'CheckboxMaterialDesignComponent');
-		register('CheckboxSimple', CheckboxComponent, 'CheckboxComponent');
 
 		initOnStartOrLangChange();
 
