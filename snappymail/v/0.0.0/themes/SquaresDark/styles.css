@@ -4,6 +4,7 @@
 	--main-color: #fff;
 	--main-bg-color: #48525C;
 	--main-bg-image: url("images/background.jpg");
+	--border-color: #555;
 
 	/* LOADING */
 	--loading-color: #ddd;
@@ -92,12 +93,6 @@
 	background-color: #000;
 	border-color: #555;
 	color: var(--main-color);
-}
-
-.legend,
-dialog header, dialog footer,
-.table td, .table th {
-	border-color: #555 !important;
 }
 
 .legend,
