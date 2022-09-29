@@ -69,7 +69,7 @@ abstract class Log
 		}
 		if (($level < \LOG_WARNING && \error_reporting() & \E_ERROR)
 		 || ($level == \LOG_WARNING && \error_reporting() & \E_WARNING)
-		 || ($level > \LOG_WARNING && \error_reporting() & \E_ERROR)) {
+		 || ($level > \LOG_WARNING && \error_reporting() & \E_NOTICE)) {
 			\error_log($prefix . ' ' . static::$levels[$level] . ': ' . $msg);
 		}
 	}
