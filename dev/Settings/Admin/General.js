@@ -35,7 +35,7 @@ export class AdminSettingsGeneral extends AbstractViewSettings {
 		this.theme = ThemeStore.theme;
 		this.themes = ThemeStore.themes;
 
-		this.addSettings(['AllowLanguagesOnSettings','NewMoveToFolder']);
+		this.addSettings(['AllowLanguagesOnSettings']);
 
 		addObservablesTo(this, {
 			attachmentLimitTrigger: SaveSettingStatus.Idle,

@@ -711,7 +711,6 @@ class Actions
 			'Plugins' => array(),
 			'System' => $this->AppDataSystem($bAdmin),
 
-			'NewMoveToFolder' => (bool) $oConfig->Get('interface', 'new_move_to_folder_button', true),
 			'AllowLanguagesOnSettings' => (bool) $oConfig->Get('webmail', 'allow_languages_on_settings', true),
 			'AllowLanguagesOnLogin' => (bool) $oConfig->Get('login', 'allow_languages_on_login', true),
 			'AttachmentLimit' => \min($upload_max_filesize, ((int) $oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024),

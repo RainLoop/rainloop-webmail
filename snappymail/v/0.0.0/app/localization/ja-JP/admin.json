@@ -37,7 +37,6 @@
 		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "設定画面で言語選択を使用する",
 		"LABEL_ALLOW_THEMES_ON_SETTINGS": "設定画面でテーマ選択を使用する",
 		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "設定画面で背景選択を使用する",
-		"LABEL_NEW_FOLDER_MOVE": "新しい\"フォルダへ移動\"ボタン",
 		"LABEL_SHOW_THUMBNAILS": "サムネイルを表示(添付ファイル)",
 		"LEGEND_MAIN": "メイン",
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "添付サイズ制限",

@@ -37,7 +37,6 @@
 		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "允许在设置界面中选择语言",
 		"LABEL_ALLOW_THEMES_ON_SETTINGS": "允许在设置界面中选择主题",
 		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "允许在设置界面中选择背景",
-		"LABEL_NEW_FOLDER_MOVE": "使用新的“移动”按钮样式",
 		"LABEL_SHOW_THUMBNAILS": "显示缩略图(附件)",
 		"LEGEND_MAIN": "主要设置",
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "附件大小限制",

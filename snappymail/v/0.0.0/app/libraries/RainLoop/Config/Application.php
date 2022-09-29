@@ -149,8 +149,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 			),
 
 			'interface' => array(
-				'show_attachment_thumbnail' => array(true),
-				'new_move_to_folder_button' => array(true)
+				'show_attachment_thumbnail' => array(true)
 			),
 
 			'contacts' => array(

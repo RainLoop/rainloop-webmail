@@ -5,14 +5,14 @@ import { Scope } from 'Common/Enums';
 import { ComposeType, FolderType, MessageSetAction } from 'Common/EnumsUser';
 
 import { leftPanelDisabled, moveAction,
-	Settings, SettingsCapa, SettingsGet,
+	Settings, SettingsCapa,
 	addEventsListeners,
 	addShortcut, registerShortcut, formFieldFocused
 } from 'Common/Globals';
 
 import { computedPaginatorHelper, showMessageComposer, populateMessageBody } from 'Common/UtilsUser';
 import { FileInfo } from 'Common/File';
-import { folderListOptionsBuilder, moveMessagesToFolder } from 'Common/Folders';
+import { moveMessagesToFolder } from 'Common/Folders';
 import { isFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
 import { mailBox, serverRequest } from 'Common/Links';
@@ -70,8 +70,6 @@ export class MailMessageList extends AbstractViewRight {
 	constructor() {
 		super();
 
-		this.newMoveToFolder = !!SettingsGet('NewMoveToFolder');
-
 		this.allowDangerousActions = SettingsCapa('DangerousActions');
 
 		this.messageList = MessagelistUserStore;
@@ -91,7 +89,6 @@ export class MailMessageList extends AbstractViewRight {
 		this.userUsageProc = FolderUserStore.quotaPercentage;
 
 		this.addObservables({
-			moveDropdownTrigger: false,
 			moreDropdownTrigger: false,
 			sortDropdownTrigger: false,
 
@@ -106,13 +103,6 @@ export class MailMessageList extends AbstractViewRight {
 
 			sortSupported: () =>
 				FolderUserStore.hasCapability('SORT') | FolderUserStore.hasCapability('ESORT'),
-
-			folderMenuForMove: () =>
-				folderListOptionsBuilder(
-					[FolderUserStore.currentFolderFullName()],
-					[],
-					item => item ? item.localName() : ''
-				),
 
 			messageListSearchDesc: () => {
 				const value = MessagelistUserStore().Search;
@@ -233,7 +223,6 @@ export class MailMessageList extends AbstractViewRight {
 			spamCommand: canBeMovedHelper,
 			notSpamCommand: canBeMovedHelper,
 			moveCommand: canBeMovedHelper,
-			moveNewCommand: canBeMovedHelper,
 		});
 	}
 
@@ -283,10 +272,8 @@ export class MailMessageList extends AbstractViewRight {
 		moveMessagesToFolderType(FolderType.NotSpam);
 	}
 
-	moveCommand() {}
-
-	moveNewCommand(vm, event) {
-		if (this.newMoveToFolder && this.mobileCheckedStateShow()) {
+	moveCommand(vm, event) {
+		if (this.mobileCheckedStateShow()) {
 			if (vm && event?.preventDefault) {
 				event.preventDefault();
 				event.stopPropagation();
@@ -669,12 +656,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		// move
 		registerShortcut('insert', '', Scope.MessageList, () => {
-			if (this.newMoveToFolder) {
-				this.moveNewCommand();
-			} else {
-				this.moveDropdownTrigger(true);
-			}
-
+			this.moveCommand();
 			return false;
 		});
 
