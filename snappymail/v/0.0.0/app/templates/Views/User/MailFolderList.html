@@ -26,14 +26,10 @@
 	<div class="b-content show-on-panel-disabled" data-bind="click: leftPanelDisabled.toggle()"></div>
 	<div class="b-footer btn-toolbar hide-mobile">
 		<div class="btn-group">
-			<a class="btn" data-bind="click: leftPanelDisabled.toggle()">
-				<i data-bind="css: {'icon-resize-out': leftPanelDisabled(), 'icon-resize-in': !leftPanelDisabled()}"></i>
-			</a>
+			<a class="btn" data-bind="click: leftPanelDisabled.toggle(), css: {'icon-resize-out': leftPanelDisabled(), 'icon-resize-in': !leftPanelDisabled()}"></a>
 		</div>
 		<div class="btn-group hide-on-panel-disabled">
-			<a class="btn" data-bind="click: createFolder" data-i18n="[title]POPUPS_CREATE_FOLDER/TITLE_CREATE_FOLDER">
-				<i class="icon-folder-add"></i>
-			</a>
+			<a class="btn icon-folder-add" data-bind="click: createFolder" data-i18n="[title]POPUPS_CREATE_FOLDER/TITLE_CREATE_FOLDER"></a>
 			<a class="btn fontastic" data-bind="click: configureFolders">⚙</a>
 		</div>
 	</div>
