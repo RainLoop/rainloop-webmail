@@ -26,24 +26,13 @@ class ActionsAdmin extends Actions
 
 	public function DoAdminSettingsSet() : array
 	{
-		// TODO
-		$aConfig = $this->GetActionParam('config', []);
-		unset($aConfig['version']);
-		/* Sections:
-		[webmail] => Array
-		[interface] => Array
-		[contacts] => Array
-		[security] => Array
-		[ssl] => Array
-		[capa] => Array
-		[login] => Array
-		[plugins] => Array
-		[defaults] => Array
-		[logs] => Array
-		[cache] => Array
-		[labs] => Array
-		*/
-		return $this->TrueResponse(__FUNCTION__);
+		$oConfig = $this->Config();
+		foreach ($this->GetActionParam('config', []) as $sSection => $aItems) {
+			foreach ($aItems as $sKey => $mValue) {
+				$oConfig->Set($sSection, $sKey, $mValue);
+			}
+		}
+		return $this->DefaultResponse(__FUNCTION__, $oConfig->Save());
 	}
 
 	public function DoAdminSettingsUpdate() : array

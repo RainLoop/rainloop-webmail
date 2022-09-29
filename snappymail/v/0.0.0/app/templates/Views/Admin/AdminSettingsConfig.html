@@ -1,5 +1,6 @@
 <div class="legend">application.ini</div>
-<form method="POST" data-bind="submit: saveConfig">
+<p><strong>WARNING: experimental editor!</strong></p>
+<form method="POST" data-bind="submit: saveConfig" spellcheck="false" autocomplete="off" autocapitalize="none">
 <table class="table table-hover table-bordered">
 	<!-- ko foreach: config -->
 	<tbody>
@@ -9,10 +10,10 @@
 			<td data-bind="text: name"></td>
 			<td>
 				<!-- ko if: 'checkbox' == type -->
-				<input type="checkbox" data-bind="attr: {name: key, checked: value}" readonly="">
+				<input type="checkbox" data-bind="attr: {name: key, checked: value}">
 				<!-- /ko -->
 				<!-- ko if: 'checkbox' != type -->
-				<input data-bind="attr: {name: key, type: type}, value: value" readonly="">
+				<input data-bind="attr: {name: key, type: type}, value: value" autocorrect="off">
 				<!-- /ko -->
 				<em data-bind="text: comment, visible: comment"></em>
 			</td>
@@ -21,7 +22,5 @@
 	</tbody>
 	<!-- /ko -->
 </table>
-<!--
-<button data-i18n="GLOBAL/SAVE"></button>
--->
+<button class="btn" data-i18n="GLOBAL/SAVE" data-bind="css:{'btn-success':saved()},attr:{'data-icon':saved()?'✔':'💾'}"></button>
 </form>

@@ -7,6 +7,7 @@ export class AdminSettingsConfig /*extends AbstractViewSettings*/ {
 
 	constructor() {
 		this.config = ko.observableArray();
+		this.saved = ko.observable(false).extend({ falseTimeout: 5000 });
 	}
 
 	beforeShow() {
@@ -27,6 +28,7 @@ export class AdminSettingsConfig /*extends AbstractViewSettings*/ {
 						items: []
 					};
 					forEachObjectEntry(items, (skey, item) => {
+						'admin_password' === skey ||
 						section.items.push({
 							key: `config[${key}][${skey}]`,
 							name: skey,
@@ -43,6 +45,27 @@ export class AdminSettingsConfig /*extends AbstractViewSettings*/ {
 	}
 
 	saveConfig(form) {
-		Remote.post('AdminSettingsSet', null, new FormData(form));
+		const data = new FormData(form),
+			config = {};
+		this.config.forEach(section => {
+			if (!config[section.name]) {
+				config[section.name] = {};
+			}
+			section.items.forEach(item => {
+				let value = data.get(item.key);
+				switch (typeof item.value) {
+					case 'boolean':
+						value = 'on' == value;
+						break;
+					case 'number':
+						value = parseInt(value, 10);
+						break;
+				}
+				config[section.name][item.name] = value;
+			})
+		});
+		Remote.post('AdminSettingsSet', null, {config:config}).then(result => {
+			result.Result && this.saved(true);
+		});
 	}
 }
