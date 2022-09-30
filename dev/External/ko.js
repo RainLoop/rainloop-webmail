@@ -137,7 +137,7 @@ Object.assign(ko.bindingHandlers, {
 		init: (element) => {
 			let icon = element;
 			if (element.matches('input,select,textarea')) {
-				element.classList.add('settings-saved-trigger-input');
+				element.classList.add('settings-save-trigger-input');
 				element.after(element.saveTriggerIcon = icon = createElement('span'));
 			}
 			icon.classList.add('settings-save-trigger');
