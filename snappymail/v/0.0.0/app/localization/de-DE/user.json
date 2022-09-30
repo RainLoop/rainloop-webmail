@@ -222,7 +222,7 @@
 		"DISCARD_UNSAVED_DATA": "Nicht gespeicherte Daten löschen?",
 		"ATTACH_FILES": "Dateien anhängen",
 		"ATTACH_DROP_FILES_DESC": "Fügen Sie hier Dateien ein",
-		"REPLY_MESSAGE_TITLE": "%DATETIME%, %EMAIL% schrieb",
+		"REPLY_MESSAGE_TITLE": "Am %DATETIME% schrieb %EMAIL%",
 		"FORWARD_MESSAGE_TOP_TITLE": "-------- Weitergeleitete Nachricht -------",
 		"FORWARD_MESSAGE_TOP_SENT": "Gesendet",
 		"EMPTY_TO_ERROR_DESC": "Geben Sie bitte mindestens einen Empfänger an",
