@@ -1018,7 +1018,7 @@ trait Messages
 			\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sText))),
 			'convert.quoted-printable-encode'
 		);
-		$this->SubParts->append($oPart);
+		$oMessage->SubParts->append($oPart);
 
 		$this->Plugins()->RunHook('filter.build-read-receipt-message', array($oMessage, $oAccount));
 
