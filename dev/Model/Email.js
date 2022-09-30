@@ -1,3 +1,4 @@
+import { encodeHtml } from 'Common/Html';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
@@ -332,13 +333,31 @@ export class EmailModel extends AbstractModel {
 
 	/**
 	 * @param {boolean} friendlyView = false
+	 * @param {boolean} wrapWithLink = false
 	 * @returns {string}
 	 */
-	toLine(friendlyView) {
-		let result = this.email;
-		return (result && this.name)
-			? (friendlyView ? this.name : '"' + this.name + '" <' + result + '>')
-			: result;
+	toLine(friendlyView, wrapWithLink) {
+		let result = this.email,
+			name = this.name,
+			toLink = text =>
+				'<a href="mailto:'
+				+ encodeHtml(result) + (name ? '?to=' + encodeURIComponent('"' + name + '" <' + result + '>') : '')
+				+ '" target="_blank" tabindex="-1">'
+				+ encodeHtml(text || result)
+				+ '</a>';
+		if (result) {
+			if (name) {
+				result = friendlyView
+					? (wrapWithLink ? toLink(name) : name)
+					: (wrapWithLink
+						? encodeHtml('"' + name + '" <') + toLink() + encodeHtml('>')
+						: '"' + name + '" <' + result + '>'
+					);
+			} else if (wrapWithLink) {
+				result = toLink();
+			}
+		}
+		return result;
 	}
 
 	static splitEmailLine(line) {

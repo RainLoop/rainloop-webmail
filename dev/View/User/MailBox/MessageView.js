@@ -252,11 +252,10 @@ export class MailMessageView extends AbstractViewRight {
 			ThemeStore.isMobile() && leftPanelDisabled(true);
 
 			let el = eqs(event, 'a');
-			if (el) {
-				return !(
-					0 === event.button &&
-					mailToHelper(el.href)
-				);
+			if (el && 0 === event.button && mailToHelper(el.href)) {
+				event.preventDefault();
+				event.stopPropagation();
+				return;
 			}
 
 			if (eqs(event, '.attachmentsPlace .attachmentIconParent')) {

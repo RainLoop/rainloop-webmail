@@ -18,10 +18,8 @@ export class EmailCollectionModel extends AbstractCollectionModel
 	 * @param {boolean=} wrapWithLink = false
 	 * @returns {string}
 	 */
-	toString(friendlyView = false, wrapWithLink = false) {
-		const result = [];
-		this.forEach(email => result.push(email.toLine(friendlyView, wrapWithLink)));
-		return result.join(', ');
+	toString(friendlyView, wrapWithLink) {
+		return this.map(email => email.toLine(friendlyView, wrapWithLink)).join(', ');
 	}
 
 	/**

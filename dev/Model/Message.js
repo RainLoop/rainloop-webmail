@@ -349,21 +349,17 @@ export class MessageModel extends AbstractModel {
 	}
 
 	/**
-	 * @param {boolean} friendlyView
-	 * @param {boolean=} wrapWithLink
 	 * @returns {string}
 	 */
-	bccToLine(friendlyView, wrapWithLink) {
-		return this.bcc.toString(friendlyView, wrapWithLink);
+	bccToLine() {
+		return this.bcc.toString();
 	}
 
 	/**
-	 * @param {boolean} friendlyView
-	 * @param {boolean=} wrapWithLink
 	 * @returns {string}
 	 */
-	replyToToLine(friendlyView, wrapWithLink) {
-		return this.replyTo.toString(friendlyView, wrapWithLink);
+	replyToToLine() {
+		return this.replyTo.toString();
 	}
 
 	/**
@@ -508,7 +504,7 @@ export class MessageModel extends AbstractModel {
 
 	viewPopupMessage(print) {
 		const timeStampInUTC = this.dateTimeStampInUTC() || 0,
-			ccLine = this.ccToLine(false),
+			ccLine = this.ccToLine(),
 			m = 0 < timeStampInUTC ? new Date(timeStampInUTC * 1000) : null,
 			win = open(''),
 			sdoc = win.document;
@@ -520,7 +516,7 @@ export class MessageModel extends AbstractModel {
 		sdoc.write(PreviewHTML
 			.replace('<title>', '<title>'+subject)
 			// eslint-disable-next-line max-len
-			.replace('<body>', `<body style="background-color:${prop('background-color')};color:${prop('color')}"><header><h1>${subject}</h1><time>${encodeHtml(m ? m.format('LLL') : '')}</time><div>${encodeHtml(this.fromToLine(false))}</div><div>${encodeHtml(i18n('GLOBAL/TO'))}: ${encodeHtml(this.toToLine(false))}</div>${cc}</header><${mode}>${this.bodyAsHTML()}</${mode}>`)
+			.replace('<body>', `<body style="background-color:${prop('background-color')};color:${prop('color')}"><header><h1>${subject}</h1><time>${encodeHtml(m ? m.format('LLL') : '')}</time><div>${encodeHtml(this.fromToLine())}</div><div>${encodeHtml(i18n('GLOBAL/TO'))}: ${encodeHtml(this.toToLine())}</div>${cc}</header><${mode}>${this.bodyAsHTML()}</${mode}>`)
 		);
 		sdoc.close();
 
