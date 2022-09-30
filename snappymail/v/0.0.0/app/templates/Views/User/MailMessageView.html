@@ -221,7 +221,7 @@
 						<div class="bodySubHeader">
 							<div class="showImages" data-bind="visible: message().hasImages(), click: showImages"
 								data-icon="🖼" data-i18n="MESSAGE/BUTTON_SHOW_IMAGES"></div>
-							<div class="readReceipt" data-bind="visible: !isDraftOrSentFolder() && '' !== message().readReceipt() && !message().isReadReceipt(), click: readReceipt"
+							<div class="readReceipt" data-bind="visible: !isDraftOrSentFolder() && message().readReceipt() && !message().isReadReceipt(), click: readReceipt"
 								data-icon="✉" data-i18n="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></div>
 							<div class="attachmentsPlace" data-bind="visible: message().hasAttachments(), css: {'selection-mode' : showAttachmentControls}">
 								<ul class="attachmentList" data-bind="foreach: message().attachments()">
