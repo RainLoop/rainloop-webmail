@@ -43,9 +43,6 @@ abstract class Service
 
 		static::setCSP();
 
-		$sXFrameOptionsHeader = \trim($oConfig->Get('security', 'x_frame_options_header', '')) ?: 'DENY';
-		\header('X-Frame-Options: '.$sXFrameOptionsHeader);
-
 		$sXssProtectionOptionsHeader = \trim($oConfig->Get('security', 'x_xss_protection_header', '')) ?: '1; mode=block';
 		\header('X-XSS-Protection: '.$sXssProtectionOptionsHeader);
 
@@ -250,6 +247,7 @@ abstract class Service
 		$CSP = new \SnappyMail\HTTP\CSP(\trim(Api::Config()->Get('security', 'content_security_policy', '')));
 		$CSP->report = Api::Config()->Get('security', 'csp_report', false);
 		$CSP->report_only = Api::Config()->Get('debug', 'enable', false); // '0.0.0' === APP_VERSION
+//		$CSP->frame = \explode(' ', Api::Config()->Get('security', 'csp_iframe', ''));
 
 		// Allow https: due to remote images in e-mails or use proxy
 		if (!Api::Config()->Get('security', 'use_local_proxy_for_external_images', '')) {

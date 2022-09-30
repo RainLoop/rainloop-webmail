@@ -652,7 +652,6 @@ class Actions
 			'version' => APP_VERSION,
 			'admin' => $bAdmin,
 			'token' => $oConfig->Get('security', 'csrf_protection', false) ? Utils::GetCsrfToken() : '',
-			'inIframe' => (bool)$oConfig->Get('labs', 'in_iframe', false),
 			'allowHtmlEditorBitiButtons' => (bool)$oConfig->Get('labs', 'allow_html_editor_biti_buttons', false),
 			'allowCtrlEnterOnCompose' => (bool)$oConfig->Get('labs', 'allow_ctrl_enter_on_compose', false),
 			'useImapThread' => (bool)$oConfig->Get('labs', 'use_imap_thread', false),

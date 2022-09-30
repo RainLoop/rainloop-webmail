@@ -79,7 +79,7 @@ export class AppUser extends AbstractApp {
 			const currentTime = Date.now();
 			if (currentTime > (lastTime + interval + 1000)) {
 				Remote.request('Version',
-					iError => (100 < iError) && (Settings.app('inIframe') ? parent : window).location.reload(),
+					iError => (100 < iError) && location.reload(),
 					{ Version: Settings.app('version') }
 				);
 			}
@@ -211,7 +211,7 @@ export class AppUser extends AbstractApp {
 		Remote.request('Logout', () => {
 			const customLogoutLink = Settings.app('customLogoutLink');
 			if (customLogoutLink) {
-				((window.parent && Settings.app('inIframe')) ? window.parent : window).location.href = customLogoutLink;
+				location.href = customLogoutLink;
 			} else {
 				rl.logoutReload()
 			}

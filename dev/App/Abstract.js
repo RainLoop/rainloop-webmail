@@ -1,7 +1,5 @@
 import ko from 'ko';
 
-import { Settings } from 'Common/Globals';
-
 import { logoutLink } from 'Common/Links';
 import { i18nToNodes, initOnStartOrLangChange } from 'Common/Translator';
 
@@ -23,7 +21,7 @@ export class AbstractApp {
 		const url = logoutLink();
 
 		if (location.href !== url) {
-			setTimeout(() => (Settings.app('inIframe') ? parent : window).location.href = url, 100);
+			setTimeout(() => location.href = url, 100);
 		} else {
 			rl.route.reload();
 		}
