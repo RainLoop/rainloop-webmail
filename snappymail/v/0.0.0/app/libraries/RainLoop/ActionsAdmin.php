@@ -666,7 +666,7 @@ class ActionsAdmin extends Actions
 
 	private function setAdminAuthToken(string $sToken) : void
 	{
-		Utils::SetCookie(static::$AUTH_ADMIN_TOKEN_KEY, $sToken, 0);
+		Utils::SetCookie(static::$AUTH_ADMIN_TOKEN_KEY, $sToken);
 	}
 
 	private function getAdminToken() : string

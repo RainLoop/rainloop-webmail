@@ -4,15 +4,11 @@ namespace RainLoop;
 
 class Utils
 {
-	/**
-	 * @var string
-	 */
 	static $CookieDefaultPath = '';
 
-	/**
-	 * @var bool|null
-	 */
-	static $CookieDefaultSecure = null;
+	static $CookieSecure = null;
+
+	static $CookieSameSite = 'Strict';
 
 	const
 		/**
@@ -119,7 +115,26 @@ class Utils
 			: null;
 	}
 
-	public static function SetCookie(string $sName, string $sValue = '', int $iExpire = 0, bool $bHttpOnly = true)
+	private static function _SetCookie(string $sName, string $sValue, int $iExpire)
+	{
+		$sPath = static::$CookieDefaultPath;
+		$sPath = $sPath && \strlen($sPath) ? $sPath : '/';
+/*
+		if (\strlen($sValue) > 4000 - \strlen($sPath . $sName)) {
+			throw new \Exception("Cookie '{$sName}' value too long");
+		}
+*/
+		\setcookie($sName, $sValue, array(
+			'expires' => $iExpire,
+			'path' => $sPath,
+//			'domain' => null,
+			'secure' => static::$CookieSecure,
+			'httponly' => true,
+			'samesite' => static::$CookieSameSite
+		));
+	}
+
+	public static function SetCookie(string $sName, string $sValue = '', int $iExpire = 0)
 	{
 		$sPath = static::$CookieDefaultPath;
 		$sPath = $sPath && \strlen($sPath) ? $sPath : '/';
@@ -133,14 +148,7 @@ class Utils
 		}
 */
 		foreach (\str_split($sValue, $iMaxSize) as $i => $sPart) {
-			\setcookie($i ? "{$sName}~{$i}" : $sName, $sPart, array(
-				'expires' => $iExpire,
-				'path' => $sPath,
-//				'domain' => $sDomain,
-				'secure' => isset($_SERVER['HTTPS']) || static::$CookieDefaultSecure,
-				'httponly' => $bHttpOnly,
-				'samesite' => 'Strict'
-			));
+			static::_SetCookie($i ? "{$sName}~{$i}" : $sName, $sPart, $iExpire);
 		}
 	}
 
@@ -151,14 +159,7 @@ class Utils
 			foreach (\array_keys($_COOKIE) as $sCookieName) {
 				if (\strtok($sCookieName, '~') === $sName) {
 					unset($_COOKIE[$sCookieName]);
-					\setcookie($sCookieName, '', array(
-						'expires' => \time() - 3600 * 24 * 30,
-						'path' => $sPath && \strlen($sPath) ? $sPath : '/',
-//						'domain' => null,
-						'secure' => isset($_SERVER['HTTPS']) || static::$CookieDefaultSecure,
-						'httponly' => true,
-						'samesite' => 'Strict'
-					));
+					static::_SetCookie($sCookieName, '', \time() - 3600 * 24 * 30);
 				}
 			}
 		}

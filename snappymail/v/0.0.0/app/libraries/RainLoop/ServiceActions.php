@@ -634,12 +634,14 @@ class ServiceActions
 		$this->oHttp->ServerNoCache();
 		$sTo = \trim($_GET['to'] ?? '');
 		if (!empty($sTo) && \preg_match('/^mailto:/i', $sTo)) {
-			Utils::SetCookie(Actions::AUTH_MAILTO_TOKEN_KEY,
+			Utils::SetCookie(
+				Actions::AUTH_MAILTO_TOKEN_KEY,
 				Utils::EncodeKeyValuesQ(array(
 					'Time' => \microtime(true),
 					'MailTo' => 'MailTo',
 					'To' => $sTo
-				)), 0);
+				))
+			);
 		}
 		$this->oActions->Location('./');
 		return '';

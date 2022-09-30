@@ -80,7 +80,10 @@ abstract class Api
 			$sSslCapath = static::Config()->Get('ssl', 'capath', '');
 
 			Utils::$CookieDefaultPath = static::Config()->Get('labs', 'cookie_default_path', '');
-			Utils::$CookieDefaultSecure = !!static::Config()->Get('labs', 'cookie_default_secure', false);
+			Utils::$CookieSameSite = static::Config()->Get('security', 'cookie_samesite', 'Strict');
+			Utils::$CookieSecure = isset($_SERVER['HTTPS'])
+				|| 'None' == Utils::$CookieSameSite
+				|| !!static::Config()->Get('labs', 'cookie_default_secure', false);
 
 			if (!empty($sSslCafile) || !empty($sSslCapath))
 			{
