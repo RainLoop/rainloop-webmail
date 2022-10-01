@@ -945,7 +945,7 @@ export class ComposePopupView extends AbstractViewPopup {
 
 			this.editor(editor => {
 				encrypted || editor.setHtml(sText);
-				if (encrypted || this.isPlainEditor() || !message.isHtml()) {
+				if (encrypted || isPlainEditor() || !message.isHtml()) {
 					editor.modePlain();
 				}
 				encrypted && editor.setPlain(sText);
