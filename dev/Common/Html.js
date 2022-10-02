@@ -117,6 +117,8 @@ export const
 			// Not supported by <template> element
 			.replace(/<(\/?)body(\s[^>]*)?>/gi, '<$1div class="mail-body"$2>')
 			.replace(/<\/?(html|head)[^>]*>/gi, '')
+			// Fix Reddit https://github.com/the-djmaze/snappymail/issues/540
+			.replace(/<span class="preview-text"[\s\S]+?<\/span>/, '')
 			.trim();
 		html = '';
 
