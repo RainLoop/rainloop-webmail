@@ -864,7 +864,7 @@ class ServiceActions
 		foreach ($aTemplates as $sName => $sFile) {
 			$sName = \preg_replace('/[^a-zA-Z0-9]/', '', $sName);
 			$sHtml .= '<template id="'.$sName.'">'
-				. Utils::ClearHtmlOutput(\preg_replace('/<(\/?)script/i', '<$1x-script', \file_get_contents($sFile)))
+				. \preg_replace('/<(\/?)script/i', '<$1x-script', \file_get_contents($sFile))
 				. '</template>';
 		}
 

@@ -198,22 +198,17 @@ abstract class Service
 			if ($sResult) {
 				$sResult .= '<!--cached-->';
 			} else {
-				$aTemplateParameters['{{BaseAppThemeCss}}'] = $oActions->compileCss($oActions->GetTheme($bAdmin), $bAdmin);
-				$aTemplateParameters['{{BaseLanguage}}'] = $oActions->compileLanguage($sLanguage, $bAdmin);
-				$aTemplateParameters['{{BaseTemplates}}'] = $oServiceActions->compileTemplates($bAdmin);
 				$aTemplateParameters['{{BaseAppBootCss}}'] = \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.$sAppCssMin.'.css');
 				$aTemplateParameters['{{BaseAppBootScript}}'] = \file_get_contents(APP_VERSION_ROOT_PATH.'static/js'.($sAppJsMin ? '/min' : '').'/boot'.$sAppJsMin.'.js');
-				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), $aTemplateParameters);
-
-				if ($sAppJsMin || $sAppCssMin) {
-					$sResult = \preg_replace(
-						['@\\s*/>@', '/\\s*&nbsp;/i', '/&nbsp;\\s*/i', '/>\\s+</'],
-						['>', "\xC2\xA0", "\xC2\xA0", '><'],
-						\trim($sResult)
-					);
-				} else {
-					$sResult = Utils::ClearHtmlOutput($sResult);
-				}
+				$aTemplateParameters['{{BaseAppThemeCss}}'] = \preg_replace(
+					'/\\s*([:;{},]+)\\s*/s',
+					'$1',
+					$oActions->compileCss($oActions->GetTheme($bAdmin), $bAdmin)
+				);
+				$aTemplateParameters['{{BaseLanguage}}'] = $oActions->compileLanguage($sLanguage, $bAdmin);
+				$aTemplateParameters['{{BaseTemplates}}'] = Utils::ClearHtmlOutput($oServiceActions->compileTemplates($bAdmin));
+				$sResult = Utils::ClearHtmlOutput(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'));
+				$sResult = \strtr($sResult, $aTemplateParameters);
 				if ($sCacheFileName) {
 					$oActions->Cacher()->Set($sCacheFileName, $sResult);
 				}

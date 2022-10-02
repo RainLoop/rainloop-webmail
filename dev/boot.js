@@ -18,6 +18,7 @@ const
 			script.onload = () => resolve();
 			script.onerror = () => reject(new Error('Failed loading ' + src));
 			script.src = src;
+//			script.async = true;
 			doc.head.append(script);
 		});
 	};
