@@ -20,15 +20,12 @@ const
 	stripTracking = text => text
 		.replace(/tracking\.(printabout\.nl[^?]+)\?.*/gsi, (...m) => m[1])
 		.replace(/^.+awstrack\.me\/.+(https:%2F%2F[^/]+)/gsi, (...m) => decodeURIComponent(m[1]))
-		.replace(/^.+mandrillapp.com.+\?p=([a-z0-9]+)/gsi, (...m) => {
-			let d = JSON.parse(atob(m[1]));
-			if (d && d.p) {
+		.replace(/^.+\/track\/click\/.+\?p=([a-z0-9_]+)$/gsi, (...m) => {
+			let d = JSON.parse(atob(m[1].replace(/_/g,'/').replace(/-/g,'+')));
+			if (d?.p) {
 				d = JSON.parse(d.p);
-				if (d && d.url) {
-					return d.url;
-				}
 			}
-			return m[0];
+			return d?.url || m[0];
 		})
 		.replace(/([?&])utm_[a-z]+=[^&?#]*/gsi, '$1') // Urchin Tracking Module
 		.replace(/([?&])ec_[a-z]+=[^&?#]*/gsi, '$1')  // Sitecore
