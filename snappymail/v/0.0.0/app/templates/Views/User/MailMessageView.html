@@ -231,7 +231,7 @@
 											<i class="hidePreview iconMain" data-bind="css: iconClass()"></i>
 											<div class="showPreview">
 												<a data-bind="css: {'attachmentImagePreview': isImage()}, attr: { 'title': fileName, 'href': linkPreviewMain() }" target="_blank">
-													<i class="iconMain" data-bind="css: iconClass()"></i>
+													<i class="iconMain" data-bind="visible: !isThumbnail, css: iconClass()"></i>
 													<div class="iconBG" data-bind="attr: { 'style': linkThumbnailPreviewStyle() }"></div>
 													<div class="iconPreview fontastic">👁</div>
 												</a>
@@ -243,7 +243,7 @@
 										</div>
 										<div class="attachmentNameParent">
 											<div style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;" class="attachmentName" data-bind="text: fileName"></div>
-											<div class="attachmentSize" data-bind="text: friendlySize"></div>
+											<div class="attachmentSize" data-bind="text: friendlySize()"></div>
 										</div>
 										<div class="checkboxAttachment fontastic"
 												data-bind="visible: download, text: checked() ? '☑' : '☐',

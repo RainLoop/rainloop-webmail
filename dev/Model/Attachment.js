@@ -20,7 +20,6 @@ export class AttachmentModel extends AbstractModel {
 		this.fileName = '';
 		this.fileNameExt = '';
 		this.fileType = FileType.Unknown;
-		this.friendlySize = '';
 		this.isThumbnail = false;
 		this.cid = '';
 		this.contentLocation = '';
@@ -29,6 +28,7 @@ export class AttachmentModel extends AbstractModel {
 		this.uid = '';
 		this.url = '';
 		this.mimeIndex = '';
+		this.estimatedSize = 0;
 		this.framed = false;
 
 		this.addObservables({
@@ -45,12 +45,14 @@ export class AttachmentModel extends AbstractModel {
 	static reviveFromJson(json) {
 		const attachment = super.reviveFromJson(json);
 		if (attachment) {
-			attachment.friendlySize = FileInfo.friendlySize(json.EstimatedSize);
-
 			attachment.fileNameExt = FileInfo.getExtension(attachment.fileName);
 			attachment.fileType = FileInfo.getType(attachment.fileNameExt, attachment.mimeType);
 		}
 		return attachment;
+	}
+
+	friendlySize() {
+		return FileInfo.friendlySize(this.estimatedSize) + (this.isLinked() ? ' 🔗' : '');
 	}
 
 	contentId() {
@@ -83,13 +85,6 @@ export class AttachmentModel extends AbstractModel {
 	 */
 	isWav() {
 		return FileType.Audio === this.fileType && 'wav' === this.fileNameExt;
-	}
-
-	/**
-	 * @returns {boolean}
-	 */
-	hasThumbnail() {
-		return this.isThumbnail;
 	}
 
 	/**
@@ -142,7 +137,10 @@ export class AttachmentModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	linkThumbnailPreviewStyle() {
-		return this.hasThumbnail() ? 'background:url(' + serverRequestRaw('ViewThumbnail', this.download) + ')' : '';
+//		return (this.isThumbnail && !this.isLinked())
+		return this.isThumbnail
+			? 'background:url(' + serverRequestRaw('ViewThumbnail', this.download) + ')'
+			: '';
 	}
 
 	/**

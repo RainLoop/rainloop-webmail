@@ -212,7 +212,7 @@ trait Raw
 						{
 							if ($bThumbnail)
 							{
-								$oImage = static::loadImage($rResource, $bDetectImageOrientation, 60);
+								$oImage = static::loadImage($rResource, $bDetectImageOrientation, 48);
 								\header('Content-Disposition: inline; '.
 									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileName.'_thumb60x60.png')));
 								$oImage->show('png');
