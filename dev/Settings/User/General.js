@@ -42,7 +42,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 
 		['layout', 'messageReadDelay', 'messagesPerPage',
 		 'editorDefaultType', 'requestReadReceipt', 'requestDsn', 'pgpSign', 'pgpEncrypt',
-		 'viewHTML', 'showImages', 'removeColors', 'hideDeleted',
+		 'viewHTML', 'showImages', 'removeColors', 'hideDeleted', 'listInlineAttachments',
 		 'useCheckboxesInList', 'useThreads', 'replySameFolder', 'msgDefaultAction'
 		].forEach(name => this[name] = SettingsUserStore[name]);
 
@@ -68,8 +68,8 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 			editorDefaultTypes: () => {
 				translatorTrigger();
 				return [
-					{ id: EditorDefaultType.Html, name: i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML') },
-					{ id: EditorDefaultType.Plain, name: i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN') }
+					{ id: EditorDefaultType.Html, name: i18n('SETTINGS_GENERAL/EDITOR_HTML') },
+					{ id: EditorDefaultType.Plain, name: i18n('SETTINGS_GENERAL/EDITOR_PLAIN') }
 				];
 			},
 
@@ -84,9 +84,9 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 			layoutTypes: () => {
 				translatorTrigger();
 				return [
-					{ id: Layout.NoPreview, name: i18n('SETTINGS_GENERAL/LABEL_LAYOUT_NO_SPLIT') },
-					{ id: Layout.SidePreview, name: i18n('SETTINGS_GENERAL/LABEL_LAYOUT_VERTICAL_SPLIT') },
-					{ id: Layout.BottomPreview, name: i18n('SETTINGS_GENERAL/LABEL_LAYOUT_HORIZONTAL_SPLIT') }
+					{ id: Layout.NoPreview, name: i18n('SETTINGS_GENERAL/LAYOUT_NO_SPLIT') },
+					{ id: Layout.SidePreview, name: i18n('SETTINGS_GENERAL/LAYOUT_VERTICAL_SPLIT') },
+					{ id: Layout.BottomPreview, name: i18n('SETTINGS_GENERAL/LAYOUT_HORIZONTAL_SPLIT') }
 				];
 			}
 		});
@@ -97,7 +97,8 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.addSetting('MessagesPerPage');
 		this.addSetting('Layout');
 
-		this.addSettings(['ViewHTML', 'ShowImages', 'HideDeleted', 'UseCheckboxesInList', 'ReplySameFolder',
+		this.addSettings(['ViewHTML', 'ShowImages', 'HideDeleted', 'ListInlineAttachments',
+			'UseCheckboxesInList', 'ReplySameFolder',
 			'requestReadReceipt', 'requestDsn', 'pgpSign', 'pgpEncrypt',
 			'DesktopNotifications', 'SoundNotification']);
 

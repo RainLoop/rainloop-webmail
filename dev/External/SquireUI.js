@@ -81,8 +81,8 @@ class SquireUI
 //						html: '〈〉',
 //						cmd: () => this.setMode('plain' == this.mode ? 'wysiwyg' : 'plain'),
 						select: [
-							[i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML'),'wysiwyg'],
-							[i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN'),'plain']
+							[i18n('SETTINGS_GENERAL/EDITOR_HTML'),'wysiwyg'],
+							[i18n('SETTINGS_GENERAL/EDITOR_PLAIN'),'plain']
 						],
 						cmd: s => this.setMode('plain' == s.value ? 'plain' : 'wysiwyg'),
 						hint: i18n('EDITOR/TEXT_SWITCHER_PLAIN_TEXT', 'Plain')

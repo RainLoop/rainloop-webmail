@@ -720,6 +720,7 @@ class Actions
 			'ViewHTML' => (bool) $oConfig->Get('defaults', 'view_html', true),
 			'ShowImages' => (bool) $oConfig->Get('defaults', 'show_images', false),
 			'RemoveColors' => (bool) $oConfig->Get('defaults', 'remove_colors', false),
+			'ListInlineAttachments' => false,
 			'MessagesPerPage' => (int) $oConfig->Get('webmail', 'messages_per_page', 25),
 			'MessageReadDelay' => (int) $oConfig->Get('webmail', 'message_read_delay', 5),
 			'MsgDefaultAction' => 1,
@@ -860,6 +861,7 @@ class Actions
 					$aResult['ViewHTML'] = (bool)$oSettings->GetConf('ViewHTML', $aResult['ViewHTML']);
 					$aResult['ShowImages'] = (bool)$oSettings->GetConf('ShowImages', $aResult['ShowImages']);
 					$aResult['RemoveColors'] = (bool)$oSettings->GetConf('RemoveColors', $aResult['RemoveColors']);
+					$aResult['ListInlineAttachments'] = (bool)$oSettings->GetConf('ListInlineAttachments', $aResult['ListInlineAttachments']);
 					$aResult['ContactsAutosave'] = (bool)$oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
 					$aResult['MessagesPerPage'] = (int)$oSettings->GetConf('MessagesPerPage', $aResult['MessagesPerPage']);
 					$aResult['MessageReadDelay'] = (int)$oSettings->GetConf('MessageReadDelay', $aResult['MessageReadDelay']);
