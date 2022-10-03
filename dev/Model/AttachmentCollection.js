@@ -21,13 +21,6 @@ export class AttachmentCollectionModel extends AbstractCollectionModel
 	}
 
 	/**
-	 * @returns {boolean}
-	 */
-	hasVisible() {
-		return !!this.filter(item => !item.isLinked()).length;
-	}
-
-	/**
 	 * @param {string} cid
 	 * @returns {*}
 	 */

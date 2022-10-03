@@ -137,7 +137,7 @@ export class MailMessageView extends AbstractViewRight {
 
 			downloadAsZipAllowed: () => this.attachmentsActions.includes('zip')
 				&& (currentMessage()?.attachments || [])
-					.filter(item => item?.download && !item?.isLinked() && item?.checked())
+					.filter(item => item?.download /*&& !item?.isLinked()*/ && item?.checked())
 					.length,
 
 			tagsAllowed: () => FolderUserStore.currentFolder() ? FolderUserStore.currentFolder().tagsAllowed() : false,
@@ -467,7 +467,7 @@ export class MailMessageView extends AbstractViewRight {
 
 	downloadAsZip() {
 		const hashes = (currentMessage() ? currentMessage().attachments : [])
-			.map(item => item?.checked() && !item?.isLinked() ? item.download : '')
+			.map(item => item?.checked() /*&& !item?.isLinked()*/ ? item.download : '')
 			.filter(v => v);
 		if (hashes.length) {
 			Remote.post('AttachmentsActions', this.downloadAsZipLoading, {

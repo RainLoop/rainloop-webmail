@@ -150,7 +150,8 @@ export class MessageModel extends AbstractModel {
 		this.addComputables({
 			attachmentIconClass: () => FileInfo.getAttachmentsIconClass(this.attachments()),
 			threadsLen: () => this.threads().length,
-			hasAttachments: () => this.attachments().hasVisible(),
+//			hasAttachments: () => this.attachments().filter(item => !item.isLinked()).length,
+			hasAttachments: () => this.attachments().length,
 
 			isUnseen: () => !this.flags().includes('\\seen'),
 			isFlagged: () => this.flags().includes('\\flagged'),
