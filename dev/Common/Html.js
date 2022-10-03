@@ -23,28 +23,31 @@ const
 	tel = /(^|\s|\n|\/?>)(tel:(\+[0-9().-]+|[0-9*#().-]+(;phone-context=\+[0-9+().-]+)?))/g,
 
 	// Strip tracking
+	stripParams = /^(utm_|ec_|fbclid|mc_eid|mkt_tok|_hsenc|vero_id|oly_enc_id|oly_anon_id|__s)/i,
 	urlGetParam = (url, name) => new URL(url).searchParams.get(name) || url,
 	base64Url = data => atob(data.replace(/_/g,'/').replace(/-/g,'+')),
-	stripTracking = text => text
-		.replace(/tracking\.(printabout\.nl[^?]+)\?.*/i, (...m) => m[1])
-		.replace(/^.+awstrack\.me\/.+(https:%2F%2F[^/]+)/i, (...m) => decodeURIComponent(m[1]))
-		.replace(/^.+(www\.google|safelinks\.protection\.outlook\.com).+$/i, () => urlGetParam(text, 'url'))
-		.replace(/^.+go\.dhlparcel\.nl.+\/([^/]+)$/i, (...m) => base64Url(m[1]))
-		// Mandrill
-		.replace(/^.+\/track\/click\/.+\?p=.+$/i, () => {
-			let d = urlGetParam(text, 'p');
-			try {
-				d = JSON.parse(base64Url(d));
-				if (d?.p) {
-					d = JSON.parse(d.p);
+	stripTracking = url => {
+		url = url
+			.replace(/tracking\.(printabout\.nl[^?]+)\?.*/i, (...m) => m[1])
+			.replace(/^.+awstrack\.me\/.+(https:%2F%2F[^/]+)/i, (...m) => decodeURIComponent(m[1]))
+			.replace(/^.+(www\.google|safelinks\.protection\.outlook\.com).+$/i, () => urlGetParam(url, 'url'))
+			.replace(/^.+go\.dhlparcel\.nl.+\/([^/]+)$/i, (...m) => base64Url(m[1]))
+			// Mandrill
+			.replace(/^.+\/track\/click\/.+\?p=.+$/i, () => {
+				let d = urlGetParam(url, 'p');
+				try {
+					d = JSON.parse(base64Url(d));
+					if (d?.p) {
+						d = JSON.parse(d.p);
+					}
+				} catch (e) {
+					console.error(e);
 				}
-			} catch (e) {
-				console.error(e);
-			}
-			return d?.url || text;
-		})
-		.replace(/(\?|&(amp;)?)utm_[a-z]+=[^&?#]*/gi, '$1') // Urchin Tracking Module
-		.replace(/(\?|&(amp;)?)ec_[a-z]+=[^&?#]*/gi, '$1')  // Sitecore
+				return d?.url || url;
+			});
+		url = new URL(url);
+		let s = url.searchParams;
+		[...s.keys()].forEach(key => stripParams.test(key) && s.delete(key));
 		/** TODO: implement other url strippers like from
 		 * https://www.bleepingcomputer.com/news/security/new-firefox-privacy-feature-strips-urls-of-tracking-parameters/
 		 * https://github.com/newhouse/url-tracking-stripper
@@ -52,7 +55,8 @@ const
 		 * https://maxchadwick.xyz/tracking-query-params-registry/
 		 * https://github.com/M66B/FairEmail/blob/master/app/src/main/java/eu/faircode/email/UriHelper.java
 		 */
-		;
+		return url.toString();
+	};
 
 export const
 
@@ -168,11 +172,6 @@ export const
 				oElement.remove();
 				return;
 			}
-//			if (['CENTER','FORM'].includes(name)) {
-			if ('FORM' === name || 'O:P' === name || (nonEmptyTags.includes(name) && ('' == oElement.textContent.trim()))) {
-				('A' !== name || !oElement.querySelector('IMG')) && replaceWithChildren(oElement);
-				return;
-			}
 /*
 			// Idea to allow CSS
 			if ('STYLE' === name) {
@@ -247,6 +246,12 @@ export const
 //					setAttribute('rel', 'external nofollow noopener noreferrer');
 				}
 				setAttribute('tabindex', '-1');
+			}
+
+//			if (['CENTER','FORM'].includes(name)) {
+			if ('FORM' === name || 'O:P' === name || (nonEmptyTags.includes(name) && ('' == oElement.textContent.trim()))) {
+				('A' !== name || !oElement.querySelector('IMG')) && replaceWithChildren(oElement);
+				return;
 			}
 
 			// SVG xlink:href
