@@ -21,11 +21,15 @@ const
 		.replace(/tracking\.(printabout\.nl[^?]+)\?.*/gsi, (...m) => m[1])
 		.replace(/^.+awstrack\.me\/.+(https:%2F%2F[^/]+)/gsi, (...m) => decodeURIComponent(m[1]))
 		.replace(/^.+\/track\/click\/.+\?p=([a-z0-9_]+)$/gsi, (...m) => {
-			let d = JSON.parse(atob(m[1].replace(/_/g,'/').replace(/-/g,'+')));
-			if (d?.p) {
-				d = JSON.parse(d.p);
+			try {
+				let d = JSON.parse(atob(m[1].replace(/_/g,'/').replace(/-/g,'+')));
+				if (d?.p) {
+					d = JSON.parse(d.p);
+				}
+				return d?.url || m[0];
+			} catch (e) {
+				console.error(e);
 			}
-			return d?.url || m[0];
 		})
 		.replace(/([?&])utm_[a-z]+=[^&?#]*/gsi, '$1') // Urchin Tracking Module
 		.replace(/([?&])ec_[a-z]+=[^&?#]*/gsi, '$1')  // Sitecore
