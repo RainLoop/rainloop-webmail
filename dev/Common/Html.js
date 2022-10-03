@@ -17,23 +17,36 @@ const
 	replaceWithChildren = node => node.replaceWith(...[...node.childNodes]),
 
 	// Strip tracking
+	urlGetParam = (url, name) => new URL(url).searchParams.get(name) || url,
+	base64Url = data => atob(data.replace(/_/g,'/').replace(/-/g,'+')),
 	stripTracking = text => text
-		.replace(/tracking\.(printabout\.nl[^?]+)\?.*/gsi, (...m) => m[1])
-		.replace(/^.+awstrack\.me\/.+(https:%2F%2F[^/]+)/gsi, (...m) => decodeURIComponent(m[1]))
-		.replace(/^.+\/track\/click\/.+\?p=([a-z0-9_]+)$/gsi, (...m) => {
+		.replace(/tracking\.(printabout\.nl[^?]+)\?.*/i, (...m) => m[1])
+		.replace(/^.+awstrack\.me\/.+(https:%2F%2F[^/]+)/i, (...m) => decodeURIComponent(m[1]))
+		.replace(/^.+(www\.google|safelinks\.protection\.outlook\.com).+$/i, () => urlGetParam(text, 'url'))
+		.replace(/^.+go\.dhlparcel\.nl.+\/([^/]+)$/i, (...m) => base64Url(m[1]))
+		// Mandrill
+		.replace(/^.+\/track\/click\/.+\?p=.+$/i, () => {
+			let d = urlGetParam(text, 'p');
 			try {
-				let d = JSON.parse(atob(m[1].replace(/_/g,'/').replace(/-/g,'+')));
+				d = JSON.parse(base64Url(d));
 				if (d?.p) {
 					d = JSON.parse(d.p);
 				}
-				return d?.url || m[0];
 			} catch (e) {
 				console.error(e);
 			}
+			return d?.url || text;
 		})
-		.replace(/([?&])utm_[a-z]+=[^&?#]*/gsi, '$1') // Urchin Tracking Module
-		.replace(/([?&])ec_[a-z]+=[^&?#]*/gsi, '$1')  // Sitecore
-		.replace(/&&+/, '');
+		.replace(/([?&])utm_[a-z]+=[^&?#]*/gi, '$1') // Urchin Tracking Module
+		.replace(/([?&])ec_[a-z]+=[^&?#]*/gi, '$1')  // Sitecore
+		/** TODO: implement other url strippers like from
+		 * https://www.bleepingcomputer.com/news/security/new-firefox-privacy-feature-strips-urls-of-tracking-parameters/
+		 * https://github.com/newhouse/url-tracking-stripper
+		 * https://github.com/svenjacobs/leon
+		 * https://maxchadwick.xyz/tracking-query-params-registry/
+		 * https://github.com/M66B/FairEmail/blob/master/app/src/main/java/eu/faircode/email/UriHelper.java
+		 */
+		.replace(/([?&])&+/g, '$1');
 
 export const
 
