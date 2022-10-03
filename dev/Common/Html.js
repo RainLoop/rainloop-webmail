@@ -16,6 +16,12 @@ const
 
 	replaceWithChildren = node => node.replaceWith(...[...node.childNodes]),
 
+	url = /(^|\s|\n|\/?>)(https?:\/\/[-A-Z0-9+&#/%?=()~_|!:,.;]*[-A-Z0-9+&#/%=~()_|])/gi,
+	// eslint-disable-next-line max-len
+	email = /(^|\s|\n|\/?>)((?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x21\x23-\x5b\x5d-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x21-\x5a\x53-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])+)\]))/gi,
+	// rfc3966
+	tel = /(^|\s|\n|\/?>)(tel:(\+[0-9().-]+|[0-9*#().-]+(;phone-context=\+[0-9+().-]+)?))/g,
+
 	// Strip tracking
 	urlGetParam = (url, name) => new URL(url).searchParams.get(name) || url,
 	base64Url = data => atob(data.replace(/_/g,'/').replace(/-/g,'+')),
@@ -37,8 +43,8 @@ const
 			}
 			return d?.url || text;
 		})
-		.replace(/([?&])utm_[a-z]+=[^&?#]*/gi, '$1') // Urchin Tracking Module
-		.replace(/([?&])ec_[a-z]+=[^&?#]*/gi, '$1')  // Sitecore
+		.replace(/(\?|&(amp;)?)utm_[a-z]+=[^&?#]*/gi, '$1') // Urchin Tracking Module
+		.replace(/(\?|&(amp;)?)ec_[a-z]+=[^&?#]*/gi, '$1')  // Sitecore
 		/** TODO: implement other url strippers like from
 		 * https://www.bleepingcomputer.com/news/security/new-firefox-privacy-feature-strips-urls-of-tracking-parameters/
 		 * https://github.com/newhouse/url-tracking-stripper
@@ -46,7 +52,7 @@ const
 		 * https://maxchadwick.xyz/tracking-query-params-registry/
 		 * https://github.com/M66B/FairEmail/blob/master/app/src/main/java/eu/faircode/email/UriHelper.java
 		 */
-		.replace(/([?&])&+/g, '$1');
+		;
 
 export const
 
@@ -504,8 +510,7 @@ export const
 	 * @returns {string}
 	 */
 	plainToHtml = plain => {
-		plain = stripTracking(plain)
-			.toString()
+		plain = plain.toString()
 			.replace(/\r/g, '')
 			.replace(/^>[> ]>+/gm, ([match]) => (match ? match.replace(/[ ]+/g, '') : match));
 
@@ -553,6 +558,12 @@ export const
 			.replace(/&/g, '&amp;')
 			.replace(/>/g, '&gt;')
 			.replace(/</g, '&lt;')
+			.replace(url, (...m) => {
+				m[2] = stripTracking(m[2]);
+				return `${m[1]}<a href="${m[2]}" target="_blank">${m[2]}</a>`;
+			})
+			.replace(email, '$1<a href="mailto:$2">$2</a>')
+			.replace(tel, '$1<a href="$2">$2</a>')
 			.replace(/~~~blockquote~~~\s*/g, '<blockquote>')
 			.replace(/\s*~~~\/blockquote~~~/g, '</blockquote>')
 			.replace(/\n/g, '<br>');
