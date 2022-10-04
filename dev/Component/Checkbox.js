@@ -1,4 +1,4 @@
-export class CheckboxMaterialDesignComponent {
+export class CheckboxComponent {
 	constructor(params = {}) {
 		this.value = ko.isObservable(params.value) ? params.value
 			: ko.observable(!!params.value);

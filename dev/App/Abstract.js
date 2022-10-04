@@ -7,7 +7,7 @@ import { LanguageStore } from 'Stores/Language';
 import { ThemeStore } from 'Stores/Theme';
 
 import { SelectComponent } from 'Component/Select';
-import { CheckboxMaterialDesignComponent } from 'Component/MaterialDesign/Checkbox';
+import { CheckboxComponent } from 'Component/Checkbox';
 
 export class AbstractApp {
 	/**
@@ -28,8 +28,8 @@ export class AbstractApp {
 	}
 
 	bootstart() {
-		const register = (key, ClassObject, templateID) => ko.components.register(key, {
-				template: { element: templateID || (key + 'Component') },
+		const register = (key, ClassObject) => ko.components.register(key, {
+				template: { element: key + 'Component' },
 				viewModel: {
 					createViewModel: (params, componentInfo) => {
 						params = params || {};
@@ -41,9 +41,8 @@ export class AbstractApp {
 					}
 				}
 			});
-
 		register('Select', SelectComponent);
-		register('Checkbox', CheckboxMaterialDesignComponent, 'CheckboxMaterialDesignComponent');
+		register('Checkbox', CheckboxComponent);
 
 		initOnStartOrLangChange();
 
