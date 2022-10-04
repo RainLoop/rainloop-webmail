@@ -23,7 +23,14 @@ const
 	tel = /(^|\s|\n|\/?>)(tel:(\+[0-9().-]+|[0-9*#().-]+(;phone-context=\+[0-9+().-]+)?))/g,
 
 	// Strip tracking
-	stripParams = /^(utm_|ec_|fbclid|mc_eid|mkt_tok|_hsenc|vero_id|oly_enc_id|oly_anon_id|__s)/i,
+	/** TODO: implement other url strippers like from
+	 * https://www.bleepingcomputer.com/news/security/new-firefox-privacy-feature-strips-urls-of-tracking-parameters/
+	 * https://github.com/newhouse/url-tracking-stripper
+	 * https://github.com/svenjacobs/leon
+	 * https://maxchadwick.xyz/tracking-query-params-registry/
+	 * https://github.com/M66B/FairEmail/blob/master/app/src/main/java/eu/faircode/email/UriHelper.java
+	 */
+	stripParams = /^(utm_|ec_|fbclid|mc_eid|mkt_tok|_hsenc|vero_id|oly_enc_id|oly_anon_id|__s|Referrer|mailing)/i,
 	urlGetParam = (url, name) => new URL(url).searchParams.get(name) || url,
 	base64Url = data => atob(data.replace(/_/g,'/').replace(/-/g,'+')),
 	stripTracking = url => {
@@ -44,18 +51,20 @@ const
 					console.error(e);
 				}
 				return d?.url || url;
+			})
+			// Remove invalid URL characters
+			.replace(/[\s<>]+/gi, '');
+		try {
+			url = new URL(url);
+			let s = url.searchParams;
+			[...s.keys()].forEach(key => stripParams.test(key) && s.delete(key));
+			return url.toString();
+		} catch (e) {
+			console.dir({
+				error:e,
+				url:url
 			});
-		url = new URL(url);
-		let s = url.searchParams;
-		[...s.keys()].forEach(key => stripParams.test(key) && s.delete(key));
-		/** TODO: implement other url strippers like from
-		 * https://www.bleepingcomputer.com/news/security/new-firefox-privacy-feature-strips-urls-of-tracking-parameters/
-		 * https://github.com/newhouse/url-tracking-stripper
-		 * https://github.com/svenjacobs/leon
-		 * https://maxchadwick.xyz/tracking-query-params-registry/
-		 * https://github.com/M66B/FairEmail/blob/master/app/src/main/java/eu/faircode/email/UriHelper.java
-		 */
-		return url.toString();
+		}
 	};
 
 export const
