@@ -1,6 +1,7 @@
 import 'External/ko';
 
 import { Settings, SettingsGet } from 'Common/Globals';
+import { ThemeStore } from 'Stores/Theme';
 
 import Remote from 'Remote/Admin/Fetch';
 
@@ -17,6 +18,7 @@ export class AdminApp extends AbstractApp {
 	}
 
 	refresh() {
+		ThemeStore.populate();
 		this.start();
 	}
 

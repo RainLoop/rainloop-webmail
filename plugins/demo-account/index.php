@@ -40,7 +40,7 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 */
 	public function FilterAppData($bAdmin, &$aResult)
 	{
-		if (!$bAdmin && \is_array($aResult) && isset($aResult['Auth']) && !$aResult['Auth']) {
+		if (!$bAdmin && \is_array($aResult) && empty($aResult['Auth'])) {
 			$aResult['DevEmail'] = $this->Config()->Get('plugin', 'email', $aResult['DevEmail']);
 			$aResult['DevPassword'] = APP_DUMMY;
 		}

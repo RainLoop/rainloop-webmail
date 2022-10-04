@@ -94,13 +94,6 @@ export class AppUser extends AbstractApp {
 		this.folderList = FolderUserStore.folderList;
 	}
 
-	refresh() {
-		LanguageStore.language(SettingsGet('Language'));
-		ThemeStore.populate();
-		changeTheme(SettingsGet('Theme'));
-		this.start();
-	}
-
 	/**
 	 * @param {number} iFolderType
 	 * @param {string} sFromFolderFullName
@@ -228,6 +221,13 @@ export class AppUser extends AbstractApp {
 				return event.returnValue = "Are you sure you want to exit?";
 			}
 		}, {capture: true});
+	}
+
+	refresh() {
+		ThemeStore.populate();
+		LanguageStore.language(SettingsGet('Language'));
+		changeTheme(SettingsGet('Theme'));
+		this.start();
 	}
 
 	start() {

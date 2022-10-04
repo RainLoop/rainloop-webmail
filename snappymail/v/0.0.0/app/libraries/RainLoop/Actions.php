@@ -637,110 +637,28 @@ class Actions
 		}
 	}
 
-	public function AppDataSystem(bool $bAdmin = false): array
-	{
-		$oConfig = $this->oConfig;
-
-		$aAttachmentsActions = array();
-		if ($this->GetCapa(Enumerations\Capa::ATTACHMENTS_ACTIONS)) {
-			if (\class_exists('PharData') || \class_exists('ZipArchive')) {
-				$aAttachmentsActions[] = 'zip';
-			}
-		}
-
-		return \array_merge(array(
-			'version' => APP_VERSION,
-			'admin' => $bAdmin,
-			'token' => $oConfig->Get('security', 'csrf_protection', false) ? Utils::GetCsrfToken() : '',
-			'allowHtmlEditorBitiButtons' => (bool)$oConfig->Get('labs', 'allow_html_editor_biti_buttons', false),
-			'allowCtrlEnterOnCompose' => (bool)$oConfig->Get('labs', 'allow_ctrl_enter_on_compose', false),
-			'useImapThread' => (bool)$oConfig->Get('labs', 'use_imap_thread', false),
-			'allowAppendMessage' => (bool)$oConfig->Get('labs', 'allow_message_append', false),
-			'folderSpecLimit' => (int)$oConfig->Get('labs', 'folders_spec_limit', 50),
-			'listPermanentFiltered' => '' !== \trim($oConfig->Get('labs', 'imap_message_list_permanent_filter', '')),
-			'themes' => $this->GetThemes(),
-			'languages' => \SnappyMail\L10n::getLanguages(false),
-			'languagesAdmin' => \SnappyMail\L10n::getLanguages(true),
-			'attachmentsActions' => $aAttachmentsActions
-		), $bAdmin ? array(
-			'adminHostUse' => '' !== $oConfig->Get('security', 'admin_panel_host', ''),
-			'adminPath' => $oConfig->Get('security', 'admin_panel_key', '') ?: 'admin',
-			'adminAllowed' => (bool)$oConfig->Get('security', 'allow_admin_panel', true),
-		) : array(
-			'customLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
-		));
-	}
-
 	public function AppData(bool $bAdmin): array
 	{
 		$oAccount = null;
 		$oConfig = $this->oConfig;
 
-		/*
-		required by Index.html and rl.js:
-		PluginsLink
-		*/
-
-		$value = \ini_get('upload_max_filesize');
-		$upload_max_filesize = \intval($value);
-		switch (\strtoupper(\substr($value, -1))) {
-			case 'G': $upload_max_filesize *= 1024;
-			case 'M': $upload_max_filesize *= 1024;
-			case 'K': $upload_max_filesize *= 1024;
-		}
-
 		$aResult = array(
 			'Auth' => false,
-			'AccountHash' => '',
-			'AccountSignMe' => false,
-			'MailToEmail' => '',
-			'Email' => '',
-			'DevEmail' => '',
-			'DevPassword' => '',
 			'Title' => $oConfig->Get('webmail', 'title', 'SnappyMail Webmail'),
 			'LoadingDescription' => $oConfig->Get('webmail', 'loading_description', 'SnappyMail'),
-			'FaviconUrl' => $oConfig->Get('webmail', 'favicon_url', ''),
-			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
-			'DetermineUserLanguage' => (bool)$oConfig->Get('login', 'determine_user_language', true),
-			'DetermineUserDomain' => (bool)$oConfig->Get('login', 'determine_user_domain', false),
-			'SieveAllowFileintoInbox' => (bool)$oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false),
-			'ContactsIsAllowed' => false,
-			'Admin' => array(),
-			'Capa' => array(),
 			'Plugins' => array(),
-			'System' => $this->AppDataSystem($bAdmin),
-
-			'AllowLanguagesOnSettings' => (bool) $oConfig->Get('webmail', 'allow_languages_on_settings', true),
-			'AllowLanguagesOnLogin' => (bool) $oConfig->Get('login', 'allow_languages_on_login', true),
-			'AttachmentLimit' => \min($upload_max_filesize, ((int) $oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024),
-			'SignMe' => (string) $oConfig->Get('login', 'sign_me_auto', Enumerations\SignMeType::DEFAULT_OFF),
-			'UseLocalProxyForExternalImages' => (bool)$oConfig->Get('labs', 'use_local_proxy_for_external_images', false),
-
-			// user
-			'ViewHTML' => (bool) $oConfig->Get('defaults', 'view_html', true),
-			'ShowImages' => (bool) $oConfig->Get('defaults', 'show_images', false),
-			'RemoveColors' => (bool) $oConfig->Get('defaults', 'remove_colors', false),
-			'ListInlineAttachments' => false,
-			'MessagesPerPage' => (int) $oConfig->Get('webmail', 'messages_per_page', 25),
-			'MessageReadDelay' => (int) $oConfig->Get('webmail', 'message_read_delay', 5),
-			'MsgDefaultAction' => 1,
-			'SoundNotification' => true,
-			'NotificationSound' => 'new-mail',
-			'DesktopNotifications' => true,
-			'Layout' => (int) $oConfig->Get('defaults', 'view_layout', Enumerations\Layout::SIDE_PREVIEW),
-			'EditorDefaultType' => \str_replace('Forced', '', $oConfig->Get('defaults', 'view_editor_type', '')),
-			'UseCheckboxesInList' => (bool) $oConfig->Get('defaults', 'view_use_checkboxes', true),
-			'AutoLogout' => (int) $oConfig->Get('defaults', 'autologout', 30),
-			'UseThreads' => (bool) $oConfig->Get('defaults', 'mail_use_threads', false),
-			'AllowDraftAutosave' => (bool) $oConfig->Get('defaults', 'allow_draft_autosave', true),
-			'ReplySameFolder' => (bool) $oConfig->Get('defaults', 'mail_reply_same_folder', false),
-			'ContactsAutosave' => (bool) $oConfig->Get('defaults', 'contacts_autosave', true),
-			'HideUnsubscribed' => false,
-			'HideDeleted' => true,
-			'UnhideKolabFolders' => false,
-			'MainEmail' => '',
-			'UserBackgroundName' => '',
-			'UserBackgroundHash' => ''
+			'System' => \array_merge(
+				array(
+					'version' => APP_VERSION,
+					'token' => $oConfig->Get('security', 'csrf_protection', false) ? Utils::GetCsrfToken() : '',
+					'languages' => \SnappyMail\L10n::getLanguages(false)
+				), $bAdmin ? array(
+					'adminHostUse' => '' !== $oConfig->Get('security', 'admin_panel_host', ''),
+					'adminPath' => $oConfig->Get('security', 'admin_panel_key', '') ?: 'admin',
+					'adminAllowed' => (bool)$oConfig->Get('security', 'allow_admin_panel', true)
+				) : array()
+			),
+			'AllowLanguagesOnLogin' => (bool) $oConfig->Get('login', 'allow_languages_on_login', true)
 		);
 
 		$sLanguage = $oConfig->Get('webmail', 'language', 'en');
@@ -753,6 +671,10 @@ class Actions
 				$aResult['AdminTOTP'] = (string)$oConfig->Get('security', 'admin_totp', '');
 				$aResult['UseTokenProtection'] = (bool)$oConfig->Get('security', 'csrf_protection', true);
 				$aResult['EnabledPlugins'] = (bool)$oConfig->Get('plugins', 'enable', false);
+
+				$aResult['LoginDefaultDomain'] = $oConfig->Get('login', 'default_domain', '');
+				$aResult['DetermineUserLanguage'] = (bool)$oConfig->Get('login', 'determine_user_language', true);
+				$aResult['DetermineUserDomain'] = (bool)$oConfig->Get('login', 'determine_user_domain', false);
 
 				$aResult['VerifySslCertificate'] = (bool)$oConfig->Get('ssl', 'verify_certificate', false);
 				$aResult['AllowSelfSigned'] = (bool)$oConfig->Get('ssl', 'allow_self_signed', true);
@@ -767,7 +689,13 @@ class Actions
 				$aResult['ContactsPdoUser'] = (string)$oConfig->Get('contacts', 'pdo_user', '');
 				$aResult['ContactsPdoPassword'] = (string)APP_DUMMY;
 
+				$aResult['FaviconUrl'] = $oConfig->Get('webmail', 'favicon_url', '');
+
 				$aResult['WeakPassword'] = \is_file(APP_PRIVATE_DATA.'admin_password.txt');
+
+				$aResult['System']['languagesAdmin'] = \SnappyMail\L10n::getLanguages(true);
+				$aResult['LanguageAdmin'] = $this->ValidateLanguage($oConfig->Get('webmail', 'language_admin', 'en'), '', true);
+				$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($UserLanguageRaw, '', true, true);
 			} else {
 				$passfile = APP_PRIVATE_DATA.'admin_password.txt';
 				$sPassword = $oConfig->Get('security', 'admin_password', '');
@@ -779,26 +707,72 @@ class Actions
 					$oConfig->Save();
 				}
 			}
-
-			$aResult['LanguageAdmin'] = $this->ValidateLanguage($oConfig->Get('webmail', 'language_admin', 'en'), '', true);
-			$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($UserLanguageRaw, '', true, true);
 		} else {
 			$oAccount = $this->getAccountFromToken(false);
 			if ($oAccount) {
-				$aResult['Auth'] = true;
-				$aResult['Email'] = $oAccount->Email();
-				$aResult['IncLogin'] = $oAccount->IncLogin();
-				$aResult['OutLogin'] = $oAccount->OutLogin();
-				$aResult['AccountHash'] = $oAccount->Hash();
-				$aResult['AccountSignMe'] = isset($_COOKIE[self::AUTH_SIGN_ME_TOKEN_KEY]);
-				$aResult['ContactsIsAllowed'] = $this->AddressBookProvider($oAccount)->IsActive();
-				$aResult['ContactsSyncIsAllowed'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
-				$aResult['ContactsSyncInterval'] = (int)$oConfig->Get('contacts', 'sync_interval', 20);
+				$aResult = \array_merge($aResult, [
+					'Auth' => true,
+					'Email' => \MailSo\Base\Utils::IdnToUtf8($oAccount->Email()),
+					'IncLogin' => $oAccount->IncLogin(),
+					'OutLogin' => $oAccount->OutLogin(),
+					'AccountHash' => $oAccount->Hash(),
+					'AccountSignMe' => isset($_COOKIE[self::AUTH_SIGN_ME_TOKEN_KEY]),
+					'MainEmail' => \MailSo\Base\Utils::IdnToUtf8($this->getMainAccountFromToken()->Email()),
+					'MailToEmail' => '',
 
-				$aResult['ContactsSyncMode'] = 0;
-				$aResult['ContactsSyncUrl'] = '';
-				$aResult['ContactsSyncUser'] = '';
-				$aResult['ContactsSyncPassword'] = '';
+					'ContactsIsAllowed' => $this->AddressBookProvider($oAccount)->IsActive(),
+					'ContactsSyncIsAllowed' => (bool)$oConfig->Get('contacts', 'allow_sync', false),
+					'ContactsSyncInterval' => (int)$oConfig->Get('contacts', 'sync_interval', 20),
+					'ContactsSyncMode' => 0,
+					'ContactsSyncUrl' => '',
+					'ContactsSyncUser' => '',
+					'ContactsSyncPassword' => '',
+
+					'ViewHTML' => (bool) $oConfig->Get('defaults', 'view_html', true),
+					'ShowImages' => (bool) $oConfig->Get('defaults', 'show_images', false),
+					'RemoveColors' => (bool) $oConfig->Get('defaults', 'remove_colors', false),
+					'ListInlineAttachments' => false,
+					'MessagesPerPage' => (int) $oConfig->Get('webmail', 'messages_per_page', 25),
+					'MessageReadDelay' => (int) $oConfig->Get('webmail', 'message_read_delay', 5),
+					'MsgDefaultAction' => 1,
+					'SoundNotification' => true,
+					'NotificationSound' => 'new-mail',
+					'DesktopNotifications' => true,
+					'Layout' => (int) $oConfig->Get('defaults', 'view_layout', Enumerations\Layout::SIDE_PREVIEW),
+					'EditorDefaultType' => \str_replace('Forced', '', $oConfig->Get('defaults', 'view_editor_type', '')),
+					'UseCheckboxesInList' => (bool) $oConfig->Get('defaults', 'view_use_checkboxes', true),
+					'AutoLogout' => (int) $oConfig->Get('defaults', 'autologout', 30),
+					'UseThreads' => (bool) $oConfig->Get('defaults', 'mail_use_threads', false),
+					'AllowDraftAutosave' => (bool) $oConfig->Get('defaults', 'allow_draft_autosave', true),
+					'ReplySameFolder' => (bool) $oConfig->Get('defaults', 'mail_reply_same_folder', false),
+					'ContactsAutosave' => (bool) $oConfig->Get('defaults', 'contacts_autosave', true),
+					'HideUnsubscribed' => false,
+					'HideDeleted' => true,
+					'UnhideKolabFolders' => false,
+					'MainEmail' => '',
+					'UserBackgroundName' => '',
+					'UserBackgroundHash' => '',
+					'SieveAllowFileintoInbox' => (bool)$oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false)
+				]);
+
+				$aAttachmentsActions = array();
+				if ($this->GetCapa(Enumerations\Capa::ATTACHMENTS_ACTIONS)) {
+					if (\class_exists('PharData') || \class_exists('ZipArchive')) {
+						$aAttachmentsActions[] = 'zip';
+					}
+				}
+				$aResult['System'] = \array_merge(
+					$aResult['System'], array(
+						'allowHtmlEditorBitiButtons' => (bool)$oConfig->Get('labs', 'allow_html_editor_biti_buttons', false),
+						'allowCtrlEnterOnCompose' => (bool)$oConfig->Get('labs', 'allow_ctrl_enter_on_compose', false),
+						'useImapThread' => (bool)$oConfig->Get('labs', 'use_imap_thread', false),
+						'allowAppendMessage' => (bool)$oConfig->Get('labs', 'allow_message_append', false),
+						'folderSpecLimit' => (int)$oConfig->Get('labs', 'folders_spec_limit', 50),
+						'listPermanentFiltered' => '' !== \trim($oConfig->Get('labs', 'imap_message_list_permanent_filter', '')),
+						'attachmentsActions' => $aAttachmentsActions,
+						'customLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
+					)
+				);
 
 				if ($aResult['ContactsIsAllowed'] && $aResult['ContactsSyncIsAllowed']) {
 					$mData = $this->getContactsSyncData($oAccount);
@@ -815,18 +789,12 @@ class Actions
 					Utils::ClearCookie(self::AUTH_MAILTO_TOKEN_KEY);
 
 					$mMailToData = Utils::DecodeKeyValuesQ($sToken);
-					if (!empty($mMailToData['MailTo']) &&
-						'MailTo' === $mMailToData['MailTo'] && !empty($mMailToData['To'])) {
-						$aResult['MailToEmail'] = $mMailToData['To'];
+					if (!empty($mMailToData['MailTo']) && 'MailTo' === $mMailToData['MailTo'] && !empty($mMailToData['To'])) {
+						$aResult['MailToEmail'] = \MailSo\Base\Utils::IdnToUtf8($mMailToData['To']);
 					}
 				}
 
-				$oSettings = $this->SettingsProvider()->Load($oAccount);
-
-				$aResult['MainEmail'] = \MailSo\Base\Utils::IdnToUtf8($this->getMainAccountFromToken()->Email());
-
 				$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
-
 				if ($oSettingsLocal instanceof Settings) {
 					$aResult['SentFolder'] = (string)$oSettingsLocal->GetConf('SentFolder', '');
 					$aResult['DraftsFolder'] = (string)$oSettingsLocal->GetConf('DraftFolder', '');
@@ -844,6 +812,7 @@ class Actions
 					$sLanguage = $this->ValidateLanguage($UserLanguageRaw, $sLanguage, false);
 				}
 
+				$oSettings = $this->SettingsProvider()->Load($oAccount);
 				if ($oSettings instanceof Settings) {
 					if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
 						$sLanguage = (string) $oSettings->GetConf('Language', $sLanguage);
@@ -900,20 +869,34 @@ class Actions
 				if ('0.0.0' === APP_VERSION) {
 					$aResult['DevEmail'] = $oConfig->Get('labs', 'dev_email', '');
 					$aResult['DevPassword'] = $oConfig->Get('labs', 'dev_password', '');
+				} else {
+					$aResult['DevEmail'] = '';
+					$aResult['DevPassword'] = '';
 				}
 
-				if (empty($aResult['AdditionalLoginError'])) {
-					$aResult['AdditionalLoginError'] = $this->GetSpecLogoutCustomMgsWithDeletion();
-				}
+				$aResult['SignMe'] = (string) $oConfig->Get('login', 'sign_me_auto', Enumerations\SignMeType::DEFAULT_OFF);
+
+				$aResult['AdditionalLoginError'] = $this->GetSpecLogoutCustomMgsWithDeletion();
 			}
 		}
 
 		if ($aResult['Auth']) {
+			$aResult['UseLocalProxyForExternalImages'] = (bool)$oConfig->Get('labs', 'use_local_proxy_for_external_images', false);
+			$aResult['AllowLanguagesOnSettings'] = (bool) $oConfig->Get('webmail', 'allow_languages_on_settings', true);
 			$aResult['Capa'] = $this->Capa($bAdmin, $oAccount);
+			$value = \ini_get('upload_max_filesize');
+			$upload_max_filesize = \intval($value);
+			switch (\strtoupper(\substr($value, -1))) {
+				case 'G': $upload_max_filesize *= 1024;
+				case 'M': $upload_max_filesize *= 1024;
+				case 'K': $upload_max_filesize *= 1024;
+			}
+			$aResult['AttachmentLimit'] = \min($upload_max_filesize, ((int) $oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024);
 			$aResult['PhpUploadSizes'] = array(
-				'upload_max_filesize' => \ini_get('upload_max_filesize'),
+				'upload_max_filesize' => $value,
 				'post_max_size' => \ini_get('post_max_size')
 			);
+			$aResult['System']['themes'] = $this->GetThemes();
 		}
 
 		$sStaticCache = $this->StaticCache();
@@ -931,10 +914,6 @@ class Actions
 
 		$aResult['StaticLibsJs'] = Utils::WebStaticPath('js/' . ($bAppJsDebug ? '' : 'min/') .
 			'libs' . ($bAppJsDebug ? '' : '.min') . '.js');
-
-		// IDN
-		$aResult['Email'] = \MailSo\Base\Utils::IdnToUtf8($aResult['Email']);
-		$aResult['MailToEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['MailToEmail']);
 
 		$this->oPlugins->InitAppData($bAdmin, $aResult, $oAccount);
 
