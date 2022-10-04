@@ -254,7 +254,7 @@ class Binary
 						$sReturn .= self::$sFunctionName($this->sReadEndBuffer.$sReadResult,
 							$this->sReadEndBuffer, $this->sFromEncoding, $this->sToEncoding);
 
-						$iDecodeLen = \strlen($sReturn);
+						$iDecodeLen = \strlen($sReadResult);
 						if ($iCount < $iDecodeLen)
 						{
 							$this->sBuffer = \substr($sReturn, $iCount);
