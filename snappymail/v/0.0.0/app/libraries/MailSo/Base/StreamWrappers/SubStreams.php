@@ -145,25 +145,24 @@ class SubStreams
 							{
 								return false;
 							}
-
 							$sReturn .= $sReadResult;
-
-							$iLen = \strlen($sReturn);
-							if ($iCount < $iLen)
-							{
-								$this->sBuffer = \substr($sReturn, $iCount);
-								$sReturn = \substr($sReturn, 0, $iCount);
-								$iCount = 0;
-							}
-							else
-							{
-								$iCount -= $iLen;
-							}
 						}
 						else
 						{
 							$this->iIndex++;
 						}
+					}
+
+					$iLen = \strlen($sReturn);
+					if ($iCount < $iLen)
+					{
+						$this->sBuffer = \substr($sReturn, $iCount);
+						$sReturn = \substr($sReturn, 0, $iCount);
+						$iCount = 0;
+					}
+					else
+					{
+						$iCount -= $iLen;
 					}
 				}
 			}
