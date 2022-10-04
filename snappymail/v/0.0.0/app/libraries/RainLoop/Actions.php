@@ -749,7 +749,6 @@ class Actions
 					'HideUnsubscribed' => false,
 					'HideDeleted' => true,
 					'UnhideKolabFolders' => false,
-					'MainEmail' => '',
 					'UserBackgroundName' => '',
 					'UserBackgroundHash' => '',
 					'SieveAllowFileintoInbox' => (bool)$oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false)
