@@ -9,7 +9,45 @@ import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
 import { Settings, SettingsCapa } from 'Common/Globals';
 //import Remote from 'Remote/User/Fetch'; // Circular dependency
 
-export const FolderUserStore = new class {
+export const
+
+ignoredKeywords = [
+	// rfc5788
+	'$forwarded',
+	'$mdnsent',
+	'$submitpending',
+	'$submitted',
+	// rfc9051
+	'$junk',
+	'$notjunk',
+	'$phishing',
+	// Mailo
+	'sent',
+	// KMail
+	'$attachment',
+	'$encrypted',
+	'$error',
+	'$ignored',
+	'$invitation',
+	'$queued',
+	'$replied',
+	'$sent',
+	'$signed',
+	'$todo',
+	'$watched',
+	// GMail
+	'$replied',
+	'$attachment',
+	'$notphishing',
+	'junk',
+	'nonjunk',
+	// Others
+	'$readreceipt'
+],
+
+isAllowedKeyword = value => '\\' != value[0] && !ignoredKeywords.includes(value.toLowerCase()),
+
+FolderUserStore = new class {
 	constructor() {
 		const self = this;
 		addObservablesTo(self, {

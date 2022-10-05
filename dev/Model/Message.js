@@ -8,7 +8,7 @@ import { encodeHtml, plainToHtml, cleanHtml } from 'Common/Html';
 import { isArray, arrayLength, forEachObjectEntry } from 'Common/Utils';
 import { serverRequestRaw, proxy } from 'Common/Links';
 
-import { FolderUserStore } from 'Stores/User/Folder';
+import { FolderUserStore, isAllowedKeyword } from 'Stores/User/Folder';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
 import { FileInfo } from 'Common/File';
@@ -29,40 +29,6 @@ const
 		hcont.innerHTML = '';
 		return result;
 	},
-
-	ignoredTags = [
-		// rfc5788
-		'$forwarded',
-		'$mdnsent',
-		'$submitpending',
-		'$submitted',
-		// rfc9051
-		'$junk',
-		'$notjunk',
-		'$phishing',
-		// Mailo
-		'sent',
-		// KMail
-		'$attachment',
-		'$encrypted',
-		'$error',
-		'$ignored',
-		'$invitation',
-		'$queued',
-		'$replied',
-		'$sent',
-		'$signed',
-		'$todo',
-		'$watched',
-		// GMail
-		'$replied',
-		'$attachment',
-		'$notphishing',
-		'junk',
-		'nonjunk',
-		// Others
-		'$readreceipt'
-	],
 
 	toggleTag = (message, keyword) => {
 		const lower = keyword.toLowerCase(),
@@ -161,16 +127,16 @@ export class MessageModel extends AbstractModel {
 //			isPhishing: () => this.flags().includes('$phishing'),
 
 			tagsToHTML: () => this.flags().map(value =>
-					('\\' == value[0] || ignoredTags.includes(value))
-					? ''
-					: '<span class="focused msgflag-'+value+'">' + i18n('MESSAGE_TAGS/'+value,0,value) + '</span>'
+					isAllowedKeyword(value)
+					? '<span class="focused msgflag-'+value+'">' + i18n('MESSAGE_TAGS/'+value,0,value) + '</span>'
+					: ''
 				).join(' '),
 
 			tagOptions: () => {
 				const tagOptions = [];
 				FolderUserStore.currentFolder().permanentFlags.forEach(value => {
-					let lower = value.toLowerCase();
-					if ('\\' != value[0] && !ignoredTags.includes(lower)) {
+					if (isAllowedKeyword(value)) {
+						let lower = value.toLowerCase();
 						tagOptions.push({
 							css: 'msgflag-' + lower,
 							value: value,

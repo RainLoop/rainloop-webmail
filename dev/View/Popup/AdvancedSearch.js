@@ -1,12 +1,10 @@
-import { koComputable } from 'External/ko';
-
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 import { pString } from 'Common/Utils';
 
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
 
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
-import { FolderUserStore } from 'Stores/User/Folder';
+import { FolderUserStore, isAllowedKeyword } from 'Stores/User/Folder';
 
 export class AdvancedSearchPopupView extends AbstractViewPopup {
 	constructor() {
@@ -17,6 +15,7 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 			to: '',
 			subject: '',
 			text: '',
+			keyword: '',
 			repliedValue: -1,
 			selectedDateValue: -1,
 			selectedTreeValue: '',
@@ -26,39 +25,58 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 			unseen: false
 		});
 
-		this.showMultisearch = koComputable(() => FolderUserStore.hasCapability('MULTISEARCH'));
+		this.addComputables({
+			showMultisearch: () => FolderUserStore.hasCapability('MULTISEARCH'),
 
-		this.repliedOptions = koComputable(() => {
-			translatorTrigger();
-			return [
-				{ id: -1, name: '' },
-				{ id: 1, name: i18n('GLOBAL/YES') },
-				{ id: 0, name: i18n('GLOBAL/NO') }
-			];
-		});
+			// Almost the same as MessageModel.tagOptions
+			keywords: () => {
+				const keywords = [{value:'',label:''}];
+				FolderUserStore.currentFolder().permanentFlags.forEach(value => {
+					if (isAllowedKeyword(value)) {
+						let lower = value.toLowerCase();
+						keywords.push({
+							value: value,
+							label: i18n('MESSAGE_TAGS/'+lower, 0, lower)
+						});
+					}
+				});
+				return keywords
+			},
 
-		this.selectedDates = koComputable(() => {
-			translatorTrigger();
-			let prefix = 'SEARCH/LABEL_DATE_';
-			return [
-				{ id: -1, name: i18n(prefix + 'ALL') },
-				{ id: 3, name: i18n(prefix + '3_DAYS') },
-				{ id: 7, name: i18n(prefix + '7_DAYS') },
-				{ id: 30, name: i18n(prefix + 'MONTH') },
-				{ id: 90, name: i18n(prefix + '3_MONTHS') },
-				{ id: 180, name: i18n(prefix + '6_MONTHS') },
-				{ id: 365, name: i18n(prefix + 'YEAR') }
-			];
-		});
+			showKeywords: () => FolderUserStore.currentFolder().permanentFlags().some(isAllowedKeyword),
 
-		this.selectedTree = koComputable(() => {
-			translatorTrigger();
-			let prefix = 'SEARCH/LABEL_SUBFOLDERS_';
-			return [
-				{ id: '', name: i18n(prefix + 'NONE') },
-				{ id: 'subtree-one', name: i18n(prefix + 'SUBTREE_ONE') },
-				{ id: 'subtree', name: i18n(prefix + 'SUBTREE') }
-			];
+			repliedOptions: () => {
+				translatorTrigger();
+				return [
+					{ id: -1, name: '' },
+					{ id: 1, name: i18n('GLOBAL/YES') },
+					{ id: 0, name: i18n('GLOBAL/NO') }
+				];
+			},
+
+			selectedDates: () => {
+				translatorTrigger();
+				let prefix = 'SEARCH/LABEL_DATE_';
+				return [
+					{ id: -1, name: i18n(prefix + 'ALL') },
+					{ id: 3, name: i18n(prefix + '3_DAYS') },
+					{ id: 7, name: i18n(prefix + '7_DAYS') },
+					{ id: 30, name: i18n(prefix + 'MONTH') },
+					{ id: 90, name: i18n(prefix + '3_MONTHS') },
+					{ id: 180, name: i18n(prefix + '6_MONTHS') },
+					{ id: 365, name: i18n(prefix + 'YEAR') }
+				];
+			},
+
+			selectedTree: () => {
+				translatorTrigger();
+				let prefix = 'SEARCH/LABEL_SUBFOLDERS_';
+				return [
+					{ id: '', name: i18n(prefix + 'NONE') },
+					{ id: 'subtree-one', name: i18n(prefix + 'SUBTREE_ONE') },
+					{ id: 'subtree', name: i18n(prefix + 'SUBTREE') }
+				];
+			}
 		});
 	}
 
@@ -81,6 +99,7 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 		append('to', self.to().trim());
 		append('subject', self.subject().trim());
 		append('text', self.text().trim());
+		append('keyword', self.keyword());
 		append('in', self.selectedTreeValue());
 		if (-1 < self.selectedDateValue()) {
 			let d = new Date();
@@ -88,7 +107,7 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 			append('since', d.toISOString().split('T')[0]);
 		}
 
-		let result = new URLSearchParams(data).toString();
+		let result = new URLSearchParams(data).toString().replace('%24','$');
 
 		if (self.hasAttachment()) {
 			result += '&attachment';
@@ -116,6 +135,7 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 		self.to(pString(params.get('to')));
 		self.subject(pString(params.get('subject')));
 		self.text(pString(params.get('text')));
+		self.keyword(pString(params.get('keyword')));
 		self.selectedTreeValue(pString(params.get('in')));
 //		self.selectedDateValue(params.get('since'));
 		self.selectedDateValue(-1);

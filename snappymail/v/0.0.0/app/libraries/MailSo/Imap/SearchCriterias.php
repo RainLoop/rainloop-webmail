@@ -56,7 +56,7 @@ abstract class SearchCriterias
 			have a header line with the specified field-name regardless of
 			the contents.
 
-		☐ KEYWORD <flag>
+		✔ KEYWORD <flag>
 			Messages with the specified keyword flag set.
 
 		✔ LARGER <n>
@@ -190,6 +190,7 @@ abstract class SearchCriterias
 						case 'FROM':
 						case 'SUBJECT':
 						case 'BODY': // $sValue = \trim(\MailSo\Base\Utils::StripSpaces($sValue), '"');
+						case 'KEYWORD':
 							$aCriteriasResult[] = $sName;
 							$aCriteriasResult[] = $sValue;
 							break;
@@ -350,6 +351,7 @@ abstract class SearchCriterias
 				case 'FROM':
 				case 'TO':
 				case 'SUBJECT':
+				case 'KEYWORD':
 				case 'IN':
 				case 'SMALLER':
 				case 'LARGER':
