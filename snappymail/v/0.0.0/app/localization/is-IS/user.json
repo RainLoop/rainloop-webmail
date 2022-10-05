@@ -148,7 +148,8 @@
 		"LINK_DOWNLOAD_AS_ZIP": "Sækja sem .zip skrá",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "WARNING: virus detected",
-		"TAGS": "Tags"
+		"TAGS": "Tags",
+		"NEW_TAG": "New tag"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Important",

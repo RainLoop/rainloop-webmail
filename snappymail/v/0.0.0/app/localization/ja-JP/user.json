@@ -148,7 +148,8 @@
 		"LINK_DOWNLOAD_AS_ZIP": "Zipとしてダウンロード",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "警告: ウィルスが検出されました",
-		"TAGS": "タグ"
+		"TAGS": "タグ",
+		"NEW_TAG": "New tag"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "重要",

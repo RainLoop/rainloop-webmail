@@ -148,7 +148,8 @@
 		"LINK_DOWNLOAD_AS_ZIP": "Tải xuống dạng zip",
 		"SPAM_SCORE": "Điểm số thư rác",
 		"HAS_VIRUS_WARNING": "BÁO ĐỘNG ĐỎ: phát hiện có virut trong thư",
-		"TAGS": "Thẻ"
+		"TAGS": "Thẻ",
+		"NEW_TAG": "New tag"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Quan trọng",

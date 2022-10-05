@@ -152,6 +152,10 @@ export class MessageModel extends AbstractModel {
 		});
 	}
 
+	toggleTag(keyword) {
+		toggleTag(this, keyword);
+	}
+
 	_reset() {
 		this.folder = '';
 		this.uid = 0;

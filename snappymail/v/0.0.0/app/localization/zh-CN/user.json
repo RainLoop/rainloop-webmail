@@ -148,7 +148,8 @@
 		"LINK_DOWNLOAD_AS_ZIP": "下载为zip压缩包",
 		"SPAM_SCORE": "垃圾邮件分数",
 		"HAS_VIRUS_WARNING": "警告：检测到病毒",
-		"TAGS": "Tags"
+		"TAGS": "Tags",
+		"NEW_TAG": "New tag"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Important",

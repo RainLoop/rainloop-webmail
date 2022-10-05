@@ -148,7 +148,8 @@
 		"LINK_DOWNLOAD_AS_ZIP": "Letöltés zip fájlként",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "FIGYELEM: vírust észleltünk",
-		"TAGS": "Tags"
+		"TAGS": "Tags",
+		"NEW_TAG": "New tag"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Important",

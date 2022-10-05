@@ -148,7 +148,8 @@
 		"LINK_DOWNLOAD_AS_ZIP": "Ladda ner som ZIP-fil",
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "VARNING: virus upptäckt",
-		"TAGS": "Tags"
+		"TAGS": "Tags",
+		"NEW_TAG": "New tag"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Important",

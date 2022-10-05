@@ -140,7 +140,7 @@ export class MailMessageView extends AbstractViewRight {
 					.filter(item => item?.download /*&& !item?.isLinked()*/ && item?.checked())
 					.length,
 
-			tagsAllowed: () => FolderUserStore.currentFolder() ? FolderUserStore.currentFolder().tagsAllowed() : false,
+			tagsAllowed: () => FolderUserStore.currentFolder()?.tagsAllowed(),
 
 			messageVisibility: () => !MessageUserStore.loading() && !!currentMessage(),
 
@@ -523,6 +523,17 @@ export class MailMessageView extends AbstractViewRight {
 				subject: i18n('READ_RECEIPT/SUBJECT', { SUBJECT: oMessage.subject() }),
 				Text: i18n('READ_RECEIPT/BODY', { 'READ-RECEIPT': AccountUserStore.email() })
 			});
+		}
+	}
+
+	newTag() {
+		let message = currentMessage();
+		if (message) {
+			let keyword = prompt(i18n('MESSAGE/NEW_TAG'), '')?.trim();
+			if (keyword.length) {
+				message.toggleTag(keyword);
+				FolderUserStore.currentFolder().permanentFlags.push(keyword);
+			}
 		}
 	}
 

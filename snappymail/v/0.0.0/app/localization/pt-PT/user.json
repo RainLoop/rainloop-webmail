@@ -148,7 +148,8 @@
 		"LINK_DOWNLOAD_AS_ZIP": "Transferir em arquivo zip",
 		"SPAM_SCORE": "Pontuação de Spam",
 		"HAS_VIRUS_WARNING": "AVISO: vírus detetado",
-		"TAGS": "Marcadores"
+		"TAGS": "Marcadores",
+		"NEW_TAG": "New tag"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Importante",

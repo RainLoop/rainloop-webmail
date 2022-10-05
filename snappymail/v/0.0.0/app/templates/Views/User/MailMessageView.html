@@ -197,9 +197,14 @@
 					<span data-bind="html: message().tagsToHTML()"></span>
 					<div class="btn-group" data-bind="registerBootstrapDropdown: true" style="display: inline-block">
 						<a class="btn btn-thin btn-transparent dropdown-toggle fontastic" id="tags-dropdown-id" href="#" tabindex="-1">☰</a>
-						<menu class="dropdown-menu right-edge" role="menu" aria-labelledby="tags-dropdown-id" data-bind="foreach: message().tagOptions()">
-							<li role="presentation">
-								<a href="#" tabindex="-1" data-icon="☐" data-bind="click: toggle, text: label, title: value, attr: { class: css, 'data-icon': checked ? '☑' : '☐' }"></a>
+						<menu class="dropdown-menu right-edge" role="menu" aria-labelledby="tags-dropdown-id">
+							<div data-bind="foreach: message().tagOptions()">
+								<li role="presentation">
+									<a href="#" tabindex="-1" data-icon="☐" data-bind="click: toggle, text: label, title: value, attr: { class: css, 'data-icon': checked ? '☑' : '☐' }"></a>
+								</li>
+							</div>
+							<li role="presentation" class="dividerbar">
+								<a href="#" tabindex="-1" data-icon="✚" data-bind="click: newTag" data-i18n="MESSAGE/NEW_TAG"></a>
 							</li>
 						</menu>
 					</div>
