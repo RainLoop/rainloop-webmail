@@ -56,7 +56,7 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 
 			selectedDates: () => {
 				translatorTrigger();
-				let prefix = 'SEARCH/LABEL_DATE_';
+				let prefix = 'SEARCH/DATE_';
 				return [
 					{ id: -1, name: i18n(prefix + 'ALL') },
 					{ id: 3, name: i18n(prefix + '3_DAYS') },
@@ -70,7 +70,7 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 
 			selectedTree: () => {
 				translatorTrigger();
-				let prefix = 'SEARCH/LABEL_SUBFOLDERS_';
+				let prefix = 'SEARCH/SUBFOLDERS_';
 				return [
 					{ id: '', name: i18n(prefix + 'NONE') },
 					{ id: 'subtree-one', name: i18n(prefix + 'SUBTREE_ONE') },
