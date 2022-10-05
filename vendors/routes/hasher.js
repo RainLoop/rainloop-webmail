@@ -14,7 +14,7 @@
     const
     _hashValRegexp = /#(.*)$/,
     _hashRegexp = /^[#/]+/,
-    _hashTrim = /^\/|\$/g,
+    _hashTrim = /^\/+/g,
     _trimHash = hash => hash?.replace(_hashTrim, '') || '',
     _getWindowHash = () => {
         //parsed full URL instead of getting window.location.hash because Firefox decode hash value (and all the other browsers don't)
