@@ -26,7 +26,7 @@
 		"LABEL_DOMAINS_NAME": "Domains",
 		"LABEL_SECURITY_NAME": "Sicherheit",
 		"LABEL_PACKAGES_NAME": "Erweiterungen",
-		"LABEL_CONFIG_NAME": "Config",
+		"LABEL_CONFIG_NAME": "Konfig",
 		"LABEL_ABOUT_NAME": "Über"
 	},
 	"TAB_GENERAL": {
@@ -108,7 +108,7 @@
 		"HTML_NEW_VERSION": "Neue Version <b>%VERSION%<\/b> verfügbar.",
 		"LABEL_UPDATING": "Aktualisiere",
 		"LABEL_CHECKING": "Überprüfe auf Aktualisierungen",
-		"BUTTON_RELEASES": "Releases"
+		"BUTTON_RELEASES": "Veröffentlichungen"
 	},
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Alias hinzufügen",
@@ -166,9 +166,9 @@
 		"UNKNOWN_ERROR": "Unbekannter Fehler"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
+		"REQUEST_ERROR": "Anfrage fehlgeschlagen",
+		"REQUEST_ABORTED": "Anfrage abgebrochen",
+		"REQUEST_TIMEOUT": "Antrag auf Auslieferung",
 		"INVALID_TOKEN": "Ungültiger Token",
 		"AUTH_ERROR": "Authentifizierung fehlgeschlagen",
 		"DOMAIN_ALREADY_EXISTS": "Diese Domain existiert bereits",
