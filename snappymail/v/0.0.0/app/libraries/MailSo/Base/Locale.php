@@ -75,40 +75,24 @@ abstract class Locale
 
 	public static function DetectSystemCharset() : string
 	{
-		$sResult = '';
-		$sLocale = \setlocale(LC_ALL, '');
-		$sLocaleLower = \strtolower(\trim($sLocale));
-
-		foreach (static::$aLocaleMapping as $sKey => $sValue)
-		{
-			if (false !== \strpos($sLocaleLower, $sKey) ||
-				false !== \strpos($sLocaleLower, '.'.$sValue))
-			{
-				$sResult = $sValue;
-				break;
+		$sLocale = \strtolower(\trim(\setlocale(LC_ALL, '')));
+		foreach (static::$aLocaleMapping as $sKey => $sValue) {
+			if (\str_contains($sLocale, $sKey) || \str_contains($sLocale, '.'.$sValue)) {
+				return $sValue;
 			}
 		}
-
-		return $sResult;
+		return '';
 	}
 
 	public static function ConvertSystemString(string $sSrt) : string
 	{
 		$sSrt = \trim($sSrt);
-		if (!empty($sSrt) && !Utils::IsUtf8($sSrt))
-		{
+		if (!empty($sSrt) && !Utils::IsUtf8($sSrt)) {
 			$sCharset = static::DetectSystemCharset();
-			if (!empty($sCharset))
-			{
-				$sSrt = Utils::ConvertEncoding(
-					$sSrt, $sCharset, Enumerations\Charset::UTF_8);
-			}
-			else
-			{
-				$sSrt = \utf8_encode($sSrt);
-			}
+			$sSrt = $sCharset
+				? Utils::ConvertEncoding($sSrt, $sCharset, Enumerations\Charset::UTF_8)
+				: \mb_convert_encoding($sSrt, 'UTF-8', 'ISO-8859-1');
 		}
-
 		return $sSrt;
 	}
 

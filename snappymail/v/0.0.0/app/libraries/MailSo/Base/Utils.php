@@ -183,22 +183,12 @@ abstract class Utils
 			return $sInputString;
 		}
 
-		if ($sToEncoding === Enumerations\Charset::UTF_8) {
-			if ($sFromEncoding === Enumerations\Charset::ISO_8859_1) {
-				return \utf8_encode($sInputString);
-			}
-			if ($sFromEncoding === 'utf7-imap') {
-				return static::Utf7ModifiedToUtf8($sInputString);
-			}
+		if ($sToEncoding === Enumerations\Charset::UTF_8 && $sFromEncoding === 'utf7-imap') {
+			return static::Utf7ModifiedToUtf8($sInputString);
 		}
 
-		if ($sFromEncoding === Enumerations\Charset::UTF_8) {
-			if ($sToEncoding === Enumerations\Charset::ISO_8859_1) {
-				return \utf8_decode($sInputString);
-			}
-			if ($sToEncoding === 'utf7-imap') {
-				return static::Utf8ToUtf7Modified($sInputString);
-			}
+		if ($sFromEncoding === Enumerations\Charset::UTF_8 && $sToEncoding === 'utf7-imap') {
+			return static::Utf8ToUtf7Modified($sInputString);
 		}
 
 		return static::MbConvertEncoding($sInputString, $sFromEncoding, $sToEncoding);
@@ -1129,9 +1119,10 @@ abstract class Utils
 	{
 		$sResult = \is_callable('imap_mutf7_to_utf8')
 			? \imap_mutf7_to_utf8($sStr)
-			: \mb_convert_encoding($sStr, 'UTF-8', 'UTF7-IMAP');
-//			static::MbConvertEncoding($sStr, 'UTF7-IMAP', 'UTF-8');
-//		$sResult = \UConverter::transcode($sStr, \UConverter::UTF8, \UConverter::IMAP_MAILBOX);
+//			: \mb_convert_encoding($sStr, 'UTF-8', 'UTF7-IMAP');
+			: static::MbConvertEncoding($sStr, 'UTF7-IMAP', 'UTF-8');
+		// ucnv U_FILE_ACCESS_ERROR
+//		$sResult = \UConverter::transcode($sStr, \UConverter::UTF8, \UConverter::IMAP_MAILBOX, ['to_subst' => '�']);
 		return (false === $sResult) ? $sStr : $sResult;
 	}
 
@@ -1139,8 +1130,9 @@ abstract class Utils
 	{
 		$sResult = \is_callable('imap_utf8_to_mutf7')
 			? \imap_utf8_to_mutf7($sStr)
-			: \mb_convert_encoding($sStr, 'UTF7-IMAP', 'UTF-8');
-//			static::MbConvertEncoding($sStr, 'UTF-8', 'UTF7-IMAP');
+//			: \mb_convert_encoding($sStr, 'UTF7-IMAP', 'UTF-8');
+			: static::MbConvertEncoding($sStr, 'UTF-8', 'UTF7-IMAP');
+		// ucnv U_FILE_ACCESS_ERROR
 //		$sResult = \UConverter::transcode($sStr, \UConverter::IMAP_MAILBOX, \UConverter::UTF8);
 		return (false === $sResult) ? $sStr : $sResult;
 	}

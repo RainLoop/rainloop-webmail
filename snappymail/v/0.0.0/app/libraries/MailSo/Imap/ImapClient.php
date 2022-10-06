@@ -219,7 +219,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 			else
 			{
-				$sPassword = $this->EscapeString(\utf8_decode($sPassword));
+				$sPassword = $this->EscapeString(\mb_convert_encoding($sPassword, 'ISO-8859-1', 'UTF-8'));
 				if ($this->oLogger)
 				{
 					$this->oLogger->AddSecret($sPassword);

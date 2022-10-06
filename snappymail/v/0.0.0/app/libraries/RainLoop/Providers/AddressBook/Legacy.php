@@ -41,7 +41,7 @@ class Legacy
 		$sValue = \trim($oProp);
 		if ($bOldVersion && !isset($oProp->parameters['CHARSET'])) {
 			if (\strlen($sValue)) {
-				$sEncValue = \utf8_encode($sValue);
+				$sEncValue = \mb_convert_encoding($sValue, 'UTF-8', 'ISO-8859-1');
 				if (\strlen($sEncValue)) {
 					$sValue = $sEncValue;
 				}
@@ -67,7 +67,7 @@ class Legacy
 				$sValue = \trim($sValue);
 				if ($bOldVersion && !isset($oVCard->N->parameters['CHARSET'])) {
 					if (\strlen($sValue)) {
-						$sEncValue = \utf8_encode($sValue);
+						$sEncValue = \mb_convert_encoding($sValue, 'UTF-8', 'ISO-8859-1');
 						if (\strlen($sEncValue)) {
 							$sValue = $sEncValue;
 						}
