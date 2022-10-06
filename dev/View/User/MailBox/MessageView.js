@@ -36,7 +36,7 @@ import { MessageFlagsCache } from 'Common/Cache';
 import { AppUserStore } from 'Stores/User/App';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { AccountUserStore } from 'Stores/User/Account';
-import { FolderUserStore } from 'Stores/User/Folder';
+import { FolderUserStore, isAllowedKeyword } from 'Stores/User/Folder';
 import { MessageUserStore } from 'Stores/User/Message';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { ThemeStore } from 'Stores/Theme';
@@ -529,8 +529,8 @@ export class MailMessageView extends AbstractViewRight {
 	newTag() {
 		let message = currentMessage();
 		if (message) {
-			let keyword = prompt(i18n('MESSAGE/NEW_TAG'), '')?.replace(/\s+/g, '');
-			if (keyword.length) {
+			let keyword = prompt(i18n('MESSAGE/NEW_TAG'), '')?.replace(/[\s\\]+/g, '');
+			if (keyword.length && isAllowedKeyword(keyword)) {
 				message.toggleTag(keyword);
 				FolderUserStore.currentFolder().permanentFlags.push(keyword);
 			}

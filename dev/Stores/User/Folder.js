@@ -24,23 +24,22 @@ ignoredKeywords = [
 	// Mailo
 	'sent',
 	// KMail
-	'$attachment',
 	'$encrypted',
 	'$error',
 	'$ignored',
 	'$invitation',
 	'$queued',
-	'$replied',
 	'$sent',
 	'$signed',
 	'$todo',
 	'$watched',
 	// GMail
-	'$replied',
-	'$attachment',
 	'$notphishing',
 	'junk',
 	'nonjunk',
+	// KMail & GMail
+	'$attachment',
+	'$replied',
 	// Others
 	'$readreceipt'
 ],

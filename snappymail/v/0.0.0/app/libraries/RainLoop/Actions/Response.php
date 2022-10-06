@@ -194,19 +194,6 @@ trait Response
 				'FileName' => (\strlen($sSubject) ? \MailSo\Base\Utils::ClearXss($sSubject) : 'message-'.$mResult['Uid']) . '.eml'
 			));
 
-			// https://datatracker.ietf.org/doc/html/rfc5788#section-3.4.1
-			$key = \array_search('$readreceipt', $mResult['Flags']);
-			if (false !== $key) {
-				$mResult['Flags'][$key] = '$mdnsent';
-			}
-			// KMail
-			$key = \array_search('$replied', $mResult['Flags']);
-			if (false !== $key) {
-				$mResult['Flags'][$key] = '\\answered';
-			}
-
-			$mResult['Flags'] = \array_unique($mResult['Flags']);
-
 			if ('Message' === $sParent)
 			{
 				$mResult['DraftInfo'] = $mResponse->DraftInfo();

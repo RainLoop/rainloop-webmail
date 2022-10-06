@@ -647,6 +647,15 @@ class Message implements \JsonSerializable
 			$this->aFlagsLowerCase
 		), true);
 */
+		// https://datatracker.ietf.org/doc/html/rfc5788#section-3.4.1
+		// Thunderbird $label1 is same as $Important?
+		// Thunderbird $label4 is same as $todo?
+		$aFlags = \array_unique(\str_replace(
+			['$readreceipt', '$replied',  /* 'junk',  'nonjunk',  '$queued',        '$sent',      'sent'*/],
+			['$mdnsent',     '\\answered',/* '$junk', '$notjunk', '$submitpending', '$submitted', '$submitted'*/],
+			$this->aFlagsLowerCase
+		));
+
 		return array(
 			'@Object' => 'Object/Message',
 			'Folder' => $this->sFolder,
@@ -676,7 +685,7 @@ class Message implements \JsonSerializable
 
 			'Attachments' => $this->oAttachments ? $this->oAttachments->SpecData() : null,
 
-			'Flags' => $this->aFlagsLowerCase,
+			'Flags' => $aFlags,
 
 			// https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.1
 			'id' => $this->sEmailId,
