@@ -308,6 +308,7 @@ export const
 						attachment = findAttachmentByCid(value);
 						if (attachment?.download) {
 							oElement.src = attachment.linkPreview();
+							oElement.title += ' ('+attachment.fileName+')';
 							attachment.isInline(true);
 							attachment.isLinked(true);
 						}

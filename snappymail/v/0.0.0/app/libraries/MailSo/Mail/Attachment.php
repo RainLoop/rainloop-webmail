@@ -92,7 +92,7 @@ class Attachment implements \JsonSerializable
 			return \str_replace('/', $sIdx.'.', $sMimeType);
 		}
 
-		return ($this->oBodyStructure->IsInline() ? 'part' : 'inline' ) . $sIdx;
+		return ($this->oBodyStructure->IsInline() ? 'inline' : 'part' ) . $sIdx;
 	}
 
 	public function MimeType() : string

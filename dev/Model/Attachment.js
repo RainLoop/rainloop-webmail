@@ -134,11 +134,17 @@ export class AttachmentModel extends AbstractModel {
 	}
 
 	/**
+	 * @returns {boolean}
+	 */
+	hasThumbnail() {
+		return this.isThumbnail && !this.isLinked();
+	}
+
+	/**
 	 * @returns {string}
 	 */
-	linkThumbnailPreviewStyle() {
-//		return (this.isThumbnail && !this.isLinked())
-		return this.isThumbnail
+	thumbnailStyle() {
+		return this.hasThumbnail()
 			? 'background:url(' + serverRequestRaw('ViewThumbnail', this.download) + ')'
 			: '';
 	}
