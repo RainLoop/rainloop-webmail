@@ -185,17 +185,23 @@ abstract class SearchCriterias
 					if (\is_string($sRawValue) && '' === \trim($sRawValue)) {
 						continue;
 					}
-					$sValue = static::escapeSearchString($oImapClient, $sRawValue);
 					switch ($sName) {
 						case 'FROM':
 						case 'SUBJECT':
 						case 'BODY': // $sValue = \trim(\MailSo\Base\Utils::StripSpaces($sValue), '"');
+							$aCriteriasResult[] = $sName;
+							$aCriteriasResult[] = static::escapeSearchString($oImapClient, $sRawValue);
+							break;
 						case 'KEYWORD':
 							$aCriteriasResult[] = $sName;
-							$aCriteriasResult[] = $sValue;
+							$aCriteriasResult[] = static::escapeSearchString(
+								$oImapClient,
+								\MailSo\Base\Utils::Utf8ToUtf7Modified($sRawValue)
+							);
 							break;
 
 						case 'TO':
+							$sValue = static::escapeSearchString($oImapClient, $sRawValue);
 							$aCriteriasResult[] = 'OR';
 							$aCriteriasResult[] = 'TO';
 							$aCriteriasResult[] = $sValue;
@@ -293,7 +299,7 @@ abstract class SearchCriterias
 		return $sCriteriasResult ?: 'ALL';
 	}
 
-	public static function escapeSearchString(\MailSo\Imap\ImapClient $oImapClient, string $sSearch) : string
+	private static function escapeSearchString(\MailSo\Imap\ImapClient $oImapClient, string $sSearch) : string
 	{
 		return !\MailSo\Base\Utils::IsAscii($sSearch)
 			? '{'.\strlen($sSearch).'}'."\r\n".$sSearch : $oImapClient->EscapeString($sSearch);
