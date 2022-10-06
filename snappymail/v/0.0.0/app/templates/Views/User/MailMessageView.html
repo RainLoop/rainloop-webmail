@@ -194,7 +194,7 @@
 				<!-- ko if: tagsAllowed -->
 				<div class="messageTags">
 					<span data-i18n="MESSAGE/TAGS"></span>:
-					<span data-bind="html: message().tagsToHTML()"></span>
+					<span class="messageAssignedTags" data-bind="html: message().tagsToHTML()"></span>
 					<div class="btn-group" data-bind="registerBootstrapDropdown: true" style="display: inline-block">
 						<a class="btn btn-thin btn-transparent dropdown-toggle fontastic" id="tags-dropdown-id" href="#" tabindex="-1">☰</a>
 						<menu class="dropdown-menu right-edge" role="menu" aria-labelledby="tags-dropdown-id">

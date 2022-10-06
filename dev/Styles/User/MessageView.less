@@ -97,8 +97,16 @@ html.rl-no-preview-pane {
 
 	.messageTags {
 		margin-top: 6px;
+		align-items: baseline;
+		display: flex;
 	}
-	.messageTags span span {
+	.messageTags > * {
+		flex: 0 0 0;
+	}
+	.messageAssignedTags {
+		flex: 1 0 0;
+	}
+	.messageAssignedTags span {
 		border: 1px solid #808080;
 		padding: 2px;
 	}
