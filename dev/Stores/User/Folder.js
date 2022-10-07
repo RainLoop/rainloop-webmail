@@ -41,7 +41,8 @@ ignoredKeywords = [
 	'$attachment',
 	'$replied',
 	// Others
-	'$readreceipt'
+	'$readreceipt',
+	'$notdelivered'
 ],
 
 isAllowedKeyword = value => '\\' != value[0] && !ignoredKeywords.includes(value.toLowerCase()),
