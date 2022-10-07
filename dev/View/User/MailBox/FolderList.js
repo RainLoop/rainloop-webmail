@@ -108,11 +108,13 @@ export class MailFolderList extends AbstractViewLeft {
 							setFolderHash(folder.fullName, '');
 						}
 */
-						hasher.setHash(
-							mailBox(folder.fullNameHash, 1,
-								(event.target.matches('.flag-icon') && !folder.isFlagged()) ? 'flagged' : ''
-							)
-						);
+						let search = '';
+						if (event.target.matches('.flag-icon') && !folder.isFlagged()) {
+							search = 'flagged';
+						} else if (folder.printableUnreadCount() && event.clientX > el.getBoundingClientRect().right - 25) {
+							search = 'unseen';
+						}
+						hasher.setHash(mailBox(folder.fullNameHash, 1, search));
 					}
 
 					AppUserStore.focusedState(Scope.MessageList);
