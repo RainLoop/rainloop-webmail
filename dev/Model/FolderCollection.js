@@ -13,8 +13,6 @@ import { FolderUserStore } from 'Stores/User/Folder';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
-import ko from 'ko';
-
 import { sortFolders } from 'Common/Folders';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
@@ -90,6 +88,8 @@ export const
 
 		Local.set(ClientSideKeyNameExpandedFolders, aExpandedList);
 	},
+
+	foldersFilter = ko.observable(''),
 
 	/**
 	 * @param {?Function} fCallback
@@ -385,7 +385,11 @@ export class FolderModel extends AbstractModel {
 				 */
 				visible: () => {
 					const selectable = folder.canBeSelected(),
-						visible = (folder.isSubscribed() | !SettingsUserStore.hideUnsubscribed()) && selectable;
+						name = folder.name(),
+						filter = foldersFilter(),
+						visible = (folder.isSubscribed() | !SettingsUserStore.hideUnsubscribed())
+							&& selectable
+							&& (!filter || name.toLowerCase().includes(filter.toLowerCase()));
 					return folder.hasVisibleSubfolders() | visible;
 				},
 

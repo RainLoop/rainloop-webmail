@@ -22,7 +22,7 @@ import { ComposePopupView } from 'View/Popup/Compose';
 
 import { moveMessagesToFolder } from 'Common/Folders';
 
-import { setExpandedFolder } from 'Model/FolderCollection';
+import { setExpandedFolder, foldersFilter } from 'Model/FolderCollection';
 
 export class MailFolderList extends AbstractViewLeft {
 	constructor() {
@@ -40,7 +40,11 @@ export class MailFolderList extends AbstractViewLeft {
 
 		this.allowContacts = AppUserStore.allowContacts();
 
+		this.foldersFilter = foldersFilter;
+
 		addComputablesTo(this, {
+			foldersFilterVisible: () => 20 < FolderUserStore.folderList().CountRec,
+
 			folderListVisible: () => {
 				let multiple = false,
 					inbox, visible,
