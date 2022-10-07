@@ -56,3 +56,39 @@
 @import "User/Animations.less";
 
 @import "_End.less";
+
+@media print {
+	body, html {
+		height: auto;
+		overflow: auto;
+	}
+	body, #rl-right {
+		position: initial;
+	}
+	#rl-left {
+		display: none;
+	}
+	.message-selected {
+		.close,
+		.infoParent,
+		.messageView .controls-handle,
+		#tags-dropdown-id,
+		.message-fixed-button-toolbar,
+		#V-MailMessageList,
+		#V-SystemDropDown,
+		.bodySubHeader {
+			display: none;
+		}
+		#V-MailMessageView {
+			left: 0;
+			position: initial;
+		}
+		.messageView,
+		.messageView .b-content,
+		.messageView .b-message,
+		#messageItem,
+		#messageItem .b-text-part {
+			height: auto;
+		}
+	}
+}

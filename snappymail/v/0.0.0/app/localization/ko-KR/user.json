@@ -503,7 +503,6 @@
 		"LABEL_BLOCKQUOTES_TOGGLE": "메시지 인용구 전환",
 		"LABEL_THREAD_NEXT": "대화에서 다음 메시지",
 		"LABEL_THREAD_PREV": "대화에서 이전 메시지",
-		"LABEL_PRINT": "인쇄",
 		"LABEL_EXIT_FULLSCREEN": "전체화면 모드 나가기",
 		"LABEL_CLOSE_MESSAGE": "메시지 닫기 (미리보기 화면 레이아웃 없음)",
 		"LABEL_SWITCH_TO_LIST": "메시지 목록으로 촛점 전환",

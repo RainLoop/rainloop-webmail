@@ -503,7 +503,6 @@
 		"LABEL_BLOCKQUOTES_TOGGLE": "Toggle message blockquotes",
 		"LABEL_THREAD_NEXT": "Next message in thread",
 		"LABEL_THREAD_PREV": "Previous message in thread",
-		"LABEL_PRINT": "Εκτύπωση",
 		"LABEL_EXIT_FULLSCREEN": "Exit fullscreen mode",
 		"LABEL_CLOSE_MESSAGE": "Close message (No preview pane layout)",
 		"LABEL_SWITCH_TO_LIST": "Switch focus back to message list",

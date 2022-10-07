@@ -408,12 +408,6 @@ export class MailMessageView extends AbstractViewRight {
 			return false;
 		});
 
-		// print
-		addShortcut('p,printscreen', 'meta', [Scope.MessageView, Scope.MessageList], () => {
-			currentMessage()?.printMessage();
-			return false;
-		});
-
 		// delete
 		addShortcut('delete', '', Scope.MessageView, () => {
 			this.deleteCommand();

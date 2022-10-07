@@ -503,7 +503,6 @@
 		"LABEL_BLOCKQUOTES_TOGGLE": "Cambiar blockquotes de mensaje",
 		"LABEL_THREAD_NEXT": "Próximo mensaje del hilo",
 		"LABEL_THREAD_PREV": "Mensaje anterior del hilo",
-		"LABEL_PRINT": "Imprimir",
 		"LABEL_EXIT_FULLSCREEN": "Salir del modo de pantalla completa",
 		"LABEL_CLOSE_MESSAGE": "Cerrar el mensaje (No hay diseño panel de vista previa)",
 		"LABEL_SWITCH_TO_LIST": "Cambiar foco de nuevo a la lista de mensajes",

@@ -503,7 +503,6 @@
 		"LABEL_BLOCKQUOTES_TOGGLE": "メッセージ引用の切り替え",
 		"LABEL_THREAD_NEXT": "スレッドの次のメーッセージ",
 		"LABEL_THREAD_PREV": "スレッドの前のメーッセージ",
-		"LABEL_PRINT": "印刷",
 		"LABEL_EXIT_FULLSCREEN": "フルスクリーンモードの終了",
 		"LABEL_CLOSE_MESSAGE": "メッセージを閉じる(非プレビューペインレイアウト)",
 		"LABEL_SWITCH_TO_LIST": "メッセージ一覧へ切り替える",
