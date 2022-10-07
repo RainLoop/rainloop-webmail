@@ -124,7 +124,7 @@ export class MailFolderList extends AbstractViewLeft {
 
 		addShortcut('arrowup,arrowdown', '', Scope.FolderList, event => {
 			let items = [], index = 0;
-			dom.querySelectorAll('li a:not(.hidden)').forEach(node => {
+			dom.querySelectorAll('li a').forEach(node => {
 				if (node.offsetHeight || node.getClientRects().length) {
 					items.push(node);
 					if (node.matches('.focused')) {
@@ -147,7 +147,7 @@ export class MailFolderList extends AbstractViewLeft {
 		});
 
 		addShortcut('enter,open', '', Scope.FolderList, () => {
-			const item = qs('li a:not(.hidden).focused');
+			const item = qs('li a.focused');
 			if (item) {
 				AppUserStore.focusedState(Scope.MessageList);
 				item.click();
@@ -157,7 +157,7 @@ export class MailFolderList extends AbstractViewLeft {
 		});
 
 		addShortcut('space', '', Scope.FolderList, () => {
-			const item = qs('li a:not(.hidden).focused'),
+			const item = qs('li a.focused'),
 				folder = item && ko.dataFor(item);
 			if (folder) {
 				const collapsed = folder.collapsed();

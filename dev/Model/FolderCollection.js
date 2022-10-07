@@ -393,8 +393,6 @@ export class FolderModel extends AbstractModel {
 					return folder.hasVisibleSubfolders() | visible;
 				},
 
-				hidden: () => !folder.selectable() && (folder.isSystemFolder() | !folder.hasVisibleSubfolders()),
-
 				printableUnreadCount: () => {
 					const count = folder.totalEmails(),
 						unread = folder.unreadEmails(),
