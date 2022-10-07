@@ -37,7 +37,7 @@ tar -xzf /tmp/snappymail_latest.tar.gz
 echo -e "\033[1;33mSet permissions\033[0m"
 find . -type d -exec chmod 755 {} \;
 find . -type f -exec chmod 644 {} \;
-chmod u+x upgrade_snappymail
+chmod u+x bin/upgrade.sh
 chown -R $OWNERGROUP *
 
 echo -e "\033[1;32mFinished with snappymail upgrade from $OLD_VERSION to $NEW_VERSION... \033[0m"
