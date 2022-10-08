@@ -22,7 +22,7 @@ LATEST_URL="https://snappymail.eu/repository/latest.tar.gz"
 OWNERGROUP=`stat -c "%U:%G" snappymail`
 OLD_VERSION=`grep "define('APP_VERSION" index.php | awk -F\' '{print $4}'`
 
-# Safty First ... make a backup
+# Safety First ... make a backup
 DSTAMP=`date +%Y-%m-%d`
 echo -e "\033[1;33mBacking up snappymail $OLD_VERSION to ../backup_snappymail_${DSTAMP}.tar.gz\033[0m"
 tar -czf ../backup_snappymail_${DSTAMP}.tar.gz .
@@ -39,7 +39,7 @@ tar -xzf /tmp/snappymail_latest.tar.gz
 echo -e "\033[1;33mSet permissions\033[0m"
 find . -type d -exec chmod 755 {} \;
 find . -type f -exec chmod 644 {} \;
-chmod u+x cli/upgrade.sh
+chmod u+x "${SCRIPT_DIR}/upgrade.sh"
 chown -R $OWNERGROUP *
 
 echo -e "\033[1;32mFinished with snappymail upgrade from $OLD_VERSION to $NEW_VERSION... \033[0m"
