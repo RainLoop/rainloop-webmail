@@ -34,6 +34,7 @@ class Message implements \JsonSerializable
 		$iInternalTimeStampInUTC = 0,
 		$iHeaderTimeStampInUTC = 0,
 		$sHeaderDate = '',
+//		$aFlags = [],
 		$aFlagsLowerCase = [],
 
 		/**
@@ -189,11 +190,6 @@ class Message implements \JsonSerializable
 		return $this->sHeaderDate;
 	}
 
-	public function FlagsLowerCase() : array
-	{
-		return $this->aFlagsLowerCase;
-	}
-
 	public function From() : ?\MailSo\Mime\EmailCollection
 	{
 		return $this->oFrom;
@@ -293,12 +289,13 @@ class Message implements \JsonSerializable
 			$oBodyStructure = $oFetchResponse->GetFetchBodyStructure();
 		}
 
-		$aFlags = $oFetchResponse->GetFetchValue(FetchType::FLAGS);
+		$aFlags = $oFetchResponse->GetFetchValue(FetchType::FLAGS) ?: [];
 
 		$oMessage->sFolder = $sFolder;
 		$oMessage->iUid = (int) $oFetchResponse->GetFetchValue(FetchType::UID);
 		$oMessage->iSize = (int) $oFetchResponse->GetFetchValue(FetchType::RFC822_SIZE);
-		$oMessage->aFlagsLowerCase = \array_map('mb_strtolower', \array_map('\\MailSo\\Base\\Utils::Utf7ModifiedToUtf8', $aFlags ?: []));
+//		$oMessage->aFlags = $aFlags;
+		$oMessage->aFlagsLowerCase = \array_map('mb_strtolower', \array_map('\\MailSo\\Base\\Utils::Utf7ModifiedToUtf8', $aFlags));
 		$oMessage->iInternalTimeStampInUTC = \MailSo\Base\DateTimeHelper::ParseInternalDateString(
 			$oFetchResponse->GetFetchValue(FetchType::INTERNALDATE)
 		);

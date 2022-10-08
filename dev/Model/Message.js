@@ -141,7 +141,7 @@ export class MessageModel extends AbstractModel {
 							css: 'msgflag-' + lower,
 							value: value,
 							checked: this.flags().includes(lower),
-							label: i18n('MESSAGE_TAGS/'+lower, 0, lower),
+							label: i18n('MESSAGE_TAGS/'+lower, 0, value),
 							toggle: (/*obj*/) => toggleTag(this, value)
 						});
 					}
