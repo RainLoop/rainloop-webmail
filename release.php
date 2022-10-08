@@ -125,6 +125,9 @@ if ($options['docker']) {
 	$tar->buildFromDirectory('./', "@snappymail/v/{$package->version}@");
 }
 
+//$zip->addFile('cli/upgrade.sh');
+//$tar->addFile('cli/upgrade.sh');
+
 $zip->addFile('data/.htaccess');
 $tar->addFile('data/.htaccess');
 

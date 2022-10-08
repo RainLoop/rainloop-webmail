@@ -12,8 +12,10 @@
 
 if [[ $(id -u) -ne 0 ]] ; then echo -e "\033[1;31mPlease run as root\033[0m" ; exit 1 ; fi
 
-dir=$(pwd)
-if [ ! -d "$dir/snappymail/v" ] ; then echo -e "\033[1;31mThis script can only be run from the SnappyMail install directory\033[0m" ; exit 1 ; fi
+SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+cd "${SCRIPT_DIR}/.."
+
+if [ ! -d snappymail/v ] ; then echo -e "\033[1;31mThis script can only be run from the SnappyMail install directory\033[0m" ; exit 1 ; fi
 
 LATEST_URL="https://snappymail.eu/repository/latest.tar.gz"
 
@@ -37,7 +39,7 @@ tar -xzf /tmp/snappymail_latest.tar.gz
 echo -e "\033[1;33mSet permissions\033[0m"
 find . -type d -exec chmod 755 {} \;
 find . -type f -exec chmod 644 {} \;
-chmod u+x bin/upgrade.sh
+chmod u+x cli/upgrade.sh
 chown -R $OWNERGROUP *
 
 echo -e "\033[1;32mFinished with snappymail upgrade from $OLD_VERSION to $NEW_VERSION... \033[0m"
