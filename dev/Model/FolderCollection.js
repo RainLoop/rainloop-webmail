@@ -394,25 +394,10 @@ export class FolderModel extends AbstractModel {
 				},
 
 				printableUnreadCount: () => {
-					const count = folder.totalEmails(),
+					const
 						unread = folder.unreadEmails(),
 						type = folder.type();
-
-					if (count) {
-						if (FolderType.Drafts === type) {
-							return count;
-						}
-						if (
-							unread &&
-							FolderType.Trash !== type &&
-							FolderType.Archive !== type &&
-							FolderType.Sent !== type
-						) {
-							return unread;
-						}
-					}
-
-					return null;
+					return ((!folder.isSystemFolder() || type == FolderType.Inbox) && unread) ? unread : null;
 				},
 
 				localName: () => {
