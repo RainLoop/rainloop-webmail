@@ -36,12 +36,14 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 */
 	public function MainFabrica(string $sName, &$mResult)
 	{
-		if ('suggestions' === $sName) {
-			if (!\is_array($mResult)) {
-				$mResult = array();
+		if (static::isLoggedIn()) {
+			if ('suggestions' === $sName) {
+				if (!\is_array($mResult)) {
+					$mResult = array();
+				}
+				include_once __DIR__ . '/NextcloudContactsSuggestions.php';
+				$mResult[] = new NextcloudContactsSuggestions();
 			}
-			include_once __DIR__ . '/NextcloudContactsSuggestions.php';
-			$mResult[] = new NextcloudContactsSuggestions();
 		}
 	}
 }

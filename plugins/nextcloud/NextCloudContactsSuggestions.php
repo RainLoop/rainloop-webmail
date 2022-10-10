@@ -12,7 +12,7 @@ class NextcloudContactsSuggestions implements \RainLoop\Providers\Suggestions\IS
 		try
 		{
 			$sQuery = \trim($sQuery);
-			if ('' === $sQuery || !NextcloudPlugin::IsIntegrated()) {
+			if ('' === $sQuery) {
 				return [];
 			}
 
