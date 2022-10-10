@@ -3,32 +3,11 @@ import { Notification, UploadErrorCode } from 'Common/Enums';
 import { langLink } from 'Common/Links';
 import { doc, createElement } from 'Common/Globals';
 import { getKeyByValue, forEachObjectEntry } from 'Common/Utils';
+import { pInt } from 'Common/Utils';
 
 let I18N_DATA = {};
 
 const
-	i18nToNode = element => {
-		const key = element.dataset.i18n;
-		if (key) {
-			if ('[' === key.slice(0, 1)) {
-				switch (key.slice(0, 6)) {
-					case '[html]':
-						element.innerHTML = i18n(key.slice(6));
-						break;
-					case '[place':
-						element.placeholder = i18n(key.slice(13));
-						break;
-					case '[title':
-						element.title = i18n(key.slice(7));
-						break;
-					// no default
-				}
-			} else {
-				element.textContent = i18n(key);
-			}
-		}
-	},
-
 	init = () => {
 		if (rl.I18N) {
 			I18N_DATA = rl.I18N;
@@ -46,7 +25,7 @@ const
 	};
 
 export const
-	trigger = ko.observable(false),
+	translateTrigger = ko.observable(false),
 
 	/**
 	 * @param {string} key
@@ -56,17 +35,13 @@ export const
 	 */
 	i18n = (key, valueList, defaulValue) => {
 		let result = defaulValue || key;
-		if (key) {
-			let path = key.split('/');
-			if (I18N_DATA[path[0]] && path[1]) {
-				result = I18N_DATA[path[0]][path[1]] || result;
-			}
+		let path = key.split('/');
+		if (I18N_DATA[path[0]] && path[1]) {
+			result = I18N_DATA[path[0]][path[1]] || result;
 		}
-		if (valueList) {
-			forEachObjectEntry(valueList, (key, value) => {
-				result = result.replace('%' + key + '%', value);
-			});
-		}
+		valueList && forEachObjectEntry(valueList, (key, value) => {
+			result = result.replace('%' + key + '%', value);
+		});
 		return result;
 	},
 
@@ -76,7 +51,25 @@ export const
 	 */
 	i18nToNodes = element =>
 		setTimeout(() =>
-			element.querySelectorAll('[data-i18n]').forEach(item => i18nToNode(item))
+			element.querySelectorAll('[data-i18n]').forEach(element => {
+				const key = element.dataset.i18n;
+				if ('[' === key[0]) {
+					switch (key.slice(1, 6)) {
+						case 'html]':
+							element.innerHTML = i18n(key.slice(6));
+							break;
+						case 'place':
+							element.placeholder = i18n(key.slice(13));
+							break;
+						case 'title':
+							element.title = i18n(key.slice(7));
+							break;
+						// no default
+					}
+				} else {
+					element.textContent = i18n(key);
+				}
+			})
 		, 1),
 
 	timestampToString = (timeStampInUTC, formatStr) => {
@@ -141,10 +134,10 @@ export const
 	 * @param {Function} startCallback
 	 * @param {Function=} langCallback = null
 	 */
-	initOnStartOrLangChange = (startCallback, langCallback = null) => {
+	initOnStartOrLangChange = (startCallback, langCallback) => {
 		startCallback?.();
-		startCallback && trigger.subscribe(startCallback);
-		langCallback && trigger.subscribe(langCallback);
+		startCallback && translateTrigger.subscribe(startCallback);
+		langCallback && translateTrigger.subscribe(langCallback);
 	},
 
 	/**
@@ -154,13 +147,13 @@ export const
 	 * @returns {string}
 	 */
 	getNotification = (code, message = '', defCode = 0) => {
-		code = parseInt(code, 10) || 0;
+		code = pInt(code);
 		if (Notification.ClientViewError === code && message) {
 			return message;
 		}
 
 		return getNotificationMessage(code)
-			|| getNotificationMessage(parseInt(defCode, 10))
+			|| getNotificationMessage(pInt(defCode))
 			|| '';
 	},
 
@@ -185,7 +178,7 @@ export const
 				if (init()) {
 					i18nToNodes(doc);
 					admin || reloadTime();
-					trigger(!trigger());
+					translateTrigger(!translateTrigger());
 				}
 				script.remove();
 				resolve();

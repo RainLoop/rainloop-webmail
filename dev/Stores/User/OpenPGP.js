@@ -47,9 +47,7 @@ const
 			i = arrayLength(armoredKeys);
 		while (i--) {
 			key = await openpgp.readKey({armoredKey:armoredKeys[i]});
-			if (!key.err) {
-				keys.push(new OpenPgpKeyModel(armoredKeys[i], key));
-			}
+			key.err || keys.push(new OpenPgpKeyModel(armoredKeys[i], key));
 		}
 		return keys;
 	},

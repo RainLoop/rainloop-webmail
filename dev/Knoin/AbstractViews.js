@@ -95,7 +95,7 @@ export class AbstractViewLeft extends AbstractView
 {
 	constructor(templateID)
 	{
-		super(templateID, 'Left');
+		super(templateID, 'left');
 		this.leftPanelDisabled = leftPanelDisabled;
 	}
 }
@@ -104,7 +104,7 @@ export class AbstractViewRight extends AbstractView
 {
 	constructor(templateID)
 	{
-		super(templateID, 'Right');
+		super(templateID, 'right');
 	}
 }
 
@@ -151,7 +151,7 @@ export class AbstractViewSettings
 
 export class AbstractViewLogin extends AbstractView {
 	constructor(templateID) {
-		super(templateID, 'Content');
+		super(templateID, 'content');
 		this.formError = ko.observable(false).extend({ falseTimeout: 500 });
 	}
 

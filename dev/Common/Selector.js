@@ -51,15 +51,20 @@ export class Selector {
 		this.sLastUid = '';
 		this.oCallbacks = {};
 
-		const itemSelectedThrottle = (item => this.itemSelected(item)).debounce(300);
+		const
+			itemSelected = item => {
+				if (koList.hasChecked()) {
+					item || this.oCallbacks.ItemSelect?.(null);
+				} else if (item) {
+					this.oCallbacks.ItemSelect?.(item);
+				}
+			},
+
+			itemSelectedThrottle = (item => itemSelected(item)).debounce(300);
 
 		this.listChecked.subscribe(items => {
 			if (items.length) {
-				if (koSelectedItem()) {
-					koSelectedItem(null);
-				} else {
-					koSelectedItem.valueHasMutated?.();
-				}
+				koSelectedItem() ? koSelectedItem(null) : koSelectedItem.valueHasMutated?.();
 			} else if (this.autoSelect()) {
 				koSelectedItem(koFocusedItem());
 			}
@@ -70,11 +75,9 @@ export class Selector {
 		koSelectedItem.subscribe(item => {
 			if (item) {
 				koList.forEach(subItem => subItem.checked(false));
-				if (selectedItemUseCallback) {
-					itemSelectedThrottle(item);
-				}
-			} else if (selectedItemUseCallback) {
-				this.itemSelected();
+				selectedItemUseCallback && itemSelectedThrottle(item);
+			} else {
+				selectedItemUseCallback && itemSelected();
 			}
 		});
 
@@ -185,14 +188,6 @@ export class Selector {
 			mSelected = null;
 			selectedItemUseCallback = true;
 		});
-	}
-
-	itemSelected(item) {
-		if (this.list.hasChecked()) {
-			item || this.oCallbacks.ItemSelect?.(null);
-		} else if (item) {
-			this.oCallbacks.ItemSelect?.(item);
-		}
 	}
 
 	unselect() {
@@ -376,21 +371,17 @@ export class Selector {
 	 * @param {Object} item
 	 * @param {Object=} event
 	 */
-	actionClick(item, event = null) {
+	actionClick(item, event) {
 		if (item) {
-			let click = true;
-			if (event) {
-				if (event.shiftKey && !event.ctrlKey && !event.metaKey && !event.altKey) {
-					click = false;
-					this.sLastUid || (this.sLastUid = this.getItemUid(item));
-
-					item.checked(!item.checked());
-
+			let select = true;
+			if (event && !event.altKey) {
+				if (event.shiftKey && !event.ctrlKey && !event.metaKey) {
+					select = false;
 					const uid = this.getItemUid(item);
 					if (uid && this.sLastUid && uid !== this.sLastUid) {
 						let changeRange = false,
 							isInRange = false,
-							checked = item.checked(),
+							checked = !item.checked(),
 							lineUid = '';
 						this.list().forEach(listItem => {
 							lineUid = this.getItemUid(listItem);
@@ -406,19 +397,17 @@ export class Selector {
 					this.sLastUid = uid;
 
 					this.focusedItem(item);
-				} else if (!event.shiftKey && (event.ctrlKey || event.metaKey) && !event.altKey) {
-					click = false;
+				} else if (!event.shiftKey && (event.ctrlKey || event.metaKey)) {
+					select = false;
 					this.focusedItem(item);
-
-					if (this.selectedItem() && item !== this.selectedItem()) {
-						this.selectedItem().checked(true);
+					const selected = this.selectedItem();
+					if (selected && item !== selected) {
+						selected.checked(true);
 					}
-
-					item.checked(!item.checked());
 				}
 			}
 
-			click && this.selectMessageItem(item);
+			select ? this.selectMessageItem(item) : item.checked(!item.checked());
 		}
 	}
 

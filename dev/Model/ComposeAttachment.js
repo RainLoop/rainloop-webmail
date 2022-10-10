@@ -38,12 +38,12 @@ export class ComposeAttachmentModel extends AbstractModel {
 		this.addComputables({
 			progressText: () => {
 				const p = this.progress();
-				return 0 === p ? '' : '' + (98 < p ? 100 : p) + '%';
+				return 1 > p ? '' : (100 < p ? 100 : p) + '%';
 			},
 
 			progressStyle: () => {
 				const p = this.progress();
-				return 0 === p ? '' : 'width:' + (98 < p ? 100 : p) + '%';
+				return 1 > p ? '' : 'width:' + (100 < p ? 100 : p) + '%';
 			},
 
 			title: () => this.error() || this.fileName(),
@@ -54,14 +54,9 @@ export class ComposeAttachmentModel extends AbstractModel {
 			},
 
 			mimeType: () => FileInfo.getContentType(this.fileName()),
-			fileExt: () => FileInfo.getExtension(this.fileName())
-		});
-	}
+			fileExt: () => FileInfo.getExtension(this.fileName()),
 
-	/**
-	 * @returns {string}
-	 */
-	iconClass() {
-		return FileInfo.getIconClass(this.fileExt(), this.mimeType());
+			iconClass: () => FileInfo.getIconClass(this.fileExt(), this.mimeType())
+		});
 	}
 }

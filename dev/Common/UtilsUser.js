@@ -57,11 +57,7 @@ computedPaginatorHelper = (koCurrentPage, koPageCount) => {
 					value: index.toString()
 				};
 
-				if (push) {
-					result.push(data);
-				} else {
-					result.unshift(data);
-				}
+				push ? result.push(data) : result.unshift(data);
 			};
 
 		let prev = 0,

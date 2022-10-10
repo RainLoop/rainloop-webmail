@@ -5,7 +5,7 @@ import { getNotification } from 'Common/Translator';
 
 let iJsonErrorCount = 0;
 
-const getURL = (add = '') => serverRequest('Json') + add,
+const getURL = (add = '') => serverRequest('Json') + pString(add),
 
 checkResponseError = data => {
 	const err = data ? data.ErrorCode : null;
@@ -109,10 +109,8 @@ export class AbstractFetchRemote
 						buffer = buffer.slice(result.index + 1);
 						re.lastIndex = 0;
 					}
-					if (buffer.length) {
-						// last line didn't end in a newline char
-						fCallback(buffer);
-					}
+					// last line didn't end in a newline char
+					buffer.length && fCallback(buffer);
 				};
 			reader.read().then(processText);
 		})
@@ -132,7 +130,7 @@ export class AbstractFetchRemote
 
 		abortActions && console.error('abortActions is obsolete');
 
-		fetchJSON(sAction, pString(sGetAdd),
+		fetchJSON(sAction, sGetAdd,
 			params,
 			undefined === iTimeout ? 30000 : pInt(iTimeout),
 			data => {

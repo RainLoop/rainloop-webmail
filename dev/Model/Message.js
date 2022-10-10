@@ -5,7 +5,7 @@ import { i18n } from 'Common/Translator';
 
 import { doc, SettingsGet } from 'Common/Globals';
 import { encodeHtml, plainToHtml, cleanHtml } from 'Common/Html';
-import { isArray, arrayLength, forEachObjectEntry } from 'Common/Utils';
+import { arrayLength, forEachObjectEntry } from 'Common/Utils';
 import { serverRequestRaw, proxy } from 'Common/Links';
 
 import { FolderUserStore, isAllowedKeyword } from 'Stores/User/Folder';
@@ -32,15 +32,12 @@ const
 
 	toggleTag = (message, keyword) => {
 		const lower = keyword.toLowerCase(),
-			isSet = message.flags().includes(lower);
+			flags = message.flags,
+			isSet = flags.includes(lower);
 		Remote.request('MessageSetKeyword', iError => {
 			if (!iError) {
-				if (isSet) {
-					message.flags.remove(lower);
-				} else {
-					message.flags.push(lower);
-				}
-//				MessageFlagsCache.setFor(message.folder, message.uid, message.flags());
+				isSet ? flags.remove(lower) : flags.push(lower);
+//				MessageFlagsCache.setFor(message.folder, message.uid, flags());
 			}
 		}, {
 			Folder: message.folder,
@@ -56,11 +53,9 @@ const
 	 * @param {Map} localEmails
 	 */
 	replyHelper = (emails, unic, localEmails) =>
-		emails.forEach(email => {
-			if (!unic[email.email] && !localEmails.has(email.email)) {
-				localEmails.set(email.email, email);
-			}
-		});
+		emails.forEach(email =>
+			unic[email.email] || localEmails.has(email.email) || localEmails.set(email.email, email)
+		);
 
 doc.body.append(hcont);
 
@@ -223,16 +218,6 @@ export class MessageModel extends AbstractModel {
 	}
 
 	/**
-	 * @param {Array} properties
-	 * @returns {Array}
-	 */
-	getEmails(properties) {
-		return properties.reduce((carry, property) => carry.concat(this[property]), []).map(
-			oItem => oItem ? oItem.email : ''
-		).validUnique();
-	}
-
-	/**
 	 * @returns {string}
 	 */
 	friendlySize() {
@@ -240,9 +225,11 @@ export class MessageModel extends AbstractModel {
 	}
 
 	computeSenderEmail() {
-		const list = [FolderUserStore.sentFolder(), FolderUserStore.draftsFolder()].includes(this.folder) ? 'to' : 'from';
-		this.senderEmailsString(this[list].toString(true));
-		this.senderClearEmailsString(this[list].toStringClear());
+		const list = this[
+			[FolderUserStore.sentFolder(), FolderUserStore.draftsFolder()].includes(this.folder) ? 'to' : 'from'
+		];
+		this.senderEmailsString(list.toString(true));
+		this.senderClearEmailsString(list.map(email => email?.email).filter(email => email).join(', '));
 	}
 
 	/**
@@ -347,21 +334,6 @@ export class MessageModel extends AbstractModel {
 		}, (key, value) => value && classes.push(key));
 		flags && this.flags().forEach(value => classes.push('msgflag-'+value));
 		return classes.join(' ');
-	}
-
-	/**
-	 * @return array
-	 * https://datatracker.ietf.org/doc/html/rfc5788
-	 */
-	keywords() {
-		return this.flags().filter(value => '\\' !== value[0]);
-	}
-
-	/**
-	 * @returns {string}
-	 */
-	fromAsSingleEmail() {
-		return (isArray(this.from) && this.from[0]?.email) || '';
 	}
 
 	/**
@@ -491,7 +463,7 @@ export class MessageModel extends AbstractModel {
 	 * @param {boolean=} print = false
 	 */
 	popupMessage() {
-		this.viewPopupMessage(false);
+		this.viewPopupMessage();
 	}
 
 	printMessage() {

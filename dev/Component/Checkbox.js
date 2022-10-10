@@ -8,8 +8,6 @@ export class CheckboxComponent {
 
 		this.label = params.label;
 		this.inline = params.inline;
-
-		this.labeled = null != params.label;
 	}
 
 	click() {

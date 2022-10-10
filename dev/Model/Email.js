@@ -27,18 +27,14 @@ function addressparser(str) {
 
 	tokens.forEach(token => {
 		if (token.type === 'operator' && (token.value === ',' || token.value === ';')) {
-			if (address.length) {
-				addresses.push(address);
-			}
+			address.length && addresses.push(address);
 			address = [];
 		} else {
 			address.push(token);
 		}
 	});
 
-	if (address.length) {
-		addresses.push(address);
-	}
+	address.length && addresses.push(address);
 
 	addresses.forEach(address => {
 		address = _handleAddress(address);
@@ -205,9 +201,7 @@ class Tokenizer
 
 		this.list.forEach(node => {
 			node.value = (node.value || '').toString().trim();
-			if (node.value) {
-				list.push(node);
-			}
+			node.value && list.push(node);
 		});
 
 		return list;
@@ -361,37 +355,26 @@ export class EmailModel extends AbstractModel {
 	}
 
 	static splitEmailLine(line) {
-		const parsedResult = addressparser(line);
-		if (parsedResult.length) {
-			const result = [];
-			let exists = false;
-			parsedResult.forEach((item) => {
-				const address = item.address
-					? new EmailModel(item.address.replace(/^[<]+(.*)[>]+$/g, '$1'), item.name || '')
-					: null;
+		const result = [];
+		let exists = false;
+		addressparser(line).forEach(item => {
+			const address = item.address
+				? new EmailModel(item.address.replace(/^[<]+(.*)[>]+$/g, '$1'), item.name || '')
+				: null;
 
-				if (address?.email) {
-					exists = true;
-				}
+			if (address?.email) {
+				exists = true;
+			}
 
-				result.push(address ? address.toLine() : item.name);
-			});
-
-			return exists ? result : null;
-		}
-
-		return null;
+			result.push(address ? address.toLine() : item.name);
+		});
+		return exists ? result : null;
 	}
 
 	static parseEmailLine(line) {
-		const parsedResult = addressparser(line);
-		if (parsedResult.length) {
-			return parsedResult.map(item =>
-				item.address ? new EmailModel(item.address.replace(/^[<]+(.*)[>]+$/g, '$1'), item.name || '') : null
-			).filter(v => v);
-		}
-
-		return [];
+		return addressparser(line).map(item =>
+			item.address ? new EmailModel(item.address.replace(/^[<]+(.*)[>]+$/g, '$1'), item.name || '') : null
+		).filter(v => v);
 	}
 
 	/**
@@ -400,19 +383,15 @@ export class EmailModel extends AbstractModel {
 	 */
 	parse(emailAddress) {
 		emailAddress = emailAddress.trim();
-		if (!emailAddress) {
-			return false;
+		if (emailAddress) {
+			const result = addressparser(emailAddress);
+			if (result.length) {
+				this.name = result[0].name || '';
+				this.email = result[0].address || '';
+				this.clearDuplicateName();
+				return true;
+			}
 		}
-
-		const result = addressparser(emailAddress);
-		if (result.length) {
-			this.name = result[0].name || '';
-			this.email = result[0].address || '';
-			this.clearDuplicateName();
-
-			return true;
-		}
-
 		return false;
 	}
 }

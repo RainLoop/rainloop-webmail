@@ -1,5 +1,3 @@
-import { i18n } from 'Common/Translator';
-import { pInt } from 'Common/Utils';
 import { SaveSettingStatus } from 'Common/Enums';
 import { koComputable } from 'External/ko';
 import { dispose } from 'External/ko';
@@ -10,20 +8,20 @@ export class SelectComponent {
 	 * @param {Object} params
 	 */
 	constructor(params) {
-		this.value = params.value || '';
-		this.label = params.label || '';
-		this.enable = null == params.enable ? true : params.enable;
+		this.value = params.value;
+		this.label = params.label;
 		this.trigger = params.trigger?.subscribe ? params.trigger : null;
-		this.placeholder = params.placeholder || '';
-
-		this.labeled = null != params.label;
+		this.placeholder = params.placeholder;
+		this.options = params.options;
+		this.optionsText = params.optionsText;
+		this.optionsValue = params.optionsValue;
 
 		let size = 0 < params.size ? 'span' + params.size : '';
 		if (this.trigger) {
 			const
 				classForTrigger = ko.observable(''),
 				setTriggerState = value => {
-					switch (pInt(value)) {
+					switch (value) {
 						case SaveSettingStatus.Success:
 							classForTrigger('success');
 							break;
@@ -48,19 +46,12 @@ export class SelectComponent {
 			];
 		} else {
 			this.className = size;
-			this.disposables = [];
 		}
-
-		this.options = params.options || '';
-
-		this.optionsText = params.optionsText || null;
-		this.optionsValue = params.optionsValue || null;
-		this.optionsCaption = i18n(params.optionsCaption || null);
 
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 	}
 
 	dispose() {
-		this.disposables.forEach(dispose);
+		this.disposables?.forEach(dispose);
 	}
 }

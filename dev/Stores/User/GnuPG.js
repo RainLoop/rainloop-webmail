@@ -56,11 +56,9 @@ export const GnuPGUserStore = new class {
 											if (iError) {
 												alert(oData.ErrorMessage);
 											} else if (oData.Result) {
-												if (isPrivate) {
-													this.privateKeys.remove(key);
-												} else {
-													this.publicKeys.remove(key);
-												}
+												isPrivate
+													? this.privateKeys.remove(key)
+													: this.publicKeys.remove(key);
 											}
 										}
 									}, {

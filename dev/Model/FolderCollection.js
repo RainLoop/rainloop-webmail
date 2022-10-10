@@ -14,7 +14,7 @@ import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
 import { sortFolders } from 'Common/Folders';
-import { i18n, trigger as translatorTrigger } from 'Common/Translator';
+import { i18n, translateTrigger } from 'Common/Translator';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
@@ -76,17 +76,9 @@ export const
 	 */
 	setExpandedFolder = (sFullName, bExpanded) => {
 		let aExpandedList = Local.get(ClientSideKeyNameExpandedFolders);
-		if (!isArray(aExpandedList)) {
-			aExpandedList = [];
-		}
-
-		if (bExpanded) {
-			aExpandedList.includes(sFullName) || aExpandedList.push(sFullName);
-		} else {
-			aExpandedList = aExpandedList.filter(value => value !== sFullName);
-		}
-
-		Local.set(ClientSideKeyNameExpandedFolders, aExpandedList);
+		aExpandedList = new Set(isArray(aExpandedList) ? aExpandedList : []);
+		bExpanded ? aExpandedList.add(sFullName) : aExpandedList.delete(sFullName);
+		Local.set(ClientSideKeyNameExpandedFolders, [...aExpandedList]);
 	},
 
 	foldersFilter = ko.observable(''),
@@ -99,8 +91,7 @@ export const
 		Remote.abort('Folders')
 			.post('Folders', FolderUserStore.foldersLoading)
 			.then(data => {
-				data = FolderCollectionModel.reviveFromJson(data.Result);
-				data?.storeIt();
+				FolderCollectionModel.reviveFromJson(data.Result)?.storeIt();
 				fCallback?.(true);
 				// Repeat every 15 minutes?
 //				this.foldersTimeout = setTimeout(loadFolders, 900000);
@@ -281,25 +272,15 @@ export class FolderModel extends AbstractModel {
 
 		this.totalEmails = koComputable({
 				read: this.totalEmailsValue,
-				write: (iValue) => {
-					if (isPosNumeric(iValue)) {
-						this.totalEmailsValue(iValue);
-					} else {
-						this.totalEmailsValue.valueHasMutated();
-					}
-				}
+				write: iValue =>
+					isPosNumeric(iValue) ? this.totalEmailsValue(iValue) : this.totalEmailsValue.valueHasMutated()
 			})
 			.extend({ notify: 'always' });
 
 		this.unreadEmails = koComputable({
 				read: this.unreadEmailsValue,
-				write: (value) => {
-					if (isPosNumeric(value)) {
-						this.unreadEmailsValue(value);
-					} else {
-						this.unreadEmailsValue.valueHasMutated();
-					}
-				}
+				write: value =>
+					isPosNumeric(value) ? this.unreadEmailsValue(value) : this.unreadEmailsValue.valueHasMutated()
 			})
 			.extend({ notify: 'always' });
 /*
@@ -397,13 +378,14 @@ export class FolderModel extends AbstractModel {
 					const
 						unread = folder.unreadEmails(),
 						type = folder.type();
+					// TODO: make isSystemFolder() optional in Settings
 					return ((!folder.isSystemFolder() || type == FolderType.Inbox) && unread) ? unread : null;
 				},
 
 				localName: () => {
 					let name = folder.name();
 					if (folder.isSystemFolder()) {
-						translatorTrigger();
+						translateTrigger();
 						name = getSystemFolderName(folder.type(), name);
 					}
 					return name;
@@ -411,7 +393,7 @@ export class FolderModel extends AbstractModel {
 
 				manageFolderSystemName: () => {
 					if (folder.isSystemFolder()) {
-						translatorTrigger();
+						translateTrigger();
 						let suffix = getSystemFolderName(folder.type(), getKolabFolderName(folder.kolabType()));
 						if (folder.name() !== suffix && 'inbox' !== suffix.toLowerCase()) {
 							return '(' + suffix + ')';
@@ -420,24 +402,22 @@ export class FolderModel extends AbstractModel {
 					return '';
 				},
 
-				hasUnreadMessages: () => 0 < folder.unreadEmails() && folder.printableUnreadCount(),
-
 				hasSubscribedUnreadMessagesSubfolders: () =>
 					!!folder.subFolders().find(
-						folder => folder.hasUnreadMessages() | folder.hasSubscribedUnreadMessagesSubfolders()
+						folder => folder.printableUnreadCount() | folder.hasSubscribedUnreadMessagesSubfolders()
 					)
-
+/*
+					!!folder.subFolders().filter(
+						folder => folder.printableUnreadCount() | folder.hasSubscribedUnreadMessagesSubfolders()
+					).length
+*/
 //				,href: () => folder.canBeSelected() && mailBox(folder.fullNameHash)
 			});
 
 			folder.addSubscribables({
 				editing: value => value && folder.nameForEdit(folder.name()),
 
-				unreadEmails: unread => {
-					if (FolderType.Inbox === folder.type()) {
-						fireEvent('mailbox.inbox-unread-count', unread);
-					}
-				}
+				unreadEmails: unread => FolderType.Inbox === folder.type() && fireEvent('mailbox.inbox-unread-count', unread)
 			});
 		}
 		return folder;

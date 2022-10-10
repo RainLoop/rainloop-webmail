@@ -50,20 +50,18 @@ export class UserSettingsAccounts /*extends AbstractViewSettings*/ {
 	deleteAccount(accountToRemove) {
 		if (accountToRemove?.askDelete()) {
 			this.accountForDeletion(null);
-			if (accountToRemove) {
-				this.accounts.remove((account) => accountToRemove === account);
+			this.accounts.remove(account => accountToRemove === account);
 
-				Remote.request('AccountDelete', (iError, data) => {
-					if (!iError && data.Reload) {
-						rl.route.root();
-						setTimeout(() => location.reload(), 1);
-					} else {
-						rl.app.accountsAndIdentities();
-					}
-				}, {
-					EmailToDelete: accountToRemove.email
-				});
-			}
+			Remote.request('AccountDelete', (iError, data) => {
+				if (!iError && data.Reload) {
+					rl.route.root();
+					setTimeout(() => location.reload(), 1);
+				} else {
+					rl.app.accountsAndIdentities();
+				}
+			}, {
+				EmailToDelete: accountToRemove.email
+			});
 		}
 	}
 
@@ -74,13 +72,10 @@ export class UserSettingsAccounts /*extends AbstractViewSettings*/ {
 	deleteIdentity(identityToRemove) {
 		if (identityToRemove?.askDelete()) {
 			this.identityForDeletion(null);
-
-			if (identityToRemove) {
-				IdentityUserStore.remove(oIdentity => identityToRemove === oIdentity);
-				Remote.request('IdentityDelete', () => rl.app.accountsAndIdentities(), {
-					IdToDelete: identityToRemove.id()
-				});
-			}
+			IdentityUserStore.remove(oIdentity => identityToRemove === oIdentity);
+			Remote.request('IdentityDelete', () => rl.app.accountsAndIdentities(), {
+				IdToDelete: identityToRemove.id()
+			});
 		}
 	}
 

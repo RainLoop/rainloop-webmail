@@ -121,10 +121,9 @@ Object.assign(ko.bindingHandlers, {
 			);
 		},
 		update: (element, fValueAccessor) => {
-			const cl = element.classList,
-				command = fValueAccessor();
+			const cl = element.classList;
 
-			let disabled = !command.canExecute();
+			let disabled = !fValueAccessor().canExecute();
 			cl.toggle('disabled', disabled);
 
 			if (element.matches('INPUT,TEXTAREA,BUTTON')) {

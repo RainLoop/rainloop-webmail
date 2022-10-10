@@ -2,7 +2,7 @@ import ko from 'ko';
 import { koComputable } from 'External/ko';
 
 import { SettingsGet } from 'Common/Globals';
-import { i18n, trigger as translatorTrigger } from 'Common/Translator';
+import { i18n, translateTrigger } from 'Common/Translator';
 import { ContactUserStore } from 'Stores/User/Contact';
 import Remote from 'Remote/User/Fetch';
 
@@ -17,7 +17,7 @@ export class UserSettingsContacts /*extends AbstractViewSettings*/ {
 		this.syncPass = ContactUserStore.syncPass;
 
 		this.syncModeOptions = koComputable(() => {
-			translatorTrigger();
+			translateTrigger();
 			return [
 				{ id: 0, name: i18n('GLOBAL/NO') },
 				{ id: 1, name: i18n('GLOBAL/YES') },

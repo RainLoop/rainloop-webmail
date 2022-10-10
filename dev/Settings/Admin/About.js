@@ -3,7 +3,7 @@ import { Settings } from 'Common/Globals';
 import { addObservablesTo } from 'External/ko';
 import Remote from 'Remote/Admin/Fetch';
 
-import { i18n, trigger as translatorTrigger } from 'Common/Translator';
+import { i18n, translateTrigger } from 'Common/Translator';
 
 export class AdminSettingsAbout /*extends AbstractViewSettings*/ {
 	constructor() {
@@ -22,7 +22,7 @@ export class AdminSettingsAbout /*extends AbstractViewSettings*/ {
 		this.coreUpdating = ko.observable(false).extend({ throttle: 100 });
 
 		this.coreVersionHtmlDesc = ko.computed(() => {
-			translatorTrigger();
+			translateTrigger();
 			return i18n('TAB_ABOUT/HTML_NEW_VERSION', { 'VERSION': this.coreVersion() });
 		});
 

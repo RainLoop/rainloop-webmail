@@ -120,9 +120,7 @@ export class MessageFlagsCache
 				flags = this.getFor(message.folder, uid),
 				thread = message.threads();
 
-			if (isArray(flags)) {
-				message.flags(flags);
-			}
+			isArray(flags) && message.flags(flags);
 
 			if (thread.length) {
 				message.hasUnseenSubMessage(!!thread.find(iSubUid =>

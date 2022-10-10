@@ -77,12 +77,11 @@ export class AppUser extends AbstractApp {
 		let lastTime = Date.now();
 		setInterval(() => {
 			const currentTime = Date.now();
-			if (currentTime > (lastTime + interval + 1000)) {
-				Remote.request('Version',
+			(currentTime > (lastTime + interval + 1000))
+			&& Remote.request('Version',
 					iError => (100 < iError) && location.reload(),
 					{ Version: Settings.app('version') }
 				);
-			}
 			lastTime = currentTime;
 		}, interval);
 
@@ -254,9 +253,7 @@ export class AppUser extends AbstractApp {
 							const cF = FolderUserStore.currentFolderFullName(),
 								iF = getFolderInboxName();
 							folderInformation(iF);
-							if (iF !== cF) {
-								folderInformation(cF);
-							}
+							iF === cF || folderInformation(cF);
 							folderInformationMultiply();
 						}, refreshFoldersInterval);
 
@@ -266,9 +263,7 @@ export class AppUser extends AbstractApp {
 
 						setTimeout(() => {
 							const cF = FolderUserStore.currentFolderFullName();
-							if (getFolderInboxName() !== cF) {
-								folderInformation(cF);
-							}
+							getFolderInboxName() === cF || folderInformation(cF);
 							FolderUserStore.hasCapability('LIST-STATUS') || folderInformationMultiply(true);
 						}, 1000);
 
@@ -296,15 +291,14 @@ export class AppUser extends AbstractApp {
 						PgpUserStore.init();
 
 						// When auto-login is active
-						if (navigator.registerProtocolHandler) {
-							try {
-								navigator.registerProtocolHandler(
-									'mailto',
-									location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
-									(SettingsGet('Title') || 'SnappyMail')
-								);
-							} catch (e) {} // eslint-disable-line no-empty
-						}
+						try {
+							navigator.registerProtocolHandler?.(
+								'mailto',
+								location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
+								(SettingsGet('Title') || 'SnappyMail')
+							);
+						} catch (e) {} // eslint-disable-line no-empty
+
 						setTimeout(() => mailToHelper(SettingsGet('MailToEmail')), 500);
 					} else {
 						this.logout();

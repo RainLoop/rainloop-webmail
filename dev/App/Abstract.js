@@ -28,8 +28,8 @@ export class AbstractApp {
 	}
 
 	bootstart() {
-		const register = (key, ClassObject) => ko.components.register(key, {
-				template: { element: key + 'Component' },
+		const register = (name, ClassObject) => ko.components.register(name, {
+				template: { element: ClassObject.name },
 				viewModel: {
 					createViewModel: (params, componentInfo) => {
 						params = params || {};

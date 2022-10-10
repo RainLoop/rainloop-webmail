@@ -39,9 +39,9 @@ rl.addSettingsViewModelForAdmin = (SettingsViewModelClass, template, labelName, 
  * @param {boolean} admin
  */
 export function runSettingsViewModelHooks(admin) {
-	(admin ? ADMIN_VIEW_MODELS_HOOKS : USER_VIEW_MODELS_HOOKS).forEach(view => {
-		settingsAddViewModel(view[0], view[1], view[2], view[3]);
-	});
+	(admin ? ADMIN_VIEW_MODELS_HOOKS : USER_VIEW_MODELS_HOOKS).forEach(view =>
+		settingsAddViewModel(...view)
+	);
 }
 
 /**

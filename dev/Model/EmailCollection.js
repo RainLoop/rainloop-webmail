@@ -21,17 +21,4 @@ export class EmailCollectionModel extends AbstractCollectionModel
 	toString(friendlyView, wrapWithLink) {
 		return this.map(email => email.toLine(friendlyView, wrapWithLink)).join(', ');
 	}
-
-	/**
-	 * @returns {string}
-	 */
-	toStringClear() {
-		const result = [];
-		this.forEach(email => {
-			if (email?.email && email?.name) {
-				result.push(email.email);
-			}
-		});
-		return result.join(', ');
-	}
 }

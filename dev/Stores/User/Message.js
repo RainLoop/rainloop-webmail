@@ -26,9 +26,7 @@ export const MessageUserStore = new class {
 				clearTimeout(this.MessageSeenTimer);
 				elementById('rl-right').classList.toggle('message-selected', !!message);
 				if (message) {
-					if (!SettingsUserStore.usePreviewPane()) {
-						AppUserStore.focusedState(Scope.MessageView);
-					}
+					SettingsUserStore.usePreviewPane() || AppUserStore.focusedState(Scope.MessageView);
 				} else {
 					AppUserStore.focusedState(Scope.MessageList);
 					exitFullscreen();

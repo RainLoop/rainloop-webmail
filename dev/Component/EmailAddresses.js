@@ -144,8 +144,8 @@ export class EmailAddressesComponent {
 
 	_parseInput(force) {
 		let val = this.input.value;
-		if (force || val.includes(',') || val.includes(';')) {
-			this._parseValue(val) && (this.input.value = '');
+		if ((force || val.includes(',') || val.includes(';')) && this._parseValue(val)) {
+			this.input.value = '';
 		}
 		this._resizeInput();
 	}
@@ -175,7 +175,7 @@ export class EmailAddressesComponent {
 							lastIndex = kk;
 						}
 
-						vv.value === v && (exists = true);
+						exists |= vv.value === v;
 					});
 
 					if (v !== '' && a[1] && !exists) {
@@ -195,7 +195,7 @@ export class EmailAddressesComponent {
 					}
 				});
 
-				if (values.length === 1 && values[0] === '' && self._lastEdit !== '') {
+				if (1 === values.length && '' === values[0] && '' !== self._lastEdit) {
 					self._lastEdit = '';
 					self._renderTags();
 				}

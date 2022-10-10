@@ -6,7 +6,7 @@ import { EditorDefaultType, Layout } from 'Common/EnumsUser';
 import { Settings, SettingsGet } from 'Common/Globals';
 import { isArray } from 'Common/Utils';
 import { addSubscribablesTo, addComputablesTo } from 'External/ko';
-import { i18n, trigger as translatorTrigger, translatorReload, convertLangName } from 'Common/Translator';
+import { i18n, translateTrigger, translatorReload, convertLangName } from 'Common/Translator';
 
 import { AbstractViewSettings } from 'Knoin/AbstractViews';
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -66,7 +66,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 			},
 
 			editorDefaultTypes: () => {
-				translatorTrigger();
+				translateTrigger();
 				return [
 					{ id: EditorDefaultType.Html, name: i18n('SETTINGS_GENERAL/EDITOR_HTML') },
 					{ id: EditorDefaultType.Plain, name: i18n('SETTINGS_GENERAL/EDITOR_PLAIN') }
@@ -74,7 +74,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 			},
 
 			msgDefaultActions: () => {
-				translatorTrigger();
+				translateTrigger();
 				return [
 					{ id: 1, name: i18n('MESSAGE/BUTTON_REPLY') }, // ComposeType.Reply,
 					{ id: 2, name: i18n('MESSAGE/BUTTON_REPLY_ALL') } // ComposeType.ReplyAll
@@ -82,7 +82,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 			},
 
 			layoutTypes: () => {
-				translatorTrigger();
+				translateTrigger();
 				return [
 					{ id: Layout.NoPreview, name: i18n('SETTINGS_GENERAL/LAYOUT_NO_SPLIT') },
 					{ id: Layout.SidePreview, name: i18n('SETTINGS_GENERAL/LAYOUT_VERTICAL_SPLIT') },

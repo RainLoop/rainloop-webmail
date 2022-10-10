@@ -1,4 +1,4 @@
-import { i18n, trigger as translatorTrigger } from 'Common/Translator';
+import { i18n, translateTrigger } from 'Common/Translator';
 import { pString } from 'Common/Utils';
 
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
@@ -46,7 +46,7 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 			showKeywords: () => FolderUserStore.currentFolder().permanentFlags().some(isAllowedKeyword),
 
 			repliedOptions: () => {
-				translatorTrigger();
+				translateTrigger();
 				return [
 					{ id: -1, name: '' },
 					{ id: 1, name: i18n('GLOBAL/YES') },
@@ -55,7 +55,7 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 			},
 
 			selectedDates: () => {
-				translatorTrigger();
+				translateTrigger();
 				let prefix = 'SEARCH/DATE_';
 				return [
 					{ id: -1, name: i18n(prefix + 'ALL') },
@@ -69,7 +69,7 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 			},
 
 			selectedTree: () => {
-				translatorTrigger();
+				translateTrigger();
 				let prefix = 'SEARCH/SUBFOLDERS_';
 				return [
 					{ id: '', name: i18n(prefix + 'NONE') },

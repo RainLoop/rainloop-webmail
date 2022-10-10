@@ -114,8 +114,6 @@ export class ContactModel extends AbstractModel {
 		this.adr   = ko.observableArray();
 
 		this.addComputables({
-			hasValidName: () => !!(this.givenName() || this.surName()),
-
 			fullName: () => [this.namePrefix(), this.givenName(), this.middleName(), this.surName()].join(' ').trim(),
 
 			display: () => {

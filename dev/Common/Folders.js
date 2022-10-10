@@ -37,17 +37,10 @@ fetchFolderInformation = (fCallback, folder, list = []) => {
 
 	if (!fetch) {
 		list.forEach(messageListItem => {
-			if (!MessageFlagsCache.getFor(folder, messageListItem.uid)) {
-				uids.push(messageListItem.uid);
-			}
-
-			if (messageListItem.threads.length) {
-				messageListItem.threads.forEach(uid => {
-					if (!MessageFlagsCache.getFor(folder, uid)) {
-						uids.push(uid);
-					}
-				});
-			}
+			MessageFlagsCache.getFor(folder, messageListItem.uid) || uids.push(messageListItem.uid);
+			messageListItem.threads.forEach(uid => {
+				MessageFlagsCache.getFor(folder, uid) || uids.push(uid);
+			});
 		});
 		fetch = uids.length;
 	}
@@ -100,10 +93,7 @@ folderListOptionsBuilder = (
 							fDisableCallback(oItem))
 					});
 				}
-
-				if (oItem.subFolders.length) {
-					foldersWalk(oItem.subFolders());
-				}
+				foldersWalk(oItem.subFolders());
 			});
 		};
 
@@ -151,9 +141,7 @@ folderInformation = (folder, list) => {
 						folderFromCache.totalEmails(result.totalEmails);
 						folderFromCache.unreadEmails(result.unreadEmails);
 
-						if (unreadCountChange) {
-							MessageFlagsCache.clearFolder(folderFromCache.fullName);
-						}
+						unreadCountChange && MessageFlagsCache.clearFolder(folderFromCache.fullName);
 
 						if (result.MessagesFlags.length) {
 							result.MessagesFlags.forEach(message =>
@@ -203,9 +191,7 @@ folderInformationMultiply = (boot = false) => {
 						folder.totalEmails(item.totalEmails);
 						folder.unreadEmails(item.unreadEmails);
 
-						if (unreadCountChange) {
-							MessageFlagsCache.clearFolder(folder.fullName);
-						}
+						unreadCountChange && MessageFlagsCache.clearFolder(folder.fullName);
 
 						if (!oldHash || item.Hash !== oldHash) {
 							if (folder.fullName === FolderUserStore.currentFolderFullName()) {
@@ -219,9 +205,7 @@ folderInformationMultiply = (boot = false) => {
 					}
 				});
 
-				if (boot) {
-					setTimeout(() => folderInformationMultiply(true), 2000);
-				}
+				boot && setTimeout(() => folderInformationMultiply(true), 2000);
 			}
 		}, {
 			Folders: folders
@@ -283,15 +267,13 @@ moveMessagesToFolder = (sFromFolderFullName, oUids, sToFolderFullName, bCopy) =>
 			oToFolder = getFolderFromCacheList(sToFolderFullName);
 
 		if (oFromFolder && oToFolder) {
-			if (bCopy) {
-				Remote.request('MessageCopy', null, {
-					FromFolder: oFromFolder.fullName,
-					ToFolder: oToFolder.fullName,
-					Uids: [...oUids].join(',')
-				});
-			} else {
-				messagesMoveHelper(oFromFolder.fullName, oToFolder.fullName, oUids);
-			}
+			bCopy
+				? Remote.request('MessageCopy', null, {
+						FromFolder: oFromFolder.fullName,
+						ToFolder: oToFolder.fullName,
+						Uids: [...oUids].join(',')
+					})
+				: messagesMoveHelper(oFromFolder.fullName, oToFolder.fullName, oUids);
 
 			MessagelistUserStore.removeMessagesFromList(oFromFolder.fullName, oUids, oToFolder.fullName, bCopy);
 			return true;

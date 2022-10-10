@@ -42,7 +42,7 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 		oDom.addEventListener('click', event => {
 			// configurePlugin
 			let el = event.target.closestWithin('.package-configure', oDom),
-				data = el ? ko.dataFor(el) : 0;
+				data = el && ko.dataFor(el);
 			data && Remote.request('AdminPluginLoad',
 				(iError, data) => iError || showScreenPopup(PluginPopupView, [data.Result]),
 				{
@@ -51,7 +51,7 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 			);
 			// disablePlugin
 			el = event.target.closestWithin('.package-active', oDom);
-			data = el ? ko.dataFor(el) : 0;
+			data = el && ko.dataFor(el);
 			data && this.disablePlugin(data);
 		});
 	}

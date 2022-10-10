@@ -1,7 +1,7 @@
 import { koComputable } from 'External/ko';
 
 import { SettingsCapa } from 'Common/Globals';
-import { i18n, trigger as translatorTrigger } from 'Common/Translator';
+import { i18n, translateTrigger } from 'Common/Translator';
 
 import { AbstractViewSettings } from 'Knoin/AbstractViews';
 
@@ -27,7 +27,7 @@ export class UserSettingsSecurity extends AbstractViewSettings {
 
 		let i18nLogout = (key, params) => i18n('SETTINGS_SECURITY/AUTOLOGIN_' + key, params);
 		this.autoLogoutOptions = koComputable(() => {
-			translatorTrigger();
+			translateTrigger();
 			return [
 				{ id: 0, name: i18nLogout('NEVER_OPTION_NAME') },
 				{ id: 5, name: i18nLogout('MINUTES_OPTION_NAME', { MINUTES: 5 }) },

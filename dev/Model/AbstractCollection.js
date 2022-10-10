@@ -27,12 +27,10 @@ export class AbstractCollectionModel extends Array
 				forEachObjectEntry(json, (key, value) => '@' !== key[0] && (result[key] = value));
 				json = json['@Collection'];
 			}
-			if (isArray(json)) {
-				json.forEach(item => {
-					item && itemCallback && (item = itemCallback(item, result));
-					item && result.push(item);
-				});
-			}
+			isArray(json) && json.forEach(item => {
+				item && itemCallback && (item = itemCallback(item, result));
+				item && result.push(item);
+			});
 		}
 		return result;
 	}

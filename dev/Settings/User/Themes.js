@@ -32,9 +32,7 @@ export class UserSettingsThemes /*extends AbstractViewSettings*/ {
 		this.themeTrigger = ko.observable(SaveSettingStatus.Idle).extend({ debounce: 100 });
 
 		ThemeStore.theme.subscribe(value => {
-			this.themesObjects.forEach(theme => {
-				theme.selected(value === theme.name);
-			});
+			this.themesObjects.forEach(theme => theme.selected(value === theme.name));
 
 			changeTheme(value, this.themeTrigger);
 
@@ -69,18 +67,12 @@ export class UserSettingsThemes /*extends AbstractViewSettings*/ {
 				.on('onStart', () => {
 					themeBackground.loading(true);
 					themeBackground.error('');
-					return true;
 				})
 				.on('onComplete', (id, result, data) => {
 					themeBackground.loading(false);
-
-					if (result && id && data?.Result?.Name && data?.Result?.Hash) {
-						themeBackground.name(data.Result.Name);
-						themeBackground.hash(data.Result.Hash);
-					} else {
-						themeBackground.name('');
-						themeBackground.hash('');
-
+					themeBackground.name(data?.Result?.Name || '');
+					themeBackground.hash(data?.Result?.Hash || '');
+					if (!themeBackground.name() || !themeBackground.hash()) {
 						let errorMsg = '';
 						if (data.ErrorCode) {
 							switch (data.ErrorCode) {
@@ -96,8 +88,6 @@ export class UserSettingsThemes /*extends AbstractViewSettings*/ {
 
 						themeBackground.error(errorMsg || data.ErrorMessage || i18n('SETTINGS_THEMES/ERROR_UNKNOWN'));
 					}
-
-					return true;
 				});
 		}
 	}

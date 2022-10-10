@@ -85,11 +85,7 @@ export class AdminSettingsContacts extends AbstractViewSettings {
 					this.testContactsSuccess(true);
 				} else {
 					this.testContactsError(true);
-					if (data?.Result) {
-						this.testContactsErrorMessage(data.Result.Message || '');
-					} else {
-						this.testContactsErrorMessage('');
-					}
+					this.testContactsErrorMessage(data?.Result?.Message || '');
 				}
 
 				this.testing(false);

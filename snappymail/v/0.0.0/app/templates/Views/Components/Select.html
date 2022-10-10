@@ -1,7 +1,7 @@
 <div class="e-component">
-	<select data-bind="options: options, value: value, enable: enable, optionsText: optionsText, optionsValue: optionsValue,
-		optionsCaption: optionsCaption, css: className, optionsAfterRender: defaultOptionsAfterRender"></select>
-	<!-- ko if: labeled -->
+	<select data-bind="options: options, value: value, optionsText: optionsText, optionsValue: optionsValue,
+		css: className, optionsAfterRender: defaultOptionsAfterRender"></select>
+	<!-- ko if: label -->
 	<span data-bind="attr: {'data-i18n': label}"></span>
 	<!-- /ko -->
 	<!-- ko if: trigger -->

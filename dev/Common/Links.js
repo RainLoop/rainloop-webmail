@@ -1,4 +1,4 @@
-import { pString, pInt } from 'Common/Utils';
+import { pInt } from 'Common/Utils';
 import { Settings } from 'Common/Globals';
 
 const
@@ -125,10 +125,7 @@ export const
 			result.push('p' + page);
 		}
 
-		search = pString(search);
-		if (search) {
-			result.push(encodeURI(search));
-		}
+		search && result.push(encodeURI(search));
 
 		return result.join('/');
 	};
