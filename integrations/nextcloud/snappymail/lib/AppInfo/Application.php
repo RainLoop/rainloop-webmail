@@ -16,8 +16,8 @@ class Application extends App {
 		parent::__construct('snappymail', $urlParams);
 
 		$container = $this->getContainer();
-		$server = $container->getServer();
-		$config = $server->getConfig();
+//		$server = $container->getServer();
+//		$config = $server->getConfig();
 
 		/**
 		 * Controllers
@@ -26,10 +26,7 @@ class Application extends App {
 			'PageController', function($c) {
 				return new PageController(
 					$c->query('AppName'),
-					$c->query('Request'),
-					$c->getServer()->getAppManager(),
-					$c->query('ServerContainer')->getConfig(),
-					$c->getServer()->getSession()
+					$c->query('Request')
 				);
 			}
 		);
@@ -51,12 +48,7 @@ class Application extends App {
 		 */
 		$container->registerService(
 			'SnappyMailHelper', function($c) {
-				return new SnappyMailHelper(
-					$c->getServer()->getConfig(),
-					$c->getServer()->getUserSession(),
-					$c->getServer()->getAppManager(),
-					$c->getServer()->getSession()
-				);
+				return new SnappyMailHelper();
 			}
 		);
 

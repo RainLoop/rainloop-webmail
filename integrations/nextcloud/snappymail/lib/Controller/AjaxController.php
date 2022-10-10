@@ -67,10 +67,10 @@ class AjaxController extends Controller {
 
 				$sPass = $_POST['snappymail-password'];
 				if ('******' !== $sPass && '' !== $sPass) {
-					include_once $this->appManager->getAppPath('snappymail').'/lib/Util/SnappyMailHelper.php';
+					require_once $this->appManager->getAppPath('snappymail').'/lib/Util/SnappyMailHelper.php';
 
 					$this->config->setUserValue($sUser, 'snappymail', 'snappymail-password',
-						SnappyMailHelper::encodePassword($sPass, md5($sPostEmail)));
+						SnappyMailHelper::encodePassword($sPass, \md5($sPostEmail)));
 				}
 
 				$sEmail = $this->config->getUserValue($sUser, 'snappymail', 'snappymail-email', '');

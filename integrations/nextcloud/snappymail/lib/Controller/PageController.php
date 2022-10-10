@@ -4,42 +4,26 @@ namespace OCA\SnappyMail\Controller;
 
 use OCA\SnappyMail\Util\SnappyMailHelper;
 
-use OCP\App\IAppManager;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\TemplateResponse;
-use OCP\IConfig;
-use OCP\IRequest;
-use OCP\ISession;
 
-class PageController extends Controller {
-	private $userId;
-	private $config;
-	private $appManager;
-	private $appPath;
-	private $session;
-
-	public function __construct($AppName, IRequest $request, IAppManager $appManager, IConfig $config, ISession $session) {
-		parent::__construct($AppName, $request);
-		$this->appPath = $appManager->getAppPath('snappymail');
-		$this->config = $config;
-		$this->appManager = $appManager;
-		$this->session = $session;
-	}
-
+class PageController extends Controller
+{
 	/**
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function index() {
+	public function index()
+	{
 		\OC::$server->getNavigationManager()->setActiveEntry('snappymail');
 
 		\OCP\Util::addStyle('snappymail', 'style');
 
-		$sUrl = SnappyMailHelper::normalizeUrl(SnappyMailHelper::getAppUrl());
-
+		$session = \OC::$server->getSession();
 		$params = [
-			'snappymail-iframe-url' => SnappyMailHelper::normalizeUrl($sUrl).'?OwnCloudAuth'
+			'snappymail-iframe-url' => SnappyMailHelper::normalizeUrl(SnappyMailHelper::getAppUrl())
+				. (empty($session['snappymail-sso-hash']) ? '' : '?sso&hash=' . $session['snappymail-sso-hash'])
 		];
 
 		$response = new TemplateResponse('snappymail', 'index', $params);
@@ -55,56 +39,18 @@ class PageController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function appGet() {
-		$this->app();
+	public function appGet()
+	{
+		SnappyMailHelper::startApp();
 	}
 
 	/**
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function appPost() {
-		$this->app();
+	public function appPost()
+	{
+		SnappyMailHelper::startApp();
 	}
-
-	public function app() {
-
-		SnappyMailHelper::regSnappyMailDataFunction();
-
-		if (isset($_GET['OwnCloudAuth'])) {
-			$sEmail = '';
-			$sEncodedPassword = '';
-
-			$sUser = \OC::$server->getUserSession()->getUser()->getUID();
-
-			if ($this->config->getAppValue('snappymail', 'snappymail-autologin', false)) {
-				$sEmail = $sUser;
-				$sPasswordSalt = $sUser;
-				$sEncodedPassword = $this->session['snappymail-autologin-password'];
-			} else if ($this->config->getAppValue('snappymail', 'snappymail-autologin-with-email', false)) {
-				$sEmail = $this->config->getUserValue($sUser, 'settings', 'email', '');
-				$sPasswordSalt = $sUser;
-				$sEncodedPassword = $this->session['snappymail-autologin-password'];
-			}
-
-			// If the user has set credentials for SnappyMail in their personal
-			// settings, override everything before and use those instead.
-			$sIndividualEmail = $this->config->getUserValue($sUser, 'snappymail', 'snappymail-email', '');
-			if ($sIndividualEmail) {
-				$sEmail = $sIndividualEmail;
-				$sPasswordSalt = $sEmail;
-				$sEncodedPassword = $this->config->getUserValue($sUser, 'snappymail', 'snappymail-password', '');
-			}
-
-			$sDecodedPassword = SnappyMailHelper::decodePassword($sEncodedPassword, md5($sPasswordSalt));
-
-			$_ENV['___snappymail_owncloud_email'] = $sEmail;
-			$_ENV['___snappymail_owncloud_password'] = $sDecodedPassword;
-		}
-
-		include $this->appPath . '/app/index.php';
-
-	}
-
 }
 
