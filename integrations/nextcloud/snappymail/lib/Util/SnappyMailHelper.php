@@ -47,12 +47,21 @@ class SnappyMailHelper
 		if (!\class_exists('RainLoop\\Api')) {
 			if ($api) {
 				$_ENV['SNAPPYMAIL_INCLUDE_AS_API'] = true;
+			} else {
+				$_SERVER['SCRIPT_NAME'] = \OC::$server->getAppManager()->getAppWebPath('snappymail') . '/app/index.php';
 			}
 			$_ENV['SNAPPYMAIL_NEXTCLOUD'] = true;
-			$sData = \rtrim(\trim(\OC::$server->getSystemConfig()->getValue('datadirectory', '')), '\\/').'/';
+			$sData = \rtrim(\trim(\OC::$server->getSystemConfig()->getValue('datadirectory', '')), '\\/').'/snappymail/';
 			if (\is_dir($sData)) {
 				\define('APP_DATA_FOLDER_PATH', $sData);
 			}
+			// Nextcloud the default spl_autoload_register() not working
+			\spl_autoload_register(function($sClassName){
+				$file = RAINLOOP_APP_LIBRARIES_PATH . \strtolower(\strtr($sClassName, '\\', DIRECTORY_SEPARATOR)) . '.php';
+				if (is_file($file)) {
+					include_once $file;
+				}
+			});
 			require_once \OC::$server->getAppManager()->getAppPath('snappymail') . '/app/index.php';
 		}
 	}
