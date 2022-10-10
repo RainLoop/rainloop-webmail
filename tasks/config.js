@@ -60,7 +60,6 @@ config.paths.js = {
 		name: 'libs.js',
 		src: [
 			'dev/prototype.js',
-			'dev/External/ifvisible.js',
 			'dev/dragdropgecko.js',
 			'dev/shortcuts.js',
 			'vendors/routes/hasher.js',

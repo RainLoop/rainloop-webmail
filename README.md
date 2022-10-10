@@ -108,7 +108,6 @@ The result is faster and smaller download code (good for mobile networks).
 * boot.js without webpack overhead
 * Modified Jua.js to be without jQuery
 * Replaced Autolinker with simple https/email detection
-* Replaced ifvisible.js with simple drop-in replacement
 * Replaced momentToNode with proper HTML5 `<time>`
 * Replaced resize listeners with ResizeObserver
 * Replaced bootstrap.js with native drop-in replacement
@@ -119,6 +118,7 @@ The result is faster and smaller download code (good for mobile networks).
 * Replaced simplestatemanager with CSS @media
 * Replaced inputosaurus with own code
 * Replaced keymaster with own shortcuts handler
+* Removed ifvisible.js
 * Removed pikaday
 * Removed underscore
 * Removed polyfills
