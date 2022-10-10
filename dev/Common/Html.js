@@ -486,7 +486,7 @@ export const
 				parent = node,
 				ordered = 'OL' == node.tagName,
 				i = 0;
-			while ((parent = parent?.parentNode?.closest('ol,ul'))) {
+			while ((parent = parent?.parentNode?.closest?.('ol,ul'))) {
 				prefix = '    ' + prefix;
 			}
 			node.querySelectorAll(':scope > li').forEach(li => {
