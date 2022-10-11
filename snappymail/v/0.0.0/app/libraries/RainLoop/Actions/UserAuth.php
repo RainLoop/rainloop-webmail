@@ -32,10 +32,10 @@ trait UserAuth
 			$sEmail = \mb_strtolower($sEmail);
 		}
 
-		if (false === \strpos($sEmail, '@')) {
+		if (!\str_contains($sEmail, '@')) {
 			$this->Logger()->Write('The email address "' . $sEmail . '" is not complete', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
 
-			if (false === \strpos($sEmail, '@') && $this->Config()->Get('login', 'determine_user_domain', false)) {
+			if ($this->Config()->Get('login', 'determine_user_domain', false)) {
 				$sUserHost = \trim($this->Http()->GetHost(false, true, true));
 				$this->Logger()->Write('Determined user domain: ' . $sUserHost, \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
 
@@ -54,7 +54,7 @@ trait UserAuth
 						$this->Logger()->Write('Check "' . $sLine . '": OK (' . $sEmail . ' > ' . $sEmail . '@' . $sLine . ')',
 							\MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
 
-						$sEmail = $sEmail . '@' . $sLine;
+						$sEmail .= '@' . $sLine;
 						break;
 					} else {
 						$this->Logger()->Write('Check "' . $sLine . '": NO', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
@@ -72,7 +72,7 @@ trait UserAuth
 						$this->Logger()->Write('Check "' . $sLine . '" with wildcard: OK (' . $sEmail . ' > ' . $sEmail . '@' . $sLine . ')',
 							\MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
 
-						$sEmail = $sEmail . '@' . $sLine;
+						$sEmail .= '@' . $sLine;
 					} else {
 						$this->Logger()->Write('Check "' . $sLine . '" with wildcard: NO', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
 					}
@@ -84,17 +84,17 @@ trait UserAuth
 			}
 
 			$sDefDomain = \trim($this->Config()->Get('login', 'default_domain', ''));
-			if (false === \strpos($sEmail, '@') && \strlen($sDefDomain)) {
+			if (!\str_contains($sEmail, '@') && \strlen($sDefDomain)) {
 				$this->Logger()->Write('Default domain "' . $sDefDomain . '" was used. (' . $sEmail . ' > ' . $sEmail . '@' . $sDefDomain . ')',
 					\MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
 
-				$sEmail = $sEmail . '@' . $sDefDomain;
+				$sEmail .= '@' . $sDefDomain;
 			}
 		}
 
 		$this->Plugins()->RunHook('login.credentials.step-2', array(&$sEmail, &$sPassword));
 
-		if (false === \strpos($sEmail, '@') || !\strlen($sPassword)) {
+		if (!\str_contains($sEmail, '@') || !\strlen($sPassword)) {
 			$this->loginErrorDelay();
 
 			throw new ClientException(Notifications::InvalidInputArgument);
