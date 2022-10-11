@@ -249,7 +249,9 @@ abstract class Service
 			$CSP->img[] = 'https:';
 			$CSP->img[] = 'http:';
 		}
-		$CSP->script[] = "'nonce-{$sScriptNonce}'";
+		if ($sScriptNonce) {
+			$CSP->script[] = "'nonce-{$sScriptNonce}'";
+		}
 
 		Api::Actions()->Plugins()->RunHook('main.content-security-policy', array($CSP));
 
