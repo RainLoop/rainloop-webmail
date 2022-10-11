@@ -7,12 +7,27 @@ use OCA\SnappyMail\Controller\AjaxController;
 use OCA\SnappyMail\Controller\PageController;
 
 use OCP\AppFramework\App;
+use OCP\AppFramework\Bootstrap\IBootstrap;
+use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\IL10N;
 use OCP\IUser;
 
-class Application extends App {
+class Application extends App implements IBootstrap
+{
 
-	public function __construct(array $urlParams = []) {
+	public function register(IRegistrationContext $context): void
+	{
+	}
+
+	public function boot(IBootContext $context): void
+	{
+		$this->registerNavigation();
+		$this->getContainer()->query('SnappyMailHelper')->registerHooks();
+	}
+
+	public function __construct(array $urlParams = [])
+	{
 		parent::__construct('snappymail', $urlParams);
 
 		$container = $this->getContainer();
@@ -56,7 +71,8 @@ class Application extends App {
 		\OCP\Util::addScript('snappymail', 'snappymail');
 	}
 
-	public function registerNavigation() {
+	public function registerNavigation()
+	{
 		$container = $this->getContainer();
 
 		$container->query('OCP\INavigationManager')->add(function () use ($container) {
