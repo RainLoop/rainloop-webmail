@@ -11,7 +11,7 @@ use OCP\IConfig;
 use OCP\IL10N;
 use OCP\IRequest;
 
-class AjaxController extends Controller {
+class FetchController extends Controller {
 	private $config;
 	private $appManager;
 

@@ -7,11 +7,9 @@
  */
 
 // Do the following things once the document is fully loaded.
-document.onreadystatechange = function () {
-	if (document.readyState === 'complete') {
-		watchIFrameTitle();
-	}
-}
+document.onreadystatechange = () => {
+	(document.readyState === 'complete') && watchIFrameTitle();
+};
 
 // The SnappyMail application is already configured to modify the <title> element
 // of its root document with the number of unread messages in the inbox.
@@ -31,7 +29,7 @@ function watchIFrameTitle() {
 		childList: true,
 		subtree: true
 	};
-	let observer = new MutationObserver(function(mutations) {
+	let observer = new MutationObserver(mutations => {
 		let title = mutations[0].target.innerText;
 		if (title) {
 			let matches = title.match(/\(([0-9]+)\)/);
@@ -45,7 +43,7 @@ function watchIFrameTitle() {
 	observer.observe(target, config);
 }
 
-function SnappyMailFormHelper(sID, sAjaxFile, fCallback)
+function SnappyMailFormHelper(sID, sFetchFile, fCallback)
 {
 	try
 	{
@@ -56,49 +54,33 @@ function SnappyMailFormHelper(sID, sAjaxFile, fCallback)
 			oDesc = oForm.querySelector('.snappymail-result-desc')
 		;
 
-		oForm.addEventListener('submit', (...args) => {
-			console.dir({args:args});
-			return false
-		});
-
-		oSubmit.onclick = oEvent => {
-
+		oForm.addEventListener('submit', oEvent => {
 			oEvent.preventDefault();
 
-			oForm.classList.add('snappymail-ajax')
+			oForm.classList.add('snappymail-fetch')
 			oForm.classList.remove('snappymail-error')
 			oForm.classList.remove('snappymail-success')
 
 			oDesc.textContent = '';
 			oSubmit.textContent = '...';
 
-			fetch(OC.filePath('snappymail', 'ajax', sAjaxFile), {
+			fetch(OC.filePath('snappymail', 'fetch', sFetchFile), {
 				mode: 'same-origin',
 				cache: 'no-cache',
 				redirect: 'error',
 				referrerPolicy: 'no-referrer',
 				credentials: 'same-origin',
 				method: 'POST',
-/*
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					'snappymail-email': document.getElementById('snappymail-email').value,
-					'snappymail-password': document.getElementById('snappymail-password').value
-				})
-*/
 				headers: {},
 				body: new FormData(oForm)
 			})
 			.then(response => response.json())
 			.then(oData => {
-				let bResult = false;
-				oForm.classList.remove('snappymail-ajax');
+				let bResult = 'success' === oData?.status;
+				oForm.classList.remove('snappymail-fetch');
 				oSubmit.textContent = sSubmitValue;
-				if (oData) {
-					bResult = 'success' === oData.status;
-					if (oData.Message) {
-						oDesc.textContent = t('snappymail', oData.Message);
-					}
+				if (oData?.Message) {
+					oDesc.textContent = t('snappymail', oData.Message);
 				}
 				if (bResult) {
 					oForm.classList.add('snappymail-success');
@@ -108,13 +90,11 @@ function SnappyMailFormHelper(sID, sAjaxFile, fCallback)
 						oDesc.textContent = t('snappymail', 'Error');
 					}
 				}
-				if (fCallback) {
-					fCallback(bResult, oData);
-				}
+				fCallback?.(bResult, oData);
 			});
 
 			return false;
-		};
+		});
 	}
 	catch(e) {
 		console.error(e);

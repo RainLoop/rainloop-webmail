@@ -3,7 +3,7 @@
 namespace OCA\SnappyMail\AppInfo;
 
 use OCA\SnappyMail\Util\SnappyMailHelper;
-use OCA\SnappyMail\Controller\AjaxController;
+use OCA\SnappyMail\Controller\FetchController;
 use OCA\SnappyMail\Controller\PageController;
 
 use OCP\AppFramework\App;
@@ -47,8 +47,8 @@ class Application extends App implements IBootstrap
 		);
 
 		$container->registerService(
-			'AjaxController', function($c) {
-				return new AjaxController(
+			'FetchController', function($c) {
+				return new FetchController(
 					$c->query('AppName'),
 					$c->query('Request'),
 					$c->getServer()->getAppManager(),

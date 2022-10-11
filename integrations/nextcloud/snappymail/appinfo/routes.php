@@ -18,13 +18,13 @@ return [
 			'verb' => 'POST'
 		],
 		[
-			'name' => 'ajax#setPersonal',
-			'url' => '/ajax/personal.php',
+			'name' => 'fetch#setPersonal',
+			'url' => '/fetch/personal.php',
 			'verb' => 'POST'
 		],
 		[
-			'name' => 'ajax#setAdmin',
-			'url' => '/ajax/admin.php',
+			'name' => 'fetch#setAdmin',
+			'url' => '/fetch/admin.php',
 			'verb' => 'POST'
 		]
 	]
