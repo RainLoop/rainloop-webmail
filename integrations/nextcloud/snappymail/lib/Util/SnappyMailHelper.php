@@ -34,16 +34,7 @@ class SnappyMailHelper
 	public static function startApp(bool $api = false)
 	{
 		if (!\class_exists('RainLoop\\Api')) {
-			if ($api) {
-				$_ENV['SNAPPYMAIL_INCLUDE_AS_API'] = true;
-			}
 			$_ENV['SNAPPYMAIL_NEXTCLOUD'] = true;
-			$_SERVER['SCRIPT_NAME'] = \OC::$server->getAppManager()->getAppWebPath('snappymail') . '/app/index.php';
-
-			$sData = \rtrim(\trim(\OC::$server->getSystemConfig()->getValue('datadirectory', '')), '\\/').'/appdata_snappymail/';
-			if (\is_dir($sData)) {
-				\define('APP_DATA_FOLDER_PATH', $sData);
-			}
 
 			// Nextcloud the default spl_autoload_register() not working
 			\spl_autoload_register(function($sClassName){
@@ -53,7 +44,40 @@ class SnappyMailHelper
 				}
 			});
 
-			require_once \OC::$server->getAppManager()->getAppPath('snappymail') . '/app/index.php';
+			$path = \OC::$server->getAppManager()->getAppPath('snappymail') . '/app/';
+
+			$sData = \rtrim(\trim(\OC::$server->getSystemConfig()->getValue('datadirectory', '')), '\\/').'/appdata_snappymail/';
+			if (!\is_file("{$path}include.php")) {
+				\file_put_contents("{$path}include.php",
+					\file_get_contents("{$path}_include.php")
+					. "define('APP_DATA_FOLDER_PATH', '{$sData}');\n"
+				);
+			}
+//			\define('APP_DATA_FOLDER_PATH', $sData);
+
+			if ($api) {
+				$_ENV['SNAPPYMAIL_INCLUDE_AS_API'] = true;
+			}
+
+			require_once "{$path}index.php";
+
+			if ($api) {
+				$oConfig = \RainLoop\Api::Config();
+				if (!$oConfig->Get('webmail', 'app_path')) {
+					$oConfig->Set('webmail', 'app_path', \OC::$server->getAppManager()->getAppWebPath('snappymail') . '/app/');
+					$oConfig->Save();
+				}
+/*
+				if (!\is_dir(APP_PLUGINS_PATH . 'nextcloud')) {
+					\SnappyMail\Repository::installPackage('plugin', 'nextcloud');
+					$oConfig->Set('plugins', 'enable', true);
+					$aList = \SnappyMail\Repository::getEnabledPackagesNames();
+					$aList[] = 'nextcloud';
+					$oConfig->Set('plugins', 'enabled_list', \implode(',', \array_unique($aList)));
+					$oConfig->Save();
+				}
+*/
+			}
 		}
 	}
 
