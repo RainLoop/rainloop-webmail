@@ -16,6 +16,9 @@ class PageController extends Controller
 	 */
 	public function index()
 	{
+		// Uncomment to test without using an iframe
+//		return static::index_embed();
+
 		\OC::$server->getNavigationManager()->setActiveEntry('snappymail');
 
 		\OCP\Util::addStyle('snappymail', 'style');
@@ -72,5 +75,61 @@ class PageController extends Controller
 	{
 		SnappyMailHelper::startApp();
 	}
-}
 
+	/**
+	 * Draft code to run without using an iframe
+	 */
+	private static function index_embed()
+	{
+		\OC::$server->getNavigationManager()->setActiveEntry('snappymail');
+
+		\OCP\Util::addStyle('snappymail', 'style');
+
+		SnappyMailHelper::startApp(true);
+		$webPath = \OC::$server->getAppManager()->getAppWebPath('snappymail') . '/app';
+		$oConfig = \RainLoop\Api::Config();
+		$oActions = \RainLoop\Api::Actions();
+		$oHttp = \MailSo\Base\Http::SingletonInstance();
+		$oServiceActions = new \RainLoop\ServiceActions($oHttp, $oActions);
+		$sAppJsMin = $oConfig->Get('labs', 'use_app_debug_js', false) ? '' : '.min';
+		$sAppCssMin = $oConfig->Get('labs', 'use_app_debug_css', false) ? '' : '.min';
+		$sLanguage = $oActions->GetLanguage(false);
+
+		$sScriptNonce = \OC::$server->getContentSecurityPolicyNonceManager()->getNonce();
+//		$sScriptNonce = \SnappyMail\UUID::generate();
+//		\RainLoop\Service::setCSP($sScriptNonce);
+
+		$params = [
+			'LoadingDescriptionEsc' => \htmlspecialchars($oConfig->Get('webmail', 'loading_description', 'SnappyMail'), ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
+			'BaseTemplates' => \RainLoop\Utils::ClearHtmlOutput($oServiceActions->compileTemplates(false)),
+			'BaseAppBootScript' => \str_replace(
+				'loadScript(`./?/',
+				'loadScript(`'.$webPath.'/?/',
+				\file_get_contents(APP_VERSION_ROOT_PATH.'static/js'.($sAppJsMin ? '/min' : '').'/boot'.$sAppJsMin.'.js')
+			),
+			'BaseAppBootScriptNonce' => $sScriptNonce,
+			'BaseLanguage' => $oActions->compileLanguage($sLanguage, false),
+		];
+
+		\OCP\Util::addHeader('style', ['id'=>'app-boot-css'], \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.$sAppCssMin.'.css'));
+		\OCP\Util::addHeader('link', ['type'=>'text/css','rel'=>'stylesheet','href'=>\RainLoop\Utils::WebStaticPath('css/app'.$sAppCssMin.'.css')], '');
+		\OCP\Util::addHeader('style', ['id'=>'app-theme-style','data-href'=>$oActions->ThemeLink(false)],
+			\preg_replace(
+				'/\\s*([:;{},]+)\\s*/s',
+				'$1',
+				$oActions->compileCss($oActions->GetTheme(false), false)
+			));
+
+		$response = new TemplateResponse('snappymail', 'index_embed', $params);
+
+		$csp = new ContentSecurityPolicy();
+		$csp->addAllowedScriptDomain("'self'");
+		$csp->useStrictDynamic(true);
+		$csp->allowEvalScript(true); // $csp->addAllowedScriptDomain("'unsafe-eval'");
+		$csp->addAllowedStyleDomain("'self'");
+		$response->setContentSecurityPolicy($csp);
+
+		return $response;
+	}
+
+}

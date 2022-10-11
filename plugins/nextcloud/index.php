@@ -17,15 +17,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$this->addHook('filter.app-data', 'FilterAppData');
 			$this->addHook('json.attachments', 'SaveAttachments');
 
-			$sAppPath = \rtrim(\trim(\OC::$server->getAppManager()->getAppWebPath()), '\\/').'/app/';
-			if (!$sAppPath) {
-				$sUrl = \MailSo\Base\Http::SingletonInstance()->GetUrl();
-				if (\str_contains($sUrl, '/index.php/apps/snappymail/')) {
-					$sAppPath = \preg_replace('/\/index\.php\/apps\/snappymail.+$/',
-						'/apps/snappymail/app/', $sUrl);
-				}
-			}
-			$_SERVER['SCRIPT_NAME'] = $sAppPath;
+			$this->addJs('js/attachments.js');
 		}
 	}
 
