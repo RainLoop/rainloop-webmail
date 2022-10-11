@@ -37,7 +37,7 @@
 				</div>
 				<br />
 				<br />
-				<input type="button" id="snappymail-save-button" name="snappymail-save-button" value="<?php echo($l->t('Save')); ?>" />
+				<button id="snappymail-save-button" name="snappymail-save-button"><?php echo($l->t('Save')); ?></button>
 				&nbsp;&nbsp;<span class="snappymail-result-desc"></span>
 			</p>
 		</fieldset>

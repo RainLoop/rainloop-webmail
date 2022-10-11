@@ -24,7 +24,7 @@ $links = [
 				<input type="password" id="snappymail-password" name="snappymail-password"
 					value="<?php echo $_['snappymail-password']; ?>" placeholder="<?php echo($l->t('Password')); ?>" />
 
-				<input type="button" id="snappymail-save-button" name="snappymail-save-button" value="<?php echo($l->t('Save')); ?>" />
+				<button id="snappymail-save-button" name="snappymail-save-button"><?php echo($l->t('Save')); ?></button>
 				&nbsp;&nbsp;<span class="snappymail-result-desc"></span>
 			</p>
 		</fieldset>

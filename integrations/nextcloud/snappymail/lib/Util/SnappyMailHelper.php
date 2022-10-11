@@ -7,36 +7,25 @@ class SnappyMailHelper
 
 	public function registerHooks()
 	{
-		$config = \OC::$server->getConfig();
-		$session = \OC::$server->getSession();
 		$userSession = \OC::$server->getUserSession();
 		$userSession->listen('\OC\User', 'postLogin', function($user, $loginName, $password, $isTokenLogin) {
+			$config = \OC::$server->getConfig();
 			$sEmail = '';
-			// If the user has set credentials for SnappyMail in their personal
-			// settings, override everything before and use those instead.
-			$sIndividualEmail = $config->getUserValue($user->getUID(), 'snappymail', 'snappymail-email', '');
-			if ($sIndividualEmail) {
-				$sEmail = $sIndividualEmail;
-				$password = SnappyMailHelper::decodePassword(
-					$this->config->getUserValue($sUser, 'snappymail', 'snappymail-password', ''),
-					\md5($sEmail)
-				);
-			}
 			// Only store the user's password in the current session if they have
 			// enabled auto-login using Nextcloud username or email address.
-			else if ($config->getAppValue('snappymail', 'snappymail-autologin', false)) {
+			if ($config->getAppValue('snappymail', 'snappymail-autologin', false)) {
 				$sEmail = $user->getUID();
 			} else if ($config->getAppValue('snappymail', 'snappymail-autologin-with-email', false)) {
 				$sEmail = $config->getUserValue($user->getUID(), 'settings', 'email', '');
 			}
 			if ($sEmail) {
 				static::startApp(true);
-				$session['snappymail-sso-hash'] = \RainLoop\Api::CreateUserSsoHash($sEmail, $password/*, array $aAdditionalOptions = array(), bool $bUseTimeout = true*/);
+				\OC::$server->getSession()['snappymail-sso-hash'] = \RainLoop\Api::CreateUserSsoHash($sEmail, $password/*, array $aAdditionalOptions = array(), bool $bUseTimeout = true*/);
 			}
 		});
 
 		$userSession->listen('\OC\User', 'logout', function($user) {
-			$session['snappymail-sso-hash'] = '';
+			\OC::$server->getSession()['snappymail-sso-hash'] = '';
 			static::startApp(true);
 			\RainLoop\Api::LogoutCurrentLogginedUser();
 		});
@@ -51,7 +40,7 @@ class SnappyMailHelper
 				$_SERVER['SCRIPT_NAME'] = \OC::$server->getAppManager()->getAppWebPath('snappymail') . '/app/index.php';
 			}
 			$_ENV['SNAPPYMAIL_NEXTCLOUD'] = true;
-			$sData = \rtrim(\trim(\OC::$server->getSystemConfig()->getValue('datadirectory', '')), '\\/').'/snappymail/';
+			$sData = \rtrim(\trim(\OC::$server->getSystemConfig()->getValue('datadirectory', '')), '\\/').'/appdata_snappymail/';
 			if (\is_dir($sData)) {
 				\define('APP_DATA_FOLDER_PATH', $sData);
 			}

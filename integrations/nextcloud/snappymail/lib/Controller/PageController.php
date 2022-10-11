@@ -20,10 +20,30 @@ class PageController extends Controller
 
 		\OCP\Util::addStyle('snappymail', 'style');
 
-		$session = \OC::$server->getSession();
+		$query = '';
+		// If the user has set credentials for SnappyMail in their personal
+		// settings, override everything before and use those instead.
+		$config = \OC::$server->getConfig();
+		$sUID = \OC::$server->getUserSession()->getUser()->getUID();
+		$sEmail = $config->getUserValue($sUID, 'snappymail', 'snappymail-email', '');
+		if ($sEmail) {
+			$password = SnappyMailHelper::decodePassword(
+				$config->getUserValue($sUID, 'snappymail', 'snappymail-password', ''),
+				\md5($sEmail)
+			);
+			if ($password) {
+				$query = '?sso&hash=' . \RainLoop\Api::CreateUserSsoHash($sEmail, $password);
+			}
+		}
+		if (!$query) {
+			$session = \OC::$server->getSession();
+			if (!empty($session['snappymail-sso-hash'])) {
+				$query = '?sso&hash=' . $session['snappymail-sso-hash'];
+			}
+		}
+
 		$params = [
-			'snappymail-iframe-url' => SnappyMailHelper::normalizeUrl(SnappyMailHelper::getAppUrl())
-				. (empty($session['snappymail-sso-hash']) ? '' : '?sso&hash=' . $session['snappymail-sso-hash'])
+			'snappymail-iframe-url' => SnappyMailHelper::normalizeUrl(SnappyMailHelper::getAppUrl()) . $query
 		];
 
 		$response = new TemplateResponse('snappymail', 'index', $params);
