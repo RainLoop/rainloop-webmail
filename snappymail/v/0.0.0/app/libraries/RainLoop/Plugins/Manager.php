@@ -39,7 +39,7 @@ class Manager
 		if ($this->bIsEnabled) {
 			$sList = $oConfig->Get('plugins', 'enabled_list', '');
 			if (\strlen($sList)) {
-				$aList = \array_map('trim', \explode(',', $sList));
+				$aList = \SnappyMail\Repository::getEnabledPackagesNames();
 				foreach ($aList as $i => $sName) {
 					$oPlugin = $this->CreatePluginByName($sName);
 					if ($oPlugin) {

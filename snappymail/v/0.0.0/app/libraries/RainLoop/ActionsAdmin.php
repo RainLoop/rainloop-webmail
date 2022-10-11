@@ -704,9 +704,7 @@ class ActionsAdmin extends Actions
 
 		$oConfig = $this->Config();
 
-		$sEnabledPlugins = $oConfig->Get('plugins', 'enabled_list', '');
-		$aEnabledPlugins = \explode(',', \strtolower($sEnabledPlugins));
-		$aEnabledPlugins = \array_map('trim', $aEnabledPlugins);
+		$aEnabledPlugins = \SnappyMail\Repository::getEnabledPackagesNames();
 
 		$aNewEnabledPlugins = array();
 		if ($bEnable)

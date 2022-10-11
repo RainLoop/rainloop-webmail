@@ -177,6 +177,13 @@ abstract class Repository
 			&& \RainLoop\Api::Config()->Get('admin_panel', 'allow_update', false);
 	}
 
+	public static function getEnabledPackagesNames() : array
+	{
+		return \array_map('trim',
+			\explode(',', \strtolower(\RainLoop\Api::Config()->Get('plugins', 'enabled_list', '')))
+		);
+	}
+
 	public static function getPackagesList() : array
 	{
 		empty($_ENV['SNAPPYMAIL_INCLUDE_AS_API']) && \RainLoop\Api::Actions()->IsAdminLoggined();
@@ -185,9 +192,7 @@ abstract class Repository
 		$sError = '';
 		$aList = static::getRepositoryData($bReal, $sError);
 
-		$aEnabledPlugins = \array_map('trim',
-			\explode(',', \strtolower(\RainLoop\Api::Config()->Get('plugins', 'enabled_list', '')))
-		);
+		$aEnabledPlugins = static::getEnabledPackagesNames();
 
 		$aInstalled = \RainLoop\Api::Actions()->Plugins()->InstalledPlugins();
 		foreach ($aInstalled as $aItem) {
