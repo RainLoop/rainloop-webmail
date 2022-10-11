@@ -2,7 +2,7 @@
 <?php
 chdir(__DIR__);
 
-$options = getopt('', ['aur','docker','plugins','set-version','skip-gulp','debian','sign']);
+$options = getopt('', ['aur','docker','plugins','set-version','skip-gulp','debian','nextcloud','sign']);
 
 if (isset($options['plugins'])) {
 	require(__DIR__ . '/build/plugins.php');
@@ -27,7 +27,6 @@ file_put_contents($file, preg_replace('/<upstream>[^<]*</', "<upstream>{$package
 $file = __DIR__ . '/.docker/release/files/usr/local/include/application.ini';
 file_put_contents($file, preg_replace('/current = "[0-9.]+"/', "current = \"{$package->version}\"", file_get_contents($file)));
 // nextcloud
-file_put_contents(__DIR__ . '/integrations/nextcloud/snappymail/VERSION', $package->version);
 $file = __DIR__ . '/integrations/nextcloud/snappymail/appinfo/info.xml';
 file_put_contents($file, preg_replace('/<version>[^<]*</', "<version>{$package->version}<", file_get_contents($file)));
 // virtualmin
@@ -175,6 +174,10 @@ $tar_destination .= '.gz';
 
 echo "{$zip_destination} created\n{$tar_destination} created\n";
 
+if (isset($options['nextcloud'])) {
+	require(__DIR__ . '/build/nextcloud.php');
+}
+
 rename("snappymail/v/{$package->version}", 'snappymail/v/0.0.0');
 
 file_put_contents("{$destPath}core.json", '{
@@ -252,6 +255,10 @@ if (isset($options['sign'])) {
 	echo "\x1b[33;1m === PGP Sign === \x1b[0m\n";
 	passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --armor --detach-sign '.escapeshellarg($tar_destination), $return_var);
 	passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --armor --detach-sign '.escapeshellarg($zip_destination), $return_var);
+	if (isset($options['nextcloud'])) {
+		passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --armor --detach-sign '
+			.escapeshellarg("{$destPath}snappymail-{$package->version}-nextcloud.tar.gz"), $return_var);
+	}
 	if (isset($options['debian'])) {
 		passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --armor --detach-sign '
 			. escapeshellarg(__DIR__ . "/build/dist/releases/webmail/{$package->version}/" . basename(DEB_DEST_DIR.'.deb')), $return_var);
