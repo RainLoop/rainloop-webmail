@@ -71,9 +71,4 @@ class Application extends App {
 		});
 	}
 
-	public function registerPersonalSettings() {
-		\OCP\App::registerPersonal('snappymail', 'templates/personal');
-	}
-
 }
-

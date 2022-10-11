@@ -3,8 +3,10 @@ namespace OCA\SnappyMail\Settings;
 
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IConfig;
+use OCP\Settings\ISettings;
 
-class PersonalSettings {
+class PersonalSettings implements ISettings
+{
 	private $config;
 
 	public function __construct(IConfig $config) {
@@ -28,5 +30,12 @@ class PersonalSettings {
 		return new TemplateResponse('snappymail', 'personal_settings', $parameters, '');
 	}
 
-}
+	public function getSection() {
+		return 'additional';
+	}
 
+	public function getPriority() {
+		return 50;
+	}
+
+}

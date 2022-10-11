@@ -10,6 +10,4 @@
 
 $app = new OCA\SnappyMail\AppInfo\Application();
 $app->registerNavigation();
-$app->registerPersonalSettings();
 $app->getContainer()->query('SnappyMailHelper')->registerHooks();
-
