@@ -651,7 +651,8 @@ class Actions
 				array(
 					'version' => APP_VERSION,
 					'token' => $oConfig->Get('security', 'csrf_protection', false) ? Utils::GetCsrfToken() : '',
-					'languages' => \SnappyMail\L10n::getLanguages(false)
+					'languages' => \SnappyMail\L10n::getLanguages(false),
+					'webPath' => \RainLoop\Utils::WebPath()
 				), $bAdmin ? array(
 					'adminHostUse' => '' !== $oConfig->Get('security', 'admin_panel_host', ''),
 					'adminPath' => $oConfig->Get('security', 'admin_panel_key', '') ?: 'admin',

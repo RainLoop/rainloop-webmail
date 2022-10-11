@@ -81,7 +81,7 @@ export const
 			prefix = '';
 		}
 
-		return prefix + 'themes/' + encodeURI(theme) + '/images/preview.png';
+		return Settings.app('webPath') + prefix + 'themes/' + encodeURI(theme) + '/images/preview.png';
 	},
 
 	/**
