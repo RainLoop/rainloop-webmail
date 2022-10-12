@@ -9,12 +9,12 @@ return [
 		],
 		[
 			'name' => 'page#appGet',
-			'url' => '/app/',
+			'url' => '/run/',
 			'verb' => 'GET'
 		],
 		[
 			'name' => 'page#appPost',
-			'url' => '/app/',
+			'url' => '/run/',
 			'verb' => 'POST'
 		],
 		[

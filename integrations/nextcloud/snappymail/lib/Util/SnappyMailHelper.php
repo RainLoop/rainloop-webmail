@@ -86,14 +86,7 @@ class SnappyMailHelper
 	 */
 	public static function getAppUrl()
 	{
-		$sRequestUri = \OC::$server->getURLGenerator()->linkToRoute('snappymail.page.appGet');
-		if ($sRequestUri) {
-			return $sRequestUri;
-		}
-		$sRequestUri = empty($_SERVER['REQUEST_URI']) ? '': \trim($_SERVER['REQUEST_URI']);
-		$sRequestUri = \preg_replace('/index.php\/.+$/', 'index.php/', $sRequestUri);
-		$sRequestUri = $sRequestUri.'apps/snappymail/app/';
-		return '/'.\ltrim($sRequestUri, '/\\');
+		return \OC::$server->getURLGenerator()->linkToRoute('snappymail.page.appGet');
 	}
 
 	/**
