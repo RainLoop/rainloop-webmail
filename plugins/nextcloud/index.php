@@ -7,16 +7,18 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 		VERSION = '2.1',
 		RELEASE  = '2022-10-10',
 		CATEGORY = 'Integrations',
-		DESCRIPTION = 'Integrate with Nextcloud v18+',
-		REQUIRED = '2.15.2';
+		DESCRIPTION = 'Integrate with Nextcloud v20+',
+		REQUIRED = '2.18.6';
 
 	public function Init() : void
 	{
 		if (static::IsIntegrated()) {
+			$this->UseLangs(true);
+
 			$this->addHook('main.fabrica', 'MainFabrica');
 			$this->addHook('filter.app-data', 'FilterAppData');
-			$this->addHook('json.attachments', 'DoAttachmentsActions');
 
+			$this->addHook('json.attachments', 'DoAttachmentsActions');
 			$this->addJs('js/attachments.js');
 		}
 	}
@@ -36,11 +38,33 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 		return static::IsIntegrated() && \OC::$server->getUserSession()->isLoggedIn();
 	}
 
+	/*
+	$sUID = \OC::$server->getUserSession()->getUser()->getUID();
+	WebDAV /nextcloud/remote.php/dav/files/$sUID/
+	\OCP\Util::linkToRemote('files');
+
+	\OC::$server->getCalendarManager();
+	\OC::$server->getLDAPProvider();
+	\OC::$server->getAppDataDir('snappymail'); ??
+
+	$oFiles = \OCP\Files::getStorage('files');
+	if ($oFiles and $oFiles->is_dir('/')) {
+		$dh = $oFiles->opendir('/');
+		if (\is_resource($dh)) {
+			while (($file = \readdir($dh)) !== false) {
+				if ($file != '.' && $file != '..') {
+					// DO THINGS
+				}
+			}
+		}
+	}
+	*/
+
 	public function DoAttachmentsActions(\SnappyMail\AttachmentsAction $data)
 	{
-		if ('nextcloud' === $data->action) {
+		if (static::isLoggedIn() && 'nextcloud' === $data->action) {
 			$oFiles = \OCP\Files::getStorage('files');
-			if ($oFiles && $data->filesProvider->IsActive() && \method_exists($oFiles, 'file_put_contents')) {
+			if ($oFiles && \method_exists($oFiles, 'file_put_contents')) {
 				$sSaveFolder = $this->Config()->Get('plugin', 'save_folder', '') ?: 'Attachments';
 				$oFiles->is_dir($sSaveFolder) || $oFiles->mkdir($sSaveFolder);
 				$data->result = true;
@@ -77,13 +101,10 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function FilterAppData($bAdmin, &$aResult) : void
 	{
-		if (!$bAdmin && \is_array($aResult) && static::IsIntegrated()) {
+		if (!$bAdmin && \is_array($aResult)) {
 			$key = \array_search(\RainLoop\Enumerations\Capa::AUTOLOGOUT, $aResult['Capa']);
 			if (false !== $key) {
 				unset($aResult['Capa'][$key]);
-			}
-			if (static::IsLoggedIn() && \class_exists('OCP\Files')) {
-				$aResult['System']['attachmentsActions'][] = 'nextcloud';
 			}
 		}
 	}
