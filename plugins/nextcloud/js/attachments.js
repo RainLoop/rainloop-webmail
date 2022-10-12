@@ -10,19 +10,24 @@
 					.map(item => item?.checked() /*&& !item?.isLinked()*/ ? item.download : '')
 					.filter(v => v);
 				if (hashes.length) {
+					view.saveNextcloudLoading(true);
 					rl.fetchJSON('./?/Json/&q[]=/0/', {}, {
 						Action: 'AttachmentsActions',
 						Do: 'nextcloud',
 						Hashes: hashes
 					})
 					.then(result => {
+						view.saveNextcloudLoading(false);
 						if (result?.Result) {
 							// success
 						} else {
 							view.saveNextcloudError(true);
 						}
 					})
-					.catch(() => view.saveNextcloudError(true));
+					.catch(() => {
+						view.saveNextcloudLoading(false);
+						view.saveNextcloudError(true);
+					});
 				}
 			};
 		}
