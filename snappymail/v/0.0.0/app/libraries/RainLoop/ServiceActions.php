@@ -109,7 +109,7 @@ class ServiceActions
 			{
 				throw new Exceptions\ClientException(Notifications::InvalidToken, null, 'CSRF failed');
 			}
-			else if (!empty($sAction))
+			if (!empty($sAction))
 			{
 				if ($this->oActions instanceof ActionsAdmin && 0 === \stripos($sAction, 'Admin') && !\in_array($sAction, ['AdminLogin', 'AdminLogout'])) {
 					$this->oActions->IsAdminLoggined();

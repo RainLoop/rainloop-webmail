@@ -28,7 +28,7 @@ $keys = [
 	'version'
 ];
 foreach (glob(ROOT_DIR . '/plugins/*', GLOB_NOSORT | GLOB_ONLYDIR) as $dir) {
-	if (is_file("{$dir}/index.php")) {
+	if (is_file("{$dir}/index.php") && !strpos($dir, '.bak')) {
 		require "{$dir}/index.php";
 		$name = basename($dir);
 		$class = new ReflectionClass(str_replace('-', '', $name) . 'Plugin');
@@ -50,7 +50,7 @@ foreach (glob(ROOT_DIR . '/plugins/*', GLOB_NOSORT | GLOB_ONLYDIR) as $dir) {
 			@unlink($tgz_destination);
 			@unlink("{$tar_destination}.gz");
 			$tar = new PharData($tar_destination);
-			$tar->buildFromDirectory('./plugins/', '/' . \preg_quote("./plugins/{$name}/", '/') . '/');
+			$tar->buildFromDirectory('./plugins/', '/' . \preg_quote("./plugins/{$name}/", '/') . '((?!\.bak).)*$/');
 			$tar->compress(Phar::GZ);
 			unlink($tar_destination);
 			rename("{$tar_destination}.gz", $tgz_destination);
@@ -58,7 +58,7 @@ foreach (glob(ROOT_DIR . '/plugins/*', GLOB_NOSORT | GLOB_ONLYDIR) as $dir) {
 				$phar_destination = PLUGINS_DEST_DIR . "/{$name}.phar";
 				@unlink($phar_destination);
 				$tar = new Phar($phar_destination);
-				$tar->buildFromDirectory("./plugins/{$name}/");
+				$tar->buildFromDirectory("./plugins/{$name}/", '/^((?!\.bak).)*$/');
 				$tar->compress(Phar::GZ);
 				unlink($phar_destination);
 				rename("{$phar_destination}.gz", $phar_destination);
@@ -86,4 +86,3 @@ $manifest = str_replace('}]', "}\n]", $manifest);
 $manifest = str_replace('","', "\",\n\t\t\"", $manifest);
 $manifest = str_replace('\/', '/', $manifest);
 file_put_contents(PLUGINS_DEST_DIR . "/packages.json", $manifest);
-exit;

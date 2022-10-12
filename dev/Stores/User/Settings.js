@@ -4,7 +4,7 @@ import { koComputable } from 'External/ko';
 import { Layout } from 'Common/EnumsUser';
 import { pInt } from 'Common/Utils';
 import { addObservablesTo } from 'External/ko';
-import { $htmlCL, SettingsGet, fireEvent } from 'Common/Globals';
+import { $htmlCL, SettingsGet, SettingsCapa, fireEvent } from 'Common/Globals';
 import { ThemeStore } from 'Stores/Theme';
 
 export const SettingsUserStore = new class {
@@ -57,7 +57,7 @@ export const SettingsUserStore = new class {
 		let iAutoLogoutTimer;
 		self.delayLogout = (() => {
 			clearTimeout(iAutoLogoutTimer);
-			if (0 < self.autoLogout() && !SettingsGet('AccountSignMe')) {
+			if (0 < self.autoLogout() && !SettingsGet('AccountSignMe') && SettingsCapa('AutoLogout')) {
 				iAutoLogoutTimer = setTimeout(
 					rl.app.logout,
 					self.autoLogout() * 60000

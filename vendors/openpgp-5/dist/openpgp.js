@@ -1883,12 +1883,12 @@ var openpgp = (function (exports) {
     },
 
     /**
-     * Remove trailing spaces and tabs from each line
+     * Remove trailing spaces, carriage returns and tabs from each line
      */
     removeTrailingSpaces(text) {
       return text.split('\n').map(line => {
         let i = line.length - 1;
-        for (; i >= 0 && (line[i] === ' ' || line[i] === '\t'); i--);
+        for (; i >= 0 && (line[i] === ' ' || line[i] === '\t' || line[i] === '\r'); i--);
         return line.substr(0, i + 1);
       }).join('\n');
     },

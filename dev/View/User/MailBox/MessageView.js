@@ -460,7 +460,7 @@ export class MailMessageView extends AbstractViewRight {
 	}
 
 	downloadAsZip() {
-		const hashes = (currentMessage() ? currentMessage().attachments : [])
+		const hashes = (currentMessage()?.attachments || [])
 			.map(item => item?.checked() /*&& !item?.isLinked()*/ ? item.download : '')
 			.filter(v => v);
 		if (hashes.length) {
