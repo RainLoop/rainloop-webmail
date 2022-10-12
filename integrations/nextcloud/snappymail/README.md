@@ -30,7 +30,7 @@ After a quick wait, SnappyMail is installed. Now you should configure it before 
 
 ![Image3](https://github.com/pierre-alain-b/rainloop-nextcloud/blob/master/screenshots/help_a3.png)
 
-To enter SnappyMail admin area, the default login is "admin" and the default password is "12345". Don't forget to change it once in the admin panel!
+To enter SnappyMail admin area, the default login is "admin" and the default password will be generated in `[nextcloud-data]/app_snappymail/_data_/_default_/admin_password.txt`. Don't forget to change it once in the admin panel!
 
 From that point, all instance-wide SnappyMail settings can be tweaked as you wish. One important point is the "Domains" section where you should set up the IMAP/SMTP parameters that will be associated with the email adresses of your users. Basically, if a user of the Nextcloud instance starts SnappyMail and puts "firstname@domain.tld" as an email address, then SnappyMail should know how to connect to the IMAP & SMTP of domain.tld. You can fill in this information in the "Domains" section of the SnappyMail admin settings.
 
