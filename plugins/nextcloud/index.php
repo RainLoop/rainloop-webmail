@@ -15,7 +15,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 		if (static::IsIntegrated()) {
 			$this->addHook('main.fabrica', 'MainFabrica');
 			$this->addHook('filter.app-data', 'FilterAppData');
-			$this->addHook('json.attachments', 'SaveAttachments');
+			$this->addHook('json.attachments', 'DoAttachmentsActions');
 
 			$this->addJs('js/attachments.js');
 		}
@@ -36,8 +36,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 		return static::IsIntegrated() && \OC::$server->getUserSession()->isLoggedIn();
 	}
 
-	// DoAttachmentsActions
-	public function SaveAttachments(\SnappyMail\AttachmentsAction $data)
+	public function DoAttachmentsActions(\SnappyMail\AttachmentsAction $data)
 	{
 		if ('nextcloud' === $data->action) {
 			$oFiles = \OCP\Files::getStorage('files');

@@ -378,8 +378,14 @@ $Plugin->addHook('hook.name', 'functionName');
 ## Misc
 ### idle
 ### rl-layout
+
+### rl-view-model.create
+	event.detail = the ViewModel class
+	Happens immediately after the ViewModel constructor
+
 ### rl-view-model
 	event.detail = the ViewModel class
+	Happens after the full build (vm.onBuild()) and contains viewModelDom
 
 ### sm-admin-login
 	event.detail = FormData
