@@ -42,4 +42,33 @@
 			+ '<span class="g-ui-link" data-bind="click: saveNextcloud" data-i18n="NEXTCLOUD/SAVE_ATTACHMENTS">Save Nextcloud</span>'
 		+ '</span>'));
 	}
+
+
+	/** TODO: File browser to attach files in composer */
+/*
+	let cfg = rl.settings.get('Nextcloud');
+	fetch(cfg.WebDAV . '/files/' . cfg.UID, {
+		method: 'PROPFIND',
+		mode: 'same-origin',
+		cache: 'no-cache',
+		redirect: 'error',
+		credentials: 'same-origin',
+		headers: {
+			'Content-Type': 'application/xml; charset=utf-8',
+		},
+		body: '<?xml version="1.0"?>'
+			+ '<d:propfind xmlns:d="DAV:">'
+			+ '<d:prop><d:resourcetype/></d:prop>'
+			+ '</d:propfind>'
+	})
+    .then(response => response.text())
+	.then(text => {
+		console.dir({response:text});
+		parser = new DOMParser();
+		xmlDoc = parser.parseFromString(text, "text/xml");
+	})
+	.catch(error => console.error(error));
+*/
+
+
 })(window.rl);

@@ -39,10 +39,6 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	}
 
 	/*
-	$sUID = \OC::$server->getUserSession()->getUser()->getUID();
-	WebDAV /nextcloud/remote.php/dav/files/$sUID/
-	\OCP\Util::linkToRemote('files');
-
 	\OC::$server->getCalendarManager();
 	\OC::$server->getLDAPProvider();
 	\OC::$server->getAppDataDir('snappymail'); ??
@@ -106,6 +102,14 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			if (false !== $key) {
 				unset($aResult['Capa'][$key]);
 			}
+			$sUID = \OC::$server->getUserSession()->getUser()->getUID();
+			$sWebDAV = \OC::$server->getURLGenerator()->linkTo('', 'remote.php') . '/dav/';
+//			$sWebDAV = \OCP\Util::linkToRemote('dav');
+			$aResult['Nextcloud'] = [
+				'UID' => $sUID,
+				'WebDAV' => $sWebDAV
+//				'WebDAV_files' => $sWebDAV . '/files/' . $sUID
+			];
 		}
 	}
 
