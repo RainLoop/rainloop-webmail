@@ -5,6 +5,7 @@ namespace OCA\SnappyMail\AppInfo;
 use OCA\SnappyMail\Util\SnappyMailHelper;
 use OCA\SnappyMail\Controller\FetchController;
 use OCA\SnappyMail\Controller\PageController;
+use OCA\SnappyMail\Search\Provider;
 
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootstrap;
@@ -15,14 +16,64 @@ use OCP\IUser;
 
 class Application extends App implements IBootstrap
 {
+	public const APP_ID = 'snappymail';
+
+	public function __construct(array $urlParams = [])
+	{
+		parent::__construct(self::APP_ID, $urlParams);
+	}
 
 	public function register(IRegistrationContext $context): void
 	{
+		/**
+		 * Controllers
+		 */
+		$context->registerService(
+			'PageController', function($c) {
+				return new PageController(
+					$c->query('AppName'),
+					$c->query('Request')
+				);
+			}
+		);
+
+		$context->registerService(
+			'FetchController', function($c) {
+				return new FetchController(
+					$c->query('AppName'),
+					$c->query('Request'),
+					$c->getServer()->getAppManager(),
+					$c->query('ServerContainer')->getConfig(),
+					$c->query(IL10N::class)
+				);
+			}
+		);
+
+		/**
+		 * Utils
+		 */
+		$context->registerService(
+			'SnappyMailHelper', function($c) {
+				return new SnappyMailHelper();
+			}
+		);
+
+//		$context->registerSearchProvider(Provider::class);
 	}
 
 	public function boot(IBootContext $context): void
 	{
-		$this->registerNavigation();
+		$container = $this->getContainer();
+		$container->query('OCP\INavigationManager')->add(function () use ($container) {
+			$urlGenerator = $container->query('OCP\IURLGenerator');
+			return [
+				'id' => 'snappymail',
+				'order' => 10,
+				'href' => $urlGenerator->linkToRoute('snappymail.page.index'),
+				'icon' => $urlGenerator->imagePath('snappymail', 'logo-64x64.png'),
+				'name' => \OCP\Util::getL10N('snappymail')->t('Email')
+			];
+		});
 
 		$userSession = \OC::$server->getUserSession();
 		$userSession->listen('\OC\User', 'postLogin', function($user, $loginName, $password, $isTokenLogin) {
@@ -47,65 +98,4 @@ class Application extends App implements IBootstrap
 			\RainLoop\Api::LogoutCurrentLogginedUser();
 		});
 	}
-
-//	public function __construct(string $appName, array $urlParams = [])
-	public function __construct()
-	{
-		parent::__construct('snappymail');
-
-		$container = $this->getContainer();
-
-		/**
-		 * Controllers
-		 */
-		$container->registerService(
-			'PageController', function($c) {
-				return new PageController(
-					$c->query('AppName'),
-					$c->query('Request')
-				);
-			}
-		);
-
-		$container->registerService(
-			'FetchController', function($c) {
-				return new FetchController(
-					$c->query('AppName'),
-					$c->query('Request'),
-					$c->getServer()->getAppManager(),
-					$c->query('ServerContainer')->getConfig(),
-					$c->query(IL10N::class)
-				);
-			}
-		);
-
-		/**
-		 * Utils
-		 */
-		$container->registerService(
-			'SnappyMailHelper', function($c) {
-				return new SnappyMailHelper();
-			}
-		);
-
-		// Add script js/snappymail.js
-		\OCP\Util::addScript('snappymail', 'snappymail');
-	}
-
-	public function registerNavigation()
-	{
-		$container = $this->getContainer();
-
-		$container->query('OCP\INavigationManager')->add(function () use ($container) {
-			$urlGenerator = $container->query('OCP\IURLGenerator');
-			return [
-				'id' => 'snappymail',
-				'order' => 10,
-				'href' => $urlGenerator->linkToRoute('snappymail.page.index'),
-				'icon' => $urlGenerator->imagePath('snappymail', 'logo-64x64.png'),
-				'name' => \OCP\Util::getL10N('snappymail')->t('Email')
-			];
-		});
-	}
-
 }

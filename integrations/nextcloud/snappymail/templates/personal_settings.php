@@ -1,5 +1,4 @@
-<?php script('snappymail', 'personal');
-
+<?php
 $textLink1 = $l->t('may have some');
 $textLink2 = $l->t('security considerations');
 $links = [
@@ -8,10 +7,8 @@ $links = [
 	]; ?>
 
 <div class="section">
-	<form id="mail-snappymail-personal-form" action="#" method="post">
+	<form class="snappymail" action="personal.php" method="post">
 		<input type="hidden" name="requesttoken" value="<?php echo $_['requesttoken'] ?>" id="requesttoken">
-		<input type="hidden" name="appname" value="snappymail">
-
 		<fieldset class="personalblock">
 			<h2><?php echo($l->t('SnappyMail Webmail')); ?></h2>
 			<p>

@@ -8,7 +8,11 @@
 
 // Do the following things once the document is fully loaded.
 document.onreadystatechange = () => {
-	(document.readyState === 'complete') && watchIFrameTitle();
+	if (document.readyState === 'complete') {
+		watchIFrameTitle();
+		let form = document.querySelector('form.snappymail');
+		form && SnappyMailFormHelper(form);
+	}
 };
 
 // The SnappyMail application is already configured to modify the <title> element
@@ -43,12 +47,11 @@ function watchIFrameTitle() {
 	observer.observe(target, config);
 }
 
-function SnappyMailFormHelper(sID, sFetchFile, fCallback)
+function SnappyMailFormHelper(oForm)
 {
 	try
 	{
 		var
-			oForm = document.getElementById('mail-snappymail-' + sID),
 			oSubmit = document.getElementById('snappymail-save-button'),
 			sSubmitValue = oSubmit.textContent,
 			oDesc = oForm.querySelector('.snappymail-result-desc')
@@ -64,7 +67,10 @@ function SnappyMailFormHelper(sID, sFetchFile, fCallback)
 			oDesc.textContent = '';
 			oSubmit.textContent = '...';
 
-			fetch(OC.filePath('snappymail', 'fetch', sFetchFile), {
+			let data = new FormData(oForm);
+			data.set('appname', 'snappymail');
+
+			fetch(OC.filePath('snappymail', 'fetch', oForm.getAttribute('action')), {
 				mode: 'same-origin',
 				cache: 'no-cache',
 				redirect: 'error',
@@ -72,7 +78,7 @@ function SnappyMailFormHelper(sID, sFetchFile, fCallback)
 				credentials: 'same-origin',
 				method: 'POST',
 				headers: {},
-				body: new FormData(oForm)
+				body: data
 			})
 			.then(response => response.json())
 			.then(oData => {
@@ -90,7 +96,6 @@ function SnappyMailFormHelper(sID, sFetchFile, fCallback)
 						oDesc.textContent = t('snappymail', 'Error');
 					}
 				}
-				fCallback?.(bResult, oData);
 			});
 
 			return false;

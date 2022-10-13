@@ -6,41 +6,42 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IConfig;
 use OCP\Settings\ISettings;
 
-class AdminSettings implements ISettings {
-
+class AdminSettings implements ISettings
+{
 	private $config;
 
-	public function __construct(IConfig $config) {
+	public function __construct(IConfig $config)
+	{
 		$this->config = $config;
 	}
 
-	public function getForm() {
+	public function getForm()
+	{
 		$keys = [
 			'snappymail-autologin',
 			'snappymail-autologin-with-email',
 			'snappymail-embed'
 		];
-
 		$parameters = [];
 		foreach ($keys as $k) {
 			$v = $this->config->getAppValue('snappymail', $k);
 			$parameters[$k] = $v;
 		}
-
 		$uid = \OC::$server->getUserSession()->getUser()->getUID();
 		if (\OC_User::isAdminUser($uid)) {
 			$parameters['snappymail-admin-panel-link'] = SnappyMailHelper::getAppUrl().'?admin';
 		}
-
+		\OCP\Util::addScript('snappymail', 'snappymail');
 		return new TemplateResponse('snappymail', 'admin-local', $parameters);
 	}
 
-	public function getSection() {
+	public function getSection()
+	{
 		return 'additional';
 	}
 
-	public function getPriority() {
+	public function getPriority()
+	{
 		return 50;
 	}
-
 }

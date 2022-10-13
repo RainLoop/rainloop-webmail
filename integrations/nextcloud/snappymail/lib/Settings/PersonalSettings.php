@@ -21,6 +21,7 @@ class PersonalSettings implements ISettings
 			'snappymail-email' => $this->config->getUserValue($uid, 'snappymail', 'snappymail-email'),
 			'snappymail-password' => $this->config->getUserValue($uid, 'snappymail', 'snappymail-password') ? '******' : ''
 		];
+		\OCP\Util::addScript('snappymail', 'snappymail');
 		return new TemplateResponse('snappymail', 'personal_settings', $parameters, '');
 	}
 
@@ -33,5 +34,4 @@ class PersonalSettings implements ISettings
 	{
 		return 50;
 	}
-
 }

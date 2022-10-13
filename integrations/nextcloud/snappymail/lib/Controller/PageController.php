@@ -24,6 +24,7 @@ class PageController extends Controller
 
 		\OC::$server->getNavigationManager()->setActiveEntry('snappymail');
 
+		\OCP\Util::addScript('snappymail', 'snappymail');
 		\OCP\Util::addStyle('snappymail', 'style');
 
 		$query = '';

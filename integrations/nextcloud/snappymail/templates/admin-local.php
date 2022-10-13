@@ -1,10 +1,6 @@
-<?php script('snappymail', 'admin') ?>
-
 <div class="section">
-	<form id="mail-snappymail-admin-form" action="#" method="post">
+	<form class="snappymail" action="admin.php" method="post">
 		<input type="hidden" name="requesttoken" value="<?php echo $_['requesttoken'] ?>" id="requesttoken">
-		<input type="hidden" name="appname" value="snappymail">
-
 		<fieldset class="personalblock">
 			<h2><?php echo($l->t('SnappyMail Webmail')); ?></h2>
 			<br />
