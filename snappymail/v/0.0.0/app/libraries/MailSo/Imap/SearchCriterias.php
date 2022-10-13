@@ -19,7 +19,7 @@ namespace MailSo\Imap;
 abstract class SearchCriterias
 {
 	const
-		RegEx = 'in|e?mail|from|to|subject|has|is|date|since|before|text|body|size|larger|bigger|smaller|maxsize|minsize';
+		RegEx = 'in|e?mail|from|to|subject|has|is|date|since|before|text|body|size|larger|bigger|smaller|maxsize|minsize|keyword';
 
 	/**
 		https://datatracker.ietf.org/doc/html/rfc3501#section-6.4.4
