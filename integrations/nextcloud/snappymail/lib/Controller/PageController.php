@@ -28,24 +28,9 @@ class PageController extends Controller
 		\OCP\Util::addStyle('snappymail', 'style');
 
 		$query = '';
-		// If the user has set credentials for SnappyMail in their personal
-		// settings, override everything before and use those instead.
-		$sUID = \OC::$server->getUserSession()->getUser()->getUID();
-		$sEmail = $config->getUserValue($sUID, 'snappymail', 'snappymail-email', '');
-		if ($sEmail) {
-			$password = SnappyMailHelper::decodePassword(
-				$config->getUserValue($sUID, 'snappymail', 'snappymail-password', ''),
-				\md5($sEmail)
-			);
-			if ($password) {
-				$query = '?sso&hash=' . \RainLoop\Api::CreateUserSsoHash($sEmail, $password);
-			}
-		}
-		if (!$query) {
-			$session = \OC::$server->getSession();
-			if (!empty($session['snappymail-sso-hash'])) {
-				$query = '?sso&hash=' . $session['snappymail-sso-hash'];
-			}
+		$aCredentials = SnappyMailHelper::getLoginCredentials();
+		if ($aCredentials[0] && $aCredentials[1]) {
+			$query = '?sso&hash=' . \RainLoop\Api::CreateUserSsoHash($aCredentials[0] && $aCredentials[1]);
 		}
 
 		$params = [
@@ -68,6 +53,8 @@ class PageController extends Controller
 	public function appGet()
 	{
 		SnappyMailHelper::startApp();
+		\RainLoop\Service::Handle();
+		exit;
 	}
 
 	/**
@@ -76,7 +63,7 @@ class PageController extends Controller
 	 */
 	public function appPost()
 	{
-		SnappyMailHelper::startApp();
+		SnappyMailHelper::startApp(true);
 	}
 
 	/**
@@ -85,7 +72,7 @@ class PageController extends Controller
 	 */
 	public function indexPost()
 	{
-		SnappyMailHelper::startApp();
+		SnappyMailHelper::startApp(true);
 	}
 
 	/**
@@ -94,15 +81,14 @@ class PageController extends Controller
 	private static function index_embed()
 	{
 		if (!empty($_SERVER['QUERY_STRING'])) {
-			SnappyMailHelper::startApp();
-			return;
+			SnappyMailHelper::startApp(true);
 		}
 
 		\OC::$server->getNavigationManager()->setActiveEntry('snappymail');
 
 		\OCP\Util::addStyle('snappymail', 'embed');
 
-		SnappyMailHelper::startApp(true);
+		SnappyMailHelper::startApp();
 		$oConfig = \RainLoop\Api::Config();
 		$oActions = \RainLoop\Api::Actions();
 		$oHttp = \MailSo\Base\Http::SingletonInstance();

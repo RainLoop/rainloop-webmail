@@ -43,9 +43,10 @@ class Provider implements IProvider
 	public function search(IUser $user, ISearchQuery $query): SearchResult
 	{
 		$result = [];
-		SnappyMailHelper::startApp(true);
+		SnappyMailHelper::startApp();
 		$oActions = \RainLoop\Api::Actions();
-		$oAccount = $oActions->getAccountFromToken(false);
+		$oAccount = $oActions->getMainAccountFromToken(false);
+//		$oAccount = $oActions->getAccountFromToken(false);
 		$iCursor = (int) $query->getCursor();
 		$iLimit = $query->getLimit();
 		if ($oAccount) {

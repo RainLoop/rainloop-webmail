@@ -87,14 +87,13 @@ class Application extends App implements IBootstrap
 				$sEmail = $config->getUserValue($user->getUID(), 'settings', 'email', '');
 			}
 			if ($sEmail) {
-				SnappyMailHelper::startApp(true);
-				\OC::$server->getSession()['snappymail-sso-hash'] = \RainLoop\Api::CreateUserSsoHash($sEmail, $password/*, array $aAdditionalOptions = array(), bool $bUseTimeout = true*/);
+				\OC::$server->getSession()['snappymail-password'] = SnappyMailHelper::encodePassword($password, \md5($sEmail));
 			}
 		});
 
 		$userSession->listen('\OC\User', 'logout', function($user) {
-			\OC::$server->getSession()['snappymail-sso-hash'] = '';
-			SnappyMailHelper::startApp(true);
+			$oSession = \OC::$server->getSession()['snappymail-password'] = '';
+			SnappyMailHelper::startApp();
 			\RainLoop\Api::LogoutCurrentLogginedUser();
 		});
 	}
