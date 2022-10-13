@@ -5,32 +5,6 @@ namespace OCA\SnappyMail\Util;
 class SnappyMailHelper
 {
 
-	public function registerHooks()
-	{
-		$userSession = \OC::$server->getUserSession();
-		$userSession->listen('\OC\User', 'postLogin', function($user, $loginName, $password, $isTokenLogin) {
-			$config = \OC::$server->getConfig();
-			$sEmail = '';
-			// Only store the user's password in the current session if they have
-			// enabled auto-login using Nextcloud username or email address.
-			if ($config->getAppValue('snappymail', 'snappymail-autologin', false)) {
-				$sEmail = $user->getUID();
-			} else if ($config->getAppValue('snappymail', 'snappymail-autologin-with-email', false)) {
-				$sEmail = $config->getUserValue($user->getUID(), 'settings', 'email', '');
-			}
-			if ($sEmail) {
-				static::startApp(true);
-				\OC::$server->getSession()['snappymail-sso-hash'] = \RainLoop\Api::CreateUserSsoHash($sEmail, $password/*, array $aAdditionalOptions = array(), bool $bUseTimeout = true*/);
-			}
-		});
-
-		$userSession->listen('\OC\User', 'logout', function($user) {
-			\OC::$server->getSession()['snappymail-sso-hash'] = '';
-			static::startApp(true);
-			\RainLoop\Api::LogoutCurrentLogginedUser();
-		});
-	}
-
 	public static function startApp(bool $api = false)
 	{
 		if (!\class_exists('RainLoop\\Api')) {

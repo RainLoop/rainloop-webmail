@@ -30,11 +30,37 @@ Then the below #rl-app can be used to style it.
 #content[class*="app-"] #rl-app .select,
 #content[class*="app-"] #rl-app textarea,
 #content[class*="app-"] #rl-app input,
-#content[class*="app-"] #rl-app .input-block-level
+#content[class*="app-"] #rl-app .input-block-level,
+#content[class*="app-"] #rl-app .icon-spinner
 {
 	box-sizing: border-box;
 }
 .squire-wysiwyg {
 	min-width: 100%;
 	min-height: 100%;
+}
+
+#rl-app select,
+#rl-app input
+{
+	min-height: auto;
+	height: auto;
+	margin: 0;
+	padding: 3px;
+}
+#rl-app .form-horizontal .control-group > :not(label)
+{
+	margin-left: 20px;
+}
+#rl-app .LoginView .fontastic + input {
+	padding-left: 30px;
+}
+
+@media print {
+	#body-user #header {
+		display: none;
+	}
+	#content {
+		padding-top: 0;
+	}
 }
