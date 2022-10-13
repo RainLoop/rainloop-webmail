@@ -37,6 +37,7 @@ const
 	stripTracking = url => {
 		url = url
 			.replace(/tracking\.(printabout\.nl[^?]+)\?.*/i, (...m) => m[1])
+			.replace(/(zalando\.nl[^?]+)\?.*/i, (...m) => m[1])
 			.replace(/^.+(awstrack\.me|redditmail\.com)\/.+(https:%2F%2F[^/]+).*/i, (...m) => decodeURIComponent(m[2]))
 			.replace(/^.+(www\.google|safelinks\.protection\.outlook\.com).+$/i, () => urlGetParam(url, 'url'))
 			.replace(/^.+delivery-status\.com.+$/i, () => urlGetParam(url, 'fb'))
