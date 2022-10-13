@@ -58,7 +58,7 @@ class Application extends App implements IBootstrap
 			}
 		);
 
-//		$context->registerSearchProvider(Provider::class);
+		$context->registerSearchProvider(Provider::class);
 	}
 
 	public function boot(IBootContext $context): void

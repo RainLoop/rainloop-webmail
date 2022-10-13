@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OCA\SnappyMail\Search;
 
+use OCA\SnappyMail\AppInfo\Application;
+use OCA\SnappyMail\Util\SnappyMailHelper;
 use OCP\IDateTimeFormatter;
 use OCP\IL10N;
 use OCP\IURLGenerator;
@@ -25,7 +27,8 @@ class Provider implements IProvider
 
 	public function getName(): string
 	{
-		return $this->l10n->t('Mails');
+		return 'SnappyMail';
+//		return $this->l10n->t('Mails');
 	}
 
 	public function getOrder(string $route, array $routeParameters): int
@@ -39,31 +42,63 @@ class Provider implements IProvider
 
 	public function search(IUser $user, ISearchQuery $query): SearchResult
 	{
-		/**
-		 * TODO
-		 * And use \MailSo\Imap\SearchCriterias
-		 */
+		$result = [];
+		SnappyMailHelper::startApp(true);
+		$oActions = \RainLoop\Api::Actions();
+		$oAccount = $oActions->getAccountFromToken(false);
+		$iCursor = (int) $query->getCursor();
+		$iLimit = $query->getLimit();
+		if ($oAccount) {
+			$oConfig = $oActions->Config();
 
-		return SearchResult::complete(
-			$this->getName(),
-			[
-/*
-				new SearchResultEntry(
+			$oParams = new \MailSo\Mail\MessageListParams;
+			$oParams->sFolderName = 'INBOX'; // or \All ?
+			$oParams->sSearch = $query->getTerm();
+			$oParams->oCacher = ($oConfig->Get('cache', 'enable', true) && $oConfig->Get('cache', 'server_uids', false))
+				? $oActions->Cacher($oAccount) : null;
+			$oParams->bUseSortIfSupported = !!$oConfig->Get('labs', 'use_imap_sort', true);
+//			$oParams->bUseThreads = $oConfig->Get('labs', 'use_imap_thread', false);
+//			$oParams->bHideDeleted = false;
+//			$oParams->sSort = (string) $aValues['Sort'];
+//				ISearchQuery::SORT_DATE_DESC == $query->getSortOrder(): int;
+			$oParams->iOffset = $iCursor;
+			$oParams->iLimit = $iLimit;
+//			$oParams->iPrevUidNext = 0, // used to check for new messages
+//			$oParams->iThreadUid = 0;
+
+			$oMailClient = $oActions->MailClient();
+			if (!$oMailClient->IsLoggined()) {
+				$oAccount->ImapConnectAndLoginHelper($oActions->Plugins(), $oMailClient, $oConfig);
+			}
+
+			// instanceof \MailSo\Mail\MessageCollection
+			$MessageCollection = $oMailClient->MessageList($oParams);
+
+//			$MessageCollection->MessageResultCount;
+			foreach ($MessageCollection as $Message) {
+				// $Message instanceof \MailSo\Mail\Message
+				$result[] = new SearchResultEntry(
 					// thumbnailUrl
 					'',
 					// title
-					\MailSo\Mail\Message->sSubject,
+					$Message->Subject(),
 					// subline
-					\MailSo\Mail\Message->oFrom->ToString(),
+					$Message->From()->ToString(),
 					// resourceUrl
-					$this->urlGenerator->linkToRouteAbsolute(),
+					'', // TODO $this->urlGenerator->linkToRouteAbsolute(),
 					// icon
 					'icon-mail',
 					// rounded
 					false
-				),
-*/
-			]
-		);
+				);
+			}
+		} else {
+			\error_log('SnappyMail not logged in to use unified search');
+		}
+
+		if ($iLimit > \count($result)) {
+			return SearchResult::complete($this->getName(), $result);
+		}
+		return SearchResult::paginated($this->getName(), $result, $iCursor + $iLimit);
 	}
 }
