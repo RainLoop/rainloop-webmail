@@ -45,8 +45,8 @@ class Provider implements IProvider
 		$result = [];
 		SnappyMailHelper::startApp();
 		$oActions = \RainLoop\Api::Actions();
-		$oAccount = $oActions->getMainAccountFromToken(false);
-//		$oAccount = $oActions->getAccountFromToken(false);
+//		$oAccount = $oActions->getMainAccountFromToken(false); // Issue: when account switched, wrong email is shown
+		$oAccount = $oActions->getAccountFromToken(false);
 		$iCursor = (int) $query->getCursor();
 		$iLimit = $query->getLimit();
 		if ($oAccount) {

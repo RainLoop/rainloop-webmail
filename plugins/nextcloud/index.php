@@ -143,6 +143,23 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 				'WebDAV' => $sWebDAV
 //				'WebDAV_files' => $sWebDAV . '/files/' . $sUID
 			];
+			if (empty($aResult['Auth'])) {
+				$config = \OC::$server->getConfig();
+				// Only store the user's password in the current session if they have
+				// enabled auto-login using Nextcloud username or email address.
+				if ($config->getAppValue('snappymail', 'snappymail-autologin', false)) {
+					$sEmail = $sUID;
+				} else if ($config->getAppValue('snappymail', 'snappymail-autologin-with-email', false)) {
+					$sEmail = $config->getUserValue($sUID, 'settings', 'email', '');
+				}
+				// If the user has set credentials for SnappyMail in their personal
+				// settings, override everything before and use those instead.
+				$sCustomEmail = $config->getUserValue($sUID, 'snappymail', 'snappymail-email', '');
+				if ($sCustomEmail) {
+					$sEmail = $sCustomEmail;
+				}
+				$aResult['DevEmail'] = $sEmail ?: '';
+			}
 		}
 	}
 

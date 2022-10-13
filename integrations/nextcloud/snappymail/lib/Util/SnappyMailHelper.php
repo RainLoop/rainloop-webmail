@@ -61,9 +61,9 @@ class SnappyMailHelper
 
 	public static function getLoginCredentials() : array
 	{
-		$config = \OC::$server->getConfig();
 		$sEmail = '';
 		$sPassword = '';
+		$config = \OC::$server->getConfig();
 		$sUID = \OC::$server->getUserSession()->getUser()->getUID();
 		// Only store the user's password in the current session if they have
 		// enabled auto-login using Nextcloud username or email address.
@@ -76,8 +76,9 @@ class SnappyMailHelper
 		}
 		// If the user has set credentials for SnappyMail in their personal
 		// settings, override everything before and use those instead.
-		$sEmail = $config->getUserValue($sUID, 'snappymail', 'snappymail-email', '');
-		if ($sEmail) {
+		$sCustomEmail = $config->getUserValue($sUID, 'snappymail', 'snappymail-email', '');
+		if ($sCustomEmail) {
+			$sEmail = $sCustomEmail;
 			$sPassword = $config->getUserValue($sUID, 'snappymail', 'snappymail-password', '');
 		}
 		return [$sEmail, $sPassword ? SnappyMailHelper::decodePassword($sPassword, \md5($sEmail)) : ''];

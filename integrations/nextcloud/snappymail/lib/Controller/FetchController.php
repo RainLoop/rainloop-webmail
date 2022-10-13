@@ -65,11 +65,11 @@ class FetchController extends Controller {
 				$this->config->setUserValue($sUser, 'snappymail', 'snappymail-email', $sPostEmail);
 
 				$sPass = $_POST['snappymail-password'];
-				if ('******' !== $sPass && '' !== $sPass) {
+				if ('******' !== $sPass) {
 					require_once $this->appManager->getAppPath('snappymail').'/lib/Util/SnappyMailHelper.php';
 
 					$this->config->setUserValue($sUser, 'snappymail', 'snappymail-password',
-						SnappyMailHelper::encodePassword($sPass, \md5($sPostEmail)));
+						$sPass ? SnappyMailHelper::encodePassword($sPass, \md5($sPostEmail)) : '');
 				}
 
 				$sEmail = $this->config->getUserValue($sUser, 'snappymail', 'snappymail-email', '');
