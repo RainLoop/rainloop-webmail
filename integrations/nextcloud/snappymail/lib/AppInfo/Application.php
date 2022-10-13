@@ -26,13 +26,12 @@ class Application extends App implements IBootstrap
 		$this->getContainer()->query('SnappyMailHelper')->registerHooks();
 	}
 
-	public function __construct(array $urlParams = [])
+//	public function __construct(string $appName, array $urlParams = [])
+	public function __construct()
 	{
 		parent::__construct('snappymail', $urlParams);
 
 		$container = $this->getContainer();
-//		$server = $container->getServer();
-//		$config = $server->getConfig();
 
 		/**
 		 * Controllers

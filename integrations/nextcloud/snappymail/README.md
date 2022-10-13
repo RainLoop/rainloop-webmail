@@ -69,9 +69,9 @@ To fill in the default email address and password to use, each Nextcloud user sh
 
 ## How to Activate SnappyMail Logging and then Find Logs
 
-You can activate SnappyMail logging here: `/path/to/nextcloud/data/snappymail-storage/_data_/_default_/configs/application.ini`
+You can activate SnappyMail logging here: `/path/to/nextcloud/data/appdata_snappymail/_data_/_default_/configs/application.ini`
 ```
 [logs]
 enable = On
 ```
-Logs are then available in `/path/to/nextcloud/data/snappymail-storage/_data_/_default_/logs/`
+Logs are then available in `/path/to/nextcloud/data/appdata_snappymail/_data_/_default_/logs/`

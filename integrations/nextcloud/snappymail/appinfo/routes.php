@@ -8,6 +8,11 @@ return [
 			'verb' => 'GET'
 		],
 		[
+			'name' => 'page#indexPost',
+			'url' => '/',
+			'verb' => 'POST'
+		],
+		[
 			'name' => 'page#appGet',
 			'url' => '/run/',
 			'verb' => 'GET'

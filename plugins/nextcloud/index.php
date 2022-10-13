@@ -41,7 +41,6 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/*
 	\OC::$server->getCalendarManager();
 	\OC::$server->getLDAPProvider();
-	\OC::$server->getAppDataDir('snappymail'); ??
 
 	$oFiles = \OCP\Files::getStorage('files');
 	if ($oFiles and $oFiles->is_dir('/')) {

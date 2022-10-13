@@ -44,39 +44,29 @@ class SnappyMailHelper
 				}
 			});
 
-			$path = \OC::$server->getAppManager()->getAppPath('snappymail') . '/app/';
-
-			$sData = \rtrim(\trim(\OC::$server->getSystemConfig()->getValue('datadirectory', '')), '\\/').'/appdata_snappymail/';
-			if (!\is_file("{$path}include.php")) {
-				\file_put_contents("{$path}include.php",
-					\file_get_contents("{$path}_include.php")
-					. "define('APP_DATA_FOLDER_PATH', '{$sData}');\n"
-				);
-			}
-//			\define('APP_DATA_FOLDER_PATH', $sData);
-
 			if ($api) {
 				$_ENV['SNAPPYMAIL_INCLUDE_AS_API'] = true;
 			}
 
-			require_once "{$path}index.php";
+			require_once \dirname(\dirname(__DIR__)) . '/app/index.php';
 
 			if ($api) {
 				$oConfig = \RainLoop\Api::Config();
+				$bSave = false;
 				if (!$oConfig->Get('webmail', 'app_path')) {
 					$oConfig->Set('webmail', 'app_path', \OC::$server->getAppManager()->getAppWebPath('snappymail') . '/app/');
-					$oConfig->Save();
+					$bSave = true;
 				}
-/*
 				if (!\is_dir(APP_PLUGINS_PATH . 'nextcloud')) {
 					\SnappyMail\Repository::installPackage('plugin', 'nextcloud');
 					$oConfig->Set('plugins', 'enable', true);
 					$aList = \SnappyMail\Repository::getEnabledPackagesNames();
 					$aList[] = 'nextcloud';
 					$oConfig->Set('plugins', 'enabled_list', \implode(',', \array_unique($aList)));
-					$oConfig->Save();
+					$oConfig->Set('webmail', 'theme', 'Nextcloud@custom');
+					$bSave = true;
 				}
-*/
+				$bSave && $oConfig->Save();
 			}
 		}
 	}

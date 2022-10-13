@@ -77,16 +77,29 @@ class PageController extends Controller
 	}
 
 	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function indexPost()
+	{
+		SnappyMailHelper::startApp();
+	}
+
+	/**
 	 * Draft code to run without using an iframe
 	 */
 	private static function index_embed()
 	{
+		if (!empty($_SERVER['QUERY_STRING'])) {
+			SnappyMailHelper::startApp();
+			return;
+		}
+
 		\OC::$server->getNavigationManager()->setActiveEntry('snappymail');
 
-		\OCP\Util::addStyle('snappymail', 'style');
+		\OCP\Util::addStyle('snappymail', 'embed');
 
 		SnappyMailHelper::startApp(true);
-		$webPath = \OC::$server->getAppManager()->getAppWebPath('snappymail') . '/app';
 		$oConfig = \RainLoop\Api::Config();
 		$oActions = \RainLoop\Api::Actions();
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
@@ -102,11 +115,7 @@ class PageController extends Controller
 		$params = [
 			'LoadingDescriptionEsc' => \htmlspecialchars($oConfig->Get('webmail', 'loading_description', 'SnappyMail'), ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
 			'BaseTemplates' => \RainLoop\Utils::ClearHtmlOutput($oServiceActions->compileTemplates(false)),
-			'BaseAppBootScript' => \str_replace(
-				'loadScript(`./?/',
-				'loadScript(`'.$webPath.'/?/',
-				\file_get_contents(APP_VERSION_ROOT_PATH.'static/js'.($sAppJsMin ? '/min' : '').'/boot'.$sAppJsMin.'.js')
-			),
+			'BaseAppBootScript' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/js'.($sAppJsMin ? '/min' : '').'/boot'.$sAppJsMin.'.js'),
 			'BaseAppBootScriptNonce' => $sScriptNonce,
 			'BaseLanguage' => $oActions->compileLanguage($sLanguage, false),
 		];

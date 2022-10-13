@@ -283,7 +283,7 @@ class SquireUI
 		this.wysiwyg = wysiwyg;
 
 		toolbar.className = 'squire-toolbar btn-toolbar';
-		let group, action, touchTap;
+		let group, action/*, touchTap*/;
 		for (group in actions) {
 /*
 			if ('bidi' == group && !rl.settings.app('allowHtmlEditorBitiButtons')) {
@@ -328,16 +328,18 @@ class SquireUI
 					input.className = 'btn';
 					input.innerHTML = cfg.html;
 					input.action_cmd = cfg.cmd;
-					input.addEventListener('touchstart', () => touchTap = input, {passive:true});
-					input.addEventListener('touchmove', () => touchTap = null, {passive:true});
-					input.addEventListener('touchcancel', () => touchTap = null);
-					input.addEventListener('touchend', e => {
+/*
+					input.addEventListener('pointerdown', () => touchTap = input, {passive:true});
+					input.addEventListener('pointermove', () => touchTap = null, {passive:true});
+					input.addEventListener('pointercancel', () => touchTap = null);
+					input.addEventListener('pointerup', e => {
 						if (touchTap === input) {
 							e.preventDefault();
 							cfg.cmd(input);
 						}
 						touchTap = null;
 					});
+*/
 				}
 				input.addEventListener(ev, () => cfg.cmd(input));
 				if (cfg.hint) {

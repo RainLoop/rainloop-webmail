@@ -21,8 +21,8 @@ foreach ($files as $file) {
 $nc_tar->addFile('data/.htaccess');
 $nc_tar->addFromString('data/VERSION', $package->version);
 $nc_tar->addFile('data/README.md');
-*/
 $nc_tar->addFile('_include.php', 'snappymail/app/_include.php');
+*/
 $nc_tar->addFile('.htaccess', 'snappymail/app/.htaccess');
 
 $index = file_get_contents('index.php');
