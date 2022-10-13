@@ -56,6 +56,14 @@ Then the below #rl-app can be used to style it.
 	padding-left: 30px;
 }
 
+#rl-app .loading::after {
+	display: none;
+}
+
+#appmenu {
+	margin: 0;
+}
+
 @media print {
 	#body-user #header {
 		display: none;
