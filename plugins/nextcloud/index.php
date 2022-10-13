@@ -4,8 +4,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Nextcloud',
-		VERSION = '2.1',
-		RELEASE  = '2022-10-10',
+		VERSION = '2.2',
+		RELEASE  = '2022-10-13',
 		CATEGORY = 'Integrations',
 		DESCRIPTION = 'Integrate with Nextcloud v20+',
 		REQUIRED = '2.18.6';
@@ -18,8 +18,9 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$this->addHook('main.fabrica', 'MainFabrica');
 			$this->addHook('filter.app-data', 'FilterAppData');
 
+			$this->addJs('js/message.js');
 			$this->addHook('json.attachments', 'DoAttachmentsActions');
-			$this->addJs('js/attachments.js');
+			$this->addJsonHook('NextcloudSaveMsg', 'NextcloudSaveMsg');
 		}
 	}
 
@@ -54,6 +55,39 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 	}
 	*/
+
+	public function NextcloudSaveMsg() : array
+	{
+		$aValues = \RainLoop\Utils::DecodeKeyValuesQ($this->jsonParam('msgHash', ''));
+		if (!empty($aValues['Folder']) && !empty($aValues['Uid'])) {
+			$oActions = \RainLoop\Api::Actions();
+			$oMailClient = $oActions->MailClient();
+			if (!$oMailClient->IsLoggined()) {
+				$oAccount = $oActions->getAccountFromToken();
+				$oAccount->ImapConnectAndLoginHelper($oActions->Plugins(), $oMailClient, $oActions->Config());
+			}
+
+			$sSaveFolder = $this->Config()->Get('plugin', 'save_folder', '') ?: 'Emails';
+			$oFiles = \OCP\Files::getStorage('files');
+			if ($oFiles && \method_exists($oFiles, 'file_put_contents')) {
+				$oFiles->is_dir($sSaveFolder) || $oFiles->mkdir($sSaveFolder);
+			}
+			$sFilename = $sSaveFolder . '/' . ($this->jsonParam('filename', '') ?: \date('YmdHis')) . '.eml';
+
+			$oMailClient->MessageMimeStream(
+				function ($rResource) use ($oFiles, $sFilename) {
+					if (\is_resource($rResource)) {
+						$oFiles->file_put_contents($sFilename, $rResource);
+					}
+				},
+				(string) $aValues['Folder'],
+				(int) $aValues['Uid'],
+				isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : ''
+			);
+		}
+
+		return $this->jsonResponse(__FUNCTION__, true);
+	}
 
 	public function DoAttachmentsActions(\SnappyMail\AttachmentsAction $data)
 	{
