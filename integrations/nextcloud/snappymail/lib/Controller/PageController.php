@@ -16,8 +16,11 @@ class PageController extends Controller
 	 */
 	public function index()
 	{
-		// Uncomment to test without using an iframe
-//		return static::index_embed();
+		$config = \OC::$server->getConfig();
+
+		if ($config->getAppValue('snappymail', 'snappymail-embed')) {
+			return static::index_embed();
+		}
 
 		\OC::$server->getNavigationManager()->setActiveEntry('snappymail');
 
@@ -26,7 +29,6 @@ class PageController extends Controller
 		$query = '';
 		// If the user has set credentials for SnappyMail in their personal
 		// settings, override everything before and use those instead.
-		$config = \OC::$server->getConfig();
 		$sUID = \OC::$server->getUserSession()->getUser()->getUID();
 		$sEmail = $config->getUserValue($sUID, 'snappymail', 'snappymail-email', '');
 		if ($sEmail) {

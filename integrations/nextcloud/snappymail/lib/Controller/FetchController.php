@@ -26,14 +26,13 @@ class FetchController extends Controller {
 		try {
 			$sUrl = '';
 			$sPath = '';
-			$bAutologin = false;
 
 			if (isset($_POST['appname']) && 'snappymail' === $_POST['appname']) {
 				$this->config->setAppValue('snappymail', 'snappymail-autologin',
 					isset($_POST['snappymail-autologin']) ? '1' === $_POST['snappymail-autologin'] : false);
 				$this->config->setAppValue('snappymail', 'snappymail-autologin-with-email',
 					isset($_POST['snappymail-autologin']) ? '2' === $_POST['snappymail-autologin'] : false);
-				$bAutologin = $this->config->getAppValue('snappymail', 'snappymail-autologin', false);
+				$this->config->setAppValue('snappymail', 'snappymail-embed', isset($_POST['snappymail-embed']));
 			} else {
 				return new JSONResponse([
 					'status' => 'error',

@@ -17,7 +17,8 @@ class AdminSettings implements ISettings {
 	public function getForm() {
 		$keys = [
 			'snappymail-autologin',
-			'snappymail-autologin-with-email'
+			'snappymail-autologin-with-email',
+			'snappymail-embed'
 		];
 
 		$parameters = [];
