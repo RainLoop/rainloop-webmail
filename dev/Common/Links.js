@@ -68,7 +68,7 @@ export const
 	 * @param {string} path
 	 * @returns {string}
 	 */
-	staticLink = path => VERSION_PREFIX + 'static/' + path,
+	staticLink = path => Settings.app('webPath') + VERSION_PREFIX + 'static/' + path,
 
 	/**
 	 * @param {string} theme

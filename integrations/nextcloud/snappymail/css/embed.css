@@ -48,6 +48,12 @@ Then the below #rl-app can be used to style it.
 	margin: 0;
 	padding: 3px;
 }
+button.btn:not(.button-vue) {
+	min-height: auto;
+	height: auto;
+	margin: 0;
+	padding: 4px 12px;
+}
 #rl-app .form-horizontal .control-group > :not(label)
 {
 	margin-left: 20px;
@@ -58,6 +64,20 @@ Then the below #rl-app can be used to style it.
 
 #rl-app .loading::after {
 	display: none;
+}
+
+#rl-app .squire-plain, #rl-app .squire-wysiwyg {
+	box-sizing: border-box;
+	font-size: 13px;
+	height: 100%;
+	line-height: 16px;
+	min-height: 200px;
+}
+
+#V-PopupsCompose header {
+	background-color: var(--color-primary);
+	background-image: linear-gradient(40deg, #0082c9 0%, #30b6ff 100%);
+	color: #fff;
 }
 
 #appmenu {
