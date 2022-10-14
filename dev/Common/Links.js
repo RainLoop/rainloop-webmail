@@ -113,19 +113,24 @@ export const
 	 * @param {number=} threadUid = 0
 	 * @returns {string}
 	 */
-	mailBox = (folder, page, search, threadUid) => {
+	mailBox = (folder, page, search, threadUid, messageUid) => {
 		let result = [HASH_PREFIX + 'mailbox'];
 
 		if (folder) {
 			result.push(folder + (threadUid ? '~' + threadUid : ''));
 		}
 
-		page = pInt(page, 1);
-		if (1 < page) {
-			result.push('p' + page);
+		if (messageUid) {
+			result.push('m' + messageUid);
+		} else {
+			page = pInt(page, 1);
+			if (1 < page) {
+				result.push('p' + page);
+			}
+			search && result.push(encodeURI(search));
 		}
 
-		search && result.push(encodeURI(search));
-
 		return result.join('/');
-	};
+	},
+
+	mailBoxMessage = (folder, messageUid) => mailBox(folder, 1, '', 0, pInt(messageUid));

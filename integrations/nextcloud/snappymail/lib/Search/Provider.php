@@ -20,6 +20,18 @@ use OCP\Search\SearchResultEntry;
  */
 class Provider implements IProvider
 {
+	/** @var IL10N */
+	private $l10n;
+
+	/** @var IURLGenerator */
+	private $urlGenerator;
+
+	public function __construct(IL10N $l10n, IURLGenerator $urlGenerator)
+	{
+		$this->l10n = $l10n;
+		$this->urlGenerator = $urlGenerator;
+	}
+
 	public function getId(): string
 	{
 		return Application::APP_ID;
@@ -85,8 +97,10 @@ class Provider implements IProvider
 					$Message->Subject(),
 					// subline
 					$Message->From()->ToString(),
-					// resourceUrl
-					'', // TODO $this->urlGenerator->linkToRouteAbsolute(),
+					// resourceUrl /index.php/apps/snappymail/#/mailbox/INBOX/p2/text=an&unseen
+					$this->urlGenerator->linkToRoute('snappymail.page.index')
+						. '#/mailbox/INBOX/m' . $Message->Uid()
+						. '/' . \rawurlencode($oParams->sSearch),
 					// icon
 					'icon-mail',
 					// rounded

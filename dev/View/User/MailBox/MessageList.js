@@ -200,10 +200,10 @@ export class MailMessageList extends AbstractViewRight {
 					hasher.setHash(mailBox(sFolder));
 				}
 				if (sFolder && iUid) {
-					MessageUserStore.message(MessageModel.fromMessageListItem(null));
-					MessageUserStore.message().folder = sFolder;
-					MessageUserStore.message().uid = iUid;
-
+					let message = new MessageModel;
+					message.folder = sFolder;
+					message.uid = iUid;
+					MessageUserStore.message(message);
 					populateMessageBody(MessageUserStore.message());
 				} else {
 					MessageUserStore.message(null);

@@ -11,6 +11,7 @@ import { AppUserStore } from 'Stores/User/App';
 import { AccountUserStore } from 'Stores/User/Account';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
+import { MessageUserStore } from 'Stores/User/Message';
 import { ThemeStore } from 'Stores/Theme';
 
 import { SystemDropDownUserView } from 'View/User/SystemDropDown';
@@ -19,6 +20,9 @@ import { MailMessageList } from 'View/User/MailBox/MessageList';
 import { MailMessageView } from 'View/User/MailBox/MessageView';
 
 import { AbstractScreen } from 'Knoin/AbstractScreen';
+
+import { MessageModel } from 'Model/Message';
+import { populateMessageBody } from 'Common/UtilsUser';
 
 export class MailBoxUserScreen extends AbstractScreen {
 	constructor() {
@@ -69,17 +73,22 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 * @param {string} search
 	 * @returns {void}
 	 */
-	onRoute(folderHash, page, search) {
+	onRoute(folderHash, page, search, messageUid) {
 		const folder = getFolderFromCacheList(getFolderFullName(folderHash.replace(/~([\d]+)$/, '')));
 		if (folder) {
-			let threadUid = folderHash.replace(/^.+~(\d+)$/, '$1');
-
 			FolderUserStore.currentFolder(folder);
-
 			MessagelistUserStore.page(1 > page ? 1 : page);
 			MessagelistUserStore.listSearch(search);
-			MessagelistUserStore.threadUid((folderHash === threadUid) ? 0 : pInt(threadUid));
-
+			if (messageUid) {
+				let message = new MessageModel;
+				message.folder = folderHash;
+				message.uid = messageUid;
+				MessageUserStore.message(message);
+				populateMessageBody(MessageUserStore.message());
+			} else {
+				let threadUid = folderHash.replace(/^.+~(\d+)$/, '$1');
+				MessagelistUserStore.threadUid((folderHash === threadUid) ? 0 : pInt(threadUid));
+			}
 			MessagelistUserStore.reload();
 		}
 	}
@@ -144,6 +153,10 @@ export class MailBoxUserScreen extends AbstractScreen {
 			// Search: {folder}/{string}
 			[/^([a-zA-Z0-9.~_-]+)\/(.+)\/?$/, { normalize_: (request, vals) =>
 				[folder(request, vals), 1, decodeURI(pString(vals[1]))]
+			}],
+			// Message: {folder}/m{uid}(/{search})?
+			[/^([a-zA-Z0-9.~_-]+)\/m([1-9][0-9]*)(?:\/(.+))?$/, { normalize_: (request, vals) =>
+				[folder(request, vals), 1, pString(vals[2]), pString(vals[1])]
 			}],
 			// Page: {folder}/p{int}(/{search})?
 			[/^([a-zA-Z0-9.~_-]+)\/p([1-9][0-9]*)(?:\/(.+))?$/, { normalize_: fNormS }]
