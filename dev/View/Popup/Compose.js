@@ -1242,25 +1242,25 @@ export class ComposePopupView extends AbstractViewPopup {
 	 */
 	prepareMessageAttachments(message, type) {
 		if (message) {
-			if (ComposeType.ForwardAsAttachment === type) {
-				this.addMessageAsAttachment(message);
-			} else if ([
-				ComposeType.Reply, ComposeType.ReplyAll,
-				ComposeType.Forward, ComposeType.Draft, ComposeType.EditAsNew
-			].includes(type)) {
+			let reply = [ComposeType.Reply, ComposeType.ReplyAll].includes(type);
+			if (reply || [ComposeType.Forward, ComposeType.Draft, ComposeType.EditAsNew].includes(type)) {
 				message.attachments.forEach(item => {
-					const attachment = new ComposeAttachmentModel(
-						item.download,
-						item.fileName,
-						item.estimatedSize,
-						item.isInline(),
-						item.isLinked(),
-						item.cid,
-						item.contentLocation
-					);
-					attachment.fromMessage = true;
-					this.addAttachment(attachment);
+					if (!reply || item.isLinked()) {
+						const attachment = new ComposeAttachmentModel(
+							item.download,
+							item.fileName,
+							item.estimatedSize,
+							item.isInline(),
+							item.isLinked(),
+							item.cid,
+							item.contentLocation
+						);
+						attachment.fromMessage = true;
+						this.addAttachment(attachment);
+					}
 				});
+			} else if (ComposeType.ForwardAsAttachment === type) {
+				this.addMessageAsAttachment(message);
 			}
 		}
 	}
