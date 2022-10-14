@@ -1,4 +1,12 @@
 (rl => {
+
+	function browseFiles(path = '/')
+	{
+		rl.ncFiles.getDirectoryContents(path).then(elemList => {
+			console.dir(elemList);
+		}).catch(err => console.error(err))
+	}
+
 	addEventListener('rl-view-model.create', e => {
 		if ('MailMessageView' === e.detail.viewModelTemplateID) {
 			let view = e.detail;
@@ -33,6 +41,13 @@
 
 			view.nextcloudSaveMsg = () => {
 				let msg = view.message();
+
+				/**
+				 * TODO: op select screen to show browseFiles result
+				 * Then the user can select which Nextcloud folder to save to
+				 */
+				browseFiles();
+
 				rl.pluginRemoteRequest(
 					(iError, data) => {
 						console.dir({
