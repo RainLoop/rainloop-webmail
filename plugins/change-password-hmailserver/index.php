@@ -14,6 +14,7 @@ class ChangePasswordHMailServerPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function Supported() : string
 	{
-		return 'Use Change Password plugin';
+		return 'Activate in Change Password plugin'
+			. (\class_exists('COM') ? '' : '. And you must install PHP COM extension');
 	}
 }

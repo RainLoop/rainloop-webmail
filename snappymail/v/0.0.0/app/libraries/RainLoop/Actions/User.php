@@ -41,8 +41,6 @@ trait User
 		$sPassword = $this->GetActionParam('Password', '');
 		$bSignMe = !empty($this->GetActionParam('SignMe', 0));
 
-		$oAccount = null;
-
 		$this->Logger()->AddSecret($sPassword);
 
 		$oAccount = $this->LoginProcess($sEmail, $sPassword, $bSignMe);
