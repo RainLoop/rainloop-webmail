@@ -111,7 +111,9 @@
 		onBuild(dom) {
 			let input = dom.querySelector('.new-password'),
 				meter = dom.querySelector('.new-password-meter');
-			input && meter && input.addEventListener('input',() => meter.value = getPassStrength(input.value));
+			if (input && meter) {
+				this.newPassword.subscribe(value => meter.value = getPassStrength(value));
+			}
 		}
 
 		onHide() {
