@@ -30,12 +30,16 @@ abstract class Api
 	public static function Config() : Config\Application
 	{
 		static $oConfig = null;
-		if (!$oConfig)
-		{
+		if (!$oConfig) {
 			$oConfig = new Config\Application();
 			if (!$oConfig->Load()) {
-				usleep(10000);
+				\usleep(10000);
 				$oConfig->Load();
+			}
+			if ($oConfig->Get('debug', 'enable', false)) {
+				\error_reporting(E_ALL);
+				\ini_set('display_errors', 1);
+				\ini_set('log_errors', 1);
 			}
 		}
 		return $oConfig;

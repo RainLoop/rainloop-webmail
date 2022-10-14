@@ -164,6 +164,18 @@ class Actions
 				$this->oLogger->AddForbiddenType(\MailSo\Log\Enumerations\Type::TIME);
 			}
 
+			$level = \max(3, \RainLoop\Api::Config()->Get('logs', 'level', \LOG_WARNING)) - 3;
+			$mailso = [
+				\MailSo\Log\Enumerations\Type::ERROR,
+				\MailSo\Log\Enumerations\Type::WARNING,
+				\MailSo\Log\Enumerations\Type::NOTICE,
+				\MailSo\Log\Enumerations\Type::INFO,
+				\MailSo\Log\Enumerations\Type::DEBUG
+			];
+			while (4 > $level++) {
+				$this->oLogger->AddForbiddenType($mailso[$level]);
+			}
+
 			$this->oLogger->WriteEmptyLine();
 
 			$oHttp = $this->Http();

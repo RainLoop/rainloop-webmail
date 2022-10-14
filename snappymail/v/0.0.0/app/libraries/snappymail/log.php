@@ -66,11 +66,13 @@ abstract class Log
 				\closelog();
 			}
 */
-		}
-		if (($level < \LOG_WARNING && \error_reporting() & \E_ERROR)
-		 || ($level == \LOG_WARNING && \error_reporting() & \E_WARNING)
-		 || ($level > \LOG_WARNING && \error_reporting() & \E_NOTICE)) {
-			\error_log($prefix . ' ' . static::$levels[$level] . ': ' . $msg);
+			if (\filter_var(\ini_get('log_errors'), FILTER_VALIDATE_BOOLEAN)
+			 && (($level < \LOG_WARNING && \error_reporting() & \E_ERROR)
+			  || ($level == \LOG_WARNING && \error_reporting() & \E_WARNING)
+			  || ($level > \LOG_WARNING && \error_reporting() & \E_NOTICE)
+			)) {
+				\error_log($prefix . ' ' . static::$levels[$level] . ': ' . $msg);
+			}
 		}
 	}
 }
