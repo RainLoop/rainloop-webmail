@@ -87,6 +87,15 @@ class Provider implements IProvider
 			// instanceof \MailSo\Mail\MessageCollection
 			$MessageCollection = $oMailClient->MessageList($oParams);
 
+			$baseURL = $this->urlGenerator->linkToRoute('snappymail.page.index');
+			$config = \OC::$server->getConfig();
+			if ($config->getAppValue('snappymail', 'snappymail-embed')) {
+				$baseURL .= '#';
+			} else {
+				$baseURL .= '?target=';
+			}
+			$search = \rawurlencode($oParams->sSearch);
+
 //			$MessageCollection->MessageResultCount;
 			foreach ($MessageCollection as $Message) {
 				// $Message instanceof \MailSo\Mail\Message
@@ -98,9 +107,7 @@ class Provider implements IProvider
 					// subline
 					$Message->From()->ToString(),
 					// resourceUrl /index.php/apps/snappymail/#/mailbox/INBOX/p2/text=an&unseen
-					$this->urlGenerator->linkToRoute('snappymail.page.index')
-						. '#/mailbox/INBOX/m' . $Message->Uid()
-						. '/' . \rawurlencode($oParams->sSearch),
+					$baseURL . '/mailbox/INBOX/m' . $Message->Uid() . '/' . $search,
 					// icon
 					'icon-mail',
 					// rounded

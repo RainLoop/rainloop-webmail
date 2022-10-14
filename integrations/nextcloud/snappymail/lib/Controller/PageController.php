@@ -27,17 +27,12 @@ class PageController extends Controller
 		\OCP\Util::addScript('snappymail', 'snappymail');
 		\OCP\Util::addStyle('snappymail', 'style');
 
-		$query = '';
-		$aCredentials = SnappyMailHelper::getLoginCredentials();
-		if ($aCredentials[0] && $aCredentials[1]) {
-			$query = '?sso&hash=' . \RainLoop\Api::CreateUserSsoHash($aCredentials[0] && $aCredentials[1]);
-		}
+		SnappyMailHelper::startApp();
 
-		$params = [
-			'snappymail-iframe-url' => SnappyMailHelper::normalizeUrl(SnappyMailHelper::getAppUrl()) . $query
-		];
-
-		$response = new TemplateResponse('snappymail', 'index', $params);
+		$response = new TemplateResponse('snappymail', 'index', [
+			'snappymail-iframe-url' => SnappyMailHelper::normalizeUrl(SnappyMailHelper::getAppUrl())
+				. (empty($_GET['target']) ? '' : "#{$_GET['target']}")
+		]);
 
 		$csp = new ContentSecurityPolicy();
 		$csp->addAllowedFrameDomain("'self'");
