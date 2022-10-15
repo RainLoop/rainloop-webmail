@@ -13,7 +13,6 @@
 namespace MailSo\Imap\Requests;
 
 use MailSo\Imap\Exceptions\RuntimeException;
-use MailSo\Log\Enumerations\Type;
 
 /**
  * @category MailSo
@@ -58,7 +57,7 @@ class ESEARCH extends Request
 		if (!$oImapClient->IsSupported('ESEARCH')) {
 			$oImapClient->writeLogException(
 				new RuntimeException('ESEARCH is not supported'),
-				Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 		parent::__construct($oImapClient);
 	}
@@ -72,7 +71,7 @@ class ESEARCH extends Request
 		if (false !== \stripos($this->sCriterias, 'FUZZY') && !$this->oImapClient->IsSupported('SEARCH=FUZZY')) {
 			$this->oImapClient->writeLogException(
 				new RuntimeException('SEARCH=FUZZY is not supported'),
-				Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 */
 
@@ -93,7 +92,7 @@ class ESEARCH extends Request
 			if (!$this->oImapClient->IsSupported('MULTISEARCH')) {
 				$this->oImapClient->writeLogException(
 					new RuntimeException('MULTISEARCH is not supported'),
-					Type::ERROR, true);
+					\LOG_ERR, true);
 			}
 			$sCmd = 'ESEARCH';
 			$aReques[] = 'IN';
@@ -113,7 +112,7 @@ class ESEARCH extends Request
 					if (\preg_match('/PARTIAL|UPDATE|CONTEXT/i', $sReturn)) {
 						$this->oImapClient->writeLogException(
 							new RuntimeException('CONTEXT=SEARCH is not supported'),
-							Type::ERROR, true);
+							\LOG_ERR, true);
 					}
 				}
 			}

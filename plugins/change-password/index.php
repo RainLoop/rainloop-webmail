@@ -183,7 +183,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 					if ($oLogger) {
 						$oLogger->Write("ERROR: {$name} password change for {$oAccount->Email()} failed");
 						$oLogger->WriteException($oException);
-//						$oLogger->WriteException($oException, \MailSo\Log\Enumerations\Type::WARNING, $name);
+//						$oLogger->WriteException($oException, \LOG_WARNING, $name);
 					}
 				}
 			}

@@ -802,7 +802,7 @@ abstract class Utils
 		return false;
 	}
 
-	public static function ClearArrayUtf8Values(array &$aInput)
+	private static function ClearArrayUtf8Values(array &$aInput)
 	{
 		foreach ($aInput as $mKey => $mItem)
 		{
@@ -824,35 +824,20 @@ abstract class Utils
 	public static function Php2js($mInput, ?\MailSo\Log\Logger $oLogger = null) : string
 	{
 		$sResult = \json_encode($mInput, JSON_UNESCAPED_UNICODE);
-		if (!\is_string($sResult) || '' === $sResult)
-		{
-			if (!$oLogger && \MailSo\Log\Logger::IsSystemEnabled())
-			{
-				$oLogger = \MailSo\Config::$SystemLogger;
-			}
-
-			if ($oLogger)
-			{
-				$oLogger->Write('json_encode: '.\trim(
-						(static::FunctionExistsAndEnabled('json_last_error') ? ' [Error Code: '.\json_last_error().']' : '').
-						(static::FunctionExistsAndEnabled('json_last_error_msg') ? ' [Error Message: '.\json_last_error_msg().']' : '')
-					), \MailSo\Log\Enumerations\Type::WARNING, 'JSON'
-				);
-			}
-
-			if (\is_array($mInput))
-			{
-				if ($oLogger)
-				{
-					$oLogger->WriteDump($mInput, \MailSo\Log\Enumerations\Type::INFO, 'JSON');
-					$oLogger->Write('Trying to clear Utf8 before json_encode', \MailSo\Log\Enumerations\Type::INFO, 'JSON');
-				}
-
+		if (!\is_string($sResult) || '' === $sResult) {
+			\trigger_error(
+				'json_encode: '.\trim(
+					(static::FunctionExistsAndEnabled('json_last_error') ? ' [Error Code: '.\json_last_error().']' : '').
+					(static::FunctionExistsAndEnabled('json_last_error_msg') ? ' [Error Message: '.\json_last_error_msg().']' : '')
+				), E_USER_WARNING
+			);
+			if (\is_array($mInput)) {
+//				$oLogger->WriteDump($mInput, \LOG_INFO, 'JSON');
+//				$oLogger->Write('Trying to clear Utf8 before json_encode', \LOG_INFO, 'JSON');
 				static::ClearArrayUtf8Values($mInput);
 				$sResult = \json_encode($mInput, JSON_UNESCAPED_UNICODE);
 			}
 		}
-
 		return $sResult;
 	}
 

@@ -122,76 +122,31 @@ class Actions
 		$this->oConfig = API::Config();
 
 		$this->oLogger = API::Logger();
-		if ($this->oConfig->Get('logs', 'enable', false)) {
-			$sSessionFilter = (string)$this->oConfig->Get('logs', 'session_filter', '');
-			if (!empty($sSessionFilter)) {
-				$aSessionParts = \explode(':', $sSessionFilter, 2);
-
-				if (empty($aSessionParts[0]) || empty($aSessionParts[1]) ||
-					(string)$aSessionParts[1] !== (string)Utils::GetCookie($aSessionParts[0], '')) {
-					return $this->oLogger;
-				}
-			}
-
-			$sTimeZone = $this->oConfig->Get('logs', 'time_zone', 'UTC');
-
-			$this->oLogger->SetShowSecrets(!$this->oConfig->Get('logs', 'hide_passwords', true));
-
-			$sLogFileName = $this->oConfig->Get('logs', 'filename', '');
+		if ($this->oConfig->Get('logs', 'enable', false) || $this->oConfig->Get('debug', 'enable', false)) {
 
 			$oDriver = null;
+			$sLogFileName = $this->oConfig->Get('logs', 'filename', '');
 			if ('syslog' === $sLogFileName) {
 				$oDriver = new \MailSo\Log\Drivers\Syslog();
 			} else {
 				$sLogFileFullPath = \APP_PRIVATE_DATA . 'logs/' . $this->compileLogFileName($sLogFileName);
-				$sLogFileDir = \dirname($sLogFileFullPath);
-
-				if (!\is_dir($sLogFileDir)) {
-					\mkdir($sLogFileDir, 0755, true);
-				}
-
 				$oDriver = new \MailSo\Log\Drivers\File($sLogFileFullPath);
 			}
-
 			$this->oLogger->append($oDriver
-				->WriteOnErrorOnly($this->oConfig->Get('logs', 'write_on_error_only', false))
-				->WriteOnPhpErrorOnly($this->oConfig->Get('logs', 'write_on_php_error_only', false))
-				->WriteOnTimeoutOnly($this->oConfig->Get('logs', 'write_on_timeout_only', 0))
-				->SetTimeZone($sTimeZone)
+				->SetTimeZone($this->oConfig->Get('logs', 'time_zone', 'UTC'))
 			);
-
-			if (!$this->oConfig->Get('debug', 'enable', false)) {
-				$this->oLogger->AddForbiddenType(\MailSo\Log\Enumerations\Type::TIME);
-			}
-
-			$level = \max(3, \RainLoop\Api::Config()->Get('logs', 'level', \LOG_WARNING)) - 3;
-			$mailso = [
-				\MailSo\Log\Enumerations\Type::ERROR,
-				\MailSo\Log\Enumerations\Type::WARNING,
-				\MailSo\Log\Enumerations\Type::NOTICE,
-				\MailSo\Log\Enumerations\Type::INFO,
-				\MailSo\Log\Enumerations\Type::DEBUG
-			];
-			while (4 > $level++) {
-				$this->oLogger->AddForbiddenType($mailso[$level]);
-			}
-
-			$this->oLogger->WriteEmptyLine();
 
 			$oHttp = $this->Http();
 
-			$this->oLogger->Write('[DATE:' . (new \DateTime('now', new \DateTimeZone($sTimeZone)))->format('Y-m-d ') .
-				$sTimeZone .
-				'][SM:' . APP_VERSION . '][IP:' .
-				$oHttp->GetClientIp($this->oConfig->Get('labs', 'http_client_ip_check_proxy', false)) . '][PID:' .
-				(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown') . '][' .
-				$oHttp->GetServer('SERVER_SOFTWARE', '~') . '][' .
-				(\MailSo\Base\Utils::FunctionExistsAndEnabled('php_sapi_name') ? \php_sapi_name() : '~') . '][Streams:' . \implode(',', \stream_get_transports()) . ']'
-			);
-
 			$this->oLogger->Write(
-				'[' . $oHttp->GetMethod() . '] ' . $oHttp->GetScheme() . '://' . $oHttp->GetHost(false, false) . $oHttp->GetServer('REQUEST_URI', ''),
-				\MailSo\Log\Enumerations\Type::NOTE, 'REQUEST');
+				'[SM:' . APP_VERSION . '][IP:'
+				. $oHttp->GetClientIp($this->oConfig->Get('labs', 'http_client_ip_check_proxy', false))
+				. '][PID:' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown')
+				. '][' . $oHttp->GetServer('SERVER_SOFTWARE', '~')
+				. '][' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('php_sapi_name') ? \php_sapi_name() : '~')
+				. '][Streams:' . \implode(',', \stream_get_transports())
+				. '][' . $oHttp->GetMethod() . ' ' . $oHttp->GetScheme() . '://' . $oHttp->GetHost(false, false) . $oHttp->GetServer('REQUEST_URI', '') . ']'
+			);
 		}
 
 		$this->oPlugins = new Plugins\Manager($this);
@@ -407,7 +362,7 @@ class Actions
 	{
 		$sFileName = \trim($sFileName);
 
-		if (0 !== \strlen($sFileName)) {
+		if (\strlen($sFileName)) {
 			$sFileName = $this->compileLogParams($sFileName);
 
 			$sFileName = \preg_replace('/[\/]+/', '/', \preg_replace('/[.]+/', '.', $sFileName));
@@ -415,7 +370,7 @@ class Actions
 		}
 
 		if (!\strlen($sFileName)) {
-			$sFileName = 'rainloop-log.txt';
+			$sFileName = 'snappymail-log.txt';
 		}
 
 		return $sFileName;
@@ -602,34 +557,26 @@ class Actions
 
 	public function LoggerAuth(): \MailSo\Log\Logger
 	{
-		if (null === $this->oLoggerAuth) {
+		if (!$this->oLoggerAuth) {
 			$this->oLoggerAuth = new \MailSo\Log\Logger(false);
-
 			if ($this->oConfig->Get('logs', 'auth_logging', false)) {
+//				$this->oLoggerAuth->SetLevel(\LOG_WARNING);
+
 				$sAuthLogFileFullPath = \APP_PRIVATE_DATA . 'logs/' . $this->compileLogFileName(
 						$this->oConfig->Get('logs', 'auth_logging_filename', ''));
-
 				$sLogFileDir = \dirname($sAuthLogFileFullPath);
-
-				if (!is_dir($sLogFileDir)) {
-					mkdir($sLogFileDir, 0755, true);
+				if (!\is_dir($sLogFileDir)) {
+					\mkdir($sLogFileDir, 0755, true);
 				}
 
-				$this->oLoggerAuth
-					->AddForbiddenType(\MailSo\Log\Enumerations\Type::MEMORY)
-					->AddForbiddenType(\MailSo\Log\Enumerations\Type::TIME)
-					->AddForbiddenType(\MailSo\Log\Enumerations\Type::TIME_DELTA);
-
-				$oDriver = new \MailSo\Log\Drivers\File($sAuthLogFileFullPath);
-
-				$oDriver->DisableTimePrefix();
-				$oDriver->DisableGuidPrefix();
-				$oDriver->DisableTypedPrefix();
-
-				$this->oLoggerAuth->append($oDriver);
+				$this->oLoggerAuth->append(
+					(new \MailSo\Log\Drivers\File($sAuthLogFileFullPath))
+						->DisableTimePrefix()
+						->DisableGuidPrefix()
+						->DisableTypedPrefix()
+				);
 			}
 		}
-
 		return $this->oLoggerAuth;
 	}
 

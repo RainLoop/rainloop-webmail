@@ -508,11 +508,11 @@ trait Folders
 					}
 					catch (\MailSo\Base\Exceptions\InvalidArgumentException $oException)
 					{
-						$this->writeLogException($oException, \MailSo\Log\Enumerations\Type::WARNING, false);
+						$this->writeLogException($oException, \LOG_WARNING, false);
 					}
 					catch (\Throwable $oException)
 					{
-						$this->writeLogException($oException, \MailSo\Log\Enumerations\Type::WARNING, false);
+						$this->writeLogException($oException, \LOG_WARNING, false);
 					}
 				}
 			}

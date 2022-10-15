@@ -33,11 +33,11 @@ trait UserAuth
 		}
 
 		if (!\str_contains($sEmail, '@')) {
-			$this->Logger()->Write('The email address "' . $sEmail . '" is not complete', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+			$this->Logger()->Write('The email address "' . $sEmail . '" is not complete', \LOG_INFO, 'LOGIN');
 
 			if ($this->Config()->Get('login', 'determine_user_domain', false)) {
 				$sUserHost = \trim($this->Http()->GetHost(false, true, true));
-				$this->Logger()->Write('Determined user domain: ' . $sUserHost, \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+				$this->Logger()->Write('Determined user domain: ' . $sUserHost, \LOG_INFO, 'LOGIN');
 
 				$bAdded = false;
 
@@ -52,12 +52,12 @@ trait UserAuth
 					if ($oDomain) {
 						$bAdded = true;
 						$this->Logger()->Write('Check "' . $sLine . '": OK (' . $sEmail . ' > ' . $sEmail . '@' . $sLine . ')',
-							\MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+							\LOG_INFO, 'LOGIN');
 
 						$sEmail .= '@' . $sLine;
 						break;
 					} else {
-						$this->Logger()->Write('Check "' . $sLine . '": NO', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+						$this->Logger()->Write('Check "' . $sLine . '": NO', \LOG_INFO, 'LOGIN');
 					}
 
 					\array_shift($aDomainParts);
@@ -70,23 +70,23 @@ trait UserAuth
 					if ($oDomain && $oDomain) {
 						$bAdded = true;
 						$this->Logger()->Write('Check "' . $sLine . '" with wildcard: OK (' . $sEmail . ' > ' . $sEmail . '@' . $sLine . ')',
-							\MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+							\LOG_INFO, 'LOGIN');
 
 						$sEmail .= '@' . $sLine;
 					} else {
-						$this->Logger()->Write('Check "' . $sLine . '" with wildcard: NO', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+						$this->Logger()->Write('Check "' . $sLine . '" with wildcard: NO', \LOG_INFO, 'LOGIN');
 					}
 				}
 
 				if (!$bAdded) {
-					$this->Logger()->Write('Domain was not found!', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+					$this->Logger()->Write('Domain was not found!', \LOG_INFO, 'LOGIN');
 				}
 			}
 
 			$sDefDomain = \trim($this->Config()->Get('login', 'default_domain', ''));
 			if (!\str_contains($sEmail, '@') && \strlen($sDefDomain)) {
 				$this->Logger()->Write('Default domain "' . $sDefDomain . '" was used. (' . $sEmail . ' > ' . $sEmail . '@' . $sDefDomain . ')',
-					\MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+					\LOG_INFO, 'LOGIN');
 
 				$sEmail .= '@' . $sDefDomain;
 			}

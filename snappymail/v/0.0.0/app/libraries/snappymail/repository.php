@@ -143,7 +143,7 @@ abstract class Repository
 			}
 		} catch (\Throwable $e) {
 			$sError = "{$e->getCode()} {$e->getMessage()}";
-			\RainLoop\Api::Logger()->Write($sError, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
+			\RainLoop\Api::Logger()->Write($sError, \LOG_ERR, 'INSTALLER');
 		}
 		return $aResult;
 	}
@@ -246,7 +246,7 @@ abstract class Repository
 	{
 		empty($_ENV['SNAPPYMAIL_INCLUDE_AS_API']) && \RainLoop\Api::Actions()->IsAdminLoggined();
 
-		\RainLoop\Api::Logger()->Write('Start package install: '.$sId.' ('.$sType.')', \MailSo\Log\Enumerations\Type::INFO, 'INSTALLER');
+		\RainLoop\Api::Logger()->Write('Start package install: '.$sId.' ('.$sType.')', \LOG_INFO, 'INSTALLER');
 
 		$sRealFile = '';
 
@@ -281,7 +281,7 @@ abstract class Repository
 				}
 			}
 		} catch (\Throwable $e) {
-			\RainLoop\Api::Logger()->Write("Install package {$sRealFile} failed: {$e->getMessage()}", \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
+			\RainLoop\Api::Logger()->Write("Install package {$sRealFile} failed: {$e->getMessage()}", \LOG_ERR, 'INSTALLER');
 			throw $e;
 		} finally {
 			$sTmp && \unlink($sTmp);

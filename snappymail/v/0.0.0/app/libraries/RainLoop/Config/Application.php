@@ -267,15 +267,10 @@ Values:
 6 = Informational
 7 = Debug'),
 
-				'write_on_error_only' => array(false, 'Logs entire request only if error occured (php required)'),
-				'write_on_php_error_only' => array(false, 'Logs entire request only if php error occured'),
-				'write_on_timeout_only' => array(0, 'Logs entire request only if request timeout (in seconds) occured.'),
-
 				'hide_passwords' => array(true, 'Required for development purposes only.
 Disabling this option is not recommended.'),
 
 				'time_zone' => array('UTC'),
-				'session_filter' => array(''),
 
 				'filename' => array('log-{date:Y-m-d}.txt',
 					'Log filename.

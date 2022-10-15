@@ -1,8 +1,7 @@
 <?php
 
-use \MailSo\Log\Enumerations\Type;
-use \RainLoop\Enumerations\PluginPropertyType;
-use \RainLoop\Plugins\AbstractPlugin;
+use RainLoop\Enumerations\PluginPropertyType;
+use RainLoop\Plugins\AbstractPlugin;
 use RainLoop\Plugins\Property;
 
 class LDAPLoginMappingPlugin extends AbstractPlugin
@@ -87,7 +86,7 @@ class LDAPLoginMappingPlugin extends AbstractPlugin
 	 */
 	public function FilterLoginСredentials(&$sEmail, &$sLogin, &$sPassword)
 	{
-		$this->oLogger = \MailSo\Log\Logger::SingletonInstance();
+		$this->oLogger = \RainLoop\Api::Logger();
 
 		$this->aDomains = explode(',', $this->Config()->Get('plugin', 'domains', ''));
 		$this->sSearchDomain = trim($this->Config()->Get('plugin', 'search_domain', ''));
@@ -100,13 +99,13 @@ class LDAPLoginMappingPlugin extends AbstractPlugin
 
 		if (0 < \strlen($this->sObjectClass) && 0 < \strlen($this->sEmailField))
 		{
-      $sIP = $_SERVER['REMOTE_ADDR'];
-      $sResult = $this->ldapSearch($sEmail);
+			$sIP = $_SERVER['REMOTE_ADDR'];
+			$sResult = $this->ldapSearch($sEmail);
 			if ( is_array($sResult) ) {
 				$sLogin = $sResult['login'];
 				$sEmail = $sResult['email'];
 			}
-      syslog(LOG_WARNING, "plugins/ldap-login-mapping/index.php:FilterLoginСredentials() auth try: $sIP/$sEmail, resolved as $sLogin/$sEmail");
+			syslog(LOG_WARNING, "plugins/ldap-login-mapping/index.php:FilterLoginСredentials() auth try: $sIP/$sEmail, resolved as $sLogin/$sEmail");
 		}
 	}
 
@@ -163,7 +162,7 @@ class LDAPLoginMappingPlugin extends AbstractPlugin
 		$bFound = FALSE;
 		foreach ( $this->aDomains as $sDomain ) {
 			$sRegex = '/^[a-z0-9._-]+@' . preg_quote(trim($sDomain)) . '$/i';
-			$this->oLogger->Write('DEBUG regex ' . $sRegex, Type::INFO, 'LDAP');
+			$this->oLogger->Write('DEBUG regex ' . $sRegex, \LOG_INFO, 'LDAP');
 			if ( preg_match($sRegex, $sEmail) === 1) {
 				$bFound = TRUE;
 				break;
@@ -172,18 +171,18 @@ class LDAPLoginMappingPlugin extends AbstractPlugin
 		if ( !$bFound ) {
 			$this->oLogger->Write(
 				'preg_match: no match in "' . $sEmail . '" for /^[a-z0-9._-]+@{configured-domains}$/i',
-				Type::INFO,
+				\LOG_INFO,
 				'LDAP');
 			return FALSE;
 		}
 		$sLogin = \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail);
 
-		$this->oLogger->Write('ldap_connect: trying...', Type::INFO, 'LDAP');
+		$this->oLogger->Write('ldap_connect: trying...', \LOG_INFO, 'LDAP');
 
 		$oCon = @\ldap_connect($this->sHostName, $this->iHostPort);
 		if (!$oCon) return FALSE;
 
-		$this->oLogger->Write('ldap_connect: connected', Type::INFO, 'LDAP');
+		$this->oLogger->Write('ldap_connect: connected', \LOG_INFO, 'LDAP');
 
 		@\ldap_set_option($oCon, LDAP_OPT_PROTOCOL_VERSION, 3);
 
@@ -199,7 +198,7 @@ class LDAPLoginMappingPlugin extends AbstractPlugin
 		} else {
 			$sFilter = '(&(objectclass='.$this->sObjectClass.')(|('.$this->sEmailField.'='.$sEmail.')('.$this->sLoginField.'='.$sLogin.')))';
 		}
-		$this->oLogger->Write('ldap_search: start: '.$sSearchDn.' / '.$sFilter, Type::INFO, 'LDAP');
+		$this->oLogger->Write('ldap_search: start: '.$sSearchDn.' / '.$sFilter, \LOG_INFO, 'LDAP');
 		$oS = @\ldap_search($oCon, $sSearchDn, $sFilter, $aItems, 0, 30, 30);
 		if (!$oS) {
 			$this->logLdapError($oCon, 'ldap_search');
@@ -246,7 +245,7 @@ class LDAPLoginMappingPlugin extends AbstractPlugin
 			$iErrno = $oCon ? @\ldap_errno($oCon) : 0;
 
 			$this->oLogger->Write($sCmd.' error: '.$sError.' ('.$iErrno.')',
-				Type::WARNING, 'LDAP');
+				\LOG_WARNING, 'LDAP');
 		}
 	}
 

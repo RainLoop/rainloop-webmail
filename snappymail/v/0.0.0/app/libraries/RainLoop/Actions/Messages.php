@@ -201,7 +201,7 @@ trait Messages
 						}
 						catch (\Throwable $oException)
 						{
-							$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+							$this->Logger()->WriteException($oException, \LOG_ERR);
 						}
 					}
 
@@ -266,7 +266,7 @@ trait Messages
 						}
 						catch (\Throwable $oException)
 						{
-							$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+							$this->Logger()->WriteException($oException, \LOG_ERR);
 						}
 					}
 
@@ -824,12 +824,9 @@ trait Messages
 									));
 								}
 
-								if ($this->Config()->Get('debug', 'enable', false))
-								{
-									$this->Logger()->WriteDump(array(
-										$sMailTo, $sMailSubject, $sMailBody, $sMailHeaders
-									));
-								}
+								$this->Logger()->WriteDump(array(
+									$sMailTo, $sMailSubject, $sMailBody, $sMailHeaders
+								), \LOG_DEBUG);
 
 								$bR = $this->Config()->Get('labs', 'mail_func_additional_parameters', false) ?
 									\mail($sMailTo, $sMailSubject, $sMailBody, $sMailHeaders, '-f'.$oFrom->GetEmail()) :

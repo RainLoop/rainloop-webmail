@@ -83,7 +83,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		{
 			$this->writeLogException(
 				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('STARTTLS is not supported'),
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 	}
 
@@ -101,7 +101,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 
 		if ($this->IsSupported('SASL'))
@@ -176,21 +176,21 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 				$this->writeLogException(
 					new \MailSo\Sieve\Exceptions\LoginBadCredentialsException(
 						$oException->GetResponses(), '', 0, $oException),
-					\MailSo\Log\Enumerations\Type::ERROR, true);
+					\LOG_ERR, true);
 			}
 
 			if (!$bAuth)
 			{
 				$this->writeLogException(
 					new \MailSo\Sieve\Exceptions\LoginBadMethodException,
-					\MailSo\Log\Enumerations\Type::ERROR, true);
+					\LOG_ERR, true);
 			}
 		}
 		else
 		{
 			$this->writeLogException(
 				new \MailSo\Sieve\Exceptions\LoginException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 
 		$this->bIsLoggined = true;
@@ -449,7 +449,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 
 		$this->IsConnected(true);
@@ -530,7 +530,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		{
 			$this->writeLogException(
 				new \MailSo\Sieve\Exceptions\NegativeResponseException($aResponse),
-				\MailSo\Log\Enumerations\Type::WARNING, true);
+				\LOG_WARNING, true);
 		}
 	}
 

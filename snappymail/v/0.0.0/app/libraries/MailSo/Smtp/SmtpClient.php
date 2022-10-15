@@ -134,7 +134,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			\trigger_error("SMTP {$this->GetConnectedHost()} no supported AUTH options. Disable login" . ($this->IsSupported('STARTTLS') ? ' or try with STARTTLS' : ''));
 			$this->writeLogException(
 				new \MailSo\Smtp\Exceptions\LoginBadMethodException,
-				\MailSo\Log\Enumerations\Type::NOTICE, true);
+				\LOG_NOTICE, true);
 		}
 
 		$SASL = \SnappyMail\SASL::factory($type);
@@ -150,7 +150,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$this->writeLogException(
 				new \MailSo\Smtp\Exceptions\LoginBadMethodException(
 					$oException->GetResponses(), $oException->getMessage(), 0, $oException),
-				\MailSo\Log\Enumerations\Type::NOTICE, true);
+				\LOG_NOTICE, true);
 		}
 
 		try
@@ -178,7 +178,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 				if (empty($sResult)) {
 					$this->writeLogException(
 						new \MailSo\Smtp\Exceptions\NegativeResponseException,
-						\MailSo\Log\Enumerations\Type::NOTICE, true
+						\LOG_NOTICE, true
 					);
 				}
 				$this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 235, '', true);
@@ -190,7 +190,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$this->writeLogException(
 				new \MailSo\Smtp\Exceptions\LoginBadCredentialsException(
 					$oException->GetResponses(), $oException->getMessage(), 0, $oException),
-				\MailSo\Log\Enumerations\Type::NOTICE, true);
+				\LOG_NOTICE, true);
 		}
 
 		return $this;
@@ -236,7 +236,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		{
 			$this->writeLogException(
 				new Exceptions\RuntimeException('No sender reverse path has been supplied'),
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 
 		$sTo = \MailSo\Base\Utils::IdnToAscii(
@@ -305,12 +305,12 @@ class SmtpClient extends \MailSo\Net\NetClient
 		{
 			$this->writeLogException(
 				new Exceptions\RuntimeException('No recipient forward path has been supplied'),
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 
 		$this->sendRequestWithCheck('DATA', 354);
 
-		$this->writeLog('Message data.', \MailSo\Log\Enumerations\Type::NOTE);
+		$this->writeLog('Message data.', \LOG_INFO);
 
 		$this->bRunningCallback = true;
 
@@ -333,7 +333,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			{
 				$this->writeLogException(
 					new Exceptions\RuntimeException('Cannot read input resource'),
-					\MailSo\Log\Enumerations\Type::ERROR, true);
+					\LOG_ERR, true);
 			}
 
 			break;
@@ -411,7 +411,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		{
 			$this->writeLogException(
 				new Exceptions\RuntimeException('Cannot issue EHLO/HELO to existing session'),
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 
 		$this->ehloOrHelo($sEhloHost);
@@ -427,7 +427,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		{
 			$this->writeLogException(
 				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('STARTTLS is not supported'),
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 
 		$this->bHelo = true;
@@ -443,7 +443,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 
 		$this->IsConnected(true);
@@ -568,7 +568,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 						new Exceptions\NegativeResponseException($this->aResults,
 							('' === $sErrorPrefix ? '' : $sErrorPrefix.': ').\trim(
 							(\count($this->aResults) ? \implode("\r\n", $this->aResults)."\r\n" : '').
-							$this->sResponseBuffer)), \MailSo\Log\Enumerations\Type::ERROR, true);
+							$this->sResponseBuffer)), \LOG_ERR, true);
 				}
 			}
 			else
@@ -577,7 +577,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 					new Exceptions\ResponseException($this->aResults,
 						('' === $sErrorPrefix ? '' : $sErrorPrefix.': ').\trim(
 						(\count($this->aResults) ? \implode("\r\n", $this->aResults)."\r\n" : '').
-						$this->sResponseBuffer)), \MailSo\Log\Enumerations\Type::ERROR, true);
+						$this->sResponseBuffer)), \LOG_ERR, true);
 			}
 
 			$this->aResults[] = $this->sResponseBuffer;

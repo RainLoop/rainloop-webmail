@@ -194,7 +194,7 @@ class LoginOAuth2Plugin extends \RainLoop\Plugins\AbstractPlugin
 			}
 			catch (\Exception $oException)
 			{
-				$oActions->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+				$oActions->Logger()->WriteException($oException, \LOG_ERR);
 			}
 		}
 
@@ -292,7 +292,7 @@ class LoginOAuth2Plugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 		catch (\Exception $oException)
 		{
-			$oActions->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+			$oActions->Logger()->WriteException($oException, \LOG_ERR);
 		}
 
 		$oActions = \RainLoop::Actions();

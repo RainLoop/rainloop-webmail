@@ -23,16 +23,18 @@ class File extends \MailSo\Log\Driver
 	 */
 	private $sLoggerFileName;
 
-	function __construct(string $sLoggerFileName, string $sNewLine = "\r\n")
+	function __construct(string $sLoggerFileName)
 	{
 		parent::__construct();
-
-		$this->sLoggerFileName = $sLoggerFileName;
-		$this->sNewLine = $sNewLine;
+		$this->SetLoggerFileName($sLoggerFileName);
 	}
 
 	public function SetLoggerFileName(string $sLoggerFileName)
 	{
+		$sLogFileDir = \dirname($sLoggerFileName);
+		if (!\is_dir($sLogFileDir)) {
+			\mkdir($sLogFileDir, 0755, true);
+		}
 		$this->sLoggerFileName = $sLoggerFileName;
 	}
 
@@ -48,11 +50,9 @@ class File extends \MailSo\Log\Driver
 
 	private function writeToLogFile($mDesc) : bool
 	{
-		if (\is_array($mDesc))
-		{
-			$mDesc = \implode($this->sNewLine, $mDesc);
+		if (\is_array($mDesc)) {
+			$mDesc = \implode("\n\t", $mDesc);
 		}
-
-		return \error_log($mDesc.$this->sNewLine, 3, $this->sLoggerFileName);
+		return \error_log($mDesc . "\n", 3, $this->sLoggerFileName);
 	}
 }

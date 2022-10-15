@@ -66,13 +66,13 @@ class ChangePasswordHMailServerDriver
 						$oHmailAccount->Save();
 						$bResult = true;
 					} else {
-						$this->oLogger && $this->oLogger->Write('hMailServer: Unknown account ('.$sEmail.')', \MailSo\Log\Enumerations\Type::ERROR);
+						$this->oLogger && $this->oLogger->Write('hMailServer: Unknown account ('.$sEmail.')', \LOG_ERROR);
 					}
 				} else {
-					$this->oLogger && $this->oLogger->Write('hMailServer: Unknown domain ('.$sDomain.')', \MailSo\Log\Enumerations\Type::ERROR);
+					$this->oLogger && $this->oLogger->Write('hMailServer: Unknown domain ('.$sDomain.')', \LOG_ERROR);
 				}
 			} else {
-				$this->oLogger && $this->oLogger->Write('hMailServer: Auth error', \MailSo\Log\Enumerations\Type::ERROR);
+				$this->oLogger && $this->oLogger->Write('hMailServer: Auth error', \LOG_ERROR);
 			}
 		}
 		catch (\Exception $oException)

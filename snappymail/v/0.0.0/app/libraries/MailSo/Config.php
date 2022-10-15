@@ -70,9 +70,4 @@ class Config
 	 * @var int
 	 */
 	public static $ImapTimeout = 300;
-
-	/**
-	 * @var \MailSo\Log\Logger|null
-	 */
-	public static $SystemLogger = null;
 }

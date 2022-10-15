@@ -53,7 +53,7 @@ class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 			if ($this->bIsLoggined) {
 				$this->writeLogException(
 					new \RuntimeException('Already authenticated for this session'),
-					\MailSo\Log\Enumerations\Type::ERROR, true);
+					\LOG_ERR, true);
 			}
 
 			try
@@ -63,7 +63,7 @@ class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 			}
 			catch (\Throwable $oException)
 			{
-				$this->writeLogException($oException, \MailSo\Log\Enumerations\Type::NOTICE, true);
+				$this->writeLogException($oException, \LOG_NOTICE, true);
 			}
 
 			$this->bIsLoggined = true;
@@ -73,7 +73,7 @@ class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 			} else {
 				$this->writeLogException(
 					new \RuntimeException('Required login'),
-					\MailSo\Log\Enumerations\Type::ERROR, true);
+					\LOG_ERR, true);
 			}
 
 
@@ -125,9 +125,7 @@ class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 	{
 		$sCommand = \trim($sCommand);
 		if (!\strlen($sCommand)) {
-			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException(),
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+			$this->writeLogException(new \MailSo\Base\Exceptions\InvalidArgumentException(), \LOG_ERR, true);
 		}
 
 		$this->IsConnected(true);
@@ -158,13 +156,10 @@ class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 		}
 
 		if (!$bResult) {
-			$this->writeLogException(
-				new \MailSo\Base\Exceptions\Exception(),
-				\MailSo\Log\Enumerations\Type::WARNING, true);
+			$this->writeLogException(new \MailSo\Base\Exceptions\Exception(), \LOG_WARNING, true);
 		}
 
-		$this->writeLog((\microtime(true) - $this->iRequestTime),
-			\MailSo\Log\Enumerations\Type::TIME);
+		$this->writeLog((\microtime(true) - $this->iRequestTime), \LOG_DEBUG);
 
 		return $this;
 	}

@@ -28,7 +28,7 @@ trait CardDAV
 		$aResponse = null;
 		try
 		{
-			$this->oLogger->Write('PROPFIND '.$sPath, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
+			$this->oLogger->Write('PROPFIND '.$sPath, \LOG_INFO, 'DAV');
 
 			$aResponse = $oClient->propFind($sPath, array(
 				'{DAV:}getlastmodified',
@@ -100,11 +100,11 @@ trait CardDAV
 		\MailSo\Base\Utils::ResetTimeLimit();
 
 		$this->oLogger->Write($sCmd.' '.$sUrl.(('PUT' === $sCmd || 'POST' === $sCmd) && null !== $mData ? ' ('.\strlen($mData).')' : ''),
-			\MailSo\Log\Enumerations\Type::INFO, 'DAV');
+			\LOG_INFO, 'DAV');
 
 //		if ('PUT' === $sCmd || 'POST' === $sCmd)
 //		{
-//			$this->oLogger->Write($mData, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
+//			$this->oLogger->Write($mData, \LOG_INFO, 'DAV');
 //		}
 
 		try
@@ -122,7 +122,7 @@ trait CardDAV
 
 //			if ('GET' === $sCmd)
 //			{
-//				$this->oLogger->WriteDump($aResponse, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
+//				$this->oLogger->WriteDump($aResponse, \LOG_INFO, 'DAV');
 //			}
 		}
 		catch (\Throwable $oException)
@@ -139,7 +139,7 @@ trait CardDAV
 
 		try
 		{
-			$this->oLogger->Write('PROPFIND '.$sPath, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
+			$this->oLogger->Write('PROPFIND '.$sPath, \LOG_INFO, 'DAV');
 
 			$aResponse = $oClient->propFind($sPath, array(
 				'{DAV:}current-user-principal',
@@ -336,7 +336,7 @@ trait CardDAV
 			return false;
 		}
 
-		$this->oLogger->Write('PROPFIND '.$sPath, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
+		$this->oLogger->Write('PROPFIND '.$sPath, \LOG_INFO, 'DAV');
 
 		$aResponse = null;
 		try
@@ -412,7 +412,7 @@ trait CardDAV
 
 		$oClient->__UrlPath__ = $aUrl['path'];
 
-		$this->oLogger->Write('DavClient: User: '.$aSettings['userName'].', Url: '.$sUrl, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
+		$this->oLogger->Write('DavClient: User: '.$aSettings['userName'].', Url: '.$sUrl, \LOG_INFO, 'DAV');
 
 		return $oClient;
 	}

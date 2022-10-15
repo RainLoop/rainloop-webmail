@@ -191,7 +191,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 		$oCon = @\ldap_connect($this->sLdapUri);
 		if ($oCon)
 		{
-			$this->oLogger->Write('ldap_connect: connected', \MailSo\Log\Enumerations\Type::INFO, 'LDAP');
+			$this->oLogger->Write('ldap_connect: connected', \LOG_INFO, 'LDAP');
 
 			@\ldap_set_option($oCon, LDAP_OPT_PROTOCOL_VERSION, 3);
 
@@ -268,7 +268,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 			$sFilter .= (1 < count($aItems) ? '(|' : '').$sSubFilter.(1 < count($aItems) ? ')' : '');
 			$sFilter .= ')';
 
-			$this->oLogger->Write('ldap_search: start: '.$sBaseDn.' / '.$sFilter, \MailSo\Log\Enumerations\Type::INFO, 'LDAP');
+			$this->oLogger->Write('ldap_search: start: '.$sBaseDn.' / '.$sFilter, \LOG_INFO, 'LDAP');
 			$oS = @\ldap_search($oCon, $sBaseDn, $sFilter, $aItems, 0, 30, 30);
 			if ($oS)
 			{
@@ -343,7 +343,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 			$iErrno = $oCon ? @\ldap_errno($oCon) : 0;
 
 			$this->oLogger->Write($sCmd.' error: '.$sError.' ('.$iErrno.')',
-				\MailSo\Log\Enumerations\Type::WARNING, 'LDAP');
+				\LOG_WARNING, 'LDAP');
 		}
 	}
 

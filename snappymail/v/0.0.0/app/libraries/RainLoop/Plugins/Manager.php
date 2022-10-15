@@ -44,7 +44,6 @@ class Manager
 					$oPlugin = $this->CreatePluginByName($sName);
 					if ($oPlugin) {
 						$oPlugin->Init();
-
 						$this->aPlugins[] = $oPlugin;
 					} else {
 						unset($aList[$i]);
@@ -84,6 +83,9 @@ class Manager
 				->SetPluginManager($this)
 				->SetPluginConfig(new \RainLoop\Config\Plugin($sName, $oPlugin->ConfigMap(true)))
 			;
+			if (\method_exists($oPlugin, 'SetLogger')) {
+				$oPlugin->SetLogger($this->oLogger);
+			}
 		}
 
 		return $oPlugin;
@@ -119,7 +121,7 @@ class Manager
 		else
 		{
 			$this->oActions->Logger()->Write('Cannot get installed plugins from '.APP_PLUGINS_PATH,
-				\MailSo\Log\Enumerations\Type::ERROR);
+				\LOG_ERR);
 		}
 
 		return $aList;
@@ -316,7 +318,7 @@ class Manager
 			{
 				if ($bLogHook)
 				{
-					$this->WriteLog('Hook: '.$sHookName, \MailSo\Log\Enumerations\Type::NOTE);
+					$this->WriteLog('Hook: '.$sHookName, \LOG_INFO);
 				}
 
 				foreach ($this->aHooks[$sHookName] as $mCallback)
@@ -525,7 +527,7 @@ class Manager
 		return $this;
 	}
 
-	public function WriteLog(string $sDesc, int $iType = \MailSo\Log\Enumerations\Type::INFO) : void
+	public function WriteLog(string $sDesc, int $iType = \LOG_INFO) : void
 	{
 		if ($this->oLogger)
 		{
@@ -533,7 +535,7 @@ class Manager
 		}
 	}
 
-	public function WriteException(string $sDesc, int $iType = \MailSo\Log\Enumerations\Type::INFO) : void
+	public function WriteException(string $sDesc, int $iType = \LOG_INFO) : void
 	{
 		if ($this->oLogger)
 		{

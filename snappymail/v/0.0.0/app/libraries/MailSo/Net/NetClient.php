@@ -126,14 +126,14 @@ abstract class NetClient
 		if (!\strlen($oSettings->host) || !\MailSo\Base\Validator::PortInt($oSettings->port)) {
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 
 		if ($this->IsConnected())
 		{
 			$this->writeLogException(
 				new Exceptions\SocketAlreadyConnectedException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 
 		$sErrorStr = '';
@@ -155,12 +155,12 @@ abstract class NetClient
 		{
 			$this->writeLogException(
 				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('SSL isn\'t supported: ('.\implode(', ', \stream_get_transports()).')'),
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 
 		$this->iStartConnectTime = \microtime(true);
 		$this->writeLog('Start connection to "'.$this->sConnectedHost.':'.$this->iConnectedPort.'"',
-			\MailSo\Log\Enumerations\Type::NOTE);
+			\LOG_INFO);
 
 		$aStreamContextSettings = array(
 			'ssl' => $oSettings->ssl
@@ -186,7 +186,7 @@ abstract class NetClient
 		\restore_error_handler();
 
 		$this->writeLog('Connect ('.($this->rConnect ? 'success' : 'failed').')',
-			\MailSo\Log\Enumerations\Type::NOTE);
+			\LOG_INFO);
 
 		if (!$this->rConnect)
 		{
@@ -194,11 +194,10 @@ abstract class NetClient
 				new Exceptions\SocketCanNotConnectToHostException(
 					\MailSo\Base\Locale::ConvertSystemString($sErrorStr), (int) $iErrorNo,
 					'Can\'t connect to host "'.$this->sConnectedHost.':'.$this->iConnectedPort.'"'
-				), \MailSo\Log\Enumerations\Type::NOTICE, true);
+				), \LOG_NOTICE, true);
 		}
 
-		$this->writeLog((\microtime(true) - $this->iStartConnectTime).' (raw connection)',
-			\MailSo\Log\Enumerations\Type::TIME);
+		$this->writeLog((\microtime(true) - $this->iStartConnectTime).' (raw connection)', \LOG_DEBUG);
 
 		if ($this->rConnect)
 		{
@@ -228,7 +227,7 @@ abstract class NetClient
 		if ($bError) {
 			$this->writeLogException(
 				new \MailSo\Net\Exceptions\Exception('Cannot enable STARTTLS.'),
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 	}
 
@@ -247,12 +246,11 @@ abstract class NetClient
 			$bResult = \fclose($this->rConnect);
 
 			$this->writeLog('Disconnected from "'.$this->sConnectedHost.':'.$this->iConnectedPort.'" ('.
-				(($bResult) ? 'success' : 'unsuccess').')', \MailSo\Log\Enumerations\Type::NOTE);
+				(($bResult) ? 'success' : 'unsuccess').')', \LOG_INFO);
 
 			if ($this->iStartConnectTime)
 			{
-				$this->writeLog((\microtime(true) - $this->iStartConnectTime).' (net session)',
-					\MailSo\Log\Enumerations\Type::TIME);
+				$this->writeLog((\microtime(true) - $this->iStartConnectTime).' (net session)', \LOG_DEBUG);
 
 				$this->iStartConnectTime = 0;
 			}
@@ -271,7 +269,7 @@ abstract class NetClient
 		if ($bThrowExceptionOnFalse) {
 			$this->writeLogException(
 				new Exceptions\SocketConnectionDoesNotAvailableException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 		return false;
 	}
@@ -298,9 +296,7 @@ abstract class NetClient
 	{
 		if ($this->bUnreadBuffer)
 		{
-			$this->writeLogException(
-				new Exceptions\SocketUnreadBufferException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+			$this->writeLogException(new Exceptions\SocketUnreadBufferException, \LOG_ERR, true);
 		}
 
 		$bFake = \strlen($sFakeRaw);
@@ -320,18 +316,11 @@ abstract class NetClient
 		if (false === $mResult)
 		{
 			$this->IsConnected(true);
-
-			$this->writeLogException(
-				new Exceptions\SocketWriteException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+			$this->writeLogException(new Exceptions\SocketWriteException, \LOG_ERR, true);
 		}
-		else
+		else if ($bWriteToLog)
 		{
-			if ($bWriteToLog)
-			{
-				$this->writeLogWithCrlf('> '.($bFake ? $sFakeRaw : $sRaw), //.' ['.$iWriteSize.']',
-					$bFake ? \MailSo\Log\Enumerations\Type::SECURE : \MailSo\Log\Enumerations\Type::INFO);
-			}
+			$this->writeLogWithCrlf('> '.($bFake ? $sFakeRaw : $sRaw), \LOG_INFO);
 		}
 	}
 
@@ -373,16 +362,16 @@ abstract class NetClient
 			{
 				$this->writeLogException(
 					new Exceptions\SocketReadTimeoutException,
-						\MailSo\Log\Enumerations\Type::ERROR, true);
+						\LOG_ERR, true);
 			}
 			else
 			{
 				$this->writeLog('Stream Meta: '.
-					\print_r($aSocketStatus, true), \MailSo\Log\Enumerations\Type::ERROR);
+					\print_r($aSocketStatus, true), \LOG_ERR);
 
 				$this->writeLogException(
 					new Exceptions\SocketReadException,
-						\MailSo\Log\Enumerations\Type::ERROR, true);
+						\LOG_ERR, true);
 			}
 		}
 		else
@@ -394,25 +383,25 @@ abstract class NetClient
 				if ($iLimit < $iReadedLen)
 				{
 					$this->writeLogWithCrlf('[cutted:'.$iReadedLen.'] < '.\substr($this->sResponseBuffer, 0, $iLimit).'...',
-						\MailSo\Log\Enumerations\Type::INFO);
+						\LOG_INFO);
 				}
 				else
 				{
 					$this->writeLogWithCrlf('< '.$this->sResponseBuffer, //.' ['.$iReadedLen.']',
-						\MailSo\Log\Enumerations\Type::INFO);
+						\LOG_INFO);
 				}
 			}
 			else
 			{
 				$this->writeLog('Received '.$iReadedLen.'/'.$iReadLen.' bytes.',
-					\MailSo\Log\Enumerations\Type::INFO);
+					\LOG_INFO);
 			}
 		}
 	}
 
 	abstract function getLogName() : string;
 
-	protected function writeLog(string $sDesc, int $iDescType = \MailSo\Log\Enumerations\Type::INFO, bool $bDiplayCrLf = false) : void
+	protected function writeLog(string $sDesc, int $iDescType = \LOG_INFO, bool $bDiplayCrLf = false) : void
 	{
 		if ($this->oLogger)
 		{
@@ -420,13 +409,13 @@ abstract class NetClient
 		}
 	}
 
-	protected function writeLogWithCrlf(string $sDesc, int $iDescType = \MailSo\Log\Enumerations\Type::INFO) : void
+	protected function writeLogWithCrlf(string $sDesc, int $iDescType = \LOG_INFO) : void
 	{
 		$this->writeLog($sDesc, $iDescType, true);
 	}
 
 	protected function writeLogException(\Throwable $oException,
-		int $iDescType = \MailSo\Log\Enumerations\Type::NOTICE, bool $bThrowException = false) : void
+		int $iDescType = \LOG_NOTICE, bool $bThrowException = false) : void
 	{
 		if ($this->oLogger)
 		{

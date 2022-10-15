@@ -103,7 +103,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		{
 			$this->writeLogException(
 				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('STARTTLS is not supported'),
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 	}
 
@@ -128,7 +128,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 
 		$this->sLogginedUser = $sLogin;
@@ -199,7 +199,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				if ($oR && Enumerations\ResponseType::CONTINUATION === $oR->ResponseType) {
 					if (!empty($oR->ResponseList[1]) && preg_match('/^[a-zA-Z0-9=+\/]+$/', $oR->ResponseList[1])) {
 						$this->Logger()->Write(\base64_decode($oR->ResponseList[1]),
-							\MailSo\Log\Enumerations\Type::WARNING);
+							\LOG_WARNING);
 					}
 					$this->sendRaw('');
 					$oResponse = $this->getResponse();
@@ -254,7 +254,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			$this->writeLogException(
 				new Exceptions\LoginBadCredentialsException(
 					$oException->GetResponses(), '', 0, $oException),
-				\MailSo\Log\Enumerations\Type::NOTICE, true);
+				\LOG_NOTICE, true);
 		}
 
 		$this->bIsLoggined = true;
@@ -364,7 +364,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 			throw new Exceptions\ResponseException;
 		} catch (\Throwable $e) {
-			$this->writeLogException($e, \MailSo\Log\Enumerations\Type::ERROR);
+			$this->writeLogException($e, \LOG_ERR);
 			throw $e;
 		}
 	}
@@ -409,7 +409,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 
 		$this->IsConnected(true);
@@ -475,11 +475,11 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 			$this->writeLogException(
 				new Exceptions\LoginException,
-				\MailSo\Log\Enumerations\Type::NOTICE, true);
+				\LOG_NOTICE, true);
 		}
 		$this->writeLogException(
 			new Exceptions\LoginException,
-			\MailSo\Log\Enumerations\Type::NOTICE, true);
+			\LOG_NOTICE, true);
 	}
 
 	/**
@@ -509,7 +509,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				exit;
 			}
 		} catch (\Throwable $e) {
-			$this->writeLogException($e, \MailSo\Log\Enumerations\Type::WARNING);
+			$this->writeLogException($e, \LOG_WARNING);
 			throw $e;
 		}
 	}
@@ -534,8 +534,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 					if ($sEndTag === $oResponse->Tag || Enumerations\ResponseType::CONTINUATION === $oResponse->ResponseType) {
 						if (isset($this->aTagTimeouts[$sEndTag])) {
-							$this->writeLog((\microtime(true) - $this->aTagTimeouts[$sEndTag]).' ('.$sEndTag.')',
-								\MailSo\Log\Enumerations\Type::TIME);
+							$this->writeLog((\microtime(true) - $this->aTagTimeouts[$sEndTag]).' ('.$sEndTag.')', \LOG_DEBUG);
 
 							unset($this->aTagTimeouts[$sEndTag]);
 						}
@@ -548,7 +547,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			$oResult->validate();
 
 		} catch (\Throwable $e) {
-			$this->writeLogException($e, \MailSo\Log\Enumerations\Type::WARNING);
+			$this->writeLogException($e, \LOG_WARNING);
 			throw $e;
 		}
 
@@ -580,8 +579,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 					if ($sEndTag === $oResponse->Tag || Enumerations\ResponseType::CONTINUATION === $oResponse->ResponseType) {
 						if (isset($this->aTagTimeouts[$sEndTag])) {
-							$this->writeLog((\microtime(true) - $this->aTagTimeouts[$sEndTag]).' ('.$sEndTag.')',
-								\MailSo\Log\Enumerations\Type::TIME);
+							$this->writeLog((\microtime(true) - $this->aTagTimeouts[$sEndTag]).' ('.$sEndTag.')', \LOG_DEBUG);
 
 							unset($this->aTagTimeouts[$sEndTag]);
 						}
@@ -594,7 +592,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			$oResult->validate();
 
 		} catch (\Throwable $e) {
-			$this->writeLogException($e, \MailSo\Log\Enumerations\Type::WARNING);
+			$this->writeLogException($e, \LOG_WARNING);
 			throw $e;
 		}
 	}

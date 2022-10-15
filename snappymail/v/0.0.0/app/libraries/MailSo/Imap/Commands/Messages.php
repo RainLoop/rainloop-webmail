@@ -17,7 +17,6 @@ use MailSo\Imap\Enumerations\FetchType;
 use MailSo\Imap\ResponseCollection;
 use MailSo\Imap\SequenceSet;
 use MailSo\Imap\Enumerations\ResponseType;
-use MailSo\Log\Enumerations\Type as LogType;
 use MailSo\Base\Exceptions\InvalidArgumentException;
 
 /**
@@ -35,7 +34,7 @@ trait Messages
 	{
 		if (!\strlen(\trim($sIndexRange)))
 		{
-			$this->writeLogException(new InvalidArgumentException, LogType::ERROR, true);
+			$this->writeLogException(new InvalidArgumentException, \LOG_ERR, true);
 		}
 
 		$aReturn = array();
@@ -115,7 +114,7 @@ trait Messages
 					if (FetchResponse::hasUidAndSize($oResponse)) {
 						$aReturn[] = new FetchResponse($oResponse);
 					} else if ($this->oLogger) {
-						$this->oLogger->Write('Skipped Imap Response! ['.$oResponse.']', LogType::NOTICE);
+						$this->oLogger->Write('Skipped Imap Response! ['.$oResponse.']', \LOG_NOTICE);
 					}
 				}
 			}
@@ -160,7 +159,7 @@ trait Messages
 
 	private function writeMessageStream($rMessageStream) : ?int
 	{
-		$this->writeLog('Write to connection stream', LogType::NOTE);
+		$this->writeLog('Write to connection stream', \LOG_INFO);
 
 		\MailSo\Base\Utils::MultipleStreamWriter($rMessageStream, array($this->ConnectionResource()));
 
@@ -198,7 +197,7 @@ trait Messages
 	public function MessageCopy(string $sToFolder, SequenceSet $oRange) : ResponseCollection
 	{
 		if (!\count($oRange)) {
-			$this->writeLogException(new InvalidArgumentException, LogType::ERROR, true);
+			$this->writeLogException(new InvalidArgumentException, \LOG_ERR, true);
 		}
 
 		return $this->SendRequestGetResponse(
@@ -215,13 +214,13 @@ trait Messages
 	public function MessageMove(string $sToFolder, SequenceSet $oRange) : ResponseCollection
 	{
 		if (!\count($oRange)) {
-			$this->writeLogException(new InvalidArgumentException, LogType::ERROR, true);
+			$this->writeLogException(new InvalidArgumentException, \LOG_ERR, true);
 		}
 
 		if (!$this->IsSupported('MOVE')) {
 			$this->writeLogException(
 				new \MailSo\IMAP\Exceptions\RuntimeException('Move is not supported'),
-				LogType::ERROR, true);
+				\LOG_ERR, true);
 		}
 
 		return $this->SendRequestGetResponse(

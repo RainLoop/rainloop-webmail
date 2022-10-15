@@ -309,7 +309,7 @@ class ActionsAdmin extends Actions
 			}
 			catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
 			{
-				$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+				$this->Logger()->WriteException($oException, \LOG_ERR);
 				$sImapErrorDesc = $oException->getSocketMessage();
 				if (empty($sImapErrorDesc))
 				{
@@ -318,7 +318,7 @@ class ActionsAdmin extends Actions
 			}
 			catch (\Throwable $oException)
 			{
-				$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+				$this->Logger()->WriteException($oException, \LOG_ERR);
 				$sImapErrorDesc = $oException->getMessage();
 			}
 
@@ -350,7 +350,7 @@ class ActionsAdmin extends Actions
 				}
 				catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
 				{
-					$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+					$this->Logger()->WriteException($oException, \LOG_ERR);
 					$sSmtpErrorDesc = $oException->getSocketMessage();
 					if (empty($sSmtpErrorDesc))
 					{
@@ -359,7 +359,7 @@ class ActionsAdmin extends Actions
 				}
 				catch (\Throwable $oException)
 				{
-					$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+					$this->Logger()->WriteException($oException, \LOG_ERR);
 					$sSmtpErrorDesc = $oException->getMessage();
 				}
 			}
@@ -384,7 +384,7 @@ class ActionsAdmin extends Actions
 				}
 				catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
 				{
-					$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+					$this->Logger()->WriteException($oException, \LOG_ERR);
 					$sSieveErrorDesc = $oException->getSocketMessage();
 					if (empty($sSieveErrorDesc))
 					{
@@ -393,7 +393,7 @@ class ActionsAdmin extends Actions
 				}
 				catch (\Throwable $oException)
 				{
-					$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+					$this->Logger()->WriteException($oException, \LOG_ERR);
 					$sSieveErrorDesc = $oException->getMessage();
 				}
 			}
@@ -688,7 +688,7 @@ class ActionsAdmin extends Actions
 		if (!$this->Cacher(null, true)->Set(KeyPathHelper::SessionAdminKey($sRand), \time()))
 		{
 			$this->oLogger->Write('Cannot store an admin token',
-				\MailSo\Log\Enumerations\Type::WARNING);
+				\LOG_WARNING);
 			return '';
 		}
 

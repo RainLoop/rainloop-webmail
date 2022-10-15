@@ -184,14 +184,14 @@ trait ResponseParser
 								if (!$bTreatAsAtom) {
 									$aList[] = $sLiteral;
 									if (\MailSo\Config::$LogSimpleLiterals) {
-										$this->writeLog('{'.$iLiteralLen.'} '.$sLiteral, \MailSo\Log\Enumerations\Type::INFO);
+										$this->writeLog('{'.$iLiteralLen.'} '.$sLiteral, \LOG_INFO);
 									}
 								} else {
 									\SnappyMail\Log::notice('IMAP', 'Literal treated as atom and skipped');
 								}
 								unset($sLiteral);
 							} else {
-								$this->writeLog('Can\'t read imap stream', \MailSo\Log\Enumerations\Type::NOTE);
+								$this->writeLog('Can\'t read imap stream', \LOG_WARNING);
 							}
 						}
 
@@ -359,7 +359,7 @@ trait ResponseParser
 			$iBLen = \strlen($sAddRead);
 			if (!$iBLen) {
 				$this->writeLog('Literal stream read warning "read '.\strlen($sLiteral).' of '.
-					$iLiteralLen.'" bytes', \MailSo\Log\Enumerations\Type::WARNING);
+					$iLiteralLen.'" bytes', \LOG_WARNING);
 				return null;
 			}
 			$sLiteral .= $sAddRead;
@@ -373,7 +373,7 @@ trait ResponseParser
 		$iLiteralSize = \strlen($sLiteral);
 		if ($iLiteralLen !== $iLiteralSize) {
 			$this->writeLog('Literal stream read warning "read '.$iLiteralSize.' of '.
-				$iLiteralLen.'" bytes', \MailSo\Log\Enumerations\Type::WARNING);
+				$iLiteralLen.'" bytes', \LOG_WARNING);
 		}
 		return $sLiteral;
 	}
@@ -403,7 +403,7 @@ trait ResponseParser
 			\MailSo\Base\StreamWrappers\Literal::CreateStream($this->ConnectionResource(), $iLiteralLen);
 
 		$this->writeLog('Start Callback for '.$sParent.' / '.$sLiteralAtomUpperCase.
-			' - try to read '.$iLiteralLen.' bytes.', \MailSo\Log\Enumerations\Type::NOTE);
+			' - try to read '.$iLiteralLen.' bytes.', \LOG_INFO);
 
 		$this->bRunningCallback = true;
 
@@ -413,7 +413,6 @@ trait ResponseParser
 		}
 		catch (\Throwable $oException)
 		{
-			$this->writeLog('Callback Exception', \MailSo\Log\Enumerations\Type::NOTICE);
 			$this->writeLogException($oException);
 		}
 
@@ -423,7 +422,7 @@ trait ResponseParser
 			$bFeof = \feof($rImapLiteralStream);
 			$this->writeLog('End Callback for '.$sParent.' / '.$sLiteralAtomUpperCase.
 				' - feof = '.($bFeof ? 'good' : 'BAD'), $bFeof ?
-					\MailSo\Log\Enumerations\Type::NOTE : \MailSo\Log\Enumerations\Type::WARNING);
+					\LOG_INFO : \LOG_WARNING);
 
 			if (!$bFeof) {
 				while (!\feof($rImapLiteralStream)) {
@@ -445,11 +444,11 @@ trait ResponseParser
 
 			if (0 < $iNotReadLiteralLen) {
 				$this->writeLog('Not read literal size is '.$iNotReadLiteralLen.' bytes.',
-					\MailSo\Log\Enumerations\Type::WARNING);
+					\LOG_WARNING);
 			}
 		} else {
 			$this->writeLog('Literal stream is not resource after callback.',
-				\MailSo\Log\Enumerations\Type::WARNING);
+				\LOG_WARNING);
 		}
 
 		$this->bRunningCallback = false;

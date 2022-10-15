@@ -2,8 +2,6 @@
 
 namespace SnappyMail;
 
-use MailSo\Log\Enumerations\Type;
-
 abstract class Log
 {
 	// Same as RFC 5424 section 6.2.1 decimal Severity level indicator
@@ -35,44 +33,32 @@ abstract class Log
 			\LOG_NOTICE  => 'NOTICE',
 			\LOG_INFO    => 'INFO',
 			\LOG_DEBUG   => 'DEBUG',
-		],
-		$mailso = [
-			\LOG_EMERG   => Type::ERROR,
-			\LOG_ALERT   => Type::ERROR,
-			\LOG_CRIT    => Type::ERROR,
-			\LOG_ERR     => Type::ERROR,
-			\LOG_WARNING => Type::WARNING,
-			\LOG_NOTICE  => Type::NOTICE,
-			\LOG_INFO    => Type::INFO,
-			\LOG_DEBUG   => Type::DEBUG
 		];
 
 	protected static function log(int $level, string $prefix, string $msg)
 	{
+		\RainLoop\Api::Logger()->Write($msg, $level, $prefix);
+/*
 		static $log_level;
 		// Default to level 4, 0 = LOG_EMERG, 7 = LOG_DEBUG
 		if (!$log_level) {
 			$log_level = \max(3, \RainLoop\Api::Config()->Get('logs', 'level', \LOG_WARNING));
 		}
 		if ($level <= $log_level) {
-			\RainLoop\Api::Logger()->Write(
-				$msg,
-				static::$mailso[$level],
-				$prefix
-			);
-/*
 			if (\RainLoop\Api::Config()->Get('logs', 'syslog') && \openlog('snappymail', \LOG_ODELAY, \LOG_USER)) {
 				\syslog($level, "{$prefix} {$msg}");
 				\closelog();
 			}
-*/
+
 			if (\filter_var(\ini_get('log_errors'), FILTER_VALIDATE_BOOLEAN)
 			 && (($level < \LOG_WARNING && \error_reporting() & \E_ERROR)
 			  || ($level == \LOG_WARNING && \error_reporting() & \E_WARNING)
 			  || ($level > \LOG_WARNING && \error_reporting() & \E_NOTICE)
 			)) {
 				\error_log($prefix . ' ' . static::$levels[$level] . ': ' . $msg);
+//				\error_log($prefix . ' ' . static::$levels[$level] . ': ' . $msg, 3, 'filename');
 			}
 		}
+*/
 	}
 }

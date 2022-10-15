@@ -233,7 +233,7 @@ abstract class PdoAbstract
 	{
 		if ($this->oLogger)
 		{
-			$this->oLogger->WriteMixed($mData, \MailSo\Log\Enumerations\Type::INFO, 'SQL');
+			$this->oLogger->WriteMixed($mData, \LOG_INFO, 'SQL');
 		}
 	}
 

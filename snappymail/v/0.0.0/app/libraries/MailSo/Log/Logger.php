@@ -19,7 +19,7 @@ class Logger extends \SplFixedArray
 {
 	private $bUsed = false;
 
-	private $aForbiddenTypes = [];
+	private $iLevel = \LOG_WARNING;
 
 	private $aSecretWords = [];
 
@@ -35,36 +35,6 @@ class Logger extends \SplFixedArray
 		}
 
 		\register_shutdown_function(array($this, '__loggerShutDown'));
-	}
-
-	/**
-	 * @staticvar \MailSo\Log\Logger $oInstance;
-	 */
-	public static function SingletonInstance() : self
-	{
-		static $oInstance = null;
-		if (null === $oInstance)
-		{
-			$oInstance = new self;
-		}
-
-		return $oInstance;
-	}
-
-	public static function IsSystemEnabled() : bool
-	{
-		return !!(\MailSo\Config::$SystemLogger instanceof Logger);
-	}
-
-	/**
-	 * @param mixed $mData
-	 */
-	public static function SystemLog($mData, int $iType = Enumerations\Type::INFO)
-	{
-		if (\MailSo\Config::$SystemLogger instanceof Logger)
-		{
-			\MailSo\Config::$SystemLogger->WriteMixed($mData, $iType);
-		}
 	}
 
 	/**
@@ -114,43 +84,56 @@ class Logger extends \SplFixedArray
 		return $this->bShowSecrets;
 	}
 
-	public function AddForbiddenType(int $iType) : self
+	public function SetLevel(int $iLevel) : self
 	{
-		$this->aForbiddenTypes[$iType] = true;
-
+		$this->iLevel = $iLevel;
 		return $this;
 	}
+
+	const PHP_TYPES = array(
+		\E_ERROR => \LOG_ERR,
+		\E_WARNING => \LOG_WARNING,
+		\E_PARSE => \LOG_CRIT,
+		\E_NOTICE => \LOG_NOTICE,
+		\E_CORE_ERROR => \LOG_ERR,
+		\E_CORE_WARNING => \LOG_WARNING,
+		\E_COMPILE_ERROR => \LOG_ERR,
+		\E_COMPILE_WARNING => \LOG_WARNING,
+		\E_USER_ERROR => \LOG_ERR,
+		\E_USER_WARNING => \LOG_WARNING,
+		\E_USER_NOTICE => \LOG_NOTICE,
+		\E_STRICT => \LOG_CRIT,
+		\E_RECOVERABLE_ERROR => \LOG_ERR,
+		\E_DEPRECATED => \LOG_INFO,
+		\E_USER_DEPRECATED => \LOG_INFO
+	);
+
+	const PHP_TYPE_POSTFIX = array(
+		\E_ERROR => '',
+		\E_WARNING => '',
+		\E_PARSE => '-PARSE',
+		\E_NOTICE => '',
+		\E_CORE_ERROR => '-CORE',
+		\E_CORE_WARNING => '-CORE',
+		\E_COMPILE_ERROR => '-COMPILE',
+		\E_COMPILE_WARNING => '-COMPILE',
+		\E_USER_ERROR => '-USER',
+		\E_USER_WARNING => '-USER',
+		\E_USER_NOTICE => '-USER',
+		\E_STRICT => '-STRICT',
+		\E_RECOVERABLE_ERROR => '-RECOVERABLE',
+		\E_DEPRECATED => '-DEPRECATED',
+		\E_USER_DEPRECATED => '-USER_DEPRECATED'
+	);
 
 	public function __phpErrorHandler(int $iErrNo, string $sErrStr, string $sErrFile, int $iErrLine) : bool
 	{
 		if (\error_reporting() & $iErrNo) {
-			$iType = Enumerations\Type::NOTICE_PHP;
-			switch ($iErrNo)
-			{
-				 case E_USER_ERROR:
-					 $iType = Enumerations\Type::ERROR_PHP;
-					 break;
-				 case E_USER_WARNING:
-					 $iType = Enumerations\Type::WARNING_PHP;
-					 break;
-			}
-/*
-				case E_ERROR:
-				case E_WARNING:
-				case E_PARSE:
-				case E_NOTICE:
-				case E_CORE_ERROR:
-				case E_CORE_WARNING:
-				case E_COMPILE_ERROR:
-				case E_COMPILE_WARNING:
-				case E_USER_NOTICE:
-				case E_STRICT:
-				case E_RECOVERABLE_ERROR:
-				case E_DEPRECATED:
-				case E_USER_DEPRECATED:
-*/
-			$this->Write($sErrFile.' [line:'.$iErrLine.', code:'.$iErrNo.']', $iType, 'PHP');
-			$this->Write('Error: '.$sErrStr, $iType, 'PHP');
+			$this->Write(
+				"{$sErrStr} {$sErrFile} [line:{$iErrLine}, code:{$iErrNo}]",
+				static::PHP_TYPES[$iErrNo],
+				'PHP' . static::PHP_TYPE_POSTFIX[$iErrNo]
+			);
 		}
 		/* forward to standard PHP error handler */
 		return false;
@@ -158,31 +141,16 @@ class Logger extends \SplFixedArray
 
 	public function __loggerShutDown() : void
 	{
-		if ($this->bUsed)
-		{
-			$this->Write('Memory peak usage: '.\MailSo\Base\Utils::FormatFileSize(\memory_get_peak_usage(true), 2),
-				Enumerations\Type::MEMORY);
-			$this->Write('Time delta: '.(\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']), Enumerations\Type::TIME_DELTA);
+		if ($this->bUsed) {
+			$this->Write('Memory peak usage: '.\MailSo\Base\Utils::FormatFileSize(\memory_get_peak_usage(true), 2));
+			$this->Write('Time delta: '.(\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']));
 		}
 	}
 
-	public function WriteEmptyLine() : bool
-	{
-		$iResult = 1;
-
-		foreach ($this as /* @var $oLogger \MailSo\Log\Driver */ $oLogger)
-		{
-			$iResult = $oLogger->WriteEmptyLine();
-		}
-
-		return (bool) $iResult;
-	}
-
-	public function Write(string $sDesc, int $iType = Enumerations\Type::INFO,
+	public function Write(string $sDesc, int $iType = \LOG_INFO,
 		string $sName = '', bool $bSearchSecretWords = true, bool $bDiplayCrLf = false) : bool
 	{
-		if (!empty($this->aForbiddenTypes[$iType]))
-		{
+		if ($this->iLevel < $iType) {
 			return true;
 		}
 
@@ -206,13 +174,13 @@ class Logger extends \SplFixedArray
 	/**
 	 * @param mixed $oValue
 	 */
-	public function WriteDump($oValue, int $iType = Enumerations\Type::INFO, string $sName = '',
+	public function WriteDump($oValue, int $iType = \LOG_INFO, string $sName = '',
 		bool $bSearchSecretWords = false, bool $bDiplayCrLf = false) : bool
 	{
 		return $this->Write(\print_r($oValue, true), $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);
 	}
 
-	public function WriteException(\Throwable $oException, int $iType = Enumerations\Type::NOTICE, string $sName = '',
+	public function WriteException(\Throwable $oException, int $iType = \LOG_NOTICE, string $sName = '',
 		bool $bSearchSecretWords = true, bool $bDiplayCrLf = false) : bool
 	{
 		if ($oException instanceof \Throwable)
@@ -230,7 +198,7 @@ class Logger extends \SplFixedArray
 		return false;
 	}
 
-	public function WriteExceptionShort(\Throwable $oException, int $iType = Enumerations\Type::NOTICE, string $sName = '',
+	public function WriteExceptionShort(\Throwable $oException, int $iType = \LOG_NOTICE, string $sName = '',
 		bool $bSearchSecretWords = true, bool $bDiplayCrLf = false) : bool
 	{
 		if ($oException instanceof \Throwable)
@@ -254,12 +222,12 @@ class Logger extends \SplFixedArray
 	public function WriteMixed($mData, int $iType = null, string $sName = '',
 		bool $bSearchSecretWords = true, bool $bDiplayCrLf = false) : bool
 	{
-		$iType = null === $iType ? Enumerations\Type::INFO : $iType;
+		$iType = null === $iType ? \LOG_INFO : $iType;
 		if (\is_array($mData) || \is_object($mData))
 		{
 			if ($mData instanceof \Throwable)
 			{
-				$iType = null === $iType ? Enumerations\Type::NOTICE : $iType;
+				$iType = null === $iType ? \LOG_NOTICE : $iType;
 				return $this->WriteException($mData, $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);
 			}
 			return  $this->WriteDump($mData, $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);

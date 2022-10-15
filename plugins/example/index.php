@@ -202,7 +202,7 @@ class ExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 	$this->Manager()->IsEnabled() : bool
 	$this->Manager()->Count() : int
 	$this->Manager()->SetLogger(\MailSo\Log\Logger $oLogger) : self
-	$this->Manager()->WriteLog(string $sDesc, int $iType = \MailSo\Log\Enumerations\Type::INFO) : void
-	$this->Manager()->WriteException(string $sDesc, int $iType = \MailSo\Log\Enumerations\Type::INFO) : void
+	$this->Manager()->WriteLog(string $sDesc, int $iType = \LOG_INFO) : void
+	$this->Manager()->WriteException(string $sDesc, int $iType = \LOG_INFO) : void
 */
 }

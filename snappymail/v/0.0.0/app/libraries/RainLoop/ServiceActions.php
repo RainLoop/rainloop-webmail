@@ -117,7 +117,7 @@ class ServiceActions
 
 				$sMethodName = 'Do'.$sAction;
 
-				$this->Logger()->Write('Action: '.$sMethodName, \MailSo\Log\Enumerations\Type::NOTE, 'JSON');
+				$this->Logger()->Write('Action: '.$sMethodName, \LOG_INFO, 'JSON');
 
 				$aPost = $_POST ?? null;
 				if ($aPost)
@@ -139,7 +139,7 @@ class ServiceActions
 					}
 */
 					$this->Logger()->Write(\MailSo\Base\Utils::Php2js($aPost, $this->Logger()),
-						\MailSo\Log\Enumerations\Type::INFO, 'POST', true);
+						\LOG_INFO, 'POST', true);
 				}
 				else if (3 < \count($this->aPaths) && $this->oHttp->IsGet())
 				{
@@ -198,17 +198,17 @@ class ServiceActions
 		{
 			if (\strlen($sObResult))
 			{
-				$this->Logger()->Write($sObResult, \MailSo\Log\Enumerations\Type::ERROR, 'OB-DATA');
+				$this->Logger()->Write($sObResult, \LOG_ERR, 'OB-DATA');
 			}
 
 			if ($oException)
 			{
-				$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+				$this->Logger()->WriteException($oException, \LOG_ERR);
 			}
 
 			$iLimit = (int) $this->Config()->Get('labs', 'log_ajax_response_write_limit', 0);
 			$this->Logger()->Write(0 < $iLimit && $iLimit < \strlen($sResult)
-					? \substr($sResult, 0, $iLimit).'...' : $sResult, \MailSo\Log\Enumerations\Type::INFO, 'JSON');
+					? \substr($sResult, 0, $iLimit).'...' : $sResult, \LOG_INFO, 'JSON');
 		}
 
 		return $sResult;
@@ -239,15 +239,15 @@ class ServiceActions
 		$sObResult = \ob_get_clean();
 		if (\strlen($sObResult))
 		{
-			$this->Logger()->Write($sObResult, \MailSo\Log\Enumerations\Type::ERROR, 'OB-DATA');
+			$this->Logger()->Write($sObResult, \LOG_ERR, 'OB-DATA');
 		}
 
 		if ($oException)
 		{
-			$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+			$this->Logger()->WriteException($oException, \LOG_ERR);
 		}
 
-		$this->Logger()->Write($sResult, \MailSo\Log\Enumerations\Type::INFO, 'APPEND');
+		$this->Logger()->Write($sResult, \LOG_INFO, 'APPEND');
 
 		return $sResult;
 	}
@@ -322,10 +322,10 @@ class ServiceActions
 		$sObResult = \ob_get_clean();
 		if (\strlen($sObResult))
 		{
-			$this->Logger()->Write($sObResult, \MailSo\Log\Enumerations\Type::ERROR, 'OB-DATA');
+			$this->Logger()->Write($sObResult, \LOG_ERR, 'OB-DATA');
 		}
 
-		$this->Logger()->Write($sResult, \MailSo\Log\Enumerations\Type::INFO, 'UPLOAD');
+		$this->Logger()->Write($sResult, \LOG_INFO, 'UPLOAD');
 
 		return $sResult;
 	}
@@ -443,13 +443,13 @@ class ServiceActions
 
 		if (\strlen($sRawError))
 		{
-			$this->Logger()->Write($sRawError, \MailSo\Log\Enumerations\Type::ERROR);
-			$this->Logger()->WriteDump($this->aPaths, \MailSo\Log\Enumerations\Type::ERROR, 'PATHS');
+			$this->Logger()->Write($sRawError, \LOG_ERR);
+			$this->Logger()->WriteDump($this->aPaths, \LOG_ERR, 'PATHS');
 		}
 
 		if ($oException)
 		{
-			$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR, 'RAW');
+			$this->Logger()->WriteException($oException, \LOG_ERR, 'RAW');
 		}
 
 		return $sResult;
@@ -583,7 +583,7 @@ class ServiceActions
 				}
 				catch (\Throwable $oException)
 				{
-					$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR, 'LESS');
+					$this->Logger()->WriteException($oException, \LOG_ERR, 'LESS');
 				}
 			}
 
@@ -652,7 +652,7 @@ class ServiceActions
 		$this->oHttp->ServerNoCache();
 
 		\header('Content-Type: text/plain; charset=utf-8');
-		$this->oActions->Logger()->Write('Pong', \MailSo\Log\Enumerations\Type::INFO, 'PING');
+		$this->oActions->Logger()->Write('Pong', \LOG_INFO, 'PING');
 		return 'Pong';
 	}
 
@@ -841,7 +841,7 @@ class ServiceActions
 			.\json_encode($this->oActions->AppData($bAdmin))
 			.');';
 
-		$this->Logger()->Write($sResult, \MailSo\Log\Enumerations\Type::INFO, 'APPDATA');
+		$this->Logger()->Write($sResult, \LOG_INFO, 'APPDATA');
 
 		return $sResult;
 	}

@@ -36,7 +36,7 @@ class THREAD extends Request
 		} else {
 			$oImapClient->writeLogException(
 				new \MailSo\Imap\Exceptions\RuntimeException('THREAD is not supported'),
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 		parent::__construct($oImapClient);
 	}
@@ -46,7 +46,7 @@ class THREAD extends Request
 		if (!$this->oImapClient->IsSupported(\strtoupper("THREAD={$this->sAlgorithm}"))) {
 			$this->oImapClient->writeLogException(
 				new \MailSo\Imap\Exceptions\RuntimeException("THREAD={$this->sAlgorithm} is not supported"),
-				\MailSo\Log\Enumerations\Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 
 		$this->oImapClient->SendRequest(

@@ -16,7 +16,6 @@
 namespace MailSo\Imap\Requests;
 
 use MailSo\Imap\Exceptions\RuntimeException;
-use MailSo\Log\Enumerations\Type;
 
 /**
  * @category MailSo
@@ -59,7 +58,7 @@ class SORT extends Request
 		if (!$oImapClient->IsSupported('SORT')) {
 			$oImapClient->writeLogException(
 				new RuntimeException('SORT is not supported'),
-				Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 		parent::__construct($oImapClient);
 	}
@@ -69,7 +68,7 @@ class SORT extends Request
 		if (!$this->aSortTypes) {
 			$this->oImapClient->writeLogException(
 				new RuntimeException('SortTypes are missing'),
-				Type::ERROR, true);
+				\LOG_ERR, true);
 		}
 
 		$aRequest = array();
@@ -79,14 +78,14 @@ class SORT extends Request
 			if (!$this->oImapClient->IsSupported('ESORT')) {
 				$this->oImapClient->writeLogException(
 					new RuntimeException('ESORT is not supported'),
-					Type::ERROR, true);
+					\LOG_ERR, true);
 			}
 			if (!$this->oImapClient->IsSupported('CONTEXT=SORT')) {
 				foreach ($this->aReturn as $sReturn) {
 					if (\preg_match('/PARTIAL|UPDATE|CONTEXT/i', $sReturn)) {
 						$this->oImapClient->writeLogException(
 							new RuntimeException('CONTEXT=SORT is not supported'),
-							Type::ERROR, true);
+							\LOG_ERR, true);
 					}
 				}
 			}

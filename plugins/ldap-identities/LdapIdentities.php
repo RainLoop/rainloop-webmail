@@ -1,6 +1,5 @@
 <?php
 
-use MailSo\Log\Enumerations\Type;
 use MailSo\Log\Logger;
 use RainLoop\Model\Account;
 use RainLoop\Model\Identity;
@@ -40,7 +39,7 @@ class LdapIdentities implements IIdentities
 		// Check if LDAP is available
 		if (!extension_loaded('ldap') || !function_exists('ldap_connect')) {
 			$this->ldapAvailable = false;
-			$logger->Write("The LDAP extension is not available!", Type::WARNING, self::LOG_KEY);
+			$logger->Write("The LDAP extension is not available!", \LOG_WARNING, self::LOG_KEY);
 			return;
 		}
 
@@ -77,10 +76,10 @@ class LdapIdentities implements IIdentities
 		}
 
 		if (count($userResults) < 1) {
-			$this->logger->Write("Could not find user $username", Type::NOTICE, self::LOG_KEY);
+			$this->logger->Write("Could not find user $username", \LOG_NOTICE, self::LOG_KEY);
 			return [];
 		} else if (count($userResults) > 1) {
-			$this->logger->Write("Found multiple matches for user $username", Type::WARNING, self::LOG_KEY);
+			$this->logger->Write("Found multiple matches for user $username", \LOG_WARNING, self::LOG_KEY);
 		}
 
 		$userResult = $userResults[0];
@@ -219,7 +218,7 @@ class LdapIdentities implements IIdentities
 		$errorMsg = @ldap_error($this->ldap);
 
 		$message = empty($op) ? "LDAP Error: {$errorMsg} ({$errorNo})" : "LDAP Error during {$op}: {$errorMsg} ({$errorNo})";
-		$this->logger->Write($message, Type::ERROR, self::LOG_KEY);
+		$this->logger->Write($message, \LOG_ERR, self::LOG_KEY);
 		throw new LdapException($message, $errorNo);
 	}
 
@@ -279,14 +278,14 @@ class LdapIdentities implements IIdentities
 	{
 		if (!isset($entry[$attribute])) {
 			if ($required)
-				$this->logger->Write("Attribute $attribute not found on object {$entry['dn']} while required", Type::NOTICE, self::LOG_KEY);
+				$this->logger->Write("Attribute $attribute not found on object {$entry['dn']} while required", \LOG_NOTICE, self::LOG_KEY);
 
 			return $single ? "" : [];
 		}
 
 		if ($single) {
 			if ($entry[$attribute]["count"] > 1)
-				$this->logger->Write("Attribute $attribute is multivalues while only a single value is expected", Type::NOTICE, self::LOG_KEY);
+				$this->logger->Write("Attribute $attribute is multivalues while only a single value is expected", \LOG_NOTICE, self::LOG_KEY);
 
 			return $entry[$attribute][0];
 		}

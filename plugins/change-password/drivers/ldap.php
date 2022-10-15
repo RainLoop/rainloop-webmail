@@ -79,7 +79,7 @@ class ChangePasswordDriverLDAP
 		if (!\ldap_set_option($oCon, LDAP_OPT_PROTOCOL_VERSION, 3)) {
 			$this->oLogger->Write(
 				'Failed to set LDAP Protocol version to 3, TLS not supported.',
-				\MailSo\Log\Enumerations\Type::WARNING,
+				\LOG_WARNING,
 				'LDAP'
 			);
 		}

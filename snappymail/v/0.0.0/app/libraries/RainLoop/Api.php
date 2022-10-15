@@ -36,9 +36,10 @@ abstract class Api
 				\usleep(10000);
 				$oConfig->Load();
 			}
+//			\ini_set('display_errors', 0);
 			if ($oConfig->Get('debug', 'enable', false)) {
 				\error_reporting(E_ALL);
-				\ini_set('display_errors', 1);
+//				\ini_set('display_errors', 1);
 				\ini_set('log_errors', 1);
 			}
 		}
@@ -47,7 +48,19 @@ abstract class Api
 
 	public static function Logger() : \MailSo\Log\Logger
 	{
-		return \MailSo\Log\Logger::SingletonInstance();
+		static $oLogger = null;
+		if (!$oLogger) {
+			$oConfig = static::Config();
+			$oLogger = new \MailSo\Log\Logger;
+			if ($oConfig->Get('debug', 'enable', false)) {
+				$oLogger->SetShowSecrets(!$oConfig->Get('logs', 'hide_passwords', true));
+				$oLogger->SetLevel(\LOG_DEBUG);
+			} else if ($oConfig->Get('logs', 'enable', false)) {
+				$oLogger->SetShowSecrets(!$oConfig->Get('logs', 'hide_passwords', true));
+				$oLogger->SetLevel(\max(3, \RainLoop\Api::Config()->Get('logs', 'level', \LOG_WARNING)));
+			}
+		}
+		return $oLogger;
 	}
 
 	protected static function SetupDefaultMailSoConfig() : void
@@ -77,8 +90,6 @@ abstract class Api
 
 			\MailSo\Config::$BoundaryPrefix =
 				\trim(static::Config()->Get('labs', 'boundary_prefix', ''));
-
-			\MailSo\Config::$SystemLogger = static::Logger();
 
 			$sSslCafile = static::Config()->Get('ssl', 'cafile', '');
 			$sSslCapath = static::Config()->Get('ssl', 'capath', '');
