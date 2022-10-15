@@ -376,7 +376,6 @@ export class Selector {
 			let select = true;
 			if (event && !event.altKey) {
 				if (event.shiftKey && !event.ctrlKey && !event.metaKey) {
-					select = false;
 					const uid = this.getItemUid(item);
 					if (uid && this.sLastUid && uid !== this.sLastUid) {
 						let changeRange = false,
@@ -395,9 +394,10 @@ export class Selector {
 						});
 					}
 					this.sLastUid = uid;
-
 					this.focusedItem(item);
-				} else if (!event.shiftKey && (event.ctrlKey || event.metaKey)) {
+					return;
+				}
+				if (!event.shiftKey && (event.ctrlKey || event.metaKey)) {
 					select = false;
 					this.focusedItem(item);
 					const selected = this.selectedItem();
