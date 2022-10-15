@@ -39,17 +39,21 @@ class SnappyMailHelper
 			}
 			$bSave && $oConfig->Save();
 
-			$oActions = \RainLoop\Api::Actions();
-			if (!$oActions->getMainAccountFromToken(false)) {
-				$aCredentials = SnappyMailHelper::getLoginCredentials();
-				if ($aCredentials[0] && $aCredentials[1]) {
-					$oActions->Logger()->AddSecret($aCredentials[1]);
-					$oAccount = $oActions->LoginProcess($aCredentials[0], $aCredentials[1], false);
-					if ($oAccount) {
-						$oActions->Plugins()->RunHook('login.success', array($oAccount));
-						$oActions->SetAuthToken($oAccount);
+			try {
+				$oActions = \RainLoop\Api::Actions();
+				if (!$oActions->getMainAccountFromToken(false)) {
+					$aCredentials = SnappyMailHelper::getLoginCredentials();
+					if ($aCredentials[0] && $aCredentials[1]) {
+						$oActions->Logger()->AddSecret($aCredentials[1]);
+						$oAccount = $oActions->LoginProcess($aCredentials[0], $aCredentials[1], false);
+						if ($oAccount) {
+							$oActions->Plugins()->RunHook('login.success', array($oAccount));
+							$oActions->SetAuthToken($oAccount);
+						}
 					}
 				}
+			} catch (\Throwable $e) {
+				// Ignore login failure
 			}
 		}
 
