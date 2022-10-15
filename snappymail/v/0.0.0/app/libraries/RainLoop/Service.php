@@ -176,7 +176,7 @@ abstract class Service
 			if ($oConfig->Get('labs', 'cache_system_data', true))
 			{
 				$sCacheFileName = 'TMPL:' . $sLanguage . \md5(
-					\json_encode(array(
+					Utils::jsonEncode(array(
 						$oConfig->Get('cache', 'index', ''),
 						$oActions->Plugins()->Hash(),
 						$sAppJsMin,

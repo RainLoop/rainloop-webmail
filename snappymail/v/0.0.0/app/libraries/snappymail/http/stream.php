@@ -41,7 +41,7 @@ abstract class Stream
 
 	public static function JSON($data)
 	{
-		echo \MailSo\Base\Utils::Php2js($data) . "\n";
+		echo \RainLoop\Utils::jsonEncode($data) . "\n";
 //		\ob_flush();
 		\flush();
 	}

@@ -1052,7 +1052,7 @@ class Actions
 							if ($this->StorageProvider()->Put($oAccount,
 								Providers\Storage\Enumerations\StorageType::CONFIG,
 								'background',
-								\json_encode(array(
+								Utils::jsonEncode(array(
 									'Name' => $aFile['name'],
 									'ContentType' => $sMimeType,
 									'Raw' => \base64_encode($sData)

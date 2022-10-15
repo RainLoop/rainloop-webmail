@@ -138,7 +138,7 @@ class ServiceActions
 							break;
 					}
 */
-					$this->Logger()->Write(\MailSo\Base\Utils::Php2js($aPost, $this->Logger()),
+					$this->Logger()->Write(Utils::jsonEncode($aPost),
 						\LOG_INFO, 'POST', true);
 				}
 				else if (3 < \count($this->aPaths) && $this->oHttp->IsGet())
@@ -190,7 +190,7 @@ class ServiceActions
 			\header('Content-Type: application/json; charset=utf-8');
 		}
 
-		$sResult = \MailSo\Base\Utils::Php2js($aResponseItem, $this->Logger());
+		$sResult = Utils::jsonEncode($aResponseItem);
 
 		$sObResult = \ob_get_clean();
 
@@ -317,7 +317,7 @@ class ServiceActions
 		\header('Content-Type: application/json; charset=utf-8');
 
 		$this->Plugins()->RunHook('filter.upload-response', array(&$aResponseItem));
-		$sResult = \MailSo\Base\Utils::Php2js($aResponseItem, $this->Logger());
+		$sResult = Utils::jsonEncode($aResponseItem);
 
 		$sObResult = \ob_get_clean();
 		if (\strlen($sObResult))
@@ -593,7 +593,7 @@ class ServiceActions
 			}
 		}
 
-		return $bJson ? \MailSo\Base\Utils::Php2js(array($sTheme, $sResult), $this->Logger()) : $sResult;
+		return $bJson ? Utils::jsonEncode(array($sTheme, $sResult)) : $sResult;
 	}
 
 	public function ServiceAppData() : string
@@ -804,7 +804,7 @@ class ServiceActions
 				}
 			}
 
-			return \MailSo\Base\Utils::Php2js($aResult, $this->Logger());
+			return Utils::jsonEncode($aResult);
 		}
 
 		$this->oActions->Location('./');
@@ -838,7 +838,7 @@ class ServiceActions
 		$this->oHttp->ServerNoCache();
 
 		$sResult = 'rl.initData('
-			.\json_encode($this->oActions->AppData($bAdmin))
+			.Utils::jsonEncode($this->oActions->AppData($bAdmin))
 			.');';
 
 		$this->Logger()->Write($sResult, \LOG_INFO, 'APPDATA');
