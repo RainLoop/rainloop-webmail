@@ -31,8 +31,8 @@
 
 	function fetchFiles(xml, path)
 	{
-		if (!parent.oc_requesttoken) {
-			return Promise.reject(new Error('oc_requesttoken missing'));
+		if (!parent.OC.requestToken) {
+			return Promise.reject(new Error('OC.requestToken missing'));
 		}
 		let cfg = rl.settings.get('Nextcloud');
 		return fetch(cfg.WebDAV + '/files/' + cfg.UID + path, {
@@ -43,7 +43,7 @@
 			credentials: 'same-origin',
 			headers: {
 				'Content-Type': 'application/xml; charset=utf-8',
-				requesttoken: parent.oc_requesttoken
+				requesttoken: parent.OC.requestToken
 			},
 			body: xml
 		})
