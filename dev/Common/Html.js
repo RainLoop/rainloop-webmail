@@ -43,6 +43,7 @@ const
 				.replace(/^.+(www\.google|safelinks\.protection\.outlook\.com).+$/i, () => urlGetParam(url, 'url'))
 				.replace(/^.+delivery-status\.com.+$/i, () => urlGetParam(url, 'fb'))
 				.replace(/^.+go\.dhlparcel\.nl.+\/([A-Za-z0-9_-]+)$/i, (...m) => base64Url(m[1]))
+				.replace(/^(.+mopinion\.com.+)\?.*$/i, (...m) => m[1])
 				// Mandrill
 				.replace(/^.+\/track\/click\/.+\?p=.+$/i, () => {
 					let d = urlGetParam(url, 'p');
@@ -293,8 +294,7 @@ export const
 							|| [
 								'email.microsoftemail.com/open',
 								'github.com/notifications/beacon/',
-								'mandrillapp.com/track/open',
-								'list-manage.com/track/open',
+								'/track/open', // mandrillapp.com list-manage.com
 								'google-analytics.com'
 							].filter(uri => value.toLowerCase().includes(uri)).length
 					)) {
