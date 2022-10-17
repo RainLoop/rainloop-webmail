@@ -260,14 +260,7 @@ class Email implements \JsonSerializable
 /*
 		$BIMI = '';
 		if (Enumerations\DkimStatus::PASS == $this->GetDkimStatus()) {
-			if ($values = \dns_get_record($this->GetDomain(), \DNS_TXT)) {
-				foreach ($values as $value) {
-					if (\str_starts_with($value['txt'], 'v=BIMI1')) {
-						$BIMI = \preg_replace('/^.+l=([^;]+)(;.*)?$/', '$1', $value['txt']);
-						break;
-					}
-				}
-			}
+			$BIMI = \SnappyMail\DNS\BIMI($this->GetDomain());
 		}
 */
 		return array(
