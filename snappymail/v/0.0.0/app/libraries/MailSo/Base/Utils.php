@@ -77,53 +77,6 @@ abstract class Utils
 		return $sCharset;
 	}
 
-	/**
-	 * @param function $fFileExistsCallback = null
-	 */
-	public static function SmartFileExists(string $sFilePath, $fFileExistsCallback = null) : string
-	{
-		$sFilePath = \str_replace('\\', '/', \trim($sFilePath));
-		if (!$fFileExistsCallback)
-		{
-			$fFileExistsCallback = function ($sPath) {
-				return \file_exists($sPath);
-			};
-		}
-
-		if (!$fFileExistsCallback($sFilePath))
-		{
-			return $sFilePath;
-		}
-
-		$aFileInfo = \pathinfo($sFilePath);
-
-		$iIndex = 0;
-
-		do
-		{
-			$iIndex++;
-
-			$sFilePathNew = $aFileInfo['dirname'].'/'.
-				\preg_replace('/\(\d{1,2}\)$/', '', $aFileInfo['filename']).
-				' ('.$iIndex.')'.
-				(empty($aFileInfo['extension']) ? '' : '.'.$aFileInfo['extension'])
-			;
-
-			if (!$fFileExistsCallback($sFilePathNew))
-			{
-				$sFilePath = $sFilePathNew;
-				break;
-			}
-			else if (10 < $iIndex)
-			{
-				break;
-			}
-		}
-		while (true);
-
-		return $sFilePath;
-	}
-
 	public static function MbSupportedEncoding(string $sEncoding) : bool
 	{
 		static $aSupportedEncodings = null;
@@ -150,14 +103,22 @@ abstract class Utils
 
 	public static function MbConvertEncoding(string $sInputString, ?string $sFromEncoding, string $sToEncoding) : string
 	{
+		$sToEncoding = \strtoupper($sToEncoding);
 		if ($sFromEncoding) {
 			$sFromEncoding = \strtoupper($sFromEncoding);
 			if (isset(static::$RenameEncoding[$sFromEncoding])) {
 				$sFromEncoding = static::$RenameEncoding[$sFromEncoding];
 			}
 /*
+			if ('UTF-8' === $sFromEncoding && $sToEncoding === 'UTF7-IMAP' && \is_callable('imap_utf8_to_mutf7')) {
+				$sResult = \imap_utf8_to_mutf7($sInputString);
+				if (false !== $sResult) {
+					return $sResult;
+				}
+			}
+
 			if ('BASE64' === $sFromEncoding) {
-				\base64_decode($sFromEncoding);
+				static::Base64Decode($sFromEncoding);
 				$sFromEncoding = null;
 			} else if ('UUENCODE' === $sFromEncoding) {
 				\convert_uudecode($sFromEncoding);
@@ -179,7 +140,7 @@ abstract class Utils
 		}
 
 		\mb_substitute_character('none');
-		$sResult = \mb_convert_encoding($sInputString, \strtoupper($sToEncoding), $sFromEncoding);
+		$sResult = \mb_convert_encoding($sInputString, $sToEncoding, $sFromEncoding);
 		\mb_substitute_character(0xFFFD);
 
 		return (false !== $sResult) ? $sResult : $sInputString;
@@ -193,14 +154,6 @@ abstract class Utils
 		if ('' === \trim($sInputString) || ($sFromEncoding === $sToEncoding && Enumerations\Charset::UTF_8 !== $sFromEncoding))
 		{
 			return $sInputString;
-		}
-
-		if ($sToEncoding === Enumerations\Charset::UTF_8 && $sFromEncoding === 'utf7-imap') {
-			return static::Utf7ModifiedToUtf8($sInputString);
-		}
-
-		if ($sFromEncoding === Enumerations\Charset::UTF_8 && $sToEncoding === 'utf7-imap') {
-			return static::Utf8ToUtf7Modified($sInputString);
 		}
 
 		return static::MbConvertEncoding($sInputString, $sFromEncoding, $sToEncoding);
@@ -725,7 +678,7 @@ abstract class Utils
 	public static function ContentTypeType(string $sContentType, string $sFileName) : string
 	{
 		$sContentType = \strtolower($sContentType);
-		if (0 === \strpos($sContentType, 'image/')) {
+		if (\str_starts_with($sContentType, 'image/')) {
 			return 'image';
 		}
 
@@ -871,26 +824,6 @@ abstract class Utils
 		return false;
 	}
 
-	public static function Utf8Truncate(string $sUtfString, int $iLength) : string
-	{
-		if (\strlen($sUtfString) <= $iLength)
-		{
-			return $sUtfString;
-		}
-
-		while ($iLength >= 0)
-		{
-			if ((\ord($sUtfString[$iLength]) < 0x80) || (\ord($sUtfString[$iLength]) >= 0xC0))
-			{
-				return \substr($sUtfString, 0, $iLength);
-			}
-
-			$iLength--;
-		}
-
-		return '';
-	}
-
 	public static function Utf8Clear(?string $sUtfString) : string
 	{
 		if (!\strlen($sUtfString)) {
@@ -948,35 +881,6 @@ abstract class Utils
 	public static function UrlSafeBase64Decode(string $sValue) : string
 	{
 		return \base64_decode(\strtr($sValue, '-_', '+/'), '=');
-	}
-
-	public static function ParseFetchSequence(string $sSequence) : array
-	{
-		$aResult = array();
-		$sSequence = \trim($sSequence);
-		if (\strlen($sSequence))
-		{
-			$aSequence = \explode(',', $sSequence);
-			foreach ($aSequence as $sItem)
-			{
-				if (false === \strpos($sItem, ':'))
-				{
-					$aResult[] = (int) $sItem;
-				}
-				else
-				{
-					$aItems = \explode(':', $sItem);
-					$iMax = \max($aItems[0], $aItems[1]);
-
-					for ($iIndex = $aItems[0]; $iIndex <= $iMax; $iIndex++)
-					{
-						$aResult[] = (int) $iIndex;
-					}
-				}
-			}
-		}
-
-		return $aResult;
 	}
 
 	/**
@@ -1076,11 +980,7 @@ abstract class Utils
 
 	public static function Utf8ToUtf7Modified(string $sStr) : string
 	{
-		$sResult = \is_callable('imap_utf8_to_mutf7')
-			? \imap_utf8_to_mutf7($sStr)
-//			: \mb_convert_encoding($sStr, 'UTF7-IMAP', 'UTF-8');
-			: static::MbConvertEncoding($sStr, 'UTF-8', 'UTF7-IMAP');
-		return (false === $sResult) ? $sStr : $sResult;
+		return static::MbConvertEncoding($sStr, 'UTF-8', 'UTF7-IMAP');
 	}
 
 	public static function FunctionsExistAndEnabled(array $aFunctionNames) : bool
