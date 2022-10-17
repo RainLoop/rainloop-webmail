@@ -77,6 +77,10 @@ button.btn:not(.button-vue) {
 	color: #fff;
 }
 
+#rl-app tbody tr:hover {
+	background-color: inherit;
+}
+
 #appmenu {
 	margin: 0;
 }
