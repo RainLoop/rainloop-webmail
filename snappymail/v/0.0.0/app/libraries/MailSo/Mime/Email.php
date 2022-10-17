@@ -257,12 +257,26 @@ class Email implements \JsonSerializable
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
+/*
+		$BIMI = '';
+		if (Enumerations\DkimStatus::PASS == $this->GetDkimStatus()) {
+			if ($values = \dns_get_record($this->GetDomain(), \DNS_TXT)) {
+				foreach ($values as $value) {
+					if (\str_starts_with($value['txt'], 'v=BIMI1')) {
+						$BIMI = \preg_replace('/^.+l=([^;]+)(;.*)?$/', '$1', $value['txt']);
+						break;
+					}
+				}
+			}
+		}
+*/
 		return array(
 			'@Object' => 'Object/Email',
 			'Name' => \MailSo\Base\Utils::Utf8Clear($this->GetDisplayName()),
 			'Email' => \MailSo\Base\Utils::Utf8Clear($this->GetEmail(true)),
 			'DkimStatus' => $this->GetDkimStatus(),
-			'DkimValue' => $this->GetDkimValue()
+			'DkimValue' => $this->GetDkimValue(),
+			'BIMI' => $BIMI
 		);
 	}
 }
