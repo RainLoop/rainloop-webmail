@@ -198,8 +198,8 @@ abstract class Account implements \JsonSerializable
 	public function ImapConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Mail\MailClient $oMailClient, \RainLoop\Config\Application $oConfig) : bool
 	{
 		$oImapClient = $oMailClient->ImapClient();
-		$oImapClient->__FORCE_SELECT_ON_EXAMINE__ = !!$oConfig->Get('labs', 'use_imap_force_selection');
-		$oImapClient->__DISABLE_METADATA = !!$oConfig->Get('labs', 'imap_disable_metadata');
+		$oImapClient->__FORCE_SELECT_ON_EXAMINE__ = !!$oConfig->Get('imap', 'use_force_selection');
+		$oImapClient->__DISABLE_METADATA = !!$oConfig->Get('imap', 'disable_metadata');
 
 		$aCredentials = \array_merge(
 			$this->Domain()->ImapSettings(),

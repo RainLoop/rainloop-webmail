@@ -81,6 +81,16 @@ class Application extends \RainLoop\Config\AbstractConfig
 		return $mResult;
 	}
 
+	public function Set(string $sSectionKey, string $sParamKey, $mParamValue) : void
+	{
+		if ('labs' === $sSectionKey && \str_contains($sParamKey, 'imap_')) {
+			// This is a workaround for the changed application structure
+			$sSectionKey = 'imap';
+			$sParamKey = \str_replace('imap_', '', $sParamKey);
+		}
+		parent::Set($sSectionKey, $sParamKey, $mParamValue);
+	}
+
 	public function SetPassword(string $sPassword) : void
 	{
 		$this->Set('security', 'admin_password', \password_hash($sPassword, PASSWORD_DEFAULT));
@@ -180,8 +190,8 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'admin_panel_host'           => array(''),
 				'admin_panel_key'            => array('admin'),
 				'content_security_policy'    => array(''),
-				'csp_report'                 => array(false),
-				'encrypt_cipher'             => array($sCipher),
+				'csp_report'                 => array(false, 'Report CSP errors to PHP and/or SnappyMail Log'),
+				'encrypt_cipher'             => array($sCipher, 'A valid cipher method from https://php.net/openssl_get_cipher_methods'),
 				'cookie_samesite'            => array('Strict', 'Strict, Lax or None')
 			),
 
@@ -328,6 +338,26 @@ Enables caching in the system'),
 				'server_uids' => array(true, 'Caching message UIDs when searching and sorting (threading)')
 			),
 
+			'imap' => array(
+				'use_sort' => array(true),
+				'use_force_selection' => array(false),
+				'use_thread' => array(true),
+				'use_move' => array(false),
+				'use_expunge_all_on_delete' => array(false),
+				'body_text_limit' => array(555000),
+				'message_list_fast_simple_search' => array(true),
+				'message_list_count_limit_trigger' => array(0),
+				'message_list_date_filter' => array(0),
+				'message_list_permanent_filter' => array(''),
+				'message_all_headers' => array(false),
+				'large_thread_limit' => array(50),
+				'folder_list_limit' => array(200),
+				'show_login_alert' => array(true),
+				'use_list_status' => array(true),
+				'timeout' => array(300),
+				'disable_metadata' => array(false),
+			),
+
 			'labs' => array(
 				'cache_system_data' => array(true),
 				'date_from_headers' => array(true),
@@ -340,23 +370,6 @@ Enables caching in the system'),
 				'try_to_detect_hidden_images' => array(false),
 				'use_app_debug_js' => array(false),
 				'use_app_debug_css' => array(false),
-				'use_imap_sort' => array(true),
-				'use_imap_force_selection' => array(false),
-				'use_imap_thread' => array(true),
-				'use_imap_move' => array(false),
-				'use_imap_expunge_all_on_delete' => array(false),
-				'imap_body_text_limit' => array(555000),
-				'imap_message_list_fast_simple_search' => array(true),
-				'imap_message_list_count_limit_trigger' => array(0),
-				'imap_message_list_date_filter' => array(0),
-				'imap_message_list_permanent_filter' => array(''),
-				'imap_message_all_headers' => array(false),
-				'imap_large_thread_limit' => array(50),
-				'imap_folder_list_limit' => array(200),
-				'imap_show_login_alert' => array(true),
-				'imap_use_list_status' => array(true),
-				'imap_timeout' => array(300),
-				'imap_disable_metadata' => array(false),
 				'smtp_show_server_errors' => array(false),
 				'smtp_timeout' => array(60),
 				'sieve_auth_plain_initial' => array(true),

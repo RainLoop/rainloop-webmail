@@ -444,7 +444,7 @@ trait UserAuth
 				$this->LoggerAuthHelper($oAccount);
 			}
 
-			if ($this->Config()->Get('labs', 'imap_show_login_alert', true)) {
+			if ($this->Config()->Get('imap', 'show_login_alert', true)) {
 				throw new ClientException(Notifications::AuthError, $oException, $oException->getAlertFromStatus());
 			} else {
 				throw new ClientException(Notifications::AuthError, $oException);

@@ -14,8 +14,8 @@ trait Folders
 	{
 		return $this->MailClient()->Folders('', '*',
 			$HideUnsubscribed,
-			(int) $this->Config()->Get('labs', 'imap_folder_list_limit', 200),
-			(bool) $this->Config()->Get('labs', 'imap_use_list_status', true)
+			(int) $this->Config()->Get('imap', 'folder_list_limit', 200),
+			(bool) $this->Config()->Get('imap', 'use_list_status', true)
 		);
 	}
 
@@ -71,7 +71,7 @@ trait Folders
 			$aSystemFolders = array();
 			$this->recFoldersTypes($oAccount, $oFolderCollection, $aSystemFolders);
 
-			if (!$this->Config()->Get('labs', 'use_imap_sort', true)) {
+			if (!$this->Config()->Get('imap', 'use_sort', true)) {
 				$oFolderCollection->capabilities = \array_filter($oFolderCollection->capabilities, function($item){
 					return !\preg_match('/^E?SORT/', $item);
 				});
@@ -189,7 +189,7 @@ trait Folders
 				$aCapabilities = \array_filter($this->MailClient()->Capabilities(), function($item){
 					return !\preg_match('/^(IMAP|AUTH|LOGIN|SASL)/', $item);
 				});
-				if (!$this->Config()->Get('labs', 'imap_use_list_status', true)) {
+				if (!$this->Config()->Get('imap', 'use_list_status', true)) {
 					$key = \array_search('LIST-STATUS', $aCapabilities);
 					if (false !== $key) {
 						unset($aCapabilities[$key]);

@@ -724,10 +724,10 @@ class Actions
 					$aResult['System'], array(
 						'allowHtmlEditorBitiButtons' => (bool)$oConfig->Get('labs', 'allow_html_editor_biti_buttons', false),
 						'allowCtrlEnterOnCompose' => (bool)$oConfig->Get('labs', 'allow_ctrl_enter_on_compose', false),
-						'useImapThread' => (bool)$oConfig->Get('labs', 'use_imap_thread', false),
+						'useImapThread' => (bool)$oConfig->Get('imap', 'use_thread', false),
 						'allowAppendMessage' => (bool)$oConfig->Get('labs', 'allow_message_append', false),
 						'folderSpecLimit' => (int)$oConfig->Get('labs', 'folders_spec_limit', 50),
-						'listPermanentFiltered' => '' !== \trim($oConfig->Get('labs', 'imap_message_list_permanent_filter', '')),
+						'listPermanentFiltered' => '' !== \trim($oConfig->Get('imap', 'message_list_permanent_filter', '')),
 						'attachmentsActions' => $aAttachmentsActions,
 						'customLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
 					)

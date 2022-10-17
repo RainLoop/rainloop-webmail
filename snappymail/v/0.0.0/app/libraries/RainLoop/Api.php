@@ -68,25 +68,25 @@ abstract class Api
 		if (\class_exists('MailSo\Config'))
 		{
 			\MailSo\Config::$MessageListFastSimpleSearch =
-				!!static::Config()->Get('labs', 'imap_message_list_fast_simple_search', true);
+				!!static::Config()->Get('imap', 'message_list_fast_simple_search', true);
 
 			\MailSo\Config::$MessageListCountLimitTrigger =
-				(int) static::Config()->Get('labs', 'imap_message_list_count_limit_trigger', 0);
+				(int) static::Config()->Get('imap', 'message_list_count_limit_trigger', 0);
 
 			\MailSo\Config::$MessageListDateFilter =
-				(int) static::Config()->Get('labs', 'imap_message_list_date_filter', 0);
+				(int) static::Config()->Get('imap', 'message_list_date_filter', 0);
 
 			\MailSo\Config::$MessageListPermanentFilter =
-				\trim(static::Config()->Get('labs', 'imap_message_list_permanent_filter', ''));
+				\trim(static::Config()->Get('imap', 'message_list_permanent_filter', ''));
 
 			\MailSo\Config::$MessageAllHeaders =
-				!!static::Config()->Get('labs', 'imap_message_all_headers', false);
+				!!static::Config()->Get('imap', 'message_all_headers', false);
 
 			\MailSo\Config::$LargeThreadLimit =
-				(int) static::Config()->Get('labs', 'imap_large_thread_limit', 50);
+				(int) static::Config()->Get('imap', 'large_thread_limit', 50);
 
 			\MailSo\Config::$ImapTimeout =
-				(int) static::Config()->Get('labs', 'imap_timeout', 300);
+				(int) static::Config()->Get('imap', 'timeout', 300);
 
 			\MailSo\Config::$BoundaryPrefix =
 				\trim(static::Config()->Get('labs', 'boundary_prefix', ''));

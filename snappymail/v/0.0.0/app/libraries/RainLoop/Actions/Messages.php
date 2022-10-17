@@ -65,12 +65,12 @@ trait Messages
 
 		try
 		{
-			if (!$this->Config()->Get('labs', 'use_imap_thread', false)) {
+			if (!$this->Config()->Get('imap', 'use_thread', false)) {
 				$oParams->bUseThreads = false;
 			}
 
 			$oParams->oCacher = $this->cacherForUids();
-			$oParams->bUseSortIfSupported = !!$this->Config()->Get('labs', 'use_imap_sort', true);
+			$oParams->bUseSortIfSupported = !!$this->Config()->Get('imap', 'use_sort', true);
 
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 			if ($oSettingsLocal instanceof \RainLoop\Settings) {
@@ -451,7 +451,7 @@ trait Messages
 		{
 			$oMessage = $this->MailClient()->Message($sFolder, $iUid, true,
 				$this->cacherForThreads(),
-				(int) $this->Config()->Get('labs', 'imap_body_text_limit', 0)
+				(int) $this->Config()->Get('imap', 'body_text_limit', 0)
 			);
 		}
 		catch (\Throwable $oException)
@@ -482,7 +482,7 @@ trait Messages
 		try
 		{
 			$this->MailClient()->MessageDelete($sFolder, new SequenceSet($aUids),
-				!!$this->Config()->Get('labs', 'use_imap_expunge_all_on_delete', false));
+				!!$this->Config()->Get('imap', 'use_expunge_all_on_delete', false));
 		}
 		catch (\Throwable $oException)
 		{
@@ -548,8 +548,8 @@ trait Messages
 		try
 		{
 			$this->MailClient()->MessageMove($sFromFolder, $sToFolder, $oUids,
-				!!$this->Config()->Get('labs', 'use_imap_move', true),
-				!!$this->Config()->Get('labs', 'use_imap_expunge_all_on_delete', false)
+				!!$this->Config()->Get('imap', 'use_move', true),
+				!!$this->Config()->Get('imap', 'use_expunge_all_on_delete', false)
 			);
 		}
 		catch (\Throwable $oException)
@@ -959,7 +959,7 @@ trait Messages
 	private function cacherForThreads()
 	{
 		$oAccount = $this->getAccountFromToken(false);
-		return !!$this->Config()->Get('labs', 'use_imap_thread', false) ? $this->Cacher($oAccount) : null;
+		return !!$this->Config()->Get('imap', 'use_thread', false) ? $this->Cacher($oAccount) : null;
 	}
 
 	private function buildReadReceiptMessage(Account $oAccount) : \MailSo\Mime\Message
