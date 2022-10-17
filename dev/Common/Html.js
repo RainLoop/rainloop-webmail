@@ -224,12 +224,16 @@ export const
 
 //			if ('TABLE' === name || 'TD' === name || 'TH' === name) {
 			if (!oStyle.backgroundImage) {
+				value = oStyle.width;
 				if (hasAttribute('width')) {
-					value = getAttribute('width');
-					oStyle.width = value.includes('%') ? value : value + 'px';
+					if (!value) {
+						value = getAttribute('width');
+						if (1 < pInt(value)) {
+							oStyle.width = value.includes('%') ? value : value + 'px';
+						}
+					}
 					delAttribute('width');
 				}
-				value = oStyle.width;
 				if (value && !value.includes('%')) {
 					oStyle.maxWidth = value;
 					if ('TD' !== name && 'TH' !== name) {
@@ -238,7 +242,9 @@ export const
 				}
 				if (hasAttribute('height')) {
 					value = getAttribute('height');
-					oStyle.height = value.includes('%') ? value : value + 'px';
+					if (pInt(value)) {
+						oStyle.height = value.includes('%') ? value : value + 'px';
+					}
 					delAttribute('height');
 				}
 				value = oStyle.removeProperty('height');
