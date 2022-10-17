@@ -1008,17 +1008,6 @@ abstract class Utils
 //			&& \is_callable($mFunctionNameOrNames);
 	}
 
-	public static function CharsetDetect(string $sStr) : string
-	{
-		$mResult = '';
-		if (!static::IsAscii($sStr))
-		{
-			$mResult = \mb_detect_encoding($sStr, 'auto', true);
-		}
-
-		return \is_string($mResult) && \strlen($mResult) ? $mResult : '';
-	}
-
 	public static function Sha1Rand(string $sAdditionalSalt = '') : string
 	{
 		return \sha1($sAdditionalSalt . \random_bytes(16));

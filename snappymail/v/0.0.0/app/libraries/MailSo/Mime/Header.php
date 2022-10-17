@@ -226,20 +226,14 @@ class Header
 
 	public function ValueWithCharsetAutoDetect() : string
 	{
-		$sValue = $this->Value();
-		if (!\MailSo\Base\Utils::IsAscii($sValue) &&
-			\strlen($this->sEncodedValueForReparse) &&
-			!\MailSo\Base\Utils::IsAscii($this->sEncodedValueForReparse))
-		{
-			$sValueCharset = \MailSo\Base\Utils::CharsetDetect($this->sEncodedValueForReparse);
-			if (\strlen($sValueCharset))
-			{
-				$this->SetParentCharset($sValueCharset);
-				$sValue = $this->Value();
-			}
+		if (!\MailSo\Base\Utils::IsAscii($this->Value())
+		 && \strlen($this->sEncodedValueForReparse)
+		 && !\MailSo\Base\Utils::IsAscii($this->sEncodedValueForReparse)
+		 && ($mEncoding = \mb_detect_encoding($this->sEncodedValueForReparse, 'auto', true))
+		) {
+			$this->SetParentCharset($mEncoding);
 		}
-
-		return $sValue;
+		return $this->Value();
 	}
 
 	public function IsReparsed() : bool
