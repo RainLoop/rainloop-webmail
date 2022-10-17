@@ -318,7 +318,7 @@ class Message extends Part
 			$sHostName = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
 		}
 
-		if (empty($sHostName) && \MailSo\Base\Utils::FunctionExistsAndEnabled('php_uname'))
+		if (empty($sHostName) && \MailSo\Base\Utils::FunctionCallable('php_uname'))
 		{
 			$sHostName = \php_uname('n');
 		}
@@ -330,7 +330,7 @@ class Message extends Part
 
 		return '<'.
 			\MailSo\Base\Utils::Sha1Rand($sHostName.
-				(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : '')).'@'.$sHostName.'>';
+				(\MailSo\Base\Utils::FunctionCallable('getmypid') ? \getmypid() : '')).'@'.$sHostName.'>';
 	}
 
 	public function GetRootPart() : Part

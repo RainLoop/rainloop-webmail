@@ -141,9 +141,9 @@ class Actions
 			$this->oLogger->Write(
 				'[SM:' . APP_VERSION . '][IP:'
 				. $oHttp->GetClientIp($this->oConfig->Get('labs', 'http_client_ip_check_proxy', false))
-				. '][PID:' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown')
+				. '][PID:' . (\MailSo\Base\Utils::FunctionCallable('getmypid') ? \getmypid() : 'unknown')
 				. '][' . $oHttp->GetServer('SERVER_SOFTWARE', '~')
-				. '][' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('php_sapi_name') ? \php_sapi_name() : '~')
+				. '][' . (\MailSo\Base\Utils::FunctionCallable('php_sapi_name') ? \php_sapi_name() : '~')
 				. '][Streams:' . \implode(',', \stream_get_transports())
 				. '][' . $oHttp->GetMethod() . ' ' . $oHttp->GetScheme() . '://' . $oHttp->GetHost(false, false) . $oHttp->GetServer('REQUEST_URI', '') . ']'
 			);
@@ -509,7 +509,7 @@ class Actions
 					break;
 
 				case ('APCU' === $sDriver) &&
-					\MailSo\Base\Utils::FunctionsExistAndEnabled(array(
+					\MailSo\Base\Utils::FunctionsCallable(array(
 						'apcu_store', 'apcu_fetch', 'apcu_delete', 'apcu_clear_cache')):
 
 					$oDriver = new \MailSo\Cache\Drivers\APCU($sKey);

@@ -23,7 +23,7 @@ abstract class HtmlUtils
 	public static function BuildHtml(string $sHtml, array &$aFoundCids, array &$aFoundDataURL, array &$aFoundContentLocationUrls) : string
 	{
 		$bState = true;
-		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_use_internal_errors'))
+		if (\MailSo\Base\Utils::FunctionCallable('libxml_use_internal_errors'))
 		{
 			$bState = \libxml_use_internal_errors(true);
 		}
@@ -86,12 +86,12 @@ abstract class HtmlUtils
 
 		$oDoc->normalizeDocument();
 
-		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_clear_errors'))
+		if (\MailSo\Base\Utils::FunctionCallable('libxml_clear_errors'))
 		{
 			\libxml_clear_errors();
 		}
 
-		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_use_internal_errors'))
+		if (\MailSo\Base\Utils::FunctionCallable('libxml_use_internal_errors'))
 		{
 			\libxml_use_internal_errors($bState);
 		}

@@ -799,7 +799,7 @@ trait Messages
 
 				if ($bUsePhpMail)
 				{
-					if (\MailSo\Base\Utils::FunctionExistsAndEnabled('mail'))
+					if (\MailSo\Base\Utils::FunctionCallable('mail'))
 					{
 						$aToCollection = $oMessage->GetTo();
 						if ($aToCollection && $oFrom)

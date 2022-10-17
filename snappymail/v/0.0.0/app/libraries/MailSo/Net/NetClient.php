@@ -201,7 +201,7 @@ abstract class NetClient
 
 		if ($this->rConnect)
 		{
-			if (\MailSo\Base\Utils::FunctionExistsAndEnabled('stream_set_timeout'))
+			if (\MailSo\Base\Utils::FunctionCallable('stream_set_timeout'))
 			{
 				\stream_set_timeout($this->rConnect, $this->iSocketTimeOut);
 			}
@@ -211,7 +211,7 @@ abstract class NetClient
 	public function EnableCrypto(bool $insecure = false)
 	{
 		$bError = true;
-		if ($this->rConnect && \MailSo\Base\Utils::FunctionExistsAndEnabled('stream_socket_enable_crypto')) {
+		if ($this->rConnect && \MailSo\Base\Utils::FunctionCallable('stream_socket_enable_crypto')) {
 			$crypto_method = STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
 			if (\defined('STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT') && OPENSSL_VERSION_NUMBER >= 0x10101000) {
 				$crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT;
@@ -284,7 +284,7 @@ abstract class NetClient
 
 	public function StreamContextParams() : array
 	{
-		return $this->rConnect && \MailSo\Base\Utils::FunctionExistsAndEnabled('stream_context_get_options')
+		return $this->rConnect && \MailSo\Base\Utils::FunctionCallable('stream_context_get_options')
 			? \stream_context_get_params($this->rConnect) : false;
 	}
 

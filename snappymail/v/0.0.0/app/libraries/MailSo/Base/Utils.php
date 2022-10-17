@@ -749,7 +749,7 @@ abstract class Utils
 		{
 			$iResetTimer = 0;
 
-			$bValidateAction = static::FunctionExistsAndEnabled('set_time_limit');
+			$bValidateAction = static::FunctionCallable('set_time_limit');
 		}
 
 		if ($bValidateAction && $iTimeToReset < $iTime - $iResetTimer)
@@ -983,10 +983,10 @@ abstract class Utils
 		return static::MbConvertEncoding($sStr, 'UTF-8', 'UTF7-IMAP');
 	}
 
-	public static function FunctionsExistAndEnabled(array $aFunctionNames) : bool
+	public static function FunctionsCallable(array $aFunctionNames) : bool
 	{
 		foreach ($aFunctionNames as $sFunctionName) {
-			if (!static::FunctionExistsAndEnabled($sFunctionName)) {
+			if (!static::FunctionCallable($sFunctionName)) {
 				return false;
 			}
 		}
@@ -994,7 +994,7 @@ abstract class Utils
 	}
 
 	private static $disabled_functions = null;
-	public static function FunctionExistsAndEnabled(string $sFunctionName) : bool
+	public static function FunctionCallable(string $sFunctionName) : bool
 	{
 		if (null === static::$disabled_functions) {
 			static::$disabled_functions = \array_map('trim', \explode(',', \ini_get('disable_functions')));

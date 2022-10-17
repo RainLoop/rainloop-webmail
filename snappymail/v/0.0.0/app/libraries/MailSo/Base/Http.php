@@ -90,7 +90,7 @@ class Http
 		$sResultHeader = $this->GetServer($sServerKey, '');
 
 		if (0 === \strlen($sResultHeader) &&
-			\MailSo\Base\Utils::FunctionExistsAndEnabled('apache_request_headers'))
+			\MailSo\Base\Utils::FunctionCallable('apache_request_headers'))
 		{
 			$sHeaders = \apache_request_headers();
 			if (isset($sHeaders[$sHeader]))
