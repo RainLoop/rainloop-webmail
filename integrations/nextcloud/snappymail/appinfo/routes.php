@@ -31,6 +31,11 @@ return [
 			'name' => 'fetch#setAdmin',
 			'url' => '/fetch/admin.php',
 			'verb' => 'POST'
+		],
+		[
+			'name' => 'fetch#upgrade',
+			'url' => '/fetch/upgrade',
+			'verb' => 'POST'
 		]
 	]
 ];

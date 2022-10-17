@@ -102,16 +102,19 @@ class PageController extends Controller
 			'BaseAppBootScript' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/js'.($sAppJsMin ? '/min' : '').'/boot'.$sAppJsMin.'.js'),
 			'BaseAppBootScriptNonce' => $sScriptNonce,
 			'BaseLanguage' => $oActions->compileLanguage($sLanguage, false),
-		];
-
-		\OCP\Util::addHeader('style', ['id'=>'app-boot-css'], \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.$sAppCssMin.'.css'));
-		\OCP\Util::addHeader('link', ['type'=>'text/css','rel'=>'stylesheet','href'=>\RainLoop\Utils::WebStaticPath('css/app'.$sAppCssMin.'.css')], '');
-		\OCP\Util::addHeader('style', ['id'=>'app-theme-style','data-href'=>$oActions->ThemeLink(false)],
-			\preg_replace(
+			'BaseAppBootCss' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.$sAppCssMin.'.css'),
+			'BaseAppThemeCssLink' => $oActions->ThemeLink(false),
+			'BaseAppThemeCss' => \preg_replace(
 				'/\\s*([:;{},]+)\\s*/s',
 				'$1',
 				$oActions->compileCss($oActions->GetTheme(false), false)
-			));
+			)
+		];
+
+		// Nextcloud html encodes, so addHeader('style') is not possible
+//		\OCP\Util::addHeader('style', ['id'=>'app-boot-css'], \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.$sAppCssMin.'.css'));
+		\OCP\Util::addHeader('link', ['type'=>'text/css','rel'=>'stylesheet','href'=>\RainLoop\Utils::WebStaticPath('css/app'.$sAppCssMin.'.css')], '');
+//		\OCP\Util::addHeader('style', ['id'=>'app-theme-style','data-href'=>$params['BaseAppThemeCssLink']], $params['BaseAppThemeCss']);
 
 		$response = new TemplateResponse('snappymail', 'index_embed', $params);
 

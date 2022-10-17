@@ -1,25 +1,70 @@
 
 :root {
+/* Nextcloud
+	--color-main-text: #222;
+	--color-main-background: #fff;
+	--color-main-background-translucent: rgba(255, 255, 255, 0.97);
+	--gradient-main-background: var(--color-main-background) 0%, var(--color-main-background-translucent) 85%, transparent 100%;
+	--color-background-hover: whitesmoke;
+	--color-background-dark: #ededed;
+	--color-background-darker: #dbdbdb;
+	--color-placeholder-light: #e6e6e6;
+	--color-placeholder-dark: #ccc;
+	--color-primary: #0082c9;
+	--color-primary-hover: #339bd4;
+	--color-primary-light: #e6f3fa;
+	--color-primary-light-hover: #dce9ef;
+	--color-primary-text: #ffffff;
+	--color-primary-light-text: #0082c9;
+	--color-primary-text-dark: #ededed;
+	--color-primary-element: #0082c9;
+	--color-primary-element-hover: #339bd4;
+	--color-primary-element-light: #17adff;
+	--color-primary-element-lighter: #d9ecf7;
+	--color-error: #e9322d;
+	--color-error-hover: #ed5b57;
+	--color-warning: #eca700;
+	--color-warning-hover: #f0b933;
+	--color-success: #46ba61;
+	--color-success-hover: #6bc881;
+	--color-text-maxcontrast: #767676;
+	--color-text-light: #222;
+	--color-text-lighter: #767676;
+	--color-loading-light: #ccc;
+	--color-loading-dark: #444;
+	--color-box-shadow: rgba(77, 77, 77, 0.5);
+	--color-border: #ededed;
+	--color-border-dark: #dbdbdb;
+	--border-radius: 3px;
+	--border-radius-large: 10px;
+	--border-radius-pill: 100px;
+	--font-face: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen-Sans, Cantarell, Ubuntu, Helvetica Neue, Arial, sans-serif, Noto Color Emoji, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+	--default-font-size: 15px;
+	--default-line-height: 24px;
+	--animation-quick: 100ms;
+	--animation-slow: 300ms;
+*/
+
 	/* MAIN */
-	--main-color: #333;
-	--main-bg-color: transparent;
+	--main-color: var(--color-main-text, #333);
+	--main-bg-color: var(--color-main-background, transparent);
 	--main-bg-image: none;
 
 	/* LOADING */
 	--loading-color: #000;
 
 	/* LOGIN */
-	--login-color: #eee;
-	--login-bg-color: rgba(0,0,0,0.5);
+	--login-color: var(--color-main-text, #eee);
+	--login-bg-color: var(--color-background-darker, rgba(0,0,0,0.5));
 	--login-box-shadow: none;
 	--login-border: none;
-	--login-border-radius: 7px;
+	--login-border-radius: var(--border-radius-large, 7px);
 
 	/* MENU */
-	--dropdown-menu-color: #333;
-	--dropdown-menu-bg-color: #fff;
-	--dropdown-menu-hover-bg-color: #757575;
-	--dropdown-menu-hover-color: #eee;
+	--dropdown-menu-color: var(--color-main-text, #333);
+	--dropdown-menu-bg-color: var(--color-main-background, #fff);
+	--dropdown-menu-hover-bg-color: var(--color-background-hover, #757575);
+	--dropdown-menu-hover-color: var(--color-main-text, #eee);
 	--dropdown-menu-disable-color: #999;
 
 	/* FOLDERS */
@@ -57,4 +102,40 @@
 }
 #V-AdminPane > .b-toolbar h4::before {
 	content: 'Nextcloud: ';
+}
+
+/**
+ * hampoelz
+ * https://github.com/the-djmaze/snappymail/issues/96#issuecomment-1279783076
+ */
+
+.messageList {
+	margin: 0 5px;
+}
+
+a.selectable {
+	margin: 2px;
+	height: 38px !important;
+	line-height: 38px !important;
+	border-radius: 100px;
+}
+
+a.selectable::after {
+	display: block;
+	margin: 0 !important;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.btn {
+	border: initial !important;
+}
+
+@media (prefers-color-scheme: dark) {
+	/**
+	* Invert everything except images (and add a slight blue tint with the sepia() filter)
+	*/
+	#V-PopupsCompose, #V-PopupsCompose img {
+		filter: invert(95%) sepia(15%) hue-rotate(180deg);
+	}
 }

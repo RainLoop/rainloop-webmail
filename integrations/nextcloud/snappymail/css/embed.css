@@ -1,8 +1,5 @@
 /*
-SnappyMail runs in an iframe, so this style sheet is not used there.
-Only needed to give you the opportunity to theme the nextcloud part of this app.
-However, there is hidden code in the PageController to embed instead of using an iframe.
-Then the below #rl-app can be used to style it.
+This stylesheet is used when SnappyMail runs in embed mode.
 */
 #rl-app {
 	position: relative;

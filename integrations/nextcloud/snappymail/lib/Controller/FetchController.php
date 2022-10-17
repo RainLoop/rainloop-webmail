@@ -22,6 +22,25 @@ class FetchController extends Controller {
 		$this->l = $l;
 	}
 
+	public function upgrade(): JSONResponse {
+		$error = 'Upgrade failed';
+		try {
+			SnappyMailHelper::startApp();
+			if (SnappyMail\Upgrade::core()) {
+				return new JSONResponse([
+					'status' => 'success',
+					'Message' => $this->l->t('Upgraded successfully')
+				]);
+			}
+		} catch (Exception $e) {
+			$error .= ': ' . $e->getMessage();
+		}
+		return new JSONResponse([
+			'status' => 'error',
+			'Message' => $error
+		]);
+	}
+
 	public function setAdmin(): JSONResponse {
 		try {
 			$sUrl = '';
