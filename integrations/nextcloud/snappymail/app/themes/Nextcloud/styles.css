@@ -134,6 +134,8 @@ a.selectable::after {
 @media (prefers-color-scheme: dark) {
 	/**
 	* Invert everything except images (and add a slight blue tint with the sepia() filter)
+	*
+	* `#rl-popups dialog` inverts them all
 	*/
 	#V-PopupsCompose, #V-PopupsCompose img {
 		filter: invert(95%) sepia(15%) hue-rotate(180deg);

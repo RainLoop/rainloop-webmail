@@ -70,7 +70,7 @@ class Application extends App implements IBootstrap
 				'id' => 'snappymail',
 				'order' => 10,
 				'href' => $urlGenerator->linkToRoute('snappymail.page.index'),
-				'icon' => $urlGenerator->imagePath('snappymail', 'logo-64x64.png'),
+				'icon' => $urlGenerator->imagePath('snappymail', 'logo-white-64x64.png'),
 				'name' => \OCP\Util::getL10N('snappymail')->t('Email')
 			];
 		});
