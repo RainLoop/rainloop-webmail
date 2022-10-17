@@ -4,7 +4,7 @@ import { MessagePriority } from 'Common/EnumsUser';
 import { i18n } from 'Common/Translator';
 
 import { doc, SettingsGet } from 'Common/Globals';
-import { encodeHtml, plainToHtml, cleanHtml } from 'Common/Html';
+import { encodeHtml, plainToHtml, htmlToPlain, cleanHtml } from 'Common/Html';
 import { arrayLength, forEachObjectEntry } from 'Common/Utils';
 import { serverRequestRaw, proxy } from 'Common/Links';
 
@@ -407,13 +407,16 @@ export class MessageModel extends AbstractModel {
 
 	viewPlain() {
 		const body = this.body;
-		if (body && this.plain()) {
+		if (body) {
 			body.classList.toggle('html', 0);
 			body.classList.toggle('plain', 1);
 			body.innerHTML = plainToHtml(
-				this.plain()
-					.replace(/-----BEGIN PGP (SIGNED MESSAGE-----(\r?\n[a-z][^\r\n]+)+|SIGNATURE-----[\s\S]*)/, '')
-					.trim()
+				(this.plain()
+					? this.plain()
+						.replace(/-----BEGIN PGP (SIGNED MESSAGE-----(\r?\n[a-z][^\r\n]+)+|SIGNATURE-----[\s\S]*)/, '')
+						.trim()
+					: htmlToPlain(body.innerHTML)
+				)
 			);
 			this.isHtml(false);
 			this.hasImages(false);
