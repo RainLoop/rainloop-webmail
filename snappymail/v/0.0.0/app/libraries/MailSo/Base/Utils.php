@@ -148,35 +148,47 @@ abstract class Utils
 		'SHIFT_JIS' => 'SJIS'
 	];
 
-	public static function MbConvertEncoding(string $sInputString, ?string $sInputFromEncoding, string $sInputToEncoding) : string
+	public static function MbConvertEncoding(string $sInputString, ?string $sFromEncoding, string $sToEncoding) : string
 	{
-		if ($sInputFromEncoding) {
-			$sInputFromEncoding = \strtoupper($sInputFromEncoding);
-			if (isset(static::$RenameEncoding[$sInputFromEncoding])) {
-				$sInputFromEncoding = static::$RenameEncoding[$sInputFromEncoding];
+		if ($sFromEncoding) {
+			$sFromEncoding = \strtoupper($sFromEncoding);
+			if (isset(static::$RenameEncoding[$sFromEncoding])) {
+				$sFromEncoding = static::$RenameEncoding[$sFromEncoding];
 			}
-			if (!static::MbSupportedEncoding($sInputFromEncoding)) {
+/*
+			if ('BASE64' === $sFromEncoding) {
+				\base64_decode($sFromEncoding);
+				$sFromEncoding = null;
+			} else if ('UUENCODE' === $sFromEncoding) {
+				\convert_uudecode($sFromEncoding);
+				$sFromEncoding = null;
+			} else if ('QUOTED-PRINTABLE' === $sFromEncoding) {
+				\quoted_printable_decode($sFromEncoding);
+				$sFromEncoding = null;
+			} else
+*/
+			if (!static::MbSupportedEncoding($sFromEncoding)) {
 				if (\function_exists('iconv')) {
-					$sResult = \iconv($sInputFromEncoding, "{$sInputToEncoding}//IGNORE", $sInputString);
+					$sResult = \iconv($sFromEncoding, "{$sToEncoding}//IGNORE", $sInputString);
 					return (false !== $sResult) ? $sResult : $sInputString;
 				}
-				\error_log("Unsupported encoding {$sInputFromEncoding}");
-				$sInputFromEncoding = null;
+				\error_log("Unsupported encoding {$sFromEncoding}");
+				$sFromEncoding = null;
 //				return $sInputString;
 			}
 		}
 
 		\mb_substitute_character('none');
-		$sResult = \mb_convert_encoding($sInputString, \strtoupper($sInputToEncoding), $sInputFromEncoding);
+		$sResult = \mb_convert_encoding($sInputString, \strtoupper($sToEncoding), $sFromEncoding);
 		\mb_substitute_character(0xFFFD);
 
 		return (false !== $sResult) ? $sResult : $sInputString;
 	}
 
-	public static function ConvertEncoding(string $sInputString, string $sInputFromEncoding, string $sInputToEncoding) : string
+	public static function ConvertEncoding(string $sInputString, string $sFromEncoding, string $sToEncoding) : string
 	{
-		$sFromEncoding = static::NormalizeCharset($sInputFromEncoding);
-		$sToEncoding = static::NormalizeCharset($sInputToEncoding);
+		$sFromEncoding = static::NormalizeCharset($sFromEncoding);
+		$sToEncoding = static::NormalizeCharset($sToEncoding);
 
 		if ('' === \trim($sInputString) || ($sFromEncoding === $sToEncoding && Enumerations\Charset::UTF_8 !== $sFromEncoding))
 		{
@@ -802,17 +814,11 @@ abstract class Utils
 		return false;
 	}
 
-	public static function ClearFileName(string $sFileName) : string
+	# Replace ampersand, spaces and reserved characters (based on Win95 VFAT)
+	# en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
+	public static function SecureFileName(string $sFileName) : string
 	{
-		return static::Trim(static::ClearNullBite(
-			static::StripSpaces(
-				\str_replace(array('"', '/', '\\', '*', '?', '<', '>', '|', ':'), ' ', $sFileName))));
-	}
-
-	public static function ClearXss(string $sValue) : string
-	{
-		return static::Trim(static::ClearNullBite(
-			\str_replace(array('"', '/', '\\', '*', '?', '<', '>', '|', ':'), ' ', $sValue)));
+		return \preg_replace('#[|\\\\?*<":>+\\[\\]/&\\s\\pC]#su', '-', $sFileName);
 	}
 
 	public static function Trim(string $sValue) : string
@@ -1063,12 +1069,9 @@ abstract class Utils
 
 	public static function Utf7ModifiedToUtf8(string $sStr) : string
 	{
-		// imap_mutf7_to_utf8() is broken and doesn't support U+10000 and up,
-		// thats why mmb_convert_encoding is used
-		$sResult = static::MbConvertEncoding($sStr, 'UTF7-IMAP', 'UTF-8');
-		// ucnv U_FILE_ACCESS_ERROR
-//		$sResult = \UConverter::transcode($sStr, \UConverter::UTF8, \UConverter::IMAP_MAILBOX, ['to_subst' => '�']);
-		return (false === $sResult) ? $sStr : $sResult;
+		// imap_mutf7_to_utf8() doesn't support U+10000 and up,
+		// thats why mb_convert_encoding is used
+		return static::MbConvertEncoding($sStr, 'UTF7-IMAP', 'UTF-8');
 	}
 
 	public static function Utf8ToUtf7Modified(string $sStr) : string
@@ -1077,8 +1080,6 @@ abstract class Utils
 			? \imap_utf8_to_mutf7($sStr)
 //			: \mb_convert_encoding($sStr, 'UTF7-IMAP', 'UTF-8');
 			: static::MbConvertEncoding($sStr, 'UTF-8', 'UTF7-IMAP');
-		// ucnv U_FILE_ACCESS_ERROR
-//		$sResult = \UConverter::transcode($sStr, \UConverter::IMAP_MAILBOX, \UConverter::UTF8);
 		return (false === $sResult) ? $sStr : $sResult;
 	}
 
@@ -1105,11 +1106,6 @@ abstract class Utils
 		return \function_exists($sFunctionName)
 			&& !\in_array($sFunctionName, static::$disabled_functions);
 //			&& \is_callable($mFunctionNameOrNames);
-	}
-
-	public static function ClearNullBite($mValue) : string
-	{
-		return \str_replace('%00', '', $mValue);
 	}
 
 	public static function CharsetDetect(string $sStr) : string

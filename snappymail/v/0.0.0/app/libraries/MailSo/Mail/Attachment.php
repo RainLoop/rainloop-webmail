@@ -172,7 +172,7 @@ class Attachment implements \JsonSerializable
 			'Uid' => (string) $this->Uid(),
 			'MimeIndex' => (string) $this->MimeIndex(),
 			'MimeType' => $this->MimeType(),
-			'FileName' => \MailSo\Base\Utils::ClearFileName(\MailSo\Base\Utils::ClearXss($this->FileName(true))),
+			'FileName' => \MailSo\Base\Utils::SecureFileName($this->FileName(true)),
 			'EstimatedSize' => $this->EstimatedSize(),
 			'Cid' => $this->Cid(),
 			'ContentLocation' => $this->ContentLocation(),
