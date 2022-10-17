@@ -1063,10 +1063,9 @@ abstract class Utils
 
 	public static function Utf7ModifiedToUtf8(string $sStr) : string
 	{
-		$sResult = \is_callable('imap_mutf7_to_utf8')
-			? \imap_mutf7_to_utf8($sStr)
-//			: \mb_convert_encoding($sStr, 'UTF-8', 'UTF7-IMAP');
-			: static::MbConvertEncoding($sStr, 'UTF7-IMAP', 'UTF-8');
+		// imap_mutf7_to_utf8() is broken and doesn't support U+10000 and up,
+		// thats why mmb_convert_encoding is used
+		$sResult = static::MbConvertEncoding($sStr, 'UTF7-IMAP', 'UTF-8');
 		// ucnv U_FILE_ACCESS_ERROR
 //		$sResult = \UConverter::transcode($sStr, \UConverter::UTF8, \UConverter::IMAP_MAILBOX, ['to_subst' => '�']);
 		return (false === $sResult) ? $sStr : $sResult;
