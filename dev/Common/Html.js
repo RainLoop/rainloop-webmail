@@ -35,29 +35,29 @@ const
 	urlGetParam = (url, name) => new URL(url).searchParams.get(name) || url,
 	base64Url = data => atob(data.replace(/_/g,'/').replace(/-/g,'+')),
 	stripTracking = url => {
-		url = url
-			.replace(/tracking\.(printabout\.nl[^?]+)\?.*/i, (...m) => m[1])
-			.replace(/(zalando\.nl[^?]+)\?.*/i, (...m) => m[1])
-			.replace(/^.+(awstrack\.me|redditmail\.com)\/.+(https:%2F%2F[^/]+).*/i, (...m) => decodeURIComponent(m[2]))
-			.replace(/^.+(www\.google|safelinks\.protection\.outlook\.com).+$/i, () => urlGetParam(url, 'url'))
-			.replace(/^.+delivery-status\.com.+$/i, () => urlGetParam(url, 'fb'))
-			.replace(/^.+go\.dhlparcel\.nl.+\/([^/]+)$/i, (...m) => base64Url(m[1]))
-			// Mandrill
-			.replace(/^.+\/track\/click\/.+\?p=.+$/i, () => {
-				let d = urlGetParam(url, 'p');
-				try {
-					d = JSON.parse(base64Url(d));
-					if (d?.p) {
-						d = JSON.parse(d.p);
-					}
-				} catch (e) {
-					console.error(e);
-				}
-				return d?.url || url;
-			})
-			// Remove invalid URL characters
-			.replace(/[\s<>]+/gi, '');
 		try {
+			url = url
+				.replace(/tracking\.(printabout\.nl[^?]+)\?.*/i, (...m) => m[1])
+				.replace(/(zalando\.nl[^?]+)\?.*/i, (...m) => m[1])
+				.replace(/^.+(awstrack\.me|redditmail\.com)\/.+(https:%2F%2F[^/]+).*/i, (...m) => decodeURIComponent(m[2]))
+				.replace(/^.+(www\.google|safelinks\.protection\.outlook\.com).+$/i, () => urlGetParam(url, 'url'))
+				.replace(/^.+delivery-status\.com.+$/i, () => urlGetParam(url, 'fb'))
+				.replace(/^.+go\.dhlparcel\.nl.+\/([A-Za-z0-9_-]+)$/i, (...m) => base64Url(m[1]))
+				// Mandrill
+				.replace(/^.+\/track\/click\/.+\?p=.+$/i, () => {
+					let d = urlGetParam(url, 'p');
+					try {
+						d = JSON.parse(base64Url(d));
+						if (d?.p) {
+							d = JSON.parse(d.p);
+						}
+					} catch (e) {
+						console.error(e);
+					}
+					return d?.url || url;
+				})
+				// Remove invalid URL characters
+				.replace(/[\s<>]+/gi, '');
 			url = new URL(url);
 			let s = url.searchParams;
 			[...s.keys()].forEach(key => stripParams.test(key) && s.delete(key));
@@ -281,7 +281,7 @@ export const
 
 			let skipStyle = false;
 			if (hasAttribute('src')) {
-				value = getAttribute('src');
+				value = stripTracking(getAttribute('src'));
 				delAttribute('src');
 
 				if ('IMG' === name) {
@@ -294,7 +294,8 @@ export const
 								'email.microsoftemail.com/open',
 								'github.com/notifications/beacon/',
 								'mandrillapp.com/track/open',
-								'list-manage.com/track/open'
+								'list-manage.com/track/open',
+								'google-analytics.com'
 							].filter(uri => value.toLowerCase().includes(uri)).length
 					)) {
 						skipStyle = true;
