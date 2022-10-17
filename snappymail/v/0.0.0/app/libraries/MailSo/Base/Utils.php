@@ -128,7 +128,7 @@ abstract class Utils
 	{
 		static $aSupportedEncodings = null;
 		if (null === $aSupportedEncodings) {
-			$aSupportedEncodings = \mb_list_encodings();
+			$aSupportedEncodings = \array_diff(\mb_list_encodings(), ['BASE64','UUENCODE','HTML-ENTITIES','Quoted-Printable']);
 			$aSupportedEncodings = \array_map('strtoupper', \array_unique(
 				\array_merge(
 					$aSupportedEncodings,
