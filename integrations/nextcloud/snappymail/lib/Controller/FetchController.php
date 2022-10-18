@@ -59,6 +59,14 @@ class FetchController extends Controller {
 				]);
 			}
 
+			\OCA\SnappyMail\Util\SnappyMailHelper::startApp();
+			$debug = !empty($_POST['snappymail-debug']);
+			$oConfig = \RainLoop\Api::Config();
+			if ($debug != $oConfig->Get('debug', 'enable', false)) {
+				$oConfig->Set('debug', 'enable', $debug);
+				$oConfig->Save();
+			}
+
 			return new JSONResponse([
 				'status' => 'success',
 				'Message' => $this->l->t('Saved successfully')

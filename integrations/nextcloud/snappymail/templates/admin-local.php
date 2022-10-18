@@ -9,6 +9,11 @@
 				<a href="<?php echo $_['snappymail-admin-panel-link'] ?>" target="_blank" style="text-decoration: underline">
 					<?php echo($l->t('Go to SnappyMail Webmail admin panel')); ?>
 				</a>
+			<?php if ($_['snappymail-admin-password']) { ?>
+				<br/>
+				Username: admin<br/>
+				Temporary password: <?php echo $_['snappymail-admin-password']; ?>
+			<?php } ?>
 			</p>
 			<br />
 			<?php } ?>
@@ -33,12 +38,15 @@
 				</div>
 			</p>
 			<br />
-			<br />
 			<p>
 				<input id="snappymail-embed" name="snappymail-embed" type="checkbox" class="checkbox"  <?php if ($_['snappymail-embed']) echo 'checked="checked"'; ?>>
 				<label for="snappymail-embed">Embed without iframe (experimental)</label>
 			</p>
 			<br />
+			<p>
+				<input id="snappymail-debug" name="snappymail-debug" type="checkbox" class="checkbox"  <?php if ($_['snappymail-debug']) echo 'checked="checked"'; ?>>
+				<label for="snappymail-debug">Debug</label>
+			</p>
 			<br />
 			<p>
 				<button id="snappymail-save-button" name="snappymail-save-button"><?php echo($l->t('Save')); ?></button>
