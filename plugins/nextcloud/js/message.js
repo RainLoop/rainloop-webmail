@@ -46,7 +46,7 @@
 				 * TODO: op select screen to show browseFiles result
 				 * Then the user can select which Nextcloud folder to save to
 				 */
-				browseFiles();
+//				browseFiles();
 
 				rl.pluginRemoteRequest(
 					(iError, data) => {

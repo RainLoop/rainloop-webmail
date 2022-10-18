@@ -87,9 +87,53 @@
 		});
 	}
 
+	class NextcloudFilesPopupView extends rl.pluginPopupView {
+		constructor() {
+			super('NextcloudFiles');
+			this.addObservables({
+				folder: '',
+				files: false
+			});
+		}
+
+		onShow(files, fResolve) {
+			this.files(!!files);
+			this.fResolve = fResolve;
+		}
+
+		select() {
+			this.close();
+			this.fResolve(this.folder());
+		}
+
+		onClose() {
+			this.close();
+			this.fResolve();
+			return false;
+		}
+	}
+
 	rl.ncFiles = new class {
 		async getDirectoryContents(path) {
 			return await fetchFiles(propertyRequestBody, path);
+		}
+
+		selectFolder() {
+			return new Promise(resolve => {
+				NextcloudFilesPopupView.showModal([
+					false,
+					folder => resolve(folder),
+				]);
+			});
+		}
+
+		selectFiles() {
+			return new Promise(resolve => {
+				NextcloudFilesPopupView.showModal([
+					true,
+					files => resolve(files),
+				]);
+			});
 		}
 	}
 })(window.rl);
