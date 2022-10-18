@@ -17,14 +17,16 @@ export class AbstractApp {
 		this.Remote = Remote;
 	}
 
-	logoutReload() {
-		const url = logoutLink();
-
+	logoutReload(url) {
+		url = url || logoutLink();
 		if (location.href !== url) {
 			setTimeout(() => location.href = url, 100);
 		} else {
 			rl.route.reload();
 		}
+		// this does not work due to ViewModelClass.__builded = true;
+//		rl.settings.set('Auth', false);
+//		rl.app.start();
 	}
 
 	bootstart() {

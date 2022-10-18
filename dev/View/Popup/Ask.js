@@ -26,13 +26,13 @@ export class AskPopupView extends AbstractViewPopup {
 	yesClick() {
 		this.close();
 
-		isFunction(this.fYesAction) && this.fYesAction();
+		isFunction(this.fYesAction) && this.fYesAction(this);
 	}
 
 	noClick() {
 		this.close();
 
-		isFunction(this.fNoAction) && this.fNoAction();
+		isFunction(this.fNoAction) && this.fNoAction(this);
 	}
 
 	/**
@@ -86,7 +86,7 @@ AskPopupView.password = function(sAskDesc, btnText) {
 	return new Promise(resolve => {
 		this.showModal([
 			sAskDesc,
-			() => resolve(this.__vm.passphrase()),
+			view => resolve(view.passphrase()),
 			() => resolve(null),
 			true,
 			1,
@@ -99,7 +99,7 @@ AskPopupView.credentials = function(sAskDesc, btnText) {
 	return new Promise(resolve => {
 		this.showModal([
 			sAskDesc,
-			() => resolve({username:this.__vm.username(), password:this.__vm.passphrase()}),
+			view => resolve({username:view.username(), password:view.passphrase()}),
 			() => resolve(null),
 			true,
 			3,

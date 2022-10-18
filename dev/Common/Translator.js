@@ -34,7 +34,7 @@ export const
 	 * @returns {string}
 	 */
 	i18n = (key, valueList, defaulValue) => {
-		let result = defaulValue || key;
+		let result = null == defaulValue ? key : defaulValue;
 		let path = key.split('/');
 		if (I18N_DATA[path[0]] && path[1]) {
 			result = I18N_DATA[path[0]][path[1]] || result;

@@ -200,14 +200,7 @@ export class AppUser extends AbstractApp {
 	}
 
 	logout() {
-		Remote.request('Logout', () => {
-			const customLogoutLink = Settings.app('customLogoutLink');
-			if (customLogoutLink) {
-				location.href = customLogoutLink;
-			} else {
-				rl.logoutReload()
-			}
-		});
+		Remote.request('Logout', () => rl.logoutReload(Settings.app('customLogoutLink')));
 	}
 
 	bootstart() {
