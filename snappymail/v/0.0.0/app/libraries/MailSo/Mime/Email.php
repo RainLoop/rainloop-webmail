@@ -268,8 +268,8 @@ class Email implements \JsonSerializable
 			'Name' => \MailSo\Base\Utils::Utf8Clear($this->GetDisplayName()),
 			'Email' => \MailSo\Base\Utils::Utf8Clear($this->GetEmail(true)),
 			'DkimStatus' => $this->GetDkimStatus(),
-			'DkimValue' => $this->GetDkimValue(),
-			'BIMI' => $BIMI
+			'DkimValue' => $this->GetDkimValue()
+//			'BIMI' => $BIMI
 		);
 	}
 }
