@@ -39,6 +39,8 @@ if (defined('APP_VERSION'))
 		'json' => function_exists('json_decode'),
 		'libxml' => function_exists('libxml_use_internal_errors'),
 		'dom' => class_exists('DOMDocument')
+		// https://github.com/the-djmaze/snappymail/issues/392
+//		'phar' => class_exists('PharData')
 	);
 
 	if (in_array(false, $aRequirements))

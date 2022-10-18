@@ -83,12 +83,16 @@ trait UserAuth
 				}
 			}
 
-			$sDefDomain = \trim($this->Config()->Get('login', 'default_domain', ''));
-			if (!\str_contains($sEmail, '@') && \strlen($sDefDomain)) {
-				$this->Logger()->Write('Default domain "' . $sDefDomain . '" was used. (' . $sEmail . ' > ' . $sEmail . '@' . $sDefDomain . ')',
-					\LOG_INFO, 'LOGIN');
+			if (!\str_contains($sEmail, '@')) {
+				$sDefDomain = \trim($this->Config()->Get('login', 'default_domain', ''));
+				if (\strlen($sDefDomain)) {
+					$this->Logger()->Write('Default domain "' . $sDefDomain . '" was used. (' . $sEmail . ' > ' . $sEmail . '@' . $sDefDomain . ')',
+						\LOG_INFO, 'LOGIN');
 
-				$sEmail .= '@' . $sDefDomain;
+					$sEmail .= '@' . $sDefDomain;
+				} else {
+					$this->Logger()->Write('Default domain not configured.', \LOG_INFO, 'LOGIN');
+				}
 			}
 		}
 

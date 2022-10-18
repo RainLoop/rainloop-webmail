@@ -836,14 +836,17 @@ class ServiceActions
 	{
 		\header('Content-Type: application/javascript; charset=utf-8');
 		$this->oHttp->ServerNoCache();
+		try {
+			$sResult = 'rl.initData('
+				. Utils::jsonEncode($this->oActions->AppData($bAdmin))
+				. ');';
 
-		$sResult = 'rl.initData('
-			.Utils::jsonEncode($this->oActions->AppData($bAdmin))
-			.');';
+			$this->Logger()->Write($sResult, \LOG_INFO, 'APPDATA');
 
-		$this->Logger()->Write($sResult, \LOG_INFO, 'APPDATA');
-
-		return $sResult;
+			return $sResult;
+		} catch (\Throwable $e) {
+			return 'alert(' . \json_encode('ERROR: ' . $e->getMessage()) . ');';
+		}
 	}
 
 	public function compileTemplates(bool $bAdmin = false) : string
