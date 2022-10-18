@@ -4,11 +4,11 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Nextcloud',
-		VERSION = '2.2',
-		RELEASE  = '2022-10-13',
+		VERSION = '2.3',
+		RELEASE  = '2022-10-18',
 		CATEGORY = 'Integrations',
 		DESCRIPTION = 'Integrate with Nextcloud v20+',
-		REQUIRED = '2.18.6';
+		REQUIRED = '2.19.0';
 
 	public function Init() : void
 	{

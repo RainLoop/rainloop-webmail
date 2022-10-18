@@ -16,26 +16,52 @@
 - **Integration with other Nextcloud apps** (Contacts & Files)
 - **Multiple mail accounts and identities**
 - **Send & receive OpenPGP encrypted/signed emails** (With full HTML support, ECC keys, or plain text with Mailvelope)
-- **Many security features** (Sodium encrypted passwords, Sec-Fetch, TOTP 2FA, DKIM, etc.)
+- **Many security features** (Sodium encrypted passwords, Sec-Fetch, TOTP 2FA, DKIM, prevent tracking, etc.)
 - **Kolab integrations**
 
-After enabling in Nextcloud, go to Nextcloud admin panel, "Additionnal settings" and you will see a "SnappyMail webmail" section.
+After enabling in Nextcloud, go to Nextcloud admin panel, "Additional settings" and you will see a "SnappyMail webmail" section.
 There, click on the link to go to the SnappyMail admin panel.
 	]]></description>
 	<namespace>SnappyMail</namespace>
 	<documentation>
 		<user>https://github.com/the-djmaze/snappymail/blob/master/integrations/nextcloud/snappymail/README.md</user>
-		<website>https://snappymail.eu/</website>
+		<website>https://github.com/the-djmaze/snappymail/wiki</website>
 	</documentation>
-	<category>social</category>
-	<category>tools</category>
 	<category>integration</category>
+	<category>office</category>
+	<category>search</category>
+	<category>social</category>
 	<screenshot>https://raw.githubusercontent.com/the-djmaze/snappymail/master/integrations/nextcloud/screenshots/inbox.jpg</screenshot>
-	<website>https://github.com/the-djmaze/snappymail</website>
-	<bugs>https://github.com/the-djmaze/snappymail/issues/96</bugs>
+	<website>https://snappymail.eu</website>
+	<discussion>https://github.com/the-djmaze/snappymail/discussions</discussion>
+	<repository>https://github.com/the-djmaze/snappymail/tree/master/integrations/nextcloud</repository>
+	<bugs>https://github.com/the-djmaze/snappymail/issues</bugs>
 	<dependencies>
-		<php min-version="7.4" />
-		<nextcloud min-version="20" max-version="24" />
+		<php min-version="7.4" min-int-size="64" />
+		<lib>mbstring</lib>
+		<lib>zlib</lib>
+<!--
+		<lib>gnupg</lib>
+		<lib>curl</lib>
+		<lib>exif</lib>
+		<lib>gd</lib>
+		<lib>gmagick</lib>
+		<lib>imagick</lib>
+		<lib>iconv</lib>
+		<lib>intl</lib>
+		<lib>ldap</lib>
+		<lib>openssl</lib>
+		<lib>sodium</lib>
+		<lib>redis</lib>
+		<lib>pdo_mysql</lib>
+		<lib>pdo_pgsql</lib>
+		<lib>pdo_sqlite</lib>
+		<lib>tidy</lib>
+		<lib>uuid</lib>
+		<lib>xxtea</lib>
+		<lib>zip</lib>
+-->
+		<nextcloud min-version="20" max-version="25" />
 	</dependencies>
 	<settings>
 		<admin>OCA\SnappyMail\Settings\AdminSettings</admin>
