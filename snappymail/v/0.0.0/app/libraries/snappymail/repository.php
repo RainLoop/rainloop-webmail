@@ -266,7 +266,12 @@ abstract class Repository
 			}
 
 			if ($sTmp) {
-				$oArchive = new \PharData($sTmp, 0, $sRealFile);
+				if (\class_exists('PharData')) {
+					$oArchive = new \PharData($sTmp, 0, $sRealFile);
+				} else {
+//					throw new \Exception('PHP Phar is disabled, you must enable it');
+					$oArchive = new \SnappyMail\TAR($sTmp);
+				}
 				if (!static::deletePackageDir($sId)) {
 					throw new \Exception('Cannot remove previous plugin folder: '.$sId);
 				}
@@ -276,7 +281,7 @@ abstract class Repository
 					$bResult = $oArchive->extractTo(\rtrim(APP_PLUGINS_PATH, '\\/'));
 				}
 				if (!$bResult) {
-					throw new \Exception('Cannot extract package files: '.$oArchive->getStatusString());
+					throw new \Exception('Cannot extract package files');
 				}
 			}
 		} catch (\Throwable $e) {

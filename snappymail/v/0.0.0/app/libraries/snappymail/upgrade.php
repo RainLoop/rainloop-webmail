@@ -165,6 +165,9 @@ abstract class Upgrade
 
 	public static function backup() : string
 	{
+		if (!\class_exists('PharData')) {
+			throw new \Exception('PHP Phar is disabled, you must enable it');
+		}
 //		$tar_destination = APP_DATA_FOLDER_PATH . APP_VERSION . '.tar';
 		$tar_destination = APP_DATA_FOLDER_PATH . 'backup-' . \date('YmdHis') . '.tar';
 		$tar = new \PharData($tar_destination);
