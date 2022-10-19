@@ -1,7 +1,7 @@
 /*
 This stylesheet is used when SnappyMail runs in embed mode.
 */
-#rl-app {
+#content #rl-app {
 	position: relative;
 	min-width: 100%;
 	min-height: 100%;

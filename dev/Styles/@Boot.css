@@ -5,14 +5,14 @@
 }
 
 html, body {
-	font-family: var(--fontSans);
 	margin: 0;
 	padding: 0;
 }
 
-body {
-	background: var(--main-bg-color, #aaa);
+#rl-app {
+	background-color: var(--main-bg-color, #aaa);
 	color: var(--main-color, #333);
+	font-family: var(--fontSans);
 }
 
 #rl-loading, #rl-loading-error {
