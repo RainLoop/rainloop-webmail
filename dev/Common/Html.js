@@ -325,7 +325,7 @@ export const
 					{
 						setAttribute('data-x-src', value);
 						result.hasExternals = true;
-						oElement.alt || (oElement.alt = value.replace(/^.+\/([^/]+)$/, '$1'));
+						oElement.alt || (oElement.alt = value.replace(/^.+\/([^/]+)$/, '$1').slice(0, 32));
 					}
 					else if ('data:image/' === value.slice(0, 11))
 					{
