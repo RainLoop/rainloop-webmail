@@ -47,8 +47,7 @@ class PageController extends Controller
 	 */
 	public function appGet()
 	{
-		SnappyMailHelper::startApp();
-		\RainLoop\Service::Handle();
+		SnappyMailHelper::startApp(true);
 		exit;
 	}
 
