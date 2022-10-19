@@ -96,14 +96,39 @@
 			});
 		}
 
-		onShow(files, fResolve) {
-			this.files(!!files);
-			this.fResolve = fResolve;
+		onBuild(dom) {
+			this.tree = dom.querySelector('#sm-nc-files-tree');
+			this.tree.addEventListener('click', event => {
+				let li = event.target.closest('li');
+				if (li.item_name) {
+					this.close();
+					this.fResolve(li.item_name);
+				}
+			});
 		}
 
-		select() {
-			this.close();
-			this.fResolve(this.folder());
+		// Happens after showModal()
+		beforeShow(files, fResolve) {
+			this.files(!!files);
+			this.fResolve = fResolve;
+
+			this.tree.innerHTML = '';
+			fetchFiles(propertyRequestBody, '/').then(items => {
+				items.forEach(item => {
+					if (item.isFile) {
+						if (files) {
+							// TODO show files
+						}
+					} else {
+						let li = document.createElement('li'),
+							a = document.createElement('a');
+						li.item_name = item.name;
+						a.append('- ' + item.name.replace(/^\/+/, ''));
+						li.append(a);
+						this.tree.append(li);
+					}
+				});
+			}).catch(err => console.error(err))
 		}
 
 		onClose() {
@@ -111,6 +136,14 @@
 			this.fResolve();
 			return false;
 		}
+/*
+	onShow() {}     // Happens after  showModal()
+	beforeShow() {} // Happens before showModal()
+	afterShow() {}  // Happens after  showModal() animation transitionend
+	onHide() {}     // Happens before animation transitionend
+	afterHide() {}  // Happens after  animation transitionend
+	close() {}
+*/
 	}
 
 	rl.ncFiles = new class {

@@ -1,12 +1,5 @@
 (rl => {
 
-	function browseFiles(path = '/')
-	{
-		rl.ncFiles.getDirectoryContents(path).then(elemList => {
-			console.dir(elemList);
-		}).catch(err => console.error(err))
-	}
-
 	addEventListener('rl-view-model.create', e => {
 		if ('MailMessageView' === e.detail.viewModelTemplateID) {
 			let view = e.detail;
@@ -19,48 +12,49 @@
 					.filter(v => v);
 				if (hashes.length) {
 					view.saveNextcloudLoading(true);
-					rl.fetchJSON('./?/Json/&q[]=/0/', {}, {
-						Action: 'AttachmentsActions',
-						Do: 'nextcloud',
-						Hashes: hashes
-					})
-					.then(result => {
-						view.saveNextcloudLoading(false);
-						if (result?.Result) {
-							// success
-						} else {
-							view.saveNextcloudError(true);
+					rl.ncFiles.selectFolder().then(folder => {
+						if (folder) {
+							rl.fetchJSON('./?/Json/&q[]=/0/', {}, {
+								Action: 'AttachmentsActions',
+								Do: 'nextcloud',
+								Hashes: hashes,
+								NcFolder: folder
+							})
+							.then(result => {
+								view.saveNextcloudLoading(false);
+								if (result?.Result) {
+									// success
+								} else {
+									view.saveNextcloudError(true);
+								}
+							})
+							.catch(() => {
+								view.saveNextcloudLoading(false);
+								view.saveNextcloudError(true);
+							});
 						}
-					})
-					.catch(() => {
-						view.saveNextcloudLoading(false);
-						view.saveNextcloudError(true);
 					});
 				}
 			};
 
 			view.nextcloudSaveMsg = () => {
-				let msg = view.message();
-
-				/**
-				 * TODO: op select screen to show browseFiles result
-				 * Then the user can select which Nextcloud folder to save to
-				 */
-//				browseFiles();
-
-				rl.pluginRemoteRequest(
-					(iError, data) => {
-						console.dir({
-							iError:iError,
-							data:data
-						});
-					},
-					'NextcloudSaveMsg',
-					{
-						'msgHash': msg.requestHash,
-						'filename': msg.subject()
-					}
-				);
+				rl.ncFiles.selectFolder().then(folder => {
+					let msg = view.message();
+					folder && rl.pluginRemoteRequest(
+						(iError, data) => {
+							console.dir({
+								iError:iError,
+								data:data
+							});
+						},
+						'NextcloudSaveMsg',
+						{
+							'msgHash': msg.requestHash,
+							'folder': folder,
+							'filename': msg.subject()
+						}
+					);
+				});
 			};
 		}
 	});

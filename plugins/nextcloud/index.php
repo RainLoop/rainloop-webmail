@@ -19,9 +19,9 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$this->addHook('filter.app-data', 'FilterAppData');
 
 			$this->addJs('js/message.js');
+			$this->addJs('js/webdav.js');
 			$this->addHook('json.attachments', 'DoAttachmentsActions');
 			$this->addJsonHook('NextcloudSaveMsg', 'NextcloudSaveMsg');
-
 			$this->addTemplate('templates/PopupsNextcloudFiles.html');
 		}
 	}
@@ -60,8 +60,14 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function NextcloudSaveMsg() : array
 	{
+		$sSaveFolder = \ltrim($this->jsonParam('folder', ''), '/');
 		$aValues = \RainLoop\Utils::DecodeKeyValuesQ($this->jsonParam('msgHash', ''));
-		if (!empty($aValues['Folder']) && !empty($aValues['Uid'])) {
+		$aResult = [
+			'folder' => '',
+			'filename' => '',
+			'success' => false
+		];
+		if ($sSaveFolder && !empty($aValues['Folder']) && !empty($aValues['Uid'])) {
 			$oActions = \RainLoop\Api::Actions();
 			$oMailClient = $oActions->MailClient();
 			if (!$oMailClient->IsLoggined()) {
@@ -69,17 +75,20 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$oAccount->ImapConnectAndLoginHelper($oActions->Plugins(), $oMailClient, $oActions->Config());
 			}
 
-			$sSaveFolder = $this->Config()->Get('plugin', 'save_folder', '') ?: 'Emails';
+			$sSaveFolder = $sSaveFolder ?: 'Emails';
 			$oFiles = \OCP\Files::getStorage('files');
-			if ($oFiles && \method_exists($oFiles, 'file_put_contents')) {
+			if ($oFiles) {
 				$oFiles->is_dir($sSaveFolder) || $oFiles->mkdir($sSaveFolder);
 			}
+			$aResult['folder'] = $sSaveFolder;
+
 			$sFilename = $sSaveFolder . '/' . ($this->jsonParam('filename', '') ?: \date('YmdHis')) . '.eml';
+			$aResult['folder'] = $sFilename;
 
 			$oMailClient->MessageMimeStream(
-				function ($rResource) use ($oFiles, $sFilename) {
+				function ($rResource) use ($oFiles, $sFilename, $aResult) {
 					if (\is_resource($rResource)) {
-						$oFiles->file_put_contents($sFilename, $rResource);
+						$aResult['success'] = $oFiles->file_put_contents($sFilename, $rResource);
 					}
 				},
 				(string) $aValues['Folder'],
@@ -88,7 +97,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			);
 		}
 
-		return $this->jsonResponse(__FUNCTION__, true);
+		return $this->jsonResponse(__FUNCTION__, $aResult);
 	}
 
 	public function DoAttachmentsActions(\SnappyMail\AttachmentsAction $data)
@@ -96,7 +105,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 		if (static::isLoggedIn() && 'nextcloud' === $data->action) {
 			$oFiles = \OCP\Files::getStorage('files');
 			if ($oFiles && \method_exists($oFiles, 'file_put_contents')) {
-				$sSaveFolder = $this->Config()->Get('plugin', 'save_folder', '') ?: 'Attachments';
+				$sSaveFolder = \ltrim($this->jsonParam('NcFolder', ''), '/');
+				$sSaveFolder = $sSaveFolder ?: $this->Config()->Get('plugin', 'save_folder', '') ?: 'Attachments';
 				$oFiles->is_dir($sSaveFolder) || $oFiles->mkdir($sSaveFolder);
 				$data->result = true;
 				foreach ($data->items as $aItem) {
@@ -105,14 +115,10 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 					if (!empty($sSavedFileHash)) {
 						$fFile = $data->filesProvider->GetFile($data->account, $sSavedFileHash, 'rb');
 						if (\is_resource($fFile)) {
-							$sSavedFileNameFull = \MailSo\Base\Utils::SmartFileExists($sSaveFolder.'/'.$sSavedFileName, function ($sPath) use ($oFiles) {
-								return $oFiles->file_exists($sPath);
-							});
-
+							$sSavedFileNameFull = static::SmartFileExists($sSaveFolder.'/'.$sSavedFileName, $oFiles);
 							if (!$oFiles->file_put_contents($sSavedFileNameFull, $fFile)) {
 								$data->result = false;
 							}
-
 							if (\is_resource($fFile)) {
 								\fclose($fFile);
 							}
@@ -192,5 +198,34 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(true)
 		);
+	}
+
+	private static function SmartFileExists(string $sFilePath, $oFiles) : string
+	{
+		$sFilePath = \str_replace('\\', '/', \trim($sFilePath));
+
+		if (!$oFiles->file_exists($sFilePath)) {
+			return $sFilePath;
+		}
+
+		$aFileInfo = \pathinfo($sFilePath);
+
+		$iIndex = 0;
+
+		while (true) {
+			++$iIndex;
+			$sFilePathNew = $aFileInfo['dirname'].'/'.
+				\preg_replace('/\(\d{1,2}\)$/', '', $aFileInfo['filename']).
+				' ('.$iIndex.')'.
+				(empty($aFileInfo['extension']) ? '' : '.'.$aFileInfo['extension'])
+			;
+			if (!$oFiles->file_exists($sFilePathNew)) {
+				return $sFilePathNew;
+			}
+			if (10 < $iIndex) {
+				break;
+			}
+		}
+		return $sFilePath;
 	}
 }
