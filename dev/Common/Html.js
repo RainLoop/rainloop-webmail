@@ -103,7 +103,7 @@ export const
 			tasks = {
 				link: value => {
 					if (/^#[a-fA-Z0-9]{3,6}$/.test(value)) {
-						tpl.content.querySelectorAll('a').forEach(node => node.style.color = value)
+						tpl.content.querySelectorAll('a').forEach(node => node.style.color || (node.style.color = value))
 					}
 				},
 				text: (value, node) => node.style.color = value,
@@ -289,8 +289,8 @@ export const
 					oElement.loading = 'lazy';
 					let attachment;
 					if (detectHiddenImages
-						&& (('' != getAttribute('height') && 3 > pInt(getAttribute('height')))
-							|| ('' != getAttribute('width') && 3 > pInt(getAttribute('width')))
+						&& ((oStyle.maxHeight && 3 > pInt(oStyle.maxHeight))
+							|| (oStyle.maxWidth && 3 > pInt(oStyle.maxWidth))
 							|| [
 								'email.microsoftemail.com/open',
 								'github.com/notifications/beacon/',
