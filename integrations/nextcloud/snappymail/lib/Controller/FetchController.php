@@ -25,7 +25,7 @@ class FetchController extends Controller {
 	public function upgrade(): JSONResponse {
 		$error = 'Upgrade failed';
 		try {
-			SnappyMailHelper::startApp();
+			SnappyMailHelper::loadApp();
 			if (SnappyMail\Upgrade::core()) {
 				return new JSONResponse([
 					'status' => 'success',
@@ -59,7 +59,7 @@ class FetchController extends Controller {
 				]);
 			}
 
-			\OCA\SnappyMail\Util\SnappyMailHelper::startApp();
+			SnappyMailHelper::loadApp();
 			$debug = !empty($_POST['snappymail-debug']);
 			$oConfig = \RainLoop\Api::Config();
 			if ($debug != $oConfig->Get('debug', 'enable', false)) {

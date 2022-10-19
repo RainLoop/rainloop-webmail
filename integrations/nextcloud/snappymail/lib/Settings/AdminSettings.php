@@ -32,7 +32,7 @@ class AdminSettings implements ISettings
 			$parameters['snappymail-admin-panel-link'] = SnappyMailHelper::getAppUrl().'?admin';
 		}
 
-		\OCA\SnappyMail\Util\SnappyMailHelper::startApp();
+		\OCA\SnappyMail\Util\SnappyMailHelper::loadApp();
 		$oConfig = \RainLoop\Api::Config();
 		$passfile = APP_PRIVATE_DATA . 'admin_password.txt';
 		$sPassword = $oConfig->Get('security', 'admin_password', '');

@@ -5,11 +5,9 @@ namespace OCA\SnappyMail\Util;
 class SnappyMailHelper
 {
 
-	public static function startApp(bool $handle = false) : void
+	public static function loadApp() : void
 	{
 		if (!\class_exists('RainLoop\\Api')) {
-			$_ENV['SNAPPYMAIL_NEXTCLOUD'] = true;
-
 			// Nextcloud the default spl_autoload_register() not working
 			\spl_autoload_register(function($sClassName){
 				$file = RAINLOOP_APP_LIBRARIES_PATH . \strtolower(\strtr($sClassName, '\\', DIRECTORY_SEPARATOR)) . '.php';
@@ -18,43 +16,49 @@ class SnappyMailHelper
 				}
 			});
 
+			$_ENV['SNAPPYMAIL_NEXTCLOUD'] = true;
 			$_ENV['SNAPPYMAIL_INCLUDE_AS_API'] = true;
 
 			require_once \dirname(\dirname(__DIR__)) . '/app/index.php';
+		}
 
-			$oConfig = \RainLoop\Api::Config();
-			$bSave = false;
-			if (!$oConfig->Get('webmail', 'app_path')) {
-				$oConfig->Set('webmail', 'app_path', \OC::$server->getAppManager()->getAppWebPath('snappymail') . '/app/');
-				$bSave = true;
-			}
-			if (!\is_dir(APP_PLUGINS_PATH . 'nextcloud')) {
-				\SnappyMail\Repository::installPackage('plugin', 'nextcloud');
-				$oConfig->Set('plugins', 'enable', true);
-				$aList = \SnappyMail\Repository::getEnabledPackagesNames();
-				$aList[] = 'nextcloud';
-				$oConfig->Set('plugins', 'enabled_list', \implode(',', \array_unique($aList)));
-				$oConfig->Set('webmail', 'theme', 'Nextcloud@custom');
-				$bSave = true;
-			}
-			$bSave && $oConfig->Save();
+		$oConfig = \RainLoop\Api::Config();
+		$bSave = false;
+		if (!$oConfig->Get('webmail', 'app_path')) {
+			$oConfig->Set('webmail', 'app_path', \OC::$server->getAppManager()->getAppWebPath('snappymail') . '/app/');
+			$bSave = true;
+		}
+		if (!\is_dir(APP_PLUGINS_PATH . 'nextcloud')) {
+			\SnappyMail\Repository::installPackage('plugin', 'nextcloud');
+			$oConfig->Set('plugins', 'enable', true);
+			$aList = \SnappyMail\Repository::getEnabledPackagesNames();
+			$aList[] = 'nextcloud';
+			$oConfig->Set('plugins', 'enabled_list', \implode(',', \array_unique($aList)));
+			$oConfig->Set('webmail', 'theme', 'Nextcloud@custom');
+			$bSave = true;
+		}
+		$bSave && $oConfig->Save();
+	}
 
-			try {
-				$oActions = \RainLoop\Api::Actions();
-				if (!$oActions->getMainAccountFromToken(false)) {
-					$aCredentials = SnappyMailHelper::getLoginCredentials();
-					if ($aCredentials[0] && $aCredentials[1]) {
-						$oActions->Logger()->AddSecret($aCredentials[1]);
-						$oAccount = $oActions->LoginProcess($aCredentials[0], $aCredentials[1], false);
-						if ($oAccount) {
-							$oActions->Plugins()->RunHook('login.success', array($oAccount));
-							$oActions->SetAuthToken($oAccount);
-						}
+	public static function startApp(bool $handle = false) : void
+	{
+		static::loadApp();
+
+		try {
+			$oActions = \RainLoop\Api::Actions();
+			if (!$oActions->getMainAccountFromToken(false)) {
+				$aCredentials = SnappyMailHelper::getLoginCredentials();
+				if ($aCredentials[0] && $aCredentials[1]) {
+					$oActions->Logger()->AddSecret($aCredentials[1]);
+					$oAccount = $oActions->LoginProcess($aCredentials[0], $aCredentials[1], false);
+					if ($oAccount) {
+						$oActions->Plugins()->RunHook('login.success', array($oAccount));
+						$oActions->SetAuthToken($oAccount);
 					}
 				}
-			} catch (\Throwable $e) {
-				// Ignore login failure
 			}
+		} catch (\Throwable $e) {
+			// Ignore login failure
 		}
 
 		if ($handle) {
@@ -106,13 +110,13 @@ class SnappyMailHelper
 
 	public static function encodePassword(string $sPassword, string $sSalt) : string
 	{
-		static::startApp();
+		static::loadApp();
 		return \SnappyMail\Crypt::EncryptUrlSafe($sPassword, $sSalt);
 	}
 
 	public static function decodePassword(string $sPassword, string $sSalt)/* : mixed */
 	{
-		static::startApp();
+		static::loadApp();
 		return \SnappyMail\Crypt::DecryptUrlSafe($sPassword, $sSalt);
 	}
 }
