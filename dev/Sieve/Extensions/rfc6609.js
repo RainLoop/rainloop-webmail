@@ -34,7 +34,7 @@ export class IncludeCommand extends ControlCommand
 	{
 		args.forEach(arg => {
 			if (':global' === arg || ':once' === arg || ':optional' === arg) {
-				this[arg.substr(1)] = true;
+				this[arg.slice(1)] = true;
 			} else if (arg instanceof GrammarQuotedString) {
 				this.value = arg;
 			}

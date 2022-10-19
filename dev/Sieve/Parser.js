@@ -110,7 +110,7 @@ export const parseScript = (script, name = 'script.sieve') => {
 		error = message => {
 //			throw new SyntaxError(message + ' at ' + regex.lastIndex + ' line ' + line, name, line)
 			throw new SyntaxError(message + ' on line ' + line
-				+ ' around:\n\n' + script.substr(regex.lastIndex - 20, 30), name, line)
+				+ ' around:\n\n' + script.slice(regex.lastIndex - 20, regex.lastIndex + 10), name, line)
 		},
 		pushArg = arg => {
 			command || error('Argument not part of command');
@@ -219,7 +219,7 @@ export const parseScript = (script, name = 'script.sieve') => {
 			pushArg(GrammarMultiLine.fromString(value));
 			break;
 		case T_QUOTED_STRING:
-			pushArg(new GrammarQuotedString(value.substr(1,value.length-2)));
+			pushArg(new GrammarQuotedString(value.slice(1,-1)));
 			break;
 		case T_NUMBER:
 			pushArg(new GrammarNumber(value));
@@ -229,8 +229,8 @@ export const parseScript = (script, name = 'script.sieve') => {
 		case T_BRACKET_COMMENT:
 		case T_HASH_COMMENT: {
 			let obj = (T_HASH_COMMENT == type)
-				? new GrammarHashComment(value.substr(1).trim())
-				: new GrammarBracketComment(value.substr(2, value.length-4));
+				? new GrammarHashComment(value.slice(1).trim())
+				: new GrammarBracketComment(value.slice(2, -2));
 			if (command) {
 				if (!command.comments) {
 					command.comments = [];
