@@ -1,9 +1,9 @@
 OC.L10N.register(
     "rainloop",
     {
-    "Email" : "Email",
+    "Email" : "E-posta",
     "Error" : "Error",
-    "Save" : "Save",
-    "Password" : "Password"
+    "Save" : "Salveguardar",
+    "Password" : "Contrasigno"
 },
 "nplurals=2; plural=(n != 1);");
