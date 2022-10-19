@@ -2,29 +2,22 @@
 
 snappymail-nextcloud is a plugin for Nextcloud to use the excellent SnappyMail webmail (https://snappymail.eu/).
 
-## Which branch for which version of Nextcloud?
-
-- The master branch corresponds to the latest stable version of the plugin that is suitable for Nextcloud 19 and upwards.
-- The 'up-to-nc18' corresponds to the working version of the plugin for Nextcloud 14 to 18.
-- The 'nc14' branch corresponds to a beta version of the plugin for Nextcloud 14. All the changes of 'nc14' branch were merged into master when it was deemed suitable for production.
-- The 'nc13' branch corresponds to the working version of the plugin for Nextcloud 10 to Nextcloud 13.
-
-
 Thank you to all contributors to SnappyMail for nextcloud:
-- SnappyMail Team, who initiated it
+- RainLoop Team, who initiated it
 - [pierre-alain-b](https://github.com/pierre-alain-b/rainloop-nextcloud)
 - Tab Fitts (@tabp0le)
 - Nextgen Networks (@nextgen-networks)
+- [All testers of issue 96](https://github.com/the-djmaze/snappymail/issues/96)
 
 ## How to Install
 
 Start within Nextcloud, and click on the "+ Apps" button in the upper-left corner dropdown menu:
 
-![Image1](https://github.com/pierre-alain-b/rainloop-nextcloud/blob/master/screenshots/help_a1.png)
+![Image1](https://raw.githubusercontent.com/the-djmaze/snappymail/master/integrations/nextcloud/screenshots/help_a1.png)
 
 Then, enable the SnappyMail plugin that you will find in the "Social & communication" section:
 
-![Image2](https://github.com/pierre-alain-b/rainloop-nextcloud/blob/master/screenshots/help_a2.png)
+![Image2](https://raw.githubusercontent.com/the-djmaze/snappymail/master/integrations/nextcloud/screenshots//help_a2.png)
 
 After a quick wait, SnappyMail is installed. Now you should configure it before use: open the Nextcloud admin panel (upper-right corner dropdown menu) and go to "Additionnal settings". There, click on the "Go to SnappyMail Webmail admin panel" link.
 
