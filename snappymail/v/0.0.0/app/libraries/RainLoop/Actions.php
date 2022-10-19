@@ -930,7 +930,7 @@ class Actions
 			$sClearedFileName = \substr($sClearedFileName, 0, $iMaxLength) . (empty($sExt) ? '' : '.' . $sExt);
 		}
 
-		return \MailSo\Base\Utils::ClearFileName(\MailSo\Base\Utils::Utf8Clear($sClearedFileName));
+		return \MailSo\Base\Utils::SecureFileName(\MailSo\Base\Utils::Utf8Clear($sClearedFileName));
 	}
 
 	protected function getUploadErrorMessageByCode(int $iError, int &$iClientError): string
