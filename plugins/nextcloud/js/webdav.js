@@ -29,21 +29,40 @@
 		getDavElementByTagName = (parent, localName) => getDavElementsByTagName(parent, localName)?.item(0),
 		getElementByTagName = (parent, localName) => +parent.getElementsByTagName(localName)?.item(0);
 
-	function fetchFiles(xml, path)
+	function davFetch(path, options)
 	{
 		if (!parent.OC.requestToken) {
 			return Promise.reject(new Error('OC.requestToken missing'));
 		}
 		let cfg = rl.settings.get('Nextcloud');
-		return fetch(cfg.WebDAV + '/files/' + cfg.UID + path, {
-			method: 'PROPFIND',
+		options = Object.assign({
 			mode: 'same-origin',
 			cache: 'no-cache',
 			redirect: 'error',
 			credentials: 'same-origin',
+			headers: {}
+		}, options);
+		options.headers.requesttoken = parent.OC.requestToken;
+		return fetch(cfg.WebDAV + '/files/' + cfg.UID + path, options);
+	}
+
+	function createDirectory(path)
+	{
+		return davFetch(path, {
+			method: 'MKCOL'
+		})
+		.then(response => response.status == 201);
+	}
+
+	function fetchFiles(xml, path)
+	{
+		if (!parent.OC.requestToken) {
+			return Promise.reject(new Error('OC.requestToken missing'));
+		}
+		return davFetch(path, {
+			method: 'PROPFIND',
 			headers: {
-				'Content-Type': 'application/xml; charset=utf-8',
-				requesttoken: parent.OC.requestToken
+				'Content-Type': 'application/xml; charset=utf-8'
 			},
 			body: xml
 		})
@@ -87,6 +106,49 @@
 		});
 	}
 
+	function buildTree(view, parent, items)
+	{
+		let empty = true;
+		if (items.length) {
+			items.forEach(item => {
+				if (item.isFile) {
+					if (view.files()) {
+						empty = false;
+						// TODO show files
+					}
+				} else {
+					empty = false;
+					let li = document.createElement('li'),
+						details = document.createElement('details'),
+						summary = document.createElement('summary'),
+						ul = document.createElement('ul'),
+						btn = document.createElement('button');
+					li.item_name = item.name;
+					details.addEventListener('toggle', () => {
+						if (!ul.children.length) {
+							fetchFiles(propertyRequestBody, item.name).then(items => buildTree(view, ul, items));
+						}
+					});
+					summary.textContent = '📁 ' + item.name.replace(/^.*\/([^/]+)$/, '$1');
+					btn.textContent = 'select';
+					btn.className = 'button-vue';
+					btn.style.marginLeft = '1em';
+					summary.append(btn);
+					details.append(summary);
+					details.append(ul);
+//					a.append('- ' + item.name.replace(/^\/+/, ''));
+					li.append(details);
+					parent.append(li);
+				}
+			});
+		}
+		if (empty) {
+			let li = document.createElement('li');
+			li.append('(empty)');
+			parent.append(li);
+		}
+	}
+
 	class NextcloudFilesPopupView extends rl.pluginPopupView {
 		constructor() {
 			super('NextcloudFiles');
@@ -99,10 +161,12 @@
 		onBuild(dom) {
 			this.tree = dom.querySelector('#sm-nc-files-tree');
 			this.tree.addEventListener('click', event => {
-				let li = event.target.closest('li');
-				if (li.item_name) {
-					this.close();
-					this.fResolve(li.item_name);
+				if (event.target.matches('button')) {
+					let li = event.target.closest('li');
+					if (li.item_name) {
+						this.close();
+						this.fResolve(li.item_name);
+					}
 				}
 			});
 		}
@@ -114,20 +178,7 @@
 
 			this.tree.innerHTML = '';
 			fetchFiles(propertyRequestBody, '/').then(items => {
-				items.forEach(item => {
-					if (item.isFile) {
-						if (files) {
-							// TODO show files
-						}
-					} else {
-						let li = document.createElement('li'),
-							a = document.createElement('a');
-						li.item_name = item.name;
-						a.append('- ' + item.name.replace(/^\/+/, ''));
-						li.append(a);
-						this.tree.append(li);
-					}
-				});
+				buildTree(this, this.tree, items);
 			}).catch(err => console.error(err))
 		}
 
