@@ -45,16 +45,19 @@ This stylesheet is used when SnappyMail runs in embed mode.
 	margin: 0;
 	padding: 3px;
 }
+
 button.btn:not(.button-vue) {
 	min-height: auto;
 	height: auto;
 	margin: 0;
 	padding: 4px 12px;
 }
+
 #rl-app .form-horizontal .control-group > :not(label)
 {
 	margin-left: 20px;
 }
+
 #rl-app .LoginView .fontastic + input {
 	padding-left: 30px;
 }
@@ -81,8 +84,8 @@ button.btn:not(.button-vue) {
 	background-color: inherit;
 }
 
-#appmenu {
-	margin: 0;
+#rl-app table {
+	white-space: inherit;
 }
 
 @media print {
