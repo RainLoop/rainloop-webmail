@@ -55,7 +55,7 @@ class Provider implements IProvider
 	public function search(IUser $user, ISearchQuery $query): SearchResult
 	{
 		$result = [];
-		if (1 < \strlen(\trim($query->getTerm()))) {
+		if (2 > \strlen(\trim($query->getTerm()))) {
 			return SearchResult::complete($this->getName(), $result);
 		}
 		SnappyMailHelper::startApp();

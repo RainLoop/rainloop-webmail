@@ -88,6 +88,10 @@ button.btn:not(.button-vue) {
 	white-space: inherit;
 }
 
+body > header ul {
+	margin: 0;
+}
+
 @media print {
 	#body-user #header {
 		display: none;
