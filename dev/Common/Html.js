@@ -31,12 +31,12 @@ const
 	 * https://github.com/M66B/FairEmail/blob/master/app/src/main/java/eu/faircode/email/UriHelper.java
 	 */
 	// eslint-disable-next-line max-len
-	stripParams = /^(utm_|ec_|fbclid|mc_eid|mkt_tok|_hsenc|vero_id|oly_enc_id|oly_anon_id|__s|Referrer|mailing|elq|bch|trc|ref|correlation_id|e$)/i,
+	stripParams = /^(utm_|ec_|fbclid|mc_eid|mkt_tok|_hsenc|vero_id|oly_enc_id|oly_anon_id|__s|Referrer|mailing|elq|bch|trc|ref|correlation_id|e$|pd_|pf_)/i,
 	urlGetParam = (url, name) => new URL(url).searchParams.get(name) || url,
 	base64Url = data => atob(data.replace(/_/g,'/').replace(/-/g,'+')),
 	stripTracking = url => {
 		try {
-			url = url
+			let nurl = url
 				.replace(/tracking\.(printabout\.nl[^?]+)\?.*/i, (...m) => m[1])
 				.replace(/(zalando\.nl[^?]+)\?.*/i, (...m) => m[1])
 				.replace(/^.+(awstrack\.me|redditmail\.com)\/.+(https:%2F%2F[^/]+).*/i, (...m) => decodeURIComponent(m[2]))
@@ -44,6 +44,8 @@ const
 				.replace(/^.+delivery-status\.com.+$/i, () => urlGetParam(url, 'fb'))
 				.replace(/^.+go\.dhlparcel\.nl.+\/([A-Za-z0-9_-]+)$/i, (...m) => base64Url(m[1]))
 				.replace(/^(.+mopinion\.com.+)\?.*$/i, (...m) => m[1])
+				.replace(/^.+sellercentral\.amazon\.com\/nms\/redirect.+$/i, () => base64Url(urlGetParam(url, 'u')))
+				.replace(/^.+amazon\.com\/gp\/r\.html.+$/i, () => urlGetParam(url, 'U'))
 				// Mandrill
 				.replace(/^.+\/track\/click\/.+\?p=.+$/i, () => {
 					let d = urlGetParam(url, 'p');
@@ -59,16 +61,17 @@ const
 				})
 				// Remove invalid URL characters
 				.replace(/[\s<>]+/gi, '');
-			url = new URL(url);
-			let s = url.searchParams;
+			nurl = new URL(nurl);
+			let s = nurl.searchParams;
 			[...s.keys()].forEach(key => stripParams.test(key) && s.delete(key));
-			return url.toString();
+			return nurl.toString();
 		} catch (e) {
 			console.dir({
 				error:e,
 				url:url
 			});
 		}
+		return url;
 	};
 
 export const
