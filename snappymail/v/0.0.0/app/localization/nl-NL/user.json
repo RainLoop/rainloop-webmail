@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Thema's",
-		"LEGEND_THEMES_CUSTOM": "Aangepaste thema configuratie",
-		"LABEL_CUSTOM_TYPE": "Soort",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Licht",
-		"LABEL_CUSTOM_TYPE_DARK": "Donker",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Achtergrond",
+		"LABEL_BACKGROUND": "Achtergrond",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Upload achtergrond afbeelding (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Bestand is te groot",
 		"ERROR_FILE_TYPE_ERROR": "Onjuist bestandstype (alleen JPG and PNG)",

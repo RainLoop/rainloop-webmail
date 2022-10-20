@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Motywy",
-		"LEGEND_THEMES_CUSTOM": "Konfiguracja własnego motywu",
-		"LABEL_CUSTOM_TYPE": "Typ",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Jasny",
-		"LABEL_CUSTOM_TYPE_DARK": "Ciemny",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Tło",
+		"LABEL_BACKGROUND": "Tło",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Prześlij własne tło (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Plik jest za duży",
 		"ERROR_FILE_TYPE_ERROR": "Nieprawidłowy format pliku (obsługiwane są wyłącznie pliki JPG i PNG)",

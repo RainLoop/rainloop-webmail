@@ -303,7 +303,7 @@ trait User
 		}
 		else
 		{
-			$oSettings->SetConf('Language', $this->ValidateLanguage($oConfig->Get('webmail', 'language', 'en')));
+//			$oSettings->SetConf('Language', $this->ValidateLanguage($oConfig->Get('webmail', 'language', 'en')));
 		}
 
 		if ($this->GetCapa(Capa::THEMES))
@@ -311,10 +311,13 @@ trait User
 			$this->setSettingsFromParams($oSettingsLocal, 'Theme', 'string', function ($sTheme) use ($self) {
 				return $self->ValidateTheme($sTheme);
 			});
+			$this->setSettingsFromParams($oSettings, 'fontSansSerif', 'string');
+			$this->setSettingsFromParams($oSettings, 'fontSerif', 'string');
+			$this->setSettingsFromParams($oSettings, 'fontMono', 'string');
 		}
 		else
 		{
-			$oSettingsLocal->SetConf('Theme', $this->ValidateTheme($oConfig->Get('webmail', 'theme', 'Default')));
+//			$oSettingsLocal->SetConf('Theme', $this->ValidateTheme($oConfig->Get('webmail', 'theme', 'Default')));
 		}
 
 		$this->setSettingsFromParams($oSettings, 'MessagesPerPage', 'int', function ($iValue) {

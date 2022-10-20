@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Temi",
-		"LEGEND_THEMES_CUSTOM": "Configurazione del tema personalizzato",
-		"LABEL_CUSTOM_TYPE": "Tipo",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Chiaro",
-		"LABEL_CUSTOM_TYPE_DARK": "Scuro",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Sfondo",
+		"LABEL_BACKGROUND": "Sfondo",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Carica immagine di sfondo (.jpg o .png)",
 		"ERROR_FILE_IS_TOO_BIG": "Il file è più grande di 1MB",
 		"ERROR_FILE_TYPE_ERROR": "Tipo di file invalido (solo .jpg o .png)",

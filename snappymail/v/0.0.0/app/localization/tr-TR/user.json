@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Temalar",
-		"LEGEND_THEMES_CUSTOM": "Özel Tema Yapılandırması",
-		"LABEL_CUSTOM_TYPE": "Tip",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Aydınlık",
-		"LABEL_CUSTOM_TYPE_DARK": "Koyu",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Arka Plan",
+		"LABEL_BACKGROUND": "Arka Plan",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Arka Plan Resmi Yükleyin(JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Dosya çok büyük (1MB+)",
 		"ERROR_FILE_TYPE_ERROR": "Geçersiz dosya tipi (sadece JPG ve PNG kabul edilir)",

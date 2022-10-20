@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Þemu",
-		"LEGEND_THEMES_CUSTOM": "Sérsniðin þemastilling",
-		"LABEL_CUSTOM_TYPE": "Tegund",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Ljóst",
-		"LABEL_CUSTOM_TYPE_DARK": "Dökkt",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Bakgrunnur",
+		"LABEL_BACKGROUND": "Bakgrunnur",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Senda inn bakgrunnsmynd (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Skrá er of stór",
 		"ERROR_FILE_TYPE_ERROR": "Röng skráartegund (aðeins JPG and PNG)",

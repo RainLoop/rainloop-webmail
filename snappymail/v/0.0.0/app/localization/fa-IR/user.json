@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "پوسته‌ها",
-		"LEGEND_THEMES_CUSTOM": "پیکربندی سفارشی پوسته",
-		"LABEL_CUSTOM_TYPE": "نوع",
-		"LABEL_CUSTOM_TYPE_LIGHT": "روشن",
-		"LABEL_CUSTOM_TYPE_DARK": "تیره",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "پشت زمینه",
+		"LABEL_BACKGROUND": "پشت زمینه",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "بارگذاری تصاویر پشت زمینه (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "اندازه فایل بیش از حد بزرگ است",
 		"ERROR_FILE_TYPE_ERROR": "نوع فایل نامعتبر (فقط PNG و JPG)",

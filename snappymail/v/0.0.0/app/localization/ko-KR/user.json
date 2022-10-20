@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "테마",
-		"LEGEND_THEMES_CUSTOM": "사용자 지정 테마 설정",
-		"LABEL_CUSTOM_TYPE": "유형",
-		"LABEL_CUSTOM_TYPE_LIGHT": "밝음",
-		"LABEL_CUSTOM_TYPE_DARK": "어두움",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "배경",
+		"LABEL_BACKGROUND": "배경",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "배경 이미지 업로드 (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "파일이 너무 큽니다",
 		"ERROR_FILE_TYPE_ERROR": "유효하지 않은 파일 형식 (JPG 또는 PNG만 가능)",

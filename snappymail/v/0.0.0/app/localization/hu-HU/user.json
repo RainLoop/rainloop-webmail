@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Témák",
-		"LEGEND_THEMES_CUSTOM": "Saját téma beállítások",
-		"LABEL_CUSTOM_TYPE": "Típus",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Világos",
-		"LABEL_CUSTOM_TYPE_DARK": "Sötét",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Háttér",
+		"LABEL_BACKGROUND": "Háttér",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Háttérkép feltöltés (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "A fájl túl nagy",
 		"ERROR_FILE_TYPE_ERROR": "Érvénytelen fájl típus (csak JPG és PNG lehet)",

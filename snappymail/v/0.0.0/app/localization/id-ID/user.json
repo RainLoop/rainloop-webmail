@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Tema",
-		"LEGEND_THEMES_CUSTOM": "Konfigurasi tema khusus",
-		"LABEL_CUSTOM_TYPE": "Tipe",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Terang",
-		"LABEL_CUSTOM_TYPE_DARK": "Gelap",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Latar",
+		"LABEL_BACKGROUND": "Latar",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Unggah gambar latar (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "File terlalu besar",
 		"ERROR_FILE_TYPE_ERROR": "Tipe file tidak sah (JPG dan PNG saja)",

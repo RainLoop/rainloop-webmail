@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Tema",
-		"LEGEND_THEMES_CUSTOM": "Selvvalgt tema",
-		"LABEL_CUSTOM_TYPE": "Type",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Lys",
-		"LABEL_CUSTOM_TYPE_DARK": "Mørk",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Bakgrunn",
+		"LABEL_BACKGROUND": "Bakgrunn",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Last opp bakgrunnsbilde (.jpg eller .png)",
 		"ERROR_FILE_IS_TOO_BIG": "Fila er for stor (1mb +)",
 		"ERROR_FILE_TYPE_ERROR": "Ugyldig filtype (bruk .jpg eller .png)",

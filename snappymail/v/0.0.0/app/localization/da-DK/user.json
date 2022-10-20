@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Temaer",
-		"LEGEND_THEMES_CUSTOM": "Brugerdefineret temakonfiguration",
-		"LABEL_CUSTOM_TYPE": "Type",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Lys",
-		"LABEL_CUSTOM_TYPE_DARK": "Mørk",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Baggrund",
+		"LABEL_BACKGROUND": "Baggrund",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Upload baggrundsbillede (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Fil for stor",
 		"ERROR_FILE_TYPE_ERROR": "Forkert filtype (kun JPG og PNG )",

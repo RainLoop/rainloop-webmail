@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "テーマ",
-		"LEGEND_THEMES_CUSTOM": "カスタムテーマ設定",
-		"LABEL_CUSTOM_TYPE": "種類",
-		"LABEL_CUSTOM_TYPE_LIGHT": "ライト",
-		"LABEL_CUSTOM_TYPE_DARK": "ダーク",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "背景",
+		"LABEL_BACKGROUND": "背景",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "背景画像をアップロード(JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "ファイルが大きすぎます",
 		"ERROR_FILE_TYPE_ERROR": "無効なファイル種類(JPG\/PNG のみ)",

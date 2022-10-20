@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Темы Оформления",
-		"LEGEND_THEMES_CUSTOM": "Настройка Пользовательской Темы",
-		"LABEL_CUSTOM_TYPE": "Тип Темы",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Светлая",
-		"LABEL_CUSTOM_TYPE_DARK": "Темная",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Картинка на фоне",
+		"LABEL_BACKGROUND": "Картинка на фоне",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Загрузить фоновую картинку (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Файл слишком большой",
 		"ERROR_FILE_TYPE_ERROR": "Неверный тип файла (только JPG и PNG)",

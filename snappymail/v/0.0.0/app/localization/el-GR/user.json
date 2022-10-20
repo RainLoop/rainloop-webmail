@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Θέματα",
-		"LEGEND_THEMES_CUSTOM": "Διαμόρφωση προσαρμοσμένου θέματος",
-		"LABEL_CUSTOM_TYPE": "Τύπος",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Ανοικτόχρωμο",
-		"LABEL_CUSTOM_TYPE_DARK": "Σκουρόχρωμο",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Υπόβαθρο",
+		"LABEL_BACKGROUND": "Υπόβαθρο",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Μεταφόρτωση εικόνας υποβάθρου (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Το αρχείο είναι πολύ μεγάλο",
 		"ERROR_FILE_TYPE_ERROR": "Άκυρος τύπος αρχείου (μόνο JPG και PNG)",

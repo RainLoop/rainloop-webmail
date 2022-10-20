@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Motivy",
-		"LEGEND_THEMES_CUSTOM": "Správa vlastního motivu",
-		"LABEL_CUSTOM_TYPE": "Typ",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Světlý",
-		"LABEL_CUSTOM_TYPE_DARK": "Tmavý",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Pozadí",
+		"LABEL_BACKGROUND": "Pozadí",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Nahrát obrázek pozadí (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Soubor je příliš velký",
 		"ERROR_FILE_TYPE_ERROR": "Nesprávný typ souboru (povolené jsou pouze JPG a PNG)",

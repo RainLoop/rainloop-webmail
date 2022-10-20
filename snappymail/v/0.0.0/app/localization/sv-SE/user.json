@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Teman",
-		"LEGEND_THEMES_CUSTOM": "Anpassad temakonfiguration",
-		"LABEL_CUSTOM_TYPE": "Typ",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Ljus",
-		"LABEL_CUSTOM_TYPE_DARK": "Mörk",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Bakgrund",
+		"LABEL_BACKGROUND": "Bakgrund",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Ladda upp bakgrundsbild (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Filen är för stor",
 		"ERROR_FILE_TYPE_ERROR": "Ogiltig fil typ (endast JPG och PNG)",

@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Tematică",
-		"LEGEND_THEMES_CUSTOM": "Setați o temă particularizată",
-		"LABEL_CUSTOM_TYPE": "Tip Teme",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Lumina",
-		"LABEL_CUSTOM_TYPE_DARK": "Umbră",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Imaginea de pe fundal",
+		"LABEL_BACKGROUND": "Imaginea de pe fundal",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Încărcați o imagine de fundal (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Fișier prea mare",
 		"ERROR_FILE_TYPE_ERROR": "Tip de fișier invalid (numai JPG sau PNG)",

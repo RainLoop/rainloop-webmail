@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Teemat",
-		"LEGEND_THEMES_CUSTOM": "Muokatun teeman asetukset",
-		"LABEL_CUSTOM_TYPE": "Tyyppi",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Vaalea",
-		"LABEL_CUSTOM_TYPE_DARK": "Tumma",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Tausta",
+		"LABEL_BACKGROUND": "Tausta",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Lataa taustakuva (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Tiedosto on liian iso",
 		"ERROR_FILE_TYPE_ERROR": "Väärä tiedostotyyppi (ainoastaan JPG ja PNG)",

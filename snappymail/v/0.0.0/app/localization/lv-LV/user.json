@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Tēmas",
-		"LEGEND_THEMES_CUSTOM": "Tēmas konfigurācija",
-		"LABEL_CUSTOM_TYPE": "Tips",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Gaišs",
-		"LABEL_CUSTOM_TYPE_DARK": "Tumšs",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Fons",
+		"LABEL_BACKGROUND": "Fons",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Ielādēt fona attēlu (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Fails ir par lielu",
 		"ERROR_FILE_TYPE_ERROR": "Nepareizs faila tips (Tikai JPG un PNG)",

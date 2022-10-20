@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Phông nền",
-		"LEGEND_THEMES_CUSTOM": "Tùy chỉnh phông nền",
-		"LABEL_CUSTOM_TYPE": "Kiểu",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Nền sáng",
-		"LABEL_CUSTOM_TYPE_DARK": "Nền tối",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Hình nền",
+		"LABEL_BACKGROUND": "Hình nền",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Tải hình nền lên (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Tập tin hình ảnh quá lớn",
 		"ERROR_FILE_TYPE_ERROR": "Định dạng tập tin hình ảnh không hợp lệ (chỉ tải lên được JPG và PNG)",

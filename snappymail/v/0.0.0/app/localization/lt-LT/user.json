@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Temos",
-		"LEGEND_THEMES_CUSTOM": "Individualizuotos temos konfigūravimas",
-		"LABEL_CUSTOM_TYPE": "Tipas",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Šviesi",
-		"LABEL_CUSTOM_TYPE_DARK": "Tamsi",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Fonas",
+		"LABEL_BACKGROUND": "Fonas",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Įkelti fono paveiksliuką (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Per didelis failas",
 		"ERROR_FILE_TYPE_ERROR": "Netinkamas failo tipas (tik JPG ir PNG)",

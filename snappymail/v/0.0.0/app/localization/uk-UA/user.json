@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Теми Оформлення",
-		"LEGEND_THEMES_CUSTOM": "Налаштування Користувацької Теми",
-		"LABEL_CUSTOM_TYPE": "Тип Теми",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Світла",
-		"LABEL_CUSTOM_TYPE_DARK": "Темна",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Картинка на фоні",
+		"LABEL_BACKGROUND": "Картинка на фоні",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Завантажити фонову картинку (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Файл надто великий",
 		"ERROR_FILE_TYPE_ERROR": "Невірний тип файлу (тільки JPG и PNG)",

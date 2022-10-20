@@ -22,6 +22,25 @@ addObservablesTo(themeBackground, {
 
 export class UserSettingsThemes /*extends AbstractViewSettings*/ {
 	constructor() {
+		this.fontSansSerif = ThemeStore.fontSansSerif;
+		this.fontSerif = ThemeStore.fontSerif;
+		this.fontMono = ThemeStore.fontMono;
+		ThemeStore.fontSansSerif.subscribe(value => {
+			Remote.saveSettings(null, {
+				fontSansSerif: value
+			});
+		});
+		ThemeStore.fontSerif.subscribe(value => {
+			Remote.saveSettings(null, {
+				fontSerif: value
+			});
+		});
+		ThemeStore.fontMono.subscribe(value => {
+			Remote.saveSettings(null, {
+				fontMono: value
+			});
+		});
+
 		this.theme = ThemeStore.theme;
 		this.themes = ThemeStore.themes;
 		this.themesObjects = ko.observableArray();

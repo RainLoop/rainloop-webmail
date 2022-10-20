@@ -4,6 +4,37 @@
 	--fontMono: "Liberation Mono", Monaco, Menlo, Consolas, "Courier New", FreeMono, Courier, monospace;
 }
 
+#rl-app.fontArial {
+	--fontSans: "Nimbus Sans L", "Liberation sans", "Arial Unicode MS", Arial, Helvetica, Garuda, Utkal, FreeSans, sans-serif;
+}
+#rl-app.fontTahoma {
+	--fontSans: "Luxi Sans", Tahoma, Loma, Geneva, Meera, sans-serif;
+}
+#rl-app.fontTrebuchet {
+	--fontSans: "DejaVu Sans Condensed", Trebuchet, "Trebuchet MS", sans-serif;
+}
+#rl-app.fontLucida {
+	--fontSans: "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "DejaVu LGC Sans", sans-serif;
+}
+#rl-app.fontVerdana {
+	--fontSans: "DejaVu Sans", Verdana, Geneva, "Bitstream Vera Sans", "DejaVu LGC Sans", sans-serif;
+}
+#rl-app.fontMonoCourier {
+	--fontMono: "Liberation Mono", "Courier New", FreeMono, Courier, monospace;
+}
+#rl-app.fontMonoLucida {
+	--fontMono: "DejaVu Sans Mono", "DejaVu LGC Sans Mono", "Bitstream Vera Sans Mono", "Lucida Console", Monaco, monospace;
+}
+#rl-app.fontSerifTimes {
+	--fontSerif: "Nimbus Roman No9 L", "Times New Roman", Times, FreeSerif, serif;
+}
+#rl-app.fontSerifPalatino {
+	--fontSerif: "Bitstream Charter", "Palatino Linotype", Palatino, Palladio, "URW Palladio L", "Book Antiqua", Times, serif;
+}
+#rl-app.fontSerifGeorgia {
+	--fontSerif: "URW Palladio L", Georgia, Times, serif;
+}
+
 html, body {
 	margin: 0;
 	padding: 0;

@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Themen",
-		"LEGEND_THEMES_CUSTOM": "Konfiguration der selbsterstellten Themen",
-		"LABEL_CUSTOM_TYPE": "Typ",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Hell",
-		"LABEL_CUSTOM_TYPE_DARK": "Dunkel",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Hintergrund",
+		"LABEL_BACKGROUND": "Hintergrund",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Hintergrundbild hochladen (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Datei ist zu groß",
 		"ERROR_FILE_TYPE_ERROR": "Ungültiger Dateityp (nur JPG und PNG)",

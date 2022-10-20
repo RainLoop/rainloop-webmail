@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Теми",
-		"LEGEND_THEMES_CUSTOM": "Специфична настройка на темата",
-		"LABEL_CUSTOM_TYPE": "Тип",
-		"LABEL_CUSTOM_TYPE_LIGHT": "Светла",
-		"LABEL_CUSTOM_TYPE_DARK": "Тъмна",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "Фон",
+		"LABEL_BACKGROUND": "Фон",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Качи снимка за фон (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Файла е прекалено голям",
 		"ERROR_FILE_TYPE_ERROR": "Невалиден тип (Само JPG или PNG)",

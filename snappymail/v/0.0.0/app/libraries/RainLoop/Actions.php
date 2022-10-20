@@ -805,6 +805,10 @@ class Actions
 					$aResult['Resizer5Width'] = (int)$oSettings->GetConf('Resizer5Width', 0);
 					$aResult['Resizer5Height'] = (int)$oSettings->GetConf('Resizer5Height', 0);
 
+					$aResult['fontSansSerif'] = $oSettings->GetConf('fontSansSerif', '');
+					$aResult['fontSerif'] = $oSettings->GetConf('fontSerif', '');
+					$aResult['fontMono'] = $oSettings->GetConf('fontMono', '');
+
 					if (!$this->GetCapa(Enumerations\Capa::AUTOLOGOUT)) {
 						$aResult['AutoLogout'] = 0;
 					}

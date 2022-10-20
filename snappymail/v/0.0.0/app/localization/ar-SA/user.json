@@ -423,11 +423,8 @@
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "المظاهر العامة",
-		"LEGEND_THEMES_CUSTOM": "تجهيز المظهر المخصص",
-		"LABEL_CUSTOM_TYPE": "النوع",
-		"LABEL_CUSTOM_TYPE_LIGHT": "فاتح",
-		"LABEL_CUSTOM_TYPE_DARK": "غامق",
-		"LABEL_CUSTOM_BACKGROUND_IMAGE": "الخلفية",
+		"LABEL_BACKGROUND": "الخلفية",
+		"LABEL_FONTS": "Fonts",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "(JPG, PNG)حمل صورة الخلفية",
 		"ERROR_FILE_IS_TOO_BIG": "حجم الملف كبير جداً",
 		"ERROR_FILE_TYPE_ERROR": "مسموحة فقط(JPG,PNG)نوع الملف خطأ",
