@@ -53,6 +53,13 @@ class AdminSettings implements ISettings
 
 		$parameters['snappymail-debug'] = $oConfig->Get('debug', 'enable', false);
 
+		// Check for nextcloud plugin update, if so then update
+		foreach (\SnappyMail\Repository::getPackagesList()['List'] as $plugin) {
+			if ('nextcloud' == $plugin['id'] && $plugin['canBeUpdated']) {
+				\SnappyMail\Repository::installPackage('plugin', 'nextcloud');
+			}
+		}
+
 		\OCP\Util::addScript('snappymail', 'snappymail');
 		return new TemplateResponse('snappymail', 'admin-local', $parameters);
 	}
