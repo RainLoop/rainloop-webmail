@@ -153,7 +153,6 @@
 		constructor() {
 			super('NextcloudFiles');
 			this.addObservables({
-				folder: '',
 				files: false
 			});
 		}
@@ -164,8 +163,8 @@
 				if (event.target.matches('button')) {
 					let li = event.target.closest('li');
 					if (li.item_name) {
+						this.select = li.item_name;
 						this.close();
-						this.fResolve(li.item_name);
 					}
 				}
 			});
@@ -173,6 +172,7 @@
 
 		// Happens after showModal()
 		beforeShow(files, fResolve) {
+			this.select = '';
 			this.files(!!files);
 			this.fResolve = fResolve;
 
@@ -182,10 +182,8 @@
 			}).catch(err => console.error(err))
 		}
 
-		onClose() {
-			this.close();
-			this.fResolve();
-			return false;
+		onHide() {
+			this.fResolve(this.select);
 		}
 /*
 	onShow() {}     // Happens after  showModal()

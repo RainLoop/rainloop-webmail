@@ -32,6 +32,8 @@
 								view.saveNextcloudLoading(false);
 								view.saveNextcloudError(true);
 							});
+						} else {
+							view.saveNextcloudLoading(false);
 						}
 					});
 				}
