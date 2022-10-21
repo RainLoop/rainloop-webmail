@@ -6,10 +6,9 @@
 			let view = e.detail;
 			view.nextcloudAttach = () => {
 				rl.ncFiles.selectFiles().then(files => {
-					files.forEach(file => {
-						let id = Jua?.randomId() || file.etag,
-							attachment = view.addAttachmentHelper(
-								id.etag,
+					files && files.forEach(file => {
+						let attachment = view.addAttachmentHelper(
+								Jua?.randomId(),
 								file.name.replace(/^.*\/([^/]+)$/, '$1'),
 								file.size
 							);
