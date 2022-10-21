@@ -53,7 +53,7 @@
   content: "✔";
 }
 .icon-file::before {
-  content: "\e02f";
+  content: "🗎";
 }
 .icon-file-code::before {
   content: "\e030";
@@ -68,7 +68,7 @@
   content: "\e033";
 }
 .icon-file-text::before {
-  content: "\e034"; /* 🖹 | 🖺 */
+  content: "📄";
 }
 .icon-file-image::before {
   content: "\e036"; /* 🖻 */
