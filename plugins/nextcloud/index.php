@@ -49,18 +49,6 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/*
 	\OC::$server->getCalendarManager();
 	\OC::$server->getLDAPProvider();
-
-	$oFiles = \OCP\Files::getStorage('files');
-	if ($oFiles and $oFiles->is_dir('/')) {
-		$dh = $oFiles->opendir('/');
-		if (\is_resource($dh)) {
-			while (($file = \readdir($dh)) !== false) {
-				if ($file != '.' && $file != '..') {
-					// DO THINGS
-				}
-			}
-		}
-	}
 	*/
 
 	public function NextcloudAttachFile() : array

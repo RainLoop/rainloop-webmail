@@ -96,7 +96,7 @@ class Application extends App implements IBootstrap
 		});
 
 		$userSession->listen('\OC\User', 'logout', function($user) {
-			$oSession = \OC::$server->getSession()['snappymail-password'] = '';
+			\OC::$server->getSession()['snappymail-password'] = '';
 			SnappyMailHelper::loadApp();
 			\RainLoop\Api::LogoutCurrentLogginedUser();
 		});
