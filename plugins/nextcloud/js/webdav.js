@@ -50,8 +50,7 @@
 	{
 		return davFetch(path, {
 			method: 'MKCOL'
-		})
-		.then(response => response.status == 201);
+		});
 	}
 
 	function fetchFiles(xml, path)
@@ -106,30 +105,28 @@
 		});
 	}
 
-	function buildTree(view, parent, items)
+	function buildTree(view, parent, items, path)
 	{
-		let empty = true;
 		if (items.length) {
 			items.forEach(item => {
 				if (item.isFile) {
 					if (view.files()) {
-						empty = false;
 						// TODO show files
 					}
 				} else {
-					empty = false;
 					let li = document.createElement('li'),
 						details = document.createElement('details'),
 						summary = document.createElement('summary'),
 						ul = document.createElement('ul'),
 						btn = document.createElement('button');
-					li.item_name = item.name;
+					btn.item_name = item.name;
 					details.addEventListener('toggle', () => {
 						if (!ul.children.length) {
-							fetchFiles(propertyRequestBody, item.name).then(items => buildTree(view, ul, items));
+							fetchFiles(propertyRequestBody, item.name).then(items => buildTree(view, ul, items, item.name));
 						}
 					});
 					summary.textContent = '📁 ' + item.name.replace(/^.*\/([^/]+)$/, '$1');
+					btn.name = 'select';
 					btn.textContent = 'select';
 					btn.className = 'button-vue';
 					btn.style.marginLeft = '1em';
@@ -142,9 +139,17 @@
 				}
 			});
 		}
-		if (empty) {
-			let li = document.createElement('li');
-			li.append('(empty)');
+		if (!view.files()) {
+			let li = document.createElement('li'),
+				input = document.createElement('input'),
+				btn = document.createElement('button');
+			btn.name = 'create';
+			btn.textContent = 'create & select';
+			btn.className = 'button-vue';
+			btn.item_name = path;
+			btn.input = input;
+			li.append(input);
+			li.append(btn);
 			parent.append(li);
 		}
 	}
@@ -160,11 +165,22 @@
 		onBuild(dom) {
 			this.tree = dom.querySelector('#sm-nc-files-tree');
 			this.tree.addEventListener('click', event => {
-				if (event.target.matches('button')) {
-					let li = event.target.closest('li');
-					if (li.item_name) {
-						this.select = li.item_name;
+				let el = event.target;
+				if (el.matches('button')) {
+					if ('select' == el.name) {
+						this.select = el.item_name;
 						this.close();
+					} else if ('create' == el.name) {
+						let name = el.input.value.replace(/[|\\?*<":>+[]\/&\s]/g, '');
+						if (name.length) {
+							name = el.item_name + '/' + name;
+							createDirectory(name).then(response => {
+								if (response.status == 201) {
+									this.select = name;
+									this.close();
+								}
+							});
+						}
 					}
 				}
 			});
@@ -178,7 +194,7 @@
 
 			this.tree.innerHTML = '';
 			fetchFiles(propertyRequestBody, '/').then(items => {
-				buildTree(this, this.tree, items);
+				buildTree(this, this.tree, items, '/');
 			}).catch(err => console.error(err))
 		}
 
