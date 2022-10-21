@@ -63,6 +63,10 @@ class Application extends App implements IBootstrap
 
 	public function boot(IBootContext $context): void
 	{
+		if (!\is_dir(\rtrim(\trim(\OC::$server->getSystemConfig()->getValue('datadirectory', '')), '\\/') . '/appdata_snappymail')) {
+			return;
+		}
+
 		$container = $this->getContainer();
 		$container->query('OCP\INavigationManager')->add(function () use ($container) {
 			$urlGenerator = $container->query('OCP\IURLGenerator');

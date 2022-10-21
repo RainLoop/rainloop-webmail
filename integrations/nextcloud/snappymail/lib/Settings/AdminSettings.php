@@ -36,17 +36,8 @@ class AdminSettings implements ISettings
 		$oConfig = \RainLoop\Api::Config();
 		$passfile = APP_PRIVATE_DATA . 'admin_password.txt';
 		$sPassword = $oConfig->Get('security', 'admin_password', '');
-		if (!$sPassword) {
-			$sPassword = \substr(\base64_encode(\random_bytes(16)), 0, 12);
-			\RainLoop\Utils::saveFile($passfile, $sPassword . "\n");
-			$oConfig->SetPassword($sPassword);
-			$oConfig->Save();
-		} else if (\is_file($passfile)) {
+		if (\is_file($passfile)) {
 			$sPassword = \file_get_contents($passfile);
-		} else {
-			$sPassword = '';
-		}
-		if ($sPassword) {
 			$parameters['snappymail-admin-panel-link'] .= SnappyMailHelper::getAppUrl().'?admin#/security';
 		}
 		$parameters['snappymail-admin-password'] = $sPassword;
