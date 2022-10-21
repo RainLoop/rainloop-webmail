@@ -109,28 +109,26 @@
 	{
 		if (items.length) {
 			items.forEach(item => {
-				if (item.isFile) {
-					if (view.files()) {
-						// TODO show files
-					}
-				} else {
+				if (!item.isFile) {
 					let li = document.createElement('li'),
 						details = document.createElement('details'),
 						summary = document.createElement('summary'),
-						ul = document.createElement('ul'),
-						btn = document.createElement('button');
-					btn.item_name = item.name;
+						ul = document.createElement('ul');
 					details.addEventListener('toggle', () => {
-						if (!ul.children.length) {
-							fetchFiles(propertyRequestBody, item.name).then(items => buildTree(view, ul, items, item.name));
-						}
+						ul.children.length
+						|| fetchFiles(propertyRequestBody, item.name).then(items => buildTree(view, ul, items, item.name));
 					});
-					summary.textContent = '📁 ' + item.name.replace(/^.*\/([^/]+)$/, '$1');
-					btn.name = 'select';
-					btn.textContent = 'select';
-					btn.className = 'button-vue';
-					btn.style.marginLeft = '1em';
-					summary.append(btn);
+					summary.textContent = item.name.replace(/^.*\/([^/]+)$/, '$1');
+					summary.dataset.icon = '📁';
+					if (!view.files()) {
+						let btn = document.createElement('button');
+						btn.item_name = item.name;
+						btn.name = 'select';
+						btn.textContent = 'select';
+						btn.className = 'button-vue';
+						btn.style.marginLeft = '1em';
+						summary.append(btn);
+					}
 					details.append(summary);
 					details.append(ul);
 //					a.append('- ' + item.name.replace(/^\/+/, ''));
@@ -138,6 +136,24 @@
 					parent.append(li);
 				}
 			});
+			if (view.files()) {
+				items.forEach(item => {
+					if (item.isFile) {
+						// TODO show files
+						let li = document.createElement('li'),
+							btn = document.createElement('button');
+						btn.item = item;
+						btn.name = 'select';
+						btn.textContent = 'select';
+						btn.className = 'button-vue';
+						btn.style.marginLeft = '1em';
+						li.textContent = item.name.replace(/^.*\/([^/]+)$/, '$1');
+						li.dataset.icon = '🗎';
+						li.append(btn);
+						parent.append(li);
+					}
+				});
+			}
 		}
 		if (!view.files()) {
 			let li = document.createElement('li'),
@@ -168,7 +184,7 @@
 				let el = event.target;
 				if (el.matches('button')) {
 					if ('select' == el.name) {
-						this.select = el.item_name;
+						this.select = this.files() ? [el.item] : el.item_name;
 						this.close();
 					} else if ('create' == el.name) {
 						let name = el.input.value.replace(/[|\\?*<":>+[]\/&\s]/g, '');

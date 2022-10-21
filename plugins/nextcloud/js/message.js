@@ -1,4 +1,5 @@
 (rl => {
+//	if (rl.settings.get('Nextcloud'))
 
 	addEventListener('rl-view-model.create', e => {
 		if ('MailMessageView' === e.detail.viewModelTemplateID) {

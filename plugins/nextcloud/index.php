@@ -4,7 +4,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Nextcloud',
-		VERSION = '2.4',
+		VERSION = '2.6',
 		RELEASE  = '2022-10-19',
 		CATEGORY = 'Integrations',
 		DESCRIPTION = 'Integrate with Nextcloud v20+',
@@ -18,10 +18,15 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$this->addHook('main.fabrica', 'MainFabrica');
 			$this->addHook('filter.app-data', 'FilterAppData');
 
-			$this->addJs('js/message.js');
 			$this->addJs('js/webdav.js');
+
+			$this->addJs('js/message.js');
 			$this->addHook('json.attachments', 'DoAttachmentsActions');
 			$this->addJsonHook('NextcloudSaveMsg', 'NextcloudSaveMsg');
+			$this->addJsonHook('NextcloudAttachFile', 'NextcloudAttachFile');
+
+			$this->addJs('js/composer.js');
+
 			$this->addTemplate('templates/PopupsNextcloudFiles.html');
 		}
 	}
@@ -57,6 +62,30 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 	}
 	*/
+
+	public function NextcloudAttachFile() : array
+	{
+		$aResult = [
+			'success' => false,
+			'tempName' => ''
+		];
+		$sFile = $this->jsonParam('file', '');
+		$oFiles = \OCP\Files::getStorage('files');
+		if ($oFiles && $oFiles->is_file($sFile) && $fp = $oFiles->fopen($sFile, 'rb')) {
+			$oActions = \RainLoop\Api::Actions();
+			$oAccount = $oActions->getAccountFromToken();
+			if ($oAccount) {
+				$sSavedName = 'nextcloud-file-' . \sha1($sFile . \microtime());
+				if (!$oActions->FilesProvider()->PutFile($oAccount, $sSavedName, $fp)) {
+					$aResult['error'] = 'failed';
+				} else {
+					$aResult['tempName'] = $sSavedName;
+					$aResult['success'] = true;
+				}
+			}
+		}
+		return $this->jsonResponse(__FUNCTION__, $aResult);
+	}
 
 	public function NextcloudSaveMsg() : array
 	{
@@ -106,7 +135,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$oFiles = \OCP\Files::getStorage('files');
 			if ($oFiles && \method_exists($oFiles, 'file_put_contents')) {
 				$sSaveFolder = \ltrim($this->jsonParam('NcFolder', ''), '/');
-				$sSaveFolder = $sSaveFolder ?: $this->Config()->Get('plugin', 'save_folder', '') ?: 'Attachments';
+				$sSaveFolder = $sSaveFolder ?: 'Attachments';
 				$oFiles->is_dir($sSaveFolder) || $oFiles->mkdir($sSaveFolder);
 				$data->result = true;
 				foreach ($data->items as $aItem) {
@@ -192,8 +221,6 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	protected function configMapping() : array
 	{
 		return array(
-			\RainLoop\Plugins\Property::NewInstance('save_folder')->SetLabel('Save Folder')
-				->SetDefaultValue('Attachments'),
 			\RainLoop\Plugins\Property::NewInstance('suggestions')->SetLabel('Suggestions')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(true)
