@@ -32,32 +32,32 @@ class ServiceActions
 		$this->sQuery = '';
 	}
 
-	public function Logger() : \MailSo\Log\Logger
+	private function Logger() : \MailSo\Log\Logger
 	{
 		return $this->oActions->Logger();
 	}
 
-	public function Plugins() : Plugins\Manager
+	private function Plugins() : Plugins\Manager
 	{
 		return $this->oActions->Plugins();
 	}
 
-	public function Config() : Config\Application
+	private function Config() : Config\Application
 	{
 		return $this->oActions->Config();
 	}
 
-	public function Cacher() : \MailSo\Cache\CacheClient
+	private function Cacher() : \MailSo\Cache\CacheClient
 	{
 		return $this->oActions->Cacher();
 	}
 
-	public function StorageProvider() : Providers\Storage
+	private function StorageProvider() : Providers\Storage
 	{
 		return $this->oActions->StorageProvider();
 	}
 
-	public function SettingsProvider() : Providers\Settings
+	private function SettingsProvider() : Providers\Settings
 	{
 		return $this->oActions->SettingsProvider();
 	}

@@ -291,28 +291,7 @@ export const
 				if ('IMG' === name) {
 					oElement.loading = 'lazy';
 					let attachment;
-					if (detectHiddenImages
-						&& ((oStyle.maxHeight && 3 > pInt(oStyle.maxHeight))
-							|| (oStyle.maxWidth && 3 > pInt(oStyle.maxWidth))
-							|| [
-								'email.microsoftemail.com/open',
-								'github.com/notifications/beacon/',
-								'/track/open', // mandrillapp.com list-manage.com
-								'google-analytics.com'
-							].filter(uri => value.toLowerCase().includes(uri)).length
-					)) {
-						skipStyle = true;
-						setAttribute('style', 'display:none');
-						setAttribute('data-x-src-hidden', value);
-					}
-					else if ((attachment = findLocationByCid(value)))
-					{
-						if (attachment.download) {
-							oElement.src = attachment.linkPreview();
-							attachment.isLinked(true);
-						}
-					}
-					else if ('cid:' === value.slice(0, 4))
+					if ('cid:' === value.slice(0, 4))
 					{
 						value = value.slice(4);
 						setAttribute('data-x-src-cid', value);
@@ -323,6 +302,28 @@ export const
 							attachment.isInline(true);
 							attachment.isLinked(true);
 						}
+					}
+					else if ((attachment = findLocationByCid(value)))
+					{
+						if (attachment.download) {
+							oElement.src = attachment.linkPreview();
+							attachment.isLinked(true);
+						}
+					}
+					else if (detectHiddenImages
+						&& ((oStyle.maxHeight && 3 > pInt(oStyle.maxHeight)) // TODO: issue with 'in'
+							|| (oStyle.maxWidth && 3 > pInt(oStyle.maxWidth)) // TODO: issue with 'in'
+							|| [
+								'email.microsoftemail.com/open',
+								'github.com/notifications/beacon/',
+								'/track/open', // mandrillapp.com list-manage.com
+								'google-analytics.com'
+							].filter(uri => value.toLowerCase().includes(uri)).length
+					)) {
+						skipStyle = true;
+						oStyle.display = 'none';
+//						setAttribute('style', 'display:none');
+						setAttribute('data-x-src-hidden', value);
 					}
 					else if (httpre.test(value))
 					{

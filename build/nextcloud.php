@@ -37,4 +37,7 @@ $nc_tar->compress(Phar::GZ);
 unlink($nc_destination);
 $nc_destination .= '.gz';
 
+$signature = shell_exec("openssl dgst -sha512 -sign ~/.nextcloud/certificates/snappymail.key {$nc_destination} | openssl base64");
+file_put_contents($nc_destination.'.sig', $signature);
+
 echo "{$nc_destination} created\n";
