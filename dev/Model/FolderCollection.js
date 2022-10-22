@@ -374,13 +374,18 @@ export class FolderModel extends AbstractModel {
 					return folder.hasVisibleSubfolders() | visible;
 				},
 
-				printableUnreadCount: () => {
+				printableUnreadCount: () => folder.unreadEmails() || null,
+/*
+				{
+					// TODO: make this optional in Settings
+					// https://github.com/the-djmaze/snappymail/issues/457
+					// https://github.com/the-djmaze/snappymail/issues/567
 					const
 						unread = folder.unreadEmails(),
 						type = folder.type();
-					// TODO: make isSystemFolder() optional in Settings
-					return ((!folder.isSystemFolder() || type == FolderType.Inbox) && unread) ? unread : null;
+//					return ((!folder.isSystemFolder() || type == FolderType.Inbox) && unread) ? unread : null;
 				},
+*/
 
 				localName: () => {
 					let name = folder.name();
