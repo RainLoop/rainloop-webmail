@@ -1398,7 +1398,7 @@ class GPG
 
 	private static function findBinary($name) : ?string
 	{
-		$binary = \trim(`which $name`);
+		$binary = \trim((string) `which $name`);
 		if ($binary && \is_executable($binary)) {
 			return $binary;
 		}
