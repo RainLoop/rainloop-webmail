@@ -12,7 +12,7 @@
 	"LOGIN": {
 		"LABEL_LOGIN": "登录",
 		"LABEL_PASSWORD": "密码",
-		"LABEL_TOTP": "TOTP代碼",
+		"LABEL_TOTP": "TOTP 代码",
 		"BUTTON_LOGIN": "登录到控制面板"
 	},
 	"TOP_PANEL": {
@@ -26,7 +26,7 @@
 		"LABEL_DOMAINS_NAME": "域名",
 		"LABEL_SECURITY_NAME": "安全",
 		"LABEL_PACKAGES_NAME": "插件包",
-		"LABEL_CONFIG_NAME": "Config",
+		"LABEL_CONFIG_NAME": "配置",
 		"LABEL_ABOUT_NAME": "关于"
 	},
 	"TAB_GENERAL": {
@@ -70,14 +70,14 @@
 		"LABEL_STORAGE_PASSWORD": "密码",
 		"ALERT_NOTICE": "提示!",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "如果有大量的活跃用户，请不要选择此数据库类型。",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "你的系统不支持联系人\n<br>\n你需要在你的服务器上安装或启用<strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> 组件。\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "您的系统不支持联系人\n<br>\n您需要在您的服务器上安装或启用<strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> 组件。\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "域名",
 		"BUTTON_ADD_DOMAIN": "添加域名",
 		"BUTTON_ADD_ALIAS": "添加别名",
-		"DELETE_ARE_YOU_SURE": "你确定吗？",
-		"HTML_DOMAINS_HELPER": "允许访问的域名。\n<br>\n点击域名进行设置。\n"
+		"DELETE_ARE_YOU_SURE": "您确定吗？",
+		"HTML_DOMAINS_HELPER": "允许访问的域名列表。\n<br>\n点击域名进行设置。\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "安全",
@@ -141,7 +141,7 @@
 		"BUTTON_BACK_TO_IMAP": "回到 IMAP 设置",
 		"BUTTON_BACK": "返回",
 		"BUTTON_UPDATE": "更新",
-		"NEW_DOMAIN_DESC": "此域名配置将允许你<br>和<i>%NAME%<\/i>电子邮件地址一起工作.",
+		"NEW_DOMAIN_DESC": "此域名配置将允许您<br>和<i>%NAME%<\/i>电子邮件地址一起工作.",
 		"WHITE_LIST_ALERT": "允许访问的域用户；使用空格分隔。\n"
 	},
 	"POPUPS_PLUGIN": {
@@ -151,7 +151,7 @@
 	"POPUPS_ASK": {
 		"BUTTON_YES": "是",
 		"BUTTON_NO": "否",
-		"DESC_WANT_CLOSE_THIS_WINDOW": "你确定要关闭此窗口吗？"
+		"DESC_WANT_CLOSE_THIS_WINDOW": "您确定要关闭此窗口吗？"
 	},
 	"POPUPS_LANGUAGES": {
 		"TITLE_LANGUAGES": "选择您的语言"
@@ -166,9 +166,9 @@
 		"UNKNOWN_ERROR": "未知错误"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
+		"REQUEST_ERROR": "请求失败",
+		"REQUEST_ABORTED": "请求中止",
+		"REQUEST_TIMEOUT": "请求超时",
 		"INVALID_TOKEN": "无效标记",
 		"AUTH_ERROR": "认证失败",
 		"DOMAIN_ALREADY_EXISTS": "域名已经存在",
