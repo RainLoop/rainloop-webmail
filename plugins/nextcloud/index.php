@@ -23,9 +23,11 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$this->addJs('js/message.js');
 			$this->addHook('json.attachments', 'DoAttachmentsActions');
 			$this->addJsonHook('NextcloudSaveMsg', 'NextcloudSaveMsg');
-			$this->addJsonHook('NextcloudAttachFile', 'NextcloudAttachFile');
 
 			$this->addJs('js/composer.js');
+			$this->addJsonHook('NextcloudAttachFile', 'NextcloudAttachFile');
+
+			$this->addJs('js/messagelist.js');
 
 			$this->addTemplate('templates/PopupsNextcloudFiles.html');
 		}
