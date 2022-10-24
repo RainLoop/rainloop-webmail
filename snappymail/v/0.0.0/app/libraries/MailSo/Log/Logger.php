@@ -32,6 +32,7 @@ class Logger extends \SplFixedArray
 		if ($bRegPhpErrorHandler)
 		{
 			\set_error_handler(array($this, '__phpErrorHandler'));
+			\set_exception_handler(array($this, '__phpExceptionHandler'));
 		}
 
 		\register_shutdown_function(array($this, '__loggerShutDown'));
@@ -139,6 +140,15 @@ class Logger extends \SplFixedArray
 		return false;
 	}
 
+	/**
+	 * Called by PHP when an Exception is uncaught
+	 */
+	public function __phpExceptionHandler(\Throwable $oException): void
+	{
+		$this->Write('Uncaught exception: ' . $oException, \LOG_CRIT);
+		\error_log('Uncaught exception: ' . $oException);
+	}
+
 	public function __loggerShutDown() : void
 	{
 		if ($this->bUsed) {
@@ -183,55 +193,18 @@ class Logger extends \SplFixedArray
 	public function WriteException(\Throwable $oException, int $iType = \LOG_NOTICE, string $sName = '',
 		bool $bSearchSecretWords = true, bool $bDiplayCrLf = false) : bool
 	{
-		if ($oException instanceof \Throwable)
-		{
-			if (isset($oException->__LOGINNED__))
-			{
-				return true;
-			}
-
-			$oException->__LOGINNED__ = true;
-
-			return $this->Write((string) $oException, $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);
+		if (isset($oException->__LOGINNED__)) {
+			return true;
 		}
-
-		return false;
+		$oException->__LOGINNED__ = true;
+		return $this->Write((string) $oException, $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);
 	}
 
-	public function WriteExceptionShort(\Throwable $oException, int $iType = \LOG_NOTICE, string $sName = '',
-		bool $bSearchSecretWords = true, bool $bDiplayCrLf = false) : bool
+	public function WriteExceptionShort(\Throwable $oException, int $iType = \LOG_NOTICE) : void
 	{
-		if ($oException instanceof \Throwable)
-		{
-			if (isset($oException->__LOGINNED__))
-			{
-				return true;
-			}
-
+		if (!isset($oException->__LOGINNED__)) {
 			$oException->__LOGINNED__ = true;
-
-			return $this->Write($oException->getMessage(), $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);
+			$this->Write($oException->getMessage(), $iType);
 		}
-
-		return false;
-	}
-
-	/**
-	 * @param mixed $mData
-	 */
-	public function WriteMixed($mData, int $iType = null, string $sName = '',
-		bool $bSearchSecretWords = true, bool $bDiplayCrLf = false) : bool
-	{
-		$iType = null === $iType ? \LOG_INFO : $iType;
-		if (\is_array($mData) || \is_object($mData))
-		{
-			if ($mData instanceof \Throwable)
-			{
-				$iType = null === $iType ? \LOG_NOTICE : $iType;
-				return $this->WriteException($mData, $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);
-			}
-			return  $this->WriteDump($mData, $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);
-		}
-		return $this->Write($mData, $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);
 	}
 }
