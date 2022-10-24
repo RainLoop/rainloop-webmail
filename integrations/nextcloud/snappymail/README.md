@@ -57,7 +57,7 @@ Beware, if you tick this box, all Nextcloud users will *not* be able to use the 
 ### Auto-connection for one user at a time
 Except if the above setting is activated, any Nextcloud user can have Nextcloud and SnappyMail keep in mind the default email/password to connect to SnappyMail. There, logging in Nextcloud is sufficient to then access SnappyMail within Nextcloud.
 
-To fill in the default email address and password to use, each Nextcloud user should go in the personal settings: choose "Personal" in the upper-right corner dropdown menu. Then select the "Rainlopp webmail" section. You can also use this direct link: https://path.to.nextcloud/index.php/settings/personal#snappymail-webmail.
+To fill in the default email address and password to use, each Nextcloud user should go in the personal settings: choose "Settings" in the upper-right corner dropdown menu. Under "Personal" select the "Additional settings" section where you can find the "SnappyMail Webmail" settings. You can also use this direct link: https://path.to.nextcloud/settings/user/additional.
 
 
 ## How to Activate SnappyMail Logging and then Find Logs
