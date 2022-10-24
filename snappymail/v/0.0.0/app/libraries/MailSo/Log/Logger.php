@@ -25,17 +25,16 @@ class Logger extends \SplFixedArray
 
 	private $bShowSecrets = false;
 
-	function __construct(bool $bRegPhpErrorHandler = true)
+	function __construct(bool $bMainLogger = false)
 	{
 		parent::__construct();
 
-		if ($bRegPhpErrorHandler)
+		if ($bMainLogger)
 		{
 			\set_error_handler(array($this, '__phpErrorHandler'));
 			\set_exception_handler(array($this, '__phpExceptionHandler'));
+			\register_shutdown_function(array($this, '__loggerShutDown'));
 		}
-
-		\register_shutdown_function(array($this, '__loggerShutDown'));
 	}
 
 	/**
@@ -67,8 +66,8 @@ class Logger extends \SplFixedArray
 
 	public function AddSecret(string $sWord) : void
 	{
-		if (\strlen(\trim($sWord)))
-		{
+		$sWord = \strlen(\trim($sWord));
+		if ($sWord) {
 			$this->aSecretWords[] = $sWord;
 			$this->aSecretWords = \array_unique($this->aSecretWords);
 		}
@@ -80,7 +79,7 @@ class Logger extends \SplFixedArray
 		return $this;
 	}
 
-	public function IsShowSecter() : bool
+	public function ShowSecrets() : bool
 	{
 		return $this->bShowSecrets;
 	}
@@ -182,29 +181,26 @@ class Logger extends \SplFixedArray
 	}
 
 	/**
-	 * @param mixed $oValue
+	 * @param mixed $mValue
 	 */
-	public function WriteDump($oValue, int $iType = \LOG_INFO, string $sName = '',
-		bool $bSearchSecretWords = false, bool $bDiplayCrLf = false) : bool
+	public function WriteDump($mValue, int $iType = \LOG_INFO, string $sName = '') : bool
 	{
-		return $this->Write(\print_r($oValue, true), $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);
+		return $this->Write(\print_r($mValue, true), $iType, $sName);
 	}
 
-	public function WriteException(\Throwable $oException, int $iType = \LOG_NOTICE, string $sName = '',
-		bool $bSearchSecretWords = true, bool $bDiplayCrLf = false) : bool
-	{
-		if (isset($oException->__LOGINNED__)) {
-			return true;
-		}
-		$oException->__LOGINNED__ = true;
-		return $this->Write((string) $oException, $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);
-	}
-
-	public function WriteExceptionShort(\Throwable $oException, int $iType = \LOG_NOTICE) : void
+	public function WriteException(\Throwable $oException, int $iType = \LOG_NOTICE, string $sName = '') : void
 	{
 		if (!isset($oException->__LOGINNED__)) {
 			$oException->__LOGINNED__ = true;
-			$this->Write($oException->getMessage(), $iType);
+			$this->Write((string) $oException, $iType, $sName);
+		}
+	}
+
+	public function WriteExceptionShort(\Throwable $oException, int $iType = \LOG_NOTICE, string $sName = '') : void
+	{
+		if (!isset($oException->__LOGINNED__)) {
+			$oException->__LOGINNED__ = true;
+			$this->Write($oException->getMessage(), $iType, $sName);
 		}
 	}
 }

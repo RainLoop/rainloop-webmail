@@ -304,7 +304,7 @@ abstract class NetClient
 		$bFake = \strlen($sFakeRaw);
 		$sRaw .= "\r\n";
 
-		if ($this->oLogger && $this->oLogger->IsShowSecter())
+		if ($this->oLogger && $this->oLogger->ShowSecrets())
 		{
 			$bFake = false;
 		}

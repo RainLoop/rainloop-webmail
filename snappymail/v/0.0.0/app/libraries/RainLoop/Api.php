@@ -51,12 +51,11 @@ abstract class Api
 		static $oLogger = null;
 		if (!$oLogger) {
 			$oConfig = static::Config();
-			$oLogger = new \MailSo\Log\Logger;
+			$oLogger = new \MailSo\Log\Logger(true);
+			$oLogger->SetShowSecrets(!$oConfig->Get('logs', 'hide_passwords', true));
 			if ($oConfig->Get('debug', 'enable', false)) {
-				$oLogger->SetShowSecrets(!$oConfig->Get('logs', 'hide_passwords', true));
 				$oLogger->SetLevel(\LOG_DEBUG);
 			} else if ($oConfig->Get('logs', 'enable', false)) {
-				$oLogger->SetShowSecrets(!$oConfig->Get('logs', 'hide_passwords', true));
 				$oLogger->SetLevel(\max(3, \RainLoop\Api::Config()->Get('logs', 'level', \LOG_WARNING)));
 			}
 		}
