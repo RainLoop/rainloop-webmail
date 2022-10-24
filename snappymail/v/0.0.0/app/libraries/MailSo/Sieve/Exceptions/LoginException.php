@@ -16,4 +16,4 @@ namespace MailSo\Sieve\Exceptions;
  * @package Sieve
  * @subpackage Exceptions
  */
-class LoginException extends \MailSo\Sieve\Exceptions\NegativeResponseException {}
+class LoginException extends NegativeResponseException {}

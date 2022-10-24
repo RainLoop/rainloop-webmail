@@ -68,7 +68,9 @@ trait ResponseParser
 
 	/**
 	 * @return array|string
-	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	private function partialParseResponseBranch(Response $oImapResponse,
 		bool $bTreatAsAtom,

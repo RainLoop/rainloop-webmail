@@ -58,9 +58,10 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Sieve\Exceptions\ResponseException
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Sieve\Exceptions\*
 	 */
 	public function Connect(\MailSo\Net\ConnectSettings $oSettings) : void
 	{
@@ -88,9 +89,10 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Sieve\Exceptions\LoginException
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Sieve\Exceptions\*
 	 */
 	public function Login(array $aCredentials) : self
 	{
@@ -100,7 +102,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		if (!\strlen($sLogin) || !\strlen($sPassword))
 		{
 			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException,
+				new \InvalidArgumentException,
 				\LOG_ERR, true);
 		}
 
@@ -199,8 +201,9 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Sieve\Exceptions\*
 	 */
 	public function Logout() : void
 	{
@@ -212,8 +215,9 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Sieve\Exceptions\*
 	 */
 	public function ListScripts() : array
 	{
@@ -237,8 +241,9 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Sieve\Exceptions\*
 	 */
 	public function Capability() : array
 	{
@@ -251,8 +256,9 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Sieve\Exceptions\*
 	 */
 	public function Noop() : self
 	{
@@ -262,8 +268,9 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Sieve\Exceptions\*
 	 */
 	public function GetScript(string $sScriptName) : string
 	{
@@ -291,8 +298,9 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Sieve\Exceptions\*
 	 */
 	public function PutScript(string $sScriptName, string $sScriptSource) : self
 	{
@@ -304,8 +312,9 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Sieve\Exceptions\*
 	 */
 	public function CheckScript(string $sScriptSource) : self
 	{
@@ -317,8 +326,9 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Sieve\Exceptions\*
 	 */
 	public function SetActiveScript(string $sScriptName) : self
 	{
@@ -328,8 +338,9 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Sieve\Exceptions\*
 	 */
 	public function DeleteScript(string $sScriptName) : self
 	{
@@ -339,8 +350,9 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Sieve\Exceptions\*
 	 */
 	public function RenameScript(string $sOldName, string $sNewName) : self
 	{
@@ -350,8 +362,9 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Sieve\Exceptions\*
 	 */
 	public function GetActiveScriptName() : string
 	{
@@ -368,8 +381,9 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Sieve\Exceptions\*
 	 */
 	public function IsActiveScript(string $sScriptName) : bool
 	{
@@ -407,8 +421,9 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
 	 */
 	private function parseStartupResponse(array $aResponse) : void
 	{
@@ -440,15 +455,16 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
 	 */
 	private function sendRequest(string $sRequest) : void
 	{
 		if (!\strlen(\trim($sRequest)))
 		{
 			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException,
+				new \InvalidArgumentException,
 				\LOG_ERR, true);
 		}
 
@@ -458,8 +474,9 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Sieve\Exceptions\*
 	 */
 	private function sendRequestWithCheck(string $sRequest) : void
 	{

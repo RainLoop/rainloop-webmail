@@ -21,7 +21,7 @@ trait Folders
 
 	/**
 	 * Appends uploaded rfc822 message to mailbox
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function Append(): bool
 	{
@@ -318,7 +318,7 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoFolderMove() : array
 	{
@@ -341,7 +341,7 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoFolderRename() : array
 	{
@@ -369,7 +369,7 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoFolderDelete() : array
 	{
@@ -392,7 +392,7 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoFolderClear() : array
 	{
@@ -411,7 +411,7 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoFolderInformation() : array
 	{
@@ -433,7 +433,7 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoFolderInformationMultiply() : array
 	{

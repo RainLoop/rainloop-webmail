@@ -12,7 +12,7 @@ trait Filters
 	private $oFiltersProvider;
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoFilters() : array
 	{
@@ -27,7 +27,7 @@ trait Filters
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoFiltersScriptSave() : array
 	{
@@ -49,7 +49,7 @@ trait Filters
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoFiltersScriptActivate() : array
 	{
@@ -65,7 +65,7 @@ trait Filters
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoFiltersScriptDelete() : array
 	{

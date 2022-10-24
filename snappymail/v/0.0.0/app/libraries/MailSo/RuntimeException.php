@@ -9,20 +9,20 @@
  * file that was distributed with this source code.
  */
 
-namespace MailSo\Base\Exceptions;
+namespace MailSo;
 
 /**
  * @category MailSo
- * @package Base
- * @subpackage Exceptions
  */
-class Exception extends \Exception
+class RuntimeException extends \RuntimeException
 {
-	public function __construct(string $sMessage = '', int $iCode = 0, \Throwable $oPrevious = null)
+/*
+	public function __construct(string $sMessage = '', int $iCode = 0, ?\Throwable $oPrevious = null)
 	{
 		$sMessage = \strlen($sMessage) ? $sMessage
-			: \str_replace('\\', '-', \get_class($this)).' ('.\basename($this->getFile()).' ~ '.$this->getLine().')';
+			: \str_replace('\\', '-', \get_class($this)).' ('.\basename($this->getFile()).'#'.$this->getLine().')';
 
 		parent::__construct($sMessage, $iCode, $oPrevious);
 	}
+*/
 }

@@ -16,4 +16,4 @@ namespace MailSo\Net\Exceptions;
  * @package Net
  * @subpackage Exceptions
  */
-class SocketReadTimeoutException extends \MailSo\Net\Exceptions\Exception {}
+class SocketReadTimeoutException extends \MailSo\RuntimeException {}

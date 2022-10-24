@@ -16,4 +16,4 @@ namespace MailSo\Smtp\Exceptions;
  * @package Smtp
  * @subpackage Exceptions
  */
-class LoginException extends \MailSo\Smtp\Exceptions\NegativeResponseException {}
+class LoginException extends NegativeResponseException {}

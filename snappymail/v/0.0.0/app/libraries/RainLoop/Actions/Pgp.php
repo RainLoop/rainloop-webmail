@@ -9,7 +9,7 @@ trait Pgp
 	 */
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function GnuPG() : ?\SnappyMail\PGP\GnuPG
 	{

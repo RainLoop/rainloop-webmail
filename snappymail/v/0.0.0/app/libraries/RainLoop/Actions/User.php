@@ -33,7 +33,7 @@ trait User
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoLogin() : array
 	{
@@ -69,7 +69,7 @@ trait User
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoAttachmentsActions() : array
 	{

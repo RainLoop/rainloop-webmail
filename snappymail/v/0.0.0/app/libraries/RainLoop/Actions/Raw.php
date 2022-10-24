@@ -5,7 +5,7 @@ namespace RainLoop\Actions;
 trait Raw
 {
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function RawViewAsPlain() : bool
 	{

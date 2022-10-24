@@ -96,9 +96,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Smtp\Exceptions\ResponseException
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
 	public function Connect(\MailSo\Net\ConnectSettings $oSettings, string $sEhloHost = '[127.0.0.1]') : void
 	{
@@ -110,9 +111,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Smtp\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\*
+	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
 	public function Login(array $aCredentials) : self
 	{
@@ -197,8 +199,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Smtp\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
 	public function MailFrom(string $sFrom, string $sSizeIfSupported = '', bool $bDsn = false) : self
 	{
@@ -227,15 +230,16 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Smtp\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
 	public function Rcpt(string $sTo, bool $bDsn = false) : self
 	{
 		if (!$this->bMail)
 		{
 			$this->writeLogException(
-				new Exceptions\RuntimeException('No sender reverse path has been supplied'),
+				new \MailSo\RuntimeException('No sender reverse path has been supplied'),
 				\LOG_ERR, true);
 		}
 
@@ -260,8 +264,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Smtp\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
 	public function MailTo(string $sTo) : self
 	{
@@ -269,14 +274,15 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Smtp\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
 	public function Data(string $sData) : self
 	{
 		if (!\strlen(\trim($sData)))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 
 		$rDataStream = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString($sData);
@@ -290,21 +296,22 @@ class SmtpClient extends \MailSo\Net\NetClient
 	/**
 	 * @param resource $rDataStream
 	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Smtp\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
 	public function DataWithStream($rDataStream) : self
 	{
 		if (!\is_resource($rDataStream))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 
 		if (!$this->bRcpt)
 		{
 			$this->writeLogException(
-				new Exceptions\RuntimeException('No recipient forward path has been supplied'),
+				new \MailSo\RuntimeException('No recipient forward path has been supplied'),
 				\LOG_ERR, true);
 		}
 
@@ -332,7 +339,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			else if (!\feof($rDataStream))
 			{
 				$this->writeLogException(
-					new Exceptions\RuntimeException('Cannot read input resource'),
+					new \MailSo\RuntimeException('Cannot read input resource'),
 					\LOG_ERR, true);
 			}
 
@@ -349,8 +356,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Smtp\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
 	public function Rset() : self
 	{
@@ -364,8 +372,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Smtp\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
 	public function Vrfy(string $sUser) : self
 	{
@@ -378,8 +387,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Smtp\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
 	public function Noop() : self
 	{
@@ -389,8 +399,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Smtp\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
 	public function Logout() : void
 	{
@@ -410,7 +421,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		if ($this->bHelo)
 		{
 			$this->writeLogException(
-				new Exceptions\RuntimeException('Cannot issue EHLO/HELO to existing session'),
+				new \MailSo\RuntimeException('Cannot issue EHLO/HELO to existing session'),
 				\LOG_ERR, true);
 		}
 
@@ -434,15 +445,16 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
 	 */
 	private function sendRequest(string $sCommand, string $sAddToCommand = '', bool $bSecureLog = false) : void
 	{
 		if (!\strlen(\trim($sCommand)))
 		{
 			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException,
+				new \InvalidArgumentException,
 				\LOG_ERR, true);
 		}
 
@@ -457,9 +469,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Smtp\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
 	private function sendRequestWithCheck(string $sCommand, $mExpectCode, string $sAddToCommand = '', bool $bSecureLog = false, string $sErrorPrefix = '') : string
 	{
@@ -488,8 +501,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Smtp\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
 	private function ehlo(string $sHost) : void
 	{
@@ -528,8 +542,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Smtp\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
 	private function helo(string $sHost) : void
 	{

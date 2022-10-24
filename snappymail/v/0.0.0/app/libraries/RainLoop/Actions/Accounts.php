@@ -70,7 +70,7 @@ trait Accounts
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoAccountSetup(): array
 	{
@@ -102,7 +102,7 @@ trait Accounts
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoAccountDelete(): array
 	{
@@ -135,7 +135,7 @@ trait Accounts
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoAccountSwitch(): array
 	{
@@ -170,7 +170,7 @@ trait Accounts
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoIdentityUpdate(): array
 	{
@@ -186,7 +186,7 @@ trait Accounts
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoIdentityDelete(): array
 	{
@@ -206,7 +206,7 @@ trait Accounts
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoAccountsAndIdentitiesSortOrder(): array
 	{
@@ -237,7 +237,7 @@ trait Accounts
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoAccountsAndIdentities(): array
 	{

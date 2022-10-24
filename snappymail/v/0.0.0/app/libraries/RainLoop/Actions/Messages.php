@@ -14,7 +14,7 @@ use MailSo\Mime\Part as MimePart;
 trait Messages
 {
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoMessageList() : array
 	{
@@ -422,7 +422,7 @@ trait Messages
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoMessage() : array
 	{
@@ -470,7 +470,7 @@ trait Messages
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoMessageDelete() : array
 	{
@@ -503,7 +503,7 @@ trait Messages
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoMessageMove() : array
 	{
@@ -571,7 +571,7 @@ trait Messages
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoMessageCopy() : array
 	{

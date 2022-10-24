@@ -16,4 +16,4 @@ namespace MailSo\Net\Exceptions;
  * @package Net
  * @subpackage Exceptions
  */
-class SocketUnreadBufferException extends \MailSo\Net\Exceptions\Exception {}
+class SocketUnreadBufferException extends \MailSo\RuntimeException {}

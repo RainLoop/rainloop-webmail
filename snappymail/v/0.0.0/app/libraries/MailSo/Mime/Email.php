@@ -38,13 +38,13 @@ class Email implements \JsonSerializable
 	private $sDkimValue;
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 */
 	function __construct(string $sEmail, string $sDisplayName = '')
 	{
 		if (!\strlen(\trim($sEmail)))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 
 		$this->sEmail = \MailSo\Base\Utils::IdnToAscii(
@@ -57,14 +57,14 @@ class Email implements \JsonSerializable
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 */
 	public static function Parse(string $sEmailAddress) : self
 	{
 		$sEmailAddress = \MailSo\Base\Utils::Trim($sEmailAddress);
 		if (!\strlen(\trim($sEmailAddress)))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 
 		$sName = '';

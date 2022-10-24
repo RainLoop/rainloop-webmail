@@ -25,9 +25,10 @@ use MailSo\Imap\Enumerations\FolderResponseStatus;
 trait Folders
 {
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function FolderCreate(string $sFolderName) : self
 	{
@@ -39,9 +40,10 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function FolderDelete(string $sFolderName) : self
 	{
@@ -63,9 +65,10 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function FolderSubscribe(string $sFolderName) : self
 	{
@@ -75,9 +78,10 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function FolderUnsubscribe(string $sFolderName) : self
 	{
@@ -87,9 +91,10 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function FolderRename(string $sOldFolderName, string $sNewFolderName) : self
 	{
@@ -100,9 +105,10 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 *
 	 * https://datatracker.ietf.org/doc/html/rfc9051#section-6.3.11
 	 */
@@ -169,8 +175,9 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function FolderCheck() : self
 	{
@@ -182,8 +189,9 @@ trait Folders
 
 	/**
 	 * This also expunge the mailbox
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function FolderClose() : int
 	{
@@ -197,8 +205,9 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function FolderUnselect() : self
 	{
@@ -225,8 +234,9 @@ trait Folders
 	 * The EXPUNGE command permanently removes all messages that have the
 	 * \Deleted flag set from the currently selected mailbox.
 	 *
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function FolderExpunge(SequenceSet $oUidRange = null) : void
 	{
@@ -246,8 +256,9 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function FolderHierarchyDelimiter(string $sFolderName = '') : ?string
 	{
@@ -256,9 +267,10 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function FolderSelect(string $sFolderName, bool $bReSelectSameFolders = false) : FolderInformation
 	{
@@ -271,9 +283,10 @@ trait Folders
 	 * No changes to the permanent state of the mailbox, including per-user state,
 	 * are permitted; in particular, EXAMINE MUST NOT cause messages to lose the \Recent flag.
 	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function FolderExamine(string $sFolderName, bool $bReSelectSameFolders = false) : FolderInformation
 	{
@@ -281,9 +294,10 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 *
 	 * REQUIRED IMAP4rev2 untagged responses:  FLAGS, EXISTS, LIST
 	 * REQUIRED IMAP4rev2 OK untagged responses:  PERMANENTFLAGS, UIDNEXT, UIDVALIDITY
@@ -300,7 +314,7 @@ trait Folders
 
 		if (!\strlen(\trim($sFolderName)))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 
 		$aSelectParams = array();
@@ -374,8 +388,9 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function FolderList(string $sParentFolderName, string $sListPattern, bool $bIsSubscribeList = false, bool $bUseListStatus = false) : array
 	{
@@ -506,7 +521,7 @@ trait Folders
 
 						$aReturn[$sFullName] = $oFolder;
 					}
-					catch (\MailSo\Base\Exceptions\InvalidArgumentException $oException)
+					catch (\InvalidArgumentException $oException)
 					{
 						$this->writeLogException($oException, \LOG_WARNING, false);
 					}
@@ -540,8 +555,9 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function FolderSubscribeList(string $sParentFolderName, string $sListPattern) : array
 	{
@@ -549,8 +565,9 @@ trait Folders
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function FolderStatusList(string $sParentFolderName, string $sListPattern) : array
 	{

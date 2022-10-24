@@ -49,7 +49,8 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
 	 */
 	public function Disconnect() : self
 	{
@@ -123,10 +124,11 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 * @throws \MailSo\Mail\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
+	 * @throws \MailSo\Mail\Exceptions\*
 	 */
 	public function MessageSetFlag(string $sFolderName, SequenceSet $oRange, string $sMessageFlag, bool $bSetAction = true, bool $bSkipUnsupportedFlag = false) : void
 	{
@@ -135,21 +137,22 @@ class MailClient
 				$sStoreAction = $bSetAction ? StoreAction::ADD_FLAGS_SILENT : StoreAction::REMOVE_FLAGS_SILENT;
 				$this->oImapClient->MessageStoreFlag($oRange, array($sMessageFlag), $sStoreAction);
 			} else if (!$bSkipUnsupportedFlag) {
-				throw new Exceptions\RuntimeException('Message flag "'.$sMessageFlag.'" is not supported.');
+				throw new \MailSo\RuntimeException('Message flag "'.$sMessageFlag.'" is not supported.');
 			}
 		}
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function Message(string $sFolderName, int $iIndex, bool $bIndexIsUid = true, ?\MailSo\Cache\CacheClient $oCacher = null, int $iBodyTextLimit = 0) : ?Message
 	{
 		if (!\MailSo\Base\Validator::RangeInt($iIndex, 1))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 
 		$this->oImapClient->FolderExamine($sFolderName);
@@ -216,15 +219,16 @@ class MailClient
 	 *
 	 * @param mixed $mCallback
 	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function MessageMimeStream($mCallback, string $sFolderName, int $iIndex, string $sMimeIndex) : bool
 	{
 		if (!\is_callable($mCallback))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 
 		$this->oImapClient->FolderExamine($sFolderName);
@@ -303,15 +307,16 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function MessageDelete(string $sFolder, SequenceSet $oRange, bool $bExpungeAll = false) : self
 	{
 		if (!\strlen($sFolder) || !\count($oRange))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 
 		$this->oImapClient->FolderSelect($sFolder);
@@ -331,15 +336,16 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function MessageMove(string $sFromFolder, string $sToFolder, SequenceSet $oRange, bool $bUseMoveSupported = true, bool $bExpungeAll = false) : self
 	{
 		if (!$sFromFolder || !$sToFolder || !\count($oRange))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 
 		$this->oImapClient->FolderSelect($sFromFolder);
@@ -359,15 +365,16 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function MessageCopy(string $sFromFolder, string $sToFolder, SequenceSet $oRange) : self
 	{
 		if (!$sFromFolder || !$sToFolder || !\count($oRange))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 
 		$this->oImapClient->FolderSelect($sFromFolder);
@@ -377,8 +384,9 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function FolderUnselect() : self
 	{
@@ -397,7 +405,7 @@ class MailClient
 	{
 		if (!\is_resource($rMessageStream) || !\strlen($sFolderToSave))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 
 		$iUid = $this->oImapClient->MessageAppendStream(
@@ -410,7 +418,7 @@ class MailClient
 	{
 		if (!\is_file($sMessageFileName) || !\is_readable($sMessageFileName))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 
 		$iMessageStreamSize = \filesize($sMessageFileName);
@@ -513,9 +521,10 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function FolderInformation(string $sFolderName, int $iPrevUidNext = 0, SequenceSet $oRange = null) : array
 	{
@@ -563,9 +572,10 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function FolderHash(string $sFolderName) : string
 	{
@@ -575,9 +585,10 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function MessageListThreadsMap(string $sFolderName, string $sFolderHash, ?\MailSo\Cache\CacheClient $oCacher) : array
 	{
@@ -633,7 +644,7 @@ class MailClient
 				$aResult[] = $aMap;
 			}
 		}
-		catch (\MailSo\Imap\Exceptions\RuntimeException $oException)
+		catch (\MailSo\RuntimeException $oException)
 		{
 			\SnappyMail\Log::warning('MessageListThreadsMap ' . $oException->getMessage());
 			unset($oException);
@@ -655,8 +666,9 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	protected function MessageListByRequestIndexOrUids(MessageCollection $oMessageCollection, SequenceSet $oRange) : void
 	{
@@ -686,7 +698,8 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
 	 */
 	public function IsThreadsSupported() : bool
 	{
@@ -696,9 +709,10 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	private function GetUids(MessageListParams $oParams, string $sSearch,
 		string $sFolderName, string $sFolderHash,
@@ -810,16 +824,17 @@ class MailClient
 
 	/**
 	 * Runs SORT/SEARCH when $sSearch is provided
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function MessageList(MessageListParams $oParams) : MessageCollection
 	{
 		if (!\MailSo\Base\Validator::RangeInt($oParams->iOffset, 0) ||
 			!\MailSo\Base\Validator::RangeInt($oParams->iLimit, 0, 999))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 
 		$sSearch = \trim($oParams->sSearch);
@@ -850,7 +865,7 @@ class MailClient
 
 		if ($oParams->iThreadUid && !$bUseThreads)
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException('THREAD not supported');
+			throw new \InvalidArgumentException('THREAD not supported');
 		}
 
 		if (!$oParams->oCacher || !($oParams->oCacher instanceof \MailSo\Cache\CacheClient))
@@ -1015,7 +1030,7 @@ class MailClient
 	{
 		if (!\strlen($sMessageId))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 
 		$this->oImapClient->FolderExamine($sFolderName);
@@ -1097,7 +1112,7 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 */
 	public function FolderCreate(string $sFolderNameInUtf8, string $sFolderParentFullName = '', bool $bSubscribeOnCreation = true, string $sDelimiter = '') : ?Folder
 	{
@@ -1106,7 +1121,7 @@ class MailClient
 
 		if (!\strlen($sFolderNameInUtf8))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 
 		if (!\strlen($sDelimiter) || \strlen($sFolderParentFullName))
@@ -1115,7 +1130,7 @@ class MailClient
 			if (null === $sDelimiter)
 			{
 				// TODO: Translate
-				throw new Exceptions\RuntimeException(
+				throw new \MailSo\RuntimeException(
 					\strlen($sFolderParentFullName)
 						? 'Cannot create folder in non-existent parent folder.'
 						: 'Cannot get folder delimiter.');
@@ -1130,7 +1145,7 @@ class MailClient
 		if (\strlen($sDelimiter) && false !== \strpos($sFolderNameInUtf8, $sDelimiter))
 		{
 			// TODO: Translate
-			throw new Exceptions\RuntimeException(
+			throw new \MailSo\RuntimeException(
 				'New folder name contains delimiter.');
 		}
 
@@ -1151,31 +1166,31 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 */
 	public function FolderMove(string $sPrevFolderFullName, string $sNextFolderFullNameInUtf, bool $bSubscribeOnMove = true) : self
 	{
 		if (!$this->oImapClient->FolderHierarchyDelimiter($sPrevFolderFullName)) {
 			// TODO: Translate
-			throw new Exceptions\RuntimeException('Cannot move non-existent folder.');
+			throw new \MailSo\RuntimeException('Cannot move non-existent folder.');
 		}
 		return $this->folderModify($sPrevFolderFullName, $sNextFolderFullNameInUtf, $bSubscribeOnMove);
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 */
 	public function FolderRename(string $sPrevFolderFullName, string $sNewTopFolderNameInUtf, bool $bSubscribeOnRename = true) : string
 	{
 		$sDelimiter = $this->oImapClient->FolderHierarchyDelimiter($sPrevFolderFullName);
 		if (!$sDelimiter) {
 			// TODO: Translate
-			throw new Exceptions\RuntimeException('Cannot rename non-existent folder.');
+			throw new \MailSo\RuntimeException('Cannot rename non-existent folder.');
 		}
 
 		if (\strlen($sDelimiter) && false !== \strpos($sNewTopFolderNameInUtf, $sDelimiter)) {
 			// TODO: Translate
-			throw new Exceptions\RuntimeException('New folder name contains delimiter.');
+			throw new \MailSo\RuntimeException('New folder name contains delimiter.');
 		}
 
 		$iLast = \strrpos($sPrevFolderFullName, $sDelimiter);
@@ -1188,14 +1203,14 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Base\Exceptions\RuntimeException
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
 	 */
 	protected function folderModify(string $sPrevFolderFullName, string $sNewFolderFullName, bool $bSubscribe) : self
 	{
 		if (!\strlen($sPrevFolderFullName) || !\strlen($sNewFolderFullName))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 
 		$aSubscribeFolders = array();
@@ -1226,13 +1241,13 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Mail\Exceptions\RuntimeException
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
 	 */
 	public function FolderDelete(string $sFolderFullName) : self
 	{
 		if (!\strlen($sFolderFullName) || 'INBOX' === $sFolderFullName) {
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 
 		if ($this->oImapClient->IsSupported('IMAP4rev2')) {
@@ -1253,7 +1268,7 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 */
 	public function FolderClear(string $sFolderFullName) : self
 	{
@@ -1268,25 +1283,25 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 */
 	public function FolderSubscribe(string $sFolderFullName, bool $bSubscribe) : self
 	{
 		if (!\strlen($sFolderFullName)) {
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 		$this->oImapClient->{$bSubscribe ? 'FolderSubscribe' : 'FolderUnsubscribe'}($sFolderFullName);
 		return $this;
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 */
 	public function SetLogger(\MailSo\Log\Logger $oLogger) : self
 	{
 		if (!($oLogger instanceof \MailSo\Log\Logger))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 
 		$this->oLogger = $oLogger;

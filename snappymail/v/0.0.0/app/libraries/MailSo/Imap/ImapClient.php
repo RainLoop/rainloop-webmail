@@ -80,9 +80,10 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function Connect(\MailSo\Net\ConnectSettings $oSettings) : void
 	{
@@ -108,9 +109,10 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function Login(array $aCredentials) : self
 	{
@@ -127,7 +129,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		if (!\strlen($sLogin) || !\strlen($sPassword))
 		{
 			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException,
+				new \InvalidArgumentException,
 				\LOG_ERR, true);
 		}
 
@@ -141,7 +143,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 		}
 		if (!$type) {
-			throw new \Exception('No supported SASL mechanism found, remote server wants: '
+			throw new \MailSo\RuntimeException('No supported SASL mechanism found, remote server wants: '
 				. \implode(', ', \array_filter($this->Capability() ?: [], function($var){
 					return \str_starts_with($var, 'AUTH=');
 				}))
@@ -263,7 +265,9 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function Logout() : void
 	{
@@ -285,8 +289,9 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function Capability() : ?array
 	{
@@ -319,8 +324,9 @@ class ImapClient extends \MailSo\Net\NetClient
 	 *     STARTTLS AUTH= LOGIN LOGINDISABLED QUOTA
 	 *     METADATA METADATA-SERVER
 	 *
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function IsSupported(string $sExtentionName) : bool
 	{
@@ -342,8 +348,9 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function GetNamespace() : ?NamespaceResult
 	{
@@ -389,8 +396,9 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function Noop() : self
 	{
@@ -399,8 +407,10 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function SendRequest(string $sCommand, array $aParams = array(), bool $bBreakOnLiteral = false) : string
 	{
@@ -408,7 +418,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		if (!\strlen($sCommand))
 		{
 			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException,
+				new \InvalidArgumentException,
 				\LOG_ERR, true);
 		}
 
@@ -455,9 +465,10 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function SendRequestGetResponse(string $sCommand, array $aParams = array()) : ResponseCollection
 	{
@@ -487,9 +498,9 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * This will reduce CPU time on server and moves it to the client
 	 * And can be used with the new JavaScript AbstractFetchRemote.streamPerLine(fCallback, sGetAdd)
 	 *
-	 * @throws \MailSo\Imap\Exceptions\ResponseNotFoundException
-	 * @throws \MailSo\Imap\Exceptions\InvalidResponseException
-	 * @throws \MailSo\Imap\Exceptions\NegativeResponseException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	protected function streamResponse(string $sEndTag = null) : void
 	{

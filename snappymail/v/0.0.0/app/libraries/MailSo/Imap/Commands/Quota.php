@@ -23,8 +23,9 @@ trait Quota
 	/**
 	 * https://datatracker.ietf.org/doc/html/rfc2087#section-4.2
 	 *
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function Quota(string $sRootName = '') : ?array
 	{
@@ -34,8 +35,9 @@ trait Quota
 	/**
 	 * https://datatracker.ietf.org/doc/html/rfc2087#section-4.3
 	 *
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function QuotaRoot(string $sFolderName = 'INBOX') : ?array
 	{

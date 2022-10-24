@@ -16,7 +16,7 @@ namespace MailSo\Net\Exceptions;
  * @package Net
  * @subpackage Exceptions
  */
-class SocketCanNotConnectToHostException extends \MailSo\Net\Exceptions\ConnectionException
+class SocketCanNotConnectToHostException extends ConnectionException
 {
 	/**
 	 * @var string

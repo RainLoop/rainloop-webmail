@@ -112,10 +112,11 @@ abstract class NetClient
 
 	public function capturePhpErrorWithException(int $iErrNo, string $sErrStr, string $sErrFile, int $iErrLine) : bool
 	{
-		throw new \MailSo\Base\Exceptions\Exception($sErrStr, $iErrNo);
+		throw new \MailSo\RuntimeException($sErrStr, $iErrNo);
 	}
 
 	/**
+	 * @throws \MailSo\RuntimeException
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\SocketAlreadyConnectedException
 	 * @throws \MailSo\Net\Exceptions\SocketCanNotConnectToHostException
@@ -226,13 +227,14 @@ abstract class NetClient
 
 		if ($bError) {
 			$this->writeLogException(
-				new \MailSo\Net\Exceptions\Exception('Cannot enable STARTTLS.'),
+				new \MailSo\RuntimeException('Cannot enable STARTTLS.'),
 				\LOG_ERR, true);
 		}
 	}
 
 	/**
-	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
 	 */
 	public function Disconnect() : void
 	{

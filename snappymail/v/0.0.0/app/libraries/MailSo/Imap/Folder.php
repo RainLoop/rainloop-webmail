@@ -41,12 +41,12 @@ class Folder
 	private $aMetadata = array();
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 */
 	function __construct(string $sFullName, string $sDelimiter = null, array $aFlags = array())
 	{
 		if (!\strlen($sFullName)) {
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
+			throw new \InvalidArgumentException;
 		}
 		$this->sFullName = $sFullName;
 		$this->setDelimiter($sDelimiter);

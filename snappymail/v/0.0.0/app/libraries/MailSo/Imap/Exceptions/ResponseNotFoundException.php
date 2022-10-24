@@ -16,4 +16,4 @@ namespace MailSo\Imap\Exceptions;
  * @package Imap
  * @subpackage Exceptions
  */
-class ResponseNotFoundException extends \MailSo\Imap\Exceptions\Exception {}
+class ResponseNotFoundException extends \MailSo\RuntimeException {}

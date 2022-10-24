@@ -165,7 +165,7 @@ class EmailCollection extends \MailSo\Base\Collection
 
 							$iEmailStartPos = $iCurrentPos + 1;
 						}
-						catch (\MailSo\Base\Exceptions\InvalidArgumentException $oException)
+						catch (\InvalidArgumentException $oException)
 						{
 						}
 					}
@@ -183,7 +183,7 @@ class EmailCollection extends \MailSo\Base\Collection
 					Email::Parse(\substr($sRawEmails, $iEmailStartPos, $iCurrentPos - $iEmailStartPos))
 				);
 			}
-			catch (\MailSo\Base\Exceptions\InvalidArgumentException $oException) {}
+			catch (\InvalidArgumentException $oException) {}
 		}
 	}
 }

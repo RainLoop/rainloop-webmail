@@ -16,4 +16,4 @@ namespace MailSo\Net\Exceptions;
  * @package Net
  * @subpackage Exceptions
  */
-class ConnectionException extends \MailSo\Net\Exceptions\Exception {}
+class ConnectionException extends \MailSo\RuntimeException {}

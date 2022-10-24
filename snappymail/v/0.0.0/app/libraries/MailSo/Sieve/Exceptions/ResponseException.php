@@ -16,7 +16,7 @@ namespace MailSo\Sieve\Exceptions;
  * @package Sieve
  * @subpackage Exceptions
  */
-class ResponseException extends \MailSo\Sieve\Exceptions\Exception
+class ResponseException extends \MailSo\RuntimeException
 {
 	/**
 	 * @var array

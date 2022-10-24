@@ -36,7 +36,7 @@ class Folder implements \JsonSerializable
 	private $oImapFolder;
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 */
 	function __construct(\MailSo\Imap\Folder $oImapFolder, bool $bSubscribed = true, bool $bExists = true)
 	{
@@ -46,8 +46,8 @@ class Folder implements \JsonSerializable
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 */
 	public static function NewNonExistentInstance(string $sFullName, string $sDelimiter) : self
 	{

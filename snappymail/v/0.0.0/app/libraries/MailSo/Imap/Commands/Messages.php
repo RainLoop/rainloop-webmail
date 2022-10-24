@@ -17,7 +17,6 @@ use MailSo\Imap\Enumerations\FetchType;
 use MailSo\Imap\ResponseCollection;
 use MailSo\Imap\SequenceSet;
 use MailSo\Imap\Enumerations\ResponseType;
-use MailSo\Base\Exceptions\InvalidArgumentException;
 
 /**
  * @category MailSo
@@ -26,15 +25,16 @@ use MailSo\Base\Exceptions\InvalidArgumentException;
 trait Messages
 {
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function Fetch(array $aInputFetchItems, string $sIndexRange, bool $bIndexIsUid) : array
 	{
 		if (!\strlen(\trim($sIndexRange)))
 		{
-			$this->writeLogException(new InvalidArgumentException, \LOG_ERR, true);
+			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR, true);
 		}
 
 		$aReturn = array();
@@ -130,9 +130,10 @@ trait Messages
 	 *
 	 * @param resource $rMessageAppendStream
 	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function MessageAppendStream(string $sFolderName, $rMessageAppendStream, int $iStreamSize, array $aFlagsList = null, int $iDateTime = 0) : ?int
 	{
@@ -190,14 +191,15 @@ trait Messages
 	*/
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function MessageCopy(string $sToFolder, SequenceSet $oRange) : ResponseCollection
 	{
 		if (!\count($oRange)) {
-			$this->writeLogException(new InvalidArgumentException, \LOG_ERR, true);
+			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR, true);
 		}
 
 		return $this->SendRequestGetResponse(
@@ -207,19 +209,20 @@ trait Messages
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function MessageMove(string $sToFolder, SequenceSet $oRange) : ResponseCollection
 	{
 		if (!\count($oRange)) {
-			$this->writeLogException(new InvalidArgumentException, \LOG_ERR, true);
+			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR, true);
 		}
 
 		if (!$this->IsSupported('MOVE')) {
 			$this->writeLogException(
-				new \MailSo\IMAP\Exceptions\RuntimeException('Move is not supported'),
+				new \MailSo\RuntimeException('Move is not supported'),
 				\LOG_ERR, true);
 		}
 
@@ -236,9 +239,10 @@ trait Messages
 	 *
 	 * @param resource $rMessageStream
 	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function MessageReplaceStream(string $sFolderName, int $iUid, $rMessageStream, int $iStreamSize, array $aFlagsList = null, int $iDateTime = 0) : ?int
 	{
@@ -279,9 +283,10 @@ trait Messages
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function MessageStoreFlag(SequenceSet $oRange, array $aInputStoreItems, string $sStoreAction) : ?ResponseCollection
 	{
@@ -305,9 +310,10 @@ trait Messages
 
 	/**
 	 * See https://tools.ietf.org/html/rfc5256
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function MessageSimpleSort(array $aSortTypes, string $sSearchCriterias = 'ALL', bool $bReturnUid = true) : array
 	{
@@ -333,9 +339,10 @@ trait Messages
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function MessageSimpleESearch(string $sSearchCriterias = 'ALL', array $aSearchReturn = null, bool $bReturnUid = true, string $sCharset = '', string $sLimit = '') : array
 	{
@@ -350,9 +357,10 @@ trait Messages
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function MessageSimpleESort(array $aSortTypes, string $sSearchCriterias = 'ALL', array $aSearchReturn = ['ALL'], bool $bReturnUid = true, string $sLimit = '') : array
 	{
@@ -367,9 +375,10 @@ trait Messages
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function MessageSimpleSearch(string $sSearchCriterias = 'ALL', bool $bReturnUid = true, string $sCharset = '') : array
 	{
@@ -416,9 +425,10 @@ trait Messages
 	}
 
 	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function MessageSimpleThread(string $sSearchCriterias = 'ALL', bool $bReturnUid = true) : iterable
 	{

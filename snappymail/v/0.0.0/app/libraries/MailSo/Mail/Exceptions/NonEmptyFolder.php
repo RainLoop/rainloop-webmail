@@ -16,4 +16,4 @@ namespace MailSo\Mail\Exceptions;
  * @package Mail
  * @subpackage Exceptions
  */
-class NonEmptyFolder extends \MailSo\Mail\Exceptions\RuntimeException {}
+class NonEmptyFolder extends \MailSo\RuntimeException {}

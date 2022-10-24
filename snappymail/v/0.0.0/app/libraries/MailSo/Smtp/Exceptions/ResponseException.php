@@ -16,7 +16,7 @@ namespace MailSo\Smtp\Exceptions;
  * @package Smtp
  * @subpackage Exceptions
  */
-class ResponseException extends \MailSo\Smtp\Exceptions\Exception
+class ResponseException extends \MailSo\RuntimeException
 {
 	/**
 	 * @var array
