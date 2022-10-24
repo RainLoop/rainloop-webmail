@@ -147,7 +147,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 
 		if ($bMkDir && !empty($sFilePath) && !\is_dir($sFilePath) && !\mkdir($sFilePath, 0700, true))
 		{
-			throw new \RainLoop\Exceptions\Exception('Can\'t make storage directory "'.$sFilePath.'"');
+			throw new \RuntimeException('Can\'t make storage directory "'.$sFilePath.'"');
 		}
 
 		return $sFilePath;

@@ -6,7 +6,7 @@ namespace RainLoop\Exceptions;
  * @category RainLoop
  * @package Exceptions
  */
-class ClientException extends Exception
+class ClientException extends \RuntimeException
 {
 	/**
 	 * @var string

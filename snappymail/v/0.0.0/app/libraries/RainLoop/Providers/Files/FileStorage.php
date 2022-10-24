@@ -150,7 +150,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 			.'/.files/'.\sha1($sKey);
 
 		if ($bMkDir && !\is_dir(\dirname($sFilePath)) && !\mkdir(\dirname($sFilePath), 0700, true)) {
-			throw new \RainLoop\Exceptions\Exception('Can\'t make storage directory "'.$sFilePath.'"');
+			throw new \RuntimeException('Can\'t make storage directory "'.$sFilePath.'"');
 		}
 
 		return $sFilePath;

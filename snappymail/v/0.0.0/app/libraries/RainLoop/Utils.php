@@ -255,17 +255,17 @@ class Utils
 	{
 		$dir = \dirname($filename);
 		if (!\is_dir($dir) && !\mkdir($dir, 0700, true)) {
-			throw new Exceptions\Exception('Failed to create directory "'.$dir.'"');
+			throw new \RuntimeException('Failed to create directory "'.$dir.'"');
 		}
 		if (false === \file_put_contents($filename, $data)) {
-			throw new Exceptions\Exception('Failed to save file "'.$filename.'"');
+			throw new \RuntimeException('Failed to save file "'.$filename.'"');
 		}
 		\clearstatcache();
 		\chmod($filename, 0600);
 /*
 		try {
 		} catch (\Throwable $oException) {
-			throw new Exceptions\Exception($oException->getMessage() . ': ' . \error_get_last()['message']);
+			throw new \RuntimeException($oException->getMessage() . ': ' . \error_get_last()['message']);
 		}
 */
 	}
