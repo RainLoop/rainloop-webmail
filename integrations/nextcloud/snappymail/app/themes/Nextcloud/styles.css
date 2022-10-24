@@ -38,12 +38,12 @@
 	--border-radius: 3px;
 	--border-radius-large: 10px;
 	--border-radius-pill: 100px;
-	--font-face: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen-Sans, Cantarell, Ubuntu, Helvetica Neue, Arial, sans-serif, Noto Color Emoji, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
 	--default-font-size: 15px;
 	--default-line-height: 24px;
 	--animation-quick: 100ms;
 	--animation-slow: 300ms;
 */
+	--fontSans: var(--font-face);
 
 	/* MAIN */
 	--main-color: var(--color-main-text, #333);
@@ -70,14 +70,14 @@
 	/* FOLDERS */
 	--folders-color: #333;
 	--folders-disabled-color: #999;
-	--folders-selected-color: #eee;
-	--folders-selected-bg-color: rgba(0,0,0,0.5);
-	--folders-focused-color: #eee;
-	--folders-focused-bg-color: rgba(0,0,0,0.7);
-	--folders-hover-color: #eee;
-	--folders-hover-bg-color: rgba(0,0,0,0.5);
-	--folders-drop-color: #eee;
-	--folders-drop-bg-color: rgba(0,0,0,0.5);
+	--folders-selected-color: var(--color-primary);
+	--folders-selected-bg-color: var(--color-background-darker);
+	--folders-focused-color: var(--color-primary);
+	--folders-focused-bg-color: var(--color-background-dark);
+	--folders-hover-color: var(--color-primary-hover);
+	--folders-hover-bg-color: var(--color-background-hover);
+	--folders-drop-color: var(--color-primary-hover);
+	--folders-drop-bg-color:  var(--color-background-hover);
 
 	/* SETTINGS */
 	--settings-menu-color: #333;
@@ -104,6 +104,27 @@
 	content: 'Nextcloud: ';
 }
 
+.messageList, .messageView {
+	border-color: var(--color-border);
+	border-radius: var(--border-radius);
+}
+#V-MailFolderList.focused .b-content,
+#V-MailMessageList.focused .messageList,
+#V-MailMessageView.focused .messageView {
+	border-color: var(--color-border-dark);
+	box-shadow: 0 2px 8px var(--color-box-shadow);
+}
+
+#V-MailMessageView,
+.b-folders .b-content {
+	bottom: 5px;
+	top: 50px;
+}
+
+.messageListItem * {
+	cursor: pointer;
+}
+
 /**
  * hampoelz
  * https://github.com/the-djmaze/snappymail/issues/96#issuecomment-1279783076
@@ -117,7 +138,7 @@ a.selectable {
 	margin: 2px;
 	height: 38px !important;
 	line-height: 38px !important;
-	border-radius: 100px;
+	border-radius: var(--border-radius-pill);
 }
 
 a.selectable::after {
