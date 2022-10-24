@@ -27,9 +27,10 @@ html.rl-no-preview-pane {
 	border: 1px solid @rlMainDarkColor;
 	border-radius: @rlMainBorderRadius;
 	box-shadow: @rlMainShadow;
+/*
 	display: flex;
 	flex-direction: column;
-
+*/
 	.b-footer {
 	    display: flex;
 		flex-shrink: 0;
@@ -177,28 +178,27 @@ html:not(rl-mobile) {
 			visibility: hidden;
 		}
 
-		.checkboxMessage {
+		.messageCheckbox {
 			display: none;
 		}
 	}
 }
 
-.messageListItem {
+.messageListItem > div + div {
 	display: flex;
-	flex-wrap: wrap;
-
-	position: relative;
-	font-size: 13px;
 	overflow: hidden;
-	cursor: pointer;
+	padding: 5px 0 5px 5px;
+	width: 100%;
+}
 
-	margin: 0;
-	padding: 5px 0;
+.messageListItem {
+	cursor: pointer;
 	border: 0;
 	border-bottom: 1px solid rgba(153, 153, 153, 0.2);
 	border-left: 6px solid #eee;
-
-	z-index: 100;
+	display: flex;
+	font-size: 13px;
+	line-height: 2;
 /*
 	> * {
 		display: flex;
@@ -221,9 +221,12 @@ html:not(rl-mobile) {
 		opacity: .3;
 	}
 
-	.checkboxMessage {
-		margin: 0 6px;
+	.messageCheckbox {
 		font-size: 16px;
+		padding: 5px .5em 0;
+	}
+	.checkboxMessage {
+		display: inline;
 	}
 
 	time, .sizeParent {
@@ -234,7 +237,6 @@ html:not(rl-mobile) {
 	}
 
 	.attachmentParent {
-		position: relative;
 		margin: 2px 10px 0 5px;
 	}
 
@@ -243,6 +245,14 @@ html:not(rl-mobile) {
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+
+	.senderParent {
+		flex: 0 0 25%;
+	}
+
+	.subjectParent {
+		flex: 1 1 auto;
 	}
 
 	.subjectParent:empty {
@@ -394,11 +404,19 @@ html:not(rl-mobile) {
 
 .rl-side-preview-pane, .rl-mobile {
 
-	.messageListItem {
+	.messageListItem > div + div {
+		flex-wrap: wrap;
+	}
 
-		.checkboxMessage {
-			line-height: 12px;
-			margin: 10px 6px -5px;
+	.messageListItem {
+		line-height: 1.5;
+
+		.messageCheckbox {
+			padding-top: 0.8em;
+		}
+
+		.senderParent {
+			flex: 1 0 45%;
 		}
 
 		.subjectParent {
@@ -406,10 +424,6 @@ html:not(rl-mobile) {
 			line-height: 16px;
 			order: 1;
 			width: calc(100% - 120px);
-		}
-
-		.senderParent {
-			flex: 1 0 45%;
 		}
 
 		.flagParent {
@@ -422,31 +436,6 @@ html:not(rl-mobile) {
 
 		.attachmentParent {
 			order: 3;
-		}
-	}
-
-	.messageList:not(.hideMessageListCheckbox) .subjectParent {
-		margin-left: 28px;
-	}
-}
-
-html:not(.rl-mobile):not(.rl-side-preview-pane) {
-
-	.messageListItem {
-
-		line-height: 25px;
-		flex-wrap: nowrap;
-
-		> * {
-			line-height: 25px;
-		}
-
-		.senderParent {
-			flex: 0 0 25%;
-		}
-
-		.subjectParent {
-			flex: 1 1 auto;
 		}
 	}
 }

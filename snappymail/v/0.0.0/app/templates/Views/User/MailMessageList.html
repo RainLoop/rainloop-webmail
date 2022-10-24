@@ -109,23 +109,19 @@
 		</div>
 		<div class="messageListPlace" data-bind="dragmessages: 1, foreach: messageList" draggable="true">
 			<div class="messageListItem" data-bind="css: lineAsCss()">
-				<div class="checkboxMessage fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
-
-				<div class="flagParent fontastic"></div>
-
-				<div class="senderParent actionHandle" data-bind="attr: {'title': senderClearEmailsString}, text: senderEmailsString"></div>
-
-				<div class="subjectParent actionHandle" data-bind="text: subject"></div>
-
-				<div class="attachmentParent actionHandle">
-					<i data-bind="css: attachmentIconClass"></i>
+				<div class="messageCheckbox">
+					<div class="checkboxMessage fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
+				</div><div>
+					<div class="flagParent fontastic"></div>
+					<div class="senderParent actionHandle" data-bind="attr: {'title': senderClearEmailsString}, text: senderEmailsString"></div>
+					<div class="subjectParent actionHandle" data-bind="text: subject"></div>
+					<div class="attachmentParent actionHandle">
+						<i data-bind="css: attachmentIconClass"></i>
+					</div>
+					<div class="sizeParent actionHandle" data-bind="text: friendlySize()"></div>
+					<div class="threads-len" data-bind="visible: 1 < threadsLen(), text: threadsLen"></div>
+					<time class="actionHandle" data-moment-format="SHORT" data-moment-format-title="FULL" data-bind="moment: dateTimeStampInUTC"></time>
 				</div>
-
-				<div class="sizeParent actionHandle" data-bind="text: friendlySize()"></div>
-
-				<div class="threads-len" data-bind="visible: 1 < threadsLen(), text: threadsLen"></div>
-
-				<time class="actionHandle" data-moment-format="SHORT" data-moment-format-title="FULL" data-bind="moment: dateTimeStampInUTC"></time>
 			</div>
 		</div>
 		<div id="messagesDragImage"><span class="text"></span>&nbsp;<i class="icon-mail"></i></div>
