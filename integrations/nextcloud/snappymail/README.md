@@ -11,17 +11,17 @@ Thank you to all contributors to SnappyMail for nextcloud:
 
 ## How to Install
 
-Start within Nextcloud, and click on the "+ Apps" button in the upper-left corner dropdown menu:
+Start within Nextcloud, and click on the "+ Apps" button in the upper-right corner dropdown menu:
 
 ![Image1](https://raw.githubusercontent.com/the-djmaze/snappymail/master/integrations/nextcloud/screenshots/help_a1.png)
 
 Then, enable the SnappyMail plugin that you will find in the "Social & communication" section:
 
-![Image2](https://raw.githubusercontent.com/the-djmaze/snappymail/master/integrations/nextcloud/screenshots//help_a2.png)
+![Image2](https://raw.githubusercontent.com/the-djmaze/snappymail/master/integrations/nextcloud/screenshots/help_a2.png)
 
 After a quick wait, SnappyMail is installed. Now you should configure it before use: open the Nextcloud admin panel (upper-right corner dropdown menu) and go to "Additionnal settings". There, click on the "Go to SnappyMail Webmail admin panel" link.
 
-![Image3](https://github.com/pierre-alain-b/rainloop-nextcloud/blob/master/screenshots/help_a3.png)
+![Image3](https://raw.githubusercontent.com/the-djmaze/snappymail/master/integrations/nextcloud/screenshots/nextcloud-admin.png)
 
 To enter SnappyMail admin area, the default login is "admin" and the default password will be generated in `[nextcloud-data]/app_snappymail/_data_/_default_/admin_password.txt`. Don't forget to change it once in the admin panel!
 
@@ -34,7 +34,7 @@ From that point, all instance-wide SnappyMail settings can be tweaked as you wis
 SnappyMail for Nextcloud is highly configurable. But settings are available in multiple places and this can be misleading for first-time users.
 
 ### SnappyMail admin settings
-SnappyMail admin settings can be reached only by the Nextcloud administrator. Open the Nextcloud admin panel ("Admin" in the upper-right corner dropdown menu) and go to "Additionnal settings". There, click on the "Go to SnappyMail Webmail admin panel" link. Alternatively, you may use the following link: https://path.to.nextcloud/index.php/apps/snappymail/app/?admin.
+SnappyMail admin settings can be reached only by the Nextcloud administrator. Open the Nextcloud admin panel ("Admin" in the upper-right corner dropdown menu) and go to "Additionnal settings". There, click on the "Go to SnappyMail Webmail admin panel" link. Alternatively, you may use the following link: https://path.to.nextcloud/index.php/apps/snappymail/run/?admin.
 
 SnappyMail admin settings include all settings that will apply to all SnappyMail users (default login rules, branding, management of plugins, security rules and domains).
 

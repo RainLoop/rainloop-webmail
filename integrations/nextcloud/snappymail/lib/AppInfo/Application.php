@@ -66,19 +66,19 @@ class Application extends App implements IBootstrap
 		if (!\is_dir(\rtrim(\trim(\OC::$server->getSystemConfig()->getValue('datadirectory', '')), '\\/') . '/appdata_snappymail')) {
 			return;
 		}
-
+/*
 		$container = $this->getContainer();
 		$container->query('OCP\INavigationManager')->add(function () use ($container) {
 			$urlGenerator = $container->query('OCP\IURLGenerator');
 			return [
 				'id' => 'snappymail',
-				'order' => 10,
+				'order' => 4,
 				'href' => $urlGenerator->linkToRoute('snappymail.page.index'),
 				'icon' => $urlGenerator->imagePath('snappymail', 'logo-white-64x64.png'),
 				'name' => \OCP\Util::getL10N('snappymail')->t('Email')
 			];
 		});
-
+*/
 		$userSession = \OC::$server->getUserSession();
 		$userSession->listen('\OC\User', 'postLogin', function($user, $loginName, $password, $isTokenLogin) {
 			$config = \OC::$server->getConfig();
