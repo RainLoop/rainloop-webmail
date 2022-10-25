@@ -25,13 +25,7 @@ class CacheClient
 	/**
 	 * @var string
 	 */
-	private $sCacheIndex;
-
-	function __construct()
-	{
-		$this->oDriver = null;
-		$this->sCacheIndex = '';
-	}
+	private $sCacheIndex = '';
 
 	public function Set(string $sKey, string $sValue) : bool
 	{
@@ -111,7 +105,7 @@ class CacheClient
 
 	public function IsInited() : bool
 	{
-		return $this->oDriver instanceof DriverInterface;
+		return !!$this->oDriver;
 	}
 
 	public function SetCacheIndex(string $sCacheIndex) : self

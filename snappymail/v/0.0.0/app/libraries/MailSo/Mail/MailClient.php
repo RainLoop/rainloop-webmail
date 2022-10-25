@@ -1299,11 +1299,6 @@ class MailClient
 	 */
 	public function SetLogger(\MailSo\Log\Logger $oLogger) : self
 	{
-		if (!($oLogger instanceof \MailSo\Log\Logger))
-		{
-			throw new \InvalidArgumentException;
-		}
-
 		$this->oLogger = $oLogger;
 		$this->oImapClient->SetLogger($this->oLogger);
 

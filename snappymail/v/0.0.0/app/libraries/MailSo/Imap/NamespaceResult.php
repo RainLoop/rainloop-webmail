@@ -49,7 +49,7 @@ class NamespaceResult
 
 	public function InitByImapResponse(\MailSo\Imap\Response $oImapResponse) : self
 	{
-		if ($oImapResponse && $oImapResponse instanceof \MailSo\Imap\Response)
+		if ($oImapResponse)
 		{
 			if (isset($oImapResponse->ResponseList[2][0]) &&
 				\is_array($oImapResponse->ResponseList[2][0]) &&
