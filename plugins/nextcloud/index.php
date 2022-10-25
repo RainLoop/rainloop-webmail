@@ -30,6 +30,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$this->addJs('js/messagelist.js');
 
 			$this->addTemplate('templates/PopupsNextcloudFiles.html');
+			$this->addTemplate('templates/PopupsNextcloudCalendars.html');
 		}
 	}
 

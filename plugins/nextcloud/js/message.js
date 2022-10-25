@@ -13,7 +13,7 @@
 					.filter(v => v);
 				if (hashes.length) {
 					view.saveNextcloudLoading(true);
-					rl.ncFiles.selectFolder().then(folder => {
+					rl.nextcloud.selectFolder().then(folder => {
 						if (folder) {
 							rl.fetchJSON('./?/Json/&q[]=/0/', {}, {
 								Action: 'AttachmentsActions',
@@ -41,7 +41,7 @@
 			};
 
 			view.nextcloudSaveMsg = () => {
-				rl.ncFiles.selectFolder().then(folder => {
+				rl.nextcloud.selectFolder().then(folder => {
 					let msg = view.message();
 					folder && rl.pluginRemoteRequest(
 						(iError, data) => {
@@ -59,6 +59,28 @@
 					);
 				});
 			};
+
+			view.nextcloudICS = ko.computed(() => {
+				let msg = view.message();
+				return msg
+					? msg.attachments.find(attachment => 'text/calendar' == attachment.mimeType)
+					: null;
+			}, {'pure':true});
+
+			view.nextcloudSaveICS = () => {
+				let attachment = view.nextcloudICS();
+				attachment && rl.nextcloud.selectCalendar().then(href => {
+					console.dir({href: href});
+					fetch(attachment.linkDownload(), {
+						mode: 'same-origin',
+						cache: 'no-cache',
+						redirect: 'error',
+						credentials: 'same-origin'
+					})
+					.then(response => (response.status < 400) ? response.text() : Promise.reject(new Error({ response })))
+					.then(text => rl.nextcloud.calendarPut(href, text));
+				});
+			}
 		}
 	});
 
@@ -71,6 +93,11 @@
 			+ '<i class="fontastic" data-bind="visible: !saveNextcloudError(), css: {\'icon-spinner\': saveNextcloudLoading()}">💾</i>'
 			+ '<span class="g-ui-link" data-bind="click: saveNextcloud" data-i18n="NEXTCLOUD/SAVE_ATTACHMENTS"></span>'
 		+ '</span>'));
+
+		// https://github.com/nextcloud/calendar/issues/4684
+//		attachmentsControls.append(Element.fromHTML('<span data-bind="visible: nextcloudICS" data-icon="📅">'
+//			+ '<span class="g-ui-link" data-bind="click: nextcloudSaveICS" data-i18n="NEXTCLOUD/SAVE_ICS"></span>'
+//		+ '</span>'));
 	}
 
 	const msgMenu = template.content.querySelector('#more-view-dropdown-id + menu');

@@ -2,24 +2,34 @@
 
 const
 	namespace = 'DAV:',
+	nsCalDAV = 'urn:ietf:params:xml:ns:caldav',
 
-	propfindBody = `<?xml version="1.0"?>
-<d:propfind xmlns:d="DAV:" xmlns:oc="http://owncloud.org/ns" xmlns:nc="http://nextcloud.org/ns">
+	propfindFiles = `<?xml version="1.0"?>
+<d:propfind xmlns:d="DAV:" xmlns:oc="http://owncloud.org/ns">
   <d:prop>
-		<d:resourcetype />
-		<oc:size />
-		<d:getcontentlength />
+		<d:resourcetype/>
+		<oc:size/>
+		<d:getcontentlength/>
+  </d:prop>
+</d:propfind>`,
+
+	propfindCal = `<?xml version="1.0"?>
+<d:propfind xmlns:d="DAV:">
+  <d:prop>
+		<d:resourcetype/>
+		<d:current-user-privilege-set/>
+		<d:displayname/>
   </d:prop>
 </d:propfind>`,
 
 	xmlParser = new DOMParser(),
-	pathRegex = /.*\/remote.php\/dav\/files\/[^/]+/g,
+	pathRegex = /.*\/remote.php\/dav\/[^/]+\/[^/]+/g,
 
 	getDavElementsByTagName = (parent, localName) => parent.getElementsByTagNameNS(namespace, localName),
 	getDavElementByTagName = (parent, localName) => getDavElementsByTagName(parent, localName)?.item(0),
 	getElementByTagName = (parent, localName) => +parent.getElementsByTagName(localName)?.item(0),
 
-	davFetch = (path, options) => {
+	davFetch = (mode, path, options) => {
 		if (!parent.OC.requestToken) {
 			return Promise.reject(new Error('OC.requestToken missing'));
 		}
@@ -32,21 +42,23 @@ const
 			headers: {}
 		}, options);
 		options.headers.requesttoken = parent.OC.requestToken;
-		return fetch(cfg.WebDAV + '/files/' + cfg.UID + path, options);
+		return fetch(cfg.WebDAV + '/' + mode + '/' + cfg.UID + path, options);
 	},
 
-	createDirectory = path => davFetch(path, { method: 'MKCOL' }),
+	davFetchFiles = (path, options) => davFetch('files', path, options),
+
+	createDirectory = path => davFetchFiles(path, { method: 'MKCOL' }),
 
 	fetchFiles = path => {
 		if (!parent.OC.requestToken) {
 			return Promise.reject(new Error('OC.requestToken missing'));
 		}
-		return davFetch(path, {
+		return davFetchFiles(path, {
 			method: 'PROPFIND',
 			headers: {
 				'Content-Type': 'application/xml; charset=utf-8'
 			},
-			body: propfindBody
+			body: propfindFiles
 		})
 		.then(response => (response.status < 400) ? response.text() : Promise.reject(new Error({ response })))
 		.then(text => {
@@ -61,10 +73,10 @@ const
 				const
 					e = responseList.item(i),
 					elem = {
-						name: decodeURIComponent(getDavElementByTagName(e, 'href').innerHTML)
+						name: getDavElementByTagName(e, 'href').textContent
 							.replace(pathRegex, '').replace(/\/$/, ''),
 						isFile: false
-					}
+					};
 				if (getDavElementsByTagName(getDavElementByTagName(e, 'resourcetype'), 'collection').length) {
 					// skip current directory
 					if (elem.name === path) {
@@ -72,8 +84,8 @@ const
 					}
 				} else {
 					elem.isFile = true;
-					elem.size = getDavElementByTagName(e, 'getcontentlength')?.innerHTML
-						|| getElementByTagName(e, 'oc:size')?.innerHTML;
+					elem.size = getDavElementByTagName(e, 'getcontentlength')?.textContent
+						|| getElementByTagName(e, 'oc:size')?.textContent;
 				}
 				elemList.push(elem);
 			}
@@ -202,7 +214,100 @@ close() {}
 */
 }
 
-rl.ncFiles = {
+class NextcloudCalendarsPopupView extends rl.pluginPopupView {
+	constructor() {
+		super('NextcloudCalendars');
+	}
+
+	onBuild(dom) {
+		this.tree = dom.querySelector('#sm-nc-calendars');
+		this.tree.addEventListener('click', event => {
+			let el = event.target;
+			if (el.matches('button')) {
+				this.select = el.href;
+				this.close();
+			}
+		});
+	}
+
+	// Happens after showModal()
+	beforeShow(fResolve) {
+		this.select = '';
+		this.fResolve = fResolve;
+		this.tree.innerHTML = '';
+		davFetch('calendars', '/', {
+			method: 'PROPFIND',
+			headers: {
+				'Content-Type': 'application/xml; charset=utf-8'
+			},
+			body: propfindCal
+		})
+		.then(response => (response.status < 400) ? response.text() : Promise.reject(new Error({ response })))
+		.then(text => {
+			const
+				responseList = getDavElementsByTagName(
+					xmlParser.parseFromString(text, 'application/xml').documentElement,
+					'response'
+				);
+			for (let i = 0; i < responseList.length; ++i) {
+				const e = responseList.item(i);
+				if (getDavElementByTagName(e, 'resourcetype').getElementsByTagNameNS(nsCalDAV, 'calendar').length) {
+//				 && getDavElementsByTagName(getDavElementByTagName(e, 'current-user-privilege-set'), 'write').length) {
+					const li = document.createElement('li'),
+						btn = document.createElement('button');
+					li.textContent = getDavElementByTagName(e, 'displayname').textContent;
+					btn.href = getDavElementByTagName(e, 'href').textContent
+						.replace(pathRegex, '').replace(/\/$/, '');
+					btn.textContent = 'select';
+					btn.className = 'button-vue';
+					btn.style.marginLeft = '1em';
+					li.append(btn);
+					this.tree.append(li);
+				}
+			}
+		})
+		.catch(err => console.error(err));
+	}
+
+	onHide() {
+		this.fResolve(this.select);
+	}
+/*
+beforeShow() {} // Happens before showModal()
+onShow() {}     // Happens after  showModal()
+afterShow() {}  // Happens after  showModal() animation transitionend
+onHide() {}     // Happens before animation transitionend
+afterHide() {}  // Happens after  animation transitionend
+close() {}
+*/
+}
+
+rl.nextcloud = {
+	selectCalendar: () =>
+		new Promise(resolve => {
+			NextcloudCalendarsPopupView.showModal([
+				href => resolve(href),
+			]);
+		}),
+
+	calendarPut: (path, event) => {
+		// Validation error in iCalendar: A calendar object on a CalDAV server MUST NOT have a METHOD property.
+		event = event.replace(/METHOD:.+\r?\n/i, '');
+
+		let m = event.match(/UID:(.+)/);
+		davFetch('calendars', path + '/' + m[1] + '.ics', {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'text/calendar'
+			},
+			body: event
+		})
+		.then(response => (response.status < 400) ? response.text() : Promise.reject(new Error({ response })))
+		.then(text => {
+			console.dir({event_response:text});
+		});
+	},
+
 	selectFolder: () =>
 		new Promise(resolve => {
 			NextcloudFilesPopupView.showModal([

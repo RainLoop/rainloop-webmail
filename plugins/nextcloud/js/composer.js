@@ -5,7 +5,7 @@
 		if ('PopupsCompose' === e.detail.viewModelTemplateID) {
 			let view = e.detail;
 			view.nextcloudAttach = () => {
-				rl.ncFiles.selectFiles().then(files => {
+				rl.nextcloud.selectFiles().then(files => {
 					files && files.forEach(file => {
 						let attachment = view.addAttachmentHelper(
 								Jua?.randomId(),
