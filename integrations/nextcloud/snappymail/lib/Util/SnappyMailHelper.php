@@ -26,10 +26,12 @@ class SnappyMailHelper
 
 		$oConfig = \RainLoop\Api::Config();
 		$bSave = false;
+
 		if (!$oConfig->Get('webmail', 'app_path')) {
 			$oConfig->Set('webmail', 'app_path', \OC::$server->getAppManager()->getAppWebPath('snappymail') . '/app/');
 			$bSave = true;
 		}
+
 		if (!\is_dir(APP_PLUGINS_PATH . 'nextcloud')) {
 			\SnappyMail\Repository::installPackage('plugin', 'nextcloud');
 			$oConfig->Set('plugins', 'enable', true);
@@ -37,6 +39,14 @@ class SnappyMailHelper
 			$aList[] = 'nextcloud';
 			$oConfig->Set('plugins', 'enabled_list', \implode(',', \array_unique($aList)));
 			$oConfig->Set('webmail', 'theme', 'Nextcloud@custom');
+			$bSave = true;
+		}
+
+		$sPassword = $oConfig->Get('security', 'admin_password');
+		if ('12345' == $sPassword || !$sPassword) {
+			$sPassword = \substr(\base64_encode(\random_bytes(16)), 0, 12);
+			$oConfig->SetPassword($sPassword);
+			\RainLoop\Utils::saveFile(APP_PRIVATE_DATA . 'admin_password.txt', $sPassword . "\n");
 			$bSave = true;
 		}
 
