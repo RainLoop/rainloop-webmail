@@ -95,9 +95,12 @@
 		+ '</span>'));
 
 		// https://github.com/nextcloud/calendar/issues/4684
-//		attachmentsControls.append(Element.fromHTML('<span data-bind="visible: nextcloudICS" data-icon="📅">'
-//			+ '<span class="g-ui-link" data-bind="click: nextcloudSaveICS" data-i18n="NEXTCLOUD/SAVE_ICS"></span>'
-//		+ '</span>'));
+		let cfg = rl.settings.get('Nextcloud');
+		if (cfg.CalDAV) {
+			attachmentsControls.append(Element.fromHTML('<span data-bind="visible: nextcloudICS" data-icon="📅">'
+				+ '<span class="g-ui-link" data-bind="click: nextcloudSaveICS" data-i18n="NEXTCLOUD/SAVE_ICS"></span>'
+			+ '</span>'));
+		}
 	}
 
 	const msgMenu = template.content.querySelector('#more-view-dropdown-id + menu');

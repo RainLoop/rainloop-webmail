@@ -4,8 +4,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Nextcloud',
-		VERSION = '2.6',
-		RELEASE  = '2022-10-21',
+		VERSION = '2.7',
+		RELEASE  = '2022-10-25',
 		CATEGORY = 'Integrations',
 		DESCRIPTION = 'Integrate with Nextcloud v20+',
 		REQUIRED = '2.19.0';
@@ -170,7 +170,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 //			$sWebDAV = \OCP\Util::linkToRemote('dav');
 			$aResult['Nextcloud'] = [
 				'UID' => $sUID,
-				'WebDAV' => $sWebDAV
+				'WebDAV' => $sWebDAV,
+				'CalDAV' => $this->Config()->Get('plugin', 'calendar', false)
 //				'WebDAV_files' => $sWebDAV . '/files/' . $sUID
 			];
 			if (empty($aResult['Auth'])) {
@@ -214,7 +215,10 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 		return array(
 			\RainLoop\Plugins\Property::NewInstance('suggestions')->SetLabel('Suggestions')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
-				->SetDefaultValue(true)
+				->SetDefaultValue(true),
+			\RainLoop\Plugins\Property::NewInstance('calendar')->SetLabel('Enable "Put ICS in calendar"')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDefaultValue(false)
 		);
 	}
 
