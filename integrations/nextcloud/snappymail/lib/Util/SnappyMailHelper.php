@@ -14,38 +14,13 @@ class SnappyMailHelper
 		// Nextcloud the default spl_autoload_register() not working
 		\spl_autoload_register(function($sClassName){
 			$file = RAINLOOP_APP_LIBRARIES_PATH . \strtolower(\strtr($sClassName, '\\', DIRECTORY_SEPARATOR)) . '.php';
-			if (is_file($file)) {
+			if (\is_file($file)) {
 				include_once $file;
 			}
 		});
 
 		$_ENV['SNAPPYMAIL_NEXTCLOUD'] = true;
 		$_ENV['SNAPPYMAIL_INCLUDE_AS_API'] = true;
-
-		// Import data from RainLoop
-		$dir = \rtrim(\trim(\OC::$server->getSystemConfig()->getValue('datadirectory', '')), '\\/');
-		$dir_snappy = $dir . '/appdata_snappymail/';
-		$dir_rainloop = $dir . '/rainloop-storage';
-		$rainloop_plugins = [];
-		if (!\is_dir($dir_snappy) && \is_dir($dir_rainloop)) {
-			\mkdir($dir_snappy, 0755, true);
-			$iterator = new \RecursiveIteratorIterator(
-				new \RecursiveDirectoryIterator($dir_rainloop, \RecursiveDirectoryIterator::SKIP_DOTS),
-				\RecursiveIteratorIterator::SELF_FIRST
-			);
-			foreach ($iterator as $item) {
-				$target = $dir_snappy . $iterator->getSubPathname();
-				if (\preg_match('@/plugins/([^/])@', $target, $match)) {
-					$rainloop_plugins[$match[1]] = $match[1];
-				} else if (!\strpos($target, '/cache/')) {
-					if ($item->isDir()) {
-						\mkdir($target, 0755, true);
-					} else {
-						\copy($item, $target);
-					}
-				}
-			}
-		}
 
 		require_once \dirname(\dirname(__DIR__)) . '/app/index.php';
 
@@ -63,23 +38,6 @@ class SnappyMailHelper
 			$oConfig->Set('plugins', 'enabled_list', \implode(',', \array_unique($aList)));
 			$oConfig->Set('webmail', 'theme', 'Nextcloud@custom');
 			$bSave = true;
-		}
-
-		$sPassword = $oConfig->Get('security', 'admin_password');
-		if ('12345' == $sPassword || !$sPassword) {
-			$sPassword = \substr(\base64_encode(\random_bytes(16)), 0, 12);
-			\RainLoop\Utils::saveFile(APP_PRIVATE_DATA . 'admin_password.txt', $sPassword . "\n");
-			$oConfig->SetPassword($sPassword);
-			$bSave = true;
-		}
-
-		// Attempt to install same plugins as RainLoop
-		if ($rainloop_plugins) {
-			foreach (\SnappyMail\Repository::getPackagesList()['List'] as $plugin) {
-				if (\in_array($plugin['id'], $rainloop_plugins)) {
-					\SnappyMail\Repository::installPackage('plugin', $plugin['id']);
-				}
-			}
 		}
 
 		$bSave && $oConfig->Save();
@@ -164,4 +122,63 @@ class SnappyMailHelper
 		static::loadApp();
 		return \SnappyMail\Crypt::DecryptUrlSafe($sPassword, $sSalt);
 	}
+
+	// Imports data from RainLoop
+	public static function importRainLoop() : array
+	{
+		$result = [];
+
+		$dir = \rtrim(\trim(\OC::$server->getSystemConfig()->getValue('datadirectory', '')), '\\/');
+		$dir_snappy = $dir . '/appdata_snappymail/';
+		$dir_rainloop = $dir . '/rainloop-storage';
+		$rainloop_plugins = [];
+		if (\is_dir($dir_rainloop)) {
+			\is_dir($dir_snappy) || \mkdir($dir_snappy, 0755, true);
+			$iterator = new \RecursiveIteratorIterator(
+				new \RecursiveDirectoryIterator($dir_rainloop, \RecursiveDirectoryIterator::SKIP_DOTS),
+				\RecursiveIteratorIterator::SELF_FIRST
+			);
+			foreach ($iterator as $item) {
+				$target = $dir_snappy . $iterator->getSubPathname();
+				if (\preg_match('@/plugins/([^/])@', $target, $match)) {
+					$rainloop_plugins[$match[1]] = $match[1];
+				} else if (!\strpos($target, '/cache/')) {
+					if ($item->isDir()) {
+						\is_dir($target) || \mkdir($target, 0755, true);
+					} else if (\file_exists($target)) {
+						$result[] = "skipped: {$target}";
+					} else {
+						\copy($item, $target);
+						$result[] = "copied : {$target}";
+					}
+				}
+			}
+		}
+
+//		$password = APP_PRIVATE_DATA . 'admin_password.txt';
+//		\is_file($password) && \unlink($password);
+
+		static::loadApp();
+
+		// Attempt to install same plugins as RainLoop
+		if ($rainloop_plugins) {
+			foreach (\SnappyMail\Repository::getPackagesList()['List'] as $plugin) {
+				if (\in_array($plugin['id'], $rainloop_plugins)) {
+					$result[] = "install plugin : {$plugin['id']}";
+					\SnappyMail\Repository::installPackage('plugin', $plugin['id']);
+					unset($rainloop_plugins[$plugin['id']]);
+				}
+			}
+			foreach ($rainloop_plugins as $plugin) {
+				$result[] = "skipped plugin : {$plugin}";
+			}
+		}
+
+		$oConfig = \RainLoop\Api::Config();
+		$oConfig->Set('webmail', 'theme', 'Nextcloud@custom');
+		$oConfig->Save();
+
+		return $result;
+	}
+
 }

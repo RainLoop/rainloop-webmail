@@ -39,18 +39,25 @@
 			</p>
 			<br />
 			<p>
-				<input id="snappymail-embed" name="snappymail-embed" type="checkbox" class="checkbox"  <?php if ($_['snappymail-embed']) echo 'checked="checked"'; ?>>
+				<input id="snappymail-embed" name="snappymail-embed" type="checkbox" class="checkbox" <?php if ($_['snappymail-embed']) echo 'checked="checked"'; ?>>
 				<label for="snappymail-embed">Embed without iframe (experimental)</label>
 			</p>
 			<br />
 			<p>
-				<input id="snappymail-debug" name="snappymail-debug" type="checkbox" class="checkbox"  <?php if ($_['snappymail-debug']) echo 'checked="checked"'; ?>>
+				<input id="snappymail-debug" name="snappymail-debug" type="checkbox" class="checkbox" <?php if ($_['snappymail-debug']) echo 'checked="checked"'; ?>>
 				<label for="snappymail-debug">Debug</label>
 			</p>
 			<br />
+			<?php if ($_['can-import-rainloop']) { ?>
+			<p>
+				<input id="import-rainloop" name="import-rainloop" type="checkbox" class="checkbox">
+				<label for="import-rainloop">Import RainLoop data</label>
+			</p>
+			<br />
+			<?php } ?>
 			<p>
 				<button id="snappymail-save-button" name="snappymail-save-button"><?php echo($l->t('Save')); ?></button>
-				&nbsp;&nbsp;<span class="snappymail-result-desc"></span>
+				<div class="snappymail-result-desc" style="white-space: pre"></div>
 			</p>
 		</fieldset>
 	</form>

@@ -38,9 +38,14 @@ class AdminSettings implements ISettings
 		$sPassword = '';
 		if (\is_file($passfile)) {
 			$sPassword = \file_get_contents($passfile);
-			$parameters['snappymail-admin-panel-link'] .= SnappyMailHelper::getAppUrl().'?admin#/security';
+			$parameters['snappymail-admin-panel-link'] .= '#/security';
 		}
 		$parameters['snappymail-admin-password'] = $sPassword;
+
+		$parameters['can-import-rainloop'] = \is_dir(
+			\rtrim(\trim(\OC::$server->getSystemConfig()->getValue('datadirectory', '')), '\\/')
+			. '/rainloop-storage'
+		);
 
 		$parameters['snappymail-debug'] = $oConfig->Get('debug', 'enable', false);
 

@@ -59,6 +59,14 @@ class FetchController extends Controller {
 				]);
 			}
 
+			if (!empty($_POST['import-rainloop'])) {
+				$result = SnappyMailHelper::importRainLoop();
+				return new JSONResponse([
+					'status' => 'success',
+					'Message' => \implode("\n", $result)
+				]);
+			}
+
 			SnappyMailHelper::loadApp();
 			$debug = !empty($_POST['snappymail-debug']);
 			$oConfig = \RainLoop\Api::Config();
