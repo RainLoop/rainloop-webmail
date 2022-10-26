@@ -291,7 +291,7 @@ export const
 				if ('IMG' === name) {
 					oElement.loading = 'lazy';
 					let attachment;
-					if ('cid:' === value.slice(0, 4))
+					if (value.startsWith('cid:'))
 					{
 						value = value.slice(4);
 						setAttribute('data-x-src-cid', value);
@@ -331,7 +331,7 @@ export const
 						result.hasExternals = true;
 						oElement.alt || (oElement.alt = value.replace(/^.+\/([^/?]+).*$/, '$1').slice(-20));
 					}
-					else if ('data:image/' === value.slice(0, 11))
+					else if (value.startsWith('data:image/'))
 					{
 						oElement.src = value;
 					}
@@ -382,7 +382,7 @@ export const
 							oStyle[property] = null;
 							found = found[1].replace(/^["'\s]+|["'\s]+$/g, '');
 							let lowerUrl = found.toLowerCase();
-							if ('cid:' === lowerUrl.slice(0, 4)) {
+							if (lowerUrl.startsWith('cid:')) {
 								const attachment = findAttachmentByCid(found);
 								if (attachment?.linkPreview && name) {
 									oStyle[property] = "url('" + attachment.linkPreview() + "')";
@@ -392,7 +392,7 @@ export const
 							} else if (httpre.test(lowerUrl)) {
 								result.hasExternals = true;
 								urls_remote.push([property, found]);
-							} else if ('data:image/' === lowerUrl.slice(0, 11)) {
+							} else if (lowerUrl.startsWith('data:image/')) {
 								oStyle[property] = value;
 							} else {
 								urls_broken.push([property, found]);
@@ -717,11 +717,9 @@ export class HtmlEditor {
 	}
 
 	setHtmlOrPlain(text) {
-		if (':HTML:' === text.slice(0, 6)) {
-			this.setHtml(text.slice(6));
-		} else {
-			this.setPlain(text);
-		}
+		text.startsWith(':HTML:')
+			? this.setHtml(text.slice(6))
+			: this.setPlain(text);
 	}
 
 	setData(mode, data) {

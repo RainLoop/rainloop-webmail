@@ -36,7 +36,7 @@ ThemeStore.fontSansSerif.subscribe(value => {
 	if (null != value) {
 		let cl = elementById('rl-app').classList;
 		cl.forEach(name => {
-			if ('font' === name.slice(0,4) && !/font(Serif|Mono)/.test(name)) {
+			if (name.startsWith('font') && !/font(Serif|Mono)/.test(name)) {
 				cl.remove(name);
 			}
 		});
@@ -46,22 +46,14 @@ ThemeStore.fontSansSerif.subscribe(value => {
 ThemeStore.fontSerif.subscribe(value => {
 	if (null != value) {
 		let cl = elementById('rl-app').classList;
-		cl.forEach(name => {
-			if ('fontSerif' === name.slice(0,9)) {
-				cl.remove(name);
-			}
-		});
+		cl.forEach(name => name.startsWith('fontSerif') && cl.remove(name));
 		value && cl.add('fontSerif'+value);
 	}
 });
 ThemeStore.fontMono.subscribe(value => {
 	if (null != value) {
 		let cl = elementById('rl-app').classList;
-		cl.forEach(name => {
-			if ('fontMono' === name.slice(0,9)) {
-				cl.remove(name);
-			}
-		});
+		cl.forEach(name => name.startsWith('fontMono') && cl.remove(name));
 		value && cl.add('fontMono'+value);
 	}
 });

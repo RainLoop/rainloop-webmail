@@ -177,7 +177,7 @@ export class AttachmentModel extends AbstractModel {
 		const localEvent = event.originalEvent || event;
 		if (attachment && localEvent && localEvent.dataTransfer && localEvent.dataTransfer.setData) {
 			let link = this.linkDownload();
-			if ('http' !== link.slice(0, 4)) {
+			if (!link.startsWith('http')) {
 				link = location.protocol + '//' + location.host + location.pathname + link;
 			}
 			localEvent.dataTransfer.setData('DownloadURL', this.mimeType + ':' + this.fileName + ':' + link);

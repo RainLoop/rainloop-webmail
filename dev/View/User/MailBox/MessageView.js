@@ -441,10 +441,6 @@ export class MailMessageView extends AbstractViewRight {
 		return MessagelistUserStore.isDraftFolder() || MessagelistUserStore.isSentFolder();
 	}
 
-	composeClick() {
-		showMessageComposer();
-	}
-
 	scrollMessageToTop() {
 		oMessageScrollerDom().scrollTop = (50 < oMessageScrollerDom().scrollTop) ? 50 : 0;
 	}

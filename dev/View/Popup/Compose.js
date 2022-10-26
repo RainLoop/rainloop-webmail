@@ -686,7 +686,7 @@ export class ComposePopupView extends AbstractViewPopup {
 		if (identity && ComposeType.Draft !== msgComposeType && ComposeType.EditAsNew !== msgComposeType) {
 			this.editor(editor => {
 				let signature = identity.signature() || '',
-					isHtml = ':HTML:' === signature.slice(0, 6),
+					isHtml = signature.startsWith(':HTML:'),
 					fromLine = oLastMessage ? emailArrayToStringLineHelper(oLastMessage.from, true) : '';
 				if (fromLine) {
 					signature = signature.replace(/{{FROM-FULL}}/g, fromLine);

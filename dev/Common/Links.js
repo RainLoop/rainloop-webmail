@@ -76,7 +76,7 @@ export const
 	 */
 	themePreviewLink = theme => {
 		let prefix = VERSION_PREFIX;
-		if ('@custom' === theme.slice(-7)) {
+		if (theme.endsWith('@custom')) {
 			theme = theme.slice(0, theme.length - 7).trim();
 			prefix = '';
 		}
