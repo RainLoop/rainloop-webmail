@@ -255,6 +255,7 @@ class NextcloudCalendarsPopupView extends rl.pluginPopupView {
 //				 && getDavElementsByTagName(getDavElementByTagName(e, 'current-user-privilege-set'), 'write').length) {
 					const li = document.createElement('li'),
 						btn = document.createElement('button');
+					li.dataset.icon = '📅';
 					li.textContent = getDavElementByTagName(e, 'displayname').textContent;
 					btn.href = getDavElementByTagName(e, 'href').textContent
 						.replace(pathRegex, '').replace(/\/$/, '');

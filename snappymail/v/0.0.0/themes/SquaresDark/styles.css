@@ -112,12 +112,7 @@
 }
 
 .messageView .messageItemHeader,
-.messageView #messageItem .pgpEncrypted,
-.messageView #messageItem .pgpSigned,
-.messageView #messageItem .readReceipt,
-.messageView #messageItem .showImages,
-.messageView #messageItem .attachmentsPlace,
-.messageView #messageItem .attachmentsControls {
+.messageView #messageItem .bodySubHeader > * {
 	background-color: #222;
 	border-bottom-color: #444;
 }
