@@ -281,7 +281,6 @@ export class ContactsPopupView extends AbstractViewPopup {
 			const j = new Jua({
 				action: serverRequest('UploadContacts'),
 				limit: 1,
-				disableDocumentDropPrevent: true,
 				clickElement: this.importButton()
 			});
 

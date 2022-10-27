@@ -1045,9 +1045,6 @@ export class ComposePopupView extends AbstractViewPopup {
 			attachmentSizeLimit = pInt(SettingsGet('AttachmentLimit'));
 
 		oJua
-			// .on('onLimitReached', (limit) => {
-			// 	alert(limit);
-			// })
 			.on('onDragEnter', () => {
 				this.dragAndDropOver(true);
 			})
