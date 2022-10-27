@@ -11,6 +11,9 @@ import { setExpandedFolder } from 'Model/FolderCollection';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
 
+import { Settings } from 'Common/Globals';
+import { serverRequest } from 'Common/Links';
+
 const rlContentType = 'snappymail/action',
 
 	// In Chrome we have no access to dataTransfer.getData unless it's the 'drop' event
@@ -131,9 +134,15 @@ Object.assign(ko.bindingHandlers, {
 					dragTimer.stop();
 				},
 				fnHover = e => {
-					if (dragMessages()) {
+					let files = false;
+//					if (e.dataTransfer.types.includes('Files'))
+					for (const item of e.dataTransfer.items) {
+						files |= 'file' === item.kind && 'message/rfc822' === item.type;
+					}
+					if (files || dragMessages()) {
 						fnStop(e);
-						e.dataTransfer.dropEffect = e.ctrlKey ? 'copy' : 'move';
+						files && e.stopPropagation();
+						e.dataTransfer.dropEffect = files ? 'copy' : (e.ctrlKey ? 'copy' : 'move');
 						element.classList.add('droppableHover');
 						if (folder.collapsed()) {
 							dragTimer.start(() => {
@@ -151,6 +160,25 @@ Object.assign(ko.bindingHandlers, {
 					fnStop(e);
 					if (dragMessages() && 'copyMove' == e.dataTransfer.effectAllowed) {
 						moveMessagesToFolder(FolderUserStore.currentFolderFullName(), dragData.data, folder.fullName, e.ctrlKey);
+					} else if (e.dataTransfer.types.includes('Files')) {
+						for (const file of e.dataTransfer.files) {
+							if ('message/rfc822' === file.type) {
+								let data = new FormData;
+								data.append('Folder', folder.fullName);
+								data.append('AppendFile', file);
+								data.XToken = Settings.app('token');
+								fetch(serverRequest('Append'), {
+									method: 'POST',
+									mode: 'same-origin',
+									cache: 'no-cache',
+									redirect: 'error',
+									referrerPolicy: 'no-referrer',
+									credentials: 'same-origin',
+									body: data
+								});
+							}
+						}
+						// TODO: when all are uploaded -> MessagelistUserStore.reload(true, true)
 					}
 				}
 			});
