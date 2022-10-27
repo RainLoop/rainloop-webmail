@@ -21,11 +21,8 @@ export class UserSettingsSecurity extends AbstractViewSettings {
 	constructor() {
 		super();
 
-		this.capaAutoLogout = SettingsCapa('AutoLogout');
-
-		this.autoLogout = SettingsUserStore.autoLogout;
-
 		let i18nLogout = (key, params) => i18n('SETTINGS_SECURITY/AUTOLOGIN_' + key, params);
+		this.autoLogout = SettingsUserStore.autoLogout;
 		this.autoLogoutOptions = koComputable(() => {
 			translateTrigger();
 			return [
@@ -39,10 +36,7 @@ export class UserSettingsSecurity extends AbstractViewSettings {
 				{ id: 60 * 10, name: i18nLogout('HOURS_OPTION_NAME', { HOURS: 10 }) }
 			];
 		});
-
-		if (this.capaAutoLogout) {
-			this.addSetting('AutoLogout');
-		}
+		this.addSetting('AutoLogout');
 
 		this.gnupgPublicKeys = GnuPGUserStore.publicKeys;
 		this.gnupgPrivateKeys = GnuPGUserStore.privateKeys;

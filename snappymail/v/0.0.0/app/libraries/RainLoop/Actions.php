@@ -809,10 +809,6 @@ class Actions
 					$aResult['fontSerif'] = $oSettings->GetConf('fontSerif', '');
 					$aResult['fontMono'] = $oSettings->GetConf('fontMono', '');
 
-					if (!$this->GetCapa(Enumerations\Capa::AUTOLOGOUT)) {
-						$aResult['AutoLogout'] = 0;
-					}
-
 					if ($this->GetCapa(Enumerations\Capa::USER_BACKGROUND)) {
 						$aResult['UserBackgroundName'] = (string)$oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
 						$aResult['UserBackgroundHash'] = (string)$oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
@@ -1110,7 +1106,6 @@ class Actions
 		if (!$aResult) {
 			$oConfig = $this->oConfig;
 			$aResult = array(
-				'AutoLogout' => true,
 				'AdditionalAccounts'   => (bool) $oConfig->Get('webmail', 'allow_additional_accounts', false),
 				'AttachmentThumbnails' => (bool) $oConfig->Get('interface', 'show_attachment_thumbnail', true),
 				'AttachmentsActions'   => (bool) $oConfig->Get('capa', 'attachments_actions', false),

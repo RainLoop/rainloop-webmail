@@ -41,9 +41,7 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 			views.push(UserSettingsFilters);
 		}
 
-		if (SettingsCapa('AutoLogout') || SettingsCapa('OpenPGP') || SettingsCapa('GnuPG')) {
-			views.push(UserSettingsSecurity);
-		}
+		views.push(UserSettingsSecurity);
 
 		views.push(UserSettingsFolders);
 
