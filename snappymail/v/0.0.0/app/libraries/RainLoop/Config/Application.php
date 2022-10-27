@@ -225,7 +225,12 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 			'login' => array(
 
-				'default_domain' => array(''),
+				'default_domain' => array('',
+					'If someone logs in without "@domain.tld", this value will be used
+When this value is HTTP_HOST, the $_SERVER["HTTP_HOST"] value is used.
+When this value is SERVER_NAME, the $_SERVER["SERVER_NAME"] value is used.
+When this value is gethostname, the gethostname() value is used.
+'),
 
 				'allow_languages_on_login' => array(true,
 					'Allow language selection on webmail login screen'),

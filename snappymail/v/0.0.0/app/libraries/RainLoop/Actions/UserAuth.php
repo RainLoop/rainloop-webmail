@@ -86,6 +86,11 @@ trait UserAuth
 			if (!\str_contains($sEmail, '@')) {
 				$sDefDomain = \trim($this->Config()->Get('login', 'default_domain', ''));
 				if (\strlen($sDefDomain)) {
+					if ('HTTP_HOST' === $sDefDomain || 'SERVER_NAME' === $sDefDomain) {
+						$sDefDomain = \preg_replace('/:[0-9]+$/D', '', $_SERVER[$sDefDomain]);
+					} else if ('gethostname' === $sDefDomain) {
+						$sDefDomain = \gethostname();
+					}
 					$this->Logger()->Write('Default domain "' . $sDefDomain . '" was used. (' . $sEmail . ' > ' . $sEmail . '@' . $sDefDomain . ')',
 						\LOG_INFO, 'LOGIN');
 
