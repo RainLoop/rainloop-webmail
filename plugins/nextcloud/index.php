@@ -4,8 +4,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Nextcloud',
-		VERSION = '2.7',
-		RELEASE  = '2022-10-25',
+		VERSION = '2.8',
+		RELEASE  = '2022-10-27',
 		CATEGORY = 'Integrations',
 		DESCRIPTION = 'Integrate with Nextcloud v20+',
 		REQUIRED = '2.19.0';
@@ -159,12 +159,6 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function FilterAppData($bAdmin, &$aResult) : void
 	{
 		if (!$bAdmin && \is_array($aResult)) {
-			if (isset($aResult['Capa']) && \is_array($aResult['Capa'])) {
-				$key = \array_search(\RainLoop\Enumerations\Capa::AUTOLOGOUT, $aResult['Capa']);
-				if (false !== $key) {
-					unset($aResult['Capa'][$key]);
-				}
-			}
 			$sUID = \OC::$server->getUserSession()->getUser()->getUID();
 			$sWebDAV = \OC::$server->getURLGenerator()->linkTo('', 'remote.php') . '/dav/';
 //			$sWebDAV = \OCP\Util::linkToRemote('dav');
