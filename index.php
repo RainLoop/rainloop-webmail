@@ -12,6 +12,6 @@ if (file_exists(APP_INDEX_ROOT_PATH.'snappymail/v/'.APP_VERSION.'/include.php'))
 }
 else
 {
-	echo '[105] Missing version directory';
+	echo '[105] Missing snappymail/v/'.APP_VERSION.'/include.php';
 	exit(105);
 }
