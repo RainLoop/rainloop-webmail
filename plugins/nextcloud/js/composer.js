@@ -47,4 +47,19 @@
 			+ ' data-bind="click: nextcloudAttach" data-i18n="[title]NEXTCLOUD/ATTACH_FILES">◦◯◦</a>'));
 	}
 
+/**
+	https://docs.nextcloud.com/server/latest/developer_manual/client_apis/OCS/ocs-share-api.html
+	POST /ocs/v2.php/apps/files_sharing/api/v1/shares
+	JSON {
+		"path":"/Nextcloud intro.mp4",
+		"shareType":3, // public link
+		"shareWith":"user@example.com",
+//		"publicUpload":false,
+//		"password":null,
+//		"permissions":1, // default
+//		"expireDate":"YYYY-MM-DD",
+//		"note":"Especially for you"
+	}
+*/
+
 })(window.rl);
