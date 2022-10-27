@@ -6,13 +6,10 @@ import { doc, elementById, addEventsListeners, dropdowns } from 'Common/Globals'
 import { dropdownsDetectVisibility } from 'Common/UtilsUser';
 import { EmailAddressesComponent } from 'Component/EmailAddresses';
 import { ThemeStore } from 'Stores/Theme';
-import { moveMessagesToFolder } from 'Common/Folders';
+import { moveMessagesToFolder, dropFilesInFolder } from 'Common/Folders';
 import { setExpandedFolder } from 'Model/FolderCollection';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
-
-import { Settings } from 'Common/Globals';
-import { serverRequest } from 'Common/Links';
 
 const rlContentType = 'snappymail/action',
 
@@ -66,32 +63,7 @@ const rlContentType = 'snappymail/action',
 		if (dragMessages() && 'copyMove' == e.dataTransfer.effectAllowed) {
 			moveMessagesToFolder(FolderUserStore.currentFolderFullName(), dragData.data, folder.fullName, e.ctrlKey);
 		} else if (e.dataTransfer.types.includes('Files')) {
-			let files = 0,
-				fn = () => {
-					0 == --files
-					&& FolderUserStore.currentFolderFullName() == folder.fullName
-					&& MessagelistUserStore.reload(true, true);
-				};
-			for (const file of e.dataTransfer.files) {
-				if ('message/rfc822' === file.type) {
-					++files;
-					let data = new FormData;
-					data.append('Folder', folder.fullName);
-					data.append('AppendFile', file);
-					data.XToken = Settings.app('token');
-					fetch(serverRequest('Append'), {
-						method: 'POST',
-						mode: 'same-origin',
-						cache: 'no-cache',
-						redirect: 'error',
-						referrerPolicy: 'no-referrer',
-						credentials: 'same-origin',
-						body: data
-					})
-					.then(fn)
-					.catch(fn);
-				}
-			}
+			dropFilesInFolder(folder.fullName, e.dataTransfer.files);
 		}
 	},
 

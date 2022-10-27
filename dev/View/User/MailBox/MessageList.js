@@ -14,10 +14,12 @@ import { computedPaginatorHelper, showMessageComposer, populateMessageBody } fro
 import { FileInfo } from 'Common/File';
 import { isFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
-import { mailBox, serverRequest } from 'Common/Links';
+import { mailBox } from 'Common/Links';
 import { Selector } from 'Common/Selector';
 
 import { i18n } from 'Common/Translator';
+
+import { dropFilesInFolder } from 'Common/Folders';
 
 import {
 	getFolderFromCacheList,
@@ -507,33 +509,53 @@ export class MailMessageList extends AbstractViewRight {
 		// initUploaderForAppend
 
 		if (Settings.app('allowAppendMessage')) {
-			const oJua = new Jua({
-				action: serverRequest('Append'),
-				name: 'AppendFile',
-				limit: 1,
-				hidden: {
-					Folder: () => FolderUserStore.currentFolderFullName()
-				},
-				dragAndDropElement: dom.querySelector('.listDragOver'),
-				dragAndDropBodyElement: b_content
-			});
-
-			this.dragOver.subscribe(value => value && this.selector.scrollToTop());
-
-			oJua
-				.on('onDragEnter', () => this.dragOverEnter(true))
-				.on('onDragLeave', () => this.dragOverEnter(false))
-				.on('onBodyDragEnter', () => this.dragOver(true))
-				.on('onBodyDragLeave', () => this.dragOver(false))
-				.on('onSelect', (sUid, oData) => {
-					if (sUid && oData && 'message/rfc822' === oData.Type) {
-						MessagelistUserStore.loading(true);
-						return true;
+			const dropZone = dom.querySelector('.listDragOver'),
+				validFiles = oEvent => {
+					for (const item of oEvent.dataTransfer.items) {
+						if ('file' === item.kind && 'message/rfc822' === item.type) {
+							return true;
+						}
 					}
-
-					return false;
-				})
-				.on('onComplete', () => MessagelistUserStore.reload(true, true));
+				};
+			addEventsListeners(dropZone, {
+				dragover: oEvent => {
+					if (validFiles(oEvent)) {
+						oEvent.dataTransfer.dropEffect = 'copy';
+						oEvent.preventDefault();
+					}
+				},
+			});
+			addEventsListeners(b_content, {
+				dragenter: oEvent => {
+					if (validFiles(oEvent)) {
+						if (b_content.contains(oEvent.target)) {
+							this.dragOver(true);
+						}
+						if (oEvent.target == dropZone) {
+							oEvent.dataTransfer.dropEffect = 'copy';
+							this.dragOverEnter(true);
+						}
+					}
+				},
+				dragleave: oEvent => {
+					if (oEvent.target == dropZone) {
+						this.dragOverEnter(false);
+					}
+					let related = oEvent.relatedTarget;
+					if (!related || !b_content.contains(related)) {
+						this.dragOver(false);
+					}
+				},
+				drop: oEvent => {
+					oEvent.preventDefault();
+					if (oEvent.target == dropZone && validFiles(oEvent)) {
+						MessagelistUserStore.loading(true);
+						dropFilesInFolder(FolderUserStore.currentFolderFullName(), oEvent.dataTransfer.files);
+					}
+					this.dragOverEnter(false);
+					this.dragOver(false);
+				}
+			});
 		}
 
 		// initShortcuts

@@ -9,6 +9,8 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { getNotification } from 'Common/Translator';
+import { Settings,  } from 'Common/Globals';
+import { serverRequest } from 'Common/Links';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -281,4 +283,31 @@ moveMessagesToFolder = (sFromFolderFullName, oUids, sToFolderFullName, bCopy) =>
 	}
 
 	return false;
+},
+
+dropFilesInFolder = (sFolderFullName, files) => {
+	let count = 0,
+		fn = () => 0 == --count
+			&& FolderUserStore.currentFolderFullName() == sFolderFullName
+			&& MessagelistUserStore.reload(true, true);
+	for (const file of files) {
+		if ('message/rfc822' === file.type) {
+			++count;
+			let data = new FormData;
+			data.append('Folder', sFolderFullName);
+			data.append('AppendFile', file);
+			data.XToken = Settings.app('token');
+			fetch(serverRequest('Append'), {
+				method: 'POST',
+				mode: 'same-origin',
+				cache: 'no-cache',
+				redirect: 'error',
+				referrerPolicy: 'no-referrer',
+				credentials: 'same-origin',
+				body: data
+			})
+			.then(fn)
+			.catch(fn);
+		}
+	}
 };
