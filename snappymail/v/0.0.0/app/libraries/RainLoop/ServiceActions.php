@@ -811,10 +811,33 @@ class ServiceActions
 		return '';
 	}
 
-	/**
-	 * @return mixed
-	 */
-	public function ErrorTemplates(string $sTitle, string $sDesc, bool $bShowBackLink = true)
+	public function ServiceExternalSso() : string
+	{
+		$this->oHttp->ServerNoCache();
+		$sResult = '';
+		$oConfig = $this->oActions->Config();
+		$sKey = $oConfig->Get('labs', 'external_sso_key', '');
+		$sEmail = \trim($this->oHttp->GetRequest('Email', ''));
+		$sPassword = $this->oHttp->GetRequest('Password', '');
+		if ($oConfig->Get('labs', 'allow_external_sso', false)
+		 && $sEmail && $sPassword
+		 && $sKey && $this->oHttp->GetRequest('SsoKey', '') == $sKey
+		) {
+			$sResult = \RainLoop\Api::CreateUserSsoHash($sEmail, $sPassword);
+			if ('json' == \strtolower($this->oHttp->GetRequest('Output', 'Plain'))) {
+				\header('Content-Type: application/json; charset=utf-8');
+				$sResult = \json_encode(array(
+					'Action' => 'ExternalSso',
+					'Result' => $sResult
+				));
+			} else {
+				\header('Content-Type: text/plain');
+			}
+		}
+		return $sResult;
+	}
+
+	public function ErrorTemplates(string $sTitle, string $sDesc, bool $bShowBackLink = true) : string
 	{
 		return \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Error.html'), array(
 			'{{ErrorTitle}}' => $sTitle,
