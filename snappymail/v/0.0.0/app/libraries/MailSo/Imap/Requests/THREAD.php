@@ -78,33 +78,33 @@ class THREAD extends Request
 	/**
 	 * @param mixed $mValue
 	 *
-	 * @return mixed
+	 * @return int | array | false
 	 */
 	private function validateThreadItem($mValue)
 	{
-		$mResult = false;
 		if (\is_numeric($mValue)) {
-			$mResult = (int) $mValue;
-			if (0 >= $mResult) {
-				$mResult = false;
+			$mValue = (int) $mValue;
+			if (0 < $mValue) {
+				return $mValue;
 			}
 		} else if (\is_array($mValue)) {
 			if (1 === \count($mValue) && \is_numeric($mValue[0])) {
-				$mResult = (int) $mValue[0];
-				if (0 >= $mResult) {
-					$mResult = false;
+				$mValue = (int) $mValue[0];
+				if (0 < $mValue) {
+					return $mValue;
 				}
 			} else {
-				$mResult = array();
+				$aResult = array();
 				foreach ($mValue as $mValueItem) {
-					$mTemp = $this->validateThreadItem($mValueItem);
-					if (false !== $mTemp) {
-						$mResult[] = $mTemp;
+					$mValueItem = $this->validateThreadItem($mValueItem);
+					if ($mValueItem) {
+						$aResult[] = $mValueItem;
 					}
 				}
+				return $aResult;
 			}
 		}
 
-		return $mResult;
+		return false;
 	}
 }
