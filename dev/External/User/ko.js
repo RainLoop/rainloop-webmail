@@ -37,6 +37,64 @@ const rlContentType = 'snappymail/action',
 		start: fn => dragTimer.id = setTimeout(fn, 500)
 	},
 
+	fnStop = (e, element) => {
+		e.preventDefault();
+		element.classList.remove('droppableHover');
+		dragTimer.stop();
+	},
+	fnHover = (e, element, folder) => {
+		let files = false;
+//		if (e.dataTransfer.types.includes('Files'))
+		for (const item of e.dataTransfer.items) {
+			files |= 'file' === item.kind && 'message/rfc822' === item.type;
+		}
+		if (files || dragMessages()) {
+			fnStop(e, element);
+			files && e.stopPropagation();
+			e.dataTransfer.dropEffect = files ? 'copy' : (e.ctrlKey ? 'copy' : 'move');
+			element.classList.add('droppableHover');
+			if (folder.collapsed()) {
+				dragTimer.start(() => {
+					folder.collapsed(false);
+					setExpandedFolder(folder.fullName, true);
+				}, 500);
+			}
+		}
+	},
+	fnDrop = (e, element, folder, dragData) => {
+		fnStop(e, element);
+		if (dragMessages() && 'copyMove' == e.dataTransfer.effectAllowed) {
+			moveMessagesToFolder(FolderUserStore.currentFolderFullName(), dragData.data, folder.fullName, e.ctrlKey);
+		} else if (e.dataTransfer.types.includes('Files')) {
+			let files = 0,
+				fn = () => {
+					0 == --files
+					&& FolderUserStore.currentFolderFullName() == folder.fullName
+					&& MessagelistUserStore.reload(true, true);
+				};
+			for (const file of e.dataTransfer.files) {
+				if ('message/rfc822' === file.type) {
+					++files;
+					let data = new FormData;
+					data.append('Folder', folder.fullName);
+					data.append('AppendFile', file);
+					data.XToken = Settings.app('token');
+					fetch(serverRequest('Append'), {
+						method: 'POST',
+						mode: 'same-origin',
+						cache: 'no-cache',
+						redirect: 'error',
+						referrerPolicy: 'no-referrer',
+						credentials: 'same-origin',
+						body: data
+					})
+					.then(fn)
+					.catch(fn);
+				}
+			}
+		}
+	},
+
 	ttn = (element, fValueAccessor) => timeToNode(element, ko.unwrap(fValueAccessor()));
 
 let dragImage,
@@ -126,61 +184,12 @@ Object.assign(ko.bindingHandlers, {
 	// Drop selected messages on folder
 	dropmessages: {
 		init: (element, fValueAccessor) => {
-			const folder = fValueAccessor(),
-	//			folder = ko.dataFor(element),
-				fnStop = e => {
-					e.preventDefault();
-					element.classList.remove('droppableHover');
-					dragTimer.stop();
-				},
-				fnHover = e => {
-					let files = false;
-//					if (e.dataTransfer.types.includes('Files'))
-					for (const item of e.dataTransfer.items) {
-						files |= 'file' === item.kind && 'message/rfc822' === item.type;
-					}
-					if (files || dragMessages()) {
-						fnStop(e);
-						files && e.stopPropagation();
-						e.dataTransfer.dropEffect = files ? 'copy' : (e.ctrlKey ? 'copy' : 'move');
-						element.classList.add('droppableHover');
-						if (folder.collapsed()) {
-							dragTimer.start(() => {
-								folder.collapsed(false);
-								setExpandedFolder(folder.fullName, true);
-							}, 500);
-						}
-					}
-				};
+			const folder = fValueAccessor(); // ko.dataFor(element)
 			folder && addEventsListeners(element, {
-				dragenter: fnHover,
-				dragover: fnHover,
-				dragleave: fnStop,
-				drop: e => {
-					fnStop(e);
-					if (dragMessages() && 'copyMove' == e.dataTransfer.effectAllowed) {
-						moveMessagesToFolder(FolderUserStore.currentFolderFullName(), dragData.data, folder.fullName, e.ctrlKey);
-					} else if (e.dataTransfer.types.includes('Files')) {
-						for (const file of e.dataTransfer.files) {
-							if ('message/rfc822' === file.type) {
-								let data = new FormData;
-								data.append('Folder', folder.fullName);
-								data.append('AppendFile', file);
-								data.XToken = Settings.app('token');
-								fetch(serverRequest('Append'), {
-									method: 'POST',
-									mode: 'same-origin',
-									cache: 'no-cache',
-									redirect: 'error',
-									referrerPolicy: 'no-referrer',
-									credentials: 'same-origin',
-									body: data
-								});
-							}
-						}
-						// TODO: when all are uploaded -> MessagelistUserStore.reload(true, true)
-					}
-				}
+				dragenter: e => fnHover(e, element, folder),
+				dragover: e => fnHover(e, element, folder),
+				dragleave: e => fnStop(e, element),
+				drop: e => fnDrop(e, element, folder, dragData)
 			});
 		}
 	},
