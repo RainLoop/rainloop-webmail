@@ -4,7 +4,7 @@ import { koComputable } from 'External/ko';
 import { Layout } from 'Common/EnumsUser';
 import { pInt } from 'Common/Utils';
 import { addObservablesTo } from 'External/ko';
-import { $htmlCL, SettingsGet, SettingsCapa, fireEvent } from 'Common/Globals';
+import { $htmlCL, SettingsGet, fireEvent } from 'Common/Globals';
 import { ThemeStore } from 'Stores/Theme';
 
 export const SettingsUserStore = new class {
