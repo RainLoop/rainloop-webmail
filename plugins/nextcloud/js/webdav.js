@@ -73,8 +73,8 @@ const
 				const
 					e = responseList.item(i),
 					elem = {
-						name: getDavElementByTagName(e, 'href').textContent
-							.replace(pathRegex, '').replace(/\/$/, ''),
+						name: decodeURIComponent(getDavElementByTagName(e, 'href').textContent
+							.replace(pathRegex, '').replace(/\/$/, '')),
 						isFile: false
 					};
 				if (getDavElementsByTagName(getDavElementByTagName(e, 'resourcetype'), 'collection').length) {
