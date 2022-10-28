@@ -69,18 +69,12 @@
 
 			view.nextcloudSaveICS = () => {
 				let attachment = view.nextcloudICS();
-				attachment && rl.nextcloud.selectCalendar().then(href => {
-					if (href) {
-						fetch(attachment.linkDownload(), {
-							mode: 'same-origin',
-							cache: 'no-cache',
-							redirect: 'error',
-							credentials: 'same-origin'
-						})
-						.then(response => (response.status < 400) ? response.text() : Promise.reject(new Error({ response })))
-						.then(text => rl.nextcloud.calendarPut(href, text));
-					}
-				});
+				attachment && rl.nextcloud.selectCalendar()
+				.then(href =>
+					href && rl.fetch(attachment.linkDownload())
+					.then(response => (response.status < 400) ? response.text() : Promise.reject(new Error({ response })))
+					.then(text => rl.nextcloud.calendarPut(href, text))
+				);
 			}
 		}
 	});
@@ -89,26 +83,27 @@
 
 	const attachmentsControls = template.content.querySelector('.attachmentsControls');
 	if (attachmentsControls) {
-		attachmentsControls.append(Element.fromHTML('<span>'
-			+ '<i class="fontastic iconcolor-red" data-bind="visible: saveNextcloudError">✖</i>'
-			+ '<i class="fontastic" data-bind="visible: !saveNextcloudError(), css: {\'icon-spinner\': saveNextcloudLoading()}">💾</i>'
-			+ '<span class="g-ui-link" data-bind="click: saveNextcloud" data-i18n="NEXTCLOUD/SAVE_ATTACHMENTS"></span>'
-		+ '</span>'));
+		attachmentsControls.append(Element.fromHTML(`<span>
+			<i class="fontastic iconcolor-red" data-bind="visible: saveNextcloudError">✖</i>
+			<i class="fontastic" data-bind="visible: !saveNextcloudError(),
+				css: {'icon-spinner': saveNextcloudLoading()}">💾</i>
+			<span class="g-ui-link" data-bind="click: saveNextcloud" data-i18n="NEXTCLOUD/SAVE_ATTACHMENTS"></span>
+		</span>`));
 
 		// https://github.com/nextcloud/calendar/issues/4684
 		let cfg = rl.settings.get('Nextcloud');
 		if (cfg.CalDAV) {
-			attachmentsControls.append(Element.fromHTML('<span data-bind="visible: nextcloudICS" data-icon="📅">'
-				+ '<span class="g-ui-link" data-bind="click: nextcloudSaveICS" data-i18n="NEXTCLOUD/SAVE_ICS"></span>'
-			+ '</span>'));
+			attachmentsControls.append(Element.fromHTML(`<span data-bind="visible: nextcloudICS" data-icon="📅">
+				<span class="g-ui-link" data-bind="click: nextcloudSaveICS" data-i18n="NEXTCLOUD/SAVE_ICS"></span>
+			</span>`));
 		}
 	}
 
 	const msgMenu = template.content.querySelector('#more-view-dropdown-id + menu');
 	if (msgMenu) {
-		msgMenu.append(Element.fromHTML('<li role="presentation">'
-			+ '<a href="#" tabindex="-1" data-icon="📥" data-bind="click: nextcloudSaveMsg" data-i18n="NEXTCLOUD/SAVE_EML"></a>'
-		+ '</li>'));
+		msgMenu.append(Element.fromHTML(`<li role="presentation">
+			<a href="#" tabindex="-1" data-icon="📥" data-bind="click: nextcloudSaveMsg" data-i18n="NEXTCLOUD/SAVE_EML"></a>
+		</li>`));
 	}
 
 })(window.rl);
