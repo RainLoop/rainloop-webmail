@@ -35,18 +35,18 @@ trait UserAuth
 		if (!\str_contains($sEmail, '@')) {
 			$this->Logger()->Write('The email address "' . $sEmail . '" is not complete', \LOG_INFO, 'LOGIN');
 
+			$bAdded = false;
+
 			if ($this->Config()->Get('login', 'determine_user_domain', false)) {
 				$sUserHost = \trim($this->Http()->GetHost(false, true, true));
 				$this->Logger()->Write('Determined user domain: ' . $sUserHost, \LOG_INFO, 'LOGIN');
 
-				$bAdded = false;
-
-				$iLimit = 14;
 				$aDomainParts = \explode('.', $sUserHost);
+				$iLimit = \min(\count($aDomainParts), 14);
 
 				$oDomainProvider = $this->DomainProvider();
-				while (\count($aDomainParts) && 0 < $iLimit) {
-					$sLine = \trim(\implode('.', $aDomainParts), '. ');
+				while (0 < $iLimit--) {
+					$sLine = \implode('.', $aDomainParts);
 
 					$oDomain = $oDomainProvider->Load($sLine, false);
 					if ($oDomain) {
@@ -61,20 +61,18 @@ trait UserAuth
 					}
 
 					\array_shift($aDomainParts);
-					$iLimit--;
 				}
 
 				if (!$bAdded) {
-					$sLine = $sUserHost;
-					$oDomain = $oDomainProvider->Load($sLine, true);
-					if ($oDomain && $oDomain) {
+					$oDomain = $oDomainProvider->Load($sUserHost, true);
+					if ($oDomain) {
 						$bAdded = true;
-						$this->Logger()->Write('Check "' . $sLine . '" with wildcard: OK (' . $sEmail . ' > ' . $sEmail . '@' . $sLine . ')',
+						$this->Logger()->Write('Check "' . $sUserHost . '" with wildcard: OK (' . $sEmail . ' > ' . $sEmail . '@' . $sUserHost . ')',
 							\LOG_INFO, 'LOGIN');
 
-						$sEmail .= '@' . $sLine;
+						$sEmail .= '@' . $sUserHost;
 					} else {
-						$this->Logger()->Write('Check "' . $sLine . '" with wildcard: NO', \LOG_INFO, 'LOGIN');
+						$this->Logger()->Write('Check "' . $sUserHost . '" with wildcard: NO', \LOG_INFO, 'LOGIN');
 					}
 				}
 
@@ -83,7 +81,7 @@ trait UserAuth
 				}
 			}
 
-			if (!\str_contains($sEmail, '@')) {
+			if (!$bAdded) {
 				$sDefDomain = \trim($this->Config()->Get('login', 'default_domain', ''));
 				if (\strlen($sDefDomain)) {
 					if ('HTTP_HOST' === $sDefDomain || 'SERVER_NAME' === $sDefDomain) {

@@ -129,7 +129,7 @@ class Http
 	public function GetHost(bool $bWithRemoteUserData = false, bool $bWithoutWWW = true, bool $bWithoutPort = false) : string
 	{
 		$sHost = $this->GetServer('HTTP_HOST', '');
-		if (0 === \strlen($sHost))
+		if (!\strlen($sHost))
 		{
 			$sName = $this->GetServer('SERVER_NAME');
 			$iPort = (int) $this->GetServer('SERVER_PORT', 80);
@@ -150,7 +150,7 @@ class Http
 
 		if ($bWithoutPort)
 		{
-			$sHost = \preg_replace('/:[\d]+$/', '', $sHost);
+			$sHost = \preg_replace('/:\d+$/', '', $sHost);
 		}
 
 		return $sHost;
