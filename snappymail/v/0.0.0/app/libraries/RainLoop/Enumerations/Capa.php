@@ -17,4 +17,5 @@ class Capa
 	const MESSAGE_ACTIONS = 'MessageActions';
 	const ATTACHMENTS_ACTIONS = 'AttachmentsActions';
 	const DANGEROUS_ACTIONS = 'DangerousActions';
+	const AUTOLOGOUT = ''; // Obsolete
 }
