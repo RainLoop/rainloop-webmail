@@ -70,15 +70,16 @@
 			view.nextcloudSaveICS = () => {
 				let attachment = view.nextcloudICS();
 				attachment && rl.nextcloud.selectCalendar().then(href => {
-					console.dir({href: href});
-					fetch(attachment.linkDownload(), {
-						mode: 'same-origin',
-						cache: 'no-cache',
-						redirect: 'error',
-						credentials: 'same-origin'
-					})
-					.then(response => (response.status < 400) ? response.text() : Promise.reject(new Error({ response })))
-					.then(text => rl.nextcloud.calendarPut(href, text));
+					if (href) {
+						fetch(attachment.linkDownload(), {
+							mode: 'same-origin',
+							cache: 'no-cache',
+							redirect: 'error',
+							credentials: 'same-origin'
+						})
+						.then(response => (response.status < 400) ? response.text() : Promise.reject(new Error({ response })))
+						.then(text => rl.nextcloud.calendarPut(href, text));
+					}
 				});
 			}
 		}
