@@ -250,7 +250,7 @@ setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 
 populateMessageBody = (oMessage, popup) => {
 	if (oMessage) {
-		popup || MessageUserStore.hideMessageBodies();
+		popup || MessageUserStore.message(oMessage);
 		popup || MessageUserStore.loading(true);
 		Remote.message((iError, oData/*, bCached*/) => {
 			if (iError) {
@@ -276,9 +276,9 @@ populateMessageBody = (oMessage, popup) => {
 							MessageFlagsCache.initMessage(oMessage);
 
 							// Set clone
-							MessageUserStore.message(MessageModel.fromMessageListItem(oMessage));
-							oMessage = MessageUserStore.message();
+							oMessage = MessageModel.fromMessageListItem(oMessage);
 						}
+						MessageUserStore.message(oMessage);
 					}
 
 					if (oMessage && oMessage.uid == json.Uid) {
@@ -289,6 +289,7 @@ populateMessageBody = (oMessage, popup) => {
 						}
 */
 						isNew || oMessage.revivePropertiesFromJson(json);
+
 						if (messagesDom) {
 							let id = 'rl-msg-' + oMessage.hash.replace(/[^a-zA-Z0-9]/g, ''),
 								body = elementById(id);
@@ -312,11 +313,7 @@ populateMessageBody = (oMessage, popup) => {
 
 							messagesDom.append(body);
 
-							if (!popup) {
-								MessageUserStore.activeDom(body);
-								MessageUserStore.hideMessageBodies();
-								oMessage.body.hidden = false;
-							}
+							popup || (oMessage.body.hidden = false);
 							popup && oMessage.viewPopupMessage();
 						}
 

@@ -48,7 +48,6 @@ export function MimeToMessage(data, message)
 				attachment.folder = '';
 				attachment.uid = '';
 				attachment.mimeIndex = part.id;
-				attachment.framed = false;
 */
 				attachment.cid = cid ? cid.value : '';
 				if (cid && html) {

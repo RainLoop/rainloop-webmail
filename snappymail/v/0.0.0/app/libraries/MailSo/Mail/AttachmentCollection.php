@@ -22,21 +22,4 @@ class AttachmentCollection extends \MailSo\Base\Collection
 		assert($oAttachment instanceof Attachment);
 		parent::append($oAttachment, $bToTop);
 	}
-
-	public function SpecData() : array
-	{
-		$aResult = array();
-		foreach ($this as $oAttachment) {
-			$aResult[] = array(
-				'@Object' => 'Object/Attachment',
-				'FileName' => $oAttachment->FileName(),
-				'MimeType' => $oAttachment->MimeType(),
-				'IsInline' => $oAttachment->IsInline()
-			);
-		}
-		return array(
-			'@Object' => 'Collection/AttachmentCollection',
-			'@Collection' => $aResult
-		);
-	}
 }

@@ -160,8 +160,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.selector.on('ItemSelect', message => {
 			if (message) {
-				MessageUserStore.message(MessageModel.fromMessageListItem(message));
-				populateMessageBody(MessageUserStore.message());
+				populateMessageBody(MessageModel.fromMessageListItem(message));
 			} else {
 				MessageUserStore.message(null);
 			}
@@ -246,8 +245,7 @@ export class MailMessageList extends AbstractViewRight {
 					let message = new MessageModel;
 					message.folder = sFolder;
 					message.uid = iUid;
-					MessageUserStore.message(message);
-					populateMessageBody(MessageUserStore.message());
+					populateMessageBody(message);
 				} else {
 					MessageUserStore.message(null);
 				}
@@ -679,7 +677,7 @@ export class MailMessageList extends AbstractViewRight {
 			return false;
 		});
 		addShortcut('tab,arrowright', '', Scope.MessageList, () => {
-			if (MessageUserStore.message()){
+			if (MessageUserStore.message()) {
 				AppUserStore.focusedState(Scope.MessageView);
 				return false;
 			}

@@ -11,7 +11,6 @@ import { AppUserStore } from 'Stores/User/App';
 import { AccountUserStore } from 'Stores/User/Account';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
-import { MessageUserStore } from 'Stores/User/Message';
 import { ThemeStore } from 'Stores/Theme';
 
 import { SystemDropDownUserView } from 'View/User/SystemDropDown';
@@ -83,8 +82,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 				let message = new MessageModel;
 				message.folder = folderHash;
 				message.uid = messageUid;
-				MessageUserStore.message(message);
-				populateMessageBody(MessageUserStore.message());
+				populateMessageBody(message);
 			} else {
 				let threadUid = folderHash.replace(/^.+~(\d+)$/, '$1');
 				MessagelistUserStore.threadUid((folderHash === threadUid) ? 0 : pInt(threadUid));

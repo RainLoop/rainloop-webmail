@@ -29,7 +29,6 @@ export class AttachmentModel extends AbstractModel {
 		this.url = '';
 		this.mimeIndex = '';
 		this.estimatedSize = 0;
-		this.framed = false;
 
 		this.addObservables({
 			isInline: false,

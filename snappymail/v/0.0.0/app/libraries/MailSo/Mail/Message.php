@@ -680,7 +680,7 @@ class Message implements \JsonSerializable
 			'ReadReceipt' => '',
 			'Autocrypt' => $this->sAutocrypt,
 
-			'Attachments' => $this->oAttachments ? $this->oAttachments->SpecData() : null,
+			'Attachments' => $this->oAttachments,
 
 			'Flags' => $aFlags,
 

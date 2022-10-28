@@ -176,8 +176,6 @@ export class MailMessageView extends AbstractViewRight {
 
 		this.addSubscribables({
 			message: message => {
-				MessageUserStore.activeDom(null);
-
 				if (message) {
 					if (this.viewHash !== message.hash) {
 						this.scrollMessageToTop();

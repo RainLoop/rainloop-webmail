@@ -15,8 +15,7 @@ export const MessageUserStore = new class {
 			loading: false,
 
 			// Cache mail bodies
-			bodiesDom: null,
-			activeDom: null
+			bodiesDom: null
 		});
 
 		// Subscribers
@@ -30,8 +29,8 @@ export const MessageUserStore = new class {
 				} else {
 					AppUserStore.focusedState(Scope.MessageList);
 					exitFullscreen();
-					this.hideMessageBodies();
 				}
+				this.hideMessageBodies();
 			},
 		});
 

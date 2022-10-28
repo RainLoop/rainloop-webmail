@@ -113,12 +113,6 @@ trait Response
 		return $aResult;
 	}
 
-	private function isFileHasFramedPreview(string $sFileName) : bool
-	{
-		$sExt = \MailSo\Base\Utils::GetFileExtension($sFileName);
-		return \in_array($sExt, array('doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'));
-	}
-
 	private function isFileHasThumbnail(string $sFileName) : bool
 	{
 		static $aCache = array();
@@ -194,6 +188,8 @@ trait Response
 				'FileName' => (\strlen($sSubject) ? \MailSo\Base\Utils::SecureFileName($sSubject) : 'message-'.$mResult['Uid']) . '.eml'
 			));
 
+			$mResult['Attachments'] = $this->responseObject($mResponse->Attachments(), $sParent);
+
 			if ('Message' === $sParent)
 			{
 				$mResult['DraftInfo'] = $mResponse->DraftInfo();
@@ -207,8 +203,6 @@ trait Response
 //				$this->GetCapa(Capa::OPEN_PGP) || $this->GetCapa(Capa::GNUPG)
 				$mResult['PgpSigned'] = $mResponse->PgpSigned();
 				$mResult['PgpEncrypted'] = $mResponse->PgpEncrypted();
-
-				$mResult['Attachments'] = $this->responseObject($mResponse->Attachments(), $sParent);
 
 				$mResult['ReadReceipt'] = $mResponse->ReadReceipt();
 
@@ -241,7 +235,6 @@ trait Response
 		if ($mResponse instanceof \MailSo\Mail\Attachment)
 		{
 			$mResult = $mResponse->jsonSerialize();
-			$mResult['Framed'] = $this->isFileHasFramedPreview($mResult['FileName']);
 			$mResult['IsThumbnail'] = $this->GetCapa(Capa::ATTACHMENT_THUMBNAILS) && $this->isFileHasThumbnail($mResult['FileName']);
 			$mResult['Download'] = Utils::EncodeKeyValuesQ(array(
 				'V' => APP_VERSION,
@@ -250,8 +243,7 @@ trait Response
 				'Uid' => $mResult['Uid'],
 				'MimeIndex' => $mResult['MimeIndex'],
 				'MimeType' => $mResult['MimeType'],
-				'FileName' => $mResult['FileName'],
-				'Framed' => $mResult['Framed']
+				'FileName' => $mResult['FileName']
 			));
 			return $mResult;
 		}
