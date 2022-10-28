@@ -39,7 +39,7 @@
 		{
 			if (!window.grecaptcha && window.rl)
 			{
-				$.getScript('https://www.google.com/recaptcha/api.js?onload=__globalShowRecaptcha&render=explicit&hl=' + window.rl.settingsGet('Language'));
+				$.getScript('https://www.recaptcha.net/recaptcha/api.js?onload=__globalShowRecaptcha&render=explicit&hl=' + window.rl.settingsGet('Language'));
 			}
 			else
 			{
