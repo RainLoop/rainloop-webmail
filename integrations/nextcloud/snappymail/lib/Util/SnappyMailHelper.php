@@ -78,7 +78,19 @@ class SnappyMailHelper
 
 		try {
 			$oActions = \RainLoop\Api::Actions();
-			if (!$oActions->getMainAccountFromToken(false)) {
+			$oConfig = \RainLoop\Api::Config();
+			if (isset($_GET[$oConfig->Get('security', 'admin_panel_key', 'admin')])) {
+/*				// TODO: check Nextcloud group if allowed
+				if ($oConfig->Get('security', 'allow_admin_panel', true) && !$oActions->IsAdminLoggined(false)) {
+					$sRand = \MailSo\Base\Utils::Sha1Rand();
+					if ($oActions->Cacher(null, true)->Set(\RainLoop\KeyPathHelper::SessionAdminKey($sRand), \time())) {
+						$sToken = \RainLoop\Utils::EncodeKeyValuesQ(array('token', $sRand));
+//						$oActions->setAdminAuthToken($sToken);
+						\RainLoop\Utils::SetCookie('smadmin', $sToken);
+					}
+				}
+*/
+			} else if (!$oActions->getMainAccountFromToken(false)) {
 				$aCredentials = SnappyMailHelper::getLoginCredentials();
 				if ($aCredentials[0] && $aCredentials[1]) {
 					$oActions->Logger()->AddSecret($aCredentials[1]);
