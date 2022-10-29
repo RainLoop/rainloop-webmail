@@ -64,8 +64,10 @@ class SnappyMailHelper
 					'localhost', 25, \MailSo\Net\Enumerations\ConnectionSecurityType::NONE, true, true, false, false,
 					'');
 				$oProvider->Save($oDomain);
-				$oConfig->Set('login', 'default_domain', 'nextcloud');
-				$bSave = true;
+				if (!$oConfig->Set('login', 'default_domain', '')) {
+					$oConfig->Set('login', 'default_domain', 'nextcloud');
+					$bSave = true;
+				}
 			}
 		}
 
