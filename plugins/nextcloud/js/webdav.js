@@ -42,6 +42,7 @@ const
 			headers: {}
 		}, options);
 		options.headers.requesttoken = parent.OC.requestToken;
+//		cfg.UID = document.head.dataset.user
 		return fetch(cfg.WebDAV + '/' + mode + '/' + cfg.UID + path, options);
 	},
 

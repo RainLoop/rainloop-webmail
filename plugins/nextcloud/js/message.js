@@ -60,22 +60,80 @@
 				});
 			};
 
-			view.nextcloudICS = ko.computed(() => {
-				let msg = view.message();
-				return msg
-					? msg.attachments.find(attachment => 'text/calendar' == attachment.mimeType)
-					: null;
-			}, {'pure':true});
+			view.nextcloudICS = ko.observable(null);
 
 			view.nextcloudSaveICS = () => {
-				let attachment = view.nextcloudICS();
-				attachment && rl.nextcloud.selectCalendar()
-				.then(href =>
-					href && rl.fetch(attachment.linkDownload())
-					.then(response => (response.status < 400) ? response.text() : Promise.reject(new Error({ response })))
-					.then(text => rl.nextcloud.calendarPut(href, text))
-				);
+				let VEVENT = view.nextcloudICS();
+				VEVENT && rl.nextcloud.selectCalendar()
+				.then(href => href && rl.nextcloud.calendarPut(href, VEVENT.rawText));
 			}
+
+			/**
+			 * TODO
+			 */
+			view.message.subscribe(msg => {
+				view.nextcloudICS(null);
+				if (msg) {
+					let ics = msg.attachments.find(attachment => 'text/calendar' == attachment.mimeType);
+					if (ics && ics.download) {
+						// fetch it and parse the VEVENT
+						rl.fetch(ics.linkDownload())
+						.then(response => (response.status < 400) ? response.text() : Promise.reject(new Error({ response })))
+						.then(text => {
+							let VEVENT,
+								VALARM,
+								multiple = ['ATTACH','ATTENDEE','CATEGORIES','COMMENT','CONTACT','EXDATE',
+									'EXRULE','RSTATUS','RELATED','RESOURCES','RDATE','RRULE'],
+								lines = text.split(/\r?\n/),
+								i = lines.length;
+							while (i--) {
+								let line = lines[i];
+								if (VEVENT) {
+									while (line.startsWith(' ') && i--) {
+										line = lines[i] + line.slice(1);
+									}
+									if (line.startsWith('END:VALARM')) {
+										VALARM = {};
+										continue;
+									} else if (line.startsWith('BEGIN:VALARM')) {
+										VEVENT.VALARM || (VEVENT.VALARM = []);
+										VEVENT.VALARM.push(VALARM);
+										VALARM = null;
+										continue;
+									} else if (line.startsWith('BEGIN:VEVENT')) {
+										break;
+									}
+									line = line.match(/^([^:;]+)[:;](.+)$/);
+									if (VALARM) {
+										VALARM[line[1]] = line[2];
+									} else {
+										if (multiple.includes(line[1]) || 'X-' == line[1].slice(0,2)) {
+											VEVENT[line[1]] || (VEVENT[line[1]] = []);
+											VEVENT[line[1]].push(line[2]);
+										} else {
+											VEVENT[line[1]] = line[2];
+										}
+									}
+								} else if (line.startsWith('END:VEVENT')) {
+									VEVENT = {};
+								}
+							}
+//							METHOD:REPLY || METHOD:REQUEST
+							console.dir({VEVENT:VEVENT});
+							if (VEVENT) {
+								VEVENT.rawText = text;
+								VEVENT.isCancelled = () => VEVENT.STATUS?.includes('CANCELLED');
+								VEVENT.shouldReply = () => VEVENT.METHOD?.includes('REPLY');
+								console.dir({
+									isCancelled: VEVENT.isCancelled(),
+									shouldReply: VEVENT.shouldReply()
+								});
+								view.nextcloudICS(VEVENT);
+							}
+						});
+					}
+				}
+			});
 		}
 	});
 
