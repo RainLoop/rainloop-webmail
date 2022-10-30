@@ -32,7 +32,8 @@
 		"TO": "Naar",
 		"SERVER_MESSAGE": "Server bericht",
 		"YES": "Ja",
-		"NO": "Nee"
+		"NO": "Nee",
+		"INACTIVE": "Inactief"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Inlognaam",

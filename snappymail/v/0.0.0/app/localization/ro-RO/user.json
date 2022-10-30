@@ -32,7 +32,8 @@
 		"TO": "către",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Da",
-		"NO": "Nu"
+		"NO": "Nu",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Conectare",

@@ -32,7 +32,8 @@
 		"TO": "Gửi đến",
 		"SERVER_MESSAGE": "Tin nhắn từ máy chủ",
 		"YES": "Ok",
-		"NO": "Không"
+		"NO": "Không",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Đăng nhập",

@@ -32,7 +32,8 @@
 		"TO": "發送到",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "是",
-		"NO": "否"
+		"NO": "否",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登錄",

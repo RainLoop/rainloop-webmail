@@ -32,7 +32,8 @@
 		"TO": "Kime",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Evet",
-		"NO": "Hayır"
+		"NO": "Hayır",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Giriş",

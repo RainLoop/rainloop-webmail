@@ -32,7 +32,8 @@
 		"TO": "Címzett",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Igen",
-		"NO": "Nem"
+		"NO": "Nem",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Bejelentkezés",

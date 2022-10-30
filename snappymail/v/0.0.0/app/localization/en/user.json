@@ -32,7 +32,8 @@
 		"TO": "To",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Yes",
-		"NO": "No"
+		"NO": "No",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",

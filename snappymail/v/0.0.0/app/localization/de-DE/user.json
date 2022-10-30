@@ -32,7 +32,8 @@
 		"TO": "An",
 		"SERVER_MESSAGE": "Server-Nachricht",
 		"YES": "Ja",
-		"NO": "Nein"
+		"NO": "Nein",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Anmeldung",

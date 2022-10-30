@@ -32,7 +32,8 @@
 		"TO": "Kepada",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Ya",
-		"NO": "Tidak"
+		"NO": "Tidak",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",

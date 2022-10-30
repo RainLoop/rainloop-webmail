@@ -32,7 +32,8 @@
 		"TO": "الى",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "نعم",
-		"NO": "لا"
+		"NO": "لا",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "تسيجيل الدخول",

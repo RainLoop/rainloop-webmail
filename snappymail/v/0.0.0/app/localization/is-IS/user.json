@@ -32,7 +32,8 @@
 		"TO": "Til",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Já",
-		"NO": "Nei"
+		"NO": "Nei",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Innskráning",

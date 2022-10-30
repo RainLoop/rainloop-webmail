@@ -32,7 +32,8 @@
 		"TO": "به",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "بلی",
-		"NO": "خیر"
+		"NO": "خیر",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ورود",

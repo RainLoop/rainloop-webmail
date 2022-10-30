@@ -32,7 +32,8 @@
 		"TO": "Za",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Da",
-		"NO": "Ne"
+		"NO": "Ne",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prijava",

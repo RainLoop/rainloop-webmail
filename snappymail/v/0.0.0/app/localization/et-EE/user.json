@@ -32,7 +32,8 @@
 		"TO": "Saaja",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Jah",
-		"NO": "Ei"
+		"NO": "Ei",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logi sisse",

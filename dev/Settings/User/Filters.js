@@ -1,4 +1,4 @@
-import { addObservablesTo } from 'External/ko';
+import { koComputable, addObservablesTo } from 'External/ko';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { SettingsGet } from 'Common/Globals';
 
@@ -22,6 +22,8 @@ export class UserSettingsFilters /*extends AbstractViewSettings*/ {
 			Sieve.updateList();
 		}).catch(e => console.error(e));
 
+		this.hasActive = koComputable(() => this.scripts().filter(script=>script.active()).length);
+
 		this.scriptForDeletion = ko.observable(null).askDeleteHelper();
 	}
 
@@ -37,8 +39,12 @@ export class UserSettingsFilters /*extends AbstractViewSettings*/ {
 		window.Sieve.deleteScript(script);
 	}
 
-	toggleScript(script) {
-		window.Sieve.toggleScript(script);
+	disableScripts() {
+		window.Sieve.setActiveScript('');
+	}
+
+	enableScript(script) {
+		window.Sieve.setActiveScript(script.name());
 	}
 
 	onBuild(oDom) {

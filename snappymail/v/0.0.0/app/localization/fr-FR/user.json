@@ -32,7 +32,8 @@
 		"TO": "À",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Oui",
-		"NO": "Non"
+		"NO": "Non",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Identifiant",

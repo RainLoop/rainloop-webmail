@@ -32,7 +32,8 @@
 		"TO": "Příjemce",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Ano",
-		"NO": "Ne"
+		"NO": "Ne",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Uživatelské jméno",

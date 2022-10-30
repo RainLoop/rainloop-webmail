@@ -32,7 +32,8 @@
 		"TO": "Vastaanottaja",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Kyllä",
-		"NO": "Ei"
+		"NO": "Ei",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Tunnus",

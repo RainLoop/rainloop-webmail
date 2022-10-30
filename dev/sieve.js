@@ -66,8 +66,7 @@ window.Sieve = {
 		);
 	},
 
-	toggleScript(script) {
-		let name = script.active() ? '' : script.name();
+	setActiveScript(name) {
 		serverError(false);
 		Remote.request('FiltersScriptActivate',
 			(iError, data) => {

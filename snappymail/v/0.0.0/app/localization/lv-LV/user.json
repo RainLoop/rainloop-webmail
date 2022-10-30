@@ -32,7 +32,8 @@
 		"TO": "Kam",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Jā",
-		"NO": "Nē"
+		"NO": "Nē",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Ielogoties",

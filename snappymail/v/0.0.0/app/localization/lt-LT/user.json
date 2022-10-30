@@ -32,7 +32,8 @@
 		"TO": "Kam",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Taip",
-		"NO": "Ne"
+		"NO": "Ne",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prisijungimo vardas",

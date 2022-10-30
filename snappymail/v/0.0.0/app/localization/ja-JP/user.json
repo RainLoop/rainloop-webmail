@@ -32,7 +32,8 @@
 		"TO": "宛先",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "はい",
-		"NO": "いいえ"
+		"NO": "いいえ",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ログイン",

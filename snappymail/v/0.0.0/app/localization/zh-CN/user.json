@@ -32,7 +32,8 @@
 		"TO": "收件人",
 		"SERVER_MESSAGE": "服务器信息",
 		"YES": "是",
-		"NO": "否"
+		"NO": "否",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登录",

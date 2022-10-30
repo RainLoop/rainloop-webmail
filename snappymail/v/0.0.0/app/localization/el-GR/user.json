@@ -32,7 +32,8 @@
 		"TO": "Προς",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Ναι",
-		"NO": "Όχι"
+		"NO": "Όχι",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Είσοδος",

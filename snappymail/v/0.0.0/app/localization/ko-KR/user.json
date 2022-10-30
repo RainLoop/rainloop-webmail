@@ -32,7 +32,8 @@
 		"TO": "받는 사람",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "예",
-		"NO": "아니요"
+		"NO": "아니요",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "아이디",

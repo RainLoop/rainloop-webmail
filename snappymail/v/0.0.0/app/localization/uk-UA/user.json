@@ -32,7 +32,8 @@
 		"TO": "Кому",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Так",
-		"NO": "Ні"
+		"NO": "Ні",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Логін",

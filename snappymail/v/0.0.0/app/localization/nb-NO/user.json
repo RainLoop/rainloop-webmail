@@ -32,7 +32,8 @@
 		"TO": "Til",
 		"SERVER_MESSAGE": "Tjenermelding",
 		"YES": "Ja",
-		"NO": "Nei"
+		"NO": "Nei",
+		"INACTIVE": "Inactive"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logg inn",
