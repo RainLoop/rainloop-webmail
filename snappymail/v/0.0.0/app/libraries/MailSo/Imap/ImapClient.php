@@ -11,6 +11,8 @@
 
 namespace MailSo\Imap;
 
+use MailSo\Net\Enumerations\ConnectionSecurityType;
+
 /**
  * @category MailSo
  * @package Imap
@@ -93,15 +95,19 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		$this->setCapabilities($this->getResponse('*'));
 
-		if ($this->IsSupported('STARTTLS') && \MailSo\Net\Enumerations\ConnectionSecurityType::UseStartTLS($this->iSecurityType))
-		{
+		if (ConnectionSecurityType::STARTTLS === $this->iSecurityType
+		 || (ConnectionSecurityType::AUTO_DETECT === $this->iSecurityType && $this->IsSupported('STARTTLS'))) {
+			$this->StartTLS();
+		}
+	}
+
+	private function StartTLS() : void
+	{
+		if ($this->IsSupported('STARTTLS')) {
 			$this->SendRequestGetResponse('STARTTLS');
 			$this->EnableCrypto();
-
 			$this->aCapabilityItems = null;
-		}
-		else if (\MailSo\Net\Enumerations\ConnectionSecurityType::STARTTLS === $this->iSecurityType)
-		{
+		} else {
 			$this->writeLogException(
 				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('STARTTLS is not supported'),
 				\LOG_ERR, true);
@@ -143,6 +149,10 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 		}
 		if (!$type) {
+			if (!$this->Encrypted() && $this->IsSupported('STARTTLS')) {
+				$this->StartTLS();
+				return $this->Login($aCredentials);
+			}
 			throw new \MailSo\RuntimeException('No supported SASL mechanism found, remote server wants: '
 				. \implode(', ', \array_filter($this->Capability() ?: [], function($var){
 					return \str_starts_with($var, 'AUTH=');

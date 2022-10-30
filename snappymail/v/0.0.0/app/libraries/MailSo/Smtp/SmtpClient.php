@@ -11,6 +11,8 @@
 
 namespace MailSo\Smtp;
 
+use MailSo\Net\Enumerations\ConnectionSecurityType;
+
 /**
  * @category MailSo
  * @package Smtp
@@ -18,9 +20,9 @@ namespace MailSo\Smtp;
 class SmtpClient extends \MailSo\Net\NetClient
 {
 	/**
-	 * @var bool
+	 * @var string
 	 */
-	private $bHelo = false;
+	private $sEhlo = '';
 
 	/**
 	 * @var bool
@@ -107,7 +109,26 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 		$this->validateResponse(220);
 
-		$this->preLoginStartTLSAndEhloProcess($sEhloHost);
+		$this->ehloOrHelo($sEhloHost);
+		$this->sEhlo = $sEhloHost;
+
+		if (ConnectionSecurityType::STARTTLS === $this->iSecurityType
+		 || (ConnectionSecurityType::AUTO_DETECT === $this->iSecurityType && $this->IsSupported('STARTTLS'))) {
+			$this->StartTLS();
+		}
+	}
+
+	private function StartTLS() : void
+	{
+		if ($this->IsSupported('STARTTLS')) {
+			$this->sendRequestWithCheck('STARTTLS', 220);
+			$this->EnableCrypto();
+			$this->ehloOrHelo($this->sEhlo);
+		} else {
+			$this->writeLogException(
+				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('STARTTLS is not supported'),
+				\LOG_ERR, true);
+		}
 	}
 
 	/**
@@ -133,7 +154,11 @@ class SmtpClient extends \MailSo\Net\NetClient
 		}
 
 		if (!$type) {
-			\trigger_error("SMTP {$this->GetConnectedHost()} no supported AUTH options. Disable login" . ($this->IsSupported('STARTTLS') ? ' or try with STARTTLS' : ''));
+			if (!$this->Encrypted() && $this->IsSupported('STARTTLS')) {
+				$this->StartTLS();
+				return $this->Login($aCredentials);
+			}
+			\trigger_error("SMTP {$this->GetConnectedHost()} no supported AUTH options. Disable login");
 			$this->writeLogException(
 				new \MailSo\Smtp\Exceptions\LoginBadMethodException,
 				\LOG_NOTICE, true);
@@ -410,38 +435,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$this->sendRequestWithCheck('QUIT', 221);
 		}
 
-		$this->bHelo = false;
 		$this->bMail = false;
 		$this->bRcpt = false;
 		$this->bData = false;
-	}
-
-	private function preLoginStartTLSAndEhloProcess(string $sEhloHost) : void
-	{
-		if ($this->bHelo)
-		{
-			$this->writeLogException(
-				new \MailSo\RuntimeException('Cannot issue EHLO/HELO to existing session'),
-				\LOG_ERR, true);
-		}
-
-		$this->ehloOrHelo($sEhloHost);
-
-		if ($this->IsSupported('STARTTLS') && \MailSo\Net\Enumerations\ConnectionSecurityType::UseStartTLS($this->iSecurityType, $this->HasSupportedAuth()))
-		{
-			$this->sendRequestWithCheck('STARTTLS', 220);
-			$this->EnableCrypto();
-
-			$this->ehloOrHelo($sEhloHost);
-		}
-		else if (\MailSo\Net\Enumerations\ConnectionSecurityType::STARTTLS === $this->iSecurityType)
-		{
-			$this->writeLogException(
-				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('STARTTLS is not supported'),
-				\LOG_ERR, true);
-		}
-
-		$this->bHelo = true;
 	}
 
 	/**

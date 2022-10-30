@@ -57,11 +57,6 @@ class Config
 	public static $CheckNewMessages = true;
 
 	/**
-	 * @var bool
-	 */
-	public static $PreferStartTlsIfAutoDetect = true;
-
-	/**
 	 * @var string
 	 */
 	public static $BoundaryPrefix = '_Part_';

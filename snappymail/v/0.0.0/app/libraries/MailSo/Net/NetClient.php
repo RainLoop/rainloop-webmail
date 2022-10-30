@@ -209,6 +209,11 @@ abstract class NetClient
 		}
 	}
 
+	public function Encrypted() : bool
+	{
+		return $this->rConnect && !empty(\stream_get_meta_data($this->rConnect)['crypto']);
+	}
+
 	public function EnableCrypto(bool $insecure = false)
 	{
 		$bError = true;

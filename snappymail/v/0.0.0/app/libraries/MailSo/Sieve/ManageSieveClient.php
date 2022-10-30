@@ -11,6 +11,8 @@
 
 namespace MailSo\Sieve;
 
+use MailSo\Net\Enumerations\ConnectionSecurityType;
+
 /**
  * @category MailSo
  * @package Sieve
@@ -71,17 +73,21 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		$this->validateResponse($aResponse);
 		$this->parseStartupResponse($aResponse);
 
-		if ($this->IsSupported('STARTTLS') && \MailSo\Net\Enumerations\ConnectionSecurityType::UseStartTLS($this->iSecurityType))
-		{
+		if (ConnectionSecurityType::STARTTLS === $this->iSecurityType
+		 || (ConnectionSecurityType::AUTO_DETECT === $this->iSecurityType && $this->IsSupported('STARTTLS'))) {
+			$this->StartTLS();
+		}
+	}
+
+	private function StartTLS() : void
+	{
+		if ($this->IsSupported('STARTTLS')) {
 			$this->sendRequestWithCheck('STARTTLS');
 			$this->EnableCrypto();
-
 			$aResponse = $this->parseResponse();
 			$this->validateResponse($aResponse);
 			$this->parseStartupResponse($aResponse);
-		}
-		else if (\MailSo\Net\Enumerations\ConnectionSecurityType::STARTTLS === $this->iSecurityType)
-		{
+		} else {
 			$this->writeLogException(
 				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('STARTTLS is not supported'),
 				\LOG_ERR, true);
@@ -106,92 +112,93 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 				\LOG_ERR, true);
 		}
 
-		if ($this->IsSupported('SASL'))
-		{
-			$type = '';
-			\array_push($aCredentials['SASLMechanisms'], 'PLAIN', 'LOGIN');
-			foreach ($aCredentials['SASLMechanisms'] as $sasl_type) {
-				if ($this->IsAuthSupported($sasl_type) && \SnappyMail\SASL::isSupported($sasl_type)) {
-					$type = $sasl_type;
-					break;
-				}
-			}
-
-			$SASL = \SnappyMail\SASL::factory($type);
-			$SASL->base64 = true;
-
-			$bAuth = false;
-			try
-			{
-				if (0 === \strpos($type, 'SCRAM-'))
-				{
-/*
-					$sAuthzid = $this->getResponseValue($this->SendRequestGetResponse('AUTHENTICATE', array($type)), \MailSo\Imap\Enumerations\ResponseType::CONTINUATION);
-					$this->sendRaw($SASL->authenticate($sLogin, $sPassword/*, $sAuthzid* /), true);
-					$sChallenge = $SASL->challenge($this->getResponseValue($this->getResponse(), \MailSo\Imap\Enumerations\ResponseType::CONTINUATION));
-					if ($this->oLogger) {
-						$this->oLogger->AddSecret($sChallenge);
-					}
-					$this->sendRaw($sChallenge, true, '*******');
-					$oResponse = $this->getResponse();
-					$SASL->verify($this->getResponseValue($oResponse));
-*/
-				}
-				else if ('PLAIN' === $type || 'OAUTHBEARER' === $type || 'XOAUTH2' === $type)
-				{
-					$sAuth = $SASL->authenticate($sLogin, $sPassword, $sLoginAuthKey);
-
-					if ($aCredentials['InitialAuthPlain'])
-					{
-						$this->sendRaw("AUTHENTICATE \"{$type}\" \"{$sAuth}\"");
-					}
-					else
-					{
-						$this->sendRaw("AUTHENTICATE \"{$type}\" {".\strlen($sAuth).'+}');
-						$this->sendRaw($sAuth);
-					}
-
-					$aResponse = $this->parseResponse();
-					$this->validateResponse($aResponse);
-					$this->parseStartupResponse($aResponse);
-					$bAuth = true;
-				}
-				else if ('LOGIN' === $type)
-				{
-					$sLogin = $SASL->authenticate($sLogin, $sPassword);
-					$sPassword = $SASL->challenge('');
-
-					$this->sendRaw('AUTHENTICATE "LOGIN"');
-					$this->sendRaw('{'.\strlen($sLogin).'+}');
-					$this->sendRaw($sLogin);
-					$this->sendRaw('{'.\strlen($sPassword).'+}');
-					$this->sendRaw($sPassword);
-
-					$aResponse = $this->parseResponse();
-					$this->validateResponse($aResponse);
-					$this->parseStartupResponse($aResponse);
-					$bAuth = true;
-				}
-			}
-			catch (\MailSo\Sieve\Exceptions\NegativeResponseException $oException)
-			{
-				$this->writeLogException(
-					new \MailSo\Sieve\Exceptions\LoginBadCredentialsException(
-						$oException->GetResponses(), '', 0, $oException),
-					\LOG_ERR, true);
-			}
-
-			if (!$bAuth)
-			{
-				$this->writeLogException(
-					new \MailSo\Sieve\Exceptions\LoginBadMethodException,
-					\LOG_ERR, true);
+		$type = '';
+		\array_push($aCredentials['SASLMechanisms'], 'PLAIN', 'LOGIN');
+		foreach ($aCredentials['SASLMechanisms'] as $sasl_type) {
+			if ($this->IsAuthSupported($sasl_type) && \SnappyMail\SASL::isSupported($sasl_type)) {
+				$type = $sasl_type;
+				break;
 			}
 		}
-		else
-		{
+
+		if (!$type) {
+			if (!$this->Encrypted() && $this->IsSupported('STARTTLS')) {
+				$this->StartTLS();
+				return $this->Login($aCredentials);
+			}
 			$this->writeLogException(
 				new \MailSo\Sieve\Exceptions\LoginException,
+				\LOG_ERR, true);
+		}
+
+		$SASL = \SnappyMail\SASL::factory($type);
+		$SASL->base64 = true;
+
+		$bAuth = false;
+		try
+		{
+			if (0 === \strpos($type, 'SCRAM-'))
+			{
+/*
+				$sAuthzid = $this->getResponseValue($this->SendRequestGetResponse('AUTHENTICATE', array($type)), \MailSo\Imap\Enumerations\ResponseType::CONTINUATION);
+				$this->sendRaw($SASL->authenticate($sLogin, $sPassword/*, $sAuthzid* /), true);
+				$sChallenge = $SASL->challenge($this->getResponseValue($this->getResponse(), \MailSo\Imap\Enumerations\ResponseType::CONTINUATION));
+				if ($this->oLogger) {
+					$this->oLogger->AddSecret($sChallenge);
+				}
+				$this->sendRaw($sChallenge, true, '*******');
+				$oResponse = $this->getResponse();
+				$SASL->verify($this->getResponseValue($oResponse));
+*/
+			}
+			else if ('PLAIN' === $type || 'OAUTHBEARER' === $type || 'XOAUTH2' === $type)
+			{
+				$sAuth = $SASL->authenticate($sLogin, $sPassword, $sLoginAuthKey);
+
+				if ($aCredentials['InitialAuthPlain'])
+				{
+					$this->sendRaw("AUTHENTICATE \"{$type}\" \"{$sAuth}\"");
+				}
+				else
+				{
+					$this->sendRaw("AUTHENTICATE \"{$type}\" {".\strlen($sAuth).'+}');
+					$this->sendRaw($sAuth);
+				}
+
+				$aResponse = $this->parseResponse();
+				$this->validateResponse($aResponse);
+				$this->parseStartupResponse($aResponse);
+				$bAuth = true;
+			}
+			else if ('LOGIN' === $type)
+			{
+				$sLogin = $SASL->authenticate($sLogin, $sPassword);
+				$sPassword = $SASL->challenge('');
+
+				$this->sendRaw('AUTHENTICATE "LOGIN"');
+				$this->sendRaw('{'.\strlen($sLogin).'+}');
+				$this->sendRaw($sLogin);
+				$this->sendRaw('{'.\strlen($sPassword).'+}');
+				$this->sendRaw($sPassword);
+
+				$aResponse = $this->parseResponse();
+				$this->validateResponse($aResponse);
+				$this->parseStartupResponse($aResponse);
+				$bAuth = true;
+			}
+		}
+		catch (\MailSo\Sieve\Exceptions\NegativeResponseException $oException)
+		{
+			$this->writeLogException(
+				new \MailSo\Sieve\Exceptions\LoginBadCredentialsException(
+					$oException->GetResponses(), '', 0, $oException),
+				\LOG_ERR, true);
+		}
+
+		if (!$bAuth)
+		{
+			$this->writeLogException(
+				new \MailSo\Sieve\Exceptions\LoginBadMethodException,
 				\LOG_ERR, true);
 		}
 

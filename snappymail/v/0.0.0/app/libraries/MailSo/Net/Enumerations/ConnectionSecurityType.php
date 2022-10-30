@@ -46,12 +46,4 @@ abstract class ConnectionSecurityType
 
 		return self::SSL === $iResult;
 	}
-
-	public static function UseStartTLS(int $iSecurityType, bool $bHasSupportedAuth = true) : bool
-	{
-		return
-			(self::STARTTLS === $iSecurityType
-			 || (self::AUTO_DETECT === $iSecurityType && (!$bHasSupportedAuth || \MailSo\Config::$PreferStartTlsIfAutoDetect)))
-		 && \defined('STREAM_CRYPTO_METHOD_TLS_CLIENT') && \MailSo\Base\Utils::FunctionCallable('stream_socket_enable_crypto');
-	}
 }
