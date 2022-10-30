@@ -50,23 +50,34 @@ class SnappyMailHelper
 			$bSave = true;
 		}
 
+		// Pre-configure some domains
 		$ocConfig = \OC::$server->getConfig();
 		if ($ocConfig->getAppValue('snappymail', 'snappymail-autologin', false)
 		 || $ocConfig->getAppValue('snappymail', 'snappymail-autologin-with-email', false)
 		) {
-			$oProvider = \RainLoop\Api::Actions()->DomainProvider();
-			$oDomain = $oProvider->Load('nextcloud');
-			if (!($oDomain instanceof \RainLoop\Model\Domain)) {
-				$oDomain = new \RainLoop\Model\Domain('nextcloud');
-				$oDomain->SetConfig(
-					'localhost', 143, \MailSo\Net\Enumerations\ConnectionSecurityType::NONE, true,
-					true, 'localhost', 4190, \MailSo\Net\Enumerations\ConnectionSecurityType::NONE,
-					'localhost', 25, \MailSo\Net\Enumerations\ConnectionSecurityType::NONE, true, true, false, false,
-					'');
-				$oProvider->Save($oDomain);
-				if (!$oConfig->Set('login', 'default_domain', '')) {
-					$oConfig->Set('login', 'default_domain', 'nextcloud');
-					$bSave = true;
+			$aDomains = \array_unique([
+				'nextcloud',
+				\preg_replace('/:\d+/$','',$_SERVER['HTTP_HOST']),
+				$_SERVER['SERVER_NAME'],
+				\gethostname()
+			]);
+			foreach ($aDomains as $i => $sDomain) {
+				$oProvider = \RainLoop\Api::Actions()->DomainProvider();
+				$oDomain = $oProvider->Load($sDomain);
+				if (!($oDomain instanceof \RainLoop\Model\Domain)) {
+					$oDomain = new \RainLoop\Model\Domain($sDomain);
+					$bShortLogin = !$i;
+					$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::NONE;
+					$oDomain->SetConfig(
+						'localhost', 143, $iSecurityType, $bShortLogin,
+						true, 'localhost', 4190, $iSecurityType,
+						'localhost', 25, $iSecurityType, $bShortLogin, true, false, false,
+						'');
+					$oProvider->Save($oDomain);
+					if (!$oConfig->Get('login', 'default_domain', '')) {
+						$oConfig->Set('login', 'default_domain', 'nextcloud');
+						$bSave = true;
+					}
 				}
 			}
 		}
