@@ -1,6 +1,7 @@
 import { FileInfo } from 'Common/File';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
+import { addObservablesTo, addComputablesTo } from 'External/ko';
 
 export class ComposeAttachmentModel extends AbstractModel {
 	/**
@@ -22,7 +23,7 @@ export class ComposeAttachmentModel extends AbstractModel {
 		this.contentLocation = contentLocation;
 		this.fromMessage = false;
 
-		this.addObservables({
+		addObservablesTo(this, {
 			fileName: fileName,
 			size: size,
 			tempName: '',
@@ -35,7 +36,7 @@ export class ComposeAttachmentModel extends AbstractModel {
 			complete: false
 		});
 
-		this.addComputables({
+		addComputablesTo(this, {
 			progressText: () => {
 				const p = this.progress();
 				return 1 > p ? '' : (100 < p ? 100 : p) + '%';

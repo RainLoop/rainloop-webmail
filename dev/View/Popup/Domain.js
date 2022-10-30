@@ -1,3 +1,5 @@
+import { addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
+
 import { pInt, forEachObjectEntry } from 'Common/Utils';
 import { i18n, getNotification } from 'Common/Translator';
 
@@ -33,8 +35,8 @@ export class DomainPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Domain');
 
-		this.addObservables(this.getDefaults());
-		this.addObservables({
+		addObservablesTo(this, this.getDefaults());
+		addObservablesTo(this, {
 			edit: false,
 
 			saving: false,
@@ -53,7 +55,7 @@ export class DomainPopupView extends AbstractViewPopup {
 			smtpHostFocus: false,
 		});
 
-		this.addComputables({
+		addComputablesTo(this, {
 			headerText: () => {
 				const name = this.name(),
 					aliasName = this.aliasName();
@@ -96,7 +98,7 @@ export class DomainPopupView extends AbstractViewPopup {
 			canBeSaved: () => !this.saving() && this.domainIsComputed()
 		});
 
-		this.addSubscribables({
+		addSubscribablesTo(this, {
 			testingImapError: value => value || this.testingImapErrorDesc(''),
 			testingSieveError: value => value || this.testingSieveErrorDesc(''),
 			testingSmtpError: value => value || this.testingSmtpErrorDesc(''),

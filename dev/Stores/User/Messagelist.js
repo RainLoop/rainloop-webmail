@@ -1,11 +1,10 @@
-import { koComputable } from 'External/ko';
+import { koComputable, addObservablesTo, addComputablesTo } from 'External/ko';
 
 import { SMAudio } from 'Common/Audio';
 import { Notification } from 'Common/Enums';
 import { MessageSetAction } from 'Common/EnumsUser';
 import { $htmlCL } from 'Common/Globals';
 import { arrayLength, pInt, pString } from 'Common/Utils';
-import { addObservablesTo, addComputablesTo } from 'External/ko';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import {

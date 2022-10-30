@@ -1,3 +1,4 @@
+import { addObservablesTo } from 'External/ko';
 import { GnuPGUserStore } from 'Stores/User/GnuPG';
 import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 
@@ -7,7 +8,7 @@ export class OpenPgpImportPopupView extends AbstractViewPopup {
 	constructor() {
 		super('OpenPgpImport');
 
-		this.addObservables({
+		addObservablesTo(this, {
 			key: '',
 			keyError: false,
 			keyErrorMessage: '',

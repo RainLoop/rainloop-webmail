@@ -1,3 +1,4 @@
+import { addObservablesTo } from 'External/ko';
 import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/User/Fetch';
@@ -8,7 +9,7 @@ export class AccountPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Account');
 
-		this.addObservables({
+		addObservablesTo(this, {
 			isNew: true,
 
 			email: '',

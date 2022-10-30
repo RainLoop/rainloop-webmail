@@ -1,3 +1,4 @@
+import { addObservablesTo, addComputablesTo } from 'External/ko';
 import { i18n, translateTrigger } from 'Common/Translator';
 import { pString } from 'Common/Utils';
 
@@ -10,7 +11,7 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 	constructor() {
 		super('AdvancedSearch');
 
-		this.addObservables({
+		addObservablesTo(this, {
 			from: '',
 			to: '',
 			subject: '',
@@ -25,7 +26,7 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 			unseen: false
 		});
 
-		this.addComputables({
+		addComputablesTo(this, {
 			showMultisearch: () => FolderUserStore.hasCapability('MULTISEARCH'),
 
 			// Almost the same as MessageModel.tagOptions

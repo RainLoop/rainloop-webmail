@@ -1,4 +1,5 @@
 import { AbstractModel } from 'Knoin/AbstractModel';
+import { addObservablesTo, addComputablesTo } from 'External/ko';
 
 import { JCard } from 'DAV/JCard';
 //import { VCardProperty } from 'DAV/VCardProperty';
@@ -80,7 +81,7 @@ export class ContactModel extends AbstractModel {
 
 		this.jCard = ['vcard',[]];
 
-		this.addObservables({
+		addObservablesTo(this, {
 			// Also used by Selector
 			focused: false,
 			selected: false,
@@ -113,7 +114,7 @@ export class ContactModel extends AbstractModel {
 		this.url   = ko.observableArray();
 		this.adr   = ko.observableArray();
 
-		this.addComputables({
+		addComputablesTo(this, {
 			fullName: () => [this.namePrefix(), this.givenName(), this.middleName(), this.surName()].join(' ').trim(),
 
 			display: () => {

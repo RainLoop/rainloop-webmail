@@ -1,4 +1,5 @@
 import { getNotification } from 'Common/Translator';
+import { addObservablesTo, addComputablesTo } from 'External/ko';
 
 import { DomainAdminStore } from 'Stores/Admin/Domain';
 
@@ -11,7 +12,7 @@ export class DomainAliasPopupView extends AbstractViewPopup {
 	constructor() {
 		super('DomainAlias');
 
-		this.addObservables({
+		addObservablesTo(this, {
 			saving: false,
 			savingError: '',
 
@@ -20,7 +21,7 @@ export class DomainAliasPopupView extends AbstractViewPopup {
 			alias: ''
 		});
 
-		this.addComputables({
+		addComputablesTo(this, {
 			domains: () => DomainAdminStore.filter(item => item && !item.alias),
 
 			domainsOptions: () => this.domains().map(item => ({ optValue: item.name, optText: item.name })),

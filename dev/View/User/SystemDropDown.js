@@ -20,6 +20,7 @@ import Remote from 'Remote/User/Fetch';
 import { getNotification } from 'Common/Translator';
 //import { clearCache } from 'Common/Cache';
 //import { koComputable } from 'External/ko';
+import { addObservablesTo } from 'External/ko';
 
 export class SystemDropDownUserView extends AbstractViewRight {
 	constructor() {
@@ -36,7 +37,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 		this.accountsUnreadCount = : koComputable(() => AccountUserStore.accounts().reduce((result, item) => result + item.count(), 0));
 */
 
-		this.addObservables({
+		addObservablesTo(this, {
 			currentAudio: '',
 			accountMenuDropdownTrigger: false
 		});

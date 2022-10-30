@@ -18,7 +18,7 @@ import { i18n, translateTrigger } from 'Common/Translator';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-import { koComputable } from 'External/ko';
+import { koComputable, addObservablesTo } from 'External/ko';
 
 //import { mailBox } from 'Common/Links';
 
@@ -234,7 +234,7 @@ export class FolderModel extends AbstractModel {
 //		this.id = null;
 		this.uidNext = null;
 
-		this.addObservables({
+		addObservablesTo(this, {
 			name: '',
 			type: FolderType.User,
 			selectable: false,

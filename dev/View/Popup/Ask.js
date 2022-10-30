@@ -1,13 +1,13 @@
 import { i18n } from 'Common/Translator';
 import { isFunction } from 'Common/Utils';
-
+import { addObservablesTo } from 'External/ko';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 export class AskPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Ask');
 
-		this.addObservables({
+		addObservablesTo(this, {
 			askDesc: '',
 			yesButton: '',
 			noButton: '',

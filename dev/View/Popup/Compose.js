@@ -13,7 +13,7 @@ import {
 
 import { pInt, isArray, arrayLength, forEachObjectEntry } from 'Common/Utils';
 import { encodeHtml, HtmlEditor, htmlToPlain } from 'Common/Html';
-import { koArrayWithDestroy } from 'External/ko';
+import { koArrayWithDestroy, addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { folderInformation, messagesDeleteHelper } from 'Common/Folders';
@@ -215,7 +215,7 @@ export class ComposePopupView extends AbstractViewPopup {
 		this.allowContacts = AppUserStore.allowContacts();
 		this.allowIdentities = SettingsCapa('Identities');
 
-		this.addObservables({
+		addObservablesTo(this, {
 			identitiesDropdownTrigger: false,
 
 			from: '',
@@ -304,7 +304,7 @@ export class ComposePopupView extends AbstractViewPopup {
 
 		this.iTimer = 0;
 
-		this.addComputables({
+		addComputablesTo(this, {
 			sendButtonSuccess: () => !this.sendError() && !this.sendSuccessButSaveError(),
 
 			savedTimeText: () =>
@@ -344,7 +344,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			canBeSentOrSaved: () => !this.sending() && !this.saving()
 		});
 
-		this.addSubscribables({
+		addSubscribablesTo(this, {
 			sendError: value => !value && this.sendErrorDesc(''),
 
 			savedError: value => !value && this.savedErrorDesc(''),

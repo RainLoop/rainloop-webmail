@@ -7,6 +7,7 @@ import {
 } from 'Common/Links';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
+import { addObservablesTo } from 'External/ko';
 
 import { SMAudio } from 'Common/Audio';
 
@@ -30,7 +31,7 @@ export class AttachmentModel extends AbstractModel {
 		this.mimeIndex = '';
 		this.estimatedSize = 0;
 
-		this.addObservables({
+		addObservablesTo(this, {
 			isInline: false,
 			isLinked: false
 		});

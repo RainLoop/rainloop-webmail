@@ -1,3 +1,4 @@
+import { addObservablesTo, addComputablesTo } from 'External/ko';
 import { ComposeType } from 'Common/EnumsUser';
 import { registerShortcut } from 'Common/Globals';
 import { arrayLength, pInt } from 'Common/Utils';
@@ -32,7 +33,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Contacts');
 
-		this.addObservables({
+		addObservablesTo(this, {
 			search: '',
 			contactsCount: 0,
 
@@ -64,7 +65,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 
 		this.selector.on('ItemGetUid', contact => contact ? contact.generateUid() : '');
 
-		this.addComputables({
+		addComputablesTo(this, {
 			contactsPaginator: computedPaginatorHelper(
 				this.contactsPage,
 				() => Math.max(1, Math.ceil(this.contactsCount() / CONTACTS_PER_PAGE))

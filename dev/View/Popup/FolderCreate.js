@@ -1,4 +1,4 @@
-import { koComputable } from 'External/ko';
+import { koComputable, addObservablesTo } from 'External/ko';
 
 import { Notification } from 'Common/Enums';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
@@ -20,7 +20,7 @@ export class FolderCreatePopupView extends AbstractViewPopup {
 	constructor() {
 		super('FolderCreate');
 
-		this.addObservables({
+		addObservablesTo(this, {
 			folderName: '',
 			folderSubscribe: SettingsUserStore.hideUnsubscribed(),
 

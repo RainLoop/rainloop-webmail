@@ -2,6 +2,7 @@ import { Notification } from 'Common/Enums';
 import { ClientSideKeyNameLastSignMe } from 'Common/EnumsUser';
 import { SettingsGet, fireEvent } from 'Common/Globals';
 import { getNotification, translatorReload, convertLangName } from 'Common/Translator';
+import { addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
 
 import { LanguageStore } from 'Stores/Language';
 
@@ -24,7 +25,7 @@ export class LoginUserView extends AbstractViewLogin {
 	constructor() {
 		super();
 
-		this.addObservables({
+		addObservablesTo(this, {
 			loadingDesc: SettingsGet('LoadingDescription'),
 
 			email: SettingsGet('DevEmail'),
@@ -50,14 +51,14 @@ export class LoginUserView extends AbstractViewLogin {
 
 		this.bSendLanguage = false;
 
-		this.addComputables({
+		addComputablesTo(this, {
 
 			languageFullName: () => convertLangName(this.language()),
 
 			signMeVisibility: () => SignMeUnused !== this.signMeType()
 		});
 
-		this.addSubscribables({
+		addSubscribablesTo(this, {
 			email: () => this.emailError(false),
 
 			password: () => this.passwordError(false),

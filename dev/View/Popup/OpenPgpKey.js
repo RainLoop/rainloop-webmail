@@ -1,3 +1,4 @@
+import { addObservablesTo } from 'External/ko';
 import { doc, addShortcut } from 'Common/Globals';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
@@ -5,7 +6,7 @@ export class OpenPgpKeyPopupView extends AbstractViewPopup {
 	constructor() {
 		super('OpenPgpKey');
 
-		this.addObservables({
+		addObservablesTo(this, {
 			key: '',
 			keyDom: null
 		});

@@ -1,4 +1,5 @@
 import { AbstractModel } from 'Knoin/AbstractModel';
+import { addObservablesTo } from 'External/ko';
 
 export class IdentityModel extends AbstractModel {
 	/**
@@ -8,7 +9,7 @@ export class IdentityModel extends AbstractModel {
 	constructor(id, email) {
 		super();
 
-		this.addObservables({
+		addObservablesTo(this, {
 			id: id || '',
 			email: email,
 			name: '',

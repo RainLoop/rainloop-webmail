@@ -1,4 +1,5 @@
 import { AbstractModel } from 'Knoin/AbstractModel';
+import { addObservablesTo } from 'External/ko';
 
 export class AccountModel extends AbstractModel {
 	/**
@@ -11,7 +12,7 @@ export class AccountModel extends AbstractModel {
 
 		this.email = email;
 
-		this.addObservables({
+		addObservablesTo(this, {
 //			count: count || 0,
 			askDelete: false,
 			isAdditional: isAdditional

@@ -1,6 +1,5 @@
 import { SaveSettingStatus } from 'Common/Enums';
-import { koComputable } from 'External/ko';
-import { dispose } from 'External/ko';
+import { dispose, koComputable } from 'External/ko';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 
 export class SelectComponent {

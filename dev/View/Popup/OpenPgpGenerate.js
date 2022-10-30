@@ -1,3 +1,4 @@
+import { addObservablesTo } from 'External/ko';
 //import { pInt } from 'Common/Utils';
 
 import { GnuPGUserStore } from 'Stores/User/GnuPG';
@@ -15,7 +16,7 @@ export class OpenPgpGeneratePopupView extends AbstractViewPopup {
 
 		this.identities = IdentityUserStore;
 
-		this.addObservables({
+		addObservablesTo(this, {
 			email: '',
 			emailError: false,
 

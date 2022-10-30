@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { addObservablesTo, addComputablesTo } from 'External/ko';
 
 import { getNotification, i18n } from 'Common/Translator';
 import { arrayLength } from 'Common/Utils';
@@ -13,7 +14,7 @@ export class PluginPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Plugin');
 
-		this.addObservables({
+		addObservablesTo(this, {
 			saveError: '',
 			id: '',
 			name: '',
@@ -22,7 +23,7 @@ export class PluginPopupView extends AbstractViewPopup {
 
 		this.config = ko.observableArray();
 
-		this.addComputables({
+		addComputablesTo(this, {
 			hasReadme: () => !!this.readme(),
 			hasConfiguration: () => 0 < this.config().length
 		});

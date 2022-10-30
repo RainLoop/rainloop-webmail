@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { addObservablesTo, addComputablesTo } from 'External/ko';
 
 import { Scope } from 'Common/Enums';
 
@@ -89,7 +90,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.userUsageProc = FolderUserStore.quotaPercentage;
 
-		this.addObservables({
+		addObservablesTo(this, {
 			moreDropdownTrigger: false,
 			sortDropdownTrigger: false,
 
@@ -100,7 +101,7 @@ export class MailMessageList extends AbstractViewRight {
 		this.dragOver = ko.observable(false).extend({ throttle: 1 });
 		this.dragOverEnter = ko.observable(false).extend({ throttle: 1 });
 
-		this.addComputables({
+		addComputablesTo(this, {
 
 			sortSupported: () =>
 				FolderUserStore.hasCapability('SORT') | FolderUserStore.hasCapability('ESORT'),

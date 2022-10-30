@@ -1,3 +1,5 @@
+import { addObservablesTo, addSubscribablesTo } from 'External/ko';
+
 import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/User/Fetch';
@@ -9,7 +11,7 @@ export class IdentityPopupView extends AbstractViewPopup {
 		super('Identity');
 
 		this.id = '';
-		this.addObservables({
+		addObservablesTo(this, {
 			edit: false,
 			owner: false,
 
@@ -35,7 +37,7 @@ export class IdentityPopupView extends AbstractViewPopup {
 			submitError: ''
 		});
 
-		this.addSubscribables({
+		addSubscribablesTo(this, {
 			replyTo: value => {
 				if (false === this.showReplyTo() && value.length) {
 					this.showReplyTo(true);

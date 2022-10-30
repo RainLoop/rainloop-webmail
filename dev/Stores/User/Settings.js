@@ -1,9 +1,8 @@
 import ko from 'ko';
-import { koComputable } from 'External/ko';
+import { koComputable, addObservablesTo } from 'External/ko';
 
 import { Layout } from 'Common/EnumsUser';
 import { pInt } from 'Common/Utils';
-import { addObservablesTo } from 'External/ko';
 import { $htmlCL, SettingsGet, fireEvent } from 'Common/Globals';
 import { ThemeStore } from 'Stores/Theme';
 

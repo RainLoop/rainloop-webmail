@@ -7,6 +7,7 @@ import { doc, SettingsGet } from 'Common/Globals';
 import { encodeHtml, plainToHtml, htmlToPlain, cleanHtml } from 'Common/Html';
 import { arrayLength, forEachObjectEntry } from 'Common/Utils';
 import { serverRequestRaw, proxy } from 'Common/Links';
+import { addObservablesTo, addComputablesTo } from 'External/ko';
 
 import { FolderUserStore, isAllowedKeyword } from 'Stores/User/Folder';
 import { SettingsUserStore } from 'Stores/User/Settings';
@@ -65,7 +66,7 @@ export class MessageModel extends AbstractModel {
 
 		this._reset();
 
-		this.addObservables({
+		addObservablesTo(this, {
 			subject: '',
 			plain: '',
 			html: '',
@@ -108,7 +109,7 @@ export class MessageModel extends AbstractModel {
 		this.unsubsribeLinks = ko.observableArray();
 		this.flags = ko.observableArray();
 
-		this.addComputables({
+		addComputablesTo(this, {
 			attachmentIconClass: () => FileInfo.getAttachmentsIconClass(this.attachments()),
 			threadsLen: () => this.threads().length,
 			listAttachments: () => this.attachments()

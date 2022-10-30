@@ -1,3 +1,4 @@
+import { addObservablesTo, addComputablesTo } from 'External/ko';
 import { i18n, getNotification } from 'Common/Translator';
 
 import { MessageUserStore } from 'Stores/User/Message';
@@ -12,12 +13,12 @@ export class FolderClearPopupView extends AbstractViewPopup {
 	constructor() {
 		super('FolderClear');
 
-		this.addObservables({
+		addObservablesTo(this, {
 			folder: null,
 			clearing: false
 		});
 
-		this.addComputables({
+		addComputablesTo(this, {
 			dangerDescHtml: () => {
 //				const folder = this.folder();
 //				return i18n('POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_1', { FOLDER: folder.fullName.replace(folder.delimiter, ' / ') });

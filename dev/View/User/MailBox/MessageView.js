@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
 
 import { Scope } from 'Common/Enums';
 
@@ -92,7 +93,7 @@ export class MailMessageView extends AbstractViewRight {
 
 		this.msgDefaultAction = SettingsUserStore.msgDefaultAction;
 
-		this.addObservables({
+		addObservablesTo(this, {
 			showAttachmentControls: !!Local.get(ClientSideKeyNameMessageAttachmentControls),
 			downloadAsZipLoading: false,
 			showFullInfo: '1' === Local.get(ClientSideKeyNameMessageHeaderFullInfo),
@@ -132,7 +133,7 @@ export class MailMessageView extends AbstractViewRight {
 		// viewer
 		this.viewHash = '';
 
-		this.addComputables({
+		addComputablesTo(this, {
 			allowAttachmentControls: () => arrayLength(attachmentsActions) && SettingsCapa('AttachmentsActions'),
 
 			downloadAsZipAllowed: () => this.attachmentsActions.includes('zip')
@@ -174,7 +175,7 @@ export class MailMessageView extends AbstractViewRight {
 				() => MessagelistUserStore.isLoading() | MessageUserStore.loading()
 		});
 
-		this.addSubscribables({
+		addSubscribablesTo(this, {
 			message: message => {
 				if (message) {
 					if (this.viewHash !== message.hash) {

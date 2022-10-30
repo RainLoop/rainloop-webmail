@@ -1,10 +1,9 @@
 import ko from 'ko';
-import { koComputable } from 'External/ko';
+import { koComputable, addObservablesTo, addSubscribablesTo, addComputablesTo } from 'External/ko';
 
 import { FolderType } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { forEachObjectEntry } from 'Common/Utils';
-import { addObservablesTo, addSubscribablesTo, addComputablesTo } from 'External/ko';
 import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
 import { Settings, SettingsCapa } from 'Common/Globals';
 //import Remote from 'Remote/User/Fetch'; // Circular dependency
