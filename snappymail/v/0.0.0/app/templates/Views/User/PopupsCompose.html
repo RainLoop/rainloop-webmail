@@ -54,6 +54,18 @@
 						<span data-i18n="COMPOSE/BUTTON_MARK_AS_IMPORTANT"></span>
 					</a>
 				</li>
+				<li data-bind="click: togglePgpSign, visible: canPgpSign">
+					<a>
+						<i class="fontastic" data-bind="text: pgpSign() ? '☑' : '☐'"></i>
+						<span data-icon="✍" data-i18n="OPENPGP/LABEL_SIGN"></span>
+					</a>
+				</li>
+				<li data-bind="click: togglePgpEncrypt, visible: canPgpEncrypt">
+					<a>
+						<i class="fontastic" data-bind="text: pgpEncrypt() || 'mailvelope' == viewArea() ? '☑' : '☐'"></i>
+						<span data-icon="🔒" data-i18n="OPENPGP/LABEL_ENCRYPT"></span>
+					</a>
+				</li>
 			</menu>
 		</div>
 		<a class="minimize-custom" data-bind="click: skipCommand" data-i18n="[title]COMPOSE/BUTTON_MINIMIZE"></a>
@@ -136,14 +148,14 @@
 				</button>
 			</div>
 			<div class="btn-group">
-				<a class="btn" data-bind="click: togglePgpSign, visible: canPgpSign, css: {'btn-success': pgpSign()}">
-					<i class="fontastic" data-bind="text: pgpSign() ? '☑' : '☐'"></i>
-					<span data-i18n="OPENPGP/LABEL_SIGN"></span>
+				<a class="btn fontastic" data-bind="click: togglePgpSign, visible: canPgpSign, css: {'btn-success': pgpSign()}" data-i18n="[title]OPENPGP/LABEL_SIGN">
+					✍
 				</a>
-				<a class="btn" data-bind="click: togglePgpEncrypt, visible: canPgpEncrypt, css: {'btn-success': pgpEncrypt() || 'mailvelope' == viewArea()}">
-					<i class="fontastic" data-bind="text: pgpEncrypt() || 'mailvelope' == viewArea() ? '☑' : '☐'"></i>
-					<span data-i18n="OPENPGP/LABEL_ENCRYPT"></span>
+				<a class="btn fontastic" data-bind="click: togglePgpEncrypt, visible: canPgpEncrypt, css: {'btn-success': pgpEncrypt() || 'mailvelope' == viewArea()}" data-i18n="[title]OPENPGP/LABEL_ENCRYPT">
+					🔒
 				</a>
+			</div>
+			<div class="btn-group">
 				<a class="btn fontastic" style="padding-left: 10px; padding-right: 10px;" id="composeUploadButton"
 					data-bind="visible: addAttachmentEnabled()" data-i18n="[title]COMPOSE/ATTACH_FILES">
 					⁺📎
