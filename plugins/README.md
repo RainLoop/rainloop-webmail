@@ -202,7 +202,7 @@ $Plugin->addHook('hook.name', 'functionName');
 
 ### filter.domain
 	params:
-		\RainLoop\Model\Domain &$oDomain
+		\RainLoop\Model\Domain $oDomain
 
 ### filter.fabrica
 	params:

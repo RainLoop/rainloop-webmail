@@ -50,7 +50,7 @@ class SnappyMailHelper
 			$bSave = true;
 		}
 
-		// Pre-configure some domains
+		// Pre-configure domain
 		$ocConfig = \OC::$server->getConfig();
 		if ($ocConfig->getAppValue('snappymail', 'snappymail-autologin', false)
 		 || $ocConfig->getAppValue('snappymail', 'snappymail-autologin-with-email', false)

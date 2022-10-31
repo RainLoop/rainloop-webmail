@@ -72,8 +72,6 @@ if (defined('MULTIDOMAIN')) {
 define('APP_PRIVATE_DATA_NAME', $sPrivateDataFolderInternalName ?: '_default_');
 unset($sPrivateDataFolderInternalName);
 
-defined('APP_USE_APCU_CACHE') || define('APP_USE_APCU_CACHE', true);
-
 if (!defined('APP_DATA_FOLDER_PATH')) {
 	$sCustomDataPath = function_exists('__get_custom_data_full_path') ? rtrim(trim(__get_custom_data_full_path()), '\\/') : $sCustomDataPath;
 	define('APP_DATA_FOLDER_PATH', strlen($sCustomDataPath) ? $sCustomDataPath.'/' : APP_INDEX_ROOT_PATH.'data/');
@@ -90,17 +88,37 @@ $sData = is_file(APP_DATA_FOLDER_PATH.'DATA.php') ? file_get_contents(APP_DATA_F
 define('APP_PRIVATE_DATA', APP_DATA_FOLDER_PATH.'_data_'.($sData ? md5($sData) : '').'/'.APP_PRIVATE_DATA_NAME.'/');
 define('APP_PLUGINS_PATH', APP_PRIVATE_DATA.'plugins/');
 
-// installation checking data folder
-if (APP_VERSION !== (is_file(APP_DATA_FOLDER_PATH.'INSTALLED') ? file_get_contents(APP_DATA_FOLDER_PATH.'INSTALLED') : '')
- || !is_dir(APP_PRIVATE_DATA))
-{
-	include APP_VERSION_ROOT_PATH.'setup.php';
-}
-
 ini_set('default_charset', 'UTF-8');
 ini_set('internal_encoding', 'UTF-8');
 mb_internal_encoding('UTF-8');
 mb_language('uni');
+
+if (!defined('SNAPPYMAIL_LIBRARIES_PATH')) {
+	define('SNAPPYMAIL_LIBRARIES_PATH', rtrim(realpath(__DIR__), '\\/').'/app/libraries/');
+
+	if (false === set_include_path(SNAPPYMAIL_LIBRARIES_PATH . PATH_SEPARATOR . get_include_path())) {
+		exit('set_include_path() failed. Probably due to Apache config using php_admin_value instead of php_value');
+	}
+
+	spl_autoload_extensions('.php');
+	/** lowercase autoloader */
+	spl_autoload_register();
+	/** case-sensitive autoloader */
+	spl_autoload_register(function($sClassName){
+		$file = SNAPPYMAIL_LIBRARIES_PATH . strtr($sClassName, '\\', DIRECTORY_SEPARATOR) . '.php';
+//		if ($file = stream_resolve_include_path(strtr($sClassName, '\\', DIRECTORY_SEPARATOR) . '.php')) {
+		if (is_file($file)) {
+			include_once $file;
+		}
+	});
+}
+
+// installation checking data folder
+if (APP_VERSION !== (is_file(APP_DATA_FOLDER_PATH.'INSTALLED') ? file_get_contents(APP_DATA_FOLDER_PATH.'INSTALLED') : '')
+ || !is_dir(APP_PRIVATE_DATA))
+{
+	include __DIR__ . '/setup.php';
+}
 
 $sSalt = is_file(APP_DATA_FOLDER_PATH.'SALT.php') ? trim(file_get_contents(APP_DATA_FOLDER_PATH.'SALT.php')) : '';
 if (!$sSalt) {
@@ -140,26 +158,6 @@ if (!ini_get('zlib.output_compression') && !ini_get('brotli.output_compression')
 	} else if (defined('USE_GZIP')) {
 		ob_start('ob_gzhandler');
 	}
-}
-
-if (!defined('RAINLOOP_APP_LIBRARIES_PATH')) {
-	define('RAINLOOP_APP_LIBRARIES_PATH', rtrim(realpath(__DIR__), '\\/').'/app/libraries/');
-
-	if (false === set_include_path(RAINLOOP_APP_LIBRARIES_PATH . PATH_SEPARATOR . get_include_path())) {
-		exit('set_include_path() failed. Probably due to Apache config using php_admin_value instead of php_value');
-	}
-
-	spl_autoload_extensions('.php');
-	/** lowercase autoloader */
-	spl_autoload_register();
-	/** case-sensitive autoloader */
-	spl_autoload_register(function($sClassName){
-		$file = RAINLOOP_APP_LIBRARIES_PATH . strtr($sClassName, '\\', DIRECTORY_SEPARATOR) . '.php';
-//		if ($file = stream_resolve_include_path(strtr($sClassName, '\\', DIRECTORY_SEPARATOR) . '.php')) {
-		if (is_file($file)) {
-			include_once $file;
-		}
-	});
 }
 
 if (class_exists('RainLoop\\Api')) {

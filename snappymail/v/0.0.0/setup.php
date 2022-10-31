@@ -156,10 +156,7 @@ if (defined('APP_VERSION'))
 			}
 		}
 
-//		require __DIR__ . '/app/libraries/snappymail/idn.php';
-//		require __DIR__ . '/app/libraries/snappymail/intl/idn.php';
-//		$sName = \SnappyMail\IDN::toAscii(mb_strtolower(gethostname()));
-		$sName = mb_strtolower(gethostname());
+		$sName = \SnappyMail\IDN::toAscii(mb_strtolower(gethostname()));
 		$sFile = APP_PRIVATE_DATA.'domains/'.$sName.'.json';
 		if (!file_exists($sFile) && !file_exists(APP_PRIVATE_DATA.'domains/'.$sName.'.ini')) {
 			$config = json_decode(file_get_contents(__DIR__ . '/app/domains/default.json'), true);
