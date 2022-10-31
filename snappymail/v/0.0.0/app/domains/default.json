@@ -1,0 +1,18 @@
+{
+    "imapHost": "localhost",
+    "imapPort": 143,
+    "imapSecure": 0,
+    "imapShortLogin": false,
+    "useSieve": false,
+    "sieveHost": "localhost",
+    "sievePort": 4190,
+    "sieveSecure": 0,
+    "smtpHost": "localhost",
+    "smtpPort": 25,
+    "smtpSecure": 0,
+    "smtpShortLogin": false,
+    "smtpAuth": true,
+    "smtpSetSender": false,
+    "smtpPhpMail": false,
+    "whiteList": ""
+}

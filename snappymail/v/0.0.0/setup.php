@@ -114,9 +114,9 @@ if (defined('APP_VERSION'))
 	file_put_contents(APP_DATA_FOLDER_PATH.'INSTALLED', APP_VERSION);
 	file_put_contents(APP_DATA_FOLDER_PATH.'index.html', 'Forbidden');
 	file_put_contents(APP_DATA_FOLDER_PATH.'index.php', 'Forbidden');
-	if (!is_file(APP_DATA_FOLDER_PATH.'.htaccess') && is_file(APP_VERSION_ROOT_PATH.'app/.htaccess'))
+	if (!is_file(APP_DATA_FOLDER_PATH.'.htaccess') && is_file(__DIR__ . '/app/.htaccess'))
 	{
-		copy(APP_VERSION_ROOT_PATH.'app/.htaccess', APP_DATA_FOLDER_PATH.'.htaccess');
+		copy(__DIR__ . '/app/.htaccess', APP_DATA_FOLDER_PATH.'.htaccess');
 	}
 
 	if (!is_dir(APP_PRIVATE_DATA))
@@ -144,7 +144,7 @@ if (defined('APP_VERSION'))
 
 	if (!file_exists(APP_PRIVATE_DATA.'domains/disabled') && is_dir(APP_PRIVATE_DATA.'domains'))
 	{
-		$aFiles = glob(APP_VERSION_ROOT_PATH.'app/domains/*');
+		$aFiles = glob(__DIR__ . '/app/domains/*');
 		if ($aFiles) {
 			foreach ($aFiles as $sFile) {
 				if (is_file($sFile)) {
@@ -155,14 +155,17 @@ if (defined('APP_VERSION'))
 				}
 			}
 		}
-		/*
-		$sNewFile = APP_PRIVATE_DATA.'domains/'.gethostname().'.ini';
-		if (!file_exists($sNewFile)) {
-			\file_put_contents(
-				$sNewFile,
-				\str_replace('short_login = Off', 'short_login = On', \file_get_contents(APP_VERSION_ROOT_PATH.'app/domains/default.ini'))
-			);
+
+//		require __DIR__ . '/app/libraries/snappymail/idn.php';
+//		require __DIR__ . '/app/libraries/snappymail/intl/idn.php';
+//		$sName = \SnappyMail\IDN::toAscii(mb_strtolower(gethostname()));
+		$sName = mb_strtolower(gethostname());
+		$sFile = APP_PRIVATE_DATA.'domains/'.$sName.'.json';
+		if (!file_exists($sFile) && !file_exists(APP_PRIVATE_DATA.'domains/'.$sName.'.ini')) {
+			$config = json_decode(file_get_contents(__DIR__ . '/app/domains/default.json'), true);
+			$config['imapShortLogin'] = true;
+			$config['smtpShortLogin'] = true;
+			file_put_contents($sFile, json_encode($config, JSON_PRETTY_PRINT));
 		}
-		*/
 	}
 }

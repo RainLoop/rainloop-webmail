@@ -368,17 +368,17 @@ class Domain implements \JsonSerializable
 		if (\strlen($sName) && \strlen($aDomain['imapHost'])) {
 			$oDomain = new self($sName);
 
-			$oDomain->sIncHost = \MailSo\Base\Utils::IdnToAscii($aDomain['imapHost']);
+			$oDomain->sIncHost = \SnappyMail\IDN::toAscii($aDomain['imapHost']);
 			$oDomain->iIncPort = (int) $aDomain['imapPort'];
 			$oDomain->iIncSecure = (int) $aDomain['imapSecure'];
 			$oDomain->bIncShortLogin = !empty($aDomain['imapShortLogin']);
 
 			$oDomain->bUseSieve = !empty($aDomain['useSieve']);
-			$oDomain->sSieveHost = \MailSo\Base\Utils::IdnToAscii($aDomain['sieveHost']);
+			$oDomain->sSieveHost = \SnappyMail\IDN::toAscii($aDomain['sieveHost']);
 			$oDomain->iSievePort = (int) $aDomain['sievePort'];
 			$oDomain->iSieveSecure = (int) $aDomain['sieveSecure'];
 
-			$oDomain->sOutHost = \MailSo\Base\Utils::IdnToAscii($aDomain['smtpHost']);
+			$oDomain->sOutHost = \SnappyMail\IDN::toAscii($aDomain['smtpHost']);
 			$oDomain->iOutPort = (int) $aDomain['smtpPort'];
 			$oDomain->iOutSecure = (int) $aDomain['smtpSecure'];
 			$oDomain->bOutShortLogin = !empty($aDomain['smtpShortLogin']);
@@ -396,16 +396,16 @@ class Domain implements \JsonSerializable
 	{
 		$aResult = array(
 //			'@Object' => 'Object/Domain',
-			'name' => \MailSo\Base\Utils::IdnToUtf8($this->sName),
-			'imapHost' => \MailSo\Base\Utils::IdnToUtf8($this->sIncHost),
+			'name' => \SnappyMail\IDN::toUtf8($this->sName),
+			'imapHost' => \SnappyMail\IDN::toUtf8($this->sIncHost),
 			'imapPort' => $this->iIncPort,
 			'imapSecure' => $this->iIncSecure,
 			'imapShortLogin' => $this->bIncShortLogin,
 			'useSieve' => $this->bUseSieve,
-			'sieveHost' => \MailSo\Base\Utils::IdnToUtf8($this->sSieveHost),
+			'sieveHost' => \SnappyMail\IDN::toUtf8($this->sSieveHost),
 			'sievePort' => $this->iSievePort,
 			'sieveSecure' => $this->iSieveSecure,
-			'smtpHost' => \MailSo\Base\Utils::IdnToUtf8($this->sOutHost),
+			'smtpHost' => \SnappyMail\IDN::toUtf8($this->sOutHost),
 			'smtpPort' => $this->iOutPort,
 			'smtpSecure' => $this->iOutSecure,
 			'smtpShortLogin' => $this->bOutShortLogin,
