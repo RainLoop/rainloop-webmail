@@ -817,14 +817,14 @@ class ServiceActions
 		$sResult = '';
 		$oConfig = $this->oActions->Config();
 		$sKey = $oConfig->Get('labs', 'external_sso_key', '');
-		$sEmail = \trim($this->oHttp->GetRequest('Email', ''));
-		$sPassword = $this->oHttp->GetRequest('Password', '');
+		$sEmail = \trim($_POST['Email']);
+		$sPassword = $_POST['Password'];
 		if ($oConfig->Get('labs', 'allow_external_sso', false)
 		 && $sEmail && $sPassword
-		 && $sKey && $this->oHttp->GetRequest('SsoKey', '') == $sKey
+		 && $sKey && $_POST['SsoKey'] == $sKey
 		) {
 			$sResult = \RainLoop\Api::CreateUserSsoHash($sEmail, $sPassword);
-			if ('json' == \strtolower($this->oHttp->GetRequest('Output', 'Plain'))) {
+			if ('json' == \strtolower($_POST['Output'] ?? 'Plain')) {
 				\header('Content-Type: application/json; charset=utf-8');
 				$sResult = \json_encode(array(
 					'Action' => 'ExternalSso',
