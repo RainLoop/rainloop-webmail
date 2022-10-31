@@ -429,7 +429,7 @@ trait UserAuth
 		Utils::SetCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY, $sMessage);
 	}
 
-	protected function Logout(bool $bMain) : void
+	public function Logout(bool $bMain) : void
 	{
 		Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
 		$bMain && Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);

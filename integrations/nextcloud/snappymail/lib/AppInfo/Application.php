@@ -79,7 +79,9 @@ class Application extends App implements IBootstrap
 			];
 		});
 */
+
 		$userSession = \OC::$server->getUserSession();
+//		$userSession->listen('\OC\User', 'postRememberedLogin', function($loginName, $password) {
 		$userSession->listen('\OC\User', 'postLogin', function($user, $loginName, $password, $isTokenLogin) {
 			$config = \OC::$server->getConfig();
 			$sEmail = '';
@@ -91,6 +93,7 @@ class Application extends App implements IBootstrap
 				$sEmail = $config->getUserValue($user->getUID(), 'settings', 'email', '');
 			}
 			if ($sEmail) {
+				\OC::$server->getSession()['snappymail-email'] = $sEmail;
 				\OC::$server->getSession()['snappymail-password'] = SnappyMailHelper::encodePassword($password, \md5($sEmail));
 			}
 		});

@@ -106,9 +106,13 @@ class SnappyMailHelper
 						\RainLoop\Utils::SetCookie('smadmin', $sToken);
 					}
 				}
-			} else if (!$oActions->getMainAccountFromToken(false)) {
+			} else {
 				$aCredentials = SnappyMailHelper::getLoginCredentials();
-				if ($aCredentials[0] && $aCredentials[1]) {
+				if ($oActions->getMainAccountFromToken(false)) {
+					if (!$aCredentials[0] || !$aCredentials[1]) {
+						$oActions->Logout(true);
+					}
+				} else if ($aCredentials[0] && $aCredentials[1]) {
 					$oActions->Logger()->AddSecret($aCredentials[1]);
 					$oAccount = $oActions->LoginProcess($aCredentials[0], $aCredentials[1], false);
 					if ($oAccount) {
@@ -143,6 +147,10 @@ class SnappyMailHelper
 			$sEmail = $config->getUserValue($sUID, 'settings', 'email', '');
 			$sPassword = \OC::$server->getSession()['snappymail-password'];
 		}
+		if (\OC::$server->getSession()['snappymail-email'] != $sEmail) {
+			$sPassword = '';
+		}
+
 		// If the user has set credentials for SnappyMail in their personal
 		// settings, override everything before and use those instead.
 		$sCustomEmail = $config->getUserValue($sUID, 'snappymail', 'snappymail-email', '');
