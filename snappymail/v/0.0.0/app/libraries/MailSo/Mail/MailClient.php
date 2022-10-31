@@ -28,7 +28,7 @@ class MailClient
 	/**
 	 * @var \MailSo\Log\Logger
 	 */
-	private $oLogger;
+	private $oLogger = null;
 
 	/**
 	 * @var \MailSo\Imap\ImapClient
@@ -37,8 +37,6 @@ class MailClient
 
 	function __construct()
 	{
-		$this->oLogger = null;
-
 		$this->oImapClient = new \MailSo\Imap\ImapClient;
 		$this->oImapClient->SetTimeOuts(10, \MailSo\Config::$ImapTimeout);
 	}
@@ -46,31 +44,6 @@ class MailClient
 	public function ImapClient() : \MailSo\Imap\ImapClient
 	{
 		return $this->oImapClient;
-	}
-
-	/**
-	 * @throws \MailSo\RuntimeException
-	 * @throws \MailSo\Net\Exceptions\*
-	 */
-	public function Disconnect() : self
-	{
-		$this->oImapClient->Disconnect();
-		return $this;
-	}
-
-	public function IsConnected() : bool
-	{
-		return $this->oImapClient->IsConnected();
-	}
-
-	public function IsLoggined() : bool
-	{
-		return $this->oImapClient->IsLoggined();
-	}
-
-	public function Capabilities() : array
-	{
-		return $this->oImapClient->Capability();
 	}
 
 	private function getEnvelopeOrHeadersRequestString() : string
@@ -1016,16 +989,6 @@ class MailClient
 		return $oMessageCollection;
 	}
 
-	public function Quota(string $sRootName = '') : ?array
-	{
-		return $this->oImapClient->Quota($sRootName);
-	}
-
-	public function QuotaRoot(string $sFolderName = 'INBOX') : ?array
-	{
-		return $this->oImapClient->QuotaRoot($sFolderName);
-	}
-
 	public function FindMessageUidByMessageId(string $sFolderName, string $sMessageId) : ?int
 	{
 		if (!\strlen($sMessageId))
@@ -1297,38 +1260,26 @@ class MailClient
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	public function SetLogger(\MailSo\Log\Logger $oLogger) : self
+	public function SetLogger(\MailSo\Log\Logger $oLogger) : void
 	{
 		$this->oLogger = $oLogger;
-		$this->oImapClient->SetLogger($this->oLogger);
-
-		return $this;
+		$this->oImapClient->SetLogger($oLogger);
 	}
 
-	public function GetNamespace() : string
+	public function GetPersonalNamespace() : string
 	{
 		$oNamespace = $this->oImapClient->GetNamespace();
 		return $oNamespace ? $oNamespace->GetPersonalNamespace() : '';
 	}
 
+	public function __call(string $name, array $arguments) /*: mixed*/
+	{
+		return $this->oImapClient->{$name}(...$arguments);
+	}
+
 	/**
 	 * RFC 5464
 	 */
-
-	public function ServerGetMetadata(array $aEntries, array $aOptions = []) : array
-	{
-		return $this->oImapClient->ServerGetMetadata($aEntries, $aOptions);
-	}
-
-	public function FolderGetMetadata(string $sFolderName, array $aEntries, array $aOptions = []) : array
-	{
-		return $this->oImapClient->FolderGetMetadata($sFolderName, $aEntries, $aOptions);
-	}
-
-	public function FolderSetMetadata(string $sFolderName, array $aEntries) : void
-	{
-		$this->oImapClient->FolderSetMetadata($sFolderName, $aEntries);
-	}
 
 	public function FolderDeleteMetadata($sFolderName, array $aEntries) : void
 	{

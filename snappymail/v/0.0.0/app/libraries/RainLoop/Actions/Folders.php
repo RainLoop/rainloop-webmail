@@ -64,7 +64,7 @@ trait Folders
 
 		if ($oFolderCollection)
 		{
-			$sNamespace = $this->MailClient()->GetNamespace();
+			$sNamespace = $this->MailClient()->GetPersonalNamespace();
 
 			$this->Plugins()->RunHook('filter.folders-post', array($oAccount, $oFolderCollection));
 
@@ -186,7 +186,7 @@ trait Folders
 					}
 				}
 
-				$aCapabilities = \array_filter($this->MailClient()->Capabilities(), function($item){
+				$aCapabilities = \array_filter($this->MailClient()->Capability(), function($item){
 					return !\preg_match('/^(IMAP|AUTH|LOGIN|SASL)/', $item);
 				});
 				if (!$this->Config()->Get('imap', 'use_list_status', true)) {
