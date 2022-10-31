@@ -277,10 +277,7 @@ class ActionsAdmin extends Actions
 				$oImapClient->SetTimeOuts($iConnectionTimeout);
 
 				$iTime = \microtime(true);
-				$oSettings = new \MailSo\Net\ConnectSettings;
-				$oSettings->host = $oDomain->IncHost();
-				$oSettings->port = $oDomain->IncPort();
-				$oSettings->type = $oDomain->IncSecure();
+				$oSettings = \MailSo\Net\ConnectSettings::fromArray($oDomain->ImapSettings());
 				$oImapClient->Connect($oSettings);
 
 				$sUsername = $this->GetActionParam('username', '');
@@ -339,10 +336,7 @@ class ActionsAdmin extends Actions
 					$oSmtpClient->SetTimeOuts($iConnectionTimeout);
 
 					$iTime = \microtime(true);
-					$oSettings = new \MailSo\Net\ConnectSettings;
-					$oSettings->host = $oDomain->OutHost();
-					$oSettings->port = $oDomain->OutPort();
-					$oSettings->type = $oDomain->OutSecure();
+					$oSettings = \MailSo\Net\ConnectSettings::fromArray($oDomain->SmtpSettings());
 					$oSmtpClient->Connect($oSettings, \MailSo\Smtp\SmtpClient::EhloHelper());
 
 					$oSmtpClient->Disconnect();
@@ -373,10 +367,7 @@ class ActionsAdmin extends Actions
 					$oSieveClient->SetTimeOuts($iConnectionTimeout);
 
 					$iTime = \microtime(true);
-					$oSettings = new \MailSo\Net\ConnectSettings;
-					$oSettings->host = $oDomain->SieveHost();
-					$oSettings->port = $oDomain->SievePort();
-					$oSettings->type = $oDomain->SieveSecure();
+					$oSettings = \MailSo\Net\ConnectSettings::fromArray($oDomain->SieveSettings());
 					$oSieveClient->Connect($oSettings);
 
 					$oSieveClient->Disconnect();

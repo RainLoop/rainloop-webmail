@@ -42,36 +42,38 @@ class DefaultDomain implements DomainInterface
 
 	private function getWildcardDomainsLine() : string
 	{
-		if ($this->oCacher)
-		{
+		if ($this->oCacher) {
 			$sResult = $this->oCacher->Get(static::wildcardDomainsCacheKey());
-			if (\strlen($sResult))
-			{
+			if (\strlen($sResult)) {
 				return $sResult;
 			}
 		}
 
-		$sResult = '';
 		$aNames = array();
 
+//		$aList = \glob($this->sDomainPath.'/*.{ini,json}', GLOB_BRACE);
+		$aList = \glob($this->sDomainPath.'/*.json');
+		foreach ($aList as $sFile) {
+			$sName = \substr(\basename($sFile), 0, -5);
+			if ('default' === $sName || false !== \strpos($sName, '_wildcard_')) {
+				$aNames[] = static::codeFileName($sName, true);
+			}
+		}
 		$aList = \glob($this->sDomainPath.'/*.ini');
-		foreach ($aList as $sFile)
-		{
+		foreach ($aList as $sFile) {
 			$sName = \substr(\basename($sFile), 0, -4);
-			if ('default' === $sName || false !== \strpos($sName, '_wildcard_'))
-			{
+			if ('default' === $sName || false !== \strpos($sName, '_wildcard_')) {
 				$aNames[] = static::codeFileName($sName, true);
 			}
 		}
 
-		if (\count($aNames))
-		{
+		$sResult = '';
+		if ($aNames) {
 			\rsort($aNames, SORT_STRING);
-			$sResult = \implode(' ', $aNames);
+			$sResult = \implode(' ', \array_unique($aNames));
 		}
 
-		if ($this->oCacher)
-		{
+		if ($this->oCacher) {
 			$this->oCacher->Set(static::wildcardDomainsCacheKey(), $sResult);
 		}
 
@@ -80,62 +82,48 @@ class DefaultDomain implements DomainInterface
 
 	public function Load(string $sName, bool $bFindWithWildCard = false, bool $bCheckDisabled = true, bool $bCheckAliases = true) : ?\RainLoop\Model\Domain
 	{
-		$mResult = null;
-
-		$aDisabled = [];
-		$sFoundValue = '';
+		if ($bCheckDisabled) {
+			$aDisabled = [];
+			if (\file_exists($this->sDomainPath.'/disabled')) {
+				$aDisabled = \explode(',', \file_get_contents($this->sDomainPath.'/disabled'));
+				if ($aDisabled && \in_array(\MailSo\Base\Utils::IdnToAscii($sName, true), $aDisabled)) {
+					return null;
+				}
+			}
+		}
 
 		$sRealFileName = static::codeFileName($sName);
 
-		if (\file_exists($this->sDomainPath.'/disabled')) {
-			$aDisabled = \explode(',', \file_get_contents($this->sDomainPath.'/disabled'));
+		if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.json')) {
+			$aDomain = \json_decode(\file_get_contents($this->sDomainPath.'/'.$sRealFileName.'.json'), true) ?: array();
+			return \RainLoop\Model\Domain::fromArray($sName, $aDomain);
 		}
-		$bCheckDisabled = $bCheckDisabled && 0 < \count($aDisabled);
-
-		if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini') &&
-			(!$bCheckDisabled || !\in_array(\MailSo\Base\Utils::IdnToAscii($sName, true), $aDisabled)))
-		{
+		if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini')) {
 			$aDomain = \parse_ini_file($this->sDomainPath.'/'.$sRealFileName.'.ini') ?: array();
-//			if ($bCheckAliases && !empty($aDomain['alias']))
-//			{
-//				$oDomain = $this->Load($aDomain['alias'], false, false, false);
-//				if ($oDomain && $oDomain instanceof \RainLoop\Model\Domain)
-//				{
-//					$oDomain->SetAliasName($sName);
-//				}
-//
-//				return $oDomain;
-//			}
-			$mResult = \RainLoop\Model\Domain::NewInstanceFromDomainConfigArray($sName, $aDomain);
+			return \RainLoop\Model\Domain::fromIniArray($sName, $aDomain);
 		}
-		else if ($bCheckAliases && \file_exists($this->sDomainPath.'/'.$sRealFileName.'.alias') &&
-			(!$bCheckDisabled || !\in_array(\MailSo\Base\Utils::IdnToAscii($sName, true), $aDisabled)))
-		{
-			$sAlias = \trim(\file_get_contents($this->sDomainPath.'/'.$sRealFileName.'.alias'));
-			if (!empty($sAlias))
-			{
-				$oDomain = $this->Load($sAlias, false, false, false);
-				if ($oDomain && $oDomain instanceof \RainLoop\Model\Domain)
-				{
-					$oDomain->SetAliasName($sName);
-				}
 
+		if ($bCheckAliases && \file_exists($this->sDomainPath.'/'.$sRealFileName.'.alias')) {
+			$sAlias = \trim(\file_get_contents($this->sDomainPath.'/'.$sRealFileName.'.alias'));
+			if (!empty($sAlias)) {
+				$oDomain = $this->Load($sAlias, false, false, false);
+				$oDomain && $oDomain->SetAliasName($sName);
 				return $oDomain;
 			}
 		}
-		else if ($bFindWithWildCard)
-		{
+
+		if ($bFindWithWildCard) {
 			$sNames = $this->getWildcardDomainsLine();
+			$sFoundValue = '';
 			if (\strlen($sNames)
 			 && \RainLoop\Plugins\Helper::ValidateWildcardValues(\MailSo\Base\Utils::IdnToUtf8($sName, true), $sNames, $sFoundValue)
 			 && \strlen($sFoundValue)
-			 && (!$bCheckDisabled || !\in_array($sFoundValue, $aDisabled))
 			) {
-				$mResult = $this->Load($sFoundValue, false);
+				return $this->Load($sFoundValue, false);
 			}
 		}
 
-		return $mResult;
+		return null;
 	}
 
 	public function Save(\RainLoop\Model\Domain $oDomain) : bool
@@ -147,7 +135,8 @@ class DefaultDomain implements DomainInterface
 			$this->oCacher->Delete(static::wildcardDomainsCacheKey());
 		}
 
-		\RainLoop\Utils::saveFile($this->sDomainPath.'/'.$sRealFileName.'.ini', $oDomain->ToIniString());
+//		\RainLoop\Utils::saveFile($this->sDomainPath.'/'.$sRealFileName.'.ini', $oDomain->ToIniString());
+		\RainLoop\Utils::saveFile($this->sDomainPath.'/'.$sRealFileName.'.json', \json_encode($oDomain, \JSON_PRETTY_PRINT));
 
 		return true;
 	}
@@ -204,6 +193,10 @@ class DefaultDomain implements DomainInterface
 
 		if (\strlen($sName))
 		{
+			if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.json'))
+			{
+				$bResult = \unlink($this->sDomainPath.'/'.$sRealFileName.'.json');
+			}
 			if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini'))
 			{
 				$bResult = \unlink($this->sDomainPath.'/'.$sRealFileName.'.ini');
@@ -245,12 +238,12 @@ class DefaultDomain implements DomainInterface
 		$aWildCards = array();
 		$aAliases = array();
 
-//		$aList = \glob($this->sDomainPath.'/*.{ini,alias}', GLOB_BRACE);
+//		$aList = \glob($this->sDomainPath.'/*.{ini,json,alias}', GLOB_BRACE);
 		$aList = \array_diff(\scandir($this->sDomainPath), array('.', '..'));
 		foreach ($aList as $sFile) {
 			$bAlias = '.alias' === \substr($sFile, -6);
-			if ($bAlias || '.ini' === \substr($sFile, -4)) {
-				$sName = static::codeFileName(\preg_replace('/\.(ini|alias)$/', '', $sFile), true);
+			if ($bAlias || '.json' === \substr($sFile, -5) || '.ini' === \substr($sFile, -4)) {
+				$sName = static::codeFileName(\preg_replace('/\.(ini|json|alias)$/', '', $sFile), true);
 				if ($bAlias) {
 					if ($bIncludeAliases) {
 						$aAliases[$sName] = array(

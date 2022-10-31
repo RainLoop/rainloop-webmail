@@ -182,8 +182,7 @@ trait User
 						if (!$bError) {
 							$mResult = array(
 								'FileHash' => Utils::EncodeKeyValuesQ(array(
-									'V' => APP_VERSION,
-									'Account' => $oAccount ? \md5($oAccount->Hash()) : '',
+									'Account' => $oAccount ? $oAccount->Hash() : '',
 									'FileName' => 'attachments.zip',
 									'MimeType' => 'application/zip',
 									'FileHash' => $sZipHash

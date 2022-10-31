@@ -62,4 +62,19 @@ class ConnectSettings
 //		$this->ssl['capath'] = (string) $oConfig->Get('ssl', 'capath', '');
 	}
 
+	public static function fromArray(array $aSettings) : self
+	{
+		$object = new self;
+		$object->host = $aSettings['Host'];
+		$object->port = $aSettings['Port'];
+		$object->type = $aSettings['Secure'];
+		$object->ssl['verify_peer'] = !!$aSettings['VerifySsl'];
+		$object->ssl['verify_peer_name'] = !!$aSettings['VerifySsl'];
+		$object->ssl['allow_self_signed'] = !!$aSettings['AllowSelfSigned'];
+		if (!empty($aSettings['ClientCert'])) {
+			$object->ssl['local_cert'] = $aSettings['ClientCert'];
+		}
+		return $object;
+	}
+
 }

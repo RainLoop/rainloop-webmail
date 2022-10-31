@@ -180,7 +180,6 @@ trait Response
 			$sSubject = $mResult['subject'];
 			$mResult['Hash'] = \md5($mResult['Folder'].$mResult['Uid']);
 			$mResult['RequestHash'] = Utils::EncodeKeyValuesQ(array(
-				'V' => APP_VERSION,
 				'Account' => $oAccount->Hash(),
 				'Folder' => $mResult['Folder'],
 				'Uid' => $mResult['Uid'],
@@ -237,7 +236,6 @@ trait Response
 			$mResult = $mResponse->jsonSerialize();
 			$mResult['IsThumbnail'] = $this->GetCapa(Capa::ATTACHMENT_THUMBNAILS) && $this->isFileHasThumbnail($mResult['FileName']);
 			$mResult['Download'] = Utils::EncodeKeyValuesQ(array(
-				'V' => APP_VERSION,
 				'Account' => $this->getAccountFromToken()->Hash(),
 				'Folder' => $mResult['Folder'],
 				'Uid' => $mResult['Uid'],

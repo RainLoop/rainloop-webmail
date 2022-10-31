@@ -6,8 +6,6 @@ use MailSo\Net\Enumerations\ConnectionSecurityType;
 
 class Domain implements \JsonSerializable
 {
-	const DEFAULT_FORWARDED_FLAG = '$Forwarded';
-
 	/**
 	 * @var string
 	 */
@@ -106,7 +104,7 @@ class Domain implements \JsonSerializable
 	/**
 	 * See ToIniString() for valid values
 	 */
-	public static function NewInstanceFromDomainConfigArray(string $sName, array $aDomain) : ?self
+	public static function fromIniArray(string $sName, array $aDomain) : ?self
 	{
 		$oDomain = null;
 
@@ -220,6 +218,9 @@ class Domain implements \JsonSerializable
 		return $sType;
 	}
 
+	/**
+	 * deprecated
+	 */
 	public function SetConfig(
 		string $sIncHost, int $iIncPort, int $iIncSecure, bool $bIncShortLogin,
 		bool $bUseSieve, string $sSieveHost, int $iSievePort, int $iSieveSecure,
@@ -265,11 +266,6 @@ class Domain implements \JsonSerializable
 		return $this->iIncPort;
 	}
 
-	public function IncSecure() : int
-	{
-		return $this->iIncSecure;
-	}
-
 	public function IncShortLogin() : bool
 	{
 		return $this->bIncShortLogin;
@@ -278,21 +274,6 @@ class Domain implements \JsonSerializable
 	public function UseSieve() : bool
 	{
 		return $this->bUseSieve;
-	}
-
-	public function SieveHost() : string
-	{
-		return $this->sSieveHost;
-	}
-
-	public function SievePort() : int
-	{
-		return $this->iSievePort;
-	}
-
-	public function SieveSecure() : int
-	{
-		return $this->iSieveSecure;
 	}
 
 	public function OutHost() : string
@@ -305,19 +286,9 @@ class Domain implements \JsonSerializable
 		return $this->iOutPort;
 	}
 
-	public function OutSecure() : int
-	{
-		return $this->iOutSecure;
-	}
-
 	public function OutShortLogin() : bool
 	{
 		return $this->bOutShortLogin;
-	}
-
-	public function OutAuth() : bool
-	{
-		return $this->bOutAuth;
 	}
 
 	public function OutSetSender() : bool
@@ -330,21 +301,9 @@ class Domain implements \JsonSerializable
 		return $this->bOutUsePhpMail;
 	}
 
-	public function WhiteList() : string
-	{
-		return $this->sWhiteList;
-	}
-
-	public function AliasName() : string
-	{
-		return $this->sAliasName;
-	}
-
-	public function SetAliasName(string $sAliasName) : self
+	public function SetAliasName(string $sAliasName) : void
 	{
 		$this->sAliasName = $sAliasName;
-
-		return $this;
 	}
 
 	public function ValidateWhiteList(string $sEmail, string $sLogin = '') : bool
@@ -400,10 +359,42 @@ class Domain implements \JsonSerializable
 		);
 	}
 
+	/**
+	 * See jsonSerialize() for valid values
+	 */
+	public static function fromArray(string $sName, array $aDomain) : ?self
+	{
+		$oDomain = null;
+		if (\strlen($sName) && \strlen($aDomain['imapHost'])) {
+			$oDomain = new self($sName);
+
+			$oDomain->sIncHost = \MailSo\Base\Utils::IdnToAscii($aDomain['imapHost']);
+			$oDomain->iIncPort = (int) $aDomain['imapPort'];
+			$oDomain->iIncSecure = (int) $aDomain['imapSecure'];
+			$oDomain->bIncShortLogin = !empty($aDomain['imapShortLogin']);
+
+			$oDomain->bUseSieve = !empty($aDomain['useSieve']);
+			$oDomain->sSieveHost = \MailSo\Base\Utils::IdnToAscii($aDomain['sieveHost']);
+			$oDomain->iSievePort = (int) $aDomain['sievePort'];
+			$oDomain->iSieveSecure = (int) $aDomain['sieveSecure'];
+
+			$oDomain->sOutHost = \MailSo\Base\Utils::IdnToAscii($aDomain['smtpHost']);
+			$oDomain->iOutPort = (int) $aDomain['smtpPort'];
+			$oDomain->iOutSecure = (int) $aDomain['smtpSecure'];
+			$oDomain->bOutShortLogin = !empty($aDomain['smtpShortLogin']);
+			$oDomain->bOutAuth = !empty($aDomain['smtpAuth']);
+			$oDomain->bOutSetSender = !empty($aDomain['smtpSetSender']);
+			$oDomain->bOutUsePhpMail = !empty($aDomain['smtpPhpMail']);
+
+			$oDomain->sWhiteList = (string) $aDomain['whiteList'];
+		}
+		return $oDomain;
+	}
+
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
-		return array(
+		$aResult = array(
 //			'@Object' => 'Object/Domain',
 			'name' => \MailSo\Base\Utils::IdnToUtf8($this->sName),
 			'imapHost' => \MailSo\Base\Utils::IdnToUtf8($this->sIncHost),
@@ -421,8 +412,11 @@ class Domain implements \JsonSerializable
 			'smtpAuth' => $this->bOutAuth,
 			'smtpSetSender' => $this->bOutSetSender,
 			'smtpPhpMail' => $this->bOutUsePhpMail,
-			'whiteList' => $this->sWhiteList,
-			'aliasName' => $this->sAliasName
+			'whiteList' => $this->sWhiteList
 		);
+		if ($this->sAliasName) {
+			$aResult['aliasName'] = $this->sAliasName;
+		}
+		return $aResult;
 	}
 }

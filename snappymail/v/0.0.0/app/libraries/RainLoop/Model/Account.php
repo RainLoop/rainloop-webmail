@@ -99,9 +99,9 @@ abstract class Account implements \JsonSerializable
 	{
 		return \sha1(\implode(APP_SALT, [
 			$this->sEmail,
-			$this->Domain()->IncHost(),
-			$this->Domain()->IncPort(),
-			$this->sPassword
+			APP_VERSION
+//			\json_encode($this->Domain()),
+//			$this->sPassword
 		]));
 	}
 
@@ -213,16 +213,7 @@ abstract class Account implements \JsonSerializable
 
 		$oPlugins->RunHook('imap.before-connect', array($this, $oImapClient, &$aCredentials));
 		if ($aCredentials['UseConnect']) {
-			$oSettings = new \MailSo\Net\ConnectSettings;
-			$oSettings->host = $aCredentials['Host'];
-			$oSettings->port = $aCredentials['Port'];
-			$oSettings->type = $aCredentials['Secure'];
-			$oSettings->ssl['verify_peer'] = !!$aCredentials['VerifySsl'];
-			$oSettings->ssl['verify_peer_name'] = !!$aCredentials['VerifySsl'];
-			$oSettings->ssl['allow_self_signed'] = !!$aCredentials['AllowSelfSigned'];
-			if ($aCredentials['ClientCert']) {
-				$oSettings->ssl['local_cert'] = $aCredentials['ClientCert'];
-			}
+			$oSettings = \MailSo\Net\ConnectSettings::fromArray($aCredentials);
 			$oImapClient->Connect($oSettings);
 		}
 		$oPlugins->RunHook('imap.after-connect', array($this, $oImapClient, $aCredentials));
@@ -248,13 +239,7 @@ abstract class Account implements \JsonSerializable
 		$aCredentials['UseAuth'] = $aCredentials['UseAuth'] && !$aCredentials['UsePhpMail'];
 
 		if ($aCredentials['UseConnect'] && !$aCredentials['UsePhpMail']) {
-			$oSettings = new \MailSo\Net\ConnectSettings;
-			$oSettings->host = $aCredentials['Host'];
-			$oSettings->port = $aCredentials['Port'];
-			$oSettings->type = $aCredentials['Secure'];
-			$oSettings->ssl['verify_peer'] = !!$aCredentials['VerifySsl'];
-			$oSettings->ssl['verify_peer_name'] = !!$aCredentials['VerifySsl'];
-			$oSettings->ssl['allow_self_signed'] = !!$aCredentials['AllowSelfSigned'];
+			$oSettings = \MailSo\Net\ConnectSettings::fromArray($aCredentials);
 			$oSmtpClient->Connect($oSettings, $aCredentials['Ehlo']);
 		}
 		$oPlugins->RunHook('smtp.after-connect', array($this, $oSmtpClient, $aCredentials));
@@ -276,13 +261,7 @@ abstract class Account implements \JsonSerializable
 
 		$oPlugins->RunHook('sieve.before-connect', array($this, $oSieveClient, &$aCredentials));
 		if ($aCredentials['UseConnect']) {
-			$oSettings = new \MailSo\Net\ConnectSettings;
-			$oSettings->host = $aCredentials['Host'];
-			$oSettings->port = $aCredentials['Port'];
-			$oSettings->type = $aCredentials['Secure'];
-			$oSettings->ssl['verify_peer'] = !!$aCredentials['VerifySsl'];
-			$oSettings->ssl['verify_peer_name'] = !!$aCredentials['VerifySsl'];
-			$oSettings->ssl['allow_self_signed'] = !!$aCredentials['AllowSelfSigned'];
+			$oSettings = \MailSo\Net\ConnectSettings::fromArray($aCredentials);
 			$oSieveClient->Connect($oSettings);
 		}
 		$oPlugins->RunHook('sieve.after-connect', array($this, $oSieveClient, $aCredentials));
