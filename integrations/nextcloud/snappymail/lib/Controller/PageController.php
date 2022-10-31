@@ -74,7 +74,13 @@ class PageController extends Controller
 	 */
 	private static function index_embed()
 	{
-		if (!empty($_SERVER['QUERY_STRING'])) {
+/*
+		$oConfig = \RainLoop\Api::Config();
+		$bAdmin = empty($_SERVER['QUERY_STRING']) || $oConfig->Get('security', 'admin_panel_key', 'admin') != $_SERVER['QUERY_STRING'];
+*/
+		$bAdmin = !empty($_SERVER['QUERY_STRING']) && 'admin' == $_SERVER['QUERY_STRING'];
+
+		if (!$bAdmin && !empty($_SERVER['QUERY_STRING'])) {
 			SnappyMailHelper::startApp(true);
 		}
 
@@ -84,7 +90,7 @@ class PageController extends Controller
 
 		SnappyMailHelper::startApp();
 		$oConfig = \RainLoop\Api::Config();
-		$oActions = \RainLoop\Api::Actions();
+		$oActions = $bAdmin ? new \RainLoop\ActionsAdmin() : \RainLoop\Api::Actions();
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
 		$oServiceActions = new \RainLoop\ServiceActions($oHttp, $oActions);
 		$sAppJsMin = $oConfig->Get('labs', 'use_app_debug_js', false) ? '' : '.min';
@@ -96,23 +102,24 @@ class PageController extends Controller
 //		\RainLoop\Service::setCSP($sScriptNonce);
 
 		$params = [
+			'Admin' => $bAdmin ? 1 : 0,
 			'LoadingDescriptionEsc' => \htmlspecialchars($oConfig->Get('webmail', 'loading_description', 'SnappyMail'), ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
-			'BaseTemplates' => \RainLoop\Utils::ClearHtmlOutput($oServiceActions->compileTemplates(false)),
+			'BaseTemplates' => \RainLoop\Utils::ClearHtmlOutput($oServiceActions->compileTemplates($bAdmin)),
 			'BaseAppBootScript' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/js'.($sAppJsMin ? '/min' : '').'/boot'.$sAppJsMin.'.js'),
 			'BaseAppBootScriptNonce' => $sScriptNonce,
-			'BaseLanguage' => $oActions->compileLanguage($sLanguage, false),
+			'BaseLanguage' => $oActions->compileLanguage($sLanguage, $bAdmin),
 			'BaseAppBootCss' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.$sAppCssMin.'.css'),
-			'BaseAppThemeCssLink' => $oActions->ThemeLink(false),
+			'BaseAppThemeCssLink' => $oActions->ThemeLink($bAdmin),
 			'BaseAppThemeCss' => \preg_replace(
 				'/\\s*([:;{},]+)\\s*/s',
 				'$1',
-				$oActions->compileCss($oActions->GetTheme(false), false)
+				$oActions->compileCss($oActions->GetTheme($bAdmin), $bAdmin)
 			)
 		];
 
 		// Nextcloud html encodes, so addHeader('style') is not possible
 //		\OCP\Util::addHeader('style', ['id'=>'app-boot-css'], \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.$sAppCssMin.'.css'));
-		\OCP\Util::addHeader('link', ['type'=>'text/css','rel'=>'stylesheet','href'=>\RainLoop\Utils::WebStaticPath('css/app'.$sAppCssMin.'.css')], '');
+		\OCP\Util::addHeader('link', ['type'=>'text/css','rel'=>'stylesheet','href'=>\RainLoop\Utils::WebStaticPath('css/'.($bAdmin?'admin':'app').$sAppCssMin.'.css')], '');
 //		\OCP\Util::addHeader('style', ['id'=>'app-theme-style','data-href'=>$params['BaseAppThemeCssLink']], $params['BaseAppThemeCss']);
 
 		$response = new TemplateResponse('snappymail', 'index_embed', $params);

@@ -1,6 +1,6 @@
 <style id="app-boot-css"><?php echo $_['BaseAppBootCss']; ?></style>
 <style id="app-theme-style" data-href="<?php echo $_['BaseAppThemeCssLink']; ?>"><?php echo $_['BaseAppThemeCss']; ?></style>
-<div id="rl-app" data-admin="0" spellcheck="false">
+<div id="rl-app" data-admin="<?php echo $_['Admin']; ?>" spellcheck="false">
 	<div id="rl-loading">
 		<div id="rl-loading-desc"><?php echo $_['LoadingDescriptionEsc']; ?></div>
 		<i class="icon-spinner"></i>

@@ -6,7 +6,7 @@
 			<br />
 			<?php if ($_['snappymail-admin-panel-link']) { ?>
 			<p>
-				<a href="<?php echo $_['snappymail-admin-panel-link'] ?>" target="_blank" style="text-decoration: underline">
+				<a href="<?php echo $_['snappymail-admin-panel-link'] ?>" style="text-decoration: underline">
 					<?php echo($l->t('Go to SnappyMail Webmail admin panel')); ?>
 				</a>
 			<?php if ($_['snappymail-admin-password']) { ?>

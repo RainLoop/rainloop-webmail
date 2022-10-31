@@ -123,6 +123,7 @@
 							if (VEVENT) {
 								VEVENT.rawText = text;
 								VEVENT.isCancelled = () => VEVENT.STATUS?.includes('CANCELLED');
+								VEVENT.isConfirmed = () => VEVENT.STATUS?.includes('CONFIRMED');
 								VEVENT.shouldReply = () => VEVENT.METHOD?.includes('REPLY');
 								console.dir({
 									isCancelled: VEVENT.isCancelled(),
@@ -138,6 +139,7 @@
 	});
 
 	let template = document.getElementById('MailMessageView');
+	let cfg = rl.settings.get('Nextcloud');
 
 	const attachmentsControls = template.content.querySelector('.attachmentsControls');
 	if (attachmentsControls) {
@@ -149,14 +151,29 @@
 		</span>`));
 
 		// https://github.com/nextcloud/calendar/issues/4684
-		let cfg = rl.settings.get('Nextcloud');
 		if (cfg.CalDAV) {
 			attachmentsControls.append(Element.fromHTML(`<span data-bind="visible: nextcloudICS" data-icon="📅">
 				<span class="g-ui-link" data-bind="click: nextcloudSaveICS" data-i18n="NEXTCLOUD/SAVE_ICS"></span>
 			</span>`));
 		}
 	}
-
+/*
+	// https://github.com/the-djmaze/snappymail/issues/592
+	if (cfg.CalDAV) {
+		const attachmentsPlace = template.content.querySelector('.attachmentsPlace');
+		attachmentsPlace.after(Element.fromHTML(`
+		<table data-bind="if: nextcloudICS, visible: nextcloudICS"><tbody style="white-space:pre">
+			<tr><td>Summary</td><td data-icon="📅" data-bind="text: nextcloudICS().SUMMARY"></td></tr>
+			<tr><td>Organizer</td><td data-bind="text: nextcloudICS().ORGANIZER"></td></tr>
+			<tr><td>Start</td><td data-bind="text: nextcloudICS().DTSTART"></td></tr>
+			<tr><td>End</td><td data-bind="text: nextcloudICS().DTEND"></td></tr>
+			<tr><td>Transparency</td><td data-bind="text: nextcloudICS().TRANSP"></td></tr>
+			<tr data-bind="foreach: nextcloudICS().ATTENDEE">
+				<td></td><td data-bind="text: $data.replace(/;/g,';\\n')"></td>
+			</tr>
+		</tbody></table>`));
+	}
+*/
 	const msgMenu = template.content.querySelector('#more-view-dropdown-id + menu');
 	if (msgMenu) {
 		msgMenu.append(Element.fromHTML(`<li role="presentation">

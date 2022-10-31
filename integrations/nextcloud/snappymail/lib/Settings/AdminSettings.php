@@ -29,7 +29,9 @@ class AdminSettings implements ISettings
 		}
 		$uid = \OC::$server->getUserSession()->getUser()->getUID();
 		if (\OC_User::isAdminUser($uid)) {
-			$parameters['snappymail-admin-panel-link'] = SnappyMailHelper::getAppUrl().'?admin';
+//			$parameters['snappymail-admin-panel-link'] = SnappyMailHelper::getAppUrl().'?admin';
+			$parameters['snappymail-admin-panel-link'] =
+				\OC::$server->getURLGenerator()->linkToRoute('snappymail.page.index').'?admin';
 		}
 
 		\OCA\SnappyMail\Util\SnappyMailHelper::loadApp();

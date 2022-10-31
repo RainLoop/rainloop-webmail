@@ -57,26 +57,28 @@ class SnappyMailHelper
 		) {
 			$aDomains = \array_unique([
 				'nextcloud',
-				\preg_replace('/:\d+/$','',$_SERVER['HTTP_HOST']),
+				\preg_replace('/:\d+$/','',$_SERVER['HTTP_HOST']),
 				$_SERVER['SERVER_NAME'],
 				\gethostname()
 			]);
 			foreach ($aDomains as $i => $sDomain) {
-				$oProvider = \RainLoop\Api::Actions()->DomainProvider();
-				$oDomain = $oProvider->Load($sDomain);
-				if (!($oDomain instanceof \RainLoop\Model\Domain)) {
-					$oDomain = new \RainLoop\Model\Domain($sDomain);
-					$bShortLogin = !$i;
-					$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::NONE;
-					$oDomain->SetConfig(
-						'localhost', 143, $iSecurityType, $bShortLogin,
-						true, 'localhost', 4190, $iSecurityType,
-						'localhost', 25, $iSecurityType, $bShortLogin, true, false, false,
-						'');
-					$oProvider->Save($oDomain);
-					if (!$oConfig->Get('login', 'default_domain', '')) {
-						$oConfig->Set('login', 'default_domain', 'nextcloud');
-						$bSave = true;
+				if ($sDomain) {
+					$oProvider = \RainLoop\Api::Actions()->DomainProvider();
+					$oDomain = $oProvider->Load($sDomain);
+					if (!($oDomain instanceof \RainLoop\Model\Domain)) {
+						$oDomain = new \RainLoop\Model\Domain($sDomain);
+						$bShortLogin = !$i;
+						$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::NONE;
+						$oDomain->SetConfig(
+							'localhost', 143, $iSecurityType, $bShortLogin,
+							true, 'localhost', 4190, $iSecurityType,
+							'localhost', 25, $iSecurityType, $bShortLogin, true, false, false,
+							'');
+						$oProvider->Save($oDomain);
+						if (!$oConfig->Get('login', 'default_domain', '')) {
+							$oConfig->Set('login', 'default_domain', 'nextcloud');
+							$bSave = true;
+						}
 					}
 				}
 			}
@@ -93,8 +95,10 @@ class SnappyMailHelper
 			$oActions = \RainLoop\Api::Actions();
 			$oConfig = \RainLoop\Api::Config();
 			if (isset($_GET[$oConfig->Get('security', 'admin_panel_key', 'admin')])) {
-/*				// TODO: check Nextcloud group if allowed
-				if ($oConfig->Get('security', 'allow_admin_panel', true) && !$oActions->IsAdminLoggined(false)) {
+				if ($oConfig->Get('security', 'allow_admin_panel', true)
+				 && \OC_User::isAdminUser(\OC::$server->getUserSession()->getUser()->getUID())
+				 && !$oActions->IsAdminLoggined(false)
+				) {
 					$sRand = \MailSo\Base\Utils::Sha1Rand();
 					if ($oActions->Cacher(null, true)->Set(\RainLoop\KeyPathHelper::SessionAdminKey($sRand), \time())) {
 						$sToken = \RainLoop\Utils::EncodeKeyValuesQ(array('token', $sRand));
@@ -102,7 +106,6 @@ class SnappyMailHelper
 						\RainLoop\Utils::SetCookie('smadmin', $sToken);
 					}
 				}
-*/
 			} else if (!$oActions->getMainAccountFromToken(false)) {
 				$aCredentials = SnappyMailHelper::getLoginCredentials();
 				if ($aCredentials[0] && $aCredentials[1]) {

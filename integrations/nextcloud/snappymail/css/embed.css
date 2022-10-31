@@ -1,6 +1,9 @@
 /*
 This stylesheet is used when SnappyMail runs in embed mode.
 */
+#content.app-snappymail {
+	max-height: 100%;
+}
 #content #rl-app {
 	position: relative;
 	min-width: 100%;
@@ -28,13 +31,18 @@ This stylesheet is used when SnappyMail runs in embed mode.
 #content[class*="app-"] #rl-app textarea,
 #content[class*="app-"] #rl-app input,
 #content[class*="app-"] #rl-app .input-block-level,
-#content[class*="app-"] #rl-app .icon-spinner
+#content[class*="app-"] #rl-app .icon-spinner,
+#content[class*="app-"] #rl-app #V-AdminPane #rl-settings-subscreen
 {
 	box-sizing: border-box;
 }
 .squire-wysiwyg {
 	min-width: 100%;
 	min-height: 100%;
+}
+
+#V-AdminPane .btn-logout {
+	display: none;
 }
 
 #rl-app select,

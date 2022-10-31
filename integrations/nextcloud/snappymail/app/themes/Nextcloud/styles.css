@@ -94,14 +94,14 @@
     background-image: linear-gradient(to bottom, #f4f4f4, #dfdfdf) !important;
     background-repeat: repeat-x !important;
 }
-#V-AdminPane > .b-toolbar,
+#V-AdminPane > .b-toolbar {
+	color: var(--main-color);
+	text-shadow: none;
+}
 #V-PopupsCompose header {
 	background-color: #0082c9;
 	background-image: linear-gradient(40deg, #0082c9 0%, #30b6ff 100%);
 	color: #fff;
-}
-#V-AdminPane > .b-toolbar h4::before {
-	content: 'Nextcloud: ';
 }
 
 .messageList, .messageView {
