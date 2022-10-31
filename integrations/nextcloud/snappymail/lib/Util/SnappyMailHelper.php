@@ -13,7 +13,7 @@ class SnappyMailHelper
 
 		// Nextcloud the default spl_autoload_register() not working
 		\spl_autoload_register(function($sClassName){
-			$file = RAINLOOP_APP_LIBRARIES_PATH . \strtolower(\strtr($sClassName, '\\', DIRECTORY_SEPARATOR)) . '.php';
+			$file = SNAPPYMAIL_LIBRARIES_PATH . \strtolower(\strtr($sClassName, '\\', DIRECTORY_SEPARATOR)) . '.php';
 			if (\is_file($file)) {
 				include_once $file;
 			}
