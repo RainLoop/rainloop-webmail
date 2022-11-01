@@ -1171,11 +1171,9 @@ class Actions
 	 */
 	protected function initMailClientConnection(): ?Model\Account
 	{
-		$oAccount = null;
+		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->MailClient()->IsLoggined()) {
-			$oAccount = $this->getAccountFromToken();
-
 			try {
 				$oAccount->ImapConnectAndLoginHelper($this->oPlugins, $this->MailClient(), $this->oConfig);
 			} catch (\MailSo\Net\Exceptions\ConnectionException $oException) {
