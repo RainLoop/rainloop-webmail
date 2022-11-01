@@ -132,7 +132,8 @@ export const
 		}
 
 		async decrypt(message) {
-			const armoredText = message.plain(),
+			const sender = message.from[0].email,
+				armoredText = message.plain(),
 				emails = [...message.from,...message.to,...message.cc].validUnique();
 			if (!this.isEncrypted(armoredText)) {
 				throw Error('Not armored text');
@@ -147,8 +148,8 @@ export const
 				return result;
 			});
 			if (email) {
-				let result = await OpenPGPUserStore.decrypt(armoredText, email.email);
-				if (result?.data) {
+				let result = await OpenPGPUserStore.decrypt(armoredText, sender);
+				if (result) {
 					return result;
 				}
 				console.error('OpenPGP decrypt failed');
@@ -175,7 +176,7 @@ export const
 							armoredText,
 							this.mailvelopeKeyring,
 							{
-								senderAddress: message.from[0].email
+								senderAddress: sender
 								// emails[i].email
 							}
 						);
