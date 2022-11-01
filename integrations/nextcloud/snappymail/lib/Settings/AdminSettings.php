@@ -17,6 +17,8 @@ class AdminSettings implements ISettings
 
 	public function getForm()
 	{
+		\OCA\SnappyMail\Util\SnappyMailHelper::loadApp();
+
 		$keys = [
 			'snappymail-autologin',
 			'snappymail-autologin-with-email',
@@ -30,11 +32,12 @@ class AdminSettings implements ISettings
 		$uid = \OC::$server->getUserSession()->getUser()->getUID();
 		if (\OC_User::isAdminUser($uid)) {
 //			$parameters['snappymail-admin-panel-link'] = SnappyMailHelper::getAppUrl().'?admin';
+			SnappyMailHelper::loadApp();
 			$parameters['snappymail-admin-panel-link'] =
-				\OC::$server->getURLGenerator()->linkToRoute('snappymail.page.index').'?admin';
+				\OC::$server->getURLGenerator()->linkToRoute('snappymail.page.index')
+				. '?' . \RainLoop\Api::Config()->Get('security', 'admin_panel_key', 'admin');
 		}
 
-		\OCA\SnappyMail\Util\SnappyMailHelper::loadApp();
 		$oConfig = \RainLoop\Api::Config();
 		$passfile = APP_PRIVATE_DATA . 'admin_password.txt';
 		$sPassword = '';

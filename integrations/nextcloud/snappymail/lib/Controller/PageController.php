@@ -18,8 +18,18 @@ class PageController extends Controller
 	{
 		$config = \OC::$server->getConfig();
 
-		if ($config->getAppValue('snappymail', 'snappymail-embed')) {
-			return static::index_embed();
+		$bAdmin = false;
+		if (!empty($_SERVER['QUERY_STRING'])) {
+			SnappyMailHelper::loadApp();
+			$bAdmin = \RainLoop\Api::Config()->Get('security', 'admin_panel_key', 'admin') == $_SERVER['QUERY_STRING'];
+			if (!$bAdmin) {
+				SnappyMailHelper::startApp(true);
+				return;
+			}
+		}
+
+		if ($bAdmin || $config->getAppValue('snappymail', 'snappymail-embed')) {
+			return static::index_embed($bAdmin);
 		}
 
 		\OC::$server->getNavigationManager()->setActiveEntry('snappymail');
@@ -72,18 +82,8 @@ class PageController extends Controller
 	/**
 	 * Draft code to run without using an iframe
 	 */
-	private static function index_embed()
+	private static function index_embed(bool $bAdmin)
 	{
-/*
-		$oConfig = \RainLoop\Api::Config();
-		$bAdmin = empty($_SERVER['QUERY_STRING']) || $oConfig->Get('security', 'admin_panel_key', 'admin') != $_SERVER['QUERY_STRING'];
-*/
-		$bAdmin = !empty($_SERVER['QUERY_STRING']) && 'admin' == $_SERVER['QUERY_STRING'];
-
-		if (!$bAdmin && !empty($_SERVER['QUERY_STRING'])) {
-			SnappyMailHelper::startApp(true);
-		}
-
 		\OC::$server->getNavigationManager()->setActiveEntry('snappymail');
 
 		\OCP\Util::addStyle('snappymail', 'embed');
