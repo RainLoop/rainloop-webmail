@@ -15,6 +15,7 @@ namespace MailSo\Base\StreamWrappers;
  * @category MailSo
  * @package Base
  * @subpackage StreamWrappers
+ * https://www.php.net/streamwrapper
  */
 class SubStreams
 {
@@ -214,4 +215,4 @@ class SubStreams
 	}
 }
 
-\stream_wrapper_register(SubStreams::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\SubStreams');
+\stream_wrapper_register(SubStreams::STREAM_NAME, SubStreams::class);

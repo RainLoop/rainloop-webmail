@@ -708,6 +708,7 @@ trait Messages
 			}
 		}
 
+		// Try by default as OpenPGP.js sets GnuPG to 0
 		if ($this->GetActionParam('GnuPG', 1)) {
 			$GPG = $this->GnuPG();
 			if ($GPG) {
@@ -722,12 +723,13 @@ trait Messages
 					* https://code.woboq.org/qt5/include/gpg-error.h.html
 					* status:
 						0 = GPG_ERR_NO_ERROR
+						1 = GPG_ERR_GENERAL
 						9 = GPG_ERR_NO_PUBKEY
 						117440513 = General error
 						117440520 = Bad signature
 					*/
 
-					$summary = [
+					$summary = \defined('GNUPG_SIGSUM_VALID') ? [
 						GNUPG_SIGSUM_VALID => 'The signature is fully valid.',
 						GNUPG_SIGSUM_GREEN => 'The signature is good but one might want to display some extra information. Check the other bits.',
 						GNUPG_SIGSUM_RED => 'The signature is bad. It might be useful to check other bits and display more information, i.e. a revoked certificate might not render a signature invalid when the message was received prior to the cause for the revocation.',
@@ -740,7 +742,7 @@ trait Messages
 						GNUPG_SIGSUM_BAD_POLICY => 'A policy requirement was not met.',
 						GNUPG_SIGSUM_SYS_ERROR => 'A system error occurred.',
 //						GNUPG_SIGSUM_TOFU_CONFLICT = 'A TOFU conflict was detected.',
-					];
+					] : [];
 
 					// Verified, so no need to return $result['text'] and $result['signature']
 					$result = [
@@ -1280,14 +1282,17 @@ trait Messages
 			$GPG = $this->GnuPG();
 			$oBody = $oMessage->GetRootPart();
 			$resource = $oBody->ToStream();
+
+			\MailSo\Base\StreamFilters\LineEndings::appendTo($resource);
+			$fp = \fopen('php://temp', 'r+b');
+//			\stream_copy_to_stream($resource, $fp); // Fails
+			while (!\feof($resource)) \fwrite($fp, \fread($resource, 8192));
+
 			$oBody->Body = null;
 			$oBody->SubParts->Clear();
 			$oMessage->SubParts->Clear();
 			$oMessage->Attachments()->Clear();
 
-			\MailSo\Base\StreamFilters\LineEndings::appendTo($resource);
-			$fp = \fopen('php://temp', 'r+b');
-			\stream_copy_to_stream($resource, $fp);
 			$GPG->addSignKey($sFingerprint, $sPassphrase);
 			$GPG->setsignmode(GNUPG_SIG_MODE_DETACH);
 			$sSignature = $GPG->signStream($fp);
@@ -1317,16 +1322,18 @@ trait Messages
 		if ($aFingerprints) {
 			$GPG = $this->GnuPG();
 			$oBody = $oMessage->GetRootPart();
-			$fp = \fopen('php://temp', 'r+b');
 			$resource = $oBody->ToStream();
-			\stream_copy_to_stream($resource, $fp);
+			$fp = \fopen('php://temp', 'r+b');
+//			\stream_copy_to_stream($resource, $fp); // Fails
+			while (!\feof($resource)) \fwrite($fp, \fread($resource, 8192));
+
+			$oMessage->SubParts->Clear();
+			$oMessage->Attachments()->Clear();
+
 			foreach ($aFingerprints as $sFingerprint) {
 				$GPG->addEncryptKey($sFingerprint);
 			}
 			$sEncrypted = $GPG->encryptStream($fp);
-
-			$oMessage->SubParts->Clear();
-			$oMessage->Attachments()->Clear();
 
 			$oPart = new MimePart;
 			$oPart->Headers->AddByName(
