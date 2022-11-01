@@ -15,9 +15,10 @@ const
 	askPassphrase = async (privateKey, btnTxt = 'LABEL_SIGN') =>
 		await AskPopupView.password('GnuPG key<br>' + privateKey.id + ' ' + privateKey.emails[0], 'OPENPGP/'+btnTxt),
 
-	findGnuPGKey = (keys, query, sign) =>
+	findGnuPGKey = (keys, query/*, sign*/) =>
 		keys.find(key =>
-			key[sign ? 'can_sign' : 'can_decrypt']
+//			key[sign ? 'can_sign' : 'can_decrypt']
+			(key.can_sign || key.can_decrypt)
 			&& (key.emails.includes(query) || key.subkeys.find(key => query == key.keyid || query == key.fingerprint))
 		);
 
