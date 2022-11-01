@@ -277,7 +277,8 @@ trait Pgp
 			$keyId = $keyId ? "0x{$keyId}" : \sha1($key);
 			$dir = $this->StorageProvider()->GenerateFilePath(
 				$oAccount,
-				\RainLoop\Providers\Storage\Enumerations\StorageType::PGP
+				\RainLoop\Providers\Storage\Enumerations\StorageType::PGP,
+				true
 			);
 			if (\str_contains($key, 'PGP PRIVATE KEY')) {
 				$hash = $oAccount->CryptKey();
