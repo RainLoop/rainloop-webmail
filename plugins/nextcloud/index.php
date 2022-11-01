@@ -41,7 +41,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public static function IsIntegrated()
 	{
-		return !empty($_ENV['SNAPPYMAIL_NEXTCLOUD']) && \class_exists('OC') && isset(\OC::$server);
+		return \class_exists('OC') && isset(\OC::$server);
 	}
 
 	public static function IsLoggedIn()
@@ -170,6 +170,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			];
 			if (empty($aResult['Auth'])) {
 				$config = \OC::$server->getConfig();
+				$sEmail = '';
 				// Only store the user's password in the current session if they have
 				// enabled auto-login using Nextcloud username or email address.
 				if ($config->getAppValue('snappymail', 'snappymail-autologin', false)) {
