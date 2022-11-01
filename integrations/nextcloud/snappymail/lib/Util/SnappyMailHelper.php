@@ -19,8 +19,13 @@ class SnappyMailHelper
 			}
 		});
 
-		$_ENV['SNAPPYMAIL_NEXTCLOUD'] = true;
+		$_ENV['SNAPPYMAIL_NEXTCLOUD'] = true; // Obsolete
 		$_ENV['SNAPPYMAIL_INCLUDE_AS_API'] = true;
+
+//		define('APP_VERSION', '0.0.0');
+//		define('APP_INDEX_ROOT_PATH', __DIR__ . DIRECTORY_SEPARATOR);
+//		include APP_INDEX_ROOT_PATH.'snappymail/v/'.APP_VERSION.'/include.php';
+//		define('APP_DATA_FOLDER_PATH', \rtrim(\trim(\OC::$server->getSystemConfig()->getValue('datadirectory', '')), '\\/').'/appdata_snappymail/');
 
 		require_once \dirname(\dirname(__DIR__)) . '/app/index.php';
 
@@ -96,15 +101,20 @@ class SnappyMailHelper
 					}
 				}
 			} else {
-				$aCredentials = SnappyMailHelper::getLoginCredentials();
-				if ($oActions->getMainAccountFromToken(false)) {
-					if (!$aCredentials[0] || !$aCredentials[1]) {
-						$oActions->Logout(true);
-					}
-				} else if ($aCredentials[0] && $aCredentials[1]) {
-					$oActions->Logger()->AddSecret($aCredentials[1]);
-					$oAccount = $oActions->LoginProcess($aCredentials[0], $aCredentials[1], false);
+				$aCredentials = static::getLoginCredentials();
+				$ocSession = \OC::$server->getSession();
+				$doLogin = !$oActions->getMainAccountFromToken(false);
+				if (!$doLogin && $ocSession['snappymail-uid'] && $ocSession['snappymail-uid'] != $aCredentials[0]) {
+					// UID changed, Impersonate plugin probably active
+					$ocSession['snappymail-uid'] = false;
+					$oActions->Logout(true);
+					$doLogin = true;
+				}
+				if ($doLogin && $aCredentials[1] && $aCredentials[2]) {
+					$oActions->Logger()->AddSecret($aCredentials[2]);
+					$oAccount = $oActions->LoginProcess($aCredentials[1], $aCredentials[2], false);
 					if ($oAccount) {
+						$ocSession['snappymail-uid'] = $aCredentials[0];
 						$oActions->Plugins()->RunHook('login.success', array($oAccount));
 						$oActions->SetAuthToken($oAccount);
 					}
@@ -127,17 +137,20 @@ class SnappyMailHelper
 		$sPassword = '';
 		$config = \OC::$server->getConfig();
 		$sUID = \OC::$server->getUserSession()->getUser()->getUID();
-		// Only store the user's password in the current session if they have
+		$ocSession = \OC::$server->getSession();
+		// Only use the user's password in the current session if they have
 		// enabled auto-login using Nextcloud username or email address.
-		if ($config->getAppValue('snappymail', 'snappymail-autologin', false)) {
-			$sEmail = $sUID;
-			$sPassword = \OC::$server->getSession()['snappymail-password'];
-		} else if ($config->getAppValue('snappymail', 'snappymail-autologin-with-email', false)) {
-			$sEmail = $config->getUserValue($sUID, 'settings', 'email', '');
-			$sPassword = \OC::$server->getSession()['snappymail-password'];
-		}
-		if (\OC::$server->getSession()['snappymail-email'] != $sEmail) {
-			$sPassword = '';
+		if ($ocSession['snappymail-nc-uid'] == $sUID) {
+			if ($config->getAppValue('snappymail', 'snappymail-autologin', false)) {
+				$sEmail = $sUID;
+				$sPassword = $ocSession['snappymail-password'];
+			} else if ($config->getAppValue('snappymail', 'snappymail-autologin-with-email', false)) {
+				$sEmail = $config->getUserValue($sUID, 'settings', 'email', '');
+				$sPassword = $ocSession['snappymail-password'];
+			}
+			if ($sPassword) {
+				$sPassword = static::decodePassword($sPassword, $sUID);
+			}
 		}
 
 		// If the user has set credentials for SnappyMail in their personal
@@ -146,8 +159,11 @@ class SnappyMailHelper
 		if ($sCustomEmail) {
 			$sEmail = $sCustomEmail;
 			$sPassword = $config->getUserValue($sUID, 'snappymail', 'snappymail-password', '');
+			if ($sPassword) {
+				$sPassword = static::decodePassword($sPassword, \md5($sEmail));
+			}
 		}
-		return [$sEmail, $sPassword ? SnappyMailHelper::decodePassword($sPassword, \md5($sEmail)) : ''];
+		return [$sUID, $sEmail, $sPassword ?: ''];
 	}
 
 	public static function getAppUrl() : string

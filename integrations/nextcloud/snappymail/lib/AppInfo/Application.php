@@ -84,17 +84,13 @@ class Application extends App implements IBootstrap
 //		$userSession->listen('\OC\User', 'postRememberedLogin', function($loginName, $password) {
 		$userSession->listen('\OC\User', 'postLogin', function($user, $loginName, $password, $isTokenLogin) {
 			$config = \OC::$server->getConfig();
-			$sEmail = '';
 			// Only store the user's password in the current session if they have
 			// enabled auto-login using Nextcloud username or email address.
-			if ($config->getAppValue('snappymail', 'snappymail-autologin', false)) {
-				$sEmail = $user->getUID();
-			} else if ($config->getAppValue('snappymail', 'snappymail-autologin-with-email', false)) {
-				$sEmail = $config->getUserValue($user->getUID(), 'settings', 'email', '');
-			}
-			if ($sEmail) {
-				\OC::$server->getSession()['snappymail-email'] = $sEmail;
-				\OC::$server->getSession()['snappymail-password'] = SnappyMailHelper::encodePassword($password, \md5($sEmail));
+			if ($config->getAppValue('snappymail', 'snappymail-autologin', false)
+			 || $config->getAppValue('snappymail', 'snappymail-autologin-with-email', false)) {
+				$sUID = $user->getUID();
+				\OC::$server->getSession()['snappymail-nc-uid'] = $sUID;
+				\OC::$server->getSession()['snappymail-password'] = SnappyMailHelper::encodePassword($password, $sUID);
 			}
 		});
 
