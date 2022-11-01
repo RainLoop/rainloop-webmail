@@ -133,31 +133,21 @@ export const
 
 		async decrypt(message) {
 			const sender = message.from[0].email,
-				armoredText = message.plain(),
-				emails = [...message.from,...message.to,...message.cc].validUnique();
+				armoredText = message.plain();
 			if (!this.isEncrypted(armoredText)) {
 				throw Error('Not armored text');
 			}
 
 			// Try OpenPGP.js
-			let email = emails.find(email => {
-				let result = OpenPGPUserStore.getPrivateKeyFor(email.email);
-				if (result) {
-					console.log('Trying decrypt with '+result.id+' of '+email.email);
-				}
+			let result = await OpenPGPUserStore.decrypt(armoredText, sender);
+			if (result) {
 				return result;
-			});
-			if (email) {
-				let result = await OpenPGPUserStore.decrypt(armoredText, sender);
-				if (result) {
-					return result;
-				}
-				console.error('OpenPGP decrypt failed');
 			}
 
 			// Try Mailvelope (does not support inline images)
 			try {
-				let i = emails.length;
+				let emails = [...message.from,...message.to,...message.cc].validUnique(),
+					i = emails.length;
 				while (i--) {
 					if (await this.getMailvelopePrivateKeyFor(emails[i].email)) {
 						/**
