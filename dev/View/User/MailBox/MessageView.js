@@ -529,21 +529,23 @@ export class MailMessageView extends AbstractViewRight {
 	pgpDecrypt() {
 		const oMessage = currentMessage();
 		PgpUserStore.decrypt(oMessage).then(result => {
-			if (result) {
+			if (result?.data) {
 				oMessage.pgpDecrypted(true);
-				if (result.data) {
-					MimeToMessage(result.data, oMessage);
-					oMessage.html() ? oMessage.viewHtml() : oMessage.viewPlain();
-					if (result.signatures?.length) {
-						oMessage.pgpSigned(true);
-						oMessage.pgpVerified({
-							signatures: result.signatures,
-							success: !!result.signatures.length
-						});
-					}
+				MimeToMessage(result.data, oMessage);
+				oMessage.html() ? oMessage.viewHtml() : oMessage.viewPlain();
+				if (result.signatures?.length) {
+					oMessage.pgpSigned(true);
+					oMessage.pgpVerified({
+						signatures: result.signatures,
+						success: !!result.signatures.length
+					});
 				}
+			} else {
+				// TODO: translate
+				alert('Decryption failed, canceled or not possible');
 			}
-		});
+		})
+		.catch(e => console.error(e));
 	}
 
 	pgpVerify(/*self, event*/) {

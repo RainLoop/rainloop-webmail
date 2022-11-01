@@ -132,51 +132,64 @@ export const
 		}
 
 		async decrypt(message) {
-			const sender = message.from[0].email,
-				armoredText = message.plain();
-
+			const armoredText = message.plain(),
+				emails = [...message.from,...message.to,...message.cc].validUnique();
 			if (!this.isEncrypted(armoredText)) {
-				return;
+				throw Error('Not armored text');
 			}
 
 			// Try OpenPGP.js
-			let result = await OpenPGPUserStore.decrypt(armoredText, sender);
-			if (result) {
+			let email = emails.find(email => {
+				let result = OpenPGPUserStore.getPrivateKeyFor(email.email);
+				if (result) {
+					console.log('Trying decrypt with '+result.id+' of '+email.email);
+				}
 				return result;
+			});
+			if (email) {
+				let result = await OpenPGPUserStore.decrypt(armoredText, email.email);
+				if (result?.data) {
+					return result;
+				}
+				console.error('OpenPGP decrypt failed');
 			}
 
 			// Try Mailvelope (does not support inline images)
 			try {
-				let key = await this.getMailvelopePrivateKeyFor(message.to[0].email);
-				if (key) {
-					/**
-					* https://mailvelope.github.io/mailvelope/Mailvelope.html#createEncryptedFormContainer
-					* Creates an iframe to display an encrypted form
-					*/
-	//				mailvelope.createEncryptedFormContainer('#mailvelope-form');
-					/**
-					* https://mailvelope.github.io/mailvelope/Mailvelope.html#createDisplayContainer
-					* Creates an iframe to display the decrypted content of the encrypted mail.
-					*/
-					const body = message.body;
-					body.textContent = '';
-					result = await mailvelope.createDisplayContainer(
-						'#'+body.id,
-						armoredText,
-						this.mailvelopeKeyring,
-						{
-							senderAddress: sender
-						}
-					);
-					if (result) {
-						if (result.error?.message) {
-							if ('PWD_DIALOG_CANCEL' !== result.error.code) {
-								alert(result.error.code + ': ' + result.error.message);
+				let i = emails.length;
+				while (i--) {
+					if (await this.getMailvelopePrivateKeyFor(emails[i].email)) {
+						/**
+						* https://mailvelope.github.io/mailvelope/Mailvelope.html#createEncryptedFormContainer
+						* Creates an iframe to display an encrypted form
+						*/
+	//					mailvelope.createEncryptedFormContainer('#mailvelope-form');
+						/**
+						* https://mailvelope.github.io/mailvelope/Mailvelope.html#createDisplayContainer
+						* Creates an iframe to display the decrypted content of the encrypted mail.
+						*/
+						const body = message.body;
+						body.textContent = '';
+						let result = await mailvelope.createDisplayContainer(
+							'#'+body.id,
+							armoredText,
+							this.mailvelopeKeyring,
+							{
+								senderAddress: message.from[0].email
+								// emails[i].email
 							}
-						} else {
-							body.classList.add('mailvelope');
-							return true;
+						);
+						if (result) {
+							if (result.error?.message) {
+								if ('PWD_DIALOG_CANCEL' !== result.error.code) {
+									alert(result.error.code + ': ' + result.error.message);
+								}
+							} else {
+								body.classList.add('mailvelope');
+								return true;
+							}
 						}
+						break;
 					}
 				}
 			} catch (err) {
