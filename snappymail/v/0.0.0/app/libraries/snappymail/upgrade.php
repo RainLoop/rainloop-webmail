@@ -207,6 +207,9 @@ abstract class Upgrade
 				} else {
 					throw new \Exception('Extract core files failed');
 				}
+				// opcache_reset is a terrible solution
+//				\is_callable('opcache_reset') && \opcache_reset();
+				\is_callable('opcache_invalidate') && \opcache_invalidate($target.'/index.php', true);
 			} finally {
 				$sTmp && \unlink($sTmp);
 			}
