@@ -66,8 +66,9 @@ class Logger extends \SplFixedArray
 
 	public function AddSecret(string $sWord) : void
 	{
-		$sWord = \strlen(\trim($sWord));
-		if ($sWord) {
+//		$this->bShowSecrets && $this->Write("AddSecret '{$sWord}'", \LOG_INFO, '', false);
+		$sWord = \trim($sWord);
+		if (\strlen($sWord)) {
 			$this->aSecretWords[] = $sWord;
 			$this->aSecretWords = \array_unique($this->aSecretWords);
 		}
@@ -165,7 +166,7 @@ class Logger extends \SplFixedArray
 
 		$this->bUsed = true;
 
-		if ($bSearchSecretWords && !$this->bShowSecrets && \count($this->aSecretWords))
+		if ($bSearchSecretWords && !$this->bShowSecrets && $this->aSecretWords)
 		{
 			$sDesc = \str_replace($this->aSecretWords, '*******', $sDesc);
 		}

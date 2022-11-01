@@ -185,19 +185,24 @@ class SmtpClient extends \MailSo\Net\NetClient
 			if (0 === \strpos($type, 'SCRAM-')) {
 				// RFC 5802
 				$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 234, '');
-				$sResult = $this->sendRequestWithCheck($SASL->challenge($sResult), 235, '', true);
-				$SASL->verify($sResult);
+				$sChallenge = $SASL->challenge($sResult);
+				$this->oLogger && $this->oLogger->AddSecret($sChallenge);
+				$SASL->verify($this->sendRequestWithCheck($sChallenge, 235, '', true));
 			} else switch ($type) {
 			// RFC 4616
 			case 'PLAIN':
 			case 'XOAUTH2':
 			case 'OAUTHBEARER':
-				$this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword), 235, '', true);
+				$sAuth = $SASL->authenticate($sLogin, $sPassword);
+				$this->oLogger && $this->oLogger->AddSecret($sAuth);
+				$this->sendRequestWithCheck($sAuth, 235, '', true);
 				break;
 
 			case 'LOGIN':
 				$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 334, '');
-				$this->sendRequestWithCheck($SASL->challenge($sResult), 235, '', true);
+				$sPassword = $SASL->challenge($sResult);
+				$this->oLogger && $this->oLogger->AddSecret($sPassword);
+				$this->sendRequestWithCheck($sPassword, 235, '', true);
 				break;
 
 			// RFC 2195
@@ -342,7 +347,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 		$this->sendRequestWithCheck('DATA', 354);
 
-		$this->writeLog('Message data.', \LOG_INFO);
+		$this->writeLog('Message data.');
 
 		$this->bRunningCallback = true;
 

@@ -170,10 +170,8 @@ class ImapClient extends \MailSo\Net\NetClient
 				$sAuthzid = $this->getResponseValue($this->SendRequestGetResponse('AUTHENTICATE', array($type)), Enumerations\ResponseType::CONTINUATION);
 				$this->sendRaw($SASL->authenticate($sLogin, $sPassword/*, $sAuthzid*/), true);
 				$sChallenge = $SASL->challenge($this->getResponseValue($this->getResponse(), Enumerations\ResponseType::CONTINUATION));
-				if ($this->oLogger) {
-					$this->oLogger->AddSecret($sChallenge);
-				}
-				$this->sendRaw($sChallenge, true, '*******');
+				$this->oLogger && $this->oLogger->AddSecret($sChallenge);
+				$this->sendRaw($sChallenge);
 				$oResponse = $this->getResponse();
 				$SASL->verify($this->getResponseValue($oResponse));
 			}
@@ -182,31 +180,26 @@ class ImapClient extends \MailSo\Net\NetClient
 				$sChallenge = $this->getResponseValue($this->SendRequestGetResponse('AUTHENTICATE', array($type)), Enumerations\ResponseType::CONTINUATION);
 				$this->oLogger->Write('challenge: '.\base64_decode($sChallenge));
 				$sAuth = $SASL->authenticate($sLogin, $sPassword, $sChallenge);
-				if ($this->oLogger) {
-					$this->oLogger->AddSecret($sAuth);
-				}
-				$this->sendRaw($sAuth, true, '*******');
+				$this->oLogger && $this->oLogger->AddSecret($sAuth);
+				$this->sendRaw($sAuth);
 				$oResponse = $this->getResponse();
 			}
 			else if ('PLAIN' === $type || 'OAUTHBEARER' === $type)
 			{
 				$sAuth = $SASL->authenticate($sLogin, $sPassword);
-				if ($this->oLogger) {
-					$this->oLogger->AddSecret($sAuth);
-				}
+				$this->oLogger && $this->oLogger->AddSecret($sAuth);
 				if ($this->IsSupported('SASL-IR')) {
 					$oResponse = $this->SendRequestGetResponse('AUTHENTICATE', array($type, $sAuth));
 				} else {
 					$this->SendRequestGetResponse('AUTHENTICATE', array($type));
-					$this->sendRaw($sAuth, true, '*******');
+					$this->sendRaw($sAuth);
 					$oResponse = $this->getResponse();
 				}
 			}
-			else if ('XOAUTH2' === $type)
+			else if ('XOAUTH2' === $type || 'OAUTHBEARER' === $type)
 			{
 				$sAuth = $SASL->authenticate($sLogin, $sPassword);
-				$this->SendRequest('AUTHENTICATE', array($type, $sAuth));
-				$oResponse = $this->getResponse();
+				$oResponse = $this->SendRequestGetResponse('AUTHENTICATE', array($type, $sAuth));
 				$oR = $oResponse->getLast();
 				if ($oR && Enumerations\ResponseType::CONTINUATION === $oR->ResponseType) {
 					if (!empty($oR->ResponseList[1]) && preg_match('/^[a-zA-Z0-9=+\/]+$/', $oR->ResponseList[1])) {
@@ -223,19 +216,14 @@ class ImapClient extends \MailSo\Net\NetClient
 				$this->sendRaw($SASL->authenticate($sLogin, $sPassword, $sB64), true);
 				$this->getResponse();
 				$sPass = $SASL->challenge(''/*UGFzc3dvcmQ6*/);
-				if ($this->oLogger) {
-					$this->oLogger->AddSecret($sPass);
-				}
-				$this->sendRaw($sPass, true, '*******');
+				$this->oLogger && $this->oLogger->AddSecret($sPass);
+				$this->sendRaw($sPass);
 				$oResponse = $this->getResponse();
 			}
 			else
 			{
 				$sPassword = $this->EscapeString(\mb_convert_encoding($sPassword, 'ISO-8859-1', 'UTF-8'));
-				if ($this->oLogger)
-				{
-					$this->oLogger->AddSecret($sPassword);
-				}
+				$this->oLogger && $this->oLogger->AddSecret($sPassword);
 				$oResponse = $this->SendRequestGetResponse('LOGIN',
 					array(
 						$this->EscapeString($sLogin),
@@ -425,11 +413,8 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function SendRequest(string $sCommand, array $aParams = array(), bool $bBreakOnLiteral = false) : string
 	{
 		$sCommand = \trim($sCommand);
-		if (!\strlen($sCommand))
-		{
-			$this->writeLogException(
-				new \InvalidArgumentException,
-				\LOG_ERR, true);
+		if (!\strlen($sCommand)) {
+			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR, true);
 		}
 
 		$this->IsConnected(true);
@@ -438,40 +423,18 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		$sRealCommand = $sTag.' '.$sCommand.$this->prepareParamLine($aParams);
 
-		$sFakeCommand = '';
-		if ($aFakeParams = $this->secureRequestParams($sCommand, $aParams)) {
-			$sFakeCommand = $sTag.' '.$sCommand.$this->prepareParamLine($aFakeParams);
-		}
-
-//		$this->lastCommand = $sFakeCommand ?: $sRealCommand;
-
 		$this->aTagTimeouts[$sTag] = \microtime(true);
 
-		if ($bBreakOnLiteral && !\preg_match('/\d\+\}\r\n/', $sRealCommand))
-		{
+		if ($bBreakOnLiteral && !\preg_match('/\d\+\}\r\n/', $sRealCommand)) {
 			$iPos = \strpos($sRealCommand, "}\r\n");
-			if (false !== $iPos)
-			{
-				$iFakePos = \strpos($sFakeCommand, "}\r\n");
-
-				$this->sendRaw(\substr($sRealCommand, 0, $iPos + 1), true,
-					false !== $iFakePos ? \substr($sFakeCommand, 0, $iFakePos + 3) : '');
-
+			if (false !== $iPos) {
+				$this->sendRaw(\substr($sRealCommand, 0, $iPos + 1));
 				return \substr($sRealCommand, $iPos + 3);
 			}
 		}
 
-		$this->sendRaw($sRealCommand, true, $sFakeCommand);
+		$this->sendRaw($sRealCommand);
 		return '';
-	}
-
-	protected function secureRequestParams(string $sCommand, array $aParams) : ?array
-	{
-		if ('LOGIN' === $sCommand && isset($aParams[1])) {
-			$aParams[1] = '"********"';
-			return $aParams;
-		}
-		return null;
 	}
 
 	/**

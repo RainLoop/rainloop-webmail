@@ -143,10 +143,8 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 				$sAuthzid = $this->getResponseValue($this->SendRequestGetResponse('AUTHENTICATE', array($type)), \MailSo\Imap\Enumerations\ResponseType::CONTINUATION);
 				$this->sendRaw($SASL->authenticate($sLogin, $sPassword/*, $sAuthzid* /), true);
 				$sChallenge = $SASL->challenge($this->getResponseValue($this->getResponse(), \MailSo\Imap\Enumerations\ResponseType::CONTINUATION));
-				if ($this->oLogger) {
-					$this->oLogger->AddSecret($sChallenge);
-				}
-				$this->sendRaw($sChallenge, true, '*******');
+				$this->oLogger && $this->oLogger->AddSecret($sChallenge);
+				$this->sendRaw($sChallenge);
 				$oResponse = $this->getResponse();
 				$SASL->verify($this->getResponseValue($oResponse));
 */
@@ -154,13 +152,11 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 			else if ('PLAIN' === $type || 'OAUTHBEARER' === $type || 'XOAUTH2' === $type)
 			{
 				$sAuth = $SASL->authenticate($sLogin, $sPassword, $sLoginAuthKey);
+				$this->oLogger && $this->oLogger->AddSecret($sAuth);
 
-				if ($aCredentials['InitialAuthPlain'])
-				{
+				if ($aCredentials['InitialAuthPlain']) {
 					$this->sendRaw("AUTHENTICATE \"{$type}\" \"{$sAuth}\"");
-				}
-				else
-				{
+				} else {
 					$this->sendRaw("AUTHENTICATE \"{$type}\" {".\strlen($sAuth).'+}');
 					$this->sendRaw($sAuth);
 				}
@@ -174,6 +170,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 			{
 				$sLogin = $SASL->authenticate($sLogin, $sPassword);
 				$sPassword = $SASL->challenge('');
+				$this->oLogger && $this->oLogger->AddSecret($sPassword);
 
 				$this->sendRaw('AUTHENTICATE "LOGIN"');
 				$this->sendRaw('{'.\strlen($sLogin).'+}');

@@ -160,8 +160,7 @@ abstract class NetClient
 		}
 
 		$this->iStartConnectTime = \microtime(true);
-		$this->writeLog('Start connection to "'.$this->sConnectedHost.':'.$this->iConnectedPort.'"',
-			\LOG_INFO);
+		$this->writeLog('Start connection to "'.$this->sConnectedHost.':'.$this->iConnectedPort.'"');
 
 		$aStreamContextSettings = array(
 			'ssl' => $oSettings->ssl
@@ -186,8 +185,7 @@ abstract class NetClient
 
 		\restore_error_handler();
 
-		$this->writeLog('Connect ('.($this->rConnect ? 'success' : 'failed').')',
-			\LOG_INFO);
+		$this->writeLog('Connect ('.($this->rConnect ? 'success' : 'failed').')');
 
 		if (!$this->rConnect)
 		{
@@ -253,7 +251,7 @@ abstract class NetClient
 			$bResult = \fclose($this->rConnect);
 
 			$this->writeLog('Disconnected from "'.$this->sConnectedHost.':'.$this->iConnectedPort.'" ('.
-				(($bResult) ? 'success' : 'unsuccess').')', \LOG_INFO);
+				(($bResult) ? 'success' : 'unsuccess').')');
 
 			if ($this->iStartConnectTime)
 			{
@@ -301,21 +299,14 @@ abstract class NetClient
 	 */
 	protected function sendRaw(string $sRaw, bool $bWriteToLog = true, string $sFakeRaw = '') : void
 	{
-		if ($this->bUnreadBuffer)
-		{
+		if ($this->bUnreadBuffer) {
 			$this->writeLogException(new Exceptions\SocketUnreadBufferException, \LOG_ERR, true);
 		}
 
-		$bFake = \strlen($sFakeRaw);
 		$sRaw .= "\r\n";
 
-		if ($this->oLogger && $this->oLogger->ShowSecrets())
-		{
-			$bFake = false;
-		}
-
-		if ($bFake)
-		{
+		$bFake = \strlen($sFakeRaw) && $this->oLogger && !$this->oLogger->ShowSecrets();
+		if ($bFake) {
 			$sFakeRaw .= "\r\n";
 		}
 
@@ -327,7 +318,7 @@ abstract class NetClient
 		}
 		else if ($bWriteToLog)
 		{
-			$this->writeLogWithCrlf('> '.($bFake ? $sFakeRaw : $sRaw), \LOG_INFO);
+			$this->writeLogWithCrlf('> '.($bFake ? $sFakeRaw : $sRaw));
 		}
 	}
 
@@ -373,8 +364,7 @@ abstract class NetClient
 			}
 			else
 			{
-				$this->writeLog('Stream Meta: '.
-					\print_r($aSocketStatus, true), \LOG_ERR);
+				$this->writeLog('Stream Meta: '.\print_r($aSocketStatus, true), \LOG_ERR);
 
 				$this->writeLogException(
 					new Exceptions\SocketReadException,
@@ -389,36 +379,31 @@ abstract class NetClient
 				$iLimit = 5000; // 5KB
 				if ($iLimit < $iReadedLen)
 				{
-					$this->writeLogWithCrlf('[cutted:'.$iReadedLen.'] < '.\substr($this->sResponseBuffer, 0, $iLimit).'...',
-						\LOG_INFO);
+					$this->writeLogWithCrlf('[cutted:'.$iReadedLen.'] < '.\substr($this->sResponseBuffer, 0, $iLimit).'...');
 				}
 				else
 				{
-					$this->writeLogWithCrlf('< '.$this->sResponseBuffer, //.' ['.$iReadedLen.']',
-						\LOG_INFO);
+//					$this->writeLogWithCrlf('< '.$this->sResponseBuffer, //.' ['.$iReadedLen.']',
+					$this->writeLogWithCrlf('< '.$this->sResponseBuffer);
 				}
 			}
 			else
 			{
-				$this->writeLog('Received '.$iReadedLen.'/'.$iReadLen.' bytes.',
-					\LOG_INFO);
+				$this->writeLog('Received '.$iReadedLen.'/'.$iReadLen.' bytes.');
 			}
 		}
 	}
 
 	abstract function getLogName() : string;
 
-	protected function writeLog(string $sDesc, int $iDescType = \LOG_INFO, bool $bDiplayCrLf = false) : void
+	protected function writeLog(string $sDesc, int $iDescType = \LOG_INFO) : void
 	{
-		if ($this->oLogger)
-		{
-			$this->oLogger->Write($sDesc, $iDescType, $this->getLogName(), true, $bDiplayCrLf);
-		}
+		$this->oLogger && $this->oLogger->Write($sDesc, $iDescType, $this->getLogName());
 	}
 
-	protected function writeLogWithCrlf(string $sDesc, int $iDescType = \LOG_INFO) : void
+	protected function writeLogWithCrlf(string $sDesc) : void
 	{
-		$this->writeLog($sDesc, $iDescType, true);
+		$this->oLogger && $this->oLogger->Write($sDesc, \LOG_INFO, $this->getLogName(), true, true);
 	}
 
 	protected function writeLogException(\Throwable $oException,
