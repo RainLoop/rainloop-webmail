@@ -161,7 +161,7 @@ export const
 						*/
 						const body = message.body;
 						body.textContent = '';
-						let result = await mailvelope.createDisplayContainer(
+						result = await mailvelope.createDisplayContainer(
 							'#'+body.id,
 							armoredText,
 							this.mailvelopeKeyring,

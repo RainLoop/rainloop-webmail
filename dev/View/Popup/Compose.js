@@ -169,7 +169,7 @@ class MimePart {
 		const hasSub = this.children.length,
 			boundary = this.boundary || (this.boundary = 'part' + Jua.randomId()),
 			headers = this.headers;
-		if (hasSub) {
+		if (hasSub && !headers['Content-Type'].includes(boundary)) {
 			headers['Content-Type'] += `; boundary="${boundary}"`;
 		}
 		let result = Object.entries(headers).map(([key, value]) => `${key}: ${value}`).join('\r\n') + '\r\n';
