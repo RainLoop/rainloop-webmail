@@ -1,5 +1,5 @@
 OC.L10N.register(
-    "rainloop",
+    "snappymail",
     {
     "Error" : "ýalňyşlyk",
     "Save" : "Saklamak",

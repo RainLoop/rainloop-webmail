@@ -1,5 +1,5 @@
 OC.L10N.register(
-    "rainloop",
+    "snappymail",
     {
     "Email" : "Postel",
     "Error" : "Fazi",

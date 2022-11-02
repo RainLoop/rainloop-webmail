@@ -1,5 +1,5 @@
 OC.L10N.register(
-    "rainloop",
+    "snappymail",
     {
     "Email" : "﻿ಇ-ಅಂಚೆ",
     "Error" : "﻿ತಪ್ಪಾಗಿದೆ",
