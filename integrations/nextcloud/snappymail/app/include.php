@@ -27,7 +27,7 @@
 /**
  * Custom 'data' folder path
  */
-if (!empty($_ENV['SNAPPYMAIL_NEXTCLOUD'])) {
+if (class_exists('OC')) {
 	define('APP_DATA_FOLDER_PATH', \rtrim(\trim(\OC::$server->getSystemConfig()->getValue('datadirectory', '')), '\\/').'/appdata_snappymail/');
 } else {
 	http_response_code(400);
