@@ -68,7 +68,7 @@
 	--dropdown-menu-disable-color: #999;
 
 	/* FOLDERS */
-	--folders-color: #333;
+	--folders-color: var(--color-main-text, #333);
 	--folders-disabled-color: #999;
 	--folders-selected-color: var(--color-primary);
 	--folders-selected-bg-color: var(--color-background-darker);
@@ -91,8 +91,7 @@
 }
 
 .thm-message-list-top-toolbar, .thm-message-list-bottom-toolbar {
-    background-image: linear-gradient(to bottom, #f4f4f4, #dfdfdf) !important;
-    background-repeat: repeat-x !important;
+    background: transparent linear-gradient(to bottom, var(--color-main-background) 0%, var(--color-main-background-translucent) 85%, transparent 100%) repeat-x !important;
 }
 #V-AdminPane > .b-toolbar {
 	color: var(--main-color);
@@ -105,9 +104,21 @@
 }
 
 .messageList, .messageView {
+	background-color: var(--color-main-background, #fff);
 	border-color: var(--color-border);
 	border-radius: var(--border-radius);
 }
+
+#messageItem {
+	color: var(--main-color, #000);
+}
+.messageView .messageItemHeader,
+#messageItem .attachmentsPlace,
+#messageItem .attachmentsControls,
+#messageItem .bodySubHeader > * {
+	background-color: var(--color-main-background, #eee);
+}
+
 #V-MailFolderList.focused .b-content,
 #V-MailMessageList.focused .messageList,
 #V-MailMessageView.focused .messageView {

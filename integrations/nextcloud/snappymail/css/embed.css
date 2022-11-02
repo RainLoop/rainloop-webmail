@@ -84,7 +84,7 @@ button.btn:not(.button-vue) {
 
 #V-PopupsCompose header {
 	background-color: var(--color-primary);
-	background-image: linear-gradient(40deg, #0082c9 0%, #30b6ff 100%);
+	background-image: linear-gradient(40deg, var(--color-primary) 0%, var(--color-primary-element-light) 100%);
 	color: #fff;
 }
 
