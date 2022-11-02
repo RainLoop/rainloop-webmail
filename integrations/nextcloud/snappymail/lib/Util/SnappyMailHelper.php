@@ -101,22 +101,28 @@ class SnappyMailHelper
 					}
 				}
 			} else {
-				$aCredentials = static::getLoginCredentials();
-				$ocSession = \OC::$server->getSession();
 				$doLogin = !$oActions->getMainAccountFromToken(false);
-				if (!$doLogin && $ocSession['snappymail-uid'] && $ocSession['snappymail-uid'] != $aCredentials[0]) {
+				$aCredentials = static::getLoginCredentials();
+				// https://github.com/the-djmaze/snappymail/issues/561#issuecomment-1301317723
+				// $ocSession['snappymail-uid'] Always NULL, so we use a cookie
+//				$ocSession = \OC::$server->getSession();
+//				if (!$doLogin && $ocSession['snappymail-uid'] && $ocSession['snappymail-uid'] != $aCredentials[0]) {
+				if (!$doLogin && !empty($_COOKIE['snappymail-uid']) && $_COOKIE['snappymail-uid'] != $aCredentials[0]) {
 					// UID changed, Impersonate plugin probably active
-					$ocSession['snappymail-uid'] = false;
+					\setcookie('snappymail-uid');
 					$oActions->Logout(true);
 					$doLogin = true;
+//					$this->logger->warning("Logout {$_COOKIE['snappymail-uid']}", ['app' => 'SnappyMail']);
 				}
+//				$ocSession['snappymail-uid'] = $aCredentials[0];
+				\setcookie('snappymail-uid', $aCredentials[0]);
 				if ($doLogin && $aCredentials[1] && $aCredentials[2]) {
 					$oActions->Logger()->AddSecret($aCredentials[2]);
 					$oAccount = $oActions->LoginProcess($aCredentials[1], $aCredentials[2], false);
 					if ($oAccount) {
-						$ocSession['snappymail-uid'] = $aCredentials[0];
 						$oActions->Plugins()->RunHook('login.success', array($oAccount));
 						$oActions->SetAuthToken($oAccount);
+//						$this->logger->warning("Login {$aCredentials[0]}", ['app' => 'SnappyMail']);
 					}
 				}
 			}
