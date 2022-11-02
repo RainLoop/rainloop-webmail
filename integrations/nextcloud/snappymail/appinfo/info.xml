@@ -69,7 +69,7 @@ There, click on the link to go to the SnappyMail admin panel.
 	</settings>
 	<navigations>
 		<navigation>
-			<name>SnappyMail</name>
+			<name>Email</name>
 			<route>snappymail.page.index</route>
 			<icon>logo-white-64x64.png</icon>
 			<order>4</order>
