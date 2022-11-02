@@ -7,7 +7,7 @@
 // -------------------------
 
 p {
-  margin: (@baseLineHeight / 2) 0;
+  margin: 0.715em 0;
 }
 
 
@@ -33,7 +33,7 @@ cite {
 
 h1, h2, h3, h4, h5, h6 {
   line-height: 40px;
-  margin: (@baseLineHeight / 2) 0;
+  margin: 0.715em 0;
   text-rendering: optimizelegibility; // Fix the character spacing for headings
 }
 h1 { font-size: 36px; }
@@ -51,7 +51,7 @@ h4, h5, h6 { line-height: 20px; }
 // Unordered and Ordered lists
 ul, ol {
   padding: 0;
-  margin: 0 0 (@baseLineHeight / 2) 25px;
+  margin: 0 0 0.715em 25px;
 }
 ul ul,
 ul ol,
@@ -60,7 +60,7 @@ ol ul {
   margin-bottom: 0;
 }
 li {
-  line-height: @baseLineHeight;
+  line-height: 1.43em;
 }
 
 // MISC
@@ -68,29 +68,18 @@ li {
 
 // Horizontal rules
 hr {
-  margin: @baseLineHeight 0;
+  margin: 1.43em 0;
   border: 0;
-  border-bottom: 1px solid @hrBorder;
+  border-bottom: 1px solid var(--hr-color, #eee);
   box-sizing: content-box;
   height: 0;
-}
-
-// Abbreviations and acronyms
-abbr[title] {
-  cursor: help;
-  border-bottom: 1px dotted @grayLight;
-  text-decoration: none;
 }
 
 // Blockquotes
 blockquote {
   padding: 0 0 0 15px;
-  margin: 0 0 @baseLineHeight;
-  border-left: 5px solid @grayLighter;
-  p {
-    margin-bottom: 0;
-    line-height: (@baseLineHeight * 1.25);
-  }
+  margin: 0 0 1.43em;
+  border-left: 5px solid var(--border-color, #ddd);
 }
 
 // Quotes
@@ -104,7 +93,7 @@ blockquote::after {
 // Addresses
 address {
   display: block;
-  margin-bottom: @baseLineHeight;
+  margin-bottom: 1.43em;
   font-style: normal;
-  line-height: @baseLineHeight;
+  line-height: 1.43em;
 }

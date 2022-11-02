@@ -9,19 +9,18 @@
 // table {
 .table {
   max-width: 100%;
-  background-color: @tableBackground;
   border-collapse: collapse;
   border-spacing: 0;
   width: 100%;
-  margin-bottom: @baseLineHeight;
+  margin-bottom: 1.43em;
   // Cells
   th,
   td {
     padding: 8px;
-    line-height: @baseLineHeight;
+    line-height: 1.43em;
     text-align: left;
     vertical-align: text-top;
-    border-top: 1px solid @tableBorder;
+    border-top: 1px solid var(--border-color, #ddd);
   }
   th {
     font-weight: bold;
@@ -45,12 +44,12 @@
 // ----------------
 
 .table-bordered {
-  border: 1px solid @tableBorder;
+  border: 1px solid var(--border-color, #ddd);
   border-collapse: separate; // Done so we can round those corners!
   border-radius: 4px;
   th + th,
   td + td {
-    border-left: 1px solid @tableBorder;
+    border-left: 1px solid var(--border-color, #ddd);
   }
   // Prevent a double border
   colgroup + thead tr:first-child th,
@@ -105,7 +104,7 @@
   tbody {
     tr:nth-child(odd) td,
     tr:nth-child(odd) th {
-      background-color: @tableBackgroundAccent;
+      background-color: var(--tr-odd-bg-clr, #f9f9f9);
     }
   }
 }
@@ -118,7 +117,7 @@
   tbody {
     tr:hover td,
     tr:hover th {
-      background-color: @tableBackgroundHover;
+      background-color: var(--tr-hover-bg-clr, #f5f5f5);
     }
   }
 }

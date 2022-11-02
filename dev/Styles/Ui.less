@@ -115,18 +115,17 @@ tr:hover .drag-handle {
 	border-radius: 4px 4px 0 0;
 	cursor: pointer;
 	grid-row-start: 1;
-	line-height: @baseLineHeight;
 	opacity: 0.6;
 	margin: 0 2px -1px 0;
 	padding: 5px;
 	text-align: center;
 	&:hover {
-		border-color: @grayLighter;
+		border-color: var(--tab-hover-border-clr, #eee);
 		opacity: 0.8;
 	}
 }
 .tabs > [id^="tab"]:checked + label {
-	background-color: @white;
+	background-color: var(--tab-active-bg-clr, #fff);
 	border-color: rgba(128,128,128,.5) rgba(128,128,128,.5) transparent rgba(128,128,128,.5);
 	opacity: 1;
 	z-index: 1;

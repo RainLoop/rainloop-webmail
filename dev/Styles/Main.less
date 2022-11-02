@@ -11,7 +11,7 @@ html, body {
 
 #rl-app {
 	-webkit-touch-callout: none;
-	font-size: @baseFontSize;
+	font-size: var(--main-font-size, 14px);
 	line-height: 1.15; /* 1 */
 	position: fixed;
 	top: 0;
@@ -58,7 +58,7 @@ dialog::backdrop {
 
 dialog {
 	border: 0;
-	background-color: @white;
+	background-color: var(--dialog-bg-clr, #fff);
 	border: 1px solid rgba(0,0,0,.3);
 	border-radius: 6px;
 	box-shadow: 0 5px 80px rgba(0,0,0,0.3);

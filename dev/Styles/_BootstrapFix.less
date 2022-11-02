@@ -1,17 +1,11 @@
 
 .legend {
-	display: block;
-	width: 100%;
-	padding: 0;
-	margin-bottom: @baseLineHeight;
-	font-size: @baseFontSize * 1.5;
-	line-height: @baseLineHeight * 1.5;
-	color: @grayDark;
-	border: 0;
 	border-bottom: 1px solid var(--border-color, #ddd);
+	font-size: 150%;
+	line-height: 2.1;
+	margin-bottom: 1.43em;
 }
 summary.legend {
-	display: list-item;
 	cursor: pointer;
 }
 
@@ -21,15 +15,14 @@ summary.legend {
 
 .alert a:not(.close) {
 	text-decoration: underline;
-	color: @warningText;
 }
 
 .alert.alert-info a:not(.close) {
-	color: @infoText;
+	color: var(--info-clr, #3a87ad);
 }
 
 .alert.alert-error a:not(.close) {
-	color: @errorText;
+	color: var(--error-clr, #b94a48);
 }
 
 /* mobile and tablet */

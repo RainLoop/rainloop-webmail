@@ -6,8 +6,22 @@
 	--main-bg-image: none; /* url("images/background.png"); */
 	--main-bg-size: auto;
 	--main-bg-repeat: repeat;
+	--main-font-size: 14px;
 	--link-color: #369;
 	--border-color: #ddd;
+	--hr-color: #eee;
+
+	--warning-clr: #c09853;
+	--warning-bg-clr: #fcf8e3;
+	--warning-border-clr: #fbeed5;
+
+	--error-clr: #b94a48;
+	--error-bg-clr: #f2dede;
+	--error-border-clr: #eed3d7;
+
+	--info-clr: #3a87ad;
+	--info-bg-clr: #d9edf7;
+	--info-border-clr: #bce8f1;
 
 /* LOADING */
 	--loading-color: #000;
@@ -42,6 +56,8 @@
 	--folders-hover-bg-color: false;
 	--folders-drop-color: #eee;
 	--folders-drop-bg-color: #333;
+	--unread-count-color: #fff;
+	--unread-count-bg-color: #333;
 
 /* SETTINGS */
 	--settings-menu-color: #333;
@@ -52,9 +68,32 @@
 
 /* MESSAGE LIST */
 	--message-list-toolbar-bg-color: #eee;
-	--message-list-toolbar-gradient-start: none; /* #f4f4f4 */
-	--message-list-toolbar-gradient-end: none;   /* #dfdfdf */
 
 /* MESSAGE */
 	--message-bg-color: #fff;
+
+/* DIALOGS */
+	--dialog-bg-clr: #fff;
+
+/* FORMS */
+	--btn-clr: #333;
+	--btn-bg-clr: #fff;
+	--btn-border-clr: #fff;
+	--btn-success-bg-clr: #84AB04;
+	--btn-danger-bg-clr: #ee5f5b;
+
+	--input-clr: #555;
+	--input-bg-clr: #fff;
+	--input-border-clr: #ccc;
+	--input-border-radius: 3px;
+	--input-focus-border-clr: #999;
+
+/* TABLES */
+	--tr-hover-bg-clr: #f5f5f5;
+	--tr-odd-bg-clr: #f9f9f9; /* when striped */
+
+/* TABS */
+	--tab-active-bg-clr: #fff;
+	--tab-hover-border-clr: #eee;
+
 }

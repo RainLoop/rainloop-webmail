@@ -17,15 +17,15 @@
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: @zindexDropdown;
+  z-index: 1000;
   display: none; // none by default, but block on "open" of the menu
   min-width: 160px;
   padding: 5px 0;
   margin: 2px 0 0; // override default ul
   list-style: none;
   color: var(--dropdown-menu-color, inherit);
-  background-color: var(--dropdown-menu-bg-color, @dropdownBackground);
-  border: 1px solid @dropdownBorder;
+  background-color: var(--dropdown-menu-bg-color, #fff);
+  border: 1px solid rgba(0,0,0,.2);
   box-shadow: 0 1px 2px rgba(0,0,0,0.2);
   background-clip: padding-box;
 
@@ -38,7 +38,7 @@
   // Links within the dropdown menu
   a {
     background-color: var(--dropdown-menu-bg-color, #fff);
-    color: var(--dropdown-menu-color, @dropdownLinkColor);
+    color: var(--dropdown-menu-color, #333);
     display: block;
     padding: 3px 10px;
     text-decoration: none;
@@ -60,7 +60,7 @@
 // Gray out text and ensure the hover state remains gray
 .dropdown-menu .disabled > a,
 .dropdown-menu .disabled > a:hover {
-  color: @grayLight;
+  color: #999;
   cursor: not-allowed;
   opacity: 0.5;
 }

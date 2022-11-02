@@ -12,16 +12,16 @@
 
   display: inline-block;
   padding: 4px 12px;
-  line-height: @baseLineHeight;
+  line-height: 1.43em;
   text-align: center;
   vertical-align: middle;
   cursor: pointer;
-  border: 1px solid @btnBorder;
+  border: 1px solid var(--btn-border-clr, #bbb);
   border-color: rgba(0,0,0,.15) rgba(0,0,0,.15) rgba(0,0,0,.25);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
-  color: @grayDark;
+  color: var(--btn-clr, #333);
   text-shadow: 0 -1px 0 rgba(0,0,0,.25);
-  background-color: @btnBackground;
+  background-color: var(--btn-bg-clr, #fff);
   text-decoration: none;
 
   // Hover state
@@ -94,16 +94,16 @@
 // Warning appears are orange
 .btn-warning {
   color: #fff;
-  background-color: @btnWarningBackground;
+  background-color: #fbb450;
 }
 // Danger and error appear as red
 .btn-danger {
   color: #fff;
-  background-color: @btnDangerBackground;
+  background-color: var(--btn-danger-bg-clr, #ee5f5b);
 }
 // Success appears as green
 .btn-success {
-  background-color: @btnSuccessBackground;
+  background-color: var(--btn-success-bg-clr, #84AB04);
   color: #fff;
   text-shadow: 0 -1px 0 rgba(0,0,0,.25);
 }
