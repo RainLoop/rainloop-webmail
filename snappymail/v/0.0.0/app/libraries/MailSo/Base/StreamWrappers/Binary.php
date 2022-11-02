@@ -316,4 +316,4 @@ class Binary
 	}
 }
 
-\stream_wrapper_register(Binary::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\Binary');
+\stream_wrapper_register(Binary::STREAM_NAME, Binary::class);

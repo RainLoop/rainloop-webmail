@@ -164,4 +164,4 @@ class Literal
 	}
 }
 
-\stream_wrapper_register(Literal::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\Literal');
+\stream_wrapper_register(Literal::STREAM_NAME, Literal::class);

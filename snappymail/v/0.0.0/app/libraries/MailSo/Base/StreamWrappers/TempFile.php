@@ -116,4 +116,4 @@ class TempFile
 	}
 }
 
-\stream_wrapper_register(TempFile::STREAM_NAME, '\\MailSo\\Base\\StreamWrappers\\TempFile');
+\stream_wrapper_register(TempFile::STREAM_NAME, TempFile::class);
