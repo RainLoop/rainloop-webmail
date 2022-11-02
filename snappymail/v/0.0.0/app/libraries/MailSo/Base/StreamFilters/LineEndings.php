@@ -4,6 +4,8 @@ namespace MailSo\Base\StreamFilters;
 
 class LineEndings extends \php_user_filter
 {
+	#[\ReturnTypeWillChange]
+//	public function filter($in, $out, &$consumed, bool $closing): int
 	public function filter($in, $out, &$consumed, $closing)
 	{
 		while ($bucket = \stream_bucket_make_writeable($in)) {
@@ -25,10 +27,13 @@ class LineEndings extends \php_user_filter
 		return PSFS_PASS_ON;
 	}
 
+//	public onClose(): void
+//	public onCreate(): bool
+
 	public static function appendTo($fp)
 	{
 		\stream_filter_append($fp, 'crlf', STREAM_FILTER_ALL);
 	}
 }
 
-\stream_filter_register('crlf', 'MailSo\\Base\\StreamFilters\\LineEndings');
+\stream_filter_register('crlf', LineEndings::class);
