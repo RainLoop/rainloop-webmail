@@ -29,6 +29,7 @@ $index = file_get_contents('index.php');
 $index = str_replace('0.0.0', $package->version, $index);
 $nc_tar->addFromString('snappymail/app/index.php', $index);
 $nc_tar->addFile('README.md', 'snappymail/app/README.md');
+$nc_tar->addFile('CHANGELOG.md', 'snappymail/CHANGELOG.md');
 
 $data = file_get_contents('dev/serviceworker.js');
 $nc_tar->addFromString('snappymail/app/serviceworker.js', $data);
