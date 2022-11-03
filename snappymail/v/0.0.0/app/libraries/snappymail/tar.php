@@ -5,7 +5,7 @@ namespace SnappyMail;
 class TAR
 {
 	public
-		$toc,
+		$alias,
 		$filename;
 
 	const dec = array(
