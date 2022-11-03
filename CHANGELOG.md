@@ -1,3 +1,22 @@
+## 2.20.0 – 2022-11-03
+
+### Added
+- Strip mailchimp tracking
+
+### Changed
+- Use some PHP typed properties
+- Move bootstrap @less variables to CSS var()
+- Improved theme styling
+
+### Fixed
+- CSS --dropdown-menu-background-color should be --dropdown-menu-bg-color
+
+### Nextcloud
+- Disable Nextcloud Impersonate check due to login/logout complications
+  [#561](https://github.com/the-djmaze/snappymail/issues/561)
+- Improved theme integration and be compatible with Breeze Dark
+
+
 ## 2.19.7 – 2022-11-02
 
 ### Added

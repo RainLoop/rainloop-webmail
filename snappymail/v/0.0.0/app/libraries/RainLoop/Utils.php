@@ -141,6 +141,9 @@ class Utils
 			throw new \Exception("Cookie '{$sName}' value too long");
 		}
 */
+		if (\strlen($sValue)) {
+			$_COOKIE[$sName] = $sValue;
+		}
 		\setcookie($sName, $sValue, array(
 			'expires' => $iExpire,
 			'path' => $sPath,
@@ -155,7 +158,6 @@ class Utils
 	{
 		$sPath = static::$CookieDefaultPath;
 		$sPath = $sPath && \strlen($sPath) ? $sPath : '/';
-		$_COOKIE[$sName] = $sValue;
 		// https://github.com/the-djmaze/snappymail/issues/451
 		// The 4K browser limit is for the entire cookie, including name, value, expiry date etc.
 		$iMaxSize = 4000 - \strlen($sPath . $sName);

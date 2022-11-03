@@ -44,7 +44,7 @@
 	--settings-menu-hover-bg-color: rgba(0,0,0,0.5);
 
 	/* MESSAGE LIST */
-	--message-list-toolbar-bg-color: #eee;
+	--message-list-toolbar-bg-color: #222;
 }
 
 ::-webkit-scrollbar {

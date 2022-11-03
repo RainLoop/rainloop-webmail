@@ -98,12 +98,6 @@ body > header ul {
 	color: inherit;
 }
 
-#V-MailMessageView,
-.b-folders .b-content {
-	bottom: 5px;
-	top: 50px;
-}
-
 .messageListItem * {
 	cursor: pointer;
 }
@@ -114,7 +108,7 @@ body > header ul {
  */
 
 .messageList {
-	margin: 0 5px;
+	margin: 0 5px 0 0;
 }
 
 a.selectable {
