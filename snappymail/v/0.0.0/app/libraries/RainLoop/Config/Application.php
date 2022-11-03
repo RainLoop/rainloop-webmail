@@ -189,7 +189,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'hide_x_mailer_header'       => array(true),
 				'admin_panel_host'           => array(''),
 				'admin_panel_key'            => array('admin'),
-				'content_security_policy'    => array(''),
+				'content_security_policy'    => array('', 'For example to allow all images use "img-src https:". More info at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy#directives'),
 				'csp_report'                 => array(false, 'Report CSP errors to PHP and/or SnappyMail Log'),
 				'encrypt_cipher'             => array($sCipher, 'A valid cipher method from https://php.net/openssl_get_cipher_methods'),
 				'cookie_samesite'            => array('Strict', 'Strict, Lax or None')
