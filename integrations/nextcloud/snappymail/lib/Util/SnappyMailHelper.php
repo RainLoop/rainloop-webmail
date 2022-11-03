@@ -104,19 +104,20 @@ class SnappyMailHelper
 				$doLogin = !$oActions->getMainAccountFromToken(false);
 				$aCredentials = static::getLoginCredentials();
 /*
+				// NC25+ workaround for Impersonate plugin
 				// https://github.com/the-djmaze/snappymail/issues/561#issuecomment-1301317723
 				// https://github.com/nextcloud/server/issues/34935#issuecomment-1302145157
-				// $ocSession['snappymail-uid'] Always NULL, so we use a cookie
-//				$ocSession = \OC::$server->getSession();
-//				if (!$doLogin && $ocSession['snappymail-uid'] && $ocSession['snappymail-uid'] != $aCredentials[0]) {
-				if (!$doLogin && !empty($_COOKIE['sm-nc-uid']) && $_COOKIE['sm-nc-uid'] != $aCredentials[0]) {
-					// UID changed, Impersonate plugin probably active
-					\RainLoop\Utils::ClearCookie('sm-nc-uid');
-					$oActions->Logout(true);
-					$doLogin = true;
+				require \OC::$SERVERROOT . '/version.php';
+				if (24 < $OC_Version[0]) {
+					$ocSession = \OC::$server->getSession();
+					$ocSession->reopen();
+					if (!$doLogin && $ocSession['snappymail-uid'] && $ocSession['snappymail-uid'] != $aCredentials[0]) {
+						// UID changed, Impersonate plugin probably active
+						$oActions->Logout(true);
+						$doLogin = true;
+					}
+					$ocSession->set('snappymail-uid', $aCredentials[0]);
 				}
-//				$ocSession->set('snappymail-uid', $aCredentials[0]);
-				\RainLoop\Utils::SetCookie('snappymail-uid', $aCredentials[0]);
 */
 				if ($doLogin && $aCredentials[1] && $aCredentials[2]) {
 					$oActions->Logger()->AddSecret($aCredentials[2]);
