@@ -24,7 +24,6 @@ class PageController extends Controller
 			$bAdmin = \RainLoop\Api::Config()->Get('security', 'admin_panel_key', 'admin') == $_SERVER['QUERY_STRING'];
 			if (!$bAdmin) {
 				SnappyMailHelper::startApp(true);
-				return;
 			}
 		}
 
@@ -58,7 +57,6 @@ class PageController extends Controller
 	public function appGet()
 	{
 		SnappyMailHelper::startApp(true);
-		exit;
 	}
 
 	/**
