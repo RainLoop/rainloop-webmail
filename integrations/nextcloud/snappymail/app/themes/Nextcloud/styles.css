@@ -1,4 +1,3 @@
-
 :root {
 /* Nextcloud
 	--color-main-text: #222;
@@ -40,35 +39,54 @@
 	--border-radius-pill: 100px;
 	--default-font-size: 15px;
 	--default-line-height: 24px;
-	--animation-quick: 100ms;
-	--animation-slow: 300ms;
 */
 	--fontSans: var(--font-face);
 
 	/* MAIN */
-	--main-color: var(--color-main-text, #333);
-	--main-bg-color: var(--color-main-background, transparent);
+	--main-color: var(--color-main-text);
+	--main-bg-color: var(--color-main-background);
 	--main-bg-image: none;
+	--main-bg-size: auto;
+	--main-bg-repeat: repeat;
+	--main-font-size: 14px;
+	--link-color: #369;
+	--border-color: #ddd;
+	--hr-color: #eee;
+
+	--warning-clr: var(--color-warning);
+	--warning-bg-clr: #fcf8e3;
+	--warning-border-clr: #fbeed5;
+
+	--error-clr: #b94a48;
+	--error-bg-clr: #f2dede;
+	--error-border-clr: #eed3d7;
+
+	--info-clr: #3a87ad;
+	--info-bg-clr: #d9edf7;
+	--info-border-clr: #bce8f1;
 
 	/* LOADING */
-	--loading-color: #000;
+	--loading-color: var(--color-main-text);
+	--loading-text-shadow: none; /* 0px 1px 0px rgba(0, 0, 0, 0.5); */
 
 	/* LOGIN */
-	--login-color: var(--color-main-text, #eee);
-	--login-bg-color: var(--color-background-darker, rgba(0,0,0,0.5));
-	--login-box-shadow: none;
+	--login-color: var(--color-main-text);
+	--login-bg-color: var(--color-background-darker);
+	--login-box-shadow: var(--color-box-shadow);
 	--login-border: none;
-	--login-border-radius: var(--border-radius-large, 7px);
+	--login-border-radius: var(--border-radius-large);
+
+	--spinner-color: #fff;
 
 	/* MENU */
-	--dropdown-menu-color: var(--color-main-text, #333);
-	--dropdown-menu-bg-color: var(--color-main-background, #fff);
-	--dropdown-menu-hover-bg-color: var(--color-background-hover, #757575);
-	--dropdown-menu-hover-color: var(--color-main-text, #eee);
-	--dropdown-menu-disable-color: #999;
+	--dropdown-menu-color: var(--color-main-text);
+	--dropdown-menu-bg-color: var(--color-main-background);
+	--dropdown-menu-hover-bg-color: var(--color-background-hover);
+	--dropdown-menu-hover-color: var(--color-main-text);
+	--dropdown-menu-disabled-color: #999;
 
 	/* FOLDERS */
-	--folders-color: var(--color-main-text, #333);
+	--folders-color: var(--color-main-text);
 	--folders-disabled-color: #999;
 	--folders-selected-color: var(--color-primary);
 	--folders-selected-bg-color: var(--color-background-darker);
@@ -78,9 +96,12 @@
 	--folders-hover-bg-color: var(--color-background-hover);
 	--folders-drop-color: var(--color-primary-hover);
 	--folders-drop-bg-color:  var(--color-background-hover);
+	--unread-count-color: #fff;
+	--unread-count-bg-color: #333;
 
 	/* SETTINGS */
-	--settings-menu-color: #333;
+	--settings-bg-clr: transparent;
+	--settings-menu-color: var(--color-main-text);
 	--settings-menu-selected-color: #eee;
 	--settings-menu-selected-bg-color: rgba(0,0,0,0.5);
 	--settings-menu-hover-color: #eee;
@@ -88,6 +109,34 @@
 
 	/* MESSAGE LIST */
 	--message-list-toolbar-bg-color: #eee;
+
+	/* MESSAGE */
+	--message-bg-color: #fff;
+
+	/* DIALOGS */
+	--dialog-clr: var(--color-main-text);
+	--dialog-bg-clr: var(--color-main-background);
+
+	/* FORMS */
+	--btn-clr: var(--color-primary-text);
+	--btn-bg-clr: var(--color-primary-element);
+	--btn-border-clr: var(--color-border);
+	--btn-success-bg-clr: #84AB04;
+	--btn-danger-bg-clr: #ee5f5b;
+
+	--input-clr: var(--color-main-text);
+	--input-bg-clr: var(--color-main-background);
+	--input-border-clr: var(--color-border-dark);
+	--input-border-radius: var(--border-radius);
+	--input-focus-border-clr: var(--color-primary-element);
+
+	/* TABLES */
+	--tr-hover-bg-clr: var(--color-background-hover);
+	--tr-odd-bg-clr: var(--color-background-darker); /* when striped */
+
+	/* TABS */
+	--tab-active-bg-clr: var(--color-main-background);
+	--tab-hover-border-clr: var(--color-background-hover);
 }
 
 .thm-message-list-top-toolbar, .thm-message-list-bottom-toolbar {
@@ -97,10 +146,11 @@
 	color: var(--main-color);
 	text-shadow: none;
 }
-#V-PopupsCompose header {
-	background-color: #0082c9;
-	background-image: linear-gradient(40deg, #0082c9 0%, #30b6ff 100%);
-	color: #fff;
+
+#rl-app dialog header {
+	background-color: var(--color-primary-element);
+	background-image: linear-gradient(40deg, var(--color-primary) 0%, var(--color-primary-element-light) 100%);
+	color: var(--color-primary-text);
 }
 
 .messageList, .messageView {
@@ -126,39 +176,7 @@
 	box-shadow: 0 2px 8px var(--color-box-shadow);
 }
 
-#V-MailMessageView,
-.b-folders .b-content {
-	bottom: 5px;
-	top: 50px;
-}
-
-.messageListItem * {
-	cursor: pointer;
-}
-
-/**
- * hampoelz
- * https://github.com/the-djmaze/snappymail/issues/96#issuecomment-1279783076
- */
-
-.messageList {
-	margin: 0 5px;
-}
-
-a.selectable {
-	margin: 2px;
-	height: 38px !important;
-	line-height: 38px !important;
-	border-radius: var(--border-radius-pill);
-}
-
-a.selectable::after {
-	display: block;
-	margin: 0 !important;
-	top: 50%;
-	transform: translateY(-50%);
-}
-
-.btn {
-	border: initial !important;
+#rl-app button.btn:not(.button-vue) {
+	color: var(--color-primary-text);
+	background-color: var(--color-primary-element);
 }

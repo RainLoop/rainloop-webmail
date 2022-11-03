@@ -54,7 +54,7 @@ This stylesheet is used when SnappyMail runs in embed mode.
 	padding: 3px;
 }
 
-button.btn:not(.button-vue) {
+#rl-app button.btn:not(.button-vue) {
 	min-height: auto;
 	height: auto;
 	margin: 0;
@@ -82,12 +82,6 @@ button.btn:not(.button-vue) {
 	min-height: 200px;
 }
 
-#V-PopupsCompose header {
-	background-color: var(--color-primary);
-	background-image: linear-gradient(40deg, var(--color-primary) 0%, var(--color-primary-element-light) 100%);
-	color: #fff;
-}
-
 #rl-app tbody tr:hover {
 	background-color: inherit;
 }
@@ -98,6 +92,47 @@ button.btn:not(.button-vue) {
 
 body > header ul {
 	margin: 0;
+}
+
+#rl-app h3 {
+	color: inherit;
+}
+
+#V-MailMessageView,
+.b-folders .b-content {
+	bottom: 5px;
+	top: 50px;
+}
+
+.messageListItem * {
+	cursor: pointer;
+}
+
+/**
+ * hampoelz
+ * https://github.com/the-djmaze/snappymail/issues/96#issuecomment-1279783076
+ */
+
+.messageList {
+	margin: 0 5px;
+}
+
+a.selectable {
+	margin: 2px;
+	height: 38px !important;
+	line-height: 38px !important;
+	border-radius: var(--border-radius-pill);
+}
+
+a.selectable::after {
+	display: block;
+	margin: 0 !important;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.btn {
+	border: initial !important;
 }
 
 @media print {
