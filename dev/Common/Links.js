@@ -4,8 +4,6 @@ import { Settings } from 'Common/Globals';
 const
 	HASH_PREFIX = '#/',
 	SERVER_PREFIX = './?',
-	VERSION = Settings.app('version'),
-	VERSION_PREFIX = 'snappymail/v/' + VERSION + '/',
 
 	adminPath = () => rl.adminArea() && !Settings.app('adminHostUse'),
 
@@ -62,26 +60,27 @@ export const
 	 * @returns {string}
 	 */
 	langLink = (lang, isAdmin) =>
-		SERVER_PREFIX + '/Lang/0/' + (isAdmin ? 'Admin' : 'App') + '/' + encodeURI(lang) + '/' + VERSION + '/',
+		SERVER_PREFIX + '/Lang/0/' + (isAdmin ? 'Admin' : 'App')
+			+ '/' + encodeURI(lang)
+			+ '/' + Settings.app('version') + '/',
 
 	/**
 	 * @param {string} path
 	 * @returns {string}
 	 */
-	staticLink = path => Settings.app('webPath') + VERSION_PREFIX + 'static/' + path,
+	staticLink = path => Settings.app('webVersionPath') + 'static/' + path,
 
 	/**
 	 * @param {string} theme
 	 * @returns {string}
 	 */
 	themePreviewLink = theme => {
-		let prefix = VERSION_PREFIX;
+		let path = 'webVersionPath';
 		if (theme.endsWith('@custom')) {
 			theme = theme.slice(0, theme.length - 7).trim();
-			prefix = '';
+			path = 'webPath';
 		}
-
-		return Settings.app('webPath') + prefix + 'themes/' + encodeURI(theme) + '/images/preview.png';
+		return Settings.app(path) + 'themes/' + encodeURI(theme) + '/images/preview.png';
 	},
 
 	/**

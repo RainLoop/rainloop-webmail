@@ -202,7 +202,7 @@ class Utils
 
 	public static function WebVersionPath() : string
 	{
-		return self::WebPath().'snappymail/v/'.APP_VERSION.'/';
+		return self::WebPath() . \str_replace(APP_INDEX_ROOT_PATH, '', APP_VERSION_ROOT_PATH);
 	}
 
 	public static function WebStaticPath(string $path = '') : string
