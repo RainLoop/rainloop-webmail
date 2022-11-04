@@ -39,8 +39,8 @@
 			</p>
 			<br />
 			<p>
-				<input id="snappymail-embed" name="snappymail-embed" type="checkbox" class="checkbox" <?php if ($_['snappymail-embed']) echo 'checked="checked"'; ?>>
-				<label for="snappymail-embed">Embed without iframe (experimental)</label>
+				<input id="snappymail-no-embed" name="snappymail-no-embed" type="checkbox" class="checkbox" <?php if ($_['snappymail-no-embed']) echo 'checked="checked"'; ?>>
+				<label for="snappymail-no-embed">Don't fully integrate in Nextcloud, use in iframe</label>
 			</p>
 			<br />
 			<p>

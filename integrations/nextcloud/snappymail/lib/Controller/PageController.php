@@ -27,61 +27,21 @@ class PageController extends Controller
 			}
 		}
 
-		if ($bAdmin || $config->getAppValue('snappymail', 'snappymail-embed')) {
-			return static::index_embed($bAdmin);
+		if (!$bAdmin && $config->getAppValue('snappymail', 'snappymail-no-embed')) {
+			\OC::$server->getNavigationManager()->setActiveEntry('snappymail');
+			\OCP\Util::addScript('snappymail', 'snappymail');
+			\OCP\Util::addStyle('snappymail', 'style');
+			SnappyMailHelper::startApp();
+			$response = new TemplateResponse('snappymail', 'index', [
+				'snappymail-iframe-url' => SnappyMailHelper::normalizeUrl(SnappyMailHelper::getAppUrl())
+					. (empty($_GET['target']) ? '' : "#{$_GET['target']}")
+			]);
+			$csp = new ContentSecurityPolicy();
+			$csp->addAllowedFrameDomain("'self'");
+			$response->setContentSecurityPolicy($csp);
+			return $response;
 		}
 
-		\OC::$server->getNavigationManager()->setActiveEntry('snappymail');
-
-		\OCP\Util::addScript('snappymail', 'snappymail');
-		\OCP\Util::addStyle('snappymail', 'style');
-
-		SnappyMailHelper::startApp();
-
-		$response = new TemplateResponse('snappymail', 'index', [
-			'snappymail-iframe-url' => SnappyMailHelper::normalizeUrl(SnappyMailHelper::getAppUrl())
-				. (empty($_GET['target']) ? '' : "#{$_GET['target']}")
-		]);
-
-		$csp = new ContentSecurityPolicy();
-		$csp->addAllowedFrameDomain("'self'");
-		$response->setContentSecurityPolicy($csp);
-
-		return $response;
-	}
-
-	/**
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 */
-	public function appGet()
-	{
-		SnappyMailHelper::startApp(true);
-	}
-
-	/**
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 */
-	public function appPost()
-	{
-		SnappyMailHelper::startApp(true);
-	}
-
-	/**
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 */
-	public function indexPost()
-	{
-		SnappyMailHelper::startApp(true);
-	}
-
-	/**
-	 * Draft code to run without using an iframe
-	 */
-	private static function index_embed(bool $bAdmin)
-	{
 		\OC::$server->getNavigationManager()->setActiveEntry('snappymail');
 
 		\OCP\Util::addStyle('snappymail', 'embed');
@@ -132,4 +92,30 @@ class PageController extends Controller
 		return $response;
 	}
 
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function appGet()
+	{
+		SnappyMailHelper::startApp(true);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function appPost()
+	{
+		SnappyMailHelper::startApp(true);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function indexPost()
+	{
+		SnappyMailHelper::startApp(true);
+	}
 }

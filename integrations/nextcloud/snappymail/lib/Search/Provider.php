@@ -92,10 +92,10 @@ class Provider implements IProvider
 
 			$baseURL = $this->urlGenerator->linkToRoute('snappymail.page.index');
 			$config = \OC::$server->getConfig();
-			if ($config->getAppValue('snappymail', 'snappymail-embed')) {
-				$baseURL .= '#';
-			} else {
+			if ($config->getAppValue('snappymail', 'snappymail-no-embed')) {
 				$baseURL .= '?target=';
+			} else {
+				$baseURL .= '#';
 			}
 			$search = \rawurlencode($oParams->sSearch);
 
