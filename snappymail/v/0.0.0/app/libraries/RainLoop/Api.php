@@ -172,8 +172,7 @@ abstract class Api
 
 	public static function LogoutCurrentLogginedUser() : bool
 	{
-		// TODO: kill SignMe data to prevent automatic login?
-		Utils::ClearCookie(Utils::SESSION_TOKEN);
+		static::Actions()->Logout(true);
 		return true;
 	}
 }

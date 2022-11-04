@@ -431,8 +431,10 @@ trait UserAuth
 
 	public function Logout(bool $bMain) : void
 	{
+//		Utils::ClearCookie(Utils::SESSION_TOKEN);
 		Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
 		$bMain && Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
+		// TODO: kill SignMe data to prevent automatic login?
 	}
 
 	/**
