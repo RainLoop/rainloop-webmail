@@ -104,10 +104,10 @@
 										break;
 									}
 									line = line.match(/^([^:;]+)[:;](.+)$/);
-									if (VALARM) {
-										VALARM[line[1]] = line[2];
-									} else {
-										if (multiple.includes(line[1]) || 'X-' == line[1].slice(0,2)) {
+									if (line) {
+										if (VALARM) {
+											VALARM[line[1]] = line[2];
+										} else if (multiple.includes(line[1]) || 'X-' == line[1].slice(0,2)) {
 											VEVENT[line[1]] || (VEVENT[line[1]] = []);
 											VEVENT[line[1]].push(line[2]);
 										} else {
