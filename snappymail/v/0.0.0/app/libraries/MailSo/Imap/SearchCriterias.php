@@ -19,7 +19,7 @@ namespace MailSo\Imap;
 abstract class SearchCriterias
 {
 	const
-		RegEx = 'in|e?mail|from|to|subject|has|is|date|since|before|text|body|size|larger|bigger|smaller|maxsize|minsize|keyword';
+		RegEx = 'in|e?mail|from|to|subject|has|is|date|since|before|text|body|size|larger|bigger|smaller|maxsize|minsize|keyword|older_than|newer_than';
 
 	/**
 		https://datatracker.ietf.org/doc/html/rfc3501#section-6.4.4
@@ -274,6 +274,23 @@ abstract class SearchCriterias
 								$aCriteriasResult[] = 'BEFORE';
 								$aCriteriasResult[] = \gmdate('j-M-Y', $iDateStampTo);
 							}
+							break;
+
+						// https://github.com/the-djmaze/snappymail/issues/625
+						case 'READ':
+						case 'UNREAD':
+							$aCriteriasResult[] = \str_replace('READ', 'SEEN', $sName);
+							$bUseCache = false;
+							break;
+						case 'OLDER_THAN':
+							$aCriteriasResult[] = 'BEFORE';
+							$aCriteriasResult[] = (new \DateTime())->sub(new \DateInterval("P{$sRawValue}"))->format('j-M-Y');
+							break;
+						case 'NEWER_THAN':
+							$iTimeFilter = \max(
+								$iTimeFilter,
+								(new \DateTime())->sub(new \DateInterval("P{$sRawValue}"))->getTimestamp()
+							);
 							break;
 					}
 				}
