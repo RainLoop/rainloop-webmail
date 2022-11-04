@@ -72,7 +72,10 @@
 	--message-bg-color: #fff;
 
 	/* DIALOGS */
+	--dialog-clr: #333;
 	--dialog-bg-clr: #fff;
+	--dialog-border-clr: rgba(0,0,0,.3);
+	--dialog-border-radius: 6px;
 
 	/* FORMS */
 	--btn-clr: #333;

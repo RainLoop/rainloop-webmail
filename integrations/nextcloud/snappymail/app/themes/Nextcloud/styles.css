@@ -116,6 +116,8 @@
 	/* DIALOGS */
 	--dialog-clr: var(--color-main-text);
 	--dialog-bg-clr: var(--color-main-background);
+	--dialog-border-clr: #ddd;
+	--dialog-border-radius: var(--border-radius-large);
 
 	/* FORMS */
 	--btn-clr: var(--color-primary-text);
