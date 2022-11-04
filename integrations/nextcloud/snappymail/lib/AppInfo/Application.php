@@ -99,5 +99,14 @@ class Application extends App implements IBootstrap
 			SnappyMailHelper::loadApp();
 			\RainLoop\Api::Actions()->Logout(true);
 		});
+
+/*
+		// https://github.com/nextcloud/impersonate/issues/179
+		$userSession->listen('\OC\User', 'impersonate', function($user, $newUser) {
+			\OC::$server->getSession()['snappymail-password'] = '';
+			SnappyMailHelper::loadApp();
+			\RainLoop\Api::Actions()->Logout(true);
+		});
+*/
 	}
 }
