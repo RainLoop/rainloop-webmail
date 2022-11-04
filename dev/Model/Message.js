@@ -95,6 +95,7 @@ export class MessageModel extends AbstractModel {
 			pgpSigned: null,
 			pgpVerified: null,
 
+			encrypted: false,
 			pgpEncrypted: null,
 			pgpDecrypted: false,
 
@@ -110,7 +111,8 @@ export class MessageModel extends AbstractModel {
 		this.flags = ko.observableArray();
 
 		addComputablesTo(this, {
-			attachmentIconClass: () => FileInfo.getAttachmentsIconClass(this.attachments()),
+			attachmentIconClass: () =>
+				this.encrypted() ? 'icon-lock' : FileInfo.getAttachmentsIconClass(this.attachments()),
 			threadsLen: () => this.threads().length,
 			listAttachments: () => this.attachments()
 				.filter(item => SettingsUserStore.listInlineAttachments() || !item.isLinked()),

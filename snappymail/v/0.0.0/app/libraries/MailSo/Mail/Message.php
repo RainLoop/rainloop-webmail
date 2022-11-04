@@ -658,6 +658,7 @@ class Message implements \JsonSerializable
 			'Folder' => $this->sFolder,
 			'Uid' => $this->iUid,
 			'subject' => \trim(Utils::Utf8Clear($this->sSubject)),
+			'encrypted' => 'multipart/encrypted' == $this->sContentType || $this->PgpEncrypted(),
 			'MessageId' => $this->sMessageId,
 			'SpamScore' => $this->bIsSpam ? 100 : $this->iSpamScore,
 			'SpamResult' => $this->sSpamResult,

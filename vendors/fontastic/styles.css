@@ -88,6 +88,9 @@
 .icon-folder-add::before {
   content: "\e03c";
 }
+.icon-lock::before {
+  content: "🔒";
+}
 .icon-popup::before {
   content: "\e045";
 }
