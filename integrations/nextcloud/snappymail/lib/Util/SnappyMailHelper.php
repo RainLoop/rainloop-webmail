@@ -108,6 +108,9 @@ class SnappyMailHelper
 				// https://github.com/the-djmaze/snappymail/issues/561#issuecomment-1301317723
 				// https://github.com/nextcloud/server/issues/34935#issuecomment-1302145157
 				require \OC::$SERVERROOT . '/version.php';
+//				\OC\SystemConfig
+//				file_get_contents(\OC::$SERVERROOT . 'config/config.php');
+//				$CONFIG['version']
 				if (24 < $OC_Version[0]) {
 					$ocSession = \OC::$server->getSession();
 					$ocSession->reopen();
