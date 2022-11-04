@@ -56,9 +56,7 @@ export const
 				addEventListener('mailvelope', () => this.loadKeyrings(identifier));
 			}
 
-			if (OpenPGPUserStore.isSupported()) {
-				OpenPGPUserStore.loadKeyrings();
-			}
+			OpenPGPUserStore.loadKeyrings();
 
 			if (SettingsCapa('GnuPG')) {
 				GnuPGUserStore.loadKeyrings();
@@ -139,9 +137,11 @@ export const
 			}
 
 			// Try OpenPGP.js
-			let result = await OpenPGPUserStore.decrypt(armoredText, sender);
-			if (result) {
-				return result;
+			if (OpenPGPUserStore.isSupported()) {
+				let result = await OpenPGPUserStore.decrypt(armoredText, sender);
+				if (result) {
+					return result;
+				}
 			}
 
 			// Try Mailvelope (does not support inline images)
@@ -161,7 +161,7 @@ export const
 						*/
 						const body = message.body;
 						body.textContent = '';
-						result = await mailvelope.createDisplayContainer(
+						let result = await mailvelope.createDisplayContainer(
 							'#'+body.id,
 							armoredText,
 							this.mailvelopeKeyring,

@@ -108,14 +108,16 @@ export const OpenPGPUserStore = new class {
 	}
 
 	loadKeyrings() {
-		loadOpenPgpKeys(publicKeysItem).then(keys => {
-			this.publicKeys(keys || []);
-			console.log('openpgp.js public keys loaded');
-		});
-		loadOpenPgpKeys(privateKeysItem).then(keys => {
-			this.privateKeys(keys || [])
-			console.log('openpgp.js private keys loaded');
-		});
+		if (window.openpgp) {
+			loadOpenPgpKeys(publicKeysItem).then(keys => {
+				this.publicKeys(keys || []);
+				console.log('openpgp.js public keys loaded');
+			});
+			loadOpenPgpKeys(privateKeysItem).then(keys => {
+				this.privateKeys(keys || [])
+				console.log('openpgp.js private keys loaded');
+			});
+		}
 	}
 
 	/**
@@ -126,7 +128,7 @@ export const OpenPGPUserStore = new class {
 	}
 
 	importKey(armoredKey) {
-		openpgp.readKey({armoredKey:armoredKey}).then(key => {
+		window.openpgp && openpgp.readKey({armoredKey:armoredKey}).then(key => {
 			if (!key.err) {
 				if (key.isPrivate()) {
 					this.privateKeys.push(new OpenPgpKeyModel(armoredKey, key));
@@ -145,14 +147,16 @@ export const OpenPGPUserStore = new class {
 		keyPair.revocationCertificate
 	 */
 	storeKeyPair(keyPair) {
-		openpgp.readKey({armoredKey:keyPair.publicKey}).then(key => {
-			this.publicKeys.push(new OpenPgpKeyModel(keyPair.publicKey, key));
-			storeOpenPgpKeys(this.publicKeys, publicKeysItem);
-		});
-		openpgp.readKey({armoredKey:keyPair.privateKey}).then(key => {
-			this.privateKeys.push(new OpenPgpKeyModel(keyPair.privateKey, key));
-			storeOpenPgpKeys(this.privateKeys, privateKeysItem);
-		});
+		if (window.openpgp) {
+			openpgp.readKey({armoredKey:keyPair.publicKey}).then(key => {
+				this.publicKeys.push(new OpenPgpKeyModel(keyPair.publicKey, key));
+				storeOpenPgpKeys(this.publicKeys, publicKeysItem);
+			});
+			openpgp.readKey({armoredKey:keyPair.privateKey}).then(key => {
+				this.privateKeys.push(new OpenPgpKeyModel(keyPair.privateKey, key));
+				storeOpenPgpKeys(this.privateKeys, privateKeysItem);
+			});
+		}
 	}
 
 	/**
