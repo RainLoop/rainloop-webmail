@@ -42,6 +42,7 @@
 	--dropdown-menu-hover-bg-color: #444;
 	--dropdown-menu-hover-color: #eee;
 	--dropdown-menu-disabled-color: #999;
+	--dropdown-menu-border-clr: rgba(0,0,0,.2);
 
 	/* FOLDERS */
 	--folders-color: #333;

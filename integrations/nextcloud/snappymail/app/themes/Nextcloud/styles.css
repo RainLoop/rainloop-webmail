@@ -117,6 +117,7 @@
 	--dropdown-menu-hover-bg-color: var(--color-background-hover);
 	--dropdown-menu-hover-color: var(--color-main-text);
 	--dropdown-menu-disabled-color: #999;
+	--dropdown-menu-border-clr: var(--color-border);
 
 	/* FOLDERS */
 	--folders-color: var(--color-main-text);
