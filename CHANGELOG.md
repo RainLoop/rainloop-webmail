@@ -1,3 +1,24 @@
+## 2.20.1 – 2022-11-04
+
+### Added
+- Added CSS --dialog-border-clr and --dialog-border-radius
+- Show lock (lock) glyph in messagelist for encrypted messages
+
+### Fixed
+- Decrypt failed when OpenPGP.js not loaded
+
+### Nextcloud
+- Now integrate with Nextcloud by default, but keep iframe option available
+- Better theme integration with Nextcloud
+- Use Nextcloud 18+ IEventDispatcher
+- Solve Nextcloud 25 CSS issues
+  [#620](https://github.com/the-djmaze/snappymail/issues/620)
+- PutinICS does is not working for all calendar events
+  [#622](https://github.com/the-djmaze/snappymail/issues/622)
+- Update readme by @cm-schl
+  [#617](https://github.com/the-djmaze/snappymail/issues/617)
+
+
 ## 2.20.0 – 2022-11-03
 
 ### Added
