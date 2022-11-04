@@ -83,8 +83,8 @@
 	--main-bg-repeat: repeat;
 	--main-font-size: 14px;
 	--link-color: #369;
-	--border-color: #ddd;
-	--hr-color: #eee;
+	--border-color: var(--color-border);
+	--hr-color: var(--color-border);
 
 	--warning-clr: var(--color-warning);
 	--warning-bg-clr: #fcf8e3;
@@ -149,7 +149,7 @@
 	/* DIALOGS */
 	--dialog-clr: var(--color-main-text);
 	--dialog-bg-clr: var(--color-main-background);
-	--dialog-border-clr: #ddd;
+	--dialog-border-clr: var(--color-border);
 	--dialog-border-radius: var(--border-radius-large);
 
 	/* FORMS */
