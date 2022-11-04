@@ -2,10 +2,10 @@
 
 if (defined('APP_VERSION'))
 {
-	if (PHP_VERSION_ID  < 70300)
+	if (PHP_VERSION_ID  < 70400)
 	{
 		echo '<p style="color: red">';
-		echo '[301] Your PHP version ('.PHP_VERSION.') is lower than the minimal required 7.3.0!';
+		echo '[301] Your PHP version ('.PHP_VERSION.') is lower than the minimal required 7.4.0!';
 		echo '</p>';
 		exit(301);
 	}

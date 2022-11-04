@@ -46,7 +46,7 @@ This fork of RainLoop has the following changes:
 * Auth failed attempts written to syslog
 * Added Fail2ban instructions
 * ES2018
-* PHP 7.3+ required
+* PHP 7.4+ required
 * PHP mbstring extension required
 * PHP replaced pclZip with PharData and ZipArchive
 * Dark mode
