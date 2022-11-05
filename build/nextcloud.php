@@ -14,7 +14,7 @@ $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('snappymai
 foreach ($files as $file) {
 	if (is_file($file)) {
 		$newFile = str_replace('\\', '/', $file);
-		$newFile = str_replace("'snappymail/v/'.", '', $newFile);
+//		$newFile = str_replace("'snappymail/v/'.", '', $newFile);
 		$nc_tar->addFile($file, "snappymail/app/{$newFile}");
 	}
 }
@@ -28,7 +28,7 @@ $nc_tar->addFile('.htaccess', 'snappymail/app/.htaccess');
 
 $index = file_get_contents('index.php');
 $index = str_replace('0.0.0', $package->version, $index);
-$index = str_replace('snappymail/v/', '', $index);
+//$index = str_replace('snappymail/v/', '', $index);
 $nc_tar->addFromString('snappymail/app/index.php', $index);
 $nc_tar->addFile('README.md', 'snappymail/app/README.md');
 $nc_tar->addFile('CHANGELOG.md', 'snappymail/CHANGELOG.md');

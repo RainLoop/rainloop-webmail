@@ -1,3 +1,22 @@
+## 2.20.2 – 2022-11-05
+
+### Added
+- Add more search operators (i.e. copy lots of Gmail ones)
+  [#625](https://github.com/the-djmaze/snappymail/issues/625)
+
+### Changed
+- Some CSS borders to var(--border-color)
+
+### Fixed
+- pgpDecrypt() using MailVelope the decrypt message was not green
+- Shift + F in search bar resulted in forwarding message
+  [#624](https://github.com/the-djmaze/snappymail/issues/624)
+
+### Nextcloud
+- auto login mechanism not working anymore
+  [#627](https://github.com/the-djmaze/snappymail/issues/627)
+
+
 ## 2.20.1 – 2022-11-04
 
 ### Added
