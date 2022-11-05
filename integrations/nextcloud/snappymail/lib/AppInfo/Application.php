@@ -68,22 +68,9 @@ class Application extends App implements IBootstrap
 		if (!\is_dir(\rtrim(\trim(\OC::$server->getSystemConfig()->getValue('datadirectory', '')), '\\/') . '/appdata_snappymail')) {
 			return;
 		}
-/*
-		$container = $this->getContainer();
-		$container->query('OCP\INavigationManager')->add(function () use ($container) {
-			$urlGenerator = $container->query('OCP\IURLGenerator');
-			return [
-				'id' => 'snappymail',
-				'order' => 4,
-				'href' => $urlGenerator->linkToRoute('snappymail.page.index'),
-				'icon' => $urlGenerator->imagePath('snappymail', 'logo-white-64x64.png'),
-				'name' => \OCP\Util::getL10N('snappymail')->t('Email')
-			];
-		});
-*/
 
-		$dispatcher = $container->query('OCP\EventDispatcher\IEventDispatcher');
-		$this->dispatcher->addListener(PostLoginEvent::class, function (PostLoginEvent $Event) {
+		$dispatcher = $context->getAppContainer()->query('OCP\EventDispatcher\IEventDispatcher');
+		$dispatcher->addListener(PostLoginEvent::class, function (PostLoginEvent $Event) {
 			$config = \OC::$server->getConfig();
 			// Only store the user's password in the current session if they have
 			// enabled auto-login using Nextcloud username or email address.
@@ -95,7 +82,7 @@ class Application extends App implements IBootstrap
 			}
 		});
 
-		$this->dispatcher->addListener(BeforeUserLoggedOutEvent::class, function (BeforeUserLoggedOutEvent $Event) {
+		$dispatcher->addListener(BeforeUserLoggedOutEvent::class, function (BeforeUserLoggedOutEvent $Event) {
 			\OC::$server->getSession()['snappymail-password'] = '';
 			SnappyMailHelper::loadApp();
 			\RainLoop\Api::Actions()->Logout(true);
