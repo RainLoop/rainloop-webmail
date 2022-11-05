@@ -15,6 +15,27 @@ document.onreadystatechange = () => {
 	}
 };
 
+document.addEventListener('DOMContentLoaded', () => {
+	passThemes();
+});
+
+// Pass nextcloud themes and theme attributes to SnappyMail.
+function passThemes() {
+	const iframe = document.getElementById('rliframe');
+    if (!iframe) return;
+
+    const target = iframe.contentWindow.document;
+
+	const ncStylesheets = [...document.querySelectorAll('link.theme')];
+	ncStylesheets.forEach(ncSheet => {
+		const smSheet = target.importNode(ncSheet, true);
+		target.head.appendChild(smSheet);
+	});
+
+	const themes = [...document.body.attributes].filter(att => att.name.startsWith('data-theme'));
+	themes.forEach(theme => target.body.setAttribute(theme.name, theme.value));
+}
+
 // The SnappyMail application is already configured to modify the <title> element
 // of its root document with the number of unread messages in the inbox.
 // However, its document is the SnappyMail iframe. This function sets up a
