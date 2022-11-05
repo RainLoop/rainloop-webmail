@@ -15,6 +15,7 @@
 #rl-app {
     color: var(--color-main-text);
     background-color: transparent;
+    font-family: var(--font-face);
 }
 
 #rl-left {
