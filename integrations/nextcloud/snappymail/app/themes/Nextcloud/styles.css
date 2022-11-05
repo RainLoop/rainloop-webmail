@@ -16,6 +16,7 @@
     color: var(--color-main-text);
     background-color: transparent;
     font-family: var(--font-face);
+    font-size: var(--default-font-size);
 }
 
 #rl-left {
