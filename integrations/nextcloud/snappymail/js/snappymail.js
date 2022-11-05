@@ -22,9 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // Pass nextcloud themes and theme attributes to SnappyMail.
 function passThemes() {
 	const iframe = document.getElementById('rliframe');
-    if (!iframe) return;
+	if (!iframe) return;
 
-    const target = iframe.contentWindow.document;
+	const target = iframe.contentWindow.document;
 
 	const ncStylesheets = [...document.querySelectorAll('link.theme')];
 	ncStylesheets.forEach(ncSheet => {
