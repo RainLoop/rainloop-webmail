@@ -644,7 +644,7 @@ export class MailMessageList extends AbstractViewRight {
 			return false;
 		});
 
-		addShortcut('f,mailforward', 'shift', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('f,mailforward', 'shift', [Scope.MessageList, Scope.MessageView], () => {
 			this.forwardCommand();
 			return false;
 		});
