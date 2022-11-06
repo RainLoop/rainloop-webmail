@@ -55,16 +55,12 @@ class PageController extends Controller
 		$sAppCssMin = $oConfig->Get('labs', 'use_app_debug_css', false) ? '' : '.min';
 		$sLanguage = $oActions->GetLanguage(false);
 
-		$sScriptNonce = \OC::$server->getContentSecurityPolicyNonceManager()->getNonce();
-//		$sScriptNonce = \SnappyMail\UUID::generate();
-//		\RainLoop\Service::setCSP($sScriptNonce);
-
 		$params = [
 			'Admin' => $bAdmin ? 1 : 0,
 			'LoadingDescriptionEsc' => \htmlspecialchars($oConfig->Get('webmail', 'loading_description', 'SnappyMail'), ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
 			'BaseTemplates' => \RainLoop\Utils::ClearHtmlOutput($oServiceActions->compileTemplates($bAdmin)),
 			'BaseAppBootScript' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/js'.($sAppJsMin ? '/min' : '').'/boot'.$sAppJsMin.'.js'),
-			'BaseAppBootScriptNonce' => $sScriptNonce,
+			'BaseAppBootScriptNonce' => \OC::$server->getContentSecurityPolicyNonceManager()->getNonce(),
 			'BaseLanguage' => $oActions->compileLanguage($sLanguage, $bAdmin),
 			'BaseAppBootCss' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.$sAppCssMin.'.css'),
 			'BaseAppThemeCssLink' => $oActions->ThemeLink($bAdmin),
@@ -75,6 +71,8 @@ class PageController extends Controller
 			)
 		];
 
+//		\OCP\Util::addScript('snappymail', '../app/snappymail/v/'.APP_VERSION.'/static/js'.($sAppJsMin ? '/min' : '').'/boot'.$sAppJsMin);
+
 		// Nextcloud html encodes, so addHeader('style') is not possible
 //		\OCP\Util::addHeader('style', ['id'=>'app-boot-css'], \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.$sAppCssMin.'.css'));
 		\OCP\Util::addHeader('link', ['type'=>'text/css','rel'=>'stylesheet','href'=>\RainLoop\Utils::WebStaticPath('css/'.($bAdmin?'admin':'app').$sAppCssMin.'.css')], '');
@@ -83,10 +81,17 @@ class PageController extends Controller
 		$response = new TemplateResponse('snappymail', 'index_embed', $params);
 
 		$csp = new ContentSecurityPolicy();
-		$csp->addAllowedScriptDomain("'self'");
-		\method_exists($csp, 'useStrictDynamic') && $csp->useStrictDynamic(true); // NC24+
+//		$csp->addAllowedScriptDomain("'self'");
+		// CSP level 3
+		\method_exists($csp, 'useStrictDynamic')
+			? $csp->useStrictDynamic(true) // NC24+
+			: $csp->addAllowedScriptDomain("'strict-dynamic'");
+		// Else CSP level 2
+		$csp->addAllowedScriptDomain("'unsafe-inline'"); // ignored by CSP 3 'strict-dynamic'
 		$csp->allowEvalScript(true); // $csp->addAllowedScriptDomain("'unsafe-eval'");
-		$csp->addAllowedStyleDomain("'self'");
+//		$csp->addAllowedStyleDomain("'self'");
+//		$csp->addAllowedStyleDomain("'unsafe-inline'");
+//		$csp->addAllowedImageDomain("data:");
 		$response->setContentSecurityPolicy($csp);
 
 		return $response;

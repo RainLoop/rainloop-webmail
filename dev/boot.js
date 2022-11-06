@@ -9,6 +9,13 @@ const
 	layout = doc.cookie.match(/(^|;) ?rllayout=([^;]+)/) || '',
 	badBrowser = () => doc.location.replace('./?/BadBrowser'),
 
+	showError = msg => {
+		let div = eId('loading-error');
+		div.append(' ' + msg);
+		eId('loading').hidden = true;
+		div.hidden = false;
+	},
+
 	loadScript = src => {
 		if (!src) {
 			throw new Error('src should not be empty.');
@@ -44,13 +51,7 @@ window.rl = {
 	initData: appData => {
 		RL_APP_DATA = appData;
 		const url = appData.StaticLibsJs,
-			cb = () => rl.app ? rl.app.bootstart() : badBrowser(),
-			div = eId('loading-error'),
-			showError = msg => {
-				div.append(' ' + msg);
-				eId('loading').hidden = true;
-				div.hidden = false;
-			};
+			cb = () => rl.app ? rl.app.bootstart() : badBrowser();
 		loadScript(url)
 			.then(() => loadScript(url.replace('/libs.', `/${admin?'admin':'app'}.`)))
 			.then(() => appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve())
@@ -73,6 +74,6 @@ window.rl = {
 };
 
 loadScript(`./?/${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().slice(2)}/`)
-	.then(() => 0);
+	.catch(e => showError(e));
 
 })(document);
