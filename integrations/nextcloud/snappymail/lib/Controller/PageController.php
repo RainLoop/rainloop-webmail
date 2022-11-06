@@ -84,7 +84,7 @@ class PageController extends Controller
 
 		$csp = new ContentSecurityPolicy();
 		$csp->addAllowedScriptDomain("'self'");
-		$csp->useStrictDynamic(true);
+		\method_exists($csp, 'useStrictDynamic') && $csp->useStrictDynamic(true); // NC24+
 		$csp->allowEvalScript(true); // $csp->addAllowedScriptDomain("'unsafe-eval'");
 		$csp->addAllowedStyleDomain("'self'");
 		$response->setContentSecurityPolicy($csp);
