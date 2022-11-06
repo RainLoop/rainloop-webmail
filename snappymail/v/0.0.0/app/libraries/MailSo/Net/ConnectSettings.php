@@ -68,9 +68,9 @@ class ConnectSettings
 		$object->host = $aSettings['Host'];
 		$object->port = $aSettings['Port'];
 		$object->type = $aSettings['Secure'];
-		$object->ssl['verify_peer'] = !!$aSettings['VerifySsl'];
-		$object->ssl['verify_peer_name'] = !!$aSettings['VerifySsl'];
-		$object->ssl['allow_self_signed'] = !!$aSettings['AllowSelfSigned'];
+		$object->ssl['verify_peer'] = !empty($aSettings['VerifySsl']);
+		$object->ssl['verify_peer_name'] = !empty($aSettings['VerifySsl']);
+		$object->ssl['allow_self_signed'] = !empty($aSettings['AllowSelfSigned']);
 		if (!empty($aSettings['ClientCert'])) {
 			$object->ssl['local_cert'] = $aSettings['ClientCert'];
 		}
