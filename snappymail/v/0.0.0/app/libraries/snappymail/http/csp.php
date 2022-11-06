@@ -35,20 +35,20 @@ class CSP
 	function __toString() : string
 	{
 		$params = [
-			'base-uri ' . \implode(' ', $this->base),
-			'default-src ' . \implode(' ', $this->default)
+			'base-uri ' . \implode(' ', \array_unique($this->base)),
+			'default-src ' . \implode(' ', \array_unique($this->default))
 		];
 		if ($this->script) {
-			$params[] = 'script-src ' . \implode(' ', $this->script);
+			$params[] = 'script-src ' . \implode(' ', \array_unique($this->script));
 		}
 		if ($this->img) {
-			$params[] = 'img-src ' . \implode(' ', $this->img);
+			$params[] = 'img-src ' . \implode(' ', \array_unique($this->img));
 		}
 		if ($this->style) {
-			$params[] = 'style-src ' . \implode(' ', $this->style);
+			$params[] = 'style-src ' . \implode(' ', \array_unique($this->style));
 		}
 		if ($this->frame) {
-			$params[] = 'frame-src ' . \implode(' ', $this->frame);
+			$params[] = 'frame-src ' . \implode(' ', \array_unique($this->frame));
 		}
 
 		// Deprecated
