@@ -55,7 +55,9 @@ abstract class Crypt
 				$fn = "{$data[0]}Decrypt";
 				if (\method_exists(__CLASS__, $fn)) {
 					$result = static::{$fn}($data[2], $data[1], $key);
-					return \json_decode($result, true);
+					if (\is_string($result)) {
+						return static::jsonDecode($result);
+					}
 				}
 			} catch (\Throwable $e) {
 				\trigger_error(__CLASS__ . "::{$fn}(): " . $e->getMessage());
@@ -68,7 +70,7 @@ abstract class Crypt
 
 	public static function DecryptFromJSON(string $data, string $key = null) /* : mixed */
 	{
-		$data = \json_decode($data, true);
+		$data = static::jsonDecode($data);
 		if (!\is_array($data)) {
 //			\trigger_error(__CLASS__ . '::DecryptFromJSON() invalid $data');
 			return null;
@@ -89,22 +91,26 @@ abstract class Crypt
 	public static function Encrypt($data, string $key = null) : array
 	{
 		$data = \json_encode($data);
-		if (\is_callable('sodium_crypto_aead_xchacha20poly1305_ietf_encrypt')) {
+
+		try {
 			$nonce = \random_bytes(\SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
-			$result = ['sodium', $nonce, static::SodiumEncrypt($data, $nonce, $key)];
-		} else if (static::$cipher && \is_callable('openssl_encrypt')) {
-			$iv = \random_bytes(\openssl_cipher_iv_length(static::$cipher));
-			$result = ['openssl', $iv, static::OpenSSLEncrypt($data, $iv, $key)];
-		} else {
-			$salt = \random_bytes(16);
-			$result = ['xxtea', $salt, static::XxteaEncrypt($data, $salt, $key)];
+			return ['sodium', $nonce, static::SodiumEncrypt($data, $nonce, $key)];
+		} catch (\Throwable $e) {
 		}
+
+		try {
+			$iv = \random_bytes(\openssl_cipher_iv_length(static::$cipher));
+			return ['openssl', $iv, static::OpenSSLEncrypt($data, $iv, $key)];
+		} catch (\Throwable $e) {
+		}
+
+		$salt = \random_bytes(16);
+		return ['xxtea', $salt, static::XxteaEncrypt($data, $salt, $key)];
 /*
 		if (static::{"{$result[0]}Decrypt"}($result[2], $result[1], $key) !== $data) {
 			throw new \Exception('Encrypt/Decrypt mismatch');
 		}
 */
-		return $result;
 	}
 
 	public static function EncryptToJSON($data, string $key = null) : string
@@ -117,10 +123,10 @@ abstract class Crypt
 		return \implode('.', \array_map('MailSo\\Base\\Utils::UrlSafeBase64Encode', static::Encrypt($data, $key)));
 	}
 
-	public static function SodiumDecrypt(string $data, string $nonce, string $key = null) /* : mixed */
+	public static function SodiumDecrypt(string $data, string $nonce, string $key = null) /* : string|false */
 	{
 		if (!\is_callable('sodium_crypto_aead_xchacha20poly1305_ietf_decrypt')) {
-			return null;
+			throw new \Exception('sodium_crypto_aead_xchacha20poly1305_ietf_decrypt not callable');
 		}
 		return \sodium_crypto_aead_xchacha20poly1305_ietf_decrypt(
 			$data,
@@ -130,10 +136,10 @@ abstract class Crypt
 		);
 	}
 
-	public static function SodiumEncrypt(string $data, string $nonce, string $key = null) : ?string
+	public static function SodiumEncrypt(string $data, string $nonce, string $key = null) : string
 	{
 		if (!\is_callable('sodium_crypto_aead_xchacha20poly1305_ietf_encrypt')) {
-			return null;
+			throw new \Exception('sodium_crypto_aead_xchacha20poly1305_ietf_encrypt not callable');
 		}
 		return \sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(
 			$data,
@@ -143,10 +149,13 @@ abstract class Crypt
 		);
 	}
 
-	public static function OpenSSLDecrypt(string $data, string $iv, string $key = null) /* : mixed */
+	public static function OpenSSLDecrypt(string $data, string $iv, string $key = null) /* : string|false */
 	{
-		if (!$data || !$iv || !static::$cipher || !\is_callable('openssl_decrypt')) {
-			return null;
+		if (!$data || !$iv) {
+			throw new \InvalidArgumentException('$data or $iv is empty string');
+		}
+		if (!static::$cipher || !\is_callable('openssl_decrypt')) {
+			throw new \Exception('openssl_decrypt not callable');
 		}
 		return \openssl_decrypt(
 			$data,
@@ -159,8 +168,11 @@ abstract class Crypt
 
 	public static function OpenSSLEncrypt(string $data, string $iv, string $key = null) : ?string
 	{
-		if (!$data || !$iv || !static::$cipher || !\is_callable('openssl_encrypt')) {
-			return null;
+		if (!$data || !$iv) {
+			throw new \InvalidArgumentException('$data or $iv is empty string');
+		}
+		if (!static::$cipher || !\is_callable('openssl_encrypt')) {
+			throw new \Exception('openssl_encrypt not callable');
 		}
 		return \openssl_encrypt(
 			$data,
@@ -174,7 +186,7 @@ abstract class Crypt
 	public static function XxteaDecrypt(string $data, string $salt, string $key = null) /* : mixed */
 	{
 		if (!$data || !$salt) {
-			return null;
+			throw new \InvalidArgumentException('$data or $salt is empty string');
 		}
 		$key = $salt . static::Passphrase($key);
 		return \is_callable('xxtea_decrypt')
@@ -185,12 +197,17 @@ abstract class Crypt
 	public static function XxteaEncrypt(string $data, string $salt, string $key = null) : ?string
 	{
 		if (!$data || !$salt) {
-			return null;
+			throw new \InvalidArgumentException('$data or $salt is empty string');
 		}
 		$key = $salt . static::Passphrase($key);
 		return \is_callable('xxtea_encrypt')
 			? \xxtea_encrypt($data, $key)
 			: \MailSo\Base\Xxtea::encrypt($data, $key);
+	}
+
+	private static function jsonDecode(string $data) /*: mixed*/
+	{
+		return \json_decode($data, true, 512, JSON_THROW_ON_ERROR);
 	}
 
 }
