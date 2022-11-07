@@ -27,12 +27,6 @@ class PageController extends Controller
 			}
 		}
 
-		$cspManager = \OC::$server->getContentSecurityPolicyNonceManager();
-		if (\method_exists($cspManager, 'browserSupportsCspV3') && !$cspManager->browserSupportsCspV3()) {
-			exit('SnappyMail does not work in this browser due to a <a href="https://github.com/the-djmaze/snappymail/issues/633">bug in Nextcloud</a>.
-				<br/>You must <a href="../../settings/admin/additional">turn on iframe mode</a>');
-		}
-
 		if (!$bAdmin && $config->getAppValue('snappymail', 'snappymail-no-embed')) {
 			\OC::$server->getNavigationManager()->setActiveEntry('snappymail');
 			\OCP\Util::addScript('snappymail', 'snappymail');
@@ -46,6 +40,12 @@ class PageController extends Controller
 			$csp->addAllowedFrameDomain("'self'");
 			$response->setContentSecurityPolicy($csp);
 			return $response;
+		}
+
+		$cspManager = \OC::$server->getContentSecurityPolicyNonceManager();
+		if (\method_exists($cspManager, 'browserSupportsCspV3') && !$cspManager->browserSupportsCspV3()) {
+			exit('SnappyMail does not work in this browser due to a <a href="https://github.com/the-djmaze/snappymail/issues/633">bug in Nextcloud</a>.
+				<br/>You must <a href="../../settings/admin/additional">turn on iframe mode</a>');
 		}
 
 		\OC::$server->getNavigationManager()->setActiveEntry('snappymail');

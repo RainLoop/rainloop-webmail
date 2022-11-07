@@ -1,3 +1,15 @@
+## 2.20.4 – 2022-11-07
+
+### Fixed
+- Nextcloud no-embed use iframe mode failed
+
+### Nextcloud
+- Workaround Nextcloud Content-Security-Policy bug
+  Safari [#631](https://github.com/the-djmaze/snappymail/issues/631)
+  Edge [#633](https://github.com/the-djmaze/snappymail/issues/633)
+  Reported [#35013](https://github.com/nextcloud/server/issues/35013)
+
+
 ## 2.20.3 – 2022-11-07
 
 ### Added
@@ -21,6 +33,25 @@
   [#634](https://github.com/the-djmaze/snappymail/issues/634)
 - Use snappymail icon as favicon-mask.svg instead default nextcloud logo
   [#635](https://github.com/the-djmaze/snappymail/issues/635)
+
+
+## 2.20.2 – 2022-11-05
+
+### Added
+- Add more search operators (i.e. copy lots of Gmail ones)
+  [#625](https://github.com/the-djmaze/snappymail/issues/625)
+
+### Changed
+- Some CSS borders to var(--border-color)
+
+### Fixed
+- pgpDecrypt() using MailVelope the decrypt message was not green
+- Shift + F in search bar resulted in forwarding message
+  [#624](https://github.com/the-djmaze/snappymail/issues/624)
+
+### Nextcloud
+- auto login mechanism not working anymore
+  [#627](https://github.com/the-djmaze/snappymail/issues/627)
 
 
 ## 2.20.1 – 2022-11-04
