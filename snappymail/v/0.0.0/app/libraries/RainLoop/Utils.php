@@ -144,6 +144,28 @@ class Utils
 		if (\strlen($sValue)) {
 			$_COOKIE[$sName] = $sValue;
 		}
+
+		// Cookie "$sName" has been rejected because it is already expired.
+		// Happens when \setcookie() sends multiple with the same name (and one is deleted)
+		// So when previously set, we must delete all 'Set-Cookie' headers and start over
+		$cookies = [];
+		$cookie_remove = false;
+		foreach (\headers_list() as $header) {
+			if (\preg_match("/Set-Cookie:([^=]+)=/i", $header, $match)) {
+				if (\trim($match[1]) == $sName) {
+					$cookie_remove = true;
+				} else {
+					$cookies[] = $header;
+				}
+			}
+		}
+		if ($cookie_remove) {
+			\header_remove('Set-Cookie');
+			foreach ($cookies as $cookie) {
+				\header($cookie);
+			}
+		}
+
 		\setcookie($sName, $sValue, array(
 			'expires' => $iExpire,
 			'path' => $sPath,
@@ -154,7 +176,11 @@ class Utils
 		));
 	}
 
-	public static function SetCookie(string $sName, string $sValue = '', int $iExpire = 0)
+	/**
+	 * Firefox: Cookie "$sName" has been rejected because it is already expired.
+	 * \header_remove("set-cookie: {$sName}");
+	 */
+	public static function SetCookie(string $sName, string $sValue, int $iExpire = 0)
 	{
 		$sPath = static::$CookieDefaultPath;
 		$sPath = $sPath && \strlen($sPath) ? $sPath : '/';
@@ -166,11 +192,14 @@ class Utils
 			throw new \Exception("Cookie '{$sName}' value too long");
 		}
 */
-		// Clear 4K split cookie first
-		static::ClearCookie($sName);
-		// Now set the new 4K split cookie
+		// Set the new 4K split cookie
 		foreach (\str_split($sValue, $iMaxSize) as $i => $sPart) {
 			static::_SetCookie($i ? "{$sName}~{$i}" : $sName, $sPart, $iExpire);
+		}
+		// Delete unused old 4K split cookie parts
+		while (($sCookieName = "{$sName}~" . ++$i) && isset($_COOKIE[$sCookieName])) {
+			unset($_COOKIE[$sCookieName]);
+			static::_SetCookie($sCookieName, '', \time() - 3600 * 24 * 30);
 		}
 	}
 
