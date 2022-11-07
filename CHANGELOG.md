@@ -1,20 +1,26 @@
-## 2.20.2 – 2022-11-05
+## 2.20.3 – 2022-11-07
 
 ### Added
-- Add more search operators (i.e. copy lots of Gmail ones)
-  [#625](https://github.com/the-djmaze/snappymail/issues/625)
+- Throw decrypt errors
+  [#632](https://github.com/the-djmaze/snappymail/issues/632)
 
 ### Changed
-- Some CSS borders to var(--border-color)
+- Better multiple WYSIWYG registration system (not finished)
+- Better handling of admin token cookie
 
 ### Fixed
-- pgpDecrypt() using MailVelope the decrypt message was not green
-- Shift + F in search bar resulted in forwarding message
-  [#624](https://github.com/the-djmaze/snappymail/issues/624)
+- Cookie “name” has been rejected because it is already expired.
+  [#636](https://github.com/the-djmaze/snappymail/issues/636)
+- Content-Security-Policy 'strict-dynamic' was missing
 
 ### Nextcloud
-- auto login mechanism not working anymore
-  [#627](https://github.com/the-djmaze/snappymail/issues/627)
+- Better handling of Content-Security-Policy
+  [#631](https://github.com/the-djmaze/snappymail/issues/631)
+  [#633](https://github.com/the-djmaze/snappymail/issues/633)
+- Nextcloud 23 Error Call to undefined method useStrictDynamic()
+  [#634](https://github.com/the-djmaze/snappymail/issues/634)
+- Use snappymail icon as favicon-mask.svg instead default nextcloud logo
+  [#635](https://github.com/the-djmaze/snappymail/issues/635)
 
 
 ## 2.20.1 – 2022-11-04

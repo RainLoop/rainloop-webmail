@@ -85,6 +85,6 @@ $manifest = str_replace('"}', "\"\n\t}", $manifest);
 $manifest = str_replace('}]', "}\n]", $manifest);
 $manifest = str_replace('","', "\",\n\t\t\"", $manifest);
 $manifest = str_replace('\/', '/', $manifest);
-file_put_contents(PLUGINS_DEST_DIR . "/packages.json", $manifest);
+file_put_contents(dirname(PLUGINS_DEST_DIR) . "/packages.json", $manifest);
 
 exit;

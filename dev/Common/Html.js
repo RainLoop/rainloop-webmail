@@ -634,9 +634,9 @@ export class HtmlEditor {
 			onReady = onReady ? [onReady] : [];
 			this.onReady = fn => onReady.push(fn);
 			// TODO: make 'which' user configurable
-			const which = 'CKEditor4',
-				wysiwyg = WYSIWYGS.find(item => which == item[0])
-					|| WYSIWYGS.find(item => 'Squire' == item[0]);
+//			const which = 'CKEditor4',
+//				wysiwyg = WYSIWYGS.find(item => which == item[0]) || WYSIWYGS.find(item => 'Squire' == item[0]);
+			const wysiwyg = WYSIWYGS.find(item => 'Squire' == item[0]);
 			wysiwyg[1](this, element, editor => {
 				this.editor = editor;
 				editor.on('blur', () => this.blurTrigger());
