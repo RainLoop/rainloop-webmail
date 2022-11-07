@@ -27,6 +27,12 @@ class PageController extends Controller
 			}
 		}
 
+		$cspManager = \OC::$server->getContentSecurityPolicyNonceManager();
+		if (\method_exists($cspManager, 'browserSupportsCspV3') && !$cspManager->browserSupportsCspV3()) {
+			exit('SnappyMail does not work in this browser due to a <a href="https://github.com/the-djmaze/snappymail/issues/633">bug in Nextcloud</a>.
+				<br/>You must <a href="../../settings/admin/additional">turn on iframe mode</a>');
+		}
+
 		if (!$bAdmin && $config->getAppValue('snappymail', 'snappymail-no-embed')) {
 			\OC::$server->getNavigationManager()->setActiveEntry('snappymail');
 			\OCP\Util::addScript('snappymail', 'snappymail');
@@ -60,7 +66,7 @@ class PageController extends Controller
 			'LoadingDescriptionEsc' => \htmlspecialchars($oConfig->Get('webmail', 'loading_description', 'SnappyMail'), ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
 			'BaseTemplates' => \RainLoop\Utils::ClearHtmlOutput($oServiceActions->compileTemplates($bAdmin)),
 			'BaseAppBootScript' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/js'.($sAppJsMin ? '/min' : '').'/boot'.$sAppJsMin.'.js'),
-			'BaseAppBootScriptNonce' => \OC::$server->getContentSecurityPolicyNonceManager()->getNonce(),
+			'BaseAppBootScriptNonce' => $cspManager->getNonce(),
 			'BaseLanguage' => $oActions->compileLanguage($sLanguage, $bAdmin),
 			'BaseAppBootCss' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.$sAppCssMin.'.css'),
 			'BaseAppThemeCssLink' => $oActions->ThemeLink($bAdmin),
