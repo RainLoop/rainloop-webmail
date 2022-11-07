@@ -42,12 +42,6 @@ class PageController extends Controller
 			return $response;
 		}
 
-		$cspManager = \OC::$server->getContentSecurityPolicyNonceManager();
-		if (\method_exists($cspManager, 'browserSupportsCspV3') && !$cspManager->browserSupportsCspV3()) {
-			exit('SnappyMail does not work in this browser due to a <a href="https://github.com/the-djmaze/snappymail/issues/633">bug in Nextcloud</a>.
-				<br/>You must <a href="../../settings/admin/additional">turn on iframe mode</a>');
-		}
-
 		\OC::$server->getNavigationManager()->setActiveEntry('snappymail');
 
 		\OCP\Util::addStyle('snappymail', 'embed');
@@ -61,12 +55,19 @@ class PageController extends Controller
 		$sAppCssMin = $oConfig->Get('labs', 'use_app_debug_css', false) ? '' : '.min';
 		$sLanguage = $oActions->GetLanguage(false);
 
+		$cspManager = \OC::$server->getContentSecurityPolicyNonceManager();
+		$sNonce = $cspManager->getNonce() ?: \SnappyMail\UUID::generate();
+		$csp = new ContentSecurityPolicy();
+		if (\method_exists($cspManager, 'browserSupportsCspV3') && !$cspManager->browserSupportsCspV3()) {
+			$csp->addAllowedScriptDomain("'nonce-{$sNonce}'");
+		}
+
 		$params = [
 			'Admin' => $bAdmin ? 1 : 0,
 			'LoadingDescriptionEsc' => \htmlspecialchars($oConfig->Get('webmail', 'loading_description', 'SnappyMail'), ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
 			'BaseTemplates' => \RainLoop\Utils::ClearHtmlOutput($oServiceActions->compileTemplates($bAdmin)),
 			'BaseAppBootScript' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/js'.($sAppJsMin ? '/min' : '').'/boot'.$sAppJsMin.'.js'),
-			'BaseAppBootScriptNonce' => $cspManager->getNonce(),
+			'BaseAppBootScriptNonce' => $sNonce,
 			'BaseLanguage' => $oActions->compileLanguage($sLanguage, $bAdmin),
 			'BaseAppBootCss' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.$sAppCssMin.'.css'),
 			'BaseAppThemeCssLink' => $oActions->ThemeLink($bAdmin),
@@ -86,7 +87,7 @@ class PageController extends Controller
 
 		$response = new TemplateResponse('snappymail', 'index_embed', $params);
 
-		$response->setContentSecurityPolicy(new ContentSecurityPolicy());
+		$response->setContentSecurityPolicy($csp);
 
 		return $response;
 	}
