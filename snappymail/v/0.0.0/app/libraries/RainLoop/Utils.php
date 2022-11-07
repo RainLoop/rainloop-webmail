@@ -166,6 +166,9 @@ class Utils
 			throw new \Exception("Cookie '{$sName}' value too long");
 		}
 */
+		// Clear 4K split cookie first
+		static::ClearCookie($sName);
+		// Now set the new 4K split cookie
 		foreach (\str_split($sValue, $iMaxSize) as $i => $sPart) {
 			static::_SetCookie($i ? "{$sName}~{$i}" : $sName, $sPart, $iExpire);
 		}

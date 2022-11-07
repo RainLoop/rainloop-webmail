@@ -123,8 +123,7 @@ class ActionsAdmin extends Actions
 			throw new ClientException(Notifications::AuthError);
 		}
 
-		$sToken = $this->getAdminToken();
-		$this->setAdminAuthToken($sToken);
+		$sToken = $this->setAdminAuthToken($sToken);
 
 		return $this->DefaultResponse(__FUNCTION__, $sToken ? $this->AppData(true) : false);
 	}
@@ -668,22 +667,18 @@ class ActionsAdmin extends Actions
 		return $this->DefaultResponse(__FUNCTION__, $QR->__toString());
 	}
 
-	private function setAdminAuthToken(string $sToken) : void
-	{
-		Utils::SetCookie(static::$AUTH_ADMIN_TOKEN_KEY, $sToken);
-	}
-
-	private function getAdminToken() : string
+	private function setAdminAuthToken(string $sToken) : string
 	{
 		$sRand = \MailSo\Base\Utils::Sha1Rand();
-		if (!$this->Cacher(null, true)->Set(KeyPathHelper::SessionAdminKey($sRand), \time()))
-		{
-			$this->oLogger->Write('Cannot store an admin token',
-				\LOG_WARNING);
-			return '';
+		if (!$this->Cacher(null, true)->Set(KeyPathHelper::SessionAdminKey($sRand), \time())) {
+			throw new \RuntimeException('Failed to store admin token');
 		}
-
-		return Utils::EncodeKeyValuesQ(array('token', $sRand));
+		$sToken = Utils::EncodeKeyValuesQ(array('token', $sRand));
+		if (!$sToken) {
+			throw new \RuntimeException('Failed to encode admin token');
+		}
+		Utils::SetCookie(static::$AUTH_ADMIN_TOKEN_KEY, $sToken);
+		return $sToken;
 	}
 
 	private function pluginEnable(string $sName, bool $bEnable = true) : bool
