@@ -598,7 +598,24 @@ export const
 			.replace(/~~~blockquote~~~\s*/g, '<blockquote>')
 			.replace(/\s*~~~\/blockquote~~~/g, '</blockquote>')
 			.replace(/\n/g, '<br>');
-	};
+	},
+
+	WYSIWYGS = ko.observableArray();
+
+WYSIWYGS.push(['Squire', (owner, container, onReady)=>{
+	let squire = new SquireUI(container);
+	setTimeout(()=>onReady(squire), 1);
+/*
+	squire.on('blur', () => owner.blurTrigger());
+	squire.on('focus', () => clearTimeout(owner.blurTimer));
+	squire.on('mode', () => {
+		owner.blurTrigger();
+		owner.onModeChange?.(!owner.isPlain());
+	});
+*/
+}]);
+
+rl.registerWYSIWYG = (name, construct) => WYSIWYGS.push([name, construct]);
 
 export class HtmlEditor {
 	/**
@@ -614,29 +631,22 @@ export class HtmlEditor {
 		this.onModeChange = onModeChange;
 
 		if (element) {
-			let editor;
-
 			onReady = onReady ? [onReady] : [];
 			this.onReady = fn => onReady.push(fn);
-			const readyCallback = () => {
+			// TODO: make 'which' user configurable
+			const which = 'CKEditor4',
+				wysiwyg = WYSIWYGS.find(item => which == item[0])
+					|| WYSIWYGS.find(item => 'Squire' == item[0]);
+			wysiwyg[1](this, element, editor => {
 				this.editor = editor;
-				this.onReady = fn => fn();
+				editor.on('blur', () => this.blurTrigger());
+				editor.on('focus', () => clearTimeout(this.blurTimer));
+				editor.on('mode', () => {
+					this.blurTrigger();
+					this.onModeChange?.(!this.isPlain());
+				});
 				onReady.forEach(fn => fn());
-			};
-
-			if (rl.createWYSIWYG) {
-				editor = rl.createWYSIWYG(element, readyCallback);
-			}
-			if (!editor) {
-				editor = new SquireUI(element);
-				setTimeout(readyCallback, 1);
-			}
-
-			editor.on('blur', () => this.blurTrigger());
-			editor.on('focus', () => this.blurTimer && clearTimeout(this.blurTimer));
-			editor.on('mode', () => {
-				this.blurTrigger();
-				this.onModeChange?.(!this.isPlain());
+				this.onReady = fn => fn();
 			});
 		}
 	}
