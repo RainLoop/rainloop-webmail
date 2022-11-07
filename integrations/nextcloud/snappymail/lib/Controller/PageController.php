@@ -3,9 +3,9 @@
 namespace OCA\SnappyMail\Controller;
 
 use OCA\SnappyMail\Util\SnappyMailHelper;
+use OCA\SnappyMail\ContentSecurityPolicy;
 
 use OCP\AppFramework\Controller;
-use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\TemplateResponse;
 
 class PageController extends Controller
@@ -80,19 +80,7 @@ class PageController extends Controller
 
 		$response = new TemplateResponse('snappymail', 'index_embed', $params);
 
-		$csp = new ContentSecurityPolicy();
-//		$csp->addAllowedScriptDomain("'self'");
-		// CSP level 3
-		\method_exists($csp, 'useStrictDynamic')
-			? $csp->useStrictDynamic(true) // NC24+
-			: $csp->addAllowedScriptDomain("'strict-dynamic'");
-		// Else CSP level 2
-		$csp->addAllowedScriptDomain("'unsafe-inline'"); // ignored by CSP 3 'strict-dynamic'
-		$csp->allowEvalScript(true); // $csp->addAllowedScriptDomain("'unsafe-eval'");
-//		$csp->addAllowedStyleDomain("'self'");
-//		$csp->addAllowedStyleDomain("'unsafe-inline'");
-//		$csp->addAllowedImageDomain("data:");
-		$response->setContentSecurityPolicy($csp);
+		$response->setContentSecurityPolicy(new ContentSecurityPolicy());
 
 		return $response;
 	}

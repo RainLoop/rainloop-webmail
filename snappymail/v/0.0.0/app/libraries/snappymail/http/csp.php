@@ -12,7 +12,8 @@ class CSP
 		$default = ["'self'"],
 		// Knockout.js requires unsafe-inline?
 		// Knockout.js requires eval() for observable binding purposes
-		$script  = ["'self'", "'unsafe-eval'"/*, "'unsafe-inline'"*/],
+		$script  = ["'strict-dynamic'", "'unsafe-eval'"],
+//		$script  = ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
 		$img     = ["'self'", 'data:'],
 		$style   = ["'self'", "'unsafe-inline'"],
 		$frame   = [],
