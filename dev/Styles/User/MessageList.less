@@ -25,8 +25,8 @@ html.rl-no-preview-pane {
 .messageList {
 	height: calc(100% - 50px);
 	background-color: #fff;
-	border: 1px solid @rlMainDarkColor;
-	border-radius: @rlMainBorderRadius;
+	border: 1px solid var(--border-color, #aaa);
+	border-radius: var(--border-radius, 5px);
 	display: flex;
 	flex-direction: column;
 
@@ -38,8 +38,8 @@ html.rl-no-preview-pane {
 		background-color: var(--message-list-toolbar-bg-color, #eee);
 //		#gradient > .vertical(#f4f4f4, #dfdfdf);
 
-		border-bottom-right-radius: @rlMainBorderRadius;
-		border-bottom-left-radius: @rlMainBorderRadius;
+		border-bottom-right-radius: var(--border-radius, 5px);
+		border-bottom-left-radius: var(--border-radius, 5px);
 		border-top: 1px solid var(--border-color, #bbb);
 
 		.e-quota {
@@ -72,8 +72,8 @@ html.rl-no-preview-pane {
 		background-color: var(--message-list-toolbar-bg-color, #eee);
 //		#gradient > .vertical(#f4f4f4, #dfdfdf);
 
-		border-top-right-radius: @rlMainBorderRadius;
-		border-top-left-radius: @rlMainBorderRadius;
+		border-top-right-radius: var(--border-radius, 5px);
+		border-top-left-radius: var(--border-radius, 5px);
 		border-bottom: 1px solid var(--border-color, #bbb);
 	}
 
@@ -267,7 +267,7 @@ html:not(rl-mobile) {
 		padding: 1px 5px;
 		margin-right: 5px;
 		border: 1px solid #ccc;
-		border-radius: 5px;
+		border-radius: var(--border-radius, 5px);
 	}
 
 	.threadsCountParent.lastSelected {
@@ -281,7 +281,7 @@ html:not(rl-mobile) {
 	}
 
 	.threads-len {
-		border-radius: 6px;
+		border-radius: var(--border-radius, 5px);
 		border: 1px solid #ccc;
 		font-size: 11px;
 		padding: 0 2px;

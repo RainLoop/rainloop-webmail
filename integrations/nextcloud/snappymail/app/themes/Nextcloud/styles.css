@@ -84,6 +84,7 @@
 	--main-font-size: 14px;
 	--link-color: #369;
 	--border-color: var(--color-border);
+	--border-radius: var(--border-radius);
 	--hr-color: var(--color-border);
 
 	--warning-clr: var(--color-warning);

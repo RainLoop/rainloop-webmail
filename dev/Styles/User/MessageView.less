@@ -7,13 +7,12 @@ html.rl-no-preview-pane {
 
 #V-MailMessageView.focused .messageView {
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-	border-color: darken(@rlMainDarkColor, 5%);
 }
 
 .messageView {
 	background-color: #fff;
-	border: 1px solid @rlMainDarkColor;
-	border-radius: @rlMainBorderRadius;
+	border: 1px solid var(--border-color, #aaa);
+	border-radius: var(--border-radius, 5px);
 	height: 100%;
 
 	.toolbar {
@@ -117,7 +116,7 @@ html.rl-no-preview-pane {
 
 		background-color: #f8f8f8;
 		border-bottom: 1px solid var(--border-color, #bbb);
-		border-radius: @rlMainBorderRadius @rlMainBorderRadius 0 0;
+		border-radius: var(--border-radius, 5px) var(--border-radius, 5px) 0 0;
 		padding: 10px;
 		flex-shrink: 0;
 
@@ -270,7 +269,7 @@ html.rl-no-preview-pane {
 		color: #333;
 		z-index: 2;
 		cursor: pointer;
-		border-radius: 5px;
+		border-radius: var(--border-radius, 5px);
 		opacity: 0.5;
 
 		&:hover {
@@ -435,7 +434,7 @@ html.rl-no-preview-pane {
 			}
 
 			pre {
-				border-radius: 5px;
+				border-radius: var(--border-radius, 5px);
 				display: block;
 				padding: 5px 10px;
 			}
@@ -488,7 +487,7 @@ html.rl-no-preview-pane .messageView {
 		left: 0;
 		bottom: @rlBottomMargin;
 		right: @rlBottomMargin;
-		border: 1px solid @rlMainDarkColor;
+		border: 1px solid var(--border-color, #aaa);
 		box-shadow: @rlMainShadow;
 	}
 }
