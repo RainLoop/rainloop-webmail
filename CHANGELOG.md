@@ -1,3 +1,12 @@
+## 2.20.5 – 2022-11-08
+
+### Nextcloud
+- Improved workaround for Nextcloud Content-Security-Policy bug
+  Safari [#631](https://github.com/the-djmaze/snappymail/issues/631)
+  Edge [#633](https://github.com/the-djmaze/snappymail/issues/633)
+  Reported [#35013](https://github.com/nextcloud/server/issues/35013)
+
+
 ## 2.20.4 – 2022-11-07
 
 ### Fixed
