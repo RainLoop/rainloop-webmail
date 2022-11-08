@@ -1,3 +1,11 @@
+## 2.20.6 – 2022-11-08
+
+### Fixed
+- ?admin login failed
+  [#642](https://github.com/the-djmaze/snappymail/pull/642)
+- Resolve PHP 8.2 Creation of dynamic property is deprecated
+
+
 ## 2.20.5 – 2022-11-08
 
 ### Nextcloud

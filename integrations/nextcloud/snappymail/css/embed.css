@@ -53,6 +53,9 @@ This stylesheet is used when SnappyMail runs in embed mode.
 	margin: 0;
 	padding: 3px;
 }
+#rl-app .select, #rl-app select {
+	padding-right: 1.5em !important;
+}
 
 #rl-app button.btn:not(.button-vue) {
 	min-height: auto;
