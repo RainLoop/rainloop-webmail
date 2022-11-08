@@ -252,7 +252,7 @@ Values:
 
 			'plugins' => array(
 				'enable'       => array(false, 'Enable plugin support'),
-				'enabled_list' => array('', 'List of enabled plugins'),
+				'enabled_list' => array('', 'Comma-separated list of enabled plugins'),
 			),
 
 			'defaults' => array(
