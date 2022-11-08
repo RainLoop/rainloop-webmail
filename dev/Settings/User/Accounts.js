@@ -16,7 +16,7 @@ export class UserSettingsAccounts /*extends AbstractViewSettings*/ {
 		this.allowAdditionalAccount = SettingsCapa('AdditionalAccounts');
 		this.allowIdentities = SettingsCapa('Identities');
 
-		this.accounts = AccountUserStore.accounts;
+		this.accounts = AccountUserStore;
 		this.loading = AccountUserStore.loading;
 		this.identities = IdentityUserStore;
 		this.mainEmail = SettingsGet('MainEmail');

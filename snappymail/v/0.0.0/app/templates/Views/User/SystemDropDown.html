@@ -4,7 +4,7 @@
 		<div class="playIcon"><div></div></div>
 		<i class="stopIcon fontastic">⏸</i>
 	</div>
-	<div class="accountPlace hide-mobile" data-bind="text: emailTitle()"></div>
+	<div class="accountPlace hide-mobile" data-bind="text: accountName(), title: accountEmail"></div>
 	<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: accountMenuDropdownTrigger">
 		<a id="top-system-dropdown-id" href="#" tabindex="-1" class="btn single btn-block dropdown-toggle">
 			<i style="vertical-align:middle" class="fontastic" data-bind="css: {'icon-spinner': accountsLoading()}">👤</i>
@@ -24,7 +24,7 @@
 							<span data-bind="visible: 99 < count()">99+</span>
 						</b>-->
 						<i class="fontastic" data-bind="text: $root.accountEmail() === email ? '✔' : '👤'"></i>
-						<span class="email-title" data-bind="text: email, attr: {title: email}"></span>
+						<span class="email-title" data-bind="text: name || email, attr: {title: email}"></span>
 					</a>
 				</li>
 			<!-- /ko -->

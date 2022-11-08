@@ -152,41 +152,29 @@ export class AppUser extends AbstractApp {
 			IdentityUserStore.loading(false);
 
 			if (!iError) {
-				const
-//					counts = {},
-					accounts = oData.Result.Accounts,
-					mainEmail = SettingsGet('MainEmail');
+				let items = oData.Result.Accounts;
+				AccountUserStore(isArray(items)
+					? items.map(oValue => new AccountModel(oValue.email, oValue.name))
+					: []
+				);
+				AccountUserStore.unshift(new AccountModel(SettingsGet('MainEmail'), '', false));
 
-				if (isArray(accounts)) {
-//					AccountUserStore.accounts.forEach(oAccount => counts[oAccount.email] = oAccount.count());
-
-					AccountUserStore.accounts(
-						accounts.map(
-							sValue => new AccountModel(sValue/*, counts[sValue]*/)
-						)
-					);
-//					accounts.length &&
-					AccountUserStore.accounts.unshift(new AccountModel(mainEmail/*, counts[mainEmail]*/, false));
-				}
-
-				if (isArray(oData.Result.Identities)) {
-					IdentityUserStore(
-						oData.Result.Identities.map(identityData => {
-							const identity = new IdentityModel(
-								pString(identityData.Id),
-								pString(identityData.Email)
-							);
-
-							identity.name(pString(identityData.Name));
-							identity.replyTo(pString(identityData.ReplyTo));
-							identity.bcc(pString(identityData.Bcc));
-							identity.signature(pString(identityData.Signature));
-							identity.signatureInsertBefore(!!identityData.SignatureInsertBefore);
-
-							return identity;
-						})
-					);
-				}
+				items = oData.Result.Identities;
+				IdentityUserStore(isArray(items)
+					? items.map(identityData => {
+						const identity = new IdentityModel(
+							pString(identityData.Id),
+							pString(identityData.Email)
+						);
+						identity.name(pString(identityData.Name));
+						identity.replyTo(pString(identityData.ReplyTo));
+						identity.bcc(pString(identityData.Bcc));
+						identity.signature(pString(identityData.Signature));
+						identity.signatureInsertBefore(!!identityData.SignatureInsertBefore);
+						return identity;
+					})
+					: []
+				);
 			}
 		});
 	}

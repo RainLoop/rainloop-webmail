@@ -41,7 +41,8 @@ trait Accounts
 				StorageType::CONFIG,
 				'additionalaccounts'
 			);
-			$aAccounts = $sAccounts ? \json_decode($sAccounts, true) : \SnappyMail\Upgrade::ConvertInsecureAccounts($this, $oAccount);
+			$aAccounts = $sAccounts ? \json_decode($sAccounts, true)
+				: \SnappyMail\Upgrade::ConvertInsecureAccounts($this, $oAccount);
 			if ($aAccounts && \is_array($aAccounts)) {
 				return $aAccounts;
 			}
@@ -84,6 +85,7 @@ trait Accounts
 
 		$sEmail = \trim($this->GetActionParam('Email', ''));
 		$sPassword = $this->GetActionParam('Password', '');
+		$sName = $this->GetActionParam('Name', '');
 		$bNew = '1' === (string)$this->GetActionParam('New', '1');
 
 		$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
@@ -93,10 +95,17 @@ trait Accounts
 			throw new ClientException(Notifications::AccountDoesNotExist);
 		}
 
-		$oNewAccount = $this->LoginProcess($sEmail, $sPassword, false, false);
+		if ($bNew || $sPassword) {
+			$oNewAccount = $this->LoginProcess($sEmail, $sPassword, false, false);
+			$aAccounts[$sEmail] = $oNewAccount->asTokenArray($oMainAccount);
+		} else {
+			$aAccounts[$sEmail] = \RainLoop\Model\AdditionalAccount::convertArray($aAccounts[$sEmail]);
+		}
 
-		$aAccounts[$oNewAccount->Email()] = $oNewAccount->asTokenArray($oMainAccount);
-		$this->SetAccounts($oMainAccount, $aAccounts);
+		if ($aAccounts[$sEmail]) {
+			$aAccounts[$sEmail]['name'] = $sName;
+			$this->SetAccounts($oMainAccount, $aAccounts);
+		}
 
 		return $this->TrueResponse(__FUNCTION__);
 	}
@@ -241,11 +250,16 @@ trait Accounts
 	 */
 	public function DoAccountsAndIdentities(): array
 	{
+		// https://github.com/the-djmaze/snappymail/issues/571
 		return $this->DefaultResponse(__FUNCTION__, array(
-			'Accounts' => \array_map(
-				'MailSo\\Base\\Utils::IdnToUtf8',
-				\array_keys($this->GetAccounts($this->getMainAccountFromToken()))
-			),
+			'Accounts' => \array_values(\array_map(function($value){
+					return [
+						'email' => \MailSo\Base\Utils::IdnToUtf8($value['email'] ?? $value[1]),
+						'name' => $value['name'] ?? ''
+					];
+				},
+				$this->GetAccounts($this->getMainAccountFromToken())
+			)),
 			'Identities' => $this->GetIdentities($this->getAccountFromToken())
 		));
 	}

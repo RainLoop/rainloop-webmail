@@ -101,7 +101,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 			FolderUserStore.foldersInboxUnreadCount(e.detail);
 /*			// Disabled in SystemDropDown.html
 			const email = AccountUserStore.email();
-			AccountUserStore.accounts.forEach(item =>
+			AccountUserStore.forEach(item =>
 				email === item?.email && item?.count(e.detail)
 			);
 */

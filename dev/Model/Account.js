@@ -7,10 +7,13 @@ export class AccountModel extends AbstractModel {
 	 * @param {boolean=} canBeDelete = true
 	 * @param {number=} count = 0
 	 */
-	constructor(email/*, count = 0*/, isAdditional = true) {
+	constructor(email, name/*, count = 0*/, isAdditional = true) {
 		super();
 
+		this.name = name;
 		this.email = email;
+
+		this.displayName = name ? name + ' <' + email + '>' : email;
 
 		addObservablesTo(this, {
 //			count: count || 0,

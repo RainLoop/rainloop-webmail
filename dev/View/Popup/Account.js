@@ -12,6 +12,7 @@ export class AccountPopupView extends AbstractViewPopup {
 		addObservablesTo(this, {
 			isNew: true,
 
+			name: '',
 			email: '',
 			password: '',
 
@@ -40,18 +41,17 @@ export class AccountPopupView extends AbstractViewPopup {
 		}
 	}
 
-	onShow(account) {
-		if (account?.isAdditional()) {
-			this.isNew(false);
-			this.email(account.email);
-		} else {
-			this.isNew(true);
-			this.email('');
-		}
+	onHide() {
 		this.password('');
-
 		this.submitRequest(false);
 		this.submitError('');
 		this.submitErrorAdditional('');
+	}
+
+	onShow(account) {
+		let edit = account?.isAdditional();
+		this.isNew(!edit);
+		this.name(edit ? account.name : '');
+		this.email(edit ? account.email : '');
 	}
 }

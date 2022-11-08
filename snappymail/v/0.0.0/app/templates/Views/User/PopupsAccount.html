@@ -19,7 +19,11 @@
 	<div class="control-group">
 		<label data-i18n="GLOBAL/PASSWORD"></label>
 		<input name="Password" type="password" class="input-xlarge" autocomplete="new-password" autocorrect="off" autocapitalize="off"
-			required="" data-bind="value: password">
+			data-bind="value: password, attr: {required:isNew}">
+	</div>
+	<div class="control-group">
+		<label data-i18n="GLOBAL/NAME"></label>
+		<input name="Name" type="text" class="input-xlarge" data-bind="value: name">
 	</div>
 </form>
 <footer>

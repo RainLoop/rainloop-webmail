@@ -8,39 +8,28 @@ use RainLoop\Exceptions\ClientException;
 
 abstract class Account implements \JsonSerializable
 {
-	/**
-	 * @var string
-	 */
-	private $sEmail;
+	private string $sName = '';
 
-	/**
-	 * @var string
-	 */
-	private $sLogin;
+	private string $sEmail = '';
 
-	/**
-	 * @var string
-	 */
-	private $sPassword;
+	private string $sLogin = '';
 
-	/**
-	 * @var string
-	 */
-	private $sProxyAuthUser = '';
+	private string $sPassword = '';
 
-	/**
-	 * @var string
-	 */
-	private $sProxyAuthPassword = '';
+	private string $sProxyAuthUser = '';
 
-	/**
-	 * @var \RainLoop\Model\Domain
-	 */
-	private $oDomain;
+	private string $sProxyAuthPassword = '';
+
+	private Domain $oDomain;
 
 	public function Email() : string
 	{
 		return $this->sEmail;
+	}
+
+	public function Name() : string
+	{
+		return $this->sName;
 	}
 
 	public function ProxyAuthUser() : string
@@ -123,15 +112,21 @@ abstract class Account implements \JsonSerializable
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
-		return array(
-			'account',                // 0
-			$this->sEmail,            // 1
-			$this->sLogin,            // 2
-			$this->sPassword,         // 3
-			'',                       // 4 sClientCert
-			$this->sProxyAuthUser,    // 5
-			$this->sProxyAuthPassword // 6
-		);
+		$result = [
+//			'account',                   // 0
+			'email' => $this->sEmail,    // 1
+			'login' => $this->sLogin,    // 2
+			'pass'  => $this->sPassword, // 3
+//			'',                          // 4 sClientCert
+			'name' => $this->sName
+		];
+		if ($this->sProxyAuthUser && $this->sProxyAuthPassword) {
+			$result['proxy'] = [
+				'user' => $this->sProxyAuthUser,    // 5
+				'pass' => $this->sProxyAuthPassword // 6
+			];
+		}
+		return $result;
 	}
 
 	public static function NewInstanceFromCredentials(\RainLoop\Actions $oActions,
@@ -165,34 +160,60 @@ abstract class Account implements \JsonSerializable
 		return $oAccount;
 	}
 
+	/**
+	 * Converts old numeric array to new associative array
+	 */
+	public static function convertArray(array $aAccount) : array
+	{
+		if (isset($aAccount['email'])) {
+			return $aAccount;
+		}
+		if (empty($aAccount[0]) || 'account' != $aAccount[0] || 7 > \count($aAccount)) {
+			return [];
+		}
+		$aResult = [
+			'email' => $aAccount[1] ?: '',
+			'login' => $aAccount[2] ?: '',
+			'pass'  => $aAccount[3] ?: ''
+		];
+		if ($aAccount[5] && $aAccount[6]) {
+			$aResult['proxy'] = [
+				'user' => $aAccount[5],
+				'pass' => $aAccount[6]
+			];
+		}
+		return $aResult;
+	}
+
 	public static function NewInstanceFromTokenArray(
 		\RainLoop\Actions $oActions,
 		array $aAccountHash,
 		bool $bThrowExceptionOnFalse = false): ?self
 	{
-		if (!empty($aAccountHash[0]) && 'account' === $aAccountHash[0] && 7 <= \count($aAccountHash)) {
+		$oAccount = null;
+		$aAccountHash = static::convertArray($aAccountHash);
+		if (!empty($aAccountHash['email']) && 3 <= \count($aAccountHash)) {
 			$oAccount = static::NewInstanceFromCredentials(
 				$oActions,
-				$aAccountHash[1] ?: '',
-				$aAccountHash[2] ?: '',
-				$aAccountHash[3] ?: '',
+				$aAccountHash['email'],
+				$aAccountHash['login'],
+				$aAccountHash['pass'],
 				$bThrowExceptionOnFalse
 			);
-
 			if ($oAccount) {
-				// init proxy user/password
-				if (!empty($aAccountHash[5]) && !empty($aAccountHash[6])) {
-					$oAccount->SetProxyAuthUser($aAccountHash[5]);
-					$oAccount->SetProxyAuthPassword($aAccountHash[6]);
+				if (isset($aAccountHash['name'])) {
+					$oAccount->sName = $aAccountHash['name'];
 				}
-
+				// init proxy user/password
+				if (isset($aAccountHash['proxy'])) {
+					$oAccount->sProxyAuthUser = $aAccountHash['proxy']['user'];
+					$oAccount->sProxyAuthPassword = $aAccountHash['proxy']['pass'];
+				}
 				$oActions->Logger()->AddSecret($oAccount->Password());
 				$oActions->Logger()->AddSecret($oAccount->ProxyAuthPassword());
-
-				return $oAccount;
 			}
 		}
-		return null;
+		return $oAccount;
 	}
 
 	public function ImapConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Mail\MailClient $oMailClient, \RainLoop\Config\Application $oConfig) : bool

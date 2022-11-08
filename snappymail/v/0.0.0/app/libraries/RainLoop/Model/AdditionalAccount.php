@@ -17,13 +17,25 @@ class AdditionalAccount extends Account
 		return \md5(parent::Hash() . $this->ParentEmail());
 	}
 
+	public static function convertArray(array $aAccount) : array
+	{
+		$aResult = parent::convertArray($aAccount);
+		$iCount = \count($aAccount);
+		if ($aResult && 7 < $iCount && 9 >= $iCount) {
+			$aResult['hmac'] = \array_pop($aAccount);
+		}
+		return $aResult;
+	}
+
 	public function asTokenArray(MainAccount $oMainAccount) : array
 	{
 		$sHash = $oMainAccount->CryptKey();
 		$aData = $this->jsonSerialize();
-		$aData[3] = \SnappyMail\Crypt::EncryptUrlSafe($aData[3], $sHash); // sPassword
-		$aData[6] = \SnappyMail\Crypt::EncryptUrlSafe($aData[6], $sHash); // sProxyAuthPassword
-		$aData[] = \hash_hmac('sha1', $aData[3], $sHash);
+		$aData['pass'] = \SnappyMail\Crypt::EncryptUrlSafe($aData['pass'], $sHash); // sPassword
+		if (isset($aAccountHash['proxy'])) {
+			$aData['proxy']['pass'] = \SnappyMail\Crypt::EncryptUrlSafe($aData['proxy']['pass'], $sHash); // sProxyAuthPassword
+		}
+		$aData['hmac'] = \hash_hmac('sha1', $aData['pass'], $sHash);
 		return $aData;
 	}
 
@@ -32,13 +44,16 @@ class AdditionalAccount extends Account
 		array $aAccountHash,
 		bool $bThrowExceptionOnFalse = false) : ?Account /* PHP7.4: ?self*/
 	{
-		$iCount = \count($aAccountHash);
-		if (!empty($aAccountHash[0]) && 'account' === $aAccountHash[0] && 7 <= $iCount && 9 >= $iCount) {
+		$aAccountHash = static::convertArray($aAccountHash);
+		if (!empty($aAccountHash['email'])) {
 			$sHash = $oActions->getMainAccountFromToken()->CryptKey();
-			$sPasswordHMAC = (7 < $iCount) ? \array_pop($aAccountHash) : null;
-			if ($sPasswordHMAC && $sPasswordHMAC === \hash_hmac('sha1', $aAccountHash[3], $sHash)) {
-				$aAccountHash[3] = \SnappyMail\Crypt::DecryptUrlSafe($aAccountHash[3], $sHash);
-				$aAccountHash[6] = \SnappyMail\Crypt::DecryptUrlSafe($aAccountHash[6], $sHash);
+			// hmac only set when asTokenArray() was used
+			$sPasswordHMAC = $aAccountHash['hmac'] ?? null;
+			if ($sPasswordHMAC && $sPasswordHMAC === \hash_hmac('sha1', $aAccountHash['pass'], $sHash)) {
+				$aAccountHash['pass'] = \SnappyMail\Crypt::DecryptUrlSafe($aAccountHash['pass'], $sHash);
+				if (isset($aAccountHash['proxy'])) {
+					$aAccountHash['proxy']['pass'] = \SnappyMail\Crypt::DecryptUrlSafe($aAccountHash['proxy']['pass'], $sHash);
+				}
 			}
 			return parent::NewInstanceFromTokenArray($oActions, $aAccountHash, $bThrowExceptionOnFalse);
 		}

@@ -30,11 +30,11 @@ export class SystemDropDownUserView extends AbstractViewRight {
 
 		this.accountEmail = AccountUserStore.email;
 
-		this.accounts = AccountUserStore.accounts;
+		this.accounts = AccountUserStore;
 		this.accountsLoading = AccountUserStore.loading;
 /*
 		this.accountsUnreadCount = : koComputable(() => 0);
-		this.accountsUnreadCount = : koComputable(() => AccountUserStore.accounts().reduce((result, item) => result + item.count(), 0));
+		this.accountsUnreadCount = : koComputable(() => AccountUserStore().reduce((result, item) => result + item.count(), 0));
 */
 
 		addObservablesTo(this, {
@@ -91,8 +91,10 @@ export class SystemDropDownUserView extends AbstractViewRight {
 		return true;
 	}
 
-	emailTitle() {
-		return AccountUserStore.email();
+	accountName() {
+		let email = AccountUserStore.email(),
+			account = AccountUserStore.find(account => account.email == email);
+		return account?.name || email;
 	}
 
 	settingsClick() {
