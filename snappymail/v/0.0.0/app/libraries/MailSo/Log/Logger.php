@@ -191,17 +191,11 @@ class Logger extends \SplFixedArray
 
 	public function WriteException(\Throwable $oException, int $iType = \LOG_NOTICE, string $sName = '') : void
 	{
-		if (empty($oException->__WRITTEN__)) {
-			$oException->__WRITTEN__ = true;
-			$this->Write((string) $oException, $iType, $sName);
-		}
+		$this->Write((string) $oException, $iType, $sName);
 	}
 
 	public function WriteExceptionShort(\Throwable $oException, int $iType = \LOG_NOTICE, string $sName = '') : void
 	{
-		if (empty($oException->__WRITTEN__)) {
-			$oException->__WRITTEN__ = true;
-			$this->Write($oException->getMessage(), $iType, $sName);
-		}
+		$this->Write($oException->getMessage(), $iType, $sName);
 	}
 }
