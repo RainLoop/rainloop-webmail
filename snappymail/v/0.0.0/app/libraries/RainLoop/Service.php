@@ -168,6 +168,7 @@ abstract class Service
 				'{{BaseAppMainCssLink}}' => Utils::WebStaticPath('css/'.($bAdmin ? 'admin' : 'app').$sAppCssMin.'.css'),
 				'{{BaseAppThemeCssLink}}' => $oActions->ThemeLink($bAdmin),
 				'{{BaseAppManifestLink}}' => Utils::WebStaticPath('manifest.json'),
+				'{{BaseFavIconSvg}}' => Utils::WebStaticPath('favicon.svg'),
 				'{{LoadingDescriptionEsc}}' => \htmlspecialchars($oConfig->Get('webmail', 'loading_description', 'SnappyMail'), ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
 				'{{BaseAppAdmin}}' => $bAdmin ? 1 : 0
 			);
