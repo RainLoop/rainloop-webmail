@@ -32,22 +32,19 @@ oRequests = {},
 
 abort = (sAction, sReason, bClearOnly) => {
 	if (oRequests[sAction]) {
-		if (!bClearOnly && oRequests[sAction].abort) {
-//			oRequests[sAction].__aborted = true;
-			oRequests[sAction].abort(sReason || 'AbortError');
-		}
-
+		bClearOnly || oRequests[sAction].abort(sReason || 'AbortError');
 		oRequests[sAction] = null;
 		delete oRequests[sAction];
 	}
 },
 
-fetchJSON = (action, sGetAdd, params, timeout, jsonCallback) => {
-	params = params || {};
-	if (params instanceof FormData) {
-		params.set('Action', action);
-	} else {
-		params.Action = action;
+fetchJSON = (action, sUrl, params, timeout, jsonCallback) => {
+	if (params) {
+		if (params instanceof FormData) {
+			params.set('Action', action);
+		} else {
+			params.Action = action;
+		}
 	}
 	// Don't abort, read https://github.com/the-djmaze/snappymail/issues/487
 //	abort(action);
@@ -56,7 +53,7 @@ fetchJSON = (action, sGetAdd, params, timeout, jsonCallback) => {
 	oRequests[action] = controller;
 	// Currently there is no way to combine multiple signals, so AbortSignal.timeout() not possible
 	timeout && setTimeout(() => abort(action, 'TimeoutError'), timeout);
-	return rl.fetchJSON(getURL(sGetAdd), {signal: signal}, sGetAdd ? null : params).then(jsonCallback).catch(err => {
+	return rl.fetchJSON(sUrl, {signal: signal}, params).then(jsonCallback).catch(err => {
 		err.aborted = signal.aborted;
 		err.reason = signal.reason;
 		return Promise.reject(err);
@@ -123,15 +120,13 @@ export class AbstractFetchRemote
 	 * @param {?number=} iTimeout
 	 * @param {string=} sGetAdd = ''
 	 */
-	request(sAction, fCallback, params, iTimeout, sGetAdd, abortActions) {
+	request(sAction, fCallback, params, iTimeout, sGetAdd) {
 		params = params || {};
 
 		const start = Date.now();
 
-		abortActions && console.error('abortActions is obsolete');
-
-		fetchJSON(sAction, sGetAdd,
-			params,
+		fetchJSON(sAction, getURL(sGetAdd),
+			sGetAdd ? null : (params || {}),
 			undefined === iTimeout ? 30000 : pInt(iTimeout),
 			data => {
 				let cached = false;
@@ -141,9 +136,6 @@ export class AbstractFetchRemote
 
 				let iError = 0;
 				if (sAction && oRequests[sAction]) {
-					if (oRequests[sAction].__aborted) {
-						iError = 2;
-					}
 					abort(sAction, 0, 1);
 				}
 
@@ -195,9 +187,13 @@ export class AbstractFetchRemote
 		}
 	}
 
+	get(action, url) {
+		return fetchJSON(action, url);
+	}
+
 	post(action, fTrigger, params, timeOut) {
 		this.setTrigger(fTrigger, true);
-		return fetchJSON(action, '', params, pInt(timeOut, 30000),
+		return fetchJSON(action, getURL(), params || {}, pInt(timeOut, 30000),
 			data => {
 				abort(action, 0, 1);
 

@@ -1,9 +1,7 @@
 import ko from 'ko';
 
 import {
-	isArray,
-	changeTheme,
-	convertThemeName
+	isArray
 } from 'Common/Utils';
 
 import { addObservablesTo, addSubscribablesTo, addComputablesTo } from 'External/ko';
@@ -17,7 +15,7 @@ import { showScreenPopup } from 'Knoin/Knoin';
 
 import Remote from 'Remote/Admin/Fetch';
 
-import { ThemeStore } from 'Stores/Theme';
+import { ThemeStore, convertThemeName, changeTheme } from 'Stores/Theme';
 import { LanguageStore } from 'Stores/Language';
 import { LanguagesPopupView } from 'View/Popup/Languages';
 

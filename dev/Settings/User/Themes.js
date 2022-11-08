@@ -1,12 +1,11 @@
 import { addObservablesTo } from 'External/ko';
 
 import { SaveSettingStatus, UploadErrorCode } from 'Common/Enums';
-import { changeTheme, convertThemeName } from 'Common/Utils';
 import { themePreviewLink, serverRequest } from 'Common/Links';
 import { i18n } from 'Common/Translator';
 import { SettingsCapa } from 'Common/Globals';
 
-import { ThemeStore } from 'Stores/Theme';
+import { ThemeStore, convertThemeName, changeTheme } from 'Stores/Theme';
 
 import Remote from 'Remote/User/Fetch';
 

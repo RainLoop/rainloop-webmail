@@ -1,7 +1,7 @@
 import 'External/User/ko';
 
 import { SMAudio } from 'Common/Audio';
-import { isArray, pString, changeTheme } from 'Common/Utils';
+import { isArray, pString } from 'Common/Utils';
 import { mailToHelper, setLayoutResizer, dropdownsDetectVisibility } from 'Common/UtilsUser';
 
 import {
@@ -38,7 +38,7 @@ import { IdentityUserStore } from 'Stores/User/Identity';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { PgpUserStore } from 'Stores/User/Pgp';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
-import { ThemeStore } from 'Stores/Theme';
+import { ThemeStore, changeTheme } from 'Stores/Theme';
 import { LanguageStore } from 'Stores/Language';
 import { MessageUserStore } from 'Stores/User/Message';
 
