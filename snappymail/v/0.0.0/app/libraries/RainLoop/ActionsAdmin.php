@@ -123,7 +123,7 @@ class ActionsAdmin extends Actions
 			throw new ClientException(Notifications::AuthError);
 		}
 
-		$sToken = $this->setAdminAuthToken($sToken);
+		$sToken = $this->setAdminAuthToken();
 
 		return $this->DefaultResponse(__FUNCTION__, $sToken ? $this->AppData(true) : false);
 	}
@@ -667,7 +667,7 @@ class ActionsAdmin extends Actions
 		return $this->DefaultResponse(__FUNCTION__, $QR->__toString());
 	}
 
-	private function setAdminAuthToken(string $sToken) : string
+	private function setAdminAuthToken() : string
 	{
 		$sRand = \MailSo\Base\Utils::Sha1Rand();
 		if (!$this->Cacher(null, true)->Set(KeyPathHelper::SessionAdminKey($sRand), \time())) {
