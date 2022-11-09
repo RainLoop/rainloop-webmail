@@ -101,7 +101,7 @@ abstract class Service
 		$sResult = '';
 		if (\count($aPaths) && !empty($aPaths[0]) && 'index' !== \strtolower($aPaths[0]))
 		{
-			if ('mailto' !== \strtolower($aPaths[0]) && !\SnappyMail\HTTP\SecFetch::isSameOrigin()) {
+			if ('mailto' !== \strtolower($aPaths[0]) && !\SnappyMail\HTTP\SecFetch::matchAnyRule($oConfig->Get('security', 'secfetch_allow', ''))) {
 				\MailSo\Base\Http::StatusHeader(403);
 				echo $oServiceActions->ErrorTemplates('Access Denied.',
 					"Disallowed Sec-Fetch

@@ -194,7 +194,15 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'content_security_policy'    => array('', 'For example to allow all images use "img-src https:". More info at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy#directives'),
 				'csp_report'                 => array(false, 'Report CSP errors to PHP and/or SnappyMail Log'),
 				'encrypt_cipher'             => array('aes-256-cbc-hmac-sha1', 'A valid cipher method from https://php.net/openssl_get_cipher_methods'),
-				'cookie_samesite'            => array('Strict', 'Strict, Lax or None')
+				'cookie_samesite'            => array('Strict', 'Strict, Lax or None'),
+				'secfetch_allow'             => array('', 'Additional allowed Sec-Fetch combinations separated by ";".
+For example:
+* Allow iframe on same domain in any mode: dest=iframe,site=same-origin
+* Allow navigate to iframe on same domain: mode=navigate,dest=iframe,site=same-origin
+* Allow navigate to iframe on (sub)domain: mode=navigate,dest=iframe,site=same-site
+* Allow navigate to iframe from any domain: mode=navigate,dest=iframe,site=cross-site
+
+Default is "site=same-origin;site=none"')
 			),
 
 			'admin_panel' => array(
