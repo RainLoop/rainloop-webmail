@@ -1,5 +1,5 @@
 <?php
 
-class LdapException extends \RainLoop\Exceptions\Exception
+class LdapException extends \RainLoop\Exceptions\ClientException
 {
 }

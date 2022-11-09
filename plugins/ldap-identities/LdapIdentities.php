@@ -129,11 +129,11 @@ class LdapIdentities implements IIdentities
 
 	/**
 	 * @inheritDoc
-	 * @throws \RainLoop\Exceptions\Exception
+	 * @throws \RainLoop\Exceptions\ClientException
 	 */
 	public function SetIdentities(Account $account, array $identities): void
 	{
-		throw new \RainLoop\Exceptions\Exception("Ldap identities provider does not support storage");
+		throw new \RainLoop\Exceptions\ClientException("Ldap identities provider does not support storage");
 	}
 
 	/**
