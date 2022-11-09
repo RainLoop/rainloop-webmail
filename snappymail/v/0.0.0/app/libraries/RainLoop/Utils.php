@@ -58,7 +58,7 @@ class Utils
 
 	public static function GetSessionToken(bool $generate = true) : ?string
 	{
-		$sToken = static::GetCookie(self::SESSION_TOKEN, null);
+		$sToken = static::GetCookie(self::SESSION_TOKEN);
 		if (!$sToken) {
 			if (!$generate) {
 				return null;
@@ -108,9 +108,8 @@ class Utils
 
 	/**
 	 * @param mixed $mDefault = null
-	 * @return mixed
 	 */
-	public static function GetCookie(string $sName, $mDefault = null)
+	public static function GetCookie(string $sName) : ?string
 	{
 		if (isset($_COOKIE[$sName])) {
 			$aParts = [];
@@ -122,7 +121,7 @@ class Utils
 			\ksort($aParts);
 			return \implode('', $aParts);
 		}
-		return $mDefault;
+		return null;
 	}
 
 	public static function GetSecureCookie(string $sName)

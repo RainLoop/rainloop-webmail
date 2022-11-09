@@ -416,7 +416,7 @@ trait UserAuth
 
 	public function GetSpecLogoutCustomMgsWithDeletion(): string
 	{
-		$sResult = Utils::GetCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY, '');
+		$sResult = Utils::GetCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY) ?: '';
 		if (\strlen($sResult)) {
 			Utils::ClearCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY);
 		}

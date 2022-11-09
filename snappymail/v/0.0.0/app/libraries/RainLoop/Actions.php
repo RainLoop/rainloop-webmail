@@ -26,11 +26,13 @@ class Actions
 
 	/**
 	 * This session cookie contains a \RainLoop\Model\Account
+	 * Value is Base64 EncryptToJSON
 	 */
 	const AUTH_SPEC_TOKEN_KEY = 'smaccount';
 
 	/**
 	 * This session cookie optionally contains a \RainLoop\Model\AdditionalAccount
+	 * Value is Base64 EncryptToJSON
 	 */
 	const AUTH_ADDITIONAL_TOKEN_KEY = 'smadditional';
 
@@ -744,7 +746,7 @@ class Actions
 					}
 				}
 
-				$sToken = Utils::GetCookie(self::AUTH_MAILTO_TOKEN_KEY, null);
+				$sToken = Utils::GetCookie(self::AUTH_MAILTO_TOKEN_KEY);
 				if (null !== $sToken) {
 					Utils::ClearCookie(self::AUTH_MAILTO_TOKEN_KEY);
 
