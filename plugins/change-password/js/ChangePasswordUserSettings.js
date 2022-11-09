@@ -34,6 +34,9 @@
 	class ChangePasswordUserSettings
 	{
 		constructor() {
+			let minLength = rl.pluginSettingsGet('change-password', 'pass_min_length');
+			let minStrength = rl.pluginSettingsGet('change-password', 'pass_min_strength');
+
 			this.changeProcess = ko.observable(false);
 			this.errorDescription = ko.observable('');
 			this.passwordMismatch = ko.observable(false);
@@ -43,6 +46,7 @@
 			this.currentPasswordError = ko.observable(false);
 			this.newPassword = ko.observable('');
 			this.newPassword2 = ko.observable('');
+			this.pass_min_length = minLength;
 
 			this.currentPassword.subscribe(() => this.resetUpdate(true));
 			this.newPassword.subscribe(() => this.resetUpdate());
@@ -51,9 +55,14 @@
 			ko.decorateCommands(this, {
 				saveNewPasswordCommand: self => !self.changeProcess()
 					&& '' !== self.currentPassword()
-					&& '' !== self.newPassword()
-					&& '' !== self.newPassword2()
+					&& self.newPassword().length >= minLength
+					&& self.newPassword2() == self.newPassword()
+					&& (!this.meter || this.meter.value >= minStrength)
 			});
+		}
+
+		submitForm(form) {
+			form.reportValidity() && this.saveNewPasswordCommand();
 		}
 
 		saveNewPasswordCommand() {
@@ -111,6 +120,7 @@
 		onBuild(dom) {
 			let meter = dom.querySelector('.new-password-meter');
 			meter && this.newPassword.subscribe(value => meter.value = getPassStrength(value));
+			this.meter = meter;
 		}
 
 		onHide() {

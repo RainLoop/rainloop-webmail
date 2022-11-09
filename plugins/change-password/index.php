@@ -6,8 +6,8 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Change Password',
-		VERSION  = '2.16.3',
-		RELEASE  = '2022-10-14',
+		VERSION  = '2.16.4',
+		RELEASE  = '2022-11-09',
 		REQUIRED = '2.12.0',
 		CATEGORY = 'Security',
 		DESCRIPTION = 'Extension to allow users to change their passwords';
@@ -106,12 +106,14 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetLabel('Password minimum length')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
 				->SetDescription('Minimum length of the password')
-				->SetDefaultValue(10),
+				->SetDefaultValue(10)
+				->SetAllowedInJs(true),
 			\RainLoop\Plugins\Property::NewInstance("pass_min_strength")
 				->SetLabel('Password minimum strength')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
 				->SetDescription('Minimum strength of the password in %')
-				->SetDefaultValue(70),
+				->SetDefaultValue(70)
+				->SetAllowedInJs(true),
 		];
 		foreach ($this->getSupportedDrivers(true) as $name => $class) {
 			$group = new \RainLoop\Plugins\PropertyCollection($name);
