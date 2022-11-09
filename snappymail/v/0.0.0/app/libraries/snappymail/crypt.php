@@ -18,7 +18,8 @@ abstract class Crypt
 			$list = \array_diff($list, \array_map('strtoupper',$list));
 			$list = \array_filter($list, function($v){
 				// DES/ECB/bf/rc insecure, GCM/CCM not supported
-				return !\preg_match('/(^(des|bf|rc))|-(ecb|gcm|ccm|ocb)|wrap/i', $v);
+				// AEAD
+				return !\preg_match('/(^(des|bf|rc))|-(ecb|gcm|ccm|ocb|siv|cts)|wrap/i', $v);
 			});
 			\natcasesort($list);
 		}
