@@ -92,6 +92,12 @@
 									<a href="#" tabindex="-1" data-bind="click: printMessage" data-icon="🖨" data-i18n="MESSAGE/MENU_PRINT"></a>
 								</li>
 								<li role="presentation">
+									<a href="#" tabindex="-1" data-bind="click: $root.toggleFullScreen">
+										<i data-bind="css: { 'icon-arrows-out': !$root.fullScreenMode(), 'icon-arrows-in': $root.fullScreenMode }"></i>
+										<span data-i18n="SHORTCUTS_HELP/LABEL_FULLSCREEN_TOGGLE"></span>
+									</a>
+								</li>
+								<li role="presentation">
 									<a href="#" tabindex="-1" data-bind="click: popupMessage">
 										<i class="icon-popup"></i>
 										<span data-i18n="MESSAGE/BUTTON_IN_NEW_WINDOW"></span>
@@ -122,10 +128,10 @@
 				<div class="subjectParent">
 					<span class="infoParent g-ui-user-select-none fontastic" data-bind="click: function() { showFullInfo(!showFullInfo()); }">ℹ</span>
 					<span class="flagParent g-ui-user-select-none flagOff fontastic" data-bind="text: message().isFlagged() ? '★' : '☆', css: {'flagOn': message().isFlagged(), 'flagOff': !message().isFlagged()}"></span>
-					<span class="subject" data-bind="text: message().subject, title: message().subject, event: { 'dblclick': toggleFullScreen }"></span>
+					<span class="subject" data-bind="text: message().subject, title: message().subject"></span>
 					<a href="#" class="close" data-bind="click: closeMessage" style="margin-top: -8px;">×</a>
 				</div>
-				<div data-bind="hidden: showFullInfo(), event: { 'dblclick': toggleFullScreen }">
+				<div data-bind="hidden: showFullInfo">
 					<div class="informationShort">
 						<span class="from" data-bind="html: viewFromShort, title: message().fromToLine()"></span>
 						<i data-bind="visible: viewFromDkimVisibility, css: viewFromDkimStatusIconClass, title: viewFromDkimStatusTitle"></i>
@@ -148,7 +154,7 @@
 						<meter min="0" max="100" optimum="0" low="33" high="66" data-bind="value: message().spamScore(), title: message().spamStatus()"></meter>
 					</div>
 				</div>
-				<div class="informationFull" data-bind="visible: showFullInfo(), with: message">
+				<div class="informationFull" data-bind="visible: showFullInfo, with: message">
 					<table>
 						<tr data-bind="visible: fromToLine()">
 							<td data-i18n="GLOBAL/FROM"></td>
