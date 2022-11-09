@@ -39,6 +39,14 @@ class Application extends \RainLoop\Config\AbstractConfig
 			$this->aReplaceEnv = null;
 		}
 
+		$sCipher = $this->Get('security', 'encrypt_cipher', '');
+		if (!$sCipher || !\SnappyMail\Crypt::cipherSupported($sCipher)) {
+			$sCipher && \SnappyMail\Log::warning("OpenSSL does not support {$sCipher}");
+			$aCiphers = \SnappyMail\Crypt::listCiphers();
+			$this->Set('security', 'encrypt_cipher', $aCiphers[\array_rand($aCiphers)]);
+			$this->Save();
+		}
+
 		return $bResult;
 	}
 
@@ -125,12 +133,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 		}
 		$upload_max_filesize = $upload_max_filesize / 1024 / 1024;
 
-		$sCipher = 'aes-256-cbc-hmac-sha1';
-		$aCiphers = \SnappyMail\Crypt::listCiphers();
-		if (!\in_array($sCipher, $aCiphers)) {
-			$sCipher = $aCiphers[\array_rand($aCiphers)];
-		}
-
 		return array(
 
 			'webmail' => array(
@@ -191,7 +193,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'admin_panel_key'            => array('admin'),
 				'content_security_policy'    => array('', 'For example to allow all images use "img-src https:". More info at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy#directives'),
 				'csp_report'                 => array(false, 'Report CSP errors to PHP and/or SnappyMail Log'),
-				'encrypt_cipher'             => array($sCipher, 'A valid cipher method from https://php.net/openssl_get_cipher_methods'),
+				'encrypt_cipher'             => array('aes-256-cbc-hmac-sha1', 'A valid cipher method from https://php.net/openssl_get_cipher_methods'),
 				'cookie_samesite'            => array('Strict', 'Strict, Lax or None')
 			),
 

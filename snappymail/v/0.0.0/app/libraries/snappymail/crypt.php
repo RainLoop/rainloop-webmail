@@ -18,21 +18,23 @@ abstract class Crypt
 			$list = \array_diff($list, \array_map('strtoupper',$list));
 			$list = \array_filter($list, function($v){
 				// DES/ECB/bf/rc insecure, GCM/CCM not supported
-				return !\preg_match('/(^(des|bf|rc))|-(ecb|gcm|ccm)/i', $v);
+				return !\preg_match('/(^(des|bf|rc))|-(ecb|gcm|ccm|ocb)|wrap/i', $v);
 			});
 			\natcasesort($list);
 		}
 		return $list;
 	}
 
+	public static function cipherSupported(string $cipher) : bool
+	{
+		return \in_array($cipher, static::listCiphers());
+	}
+
 	public static function setCipher(string $cipher) : bool
 	{
-		if ($cipher) {
-			$ciphers = static::listCiphers();
-			if (\in_array($cipher, $ciphers)) {
-				static::$cipher = $cipher;
-				return true;
-			}
+		if (static::cipherSupported($cipher)) {
+			static::$cipher = $cipher;
+			return true;
 		}
 		return false;
 	}
@@ -96,12 +98,14 @@ abstract class Crypt
 			$nonce = \random_bytes(\SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
 			return ['sodium', $nonce, static::SodiumEncrypt($data, $nonce, $key)];
 		} catch (\Throwable $e) {
+			Log::error($e->getMessage());
 		}
 
 		try {
 			$iv = \random_bytes(\openssl_cipher_iv_length(static::$cipher));
 			return ['openssl', $iv, static::OpenSSLEncrypt($data, $iv, $key)];
 		} catch (\Throwable $e) {
+			Log::error($e->getMessage());
 		}
 
 		$salt = \random_bytes(16);
@@ -141,12 +145,16 @@ abstract class Crypt
 		if (!\is_callable('sodium_crypto_aead_xchacha20poly1305_ietf_encrypt')) {
 			throw new \Exception('sodium_crypto_aead_xchacha20poly1305_ietf_encrypt not callable');
 		}
-		return \sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(
+		$result = \sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(
 			$data,
 			APP_SALT,
 			$nonce,
 			\str_pad('', \SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES, static::Passphrase($key))
 		);
+		if (!$result) {
+			throw new \Exception('Sodium encryption failed');
+		}
+		return $result;
 	}
 
 	public static function OpenSSLDecrypt(string $data, string $iv, string $key = null) /* : string|false */
@@ -154,8 +162,11 @@ abstract class Crypt
 		if (!$data || !$iv) {
 			throw new \InvalidArgumentException('$data or $iv is empty string');
 		}
-		if (!static::$cipher || !\is_callable('openssl_decrypt')) {
+		if (!\is_callable('openssl_decrypt')) {
 			throw new \Exception('openssl_decrypt not callable');
+		}
+		if (!static::$cipher) {
+			throw new \Exception('openssl $cipher not set');
 		}
 		return \openssl_decrypt(
 			$data,
@@ -166,21 +177,28 @@ abstract class Crypt
 		);
 	}
 
-	public static function OpenSSLEncrypt(string $data, string $iv, string $key = null) : ?string
+	public static function OpenSSLEncrypt(string $data, string $iv, string $key = null) : string
 	{
 		if (!$data || !$iv) {
 			throw new \InvalidArgumentException('$data or $iv is empty string');
 		}
-		if (!static::$cipher || !\is_callable('openssl_encrypt')) {
+		if (!\is_callable('openssl_encrypt')) {
 			throw new \Exception('openssl_encrypt not callable');
 		}
-		return \openssl_encrypt(
+		if (!static::$cipher) {
+			throw new \Exception('openssl $cipher not set');
+		}
+		$result = \openssl_encrypt(
 			$data,
 			static::$cipher,
 			static::Passphrase($key),
 			OPENSSL_RAW_DATA,
 			$iv
 		);
+		if (!$result) {
+			throw new \Exception('OpenSSL encryption with ' . static::$cipher . ' failed');
+		}
+		return $result;
 	}
 
 	public static function XxteaDecrypt(string $data, string $salt, string $key = null) /* : mixed */
@@ -194,15 +212,19 @@ abstract class Crypt
 			: \MailSo\Base\Xxtea::decrypt($data, $key);
 	}
 
-	public static function XxteaEncrypt(string $data, string $salt, string $key = null) : ?string
+	public static function XxteaEncrypt(string $data, string $salt, string $key = null) : string
 	{
 		if (!$data || !$salt) {
 			throw new \InvalidArgumentException('$data or $salt is empty string');
 		}
 		$key = $salt . static::Passphrase($key);
-		return \is_callable('xxtea_encrypt')
+		$result = \is_callable('xxtea_encrypt')
 			? \xxtea_encrypt($data, $key)
 			: \MailSo\Base\Xxtea::encrypt($data, $key);
+		if (!$result) {
+			throw new \Exception('Xxtea encryption failed');
+		}
+		return $result;
 	}
 
 	private static function jsonDecode(string $data) /*: mixed*/
@@ -212,6 +234,4 @@ abstract class Crypt
 
 }
 
-\SnappyMail\Crypt::setCipher(\RainLoop\Api::Config()->Get('security', 'encrypt_cipher', 'aes-256-cbc-hmac-sha1'))
-	|| \SnappyMail\Crypt::setCipher('aes-256-cbc-hmac-sha1')
-	|| \SnappyMail\Crypt::setCipher('aes-256-xts');
+\SnappyMail\Crypt::setCipher(\RainLoop\Api::Config()->Get('security', 'encrypt_cipher', 'aes-256-cbc-hmac-sha1'));
