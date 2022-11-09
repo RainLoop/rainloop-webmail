@@ -28,7 +28,7 @@ class Plugin extends \RainLoop\Config\AbstractConfig
 			}
 		}
 
-		parent::__construct('plugin-'.$sPluginName.'.ini', '; SnappyMail plugin ('.$sPluginName.')');
+		parent::__construct('plugin-'.$sPluginName.'.json');
 	}
 
 	protected function defaultValues() : array

@@ -34,10 +34,10 @@ abstract class AbstractConfig implements \JsonSerializable
 		$this->sFile = \APP_PRIVATE_DATA.'configs/'.\trim($sFileName);
 
 		$sAdditionalFileName = \trim($sAdditionalFileName);
-		if (\strlen($sAdditionalFileName)) {
+		if ($sAdditionalFileName) {
 			$sAdditionalFileName = \APP_PRIVATE_DATA.'configs/'.$sAdditionalFileName;
 			if (\file_exists($this->sAdditionalFile)) {
-				$this->sAdditionalFile = $this->sAdditionalFile;
+				$this->sAdditionalFile = $sAdditionalFileName;
 			}
 		}
 
@@ -58,7 +58,16 @@ abstract class AbstractConfig implements \JsonSerializable
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
-		return $this->aData;
+		$aData = [];
+		foreach ($this->aData as $sSectionKey => $aSectionValue) {
+			if (\is_array($aSectionValue)) {
+				$aData[$sSectionKey] = [];
+				foreach ($aSectionValue as $sParamKey => $mParamValue) {
+					$aData[$sSectionKey][$sParamKey] = $mParamValue[0];
+				}
+			}
+		}
+		return $aData;
 	}
 
 	/**
@@ -179,14 +188,22 @@ abstract class AbstractConfig implements \JsonSerializable
 
 	public function Load() : bool
 	{
-		if (\file_exists($this->sFile) && \is_readable($this->sFile))
+		$sFile = $this->sFile;
+		if (!\file_exists($sFile) && \str_ends_with($sFile, '.json')) {
+			$sFile = \str_replace('.json', '.ini', $sFile);
+		}
+		if (\file_exists($sFile) && \is_readable($sFile))
 		{
 			if ($this->loadDataFromCache())
 			{
 				return true;
 			}
 
-			$aData = \parse_ini_file($this->sFile, true);
+			if (\str_ends_with($sFile, '.json')) {
+				$aData = \json_decode(\file_get_contents($sFile), true);
+			} else {
+				$aData = \parse_ini_file($sFile, true);
+			}
 			if ($aData && \count($aData))
 			{
 				foreach ($aData as $sSectionKey => $aSectionValue)
@@ -204,10 +221,14 @@ abstract class AbstractConfig implements \JsonSerializable
 
 				if (\file_exists($this->sAdditionalFile) && \is_readable($this->sAdditionalFile))
 				{
-					$aSubData = \parse_ini_file($this->sAdditionalFile, true);
-					if ($aSubData && \count($aSubData))
+					if (\str_ends_with($this->sAdditionalFile, '.json')) {
+						$aData = \json_decode(\file_get_contents($this->sAdditionalFile), true);
+					} else {
+						$aData = \parse_ini_file($this->sAdditionalFile, true);
+					}
+					if ($aData && \count($aData))
 					{
-						foreach ($aSubData as $sSectionKey => $aSectionValue)
+						foreach ($aData as $sSectionKey => $aSectionValue)
 						{
 							if (\is_array($aSectionValue))
 							{
@@ -219,7 +240,7 @@ abstract class AbstractConfig implements \JsonSerializable
 						}
 					}
 
-					unset($aSubData);
+					unset($aData);
 				}
 
 				$this->storeDataToCache();
@@ -238,38 +259,38 @@ abstract class AbstractConfig implements \JsonSerializable
 			return false;
 		}
 
+		if (\str_ends_with($this->sFile, '.json')) {
+			$this->clearCache();
+			\RainLoop\Utils::saveFile($this->sFile, \json_encode($this, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES));
+			// Remove old .ini file
+			$sFile = \str_replace('.json', '.ini', $this->sFile);
+			\file_exists($sFile) && \unlink($sFile);
+			return true;
+		}
+
 		$sNewLine = "\n";
 
 		$aResultLines = array();
 
-		foreach ($this->aData as $sSectionKey => $aSectionValue)
-		{
-			if (\is_array($aSectionValue))
-			{
+		foreach ($this->aData as $sSectionKey => $aSectionValue) {
+			if (\is_array($aSectionValue)) {
 				$aResultLines[] = '';
 				$aResultLines[] = '['.$sSectionKey.']';
 				$bFirst = true;
 
-				foreach ($aSectionValue as $sParamKey => $mParamValue)
-				{
-					if (\is_array($mParamValue))
-					{
-						if (!empty($mParamValue[1]))
-						{
-							$sDesk = \str_replace("\r", '', $mParamValue[1]);
-							$aDesk = \explode("\n", $sDesk);
-							$aDesk = \array_map(function ($sLine) {
-								return '; '.$sLine;
-							}, $aDesk);
-
-							if (!$bFirst)
-							{
+				foreach ($aSectionValue as $sParamKey => $mParamValue) {
+					if (\is_array($mParamValue)) {
+						// Add comments
+						if (!empty($mParamValue[1])) {
+							if (!$bFirst) {
 								$aResultLines[] = '';
 							}
-
-							$aResultLines[] = \implode($sNewLine, $aDesk);
+							foreach (\explode("\n", \str_replace("\r", '', $mParamValue[1])) as $sLine) {
+								$aResultLines[] = '; ' . $sLine;
+							}
 						}
 
+						// Add value
 						$bFirst = false;
 
 						$sValue = '""';
