@@ -92,7 +92,7 @@ if [ "$UPDATE" == "no" ]; then
     echo "Password: $admin_password" >> ~/.snappymail
     echo "Secret key: admin_$key" >> ~/.snappymail
 
-    unzip -q ${SM_INSTALL_DIR}/${SM_FILE}
+    tar -xzf ${SM_INSTALL_DIR}/${SM_FILE}
 
     mv ./data $SM_CONFIG_DIR/
     ln -s $SM_CONFIG_DIR/data/ ./data
@@ -153,12 +153,12 @@ else
    [ ! -f "${RC_INSTALL_DIR}/${RC_FILE}" ] && wget "$SM_URL" --quiet -O "${SM_INSTALL_DIR}/${SM_FILE}"
    version=$(cat $SM_INSTALL_DIR/data/VERSION);
 
-   unzip -q -j snappymail-latest.zip "data/VERSION" -d $SM_INSTALL_DIR/
+   tar -xzf snappymail-latest.tar.gz "data/VERSION" $SM_INSTALL_DIR/
    version_source=$(cat $SM_INSTALL_DIR/VERSION);
 
-   # Check version inside .zip file in case hestia didn't update yet
+   # Check version inside .tar.gz file in case hestia didn't update yet
    if [ "$version" != "$version_source" ]; then
-       unzip -q ${SM_INSTALL_DIR}/${SM_FILE}
+       tar -xzf ${SM_INSTALL_DIR}/${SM_FILE}
        rm $SM_INSTALL_DIR/$SM_FILE
     fi
     rm ${SM_INSTALL_DIR}/VERSION
