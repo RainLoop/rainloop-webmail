@@ -4,55 +4,31 @@ namespace RainLoop\Plugins;
 
 class Property implements \JsonSerializable
 {
-	/**
-	 * @var string
-	 */
-	private $sName;
+	private string $sName;
 
 	/**
 	 * @var mixed
 	 */
 	private $mValue;
 
-	/**
-	 * @var string
-	 */
-	private $sLabel;
+	private string $sLabel = '';
 
-	/**
-	 * @var string
-	 */
-	private $sDesc;
+	private string $sDesc = '';
 
-	/**
-	 * @var int
-	 */
-	private $iType;
+	private int $iType = \RainLoop\Enumerations\PluginPropertyType::STRING;
 
-	/**
-	 * @var bool
-	 */
-	private $bAllowedInJs;
+	private bool $bAllowedInJs = false;
 
 	/**
 	 * @var mixed
 	 */
-	private $mDefaultValue;
+	private $mDefaultValue = '';
 
-	/**
-	 * @var string
-	 */
-	private $sPlaceholder;
+	private string $sPlaceholder = '';
 
 	function __construct(string $sName)
 	{
 		$this->sName = $sName;
-		$this->iType = \RainLoop\Enumerations\PluginPropertyType::STRING;
-		$this->mDefaultValue = '';
-		$this->sLabel = '';
-		$this->sDesc = '';
-		$this->bAllowedInJs = false;
-		$this->sPlaceholder = '';
 	}
 
 	public static function NewInstance(string $sName) : self

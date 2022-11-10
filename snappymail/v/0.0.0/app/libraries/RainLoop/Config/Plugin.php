@@ -13,11 +13,12 @@ class Plugin extends \RainLoop\Config\AbstractConfig
 	{
 		if (\count($aMap)) {
 			$aResultMap = array();
-			foreach ($aMap as /* @var $oProperty \RainLoop\Plugins\Property */ $oProperty) {
-				if ($oProperty) {
-					$mValue = $oProperty->DefaultValue();
-					$sValue = \is_array($mValue) && isset($mValue[0]) ? $mValue[0] : $mValue;
-					$aResultMap[$oProperty->Name()] = array($sValue, '');
+			foreach ($aMap as $oProperty) {
+				if ($oProperty instanceof \RainLoop\Plugins\Property) {
+					$aResultMap[$oProperty->Name()] = array(
+						$oProperty->DefaultValue(),
+						''
+					);
 				}
 			}
 
@@ -28,6 +29,7 @@ class Plugin extends \RainLoop\Config\AbstractConfig
 			}
 		}
 
+//		parent::__construct('plugin-'.$sPluginName.'.ini', '; SnappyMail plugin ('.$sPluginName.')');
 		parent::__construct('plugin-'.$sPluginName.'.json');
 	}
 
