@@ -58,16 +58,7 @@ abstract class AbstractConfig implements \JsonSerializable
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
-		$aData = [];
-		foreach ($this->aData as $sSectionKey => $aSectionValue) {
-			if (\is_array($aSectionValue)) {
-				$aData[$sSectionKey] = [];
-				foreach ($aSectionValue as $sParamKey => $mParamValue) {
-					$aData[$sSectionKey][$sParamKey] = $mParamValue[0];
-				}
-			}
-		}
-		return $aData;
+		return $this->aData;;
 	}
 
 	/**
