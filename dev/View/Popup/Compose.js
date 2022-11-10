@@ -1222,13 +1222,13 @@ export class ComposePopupView extends AbstractViewPopup {
 	}
 
 	/**
-	 * @param {string} url
+	 * @param {string} id
 	 * @param {string} name
 	 * @param {number} size
 	 * @returns {ComposeAttachmentModel}
 	 */
-	addAttachmentHelper(url, name, size) {
-		const attachment = new ComposeAttachmentModel(url, name, size);
+	addAttachmentHelper(id, name, size) {
+		const attachment = new ComposeAttachmentModel(id, name, size);
 		this.addAttachment(attachment, 1);
 		return attachment;
 	}
