@@ -7,33 +7,30 @@
 			view.nextcloudAttach = () => {
 				rl.nextcloud.selectFiles().then(files => {
 					files && files.forEach(file => {
-						let attachment = view.addAttachmentHelper(
-								Jua?.randomId(),
-								file.name.replace(/^.*\/([^/]+)$/, '$1'),
-								file.size
-							);
-						attachment
-							.waiting(false)
-							.uploading(true)
-							.complete(false);
+						if (file.name) {
+							let attachment = view.addAttachmentHelper(
+									Jua?.randomId(),
+									file.name.replace(/^.*\/([^/]+)$/, '$1'),
+									file.size
+								);
 
-						rl.pluginRemoteRequest(
-							(iError, data) => {
-								attachment
-									.uploading(false)
-									.complete(true);
-								if (iError) {
-									attachment.error(data?.Result?.error || 'failed');
-								} else {
-									attachment.tempName(data.Result.tempName);
+							rl.pluginRemoteRequest(
+								(iError, data) => {
+									attachment.uploading(false).complete(true);
+									if (iError) {
+										attachment.error(data?.Result?.error || 'failed');
+									} else {
+										attachment.tempName(data.Result.tempName);
+									}
+								},
+								'NextcloudAttachFile',
+								{
+									'file': file.name
 								}
-							},
-							'NextcloudAttachFile',
-							{
-								'file': file.name
-							}
-						);
-
+							);
+						} else if (file.url) {
+							view.oEditor.editor.squire.makeLink(file.url);
+						}
 					});
 				});
 			};

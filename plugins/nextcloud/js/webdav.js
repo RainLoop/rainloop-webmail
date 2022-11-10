@@ -1,36 +1,77 @@
 (rl => {
 
 const
-	namespace = 'DAV:',
+	nsDAV = 'DAV:',
+	nsNC = 'http://nextcloud.org/ns',
+	nsOC = 'http://owncloud.org/ns',
+	nsOCS = 'http://open-collaboration-services.org/ns',
 	nsCalDAV = 'urn:ietf:params:xml:ns:caldav',
 
+	OC = () => parent.OC,
+
+	// Nextcloud 19 deprecated generateUrl, but screw `import { generateUrl } from "@nextcloud/router"`
+	generateUrl = path => OC().webroot + (OC().config.modRewriteWorking ? '' : '/index.php') + path,
+	generateRemoteUrl = path => location.protocol + '//' + location.host + generateUrl(path),
+
+//	shareTypes = {0 = user, 1 = group, 3 = public link}
+
 	propfindFiles = `<?xml version="1.0"?>
-<d:propfind xmlns:d="DAV:" xmlns:oc="http://owncloud.org/ns">
-  <d:prop>
-		<d:resourcetype/>
+<propfind xmlns="DAV:" xmlns:oc="${nsOC}" xmlns:ocs="${nsOCS}" xmlns:nc="${nsNC}">
+	<prop>
+		<oc:fileid/>
 		<oc:size/>
-		<d:getcontentlength/>
-  </d:prop>
-</d:propfind>`,
+		<resourcetype/>
+		<getcontentlength/>
+
+		<getcontenttype/>
+		<oc:permissions/>
+		<ocs:share-permissions/>
+		<nc:share-attributes/>
+		<oc:share-types/>
+		<nc:is-encrypted/>
+	</prop>
+</propfind>`,
+/*
+<d:propstat>
+	<d:prop>
+		<d:getcontenttype>video/mp4</d:getcontenttype>
+		<oc:permissions>RGDNVW</oc:permissions>
+		<d:getcontentlength>3963036</d:getcontentlength>
+		<ocs:share-permissions>19</ocs:share-permissions>
+		<nc:share-attributes>[]</nc:share-attributes>
+		<oc:share-types>
+			<oc:share-type>3</oc:share-type>
+		</oc:share-types>
+	</d:prop>
+	<d:status>HTTP/1.1 200 OK</d:status>
+</d:propstat>
+<d:propstat>
+	<d:prop>
+		<nc:is-encrypted/>
+	</d:prop>
+	<d:status>HTTP/1.1 404 Not Found</d:status>
+</d:propstat>
+*/
 
 	propfindCal = `<?xml version="1.0"?>
-<d:propfind xmlns:d="DAV:">
-  <d:prop>
-		<d:resourcetype/>
-		<d:current-user-privilege-set/>
-		<d:displayname/>
-  </d:prop>
-</d:propfind>`,
+<propfind xmlns="DAV:">
+	<prop>
+		<resourcetype/>
+		<current-user-privilege-set/>
+		<displayname/>
+	</prop>
+</propfind>`,
 
 	xmlParser = new DOMParser(),
 	pathRegex = /.*\/remote.php\/dav\/[^/]+\/[^/]+/g,
 
-	getDavElementsByTagName = (parent, localName) => parent.getElementsByTagNameNS(namespace, localName),
+	getElementsByTagName = (parent, namespace, localName) => parent.getElementsByTagNameNS(namespace, localName),
+	getDavElementsByTagName = (parent, localName) => getElementsByTagName(parent, nsDAV, localName),
 	getDavElementByTagName = (parent, localName) => getDavElementsByTagName(parent, localName)?.item(0),
 	getElementByTagName = (parent, localName) => +parent.getElementsByTagName(localName)?.item(0),
 
 	davFetch = (mode, path, options) => {
-		if (!parent.OC.requestToken) {
+		if (!OC().requestToken) {
 			return Promise.reject(new Error('OC.requestToken missing'));
 		}
 		let cfg = rl.settings.get('Nextcloud');
@@ -41,7 +82,7 @@ const
 			credentials: 'same-origin',
 			headers: {}
 		}, options);
-		options.headers.requesttoken = parent.OC.requestToken;
+		options.headers.requesttoken = OC().requestToken;
 //		cfg.UID = document.head.dataset.user
 		return fetch(cfg.WebDAV + '/' + mode + '/' + cfg.UID + path, options);
 	},
@@ -51,7 +92,7 @@ const
 	createDirectory = path => davFetchFiles(path, { method: 'MKCOL' }),
 
 	fetchFiles = path => {
-		if (!parent.OC.requestToken) {
+		if (!OC().requestToken) {
 			return Promise.reject(new Error('OC.requestToken missing'));
 		}
 		return davFetchFiles(path, {
@@ -85,6 +126,7 @@ const
 					}
 				} else {
 					elem.isFile = true;
+					elem.id = e.getElementsByTagNameNS(nsOC, 'fileid')?.item(0)?.textContent;
 					elem.size = getDavElementByTagName(e, 'getcontentlength')?.textContent
 						|| getElementByTagName(e, 'oc:size')?.textContent;
 				}
@@ -110,12 +152,12 @@ const
 					summary.dataset.icon = '📁';
 					if (!view.files()) {
 						let btn = document.createElement('button');
-						btn.item_name = item.name;
 						btn.name = 'select';
 						btn.textContent = 'select';
 						btn.className = 'button-vue';
 						btn.style.marginLeft = '1em';
 						summary.append(btn);
+						summary.item_name = item.name;
 					}
 					details.append(summary);
 					details.append(ul);
@@ -127,17 +169,33 @@ const
 			if (view.files()) {
 				items.forEach(item => {
 					if (item.isFile) {
-						// TODO show files
 						let li = document.createElement('li'),
 							btn = document.createElement('button');
-						btn.item = item;
+
+						li.item = item;
+						li.textContent = item.name.replace(/^.*\/([^/]+)$/, '$1');
+						li.dataset.icon = '🗎';
+
 						btn.name = 'select';
 						btn.textContent = 'select';
 						btn.className = 'button-vue';
 						btn.style.marginLeft = '1em';
-						li.textContent = item.name.replace(/^.*\/([^/]+)$/, '$1');
-						li.dataset.icon = '🗎';
 						li.append(btn);
+
+						btn = document.createElement('button');
+						btn.name = 'share-internal';
+						btn.textContent = '🔗 internal';
+						btn.className = 'button-vue';
+						btn.style.marginLeft = '1em';
+						li.append(btn);
+/*
+						btn = document.createElement('button');
+						btn.name = 'share-public';
+						btn.textContent = '🔗 public';
+						btn.className = 'button-vue';
+						btn.style.marginLeft = '1em';
+						li.append(btn);
+*/
 						parent.append(li);
 					}
 				});
@@ -150,8 +208,8 @@ const
 			btn.name = 'create';
 			btn.textContent = 'create & select';
 			btn.className = 'button-vue';
-			btn.item_name = path;
 			btn.input = input;
+			li.item_path = path;
 			li.append(input);
 			li.append(btn);
 			parent.append(li);
@@ -171,13 +229,50 @@ class NextcloudFilesPopupView extends rl.pluginPopupView {
 		this.tree.addEventListener('click', event => {
 			let el = event.target;
 			if (el.matches('button')) {
+				let parent = el.parentNode;
 				if ('select' == el.name) {
-					this.select = this.files() ? [el.item] : el.item_name;
+					this.select = this.files() ? [parent.item] : parent.item_name;
 					this.close();
+				} else if ('share-internal' == el.name) {
+					this.select = [{url:generateRemoteUrl(`/f/${parent.item.id}`)}];
+					this.close();
+				} else if ('share-public' == el.name) {
+/*
+					if (3 == share-type) {
+						GET generateUrl(`/ocs/v2.php/apps/files_sharing/api/v1/shares?format=json&path=${encodeURIComponent(parent.item.name)}&reshares=true`);
+					} else {
+						POST generateUrl(`/ocs/v2.php/apps/files_sharing/api/v1/shares`)
+						> {"path":"/Nextcloud intro.mp4","shareType":3,"attributes":"[]"}
+						< {"ocs":{"meta":{"status":"ok","statuscode":200,"message":"OK"},
+							"data":{
+								"id":"2",
+								"share_type":3,
+								"permissions":17,
+								"token":"7GK9mL9LCTseSgK",
+								"path":"\/Nextcloud intro.mp4",
+								"item_type":"file",
+								"mimetype":"video\/mp4",
+								"storage":1,
+								"item_source":20,
+								"file_source":20,
+								"file_parent":2,
+								"file_target":"\/Nextcloud intro.mp4",
+								"password":null,
+								"url":"https:\/\/example.com\/index.php\/s\/7GK9mL9LCTseSgK",
+								"mail_send":1,
+								"hide_download":0,
+								"attributes":null
+							}}}
+						GET /index.php/s/7GK9mL9LCTseSgK
+						PUT /ocs/v2.php/apps/files_sharing/api/v1/shares/2
+						> {"expireDate":"\"2022-11-29T23:00:00.000Z\""}
+						> {"password":"ABC09"}
+					}
+*/
 				} else if ('create' == el.name) {
 					let name = el.input.value.replace(/[|\\?*<":>+[]\/&\s]/g, '');
 					if (name.length) {
-						name = el.item_name + '/' + name;
+						name = parent.item_path + '/' + name;
 						createDirectory(name).then(response => {
 							if (response.status == 201) {
 								this.select = name;

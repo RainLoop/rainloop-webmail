@@ -160,7 +160,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		if (!$bAdmin && \is_array($aResult)) {
 			$sUID = \OC::$server->getUserSession()->getUser()->getUID();
-			$sWebDAV = \OC::$server->getURLGenerator()->linkTo('', 'remote.php') . '/dav/';
+			$sWebDAV = \OC::$server->getURLGenerator()->linkTo('', 'remote.php') . '/dav';
 //			$sWebDAV = \OCP\Util::linkToRemote('dav');
 			$aResult['Nextcloud'] = [
 				'UID' => $sUID,
