@@ -155,7 +155,6 @@ const
 						btn.name = 'select';
 						btn.textContent = 'select';
 						btn.className = 'button-vue';
-						btn.style.marginLeft = '1em';
 						summary.append(btn);
 						summary.item_name = item.name;
 					}
@@ -179,21 +178,18 @@ const
 						btn.name = 'select';
 						btn.textContent = 'select';
 						btn.className = 'button-vue';
-						btn.style.marginLeft = '1em';
 						li.append(btn);
 
 						btn = document.createElement('button');
 						btn.name = 'share-internal';
 						btn.textContent = '🔗 internal';
 						btn.className = 'button-vue';
-						btn.style.marginLeft = '1em';
 						li.append(btn);
 /*
 						btn = document.createElement('button');
 						btn.name = 'share-public';
 						btn.textContent = '🔗 public';
 						btn.className = 'button-vue';
-						btn.style.marginLeft = '1em';
 						li.append(btn);
 */
 						parent.append(li);

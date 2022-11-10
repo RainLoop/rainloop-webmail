@@ -63,6 +63,7 @@ class SnappyMailHelper
 			$oProvider = \RainLoop\Api::Actions()->DomainProvider();
 			$oDomain = $oProvider->Load('nextcloud');
 			if (!$oDomain) {
+//				$oDomain = \RainLoop\Model\Domain::fromIniArray('nextcloud', []);
 				$oDomain = new \RainLoop\Model\Domain('nextcloud');
 				$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::NONE;
 				$oDomain->SetConfig(

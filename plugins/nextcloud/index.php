@@ -18,6 +18,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$this->addHook('main.fabrica', 'MainFabrica');
 			$this->addHook('filter.app-data', 'FilterAppData');
 
+			$this->addCss('style.css');
+
 			$this->addJs('js/webdav.js');
 
 			$this->addJs('js/message.js');
