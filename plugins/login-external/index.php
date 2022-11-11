@@ -44,7 +44,7 @@ class LoginExternalPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$oLogger && $oLogger->WriteException($oException);
 		}
 
-		if ('json' === \strtolower($_POST['Output'])) {
+		if ('json' === \strtolower($_POST['Output'] ?? '')) {
 			\header('Content-Type: application/json; charset=utf-8');
 			$aResult = array(
 				'Action' => 'ExternalLogin',

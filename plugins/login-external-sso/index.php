@@ -11,7 +11,7 @@ class LoginExternalSsoPlugin extends \RainLoop\Plugins\AbstractPlugin
 		REQUIRED = '2.21.0',
 		CATEGORY = 'Login',
 		LICENSE  = 'MIT',
-		DESCRIPTION = '';
+		DESCRIPTION = 'More secure version of Login External with an SSO key';
 
 	public function Init() : void
 	{
@@ -27,7 +27,7 @@ class LoginExternalSsoPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$sPassword = $_POST['Password'];
 		if ($sEmail && $sPassword && $sKey && $_POST['SsoKey'] == $sKey) {
 			$sResult = \RainLoop\Api::CreateUserSsoHash($sEmail, $sPassword);
-			if ('json' == \strtolower($_POST['Output'] ?? 'Plain')) {
+			if ('json' === \strtolower($_POST['Output'] ?? '')) {
 				\header('Content-Type: application/json; charset=utf-8');
 				echo \json_encode(array(
 					'Action' => 'ExternalSso',
