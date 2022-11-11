@@ -352,7 +352,7 @@ class ActionsAdmin extends Actions
 			{
 				try
 				{
-					$oSieveClient = new \MailSo\Sieve\ManageSieveClient();
+					$oSieveClient = new \MailSo\Sieve\SieveClient();
 					$oSieveClient->SetLogger($this->Logger());
 					$oSieveClient->SetTimeOuts($iConnectionTimeout);
 

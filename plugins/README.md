@@ -111,25 +111,25 @@ $Plugin->addHook('hook.name', 'functionName');
 ### sieve.before-connect
 	params:
 		\RainLoop\Model\Account $oAccount
-		\MailSo\Sieve\ManageSieveClient $oSieveClient
+		\MailSo\Sieve\SieveClient $oSieveClient
 		\MailSo\Sieve\Settings $oSettings
 
 ### sieve.after-connect
 	params:
 		\RainLoop\Model\Account $oAccount
-		\MailSo\Sieve\ManageSieveClient $oSieveClient
+		\MailSo\Sieve\SieveClient $oSieveClient
 		\MailSo\Sieve\Settings $oSettings
 
 ### sieve.before-login
 	params:
 		\RainLoop\Model\Account $oAccount
-		\MailSo\Sieve\ManageSieveClient $oSieveClient
+		\MailSo\Sieve\SieveClient $oSieveClient
 		\MailSo\Sieve\Settings $oSettings
 
 ### sieve.after-login
 	params:
 		\RainLoop\Model\Account $oAccount
-		\MailSo\Sieve\ManageSieveClient $oSieveClient
+		\MailSo\Sieve\SieveClient $oSieveClient
 		bool $bSuccess
 		\MailSo\Sieve\Settings $oSettings
 

@@ -17,7 +17,7 @@ use MailSo\Net\Enumerations\ConnectionSecurityType;
  * @category MailSo
  * @package Sieve
  */
-class ManageSieveClient extends \MailSo\Net\NetClient
+class SieveClient extends \MailSo\Net\NetClient
 {
 	/**
 	 * @var bool

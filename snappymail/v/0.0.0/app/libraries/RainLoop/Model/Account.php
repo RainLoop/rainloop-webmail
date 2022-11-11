@@ -251,7 +251,7 @@ abstract class Account implements \JsonSerializable
 		return $this->netClientLogin($oSmtpClient, $oPlugins, $oSettings);
 	}
 
-	public function SieveConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Sieve\ManageSieveClient $oSieveClient, \RainLoop\Config\Application $oConfig)
+	public function SieveConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Sieve\SieveClient $oSieveClient, \RainLoop\Config\Application $oConfig)
 	{
 		$oSettings = $this->Domain()->SieveSettings();
 		$oSettings->Login = $this->IncLogin();
