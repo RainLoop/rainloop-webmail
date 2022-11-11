@@ -360,11 +360,7 @@ class Manager
 			{
 				foreach ($this->aAdditionalParts[$sActionName] as $mCallbak)
 				{
-					$bCallResult = $mCallbak(...$aParts);
-					if ($bCallResult && !$bResult)
-					{
-						$bResult = true;
-					}
+					$bResult = !!$mCallbak(...$aParts) || $bResult;
 				}
 			}
 		}

@@ -5,24 +5,82 @@ class Plugin extends \RainLoop\Plugins\AbstractPlugin
 	public function __construct();
 
 	/** Returns static::NAME */
-	public function Name() : string;
+	public function Name(): string;
 
 	/** Returns /README file contents or static::DESCRIPTION */
-	public function Description() : string;
+	public function Description(): string;
 
 	/** When $bLangs is boolean it sets the value, else returns current value */
-	public function UseLangs(?bool $bLangs = null) : bool;
+	public function UseLangs(?bool $bLangs = null): bool;
 
 	/** When true the result is empty string, else the error message */
-	public function Supported() : string;
+	public function Supported(): string;
 
 	/** Initialize settings */
-	public function Init() : void;
+	public function Init(): void;
 
-	public function FilterAppDataPluginSection(bool $bAdmin, bool $bAuth, array &$aConfig) : void;
+	public function FilterAppDataPluginSection(bool $bAdmin, bool $bAuth, array &$aConfig): void;
 
 	/** Returns array of all plugin Property options for use in Admin -> Extensions -> Plugin cog wheel */
-	protected function configMapping() : array;
+	protected function configMapping(): array;
+
+	/** With this function you hook to an event
+	 * $sHookName see chapter "Hooks" below for available names
+	 * $sFunctionName the name of a function in this class
+	 */
+	final protected function addHook(string $sHookName, string $sFunctionName): self;
+
+	final protected function addCss(string $sFile, bool $bAdminScope = false): self;
+
+	final protected function addJs(string $sFile, bool $bAdminScope = false): self;
+
+	final protected function addTemplate(string $sFile, bool $bAdminScope = false): self;
+
+	final protected function addJsonHook(string $sActionName, string $sFunctionName): self;
+
+	/**
+	 * You may register your own service actions.
+	 * Url is like /?{actionname}/etc.
+	 * Predefined actions of \RainLoop\ServiceActions that can't be registered are:
+	 * - admin
+	 * - AdminAppData
+	 * - AppData
+	 * - Append
+	 * - Backup
+	 * - BadBrowser
+	 * - CspReport
+	 * - Css
+	 * - Json
+	 * - Lang
+	 * - Mailto
+	 * - NoCookie
+	 * - NoScript
+	 * - Ping
+	 * - Plugins
+	 * - ProxyExternal
+	 * - Raw
+	 * - Sso
+	 * - Upload
+	 * - UploadBackground
+	 * - UploadContacts
+	 */
+	final protected function addPartHook(string $sActionName, string $sFunctionName): self
+
+	final public function Config(): \RainLoop\Config\Plugin;
+	final public function Manager(): \RainLoop\Plugins\Manager;
+	final public function Path(): string;
+	final public function ConfigMap(bool $flatten = false): array;
+
+	/**
+	 * Returns result of Actions->DefaultResponse($sFunctionName, $mData) or json_encode($mData)
+	 */
+	final protected function jsonResponse(string $sFunctionName, $mData): mixed;
+
+	final public function jsonParam(string $sKey, $mDefault = null): mixed;
+
+	final public function getUserSettings(): array;
+
+	final public function saveUserSettings(array $aSettings): bool;
 }
 ```
 
