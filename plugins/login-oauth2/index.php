@@ -4,9 +4,9 @@ class LoginOAuth2Plugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'OAuth2',
-		VERSION  = '1.0',
-		RELEASE  = '2021-11-12',
-		REQUIRED = '2.9.1',
+		VERSION  = '1.1',
+		RELEASE  = '2022-11-11',
+		REQUIRED = '2.21.0',
 		CATEGORY = 'Login',
 		DESCRIPTION = 'IMAP, Sieve & SMTP login using RFC 7628 OAuth2';
 
@@ -19,18 +19,18 @@ class LoginOAuth2Plugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		$this->UseLangs(true);
 		$this->addJs('LoginOAuth2.js');
-//		$this->addHook('imap.before-connect', array($this, $oImapClient, &$aCredentials));
-//		$this->addHook('imap.after-connect', array($this, $oImapClient, $aCredentials));
+//		$this->addHook('imap.before-connect', array($this, $oImapClient, $oSettings));
+//		$this->addHook('imap.after-connect', array($this, $oImapClient, $oSettings));
 		$this->addHook('imap.before-login', 'clientLogin');
-//		$this->addHook('imap.after-login', array($this, $oImapClient, $aCredentials));
-//		$this->addHook('smtp.before-connect', array($this, $oSmtpClient, &$aCredentials));
-//		$this->addHook('smtp.after-connect', array($this, $oSmtpClient, $aCredentials));
+//		$this->addHook('imap.after-login', array($this, $oImapClient, $oSettings));
+//		$this->addHook('smtp.before-connect', array($this, $oSmtpClient, $oSettings));
+//		$this->addHook('smtp.after-connect', array($this, $oSmtpClient, $oSettings));
 		$this->addHook('smtp.before-login', 'clientLogin');
-//		$this->addHook('smtp.after-login', array($this, $oSmtpClient, $aCredentials));
-//		$this->addHook('sieve.before-connect', array($this, $oSieveClient, &$aCredentials));
-//		$this->addHook('sieve.after-connect', array($this, $oSieveClient, $aCredentials));
+//		$this->addHook('smtp.after-login', array($this, $oSmtpClient, $oSettings));
+//		$this->addHook('sieve.before-connect', array($this, $oSieveClient, $oSettings));
+//		$this->addHook('sieve.after-connect', array($this, $oSieveClient, $oSettings));
 		$this->addHook('sieve.before-login', 'clientLogin');
-//		$this->addHook('sieve.after-login', array($this, $oSieveClient, $aCredentials));
+//		$this->addHook('sieve.after-login', array($this, $oSieveClient, $oSettings));
 		$this->addHook('filter.account', 'filterAccount');
 	}
 
@@ -46,9 +46,9 @@ class LoginOAuth2Plugin extends \RainLoop\Plugins\AbstractPlugin
 		];
 	}
 
-	public function clientLogin(\RainLoop\Model\Account $oAccount, \MailSo\Net\NetClient $oClient, array &$aCredentials) : void
+	public function clientLogin(\RainLoop\Model\Account $oAccount, \MailSo\Net\NetClient $oClient, \MailSo\Net\ConnectSettings $oSettings) : void
 	{
-		$sPassword = $aCredentials['Password'];
+		$sPassword = $oSettings->Password;
 		$iGatLen = \strlen(static::GMAIL_TOKENS_PREFIX);
 		if ($sPassword && static::GMAIL_TOKENS_PREFIX === \substr($sPassword, 0, $iGatLen)) {
 			$aTokens = \json_decode(\substr($sPassword, $iGatLen));
@@ -56,8 +56,8 @@ class LoginOAuth2Plugin extends \RainLoop\Plugins\AbstractPlugin
 			$sRefreshToken = !empty($aTokens[1]) ? $aTokens[1] : '';
 		}
 		if ($sAccessToken && $sRefreshToken) {
-			$aCredentials['Password'] = $this->gmailRefreshToken($sAccessToken, $sRefreshToken);
-			\array_unshift($aCredentials['SASLMechanisms'], 'OAUTHBEARER', 'XOAUTH2');
+			$oSettings->Password = $this->gmailRefreshToken($sAccessToken, $sRefreshToken);
+			\array_unshift($oSettings->SASLMechanisms, 'OAUTHBEARER', 'XOAUTH2');
 		}
 	}
 

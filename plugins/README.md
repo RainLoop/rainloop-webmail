@@ -3,12 +3,25 @@ PHP
 class Plugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	public function __construct();
+
+	/** Returns static::NAME */
 	public function Name() : string;
+
+	/** Returns /README file contents or static::DESCRIPTION */
 	public function Description() : string;
+
+	/** When $bLangs is boolean it sets the value, else returns current value */
 	public function UseLangs(?bool $bLangs = null) : bool;
+
+	/** When true the result is empty string, else the error message */
 	public function Supported() : string;
+
+	/** Initialize settings */
 	public function Init() : void;
+
 	public function FilterAppDataPluginSection(bool $bAdmin, bool $bAuth, array &$aConfig) : void;
+
+	/** Returns array of all plugin Property options for use in Admin -> Extensions -> Plugin cog wheel */
 	protected function configMapping() : array;
 }
 ```
@@ -72,26 +85,26 @@ $Plugin->addHook('hook.name', 'functionName');
 	params:
 		\RainLoop\Model\Account $oAccount
 		\MailSo\Imap\ImapClient $oImapClient
-		array &$aCredentials
+		\MailSo\Imap\Settings $oSettings
 
 ### imap.after-connect
 	params:
 		\RainLoop\Model\Account $oAccount
 		\MailSo\Imap\ImapClient $oImapClient
-		array $aCredentials
+		\MailSo\Imap\Settings $oSettings
 
 ### imap.before-login
 	params:
 		\RainLoop\Model\Account $oAccount
 		\MailSo\Imap\ImapClient $oImapClient
-		array &$aCredentials
+		\MailSo\Imap\Settings $oSettings
 
 ### imap.after-login
 	params:
 		\RainLoop\Model\Account $oAccount
 		\MailSo\Imap\ImapClient $oImapClient
 		bool $bSuccess
-		array $aCredentials
+		\MailSo\Imap\Settings $oSettings
 
 ## Sieve
 
@@ -99,26 +112,26 @@ $Plugin->addHook('hook.name', 'functionName');
 	params:
 		\RainLoop\Model\Account $oAccount
 		\MailSo\Sieve\ManageSieveClient $oSieveClient
-		array &$aCredentials
+		\MailSo\Sieve\Settings $oSettings
 
 ### sieve.after-connect
 	params:
 		\RainLoop\Model\Account $oAccount
 		\MailSo\Sieve\ManageSieveClient $oSieveClient
-		array $aCredentials
+		\MailSo\Sieve\Settings $oSettings
 
 ### sieve.before-login
 	params:
 		\RainLoop\Model\Account $oAccount
 		\MailSo\Sieve\ManageSieveClient $oSieveClient
-		array &$aCredentials
+		\MailSo\Sieve\Settings $oSettings
 
 ### sieve.after-login
 	params:
 		\RainLoop\Model\Account $oAccount
 		\MailSo\Sieve\ManageSieveClient $oSieveClient
 		bool $bSuccess
-		array $aCredentials
+		\MailSo\Sieve\Settings $oSettings
 
 ## SMTP
 
@@ -126,26 +139,26 @@ $Plugin->addHook('hook.name', 'functionName');
 	params:
 		\RainLoop\Model\Account $oAccount
 		\MailSo\Smtp\SmtpClient $oSmtpClient
-		array &$aCredentials
+		\MailSo\Smtp\Settings $oSettings
 
 ### smtp.after-connect
 	params:
 		\RainLoop\Model\Account $oAccount
 		\MailSo\Smtp\SmtpClient $oSmtpClient
-		array $aCredentials
+		\MailSo\Smtp\Settings $oSettings
 
 ### smtp.before-login
 	params:
 		\RainLoop\Model\Account $oAccount
 		\MailSo\Smtp\SmtpClient $oSmtpClient
-		array &$aCredentials
+		\MailSo\Smtp\Settings $oSettings
 
 ### smtp.after-login
 	params:
 		\RainLoop\Model\Account $oAccount
 		\MailSo\Smtp\SmtpClient $oSmtpClient
 		bool $bSuccess
-		array $aCredentials
+		\MailSo\Smtp\Settings $oSettings
 
 ## Folders
 
