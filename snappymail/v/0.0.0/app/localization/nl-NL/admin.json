@@ -88,8 +88,7 @@
 		"LABEL_CURRENT_PASSWORD": "Huidig wachtwoord",
 		"LABEL_NEW_PASSWORD": "Nieuw wachtwoord",
 		"LABEL_REPEAT_PASSWORD": "Herhaal nieuw wachtwoord",
-		"LEGEND_SSL": "SSL",
-		"LABEL_REQUIRE_VERIFICATION": "Verificatie van SSL certificaten (IMAP\/SMTP)",
+		"LABEL_REQUIRE_VERIFICATION": "Verificatie van SSL certificaten",
 		"LABEL_ALLOW_SELF_SIGNED": "Sta zelf ondertekende certificaten toe"
 	},
 	"TAB_PACKAGES": {
@@ -158,7 +157,6 @@
 	},
 	"HINTS": {
 		"BETA": "bèta",
-		"UNSTABLE": "onstabiel",
 		"WARNING": "Waarschuwing!"
 	},
 	"ERRORS": {

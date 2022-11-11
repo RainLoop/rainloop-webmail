@@ -162,13 +162,9 @@ abstract class NetClient
 		$this->iStartConnectTime = \microtime(true);
 		$this->writeLog('Start connection to "'.$this->sConnectedHost.':'.$this->iConnectedPort.'"');
 
-		$aStreamContextSettings = array(
-			'ssl' => $oSettings->ssl
-		);
-
-		\MailSo\Hooks::Run('Net.NetClient.StreamContextSettings/Filter', array(&$aStreamContextSettings));
-
-		$rStreamContext = \stream_context_create($aStreamContextSettings);
+		$rStreamContext = \stream_context_create(array(
+			'ssl' => $oSettings->ssl->jsonSerialize()
+		));
 
 		\set_error_handler(array($this, 'capturePhpErrorWithException'));
 

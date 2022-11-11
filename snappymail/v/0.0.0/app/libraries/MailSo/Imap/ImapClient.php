@@ -120,15 +120,15 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function Login(array $aCredentials) : self
+	public function Login(Settings $oSettings) : self
 	{
-		if (!empty($aCredentials['ProxyAuthUser']) && !empty($aCredentials['ProxyAuthPassword'])) {
-			$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($aCredentials['ProxyAuthUser']));
-			$sPassword = $aCredentials['ProxyAuthPassword'];
-			$sProxyAuthUser = $aCredentials['Login'];
+		if (!empty($oSettings->ProxyAuthUser) && !empty($oSettings->ProxyAuthPassword)) {
+			$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($oSettings->ProxyAuthUser));
+			$sPassword = $oSettings->ProxyAuthPassword;
+			$sProxyAuthUser = $oSettings->Login;
 		} else {
-			$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($aCredentials['Login']));
-			$sPassword = $aCredentials['Password'];
+			$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($oSettings->Login));
+			$sPassword = $oSettings->Password;
 			$sProxyAuthUser = '';
 		}
 
@@ -142,7 +142,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		$this->sLogginedUser = $sLogin;
 
 		$type = $this->IsSupported('LOGINDISABLED') ? '' : 'LOGIN'; // RFC3501 6.2.3
-		foreach ($aCredentials['SASLMechanisms'] as $sasl_type) {
+		foreach ($oSettings->SASLMechanisms as $sasl_type) {
 			if ($this->IsSupported("AUTH={$sasl_type}") && \SnappyMail\SASL::isSupported($sasl_type)) {
 				$type = $sasl_type;
 				break;
@@ -151,7 +151,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		if (!$type) {
 			if (!$this->Encrypted() && $this->IsSupported('STARTTLS')) {
 				$this->StartTLS();
-				return $this->Login($aCredentials);
+				return $this->Login($oSettings);
 			}
 			throw new \MailSo\RuntimeException('No supported SASL mechanism found, remote server wants: '
 				. \implode(', ', \array_filter($this->Capability() ?: [], function($var){

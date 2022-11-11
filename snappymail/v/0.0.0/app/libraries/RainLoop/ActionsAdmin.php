@@ -269,35 +269,21 @@ class ActionsAdmin extends Actions
 		$oDomain = $this->DomainProvider()->LoadOrCreateNewFromAction($this, 'test.example.com');
 		if ($oDomain)
 		{
+			$aAuth = $this->GetActionParam('auth');
+
 			try
 			{
 				$oImapClient = new \MailSo\Imap\ImapClient();
 				$oImapClient->SetLogger($this->Logger());
 				$oImapClient->SetTimeOuts($iConnectionTimeout);
 
-				$iTime = \microtime(true);
-				$oSettings = \MailSo\Net\ConnectSettings::fromArray($oDomain->ImapSettings());
+				$oSettings = $oDomain->ImapSettings();
 				$oImapClient->Connect($oSettings);
 
-				$sUsername = $this->GetActionParam('username', '');
-				if ($sUsername) {
-					$aSASLMechanisms = [];
-					$oConfig = $this->Config();
-					if ($oConfig->Get('labs', 'sasl_allow_scram_sha', false)) {
-						// https://github.com/the-djmaze/snappymail/issues/182
-						\array_push($aSASLMechanisms, 'SCRAM-SHA3-512', 'SCRAM-SHA-512', 'SCRAM-SHA-256', 'SCRAM-SHA-1');
-					}
-					if ($oConfig->Get('labs', 'sasl_allow_cram_md5', false)) {
-						$aSASLMechanisms[] = 'CRAM-MD5';
-					}
-					if ($oConfig->Get('labs', 'sasl_allow_plain', true)) {
-						$aSASLMechanisms[] = 'PLAIN';
-					}
-					$oImapClient->Login([
-						'Login' => $sUsername,
-						'Password' => $this->GetActionParam('password', ''),
-						'SASLMechanisms' => $aSASLMechanisms
-					]);
+				if (!empty($aAuth['user'])) {
+					$oSettings->Login = $aAuth['user'];
+					$oSettings->Password = $aAuth['pass'];
+					$oImapClient->Login($oSettings);
 				}
 
 				$oImapClient->Disconnect();
@@ -334,9 +320,14 @@ class ActionsAdmin extends Actions
 					$oSmtpClient->SetLogger($this->Logger());
 					$oSmtpClient->SetTimeOuts($iConnectionTimeout);
 
-					$iTime = \microtime(true);
-					$oSettings = \MailSo\Net\ConnectSettings::fromArray($oDomain->SmtpSettings());
+					$oSettings = $oDomain->SmtpSettings();
 					$oSmtpClient->Connect($oSettings, \MailSo\Smtp\SmtpClient::EhloHelper());
+
+					if (!empty($aAuth['user'])) {
+						$oSettings->Login = $aAuth['user'];
+						$oSettings->Password = $aAuth['pass'];
+						$oSmtpClient->Login($oSettings);
+					}
 
 					$oSmtpClient->Disconnect();
 					$bSmtpResult = true;
@@ -365,9 +356,14 @@ class ActionsAdmin extends Actions
 					$oSieveClient->SetLogger($this->Logger());
 					$oSieveClient->SetTimeOuts($iConnectionTimeout);
 
-					$iTime = \microtime(true);
-					$oSettings = \MailSo\Net\ConnectSettings::fromArray($oDomain->SieveSettings());
+					$oSettings = $oDomain->SieveSettings();
 					$oSieveClient->Connect($oSettings);
+
+					if (!empty($aAuth['user'])) {
+						$oSettings->Login = $aAuth['user'];
+						$oSettings->Password = $aAuth['pass'];
+						$oSieveClient->Login($oSettings);
+					}
 
 					$oSieveClient->Disconnect();
 					$bSieveResult = true;

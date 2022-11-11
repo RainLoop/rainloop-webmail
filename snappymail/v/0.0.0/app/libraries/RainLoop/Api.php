@@ -112,32 +112,11 @@ abstract class Api
 			\MailSo\Config::$BoundaryPrefix =
 				\trim(static::Config()->Get('labs', 'boundary_prefix', ''));
 
-			$sSslCafile = static::Config()->Get('ssl', 'cafile', '');
-			$sSslCapath = static::Config()->Get('ssl', 'capath', '');
-
 			Utils::$CookieDefaultPath = static::Config()->Get('labs', 'cookie_default_path', '');
 			Utils::$CookieSameSite = static::Config()->Get('security', 'cookie_samesite', 'Strict');
 			Utils::$CookieSecure = isset($_SERVER['HTTPS'])
 				|| 'None' == Utils::$CookieSameSite
 				|| !!static::Config()->Get('labs', 'cookie_default_secure', false);
-
-			if (!empty($sSslCafile) || !empty($sSslCapath))
-			{
-				\MailSo\Hooks::Add('Net.NetClient.StreamContextSettings/Filter', function ($aStreamContextSettings) use ($sSslCafile, $sSslCapath) {
-					if (isset($aStreamContextSettings['ssl']) && \is_array($aStreamContextSettings['ssl']))
-					{
-						if (empty($aStreamContextSettings['ssl']['cafile']) && !empty($sSslCafile))
-						{
-							$aStreamContextSettings['ssl']['cafile'] = $sSslCafile;
-						}
-
-						if (empty($aStreamContextSettings['ssl']['capath']) && !empty($sSslCapath))
-						{
-							$aStreamContextSettings['ssl']['capath'] = $sSslCapath;
-						}
-					}
-				});
-			}
 
 			\MailSo\Config::$CheckNewMessages = !!static::Config()->Get('labs', 'check_new_messages', true);
 		}

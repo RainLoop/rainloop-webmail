@@ -218,12 +218,13 @@ Default is "site=same-origin;site=none"')
 			),
 
 			'ssl' => array(
-				'verify_certificate' => array(false, 'Require verification of SSL certificate used.'),
-				'allow_self_signed'  => array(true, 'Allow self-signed certificates. Requires verify_certificate.'),
-				'security_level'     => array(1, 'https://www.openssl.org/docs/man1.1.1/man3/SSL_CTX_set_security_level.html'),
-				'cafile'             => array('', 'Location of Certificate Authority file on local filesystem (/etc/ssl/certs/ca-certificates.crt)'),
-				'capath'             => array('', 'capath must be a correctly hashed certificate directory. (/etc/ssl/certs/)'),
-				'client_cert'        => array('', 'Location of client certificate file (pem format with private key) on local filesystem'),
+				'verify_certificate'  => array(true, 'Require verification of SSL certificate used.'),
+				'allow_self_signed'   => array(false, 'Allow self-signed certificates. Requires verify_certificate.'),
+				'security_level'      => array(1, 'https://www.openssl.org/docs/man1.1.1/man3/SSL_CTX_set_security_level.html'),
+				'cafile'              => array('', 'Location of Certificate Authority file on local filesystem (/etc/ssl/certs/ca-certificates.crt)'),
+				'capath'              => array('', 'capath must be a correctly hashed certificate directory. (/etc/ssl/certs/)'),
+				'local_cert'          => array('', 'Location of client certificate file (pem format with private key) on local filesystem'),
+				'disable_compression' => array(true, 'This can help mitigate the CRIME attack vector.')
 			),
 
 			'capa' => array(

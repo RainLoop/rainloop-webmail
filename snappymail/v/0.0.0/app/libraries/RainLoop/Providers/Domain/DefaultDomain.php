@@ -135,7 +135,6 @@ class DefaultDomain implements DomainInterface
 			$this->oCacher->Delete(static::wildcardDomainsCacheKey());
 		}
 
-//		\RainLoop\Utils::saveFile($this->sDomainPath.'/'.$sRealFileName.'.ini', $oDomain->ToIniString());
 		\RainLoop\Utils::saveFile($this->sDomainPath.'/'.$sRealFileName.'.json', \json_encode($oDomain, \JSON_PRETTY_PRINT));
 
 		return true;

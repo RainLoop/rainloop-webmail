@@ -137,16 +137,16 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\*
 	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
-	public function Login(array $aCredentials) : self
+	public function Login(Settings $oSettings) : self
 	{
-		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($aCredentials['Login']));
-		$sPassword = $aCredentials['Password'];
+		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($oSettings->Login));
+		$sPassword = $oSettings->Password;
 
 		$type = '';
 		// https://github.com/the-djmaze/snappymail/pull/423
-//		$aCredentials['SASLMechanisms'][] = 'LOGIN';
-		\array_unshift($aCredentials['SASLMechanisms'], 'LOGIN');
-		foreach ($aCredentials['SASLMechanisms'] as $sasl_type) {
+//		$oSettings->SASLMechanisms[] = 'LOGIN';
+		\array_unshift($oSettings->SASLMechanisms, 'LOGIN');
+		foreach ($oSettings->SASLMechanisms as $sasl_type) {
 			if ($this->IsAuthSupported($sasl_type) && \SnappyMail\SASL::isSupported($sasl_type)) {
 				$type = $sasl_type;
 				break;
@@ -156,7 +156,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		if (!$type) {
 			if (!$this->Encrypted() && $this->IsSupported('STARTTLS')) {
 				$this->StartTLS();
-				return $this->Login($aCredentials);
+				return $this->Login($oSettings);
 			}
 			\trigger_error("SMTP {$this->GetConnectedHost()} no supported AUTH options. Disable login");
 			$this->writeLogException(

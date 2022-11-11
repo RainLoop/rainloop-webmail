@@ -12,24 +12,49 @@ import { DomainAdminStore } from 'Stores/Admin/Domain';
 
 import { AskPopupView } from 'View/Popup/Ask';
 
-const domainToParams = oDomain => ({
-			Name: oDomain.name(),
-
-			IncHost: oDomain.imapHost(),
-			IncPort: oDomain.imapPort(),
-			IncSecure: oDomain.imapSecure(),
-
-			UseSieve: oDomain.useSieve() ? 1 : 0,
-			SieveHost: oDomain.sieveHost(),
-			SievePort: oDomain.sievePort(),
-			SieveSecure: oDomain.sieveSecure(),
-
-			OutHost: oDomain.smtpHost(),
-			OutPort: oDomain.smtpPort(),
-			OutSecure: oDomain.smtpSecure(),
-			OutAuth: oDomain.smtpAuth() ? 1 : 0,
-			OutUsePhpMail: oDomain.smtpPhpMail() ? 1 : 0
-		});
+const
+	capitalize = string => string.charAt(0).toUpperCase() + string.slice(1),
+	domainToParams = oDomain => ({
+		Name: oDomain.name(),
+		IMAP: {
+			host: oDomain.imapHost(),
+			port: oDomain.imapPort(),
+			secure: pInt(oDomain.imapType()),
+			shortLogin: !!oDomain.imapShortLogin(),
+			ssl: {
+				verify_peer: !!oDomain.imapSslVerify_peer(),
+				verify_peer_name: !!oDomain.imapSslVerify_peer(),
+				allow_self_signed: !!oDomain.imapSslAllow_self_signed()
+			}
+		},
+		SMTP: {
+			host: oDomain.smtpHost(),
+			port: oDomain.smtpPort(),
+			secure: pInt(oDomain.smtpType()),
+			shortLogin: !!oDomain.smtpShortLogin(),
+			ssl: {
+				verify_peer: !!oDomain.smtpSslVerify_peer(),
+				verify_peer_name: !!oDomain.smtpSslVerify_peer(),
+				allow_self_signed: !!oDomain.smtpSslAllow_self_signed()
+			},
+			setSender: !!oDomain.smtpSetSender(),
+			useAuth: !!oDomain.smtpUseAuth(),
+			usePhpMail: !!oDomain.smtpUsePhpMail()
+		},
+		Sieve: {
+			enabled: !!oDomain.sieveEnabled(),
+			host: oDomain.sieveHost(),
+			port: oDomain.sievePort(),
+			secure: pInt(oDomain.sieveType()),
+			shortLogin: !!oDomain.imapShortLogin(),
+			ssl: {
+				verify_peer: !!oDomain.imapSslVerify_peer(),
+				verify_peer_name: !!oDomain.imapSslVerify_peer(),
+				allow_self_signed: !!oDomain.imapSslAllow_self_signed()
+			}
+		},
+		whiteList: oDomain.whiteList()
+	});
 
 export class DomainPopupView extends AbstractViewPopup {
 	constructor() {
@@ -82,14 +107,14 @@ export class DomainPopupView extends AbstractViewPopup {
 			},
 
 			domainIsComputed: () => {
-				const usePhpMail = this.smtpPhpMail(),
-					useSieve = this.useSieve();
+				const usePhpMail = this.smtpUsePhpMail(),
+					sieveEnabled = this.sieveEnabled();
 
 				return (
 					this.name() &&
 					this.imapHost() &&
 					this.imapPort() &&
-					(useSieve ? this.sieveHost() && this.sievePort() : true) &&
+					(sieveEnabled ? this.sieveHost() && this.sievePort() : true) &&
 					((this.smtpHost() && this.smtpPort()) || usePhpMail)
 				);
 			},
@@ -113,7 +138,7 @@ export class DomainPopupView extends AbstractViewPopup {
 			smtpHostFocus: value => value && this.imapHost() && !this.smtpHost()
 				&& this.smtpHost(this.imapHost().replace(/imap/gi, 'smtp')),
 
-			imapSecure: value => {
+			imapType: value => {
 				if (this.enableSmartPorts()) {
 					const port = pInt(this.imapPort());
 					switch (pInt(value)) {
@@ -133,7 +158,7 @@ export class DomainPopupView extends AbstractViewPopup {
 				}
 			},
 
-			smtpSecure: value => {
+			smtpType: value => {
 				if (this.enableSmartPorts()) {
 					const port = pInt(this.smtpPort());
 					switch (pInt(value)) {
@@ -169,14 +194,7 @@ export class DomainPopupView extends AbstractViewPopup {
 		Remote.request('AdminDomainSave',
 			this.onDomainCreateOrSaveResponse.bind(this),
 			Object.assign(domainToParams(this), {
-				Create: this.edit() ? 0 : 1,
-
-				IncShortLogin: this.imapShortLogin() ? 1 : 0,
-
-				OutShortLogin: this.smtpShortLogin() ? 1 : 0,
-				OutSetSender: this.smtpSetSender() ? 1 : 0,
-
-				WhiteList: this.whiteList()
+				Create: this.edit() ? 0 : 1
 			})
 		);
 	}
@@ -188,8 +206,10 @@ export class DomainPopupView extends AbstractViewPopup {
 			if (credentials) {
 				this.testing(true);
 				const params = domainToParams(this);
-				params.username = credentials.username;
-				params.password = credentials.password;
+				params.auth = {
+					user: credentials.username,
+					pass: credentials.password
+				};
 				Remote.request('AdminDomainTest',
 					(iError, oData) => {
 						this.testing(false);
@@ -250,7 +270,23 @@ export class DomainPopupView extends AbstractViewPopup {
 		if (oDomain) {
 			this.enableSmartPorts(false);
 			this.edit(true);
-			forEachObjectEntry(oDomain, (key, value) => this[key]?.(value));
+			forEachObjectEntry(oDomain, (key, value) => {
+				if ('IMAP' === key || 'SMTP' === key || 'Sieve' === key) {
+					key = key.toLowerCase();
+					forEachObjectEntry(value, (skey, value) => {
+						skey = capitalize(skey);
+						if ('Ssl' == skey) {
+							forEachObjectEntry(value, (sslkey, value) => {
+								this[key + skey + capitalize(sslkey)]?.(value);
+							});
+						} else {
+							this[key + skey]?.(value);
+						}
+					});
+				} else {
+					this[key]?.(value);
+				}
+			});
 			this.enableSmartPorts(true);
 		}
 	}
@@ -265,21 +301,27 @@ export class DomainPopupView extends AbstractViewPopup {
 
 			imapHost: '',
 			imapPort: 143,
-			imapSecure: 0,
+			imapType: 0,
 			imapShortLogin: false,
+			// SSL
+			imapSslVerify_peer: false,
+			imapSslAllow_self_signed: false,
 
-			useSieve: false,
+			sieveEnabled: false,
 			sieveHost: '',
 			sievePort: 4190,
-			sieveSecure: 0,
+			sieveType: 0,
 
 			smtpHost: '',
 			smtpPort: 25,
-			smtpSecure: 0,
+			smtpType: 0,
 			smtpShortLogin: false,
-			smtpAuth: true,
+			smtpUseAuth: true,
 			smtpSetSender: false,
-			smtpPhpMail: false,
+			smtpUsePhpMail: false,
+			// SSL
+			smtpSslVerify_peer: false,
+			smtpSslAllow_self_signed: false,
 
 			whiteList: '',
 			aliasName: ''
