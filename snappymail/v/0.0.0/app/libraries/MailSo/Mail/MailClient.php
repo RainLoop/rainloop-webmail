@@ -619,7 +619,7 @@ class MailClient
 		}
 		catch (\MailSo\RuntimeException $oException)
 		{
-			\SnappyMail\Log::warning('MessageListThreadsMap ' . $oException->getMessage());
+			\SnappyMail\Log::warning('MailClient', 'MessageListThreadsMap ' . $oException->getMessage());
 			unset($oException);
 		}
 
