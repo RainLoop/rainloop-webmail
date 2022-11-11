@@ -734,33 +734,6 @@ class ServiceActions
 		return '';
 	}
 
-	public function ServiceRemoteAutoLogin() : string
-	{
-		$oException = null;
-		$oAccount = null;
-
-		$sEmail = $_ENV['REMOTE_USER'] ?? '';
-		$sPassword = $_ENV['REMOTE_PASSWORD'] ?? '';
-
-		if (\strlen($sEmail) && \strlen(\trim($sPassword)))
-		{
-			try
-			{
-				$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
-				if ($oAccount instanceof Model\MainAccount) {
-					$this->oActions->SetAuthToken($oAccount);
-				}
-			}
-			catch (\Throwable $oException)
-			{
-				$this->Logger()->WriteException($oException);
-			}
-		}
-
-		$this->oActions->Location('./');
-		return '';
-	}
-
 	public function ServiceExternalSso() : string
 	{
 		$this->oHttp->ServerNoCache();
