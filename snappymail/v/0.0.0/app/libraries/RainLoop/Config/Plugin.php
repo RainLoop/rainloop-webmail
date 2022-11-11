@@ -42,7 +42,7 @@ class Plugin extends \RainLoop\Config\AbstractConfig
 	public function jsonSerialize()
 	{
 		$aData = [];
-		foreach ($this->aData as $sSectionKey => $aSectionValue) {
+		foreach (parent::jsonSerialize() as $sSectionKey => $aSectionValue) {
 			if (\is_array($aSectionValue)) {
 				$aData[$sSectionKey] = [];
 				foreach ($aSectionValue as $sParamKey => $mParamValue) {
