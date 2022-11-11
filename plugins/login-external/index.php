@@ -11,7 +11,7 @@ class LoginExternalPlugin extends \RainLoop\Plugins\AbstractPlugin
 		REQUIRED = '2.21.0',
 		CATEGORY = 'Login',
 		LICENSE  = 'MIT',
-		DESCRIPTION = '';
+		DESCRIPTION = 'Login with $_POST["Email"] and $_POST["Password"] from anywhere';
 
 	public function Init() : void
 	{

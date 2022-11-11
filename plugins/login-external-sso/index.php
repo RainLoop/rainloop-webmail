@@ -11,7 +11,7 @@ class LoginExternalSsoPlugin extends \RainLoop\Plugins\AbstractPlugin
 		REQUIRED = '2.21.0',
 		CATEGORY = 'Login',
 		LICENSE  = 'MIT',
-		DESCRIPTION = 'More secure version of Login External with an SSO key';
+		DESCRIPTION = 'Login with $_POST "Email", "Password" and "SsoKey". It returns an SSO hash to use with "?Sso&hash="';
 
 	public function Init() : void
 	{
@@ -48,7 +48,7 @@ class LoginExternalSsoPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		return array(
 			// Was application.ini external_sso_key
-			Property::NewInstance('key')->SetLabel('SSO key')
+			\RainLoop\Plugins\Property::NewInstance('key')->SetLabel('SSO key')
 				->SetDefaultValue(''),
 		);
 	}
