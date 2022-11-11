@@ -26,8 +26,8 @@ class LoginExternalPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$oAccount = null;
 		$oException = null;
 
-		$sEmail = \trim($_POST['Email']);
-		$sPassword = $_POST['Password'];
+		$sEmail = isset($_POST['Email']) ? $_POST['Email'] : '';
+		$sPassword = isset($_POST['Password']) ? $_POST['Password'] : '';
 
 		try
 		{
@@ -44,7 +44,7 @@ class LoginExternalPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$oLogger && $oLogger->WriteException($oException);
 		}
 
-		if ('json' === \strtolower($_POST['Output'] ?? '')) {
+		if (isset($_POST['Output']) && 'json' === \strtolower($_POST['Output'])) {
 			\header('Content-Type: application/json; charset=utf-8');
 			$aResult = array(
 				'Action' => 'ExternalLogin',
