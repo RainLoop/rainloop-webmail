@@ -734,32 +734,6 @@ class ServiceActions
 		return '';
 	}
 
-	public function ServiceExternalSso() : string
-	{
-		$this->oHttp->ServerNoCache();
-		$sResult = '';
-		$oConfig = $this->oActions->Config();
-		$sKey = $oConfig->Get('labs', 'external_sso_key', '');
-		$sEmail = \trim($_POST['Email']);
-		$sPassword = $_POST['Password'];
-		if ($oConfig->Get('labs', 'allow_external_sso', false)
-		 && $sEmail && $sPassword
-		 && $sKey && $_POST['SsoKey'] == $sKey
-		) {
-			$sResult = \RainLoop\Api::CreateUserSsoHash($sEmail, $sPassword);
-			if ('json' == \strtolower($_POST['Output'] ?? 'Plain')) {
-				\header('Content-Type: application/json; charset=utf-8');
-				$sResult = \json_encode(array(
-					'Action' => 'ExternalSso',
-					'Result' => $sResult
-				));
-			} else {
-				\header('Content-Type: text/plain');
-			}
-		}
-		return $sResult;
-	}
-
 	public function ErrorTemplates(string $sTitle, string $sDesc, bool $bShowBackLink = true) : string
 	{
 		return \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Error.html'), array(
