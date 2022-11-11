@@ -761,56 +761,6 @@ class ServiceActions
 		return '';
 	}
 
-	public function ServiceExternalLogin() : string
-	{
-		$this->oHttp->ServerNoCache();
-
-		$oException = null;
-		$oAccount = null;
-
-		if ($this->oActions->Config()->Get('labs', 'allow_external_login', false)) {
-			$sEmail = \trim($_POST['Email']);
-			$sPassword = $_POST['Password'];
-
-			try
-			{
-				$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
-				if ($oAccount instanceof Model\MainAccount) {
-					$this->oActions->SetAuthToken($oAccount);
-				} else {
-					$oAccount = null;
-				}
-			}
-			catch (\Throwable $oException)
-			{
-				$this->Logger()->WriteException($oException);
-			}
-		}
-
-		if ('json' === \strtolower($_POST['Output'])) {
-			\header('Content-Type: application/json; charset=utf-8');
-
-			$aResult = array(
-				'Action' => 'ExternalLogin',
-				'Result' => $oAccount ? true : false,
-				'ErrorCode' => 0
-			);
-
-			if (!$oAccount) {
-				if ($oException instanceof Exceptions\ClientException) {
-					$aResult['ErrorCode'] = $oException->getCode();
-				} else {
-					$aResult['ErrorCode'] = Notifications::AuthError;
-				}
-			}
-
-			return Utils::jsonEncode($aResult);
-		}
-
-		$this->oActions->Location('./');
-		return '';
-	}
-
 	public function ServiceExternalSso() : string
 	{
 		$this->oHttp->ServerNoCache();
