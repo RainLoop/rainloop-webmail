@@ -43,7 +43,22 @@
 			<li class="dividerbar" role="presentation" data-bind="command: forwardCommand">
 				<a href="#" tabindex="-1" data-icon="↞" data-i18n="MESSAGE_LIST/BUTTON_MULTY_FORWARD"></a>
 			</li>
-			<li class="dividerbar" role="presentation" data-bind="visible: allowDangerousActions, command: deleteWithoutMoveCommand">
+			<li class="dividerbar" role="presentation" data-bind="command: moveCommand">
+				<a href="#" tabindex="-1" data-icon="📁" data-i18n="GLOBAL/MOVE_TO"></a>
+			</li>
+			<li role="presentation" data-bind="visible: archiveAllowed, command: archiveCommand">
+				<a href="#" tabindex="-1" data-icon="🗄" data-i18n="GLOBAL/TO_ARCHIVE">🗄</a>
+			</li>
+			<li role="presentation" data-bind="visible: canMarkAsSpam, command: spamCommand">
+				<a href="#" tabindex="-1" data-icon="⚠" data-i18n="GLOBAL/SPAM"></a>
+			</li>
+			<li role="presentation" data-bind="visible: isSpamFolder, command: notSpamCommand">
+				<a href="#" tabindex="-1" data-icon="" data-i18n="GLOBAL/NOT_SPAM"></a>
+			</li>
+			<li role="presentation" data-bind="command: deleteCommand">
+				<a href="#" tabindex="-1" data-icon="🗑" data-i18n="GLOBAL/DELETE"></a>
+			</li>
+			<li role="presentation" data-bind="visible: allowDangerousActions, command: deleteWithoutMoveCommand">
 				<a href="#" tabindex="-1" data-icon="🗑" data-i18n="MESSAGE_LIST/BUTTON_DELETE_WITHOUT_MOVE"></a>
 			</li>
 			<li role="presentation" data-bind="visible: allowDangerousActions, click: clear">
