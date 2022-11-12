@@ -16,14 +16,28 @@ document.onreadystatechange = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-	passThemes();
-});
-
-// Pass nextcloud themes and theme attributes to SnappyMail.
-function passThemes() {
 	const iframe = document.getElementById('rliframe');
 	if (!iframe) return;
 
+	let firstLoad = true;
+
+	iframe.addEventListener('load', event => {
+		// repass theme styles when iframe is reloaded
+		if (!firstLoad) {
+			passThemes(event.target);
+		}
+		firstLoad = false;
+	});
+
+	passThemes(iframe);
+
+	// TODO: add initial stylesheets without primary colors to improve loading experience
+});
+
+// Pass nextcloud themes and theme attributes to SnappyMail.
+function passThemes(iframe) {
+	if (!iframe) return;
+	
 	const target = iframe.contentWindow.document;
 
 	const ncStylesheets = [...document.querySelectorAll('link.theme')];
