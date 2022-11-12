@@ -155,7 +155,7 @@ html.rl-left-panel-disabled .b-folders .b-toolbar {
     align-content: stretch;
     justify-content: flex-start;
     height: unset;
-    box-sizing: border-box;
+    box-sizing: border-box !important;
     margin: 0;
     padding: 0;
     bottom: 0;
@@ -172,7 +172,7 @@ html.rl-left-panel-disabled .b-folders .b-toolbar {
 .btn {
     min-height: 36px;
     height: 36px;
-    box-sizing: border-box;
+    box-sizing: border-box !important;
     padding: 8px 14px;
     line-height: 20px;
     color: var(--color-main-text);
@@ -240,7 +240,7 @@ html.rl-left-panel-disabled .b-folders .b-toolbar {
 .btn.buttonCompose,
 .b-folders .btn.buttonContacts,
 .b-footer.btn-toolbar .btn-group .btn {
-    box-sizing: border-box;
+    box-sizing: border-box !important;
     padding: 4px 14px;
     line-height: 36px;
     height: 44px;
