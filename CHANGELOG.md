@@ -1,10 +1,31 @@
+## 2.21.1 – 2022-11-13
+
+### Fixed
+- Crypt crashes when Sodium not installed
+  [#641](https://github.com/the-djmaze/snappymail/pull/641)
+  [#657](https://github.com/the-djmaze/snappymail/pull/657)
+  [#663](https://github.com/the-djmaze/snappymail/pull/663)
+  [#664](https://github.com/the-djmaze/snappymail/pull/664)
+  [#668](https://github.com/the-djmaze/snappymail/pull/668)
+  [#669](https://github.com/the-djmaze/snappymail/pull/669)
+- Personalised favicon not working - default Snappymail favicon showing
+  [#665](https://github.com/the-djmaze/snappymail/pull/665)
+
+### Nextcloud
+- v23 ContentSecurityPolicy versions issue
+  [#666](https://github.com/the-djmaze/snappymail/pull/666)
+
+
 ## 2.21.0 – 2022-11-11
 
 ### Added
 - Put messagelist top bar buttons also in dropdown
-- Allow setting additional Sec-Fetch rules, as discussed by #585
-- Light/Dark favicon.svg #643
-- Allow an account name/label #571
+- Allow setting additional Sec-Fetch rules, as discussed by
+  [#585](https://github.com/the-djmaze/snappymail/pull/585)
+- Light/Dark favicon.svg
+  [#643](https://github.com/the-djmaze/snappymail/pull/643)
+- Allow an account name/label
+  [#571](https://github.com/the-djmaze/snappymail/pull/571)
 
 ### Changed
 - Moved ServiceRemoteAutoLogin to plugin/extension
@@ -14,12 +35,14 @@
 - New Net/Imap/Smtp/Sieve Settings object system which allows
   setting SSL options per domain and verify_certificate by default
 - Update plugins to use new Net/Imap/Smtp/Sieve Settings object
-- Removed message double-click to full screen #638
+- Removed message double-click to full screen
+  [#638](https://github.com/the-djmaze/snappymail/pull/638)
 
 ### Fixed
 - ldap-identities-plugin by @cm-schl
   [#647](https://github.com/the-djmaze/snappymail/pull/647)
-- OpenSSL v3 ciphers issue #641
+- OpenSSL v3 ciphers issue
+  [#641](https://github.com/the-djmaze/snappymail/pull/641)
 
 ### Nextcloud
 - Style PopupsNextcloudFiles view
