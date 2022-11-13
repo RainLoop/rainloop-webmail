@@ -410,6 +410,60 @@ select option {
 }
 
 /*
+ * checkboxes
+ */
+
+.e-component.e-checkbox.material-design {
+    width: -moz-fit-content;
+    width: -webkit-fill-available;
+    width: fit-content;
+    display: flex;
+    position: relative;
+    align-items: center;
+    user-select: none;
+    height: 44px;
+    border-radius: 44px;
+    padding: 0 14px;
+    margin: 0 -14px;
+}
+
+.e-component.e-checkbox.material-design:hover,
+.e-component.e-checkbox.material-design:focus-within {
+    background-color: var(--color-primary-light);
+}
+
+.e-component.e-checkbox.material-design:focus {
+    outline: none;
+}
+
+.e-checkbox.material-design>div {
+    border: 2px solid var(--color-primary-element);
+    border-radius: 2px;
+    box-sizing: border-box;
+    margin-right: 4px;
+    margin-left: -2px;
+}
+
+.e-checkbox.material-design>div:has(div.checked) {
+    background: var(--color-primary-element);
+}
+
+.e-checkbox.material-design>div>div {
+    animation: none;
+}
+
+.e-checkbox.material-design>div>div.checked {
+    animation: none;
+    top: -2px;
+    left: 4px;
+    width: 7px;
+    height: 13px;
+    border: 2px solid var(--color-main-background);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/*
  * message list
  */
 
