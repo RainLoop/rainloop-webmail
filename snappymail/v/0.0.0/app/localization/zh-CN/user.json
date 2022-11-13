@@ -6,7 +6,7 @@
 		"BCC": "密送",
 		"CANCEL": "取消",
 		"CC": "抄送",
-		"CLEAR": "取消",
+		"CLEAR": "清除",
 		"CLOSE": "关闭",
 		"CONTACTS": "联系人",
 		"DELETE": "删除",
@@ -33,7 +33,7 @@
 		"SERVER_MESSAGE": "服务器信息",
 		"YES": "是",
 		"NO": "否",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "不生效"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登录",
