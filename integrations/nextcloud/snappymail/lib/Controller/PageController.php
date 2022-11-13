@@ -61,6 +61,9 @@ class PageController extends Controller
 		if (\method_exists($cspManager, 'browserSupportsCspV3') && !$cspManager->browserSupportsCspV3()) {
 			$csp->addAllowedScriptDomain("'nonce-{$sNonce}'");
 		}
+		\method_exists($csp, 'useStrictDynamic')
+			? $csp->useStrictDynamic(true) // NC24+
+			: $csp->addAllowedScriptDomain("'strict-dynamic'");
 
 		$params = [
 			'Admin' => $bAdmin ? 1 : 0,
