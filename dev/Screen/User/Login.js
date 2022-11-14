@@ -8,6 +8,6 @@ export class LoginUserScreen extends AbstractScreen {
 	}
 
 	onShow() {
-		rl.setWindowTitle();
+		rl.setTitle();
 	}
 }

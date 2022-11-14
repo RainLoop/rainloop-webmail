@@ -46,7 +46,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 		const count = Settings.app('listPermanentFiltered') ? 0 : FolderUserStore.foldersInboxUnreadCount(),
 			email = AccountUserStore.email();
 
-		rl.setWindowTitle(
+		rl.setTitle(
 			(email
 				? '' + (0 < count ? '(' + count + ') ' : ' ') + email + ' - '
 				: ''
