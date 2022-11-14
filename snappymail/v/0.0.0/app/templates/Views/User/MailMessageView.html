@@ -220,15 +220,12 @@
 			<div id="messageItem">
 				<div tabindex="0" data-bind="hasfocus: messageDomFocused">
 
-					<span class="buttonFull" data-bind="click: toggleFullScreen">
-						<i data-bind="css: { 'icon-arrows-out': !fullScreenMode(), 'icon-arrows-in': fullScreenMode }"></i>
-					</span>
-					<div class="loading" data-bind="visible: messageLoadingThrottle()">
+					<div class="loading" data-bind="visible: messageLoadingThrottle">
 						<i class="icon-spinner"></i>
 						<span data-i18n="GLOBAL/LOADING"></span>
 					</div>
 
-					<div data-bind="visible: !messageLoadingThrottle()">
+					<div data-bind="hidden: messageLoadingThrottle">
 						<div class="bodySubHeader">
 							<div class="showImages" data-bind="visible: message().hasImages(), click: showImages"
 								data-icon="🖼" data-i18n="MESSAGE/BUTTON_SHOW_IMAGES"></div>
