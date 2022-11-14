@@ -29,6 +29,7 @@
 								}
 							);
 						} else if (file.url) {
+							// TODO: other editors and text/plain
 							view.oEditor.editor.squire.makeLink(file.url);
 						}
 					});
