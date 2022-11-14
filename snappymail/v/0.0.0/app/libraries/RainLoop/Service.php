@@ -154,8 +154,9 @@ abstract class Service
 
 			$sLanguage = $oActions->GetLanguage($bAdmin);
 
-			$sAppJsMin = $oConfig->Get('labs', 'use_app_debug_js', false) ? '' : '.min';
-			$sAppCssMin = $oConfig->Get('labs', 'use_app_debug_css', false) ? '' : '.min';
+			$bAppDebug = $oConfig->Get('debug', 'enable', false);
+			$sAppJsMin = $bAppDebug || $oConfig->Get('labs', 'use_app_debug_js', false) ? '' : '.min';
+			$sAppCssMin = $bAppDebug || $oConfig->Get('labs', 'use_app_debug_css', false) ? '' : '.min';
 
 			$sFaviconUrl = (string) $oConfig->Get('webmail', 'favicon_url', '');
 
