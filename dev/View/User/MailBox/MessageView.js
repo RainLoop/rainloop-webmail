@@ -98,6 +98,7 @@ export class MailMessageView extends AbstractViewRight {
 			downloadAsZipLoading: false,
 			showFullInfo: '1' === Local.get(ClientSideKeyNameMessageHeaderFullInfo),
 			moreDropdownTrigger: false,
+			attachmentListSimple: false,
 
 			// viewer
 			viewFromShort: '',
@@ -281,7 +282,7 @@ export class MailMessageView extends AbstractViewRight {
 				}
 			}
 
-			el = eqs(event, '.attachmentsPlace .attachmentItem .attachmentNameParent');
+			el = eqs(event, '.attachmentsPlace .attachmentName');
 			if (el) {
 				const attachment = ko.dataFor(el);
 				if (attachment?.linkDownload()) {
