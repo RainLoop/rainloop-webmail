@@ -3,6 +3,7 @@
 }
 #V-PopupsNextcloudFiles li {
 	clear: right;
+	line-height: 2.5em;
 }
 #V-PopupsNextcloudFiles li button {
 	cursor: pointer;

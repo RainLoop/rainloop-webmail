@@ -21,6 +21,8 @@ class ContentSecurityPolicy extends \OCP\AppFramework\Http\ContentSecurityPolicy
 			$CSP->script
 		));
 		$this->allowedScriptDomains = \array_diff($this->allowedScriptDomains, ["'unsafe-inline'", "'unsafe-eval'"]);
+
+		// Nextcloud only sets 'strict-dynamic' when browserSupportsCspV3() ?
 		\method_exists($this, 'useStrictDynamic')
 			? $this->useStrictDynamic(true) // NC24+
 			: $this->addAllowedScriptDomain("'strict-dynamic'");

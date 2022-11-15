@@ -242,6 +242,7 @@ class NextcloudFilesPopupView extends rl.pluginPopupView {
 						)
 						.then(response => (response.status < 400) ? response.json() : Promise.reject(new Error({ response })))
 						.then(json => {
+//							PUT /ocs/v2.php/apps/files_sharing/api/v1/shares/2 {"password":"ABC09"}
 							this.select = [{url:json.ocs.data.url}];
 							this.close();
 						});
@@ -365,20 +366,29 @@ rl.nextcloud = {
 		}),
 
 	calendarPut: (path, event) => {
-		// Validation error in iCalendar: A calendar object on a CalDAV server MUST NOT have a METHOD property.
-		event = event.replace(/METHOD:.+\r?\n/i, '');
-
-		let m = event.match(/UID:(.+)/);
-		davFetch('calendars', path + '/' + m[1] + '.ics', {
+		davFetch('calendars', path + '/' + event.UID + '.ics', {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'text/calendar'
 			},
-			body: event
+			// Validation error in iCalendar: A calendar object on a CalDAV server MUST NOT have a METHOD property.
+			body: event.rawText
+				.replace('METHOD:', 'X-METHOD:')
+				// https://github.com/nextcloud/calendar/issues/4684
+				.replace('ATTENDEE:', 'X-ATTENDEE:')
+				.replace('ORGANIZER:', 'X-ORGANIZER:')
+				.replace(/RSVP=TRUE/g, 'RSVP=FALSE')
+				.replace(/\r?\n/g, '\r\n')
 		})
-		.then(response => (response.status < 400) ? response.text() : Promise.reject(new Error({ response })))
-		.then(text => {
-			console.dir({event_response:text});
+		.then(response => {
+			if (201 == response.status) {
+				// Created
+			} else if (204 == response.status) {
+				// Not modified
+			} else {
+//				response.text().then(text => console.error({status:response.status, body:text}));
+				Promise.reject(new Error({ response }));
+			}
 		});
 	},
 
