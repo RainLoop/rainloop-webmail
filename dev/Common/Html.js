@@ -233,8 +233,9 @@ export const
 				if (hasAttribute('width')) {
 					if (!value) {
 						value = getAttribute('width');
+						value = value.includes('%') ? value : value + 'px';
 						if (1 < pInt(value)) {
-							value = oStyle.width = value.includes('%') ? value : value + 'px';
+							oStyle.width = value;
 						}
 					}
 					delAttribute('width');
