@@ -32,6 +32,12 @@ class LoginOAuth2Plugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addHook('sieve.before-login', 'clientLogin');
 //		$this->addHook('sieve.after-login', array($this, $oSieveClient, $oSettings));
 		$this->addHook('filter.account', 'filterAccount');
+
+		spl_autoload_register(function($classname){
+			if (str_starts_with($classname, 'OAuth2\\')) {
+				include_once __DIR__ . strtr("\\{$sClassName}", '\\', DIRECTORY_SEPARATOR) . '.php';
+			}
+		});
 	}
 
 	public function configMapping() : array
@@ -175,10 +181,10 @@ class LoginOAuth2Plugin extends \RainLoop\Plugins\AbstractPlugin
 		$client_id = \trim($this->Config()->Get('plugin', 'client_id', ''));
 		$client_secret = \trim($this->Config()->Get('plugin', 'client_secret', ''));
 		if ($client_id && $client_secret) {
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/PHP-OAuth2/Client.php';
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/PHP-OAuth2/GrantType/IGrantType.php';
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/PHP-OAuth2/GrantType/AuthorizationCode.php';
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/PHP-OAuth2/GrantType/RefreshToken.php';
+//			include_once __DIR__ . '/OAuth2/Client.php';
+//			include_once __DIR__ . '/OAuth2/GrantType/IGrantType.php';
+//			include_once __DIR__ . '/OAuth2/GrantType/AuthorizationCode.php';
+//			include_once __DIR__ . '/OAuth2/GrantType/RefreshToken.php';
 
 			try
 			{
