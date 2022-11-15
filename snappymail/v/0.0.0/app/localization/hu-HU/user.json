@@ -412,7 +412,8 @@
 		"SOUND_NOTIFICATION": "Hangos értesítés",
 		"CHROME_NOTIFICATION_DESC": "Új üzenetek értesítő ablakainak megjelenítése",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(a böngésző blokkolta)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Címzettek automatikus hozzáadása a címtárhoz",

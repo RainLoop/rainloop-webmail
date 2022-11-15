@@ -92,13 +92,13 @@ export class MailMessageView extends AbstractViewRight {
 				}, this.messageVisibility);
 
 		this.msgDefaultAction = SettingsUserStore.msgDefaultAction;
+		this.simpleAttachmentsList = SettingsUserStore.simpleAttachmentsList;
 
 		addObservablesTo(this, {
 			showAttachmentControls: !!Local.get(ClientSideKeyNameMessageAttachmentControls),
 			downloadAsZipLoading: false,
 			showFullInfo: '1' === Local.get(ClientSideKeyNameMessageHeaderFullInfo),
 			moreDropdownTrigger: false,
-			attachmentListSimple: false,
 
 			// viewer
 			viewFromShort: '',

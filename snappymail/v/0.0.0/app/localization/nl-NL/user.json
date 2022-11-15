@@ -412,7 +412,8 @@
 		"SOUND_NOTIFICATION": "Notificatie geluid",
 		"CHROME_NOTIFICATION_DESC": "Toon nieuwe berichten popup",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Geblokkeerd door de browser)",
-		"LIST_INLINE_ATTACHMENTS": "Toon inline bijlagen in lijst"
+		"LIST_INLINE_ATTACHMENTS": "Toon inline bijlagen in lijst",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Automatisch ontvangers toevoegen aan uw adresboek",

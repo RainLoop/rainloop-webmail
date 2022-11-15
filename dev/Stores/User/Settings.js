@@ -19,6 +19,7 @@ export const SettingsUserStore = new class {
 			showImages: 0,
 			removeColors: 0,
 			listInlineAttachments: 0,
+			simpleAttachmentsList: 0,
 			useCheckboxesInList: 1,
 			allowDraftAutosave: 1,
 			useThreads: 0,
@@ -80,6 +81,7 @@ export const SettingsUserStore = new class {
 		self.showImages(SettingsGet('ShowImages'));
 		self.removeColors(SettingsGet('RemoveColors'));
 		self.listInlineAttachments(SettingsGet('ListInlineAttachments'));
+		self.simpleAttachmentsList(SettingsGet('simpleAttachmentsList'));
 		self.useCheckboxesInList(SettingsGet('UseCheckboxesInList'));
 		self.allowDraftAutosave(SettingsGet('AllowDraftAutosave'));
 		self.useThreads(SettingsGet('UseThreads'));

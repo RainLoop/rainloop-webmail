@@ -227,12 +227,10 @@
 
 					<div data-bind="hidden: messageLoadingThrottle">
 						<div class="bodySubHeader">
-							<div class="showImages" data-bind="visible: message().hasImages(), click: showImages"
-								data-icon="🖼" data-i18n="MESSAGE/BUTTON_SHOW_IMAGES"></div>
 							<div class="readReceipt" data-bind="visible: !isDraftOrSentFolder() && message().readReceipt() && !message().isReadReceipt(), click: readReceipt"
 								data-icon="✉" data-i18n="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></div>
 							<div class="attachmentsPlace" data-bind="visible: message().hasAttachments(), css: {'selection-mode' : showAttachmentControls}">
-								<!-- ko ifnot: attachmentListSimple -->
+								<!-- ko ifnot: simpleAttachmentsList -->
 								<ul class="attachmentList" data-bind="foreach: message().listAttachments()">
 									<li class="attachmentItem" draggable="true"
 											data-bind="event: { 'dragstart': eventDragStart }, attr: { 'title': fileName }, css: {'checked': checked}">
@@ -260,7 +258,7 @@
 									</li>
 								</ul>
 								<!-- /ko -->
-								<!-- ko if: attachmentListSimple -->
+								<!-- ko if: simpleAttachmentsList -->
 								<ul class="attachmentListSimple" data-bind="foreach: message().listAttachments()">
 									<li class="attachmentItem" data-bind="attr: { 'title': fileName }, css: {'checked': checked}">
 										<span class="attachmentName" data-bind="text: fileName"></span>
@@ -284,6 +282,9 @@
 										data-i18n="MESSAGE/LINK_DOWNLOAD_AS_ZIP"></span>
 								</span>
 							</div>
+
+							<div class="showImages" data-bind="visible: message().hasImages(), click: showImages"
+								data-icon="🖼" data-i18n="MESSAGE/BUTTON_SHOW_IMAGES"></div>
 						</div>
 
 						<div class="openpgp-control encrypted" data-bind="visible: message().pgpEncrypted(), css: {'success': message().pgpDecrypted()}">
