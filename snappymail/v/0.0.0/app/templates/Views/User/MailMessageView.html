@@ -131,28 +131,9 @@
 					<span class="subject" data-bind="text: message().subject, title: message().subject"></span>
 					<a href="#" class="close" data-bind="click: closeMessage" style="margin-top: -8px;">×</a>
 				</div>
-				<div data-bind="hidden: showFullInfo">
-					<div class="informationShort">
-						<span class="from" data-bind="html: viewFromShort, title: message().fromToLine()"></span>
-						<i data-bind="visible: viewFromDkimVisibility, css: viewFromDkimStatusIconClass, title: viewFromDkimStatusTitle"></i>
-						<div data-bind="visible: 0 < message().dateTimeStampInUTC()">
-							(<time class="date" data-moment-format="FULL" data-bind="moment: message().dateTimeStampInUTC()"></time>)
-						</div>
-					</div>
-					<div class="informationShortWrp">
-						<div class="informationShort" data-bind="visible: message().toToLine()">
-							<span data-i18n="GLOBAL/TO"></span>:
-							<span data-bind="text: message().toToLine()"></span>
-						</div>
-						<div class="informationShort" data-bind="visible: message().ccToLine()">
-							<span data-i18n="GLOBAL/CC"></span>:
-							<span data-bind="text: message().ccToLine()"></span>
-						</div>
-					</div>
-					<div class="informationShort" data-bind="visible: message().spamResult()">
-						<span data-i18n="MESSAGE/SPAM_SCORE"></span>:
-						<meter min="0" max="100" optimum="0" low="33" high="66" data-bind="value: message().spamScore(), title: message().spamStatus()"></meter>
-					</div>
+				<div class="informationShort" data-bind="hidden: showFullInfo">
+					<span class="from" data-bind="html: viewFromShort, title: message().fromToLine()"></span>
+					<i data-bind="visible: viewFromDkimVisibility, css: viewFromDkimStatusIconClass, title: viewFromDkimStatusTitle"></i>
 				</div>
 				<div class="informationFull" data-bind="visible: showFullInfo, with: message">
 					<table>
@@ -196,28 +177,47 @@
 						</tr>
 					</table>
 				</div>
-				<div class="hasVirus" data-bind="visible: message().hasVirus()" data-i18n="MESSAGE/HAS_VIRUS_WARNING"></div>
-				<!-- ko if: tagsAllowed -->
-				<div class="messageTags">
-					<span data-i18n="MESSAGE/TAGS"></span>:
-					<span class="messageAssignedTags" data-bind="html: message().tagsToHTML()"></span>
-					<div class="btn-group" data-bind="registerBootstrapDropdown: true" style="display: inline-block">
-						<a class="btn btn-thin btn-transparent dropdown-toggle fontastic" id="tags-dropdown-id" href="#" tabindex="-1">🏷</a>
-						<menu class="dropdown-menu right-edge" role="menu" aria-labelledby="tags-dropdown-id">
-							<div data-bind="foreach: message().tagOptions()">
-								<li role="presentation">
-									<a href="#" tabindex="-1" data-icon="☐" data-bind="click: toggle, text: label, title: value, attr: { class: css, 'data-icon': checked ? '☑' : '☐' }"></a>
-								</li>
-							</div>
-							<li role="presentation" class="dividerbar">
-								<a href="#" tabindex="-1" data-icon="✚" data-bind="click: newTag" data-i18n="MESSAGE/NEW_TAG"></a>
-							</li>
-						</menu>
-					</div>
-				</div>
-				<!-- /ko -->
 			</div>
 			<div id="messageItem">
+				<div class="messageItemHeader">
+					<div data-bind="hidden: showFullInfo">
+						<time class="date" data-moment-format="FULL" data-bind="visible: 0 < message().dateTimeStampInUTC(), moment: message().dateTimeStampInUTC()"></time>
+						<div class="informationShortWrp">
+							<div class="informationShort" data-bind="visible: message().toToLine()">
+								<span data-i18n="GLOBAL/TO"></span>:
+								<span data-bind="text: message().toToLine()"></span>
+							</div>
+							<div class="informationShort" data-bind="visible: message().ccToLine()">
+								<span data-i18n="GLOBAL/CC"></span>:
+								<span data-bind="text: message().ccToLine()"></span>
+							</div>
+						</div>
+					</div>
+					<div class="informationShort" data-bind="visible: message().spamResult()">
+						<span data-i18n="MESSAGE/SPAM_SCORE"></span>:
+						<meter min="0" max="100" optimum="0" low="33" high="66" data-bind="value: message().spamScore(), title: message().spamStatus()"></meter>
+					</div>
+					<div class="hasVirus" data-bind="visible: message().hasVirus()" data-i18n="MESSAGE/HAS_VIRUS_WARNING"></div>
+					<!-- ko if: tagsAllowed -->
+					<div class="messageTags">
+						<span data-i18n="MESSAGE/TAGS"></span>:
+						<span class="messageAssignedTags" data-bind="html: message().tagsToHTML()"></span>
+						<div class="btn-group" data-bind="registerBootstrapDropdown: true" style="display: inline-block">
+							<a class="btn btn-thin btn-transparent dropdown-toggle fontastic" id="tags-dropdown-id" href="#" tabindex="-1">🏷</a>
+							<menu class="dropdown-menu right-edge" role="menu" aria-labelledby="tags-dropdown-id">
+								<div data-bind="foreach: message().tagOptions()">
+									<li role="presentation">
+										<a href="#" tabindex="-1" data-icon="☐" data-bind="click: toggle, text: label, title: value, attr: { class: css, 'data-icon': checked ? '☑' : '☐' }"></a>
+									</li>
+								</div>
+								<li role="presentation" class="dividerbar">
+									<a href="#" tabindex="-1" data-icon="✚" data-bind="click: newTag" data-i18n="MESSAGE/NEW_TAG"></a>
+								</li>
+							</menu>
+						</div>
+					</div>
+					<!-- /ko -->
+				</div>
 				<div tabindex="0" data-bind="hasfocus: messageDomFocused">
 
 					<div class="loading" data-bind="visible: messageLoadingThrottle">
