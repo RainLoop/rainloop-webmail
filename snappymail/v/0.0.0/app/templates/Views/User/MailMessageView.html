@@ -167,9 +167,9 @@
 								(<time data-moment-format="FROMNOW" data-bind="moment: dateTimeStampInUTC()"></time>)
 							</td>
 						</tr>
-						<tr data-bind="visible: 0 < spamScore()">
-							<td data-i18n="MESSAGE/SPAM_SCORE"></td>
-							<td><span data-bind="text: spamScore(), title: spamStatus()"></span>%</td>
+						<tr data-bind="visible: spamResult">
+							<td data-i18n="GLOBAL/SPAM"></td>
+							<td data-bind="text: spamStatus()"></td>
 						</tr>
 						<tr data-bind="visible: friendlySize()">
 							<td data-i18n="POPUPS_FILTER/SELECT_FIELD_SIZE"></td>
@@ -192,10 +192,10 @@
 								<span data-bind="text: message().ccToLine()"></span>
 							</div>
 						</div>
-					</div>
-					<div class="informationShort" data-bind="visible: message().spamResult()">
-						<span data-i18n="MESSAGE/SPAM_SCORE"></span>:
-						<meter min="0" max="100" optimum="0" low="33" high="66" data-bind="value: message().spamScore(), title: message().spamStatus()"></meter>
+						<div class="informationShort" data-bind="visible: message().spamResult()">
+							<span data-i18n="MESSAGE/SPAM_SCORE"></span>:
+							<meter min="0" max="100" optimum="0" low="33" high="66" data-bind="value: message().spamScore(), title: message().spamStatus()"></meter>
+						</div>
 					</div>
 					<div class="hasVirus" data-bind="visible: message().hasVirus()" data-i18n="MESSAGE/HAS_VIRUS_WARNING"></div>
 					<!-- ko if: tagsAllowed -->
