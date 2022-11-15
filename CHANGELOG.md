@@ -1,3 +1,30 @@
+## 2.21.2 – 2022-11-15
+
+### Added
+- Allow browser Spellchecker
+  [#574](https://github.com/the-djmaze/snappymail/pull/574)
+- Decode MIME charset of .EML attachments
+  [#662](https://github.com/the-djmaze/snappymail/pull/662)
+
+### Changed
+- Increase message visible text area
+  [#672](https://github.com/the-djmaze/snappymail/pull/672)
+- When copy/paste image use the raw data instead of clipboard HTML
+  [#654](https://github.com/the-djmaze/snappymail/pull/654)
+- When application.ini debug.enable is true, also debug js and css
+- JavaScript rl.setWindowTitle() renamed to rl.setTitle()
+
+### Removed
+- Message toggle fullscreen button which was only in mobile view
+
+### Nextcloud
+- Workaround Nextcloud calendar crashes
+  [#622](https://github.com/the-djmaze/snappymail/pull/622)
+  [#661](https://github.com/the-djmaze/snappymail/pull/661)
+- Added share public/internal file link
+  [#569](https://github.com/the-djmaze/snappymail/pull/569)
+
+
 ## 2.21.1 – 2022-11-13
 
 ### Fixed

@@ -35,8 +35,13 @@ class DemoStorage extends \RainLoop\Providers\Storage\FileStorage
 		if (!\is_dir($sDataPath) && \mkdir($sDataPath, 0700, true)) {
 			\file_put_contents("{$sDataPath}/settings",'{"RemoveColors":true,"ListInlineAttachments":true}');
 			if (\mkdir($sDataPath.'/.gnupg/private-keys-v1.d', 0700, true)) {
+				// AES
+				\file_put_contents("{$sDataPath}/.gnupg/private-keys-v1.d/3106F4281F98D820114228FEF16B5BA0D78AA005.key",file_get_contents("{$this->sDataPath}/demo.pgp/.gnupg/private-keys-v1.d/3106F4281F98D820114228FEF16B5BA0D78AA005.key"));
+				\file_put_contents("{$sDataPath}/.gnupg/private-keys-v1.d/82CA239C482423D364BFD6DFC3E400B3B98AD66F.key",file_get_contents("{$this->sDataPath}/demo.pgp/.gnupg/private-keys-v1.d/82CA239C482423D364BFD6DFC3E400B3B98AD66F.key"));
+				// ECC
 				\file_put_contents("{$sDataPath}/.gnupg/private-keys-v1.d/5A1A6C7310D0508C68E8E74F15068301E83FD1AE.key",file_get_contents("{$this->sDataPath}/demo.pgp/.gnupg/private-keys-v1.d/5A1A6C7310D0508C68E8E74F15068301E83FD1AE.key"));
 				\file_put_contents("{$sDataPath}/.gnupg/private-keys-v1.d/886921A7E06BE56F8E8C51797BB476BB26DF21BF.key",file_get_contents("{$this->sDataPath}/demo.pgp/.gnupg/private-keys-v1.d/886921A7E06BE56F8E8C51797BB476BB26DF21BF.key"));
+
 				\file_put_contents("{$sDataPath}/.gnupg/pubring.kbx",file_get_contents("{$this->sDataPath}/demo.pgp/.gnupg/pubring.kbx"));
 				\file_put_contents("{$sDataPath}/.gnupg/trustdb.gpg",file_get_contents("{$this->sDataPath}/demo.pgp/.gnupg/trustdb.gpg"));
 			}

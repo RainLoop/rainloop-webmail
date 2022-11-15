@@ -35,8 +35,6 @@ const
 				dialog = ViewTypePopup === vm.viewType,
 				vmPlace = doc.getElementById(position);
 
-			fireEvent('rl-view-model.create', vm);
-
 			ViewModelClass.__builded = true;
 			ViewModelClass.__vm = vm;
 
@@ -112,6 +110,8 @@ const
 					});
 					vmDom.addEventListener('transitionend', endShowHide);
 				}
+
+				fireEvent('rl-view-model.create', vm);
 
 				ko.applyBindingAccessorsToNode(
 					vmDom,
