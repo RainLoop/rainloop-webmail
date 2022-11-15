@@ -224,6 +224,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Δεν υπάρχουν συνημμένα εδώ.",
 		"ATTACHMENTS_ERROR_DESC": "Προειδοποίηση! Δεν έχουν μεταφορτωθεί όλα τα συνημμένα.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Δεν έχουν μεταφορτωθεί ακόμη όλα τα συνημμένα.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Ζητήστε αποδεικτικό ανάγνωσης",
 		"BUTTON_MARK_AS_IMPORTANT": "Σημειώστε το σαν σημαντικό",
 		"BUTTON_REQUEST_DSN": "Ζητήστε αποδεικτικό παράδοσης"

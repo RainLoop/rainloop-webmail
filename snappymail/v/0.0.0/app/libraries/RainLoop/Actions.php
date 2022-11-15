@@ -788,6 +788,7 @@ class Actions
 					$aResult['requestDsn'] = (bool) $oSettings->GetConf('requestDsn', false);
 					$aResult['pgpSign'] = (bool) $oSettings->GetConf('pgpSign', false);
 					$aResult['pgpEncrypt'] = (bool) $oSettings->GetConf('pgpEncrypt', false);
+					$aResult['allowSpellcheck'] = (bool) $oSettings->GetConf('allowSpellcheck', false);
 
 					$aResult['ViewHTML'] = (bool)$oSettings->GetConf('ViewHTML', $aResult['ViewHTML']);
 					$aResult['ShowImages'] = (bool)$oSettings->GetConf('ShowImages', $aResult['ShowImages']);

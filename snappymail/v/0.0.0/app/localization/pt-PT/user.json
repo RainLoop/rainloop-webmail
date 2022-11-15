@@ -224,6 +224,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Sem anexos aqui.",
 		"ATTACHMENTS_ERROR_DESC": "Aviso! Nem todos os anexos foram carregados.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Ainda não foram carregados todos os anexos",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Pedir um recibo de leitura",
 		"BUTTON_MARK_AS_IMPORTANT": "Marcar como importante",
 		"BUTTON_REQUEST_DSN": "Pedir um recibo de entrega"

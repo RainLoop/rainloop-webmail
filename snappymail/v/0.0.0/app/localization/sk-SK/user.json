@@ -224,6 +224,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Žiadne prílohy.",
 		"ATTACHMENTS_ERROR_DESC": "Pozor! Nie všetky prílohy boli nahraté.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Nie všetky prílohy boli už nahraté na server.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Vyžiadať potvrdenie o prečítaní",
 		"BUTTON_MARK_AS_IMPORTANT": "Označiť ako dôležité",
 		"BUTTON_REQUEST_DSN": "Vyžiadať potvrdenie o doručení"

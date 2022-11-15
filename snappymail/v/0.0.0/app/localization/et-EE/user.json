@@ -224,6 +224,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Manused puuduvad.",
 		"ATTACHMENTS_ERROR_DESC": "Tähelepanu! Kõiki manuseid ei ole üles laetud.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Kõiki manuseid ei ole veel üles laetud.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Palu lugemise kohta kinnitust",
 		"BUTTON_MARK_AS_IMPORTANT": "Tähista olulisena",
 		"BUTTON_REQUEST_DSN": "Palu kättesaamise kohta kinnitust"

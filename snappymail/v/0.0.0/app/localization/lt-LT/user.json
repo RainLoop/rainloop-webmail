@@ -224,6 +224,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Nėra priedų.",
 		"ATTACHMENTS_ERROR_DESC": "Dėmesio! Ne visi priedai buvo įkelti.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Dar ne visi priedai buvo įkelti",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Prašyti pranešti kada bus perskaitytas",
 		"BUTTON_MARK_AS_IMPORTANT": "Žymėti svarbiu",
 		"BUTTON_REQUEST_DSN": "Prašyti laiško gavimo pažymos"

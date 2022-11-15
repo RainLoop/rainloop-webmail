@@ -224,6 +224,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Keine Anhänge vorhanden.",
 		"ATTACHMENTS_ERROR_DESC": "Warnung! Nicht alle Anhänge wurden hochgeladen.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Es wurden noch nicht alle Anhänge hochgeladen.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Empfangsbestätigung anfordern",
 		"BUTTON_MARK_AS_IMPORTANT": "Als Wichtig markieren",
 		"BUTTON_REQUEST_DSN": "Übermittlungsstatus anfordern"

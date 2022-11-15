@@ -224,6 +224,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Aucune pièce jointe.",
 		"ATTACHMENTS_ERROR_DESC": "Attention ! Toutes les pièces jointes n'ont pas été téléchargées.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Toutes les pièces jointes n'ont pas encore été téléchargées",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Demander une confirmation de lecture",
 		"BUTTON_MARK_AS_IMPORTANT": "Marquer comme important",
 		"BUTTON_REQUEST_DSN": "Demander un accusé de réception"

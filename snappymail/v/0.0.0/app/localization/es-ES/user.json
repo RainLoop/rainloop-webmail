@@ -224,6 +224,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "No hay adjuntos aquí.",
 		"ATTACHMENTS_ERROR_DESC": "¡Atención! No se han subido todos los archivos adjuntos.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "No se han subido todos los archivos adjuntos.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Solicitar confirmación de lectura",
 		"BUTTON_MARK_AS_IMPORTANT": "Marcar como importante",
 		"BUTTON_REQUEST_DSN": "Solicitar una confirmación de entrega"

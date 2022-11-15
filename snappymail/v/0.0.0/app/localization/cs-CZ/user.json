@@ -224,6 +224,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Žádné přílohy.",
 		"ATTACHMENTS_ERROR_DESC": "Upozornění! Některé přílohy nebyly nahrány.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Některé přílohy ještě nebyly nahrány",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Vyžádat si potvrzení o přečtení",
 		"BUTTON_MARK_AS_IMPORTANT": "Označit jako důležité",
 		"BUTTON_REQUEST_DSN": "Vyžádat si potvrzení o přijetí"

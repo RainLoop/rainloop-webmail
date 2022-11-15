@@ -32,6 +32,7 @@ export const SettingsUserStore = new class {
 			requestDsn: 0,
 			pgpSign: 0,
 			pgpEncrypt: 0,
+			allowSpellcheck: 0,
 
 			layout: 1,
 			editorDefaultType: 'Html',
@@ -92,5 +93,6 @@ export const SettingsUserStore = new class {
 		self.requestDsn(SettingsGet('requestDsn'));
 		self.pgpSign(SettingsGet('pgpSign'));
 		self.pgpEncrypt(SettingsGet('pgpEncrypt'));
+		self.allowSpellcheck(SettingsGet('allowSpellcheck'));
 	}
 };

@@ -224,6 +224,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Ni prilog.",
 		"ATTACHMENTS_ERROR_DESC": "Pozor! Priloge niso bile vse naložene.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Priloge še niso bile naložene v celoti.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Zahtevaj potrdilo o branju",
 		"BUTTON_MARK_AS_IMPORTANT": "Označi kot pomembno",
 		"BUTTON_REQUEST_DSN": "Zahtevaj potrdilo o dostavi"

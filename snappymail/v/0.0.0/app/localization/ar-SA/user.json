@@ -224,6 +224,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "لايوجد مرفقات",
 		"ATTACHMENTS_ERROR_DESC": "تحذير! لم يتم إرفاق جميع المرفقات",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "لم تنتهي عملية الإرفاق بعد",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "اطلب اعلاماً بالقراءة",
 		"BUTTON_MARK_AS_IMPORTANT": "تحديده كـ هام",
 		"BUTTON_REQUEST_DSN": "اطلب اعلاماً بايصال البريد"

@@ -214,6 +214,7 @@ export class ComposePopupView extends AbstractViewPopup {
 
 		this.allowContacts = AppUserStore.allowContacts();
 		this.allowIdentities = SettingsCapa('Identities');
+		this.allowSpellcheck = SettingsUserStore.allowSpellcheck;
 
 		addObservablesTo(this, {
 			identitiesDropdownTrigger: false,
