@@ -156,19 +156,22 @@ const
 						li.dataset.icon = '🗎';
 
 						btn.name = 'select';
-						btn.textContent = '📎 attach';
+						btn.dataset.icon = '📎';
+						btn.textContent = 'attach';
 						btn.className = 'button-vue';
 						li.append(btn);
 
 						btn = document.createElement('button');
 						btn.name = 'share-internal';
-						btn.textContent = '🔗 internal';
+						btn.dataset.icon = '🔗';
+						btn.textContent = 'internal';
 						btn.className = 'button-vue';
 						li.append(btn);
 
 						btn = document.createElement('button');
 						btn.name = 'share-public';
-						btn.textContent = '🔗 public';
+						btn.dataset.icon = '🔗';
+						btn.textContent = 'public';
 						btn.className = 'button-vue';
 						li.append(btn);
 
