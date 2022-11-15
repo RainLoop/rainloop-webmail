@@ -272,15 +272,11 @@ export class ComposePopupView extends AbstractViewPopup {
 			currentIdentity: IdentityUserStore()[0]
 		});
 
-		// this.to.subscribe((v) => console.log(v));
-
 		// Used by ko.bindingHandlers.emailsTags
-		this.to.focused = ko.observable(false);
-		this.to.focused.subscribe(value => value && (this.sLastFocusedField = 'to'));
-		this.cc.focused = ko.observable(false);
-		this.cc.focused.subscribe(value => value && (this.sLastFocusedField = 'cc'));
-		this.bcc.focused = ko.observable(false);
-		this.bcc.focused.subscribe(value => value && (this.sLastFocusedField = 'bcc'));
+		['to','cc','bcc'].forEach(name => {
+			this[name].focused = ko.observable(false);
+			this[name].focused.subscribe(value => value && (this.sLastFocusedField = name));
+		});
 
 		this.attachments = koArrayWithDestroy();
 
@@ -1014,9 +1010,8 @@ export class ComposePopupView extends AbstractViewPopup {
 		setTimeout(() => {
 			if (!this.to()) {
 				this.to.focused(true);
-			// TODO https://github.com/the-djmaze/snappymail/issues/501#issuecomment-1255906243
-//			} else if (!this.subject()) {
-//				this.subject.focus();
+			} else if (!this.subject()) {
+				this.viewModelDom.querySelector('input[name="subject"]').focus();
 			} else {
 				this.oEditor?.focus();
 			}
