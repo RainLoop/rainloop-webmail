@@ -493,7 +493,12 @@ class SquireUI
 	}
 
 	focus() {
-		('plain' == this.mode ? this.plain : this.squire).focus();
+		if ('plain' == this.mode) {
+			this.plain.focus();
+			this.plain.setSelectionRange(0, 0);
+		} else {
+			this.squire.focus();
+		}
 	}
 }
 
