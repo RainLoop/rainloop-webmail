@@ -410,6 +410,14 @@ class ActionsAdmin extends Actions
 				'loaded' => \extension_loaded(\strtolower($name))
 			];
 		}
+		$aResult[] = [
+			'name' => 'Fileinfo',
+			'loaded' => \class_exists('finfo')
+		];
+		$aResult[] = [
+			'name' => 'Phar',
+			'loaded' => \class_exists('PharData')
+		];
 		return $this->DefaultResponse(__FUNCTION__, $aResult);
 	}
 

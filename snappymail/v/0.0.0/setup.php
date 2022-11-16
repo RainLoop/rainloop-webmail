@@ -29,7 +29,8 @@ if (defined('APP_VERSION'))
 		'tidy' => extension_loaded('tidy'),
 		'uuid' => extension_loaded('uuid'),
 		'xxtea' => extension_loaded('xxtea'),
-		'zip' => extension_loaded('zip')
+		'zip' => extension_loaded('zip'),
+		'finfo' => class_exists('finfo')
 	);
 
 	$aRequirements = array(
