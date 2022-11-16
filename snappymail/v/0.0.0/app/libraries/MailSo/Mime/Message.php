@@ -387,10 +387,7 @@ class Message extends Part
 				if ($oAttachment->IsLinked()) {
 					$oRelatedPart = new Part;
 					$oRelatedPart->Headers->append(
-						new Header(
-							Enumerations\Header::CONTENT_TYPE,
-							Enumerations\MimeType::MULTIPART_RELATED
-						)
+						new Header(Enumerations\Header::CONTENT_TYPE, 'multipart/related')
 					);
 					$oRelatedPart->SubParts->append($oRootPart);
 					$oRootPart = $oRelatedPart;
@@ -399,10 +396,7 @@ class Message extends Part
 			}
 		} else {
 			$oRootPart = new Part;
-			$oRootPart->Headers->AddByName(
-				Enumerations\Header::CONTENT_TYPE,
-				Enumerations\MimeType::MULTIPART_MIXED
-			);
+			$oRootPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE, 'multipart/mixed');
 			$oRootPart->SubParts = $this->SubParts;
 		}
 
@@ -413,10 +407,7 @@ class Message extends Part
 			} else {
 				if (!$oMixedPart) {
 					$oMixedPart = new Part;
-					$oMixedPart->Headers->AddByName(
-						Enumerations\Header::CONTENT_TYPE,
-						Enumerations\MimeType::MULTIPART_MIXED
-					);
+					$oMixedPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE, 'multipart/mixed');
 					$oMixedPart->SubParts->append($oRootPart);
 					$oRootPart = $oMixedPart;
 				}
