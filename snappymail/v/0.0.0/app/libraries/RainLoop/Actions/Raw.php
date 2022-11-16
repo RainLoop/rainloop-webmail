@@ -149,7 +149,9 @@ trait Raw
 			if ('.pdf' === \substr($sFileNameIn,-4)) {
 				$sContentTypeOut = 'application/pdf'; // application/octet-stream
 			} else {
-				$sContentTypeOut = $sContentTypeIn ?: \MailSo\Base\Utils::MimeContentType($sFileNameIn);
+				$sContentTypeOut = $sContentTypeIn
+					?: \SnappyMail\File\MimeType::fromFilename($sFileNameIn)
+					?: 'application/octet-stream';
 			}
 
 			$sFileNameOut = $this->MainClearFileName($sFileNameIn, $sContentTypeIn, $sMimeIndex);
@@ -197,10 +199,12 @@ trait Raw
 					if ('.pdf' === \substr($sFileName, -4)) {
 						// https://github.com/the-djmaze/snappymail/issues/144
 						$sContentType = 'application/pdf';
-					} else if ($sContentTypeIn) {
-						$sContentType = $sContentTypeIn;
-					} else if (!$sContentType) {
-						$sContentType = $sFileName ? \MailSo\Base\Utils::MimeContentType($sFileName) : 'text/plain';
+					} else {
+						$sContentType = $sContentTypeIn
+							?: $sContentType
+//							?: \SnappyMail\File\MimeType::fromStream($rResource, $sFileName)
+							?: \SnappyMail\File\MimeType::fromFilename($sFileName)
+							?: 'application/octet-stream';
 					}
 
 					if (!$bDownload)

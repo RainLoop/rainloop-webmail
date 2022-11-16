@@ -997,18 +997,23 @@ class Actions
 
 		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile)) {
 			$sSavedName = 'upload-post-' . \md5($aFile['name'] . $aFile['tmp_name']);
+
+			// Detect content-type
+			$type = \SnappyMail\File\MimeType::fromFile($aFile['tmp_name'], $aFile['name'])
+				?: \SnappyMail\File\MimeType::fromFilename($aFile['name']);
+			if ($type) {
+				$aFile['type'] = $type;
+				$sSavedName .= \SnappyMail\File\MimeType::toExtension($type);
+			}
+
 			if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name'])) {
 				$iError = Enumerations\UploadError::ON_SAVING;
 			} else {
-				$sUploadName = $aFile['name'];
-				$iSize = $aFile['size'];
-				$sMimeType = $aFile['type'];
-
 				$aResponse['Attachment'] = array(
-					'Name' => $sUploadName,
+					'Name' => $aFile['name'],
 					'TempName' => $sSavedName,
-					'MimeType' => $sMimeType,
-					'Size' => (int)$iSize
+					'MimeType' => $aFile['type'],
+					'Size' => (int) $aFile['size']
 				);
 			}
 		}
@@ -1041,9 +1046,12 @@ class Actions
 		$iError = $this->GetActionParam('Error', Enumerations\UploadError::UNKNOWN);
 
 		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile)) {
-			$sMimeType = \strtolower(\MailSo\Base\Utils::MimeContentType($aFile['name']));
-			if (\in_array($sMimeType, array('image/png', 'image/jpg', 'image/jpeg'))) {
-				$sSavedName = 'upload-post-' . \md5($aFile['name'] . $aFile['tmp_name']);
+			$sMimeType = \SnappyMail\File\MimeType::fromFile($aFile['tmp_name'], $aFile['name'])
+				?: \SnappyMail\File\MimeType::fromFilename($aFile['name'])
+				?: $aFile['type'];
+			if (\in_array($sMimeType, array('image/png', 'image/jpg', 'image/jpeg', 'image/webp'))) {
+				$sSavedName = 'upload-post-' . \md5($aFile['name'] . $aFile['tmp_name'])
+					. \SnappyMail\File\MimeType::toExtension($sContentType);
 				if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name'])) {
 					$iError = Enumerations\UploadError::ON_SAVING;
 				} else {

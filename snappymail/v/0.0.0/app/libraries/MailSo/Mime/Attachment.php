@@ -22,46 +22,28 @@ class Attachment
 	 */
 	private $rResource;
 
-	/**
-	 * @var string
-	 */
-	private $sFileName;
+	private string $sFileName;
 
-	/**
-	 * @var int
-	 */
-	private $iFileSize;
+	private int $iFileSize;
 
-	/**
-	 * @var string
-	 */
-	private $sCID;
+	private string $sCID;
 
-	/**
-	 * @var bool
-	 */
-	private $bIsInline;
+	private bool $bIsInline;
 
-	/**
-	 * @var bool
-	 */
-	private $bIsLinked;
+	private bool $bIsLinked;
 
-	/**
-	 * @var array
-	 */
-	private $aCustomContentTypeParams;
+	private array $aCustomContentTypeParams;
 
-	/**
-	 * @var string
-	 */
-	private $sContentLocation;
+	private string $sContentLocation;
+
+	private string $sContentType;
 
 	/**
 	 * @param resource $rResource
 	 */
 	function __construct($rResource, string $sFileName, int $iFileSize, bool $bIsInline,
-		bool $bIsLinked, string $sCID, array $aCustomContentTypeParams = [], string $sContentLocation = '')
+		bool $bIsLinked, string $sCID, array $aCustomContentTypeParams = [],
+		string $sContentLocation = '', string $sContentType = '')
 	{
 		$this->rResource = $rResource;
 		$this->sFileName = $sFileName;
@@ -71,6 +53,10 @@ class Attachment
 		$this->sCID = $sCID;
 		$this->aCustomContentTypeParams = $aCustomContentTypeParams;
 		$this->sContentLocation = $sContentLocation;
+		$this->sContentType = $sContentType
+			?: \SnappyMail\File\MimeType::fromStream($rResource, $sFileName)
+			?: \SnappyMail\File\MimeType::fromFilename($sFileName)
+			?: 'application/octet-stream';
 	}
 
 	/**
@@ -83,7 +69,7 @@ class Attachment
 
 	public function ContentType() : string
 	{
-		return \MailSo\Base\Utils::MimeContentType($this->sFileName);
+		return $this->sContentType;
 	}
 
 	public function CustomContentTypeParams() : array

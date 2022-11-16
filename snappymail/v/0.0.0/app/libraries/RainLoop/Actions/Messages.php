@@ -603,37 +603,53 @@ trait Messages
 		try
 		{
 			$aAttachments = $this->GetActionParam('Attachments', array());
-			if (\is_array($aAttachments) && \count($aAttachments))
-			{
-				$mResult = array();
-				foreach ($aAttachments as $sAttachment)
-				{
-					if ($aValues = \RainLoop\Utils::DecodeKeyValuesQ($sAttachment))
-					{
+			if (!\is_array($aAttachments)) {
+				$aAttachments = [];
+			}
+			if (\count($aAttachments)) {
+				$oFilesProvider = $this->FilesProvider();
+				foreach ($aAttachments as $mIndex => $sAttachment) {
+					$aAttachments[$mIndex] = false;
+					if ($aValues = \RainLoop\Utils::DecodeKeyValuesQ($sAttachment)) {
 						$sFolder = isset($aValues['Folder']) ? (string) $aValues['Folder'] : '';
 						$iUid = isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0;
 						$sMimeIndex = isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : '';
 
-						$sTempName = \md5($sAttachment);
-						if (!$this->FilesProvider()->FileExists($oAccount, $sTempName))
-						{
+						$sTempName = \sha1($sAttachment);
+						if (!$oFilesProvider->FileExists($oAccount, $sTempName)) {
 							$this->MailClient()->MessageMimeStream(
-								function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use ($oAccount, &$mResult, $sTempName, $sAttachment, $self) {
-									if (is_resource($rResource))
-									{
-										$sContentType = (empty($sFileName)) ? 'text/plain' : \MailSo\Base\Utils::MimeContentType($sFileName);
-										$sFileName = $self->MainClearFileName($sFileName, $sContentType, $sMimeIndex);
+								function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use ($oAccount, $sTempName, $self, &$aAttachments, $mIndex) {
+									if (\is_resource($rResource)) {
+										$sContentType =
+											$sContentType
+											?: \SnappyMail\File\MimeType::fromStream($rResource, $sFileName)
+											?: \SnappyMail\File\MimeType::fromFilename($sFileName)
+											?: 'application/octet-stream'; // 'text/plain'
 
-										if ($self->FilesProvider()->PutFile($oAccount, $sTempName, $rResource))
-										{
-											$mResult[$sTempName] = $sAttachment;
+//										$sFileName = $self->MainClearFileName($sFileName, $sContentType, $sMimeIndex);
+										$sTempName .= \SnappyMail\File\MimeType::toExtension($sContentType);
+
+										if ($self->FilesProvider()->PutFile($oAccount, $sTempName, $rResource)) {
+											$aAttachments[$mIndex] = [
+//												'Name' => $sFileName,
+												'TempName' => $sTempName,
+												'MimeType' => $sContentType
+//												'Size' => 0
+											];
 										}
 									}
 								}, $sFolder, $iUid, $sMimeIndex);
-						}
-						else
-						{
-							$mResult[$sTempName] = $sAttachment;
+						} else {
+							$rResource = $oFilesProvider->GetFile($oAccount, $sTempName);
+							$sContentType = \SnappyMail\File\MimeType::fromStream($rResource, $sTempName)
+								?: \SnappyMail\File\MimeType::fromFilename($sTempName)
+								?: 'application/octet-stream'; // 'text/plain'
+							$aAttachments[$mIndex] = [
+//								'Name' => $sFileName,
+								'TempName' => $sTempName,
+								'MimeType' => $sContentType
+//								'Size' => $oFilesProvider->FileSize($oAccount, $sTempName)
+							];
 						}
 					}
 				}
@@ -644,7 +660,7 @@ trait Messages
 			throw new ClientException(Notifications::MailServerError, $oException);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $mResult);
+		return $this->DefaultResponse(__FUNCTION__, $aAttachments);
 	}
 
 	/**
@@ -1231,10 +1247,11 @@ trait Messages
 		{
 			foreach ($aAttachments as $sTempName => $aData)
 			{
-				$sFileName = (string) $aData[0];
-				$bIsInline = (bool) $aData[1];
-				$sCID = (string) $aData[2];
-				$sContentLocation = isset($aData[3]) ? (string) $aData[3] : '';
+				$sFileName = (string) $aData['name'];
+				$bIsInline = (bool) $aData['inline'];
+				$sCID = (string) $aData['cid'];
+				$sContentLocation = (string) $aData['location'];
+				$sMimeType = (string) $aData['type'];
 
 				$rResource = $this->FilesProvider()->GetFile($oAccount, $sTempName);
 				if (\is_resource($rResource))
@@ -1244,7 +1261,7 @@ trait Messages
 					$oMessage->Attachments()->append(
 						new \MailSo\Mime\Attachment($rResource, $sFileName, $iFileSize, $bIsInline,
 							\in_array(trim(trim($sCID), '<>'), $aFoundCids),
-							$sCID, array(), $sContentLocation
+							$sCID, array(), $sContentLocation, $sMimeType
 						)
 					);
 				}

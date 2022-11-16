@@ -11,7 +11,7 @@ import {
 	SetSystemFoldersNotification
 } from 'Common/EnumsUser';
 
-import { pInt, isArray, arrayLength, forEachObjectEntry } from 'Common/Utils';
+import { pInt, isArray, arrayLength } from 'Common/Utils';
 import { encodeHtml, HtmlEditor, htmlToPlain } from 'Common/Html';
 import { koArrayWithDestroy, addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
 
@@ -973,28 +973,22 @@ export class ComposePopupView extends AbstractViewPopup {
 		if (arrayLength(downloads)) {
 			Remote.request('MessageUploadAttachments',
 				(iError, oData) => {
-					if (!iError) {
-						forEachObjectEntry(oData.Result, (tempName, id) => {
-							const attachment = this.getAttachmentById(id);
-							if (attachment) {
-								attachment.tempName(tempName);
-								attachment
-									.waiting(false)
-									.uploading(false)
-									.complete(true);
+					const result = oData?.Result;
+					downloads.forEach((id, index) => {
+						const attachment = this.getAttachmentById(id);
+						if (attachment) {
+							attachment
+								.waiting(false)
+								.uploading(false)
+								.complete(true);
+							if (iError || !result?.[index]) {
+								attachment.error(getUploadErrorDescByCode(UploadErrorCode.NoFileUploaded));
+							} else {
+								attachment.tempName(result[index].TempName);
+								attachment.type(result[index].MimeType);
 							}
-						});
-					} else {
-						this.attachments.forEach(attachment => {
-							if (attachment?.fromMessage) {
-								attachment
-									.waiting(false)
-									.uploading(false)
-									.complete(true)
-									.error(getUploadErrorDescByCode(UploadErrorCode.NoFileUploaded));
-							}
-						});
-					}
+						}
+					});
 				},
 				{
 					Attachments: downloads
@@ -1123,6 +1117,7 @@ export class ComposePopupView extends AbstractViewPopup {
 						attachment.size(attachmentJson.Size ? pInt(attachmentJson.Size) : 0);
 						attachment.tempName(attachmentJson.TempName ? attachmentJson.TempName : '');
 						attachment.isInline = false;
+						attachment.type(attachmentJson.MimeType);
 					}
 				}
 			});
@@ -1179,20 +1174,6 @@ export class ComposePopupView extends AbstractViewPopup {
 	}
 
 	/**
-	 * @returns {Object}
-	 */
-	prepareAttachmentsForSendOrSave() {
-		const result = {};
-		this.attachments.forEach(item => {
-			if (item?.complete() && item?.tempName() && item?.enabled()) {
-				result[item.tempName()] = [item.fileName(), item.isInline ? '1' : '0', item.CID, item.contentLocation];
-			}
-		});
-
-		return result;
-	}
-
-	/**
 	 * @param {MessageModel} message
 	 */
 	addMessageAsAttachment(message) {
@@ -1237,6 +1218,7 @@ export class ComposePopupView extends AbstractViewPopup {
 		if (message) {
 			let reply = [ComposeType.Reply, ComposeType.ReplyAll].includes(type);
 			if (reply || [ComposeType.Forward, ComposeType.Draft, ComposeType.EditAsNew].includes(type)) {
+				// item instanceof AttachmentModel
 				message.attachments.forEach(item => {
 					if (!reply || item.isLinked()) {
 						const attachment = new ComposeAttachmentModel(
@@ -1249,6 +1231,7 @@ export class ComposePopupView extends AbstractViewPopup {
 							item.contentLocation
 						);
 						attachment.fromMessage = true;
+						attachment.type(item.mimeType);
 						this.addAttachment(attachment);
 					}
 				});
@@ -1405,6 +1388,20 @@ export class ComposePopupView extends AbstractViewPopup {
 
 	async getMessageRequestParams(sSaveFolder, draft)
 	{
+		// Prepare ComposeAttachmentModel attachments
+		const attachments = {};
+		this.attachments.forEach(item => {
+			if (item?.complete() && item?.tempName() && item?.enabled()) {
+				attachments[item.tempName()] = {
+					name: item.fileName(),
+					inline: item.isInline,
+					cid: item.CID,
+					location: item.contentLocation,
+					type: item.mimeType()
+				};
+			}
+		});
+
 		const
 			identity = this.currentIdentity(),
 			params = {
@@ -1422,7 +1419,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				InReplyTo: this.sInReplyTo,
 				References: this.sReferences,
 				MarkAsImportant: this.markAsImportant() ? 1 : 0,
-				Attachments: this.prepareAttachmentsForSendOrSave(),
+				Attachments: attachments,
 				// Only used at send, not at save:
 				Dsn: this.requestDsn() ? 1 : 0,
 				ReadReceiptRequest: this.requestReadReceipt() ? 1 : 0
