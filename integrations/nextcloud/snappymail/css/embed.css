@@ -106,6 +106,15 @@ body > header ul {
 }
 
 /**
+ * Firefox < 98
+ * https://github.com/the-djmaze/snappymail/issues/673
+ */
+#rl-app dialog.polyfill {
+	margin-top: 50px;
+	max-height: calc(100vh - 60px);
+}
+
+/**
  * hampoelz
  * https://github.com/the-djmaze/snappymail/issues/96#issuecomment-1279783076
  */
