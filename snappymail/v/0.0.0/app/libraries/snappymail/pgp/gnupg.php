@@ -10,7 +10,7 @@ class GnuPG
 {
 	private
 		$homedir,
-		// Instance of gnupg pecl extension
+		// Instance of gnupg pecl extension https://www.php.net/gnupg
 		$GnuPG,
 		// Instance of \SnappyMail\PGP\GPG
 		$GPG;
