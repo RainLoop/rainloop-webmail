@@ -35,13 +35,13 @@ trait Contacts
 		$oAccount = $this->getAccountFromToken();
 		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
 		if (!$oAddressBookProvider) {
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ContactsSyncError);
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ContactsSyncError, null, 'No AddressBookProvider');
 		}
 		\ignore_user_abort(true);
 		\SnappyMail\HTTP\Stream::start(/*$binary = false*/);
 		\SnappyMail\HTTP\Stream::JSON(['messsage'=>'start']);
 		if (!$oAddressBookProvider->Sync()) {
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ContactsSyncError);
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ContactsSyncError, null, 'AddressBookProvider->Sync() failed');
 		}
 		return $this->TrueResponse(__FUNCTION__);
 	}
