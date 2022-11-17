@@ -1,3 +1,31 @@
+## 2.21.3 – 2022-11-16
+
+### Added
+- Click on PGP KEY attachment opens "Import key" dialog
+
+### Changed
+- Increase visible reading area for small screens
+  [#672](https://github.com/the-djmaze/snappymail/pull/672)
+- Improved message spam score detailed view
+- Improved DAV connection logging
+
+### Fixed
+- Handling attachments MIME type / content-type
+- Message responsive resizing width/height of elements
+  [#678](https://github.com/the-djmaze/snappymail/pull/678)
+- Focus on textarea when creating a new plain text email
+  [#501](https://github.com/the-djmaze/snappymail/pull/501)
+- CardDav remove photos of my contacts when synchronizing
+  [#679](https://github.com/the-djmaze/snappymail/pull/679)
+
+### Removed
+- \MailSo\Mime\Enumerations\MimeType
+
+### Nextcloud
+- Use fontastic in Nextcloud Files selector dialog
+- Firefox < 98 dialogs
+  [#673](https://github.com/the-djmaze/snappymail/pull/673)
+
 ## 2.21.2 – 2022-11-15
 
 ### Added
