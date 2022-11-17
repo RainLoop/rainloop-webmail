@@ -38,7 +38,11 @@ class Client
 
 		$this->HTTP = \SnappyMail\HTTP\Request::factory(/*'socket'*/);
 		$this->HTTP->proxy = $settings['proxy'] ?? null;
-		$this->HTTP->setAuth(3, $settings['userName'] ?? '', $settings['password'] ?? '');
+		if (!empty($settings['userName']) && !empty($settings['password'])) {
+			$this->HTTP->setAuth(3, $settings['userName'], $settings['password']);
+		} else {
+			\SnappyMail\Log::warning('DAV', 'No user credentials set');
+		}
 		$this->HTTP->max_response_kb = 0;
 		$this->HTTP->timeout = 15; // timeout in seconds.
 		$this->HTTP->max_redirects = 0;
