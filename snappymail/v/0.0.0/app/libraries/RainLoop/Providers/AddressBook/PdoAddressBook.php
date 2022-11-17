@@ -531,12 +531,16 @@ class PdoAddressBook
 										$sUid = $sFirstName = $sLastName = $sMiddleName = $sSuffix = $sPrefix = '';
 										$iPrevId = $iId;
 									}
-									if (!isset($aVCards[$iId])) {
-										$aVCards[$iId] = new VCard;
+									if (isset($aVCards[$iId])) {
+										$oVCard = $aVCards[$iId];
+									} else {
+										$oVCard = new VCard;
+//										$oVCard = $oVCard->convert(VCard::VCARD40);
+										$oVCard->VERSION = '4.0';
+										$oVCard->PRODID = 'SnappyMail-'.APP_VERSION;
+										$aVCards[$iId] = $oVCard;
 									}
 									$oVCard = $aVCards[$iId];
-									$oVCard->VERSION = '4.0';
-									$oVCard->PRODID = 'SnappyMail-'.APP_VERSION;
 									$sPropValue = (string) $aItem['prop_value'];
 									$aTypes = array();
 									if (!empty($aItem['prop_type_str'])) {
