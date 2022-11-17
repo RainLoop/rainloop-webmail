@@ -162,9 +162,9 @@ export class MailMessageView extends AbstractViewRight {
 					case 'none':
 						return '';
 					case 'pass':
-						return 'icon-ok iconcolor-green';
+						return 'icon-ok iconcolor-green'; // ✔️
 					default:
-						return 'icon-warning-alt iconcolor-red';
+						return 'icon-cross iconcolor-red'; // ✖ ❌
 				}
 			},
 
