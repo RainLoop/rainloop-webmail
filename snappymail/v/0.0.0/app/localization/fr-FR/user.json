@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Lu",
 		"MENU_SELECT_FLAGGED": "Signalés",
 		"MENU_SELECT_UNFLAGGED": "Non signalés",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Liste vide.",
 		"EMPTY_SEARCH_LIST": "Aucun message ne correspond à votre recherche.",
 		"SEARCH_RESULT_FOR": "Résultats de recherche pour \"%SEARCH%\"",

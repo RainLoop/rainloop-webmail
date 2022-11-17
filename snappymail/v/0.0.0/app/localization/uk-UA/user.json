@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Прочитані",
 		"MENU_SELECT_FLAGGED": "Відмічені",
 		"MENU_SELECT_UNFLAGGED": "Без поміток",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "В папці немає листів.",
 		"EMPTY_SEARCH_LIST": "Листи не знайдено.",
 		"SEARCH_RESULT_FOR": "Результат пошуку \"%SEARCH%\"",

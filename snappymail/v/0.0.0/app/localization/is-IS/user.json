@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Lesið",
 		"MENU_SELECT_FLAGGED": "Flaggað",
 		"MENU_SELECT_UNFLAGGED": "Afflaggað",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Tómur listi.",
 		"EMPTY_SEARCH_LIST": "Engin skilaboð stemmdu við leitina þína.",
 		"SEARCH_RESULT_FOR": "Leitarniðurstöður fyrir \"%SEARCH%\"",

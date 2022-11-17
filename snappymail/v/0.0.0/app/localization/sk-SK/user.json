@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Prečítané",
 		"MENU_SELECT_FLAGGED": "Označené",
 		"MENU_SELECT_UNFLAGGED": "Neoznačené",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Zoznam je prázdny.",
 		"EMPTY_SEARCH_LIST": "Vášmu vyhľadávaniu nezodpovedajú žiadne správy.",
 		"SEARCH_RESULT_FOR": "Výsledky vyhľadávania pre \"%SEARCH%\"",

@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Read",
 		"MENU_SELECT_FLAGGED": "Flagged",
 		"MENU_SELECT_UNFLAGGED": "Unflagged",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Empty list.",
 		"EMPTY_SEARCH_LIST": "No messages matched your search.",
 		"SEARCH_RESULT_FOR": "Search results for \"%SEARCH%\"",

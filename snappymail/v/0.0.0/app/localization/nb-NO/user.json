@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Lest",
 		"MENU_SELECT_FLAGGED": "Stjernemerket",
 		"MENU_SELECT_UNFLAGGED": "Ikke stjernemerket",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Tom liste",
 		"EMPTY_SEARCH_LIST": "Søket ga ingen treff.",
 		"SEARCH_RESULT_FOR": "Søketreff for «%SEARCH%»",

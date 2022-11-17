@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Gelezen",
 		"MENU_SELECT_FLAGGED": "Met Vlag",
 		"MENU_SELECT_UNFLAGGED": "Zonder Vlag",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Geen berichten",
 		"EMPTY_SEARCH_LIST": "Geen items gevonden",
 		"SEARCH_RESULT_FOR": "Zoekresultaten voor \"%SEARCH%\"",

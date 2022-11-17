@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Oku",
 		"MENU_SELECT_FLAGGED": "İşaretlenmiş",
 		"MENU_SELECT_UNFLAGGED": "İşaretlenmemiş",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Herhangi Bir Sonuç Bulunamadı.",
 		"EMPTY_SEARCH_LIST": "Arama sonuçlarına uyan herhangi bir mesaj bulunamadı.",
 		"SEARCH_RESULT_FOR": "\"%SEARCH%\" için arama sonuçları",

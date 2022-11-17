@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "مقروء",
 		"MENU_SELECT_FLAGGED": "محدد كـ مهم",
 		"MENU_SELECT_UNFLAGGED": "إزالة الأهمية",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "إفراغ القائمة",
 		"EMPTY_SEARCH_LIST": "ليست هناك أية رسائل تطابق بحثك.",
 		"SEARCH_RESULT_FOR": "نتيجة البحث لـ \"%SEARCH%\"",

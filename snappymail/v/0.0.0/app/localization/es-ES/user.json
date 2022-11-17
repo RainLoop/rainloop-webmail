@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Leído",
 		"MENU_SELECT_FLAGGED": "Destacado",
 		"MENU_SELECT_UNFLAGGED": "No Destacado",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "No hay mensajes.",
 		"EMPTY_SEARCH_LIST": "La búsqueda no ha producido resultados.",
 		"SEARCH_RESULT_FOR": "Resultados de búsqueda para \"%SEARCH%\"",

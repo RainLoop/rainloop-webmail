@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Läst",
 		"MENU_SELECT_FLAGGED": "Flaggad",
 		"MENU_SELECT_UNFLAGGED": "Avflaggad",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Tom lista",
 		"EMPTY_SEARCH_LIST": "Inga meddelanden matchar din sökning.",
 		"SEARCH_RESULT_FOR": "Sök resultat för \"%SEARCH%\"",

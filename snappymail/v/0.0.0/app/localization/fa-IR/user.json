@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "خوانده",
 		"MENU_SELECT_FLAGGED": "پرچم‌دار کردن",
 		"MENU_SELECT_UNFLAGGED": "پرچم‌دار نشده",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "فهرست خالی",
 		"EMPTY_SEARCH_LIST": "پیامی مطابق جستجوی شما پیدا نشد",
 		"SEARCH_RESULT_FOR": "نتایج جستجو مطابق \"%SEARCH%\"",

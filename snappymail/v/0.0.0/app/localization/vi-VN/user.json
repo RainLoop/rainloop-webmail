@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Đã đọc",
 		"MENU_SELECT_FLAGGED": "Được đánh dấu sao",
 		"MENU_SELECT_UNFLAGGED": "Không được đánh dấu sao",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Danh sách trống.",
 		"EMPTY_SEARCH_LIST": "Không tìm thấy thư trùng khớp.",
 		"SEARCH_RESULT_FOR": "Kết quả tìm kiếm cho \"%SEARCH%\"",

@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Loetud",
 		"MENU_SELECT_FLAGGED": "Lipuga märgitud",
 		"MENU_SELECT_UNFLAGGED": "Lipuga märkimata",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Tühi nimekiri",
 		"EMPTY_SEARCH_LIST": "Otsingule ei vastanud ühtegi kirja",
 		"SEARCH_RESULT_FOR": "Vasted otsingule \"%SEARCH%\"",

@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Gelesen",
 		"MENU_SELECT_FLAGGED": "Markiert",
 		"MENU_SELECT_UNFLAGGED": "Nicht markiert",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Liste ist leer.",
 		"EMPTY_SEARCH_LIST": "Keine Treffer für Ihre Suche.",
 		"SEARCH_RESULT_FOR": "Suchergebnisse für \"%SEARCH%\"",

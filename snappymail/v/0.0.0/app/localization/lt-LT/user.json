@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Skaityta",
 		"MENU_SELECT_FLAGGED": "Pažymėta",
 		"MENU_SELECT_UNFLAGGED": "Nepažymėta",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Tuščias sąrašas.",
 		"EMPTY_SEARCH_LIST": "Nėra pranešimų, atitinkančių jūsų paiešką.",
 		"SEARCH_RESULT_FOR": "Ieškoti \"%SEARCH%\" rezultatuose",

@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "已讀",
 		"MENU_SELECT_FLAGGED": "已加星標",
 		"MENU_SELECT_UNFLAGGED": "未加星標",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "空列表。",
 		"EMPTY_SEARCH_LIST": "未找到您想要的。",
 		"SEARCH_RESULT_FOR": "搜索 \"%SEARCH%\" 的結果",

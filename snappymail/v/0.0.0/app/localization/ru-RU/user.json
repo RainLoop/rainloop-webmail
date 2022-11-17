@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Прочитанные",
 		"MENU_SELECT_FLAGGED": "Помеченные",
 		"MENU_SELECT_UNFLAGGED": "Без пометок",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "В папке нет писем.",
 		"EMPTY_SEARCH_LIST": "Письма не найдены.",
 		"SEARCH_RESULT_FOR": "Результат поиска \"%SEARCH%\"",

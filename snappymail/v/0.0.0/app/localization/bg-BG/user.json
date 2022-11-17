@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Прочетени",
 		"MENU_SELECT_FLAGGED": "Маркирани с флаг",
 		"MENU_SELECT_UNFLAGGED": "С премахнат флаг",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Празен списък.",
 		"EMPTY_SEARCH_LIST": "Няма съобщения, които да отговарят на търсенето.",
 		"SEARCH_RESULT_FOR": "Резултати от търсенето за \"%SEARCH%\"",

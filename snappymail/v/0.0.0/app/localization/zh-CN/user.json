@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "已读",
 		"MENU_SELECT_FLAGGED": "已加星标",
 		"MENU_SELECT_UNFLAGGED": "未加星标",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "空列表。",
 		"EMPTY_SEARCH_LIST": "未找到您搜索的消息。",
 		"SEARCH_RESULT_FOR": "搜索 \"%SEARCH%\" 的结果",

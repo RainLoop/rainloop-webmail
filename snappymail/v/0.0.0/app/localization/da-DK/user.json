@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Læst",
 		"MENU_SELECT_FLAGGED": "Markeret med flag",
 		"MENU_SELECT_UNFLAGGED": "Ikke markeret med flag",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Ingen meddelelser.",
 		"EMPTY_SEARCH_LIST": "Ingen meddelelser passede på søgningen.",
 		"SEARCH_RESULT_FOR": "Resultat for søgningen på \"%SEARCH%\"",

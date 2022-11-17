@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Olvasott",
 		"MENU_SELECT_FLAGGED": "Megjelölt",
 		"MENU_SELECT_UNFLAGGED": "Jelöletlen",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Lista üres.",
 		"EMPTY_SEARCH_LIST": "Nincs a keresésnek megfelelő levél.",
 		"SEARCH_RESULT_FOR": "Keresési eredmények ehhez: \"%SEARCH%\"",

@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Διαβασμένο",
 		"MENU_SELECT_FLAGGED": "Σημαδεμένο",
 		"MENU_SELECT_UNFLAGGED": "Μη σημαδεμένο",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Άδεια λίστα.",
 		"EMPTY_SEARCH_LIST": "Δεν υπάρχουν μηνύματα που να ταιριάζουν στην αναζήτηση.",
 		"SEARCH_RESULT_FOR": "Αποτελέσματα αναζήτησης για \"%SEARCH%\"",

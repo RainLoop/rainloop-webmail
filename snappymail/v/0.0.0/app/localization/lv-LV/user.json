@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Izlasīts",
 		"MENU_SELECT_FLAGGED": "Atzīmētie",
 		"MENU_SELECT_UNFLAGGED": "Noņemtās atzīmes",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Tukšs saraksts.",
 		"EMPTY_SEARCH_LIST": "Neviens ziņojums neatbilda jūsu meklētajiem kritērijiem.",
 		"SEARCH_RESULT_FOR": "Meklēšanas rezultāti: \"%SEARCH%\"",
