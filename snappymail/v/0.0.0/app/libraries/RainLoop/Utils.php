@@ -30,9 +30,11 @@ class Utils
 	public static function jsonEncode($value, int $flags = \JSON_INVALID_UTF8_SUBSTITUTE) : string
 	{
 		try {
+			/* Issue with \SnappyMail\HTTP\Stream
 			if (Api::Config()->Get('debug', 'enable', false)) {
 				$flags |= \JSON_PRETTY_PRINT;
 			}
+			*/
 			return \json_encode($value, $flags | \JSON_UNESCAPED_UNICODE | \JSON_THROW_ON_ERROR);
 		} catch (\Throwable $e) {
 			Api::Logger()->WriteException($e, \LOG_ERR, 'JSON');
