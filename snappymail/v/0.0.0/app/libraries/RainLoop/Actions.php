@@ -39,6 +39,8 @@ class Actions
 	const AUTH_SPEC_LOGOUT_TOKEN_KEY = 'smspeclogout';
 	const AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY = 'smspeclogoutcmk';
 
+	const APP_DUMMY = '********';
+
 	/**
 	 * @var \MailSo\Base\Http
 	 */
@@ -650,7 +652,7 @@ class Actions
 				$aResult['ContactsPdoDsn'] = (string)$oConfig->Get('contacts', 'pdo_dsn', '');
 				$aResult['ContactsPdoType'] = (string)$oConfig->Get('contacts', 'type', '');
 				$aResult['ContactsPdoUser'] = (string)$oConfig->Get('contacts', 'pdo_user', '');
-				$aResult['ContactsPdoPassword'] = (string)APP_DUMMY;
+				$aResult['ContactsPdoPassword'] = static::APP_DUMMY;
 
 				$aResult['FaviconUrl'] = $oConfig->Get('webmail', 'favicon_url', '');
 
@@ -743,7 +745,7 @@ class Actions
 						$aResult['ContactsSyncMode'] = isset($mData['Mode']) ? $mData['Mode'] : 0;
 						$aResult['ContactsSyncUrl'] = isset($mData['Url']) ? \trim($mData['Url']) : '';
 						$aResult['ContactsSyncUser'] = isset($mData['User']) ? \trim($mData['User']) : '';
-						$aResult['ContactsSyncPassword'] = APP_DUMMY;
+						$aResult['ContactsSyncPassword'] = static::APP_DUMMY;
 					}
 				}
 

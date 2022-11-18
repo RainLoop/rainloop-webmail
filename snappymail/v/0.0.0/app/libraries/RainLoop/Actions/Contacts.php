@@ -22,8 +22,9 @@ trait Contacts
 		$bResult = $this->setContactsSyncData($oAccount, array(
 			'Mode' => \intval($this->GetActionParam('Mode', '0')),
 			'User' => $this->GetActionParam('User', ''),
-			'Password' => APP_DUMMY === $sPassword && isset($mData['Password'])
-				? $mData['Password'] : (APP_DUMMY === $sPassword ? '' : $sPassword),
+			'Password' => static::APP_DUMMY === $sPassword
+				? (isset($mData['Password']) ? $mData['Password'] : '')
+				: $sPassword,
 			'Url' => $this->GetActionParam('Url', '')
 		));
 

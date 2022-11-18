@@ -567,7 +567,7 @@ class ActionsAdmin extends Actions
 						if ($oItem) {
 							if ($oItem instanceof \RainLoop\Plugins\Property) {
 								if (PluginPropertyType::PASSWORD === $oItem->Type()) {
-									$oItem->SetValue(APP_DUMMY);
+									$oItem->SetValue(static::APP_DUMMY);
 								} else {
 									$oItem->SetValue($oConfig->Get('plugin', $oItem->Name(), ''));
 								}
@@ -576,7 +576,7 @@ class ActionsAdmin extends Actions
 								foreach ($oItem as $oSubItem) {
 									if ($oSubItem && $oSubItem instanceof \RainLoop\Plugins\Property) {
 										if (PluginPropertyType::PASSWORD === $oSubItem->Type()) {
-											$oSubItem->SetValue(APP_DUMMY);
+											$oSubItem->SetValue(static::APP_DUMMY);
 										} else {
 											$oSubItem->SetValue($oConfig->Get('plugin', $oSubItem->Name(), ''));
 										}
@@ -614,7 +614,7 @@ class ActionsAdmin extends Actions
 					{
 						$sKey = $oItem->Name();
 						$sValue = $aSettings[$sKey] ?? $oConfig->Get('plugin', $sKey);
-						if (PluginPropertyType::PASSWORD !== $oItem->Type() || APP_DUMMY !== $sValue)
+						if (PluginPropertyType::PASSWORD !== $oItem->Type() || static::APP_DUMMY !== $sValue)
 						{
 							$mResultValue = null;
 							switch ($oItem->Type()) {
@@ -734,8 +734,8 @@ class ActionsAdmin extends Actions
 					break;
 
 				case 'dummy':
-					$sValue = (string) $this->GetActionParam($sParamName, APP_DUMMY);
-					if (APP_DUMMY !== $sValue) {
+					$sValue = (string) $this->GetActionParam($sParamName, static::APP_DUMMY);
+					if (static::APP_DUMMY !== $sValue) {
 						$oConfig->Set($sConfigSector, $sConfigName, $sValue);
 					}
 					break;

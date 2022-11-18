@@ -52,8 +52,6 @@ define('APP_VERSION_ROOT_PATH', __DIR__ . DIRECTORY_SEPARATOR);
 
 date_default_timezone_set('UTC');
 
-define('APP_DUMMY', '********');
-
 $sCustomDataPath = '';
 $sCustomConfiguration = '';
 
