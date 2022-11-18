@@ -686,12 +686,6 @@ class Actions
 					'MailToEmail' => '',
 
 					'ContactsIsAllowed' => $this->AddressBookProvider($oAccount)->IsActive(),
-					'ContactsSyncIsAllowed' => (bool)$oConfig->Get('contacts', 'allow_sync', false),
-					'ContactsSyncInterval' => (int)$oConfig->Get('contacts', 'sync_interval', 20),
-					'ContactsSyncMode' => 0,
-					'ContactsSyncUrl' => '',
-					'ContactsSyncUser' => '',
-					'ContactsSyncPassword' => '',
 
 					'ViewHTML' => (bool) $oConfig->Get('defaults', 'view_html', true),
 					'ShowImages' => (bool) $oConfig->Get('defaults', 'show_images', false),
@@ -739,14 +733,15 @@ class Actions
 					)
 				);
 
-				if ($aResult['ContactsIsAllowed'] && $aResult['ContactsSyncIsAllowed']) {
-					$mData = $this->getContactsSyncData($oAccount);
-					if (\is_array($mData)) {
-						$aResult['ContactsSyncMode'] = isset($mData['Mode']) ? $mData['Mode'] : 0;
-						$aResult['ContactsSyncUrl'] = isset($mData['Url']) ? \trim($mData['Url']) : '';
-						$aResult['ContactsSyncUser'] = isset($mData['User']) ? \trim($mData['User']) : '';
-						$aResult['ContactsSyncPassword'] = static::APP_DUMMY;
-					}
+				if ($aResult['ContactsIsAllowed'] && $oConfig->Get('contacts', 'allow_sync', false)) {
+					$aData = $this->getContactsSyncData($oAccount) ?: [
+						'Mode' => 0,
+						'Url' => '',
+						'User' => ''
+					];
+					$aData['Password'] = $aData['Password'] ? static::APP_DUMMY : '';
+					$aData['Interval'] = \max(20, \min(320, (int) $oConfig->Get('contacts', 'sync_interval', 20)));
+					$aResult['ContactsSync'] = $aData;
 				}
 
 				$sToken = Utils::GetCookie(self::AUTH_MAILTO_TOKEN_KEY);
