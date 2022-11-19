@@ -4,18 +4,6 @@ import { i18n } from 'Common/Translator';
 import { root } from 'Common/Links';
 
 import { isArray } from 'Common/Utils';
-const FormDataToObject = formData => {
-	var object = {};
-	formData.forEach((value, key) => {
-		if (!Reflect.has(object, key)){
-			object[key] = value;
-		} else {
-			isArray(object[key]) || (object[key] = [object[key]]);
-			object[key].push(value);
-		}
-	});
-	return object;
-};
 
 export default App => {
 
@@ -57,7 +45,18 @@ export default App => {
 		if (postData) {
 			init.method = 'POST';
 			init.headers['Content-Type'] = 'application/json';
-			postData = (postData instanceof FormData) ? FormDataToObject(postData) : postData;
+			if (postData instanceof FormData) {
+				const object = {};
+				postData.forEach((value, key) => {
+					if (!Reflect.has(object, key)){
+						object[key] = value;
+					} else {
+						isArray(object[key]) || (object[key] = [object[key]]);
+						object[key].push(value);
+					}
+				});
+				postData = object;
+			}
 			postData.XToken = Settings.app('token');
 			init.body = JSON.stringify(postData);
 		}
