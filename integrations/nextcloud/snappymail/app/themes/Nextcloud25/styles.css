@@ -437,6 +437,7 @@ select option {
 }
 
 .e-checkbox.material-design>div {
+    box-sizing: border-box !important;
     border: 2px solid var(--color-primary-element);
     border-radius: 2px;
     box-sizing: border-box;
