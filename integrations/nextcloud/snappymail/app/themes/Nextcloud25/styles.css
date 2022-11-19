@@ -289,6 +289,11 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     content: 'Create new folder';
 }
 
+html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic:after,
+html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-folder-add:after {
+    content: '';
+}
+
 #rl-app .icon-folder-add::before,
 #rl-app .icon-resize-in::before {
     line-height: unset;
