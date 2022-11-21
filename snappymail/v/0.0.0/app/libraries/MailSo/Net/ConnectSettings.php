@@ -50,7 +50,7 @@ class ConnectSettings implements \JsonSerializable
 		$object = new static;
 		$object->host = $aSettings['host'];
 		$object->port = $aSettings['port'];
-		$object->type = $aSettings['secure'];
+		$object->type = isset($aSettings['type']) ? $aSettings['type'] : $aSettings['secure'];
 		$object->shortLogin = !empty($aSettings['shortLogin']);
 		$object->ssl = SSLContext::fromArray($aSettings['ssl'] ?? []);
 		return $object;
@@ -63,7 +63,7 @@ class ConnectSettings implements \JsonSerializable
 //			'@Object' => 'Object/ConnectSettings',
 			'host' => $this->host,
 			'port' => $this->port,
-			'secure' => $this->type,
+			'type' => $this->type,
 			'shortLogin' => $this->shortLogin,
 			'ssl' => $this->ssl
 		);

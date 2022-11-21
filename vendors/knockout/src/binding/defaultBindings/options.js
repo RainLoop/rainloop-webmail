@@ -73,7 +73,7 @@ ko.bindingHandlers['options'] = {
             if (allBindings['has']('optionsCaption')) {
                 captionValue = ko.utils.unwrapObservable(allBindings.get('optionsCaption'));
                 // If caption value is null or undefined, don't show a caption
-                if (captionValue !== null && captionValue !== undefined) {
+                if (captionValue != null) {
                     filteredArray.unshift(captionPlaceholder);
                 }
             }

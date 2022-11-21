@@ -3,7 +3,7 @@
     "IMAP": {
         "host": "localhost",
         "port": 143,
-        "secure": 0,
+        "type": 0,
         "shortLogin": false,
         "ssl": {
             "verify_peer": false,
@@ -17,7 +17,7 @@
     "SMTP": {
         "host": "localhost",
         "port": 25,
-        "secure": 0,
+        "type": 0,
         "shortLogin": false,
         "ssl": {
             "verify_peer": false,
@@ -34,7 +34,7 @@
     "Sieve": {
         "host": "localhost",
         "port": 4190,
-        "secure": 0,
+        "type": 0,
         "shortLogin": false,
         "ssl": {
             "verify_peer": false,
