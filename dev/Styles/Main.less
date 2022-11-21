@@ -3,23 +3,6 @@
  * 2. Prevent adjustments of font size after orientation changes in iOS.
  */
 
-html, body {
-	height: 100%;
-	overflow: hidden;
-	-webkit-text-size-adjust: 100%; /* 2 */
-}
-
-#rl-app {
-	-webkit-touch-callout: none;
-	font-size: var(--main-font-size, 14px);
-	line-height: 1.25; /* 1 */
-	position: fixed;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
-}
-
 html.list-loading body {
 /*	cursor: wait;*/
 	cursor: progress;
@@ -62,7 +45,6 @@ dialog {
 	border: 1px solid var(--dialog-border-clr, rgba(0,0,0,.3));
 	border-radius: var(--dialog-border-radius, 6px);
 	box-shadow: 0 5px 80px rgba(0,0,0,0.3);
-	box-sizing: border-box;
 	color: var(--dialog-clr, #333);
 	display: flex;
 	flex-direction: column;

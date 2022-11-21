@@ -45,16 +45,14 @@
 	height: 100%;
 
 	> .b-toolbar {
+		color: #fff;
+		display: flex;
 		position: absolute;
 		top: 0;
 		right: 0;
 		left: 0;
-		height: 34px;
 		padding: 8px @rlLowMargin 8px 0;
-		color: #fff;
 		text-shadow: 0 1px 1px #000;
-
-		display: flex;
 
 		h4 {
 			flex-grow: 1;
@@ -73,7 +71,6 @@
 	border: 1px solid var(--border-color, #aaa);
 	border-radius: var(--border-radius, 5px);
 	box-shadow: @rlMainShadow;
-	box-sizing: border-box;
 	height: calc(100% - 50px - @rlLowMargin - @rlLowMargin);
 	margin: (50px + @rlLowMargin) @rlLowMargin @rlLowMargin 0;
 	overflow-y: auto;
