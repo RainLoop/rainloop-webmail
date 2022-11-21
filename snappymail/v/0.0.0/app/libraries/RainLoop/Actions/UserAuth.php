@@ -21,10 +21,8 @@ trait UserAuth
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function LoginProcess(string &$sEmail, string &$sPassword, bool $bSignMe = false, bool $bMainAccount = true): Account
+	protected function resolveLoginCredentials(string &$sEmail, string &$sPassword, string &$sLogin): void
 	{
-		$sInputEmail = $sEmail;
-
 		$this->Plugins()->RunHook('login.credentials.step-1', array(&$sEmail));
 
 		$sEmail = \MailSo\Base\Utils::Trim($sEmail);
@@ -101,22 +99,30 @@ trait UserAuth
 
 		$this->Plugins()->RunHook('login.credentials.step-2', array(&$sEmail, &$sPassword));
 
-		if (!\str_contains($sEmail, '@') || !\strlen($sPassword)) {
-			$this->loginErrorDelay();
-
-			throw new ClientException(Notifications::InvalidInputArgument);
-		}
-
-		$this->Logger()->AddSecret($sPassword);
-
 		$sLogin = $sEmail;
 		if ($this->Config()->Get('login', 'login_lowercase', true)) {
 			$sLogin = \mb_strtolower($sLogin);
 		}
 
-		$this->Plugins()->RunHook('login.credentials', array(&$sEmail, &$sLogin, &$sPassword));
-
 		$this->Logger()->AddSecret($sPassword);
+		$this->Plugins()->RunHook('login.credentials', array(&$sEmail, &$sLogin, &$sPassword));
+		$this->Logger()->AddSecret($sPassword);
+	}
+
+	/**
+	 * @throws \RainLoop\Exceptions\ClientException
+	 */
+	public function LoginProcess(string &$sEmail, string &$sPassword, bool $bSignMe = false, bool $bMainAccount = true): Account
+	{
+		$sInputEmail = $sEmail;
+
+		$sLogin = '';
+		$this->resolveLoginCredentials($sEmail, $sPassword, $sLogin);
+
+		if (!\str_contains($sEmail, '@') || !\strlen($sPassword)) {
+			$this->loginErrorDelay();
+			throw new ClientException(Notifications::InvalidInputArgument);
+		}
 
 		$oAccount = null;
 		try {

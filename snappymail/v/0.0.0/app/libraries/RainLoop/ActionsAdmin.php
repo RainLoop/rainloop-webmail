@@ -253,6 +253,23 @@ class ActionsAdmin extends Actions
 		));
 	}
 
+	public function DoAdminDomainMatch() : array
+	{
+		$sEmail = $this->GetActionParam('username');
+		$sPassword = '********';
+		$sLogin = '';
+		$this->resolveLoginCredentials($sEmail, $sPassword, $sLogin);
+		$oDomain = \str_contains($sEmail, '@')
+			? $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true)
+			: null;
+		return $this->DefaultResponse(__FUNCTION__, array(
+			'email' => $sEmail,
+			'login' => $sLogin,
+			'domain' => $oDomain,
+			'whitelist' => $oDomain ? $oDomain->ValidateWhiteList($sEmail, $sLogin) : null
+		));
+	}
+
 	public function DoAdminDomainTest() : array
 	{
 		$this->IsAdminLoggined();
