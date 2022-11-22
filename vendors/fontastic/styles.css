@@ -103,12 +103,6 @@
 .icon-copy::before {
   content: "\e068";
 }
-.icon-resize-in::before {
-  content: "\e06c";
-}
-.icon-resize-out::before {
-  content: "⤢";
-}
 .icon-check-mark-circle-two::before {
   content: "\e073";
 }

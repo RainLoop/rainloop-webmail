@@ -5,7 +5,7 @@ import { Scope } from 'Common/Enums';
 
 import { ComposeType, FolderType, MessageSetAction } from 'Common/EnumsUser';
 
-import { leftPanelDisabled, moveAction,
+import { leftPanelDisabled, toggleLeftPanel, moveAction,
 	Settings, SettingsCapa,
 	addEventsListeners,
 	addShortcut, registerShortcut, formFieldFocused
@@ -83,6 +83,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.isMobile = ThemeStore.isMobile;
 		this.leftPanelDisabled = leftPanelDisabled;
+		this.toggleLeftPanel = toggleLeftPanel;
 
 		this.popupVisibility = arePopupsVisible;
 

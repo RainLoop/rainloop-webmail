@@ -1,6 +1,6 @@
 <div class="btn-toolbar">
 	<!-- ko if: isMobile() -->
-	<a class="btn btn-thin fontastic toggleLeft" data-bind="click: leftPanelDisabled.toggle, text: leftPanelDisabled() ? '❯' : '❮'">❮</a>
+	<a class="btn btn-thin fontastic toggleLeft" data-bind="click: toggleLeftPanel, text: leftPanelDisabled() ? '❯' : '❮'">❮</a>
 	<a class="btn buttonCompose" data-bind="click: composeClick, css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}, visible: mobileCheckedStateHide()" data-i18n="[title]FOLDER_LIST/BUTTON_NEW_MESSAGE">
 		<i class="icon-paper-plane"></i>
 	</a>

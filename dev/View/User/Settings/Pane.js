@@ -1,6 +1,6 @@
 import { mailbox } from 'Common/Links';
 import { getFolderInboxName } from 'Common/Cache';
-import { leftPanelDisabled } from 'Common/Globals';
+import { leftPanelDisabled, toggleLeftPanel } from 'Common/Globals';
 
 import { MessageUserStore } from 'Stores/User/Message';
 import { ThemeStore } from 'Stores/Theme';
@@ -13,6 +13,7 @@ export class SettingsPaneUserView extends AbstractViewRight {
 
 		this.isMobile = ThemeStore.isMobile;
 		this.leftPanelDisabled = leftPanelDisabled;
+		this.toggleLeftPanel = toggleLeftPanel;
 	}
 
 	onShow() {

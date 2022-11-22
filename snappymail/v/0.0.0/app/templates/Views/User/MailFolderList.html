@@ -24,10 +24,10 @@
 		<ul class="b-folders-user" data-bind="template: { name: 'MailFolderListItem', foreach: folderListVisible }"></ul>
 		<div class="move-action-content-wrapper" data-bind="visible: moveAction"></div>
 	</div>
-	<div class="b-content show-on-panel-disabled" data-bind="click: leftPanelDisabled.toggle()"></div>
+	<div class="b-content show-on-panel-disabled" data-bind="click: toggleLeftPanel"></div>
 	<div class="b-footer btn-toolbar hide-mobile">
 		<div class="btn-group">
-			<a class="btn" data-bind="click: leftPanelDisabled.toggle(), css: {'icon-resize-out': leftPanelDisabled(), 'icon-resize-in': !leftPanelDisabled()}"></a>
+			<a class="btn fontastic" data-bind="click: toggleLeftPanel, text: leftPanelDisabled() ? '❯' : '❮'"></a>
 		</div>
 		<div class="btn-group hide-on-panel-disabled">
 			<a class="btn icon-folder-add" data-bind="click: createFolder" data-i18n="[title]POPUPS_CREATE_FOLDER/TITLE_CREATE_FOLDER"></a>

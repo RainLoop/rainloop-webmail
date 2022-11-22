@@ -1,7 +1,7 @@
 <div class="btn-toolbar">
 	<!-- ko if: isMobile() -->
 	<div class="btn-group" style="margin-left: -1px">
-		<a class="btn btn-thin fontastic toggleLeft" data-bind="click: leftPanelDisabled.toggle, text: leftPanelDisabled() ? '❯' : '❮'">❮</a>
+		<a class="btn btn-thin fontastic toggleLeft" data-bind="click: toggleLeftPanel, text: leftPanelDisabled() ? '❯' : '❮'">❮</a>
 	</div>
 	<!-- /ko -->
 	<a class="btn" data-bind="click: backToInbox" data-icon="⬅" data-i18n="GLOBAL/BACK"></a>
