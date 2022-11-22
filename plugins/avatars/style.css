@@ -1,0 +1,11 @@
+.messageView .b-content .messageItemHeader .fromPic {
+	display: inline-block;
+	float: left;
+	width: 50px;
+	height: 50px;
+	padding: 2px;
+	margin: 0 5px 0 0;
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+}
