@@ -1,3 +1,34 @@
+## 2.21.4 – 2022-11-22
+
+### Added
+- Added domain matcher test for
+  [#689](https://github.com/the-djmaze/snappymail/pull/689)
+- Download all Attachments of selected Emails
+  [#361](https://github.com/the-djmaze/snappymail/pull/361)
+
+### Changed
+- Log current shortcuts scope for
+  [#690](https://github.com/the-djmaze/snappymail/pull/690)
+- CSS everything to be box-sizing: border-box;
+- Make messageview a bit larger so that it is the same height as the messagelist
+- Cleanup and rearrange some fontastic glyphs
+- Also show From email address by default
+  [#683](https://github.com/the-djmaze/snappymail/pull/683)
+
+### Fixed
+- Contact.display() returns [object Object]
+- When left panel disabled and drag messages, show it
+- Issue with admin domain connection type settings selectbox
+  [#689](https://github.com/the-djmaze/snappymail/pull/689)
+- Mobile View on cellphones: automatic scrolling not working near the visual keyboard
+  [#686](https://github.com/the-djmaze/snappymail/pull/686)
+- Unable to separate runtime from installation
+  [#685](https://github.com/the-djmaze/snappymail/pull/685)
+
+### Removed
+- Removed inline parameter of checkbox and select components
+
+
 ## 2.21.3 – 2022-11-16
 
 ### Added
