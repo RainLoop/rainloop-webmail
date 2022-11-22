@@ -20,6 +20,8 @@ interface AddressBookInterface
 
 	public function GetContacts(int $iOffset = 0, int $iLimit = 20, string $sSearch = '', int &$iResultCount = 0) : array;
 
+	public function GetContactByEmail(string $sEmail) : ?Classes\Contact;
+
 	public function GetContactByID($mID, bool $bIsStrID = false) : ?Classes\Contact;
 
 	public function GetSuggestions(string $sSearch, int $iLimit = 20) : array;

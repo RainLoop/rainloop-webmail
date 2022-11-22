@@ -4,6 +4,10 @@ namespace SnappyMail;
 
 abstract class DNS
 {
+	/**
+	 * $domain = 'bimigroup.org'
+	 * Then a TXT lookup is done on 'default._bimi.bimigroup.org'
+	 */
 	public static function BIMI(string $domain) : string
 	{
 		$oCache = \RainLoop\Api::Actions()->Cacher();
@@ -18,7 +22,7 @@ abstract class DNS
 		}
 		if (null === $BIMI) {
 			$BIMI = '';
-			$values = \dns_get_record($domain, \DNS_TXT);
+			$values = \dns_get_record("default._bimi.{$domain}", \DNS_TXT);
 			if ($values) {
 				foreach ($values as $value) {
 					if (\str_starts_with($value['txt'], 'v=BIMI1')) {

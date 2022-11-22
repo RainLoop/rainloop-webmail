@@ -60,6 +60,11 @@ class AddressBook extends AbstractProvider
 		) : array();
 	}
 
+	public function GetContactByEmail(string $sEmail) : ?AddressBook\Classes\Contact
+	{
+		return $this->IsActive() ? $this->oDriver->GetContactByEmail($sEmail) : null;
+	}
+
 	public function GetContactByID($mID, bool $bIsStrID = false) : ?AddressBook\Classes\Contact
 	{
 		return $this->IsActive() ? $this->oDriver->GetContactByID($mID, $bIsStrID) : null;

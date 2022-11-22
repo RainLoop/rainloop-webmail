@@ -313,6 +313,12 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		return $aResult;
 	}
 
+	public function GetContactByEmail(string $sEmail) : ?Contact;
+	{
+		// TODO
+		return null;
+	}
+
 	public function GetContactByID($mID, bool $bIsStrID = false) : ?Contact
 	{
 		if ($bIsStrID) {

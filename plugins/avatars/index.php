@@ -8,7 +8,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		URL      = 'https://snappymail.eu/',
 		VERSION  = '1.0',
 		RELEASE  = '2022-11-11',
-		REQUIRED = '2.21.0',
+		REQUIRED = '2.22.0',
 		CATEGORY = 'Contacts',
 		LICENSE  = 'MIT',
 		DESCRIPTION = '';
@@ -53,48 +53,82 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			return null;
 		}
 
-//		$this->verifyCacheByKey($sEmail);
+		$oActions = \RainLoop\Api::Actions();
+		$oActions->verifyCacheByKey($sEmail);
 
-		// DATA_IMAGE_USER_DOT_PIC
-		$sDomain = \explode('@', $sEmail);
-		$sDomain = \array_pop($sDomain);
-
-		$BIMI = $bBimi ? \SnappyMail\DNS::BIMI($sDomain) : null;
-		// TODO: process $BIMI value
+		$aResult = null;
 
 		// TODO: lookup contacts vCard
-
-		// TODO: make this optional
-		$aResult = static::Gravatar($sEmail);
-
-		if (!$aResult && \file_exists(__DIR__ . '/images/services/'.$sDomain.'.png')) {
-			$aResult = [
-				'image/png',
-				\file_get_contents(__DIR__ . '/images/services/'.$sDomain.'.png')
-			];
+		$oAccount = $oActions->getAccountFromToken();
+		if ($oAccount) {
+			$oAddressBookProvider = $oActions->AddressBookProvider($oAccount);
+			if ($oAddressBookProvider) {
+				$oContact = $oAddressBookProvider->GetContactByEmail($sEmail);
+				if ($oContact && $oContact->vCard && $oContact->vCard['PHOTO']) {
+					$aResult = [
+						'text/vcard',
+						$oContact->vCard
+					];
+				}
+			}
 		}
+
 		if (!$aResult) {
-			$aResult = [
-				'image/png',
-				\file_get_contents(__DIR__.'/images/empty-contact.png')
-			];
+			$sDomain = \explode('@', $sEmail);
+			$sDomain = \array_pop($sDomain);
+
+			$aUrls = [];
+
+			$BIMI = $bBimi ? \SnappyMail\DNS::BIMI($sDomain) : null;
+			if ($BIMI) {
+				$aUrls[] = $BIMI;
+//				$aResult = ['text/uri-list', $BIMI];
+				\SnappyMail\Log::debug('Avatar', "BIMI {$sDomain} for {$sUrl}");
+			} else {
+				\SnappyMail\Log::notice('Avatar', "BIMI 404 for {$sDomain}");
+			}
+
+			// TODO: make Gravatar optional
+			$sAsciiEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
+			$aUrls[] = 'http://gravatar.com/avatar/'.\md5(\strtolower($sAsciiEmail)).'?s=80&d=404';
+
+			foreach ($aUrls as $sUrl) {
+				if ($aResult = static::getUrl($sUrl)) {
+					break;
+				}
+			}
 		}
 
-//		$this->cacheByKey($sEmail);
+		if (!$aResult) {
+			$aServices = [
+				"services/{$sDomain}",
+				'services/' . \preg_replace('/^.+\\.([^.]+\\.[^.]+)$/D', '$1', $sDomain),
+				'empty-contact' // DATA_IMAGE_USER_DOT_PIC
+			];
+			foreach ($aServices as $service) {
+				if (\file_exists(__DIR__ . "/images/{$service}.png")) {
+					$aResult = [
+						'image/png',
+						\file_get_contents(__DIR__ . "/images/{$service}.png")
+					];
+					break;
+				}
+			}
+		}
+
+		$oActions->cacheByKey($sEmail);
 
 		return $aResult;
 	}
 
-	private static function Gravatar(string $sEmail) : ?array
+	private static function getUrl(string $sUrl) : ?array
 	{
-		$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
-		$sGravatarUrl = 'http://gravatar.com/avatar/'.\md5(\strtolower($sEmail)).'?s=80&d=404';
 		$oHTTP = \SnappyMail\HTTP\Request::factory(/*'socket' or 'curl'*/);
 		$oHTTP->proxy = \RainLoop\Api::Config()->Get('labs', 'curl_proxy', '');
 		$oHTTP->proxy_auth = \RainLoop\Api::Config()->Get('labs', 'curl_proxy_auth', '');
 		$oHTTP->max_response_kb = 0;
 		$oHTTP->timeout = 15; // timeout in seconds.
-		$oResponse = $oHTTP->doRequest('GET', $sGravatarUrl);
+		$oResponse = $oHTTP->doRequest('GET', $sUrl);
 		if ($oResponse) {
 			if (200 === $oResponse->status && \str_starts_with($oResponse->getHeader('content-type'), 'image/')) {
 				return [
@@ -102,11 +136,10 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 					$oResponse->body
 				];
 			}
-			\SnappyMail\Log::notice('Gravatar', "error {$oResponse->status} for {$sGravatarUrl}");
+			\SnappyMail\Log::notice('Avatar', "error {$oResponse->status} for {$sUrl}");
 		} else {
-			\SnappyMail\Log::warning('Gravatar', "failed for {$sGravatarUrl}");
+			\SnappyMail\Log::warning('Avatar', "failed for {$sUrl}");
 		}
 		return null;
 	}
-
 }

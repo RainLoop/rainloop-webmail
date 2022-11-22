@@ -697,6 +697,40 @@ class PdoAddressBook
 	/**
 	 * @param mixed $mID
 	 */
+	public function GetContactByEmail(string $sEmail) : ?Contact
+	{
+		$sLowerSearch = $this->specialConvertSearchValueLower($sEmail);
+
+		$sSql = 'SELECT
+			DISTINCT id_contact
+		FROM rainloop_ab_properties
+		WHERE id_user = :id_user
+		 AND prop_type = '.PropertyType::JCARD.'
+		 AND ('.
+			'prop_value LIKE :search ESCAPE \'=\''
+				. (\strlen($sLowerSearch) ? ' OR (prop_value_lower <> \'\' AND prop_value_lower LIKE :search_lower ESCAPE \'=\')' : '').
+			')';
+		$aParams = array(
+			':id_user' => array($this->iUserID, \PDO::PARAM_INT),
+			':search' => array($this->specialConvertSearchValue($sEmail, '='), \PDO::PARAM_STR)
+		);
+		if (\strlen($sLowerSearch)) {
+			$aParams[':search_lower'] = array($sLowerSearch, \PDO::PARAM_STR);
+		}
+
+		$oContact = null;
+		$iIdContact = 0;
+
+		$aContacts = $this->getContactsFromPDO(
+			$this->prepareAndExecute($sSql, $aParams)
+		);
+
+		return $aContacts ? $aContacts[0] : null;
+	}
+
+	/**
+	 * @param mixed $mID
+	 */
 	public function GetContactByID($mID, bool $bIsStrID = false) : ?Contact
 	{
 		$mID = \trim($mID);

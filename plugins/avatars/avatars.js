@@ -22,10 +22,12 @@
 			view.viewUserPicVisible = ko.observable(false);
 
 			view.message.subscribe(msg => {
+				view.viewUserPicVisible(false);
 				if (msg) {
 					let from = msg.from[0],
 						bimi = 'pass' == from.dkimStatus ? 1 : 0;
 //					view.viewUserPic(`?Avatar/${bimi}/${encodeURIComponent(from.email)}`);
+//					view.viewUserPicVisible(true);
 					rl.pluginRemoteRequest((iError, data) => {
 						if (!iError && data?.Result.type) {
 							view.viewUserPic(`data:${data.Result.type};base64,${data.Result.data}`);
@@ -38,6 +40,23 @@
 				}
 			});
 		}
+/*
+		if ('MailMessageList' === e.detail.viewModelTemplateID) {
+			const
+				template = document.getElementById('MailMessageList' ),
+				messageCheckbox = template.content.querySelector('.messageCheckbox');
+			messageCheckbox.dataset.bind = 'attr:{style:$root.viewUserPic($data)}';
+			e.detail.viewUserPic = msg => {
+				let from = msg.from[0],
+					bimi = 'pass' == from.dkimStatus ? 1 : 0;
+				return `background:no-repeat url("?Avatar/${bimi}/${encodeURIComponent(from.email)}") center / contain`;
+				return `background:no-repeat url("?Avatar/${bimi}/${encodeURIComponent(from.email)}") right / 32px;width:68px`;
+			};
+			.checkboxMessage {
+				background: #000;
+			}
+		}
+*/
 	});
 
 })(window.rl);
