@@ -1,8 +1,8 @@
 import { Scope } from 'Common/Enums';
 import { Layout, ClientSideKeyNameMessageListSize } from 'Common/EnumsUser';
-import { doc, createElement, leftPanelDisabled, moveAction, Settings, elementById } from 'Common/Globals';
+import { doc, createElement, leftPanelDisabled, Settings, elementById } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
-import { setLayoutResizer } from 'Common/UtilsUser';
+import { setLayoutResizer, moveAction } from 'Common/UtilsUser';
 import { getFolderFromCacheList, getFolderFullName, getFolderInboxName } from 'Common/Cache';
 import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 import { SettingsUserStore } from 'Stores/User/Settings';

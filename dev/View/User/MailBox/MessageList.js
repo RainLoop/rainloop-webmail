@@ -5,13 +5,13 @@ import { Scope } from 'Common/Enums';
 
 import { ComposeType, FolderType, MessageSetAction } from 'Common/EnumsUser';
 
-import { leftPanelDisabled, toggleLeftPanel, moveAction,
+import { leftPanelDisabled, toggleLeftPanel,
 	Settings, SettingsCapa,
 	addEventsListeners,
 	addShortcut, registerShortcut, formFieldFocused
 } from 'Common/Globals';
 
-import { computedPaginatorHelper, showMessageComposer, populateMessageBody, download } from 'Common/UtilsUser';
+import { computedPaginatorHelper, showMessageComposer, populateMessageBody, download, moveAction } from 'Common/UtilsUser';
 import { FileInfo } from 'Common/File';
 import { isFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
