@@ -189,7 +189,8 @@ export class MailMessageView extends AbstractViewRight {
 						this.scrollMessageToTop();
 					}
 					this.viewHash = message.hash;
-					this.viewFromShort(message.fromToLine(true, true));
+					// TODO: make first param a user setting #683
+					this.viewFromShort(message.fromToLine(false, true));
 					this.viewFromDkimData(message.fromDkimData());
 					this.viewToShort(message.toToLine(true, true));
 				} else {
