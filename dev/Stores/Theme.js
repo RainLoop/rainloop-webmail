@@ -1,5 +1,5 @@
 import ko from 'ko';
-import { doc, $htmlCL, elementById, leftPanelDisabled, Settings, SettingsGet } from 'Common/Globals';
+import { $htmlCL, elementById, leftPanelDisabled, Settings, SettingsGet } from 'Common/Globals';
 import { isArray, arrayLength } from 'Common/Utils';
 import { serverRequestRaw } from 'Common/Links';
 import { SaveSettingStatus } from 'Common/Enums';
@@ -7,6 +7,8 @@ import { SaveSettingStatus } from 'Common/Enums';
 let __themeTimer = 0;
 
 export const
+	appEl = () => elementById('rl-app'),
+
 	ThemeStore = {
 		theme: ko.observable(''),
 		themes: ko.observableArray(),
@@ -65,7 +67,7 @@ ThemeStore.isMobile.subscribe(value => $htmlCL.toggle('rl-mobile', value));
 
 ThemeStore.fontSansSerif.subscribe(value => {
 	if (null != value) {
-		let cl = elementById('rl-app').classList;
+		let cl = appEl().classList;
 		cl.forEach(name => {
 			if (name.startsWith('font') && !/font(Serif|Mono)/.test(name)) {
 				cl.remove(name);
@@ -76,25 +78,20 @@ ThemeStore.fontSansSerif.subscribe(value => {
 });
 ThemeStore.fontSerif.subscribe(value => {
 	if (null != value) {
-		let cl = elementById('rl-app').classList;
+		let cl = appEl().classList;
 		cl.forEach(name => name.startsWith('fontSerif') && cl.remove(name));
 		value && cl.add('fontSerif'+value);
 	}
 });
 ThemeStore.fontMono.subscribe(value => {
 	if (null != value) {
-		let cl = elementById('rl-app').classList;
+		let cl = appEl().classList;
 		cl.forEach(name => name.startsWith('fontMono') && cl.remove(name));
 		value && cl.add('fontMono'+value);
 	}
 });
 
 ThemeStore.userBackgroundHash.subscribe(value => {
-	if (value) {
-		$htmlCL.add('UserBackground');
-		doc.body.style.backgroundImage = "url("+serverRequestRaw('UserBackground', value)+")";
-	} else {
-		$htmlCL.remove('UserBackground');
-		doc.body.removeAttribute('style');
-	}
+	appEl().classList.toggle('UserBackground', !!value);
+	appEl().style.backgroundImage = value ? "url("+serverRequestRaw('UserBackground', value)+")" : null;
 });

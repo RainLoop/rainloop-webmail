@@ -127,4 +127,88 @@ trait Themes
 		return $bLess ? (new \LessPHP\lessc())->compile($mResult) : $mResult;
 //			: \str_replace(';}', '}', \preg_replace('/\\s*([:;{},])\\s*/', '\1', \preg_replace('/\\s+/', ' ', \preg_replace('#/\\*.*?\\*/#s', '', $mResult))));
 	}
+
+	public function UploadBackground(): array
+	{
+		$oAccount = $this->getAccountFromToken();
+
+		if (!$this->GetCapa(\RainLoop\Enumerations\Capa::USER_BACKGROUND)) {
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
+		$sName = '';
+		$sHash = '';
+
+		$aFile = $this->GetActionParam('File', null);
+		$iError = $this->GetActionParam('Error', \RainLoop\Enumerations\UploadError::UNKNOWN);
+
+		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile)) {
+			$sMimeType = \SnappyMail\File\MimeType::fromFile($aFile['tmp_name'], $aFile['name'])
+				?: \SnappyMail\File\MimeType::fromFilename($aFile['name'])
+				?: $aFile['type'];
+			if (\in_array($sMimeType, array('image/png', 'image/jpg', 'image/jpeg', 'image/webp'))) {
+				$sSavedName = 'upload-post-' . \md5($aFile['name'] . $aFile['tmp_name'])
+					. \SnappyMail\File\MimeType::toExtension($sMimeType);
+				if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name'])) {
+					$iError = \RainLoop\Enumerations\UploadError::ON_SAVING;
+				} else {
+					$rData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
+					if (\is_resource($rData)) {
+						$sData = \stream_get_contents($rData);
+						if (!empty($sData) && \strlen($sData)) {
+							$sName = $aFile['name'];
+							if (empty($sName)) {
+								$sName = '_';
+							}
+
+							if ($this->StorageProvider()->Put($oAccount,
+								\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+								'background',
+								\RainLoop\Utils::jsonEncode(array(
+									'Name' => $aFile['name'],
+									'ContentType' => $sMimeType,
+									'Raw' => \base64_encode($sData)
+								))
+							)) {
+								$oSettings = $this->SettingsProvider()->Load($oAccount);
+								if ($oSettings) {
+									$sHash = \MailSo\Base\Utils::Sha1Rand($sName . APP_VERSION . APP_SALT);
+
+									$oSettings->SetConf('UserBackgroundName', $sName);
+									$oSettings->SetConf('UserBackgroundHash', $sHash);
+									$this->SettingsProvider()->Save($oAccount, $oSettings);
+								}
+							}
+						}
+
+						unset($sData);
+					}
+
+					if (\is_resource($rData)) {
+						\fclose($rData);
+					}
+
+					unset($rData);
+				}
+
+				$this->FilesProvider()->Clear($oAccount, $sSavedName);
+			} else {
+				$iError = \RainLoop\Enumerations\UploadError::FILE_TYPE;
+			}
+		}
+
+		if (UPLOAD_ERR_OK !== $iError) {
+			$iClientError = \RainLoop\Enumerations\UploadError::NORMAL;
+			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
+
+			if (!empty($sError)) {
+				return $this->FalseResponse(__FUNCTION__, $iClientError, $sError);
+			}
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, !empty($sName) && !empty($sHash) ? array(
+			'Name' => $sName,
+			'Hash' => $sHash
+		) : false);
+	}
 }
