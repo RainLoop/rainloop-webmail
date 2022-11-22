@@ -47,12 +47,11 @@
 					</div>
 				</div>
 				<br>
-				<div data-bind="component: {
+				<div style="display: inline-block;" data-bind="component: {
 					name: 'Checkbox',
 					params: {
 						label: 'POPUPS_DOMAIN/LABEL_USE_SHORT_LOGIN',
-						value: imapShortLogin,
-						inline: true
+						value: imapShortLogin
 					}
 				}"></div>
 				<span style="opacity:0.7"> (user@domain.com → user)</span>
@@ -62,11 +61,9 @@
 					name: 'Checkbox',
 					params: {
 						value: imapSslVerify_peer,
-						label: 'TAB_SECURITY/LABEL_REQUIRE_VERIFICATION',
-						inline: true
+						label: 'TAB_SECURITY/LABEL_REQUIRE_VERIFICATION'
 					}
 				}"></div>
-				<br>
 				<div data-bind="component: {
 					name: 'Checkbox',
 					params: {
@@ -107,12 +104,11 @@
 						</div>
 					</div>
 					<br>
-					<div data-bind="component: {
+					<div style="display: inline-block;" data-bind="component: {
 						name: 'Checkbox',
 						params: {
 							label: 'POPUPS_DOMAIN/LABEL_USE_SHORT_LOGIN',
-							value: smtpShortLogin,
-							inline: true
+							value: smtpShortLogin
 						}
 					}"></div>
 					<span style="opacity:0.7"> (user@domain.com → user)</span>
@@ -129,17 +125,14 @@
 					name: 'Checkbox',
 					params: {
 						label: 'POPUPS_DOMAIN/LABEL_SET_SENDER',
-						value: smtpSetSender,
-						inline: true
+						value: smtpSetSender
 					}
 				}"></div>
-				<br>
-				<div data-bind="component: {
+				<div style="display: inline-block;" data-bind="component: {
 					name: 'Checkbox',
 					params: {
 						label: 'POPUPS_DOMAIN/LABEL_USE_PHP_MAIL',
-						value: smtpUsePhpMail,
-						inline: true
+						value: smtpUsePhpMail
 					}
 				}"></div>
 				<span style="color:red"> (<span data-i18n="HINTS/BETA"></span>)</span>
@@ -149,11 +142,9 @@
 					name: 'Checkbox',
 					params: {
 						value: smtpSslVerify_peer,
-						label: 'TAB_SECURITY/LABEL_REQUIRE_VERIFICATION',
-						inline: true
+						label: 'TAB_SECURITY/LABEL_REQUIRE_VERIFICATION'
 					}
 				}"></div>
-				<br>
 				<div data-bind="component: {
 					name: 'Checkbox',
 					params: {
