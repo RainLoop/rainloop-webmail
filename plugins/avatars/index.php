@@ -25,7 +25,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		$bBimi = !empty($this->jsonParam('bimi'));
 		$sEmail = $this->jsonParam('email');
-		$aResult = static::getAvatar(\urldecode($sEmail), !empty($sEmail));
+		$aResult = $this->getAvatar(\urldecode($sEmail), !empty($sEmail));
 		if ($aResult) {
 			$aResult = [
 				'type' => $aResult[0],
@@ -38,7 +38,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 //	public function ServiceAvatar(...$aParts)
 	public function ServiceAvatar(string $sServiceName, string $sBimi, string $sEmail)
 	{
-		$aResult = static::getAvatar(\urldecode($sEmail), !empty($sEmail));
+		$aResult = $this->getAvatar(\urldecode($sEmail), !empty($sEmail));
 		if ($aResult) {
 			\header('Content-Type: '.$aResult[0]);
 			echo $aResult[1];
@@ -59,7 +59,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		);
 	}
 
-	private static function getAvatar(string $sEmail, bool $bBimi) : ?array
+	private function getAvatar(string $sEmail, bool $bBimi) : ?array
 	{
 		if (!\strpos($sEmail, '@')) {
 			return null;
