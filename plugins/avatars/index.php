@@ -47,6 +47,18 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		return false;
 	}
 
+	protected function configMapping() : array
+	{
+		return array(
+			\RainLoop\Plugins\Property::NewInstance('bimi')->SetLabel('Use BIMI (https://bimigroup.org/)')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDefaultValue(false),
+			\RainLoop\Plugins\Property::NewInstance('gravatar')->SetLabel('Use Gravatar')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDefaultValue(false)
+		);
+	}
+
 	private static function getAvatar(string $sEmail, bool $bBimi) : ?array
 	{
 		if (!\strpos($sEmail, '@')) {
@@ -97,17 +109,20 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 			$aUrls = [];
 
-			$BIMI = $bBimi ? \SnappyMail\DNS::BIMI($sDomain) : null;
-			if ($BIMI) {
-				$aUrls[] = $BIMI;
-//				$aResult = ['text/uri-list', $BIMI];
-				\SnappyMail\Log::debug('Avatar', "BIMI {$sDomain} for {$sUrl}");
-			} else {
-				\SnappyMail\Log::notice('Avatar', "BIMI 404 for {$sDomain}");
+			if ($this->Config()->Get('plugin', 'bimi', false)) {
+				$BIMI = $bBimi ? \SnappyMail\DNS::BIMI($sDomain) : null;
+				if ($BIMI) {
+					$aUrls[] = $BIMI;
+//					$aResult = ['text/uri-list', $BIMI];
+					\SnappyMail\Log::debug('Avatar', "BIMI {$sDomain} for {$sUrl}");
+				} else {
+					\SnappyMail\Log::notice('Avatar', "BIMI 404 for {$sDomain}");
+				}
 			}
 
-			// TODO: make Gravatar optional
-			$aUrls[] = 'http://gravatar.com/avatar/'.\md5(\strtolower($sAsciiEmail)).'?s=80&d=404';
+			if ($this->Config()->Get('plugin', 'gravatar', false)) {
+				$aUrls[] = 'http://gravatar.com/avatar/'.\md5(\strtolower($sAsciiEmail)).'?s=80&d=404';
+			}
 
 			foreach ($aUrls as $sUrl) {
 				if ($aResult = static::getUrl($sUrl)) {
