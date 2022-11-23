@@ -3,9 +3,22 @@
 	float: left;
 	width: 50px;
 	height: 50px;
-	padding: 2px;
 	margin: 0 5px 0 0;
-	background: #fff;
-	border: 1px solid #ccc;
+	border: 1px solid var(--border-color, #ddd);
 	border-radius: 6px;
+}
+/*
+.checkboxMessage {
+	background: #000 no-repeat center / contain;
+	background: #000 no-repeat right / 32px;
+	width:68px
+}
+*/
+#rl-app .messageCheckbox {
+	padding-right:0;
+	white-space:nowrap;
+}
+.messageCheckbox .fromPic {
+	margin: -0.6em 0 -0.6em 0.4em;
+	height: 2em;
 }

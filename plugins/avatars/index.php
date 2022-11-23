@@ -58,20 +58,38 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		$aResult = null;
 
-		// TODO: lookup contacts vCard
-		$oAccount = $oActions->getAccountFromToken();
-		if ($oAccount) {
-			$oAddressBookProvider = $oActions->AddressBookProvider($oAccount);
-			if ($oAddressBookProvider) {
-				$oContact = $oAddressBookProvider->GetContactByEmail($sEmail);
-				if ($oContact && $oContact->vCard && $oContact->vCard['PHOTO']) {
-					$aResult = [
-						'text/vcard',
-						$oContact->vCard
-					];
+		$sAsciiEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
+		$sEmailId = \sha1(\strtolower($sAsciiEmail));
+
+		$sFile = \APP_PRIVATE_DATA . 'avatars/' . $sEmailId;
+		$aFiles = \glob("{$sFile}.*");
+		if ($aFiles) {
+			$aResult = [
+				\mime_content_type($aFiles[0]),
+				\file_get_contents($aFiles[0])
+			];
+			$oActions->cacheByKey($sEmail);
+			return $aResult;
+		}
+
+		// TODO: lookup contacts vCard and return PHOTO value
+		/*
+		if (!$aResult) {
+			$oAccount = $oActions->getAccountFromToken();
+			if ($oAccount) {
+				$oAddressBookProvider = $oActions->AddressBookProvider($oAccount);
+				if ($oAddressBookProvider) {
+					$oContact = $oAddressBookProvider->GetContactByEmail($sEmail);
+					if ($oContact && $oContact->vCard && $oContact->vCard['PHOTO']) {
+						$aResult = [
+							'text/vcard',
+							$oContact->vCard
+						];
+					}
 				}
 			}
 		}
+		*/
 
 		if (!$aResult) {
 			$sDomain = \explode('@', $sEmail);
@@ -89,7 +107,6 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			}
 
 			// TODO: make Gravatar optional
-			$sAsciiEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
 			$aUrls[] = 'http://gravatar.com/avatar/'.\md5(\strtolower($sAsciiEmail)).'?s=80&d=404';
 
 			foreach ($aUrls as $sUrl) {
@@ -97,6 +114,16 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 					break;
 				}
 			}
+		}
+
+		if ($aResult) {
+			if (!\is_dir(\APP_PRIVATE_DATA . 'avatars')) {
+				\mkdir(\APP_PRIVATE_DATA . 'avatars', 0700);
+			}
+			\file_put_contents(
+				$sFile . \SnappyMail\File\MimeType::toExtension($aResult[0]),
+				$aResult[1]
+			);
 		}
 
 		if (!$aResult) {

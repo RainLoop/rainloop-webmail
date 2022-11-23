@@ -1,8 +1,57 @@
 (rl => {
 //	if (rl.settings.get('Nextcloud'))
 	const
-		templateId = 'MailMessageView';
-//		DATA_IMAGE_USER_DOT_PIC = 'data:image/svg+xml;utf8,<svg version="1.1" xml:space="preserve" width="74.279999" height="86.666664" viewBox="0 0 74.279999 86.666664" xmlns="http://www.w3.org/2000/svg"><path d="M 557.17264,0 25.567509,-0.90909091 C 3.878663,-1.0561896 0.22727273,-0.69278176 0,92.8594 0,215.105 185.715,278.574 185.715,278.574 c 0,0 10.629,18.985 0,46.426 -39.047,28.785 -43.828,73.824 -46.43,185.715 C 147.316,622.742 225.969,650 278.57,650 331.18,650 409.82,622.793 417.859,510.715 415.262,398.824 410.477,353.785 371.434,325 c -10.637,-27.395 0,-46.426 0,-46.426 0,0 185.711,-63.469 185.711,-185.7146" style="fill:#AAAAAA;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,86.666667)"/></svg>';
+		queue = [],
+		avatars = new Map,
+		templateId = 'MailMessageView',
+		getAvatarUid = msg => {
+			let from = msg.from[0],
+				bimi = 'pass' == from.dkimStatus ? 1 : 0;
+			return `${bimi}/${from.email}`;
+		},
+		getAvatar = msg => avatars.get(getAvatarUid(msg)),
+		runQueue = (() => {
+			let item = queue.shift();
+			while (item) {
+				let url = getAvatar(item[0]);
+				if (url) {
+					item[1](url);
+					item = queue.shift();
+				} else {
+					// TODO: fetch vCard from Nextcloud contacts
+//					let cfg = rl.settings.get('Nextcloud'),
+
+					let from = item[0].from[0];
+					rl.pluginRemoteRequest((iError, data) => {
+						if (!iError && data?.Result.type) {
+							url = `data:${data.Result.type};base64,${data.Result.data}`;
+							avatars.set(getAvatarUid(item[0]), url);
+							item[1](url);
+						}
+						runQueue();
+					}, 'Avatar', {
+						bimi: 'pass' == from.dkimStatus ? 1 : 0,
+						email: from.email
+					});
+					break;
+				}
+			}
+		}).debounce(1000);
+
+	ko.bindingHandlers.fromPic = {
+		init: (element, self, dummy, msg) => {
+			if (msg) {
+				let url = getAvatar(msg),
+					fn = url=>{element.src = url};
+				if (url) {
+					fn(url);
+				} else {
+					queue.push([msg, fn]);
+					runQueue();
+				}
+			}
+		}
+	};
 
 	addEventListener('rl-view-model.create', e => {
 		if (templateId === e.detail.viewModelTemplateID) {
@@ -24,39 +73,28 @@
 			view.message.subscribe(msg => {
 				view.viewUserPicVisible(false);
 				if (msg) {
-					let from = msg.from[0],
-						bimi = 'pass' == from.dkimStatus ? 1 : 0;
-//					view.viewUserPic(`?Avatar/${bimi}/${encodeURIComponent(from.email)}`);
-//					view.viewUserPicVisible(true);
-					rl.pluginRemoteRequest((iError, data) => {
-						if (!iError && data?.Result.type) {
-							view.viewUserPic(`data:${data.Result.type};base64,${data.Result.data}`);
+					let url = getAvatar(msg),
+						fn = url => {
+							view.viewUserPic(url);
 							view.viewUserPicVisible(true);
-						}
-					}, 'Avatar', {
-						bimi: bimi,
-						email: from.email
-					});
+						};
+					if (url) {
+						fn(url);
+					} else {
+//						let from = msg.from[0], bimi = 'pass' == from.dkimStatus ? 1 : 0;
+//						view.viewUserPic(`?Avatar/${bimi}/${encodeURIComponent(from.email)}`);
+//						view.viewUserPicVisible(true);
+						queue.push([msg, fn]);
+						runQueue();
+					}
 				}
 			});
 		}
-/*
+
 		if ('MailMessageList' === e.detail.viewModelTemplateID) {
-			const
-				template = document.getElementById('MailMessageList' ),
-				messageCheckbox = template.content.querySelector('.messageCheckbox');
-			messageCheckbox.dataset.bind = 'attr:{style:$root.viewUserPic($data)}';
-			e.detail.viewUserPic = msg => {
-				let from = msg.from[0],
-					bimi = 'pass' == from.dkimStatus ? 1 : 0;
-				return `background:no-repeat url("?Avatar/${bimi}/${encodeURIComponent(from.email)}") center / contain`;
-				return `background:no-repeat url("?Avatar/${bimi}/${encodeURIComponent(from.email)}") right / 32px;width:68px`;
-			};
-			.checkboxMessage {
-				background: #000;
-			}
+			document.getElementById('MailMessageList').content.querySelector('.messageCheckbox')
+				.append(Element.fromHTML(`<img class="fromPic" data-bind="fromPic:$data">`));
 		}
-*/
 	});
 
 })(window.rl);
