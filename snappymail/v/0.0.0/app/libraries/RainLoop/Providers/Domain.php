@@ -57,7 +57,7 @@ class Domain extends AbstractProvider
 
 	public function LoadOrCreateNewFromAction(\RainLoop\Actions $oActions, string $sNameForTest = null) : ?\RainLoop\Model\Domain
 	{
-		$sName = (string) $oActions->GetActionParam('Name', '');
+		$sName = \mb_strtolower((string) $oActions->GetActionParam('Name', ''));
 		if (\strlen($sName) && $sNameForTest && !\str_contains($sName, '*')) {
 			$sNameForTest = null;
 		}
