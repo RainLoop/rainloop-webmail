@@ -1,11 +1,11 @@
-.messageView .b-content .messageItemHeader .fromPic {
-	display: inline-block;
+.messageView .fromPic {
+	border: 1px solid var(--border-color, #ddd);
 	float: left;
 	width: 50px;
 	height: 50px;
-	margin: 0 5px 0 0;
-	border: 1px solid var(--border-color, #ddd);
-	border-radius: 6px;
+	margin: 0 4px 0 0;
+	padding: 1px;
+	border-radius: var(--border-radius, 5px);
 }
 /*
 .checkboxMessage {
@@ -19,6 +19,7 @@
 	white-space:nowrap;
 }
 .messageCheckbox .fromPic {
-	margin: -0.6em 0 -0.6em 0.4em;
-	height: 2em;
+	margin: 0 0 -0.4em 0.4em;
+	height: 1.5em;
+	max-width: 1.5em;
 }

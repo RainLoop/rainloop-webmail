@@ -153,6 +153,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$aServices = [
 				"services/{$sDomain}",
 				'services/' . \preg_replace('/^.+\\.([^.]+\\.[^.]+)$/D', '$1', $sDomain),
+				'services/' . \preg_replace('/^(.+\\.)?(paypal\\.[a-z][a-z])$/D', 'paypal.com', $sDomain),
 				'empty-contact' // DATA_IMAGE_USER_DOT_PIC
 			];
 			foreach ($aServices as $service) {
