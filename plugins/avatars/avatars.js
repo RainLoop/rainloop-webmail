@@ -7,7 +7,7 @@
 		getAvatarUid = msg => {
 			let from = msg.from[0],
 				bimi = 'pass' == from.dkimStatus ? 1 : 0;
-			return `${bimi}/${from.email}`;
+			return `${bimi}/${from.email.toLowerCase()}`;
 		},
 		getAvatar = msg => avatars.get(getAvatarUid(msg)),
 		runQueue = (() => {

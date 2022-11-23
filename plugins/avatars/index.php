@@ -7,11 +7,11 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
 		VERSION  = '1.0',
-		RELEASE  = '2022-11-11',
+		RELEASE  = '2022-11-23',
 		REQUIRED = '2.22.0',
 		CATEGORY = 'Contacts',
 		LICENSE  = 'MIT',
-		DESCRIPTION = '';
+		DESCRIPTION = 'Show photo of sender in message and messages list (supports BIMI and Gravatar, Contacts is still TODO)';
 
 	public function Init() : void
 	{
@@ -21,6 +21,9 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addPartHook('Avatar', 'ServiceAvatar');
 	}
 
+	/**
+	 * POST method handling
+	 */
 	public function DoAvatar() : array
 	{
 		$bBimi = !empty($this->jsonParam('bimi'));
@@ -35,6 +38,11 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		return $this->jsonResponse(__FUNCTION__, $aResult);
 	}
 
+	/**
+	 * GET /?Avatar/${bimi}/${from.email}
+	 * Not fond of this idea because email address is exposed
+	 * Maybe use btoa(from.email) or Crypto.subtle.encrypt({name:'AES-GCM',iv:''}, token, from.email)
+	 */
 //	public function ServiceAvatar(...$aParts)
 	public function ServiceAvatar(string $sServiceName, string $sBimi, string $sEmail)
 	{
