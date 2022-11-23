@@ -11,9 +11,8 @@ class Login extends \SnappyMail\SASL
 	{
 		// $challenge should be 'VXNlcm5hbWU6', but broken on some systems
 		// See https://github.com/the-djmaze/snappymail/issues/693
-		if ($challenge && \str_starts_with($this->decode($challenge), 'Username:')) {
-//		if ($challenge && 'Username:' !== $this->decode($challenge)) {
-			throw new \Exception("Invalid response: {$challenge}");
+		if ($challenge && !\str_starts_with($this->decode($challenge), 'Username:')) {
+			throw new \Exception("Invalid response: {$this->decode($challenge)}");
 		}
 		$this->passphrase = $passphrase;
 		return $this->encode($username);
