@@ -265,8 +265,9 @@ export class MailMessageView extends AbstractViewRight {
 				return;
 			}
 
-			if (eqs(event, '.attachmentsPlace .attachmentIconParent')) {
+			if (eqs(event, '.attachmentsPlace .showPreview')) {
 				event.stopPropagation();
+				return;
 			}
 
 			el = eqs(event, '.attachmentsPlace .showPreplay');
@@ -287,9 +288,10 @@ export class MailMessageView extends AbstractViewRight {
 						// no default
 					}
 				}
+				return;
 			}
 
-			el = eqs(event, '.attachmentsPlace .attachmentName');
+			el = eqs(event, '.attachmentItem');
 			if (el) {
 				const attachment = ko.dataFor(el), url = attachment?.linkDownload();
 				if (url) {
