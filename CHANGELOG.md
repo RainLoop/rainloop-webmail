@@ -1,3 +1,25 @@
+## 2.22.0 – 2022-11-23
+
+### Added
+- AddressBookInterface::GetContactByEmail() to support sender image/avatar extension
+  [#115](https://github.com/the-djmaze/snappymail/pull/115)
+
+### Changed
+- All the attachment zone is not clickable, even if the cursor is a hand
+  [#691](https://github.com/the-djmaze/snappymail/pull/691)
+- Different approach for "update button duplicated in admin panel"
+  [#677](https://github.com/the-djmaze/snappymail/pull/677)
+- Better drag & drop solution for leftPanel
+
+### Fixed
+- The page does not change after batch deletion
+  [#684](https://github.com/the-djmaze/snappymail/pull/684)
+- Prevent domain uppercase issues found in
+  [#689](https://github.com/the-djmaze/snappymail/pull/689)
+- Login invalid response: VXNlcm5hbWU6CG
+  [#693](https://github.com/the-djmaze/snappymail/pull/693)
+
+
 ## 2.21.4 – 2022-11-22
 
 ### Added
