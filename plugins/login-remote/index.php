@@ -6,8 +6,8 @@ class LoginRemotePlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Login Remote',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.0',
-		RELEASE  = '2022-11-11',
+		VERSION  = '1.1',
+		RELEASE  = '2022-11-24',
 		REQUIRED = '2.21.0',
 		CATEGORY = 'Login',
 		LICENSE  = 'MIT',
@@ -17,15 +17,18 @@ class LoginRemotePlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		$this->addPartHook('RemoteAutoLogin', 'ServiceRemoteAutoLogin');
 		$this->addHook('filter.app-data', 'FilterAppData');
+		$this->addHook('login.credentials', 'FilterLoginCredentials');
 	}
 
 	public function FilterAppData($bAdmin, &$aResult)
 	{
 		if (!$bAdmin && \is_array($aResult) && empty($aResult['Auth']) && isset($_ENV['REMOTE_USER'])) {
-			$aResult['DevEmail'] = $this->Config()->Get('plugin', 'email', $_ENV['REMOTE_USER']);
+			$aResult['DevEmail'] = $_ENV['REMOTE_USER'];
+//			$aResult['DevPassword'] = $_ENV['REMOTE_PASSWORD'];
 		}
 	}
 
+	private static bool $login = false;
 	public function ServiceRemoteAutoLogin() : bool
 	{
 		$oActions = \RainLoop\Api::Actions();
@@ -36,10 +39,10 @@ class LoginRemotePlugin extends \RainLoop\Plugins\AbstractPlugin
 		$sEmail = $_ENV['REMOTE_USER'] ?? '';
 		$sPassword = $_ENV['REMOTE_PASSWORD'] ?? '';
 
-		if (\strlen($sEmail) && \strlen($sPassword))
-		{
+		if (\strlen($sEmail) && \strlen($sPassword)) {
 			try
 			{
+				static::$login = true;
 				$oAccount = $oActions->LoginProcess($sEmail, $sPassword);
 				if ($oAccount instanceof \RainLoop\Model\MainAccount) {
 					$oActions->SetAuthToken($oAccount);
@@ -54,6 +57,18 @@ class LoginRemotePlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		$oActions->Location('./');
 		return true;
+	}
+
+	public function FilterLoginCredentials(&$sEmail, &$sLogin, &$sPassword)
+	{
+		// cPanel https://github.com/the-djmaze/snappymail/issues/697
+		if (static::$login/* && $sLogin == $_SERVER['REMOTE_USER']*/) {
+			$iPos = \strpos($sPassword, '[::cpses::]');
+			if ($iPos) {
+				$sKey = \substr($sPassword, 0, $iPos);
+				$sLogin = $_SERVER['REMOTE_USER'] . '/' . \substr($sPassword, 0, $iPos);
+			}
+		}
 	}
 
 }
