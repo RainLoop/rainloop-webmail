@@ -1,4 +1,10 @@
-## 2.22.0 – 2022-11-23
+## 2.22.2 – 2022-11-24
+
+### Added
+- Support cPanel #697
+
+
+## 2.22.1 – 2022-11-23
 
 ### Added
 - AddressBookInterface::GetContactByEmail() to support sender image/avatar extension
