@@ -41,21 +41,29 @@ class Manager
 			if (\strlen($sList)) {
 				$aList = \SnappyMail\Repository::getEnabledPackagesNames();
 				foreach ($aList as $i => $sName) {
-					$oPlugin = $this->CreatePluginByName($sName);
-					if ($oPlugin) {
-						$oPlugin->Init();
-						$this->aPlugins[] = $oPlugin;
-					} else {
+					if (!$this->loadPlugin($sName)) {
 						unset($aList[$i]);
 					}
 				}
-				$aList = \implode(',', \array_unique($aList));
+				$aList = \implode(',', \array_keys($this->aPlugins));
 				if ($sList != $aList) {
 					$oConfig->Set('plugins', 'enabled_list', $aList);
 					$oConfig->Save();
 				}
 			}
 		}
+	}
+
+	public function loadPlugin(string $sName) : bool
+	{
+		if (!isset($this->aPlugins[$sName])) {
+			$oPlugin = $this->CreatePluginByName($sName);
+			if ($oPlugin) {
+				$oPlugin->Init();
+				$this->aPlugins[$sName] = $oPlugin;
+			}
+		}
+		return isset($this->aPlugins[$sName]);
 	}
 
 	protected static function getPluginPath(string $sName) : ?string

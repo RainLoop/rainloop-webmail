@@ -23,5 +23,11 @@ if (defined('APP_PLUGINS_PATH') && !empty($_ENV['CPANEL']) && !is_dir(APP_PLUGIN
 		file_put_contents($sFile, json_encode($config, JSON_PRETTY_PRINT));
 	}
 
+//	\RainLoop\Api::Actions()->Plugins()->loadPlugin('login-remote');
+	if (!isset($_GET['installed'])) {
+		\header('Location: ?RemoteAutoLogin&installed');
+		exit;
+	}
+
 	$_ENV['SNAPPYMAIL_INCLUDE_AS_API'] = $asApi;
 }
