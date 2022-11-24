@@ -62,11 +62,16 @@ class LoginRemotePlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function FilterLoginCredentials(&$sEmail, &$sLogin, &$sPassword)
 	{
 		// cPanel https://github.com/the-djmaze/snappymail/issues/697
-		if (static::$login/* && $sLogin == $_SERVER['REMOTE_USER']*/) {
-			$iPos = \strpos($sPassword, '[::cpses::]');
-			if ($iPos) {
-				$sKey = \substr($sPassword, 0, $iPos);
-				$sLogin = $_SERVER['REMOTE_USER'] . '/' . \substr($sPassword, 0, $iPos);
+//		 && !empty($_ENV['CPANEL'])
+		if (static::$login/* && $sLogin == $_ENV['REMOTE_USER']*/) {
+			if (empty($_ENV['REMOTE_TEMP_USER'])) {
+				$iPos = \strpos($sPassword, '[::cpses::]');
+				if ($iPos) {
+					$_ENV['REMOTE_TEMP_USER'] = \substr($sPassword, 0, $iPos);
+				}
+			}
+			if (!empty($_ENV['REMOTE_TEMP_USER'])) {
+				$sLogin = $_ENV['REMOTE_USER'] . '/' . $_ENV['REMOTE_TEMP_USER'];
 			}
 		}
 	}
