@@ -161,8 +161,8 @@ if (defined('APP_VERSION'))
 		$sFile = APP_PRIVATE_DATA.'domains/'.$sName.'.json';
 		if (!file_exists($sFile) && !file_exists(APP_PRIVATE_DATA.'domains/'.$sName.'.ini')) {
 			$config = json_decode(file_get_contents(__DIR__ . '/app/domains/default.json'), true);
-			$config['imapShortLogin'] = true;
-			$config['smtpShortLogin'] = true;
+			$config['IMAP']['shortLogin'] = true;
+			$config['SMTP']['shortLogin'] = true;
 			file_put_contents($sFile, json_encode($config, JSON_PRETTY_PRINT));
 		}
 	}
