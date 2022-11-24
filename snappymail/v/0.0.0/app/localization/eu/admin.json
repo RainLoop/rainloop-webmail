@@ -1,0 +1,180 @@
+{
+	"GLOBAL": {
+		"ADD": "Gehitu",
+		"CLOSE": "Itxi",
+		"SAVE": "Gorde",
+		"TEST": "Probatu",
+		"UPDATE": "Eguneratu",
+		"USERNAME": "Erabiltzailea",
+		"PASSWORD": "Pasahitza",
+		"CANCEL": "Ezeztatu"
+	},
+	"LOGIN": {
+		"LABEL_LOGIN": "Login",
+		"LABEL_PASSWORD": "Pasahitza",
+		"LABEL_TOTP": "TOTP kodea",
+		"BUTTON_LOGIN": "Administradore panelean saioa hasi"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Administradore Panela"
+	},
+	"SETTINGS_LABELS": {
+		"LABEL_GENERAL_NAME": "Orokorra",
+		"LABEL_LOGIN_NAME": "Login",
+		"LABEL_BRANDING_NAME": "Marka",
+		"LABEL_CONTACTS_NAME": "Kontaktuak",
+		"LABEL_DOMAINS_NAME": "Domeinuak",
+		"LABEL_SECURITY_NAME": "Segurtasuna",
+		"LABEL_PACKAGES_NAME": "Gehigarriak",
+		"LABEL_CONFIG_NAME": "Ezarpenak",
+		"LABEL_ABOUT_NAME": "Honi buruz"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Interfazea",
+		"LABEL_LANGUAGE": "Hizkuntza",
+		"LABEL_LANGUAGE_ADMIN": "Hizkuntza (admin)",
+		"LABEL_THEME": "Gaia",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Baimendu hizkuntza aukeratzea ezarpenen pantailan",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Baimendu gaia aukeratzea ezarpenen pantailan",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Baimendu atzealdeko irudia aukeratzea ezarpenen pantailan",
+		"LABEL_SHOW_THUMBNAILS": "Erakutsi miniaturak (gehigarriak)",
+		"LEGEND_MAIN": "Nagusia",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Eranskinen tamaina-muga",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Onartu kontu gehigarriak",
+		"LABEL_ALLOW_IDENTITIES": "Onartu nortasun gehigarriak",
+		"ALERT_DATA_ACCESS": "Datu karpeta eskuragarri dago. Mesedez, konfigruatu zure web zerbitzaria datuen karpeta kanpoko sarbidetik ezkutatzeko. Irakurri gehiago hemen:",
+		"ALERT_WARNING": "Kontuz!",
+		"HTML_ALERT_WEAK_PASSWORD": "Lehenetsitako administradore pasahitza erabiltzen ari zara.\n<br>\nSegurtasunagatik, mesedez,\n<strong><a href=\"#\/security\">aldatu<\/a><\/strong>\npasahitza beste zerbaitetara orain.\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Saio hasiera pantaila",
+		"LABEL_DEFAULT_DOMAIN": "Lehenetsitako Domeinua",
+		"LABEL_DETERMINE_USER_DOMAIN": "Saiatu zehazten erabiltzailearen domeinua",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Onartu hizkuntza hautaketa saio-hasiera pantailan",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Saiatu zehazten erabiltzailearen hizkuntza"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Marka",
+		"LABEL_PAGE_TITLE": "Orriaren izenburua",
+		"LABEL_LOADING_DESCRIPTION": "Deskribapena Kargatzen",
+		"LABEL_FAVICON_URL": "Favicon"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Kontaktuak",
+		"LEGEND_STORAGE": "Biltegia (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Gaitu kontaktuak",
+		"LABEL_ALLOW_SYNC": "Onartu kontaktuen sinkronizazioa (kanpoko CardDAV zerbitzaria)",
+		"LABEL_STORAGE_TYPE": "Mota",
+		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_USER": "Erabiltzailea",
+		"LABEL_STORAGE_PASSWORD": "Pasahitza",
+		"ALERT_NOTICE": "Adi!",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Ez erabili datubase hau erabiltzaile aktibo koputu handiarekin.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Zure sistemak ez ditu kontaktuak onartzen.\n<br>\n<strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> gehigarria instalatu edo gaitu behar duzu zure zerbitzarian.\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Domeinuak",
+		"BUTTON_ADD_DOMAIN": "Gehitu Domeinua",
+		"BUTTON_ADD_ALIAS": "gehitu Aliasa",
+		"DELETE_ARE_YOU_SURE": "Ziur zaude?",
+		"HTML_DOMAINS_HELPER": "Webmail-a sartzera baimenduta dagoen domeinu zerrenda.\n<br>\nKlikatu izenean domeinua konfiguratzeko.\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "Segurtasuna",
+		"LABEL_USE_IMAGE_PROXY": "Erabili proxy lokala kanpoko irudientzat",
+		"LABEL_ALLOW_OPEN_PGP": "Baimendu OpenPGP",
+		"LABEL_SHOW_PHP_INFO": "Erakutsi PHP informazioa",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Admin Panelerako Sarbide Kredentzialak",
+		"LABEL_CURRENT_PASSWORD": "Uneko pasahitza",
+		"LABEL_NEW_PASSWORD": "Pasahitz berria",
+		"LABEL_REPEAT_PASSWORD": "Errepikatu",
+		"LABEL_REQUIRE_VERIFICATION": "SSL ziurtagiriaren baliozkotzea eskatu",
+		"LABEL_ALLOW_SELF_SIGNED": "Onartu norberak sinatutako ziurtagiriak"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Onartu gehigarriak",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Eguneratzeko eskuragarri",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Instalatzeko eskuragarri",
+		"LEGEND_INSTALLED_PACKAGES": "Instalatutako Gehigarriak",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Ezin da sartu biltegira une honetan."
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "Honi buruz",
+		"LABEL_TAG_HINT": "Weban oinarritutako email-bezero erraz, moderno eta azkarra",
+		"LABEL_ALL_RIGHTS_RESERVED": "Eskubide guztiak gordeak.",
+		"HINT_READ_CHANGE_LOG": "Mesedez irakurri aldaketen informea eguneratu aurretik.",
+		"HINT_IS_UP_TO_DATE": "SnappyMail eguneratuta dago.",
+		"HTML_NEW_VERSION": "<b>%VERSION%</b> bertsio berria eskuragarri.",
+		"LABEL_UPDATING": "Eguneratzen",
+		"LABEL_CHECKING": "Eguneraketak dauden begiratzen",
+		"BUTTON_RELEASES": "Bertsioak"
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Gehitu Aliasa",
+		"LABEL_ALIAS": "Alias",
+		"LABEL_DOMAIN": "Domeinua"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Gehitu Domeinua",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Gehitu Domeinua \"%NAME%\"",
+		"TITLE_EDIT_DOMAIN": "Editatu Domeinua \"%NAME%\"",
+		"LABEL_NAME": "Izena",
+		"NAME_HELPER": "komodina onartuta",
+		"LABEL_IMAP": "IMAP",
+		"LABEL_SMTP": "SMTP",
+		"LABEL_SIEVE": "SIEVE",
+		"LABEL_SERVER": "Zerbitzaria",
+		"LABEL_PORT": "Portua",
+		"LABEL_SECURE": "Segurtasuna",
+		"LABEL_WHITE_LIST": "Zerrenda Zuria",
+		"SECURE_OPTION_NONE": "Bat ere ez",
+		"SECURE_OPTION_SSL": "SSL\/TLS",
+		"SECURE_OPTION_STARTTLS": "STARTTLS",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Onartu sieve scriptak",
+		"LABEL_USE_SHORT_LOGIN": "Erabili login motza",
+		"LABEL_USE_AUTH": "Erabili autentikazioa",
+		"LABEL_SET_SENDER": "Erabili logina bidaltzaile bezala",
+		"LABEL_USE_PHP_MAIL": "Erabili php mail() funtzioa",
+		"BUTTON_WHITE_LIST": "Zerrenda Zuria",
+		"BUTTON_SIEVE_CONFIGURATION": "Sieve ezarpenak",
+		"BUTTON_BACK_TO_IMAP": "Itzuli IMAP ezarpenetara",
+		"BUTTON_BACK": "Atzera",
+		"BUTTON_UPDATE": "Eguneratu",
+		"NEW_DOMAIN_DESC": "Domeinu honen konfigurazioak <br><i>%NAME%<\/i> email kontuarekin lan egitea ahalbideratuko dizu.",
+		"WHITE_LIST_ALERT": "Webmailak sartzeko baimena duen domeinuko erabiltzaileen zerrenda.\nErabili hutsunea banatzaile bezala.\n"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Gehigarria",
+		"DESC_NOTHING_TO_CONFIGURE": "Ez dago kongiguratzeko ezer"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "Bai",
+		"BUTTON_NO": "Ez",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Ziur zaude leiho hau itxi nahi duzula?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Aukeratu zure hizkuntza"
+	},
+	"HINTS": {
+		"BETA": "beta",
+		"WARNING": "Kontuz!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "Domeinua jadanik existizen da",
+		"UNKNOWN_ERROR": "Errore ezezaguna"
+	},
+	"NOTIFICATIONS": {
+		"REQUEST_ERROR": "Eskaerak huts egin du",
+		"REQUEST_ABORTED": "Eskaera bertan behera utzi da",
+		"REQUEST_TIMEOUT": "Eskaeraren denbora-muga gainditu da",
+		"INVALID_TOKEN": "Ez-baliozko tokena",
+		"AUTH_ERROR": "Autentikazioak huts egin du",
+		"DOMAIN_ALREADY_EXISTS": "Domeinua jadanik existitzen da",
+		"CANT_SAVE_PLUGIN_SETTINGS": "Ezin dira ezarpenak gorde",
+		"CANT_INSTALL_PACKAGE": "Akatsa gehigarria instalatzean",
+		"CANT_DELETE_PACKAGE": "Akatsa gehigarria kentzean",
+		"INVALID_PLUGIN_PACKAGE": "Ez-baliozko gehigarri paketea",
+		"UNSUPPORTED_PLUGIN_PACKAGE": "Gehigarri paketea ez da onartzen",
+		"UNKNOWN_ERROR": "Errore ezezaguna"
+	}
+}
