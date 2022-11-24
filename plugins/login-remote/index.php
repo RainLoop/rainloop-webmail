@@ -16,6 +16,14 @@ class LoginRemotePlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function Init() : void
 	{
 		$this->addPartHook('RemoteAutoLogin', 'ServiceRemoteAutoLogin');
+		$this->addHook('filter.app-data', 'FilterAppData');
+	}
+
+	public function FilterAppData($bAdmin, &$aResult)
+	{
+		if (!$bAdmin && \is_array($aResult) && empty($aResult['Auth']) && isset($_ENV['REMOTE_USER'])) {
+			$aResult['DevEmail'] = $this->Config()->Get('plugin', 'email', $_ENV['REMOTE_USER']);
+		}
 	}
 
 	public function ServiceRemoteAutoLogin() : bool
