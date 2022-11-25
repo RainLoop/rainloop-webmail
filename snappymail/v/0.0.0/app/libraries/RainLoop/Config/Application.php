@@ -41,7 +41,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 		$sCipher = $this->Get('security', 'encrypt_cipher', '');
 		if (!$sCipher || !\SnappyMail\Crypt::cipherSupported($sCipher)) {
-			$sCipher && \SnappyMail\Log::warning("OpenSSL does not support {$sCipher}");
+			$sCipher && \SnappyMail\Log::warning('Crypt', "OpenSSL no support for cipher '{$sCipher}'");
 			$aCiphers = \SnappyMail\Crypt::listCiphers();
 			$this->Set('security', 'encrypt_cipher', $aCiphers[\array_rand($aCiphers)]);
 			$this->Save();
@@ -218,12 +218,13 @@ Default is "site=same-origin;site=none"')
 			),
 
 			'ssl' => array(
-				'verify_certificate' => array(false, 'Require verification of SSL certificate used.'),
-				'allow_self_signed'  => array(true, 'Allow self-signed certificates. Requires verify_certificate.'),
-				'security_level'     => array(1, 'https://www.openssl.org/docs/man1.1.1/man3/SSL_CTX_set_security_level.html'),
-				'cafile'             => array('', 'Location of Certificate Authority file on local filesystem (/etc/ssl/certs/ca-certificates.crt)'),
-				'capath'             => array('', 'capath must be a correctly hashed certificate directory. (/etc/ssl/certs/)'),
-				'client_cert'        => array('', 'Location of client certificate file (pem format with private key) on local filesystem'),
+				'verify_certificate'  => array(true, 'Require verification of SSL certificate used.'),
+				'allow_self_signed'   => array(false, 'Allow self-signed certificates. Requires verify_certificate.'),
+				'security_level'      => array(1, 'https://www.openssl.org/docs/man1.1.1/man3/SSL_CTX_set_security_level.html'),
+				'cafile'              => array('', 'Location of Certificate Authority file on local filesystem (/etc/ssl/certs/ca-certificates.crt)'),
+				'capath'              => array('', 'capath must be a correctly hashed certificate directory. (/etc/ssl/certs/)'),
+				'local_cert'          => array('', 'Location of client certificate file (pem format with private key) on local filesystem'),
+				'disable_compression' => array(true, 'This can help mitigate the CRIME attack vector.')
 			),
 
 			'capa' => array(
@@ -281,6 +282,8 @@ Values:
 			'logs' => array(
 
 				'enable' => array(false, 'Enable logging'),
+
+				'path' => array('', 'Path where log files will be stored'),
 
 				'level' => array(4, 'Log messages of set RFC 5424 section 6.2.1 Severity level and higher (0 = highest, 7 = lowest).
 0 = Emergency
@@ -342,6 +345,8 @@ Examples:
 
 Enables caching in the system'),
 
+				'path' => array('', 'Path where cache files will be stored'),
+
 				'index' => array('v1', 'Additional caching key. If changed, cache is purged'),
 
 				'fast_cache_driver' => array('files', 'Can be: files, APCU, memcache, redis (beta)'),
@@ -401,9 +406,6 @@ Enables caching in the system'),
 				'force_https' => array(false),
 				'custom_login_link' => array(''),
 				'custom_logout_link' => array(''),
-				'allow_external_login' => array(false),
-				'allow_external_sso' => array(false),
-				'external_sso_key' => array(''),
 				'http_client_ip_check_proxy' => array(false),
 				'fast_cache_memcache_host' => array('127.0.0.1'),
 				'fast_cache_memcache_port' => array(11211),

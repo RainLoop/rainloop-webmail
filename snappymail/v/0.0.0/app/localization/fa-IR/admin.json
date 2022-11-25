@@ -88,8 +88,7 @@
 		"LABEL_CURRENT_PASSWORD": "گذرواژه فعلی",
 		"LABEL_NEW_PASSWORD": "گذرواژه جدید",
 		"LABEL_REPEAT_PASSWORD": "تکرار",
-		"LEGEND_SSL": "SSL",
-		"LABEL_REQUIRE_VERIFICATION": "به بررسی گواهینامه SSL نیاز داشته باشد (IMAP\/SMTP)",
+		"LABEL_REQUIRE_VERIFICATION": "به بررسی گواهینامه SSL نیاز داشته باشد",
 		"LABEL_ALLOW_SELF_SIGNED": "به گواهی‌نامه‌هایی که توسط خودشان امضاء شده‌اند اجازه بده"
 	},
 	"TAB_PACKAGES": {
@@ -158,7 +157,6 @@
 	},
 	"HINTS": {
 		"BETA": "آزمایشی",
-		"UNSTABLE": "ناپایدار",
 		"WARNING": "هشدار!"
 	},
 	"ERRORS": {

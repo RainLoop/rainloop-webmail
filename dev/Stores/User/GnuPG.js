@@ -186,7 +186,7 @@ export const GnuPGUserStore = new class {
 				}
 				if (null !== params.Passphrase) {
 					const result = await Remote.post('GnupgDecrypt', null, params);
-					if (result?.Result) {
+					if (result?.Result && false !== result.Result.data) {
 						return result.Result;
 					}
 				}

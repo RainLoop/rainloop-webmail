@@ -1,15 +1,16 @@
 import ko from 'ko';
 import { koComputable } from 'External/ko';
 import { doc, $htmlCL, elementById, fireEvent } from 'Common/Globals';
-import { forEachObjectValue, forEachObjectEntry } from 'Common/Utils';
+import { forEachObjectEntry } from 'Common/Utils';
 import { i18nToNodes } from 'Common/Translator';
 
 let
-	SCREENS = {},
 	currentScreen = null,
 	defaultScreenName = '';
 
 const
+	SCREENS = new Map,
+
 	autofocus = dom => dom.querySelector('[autofocus]')?.focus(),
 
 	visiblePopups = new Set,
@@ -18,7 +19,7 @@ const
 	 * @param {string} screenName
 	 * @returns {?Object}
 	 */
-	screen = screenName => (screenName && SCREENS[screenName]) || null,
+	screen = screenName => (screenName && SCREENS.get(screenName)) || null,
 
 	/**
 	 * @param {Function} ViewModelClass
@@ -34,8 +35,6 @@ const
 				position = 'rl-' + vm.viewType,
 				dialog = ViewTypePopup === vm.viewType,
 				vmPlace = doc.getElementById(position);
-
-			fireEvent('rl-view-model.create', vm);
 
 			ViewModelClass.__builded = true;
 			ViewModelClass.__vm = vm;
@@ -53,6 +52,7 @@ const
 
 					// Firefox < 98 / Safari < 15.4 HTMLDialogElement not defined
 					if (!vmDom.showModal) {
+						vmDom.className = 'polyfill';
 						vmDom.showModal = () => {
 							vmDom.backdrop ||
 								vmDom.before(vmDom.backdrop = Element.fromHTML('<div class="dialog-backdrop"></div>'));
@@ -113,6 +113,8 @@ const
 					vmDom.addEventListener('transitionend', endShowHide);
 				}
 
+				fireEvent('rl-view-model.create', vm);
+
 				ko.applyBindingAccessorsToNode(
 					vmDom,
 					{
@@ -129,7 +131,7 @@ const
 			}
 		}
 
-		return ViewModelClass && ViewModelClass.__vm;
+		return ViewModelClass?.__vm;
 	},
 
 	forEachViewModel = (screen, fn) => {
@@ -157,11 +159,9 @@ const
 	 * @param {Function} ViewModelClassToHide
 	 * @returns {void}
 	 */
-	hideScreenPopup = ViewModelClassToHide => {
-		if (ViewModelClassToHide?.__vm && ViewModelClassToHide?.__dom) {
-			ViewModelClassToHide.__vm.modalVisible(false);
-		}
-	},
+	hideScreenPopup = ViewModelClassToHide =>
+		ViewModelClassToHide?.__vm && ViewModelClassToHide.__dom
+		&& ViewModelClassToHide.__vm.modalVisible(false),
 
 	/**
 	 * @param {string} screenName
@@ -208,9 +208,7 @@ const
 
 					setTimeout(() => {
 						// hide screen
-						if (currentScreen && !isSameScreen) {
-							hideScreen(currentScreen);
-						}
+						currentScreen && !isSameScreen && hideScreen(currentScreen);
 						// --
 
 						currentScreen = vmScreen;
@@ -267,21 +265,19 @@ export const
 	 */
 	startScreens = screensClasses => {
 		hasher.clear();
-		forEachObjectValue(SCREENS, screen => hideScreen(screen, 1));
-		SCREENS = {};
+		SCREENS.forEach(screen => hideScreen(screen, 1));
+		SCREENS.clear();
 		currentScreen = null,
 		defaultScreenName = '';
 
 		screensClasses.forEach(CScreen => {
-			if (CScreen) {
-				const vmScreen = new CScreen(),
-					screenName = vmScreen.screenName;
-				defaultScreenName || (defaultScreenName = screenName);
-				SCREENS[screenName] = vmScreen;
-			}
+			const vmScreen = new CScreen(),
+				screenName = vmScreen.screenName;
+			defaultScreenName || (defaultScreenName = screenName);
+			SCREENS.set(screenName, vmScreen);
 		});
 
-		forEachObjectValue(SCREENS, vmScreen => {
+		SCREENS.forEach(vmScreen => {
 			if (!vmScreen.__started) {
 				vmScreen.onStart();
 				vmScreen.__started = true;

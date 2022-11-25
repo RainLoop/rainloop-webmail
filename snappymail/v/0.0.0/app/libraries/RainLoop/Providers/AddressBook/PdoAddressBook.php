@@ -531,12 +531,16 @@ class PdoAddressBook
 										$sUid = $sFirstName = $sLastName = $sMiddleName = $sSuffix = $sPrefix = '';
 										$iPrevId = $iId;
 									}
-									if (!isset($aVCards[$iId])) {
-										$aVCards[$iId] = new VCard;
+									if (isset($aVCards[$iId])) {
+										$oVCard = $aVCards[$iId];
+									} else {
+										$oVCard = new VCard;
+//										$oVCard = $oVCard->convert(VCard::VCARD40);
+										$oVCard->VERSION = '4.0';
+										$oVCard->PRODID = 'SnappyMail-'.APP_VERSION;
+										$aVCards[$iId] = $oVCard;
 									}
 									$oVCard = $aVCards[$iId];
-									$oVCard->VERSION = '4.0';
-									$oVCard->PRODID = 'SnappyMail-'.APP_VERSION;
 									$sPropValue = (string) $aItem['prop_value'];
 									$aTypes = array();
 									if (!empty($aItem['prop_type_str'])) {
@@ -688,6 +692,40 @@ class PdoAddressBook
 		}
 
 		return [];
+	}
+
+	/**
+	 * @param mixed $mID
+	 */
+	public function GetContactByEmail(string $sEmail) : ?Contact
+	{
+		$sLowerSearch = $this->specialConvertSearchValueLower($sEmail);
+
+		$sSql = 'SELECT
+			DISTINCT id_contact
+		FROM rainloop_ab_properties
+		WHERE id_user = :id_user
+		 AND prop_type = '.PropertyType::JCARD.'
+		 AND ('.
+			'prop_value LIKE :search ESCAPE \'=\''
+				. (\strlen($sLowerSearch) ? ' OR (prop_value_lower <> \'\' AND prop_value_lower LIKE :search_lower ESCAPE \'=\')' : '').
+			')';
+		$aParams = array(
+			':id_user' => array($this->iUserID, \PDO::PARAM_INT),
+			':search' => array($this->specialConvertSearchValue($sEmail, '='), \PDO::PARAM_STR)
+		);
+		if (\strlen($sLowerSearch)) {
+			$aParams[':search_lower'] = array($sLowerSearch, \PDO::PARAM_STR);
+		}
+
+		$oContact = null;
+		$iIdContact = 0;
+
+		$aContacts = $this->getContactsFromPDO(
+			$this->prepareAndExecute($sSql, $aParams)
+		);
+
+		return $aContacts ? $aContacts[0] : null;
 	}
 
 	/**

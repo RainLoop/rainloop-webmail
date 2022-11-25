@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Prečítané",
 		"MENU_SELECT_FLAGGED": "Označené",
 		"MENU_SELECT_UNFLAGGED": "Neoznačené",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Zoznam je prázdny.",
 		"EMPTY_SEARCH_LIST": "Vášmu vyhľadávaniu nezodpovedajú žiadne správy.",
 		"SEARCH_RESULT_FOR": "Výsledky vyhľadávania pre \"%SEARCH%\"",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Žiadne prílohy.",
 		"ATTACHMENTS_ERROR_DESC": "Pozor! Nie všetky prílohy boli nahraté.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Nie všetky prílohy boli už nahraté na server.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Vyžiadať potvrdenie o prečítaní",
 		"BUTTON_MARK_AS_IMPORTANT": "Označiť ako dôležité",
 		"BUTTON_REQUEST_DSN": "Vyžiadať potvrdenie o doručení"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Sound notification",
 		"CHROME_NOTIFICATION_DESC": "Zobrazovať upozornenia na nové správy",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Zablokované prehliadačom)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Automaticky pridávať príjemcov správ do Adresára",

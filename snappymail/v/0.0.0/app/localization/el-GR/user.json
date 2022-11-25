@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Διαβασμένο",
 		"MENU_SELECT_FLAGGED": "Σημαδεμένο",
 		"MENU_SELECT_UNFLAGGED": "Μη σημαδεμένο",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Άδεια λίστα.",
 		"EMPTY_SEARCH_LIST": "Δεν υπάρχουν μηνύματα που να ταιριάζουν στην αναζήτηση.",
 		"SEARCH_RESULT_FOR": "Αποτελέσματα αναζήτησης για \"%SEARCH%\"",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Δεν υπάρχουν συνημμένα εδώ.",
 		"ATTACHMENTS_ERROR_DESC": "Προειδοποίηση! Δεν έχουν μεταφορτωθεί όλα τα συνημμένα.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Δεν έχουν μεταφορτωθεί ακόμη όλα τα συνημμένα.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Ζητήστε αποδεικτικό ανάγνωσης",
 		"BUTTON_MARK_AS_IMPORTANT": "Σημειώστε το σαν σημαντικό",
 		"BUTTON_REQUEST_DSN": "Ζητήστε αποδεικτικό παράδοσης"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Ηχητική επισήμανση",
 		"CHROME_NOTIFICATION_DESC": "Να εμφανίζονται τα νέα μηνύματα σε αναδυόμενες επισημάνσεις",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Αποκλείστηκε από το φυλλομετρητή)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Αυτόματη προσθήκη επαφών στον κατάλογο διευθύνσεων",

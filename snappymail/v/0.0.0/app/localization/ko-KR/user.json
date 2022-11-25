@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "읽음",
 		"MENU_SELECT_FLAGGED": "중요",
 		"MENU_SELECT_UNFLAGGED": "일반",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "목록이 비어있습니다.",
 		"EMPTY_SEARCH_LIST": "검색 조건에 맞는 결과가 없습니다..",
 		"SEARCH_RESULT_FOR": "\"%SEARCH%\"에 대한 검색 결과",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "첨부된 파일이 없습니다.",
 		"ATTACHMENTS_ERROR_DESC": "경고! 모든 첨부파일이 업로드 되지 않습니다.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "첨부파일이 아직 업로드되지 않았습니다.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "수신 확인 요청",
 		"BUTTON_MARK_AS_IMPORTANT": "중요 표시",
 		"BUTTON_REQUEST_DSN": "수신 확인 요청"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "소리 알림",
 		"CHROME_NOTIFICATION_DESC": "새 메시지 알림 팝업 사용",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(브라우저에 의해 차단됨)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "수신인을 주소록에 자동으로 추가",

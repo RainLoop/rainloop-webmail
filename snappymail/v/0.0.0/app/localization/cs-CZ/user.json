@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Přečtené",
 		"MENU_SELECT_FLAGGED": "Označené",
 		"MENU_SELECT_UNFLAGGED": "Neoznačené",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Seznam je prázdný",
 		"EMPTY_SEARCH_LIST": "Vašemu vyhledávání neodpovídají žádné zprávy.",
 		"SEARCH_RESULT_FOR": "Výsledky vyhledávání pro \"%SEARCH%\"",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Žádné přílohy.",
 		"ATTACHMENTS_ERROR_DESC": "Upozornění! Některé přílohy nebyly nahrány.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Některé přílohy ještě nebyly nahrány",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Vyžádat si potvrzení o přečtení",
 		"BUTTON_MARK_AS_IMPORTANT": "Označit jako důležité",
 		"BUTTON_REQUEST_DSN": "Vyžádat si potvrzení o přijetí"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Zvukové notifikace",
 		"CHROME_NOTIFICATION_DESC": "Zobrazovat upozornění na nové zprávy",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Zablokované prohlížečem)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Automaticky přidávat adresy příjemců do Adresáře",

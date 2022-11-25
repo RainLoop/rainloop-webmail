@@ -15,7 +15,6 @@ import {
 	elementById,
 	leftPanelDisabled,
 	keyScopeReal,
-	moveAction,
 	Settings,
 	SettingsCapa,
 	fireEvent,
@@ -24,7 +23,7 @@ import {
 } from 'Common/Globals';
 
 import { arrayLength } from 'Common/Utils';
-import { download, mailToHelper, showMessageComposer } from 'Common/UtilsUser';
+import { download, mailToHelper, showMessageComposer, moveAction } from 'Common/UtilsUser';
 import { isFullscreen, exitFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
 import { SMAudio } from 'Common/Audio';
@@ -55,10 +54,17 @@ import { MimeToMessage } from 'Mime/Utils';
 
 import { MessageModel } from 'Model/Message';
 
+import { showScreenPopup } from 'Knoin/Knoin';
+import { OpenPgpImportPopupView } from 'View/Popup/OpenPgpImport';
+import { GnuPGUserStore } from 'Stores/User/GnuPG';
+import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
+
 const
 	oMessageScrollerDom = () => elementById('messageItem') || {},
 
-	currentMessage = MessageUserStore.message;
+	currentMessage = MessageUserStore.message,
+
+	fetchRaw = url => rl.fetch(url).then(response => response.ok && response.text());
 
 export class MailMessageView extends AbstractViewRight {
 	constructor() {
@@ -92,6 +98,7 @@ export class MailMessageView extends AbstractViewRight {
 				}, this.messageVisibility);
 
 		this.msgDefaultAction = SettingsUserStore.msgDefaultAction;
+		this.simpleAttachmentsList = SettingsUserStore.simpleAttachmentsList;
 
 		addObservablesTo(this, {
 			showAttachmentControls: !!Local.get(ClientSideKeyNameMessageAttachmentControls),
@@ -154,9 +161,9 @@ export class MailMessageView extends AbstractViewRight {
 					case 'none':
 						return '';
 					case 'pass':
-						return 'icon-ok iconcolor-green';
+						return 'icon-ok iconcolor-green'; // ✔️
 					default:
-						return 'icon-warning-alt iconcolor-red';
+						return 'icon-cross iconcolor-red'; // ✖ ❌
 				}
 			},
 
@@ -182,7 +189,8 @@ export class MailMessageView extends AbstractViewRight {
 						this.scrollMessageToTop();
 					}
 					this.viewHash = message.hash;
-					this.viewFromShort(message.fromToLine(true, true));
+					// TODO: make first param a user setting #683
+					this.viewFromShort(message.fromToLine(false, true));
 					this.viewFromDkimData(message.fromDkimData());
 					this.viewToShort(message.toToLine(true, true));
 				} else {
@@ -257,8 +265,9 @@ export class MailMessageView extends AbstractViewRight {
 				return;
 			}
 
-			if (eqs(event, '.attachmentsPlace .attachmentIconParent')) {
+			if (eqs(event, '.attachmentsPlace .showPreview')) {
 				event.stopPropagation();
+				return;
 			}
 
 			el = eqs(event, '.attachmentsPlace .showPreplay');
@@ -279,26 +288,28 @@ export class MailMessageView extends AbstractViewRight {
 						// no default
 					}
 				}
+				return;
 			}
 
-			el = eqs(event, '.attachmentsPlace .attachmentItem .attachmentNameParent');
+			el = eqs(event, '.attachmentItem');
 			if (el) {
-				const attachment = ko.dataFor(el);
-				if (attachment?.linkDownload()) {
-					if ('message/rfc822' == attachment.mimeType) {
+				const attachment = ko.dataFor(el), url = attachment?.linkDownload();
+				if (url) {
+					if ('application/pgp-keys' == attachment.mimeType
+					 && (OpenPGPUserStore.isSupported() || GnuPGUserStore.isSupported())) {
+						fetchRaw(url).then(text =>
+							showScreenPopup(OpenPgpImportPopupView, [text])
+						);
+					} else if ('message/rfc822' == attachment.mimeType) {
 						// TODO
-						rl.fetch(attachment.linkDownload()).then(response => {
-							if (response.ok) {
-								response.text().then(text => {
-									const oMessage = new MessageModel();
-									MimeToMessage(text, oMessage);
-									// cleanHTML
-									oMessage.viewPopupMessage();
-								});
-							}
+						fetchRaw(url).then(text => {
+							const oMessage = new MessageModel();
+							MimeToMessage(text, oMessage);
+							// cleanHTML
+							oMessage.viewPopupMessage();
 						});
 					} else {
-						download(attachment.linkDownload(), attachment.fileName);
+						download(url, attachment.fileName);
 					}
 				}
 			}

@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Skaityta",
 		"MENU_SELECT_FLAGGED": "Pažymėta",
 		"MENU_SELECT_UNFLAGGED": "Nepažymėta",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Tuščias sąrašas.",
 		"EMPTY_SEARCH_LIST": "Nėra pranešimų, atitinkančių jūsų paiešką.",
 		"SEARCH_RESULT_FOR": "Ieškoti \"%SEARCH%\" rezultatuose",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Nėra priedų.",
 		"ATTACHMENTS_ERROR_DESC": "Dėmesio! Ne visi priedai buvo įkelti.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Dar ne visi priedai buvo įkelti",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Prašyti pranešti kada bus perskaitytas",
 		"BUTTON_MARK_AS_IMPORTANT": "Žymėti svarbiu",
 		"BUTTON_REQUEST_DSN": "Prašyti laiško gavimo pažymos"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Garsinis pranešimas",
 		"CHROME_NOTIFICATION_DESC": "Rodyti iššokančius pranešimus apie naujas žinutes",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Blokuoja naršyklė)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Automatiškai pridėti gavėjus į adresų knygą",

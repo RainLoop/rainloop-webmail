@@ -257,19 +257,12 @@ class Email implements \JsonSerializable
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
-/*
-		$BIMI = '';
-		if (Enumerations\DkimStatus::PASS == $this->GetDkimStatus()) {
-			$BIMI = \SnappyMail\DNS\BIMI($this->GetDomain());
-		}
-*/
 		return array(
 			'@Object' => 'Object/Email',
 			'Name' => \MailSo\Base\Utils::Utf8Clear($this->GetDisplayName()),
 			'Email' => \MailSo\Base\Utils::Utf8Clear($this->GetEmail(true)),
 			'DkimStatus' => $this->GetDkimStatus(),
 			'DkimValue' => $this->GetDkimValue()
-//			'BIMI' => $BIMI
 		);
 	}
 }

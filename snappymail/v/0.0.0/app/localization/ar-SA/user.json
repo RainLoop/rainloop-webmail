@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "مقروء",
 		"MENU_SELECT_FLAGGED": "محدد كـ مهم",
 		"MENU_SELECT_UNFLAGGED": "إزالة الأهمية",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "إفراغ القائمة",
 		"EMPTY_SEARCH_LIST": "ليست هناك أية رسائل تطابق بحثك.",
 		"SEARCH_RESULT_FOR": "نتيجة البحث لـ \"%SEARCH%\"",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "لايوجد مرفقات",
 		"ATTACHMENTS_ERROR_DESC": "تحذير! لم يتم إرفاق جميع المرفقات",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "لم تنتهي عملية الإرفاق بعد",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "اطلب اعلاماً بالقراءة",
 		"BUTTON_MARK_AS_IMPORTANT": "تحديده كـ هام",
 		"BUTTON_REQUEST_DSN": "اطلب اعلاماً بايصال البريد"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "صوت التنبيهات",
 		"CHROME_NOTIFICATION_DESC": "إظهار نافذة منبثقة في حالة قدوم ايميل جديد",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(تم إعتراضها من قبل المتصفح)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "قم باضافة المستلمين تلقائيا الى دفتر العناوين",

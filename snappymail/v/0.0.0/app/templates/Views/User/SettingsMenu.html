@@ -1,9 +1,7 @@
 <nav class="b-content" data-bind="foreach: menu">
 	<a data-bind="css: {'selected': selected }, attr: { 'href': $root.link(route), 'data-i18n': label }"></a>
 </nav>
-<div class="b-content show-on-panel-disabled" data-bind="click: leftPanelDisabled.toggle()"></div>
+<div class="b-content show-on-panel-disabled" data-bind="click: toggleLeftPanel"></div>
 <div class="b-footer">
-	<a class="btn" data-bind="click: leftPanelDisabled.toggle()">
-		<i data-bind="css: {'icon-resize-out': leftPanelDisabled(), 'icon-resize-in': !leftPanelDisabled()}"></i>
-	</a>
+	<a class="btn fontastic" data-bind="click: toggleLeftPanel, text: leftPanelDisabled() ? '❯' : '❮'"></a>
 </div>

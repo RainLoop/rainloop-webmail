@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Læst",
 		"MENU_SELECT_FLAGGED": "Markeret med flag",
 		"MENU_SELECT_UNFLAGGED": "Ikke markeret med flag",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Ingen meddelelser.",
 		"EMPTY_SEARCH_LIST": "Ingen meddelelser passede på søgningen.",
 		"SEARCH_RESULT_FOR": "Resultat for søgningen på \"%SEARCH%\"",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Ingen vedhæftninger.",
 		"ATTACHMENTS_ERROR_DESC": "Advarsels! Ikke alle vedhæftninger er overført.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Overførsel af vedhæftninger igang.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Bed om kvittering for læsning",
 		"BUTTON_MARK_AS_IMPORTANT": "Markér som vigtig",
 		"BUTTON_REQUEST_DSN": "Bed om kvittering for modtagelse"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Lyd notifikationer",
 		"CHROME_NOTIFICATION_DESC": "Vis ny meddelelses notifikations popup",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Blokeret af browseren)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Tilføj automatisk modtager til adressebog",

@@ -1,0 +1,25 @@
+.messageView .fromPic {
+	border: 1px solid var(--border-color, #ddd);
+	float: left;
+	width: 50px;
+	height: 50px;
+	margin: 0 4px 0 0;
+	padding: 1px;
+	border-radius: var(--border-radius, 5px);
+}
+/*
+.checkboxMessage {
+	background: #000 no-repeat center / contain;
+	background: #000 no-repeat right / 32px;
+	width:68px
+}
+*/
+#rl-app .messageCheckbox {
+	padding-right:0;
+	white-space:nowrap;
+}
+.messageCheckbox .fromPic {
+	margin: 0 0 -0.4em 0.4em;
+	height: 1.5em;
+	max-width: 1.5em;
+}

@@ -1,8 +1,8 @@
 import { Scope } from 'Common/Enums';
 import { Layout, ClientSideKeyNameMessageListSize } from 'Common/EnumsUser';
-import { doc, createElement, leftPanelDisabled, moveAction, Settings, elementById } from 'Common/Globals';
+import { doc, createElement, leftPanelDisabled, Settings, elementById } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
-import { setLayoutResizer } from 'Common/UtilsUser';
+import { setLayoutResizer, moveAction } from 'Common/UtilsUser';
 import { getFolderFromCacheList, getFolderFullName, getFolderInboxName } from 'Common/Cache';
 import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 import { SettingsUserStore } from 'Stores/User/Settings';
@@ -46,7 +46,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 		const count = Settings.app('listPermanentFiltered') ? 0 : FolderUserStore.foldersInboxUnreadCount(),
 			email = AccountUserStore.email();
 
-		rl.setWindowTitle(
+		rl.setTitle(
 			(email
 				? '' + (0 < count ? '(' + count + ') ' : ' ') + email + ' - '
 				: ''

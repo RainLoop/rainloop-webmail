@@ -38,10 +38,14 @@ class Client
 
 		$this->HTTP = \SnappyMail\HTTP\Request::factory(/*'socket'*/);
 		$this->HTTP->proxy = $settings['proxy'] ?? null;
-		$this->HTTP->setAuth(3, $settings['userName'] ?? '', $settings['password'] ?? '');
+		if (!empty($settings['userName']) && !empty($settings['password'])) {
+			$this->HTTP->setAuth(3, $settings['userName'], $settings['password']);
+		} else {
+			\SnappyMail\Log::warning('DAV', 'No user credentials set');
+		}
 		$this->HTTP->max_response_kb = 0;
 		$this->HTTP->timeout = 15; // timeout in seconds.
-//		$this->HTTP->max_redirects = 0;
+		$this->HTTP->max_redirects = 0;
 	}
 
 	/**
@@ -69,11 +73,12 @@ class Client
 				$url = $this->baseUri . $url;
 			}
 		}
+		\SnappyMail\Log::debug('DAV', "{$method} {$url}" . ($body ? "\n\t" . \str_replace("\n", "\n\t", $body) : ''));
 		$response = $this->HTTP->doRequest($method, $url, $body, $headers);
 		if (301 == $response->status) {
 			// Like: RewriteRule ^\.well-known/carddav /nextcloud/remote.php/dav [R=301,L]
 			$location = $response->getRedirectLocation();
-			\trigger_error("Redirect {$url} to {$location}");
+			\SnappyMail\Log::info('DAV', "301 Redirect {$url} to {$location}");
 			$url = \preg_replace('@^(https?:)?//[^/]+[/$]@', '/', $location);
 			$parts = \parse_url($this->baseUri);
 			$url = $parts['scheme'] . '://' . $parts['host'] . (isset($parts['port'])?':' . $parts['port']:'') . $url;
@@ -82,6 +87,7 @@ class Client
 		if (300 <= $response->status) {
 			throw new \SnappyMail\HTTP\Exception("{$method} {$url}", $response->status, $response);
 		}
+		\SnappyMail\Log::debug('DAV', "{$response->status}: {$response->body}");
 
 		return $response;
 	}
@@ -104,23 +110,20 @@ class Client
 	 */
 	public function propFind(string $url, array $properties, int $depth = 0) : array
 	{
-		$body = '<?xml version="1.0"?>' . "\n";
-		$body.= '<d:propfind xmlns:d="DAV:">' . "\n";
-		$body.= '  <d:prop>' . "\n";
+		$body = '<?xml version="1.0"?>' . "\n" . '<d:propfind xmlns:d="DAV:"><d:prop>';
 
 		foreach ($properties as $property) {
 			if (!\preg_match('/^{([^}]*)}(.*)$/', $property, $match)) {
 				throw new \InvalidArgumentException('\'' . $property . '\' is not a valid clark-notation formatted string');
 			}
 			if ('DAV:' === $match[1]) {
-				$body .= "    <d:{$match[2]} />\n";
+				$body .= "<d:{$match[2]}/>";
 			} else {
-				$body .= "    <x:{$match[2]} xmlns:x=\"{$match[1]}\"/>\n";
+				$body .= "<x:{$match[2]} xmlns:x=\"{$match[1]}\"/>";
 			}
 		}
 
-		$body .= '  </d:prop>' . "\n";
-		$body .= '</d:propfind>';
+		$body .= '</d:prop></d:propfind>';
 
 		$response = $this->request('PROPFIND', $url, $body, array(
 			"Depth: {$depth}",
@@ -144,7 +147,7 @@ class Client
 			null, LIBXML_NOBLANKS | LIBXML_NOCDATA);
 
 		if (false === $responseXML) {
-			throw new \InvalidArgumentException('The passed data is not valid XML');
+			throw new \UnexpectedValueException("The passed data is not valid XML\n{$response->body}");
 		}
 
 		$ns = \array_search('urn:DAV', $responseXML->getNamespaces(true)) ?: 'd';
@@ -163,13 +166,18 @@ class Client
 				foreach ($propStat->xpath("{$ns}:prop") as $prop) {
 					foreach ($prop->xpath("*") as $element) {
 						$propertyName = self::toClarkNotation($element);
+						$propList[$propertyName] = [];
 						if ('{DAV:}resourcetype' === $propertyName) {
-							$propList[$propertyName] = [];
 							foreach ($element->xpath("*") as $resourcetype) {
 								$propList[$propertyName][] = self::toClarkNotation($resourcetype);
 							}
 						} else {
-							$propList[$propertyName] = (string) $element;
+							foreach ($element->xpath("*") as $child) {
+								$propList[$propertyName][self::toClarkNotation($child)] = (string) $child;
+							}
+							if (!$propList[$propertyName]) {
+								$propList[$propertyName] = (string) $element;
+							}
 						}
 					}
 				}

@@ -2,7 +2,7 @@ import 'External/ko';
 import ko from 'ko';
 import { HtmlEditor } from 'Common/Html';
 import { timeToNode } from 'Common/Translator';
-import { doc, elementById, addEventsListeners, dropdowns } from 'Common/Globals';
+import { doc, elementById, addEventsListeners, dropdowns, leftPanelDisabled } from 'Common/Globals';
 import { dropdownsDetectVisibility } from 'Common/UtilsUser';
 import { EmailAddressesComponent } from 'Component/EmailAddresses';
 import { ThemeStore } from 'Stores/Theme';
@@ -144,6 +144,8 @@ Object.assign(ko.bindingHandlers, {
 
 					// Remove the Chrome visibility
 					dragImage.style.cssText = '';
+
+					leftPanelDisabled(false);
 				} else {
 					e.preventDefault();
 				}

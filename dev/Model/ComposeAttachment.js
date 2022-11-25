@@ -27,6 +27,7 @@ export class ComposeAttachmentModel extends AbstractModel {
 			fileName: fileName,
 			size: size,
 			tempName: '',
+			type: '', // application/octet-stream
 
 			progress: 0,
 			error: '',
@@ -54,7 +55,7 @@ export class ComposeAttachmentModel extends AbstractModel {
 				return null === localSize ? '' : FileInfo.friendlySize(localSize);
 			},
 
-			mimeType: () => FileInfo.getContentType(this.fileName()),
+			mimeType: () => this.type() || FileInfo.getContentType(this.fileName()),
 			fileExt: () => FileInfo.getExtension(this.fileName()),
 
 			iconClass: () => FileInfo.getIconClass(this.fileExt(), this.mimeType())

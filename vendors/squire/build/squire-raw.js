@@ -2007,15 +2007,15 @@ function onPaste ( event ) {
 		});
 		if (htmlItem || plainItem || imageItem) {
 			event.preventDefault();
-			if ( htmlItem && ( !self.isShiftDown || !plainItem ) ) {
-				htmlItem.getAsString( html => self.insertHTML( html, true ) );
-			} else if ( plainItem ) {
-				plainItem.getAsString( text => self.insertPlainText( text, true ) );
-			} else if ( imageItem ) {
+			if ( imageItem ) {
 				let reader = new FileReader();
 				reader.onload = event =>
 					self.insertHTML( '<img src="'+event.target.result+'">', true );
 				reader.readAsDataURL(imageItem.getAsFile());
+			} else if ( htmlItem && ( !self.isShiftDown || !plainItem ) ) {
+				htmlItem.getAsString( html => self.insertHTML( html, true ) );
+			} else if ( plainItem ) {
+				plainItem.getAsString( text => self.insertPlainText( text, true ) );
 			}
 		}
 	}

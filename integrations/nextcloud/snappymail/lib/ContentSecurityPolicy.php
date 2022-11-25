@@ -9,7 +9,7 @@ class ContentSecurityPolicy extends \OCP\AppFramework\Http\ContentSecurityPolicy
 	/** @var bool Whether eval in JS scripts is allowed */
 	protected $evalScriptAllowed = true;
 	/** @var bool Whether strict-dynamic should be set */
-	protected $strictDynamicAllowed = true; // NC24+
+//	protected $strictDynamicAllowed = true; // NC24+
 	/** @var bool Whether inline CSS is allowed */
 	protected $inlineStyleAllowed = true;
 
@@ -21,9 +21,11 @@ class ContentSecurityPolicy extends \OCP\AppFramework\Http\ContentSecurityPolicy
 			$CSP->script
 		));
 		$this->allowedScriptDomains = \array_diff($this->allowedScriptDomains, ["'unsafe-inline'", "'unsafe-eval'"]);
-		if (\method_exists($this, 'useStrictDynamic')) {
-			$this->allowedScriptDomains = \array_diff($this->allowedScriptDomains, ["'strict-dynamic'"]);
-		}
+
+		// Nextcloud only sets 'strict-dynamic' when browserSupportsCspV3() ?
+		\method_exists($this, 'useStrictDynamic')
+			? $this->useStrictDynamic(true) // NC24+
+			: $this->addAllowedScriptDomain("'strict-dynamic'");
 
 		$this->allowedImageDomains = \array_unique(\array_merge(
 			$this->allowedImageDomains,
@@ -45,6 +47,18 @@ class ContentSecurityPolicy extends \OCP\AppFramework\Http\ContentSecurityPolicy
 			$this->reportTo,
 			$CSP->report_to
 		));
+	}
+
+	public function getSnappyMailNonce() {
+		static $sNonce;
+		if (!$sNonce) {
+			$cspManager = \OC::$server->getContentSecurityPolicyNonceManager();
+			$sNonce = $cspManager->getNonce() ?: \SnappyMail\UUID::generate();
+			if (\method_exists($cspManager, 'browserSupportsCspV3') && !$cspManager->browserSupportsCspV3()) {
+				$this->addAllowedScriptDomain("'nonce-{$sNonce}'");
+			}
+		}
+		return $sNonce;
 	}
 
 }

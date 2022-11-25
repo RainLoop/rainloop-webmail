@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { Scope } from 'Common/Enums';
-import { moveAction, addShortcut } from 'Common/Globals';
+import { addShortcut } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
 //import { setFolderHash } from 'Common/Cache';
 import { addComputablesTo } from 'External/ko';
@@ -15,7 +15,7 @@ import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewLeft } from 'Knoin/AbstractViews';
 
-import { showMessageComposer } from 'Common/UtilsUser';
+import { showMessageComposer, moveAction } from 'Common/UtilsUser';
 import { FolderCreatePopupView } from 'View/Popup/FolderCreate';
 import { ContactsPopupView } from 'View/Popup/Contacts';
 import { ComposePopupView } from 'View/Popup/Compose';

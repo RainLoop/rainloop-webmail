@@ -18,7 +18,6 @@ abstract class Crypt
 			$list = \array_diff($list, \array_map('strtoupper',$list));
 			$list = \array_filter($list, function($v){
 				// DES/ECB/bf/rc insecure, GCM/CCM not supported
-				// AEAD
 				return !\preg_match('/(^(des|bf|rc))|-(ecb|gcm|ccm|ocb|siv|cts)|wrap/i', $v);
 			});
 			\natcasesort($list);
@@ -37,6 +36,7 @@ abstract class Crypt
 			static::$cipher = $cipher;
 			return true;
 		}
+		Log::error('Crypt', "OpenSSL no support for cipher '{$cipher}'");
 		return false;
 	}
 
@@ -95,18 +95,22 @@ abstract class Crypt
 	{
 		$data = \json_encode($data);
 
-		try {
-			$nonce = \random_bytes(\SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
-			return ['sodium', $nonce, static::SodiumEncrypt($data, $nonce, $key)];
-		} catch (\Throwable $e) {
-			Log::error($e->getMessage());
+		if (\is_callable('sodium_crypto_aead_xchacha20poly1305_ietf_decrypt')) {
+			try {
+				$nonce = \random_bytes(\SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
+				return ['sodium', $nonce, static::SodiumEncrypt($data, $nonce, $key)];
+			} catch (\Throwable $e) {
+				Log::error('Crypt', 'Sodium ' . $e->getMessage());
+			}
 		}
 
-		try {
-			$iv = \random_bytes(\openssl_cipher_iv_length(static::$cipher));
-			return ['openssl', $iv, static::OpenSSLEncrypt($data, $iv, $key)];
-		} catch (\Throwable $e) {
-			Log::error($e->getMessage());
+		if (\is_callable('openssl_encrypt')) {
+			try {
+				$iv = \random_bytes(\openssl_cipher_iv_length(static::$cipher));
+				return ['openssl', $iv, static::OpenSSLEncrypt($data, $iv, $key)];
+			} catch (\Throwable $e) {
+				Log::error('Crypt', 'OpenSSL ' . $e->getMessage());
+			}
 		}
 
 		$salt = \random_bytes(16);

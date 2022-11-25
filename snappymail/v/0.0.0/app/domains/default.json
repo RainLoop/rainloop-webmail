@@ -1,18 +1,50 @@
 {
-    "imapHost": "localhost",
-    "imapPort": 143,
-    "imapSecure": 0,
-    "imapShortLogin": false,
-    "useSieve": false,
-    "sieveHost": "localhost",
-    "sievePort": 4190,
-    "sieveSecure": 0,
-    "smtpHost": "localhost",
-    "smtpPort": 25,
-    "smtpSecure": 0,
-    "smtpShortLogin": false,
-    "smtpAuth": true,
-    "smtpSetSender": false,
-    "smtpPhpMail": false,
+    "name": "*",
+    "IMAP": {
+        "host": "localhost",
+        "port": 143,
+        "type": 0,
+        "shortLogin": false,
+        "ssl": {
+            "verify_peer": false,
+            "verify_peer_name": false,
+            "allow_self_signed": false,
+            "SNI_enabled": true,
+            "disable_compression": true,
+            "security_level": 1
+        }
+    },
+    "SMTP": {
+        "host": "localhost",
+        "port": 25,
+        "type": 0,
+        "shortLogin": false,
+        "ssl": {
+            "verify_peer": false,
+            "verify_peer_name": false,
+            "allow_self_signed": false,
+            "SNI_enabled": true,
+            "disable_compression": true,
+            "security_level": 1
+        },
+        "useAuth": false,
+        "setSender": false,
+        "usePhpMail": false
+    },
+    "Sieve": {
+        "host": "localhost",
+        "port": 4190,
+        "type": 0,
+        "shortLogin": false,
+        "ssl": {
+            "verify_peer": false,
+            "verify_peer_name": false,
+            "allow_self_signed": false,
+            "SNI_enabled": true,
+            "disable_compression": true,
+            "security_level": 1
+        },
+        "enabled": true
+    },
     "whiteList": ""
 }

@@ -229,32 +229,28 @@ export const
 
 //			if ('TABLE' === name || 'TD' === name || 'TH' === name) {
 			if (!oStyle.backgroundImage) {
-				value = oStyle.width;
-				if (hasAttribute('width')) {
-					if (!value) {
+				if ('TD' !== name && 'TH' !== name) {
+					// Make width responsive
+					if (hasAttribute('width')) {
 						value = getAttribute('width');
-						if (1 < pInt(value)) {
-							oStyle.width = value.includes('%') ? value : value + 'px';
-						}
+						oStyle.width = value.includes('%') ? value : value + 'px';
+						delAttribute('width');
 					}
-					delAttribute('width');
-				}
-				if (value && !value.includes('%')) {
-					oStyle.maxWidth = value;
-					if ('TD' !== name && 'TH' !== name) {
+					value = oStyle.removeProperty('width');
+					if (value) {
+						oStyle.maxWidth = value;
 						oStyle.width = '100%';
 					}
-				}
-				if (hasAttribute('height')) {
-					value = getAttribute('height');
-					if (pInt(value)) {
+					// Make height responsive
+					if (hasAttribute('height')) {
+						value = getAttribute('height');
 						oStyle.height = value.includes('%') ? value : value + 'px';
+						delAttribute('height');
 					}
-					delAttribute('height');
-				}
-				value = oStyle.removeProperty('height');
-				if (value && !value.includes('%')) {
-					oStyle.maxHeight = value;
+					value = oStyle.removeProperty('height');
+					if (value) {
+						oStyle.maxHeight = value;
+					}
 				}
 			}
 //			} else

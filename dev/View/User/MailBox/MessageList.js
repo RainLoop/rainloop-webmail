@@ -5,17 +5,17 @@ import { Scope } from 'Common/Enums';
 
 import { ComposeType, FolderType, MessageSetAction } from 'Common/EnumsUser';
 
-import { leftPanelDisabled, moveAction,
+import { leftPanelDisabled, toggleLeftPanel,
 	Settings, SettingsCapa,
 	addEventsListeners,
 	addShortcut, registerShortcut, formFieldFocused
 } from 'Common/Globals';
 
-import { computedPaginatorHelper, showMessageComposer, populateMessageBody } from 'Common/UtilsUser';
+import { computedPaginatorHelper, showMessageComposer, populateMessageBody, download, moveAction } from 'Common/UtilsUser';
 import { FileInfo } from 'Common/File';
 import { isFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
-import { mailBox } from 'Common/Links';
+import { mailBox, attachmentDownload } from 'Common/Links';
 import { Selector } from 'Common/Selector';
 
 import { i18n } from 'Common/Translator';
@@ -83,6 +83,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.isMobile = ThemeStore.isMobile;
 		this.leftPanelDisabled = leftPanelDisabled;
+		this.toggleLeftPanel = toggleLeftPanel;
 
 		this.popupVisibility = arePopupsVisible;
 
@@ -258,6 +259,7 @@ export class MailMessageList extends AbstractViewRight {
 		).throttle(50));
 
 		decorateKoCommands(this, {
+			downloadCommand: canBeMovedHelper,
 			forwardCommand: canBeMovedHelper,
 			deleteWithoutMoveCommand: canBeMovedHelper,
 			deleteCommand: canBeMovedHelper,
@@ -288,6 +290,34 @@ export class MailMessageList extends AbstractViewRight {
 			ComposeType.ForwardAsAttachment,
 			MessagelistUserStore.listCheckedOrSelected()
 		]);
+	}
+
+	downloadCommand() {
+		let hashes = [];
+		MessagelistUserStore.forEach(message => {
+			if (message.checked()) {
+				message.attachments.forEach(attachment => {
+					if (!attachment.isLinked() && attachment.download) {
+						hashes.push(attachment.download);
+					}
+				});
+			}
+		});
+		if (hashes.length) {
+			Remote.post('AttachmentsActions', null, {
+				Do: 'Zip',
+				Hashes: hashes
+			})
+			.then(result => {
+				let hash = result?.Result?.FileHash;
+				if (hash) {
+					download(attachmentDownload(hash), hash+'.zip');
+				} else {
+					alert('Download failed');
+				}
+			})
+			.catch(() => alert('Download failed'));
+		}
 	}
 
 	deleteWithoutMoveCommand() {

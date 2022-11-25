@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "既読",
 		"MENU_SELECT_FLAGGED": "フラグ付き",
 		"MENU_SELECT_UNFLAGGED": "フラグなし",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "メッセージはありません",
 		"EMPTY_SEARCH_LIST": "検索条件に一致するメールは見つかりませんでした。高度な検索を試してみてください。",
 		"SEARCH_RESULT_FOR": "\"%SEARCH%\"の検索結果",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "添付ファイルがありません",
 		"ATTACHMENTS_ERROR_DESC": "警告！すべての添付ファイルがアップロードされているわけではありません。",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "すべての添付ファイルがアップロードされているわけではありません。",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "開封確認を要求する",
 		"BUTTON_MARK_AS_IMPORTANT": "重要フラグをつける",
 		"BUTTON_REQUEST_DSN": "配信確認を要求する"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "サウンド通知",
 		"CHROME_NOTIFICATION_DESC": "新しいメッセージを受信したらポップアップで知らせる",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(ブラウザでブロックされています)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "返信したアドレスをアドレス帳へ自動的に追加する",

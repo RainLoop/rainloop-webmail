@@ -41,13 +41,13 @@
   content: "\e007";
 }
 .icon-right-mini::before {
-  content: "\e01e"; /* › */
+  content: "›";
 }
 .icon-down-mini::before {
-  content: "\e01f"; /* › rotate 90 */
+  content: "⌄";
 }
-.icon-warning-alt::before {
-  content: "\e02a";
+.icon-cross::before {
+  content: "✖";
 }
 .icon-ok::before {
   content: "✔";
@@ -91,12 +91,6 @@
 .icon-lock::before {
   content: "🔒";
 }
-.icon-popup::before {
-  content: "\e045";
-}
-.icon-mail::before {
-  content: "✉";
-}
 .icon-filter::before {
   content: "\e061"; /* ⊆ */
 }
@@ -108,15 +102,6 @@
 }
 .icon-copy::before {
   content: "\e068";
-}
-.icon-help::before {
-  content: "\e06b";
-}
-.icon-resize-in::before {
-  content: "\e06c";
-}
-.icon-resize-out::before {
-  content: "⤢";
 }
 .icon-check-mark-circle-two::before {
   content: "\e073";

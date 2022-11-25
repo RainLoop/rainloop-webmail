@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Gelesen",
 		"MENU_SELECT_FLAGGED": "Markiert",
 		"MENU_SELECT_UNFLAGGED": "Nicht markiert",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Liste ist leer.",
 		"EMPTY_SEARCH_LIST": "Keine Treffer für Ihre Suche.",
 		"SEARCH_RESULT_FOR": "Suchergebnisse für \"%SEARCH%\"",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Keine Anhänge vorhanden.",
 		"ATTACHMENTS_ERROR_DESC": "Warnung! Nicht alle Anhänge wurden hochgeladen.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Es wurden noch nicht alle Anhänge hochgeladen.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Empfangsbestätigung anfordern",
 		"BUTTON_MARK_AS_IMPORTANT": "Als Wichtig markieren",
 		"BUTTON_REQUEST_DSN": "Übermittlungsstatus anfordern"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Benachrichtigungston",
 		"CHROME_NOTIFICATION_DESC": "Popups einblenden, wenn neue Nachrichten vorhanden sind",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Vom Browser blockiert.)",
-		"LIST_INLINE_ATTACHMENTS": "Inline-Anhänge in der Liste anzeigen"
+		"LIST_INLINE_ATTACHMENTS": "Inline-Anhänge in der Liste anzeigen",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Empfänger automatisch zu Ihrem Adressbuch hinzuzufügen",

@@ -67,6 +67,7 @@ config.paths.js = {
 			'vendors/jua/jua.js',
 			'vendors/bootstrap/js/bootstrap.native.js',
 			'vendors/knockout/build/output/knockout-latest.js',
+//			'vendors/knockout/build/output/knockout-latest.debug.js',
 			'vendors/squire/build/squire-raw.js',
 			'dev/External/SquireUI.js'
 		]

@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Läst",
 		"MENU_SELECT_FLAGGED": "Flaggad",
 		"MENU_SELECT_UNFLAGGED": "Avflaggad",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Tom lista",
 		"EMPTY_SEARCH_LIST": "Inga meddelanden matchar din sökning.",
 		"SEARCH_RESULT_FOR": "Sök resultat för \"%SEARCH%\"",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Inga filer är ännu valda",
 		"ATTACHMENTS_ERROR_DESC": "Varning! Inte alla bilagor har överförts.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Alla bilagor är inte uppladddade än",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Begär mottagningskvitto",
 		"BUTTON_MARK_AS_IMPORTANT": "Markera som viktigt",
 		"BUTTON_REQUEST_DSN": "Begär ett leveranskvitto"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Ljudnotifikation",
 		"CHROME_NOTIFICATION_DESC": "Visa nya meddelande-aviseringar som popup-fönster",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Blockat av webbläsaren)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Lägg till mottagare automatiskt i din adressbok",

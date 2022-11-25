@@ -15,8 +15,9 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Auto Domain Selection',
-		VERSION  = '2.8',
-		REQUIRED = '2.8.0',
+		VERSION  = '2.9',
+		RELEASE = '2022-11-11',
+		REQUIRED = '2.21.0',
 		CATEGORY = 'General',
 		DESCRIPTION = 'Sets the IMAP/SMTP host based on the user\'s login';
 
@@ -32,20 +33,20 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * This function detects the IMAP Host, and if it is set to 'auto', replaces it with the MX or email domain.
 	 */
-	public function FilterImapCredentials(\RainLoop\Model\Account $oAccount, \MailSo\Imap\ImapClient $oImapClient, array &$aImapCredentials)
+	public function FilterImapCredentials(\RainLoop\Model\Account $oAccount, \MailSo\Imap\ImapClient $oImapClient, \MailSo\Imap\Settings $oSettings)
 	{
 		// Check for mail.$DOMAIN as entered value in RL settings
-		if (!empty($aImapCredentials['Host']) && 'auto' === $aImapCredentials['Host'])
+		if ('auto' === $oSettings->host)
 		{
 			$domain = \substr(\strrchr($oAccount->Email(), '@'), 1);
 			$mxhosts = array();
 			if (\getmxrr($domain, $mxhosts) && $mxhosts)
 			{
-				$aImapCredentials['Host'] = $mxhosts[0];
+				$oSettings->host = $mxhosts[0];
 			}
 			else
 			{
-				$aImapCredentials['Host'] = $this->imap_prefix.$domain;
+				$oSettings->host = $this->imap_prefix.$domain;
 			}
 		}
 	}
@@ -53,20 +54,20 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * This function detects the SMTP Host, and if it is set to 'auto', replaces it with the MX or email domain.
 	 */
-	public function FilterSmtpCredentials(\RainLoop\Model\Account $oAccount, \MailSo\Smtp\SmtpClient $oSmtpClient, array &$aSmtpCredentials)
+	public function FilterSmtpCredentials(\RainLoop\Model\Account $oAccount, \MailSo\Smtp\SmtpClient $oSmtpClient, \MailSo\Smtp\Settings $oSettings)
 	{
 		// Check for mail.$DOMAIN as entered value in RL settings
-		if (!empty($aSmtpCredentials['Host']) && 'auto' === $aSmtpCredentials['Host'])
+		if ('auto' === $oSettings->host)
 		{
 			$domain = \substr(\strrchr($oAccount->Email(), '@'), 1);
 			$mxhosts = array();
 			if (\getmxrr($domain, $mxhosts) && $mxhosts)
 			{
-				$aSmtpCredentials['Host'] = $mxhosts[0];
+				$oSettings->host = $mxhosts[0];
 			}
 			else
 			{
-				$aSmtpCredentials['Host'] = $this->smtp_prefix . $domain;
+				$oSettings->host = $this->smtp_prefix . $domain;
 			}
 		}
 	}

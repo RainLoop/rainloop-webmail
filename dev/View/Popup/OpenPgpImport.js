@@ -69,8 +69,8 @@ export class OpenPgpImportPopupView extends AbstractViewPopup {
 		this.close();
 	}
 
-	onShow() {
-		this.key('');
+	onShow(key) {
+		this.key(key || '');
 		this.keyError(false);
 		this.keyErrorMessage('');
 	}

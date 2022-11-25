@@ -1,8 +1,16 @@
 
 const
 	// RFC2045
-	QPDecodeIn = /=([0-9A-F]{2})/g,
-	QPDecodeOut = (...args) => String.fromCharCode(parseInt(args[1], 16));
+	QPDecodeParams = [/=([0-9A-F]{2})/g, (...args) => String.fromCharCode(parseInt(args[1], 16))],
+	QPDecode = data => data.replace(/=\r?\n/g, '').replace(...QPDecodeParams),
+	decodeText = (charset, data) => {
+		try {
+			// https://developer.mozilla.org/en-US/docs/Web/API/Encoding_API/Encodings
+			return new TextDecoder(charset).decode(Uint8Array.from(data, c => c.charCodeAt(0)));
+		} catch (e) {
+			console.error({charset:charset,error:e});
+		}
+	};
 
 export function ParseMime(text)
 {
@@ -40,22 +48,14 @@ export function ParseMime(text)
 
 		get body() {
 			let body = this.bodyRaw,
-//				charset = this.header('content-type')?.params.charset,
+				charset = this.header('content-type')?.params.charset,
 				encoding = this.headerValue('content-transfer-encoding');
 			if ('quoted-printable' == encoding) {
-				body = body.replace(/=\r?\n/g, '').replace(QPDecodeIn, QPDecodeOut);
+				body = QPDecode(body);
 			} else if ('base64' == encoding) {
 				body = atob(body.replace(/\r?\n/g, ''));
 			}
-/*
-			try {
-				// https://developer.mozilla.org/en-US/docs/Web/API/Encoding_API/Encodings
-				return new TextDecoder(charset).decode(Uint8Array.from(body, c => c.charCodeAt(0)));
-//				return new TextDecoder(charset).decode(new TextEncoder().encode(body));
-			} catch (e) {
-			}
-*/
-			return body;
+			return decodeText(charset, body);
 		}
 
 		get dataUrl() {
@@ -65,7 +65,7 @@ export function ParseMime(text)
 				body = body.replace(/\r?\n/g, '');
 			} else {
 				if ('quoted-printable' == encoding) {
-					body = body.replace(/=\r?\n/g, '').replace(QPDecodeIn, QPDecodeOut);
+					body = QPDecode(body);
 				}
 				body = btoa(body);
 			}
@@ -111,8 +111,12 @@ export function ParseMime(text)
 					[...header.matchAll(/;\s*([^;=]+)=\s*"?([^;"]+)"?/g)].forEach(param =>
 						params[param[1].trim().toLowerCase()] = param[2].trim()
 					);
+					// encoded-word = "=?" charset "?" encoding "?" encoded-text "?="
+					match[2] = match[2].trim().replace(/=\?([^?]+)\?(B|Q)\?(.+?)\?=/g, (m, charset, encoding, text) =>
+						decodeText(charset, 'B' == encoding ? atob(text) : QPDecode(text))
+					);
 					headers[match[1].trim().toLowerCase()] = {
-						value: match[2].trim(),
+						value: match[2],
 						params: params
 					};
 				}

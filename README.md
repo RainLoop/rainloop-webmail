@@ -41,7 +41,7 @@ Copyright (c) 2013 - 2022 RainLoop
 
 This fork of RainLoop has the following changes:
 
-* Privacy/GDPR friendly (no: Social, Gravatar, Facebook, Google, Twitter, DropBox, OwnCloud, X-Mailer)
+* Privacy/GDPR friendly (no: Social, Gravatar, Facebook, Google, Twitter, DropBox, X-Mailer)
 * Admin uses password_hash/password_verify
 * Auth failed attempts written to syslog
 * Added Fail2ban instructions
@@ -57,10 +57,11 @@ This fork of RainLoop has the following changes:
 * Removed background video support
 * Removed Sentry (Application Monitoring and Error Tracking Software)
 * Removed Spyc yaml
+* Removed OwnCloud
 * Replaced gulp-uglify with gulp-terser
 * CRLF => LF line endings
 * Embed boot.js and boot.css into index.html
-* Ongoing removal of old JavaScript code (things are native these days)
+* Removal of old JavaScript code (things are native these days)
 * Added modified [Squire](https://github.com/neilj/Squire) HTML editor as replacement for CKEditor
 * Updated [Sabre/VObject](https://github.com/sabre-io/vobject)
 * Split Admin specific JavaScript code from User code
@@ -105,7 +106,6 @@ Supported are:
 The result is faster and smaller download code (good for mobile networks).
 
 * Added dev/prototype.js for some additional features
-* boot.js without webpack overhead
 * Modified Jua.js to be without jQuery
 * Replaced Autolinker with simple https/email detection
 * Replaced momentToNode with proper HTML5 `<time>`
@@ -118,6 +118,7 @@ The result is faster and smaller download code (good for mobile networks).
 * Replaced simplestatemanager with CSS @media
 * Replaced inputosaurus with own code
 * Replaced keymaster with own shortcuts handler
+* Replaced OpenPGP.js v2 with OpenPGP.js v5
 * Removed ifvisible.js
 * Removed pikaday
 * Removed underscore
@@ -140,26 +141,26 @@ RainLoop 1.17 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.170.153	|   81.239	|
-|app.js          	|4.207.787	|  406.270	|
-|boot.js         	|  868.735	|    2.055	|
-|libs.js         	|  658.812	|  192.965	|
+|admin.js        	|2.170.153	|   82.419	|
+|app.js          	|4.207.787	|  407.238	|
+|boot.js         	|  868.735	|    1.989	|
+|libs.js         	|  658.812	|  193.075	|
 |sieve.js         	|        0	|   86.121	|
 |polyfills.js    	|  334.608	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|8.240.095	|  768.935	|
+|TOTAL           	|8.240.095	|  771.127	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
-|admin.min.js    	|  256.831	|   40.167	| 73.606	| 13.399	| 60.877  	| 12.006	|
-|app.min.js      	|  515.367	|  188.083	|139.456	| 62.512	|110.485  	| 53.609	|
-|boot.min.js     	|   84.659	|    1.261	| 26.998	|    776	| 23.643  	|    633	|
-|libs.min.js     	|  584.772	|   92.055	|180.901	| 34.113	|155.182  	| 30.641	|
+|admin.min.js    	|  256.831	|   40.933	| 73.606	| 13.575	| 60.877  	| 12.185	|
+|app.min.js      	|  515.367	|  188.830	|139.456	| 62.816	|110.485  	| 53.944	|
+|boot.min.js     	|   84.659	|    1.216	| 26.998	|    761	| 23.643  	|    614	|
+|libs.min.js     	|  584.772	|   92.084	|180.901	| 34.119	|155.182  	| 30.621	|
 |sieve.min.js     	|        0	|   41.926	|      0	| 10.484	|      0  	|  9.451	|
 |polyfills.min.js	|   32.837	|        0	| 11.406	|      0	| 10.175  	|      0	|
-|TOTAL user      	|1.217.635	|  281.399	|358.761	| 97.401	|299.485  	| 84.883	|
-|TOTAL user+sieve	|1.217.635	|  323.325	|358.761	|107.885	|299.485  	| 94.334	|
-|TOTAL admin     	|  959.099	|  133.483	|292.911	| 48.288	|249.877  	| 43.280	|
+|TOTAL user      	|1.217.635	|  282.130	|358.761	| 97.696	|299.485  	| 85.179	|
+|TOTAL user+sieve	|1.217.635	|  324.056	|358.761	|108.180	|299.485  	| 94.630	|
+|TOTAL admin     	|  959.099	|  134.233	|292.911	| 48.455	|249.877  	| 43.420	|
 
 For a user its around 70% smaller and faster than traditional RainLoop.
 
@@ -169,6 +170,7 @@ For a user its around 70% smaller and faster than traditional RainLoop.
 * Themes work in mobile mode
 * Bugfix invalid/conflicting css rules
 * Use flexbox
+* Use border-box
 * Split app.css to have separate admin.css
 * Remove oldschool 'float'
 * Remove unused css
@@ -187,12 +189,12 @@ For a user its around 70% smaller and faster than traditional RainLoop.
 
 |css/*       	|RainLoop	|Snappy   	|RL gzip	|SM gzip	|SM brotli	|
 |------------	|-------:	|------:	|------:	|------:	|--------:	|
-|app.css     	| 340.331	| 83.746	| 46.946	| 17.262	| 14.779	|
-|app.min.css 	| 274.947	| 67.483	| 39.647	| 15.311	| 13.365	|
+|app.css     	| 340.331	| 82.425	| 46.946	| 17.049	| 14.595	|
+|app.min.css 	| 274.947	| 66.502	| 39.647	| 15.049	| 13.221	|
 |boot.css    	|       	|  1.326	|       	|    664	|    545	|
 |boot.min.css	|       	|  1.071	|       	|    590	|    474	|
-|admin.css    	|       	| 30.816	|       	|  6.939	|  6.028	|
-|admin.min.css	|       	| 24.969	|       	|  6.300	|  5.531	|
+|admin.css    	|       	| 29.807	|       	|  6.744	|  5.851	|
+|admin.min.css	|       	| 24.223	|       	|  6.142	|  5.397	|
 
 ### PGP
 RainLoop uses the old OpenPGP.js v2

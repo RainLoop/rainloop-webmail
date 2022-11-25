@@ -212,7 +212,7 @@ export class AppUser extends AbstractApp {
 
 	start() {
 		if (SettingsGet('Auth')) {
-			rl.setWindowTitle(i18n('GLOBAL/LOADING'));
+			rl.setTitle(i18n('GLOBAL/LOADING'));
 
 			SMAudio.notifications(!!SettingsGet('SoundNotification'));
 			NotificationUserStore.enabled(!!SettingsGet('DesktopNotifications'));

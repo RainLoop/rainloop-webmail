@@ -119,7 +119,7 @@ export class ContactModel extends AbstractModel {
 
 			display: () => {
 				let a = this.fullName(),
-					b = this.email()?.[0]?.value,
+					b = this.email()?.[0]?.value(),
 					c = this.nickname();
 				return a || b || c;
 			}

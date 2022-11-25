@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Letti",
 		"MENU_SELECT_FLAGGED": "Preferiti",
 		"MENU_SELECT_UNFLAGGED": "Non preferiti",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Lista vuota",
 		"EMPTY_SEARCH_LIST": "Nessun messaggio corrisponde alla tua ricerca",
 		"SEARCH_RESULT_FOR": "Risultati di ricerca per \"%SEARCH%\"",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Nessun allegato.",
 		"ATTACHMENTS_ERROR_DESC": "Attenzione! Non tutti gli allegati sono stati caricati.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Non tutti gli allegati sono stati caricati al momento.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Richiedi conferma di lettura",
 		"BUTTON_MARK_AS_IMPORTANT": "Marca come importante",
 		"BUTTON_REQUEST_DSN": "Richiedi conferma del ricevimento"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Notifica sonora",
 		"CHROME_NOTIFICATION_DESC": "Mostra le notifiche in caso di nuovi messaggi",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Bloccate dal browser)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Aggiungi automaticamente le persone che ti inviano mail alla rubrica",

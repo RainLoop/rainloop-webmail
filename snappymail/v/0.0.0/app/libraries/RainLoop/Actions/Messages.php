@@ -10,6 +10,7 @@ use MailSo\Imap\SequenceSet;
 use MailSo\Imap\Enumerations\FetchType;
 use MailSo\Imap\Enumerations\MessageFlag;
 use MailSo\Mime\Part as MimePart;
+use MailSo\Mime\Enumerations\Header as MimeEnumHeader;
 
 trait Messages
 {
@@ -603,37 +604,53 @@ trait Messages
 		try
 		{
 			$aAttachments = $this->GetActionParam('Attachments', array());
-			if (\is_array($aAttachments) && \count($aAttachments))
-			{
-				$mResult = array();
-				foreach ($aAttachments as $sAttachment)
-				{
-					if ($aValues = \RainLoop\Utils::DecodeKeyValuesQ($sAttachment))
-					{
+			if (!\is_array($aAttachments)) {
+				$aAttachments = [];
+			}
+			if (\count($aAttachments)) {
+				$oFilesProvider = $this->FilesProvider();
+				foreach ($aAttachments as $mIndex => $sAttachment) {
+					$aAttachments[$mIndex] = false;
+					if ($aValues = \RainLoop\Utils::DecodeKeyValuesQ($sAttachment)) {
 						$sFolder = isset($aValues['Folder']) ? (string) $aValues['Folder'] : '';
 						$iUid = isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0;
 						$sMimeIndex = isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : '';
 
-						$sTempName = \md5($sAttachment);
-						if (!$this->FilesProvider()->FileExists($oAccount, $sTempName))
-						{
+						$sTempName = \sha1($sAttachment);
+						if (!$oFilesProvider->FileExists($oAccount, $sTempName)) {
 							$this->MailClient()->MessageMimeStream(
-								function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use ($oAccount, &$mResult, $sTempName, $sAttachment, $self) {
-									if (is_resource($rResource))
-									{
-										$sContentType = (empty($sFileName)) ? 'text/plain' : \MailSo\Base\Utils::MimeContentType($sFileName);
-										$sFileName = $self->MainClearFileName($sFileName, $sContentType, $sMimeIndex);
+								function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use ($oAccount, $sTempName, $self, &$aAttachments, $mIndex) {
+									if (\is_resource($rResource)) {
+										$sContentType =
+											$sContentType
+											?: \SnappyMail\File\MimeType::fromStream($rResource, $sFileName)
+											?: \SnappyMail\File\MimeType::fromFilename($sFileName)
+											?: 'application/octet-stream'; // 'text/plain'
 
-										if ($self->FilesProvider()->PutFile($oAccount, $sTempName, $rResource))
-										{
-											$mResult[$sTempName] = $sAttachment;
+//										$sFileName = $self->MainClearFileName($sFileName, $sContentType, $sMimeIndex);
+										$sTempName .= \SnappyMail\File\MimeType::toExtension($sContentType);
+
+										if ($self->FilesProvider()->PutFile($oAccount, $sTempName, $rResource)) {
+											$aAttachments[$mIndex] = [
+//												'Name' => $sFileName,
+												'TempName' => $sTempName,
+												'MimeType' => $sContentType
+//												'Size' => 0
+											];
 										}
 									}
 								}, $sFolder, $iUid, $sMimeIndex);
-						}
-						else
-						{
-							$mResult[$sTempName] = $sAttachment;
+						} else {
+							$rResource = $oFilesProvider->GetFile($oAccount, $sTempName);
+							$sContentType = \SnappyMail\File\MimeType::fromStream($rResource, $sTempName)
+								?: \SnappyMail\File\MimeType::fromFilename($sTempName)
+								?: 'application/octet-stream'; // 'text/plain'
+							$aAttachments[$mIndex] = [
+//								'Name' => $sFileName,
+								'TempName' => $sTempName,
+								'MimeType' => $sContentType
+//								'Size' => $oFilesProvider->FileSize($oAccount, $sTempName)
+							];
 						}
 					}
 				}
@@ -644,7 +661,7 @@ trait Messages
 			throw new ClientException(Notifications::MailServerError, $oException);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $mResult);
+		return $this->DefaultResponse(__FUNCTION__, $aAttachments);
 	}
 
 	/**
@@ -699,7 +716,7 @@ trait Messages
 					'text' => $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']'),
 					'signature' => ''
 				];
-				$decode = (new \MailSo\Mime\HeaderCollection($sBodyMime))->ValueByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING);
+				$decode = (new \MailSo\Mime\HeaderCollection($sBodyMime))->ValueByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING);
 				if ('base64' === $decode) {
 					$result['text'] = \base64_decode($result['text']);
 				} else if ('quoted-printable' === $decode) {
@@ -821,8 +838,8 @@ trait Messages
 								if ($this->Config()->Get('labs', 'mail_func_clear_headers', true))
 								{
 									$sMailHeaders = \MailSo\Base\Utils::RemoveHeaderFromHeaders($sMailHeaders, array(
-										\MailSo\Mime\Enumerations\Header::TO_,
-										\MailSo\Mime\Enumerations\Header::SUBJECT
+										MimeEnumHeader::TO_,
+										MimeEnumHeader::SUBJECT
 									));
 								}
 
@@ -1011,8 +1028,8 @@ trait Messages
 		$this->Plugins()->RunHook('filter.read-receipt-message-plain', array($oAccount, $oMessage, &$sText));
 
 		$oPart = new MimePart;
-		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset="utf-8"');
-		$oPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
+		$oPart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'text/plain; charset="utf-8"');
+		$oPart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
 		$oPart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
 			\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sText))),
 			'convert.quoted-printable-encode'
@@ -1114,7 +1131,7 @@ trait Messages
 
 			$oPart = new MimePart;
 			$oPart->Headers->AddByName(
-				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+				MimeEnumHeader::CONTENT_TYPE,
 				'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"; boundary="'.$sBoundary.'"'
 			);
 			$oPart->Body = $aSigned[1];
@@ -1127,22 +1144,22 @@ trait Messages
 		} else if ($sEncrypted = $this->GetActionParam('Encrypted', '')) {
 			$oPart = new MimePart;
 			$oPart->Headers->AddByName(
-				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+				MimeEnumHeader::CONTENT_TYPE,
 				'multipart/encrypted; protocol="application/pgp-encrypted"'
 			);
 			$oMessage->SubParts->append($oPart);
 
 			$oAlternativePart = new MimePart;
-			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/pgp-encrypted');
-			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION, 'attachment');
-			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
+			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'application/pgp-encrypted');
+			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_DISPOSITION, 'attachment');
+			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, '7Bit');
 			$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString('Version: 1');
 			$oPart->SubParts->append($oAlternativePart);
 
 			$oAlternativePart = new MimePart;
-			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/octet-stream');
-			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION, 'inline; filename="msg.asc"');
-			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
+			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'application/octet-stream');
+			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_DISPOSITION, 'inline; filename="msg.asc"');
+			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, '7Bit');
 			$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sEncrypted)));
 			$oPart->SubParts->append($oAlternativePart);
 
@@ -1152,10 +1169,7 @@ trait Messages
 		} else {
 			if ($sHtml = $this->GetActionParam('Html', '')) {
 				$oPart = new MimePart;
-				$oPart->Headers->AddByName(
-					\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-					\MailSo\Mime\Enumerations\MimeType::MULTIPART_ALTERNATIVE
-				);
+				$oPart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'multipart/alternative');
 				$oMessage->SubParts->append($oPart);
 
 				$sHtml = \MailSo\Base\HtmlUtils::BuildHtml($sHtml, $aFoundCids, $aFoundDataURL, $aFoundContentLocationUrls);
@@ -1165,8 +1179,8 @@ trait Messages
 				$sPlain = $this->GetActionParam('Text', '') ?: \MailSo\Base\HtmlUtils::ConvertHtmlToPlain($sHtml);
 				$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sPlain));
 				$oAlternativePart = new MimePart;
-				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset=utf-8');
-				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
+				$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'text/plain; charset=utf-8');
+				$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
 				$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
 					\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sPlain))),
 					'convert.quoted-printable-encode'
@@ -1176,8 +1190,8 @@ trait Messages
 
 				// Now add HTML
 				$oAlternativePart = new MimePart;
-				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/html; charset=utf-8');
-				$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
+				$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'text/html; charset=utf-8');
+				$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
 				$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
 					\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sHtml))),
 					'convert.quoted-printable-encode'
@@ -1192,27 +1206,27 @@ trait Messages
 				if ($sSignature = $this->GetActionParam('Signature', null)) {
 					$oPart = new MimePart;
 					$oPart->Headers->AddByName(
-						\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+						MimeEnumHeader::CONTENT_TYPE,
 						'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"'
 					);
 					$oMessage->SubParts->append($oPart);
 
 					$oAlternativePart = new MimePart;
-					$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset="utf-8"; protected-headers="v1"');
-					$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'base64');
+					$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'text/plain; charset="utf-8"; protected-headers="v1"');
+					$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'base64');
 					$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sPlain)));
 					$oPart->SubParts->append($oAlternativePart);
 
 					$oAlternativePart = new MimePart;
-					$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/pgp-signature; name="signature.asc"');
-					$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
+					$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'application/pgp-signature; name="signature.asc"');
+					$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, '7Bit');
 					$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sSignature)));
 					$oPart->SubParts->append($oAlternativePart);
 				} else {
 					$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sPlain));
 					$oAlternativePart = new MimePart;
-					$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'text/plain; charset="utf-8"');
-					$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
+					$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'text/plain; charset="utf-8"');
+					$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
 					$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
 						\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sPlain))),
 						'convert.quoted-printable-encode'
@@ -1231,10 +1245,11 @@ trait Messages
 		{
 			foreach ($aAttachments as $sTempName => $aData)
 			{
-				$sFileName = (string) $aData[0];
-				$bIsInline = (bool) $aData[1];
-				$sCID = (string) $aData[2];
-				$sContentLocation = isset($aData[3]) ? (string) $aData[3] : '';
+				$sFileName = (string) $aData['name'];
+				$bIsInline = (bool) $aData['inline'];
+				$sCID = (string) $aData['cid'];
+				$sContentLocation = (string) $aData['location'];
+				$sMimeType = (string) $aData['type'];
 
 				$rResource = $this->FilesProvider()->GetFile($oAccount, $sTempName);
 				if (\is_resource($rResource))
@@ -1244,7 +1259,7 @@ trait Messages
 					$oMessage->Attachments()->append(
 						new \MailSo\Mime\Attachment($rResource, $sFileName, $iFileSize, $bIsInline,
 							\in_array(trim(trim($sCID), '<>'), $aFoundCids),
-							$sCID, array(), $sContentLocation
+							$sCID, array(), $sContentLocation, $sMimeType
 						)
 					);
 				}
@@ -1302,7 +1317,7 @@ trait Messages
 
 			$oPart = new MimePart;
 			$oPart->Headers->AddByName(
-				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+				MimeEnumHeader::CONTENT_TYPE,
 				'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"'
 			);
 			$oMessage->SubParts->append($oPart);
@@ -1312,8 +1327,8 @@ trait Messages
 			$oPart->SubParts->append($oBody);
 
 			$oSignaturePart = new MimePart;
-			$oSignaturePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/pgp-signature; name="signature.asc"');
-			$oSignaturePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
+			$oSignaturePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'application/pgp-signature; name="signature.asc"');
+			$oSignaturePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, '7Bit');
 			$oSignaturePart->Body = $sSignature;
 			$oPart->SubParts->append($oSignaturePart);
 		}
@@ -1337,22 +1352,22 @@ trait Messages
 
 			$oPart = new MimePart;
 			$oPart->Headers->AddByName(
-				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+				MimeEnumHeader::CONTENT_TYPE,
 				'multipart/encrypted; protocol="application/pgp-encrypted"'
 			);
 			$oMessage->SubParts->append($oPart);
 
 			$oAlternativePart = new MimePart;
-			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/pgp-encrypted');
-			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION, 'attachment');
-			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
+			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'application/pgp-encrypted');
+			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_DISPOSITION, 'attachment');
+			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, '7Bit');
 			$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString('Version: 1');
 			$oPart->SubParts->append($oAlternativePart);
 
 			$oAlternativePart = new MimePart;
-			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'application/octet-stream');
-			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION, 'inline; filename="msg.asc"');
-			$oAlternativePart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
+			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'application/octet-stream');
+			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_DISPOSITION, 'inline; filename="msg.asc"');
+			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, '7Bit');
 			$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString($sEncrypted);
 			$oPart->SubParts->append($oAlternativePart);
 		}

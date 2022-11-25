@@ -222,75 +222,48 @@ abstract class Account implements \JsonSerializable
 		$oImapClient->__FORCE_SELECT_ON_EXAMINE__ = !!$oConfig->Get('imap', 'use_force_selection');
 		$oImapClient->__DISABLE_METADATA = !!$oConfig->Get('imap', 'disable_metadata');
 
-		$aCredentials = \array_merge(
-			$this->Domain()->ImapSettings(),
-			array(
-				'Login' => $this->IncLogin(),
-				'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
-				'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true),
-				'ClientCert' => \trim($oConfig->Get('ssl', 'client_cert', ''))
-			)
-		);
+		$oSettings = $this->Domain()->ImapSettings();
+		$oSettings->Login = $this->IncLogin();
 
-		$oPlugins->RunHook('imap.before-connect', array($this, $oImapClient, &$aCredentials));
-		if ($aCredentials['UseConnect']) {
-			$oSettings = \MailSo\Net\ConnectSettings::fromArray($aCredentials);
-			$oImapClient->Connect($oSettings);
-		}
-		$oPlugins->RunHook('imap.after-connect', array($this, $oImapClient, $aCredentials));
+		$oPlugins->RunHook('imap.before-connect', array($this, $oImapClient, $oSettings));
+		$oImapClient->Connect($oSettings);
+		$oPlugins->RunHook('imap.after-connect', array($this, $oImapClient, $oSettings));
 
-		return $this->netClientLogin($oImapClient, $oConfig, $oPlugins, $aCredentials);
+		return $this->netClientLogin($oImapClient, $oPlugins, $oSettings);
 	}
 
 	public function SmtpConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Smtp\SmtpClient $oSmtpClient, \RainLoop\Config\Application $oConfig, bool &$bUsePhpMail = false) : bool
 	{
-		$aCredentials = \array_merge(
-			$this->Domain()->SmtpSettings(),
-			array(
-				'UseConnect' => !$bUsePhpMail,
-				'UsePhpMail' => $bUsePhpMail,
-				'Login' => $this->OutLogin(),
-				'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
-				'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true)
-			)
-		);
+		$oSettings = $this->Domain()->SmtpSettings();
+		$oSettings->Login = $this->OutLogin();
+		$oSettings->usePhpMail = $bUsePhpMail;
+		$oSettings->Ehlo = \MailSo\Smtp\SmtpClient::EhloHelper();
 
-		$oPlugins->RunHook('smtp.before-connect', array($this, $oSmtpClient, &$aCredentials));
-		$bUsePhpMail = $aCredentials['UsePhpMail'];
-		$aCredentials['UseAuth'] = $aCredentials['UseAuth'] && !$aCredentials['UsePhpMail'];
+		$oPlugins->RunHook('smtp.before-connect', array($this, $oSmtpClient, $oSettings));
+		$bUsePhpMail = $oSettings->usePhpMail;
+		$oSettings->useAuth = $oSettings->useAuth && !$oSettings->usePhpMail;
 
-		if ($aCredentials['UseConnect'] && !$aCredentials['UsePhpMail']) {
-			$oSettings = \MailSo\Net\ConnectSettings::fromArray($aCredentials);
-			$oSmtpClient->Connect($oSettings, $aCredentials['Ehlo']);
+		if (!$oSettings->usePhpMail) {
+			$oSmtpClient->Connect($oSettings, $oSettings->Ehlo);
 		}
-		$oPlugins->RunHook('smtp.after-connect', array($this, $oSmtpClient, $aCredentials));
+		$oPlugins->RunHook('smtp.after-connect', array($this, $oSmtpClient, $oSettings));
 
-		return $this->netClientLogin($oSmtpClient, $oConfig, $oPlugins, $aCredentials);
+		return $this->netClientLogin($oSmtpClient, $oPlugins, $oSettings);
 	}
 
-	public function SieveConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Sieve\ManageSieveClient $oSieveClient, \RainLoop\Config\Application $oConfig)
+	public function SieveConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Sieve\SieveClient $oSieveClient, \RainLoop\Config\Application $oConfig)
 	{
-		$aCredentials = \array_merge(
-			$this->Domain()->SieveSettings(),
-			array(
-				'Login' => $this->IncLogin(),
-				'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
-				'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true),
-				'InitialAuthPlain' => !!$oConfig->Get('labs', 'sieve_auth_plain_initial', true)
-			)
-		);
+		$oSettings = $this->Domain()->SieveSettings();
+		$oSettings->Login = $this->IncLogin();
 
-		$oPlugins->RunHook('sieve.before-connect', array($this, $oSieveClient, &$aCredentials));
-		if ($aCredentials['UseConnect']) {
-			$oSettings = \MailSo\Net\ConnectSettings::fromArray($aCredentials);
-			$oSieveClient->Connect($oSettings);
-		}
-		$oPlugins->RunHook('sieve.after-connect', array($this, $oSieveClient, $aCredentials));
+		$oPlugins->RunHook('sieve.before-connect', array($this, $oSieveClient, $oSettings));
+		$oSieveClient->Connect($oSettings);
+		$oPlugins->RunHook('sieve.after-connect', array($this, $oSieveClient, $oSettings));
 
-		return $this->netClientLogin($oSieveClient, $oConfig, $oPlugins, $aCredentials);
+		return $this->netClientLogin($oSieveClient, $oPlugins, $oSettings);
 	}
 
-	private function netClientLogin(\MailSo\Net\NetClient $oClient, \RainLoop\Config\Application $oConfig, \RainLoop\Plugins\Manager $oPlugins, array $aCredentials) : bool
+	private function netClientLogin(\MailSo\Net\NetClient $oClient, \RainLoop\Plugins\Manager $oPlugins, \MailSo\Net\ConnectSettings $oSettings) : bool
 	{
 /*
 		$encrypted = !empty(\stream_get_meta_data($oClient->ConnectionResource())['crypto']);
@@ -301,35 +274,15 @@ abstract class Account implements \JsonSerializable
 			[cipher_version] => TLSv1.3
 		)
 */
-		/**
-		 * TODO: move these to Admin -> Domains -> per Domain management?
-		 */
-		$aSASLMechanisms = [];
-		if ($oConfig->Get('labs', 'sasl_allow_scram_sha', false)) {
-			// https://github.com/the-djmaze/snappymail/issues/182
-			\array_push($aSASLMechanisms, 'SCRAM-SHA3-512', 'SCRAM-SHA-512', 'SCRAM-SHA-256', 'SCRAM-SHA-1');
-		}
-		if ($oConfig->Get('labs', 'sasl_allow_cram_md5', false)) {
-			$aSASLMechanisms[] = 'CRAM-MD5';
-		}
-		if ($oConfig->Get('labs', 'sasl_allow_plain', true)) {
-			$aSASLMechanisms[] = 'PLAIN';
-		}
-		$aCredentials = \array_merge(
-			$aCredentials,
-			array(
-				'Password' => $this->Password(),
-				'ProxyAuthUser' => $this->ProxyAuthUser(),
-				'ProxyAuthPassword' => $this->ProxyAuthPassword(),
-				'SASLMechanisms' => $aSASLMechanisms
-			)
-		);
+		$oSettings->Password = $this->Password();
+		$oSettings->ProxyAuthUser = $this->ProxyAuthUser();
+		$oSettings->ProxyAuthPassword = $this->ProxyAuthPassword();
 
 		$client_name = \strtolower($oClient->getLogName());
 
-		$oPlugins->RunHook("{$client_name}.before-login", array($this, $oClient, &$aCredentials));
-		$bResult = $aCredentials['UseAuth'] && $oClient->Login($aCredentials);
-		$oPlugins->RunHook("{$client_name}.after-login", array($this, $oClient, $bResult, $aCredentials));
+		$oPlugins->RunHook("{$client_name}.before-login", array($this, $oClient, $oSettings));
+		$bResult = !$oSettings->useAuth || $oClient->Login($oSettings);
+		$oPlugins->RunHook("{$client_name}.after-login", array($this, $oClient, $bResult, $oSettings));
 		return $bResult;
 	}
 

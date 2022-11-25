@@ -13,8 +13,7 @@
 				name: 'Checkbox',
 				params: {
 					value: capaOpenPGP,
-					label: 'TAB_SECURITY/LABEL_ALLOW_OPEN_PGP',
-					inline: true
+					label: 'TAB_SECURITY/LABEL_ALLOW_OPEN_PGP'
 				}
 			}"></div>
 		</div>
@@ -58,19 +57,16 @@
 	</div>
 </form>
 <div class="form-horizontal">
-	<div class="legend" data-i18n="TAB_SECURITY/LEGEND_SSL"></div>
+	<div class="legend">SSL/TLS</div>
 	<div class="control-group">
 		<div>
 			<div data-bind="component: {
 				name: 'Checkbox',
 				params: {
 					value: verifySslCertificate,
-					label: 'TAB_SECURITY/LABEL_REQUIRE_VERIFICATION',
-					inline: true
+					label: 'TAB_SECURITY/LABEL_REQUIRE_VERIFICATION'
 				}
 			}"></div>
-			<span style="color:red"> (<span data-i18n="HINTS/UNSTABLE"></span>)</span>
-			<br>
 			<div data-bind="component: {
 				name: 'Checkbox',
 				params: {

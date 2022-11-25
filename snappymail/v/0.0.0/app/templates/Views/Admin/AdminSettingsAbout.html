@@ -34,8 +34,8 @@
 					</span>
 					<br />
 					<a class="btn" href="https://github.com/the-djmaze/snappymail/releases" target="_blank" data-i18n="TAB_ABOUT/BUTTON_RELEASES"></a>
-					<a class="btn" data-bind="visible: coreUpdatable(), click: updateCoreData" data-i18n="GLOBAL/UPDATE"></a>
-					<a class="btn" href="https://github.com/the-djmaze/snappymail/releases/latest" data-bind="hidden: coreUpdatable()" data-i18n="GLOBAL/UPDATE"></a>
+					<a class="btn" data-bind="visible: coreUpdatable, click: updateCoreData" data-i18n="GLOBAL/UPDATE"></a>
+					<a class="btn" href="https://github.com/the-djmaze/snappymail/releases/latest" data-bind="visible: !coreUpdatable()" data-i18n="GLOBAL/UPDATE"></a>
 				</div>
 				<div data-bind="visible: 'up-to-date' === statusType()">
 					<i style="color: green">✔</i>

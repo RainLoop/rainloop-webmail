@@ -347,7 +347,7 @@ MessagelistUserStore.removeMessagesFromList = (
 	fromFolderFullName, oUids, toFolderFullName = '', copy = false
 ) => {
 	let unseenCount = 0,
-		messageList = MessagelistUserStore,
+		setPage = 0,
 		currentMessage = MessageUserStore.message();
 
 	const trashFolder = FolderUserStore.trashFolder(),
@@ -356,7 +356,7 @@ MessagelistUserStore.removeMessagesFromList = (
 		toFolder = toFolderFullName ? getFolderFromCacheList(toFolderFullName) : null,
 		messages =
 			FolderUserStore.currentFolderFullName() === fromFolderFullName
-				? messageList.filter(item => item && oUids.has(item.uid))
+				? MessagelistUserStore.filter(item => item && oUids.has(item.uid))
 				: [];
 
 	messages.forEach(item => item?.isUnseen() && ++unseenCount);
@@ -406,46 +406,46 @@ MessagelistUserStore.removeMessagesFromList = (
 				item.deleted(true);
 			});
 
-			setTimeout(() => messages.forEach(item => messageList.remove(item)), 350);
+			setTimeout(() => messages.forEach(item => MessagelistUserStore.remove(item)), 350);
+
+			const
+				count = MessagelistUserStore.count() - messages.length,
+				page = MessagelistUserStore.page();
+			MessagelistUserStore.count(count);
+			if (page > MessagelistUserStore.pageCount()) {
+				setPage = MessagelistUserStore.pageCount();
+			}
 		}
 	}
 
-	if (MessagelistUserStore.threadUid()) {
-		if (
-			messageList.length &&
-			messageList.find(item => item?.deleted() && item.uid == MessagelistUserStore.threadUid())
-		) {
-			const message = messageList.find(item => item && !item.deleted());
-			let setHash;
-			if (!message) {
-				if (1 < MessagelistUserStore.page()) {
-					MessagelistUserStore.page(MessagelistUserStore.page() - 1);
-					setHash = 1;
-				} else {
-					MessagelistUserStore.threadUid(0);
-					replaceHash(
-						mailBox(
-							FolderUserStore.currentFolderFullNameHash(),
-							MessagelistUserStore.pageBeforeThread(),
-							MessagelistUserStore.listSearch()
-						)
-					);
-				}
-			} else if (MessagelistUserStore.threadUid() != message.uid) {
-				MessagelistUserStore.threadUid(message.uid);
-				setHash = 1;
+	if (MessagelistUserStore.threadUid()
+	 && MessagelistUserStore.length
+	 && MessagelistUserStore.find(item => item?.deleted() && item.uid == MessagelistUserStore.threadUid())
+	) {
+		const message = MessagelistUserStore.find(item => item && !item.deleted());
+		if (!message) {
+			if (1 < MessagelistUserStore.page()) {
+				setPage = MessagelistUserStore.page() - 1;
+			} else {
+				MessagelistUserStore.threadUid(0);
+				setPage = MessagelistUserStore.pageBeforeThread();
 			}
-			if (setHash) {
-				replaceHash(
-					mailBox(
-						FolderUserStore.currentFolderFullNameHash(),
-						MessagelistUserStore.page(),
-						MessagelistUserStore.listSearch(),
-						MessagelistUserStore.threadUid()
-					)
-				);
-			}
+		} else if (MessagelistUserStore.threadUid() != message.uid) {
+			MessagelistUserStore.threadUid(message.uid);
+			setPage = MessagelistUserStore.page();
 		}
+	}
+
+	if (setPage) {
+		MessagelistUserStore.page(setPage);
+		replaceHash(
+			mailBox(
+				FolderUserStore.currentFolderFullNameHash(),
+				setPage,
+				MessagelistUserStore.listSearch(),
+				MessagelistUserStore.threadUid()
+			)
+		);
 	}
 },
 

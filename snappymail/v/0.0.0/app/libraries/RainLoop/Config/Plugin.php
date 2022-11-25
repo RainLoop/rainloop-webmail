@@ -37,4 +37,19 @@ class Plugin extends \RainLoop\Config\AbstractConfig
 	{
 		return $this->aMap;
 	}
+
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize()
+	{
+		$aData = [];
+		foreach (parent::jsonSerialize() as $sSectionKey => $aSectionValue) {
+			if (\is_array($aSectionValue)) {
+				$aData[$sSectionKey] = [];
+				foreach ($aSectionValue as $sParamKey => $mParamValue) {
+					$aData[$sSectionKey][$sParamKey] = $mParamValue[0];
+				}
+			}
+		}
+		return $aData;
+	}
 }

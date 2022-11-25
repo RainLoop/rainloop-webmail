@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Прочитані",
 		"MENU_SELECT_FLAGGED": "Відмічені",
 		"MENU_SELECT_UNFLAGGED": "Без поміток",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "В папці немає листів.",
 		"EMPTY_SEARCH_LIST": "Листи не знайдено.",
 		"SEARCH_RESULT_FOR": "Результат пошуку \"%SEARCH%\"",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "No attachments here.",
 		"ATTACHMENTS_ERROR_DESC": "Warning! Not all attachments have been uploaded.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Not all attachments have been uploaded yet",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Запит про прочитання листа",
 		"BUTTON_MARK_AS_IMPORTANT": "Mark as important",
 		"BUTTON_REQUEST_DSN": "Request a delivery receipt"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Звукове сповіщення",
 		"CHROME_NOTIFICATION_DESC": "Показувати сповіщення про нові повідомлення у підказках",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Заблоковано браузером)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Автоматично додавати отримувачів у адресну книгу",

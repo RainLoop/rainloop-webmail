@@ -8,7 +8,7 @@
 			<span data-i18n="POPUPS_DOMAIN/LABEL_NAME"></span>
 			<span style="opacity:0.7"> (<span data-i18n="POPUPS_DOMAIN/NAME_HELPER"></span>)</span>
 			<br>
-			<input type="text" class="span4" autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off"
+			<input name="Name" type="text" class="span4" autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off"
 				data-bind="textInput: name">
 			<div class="alert-error" data-bind="visible: savingError, text: savingError"></div>
 		</div>
@@ -18,8 +18,8 @@
 	<div class="form-horizontal domain-form">
 		<div class="tabs">
 
-			<input type="radio" name="helptabs" id="tab-help1" checked>
-			<label for="tab-help1" role="tab" tabindex="0"
+			<input type="radio" name="tabs" id="tab-imap" checked>
+			<label for="tab-imap" role="tab" tabindex="0"
 				data-bind="css: { 'testing-done': testingDone, 'testing-error': testingImapError }, tooltipErrorTip: testingImapErrorDesc"
 				data-i18n="POPUPS_DOMAIN/LABEL_IMAP"></label>
 			<div class="tab-content" role="tabpanel" aria-hidden="false">
@@ -27,13 +27,13 @@
 					<div class="span3">
 						<span data-i18n="POPUPS_DOMAIN/LABEL_SERVER"></span>
 						<br>
-						<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off"
+						<input name="IMAP[host]" type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off"
 							data-bind="textInput: imapHost, hasfocus: imapHostFocus">
 					</div>
 					<div class="span2">
 						<span data-i18n="POPUPS_DOMAIN/LABEL_SECURE"></span>
 						<br>
-						<select class="span2" data-bind="value: imapSecure">
+						<select name="IMAP[type]" class="span2" data-bind="value: imapType">
 							<option value="0" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_NONE"></option>
 							<option value="1" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_SSL"></option>
 							<option value="2" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_STARTTLS"></option>
@@ -42,39 +42,55 @@
 					<div class="span2">
 						<span data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
 						<br>
-						<input type="number" autocomplete="off" autocorrect="off" autocapitalize="off"
+						<input name="IMAP[port]" type="number" autocomplete="off" autocorrect="off" autocapitalize="off"
 							style="width:6em" data-bind="textInput: imapPort">
 					</div>
 				</div>
 				<br>
-				<div data-bind="component: {
+				<div style="display: inline-block;" data-bind="component: {
 					name: 'Checkbox',
 					params: {
 						label: 'POPUPS_DOMAIN/LABEL_USE_SHORT_LOGIN',
-						value: imapShortLogin,
-						inline: true
+						value: imapShortLogin
 					}
 				}"></div>
 				<span style="opacity:0.7"> (user@domain.com → user)</span>
+
+				<h4>SSL/TLS</h4>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						value: imapSslVerify_peer,
+						label: 'TAB_SECURITY/LABEL_REQUIRE_VERIFICATION'
+					}
+				}"></div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						enable: imapSslVerify_peer,
+						value: imapSslAllow_self_signed,
+						label: 'TAB_SECURITY/LABEL_ALLOW_SELF_SIGNED'
+					}
+				}"></div>
 			</div>
 
-			<input type="radio" name="helptabs" id="tab-help2">
-			<label for="tab-help2" role="tab" tabindex="0"
+			<input type="radio" name="tabs" id="tab-smtp">
+			<label for="tab-smtp" role="tab" tabindex="0"
 				data-bind="css: { 'testing-done': testingDone, 'testing-error': testingSmtpError }, tooltipErrorTip: testingSmtpErrorDesc"
 				data-i18n="POPUPS_DOMAIN/LABEL_SMTP"></label>
 			<div class="tab-content" role="tabpanel" aria-hidden="true">
-				<div data-bind="visible: !smtpPhpMail()">
+				<div data-bind="visible: !smtpUsePhpMail()">
 					<div class="row">
 						<div class="span3">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_SERVER"></span>
 							<br>
-							<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off"
+							<input name="SMTP[host]" type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off"
 								data-bind="textInput: smtpHost, hasfocus: smtpHostFocus">
 						</div>
 						<div class="span2">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_SECURE"></span>
 							<br>
-							<select class="span2" data-bind="value: smtpSecure">
+							<select name="SMTP[type]" class="span2" data-bind="value: smtpType">
 								<option value="0" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_NONE"></option>
 								<option value="1" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_SSL"></option>
 								<option value="2" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_STARTTLS"></option>
@@ -83,17 +99,16 @@
 						<div class="span2">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
 							<br>
-							<input type="number" autocomplete="off" autocorrect="off" autocapitalize="off"
+							<input name="SMTP[port]" type="number" autocomplete="off" autocorrect="off" autocapitalize="off"
 								style="width:6em" data-bind="textInput: smtpPort">
 						</div>
 					</div>
 					<br>
-					<div data-bind="component: {
+					<div style="display: inline-block;" data-bind="component: {
 						name: 'Checkbox',
 						params: {
 							label: 'POPUPS_DOMAIN/LABEL_USE_SHORT_LOGIN',
-							value: smtpShortLogin,
-							inline: true
+							value: smtpShortLogin
 						}
 					}"></div>
 					<span style="opacity:0.7"> (user@domain.com → user)</span>
@@ -101,7 +116,7 @@
 						name: 'Checkbox',
 						params: {
 							label: 'POPUPS_DOMAIN/LABEL_USE_AUTH',
-							value: smtpAuth
+							value: smtpUseAuth
 						}
 					}"></div>
 					<br>
@@ -110,24 +125,38 @@
 					name: 'Checkbox',
 					params: {
 						label: 'POPUPS_DOMAIN/LABEL_SET_SENDER',
-						value: smtpSetSender,
-						inline: true
+						value: smtpSetSender
 					}
 				}"></div>
-				<br>
-				<div data-bind="component: {
+				<div style="display: inline-block;" data-bind="component: {
 					name: 'Checkbox',
 					params: {
 						label: 'POPUPS_DOMAIN/LABEL_USE_PHP_MAIL',
-						value: smtpPhpMail,
-						inline: true
+						value: smtpUsePhpMail
 					}
 				}"></div>
 				<span style="color:red"> (<span data-i18n="HINTS/BETA"></span>)</span>
+
+				<h4>SSL/TLS</h4>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						value: smtpSslVerify_peer,
+						label: 'TAB_SECURITY/LABEL_REQUIRE_VERIFICATION'
+					}
+				}"></div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						enable: smtpSslVerify_peer,
+						value: smtpSslAllow_self_signed,
+						label: 'TAB_SECURITY/LABEL_ALLOW_SELF_SIGNED'
+					}
+				}"></div>
 			</div>
 
-			<input type="radio" name="helptabs" id="tab-help3">
-			<label for="tab-help3" role="tab" tabindex="0"
+			<input type="radio" name="tabs" id="tab-sieve">
+			<label for="tab-sieve" role="tab" tabindex="0"
 				data-bind="css: { 'testing-done': testingDone, 'testing-error': testingSieveError }, tooltipErrorTip: testingSieveErrorDesc">
 				<i class="icon-filter"></i>
 				<span data-i18n="POPUPS_DOMAIN/LABEL_SIEVE"></span>
@@ -138,29 +167,29 @@
 						name: 'Checkbox',
 						params: {
 							label: 'POPUPS_DOMAIN/LABEL_ALLOW_SIEVE_SCRIPTS',
-							value: useSieve
+							value: sieveEnabled
 						}
 					}"></div>
 				</div>
-				<div data-bind="visible: useSieve">
+				<div data-bind="visible: sieveEnabled">
 					<div class="row">
 						<div class="span3">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_SERVER"></span>
 							<br>
-							<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off"
+							<input name="Sieve[host]" type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off"
 								data-bind="textInput: sieveHost, hasfocus: sieveHostFocus">
 						</div>
 						<div class="span2">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_SECURE"></span>
 							<br>
-							<select class="span2" data-bind="value: sieveSecure">
+							<select name="Sieve[type]" class="span2" data-bind="value: sieveType">
 								<option value="0" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_NONE"></option>
 								<option value="1" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_SSL"></option>
 								<option value="2" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_STARTTLS"></option>
 							</select>
 						</div>
 						<div class="span2">
-							<span data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
+							<span name="Sieve[port]" data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
 							<br>
 							<input type="number" autocomplete="off" autocorrect="off" autocapitalize="off"
 								style="width:6em" data-bind="textInput: sievePort">
@@ -169,8 +198,8 @@
 				</div>
 			</div>
 
-			<input type="radio" name="helptabs" id="tab-help4">
-			<label for="tab-help4" role="tab" tabindex="0" data-icon="👥" data-i18n="POPUPS_DOMAIN/BUTTON_WHITE_LIST"></label>
+			<input type="radio" name="tabs" id="tab-whitelist">
+			<label for="tab-whitelist" role="tab" tabindex="0" data-icon="👥" data-i18n="POPUPS_DOMAIN/BUTTON_WHITE_LIST"></label>
 			<div class="tab-content" role="tabpanel" aria-hidden="true">
 				<div class="alert" data-i18n="POPUPS_DOMAIN/WHITE_LIST_ALERT"></div>
 				<textarea class="input-xxlarge" style="width: 100%" rows="8" data-bind="value: whiteList" tabindex="-1"></textarea>

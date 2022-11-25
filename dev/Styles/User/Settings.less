@@ -27,11 +27,13 @@
 			cursor: pointer;
 			display: block;
 			font-size: 18px;
-			height: 30px;
-			line-height: 29px;
+			line-height: 2em;
+			max-height: 2em;
 			overflow: hidden;
-			padding: 4px 10px;
+			padding: 0 10px;
 			text-decoration: none;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 		}
 
 		a:focus, a:hover {
@@ -54,7 +56,6 @@
 		top: 0;
 		right: 0;
 		left: 0;
-		height: 34px;
 		padding: 8px 0;
 		color: #fff;
 	}
@@ -71,7 +72,6 @@
 	scroll-behavior: smooth;
 	padding:20px;
 
-	box-sizing: border-box;
 	height: calc(100% - 50px - @rlLowMargin - @rlLowMargin);
 
 	background-color: var(--settings-bg-clr, #fff);

@@ -38,12 +38,26 @@
 html, body {
 	margin: 0;
 	padding: 0;
+	-webkit-text-size-adjust: 100%; /* 2 */
+}
+
+#rl-app *, #rl-app *::before, #rl-app *::after {
+	box-sizing: border-box;
 }
 
 #rl-app {
 	background-color: var(--main-bg-color, #aaa);
 	color: var(--main-color, #333);
 	font-family: var(--fontSans);
+
+	-webkit-touch-callout: none;
+	font-size: var(--main-font-size, 14px);
+	line-height: 1.25; /* 1 */
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
 }
 
 #rl-loading, #rl-loading-error {

@@ -36,9 +36,6 @@ export class AbstractApp {
 					createViewModel: (params, componentInfo) => {
 						params = params || {};
 						i18nToNodes(componentInfo.element);
-						if (params.inline) {
-							componentInfo.element.style.display = 'inline-block';
-						}
 						return new ClassObject(params);
 					}
 				}

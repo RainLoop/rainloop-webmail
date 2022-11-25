@@ -4,9 +4,9 @@ class OverrideSmtpCredentialsPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Override SMTP Credentials',
-		VERSION = '2.2',
-		RELEASE = '2022-04-13',
-		REQUIRED = '2.5.0',
+		VERSION = '2.3',
+		RELEASE = '2022-11-11',
+		REQUIRED = '2.21.0',
 		CATEGORY = 'Filters',
 		DESCRIPTION = 'Override SMTP credentials for specific users.';
 
@@ -19,46 +19,43 @@ class OverrideSmtpCredentialsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
 	 * @param \MailSo\Smtp\SmtpClient $oSmtpClient
-	 * @param array $aSmtpCredentials
+	 * @param \MailSo\Smtp\Settings $oSettings
 	 */
-	public function FilterSmtpCredentials($oAccount, $oSmtpClient, &$aSmtpCredentials)
+	public function FilterSmtpCredentials(\RainLoop\Model\Account $oAccount, \MailSo\Smtp\SmtpClient $oSmtpClient, \MailSo\Smtp\Settings $oSettings)
 	{
-		if ($oAccount instanceof \RainLoop\Model\Account && \is_array($aSmtpCredentials))
+		$sEmail = $oAccount->Email();
+
+		$sHost = \trim($this->Config()->Get('plugin', 'smtp_host', ''));
+		$sWhiteList = \trim($this->Config()->Get('plugin', 'override_users', ''));
+
+		$sFoundValue = '';
+		if (0 < strlen($sWhiteList) && 0 < \strlen($sHost) && \RainLoop\Plugins\Helper::ValidateWildcardValues($sEmail, $sWhiteList, $sFoundValue))
 		{
-			$sEmail = $oAccount->Email();
+			\SnappyMail\LOG::debug('SMTP Override', "{$sEmail} matched {$sFoundValue}");
+			$oSettings->host = $sHost;
+			$oSettings->port = (int) $this->Config()->Get('plugin', 'smtp_port', 25);
 
-			$sHost = \trim($this->Config()->Get('plugin', 'smtp_host', ''));
-			$sWhiteList = \trim($this->Config()->Get('plugin', 'override_users', ''));
-
-			$sFoundValue = '';
-			if (0 < strlen($sWhiteList) && 0 < \strlen($sHost) && \RainLoop\Plugins\Helper::ValidateWildcardValues($sEmail, $sWhiteList, $sFoundValue))
+			$sSecure = \trim($this->Config()->Get('plugin', 'smtp_secure', 'None'));
+			switch ($sSecure)
 			{
-				\SnappyMail\LOG::debug('SMTP Override', "{$sEmail} matched {$sFoundValue}");
-				$aSmtpCredentials['Host'] = $sHost;
-				$aSmtpCredentials['Port'] = (int) $this->Config()->Get('plugin', 'smtp_port', 25);
-
-				$sSecure = \trim($this->Config()->Get('plugin', 'smtp_secure', 'None'));
-				switch ($sSecure)
-				{
-					case 'SSL':
-						$aSmtpCredentials['Secure'] = MailSo\Net\Enumerations\ConnectionSecurityType::SSL;
-						break;
-					case 'TLS':
-						$aSmtpCredentials['Secure'] = MailSo\Net\Enumerations\ConnectionSecurityType::STARTTLS;
-						break;
-					default:
-						$aSmtpCredentials['Secure'] = MailSo\Net\Enumerations\ConnectionSecurityType::NONE;
-						break;
-				}
-
-				$aSmtpCredentials['UseAuth'] = (bool) $this->Config()->Get('plugin', 'smtp_auth', true);
-				$aSmtpCredentials['Login'] = \trim($this->Config()->Get('plugin', 'smtp_user', ''));
-				$aSmtpCredentials['Password'] = (string) $this->Config()->Get('plugin', 'smtp_password', '');
+				case 'SSL':
+					$oSettings->type = MailSo\Net\Enumerations\ConnectionSecurityType::SSL;
+					break;
+				case 'TLS':
+					$oSettings->type = MailSo\Net\Enumerations\ConnectionSecurityType::STARTTLS;
+					break;
+				default:
+					$oSettings->type = MailSo\Net\Enumerations\ConnectionSecurityType::NONE;
+					break;
 			}
-			else
-			{
-				\SnappyMail\LOG::debug('SMTP Override', "{$sEmail} no match");
-			}
+
+			$oSettings->useAuth = (bool) $this->Config()->Get('plugin', 'smtp_auth', true);
+			$oSettings->Login = \trim($this->Config()->Get('plugin', 'smtp_user', ''));
+			$oSettings->Password = (string) $this->Config()->Get('plugin', 'smtp_password', '');
+		}
+		else
+		{
+			\SnappyMail\LOG::debug('SMTP Override', "{$sEmail} no match");
 		}
 	}
 

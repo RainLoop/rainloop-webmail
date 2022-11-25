@@ -41,7 +41,6 @@ select,
 .select,
 textarea,
 input {
-  box-sizing: border-box;
   display: inline-block;
   padding: 4px 6px;
   color: var(--input-clr, #555);
@@ -84,7 +83,7 @@ select, .select {
   // Safari requires -webkit-
   -webkit-appearance: none;
   appearance: none;
-  background: var(--input-bg-clr, #fff) url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' height='10px' width='15px'><text x='0' y='10' fill='rgb(85,85,85)'>▾</text></svg>") right center/1em no-repeat border-box;
+  background: var(--input-bg-clr, #fff) url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIGhlaWdodD0nMTBweCcgd2lkdGg9JzE1cHgnPjx0ZXh0IHg9JzAnIHk9JzEwJyBmaWxsPSdyZ2IoODUsODUsODUpJz7ilr48L3RleHQ+PC9zdmc+) right center/1em no-repeat border-box;
   border: 1px solid var(--input-border-clr, #ccc);
   cursor: pointer;
   padding-right: 1.5em;

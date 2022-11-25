@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Lest",
 		"MENU_SELECT_FLAGGED": "Stjernemerket",
 		"MENU_SELECT_UNFLAGGED": "Ikke stjernemerket",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Tom liste",
 		"EMPTY_SEARCH_LIST": "Søket ga ingen treff.",
 		"SEARCH_RESULT_FOR": "Søketreff for «%SEARCH%»",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Ingen vedlegg.",
 		"ATTACHMENTS_ERROR_DESC": "Advarsel: ett eller flere vedlegg er ikke blitt lastet opp enda.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Ett eller flere vedlegg er ikke blitt lastet opp enda",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Be om en bekreftelse fra mottaker på at meldinga er lest",
 		"BUTTON_MARK_AS_IMPORTANT": "Marker som viktig",
 		"BUTTON_REQUEST_DSN": "Be om leveringsbekreftelse"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Lydvarsel",
 		"CHROME_NOTIFICATION_DESC": "Vis sprettopp-varsel om nye meldinger",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(blokkert av nettleser)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Legg til mottakere i adresseboka automatisk",

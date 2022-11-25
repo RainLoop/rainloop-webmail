@@ -2,7 +2,7 @@
 <?php
 chdir(__DIR__);
 
-$options = getopt('', ['aur','docker','plugins','set-version','skip-gulp','debian','nextcloud','sign']);
+$options = getopt('', ['aur','docker','plugins','set-version','skip-gulp','debian','nextcloud','sign','cpanel']);
 
 if (isset($options['plugins'])) {
 	require(__DIR__ . '/build/plugins.php');
@@ -176,6 +176,10 @@ echo "{$zip_destination} created\n{$tar_destination} created\n";
 
 if (isset($options['nextcloud'])) {
 	require(__DIR__ . '/build/nextcloud.php');
+}
+
+if (isset($options['cpanel'])) {
+	require(__DIR__ . '/build/cpanel.php');
 }
 
 rename("snappymail/v/{$package->version}", 'snappymail/v/0.0.0');

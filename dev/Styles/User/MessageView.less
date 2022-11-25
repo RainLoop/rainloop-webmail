@@ -17,7 +17,7 @@ html.rl-no-preview-pane {
 
 	.toolbar {
 		position: absolute;
-		top: -50px - @rlLowMargin;
+		top: -50px;
 		right: 0;
 		left: 0;
 		height: 30px;
@@ -44,9 +44,8 @@ html.rl-no-preview-pane {
 	.b-message-view-checked-helper {
 		text-align: center;
 		font-size: 70px;
-		line-height: 70px;
-		padding-top: 100px;
-		color: #999;
+		padding-top: 25vh;
+		opacity: 0.6;
 	}
 	.b-message-view-checked-helper::after {
 		content: ' ✉';
@@ -58,7 +57,7 @@ html.rl-no-preview-pane {
 		font-size: 24px;
 		line-height: 30px;
 		color: #999;
-		padding: 120px 10px 0 10px;
+		padding: 25vh 10px 0;
 	}
 
 	.b-message-view-desc.error {
@@ -95,7 +94,6 @@ html.rl-no-preview-pane {
 	}
 
 	.messageTags {
-		margin-top: 6px;
 		align-items: baseline;
 		display: flex;
 	}
@@ -128,7 +126,6 @@ html.rl-no-preview-pane {
 			display: flex;
 			font-size: 18px;
 			font-weight: bold;
-			margin-bottom: 8px;
 		}
 
 		.subject {
@@ -148,7 +145,7 @@ html.rl-no-preview-pane {
 		}
 
 		.informationShort {
-			margin: 4px 40px 0 0;
+			margin: 0 40px 0 0;
 			overflow: hidden;
 			text-overflow: ellipsis;
 
@@ -253,33 +250,6 @@ html.rl-no-preview-pane {
 	overflow: auto;
 	scroll-behavior: smooth;
 
-	.buttonFull {
-		display: inline-block;
-		position: fixed;
-		right: 8px;
-		bottom: 8px;
-		height: 30px;
-		width: 30px;
-		text-align: center;
-		vertical-align: middle;
-		line-height: 30px;
-		background-color: transparent;
-		background-color: #fff;
-		border: 1px solid #333;
-		color: #333;
-		z-index: 2;
-		cursor: pointer;
-		border-radius: var(--border-radius, 5px);
-		opacity: 0.5;
-
-		&:hover {
-			opacity: 0.8;
-			border-color: #666;
-			background-color: #888;
-			color: #fff;
-		}
-	}
-
 	.loading {
 		text-align: center;
 		font-size: 24px;
@@ -345,6 +315,7 @@ html.rl-no-preview-pane {
 		border-bottom: 1px solid var(--border-color, #bbb);
 	}
 	.attachmentsControls > * {
+		display: inline-block;
 		margin-right: 0.5em;
 		white-space: nowrap;
 	}
@@ -537,11 +508,5 @@ html.rl-fullscreen {
 		bottom: 0;
 		left: 0;
 		border: 0;
-	}
-}
-
-html:not(.rl-mobile) #messageItem {
-	.buttonFull {
-		display: none !important;
 	}
 }

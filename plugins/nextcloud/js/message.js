@@ -1,8 +1,54 @@
 (rl => {
 //	if (rl.settings.get('Nextcloud'))
+	const templateId = 'MailMessageView';
 
 	addEventListener('rl-view-model.create', e => {
-		if ('MailMessageView' === e.detail.viewModelTemplateID) {
+		if (templateId === e.detail.viewModelTemplateID) {
+
+			const
+				template = document.getElementById(templateId),
+				cfg = rl.settings.get('Nextcloud'),
+				attachmentsControls = template.content.querySelector('.attachmentsControls'),
+				msgMenu = template.content.querySelector('#more-view-dropdown-id + menu');
+
+			if (attachmentsControls) {
+				attachmentsControls.append(Element.fromHTML(`<span>
+					<i class="fontastic iconcolor-red" data-bind="visible: saveNextcloudError">✖</i>
+					<i class="fontastic" data-bind="visible: !saveNextcloudError(),
+						css: {'icon-spinner': saveNextcloudLoading()}">💾</i>
+					<span class="g-ui-link" data-bind="click: saveNextcloud" data-i18n="NEXTCLOUD/SAVE_ATTACHMENTS"></span>
+				</span>`));
+
+				// https://github.com/nextcloud/calendar/issues/4684
+				if (cfg.CalDAV) {
+					attachmentsControls.append(Element.fromHTML(`<span data-bind="visible: nextcloudICS" data-icon="📅">
+						<span class="g-ui-link" data-bind="click: nextcloudSaveICS" data-i18n="NEXTCLOUD/SAVE_ICS"></span>
+					</span>`));
+				}
+			}
+/*
+			// https://github.com/the-djmaze/snappymail/issues/592
+			if (cfg.CalDAV) {
+				const attachmentsPlace = template.content.querySelector('.attachmentsPlace');
+				attachmentsPlace.after(Element.fromHTML(`
+				<table data-bind="if: nextcloudICS, visible: nextcloudICS"><tbody style="white-space:pre">
+					<tr><td>Summary</td><td data-icon="📅" data-bind="text: nextcloudICS().SUMMARY"></td></tr>
+					<tr><td>Organizer</td><td data-bind="text: nextcloudICS().ORGANIZER"></td></tr>
+					<tr><td>Start</td><td data-bind="text: nextcloudICS().DTSTART"></td></tr>
+					<tr><td>End</td><td data-bind="text: nextcloudICS().DTEND"></td></tr>
+					<tr><td>Transparency</td><td data-bind="text: nextcloudICS().TRANSP"></td></tr>
+					<tr data-bind="foreach: nextcloudICS().ATTENDEE">
+						<td></td><td data-bind="text: $data.replace(/;/g,';\\n')"></td>
+					</tr>
+				</tbody></table>`));
+			}
+*/
+			if (msgMenu) {
+				msgMenu.append(Element.fromHTML(`<li role="presentation">
+					<a href="#" tabindex="-1" data-icon="📥" data-bind="click: nextcloudSaveMsg" data-i18n="NEXTCLOUD/SAVE_EML"></a>
+				</li>`));
+			}
+
 			let view = e.detail;
 			view.saveNextcloudError = ko.observable(false).extend({ falseTimeout: 7000 });
 			view.saveNextcloudLoading = ko.observable(false);
@@ -65,7 +111,7 @@
 			view.nextcloudSaveICS = () => {
 				let VEVENT = view.nextcloudICS();
 				VEVENT && rl.nextcloud.selectCalendar()
-				.then(href => href && rl.nextcloud.calendarPut(href, VEVENT.rawText));
+				.then(href => href && rl.nextcloud.calendarPut(href, VEVENT));
 			}
 
 			/**
@@ -73,7 +119,7 @@
 			 */
 			view.message.subscribe(msg => {
 				view.nextcloudICS(null);
-				if (msg) {
+				if (msg && cfg.CalDAV) {
 					let ics = msg.attachments.find(attachment => 'text/calendar' == attachment.mimeType);
 					if (ics && ics.download) {
 						// fetch it and parse the VEVENT
@@ -119,7 +165,7 @@
 								}
 							}
 //							METHOD:REPLY || METHOD:REQUEST
-							console.dir({VEVENT:VEVENT});
+//							console.dir({VEVENT:VEVENT});
 							if (VEVENT) {
 								VEVENT.rawText = text;
 								VEVENT.isCancelled = () => VEVENT.STATUS?.includes('CANCELLED');
@@ -137,48 +183,5 @@
 			});
 		}
 	});
-
-	let template = document.getElementById('MailMessageView');
-	let cfg = rl.settings.get('Nextcloud');
-
-	const attachmentsControls = template.content.querySelector('.attachmentsControls');
-	if (attachmentsControls) {
-		attachmentsControls.append(Element.fromHTML(`<span>
-			<i class="fontastic iconcolor-red" data-bind="visible: saveNextcloudError">✖</i>
-			<i class="fontastic" data-bind="visible: !saveNextcloudError(),
-				css: {'icon-spinner': saveNextcloudLoading()}">💾</i>
-			<span class="g-ui-link" data-bind="click: saveNextcloud" data-i18n="NEXTCLOUD/SAVE_ATTACHMENTS"></span>
-		</span>`));
-
-		// https://github.com/nextcloud/calendar/issues/4684
-		if (cfg.CalDAV) {
-			attachmentsControls.append(Element.fromHTML(`<span data-bind="visible: nextcloudICS" data-icon="📅">
-				<span class="g-ui-link" data-bind="click: nextcloudSaveICS" data-i18n="NEXTCLOUD/SAVE_ICS"></span>
-			</span>`));
-		}
-	}
-/*
-	// https://github.com/the-djmaze/snappymail/issues/592
-	if (cfg.CalDAV) {
-		const attachmentsPlace = template.content.querySelector('.attachmentsPlace');
-		attachmentsPlace.after(Element.fromHTML(`
-		<table data-bind="if: nextcloudICS, visible: nextcloudICS"><tbody style="white-space:pre">
-			<tr><td>Summary</td><td data-icon="📅" data-bind="text: nextcloudICS().SUMMARY"></td></tr>
-			<tr><td>Organizer</td><td data-bind="text: nextcloudICS().ORGANIZER"></td></tr>
-			<tr><td>Start</td><td data-bind="text: nextcloudICS().DTSTART"></td></tr>
-			<tr><td>End</td><td data-bind="text: nextcloudICS().DTEND"></td></tr>
-			<tr><td>Transparency</td><td data-bind="text: nextcloudICS().TRANSP"></td></tr>
-			<tr data-bind="foreach: nextcloudICS().ATTENDEE">
-				<td></td><td data-bind="text: $data.replace(/;/g,';\\n')"></td>
-			</tr>
-		</tbody></table>`));
-	}
-*/
-	const msgMenu = template.content.querySelector('#more-view-dropdown-id + menu');
-	if (msgMenu) {
-		msgMenu.append(Element.fromHTML(`<li role="presentation">
-			<a href="#" tabindex="-1" data-icon="📥" data-bind="click: nextcloudSaveMsg" data-i18n="NEXTCLOUD/SAVE_EML"></a>
-		</li>`));
-	}
 
 })(window.rl);

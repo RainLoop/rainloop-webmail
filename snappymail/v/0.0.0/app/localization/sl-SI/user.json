@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Prebrana",
 		"MENU_SELECT_FLAGGED": "Z zvezdico",
 		"MENU_SELECT_UNFLAGGED": "Brez zvezdice",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Prazen seznam.",
 		"EMPTY_SEARCH_LIST": "Brez ujemanj.",
 		"SEARCH_RESULT_FOR": "Ujemanja za \"%SEARCH%\"",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Ni prilog.",
 		"ATTACHMENTS_ERROR_DESC": "Pozor! Priloge niso bile vse naložene.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Priloge še niso bile naložene v celoti.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Zahtevaj potrdilo o branju",
 		"BUTTON_MARK_AS_IMPORTANT": "Označi kot pomembno",
 		"BUTTON_REQUEST_DSN": "Zahtevaj potrdilo o dostavi"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Zvočno obvestilo",
 		"CHROME_NOTIFICATION_DESC": "Prikaži obvestila ob novih sporočilih",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Zavrnil brskalnik)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Samodejno dodaj prejemnike v imenik",

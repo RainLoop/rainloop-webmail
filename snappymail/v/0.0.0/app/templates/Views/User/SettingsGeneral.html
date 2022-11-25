@@ -109,6 +109,13 @@
 					value: pgpEncrypt
 				}
 			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'COMPOSE/ALLOW_SPELLCHECK',
+					value: allowSpellcheck
+				}
+			}"></div>
 		</div>
 	</div>
 
@@ -161,6 +168,13 @@
 			<div data-bind="component: {
 				name: 'Checkbox',
 				params: {
+					label: 'SETTINGS_GENERAL/LIST_SIMPLE_ATTACHMENTS',
+					value: simpleAttachmentsList
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
 					label: 'SETTINGS_GENERAL/PREFER_HTML',
 					value: viewHTML
 				}
@@ -173,13 +187,12 @@
 	<div class="control-group">
 		<div>
 			<div>
-				<div data-bind="component: {
+				<div style="display: inline-block;" data-bind="component: {
 					name: 'Checkbox',
 					params: {
 						label: 'SETTINGS_GENERAL/CHROME_NOTIFICATION_DESC',
 						value: desktopNotification,
-						enable: isDesktopNotificationAllowed,
-						inline: true
+						enable: isDesktopNotificationAllowed
 					}
 				}"></div>
 				&nbsp;
@@ -187,12 +200,11 @@
 				<span class="fontastic" data-bind="click: testSystemNotification" style="color:green;cursor:pointer">▶️</span>
 			</div>
 			<div>
-				<div data-bind="component: {
+				<div style="display: inline-block;" data-bind="component: {
 					name: 'Checkbox',
 					params: {
 						label: 'SETTINGS_GENERAL/SOUND_NOTIFICATION',
-						value: soundNotification,
-						inline: true
+						value: soundNotification
 					}
 				}"></div>
 				&nbsp;

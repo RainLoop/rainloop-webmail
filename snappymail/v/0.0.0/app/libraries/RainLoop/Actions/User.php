@@ -73,142 +73,123 @@ trait User
 	 */
 	public function DoAttachmentsActions() : array
 	{
-		if (!$this->GetCapa(Capa::ATTACHMENTS_ACTIONS))
-		{
+		$sAction = $this->GetActionParam('Do', '');
+		$aHashes = $this->GetActionParam('Hashes', null);
+		$oFilesProvider = $this->FilesProvider();
+		if (empty($sAction) || !$this->GetCapa(Capa::ATTACHMENTS_ACTIONS) || !$oFilesProvider || !$oFilesProvider->IsActive()) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
 		$oAccount = $this->initMailClientConnection();
 
-		$sAction = $this->GetActionParam('Do', '');
-		$aHashes = $this->GetActionParam('Hashes', null);
-
-		$mResult = false;
 		$bError = false;
-		$aData = false;
+		$aData = [];
+		$mUIDs = [];
 
-		if (\is_array($aHashes) && \count($aHashes))
-		{
-			$aData = array();
-			foreach ($aHashes as $sZipHash)
-			{
+		if (\is_array($aHashes) && \count($aHashes)) {
+			foreach ($aHashes as $sZipHash) {
 				$aResult = $this->getMimeFileByHash($oAccount, $sZipHash);
-				if (!empty($aResult['FileHash']))
-				{
-					$aData[] = $aResult;
-				}
-				else
-				{
+				if (empty($aResult['FileHash'])) {
 					$bError = true;
 					break;
 				}
+				$aData[] = $aResult;
+				$mUIDs[$aResult['Uid']] = $aResult['Uid'];
 			}
 		}
+		$mUIDs = 1 < \count($mUIDs);
 
-		$oFilesProvider = $this->FilesProvider();
-		if (!empty($sAction) && !$bError && \is_array($aData) && \count($aData) &&
-			$oFilesProvider && $oFilesProvider->IsActive())
+		if ($bError || !\count($aData)) {
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
+		$mResult = false;
+		switch (\strtolower($sAction))
 		{
-			$bError = false;
-			switch (\strtolower($sAction))
-			{
-				case 'zip':
+			case 'zip':
 
-					$sZipHash = \MailSo\Base\Utils::Sha1Rand();
-					$sZipFileName = $oFilesProvider->GenerateLocalFullFileName($oAccount, $sZipHash);
+				$sZipHash = \MailSo\Base\Utils::Sha1Rand();
+				$sZipFileName = $oFilesProvider->GenerateLocalFullFileName($oAccount, $sZipHash);
 
-					if (!empty($sZipFileName)) {
-						if (\class_exists('ZipArchive')) {
-							$oZip = new \ZipArchive();
-							$oZip->open($sZipFileName, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::OVERWRITE);
-							$oZip->setArchiveComment('SnappyMail/'.APP_VERSION);
-							foreach ($aData as $aItem) {
-								$sFileName = (string) (isset($aItem['FileName']) ? $aItem['FileName'] : 'file.dat');
-								$sFileHash = (string) (isset($aItem['FileHash']) ? $aItem['FileHash'] : '');
-								if (!empty($sFileHash)) {
-									$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $sFileHash);
-									if (!$oZip->addFile($sFullFileNameHash, $sFileName)) {
-										$bError = true;
-									}
-								}
-							}
-
-							if (!$bError) {
-								$bError = !$oZip->close();
-							} else {
-								$oZip->close();
-							}
-/*
-						} else {
-							@\unlink($sZipFileName);
-							$oZip = new \SnappyMail\Stream\ZIP($sZipFileName);
-//							$oZip->setArchiveComment('SnappyMail/'.APP_VERSION);
-							foreach ($aData as $aItem) {
-								$sFileName = (string) (isset($aItem['FileName']) ? $aItem['FileName'] : 'file.dat');
-								$sFileHash = (string) (isset($aItem['FileHash']) ? $aItem['FileHash'] : '');
-								if (!empty($sFileHash)) {
-									$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $sFileHash);
-									if (!$oZip->addFile($sFullFileNameHash, $sFileName)) {
-										$bError = true;
-									}
-								}
-							}
-							$oZip->close();
-*/
-						} else {
-							@\unlink($sZipFileName);
-							$oZip = new \PharData($sZipFileName . '.zip', 0, null, \Phar::ZIP);
-							$oZip->compressFiles(\Phar::GZ);
-							foreach ($aData as $aItem) {
-								$sFileName = (isset($aItem['FileName']) ? (string) $aItem['FileName'] : 'file.dat');
-								$sFileHash = (isset($aItem['FileHash']) ? (string) $aItem['FileHash'] : '');
-								if ($sFileHash) {
-									$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $sFileHash);
-									$oZip->addFile($sFullFileNameHash, $sFileName);
-								}
-							}
-							$oZip->compressFiles(\Phar::GZ);
-							unset($oZip);
-							\rename($sZipFileName . '.zip', $sZipFileName);
-						}
-
+				if (!empty($sZipFileName)) {
+					if (\class_exists('ZipArchive')) {
+						$oZip = new \ZipArchive();
+						$oZip->open($sZipFileName, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::OVERWRITE);
+						$oZip->setArchiveComment('SnappyMail/'.APP_VERSION);
 						foreach ($aData as $aItem) {
-							$sFileHash = (isset($aItem['FileHash']) ? (string) $aItem['FileHash'] : '');
-							if ($sFileHash) {
-								$oFilesProvider->Clear($oAccount, $sFileHash);
+							$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $aItem['FileHash']);
+							$sFileName = ($mUIDs ? "{$aItem['Uid']}/" : '') . ($aItem['FileName'] ?: 'file.dat');
+							if (!$oZip->addFile($sFullFileNameHash, $sFileName)) {
+								$bError = true;
 							}
 						}
 
-						if (!$bError) {
-							$mResult = array(
-								'FileHash' => Utils::EncodeKeyValuesQ(array(
-									'Account' => $oAccount ? $oAccount->Hash() : '',
-									'FileName' => 'attachments.zip',
-									'MimeType' => 'application/zip',
-									'FileHash' => $sZipHash
-								))
+						if ($bError) {
+							$oZip->close();
+						} else {
+							$bError = !$oZip->close();
+						}
+/*
+					} else {
+						@\unlink($sZipFileName);
+						$oZip = new \SnappyMail\Stream\ZIP($sZipFileName);
+//						$oZip->setArchiveComment('SnappyMail/'.APP_VERSION);
+						foreach ($aData as $aItem) {
+							$sFileName = (string) (isset($aItem['FileName']) ? $aItem['FileName'] : 'file.dat');
+							$sFileHash = (string) (isset($aItem['FileHash']) ? $aItem['FileHash'] : '');
+							if (!empty($sFileHash)) {
+								$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $sFileHash);
+								if (!$oZip->addFile($sFullFileNameHash, $sFileName)) {
+									$bError = true;
+								}
+							}
+						}
+						$oZip->close();
+*/
+					} else {
+						@\unlink($sZipFileName);
+						$oZip = new \PharData($sZipFileName . '.zip', 0, null, \Phar::ZIP);
+						$oZip->compressFiles(\Phar::GZ);
+						foreach ($aData as $aItem) {
+							$oZip->addFile(
+								$oFilesProvider->GetFileName($oAccount, $aItem['FileHash']),
+								($mUIDs ? "{$aItem['Uid']}/" : '') . ($aItem['FileName'] ?: 'file.dat')
 							);
 						}
+						$oZip->compressFiles(\Phar::GZ);
+						unset($oZip);
+						\rename($sZipFileName . '.zip', $sZipFileName);
 					}
-					break;
 
-				default:
-					$data = new \SnappyMail\AttachmentsAction;
-					$data->action = $sAction;
-					$data->items = $aData;
-					$data->filesProvider = $oFilesProvider;
-					$data->account = $oAccount;
-					$this->Plugins()->RunHook('json.attachments', array($data));
-					$mResult = $data->result;
-					break;
-			}
-		}
-		else
-		{
-			$bError = true;
+					foreach ($aData as $aItem) {
+						$oFilesProvider->Clear($oAccount, $aItem['FileHash']);
+					}
+
+					if (!$bError) {
+						$mResult = array(
+							'FileHash' => Utils::EncodeKeyValuesQ(array(
+								'Account' => $oAccount ? $oAccount->Hash() : '',
+								'FileName' => 'attachments.zip',
+								'MimeType' => 'application/zip',
+								'FileHash' => $sZipHash
+							))
+						);
+					}
+				}
+				break;
+
+			default:
+				$data = new \SnappyMail\AttachmentsAction;
+				$data->action = $sAction;
+				$data->items = $aData;
+				$data->filesProvider = $oFilesProvider;
+				$data->account = $oAccount;
+				$this->Plugins()->RunHook('json.attachments', array($data));
+				$mResult = $data->result;
+				break;
 		}
 
-		$this->requestSleep();
+//		$this->requestSleep();
 		return $this->DefaultResponse(__FUNCTION__, $bError ? false : $mResult);
 	}
 
@@ -334,11 +315,13 @@ trait User
 		$this->setSettingsFromParams($oSettings, 'requestDsn', 'bool');
 		$this->setSettingsFromParams($oSettings, 'pgpSign', 'bool');
 		$this->setSettingsFromParams($oSettings, 'pgpEncrypt', 'bool');
+		$this->setSettingsFromParams($oSettings, 'allowSpellcheck', 'bool');
 
 		$this->setSettingsFromParams($oSettings, 'ViewHTML', 'bool');
 		$this->setSettingsFromParams($oSettings, 'ShowImages', 'bool');
 		$this->setSettingsFromParams($oSettings, 'RemoveColors', 'bool');
 		$this->setSettingsFromParams($oSettings, 'ListInlineAttachments', 'bool');
+		$this->setSettingsFromParams($oSettings, 'simpleAttachmentsList', 'bool');
 		$this->setSettingsFromParams($oSettings, 'ContactsAutosave', 'bool');
 		$this->setSettingsFromParams($oSettings, 'DesktopNotifications', 'bool');
 		$this->setSettingsFromParams($oSettings, 'SoundNotification', 'bool');

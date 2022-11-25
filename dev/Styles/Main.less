@@ -3,23 +3,6 @@
  * 2. Prevent adjustments of font size after orientation changes in iOS.
  */
 
-html, body {
-	height: 100%;
-	overflow: hidden;
-	-webkit-text-size-adjust: 100%; /* 2 */
-}
-
-#rl-app {
-	-webkit-touch-callout: none;
-	font-size: var(--main-font-size, 14px);
-	line-height: 1.15; /* 1 */
-	position: fixed;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
-}
-
 html.list-loading body {
 /*	cursor: wait;*/
 	cursor: progress;

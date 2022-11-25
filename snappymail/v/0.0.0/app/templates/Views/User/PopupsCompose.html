@@ -124,7 +124,7 @@
 			<tr>
 				<td data-i18n="GLOBAL/SUBJECT"></div>
 				<td>
-					<input type="text" size="70" autocomplete="off" data-bind="textInput: subject">
+					<input type="text" name="subject" autocomplete="off" data-bind="textInput: subject">
 				</td>
 			</tr>
 		</table>
@@ -185,7 +185,7 @@
 			data-i18n="COMPOSE/NO_ATTACHMENTS_HERE_DESC"></div>
 	</div>
 
-	<div class="textAreaParent" data-bind="visible: 'body' == viewArea(), initDom: editorArea"></div>
+	<div class="textAreaParent" data-bind="visible: 'body' == viewArea(), initDom: editorArea, attr:{spellcheck:allowSpellcheck()?'true':'false'}"></div>
 
 	<div class="textAreaParent" id="mailvelope-editor" data-bind="visible: 'mailvelope' == viewArea()"></div>
 </div>

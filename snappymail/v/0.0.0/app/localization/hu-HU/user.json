@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Olvasott",
 		"MENU_SELECT_FLAGGED": "Megjelölt",
 		"MENU_SELECT_UNFLAGGED": "Jelöletlen",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Lista üres.",
 		"EMPTY_SEARCH_LIST": "Nincs a keresésnek megfelelő levél.",
 		"SEARCH_RESULT_FOR": "Keresési eredmények ehhez: \"%SEARCH%\"",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Nincsenek mellékletek.",
 		"ATTACHMENTS_ERROR_DESC": "Figyelem! Még nem lett feltöltve minden melléklet.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Még nem lett feltöltve minden melléklet.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Olvasási visszaigazolás kérése",
 		"BUTTON_MARK_AS_IMPORTANT": "Megjelölés fontosként",
 		"BUTTON_REQUEST_DSN": "Továbbítási visszaigazolás kérés"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Hangos értesítés",
 		"CHROME_NOTIFICATION_DESC": "Új üzenetek értesítő ablakainak megjelenítése",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(a böngésző blokkolta)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Címzettek automatikus hozzáadása a címtárhoz",

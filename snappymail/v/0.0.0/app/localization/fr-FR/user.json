@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Lu",
 		"MENU_SELECT_FLAGGED": "Signalés",
 		"MENU_SELECT_UNFLAGGED": "Non signalés",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Liste vide.",
 		"EMPTY_SEARCH_LIST": "Aucun message ne correspond à votre recherche.",
 		"SEARCH_RESULT_FOR": "Résultats de recherche pour \"%SEARCH%\"",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Aucune pièce jointe.",
 		"ATTACHMENTS_ERROR_DESC": "Attention ! Toutes les pièces jointes n'ont pas été téléchargées.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Toutes les pièces jointes n'ont pas encore été téléchargées",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Demander une confirmation de lecture",
 		"BUTTON_MARK_AS_IMPORTANT": "Marquer comme important",
 		"BUTTON_REQUEST_DSN": "Demander un accusé de réception"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Son de notification",
 		"CHROME_NOTIFICATION_DESC": "Afficher un pop-up de notification pour les nouveaux messages",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Bloqué par le navigateur)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Ajouter automatiquement les destinataires à votre carnet d'adresses",

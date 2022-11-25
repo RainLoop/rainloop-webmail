@@ -39,6 +39,8 @@ class Actions
 	const AUTH_SPEC_LOGOUT_TOKEN_KEY = 'smspeclogout';
 	const AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY = 'smspeclogoutcmk';
 
+	const APP_DUMMY = '********';
+
 	/**
 	 * @var \MailSo\Base\Http
 	 */
@@ -131,8 +133,9 @@ class Actions
 			if ('syslog' === $sLogFileName) {
 				$oDriver = new \MailSo\Log\Drivers\Syslog();
 			} else {
-				$sLogFileFullPath = \APP_PRIVATE_DATA . 'logs/' . $this->compileLogFileName($sLogFileName);
-				$oDriver = new \MailSo\Log\Drivers\File($sLogFileFullPath);
+				$sLogFileFullPath = \trim($this->oConfig->Get('logs', 'path', '')) ?: \APP_PRIVATE_DATA . 'logs';
+				\is_dir($sLogFileFullPath) || \mkdir($sLogFileFullPath, 0700, true);
+				$oDriver = new \MailSo\Log\Drivers\File($sLogFileFullPath . '/' . $this->compileLogFileName($sLogFileName));
 			}
 			$this->oLogger->append($oDriver
 				->SetTimeZone($this->oConfig->Get('logs', 'time_zone', 'UTC'))
@@ -507,7 +510,12 @@ class Actions
 			switch (true) {
 				default:
 				case $bForceFile:
-					$oDriver = new \MailSo\Cache\Drivers\File(APP_PRIVATE_DATA . 'cache', $sKey);
+					$sCacheDir = \trim($this->oConfig->Get('cache', 'path', '')) ?: APP_PRIVATE_DATA . 'cache';
+					\is_dir($sCacheDir) || \mkdir($sCacheDir, 0700, true);
+					$oDriver = new \MailSo\Cache\Drivers\File(
+						\trim($this->oConfig->Get('cache', 'path', APP_PRIVATE_DATA . 'cache')),
+						$sKey
+					);
 					break;
 
 				case ('APCU' === $sDriver) &&
@@ -564,13 +572,10 @@ class Actions
 			if ($this->oConfig->Get('logs', 'auth_logging', false)) {
 //				$this->oLoggerAuth->SetLevel(\LOG_WARNING);
 
-				$sAuthLogFileFullPath = \APP_PRIVATE_DATA . 'logs/' . $this->compileLogFileName(
-						$this->oConfig->Get('logs', 'auth_logging_filename', ''));
+				$sAuthLogFileFullPath = (\trim($this->oConfig->Get('logs', 'path', '') ?: \APP_PRIVATE_DATA . 'logs'))
+					. '/' . $this->compileLogFileName($this->oConfig->Get('logs', 'auth_logging_filename', ''));
 				$sLogFileDir = \dirname($sAuthLogFileFullPath);
-				if (!\is_dir($sLogFileDir)) {
-					\mkdir($sLogFileDir, 0755, true);
-				}
-
+				\is_dir($sLogFileDir) || \mkdir($sLogFileDir, 0755, true);
 				$this->oLoggerAuth->append(
 					(new \MailSo\Log\Drivers\File($sAuthLogFileFullPath))
 						->DisableTimePrefix()
@@ -650,7 +655,7 @@ class Actions
 				$aResult['ContactsPdoDsn'] = (string)$oConfig->Get('contacts', 'pdo_dsn', '');
 				$aResult['ContactsPdoType'] = (string)$oConfig->Get('contacts', 'type', '');
 				$aResult['ContactsPdoUser'] = (string)$oConfig->Get('contacts', 'pdo_user', '');
-				$aResult['ContactsPdoPassword'] = (string)APP_DUMMY;
+				$aResult['ContactsPdoPassword'] = static::APP_DUMMY;
 
 				$aResult['FaviconUrl'] = $oConfig->Get('webmail', 'favicon_url', '');
 
@@ -684,17 +689,12 @@ class Actions
 					'MailToEmail' => '',
 
 					'ContactsIsAllowed' => $this->AddressBookProvider($oAccount)->IsActive(),
-					'ContactsSyncIsAllowed' => (bool)$oConfig->Get('contacts', 'allow_sync', false),
-					'ContactsSyncInterval' => (int)$oConfig->Get('contacts', 'sync_interval', 20),
-					'ContactsSyncMode' => 0,
-					'ContactsSyncUrl' => '',
-					'ContactsSyncUser' => '',
-					'ContactsSyncPassword' => '',
 
 					'ViewHTML' => (bool) $oConfig->Get('defaults', 'view_html', true),
 					'ShowImages' => (bool) $oConfig->Get('defaults', 'show_images', false),
 					'RemoveColors' => (bool) $oConfig->Get('defaults', 'remove_colors', false),
 					'ListInlineAttachments' => false,
+					'simpleAttachmentsList' => false,
 					'MessagesPerPage' => (int) $oConfig->Get('webmail', 'messages_per_page', 25),
 					'MessageReadDelay' => (int) $oConfig->Get('webmail', 'message_read_delay', 5),
 					'MsgDefaultAction' => 1,
@@ -736,14 +736,15 @@ class Actions
 					)
 				);
 
-				if ($aResult['ContactsIsAllowed'] && $aResult['ContactsSyncIsAllowed']) {
-					$mData = $this->getContactsSyncData($oAccount);
-					if (\is_array($mData)) {
-						$aResult['ContactsSyncMode'] = isset($mData['Mode']) ? $mData['Mode'] : 0;
-						$aResult['ContactsSyncUrl'] = isset($mData['Url']) ? \trim($mData['Url']) : '';
-						$aResult['ContactsSyncUser'] = isset($mData['User']) ? \trim($mData['User']) : '';
-						$aResult['ContactsSyncPassword'] = APP_DUMMY;
-					}
+				if ($aResult['ContactsIsAllowed'] && $oConfig->Get('contacts', 'allow_sync', false)) {
+					$aData = $this->getContactsSyncData($oAccount) ?: [
+						'Mode' => 0,
+						'Url' => '',
+						'User' => ''
+					];
+					$aData['Password'] = empty($aData['Password']) ? '' : static::APP_DUMMY;
+					$aData['Interval'] = \max(20, \min(320, (int) $oConfig->Get('contacts', 'sync_interval', 20)));
+					$aResult['ContactsSync'] = $aData;
 				}
 
 				$sToken = Utils::GetCookie(self::AUTH_MAILTO_TOKEN_KEY);
@@ -788,11 +789,13 @@ class Actions
 					$aResult['requestDsn'] = (bool) $oSettings->GetConf('requestDsn', false);
 					$aResult['pgpSign'] = (bool) $oSettings->GetConf('pgpSign', false);
 					$aResult['pgpEncrypt'] = (bool) $oSettings->GetConf('pgpEncrypt', false);
+					$aResult['allowSpellcheck'] = (bool) $oSettings->GetConf('allowSpellcheck', false);
 
 					$aResult['ViewHTML'] = (bool)$oSettings->GetConf('ViewHTML', $aResult['ViewHTML']);
 					$aResult['ShowImages'] = (bool)$oSettings->GetConf('ShowImages', $aResult['ShowImages']);
 					$aResult['RemoveColors'] = (bool)$oSettings->GetConf('RemoveColors', $aResult['RemoveColors']);
 					$aResult['ListInlineAttachments'] = (bool)$oSettings->GetConf('ListInlineAttachments', $aResult['ListInlineAttachments']);
+					$aResult['simpleAttachmentsList'] = (bool)$oSettings->GetConf('simpleAttachmentsList', $aResult['simpleAttachmentsList']);
 					$aResult['ContactsAutosave'] = (bool)$oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
 					$aResult['MessagesPerPage'] = (int)$oSettings->GetConf('MessagesPerPage', $aResult['MessagesPerPage']);
 					$aResult['MessageReadDelay'] = (int)$oSettings->GetConf('MessageReadDelay', $aResult['MessageReadDelay']);
@@ -872,7 +875,8 @@ class Actions
 			? './?/Plugins/0/' . ($bAdmin ? 'Admin' : 'User') . '/' . $sStaticCache . '/'
 			: '';
 
-		$bAppJsDebug = $this->oConfig->Get('labs', 'use_app_debug_js', false);
+		$bAppJsDebug = $this->oConfig->Get('labs', 'use_app_debug_js', false)
+			|| $this->oConfig->Get('debug', 'enable', false);
 
 		$aResult['StaticLibsJs'] = Utils::WebStaticPath('js/' . ($bAppJsDebug ? '' : 'min/') .
 			'libs' . ($bAppJsDebug ? '' : '.min') . '.js');
@@ -993,18 +997,23 @@ class Actions
 
 		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile)) {
 			$sSavedName = 'upload-post-' . \md5($aFile['name'] . $aFile['tmp_name']);
+
+			// Detect content-type
+			$type = \SnappyMail\File\MimeType::fromFile($aFile['tmp_name'], $aFile['name'])
+				?: \SnappyMail\File\MimeType::fromFilename($aFile['name']);
+			if ($type) {
+				$aFile['type'] = $type;
+				$sSavedName .= \SnappyMail\File\MimeType::toExtension($type);
+			}
+
 			if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name'])) {
 				$iError = Enumerations\UploadError::ON_SAVING;
 			} else {
-				$sUploadName = $aFile['name'];
-				$iSize = $aFile['size'];
-				$sMimeType = $aFile['type'];
-
 				$aResponse['Attachment'] = array(
-					'Name' => $sUploadName,
+					'Name' => $aFile['name'],
 					'TempName' => $sSavedName,
-					'MimeType' => $sMimeType,
-					'Size' => (int)$iSize
+					'MimeType' => $aFile['type'],
+					'Size' => (int) $aFile['size']
 				);
 			}
 		}
@@ -1020,87 +1029,6 @@ class Actions
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $aResponse);
-	}
-
-	public function UploadBackground(): array
-	{
-		$oAccount = $this->getAccountFromToken();
-
-		if (!$this->GetCapa(Enumerations\Capa::USER_BACKGROUND)) {
-			return $this->FalseResponse(__FUNCTION__);
-		}
-
-		$sName = '';
-		$sHash = '';
-
-		$aFile = $this->GetActionParam('File', null);
-		$iError = $this->GetActionParam('Error', Enumerations\UploadError::UNKNOWN);
-
-		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile)) {
-			$sMimeType = \strtolower(\MailSo\Base\Utils::MimeContentType($aFile['name']));
-			if (\in_array($sMimeType, array('image/png', 'image/jpg', 'image/jpeg'))) {
-				$sSavedName = 'upload-post-' . \md5($aFile['name'] . $aFile['tmp_name']);
-				if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name'])) {
-					$iError = Enumerations\UploadError::ON_SAVING;
-				} else {
-					$rData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
-					if (\is_resource($rData)) {
-						$sData = \stream_get_contents($rData);
-						if (!empty($sData) && \strlen($sData)) {
-							$sName = $aFile['name'];
-							if (empty($sName)) {
-								$sName = '_';
-							}
-
-							if ($this->StorageProvider()->Put($oAccount,
-								Providers\Storage\Enumerations\StorageType::CONFIG,
-								'background',
-								Utils::jsonEncode(array(
-									'Name' => $aFile['name'],
-									'ContentType' => $sMimeType,
-									'Raw' => \base64_encode($sData)
-								))
-							)) {
-								$oSettings = $this->SettingsProvider()->Load($oAccount);
-								if ($oSettings) {
-									$sHash = \MailSo\Base\Utils::Sha1Rand($sName . APP_VERSION . APP_SALT);
-
-									$oSettings->SetConf('UserBackgroundName', $sName);
-									$oSettings->SetConf('UserBackgroundHash', $sHash);
-									$this->SettingsProvider()->Save($oAccount, $oSettings);
-								}
-							}
-						}
-
-						unset($sData);
-					}
-
-					if (\is_resource($rData)) {
-						\fclose($rData);
-					}
-
-					unset($rData);
-				}
-
-				$this->FilesProvider()->Clear($oAccount, $sSavedName);
-			} else {
-				$iError = Enumerations\UploadError::FILE_TYPE;
-			}
-		}
-
-		if (UPLOAD_ERR_OK !== $iError) {
-			$iClientError = Enumerations\UploadError::NORMAL;
-			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
-
-			if (!empty($sError)) {
-				return $this->FalseResponse(__FUNCTION__, $iClientError, $sError);
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, !empty($sName) && !empty($sHash) ? array(
-			'Name' => $sName,
-			'Hash' => $sHash
-		) : false);
 	}
 
 	public function Capa(bool $bAdmin, ?Model\Account $oAccount = null): array

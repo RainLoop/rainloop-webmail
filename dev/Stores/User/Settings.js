@@ -19,6 +19,7 @@ export const SettingsUserStore = new class {
 			showImages: 0,
 			removeColors: 0,
 			listInlineAttachments: 0,
+			simpleAttachmentsList: 0,
 			useCheckboxesInList: 1,
 			allowDraftAutosave: 1,
 			useThreads: 0,
@@ -32,6 +33,7 @@ export const SettingsUserStore = new class {
 			requestDsn: 0,
 			pgpSign: 0,
 			pgpEncrypt: 0,
+			allowSpellcheck: 0,
 
 			layout: 1,
 			editorDefaultType: 'Html',
@@ -79,6 +81,7 @@ export const SettingsUserStore = new class {
 		self.showImages(SettingsGet('ShowImages'));
 		self.removeColors(SettingsGet('RemoveColors'));
 		self.listInlineAttachments(SettingsGet('ListInlineAttachments'));
+		self.simpleAttachmentsList(SettingsGet('simpleAttachmentsList'));
 		self.useCheckboxesInList(SettingsGet('UseCheckboxesInList'));
 		self.allowDraftAutosave(SettingsGet('AllowDraftAutosave'));
 		self.useThreads(SettingsGet('UseThreads'));
@@ -92,5 +95,6 @@ export const SettingsUserStore = new class {
 		self.requestDsn(SettingsGet('requestDsn'));
 		self.pgpSign(SettingsGet('pgpSign'));
 		self.pgpEncrypt(SettingsGet('pgpEncrypt'));
+		self.allowSpellcheck(SettingsGet('allowSpellcheck'));
 	}
 };

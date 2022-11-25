@@ -57,7 +57,7 @@ class Domain extends AbstractProvider
 
 	public function LoadOrCreateNewFromAction(\RainLoop\Actions $oActions, string $sNameForTest = null) : ?\RainLoop\Model\Domain
 	{
-		$sName = (string) $oActions->GetActionParam('Name', '');
+		$sName = \mb_strtolower((string) $oActions->GetActionParam('Name', ''));
 		if (\strlen($sName) && $sNameForTest && !\str_contains($sName, '*')) {
 			$sNameForTest = null;
 		}
@@ -66,22 +66,10 @@ class Domain extends AbstractProvider
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DomainAlreadyExists);
 			}
 			return \RainLoop\Model\Domain::fromArray($sNameForTest ?: $sName, [
-				'imapHost' => $oActions->GetActionParam('IncHost', ''),
-				'imapPort' => $oActions->GetActionParam('IncPort', 143),
-				'imapSecure' => $oActions->GetActionParam('IncSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE),
-				'imapShortLogin' => $oActions->GetActionParam('IncShortLogin', 0),
-				'useSieve' => $oActions->GetActionParam('UseSieve', 0),
-				'sieveHost' => $oActions->GetActionParam('SieveHost', ''),
-				'sievePort' => $oActions->GetActionParam('SievePort', 4190),
-				'sieveSecure' => $oActions->GetActionParam('SieveSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE),
-				'smtpHost' => $oActions->GetActionParam('OutHost', ''),
-				'smtpPort' => $oActions->GetActionParam('OutPort', 25),
-				'smtpSecure' => $oActions->GetActionParam('OutSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE),
-				'smtpShortLogin' => $oActions->GetActionParam('OutShortLogin', 0),
-				'smtpAuth' => $oActions->GetActionParam('OutAuth', 1),
-				'smtpSetSender' => $oActions->GetActionParam('OutSetSender', 0),
-				'smtpPhpMail' => $oActions->GetActionParam('OutUsePhpMail', 0),
-				'whiteList' => $oActions->GetActionParam('WhiteList', '')
+				'IMAP' => $oActions->GetActionParam('IMAP'),
+				'SMTP' => $oActions->GetActionParam('SMTP'),
+				'Sieve' => $oActions->GetActionParam('Sieve'),
+				'whiteList' => $oActions->GetActionParam('whiteList')
 			]);
 		}
 		return null;

@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Đã đọc",
 		"MENU_SELECT_FLAGGED": "Được đánh dấu sao",
 		"MENU_SELECT_UNFLAGGED": "Không được đánh dấu sao",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Danh sách trống.",
 		"EMPTY_SEARCH_LIST": "Không tìm thấy thư trùng khớp.",
 		"SEARCH_RESULT_FOR": "Kết quả tìm kiếm cho \"%SEARCH%\"",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Không có tập tin đính kèm.",
 		"ATTACHMENTS_ERROR_DESC": "Cảnh báo! Các tập tin đính kèm chưa được tải lên hết.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Các tập tin đính kèm chưa được tải lên hết.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Yêu cầu thông báo khi người nhận đã đọc thư",
 		"BUTTON_MARK_AS_IMPORTANT": "Đánh dấu thư quan trọng",
 		"BUTTON_REQUEST_DSN": "Yêu cầu thông báo thư đã gửi thành công"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Thông báo âm thanh",
 		"CHROME_NOTIFICATION_DESC": "Hiện thị thông báo nẩy lên nhanh khi có thư mới",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Đang bị chặn bởi trình duyệt web)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Tự động thêm người nhận thư vào sổ địa chỉ của bạn",

@@ -17,7 +17,7 @@ use MailSo\Net\Enumerations\ConnectionSecurityType;
  * @category MailSo
  * @package Sieve
  */
-class ManageSieveClient extends \MailSo\Net\NetClient
+class SieveClient extends \MailSo\Net\NetClient
 {
 	/**
 	 * @var bool
@@ -100,10 +100,10 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Sieve\Exceptions\*
 	 */
-	public function Login(array $aCredentials) : self
+	public function Login(Settings $oSettings) : self
 	{
-		$sLogin = $aCredentials['Login'];
-		$sPassword = $aCredentials['Password'];
+		$sLogin = $oSettings->Login;
+		$sPassword = $oSettings->Password;
 		$sLoginAuthKey = '';
 		if (!\strlen($sLogin) || !\strlen($sPassword))
 		{
@@ -113,8 +113,8 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		}
 
 		$type = '';
-		\array_push($aCredentials['SASLMechanisms'], 'PLAIN', 'LOGIN');
-		foreach ($aCredentials['SASLMechanisms'] as $sasl_type) {
+		\array_push($oSettings->SASLMechanisms, 'PLAIN', 'LOGIN');
+		foreach ($oSettings->SASLMechanisms as $sasl_type) {
 			if ($this->IsAuthSupported($sasl_type) && \SnappyMail\SASL::isSupported($sasl_type)) {
 				$type = $sasl_type;
 				break;
@@ -124,7 +124,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		if (!$type) {
 			if (!$this->Encrypted() && $this->IsSupported('STARTTLS')) {
 				$this->StartTLS();
-				return $this->Login($aCredentials);
+				return $this->Login($oSettings);
 			}
 			$this->writeLogException(
 				new \MailSo\Sieve\Exceptions\LoginException,
@@ -154,7 +154,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 				$sAuth = $SASL->authenticate($sLogin, $sPassword, $sLoginAuthKey);
 				$this->oLogger && $this->oLogger->AddSecret($sAuth);
 
-				if ($aCredentials['InitialAuthPlain']) {
+				if ($oSettings->initialAuthPlain) {
 					$this->sendRaw("AUTHENTICATE \"{$type}\" \"{$sAuth}\"");
 				} else {
 					$this->sendRaw("AUTHENTICATE \"{$type}\" {".\strlen($sAuth).'+}');

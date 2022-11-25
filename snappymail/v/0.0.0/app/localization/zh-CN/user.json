@@ -6,7 +6,7 @@
 		"BCC": "密送",
 		"CANCEL": "取消",
 		"CC": "抄送",
-		"CLEAR": "取消",
+		"CLEAR": "清除",
 		"CLOSE": "关闭",
 		"CONTACTS": "联系人",
 		"DELETE": "删除",
@@ -33,7 +33,7 @@
 		"SERVER_MESSAGE": "服务器信息",
 		"YES": "是",
 		"NO": "否",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "不生效"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登录",
@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "已读",
 		"MENU_SELECT_FLAGGED": "已加星标",
 		"MENU_SELECT_UNFLAGGED": "未加星标",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "空列表。",
 		"EMPTY_SEARCH_LIST": "未找到您搜索的消息。",
 		"SEARCH_RESULT_FOR": "搜索 \"%SEARCH%\" 的结果",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "无附件。",
 		"ATTACHMENTS_ERROR_DESC": "注意！还有正在上传的附件。",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "还有附件正在上传。",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "要求已读回执",
 		"BUTTON_MARK_AS_IMPORTANT": "标记为“重要”",
 		"BUTTON_REQUEST_DSN": "要求送达回执"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "提示音",
 		"CHROME_NOTIFICATION_DESC": "显示新邮件弹窗",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(被浏览器阻止)",
-		"LIST_INLINE_ATTACHMENTS": "在列表中显示内联附件"
+		"LIST_INLINE_ATTACHMENTS": "在列表中显示内联附件",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "自动添加到您的地址簿",

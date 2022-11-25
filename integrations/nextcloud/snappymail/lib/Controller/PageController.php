@@ -55,12 +55,8 @@ class PageController extends Controller
 		$sAppCssMin = $oConfig->Get('labs', 'use_app_debug_css', false) ? '' : '.min';
 		$sLanguage = $oActions->GetLanguage(false);
 
-		$cspManager = \OC::$server->getContentSecurityPolicyNonceManager();
-		$sNonce = $cspManager->getNonce() ?: \SnappyMail\UUID::generate();
 		$csp = new ContentSecurityPolicy();
-		if (\method_exists($cspManager, 'browserSupportsCspV3') && !$cspManager->browserSupportsCspV3()) {
-			$csp->addAllowedScriptDomain("'nonce-{$sNonce}'");
-		}
+		$sNonce = $csp->getSnappyMailNonce();
 
 		$params = [
 			'Admin' => $bAdmin ? 1 : 0,

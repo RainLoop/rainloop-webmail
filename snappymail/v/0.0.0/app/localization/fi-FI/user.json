@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Luetut",
 		"MENU_SELECT_FLAGGED": "Merkityt",
 		"MENU_SELECT_UNFLAGGED": "Merkkaamattomat",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Tyhjä lista",
 		"EMPTY_SEARCH_LIST": "Yhtään viestiä ei löytynyt ehdoillasi.",
 		"SEARCH_RESULT_FOR": "Hakutulokset haulle \"%SEARCH%\"",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Ei liitteitä",
 		"ATTACHMENTS_ERROR_DESC": "Huom! Yhtään liitetiedostoa ei ole ladattu.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Kaikkia liitetiedostoja ei ole vielä ladattu.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Pyydä kuittaus",
 		"BUTTON_MARK_AS_IMPORTANT": "Merkitse tärkeäksi",
 		"BUTTON_REQUEST_DSN": "Pyydä toimituskuittaus"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Äänimerkit",
 		"CHROME_NOTIFICATION_DESC": "Näytä uusien viestien ponnahdusikkuna",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Estetty selaimessa)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Lisää yhetystieto automaattisesti osoitekirjaan",

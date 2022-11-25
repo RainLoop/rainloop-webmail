@@ -253,6 +253,23 @@ class ActionsAdmin extends Actions
 		));
 	}
 
+	public function DoAdminDomainMatch() : array
+	{
+		$sEmail = $this->GetActionParam('username');
+		$sPassword = '********';
+		$sLogin = '';
+		$this->resolveLoginCredentials($sEmail, $sPassword, $sLogin);
+		$oDomain = \str_contains($sEmail, '@')
+			? $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true)
+			: null;
+		return $this->DefaultResponse(__FUNCTION__, array(
+			'email' => $sEmail,
+			'login' => $sLogin,
+			'domain' => $oDomain,
+			'whitelist' => $oDomain ? $oDomain->ValidateWhiteList($sEmail, $sLogin) : null
+		));
+	}
+
 	public function DoAdminDomainTest() : array
 	{
 		$this->IsAdminLoggined();
@@ -269,35 +286,21 @@ class ActionsAdmin extends Actions
 		$oDomain = $this->DomainProvider()->LoadOrCreateNewFromAction($this, 'test.example.com');
 		if ($oDomain)
 		{
+			$aAuth = $this->GetActionParam('auth');
+
 			try
 			{
 				$oImapClient = new \MailSo\Imap\ImapClient();
 				$oImapClient->SetLogger($this->Logger());
 				$oImapClient->SetTimeOuts($iConnectionTimeout);
 
-				$iTime = \microtime(true);
-				$oSettings = \MailSo\Net\ConnectSettings::fromArray($oDomain->ImapSettings());
+				$oSettings = $oDomain->ImapSettings();
 				$oImapClient->Connect($oSettings);
 
-				$sUsername = $this->GetActionParam('username', '');
-				if ($sUsername) {
-					$aSASLMechanisms = [];
-					$oConfig = $this->Config();
-					if ($oConfig->Get('labs', 'sasl_allow_scram_sha', false)) {
-						// https://github.com/the-djmaze/snappymail/issues/182
-						\array_push($aSASLMechanisms, 'SCRAM-SHA3-512', 'SCRAM-SHA-512', 'SCRAM-SHA-256', 'SCRAM-SHA-1');
-					}
-					if ($oConfig->Get('labs', 'sasl_allow_cram_md5', false)) {
-						$aSASLMechanisms[] = 'CRAM-MD5';
-					}
-					if ($oConfig->Get('labs', 'sasl_allow_plain', true)) {
-						$aSASLMechanisms[] = 'PLAIN';
-					}
-					$oImapClient->Login([
-						'Login' => $sUsername,
-						'Password' => $this->GetActionParam('password', ''),
-						'SASLMechanisms' => $aSASLMechanisms
-					]);
+				if (!empty($aAuth['user'])) {
+					$oSettings->Login = $aAuth['user'];
+					$oSettings->Password = $aAuth['pass'];
+					$oImapClient->Login($oSettings);
 				}
 
 				$oImapClient->Disconnect();
@@ -334,9 +337,14 @@ class ActionsAdmin extends Actions
 					$oSmtpClient->SetLogger($this->Logger());
 					$oSmtpClient->SetTimeOuts($iConnectionTimeout);
 
-					$iTime = \microtime(true);
-					$oSettings = \MailSo\Net\ConnectSettings::fromArray($oDomain->SmtpSettings());
+					$oSettings = $oDomain->SmtpSettings();
 					$oSmtpClient->Connect($oSettings, \MailSo\Smtp\SmtpClient::EhloHelper());
+
+					if (!empty($aAuth['user'])) {
+						$oSettings->Login = $aAuth['user'];
+						$oSettings->Password = $aAuth['pass'];
+						$oSmtpClient->Login($oSettings);
+					}
 
 					$oSmtpClient->Disconnect();
 					$bSmtpResult = true;
@@ -361,13 +369,18 @@ class ActionsAdmin extends Actions
 			{
 				try
 				{
-					$oSieveClient = new \MailSo\Sieve\ManageSieveClient();
+					$oSieveClient = new \MailSo\Sieve\SieveClient();
 					$oSieveClient->SetLogger($this->Logger());
 					$oSieveClient->SetTimeOuts($iConnectionTimeout);
 
-					$iTime = \microtime(true);
-					$oSettings = \MailSo\Net\ConnectSettings::fromArray($oDomain->SieveSettings());
+					$oSettings = $oDomain->SieveSettings();
 					$oSieveClient->Connect($oSettings);
+
+					if (!empty($aAuth['user'])) {
+						$oSettings->Login = $aAuth['user'];
+						$oSettings->Password = $aAuth['pass'];
+						$oSieveClient->Login($oSettings);
+					}
 
 					$oSieveClient->Disconnect();
 					$bSieveResult = true;
@@ -414,6 +427,14 @@ class ActionsAdmin extends Actions
 				'loaded' => \extension_loaded(\strtolower($name))
 			];
 		}
+		$aResult[] = [
+			'name' => 'Fileinfo',
+			'loaded' => \class_exists('finfo')
+		];
+		$aResult[] = [
+			'name' => 'Phar',
+			'loaded' => \class_exists('PharData')
+		];
 		return $this->DefaultResponse(__FUNCTION__, $aResult);
 	}
 
@@ -563,7 +584,7 @@ class ActionsAdmin extends Actions
 						if ($oItem) {
 							if ($oItem instanceof \RainLoop\Plugins\Property) {
 								if (PluginPropertyType::PASSWORD === $oItem->Type()) {
-									$oItem->SetValue(APP_DUMMY);
+									$oItem->SetValue(static::APP_DUMMY);
 								} else {
 									$oItem->SetValue($oConfig->Get('plugin', $oItem->Name(), ''));
 								}
@@ -572,7 +593,7 @@ class ActionsAdmin extends Actions
 								foreach ($oItem as $oSubItem) {
 									if ($oSubItem && $oSubItem instanceof \RainLoop\Plugins\Property) {
 										if (PluginPropertyType::PASSWORD === $oSubItem->Type()) {
-											$oSubItem->SetValue(APP_DUMMY);
+											$oSubItem->SetValue(static::APP_DUMMY);
 										} else {
 											$oSubItem->SetValue($oConfig->Get('plugin', $oSubItem->Name(), ''));
 										}
@@ -610,7 +631,7 @@ class ActionsAdmin extends Actions
 					{
 						$sKey = $oItem->Name();
 						$sValue = $aSettings[$sKey] ?? $oConfig->Get('plugin', $sKey);
-						if (PluginPropertyType::PASSWORD !== $oItem->Type() || APP_DUMMY !== $sValue)
+						if (PluginPropertyType::PASSWORD !== $oItem->Type() || static::APP_DUMMY !== $sValue)
 						{
 							$mResultValue = null;
 							switch ($oItem->Type()) {
@@ -730,8 +751,8 @@ class ActionsAdmin extends Actions
 					break;
 
 				case 'dummy':
-					$sValue = (string) $this->GetActionParam($sParamName, APP_DUMMY);
-					if (APP_DUMMY !== $sValue) {
+					$sValue = (string) $this->GetActionParam($sParamName, static::APP_DUMMY);
+					if (static::APP_DUMMY !== $sValue) {
 						$oConfig->Set($sConfigSector, $sConfigName, $sValue);
 					}
 					break;

@@ -188,6 +188,20 @@ class GPG
 		return true;
 	}
 
+	/**
+	 * TODO: parse result
+	 * https://github.com/the-djmaze/snappymail/issues/89
+	 */
+	protected function listDecryptKeys(/*string|resource*/ $input, /*string|resource*/ $output = null)
+	{
+		$this->setInput($input);
+		$fclose = $this->setOutput($output);
+		$_ENV['PINENTRY_USER_DATA'] = '';
+		$result = $this->exec(['--list-packets']);
+		$fclose && \fclose($fclose);
+		return $output ? true : ($result ? $result['output'] : false);
+	}
+
 	protected function _decrypt(/*string|resource*/ $input, /*string|resource*/ $output = null)
 	{
 		$this->setInput($input);
@@ -245,6 +259,7 @@ class GPG
 	 */
 	public function decryptVerify(string $text, string &$plaintext) /*: array|false*/
 	{
+		// TODO: https://github.com/the-djmaze/snappymail/issues/89
 		return false;
 	}
 
@@ -253,6 +268,7 @@ class GPG
 	 */
 	public function decryptVerifyFile(string $filename, string &$plaintext) /*: array|false*/
 	{
+		// TODO: https://github.com/the-djmaze/snappymail/issues/89
 		return false;
 	}
 

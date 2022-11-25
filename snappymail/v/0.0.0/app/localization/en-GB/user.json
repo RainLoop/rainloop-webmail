@@ -76,7 +76,7 @@
 		"INBOX_NAME": "Inbox",
 		"SENT_NAME": "Sent",
 		"DRAFTS_NAME": "Drafts",
-		"TRASH_NAME": "Bin",
+		"TRASH_NAME": "Deleted",
 		"ARCHIVE_NAME": "Archive"
 	},
 	"QUOTA": {
@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Read",
 		"MENU_SELECT_FLAGGED": "Flagged",
 		"MENU_SELECT_UNFLAGGED": "Unflagged",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Empty list.",
 		"EMPTY_SEARCH_LIST": "No messages matched your search.",
 		"SEARCH_RESULT_FOR": "Search results for \"%SEARCH%\"",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "No attachments here.",
 		"ATTACHMENTS_ERROR_DESC": "Warning! Not all attachments have been uploaded.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Not all attachments have been uploaded yet.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Request a read receipt",
 		"BUTTON_MARK_AS_IMPORTANT": "Mark as important",
 		"BUTTON_REQUEST_DSN": "Request a delivery receipt"
@@ -334,7 +336,7 @@
 		"NOTIFICATION_SENT": "You haven't selected \"Sent\" system folder messages are put to after sending.\nIf you don't want to save sent message, please select \"Do not use\" option.\n",
 		"NOTIFICATION_DRAFTS": "You haven't selected \"Drafts\" system folder messages are saved to while composing.",
 		"NOTIFICATION_SPAM": "You haven't selected \"Spam\" system folder spamed messages are placed to.\nIf you wish to remove messages permanently, please select \"Do not use\" option.\n",
-		"NOTIFICATION_TRASH": "You haven't selected \"Bin\" system folder deleted messages are placed to.\nIf you wish to remove messages permanently, please select \"Do not use\" option.\n",
+		"NOTIFICATION_TRASH": "You haven't selected \"Deleted\" system folder deleted messages are placed to.\nIf you wish to remove messages permanently, please select \"Do not use\" option.\n",
 		"NOTIFICATION_ARCHIVE": "You haven't selected \"Archive\" system folder achived messages are placed to."
 	},
 	"TITLES": {
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Sound notification",
 		"CHROME_NOTIFICATION_DESC": "Show new messages notification popups",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Blocked by the browser)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Automatically add recipients to your address book",

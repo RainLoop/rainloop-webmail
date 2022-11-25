@@ -172,7 +172,7 @@ input, textarea, .select, select, .emailaddresses {
     color: #fff;
 }
 .select, select {
-    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' height='10px' width='15px'><text x='0' y='10' fill='rgb(255,255,255)'>▾</text></svg>");
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIGhlaWdodD0nMTBweCcgd2lkdGg9JzE1cHgnPjx0ZXh0IHg9JzAnIHk9JzEwJyBmaWxsPSdyZ2IoMjU1LDI1NSwyNTUpJz7ilr48L3RleHQ+PC9zdmc+);
 }
 
 hr {

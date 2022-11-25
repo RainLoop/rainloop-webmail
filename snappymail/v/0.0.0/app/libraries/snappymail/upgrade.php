@@ -132,7 +132,7 @@ abstract class Upgrade
 				if ($aData) {
 					$oActions->setContactsSyncData($oAccount, $aData);
 					return array(
-						'Enable' => isset($aData['Enable']) ? !!$aData['Enable'] : false,
+						'Mode' => empty($aData['Enable']) ? 0 : 1,
 						'Url' => isset($aData['Url']) ? \trim($aData['Url']) : '',
 						'User' => isset($aData['User']) ? \trim($aData['User']) : '',
 						'Password' => isset($aData['Password']) ? $aData['Password'] : ''

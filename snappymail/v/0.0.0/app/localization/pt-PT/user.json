@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Lida",
 		"MENU_SELECT_FLAGGED": "Sinalizada",
 		"MENU_SELECT_UNFLAGGED": "Não sinalizada",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Lista vazia.",
 		"EMPTY_SEARCH_LIST": "Nenhuma mensagem corresponde à sua pesquisa.",
 		"SEARCH_RESULT_FOR": "Resultados de pesquisa para \"%SEARCH%\"",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Sem anexos aqui.",
 		"ATTACHMENTS_ERROR_DESC": "Aviso! Nem todos os anexos foram carregados.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Ainda não foram carregados todos os anexos",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Pedir um recibo de leitura",
 		"BUTTON_MARK_AS_IMPORTANT": "Marcar como importante",
 		"BUTTON_REQUEST_DSN": "Pedir um recibo de entrega"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Notificações sonoras",
 		"CHROME_NOTIFICATION_DESC": "Apresentar notificações para novas mensagens",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Bloqueado pelo navegador)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Adicionar destinatários automaticamente à sua lista de endereços",

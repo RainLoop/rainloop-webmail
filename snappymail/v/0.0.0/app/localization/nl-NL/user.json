@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Gelezen",
 		"MENU_SELECT_FLAGGED": "Met Vlag",
 		"MENU_SELECT_UNFLAGGED": "Zonder Vlag",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Geen berichten",
 		"EMPTY_SEARCH_LIST": "Geen items gevonden",
 		"SEARCH_RESULT_FOR": "Zoekresultaten voor \"%SEARCH%\"",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Er zijn geen bijlagen",
 		"ATTACHMENTS_ERROR_DESC": "Waarschuwing! Nog niet alle bijlagen zijn klaar met uploaden",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Toevoegen van bijlage(n) is nog niet gereed",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Leesbevestiging vragen",
 		"BUTTON_MARK_AS_IMPORTANT": "Markeer als belangrijk",
 		"BUTTON_REQUEST_DSN": "Ontvangstbevestiging vragen"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Notificatie geluid",
 		"CHROME_NOTIFICATION_DESC": "Toon nieuwe berichten popup",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Geblokkeerd door de browser)",
-		"LIST_INLINE_ATTACHMENTS": "Toon inline bijlagen in lijst"
+		"LIST_INLINE_ATTACHMENTS": "Toon inline bijlagen in lijst",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Automatisch ontvangers toevoegen aan uw adresboek",

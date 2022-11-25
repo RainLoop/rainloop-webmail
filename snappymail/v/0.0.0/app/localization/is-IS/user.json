@@ -98,6 +98,7 @@
 		"MENU_SELECT_SEEN": "Lesið",
 		"MENU_SELECT_FLAGGED": "Flaggað",
 		"MENU_SELECT_UNFLAGGED": "Afflaggað",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Tómur listi.",
 		"EMPTY_SEARCH_LIST": "Engin skilaboð stemmdu við leitina þína.",
 		"SEARCH_RESULT_FOR": "Leitarniðurstöður fyrir \"%SEARCH%\"",
@@ -224,6 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Engin viðhengi hér.",
 		"ATTACHMENTS_ERROR_DESC": "Aðvörun! Ekki er búið að senda inn öll viðhengi.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Ekki er búið að senda inn öll viðhengi.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Biðja um staðfestingu á lestri",
 		"BUTTON_MARK_AS_IMPORTANT": "Merkja sem mikilvægt",
 		"BUTTON_REQUEST_DSN": "Biðja um staðfestingu á afhendingu"
@@ -411,7 +413,8 @@
 		"SOUND_NOTIFICATION": "Tilkynningarhljóð",
 		"CHROME_NOTIFICATION_DESC": "Sýna tilkynningarglugga fyrir ný skilaboð",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Lokað af vafra)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Bæta viðtakendum sjálfkrafa í nafnaskrá",

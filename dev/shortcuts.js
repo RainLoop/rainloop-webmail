@@ -56,6 +56,7 @@ const
 		setScope: value => {
 			_scope = value || 'all';
 			scope = _scopes[_scope] || {};
+			console.log('Shortcuts scope set to: ' + _scope);
 		},
 		getScope: () => _scope,
 		getMetaKey: () => 'meta' === meta ? '⌘' : 'Ctrl'

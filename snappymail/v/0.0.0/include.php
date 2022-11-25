@@ -52,13 +52,10 @@ define('APP_VERSION_ROOT_PATH', __DIR__ . DIRECTORY_SEPARATOR);
 
 date_default_timezone_set('UTC');
 
-define('APP_DUMMY', '********');
-
 $sCustomDataPath = '';
 $sCustomConfiguration = '';
 
-if (is_file(APP_INDEX_ROOT_PATH.'include.php'))
-{
+if (is_file(APP_INDEX_ROOT_PATH.'include.php')) {
 	include_once APP_INDEX_ROOT_PATH.'include.php';
 }
 
@@ -73,16 +70,22 @@ define('APP_PRIVATE_DATA_NAME', $sPrivateDataFolderInternalName ?: '_default_');
 unset($sPrivateDataFolderInternalName);
 
 if (!defined('APP_DATA_FOLDER_PATH')) {
-	$sCustomDataPath = function_exists('__get_custom_data_full_path') ? rtrim(trim(__get_custom_data_full_path()), '\\/') : $sCustomDataPath;
+	// cPanel https://github.com/the-djmaze/snappymail/issues/697
+	if (!empty($_ENV['CPANEL']) && isset($_ENV['HOME'])) {
+		$sCustomDataPath = $_ENV['HOME'] . '/var/snappymail';
+//		$sCustomDataPath = $_ENV['TMPDIR'] . '/snappymail';
+	} else {
+		$sCustomDataPath = function_exists('__get_custom_data_full_path') ? rtrim(trim(__get_custom_data_full_path()), '\\/') : $sCustomDataPath;
+	}
 	define('APP_DATA_FOLDER_PATH', strlen($sCustomDataPath) ? $sCustomDataPath.'/' : APP_INDEX_ROOT_PATH.'data/');
-	unset($sCustomDataPath);
 }
+unset($sCustomDataPath);
 
 if (!defined('APP_CONFIGURATION_NAME')) {
 	define('APP_CONFIGURATION_NAME', function_exists('__get_additional_configuration_name')
 		? trim(__get_additional_configuration_name()) : $sCustomConfiguration);
-	unset($sCustomConfiguration);
 }
+unset($sCustomConfiguration);
 
 $sData = is_file(APP_DATA_FOLDER_PATH.'DATA.php') ? file_get_contents(APP_DATA_FOLDER_PATH.'DATA.php') : '';
 define('APP_PRIVATE_DATA', APP_DATA_FOLDER_PATH.'_data_'.($sData ? md5($sData) : '').'/'.APP_PRIVATE_DATA_NAME.'/');
@@ -158,6 +161,11 @@ if (!ini_get('zlib.output_compression') && !ini_get('brotli.output_compression')
 	} else if (defined('USE_GZIP')) {
 		ob_start('ob_gzhandler');
 	}
+}
+
+// cPanel https://github.com/the-djmaze/snappymail/issues/697
+if (!empty($_ENV['CPANEL']) && !is_dir(APP_PLUGINS_PATH.'login-remote')) {
+	require __DIR__ . '/cpanel.php';
 }
 
 if (class_exists('RainLoop\\Api')) {

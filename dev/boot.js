@@ -1,13 +1,11 @@
 (doc => {
 
-navigator.cookieEnabled || doc.location.replace('./?/NoCookie');
-
 const
 	eId = id => doc.getElementById('rl-'+id),
 	app = eId('app'),
 	admin = app && '1' == app.dataset.admin,
 	layout = doc.cookie.match(/(^|;) ?rllayout=([^;]+)/) || '',
-	badBrowser = () => doc.location.replace('./?/BadBrowser'),
+	redirect = path => doc.location.replace('./?/'+path),
 
 	showError = msg => {
 		let div = eId('loading-error');
@@ -23,14 +21,15 @@ const
 		return new Promise((resolve, reject) => {
 			const script = doc.createElement('script');
 			script.onload = () => resolve();
-			script.onerror = () => reject(new Error('Failed loading ' + src));
+			script.onerror = () => reject('Failed loading ' + src);
 			script.src = src;
 //			script.async = true;
 			doc.head.append(script);
 		});
 	};
 
-[].flat || badBrowser();
+navigator.cookieEnabled || redirect('NoCookie');
+[].flat || redirect('BadBrowser');
 
 let RL_APP_DATA = {};
 
@@ -45,13 +44,13 @@ window.rl = {
 		app: name => RL_APP_DATA.System[name]
 	},
 
-	setWindowTitle: title =>
-		doc.title = RL_APP_DATA.Title ? (title ? title + ' - ' : '') + RL_APP_DATA.Title : (title ? '' + title : ''),
+	setTitle: title =>
+		doc.title = (title || '') + (RL_APP_DATA.Title ? (title ? ' - ' : '') + RL_APP_DATA.Title : ''),
 
 	initData: appData => {
 		RL_APP_DATA = appData;
 		const url = appData.StaticLibsJs,
-			cb = () => rl.app ? rl.app.bootstart() : badBrowser();
+			cb = () => rl.app.bootstart();
 		loadScript(url)
 			.then(() => loadScript(url.replace('/libs.', `/${admin?'admin':'app'}.`)))
 			.then(() => appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve())

@@ -83,7 +83,6 @@
 	}
 
 	.iconMain, .iconPreview {
-		box-sizing: border-box;
 		padding: 6px 0 0;
 		font-size: 36px;
 		color: #aaa;
@@ -118,5 +117,24 @@
 	.hasPreplay .showPreplay {
 		display: inline;
 		cursor: pointer;
+	}
+}
+
+.attachmentListSimple {
+	margin: 0;
+
+	.attachmentItem {
+		min-height: 1em;
+		border: 1px solid var(--border-color);
+		padding: 0 2px;
+	}
+
+	.attachmentName {
+		margin:0;
+	}
+
+	.checkboxAttachment {
+		position: initial;
+		margin-left:.5em;
 	}
 }

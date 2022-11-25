@@ -11,8 +11,24 @@ import { DomainAliasPopupView } from 'View/Popup/DomainAlias';
 export class AdminSettingsDomains /*extends AbstractViewSettings*/ {
 	constructor() {
 		this.domains = DomainAdminStore;
-
+		this.username = ko.observable('');
 		this.domainForDeletion = ko.observable(null).askDeleteHelper();
+	}
+
+	testUsername() {
+		// TODO: find domain matching username
+		Remote.request('AdminDomainMatch',
+			(iError, oData) => {
+				if (oData?.Result?.domain) {
+					alert(`${oData.Result.domain.email} matched domain: ${oData.Result.domain.name}`);
+				} else {
+					alert('No domain match');
+				}
+			},
+			{
+				username: this.username()
+			}
+		);
 	}
 
 	createDomain() {
