@@ -350,8 +350,6 @@ $this->logger->Write("test $sUsername@$sDomain", \LOG_NOTICE, self::LOG_KEY);
 	private function LdapGetAttribute(array $entry, string $attribute, bool $single = true, bool $required = false)
 	{
 		//INFO if $single=false a array is returned. needet for identities, but not for additional mail accounts / usernames
-		//TODO: remove line when not needed anymore
-		$this->logger->Write("Attribute=$attribute, DN={$entry['dn']}", \LOG_NOTICE, self::LOG_KEY);
 
 		if (!isset($entry[$attribute])) {
 			if ($required)
