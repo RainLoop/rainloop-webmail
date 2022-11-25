@@ -13,6 +13,8 @@ if (defined('APP_PLUGINS_PATH') && !empty($_ENV['CPANEL']) && !is_dir(APP_PLUGIN
 	$oConfig->Set('plugins', 'enable', true);
 	$oConfig->Set('plugins', 'enabled_list', \implode(',', \array_unique($aList)));
 	$oConfig->Set('login', 'default_domain', 'cpanel');
+	$oConfig->Set('logs', 'path', $_ENV['HOME'] . '/logs/snappymail');
+	$oConfig->Set('cache', 'path', $_ENV['HOME'] . '/tmp/snappymail');
 	$oConfig->Save();
 
 	$sFile = APP_PRIVATE_DATA.'domains/cpanel.json';

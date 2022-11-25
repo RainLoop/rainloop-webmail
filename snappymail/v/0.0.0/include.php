@@ -55,8 +55,7 @@ date_default_timezone_set('UTC');
 $sCustomDataPath = '';
 $sCustomConfiguration = '';
 
-if (is_file(APP_INDEX_ROOT_PATH.'include.php'))
-{
+if (is_file(APP_INDEX_ROOT_PATH.'include.php')) {
 	include_once APP_INDEX_ROOT_PATH.'include.php';
 }
 
@@ -72,8 +71,9 @@ unset($sPrivateDataFolderInternalName);
 
 if (!defined('APP_DATA_FOLDER_PATH')) {
 	// cPanel https://github.com/the-djmaze/snappymail/issues/697
-	if (!empty($_ENV['CPANEL']) && isset($_ENV['TMPDIR'])) {
-		$sCustomDataPath = $_ENV['TMPDIR'] . '/snappymail';
+	if (!empty($_ENV['CPANEL']) && isset($_ENV['HOME'])) {
+		$sCustomDataPath = $_ENV['HOME'] . '/var/snappymail';
+//		$sCustomDataPath = $_ENV['TMPDIR'] . '/snappymail';
 	} else {
 		$sCustomDataPath = function_exists('__get_custom_data_full_path') ? rtrim(trim(__get_custom_data_full_path()), '\\/') : $sCustomDataPath;
 	}

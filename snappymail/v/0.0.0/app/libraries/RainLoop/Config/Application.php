@@ -283,6 +283,8 @@ Values:
 
 				'enable' => array(false, 'Enable logging'),
 
+				'path' => array('', 'Path where log files will be stored'),
+
 				'level' => array(4, 'Log messages of set RFC 5424 section 6.2.1 Severity level and higher (0 = highest, 7 = lowest).
 0 = Emergency
 1 = Alert
@@ -342,6 +344,8 @@ Examples:
 					'The section controls caching of the entire application.
 
 Enables caching in the system'),
+
+				'path' => array('', 'Path where cache files will be stored'),
 
 				'index' => array('v1', 'Additional caching key. If changed, cache is purged'),
 

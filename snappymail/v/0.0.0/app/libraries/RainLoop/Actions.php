@@ -509,7 +509,10 @@ class Actions
 			switch (true) {
 				default:
 				case $bForceFile:
-					$oDriver = new \MailSo\Cache\Drivers\File(APP_PRIVATE_DATA . 'cache', $sKey);
+					$oDriver = new \MailSo\Cache\Drivers\File(
+						\trim($this->oConfig->Get('cache', 'path', APP_PRIVATE_DATA . 'cache')),
+						$sKey
+					);
 					break;
 
 				case ('APCU' === $sDriver) &&
@@ -566,8 +569,8 @@ class Actions
 			if ($this->oConfig->Get('logs', 'auth_logging', false)) {
 //				$this->oLoggerAuth->SetLevel(\LOG_WARNING);
 
-				$sAuthLogFileFullPath = \APP_PRIVATE_DATA . 'logs/' . $this->compileLogFileName(
-						$this->oConfig->Get('logs', 'auth_logging_filename', ''));
+				$sAuthLogFileFullPath = \trim($this->oConfig->Get('logs', 'path', \APP_PRIVATE_DATA . 'logs'))
+					. '/' . $this->compileLogFileName($this->oConfig->Get('logs', 'auth_logging_filename', ''));
 				$sLogFileDir = \dirname($sAuthLogFileFullPath);
 				if (!\is_dir($sLogFileDir)) {
 					\mkdir($sLogFileDir, 0755, true);
