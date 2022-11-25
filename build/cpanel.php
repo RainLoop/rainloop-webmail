@@ -21,9 +21,8 @@ foreach ($files as $file) {
 }
 
 $cpanel_tar->addFile('.htaccess', "{$cpanel_path}.htaccess");
-//$cpanel_tar->addFile('_include.php', 'snappymail/app/_include.php');
 $cpanel_tar->addFile('README.md', "{$cpanel_path}README.md");
-$cpanel_tar->addFromString('VERSION', $package->version);
+$cpanel_tar->addFromString("{$cpanel_path}VERSION", $package->version);
 
 $index = file_get_contents('index.php');
 $index = str_replace('0.0.0', $package->version, $index);
