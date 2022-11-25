@@ -510,10 +510,8 @@ class Actions
 			switch (true) {
 				default:
 				case $bForceFile:
-					$sCacheDir = \trim($this->oConfig->Get('cache', 'path', '')) ?: APP_PRIVATE_DATA . 'cache';
-					\is_dir($sCacheDir) || \mkdir($sCacheDir, 0700, true);
 					$oDriver = new \MailSo\Cache\Drivers\File(
-						\trim($this->oConfig->Get('cache', 'path', APP_PRIVATE_DATA . 'cache')),
+						\trim($this->oConfig->Get('cache', 'path', '')) ?: APP_PRIVATE_DATA . 'cache',
 						$sKey
 					);
 					break;
