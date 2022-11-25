@@ -57,104 +57,87 @@ class LdapMailAccounts
 		try {
 			$this->EnsureBound();
 		} catch (LdapException $e) {
-			return []; // exceptions are only thrown from the handleerror function that does logging already
+			return false; // exceptions are only thrown from the handleerror function that does logging already
 		}
 
-		// Try to get account information. Login() returns the username of the user and removes the domainname 
-		// if this was configured inside the domain config.
+		// Try to get account information. Login() returns the username of the user 
+		// and removes the domainname if this was configured inside the domain config.
 		$username = @ldap_escape($oAccount->Login(), "", LDAP_ESCAPE_FILTER);
+
+		$searchString = $this->config->search_string;
+
+		// Replace placeholders inside the ldap search string with actual values
+		$searchString = str_replace("#USERNAME#", $username, $searchString);
+		$searchString = str_replace("#BASE_DN#", $this->config->base, $searchString);
+
+		$this->logger->Write("ldap search string after replacement of placeholders: $searchString", \LOG_NOTICE, self::LOG_KEY);		
 
 		try {
 			$mailAddressResults = $this->FindLdapResults(
-				$this->config->user_field_search,
-				$username,
-				$this->config->user_base,
-				$this->config->user_objectclass,
-				$this->config->user_field_name,
-				$this->config->user_field_mail
+				$this->config->field_search,
+				$searchString,
+				$this->config->base,
+				$this->config->objectclass,
+				$this->config->field_name,
+				$this->config->field_username,
+				$this->config->field_domain
 			);
-		} catch (LdapException $e) {
-			return []; // exceptions are only thrown from the handleerror function that does logging already
+		} 
+		catch (LdapException $e) {
+			return false; // exceptions are only thrown from the handleerror function that does logging already
 		}
-
 		if (count($mailAddressResults) < 1) {
 			$this->logger->Write("Could not find user $username", \LOG_NOTICE, self::LOG_KEY);
-			return [];
+			return false;
 		} else if (count($mailAddressResults) == 1) {
 			$this->logger->Write("Found only one match for user $username, no additional mail adresses found", \LOG_NOTICE, self::LOG_KEY);
+			return true;
 		}
 
-		//From: https://github.com/the-djmaze/snappymail/issues/616
+		//Basing on https://github.com/the-djmaze/snappymail/issues/616
 
 		$oActions = \RainLoop\Api::Actions();
-		$oMainAccount = $oActions->getMainAccountFromToken();
 
+		//Check if SnappyMail is configured to allow additional accounts
 		if (!$oActions->GetCapa(Capa::ADDITIONAL_ACCOUNTS)) {
 			return $oActions->FalseResponse(__FUNCTION__);
 		}
 
-		$aAccounts = $oActions->GetAccounts($oMainAccount);
-
-		$sPassword = $oActions->GetActionParam('Password', '');
-		$bNew = '1' === (string)$oActions->GetActionParam('New', '1');
+		$aAccounts = $oActions->GetAccounts($oAccount);
 
 		foreach($mailAddressResults as $mailAddressResult)
 		{
-			$sUsername = $mailAddressResult->$username;
-			$sEmail = \MailSo\Base\Utils::IdnToAscii($sUsername, true);
-			if ($bNew && ($oMainAccount->Email() === $sUsername || isset($aAccounts[$sUsername]))) {
-				//Account already exists
-				return false;
-			}
+			$sUsername = $mailAddressResult->username;
+			$sDomain = $mailAddressResult->domain;
 
-			if ($bNew || $sPassword) {
-				$oNewAccount = $oActions->LoginProcess($sUsername, $sPassword, false, false);
-				$aAccounts[$sUsername] = $oNewAccount->asTokenArray($oMainAccount);
-			} else {
-				$aAccounts[$sUsername] = \RainLoop\Model\AdditionalAccount::convertArray($aAccounts[$sUsername]);
-			}
+$this->logger->Write("Domain: $sDomain Username: $sUsername Login: " . $oAccount->Login() . " E-Mail: " . $oAccount->Email(), \LOG_NOTICE, self::LOG_KEY);
 
-			if ($aAccounts[$sUsername]) {
-				$aAccounts[$sUsername]['name'] = $mailAddressResult->$name;
-				$oActions->SetAccounts($oMainAccount, $aAccounts);
-			}
+			//only execute if the found account isn't already in the list of additional accounts
+			//and if the found account is different from the main account
+			//https://github.com/the-djmaze/snappymail/issues/705 should solve the missing logging if a domain is found in ldap
+			//but is not defined in the admin panel of SnappyMail 
+			if (!$aAccounts["$sUsername@$sDomain"] && $oAccount->Email() !== "$sUsername@$sDomain")
+			{
+$this->logger->Write("test $sUsername@$sDomain", \LOG_NOTICE, self::LOG_KEY);
+				//Try to login the user with the same password as the primary account has
+				//if this fails the user will see the new mail addresses but will be asked for the correct password
+				$sPass = $oAccount->Password();
+				$oNewAccount = RainLoop\Model\AdditionalAccount::NewInstanceFromCredentials($oActions, "$sUsername@$sDomain", $sUsername, $sPass);
+				$aAccounts["$sUsername@$sDomain"] = $oNewAccount->asTokenArray($oAccount);			
+			}				
 		}
 
-/* Not needed at the moment
-		if (!$this->config->group_get)
-			return $identities;
-
-		try {
-			$groupResults = $this->FindLdapResults(
-				$this->config->group_field_member,
-				$userResult->dn,
-				$this->config->group_base,
-				$this->config->group_objectclass,
-				$this->config->group_field_name,
-				$this->config->group_field_mail
-			);
-		} catch (LdapException $e) {
-			return []; // exceptions are only thrown from the handleerror function that does logging already
+		if ($aAccounts)
+		{
+			$oActions->SetAccounts($oAccount, $aAccounts);
+			return true;
 		}
 
-		foreach ($groupResults as $group) {
-			foreach ($group->emails as $email) {
-				$name = $this->config->group_sender_format;
-				$name = str_replace("#USER#", $userResult->name, $name);
-				$name = str_replace("#GROUP#", $group->name, $name);
-
-				$identity = new Identity($email, $email);
-				$identity->SetName($name);
-				$identity->SetBcc($email);
-
-				$identities[] = $identity;
-			}
-		}
-*/
-
-		return true;
+		return false;
 	}
 
+
+	
 	/**
 	 * @inheritDoc
 	 * @throws \RainLoop\Exceptions\ClientException
@@ -252,26 +235,33 @@ class LdapMailAccounts
 
 	/**
 	 * @param string $searchField
-	 * @param string $searchValue
+	 * @param string $searchString
 	 * @param string $searchBase
 	 * @param string $objectClass
 	 * @param string $nameField
-	 * @param string $mailField
+	 * @param string $usernameField
+	 * @param string $domainField
 	 * @return LdapResult[]
 	 * @throws LdapException
 	 */
-	private function FindLdapResults(string $searchField, string $searchValue, string $searchBase, string $objectClass, string $nameField, string $mailField): array
-	{
-		$this->EnsureBound();
-
+	private function FindLdapResults(
+		string $searchField, 
+		string $searchString, 
+		string $searchBase, 
+		string $objectClass, 
+		string $nameField, 
+		string $usernameField, 
+		string $domainField): array
+	{	
+		$this->EnsureBound();	
 		$nameField = strtolower($nameField);
-		$mailField = strtolower($mailField);
+		$usernameField = strtolower($usernameField);
+		$domainField = strtolower($domainField);
 
-		//TODO: temporary fixed to concat with Base DN - should be variable
-		$filter = "(&(objectclass=$objectClass)($searchField=uid=$searchValue,$searchBase))";
-		$this->logger->Write("Filter=$filter", \LOG_NOTICE, self::LOG_KEY);
+		$filter = "(&(objectclass=$objectClass)($searchField=$searchString))";
+		$this->logger->Write("Used ldap filter to search for additional mail accounts: $filter", \LOG_NOTICE, self::LOG_KEY);
 
-		$ldapResult = @ldap_search($this->ldap, $searchBase, $filter, ['dn', $mailField, $nameField]);
+		$ldapResult = @ldap_search($this->ldap, $searchBase, $filter, ['dn', $usernameField, $nameField, $domainField]);
 		if (!$ldapResult) {
 			$this->HandleLdapError("Fetch $objectClass");
 			return [];
@@ -283,6 +273,7 @@ class LdapMailAccounts
 			return [];
 		}
 
+		// Save the found ldap entries into a LdapResult object and return them
 		$results = [];
 		for ($i = 0; $i < $entries["count"]; $i++) {
 			$entry = $entries[$i];
@@ -290,13 +281,64 @@ class LdapMailAccounts
 			$result = new LdapResult();
 			$result->dn = $entry["dn"];
 			$result->name = $this->LdapGetAttribute($entry, $nameField, true, true);
-			$result->username = $this->LdapGetAttribute($entry, $mailField, true, true);
+			
+			$result->username = $this->LdapGetAttribute($entry, $usernameField, true, true);
+			$result->username = $this->RemoveEventualDomainPart($result->username);
+
+			$result->domain = $this->LdapGetAttribute($entry, $domainField, true, true);
+			$result->domain = $this->RemoveEventualLocalPart($result->domain);
 
 			$results[] = $result;
 		}
 
 		return $results;
 	}
+
+	/**
+	 * Removes an eventually found domain-part of an email address
+	 * 
+	 * If the input string contains an '@' character the function returns the local-part before the '@'\
+	 * If no '@' character can be found the input string is returned.
+	 * 
+	 * @param string $sInput
+	 * @return string
+	 */
+	public static function RemoveEventualDomainPart(string $sInput) : string
+	{
+		// Copy of \MailSo\Base\Utils::GetAccountNameFromEmail to make sure that also after eventual future
+		// updates the input string gets returned when no '@' is found (GetDomainFromEmail already doesn't do this)
+		$sResult = '';
+		if (\strlen($sInput))
+		{
+			$iPos = \strrpos($sInput, '@');
+			$sResult = (false === $iPos) ? $sInput : \substr($sInput, 0, $iPos);
+		}
+
+		return $sResult;
+	}	
+
+
+	/**
+	 * Removes an eventually found local-part of an email address
+	 * 
+	 * If the input string contains an '@' character the function returns the domain-part behind the '@'\
+	 * If no '@' character can be found the input string is returned.
+	 * 
+	 * @param string $sInput
+	 * @return string
+	 */
+	public static function RemoveEventualLocalPart(string $sInput) : string
+	{
+		$sResult = '';
+		if (\strlen($sInput))
+		{
+			$iPos = \strrpos($sInput, '@');
+			$sResult = (false === $iPos) ? $sInput : \substr($sInput, $iPos + 1);
+		}
+
+		return $sResult;
+	}		
+	
 
 	/**
 	 * @param array $entry
@@ -341,4 +383,7 @@ class LdapResult
 
 	/** @var string */
 	public $username;
+
+	/** @var string */
+	public $domain;
 }

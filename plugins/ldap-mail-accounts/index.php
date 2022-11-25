@@ -34,6 +34,7 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 		$this->addHook("login.success", 'AddLdapMailAccounts');
 	}
 
+	// Function gets called by RainLoop/Actions/User.php
 	public function AddLdapMailAccounts(Account $oAccount)
 	{
 		// Set up config
@@ -59,84 +60,56 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 
 			Property::NewInstance(LdapConfig::CONFIG_BIND_USER)
 				->SetLabel("Bind User DN")
-				->SetDescription("The user to use for binding to the LDAP server. Should be a DN or RDN. Leave empty for anonymous bind")
+				->SetDescription("The user to use for binding to the LDAP server. Should be a DN or RDN. Leave empty for anonymous bind.")
 				->SetType(PluginPropertyType::STRING),
 
 			Property::NewInstance(LdapConfig::CONFIG_BIND_PASSWORD)
 				->SetLabel("Bind User Password")
-				->SetDescription("Leave empty for anonymous bind")
+				->SetDescription("Leave empty for anonymous bind.")
 				->SetType(PluginPropertyType::PASSWORD),
 
-			Property::NewInstance(LdapConfig::CONFIG_USER_OBJECTCLASS)
-				->SetLabel("User object class")
+			Property::NewInstance(LdapConfig::CONFIG_OBJECTCLASS)
+				->SetLabel("Object class")
 				->SetType(PluginPropertyType::STRING)
 				->SetDefaultValue("user"),
 
-			Property::NewInstance(LdapConfig::CONFIG_USER_FIELD_SEARCH)
-				->SetLabel("User search field")
-				->SetType(PluginPropertyType::STRING)
-				->SetDescription("The fieldname inside the user object to search for the email/username the user logged in with")
-				->SetDefaultValue("member"),
-
-			Property::NewInstance(LdapConfig::CONFIG_USER_FIELD_MAIL)
-				->SetLabel("Additional account mail field")
-				->SetType(PluginPropertyType::STRING)
-				->SetDescription("The field containing the mail address of found additional mail accounts")
-				->SetDefaultValue("mail"),
-
-			Property::NewInstance(LdapConfig::CONFIG_USER_FIELD_NAME)
-				->SetLabel("Additional account name field")
-				->SetType(PluginPropertyType::STRING)
-				->SetDescription("The field containing the default sender name of the found additional mail accounts")
-				->SetDefaultValue("displayName"),
-
-			Property::NewInstance(LdapConfig::CONFIG_USER_BASE)
+			Property::NewInstance(LdapConfig::CONFIG_BASE)
 				->SetLabel("User base DN")
 				->SetType(PluginPropertyType::STRING)
-				->SetDescription("The base DN to search in for users")
+				->SetDescription("The base DN to search in for users."),
 
-			/* Not needed at the moment
-
-			Property::NewInstance(LdapConfig::CONFIG_GROUP_GET)
-				->SetLabel("Find groups?")
-				->SetType(PluginPropertyType::BOOL)
-				->SetDescription("Whether or not to search for groups")
-				->SetDefaultValue(true),
-
-			Property::NewInstance(LdapConfig::CONFIG_GROUP_OBJECTCLASS)
-				->SetLabel("Group object class")
+			Property::NewInstance(LdapConfig::CONFIG_FIELD_SEARCH)
+				->SetLabel("Search field")
 				->SetType(PluginPropertyType::STRING)
-				->SetDefaultValue("group"),
+				->SetDescription("The name of the ldap attribute that has to contain the set 'LDAP search string'.")
+				->SetDefaultValue("member"),				
 
-			Property::NewInstance(LdapConfig::CONFIG_GROUP_FIELD_MAIL)
-				->SetLabel("Group mail field")
+			Property::NewInstance(LdapConfig::CONFIG_SEARCH_STRING)
+				->SetLabel("LDAP search string")
 				->SetType(PluginPropertyType::STRING)
-				->SetDescription("The field in the group object listing all identities (email addresses) of the group")
-				->SetDefaultValue("mail"),
+				->SetDescription("The search string used to find ldap objects of mail accounts the user has access to.
+					\nPossible placeholers:\n#USERNAME# - replaced with the username of the actual SnappyMail user
+					\n#BASE_DN# - replaced with the value inside the field 'User base DN'."),
 
-			Property::NewInstance(LdapConfig::CONFIG_GROUP_FIELD_NAME)
-				->SetLabel("Group name field")
+			Property::NewInstance(LdapConfig::CONFIG_FIELD_USERNAME)
+				->SetLabel("Username field of additional account")
 				->SetType(PluginPropertyType::STRING)
-				->SetDescription("The field in the group object with the name")
-				->SetDefaultValue("cn"),
+				->SetDescription("The field containing the username of the found additional mail account. 
+					\nThis username gets used by SnappyMail to login to the additional mail account.")
+				->SetDefaultValue("uid"),
 
-			Property::NewInstance(LdapConfig::CONFIG_GROUP_FIELD_MEMBER)
-				->SetLabel("Group member field")
+			Property::NewInstance(LdapConfig::CONFIG_FIELD_MAIL_DOMAIN)
+				->SetLabel("Domain name field of additional account")
 				->SetType(PluginPropertyType::STRING)
-				->SetDescription("The field in the group object with all member DNs")
-				->SetDefaultValue("member"),
+				->SetDescription("The field containing the domain name of the found additional mail account. 
+					\nThis domain gets looked up by SnappyMail to choose the right connection parameters at logging in to the additional mail account.")
+				->SetDefaultValue("mail"),				
 
-			Property::NewInstance(LdapConfig::CONFIG_GROUP_SENDER_FORMAT)
-				->SetLabel("Group mail sender format")
+			Property::NewInstance(LdapConfig::CONFIG_FIELD_NAME)
+				->SetLabel("Additional account name field")
 				->SetType(PluginPropertyType::STRING)
-				->SetDescription("The sender name format for group addresses. Available template values: #USER# for the user name and #GROUP# for the group name")
-				->SetDefaultValue("#USER# || #GROUP#"),
-
-			Property::NewInstance(LdapConfig::CONFIG_GROUP_BASE)
-				->SetLabel("Group base DN")
-				->SetType(PluginPropertyType::STRING)
-				->SetDescription("The base DN to search in for groups")
-			*/
+				->SetDescription("The field containing the default sender name of the found additional mail account.")
+				->SetDefaultValue("displayName")
 		];
 	}
 }

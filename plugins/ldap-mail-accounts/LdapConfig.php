@@ -11,43 +11,25 @@ class LdapConfig
 	public const CONFIG_BIND_USER = "bind_user";
 	public const CONFIG_BIND_PASSWORD = "bind_password";
 
-	public const CONFIG_USER_BASE = "user_base";
-	public const CONFIG_USER_OBJECTCLASS = "user_objectclass";
-	public const CONFIG_USER_FIELD_NAME = "user_field_name";
-	public const CONFIG_USER_FIELD_SEARCH = "user_field_search";
-	public const CONFIG_USER_FIELD_MAIL = "user_field_mail";
-
-	/* Not needed at the moment
-
-	public const CONFIG_GROUP_GET = "group_get";
-	public const CONFIG_GROUP_BASE = "group_base";
-	public const CONFIG_GROUP_OBJECTCLASS = "group_objectclass";
-	public const CONFIG_GROUP_FIELD_NAME = "group_field_name";
-	public const CONFIG_GROUP_FIELD_MEMBER = "group_field_member";
-	public const CONFIG_GROUP_FIELD_MAIL = "group_field_mail";
-	public const CONFIG_GROUP_SENDER_FORMAT = "group_sender_format";
-	*/
+	public const CONFIG_BASE = "base";
+	public const CONFIG_OBJECTCLASS = "objectclass";
+	public const CONFIG_FIELD_NAME = "field_name";
+	public const CONFIG_FIELD_SEARCH = "field_search";
+	public const CONFIG_FIELD_USERNAME = "field_username";
+	public const CONFIG_SEARCH_STRING = "search_string";
+	public const CONFIG_FIELD_MAIL_DOMAIN = "field_domain";
 
 	public $server;
 	public $protocol;
 	public $bind_user;
 	public $bind_password;
-	public $user_base;
-	public $user_objectclass;
-	public $user_field_name;
-	public $user_field_search;
-	public $user_field_mail;
-
-	/* Not needed at the moment
-
-	public $group_get;
-	public $group_base;
-	public $group_objectclass;
-	public $group_field_name;
-	public $group_field_member;
-	public $group_field_mail;
-	public $group_sender_format;
-	*/
+	public $base;
+	public $objectclass;
+	public $field_name;
+	public $field_search;
+	public $field_username;
+	public $search_string;
+	public $field_domain;
 
 	public static function MakeConfig(Plugin $config): LdapConfig
 	{
@@ -56,21 +38,13 @@ class LdapConfig
 		$ldap->protocol = (int)trim($config->Get("plugin", self::CONFIG_PROTOCOL_VERSION, 3));
 		$ldap->bind_user = trim($config->Get("plugin", self::CONFIG_BIND_USER));
 		$ldap->bind_password = trim($config->Get("plugin", self::CONFIG_BIND_PASSWORD));
-		$ldap->user_base = trim($config->Get("plugin", self::CONFIG_USER_BASE));
-		$ldap->user_objectclass = trim($config->Get("plugin", self::CONFIG_USER_OBJECTCLASS));
-		$ldap->user_field_name = trim($config->Get("plugin", self::CONFIG_USER_FIELD_NAME));
-		$ldap->user_field_search = trim($config->Get("plugin", self::CONFIG_USER_FIELD_SEARCH));
-		$ldap->user_field_mail = trim($config->Get("plugin", self::CONFIG_USER_FIELD_MAIL));
-		
-		/* Not needed at the moment
-		$ldap->group_get = (bool)trim($config->Get("plugin", self::CONFIG_GROUP_GET));
-		$ldap->group_base = trim($config->Get("plugin", self::CONFIG_GROUP_BASE));
-		$ldap->group_objectclass = trim($config->Get("plugin", self::CONFIG_GROUP_OBJECTCLASS));
-		$ldap->group_field_name = trim($config->Get("plugin", self::CONFIG_GROUP_FIELD_NAME));
-		$ldap->group_field_member = trim($config->Get("plugin", self::CONFIG_GROUP_FIELD_MEMBER));
-		$ldap->group_field_mail = trim($config->Get("plugin", self::CONFIG_GROUP_FIELD_MAIL));
-		$ldap->group_sender_format = trim($config->Get("plugin", self::CONFIG_GROUP_SENDER_FORMAT));
-		*/
+		$ldap->base = trim($config->Get("plugin", self::CONFIG_BASE));
+		$ldap->objectclass = trim($config->Get("plugin", self::CONFIG_OBJECTCLASS));
+		$ldap->field_name = trim($config->Get("plugin", self::CONFIG_FIELD_NAME));
+		$ldap->field_search = trim($config->Get("plugin", self::CONFIG_FIELD_SEARCH));
+		$ldap->field_username = trim($config->Get("plugin", self::CONFIG_FIELD_USERNAME));
+		$ldap->search_string = trim($config->Get("plugin", self::CONFIG_SEARCH_STRING));
+		$ldap->field_domain = trim($config->Get("plugin", self::CONFIG_FIELD_MAIL_DOMAIN));
 
 		return $ldap;
 	}
