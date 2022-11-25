@@ -1,3 +1,20 @@
+## 2.22.3 – 2022-11-25
+
+### Added
+- application.ini config logs.path and cache.path to improve custom data structure.
+
+### Changed
+- Improved cPanel integration
+  [#697](https://github.com/the-djmaze/snappymail/pull/697)
+- Update to OpenPGP.js v5.5.0
+
+### Fixed
+- drag & drop folder expansion #707
+  [#707](https://github.com/the-djmaze/snappymail/pull/707)
+- Save selected messages as .eml in Nextcloud failed
+  [#704](https://github.com/the-djmaze/snappymail/pull/704)
+
+
 ## 2.22.2 – 2022-11-24
 
 ### Added

@@ -42,8 +42,13 @@ if (isset($options['set-version'])) {
 $options['aur'] = isset($options['aur']);
 
 // Docker build
-$docker = trim(`which docker`);
-$options['docker'] = isset($options['docker']) || (!$options['aur'] && $docker && strtoupper(readline("Build Docker image? (Y/N): ")) === "Y");
+$options['docker'] = isset($options['docker']);
+if ($options['docker'] && !($docker = trim(`which docker`))) {
+	exit('docker not found');
+}
+if ($options['docker'] && $options['aur']) {
+	exit('Conflict between docker and aur');
+}
 
 $destPath = "build/dist/releases/webmail/{$package->version}/";
 is_dir($destPath) || mkdir($destPath, 0777, true);
@@ -262,6 +267,10 @@ if (isset($options['sign'])) {
 	if (isset($options['nextcloud'])) {
 		passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --armor --detach-sign '
 			.escapeshellarg("{$destPath}snappymail-{$package->version}-nextcloud.tar.gz"), $return_var);
+	}
+	if (isset($options['cpanel'])) {
+		passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --armor --detach-sign '
+			.escapeshellarg("{$destPath}snappymail-{$package->version}-cpanel.tar.gz"), $return_var);
 	}
 	if (isset($options['debian'])) {
 		passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --armor --detach-sign '
