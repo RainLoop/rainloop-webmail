@@ -49,6 +49,10 @@ class LdapMailAccounts
 	/**
 	 * @inheritDoc
 	 * 
+	 * Add additional mail accounts to the given primary account by looking up the ldap directory
+	 * 
+	 * The ldap lookup has to be configured in the plugin configuration of the extension (in the SnappyMail Admin Panel)
+	 * 
 	 * @param Account $oAccount
 	 * @return bool $success
 	 */
@@ -95,7 +99,6 @@ class LdapMailAccounts
 		}
 
 		//Basing on https://github.com/the-djmaze/snappymail/issues/616
-
 		$oActions = \RainLoop\Api::Actions();
 
 		//Check if SnappyMail is configured to allow additional accounts
@@ -118,7 +121,6 @@ $this->logger->Write("Domain: $sDomain Username: $sUsername Login: " . $oAccount
 			//but is not defined in the admin panel of SnappyMail 
 			if (!$aAccounts["$sUsername@$sDomain"] && $oAccount->Email() !== "$sUsername@$sDomain")
 			{
-$this->logger->Write("test $sUsername@$sDomain", \LOG_NOTICE, self::LOG_KEY);
 				//Try to login the user with the same password as the primary account has
 				//if this fails the user will see the new mail addresses but will be asked for the correct password
 				$sPass = $oAccount->Password();
