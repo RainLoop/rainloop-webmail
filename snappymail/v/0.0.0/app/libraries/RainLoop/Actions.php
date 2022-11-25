@@ -133,8 +133,9 @@ class Actions
 			if ('syslog' === $sLogFileName) {
 				$oDriver = new \MailSo\Log\Drivers\Syslog();
 			} else {
-				$sLogFileFullPath = \APP_PRIVATE_DATA . 'logs/' . $this->compileLogFileName($sLogFileName);
-				$oDriver = new \MailSo\Log\Drivers\File($sLogFileFullPath);
+				$sLogFileFullPath = \trim($this->oConfig->Get('logs', 'path', '')) ?: \APP_PRIVATE_DATA . 'logs';
+				\is_dir($sLogFileFullPath) || \mkdir($sLogFileFullPath, 0700, true);
+				$oDriver = new \MailSo\Log\Drivers\File($sLogFileFullPath . '/' . $this->compileLogFileName($sLogFileName));
 			}
 			$this->oLogger->append($oDriver
 				->SetTimeZone($this->oConfig->Get('logs', 'time_zone', 'UTC'))
@@ -509,6 +510,8 @@ class Actions
 			switch (true) {
 				default:
 				case $bForceFile:
+					$sCacheDir = \trim($this->oConfig->Get('cache', 'path', '')) ?: APP_PRIVATE_DATA . 'cache';
+					\is_dir($sCacheDir) || \mkdir($sCacheDir, 0700, true);
 					$oDriver = new \MailSo\Cache\Drivers\File(
 						\trim($this->oConfig->Get('cache', 'path', APP_PRIVATE_DATA . 'cache')),
 						$sKey
@@ -569,13 +572,10 @@ class Actions
 			if ($this->oConfig->Get('logs', 'auth_logging', false)) {
 //				$this->oLoggerAuth->SetLevel(\LOG_WARNING);
 
-				$sAuthLogFileFullPath = \trim($this->oConfig->Get('logs', 'path', \APP_PRIVATE_DATA . 'logs'))
+				$sAuthLogFileFullPath = (\trim($this->oConfig->Get('logs', 'path', '') ?: \APP_PRIVATE_DATA . 'logs'))
 					. '/' . $this->compileLogFileName($this->oConfig->Get('logs', 'auth_logging_filename', ''));
 				$sLogFileDir = \dirname($sAuthLogFileFullPath);
-				if (!\is_dir($sLogFileDir)) {
-					\mkdir($sLogFileDir, 0755, true);
-				}
-
+				\is_dir($sLogFileDir) || \mkdir($sLogFileDir, 0755, true);
 				$this->oLoggerAuth->append(
 					(new \MailSo\Log\Drivers\File($sAuthLogFileFullPath))
 						->DisableTimePrefix()

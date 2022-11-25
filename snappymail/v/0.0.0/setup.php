@@ -135,7 +135,7 @@ if (defined('APP_VERSION'))
 		clearstatcache();
 	}
 
-	foreach (array('logs', 'cache', 'configs', 'domains', 'plugins', 'storage') as $sName)
+	foreach (array('configs', 'domains', 'plugins', 'storage') as $sName)
 	{
 		if (!is_dir(APP_PRIVATE_DATA.$sName))
 		{
