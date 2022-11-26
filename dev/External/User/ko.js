@@ -163,7 +163,7 @@ Object.assign(ko.bindingHandlers, {
 			const folder = fValueAccessor(); // ko.dataFor(element)
 			folder && addEventsListeners(element, {
 				dragenter: e => dragEnter(e, element, folder),
-//				dragover: e => dragOver(e, element, folder),
+				dragover: e => e.preventDefault(),
 				dragleave: e => dragStop(e, element),
 				drop: e => dragDrop(e, element, folder, dragData)
 			});
