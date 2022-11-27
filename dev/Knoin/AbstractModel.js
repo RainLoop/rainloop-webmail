@@ -105,6 +105,7 @@ export class AbstractModel {
 					// fall through
 				case 'undefined':
 				default:
+					this[key] = value;
 //					console.log((typeof this[key])+' '+(model.name)+'.'+key+' not revived');
 				}
 			} catch (e) {

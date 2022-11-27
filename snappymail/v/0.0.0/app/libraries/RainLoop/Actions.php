@@ -1067,25 +1067,20 @@ class Actions
 
 	public function cacheByKey(string $sKey, bool $bForce = false): bool
 	{
-		$bResult = false;
 		if (!empty($sKey) && ($bForce || ($this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true)))) {
 			$iExpires = $this->oConfig->Get('cache', 'http_expires', 3600);
 			if (0 < $iExpires) {
 				$this->Http()->ServerUseCache($this->etag($sKey), 1382478804, \time() + $iExpires);
-				$bResult = true;
+				return true;
 			}
 		}
-
-		if (!$bResult) {
-			$this->Http()->ServerNoCache();
-		}
-
-		return $bResult;
+		$this->Http()->ServerNoCache();
+		return false;
 	}
 
 	public function verifyCacheByKey(string $sKey, bool $bForce = false): void
 	{
-		if (!empty($sKey) && ($bForce || $this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true))) {
+		if (!empty($sKey) && ($bForce || ($this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true)))) {
 			$sIfNoneMatch = $this->Http()->GetHeader('If-None-Match', '');
 			if ($this->etag($sKey) === $sIfNoneMatch) {
 				\MailSo\Base\Http::StatusHeader(304);

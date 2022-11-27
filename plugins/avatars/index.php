@@ -3,10 +3,10 @@
 class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
-		NAME     = 'Avatar',
+		NAME     = 'Avatars',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.0',
+		VERSION  = '1.1',
 		RELEASE  = '2022-11-23',
 		REQUIRED = '2.22.0',
 		CATEGORY = 'Contacts',
@@ -19,6 +19,29 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addJs('avatars.js');
 		$this->addJsonHook('Avatar', 'DoAvatar');
 		$this->addPartHook('Avatar', 'ServiceAvatar');
+		// TODO: https://github.com/the-djmaze/snappymail/issues/714
+//		$this->addHook('filter.json-response', 'FilterJsonResponse');
+	}
+
+	public function FilterJsonResponse(string $sAction, array &$aResponseItem)
+	{
+		if ('MessageList' === $sAction && !empty($aResponseItem['Result']['@Collection'])) {
+			foreach ($aResponseItem['Result']['@Collection'] as $id => $message) {
+				$aResponseItem['Result']['@Collection'][$id]['Avatar'] = static::encryptFrom($message['From'][0]);
+			}
+		} else if ('Message' === $sAction && !empty($aResponseItem['Result']['From'])) {
+			$aResponseItem['Result']['Avatar'] = static::encryptFrom($aResponseItem['Result']['From'][0]);
+		}
+	}
+
+	private static function encryptFrom($mFrom)
+	{
+		if ($mFrom instanceof \MailSo\Mime\Email) {
+			$mFrom = $mFrom->jsonSerialize();
+		}
+		return \is_array($mFrom)
+			? \SnappyMail\Crypt::EncryptUrlSafe($mFrom['Email'])
+			: null;
 	}
 
 	/**
@@ -28,7 +51,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		$bBimi = !empty($this->jsonParam('bimi'));
 		$sEmail = $this->jsonParam('email');
-		$aResult = $this->getAvatar(\urldecode($sEmail), !empty($sEmail));
+		$aResult = $this->getAvatar($sEmail, !empty($bBimi));
 		if ($aResult) {
 			$aResult = [
 				'type' => $aResult[0],
@@ -39,15 +62,17 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	}
 
 	/**
-	 * GET /?Avatar/${bimi}/${from.email}
-	 * Not fond of this idea because email address is exposed
-	 * Maybe use btoa(from.email) or Crypto.subtle.encrypt({name:'AES-GCM',iv:''}, token, from.email)
+	 * GET /?Avatar/${bimi}/Encrypted(${from.email})
+	 * Nextcloud Mail uses insecure unencrypted 'index.php/apps/mail/api/avatars/url/local%40example.com'
 	 */
 //	public function ServiceAvatar(...$aParts)
 	public function ServiceAvatar(string $sServiceName, string $sBimi, string $sEmail)
 	{
-		$aResult = $this->getAvatar(\urldecode($sEmail), !empty($sEmail));
-		if ($aResult) {
+		$sEmail = \SnappyMail\Crypt::DecryptUrlSafe($sEmail);
+		$oActions = \RainLoop\Api::Actions();
+		$oActions->verifyCacheByKey($sEmail, true);
+		if ($sEmail && ($aResult = $this->getAvatar($sEmail, !empty($sBimi)))) {
+			$oActions->Http()->ServerUseCache($oActions->etag($sEmail), \time(), \time() + 86400);
 			\header('Content-Type: '.$aResult[0]);
 			echo $aResult[1];
 			return true;
@@ -74,7 +99,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 
 		$oActions = \RainLoop\Api::Actions();
-		$oActions->verifyCacheByKey($sEmail);
+//		$oActions->verifyCacheByKey($sEmail, true);
 
 		$aResult = null;
 
@@ -88,7 +113,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				\mime_content_type($aFiles[0]),
 				\file_get_contents($aFiles[0])
 			];
-			$oActions->cacheByKey($sEmail);
+//			$oActions->Http()->ServerUseCache($oActions->etag($sEmail), \time(), \time() + 86400);
 			return $aResult;
 		}
 
@@ -167,7 +192,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			}
 		}
 
-		$oActions->cacheByKey($sEmail);
+//		$oActions->Http()->ServerUseCache($oActions->etag($sEmail), \time(), \time() + 86400);
 
 		return $aResult;
 	}

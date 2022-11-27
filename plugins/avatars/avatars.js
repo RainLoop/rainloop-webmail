@@ -1,5 +1,4 @@
 (rl => {
-//	if (rl.settings.get('Nextcloud'))
 	const
 		queue = [],
 		avatars = new Map,
@@ -45,6 +44,9 @@
 					fn = url=>{element.src = url};
 				if (url) {
 					fn(url);
+				} else if (msg.avatar) {
+					let bimi = 'pass' == msg.from[0].dkimStatus ? 1 : 0;
+					fn(`?Avatar/${bimi}/${msg.avatar}`);
 				} else {
 					queue.push([msg, fn]);
 					runQueue();
@@ -80,6 +82,9 @@
 						};
 					if (url) {
 						fn(url);
+					} else if (msg.avatar) {
+						let bimi = 'pass' == msg.from[0].dkimStatus ? 1 : 0;
+						fn(`?Avatar/${bimi}/${msg.avatar}`);
 					} else {
 //						let from = msg.from[0], bimi = 'pass' == from.dkimStatus ? 1 : 0;
 //						view.viewUserPic(`?Avatar/${bimi}/${encodeURIComponent(from.email)}`);
