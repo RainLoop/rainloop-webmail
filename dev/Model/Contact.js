@@ -119,7 +119,7 @@ export class ContactModel extends AbstractModel {
 
 			display: () => {
 				let a = this.fullName(),
-					b = this.email()?.[0]?.value(),
+					b = this.email()[0]?.value(),
 					c = this.nickname();
 				return a || b || c;
 			}
@@ -139,7 +139,7 @@ export class ContactModel extends AbstractModel {
 	 */
 	getNameAndEmailHelper() {
 		let name = (this.givenName() + ' ' + this.surName()).trim(),
-			email = this.email()[0];
+			email = this.email()[0]?.value();
 /*
 //		this.jCard.getOne('fn')?.notEmpty() ||
 		this.jCard.parseFullName({set:true});
