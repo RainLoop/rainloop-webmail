@@ -22,7 +22,7 @@ class LdapMailAccounts
 	/** @var Logger */
 	private $logger;
 
-	private const LOG_KEY = "Ldap";
+	private const LOG_KEY = "LDAP MAIL ACCOUNTS PLUGIN";
 
 	/**
 	 * LdapMailAccount constructor.
@@ -99,6 +99,7 @@ class LdapMailAccounts
 		}
 
 		//Basing on https://github.com/the-djmaze/snappymail/issues/616
+
 		$oActions = \RainLoop\Api::Actions();
 
 		//Check if SnappyMail is configured to allow additional accounts
@@ -115,17 +116,22 @@ class LdapMailAccounts
 
 $this->logger->Write("Domain: $sDomain Username: $sUsername Login: " . $oAccount->Login() . " E-Mail: " . $oAccount->Email(), \LOG_NOTICE, self::LOG_KEY);
 
-			//only execute if the found account isn't already in the list of additional accounts
-			//and if the found account is different from the main account
-			//https://github.com/the-djmaze/snappymail/issues/705 should solve the missing logging if a domain is found in ldap
-			//but is not defined in the admin panel of SnappyMail 
-			if (!$aAccounts["$sUsername@$sDomain"] && $oAccount->Email() !== "$sUsername@$sDomain")
+			//Check if the domain of the found mail address is in the list of configured domains
+			if ($oActions->DomainProvider()->Load($sDomain, true))
 			{
-				//Try to login the user with the same password as the primary account has
-				//if this fails the user will see the new mail addresses but will be asked for the correct password
-				$sPass = $oAccount->Password();
-				$oNewAccount = RainLoop\Model\AdditionalAccount::NewInstanceFromCredentials($oActions, "$sUsername@$sDomain", $sUsername, $sPass);
-				$aAccounts["$sUsername@$sDomain"] = $oNewAccount->asTokenArray($oAccount);			
+				//only execute if the found account isn't already in the list of additional accounts
+				//and if the found account is different from the main account
+				if (!$aAccounts["$sUsername@$sDomain"] && $oAccount->Email() !== "$sUsername@$sDomain")
+				{
+					//Try to login the user with the same password as the primary account has
+					//if this fails the user will see the new mail addresses but will be asked for the correct password
+					$sPass = $oAccount->Password();
+					$oNewAccount = RainLoop\Model\AdditionalAccount::NewInstanceFromCredentials($oActions, "$sUsername@$sDomain", $sUsername, $sPass);
+					$aAccounts["$sUsername@$sDomain"] = $oNewAccount->asTokenArray($oAccount);			
+				}
+			}
+			else {
+				$this->logger->Write("Domain $sDomain is not part of configured domains in SnappyMail Admin Panel - mail address $sUsername@$sDomain will not be added.", \LOG_NOTICE, self::LOG_KEY);
 			}				
 		}
 
