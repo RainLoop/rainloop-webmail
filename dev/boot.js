@@ -31,6 +31,19 @@ const
 navigator.cookieEnabled || redirect('NoCookie');
 [].flat || redirect('BadBrowser');
 
+try {
+	let smctoken = localStorage.getItem('smctoken');
+	if (!smctoken) {
+		let data = new Uint8Array(16);
+		crypto.getRandomValues(data);
+		smctoken = btoa(String.fromCharCode(...data));
+		localStorage.setItem('smctoken', smctoken);
+	}
+	document.cookie = 'smctoken='+encodeURIComponent(smctoken)+"; path=/; samesite=strict";
+} catch (e) {
+	console.error(e);
+}
+
 let RL_APP_DATA = {};
 
 doc.documentElement.classList.toggle('rl-mobile', 'mobile' === layout[2] || (!layout && 1000 > innerWidth));

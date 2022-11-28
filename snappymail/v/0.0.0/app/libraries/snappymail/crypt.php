@@ -45,10 +45,12 @@ abstract class Crypt
 	 */
 	private static function Passphrase(?string $key) : string
 	{
-		return \sha1(
-			($key ?: \preg_replace('/[^a-z]+/i', '', \explode(')', $_SERVER['HTTP_USER_AGENT'])[0])) . APP_SALT,
-			true
-		);
+		if (!$key) {
+			$key = isset($_COOKIE['smctoken'])
+				 ? $_COOKIE['smctoken']
+				 : \preg_replace('/[^a-z]+/i', '', \explode(')', $_SERVER['HTTP_USER_AGENT'])[0]);
+		}
+		return \sha1($key . APP_SALT, true);
 	}
 
 	public static function Decrypt(array $data, string $key = null) /* : mixed */
