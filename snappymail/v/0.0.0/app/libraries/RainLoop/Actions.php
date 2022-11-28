@@ -147,10 +147,10 @@ class Actions
 				'[SM:' . APP_VERSION . '][IP:'
 				. $oHttp->GetClientIp($this->oConfig->Get('labs', 'http_client_ip_check_proxy', false))
 				. '][PID:' . (\MailSo\Base\Utils::FunctionCallable('getmypid') ? \getmypid() : 'unknown')
-				. '][' . $oHttp->GetServer('SERVER_SOFTWARE', '~')
+				. '][' . \MailSo\Base\Http::GetServer('SERVER_SOFTWARE', '~')
 				. '][' . (\MailSo\Base\Utils::FunctionCallable('php_sapi_name') ? \php_sapi_name() : '~')
 				. '][Streams:' . \implode(',', \stream_get_transports())
-				. '][' . $oHttp->GetMethod() . ' ' . $oHttp->GetScheme() . '://' . $oHttp->GetHost(false, false) . $oHttp->GetServer('REQUEST_URI', '') . ']'
+				. '][' . $oHttp->GetMethod() . ' ' . $oHttp->GetScheme() . '://' . $oHttp->GetHost(false, false) . \MailSo\Base\Http::GetServer('REQUEST_URI', '') . ']'
 			);
 		}
 
@@ -1062,17 +1062,18 @@ class Actions
 
 	public function etag(string $sKey): string
 	{
-		return \md5('Etag:' . \md5($sKey . \md5($this->oConfig->Get('cache', 'index', ''))));
+		return \md5($sKey . $this->oConfig->Get('cache', 'index', ''));
 	}
 
 	public function cacheByKey(string $sKey, bool $bForce = false): bool
 	{
-		if (!empty($sKey) && ($bForce || ($this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true)))) {
-			$iExpires = $this->oConfig->Get('cache', 'http_expires', 3600);
-			if (0 < $iExpires) {
-				$this->Http()->ServerUseCache($this->etag($sKey), 1382478804, \time() + $iExpires);
-				return true;
-			}
+		if ($sKey && ($bForce || ($this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true)))) {
+			\MailSo\Base\Http::ServerUseCache(
+				$this->etag($sKey),
+				1382478804,
+				$this->oConfig->Get('cache', 'http_expires', 3600)
+			);
+			return true;
 		}
 		$this->Http()->ServerNoCache();
 		return false;
@@ -1080,13 +1081,9 @@ class Actions
 
 	public function verifyCacheByKey(string $sKey, bool $bForce = false): void
 	{
-		if (!empty($sKey) && ($bForce || ($this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true)))) {
-			$sIfNoneMatch = $this->Http()->GetHeader('If-None-Match', '');
-			if ($this->etag($sKey) === $sIfNoneMatch) {
-				\MailSo\Base\Http::StatusHeader(304);
-				$this->cacheByKey($sKey);
-				exit(0);
-			}
+		if ($sKey && ($bForce || ($this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true)))) {
+			\MailSo\Base\Http::checkETag($this->etag($sKey));
+//			$this->cacheByKey($sKey, $bForce);
 		}
 	}
 

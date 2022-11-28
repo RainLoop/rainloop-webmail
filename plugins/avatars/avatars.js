@@ -64,7 +64,7 @@
 
 			if (messageItemHeader) {
 				messageItemHeader.prepend(Element.fromHTML(
-					`<img class="fromPic" data-bind="visible: viewUserPicVisible, attr: {'src': viewUserPic() }">`
+					`<img class="fromPic" data-bind="visible: viewUserPicVisible, attr: {'src': viewUserPic() }" loading="lazy">`
 				));
 			}
 
@@ -98,7 +98,7 @@
 
 		if ('MailMessageList' === e.detail.viewModelTemplateID) {
 			document.getElementById('MailMessageList').content.querySelector('.messageCheckbox')
-				.append(Element.fromHTML(`<img class="fromPic" data-bind="fromPic:$data">`));
+				.append(Element.fromHTML(`<img class="fromPic" data-bind="fromPic:$data" loading="lazy">`));
 		}
 	});
 

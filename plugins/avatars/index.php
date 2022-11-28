@@ -7,8 +7,8 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
 		VERSION  = '1.1',
-		RELEASE  = '2022-11-23',
-		REQUIRED = '2.22.0',
+		RELEASE  = '2022-11-27',
+		REQUIRED = '2.22.4',
 		CATEGORY = 'Contacts',
 		LICENSE  = 'MIT',
 		DESCRIPTION = 'Show photo of sender in message and messages list (supports BIMI and Gravatar, Contacts is still TODO)';
@@ -19,8 +19,9 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addJs('avatars.js');
 		$this->addJsonHook('Avatar', 'DoAvatar');
 		$this->addPartHook('Avatar', 'ServiceAvatar');
-		// TODO: https://github.com/the-djmaze/snappymail/issues/714
-//		$this->addHook('filter.json-response', 'FilterJsonResponse');
+		// https://github.com/the-djmaze/snappymail/issues/714
+		$this->Config()->Get('plugin', 'delay', true)
+		|| $this->addHook('filter.json-response', 'FilterJsonResponse');
 	}
 
 	public function FilterJsonResponse(string $sAction, array &$aResponseItem)
@@ -69,10 +70,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function ServiceAvatar(string $sServiceName, string $sBimi, string $sEmail)
 	{
 		$sEmail = \SnappyMail\Crypt::DecryptUrlSafe($sEmail);
-		$oActions = \RainLoop\Api::Actions();
-		$oActions->verifyCacheByKey($sEmail, true);
 		if ($sEmail && ($aResult = $this->getAvatar($sEmail, !empty($sBimi)))) {
-			$oActions->Http()->ServerUseCache($oActions->etag($sEmail), \time(), \time() + 86400);
 			\header('Content-Type: '.$aResult[0]);
 			echo $aResult[1];
 			return true;
@@ -83,6 +81,9 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	protected function configMapping() : array
 	{
 		return array(
+			\RainLoop\Plugins\Property::NewInstance('delay')->SetLabel('Delay loading')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDefaultValue(true),
 			\RainLoop\Plugins\Property::NewInstance('bimi')->SetLabel('Use BIMI (https://bimigroup.org/)')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(false),
@@ -98,28 +99,30 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			return null;
 		}
 
-		$oActions = \RainLoop\Api::Actions();
-//		$oActions->verifyCacheByKey($sEmail, true);
+		$sAsciiEmail = \mb_strtolower(\MailSo\Base\Utils::IdnToAscii($sEmail, true));
+		$sEmailId = \sha1($sAsciiEmail);
+
+		\MailSo\Base\Http::setETag($sEmailId);
+		\header('Cache-Control: private');
+//		\header('Expires: '.\gmdate('D, j M Y H:i:s', \time() + 86400).' UTC');
 
 		$aResult = null;
-
-		$sAsciiEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
-		$sEmailId = \sha1(\strtolower($sAsciiEmail));
 
 		$sFile = \APP_PRIVATE_DATA . 'avatars/' . $sEmailId;
 		$aFiles = \glob("{$sFile}.*");
 		if ($aFiles) {
+			\MailSo\Base\Http::setLastModified(\filemtime($aFiles[0]));
 			$aResult = [
 				\mime_content_type($aFiles[0]),
 				\file_get_contents($aFiles[0])
 			];
-//			$oActions->Http()->ServerUseCache($oActions->etag($sEmail), \time(), \time() + 86400);
 			return $aResult;
 		}
 
 		// TODO: lookup contacts vCard and return PHOTO value
 		/*
 		if (!$aResult) {
+			$oActions = \RainLoop\Api::Actions();
 			$oAccount = $oActions->getAccountFromToken();
 			if ($oAccount) {
 				$oAddressBookProvider = $oActions->AddressBookProvider($oAccount);
@@ -172,6 +175,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$sFile . \SnappyMail\File\MimeType::toExtension($aResult[0]),
 				$aResult[1]
 			);
+			\MailSo\Base\Http::setLastModified(\time());
 		}
 
 		if (!$aResult) {
@@ -182,17 +186,17 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				'empty-contact' // DATA_IMAGE_USER_DOT_PIC
 			];
 			foreach ($aServices as $service) {
-				if (\file_exists(__DIR__ . "/images/{$service}.png")) {
+				$file = __DIR__ . "/images/{$service}.png";
+				if (\file_exists($file)) {
+					\MailSo\Base\Http::setLastModified(\filemtime($file));
 					$aResult = [
 						'image/png',
-						\file_get_contents(__DIR__ . "/images/{$service}.png")
+						\file_get_contents($file)
 					];
 					break;
 				}
 			}
 		}
-
-//		$oActions->Http()->ServerUseCache($oActions->etag($sEmail), \time(), \time() + 86400);
 
 		return $aResult;
 	}
