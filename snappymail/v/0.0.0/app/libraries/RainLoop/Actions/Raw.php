@@ -117,7 +117,7 @@ trait Raw
 
 		$aValues = $this->getDecodedRawKeyValue($sRawKey);
 
-		$sRange = $this->Http()->GetHeader('Range');
+		$sRange = \MailSo\Base\Http::GetHeader('Range');
 
 		$aMatch = array();
 		$sRangeStart = $sRangeEnd = '';

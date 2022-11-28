@@ -21,7 +21,7 @@ trait UserAuth
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	protected function resolveLoginCredentials(string &$sEmail, string &$sPassword, string &$sLogin): void
+	public function resolveLoginCredentials(string &$sEmail, string &$sPassword, string &$sLogin): void
 	{
 		$this->Plugins()->RunHook('login.credentials.step-1', array(&$sEmail));
 

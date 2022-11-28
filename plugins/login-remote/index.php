@@ -6,7 +6,7 @@ class LoginRemotePlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Login Remote',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.1',
+		VERSION  = '1.2',
 		RELEASE  = '2022-11-24',
 		REQUIRED = '2.21.0',
 		CATEGORY = 'Login',

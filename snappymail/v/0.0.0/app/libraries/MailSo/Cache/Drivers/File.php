@@ -18,30 +18,20 @@ namespace MailSo\Cache\Drivers;
  */
 class File implements \MailSo\Cache\DriverInterface
 {
-	/**
-	 * @var string
-	 */
-	private $sCacheFolder;
+	private string $sCacheFolder;
 
-	/**
-	 * @var string
-	 */
-	private $sKeyPrefix;
+	private string $sKeyPrefix = '';
 
 	function __construct(string $sCacheFolder, string $sKeyPrefix = '')
 	{
-		$this->sCacheFolder = $sCacheFolder;
-		$this->sCacheFolder = rtrim(trim($this->sCacheFolder), '\\/').'/';
-
-		$this->sKeyPrefix = $sKeyPrefix;
-		if (!empty($this->sKeyPrefix))
-		{
-			$this->sKeyPrefix = \str_pad(\preg_replace('/[^a-zA-Z0-9_]/', '_',
-				rtrim(trim($this->sKeyPrefix), '\\/')), 5, '_');
+		$this->sCacheFolder = \rtrim(\trim($sCacheFolder), '\\/').'/';
+		if (!empty($sKeyPrefix)) {
+			$sKeyPrefix = \str_pad(\preg_replace('/[^a-zA-Z0-9_]/', '_',
+				\rtrim(\trim($sKeyPrefix), '\\/')), 5, '_');
 
 			$this->sKeyPrefix = '__/'.
-				\substr($this->sKeyPrefix, 0, 2).'/'.\substr($this->sKeyPrefix, 2, 2).'/'.
-				$this->sKeyPrefix.'/';
+				\substr($sKeyPrefix, 0, 2).'/'.\substr($sKeyPrefix, 2, 2).'/'.
+				$sKeyPrefix.'/';
 		}
 	}
 

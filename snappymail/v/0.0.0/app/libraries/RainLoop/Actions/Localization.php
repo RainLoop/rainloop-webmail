@@ -69,7 +69,7 @@ trait Localization
 	private function getUserLanguagesFromHeader(): array
 	{
 		$aResult = $aList = array();
-		$sAcceptLang = \strtolower($this->Http()->GetServer('HTTP_ACCEPT_LANGUAGE', 'en'));
+		$sAcceptLang = \strtolower(\MailSo\Base\Http::GetServer('HTTP_ACCEPT_LANGUAGE', 'en'));
 		if (!empty($sAcceptLang) && \preg_match_all('/([a-z]{1,8}(?:-[a-z]{1,8})?)(?:;q=([0-9.]+))?/', $sAcceptLang, $aList)) {
 			$aResult = \array_combine($aList[1], $aList[2]);
 			foreach ($aResult as $n => $v) {

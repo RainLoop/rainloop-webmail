@@ -70,13 +70,7 @@ define('APP_PRIVATE_DATA_NAME', $sPrivateDataFolderInternalName ?: '_default_');
 unset($sPrivateDataFolderInternalName);
 
 if (!defined('APP_DATA_FOLDER_PATH')) {
-	// cPanel https://github.com/the-djmaze/snappymail/issues/697
-	if (!empty($_ENV['CPANEL']) && isset($_ENV['HOME'])) {
-		$sCustomDataPath = $_ENV['HOME'] . '/var/snappymail';
-//		$sCustomDataPath = $_ENV['TMPDIR'] . '/snappymail';
-	} else {
-		$sCustomDataPath = function_exists('__get_custom_data_full_path') ? rtrim(trim(__get_custom_data_full_path()), '\\/') : $sCustomDataPath;
-	}
+	$sCustomDataPath = rtrim(trim(function_exists('__get_custom_data_full_path') ? __get_custom_data_full_path() : $sCustomDataPath), '\\/');
 	define('APP_DATA_FOLDER_PATH', strlen($sCustomDataPath) ? $sCustomDataPath.'/' : APP_INDEX_ROOT_PATH.'data/');
 }
 unset($sCustomDataPath);
