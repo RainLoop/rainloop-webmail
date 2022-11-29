@@ -31,11 +31,17 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 
 	public function Init(): void
 	{
-		$this->addHook("login.success", 'AddLdapMailAccounts');
+		$this->addHook("login.success", 'AddAdditionalLdapMailAccounts');
 	}
 
 	// Function gets called by RainLoop/Actions/User.php
-	public function AddLdapMailAccounts(Account $oAccount)
+	/**
+	 * Add additional mail accounts to the webinterface of the user by looking up the ldap directory
+	 * 
+	 * @param Account $oAccount
+	 */
+
+	public function AddAdditionalLdapMailAccounts(Account $oAccount)
 	{
 		// Set up config
 		$config = LdapConfig::MakeConfig($this->Config());
@@ -45,6 +51,9 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 		$oldapMailAccounts->AddLdapMailAccounts($oAccount);
 	}
 
+	/**
+	 * Defines the content of the plugin configuration page inside the Admin Panel of SnappyMail
+	 */
 	protected function configMapping(): array
 	{
 		return [

@@ -2,6 +2,7 @@
 
 use RainLoop\Enumerations\Capa;
 use MailSo\Log\Logger;
+use RainLoop\Actions;
 use RainLoop\Model\Account;
 
 class LdapMailAccounts
@@ -27,9 +28,8 @@ class LdapMailAccounts
 	/**
 	 * LdapMailAccount constructor.
 	 *
-	 * @param LdapConfig $config
-	 * @param Account $oAccount
-	 * @param Logger $logger
+	 * @param LdapConfig $config LdapConfig object containing the admin configuration for this plugin
+	 * @param Logger $logger Used to write to the logfile
 	 */
 	public function __construct(LdapConfig $config, Logger $logger)
 	{
@@ -54,7 +54,7 @@ class LdapMailAccounts
 	 * The ldap lookup has to be configured in the plugin configuration of the extension (in the SnappyMail Admin Panel)
 	 * 
 	 * @param Account $oAccount
-	 * @return bool $success
+	 * @return bool true if additional accounts have been added or no additional accounts where found in . false if an error occured
 	 */
 	public function AddLdapMailAccounts(Account $oAccount): bool
 	{
@@ -101,7 +101,7 @@ class LdapMailAccounts
 		//Basing on https://github.com/the-djmaze/snappymail/issues/616
 
 		$oActions = \RainLoop\Api::Actions();
-
+		
 		//Check if SnappyMail is configured to allow additional accounts
 		if (!$oActions->GetCapa(Capa::ADDITIONAL_ACCOUNTS)) {
 			return $oActions->FalseResponse(__FUNCTION__);
@@ -109,25 +109,43 @@ class LdapMailAccounts
 
 		$aAccounts = $oActions->GetAccounts($oAccount);
 
+		//Search for accounts with suffix " (LDAP)" at the end of the name that where created by this plugin and initially remove them from the
+		//account array. This only removes the visibility but does not delete the config done by the user. So if a user looses access to a
+		//mailbox the user will not see the account anymore but the configuration can be restored when the user regains access to it
+		foreach($aAccounts as $key => $aAccount)
+		{
+			if (preg_match("/\s\(LDAP\)$/", $aAccount['name']))
+			{
+				unset($aAccounts[$key]);
+			}
+		}
+
 		foreach($mailAddressResults as $mailAddressResult)
 		{
 			$sUsername = $mailAddressResult->username;
 			$sDomain = $mailAddressResult->domain;
-
-$this->logger->Write("Domain: $sDomain Username: $sUsername Login: " . $oAccount->Login() . " E-Mail: " . $oAccount->Email(), \LOG_NOTICE, self::LOG_KEY);
+			$sName = $mailAddressResult->name;
 
 			//Check if the domain of the found mail address is in the list of configured domains
 			if ($oActions->DomainProvider()->Load($sDomain, true))
 			{
 				//only execute if the found account isn't already in the list of additional accounts
 				//and if the found account is different from the main account
-				if (!$aAccounts["$sUsername@$sDomain"] && $oAccount->Email() !== "$sUsername@$sDomain")
+				if (!isset($aAccounts["$sUsername@$sDomain"]) && $oAccount->Email() !== "$sUsername@$sDomain")
 				{
 					//Try to login the user with the same password as the primary account has
 					//if this fails the user will see the new mail addresses but will be asked for the correct password
 					$sPass = $oAccount->Password();
+					
 					$oNewAccount = RainLoop\Model\AdditionalAccount::NewInstanceFromCredentials($oActions, "$sUsername@$sDomain", $sUsername, $sPass);
-					$aAccounts["$sUsername@$sDomain"] = $oNewAccount->asTokenArray($oAccount);			
+					
+					$aAccounts["$sUsername@$sDomain"] = $oNewAccount->asTokenArray($oAccount);
+				}
+
+				//Always inject/update the found mailbox names into the array (also if the mailbox already existed)
+				if (isset($aAccounts["$sUsername@$sDomain"]))
+				{
+					$aAccounts["$sUsername@$sDomain"]['name'] = $sName . " (LDAP)";
 				}
 			}
 			else {
@@ -144,34 +162,12 @@ $this->logger->Write("Domain: $sDomain Username: $sUsername Login: " . $oAccount
 		return false;
 	}
 
-
-	
 	/**
-	 * @inheritDoc
-	 * @throws \RainLoop\Exceptions\ClientException
-	 */
-	public function SetIdentities(Account $account, array $identities): void
-	{
-		throw new \RainLoop\Exceptions\ClientException("Ldap identities provider does not support storage");
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function SupportsStore(): bool
-	{
-		return false;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function Name(): string
-	{
-		return "Ldap";
-	}
-
-	/** @throws LdapException */
+	 * Checks if a connection to the LDAP was possible
+	 * 
+	 * @throws LdapException 
+	 * 
+	 * */
 	private function EnsureConnected(): void
 	{
 		if ($this->ldapConnected) return;
@@ -181,6 +177,9 @@ $this->logger->Write("Domain: $sDomain Username: $sUsername Login: " . $oAccount
 			$this->HandleLdapError("Connect");
 	}
 
+	/**
+	 * Connect to the LDAP using the server address and protocol version defined inside the configuration of the plugin
+	 */
 	private function Connect(): bool
 	{
 		// Set up connection
@@ -202,7 +201,12 @@ $this->logger->Write("Domain: $sDomain Username: $sUsername Login: " . $oAccount
 		return true;
 	}
 
-	/** @throws LdapException */
+	/** 
+	 * Ensures the plugin has been authenticated at the LDAP
+	 * 
+	 * @throws LdapException 
+	 * 
+	 * */
 	private function EnsureBound(): void
 	{
 		if ($this->ldapBound) return;
@@ -213,6 +217,11 @@ $this->logger->Write("Domain: $sDomain Username: $sUsername Login: " . $oAccount
 			$this->HandleLdapError("Bind");
 	}
 
+	/**
+	 * Authenticates the plugin at the LDAP using the username and password defined inside the configuration of the plugin
+	 * 
+	 * @return bool true if authentication was successful
+	 */
 	private function Bind(): bool
 	{
 		// Bind to LDAP here
@@ -227,6 +236,8 @@ $this->logger->Write("Domain: $sDomain Username: $sUsername Login: " . $oAccount
 	}
 
 	/**
+	 * Handles and logs an eventual LDAP error
+	 * 
 	 * @param string $op
 	 * @throws LdapException
 	 */
@@ -242,6 +253,10 @@ $this->logger->Write("Domain: $sDomain Username: $sUsername Login: " . $oAccount
 	}
 
 	/**
+	 * Looks up the LDAP for additional mail accounts
+	 * 
+	 * The search for additional mail accounts is done by a ldap search using the defined fields inside the configuration of the plugin (SnappyMail Admin Panel)
+	 * 
 	 * @param string $searchField
 	 * @param string $searchString
 	 * @param string $searchBase
@@ -349,16 +364,16 @@ $this->logger->Write("Domain: $sDomain Username: $sUsername Login: " . $oAccount
 	
 
 	/**
-	 * @param array $entry
-	 * @param string $attribute
-	 * @param bool $single
-	 * @param bool $required
+	 * Gets LDAP attributes out of the input array
+	 * 
+	 * @param array $entry Array containing the result of a ldap search
+	 * @param string $attribute The name of the attribute to return
+	 * @param bool $single If true the function checks if exact one value for this attribute is inside the input array. If false an array is returned. Default true.
+	 * @param bool $required If true the attribute has to exist inside the input array. Default false.
 	 * @return string|string[]
 	 */
 	private function LdapGetAttribute(array $entry, string $attribute, bool $single = true, bool $required = false)
 	{
-		//INFO if $single=false a array is returned. needet for identities, but not for additional mail accounts / usernames
-
 		if (!isset($entry[$attribute])) {
 			if ($required)
 				$this->logger->Write("Attribute $attribute not found on object {$entry['dn']} while required", \LOG_NOTICE, self::LOG_KEY);
