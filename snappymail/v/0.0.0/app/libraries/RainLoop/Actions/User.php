@@ -15,6 +15,7 @@ trait User
 	use Filters;
 	use Folders;
 	use Messages;
+	use Attachments;
 	use Pgp;
 
 	/**
@@ -66,131 +67,6 @@ trait User
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $this->AppData(false));
-	}
-
-	/**
-	 * @throws \MailSo\RuntimeException
-	 */
-	public function DoAttachmentsActions() : array
-	{
-		$sAction = $this->GetActionParam('Do', '');
-		$aHashes = $this->GetActionParam('Hashes', null);
-		$oFilesProvider = $this->FilesProvider();
-		if (empty($sAction) || !$this->GetCapa(Capa::ATTACHMENTS_ACTIONS) || !$oFilesProvider || !$oFilesProvider->IsActive()) {
-			return $this->FalseResponse(__FUNCTION__);
-		}
-
-		$oAccount = $this->initMailClientConnection();
-
-		$bError = false;
-		$aData = [];
-		$mUIDs = [];
-
-		if (\is_array($aHashes) && \count($aHashes)) {
-			foreach ($aHashes as $sZipHash) {
-				$aResult = $this->getMimeFileByHash($oAccount, $sZipHash);
-				if (empty($aResult['FileHash'])) {
-					$bError = true;
-					break;
-				}
-				$aData[] = $aResult;
-				$mUIDs[$aResult['Uid']] = $aResult['Uid'];
-			}
-		}
-		$mUIDs = 1 < \count($mUIDs);
-
-		if ($bError || !\count($aData)) {
-			return $this->FalseResponse(__FUNCTION__);
-		}
-
-		$mResult = false;
-		switch (\strtolower($sAction))
-		{
-			case 'zip':
-
-				$sZipHash = \MailSo\Base\Utils::Sha1Rand();
-				$sZipFileName = $oFilesProvider->GenerateLocalFullFileName($oAccount, $sZipHash);
-
-				if (!empty($sZipFileName)) {
-					if (\class_exists('ZipArchive')) {
-						$oZip = new \ZipArchive();
-						$oZip->open($sZipFileName, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::OVERWRITE);
-						$oZip->setArchiveComment('SnappyMail/'.APP_VERSION);
-						foreach ($aData as $aItem) {
-							$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $aItem['FileHash']);
-							$sFileName = ($mUIDs ? "{$aItem['Uid']}/" : '') . ($aItem['FileName'] ?: 'file.dat');
-							if (!$oZip->addFile($sFullFileNameHash, $sFileName)) {
-								$bError = true;
-							}
-						}
-
-						if ($bError) {
-							$oZip->close();
-						} else {
-							$bError = !$oZip->close();
-						}
-/*
-					} else {
-						@\unlink($sZipFileName);
-						$oZip = new \SnappyMail\Stream\ZIP($sZipFileName);
-//						$oZip->setArchiveComment('SnappyMail/'.APP_VERSION);
-						foreach ($aData as $aItem) {
-							$sFileName = (string) (isset($aItem['FileName']) ? $aItem['FileName'] : 'file.dat');
-							$sFileHash = (string) (isset($aItem['FileHash']) ? $aItem['FileHash'] : '');
-							if (!empty($sFileHash)) {
-								$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $sFileHash);
-								if (!$oZip->addFile($sFullFileNameHash, $sFileName)) {
-									$bError = true;
-								}
-							}
-						}
-						$oZip->close();
-*/
-					} else {
-						@\unlink($sZipFileName);
-						$oZip = new \PharData($sZipFileName . '.zip', 0, null, \Phar::ZIP);
-						$oZip->compressFiles(\Phar::GZ);
-						foreach ($aData as $aItem) {
-							$oZip->addFile(
-								$oFilesProvider->GetFileName($oAccount, $aItem['FileHash']),
-								($mUIDs ? "{$aItem['Uid']}/" : '') . ($aItem['FileName'] ?: 'file.dat')
-							);
-						}
-						$oZip->compressFiles(\Phar::GZ);
-						unset($oZip);
-						\rename($sZipFileName . '.zip', $sZipFileName);
-					}
-
-					foreach ($aData as $aItem) {
-						$oFilesProvider->Clear($oAccount, $aItem['FileHash']);
-					}
-
-					if (!$bError) {
-						$mResult = array(
-							'FileHash' => Utils::EncodeKeyValuesQ(array(
-								'Account' => $oAccount ? $oAccount->Hash() : '',
-								'FileName' => 'attachments.zip',
-								'MimeType' => 'application/zip',
-								'FileHash' => $sZipHash
-							))
-						);
-					}
-				}
-				break;
-
-			default:
-				$data = new \SnappyMail\AttachmentsAction;
-				$data->action = $sAction;
-				$data->items = $aData;
-				$data->filesProvider = $oFilesProvider;
-				$data->account = $oAccount;
-				$this->Plugins()->RunHook('json.attachments', array($data));
-				$mResult = $data->result;
-				break;
-		}
-
-//		$this->requestSleep();
-		return $this->DefaultResponse(__FUNCTION__, $bError ? false : $mResult);
 	}
 
 	public function DoLogout() : array
@@ -466,53 +342,6 @@ trait User
 
 		return $this->DefaultResponse(__FUNCTION__, $oAccount && $oSettings ?
 			$this->SettingsProvider()->Save($oAccount, $oSettings) : false);
-	}
-
-	private function getMimeFileByHash(\RainLoop\Model\Account $oAccount, string $sHash) : array
-	{
-		$aValues = $this->getDecodedRawKeyValue($sHash);
-
-		$sFolder = isset($aValues['Folder']) ? (string) $aValues['Folder'] : '';
-		$iUid = isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0;
-		$sMimeIndex = isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : '';
-
-		$sContentTypeIn = isset($aValues['MimeType']) ? (string) $aValues['MimeType'] : '';
-		$sFileNameIn = isset($aValues['FileName']) ? (string) $aValues['FileName'] : '';
-
-		$oFileProvider = $this->FilesProvider();
-
-		$sResultHash = '';
-
-		$mResult = $this->MailClient()->MessageMimeStream(function ($rResource, $sContentType, $sFileName, $sMimeIndex = '')
-			use ($oAccount, $oFileProvider, $sFileNameIn, $sContentTypeIn, &$sResultHash) {
-
-				unset($sContentType, $sFileName, $sMimeIndex);
-
-				if ($oAccount && \is_resource($rResource))
-				{
-					$sHash = \MailSo\Base\Utils::Sha1Rand($sFileNameIn.'~'.$sContentTypeIn);
-					$rTempResource = $oFileProvider->GetFile($oAccount, $sHash, 'wb+');
-
-					if (\is_resource($rTempResource))
-					{
-						if (false !== \MailSo\Base\Utils::MultipleStreamWriter($rResource, array($rTempResource)))
-						{
-							$sResultHash = $sHash;
-						}
-
-						\fclose($rTempResource);
-					}
-				}
-
-			}, $sFolder, $iUid, $sMimeIndex);
-
-		$aValues['FileHash'] = '';
-		if ($mResult)
-		{
-			$aValues['FileHash'] = $sResultHash;
-		}
-
-		return $aValues;
 	}
 
 	private function setSettingsFromParams(\RainLoop\Settings $oSettings, string $sConfigName, string $sType = 'string', ?callable $cCallback = null) : void
