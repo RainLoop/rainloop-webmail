@@ -11,6 +11,8 @@ foreach ($files as $fileinfo) {
     $fileinfo->isDir() || unlink($fileinfo->getRealPath());
 }
 
+$terser = ROOT_DIR . '/node_modules/terser/bin/terser';
+
 $manifest = [];
 require ROOT_DIR . '/snappymail/v/0.0.0/app/libraries/RainLoop/Plugins/AbstractPlugin.php';
 $keys = [
@@ -42,6 +44,21 @@ foreach (glob(ROOT_DIR . '/plugins/*', GLOB_NOSORT | GLOB_ONLYDIR) as $dir) {
 		$version = $manifest_item['version'];
 		if (0 < floatval($version)) {
 			echo "+ {$name} {$version}\n";
+
+			// Minify JavaScript
+			foreach (glob("{$dir}/*.js") as $file) {
+				if (!strpos($file,'.min')) {
+					$mfile = str_replace('.js', '.min.js', $file);
+					passthru("{$terser} {$file} --output {$mfile} --compress 'drop_console' --ecma 6 --mangle");
+				}
+			}
+			foreach (glob("{$dir}/js/*.js") as $file) {
+				if (!strpos($file,'.min')) {
+					$mfile = str_replace('.js', '.min.js', $file);
+					passthru("{$terser} {$file} --output {$mfile} --compress 'drop_console' --ecma 6 --mangle");
+				}
+			}
+
 			$manifest_item['type'] = 'plugin';
 			$manifest_item['id']   = $name;
 			$manifest_item['file'] = "plugins/{$name}-{$version}.tgz";
