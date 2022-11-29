@@ -688,7 +688,7 @@ window.identiconSvg = async (hashOrValue) => {
 
 	renderer.finish();
 
-	return writer.toString();
+	return 'data:image/svg+xml;base64,' + btoa(writer);
 };
 
 })();

@@ -26,8 +26,8 @@
 							avatars.set(getAvatarUid(item[0]), url);
 							item[1](url);
 						} else if (window.identiconSvg) {
-							window.identiconSvg(from.email).then(svg => {
-								url = 'data:image/svg+xml;base64,'+btoa(svg);
+							// rl.pluginSettingsGet('avatars', 'identicon');
+							window.identiconSvg(from.email).then(url => {
 								avatars.set(getAvatarUid(item[0]), url);
 								item[1](url);
 							});
@@ -46,6 +46,7 @@
 	 * Loads images from Nextcloud contacts
 	 */
 	addEventListener('DOMContentLoaded', () => {
+//		rl.pluginSettingsGet('avatars', 'nextcloud');
 		if (parent.OC) {
 			const OC = () => parent.OC,
 				nsDAV = 'DAV:',
@@ -103,11 +104,8 @@
 				} else if (msg.avatar) {
 					let bimi = 'pass' == msg.from[0].dkimStatus ? 1 : 0;
 					if (window.identiconSvg) {
-						element.onerror = () => {
-							window.identiconSvg(msg.from[0].email).then(svg =>
-								fn('data:image/svg+xml;base64,'+btoa(svg))
-							);
-						}
+						// rl.pluginSettingsGet('avatars', 'identicon');
+						element.onerror = () => window.identiconSvg(msg.from[0].email).then(fn);
 					}
 					fn(`?Avatar/${bimi}/${msg.avatar}`);
 				} else {

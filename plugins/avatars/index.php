@@ -19,11 +19,9 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addJs('avatars.js');
 		$this->addJsonHook('Avatar', 'DoAvatar');
 		$this->addPartHook('Avatar', 'ServiceAvatar');
-//		$this->addHook('filter.app-data', 'FilterAppData');
+		$this->Config()->Get('plugin', 'identicon', false) && $this->addJs('jdenticon.js');
 		// https://github.com/the-djmaze/snappymail/issues/714
 		$this->Config()->Get('plugin', 'delay', true) || $this->addHook('filter.json-response', 'FilterJsonResponse');
-
-		$this->Config()->Get('plugin', 'identicon', false) && $this->addJs('jdenticon.js');
 	}
 
 	public function FilterJsonResponse(string $sAction, array &$aResponseItem)
@@ -81,17 +79,6 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		exit;
 	}
 
-	public function FilterAppData($bAdmin, &$aResult) : void
-	{
-		if (!$bAdmin && \is_array($aResult)) {
-			$aResult['Avatars'] = [
-				'bimi' => $this->Config()->Get('plugin', 'bimi', false),
-				'gravatar' => $this->Config()->Get('plugin', 'gravatar', false),
-				'nextcloud' => $this->Config()->Get('plugin', 'nextcloud', false)
-			];
-		}
-	}
-
 	protected function configMapping() : array
 	{
 		$aResult = array(
@@ -111,11 +98,13 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		if (\class_exists('OC') && isset(\OC::$server)) {
 			$aResult[] = \RainLoop\Plugins\Property::NewInstance('nextcloud')->SetLabel('Lookup Nextcloud Contacts')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+//				->SetAllowedInJs(true)
 				->SetDefaultValue(false);
 		}
 */
 		$aResult[] = \RainLoop\Plugins\Property::NewInstance('identicon')->SetLabel('Else create Identicon')
 			->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+//			->SetAllowedInJs(true)
 			->SetDefaultValue(false)
 			->SetDescription('https://wikipedia.org/wiki/Identicon');
 		return $aResult;
