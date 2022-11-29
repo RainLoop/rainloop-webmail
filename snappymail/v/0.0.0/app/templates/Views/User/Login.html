@@ -1,6 +1,6 @@
 <div class="descWrapper" data-bind="visible: '' !== loadingDesc, text: loadingDesc"></div>
 <div class="alert" data-bind="hidden: !submitError()" hidden="">
-	<a href="#" class="close" data-bind="click: function () { submitError('') }">×</a>
+	<a href="#" class="close" data-bind="click: hideError">×</a>
 	<span data-bind="text: submitError"></span>
 	<p data-bind="visible: '' !== submitErrorAdditional()">
 		<span data-i18n="GLOBAL/SERVER_MESSAGE"></span>:
@@ -25,7 +25,7 @@
 	</div>
 	<div id="plugin-Login-BottomControlGroup"></div>
 	<div class="controls" style="display: flex">
-		<div class="e-checkbox" tabindex="0" data-bind="click: function(){signMe(!signMe())}, onSpace: function(){signMe(!signMe())}">
+		<div class="e-checkbox" tabindex="0" data-bind="click: toggleSignMe, onSpace: toggleSignMe">
 			<i role="checkbox" class="fontastic" data-bind="text: signMe() ? '☑' : '☐'"></i>
 			<span data-i18n="LOGIN/LABEL_SIGN_ME"></span>
 		</div>

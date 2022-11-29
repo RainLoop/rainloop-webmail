@@ -3,7 +3,7 @@
 	<span data-bind="saveTrigger: themeTrigger"></span>
 </div>
 <div data-bind="foreach: themesObjects">
-	<figure data-bind="click: function () { $root.theme(name); }, css: { 'selected': selected }">
+	<figure data-bind="click: $root.setTheme, css: { 'selected': selected }">
 		<figcaption data-bind="text: nameDisplay"></figcaption>
 		<img data-bind="attr: { 'src': themePreviewSrc }">
 	</figure>

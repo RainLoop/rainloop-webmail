@@ -88,6 +88,14 @@ export class LoginUserView extends AbstractViewLogin {
 		});
 	}
 
+	hideError() {
+		this.submitError('');
+	}
+
+	toggleSignMe() {
+		this.signMe(!this.signMe());
+	}
+
 	submitCommand(self, event) {
 		const email = this.email().trim();
 		this.email(email);

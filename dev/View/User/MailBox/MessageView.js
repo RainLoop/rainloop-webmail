@@ -225,6 +225,10 @@ export class MailMessageView extends AbstractViewRight {
 		});
 	}
 
+	toggleFullInfo() {
+		this.showFullInfo(!this.showFullInfo());
+	}
+
 	closeMessage() {
 		currentMessage(null);
 	}
@@ -393,9 +397,7 @@ export class MailMessageView extends AbstractViewRight {
 
 		// message information
 		registerShortcut('i', 'meta', [Scope.MessageList, Scope.MessageView], () => {
-			if (currentMessage()) {
-				this.showFullInfo(!this.showFullInfo());
-			}
+			currentMessage() && this.toggleFullInfo();
 			return false;
 		});
 
