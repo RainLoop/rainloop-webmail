@@ -169,9 +169,13 @@ class Manager
 
 	public function Hash() : string
 	{
-		return \md5(\array_reduce($this->aPlugins, function($sResult, $oPlugin){
-			return $sResult . "|{$oPlugin->Hash()}";
-		}, APP_VERSION));
+		return \md5(
+			\array_reduce($this->aPlugins, function($sResult, $oPlugin){
+				return $sResult . "|{$oPlugin->Hash()}";
+			}, APP_VERSION)
+			.implode('',$this->aJs[1]).implode('',$this->aJs[0])
+			.implode('',$this->aCss[1]).implode('',$this->aCss[0])
+		);
 	}
 
 	public function HaveJs(bool $bAdminScope = false) : bool
