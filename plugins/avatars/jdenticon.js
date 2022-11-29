@@ -48,7 +48,7 @@ class HSLColor
 	{
 		const h = this.h, s = this.s, l = this.l/*, a = this.a*/,
 			hex = v => {
-				v = Math.max(0, Math.min(255, v * 255)).toString(16);
+				v = between(0, 255, v * 255).toString(16);
 				return v.slice(0,2).padStart(2, "0");
 			};
 		let r=l, g=l, b=l;
@@ -68,6 +68,8 @@ class HSLColor
 }
 
 const
+	between = (l, h, v) => Math.max(l, Math.min(h, v)),
+
 	parseHex = (hash, startPosition, octets) => parseInt(hash.substr(startPosition, octets), 16),
 
 	/**
@@ -86,99 +88,17 @@ const
 		lightness = lightness < 0.5 ? lightness * corrector * 2 : corrector + (lightness - 0.5) * (1 - corrector) * 2;
 
 		return new HSLColor(hue, saturation, lightness).toString();
-	},
-
-	/**
-	 * Gets the normalized current Jdenticon color configuration. Missing fields have default values.
-	 * @param {Object|number|undefined} paddingOrLocalConfig - Configuration passed to the called API method. A
-	 *    local configuration overrides the global configuration in it entirety. This parameter can for backward
-	 *    compatibility also contain a padding value. A padding value only overrides the global padding, not the
-	 *    entire global configuration.
-	 * @param {number} defaultPadding - Padding used if no padding is specified in neither the configuration nor
-	 *    explicitly to the API method.
-	 * @returns {ParsedConfiguration}
-	 */
-	getConfiguration = (paddingOrLocalConfig, defaultPadding) => {
-		const configObject =
-				typeof paddingOrLocalConfig == "object" && paddingOrLocalConfig ||
-				{ },
-
-			lightnessConfig = configObject["lightness"] || { },
-
-			// In versions < 2.1.0 there was no grayscale saturation -
-			// saturation was the color saturation.
-			saturation = configObject["saturation"] || { },
-			colorSaturation = "color" in saturation ? saturation["color"] : saturation,
-			grayscaleSaturation = saturation["grayscale"],
-
-			padding = configObject["padding"],
-
-			/**
-			 * Creates a lightness range.
-			 */
-			lightness = (configName, defaultRange) => {
-				var range = lightnessConfig[configName];
-
-				// Check if the lightness range is an array-like object. This way we ensure the
-				// array contain two values at the same time.
-				if (!(range && range.length > 1)) {
-					range = defaultRange;
-				}
-
-				/**
-				 * Gets a lightness relative the specified value in the specified lightness range.
-				 */
-				return function (value) {
-					value = range[0] + value * (range[1] - range[0]);
-					return value < 0 ? 0 : value > 1 ? 1 : value;
-				};
-			};
-
-		return {
-			/**
-			 * Gets a hue allowed by the configured hue restriction,
-			 * provided the originally computed hue.
-			 */
-			X/*hue*/: originalHue => {
-				var hueConfig = configObject["hues"];
-				var hue;
-
-				// Check if 'hues' is an array-like object. This way we also ensure that
-				// the array is not empty, which would mean no hue restriction.
-				if (hueConfig && hueConfig.length > 0) {
-					// originalHue is in the range [0, 1]
-					// Multiply with 0.999 to change the range to [0, 1) and then truncate the index.
-					hue = hueConfig[0 | (0.999 * originalHue * hueConfig.length)];
-				}
-
-				return typeof hue == "number" ?
-
-					// A hue was specified. We need to convert the hue from
-					// degrees on any turn - e.g. 746° is a perfectly valid hue -
-					// to turns in the range [0, 1).
-					((((hue / 360) % 1) + 1) % 1) :
-
-					// No hue configured => use original hue
-					originalHue;
-			},
-
-			p/*colorSaturation*/: typeof colorSaturation == "number" ? colorSaturation : 0.5,
-			H/*grayscaleSaturation*/: typeof grayscaleSaturation == "number" ? grayscaleSaturation : 0,
-			q/*colorLightness*/: lightness("color", [0.4, 0.8]),
-			I/*grayscaleLightness*/: lightness("grayscale", [0.3, 0.9]),
-			Y/*iconPadding*/:
-				typeof paddingOrLocalConfig == "number" ? paddingOrLocalConfig :
-				typeof padding == "number" ? padding :
-				defaultPadding
-		}
 	};
 
 /**
  * Represents a point.
  */
-function Point(x, y) {
-	this.x = x;
-	this.y = y;
+class Point
+{
+	constructor(x, y) {
+		this.x = x;
+		this.y = y;
+	}
 }
 
 /**
@@ -467,106 +387,6 @@ function outerShape(index, g, cell) {
 }
 
 /**
- * Gets a set of identicon color candidates for a specified hue and config.
- * @param {number} hue
- * @param {ParsedConfiguration} config
- */
-function colorTheme(hue, config) {
-	hue = config.X/*hue*/(hue);
-	return [
-		// Dark gray
-		correctedHsl(hue, config.H/*grayscaleSaturation*/, config.I/*grayscaleLightness*/(0)),
-		// Mid color
-		correctedHsl(hue, config.p/*colorSaturation*/, config.q/*colorLightness*/(0.5)),
-		// Light gray
-		correctedHsl(hue, config.H/*grayscaleSaturation*/, config.I/*grayscaleLightness*/(1)),
-		// Light color
-		correctedHsl(hue, config.p/*colorSaturation*/, config.q/*colorLightness*/(1)),
-		// Dark color
-		correctedHsl(hue, config.p/*colorSaturation*/, config.q/*colorLightness*/(0))
-	];
-}
-
-/**
- * Draws an identicon to a specified renderer.
- * @param {Renderer} renderer
- * @param {string} hash
- * @param {Object|number=} config
- */
-function iconGenerator(renderer, hash, config) {
-	var parsedConfig = getConfiguration(config, 0.08);
-
-	// Calculate padding and round to nearest integer
-	var size = renderer.k/*iconSize*/;
-	var padding = (0.5 + size * parsedConfig.Y/*iconPadding*/) | 0;
-	size -= padding * 2;
-
-	var graphics = new Graphics(renderer);
-
-	// Calculate cell size and ensure it is an integer
-	var cell = 0 | (size / 4);
-
-	// Since the cell size is integer based, the actual icon will be slightly smaller than specified => center icon
-	var x = 0 | (padding + size / 2 - cell * 2);
-	var y = 0 | (padding + size / 2 - cell * 2);
-
-	function renderShape(colorIndex, shapes, index, rotationIndex, positions) {
-		var shapeIndex = parseHex(hash, index, 1);
-		var r = rotationIndex ? parseHex(hash, rotationIndex, 1) : 0;
-
-		renderer.O/*beginShape*/(availableColors[selectedColorIndexes[colorIndex]]);
-
-		for (var i = 0; i < positions.length; i++) {
-			graphics.A/*currentTransform*/
-				= new Transform(x + positions[i][0] * cell, y + positions[i][1] * cell, cell, r++ % 4);
-			shapes(shapeIndex, graphics, cell, i);
-		}
-
-		renderer.P/*endShape*/();
-	}
-
-	// AVAILABLE COLORS
-	var hue = parseHex(hash, -7) / 0xfffffff,
-
-		  // Available colors for this icon
-		  availableColors = colorTheme(hue, parsedConfig),
-
-		  // The index of the selected colors
-		  selectedColorIndexes = [];
-
-	var index;
-
-	function isDuplicate(values) {
-		if (values.indexOf(index) >= 0) {
-			for (var i = 0; i < values.length; i++) {
-				if (selectedColorIndexes.indexOf(values[i]) >= 0) {
-					return true;
-				}
-			}
-		}
-	}
-
-	for (var i = 0; i < 3; i++) {
-		index = parseHex(hash, 8 + i, 1) % availableColors.length;
-		if (isDuplicate([0, 4]) || // Disallow dark gray and dark color combo
-			isDuplicate([2, 3])) { // Disallow light gray and light color combo
-			index = 1;
-		}
-		selectedColorIndexes.push(index);
-	}
-
-	// ACTUAL RENDERING
-	// Sides
-	renderShape(0, outerShape, 2, 3, [[1, 0], [2, 0], [2, 3], [1, 3], [0, 1], [3, 1], [3, 2], [0, 2]]);
-	// Corners
-	renderShape(1, outerShape, 4, 5, [[0, 0], [3, 0], [3, 3], [0, 3]]);
-	// Center
-	renderShape(2, centerShape, 1, null, [[1, 1], [2, 1], [2, 2], [1, 2]]);
-
-	renderer.finish();
-}
-
-/**
  * Computes a SHA1 hash for any value and returns it as a hexadecimal string.
  *
  * This function is optimized for minimal code size and rather short messages.
@@ -775,18 +595,99 @@ class SvgWriter
 /**
  * Draws an identicon as an SVG string.
  * @param {*} hashOrValue - A hexadecimal hash string or any value that will be hashed by Jdenticon.
- * @param {number} size - Icon size in pixels.
- * @param {Object|number=} config - Optional configuration. If specified, this configuration object overrides any
- *    global configuration in its entirety. For backward compatibility a padding value in the range [0.0, 0.5) can be
- *    specified in place of a configuration object.
  * @returns {string} SVG string
  */
-window.identiconSvg = async (hashOrValue, config) => {
-	var writer = new SvgWriter(50);
-	iconGenerator(new SvgRenderer(writer),
-		(/^[0-9a-f]{11,}$/i.test(hashOrValue) && hashOrValue)
+window.identiconSvg = async (hashOrValue) => {
+	const writer = new SvgWriter(50),
+		renderer = new SvgRenderer(writer),
+		hash = (/^[0-9a-f]{11,}$/i.test(hashOrValue) && hashOrValue)
 			|| await computeHash(hashOrValue == null ? "" : "" + hashOrValue),
-		config);
+		config = {
+			p/*colorSaturation*/: 0.5,
+			H/*grayscaleSaturation*/: 0,
+			q/*colorLightness*/: value => between(0, 1, 0.4 + value * (0.8 - 0.4)),
+			I/*grayscaleLightness*/: value => between(0, 1, 0.3 + value * (0.9 - 0.3))
+		};
+
+	var index;
+
+	// Calculate padding and round to nearest integer
+	var size = renderer.k/*iconSize*/;
+	var padding = (0.5 + size * 0.08) | 0;
+	size -= padding * 2;
+
+	const graphics = new Graphics(renderer),
+
+		// Calculate cell size and ensure it is an integer
+		cell = 0 | (size / 4),
+
+		// Since the cell size is integer based, the actual icon will be slightly smaller than specified => center icon
+		s = 0 | (padding + size / 2 - cell * 2),
+
+		// AVAILABLE COLORS
+		hue = parseHex(hash, -7) / 0xfffffff,
+
+		// Available colors for this icon
+		availableColors = [
+			// Dark gray
+			correctedHsl(hue, config.H/*grayscaleSaturation*/, config.I/*grayscaleLightness*/(0)),
+			// Mid color
+			correctedHsl(hue, config.p/*colorSaturation*/, config.q/*colorLightness*/(0.5)),
+			// Light gray
+			correctedHsl(hue, config.H/*grayscaleSaturation*/, config.I/*grayscaleLightness*/(1)),
+			// Light color
+			correctedHsl(hue, config.p/*colorSaturation*/, config.q/*colorLightness*/(1)),
+			// Dark color
+			correctedHsl(hue, config.p/*colorSaturation*/, config.q/*colorLightness*/(0))
+		],
+
+		// The index of the selected colors
+		selectedColorIndexes = [],
+
+		isDuplicate = values => {
+			if (values.indexOf(index) >= 0) {
+				for (var i = 0; i < values.length; i++) {
+					if (selectedColorIndexes.indexOf(values[i]) >= 0) {
+						return true;
+					}
+				}
+			}
+		},
+
+		renderShape = (colorIndex, shapes, index, rotationIndex, positions) => {
+			var shapeIndex = parseHex(hash, index, 1);
+			var r = rotationIndex ? parseHex(hash, rotationIndex, 1) : 0;
+
+			renderer.O/*beginShape*/(availableColors[selectedColorIndexes[colorIndex]]);
+
+			for (var i = 0; i < positions.length; i++) {
+				graphics.A/*currentTransform*/
+					= new Transform(s + positions[i][0] * cell, s + positions[i][1] * cell, cell, r++ % 4);
+				shapes(shapeIndex, graphics, cell, i);
+			}
+
+			renderer.P/*endShape*/();
+		};
+
+	for (var i = 0; i < 3; i++) {
+		index = parseHex(hash, 8 + i, 1) % availableColors.length;
+		if (isDuplicate([0, 4]) || // Disallow dark gray and dark color combo
+			isDuplicate([2, 3])) { // Disallow light gray and light color combo
+			index = 1;
+		}
+		selectedColorIndexes.push(index);
+	}
+
+	// ACTUAL RENDERING
+	// Sides
+	renderShape(0, outerShape, 2, 3, [[1, 0], [2, 0], [2, 3], [1, 3], [0, 1], [3, 1], [3, 2], [0, 2]]);
+	// Corners
+	renderShape(1, outerShape, 4, 5, [[0, 0], [3, 0], [3, 3], [0, 3]]);
+	// Center
+	renderShape(2, centerShape, 1, null, [[1, 1], [2, 1], [2, 2], [1, 2]]);
+
+	renderer.finish();
+
 	return writer.toString();
 };
 
