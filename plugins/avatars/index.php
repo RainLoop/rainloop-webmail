@@ -167,7 +167,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				if ($BIMI) {
 					$aUrls[] = $BIMI;
 //					$aResult = ['text/uri-list', $BIMI];
-					\SnappyMail\Log::debug('Avatar', "BIMI {$sDomain} for {$sUrl}");
+					\SnappyMail\Log::debug('Avatar', "BIMI {$sDomain}: {$BIMI}");
 				} else {
 					\SnappyMail\Log::notice('Avatar', "BIMI 404 for {$sDomain}");
 				}
