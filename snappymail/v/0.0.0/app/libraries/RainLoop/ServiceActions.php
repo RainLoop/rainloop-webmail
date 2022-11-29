@@ -551,7 +551,7 @@ class ServiceActions
 			$sTheme = $this->oActions->ValidateTheme($this->aPaths[4]);
 
 			$bAppDebug = $this->Config()->Get('debug', 'enable', false);
-			$sMinify = ($bAppDebug || $oConfig->Get('labs', 'use_app_debug_css', false)) ? '' : 'min';
+			$sMinify = ($bAppDebug || $this->Config()->Get('labs', 'use_app_debug_css', false)) ? '' : 'min';
 
 			$bCacheEnabled = !$bAppDebug && $this->Config()->Get('labs', 'cache_system_data', true);
 			if ($bCacheEnabled) {
