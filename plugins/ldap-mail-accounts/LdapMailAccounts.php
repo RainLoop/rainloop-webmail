@@ -17,7 +17,7 @@ class LdapMailAccounts
 	/** @var bool */
 	private $ldapBound = false;
 
-	/** @var LdapConfig */
+	/** @var LdapMailAccountsConfig */
 	private $config;
 
 	/** @var Logger */
@@ -28,10 +28,10 @@ class LdapMailAccounts
 	/**
 	 * LdapMailAccount constructor.
 	 *
-	 * @param LdapConfig $config LdapConfig object containing the admin configuration for this plugin
+	 * @param LdapMailAccountsConfig $config LdapMailAccountsConfig object containing the admin configuration for this plugin
 	 * @param Logger $logger Used to write to the logfile
 	 */
-	public function __construct(LdapConfig $config, Logger $logger)
+	public function __construct(LdapMailAccountsConfig $config, Logger $logger)
 	{
 		$this->config = $config;
 		$this->logger = $logger;
@@ -60,7 +60,7 @@ class LdapMailAccounts
 	{
 		try {
 			$this->EnsureBound();
-		} catch (LdapException $e) {
+		} catch (LdapMailAccountsException $e) {
 			return false; // exceptions are only thrown from the handleerror function that does logging already
 		}
 
@@ -87,7 +87,7 @@ class LdapMailAccounts
 				$this->config->field_domain
 			);
 		} 
-		catch (LdapException $e) {
+		catch (LdapMailAccountsException $e) {
 			return false; // exceptions are only thrown from the handleerror function that does logging already
 		}
 		if (count($mailAddressResults) < 1) {
@@ -165,7 +165,7 @@ class LdapMailAccounts
 	/**
 	 * Checks if a connection to the LDAP was possible
 	 * 
-	 * @throws LdapException 
+	 * @throws LdapMailAccountsException 
 	 * 
 	 * */
 	private function EnsureConnected(): void
@@ -204,7 +204,7 @@ class LdapMailAccounts
 	/** 
 	 * Ensures the plugin has been authenticated at the LDAP
 	 * 
-	 * @throws LdapException 
+	 * @throws LdapMailAccountsException 
 	 * 
 	 * */
 	private function EnsureBound(): void
@@ -239,7 +239,7 @@ class LdapMailAccounts
 	 * Handles and logs an eventual LDAP error
 	 * 
 	 * @param string $op
-	 * @throws LdapException
+	 * @throws LdapMailAccountsException
 	 */
 	private function HandleLdapError(string $op = ""): void
 	{
@@ -249,7 +249,7 @@ class LdapMailAccounts
 
 		$message = empty($op) ? "LDAP Error: {$errorMsg} ({$errorNo})" : "LDAP Error during {$op}: {$errorMsg} ({$errorNo})";
 		$this->logger->Write($message, \LOG_ERR, self::LOG_KEY);
-		throw new LdapException($message, $errorNo);
+		throw new LdapMailAccountsException($message, $errorNo);
 	}
 
 	/**
@@ -264,8 +264,8 @@ class LdapMailAccounts
 	 * @param string $nameField
 	 * @param string $usernameField
 	 * @param string $domainField
-	 * @return LdapResult[]
-	 * @throws LdapException
+	 * @return LdapMailAccountResult[]
+	 * @throws LdapMailAccountsException
 	 */
 	private function FindLdapResults(
 		string $searchField, 
@@ -296,12 +296,12 @@ class LdapMailAccounts
 			return [];
 		}
 
-		// Save the found ldap entries into a LdapResult object and return them
+		// Save the found ldap entries into a LdapMailAccountResult object and return them
 		$results = [];
 		for ($i = 0; $i < $entries["count"]; $i++) {
 			$entry = $entries[$i];
 
-			$result = new LdapResult();
+			$result = new LdapMailAccountResult();
 			$result->dn = $entry["dn"];
 			$result->name = $this->LdapGetAttribute($entry, $nameField, true, true);
 			
@@ -394,7 +394,7 @@ class LdapMailAccounts
 	}
 }
 
-class LdapResult
+class LdapMailAccountResult
 {
 	/** @var string */
 	public $dn;

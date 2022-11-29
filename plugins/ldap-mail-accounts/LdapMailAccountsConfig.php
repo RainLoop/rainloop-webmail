@@ -3,7 +3,7 @@
 
 use RainLoop\Config\Plugin;
 
-class LdapConfig
+class LdapMailAccountsConfig
 {
 	public const CONFIG_SERVER = "server";
 	public const CONFIG_PROTOCOL_VERSION = "server_version";
@@ -31,7 +31,7 @@ class LdapConfig
 	public $search_string;
 	public $field_domain;
 
-	public static function MakeConfig(Plugin $config): LdapConfig
+	public static function MakeConfig(Plugin $config): LdapMailAccountsConfig
 	{
 		$ldap = new self();
 		$ldap->server = trim($config->Get("plugin", self::CONFIG_SERVER));
