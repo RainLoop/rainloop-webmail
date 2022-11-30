@@ -79,7 +79,7 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 }
 
 /*
- * icon colors
+ * icons
  */
 
 #rl-app .iconcolor-green {
@@ -88,6 +88,14 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 
 #rl-app .iconcolor-red {
     color: var(--color-error) !important;
+}
+
+#rl-app i.fontastic {
+    line-height: unset;
+}
+
+#rl-app [data-icon]::before {
+    vertical-align: -10%;
 }
 
 /*
