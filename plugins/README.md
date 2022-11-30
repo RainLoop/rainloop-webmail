@@ -135,7 +135,7 @@ $Plugin->addHook('hook.name', 'functionName');
 
 ### login.success
 	params:
-		\RainLoop\Model\Account $oAccount
+		\RainLoop\Model\MainAccount $oAccount
 
 ## IMAP
 

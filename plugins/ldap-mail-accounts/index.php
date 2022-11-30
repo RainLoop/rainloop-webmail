@@ -4,7 +4,6 @@ use RainLoop\Enumerations\Capa;
 use RainLoop\Enumerations\PluginPropertyType;
 use RainLoop\Plugins\AbstractPlugin;
 use RainLoop\Plugins\Property;
-use RainLoop\Model\Account;
 use RainLoop\Model\MainAccount;
 use RainLoop\Actions;
 
@@ -39,18 +38,16 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 	/**
 	 * Add additional mail accounts to the webinterface of the user by looking up the ldap directory
 	 *
-	 * @param Account $oAccount
+	 * @param MainAccount $oAccount
 	 */
-	public function AddAdditionalLdapMailAccounts(Account $oAccount)
+	public function AddAdditionalLdapMailAccounts(MainAccount $oAccount)
 	{
-		if ($oAccount instanceof MainAccount) {
-			// Set up config
-			$config = LdapMailAccountsConfig::MakeConfig($this->Config());
+		// Set up config
+		$config = LdapMailAccountsConfig::MakeConfig($this->Config());
 
-			$oldapMailAccounts = new LdapMailAccounts($config, $this->Manager()->Actions()->Logger());
+		$oldapMailAccounts = new LdapMailAccounts($config, $this->Manager()->Actions()->Logger());
 
-			$oldapMailAccounts->AddLdapMailAccounts($oAccount);
-		}
+		$oldapMailAccounts->AddLdapMailAccounts($oAccount);
 	}
 
 	/**
