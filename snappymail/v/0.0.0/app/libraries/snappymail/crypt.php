@@ -65,11 +65,11 @@ abstract class Crypt
 					}
 				}
 			} catch (\Throwable $e) {
-				\trigger_error(__CLASS__ . "::{$fn}(): " . $e->getMessage());
+				Log::error('Crypt', "{$fn}(): {$e->getMessage()}");
 			}
-//			\trigger_error(__CLASS__ . '::Decrypt() invalid $data or $key');
+			Log::warning('Crypt', 'Decrypt() invalid $data or $key');
 		} else {
-//			\trigger_error(__CLASS__ . '::Decrypt() invalid $data');
+			Log::warning('Crypt', 'Decrypt() invalid $data');
 		}
 	}
 
@@ -77,7 +77,7 @@ abstract class Crypt
 	{
 		$data = static::jsonDecode($data);
 		if (!\is_array($data)) {
-//			\trigger_error(__CLASS__ . '::DecryptFromJSON() invalid $data');
+			Log::notice('Crypt', 'DecryptFromJSON() invalid $data');
 			return null;
 		}
 		return static::Decrypt(\array_map('base64_decode', $data), $key);
@@ -87,7 +87,7 @@ abstract class Crypt
 	{
 		$data = \explode('.', $data);
 		if (!\is_array($data)) {
-//			\trigger_error(__CLASS__ . '::DecryptUrlSafe() invalid $data');
+			Log::notice('Crypt', 'DecryptUrlSafe() invalid $data');
 			return null;
 		}
 		return static::Decrypt(\array_map('MailSo\\Base\\Utils::UrlSafeBase64Decode', $data), $key);
@@ -175,6 +175,7 @@ abstract class Crypt
 		if (!static::$cipher) {
 			throw new \Exception('openssl $cipher not set');
 		}
+		Log::debug('Crypt', 'openssl_decrypt() with cipher ' . static::$cipher);
 		return \openssl_decrypt(
 			$data,
 			static::$cipher,
@@ -195,6 +196,7 @@ abstract class Crypt
 		if (!static::$cipher) {
 			throw new \Exception('openssl $cipher not set');
 		}
+		Log::debug('Crypt', 'openssl_encrypt() with cipher ' . static::$cipher);
 		$result = \openssl_encrypt(
 			$data,
 			static::$cipher,

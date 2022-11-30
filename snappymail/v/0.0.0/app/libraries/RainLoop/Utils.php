@@ -195,12 +195,17 @@ class Utils
 */
 		// Set the new 4K split cookie
 		foreach (\str_split($sValue, $iMaxSize) as $i => $sPart) {
+			\SnappyMail\Log::debug('COOKIE', "set {$sName}~{$i}");
 			static::_SetCookie($i ? "{$sName}~{$i}" : $sName, $sPart, $iExpire);
 		}
 		// Delete unused old 4K split cookie parts
-		while (($sCookieName = "{$sName}~" . ++$i) && isset($_COOKIE[$sCookieName])) {
-			unset($_COOKIE[$sCookieName]);
-			static::_SetCookie($sCookieName, '', \time() - 3600 * 24 * 30);
+		foreach (\array_keys($_COOKIE) as $sCookieName) {
+			$aSplit = \explode('~', $sCookieName);
+			if (isset($aSplit[1]) && $aSplit[0] == $sName && $aSplit[1] > $i) {
+				\SnappyMail\Log::debug('COOKIE', "unset {$sCookieName}");
+				unset($_COOKIE[$sCookieName]);
+				static::_SetCookie($sCookieName, '', \time() - 3600 * 24 * 30);
+			}
 		}
 	}
 
