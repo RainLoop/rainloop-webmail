@@ -223,6 +223,7 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     font-weight: bold;
     max-width: 100%;
     width: 100%;
+    box-sizing: content-box !important;
 }
 
 #rl-app .btn.btn-success {
@@ -270,18 +271,18 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     width: fill-available;
 }
 
-#rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic {
+#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic {
     background-color: var(--color-main-background);
 }
 
-#rl-app .b-footer.btn-toolbar .btn-group .btn:after {
+#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn:after {
     font-family: var(--font-face);
     font-size: var(--default-font-size);
     position: absolute;
     margin-left: 15px;
 }
 
-#rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic:after {
+#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:after {
     content: 'SnappyMail-Settings';
 }
 
@@ -368,6 +369,7 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
     border: 2px solid var(--color-border-dark);
     border-radius: var(--border-radius-large);
     line-height: 24px;
+    box-sizing: border-box;
 }
 
 #rl-app .emailaddresses:hover,
@@ -457,6 +459,7 @@ select option {
     border: 2px solid var(--color-primary-element);
     border-radius: 2px;
     animation: none;
+    box-sizing: border-box;
 }
 
 #rl-app .e-checkbox.material-design>div>div.checked {
@@ -913,6 +916,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     line-height: 22px;
     border-radius: 3px;
     margin: 2px;
+    box-sizing: content-box;
 }
 
 #rl-app .dropdown-menu li.disabled > a,
@@ -956,6 +960,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     display: flex;
     flex-direction: row;
     align-items: center;
+    box-sizing: content-box;
 }
 
 #rl-app #V-SystemDropDown .accountPlace {
@@ -1056,10 +1061,16 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 
 #rl-app .squire-toolbar {
     height: 50px;
+    box-sizing: content-box;
 }
 
 #rl-app dialog > header,
 #rl-app dialog > footer,
 #rl-app .squire-toolbar {
     border-color: var(--color-border);
+}
+
+#rl-app #V-PopupsCompose header .close,
+#rl-app #V-PopupsCompose header .minimize-custom {
+    box-sizing: content-box;
 }
