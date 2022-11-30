@@ -498,6 +498,10 @@ select option {
     align-items: center;
 }
 
+#rl-app .messageList .b-footer {
+    padding-bottom: 10px;
+}
+
 #rl-app .messageList .second-toolbar,
 #rl-app .messageList .b-footer {
     border-color: var(--color-border);
