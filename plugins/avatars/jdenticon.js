@@ -387,21 +387,6 @@ function outerShape(index, g, cell) {
 }
 
 /**
- * Computes a SHA1 hash for any value and returns it as a hexadecimal string.
- *
- * This function is optimized for minimal code size and rather short messages.
- *
- * @param {string} message
- */
-async function computeHash(message) {
-	const hashArray = Array.from(new Uint8Array(
-//		await crypto.subtle.digest('SHA-256', (new TextEncoder()).encode(message))
-		await crypto.subtle.digest('SHA-1', (new TextEncoder()).encode(message))
-	));
-	return hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
-}
-
-/**
  * Prepares a measure to be used as a measure in an SVG path, by
  * rounding the measure to a single decimal. This reduces the file
  * size of the generated SVG with more than 50% in some cases.
@@ -597,11 +582,9 @@ class SvgWriter
  * @param {*} hashOrValue - A hexadecimal hash string or any value that will be hashed by Jdenticon.
  * @returns {string} SVG string
  */
-window.identiconSvg = async (hashOrValue) => {
+window.identiconSvg = hash => {
 	const writer = new SvgWriter(50),
 		renderer = new SvgRenderer(writer),
-		hash = (/^[0-9a-f]{11,}$/i.test(hashOrValue) && hashOrValue)
-			|| await computeHash(hashOrValue == null ? "" : "" + hashOrValue),
 		config = {
 			p/*colorSaturation*/: 0.5,
 			H/*grayscaleSaturation*/: 0,

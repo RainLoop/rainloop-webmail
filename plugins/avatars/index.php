@@ -19,7 +19,9 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addJs('avatars.js');
 		$this->addJsonHook('Avatar', 'DoAvatar');
 		$this->addPartHook('Avatar', 'ServiceAvatar');
-		$this->Config()->Get('plugin', 'identicon', false) && $this->addJs('jdenticon.js');
+//		$this->Config()->Get('plugin', 'identicon', false) && $this->addJs('jdenticon.js');
+		// GitHub-style
+		$this->Config()->Get('plugin', 'identicon', false) && $this->addJs('identicon.js');
 		// https://github.com/the-djmaze/snappymail/issues/714
 		$this->Config()->Get('plugin', 'delay', true) || $this->addHook('filter.json-response', 'FilterJsonResponse');
 	}

@@ -11,6 +11,21 @@
 			return `${bimi}/${from.email.toLowerCase()}`;
 		},
 		getAvatar = msg => ncAvatars.get(msg.from[0].email.toLowerCase()) || avatars.get(getAvatarUid(msg)),
+		hash = async txt => {
+			if (/^[0-9a-f]{15,}$/i.test(txt)) {
+				return txt;
+			}
+			const hashArray = Array.from(new Uint8Array(
+//				await crypto.subtle.digest('SHA-256', (new TextEncoder()).encode(txt.toLowerCase()))
+				await crypto.subtle.digest('SHA-1', (new TextEncoder()).encode(txt.toLowerCase()))
+			));
+			return hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+		},
+		fromChars = from =>
+			((from.name || from.email).split(/[^\p{L}]+/gu) || [])
+			.reduce((a, s) => a + (s[0] || ''), '')
+			.slice(0,2)
+			.toUpperCase(),
 		runQueue = (() => {
 			let item = queue.shift();
 			while (item) {
@@ -27,7 +42,8 @@
 							item[1](url);
 						} else if (window.identiconSvg) {
 							// rl.pluginSettingsGet('avatars', 'identicon');
-							window.identiconSvg(from.email).then(url => {
+							hash(from.email).then(hash => {
+								let url = window.identiconSvg(hash, fromChars(from));
 								avatars.set(getAvatarUid(item[0]), url);
 								item[1](url);
 							});
@@ -81,7 +97,8 @@
 					for (let i = 0; i < responseList.length; ++i) {
 						const item = responseList.item(i);
 						if (1 == getElementValue(item, nsNC, 'has-photo')) {
-							[...getElementValue(item, nsCard, 'address-data').matchAll(/EMAIL.*?:([^@\r\n]+@[^@\r\n]+)/g)].forEach(match => {
+							[...getElementValue(item, nsCard, 'address-data').matchAll(/EMAIL.*?:([^@\r\n]+@[^@\r\n]+)/g)]
+							.forEach(match => {
 								ncAvatars.set(
 									match[1].toLowerCase(),
 									getElementValue(item, nsDAV, 'href') + '?photo'
@@ -102,10 +119,13 @@
 				if (url) {
 					fn(url);
 				} else if (msg.avatar) {
-					let bimi = 'pass' == msg.from[0].dkimStatus ? 1 : 0;
+					let from = msg.from[0],
+						bimi = 'pass' == from.dkimStatus ? 1 : 0;
 					if (window.identiconSvg) {
 						// rl.pluginSettingsGet('avatars', 'identicon');
-						element.onerror = () => window.identiconSvg(msg.from[0].email).then(fn);
+						element.onerror = () => hash(from.email).then(hash =>
+							fn(window.identiconSvg(hash, fromChars(from)))
+						);
 					}
 					fn(`?Avatar/${bimi}/${msg.avatar}`);
 				} else {
