@@ -76,7 +76,7 @@ class FolderInformation implements \JsonSerializable
 			$result['unreadEmails'] = $this->UNSEEN;
 		}
 		if (isset($this->HIGHESTMODSEQ)) {
-			$result['Highestmodseq'] = $this->HIGHESTMODSEQ;
+			$result['HighestModSeq'] = $this->HIGHESTMODSEQ;
 		}
 		if (isset($this->APPENDLIMIT)) {
 			$result['Appendlimit'] = $this->APPENDLIMIT;
