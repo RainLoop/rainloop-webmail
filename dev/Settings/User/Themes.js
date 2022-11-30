@@ -60,6 +60,10 @@ export class UserSettingsThemes /*extends AbstractViewSettings*/ {
 		});
 	}
 
+	setTheme(theme) {
+		ThemeStore.theme(theme.name);
+	}
+
 	onBuild() {
 		const currentTheme = ThemeStore.theme();
 

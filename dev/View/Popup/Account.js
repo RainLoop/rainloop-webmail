@@ -22,6 +22,10 @@ export class AccountPopupView extends AbstractViewPopup {
 		});
 	}
 
+	hideError() {
+		this.submitError('');
+	}
+
 	submitForm(form) {
 		if (!this.submitRequest() && form.reportValidity()) {
 			const data = new FormData(form);

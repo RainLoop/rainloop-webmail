@@ -334,11 +334,9 @@ trait UserAuth
 
 	private function SetSignMeToken(MainAccount $oAccount): void
 	{
-		$this->ClearSignMeData();
-
+//		$this->ClearSignMeData();
 		$uuid = \SnappyMail\UUID::generate();
 		$data = \SnappyMail\Crypt::Encrypt($oAccount);
-
 		Utils::SetCookie(
 			self::AUTH_SIGN_ME_TOKEN_KEY,
 			\SnappyMail\Crypt::EncryptUrlSafe([
@@ -348,13 +346,7 @@ trait UserAuth
 			]),
 			\time() + 3600 * 24 * 30 // 30 days
 		);
-
-		$this->StorageProvider()->Put(
-			$oAccount,
-			StorageType::SIGN_ME,
-			$uuid,
-			$data[2]
-		);
+		$this->StorageProvider()->Put($oAccount, StorageType::SIGN_ME, $uuid, $data[2]);
 	}
 
 	public function GetAccountFromSignMeToken(): ?MainAccount
@@ -368,36 +360,32 @@ trait UserAuth
 					StorageType::SIGN_ME,
 					$aTokenData['u']
 				);
-				if ($sAuthToken) {
-					$aAccountHash = \SnappyMail\Crypt::Decrypt([
-						\array_key_last($aTokenData),
-						\base64_decode(\end($aTokenData)),
-						$sAuthToken
-					]);
-					if (\is_array($aAccountHash)) {
-						$oAccount = MainAccount::NewInstanceFromTokenArray($this, $aAccountHash);
-						if ($oAccount) {
-							$this->CheckMailConnection($oAccount);
-							// Update lifetime
-							$this->SetSignMeToken($oAccount);
-							return $oAccount;
-						}
-						\SnappyMail\Log::notice(self::AUTH_SIGN_ME_TOKEN_KEY, 'has no account');
-					} else {
-						\SnappyMail\Log::notice(self::AUTH_SIGN_ME_TOKEN_KEY, 'decrypt failed');
-					}
-				} else {
-					\SnappyMail\Log::notice(self::AUTH_SIGN_ME_TOKEN_KEY, "server token not found for {$aTokenData['e']}/.sign_me/{$aTokenData['u']}");
+				if (!$sAuthToken) {
+					throw new \RuntimeException("server token not found for {$aTokenData['e']}/.sign_me/{$aTokenData['u']}");
 				}
+				$aAccountHash = \SnappyMail\Crypt::Decrypt([
+					\array_key_last($aTokenData),
+					\base64_decode(\end($aTokenData)),
+					$sAuthToken
+				]);
+				if (!\is_array($aAccountHash)) {
+					throw new \RuntimeException('token decrypt failed');
+				}
+				$oAccount = MainAccount::NewInstanceFromTokenArray($this, $aAccountHash);
+				if (!$oAccount) {
+					throw new \RuntimeException('token has no account');
+				}
+				$this->CheckMailConnection($oAccount);
+				// Update lifetime
+				$this->SetSignMeToken($oAccount);
+				return $oAccount;
 			}
 			catch (\Throwable $oException)
 			{
-				\SnappyMail\Log::notice(self::AUTH_SIGN_ME_TOKEN_KEY, $oException->getMessage());
+				\SnappyMail\Log::warning(self::AUTH_SIGN_ME_TOKEN_KEY, $oException->getMessage());
 			}
+			$this->ClearSignMeData();
 		}
-
-		$this->ClearSignMeData();
-
 		return null;
 	}
 

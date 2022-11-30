@@ -35,6 +35,10 @@ export class PluginPopupView extends AbstractViewPopup {
 		});
 	}
 
+	hideError() {
+		this.saveError('');
+	}
+
 	saveCommand() {
 		const oConfig = {
 			Id: this.id(),

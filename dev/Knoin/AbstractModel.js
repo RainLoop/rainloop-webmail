@@ -102,10 +102,10 @@ export class AbstractModel {
 				case 'string':
 					this[key] = typeCast(this[key], value);
 					break;
-					// fall through
 				case 'undefined':
-				default:
 					this[key] = value;
+					// fall through
+				default:
 //					console.log((typeof this[key])+' '+(model.name)+'.'+key+' not revived');
 				}
 			} catch (e) {

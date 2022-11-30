@@ -169,9 +169,13 @@ class Manager
 
 	public function Hash() : string
 	{
-		return \md5(\array_reduce($this->aPlugins, function($sResult, $oPlugin){
-			return $sResult . "|{$oPlugin->Hash()}";
-		}, APP_VERSION));
+		return \md5(
+			\array_reduce($this->aPlugins, function($sResult, $oPlugin){
+				return $sResult . "|{$oPlugin->Hash()}";
+			}, APP_VERSION)
+			.implode('',$this->aJs[1]).implode('',$this->aJs[0])
+			.implode('',$this->aCss[1]).implode('',$this->aCss[0])
+		);
 	}
 
 	public function HaveJs(bool $bAdminScope = false) : bool
@@ -179,11 +183,17 @@ class Manager
 		return $this->bIsEnabled && \count($this->aJs[$bAdminScope ? 1 : 0]);
 	}
 
-	public function CompileCss(bool $bAdminScope, bool &$bLess) : string
+	public function CompileCss(bool $bAdminScope, bool &$bLess, bool $bMinified) : string
 	{
 		$aResult = array();
 		if ($this->bIsEnabled) {
 			foreach ($this->aCss[$bAdminScope ? 1 : 0] as $sFile) {
+				if ($bMinified) {
+					$sMinFile = \str_replace('.css', '.min.css', $sFile);
+					if (\is_readable($sMinFile)) {
+						$sFile = $sMinFile;
+					}
+				}
 				if (\is_readable($sFile)) {
 					$aResult[] = \file_get_contents($sFile);
 					$bLess = $bLess || \str_ends_with($sFile, '.less');
@@ -193,15 +203,18 @@ class Manager
 		return \implode("\n", $aResult);
 	}
 
-	public function CompileJs(bool $bAdminScope = false) : string
+	public function CompileJs(bool $bAdminScope = false, bool $bMinified = false) : string
 	{
 		$aResult = array();
-		if ($this->bIsEnabled)
-		{
-			foreach ($this->aJs[$bAdminScope ? 1 : 0] as $sFile)
-			{
-				if (\is_readable($sFile))
-				{
+		if ($this->bIsEnabled) {
+			foreach ($this->aJs[$bAdminScope ? 1 : 0] as $sFile) {
+				if ($bMinified) {
+					$sMinFile = \str_replace('.js', '.min.js', $sFile);
+					if (\is_readable($sMinFile)) {
+						$sFile = $sMinFile;
+					}
+				}
+				if (\is_readable($sFile)) {
 					$aResult[] = \file_get_contents($sFile);
 				}
 			}

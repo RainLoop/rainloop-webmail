@@ -123,7 +123,7 @@
 
 			<div class="messageItemHeader">
 				<div class="subjectParent">
-					<span class="infoParent g-ui-user-select-none fontastic" data-bind="click: function() { showFullInfo(!showFullInfo()); }">ℹ</span>
+					<span class="infoParent g-ui-user-select-none fontastic" data-bind="click: toggleFullInfo">ℹ</span>
 					<span class="flagParent g-ui-user-select-none flagOff fontastic" data-bind="text: message().isFlagged() ? '★' : '☆', css: {'flagOn': message().isFlagged(), 'flagOff': !message().isFlagged()}"></span>
 					<span class="subject" data-bind="text: message().subject, title: message().subject"></span>
 					<a href="#" class="close" data-bind="click: closeMessage" style="margin-top: -8px;">×</a>
@@ -251,8 +251,7 @@
 											<div class="attachmentSize" data-bind="text: friendlySize()"></div>
 										</div>
 										<div class="checkboxAttachment fontastic"
-												data-bind="visible: download, text: checked() ? '☑' : '☐',
-												click: function () { checked(!checked()); return false }"></div>
+											data-bind="visible: download, text: checked() ? '☑' : '☐', click: toggleChecked"></div>
 									</li>
 								</ul>
 								<!-- /ko -->
@@ -261,8 +260,7 @@
 									<li class="attachmentItem" data-bind="attr: { 'title': fileName }, css: {'checked': checked}">
 										<span class="attachmentName" data-bind="text: fileName"></span>
 										<i class="checkboxAttachment fontastic"
-											data-bind="visible: download, text: checked() ? '☑' : '☐',
-											click: function () { checked(!checked()); return false }"></i>
+											data-bind="visible: download, text: checked() ? '☑' : '☐', click: toggleChecked"></i>
 									</li>
 								</ul>
 								<!-- /ko -->

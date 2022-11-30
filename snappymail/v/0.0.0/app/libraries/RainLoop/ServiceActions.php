@@ -506,31 +506,29 @@ class ServiceActions
 
 		\header('Content-Type: application/javascript; charset=utf-8');
 
-		$bCacheEnabled = $this->Config()->Get('labs', 'cache_system_data', true);
-		if ($bCacheEnabled)
-		{
-			$this->oActions->verifyCacheByKey($this->sQuery);
+		$bAppDebug = $this->Config()->Get('debug', 'enable', false);
+		$sMinify = ($bAppDebug || $this->Config()->Get('labs', 'use_app_debug_js', false)) ? '' : 'min';
+
+		$bCacheEnabled = !$bAppDebug && $this->Config()->Get('labs', 'cache_system_data', true);
+		if ($bCacheEnabled) {
+			$this->oActions->verifyCacheByKey($this->sQuery . $sMinify);
 		}
 
 		$sCacheFileName = '';
-		if ($bCacheEnabled)
-		{
-			$sCacheFileName = KeyPathHelper::PluginsJsCache($this->oActions->Plugins()->Hash());
+		if ($bCacheEnabled) {
+			$sCacheFileName = KeyPathHelper::PluginsJsCache($this->oActions->Plugins()->Hash()) . $sMinify;
 			$sResult = $this->Cacher()->Get($sCacheFileName);
 		}
 
-		if (!\strlen($sResult))
-		{
-			$sResult = $this->Plugins()->CompileJs($bAdmin);
-			if ($bCacheEnabled && \strlen($sCacheFileName))
-			{
+		if (!$sResult) {
+			$sResult = $this->Plugins()->CompileJs($bAdmin, !!$sMinify);
+			if ($sCacheFileName) {
 				$this->Cacher()->Set($sCacheFileName, $sResult);
 			}
 		}
 
-		if ($bCacheEnabled)
-		{
-			$this->oActions->cacheByKey($this->sQuery);
+		if ($bCacheEnabled) {
+			$this->oActions->cacheByKey($this->sQuery . $sMinify);
 		}
 
 		return $sResult;
@@ -539,45 +537,38 @@ class ServiceActions
 	public function ServiceCss() : string
 	{
 		$sResult = '';
-
 		$bAdmin = !empty($this->aPaths[2]) && 'Admin' === $this->aPaths[2];
 		$bJson = !empty($this->aPaths[9]) && 'Json' === $this->aPaths[9];
 
-		if ($bJson)
-		{
+		if ($bJson) {
 			\header('Content-Type: application/json; charset=utf-8');
-		}
-		else
-		{
+		} else {
 			\header('Content-Type: text/css; charset=utf-8');
 		}
 
 		$sTheme = '';
-		if (!empty($this->aPaths[4]))
-		{
+		if (!empty($this->aPaths[4])) {
 			$sTheme = $this->oActions->ValidateTheme($this->aPaths[4]);
 
-			$bCacheEnabled = $this->Config()->Get('labs', 'cache_system_data', true);
-			if ($bCacheEnabled)
-			{
-				$this->oActions->verifyCacheByKey($this->sQuery);
+			$bAppDebug = $this->Config()->Get('debug', 'enable', false);
+			$sMinify = ($bAppDebug || $this->Config()->Get('labs', 'use_app_debug_css', false)) ? '' : 'min';
+
+			$bCacheEnabled = !$bAppDebug && $this->Config()->Get('labs', 'cache_system_data', true);
+			if ($bCacheEnabled) {
+				$this->oActions->verifyCacheByKey($this->sQuery . $sMinify);
 			}
 
 			$sCacheFileName = '';
-			if ($bCacheEnabled)
-			{
-				$sCacheFileName = KeyPathHelper::CssCache($sTheme, $this->oActions->Plugins()->Hash());
+			if ($bCacheEnabled) {
+				$sCacheFileName = KeyPathHelper::CssCache($sTheme, $this->oActions->Plugins()->Hash()) . $sMinify;
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
 
-			if (!$sResult)
-			{
+			if (!$sResult) {
 				try
 				{
 					$sResult = $this->oActions->compileCss($sTheme, $bAdmin);
-
-					if ($bCacheEnabled && $sCacheFileName)
-					{
+					if ($sCacheFileName) {
 						$this->Cacher()->Set($sCacheFileName, $sResult);
 					}
 				}
@@ -587,9 +578,8 @@ class ServiceActions
 				}
 			}
 
-			if ($bCacheEnabled)
-			{
-				$this->oActions->cacheByKey($this->sQuery);
+			if ($bCacheEnabled) {
+				$this->oActions->cacheByKey($this->sQuery . $sMinify);
 			}
 		}
 

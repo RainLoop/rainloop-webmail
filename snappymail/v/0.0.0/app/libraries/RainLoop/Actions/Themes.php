@@ -92,7 +92,7 @@ trait Themes
 		return \in_array($sTheme, $this->GetThemes()) ? $sTheme : $this->Config()->Get('themes', 'default', 'Default');
 	}
 
-	public function compileCss(string $sTheme, bool $bAdmin) : string
+	public function compileCss(string $sTheme, bool $bAdmin, bool $bMinified = false) : string
 	{
 		$bCustomTheme = '@custom' === \substr($sTheme, -7);
 		if ($bCustomTheme) {
@@ -118,7 +118,7 @@ trait Themes
 			}
 		}
 
-		$mResult[] = $this->Plugins()->CompileCss($bAdmin, $bLess);
+		$mResult[] = $this->Plugins()->CompileCss($bAdmin, $bLess, $bMinified);
 
 		$mResult = \preg_replace('@(url\(["\']?)(\\./)?([a-z]+[^:a-z])@',
 			"\$1{$sBase}\$3",

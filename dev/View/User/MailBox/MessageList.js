@@ -11,6 +11,7 @@ import { leftPanelDisabled, toggleLeftPanel,
 	addShortcut, registerShortcut, formFieldFocused
 } from 'Common/Globals';
 
+import { arrayLength } from 'Common/Utils';
 import { computedPaginatorHelper, showMessageComposer, populateMessageBody, download, moveAction } from 'Common/UtilsUser';
 import { FileInfo } from 'Common/File';
 import { isFullscreen, toggleFullscreen } from 'Common/Fullscreen';
@@ -102,6 +103,9 @@ export class MailMessageList extends AbstractViewRight {
 		this.dragOver = ko.observable(false).extend({ throttle: 1 });
 		this.dragOverEnter = ko.observable(false).extend({ throttle: 1 });
 
+		const attachmentsActions = Settings.app('attachmentsActions');
+		this.attachmentsActions = ko.observableArray(arrayLength(attachmentsActions) ? attachmentsActions : []);
+
 		addComputablesTo(this, {
 
 			sortSupported: () =>
@@ -148,7 +152,9 @@ export class MailMessageList extends AbstractViewRight {
 					 return '𝐒' + (desc ? '⬆' : '⬇');
 				}
 				return (mode.includes('SIZE') ? '✉' : '📅') + (desc ? '⬇' : '⬆');
-			}
+			},
+
+			downloadAsZipAllowed: () => this.attachmentsActions.includes('zip')
 		});
 
 		this.selector = new Selector(
@@ -259,7 +265,8 @@ export class MailMessageList extends AbstractViewRight {
 		).throttle(50));
 
 		decorateKoCommands(this, {
-			downloadCommand: canBeMovedHelper,
+			downloadAttachCommand: canBeMovedHelper,
+			downloadZipCommand: canBeMovedHelper,
 			forwardCommand: canBeMovedHelper,
 			deleteWithoutMoveCommand: canBeMovedHelper,
 			deleteCommand: canBeMovedHelper,
@@ -292,7 +299,30 @@ export class MailMessageList extends AbstractViewRight {
 		]);
 	}
 
-	downloadCommand() {
+	downloadZipCommand() {
+		let hashes = []/*, uids = []*/;
+//		MessagelistUserStore.forEach(message => message.checked() && uids.push(message.uid));
+		MessagelistUserStore.forEach(message => message.checked() && hashes.push(message.requestHash));
+		if (hashes.length) {
+			Remote.post('AttachmentsActions', null, {
+				Do: 'Zip',
+				Folder: MessagelistUserStore().Folder,
+//				Uids: uids,
+				Hashes: hashes
+			})
+			.then(result => {
+				let hash = result?.Result?.FileHash;
+				if (hash) {
+					download(attachmentDownload(hash), hash+'.zip');
+				} else {
+					alert('Download failed');
+				}
+			})
+			.catch(() => alert('Download failed'));
+		}
+	}
+
+	downloadAttachCommand() {
 		let hashes = [];
 		MessagelistUserStore.forEach(message => {
 			if (message.checked()) {

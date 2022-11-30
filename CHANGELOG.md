@@ -1,3 +1,23 @@
+## 2.22.4 – 2022-11-28
+
+### Changed
+- Contacts dialog layout using flex
+- Session token is related to the user agent string
+  [#713](https://github.com/the-djmaze/snappymail/pull/713)
+- Better browser cache handling for avatars plugin
+  [#714](https://github.com/the-djmaze/snappymail/pull/714)
+- Force HTML editor when set as default when replying to message
+  [#355](https://github.com/the-djmaze/snappymail/pull/355)
+
+### Fixed
+- Contact Error - object Object #716
+  [#716](https://github.com/the-djmaze/snappymail/pull/716)
+- Unable to move messages to different folder by drag and drop
+  [#710](https://github.com/the-djmaze/snappymail/pull/710)
+- v2.22.3 unknown error #709
+  [#709https://github.com/the-djmaze/snappymail/pull/709)
+
+
 ## 2.22.3 – 2022-11-25
 
 ### Added
@@ -9,7 +29,7 @@
 - Update to OpenPGP.js v5.5.0
 
 ### Fixed
-- drag & drop folder expansion #707
+- drag & drop folder expansion
   [#707](https://github.com/the-djmaze/snappymail/pull/707)
 - Save selected messages as .eml in Nextcloud failed
   [#704](https://github.com/the-djmaze/snappymail/pull/704)

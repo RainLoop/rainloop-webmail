@@ -10,7 +10,7 @@
 	<form class="form-horizontal plugin-form" action="#/" spellcheck="false" onsubmit="return false;">
 		<div class="alert alert-info" data-bind="visible: !hasConfiguration()" data-i18n="POPUPS_PLUGIN/DESC_NOTHING_TO_CONFIGURE"></div>
 		<div class="alert" data-bind="visible: '' !== saveError()">
-			<a href="#" class="close" data-bind="click: function () { saveError('') }">×</a>
+			<a href="#" class="close" data-bind="click: hideError">×</a>
 			<span data-bind="text: saveError"></span>
 		</div>
 		<div data-bind="foreach: config, visible: hasConfiguration">

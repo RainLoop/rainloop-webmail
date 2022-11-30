@@ -333,7 +333,7 @@
 		"TITLE_SYSTEM_FOLDERS": "Aukeratu sistemaren karpetak",
 		"SELECT_CHOOSE_ONE": "Aukeratu bat",
 		"SELECT_UNUSE_NAME": "Ez erabili",
-	  "NOTIFICATION_SENT": "Ez duzu sistemako \"Bidalitakoak"\ karpeta hautatu mezuak bidali ondoren bertan ipintzeko.\nBidalitako mezua gorde nahi ez baduzu hautatu \"Ez erabili\" aukera.\n",
+	  "NOTIFICATION_SENT": "Ez duzu sistemako \"Bidalitakoak\" karpeta hautatu mezuak bidali ondoren bertan ipintzeko.\nBidalitako mezua gorde nahi ez baduzu hautatu \"Ez erabili\" aukera.\n",
 		"NOTIFICATION_DRAFTS": "Ez duzu sistemako \"Zirriborroak\"  karpeta hautatu mezuak editatu bitartean gordetzeko.",
 		"NOTIFICATION_SPAM": "Ez duzu sistemako \"Zabor-posta\" karpeta hautatu zabor-mezuak kokatzeko.\nMezu hauek betirako ezabatu nahi badituzu, aukeratu \"Ez erabili\" aukera.\n",
 		"NOTIFICATION_TRASH": "Ez duzu sistemako \"Zakarrontzia\" karpeta hautatu zabor-mezuak kokatzeko.\nMezu hauek betirako ezabatu nahi badituzu, aukeratu \"Ez erabili\" aukera.\n",
@@ -509,7 +509,7 @@
 		"LABEL_SWITCH_TO_LIST": "Itzuli fokua mezuen zerrendara",
 		"LABEL_OPEN_COMPOSE_POPUP": "Ireki prestatzeko popup-a",
 		"LABEL_MINIMIZE_COMPOSE_POPUP": "Txikitu prestatzeko popup-a",
-		"LABEL_OPEN_IDENTITIES_DROPDOWN": "Ireki identitateen goitibeherako menua,
+		"LABEL_OPEN_IDENTITIES_DROPDOWN": "Ireki identitateen goitibeherako menua",
 		"LABEL_SAVE_MESSAGE": "Gorde mezua",
 		"LABEL_SEND_MESSAGE": "Bidali mezua",
 		"LABEL_CLOSE_COMPOSE": "Itxi mezua"

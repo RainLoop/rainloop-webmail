@@ -307,6 +307,7 @@ $Plugin->addHook('hook.name', 'functionName');
 	Happens before send/save message
 
 ### filter.message-rcpt
+	Called by DoSendMessage and DoSendReadReceiptMessage
 	params:
 		\RainLoop\Model\Account $oAccount
 		\MailSo\Mime\EmailCollection $oRcpt
@@ -359,6 +360,7 @@ $Plugin->addHook('hook.name', 'functionName');
 		array &$aHiddenRcpt
 
 ### filter.smtp-message-stream
+	Called by DoSendMessage and DoSendReadReceiptMessage
 	params:
 		\RainLoop\Model\Account $oAccount
 		resource &$rMessageStream

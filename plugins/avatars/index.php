@@ -6,8 +6,8 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Avatars',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.1',
-		RELEASE  = '2022-11-27',
+		VERSION  = '1.2',
+		RELEASE  = '2022-11-29',
 		REQUIRED = '2.22.4',
 		CATEGORY = 'Contacts',
 		LICENSE  = 'MIT',
@@ -19,9 +19,9 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addJs('avatars.js');
 		$this->addJsonHook('Avatar', 'DoAvatar');
 		$this->addPartHook('Avatar', 'ServiceAvatar');
+		$this->Config()->Get('plugin', 'identicon', false) && $this->addJs('jdenticon.js');
 		// https://github.com/the-djmaze/snappymail/issues/714
-		$this->Config()->Get('plugin', 'delay', true)
-		|| $this->addHook('filter.json-response', 'FilterJsonResponse');
+		$this->Config()->Get('plugin', 'delay', true) || $this->addHook('filter.json-response', 'FilterJsonResponse');
 	}
 
 	public function FilterJsonResponse(string $sAction, array &$aResponseItem)
@@ -73,24 +73,41 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		if ($sEmail && ($aResult = $this->getAvatar($sEmail, !empty($sBimi)))) {
 			\header('Content-Type: '.$aResult[0]);
 			echo $aResult[1];
-			return true;
+		} else {
+			\MailSo\Base\Http::StatusHeader(404);
 		}
-		return false;
+		exit;
 	}
 
 	protected function configMapping() : array
 	{
-		return array(
+		$aResult = array(
 			\RainLoop\Plugins\Property::NewInstance('delay')->SetLabel('Delay loading')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(true),
-			\RainLoop\Plugins\Property::NewInstance('bimi')->SetLabel('Use BIMI (https://bimigroup.org/)')
-				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
-				->SetDefaultValue(false),
-			\RainLoop\Plugins\Property::NewInstance('gravatar')->SetLabel('Use Gravatar')
+			\RainLoop\Plugins\Property::NewInstance('bimi')->SetLabel('Lookup BIMI')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(false)
+				->SetDescription('https://bimigroup.org/'),
+			\RainLoop\Plugins\Property::NewInstance('gravatar')->SetLabel('Lookup Gravatar')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDefaultValue(false)
+				->SetDescription('https://wikipedia.org/wiki/Gravatar')
 		);
+/*
+		if (\class_exists('OC') && isset(\OC::$server)) {
+			$aResult[] = \RainLoop\Plugins\Property::NewInstance('nextcloud')->SetLabel('Lookup Nextcloud Contacts')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+//				->SetAllowedInJs(true)
+				->SetDefaultValue(false);
+		}
+*/
+		$aResult[] = \RainLoop\Plugins\Property::NewInstance('identicon')->SetLabel('Else create Identicon')
+			->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+//			->SetAllowedInJs(true)
+			->SetDefaultValue(false)
+			->SetDescription('https://wikipedia.org/wiki/Identicon');
+		return $aResult;
 	}
 
 	private function getAvatar(string $sEmail, bool $bBimi) : ?array
@@ -150,7 +167,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				if ($BIMI) {
 					$aUrls[] = $BIMI;
 //					$aResult = ['text/uri-list', $BIMI];
-					\SnappyMail\Log::debug('Avatar', "BIMI {$sDomain} for {$sUrl}");
+					\SnappyMail\Log::debug('Avatar', "BIMI {$sDomain}: {$BIMI}");
 				} else {
 					\SnappyMail\Log::notice('Avatar', "BIMI 404 for {$sDomain}");
 				}
@@ -182,9 +199,11 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$aServices = [
 				"services/{$sDomain}",
 				'services/' . \preg_replace('/^.+\\.([^.]+\\.[^.]+)$/D', '$1', $sDomain),
-				'services/' . \preg_replace('/^(.+\\.)?(paypal\\.[a-z][a-z])$/D', 'paypal.com', $sDomain),
-				'empty-contact' // DATA_IMAGE_USER_DOT_PIC
+				'services/' . \preg_replace('/^(.+\\.)?(paypal\\.[a-z][a-z])$/D', 'paypal.com', $sDomain)
 			];
+			if (!$this->Config()->Get('plugin', 'identicon', false)) {
+				$aServices[] = 'empty-contact'; // DATA_IMAGE_USER_DOT_PIC
+			}
 			foreach ($aServices as $service) {
 				$file = __DIR__ . "/images/{$service}.png";
 				if (\file_exists($file)) {

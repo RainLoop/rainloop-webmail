@@ -151,6 +151,10 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 		}
 	}
 
+	hideError() {
+		this.folderListError('');
+	}
+
 	toggleFolderKolabType(folder, event) {
 		let type = event.target.value;
 		// TODO: append '.default' ?

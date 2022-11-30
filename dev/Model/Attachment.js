@@ -51,6 +51,11 @@ export class AttachmentModel extends AbstractModel {
 		return attachment;
 	}
 
+	toggleChecked(self, event) {
+		event.stopPropagation();
+		self.checked(!self.checked());
+	}
+
 	friendlySize() {
 		return FileInfo.friendlySize(this.estimatedSize) + (this.isLinked() ? ' 🔗' : '');
 	}

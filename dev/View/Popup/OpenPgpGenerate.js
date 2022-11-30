@@ -93,6 +93,10 @@ export class OpenPgpGeneratePopupView extends AbstractViewPopup {
 		});
 	}
 
+	hideError() {
+		this.submitError('');
+	}
+
 	showError(e) {
 		console.log(e);
 		if (e?.message) {
