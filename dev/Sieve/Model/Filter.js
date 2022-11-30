@@ -210,10 +210,6 @@ export class FilterModel extends AbstractModel {
 		this.conditions.remove(oConditionToDelete);
 	}
 
-	setRecipients() {
-//		this.actionValueFourth(AccountUserStore.getEmailAddresses().join(', '));
-	}
-
 	/**
 	 * @static
 	 * @param {FetchJsonFilter} json
