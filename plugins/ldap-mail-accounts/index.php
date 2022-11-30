@@ -5,6 +5,7 @@ use RainLoop\Enumerations\PluginPropertyType;
 use RainLoop\Plugins\AbstractPlugin;
 use RainLoop\Plugins\Property;
 use RainLoop\Model\Account;
+use RainLoop\Model\MainAccount;
 use RainLoop\Actions;
 
 
@@ -37,17 +38,19 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 	// Function gets called by RainLoop/Actions/User.php
 	/**
 	 * Add additional mail accounts to the webinterface of the user by looking up the ldap directory
-	 * 
+	 *
 	 * @param Account $oAccount
 	 */
 	public function AddAdditionalLdapMailAccounts(Account $oAccount)
 	{
-		// Set up config
-		$config = LdapMailAccountsConfig::MakeConfig($this->Config());
+		if ($oAccount instanceof MainAccount) {
+			// Set up config
+			$config = LdapMailAccountsConfig::MakeConfig($this->Config());
 
-		$oldapMailAccounts = new LdapMailAccounts($config, $this->Manager()->Actions()->Logger());
+			$oldapMailAccounts = new LdapMailAccounts($config, $this->Manager()->Actions()->Logger());
 
-		$oldapMailAccounts->AddLdapMailAccounts($oAccount);
+			$oldapMailAccounts->AddLdapMailAccounts($oAccount);
+		}
 	}
 
 	/**
@@ -91,7 +94,7 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 				->SetLabel("Search field")
 				->SetType(PluginPropertyType::STRING)
 				->SetDescription("The name of the ldap attribute that has to contain the here defined 'LDAP search string'.")
-				->SetDefaultValue("member"),				
+				->SetDefaultValue("member"),
 
 			Property::NewInstance(LdapMailAccountsConfig::CONFIG_SEARCH_STRING)
 				->SetLabel("LDAP search string")
@@ -99,12 +102,12 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 				->SetDescription("The search string used to find ldap objects of mail accounts the user has access to.
 					\nPossible placeholers:\n#USERNAME# - replaced with the username of the actual SnappyMail user
 					\n#BASE_DN# - replaced with the value inside the field 'User base DN'.")
-				->SetDefaultValue("uid=#USERNAME#"),	
+				->SetDefaultValue("uid=#USERNAME#"),
 
 			Property::NewInstance(LdapMailAccountsConfig::CONFIG_FIELD_USERNAME)
 				->SetLabel("Username field of additional account")
 				->SetType(PluginPropertyType::STRING)
-				->SetDescription("The field containing the username of the found additional mail account. 
+				->SetDescription("The field containing the username of the found additional mail account.
 					\nThis username gets used by SnappyMail to login to the additional mail account.
 					\nIf this field contains an email address, only the local-part before the @ is used.")
 				->SetDefaultValue("uid"),
@@ -112,10 +115,10 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 			Property::NewInstance(LdapMailAccountsConfig::CONFIG_FIELD_MAIL_DOMAIN)
 				->SetLabel("Domain name field of additional account")
 				->SetType(PluginPropertyType::STRING)
-				->SetDescription("The field containing the domain name of the found additional mail account. 
+				->SetDescription("The field containing the domain name of the found additional mail account.
 					\nThis domain gets looked up by SnappyMail to choose the right connection parameters at logging in to the additional mail account.
 					\nIf this field contains an email address, only the domain-part after the @ is used.")
-				->SetDefaultValue("mail"),				
+				->SetDefaultValue("mail"),
 
 			Property::NewInstance(LdapMailAccountsConfig::CONFIG_FIELD_NAME)
 				->SetLabel("Additional account name field")

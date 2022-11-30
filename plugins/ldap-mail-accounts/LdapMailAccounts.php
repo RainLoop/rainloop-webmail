@@ -3,7 +3,7 @@
 use RainLoop\Enumerations\Capa;
 use MailSo\Log\Logger;
 use RainLoop\Actions;
-use RainLoop\Model\Account;
+use RainLoop\Model\MainAccount;
 
 class LdapMailAccounts
 {
@@ -48,15 +48,15 @@ class LdapMailAccounts
 
 	/**
 	 * @inheritDoc
-	 * 
+	 *
 	 * Add additional mail accounts to the given primary account by looking up the ldap directory
-	 * 
+	 *
 	 * The ldap lookup has to be configured in the plugin configuration of the extension (in the SnappyMail Admin Panel)
-	 * 
-	 * @param Account $oAccount
+	 *
+	 * @param MainAccount $oAccount
 	 * @return bool true if additional accounts have been added or no additional accounts where found in . false if an error occured
 	 */
-	public function AddLdapMailAccounts(Account $oAccount): bool
+	public function AddLdapMailAccounts(MainAccount $oAccount): bool
 	{
 		try {
 			$this->EnsureBound();
@@ -64,7 +64,7 @@ class LdapMailAccounts
 			return false; // exceptions are only thrown from the handleerror function that does logging already
 		}
 
-		// Try to get account information. Login() returns the username of the user 
+		// Try to get account information. Login() returns the username of the user
 		// and removes the domainname if this was configured inside the domain config.
 		$username = @ldap_escape($oAccount->Login(), "", LDAP_ESCAPE_FILTER);
 
@@ -74,7 +74,7 @@ class LdapMailAccounts
 		$searchString = str_replace("#USERNAME#", $username, $searchString);
 		$searchString = str_replace("#BASE_DN#", $this->config->base, $searchString);
 
-		$this->logger->Write("ldap search string after replacement of placeholders: $searchString", \LOG_NOTICE, self::LOG_KEY);		
+		$this->logger->Write("ldap search string after replacement of placeholders: $searchString", \LOG_NOTICE, self::LOG_KEY);
 
 		try {
 			$mailAddressResults = $this->FindLdapResults(
@@ -86,7 +86,7 @@ class LdapMailAccounts
 				$this->config->field_username,
 				$this->config->field_domain
 			);
-		} 
+		}
 		catch (LdapMailAccountsException $e) {
 			return false; // exceptions are only thrown from the handleerror function that does logging already
 		}
@@ -101,7 +101,7 @@ class LdapMailAccounts
 		//Basing on https://github.com/the-djmaze/snappymail/issues/616
 
 		$oActions = \RainLoop\Api::Actions();
-		
+
 		//Check if SnappyMail is configured to allow additional accounts
 		if (!$oActions->GetCapa(Capa::ADDITIONAL_ACCOUNTS)) {
 			return $oActions->FalseResponse(__FUNCTION__);
@@ -136,9 +136,9 @@ class LdapMailAccounts
 					//Try to login the user with the same password as the primary account has
 					//if this fails the user will see the new mail addresses but will be asked for the correct password
 					$sPass = $oAccount->Password();
-					
+
 					$oNewAccount = RainLoop\Model\AdditionalAccount::NewInstanceFromCredentials($oActions, "$sUsername@$sDomain", $sUsername, $sPass);
-					
+
 					$aAccounts["$sUsername@$sDomain"] = $oNewAccount->asTokenArray($oAccount);
 				}
 
@@ -150,7 +150,7 @@ class LdapMailAccounts
 			}
 			else {
 				$this->logger->Write("Domain $sDomain is not part of configured domains in SnappyMail Admin Panel - mail address $sUsername@$sDomain will not be added.", \LOG_NOTICE, self::LOG_KEY);
-			}				
+			}
 		}
 
 		if ($aAccounts)
@@ -164,9 +164,9 @@ class LdapMailAccounts
 
 	/**
 	 * Checks if a connection to the LDAP was possible
-	 * 
-	 * @throws LdapMailAccountsException 
-	 * 
+	 *
+	 * @throws LdapMailAccountsException
+	 *
 	 * */
 	private function EnsureConnected(): void
 	{
@@ -201,11 +201,11 @@ class LdapMailAccounts
 		return true;
 	}
 
-	/** 
+	/**
 	 * Ensures the plugin has been authenticated at the LDAP
-	 * 
-	 * @throws LdapMailAccountsException 
-	 * 
+	 *
+	 * @throws LdapMailAccountsException
+	 *
 	 * */
 	private function EnsureBound(): void
 	{
@@ -219,7 +219,7 @@ class LdapMailAccounts
 
 	/**
 	 * Authenticates the plugin at the LDAP using the username and password defined inside the configuration of the plugin
-	 * 
+	 *
 	 * @return bool true if authentication was successful
 	 */
 	private function Bind(): bool
@@ -237,7 +237,7 @@ class LdapMailAccounts
 
 	/**
 	 * Handles and logs an eventual LDAP error
-	 * 
+	 *
 	 * @param string $op
 	 * @throws LdapMailAccountsException
 	 */
@@ -254,9 +254,9 @@ class LdapMailAccounts
 
 	/**
 	 * Looks up the LDAP for additional mail accounts
-	 * 
+	 *
 	 * The search for additional mail accounts is done by a ldap search using the defined fields inside the configuration of the plugin (SnappyMail Admin Panel)
-	 * 
+	 *
 	 * @param string $searchField
 	 * @param string $searchString
 	 * @param string $searchBase
@@ -268,15 +268,15 @@ class LdapMailAccounts
 	 * @throws LdapMailAccountsException
 	 */
 	private function FindLdapResults(
-		string $searchField, 
-		string $searchString, 
-		string $searchBase, 
-		string $objectClass, 
-		string $nameField, 
-		string $usernameField, 
+		string $searchField,
+		string $searchString,
+		string $searchBase,
+		string $objectClass,
+		string $nameField,
+		string $usernameField,
 		string $domainField): array
-	{	
-		$this->EnsureBound();	
+	{
+		$this->EnsureBound();
 		$nameField = strtolower($nameField);
 		$usernameField = strtolower($usernameField);
 		$domainField = strtolower($domainField);
@@ -304,7 +304,7 @@ class LdapMailAccounts
 			$result = new LdapMailAccountResult();
 			$result->dn = $entry["dn"];
 			$result->name = $this->LdapGetAttribute($entry, $nameField, true, true);
-			
+
 			$result->username = $this->LdapGetAttribute($entry, $usernameField, true, true);
 			$result->username = $this->RemoveEventualDomainPart($result->username);
 
@@ -319,10 +319,10 @@ class LdapMailAccounts
 
 	/**
 	 * Removes an eventually found domain-part of an email address
-	 * 
+	 *
 	 * If the input string contains an '@' character the function returns the local-part before the '@'\
 	 * If no '@' character can be found the input string is returned.
-	 * 
+	 *
 	 * @param string $sInput
 	 * @return string
 	 */
@@ -338,15 +338,15 @@ class LdapMailAccounts
 		}
 
 		return $sResult;
-	}	
+	}
 
 
 	/**
 	 * Removes an eventually found local-part of an email address
-	 * 
+	 *
 	 * If the input string contains an '@' character the function returns the domain-part behind the '@'\
 	 * If no '@' character can be found the input string is returned.
-	 * 
+	 *
 	 * @param string $sInput
 	 * @return string
 	 */
@@ -360,12 +360,12 @@ class LdapMailAccounts
 		}
 
 		return $sResult;
-	}		
-	
+	}
+
 
 	/**
 	 * Gets LDAP attributes out of the input array
-	 * 
+	 *
 	 * @param array $entry Array containing the result of a ldap search
 	 * @param string $attribute The name of the attribute to return
 	 * @param bool $single If true the function checks if exact one value for this attribute is inside the input array. If false an array is returned. Default true.

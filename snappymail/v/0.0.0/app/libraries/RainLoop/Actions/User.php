@@ -45,9 +45,10 @@ trait User
 		$this->Logger()->AddSecret($sPassword);
 
 		$oAccount = $this->LoginProcess($sEmail, $sPassword, $bSignMe);
-		$this->Plugins()->RunHook('login.success', array($oAccount));
 
 		$this->SetAuthToken($oAccount);
+
+		$this->Plugins()->RunHook('login.success', array($oAccount));
 
 		$sLanguage = $this->GetActionParam('Language', '');
 		if ($oAccount && $sLanguage)
