@@ -144,6 +144,12 @@ class Utils
 */
 		if (\strlen($sValue)) {
 			$_COOKIE[$sName] = $sValue;
+		} else {
+			if (!isset($_COOKIE[$sName])) {
+				return;
+			}
+			unset($_COOKIE[$sName]);
+			$iExpire = \time() - 3600 * 24 * 30;
 		}
 
 		// Cookie "$sName" has been rejected because it is already expired.
@@ -203,23 +209,14 @@ class Utils
 			$aSplit = \explode('~', $sCookieName);
 			if (isset($aSplit[1]) && $aSplit[0] == $sName && $aSplit[1] > $i) {
 				\SnappyMail\Log::debug('COOKIE', "unset {$sCookieName}");
-				unset($_COOKIE[$sCookieName]);
-				static::_SetCookie($sCookieName, '', \time() - 3600 * 24 * 30);
+				static::_SetCookie($sCookieName, '', 0);
 			}
 		}
 	}
 
 	public static function ClearCookie(string $sName)
 	{
-		if (isset($_COOKIE[$sName])) {
-			$sPath = static::$CookieDefaultPath;
-			foreach (\array_keys($_COOKIE) as $sCookieName) {
-				if (\strtok($sCookieName, '~') === $sName) {
-					unset($_COOKIE[$sCookieName]);
-					static::_SetCookie($sCookieName, '', \time() - 3600 * 24 * 30);
-				}
-			}
-		}
+		static::_SetCookie($sName, '', 0);
 	}
 
 	public static function UrlEncode(string $sV, bool $bEncode = false) : string

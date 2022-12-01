@@ -323,18 +323,20 @@ trait UserAuth
 	{
 		$sSignMeToken = Utils::GetCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
 		if ($sSignMeToken) {
+			\SnappyMail\Log::notice(self::AUTH_SIGN_ME_TOKEN_KEY, 'decrypt');
 			$aResult = \SnappyMail\Crypt::DecryptUrlSafe($sSignMeToken);
 			if (isset($aResult['e'], $aResult['u']) && \SnappyMail\UUID::isValid($aResult['u'])) {
 				return $aResult;
 			}
 			\SnappyMail\Log::notice(self::AUTH_SIGN_ME_TOKEN_KEY, 'invalid');
+			Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
 		}
 		return null;
 	}
 
 	private function SetSignMeToken(MainAccount $oAccount): void
 	{
-//		$this->ClearSignMeData();
+		$this->ClearSignMeData();
 		$uuid = \SnappyMail\UUID::generate();
 		$data = \SnappyMail\Crypt::Encrypt($oAccount);
 		Utils::SetCookie(

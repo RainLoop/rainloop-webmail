@@ -119,7 +119,7 @@ abstract class Crypt
 		return ['xxtea', $salt, static::XxteaEncrypt($data, $salt, $key)];
 /*
 		if (static::{"{$result[0]}Decrypt"}($result[2], $result[1], $key) !== $data) {
-			throw new \Exception('Encrypt/Decrypt mismatch');
+			throw new \RuntimeException('Encrypt/Decrypt mismatch');
 		}
 */
 	}
@@ -159,7 +159,7 @@ abstract class Crypt
 			\str_pad('', \SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES, static::Passphrase($key))
 		);
 		if (!$result) {
-			throw new \Exception('Sodium encryption failed');
+			throw new \RuntimeException('Sodium encryption failed');
 		}
 		return $result;
 	}
@@ -173,7 +173,7 @@ abstract class Crypt
 			throw new \Exception('openssl_decrypt not callable');
 		}
 		if (!static::$cipher) {
-			throw new \Exception('openssl $cipher not set');
+			throw new \RuntimeException('openssl $cipher not set');
 		}
 		Log::debug('Crypt', 'openssl_decrypt() with cipher ' . static::$cipher);
 		return \openssl_decrypt(
@@ -194,7 +194,7 @@ abstract class Crypt
 			throw new \Exception('openssl_encrypt not callable');
 		}
 		if (!static::$cipher) {
-			throw new \Exception('openssl $cipher not set');
+			throw new \RuntimeException('openssl $cipher not set');
 		}
 		Log::debug('Crypt', 'openssl_encrypt() with cipher ' . static::$cipher);
 		$result = \openssl_encrypt(
@@ -205,7 +205,7 @@ abstract class Crypt
 			$iv
 		);
 		if (!$result) {
-			throw new \Exception('OpenSSL encryption with ' . static::$cipher . ' failed');
+			throw new \RuntimeException('OpenSSL encryption with ' . static::$cipher . ' failed');
 		}
 		return $result;
 	}
@@ -231,7 +231,7 @@ abstract class Crypt
 			? \xxtea_encrypt($data, $key)
 			: \MailSo\Base\Xxtea::encrypt($data, $key);
 		if (!$result) {
-			throw new \Exception('Xxtea encryption failed');
+			throw new \RuntimeException('Xxtea encryption failed');
 		}
 		return $result;
 	}
