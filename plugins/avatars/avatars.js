@@ -37,23 +37,29 @@
 		runQueue = (() => {
 			let item = queue.shift();
 			while (item) {
-				let url = getAvatar(item[0]);
+				let url = getAvatar(item[0]),
+					uid = getAvatarUid(item[0]);
 				if (url) {
 					item[1](url);
 					item = queue.shift();
-				} else {
+				} else if (!avatars.has(uid)) {
 					let from = item[0].from[0];
 					rl.pluginRemoteRequest((iError, data) => {
 						if (!iError && data?.Result.type) {
 							url = `data:${data.Result.type};base64,${data.Result.data}`;
-							avatars.set(getAvatarUid(item[0]), url);
+							avatars.set(uid, url);
 							item[1](url);
+						} else {
+							avatars.set(uid, '');
 						}
 						runQueue();
 					}, 'Avatar', {
 						bimi: 'pass' == from.dkimStatus ? 1 : 0,
 						email: from.email
 					});
+					break;
+				} else {
+					runQueue();
 					break;
 				}
 			}
