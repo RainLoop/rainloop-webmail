@@ -12,5 +12,6 @@ class PluginPropertyType
 		PASSWORD = 3,
 		SELECTION = 4,
 		BOOL = 5,
-		URL = 6;
+		URL = 6,
+		SELECT = 8;
 }

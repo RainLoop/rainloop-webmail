@@ -671,7 +671,7 @@ window.identiconSvg = hash => {
 
 	renderer.finish();
 
-	return 'data:image/svg+xml;base64,' + btoa(writer);
+	return writer;
 };
 
 })();

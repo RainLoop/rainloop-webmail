@@ -28,6 +28,9 @@
 		<input type="url"
 			data-bind="value: value, attr: {placeholder: placeholder}">
 	<!-- /ko -->
+	<!-- ko if: 8 === Type -->
+		<select data-bind="options: Default, optionsText: 'name', optionsValue: 'id', value: value"></select>
+	<!-- /ko -->
 	<!-- ko if: '' !== Desc -->
 	<span tabindex="0" class="help-block"><span data-bind="text: Desc"></span></span>
 	<!-- /ko -->

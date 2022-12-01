@@ -8,10 +8,10 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		URL      = 'https://snappymail.eu/',
 		VERSION  = '1.2',
 		RELEASE  = '2022-11-29',
-		REQUIRED = '2.22.4',
+		REQUIRED = '2.22.5',
 		CATEGORY = 'Contacts',
 		LICENSE  = 'MIT',
-		DESCRIPTION = 'Show photo of sender in message and messages list (supports BIMI and Gravatar, Contacts is still TODO)';
+		DESCRIPTION = 'Show photo of sender in message and messages list (supports BIMI, Gravatar and identicon, Contacts is still TODO)';
 
 	public function Init() : void
 	{
@@ -19,9 +19,14 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addJs('avatars.js');
 		$this->addJsonHook('Avatar', 'DoAvatar');
 		$this->addPartHook('Avatar', 'ServiceAvatar');
-//		$this->Config()->Get('plugin', 'identicon', false) && $this->addJs('jdenticon.js');
-		// GitHub-style
-		$this->Config()->Get('plugin', 'identicon', false) && $this->addJs('identicon.js');
+		$identicon = $this->Config()->Get('plugin', 'identicon', 'identicon');
+		if ('none' != $identicon) {
+			if ('jdenticon' === $this->Config()->Get('plugin', 'identicon', 'identicon')) {
+				$this->addJs('jdenticon.js');
+			} else {
+				$this->addJs('identicon.js');
+			}
+		}
 		// https://github.com/the-djmaze/snappymail/issues/714
 		$this->Config()->Get('plugin', 'delay', true) || $this->addHook('filter.json-response', 'FilterJsonResponse');
 	}
@@ -84,9 +89,15 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	protected function configMapping() : array
 	{
 		$aResult = array(
-			\RainLoop\Plugins\Property::NewInstance('delay')->SetLabel('Delay loading')
-				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
-				->SetDefaultValue(true),
+			\RainLoop\Plugins\Property::NewInstance('identicon')->SetLabel('Identicon')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::SELECT)
+//				->SetAllowedInJs(true)
+				->SetDefaultValue([
+					['id' => 'identicon', 'name' => 'Name characters or squares'],
+					['id' => 'jdenticon', 'name' => 'Triangles shape'],
+					['id' => 'none', 'name' => 'none']
+				])
+				->SetDescription('https://wikipedia.org/wiki/Identicon'),
 			\RainLoop\Plugins\Property::NewInstance('bimi')->SetLabel('Lookup BIMI')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(false)
@@ -94,7 +105,10 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			\RainLoop\Plugins\Property::NewInstance('gravatar')->SetLabel('Lookup Gravatar')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(false)
-				->SetDescription('https://wikipedia.org/wiki/Gravatar')
+				->SetDescription('https://wikipedia.org/wiki/Gravatar'),
+			\RainLoop\Plugins\Property::NewInstance('delay')->SetLabel('Delay lookup loading')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDefaultValue(true),
 		);
 /*
 		if (\class_exists('OC') && isset(\OC::$server)) {
@@ -104,11 +118,6 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetDefaultValue(false);
 		}
 */
-		$aResult[] = \RainLoop\Plugins\Property::NewInstance('identicon')->SetLabel('Else create Identicon')
-			->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
-//			->SetAllowedInJs(true)
-			->SetDefaultValue(false)
-			->SetDescription('https://wikipedia.org/wiki/Identicon');
 		return $aResult;
 	}
 

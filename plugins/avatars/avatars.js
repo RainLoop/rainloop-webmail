@@ -22,10 +22,18 @@
 			return hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
 		},
 		fromChars = from =>
-			((from.name || from.email).split(/[^\p{L}]+/gu) || [])
-			.reduce((a, s) => a + (s[0] || ''), '')
+//			(from.name?.split(/[^\p{Lu}]+/gu) || []).reduce((a, s) => a + (s || '')), '')
+			(from.name?.split(/[^\p{L}]+/gu) || []).reduce((a, s) => a + (s[0] || ''), '')
 			.slice(0,2)
 			.toUpperCase(),
+		setIdenticon = (from, fn) => window.identiconSvg && hash(from.email).then(hash =>
+			fn('data:image/svg+xml;base64,' + btoa(window.identiconSvg(hash, fromChars(from))))
+		),
+		addQueue = (msg, fn) => {
+			setIdenticon(msg.from[0], fn);
+			queue.push([msg, fn]);
+			runQueue();
+		},
 		runQueue = (() => {
 			let item = queue.shift();
 			while (item) {
@@ -40,13 +48,6 @@
 							url = `data:${data.Result.type};base64,${data.Result.data}`;
 							avatars.set(getAvatarUid(item[0]), url);
 							item[1](url);
-						} else if (window.identiconSvg) {
-							// rl.pluginSettingsGet('avatars', 'identicon');
-							hash(from.email).then(hash => {
-								let url = window.identiconSvg(hash, fromChars(from));
-								avatars.set(getAvatarUid(item[0]), url);
-								item[1](url);
-							});
 						}
 						runQueue();
 					}, 'Avatar', {
@@ -115,22 +116,15 @@
 		init: (element, self, dummy, msg) => {
 			if (msg) {
 				let url = getAvatar(msg),
+					from = msg.from[0],
 					fn = url=>{element.src = url};
 				if (url) {
 					fn(url);
 				} else if (msg.avatar) {
-					let from = msg.from[0],
-						bimi = 'pass' == from.dkimStatus ? 1 : 0;
-					if (window.identiconSvg) {
-						// rl.pluginSettingsGet('avatars', 'identicon');
-						element.onerror = () => hash(from.email).then(hash =>
-							fn(window.identiconSvg(hash, fromChars(from)))
-						);
-					}
-					fn(`?Avatar/${bimi}/${msg.avatar}`);
+					element.onerror = () => setIdenticon(from, fn);
+					fn(`?Avatar/${'pass' == from.dkimStatus ? 1 : 0}/${msg.avatar}`);
 				} else {
-					queue.push([msg, fn]);
-					runQueue();
+					addQueue(msg, fn);
 				}
 			}
 		}
@@ -164,14 +158,12 @@
 					if (url) {
 						fn(url);
 					} else if (msg.avatar) {
-						let bimi = 'pass' == msg.from[0].dkimStatus ? 1 : 0;
-						fn(`?Avatar/${bimi}/${msg.avatar}`);
+						fn(`?Avatar/${'pass' == msg.from[0].dkimStatus ? 1 : 0}/${msg.avatar}`);
 					} else {
-//						let from = msg.from[0], bimi = 'pass' == from.dkimStatus ? 1 : 0;
-//						view.viewUserPic(`?Avatar/${bimi}/${encodeURIComponent(from.email)}`);
+//						let from = msg.from[0];
+//						view.viewUserPic(`?Avatar/${'pass' == from.dkimStatus ? 1 : 0}/${encodeURIComponent(from.email)}`);
 //						view.viewUserPicVisible(true);
-						queue.push([msg, fn]);
-						runQueue();
+						addQueue(msg, fn);
 					}
 				}
 			});
