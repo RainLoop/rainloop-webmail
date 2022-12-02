@@ -329,7 +329,8 @@ trait UserAuth
 				return $aResult;
 			}
 			\SnappyMail\Log::notice(self::AUTH_SIGN_ME_TOKEN_KEY, 'invalid');
-			Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
+			// Don't clear due to smctoken cookie missing at initialization and login checkbox
+//			Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
 		}
 		return null;
 	}
@@ -385,8 +386,9 @@ trait UserAuth
 			catch (\Throwable $oException)
 			{
 				\SnappyMail\Log::warning(self::AUTH_SIGN_ME_TOKEN_KEY, $oException->getMessage());
+				// Don't clear due to smctoken cookie missing at initialization and login checkbox
+//				$this->ClearSignMeData();
 			}
-			$this->ClearSignMeData();
 		}
 		return null;
 	}
