@@ -19,13 +19,9 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addJs('avatars.js');
 		$this->addJsonHook('Avatar', 'DoAvatar');
 		$this->addPartHook('Avatar', 'ServiceAvatar');
-		$identicon = $this->Config()->Get('plugin', 'identicon', 'identicon');
-		if ('none' != $identicon) {
-			if ('jdenticon' === $this->Config()->Get('plugin', 'identicon', 'identicon')) {
-				$this->addJs('jdenticon.js');
-			} else {
-				$this->addJs('identicon.js');
-			}
+		$identicon = $this->Config()->Get('plugin', 'identicon', '');
+		if ($identicon && \is_file(__DIR__ . "/{$identicon}.js")) {
+			$this->addJs("{$identicon}.js");
 		}
 		// https://github.com/the-djmaze/snappymail/issues/714
 		$this->Config()->Get('plugin', 'delay', true) || $this->addHook('filter.json-response', 'FilterJsonResponse');
@@ -93,9 +89,9 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::SELECT)
 //				->SetAllowedInJs(true)
 				->SetDefaultValue([
-					['id' => 'identicon', 'name' => 'Name characters or squares'],
-					['id' => 'jdenticon', 'name' => 'Triangles shape'],
-					['id' => 'none', 'name' => 'none']
+					['id' => '', 'name' => 'Name characters else silhouette'],
+					['id' => 'identicon', 'name' => 'Name characters else squares'],
+					['id' => 'jdenticon', 'name' => 'Triangles shape']
 				])
 				->SetDescription('https://wikipedia.org/wiki/Identicon'),
 			\RainLoop\Plugins\Property::NewInstance('bimi')->SetLabel('Lookup BIMI')
@@ -212,9 +208,6 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				'services/' . \preg_replace('/^.+\\.([^.]+\\.[^.]+)$/D', '$1', $sDomain),
 				'services/' . \preg_replace('/^(.+\\.)?(paypal\\.[a-z][a-z])$/D', 'paypal.com', $sDomain)
 			];
-			if (!$this->Config()->Get('plugin', 'identicon', false)) {
-				$aServices[] = 'empty-contact'; // DATA_IMAGE_USER_DOT_PIC
-			}
 			foreach ($aServices as $service) {
 				$file = __DIR__ . "/images/{$service}.png";
 				if (\file_exists($file)) {
