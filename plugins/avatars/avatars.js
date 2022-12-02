@@ -161,8 +161,12 @@
 				if (url) {
 					fn(url);
 				} else if (msg.avatar) {
-					element.onerror = () => setIdenticon(from, fn);
-					fn(`?Avatar/${'pass' == from.dkimStatus ? 1 : 0}/${msg.avatar}`);
+					if (msg.avatar.startsWith('data:')) {
+						fn(msg.avatar);
+					} else {
+						element.onerror = () => setIdenticon(from, fn);
+						fn(`?Avatar/${'pass' == from.dkimStatus ? 1 : 0}/${msg.avatar}`);
+					}
 				} else {
 					addQueue(msg, fn);
 				}
@@ -198,7 +202,8 @@
 					if (url) {
 						fn(url);
 					} else if (msg.avatar) {
-						fn(`?Avatar/${'pass' == msg.from[0].dkimStatus ? 1 : 0}/${msg.avatar}`);
+						fn(msg.avatar.startsWith('data:') ? msg.avatar
+							: `?Avatar/${'pass' == msg.from[0].dkimStatus ? 1 : 0}/${msg.avatar}`);
 					} else {
 //						let from = msg.from[0];
 //						view.viewUserPic(`?Avatar/${'pass' == from.dkimStatus ? 1 : 0}/${encodeURIComponent(from.email)}`);

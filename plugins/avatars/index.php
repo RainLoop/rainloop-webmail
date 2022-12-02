@@ -24,28 +24,36 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$this->addJs("{$identicon}.js");
 		}
 		// https://github.com/the-djmaze/snappymail/issues/714
-		$this->Config()->Get('plugin', 'delay', true) || $this->addHook('filter.json-response', 'FilterJsonResponse');
+		if ($this->Config()->Get('plugin', 'service', true) || !$this->Config()->Get('plugin', 'delay', true)) {
+			$this->addHook('filter.json-response', 'FilterJsonResponse');
+		}
 	}
 
 	public function FilterJsonResponse(string $sAction, array &$aResponseItem)
 	{
 		if ('MessageList' === $sAction && !empty($aResponseItem['Result']['@Collection'])) {
 			foreach ($aResponseItem['Result']['@Collection'] as $id => $message) {
-				$aResponseItem['Result']['@Collection'][$id]['Avatar'] = static::encryptFrom($message['From'][0]);
+				$aResponseItem['Result']['@Collection'][$id]['Avatar'] = $this->encryptFrom($message['From'][0]);
 			}
 		} else if ('Message' === $sAction && !empty($aResponseItem['Result']['From'])) {
-			$aResponseItem['Result']['Avatar'] = static::encryptFrom($aResponseItem['Result']['From'][0]);
+			$aResponseItem['Result']['Avatar'] = $this->encryptFrom($aResponseItem['Result']['From'][0]);
 		}
 	}
 
-	private static function encryptFrom($mFrom)
+	private function encryptFrom($mFrom)
 	{
 		if ($mFrom instanceof \MailSo\Mime\Email) {
 			$mFrom = $mFrom->jsonSerialize();
 		}
-		return \is_array($mFrom)
-			? \SnappyMail\Crypt::EncryptUrlSafe($mFrom['Email'])
-			: null;
+		if (!\is_array($mFrom)) {
+			return null;
+		}
+		if ('pass' == $mFrom['DkimStatus'] && $this->Config()->Get('plugin', 'service', true) && ($sIcon = static::getServiceIcon($mFrom['Email']))) {
+			return $sIcon;
+		}
+		return $this->Config()->Get('plugin', 'delay', true)
+			? null
+			: \SnappyMail\Crypt::EncryptUrlSafe($mFrom['Email']);
 	}
 
 	/**
@@ -94,6 +102,9 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 					['id' => 'jdenticon', 'name' => 'Triangles shape']
 				])
 				->SetDescription('https://wikipedia.org/wiki/Identicon'),
+			\RainLoop\Plugins\Property::NewInstance('service')->SetLabel('Preload valid domain icons')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDefaultValue(true),
 			\RainLoop\Plugins\Property::NewInstance('bimi')->SetLabel('Lookup BIMI')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(false)
@@ -115,6 +126,25 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 */
 		return $aResult;
+	}
+
+	// Only allow service icon when DKIM is valid. $bBimi is true when DKIM is valid.
+	private static function getServiceIcon(string $sEmail) : ?string
+	{
+		$sDomain = \explode('@', $sEmail);
+		$sDomain = \array_pop($sDomain);
+		$aServices = [
+			"services/{$sDomain}",
+			'services/' . \preg_replace('/^.+\\.([^.]+\\.[^.]+)$/D', '$1', $sDomain),
+			'services/' . \preg_replace('/^(.+\\.)?(paypal\\.[a-z][a-z])$/D', 'paypal.com', $sDomain)
+		];
+		foreach ($aServices as $service) {
+			$file = __DIR__ . "/images/{$service}.png";
+			if (\file_exists($file)) {
+				return 'data:image/png;base64,' . \base64_encode(\file_get_contents($file));
+			}
+		}
+		return null;
 	}
 
 	private function getAvatar(string $sEmail, bool $bBimi) : ?array
@@ -202,7 +232,8 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			\MailSo\Base\Http::setLastModified(\time());
 		}
 
-		if (!$aResult) {
+		// Only allow service icon when DKIM is valid. $bBimi is true when DKIM is valid.
+		if ($bBimi && !$aResult) {
 			$aServices = [
 				"services/{$sDomain}",
 				'services/' . \preg_replace('/^.+\\.([^.]+\\.[^.]+)$/D', '$1', $sDomain),
