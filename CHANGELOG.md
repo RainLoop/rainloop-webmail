@@ -1,3 +1,25 @@
+## 2.22.5 – 2022-12-02
+
+### Added
+- Support plugin minified .min.js and .min.css
+- ZIP Download multiple emails
+  [#717](https://github.com/the-djmaze/snappymail/pull/717)
+
+### Changed
+- Replaced some data-bind="click: function(){} with object functions to prevent eval()
+- Improved plugins hash when there are changes
+
+### Fixed
+- Settings Themes style due to border-box change
+- "Remember me" failed due to v2.22.4 Session token change
+  [#719](https://github.com/the-djmaze/snappymail/pull/719)
+  [#731](https://github.com/the-djmaze/snappymail/pull/731)
+
+### Removed
+- Vacation filter: Button to add recipients (+)
+  [#728](https://github.com/the-djmaze/snappymail/pull/728)
+
+
 ## 2.22.4 – 2022-11-28
 
 ### Changed
@@ -10,11 +32,11 @@
   [#355](https://github.com/the-djmaze/snappymail/pull/355)
 
 ### Fixed
-- Contact Error - object Object #716
+- Contact Error - object Object
   [#716](https://github.com/the-djmaze/snappymail/pull/716)
 - Unable to move messages to different folder by drag and drop
   [#710](https://github.com/the-djmaze/snappymail/pull/710)
-- v2.22.3 unknown error #709
+- v2.22.3 unknown error
   [#709https://github.com/the-djmaze/snappymail/pull/709)
 
 
