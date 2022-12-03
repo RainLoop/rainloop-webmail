@@ -4,10 +4,7 @@ namespace RainLoop\Config;
 
 class Plugin extends \RainLoop\Config\AbstractConfig
 {
-	/**
-	 * @var array
-	 */
-	private $aMap = array();
+	private array $aMap = array();
 
 	public function __construct(string $sPluginName, array $aMap = array())
 	{
@@ -15,8 +12,9 @@ class Plugin extends \RainLoop\Config\AbstractConfig
 			$aResultMap = array();
 			foreach ($aMap as $oProperty) {
 				if ($oProperty instanceof \RainLoop\Plugins\Property) {
+					$mDefaultValue = $oProperty->DefaultValue();
 					$aResultMap[$oProperty->Name()] = array(
-						$oProperty->DefaultValue(),
+						\is_array($mDefaultValue) ? '' : $mDefaultValue,
 						''
 					);
 				}

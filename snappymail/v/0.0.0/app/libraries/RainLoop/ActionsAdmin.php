@@ -614,65 +614,34 @@ class ActionsAdmin extends Actions
 	{
 		$this->IsAdminLoggined();
 
-		$mResult = false;
 		$sId = (string) $this->GetActionParam('Id', '');
 
-		if (!empty($sId))
-		{
+		if (!empty($sId)) {
 			$oPlugin = $this->Plugins()->CreatePluginByName($sId);
-			if ($oPlugin)
-			{
+			if ($oPlugin) {
 				$oConfig = $oPlugin->Config();
 				$aMap = $oPlugin->ConfigMap(true);
-				if (\is_array($aMap))
-				{
+				if (\is_array($aMap)) {
 					$aSettings = (array) $this->GetActionParam('Settings', []);
-					foreach ($aMap as $oItem)
-					{
+					foreach ($aMap as $oItem) {
 						$sKey = $oItem->Name();
 						$sValue = $aSettings[$sKey] ?? $oConfig->Get('plugin', $sKey);
-						if (PluginPropertyType::PASSWORD !== $oItem->Type() || static::APP_DUMMY !== $sValue)
-						{
-							$mResultValue = null;
-							switch ($oItem->Type()) {
-								case PluginPropertyType::INT:
-									$mResultValue  = (int) $sValue;
-									break;
-								case PluginPropertyType::BOOL:
-									$mResultValue  = '1' === (string) $sValue;
-									break;
-								case PluginPropertyType::SELECTION:
-									if (is_array($oItem->DefaultValue()) && in_array($sValue, $oItem->DefaultValue()))
-									{
-										$mResultValue = (string) $sValue;
-									}
-									break;
-								case PluginPropertyType::PASSWORD:
-								case PluginPropertyType::STRING:
-								case PluginPropertyType::STRING_TEXT:
-								case PluginPropertyType::URL:
-									$mResultValue = (string) $sValue;
-									break;
-							}
-
-							if (null !== $mResultValue)
-							{
+						if (PluginPropertyType::PASSWORD !== $oItem->Type() || static::APP_DUMMY !== $sValue) {
+							$oItem->SetValue($sValue);
+							$mResultValue = $oItem->Value();
+							if (null !== $mResultValue) {
 								$oConfig->Set('plugin', $sKey, $mResultValue);
 							}
 						}
 					}
 				}
-
-				$mResult = $oConfig->Save();
+				if ($oConfig->Save()) {
+					return $this->DefaultResponse(__FUNCTION__, true);
+				}
 			}
 		}
 
-		if (!$mResult)
-		{
-			throw new ClientException(Notifications::CantSavePluginSettings);
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, true);
+		throw new ClientException(Notifications::CantSavePluginSettings);
 	}
 
 	public function DoAdminQRCode() : array

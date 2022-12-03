@@ -80,6 +80,9 @@ abstract class AbstractConfig implements \JsonSerializable
 	{
 		if (isset($this->aData[$sSectionKey][$sParamKey][0]))
 		{
+			if (!\is_scalar($mParamValue)) {
+				$mParamValue = null;
+			}
 			switch (\gettype($this->aData[$sSectionKey][$sParamKey][0]))
 			{
 				case 'boolean':

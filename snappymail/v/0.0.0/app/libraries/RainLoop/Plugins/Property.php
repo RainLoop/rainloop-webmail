@@ -2,6 +2,8 @@
 
 namespace RainLoop\Plugins;
 
+use \RainLoop\Enumerations\PluginPropertyType;
+
 class Property implements \JsonSerializable
 {
 	private string $sName;
@@ -15,7 +17,7 @@ class Property implements \JsonSerializable
 
 	private string $sDesc = '';
 
-	private int $iType = \RainLoop\Enumerations\PluginPropertyType::STRING;
+	private int $iType = PluginPropertyType::STRING;
 
 	private bool $bAllowedInJs = false;
 
@@ -23,6 +25,8 @@ class Property implements \JsonSerializable
 	 * @var mixed
 	 */
 	private $mDefaultValue = '';
+
+	private array $aOptions = [];
 
 	private string $sPlaceholder = '';
 
@@ -48,7 +52,35 @@ class Property implements \JsonSerializable
 	 */
 	public function SetValue($mValue) : void
 	{
-		$this->mValue = $mValue;
+		$this->mValue = null;
+		switch ($this->iType) {
+			case PluginPropertyType::INT:
+				$this->mValue = (int) $mValue;
+				break;
+			case PluginPropertyType::BOOL:
+				$this->mValue = !empty($mValue);
+				break;
+			case PluginPropertyType::SELECT:
+				foreach ($this->aOptions as $option) {
+					if ($mValue == $option['id']) {
+						$this->mValue = (string) $mValue;
+					}
+				}
+				break;
+			case PluginPropertyType::SELECTION:
+				if ($this->aOptions && \in_array($mValue, $oItem->Options())) {
+					$this->mValue = (string) $mValue;
+				}
+				break;
+			case PluginPropertyType::PASSWORD:
+			case PluginPropertyType::STRING:
+			case PluginPropertyType::STRING_TEXT:
+			case PluginPropertyType::URL:
+				$this->mValue = (string) $mValue;
+				break;
+//			case PluginPropertyType::GROUP:
+//				throw new \Exception('Not allowed to set group value');
+		}
 	}
 
 	/**
@@ -56,7 +88,18 @@ class Property implements \JsonSerializable
 	 */
 	public function SetDefaultValue($mDefaultValue) : self
 	{
-		$this->mDefaultValue = $mDefaultValue;
+		if (\is_array($mDefaultValue)) {
+			$this->aOptions = $mDefaultValue;
+		} else {
+			$this->mDefaultValue = $mDefaultValue;
+		}
+
+		return $this;
+	}
+
+	public function SetOptions(array $aOptions) : self
+	{
+		$this->aOptions = $aOptions;
 
 		return $this;
 	}
@@ -122,9 +165,22 @@ class Property implements \JsonSerializable
 		return $this->mDefaultValue;
 	}
 
+	public function Options() : array
+	{
+		return $this->aOptions;
+	}
+
 	public function Placeholder() : string
 	{
 		return $this->sPlaceholder;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function Value()
+	{
+		return $this->mValue;
 	}
 
 	#[\ReturnTypeWillChange]
@@ -138,6 +194,7 @@ class Property implements \JsonSerializable
 			'Type' => $this->iType,
 			'Label' => $this->sLabel,
 			'Default' => $this->mDefaultValue,
+			'Options' => $this->aOptions,
 			'Desc' => $this->sDesc
 		);
 	}

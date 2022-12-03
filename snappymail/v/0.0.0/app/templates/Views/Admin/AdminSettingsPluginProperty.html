@@ -16,7 +16,7 @@
 			data-bind="value: value, attr: {placeholder: placeholder }"></textarea>
 	<!-- /ko -->
 	<!-- ko if: 4 === Type -->
-		<select data-bind="options: Default, value: value"></select>
+		<select data-bind="options: Options, value: value"></select>
 	<!-- /ko -->
 	<!-- ko if: 5 === Type -->
 		<div data-bind="component: {
@@ -29,7 +29,7 @@
 			data-bind="value: value, attr: {placeholder: placeholder}">
 	<!-- /ko -->
 	<!-- ko if: 8 === Type -->
-		<select data-bind="options: Default, optionsText: 'name', optionsValue: 'id', value: value"></select>
+		<select data-bind="options: Options, optionsText: 'name', optionsValue: 'id', value: value"></select>
 	<!-- /ko -->
 	<!-- ko if: '' !== Desc -->
 	<span tabindex="0" class="help-block"><span data-bind="text: Desc"></span></span>
