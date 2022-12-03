@@ -43,7 +43,7 @@ then
         find . -type d -exec chmod 755 {} \;
         find . -type f -exec chmod 644 {} \;
         chmod u+x "${SCRIPT_DIR}/upgrade.sh"
-        chown -R $OWNERGROUP *
+        chown -R $OWNERGROUP $SCRIPT_DIR
         echo -e "\033[1;32mFinished with snappymail upgrade from $OLD_VERSION to $NEW_VERSION... \033[0m"
 
 else
