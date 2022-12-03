@@ -98,7 +98,7 @@
 		"MENU_SELECT_SEEN": "已读",
 		"MENU_SELECT_FLAGGED": "已加星标",
 		"MENU_SELECT_UNFLAGGED": "未加星标",
-		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
+		"DOWNLOAD_ALL_ATTACHMENTS": "下载所有附件",
 		"EMPTY_LIST": "空列表。",
 		"EMPTY_SEARCH_LIST": "未找到您搜索的消息。",
 		"SEARCH_RESULT_FOR": "搜索 \"%SEARCH%\" 的结果",
@@ -225,7 +225,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "无附件。",
 		"ATTACHMENTS_ERROR_DESC": "注意！还有正在上传的附件。",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "还有附件正在上传。",
-		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_SPELLCHECK": "启用浏览器拼写检查器",
 		"BUTTON_REQUEST_READ_RECEIPT": "要求已读回执",
 		"BUTTON_MARK_AS_IMPORTANT": "标记为“重要”",
 		"BUTTON_REQUEST_DSN": "要求送达回执"
@@ -414,7 +414,7 @@
 		"CHROME_NOTIFICATION_DESC": "显示新邮件弹窗",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(被浏览器阻止)",
 		"LIST_INLINE_ATTACHMENTS": "在列表中显示内联附件",
-		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
+		"LIST_SIMPLE_ATTACHMENTS": "简洁附件列表"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "自动添加到您的地址簿",
