@@ -97,6 +97,18 @@ addComputablesTo(MessagelistUserStore, {
 		)
 	},
 
+	listByDay: () => {
+		let list = {};
+		MessagelistUserStore.forEach(msg => {
+			let day = (new Date(msg.dateTimeStampInUTC() * 1000)).format('Ymd');
+			if (!list[day]) {
+				list[day] = {day:day,messages:[]};
+			}
+			list[day].messages.push(msg);
+		});
+		return Object.values(list);
+	},
+
 	listCheckedOrSelected: () => {
 		const
 			selectedMessage = MessagelistUserStore.selectedMessage(),
