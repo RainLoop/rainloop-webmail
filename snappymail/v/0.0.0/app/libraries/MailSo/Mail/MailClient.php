@@ -503,11 +503,7 @@ class MailClient
 	{
 		list($iCount, $iUnseenCount, $iUidNext, $iHighestModSeq, $iAppendLimit, $sMailboxId) = $this->initFolderValues($sFolderName);
 /*
-		// Don't use FolderExamine, else PERMANENTFLAGS is empty in Dovecot
-		$oInfo = $this->oImapClient->FolderSelect($sFolderName);
-		$oInfo->UNSEEN = $iUnseenCount;
-		$oInfo->HIGHESTMODSEQ = $iHighestModSeq;
-		$oInfo->Hash = $this->GenerateFolderHash($oInfo->FolderName, $oInfo->MESSAGES, $oInfo->UIDNEXT, $oInfo->HIGHESTMODSEQ);
+		$oInfo = $this->oImapClient->FolderStatusAndSelect($sFolderName);
 */
 		$aFlags = array();
 		if ($oRange && \count($oRange)) {
@@ -539,6 +535,7 @@ class MailClient
 //			'Flags' => $oInfo->Flags,
 //			'PermanentFlags' => $oInfo->PermanentFlags,
 			'Hash' => $this->GenerateFolderHash($sFolderName, $iCount, $iUidNext, $iHighestModSeq),
+//			'Hash' => $this->GenerateFolderHash($sFolderName, $oInfo->MESSAGES, $oInfo->UIDNEXT, $oInfo->HIGHESTMODSEQ);
 			'MessagesFlags' => $aFlags,
 			'NewMessages' => $this->getFolderNextMessageInformation($sFolderName, $iPrevUidNext, $iUidNext)
 		);
@@ -820,12 +817,7 @@ class MailClient
 		$oMessageCollection->ThreadUid = $oParams->iThreadUid;
 		$oMessageCollection->Filtered = '' !== \MailSo\Config::$MessageListPermanentFilter;
 
-		list($iMessageRealCount, $iMessageUnseenCount, $iUidNext, $iHighestModSeq) = $this->initFolderValues($oParams->sFolderName);
-		// Don't use FolderExamine, else PERMANENTFLAGS is empty in Dovecot
-		$oInfo = $this->oImapClient->FolderSelect($oParams->sFolderName);
-		$oInfo->UNSEEN = $iMessageUnseenCount;
-		$oInfo->HIGHESTMODSEQ = $iHighestModSeq;
-//		$oInfo->Hash = $this->GenerateFolderHash($oInfo->FolderName, $oInfo->MESSAGES, $oInfo->UIDNEXT, $oInfo->HIGHESTMODSEQ);
+		$oInfo = $this->oImapClient->FolderStatusAndSelect($oParams->sFolderName);
 		$oMessageCollection->FolderInfo = $oInfo;
 
 		$aUids = array();
@@ -847,19 +839,19 @@ class MailClient
 		}
 
 		$oMessageCollection->FolderHash = $this->GenerateFolderHash(
-			$oParams->sFolderName, $iMessageRealCount, $iUidNext, $oInfo->HIGHESTMODSEQ ?: 0
+			$oParams->sFolderName, $oInfo->MESSAGES, $oInfo->UIDNEXT, $oInfo->HIGHESTMODSEQ
 		);
 
 		if (!$oParams->iThreadUid)
 		{
 			$oMessageCollection->NewMessages = $this->getFolderNextMessageInformation(
-				$oParams->sFolderName, $oParams->iPrevUidNext, $iUidNext
+				$oParams->sFolderName, $oParams->iPrevUidNext, $oInfo->UIDNEXT
 			);
 		}
 
 		$bSearch = false;
 		$bMessageListOptimization = 0 < \MailSo\Config::$MessageListCountLimitTrigger &&
-			\MailSo\Config::$MessageListCountLimitTrigger < $iMessageRealCount;
+			\MailSo\Config::$MessageListCountLimitTrigger < $oInfo->MESSAGES;
 
 		if ($bMessageListOptimization)
 		{
@@ -867,7 +859,7 @@ class MailClient
 			$bUseThreads = false;
 		}
 
-		if ($iMessageRealCount && !$bMessageListOptimization)
+		if ($oInfo->MESSAGES && !$bMessageListOptimization)
 		{
 			if ($bUseThreads) {
 				$aAllThreads = $this->MessageListThreadsMap($oMessageCollection->FolderName, $oMessageCollection->FolderHash, $oParams->oCacher);
@@ -932,11 +924,11 @@ class MailClient
 				);
 			}
 		}
-		else if ($iMessageRealCount)
+		else if ($oInfo->MESSAGES)
 		{
 			if ($this->oLogger)
 			{
-				$this->oLogger->Write('List optimization (count: '.$iMessageRealCount.
+				$this->oLogger->Write('List optimization (count: '.$oInfo->MESSAGES.
 					', limit:'.\MailSo\Config::$MessageListCountLimitTrigger.')');
 			}
 
@@ -946,8 +938,7 @@ class MailClient
 					$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
 
 				$oMessageCollection->MessageResultCount = \count($aUids);
-				if ($oMessageCollection->MessageResultCount)
-				{
+				if ($oMessageCollection->MessageResultCount) {
 					$this->MessageListByRequestIndexOrUids(
 						$oMessageCollection,
 						new SequenceSet(\array_slice($aUids, $oParams->iOffset, $oParams->iLimit))
@@ -956,16 +947,14 @@ class MailClient
 			}
 			else
 			{
-				$oMessageCollection->MessageResultCount = $iMessageRealCount;
-
-				if (1 < $iMessageRealCount) {
+				$oMessageCollection->MessageResultCount = $oInfo->MESSAGES;
+				if (1 < $oInfo->MESSAGES) {
 					$end = \max(1, $oInfo->MESSAGES - $oParams->iOffset);
 					$start = \max(1, $end - $oParams->iLimit + 1);
 					$aRequestIndexes = \range($start, $end);
 				} else {
 					$aRequestIndexes = \array_slice([1], $oParams->iOffset, 1);
 				}
-
 				$this->MessageListByRequestIndexOrUids($oMessageCollection, new SequenceSet($aRequestIndexes, false));
 			}
 		}
