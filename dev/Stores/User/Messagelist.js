@@ -96,7 +96,8 @@ addComputablesTo(MessagelistUserStore, {
 				value.toString().trim(), MessagelistUserStore.threadUid())
 		)
 	},
-
+/*
+	// Idea for https://github.com/the-djmaze/snappymail/issues/737
 	listByDay: () => {
 		let list = {};
 		MessagelistUserStore.forEach(msg => {
@@ -108,7 +109,7 @@ addComputablesTo(MessagelistUserStore, {
 		});
 		return Object.values(list);
 	},
-
+*/
 	listCheckedOrSelected: () => {
 		const
 			selectedMessage = MessagelistUserStore.selectedMessage(),
