@@ -71,12 +71,6 @@ trait Folders
 			$aSystemFolders = array();
 			$this->recFoldersTypes($oAccount, $oFolderCollection, $aSystemFolders);
 
-			if (!$this->Config()->Get('imap', 'use_sort', true)) {
-				$oFolderCollection->capabilities = \array_filter($oFolderCollection->capabilities, function($item){
-					return !\preg_match('/^E?SORT/', $item);
-				});
-			}
-
 			if ($this->Config()->Get('labs', 'autocreate_system_folders', false))
 			{
 				$bDoItAgain = false;
@@ -186,8 +180,10 @@ trait Folders
 					}
 				}
 
-				$aCapabilities = \array_filter($this->MailClient()->Capability(), function($item){
-					return !\preg_match('/^(IMAP|AUTH|LOGIN|SASL)/', $item);
+				$bUseSort = $this->Config()->Get('imap', 'use_sort', true);
+				$aCapabilities = \array_filter($this->MailClient()->Capability(), function ($item) use ($bUseSort) {
+					return !\preg_match('/^(IMAP|AUTH|LOGIN|SASL)/', $item)
+						&& ($bUseSort || !\preg_match('/^E?SORT/', $item));
 				});
 				if (!$this->Config()->Get('imap', 'use_list_status', true)) {
 					$key = \array_search('LIST-STATUS', $aCapabilities);
