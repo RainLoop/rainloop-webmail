@@ -87,22 +87,21 @@ class Application extends App implements IBootstrap
 			SnappyMailHelper::loadApp();
 			\RainLoop\Api::Actions()->Logout(true);
 		});
-/*
+
 		// https://github.com/nextcloud/impersonate/issues/179
 		// https://github.com/nextcloud/impersonate/pull/180
-		$class = 'OCA\Impersonate\Events\ImpersonateEvent';
+		$class = 'OCA\Impersonate\Events\BeginImpersonateEvent';
 		if (\class_exists($class)) {
-			$this->dispatcher->addListener($class, function ($Event) {
+			$dispatcher->addListener($class, function ($Event) {
+				\OC::$server->getSession()['snappymail-password'] = '';
+				SnappyMailHelper::loadApp();
+				\RainLoop\Api::Actions()->Logout(true);
+			});
+			$dispatcher->addListener('OCA\Impersonate\Events\EndImpersonateEvent', function ($Event) {
 				\OC::$server->getSession()['snappymail-password'] = '';
 				SnappyMailHelper::loadApp();
 				\RainLoop\Api::Actions()->Logout(true);
 			});
 		}
-		\OC::$server->getUserSession()->listen('\OC\User', 'impersonate', function($user, $newUser) {
-			\OC::$server->getSession()['snappymail-password'] = '';
-			SnappyMailHelper::loadApp();
-			\RainLoop\Api::Actions()->Logout(true);
-		});
-*/
 	}
 }
