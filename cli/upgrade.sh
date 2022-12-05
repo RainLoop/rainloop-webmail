@@ -12,6 +12,7 @@
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 LATEST_URL="https://snappymail.eu/repository/latest.tar.gz"
+cd "${SCRIPT_DIR}"
 OWNERGROUP=`stat -c "%U:%G" snappymail`
 OLD_VERSION=`grep "define('APP_VERSION" index.php | awk -F\' '{print $4}'`
 
@@ -19,7 +20,6 @@ OLD_VERSION=`grep "define('APP_VERSION" index.php | awk -F\' '{print $4}'`
 if [[ $(id -u) -ne 0 ]] ; then echo -e "\033[1;31mPlease run as root\033[0m" ; exit 1 ; fi
 
 # check if we are in the correct dir
-cd "${SCRIPT_DIR}"
 if [ ! -d snappymail/v ] ; then echo -e "\033[1;31mThis script can only be run from the SnappyMail install directory\033[0m" ; exit 1 ; fi
 
 # Download last release to /tmp
