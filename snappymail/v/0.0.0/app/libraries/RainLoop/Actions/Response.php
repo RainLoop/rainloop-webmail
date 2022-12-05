@@ -256,7 +256,7 @@ trait Response
 					$mResponse->FullName(),
 					$aStatus['MESSAGES'],
 					$aStatus['UIDNEXT'],
-					empty($aStatus['HIGHESTMODSEQ']) ? $aStatus['UIDVALIDITY'] : $aStatus['HIGHESTMODSEQ']
+					\max(0, $aStatus['HIGHESTMODSEQ'] ?? $aStatus['UIDVALIDITY'])
 				);
 			}
 

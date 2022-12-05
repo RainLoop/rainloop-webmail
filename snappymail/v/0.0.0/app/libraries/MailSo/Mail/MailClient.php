@@ -833,7 +833,7 @@ class MailClient
 		}
 
 		$oMessageCollection->FolderHash = $this->GenerateFolderHash(
-			$oParams->sFolderName, $oInfo->MESSAGES, $oInfo->UIDNEXT, $oInfo->HIGHESTMODSEQ ?: $oInfo->UIDVALIDITY
+			$oParams->sFolderName, $oInfo->MESSAGES, $oInfo->UIDNEXT, \max(0, $oInfo->HIGHESTMODSEQ ?: $oInfo->UIDVALIDITY)
 		);
 
 		if (!$oParams->iThreadUid) {
