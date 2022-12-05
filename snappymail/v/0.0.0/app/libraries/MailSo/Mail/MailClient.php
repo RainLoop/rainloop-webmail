@@ -958,13 +958,12 @@ class MailClient
 			{
 				$oMessageCollection->MessageResultCount = $iMessageRealCount;
 
-				if (1 < $iMessageRealCount)
-				{
-					$aRequestIndexes = \array_slice(\array_reverse(\range(1, $iMessageRealCount)), $oParams->iOffset, $oParams->iLimit);
-				}
-				else
-				{
-					$aRequestIndexes = \array_slice(array(1), $oParams->iOffset, $oParams->iLimit);
+				if (1 < $iMessageRealCount) {
+					$end = \max(1, $oInfo->MESSAGES - $oParams->iOffset);
+					$start = \max(1, $end - $oParams->iLimit + 1);
+					$aRequestIndexes = \range($start, $end);
+				} else {
+					$aRequestIndexes = \array_slice([1], $oParams->iOffset, 1);
 				}
 
 				$this->MessageListByRequestIndexOrUids($oMessageCollection, new SequenceSet($aRequestIndexes, false));
