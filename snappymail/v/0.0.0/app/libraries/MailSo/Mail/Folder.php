@@ -214,7 +214,7 @@ class Folder implements \JsonSerializable
 				'UidNext' => (int) $aStatus['UIDNEXT'],
 //				'Hash' => $this->MailClient()->GenerateFolderHash(
 //					$this->FullName(), $aStatus['MESSAGES'], $aStatus['UIDNEXT'],
-//						empty($aStatus['HIGHESTMODSEQ']) ? 0 : $aStatus['HIGHESTMODSEQ'])
+//						empty($aStatus['HIGHESTMODSEQ']) ? $aStatus['UIDVALIDITY'] : $aStatus['HIGHESTMODSEQ'])
 			);
 		}
 */

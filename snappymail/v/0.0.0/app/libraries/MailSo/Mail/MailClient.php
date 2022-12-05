@@ -417,7 +417,7 @@ class MailClient
 
 			\max(0, $oFolderStatus->UIDNEXT ?: 0),
 
-			\max(0, $oFolderStatus->HIGHESTMODSEQ ?: 0),
+			\max(0, $oFolderStatus->HIGHESTMODSEQ ?: $oFolderStatus->UIDVALIDITY),
 
 			$oFolderStatus->APPENDLIMIT ?: $this->oImapClient->AppendLimit(),
 
@@ -820,147 +820,121 @@ class MailClient
 		$oInfo = $this->oImapClient->FolderStatusAndSelect($oParams->sFolderName);
 		$oMessageCollection->FolderInfo = $oInfo;
 
-		$aUids = array();
 		$aAllThreads = [];
-
-		$bUseSortIfSupported = $oParams->bUseSortIfSupported && $this->oImapClient->IsSupported('SORT');
 
 		$bUseThreads = $oParams->bUseThreads ?
 			($this->oImapClient->IsSupported('THREAD=REFS') || $this->oImapClient->IsSupported('THREAD=REFERENCES') || $this->oImapClient->IsSupported('THREAD=ORDEREDSUBJECT')) : false;
-
-		if ($oParams->iThreadUid && !$bUseThreads)
-		{
+		if ($oParams->iThreadUid && !$bUseThreads) {
 			throw new \InvalidArgumentException('THREAD not supported');
 		}
 
-		if (!$oParams->oCacher || !($oParams->oCacher instanceof \MailSo\Cache\CacheClient))
-		{
+		if (!$oParams->oCacher || !($oParams->oCacher instanceof \MailSo\Cache\CacheClient)) {
 			$oParams->oCacher = null;
 		}
 
 		$oMessageCollection->FolderHash = $this->GenerateFolderHash(
-			$oParams->sFolderName, $oInfo->MESSAGES, $oInfo->UIDNEXT, $oInfo->HIGHESTMODSEQ
+			$oParams->sFolderName, $oInfo->MESSAGES, $oInfo->UIDNEXT, $oInfo->HIGHESTMODSEQ ?: $oInfo->UIDVALIDITY
 		);
 
-		if (!$oParams->iThreadUid)
-		{
+		if (!$oParams->iThreadUid) {
 			$oMessageCollection->NewMessages = $this->getFolderNextMessageInformation(
 				$oParams->sFolderName, $oParams->iPrevUidNext, $oInfo->UIDNEXT
 			);
 		}
 
-		$bSearch = false;
-		$bMessageListOptimization = 0 < \MailSo\Config::$MessageListCountLimitTrigger &&
-			\MailSo\Config::$MessageListCountLimitTrigger < $oInfo->MESSAGES;
-
-		if ($bMessageListOptimization)
-		{
-			$bUseSortIfSupported = false;
-			$bUseThreads = false;
-		}
-
-		if ($oInfo->MESSAGES && !$bMessageListOptimization)
-		{
-			if ($bUseThreads) {
-				$aAllThreads = $this->MessageListThreadsMap($oMessageCollection->FolderName, $oMessageCollection->FolderHash, $oParams->oCacher);
-//				$iThreadLimit = \MailSo\Config::$LargeThreadLimit;
-
-				if ($oParams->iThreadUid)
-				{
-					$aUids = [$oParams->iThreadUid];
-					// Only show the selected thread messages
-					foreach ($aAllThreads as $aMap) {
-						if (\in_array($oParams->iThreadUid, $aMap)) {
-							$aUids = $aMap;
-							break;
-						}
-					}
+		if ($oInfo->MESSAGES) {
+			if (0 < \MailSo\Config::$MessageListCountLimitTrigger && \MailSo\Config::$MessageListCountLimitTrigger < $oInfo->MESSAGES) {
+				if ($this->oLogger) {
+					$this->oLogger->Write('List optimization (count: '.$oInfo->MESSAGES.
+						', limit:'.\MailSo\Config::$MessageListCountLimitTrigger.')');
 				}
-				else
-				{
-					$aUids = $this->GetUids($oParams, '',
-						$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported, $oParams->sSort);
-					// Remove all threaded UID's except the most recent of each thread
-					$threadedUids = [];
-					foreach ($aAllThreads as $aMap) {
-						unset($aMap[\array_key_last($aMap)]);
-						$threadedUids = \array_merge($threadedUids, $aMap);
+				if (\strlen($sSearch)) {
+					$aUids = $this->GetUids($oParams, $sSearch,
+						$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
+
+					$oMessageCollection->MessageResultCount = \count($aUids);
+					if ($oMessageCollection->MessageResultCount) {
+						$this->MessageListByRequestIndexOrUids(
+							$oMessageCollection,
+							new SequenceSet(\array_slice($aUids, $oParams->iOffset, $oParams->iLimit))
+						);
 					}
-					$aUids = \array_diff($aUids, $threadedUids);
+				} else {
+					$oMessageCollection->MessageResultCount = $oInfo->MESSAGES;
+					if (1 < $oInfo->MESSAGES) {
+						$end = \max(1, $oInfo->MESSAGES - $oParams->iOffset);
+						$start = \max(1, $end - $oParams->iLimit + 1);
+						$aRequestIndexes = \range($start, $end);
+					} else {
+						$aRequestIndexes = \array_slice([1], $oParams->iOffset, 1);
+					}
+					$this->MessageListByRequestIndexOrUids($oMessageCollection, new SequenceSet($aRequestIndexes, false));
 				}
 			} else {
-				$aUids = $this->GetUids($oParams, '',
-					$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported, $oParams->sSort);
-			}
-
-			if ($aUids && \strlen($sSearch))
-			{
-				$aSearchedUids = $this->GetUids($oParams, $sSearch,
-					$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
-				if ($bUseThreads && !$oParams->iThreadUid) {
-					$matchingThreadUids = [];
-					foreach ($aAllThreads as $aMap) {
-							if (\array_intersect($aSearchedUids, $aMap)) {
-									$matchingThreadUids = \array_merge($matchingThreadUids, $aMap);
+				$aUids = [];
+				$bUseSortIfSupported = $oParams->bUseSortIfSupported && $this->oImapClient->IsSupported('SORT');
+				if ($bUseThreads) {
+					$aAllThreads = $this->MessageListThreadsMap($oMessageCollection->FolderName, $oMessageCollection->FolderHash, $oParams->oCacher);
+//					$iThreadLimit = \MailSo\Config::$LargeThreadLimit;
+					if ($oParams->iThreadUid) {
+						$aUids = [$oParams->iThreadUid];
+						// Only show the selected thread messages
+						foreach ($aAllThreads as $aMap) {
+							if (\in_array($oParams->iThreadUid, $aMap)) {
+								$aUids = $aMap;
+								break;
 							}
+						}
+					} else {
+						$aUids = $this->GetUids($oParams, '',
+							$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported, $oParams->sSort);
+						// Remove all threaded UID's except the most recent of each thread
+						$threadedUids = [];
+						foreach ($aAllThreads as $aMap) {
+							unset($aMap[\array_key_last($aMap)]);
+							$threadedUids = \array_merge($threadedUids, $aMap);
+						}
+						$aUids = \array_diff($aUids, $threadedUids);
 					}
-					$aUids = \array_filter($aUids, function($iUid) use ($aSearchedUids, $matchingThreadUids) {
-						return \in_array($iUid, $aSearchedUids) || \in_array($iUid, $matchingThreadUids);
-					});
 				} else {
-					$aUids = \array_filter($aUids, function($iUid) use ($aSearchedUids) {
-						return \in_array($iUid, $aSearchedUids);
-					});
+					$aUids = $this->GetUids($oParams, '',
+						$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported, $oParams->sSort);
 				}
-			}
 
-			$oMessageCollection->MessageResultCount = \count($aUids);
-
-			if (\count($aUids))
-			{
-				$this->MessageListByRequestIndexOrUids(
-					$oMessageCollection,
-					new SequenceSet(\array_slice($aUids, $oParams->iOffset, $oParams->iLimit))
-				);
-			}
-		}
-		else if ($oInfo->MESSAGES)
-		{
-			if ($this->oLogger)
-			{
-				$this->oLogger->Write('List optimization (count: '.$oInfo->MESSAGES.
-					', limit:'.\MailSo\Config::$MessageListCountLimitTrigger.')');
-			}
-
-			if (\strlen($sSearch))
-			{
-				$aUids = $this->GetUids($oParams, $sSearch,
-					$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
+				if ($aUids && \strlen($sSearch)) {
+					$aSearchedUids = $this->GetUids($oParams, $sSearch,
+						$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
+					if ($bUseThreads && !$oParams->iThreadUid) {
+						$matchingThreadUids = [];
+						foreach ($aAllThreads as $aMap) {
+							if (\array_intersect($aSearchedUids, $aMap)) {
+								$matchingThreadUids = \array_merge($matchingThreadUids, $aMap);
+							}
+						}
+						$aUids = \array_filter($aUids, function($iUid) use ($aSearchedUids, $matchingThreadUids) {
+							return \in_array($iUid, $aSearchedUids) || \in_array($iUid, $matchingThreadUids);
+						});
+					} else {
+						$aUids = \array_filter($aUids, function($iUid) use ($aSearchedUids) {
+							return \in_array($iUid, $aSearchedUids);
+						});
+					}
+				}
 
 				$oMessageCollection->MessageResultCount = \count($aUids);
-				if ($oMessageCollection->MessageResultCount) {
+
+				if (\count($aUids)) {
 					$this->MessageListByRequestIndexOrUids(
 						$oMessageCollection,
 						new SequenceSet(\array_slice($aUids, $oParams->iOffset, $oParams->iLimit))
 					);
 				}
 			}
-			else
-			{
-				$oMessageCollection->MessageResultCount = $oInfo->MESSAGES;
-				if (1 < $oInfo->MESSAGES) {
-					$end = \max(1, $oInfo->MESSAGES - $oParams->iOffset);
-					$start = \max(1, $end - $oParams->iLimit + 1);
-					$aRequestIndexes = \range($start, $end);
-				} else {
-					$aRequestIndexes = \array_slice([1], $oParams->iOffset, 1);
-				}
-				$this->MessageListByRequestIndexOrUids($oMessageCollection, new SequenceSet($aRequestIndexes, false));
-			}
+		} else if ($this->oLogger) {
+			$this->oLogger->Write('No messages in '.$oMessageCollection->FolderName);
 		}
 
-		if ($aAllThreads && !$oParams->iThreadUid)
-		{
+		if ($aAllThreads && !$oParams->iThreadUid) {
 			foreach ($oMessageCollection as $oMessage) {
 				$iUid = $oMessage->Uid();
 				// Find thread and set it.
