@@ -17,53 +17,29 @@ namespace MailSo\Mail;
  */
 class MessageCollection extends \MailSo\Base\Collection
 {
-	/**
-	 * @var string
-	 */
-	public $FolderHash = '';
+	public string $FolderHash = '';
 
 	/**
-	 * @var int
+	 * Amount of UIDs in this list (could be less then total messages when using threads)
 	 */
-	public $MessageResultCount = 0;
+	public int $MessageResultCount = 0;
 
-	/**
-	 * @var string
-	 */
-	public $FolderName = '';
+	public string $FolderName = '';
 
-	/**
-	 * @var int
-	 */
-	public $Offset = 0;
+	public int $Offset = 0;
 
-	/**
-	 * @var int
-	 */
-	public $Limit = 0;
+	public int $Limit = 0;
 
-	/**
-	 * @var string
-	 */
-	public $Search = '';
+	public string $Search = '';
 
-	/**
-	 * @var int
-	 */
-	public $ThreadUid = 0;
+	public int $ThreadUid = 0;
 
 	// MailSo\Imap\FolderInformation
 	public $FolderInfo = null;
 
-	/**
-	 * @var array
-	 */
-	public $NewMessages = array();
+	public array $NewMessages = array();
 
-	/**
-	 * @var bool
-	 */
-	public $Filtered = false;
+	public bool $Filtered = false;
 
 	public function append($oMessage, bool $bToTop = false) : void
 	{

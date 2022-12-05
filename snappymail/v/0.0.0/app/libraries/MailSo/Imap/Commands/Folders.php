@@ -112,7 +112,7 @@ trait Folders
 	 *
 	 * https://datatracker.ietf.org/doc/html/rfc9051#section-6.3.11
 	 */
-	public function FolderStatus(string $sFolderName) : FolderInformation
+	public function FolderStatus(string $sFolderName, bool $bSelect = false) : FolderInformation
 	{
 		$aStatusItems = array(
 			FolderResponseStatus::MESSAGES,
@@ -166,12 +166,29 @@ trait Folders
 			$oInfo->setStatusFromResponse($oResponse);
 		}
 
-		if ($bReselect) {
-			$this->selectOrExamineFolder($sFolderName, $bWritable, false);
-//			$this->oCurrentFolderInfo->UNSEEN = $oInfo->UNSEEN;
+		if ($bReselect || $bSelect) {
+			// Don't use FolderExamine, else PERMANENTFLAGS is empty in Dovecot
+			$oFolderInformation = $this->selectOrExamineFolder($sFolderName, $bSelect || $bWritable, false);
+			$oFolderInformation->MESSAGES = \max(0, $oFolderInformation->MESSAGES, $oInfo->MESSAGES);
+			// $oFolderInformation has the message sequence number of the first unseen message in the mailbox
+			// so we set it to the amount of unseen messages
+			$oFolderInformation->UNSEEN = \max(0, $oInfo->UNSEEN);
+			$oFolderInformation->UIDNEXT = \max(0, $oFolderInformation->UIDNEXT, $oInfo->UIDNEXT);
+			$oFolderInformation->UIDVALIDITY = \max(0, $oFolderInformation->UIDVALIDITY, $oInfo->UIDVALIDITY);
+			$oFolderInformation->HIGHESTMODSEQ = \max(0, $oInfo->HIGHESTMODSEQ);
+			$oFolderInformation->APPENDLIMIT = \max(0, $oFolderInformation->APPENDLIMIT, $oInfo->APPENDLIMIT);
+			$oFolderInformation->MAILBOXID = $oFolderInformation->MAILBOXID ?: $oInfo->MAILBOXID;
+//			$oFolderInformation->SIZE = \max($oFolderInformation->SIZE, $oInfo->SIZE);
+//			$oFolderInformation->RECENT = \max(0, $oFolderInformation->RECENT, $oInfo->RECENT);
+			return $oFolderInformation;
 		}
 
 		return $oInfo;
+	}
+
+	public function FolderStatusAndSelect(string $sFolderName) : FolderInformation
+	{
+		return $this->FolderStatus($sFolderName, true);
 	}
 
 	/**
@@ -381,6 +398,9 @@ trait Folders
 				}
 			}
 		}
+
+		// IMAP4rev2 deprecated
+		$oResult->UNSEEN = null;
 
 		$this->oCurrentFolderInfo = $oResult;
 
