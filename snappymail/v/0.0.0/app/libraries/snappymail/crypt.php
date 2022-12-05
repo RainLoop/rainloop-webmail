@@ -106,6 +106,8 @@ abstract class Crypt
 			}
 		}
 
+		// Too much OpenSSL v3 issues ?
+//		if (\is_callable('openssl_encrypt') && OPENSSL_VERSION_NUMBER < 805306368) {
 		if (\is_callable('openssl_encrypt')) {
 			try {
 				$iv = \random_bytes(\openssl_cipher_iv_length(static::$cipher));

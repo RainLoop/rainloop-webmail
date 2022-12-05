@@ -1,3 +1,21 @@
+## 2.22.6 – 2022-12-05
+
+### Changed
+- Narrow MessageList wraps star icon
+  [#737](https://github.com/the-djmaze/snappymail/pull/737)
+- Use UIDVALIDITY when HIGHESTMODSEQ not available, maybe solves
+  [#745](https://github.com/the-djmaze/snappymail/pull/745)
+- No need to generate 1000's of ID's for MessageListByRequestIndexOrUids()
+- Update Chinese translation by @mayswind
+
+### Fixed
+- PluginProperty DefaultValue contained array while it should not
+  [#741](https://github.com/the-djmaze/snappymail/pull/741)
+
+### Removed
+- IMAP SELECT/EXAMINE unset `UNSEEN` because IMAP4rev2 deprecated
+
+
 ## 2.22.5 – 2022-12-02
 
 ### Added

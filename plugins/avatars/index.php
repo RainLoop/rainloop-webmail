@@ -6,9 +6,9 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Avatars',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.2',
+		VERSION  = '1.3',
 		RELEASE  = '2022-11-29',
-		REQUIRED = '2.22.5',
+		REQUIRED = '2.22.4',
 		CATEGORY = 'Contacts',
 		LICENSE  = 'MIT',
 		DESCRIPTION = 'Show photo of sender in message and messages list (supports BIMI, Gravatar and identicon, Contacts is still TODO)';
@@ -93,15 +93,22 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	protected function configMapping() : array
 	{
 		$aResult = array(
-			\RainLoop\Plugins\Property::NewInstance('identicon')->SetLabel('Identicon')
-				->SetType(\RainLoop\Enumerations\PluginPropertyType::SELECT)
-//				->SetAllowedInJs(true)
-				->SetDefaultValue([
-					['id' => '', 'name' => 'Name characters else silhouette'],
-					['id' => 'identicon', 'name' => 'Name characters else squares'],
-					['id' => 'jdenticon', 'name' => 'Triangles shape']
-				])
-				->SetDescription('https://wikipedia.org/wiki/Identicon'),
+			defined('RainLoop\\Enumerations\\PluginPropertyType::SELECT')
+				? \RainLoop\Plugins\Property::NewInstance('identicon')->SetLabel('Identicon')
+					->SetType(\RainLoop\Enumerations\PluginPropertyType::SELECT)
+//					->SetAllowedInJs(true)
+					->SetDefaultValue([
+						['id' => '', 'name' => 'Name characters else silhouette'],
+						['id' => 'identicon', 'name' => 'Name characters else squares'],
+						['id' => 'jdenticon', 'name' => 'Triangles shape']
+					])
+					->SetDescription('https://wikipedia.org/wiki/Identicon')
+				: \RainLoop\Plugins\Property::NewInstance('identicon')->SetLabel('Identicon')
+					->SetType(\RainLoop\Enumerations\PluginPropertyType::SELECTION)
+//					->SetAllowedInJs(true)
+					->SetDefaultValue(['','identicon','jdenticon'])
+					->SetDescription('empty = default, identicon = squares, jdenticon = Triangles shape')
+				,
 			\RainLoop\Plugins\Property::NewInstance('service')->SetLabel('Preload valid domain icons')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(true),
