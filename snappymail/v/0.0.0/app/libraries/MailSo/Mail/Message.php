@@ -31,6 +31,7 @@ class Message implements \JsonSerializable
 		$sSpamResult = '',
 		$bIsSpam = false,
 		$bHasVirus = null,
+		$sVirusScanned = '',
 		$iInternalTimeStampInUTC = 0,
 		$iHeaderTimeStampInUTC = 0,
 		$sHeaderDate = '',
@@ -664,6 +665,7 @@ class Message implements \JsonSerializable
 			'SpamResult' => $this->sSpamResult,
 			'IsSpam' => $this->bIsSpam,
 			'HasVirus' => $this->bHasVirus,
+//			'VirusScanned' => $this->sVirusScanned,
 			'DateTimeStampInUTC' => $this->iInternalTimeStampInUTC,
 
 			// \MailSo\Mime\EmailCollection

@@ -19,6 +19,9 @@ namespace MailSo\Base\StreamWrappers;
  */
 class SubStreams
 {
+	/** @var resource|null */
+	public $context;
+
 	/**
 	 * @var string
 	 */

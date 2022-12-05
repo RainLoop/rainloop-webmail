@@ -19,6 +19,9 @@ namespace MailSo\Base\StreamWrappers;
  */
 class Binary
 {
+	/** @var resource|null */
+	public $context;
+
 	/**
 	 * @var string
 	 */

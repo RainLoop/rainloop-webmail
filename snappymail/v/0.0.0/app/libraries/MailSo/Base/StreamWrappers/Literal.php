@@ -18,6 +18,9 @@ namespace MailSo\Base\StreamWrappers;
  */
 class Literal
 {
+	/** @var resource|null */
+	public $context;
+
 	/**
 	 * @var string
 	 */
