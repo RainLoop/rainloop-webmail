@@ -201,8 +201,9 @@ class Utils
 */
 		// Set the new 4K split cookie
 		foreach (\str_split($sValue, $iMaxSize) as $i => $sPart) {
-			\SnappyMail\Log::debug('COOKIE', "set {$sName}~{$i}");
-			static::_SetCookie($i ? "{$sName}~{$i}" : $sName, $sPart, $iExpire);
+			$sCookieName = $i ? "{$sName}~{$i}" : $sName;
+			\SnappyMail\Log::debug('COOKIE', "set {$sCookieName}");
+			static::_SetCookie($sCookieName, $sPart, $iExpire);
 		}
 		// Delete unused old 4K split cookie parts
 		foreach (\array_keys($_COOKIE) as $sCookieName) {
@@ -270,7 +271,11 @@ class Utils
 	{
 		static $open_basedir;
 		if (null === $open_basedir) {
-			$open_basedir = \array_filter(\explode(PATH_SEPARATOR, \ini_get('open_basedir')));
+			$open_basedir = \ini_get('open_basedir');
+			if ($open_basedir) {
+				\SnappyMail\Log::warning('OpenBasedir', "open_basedir restriction in effect. Allowed path(s): {$open_basedir}");
+			}
+			$open_basedir = \array_filter(\explode(PATH_SEPARATOR, $open_basedir));
 		}
 		if ($open_basedir) {
 			foreach ($open_basedir as $dir) {
@@ -278,7 +283,7 @@ class Utils
 					return true;
 				}
 			}
-			\SnappyMail\Log::warning('OpenBasedir', "open_basedir restriction in effect. {$name} is not within the allowed path(s): " . \ini_get('open_basedir'));
+//			\SnappyMail\Log::warning('OpenBasedir', "open_basedir restriction in effect. {$name} is not within the allowed path(s): " . \ini_get('open_basedir'));
 			return false;
 		}
 		return true;
