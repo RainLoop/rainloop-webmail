@@ -68,7 +68,7 @@ class Property implements \JsonSerializable
 				}
 				break;
 			case PluginPropertyType::SELECTION:
-				if ($this->aOptions && \in_array($mValue, $oItem->Options())) {
+				if ($this->aOptions && \in_array($mValue, $this->Options())) {
 					$this->mValue = (string) $mValue;
 				}
 				break;
