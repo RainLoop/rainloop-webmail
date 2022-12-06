@@ -34,6 +34,8 @@
 		</svg>`;
 	};
 
+	let isMobile;
+
 	const
 		queue = [],
 		avatars = new Map,
@@ -160,9 +162,11 @@
 					fn = url=>{element.src = url};
 				if (url) {
 					fn(url);
-				} else if (msg.avatar) {
+				} else if (msg.avatar || isMobile()) {
 					if (msg.avatar.startsWith('data:')) {
 						fn(msg.avatar);
+					} else if (isMobile()) {
+						setIdenticon(from, fn);
 					} else {
 						element.onerror = () => setIdenticon(from, fn);
 						fn(`?Avatar/${'pass' == from.dkimStatus ? 1 : 0}/${msg.avatar}`);
@@ -215,6 +219,7 @@
 		}
 
 		if ('MailMessageList' === e.detail.viewModelTemplateID) {
+			isMobile = e.detail.isMobile;
 			document.getElementById('MailMessageList').content.querySelector('.messageCheckbox')
 				.append(Element.fromHTML(`<img class="fromPic" data-bind="fromPic:$data" loading="lazy">`));
 		}
