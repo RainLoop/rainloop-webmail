@@ -33,7 +33,9 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		if ('MessageList' === $sAction && !empty($aResponseItem['Result']['@Collection'])) {
 			foreach ($aResponseItem['Result']['@Collection'] as $id => $message) {
-				$aResponseItem['Result']['@Collection'][$id]['Avatar'] = $this->encryptFrom($message['From'][0]);
+				if (!empty($message['From'])) {
+					$aResponseItem['Result']['@Collection'][$id]['Avatar'] = $this->encryptFrom($message['From'][0]);
+				}
 			}
 		} else if ('Message' === $sAction && !empty($aResponseItem['Result']['From'])) {
 			$aResponseItem['Result']['Avatar'] = $this->encryptFrom($aResponseItem['Result']['From'][0]);
