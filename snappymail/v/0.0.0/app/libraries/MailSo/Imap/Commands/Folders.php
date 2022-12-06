@@ -16,7 +16,6 @@ use MailSo\Imap\Folder;
 use MailSo\Imap\FolderInformation;
 use MailSo\Imap\SequenceSet;
 use MailSo\Imap\Enumerations\FolderStatus;
-use MailSo\Imap\Enumerations\FolderResponseStatus;
 
 /**
  * @category MailSo
@@ -104,6 +103,38 @@ trait Folders
 		return $this;
 	}
 
+	private function FolderStatusItems() : array
+	{
+		$aStatusItems = array(
+			FolderStatus::MESSAGES,
+			FolderStatus::UNSEEN,
+			FolderStatus::UIDNEXT,
+			FolderStatus::UIDVALIDITY
+		);
+		// RFC 4551
+		if ($this->IsSupported('CONDSTORE')) {
+			$aStatusItems[] = FolderStatus::HIGHESTMODSEQ;
+		}
+		// RFC 7889
+		if ($this->IsSupported('APPENDLIMIT')) {
+			$aStatusItems[] = FolderStatus::APPENDLIMIT;
+		}
+		// RFC 8474
+		if ($this->IsSupported('OBJECTID')) {
+			$aStatusItems[] = FolderStatus::MAILBOXID;
+/*
+		} else if ($this->IsSupported('X-DOVECOT')) {
+			$aStatusItems[] = 'X-GUID';
+*/
+		}
+/*		// STATUS SIZE can take a significant amount of time, therefore not active
+		if ($this->IsSupported('IMAP4rev2')) {
+			$aStatusItems[] = FolderStatus::SIZE;
+		}
+*/
+		return $aStatusItems;
+	}
+
 	/**
 	 * @throws \InvalidArgumentException
 	 * @throws \MailSo\RuntimeException
@@ -114,30 +145,6 @@ trait Folders
 	 */
 	public function FolderStatus(string $sFolderName, bool $bSelect = false) : FolderInformation
 	{
-		$aStatusItems = array(
-			FolderResponseStatus::MESSAGES,
-			FolderResponseStatus::UNSEEN,
-			FolderResponseStatus::UIDNEXT,
-			FolderResponseStatus::UIDVALIDITY
-		);
-		if ($this->IsSupported('CONDSTORE')) {
-			$aStatusItems[] = FolderResponseStatus::HIGHESTMODSEQ;
-		}
-		if ($this->IsSupported('APPENDLIMIT')) {
-			$aStatusItems[] = FolderResponseStatus::APPENDLIMIT;
-		}
-		if ($this->IsSupported('OBJECTID')) {
-			$aStatusItems[] = FolderResponseStatus::MAILBOXID;
-/*
-		} else if ($this->IsSupported('X-DOVECOT')) {
-			$aStatusItems[] = 'X-GUID';
-*/
-		}
-/*		// STATUS SIZE can take a significant amount of time, therefore not active
-		if ($this->IsSupported('IMAP4rev2')) {
-			$aStatusItems[] = FolderResponseStatus::SIZE;
-		}
-*/
 		$oFolderInfo = $this->oCurrentFolderInfo;
 		$bReselect = false;
 		$bWritable = false;
@@ -148,12 +155,10 @@ trait Folders
 			 * So we must unselect the folder to be able to get the APPENDLIMIT and UNSEEN.
 			 */
 /*
-			if ($this->IsSupported('ESEARCH')) {
-				$aResult = $oFolderInfo->getStatusItems();
-				// SELECT or EXAMINE command then UNSEEN is the message sequence number of the first unseen message
-				$aResult['UNSEEN'] = $this->MessageSimpleESearch('UNSEEN', ['COUNT'])['COUNT'];
-				return $aResult;
+			if ($this->IsSupported('ESEARCH') && !isset($oFolderInfo->UNSEEN)) {
+				$oFolderInfo->UNSEEN = $this->MessageSimpleESearch('UNSEEN', ['COUNT'])['COUNT'];
 			}
+			return $oFolderInfo;
 */
 			$bWritable = $oFolderInfo->IsWritable;
 			$bReselect = true;
@@ -161,7 +166,7 @@ trait Folders
 		}
 
 		$oInfo = new FolderInformation($sFolderName, false);
-		$this->SendRequest('STATUS', array($this->EscapeFolderName($sFolderName), $aStatusItems));
+		$this->SendRequest('STATUS', array($this->EscapeFolderName($sFolderName), $this->FolderStatusItems()));
 		foreach ($this->yieldUntaggedResponses() as $oResponse) {
 			$oInfo->setStatusFromResponse($oResponse);
 		}
@@ -170,8 +175,8 @@ trait Folders
 			// Don't use FolderExamine, else PERMANENTFLAGS is empty in Dovecot
 			$oFolderInformation = $this->selectOrExamineFolder($sFolderName, $bSelect || $bWritable, false);
 			$oFolderInformation->MESSAGES = \max(0, $oFolderInformation->MESSAGES, $oInfo->MESSAGES);
-			// $oFolderInformation has the message sequence number of the first unseen message in the mailbox
-			// so we set it to the amount of unseen messages
+			// SELECT or EXAMINE command then UNSEEN is the message sequence number of the first unseen message.
+			// And deprecated in IMAP4rev2, so we set it to the amount of unseen messages
 			$oFolderInformation->UNSEEN = \max(0, $oInfo->UNSEEN);
 			$oFolderInformation->UIDNEXT = \max(0, $oFolderInformation->UIDNEXT, $oInfo->UIDNEXT);
 			$oFolderInformation->UIDVALIDITY = \max(0, $oFolderInformation->UIDVALIDITY, $oInfo->UIDVALIDITY);
@@ -399,9 +404,14 @@ trait Folders
 			}
 		}
 
+		// SELECT or EXAMINE command then UNSEEN is the message sequence number of the first unseen message.
 		// IMAP4rev2 deprecated
 		$oResult->UNSEEN = null;
-
+/*
+		if ($this->IsSupported('ESEARCH')) {
+			$oResult->UNSEEN = $this->MessageSimpleESearch('UNSEEN', ['COUNT'])['COUNT'];
+		}
+*/
 		$this->oCurrentFolderInfo = $oResult;
 
 		return $oResult;
@@ -444,30 +454,8 @@ trait Folders
 		// RFC 5819
 		if ($bUseListStatus && !$bIsSubscribeList && $this->IsSupported('LIST-STATUS'))
 		{
-			$aL = array(
-				FolderStatus::MESSAGES,
-				FolderStatus::UNSEEN,
-				FolderStatus::UIDNEXT
-			);
-			// RFC 4551
-			if ($this->IsSupported('CONDSTORE')) {
-				$aL[] = FolderStatus::HIGHESTMODSEQ;
-			}
-			// RFC 7889
-			if ($this->IsSupported('APPENDLIMIT')) {
-				$aL[] = FolderStatus::APPENDLIMIT;
-			}
-			// RFC 8474
-			if ($this->IsSupported('OBJECTID')) {
-				$aL[] = FolderStatus::MAILBOXID;
-/*
-			} else if ($this->IsSupported('X-DOVECOT')) {
-				$aL[] = 'X-GUID';
-*/
-			}
-
 			$aReturnParams[] = 'STATUS';
-			$aReturnParams[] = $aL;
+			$aReturnParams[] = $this->FolderStatusItems();
 		}
 /*
 		// RFC 5738

@@ -23,11 +23,6 @@ class Folder
 	/**
 	 * @var string
 	 */
-	private $sFullName;
-
-	/**
-	 * @var string
-	 */
 	private $sDelimiter;
 
 	/**
@@ -48,7 +43,7 @@ class Folder
 		if (!\strlen($sFullName)) {
 			throw new \InvalidArgumentException;
 		}
-		$this->sFullName = $sFullName;
+		$this->FolderName = $sFullName;
 		$this->setDelimiter($sDelimiter);
 		$this->setFlags($aFlags);
 /*
@@ -72,7 +67,7 @@ class Folder
 
 	public function Name() : string
 	{
-		$sNameRaw = $this->sFullName;
+		$sNameRaw = $this->FolderName;
 		if ($this->sDelimiter) {
 			$aNames = \explode($this->sDelimiter, $sNameRaw);
 			return \end($aNames);
@@ -82,7 +77,7 @@ class Folder
 
 	public function FullName() : string
 	{
-		return $this->sFullName;
+		return $this->FolderName;
 	}
 
 	public function Delimiter() : ?string
@@ -102,7 +97,7 @@ class Folder
 
 	public function IsInbox() : bool
 	{
-		return 'INBOX' === \strtoupper($this->sFullName) || \in_array('\\inbox', $this->aFlagsLowerCase);
+		return 'INBOX' === \strtoupper($this->FolderName) || \in_array('\\inbox', $this->aFlagsLowerCase);
 	}
 
 	public function SetMetadata(string $sName, string $sData) : void

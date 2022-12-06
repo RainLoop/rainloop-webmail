@@ -22,6 +22,8 @@ namespace MailSo\Imap\Traits;
  */
 trait Status
 {
+	public string $FolderName;
+
 	public
 		/**
 		 * The number of messages in the mailbox.
@@ -92,11 +94,20 @@ trait Status
 		 */
 		$SIZE;
 
-	public function getStatusItems() : array
+	public function getHash(string $sClientHash) : ?string
 	{
-		return \array_filter(\get_object_vars($this), function($v, $k){
-			return \property_exists(__TRAIT__, $k);
-		}, ARRAY_FILTER_USE_BOTH);
+		if (!isset($this->MESSAGES, $this->UIDNEXT)) {
+			return null;
+		}
+		return \md5('FolderHash/'. \implode('-', [
+				$this->FolderName,
+				$this->MESSAGES,
+				$this->UIDNEXT,
+				$this->UIDVALIDITY,
+				$this->HIGHESTMODSEQ,
+				$sClientHash,
+				\MailSo\Config::$MessageListPermanentFilter
+		]));
 	}
 
 	public function setStatus(string $name, $value) : bool
@@ -157,6 +168,7 @@ trait Status
 			}
 			// SELECT or EXAMINE command
 			else if (\is_numeric($oResponse->ResponseList[1]) && \is_string($oResponse->ResponseList[2])) {
+				// UNSEEN deprecated in IMAP4rev2
 				if ('UNSEEN' !== $oResponse->ResponseList[2]) {
 					$bResult |= $this->setStatus($oResponse->ResponseList[2], $oResponse->ResponseList[1]);
 				}

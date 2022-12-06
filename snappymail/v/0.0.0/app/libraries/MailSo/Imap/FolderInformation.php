@@ -19,27 +19,17 @@ class FolderInformation implements \JsonSerializable
 {
 	use Traits\Status;
 
-	/**
-	 * @var string
-	 */
-	public $FolderName;
+	public bool $IsWritable;
 
 	/**
-	 * @var bool
-	 */
-	public $IsWritable;
-
-	/**
-	 * @var array
 	 * Message flags
 	 */
-	public $Flags = array();
+	public array $Flags = array();
 
 	/**
-	 * @var array
 	 * NOTE: Empty when FolderExamine is used
 	 */
-	public $PermanentFlags = array();
+	public array $PermanentFlags = array();
 
 	function __construct(string $sFolderName, bool $bIsWritable)
 	{

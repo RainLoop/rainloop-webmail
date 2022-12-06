@@ -95,9 +95,9 @@ class Folder implements \JsonSerializable
 		return $this->bExists && $this->oImapFolder->IsSelectable();
 	}
 
-	public function Status() : array
+	public function Hash(string $sClientHash) : ?string
 	{
-		return $this->oImapFolder->getStatusItems();
+		return $this->oImapFolder->getHash($sClientHash);
 	}
 
 	public function IsInbox() : bool
@@ -206,15 +206,12 @@ class Folder implements \JsonSerializable
 	{
 /*
 		$aExtended = null;
-		$aStatus = $this->oImapFolder->getStatusItems();
-		if ($aStatus && isset($aStatus['MESSAGES'], $aStatus['UNSEEN'], $aStatus['UIDNEXT'])) {
+		if (isset($this->oImapFolder->MESSAGES, $this->oImapFolder->UNSEEN, $this->oImapFolder->UIDNEXT)) {
 			$aExtended = array(
-				'totalEmails' => (int) $aStatus['MESSAGES'],
-				'unreadEmails' => (int) $aStatus['UNSEEN'],
-				'UidNext' => (int) $aStatus['UIDNEXT'],
-//				'Hash' => $this->MailClient()->GenerateFolderHash(
-//					$this->FullName(), $aStatus['MESSAGES'], $aStatus['UIDNEXT'],
-//						\max(0, $aStatus['HIGHESTMODSEQ'] ?? $aStatus['UIDVALIDITY'])
+				'totalEmails' => (int) $this->oImapFolder->MESSAGES,
+				'unreadEmails' => (int) $this->oImapFolder->UNSEEN,
+				'UidNext' => (int) $this->oImapFolder->UIDNEXT,
+//				'Hash' => $this->Hash($this->MailClient()->GenerateImapClientHash())
 			);
 		}
 */

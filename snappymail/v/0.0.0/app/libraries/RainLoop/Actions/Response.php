@@ -250,14 +250,9 @@ trait Response
 		{
 			$aResult = $mResponse->jsonSerialize();
 
-			$aStatus = $mResponse->Status();
-			if ($aStatus && isset($aStatus['MESSAGES'], $aStatus['UIDNEXT'])) {
-				$aResult['Hash'] = $this->MailClient()->GenerateFolderHash(
-					$mResponse->FullName(),
-					$aStatus['MESSAGES'],
-					$aStatus['UIDNEXT'],
-					\max(0, $aStatus['HIGHESTMODSEQ'] ?? $aStatus['UIDVALIDITY'])
-				);
+			$sHash = $mResponse->Hash($this->MailClient()->GenerateImapClientHash());
+			if ($sHash) {
+				$aResult['Hash'] = $sHash;
 			}
 
 			if (null === $this->aCheckableFolder) {
