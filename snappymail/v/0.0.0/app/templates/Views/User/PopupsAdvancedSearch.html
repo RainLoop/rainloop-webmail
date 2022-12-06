@@ -3,107 +3,105 @@
 	<h3 data-i18n="SEARCH/TITLE_ADV"></h3>
 </header>
 <form id="advancedsearchform" class="modal-body form-horizontal" action="#/" autocomplete="off" spellcheck="false" data-bind="submit: submitForm">
-	<div class="row">
-		<div class="span4">
-			<div class="control-group">
-				<label data-i18n="GLOBAL/FROM"></label>
-				<input type="text" autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off"
-					data-bind="value: from">
-			</div>
-			<div class="control-group">
-				<label data-i18n="GLOBAL/TO"></label>
-				<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off"
-					data-bind="value: to">
-			</div>
-			<div class="control-group">
-				<label data-i18n="GLOBAL/SUBJECT"></label>
-				<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off"
-					data-bind="value: subject">
-			</div>
-			<div class="control-group">
-				<label data-i18n="SEARCH/TEXT"></label>
-				<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off"
-					data-bind="value: text">
-			</div>
-			<!-- ko if: showKeywords -->
-			<div class="control-group">
-				<label data-i18n="SEARCH/KEYWORD"></label>
-				<div data-bind="component: {
-					name: 'Select',
-					params: {
-						options: keywords,
-						value: keyword,
-						optionsText: 'label',
-						optionsValue: 'value'
-					}
-				}"></div>
-			</div>
-			<!-- /ko -->
+	<div>
+		<div class="control-group">
+			<label data-i18n="GLOBAL/FROM"></label>
+			<input type="text" autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off"
+				data-bind="value: from">
 		</div>
-		<div class="span4">
-			<div class="control-group">
-				<label data-i18n="SEARCH/DATE"></label>
+		<div class="control-group">
+			<label data-i18n="GLOBAL/TO"></label>
+			<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off"
+				data-bind="value: to">
+		</div>
+		<div class="control-group">
+			<label data-i18n="GLOBAL/SUBJECT"></label>
+			<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off"
+				data-bind="value: subject">
+		</div>
+		<div class="control-group">
+			<label data-i18n="SEARCH/TEXT"></label>
+			<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off"
+				data-bind="value: text">
+		</div>
+		<!-- ko if: showKeywords -->
+		<div class="control-group">
+			<label data-i18n="SEARCH/KEYWORD"></label>
+			<div data-bind="component: {
+				name: 'Select',
+				params: {
+					options: keywords,
+					value: keyword,
+					optionsText: 'label',
+					optionsValue: 'value'
+				}
+			}"></div>
+		</div>
+		<!-- /ko -->
+	</div>
+	<div>
+		<div class="control-group">
+			<label data-i18n="SEARCH/DATE"></label>
+			<div data-bind="component: {
+				name: 'Select',
+				params: {
+					options: selectedDates,
+					value: selectedDateValue,
+					optionsText: 'name',
+					optionsValue: 'id'
+				}
+			}"></div>
+		</div>
+		<div class="control-group">
+			<label data-i18n="SEARCH/REPLIED"></label>
+			<div data-bind="component: {
+				name: 'Select',
+				params: {
+					options: repliedOptions,
+					value: repliedValue,
+					optionsText: 'name',
+					optionsValue: 'id'
+				}
+			}"></div>
+		</div>
+		<!-- ko if: showMultisearch -->
+		<div class="control-group">
+			<label data-i18n="SEARCH/SUBFOLDERS"></label>
+			<div data-bind="component: {
+				name: 'Select',
+				params: {
+					options: selectedTree,
+					value: selectedTreeValue,
+					optionsText: 'name',
+					optionsValue: 'id'
+				}
+			}"></div>
+		</div>
+		<!-- /ko -->
+		<div class="control-group">
+			<label></label>
+			<div>
 				<div data-bind="component: {
-					name: 'Select',
+					name: 'Checkbox',
 					params: {
-						options: selectedDates,
-						value: selectedDateValue,
-						optionsText: 'name',
-						optionsValue: 'id'
+						label: 'SEARCH/UNSEEN',
+						value: unseen
 					}
 				}"></div>
-			</div>
-			<div class="control-group">
-				<label data-i18n="SEARCH/REPLIED"></label>
 				<div data-bind="component: {
-					name: 'Select',
+					name: 'Checkbox',
 					params: {
-						options: repliedOptions,
-						value: repliedValue,
-						optionsText: 'name',
-						optionsValue: 'id'
+						label: 'SEARCH/FLAGGED',
+						value: starred
 					}
 				}"></div>
-			</div>
-			<!-- ko if: showMultisearch -->
-			<div class="control-group">
-				<label data-i18n="SEARCH/SUBFOLDERS"></label>
 				<div data-bind="component: {
-					name: 'Select',
+					name: 'Checkbox',
 					params: {
-						options: selectedTree,
-						value: selectedTreeValue,
-						optionsText: 'name',
-						optionsValue: 'id'
+						label: 'SEARCH/HAS_ATTACHMENT',
+						value: hasAttachment
 					}
 				}"></div>
-			</div>
-			<!-- /ko -->
-			<div class="control-group">
-				<label></label>
-				<div>
-					<div data-bind="component: {
-						name: 'Checkbox',
-						params: {
-							label: 'SEARCH/UNSEEN',
-							value: unseen
-						}
-					}"></div>
-					<div data-bind="component: {
-						name: 'Checkbox',
-						params: {
-							label: 'SEARCH/FLAGGED',
-							value: starred
-						}
-					}"></div>
-					<div data-bind="component: {
-						name: 'Checkbox',
-						params: {
-							label: 'SEARCH/HAS_ATTACHMENT',
-							value: hasAttachment
-						}
-					}"></div>
-				</div>
 			</div>
 		</div>
 	</div>
