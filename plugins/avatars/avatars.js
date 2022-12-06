@@ -156,7 +156,7 @@
 
 	ko.bindingHandlers.fromPic = {
 		init: (element, self, dummy, msg) => {
-			if (msg) {
+			if (msg?.from?.[0]) {
 				let url = getAvatar(msg),
 					from = msg.from[0],
 					fn = url=>{element.src = url};
