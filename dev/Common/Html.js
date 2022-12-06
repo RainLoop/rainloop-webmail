@@ -641,8 +641,8 @@ export class HtmlEditor {
 					this.blurTrigger();
 					this.onModeChange?.(!this.isPlain());
 				});
-				onReady.forEach(fn => fn());
 				this.onReady = fn => fn();
+				onReady.forEach(fn => fn());
 			});
 		}
 	}

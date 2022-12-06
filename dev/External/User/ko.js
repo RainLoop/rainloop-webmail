@@ -81,8 +81,8 @@ Object.assign(ko.bindingHandlers, {
 			let editor = null;
 
 			const fValue = fValueAccessor(),
-				fUpdateEditorValue = () => fValue?.__editor?.setHtmlOrPlain(fValue()),
-				fUpdateKoValue = () => fValue?.__editor && fValue(fValue.__editor.getDataWithHtmlMark()),
+				fUpdateEditorValue = () => fValue.__editor?.setHtmlOrPlain(fValue()),
+				fUpdateKoValue = () => fValue.__editor && fValue(fValue.__editor.getDataWithHtmlMark()),
 				fOnReady = () => {
 					fValue.__editor = editor;
 					fUpdateEditorValue();
