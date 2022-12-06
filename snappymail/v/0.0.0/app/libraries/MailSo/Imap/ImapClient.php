@@ -184,7 +184,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				$this->sendRaw($sAuth);
 				$oResponse = $this->getResponse();
 			}
-			else if ('PLAIN' === $type || 'OAUTHBEARER' === $type)
+			else if ('PLAIN' === $type || 'OAUTHBEARER' === $type /*|| 'PLAIN-CLIENTTOKEN' === $type*/)
 			{
 				$sAuth = $SASL->authenticate($sLogin, $sPassword);
 				$this->oLogger && $this->oLogger->AddSecret($sAuth);
