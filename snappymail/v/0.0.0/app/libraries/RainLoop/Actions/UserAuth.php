@@ -246,31 +246,33 @@ trait UserAuth
 				 * Server side control/kickout of logged in sessions
 				 * https://github.com/the-djmaze/snappymail/issues/151
 				 */
-				if (empty($_COOKIE[Utils::SESSION_TOKEN])) {
+				$sToken = Utils::GetSessionToken(false);
+				if (!$sToken) {
 //					\MailSo\Base\Http::StatusHeader(401);
-					$this->Logout(true);
-//					$sAdditionalMessage = $this->StaticI18N('SESSION_UNDEFINED');
-					\SnappyMail\Log::notice('TOKENS', 'SESSION_TOKEN empty');
-					throw new ClientException(Notifications::InvalidToken, null, 'Session undefined');
-				}
-				$oMainAuthAccount = MainAccount::NewInstanceFromTokenArray(
-					$this,
-					$aData,
-					$bThrowExceptionOnFalse
-				);
-				$oMainAuthAccount || \SnappyMail\Log::notice('TOKENS', 'AUTH_SPEC_TOKEN_KEY invalid');
-				$sToken = $oMainAuthAccount ? Utils::GetSessionToken(false) : null;
-				$sTokenValue = $sToken ? $this->StorageProvider()->Get($oMainAuthAccount, StorageType::SESSION, $sToken) : null;
-				if ($oMainAuthAccount && $sTokenValue) {
-					$this->oMainAuthAccount = $oMainAuthAccount;
-				} else {
-					if ($oMainAuthAccount) {
-						$sToken || \SnappyMail\Log::notice('TOKENS', 'SESSION_TOKEN not found');
-						if ($sToken) {
-							$oMainAuthAccount && $this->StorageProvider()->Clear($oMainAuthAccount, StorageType::SESSION, $sToken);
-							$sTokenValue || \SnappyMail\Log::notice('TOKENS', 'SESSION_TOKEN value invalid: ' . \gettype($sTokenValue));
-						}
+					if (isset($_COOKIE[Utils::SESSION_TOKEN])) {
+						\SnappyMail\Log::notice('TOKENS', 'SESSION_TOKEN invalid');
+					} else {
+						\SnappyMail\Log::notice('TOKENS', 'SESSION_TOKEN not set');
 					}
+				} else {
+					$oMainAuthAccount = MainAccount::NewInstanceFromTokenArray(
+						$this,
+						$aData,
+						$bThrowExceptionOnFalse
+					);
+					if ($oMainAuthAccount) {
+						$sTokenValue = $this->StorageProvider()->Get($oMainAuthAccount, StorageType::SESSION, $sToken);
+						if ($sTokenValue) {
+							$this->oMainAuthAccount = $oMainAuthAccount;
+						} else {
+							$this->StorageProvider()->Clear($oMainAuthAccount, StorageType::SESSION, $sToken);
+							\SnappyMail\Log::notice('TOKENS', 'SESSION_TOKEN value invalid: ' . \gettype($sTokenValue));
+						}
+					} else {
+						\SnappyMail\Log::notice('TOKENS', 'AUTH_SPEC_TOKEN_KEY invalid');
+					}
+				}
+				if (!$this->oMainAuthAccount) {
 					Utils::ClearCookie(Utils::SESSION_TOKEN);
 //					\MailSo\Base\Http::StatusHeader(401);
 					$this->Logout(true);

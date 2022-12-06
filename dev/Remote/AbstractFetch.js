@@ -10,7 +10,8 @@ const getURL = (add = '') => serverRequest('Json') + pString(add),
 checkResponseError = data => {
 	const err = data ? data.ErrorCode : null;
 	if (Notification.InvalidToken === err) {
-		alert(getNotification(err));
+		console.error(getNotification(err));
+//		alert(getNotification(err));
 		rl.logoutReload();
 	} else if ([
 			Notification.AuthError,
