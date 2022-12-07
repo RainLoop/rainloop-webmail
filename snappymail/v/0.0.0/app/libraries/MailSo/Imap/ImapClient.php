@@ -26,8 +26,8 @@ class ImapClient extends \MailSo\Net\NetClient
 	use Commands\Metadata;
 	use Commands\Quota;
 
-	const
-		TAG_PREFIX = 'TAG';
+	public
+		$TAG_PREFIX = 'TAG';
 
 	/**
 	 * @var int
@@ -606,7 +606,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 	protected function getCurrentTag() : string
 	{
-		return self::TAG_PREFIX.$this->iTagCount;
+		return $this->TAG_PREFIX.$this->iTagCount;
 	}
 
 	public function EscapeString(?string $sStringForEscape) : string

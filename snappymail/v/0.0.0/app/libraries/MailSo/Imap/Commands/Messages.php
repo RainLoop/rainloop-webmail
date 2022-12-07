@@ -287,6 +287,7 @@ trait Messages
 	 * @throws \MailSo\RuntimeException
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
+	 * $sStoreAction = \MailSo\Imap\Enumerations\StoreAction::ADD_FLAGS_SILENT
 	 */
 	public function MessageStoreFlag(SequenceSet $oRange, array $aInputStoreItems, string $sStoreAction) : ?ResponseCollection
 	{

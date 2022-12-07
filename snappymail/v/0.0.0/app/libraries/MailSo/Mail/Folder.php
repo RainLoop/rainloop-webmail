@@ -20,20 +20,11 @@ use MailSo\Imap\Enumerations\MetadataKeys;
  */
 class Folder implements \JsonSerializable
 {
-	/**
-	 * @var bool
-	 */
-	private $bExists;
+	private bool $bExists;
 
-	/**
-	 * @var bool
-	 */
-	private $bSubscribed;
+	private bool $bSubscribed;
 
-	/**
-	 * @var \MailSo\Imap\Folder
-	 */
-	private $oImapFolder;
+	private \MailSo\Imap\Folder $oImapFolder;
 
 	/**
 	 * @throws \InvalidArgumentException
@@ -70,7 +61,7 @@ class Folder implements \JsonSerializable
 		return $this->oImapFolder->NameRaw();
 	}
 
-	public function Delimiter() : string
+	public function Delimiter() : ?string
 	{
 		return $this->oImapFolder->Delimiter();
 	}

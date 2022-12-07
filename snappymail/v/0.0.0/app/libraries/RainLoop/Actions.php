@@ -1096,7 +1096,7 @@ class Actions
 
 		if (!$this->MailClient()->IsLoggined()) {
 			try {
-				$oAccount->ImapConnectAndLoginHelper($this->oPlugins, $this->MailClient(), $this->oConfig);
+				$oAccount->ImapConnectAndLoginHelper($this->oPlugins, $this->MailClient()->ImapClient(), $this->oConfig);
 			} catch (\MailSo\Net\Exceptions\ConnectionException $oException) {
 				throw new Exceptions\ClientException(Notifications::ConnectionError, $oException);
 			} catch (\Throwable $oException) {

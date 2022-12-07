@@ -20,20 +20,14 @@ class Folder
 	// RFC5258 Response data STATUS items when using LIST-EXTENDED
 	use Traits\Status;
 
-	/**
-	 * @var string
-	 */
-	private $sDelimiter;
+	private ?string $sDelimiter;
 
-	/**
-	 * @var array
-	 */
-	private $aFlagsLowerCase;
+	private array $aFlagsLowerCase;
 
 	/**
 	 * RFC 5464
 	 */
-	private $aMetadata = array();
+	private array $aMetadata = array();
 
 	/**
 	 * @throws \InvalidArgumentException
@@ -57,7 +51,7 @@ class Folder
 
 	public function setFlags(array $aFlags) : void
 	{
-		$this->aFlagsLowerCase = \array_map('strtolower', $aFlags);
+		$this->aFlagsLowerCase = \array_map('mb_strtolower', $aFlags);
 	}
 
 	public function setDelimiter(?string $sDelimiter) : void

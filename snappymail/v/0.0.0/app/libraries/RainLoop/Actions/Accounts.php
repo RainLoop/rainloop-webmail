@@ -111,6 +111,47 @@ trait Accounts
 	}
 
 	/**
+	 * Imports all mail from AdditionalAccount into MainAccount
+	 */
+	public function DoAccountImport(): array
+	{
+		$sEmail = \MailSo\Base\Utils::IdnToAscii(\trim($this->GetActionParam('email', '')), true);
+		if (!\strlen($sEmail)) {
+			throw new ClientException(Notifications::AccountDoesNotExist);
+		}
+
+		$oMainAccount = $this->getMainAccountFromToken();
+		$oLogger = $this->Logger();
+
+		$aAccounts = $this->GetAccounts($oMainAccount);
+		if (!isset($aAccounts[$sEmail])) {
+			throw new ClientException(Notifications::AccountDoesNotExist);
+		}
+		$oAccount = AdditionalAccount::NewInstanceFromTokenArray(
+			$this, $aAccounts[$sEmail]
+		);
+		if (!$oAccount) {
+			throw new ClientException(Notifications::AccountDoesNotExist);
+		}
+
+		$oImapTarget = new \MailSo\Imap\ImapClient;
+		$oImapTarget->SetLogger($oLogger);
+		$this->imapConnect($oMainAccount, false, $oImapTarget);
+
+		$oImapSource = new \MailSo\Imap\ImapClient;
+		$oImapSource->SetLogger($oLogger);
+		$this->imapConnect($oAccount, false, $oImapSource);
+
+		$oSync = new \SnappyMail\Imap\Sync;
+		$oSync->oImapSource = $oImapSource;
+		$oSync->oImapTarget = $oImapTarget;
+
+		$rootfolder = $this->GetActionParam('rootfolder', '') ?: $sEmail;
+		$oSync->import($rootfolder);
+		exit;
+	}
+
+	/**
 	 * @throws \MailSo\RuntimeException
 	 */
 	public function DoAccountDelete(): array

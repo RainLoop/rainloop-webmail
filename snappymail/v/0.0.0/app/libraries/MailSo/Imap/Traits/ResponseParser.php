@@ -401,8 +401,7 @@ trait ResponseParser
 			return false;
 		}
 
-		$rImapLiteralStream =
-			\MailSo\Base\StreamWrappers\Literal::CreateStream($this->ConnectionResource(), $iLiteralLen);
+		$rImapLiteralStream = \MailSo\Base\StreamWrappers\Literal::CreateStream($this->ConnectionResource(), $iLiteralLen);
 
 		$this->writeLog('Start Callback for '.$sParent.' / '.$sLiteralAtomUpperCase.
 			' - try to read '.$iLiteralLen.' bytes.', \LOG_INFO);
@@ -411,7 +410,7 @@ trait ResponseParser
 
 		try
 		{
-			$this->aFetchCallbacks[$sFetchKey]($sParent, $sLiteralAtomUpperCase, $rImapLiteralStream);
+			$this->aFetchCallbacks[$sFetchKey]($sParent, $sLiteralAtomUpperCase, $rImapLiteralStream, $iLiteralLen);
 		}
 		catch (\Throwable $oException)
 		{
@@ -445,12 +444,10 @@ trait ResponseParser
 			\fclose($rImapLiteralStream);
 
 			if (0 < $iNotReadLiteralLen) {
-				$this->writeLog('Not read literal size is '.$iNotReadLiteralLen.' bytes.',
-					\LOG_WARNING);
+				$this->writeLog('Not read literal size is '.$iNotReadLiteralLen.' bytes.', \LOG_WARNING);
 			}
 		} else {
-			$this->writeLog('Literal stream is not resource after callback.',
-				\LOG_WARNING);
+			$this->writeLog('Literal stream is not resource after callback.', \LOG_WARNING);
 		}
 
 		$this->bRunningCallback = false;

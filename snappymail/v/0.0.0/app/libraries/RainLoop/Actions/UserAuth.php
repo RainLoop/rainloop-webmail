@@ -139,7 +139,7 @@ trait UserAuth
 		}
 
 		try {
-			$this->CheckMailConnection($oAccount, true);
+			$this->imapConnect($oAccount, true);
 			if ($bMainAccount) {
 				$bSignMe && $this->SetSignMeToken($oAccount);
 				$this->StorageProvider()->Put($oAccount, StorageType::SESSION, Utils::GetSessionToken(), 'true');
@@ -188,7 +188,8 @@ trait UserAuth
 			}
 
 			// Test the login
-			$this->CheckMailConnection($oAccount);
+			$oImapClient = new \MailSo\Imap\ImapClient;
+			$this->imapConnect($oAccount, false, $oImapClient);
 
 			$this->SetAdditionalAuthToken($oAccount);
 			return true;
@@ -380,7 +381,7 @@ trait UserAuth
 				if (!$oAccount) {
 					throw new \RuntimeException('token has no account');
 				}
-				$this->CheckMailConnection($oAccount);
+				$this->imapConnect($oAccount);
 				// Update lifetime
 				$this->SetSignMeToken($oAccount);
 				return $oAccount;
@@ -440,10 +441,13 @@ trait UserAuth
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	protected function CheckMailConnection(Account $oAccount, bool $bAuthLog = false): void
+	protected function imapConnect(Account $oAccount, bool $bAuthLog = false, \MailSo\Imap\ImapClient $oImapClient = null): void
 	{
 		try {
-			$oAccount->ImapConnectAndLoginHelper($this->Plugins(), $this->MailClient(), $this->Config());
+			if (!$oImapClient) {
+				$oImapClient = $this->MailClient()->ImapClient();
+			}
+			$oAccount->ImapConnectAndLoginHelper($this->Plugins(), $oImapClient, $this->Config());
 		} catch (ClientException $oException) {
 			throw $oException;
 		} catch (\MailSo\Net\Exceptions\ConnectionException $oException) {
