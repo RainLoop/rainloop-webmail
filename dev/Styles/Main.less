@@ -70,6 +70,16 @@ dialog:not(.animate) {
 	top: -25%;
 }
 
+/**
+ * https://github.com/the-djmaze/snappymail/issues/686
+@media screen and (max-width: 999px) {
+ */
+.rl-mobile dialog {
+	margin: 0 auto;
+	max-height: calc(100vh - 100px);
+	width: 100%;
+}
+
 dialog > header {
 	padding: 9px 15px;
 	border-bottom: 1px solid var(--border-color, #ddd);
