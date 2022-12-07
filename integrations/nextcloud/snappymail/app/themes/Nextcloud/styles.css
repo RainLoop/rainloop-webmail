@@ -123,9 +123,9 @@
 	/* FOLDERS */
 	--folders-color: var(--color-main-text);
 	--folders-disabled-color: #999;
-	--folders-selected-color: var(--color-primary);
+	--folders-selected-color: var(--color-primary-text);
 	--folders-selected-bg-color: var(--color-background-darker);
-	--folders-focused-color: var(--color-primary);
+	--folders-focused-color: var(--color-primary-text);
 	--folders-focused-bg-color: var(--color-background-dark);
 	--folders-hover-color: var(--color-primary-hover);
 	--folders-hover-bg-color: var(--color-background-hover);
