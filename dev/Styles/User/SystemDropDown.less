@@ -69,13 +69,25 @@
 		white-space: nowrap;
 	}
 
-	.counter {
-		display: inline-block;
-	}
-
 	.dropdown-menu a.account-item {
 		padding-right: 5px;
 	}
+
+	span[data-unread]::after {
+		content: attr(data-unread);
+		background-color: var(--unread-count-bg-color, #999);
+		border-radius: 1em;
+		color: var(--unread-count-color, #fff);
+		font-size: 11px;
+		line-height: 1.5em;
+		min-width: 1.7em;
+		padding: 1px 4px;
+		text-align: center;
+		text-shadow: 0 -1px 0 rgba(0,0,0,.25);
+		position: absolute;
+		right: 3px;
+	}
+
 }
 
 @keyframes equaliserBar {

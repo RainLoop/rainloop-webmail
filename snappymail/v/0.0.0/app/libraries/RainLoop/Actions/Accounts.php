@@ -110,37 +110,50 @@ trait Accounts
 		return $this->TrueResponse(__FUNCTION__);
 	}
 
-	/**
-	 * Imports all mail from AdditionalAccount into MainAccount
-	 */
-	public function DoAccountImport(): array
+	protected function loadAdditionalAccountImapClient(string $sEmail): \MailSo\Imap\ImapClient
 	{
-		$sEmail = \MailSo\Base\Utils::IdnToAscii(\trim($this->GetActionParam('email', '')), true);
+		$sEmail = \MailSo\Base\Utils::IdnToAscii(\trim($sEmail), true);
 		if (!\strlen($sEmail)) {
 			throw new ClientException(Notifications::AccountDoesNotExist);
 		}
 
 		$oMainAccount = $this->getMainAccountFromToken();
-		$oLogger = $this->Logger();
-
 		$aAccounts = $this->GetAccounts($oMainAccount);
 		if (!isset($aAccounts[$sEmail])) {
 			throw new ClientException(Notifications::AccountDoesNotExist);
 		}
-		$oAccount = AdditionalAccount::NewInstanceFromTokenArray(
-			$this, $aAccounts[$sEmail]
-		);
+		$oAccount = AdditionalAccount::NewInstanceFromTokenArray($this, $aAccounts[$sEmail]);
 		if (!$oAccount) {
 			throw new ClientException(Notifications::AccountDoesNotExist);
 		}
 
-		$oImapTarget = new \MailSo\Imap\ImapClient;
-		$oImapTarget->SetLogger($oLogger);
-		$this->imapConnect($oMainAccount, false, $oImapTarget);
+		$oImapClient = new \MailSo\Imap\ImapClient;
+		$oImapClient->SetLogger($this->Logger());
+		$this->imapConnect($oAccount, false, $oImapClient);
+		return $oImapClient;
+	}
 
-		$oImapSource = new \MailSo\Imap\ImapClient;
-		$oImapSource->SetLogger($oLogger);
-		$this->imapConnect($oAccount, false, $oImapSource);
+	public function DoAccountUnread(): array
+	{
+		$oImapClient = $this->loadAdditionalAccountImapClient($this->GetActionParam('email', ''));
+		$oInfo = $oImapClient->FolderStatus('INBOX');
+		return $this->DefaultResponse(__FUNCTION__, [
+			'unreadEmails' => \max(0, $oInfo->UNSEEN)
+		]);
+	}
+
+	/**
+	 * Imports all mail from AdditionalAccount into MainAccount
+	 */
+	public function DoAccountImport(): array
+	{
+		$sEmail = $this->GetActionParam('email', '');
+		$oImapSource = $this->loadAdditionalAccountImapClient($sEmail);
+
+		$oMainAccount = $this->getMainAccountFromToken();
+		$oImapTarget = new \MailSo\Imap\ImapClient;
+		$oImapTarget->SetLogger($this->Logger());
+		$this->imapConnect($oMainAccount, false, $oImapTarget);
 
 		$oSync = new \SnappyMail\Imap\Sync;
 		$oSync->oImapSource = $oImapSource;

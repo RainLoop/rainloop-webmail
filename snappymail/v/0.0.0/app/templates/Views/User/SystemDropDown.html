@@ -19,12 +19,8 @@
 			<!-- ko foreach: accounts -->
 				<li role="presentation">
 					<a class="account-item" href="#" data-bind="click: $root.accountClick">
-<!--						<b class="pull-right counter" data-bind="visible: count()">
-							<span data-bind="text: count, visible: 100 > count()"></span>
-							<span data-bind="visible: 99 < count()">99+</span>
-						</b>-->
 						<i class="fontastic" data-bind="text: $root.accountEmail() === email ? '✔' : '👤'"></i>
-						<span class="email-title" data-bind="text: name || email, attr: {title: email}"></span>
+						<span class="email-title" data-bind="text: name || email, attr: {title: email, 'data-unread': unreadEmails}"></span>
 					</a>
 				</li>
 			<!-- /ko -->
