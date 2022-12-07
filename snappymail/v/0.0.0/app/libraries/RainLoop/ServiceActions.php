@@ -151,15 +151,15 @@ class ServiceActions
 				if (\method_exists($this->oActions, $sMethodName) &&
 					\is_callable(array($this->oActions, $sMethodName)))
 				{
-					$this->Plugins()->RunHook('json.action-pre-call', array($sAction));
+					$sAction && $this->Plugins()->RunHook('json.action-pre-call', array($sAction));
 					$aResponseItem = $this->oActions->{$sMethodName}();
-					$this->Plugins()->RunHook('json.action-post-call', array($sAction, &$aResponseItem));
+					$sAction && $this->Plugins()->RunHook('json.action-post-call', array($sAction, &$aResponseItem));
 				}
 				else if ($this->Plugins()->HasAdditionalJson($sMethodName))
 				{
-					$this->Plugins()->RunHook('json.action-pre-call', array($sAction));
+					$sAction && $this->Plugins()->RunHook('json.action-pre-call', array($sAction));
 					$aResponseItem = $this->Plugins()->RunAdditionalJson($sMethodName);
-					$this->Plugins()->RunHook('json.action-post-call', array($sAction, &$aResponseItem));
+					$sAction && $this->Plugins()->RunHook('json.action-post-call', array($sAction, &$aResponseItem));
 				}
 			}
 
@@ -184,7 +184,7 @@ class ServiceActions
 			$aResponseItem['Time'] = (int) ((\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000);
 		}
 
-		$this->Plugins()->RunHook('filter.json-response', array($sAction, &$aResponseItem));
+		$sAction && $this->Plugins()->RunHook('filter.json-response', array($sAction, &$aResponseItem));
 
 		if (!\headers_sent()) {
 			\header('Content-Type: application/json; charset=utf-8');
