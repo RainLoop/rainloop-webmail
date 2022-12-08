@@ -19,13 +19,10 @@
 	z-index: 103;
 
 	.email-title {
-		display: inline-block;
 		max-width: 50vw;
-		text-align: left;
 		text-overflow: ellipsis;
 		overflow: hidden;
-		margin-right: 28px;
-		vertical-align: middle;
+		padding-right: 32px;
 	}
 
 	.audioPlace {
@@ -69,11 +66,7 @@
 		white-space: nowrap;
 	}
 
-	.dropdown-menu a.account-item {
-		padding-right: 5px;
-	}
-
-	span[data-unread]::after {
+	a[data-unread]::after {
 		content: attr(data-unread);
 		background-color: var(--unread-count-bg-color, #999);
 		border-radius: 1em;
