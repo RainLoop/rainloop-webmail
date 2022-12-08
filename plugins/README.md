@@ -240,6 +240,25 @@ $Plugin->addHook('hook.name', 'functionName');
 		\RainLoop\Model\Account $oAccount
 		array &$aCache
 
+## Json service actions
+Called by RainLoop\ServiceActions::ServiceJson()
+
+### json.before-{actionname}
+	params: none
+
+### json.after-{actionname}
+	params:
+		array &$aResponse
+
+### json.action-post-call
+	Obsolete, use json.after-{actionname}
+
+### json.action-pre-call
+	Obsolete, use json.before-{actionname}
+
+### filter.json-response
+	Obsolete, use json.after-{actionname}
+
 ## Others
 
 ### filter.account
@@ -284,11 +303,6 @@ $Plugin->addHook('hook.name', 'functionName');
 ### filter.http-paths
 	params:
 		array &$aPaths
-
-### filter.json-response
-	params:
-		string $sAction
-		array &$aResponseItem
 
 ### filter.message-html
 	params:
@@ -368,16 +382,7 @@ $Plugin->addHook('hook.name', 'functionName');
 
 ### filter.upload-response
 	params:
-		array &$aResponseItem
-
-### json.action-post-call
-	params:
-		string $sAction
-		array &$aResponseItem
-
-### json.action-pre-call
-	params:
-		string $sAction
+		array &$aResponse
 
 ### json.attachments
 	params:
@@ -413,7 +418,7 @@ $Plugin->addHook('hook.name', 'functionName');
 ### main.default-response
 	params:
 		string $sActionName
-		array &$aResponseItem
+		array &$aResponse
 
 ### main.default-response-data
 	params:

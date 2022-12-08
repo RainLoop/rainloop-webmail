@@ -7,8 +7,8 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
 		VERSION  = '1.4',
-		RELEASE  = '2022-12-07',
-		REQUIRED = '2.22.4',
+		RELEASE  = '2022-12-08',
+		REQUIRED = '2.23',
 		CATEGORY = 'Contacts',
 		LICENSE  = 'MIT',
 		DESCRIPTION = 'Show photo of sender in message and messages list (supports BIMI, Gravatar and identicon, Contacts is still TODO)';
@@ -25,20 +25,26 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 		// https://github.com/the-djmaze/snappymail/issues/714
 		if ($this->Config()->Get('plugin', 'service', true) || !$this->Config()->Get('plugin', 'delay', true)) {
-			$this->addHook('filter.json-response', 'FilterJsonResponse');
+			$this->addHook('json.after-message', 'JsonMessage');
+			$this->addHook('json.after-messagelist', 'JsonMessageList');
 		}
 	}
 
-	public function FilterJsonResponse(string $sAction, array &$aResponseItem)
+	public function JsonMessage(array &$aResponse)
 	{
-		if ('MessageList' === $sAction && !empty($aResponseItem['Result']['@Collection'])) {
-			foreach ($aResponseItem['Result']['@Collection'] as $id => $message) {
+		if (!empty($aResponse['Result']['From'])) {
+			$aResponse['Result']['Avatar'] = $this->encryptFrom($aResponse['Result']['From'][0]);
+		}
+	}
+
+	public function JsonMessageList(array &$aResponse)
+	{
+		if (!empty($aResponse['Result']['@Collection'])) {
+			foreach ($aResponse['Result']['@Collection'] as $id => $message) {
 				if (!empty($message['From'])) {
-					$aResponseItem['Result']['@Collection'][$id]['Avatar'] = $this->encryptFrom($message['From'][0]);
+					$aResponse['Result']['@Collection'][$id]['Avatar'] = $this->encryptFrom($message['From'][0]);
 				}
 			}
-		} else if ('Message' === $sAction && !empty($aResponseItem['Result']['From'])) {
-			$aResponseItem['Result']['Avatar'] = $this->encryptFrom($aResponseItem['Result']['From'][0]);
 		}
 	}
 

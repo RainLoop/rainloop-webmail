@@ -88,7 +88,7 @@ class ServiceActions
 	{
 		\ob_start();
 
-		$aResponseItem = null;
+		$aResponse = null;
 		$oException = null;
 
 		$_POST = \json_decode(\file_get_contents('php://input'), true);
@@ -151,20 +151,20 @@ class ServiceActions
 				if (\method_exists($this->oActions, $sMethodName) &&
 					\is_callable(array($this->oActions, $sMethodName)))
 				{
-					$sAction && $this->Plugins()->RunHook('json.action-pre-call', array($sAction));
-					$aResponseItem = $this->oActions->{$sMethodName}();
-					$sAction && $this->Plugins()->RunHook('json.action-post-call', array($sAction, &$aResponseItem));
+					$sAction && $this->Plugins()->RunHook("json.before-{$sAction}");
+					$aResponse = $this->oActions->{$sMethodName}();
 				}
 				else if ($this->Plugins()->HasAdditionalJson($sMethodName))
 				{
-					$sAction && $this->Plugins()->RunHook('json.action-pre-call', array($sAction));
-					$aResponseItem = $this->Plugins()->RunAdditionalJson($sMethodName);
-					$sAction && $this->Plugins()->RunHook('json.action-post-call', array($sAction, &$aResponseItem));
+					$sAction && $this->Plugins()->RunHook("json.before-{$sAction}");
+					$aResponse = $this->Plugins()->RunAdditionalJson($sMethodName);
+				}
+				if ($sAction && \is_array($aResponse)) {
+					$this->Plugins()->RunHook("json.after-{$sAction}", array(&$aResponse));
 				}
 			}
 
-			if (!\is_array($aResponseItem))
-			{
+			if (!\is_array($aResponse)) {
 				throw new Exceptions\ClientException(Notifications::UnknownError);
 			}
 		}
@@ -175,22 +175,19 @@ class ServiceActions
 				\SnappyMail\Log::warning('SERVICE', "- {$e->getMessage()} @ {$e->getFile()}#{$e->getLine()}");
 			}
 
-			$aResponseItem = $this->oActions->ExceptionResponse(
+			$aResponse = $this->oActions->ExceptionResponse(
 				empty($sAction) ? 'Unknown' : $sAction, $oException);
 		}
 
-		if (\is_array($aResponseItem))
-		{
-			$aResponseItem['Time'] = (int) ((\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000);
+		if (\is_array($aResponse)) {
+			$aResponse['Time'] = (int) ((\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000);
 		}
-
-		$sAction && $this->Plugins()->RunHook('filter.json-response', array($sAction, &$aResponseItem));
 
 		if (!\headers_sent()) {
 			\header('Content-Type: application/json; charset=utf-8');
 		}
 
-		$sResult = Utils::jsonEncode($aResponseItem);
+		$sResult = Utils::jsonEncode($aResponse);
 
 		$sObResult = \ob_get_clean();
 
@@ -257,7 +254,7 @@ class ServiceActions
 		$oConfig = $this->Config();
 
 		\ob_start();
-		$aResponseItem = null;
+		$aResponse = null;
 		try
 		{
 			$aFile = null;
@@ -301,27 +298,26 @@ class ServiceActions
 
 				$this->oActions->SetActionParams($aActionParams, $sAction);
 
-				$aResponseItem = $this->oActions->{$sAction}();
+				$aResponse = $this->oActions->{$sAction}();
 			}
 
-			if (!is_array($aResponseItem))
-			{
+			if (!is_array($aResponse)) {
 				throw new Exceptions\ClientException(Notifications::UnknownError);
 			}
+
+			$this->Plugins()->RunHook('filter.upload-response', array(&$aResponse));
 		}
 		catch (\Throwable $oException)
 		{
-			$aResponseItem = $this->oActions->ExceptionResponse($sAction, $oException);
+			$aResponse = $this->oActions->ExceptionResponse($sAction, $oException);
 		}
 
 		\header('Content-Type: application/json; charset=utf-8');
 
-		$this->Plugins()->RunHook('filter.upload-response', array(&$aResponseItem));
-		$sResult = Utils::jsonEncode($aResponseItem);
+		$sResult = Utils::jsonEncode($aResponse);
 
 		$sObResult = \ob_get_clean();
-		if (\strlen($sObResult))
-		{
+		if (\strlen($sObResult)) {
 			$this->Logger()->Write($sObResult, \LOG_ERR, 'OB-DATA');
 		}
 

@@ -6,9 +6,9 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'reCaptcha',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '2.12.1',
-		RELEASE  = '2022-02-14',
-		REQUIRED = '2.12.1',
+		VERSION  = '2.13',
+		RELEASE  = '2022-12-08',
+		REQUIRED = '2.23',
 		CATEGORY = 'General',
 		LICENSE  = 'MIT',
 		DESCRIPTION = 'A CAPTCHA (v2) is a program that can generate and grade tests that humans can pass but current computer programs cannot. For example, humans can read distorted text as the one shown below, but current computer programs can\'t. More info at https://developers.google.com/recaptcha';
@@ -22,8 +22,8 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		$this->addJs('js/recaptcha.js');
 
-		$this->addHook('json.action-pre-call', 'AjaxActionPreCall');
-		$this->addHook('filter.json-response', 'FilterAjaxResponse');
+		$this->addHook('json.before-login', 'BeforeLogin');
+		$this->addHook('json.after-login', 'AfterLogin');
 		$this->addHook('main.content-security-policy', 'ContentSecurityPolicy');
 	}
 
@@ -82,12 +82,9 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 	}
 
-	/**
-	 * @param string $sAction
-	 */
-	public function AjaxActionPreCall(string $sAction)
+	public function BeforeLogin()
 	{
-		if ('Login' === $sAction && 0 >= $this->getLimit()) {
+		if (0 >= $this->getLimit()) {
 			$bResult = false;
 
 			$HTTP = \SnappyMail\HTTP\Request::factory();
@@ -112,18 +109,18 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	/**
 	 * @param string $sAction
-	 * @param array $aResponseItem
+	 * @param array $aResponse
 	 */
-	public function FilterAjaxResponse(string $sAction, array &$aResponseItem)
+	public function AfterLogin(array &$aResponse)
 	{
-		if ('Login' === $sAction && $aResponseItem && isset($aResponseItem['Result'])) {
+		if (isset($aResponse['Result'])) {
 			$oCacher = $this->Manager()->Actions()->Cacher();
 			$iConfigLimit = (int) $this->Config()->Get('plugin', 'error_limit', 0);
 
 			$sKey = $this->getCaptchaCacherKey();
 
 			if (0 < $iConfigLimit && $oCacher && $oCacher->IsInited()) {
-				if (false === $aResponseItem['Result']) {
+				if (false === $aResponse['Result']) {
 					$iLimit = 0;
 					$sLimut = $oCacher->Get($sKey);
 					if (\strlen($sLimut) && \is_numeric($sLimut)) {
@@ -133,7 +130,7 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 					$oCacher->Set($sKey, ++$iLimit);
 
 					if ($iConfigLimit <= $iLimit) {
-						$aResponseItem['Captcha'] = true;
+						$aResponse['Captcha'] = true;
 					}
 				} else {
 					$oCacher->Delete($sKey);

@@ -9,7 +9,7 @@ class Manager
 	 */
 	private $oActions;
 
-	private
+	private array
 		$aHooks = array(),
 		$aCss = array([], []),
 		$aJs = array([], []),
@@ -19,10 +19,7 @@ class Manager
 		$aAdditionalJson = array(),
 		$aPlugins = array();
 
-	/**
-	 * @var bool
-	 */
-	private $bIsEnabled;
+	private bool $bIsEnabled;
 
 	/**
 	 * @var \MailSo\Log\Logger
@@ -284,16 +281,13 @@ class Manager
 	 */
 	public function AddHook(string $sHookName, $mCallbak) : self
 	{
-		if ($this->bIsEnabled && \is_callable($mCallbak))
-		{
-			if (!isset($this->aHooks[$sHookName]))
-			{
+		if ($this->bIsEnabled && \is_callable($mCallbak)) {
+			$sHookName = \strtolower($sHookName);
+			if (!isset($this->aHooks[$sHookName])) {
 				$this->aHooks[$sHookName] = array();
 			}
-
 			$this->aHooks[$sHookName][] = $mCallbak;
 		}
-
 		return $this;
 	}
 
@@ -333,22 +327,17 @@ class Manager
 
 	public function RunHook(string $sHookName, array $aArg = array(), bool $bLogHook = true) : self
 	{
-		if ($this->bIsEnabled)
-		{
-			if (isset($this->aHooks[$sHookName]))
-			{
-				if ($bLogHook)
-				{
+		if ($this->bIsEnabled) {
+			$sHookName = \strtolower($sHookName);
+			if (isset($this->aHooks[$sHookName])) {
+				if ($bLogHook) {
 					$this->WriteLog('Hook: '.$sHookName, \LOG_INFO);
 				}
-
-				foreach ($this->aHooks[$sHookName] as $mCallback)
-				{
+				foreach ($this->aHooks[$sHookName] as $mCallback) {
 					$mCallback(...$aArg);
 				}
 			}
 		}
-
 		return $this;
 	}
 
