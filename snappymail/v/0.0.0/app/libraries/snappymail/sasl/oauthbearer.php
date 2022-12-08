@@ -7,7 +7,7 @@
 
 namespace SnappyMail\SASL;
 
-class OAuth extends \SnappyMail\SASL
+class OAuthBearer extends \SnappyMail\SASL
 {
 	public function authenticate(string $username, string $passphrase, ?string $authzid = null) : string
 	{
