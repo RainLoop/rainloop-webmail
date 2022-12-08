@@ -146,7 +146,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 
 		$sPrevPassword = $this->jsonParam('PrevPassword');
-		if ($sPrevPassword !== $oAccount->Password()) {
+		if ($sPrevPassword !== $oAccount->IncPassword()) {
 			throw new ClientException(static::CurrentPasswordIncorrect, null, $oActions->StaticI18N('NOTIFICATIONS/CURRENT_PASSWORD_INCORRECT'));
 		}
 

@@ -89,7 +89,7 @@ class ChangePasswordDriverPDO
 				':newpass' => $encrypt_prefix . \ChangePasswordPlugin::encrypt($encrypt, $sNewPassword),
 				':domain' => \MailSo\Base\Utils::GetDomainFromEmail($sEmail),
 				':username' => \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail),
-				':login_name' => $oAccount->Login()
+				':login_name' => $oAccount->IncLogin()
 			);
 
 			$sql = $this->oConfig->Get('plugin', 'pdo_sql', '');

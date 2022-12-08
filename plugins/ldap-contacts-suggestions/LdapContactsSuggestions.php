@@ -222,8 +222,8 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 				'{email}' => $oAccount->Email(),
 				'{email:user}' => \MailSo\Base\Utils::GetAccountNameFromEmail($oAccount->Email()),
 				'{email:domain}' => $sDomain,
-				'{login}' => $oAccount->Login(),
-				'{imap:login}' => $oAccount->Login(),
+				'{login}' => $oAccount->IncLogin(),
+				'{imap:login}' => $oAccount->IncLogin(),
 				'{imap:host}' => $oAccount->Domain()->IncHost(),
 				'{imap:port}' => $oAccount->Domain()->IncPort()
 			));

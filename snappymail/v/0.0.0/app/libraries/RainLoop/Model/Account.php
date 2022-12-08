@@ -44,13 +44,9 @@ abstract class Account implements \JsonSerializable
 
 	public function IncLogin() : string
 	{
-		$sLogin = $this->sLogin;
-		if ($this->oDomain->IncShortLogin())
-		{
-			$sLogin = \MailSo\Base\Utils::GetAccountNameFromEmail($this->sLogin);
-		}
-
-		return $sLogin;
+		return $this->oDomain->IncShortLogin()
+			? \MailSo\Base\Utils::GetAccountNameFromEmail($this->sLogin)
+			: $this->sLogin;
 	}
 
 	public function IncPassword() : string
@@ -60,22 +56,22 @@ abstract class Account implements \JsonSerializable
 
 	public function OutLogin() : string
 	{
-		$sLogin = $this->sLogin;
-		if ($this->oDomain->OutShortLogin())
-		{
-			$sLogin = \MailSo\Base\Utils::GetAccountNameFromEmail($this->sLogin);
-		}
-
-		return $sLogin;
+		return $this->oDomain->OutShortLogin()
+			? \MailSo\Base\Utils::GetAccountNameFromEmail($this->sLogin)
+			: $this->sLogin;
 	}
 
+	// Deprecated
 	public function Login() : string
 	{
+		\trigger_error('Use \RainLoop\Model\Account->IncLogin()', \E_USER_DEPRECATED);
 		return $this->IncLogin();
 	}
 
+	// Deprecated
 	public function Password() : string
 	{
+		\trigger_error('Use \RainLoop\Model\Account->IncPassword()', \E_USER_DEPRECATED);
 		return $this->IncPassword();
 	}
 
@@ -209,7 +205,7 @@ abstract class Account implements \JsonSerializable
 					$oAccount->sProxyAuthUser = $aAccountHash['proxy']['user'];
 					$oAccount->sProxyAuthPassword = $aAccountHash['proxy']['pass'];
 				}
-				$oActions->Logger()->AddSecret($oAccount->Password());
+				$oActions->Logger()->AddSecret($oAccount->IncPassword());
 				$oActions->Logger()->AddSecret($oAccount->ProxyAuthPassword());
 			}
 		}
@@ -273,7 +269,7 @@ abstract class Account implements \JsonSerializable
 			[cipher_version] => TLSv1.3
 		)
 */
-		$oSettings->Password = $this->Password();
+		$oSettings->Password = $this->IncPassword();
 		$oSettings->ProxyAuthUser = $this->ProxyAuthUser();
 		$oSettings->ProxyAuthPassword = $this->ProxyAuthPassword();
 

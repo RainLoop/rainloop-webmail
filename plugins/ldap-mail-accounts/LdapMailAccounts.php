@@ -66,7 +66,7 @@ class LdapMailAccounts
 
 		// Try to get account information. Login() returns the username of the user
 		// and removes the domainname if this was configured inside the domain config.
-		$username = @ldap_escape($oAccount->Login(), "", LDAP_ESCAPE_FILTER);
+		$username = @ldap_escape($oAccount->IncLogin(), "", LDAP_ESCAPE_FILTER);
 
 		$searchString = $this->config->search_string;
 
@@ -135,7 +135,7 @@ class LdapMailAccounts
 				{
 					//Try to login the user with the same password as the primary account has
 					//if this fails the user will see the new mail addresses but will be asked for the correct password
-					$sPass = $oAccount->Password();
+					$sPass = $oAccount->IncPassword();
 
 					$oNewAccount = RainLoop\Model\AdditionalAccount::NewInstanceFromCredentials($oActions, "$sUsername@$sDomain", $sUsername, $sPass);
 

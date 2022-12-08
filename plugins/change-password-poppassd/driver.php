@@ -58,7 +58,7 @@ class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 
 			try
 			{
-				$this->sendRequestWithCheck('user', $oAccount->Login(), true);
+				$this->sendRequestWithCheck('user', $oAccount->IncLogin(), true);
 				$this->sendRequestWithCheck('pass', $sPrevPassword, true);
 			}
 			catch (\Throwable $oException)

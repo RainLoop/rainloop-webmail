@@ -31,12 +31,12 @@ class ProxyauthLoginExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 		if ($oAccount instanceof \RainLoop\Model\Account)
 		{
 			// Verify logic
-			$bValid = $this->isValidAccount($oAccount->Login(), $oAccount->Password());
+			$bValid = $this->isValidAccount($oAccount->IncLogin(), $oAccount->IncPassword());
 
 			/**
 			 * $oAccount->Email();             // Email (It is not a IMAP login)
-			 * $oAccount->Login();             // IMAP login
-			 * $oAccount->Password();          // IMAP password
+			 * $oAccount->IncLogin();          // IMAP login
+			 * $oAccount->IncPassword();       // IMAP password
 			 * $oAccount->Domain()->IncHost(); // IMAP host
 			 *
 			 * @see \RainLoo\Model\Account for more
