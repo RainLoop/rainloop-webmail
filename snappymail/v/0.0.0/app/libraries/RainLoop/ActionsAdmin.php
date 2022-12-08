@@ -418,22 +418,26 @@ class ActionsAdmin extends Actions
 		$aResult = [
 			[
 				'name' => 'PHP ' . PHP_VERSION,
-				'loaded' => true
+				'loaded' => true,
+				'version' => PHP_VERSION
 			]
 		];
 		foreach (['APCu', 'cURL','GnuPG','GD','Gmagick','Imagick','iconv','intl','LDAP','OpenSSL','pdo_mysql','pdo_pgsql','pdo_sqlite','redis','Sodium','Tidy','uuid','XXTEA','Zip'] as $name) {
 			$aResult[] = [
-				'name' => $name,
-				'loaded' => \extension_loaded(\strtolower($name))
+				'name' => ('OpenSSL' === $name && \defined('OPENSSL_VERSION_TEXT')) ? OPENSSL_VERSION_TEXT : $name,
+				'loaded' => \extension_loaded(\strtolower($name)),
+				'version' => \phpversion($name)
 			];
 		}
 		$aResult[] = [
 			'name' => 'Fileinfo',
-			'loaded' => \class_exists('finfo')
+			'loaded' => \class_exists('finfo'),
+			'version' => \phpversion('fileinfo')
 		];
 		$aResult[] = [
 			'name' => 'Phar',
-			'loaded' => \class_exists('PharData')
+			'loaded' => \class_exists('PharData'),
+			'version' => \phpversion('phar')
 		];
 		return $this->DefaultResponse(__FUNCTION__, $aResult);
 	}
