@@ -242,6 +242,9 @@ $Plugin->addHook('hook.name', 'functionName');
 
 ## Json service actions
 Called by RainLoop\ServiceActions::ServiceJson()
+{actionname} is one of the RainLoop\Actions::Do{ActionName}(),
+or an extension action as "Plugin{ActionName}" added with Plugin::addJsonHook()
+and called in JavaScript using rl.pluginRemoteRequest().
 
 ### json.before-{actionname}
 	params: none

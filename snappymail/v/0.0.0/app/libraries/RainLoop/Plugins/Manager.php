@@ -378,21 +378,12 @@ class Manager
 		return $bResult;
 	}
 
-	/**
-	 * @param mixed $mCallback
-	 */
-	public function AddAdditionalJsonAction(string $sActionName, $mCallback) : self
+	public function AddAdditionalJsonAction(string $sActionName, callable $mCallback) : self
 	{
-		if ($this->bIsEnabled && \is_callable($mCallback) && \strlen($sActionName))
-		{
-			$sActionName = 'DoPlugin'.$sActionName;
-
-			if (!isset($this->aAdditionalJson[$sActionName]))
-			{
-				$this->aAdditionalJson[$sActionName] = $mCallback;
-			}
+		$sActionName = "DoPlugin{$sActionName}";
+		if ($this->bIsEnabled && \strlen($sActionName) && !isset($this->aAdditionalJson[$sActionName])) {
+			$this->aAdditionalJson[$sActionName] = $mCallback;
 		}
-
 		return $this;
 	}
 
@@ -406,15 +397,7 @@ class Manager
 	 */
 	public function RunAdditionalJson(string $sActionName)
 	{
-		if ($this->bIsEnabled)
-		{
-			if (isset($this->aAdditionalJson[$sActionName]))
-			{
-				return $this->aAdditionalJson[$sActionName]();
-			}
-		}
-
-		return false;
+		return $this->HasAdditionalJson($sActionName) ? $this->aAdditionalJson[$sActionName]() : false;
 	}
 
 	/**
