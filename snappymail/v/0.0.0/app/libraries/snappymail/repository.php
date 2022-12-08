@@ -112,33 +112,31 @@ abstract class Repository
 	{
 		$aResult = array();
 		try {
-			$notDev = '0.0.0' !== APP_VERSION;
+			$isDev = '0.0.0' === APP_VERSION;
 			foreach (static::getRepositoryDataByUrl($bReal) as $oItem) {
-				if ($oItem && isset($oItem->type, $oItem->id, $oItem->name,
-					$oItem->version, $oItem->release, $oItem->file, $oItem->description))
-				{
-					if ((!empty($oItem->required) && $notDev && \version_compare(APP_VERSION, $oItem->required, '<'))
-					 || (!empty($oItem->deprecated) && $notDev && \version_compare(APP_VERSION, $oItem->deprecated, '>='))
-					 || (isset($aResult[$oItem->id]) && \version_compare($aResult[$oItem->id]['version'], $oItem->version, '>'))
-					) {
-						continue;
-					}
-
-					if ('plugin' === $oItem->type) {
-						$aResult[$oItem->id] = array(
-							'type' => $oItem->type,
-							'id' => $oItem->id,
-							'name' => $oItem->name,
-							'installed' => '',
-							'enabled' => true,
-							'version' => $oItem->version,
-							'file' => $oItem->file,
-							'release' => $oItem->release,
-							'desc' => $oItem->description,
-							'canBeDeleted' => false,
-							'canBeUpdated' => true
-						);
-					}
+				if ($oItem
+				 && isset($oItem->type, $oItem->id, $oItem->name, $oItem->version, $oItem->release, $oItem->file, $oItem->description)
+				 && 'plugin' === $oItem->type
+				 // is this entry newer then an already defined one
+				 && (empty($aResult[$oItem->id]) || \version_compare($aResult[$oItem->id]['version'], $oItem->version, '<'))
+				 // does this entry require same or older app version
+				 && ($isDev || empty($oItem->required) || \version_compare(APP_VERSION, $oItem->required, '<='))
+				 // is this entry not deprecated for current app version?
+				 && ($isDev || empty($oItem->deprecated) || \version_compare(APP_VERSION, $oItem->deprecated, '<'))
+				) {
+					$aResult[$oItem->id] = array(
+						'type' => $oItem->type,
+						'id' => $oItem->id,
+						'name' => $oItem->name,
+						'installed' => '',
+						'enabled' => true,
+						'version' => $oItem->version,
+						'file' => $oItem->file,
+						'release' => $oItem->release,
+						'desc' => $oItem->description,
+						'canBeDeleted' => false,
+						'canBeUpdated' => true
+					);
 				}
 			}
 		} catch (\Throwable $e) {

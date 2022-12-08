@@ -4,8 +4,9 @@ class ProxyauthLoginExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Proxy Auth Login Example',
-		VERSION = '2.1',
-		REQUIRED = '2.5.0',
+		VERSION  = '2.2',
+		RELEASE  = '2022-12-08',
+		REQUIRED = '2.23.0',
 		CATEGORY = 'General',
 		DESCRIPTION = '';
 

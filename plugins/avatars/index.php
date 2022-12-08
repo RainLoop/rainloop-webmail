@@ -11,7 +11,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		REQUIRED = '2.23',
 		CATEGORY = 'Contacts',
 		LICENSE  = 'MIT',
-		DESCRIPTION = 'Show photo of sender in message and messages list (supports BIMI, Gravatar and identicon, Contacts is still TODO)';
+		DESCRIPTION = 'Show graphic of sender in message and messages list (supports BIMI, Gravatar and identicon, Contacts is still TODO)';
 
 	public function Init() : void
 	{

@@ -1,3 +1,56 @@
+## 2.23.0 – 2022-12-08
+
+### Added
+- Show the number of unread mails on all mail addresses/accounts
+  [#437](https://github.com/the-djmaze/snappymail/pull/437)
+- Show OpenSSL version in Admin => About
+
+### Changed
+- Redirect to login page instead of "invalid token" popup
+  [#752](https://github.com/the-djmaze/snappymail/pull/752)
+- Make all dialogs fit in mobile view
+- Changed some Plugin hooks for better handling:
+	* json.action-pre-call => json.before-{actionname}
+	* json.action-post-call => json.after-{actionname}
+- Cleaner accounts list in systemdropdown
+- Multiple imapConnect handling for new import mail feature
+  [#744](https://github.com/the-djmaze/snappymail/pull/744)
+
+### Fixed
+- Loosing HTML signature in account identity under settings
+  [#750](https://github.com/the-djmaze/snappymail/pull/750)
+- Plugin configuration did not load anymore when type was SELECTION by @cm-schl
+  [#753](https://github.com/the-djmaze/snappymail/pull/753)
+- Nextcloud Default theme shows gray text on gray background
+  [#754](https://github.com/the-djmaze/snappymail/pull/754)
+- Only run JSON hooks when $sAction is set
+  [#755](https://github.com/the-djmaze/snappymail/pull/755)
+- Unsupported SASL mechanism OAUTHBEARER
+  [#756](https://github.com/the-djmaze/snappymail/pull/756)
+  [#758](https://github.com/the-djmaze/snappymail/pull/758)
+  [#759](https://github.com/the-djmaze/snappymail/pull/759)
+- border-box issue with .buttonCompose
+
+### Removed
+- Deprecate \RainLoop\Account->Login() and \RainLoop\Account->Password()
+
+
+## 2.22.7 – 2022-12-06
+
+### Changed
+- Scroll bar with the mobile version in "Advanced search" screen
+  [#712](https://github.com/the-djmaze/snappymail/pull/712)
+
+### Fixed
+- Undefined property: MailSo\Mail\FolderCollection::$capabilities
+- PHP 8.2 Creation of dynamic property is deprecated
+- Attempt to solve #745 in v2.22.6 failed and resulted in errors #746 and #748
+  [#745](https://github.com/the-djmaze/snappymail/pull/745)
+  [#746](https://github.com/the-djmaze/snappymail/pull/746)
+  [#748](https://github.com/the-djmaze/snappymail/pull/748)
+- Admin domain test undefined matched domain should say email@example matched domain
+
+
 ## 2.22.6 – 2022-12-05
 
 ### Changed

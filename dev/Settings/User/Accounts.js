@@ -1,5 +1,6 @@
 import ko from 'ko';
 
+//import { koComputable } from 'External/ko';
 import { SettingsCapa, SettingsGet } from 'Common/Globals';
 
 import { AccountUserStore } from 'Stores/User/Account';
@@ -23,6 +24,8 @@ export class UserSettingsAccounts /*extends AbstractViewSettings*/ {
 
 		this.accountForDeletion = ko.observable(null).askDeleteHelper();
 		this.identityForDeletion = ko.observable(null).askDeleteHelper();
+
+//		this.additionalAccounts = koComputable(() => AccountUserStore.filter(account => account.isAdditional()));
 	}
 
 	addNewAccount() {
