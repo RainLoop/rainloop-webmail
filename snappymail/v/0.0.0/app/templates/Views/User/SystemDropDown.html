@@ -17,12 +17,10 @@
 		<menu class="dropdown-menu right-edge" tabindex="-1" role="menu" aria-labelledby="top-system-dropdown-id">
 
 			<!-- ko foreach: accounts -->
-				<li role="presentation">
-					<a class="account-item" href="#" data-bind="click: $root.accountClick">
-						<i class="fontastic" data-bind="text: $root.accountEmail() === email ? '✔' : '👤'"></i>
-						<span class="email-title" data-bind="text: name || email, attr: {title: email, 'data-unread': unreadEmails}"></span>
-					</a>
-				</li>
+			<li role="presentation">
+				<a class="email-title" href="#" data-bind="click: $root.accountClick, text: name || email,
+					attr: {title: email, 'data-unread': unreadEmails, 'data-icon': $root.accountEmail() === email ? '✔' : '👤'}"></a>
+			</li>
 			<!-- /ko -->
 
 			<li class="dividerbar" role="presentation" data-bind="visible: allowAccounts">

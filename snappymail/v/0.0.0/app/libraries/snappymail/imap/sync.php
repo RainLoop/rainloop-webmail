@@ -52,6 +52,7 @@ class Sync
 		]);
 
 		$fi = 0;
+		\ignore_user_abort(true);
 		foreach ($aSourceFolders as $sSourceFolderName => $oImapFolder) {
 			++$fi;
 			\SnappyMail\HTTP\Stream::JSON([
