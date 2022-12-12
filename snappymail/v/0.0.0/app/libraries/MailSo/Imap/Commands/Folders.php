@@ -312,7 +312,7 @@ trait Folders
 	 */
 	public function FolderExamine(string $sFolderName, bool $bReSelectSameFolders = false) : FolderInformation
 	{
-		return $this->selectOrExamineFolder($sFolderName, $this->__FORCE_SELECT_ON_EXAMINE__, $bReSelectSameFolders);
+		return $this->selectOrExamineFolder($sFolderName, $this->__FORCE_SELECT_ON_EXAMINE, $bReSelectSameFolders);
 	}
 
 	/**

@@ -214,7 +214,7 @@ abstract class Account implements \JsonSerializable
 
 	public function ImapConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Imap\ImapClient $oImapClient, \RainLoop\Config\Application $oConfig) : bool
 	{
-		$oImapClient->__FORCE_SELECT_ON_EXAMINE__ = !!$oConfig->Get('imap', 'use_force_selection');
+		$oImapClient->__FORCE_SELECT_ON_EXAMINE = !!$oConfig->Get('imap', 'use_force_selection');
 		$oImapClient->__DISABLE_METADATA = !!$oConfig->Get('imap', 'disable_metadata');
 
 		$oSettings = $this->Domain()->ImapSettings();

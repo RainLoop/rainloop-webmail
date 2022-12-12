@@ -68,7 +68,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	/**
 	 * @var bool
 	 */
-	public $__FORCE_SELECT_ON_EXAMINE__ = false;
+	public $__FORCE_SELECT_ON_EXAMINE = false;
 	public $__DISABLE_METADATA = false;
 
 	/**
