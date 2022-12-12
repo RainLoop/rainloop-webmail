@@ -7,12 +7,20 @@
 
 	Date.defineRelativeTimeFormat = config => relativeTime = config;
 
+	// full = Monday, December 12, 2022 at 12:16:21 PM Central European Standard Time
+	// long = December 12, 2022 at 12:16:21 PM GMT+1
+	// medium = Dec 12, 2022, 12:16:21 PM
+	// short = 12/12/22, 12:16 PM
 	let formats = {
-		LT   : {hour: 'numeric', minute: 'numeric'},
+		LT   : {timeStyle: 'short'},
+//		LT   : {hour: 'numeric', minute: 'numeric'},
 		L    : {},
-		LL   : {year: 'numeric', month: 'short', day: 'numeric'},
-		LLL  : {year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'},
-		LLLL : {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'},
+		LL   : {dateStyle: 'medium'},
+//		LL   : {year: 'numeric', month: 'short', day: 'numeric'},
+		LLL  : {dateStyle: 'long', timeStyle: 'short'},
+//		LLL  : {year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'},
+		LLLL : {dateStyle: 'full', timeStyle: 'short'},
+//		LLLL : {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'},
 		'd M': {day: '2-digit', month: 'short'}
 	},
 	phpFormats = {
@@ -31,11 +39,15 @@
 		y: {year: '2-digit'},
 		// Time
 		A: {hour12: true},
-		G: {hour: 'numeric'},
-		H: {hour: '2-digit'},
+//		A: {hourCycle: 'h12'}, // h11, h12, h23, h24
+		g: {hour: 'numeric', hourCycle:'h11'},
+		G: {hour: 'numeric', hourCycle:'h23'},
+		h: {hour: '2-digit', hourCycle:'h11'},
+		H: {hour: '2-digit', hourCycle:'h23'},
 		i: {minute: '2-digit'},
 		s: {second: '2-digit'},
-		u: {fractionalSecondDigits: 3},
+		u: {fractionalSecondDigits: 6},
+		v: {fractionalSecondDigits: 3},
 		Z: {timeZone: 'UTC'}
 	},
 	relativeTime = {
@@ -45,7 +57,7 @@
 
 	// Format momentjs/PHP date formats to Intl.DateTimeFormat
 	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
-	Date.prototype.format = function (options, UTC) {
+	Date.prototype.format = function (options, UTC, hourCycle) {
 		if (typeof options == 'string') {
 			if ('Y-m-d\\TH:i:s' == options) {
 				return this.getFullYear() + '-' + pad2(1 + this.getMonth()) + '-' + pad2(this.getDate())
@@ -58,11 +70,14 @@
 				console.log('Date.format('+s+')');
 				options = {};
 				while (i--) {
-					o = phpFormats[s[i]] || phpFormats[s[i].toUpperCase()];
+					o = phpFormats[s[i]];
 					o && Object.entries(o).forEach(([k,v])=>options[k]=v);
 				}
 				formats[s] = options;
 			}
+		}
+		if (hourCycle) {
+			options.hourCycle = hourCycle;
 		}
 		return new Intl.DateTimeFormat(doc.documentElement.lang, options).format(this);
 	};

@@ -387,6 +387,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Tổng quan",
 		"LANGUAGE": "Ngôn ngữ",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Tên gọi",
 		"LAYOUT": "Bố cục",
 		"LAYOUT_NO_SPLIT": "Không phân màn hình",

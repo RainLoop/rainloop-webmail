@@ -387,6 +387,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "عمومی",
 		"LANGUAGE": "زبان",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "شناسه",
 		"LAYOUT": "لایه",
 		"LAYOUT_NO_SPLIT": "بدون تقسیم",

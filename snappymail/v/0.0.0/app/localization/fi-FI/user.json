@@ -387,6 +387,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Yleiset",
 		"LANGUAGE": "Kieli",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identiteetti",
 		"LAYOUT": "Asettelu",
 		"LAYOUT_NO_SPLIT": "Ei jakoa",

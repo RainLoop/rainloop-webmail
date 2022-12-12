@@ -387,6 +387,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Általános",
 		"LANGUAGE": "Nyelv",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identitás",
 		"LAYOUT": "Elrendezés",
 		"LAYOUT_NO_SPLIT": "Felosztás nélkül",

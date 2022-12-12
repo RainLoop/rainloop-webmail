@@ -387,6 +387,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Almennt",
 		"LANGUAGE": "Tungumál",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Auðkenni",
 		"LAYOUT": "Framsetning",
 		"LAYOUT_NO_SPLIT": "Ekki klofið",

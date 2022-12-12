@@ -19,6 +19,8 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 
 import PreviewHTML from 'Html/PreviewMessage.html';
 
+import { LanguageStore } from 'Stores/Language';
+
 //import { MessageFlagsCache } from 'Common/Cache';
 import Remote from 'Remote/User/Fetch';
 
@@ -456,7 +458,7 @@ export class MessageModel extends AbstractModel {
 		sdoc.write(PreviewHTML
 			.replace('<title>', '<title>'+subject)
 			// eslint-disable-next-line max-len
-			.replace('<body>', `<body style="background-color:${prop('background-color')};color:${prop('color')}"><header><h1>${subject}</h1><time>${encodeHtml(m ? m.format('LLL') : '')}</time><div>${encodeHtml(this.fromToLine())}</div><div>${encodeHtml(i18n('GLOBAL/TO'))}: ${encodeHtml(this.toToLine())}</div>${cc}</header><${mode}>${this.bodyAsHTML()}</${mode}>`)
+			.replace('<body>', `<body style="background-color:${prop('background-color')};color:${prop('color')}"><header><h1>${subject}</h1><time>${encodeHtml(m ? m.format('LLL',0,LanguageStore.hourCycle()) : '')}</time><div>${encodeHtml(this.fromToLine())}</div><div>${encodeHtml(i18n('GLOBAL/TO'))}: ${encodeHtml(this.toToLine())}</div>${cc}</header><${mode}>${this.bodyAsHTML()}</${mode}>`)
 		);
 		sdoc.close();
 

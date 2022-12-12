@@ -4,6 +4,7 @@ import { langLink } from 'Common/Links';
 import { doc, createElement } from 'Common/Globals';
 import { getKeyByValue, forEachObjectEntry } from 'Common/Utils';
 import { pInt } from 'Common/Utils';
+import { LanguageStore } from 'Stores/Language';
 
 let I18N_DATA = {};
 
@@ -87,17 +88,17 @@ export const
 					const mt = m.getTime(), date = new Date,
 						dt = date.setHours(0,0,0,0);
 					if (mt > dt)
-						return i18n('MESSAGE_LIST/TODAY_AT', {TIME: m.format('LT')});
+						return i18n('MESSAGE_LIST/TODAY_AT', {TIME: m.format('LT',0,LanguageStore.hourCycle())});
 					if (mt > dt - 86400000)
-						return i18n('MESSAGE_LIST/YESTERDAY_AT', {TIME: m.format('LT')});
+						return i18n('MESSAGE_LIST/YESTERDAY_AT', {TIME: m.format('LT',0,LanguageStore.hourCycle())});
 					if (date.getFullYear() === m.getFullYear())
 						return m.format('d M');
-					return m.format('LL');
+					return m.format('LL',0,LanguageStore.hourCycle());
 				}
 				case 'FULL':
-					return m.format('LLL');
+					return m.format('LLL',0,LanguageStore.hourCycle());
 				default:
-					return m.format(formatStr);
+					return m.format(formatStr,0,LanguageStore.hourCycle());
 			}
 		}
 

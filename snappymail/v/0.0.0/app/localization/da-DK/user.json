@@ -387,6 +387,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Generelt",
 		"LANGUAGE": "Sprog",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identitet",
 		"LAYOUT": "Layout",
 		"LAYOUT_NO_SPLIT": "Del ikke",

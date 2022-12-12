@@ -387,6 +387,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Pagrindiniai",
 		"LANGUAGE": "Kalba",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Tapatybė",
 		"LAYOUT": "Išdėstymas",
 		"LAYOUT_NO_SPLIT": "Skaidymo nėra",

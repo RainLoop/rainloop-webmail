@@ -387,6 +387,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Общи",
 		"LANGUAGE": "Език",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Идентичност",
 		"LAYOUT": "Стил",
 		"LAYOUT_NO_SPLIT": "Не разделяй",

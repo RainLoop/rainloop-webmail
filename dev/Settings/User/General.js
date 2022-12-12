@@ -30,6 +30,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
+		this.hourCycle = LanguageStore.hourCycle;
 
 		this.soundNotification = SMAudio.notifications;
 		this.notificationSound = ko.observable(SettingsGet('NotificationSound'));
@@ -114,6 +115,9 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 					.then(fReloadLanguageHelper(SaveSettingStatus.Success), fReloadLanguageHelper(SaveSettingStatus.Failed))
 					.then(() => Remote.saveSetting('Language', value));
 			},
+
+			hourCycle: value =>
+				Remote.saveSetting('hourCycle', value),
 
 			removeColors: value => {
 				let dom = MessageUserStore.bodiesDom();

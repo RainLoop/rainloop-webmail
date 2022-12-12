@@ -104,7 +104,7 @@
 		"LABEL_ALL_RIGHTS_RESERVED": "Eskubide guztiak gordeak.",
 		"HINT_READ_CHANGE_LOG": "Mesedez irakurri aldaketen informea eguneratu aurretik.",
 		"HINT_IS_UP_TO_DATE": "SnappyMail eguneratuta dago.",
-		"HTML_NEW_VERSION": "<b>%VERSION%</b> bertsio berria eskuragarri.",
+		"HTML_NEW_VERSION": "<b>%VERSION%<\/b> bertsio berria eskuragarri.",
 		"LABEL_UPDATING": "Eguneratzen",
 		"LABEL_CHECKING": "Eguneraketak dauden begiratzen",
 		"BUTTON_RELEASES": "Bertsioak"

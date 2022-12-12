@@ -387,6 +387,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Üldine",
 		"LANGUAGE": "Keel",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identiteet",
 		"LAYOUT": "Vaade",
 		"LAYOUT_NO_SPLIT": "Jaotuseta",

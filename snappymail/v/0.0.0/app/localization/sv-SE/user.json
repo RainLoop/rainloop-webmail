@@ -387,6 +387,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Allmänt",
 		"LANGUAGE": "Språk",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identitet",
 		"LAYOUT": "Stil",
 		"LAYOUT_NO_SPLIT": "Utan delad vy",

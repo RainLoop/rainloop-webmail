@@ -387,6 +387,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Umum",
 		"LANGUAGE": "Bahasa",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identitas",
 		"LAYOUT": "Tampilan",
 		"LAYOUT_NO_SPLIT": "Tanpa pemisah",

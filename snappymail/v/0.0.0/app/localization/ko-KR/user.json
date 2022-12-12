@@ -387,6 +387,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "일반",
 		"LANGUAGE": "언어",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "신원",
 		"LAYOUT": "레이아웃",
 		"LAYOUT_NO_SPLIT": "분할 해제",

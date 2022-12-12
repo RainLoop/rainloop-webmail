@@ -387,6 +387,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Algemeen",
 		"LANGUAGE": "Taal",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identiteit",
 		"LAYOUT": "Indeling",
 		"LAYOUT_NO_SPLIT": "Geen splitsing",

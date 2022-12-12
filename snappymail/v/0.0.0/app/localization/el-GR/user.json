@@ -387,6 +387,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Γενικό",
 		"LANGUAGE": "Γλώσσα",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Ταυτότητα",
 		"LAYOUT": "Σχέδιο",
 		"LAYOUT_NO_SPLIT": "Χωρίς χώρισμα",

@@ -387,6 +387,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Основные Настройки",
 		"LANGUAGE": "Язык",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Профиль",
 		"LAYOUT": "Разметка",
 		"LAYOUT_NO_SPLIT": "Одна панель",

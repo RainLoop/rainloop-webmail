@@ -162,6 +162,7 @@ trait User
 		{
 //			$oSettings->SetConf('Language', $this->ValidateLanguage($oConfig->Get('webmail', 'language', 'en')));
 		}
+		$this->setSettingsFromParams($oSettings, 'hourCycle', 'string');
 
 		if ($this->GetCapa(Capa::THEMES))
 		{

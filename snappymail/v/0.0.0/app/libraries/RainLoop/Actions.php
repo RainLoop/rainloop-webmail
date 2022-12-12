@@ -778,6 +778,8 @@ class Actions
 					if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
 						$sLanguage = (string) $oSettings->GetConf('Language', $sLanguage);
 					}
+					$aResult['hourCycle'] = $oSettings->GetConf('hourCycle', '');
+
 					if (!$oSettings->GetConf('MessagesPerPage')) {
 						$oSettings->SetConf('MessagesPerPage', $oSettings->GetConf('MPP', $aResult['MessagesPerPage']));
 					}

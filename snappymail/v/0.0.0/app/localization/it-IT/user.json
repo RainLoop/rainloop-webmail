@@ -387,6 +387,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Generali",
 		"LANGUAGE": "Lingua",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identità",
 		"LAYOUT": "Struttura",
 		"LAYOUT_NO_SPLIT": "A pagina intera",
