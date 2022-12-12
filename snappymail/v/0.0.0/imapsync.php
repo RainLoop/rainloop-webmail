@@ -72,11 +72,9 @@ function getImapClient(int $host)
 	$type = SecurityType::AUTO_DETECT;
 	if (isset($options["tls{$host}"])) {
 		$type = SecurityType::STARTTLS;
-	}
-	else if (isset($options["ssl{$host}"])) {
+	} else if (isset($options["ssl{$host}"])) {
 		$type = SecurityType::SSL;
-	}
-	else if (isset($options["notls{$host}"])) {
+	} else if (isset($options["notls{$host}"])) {
 		$type = SecurityType::NONE;
 	}
 	$ImapSettings = \MailSo\Imap\Settings::fromArray([
@@ -87,6 +85,8 @@ function getImapClient(int $host)
 	]);
 	if (993 === $ImapSettings->port) {
 		$ImapSettings->type = SecurityType::SSL;
+	} else if (143 === $ImapSettings->port && SecurityType::SSL == $ImapSettings->type) {
+		$ImapSettings->port = 993;
 	}
 	if ($oConfig->Get('labs', 'sasl_allow_scram_sha', false)) {
 		\array_push($ImapSettings->SASLMechanisms, 'SCRAM-SHA3-512', 'SCRAM-SHA-512', 'SCRAM-SHA-256', 'SCRAM-SHA-1');
@@ -104,15 +104,14 @@ function getImapClient(int $host)
 	$ImapSettings->useAuth = true;
 
 	$oImapClient = new \MailSo\Imap\ImapClient;
-	//$oImapTarget->SetLogger($this->Logger());
-	$oImapClient->__FORCE_SELECT_ON_EXAMINE__ = !!$oConfig->Get('imap', 'use_force_selection');
-	$oImapClient->__DISABLE_METADATA = !!$oConfig->Get('imap', 'disable_metadata');
-	//$oPlugins->RunHook('imap.before-connect', array($this, $oImapClient, $ImapSettings));
+//	$oAccount = new \RainLoop\Model\Account;
+	$oImapClient->SetLogger(\RainLoop\API::Logger());
+//	$oPlugins->RunHook('imap.before-connect', array($oAccount, $oImapClient, $ImapSettings));
 	$oImapClient->Connect($ImapSettings);
-	//$oPlugins->RunHook('imap.after-connect', array($this, $oImapClient, $ImapSettings));
-	//$oPlugins->RunHook('imap.before-login', array($this, $oImapClient, $ImapSettings));
+//	$oPlugins->RunHook('imap.after-connect', array($oAccount, $oImapClient, $ImapSettings));
+//	$oPlugins->RunHook('imap.before-login', array($oAccount, $oImapClient, $ImapSettings));
 	$oImapClient->Login($ImapSettings);
-	//$oPlugins->RunHook('imap.after-login', array($this, $oImapClient, $bResult, $ImapSettings));
+//	$oPlugins->RunHook('imap.after-login', array($oAccount, $oImapClient, $bResult, $ImapSettings));
 
 	return $oImapClient;
 }

@@ -46,19 +46,28 @@ class Sync
 		}
 		$sSourceINBOX = 'INBOX';
 
-		\SnappyMail\HTTP\Stream::start();
-		\SnappyMail\HTTP\Stream::JSON([
-			'folders' => \count($aSourceFolders)
-		]);
+		$isCli = false !== \stripos(\php_sapi_name(), 'cli');
+		if ($isCli) {
+			echo 'folders: ' . \count($aSourceFolders) . "\n";
+		} else {
+			\SnappyMail\HTTP\Stream::start();
+			\SnappyMail\HTTP\Stream::JSON([
+				'folders' => \count($aSourceFolders)
+			]);
+		}
 
 		$fi = 0;
 		\ignore_user_abort(true);
 		foreach ($aSourceFolders as $sSourceFolderName => $oImapFolder) {
 			++$fi;
-			\SnappyMail\HTTP\Stream::JSON([
-				'index' => $fi,
-				'folder' => $sSourceFolderName
-			]);
+			if ($isCli) {
+				echo \str_pad($fi, 3, ' ', STR_PAD_LEFT) . " folder: {$sSourceFolderName}\n";
+			} else {
+				\SnappyMail\HTTP\Stream::JSON([
+					'index' => $fi,
+					'folder' => $sSourceFolderName
+				]);
+			}
 			if ($oImapFolder->IsSelectable()) {
 				if ($oImapFolder->IsInbox()) {
 					$sSourceINBOX = $sSourceFolderName;
@@ -90,10 +99,15 @@ class Sync
 
 				$oSourceInfo = $this->oImapSource->FolderSelect($sSourceFolderName);
 				if ($oSourceInfo->MESSAGES) {
-					\SnappyMail\HTTP\Stream::JSON([
-						'index' => $fi,
-						'messages' => $oSourceInfo->MESSAGES
-					]);
+					if ($isCli) {
+						echo \str_pad($fi, 3, ' ', STR_PAD_LEFT)
+							. " messages: [" . \str_repeat(' ', 50) . "] 0/{$oSourceInfo->MESSAGES}";
+					} else {
+						\SnappyMail\HTTP\Stream::JSON([
+							'index' => $fi,
+							'messages' => $oSourceInfo->MESSAGES
+						]);
+					}
 					// All id's to skip from source
 					$oTargetInfo = $this->oImapTarget->FolderSelect($sTargetFolderName);
 					if ($oTargetInfo->MESSAGES) {
@@ -175,10 +189,23 @@ class Sync
 */
 						}
 
-						\SnappyMail\HTTP\Stream::JSON([
-							'index' => $fi,
-							'message' => $i
-						]);
+						if ($isCli) {
+							// Clear line
+							echo "\x1b[2K\x1b[1G";
+							// Echo same line with progress
+							$p = \floor(50 * $i / $oSourceInfo->MESSAGES);
+							echo \str_pad($fi, 3, ' ', STR_PAD_LEFT)
+								. " messages: [" . \str_repeat('=', $p) . \str_repeat(' ', 50 - $p)
+								. "] {$i}/{$oSourceInfo->MESSAGES}";
+						} else {
+							\SnappyMail\HTTP\Stream::JSON([
+								'index' => $fi,
+								'message' => $i
+							]);
+						}
+					}
+					if ($isCli) {
+						echo "\n";
 					}
 				}
 			}
