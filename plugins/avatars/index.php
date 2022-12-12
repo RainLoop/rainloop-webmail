@@ -6,8 +6,8 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Avatars',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.4',
-		RELEASE  = '2022-12-08',
+		VERSION  = '1.5',
+		RELEASE  = '2022-12-12',
 		REQUIRED = '2.23',
 		CATEGORY = 'Contacts',
 		LICENSE  = 'MIT',
@@ -32,36 +32,46 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function JsonMessage(array &$aResponse)
 	{
-		if (!empty($aResponse['Result']['From'])) {
-			$aResponse['Result']['Avatar'] = $this->encryptFrom($aResponse['Result']['From'][0]);
+		if ($icon = $this->JsonAvatar($aResponse['Result'])) {
+			$aResponse['Result']['Avatar'] = $icon;
 		}
 	}
 
 	public function JsonMessageList(array &$aResponse)
 	{
 		if (!empty($aResponse['Result']['@Collection'])) {
-			foreach ($aResponse['Result']['@Collection'] as $id => $message) {
-				if (!empty($message['From'])) {
-					$aResponse['Result']['@Collection'][$id]['Avatar'] = $this->encryptFrom($message['From'][0]);
+			foreach ($aResponse['Result']['@Collection'] as &$message) {
+				if ($icon = $this->JsonAvatar($message)) {
+					$message['Avatar'] = $icon;
 				}
 			}
 		}
 	}
 
-	private function encryptFrom($mFrom)
+	private function JsonAvatar($message) : ?string
 	{
+		$mFrom = empty($message['From'][0]) ? null : $message['From'][0];
 		if ($mFrom instanceof \MailSo\Mime\Email) {
 			$mFrom = $mFrom->jsonSerialize();
 		}
-		if (!\is_array($mFrom)) {
-			return null;
+		if (\is_array($mFrom)) {
+			if ('pass' == $mFrom['DkimStatus'] && $this->Config()->Get('plugin', 'service', true)) {
+				// 'data:image/png;base64,[a-zA-Z0-9+/=]'
+				return static::getServiceIcon($mFrom['Email']);
+			}
+			if (!$this->Config()->Get('plugin', 'delay', true)
+			 && ($this->Config()->Get('plugin', 'gravatar', false)
+				|| ($this->Config()->Get('plugin', 'bimi', false) && 'pass' == $mFrom['DkimStatus'])
+				|| !$this->Config()->Get('plugin', 'service', true)
+			 )
+			) try {
+				// Base64Url
+				return \SnappyMail\Crypt::EncryptUrlSafe($mFrom['Email']);
+			} catch (\Throwable $e) {
+				\SnappyMail\Log::error('Crypt', $e->getMessage());
+			}
 		}
-		if ('pass' == $mFrom['DkimStatus'] && $this->Config()->Get('plugin', 'service', true) && ($sIcon = static::getServiceIcon($mFrom['Email']))) {
-			return $sIcon;
-		}
-		return $this->Config()->Get('plugin', 'delay', true)
-			? null
-			: \SnappyMail\Crypt::EncryptUrlSafe($mFrom['Email']);
+		return null;
 	}
 
 	/**
@@ -100,6 +110,23 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	protected function configMapping() : array
 	{
+		$group = new \RainLoop\Plugins\PropertyCollection('Lookup');
+		$group->exchangeArray([
+			\RainLoop\Plugins\Property::NewInstance('delay')->SetLabel('Delay lookup')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetAllowedInJs(true)
+				->SetDefaultValue(true),
+			\RainLoop\Plugins\Property::NewInstance('bimi')->SetLabel('BIMI')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+//				->SetAllowedInJs(true)
+				->SetDefaultValue(false)
+				->SetDescription('https://bimigroup.org/ (DKIM header must be valid)'),
+			\RainLoop\Plugins\Property::NewInstance('gravatar')->SetLabel('Gravatar')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+//				->SetAllowedInJs(true)
+				->SetDefaultValue(false)
+				->SetDescription('https://wikipedia.org/wiki/Gravatar'),
+		]);
 		$aResult = array(
 			defined('RainLoop\\Enumerations\\PluginPropertyType::SELECT')
 				? \RainLoop\Plugins\Property::NewInstance('identicon')->SetLabel('Identicon')
@@ -119,18 +146,10 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				,
 			\RainLoop\Plugins\Property::NewInstance('service')->SetLabel('Preload valid domain icons')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
-				->SetDefaultValue(true),
-			\RainLoop\Plugins\Property::NewInstance('bimi')->SetLabel('Lookup BIMI')
-				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
-				->SetDefaultValue(false)
-				->SetDescription('https://bimigroup.org/'),
-			\RainLoop\Plugins\Property::NewInstance('gravatar')->SetLabel('Lookup Gravatar')
-				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
-				->SetDefaultValue(false)
-				->SetDescription('https://wikipedia.org/wiki/Gravatar'),
-			\RainLoop\Plugins\Property::NewInstance('delay')->SetLabel('Delay lookup loading')
-				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
-				->SetDefaultValue(true),
+				->SetAllowedInJs(true)
+				->SetDefaultValue(true)
+				->SetDescription('DKIM header must be valid and icon is found in avatars/images/services directory'),
+			$group
 		);
 /*
 		if (\class_exists('OC') && isset(\OC::$server)) {

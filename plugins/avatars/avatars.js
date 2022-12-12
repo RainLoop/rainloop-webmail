@@ -67,8 +67,10 @@
 		),
 		addQueue = (msg, fn) => {
 			setIdenticon(msg.from[0], fn);
-			queue.push([msg, fn]);
-			runQueue();
+			if (rl.pluginSettingsGet('avatars', 'delay')) {
+				queue.push([msg, fn]);
+				runQueue();
+			}
 		},
 		runQueue = (() => {
 			let item = queue.shift();
