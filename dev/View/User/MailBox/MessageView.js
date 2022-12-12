@@ -64,6 +64,11 @@ const
 
 	currentMessage = MessageUserStore.message,
 
+	setAction = action => {
+		const message = currentMessage();
+		message && MessagelistUserStore.setAction(message.folder, action, [message]);
+	},
+
 	fetchRaw = url => rl.fetch(url).then(response => response.ok && response.text());
 
 export class MailMessageView extends AbstractViewRight {
@@ -219,7 +224,7 @@ export class MailMessageView extends AbstractViewRight {
 		this.notSpamCommand = createCommandActionHelper(FolderType.NotSpam);
 
 		decorateKoCommands(this, {
-			messageEditCommand: self => self.messageVisibility(),
+			editCommand: self => self.messageVisibility(),
 			goUpCommand: self => !self.messageListOrViewLoading(),
 			goDownCommand: self => !self.messageListOrViewLoading()
 		});
@@ -233,8 +238,13 @@ export class MailMessageView extends AbstractViewRight {
 		currentMessage(null);
 	}
 
-	messageEditCommand() {
+	editCommand() {
 		currentMessage() && showMessageComposer([ComposeType.Draft, currentMessage()]);
+	}
+
+	setUnseen() {
+		setAction(MessageSetAction.UnsetSeen);
+		currentMessage(null);
 	}
 
 	goUpCommand() {
@@ -319,12 +329,7 @@ export class MailMessageView extends AbstractViewRight {
 			}
 
 			if (eqs(event, '.messageItemHeader .subjectParent .flagParent')) {
-				const message = currentMessage();
-				message && MessagelistUserStore.setAction(
-					message.folder,
-					message.isFlagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
-					[message]
-				);
+				setAction(currentMessage()?.isFlagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag);
 			}
 		});
 

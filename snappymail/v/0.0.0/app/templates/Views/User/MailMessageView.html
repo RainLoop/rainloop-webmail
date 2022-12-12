@@ -5,7 +5,7 @@
 				<a class="btn buttonClose fontastic" data-bind="click: closeMessage">✖</a>
 			</div>
 			<div class="btn-group" data-bind="visible: isDraftFolder()" data-i18n="[title]MESSAGE/BUTTON_EDIT">
-				<a class="btn btn-success buttonEdit fontastic" data-bind="command: messageEditCommand">🖉</a>
+				<a class="btn btn-success buttonEdit fontastic" data-bind="command: editCommand">🖉</a>
 			</div>
 			<div class="btn-group">
 				<a class="btn fontastic" data-bind="visible: archiveAllowed, command: archiveCommand" data-i18n="[title]GLOBAL/TO_ARCHIVE">🗄</a>
@@ -36,7 +36,7 @@
 		<!-- ko if: message -->
 		<div class="b-message" data-bind="i18nUpdate: message, css: message().lineAsCss(0)">
 			<div class="message-fixed-button-toolbar">
-				<a class="btn btn-success buttonEdit fontastic hide-mobile" data-bind="visible: isDraftFolder(), command: messageEditCommand">🖉</a>
+				<a class="btn btn-success buttonEdit fontastic hide-mobile" data-bind="visible: isDraftFolder(), command: editCommand">🖉</a>
 				<div class="btn-group" style="margin-right: -8px; display: inline;">
 					<span data-bind="visible: canBeRepliedOrForwarded">
 						<a class="btn btn-thin btn-transparent buttonReply fontastic"
@@ -65,6 +65,9 @@
 								</li>
 							</div>
 							<div class="dividerbar">
+								<li role="presentation">
+									<a href="#" tabindex="-1" data-bind="click: setUnseen" data-icon=" " data-i18n="MESSAGE_LIST/MENU_UNSET_SEEN"></a>
+								</li>
 								<li role="presentation" data-bind="visible: archiveAllowed">
 									<a href="#" tabindex="-1" data-bind="command: archiveCommand" data-icon="🗄" data-i18n="GLOBAL/TO_ARCHIVE"></a>
 								</li>
