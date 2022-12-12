@@ -81,11 +81,12 @@
 	> div > div {
 		position: absolute;
 		margin-top: 1px;
-
+		.checkbox-box-sizes();
 		animation: checkmark-to-box 200ms ease-out forwards;
 	}
 
 	div.checked {
+		.checkbox-mark-sizes();
 		animation: box-to-checkmark 200ms ease-out forwards;
 	}
 }
