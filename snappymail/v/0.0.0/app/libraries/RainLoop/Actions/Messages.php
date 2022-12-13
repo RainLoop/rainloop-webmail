@@ -807,7 +807,6 @@ trait Messages
 
 				$oSmtpClient = new \MailSo\Smtp\SmtpClient();
 				$oSmtpClient->SetLogger($this->Logger());
-				$oSmtpClient->SetTimeOuts(10, (int) \RainLoop\Api::Config()->Get('labs', 'smtp_timeout', 60));
 
 				$bUsePhpMail = false;
 				$oAccount->SmtpConnectAndLoginHelper($this->Plugins(), $oSmtpClient, $this->Config(), $bUsePhpMail);

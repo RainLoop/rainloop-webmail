@@ -18,8 +18,7 @@ namespace MailSo\Imap;
 class Settings extends \MailSo\Net\ConnectSettings
 {
 	public int
-		$port = 143,
-		$timeout = 300;
+		$port = 143;
 
 	public bool
 		$disable_list_status = false,
@@ -61,8 +60,7 @@ class Settings extends \MailSo\Net\ConnectSettings
 				'force_select' => $this->force_select,
 				'message_all_headers' => $this->message_all_headers,
 				'message_list_limit' => $this->message_list_limit,
-				'search_filter' => $this->message_list_filter,
-				'timeout' => $this->timeout
+				'search_filter' => $this->message_list_filter
 			]
 		);
 	}

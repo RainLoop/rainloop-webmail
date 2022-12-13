@@ -34,8 +34,6 @@ abstract class NetClient
 
 	private int $iConnectTimeOut = 10;
 
-	private int $iSocketTimeOut = 10;
-
 	private float $iStartConnectTime = 0;
 
 	/**
@@ -64,10 +62,9 @@ abstract class NetClient
 		return $this->Settings->port;
 	}
 
-	public function SetTimeOuts(int $iConnectTimeOut = 10, int $iSocketTimeOut = 10) : void
+	public function SetTimeOuts(int $iConnectTimeOut = 10) : void
 	{
-		$this->iConnectTimeOut = max(5, $iConnectTimeOut);
-		$this->iSocketTimeOut = max(5, $iSocketTimeOut);
+		$this->iConnectTimeOut = \max(5, $iConnectTimeOut);
 	}
 
 	/**
@@ -148,8 +145,7 @@ abstract class NetClient
 
 		$this->writeLog('Connect ('.($this->rConnect ? 'success' : 'failed').')');
 
-		if (!$this->rConnect)
-		{
+		if (!$this->rConnect) {
 			$this->writeLogException(
 				new Exceptions\SocketCanNotConnectToHostException(
 					\MailSo\Base\Locale::ConvertSystemString($sErrorStr), (int) $iErrorNo,
@@ -159,11 +155,9 @@ abstract class NetClient
 
 		$this->writeLog((\microtime(true) - $this->iStartConnectTime).' (raw connection)', \LOG_DEBUG);
 
-		if ($this->rConnect)
-		{
-			if (\MailSo\Base\Utils::FunctionCallable('stream_set_timeout'))
-			{
-				\stream_set_timeout($this->rConnect, $this->iSocketTimeOut);
+		if ($this->rConnect) {
+			if (\MailSo\Base\Utils::FunctionCallable('stream_set_timeout')) {
+				\stream_set_timeout($this->rConnect, \max(5, $oSettings->timeout));
 			}
 		}
 	}

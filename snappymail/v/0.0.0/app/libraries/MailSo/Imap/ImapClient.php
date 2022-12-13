@@ -69,8 +69,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	{
 		$this->aTagTimeouts['*'] = \microtime(true);
 
-		$this->SetTimeOuts(10, $oSettings->timeout);
-
 		parent::Connect($oSettings);
 
 		$this->setCapabilities($this->getResponse('*'));

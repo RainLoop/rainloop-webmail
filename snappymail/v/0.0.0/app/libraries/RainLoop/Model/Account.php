@@ -215,9 +215,9 @@ abstract class Account implements \JsonSerializable
 	public function ImapConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Imap\ImapClient $oImapClient, \RainLoop\Config\Application $oConfig) : bool
 	{
 		$oSettings = $this->Domain()->ImapSettings();
+		$oSettings->timeout = \max($oSettings->timeout, (int) $oConfig->Get('imap', 'timeout', $oSettings->timeout));
 		$oSettings->Login = $this->IncLogin();
 
-		$oSettings->timeout = \max($oSettings->timeout, (int) $oConfig->Get('imap', 'timeout', $oSettings->timeout));
 		$oSettings->disable_list_status |= !$oConfig->Get('imap', 'use_list_status', true);
 		$oSettings->disable_metadata |= !!$oConfig->Get('imap', 'disable_metadata', false);
 		$oSettings->disable_move |= !$oConfig->Get('imap', 'use_move', true);
@@ -229,7 +229,7 @@ abstract class Account implements \JsonSerializable
 		$oSettings->force_select |= !!$oConfig->Get('imap', 'use_force_selection', false);
 		$oSettings->folder_list_limit = \min($oSettings->folder_list_limit, (int) $oConfig->Get('imap', 'folder_list_limit', 200));
 		$oSettings->message_all_headers |= !!$oConfig->Get('imap', 'message_all_headers', false);
-		$oSettings->message_list_limit = \min($oSettings->message_list_limit, (int) $oConfig->Get('imap', 'message_list_count_limit_trigger', 0));
+		$oSettings->message_list_limit = \max($oSettings->message_list_limit, (int) $oConfig->Get('imap', 'message_list_count_limit_trigger', 0));
 		$oSettings->search_filter = $oSettings->search_filter ?: \trim($oConfig->Get('imap', 'message_list_permanent_filter', ''));
 //		$oSettings->thread_limit = \min($oSettings->thread_limit, (int) $oConfig->Get('imap', 'large_thread_limit', 50));
 
@@ -243,6 +243,7 @@ abstract class Account implements \JsonSerializable
 	public function SmtpConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Smtp\SmtpClient $oSmtpClient, \RainLoop\Config\Application $oConfig, bool &$bUsePhpMail = false) : bool
 	{
 		$oSettings = $this->Domain()->SmtpSettings();
+		$oSettings->timeout = \max($oSettings->timeout, (int) $oConfig->Get('labs', 'smtp_timeout', 60));
 		$oSettings->Login = $this->OutLogin();
 		$oSettings->usePhpMail = $bUsePhpMail;
 		$oSettings->Ehlo = \MailSo\Smtp\SmtpClient::EhloHelper();
@@ -262,6 +263,7 @@ abstract class Account implements \JsonSerializable
 	public function SieveConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Sieve\SieveClient $oSieveClient, \RainLoop\Config\Application $oConfig)
 	{
 		$oSettings = $this->Domain()->SieveSettings();
+		$oSettings->timeout = \max($oSettings->timeout, (int) $oConfig->Get('labs', 'sieve_timeout', 10));
 		$oSettings->Login = $this->IncLogin();
 
 		$oPlugins->RunHook('sieve.before-connect', array($this, $oSieveClient, $oSettings));

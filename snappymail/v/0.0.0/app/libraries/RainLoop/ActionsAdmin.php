@@ -281,8 +281,6 @@ class ActionsAdmin extends Actions
 		$bSieveResult = false;
 		$sSieveErrorDesc = '';
 
-		$iConnectionTimeout = 5;
-
 		$oDomain = $this->DomainProvider()->LoadOrCreateNewFromAction($this, 'test.example.com');
 		if ($oDomain)
 		{
@@ -292,7 +290,6 @@ class ActionsAdmin extends Actions
 			{
 				$oImapClient = new \MailSo\Imap\ImapClient();
 				$oImapClient->SetLogger($this->Logger());
-				$oImapClient->SetTimeOuts($iConnectionTimeout);
 
 				$oSettings = $oDomain->ImapSettings();
 				$oImapClient->Connect($oSettings);
@@ -335,7 +332,6 @@ class ActionsAdmin extends Actions
 				{
 					$oSmtpClient = new \MailSo\Smtp\SmtpClient();
 					$oSmtpClient->SetLogger($this->Logger());
-					$oSmtpClient->SetTimeOuts($iConnectionTimeout);
 
 					$oSettings = $oDomain->SmtpSettings();
 					$oSmtpClient->Connect($oSettings, \MailSo\Smtp\SmtpClient::EhloHelper());
@@ -371,7 +367,6 @@ class ActionsAdmin extends Actions
 				{
 					$oSieveClient = new \MailSo\Sieve\SieveClient();
 					$oSieveClient->SetLogger($this->Logger());
-					$oSieveClient->SetTimeOuts($iConnectionTimeout);
 
 					$oSettings = $oDomain->SieveSettings();
 					$oSieveClient->Connect($oSettings);

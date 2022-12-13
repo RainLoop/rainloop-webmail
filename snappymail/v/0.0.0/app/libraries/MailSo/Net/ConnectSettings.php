@@ -21,6 +21,11 @@ class ConnectSettings implements \JsonSerializable
 
 	public int $port;
 
+	/**
+	 * stream timeout in seconds
+	 */
+	public int $timeout = 10;
+
 	// none, TLS, STARTTLS
 	public int $type = Enumerations\ConnectionSecurityType::AUTO_DETECT;
 //	public int $type = Enumerations\ConnectionSecurityType::NONE;
@@ -52,6 +57,7 @@ class ConnectSettings implements \JsonSerializable
 		$object->host = $aSettings['host'];
 		$object->port = $aSettings['port'];
 		$object->type = isset($aSettings['type']) ? $aSettings['type'] : $aSettings['secure'];
+		$object->timeout = isset($aSettings['timeout']) ? $aSettings['timeout'] : 300;
 		$object->shortLogin = !empty($aSettings['shortLogin']);
 		$object->ssl = SSLContext::fromArray($aSettings['ssl'] ?? []);
 		return $object;
@@ -65,6 +71,7 @@ class ConnectSettings implements \JsonSerializable
 			'host' => $this->host,
 			'port' => $this->port,
 			'type' => $this->type,
+			'timeout' => $this->timeout,
 			'shortLogin' => $this->shortLogin,
 			'ssl' => $this->ssl
 		);
