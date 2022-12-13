@@ -26,13 +26,9 @@ class ImapClient extends \MailSo\Net\NetClient
 	use Commands\Metadata;
 	use Commands\Quota;
 
-	public
-		$TAG_PREFIX = 'TAG';
+	public string $TAG_PREFIX = 'TAG';
 
-	/**
-	 * @var int
-	 */
-	private $iTagCount = 0;
+	private int $iTagCount = 0;
 
 	/**
 	 * @var array
@@ -46,35 +42,16 @@ class ImapClient extends \MailSo\Net\NetClient
 
 	/**
 	 * Used by \MailSo\Mail\MailClient::MessageMimeStream
-	 * @var array
 	 */
-	private $aFetchCallbacks;
+	private array $aFetchCallbacks = array();
 
-	/**
-	 * @var array
-	 */
-	private $aTagTimeouts = array();
+	private array $aTagTimeouts = array();
 
-	/**
-	 * @var bool
-	 */
-	private $bIsLoggined = false;
+	private bool $bIsLoggined = false;
 
-	/**
-	 * @var string
-	 */
-	private $sLogginedUser = '';
+	private string $sLogginedUser = '';
 
-	/**
-	 * @var bool
-	 */
-	public $__FORCE_SELECT_ON_EXAMINE = false;
-	public $__DISABLE_METADATA = false;
-
-	/**
-	 * @var bool
-	 */
-	private $UTF8 = false;
+	private bool $UTF8 = false;
 
 	public function GetLogginedUser() : string
 	{
@@ -87,16 +64,19 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
+//	public function Connect(Settings $oSettings) : void
 	public function Connect(\MailSo\Net\ConnectSettings $oSettings) : void
 	{
 		$this->aTagTimeouts['*'] = \microtime(true);
+
+		$this->SetTimeOuts(10, $oSettings->timeout);
 
 		parent::Connect($oSettings);
 
 		$this->setCapabilities($this->getResponse('*'));
 
-		if (ConnectionSecurityType::STARTTLS === $this->iSecurityType
-		 || (ConnectionSecurityType::AUTO_DETECT === $this->iSecurityType && $this->IsSupported('STARTTLS'))) {
+		if (ConnectionSecurityType::STARTTLS === $this->Settings->type
+		 || (ConnectionSecurityType::AUTO_DETECT === $this->Settings->type && $this->IsSupported('STARTTLS'))) {
 			$this->StartTLS();
 		}
 	}
@@ -305,9 +285,23 @@ class ImapClient extends \MailSo\Net\NetClient
 	private function setCapabilities(ResponseCollection $oResponseCollection) : void
 	{
 		$aList = $oResponseCollection->getCapabilityResult();
-		if ($aList && $this->__DISABLE_METADATA) {
-			// Issue #365: Many folders on Cyrus IMAP breaks login
-			$aList = \array_diff($aList, ['METADATA']);
+		if ($aList) {
+			if ($this->Settings->disable_metadata) {
+				// Issue #365: Many folders on Cyrus IMAP breaks login
+				$aList = \array_diff($aList, ['METADATA']);
+			}
+			if ($this->Settings->disable_move) {
+				$aList = \array_diff($aList, ['MOVE']);
+			}
+			if ($this->Settings->disable_sort) {
+				$aList = \array_diff($aList, ['SORT','ESORT']);
+			}
+			if ($this->Settings->disable_thread) {
+				$aList = \array_filter($aList, function ($item) { \str_starts_with($item, 'THREAD='); });
+			}
+			if ($this->Settings->disable_list_status) {
+				$aList = \array_diff($aList, ['LIST-STATUS']);
+			}
 		}
 		$this->aCapabilityItems = $aList;
 	}

@@ -23,6 +23,7 @@ class ConnectSettings implements \JsonSerializable
 
 	// none, TLS, STARTTLS
 	public int $type = Enumerations\ConnectionSecurityType::AUTO_DETECT;
+//	public int $type = Enumerations\ConnectionSecurityType::NONE;
 
 	public SSLContext $ssl;
 

@@ -132,11 +132,6 @@ abstract class SearchCriterias
 		$iTimeFilter = 0;
 		$aCriteriasResult = array();
 
-		if (0 < \MailSo\Config::$MessageListDateFilter) {
-			$iD = \time() - 3600 * 24 * 30 * \MailSo\Config::$MessageListDateFilter;
-			$iTimeFilter = \gmmktime(1, 1, 1, \gmdate('n', $iD), 1, \gmdate('Y', $iD));
-		}
-
 		$sSearch = \trim($sSearch);
 		if (\strlen($sSearch)) {
 			$aLines = \preg_match('/^('.static::RegEx.'):/i', $sSearch)
@@ -146,7 +141,7 @@ abstract class SearchCriterias
 			if (!$aLines) {
 				$sValue = static::escapeSearchString($oImapClient, $sSearch);
 
-				if (\MailSo\Config::$MessageListFastSimpleSearch) {
+				if ($oImapClient->Settings->fast_simple_search) {
 					$aCriteriasResult[] = 'OR OR OR';
 					$aCriteriasResult[] = 'FROM';
 					$aCriteriasResult[] = $sValue;
@@ -307,8 +302,8 @@ abstract class SearchCriterias
 			$aCriteriasResult[] = 'UNDELETED';
 		}
 
-		if (\MailSo\Config::$MessageListPermanentFilter) {
-			$aCriteriasResult[] = \MailSo\Config::$MessageListPermanentFilter;
+		if ($oImapClient->Settings->search_filter) {
+			$aCriteriasResult[] = $oImapClient->Settings->search_filter;
 		}
 
 		$sCriteriasResult = \trim(\implode(' ', $aCriteriasResult));

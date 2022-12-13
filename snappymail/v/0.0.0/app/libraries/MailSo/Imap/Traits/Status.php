@@ -106,8 +106,7 @@ trait Status
 				$this->UIDVALIDITY,
 //				$this->UNSEEN, // undefined when SELECT/EXAMINE
 				$this->HIGHESTMODSEQ,
-				$sClientHash,
-				\MailSo\Config::$MessageListPermanentFilter
+				$sClientHash
 		]));
 	}
 

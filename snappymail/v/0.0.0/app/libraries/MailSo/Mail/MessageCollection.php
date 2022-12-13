@@ -39,7 +39,7 @@ class MessageCollection extends \MailSo\Base\Collection
 
 	public array $NewMessages = array();
 
-	public bool $Filtered = false;
+//	public bool $Filtered = false;
 
 	public function append($oMessage, bool $bToTop = false) : void
 	{
@@ -62,7 +62,7 @@ class MessageCollection extends \MailSo\Base\Collection
 			'FolderInfo' => $this->FolderInfo,
 			'ThreadUid' => $this->ThreadUid,
 			'NewMessages' => $this->NewMessages,
-			'Filtered' => $this->Filtered,
+//			'Filtered' => $this->Filtered,
 			'Offset' => $this->Offset,
 			'Limit' => $this->Limit,
 			'Search' => $this->Search

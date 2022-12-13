@@ -21,9 +21,4 @@ class Validator
 	{
 		return (null === $iMin || $iNumber >= $iMin) && (null === $iMax || $iNumber <= $iMax);
 	}
-
-	public static function PortInt(int $iPort) : bool
-	{
-		return static::RangeInt($iPort, 0, 65535);
-	}
 }

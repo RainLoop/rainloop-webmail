@@ -16,53 +16,5 @@ namespace MailSo;
  */
 class Config
 {
-	/**
-	 * @var int
-	 */
-	public static $MessageListFastSimpleSearch = true;
-
-	/**
-	 * @var int
-	 */
-	public static $MessageListCountLimitTrigger = 0;
-
-	/**
-	 * @var int
-	 */
-	public static $MessageListDateFilter = 0;
-
-	/**
-	 * @var string
-	 */
-	public static $MessageListPermanentFilter = '';
-
-	/**
-	 * @var int
-	 */
-	public static $LargeThreadLimit = 50;
-
-	/**
-	 * @var bool
-	 */
-	public static $MessageAllHeaders = false;
-
-	/**
-	 * @var bool
-	 */
-	public static $LogSimpleLiterals = false;
-
-	/**
-	 * @var bool
-	 */
-	public static $CheckNewMessages = true;
-
-	/**
-	 * @var string
-	 */
-	public static $BoundaryPrefix = '_Part_';
-
-	/**
-	 * @var int
-	 */
-	public static $ImapTimeout = 300;
+	public static string $BoundaryPrefix = '_Part_';
 }

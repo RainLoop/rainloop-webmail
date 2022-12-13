@@ -66,12 +66,12 @@ trait Messages
 
 		try
 		{
-			if (!$this->Config()->Get('imap', 'use_thread', false)) {
+			if (!$this->Config()->Get('imap', 'use_thread', true)) {
 				$oParams->bUseThreads = false;
 			}
 
 			$oParams->oCacher = $this->cacherForUids();
-			$oParams->bUseSortIfSupported = !!$this->Config()->Get('imap', 'use_sort', true);
+			$oParams->bUseSortIfSupported = true;
 
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 			if ($oSettingsLocal instanceof \RainLoop\Settings) {
@@ -482,8 +482,7 @@ trait Messages
 
 		try
 		{
-			$this->MailClient()->MessageDelete($sFolder, new SequenceSet($aUids),
-				!!$this->Config()->Get('imap', 'use_expunge_all_on_delete', false));
+			$this->MailClient()->MessageDelete($sFolder, new SequenceSet($aUids), true);
 		}
 		catch (\Throwable $oException)
 		{
@@ -548,10 +547,7 @@ trait Messages
 
 		try
 		{
-			$this->MailClient()->MessageMove($sFromFolder, $sToFolder, $oUids,
-				!!$this->Config()->Get('imap', 'use_move', true),
-				!!$this->Config()->Get('imap', 'use_expunge_all_on_delete', false)
-			);
+			$this->MailClient()->MessageMove($sFromFolder, $sToFolder, $oUids);
 		}
 		catch (\Throwable $oException)
 		{
@@ -978,7 +974,7 @@ trait Messages
 	private function cacherForThreads()
 	{
 		$oAccount = $this->getAccountFromToken(false);
-		return !!$this->Config()->Get('imap', 'use_thread', false) ? $this->Cacher($oAccount) : null;
+		return !!$this->Config()->Get('imap', 'use_thread', true) ? $this->Cacher($oAccount) : null;
 	}
 
 	private function buildReadReceiptMessage(Account $oAccount) : \MailSo\Mime\Message

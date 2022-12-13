@@ -38,7 +38,6 @@ class MailClient
 	function __construct()
 	{
 		$this->oImapClient = new \MailSo\Imap\ImapClient;
-		$this->oImapClient->SetTimeOuts(10, \MailSo\Config::$ImapTimeout);
 	}
 
 	public function ImapClient() : \MailSo\Imap\ImapClient
@@ -48,8 +47,7 @@ class MailClient
 
 	private function getEnvelopeOrHeadersRequestString() : string
 	{
-		if (\MailSo\Config::$MessageAllHeaders)
-		{
+		if ($this->oImapClient->Settings->message_all_headers) {
 			return FetchType::BODY_HEADER_PEEK;
 		}
 
@@ -299,7 +297,7 @@ class MailClient
 			StoreAction::ADD_FLAGS_SILENT
 		);
 
-		if ($bExpungeAll) {
+		if ($bExpungeAll && $this->oImapClient->Settings->expunge_all_on_delete) {
 			$this->oImapClient->FolderExpunge();
 		} else {
 			$this->oImapClient->FolderExpunge($oRange);
@@ -314,24 +312,19 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function MessageMove(string $sFromFolder, string $sToFolder, SequenceSet $oRange, bool $bUseMoveSupported = true, bool $bExpungeAll = false) : self
+	public function MessageMove(string $sFromFolder, string $sToFolder, SequenceSet $oRange) : self
 	{
-		if (!$sFromFolder || !$sToFolder || !\count($oRange))
-		{
+		if (!$sFromFolder || !$sToFolder || !\count($oRange)) {
 			throw new \InvalidArgumentException;
 		}
 
 		$this->oImapClient->FolderSelect($sFromFolder);
 
-		if ($bUseMoveSupported && $this->oImapClient->IsSupported('MOVE'))
-		{
+		if ($this->oImapClient->IsSupported('MOVE')) {
 			$this->oImapClient->MessageMove($sToFolder, $oRange);
-		}
-		else
-		{
+		} else {
 			$this->oImapClient->MessageCopy($sToFolder, $oRange);
-
-			$this->MessageDelete($sFromFolder, $oRange, $bExpungeAll);
+			$this->MessageDelete($sFromFolder, $oRange, true);
 		}
 
 		return $this;
@@ -410,8 +403,8 @@ class MailClient
 	public function GenerateImapClientHash() : string
 	{
 		return \md5('ImapClientHash/'.
-			$this->oImapClient->GetLogginedUser().'@'.
-			$this->oImapClient->GetConnectedHost().':'.
+			$this->oImapClient->GetLogginedUser() . '@' .
+			$this->oImapClient->GetConnectedHost() . ':' .
 			$this->oImapClient->GetConnectedPort()
 		);
 	}
@@ -424,8 +417,7 @@ class MailClient
 	{
 		$aNewMessages = array();
 
-		if ($iPrevUidNext && $iPrevUidNext != $iCurrentUidNext && 'INBOX' === $sFolderName && \MailSo\Config::$CheckNewMessages)
-		{
+		if ($iPrevUidNext && $iPrevUidNext != $iCurrentUidNext && 'INBOX' === $sFolderName && $this->oImapClient->Settings->fetch_new_messages) {
 			$this->oImapClient->FolderExamine($sFolderName);
 
 			$aFetchResponse = $this->oImapClient->Fetch(array(
@@ -438,12 +430,10 @@ class MailClient
 				))
 			), $iPrevUidNext.':*', true);
 
-			foreach ($aFetchResponse as /* @var $oFetchResponse \MailSo\Imap\FetchResponse */ $oFetchResponse)
-			{
+			foreach ($aFetchResponse as /* @var $oFetchResponse \MailSo\Imap\FetchResponse */ $oFetchResponse) {
 				$aFlags = \array_map('strtolower', $oFetchResponse->GetFetchValue(FetchType::FLAGS));
 
-				if (!\in_array(\strtolower(MessageFlag::SEEN), $aFlags))
-				{
+				if (!\in_array(\strtolower(MessageFlag::SEEN), $aFlags)) {
 					$iUid = (int) $oFetchResponse->GetFetchValue(FetchType::UID);
 
 					$oHeaders = new \MailSo\Mime\HeaderCollection($oFetchResponse->GetHeaderFieldsValue());
@@ -535,41 +525,30 @@ class MailClient
 	 */
 	public function MessageListThreadsMap(string $sFolderName, string $sFolderHash, ?\MailSo\Cache\CacheClient $oCacher) : array
 	{
+//		$iThreadLimit = $this->oImapClient->Settings->thread_limit;
+
 		$sSearchHash = '';
-		if (0 < \MailSo\Config::$MessageListDateFilter)
-		{
-			$iD = \time() - 3600 * 24 * 30 * \MailSo\Config::$MessageListDateFilter;
-			$iTimeFilter = \gmmktime(1, 1, 1, \gmdate('n', $iD), 1, \gmdate('Y', $iD));
 
-			$sSearchHash .= ' SINCE '.\gmdate('j-M-Y', $iTimeFilter);
-		}
-
-		if ('' === \trim($sSearchHash))
-		{
+		if ('' === \trim($sSearchHash)) {
 			$sSearchHash = 'ALL';
 		}
 
-		if ($oCacher && $oCacher->IsInited())
-		{
+		if ($oCacher && $oCacher->IsInited()) {
 			$sSerializedHashKey =
-				'ThreadsMapSorted/'.$sSearchHash.'/'.$sFolderName.'/'.$sFolderHash;
+				"ThreadsMapSorted/{$sSearchHash}/{$sFolderName}/{$sFolderHash}";
+//				"ThreadsMapSorted/{$sSearchHash}/{$iThreadLimit}/{$sFolderName}/{$sFolderHash}";
 
-			if ($this->oLogger)
-			{
+			if ($this->oLogger) {
 				$this->oLogger->Write($sSerializedHashKey);
 			}
 
 			$sSerializedUids = $oCacher->Get($sSerializedHashKey);
-			if (!empty($sSerializedUids))
-			{
+			if (!empty($sSerializedUids)) {
 				$aSerializedUids = \json_decode($sSerializedUids, true);
-				if (isset($aSerializedUids['ThreadsUids']) && \is_array($aSerializedUids['ThreadsUids']))
-				{
-					if ($this->oLogger)
-					{
+				if (isset($aSerializedUids['ThreadsUids']) && \is_array($aSerializedUids['ThreadsUids'])) {
+					if ($this->oLogger) {
 						$this->oLogger->Write('Get Serialized Thread UIDS from cache ("'.$sFolderName.'" / '.$sSearchHash.') [count:'.\count($aSerializedUids['ThreadsUids']).']');
 					}
-
 					return $aSerializedUids['ThreadsUids'];
 				}
 			}
@@ -788,15 +767,15 @@ class MailClient
 		$oMessageCollection->Limit = $oParams->iLimit;
 		$oMessageCollection->Search = $sSearch;
 		$oMessageCollection->ThreadUid = $oParams->iThreadUid;
-		$oMessageCollection->Filtered = '' !== \MailSo\Config::$MessageListPermanentFilter;
+//		$oMessageCollection->Filtered = '' !== $this->oImapClient->Settings->search_filter;
 
 		$oInfo = $this->oImapClient->FolderStatusAndSelect($oParams->sFolderName);
 		$oMessageCollection->FolderInfo = $oInfo;
 
 		$aAllThreads = [];
 
-		$bUseThreads = $oParams->bUseThreads ?
-			($this->oImapClient->IsSupported('THREAD=REFS') || $this->oImapClient->IsSupported('THREAD=REFERENCES') || $this->oImapClient->IsSupported('THREAD=ORDEREDSUBJECT')) : false;
+		$bUseThreads = $oParams->bUseThreads
+			&& ($this->oImapClient->IsSupported('THREAD=REFS') || $this->oImapClient->IsSupported('THREAD=REFERENCES') || $this->oImapClient->IsSupported('THREAD=ORDEREDSUBJECT'));
 		if ($oParams->iThreadUid && !$bUseThreads) {
 			throw new \InvalidArgumentException('THREAD not supported');
 		}
@@ -814,10 +793,10 @@ class MailClient
 		}
 
 		if ($oInfo->MESSAGES) {
-			if (0 < \MailSo\Config::$MessageListCountLimitTrigger && \MailSo\Config::$MessageListCountLimitTrigger < $oInfo->MESSAGES) {
+			if (0 < $this->oImapClient->Settings->message_list_limit && $this->oImapClient->Settings->message_list_limit < $oInfo->MESSAGES) {
 				if ($this->oLogger) {
 					$this->oLogger->Write('List optimization (count: '.$oInfo->MESSAGES.
-						', limit:'.\MailSo\Config::$MessageListCountLimitTrigger.')');
+						', limit:'.$this->oImapClient->Settings->message_list_limit.')');
 				}
 				if (\strlen($sSearch)) {
 					$aUids = $this->GetUids($oParams, $sSearch,
@@ -846,7 +825,7 @@ class MailClient
 				$bUseSortIfSupported = $oParams->bUseSortIfSupported && $this->oImapClient->IsSupported('SORT');
 				if ($bUseThreads) {
 					$aAllThreads = $this->MessageListThreadsMap($oMessageCollection->FolderName, $oMessageCollection->FolderHash, $oParams->oCacher);
-//					$iThreadLimit = \MailSo\Config::$LargeThreadLimit;
+//					$iThreadLimit = $this->oImapClient->Settings->thread_limit;
 					if ($oParams->iThreadUid) {
 						$aUids = [$oParams->iThreadUid];
 						// Only show the selected thread messages
@@ -936,7 +915,7 @@ class MailClient
 		return 1 === \count($aUids) && \is_numeric($aUids[0]) ? (int) $aUids[0] : null;
 	}
 
-	public function Folders(string $sParent, string $sListPattern, bool $bUseListSubscribeStatus, int $iOptimizationLimit, bool $bUseListStatus) : ?FolderCollection
+	public function Folders(string $sParent, string $sListPattern, bool $bUseListSubscribeStatus) : ?FolderCollection
 	{
 		$aImapSubscribedFoldersHelper = null;
 		if ($this->oImapClient->IsSupported('LIST-EXTENDED')) {
@@ -958,13 +937,15 @@ class MailClient
 			}
 		}
 
-		$aFolders = $bUseListStatus
+//			$this->oImapClient->Settings->disable_list_status
+		$aFolders = $this->oImapClient->IsSupported('LIST-STATUS')
 			? $this->oImapClient->FolderStatusList($sParent, $sListPattern)
 			: $this->oImapClient->FolderList($sParent, $sListPattern);
 		if (!$aFolders) {
 			return null;
 		}
 
+		$iOptimizationLimit = $this->oImapClient->Settings->message_list_limit;
 		$oFolderCollection = new FolderCollection;
 		$oFolderCollection->Optimized = 10 < $iOptimizationLimit && \count($aFolders) > $iOptimizationLimit;
 

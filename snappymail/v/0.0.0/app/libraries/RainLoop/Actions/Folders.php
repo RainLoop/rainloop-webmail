@@ -12,11 +12,7 @@ trait Folders
 
 	private function getFolderCollection(bool $HideUnsubscribed) : ?\MailSo\Mail\FolderCollection
 	{
-		return $this->MailClient()->Folders('', '*',
-			$HideUnsubscribed,
-			(int) $this->Config()->Get('imap', 'folder_list_limit', 200),
-			(bool) $this->Config()->Get('imap', 'use_list_status', true)
-		);
+		return $this->MailClient()->Folders('', '*', $HideUnsubscribed);
 	}
 
 	/**
@@ -180,17 +176,9 @@ trait Folders
 					}
 				}
 
-				$bUseSort = $this->Config()->Get('imap', 'use_sort', true);
-				$aCapabilities = \array_filter($this->MailClient()->Capability(), function ($item) use ($bUseSort) {
-					return !\preg_match('/^(IMAP|AUTH|LOGIN|SASL)/', $item)
-						&& ($bUseSort || !\preg_match('/^E?SORT/', $item));
+				$aCapabilities = \array_filter($this->MailClient()->Capability(), function ($item) {
+					return !\preg_match('/^(IMAP|AUTH|LOGIN|SASL)/', $item);
 				});
-				if (!$this->Config()->Get('imap', 'use_list_status', true)) {
-					$key = \array_search('LIST-STATUS', $aCapabilities);
-					if (false !== $key) {
-						unset($aCapabilities[$key]);
-					}
-				}
 
 				$oFolderCollection = \array_merge(
 					$oFolderCollection->jsonSerialize(),

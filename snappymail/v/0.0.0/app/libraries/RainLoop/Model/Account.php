@@ -214,11 +214,24 @@ abstract class Account implements \JsonSerializable
 
 	public function ImapConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Imap\ImapClient $oImapClient, \RainLoop\Config\Application $oConfig) : bool
 	{
-		$oImapClient->__FORCE_SELECT_ON_EXAMINE = !!$oConfig->Get('imap', 'use_force_selection');
-		$oImapClient->__DISABLE_METADATA = !!$oConfig->Get('imap', 'disable_metadata');
-
 		$oSettings = $this->Domain()->ImapSettings();
 		$oSettings->Login = $this->IncLogin();
+
+		$oSettings->timeout = \max($oSettings->timeout, (int) $oConfig->Get('imap', 'timeout', $oSettings->timeout));
+		$oSettings->disable_list_status |= !$oConfig->Get('imap', 'use_list_status', true);
+		$oSettings->disable_metadata |= !!$oConfig->Get('imap', 'disable_metadata', false);
+		$oSettings->disable_move |= !$oConfig->Get('imap', 'use_move', true);
+		$oSettings->disable_sort |= !$oConfig->Get('imap', 'use_sort', true);
+		$oSettings->disable_thread |= !$oConfig->Get('imap', 'use_thread', true);
+		$oSettings->expunge_all_on_delete |= !!$oConfig->Get('imap', 'use_expunge_all_on_delete', false);
+		$oSettings->fast_simple_search = !(!$oSettings->fast_simple_search || !$oConfig->Get('imap', 'message_list_fast_simple_search', true));
+		$oSettings->fetch_new_messages = !(!$oSettings->fetch_new_messages || !$oConfig->Get('labs', 'check_new_messages', true));
+		$oSettings->force_select |= !!$oConfig->Get('imap', 'use_force_selection', false);
+		$oSettings->folder_list_limit = \min($oSettings->folder_list_limit, (int) $oConfig->Get('imap', 'folder_list_limit', 200));
+		$oSettings->message_all_headers |= !!$oConfig->Get('imap', 'message_all_headers', false);
+		$oSettings->message_list_limit = \min($oSettings->message_list_limit, (int) $oConfig->Get('imap', 'message_list_count_limit_trigger', 0));
+		$oSettings->search_filter = $oSettings->search_filter ?: \trim($oConfig->Get('imap', 'message_list_permanent_filter', ''));
+//		$oSettings->thread_limit = \min($oSettings->thread_limit, (int) $oConfig->Get('imap', 'large_thread_limit', 50));
 
 		$oPlugins->RunHook('imap.before-connect', array($this, $oImapClient, $oSettings));
 		$oImapClient->Connect($oSettings);

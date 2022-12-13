@@ -73,8 +73,8 @@ class SieveClient extends \MailSo\Net\NetClient
 		$this->validateResponse($aResponse);
 		$this->parseStartupResponse($aResponse);
 
-		if (ConnectionSecurityType::STARTTLS === $this->iSecurityType
-		 || (ConnectionSecurityType::AUTO_DETECT === $this->iSecurityType && $this->IsSupported('STARTTLS'))) {
+		if (ConnectionSecurityType::STARTTLS === $this->Settings->type
+		 || (ConnectionSecurityType::AUTO_DETECT === $this->Settings->type && $this->IsSupported('STARTTLS'))) {
 			$this->StartTLS();
 		}
 	}

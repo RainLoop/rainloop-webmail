@@ -112,8 +112,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 		$this->ehloOrHelo($sEhloHost);
 		$this->sEhlo = $sEhloHost;
 
-		if (ConnectionSecurityType::STARTTLS === $this->iSecurityType
-		 || (ConnectionSecurityType::AUTO_DETECT === $this->iSecurityType && $this->IsSupported('STARTTLS'))) {
+		if (ConnectionSecurityType::STARTTLS === $this->Settings->type
+		 || (ConnectionSecurityType::AUTO_DETECT === $this->Settings->type && $this->IsSupported('STARTTLS'))) {
 			$this->StartTLS();
 		}
 	}

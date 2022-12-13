@@ -8,9 +8,8 @@ abstract class Api
 	public static function Handle() : bool
 	{
 		static $bOne = false;
-		if (!$bOne)
-		{
-			static::SetupDefaultMailSoConfig();
+		if (!$bOne) {
+			static::SetupDefaultConfig();
 			$bOne = true;
 		}
 		return $bOne;
@@ -84,42 +83,15 @@ abstract class Api
 		return $oLogger;
 	}
 
-	protected static function SetupDefaultMailSoConfig() : void
+	protected static function SetupDefaultConfig() : void
 	{
-		if (\class_exists('MailSo\Config'))
-		{
-			\MailSo\Config::$MessageListFastSimpleSearch =
-				!!static::Config()->Get('imap', 'message_list_fast_simple_search', true);
+		\MailSo\Config::$BoundaryPrefix = \trim(static::Config()->Get('labs', 'boundary_prefix', ''));
 
-			\MailSo\Config::$MessageListCountLimitTrigger =
-				(int) static::Config()->Get('imap', 'message_list_count_limit_trigger', 0);
-
-			\MailSo\Config::$MessageListDateFilter =
-				(int) static::Config()->Get('imap', 'message_list_date_filter', 0);
-
-			\MailSo\Config::$MessageListPermanentFilter =
-				\trim(static::Config()->Get('imap', 'message_list_permanent_filter', ''));
-
-			\MailSo\Config::$MessageAllHeaders =
-				!!static::Config()->Get('imap', 'message_all_headers', false);
-
-			\MailSo\Config::$LargeThreadLimit =
-				(int) static::Config()->Get('imap', 'large_thread_limit', 50);
-
-			\MailSo\Config::$ImapTimeout =
-				(int) static::Config()->Get('imap', 'timeout', 300);
-
-			\MailSo\Config::$BoundaryPrefix =
-				\trim(static::Config()->Get('labs', 'boundary_prefix', ''));
-
-			Utils::$CookieDefaultPath = static::Config()->Get('labs', 'cookie_default_path', '');
-			Utils::$CookieSameSite = static::Config()->Get('security', 'cookie_samesite', 'Strict');
-			Utils::$CookieSecure = isset($_SERVER['HTTPS'])
-				|| 'None' == Utils::$CookieSameSite
-				|| !!static::Config()->Get('labs', 'cookie_default_secure', false);
-
-			\MailSo\Config::$CheckNewMessages = !!static::Config()->Get('labs', 'check_new_messages', true);
-		}
+		Utils::$CookieDefaultPath = static::Config()->Get('labs', 'cookie_default_path', '');
+		Utils::$CookieSameSite = static::Config()->Get('security', 'cookie_samesite', 'Strict');
+		Utils::$CookieSecure = isset($_SERVER['HTTPS'])
+			|| 'None' == Utils::$CookieSameSite
+			|| !!static::Config()->Get('labs', 'cookie_default_secure', false);
 	}
 
 	public static function Version() : string

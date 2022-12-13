@@ -22,60 +22,28 @@ abstract class NetClient
 	 */
 	private $rConnect = null;
 
-	/**
-	 * @var bool
-	 */
-	private $bUnreadBuffer = false;
+	private bool $bUnreadBuffer = false;
 
-	/**
-	 * @var bool
-	 */
-	protected $bRunningCallback = false;
+	protected bool $bRunningCallback = false;
 
-	/**
-	 * @var string
-	 */
-	protected $sResponseBuffer = '';
+	private string $sConnectedHost = '';
 
-	/**
-	 * @var int
-	 */
-	protected $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::NONE;
+	protected string $sResponseBuffer = '';
 
-	/**
-	 * @var string
-	 */
-	private $sConnectedHost = '';
+	private bool $ssl = false;
 
-	/**
-	 * @var int
-	 */
-	private $iConnectedPort = 0;
+	private int $iConnectTimeOut = 10;
 
-	/**
-	 * @var bool
-	 */
-	private $bSecure = false;
+	private int $iSocketTimeOut = 10;
 
-	/**
-	 * @var int
-	 */
-	private $iConnectTimeOut = 10;
-
-	/**
-	 * @var int
-	 */
-	private $iSocketTimeOut = 10;
-
-	/**
-	 * @var int
-	 */
-	private $iStartConnectTime = 0;
+	private float $iStartConnectTime = 0;
 
 	/**
 	 * @var \MailSo\Log\Logger
 	 */
 	protected $oLogger = null;
+
+	public ConnectSettings $Settings;
 
 	public function __destruct()
 	{
@@ -93,7 +61,7 @@ abstract class NetClient
 
 	public function GetConnectedPort() : int
 	{
-		return $this->iConnectedPort;
+		return $this->Settings->port;
 	}
 
 	public function SetTimeOuts(int $iConnectTimeOut = 10, int $iSocketTimeOut = 10) : void
@@ -124,43 +92,40 @@ abstract class NetClient
 	public function Connect(ConnectSettings $oSettings) : void
 	{
 		$oSettings->host = \trim($oSettings->host);
-		if (!\strlen($oSettings->host) || !\MailSo\Base\Validator::PortInt($oSettings->port)) {
+		if (!\strlen($oSettings->host) || !\MailSo\Base\Validator::RangeInt($oSettings->port, 0, 65535)) {
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
 				\LOG_ERR, true);
 		}
 
-		if ($this->IsConnected())
-		{
+		if ($this->IsConnected()) {
 			$this->writeLogException(
 				new Exceptions\SocketAlreadyConnectedException,
 				\LOG_ERR, true);
 		}
 
+		$this->Settings = $oSettings;
+
 		$sErrorStr = '';
 		$iErrorNo = 0;
 
 		$this->sConnectedHost = $oSettings->host;
-		$this->iConnectedPort = $oSettings->port;
-		$this->iSecurityType = $oSettings->type;
-		$this->bSecure = \MailSo\Net\Enumerations\ConnectionSecurityType::UseSSL(
-			$this->iConnectedPort, $this->iSecurityType);
 
-		if (!\preg_match('/^[a-z0-9._]{2,8}:\/\//i', $this->sConnectedHost))
-		{
-			$this->sConnectedHost = ($this->bSecure ? 'ssl://' : 'tcp://').$this->sConnectedHost;
-//			$this->sConnectedHost = ($this->bSecure ? 'ssl://' : '').$this->sConnectedHost;
+		$this->ssl = \MailSo\Net\Enumerations\ConnectionSecurityType::UseSSL($this->Settings->port, $this->Settings->type);
+
+		if (!\preg_match('/^[a-z0-9._]{2,8}:\/\//i', $this->sConnectedHost)) {
+			$this->sConnectedHost = ($this->ssl ? 'ssl://' : 'tcp://') . $this->sConnectedHost;
+//			$this->sConnectedHost = ($this->ssl ? 'ssl://' : '') . $this->sConnectedHost;
 		}
 
-		if (!$this->bSecure && \MailSo\Net\Enumerations\ConnectionSecurityType::SSL === $this->iSecurityType)
-		{
+		if (!$this->ssl && \MailSo\Net\Enumerations\ConnectionSecurityType::SSL === $this->Settings->type) {
 			$this->writeLogException(
 				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('SSL isn\'t supported: ('.\implode(', ', \stream_get_transports()).')'),
 				\LOG_ERR, true);
 		}
 
 		$this->iStartConnectTime = \microtime(true);
-		$this->writeLog('Start connection to "'.$this->sConnectedHost.':'.$this->iConnectedPort.'"');
+		$this->writeLog('Start connection to "'.$this->sConnectedHost.':'.$this->Settings->port.'"');
 
 		$rStreamContext = \stream_context_create(array(
 			'ssl' => $oSettings->ssl->jsonSerialize()
@@ -170,7 +135,7 @@ abstract class NetClient
 
 		try
 		{
-			$this->rConnect = \stream_socket_client($this->sConnectedHost.':'.$this->iConnectedPort,
+			$this->rConnect = \stream_socket_client($this->sConnectedHost.':'.$this->Settings->port,
 				$iErrorNo, $sErrorStr, $this->iConnectTimeOut, STREAM_CLIENT_CONNECT, $rStreamContext);
 		}
 		catch (\Throwable $oExc)
@@ -188,7 +153,7 @@ abstract class NetClient
 			$this->writeLogException(
 				new Exceptions\SocketCanNotConnectToHostException(
 					\MailSo\Base\Locale::ConvertSystemString($sErrorStr), (int) $iErrorNo,
-					'Can\'t connect to host "'.$this->sConnectedHost.':'.$this->iConnectedPort.'"'
+					'Can\'t connect to host "'.$this->sConnectedHost.':'.$this->Settings->port.'"'
 				), \LOG_NOTICE, true);
 		}
 
@@ -246,7 +211,7 @@ abstract class NetClient
 
 			$bResult = \fclose($this->rConnect);
 
-			$this->writeLog('Disconnected from "'.$this->sConnectedHost.':'.$this->iConnectedPort.'" ('.
+			$this->writeLog('Disconnected from "'.$this->sConnectedHost.':'.$this->Settings->port.'" ('.
 				(($bResult) ? 'success' : 'unsuccess').')');
 
 			if ($this->iStartConnectTime)
