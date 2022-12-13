@@ -96,7 +96,7 @@ class Folder implements \JsonSerializable
 		return $this->oImapFolder->IsInbox();
 	}
 
-	public function GetFolderListType() : int
+	public function GetType() : int
 	{
 		$aFlags = $this->oImapFolder->FlagsLowerCase();
 		// RFC 6154
@@ -206,9 +206,23 @@ class Folder implements \JsonSerializable
 			);
 		}
 */
+/*
+		$types = [
+			FolderType::INBOX     => 'inbox',
+			FolderType::ALL       => 'all',
+			FolderType::ARCHIVE   => 'archive',
+			FolderType::DRAFTS    => 'drafts',
+			FolderType::FLAGGED   => 'flagged',
+			FolderType::IMPORTANT => 'important',
+			FolderType::JUNK      => 'junk',
+			FolderType::SENT      => 'sent',
+			FolderType::TRASH     => 'trash',
+		];
+		$type = $this->GetType();
+*/
 		return array(
 			'@Object' => 'Object/Folder',
-			'Name' => $this->Name(),
+			'name' => $this->Name(),
 			'FullName' => $this->FullName(),
 			'Delimiter' => (string) $this->Delimiter(),
 			'isSubscribed' => $this->bSubscribed,
@@ -219,10 +233,28 @@ class Folder implements \JsonSerializable
 //			'PermanentFlags' => $this->oImapFolder->PermanentFlags,
 			'Metadata' => $this->oImapFolder->Metadata(),
 			'UidNext' => $this->oImapFolder->UIDNEXT,
-			// RFC 8621
+			// https://datatracker.ietf.org/doc/html/rfc8621#section-2
 			'totalEmails' => $this->oImapFolder->MESSAGES,
 			'unreadEmails' => $this->oImapFolder->UNSEEN,
-			'id' => $this->oImapFolder->MAILBOXID
+			'id' => $this->oImapFolder->MAILBOXID,
+/*
+			'role' => isset($types[$type]) ? $types[$type] : null,
+
+			if ($this->IsSupported('ACL') || $this->CapabilityValue('RIGHTS')) {
+				$rights = $this->FolderMyRights($this->FullName());
+			}
+			'myRights' => [
+				'mayReadItems'   => !$rights || ($rights->hasRight('l') && $rights->hasRight('r')),
+				'mayAddItems'    => !$rights || $rights->hasRight('i'),
+				'mayRemoveItems' => !$rights || ($rights->hasRight('t') && $rights->hasRight('e')),
+				'maySetSeen'     => !$rights || $rights->hasRight('s'),
+				'maySetKeywords' => !$rights || $rights->hasRight('w'),
+				'mayCreateChild' => !$rights || $rights->hasRight('k'),
+				'mayRename'      => !$rights || $rights->hasRight('x'),
+				'mayDelete'      => !$rights || $rights->hasRight('x'),
+				'maySubmit'      => !$rights || $rights->hasRight('p')
+			]
+*/
 		);
 	}
 }

@@ -24,7 +24,7 @@ trait ACL
 	 */
 	public function ACLAllow(string $sFolderName, string $command) : bool
 	{
-		if ($this->IsSupported('ACL') || $this->IsSupported('RIGHTS=texk')) {
+		if ($this->IsSupported('ACL') || $this->CapabilityValue('RIGHTS')) {
 			if ('MYRIGHTS' === $command) {
 				return true;
 			}
@@ -128,6 +128,7 @@ trait ACL
 
 	public function FolderMyRights(string $sFolderName) : ?ACLResponse
 	{
+//		if ($this->ACLAllow($sFolderName, 'MYRIGHTS')) {
 //		if ($this->IsSupported('ACL')) {
 		$oResponses = $this->SendRequestGetResponse('MYRIGHTS', array($this->EscapeString($sFolderName)));
 		foreach ($oResponses as $oResponse) {

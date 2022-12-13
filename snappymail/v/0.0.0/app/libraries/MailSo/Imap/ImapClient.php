@@ -280,6 +280,18 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $this->aCapabilityItems;
 	}
 
+	public function CapabilityValue(string $sExtentionName) : ?string
+	{
+		$sExtentionName = \trim($sExtentionName) . '=';
+		$aCapabilities = $this->Capability() ?: [];
+		foreach ($aCapabilities as $string) {
+			if (\str_starts_with($string, $sExtentionName)) {
+				return \substr($string, \strlen($sExtentionName));
+			}
+		}
+		return null;
+	}
+
 	private function setCapabilities(ResponseCollection $oResponseCollection) : void
 	{
 		$aList = $oResponseCollection->getCapabilityResult();
@@ -375,14 +387,8 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function AppendLimit() : ?int
 	{
-		if ($this->Capability()) {
-			foreach ($this->aCapabilityItems as $string) {
-				if ('APPENDLIMIT=' === \substr($string, 0, 12)) {
-					return (int) \substr($string, 12);
-				}
-			}
-		}
-		return null;
+		$string = $this->CapabilityValue('APPENDLIMIT');
+		return \is_null($string) ? null : (int) $string;
 	}
 
 	/**

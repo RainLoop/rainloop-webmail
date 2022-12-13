@@ -481,7 +481,7 @@ trait Folders
 			{
 				foreach ($oFolders as $oFolder)
 				{
-					$iFolderType = $oFolder->GetFolderListType();
+					$iFolderType = $oFolder->GetType();
 					if (!isset($aResult[$iFolderType]) && \in_array($iFolderType, array(
 						FolderType::INBOX,
 						FolderType::SENT,

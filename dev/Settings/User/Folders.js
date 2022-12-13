@@ -67,7 +67,7 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 					Subscribe: folder.isSubscribed() ? 1 : 0
 				})
 				.then(data => {
-					folder.name(nameToEdit/*data.Name*/);
+					folder.name(nameToEdit/*data.name*/);
 					if (folder.subFolders.length) {
 						Remote.setTrigger(FolderUserStore.foldersLoading, true);
 //						clearTimeout(Remote.foldersTimeout);
