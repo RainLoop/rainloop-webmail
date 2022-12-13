@@ -23,7 +23,7 @@ export class AccountModel extends AbstractModel {
 		});
 
 		// Load at random between 3 and 30 seconds
-		setTimeout(()=>this.fetchUnread(), (Math.ceil(Math.random() * 10)) * 3000);
+		isAdditional && setTimeout(()=>this.fetchUnread(), (Math.ceil(Math.random() * 10)) * 3000);
 	}
 
 	/**
