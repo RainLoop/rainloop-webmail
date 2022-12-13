@@ -611,7 +611,7 @@ class MailClient
 				foreach ($aFetchResponse as /* @var $oFetchResponseItem \MailSo\Imap\FetchResponse */ $oFetchResponseItem) {
 					$id = $oRange->UID
 						? $oFetchResponseItem->GetFetchValue(FetchType::UID)
-						: $this->oImapResponse->ResponseList[1];
+						: $oFetchResponseItem->oImapResponse->ResponseList[1];
 					$aCollection[$id] = Message::NewFetchResponseInstance($oMessageCollection->FolderName, $oFetchResponseItem);
 				}
 				$oMessageCollection->exchangeArray(\array_values(\array_filter($aCollection)));

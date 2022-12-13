@@ -17,26 +17,18 @@ namespace MailSo\Imap;
  */
 class FetchResponse
 {
-	/**
-	 * @var \MailSo\Imap\Response
-	 */
-	private $oImapResponse;
+	public Response $oImapResponse;
 
-	/**
-	 * @var array|null
-	 */
-	private $aEnvelopeCache;
+	private ?array $aEnvelopeCache = null;
 
 	function __construct(Response $oImapResponse)
 	{
 		$this->oImapResponse = $oImapResponse;
-		$this->aEnvelopeCache = null;
 	}
 
 	public function GetEnvelope(bool $bForce = false) : ?array
 	{
-		if (null === $this->aEnvelopeCache || $bForce)
-		{
+		if (null === $this->aEnvelopeCache || $bForce) {
 			$this->aEnvelopeCache = $this->GetFetchValue(Enumerations\FetchType::ENVELOPE);
 		}
 		return $this->aEnvelopeCache;
@@ -54,13 +46,10 @@ class FetchResponse
 	{
 		$oResult = null;
 		$aEmails = $this->GetFetchEnvelopeValue($iIndex);
-		if (\is_array($aEmails) && \count($aEmails))
-		{
+		if (\is_array($aEmails) && \count($aEmails)) {
 			$oResult = new \MailSo\Mime\EmailCollection;
-			foreach ($aEmails as $aEmailItem)
-			{
-				if (\is_array($aEmailItem) && 4 === \count($aEmailItem))
-				{
+			foreach ($aEmails as $aEmailItem) {
+				if (\is_array($aEmailItem) && 4 === \count($aEmailItem)) {
 					$sDisplayName = \MailSo\Base\Utils::DecodeHeaderValue(
 						self::findEnvelopeIndex($aEmailItem, 0, ''), $sParentCharset);
 
@@ -70,8 +59,7 @@ class FetchResponse
 					$sLocalPart = self::findEnvelopeIndex($aEmailItem, 2, '');
 					$sDomainPart = self::findEnvelopeIndex($aEmailItem, 3, '');
 
-					if (\strlen($sLocalPart) && \strlen($sDomainPart))
-					{
+					if (\strlen($sLocalPart) && \strlen($sDomainPart)) {
 						$oResult->append(
 							new \MailSo\Mime\Email($sLocalPart.'@'.$sDomainPart, $sDisplayName)
 						);
@@ -122,12 +110,9 @@ class FetchResponse
 	{
 		$bNextIsValue = false;
 
-		if (isset($this->oImapResponse->ResponseList[3]) && \is_array($this->oImapResponse->ResponseList[3]))
-		{
-			foreach ($this->oImapResponse->ResponseList[3] as $mItem)
-			{
-				if ($bNextIsValue)
-				{
+		if (isset($this->oImapResponse->ResponseList[3]) && \is_array($this->oImapResponse->ResponseList[3])) {
+			foreach ($this->oImapResponse->ResponseList[3] as $mItem) {
+				if ($bNextIsValue) {
 					return (string) $mItem;
 				}
 
