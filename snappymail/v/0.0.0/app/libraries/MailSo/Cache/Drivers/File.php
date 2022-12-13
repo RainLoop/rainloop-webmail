@@ -45,19 +45,16 @@ class File implements \MailSo\Cache\DriverInterface
 	{
 		$sValue = '';
 		$sPath = $this->generateCachedFileName($sKey);
-		if ('' !== $sPath && \file_exists($sPath))
-		{
+		if ('' !== $sPath && \file_exists($sPath)) {
 			$sValue = \file_get_contents($sPath);
 		}
-
 		return \is_string($sValue) ? $sValue : '';
 	}
 
 	public function Delete(string $sKey) : void
 	{
 		$sPath = $this->generateCachedFileName($sKey);
-		if ('' !== $sPath && \file_exists($sPath))
-		{
+		if ('' !== $sPath && \file_exists($sPath)) {
 			\unlink($sPath);
 		}
 	}
@@ -75,19 +72,18 @@ class File implements \MailSo\Cache\DriverInterface
 	private function generateCachedFileName(string $sKey, bool $bMkDir = false) : string
 	{
 		$sFilePath = '';
-		if (3 < \strlen($sKey))
-		{
+		if (3 < \strlen($sKey)) {
 			$sKeyPath = \sha1($sKey);
-			$sKeyPath = \substr($sKeyPath, 0, 2).'/'.\substr($sKeyPath, 2, 2).'/'.$sKeyPath;
-
-			$sFilePath = $this->sCacheFolder.$this->sKeyPrefix.$sKeyPath;
-			$dir = \dirname($sFilePath);
-			if ($bMkDir && !\is_dir($dir) && !\mkdir($dir, 0700, true))
-			{
-				$sFilePath = '';
+			$sFilePath = $this->sCacheFolder . $this->sKeyPrefix
+				. \substr($sKeyPath, 0, 2) . '/' . \substr($sKeyPath, 2, 2) . '/' . $sKeyPath;
+			if ($bMkDir) {
+				$dir = \dirname($sFilePath);
+				if (!\is_dir($dir) && !\mkdir($dir, 0700, true)) {
+					\error_log("mkdir({$dir}) failed");
+					$sFilePath = '';
+				}
 			}
 		}
-
 		return $sFilePath;
 	}
 }
