@@ -945,7 +945,7 @@ class MailClient
 			return null;
 		}
 
-		$iOptimizationLimit = $this->oImapClient->Settings->message_list_limit;
+		$iOptimizationLimit = $this->oImapClient->Settings->folder_list_limit;
 		$oFolderCollection = new FolderCollection;
 		$oFolderCollection->Optimized = 10 < $iOptimizationLimit && \count($aFolders) > $iOptimizationLimit;
 
