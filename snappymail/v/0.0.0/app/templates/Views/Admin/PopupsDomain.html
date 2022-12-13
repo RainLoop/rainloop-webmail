@@ -21,16 +21,16 @@
 			<input type="radio" name="tabs" id="tab-imap" checked>
 			<label for="tab-imap" role="tab" tabindex="0"
 				data-bind="css: { 'testing-done': testingDone, 'testing-error': testingImapError }, tooltipErrorTip: testingImapErrorDesc"
-				data-i18n="POPUPS_DOMAIN/LABEL_IMAP"></label>
+				>IMAP</label>
 			<div class="tab-content" role="tabpanel" aria-hidden="false">
 				<div class="row">
-					<div class="span3">
+					<div class="span">
 						<span data-i18n="POPUPS_DOMAIN/LABEL_SERVER"></span>
 						<br>
 						<input name="IMAP[host]" type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off"
 							data-bind="textInput: imapHost, hasfocus: imapHostFocus">
 					</div>
-					<div class="span2">
+					<div class="span">
 						<span data-i18n="POPUPS_DOMAIN/LABEL_SECURE"></span>
 						<br>
 						<select name="IMAP[type]" class="span2" data-bind="value: imapType">
@@ -39,11 +39,15 @@
 							<option value="2" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_STARTTLS"></option>
 						</select>
 					</div>
-					<div class="span2">
+					<div class="span">
 						<span data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
 						<br>
-						<input name="IMAP[port]" type="number" autocomplete="off" autocorrect="off" autocapitalize="off"
-							style="width:6em" data-bind="textInput: imapPort">
+						<input name="IMAP[port]" type="number" style="width:6em" data-bind="textInput: imapPort">
+					</div>
+					<div class="span">
+						<span data-i18n="POPUPS_DOMAIN/TIMEOUT"></span>
+						<br>
+						<input name="IMAP[timeout]" type="number" min="5" step="1" class="span1" data-bind="textInput: imapTimeout">
 					</div>
 				</div>
 				<br>
@@ -72,22 +76,76 @@
 						label: 'TAB_SECURITY/LABEL_ALLOW_SELF_SIGNED'
 					}
 				}"></div>
+
+				<h4 data-i18n="POPUPS_DOMAIN/DISABLE_CAPABILITIES"></h4>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						value: imapDisable_list_status,
+						label: 'LIST-STATUS'
+					}
+				}"></div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						value: imapDisable_metadata,
+						label: 'METADATA'
+					}
+				}"></div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						value: imapDisable_move,
+						label: 'MOVE'
+					}
+				}"></div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						value: imapDisable_sort,
+						label: 'SORT'
+					}
+				}"></div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						value: imapDisable_thread,
+						label: 'THREAD'
+					}
+				}"></div>
+
+				<h4 data-i18n="POPUPS_DOMAIN/LIMITS"></h4>
+				<div class="control-group">
+					<label data-i18n="POPUPS_DOMAIN/FOLDERS"></label>
+					<input name="IMAP[folder_list_limit]" type="number" min="0" step="1" class="span1" data-bind="textInput: imapFolder_list_limit">
+				</div>
+				<div class="control-group">
+					<label data-i18n="POPUPS_DOMAIN/MESSAGES"></label>
+					<input name="IMAP[message_list_limit]" type="number" min="0" step="1" class="span1" data-bind="textInput: imapMessage_list_limit">
+				</div>
+<!--
+        "use_expunge_all_on_delete": false,
+        "fast_simple_search": true,
+        "force_select": false,
+        "message_all_headers": false,
+        "search_filter": null,
+-->
 			</div>
 
 			<input type="radio" name="tabs" id="tab-smtp">
 			<label for="tab-smtp" role="tab" tabindex="0"
 				data-bind="css: { 'testing-done': testingDone, 'testing-error': testingSmtpError }, tooltipErrorTip: testingSmtpErrorDesc"
-				data-i18n="POPUPS_DOMAIN/LABEL_SMTP"></label>
+				>SMTP</label>
 			<div class="tab-content" role="tabpanel" aria-hidden="true">
 				<div data-bind="visible: !smtpUsePhpMail()">
 					<div class="row">
-						<div class="span3">
+						<div class="span">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_SERVER"></span>
 							<br>
 							<input name="SMTP[host]" type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off"
 								data-bind="textInput: smtpHost, hasfocus: smtpHostFocus">
 						</div>
-						<div class="span2">
+						<div class="span">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_SECURE"></span>
 							<br>
 							<select name="SMTP[type]" class="span2" data-bind="value: smtpType">
@@ -96,11 +154,15 @@
 								<option value="2" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_STARTTLS"></option>
 							</select>
 						</div>
-						<div class="span2">
+						<div class="span">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
 							<br>
-							<input name="SMTP[port]" type="number" autocomplete="off" autocorrect="off" autocapitalize="off"
-								style="width:6em" data-bind="textInput: smtpPort">
+							<input name="SMTP[port]" type="number" style="width:6em" data-bind="textInput: smtpPort">
+						</div>
+						<div class="span">
+							<span data-i18n="POPUPS_DOMAIN/TIMEOUT"></span>
+							<br>
+							<input name="SMTP[timeout]" type="number" min="5" step="1" class="span1" data-bind="textInput: smtpTimeout">
 						</div>
 					</div>
 					<br>
@@ -159,7 +221,7 @@
 			<label for="tab-sieve" role="tab" tabindex="0"
 				data-bind="css: { 'testing-done': testingDone, 'testing-error': testingSieveError }, tooltipErrorTip: testingSieveErrorDesc">
 				<i class="icon-filter"></i>
-				<span data-i18n="POPUPS_DOMAIN/LABEL_SIEVE"></span>
+				SIEVE
 			</label>
 			<div class="tab-content" role="tabpanel" aria-hidden="true">
 				<div class="row">
@@ -173,13 +235,13 @@
 				</div>
 				<div data-bind="visible: sieveEnabled">
 					<div class="row">
-						<div class="span3">
+						<div class="span">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_SERVER"></span>
 							<br>
 							<input name="Sieve[host]" type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off"
 								data-bind="textInput: sieveHost, hasfocus: sieveHostFocus">
 						</div>
-						<div class="span2">
+						<div class="span">
 							<span data-i18n="POPUPS_DOMAIN/LABEL_SECURE"></span>
 							<br>
 							<select name="Sieve[type]" class="span2" data-bind="value: sieveType">
@@ -188,11 +250,15 @@
 								<option value="2" data-i18n="POPUPS_DOMAIN/SECURE_OPTION_STARTTLS"></option>
 							</select>
 						</div>
-						<div class="span2">
+						<div class="span">
 							<span name="Sieve[port]" data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
 							<br>
-							<input type="number" autocomplete="off" autocorrect="off" autocapitalize="off"
-								style="width:6em" data-bind="textInput: sievePort">
+							<input type="number" style="width:6em" data-bind="textInput: sievePort">
+						</div>
+						<div class="span">
+							<span data-i18n="POPUPS_DOMAIN/TIMEOUT"></span>
+							<br>
+							<input name="Sieve[timeout]" type="number" min="5" step="1" class="span1" data-bind="textInput: sieveTimeout">
 						</div>
 					</div>
 				</div>

@@ -450,10 +450,7 @@ trait Messages
 
 		try
 		{
-			$oMessage = $this->MailClient()->Message($sFolder, $iUid, true,
-				$this->cacherForThreads(),
-				(int) $this->Config()->Get('imap', 'body_text_limit', 0)
-			);
+			$oMessage = $this->MailClient()->Message($sFolder, $iUid, true, $this->cacherForThreads());
 		}
 		catch (\Throwable $oException)
 		{

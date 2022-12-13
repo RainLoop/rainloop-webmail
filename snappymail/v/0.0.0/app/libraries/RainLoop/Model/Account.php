@@ -218,19 +218,13 @@ abstract class Account implements \JsonSerializable
 		$oSettings->timeout = \max($oSettings->timeout, (int) $oConfig->Get('imap', 'timeout', $oSettings->timeout));
 		$oSettings->Login = $this->IncLogin();
 
-		$oSettings->disable_list_status |= !$oConfig->Get('imap', 'use_list_status', true);
-		$oSettings->disable_metadata |= !!$oConfig->Get('imap', 'disable_metadata', false);
-		$oSettings->disable_move |= !$oConfig->Get('imap', 'use_move', true);
-		$oSettings->disable_sort |= !$oConfig->Get('imap', 'use_sort', true);
-		$oSettings->disable_thread |= !$oConfig->Get('imap', 'use_thread', true);
 		$oSettings->expunge_all_on_delete |= !!$oConfig->Get('imap', 'use_expunge_all_on_delete', false);
 		$oSettings->fast_simple_search = !(!$oSettings->fast_simple_search || !$oConfig->Get('imap', 'message_list_fast_simple_search', true));
 		$oSettings->fetch_new_messages = !(!$oSettings->fetch_new_messages || !$oConfig->Get('labs', 'check_new_messages', true));
 		$oSettings->force_select |= !!$oConfig->Get('imap', 'use_force_selection', false);
-		$oSettings->folder_list_limit = \min($oSettings->folder_list_limit, (int) $oConfig->Get('imap', 'folder_list_limit', 200));
 		$oSettings->message_all_headers |= !!$oConfig->Get('imap', 'message_all_headers', false);
-		$oSettings->message_list_limit = \max($oSettings->message_list_limit, (int) $oConfig->Get('imap', 'message_list_count_limit_trigger', 0));
 		$oSettings->search_filter = $oSettings->search_filter ?: \trim($oConfig->Get('imap', 'message_list_permanent_filter', ''));
+//		$oSettings->body_text_limit = \min($oSettings->body_text_limit, (int) $oConfig->Get('imap', 'body_text_limit', 50));
 //		$oSettings->thread_limit = \min($oSettings->thread_limit, (int) $oConfig->Get('imap', 'large_thread_limit', 50));
 
 		$oPlugins->RunHook('imap.before-connect', array($this, $oImapClient, $oSettings));
@@ -243,7 +237,6 @@ abstract class Account implements \JsonSerializable
 	public function SmtpConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Smtp\SmtpClient $oSmtpClient, \RainLoop\Config\Application $oConfig, bool &$bUsePhpMail = false) : bool
 	{
 		$oSettings = $this->Domain()->SmtpSettings();
-		$oSettings->timeout = \max($oSettings->timeout, (int) $oConfig->Get('labs', 'smtp_timeout', $oSettings->timeout));
 		$oSettings->Login = $this->OutLogin();
 		$oSettings->usePhpMail = $bUsePhpMail;
 		$oSettings->Ehlo = \MailSo\Smtp\SmtpClient::EhloHelper();
@@ -263,7 +256,6 @@ abstract class Account implements \JsonSerializable
 	public function SieveConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Sieve\SieveClient $oSieveClient, \RainLoop\Config\Application $oConfig)
 	{
 		$oSettings = $this->Domain()->SieveSettings();
-		$oSettings->timeout = \max($oSettings->timeout, (int) $oConfig->Get('labs', 'sieve_timeout', $oSettings->timeout));
 		$oSettings->Login = $this->IncLogin();
 
 		$oPlugins->RunHook('sieve.before-connect', array($this, $oSieveClient, $oSettings));

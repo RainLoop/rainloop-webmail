@@ -119,7 +119,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function Message(string $sFolderName, int $iIndex, bool $bIndexIsUid = true, ?\MailSo\Cache\CacheClient $oCacher = null, int $iBodyTextLimit = 0) : ?Message
+	public function Message(string $sFolderName, int $iIndex, bool $bIndexIsUid = true, ?\MailSo\Cache\CacheClient $oCacher = null) : ?Message
 	{
 		if (!\MailSo\Base\Validator::RangeInt($iIndex, 1))
 		{
@@ -140,6 +140,8 @@ class MailClient
 			$this->getEnvelopeOrHeadersRequestString()
 		);
 
+		$iBodyTextLimit = $this->oImapClient->Settings->body_text_limit;
+
 		$aFetchResponse = $this->oImapClient->Fetch(array(FetchType::BODYSTRUCTURE), $iIndex, $bIndexIsUid);
 		if (\count($aFetchResponse) && isset($aFetchResponse[0]))
 		{
@@ -149,11 +151,9 @@ class MailClient
 				foreach ($oBodyStructure->GetHtmlAndPlainParts() as $oPart)
 				{
 					$sLine = FetchType::BODY_PEEK.'['.$oPart->PartID().']';
-					if (0 < $iBodyTextLimit && $iBodyTextLimit < $oPart->Size())
-					{
+					if (0 < $iBodyTextLimit && $iBodyTextLimit < $oPart->Size()) {
 						$sLine .= "<0.{$iBodyTextLimit}>";
 					}
-
 					$aFetchItems[] = $sLine;
 				}
 /*

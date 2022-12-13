@@ -20,17 +20,34 @@ const
 			host: oDomain.imapHost(),
 			port: oDomain.imapPort(),
 			secure: pInt(oDomain.imapType()),
+			timeout: oDomain.imapTimeout(),
 			shortLogin: !!oDomain.imapShortLogin(),
 			ssl: {
 				verify_peer: !!oDomain.imapSslVerify_peer(),
 				verify_peer_name: !!oDomain.imapSslVerify_peer(),
 				allow_self_signed: !!oDomain.imapSslAllow_self_signed()
-			}
+			},
+			disable_list_status: !!oDomain.imapDisable_list_status(),
+			disable_metadata: !!oDomain.imapDisable_metadata(),
+			disable_move: !!oDomain.imapDisable_move(),
+			disable_sort: !!oDomain.imapDisable_sort(),
+			disable_thread:  !!oDomain.imapDisable_thread(),
+			folder_list_limit: pInt(oDomain.imapFolder_list_limit()),
+			message_list_limit: pInt(oDomain.imapMessage_list_limit())
+/*
+			expunge_all_on_delete: ,
+			fast_simple_search: ,
+			fetch_new_messages: ,
+			force_select: ,
+			message_all_headers: ,
+			search_filter:
+*/
 		},
 		SMTP: {
 			host: oDomain.smtpHost(),
 			port: oDomain.smtpPort(),
 			secure: pInt(oDomain.smtpType()),
+			timeout: oDomain.smtpTimeout(),
 			shortLogin: !!oDomain.smtpShortLogin(),
 			ssl: {
 				verify_peer: !!oDomain.smtpSslVerify_peer(),
@@ -46,6 +63,7 @@ const
 			host: oDomain.sieveHost(),
 			port: oDomain.sievePort(),
 			secure: pInt(oDomain.sieveType()),
+			timeout: oDomain.sieveTimeout(),
 			shortLogin: !!oDomain.imapShortLogin(),
 			ssl: {
 				verify_peer: !!oDomain.imapSslVerify_peer(),
@@ -302,19 +320,36 @@ export class DomainPopupView extends AbstractViewPopup {
 			imapHost: '',
 			imapPort: 143,
 			imapType: 0,
+			imapTimeout: 300,
 			imapShortLogin: false,
 			// SSL
 			imapSslVerify_peer: false,
 			imapSslAllow_self_signed: false,
+			// Options
+			imapDisable_list_status: false,
+			imapDisable_metadata: false,
+			imapDisable_move: false,
+			imapDisable_sort: false,
+			imapDisable_thread: false,
+			imapExpunge_all_on_delete: false,
+			imapFast_simple_search: true,
+			imapFetch_new_messages: true,
+			imapForce_select: false,
+			imapFolder_list_limit: 200,
+			imapMessage_all_headers: false,
+			imapMessage_list_limit: 0,
+			imapSearch_filter: '',
 
 			sieveEnabled: false,
 			sieveHost: '',
 			sievePort: 4190,
 			sieveType: 0,
+			sieveTimeout: 10,
 
 			smtpHost: '',
 			smtpPort: 25,
 			smtpType: 0,
+			smtpTimeout: 60,
 			smtpShortLogin: false,
 			smtpUseAuth: true,
 			smtpSetSender: false,

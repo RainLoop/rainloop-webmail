@@ -34,13 +34,47 @@ class Settings extends \MailSo\Net\ConnectSettings
 		$message_all_headers = false;
 
 	public int
-//		$body_text_limit = 555000,
-		$message_list_limit = 0,
+		$body_text_limit = 0,
 		$folder_list_limit = 200,
+		$message_list_limit = 0,
 		$thread_limit = 50;
 
 	public string
 		$search_filter = '';
+
+	public static function fromArray(array $aSettings) : self
+	{
+		$object = parent::fromArray($aSettings);
+		$options = [
+			'disable_list_status',
+			'disable_metadata',
+			'disable_move',
+			'disable_sort',
+			'disable_thread',
+			'expunge_all_on_delete',
+			'fast_simple_search',
+			'fetch_new_messages',
+			'force_select',
+			'message_all_headers'
+		];
+		foreach ($options as $option) {
+			if (isset($aSettings[$option])) {
+				$object->$option = !empty($aSettings[$option]);
+			}
+		}
+		$options = [
+//			'body_text_limit',
+			'folder_list_limit',
+			'message_list_limit',
+//			'thread_limit',
+		];
+		foreach ($options as $option) {
+			if (isset($aSettings[$option])) {
+				$object->$option = \intval($aSettings[$option]);
+			}
+		}
+		return $object;
+	}
 
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
@@ -61,7 +95,8 @@ class Settings extends \MailSo\Net\ConnectSettings
 				'force_select' => $this->force_select,
 				'message_all_headers' => $this->message_all_headers,
 				'message_list_limit' => $this->message_list_limit,
-				'search_filter' => $this->message_list_filter
+				'search_filter' => $this->search_filter,
+//				'thread_limit' => $this->thread_limit
 			]
 		);
 	}
