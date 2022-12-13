@@ -802,15 +802,15 @@ class MailClient
 					$aUids = $this->GetUids($oParams, $sSearch,
 						$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
 
-					$oMessageCollection->MessageResultCount = \count($aUids);
-					if ($oMessageCollection->MessageResultCount) {
+					$oMessageCollection->totalEmails = \count($aUids);
+					if ($oMessageCollection->totalEmails) {
 						$this->MessageListByRequestIndexOrUids(
 							$oMessageCollection,
 							new SequenceSet(\array_slice($aUids, $oParams->iOffset, $oParams->iLimit))
 						);
 					}
 				} else {
-					$oMessageCollection->MessageResultCount = $oInfo->MESSAGES;
+					$oMessageCollection->totalEmails = $oInfo->MESSAGES;
 					if (1 < $oInfo->MESSAGES) {
 						$end = \max(1, $oInfo->MESSAGES - $oParams->iOffset);
 						$start = \max(1, $end - $oParams->iLimit + 1);
@@ -825,6 +825,7 @@ class MailClient
 				$bUseSortIfSupported = $oParams->bUseSortIfSupported && $this->oImapClient->IsSupported('SORT');
 				if ($bUseThreads) {
 					$aAllThreads = $this->MessageListThreadsMap($oMessageCollection->FolderName, $oMessageCollection->FolderHash, $oParams->oCacher);
+					$oMessageCollection->totalThreads = \count($aAllThreads);
 //					$iThreadLimit = $this->oImapClient->Settings->thread_limit;
 					if ($oParams->iThreadUid) {
 						$aUids = [$oParams->iThreadUid];
@@ -871,7 +872,7 @@ class MailClient
 					}
 				}
 
-				$oMessageCollection->MessageResultCount = \count($aUids);
+				$oMessageCollection->totalEmails = \count($aUids);
 
 				if (\count($aUids)) {
 					$this->MessageListByRequestIndexOrUids(

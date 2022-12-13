@@ -258,7 +258,7 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 						MessagelistUserStore.notifyNewMessages(folder.fullName, collection.NewMessages);
 					}
 
-					MessagelistUserStore.count(collection.MessageResultCount);
+					MessagelistUserStore.count(collection.totalEmails);
 					MessagelistUserStore.listSearch(pString(collection.Search));
 					MessagelistUserStore.page(Math.ceil(collection.Offset / SettingsUserStore.messagesPerPage() + 1));
 					MessagelistUserStore.threadUid(collection.ThreadUid);

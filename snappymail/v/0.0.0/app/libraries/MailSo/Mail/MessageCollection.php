@@ -22,7 +22,9 @@ class MessageCollection extends \MailSo\Base\Collection
 	/**
 	 * Amount of UIDs in this list (could be less then total messages when using threads)
 	 */
-	public int $MessageResultCount = 0;
+	public int $totalEmails = 0;
+
+	public ?int $totalThreads = null;
 
 	public string $FolderName = '';
 
@@ -56,7 +58,8 @@ class MessageCollection extends \MailSo\Base\Collection
 	public function jsonSerialize()
 	{
 		return array_merge(parent::jsonSerialize(), array(
-			'MessageResultCount' => $this->MessageResultCount,
+			'totalEmails' => $this->totalEmails,
+			'totalThreads' => $this->totalThreads,
 			'Folder' => $this->FolderName,
 			'FolderHash' => $this->FolderHash,
 			'FolderInfo' => $this->FolderInfo,

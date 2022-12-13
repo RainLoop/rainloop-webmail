@@ -18,7 +18,6 @@ export class MessageCollectionModel extends AbstractCollectionModel
 		this.FolderInfo
 		this.totalEmails
 		this.unreadEmails
-		this.MessageResultCount
 		this.UidNext
 		this.ThreadUid
 		this.NewMessages
