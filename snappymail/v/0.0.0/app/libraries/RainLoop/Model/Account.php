@@ -243,7 +243,7 @@ abstract class Account implements \JsonSerializable
 	public function SmtpConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Smtp\SmtpClient $oSmtpClient, \RainLoop\Config\Application $oConfig, bool &$bUsePhpMail = false) : bool
 	{
 		$oSettings = $this->Domain()->SmtpSettings();
-		$oSettings->timeout = \max($oSettings->timeout, (int) $oConfig->Get('labs', 'smtp_timeout', 60));
+		$oSettings->timeout = \max($oSettings->timeout, (int) $oConfig->Get('labs', 'smtp_timeout', $oSettings->timeout));
 		$oSettings->Login = $this->OutLogin();
 		$oSettings->usePhpMail = $bUsePhpMail;
 		$oSettings->Ehlo = \MailSo\Smtp\SmtpClient::EhloHelper();
@@ -263,7 +263,7 @@ abstract class Account implements \JsonSerializable
 	public function SieveConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Sieve\SieveClient $oSieveClient, \RainLoop\Config\Application $oConfig)
 	{
 		$oSettings = $this->Domain()->SieveSettings();
-		$oSettings->timeout = \max($oSettings->timeout, (int) $oConfig->Get('labs', 'sieve_timeout', 10));
+		$oSettings->timeout = \max($oSettings->timeout, (int) $oConfig->Get('labs', 'sieve_timeout', $oSettings->timeout));
 		$oSettings->Login = $this->IncLogin();
 
 		$oPlugins->RunHook('sieve.before-connect', array($this, $oSieveClient, $oSettings));

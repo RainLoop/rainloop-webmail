@@ -57,7 +57,9 @@ class ConnectSettings implements \JsonSerializable
 		$object->host = $aSettings['host'];
 		$object->port = $aSettings['port'];
 		$object->type = isset($aSettings['type']) ? $aSettings['type'] : $aSettings['secure'];
-		$object->timeout = isset($aSettings['timeout']) ? $aSettings['timeout'] : 300;
+		if (isset($aSettings['timeout'])) {
+			$object->timeout = $aSettings['timeout'];
+		}
 		$object->shortLogin = !empty($aSettings['shortLogin']);
 		$object->ssl = SSLContext::fromArray($aSettings['ssl'] ?? []);
 		return $object;

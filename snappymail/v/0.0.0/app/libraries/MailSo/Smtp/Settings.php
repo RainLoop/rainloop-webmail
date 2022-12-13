@@ -17,11 +17,13 @@ namespace MailSo\Smtp;
  */
 class Settings extends \MailSo\Net\ConnectSettings
 {
-	public int $port = 25;
+	public int
+		$port = 25,
+		$timeout = 60;
 
-	public bool $usePhpMail = false;
-
-	public bool $setSender = false;
+	public bool
+		$usePhpMail = false,
+		$setSender = false;
 
 	public string $Ehlo;
 

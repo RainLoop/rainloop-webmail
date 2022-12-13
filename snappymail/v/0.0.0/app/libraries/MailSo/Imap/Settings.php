@@ -18,7 +18,8 @@ namespace MailSo\Imap;
 class Settings extends \MailSo\Net\ConnectSettings
 {
 	public int
-		$port = 143;
+		$port = 143,
+		$timeout = 300;
 
 	public bool
 		$disable_list_status = false,
