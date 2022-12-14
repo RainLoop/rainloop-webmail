@@ -158,24 +158,28 @@
 
 	ko.bindingHandlers.fromPic = {
 		init: (element, self, dummy, msg) => {
-			if (msg?.from?.[0]) {
-				let url = getAvatar(msg),
-					from = msg.from[0],
-					fn = url=>{element.src = url};
-				if (url) {
-					fn(url);
-				} else if (msg.avatar || isMobile()) {
-					if (msg.avatar.startsWith('data:')) {
-						fn(msg.avatar);
-					} else if (isMobile()) {
-						setIdenticon(from, fn);
+			try {
+				if (msg?.from?.[0]) {
+					let url = getAvatar(msg),
+						from = msg.from[0],
+						fn = url=>{element.src = url};
+					if (url) {
+						fn(url);
+					} else if (msg.avatar || isMobile()) {
+						if (msg.avatar?.startsWith('data:')) {
+							fn(msg.avatar);
+						} else if (isMobile()) {
+							setIdenticon(from, fn);
+						} else {
+							element.onerror = () => setIdenticon(from, fn);
+							fn(`?Avatar/${'pass' == from.dkimStatus ? 1 : 0}/${msg.avatar}`);
+						}
 					} else {
-						element.onerror = () => setIdenticon(from, fn);
-						fn(`?Avatar/${'pass' == from.dkimStatus ? 1 : 0}/${msg.avatar}`);
+						addQueue(msg, fn);
 					}
-				} else {
-					addQueue(msg, fn);
 				}
+			} catch (e) {
+				console.error(e);
 			}
 		}
 	};
