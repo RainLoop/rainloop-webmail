@@ -933,10 +933,6 @@ class MailClient
 			return null;
 		}
 
-		$iOptimizationLimit = $this->oImapClient->Settings->folder_list_limit;
-		$oFolderCollection = new FolderCollection;
-		$oFolderCollection->Optimized = 10 < $iOptimizationLimit && \count($aFolders) > $iOptimizationLimit;
-
 		foreach ($aFolders as $sFullName => /* @var $oImapFolder \MailSo\Imap\Folder */ $oImapFolder) {
 			if (($bUseListSubscribeStatus && (null === $aImapSubscribedFoldersHelper || \in_array($sFullName, $aImapSubscribedFoldersHelper))) || $oImapFolder->IsInbox()) {
 				$oImapFolder->setSubscribed();
@@ -964,6 +960,9 @@ class MailClient
 			}
 		}
 
+		$oFolderCollection = new FolderCollection;
+//		$iOptimizationLimit = $this->oImapClient->Settings->folder_list_limit;
+//		$oFolderCollection->Optimized = 10 < $iOptimizationLimit && \count($aFolders) > $iOptimizationLimit;
 		$oFolderCollection->exchangeArray(\array_values($aFolders));
 
 		return $oFolderCollection;

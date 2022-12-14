@@ -35,7 +35,7 @@ class Settings extends \MailSo\Net\ConnectSettings
 
 	public int
 		$body_text_limit = 0,
-		$folder_list_limit = 200,
+//		$folder_list_limit = 200,
 		$message_list_limit = 0,
 		$thread_limit = 50;
 
@@ -64,7 +64,7 @@ class Settings extends \MailSo\Net\ConnectSettings
 		}
 		$options = [
 //			'body_text_limit',
-			'folder_list_limit',
+//			'folder_list_limit',
 			'message_list_limit',
 //			'thread_limit',
 		];
@@ -91,7 +91,7 @@ class Settings extends \MailSo\Net\ConnectSettings
 				'use_expunge_all_on_delete' => $this->expunge_all_on_delete,
 //				'body_text_limit' => $this->body_text_limit,
 				'fast_simple_search' => $this->fast_simple_search,
-				'folder_list_limit' => $this->folder_list_limit,
+//				'folder_list_limit' => $this->folder_list_limit,
 				'force_select' => $this->force_select,
 				'message_all_headers' => $this->message_all_headers,
 				'message_list_limit' => $this->message_list_limit,
