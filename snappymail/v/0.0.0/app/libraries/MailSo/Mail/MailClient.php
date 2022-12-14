@@ -911,13 +911,13 @@ class MailClient
 		if ($this->oImapClient->IsSupported('LIST-EXTENDED')) {
 			$bUseListSubscribeStatus = false;
 		} else if ($bUseListSubscribeStatus) {
-			//\SnappyMail\Log::warning('IMAP', 'RFC5258 not supported, using LSUB');
+//			$this->oLogger && $this->oLogger->Write('RFC5258 not supported, using LSUB');
+//			\SnappyMail\Log::warning('IMAP', 'RFC5258 not supported, using LSUB');
 			try
 			{
 				$aSubscribedFolders = $this->oImapClient->FolderSubscribeList($sParent, $sListPattern);
 				$aImapSubscribedFoldersHelper = array();
-				foreach ($aSubscribedFolders as /* @var $oImapFolder \MailSo\Imap\Folder */ $oImapFolder)
-				{
+				foreach ($aSubscribedFolders as /* @var $oImapFolder \MailSo\Imap\Folder */ $oImapFolder) {
 					$aImapSubscribedFoldersHelper[] = $oImapFolder->FullName();
 				}
 			}
@@ -937,19 +937,18 @@ class MailClient
 			if (($bUseListSubscribeStatus && (null === $aImapSubscribedFoldersHelper || \in_array($sFullName, $aImapSubscribedFoldersHelper))) || $oImapFolder->IsInbox()) {
 				$oImapFolder->setSubscribed();
 			}
-			$aFolders[$sFullName] = $oImapFolder;
 
 			// Add NonExistent folders
 			$sDelimiter = $oImapFolder->Delimiter();
 			$aFolderExplode = \explode($sDelimiter, $sFullName);
 			\array_pop($aFolderExplode);
 			while ($aFolderExplode) {
-				$sNonExistentFolderFullName = \implode($sDelimiter, $aFolderExplode);
-				if (!isset($aFolders[$sNonExistentFolderFullName])) {
+				$sFullName = \implode($sDelimiter, $aFolderExplode);
+				if (!isset($aFolders[$sFullName])) {
 					try
 					{
-						$aFolders[$sNonExistentFolderFullName] =
-							new \MailSo\Imap\Folder($sNonExistentFolderFullName, $sDelimiter, ['\\Noselect', '\\NonExistent']);
+						$aFolders[$sFullName] =
+							new \MailSo\Imap\Folder($sFullName, $sDelimiter, ['\\Noselect', '\\NonExistent']);
 					}
 					catch (\Throwable $oExc)
 					{
