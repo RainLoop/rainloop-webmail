@@ -620,17 +620,6 @@ class MailClient
 	}
 
 	/**
-	 * @throws \MailSo\RuntimeException
-	 * @throws \MailSo\Net\Exceptions\*
-	 */
-	public function IsThreadsSupported() : bool
-	{
-		return $this->oImapClient->IsSupported('THREAD=REFS') ||
-			$this->oImapClient->IsSupported('THREAD=REFERENCES') ||
-			$this->oImapClient->IsSupported('THREAD=ORDEREDSUBJECT');
-	}
-
-	/**
 	 * @throws \InvalidArgumentException
 	 * @throws \MailSo\RuntimeException
 	 * @throws \MailSo\Net\Exceptions\*
@@ -939,9 +928,7 @@ class MailClient
 		}
 
 //			$this->oImapClient->Settings->disable_list_status
-		$aFolders = $this->oImapClient->IsSupported('LIST-STATUS')
-			? $this->oImapClient->FolderStatusList($sParent, $sListPattern)
-			: $this->oImapClient->FolderList($sParent, $sListPattern);
+		$aFolders = $this->oImapClient->FolderStatusList($sParent, $sListPattern);
 		if (!$aFolders) {
 			return null;
 		}
@@ -950,19 +937,14 @@ class MailClient
 		$oFolderCollection = new FolderCollection;
 		$oFolderCollection->Optimized = 10 < $iOptimizationLimit && \count($aFolders) > $iOptimizationLimit;
 
-		$sINBOX = 'INBOX';
 		foreach ($aFolders as $sFullName => /* @var $oImapFolder \MailSo\Imap\Folder */ $oImapFolder) {
-			$oMailFolder = new Folder($oImapFolder,
-				($bUseListSubscribeStatus && (null === $aImapSubscribedFoldersHelper || \in_array($sFullName, $aImapSubscribedFoldersHelper)))
-				|| $oImapFolder->IsInbox()
-			);
-			if ($oImapFolder->IsInbox()) {
-				$sINBOX = $sFullName;
+			if (($bUseListSubscribeStatus && (null === $aImapSubscribedFoldersHelper || \in_array($sFullName, $aImapSubscribedFoldersHelper))) || $oImapFolder->IsInbox()) {
+				$oImapFolder->setSubscribed();
 			}
-			$aFolders[$sFullName] = $oMailFolder;
+			$aFolders[$sFullName] = $oImapFolder;
 
 			// Add NonExistent folders
-			$sDelimiter = $oMailFolder->Delimiter();
+			$sDelimiter = $oImapFolder->Delimiter();
 			$aFolderExplode = \explode($sDelimiter, $sFullName);
 			\array_pop($aFolderExplode);
 			while ($aFolderExplode) {
@@ -971,7 +953,7 @@ class MailClient
 					try
 					{
 						$aFolders[$sNonExistentFolderFullName] =
-							Folder::NewNonExistentInstance($sNonExistentFolderFullName, $sDelimiter);
+							new \MailSo\Imap\Folder($sNonExistentFolderFullName, $sDelimiter, ['\\Noselect', '\\NonExistent']);
 					}
 					catch (\Throwable $oExc)
 					{
@@ -984,29 +966,24 @@ class MailClient
 
 		$oFolderCollection->exchangeArray(\array_values($aFolders));
 
-		$oFolderCollection->TotalCount = \count($aFolders);
-
 		return $oFolderCollection;
 	}
 
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	public function FolderCreate(string $sFolderNameInUtf8, string $sFolderParentFullName = '', bool $bSubscribeOnCreation = true, string $sDelimiter = '') : ?Folder
+	public function FolderCreate(string $sFolderNameInUtf8, string $sFolderParentFullName = '', bool $bSubscribeOnCreation = true, string $sDelimiter = '') : ?\MailSo\Imap\Folder
 	{
 		$sFolderNameInUtf8 = \trim($sFolderNameInUtf8);
 		$sFolderParentFullName = \trim($sFolderParentFullName);
 
-		if (!\strlen($sFolderNameInUtf8))
-		{
+		if (!\strlen($sFolderNameInUtf8)) {
 			throw new \InvalidArgumentException;
 		}
 
-		if (!\strlen($sDelimiter) || \strlen($sFolderParentFullName))
-		{
+		if (!\strlen($sDelimiter) || \strlen($sFolderParentFullName)) {
 			$sDelimiter = $this->oImapClient->FolderHierarchyDelimiter($sFolderParentFullName);
-			if (null === $sDelimiter)
-			{
+			if (null === $sDelimiter) {
 				// TODO: Translate
 				throw new \MailSo\RuntimeException(
 					\strlen($sFolderParentFullName)
@@ -1014,14 +991,12 @@ class MailClient
 						: 'Cannot get folder delimiter.');
 			}
 
-			if (\strlen($sDelimiter) && \strlen($sFolderParentFullName))
-			{
+			if (\strlen($sDelimiter) && \strlen($sFolderParentFullName)) {
 				$sFolderParentFullName .= $sDelimiter;
 			}
 		}
 
-		if (\strlen($sDelimiter) && false !== \strpos($sFolderNameInUtf8, $sDelimiter))
-		{
+		if (\strlen($sDelimiter) && false !== \strpos($sFolderNameInUtf8, $sDelimiter)) {
 			// TODO: Translate
 			throw new \MailSo\RuntimeException(
 				'New folder name contains delimiter.');
@@ -1029,18 +1004,16 @@ class MailClient
 
 		$sFullNameToCreate = $sFolderParentFullName.$sFolderNameInUtf8;
 
-		$this->oImapClient->FolderCreate($sFullNameToCreate);
+		$this->oImapClient->FolderCreate($sFullNameToCreate, $bSubscribeOnCreation);
 
-		if ($bSubscribeOnCreation)
-		{
-			$this->oImapClient->FolderSubscribe($sFullNameToCreate);
+		$aFolders = $this->oImapClient->FolderStatusList($sFullNameToCreate, '');
+		if (isset($aFolders[$sFullNameToCreate])) {
+			$oImapFolder = $aFolders[$sFullNameToCreate];
+			$bSubscribeOnCreation && $oImapFolder->setSubscribed();
+			return $oImapFolder;
 		}
 
-		$aFolders = $this->oImapClient->IsSupported('LIST-STATUS')
-			? $this->oImapClient->FolderStatusList($sFullNameToCreate, '')
-			: $this->oImapClient->FolderList($sFullNameToCreate, '');
-		$oImapFolder = $aFolders[$sFullNameToCreate];
-		return $oImapFolder ? new Folder($oImapFolder, $bSubscribeOnCreation) : null;
+		return null;
 	}
 
 	/**

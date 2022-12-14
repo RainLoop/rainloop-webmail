@@ -58,8 +58,7 @@ trait Folders
 
 		$oFolderCollection = $this->getFolderCollection($HideUnsubscribed);
 
-		if ($oFolderCollection)
-		{
+		if ($oFolderCollection) {
 			$sNamespace = $this->MailClient()->GetPersonalNamespace();
 
 			$this->Plugins()->RunHook('filter.folders-post', array($oAccount, $oFolderCollection));
@@ -67,8 +66,7 @@ trait Folders
 			$aSystemFolders = array();
 			$this->recFoldersTypes($oAccount, $oFolderCollection, $aSystemFolders);
 
-			if ($this->Config()->Get('labs', 'autocreate_system_folders', false))
-			{
+			if ($this->Config()->Get('labs', 'autocreate_system_folders', false)) {
 				$bDoItAgain = false;
 
 				$sParent = \substr($sNamespace, 0, -1);
@@ -78,64 +76,51 @@ trait Folders
 				$aList = array();
 				$aMap = $this->systemFoldersNames($oAccount);
 
-				if ('' === $oSettingsLocal->GetConf('SentFolder', ''))
-				{
+				if ('' === $oSettingsLocal->GetConf('SentFolder', '')) {
 					$aList[] = FolderType::SENT;
 				}
 
-				if ('' === $oSettingsLocal->GetConf('DraftFolder', ''))
-				{
+				if ('' === $oSettingsLocal->GetConf('DraftFolder', '')) {
 					$aList[] = FolderType::DRAFTS;
 				}
 
-				if ('' === $oSettingsLocal->GetConf('SpamFolder', ''))
-				{
+				if ('' === $oSettingsLocal->GetConf('SpamFolder', '')) {
 					$aList[] = FolderType::JUNK;
 				}
 
-				if ('' === $oSettingsLocal->GetConf('TrashFolder', ''))
-				{
+				if ('' === $oSettingsLocal->GetConf('TrashFolder', '')) {
 					$aList[] = FolderType::TRASH;
 				}
 
-				if ('' === $oSettingsLocal->GetConf('ArchiveFolder', ''))
-				{
+				if ('' === $oSettingsLocal->GetConf('ArchiveFolder', '')) {
 					$aList[] = FolderType::ARCHIVE;
 				}
 
 				$this->Plugins()->RunHook('filter.folders-system-types', array($oAccount, &$aList));
 
-				foreach ($aList as $iType)
-				{
-					if (!isset($aSystemFolders[$iType]))
-					{
+				foreach ($aList as $iType) {
+					if (!isset($aSystemFolders[$iType])) {
 						$mFolderNameToCreate = \array_search($iType, $aMap);
-						if (!empty($mFolderNameToCreate))
-						{
+						if (!empty($mFolderNameToCreate)) {
 							$iPos = \strrpos($mFolderNameToCreate, $sDelimiter);
-							if (false !== $iPos)
-							{
+							if (false !== $iPos) {
 								$mNewParent = \substr($mFolderNameToCreate, 0, $iPos);
 								$mNewFolderNameToCreate = \substr($mFolderNameToCreate, $iPos + 1);
-								if (\strlen($mNewFolderNameToCreate))
-								{
+								if (\strlen($mNewFolderNameToCreate)) {
 									$mFolderNameToCreate = $mNewFolderNameToCreate;
 								}
 
-								if (\strlen($mNewParent))
-								{
+								if (\strlen($mNewParent)) {
 									$sParent = \strlen($sParent) ? $sParent.$sDelimiter.$mNewParent : $mNewParent;
 								}
 							}
 
 							$sFullNameToCheck = $mFolderNameToCreate;
-							if (\strlen($sParent))
-							{
+							if (\strlen($sParent)) {
 								$sFullNameToCheck = $sParent.$sDelimiter.$sFullNameToCheck;
 							}
 
-							if (!isset($oFolderCollection[$sFullNameToCheck]))
-							{
+							if (!isset($oFolderCollection[$sFullNameToCheck])) {
 								try
 								{
 									$this->MailClient()->FolderCreate($mFolderNameToCreate, $sParent, true, $sDelimiter);
@@ -150,20 +135,17 @@ trait Folders
 					}
 				}
 
-				if ($bDoItAgain)
-				{
+				if ($bDoItAgain) {
 					$oFolderCollection = $this->getFolderCollection($HideUnsubscribed);
 
-					if ($oFolderCollection)
-					{
+					if ($oFolderCollection) {
 						$aSystemFolders = array();
 						$this->recFoldersTypes($oAccount, $oFolderCollection, $aSystemFolders);
 					}
 				}
 			}
 
-			if ($oFolderCollection)
-			{
+			if ($oFolderCollection) {
 				$this->Plugins()->RunHook('filter.folders-complete', array($oAccount, $oFolderCollection));
 
 				$aQuota = null;
@@ -186,9 +168,8 @@ trait Folders
 						'quotaUsage' => $aQuota ? $aQuota[0] * 1024 : null,
 						'quotaLimit' => $aQuota ? $aQuota[1] * 1024 : null,
 						'Namespace' => $sNamespace,
-						'IsThreadsSupported' => $this->MailClient()->IsThreadsSupported(),
 						'Optimized' => $oFolderCollection->Optimized,
-						'CountRec' => $oFolderCollection->TotalCount,
+						'CountRec' => $oFolderCollection->count(),
 						'SystemFolders' => empty($aSystemFolders) ? null : $aSystemFolders,
 						'Capabilities' => \array_values($aCapabilities)
 					)
@@ -246,14 +227,10 @@ trait Folders
 		}
 		catch (\Throwable $oException)
 		{
-			if ($bSubscribe)
-			{
-				throw new ClientException(Notifications::CantSubscribeFolder, $oException);
-			}
-			else
-			{
-				throw new ClientException(Notifications::CantUnsubscribeFolder, $oException);
-			}
+			throw new ClientException(
+				$bSubscribe ? Notifications::CantSubscribeFolder : Notifications::CantUnsubscribeFolder,
+				$oException
+			);
 		}
 
 		return $this->TrueResponse(__FUNCTION__);
@@ -271,22 +248,16 @@ trait Folders
 		$sCheckableFolder = $oSettingsLocal->GetConf('CheckableFolder', '[]');
 		$aCheckableFolder = \json_decode($sCheckableFolder);
 
-		if (!\is_array($aCheckableFolder))
-		{
+		if (!\is_array($aCheckableFolder)) {
 			$aCheckableFolder = array();
 		}
 
-		if ($bCheckable)
-		{
+		if ($bCheckable) {
 			$aCheckableFolder[] = $sFolderFullName;
-		}
-		else
-		{
+		} else {
 			$aCheckableFolderNew = array();
-			foreach ($aCheckableFolder as $sFolder)
-			{
-				if ($sFolder !== $sFolderFullName)
-				{
+			foreach ($aCheckableFolder as $sFolder) {
+				if ($sFolder !== $sFolderFullName) {
 					$aCheckableFolderNew[] = $sFolder;
 				}
 			}
@@ -424,20 +395,16 @@ trait Folders
 		$aResult = array();
 
 		$aFolders = $this->GetActionParam('Folders', null);
-		if (\is_array($aFolders))
-		{
+		if (\is_array($aFolders)) {
 			$this->initMailClientConnection();
 
 			$aFolders = \array_unique($aFolders);
-			foreach ($aFolders as $sFolder)
-			{
-				if (\strlen($sFolder) && 'INBOX' !== \strtoupper($sFolder))
-				{
+			foreach ($aFolders as $sFolder) {
+				if (\strlen($sFolder) && 'INBOX' !== \strtoupper($sFolder)) {
 					try
 					{
 						$aInboxInformation = $this->MailClient()->FolderInformation($sFolder);
-						if (isset($aInboxInformation['Folder']))
-						{
+						if (isset($aInboxInformation['Folder'])) {
 							$aResult[] = [
 								'Folder' => $aInboxInformation['Folder'],
 								'Hash' => $aInboxInformation['Hash'],
@@ -475,45 +442,31 @@ trait Folders
 
 	private function recFoldersTypes(\RainLoop\Model\Account $oAccount, \MailSo\Mail\FolderCollection $oFolders, array &$aResult, bool $bListFolderTypes = true) : void
 	{
-		if ($oFolders->Count())
-		{
-			if ($bListFolderTypes)
-			{
-				foreach ($oFolders as $oFolder)
-				{
+		if ($oFolders->count()) {
+			if ($bListFolderTypes) {
+				$types = array(
+					FolderType::INBOX,
+					FolderType::SENT,
+					FolderType::DRAFTS,
+					FolderType::JUNK,
+					FolderType::TRASH,
+					FolderType::ARCHIVE
+				);
+				foreach ($oFolders as $oFolder) {
 					$iFolderType = $oFolder->GetType();
-					if (!isset($aResult[$iFolderType]) && \in_array($iFolderType, array(
-						FolderType::INBOX,
-						FolderType::SENT,
-						FolderType::DRAFTS,
-						FolderType::JUNK,
-						FolderType::TRASH,
-						FolderType::ARCHIVE
-					)))
-					{
+					if (!isset($aResult[$iFolderType]) && \in_array($iFolderType, $types)) {
 						$aResult[$iFolderType] = $oFolder->FullName();
 					}
 				}
 			}
 
 			$aMap = $this->systemFoldersNames($oAccount);
-			foreach ($oFolders as $oFolder)
-			{
+			foreach ($oFolders as $oFolder) {
 				$sName = $oFolder->Name();
 				$sFullName = $oFolder->FullName();
-
-				if (isset($aMap[$sName]) || isset($aMap[$sFullName]))
-				{
+				if (isset($aMap[$sName]) || isset($aMap[$sFullName])) {
 					$iFolderType = isset($aMap[$sName]) ? $aMap[$sName] : $aMap[$sFullName];
-					if ((!isset($aResult[$iFolderType]) || $sName === $sFullName || "INBOX{$oFolder->Delimiter()}{$sName}" === $sFullName) && \in_array($iFolderType, array(
-						FolderType::INBOX,
-						FolderType::SENT,
-						FolderType::DRAFTS,
-						FolderType::JUNK,
-						FolderType::TRASH,
-						FolderType::ARCHIVE
-					)))
-					{
+					if ((!isset($aResult[$iFolderType]) || $sName === $sFullName || "INBOX{$oFolder->Delimiter()}{$sName}" === $sFullName) && \in_array($iFolderType, $types)) {
 						$aResult[$iFolderType] = $oFolder->FullName();
 					}
 				}
@@ -527,8 +480,7 @@ trait Folders
 	private function systemFoldersNames(\RainLoop\Model\Account $oAccount) : array
 	{
 		static $aCache = null;
-		if (null === $aCache)
-		{
+		if (null === $aCache) {
 			$aCache = array(
 
 				'Sent' => FolderType::SENT,
@@ -578,8 +530,7 @@ trait Folders
 			);
 
 			$aNewCache = array();
-			foreach ($aCache as $sKey => $iType)
-			{
+			foreach ($aCache as $sKey => $iType) {
 				$aNewCache[$sKey] = $iType;
 				$aNewCache[\str_replace(' ', '', $sKey)] = $iType;
 			}

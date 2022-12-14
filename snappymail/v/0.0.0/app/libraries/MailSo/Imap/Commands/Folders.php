@@ -29,12 +29,13 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function FolderCreate(string $sFolderName) : self
+	public function FolderCreate(string $sFolderName, bool $bSubscribe = false) : self
 	{
 		$this->SendRequestGetResponse('CREATE', array(
 			$this->EscapeFolderName($sFolderName)
 //			, ['(USE (\Drafts \Sent))'] RFC 6154
 		));
+		$bSubscribe && $this->FolderSubscribe($sFolderName);
 		return $this;
 	}
 

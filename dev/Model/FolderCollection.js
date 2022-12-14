@@ -105,7 +105,6 @@ export class FolderCollectionModel extends AbstractCollectionModel
 	constructor() {
 		super();
 		this.CountRec
-		this.IsThreadsSupported
 		this.Namespace;
 		this.Optimized
 		this.SystemFolders
@@ -200,7 +199,10 @@ export class FolderCollectionModel extends AbstractCollectionModel
 
 		FolderUserStore.namespace = this.Namespace;
 
-		AppUserStore.threadsAllowed(!!(Settings.app('useImapThread') && this.IsThreadsSupported));
+		// 'THREAD=REFS', 'THREAD=REFERENCES', 'THREAD=ORDEREDSUBJECT'
+		AppUserStore.threadsAllowed(!!(
+			Settings.app('useImapThread') && this.Capabilities.some(capa => capa.startsWith('THREAD='))
+		));
 
 		FolderUserStore.folderListOptimized(!!this.Optimized);
 		FolderUserStore.quotaUsage(this.quotaUsage);

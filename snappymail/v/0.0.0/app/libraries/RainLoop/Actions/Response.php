@@ -246,7 +246,7 @@ trait Response
 			return $mResult;
 		}
 
-		if ($mResponse instanceof \MailSo\Mail\Folder)
+		if ($mResponse instanceof \MailSo\Imap\Folder)
 		{
 			$aResult = $mResponse->jsonSerialize();
 

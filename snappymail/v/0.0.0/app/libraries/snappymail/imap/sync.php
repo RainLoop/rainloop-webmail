@@ -68,7 +68,7 @@ class Sync
 					'folder' => $sSourceFolderName
 				]);
 			}
-			if ($oImapFolder->IsSelectable()) {
+			if ($oImapFolder->Selectable()) {
 				if ($oImapFolder->IsInbox()) {
 					$sSourceINBOX = $sSourceFolderName;
 				}
@@ -83,11 +83,11 @@ class Sync
 				}
 				// Create mailbox if not exists
 				if (!isset($aTargetFolders[$sTargetFolderName])) {
-					$this->oImapTarget->FolderCreate($sTargetFolderName);
-					if (!$bUseListStatus || \in_array('\\subscribed', $oImapFolder->FlagsLowerCase())) {
-						$this->oImapTarget->FolderSubscribe($sTargetFolderName);
-					}
-				} else if (!$aTargetFolders[$sTargetFolderName]->IsSelectable()) {
+					$this->oImapTarget->FolderCreate(
+						$sTargetFolderName,
+						!$bUseListStatus || $oImapFolder->IsSubscribed()
+					);
+				} else if (!$aTargetFolders[$sTargetFolderName]->Selectable()) {
 					// Can't copy messages
 					continue;
 				}

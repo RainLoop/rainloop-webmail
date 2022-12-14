@@ -17,16 +17,11 @@ namespace MailSo\Mail;
  */
 class FolderCollection extends \MailSo\Base\Collection
 {
-	/**
-	 * @var bool
-	 */
-	public $Optimized = false;
-
-	public $TotalCount = 0;
+	public bool $Optimized = false;
 
 	public function append($oFolder, bool $bToTop = false) : void
 	{
-		assert($oFolder instanceof Folder);
+		assert($oFolder instanceof \MailSo\Imap\Folder);
 		parent::append($oFolder, $bToTop);
 	}
 
