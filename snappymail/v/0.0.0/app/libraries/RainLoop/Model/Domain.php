@@ -200,34 +200,17 @@ class Domain implements \JsonSerializable
 
 	public function ImapSettings() : \MailSo\Imap\Settings
 	{
-		return static::mergeGlobalSettings($this->IMAP);
+		return $this->IMAP;
 	}
 
 	public function SmtpSettings() : \MailSo\Smtp\Settings
 	{
-		return static::mergeGlobalSettings($this->SMTP);
+		return $this->SMTP;
 	}
 
 	public function SieveSettings() : \MailSo\Sieve\Settings
 	{
-		return static::mergeGlobalSettings($this->Sieve);
-	}
-
-	private static function mergeGlobalSettings(\MailSo\Net\ConnectSettings $oSettings) : \MailSo\Net\ConnectSettings
-	{
-		$oConfig = \RainLoop\API::Config();
-		if ($oConfig->Get('labs', 'sasl_allow_scram_sha', false)) {
-			// https://github.com/the-djmaze/snappymail/issues/182
-			\array_push($oSettings->SASLMechanisms, 'SCRAM-SHA3-512', 'SCRAM-SHA-512', 'SCRAM-SHA-256', 'SCRAM-SHA-1');
-		}
-		if ($oConfig->Get('labs', 'sasl_allow_cram_md5', false)) {
-			$oSettings->SASLMechanisms[] = 'CRAM-MD5';
-		}
-		if ($oConfig->Get('labs', 'sasl_allow_plain', true)) {
-			$oSettings->SASLMechanisms[] = 'PLAIN';
-		}
-
-		return $oSettings;
+		return $this->Sieve;
 	}
 
 	/**

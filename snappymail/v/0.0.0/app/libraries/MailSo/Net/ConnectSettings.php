@@ -35,7 +35,16 @@ class ConnectSettings implements \JsonSerializable
 	// Authentication settings use by all child classes
 	public bool $useAuth = true;
 	public bool $shortLogin = false;
-	public array $SASLMechanisms = [];
+	public array $SASLMechanisms = [
+		// https://github.com/the-djmaze/snappymail/issues/182
+		'SCRAM-SHA3-512',
+		'SCRAM-SHA-512',
+		'SCRAM-SHA-256',
+		'SCRAM-SHA-1',
+//		'CRAM-MD5',
+		'PLAIN',
+		'LOGIN'
+	];
 	public string $Login = '';
 	public string $Password = '';
 	public string $ProxyAuthUser = '';
@@ -62,6 +71,9 @@ class ConnectSettings implements \JsonSerializable
 		}
 		$object->shortLogin = !empty($aSettings['shortLogin']);
 		$object->ssl = SSLContext::fromArray($aSettings['ssl'] ?? []);
+		if (isset($aSettings['sasl'])) {
+			$object->SASLMechanisms = $aSettings['sasl'];
+		}
 		return $object;
 	}
 
@@ -75,6 +87,7 @@ class ConnectSettings implements \JsonSerializable
 			'type' => $this->type,
 			'timeout' => $this->timeout,
 			'shortLogin' => $this->shortLogin,
+			'sasl' => $this->SASLMechanisms,
 			'ssl' => $this->ssl
 		);
 	}

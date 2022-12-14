@@ -113,14 +113,12 @@ class SieveClient extends \MailSo\Net\NetClient
 		}
 
 		$type = '';
-		\array_push($oSettings->SASLMechanisms, 'PLAIN', 'LOGIN');
 		foreach ($oSettings->SASLMechanisms as $sasl_type) {
 			if ($this->IsAuthSupported($sasl_type) && \SnappyMail\SASL::isSupported($sasl_type)) {
 				$type = $sasl_type;
 				break;
 			}
 		}
-
 		if (!$type) {
 			if (!$this->Encrypted() && $this->IsSupported('STARTTLS')) {
 				$this->StartTLS();
