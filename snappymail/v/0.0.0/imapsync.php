@@ -120,4 +120,4 @@ $oSync = new \SnappyMail\Imap\Sync;
 $oSync->oImapSource = getImapClient(1);
 $oSync->oImapTarget = getImapClient(2);
 
-$oSync->import($options['rootfolder'] ?: 'test');
+$oSync->import($options['rootfolder'] ?? '');

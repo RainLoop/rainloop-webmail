@@ -27,11 +27,19 @@ class Sync
 		if (!$aTargetFolders) {
 			return null;
 		}
-		$sTargetINBOX = 'INBOX';
 		$sTargetDelimiter = '';
+		$sTargetRoles = [
+			'inbox'   => false,
+			'sent'    => false,
+			'drafts'  => false,
+			'junk'    => false,
+			'trash'   => false,
+			'archive' => false
+		];
 		foreach ($aTargetFolders as $sFullName => $oImapFolder) {
-			if ($oImapFolder->IsInbox()) {
-				$sTargetINBOX = $sFullName;
+			$role = $oImapFolder->Role();
+			if ($role && empty($sTargetRoles[$role])) {
+				$sTargetRoles[$role] = $sFullName;
 			}
 			if (!$sTargetDelimiter) {
 				$sTargetDelimiter = $oImapFolder->Delimiter();
@@ -44,7 +52,6 @@ class Sync
 		if (!$aSourceFolders) {
 			return null;
 		}
-		$sSourceINBOX = 'INBOX';
 
 		$isCli = false !== \stripos(\php_sapi_name(), 'cli');
 		if ($isCli) {
@@ -60,27 +67,38 @@ class Sync
 		\ignore_user_abort(true);
 		foreach ($aSourceFolders as $sSourceFolderName => $oImapFolder) {
 			++$fi;
-			if ($isCli) {
-				echo \str_pad($fi, 3, ' ', STR_PAD_LEFT) . " folder: {$sSourceFolderName}\n";
-			} else {
-				\SnappyMail\HTTP\Stream::JSON([
-					'index' => $fi,
-					'folder' => $sSourceFolderName
-				]);
-			}
 			if ($oImapFolder->Selectable()) {
-				if ($oImapFolder->IsInbox()) {
-					$sSourceINBOX = $sSourceFolderName;
+				$role = $oImapFolder->Role();
+				if ('all' === $role) {
+					// Don't duplicate all mail
+					continue;
 				}
-				// Set mailbox delimiter
-				$sTargetFolderName = $sSourceFolderName;
-				if ($sTargetDelimiter) {
-					$sTargetFolderName = \str_replace($oImapFolder->Delimiter(), $sTargetDelimiter, $sTargetFolderName);
-					$sTargetRootFolderName = \str_replace($sTargetDelimiter, '-', $sTargetRootFolderName);
+				// Detect mailbox name based on role
+				if (!$sTargetRootFolderName && $role && !empty($sTargetRoles[$role])) {
+					$sTargetFolderName = $sTargetRoles[$role];
 				}
-				if ($sTargetRootFolderName) {
-					$sTargetFolderName = $sTargetRootFolderName . ($sTargetDelimiter?:'-') . $sTargetFolderName;
+				// Else just do a name match
+				else {
+					if ($sTargetDelimiter) {
+						$sTargetFolderName = \str_replace($oImapFolder->Delimiter(), $sTargetDelimiter, $sSourceFolderName);
+						$sTargetRootFolderName = \str_replace($sTargetDelimiter, '-', $sTargetRootFolderName);
+					} else {
+						$sTargetFolderName = $sSourceFolderName;
+					}
+					if ($sTargetRootFolderName) {
+						$sTargetFolderName = $sTargetRootFolderName . ($sTargetDelimiter?:'-') . $sTargetFolderName;
+					}
 				}
+				if ($isCli) {
+					echo \str_pad($fi, 3, ' ', STR_PAD_LEFT) . " folder: {$sSourceFolderName} => {$sTargetFolderName}\n";
+				} else {
+					\SnappyMail\HTTP\Stream::JSON([
+						'index' => $fi,
+						'folder' => $sSourceFolderName,
+						'target' => $sTargetFolderName
+					]);
+				}
+
 				// Create mailbox if not exists
 				if (!isset($aTargetFolders[$sTargetFolderName])) {
 					$this->oImapTarget->FolderCreate(
@@ -208,6 +226,13 @@ class Sync
 						echo "\n";
 					}
 				}
+			} else if ($isCli) {
+				echo \str_pad($fi, 3, ' ', STR_PAD_LEFT) . " folder: {$sSourceFolderName}\n";
+			} else {
+				\SnappyMail\HTTP\Stream::JSON([
+					'index' => $fi,
+					'folder' => $sSourceFolderName
+				]);
 			}
 		}
 	}
