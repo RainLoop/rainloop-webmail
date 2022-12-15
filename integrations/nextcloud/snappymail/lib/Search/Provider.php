@@ -99,7 +99,7 @@ class Provider implements IProvider
 			}
 			$search = \rawurlencode($oParams->sSearch);
 
-//			$MessageCollection->MessageResultCount;
+//			$MessageCollection->totalEmails;
 			foreach ($MessageCollection as $Message) {
 				// $Message instanceof \MailSo\Mail\Message
 				$result[] = new SearchResultEntry(

@@ -6,7 +6,6 @@ import { mailToHelper, setLayoutResizer, dropdownsDetectVisibility } from 'Commo
 
 import {
 	FolderType,
-	SetSystemFoldersNotification,
 	ClientSideKeyNameFolderListSize
 } from 'Common/EnumsUser';
 
@@ -101,27 +100,27 @@ export class AppUser extends AbstractApp {
 	 */
 	moveMessagesToFolderType(iFolderType, sFromFolderFullName, oUids, bDelete) {
 		let oMoveFolder = null,
-			nSetSystemFoldersNotification = null;
+			nSetSystemFoldersNotification = 0;
 
 		switch (iFolderType) {
-			case FolderType.Spam:
+			case FolderType.Junk:
 				oMoveFolder = getFolderFromCacheList(FolderUserStore.spamFolder());
-				nSetSystemFoldersNotification = SetSystemFoldersNotification.Spam;
+				nSetSystemFoldersNotification = iFolderType;
 				bDelete = bDelete || UNUSED_OPTION_VALUE === FolderUserStore.spamFolder();
 				break;
-			case FolderType.NotSpam:
+			case FolderType.Inbox:
 				oMoveFolder = getFolderFromCacheList(getFolderInboxName());
 				break;
 			case FolderType.Trash:
 				oMoveFolder = getFolderFromCacheList(FolderUserStore.trashFolder());
-				nSetSystemFoldersNotification = SetSystemFoldersNotification.Trash;
+				nSetSystemFoldersNotification = iFolderType;
 				bDelete = bDelete || UNUSED_OPTION_VALUE === FolderUserStore.trashFolder()
 					|| sFromFolderFullName === FolderUserStore.spamFolder()
 					|| sFromFolderFullName === FolderUserStore.trashFolder();
 				break;
 			case FolderType.Archive:
 				oMoveFolder = getFolderFromCacheList(FolderUserStore.archiveFolder());
-				nSetSystemFoldersNotification = SetSystemFoldersNotification.Archive;
+				nSetSystemFoldersNotification = iFolderType;
 				bDelete = bDelete || UNUSED_OPTION_VALUE === FolderUserStore.archiveFolder();
 				break;
 			// no default

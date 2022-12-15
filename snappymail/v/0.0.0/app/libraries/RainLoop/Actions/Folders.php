@@ -10,11 +10,6 @@ use MailSo\Imap\Enumerations\FolderType;
 trait Folders
 {
 
-	private function getFolderCollection(bool $HideUnsubscribed) : ?\MailSo\Mail\FolderCollection
-	{
-		return $this->MailClient()->Folders('', '*', $HideUnsubscribed);
-	}
-
 	/**
 	 * Appends uploaded rfc822 message to mailbox
 	 * @throws \MailSo\RuntimeException
@@ -56,125 +51,32 @@ trait Folders
 			$HideUnsubscribed = (bool) $oSettingsLocal->GetConf('HideUnsubscribed', $HideUnsubscribed);
 		}
 
-		$oFolderCollection = $this->getFolderCollection($HideUnsubscribed);
+		$oFolderCollection = $this->MailClient()->Folders('', '*', $HideUnsubscribed);
 
 		if ($oFolderCollection) {
-			$sNamespace = $this->MailClient()->GetPersonalNamespace();
-
-			$this->Plugins()->RunHook('filter.folders-post', array($oAccount, $oFolderCollection));
-
-			$aSystemFolders = array();
-			$this->recFoldersTypes($oAccount, $oFolderCollection, $aSystemFolders);
-
-			if ($this->Config()->Get('labs', 'autocreate_system_folders', false)) {
-				$bDoItAgain = false;
-
-				$sParent = \substr($sNamespace, 0, -1);
-
-				$sDelimiter = $oFolderCollection->FindDelimiter();
-
-				$aList = array();
-				$aMap = $this->systemFoldersNames($oAccount);
-
-				if ('' === $oSettingsLocal->GetConf('SentFolder', '')) {
-					$aList[] = FolderType::SENT;
-				}
-
-				if ('' === $oSettingsLocal->GetConf('DraftFolder', '')) {
-					$aList[] = FolderType::DRAFTS;
-				}
-
-				if ('' === $oSettingsLocal->GetConf('SpamFolder', '')) {
-					$aList[] = FolderType::JUNK;
-				}
-
-				if ('' === $oSettingsLocal->GetConf('TrashFolder', '')) {
-					$aList[] = FolderType::TRASH;
-				}
-
-				if ('' === $oSettingsLocal->GetConf('ArchiveFolder', '')) {
-					$aList[] = FolderType::ARCHIVE;
-				}
-
-				$this->Plugins()->RunHook('filter.folders-system-types', array($oAccount, &$aList));
-
-				foreach ($aList as $iType) {
-					if (!isset($aSystemFolders[$iType])) {
-						$mFolderNameToCreate = \array_search($iType, $aMap);
-						if (!empty($mFolderNameToCreate)) {
-							$iPos = \strrpos($mFolderNameToCreate, $sDelimiter);
-							if (false !== $iPos) {
-								$mNewParent = \substr($mFolderNameToCreate, 0, $iPos);
-								$mNewFolderNameToCreate = \substr($mFolderNameToCreate, $iPos + 1);
-								if (\strlen($mNewFolderNameToCreate)) {
-									$mFolderNameToCreate = $mNewFolderNameToCreate;
-								}
-
-								if (\strlen($mNewParent)) {
-									$sParent = \strlen($sParent) ? $sParent.$sDelimiter.$mNewParent : $mNewParent;
-								}
-							}
-
-							$sFullNameToCheck = $mFolderNameToCreate;
-							if (\strlen($sParent)) {
-								$sFullNameToCheck = $sParent.$sDelimiter.$sFullNameToCheck;
-							}
-
-							if (!isset($oFolderCollection[$sFullNameToCheck])) {
-								try
-								{
-									$this->MailClient()->FolderCreate($mFolderNameToCreate, $sParent, true, $sDelimiter);
-									$bDoItAgain = true;
-								}
-								catch (\Throwable $oException)
-								{
-									$this->Logger()->WriteException($oException);
-								}
-							}
-						}
-					}
-				}
-
-				if ($bDoItAgain) {
-					$oFolderCollection = $this->getFolderCollection($HideUnsubscribed);
-
-					if ($oFolderCollection) {
-						$aSystemFolders = array();
-						$this->recFoldersTypes($oAccount, $oFolderCollection, $aSystemFolders);
-					}
+			$aQuota = null;
+			if ($this->GetCapa(Capa::QUOTA)) {
+				try {
+//					$aQuota = $this->MailClient()->Quota();
+					$aQuota = $this->MailClient()->QuotaRoot();
+				} catch (\Throwable $oException) {
+					// ignore
 				}
 			}
 
-			if ($oFolderCollection) {
-				$this->Plugins()->RunHook('filter.folders-complete', array($oAccount, $oFolderCollection));
+			$aCapabilities = \array_values(\array_filter($this->MailClient()->Capability(), function ($item) {
+				return !\preg_match('/^(IMAP|AUTH|LOGIN|SASL)/', $item);
+			}));
 
-				$aQuota = null;
-				if ($this->GetCapa(Capa::QUOTA)) {
-					try {
-//						$aQuota = $this->MailClient()->Quota();
-						$aQuota = $this->MailClient()->QuotaRoot();
-					} catch (\Throwable $oException) {
-						// ignore
-					}
-				}
-
-				$aCapabilities = \array_filter($this->MailClient()->Capability(), function ($item) {
-					return !\preg_match('/^(IMAP|AUTH|LOGIN|SASL)/', $item);
-				});
-
-				$oFolderCollection = \array_merge(
-					$oFolderCollection->jsonSerialize(),
-					array(
-						'quotaUsage' => $aQuota ? $aQuota[0] * 1024 : null,
-						'quotaLimit' => $aQuota ? $aQuota[1] * 1024 : null,
-						'Namespace' => $sNamespace,
-						'Optimized' => $oFolderCollection->Optimized,
-						'CountRec' => $oFolderCollection->count(),
-						'SystemFolders' => empty($aSystemFolders) ? null : $aSystemFolders,
-						'Capabilities' => \array_values($aCapabilities)
-					)
-				);
-			}
+			$oFolderCollection = \array_merge(
+				$oFolderCollection->jsonSerialize(),
+				array(
+					'quotaUsage' => $aQuota ? $aQuota[0] * 1024 : null,
+					'quotaLimit' => $aQuota ? $aQuota[1] * 1024 : null,
+					'namespace' => $this->MailClient()->GetPersonalNamespace(),
+					'capabilities' => $aCapabilities
+				)
+			);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $oFolderCollection);
@@ -438,108 +340,5 @@ trait Folders
 
 		return $this->DefaultResponse(__FUNCTION__,
 			$this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
-	}
-
-	private function recFoldersTypes(\RainLoop\Model\Account $oAccount, \MailSo\Mail\FolderCollection $oFolders, array &$aResult, bool $bListFolderTypes = true) : void
-	{
-		if ($oFolders->count()) {
-			if ($bListFolderTypes) {
-				$types = array(
-					FolderType::INBOX,
-					FolderType::SENT,
-					FolderType::DRAFTS,
-					FolderType::JUNK,
-					FolderType::TRASH,
-					FolderType::ARCHIVE
-				);
-				foreach ($oFolders as $oFolder) {
-					$iFolderType = $oFolder->GetType();
-					if (!isset($aResult[$iFolderType]) && \in_array($iFolderType, $types)) {
-						$aResult[$iFolderType] = $oFolder->FullName();
-					}
-				}
-			}
-
-			$aMap = $this->systemFoldersNames($oAccount);
-			foreach ($oFolders as $oFolder) {
-				$sName = $oFolder->Name();
-				$sFullName = $oFolder->FullName();
-				if (isset($aMap[$sName]) || isset($aMap[$sFullName])) {
-					$iFolderType = isset($aMap[$sName]) ? $aMap[$sName] : $aMap[$sFullName];
-					if ((!isset($aResult[$iFolderType]) || $sName === $sFullName || "INBOX{$oFolder->Delimiter()}{$sName}" === $sFullName) && \in_array($iFolderType, $types)) {
-						$aResult[$iFolderType] = $oFolder->FullName();
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * @staticvar array $aCache
-	 */
-	private function systemFoldersNames(\RainLoop\Model\Account $oAccount) : array
-	{
-		static $aCache = null;
-		if (null === $aCache) {
-			$aCache = array(
-
-				'Sent' => FolderType::SENT,
-				'Send' => FolderType::SENT,
-
-				'Outbox' => FolderType::SENT,
-				'Out box' => FolderType::SENT,
-
-				'Sent Item' => FolderType::SENT,
-				'Sent Items' => FolderType::SENT,
-				'Send Item' => FolderType::SENT,
-				'Send Items' => FolderType::SENT,
-				'Sent Mail' => FolderType::SENT,
-				'Sent Mails' => FolderType::SENT,
-				'Send Mail' => FolderType::SENT,
-				'Send Mails' => FolderType::SENT,
-
-				'Drafts' => FolderType::DRAFTS,
-
-				'Draft' => FolderType::DRAFTS,
-				'Draft Mail' => FolderType::DRAFTS,
-				'Draft Mails' => FolderType::DRAFTS,
-				'Drafts Mail' => FolderType::DRAFTS,
-				'Drafts Mails' => FolderType::DRAFTS,
-
-				'Junk E-mail' => FolderType::JUNK,
-
-				'Spam' => FolderType::JUNK,
-				'Spams' => FolderType::JUNK,
-
-				'Junk' => FolderType::JUNK,
-				'Bulk Mail' => FolderType::JUNK,
-				'Bulk Mails' => FolderType::JUNK,
-
-				'Deleted Items' => FolderType::TRASH,
-
-				'Trash' => FolderType::TRASH,
-				'Deleted' => FolderType::TRASH,
-				'Bin' => FolderType::TRASH,
-
-				'Archive' => FolderType::ARCHIVE,
-				'Archives' => FolderType::ARCHIVE,
-
-				'All' => FolderType::ALL,
-				'All Mail' => FolderType::ALL,
-				'All Mails' => FolderType::ALL,
-			);
-
-			$aNewCache = array();
-			foreach ($aCache as $sKey => $iType) {
-				$aNewCache[$sKey] = $iType;
-				$aNewCache[\str_replace(' ', '', $sKey)] = $iType;
-			}
-
-			$aCache = $aNewCache;
-
-			$this->Plugins()->RunHook('filter.system-folders-names', array($oAccount, &$aCache));
-		}
-
-		return $aCache;
 	}
 }

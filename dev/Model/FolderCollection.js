@@ -37,7 +37,7 @@ const
 		Inbox:   0,
 		Sent:    0,
 		Drafts:  0,
-		Spam:    0,
+		Junk:    0, // Spam
 		Trash:   0,
 		Archive: 0
 	},
@@ -62,7 +62,7 @@ const
 			case FolderType.Trash:
 			case FolderType.Archive:
 				return i18n('FOLDER_LIST/' + getKeyByValue(FolderType, type).toUpperCase() + '_NAME');
-			case FolderType.Spam:
+			case FolderType.Junk:
 				return i18n('GLOBAL/SPAM');
 			// no default
 		}
@@ -104,11 +104,11 @@ export class FolderCollectionModel extends AbstractCollectionModel
 /*
 	constructor() {
 		super();
-		this.CountRec
-		this.Namespace;
-		this.Optimized
-		this.SystemFolders
-		this.Capabilities
+		this.quotaUsage;
+		this.quotaLimit;
+		this.namespace;
+		this.optimized
+		this.capabilities
 	}
 */
 
@@ -118,16 +118,13 @@ export class FolderCollectionModel extends AbstractCollectionModel
 	 */
 	static reviveFromJson(object) {
 		const expandedFolders = Local.get(ClientSideKeyNameExpandedFolders);
-		if (object?.SystemFolders) {
-			forEachObjectEntry(SystemFolders, key =>
-				SystemFolders[key] = SettingsGet(key+'Folder') || object.SystemFolders[FolderType[key]]
-			);
-		}
+
+		forEachObjectEntry(SystemFolders, (key, value) =>
+			value || (SystemFolders[key] = SettingsGet(key+'Folder'))
+		);
 
 		const result = super.reviveFromJson(object, oFolder => {
-			let oCacheFolder = getFolderFromCacheList(oFolder.FullName),
-				type = FolderType[getKeyByValue(SystemFolders, oFolder.FullName)];
-
+			let oCacheFolder = getFolderFromCacheList(oFolder.FullName);
 			if (oCacheFolder) {
 //				oCacheFolder.revivePropertiesFromJson(oFolder);
 				if (oFolder.Hash) {
@@ -143,17 +140,59 @@ export class FolderCollectionModel extends AbstractCollectionModel
 				oCacheFolder = FolderModel.reviveFromJson(oFolder);
 				if (!oCacheFolder)
 					return null;
-
-				if (1 == type) {
-					oCacheFolder.type(type);
-					setFolderInboxName(oFolder.FullName);
-				}
 				setFolder(oCacheFolder);
 			}
 
-			if (1 < type) {
-				oCacheFolder.type(type);
+			// JMAP RFC 8621
+			let role = oFolder.role;
+/*
+			if (!role) {
+				// Kolab
+				let type = oFolder.metadata[FolderMetadataKeys.KolabFolderType]
+					|| oFolder.metadata[FolderMetadataKeys.KolabFolderTypeShared];
+				switch (type) {
+					case 'mail.inbox':
+					case 'mail.drafts':
+						role = type.replace('mail.', '');
+						break;
+//					case 'mail.outbox':
+					case 'mail.sentitems':
+						role = 'sent';
+						break;
+					case 'mail.junkemail':
+						role = 'spam';
+						break;
+					case 'mail.wastebasket':
+						role = 'trash';
+						break;
+				}
+				// Flags
+				if (oFolder.Flags.includes('\\sentmail')) {
+					role = 'sent';
+				}
+				if (oFolder.Flags.includes('\\spam')) {
+					role = 'junk';
+				}
+				if (oFolder.Flags.includes('\\bin')) {
+					role = 'trash';
+				}
+				if (oFolder.Flags.includes('\\important')) {
+					role = 'important';
+				}
+				if (oFolder.Flags.includes('\\starred')) {
+					role = 'flagged';
+				}
+				if (oFolder.Flags.includes('\\all') || oFolder.Flags.includes('\\allmail')) {
+					role = 'all';
+				}
 			}
+*/
+			if (role) {
+				role = role[0].toUpperCase() + role.slice(1);
+				SystemFolders[role] || (SystemFolders[role] = oFolder.FullName);
+			}
+
+			oCacheFolder.type(FolderType[getKeyByValue(SystemFolders, oFolder.FullName)] || 0);
 
 			oCacheFolder.collapsed(!expandedFolders
 				|| !isArray(expandedFolders)
@@ -162,12 +201,43 @@ export class FolderCollectionModel extends AbstractCollectionModel
 			return oCacheFolder;
 		});
 
+		result.CountRec = result.length;
+		setFolderInboxName(SystemFolders.Inbox);
+
 		let i = result.length;
 		if (i) {
 			sortFolders(result);
 			try {
 				while (i--) {
 					let folder = result[i], parent = getFolderFromCacheList(folder.parentName);
+					if (!parent) {
+						// Create NonExistent parent folders
+						let delimiter = folder.delimiter;
+						if (delimiter) {
+							let parents = folder.fullName.split(delimiter);
+							parents.pop();
+							while (parents.length) {
+								let parentName = parents.join(delimiter),
+									name = parents.pop(),
+									pfolder = getFolderFromCacheList(parentName);
+								if (!pfolder) {
+									pfolder = FolderModel.reviveFromJson({
+										'@Object': 'Object/Folder',
+										Name: name,
+										FullName: parentName,
+										Delimiter: delimiter,
+										Exists: false,
+										isSubscribed: false,
+										Flags: ['\\nonexistent']
+									});
+									setFolder(pfolder);
+									result.splice(i, 0, pfolder);
+									++i;
+								}
+							}
+							parent = getFolderFromCacheList(folder.parentName);
+						}
+					}
 					if (parent) {
 						parent.subFolders.unshift(folder);
 						result.splice(i,1);
@@ -187,7 +257,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		if (!(
 				SettingsGet('SentFolder') +
 				SettingsGet('DraftsFolder') +
-				SettingsGet('SpamFolder') +
+				SettingsGet('JunkFolder') +
 				SettingsGet('TrashFolder') +
 				SettingsGet('ArchiveFolder')
 			)
@@ -197,21 +267,21 @@ export class FolderCollectionModel extends AbstractCollectionModel
 
 		FolderUserStore.folderList(this);
 
-		FolderUserStore.namespace = this.Namespace;
+		FolderUserStore.namespace = this.namespace;
 
 		// 'THREAD=REFS', 'THREAD=REFERENCES', 'THREAD=ORDEREDSUBJECT'
 		AppUserStore.threadsAllowed(!!(
-			Settings.app('useImapThread') && this.Capabilities.some(capa => capa.startsWith('THREAD='))
+			Settings.app('useImapThread') && this.capabilities.some(capa => capa.startsWith('THREAD='))
 		));
 
-		FolderUserStore.folderListOptimized(!!this.Optimized);
+//		FolderUserStore.folderListOptimized(!!this.optimized);
 		FolderUserStore.quotaUsage(this.quotaUsage);
 		FolderUserStore.quotaLimit(this.quotaLimit);
-		FolderUserStore.capabilities(this.Capabilities);
+		FolderUserStore.capabilities(this.capabilities);
 
 		FolderUserStore.sentFolder(normalizeFolder(SystemFolders.Sent));
 		FolderUserStore.draftsFolder(normalizeFolder(SystemFolders.Drafts));
-		FolderUserStore.spamFolder(normalizeFolder(SystemFolders.Spam));
+		FolderUserStore.spamFolder(normalizeFolder(SystemFolders.Junk));
 		FolderUserStore.trashFolder(normalizeFolder(SystemFolders.Trash));
 		FolderUserStore.archiveFolder(normalizeFolder(SystemFolders.Archive));
 
@@ -238,7 +308,8 @@ export class FolderModel extends AbstractModel {
 
 		addObservablesTo(this, {
 			name: '',
-			type: FolderType.User,
+			type: 0,
+			role: null,
 			selectable: false,
 
 			focused: false,
@@ -345,9 +416,9 @@ export class FolderModel extends AbstractModel {
 						}
 					),
 
-				canBeEdited: () => FolderType.User === folder.type() && folder.exists/* && folder.selectable()*/,
+				canBeEdited: () => !folder.type() && folder.exists/* && folder.selectable()*/,
 
-				isSystemFolder: () => FolderType.User !== folder.type()
+				isSystemFolder: () => folder.type()
 					| (FolderUserStore.allowKolab() && !!folder.kolabType() & !SettingsUserStore.unhideKolabFolders()),
 
 				canBeSelected: () => folder.selectable() && !folder.isSystemFolder(),
@@ -363,7 +434,7 @@ export class FolderModel extends AbstractModel {
 				 * Or when all below conditions are true:
 				 * - selectable()
 				 * - isSubscribed() OR hideUnsubscribed = false
-				 * - FolderType.User
+				 * - 0 == type()
 				 * - not kolabType()
 				 */
 				visible: () => {

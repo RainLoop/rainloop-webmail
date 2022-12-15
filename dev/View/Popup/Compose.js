@@ -8,7 +8,7 @@ import {
 import {
 	ComposeType,
 	EditorDefaultType,
-	SetSystemFoldersNotification
+	FolderType
 } from 'Common/EnumsUser';
 
 import { pInt, isArray, arrayLength } from 'Common/Utils';
@@ -444,7 +444,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			}
 
 			if (!sSentFolder) {
-				showScreenPopup(FolderSystemPopupView, [SetSystemFoldersNotification.Sent]);
+				showScreenPopup(FolderSystemPopupView, [FolderType.Sent]);
 			} else try {
 				this.sendError(false);
 				this.sending(true);
@@ -501,7 +501,7 @@ export class ComposePopupView extends AbstractViewPopup {
 
 	saveCommand() {
 		if (FolderUserStore.draftsFolderNotEnabled()) {
-			showScreenPopup(FolderSystemPopupView, [SetSystemFoldersNotification.Draft]);
+			showScreenPopup(FolderSystemPopupView, [FolderType.Drafts]);
 		} else {
 			this.savedError(false);
 			this.saving(true);

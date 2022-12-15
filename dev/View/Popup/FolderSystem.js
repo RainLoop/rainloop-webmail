@@ -1,7 +1,7 @@
 import ko from 'ko';
 import { koComputable, addSubscribablesTo } from 'External/ko';
 
-import { SetSystemFoldersNotification } from 'Common/EnumsUser';
+import { FolderType } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { folderListOptionsBuilder } from 'Common/Folders';
@@ -47,24 +47,24 @@ export class FolderSystemPopupView extends AbstractViewPopup {
 	}
 
 	/**
-	 * @param {number=} notificationType = SetSystemFoldersNotification.None
+	 * @param {number=} notificationType = 0
 	 */
-	onShow(notificationType = SetSystemFoldersNotification.None) {
+	onShow(notificationType = 0) {
 		let notification = '', prefix = 'POPUPS_SYSTEM_FOLDERS/NOTIFICATION_';
 		switch (notificationType) {
-			case SetSystemFoldersNotification.Sent:
+			case FolderType.Sent:
 				notification = i18n(prefix + 'SENT');
 				break;
-			case SetSystemFoldersNotification.Draft:
+			case FolderType.Drafts:
 				notification = i18n(prefix + 'DRAFTS');
 				break;
-			case SetSystemFoldersNotification.Spam:
+			case FolderType.Junk:
 				notification = i18n(prefix + 'SPAM');
 				break;
-			case SetSystemFoldersNotification.Trash:
+			case FolderType.Trash:
 				notification = i18n(prefix + 'TRASH');
 				break;
-			case SetSystemFoldersNotification.Archive:
+			case FolderType.Archive:
 				notification = i18n(prefix + 'ARCHIVE');
 				break;
 			// no default

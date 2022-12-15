@@ -220,8 +220,8 @@ export class MailMessageView extends AbstractViewRight {
 		this.deleteCommand = createCommandActionHelper(FolderType.Trash);
 		this.deleteWithoutMoveCommand = createCommandActionHelper(FolderType.Trash, true);
 		this.archiveCommand = createCommandActionHelper(FolderType.Archive);
-		this.spamCommand = createCommandActionHelper(FolderType.Spam);
-		this.notSpamCommand = createCommandActionHelper(FolderType.NotSpam);
+		this.spamCommand = createCommandActionHelper(FolderType.Junk);
+		this.notSpamCommand = createCommandActionHelper(FolderType.Inbox);
 
 		decorateKoCommands(this, {
 			editCommand: self => self.messageVisibility(),

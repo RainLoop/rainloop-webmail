@@ -17,7 +17,7 @@ namespace MailSo\Mail;
  */
 class FolderCollection extends \MailSo\Base\Collection
 {
-	public bool $Optimized = false;
+//	public bool $Optimized = false;
 
 	public function append($oFolder, bool $bToTop = false) : void
 	{
@@ -29,5 +29,15 @@ class FolderCollection extends \MailSo\Base\Collection
 	{
 		$oFolder = $this['INBOX'] ?? $this[0] ?? null;
 		return $oFolder ? $oFolder->Delimiter() : '/';
+	}
+
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize()
+	{
+		return array(
+			'@Object' => 'Collection/FolderCollection',
+			'@Collection' => $this->getArrayCopy(),
+//			'optimized' => $this->Optimized
+		);
 	}
 }

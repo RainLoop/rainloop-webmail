@@ -364,11 +364,11 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	spamCommand() {
-		moveMessagesToFolderType(FolderType.Spam);
+		moveMessagesToFolderType(FolderType.Junk);
 	}
 
 	notSpamCommand() {
-		moveMessagesToFolderType(FolderType.NotSpam);
+		moveMessagesToFolderType(FolderType.Inbox);
 	}
 
 	moveCommand(vm, event) {

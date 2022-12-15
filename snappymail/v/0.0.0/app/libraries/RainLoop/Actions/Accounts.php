@@ -216,7 +216,7 @@ trait Accounts
 				$oConfig = $this->Config();
 				$aResult['SentFolder'] = (string) $oSettingsLocal->GetConf('SentFolder', '');
 				$aResult['DraftsFolder'] = (string) $oSettingsLocal->GetConf('DraftFolder', '');
-				$aResult['SpamFolder'] = (string) $oSettingsLocal->GetConf('SpamFolder', '');
+				$aResult['JunkFolder'] = (string) $oSettingsLocal->GetConf('SpamFolder', '');
 				$aResult['TrashFolder'] = (string) $oSettingsLocal->GetConf('TrashFolder', '');
 				$aResult['ArchiveFolder'] = (string) $oSettingsLocal->GetConf('ArchiveFolder', '');
 				$aResult['HideUnsubscribed'] = (bool) $oSettingsLocal->GetConf('HideUnsubscribed', false);

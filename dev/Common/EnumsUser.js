@@ -4,14 +4,27 @@
  * @enum {number}
  */
 export const FolderType = {
-	User: 0,
 	Inbox: 1,
 	Sent: 2,
 	Drafts: 3,
-	Spam: 4, // JUNK
+	Junk: 4, // Spam
 	Trash: 5,
-	Archive: 6,
-	NotSpam: 80
+	Archive: 6
+/*
+	IMPORTANT : 10;
+	FLAGGED : 11;
+	ALL : 13;
+	// TODO: SnappyMail
+	TEMPLATES : 19;
+	// Kolab
+	CONFIGURATION : 20;
+	CALENDAR : 21;
+	CONTACTS : 22;
+	TASKS    : 23;
+	NOTES    : 24;
+	FILES    : 25;
+	JOURNAL  : 26;
+*/
 };
 
 /**
@@ -39,18 +52,6 @@ export const ComposeType = {
 	ForwardAsAttachment: 4,
 	Draft: 5,
 	EditAsNew: 6
-};
-
-/**
- * @enum {number}
- */
-export const SetSystemFoldersNotification = {
-	None: 0,
-	Sent: 1,
-	Draft: 2,
-	Spam: 3,
-	Trash: 4,
-	Archive: 5
 };
 
 /**

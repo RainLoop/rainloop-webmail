@@ -218,28 +218,6 @@ $Plugin->addHook('hook.name', 'functionName');
 		bool $bSuccess
 		\MailSo\Smtp\Settings $oSettings
 
-## Folders
-
-### filter.folders-post
-	params:
-		\RainLoop\Model\Account $oAccount
-		\MailSo\Mail\FolderCollection $oFolderCollection
-
-### filter.folders-complete
-	params:
-		\RainLoop\Model\Account $oAccount
-		\MailSo\Mail\FolderCollection $oFolderCollection
-
-### filter.folders-system-types
-	params:
-		\RainLoop\Model\Account $oAccount
-		array &$aList
-
-### filter.system-folders-names
-	params:
-		\RainLoop\Model\Account $oAccount
-		array &$aCache
-
 ## Json service actions
 Called by RainLoop\ServiceActions::ServiceJson()
 {actionname} is one of the RainLoop\Actions::Do{ActionName}(),

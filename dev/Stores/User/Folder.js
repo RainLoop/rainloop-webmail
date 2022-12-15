@@ -117,7 +117,7 @@ FolderUserStore = new class {
 
 		const
 			subscribeRemoveSystemFolder = observable => {
-				observable.subscribe(() => getFolderFromCacheList(observable())?.type(FolderType.User), self, 'beforeChange');
+				observable.subscribe(() => getFolderFromCacheList(observable())?.type(0), self, 'beforeChange');
 			},
 			fSetSystemFolderType = type => value => getFolderFromCacheList(value)?.type(type);
 
@@ -130,7 +130,7 @@ FolderUserStore = new class {
 		addSubscribablesTo(self, {
 			sentFolder: fSetSystemFolderType(FolderType.Sent),
 			draftsFolder: fSetSystemFolderType(FolderType.Drafts),
-			spamFolder: fSetSystemFolderType(FolderType.Spam),
+			spamFolder: fSetSystemFolderType(FolderType.Junk),
 			trashFolder: fSetSystemFolderType(FolderType.Trash),
 			archiveFolder: fSetSystemFolderType(FolderType.Archive)
 		});

@@ -11,7 +11,6 @@
 
 namespace MailSo\Imap;
 
-use MailSo\Imap\Enumerations\FolderType;
 use MailSo\Imap\Enumerations\MetadataKeys;
 
 /**
@@ -135,138 +134,32 @@ class Folder implements \JsonSerializable
 	// JMAP RFC 8621
 	public function Role() : ?string
 	{
-		$aFlags = $this->aFlagsLowerCase;
-		$aFlags[] = \strtolower($this->GetMetadata(MetadataKeys::SPECIALUSE));
-
-		$match = \array_intersect([
-			'\\inbox',
-			'\\all',       // '\\allmail'
-			'\\archive',
-			'\\drafts',
-			'\\flagged',   // '\\starred'
-			'\\important',
-			'\\junk',      // '\\spam'
-			'\\sent',      // '\\sentmail'
-			'\\trash',     // '\\bin'
-		], $aFlags);
-		if ($match) {
-			return \substr(\array_shift($match), 1);
-		}
-
-		if ('INBOX' === \strtoupper($this->FolderName)) {
-			return 'inbox';
-		}
-/*
-		// Kolab
-		$type = $this->GetMetadata(MetadataKeys::KOLAB_CTYPE) ?: $this->GetMetadata(MetadataKeys::KOLAB_CTYPE_SHARED);
-		switch ($type) {
-			case 'mail.inbox':
+		$role = \strtolower($this->GetMetadata(MetadataKeys::SPECIALUSE) ?: '');
+		if (!$role) {
+			$match = \array_intersect([
+				'\\inbox',
+				'\\all',       // '\\allmail'
+				'\\archive',
+				'\\drafts',
+				'\\flagged',   // '\\starred'
+				'\\important',
+				'\\junk',      // '\\spam'
+				'\\sent',      // '\\sentmail'
+				'\\trash',     // '\\bin'
+			], $this->aFlagsLowerCase);
+			if ($match) {
+				$role = \array_shift($match);
+			}
+			if (!$role && 'INBOX' === \strtoupper($this->FolderName)) {
 				return 'inbox';
-//			case 'mail.outbox':
-			case 'mail.sentitems':
-				return 'sent';
-			case 'mail.drafts':
-				return 'drafts';
-			case 'mail.junkemail':
-				return 'junk';
-			case 'mail.wastebasket':
-				return 'trash';
+			}
 		}
-*/
-		return null;
+		return $role ? \ltrim($role, '\\') : null;
 	}
 
 	public function Hash(string $sClientHash) : ?string
 	{
 		return $this->getHash($sClientHash);
-	}
-
-	public function GetType() : int
-	{
-		$aFlags = $this->aFlagsLowerCase;
-		// RFC 6154
-//		$aFlags[] = \strtolower($this->GetMetadata(MetadataKeys::SPECIALUSE));
-
-		switch (true)
-		{
-			case $this->IsInbox():
-				return FolderType::INBOX;
-
-			case \in_array('\\sent', $this->aFlagsLowerCase):
-			case \in_array('\\sentmail', $this->aFlagsLowerCase):
-				return FolderType::SENT;
-
-			case \in_array('\\drafts', $this->aFlagsLowerCase):
-				return FolderType::DRAFTS;
-
-			case \in_array('\\junk', $this->aFlagsLowerCase):
-			case \in_array('\\spam', $this->aFlagsLowerCase):
-				return FolderType::JUNK;
-
-			case \in_array('\\trash', $this->aFlagsLowerCase):
-			case \in_array('\\bin', $this->aFlagsLowerCase):
-				return FolderType::TRASH;
-
-			case \in_array('\\important', $this->aFlagsLowerCase):
-				return FolderType::IMPORTANT;
-
-			case \in_array('\\flagged', $this->aFlagsLowerCase):
-			case \in_array('\\starred', $this->aFlagsLowerCase):
-				return FolderType::FLAGGED;
-
-			case \in_array('\\archive', $this->aFlagsLowerCase):
-				return FolderType::ARCHIVE;
-
-			case \in_array('\\all', $this->aFlagsLowerCase):
-			case \in_array('\\allmail', $this->aFlagsLowerCase):
-				return FolderType::ALL;
-
-			// TODO
-//			case 'Templates' === $this->FullName():
-//				return FolderType::TEMPLATES;
-		}
-
-		// Kolab
-		$type = $this->GetMetadata(MetadataKeys::KOLAB_CTYPE) ?: $this->GetMetadata(MetadataKeys::KOLAB_CTYPE_SHARED);
-		switch ($type)
-		{
-/*
-			// TODO: Kolab
-			case 'event':
-			case 'event.default':
-				return FolderType::CALENDAR;
-			case 'contact':
-			case 'contact.default':
-				return FolderType::CONTACTS;
-			case 'task':
-			case 'task.default':
-				return FolderType::TASKS;
-			case 'note':
-			case 'note.default':
-				return FolderType::NOTES;
-			case 'file':
-			case 'file.default':
-				return FolderType::FILES;
-			case 'configuration':
-				return FolderType::CONFIGURATION;
-			case 'journal':
-			case 'journal.default':
-				return FolderType::JOURNAL;
-*/
-			case 'mail.inbox':
-				return FolderType::INBOX;
-//			case 'mail.outbox':
-			case 'mail.sentitems':
-				return FolderType::SENT;
-			case 'mail.drafts':
-				return FolderType::DRAFTS;
-			case 'mail.junkemail':
-				return FolderType::JUNK;
-			case 'mail.wastebasket':
-				return FolderType::TRASH;
-		}
-
-		return FolderType::USER;
 	}
 
 	#[\ReturnTypeWillChange]

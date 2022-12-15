@@ -370,7 +370,6 @@ Enables caching in the system'),
 			'labs' => array(
 				'cache_system_data' => array(true),
 				'date_from_headers' => array(true),
-				'autocreate_system_folders' => array(false),
 				'allow_message_append' => array(false),
 				'login_fault_delay' => array(1),
 				'log_ajax_response_write_limit' => array(300),

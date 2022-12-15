@@ -933,29 +933,11 @@ class MailClient
 			return null;
 		}
 
-		foreach ($aFolders as $sFullName => /* @var $oImapFolder \MailSo\Imap\Folder */ $oImapFolder) {
-			if (($bUseListSubscribeStatus && (null === $aImapSubscribedFoldersHelper || \in_array($sFullName, $aImapSubscribedFoldersHelper))) || $oImapFolder->IsInbox()) {
-				$oImapFolder->setSubscribed();
-			}
-
-			// Add NonExistent folders
-			$sDelimiter = $oImapFolder->Delimiter();
-			$aFolderExplode = \explode($sDelimiter, $sFullName);
-			\array_pop($aFolderExplode);
-			while ($aFolderExplode) {
-				$sFullName = \implode($sDelimiter, $aFolderExplode);
-				if (!isset($aFolders[$sFullName])) {
-					try
-					{
-						$aFolders[$sFullName] =
-							new \MailSo\Imap\Folder($sFullName, $sDelimiter, ['\\Noselect', '\\NonExistent']);
-					}
-					catch (\Throwable $oExc)
-					{
-						unset($oExc);
-					}
+		if ($bUseListSubscribeStatus) {
+			foreach ($aFolders as $sFullName => /* @var $oImapFolder \MailSo\Imap\Folder */ $oImapFolder) {
+				if (null === $aImapSubscribedFoldersHelper || \in_array($sFullName, $aImapSubscribedFoldersHelper)) {
+					$oImapFolder->setSubscribed();
 				}
-				\array_pop($aFolderExplode);
 			}
 		}
 
