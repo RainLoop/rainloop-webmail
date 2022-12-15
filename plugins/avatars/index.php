@@ -7,8 +7,8 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
 		VERSION  = '1.5',
-		RELEASE  = '2022-12-12',
-		REQUIRED = '2.23',
+		RELEASE  = '2022-12-15',
+		REQUIRED = '2.23.0',
 		CATEGORY = 'Contacts',
 		LICENSE  = 'MIT',
 		DESCRIPTION = 'Show graphic of sender in message and messages list (supports BIMI, Gravatar and identicon, Contacts is still TODO)';
