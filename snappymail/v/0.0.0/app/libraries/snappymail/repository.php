@@ -120,7 +120,7 @@ abstract class Repository
 				 // is this entry newer then an already defined one
 				 && (empty($aResult[$oItem->id]) || \version_compare($aResult[$oItem->id]['version'], $oItem->version, '<'))
 				 // does this entry require same or older app version
-				 && ($isDev || empty($oItem->required) || \version_compare(APP_VERSION, $oItem->required, '<='))
+				 && ($isDev || empty($oItem->required) || \version_compare(APP_VERSION, $oItem->required, '>='))
 				 // is this entry not deprecated for current app version?
 				 && ($isDev || empty($oItem->deprecated) || \version_compare(APP_VERSION, $oItem->deprecated, '<'))
 				) {
