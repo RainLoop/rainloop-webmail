@@ -119,7 +119,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		$this->sLogginedUser = $sLogin;
 
-		$type = 'LOGIN';
+		$type = '';
 		foreach ($oSettings->SASLMechanisms as $sasl_type) {
 			if ($this->IsSupported("AUTH={$sasl_type}") && \SnappyMail\SASL::isSupported($sasl_type)) {
 				$type = $sasl_type;
@@ -127,8 +127,8 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 		}
 		// RFC3501 6.2.3
-		if ('LOGIN' === $type && $this->IsSupported('LOGINDISABLED')) {
-			$type = '';
+		if (!$type && \in_array('LOGIN', $oSettings->SASLMechanisms) && !$this->IsSupported('LOGINDISABLED')) {
+			$type = 'LOGIN';
 		}
 		if (!$type) {
 			if (!$this->Encrypted() && $this->IsSupported('STARTTLS')) {
