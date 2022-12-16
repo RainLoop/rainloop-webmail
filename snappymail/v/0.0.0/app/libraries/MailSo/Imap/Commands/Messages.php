@@ -77,20 +77,20 @@ trait Messages
 						break;
 				}
 			}
-			if ($this->IsSupported('OBJECTID')) {
+			if ($this->hasCapability('OBJECTID')) {
 				$aFetchItems[] = FetchType::EMAILID;
 				$aFetchItems[] = FetchType::THREADID;
-			} else if ($this->IsSupported('X-GM-EXT-1')) {
+			} else if ($this->hasCapability('X-GM-EXT-1')) {
 				// https://developers.google.com/gmail/imap/imap-extensions
 				$aFetchItems[] = 'X-GM-MSGID';
 				$aFetchItems[] = 'X-GM-THRID';
 /*
-			} else if ($this->IsSupported('X-DOVECOT')) {
+			} else if ($this->hasCapability('X-DOVECOT')) {
 				$aFetchItems[] = 'X-GUID';
 */
 			}
 /*
-			if ($this->IsSupported('X-GM-EXT-1') && \in_array(FetchType::FLAGS, $aFetchItems)) {
+			if ($this->hasCapability('X-GM-EXT-1') && \in_array(FetchType::FLAGS, $aFetchItems)) {
 				$aFetchItems[] = 'X-GM-LABELS';
 			}
 */
@@ -147,7 +147,7 @@ trait Messages
 
 /*
 		// RFC 3516 || RFC 6855 section-4
-		if ($this->IsSupported('BINARY') || $this->IsSupported('UTF8=ACCEPT')) {
+		if ($this->hasCapability('BINARY') || $this->hasCapability('UTF8=ACCEPT')) {
 			$aParams[] = '~{'.$iStreamSize.'}';
 		}
 */
@@ -220,7 +220,7 @@ trait Messages
 			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR, true);
 		}
 
-		if (!$this->IsSupported('MOVE')) {
+		if (!$this->hasCapability('MOVE')) {
 			$this->writeLogException(
 				new \MailSo\RuntimeException('Move is not supported'),
 				\LOG_ERR, true);
@@ -246,7 +246,7 @@ trait Messages
 	 */
 	public function MessageReplaceStream(string $sFolderName, int $iUid, $rMessageStream, int $iStreamSize, array $aFlagsList = null, int $iDateTime = 0) : ?int
 	{
-		if (1 > $iUid || !$this->IsSupported('REPLACE')) {
+		if (1 > $iUid || !$this->hasCapability('REPLACE')) {
 			$this->FolderSelect($sFolderName);
 			$iNewUid = $this->MessageAppendStream($sFolderName, $rMessageStream, $iStreamSize, $aFlagsList, $iDateTime);
 			if ($iUid) {
@@ -271,7 +271,7 @@ trait Messages
 
 /*
 		// RFC 3516 || RFC 6855 section-4
-		if ($this->IsSupported('BINARY') || $this->IsSupported('UTF8=ACCEPT')) {
+		if ($this->hasCapability('BINARY') || $this->hasCapability('UTF8=ACCEPT')) {
 			$aParams[] = '~{'.$iStreamSize.'}';
 		}
 */

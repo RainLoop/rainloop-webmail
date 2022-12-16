@@ -53,7 +53,7 @@ class SORT extends Request
 
 	function __construct(\MailSo\Imap\ImapClient $oImapClient)
 	{
-		if (!$oImapClient->IsSupported('SORT')) {
+		if (!$oImapClient->hasCapability('SORT')) {
 			$oImapClient->writeLogException(
 				new \MailSo\RuntimeException('SORT is not supported'),
 				\LOG_ERR, true);
@@ -73,12 +73,12 @@ class SORT extends Request
 
 		if ($this->aReturn) {
 			// RFC 5267 checks
-			if (!$this->oImapClient->IsSupported('ESORT')) {
+			if (!$this->oImapClient->hasCapability('ESORT')) {
 				$this->oImapClient->writeLogException(
 					new \MailSo\RuntimeException('ESORT is not supported'),
 					\LOG_ERR, true);
 			}
-			if (!$this->oImapClient->IsSupported('CONTEXT=SORT')) {
+			if (!$this->oImapClient->hasCapability('CONTEXT=SORT')) {
 				foreach ($this->aReturn as $sReturn) {
 					if (\preg_match('/PARTIAL|UPDATE|CONTEXT/i', $sReturn)) {
 						$this->oImapClient->writeLogException(

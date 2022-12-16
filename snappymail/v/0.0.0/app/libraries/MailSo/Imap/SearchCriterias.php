@@ -156,7 +156,7 @@ abstract class SearchCriterias
 					$aCriteriasResult[] = $sValue;
 				}
 			} else {
-				if (isset($aLines['IN']) && $oImapClient->IsSupported('MULTISEARCH') && \in_array($aLines['IN'], ['subtree','subtree-one','mailboxes'])) {
+				if (isset($aLines['IN']) && $oImapClient->hasCapability('MULTISEARCH') && \in_array($aLines['IN'], ['subtree','subtree-one','mailboxes'])) {
 					$aCriteriasResult[] = "IN ({$aLines['IN']} \"{$sFolderName}\")";
 				}
 

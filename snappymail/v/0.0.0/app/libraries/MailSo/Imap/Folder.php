@@ -177,7 +177,7 @@ class Folder implements \JsonSerializable
 		}
 */
 /*
-		if ($this->ImapClient->IsSupported('ACL') || $this->ImapClient->CapabilityValue('RIGHTS')) {
+		if ($this->ImapClient->hasCapability('ACL') || $this->ImapClient->CapabilityValue('RIGHTS')) {
 			// MailSo\Imap\Responses\ACL
 			$rights = $this->ImapClient->FolderMyRights($this->FolderName);
 		}

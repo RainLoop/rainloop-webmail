@@ -27,11 +27,11 @@ class THREAD extends Request
 
 	function __construct(\MailSo\Imap\ImapClient $oImapClient)
 	{
-		if ($oImapClient->IsSupported('THREAD=REFS')) {
+		if ($oImapClient->hasCapability('THREAD=REFS')) {
 			$this->sAlgorithm = 'REFS';
-		} else if ($oImapClient->IsSupported('THREAD=REFERENCES')) {
+		} else if ($oImapClient->hasCapability('THREAD=REFERENCES')) {
 			$this->sAlgorithm = 'REFERENCES';
-		} else if ($oImapClient->IsSupported('THREAD=ORDEREDSUBJECT')) {
+		} else if ($oImapClient->hasCapability('THREAD=ORDEREDSUBJECT')) {
 			$this->sAlgorithm = 'ORDEREDSUBJECT';
 		} else {
 			$oImapClient->writeLogException(
@@ -43,7 +43,7 @@ class THREAD extends Request
 
 	public function SendRequestIterateResponse() : iterable
 	{
-		if (!$this->oImapClient->IsSupported(\strtoupper("THREAD={$this->sAlgorithm}"))) {
+		if (!$this->oImapClient->hasCapability(\strtoupper("THREAD={$this->sAlgorithm}"))) {
 			$this->oImapClient->writeLogException(
 				new \MailSo\RuntimeException("THREAD={$this->sAlgorithm} is not supported"),
 				\LOG_ERR, true);

@@ -241,7 +241,7 @@ class MailClient
 
 					// RFC 3516
 					// Should mailserver decode or PHP?
-					if ($sMailEncoding && $this->oImapClient->IsSupported('BINARY')) {
+					if ($sMailEncoding && $this->oImapClient->hasCapability('BINARY')) {
 						$sMailEncoding = '';
 						$sPeek = FetchType::BINARY_PEEK;
 					}
@@ -320,7 +320,7 @@ class MailClient
 
 		$this->oImapClient->FolderSelect($sFromFolder);
 
-		if ($this->oImapClient->IsSupported('MOVE')) {
+		if ($this->oImapClient->hasCapability('MOVE')) {
 			$this->oImapClient->MessageMove($sToFolder, $oRange);
 		} else {
 			$this->oImapClient->MessageCopy($sToFolder, $oRange);
@@ -667,7 +667,7 @@ class MailClient
 				[IMAP] addr-mailbox of the first "To" address.
 
 			RFC 5957:
-				$this->oImapClient->IsSupported('SORT=DISPLAY')
+				$this->oImapClient->hasCapability('SORT=DISPLAY')
 				DISPLAYFROM, DISPLAYTO
 		 */
 
@@ -678,7 +678,7 @@ class MailClient
 		$sSerializedHash = '';
 		$sSerializedLog = '';
 
-		$bUseSortIfSupported = $bUseSortIfSupported && !\strlen($sSearch) && $this->oImapClient->IsSupported('SORT');
+		$bUseSortIfSupported = $bUseSortIfSupported && !\strlen($sSearch) && $this->oImapClient->hasCapability('SORT');
 
 		$sSearchCriterias = \MailSo\Imap\SearchCriterias::fromString($this->oImapClient, $sFolderName, $sSearch, $oParams->bHideDeleted, $bUseCacheAfterSearch);
 		// Disabled for now as there are many cases that change the result
@@ -709,11 +709,11 @@ class MailClient
 
 		if (!$bUidsFromCacher) {
 			if ($bUseSortIfSupported) {
-//				$this->oImapClient->IsSupported('ESORT')
+//				$this->oImapClient->hasCapability('ESORT')
 //				$aResultUids = $this->oImapClient->MessageSimpleESort(array($sSort ?: 'REVERSE DATE'), $sSearchCriterias)['ALL'];
 				$aResultUids = $this->oImapClient->MessageSimpleSort(array($sSort ?: 'REVERSE DATE'), $sSearchCriterias);
 			} else {
-//				$this->oImapClient->IsSupported('ESEARCH')
+//				$this->oImapClient->hasCapability('ESEARCH')
 //				$aResultUids = $this->oImapClient->MessageSimpleESearch($sSearchCriterias, null, true, \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? '' : 'UTF-8')
 				$aResultUids = $this->oImapClient->MessageSimpleSearch($sSearchCriterias,        true, \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? '' : 'UTF-8');
 			}
@@ -764,7 +764,7 @@ class MailClient
 		$aAllThreads = [];
 
 		$bUseThreads = $oParams->bUseThreads
-			&& ($this->oImapClient->IsSupported('THREAD=REFS') || $this->oImapClient->IsSupported('THREAD=REFERENCES') || $this->oImapClient->IsSupported('THREAD=ORDEREDSUBJECT'));
+			&& ($this->oImapClient->hasCapability('THREAD=REFS') || $this->oImapClient->hasCapability('THREAD=REFERENCES') || $this->oImapClient->hasCapability('THREAD=ORDEREDSUBJECT'));
 		if ($oParams->iThreadUid && !$bUseThreads) {
 			throw new \InvalidArgumentException('THREAD not supported');
 		}
@@ -811,7 +811,7 @@ class MailClient
 				}
 			} else {
 				$aUids = [];
-				$bUseSortIfSupported = $oParams->bUseSortIfSupported && $this->oImapClient->IsSupported('SORT');
+				$bUseSortIfSupported = $oParams->bUseSortIfSupported && $this->oImapClient->hasCapability('SORT');
 				if ($bUseThreads) {
 					$aAllThreads = $this->MessageListThreadsMap($oMessageCollection->FolderName, $oMessageCollection->FolderHash, $oParams->oCacher);
 					$oMessageCollection->totalThreads = \count($aAllThreads);
@@ -908,7 +908,7 @@ class MailClient
 	public function Folders(string $sParent, string $sListPattern, bool $bUseListSubscribeStatus) : ?FolderCollection
 	{
 		$aImapSubscribedFoldersHelper = null;
-		if ($this->oImapClient->IsSupported('LIST-EXTENDED')) {
+		if ($this->oImapClient->hasCapability('LIST-EXTENDED')) {
 			$bUseListSubscribeStatus = false;
 		} else if ($bUseListSubscribeStatus) {
 //			$this->oLogger && $this->oLogger->Write('RFC5258 not supported, using LSUB');
@@ -1081,7 +1081,7 @@ class MailClient
 			throw new \InvalidArgumentException;
 		}
 
-		if ($this->oImapClient->IsSupported('IMAP4rev2')) {
+		if ($this->oImapClient->hasCapability('IMAP4rev2')) {
 			$oInfo = $this->oImapClient->FolderExamine($sFolderFullName);
 		} else {
 			$oInfo = $this->oImapClient->FolderStatus($sFolderFullName);

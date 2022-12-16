@@ -74,14 +74,14 @@ class ImapClient extends \MailSo\Net\NetClient
 		$this->setCapabilities($this->getResponse('*'));
 
 		if (ConnectionSecurityType::STARTTLS === $this->Settings->type
-		 || (ConnectionSecurityType::AUTO_DETECT === $this->Settings->type && $this->IsSupported('STARTTLS'))) {
+		 || (ConnectionSecurityType::AUTO_DETECT === $this->Settings->type && $this->hasCapability('STARTTLS'))) {
 			$this->StartTLS();
 		}
 	}
 
 	private function StartTLS() : void
 	{
-		if ($this->IsSupported('STARTTLS')) {
+		if ($this->hasCapability('STARTTLS')) {
 			$this->SendRequestGetResponse('STARTTLS');
 			$this->EnableCrypto();
 			$this->aCapabilityItems = null;
@@ -121,17 +121,17 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		$type = '';
 		foreach ($oSettings->SASLMechanisms as $sasl_type) {
-			if ($this->IsSupported("AUTH={$sasl_type}") && \SnappyMail\SASL::isSupported($sasl_type)) {
+			if ($this->hasCapability("AUTH={$sasl_type}") && \SnappyMail\SASL::isSupported($sasl_type)) {
 				$type = $sasl_type;
 				break;
 			}
 		}
 		// RFC3501 6.2.3
-		if (!$type && \in_array('LOGIN', $oSettings->SASLMechanisms) && !$this->IsSupported('LOGINDISABLED')) {
+		if (!$type && \in_array('LOGIN', $oSettings->SASLMechanisms) && !$this->hasCapability('LOGINDISABLED')) {
 			$type = 'LOGIN';
 		}
 		if (!$type) {
-			if (!$this->Encrypted() && $this->IsSupported('STARTTLS')) {
+			if (!$this->Encrypted() && $this->hasCapability('STARTTLS')) {
 				$this->StartTLS();
 				return $this->Login($oSettings);
 			}
@@ -170,7 +170,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			{
 				$sAuth = $SASL->authenticate($sLogin, $sPassword);
 				$this->oLogger && $this->oLogger->AddSecret($sAuth);
-				if ($this->IsSupported('SASL-IR')) {
+				if ($this->hasCapability('SASL-IR')) {
 					$oResponse = $this->SendRequestGetResponse('AUTHENTICATE', array($type, $sAuth));
 				} else {
 					$this->SendRequestGetResponse('AUTHENTICATE', array($type));
@@ -192,7 +192,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					$oResponse = $this->getResponse();
 				}
 			}
-			else if ($this->IsSupported('LOGINDISABLED'))
+			else if ($this->hasCapability('LOGINDISABLED'))
 			{
 				$sB64 = $this->getResponseValue($this->SendRequestGetResponse('AUTHENTICATE', array($type)), Enumerations\ResponseType::CONTINUATION);
 				$this->sendRaw($SASL->authenticate($sLogin, $sPassword, $sB64), true);
@@ -221,12 +221,12 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 /*
 			// TODO: RFC 9051
-			if ($this->IsSupported('IMAP4rev2')) {
+			if ($this->hasCapability('IMAP4rev2')) {
 				$this->Enable('IMAP4rev1');
 			}
 */
 			// RFC 6855 || RFC 5738
-			$this->UTF8 = $this->IsSupported('UTF8=ONLY') || $this->IsSupported('UTF8=ACCEPT');
+			$this->UTF8 = $this->hasCapability('UTF8=ONLY') || $this->hasCapability('UTF8=ACCEPT');
 			if ($this->UTF8) {
 				$this->Enable('UTF8=ACCEPT');
 			}
@@ -334,10 +334,14 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function IsSupported(string $sExtentionName) : bool
+	public function hasCapability(string $sExtentionName) : bool
 	{
 		$sExtentionName = \trim($sExtentionName);
 		return $sExtentionName && \in_array(\strtoupper($sExtentionName), $this->Capability() ?: []);
+	}
+	public function IsSupported(string $sExtentionName) : bool
+	{
+		return $this->hasCapability($sExtentionName);
 	}
 
 	/**
@@ -360,7 +364,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function GetNamespace() : ?NamespaceResult
 	{
-		if (!$this->IsSupported('NAMESPACE')) {
+		if (!$this->hasCapability('NAMESPACE')) {
 			return null;
 		}
 
@@ -637,7 +641,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function ServerID() : string
 	{
-		if ($this->IsSupported('ID')) {
+		if ($this->hasCapability('ID')) {
 			foreach ($this->SendRequestGetResponse('ID', [null]) as $oResponse) {
 				if ('ID' === $oResponse->ResponseList[1] && \is_array($oResponse->ResponseList[2])) {
 					$c = \count($oResponse->ResponseList[2]);
@@ -659,7 +663,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function Compress() : bool
 	{
 		try {
-			if ($this->IsSupported('COMPRESS=DEFLATE')) {
+			if ($this->hasCapability('COMPRESS=DEFLATE')) {
 				$this->SendRequestGetResponse('COMPRESS', ['DEFLATE']);
 				\stream_filter_append($this->ConnectionResource(), 'zlib.inflate');
 				\stream_filter_append($this->ConnectionResource(), 'zlib.deflate', STREAM_FILTER_WRITE, array(

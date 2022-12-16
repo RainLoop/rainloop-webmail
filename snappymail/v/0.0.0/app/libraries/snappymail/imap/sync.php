@@ -47,7 +47,7 @@ class Sync
 		}
 
 		\SnappyMail\Log::notice('SYNC', 'Get oImapSource->FolderList');
-		$bUseListStatus = $this->oImapSource->IsSupported('LIST-EXTENDED');
+		$bUseListStatus = $this->oImapSource->hasCapability('LIST-EXTENDED');
 		$aSourceFolders = $this->oImapSource->FolderList($sParent, $sListPattern, false, $bUseListStatus);
 		if (!$aSourceFolders) {
 			return null;
@@ -168,7 +168,7 @@ class Sync
 					// Now copy each message from source to target
 					for ($i = 1; $i <= $oSourceInfo->MESSAGES; ++$i) {
 						if (!\in_array($i, $aSourceSkipIDs)) {
-							$sPeek = $this->oImapSource->IsSupported('BINARY')
+							$sPeek = $this->oImapSource->hasCapability('BINARY')
 								? FetchType::BINARY_PEEK
 								: FetchType::BODY_PEEK;
 							$iAppendUid = 0;

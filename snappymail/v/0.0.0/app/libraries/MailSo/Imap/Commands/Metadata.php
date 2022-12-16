@@ -96,21 +96,21 @@ trait Metadata
 
 	public function ServerGetMetadata(array $aEntries, array $aOptions = []) : array
 	{
-		return $this->IsSupported('METADATA-SERVER')
+		return $this->hasCapability('METADATA-SERVER')
 			? $this->getMetadata('', $aEntries, $aOptions)
 			: [];
 	}
 
 	public function FolderGetMetadata(string $sFolderName, array $aEntries, array $aOptions = []) : array
 	{
-		return $this->IsSupported('METADATA')
+		return $this->hasCapability('METADATA')
 			? $this->getMetadata($sFolderName, $aEntries, $aOptions)
 			: [];
 	}
 
 	public function FolderSetMetadata(string $sFolderName, array $aEntries) : void
 	{
-		if ($this->IsSupported('METADATA')) {
+		if ($this->hasCapability('METADATA')) {
 			if (!$aEntries) {
 				throw new \MailSo\Base\Exceptions\InvalidArgumentException("Wrong argument for SETMETADATA command");
 			}

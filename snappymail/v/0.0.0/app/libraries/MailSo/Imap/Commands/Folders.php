@@ -113,23 +113,23 @@ trait Folders
 			FolderStatus::UIDVALIDITY
 		);
 		// RFC 4551
-		if ($this->IsSupported('CONDSTORE')) {
+		if ($this->hasCapability('CONDSTORE')) {
 			$aStatusItems[] = FolderStatus::HIGHESTMODSEQ;
 		}
 		// RFC 7889
-		if ($this->IsSupported('APPENDLIMIT')) {
+		if ($this->hasCapability('APPENDLIMIT')) {
 			$aStatusItems[] = FolderStatus::APPENDLIMIT;
 		}
 		// RFC 8474
-		if ($this->IsSupported('OBJECTID')) {
+		if ($this->hasCapability('OBJECTID')) {
 			$aStatusItems[] = FolderStatus::MAILBOXID;
 /*
-		} else if ($this->IsSupported('X-DOVECOT')) {
+		} else if ($this->hasCapability('X-DOVECOT')) {
 			$aStatusItems[] = 'X-GUID';
 */
 		}
 /*		// STATUS SIZE can take a significant amount of time, therefore not active
-		if ($this->IsSupported('IMAP4rev2')) {
+		if ($this->hasCapability('IMAP4rev2')) {
 			$aStatusItems[] = FolderStatus::SIZE;
 		}
 */
@@ -156,7 +156,7 @@ trait Folders
 			 * So we must unselect the folder to be able to get the APPENDLIMIT and UNSEEN.
 			 */
 /*
-			if ($this->IsSupported('ESEARCH') && !isset($oFolderInfo->UNSEEN)) {
+			if ($this->hasCapability('ESEARCH') && !isset($oFolderInfo->UNSEEN)) {
 				$oFolderInfo->UNSEEN = $this->MessageSimpleESearch('UNSEEN', ['COUNT'])['COUNT'];
 			}
 			return $oFolderInfo;
@@ -235,7 +235,7 @@ trait Folders
 	public function FolderUnselect() : self
 	{
 		if ($this->IsSelected()) {
-			if ($this->IsSupported('UNSELECT')) {
+			if ($this->hasCapability('UNSELECT')) {
 				$this->SendRequestGetResponse('UNSELECT');
 				$this->oCurrentFolderInfo = null;
 			} else {
@@ -266,7 +266,7 @@ trait Folders
 		$sCmd = 'EXPUNGE';
 		$aArguments = array();
 
-		if ($oUidRange && \count($oUidRange) && $oUidRange->UID && $this->IsSupported('UIDPLUS')) {
+		if ($oUidRange && \count($oUidRange) && $oUidRange->UID && $this->hasCapability('UIDPLUS')) {
 			$sCmd = 'UID '.$sCmd;
 			$aArguments = array((string) $oUidRange);
 		}
@@ -344,7 +344,7 @@ trait Folders
 
 /*
 		// RFC 5162
-		if ($this->IsSupported('QRESYNC')) {
+		if ($this->hasCapability('QRESYNC')) {
 			$this->Enable(['QRESYNC', 'CONDSTORE']);
 			- the last known UIDVALIDITY,
 			- the last known modification sequence,
@@ -355,7 +355,7 @@ trait Folders
 		}
 
 		// RFC 4551
-		if ($this->IsSupported('CONDSTORE')) {
+		if ($this->hasCapability('CONDSTORE')) {
 			$aSelectParams[] = 'CONDSTORE';
 		}
 
@@ -409,7 +409,7 @@ trait Folders
 		// IMAP4rev2 deprecated
 		$oResult->UNSEEN = null;
 /*
-		if ($this->IsSupported('ESEARCH')) {
+		if ($this->hasCapability('ESEARCH')) {
 			$oResult->UNSEEN = $this->MessageSimpleESearch('UNSEEN', ['COUNT'])['COUNT'];
 		}
 */
@@ -433,7 +433,7 @@ trait Folders
 		if ($bIsSubscribeList) {
 			// IMAP4rev2 deprecated
 			$sCmd = 'LSUB';
-		} else if ($this->IsSupported('LIST-EXTENDED')) {
+		} else if ($this->hasCapability('LIST-EXTENDED')) {
 			// RFC 5258
 			$aReturnParams[] = 'SUBSCRIBED';
 //			$aReturnParams[] = 'CHILDREN';
@@ -443,7 +443,7 @@ trait Folders
 //				$aParameters[0] = '()';
 			}
 			// RFC 6154
-			if ($this->IsSupported('SPECIAL-USE')) {
+			if ($this->hasCapability('SPECIAL-USE')) {
 				$aReturnParams[] = 'SPECIAL-USE';
 			}
 		}
@@ -453,7 +453,7 @@ trait Folders
 //		$aParameters[] = $this->EscapeString(\strlen(\trim($sListPattern)) ? $sListPattern : '*');
 
 		// RFC 5819
-		if ($bUseListStatus && !$bIsSubscribeList && $this->IsSupported('LIST-STATUS'))
+		if ($bUseListStatus && !$bIsSubscribeList && $this->hasCapability('LIST-STATUS'))
 		{
 			$aReturnParams[] = 'STATUS';
 			$aReturnParams[] = $this->FolderStatusItems();
@@ -473,7 +473,7 @@ trait Folders
 		$aReturn = array();
 
 		// RFC 5464
-		$bMetadata = !$bIsSubscribeList && $this->IsSupported('METADATA');
+		$bMetadata = !$bIsSubscribeList && $this->hasCapability('METADATA');
 		$aMetadata = null;
 		if ($bMetadata) {
 			// Dovecot supports fetching all METADATA at once
