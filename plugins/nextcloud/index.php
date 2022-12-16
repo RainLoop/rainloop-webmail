@@ -4,11 +4,11 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Nextcloud',
-		VERSION = '2.12',
-		RELEASE  = '2022-11-24',
+		VERSION = '2.13',
+		RELEASE  = '2022-12-16',
 		CATEGORY = 'Integrations',
 		DESCRIPTION = 'Integrate with Nextcloud v20+',
-		REQUIRED = '2.19.0';
+		REQUIRED = '2.23.0';
 
 	public function Init() : void
 	{
@@ -94,7 +94,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$oMailClient = $oActions->MailClient();
 			if (!$oMailClient->IsLoggined()) {
 				$oAccount = $oActions->getAccountFromToken();
-				$oAccount->ImapConnectAndLoginHelper($oActions->Plugins(), $oMailClient, $oActions->Config());
+				$oAccount->ImapConnectAndLoginHelper($oActions->Plugins(), $oMailClient->ImapClient(), $oActions->Config());
 			}
 
 			$sSaveFolder = $sSaveFolder ?: 'Emails';
