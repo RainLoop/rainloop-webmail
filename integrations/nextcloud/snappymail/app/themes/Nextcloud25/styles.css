@@ -1039,6 +1039,11 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     border-color: var(--color-border);
 }
 
+#rl-app .form-horizontal .control-group {
+    display: flex;
+    align-items: center;
+}
+
 /*
  * scrollbar
  */
