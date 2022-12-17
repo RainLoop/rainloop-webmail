@@ -79,7 +79,7 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 }
 
 /*
- * icons
+* icons
  */
 
 #rl-app .iconcolor-green {
@@ -135,12 +135,14 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 #rl-app .b-folders .b-folders-system a[data-unread]::after {
     display: block;
     margin: 0 ; 
+    padding: 2px 6px;
     top: 50%;
     transform: translateY(-50%);
 
     color: var(--color-primary-element);
     background-color: var(--color-primary-light);
 
+    font-size: 12px;
     text-shadow: none;
 }
 
