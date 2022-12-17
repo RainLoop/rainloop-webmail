@@ -25,6 +25,11 @@
     backdrop-filter: var(--filter-background-blur, none);
 }
 
+#rl-app #rl-left,
+#rl-app #V-AdminPane>.b-toolbar {
+    width: 300px;
+}
+
 #rl-app #rl-right {
     background-color: var(--color-main-background);
 }
@@ -64,9 +69,10 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     }
 }
 
+#rl-app #V-AdminMenu nav,
 #rl-app #V-SettingsMenu nav.b-content,
 .b-folders .b-content {
-    padding: 8px;
+    padding: calc(var(--default-grid-baseline) * 2);
 }
 
 #rl-app .b-folders .b-content {
@@ -102,8 +108,17 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
  * side panel
  */
 
- #rl-app #V-SettingsMenu nav a,
- #rl-app .b-folders li a.selectable {
+#rl-app #V-AdminPane>.b-toolbar {
+    top: 0;
+    left: 0;
+    padding-top: calc(var(--default-grid-baseline) * 2) !important;
+    font-weight: bold;
+}
+
+#rl-app #V-AdminMenu nav a,
+#rl-app #V-AdminPane>.b-toolbar,
+#rl-app #V-SettingsMenu nav a,
+#rl-app .b-folders li a.selectable {
     margin: 2px;
     padding: 0 2em 0 15px;
     height: 38px;
@@ -113,18 +128,23 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     border: none;
 }
 
+#rl-app #V-AdminMenu nav a,
+#rl-app #V-AdminPane>.b-toolbar,
 #rl-app #V-SettingsMenu nav a {
     height: 44px;
     min-height: 44px;
     line-height: 44px;
 }
 
+#rl-app #V-AdminMenu nav a.selected,
 #rl-app #V-SettingsMenu nav a.selected,
 #rl-app .b-folders li a.selectable.selected {
     color: unset;
     background-color: var(--color-primary-light);
 }
 
+#rl-app #V-AdminMenu nav a:not(.selected):hover,
+#rl-app #V-AdminMenu nav a:not(.selected):focus,
 #rl-app #V-SettingsMenu nav a:not(.selected):hover,
 #rl-app #V-SettingsMenu nav a:not(.selected):focus,
 #rl-app .b-folders li a.selectable:not(.selected):hover,
