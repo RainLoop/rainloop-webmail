@@ -115,6 +115,7 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 
 #rl-app #V-SettingsMenu nav a {
     height: 44px;
+    min-height: 44px;
     line-height: 44px;
 }
 
