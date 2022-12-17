@@ -1044,6 +1044,25 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     align-items: center;
 }
 
+#rl-app #V-Settings-Config th {
+    background-color: var(--color-background-dark);
+}
+
+#rl-app .table-bordered,
+#rl-app .table td,
+#rl-app .table th {
+    border-color: var(--color-border-dark);
+}
+
+#rl-app .table-hover tbody tr:hover td,
+#rl-app .table-hover tbody tr:hover th {
+    background-color: var(--color-background-hover);
+}
+
+#rl-app .drag-handle {
+    color: var(--color-text-lighter);
+}
+
 /*
  * scrollbar
  */
