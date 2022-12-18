@@ -182,15 +182,14 @@ class Header
 				return \iconv_mime_encode($this->Name(), $sResult, $aPreferences);
 			}
 		}
-		else if ($this->IsParameterized() && 0 < $this->oParameters->Count())
+		else if ($this->IsParameterized() && 0 < $this->oParameters->count())
 		{
 			$sResult = $this->sValue.'; '.$this->oParameters->ToString(true);
 		}
 		else if ($this->IsEmail())
 		{
 			$oEmailCollection = new EmailCollection($this->sFullValue);
-			if ($oEmailCollection && 0 < $oEmailCollection->Count())
-			{
+			if ($oEmailCollection && $oEmailCollection->count()) {
 				$sResult = $oEmailCollection->ToString(true, false);
 			}
 		}

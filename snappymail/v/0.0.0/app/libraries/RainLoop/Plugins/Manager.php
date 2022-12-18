@@ -504,7 +504,7 @@ class Manager
 		return $this->bIsEnabled;
 	}
 
-	public function Count() : int
+	public function count() : int
 	{
 		return $this->bIsEnabled ? \count($this->aPlugins) : 0;
 	}
