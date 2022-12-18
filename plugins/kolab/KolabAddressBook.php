@@ -94,7 +94,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 
 	public function IsSupported() : bool
 	{
-		// Check $this->ImapClient()->IsSupported('METADATA')
+		// Check $this->ImapClient()->hasCapability('METADATA')
 		return true;
 	}
 

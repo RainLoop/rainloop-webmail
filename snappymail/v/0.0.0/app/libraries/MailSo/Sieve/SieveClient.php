@@ -19,34 +19,22 @@ use MailSo\Net\Enumerations\ConnectionSecurityType;
  */
 class SieveClient extends \MailSo\Net\NetClient
 {
-	/**
-	 * @var bool
-	 */
-	private $bIsLoggined = false;
+	private bool $bIsLoggined = false;
 
-	/**
-	 * @var array
-	 */
-	private $aCapa = array();
+	private array $aCapa = array();
 
-	/**
-	 * @var array
-	 */
-	private $aAuth = array();
+	private array $aAuth = array();
 
-	/**
-	 * @var array
-	 */
-	private $aModules = array();
+	private array $aModules = array();
 
-	public function IsSupported(string $sCapa) : bool
+	public function hasCapability(string $sCapa) : bool
 	{
 		return isset($this->aCapa[\strtoupper($sCapa)]);
 	}
 
 	public function IsModuleSupported(string $sModule) : bool
 	{
-		return $this->IsSupported('SIEVE') && \in_array(\strtolower(\trim($sModule)), $this->aModules);
+		return $this->hasCapability('SIEVE') && \in_array(\strtolower(\trim($sModule)), $this->aModules);
 	}
 
 	public function Modules() : array
@@ -56,7 +44,7 @@ class SieveClient extends \MailSo\Net\NetClient
 
 	public function IsAuthSupported(string $sAuth) : bool
 	{
-		return $this->IsSupported('SASL') && \in_array(\strtoupper($sAuth), $this->aAuth);
+		return $this->hasCapability('SASL') && \in_array(\strtoupper($sAuth), $this->aAuth);
 	}
 
 	/**
@@ -74,14 +62,14 @@ class SieveClient extends \MailSo\Net\NetClient
 		$this->parseStartupResponse($aResponse);
 
 		if (ConnectionSecurityType::STARTTLS === $this->Settings->type
-		 || (ConnectionSecurityType::AUTO_DETECT === $this->Settings->type && $this->IsSupported('STARTTLS'))) {
+		 || (ConnectionSecurityType::AUTO_DETECT === $this->Settings->type && $this->hasCapability('STARTTLS'))) {
 			$this->StartTLS();
 		}
 	}
 
 	private function StartTLS() : void
 	{
-		if ($this->IsSupported('STARTTLS')) {
+		if ($this->hasCapability('STARTTLS')) {
 			$this->sendRequestWithCheck('STARTTLS');
 			$this->EnableCrypto();
 			$aResponse = $this->parseResponse();
@@ -120,7 +108,7 @@ class SieveClient extends \MailSo\Net\NetClient
 			}
 		}
 		if (!$type) {
-			if (!$this->Encrypted() && $this->IsSupported('STARTTLS')) {
+			if (!$this->Encrypted() && $this->hasCapability('STARTTLS')) {
 				$this->StartTLS();
 				return $this->Login($oSettings);
 			}
