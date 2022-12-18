@@ -412,7 +412,7 @@ trait ResponseParser
 		}
 		catch (\Throwable $oException)
 		{
-			$this->writeLogException($oException);
+			$this->writeLogException($oException, \LOG_NOTICE, false);
 		}
 
 		if ($rImapLiteralStream) {

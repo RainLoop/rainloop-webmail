@@ -101,7 +101,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		} else {
 			$this->writeLogException(
 				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('STARTTLS is not supported'),
-				\LOG_ERR, true);
+				\LOG_ERR);
 		}
 	}
 
@@ -129,9 +129,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 				return $this->Login($oSettings);
 			}
 			\trigger_error("SMTP {$this->GetConnectedHost()} no supported AUTH options. Disable login");
-			$this->writeLogException(
-				new \MailSo\Smtp\Exceptions\LoginBadMethodException,
-				\LOG_NOTICE, true);
+			$this->writeLogException(new \MailSo\Smtp\Exceptions\LoginBadMethodException);
 		}
 
 		$SASL = \SnappyMail\SASL::factory($type);
@@ -145,9 +143,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 		catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
 		{
 			$this->writeLogException(
-				new \MailSo\Smtp\Exceptions\LoginBadMethodException(
-					$oException->GetResponses(), $oException->getMessage(), 0, $oException),
-				\LOG_NOTICE, true);
+				new \MailSo\Smtp\Exceptions\LoginBadMethodException($oException->GetResponses(), $oException->getMessage(), 0, $oException)
+			);
 		}
 
 		try
@@ -178,10 +175,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			// RFC 2195
 			case 'CRAM-MD5':
 				if (empty($sResult)) {
-					$this->writeLogException(
-						new \MailSo\Smtp\Exceptions\NegativeResponseException,
-						\LOG_NOTICE, true
-					);
+					$this->writeLogException(new \MailSo\Smtp\Exceptions\NegativeResponseException);
 				}
 				$this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 235, '', true);
 				break;
@@ -190,9 +184,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 		catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
 		{
 			$this->writeLogException(
-				new \MailSo\Smtp\Exceptions\LoginBadCredentialsException(
-					$oException->GetResponses(), $oException->getMessage(), 0, $oException),
-				\LOG_NOTICE, true);
+				new \MailSo\Smtp\Exceptions\LoginBadCredentialsException($oException->GetResponses(), $oException->getMessage(), 0, $oException)
+			);
 		}
 
 		return $this;
@@ -233,9 +226,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	public function Rcpt(string $sTo, bool $bDsn = false) : self
 	{
 		if (!$this->bMail) {
-			$this->writeLogException(
-				new \MailSo\RuntimeException('No sender reverse path has been supplied'),
-				\LOG_ERR, true);
+			$this->writeLogException(new \MailSo\RuntimeException('No sender reverse path has been supplied'), \LOG_ERR);
 		}
 
 		$sTo = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sTo), true);
@@ -300,9 +291,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		}
 
 		if (!$this->bRcpt) {
-			$this->writeLogException(
-				new \MailSo\RuntimeException('No recipient forward path has been supplied'),
-				\LOG_ERR, true);
+			$this->writeLogException(new \MailSo\RuntimeException('No recipient forward path has been supplied'), \LOG_ERR);
 		}
 
 		$this->sendRequestWithCheck('DATA', 354);
@@ -315,9 +304,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$sBuffer = \fgets($rDataStream);
 			if (false === $sBuffer) {
 				if (!\feof($rDataStream)) {
-					$this->writeLogException(
-						new \MailSo\RuntimeException('Cannot read input resource'),
-						\LOG_ERR, true);
+					$this->writeLogException(new \MailSo\RuntimeException('Cannot read input resource'), \LOG_ERR);
 				}
 				break;
 			}
@@ -397,7 +384,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	{
 		$sCommand = \trim($sCommand);
 		if (!\strlen($sCommand)) {
-			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR, true);
+			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
 		}
 
 		$this->IsConnected(true);
@@ -518,14 +505,14 @@ class SmtpClient extends \MailSo\Net\NetClient
 						new Exceptions\NegativeResponseException($this->aResults,
 							('' === $sErrorPrefix ? '' : $sErrorPrefix.': ').\trim(
 							(\count($this->aResults) ? \implode("\r\n", $this->aResults)."\r\n" : '').
-							$this->sResponseBuffer)), \LOG_ERR, true);
+							$this->sResponseBuffer)), \LOG_ERR);
 				}
 			} else {
 				$this->writeLogException(
 					new Exceptions\ResponseException($this->aResults,
 						('' === $sErrorPrefix ? '' : $sErrorPrefix.': ').\trim(
 						(\count($this->aResults) ? \implode("\r\n", $this->aResults)."\r\n" : '').
-						$this->sResponseBuffer)), \LOG_ERR, true);
+						$this->sResponseBuffer)), \LOG_ERR);
 			}
 
 			$this->aResults[] = $this->sResponseBuffer;

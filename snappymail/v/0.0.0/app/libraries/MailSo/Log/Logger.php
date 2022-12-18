@@ -189,13 +189,21 @@ class Logger extends \SplFixedArray
 		return $this->Write(\print_r($mValue, true), $iType, $sName);
 	}
 
+	private $aExceptions = [];
+
 	public function WriteException(\Throwable $oException, int $iType = \LOG_NOTICE, string $sName = '') : void
 	{
-		$this->Write((string) $oException, $iType, $sName);
+		if (!\in_array($oException, $this->aExceptions)) {
+			$this->Write((string) $oException, $iType, $sName);
+			$this->aExceptions[] = $oException;
+		}
 	}
 
 	public function WriteExceptionShort(\Throwable $oException, int $iType = \LOG_NOTICE, string $sName = '') : void
 	{
-		$this->Write($oException->getMessage(), $iType, $sName);
+		if (!\in_array($oException, $this->aExceptions)) {
+			$this->Write($oException->getMessage(), $iType, $sName);
+			$this->aExceptions[] = $oException;
+		}
 	}
 }

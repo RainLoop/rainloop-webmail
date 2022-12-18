@@ -88,7 +88,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		} else {
 			$this->writeLogException(
 				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('STARTTLS is not supported'),
-				\LOG_ERR, true);
+				\LOG_ERR);
 		}
 	}
 
@@ -112,9 +112,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		if (!\strlen($sLogin) || !\strlen($sPassword))
 		{
-			$this->writeLogException(
-				new \InvalidArgumentException,
-				\LOG_ERR, true);
+			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
 		}
 
 		$this->sLogginedUser = $sLogin;
@@ -233,10 +231,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 		catch (Exceptions\NegativeResponseException $oException)
 		{
-			$this->writeLogException(
-				new Exceptions\LoginBadCredentialsException(
-					$oException->GetResponses(), '', 0, $oException),
-				\LOG_NOTICE, true);
+			$this->writeLogException(new Exceptions\LoginBadCredentialsException($oException->GetResponses(), '', 0, $oException));
 		}
 
 		$this->bIsLoggined = true;
@@ -381,7 +376,6 @@ class ImapClient extends \MailSo\Net\NetClient
 			throw new Exceptions\ResponseException;
 		} catch (\Throwable $e) {
 			$this->writeLogException($e, \LOG_ERR);
-			throw $e;
 		}
 	}
 
@@ -419,7 +413,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	{
 		$sCommand = \trim($sCommand);
 		if (!\strlen($sCommand)) {
-			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR, true);
+			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
 		}
 
 		$this->IsConnected(true);
@@ -462,13 +456,9 @@ class ImapClient extends \MailSo\Net\NetClient
 			if ($sResult) {
 				return $sResult;
 			}
-			$this->writeLogException(
-				new Exceptions\LoginException,
-				\LOG_NOTICE, true);
+			$this->writeLogException(new Exceptions\LoginException);
 		}
-		$this->writeLogException(
-			new Exceptions\LoginException,
-			\LOG_NOTICE, true);
+		$this->writeLogException(new Exceptions\LoginException);
 	}
 
 	/**
@@ -499,7 +489,6 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 		} catch (\Throwable $e) {
 			$this->writeLogException($e, \LOG_WARNING);
-			throw $e;
 		}
 	}
 
@@ -537,7 +526,6 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		} catch (\Throwable $e) {
 			$this->writeLogException($e, \LOG_WARNING);
-			throw $e;
 		}
 
 		return $oResult;
@@ -582,7 +570,6 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		} catch (\Throwable $e) {
 			$this->writeLogException($e, \LOG_WARNING);
-			throw $e;
 		}
 	}
 

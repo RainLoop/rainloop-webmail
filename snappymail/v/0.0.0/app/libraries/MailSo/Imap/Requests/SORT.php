@@ -54,9 +54,7 @@ class SORT extends Request
 	function __construct(\MailSo\Imap\ImapClient $oImapClient)
 	{
 		if (!$oImapClient->hasCapability('SORT')) {
-			$oImapClient->writeLogException(
-				new \MailSo\RuntimeException('SORT is not supported'),
-				\LOG_ERR, true);
+			$oImapClient->writeLogException(new \MailSo\RuntimeException('SORT is not supported'), \LOG_ERR);
 		}
 		parent::__construct($oImapClient);
 	}
@@ -64,9 +62,7 @@ class SORT extends Request
 	public function SendRequest() : string
 	{
 		if (!$this->aSortTypes) {
-			$this->oImapClient->writeLogException(
-				new \MailSo\RuntimeException('SortTypes are missing'),
-				\LOG_ERR, true);
+			$this->oImapClient->writeLogException(new \MailSo\RuntimeException('SortTypes are missing'), \LOG_ERR);
 		}
 
 		$aRequest = array();
@@ -74,16 +70,12 @@ class SORT extends Request
 		if ($this->aReturn) {
 			// RFC 5267 checks
 			if (!$this->oImapClient->hasCapability('ESORT')) {
-				$this->oImapClient->writeLogException(
-					new \MailSo\RuntimeException('ESORT is not supported'),
-					\LOG_ERR, true);
+				$this->oImapClient->writeLogException(new \MailSo\RuntimeException('ESORT is not supported'), \LOG_ERR);
 			}
 			if (!$this->oImapClient->hasCapability('CONTEXT=SORT')) {
 				foreach ($this->aReturn as $sReturn) {
 					if (\preg_match('/PARTIAL|UPDATE|CONTEXT/i', $sReturn)) {
-						$this->oImapClient->writeLogException(
-							new \MailSo\RuntimeException('CONTEXT=SORT is not supported'),
-							\LOG_ERR, true);
+						$this->oImapClient->writeLogException(new \MailSo\RuntimeException('CONTEXT=SORT is not supported'), \LOG_ERR);
 					}
 				}
 			}

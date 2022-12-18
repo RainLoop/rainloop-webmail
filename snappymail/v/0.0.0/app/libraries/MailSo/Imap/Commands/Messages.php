@@ -34,7 +34,7 @@ trait Messages
 	{
 		if (!\strlen(\trim($sIndexRange)))
 		{
-			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR, true);
+			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
 		}
 
 		$aReturn = array();
@@ -199,7 +199,7 @@ trait Messages
 	public function MessageCopy(string $sToFolder, SequenceSet $oRange) : ResponseCollection
 	{
 		if (!\count($oRange)) {
-			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR, true);
+			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
 		}
 
 		return $this->SendRequestGetResponse(
@@ -217,13 +217,11 @@ trait Messages
 	public function MessageMove(string $sToFolder, SequenceSet $oRange) : ResponseCollection
 	{
 		if (!\count($oRange)) {
-			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR, true);
+			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
 		}
 
 		if (!$this->hasCapability('MOVE')) {
-			$this->writeLogException(
-				new \MailSo\RuntimeException('Move is not supported'),
-				\LOG_ERR, true);
+			$this->writeLogException(new \MailSo\RuntimeException('Move is not supported'), \LOG_ERR);
 		}
 
 		return $this->SendRequestGetResponse(

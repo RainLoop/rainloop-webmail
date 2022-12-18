@@ -90,15 +90,11 @@ abstract class NetClient
 	{
 		$oSettings->host = \trim($oSettings->host);
 		if (!\strlen($oSettings->host) || !\MailSo\Base\Validator::RangeInt($oSettings->port, 0, 65535)) {
-			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException,
-				\LOG_ERR, true);
+			$this->writeLogException(new \MailSo\Base\Exceptions\InvalidArgumentException, \LOG_ERR);
 		}
 
 		if ($this->IsConnected()) {
-			$this->writeLogException(
-				new Exceptions\SocketAlreadyConnectedException,
-				\LOG_ERR, true);
+			$this->writeLogException(new Exceptions\SocketAlreadyConnectedException, \LOG_ERR);
 		}
 
 		$this->Settings = $oSettings;
@@ -118,7 +114,7 @@ abstract class NetClient
 		if (!$this->ssl && \MailSo\Net\Enumerations\ConnectionSecurityType::SSL === $this->Settings->type) {
 			$this->writeLogException(
 				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('SSL isn\'t supported: ('.\implode(', ', \stream_get_transports()).')'),
-				\LOG_ERR, true);
+				\LOG_ERR);
 		}
 
 		$this->iStartConnectTime = \microtime(true);
@@ -150,15 +146,14 @@ abstract class NetClient
 				new Exceptions\SocketCanNotConnectToHostException(
 					\MailSo\Base\Locale::ConvertSystemString($sErrorStr), (int) $iErrorNo,
 					'Can\'t connect to host "'.$this->sConnectedHost.':'.$this->Settings->port.'"'
-				), \LOG_NOTICE, true);
+				)
+			);
 		}
 
 		$this->writeLog((\microtime(true) - $this->iStartConnectTime).' (raw connection)', \LOG_DEBUG);
 
-		if ($this->rConnect) {
-			if (\MailSo\Base\Utils::FunctionCallable('stream_set_timeout')) {
-				\stream_set_timeout($this->rConnect, \max(5, $oSettings->timeout));
-			}
+		if ($this->rConnect && \MailSo\Base\Utils::FunctionCallable('stream_set_timeout')) {
+			\stream_set_timeout($this->rConnect, \max(5, $oSettings->timeout));
 		}
 	}
 
@@ -167,27 +162,21 @@ abstract class NetClient
 		return $this->rConnect && !empty(\stream_get_meta_data($this->rConnect)['crypto']);
 	}
 
-	public function EnableCrypto(bool $insecure = false)
+	public function EnableCrypto() : void
 	{
-		$bError = true;
+		$bSuccess = false;
 		if ($this->rConnect && \MailSo\Base\Utils::FunctionCallable('stream_socket_enable_crypto')) {
 			$crypto_method = STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
 			if (\defined('STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT') && OPENSSL_VERSION_NUMBER >= 0x10101000) {
 				$crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT;
 			}
-			if ($insecure) {
-				$crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_0_CLIENT | STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT;
-			}
-			if (\stream_socket_enable_crypto($this->rConnect, true, $crypto_method)) {
-				$bError = false;
-			}
+//			if ($this->Settings->tls_weak) {
+//				$crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_0_CLIENT | STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT;
+//			}
+			$bSuccess = \stream_socket_enable_crypto($this->rConnect, true, $crypto_method);
 		}
 
-		if ($bError) {
-			$this->writeLogException(
-				new \MailSo\RuntimeException('Cannot enable STARTTLS.'),
-				\LOG_ERR, true);
-		}
+		$bSuccess || $this->writeLogException(new \MailSo\RuntimeException('Cannot enable STARTTLS.'), \LOG_ERR);
 	}
 
 	/**
@@ -196,10 +185,8 @@ abstract class NetClient
 	 */
 	public function Disconnect() : void
 	{
-		if ($this->rConnect)
-		{
-			if (!$this->bUnreadBuffer && !$this->bRunningCallback)
-			{
+		if ($this->rConnect) {
+			if (!$this->bUnreadBuffer && !$this->bRunningCallback) {
 				$this->Logout();
 			}
 
@@ -208,13 +195,10 @@ abstract class NetClient
 			$this->writeLog('Disconnected from "'.$this->sConnectedHost.':'.$this->Settings->port.'" ('.
 				(($bResult) ? 'success' : 'unsuccess').')');
 
-			if ($this->iStartConnectTime)
-			{
+			if ($this->iStartConnectTime) {
 				$this->writeLog((\microtime(true) - $this->iStartConnectTime).' (net session)', \LOG_DEBUG);
-
 				$this->iStartConnectTime = 0;
 			}
-
 			$this->rConnect = null;
 		}
 	}
@@ -227,9 +211,7 @@ abstract class NetClient
 			return true;
 		}
 		if ($bThrowExceptionOnFalse) {
-			$this->writeLogException(
-				new Exceptions\SocketConnectionDoesNotAvailableException,
-				\LOG_ERR, true);
+			$this->writeLogException(new Exceptions\SocketConnectionDoesNotAvailableException, \LOG_ERR);
 		}
 		return false;
 	}
@@ -255,7 +237,7 @@ abstract class NetClient
 	protected function sendRaw(string $sRaw, bool $bWriteToLog = true, string $sFakeRaw = '') : void
 	{
 		if ($this->bUnreadBuffer) {
-			$this->writeLogException(new Exceptions\SocketUnreadBufferException, \LOG_ERR, true);
+			$this->writeLogException(new Exceptions\SocketUnreadBufferException, \LOG_ERR);
 		}
 
 		$sRaw .= "\r\n";
@@ -266,13 +248,10 @@ abstract class NetClient
 		}
 
 		$mResult = \fwrite($this->rConnect, $sRaw);
-		if (false === $mResult)
-		{
+		if (false === $mResult) {
 			$this->IsConnected(true);
-			$this->writeLogException(new Exceptions\SocketWriteException, \LOG_ERR, true);
-		}
-		else if ($bWriteToLog)
-		{
+			$this->writeLogException(new Exceptions\SocketWriteException, \LOG_ERR);
+		} else if ($bWriteToLog) {
 			$this->writeLogWithCrlf('> '.($bFake ? $sFakeRaw : $sRaw));
 		}
 	}
@@ -281,70 +260,42 @@ abstract class NetClient
 	 * @throws \MailSo\Net\Exceptions\SocketConnectionDoesNotAvailableException
 	 * @throws \MailSo\Net\Exceptions\SocketReadException
 	 */
-	protected function getNextBuffer(?int $iReadLen = null, bool $bForceLogin = false) : void
+	protected function getNextBuffer(?int $iReadLen = null) : void
 	{
-		if (null === $iReadLen)
-		{
+		if (null === $iReadLen) {
 			$this->sResponseBuffer = \fgets($this->rConnect);
-		}
-		else
-		{
+		} else {
 			$this->sResponseBuffer = '';
 			$iRead = $iReadLen;
-			while (0 < $iRead)
-			{
+			while (0 < $iRead) {
 				$sAddRead = \fread($this->rConnect, $iRead);
-				if (false === $sAddRead)
-				{
+				if (false === $sAddRead) {
 					$this->sResponseBuffer = false;
 					break;
 				}
-
 				$this->sResponseBuffer .= $sAddRead;
 				$iRead -= \strlen($sAddRead);
 			}
 		}
 
-		if (false === $this->sResponseBuffer)
-		{
+		if (false === $this->sResponseBuffer) {
 			$this->IsConnected(true);
 			$this->bUnreadBuffer = true;
-
 			$aSocketStatus = \stream_get_meta_data($this->rConnect);
-			if (isset($aSocketStatus['timed_out']) && $aSocketStatus['timed_out'])
-			{
-				$this->writeLogException(
-					new Exceptions\SocketReadTimeoutException,
-						\LOG_ERR, true);
-			}
-			else
-			{
+			if (isset($aSocketStatus['timed_out']) && $aSocketStatus['timed_out']) {
+				$this->writeLogException(new Exceptions\SocketReadTimeoutException, \LOG_ERR);
+			} else {
 				$this->writeLog('Stream Meta: '.\print_r($aSocketStatus, true), \LOG_ERR);
-
-				$this->writeLogException(
-					new Exceptions\SocketReadException,
-						\LOG_ERR, true);
+				$this->writeLogException(new Exceptions\SocketReadException, \LOG_ERR);
 			}
-		}
-		else
-		{
-			$iReadedLen = \strlen($this->sResponseBuffer);
-			if (null === $iReadLen || $bForceLogin)
-			{
-				$iLimit = 5000; // 5KB
-				if ($iLimit < $iReadedLen)
-				{
-					$this->writeLogWithCrlf('[cutted:'.$iReadedLen.'] < '.\substr($this->sResponseBuffer, 0, $iLimit).'...');
-				}
-				else
-				{
-//					$this->writeLogWithCrlf('< '.$this->sResponseBuffer, //.' ['.$iReadedLen.']',
-					$this->writeLogWithCrlf('< '.$this->sResponseBuffer);
-				}
-			}
-			else
-			{
-				$this->writeLog('Received '.$iReadedLen.'/'.$iReadLen.' bytes.');
+		} else {
+			$iReadBytes = \strlen($this->sResponseBuffer);
+//			$iReadLen && $this->writeLog('Received '.$iReadBytes.'/'.$iReadLen.' bytes.');
+			$iLimit = 5000; // 5KB
+			if ($iLimit < $iReadBytes) {
+				$this->writeLogWithCrlf('[cutted:'.$iReadBytes.'] < '.\substr($this->sResponseBuffer, 0, $iLimit).'...');
+			} else {
+				$this->writeLogWithCrlf('< '.$this->sResponseBuffer);
 			}
 		}
 	}
@@ -361,21 +312,15 @@ abstract class NetClient
 		$this->oLogger && $this->oLogger->Write($sDesc, \LOG_INFO, $this->getLogName(), true, true);
 	}
 
-	protected function writeLogException(\Throwable $oException,
-		int $iDescType = \LOG_NOTICE, bool $bThrowException = false) : void
+	protected function writeLogException(\Throwable $oException, int $iDescType = \LOG_NOTICE, bool $bThrowException = true) : void
 	{
-		if ($this->oLogger)
-		{
-			if ($oException instanceof Exceptions\SocketCanNotConnectToHostException)
-			{
+		if ($this->oLogger) {
+			if ($oException instanceof Exceptions\SocketCanNotConnectToHostException) {
 				$this->oLogger->Write('Socket: ['.$oException->getSocketCode().'] '.$oException->getSocketMessage(), $iDescType, $this->getLogName());
 			}
-
 			$this->oLogger->WriteException($oException, $iDescType, $this->getLogName());
 		}
-
-		if ($bThrowException)
-		{
+		if ($bThrowException) {
 			throw $oException;
 		}
 	}

@@ -34,9 +34,7 @@ class THREAD extends Request
 		} else if ($oImapClient->hasCapability('THREAD=ORDEREDSUBJECT')) {
 			$this->sAlgorithm = 'ORDEREDSUBJECT';
 		} else {
-			$oImapClient->writeLogException(
-				new \MailSo\RuntimeException('THREAD is not supported'),
-				\LOG_ERR, true);
+			$oImapClient->writeLogException(new \MailSo\RuntimeException('THREAD is not supported'), \LOG_ERR);
 		}
 		parent::__construct($oImapClient);
 	}
@@ -44,9 +42,7 @@ class THREAD extends Request
 	public function SendRequestIterateResponse() : iterable
 	{
 		if (!$this->oImapClient->hasCapability(\strtoupper("THREAD={$this->sAlgorithm}"))) {
-			$this->oImapClient->writeLogException(
-				new \MailSo\RuntimeException("THREAD={$this->sAlgorithm} is not supported"),
-				\LOG_ERR, true);
+			$this->oImapClient->writeLogException(new \MailSo\RuntimeException("THREAD={$this->sAlgorithm} is not supported"), \LOG_ERR);
 		}
 
 		$this->oImapClient->SendRequest(

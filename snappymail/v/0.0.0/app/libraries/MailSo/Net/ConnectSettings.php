@@ -31,6 +31,7 @@ class ConnectSettings implements \JsonSerializable
 //	public int $type = Enumerations\ConnectionSecurityType::NONE;
 
 	public SSLContext $ssl;
+//	public bool $tls_weak = false;
 
 	// Authentication settings use by all child classes
 	public bool $useAuth = true;
@@ -74,6 +75,7 @@ class ConnectSettings implements \JsonSerializable
 		if (isset($aSettings['sasl'])) {
 			$object->SASLMechanisms = $aSettings['sasl'];
 		}
+//		$object->tls_weak = !empty($aSettings['tls_weak']);
 		return $object;
 	}
 
@@ -89,6 +91,7 @@ class ConnectSettings implements \JsonSerializable
 			'shortLogin' => $this->shortLogin,
 			'sasl' => $this->SASLMechanisms,
 			'ssl' => $this->ssl
+//			'tls_weak' => $this->tls_weak
 		);
 	}
 

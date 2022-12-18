@@ -53,9 +53,7 @@ class ESEARCH extends Request
 	function __construct(\MailSo\Imap\ImapClient $oImapClient)
 	{
 		if (!$oImapClient->hasCapability('ESEARCH')) {
-			$oImapClient->writeLogException(
-				new \MailSo\RuntimeException('ESEARCH is not supported'),
-				\LOG_ERR, true);
+			$oImapClient->writeLogException(new \MailSo\RuntimeException('ESEARCH is not supported'), \LOG_ERR);
 		}
 		parent::__construct($oImapClient);
 	}
@@ -67,9 +65,7 @@ class ESEARCH extends Request
 
 /*		// RFC 6203
 		if (false !== \stripos($this->sCriterias, 'FUZZY') && !$this->oImapClient->hasCapability('SEARCH=FUZZY')) {
-			$this->oImapClient->writeLogException(
-				new \MailSo\RuntimeException('SEARCH=FUZZY is not supported'),
-				\LOG_ERR, true);
+			$this->oImapClient->writeLogException(new \MailSo\RuntimeException('SEARCH=FUZZY is not supported'), \LOG_ERR);
 		}
 */
 
@@ -88,9 +84,7 @@ class ESEARCH extends Request
 		}
 		if ($aFolders) {
 			if (!$this->oImapClient->hasCapability('MULTISEARCH')) {
-				$this->oImapClient->writeLogException(
-					new \MailSo\RuntimeException('MULTISEARCH is not supported'),
-					\LOG_ERR, true);
+				$this->oImapClient->writeLogException(new \MailSo\RuntimeException('MULTISEARCH is not supported'), \LOG_ERR);
 			}
 			$sCmd = 'ESEARCH';
 			$aReques[] = 'IN';
@@ -108,9 +102,7 @@ class ESEARCH extends Request
 			if (!$this->oImapClient->hasCapability('CONTEXT=SEARCH')) {
 				foreach ($this->aReturn as $sReturn) {
 					if (\preg_match('/PARTIAL|UPDATE|CONTEXT/i', $sReturn)) {
-						$this->oImapClient->writeLogException(
-							new \MailSo\RuntimeException('CONTEXT=SEARCH is not supported'),
-							\LOG_ERR, true);
+						$this->oImapClient->writeLogException(new \MailSo\RuntimeException('CONTEXT=SEARCH is not supported'), \LOG_ERR);
 					}
 				}
 			}
