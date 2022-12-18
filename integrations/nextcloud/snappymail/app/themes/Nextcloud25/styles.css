@@ -1216,6 +1216,10 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     margin-left: -130px;
 }
 
+#rl-app #V-Settings-Domains .btn[data-i18n="GLOBAL/TEST"] {
+    margin-left: 1rem;
+}
+
 /*
  * scrollbar
  */
