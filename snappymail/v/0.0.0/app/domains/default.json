@@ -4,7 +4,16 @@
         "host": "localhost",
         "port": 143,
         "type": 0,
+        "timeout": 300,
         "shortLogin": false,
+        "sasl": [
+            "SCRAM-SHA3-512",
+            "SCRAM-SHA-512",
+            "SCRAM-SHA-256",
+            "SCRAM-SHA-1",
+            "PLAIN",
+            "LOGIN"
+        ],
         "ssl": {
             "verify_peer": false,
             "verify_peer_name": false,
@@ -12,13 +21,33 @@
             "SNI_enabled": true,
             "disable_compression": true,
             "security_level": 1
-        }
+        },
+        "disable_list_status": false,
+        "disable_metadata": false,
+        "disable_move": false,
+        "disable_sort": false,
+        "disable_thread": false,
+        "use_expunge_all_on_delete": false,
+        "fast_simple_search": true,
+        "force_select": false,
+        "message_all_headers": false,
+        "message_list_limit": 0,
+        "search_filter": ""
     },
     "SMTP": {
         "host": "localhost",
         "port": 25,
         "type": 0,
+        "timeout": 60,
         "shortLogin": false,
+        "sasl": [
+            "SCRAM-SHA3-512",
+            "SCRAM-SHA-512",
+            "SCRAM-SHA-256",
+            "SCRAM-SHA-1",
+            "PLAIN",
+            "LOGIN"
+        ],
         "ssl": {
             "verify_peer": false,
             "verify_peer_name": false,
@@ -35,7 +64,16 @@
         "host": "localhost",
         "port": 4190,
         "type": 0,
+        "timeout": 10,
         "shortLogin": false,
+        "sasl": [
+            "SCRAM-SHA3-512",
+            "SCRAM-SHA-512",
+            "SCRAM-SHA-256",
+            "SCRAM-SHA-1",
+            "PLAIN",
+            "LOGIN"
+        ],
         "ssl": {
             "verify_peer": false,
             "verify_peer_name": false,
@@ -44,7 +82,7 @@
             "disable_compression": true,
             "security_level": 1
         },
-        "enabled": true
+        "enabled": false
     },
     "whiteList": ""
 }
