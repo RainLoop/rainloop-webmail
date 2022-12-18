@@ -85,7 +85,7 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 }
 
 /*
-* icons
+ * icons
  */
 
 #rl-app .iconcolor-green {
@@ -102,6 +102,10 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 
 #rl-app [data-icon]::before {
     vertical-align: -10%;
+}
+
+#rl-app .drag-handle {
+    color: var(--color-text-lighter);
 }
 
 /*
@@ -450,7 +454,7 @@ select option {
  * email address select
  */
 
- #rl-app .emailaddresses {
+#rl-app .emailaddresses {
     display: inline-flex;
     align-items: center;
     flex-wrap: wrap;
@@ -484,7 +488,7 @@ select option {
  * checkboxes
  */
 
- #rl-app .e-component.e-checkbox.material-design {
+#rl-app .e-component.e-checkbox.material-design {
     width: -moz-fit-content;
     width: -webkit-fill-available;
     width: fit-content;
@@ -964,7 +968,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
  * dropdown menus
  */
 
- #rl-app .dropdown.show {
+#rl-app .dropdown.show {
     box-shadow: none;
 }
 
@@ -1078,6 +1082,15 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     border: none;
 }
 
+#rl-app #V-SettingsPane #rl-settings-subscreen {
+    margin: 58px 0px 8px 0px;
+    height: calc(100% - 58px - 8px);
+}
+
+#rl-app #V-SettingsPane .btn-toolbar {
+    padding: 8px;
+}
+
 #rl-app .legend {
     color: unset;
     border-color: var(--color-border);
@@ -1086,19 +1099,6 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 #rl-app .form-horizontal .control-group {
     display: flex;
     align-items: center;
-}
-
-#rl-app #V-SettingsPane .btn-toolbar {
-    padding: 8px;
-}
-
-#rl-app #V-SettingsPane #rl-settings-subscreen {
-    margin: 58px 0px 8px 0px;
-    height: calc(100% - 58px - 8px);
-}
-
-#rl-app #V-Settings-Config th {
-    background-color: var(--color-background-dark);
 }
 
 #rl-app .table-bordered,
@@ -1112,11 +1112,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     background-color: var(--color-background-hover);
 }
 
-#rl-app .drag-handle {
-    color: var(--color-text-lighter);
-}
-
-#rl-app  #V-Settings-Themes figure,
+#rl-app #V-Settings-Themes figure,
 #rl-app #V-Settings-Themes img {
     border-radius: var(--border-radius-large);
 }
@@ -1152,6 +1148,10 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 #rl-app #V-AdminPane #rl-settings-subscreen {
     margin: 8px 0px;
     height: calc(100% - 8px - 8px);
+}
+
+#rl-app #V-Settings-Config th {
+    background-color: var(--color-background-dark);
 }
 
 /*
