@@ -206,7 +206,8 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
  * buttons
  */
 
- #rl-app .btn {
+#rl-app .btn,
+#rl-app button.btn:not(.button-vue) {
     min-height: 36px;
     height: 36px;
     box-sizing: border-box !important;
