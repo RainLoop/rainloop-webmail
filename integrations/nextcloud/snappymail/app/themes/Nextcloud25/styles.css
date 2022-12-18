@@ -1108,6 +1108,22 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     color: var(--color-text-lighter);
 }
 
+#rl-app  #V-Settings-Themes figure,
+#rl-app #V-Settings-Themes img {
+    border-radius: var(--border-radius-large);
+}
+
+#rl-app #V-Settings-Themes figure:not(.selected):hover {
+    background-color: var(--color-background-hover);
+    border-color: transparent;
+}
+
+#rl-app #V-Settings-Themes figure.selected {
+    background-color: var(--color-primary-element);
+    border-color: transparent;
+    color: var(--color-primary-text);
+}
+
 /* hide additional theme settings, as these are made via Nextcloud theming */
 #rl-app #V-SettingsPane #V-Settings-Themes .form-horizontal {
     display: none !important;
