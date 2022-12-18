@@ -187,11 +187,17 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     justify-content: flex-start;
     height: unset;
     box-sizing: border-box;
+}
+
+#rl-app #V-SettingsMenu .b-footer,
+#rl-app .b-footer.btn-toolbar.hide-mobile,
+#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled {
     margin: 0;
     padding: 0;
     bottom: 0;
 }
 
+#rl-app #V-SettingsMenu .b-footer,
 #rl-app .b-footer.btn-toolbar .btn-group {
     padding: 3px;
 }
@@ -275,7 +281,7 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 
 #rl-app .btn.buttonCompose,
 #rl-app .b-folders .btn.buttonContacts,
-#rl-app .b-footer.btn-toolbar .btn-group .btn {
+#rl-app .b-footer .btn {
     box-sizing: border-box;
     padding: 4px 14px;
     line-height: 36px;
@@ -288,12 +294,18 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     border-radius: var(--border-radius-pill);
 }
 
-#rl-app .b-footer.btn-toolbar .btn-group .btn {
+#rl-app .b-footer .btn,
+#rl-app #V-SettingsPane .btn-toolbar .btn {
+    background: transparent;
+    border: unset !important;
+}
+
+#rl-app .b-footer .btn {
     background: transparent;
     text-align: left;
     font-size: 22px;
     margin: 3px;
-    border: unset !important;
+    user-select: none;
 }
 
 #rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn {
@@ -331,18 +343,21 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
     line-height: unset;
 }
 
-#rl-app .b-footer.btn-toolbar .btn-group .btn:hover,
-#rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic:hover {
+#rl-app .b-footer .btn:hover,
+#rl-app .b-footer .btn.fontastic:hover,
+#rl-app #V-SettingsPane .btn-toolbar .btn:hover {
     background-color: var(--color-background-hover);
 }
 
-#rl-app .b-footer.btn-toolbar .btn-group .btn:active,
-#rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic:active {
+#rl-app .b-footer .btn:active,
+#rl-app .b-footer .btn.fontastic:active,
+#rl-app #V-SettingsPane .btn-toolbar .btn:active {
     background-color: var(--color-primary-element-light);
 }
 
-#rl-app .b-footer.btn-toolbar .btn-group .btn:focus,
-#rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic:focus {
+#rl-app .b-footer .btn:focus,
+#rl-app .b-footer .btn.fontastic:focus,
+#rl-app #V-SettingsPane .btn-toolbar .btn:focus {
     outline: none;
 }
 
@@ -1062,6 +1077,10 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 #rl-app .form-horizontal .control-group {
     display: flex;
     align-items: center;
+}
+
+#rl-app #V-SettingsPane .btn-toolbar {
+    padding: 8px;
 }
 
 #rl-app #V-Settings-Config th {
