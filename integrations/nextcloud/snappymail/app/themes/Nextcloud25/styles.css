@@ -487,7 +487,7 @@ select option {
     height: 44px;
     border-radius: 44px;
     padding: 0 14px;
-    margin: 0 -14px;
+    margin: 0 -7px 0 -14px;
 }
 
 #rl-app .e-component.e-checkbox.material-design:hover,
