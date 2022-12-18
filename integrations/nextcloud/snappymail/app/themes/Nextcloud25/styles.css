@@ -1206,6 +1206,14 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     background-color: var(--color-background-dark);
 }
 
+#rl-app #V-Settings-General label[data-i18n="TAB_GENERAL/LABEL_ATTACHMENT_SIZE_LIMIT"] {
+    align-self: self-start;
+}
+
+#rl-app #V-Settings-General label[data-i18n="TAB_GENERAL/LABEL_ATTACHMENT_SIZE_LIMIT"] ~ div .alert.alert-info {
+    margin-left: -130px;
+}
+
 /*
  * scrollbar
  */
