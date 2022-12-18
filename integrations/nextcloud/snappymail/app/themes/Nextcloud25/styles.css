@@ -1108,6 +1108,15 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 }
 
 /*
+ * admin settings 
+ */
+
+#rl-app #V-AdminPane #rl-settings-subscreen {
+    margin: 8px 0px;
+    height: calc(100% - 8px - 8px);
+}
+
+/*
  * scrollbar
  */
 
