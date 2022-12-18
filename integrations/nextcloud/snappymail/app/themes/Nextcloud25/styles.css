@@ -84,6 +84,10 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     bottom: 56px;
 }
 
+#rl-app .row {
+    margin-left: unset;
+}
+
 /*
  * icons
  */
@@ -106,6 +110,54 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 
 #rl-app .drag-handle {
     color: var(--color-text-lighter);
+}
+
+/*
+ * alerts
+ */
+
+#rl-app .alert {
+    text-shadow: unset;
+    border: unset;
+    color: var(--color-main-text);
+    background-color: rgba(var(--color-warning-rgb), 0.1);
+    border-inline-start: 4px solid var(--color-warning);
+    border-radius: var(--border-radius);
+    margin: 1rem;
+    padding: 1rem;
+}
+
+#rl-app .alert h4 {
+    font-weight: bold;
+    font-size: 20px;
+    margin-top: unset;
+    margin-bottom: 12px;
+    line-height: 30px;
+    color: var(--color-text-light);
+}
+
+#rl-app .alert.alert-info {
+    background-color: var(--color-background-dark);
+    border-color: var(--color-background-darker);
+}
+
+#rl-app .alert.alert-warning {
+    background-color: rgba(var(--color-warning-rgb), 0.1);
+    border-color: var(--color-warning);
+}
+
+#rl-app .alert.alert-success {
+    background-color: rgba(var(--color-success-rgb), 0.1);
+    border-color: var(--color-success);
+}
+
+#rl-app .alert.alert-error {
+    background-color: rgba(var(--color-error-rgb), 0.1);
+    border-color: var(--color-error);
+}
+
+#rl-app .alert br {
+    display: none;
 }
 
 /*
