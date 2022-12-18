@@ -781,138 +781,126 @@ trait Messages
 		/*resource*/ &$rMessageStream, int &$iMessageStreamSize, bool $bDsn = false, bool $bAddHiddenRcpt = true)
 	{
 		$oRcpt = $oMessage->GetRcpt();
-		if ($oRcpt && 0 < $oRcpt->Count())
+		if (!$oRcpt || !$oRcpt->count()) {
+			throw new ClientException(Notifications::InvalidRecipients);
+		}
+
+		$this->Plugins()->RunHook('filter.smtp-message-stream',
+			array($oAccount, &$rMessageStream, &$iMessageStreamSize));
+
+		$this->Plugins()->RunHook('filter.message-rcpt', array($oAccount, $oRcpt));
+
+		try
 		{
-			$this->Plugins()->RunHook('filter.smtp-message-stream',
-				array($oAccount, &$rMessageStream, &$iMessageStreamSize));
+			$oFrom = $oMessage->GetFrom();
+			$sFrom = $oFrom instanceof \MailSo\Mime\Email ? $oFrom->GetEmail() : '';
+			$sFrom = empty($sFrom) ? $oAccount->Email() : $sFrom;
 
-			$this->Plugins()->RunHook('filter.message-rcpt', array($oAccount, $oRcpt));
+			$this->Plugins()->RunHook('filter.smtp-from', array($oAccount, $oMessage, &$sFrom));
 
-			try
+			$aHiddenRcpt = array();
+			if ($bAddHiddenRcpt)
 			{
-				$oFrom = $oMessage->GetFrom();
-				$sFrom = $oFrom instanceof \MailSo\Mime\Email ? $oFrom->GetEmail() : '';
-				$sFrom = empty($sFrom) ? $oAccount->Email() : $sFrom;
+				$this->Plugins()->RunHook('filter.smtp-hidden-rcpt', array($oAccount, $oMessage, &$aHiddenRcpt));
+			}
 
-				$this->Plugins()->RunHook('filter.smtp-from', array($oAccount, $oMessage, &$sFrom));
+			$oSmtpClient = new \MailSo\Smtp\SmtpClient();
+			$oSmtpClient->SetLogger($this->Logger());
 
-				$aHiddenRcpt = array();
-				if ($bAddHiddenRcpt)
+			$bUsePhpMail = false;
+			$oAccount->SmtpConnectAndLoginHelper($this->Plugins(), $oSmtpClient, $this->Config(), $bUsePhpMail);
+
+			if ($bUsePhpMail)
+			{
+				if (\MailSo\Base\Utils::FunctionCallable('mail'))
 				{
-					$this->Plugins()->RunHook('filter.smtp-hidden-rcpt', array($oAccount, $oMessage, &$aHiddenRcpt));
-				}
-
-				$oSmtpClient = new \MailSo\Smtp\SmtpClient();
-				$oSmtpClient->SetLogger($this->Logger());
-
-				$bUsePhpMail = false;
-				$oAccount->SmtpConnectAndLoginHelper($this->Plugins(), $oSmtpClient, $this->Config(), $bUsePhpMail);
-
-				if ($bUsePhpMail)
-				{
-					if (\MailSo\Base\Utils::FunctionCallable('mail'))
+					$aToCollection = $oMessage->GetTo();
+					if ($aToCollection && $oFrom)
 					{
-						$aToCollection = $oMessage->GetTo();
-						if ($aToCollection && $oFrom)
+						$sRawBody = \stream_get_contents($rMessageStream);
+						if (!empty($sRawBody))
 						{
-							$sRawBody = \stream_get_contents($rMessageStream);
-							if (!empty($sRawBody))
+							$sMailTo = \trim($aToCollection->ToString(true));
+							$sMailSubject = \trim($oMessage->GetSubject());
+							$sMailSubject = 0 === \strlen($sMailSubject) ? '' : \MailSo\Base\Utils::EncodeUnencodedValue(
+								\MailSo\Base\Enumerations\Encoding::BASE64_SHORT, $sMailSubject);
+
+							$sMailHeaders = $sMailBody = '';
+							list($sMailHeaders, $sMailBody) = \explode("\r\n\r\n", $sRawBody, 2);
+							unset($sRawBody);
+
+							if ($this->Config()->Get('labs', 'mail_func_clear_headers', true))
 							{
-								$sMailTo = \trim($aToCollection->ToString(true));
-								$sMailSubject = \trim($oMessage->GetSubject());
-								$sMailSubject = 0 === \strlen($sMailSubject) ? '' : \MailSo\Base\Utils::EncodeUnencodedValue(
-									\MailSo\Base\Enumerations\Encoding::BASE64_SHORT, $sMailSubject);
+								$sMailHeaders = \MailSo\Base\Utils::RemoveHeaderFromHeaders($sMailHeaders, array(
+									MimeEnumHeader::TO_,
+									MimeEnumHeader::SUBJECT
+								));
+							}
 
-								$sMailHeaders = $sMailBody = '';
-								list($sMailHeaders, $sMailBody) = \explode("\r\n\r\n", $sRawBody, 2);
-								unset($sRawBody);
+							$this->Logger()->WriteDump(array(
+								$sMailTo, $sMailSubject, $sMailBody, $sMailHeaders
+							), \LOG_DEBUG);
 
-								if ($this->Config()->Get('labs', 'mail_func_clear_headers', true))
-								{
-									$sMailHeaders = \MailSo\Base\Utils::RemoveHeaderFromHeaders($sMailHeaders, array(
-										MimeEnumHeader::TO_,
-										MimeEnumHeader::SUBJECT
-									));
-								}
+							$bR = $this->Config()->Get('labs', 'mail_func_additional_parameters', false) ?
+								\mail($sMailTo, $sMailSubject, $sMailBody, $sMailHeaders, '-f'.$oFrom->GetEmail()) :
+								\mail($sMailTo, $sMailSubject, $sMailBody, $sMailHeaders);
 
-								$this->Logger()->WriteDump(array(
-									$sMailTo, $sMailSubject, $sMailBody, $sMailHeaders
-								), \LOG_DEBUG);
-
-								$bR = $this->Config()->Get('labs', 'mail_func_additional_parameters', false) ?
-									\mail($sMailTo, $sMailSubject, $sMailBody, $sMailHeaders, '-f'.$oFrom->GetEmail()) :
-									\mail($sMailTo, $sMailSubject, $sMailBody, $sMailHeaders);
-
-								if (!$bR)
-								{
-									throw new ClientException(Notifications::CantSendMessage);
-								}
+							if (!$bR)
+							{
+								throw new ClientException(Notifications::CantSendMessage);
 							}
 						}
 					}
-					else
-					{
-						throw new ClientException(Notifications::CantSendMessage);
-					}
 				}
-				else if ($oSmtpClient->IsConnected())
+				else
 				{
-					if (!empty($sFrom))
-					{
-						$oSmtpClient->MailFrom($sFrom, '', $bDsn);
-					}
+					throw new ClientException(Notifications::CantSendMessage);
+				}
+			}
+			else if ($oSmtpClient->IsConnected())
+			{
+				if ($iMessageStreamSize && $oSmtpClient->maxSize() && $iMessageStreamSize * 1.33 > $oSmtpClient->maxSize()) {
+					throw new ClientException(Notifications::ClientViewError, 'Message size '. ($iMessageStreamSize * 1.33) . ' bigger then max ' . $oSmtpClient->maxSize());
+				}
 
-					foreach ($oRcpt as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
-					{
-						$oSmtpClient->Rcpt($oEmail->GetEmail(), $bDsn);
-					}
+				if (!empty($sFrom)) {
+					$oSmtpClient->MailFrom($sFrom, '', $bDsn);
+				}
 
-					if ($bAddHiddenRcpt && \is_array($aHiddenRcpt) && \count($aHiddenRcpt))
-					{
-						foreach ($aHiddenRcpt as $sEmail)
-						{
-							if (\preg_match('/^[^@\s]+@[^@\s]+$/', $sEmail))
-							{
-								$oSmtpClient->Rcpt($sEmail);
-							}
+				foreach ($oRcpt as /* @var $oEmail \MailSo\Mime\Email */ $oEmail) {
+					$oSmtpClient->Rcpt($oEmail->GetEmail(), $bDsn);
+				}
+
+				if ($bAddHiddenRcpt && \is_array($aHiddenRcpt) && \count($aHiddenRcpt)) {
+					foreach ($aHiddenRcpt as $sEmail) {
+						if (\preg_match('/^[^@\s]+@[^@\s]+$/', $sEmail)) {
+							$oSmtpClient->Rcpt($sEmail);
 						}
 					}
+				}
 
-					$oSmtpClient->DataWithStream($rMessageStream);
+				$oSmtpClient->DataWithStream($rMessageStream);
 
-					$oSmtpClient->Disconnect();
-				}
-			}
-			catch (\MailSo\Net\Exceptions\ConnectionException $oException)
-			{
-				if ($this->Config()->Get('labs', 'smtp_show_server_errors'))
-				{
-					throw new ClientException(Notifications::ClientViewError, $oException);
-				}
-				else
-				{
-					throw new ClientException(Notifications::ConnectionError, $oException);
-				}
-			}
-			catch (\MailSo\Smtp\Exceptions\LoginException $oException)
-			{
-				throw new ClientException(Notifications::AuthError, $oException);
-			}
-			catch (\Throwable $oException)
-			{
-				if ($this->Config()->Get('labs', 'smtp_show_server_errors'))
-				{
-					throw new ClientException(Notifications::ClientViewError, $oException);
-				}
-				else
-				{
-					throw $oException;
-				}
+				$oSmtpClient->Disconnect();
 			}
 		}
-		else
+		catch (\MailSo\Net\Exceptions\ConnectionException $oException)
 		{
-			throw new ClientException(Notifications::InvalidRecipients);
+			if ($this->Config()->Get('labs', 'smtp_show_server_errors')) {
+				throw new ClientException(Notifications::ClientViewError, $oException);
+			}
+			throw new ClientException(Notifications::ConnectionError, $oException);
+		}
+		catch (\MailSo\Smtp\Exceptions\LoginException $oException)
+		{
+			throw new ClientException(Notifications::AuthError, $oException);
+		}
+		catch (\Throwable $oException)
+		{
+			if ($this->Config()->Get('labs', 'smtp_show_server_errors')) {
+				throw new ClientException(Notifications::ClientViewError, $oException);
+			}
+			throw $oException;
 		}
 	}
 
@@ -981,8 +969,7 @@ trait Messages
 
 		$oIdentity = $this->GetIdentityByID($oAccount, '', true);
 
-		if (empty($sReadReceipt) || empty($sSubject) || empty($sText) || !$oIdentity)
-		{
+		if (empty($sReadReceipt) || empty($sSubject) || empty($sText) || !$oIdentity) {
 			throw new ClientException(Notifications::UnknownError);
 		}
 
@@ -1000,11 +987,9 @@ trait Messages
 		$oMessage->RegenerateMessageId($oFrom ? $oFrom->GetDomain() : '');
 
 		$sReplyTo = $oIdentity->ReplyTo();
-		if (!empty($sReplyTo))
-		{
+		if (!empty($sReplyTo)) {
 			$oReplyTo = new \MailSo\Mime\EmailCollection($sReplyTo);
-			if ($oReplyTo && $oReplyTo->Count())
-			{
+			if ($oReplyTo && $oReplyTo->count()) {
 				$oMessage->SetReplyTo($oReplyTo);
 			}
 		}
@@ -1012,8 +997,7 @@ trait Messages
 		$oMessage->SetSubject($sSubject);
 
 		$oToEmails = new \MailSo\Mime\EmailCollection($sReadReceipt);
-		if ($oToEmails && $oToEmails->Count())
-		{
+		if ($oToEmails && $oToEmails->count()) {
 			$oMessage->SetTo($oToEmails);
 		}
 
