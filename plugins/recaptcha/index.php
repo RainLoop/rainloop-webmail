@@ -88,7 +88,7 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$bResult = false;
 
 			$HTTP = \SnappyMail\HTTP\Request::factory();
-			$oResponse = $HTTP->doRequest('POST', 'https://www.google.com/recaptcha/api/siteverify', array(
+			$oResponse = $HTTP->doRequest('POST', 'https://www.recaptcha.net/recaptcha/api/siteverify', array(
 				'secret' => $this->Config()->Get('plugin', 'private_key', ''),
 				'response' => $this->Manager()->Actions()->GetActionParam('RecaptchaResponse', '')
 			));
