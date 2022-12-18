@@ -1143,7 +1143,9 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     padding: 8px;
 }
 
-#rl-app .legend {
+#rl-app .legend,
+#rl-app #V-AdminPane hr,
+#rl-app #V-SettingsPane hr {
     color: unset;
     border-color: var(--color-border);
 }
