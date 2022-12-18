@@ -1126,6 +1126,14 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     border-color: transparent;
 }
 
+#rl-app #V-Settings-Themes figure:not(.selected):active {
+    background-color: var(--color-primary-element-light);
+}
+
+#rl-app #V-Settings-Themes figure:not(.selected):focus {
+    outline: none;
+}
+
 #rl-app #V-Settings-Themes figure.selected {
     background-color: var(--color-primary-element);
     border-color: transparent;
