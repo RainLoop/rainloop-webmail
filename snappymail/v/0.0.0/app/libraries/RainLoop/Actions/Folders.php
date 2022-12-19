@@ -125,7 +125,7 @@ trait Folders
 
 		try
 		{
-			$this->MailClient()->FolderSubscribe($sFolderFullName, $bSubscribe);
+			$this->MailClient()->{$bSubscribe ? 'FolderSubscribe' : 'FolderUnsubscribe'}($sFolderFullName);
 		}
 		catch (\Throwable $oException)
 		{

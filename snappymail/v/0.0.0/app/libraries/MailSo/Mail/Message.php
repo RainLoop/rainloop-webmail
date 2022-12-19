@@ -281,7 +281,7 @@ class Message implements \JsonSerializable
 		$this->aThreads = $aThreads;
 	}
 
-	public static function NewFetchResponseInstance(string $sFolder, \MailSo\Imap\FetchResponse $oFetchResponse, ?\MailSo\Imap\BodyStructure $oBodyStructure = null) : self
+	public static function fromFetchResponse(string $sFolder, \MailSo\Imap\FetchResponse $oFetchResponse, ?\MailSo\Imap\BodyStructure $oBodyStructure = null) : self
 	{
 		$oMessage = new self;
 
@@ -625,7 +625,7 @@ class Message implements \JsonSerializable
 				{
 //					if ('application/pgp-keys' === $oAttachmentItem->ContentType()) import ???
 					$oMessage->oAttachments->append(
-						Attachment::NewBodyStructureInstance($oMessage->sFolder, $oMessage->iUid, $oAttachmentItem)
+						new Attachment($oMessage->sFolder, $oMessage->iUid, $oAttachmentItem)
 					);
 				}
 			}

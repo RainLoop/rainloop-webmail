@@ -250,7 +250,7 @@ trait Response
 		{
 			$aResult = $mResponse->jsonSerialize();
 
-			$sHash = $mResponse->Hash($this->MailClient()->GenerateImapClientHash());
+			$sHash = $mResponse->Hash($this->MailClient()->ImapClient()->Hash());
 			if ($sHash) {
 				$aResult['Hash'] = $sHash;
 			}

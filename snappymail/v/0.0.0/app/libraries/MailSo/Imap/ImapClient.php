@@ -53,6 +53,15 @@ class ImapClient extends \MailSo\Net\NetClient
 
 	private bool $UTF8 = false;
 
+	public function Hash() : string
+	{
+		return \md5('ImapClientHash/'.
+			$this->GetLogginedUser() . '@' .
+			$this->GetConnectedHost() . ':' .
+			$this->GetConnectedPort()
+		);
+	}
+
 	public function GetLogginedUser() : string
 	{
 		return $this->sLogginedUser;
@@ -377,6 +386,12 @@ class ImapClient extends \MailSo\Net\NetClient
 		} catch (\Throwable $e) {
 			$this->writeLogException($e, \LOG_ERR);
 		}
+	}
+
+	public function GetPersonalNamespace() : string
+	{
+		$oNamespace = $this->GetNamespace();
+		return $oNamespace ? $oNamespace->GetPersonalNamespace() : '';
 	}
 
 	/**

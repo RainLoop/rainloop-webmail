@@ -16,6 +16,8 @@ use MailSo\Imap\Folder;
 use MailSo\Imap\FolderInformation;
 use MailSo\Imap\SequenceSet;
 use MailSo\Imap\Enumerations\FolderStatus;
+use MailSo\Imap\Enumerations\MessageFlag;
+use MailSo\Imap\Enumerations\StoreAction;
 
 /**
  * @category MailSo
@@ -25,18 +27,31 @@ trait Folders
 {
 	/**
 	 * @throws \InvalidArgumentException
+	 */
+	public function FolderClear(string $sFolderFullName) : void
+	{
+		if (0 < $this->FolderSelect($sFolderFullName)->MESSAGES) {
+			$this->MessageStoreFlag(new SequenceSet('1:*', false),
+				array(MessageFlag::DELETED),
+				StoreAction::ADD_FLAGS_SILENT
+			);
+			$this->FolderExpunge();
+		}
+	}
+
+	/**
+	 * @throws \InvalidArgumentException
 	 * @throws \MailSo\RuntimeException
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function FolderCreate(string $sFolderName, bool $bSubscribe = false) : self
+	public function FolderCreate(string $sFolderName, bool $bSubscribe = false) : void
 	{
 		$this->SendRequestGetResponse('CREATE', array(
 			$this->EscapeFolderName($sFolderName)
 //			, ['(USE (\Drafts \Sent))'] RFC 6154
 		));
 		$bSubscribe && $this->FolderSubscribe($sFolderName);
-		return $this;
 	}
 
 	/**
@@ -45,23 +60,34 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function FolderDelete(string $sFolderName) : self
+	public function FolderDelete(string $sFolderName) : void
 	{
+		if (!$sFolderName || 'INBOX' === $sFolderName) {
+			throw new \InvalidArgumentException;
+		}
+
+		$oInfo = $this->hasCapability('IMAP4rev2')
+			? $this->FolderExamine($sFolderName)
+			: $this->FolderStatus($sFolderName);
+		if ($oInfo->MESSAGES) {
+			throw new \MailSo\Mail\Exceptions\NonEmptyFolder;
+		}
+
+		$this->FolderUnsubscribe($sFolderName);
+		$this->FolderUnselect();
+
 		// Uncomment will work issue #124 ?
 //		$this->selectOrExamineFolder($sFolderName, true);
-		$this->SendRequestGetResponse('DELETE',
-			array($this->EscapeFolderName($sFolderName)));
+		$this->SendRequestGetResponse('DELETE', [$this->EscapeFolderName($sFolderName)]);
 //		$this->FolderCheck();
-//		$this->FolderUnselect();
 
 		// Will this workaround solve Dovecot issue #124 ?
 		try {
 			$this->FolderRename($sFolderName, "{$sFolderName}-dummy");
 			$this->FolderRename("{$sFolderName}-dummy", $sFolderName);
-		} catch (\Throwable $e) {
+		} catch (\Throwable $oException) {
+			$this->writeLogException($oException, \LOG_WARNING, false);
 		}
-
-		return $this;
 	}
 
 	/**
@@ -70,11 +96,9 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function FolderSubscribe(string $sFolderName) : self
+	public function FolderSubscribe(string $sFolderName) : void
 	{
-		$this->SendRequestGetResponse('SUBSCRIBE',
-			array($this->EscapeFolderName($sFolderName)));
-		return $this;
+		$this->SendRequestGetResponse('SUBSCRIBE', [$this->EscapeFolderName($sFolderName)]);
 	}
 
 	/**
@@ -83,11 +107,9 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function FolderUnsubscribe(string $sFolderName) : self
+	public function FolderUnsubscribe(string $sFolderName) : void
 	{
-		$this->SendRequestGetResponse('UNSUBSCRIBE',
-			array($this->EscapeFolderName($sFolderName)));
-		return $this;
+		$this->SendRequestGetResponse('UNSUBSCRIBE', [$this->EscapeFolderName($sFolderName)]);
 	}
 
 	/**
@@ -96,12 +118,12 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function FolderRename(string $sOldFolderName, string $sNewFolderName) : self
+	public function FolderRename(string $sOldFolderName, string $sNewFolderName) : void
 	{
-		$this->SendRequestGetResponse('RENAME', array(
+		$this->SendRequestGetResponse('RENAME', [
 			$this->EscapeFolderName($sOldFolderName),
-			$this->EscapeFolderName($sNewFolderName)));
-		return $this;
+			$this->EscapeFolderName($sNewFolderName)
+		]);
 	}
 
 	private function FolderStatusItems() : array
@@ -202,12 +224,11 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function FolderCheck() : self
+	public function FolderCheck() : void
 	{
 		if ($this->IsSelected()) {
 			$this->SendRequestGetResponse('CHECK');
 		}
-		return $this;
 	}
 
 	/**
@@ -232,7 +253,7 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function FolderUnselect() : self
+	public function FolderUnselect() : void
 	{
 		if ($this->IsSelected()) {
 			if ($this->hasCapability('UNSELECT')) {
@@ -243,14 +264,13 @@ trait Folders
 					$this->SendRequestGetResponse('SELECT', ['""']);
 					// * OK [CLOSED] Previous mailbox closed.
 					// 3 NO [CANNOT] Invalid mailbox name: Name is empty
-				} catch (\MailSo\Imap\Exceptions\NegativeResponseException $e) {
-					if ('NO' === $e->GetResponseStatus()) {
+				} catch (\MailSo\Imap\Exceptions\NegativeResponseException $oException) {
+					if ('NO' === $oException->GetResponseStatus()) {
 						$this->oCurrentFolderInfo = null;
 					}
 				}
 			}
 		}
-		return $this;
 	}
 
 	/**
@@ -453,8 +473,7 @@ trait Folders
 //		$aParameters[] = $this->EscapeString(\strlen(\trim($sListPattern)) ? $sListPattern : '*');
 
 		// RFC 5819
-		if ($bUseListStatus && !$bIsSubscribeList && $this->hasCapability('LIST-STATUS'))
-		{
+		if ($bUseListStatus && !$bIsSubscribeList && $this->hasCapability('LIST-STATUS')) {
 			$aReturnParams[] = 'STATUS';
 			$aReturnParams[] = $this->FolderStatusItems();
 		}
@@ -469,80 +488,71 @@ trait Folders
 			$aParameters[] = $aReturnParams;
 		}
 
+/*
 		$bPassthru = false;
-		$aReturn = array();
+		if ($bPassthru) {
+			$this->SendRequest($sCmd, $aParameters);
+			$this->streamResponse();
+			return [];
+		}
+*/
 
 		// RFC 5464
 		$bMetadata = !$bIsSubscribeList && $this->hasCapability('METADATA');
-		$aMetadata = null;
-		if ($bMetadata) {
-			// Dovecot supports fetching all METADATA at once
-			$aMetadata = $this->getAllMetadata();
-		}
+		// Dovecot supports fetching all METADATA at once
+		$aMetadata = $bMetadata ? $this->getAllMetadata() : null;
 
 		$this->SendRequest($sCmd, $aParameters);
-		if ($bPassthru) {
-			$this->streamResponse();
-		} else {
-			$sDelimiter = '';
-			$bInbox = false;
-			foreach ($this->yieldUntaggedResponses() as $oResponse) {
-				if ('STATUS' === $oResponse->StatusOrIndex && isset($oResponse->ResponseList[2])) {
-					$sFullName = $this->toUTF8($oResponse->ResponseList[2]);
-					if (!isset($aReturn[$sFullName])) {
-						$aReturn[$sFullName] = new Folder($sFullName);
-					}
-					$aReturn[$sFullName]->setStatusFromResponse($oResponse);
+		$aReturn = array();
+		$sDelimiter = '';
+		$bInbox = false;
+		foreach ($this->yieldUntaggedResponses() as $oResponse) {
+			if ('STATUS' === $oResponse->StatusOrIndex && isset($oResponse->ResponseList[2])) {
+				$sFullName = $this->toUTF8($oResponse->ResponseList[2]);
+				if (!isset($aReturn[$sFullName])) {
+					$aReturn[$sFullName] = new Folder($sFullName);
 				}
-				else if ($sCmd === $oResponse->StatusOrIndex && 5 === \count($oResponse->ResponseList)) {
-					try
-					{
-						$sFullName = $this->toUTF8($oResponse->ResponseList[4]);
+				$aReturn[$sFullName]->setStatusFromResponse($oResponse);
+			}
+			else if ($sCmd === $oResponse->StatusOrIndex && 5 === \count($oResponse->ResponseList)) {
+				try
+				{
+					$sFullName = $this->toUTF8($oResponse->ResponseList[4]);
 
-						/**
-						 * $oResponse->ResponseList[0] = *
-						 * $oResponse->ResponseList[1] = LIST (all) | LSUB (subscribed)
-						 * $oResponse->ResponseList[2] = Flags
-						 * $oResponse->ResponseList[3] = Delimiter
-						 * $oResponse->ResponseList[4] = FullName
-						 */
-						if (!isset($aReturn[$sFullName])) {
-							$oFolder = new Folder($sFullName,
-								$oResponse->ResponseList[3], $oResponse->ResponseList[2]);
-							$aReturn[$sFullName] = $oFolder;
-						} else {
-							$oFolder = $aReturn[$sFullName];
-							$oFolder->setDelimiter($oResponse->ResponseList[3]);
-							$oFolder->setFlags($oResponse->ResponseList[2]);
-						}
-
-						if ($oFolder->IsInbox()) {
-							$bInbox = true;
-						}
-
-						if (!$sDelimiter) {
-							$sDelimiter = $oFolder->Delimiter();
-						}
-
-						if (isset($aMetadata[$oResponse->ResponseList[4]])) {
-							$oFolder->SetAllMetadata($aMetadata[$oResponse->ResponseList[4]]);
-						}
-
+					/**
+					 * $oResponse->ResponseList[0] = *
+					 * $oResponse->ResponseList[1] = LIST (all) | LSUB (subscribed)
+					 * $oResponse->ResponseList[2] = Flags
+					 * $oResponse->ResponseList[3] = Delimiter
+					 * $oResponse->ResponseList[4] = FullName
+					 */
+					if (isset($aReturn[$sFullName])) {
+						$oFolder = $aReturn[$sFullName];
+						$oFolder->setDelimiter($oResponse->ResponseList[3]);
+						$oFolder->setFlags($oResponse->ResponseList[2]);
+					} else {
+						$oFolder = new Folder($sFullName, $oResponse->ResponseList[3], $oResponse->ResponseList[2]);
 						$aReturn[$sFullName] = $oFolder;
 					}
-					catch (\InvalidArgumentException $oException)
-					{
-						$this->writeLogException($oException, \LOG_WARNING, false);
-					}
-					catch (\Throwable $oException)
-					{
-						$this->writeLogException($oException, \LOG_WARNING, false);
-					}
-				}
-			}
 
-			if (!$bInbox && !$sParentFolderName && !isset($aReturn['INBOX'])) {
-				$aReturn['INBOX'] = new Folder('INBOX', $sDelimiter);
+					if ($oFolder->IsInbox()) {
+						$bInbox = true;
+					}
+
+					if (!$sDelimiter) {
+						$sDelimiter = $oFolder->Delimiter();
+					}
+
+					if (isset($aMetadata[$oResponse->ResponseList[4]])) {
+						$oFolder->SetAllMetadata($aMetadata[$oResponse->ResponseList[4]]);
+					}
+
+					$aReturn[$sFullName] = $oFolder;
+				}
+				catch (\Throwable $oException)
+				{
+					$this->writeLogException($oException, \LOG_WARNING, false);
+				}
 			}
 		}
 
@@ -554,10 +564,14 @@ trait Folders
 					$oFolder->SetAllMetadata(
 						$this->getMetadata($oFolder->FullName(), ['/shared', '/private'], ['DEPTH'=>'infinity'])
 					);
-				} catch (\Throwable $e) {
+				} catch (\Throwable $oException) {
 					// Ignore error
 				}
 			}
+		}
+
+		if (!$bInbox && !$sParentFolderName && !isset($aReturn['INBOX'])) {
+			$aReturn['INBOX'] = new Folder('INBOX', $sDelimiter);
 		}
 
 		return $aReturn;

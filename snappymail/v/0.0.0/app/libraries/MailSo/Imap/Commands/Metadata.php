@@ -126,4 +126,8 @@ trait Metadata
 		}
 	}
 
+	public function FolderRemoveMetadata($sFolderName, array $aEntries) : void
+	{
+		$this->FolderSetMetadata($sFolderName, \array_fill_keys(\array_keys($aEntries), null));
+	}
 }

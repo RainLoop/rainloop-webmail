@@ -392,8 +392,7 @@ class SieveClient extends \MailSo\Net\NetClient
 	private function parseResponse() : array
 	{
 		$aResult = array();
-		do
-		{
+		while (true) {
 			$sResponseBuffer = $this->getNextBuffer();
 			if (null === $sResponseBuffer) {
 				break;
@@ -418,7 +417,6 @@ class SieveClient extends \MailSo\Net\NetClient
 				break;
 			}
 		}
-		while (true);
 
 		if (!$aResult || 'OK' !== \substr($aResult[\array_key_last($aResult)], 0, 2)) {
 			$this->writeLogException(new \MailSo\Sieve\Exceptions\NegativeResponseException($aResult), \LOG_WARNING);

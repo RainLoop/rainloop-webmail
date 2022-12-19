@@ -38,7 +38,8 @@ class MessageListParams
 		if ('i' === $k[0]) {
 			$this->$k = \max(0, (int) $v);
 		}
-//		\MailSo\Base\Validator::RangeInt($oParams->iOffset, 0)
-//		\MailSo\Base\Validator::RangeInt($oParams->iLimit, 0, 999)
+//		0 > $oParams->iOffset
+//		0 > $oParams->iLimit
+//		999 < $oParams->iLimit
 	}
 }

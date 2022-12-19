@@ -172,7 +172,7 @@ class Folder implements \JsonSerializable
 				'totalEmails' => (int) $this->MESSAGES,
 				'unreadEmails' => (int) $this->UNSEEN,
 				'UidNext' => (int) $this->UIDNEXT,
-//				'Hash' => $this->Hash($this->MailClient()->GenerateImapClientHash())
+//				'Hash' => $this->Hash($this->ImapClient()->Hash())
 			);
 		}
 */

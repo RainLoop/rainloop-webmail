@@ -87,7 +87,7 @@ abstract class NetClient
 	public function Connect(ConnectSettings $oSettings) : void
 	{
 		$oSettings->host = \trim($oSettings->host);
-		if (!\strlen($oSettings->host) || !\MailSo\Base\Validator::RangeInt($oSettings->port, 0, 65535)) {
+		if (!\strlen($oSettings->host) || 0 > $oSettings->port || 65535 < $oSettings->port) {
 			$this->writeLogException(new \MailSo\Base\Exceptions\InvalidArgumentException, \LOG_ERR);
 		}
 

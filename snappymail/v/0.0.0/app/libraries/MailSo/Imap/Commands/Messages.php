@@ -16,7 +16,9 @@ use MailSo\Imap\FetchResponse;
 use MailSo\Imap\Enumerations\FetchType;
 use MailSo\Imap\ResponseCollection;
 use MailSo\Imap\SequenceSet;
+use MailSo\Imap\Enumerations\MessageFlag;
 use MailSo\Imap\Enumerations\ResponseType;
+use MailSo\Imap\Enumerations\StoreAction;
 
 /**
  * @category MailSo
@@ -32,8 +34,7 @@ trait Messages
 	 */
 	public function Fetch(array $aInputFetchItems, string $sIndexRange, bool $bIndexIsUid) : array
 	{
-		if (!\strlen(\trim($sIndexRange)))
-		{
+		if (!\strlen(\trim($sIndexRange))) {
 			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
 		}
 
@@ -44,8 +45,7 @@ trait Messages
 				FetchType::UID,
 				FetchType::RFC822_SIZE
 			);
-			foreach ($aInputFetchItems as $mFetchKey)
-			{
+			foreach ($aInputFetchItems as $mFetchKey) {
 				switch ($mFetchKey)
 				{
 					case FetchType::UID:
@@ -196,11 +196,13 @@ trait Messages
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function MessageCopy(string $sToFolder, SequenceSet $oRange) : ResponseCollection
+	public function MessageCopy(string $sFromFolder, string $sToFolder, SequenceSet $oRange) : ResponseCollection
 	{
-		if (!\count($oRange)) {
+		if (!$sFromFolder || !$sToFolder || !\count($oRange)) {
 			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
 		}
+
+		$this->FolderSelect($sFromFolder);
 
 		return $this->SendRequestGetResponse(
 			$oRange->UID ? 'UID COPY' : 'COPY',
@@ -214,20 +216,48 @@ trait Messages
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function MessageMove(string $sToFolder, SequenceSet $oRange) : ResponseCollection
+	public function MessageMove(string $sFromFolder, string $sToFolder, SequenceSet $oRange) : ResponseCollection
 	{
-		if (!\count($oRange)) {
+		if (!$sFromFolder || !$sToFolder || !\count($oRange)) {
 			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
 		}
 
-		if (!$this->hasCapability('MOVE')) {
-			$this->writeLogException(new \MailSo\RuntimeException('Move is not supported'), \LOG_ERR);
+		if ($this->hasCapability('MOVE')) {
+			$this->FolderSelect($sFromFolder);
+			return $this->SendRequestGetResponse(
+				$oRange->UID ? 'UID MOVE' : 'MOVE',
+				array((string) $oRange, $this->EscapeFolderName($sToFolder))
+			);
 		}
 
-		return $this->SendRequestGetResponse(
-			$oRange->UID ? 'UID MOVE' : 'MOVE',
-			array((string) $oRange, $this->EscapeFolderName($sToFolder))
+		$this->MessageCopy($sFromFolder, $sToFolder, $oRange);
+		$this->MessageDelete($sFromFolder, $oRange, true);
+	}
+
+	/**
+	 * @throws \InvalidArgumentException
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Imap\Exceptions\*
+	 */
+	public function MessageDelete(string $sFolder, SequenceSet $oRange, bool $bExpungeAll = false) : void
+	{
+		if (!$sFolder || !\count($oRange)) {
+			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
+		}
+
+		$this->FolderSelect($sFolder);
+
+		$this->MessageStoreFlag($oRange,
+			array(MessageFlag::DELETED),
+			StoreAction::ADD_FLAGS_SILENT
 		);
+
+		if ($bExpungeAll && $this->Settings->expunge_all_on_delete) {
+			$this->FolderExpunge();
+		} else {
+			$this->FolderExpunge($oRange);
+		}
 	}
 
 	/**
@@ -250,8 +280,8 @@ trait Messages
 			if ($iUid) {
 				$oRange = new SequenceSet([$iUid]);
 				$this->MessageStoreFlag($oRange,
-					array(\MailSo\Imap\Enumerations\MessageFlag::DELETED),
-					\MailSo\Imap\Enumerations\StoreAction::ADD_FLAGS_SILENT
+					array(MessageFlag::DELETED),
+					StoreAction::ADD_FLAGS_SILENT
 				);
 				$this->FolderExpunge($oRange);
 			}
