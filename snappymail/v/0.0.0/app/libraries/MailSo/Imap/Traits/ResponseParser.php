@@ -66,6 +66,8 @@ trait ResponseParser
 		return !$oImapResponse->IsStatusResponse || 2 < \count($oImapResponse->ResponseList);
 	}
 
+	private $sResponseBuffer = '';
+
 	/**
 	 * @return array|string
 	 * @throws \MailSo\RuntimeException
@@ -91,12 +93,10 @@ trait ResponseParser
 			$aList =& $oImapResponse->ResponseList;
 		}
 
-		$sResponseBuffer = '';
-
 		while (true) {
 			if ($this->bNeedNext) {
 				$iPos = 0;
-				$sResponseBuffer = $this->getNextBuffer();
+				$this->sResponseBuffer = $this->getNextBuffer();
 				$this->iResponseBufParsedPos = $iPos;
 				$this->bNeedNext = false;
 			}
@@ -105,13 +105,13 @@ trait ResponseParser
 			if ($bIsGotoDefault) {
 				$bIsGotoDefault = false;
 			} else {
-				$iBufferEndIndex = \strlen($sResponseBuffer) - 3;
+				$iBufferEndIndex = \strlen($this->sResponseBuffer) - 3;
 
 				if ($iPos > $iBufferEndIndex) {
 					break;
 				}
 
-				$sChar = $sResponseBuffer[$iPos];
+				$sChar = $this->sResponseBuffer[$iPos];
 			}
 
 			switch ($sChar)
@@ -159,13 +159,13 @@ trait ResponseParser
 					continue 2;
 
 				case '~': // literal8
-					if ('{' !== $sResponseBuffer[++$iPos]) {
+					if ('{' !== $this->sResponseBuffer[++$iPos]) {
 						break;
 					}
 				case '{':
-					$iLength = \strspn($sResponseBuffer, '0123456789', $iPos + 1);
-					if ($iLength && "}\r\n" === \substr($sResponseBuffer, $iPos + 1 + $iLength, 3)) {
-						$iLiteralLen = (int) \substr($sResponseBuffer, $iPos + 1, $iLength);
+					$iLength = \strspn($this->sResponseBuffer, '0123456789', $iPos + 1);
+					if ($iLength && "}\r\n" === \substr($this->sResponseBuffer, $iPos + 1 + $iLength, 3)) {
+						$iLiteralLen = (int) \substr($this->sResponseBuffer, $iPos + 1, $iLength);
 						$iPos += 4 + $iLength;
 
 						if ($this->partialResponseLiteralCallbacks($sParentToken, $sPreviousAtomUpperCase, $iLiteralLen)) {
@@ -209,13 +209,13 @@ trait ResponseParser
 							$iPos = $iBufferEndIndex;
 							break;
 						}
-						$iLength = \strcspn($sResponseBuffer, "\r\n\\\"", $iOffset);
-						$sSpecial = $sResponseBuffer[$iOffset + $iLength];
+						$iLength = \strcspn($this->sResponseBuffer, "\r\n\\\"", $iOffset);
+						$sSpecial = $this->sResponseBuffer[$iOffset + $iLength];
 						switch ($sSpecial)
 						{
 						case '\\':
 							// Is escaped character \ or "?
-							if (!\in_array($sResponseBuffer[$iOffset + $iLength + 1], ['\\','"'])) {
+							if (!\in_array($this->sResponseBuffer[$iOffset + $iLength + 1], ['\\','"'])) {
 								// No, not allowed in quoted string
 								break 2;
 							}
@@ -224,9 +224,9 @@ trait ResponseParser
 
 						case '"':
 							if ($bTreatAsAtom) {
-								$sAtomBuilder .= \stripslashes(\substr($sResponseBuffer, $iPos, $iOffset + $iLength - $iPos + 1));
+								$sAtomBuilder .= \stripslashes(\substr($this->sResponseBuffer, $iPos, $iOffset + $iLength - $iPos + 1));
 							} else {
-								$aList[] = \stripslashes(\substr($sResponseBuffer, $iPos + 1, $iOffset + $iLength - $iPos - 1));
+								$aList[] = \stripslashes(\substr($this->sResponseBuffer, $iPos + 1, $iOffset + $iLength - $iPos - 1));
 							}
 							$iPos = $iOffset + $iLength + 1;
 							break 2;
@@ -234,7 +234,7 @@ trait ResponseParser
 						default:
 						case "\r":
 						case "\n":
-							\SnappyMail\Log::notice('IMAP', 'Invalid char in quoted string: "' . \substr($sResponseBuffer, $iPos, $iOffset + $iLength - $iPos) . '"');
+							\SnappyMail\Log::notice('IMAP', 'Invalid char in quoted string: "' . \substr($this->sResponseBuffer, $iPos, $iOffset + $iLength - $iPos) . '"');
 							// Not allowed in quoted string
 							break 2;
 						}
@@ -248,12 +248,12 @@ trait ResponseParser
 					if ($bRoot && $oImapResponse->IsStatusResponse) {
 						$iPos = $iBufferEndIndex;
 						if ($iPos > $iCharBlockStartPos) {
-							$iCharBlockStartPos += \strspn($sResponseBuffer, ' ', $iCharBlockStartPos, $iPos - $iCharBlockStartPos);
+							$iCharBlockStartPos += \strspn($this->sResponseBuffer, ' ', $iCharBlockStartPos, $iPos - $iCharBlockStartPos);
 						}
 					}
 
 					while ($iPos <= $iBufferEndIndex) {
-						$sCharDef = $sResponseBuffer[$iPos];
+						$sCharDef = $this->sResponseBuffer[$iPos];
 						switch (true)
 						{
 							case $bRoot && ('[' === $sCharDef || ']' === $sCharDef) && static::skipSquareBracketParse($oImapResponse):
@@ -264,7 +264,7 @@ trait ResponseParser
 									$sAtomBuilder = '';
 								}
 
-								$sAtomBuilder .= \substr($sResponseBuffer, $iCharBlockStartPos, $iPos - $iCharBlockStartPos + 1);
+								$sAtomBuilder .= \substr($this->sResponseBuffer, $iCharBlockStartPos, $iPos - $iCharBlockStartPos + 1);
 
 								$this->iResponseBufParsedPos = ++$iPos;
 
@@ -291,7 +291,7 @@ trait ResponseParser
 					}
 
 					if ($iPos > $iCharBlockStartPos || null !== $sAtomBuilder) {
-						$sLastCharBlock = \substr($sResponseBuffer, $iCharBlockStartPos, $iPos - $iCharBlockStartPos);
+						$sLastCharBlock = \substr($this->sResponseBuffer, $iCharBlockStartPos, $iPos - $iCharBlockStartPos);
 						if (null === $sAtomBuilder) {
 							$aList[] = 'NIL' === $sLastCharBlock ? null : $sLastCharBlock;
 							$sPreviousAtomUpperCase = \strtoupper($sLastCharBlock);
