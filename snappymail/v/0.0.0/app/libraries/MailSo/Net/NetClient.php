@@ -28,8 +28,6 @@ abstract class NetClient
 
 	private string $sConnectedHost = '';
 
-	protected string $sResponseBuffer = '';
-
 	private bool $ssl = false;
 
 	private int $iConnectTimeOut = 10;
@@ -260,25 +258,25 @@ abstract class NetClient
 	 * @throws \MailSo\Net\Exceptions\SocketConnectionDoesNotAvailableException
 	 * @throws \MailSo\Net\Exceptions\SocketReadException
 	 */
-	protected function getNextBuffer(?int $iReadLen = null) : void
+	protected function getNextBuffer(?int $iReadLen = null) : ?string
 	{
 		if (null === $iReadLen) {
-			$this->sResponseBuffer = \fgets($this->rConnect);
+			$sResponseBuffer = \fgets($this->rConnect);
 		} else {
-			$this->sResponseBuffer = '';
+			$sResponseBuffer = '';
 			$iRead = $iReadLen;
 			while (0 < $iRead) {
 				$sAddRead = \fread($this->rConnect, $iRead);
 				if (false === $sAddRead) {
-					$this->sResponseBuffer = false;
+					$sResponseBuffer = false;
 					break;
 				}
-				$this->sResponseBuffer .= $sAddRead;
+				$sResponseBuffer .= $sAddRead;
 				$iRead -= \strlen($sAddRead);
 			}
 		}
 
-		if (false === $this->sResponseBuffer) {
+		if (false === $sResponseBuffer) {
 			$this->IsConnected(true);
 			$this->bUnreadBuffer = true;
 			$aSocketStatus = \stream_get_meta_data($this->rConnect);
@@ -288,16 +286,19 @@ abstract class NetClient
 				$this->writeLog('Stream Meta: '.\print_r($aSocketStatus, true), \LOG_ERR);
 				$this->writeLogException(new Exceptions\SocketReadException, \LOG_ERR);
 			}
-		} else {
-			$iReadBytes = \strlen($this->sResponseBuffer);
-//			$iReadLen && $this->writeLog('Received '.$iReadBytes.'/'.$iReadLen.' bytes.');
-			$iLimit = 5000; // 5KB
-			if ($iLimit < $iReadBytes) {
-				$this->writeLogWithCrlf('[cutted:'.$iReadBytes.'] < '.\substr($this->sResponseBuffer, 0, $iLimit).'...');
-			} else {
-				$this->writeLogWithCrlf('< '.$this->sResponseBuffer);
-			}
+			return null;
 		}
+
+		$iReadBytes = \strlen($sResponseBuffer);
+//		$iReadLen && $this->writeLog('Received '.$iReadBytes.'/'.$iReadLen.' bytes.');
+		$iLimit = 5000; // 5KB
+		if ($iLimit < $iReadBytes) {
+			$this->writeLogWithCrlf('[cutted:'.$iReadBytes.'] < '.\substr($sResponseBuffer, 0, $iLimit).'...');
+		} else {
+			$this->writeLogWithCrlf('< '.$sResponseBuffer);
+		}
+
+		return $sResponseBuffer;
 	}
 
 	abstract function getLogName() : string;

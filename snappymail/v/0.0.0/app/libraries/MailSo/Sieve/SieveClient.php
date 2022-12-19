@@ -32,19 +32,9 @@ class SieveClient extends \MailSo\Net\NetClient
 		return isset($this->aCapa[\strtoupper($sCapa)]);
 	}
 
-	public function IsModuleSupported(string $sModule) : bool
-	{
-		return $this->hasCapability('SIEVE') && \in_array(\strtolower(\trim($sModule)), $this->aModules);
-	}
-
 	public function Modules() : array
 	{
 		return $this->aModules;
-	}
-
-	public function IsAuthSupported(string $sAuth) : bool
-	{
-		return $this->hasCapability('SASL') && \in_array(\strtoupper($sAuth), $this->aAuth);
 	}
 
 	/**
@@ -58,7 +48,6 @@ class SieveClient extends \MailSo\Net\NetClient
 		parent::Connect($oSettings);
 
 		$aResponse = $this->parseResponse();
-		$this->validateResponse($aResponse);
 		$this->parseStartupResponse($aResponse);
 
 		if (ConnectionSecurityType::STARTTLS === $this->Settings->type
@@ -73,7 +62,6 @@ class SieveClient extends \MailSo\Net\NetClient
 			$this->sendRequestWithCheck('STARTTLS');
 			$this->EnableCrypto();
 			$aResponse = $this->parseResponse();
-			$this->validateResponse($aResponse);
 			$this->parseStartupResponse($aResponse);
 		} else {
 			$this->writeLogException(
@@ -98,10 +86,12 @@ class SieveClient extends \MailSo\Net\NetClient
 		}
 
 		$type = '';
-		foreach ($oSettings->SASLMechanisms as $sasl_type) {
-			if ($this->IsAuthSupported($sasl_type) && \SnappyMail\SASL::isSupported($sasl_type)) {
-				$type = $sasl_type;
-				break;
+		if ($this->hasCapability('SASL')) {
+			foreach ($oSettings->SASLMechanisms as $sasl_type) {
+				if (\in_array(\strtoupper($sasl_type), $this->aAuth) && \SnappyMail\SASL::isSupported($sasl_type)) {
+					$type = $sasl_type;
+					break;
+				}
 			}
 		}
 		if (!$type) {
@@ -143,7 +133,6 @@ class SieveClient extends \MailSo\Net\NetClient
 				}
 
 				$aResponse = $this->parseResponse();
-				$this->validateResponse($aResponse);
 				$this->parseStartupResponse($aResponse);
 				$bAuth = true;
 			}
@@ -160,7 +149,6 @@ class SieveClient extends \MailSo\Net\NetClient
 				$this->sendRaw($sPassword);
 
 				$aResponse = $this->parseResponse();
-				$this->validateResponse($aResponse);
 				$this->parseStartupResponse($aResponse);
 				$bAuth = true;
 			}
@@ -201,12 +189,11 @@ class SieveClient extends \MailSo\Net\NetClient
 	{
 		$this->sendRequest('LISTSCRIPTS');
 		$aResponse = $this->parseResponse();
-		$this->validateResponse($aResponse);
 		$aResult = array();
 		foreach ($aResponse as $sLine) {
 			$aTokens = $this->parseLine($sLine);
 			if ($aTokens) {
-				$aResult[$aTokens[0]] = 'ACTIVE' === substr($sLine, -6);
+				$aResult[$aTokens[0]] = 'ACTIVE' === \substr($sLine, -6);
 			}
 		}
 
@@ -222,7 +209,6 @@ class SieveClient extends \MailSo\Net\NetClient
 	{
 		$this->sendRequest('CAPABILITY');
 		$aResponse = $this->parseResponse();
-		$this->validateResponse($aResponse);
 		$this->parseStartupResponse($aResponse);
 
 		return $this->aCapa;
@@ -247,9 +233,9 @@ class SieveClient extends \MailSo\Net\NetClient
 	 */
 	public function GetScript(string $sScriptName) : string
 	{
+		$sScriptName = \addcslashes($sScriptName, '"\\');
 		$this->sendRequest('GETSCRIPT "'.$sScriptName.'"');
 		$aResponse = $this->parseResponse();
-		$this->validateResponse($aResponse);
 
 		$sScript = '';
 		if (\count($aResponse)) {
@@ -274,6 +260,7 @@ class SieveClient extends \MailSo\Net\NetClient
 	 */
 	public function PutScript(string $sScriptName, string $sScriptSource) : self
 	{
+		$sScriptName = \addcslashes($sScriptName, '"\\');
 		$sScriptSource = \preg_replace('/\r?\n/', "\r\n", $sScriptSource);
 		$this->sendRequest('PUTSCRIPT "'.$sScriptName.'" {'.\strlen($sScriptSource).'+}');
 		$this->sendRequestWithCheck($sScriptSource);
@@ -302,6 +289,7 @@ class SieveClient extends \MailSo\Net\NetClient
 	 */
 	public function SetActiveScript(string $sScriptName) : self
 	{
+		$sScriptName = \addcslashes($sScriptName, '"\\');
 		$this->sendRequestWithCheck('SETACTIVE "'.$sScriptName.'"');
 
 		return $this;
@@ -314,6 +302,7 @@ class SieveClient extends \MailSo\Net\NetClient
 	 */
 	public function DeleteScript(string $sScriptName) : self
 	{
+		$sScriptName = \addcslashes($sScriptName, '"\\');
 		$this->sendRequestWithCheck('DELETESCRIPT "'.$sScriptName.'"');
 
 		return $this;
@@ -326,6 +315,8 @@ class SieveClient extends \MailSo\Net\NetClient
 	 */
 	public function RenameScript(string $sOldName, string $sNewName) : self
 	{
+		$sOldName = \addcslashes($sOldName, '"\\');
+		$sNewName = \addcslashes($sNewName, '"\\');
 		$this->sendRequestWithCheck('RENAMESCRIPT "'.$sOldName.'" "'.$sNewName.'"');
 
 		return $this;
@@ -333,26 +324,13 @@ class SieveClient extends \MailSo\Net\NetClient
 
 	private function parseLine(string $sLine) : ?array
 	{
-		if (false === $sLine || null === $sLine || \in_array(\substr($sLine, 0, 2), array('OK', 'NO'))) {
-			return null;
-		}
-
-		$iStart = -1;
-		$iIndex = 0;
-		$aResult = array();
-
-		for ($iPos = 0; $iPos < \strlen($sLine); ++$iPos) {
-			if ('"' === $sLine[$iPos] && '\\' !== $sLine[$iPos]) {
-				if (-1 === $iStart) {
-					$iStart = $iPos;
-				} else {
-					$aResult[$iIndex++] = \substr($sLine, $iStart + 1, $iPos - $iStart - 1);
-					$iStart = -1;
-				}
+		if (!\in_array(\substr($sLine, 0, 2), array('OK', 'NO'))) {
+			$aResult = array();
+			if (\preg_match_all('/(?:(?:"((?:\\\\"|[^"])*)"))/', $sLine, $aResult)) {
+				return \array_map('stripcslashes', $aResult[1]);
 			}
 		}
-
-		return isset($aResult[0]) ? $aResult : null;
+		return null;
 	}
 
 	/**
@@ -364,10 +342,7 @@ class SieveClient extends \MailSo\Net\NetClient
 	{
 		foreach ($aResponse as $sLine) {
 			$aTokens = $this->parseLine($sLine);
-
-			if (false === $aTokens || !isset($aTokens[0]) ||
-				\in_array(\substr($sLine, 0, 2), array('OK', 'NO')))
-			{
+			if (empty($aTokens[0]) || \in_array(\substr($sLine, 0, 2), array('OK', 'NO'))) {
 				continue;
 			}
 
@@ -411,7 +386,7 @@ class SieveClient extends \MailSo\Net\NetClient
 	private function sendRequestWithCheck(string $sRequest) : void
 	{
 		$this->sendRequest($sRequest);
-		$this->validateResponse($this->parseResponse());
+		$this->parseResponse();
 	}
 
 	private function parseResponse() : array
@@ -419,22 +394,21 @@ class SieveClient extends \MailSo\Net\NetClient
 		$aResult = array();
 		do
 		{
-			$this->getNextBuffer();
-			$sLine = $this->sResponseBuffer;
-			if (false === $sLine) {
+			$sResponseBuffer = $this->getNextBuffer();
+			if (null === $sResponseBuffer) {
 				break;
 			}
-			$bEnd = \in_array(\substr($sLine, 0, 2), array('OK', 'NO'));
+			$bEnd = \in_array(\substr($sResponseBuffer, 0, 2), array('OK', 'NO'));
 			// convertEndOfLine
-			$sLine = \trim($sLine);
+			$sLine = \trim($sResponseBuffer);
 			if ('}' === \substr($sLine, -1)) {
 				$iPos = \strrpos($sLine, '{');
 				if (false !== $iPos) {
 					$iLen = \intval(\substr($sLine, $iPos + 1, -1));
 					if (0 < $iLen) {
-						$this->getNextBuffer($iLen);
-						if (\strlen($this->sResponseBuffer) === $iLen) {
-							$sLine = \trim(\substr_replace($sLine, $this->sResponseBuffer, $iPos));
+						$sResponseBuffer = $this->getNextBuffer($iLen);
+						if (\strlen($sResponseBuffer) === $iLen) {
+							$sLine = \trim(\substr_replace($sLine, $sResponseBuffer, $iPos));
 						}
 					}
 				}
@@ -446,17 +420,11 @@ class SieveClient extends \MailSo\Net\NetClient
 		}
 		while (true);
 
-		return $aResult;
-	}
-
-	/**
-	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
-	 */
-	private function validateResponse(array $aResponse)
-	{
-		if (!$aResponse || 'OK' !== \substr($aResponse[\count($aResponse) - 1], 0, 2)) {
-			$this->writeLogException(new \MailSo\Sieve\Exceptions\NegativeResponseException($aResponse), \LOG_WARNING);
+		if (!$aResult || 'OK' !== \substr($aResult[\array_key_last($aResult)], 0, 2)) {
+			$this->writeLogException(new \MailSo\Sieve\Exceptions\NegativeResponseException($aResult), \LOG_WARNING);
 		}
+
+		return $aResult;
 	}
 
 	public function getLogName() : string

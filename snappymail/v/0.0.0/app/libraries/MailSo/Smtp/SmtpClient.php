@@ -41,11 +41,6 @@ class SmtpClient extends \MailSo\Net\NetClient
 		return \in_array(\strtoupper($sCapa), $this->aCapa);
 	}
 
-	public function IsAuthSupported(string $sAuth) : bool
-	{
-		return \in_array(\strtoupper($sAuth), $this->aAuthTypes);
-	}
-
 	public function maxSize() : int
 	{
 		return $this->iSizeCapaValue;
@@ -118,7 +113,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 		$type = '';
 		foreach ($oSettings->SASLMechanisms as $sasl_type) {
-			if ($this->IsAuthSupported($sasl_type) && \SnappyMail\SASL::isSupported($sasl_type)) {
+			if (\in_array(\strtoupper($sasl_type), $this->aAuthTypes) && \SnappyMail\SASL::isSupported($sasl_type)) {
 				$type = $sasl_type;
 				break;
 			}
@@ -486,18 +481,16 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	private function validateResponse($mExpectCode, string $sErrorPrefix = '') : void
 	{
-		if (!\is_array($mExpectCode)) {
-			$mExpectCode = array((int) $mExpectCode);
-		} else {
-			$mExpectCode = \array_map('intval', $mExpectCode);
-		}
+		$mExpectCode = \is_array($mExpectCode)
+			? \array_map('intval', $mExpectCode)
+			: array((int) $mExpectCode);
 
 		$aParts = array('', '', '');
 		$this->aResults = array();
 		do
 		{
-			$this->getNextBuffer();
-			$aParts = \preg_split('/([\s\-]+)/', $this->sResponseBuffer, 2, PREG_SPLIT_DELIM_CAPTURE);
+			$sResponse = $this->getNextBuffer();
+			$aParts = \preg_split('/([\s\-]+)/', $sResponse, 2, PREG_SPLIT_DELIM_CAPTURE);
 
 			if (3 === \count($aParts) && \is_numeric($aParts[0])) {
 				if ('-' !== \substr($aParts[1], 0, 1) && !\in_array((int) $aParts[0], $mExpectCode)) {
@@ -505,17 +498,17 @@ class SmtpClient extends \MailSo\Net\NetClient
 						new Exceptions\NegativeResponseException($this->aResults,
 							('' === $sErrorPrefix ? '' : $sErrorPrefix.': ').\trim(
 							(\count($this->aResults) ? \implode("\r\n", $this->aResults)."\r\n" : '').
-							$this->sResponseBuffer)), \LOG_ERR);
+							$sResponse)), \LOG_ERR);
 				}
 			} else {
 				$this->writeLogException(
 					new Exceptions\ResponseException($this->aResults,
 						('' === $sErrorPrefix ? '' : $sErrorPrefix.': ').\trim(
 						(\count($this->aResults) ? \implode("\r\n", $this->aResults)."\r\n" : '').
-						$this->sResponseBuffer)), \LOG_ERR);
+						$sResponse)), \LOG_ERR);
 			}
 
-			$this->aResults[] = $this->sResponseBuffer;
+			$this->aResults[] = $sResponse;
 		}
 		while ('-' === \substr($aParts[1], 0, 1));
 	}
