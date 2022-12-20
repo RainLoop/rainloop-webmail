@@ -17,35 +17,17 @@ namespace MailSo\Mime;
  */
 class Header
 {
-	/**
-	 * @var string
-	 */
-	private $sName;
+	private string $sName;
 
-	/**
-	 * @var string
-	 */
-	private $sValue;
+	private string $sValue;
 
-	/**
-	 * @var string
-	 */
-	private $sFullValue;
+	private string $sFullValue;
 
-	/**
-	 * @var string
-	 */
-	private $sEncodedValueForReparse;
+	private string $sEncodedValueForReparse;
 
-	/**
-	 * @var ParameterCollection
-	 */
-	private $oParameters;
+	private ?ParameterCollection $oParameters = null;
 
-	/**
-	 * @var strign
-	 */
-	private $sParentCharset;
+	private string $sParentCharset;
 
 	function __construct(string $sName, string $sValue = '', string $sEncodedValueForReparse = '', string $sParentCharset = '')
 	{
@@ -59,26 +41,19 @@ class Header
 		$this->sFullValue = \trim($sValue);
 		$this->sEncodedValueForReparse = '';
 
-		if (\strlen($sEncodedValueForReparse) && $this->IsReparsed())
-		{
+		if (\strlen($sEncodedValueForReparse) && $this->IsReparsed()) {
 			$this->sEncodedValueForReparse = \trim($sEncodedValueForReparse);
 		}
 
-		if (\strlen($this->sFullValue) && $this->IsParameterized())
-		{
+		if (\strlen($this->sFullValue) && $this->IsParameterized()) {
 			$aRawExplode = \explode(';', $this->sFullValue, 2);
-			if (2 === \count($aRawExplode))
-			{
+			if (2 === \count($aRawExplode)) {
 				$this->sValue = $aRawExplode[0];
 				$this->oParameters = new ParameterCollection($aRawExplode[1]);
-			}
-			else
-			{
+			} else {
 				$this->sValue = $this->sFullValue;
 			}
-		}
-		else
-		{
+		} else {
 			$this->sValue = $this->sFullValue;
 		}
 
@@ -89,14 +64,12 @@ class Header
 
 	public static function NewInstanceFromEncodedString(string $sEncodedLines, string $sIncomingCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1) : Header
 	{
-		if (empty($sIncomingCharset))
-		{
+		if (empty($sIncomingCharset)) {
 			$sIncomingCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1;
 		}
 
 		$aParts = \explode(':', \str_replace("\r", '', $sEncodedLines), 2);
-		if (isset($aParts[0]) && isset($aParts[1]) && \strlen($aParts[0]) && \strlen($aParts[1]))
-		{
+		if (isset($aParts[0]) && isset($aParts[1]) && \strlen($aParts[0]) && \strlen($aParts[1])) {
 			return new self(
 				\trim($aParts[0]),
 				\trim(\MailSo\Base\Utils::DecodeHeaderValue(\trim($aParts[1]), $sIncomingCharset)),
@@ -130,8 +103,7 @@ class Header
 
 	public function SetParentCharset(string $sParentCharset) : Header
 	{
-		if ($this->sParentCharset !== $sParentCharset && $this->IsReparsed() && \strlen($this->sEncodedValueForReparse))
-		{
+		if ($this->sParentCharset !== $sParentCharset && $this->IsReparsed() && \strlen($this->sEncodedValueForReparse)) {
 			$this->initInputData(
 				$this->sName,
 				\trim(\MailSo\Base\Utils::DecodeHeaderValue($this->sEncodedValueForReparse, $sParentCharset)),
@@ -165,11 +137,8 @@ class Header
 	{
 		$sResult = $this->sFullValue;
 
-		if ($this->IsSubject())
-		{
-			if (!\MailSo\Base\Utils::IsAscii($sResult) &&
-				\function_exists('iconv_mime_encode'))
-			{
+		if ($this->IsSubject()) {
+			if (!\MailSo\Base\Utils::IsAscii($sResult) && \function_exists('iconv_mime_encode')) {
 				$aPreferences = array(
 //					'scheme' => \MailSo\Base\Enumerations\Encoding::QUOTED_PRINTABLE_SHORT,
 					'scheme' => \MailSo\Base\Enumerations\Encoding::BASE64_SHORT,

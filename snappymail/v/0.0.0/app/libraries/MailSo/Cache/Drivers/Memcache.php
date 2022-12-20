@@ -18,37 +18,27 @@ namespace MailSo\Cache\Drivers;
  */
 class Memcache implements \MailSo\Cache\DriverInterface
 {
-	/**
-	 * @var int
-	 */
-	private $iExpire;
+	private int $iExpire;
 
 	/**
-	 * @var \Memcache|null
+	 * @var \Memcache|\Memcached|null
 	 */
 	private $oMem;
 
-	/**
-	 * @var string
-	 */
-	private $sKeyPrefix;
+	private string $sKeyPrefix;
 
 	function __construct(string $sHost = '127.0.0.1', int $iPort = 11211, int $iExpire = 43200, string $sKeyPrefix = '')
 	{
 		$this->iExpire = 0 < $iExpire ? $iExpire : 43200;
 
 		$this->oMem = \class_exists('Memcache',false) ? new \Memcache : new \Memcached;
-		if (!$this->oMem->addServer($sHost, \strpos($sHost, ':/') ? 0 : $this->iPort))
-		{
+		if (!$this->oMem->addServer($sHost, \strpos($sHost, ':/') ? 0 : $iPort)) {
 			$this->oMem = null;
 		}
 
-		$this->sKeyPrefix = $sKeyPrefix;
-		if (!empty($this->sKeyPrefix))
-		{
-			$this->sKeyPrefix =
-				\preg_replace('/[^a-zA-Z0-9_]/', '_', rtrim(trim($this->sKeyPrefix), '\\/')).'/';
-		}
+		$this->sKeyPrefix = empty($sKeyPrefix)
+			? $sKeyPrefix
+			: \preg_replace('/[^a-zA-Z0-9_]/', '_', \rtrim(\trim($this->sKeyPrefix), '\\/')) . '/';
 	}
 
 	public function Set(string $sKey, string $sValue) : bool
@@ -64,19 +54,14 @@ class Memcache implements \MailSo\Cache\DriverInterface
 
 	public function Delete(string $sKey) : void
 	{
-		if ($this->oMem)
-		{
-			$this->oMem->delete($this->generateCachedKey($sKey));
-		}
+		$this->oMem && $this->oMem->delete($this->generateCachedKey($sKey));
 	}
 
 	public function GC(int $iTimeToClearInHours = 24) : bool
 	{
-		if (0 === $iTimeToClearInHours && $this->oMem)
-		{
+		if (0 === $iTimeToClearInHours && $this->oMem) {
 			return $this->oMem->flush();
 		}
-
 		return false;
 	}
 

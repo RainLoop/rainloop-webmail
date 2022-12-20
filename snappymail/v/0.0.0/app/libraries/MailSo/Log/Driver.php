@@ -17,15 +17,9 @@ namespace MailSo\Log;
  */
 abstract class Driver
 {
-	/**
-	 * @var string
-	 */
-	protected $sDatePattern = 'H:i:s';
-
-	/**
-	 * @var string
-	 */
-	protected $sName = '';
+	protected string
+		$sDatePattern = 'H:i:s',
+		$sName = '';
 
 	/**
 	 * @var array
@@ -41,25 +35,13 @@ abstract class Driver
 		\LOG_DEBUG => '[DEBUG]'
 	];
 
-	/**
-	 * @var bool
-	 */
-	protected $bGuidPrefix = true;
+	protected bool $bGuidPrefix = true;
 
-	/**
-	 * @var DateTimeZone
-	 */
-	protected $oTimeZone;
+	protected \DateTimeZone $oTimeZone;
 
-	/**
-	 * @var bool
-	 */
-	protected $bTimePrefix = true;
+	protected bool $bTimePrefix = true;
 
-	/**
-	 * @var bool
-	 */
-	protected $bTypedPrefix = true;
+	protected bool $bTypedPrefix = true;
 
 	function __construct()
 	{

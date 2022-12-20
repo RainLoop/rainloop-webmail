@@ -27,50 +27,26 @@ class Binary
 	 */
 	const STREAM_NAME = 'mailsobinary';
 
-	/**
-	 * @var array
-	 */
-	private static $aStreams = array();
+	private static array $aStreams = array();
 
-	/**
-	 * @var array
-	 */
-	private static $aRememberStreams = array();
+	private static array $aRememberStreams = array();
 
 	/**
 	 * @var resource
 	 */
 	private $rStream;
 
-	/**
-	 * @var string
-	 */
-	private $sFromEncoding;
+	private string $sFromEncoding;
 
-	/**
-	 * @var string
-	 */
-	private $sToEncoding;
+	private string $sToEncoding;
 
-	/**
-	 * @var string
-	 */
-	private $sFunctionName;
+	private string $sFunctionName;
 
-	/**
-	 * @var int
-	 */
-	private $iPos;
+	private int $iPos;
 
-	/**
-	 * @var string
-	 */
-	private $sBuffer;
+	private string $sBuffer;
 
-	/**
-	 * @var string
-	 */
-	private $sReadEndBuffer;
+	private string $sReadEndBuffer;
 
 	public static function GetInlineDecodeOrEncodeFunctionName(string $sContentTransferEncoding, bool $bDecode = true) : string
 	{
@@ -96,8 +72,7 @@ class Binary
 		$sEndBuffer = '';
 		$iQuotedPrintableLen = \strlen($sEncodedString);
 		$iLastSpace = \strrpos($sEncodedString, ' ');
-		if (false !== $iLastSpace && $iLastSpace + 1 < $iQuotedPrintableLen)
-		{
+		if (false !== $iLastSpace && $iLastSpace + 1 < $iQuotedPrintableLen) {
 			$sEndBuffer = \substr($sEncodedString, $iLastSpace + 1);
 			$sEncodedString = \substr($sEncodedString, 0, $iLastSpace + 1);
 		}
@@ -109,10 +84,8 @@ class Binary
 	 */
 	public static function IsStreamRemembed($rStream) : bool
 	{
-		foreach (self::$aRememberStreams as $rRem)
-		{
-			if ($rStream === $rRem)
-			{
+		foreach (self::$aRememberStreams as $rRem) {
+			if ($rStream === $rRem) {
 				return true;
 			}
 		}
@@ -125,8 +98,7 @@ class Binary
 	 */
 	public static function RememberStream($rStream)
 	{
-		if (!self::IsStreamRemembed($rStream))
-		{
+		if (!self::IsStreamRemembed($rStream)) {
 			self::$aRememberStreams[] = $rStream;
 		}
 	}
@@ -139,15 +111,13 @@ class Binary
 	public static function CreateStream($rStream,
 		string $sUtilsDecodeOrEncodeFunctionName = null, string $sFromEncoding = null, string $sToEncoding = null)
 	{
-		if (null === $sUtilsDecodeOrEncodeFunctionName || !\strlen($sUtilsDecodeOrEncodeFunctionName))
-		{
+		if (null === $sUtilsDecodeOrEncodeFunctionName || !\strlen($sUtilsDecodeOrEncodeFunctionName)) {
 			$sUtilsDecodeOrEncodeFunctionName = 'InlineNullDecode';
 		}
 
 		$sHashName = \md5(\microtime(true).\rand(1000, 9999));
 
-		if (null !== $sFromEncoding && null !== $sToEncoding && $sFromEncoding !== $sToEncoding)
-		{
+		if (null !== $sFromEncoding && null !== $sToEncoding && $sFromEncoding !== $sToEncoding) {
 			$rStream = self::CreateStream($rStream, $sUtilsDecodeOrEncodeFunctionName);
 			$sUtilsDecodeOrEncodeFunctionName = 'InlineConvertDecode';
 		}
@@ -216,27 +186,19 @@ class Binary
 		$sReturn = '';
 		$sFunctionName = $this->sFunctionName;
 
-		if ($iCount > 0)
-		{
-			if ($iCount < \strlen($this->sBuffer))
-			{
+		if ($iCount > 0) {
+			if ($iCount < \strlen($this->sBuffer)) {
 				$sReturn = \substr($this->sBuffer, 0, $iCount);
 				$this->sBuffer = \substr($this->sBuffer, $iCount);
-			}
-			else
-			{
+			} else {
 				$sReturn = $this->sBuffer;
-				while ($iCount > 0)
-				{
-					if (\feof($this->rStream))
-					{
-						if (!\strlen($this->sBuffer.$sReturn))
-						{
+				while ($iCount > 0) {
+					if (\feof($this->rStream)) {
+						if (!\strlen($this->sBuffer.$sReturn)) {
 							return false;
 						}
 
-						if (\strlen($this->sReadEndBuffer))
-						{
+						if (\strlen($this->sReadEndBuffer)) {
 							$sReturn .= self::$sFunctionName($this->sReadEndBuffer,
 								$this->sReadEndBuffer, $this->sFromEncoding, $this->sToEncoding);
 
@@ -245,12 +207,9 @@ class Binary
 
 						$iCount = 0;
 						$this->sBuffer = '';
-					}
-					else
-					{
+					} else {
 						$sReadResult = \fread($this->rStream, 8192);
-						if (false === $sReadResult)
-						{
+						if (false === $sReadResult) {
 							return false;
 						}
 
@@ -258,14 +217,11 @@ class Binary
 							$this->sReadEndBuffer, $this->sFromEncoding, $this->sToEncoding);
 
 						$iDecodeLen = \strlen($sReadResult);
-						if ($iCount < $iDecodeLen)
-						{
+						if ($iCount < $iDecodeLen) {
 							$this->sBuffer = \substr($sReturn, $iCount);
 							$sReturn = \substr($sReturn, 0, $iCount);
 							$iCount = 0;
-						}
-						else
-						{
+						} else {
 							$iCount -= $iDecodeLen;
 						}
 					}

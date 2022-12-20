@@ -144,7 +144,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 		try
 		{
-			if (0 === \strpos($type, 'SCRAM-')) {
+			if (\str_starts_with($type, 'SCRAM-')) {
 				// RFC 5802
 				$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 234, '');
 				$sChallenge = $SASL->challenge($sResult);

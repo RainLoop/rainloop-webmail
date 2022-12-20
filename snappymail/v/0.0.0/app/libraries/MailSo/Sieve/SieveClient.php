@@ -108,7 +108,7 @@ class SieveClient extends \MailSo\Net\NetClient
 		$bAuth = false;
 		try
 		{
-			if (0 === \strpos($type, 'SCRAM-'))
+			if (\str_starts_with($type, 'SCRAM-'))
 			{
 /*
 				$sAuthzid = $this->getResponseValue($this->SendRequestGetResponse('AUTHENTICATE', array($type)), \MailSo\Imap\Enumerations\ResponseType::CONTINUATION);

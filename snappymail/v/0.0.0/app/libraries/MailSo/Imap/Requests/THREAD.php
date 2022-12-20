@@ -20,10 +20,12 @@ namespace MailSo\Imap\Requests;
  */
 class THREAD extends Request
 {
-	public
-		$sAlgorithm = '', // ORDEREDSUBJECT or REFERENCES or REFS
-		$sCriterias = 'ALL',
-		$bUid = true;
+	// ORDEREDSUBJECT or REFERENCES or REFS
+	public string $sAlgorithm = '';
+
+	public string $sCriterias = 'ALL';
+
+	public bool $bUid = true;
 
 	function __construct(\MailSo\Imap\ImapClient $oImapClient)
 	{

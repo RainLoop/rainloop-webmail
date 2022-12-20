@@ -18,9 +18,9 @@ namespace MailSo\Imap\Requests;
  */
 class ESEARCH extends Request
 {
-	public
-		$sCriterias = 'ALL',
-		$aReturn = [
+	public string $sCriterias = 'ALL';
+
+	public array $aReturn = [
 		/**
 		   ALL
 			  Return all message numbers/UIDs which match the search criteria,
@@ -41,14 +41,18 @@ class ESEARCH extends Request
 			  Return all message numbers/UIDs which match the search criteria,
 			  in the requested sort order, using a sequence-set.
 		 */
-		],
-		$bUid = true,
-		$sLimit = '',
-		$sCharset = '',
-		// https://datatracker.ietf.org/doc/html/rfc7377
-		$aMailboxes = [],
-		$aSubtrees = [],
-		$aSubtreesOne = [];
+		];
+
+	public bool $bUid = true;
+
+	public string $sLimit = '';
+
+	public string $sCharset = '';
+
+	// https://datatracker.ietf.org/doc/html/rfc7377
+	public array $aMailboxes = [];
+	public array $aSubtrees = [];
+	public array $aSubtreesOne = [];
 
 	function __construct(\MailSo\Imap\ImapClient $oImapClient)
 	{

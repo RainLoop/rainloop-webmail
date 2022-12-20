@@ -18,12 +18,9 @@ namespace MailSo\Mime;
 class HeaderCollection extends \MailSo\Base\Collection
 {
 
-	protected $sRawHeaders = '';
+	protected string $sRawHeaders = '';
 
-	/**
-	 * @var string
-	 */
-	protected $sParentCharset = '';
+	protected string $sParentCharset = '';
 
 	function __construct(string $sRawHeaders = '', bool $bStoreRawHeaders = true, string $sParentCharset = '')
 	{
@@ -149,40 +146,29 @@ class HeaderCollection extends \MailSo\Base\Collection
 			}
 
 			$sFirstChar = \substr($sHeadersValue, 0, 1);
-			if ($sFirstChar !== ' ' && $sFirstChar !== "\t" && false === \strpos($sHeadersValue, ':'))
-			{
+			if ($sFirstChar !== ' ' && $sFirstChar !== "\t" && false === \strpos($sHeadersValue, ':')) {
 				continue;
 			}
-			else if (null !== $sName && ($sFirstChar === ' ' || $sFirstChar === "\t"))
-			{
+			if (null !== $sName && ($sFirstChar === ' ' || $sFirstChar === "\t")) {
 				$sValue = \is_null($sValue) ? '' : $sValue;
 
-				if ('?=' === \substr(\rtrim($sHeadersValue), -2))
-				{
+				if ('?=' === \substr(\rtrim($sHeadersValue), -2)) {
 					$sHeadersValue = \rtrim($sHeadersValue);
 				}
 
-				if ('=?' === \substr(\ltrim($sHeadersValue), 0, 2))
-				{
+				if ('=?' === \substr(\ltrim($sHeadersValue), 0, 2)) {
 					$sHeadersValue = \ltrim($sHeadersValue);
 				}
 
-				if ('=?' === \substr($sHeadersValue, 0, 2))
-				{
+				if ('=?' === \substr($sHeadersValue, 0, 2)) {
 					$sValue .= $sHeadersValue;
-				}
-				else
-				{
+				} else {
 					$sValue .= "\n".$sHeadersValue;
 				}
-			}
-			else
-			{
-				if (null !== $sName)
-				{
+			} else {
+				if (null !== $sName) {
 					$oHeader = Header::NewInstanceFromEncodedString($sName.': '.$sValue, $this->sParentCharset);
-					if ($oHeader)
-					{
+					if ($oHeader) {
 						$this->append($oHeader);
 					}
 
@@ -194,18 +180,15 @@ class HeaderCollection extends \MailSo\Base\Collection
 				$sName = $aHeaderParts[0];
 				$sValue = isset($aHeaderParts[1]) ? $aHeaderParts[1] : '';
 
-				if ('?=' === \substr(\rtrim($sValue), -2))
-				{
+				if ('?=' === \substr(\rtrim($sValue), -2)) {
 					$sValue = \rtrim($sValue);
 				}
 			}
 		}
 
-		if (null !== $sName)
-		{
+		if (null !== $sName) {
 			$oHeader = Header::NewInstanceFromEncodedString($sName.': '.$sValue, $this->sParentCharset);
-			if ($oHeader)
-			{
+			if ($oHeader) {
 				$this->append($oHeader);
 			}
 		}
@@ -218,10 +201,8 @@ class HeaderCollection extends \MailSo\Base\Collection
 		$aResult = array();
 
 		$aHeaders = $this->ValuesByName(Enumerations\Header::AUTHENTICATION_RESULTS);
-		if (\count($aHeaders))
-		{
-			foreach ($aHeaders as $sHeaderValue)
-			{
+		if (\count($aHeaders)) {
+			foreach ($aHeaders as $sHeaderValue) {
 				$sStatus = '';
 				$sHeader = '';
 				$sDkimLine = '';
@@ -230,35 +211,28 @@ class HeaderCollection extends \MailSo\Base\Collection
 
 				$sHeaderValue = \preg_replace('/[\r\n\t\s]+/', ' ', $sHeaderValue);
 
-				if (\preg_match('/dkim=.+/i', $sHeaderValue, $aMatch) && !empty($aMatch[0]))
-				{
+				if (\preg_match('/dkim=.+/i', $sHeaderValue, $aMatch) && !empty($aMatch[0])) {
 					$sDkimLine = $aMatch[0];
 
 					$aMatch = array();
-					if (\preg_match('/dkim=([a-zA-Z0-9]+)/i', $sDkimLine, $aMatch) && !empty($aMatch[1]))
-					{
+					if (\preg_match('/dkim=([a-zA-Z0-9]+)/i', $sDkimLine, $aMatch) && !empty($aMatch[1])) {
 						$sStatus = $aMatch[1];
 					}
 
 					$aMatch = array();
-					if (\preg_match('/header\.(d|i|from)=([^\s;]+)/i', $sDkimLine, $aMatch) && !empty($aMatch[2]))
-					{
+					if (\preg_match('/header\.(d|i|from)=([^\s;]+)/i', $sDkimLine, $aMatch) && !empty($aMatch[2])) {
 						$sHeader = \trim($aMatch[2]);
 					}
 
-					if (!empty($sStatus) && !empty($sHeader))
-					{
+					if (!empty($sStatus) && !empty($sHeader)) {
 						$aResult[] = array($sStatus, $sHeader, $sDkimLine);
 					}
 				}
 			}
-		}
-		else
-		{
+		} else {
 			// X-DKIM-Authentication-Results: signer="hostinger.com" status="pass"
 			$aHeaders = $this->ValuesByName(Enumerations\Header::X_DKIM_AUTHENTICATION_RESULTS);
-			foreach ($aHeaders as $sHeaderValue)
-			{
+			foreach ($aHeaders as $sHeaderValue) {
 				$sStatus = '';
 				$sHeader = '';
 
@@ -266,18 +240,15 @@ class HeaderCollection extends \MailSo\Base\Collection
 
 				$sHeaderValue = \preg_replace('/[\r\n\t\s]+/', ' ', $sHeaderValue);
 
-				if (\preg_match('/status[\s]?=[\s]?"([a-zA-Z0-9]+)"/i', $sHeaderValue, $aMatch) && !empty($aMatch[1]))
-				{
+				if (\preg_match('/status[\s]?=[\s]?"([a-zA-Z0-9]+)"/i', $sHeaderValue, $aMatch) && !empty($aMatch[1])) {
 					$sStatus = $aMatch[1];
 				}
 
-				if (\preg_match('/signer[\s]?=[\s]?"([^";]+)"/i', $sHeaderValue, $aMatch) && !empty($aMatch[1]))
-				{
+				if (\preg_match('/signer[\s]?=[\s]?"([^";]+)"/i', $sHeaderValue, $aMatch) && !empty($aMatch[1])) {
 					$sHeader = \trim($aMatch[1]);
 				}
 
-				if (!empty($sStatus) && !empty($sHeader))
-				{
+				if (!empty($sStatus) && !empty($sHeader)) {
 					$aResult[] = array($sStatus, $sHeader, $sHeaderValue);
 				}
 			}
@@ -292,9 +263,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		foreach ($oEmails as $oEmail) {
 			$sEmail = $oEmail->GetEmail();
 			foreach ($aDkimStatuses as $aDkimData) {
-				if (isset($aDkimData[0], $aDkimData[1]) &&
-					$aDkimData[1] === \strstr($sEmail, $aDkimData[1]))
-				{
+				if (isset($aDkimData[0], $aDkimData[1]) && $aDkimData[1] === \strstr($sEmail, $aDkimData[1])) {
 					$oEmail->SetDkimStatusAndValue($aDkimData[0], empty($aDkimData[2]) ? '' : $aDkimData[2]);
 				}
 			}

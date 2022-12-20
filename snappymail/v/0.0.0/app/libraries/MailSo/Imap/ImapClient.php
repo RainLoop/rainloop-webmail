@@ -154,7 +154,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		try
 		{
-			if (0 === \strpos($type, 'SCRAM-'))
+			if (\str_starts_with($type, 'SCRAM-'))
 			{
 				$sAuthzid = $this->getResponseValue($this->SendRequestGetResponse('AUTHENTICATE', array($type)), Enumerations\ResponseType::CONTINUATION);
 				$this->sendRaw($SASL->authenticate($sLogin, $sPassword/*, $sAuthzid*/), true);
@@ -377,9 +377,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
 				 && 'NAMESPACE' === $oResponse->StatusOrIndex)
 				{
-					$oReturn = new NamespaceResult;
-					$oReturn->InitByImapResponse($oResponse);
-					return $oReturn;
+					return new NamespaceResult($oResponse);
 				}
 			}
 			throw new Exceptions\ResponseException;

@@ -18,10 +18,7 @@ namespace MailSo\Smtp\Exceptions;
  */
 class ResponseException extends \MailSo\RuntimeException
 {
-	/**
-	 * @var array
-	 */
-	private $aResponses;
+	private array $aResponses;
 
 	public function __construct(array $aResponses = array(), string $sMessage = '', int $iCode = 0, ?\Throwable $oPrevious = null)
 	{
@@ -37,7 +34,7 @@ class ResponseException extends \MailSo\RuntimeException
 
 	public function GetLastResponse() : ?\MailSo\Smtp\Response
 	{
-		$iCnt = count($this->aResponses);
+		$iCnt = \count($this->aResponses);
 		return $iCnt ? $this->aResponses[$iCnt - 1] : null;
 	}
 }

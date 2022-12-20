@@ -17,15 +17,7 @@ namespace MailSo\Mime;
  */
 class Part
 {
-	/**
-	 * @var string
-	 */
-	public static $DefaultCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1;
-
-	/**
-	 * @var HeaderCollection
-	 */
-	public $Headers;
+	public HeaderCollection $Headers;
 
 	/**
 	 * @var resource
@@ -37,10 +29,7 @@ class Part
 	 */
 	public $Raw = null;
 
-	/**
-	 * @var PartCollection
-	 */
-	public $SubParts;
+	public PartCollection $SubParts;
 
 	function __construct()
 	{
@@ -75,17 +64,12 @@ class Part
 
 	public function IsFlowedFormat() : bool
 	{
-		$bResult = false;
-		if ($this->Headers)
-		{
-			$bResult = 'flowed' === \trim(\strtolower($this->Headers->ParameterValue(
-				Enumerations\Header::CONTENT_TYPE,
-				Enumerations\Parameter::FORMAT)));
+		$bResult = 'flowed' === \trim(\strtolower($this->Headers->ParameterValue(
+			Enumerations\Header::CONTENT_TYPE,
+			Enumerations\Parameter::FORMAT)));
 
-			if ($bResult && \in_array($this->MailEncodingName(), array('base64', 'quoted-printable')))
-			{
-				$bResult = false;
-			}
+		if ($bResult && \in_array($this->MailEncodingName(), array('base64', 'quoted-printable'))) {
+			$bResult = false;
 		}
 
 		return $bResult;
@@ -93,19 +77,14 @@ class Part
 
 	public function FileName() : string
 	{
-		$sResult = '';
-		if ($this->Headers)
-		{
-			$sResult = \trim($this->Headers->ParameterValue(
-				Enumerations\Header::CONTENT_DISPOSITION,
-				Enumerations\Parameter::FILENAME));
+		$sResult = \trim($this->Headers->ParameterValue(
+			Enumerations\Header::CONTENT_DISPOSITION,
+			Enumerations\Parameter::FILENAME));
 
-			if (!\strlen($sResult))
-			{
-				$sResult = \trim($this->Headers->ParameterValue(
-					Enumerations\Header::CONTENT_TYPE,
-					Enumerations\Parameter::NAME));
-			}
+		if (!\strlen($sResult)) {
+			$sResult = \trim($this->Headers->ParameterValue(
+				Enumerations\Header::CONTENT_TYPE,
+				Enumerations\Parameter::NAME));
 		}
 
 		return $sResult;

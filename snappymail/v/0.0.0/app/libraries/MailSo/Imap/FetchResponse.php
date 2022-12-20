@@ -118,7 +118,7 @@ class FetchResponse
 
 				if (\is_string($mItem) && (
 					$mItem === 'BODY[HEADER]' ||
-					0 === \strpos($mItem, 'BODY[HEADER.FIELDS') ||
+					\str_starts_with($mItem, 'BODY[HEADER.FIELDS') ||
 					$mItem === 'BODY[MIME]'))
 				{
 					$bNextIsValue = true;

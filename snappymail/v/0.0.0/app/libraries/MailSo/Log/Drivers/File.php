@@ -18,10 +18,7 @@ namespace MailSo\Log\Drivers;
  */
 class File extends \MailSo\Log\Driver
 {
-	/**
-	 * @var string
-	 */
-	private $sLoggerFileName;
+	private string $sLoggerFileName;
 
 	function __construct(string $sLoggerFileName)
 	{

@@ -17,20 +17,19 @@ namespace MailSo\Log;
  */
 class Logger extends \SplFixedArray
 {
-	private $bUsed = false;
+	private bool $bUsed = false;
 
-	private $iLevel = \LOG_WARNING;
+	private int $iLevel = \LOG_WARNING;
 
-	private $aSecretWords = [];
+	private array $aSecretWords = [];
 
-	private $bShowSecrets = false;
+	private bool $bShowSecrets = false;
 
 	function __construct(bool $bMainLogger = false)
 	{
 		parent::__construct();
 
-		if ($bMainLogger)
-		{
+		if ($bMainLogger) {
 			\set_error_handler(array($this, '__phpErrorHandler'));
 			\set_exception_handler(array($this, '__phpExceptionHandler'));
 			\register_shutdown_function(array($this, '__loggerShutDown'));
@@ -43,8 +42,7 @@ class Logger extends \SplFixedArray
 	public static function Guid() : string
 	{
 		static $sCache = null;
-		if (null === $sCache)
-		{
+		if (null === $sCache) {
 			$sCache = \substr(\MailSo\Base\Utils::Sha1Rand(), -8);
 		}
 

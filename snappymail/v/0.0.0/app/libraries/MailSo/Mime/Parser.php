@@ -23,7 +23,7 @@ abstract class Parser
 		POS_SUBPARTS = 3,
 		POS_CLOSE_BOUNDARY = 4;
 
-	private static $LineParts = [];
+	private static array $LineParts = [];
 
 	protected static function writeBody(Part $oPart, string $sBuffer) : void
 	{
@@ -59,21 +59,18 @@ abstract class Parser
 
 		$oMimePart = null;
 		$sFirstNotNullCharset = null;
-		foreach (static::$LineParts as /* @var $oMimePart Part */ $oMimePart)
-		{
+		foreach (static::$LineParts as /* @var $oMimePart Part */ $oMimePart) {
 			$sCharset = $oMimePart->HeaderCharset();
-			if (\strlen($sCharset))
-			{
+			if (\strlen($sCharset)) {
 				$sFirstNotNullCharset = $sCharset;
 				break;
 			}
 		}
 
 		$sFirstNotNullCharset = (null !== $sFirstNotNullCharset)
-			? $sFirstNotNullCharset : Part::$DefaultCharset;
+			? $sFirstNotNullCharset : \MailSo\Base\Enumerations\Charset::ISO_8859_1;
 
-		foreach (static::$LineParts as /* @var $oMimePart Part */ $oMimePart)
-		{
+		foreach (static::$LineParts as /* @var $oMimePart Part */ $oMimePart) {
 			$sHeaderCharset = $oMimePart->HeaderCharset();
 			$oMimePart->Headers->SetParentCharset($sHeaderCharset);
 		}
@@ -93,53 +90,38 @@ abstract class Parser
 		$sCurrentBoundary = '';
 		$bIsBoundaryCheck = false;
 		$aHeadersLines = array();
-		while (true)
-		{
-			if (!$bNotFirstRead)
-			{
+		while (true) {
+			if (!$bNotFirstRead) {
 				$sPrevBuffer = $sBuffer;
 				$sBuffer = '';
 			}
 
-			if (!$bIsOef && !\feof($rStreamHandle))
-			{
-				if (!$bNotFirstRead)
-				{
+			if (!$bIsOef && !\feof($rStreamHandle)) {
+				if (!$bNotFirstRead) {
 					$sBuffer = \fread($rStreamHandle, 8192);
-					if (false === $sBuffer)
-					{
+					if (false === $sBuffer) {
 						break;
 					}
-				}
-				else
-				{
+				} else {
 					$bNotFirstRead = false;
 				}
-			}
-			else if ($bIsOef && !\strlen($sBuffer))
-			{
+			} else if ($bIsOef && !\strlen($sBuffer)) {
 				break;
-			}
-			else
-			{
+			} else {
 				$bIsOef = true;
 			}
 
-			while (true)
-			{
+			while (true) {
 				$sCurrentLine = $sPrevBuffer.$sBuffer;
-				if (self::POS_HEADERS === $iParsePosition)
-				{
+				if (self::POS_HEADERS === $iParsePosition) {
 					$iEndLen = 4;
 					$iPos = \strpos($sCurrentLine, "\r\n\r\n", $iOffset);
-					if (false === $iPos)
-					{
+					if (false === $iPos) {
 						$iEndLen = 2;
 						$iPos = \strpos($sCurrentLine, "\n\n", $iOffset);
 					}
 
-					if (false !== $iPos)
-					{
+					if (false !== $iPos) {
 						$aHeadersLines[] = \substr($sCurrentLine, $iOffset, $iPos + $iEndLen - $iOffset);
 
 						$oPart->Headers->Parse(\implode($aHeadersLines))->SetParentCharset($oPart->HeaderCharset());
@@ -156,42 +138,31 @@ abstract class Parser
 						$iOffset = $iPos + $iEndLen;
 						$iParsePosition = self::POS_BODY;
 						continue;
-					}
-					else
-					{
+					} else {
 						$iBufferLen = \strlen($sPrevBuffer);
-						if ($iBufferLen > $iOffset)
-						{
+						if ($iBufferLen > $iOffset) {
 							$aHeadersLines[] = \substr($sPrevBuffer, $iOffset);
 							$iOffset = 0;
-						}
-						else
-						{
+						} else {
 							$iOffset -= $iBufferLen;
 						}
 						break;
 					}
-				}
-				else if (self::POS_BODY === $iParsePosition)
-				{
+				} else if (self::POS_BODY === $iParsePosition) {
 					$iPos = false;
 					$sBoundaryLen = 0;
 					$bIsBoundaryEnd = false;
 					$bCurrentPartBody = false;
 					$bIsBoundaryCheck = \count($aBoundaryStack);
 
-					foreach ($aBoundaryStack as $sKey => $sBoundary)
-					{
-						if (false !== ($iPos = \strpos($sCurrentLine, $sBoundary, $iOffset)))
-						{
-							if ($sCurrentBoundary === $sBoundary)
-							{
+					foreach ($aBoundaryStack as $sKey => $sBoundary) {
+						if (false !== ($iPos = \strpos($sCurrentLine, $sBoundary, $iOffset))) {
+							if ($sCurrentBoundary === $sBoundary) {
 								$bCurrentPartBody = true;
 							}
 
 							$sBoundaryLen = \strlen($sBoundary);
-							if ('--' === \substr($sCurrentLine, $iPos + $sBoundaryLen, 2))
-							{
+							if ('--' === \substr($sCurrentLine, $iPos + $sBoundaryLen, 2)) {
 								$sBoundaryLen += 2;
 								$bIsBoundaryEnd = true;
 								unset($aBoundaryStack[$sKey]);
@@ -203,54 +174,42 @@ abstract class Parser
 						}
 					}
 
-					if (false !== $iPos)
-					{
+					if (false !== $iPos) {
 						static::writeBody($oPart, \substr($sCurrentLine, $iOffset, $iPos - $iOffset));
 						$iOffset = $iPos;
 
-						if ($bCurrentPartBody)
-						{
+						if ($bCurrentPartBody) {
 							$iParsePosition = self::POS_SUBPARTS;
 							continue;
 						}
 
 						return;
-					}
-					else
-					{
+					} else {
 						$iBufferLen = \strlen($sPrevBuffer);
-						if ($iBufferLen > $iOffset)
-						{
+						if ($iBufferLen > $iOffset) {
 							static::writeBody($oPart, \substr($sPrevBuffer, $iOffset));
 							$iOffset = 0;
-						}
-						else
-						{
+						} else {
 							$iOffset -= $iBufferLen;
 						}
 						break;
 					}
-				}
-				else if (self::POS_SUBPARTS === $iParsePosition)
-				{
+				} else if (self::POS_SUBPARTS === $iParsePosition) {
 					$iPos = false;
 					$iBoundaryLen = 0;
 					$bIsBoundaryEnd = false;
 					$bCurrentPartBody = false;
 					$bIsBoundaryCheck = \count($aBoundaryStack);
 
-					foreach ($aBoundaryStack as $sKey => $sBoundary)
-					{
-						if (false !== ($iPos = \strpos($sCurrentLine, $sBoundary, $iOffset)))
-						{
-							if ($sCurrentBoundary === $sBoundary)
-							{
+					foreach ($aBoundaryStack as $sKey => $sBoundary) {
+						$iPos = \strpos($sCurrentLine, $sBoundary, $iOffset);
+						if (false !== $iPos) {
+							if ($sCurrentBoundary === $sBoundary) {
 								$bCurrentPartBody = true;
 							}
 
 							$iBoundaryLen = \strlen($sBoundary);
-							if ('--' === \substr($sCurrentLine, $iPos + $iBoundaryLen, 2))
-							{
+							if ('--' === \substr($sCurrentLine, $iPos + $iBoundaryLen, 2)) {
 								$iBoundaryLen += 2;
 								$bIsBoundaryEnd = true;
 								unset($aBoundaryStack[$sKey]);
@@ -261,8 +220,7 @@ abstract class Parser
 						}
 					}
 
-					if (false !== $iPos && $bCurrentPartBody)
-					{
+					if (false !== $iPos && $bCurrentPartBody) {
 						$iOffset = $iPos + $iBoundaryLen;
 
 						$oSubPart = new Part;
@@ -274,39 +232,27 @@ abstract class Parser
 						static::$LineParts[] = $oSubPart;
 						//$iParsePosition = self::POS_HEADERS;
 						unset($oSubPart);
-					}
-					else
-					{
+					} else {
 						return;
 					}
 				}
 			}
 		}
 
-		if (\strlen($sPrevBuffer))
-		{
-			if (self::POS_HEADERS === $iParsePosition)
-			{
+		if (\strlen($sPrevBuffer)) {
+			if (self::POS_HEADERS === $iParsePosition) {
 				$aHeadersLines[] = ($iOffset < \strlen($sPrevBuffer))
 					? \substr($sPrevBuffer, $iOffset)
 					: $sPrevBuffer;
 
 				$oPart->Headers->Parse(\implode($aHeadersLines))->SetParentCharset($oPart->HeaderCharset());
 				$aHeadersLines = array();
+			} else if (!$bIsBoundaryCheck && self::POS_BODY === $iParsePosition) {
+				static::writeBody($oPart, ($iOffset < \strlen($sPrevBuffer))
+					? \substr($sPrevBuffer, $iOffset) : $sPrevBuffer);
 			}
-			else if (self::POS_BODY === $iParsePosition)
-			{
-				if (!$bIsBoundaryCheck)
-				{
-					static::writeBody($oPart, ($iOffset < \strlen($sPrevBuffer))
-						? \substr($sPrevBuffer, $iOffset) : $sPrevBuffer);
-				}
-			}
-		}
-		else
-		{
-			if (self::POS_HEADERS === $iParsePosition && \count($aHeadersLines))
-			{
+		} else {
+			if (self::POS_HEADERS === $iParsePosition && \count($aHeadersLines)) {
 				$oPart->Headers->Parse(\implode($aHeadersLines))->SetParentCharset($oPart->HeaderCharset());
 				$aHeadersLines = array();
 			}

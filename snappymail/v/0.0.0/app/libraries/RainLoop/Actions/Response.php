@@ -37,8 +37,7 @@ trait Response
 		;
 
 		$aAdditionalParams = array();
-		if (null !== $iErrorCode)
-		{
+		if (null !== $iErrorCode) {
 			$aAdditionalParams['ErrorCode'] = (int) $iErrorCode;
 			$aAdditionalParams['ErrorMessage'] = null === $sErrorMessage ? '' : (string) $sErrorMessage;
 			$aAdditionalParams['ErrorMessageAdditional'] = null === $sAdditionalErrorMessage ? '' : (string) $sAdditionalErrorMessage;
@@ -56,35 +55,27 @@ trait Response
 		$sErrorMessage = null;
 		$sErrorMessageAdditional = null;
 
-		if ($oException instanceof \RainLoop\Exceptions\ClientException)
-		{
+		if ($oException instanceof \RainLoop\Exceptions\ClientException) {
 			$iErrorCode = $oException->getCode();
 			$sErrorMessage = null;
 
-			if ($iErrorCode === Notifications::ClientViewError)
-			{
+			if ($iErrorCode === Notifications::ClientViewError) {
 				$sErrorMessage = $oException->getMessage();
 			}
 
 			$sErrorMessageAdditional = $oException->getAdditionalMessage();
-			if (empty($sErrorMessageAdditional))
-			{
+			if (empty($sErrorMessageAdditional)) {
 				$sErrorMessageAdditional = null;
 			}
-		}
-		else
-		{
+		} else {
 			$iErrorCode = Notifications::UnknownError;
 			$sErrorMessage = $oException->getCode().' - '.$oException->getMessage();
 		}
 
 		$oPrevious = $oException->getPrevious();
-		if ($oPrevious)
-		{
+		if ($oPrevious) {
 			$this->Logger()->WriteException($oPrevious);
-		}
-		else
-		{
+		} else {
 			$this->Logger()->WriteException($oException);
 		}
 
@@ -105,8 +96,7 @@ trait Response
 			'Result' => $this->responseObject($mResult, $sActionName)
 		);
 
-		foreach ($aAdditionalParams as $sKey => $mValue)
-		{
+		foreach ($aAdditionalParams as $sKey => $mValue) {
 			$aResult[$sKey] = $mValue;
 		}
 
@@ -141,17 +131,13 @@ trait Response
 	private $aCheckableFolder = null;
 	private function responseObject($mResponse, string $sParent = '')
 	{
-		if (!($mResponse instanceof \JsonSerializable))
-		{
-			if (\is_object($mResponse))
-			{
+		if (!($mResponse instanceof \JsonSerializable)) {
+			if (\is_object($mResponse)) {
 				return '["'.\get_class($mResponse).'"]';
 			}
 
-			if (\is_array($mResponse))
-			{
-				foreach ($mResponse as $iKey => $oItem)
-				{
+			if (\is_array($mResponse)) {
+				foreach ($mResponse as $iKey => $oItem) {
 					$mResponse[$iKey] = $this->responseObject($oItem, $sParent);
 				}
 			}
@@ -159,14 +145,13 @@ trait Response
 			return $mResponse;
 		}
 
-		if ($mResponse instanceof \MailSo\Mail\Message)
-		{
+		if ($mResponse instanceof \MailSo\Mail\Message) {
 			$mResult = $mResponse->jsonSerialize();
 
 			$oAccount = $this->getAccountFromToken();
 
 			if (!$mResult['DateTimeStampInUTC'] || $this->Config()->Get('labs', 'date_from_headers', false)) {
-				$iDateTimeStampInUTC = $mResponse->HeaderTimeStampInUTC();
+				$iDateTimeStampInUTC = $mResponse->HeaderTimeStampInUTC;
 				if ($iDateTimeStampInUTC) {
 					$mResult['DateTimeStampInUTC'] = $iDateTimeStampInUTC;
 				}
@@ -187,34 +172,30 @@ trait Response
 				'FileName' => (\strlen($sSubject) ? \MailSo\Base\Utils::SecureFileName($sSubject) : 'message-'.$mResult['Uid']) . '.eml'
 			));
 
-			$mResult['Attachments'] = $this->responseObject($mResponse->Attachments(), $sParent);
+			$mResult['Attachments'] = $this->responseObject($mResponse->Attachments, $sParent);
 
-			if ('Message' === $sParent)
-			{
-				$mResult['DraftInfo'] = $mResponse->DraftInfo();
-				$mResult['InReplyTo'] = $mResponse->InReplyTo();
-				$mResult['UnsubsribeLinks'] = $mResponse->UnsubsribeLinks();
-				$mResult['References'] = $mResponse->References();
+			if ('Message' === $sParent) {
+				$mResult['DraftInfo'] = $mResponse->DraftInfo;
+				$mResult['InReplyTo'] = $mResponse->InReplyTo;
+				$mResult['UnsubsribeLinks'] = $mResponse->UnsubsribeLinks;
+				$mResult['References'] = $mResponse->References;
 
 				$mResult['Html'] = $mResponse->Html();
 				$mResult['Plain'] = $mResponse->Plain();
 
 //				$this->GetCapa(Capa::OPEN_PGP) || $this->GetCapa(Capa::GNUPG)
-				$mResult['PgpSigned'] = $mResponse->PgpSigned();
-				$mResult['PgpEncrypted'] = $mResponse->PgpEncrypted();
+				$mResult['PgpSigned'] = $mResponse->pgpSigned;
+				$mResult['PgpEncrypted'] = $mResponse->pgpEncrypted;
 
-				$mResult['ReadReceipt'] = $mResponse->ReadReceipt();
+				$mResult['ReadReceipt'] = $mResponse->ReadReceipt;
 
-				if (\strlen($mResult['ReadReceipt']) && !\in_array('$forwarded', $mResult['Flags']))
-				{
+				if (\strlen($mResult['ReadReceipt']) && !\in_array('$forwarded', $mResult['Flags'])) {
 					// \in_array('$mdnsent', $mResult['Flags'])
-					if (\strlen($mResult['ReadReceipt']))
-					{
+					if (\strlen($mResult['ReadReceipt'])) {
 						try
 						{
 							$oReadReceipt = \MailSo\Mime\Email::Parse($mResult['ReadReceipt']);
-							if (!$oReadReceipt)
-							{
+							if (!$oReadReceipt) {
 								$mResult['ReadReceipt'] = '';
 							}
 						}
@@ -231,8 +212,7 @@ trait Response
 			return $mResult;
 		}
 
-		if ($mResponse instanceof \MailSo\Mail\Attachment)
-		{
+		if ($mResponse instanceof \MailSo\Mail\Attachment) {
 			$mResult = $mResponse->jsonSerialize();
 			$mResult['IsThumbnail'] = $this->GetCapa(Capa::ATTACHMENT_THUMBNAILS) && $this->isFileHasThumbnail($mResult['FileName']);
 			$mResult['Download'] = Utils::EncodeKeyValuesQ(array(
@@ -246,8 +226,7 @@ trait Response
 			return $mResult;
 		}
 
-		if ($mResponse instanceof \MailSo\Imap\Folder)
-		{
+		if ($mResponse instanceof \MailSo\Imap\Folder) {
 			$aResult = $mResponse->jsonSerialize();
 
 			$sHash = $mResponse->Hash($this->MailClient()->ImapClient()->Hash());
@@ -268,8 +247,7 @@ trait Response
 			return $aResult;
 		}
 
-		if ($mResponse instanceof \MailSo\Base\Collection)
-		{
+		if ($mResponse instanceof \MailSo\Base\Collection) {
 			$mResult = $mResponse->jsonSerialize();
 			$mResult['@Collection'] = $this->responseObject($mResult['@Collection'], $sParent);
 			if ($mResponse instanceof \MailSo\Mail\EmailCollection) {

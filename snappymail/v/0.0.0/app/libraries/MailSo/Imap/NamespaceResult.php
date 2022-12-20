@@ -17,80 +17,59 @@ namespace MailSo\Imap;
  */
 class NamespaceResult
 {
-	/**
-	 * @var string
-	 */
-	private $sPersonal = '';
+	private string $sPersonal = '';
 
-	/**
-	 * @var string
-	 */
-	private $sPersonalDelimiter = '';
+	private string $sPersonalDelimiter = '';
+/*
+	private string $sOtherUser = '';
 
-	/**
-	 * @var string
-	 */
-	private $sOtherUser = '';
+	private string $sOtherUserDelimiter = '';
 
-	/**
-	 * @var string
-	 */
-	private $sOtherUserDelimiter = '';
+	private string $sShared = '';
 
-	/**
-	 * @var string
-	 */
-	private $sShared = '';
-
-	/**
-	 * @var string
-	 */
-	private $sSharedDelimiter = '';
-
-	public function InitByImapResponse(\MailSo\Imap\Response $oImapResponse) : self
+	private string $sSharedDelimiter = '';
+*/
+	function __construct(Response $oImapResponse)
 	{
-		if ($oImapResponse)
-		{
-			if (isset($oImapResponse->ResponseList[2][0]) &&
-				\is_array($oImapResponse->ResponseList[2][0]) &&
-				2 <= \count($oImapResponse->ResponseList[2][0]))
-			{
-				$this->sPersonal = $oImapResponse->ResponseList[2][0][0];
-				$this->sPersonalDelimiter = $oImapResponse->ResponseList[2][0][1];
-
-				$this->sPersonal = 'INBOX'.$this->sPersonalDelimiter === \substr(\strtoupper($this->sPersonal), 0, 6) ?
-					'INBOX'.$this->sPersonalDelimiter.\substr($this->sPersonal, 6) : $this->sPersonal;
-			}
-
-			if (isset($oImapResponse->ResponseList[3][0]) &&
-				\is_array($oImapResponse->ResponseList[3][0]) &&
-				2 <= \count($oImapResponse->ResponseList[3][0]))
-			{
-				$this->sOtherUser = $oImapResponse->ResponseList[3][0][0];
-				$this->sOtherUserDelimiter = $oImapResponse->ResponseList[3][0][1];
-
-				$this->sOtherUser = 'INBOX'.$this->sOtherUserDelimiter === \substr(\strtoupper($this->sOtherUser), 0, 6) ?
-					'INBOX'.$this->sOtherUserDelimiter.\substr($this->sOtherUser, 6) : $this->sOtherUser;
-			}
-
-			if (isset($oImapResponse->ResponseList[4][0]) &&
-				\is_array($oImapResponse->ResponseList[4][0]) &&
-				2 <= \count($oImapResponse->ResponseList[4][0]))
-			{
-				$this->sShared = $oImapResponse->ResponseList[4][0][0];
-				$this->sSharedDelimiter = $oImapResponse->ResponseList[4][0][1];
-
-				$this->sShared = 'INBOX'.$this->sSharedDelimiter === \substr(\strtoupper($this->sShared), 0, 6) ?
-					'INBOX'.$this->sSharedDelimiter.\substr($this->sShared, 6) : $this->sShared;
-			}
+		$space = static::getNamespace($oImapResponse, 2);
+		if ($space) {
+			$this->sPersonal = $space[0];
+			$this->sPersonalDelimiter = $space[1];
+		}
+/*
+		$space = static::getNamespace($oImapResponse, 3);
+		if ($space) {
+			$this->sOtherUser = $space[0];
+			$this->sOtherUserDelimiter = $space[1];
 		}
 
-		return $this;
+		$space = static::getNamespace($oImapResponse, 4);
+		if ($space) {
+			$this->sShared = $space[0];
+			$this->sSharedDelimiter = $space[1];
+		}
+*/
 	}
 
 	public function GetPersonalNamespace() : string
 	{
 		return $this->sPersonal;
+	}
+
+	private static function getNamespace(Response $oImapResponse, int $section) : ?array
+	{
+		if (isset($oImapResponse->ResponseList[$section][0])
+		 && \is_array($oImapResponse->ResponseList[$section][0])
+		 && 2 <= \count($oImapResponse->ResponseList[$section][0]))
+		{
+			$sName = $oImapResponse->ResponseList[$section][0][0];
+			$sDelimiter = $oImapResponse->ResponseList[$section][0][1];
+			$sName = 'INBOX'.$sDelimiter === \substr(\strtoupper($sName), 0, 6)
+				? 'INBOX'.$sDelimiter.\substr($sName, 6)
+				: $sName;
+			return [$sName, $sDelimiter];
+		}
+		return null;
 	}
 
 }

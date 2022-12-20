@@ -27,35 +27,17 @@ class SubStreams
 	 */
 	const STREAM_NAME = 'mailsosubstreams';
 
-	/**
-	 * @var array
-	 */
-	private static $aStreams = array();
+	private static array $aStreams = array();
 
-	/**
-	 * @var array
-	 */
-	private $aSubStreams;
+	private array $aSubStreams;
 
-	/**
-	 * @var int
-	 */
-	private $iIndex;
+	private int $iIndex;
 
-	/**
-	 * @var string
-	 */
-	private $sBuffer;
+	private string $sBuffer;
 
-	/**
-	 * @var bool
-	 */
-	private $bIsEnd;
+	private bool $bIsEnd;
 
-	/**
-	 * @var int
-	 */
-	private $iPos;
+	private int $iPos;
 
 	/**
 	 * @return resource|bool
@@ -70,20 +52,6 @@ class SubStreams
 		}, $aSubStreams);
 
 		return \fopen(self::STREAM_NAME.'://'.$sHashName, 'rb');
-	}
-
-	/**
-	 * @return resource|null
-	 */
-	protected function &getPart()
-	{
-		$nNull = null;
-		if (isset($this->aSubStreams[$this->iIndex]))
-		{
-			return $this->aSubStreams[$this->iIndex];
-		}
-
-		return $nNull;
 	}
 
 	public function stream_open(string $sPath) : bool
@@ -119,53 +87,41 @@ class SubStreams
 	{
 		$sReturn = '';
 		$mCurrentPart = null;
-		if ($iCount > 0)
-		{
-			if ($iCount < \strlen($this->sBuffer))
-			{
+		if ($iCount > 0) {
+			if ($iCount < \strlen($this->sBuffer)) {
 				$sReturn = \substr($this->sBuffer, 0, $iCount);
 				$this->sBuffer = \substr($this->sBuffer, $iCount);
-			}
-			else
-			{
+			} else {
 				$sReturn = $this->sBuffer;
-				while ($iCount > 0)
-				{
-					$mCurrentPart =& $this->getPart();
-					if (null === $mCurrentPart)
-					{
+				while ($iCount > 0) {
+					$mCurrentPart = isset($this->aSubStreams[$this->iIndex])
+						? $this->aSubStreams[$this->iIndex]
+						: null;
+					if (null === $mCurrentPart) {
 						$this->bIsEnd = true;
 						$this->sBuffer = '';
 						$iCount = 0;
 						break;
 					}
 
-					if (\is_resource($mCurrentPart))
-					{
-						if (!\feof($mCurrentPart))
-						{
+					if (\is_resource($mCurrentPart)) {
+						if (!\feof($mCurrentPart)) {
 							$sReadResult = \fread($mCurrentPart, 8192);
-							if (false === $sReadResult)
-							{
+							if (false === $sReadResult) {
 								return false;
 							}
 							$sReturn .= $sReadResult;
-						}
-						else
-						{
-							$this->iIndex++;
+						} else {
+							++$this->iIndex;
 						}
 					}
 
 					$iLen = \strlen($sReturn);
-					if ($iCount < $iLen)
-					{
+					if ($iCount < $iLen) {
 						$this->sBuffer = \substr($sReturn, $iCount);
 						$sReturn = \substr($sReturn, 0, $iCount);
 						$iCount = 0;
-					}
-					else
-					{
+					} else {
 						$iCount -= $iLen;
 					}
 				}
@@ -214,6 +170,8 @@ class SubStreams
 
 	public function stream_seek() : bool
 	{
+//		$this->iPos = $offset;
+//		foreach ($this->aSubStreams as $rStream) \fseek($rStream, $offset, $whence);
 		return false;
 	}
 }

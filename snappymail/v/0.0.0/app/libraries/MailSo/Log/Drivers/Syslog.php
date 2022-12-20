@@ -18,7 +18,7 @@ namespace MailSo\Log\Drivers;
  */
 class Syslog extends \MailSo\Log\Driver
 {
-	private $iLogLevel;
+	private int $iLogLevel = 0;
 
 	function __construct()
 	{

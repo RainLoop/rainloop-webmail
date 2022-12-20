@@ -21,15 +21,9 @@ use MailSo\Imap\Exceptions\ResponseNotFoundException;
  */
 trait ResponseParser
 {
-	/**
-	 * @var int
-	 */
-	private $iResponseBufParsedPos;
+	private int $iResponseBufParsedPos;
 
-	/**
-	 * @var bool
-	 */
-	private $bNeedNext = true;
+	private bool $bNeedNext = true;
 
 	protected function partialParseResponse() : Response
 	{
@@ -365,9 +359,9 @@ trait ResponseParser
 		}
 
 		$sLiteralAtomUpperCasePeek = '';
-		if (0 === \strpos($sLiteralAtomUpperCase, 'BODY')) {
+		if (\str_starts_with($sLiteralAtomUpperCase, 'BODY')) {
 			$sLiteralAtomUpperCasePeek = \str_replace('BODY', 'BODY.PEEK', $sLiteralAtomUpperCase);
-		} else if (0 === \strpos($sLiteralAtomUpperCase, 'BINARY')) {
+		} else if (\str_starts_with($sLiteralAtomUpperCase, 'BINARY')) {
 			$sLiteralAtomUpperCasePeek = \str_replace('BINARY', 'BINARY.PEEK', $sLiteralAtomUpperCase);
 		}
 

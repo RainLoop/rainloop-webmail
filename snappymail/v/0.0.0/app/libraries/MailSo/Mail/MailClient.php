@@ -25,15 +25,9 @@ use MailSo\Mime\Enumerations\Parameter as MimeParameter;
  */
 class MailClient
 {
-	/**
-	 * @var \MailSo\Log\Logger
-	 */
-	private $oLogger = null;
+	private ?\MailSo\Log\Logger $oLogger = null;
 
-	/**
-	 * @var \MailSo\Imap\ImapClient
-	 */
-	private $oImapClient;
+	private \MailSo\Imap\ImapClient $oImapClient;
 
 	function __construct()
 	{
@@ -759,7 +753,7 @@ class MailClient
 
 		if ($aAllThreads && !$oParams->iThreadUid) {
 			foreach ($oMessageCollection as $oMessage) {
-				$iUid = $oMessage->Uid();
+				$iUid = $oMessage->Uid;
 				// Find thread and set it.
 				// Used by GUI to delete/move the whole thread or other features
 				foreach ($aAllThreads as $aMap) {

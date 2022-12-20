@@ -13,18 +13,22 @@ namespace MailSo\Mail;
 
 class MessageListParams
 {
-	public
-		$sFolderName, // string
-		$sSearch = '', // string
-		$oCacher = null, // ?\MailSo\Cache\CacheClient
-		$bUseSortIfSupported = false, // bool
-		$bUseThreads = false, // bool
-		$bHideDeleted = true, // bool
-		$sSort = ''; // string
+	public string
+		$sFolderName,
+		$sSearch,
+		$sSort;
 
-	protected
-		$iOffset = 0,
-		$iLimit = 10,
+	public ?\MailSo\Cache\CacheClient
+		$oCacher = null;
+
+	public bool
+		$bUseSortIfSupported = false,
+		$bUseThreads,
+		$bHideDeleted = true;
+
+	protected int
+		$iOffset,
+		$iLimit,
 		$iPrevUidNext = 0, // used to check for new messages
 		$iThreadUid = 0;
 

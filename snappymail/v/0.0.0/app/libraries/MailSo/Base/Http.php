@@ -23,8 +23,7 @@ class Http
 	public static function SingletonInstance() : self
 	{
 		static $oInstance = null;
-		if (null === $oInstance)
-		{
+		if (null === $oInstance) {
 			$oInstance = new self;
 		}
 
@@ -65,8 +64,7 @@ class Http
 
 	public function IsLocalhost(string $sValueToCheck = '') : bool
 	{
-		if (empty($sValueToCheck))
-		{
+		if (empty($sValueToCheck)) {
 			$sValueToCheck = static::GetServer('REMOTE_ADDR', '');
 		}
 
@@ -76,8 +74,7 @@ class Http
 	public function GetRawBody() : string
 	{
 		static $sRawBody = null;
-		if (null === $sRawBody)
-		{
+		if (null === $sRawBody) {
 			$sBody = \file_get_contents('php://input');
 			$sRawBody = (false !== $sBody) ? $sBody : '';
 		}
@@ -88,7 +85,7 @@ class Http
 	{
 		$sServerKey = 'HTTP_'.\strtoupper(\str_replace('-', '_', $sHeader));
 		$sResultHeader = static::GetServer($sServerKey, '');
-		if (0 === \strlen($sResultHeader) && \MailSo\Base\Utils::FunctionCallable('apache_request_headers')) {
+		if (!\strlen($sResultHeader) && \MailSo\Base\Utils::FunctionCallable('apache_request_headers')) {
 			$sHeaders = \apache_request_headers();
 			if (isset($sHeaders[$sHeader])) {
 				$sResultHeader = $sHeaders[$sHeader];
@@ -105,69 +102,44 @@ class Http
 	public function IsSecure(bool $bCheckProxy = true) : bool
 	{
 		$sHttps = \strtolower(static::GetServer('HTTPS', ''));
-		if ('on' === $sHttps || ('' === $sHttps && '443' === (string) static::GetServer('SERVER_PORT', '')))
-		{
-			return true;
-		}
-
-		if ($bCheckProxy && (
+		return ('on' === $sHttps || ('' === $sHttps && '443' === (string) static::GetServer('SERVER_PORT', '')))
+		 || ($bCheckProxy && (
 			('https' === \strtolower(static::GetServer('HTTP_X_FORWARDED_PROTO', ''))) ||
 			('on' === \strtolower(static::GetServer('HTTP_X_FORWARDED_SSL', '')))
-		))
-		{
-			return true;
-		}
-
-		return false;
+		   ));
 	}
 
 	public function GetHost(bool $bWithRemoteUserData = false, bool $bWithoutWWW = true, bool $bWithoutPort = false) : string
 	{
 		$sHost = static::GetServer('HTTP_HOST', '');
-		if (!\strlen($sHost))
-		{
+		if (!\strlen($sHost)) {
 			$sName = static::GetServer('SERVER_NAME');
 			$iPort = (int) static::GetServer('SERVER_PORT', 80);
 
 			$sHost = (\in_array($iPort, array(80, 433))) ? $sName : $sName.':'.$iPort;
 		}
 
-		if ($bWithoutWWW)
-		{
+		if ($bWithoutWWW) {
 			$sHost = 'www.' === \substr(\strtolower($sHost), 0, 4) ? \substr($sHost, 4) : $sHost;
 		}
 
-		if ($bWithRemoteUserData)
-		{
+		if ($bWithRemoteUserData) {
 			$sUser = \trim(static::GetServer('REMOTE_USER', ''));
 			$sHost = (\strlen($sUser) ? $sUser.'@' : '').$sHost;
 		}
 
-		if ($bWithoutPort)
-		{
-			$sHost = \preg_replace('/:\d+$/', '', $sHost);
-		}
-
-		return $sHost;
+		return $bWithoutPort ? \preg_replace('/:\d+$/', '', $sHost) : $sHost;
 	}
 
 	public function GetClientIp(bool $bCheckProxy = false) : string
 	{
-		$sIp = '';
-		if ($bCheckProxy && null !== static::GetServer('HTTP_CLIENT_IP', null))
-		{
-			$sIp = static::GetServer('HTTP_CLIENT_IP', '');
+		if ($bCheckProxy && null !== static::GetServer('HTTP_CLIENT_IP', null)) {
+			return static::GetServer('HTTP_CLIENT_IP', '');
 		}
-		else if ($bCheckProxy && null !== static::GetServer('HTTP_X_FORWARDED_FOR', null))
-		{
-			$sIp = static::GetServer('HTTP_X_FORWARDED_FOR', '');
+		if ($bCheckProxy && null !== static::GetServer('HTTP_X_FORWARDED_FOR', null)) {
+			return static::GetServer('HTTP_X_FORWARDED_FOR', '');
 		}
-		else
-		{
-			$sIp = static::GetServer('REMOTE_ADDR', '');
-		}
-
-		return $sIp;
+		return static::GetServer('REMOTE_ADDR', '');
 	}
 
 	public static function checkETag(string $ETag) : void
@@ -236,8 +208,7 @@ class Http
 
 	public static function StatusHeader(int $iStatus, string $sCustomStatusText = '') : void
 	{
-		if (99 < $iStatus)
-		{
+		if (99 < $iStatus) {
 			$aStatus = array(
 				200 => 'OK',
 				206 => 'Partial Content',
@@ -253,7 +224,7 @@ class Http
 				500 => 'Internal Server Error'
 			);
 
-			$sHeaderText = (0 === \strlen($sCustomStatusText) && isset($aStatus[$iStatus]) ? $aStatus[$iStatus] : $sCustomStatusText);
+			$sHeaderText = (!\strlen($sCustomStatusText) && isset($aStatus[$iStatus]) ? $aStatus[$iStatus] : $sCustomStatusText);
 
 			\http_response_code($iStatus);
 			if (isset($_SERVER['SERVER_PROTOCOL'])) {

@@ -17,7 +17,7 @@ namespace MailSo\Imap\Responses;
  */
 class ACL implements \JsonSerializable
 {
-	private $rights;
+	private array $rights;
 
 	function __construct(array $rights)
 	{

@@ -21,14 +21,18 @@ namespace MailSo\Imap\Requests;
  */
 class SORT extends Request
 {
-	public
-		$sCriterias = 'ALL',
-		$sCharset = '',
-		$bUid = true,
-		$aSortTypes = [],
-		$sLimit = '',
-		// RFC 5267
-		$aReturn = [
+	public string $sCriterias = 'ALL';
+
+	public string $sCharset = '';
+
+	public bool $bUid = true;
+
+	public array $aSortTypes = [];
+
+	public string $sLimit = '';
+
+	// RFC 5267
+	public array $aReturn = [
 		/**
 		   ALL
 			  Return all message numbers/UIDs which match the search criteria,

@@ -17,70 +17,31 @@ namespace MailSo\Imap;
  */
 class BodyStructure
 {
-	/**
-	 * @var string
-	 */
-	private $sContentType;
+	private string $sContentType;
 
-	/**
-	 * @var string
-	 */
-	private $sCharset;
+	private string $sCharset;
 
-	/**
-	 * @var array
-	 */
-	private $aBodyParams;
+	private array $aBodyParams;
 
-	/**
-	 * @var string
-	 */
-	private $sContentID;
+	private string $sContentID;
 
-	/**
-	 * @var string
-	 */
-	private $sDescription;
+	private string $sDescription;
 
-	/**
-	 * @var string
-	 */
-	private $sMailEncodingName;
+	private string $sMailEncodingName;
 
-	/**
-	 * @var string
-	 */
-	private $sDisposition;
+	private string $sDisposition;
 
-	/**
-	 * @var string
-	 */
-	private $sFileName;
+	private string $sFileName;
 
-	/**
-	 * @var string
-	 */
-	private $sLanguage = '';
+	private string $sLanguage = '';
 
-	/**
-	 * @var string
-	 */
-	private $sLocation = '';
+	private string $sLocation = '';
 
-	/**
-	 * @var int
-	 */
-	private $iSize;
+	private int $iSize;
 
-	/**
-	 * @var string
-	 */
-	private $sPartID;
+	private string $sPartID;
 
-	/**
-	 * @var array
-	 */
-	private $aSubParts;
+	private array $aSubParts;
 
 	public function MailEncodingName() : string
 	{
@@ -385,8 +346,7 @@ class BodyStructure
 
 	public static function NewInstance(array $aBodyStructure, string $sPartID = '') : ?self
 	{
-		if (2 > \count($aBodyStructure))
-		{
+		if (2 > \count($aBodyStructure)) {
 			return null;
 		}
 
@@ -587,20 +547,15 @@ class BodyStructure
 		$oStructure->sPartID = $sPartID;
 		$oStructure->aSubParts = $aSubParts;
 
-		if ($iExtraItemPos < \count($aBodyStructure))
-		{
-			if (\is_array($aBodyStructure[$iExtraItemPos]))
-			{
+		if ($iExtraItemPos < \count($aBodyStructure)) {
+			if (\is_array($aBodyStructure[$iExtraItemPos])) {
 				$oStructure->sLanguage = \implode(',', $aBodyStructure[$iExtraItemPos]);
-			}
-			else if (\is_string($aBodyStructure[$iExtraItemPos]))
-			{
+			} else if (\is_string($aBodyStructure[$iExtraItemPos])) {
 				$oStructure->sLanguage = $aBodyStructure[$iExtraItemPos];
 			}
 			++$iExtraItemPos;
 
-			if ($iExtraItemPos < \count($aBodyStructure) && \is_string($aBodyStructure[$iExtraItemPos]))
-			{
+			if ($iExtraItemPos < \count($aBodyStructure) && \is_string($aBodyStructure[$iExtraItemPos])) {
 				$oStructure->sLocation = $aBodyStructure[$iExtraItemPos];
 			}
 		}

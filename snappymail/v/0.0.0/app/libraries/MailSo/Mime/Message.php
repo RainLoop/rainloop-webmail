@@ -17,10 +17,7 @@ namespace MailSo\Mime;
  */
 class Message extends Part
 {
-	/**
-	 * @var array
-	 */
-	private $aHeadersValue = array(
+	private array $aHeadersValue = array(
 /*
 		Enumerations\Header::BCC => '',
 		Enumerations\Header::CC => '',
@@ -42,22 +39,11 @@ class Message extends Part
 */
 	);
 
-	/**
-	 * @var AttachmentCollection
-	 */
-	private $oAttachmentCollection;
+	private AttachmentCollection $oAttachmentCollection;
 
-	/**
-	 * @var bool
-	 */
-	private $bAddEmptyTextPart = true;
+	private bool $bAddEmptyTextPart = true;
 
-	/**
-	 * @var bool
-	 */
-	private $bAddDefaultXMailer = true;
-
-	public $messageIdRequired = true;
+	private bool $bAddDefaultXMailer = true;
 
 	function __construct()
 	{
@@ -177,8 +163,7 @@ class Message extends Part
 	public function SetCustomHeader(string $sHeaderName, string $sValue) : self
 	{
 		$sHeaderName = \trim($sHeaderName);
-		if (\strlen($sHeaderName))
-		{
+		if (\strlen($sHeaderName)) {
 			$this->aHeadersValue[$sHeaderName] = $sValue;
 		}
 
@@ -236,8 +221,7 @@ class Message extends Part
 				break;
 		}
 
-		if (\strlen($sResult))
-		{
+		if (\strlen($sResult)) {
 			$this->aHeadersValue[Enumerations\Header::X_PRIORITY] = $sResult;
 		}
 
@@ -313,18 +297,15 @@ class Message extends Part
 
 	private function generateNewMessageId(string $sHostName = '') : string
 	{
-		if (0 === \strlen($sHostName))
-		{
+		if (!\strlen($sHostName)) {
 			$sHostName = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
 		}
 
-		if (empty($sHostName) && \MailSo\Base\Utils::FunctionCallable('php_uname'))
-		{
+		if (empty($sHostName) && \MailSo\Base\Utils::FunctionCallable('php_uname')) {
 			$sHostName = \php_uname('n');
 		}
 
-		if (empty($sHostName))
-		{
+		if (empty($sHostName)) {
 			$sHostName = 'localhost';
 		}
 
@@ -432,7 +413,7 @@ class Message extends Part
 			$oRootPart->Headers->SetByName(Enumerations\Header::DATE, \gmdate('r'), true);
 		}
 
-		if ($this->messageIdRequired && !isset($this->aHeadersValue[Enumerations\Header::MESSAGE_ID])) {
+		if (!isset($this->aHeadersValue[Enumerations\Header::MESSAGE_ID])) {
 			$oRootPart->Headers->SetByName(Enumerations\Header::MESSAGE_ID, $this->generateNewMessageId(), true);
 		}
 

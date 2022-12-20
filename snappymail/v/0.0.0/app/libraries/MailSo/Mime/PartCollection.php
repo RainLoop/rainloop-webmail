@@ -17,7 +17,7 @@ namespace MailSo\Mime;
  */
 class PartCollection extends \MailSo\Base\Collection
 {
-	protected $sBoundary;
+	protected string $sBoundary = '';
 
 	public function append($oPart, bool $bToTop = false) : void
 	{
