@@ -918,13 +918,12 @@ class Actions
 
 	public function DoPing(): array
 	{
-		return $this->DefaultResponse(__FUNCTION__, 'Pong');
+		return $this->DefaultResponse('Pong');
 	}
 
 	public function DoVersion(): array
 	{
-		return $this->DefaultResponse(__FUNCTION__,
-			APP_VERSION === (string)$this->GetActionParam('Version', ''));
+		return $this->DefaultResponse(APP_VERSION === (string)$this->GetActionParam('Version', ''));
 	}
 
 	public function MainClearFileName(string $sFileName, string $sContentType, string $sMimeIndex, int $iMaxLength = 250): string
@@ -1028,7 +1027,7 @@ class Actions
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $aResponse);
+		return $this->DefaultResponse($aResponse);
 	}
 
 	public function Capa(bool $bAdmin, ?Model\Account $oAccount = null): array

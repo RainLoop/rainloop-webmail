@@ -13,7 +13,7 @@ use RainLoop\Exceptions\ClientException;
 trait UserAuth
 {
 	/**
-	 * @var string
+	 * @var bool | null | Account
 	 */
 	private $oAdditionalAuthAccount = false;
 	private $oMainAuthAccount = false;
@@ -199,7 +199,7 @@ trait UserAuth
 
 	/**
 	 * Returns RainLoop\Model\AdditionalAccount when it exists,
-	 * else returns RainLoop\Model\Account when it exists,
+	 * else returns RainLoop\Model\MainAccount when it exists,
 	 * else null
 	 *
 	 * @throws \RainLoop\Exceptions\ClientException

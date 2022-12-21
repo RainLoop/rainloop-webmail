@@ -4,32 +4,18 @@ namespace RainLoop;
 
 class ServiceActions
 {
-	/**
-	 * @var \MailSo\Base\Http
-	 */
-	protected $oHttp;
+	protected \MailSo\Base\Http $oHttp;
 
-	/**
-	 * @var \RainLoop\Actions
-	 */
-	protected $oActions;
+	protected Actions $oActions;
 
-	/**
-	 * @var array
-	 */
-	protected $aPaths;
+	protected array $aPaths = array();
 
-	/**
-	 * @var string
-	 */
-	protected $sQuery;
+	protected string $sQuery = '';
 
 	public function __construct(\MailSo\Base\Http $oHttp, Actions $oActions)
 	{
 		$this->oHttp = $oHttp;
 		$this->oActions = $oActions;
-		$this->aPaths = array();
-		$this->sQuery = '';
 	}
 
 	private function Logger() : \MailSo\Log\Logger
@@ -94,8 +80,7 @@ class ServiceActions
 		$_POST = \json_decode(\file_get_contents('php://input'), true);
 
 		$sAction = $_POST['Action'] ?? '';
-		if (empty($sAction) && $this->oHttp->IsGet() && !empty($this->aPaths[2]))
-		{
+		if (empty($sAction) && $this->oHttp->IsGet() && !empty($this->aPaths[2])) {
 			$sAction = $this->aPaths[2];
 		}
 
@@ -103,65 +88,60 @@ class ServiceActions
 
 		try
 		{
+			if (empty($sAction)) {
+				throw new Exceptions\ClientException(Notifications::InvalidInputArgument, null, 'Action unknown');
+			}
+
 			if ($this->oHttp->IsPost() &&
 				$this->Config()->Get('security', 'csrf_protection', false) &&
 				($_POST['XToken'] ?? '') !== Utils::GetCsrfToken())
 			{
 				throw new Exceptions\ClientException(Notifications::InvalidToken, null, 'CSRF failed');
 			}
-			if (!empty($sAction))
-			{
-				if ($this->oActions instanceof ActionsAdmin && 0 === \stripos($sAction, 'Admin') && !\in_array($sAction, ['AdminLogin', 'AdminLogout'])) {
-					$this->oActions->IsAdminLoggined();
-				}
 
-				$sMethodName = 'Do'.$sAction;
+			if ($this->oActions instanceof ActionsAdmin && 0 === \stripos($sAction, 'Admin') && !\in_array($sAction, ['AdminLogin', 'AdminLogout'])) {
+				$this->oActions->IsAdminLoggined();
+			}
 
-				$this->Logger()->Write('Action: '.$sMethodName, \LOG_INFO, 'JSON');
+			$sMethodName = 'Do'.$sAction;
 
-				$aPost = $_POST ?? null;
-				if ($aPost)
-				{
-					$this->oActions->SetActionParams($aPost, $sMethodName);
-					foreach ($aPost as $key => $value) {
-						if (false !== \stripos($key, 'Password')) {
-							$aPost[$key] = '*******';
-						}
+			$this->Logger()->Write('Action: '.$sMethodName, \LOG_INFO, 'JSON');
+
+			$aPost = $_POST ?? null;
+			if ($aPost) {
+				$this->oActions->SetActionParams($aPost, $sMethodName);
+				foreach ($aPost as $key => $value) {
+					if (false !== \stripos($key, 'Password')) {
+						$aPost[$key] = '*******';
 					}
+				}
 /*
-					switch ($sMethodName)
-					{
-						case 'DoLogin':
-						case 'DoAdminLogin':
-						case 'DoAccountAdd':
-							$this->Logger()->AddSecret($this->oActions->GetActionParam('Password', ''));
-							break;
-					}
+				switch ($sMethodName)
+				{
+					case 'DoLogin':
+					case 'DoAdminLogin':
+					case 'DoAccountAdd':
+						$this->Logger()->AddSecret($this->oActions->GetActionParam('Password', ''));
+						break;
+				}
 */
-					$this->Logger()->Write(Utils::jsonEncode($aPost),
-						\LOG_INFO, 'POST', true);
-				}
-				else if (3 < \count($this->aPaths) && $this->oHttp->IsGet())
-				{
-					$this->oActions->SetActionParams(array(
-						'RawKey' => empty($this->aPaths[3]) ? '' : $this->aPaths[3]
-					), $sMethodName);
-				}
+				$this->Logger()->Write(Utils::jsonEncode($aPost), \LOG_INFO, 'POST', true);
+			} else if (3 < \count($this->aPaths) && $this->oHttp->IsGet()) {
+				$this->oActions->SetActionParams(array(
+					'RawKey' => empty($this->aPaths[3]) ? '' : $this->aPaths[3]
+				), $sMethodName);
+			}
 
-				if (\method_exists($this->oActions, $sMethodName) &&
-					\is_callable(array($this->oActions, $sMethodName)))
-				{
-					$sAction && $this->Plugins()->RunHook("json.before-{$sAction}");
-					$aResponse = $this->oActions->{$sMethodName}();
-				}
-				else if ($this->Plugins()->HasAdditionalJson($sMethodName))
-				{
-					$sAction && $this->Plugins()->RunHook("json.before-{$sAction}");
-					$aResponse = $this->Plugins()->RunAdditionalJson($sMethodName);
-				}
-				if ($sAction && \is_array($aResponse)) {
-					$this->Plugins()->RunHook("json.after-{$sAction}", array(&$aResponse));
-				}
+			if (\method_exists($this->oActions, $sMethodName) && \is_callable(array($this->oActions, $sMethodName))) {
+				$this->Plugins()->RunHook("json.before-{$sAction}");
+				$aResponse = $this->oActions->{$sMethodName}();
+			} else if ($this->Plugins()->HasAdditionalJson($sMethodName)) {
+				$this->Plugins()->RunHook("json.before-{$sAction}");
+				$aResponse = $this->Plugins()->RunAdditionalJson($sMethodName);
+			}
+
+			if (\is_array($aResponse)) {
+				$this->Plugins()->RunHook("json.after-{$sAction}", array(&$aResponse));
 			}
 
 			if (!\is_array($aResponse)) {
@@ -175,9 +155,10 @@ class ServiceActions
 				\SnappyMail\Log::warning('SERVICE', "- {$e->getMessage()} @ {$e->getFile()}#{$e->getLine()}");
 			}
 
-			$aResponse = $this->oActions->ExceptionResponse(
-				empty($sAction) ? 'Unknown' : $sAction, $oException);
+			$aResponse = $this->oActions->ExceptionResponse($oException);
 		}
+
+		$aResponse['Action'] = $sAction ?: 'Unknown';
 
 		if (\is_array($aResponse)) {
 			$aResponse['Time'] = (int) ((\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000);
@@ -191,15 +172,12 @@ class ServiceActions
 
 		$sObResult = \ob_get_clean();
 
-		if ($this->Logger()->IsEnabled())
-		{
-			if (\strlen($sObResult))
-			{
+		if ($this->Logger()->IsEnabled()) {
+			if (\strlen($sObResult)) {
 				$this->Logger()->Write($sObResult, \LOG_ERR, 'OB-DATA');
 			}
 
-			if ($oException)
-			{
+			if ($oException) {
 				$this->Logger()->WriteException($oException, \LOG_ERR);
 			}
 
@@ -218,9 +196,7 @@ class ServiceActions
 		$oException = null;
 		try
 		{
-			if (\method_exists($this->oActions, 'Append') &&
-				\is_callable(array($this->oActions, 'Append')))
-			{
+			if (\method_exists($this->oActions, 'Append') && \is_callable(array($this->oActions, 'Append'))) {
 				isset($_POST) && $this->oActions->SetActionParams($_POST, 'Append');
 				$bResponse = $this->oActions->Append();
 			}
@@ -234,13 +210,11 @@ class ServiceActions
 		$sResult = true === $bResponse ? '1' : '0';
 
 		$sObResult = \ob_get_clean();
-		if (\strlen($sObResult))
-		{
+		if (\strlen($sObResult)) {
 			$this->Logger()->Write($sObResult, \LOG_ERR, 'OB-DATA');
 		}
 
-		if ($oException)
-		{
+		if ($oException) {
 			$this->Logger()->WriteException($oException, \LOG_ERR);
 		}
 
@@ -264,33 +238,24 @@ class ServiceActions
 
 			$iError = UPLOAD_ERR_OK;
 			$_FILES = isset($_FILES) ? $_FILES : null;
-			if (isset($_FILES[$sInputName], $_FILES[$sInputName]['name'], $_FILES[$sInputName]['tmp_name'], $_FILES[$sInputName]['size']))
-			{
+			if (isset($_FILES[$sInputName], $_FILES[$sInputName]['name'], $_FILES[$sInputName]['tmp_name'], $_FILES[$sInputName]['size'])) {
 				$iError = (isset($_FILES[$sInputName]['error'])) ? (int) $_FILES[$sInputName]['error'] : UPLOAD_ERR_OK;
 //				\is_uploaded_file($_FILES[$sInputName]['tmp_name'])
 
-				if (UPLOAD_ERR_OK === $iError && 0 < $iSizeLimit && $iSizeLimit < (int) $_FILES[$sInputName]['size'])
-				{
+				if (UPLOAD_ERR_OK === $iError && 0 < $iSizeLimit && $iSizeLimit < (int) $_FILES[$sInputName]['size']) {
 					$iError = Enumerations\UploadError::CONFIG_SIZE;
 				}
 
-				if (UPLOAD_ERR_OK === $iError)
-				{
+				if (UPLOAD_ERR_OK === $iError) {
 					$aFile = $_FILES[$sInputName];
 				}
-			}
-			else if (empty($_FILES))
-			{
+			} else if (empty($_FILES)) {
 				$iError = UPLOAD_ERR_INI_SIZE;
-			}
-			else
-			{
+			} else {
 				$iError = Enumerations\UploadError::EMPTY_FILES_DATA;
 			}
 
-			if (\method_exists($this->oActions, $sAction) &&
-				\is_callable(array($this->oActions, $sAction)))
-			{
+			if (\method_exists($this->oActions, $sAction) && \is_callable(array($this->oActions, $sAction))) {
 				$aActionParams = isset($_GET) && \is_array($_GET) ? $_GET : null;
 
 				$aActionParams['File'] = $aFile;
@@ -309,8 +274,10 @@ class ServiceActions
 		}
 		catch (\Throwable $oException)
 		{
-			$aResponse = $this->oActions->ExceptionResponse($sAction, $oException);
+			$aResponse = $this->oActions->ExceptionResponse($oException);
 		}
+
+		$aResponse['Action'] = $sAction ?: 'Unknown';
 
 		\header('Content-Type: application/json; charset=utf-8');
 
@@ -392,12 +359,10 @@ class ServiceActions
 		try
 		{
 			$sRawError = 'Invalid action';
-			if (\strlen($sAction))
-			{
+			if (\strlen($sAction)) {
 				try {
 					$sMethodName = 'Raw'.$sAction;
-					if (\method_exists($this->oActions, $sMethodName))
-					{
+					if (\method_exists($this->oActions, $sMethodName)) {
 						\header('X-Raw-Action: '.$sMethodName);
 						\header('Content-Security-Policy: script-src \'none\'; child-src \'none\'');
 
@@ -407,22 +372,17 @@ class ServiceActions
 							'Params' => $this->aPaths
 						), $sMethodName);
 
-						if (!$this->oActions->{$sMethodName}())
-						{
+						if (!$this->oActions->{$sMethodName}()) {
 							$sRawError = 'False result';
 						}
-					}
-					else
-					{
+					} else {
 						$sRawError = 'Unknown action "'.$sAction.'"';
 					}
 				} catch (\Throwable $e) {
 //					error_log(print_r($e,1));
 					$sRawError = $e->getMessage();
 				}
-			}
-			else
-			{
+			} else {
 				$sRawError = 'Empty action';
 			}
 		}
@@ -437,14 +397,12 @@ class ServiceActions
 			$sRawError = 'Exception as result';
 		}
 
-		if (\strlen($sRawError))
-		{
+		if (\strlen($sRawError)) {
 			$this->Logger()->Write($sRawError, \LOG_ERR);
 			$this->Logger()->WriteDump($this->aPaths, \LOG_ERR, 'PATHS');
 		}
 
-		if ($oException)
-		{
+		if ($oException) {
 			$this->Logger()->WriteException($oException, \LOG_ERR, 'RAW');
 		}
 
@@ -457,37 +415,31 @@ class ServiceActions
 		$sResult = '';
 		\header('Content-Type: application/javascript; charset=utf-8');
 
-		if (!empty($this->aPaths[3]))
-		{
+		if (!empty($this->aPaths[3])) {
 			$bAdmin = 'Admin' === (isset($this->aPaths[2]) ? (string) $this->aPaths[2] : 'App');
 			$sLanguage = $this->oActions->ValidateLanguage($this->aPaths[3], '', $bAdmin);
 
 			$bCacheEnabled = $this->Config()->Get('labs', 'cache_system_data', true);
-			if (!empty($sLanguage) && $bCacheEnabled)
-			{
+			if (!empty($sLanguage) && $bCacheEnabled) {
 				$this->oActions->verifyCacheByKey($this->sQuery);
 			}
 
 			$sCacheFileName = '';
-			if ($bCacheEnabled)
-			{
+			if ($bCacheEnabled) {
 				$sCacheFileName = KeyPathHelper::LangCache(
 					$sLanguage, $bAdmin, $this->oActions->Plugins()->Hash());
 
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
 
-			if (!\strlen($sResult))
-			{
+			if (!\strlen($sResult)) {
 				$sResult = $this->oActions->compileLanguage($sLanguage, $bAdmin);
-				if ($bCacheEnabled && \strlen($sCacheFileName))
-				{
+				if ($bCacheEnabled && \strlen($sCacheFileName)) {
 					$this->Cacher()->Set($sCacheFileName, $sResult);
 				}
 			}
 
-			if ($bCacheEnabled)
-			{
+			if ($bCacheEnabled) {
 				$this->oActions->cacheByKey($this->sQuery);
 			}
 		}
@@ -653,13 +605,11 @@ class ServiceActions
 		$oAccount = null;
 
 		$sSsoHash = $_REQUEST['hash'] ?? '';
-		if (!empty($sSsoHash))
-		{
+		if (!empty($sSsoHash)) {
 			$mData = null;
 
 			$sSsoSubData = $this->Cacher()->Get(KeyPathHelper::SsoCacherKey($sSsoHash));
-			if (!empty($sSsoSubData))
-			{
+			if (!empty($sSsoSubData)) {
 				$aData = \SnappyMail\Crypt::DecryptFromJSON($sSsoSubData, $sSsoHash);
 
 				$this->Cacher()->Delete(KeyPathHelper::SsoCacherKey($sSsoHash));
@@ -677,29 +627,24 @@ class ServiceActions
 					{
 						$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
 
-						if ($aAdditionalOptions)
-						{
+						if ($aAdditionalOptions) {
 							$bNeedToSettings = false;
 
 							$oSettings = $this->SettingsProvider()->Load($oAccount);
-							if ($oSettings)
-							{
+							if ($oSettings) {
 								$sLanguage = isset($aAdditionalOptions['Language']) ?
 									$aAdditionalOptions['Language'] : '';
 
-								if ($sLanguage)
-								{
+								if ($sLanguage) {
 									$sLanguage = $this->oActions->ValidateLanguage($sLanguage);
-									if ($sLanguage !== $oSettings->GetConf('Language', ''))
-									{
+									if ($sLanguage !== $oSettings->GetConf('Language', '')) {
 										$bNeedToSettings = true;
 										$oSettings->SetConf('Language', $sLanguage);
 									}
 								}
 							}
 
-							if ($bNeedToSettings)
-							{
+							if ($bNeedToSettings) {
 								$this->SettingsProvider()->Save($oAccount, $oSettings);
 							}
 						}

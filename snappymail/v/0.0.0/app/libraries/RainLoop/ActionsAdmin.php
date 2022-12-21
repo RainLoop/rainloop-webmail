@@ -14,14 +14,14 @@ class ActionsAdmin extends Actions
 		if (\is_dir(APP_PRIVATE_DATA . 'cache')) {
 			\MailSo\Base\Utils::RecRmDir(APP_PRIVATE_DATA.'cache');
 		}
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->TrueResponse();
 	}
 
 	public function DoAdminSettingsGet() : array
 	{
 		$aConfig = $this->Config()->jsonSerialize();
 		unset($aConfig['version']);
-		return $this->DefaultResponse(__FUNCTION__, $aConfig);
+		return $this->DefaultResponse($aConfig);
 	}
 
 	public function DoAdminSettingsSet() : array
@@ -32,13 +32,13 @@ class ActionsAdmin extends Actions
 				$oConfig->Set($sSection, $sKey, $mValue);
 			}
 		}
-		return $this->DefaultResponse(__FUNCTION__, $oConfig->Save());
+		return $this->DefaultResponse($oConfig->Save());
 	}
 
 	public function DoAdminSettingsUpdate() : array
 	{
 //		sleep(3);
-//		return $this->DefaultResponse(__FUNCTION__, false);
+//		return $this->DefaultResponse(false);
 
 		$this->IsAdminLoggined();
 
@@ -96,7 +96,7 @@ class ActionsAdmin extends Actions
 		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
 		$this->setConfigFromParams($oConfig, 'EnabledPlugins', 'plugins', 'enable', 'bool');
 
-		return $this->DefaultResponse(__FUNCTION__, $oConfig->Save());
+		return $this->DefaultResponse($oConfig->Save());
 	}
 
 	/**
@@ -125,7 +125,7 @@ class ActionsAdmin extends Actions
 
 		$sToken = $this->setAdminAuthToken();
 
-		return $this->DefaultResponse(__FUNCTION__, $sToken ? $this->AppData(true) : false);
+		return $this->DefaultResponse($sToken ? $this->AppData(true) : false);
 	}
 
 	public function DoAdminLogout() : array
@@ -135,7 +135,7 @@ class ActionsAdmin extends Actions
 			$this->Cacher(null, true)->Delete(KeyPathHelper::SessionAdminKey($sAdminKey));
 		}
 		Utils::ClearCookie(static::$AUTH_ADMIN_TOKEN_KEY);
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->TrueResponse();
 	}
 
 	public function DoAdminContactsTest() : array
@@ -154,7 +154,7 @@ class ActionsAdmin extends Actions
 		});
 
 		$sTestMessage = $this->AddressBookProvider(null, true)->Test();
-		return $this->DefaultResponse(__FUNCTION__, array(
+		return $this->DefaultResponse(array(
 			'Result' => '' === $sTestMessage,
 			'Message' => \MailSo\Base\Utils::Utf8Clear($sTestMessage)
 		));
@@ -195,7 +195,7 @@ class ActionsAdmin extends Actions
 			$bResult = $oConfig->Save();
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $bResult
+		return $this->DefaultResponse($bResult
 			? array('Weak' => \is_file($passfile))
 			: false);
 	}
@@ -204,30 +204,28 @@ class ActionsAdmin extends Actions
 	{
 		$this->IsAdminLoggined();
 
-		return $this->DefaultResponse(__FUNCTION__,
-			$this->DomainProvider()->Load($this->GetActionParam('Name', ''), false, false));
+		return $this->DefaultResponse($this->DomainProvider()->Load($this->GetActionParam('Name', ''), false, false));
 	}
 
 	public function DoAdminDomainList() : array
 	{
 		$this->IsAdminLoggined();
 		$bIncludeAliases = !empty($this->GetActionParam('IncludeAliases', '1'));
-		return $this->DefaultResponse(__FUNCTION__, $this->DomainProvider()->GetList($bIncludeAliases));
+		return $this->DefaultResponse($this->DomainProvider()->GetList($bIncludeAliases));
 	}
 
 	public function DoAdminDomainDelete() : array
 	{
 		$this->IsAdminLoggined();
 
-		return $this->DefaultResponse(__FUNCTION__,
-			$this->DomainProvider()->Delete((string) $this->GetActionParam('Name', '')));
+		return $this->DefaultResponse($this->DomainProvider()->Delete((string) $this->GetActionParam('Name', '')));
 	}
 
 	public function DoAdminDomainDisable() : array
 	{
 		$this->IsAdminLoggined();
 
-		return $this->DefaultResponse(__FUNCTION__, $this->DomainProvider()->Disable(
+		return $this->DefaultResponse($this->DomainProvider()->Disable(
 			(string) $this->GetActionParam('Name', ''),
 			'1' === (string) $this->GetActionParam('Disabled', '0')
 		));
@@ -239,15 +237,14 @@ class ActionsAdmin extends Actions
 
 		$oDomain = $this->DomainProvider()->LoadOrCreateNewFromAction($this);
 
-		return $this->DefaultResponse(__FUNCTION__,
-			$oDomain ? $this->DomainProvider()->Save($oDomain) : false);
+		return $this->DefaultResponse($oDomain ? $this->DomainProvider()->Save($oDomain) : false);
 	}
 
 	public function DoAdminDomainAliasSave() : array
 	{
 		$this->IsAdminLoggined();
 
-		return $this->DefaultResponse(__FUNCTION__, $this->DomainProvider()->SaveAlias(
+		return $this->DefaultResponse($this->DomainProvider()->SaveAlias(
 			(string) $this->GetActionParam('Name', ''),
 			(string) $this->GetActionParam('Alias', '')
 		));
@@ -262,7 +259,7 @@ class ActionsAdmin extends Actions
 		$oDomain = \str_contains($sEmail, '@')
 			? $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true)
 			: null;
-		return $this->DefaultResponse(__FUNCTION__, array(
+		return $this->DefaultResponse(array(
 			'email' => $sEmail,
 			'login' => $sLogin,
 			'domain' => $oDomain,
@@ -401,7 +398,7 @@ class ActionsAdmin extends Actions
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, array(
+		return $this->DefaultResponse(array(
 			'Imap' => $bImapResult ? true : $sImapErrorDesc,
 			'Smtp' => $bSmtpResult ? true : $sSmtpErrorDesc,
 			'Sieve' => $bSieveResult ? true : $sSieveErrorDesc
@@ -434,12 +431,12 @@ class ActionsAdmin extends Actions
 			'loaded' => \class_exists('PharData'),
 			'version' => \phpversion('phar')
 		];
-		return $this->DefaultResponse(__FUNCTION__, $aResult);
+		return $this->DefaultResponse($aResult);
 	}
 
 	public function DoAdminPackagesList() : array
 	{
-		return $this->DefaultResponse(__FUNCTION__, \SnappyMail\Repository::getPackagesList());
+		return $this->DefaultResponse(\SnappyMail\Repository::getPackagesList());
 	}
 
 	public function DoAdminPackageDelete() : array
@@ -447,7 +444,7 @@ class ActionsAdmin extends Actions
 		$sId = $this->GetActionParam('Id', '');
 		$bResult = \SnappyMail\Repository::deletePackage($sId);
 		static::pluginEnable($sId, false);
-		return $this->DefaultResponse(__FUNCTION__, $bResult);
+		return $this->DefaultResponse($bResult);
 	}
 
 	public function DoAdminPackageInstall() : array
@@ -458,7 +455,7 @@ class ActionsAdmin extends Actions
 			$this->GetActionParam('Id', ''),
 			$this->GetActionParam('File', '')
 		);
-		return $this->DefaultResponse(__FUNCTION__, $bResult ?
+		return $this->DefaultResponse($bResult ?
 			('plugin' !== $sType ? array('Reload' => true) : true) : false);
 	}
 
@@ -517,7 +514,7 @@ class ActionsAdmin extends Actions
 			$aWarnings[] = 'Can not edit: ' . APP_INDEX_ROOT_PATH . 'index.php';
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, array(
+		return $this->DefaultResponse(array(
 			 'Updatable' => \SnappyMail\Repository::canUpdateCore(),
 			 'Warning' => $bShowWarning,
 			 'Version' => $sVersion,
@@ -528,7 +525,7 @@ class ActionsAdmin extends Actions
 
 	public function DoAdminUpgradeCore() : array
 	{
-		return $this->DefaultResponse(__FUNCTION__, \SnappyMail\Upgrade::core());
+		return $this->DefaultResponse(\SnappyMail\Upgrade::core());
 	}
 
 	public function DoAdminPluginDisable() : array
@@ -546,16 +543,16 @@ class ActionsAdmin extends Actions
 				$sValue = $oPlugin->Supported();
 				if (\strlen($sValue))
 				{
-					return $this->FalseResponse(__FUNCTION__, Notifications::UnsupportedPluginPackage, $sValue);
+					return $this->FalseResponse(Notifications::UnsupportedPluginPackage, $sValue);
 				}
 			}
 			else
 			{
-				return $this->FalseResponse(__FUNCTION__, Notifications::InvalidPluginPackage);
+				return $this->FalseResponse(Notifications::InvalidPluginPackage);
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $this->pluginEnable($sId, !$bDisable));
+		return $this->DefaultResponse($this->pluginEnable($sId, !$bDisable));
 	}
 
 	public function DoAdminPluginLoad() : array
@@ -606,7 +603,7 @@ class ActionsAdmin extends Actions
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $mResult);
+		return $this->DefaultResponse($mResult);
 	}
 
 	public function DoAdminPluginSettingsUpdate() : array
@@ -635,7 +632,7 @@ class ActionsAdmin extends Actions
 					}
 				}
 				if ($oConfig->Save()) {
-					return $this->DefaultResponse(__FUNCTION__, true);
+					return $this->TrueResponse();
 				}
 			}
 		}
@@ -653,7 +650,7 @@ class ActionsAdmin extends Actions
 //			"otpauth://totp/{$user}?secret={$secret}",
 			\SnappyMail\QRCode::ERROR_CORRECT_LEVEL_M
 		);
-		return $this->DefaultResponse(__FUNCTION__, $QR->__toString());
+		return $this->DefaultResponse($QR->__toString());
 	}
 
 	private function setAdminAuthToken() : string

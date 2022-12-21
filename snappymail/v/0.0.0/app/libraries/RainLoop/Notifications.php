@@ -70,8 +70,7 @@ class Notifications
 
 	static public function GetNotificationsMessage(int $iCode, ?\Throwable $oPrevious = null) : string
 	{
-		if (self::ClientViewError === $iCode && $oPrevious)
-		{
+		if (self::ClientViewError === $iCode && $oPrevious) {
 			return $oPrevious->getMessage();
 		}
 

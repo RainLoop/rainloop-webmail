@@ -9,98 +9,64 @@ use RainLoop\Utils;
 trait Response
 {
 	/**
-	 * @param mixed $mResult = false
+	 * @param mixed $mResult
 	 */
-	public function DefaultResponse(string $sActionName, $mResult = false, array $aAdditionalParams = array()) : array
+	public function DefaultResponse($mResult, array $aAdditionalParams = array(), string $sActionName = '') : array
 	{
-		$this->Plugins()->RunHook('main.default-response-data', array($sActionName, &$mResult));
-		$aResponseItem = $this->mainDefaultResponse($sActionName, $mResult, $aAdditionalParams);
-		$this->Plugins()->RunHook('main.default-response', array($sActionName, &$aResponseItem));
-		return $aResponseItem;
-	}
-
-	public function TrueResponse(string $sActionName, array $aAdditionalParams = array()) : array
-	{
-		$mResult = true;
-		$this->Plugins()->RunHook('main.default-response-data', array($sActionName, &$mResult));
-		$aResponseItem = $this->mainDefaultResponse($sActionName, $mResult, $aAdditionalParams);
-		$this->Plugins()->RunHook('main.default-response', array($sActionName, &$aResponseItem));
-		return $aResponseItem;
-	}
-
-	public function FalseResponse(string $sActionName, ?int $iErrorCode = null, ?string $sErrorMessage = null, ?string $sAdditionalErrorMessage = null) : array
-	{
-		$mResult = false;
-		$this->Plugins()
-			->RunHook('main.default-response-data', array($sActionName, &$mResult))
-			->RunHook('main.default-response-error-data', array($sActionName, &$iErrorCode, &$sErrorMessage))
-		;
-
-		$aAdditionalParams = array();
-		if (null !== $iErrorCode) {
-			$aAdditionalParams['ErrorCode'] = (int) $iErrorCode;
-			$aAdditionalParams['ErrorMessage'] = null === $sErrorMessage ? '' : (string) $sErrorMessage;
-			$aAdditionalParams['ErrorMessageAdditional'] = null === $sAdditionalErrorMessage ? '' : (string) $sAdditionalErrorMessage;
+		if (false === $mResult) {
+			if (!isset($aAdditionalParams['ErrorCode'])) {
+				$aAdditionalParams['ErrorCode'] = 0;
+			}
+			if (!isset($aAdditionalParams['ErrorMessage'])) {
+				$aAdditionalParams['ErrorMessage'] = '';
+			}
 		}
 
-		$aResponseItem = $this->mainDefaultResponse($sActionName, $mResult, $aAdditionalParams);
-
-		$this->Plugins()->RunHook('main.default-response', array($sActionName, &$aResponseItem));
-		return $aResponseItem;
+		return \array_merge(array(
+//			'Version' => APP_VERSION,
+			'Action' => $sActionName,
+			'Result' => $this->responseObject($mResult)
+		), $aAdditionalParams);
 	}
 
-	public function ExceptionResponse(string $sActionName, \Throwable $oException) : array
+	public function TrueResponse(array $aAdditionalParams = array()) : array
 	{
-		$iErrorCode = null;
-		$sErrorMessage = null;
-		$sErrorMessageAdditional = null;
+		return $this->DefaultResponse(true, $aAdditionalParams);
+	}
+
+	public function FalseResponse(int $iErrorCode = 0, string $sErrorMessage = '', string $sAdditionalErrorMessage = '') : array
+	{
+		return $this->DefaultResponse(false, [
+			'ErrorCode' => $iErrorCode,
+			'ErrorMessage' => $sErrorMessage,
+			'ErrorMessageAdditional' => $sAdditionalErrorMessage
+		]);
+	}
+
+	public function ExceptionResponse(\Throwable $oException) : array
+	{
+		$iErrorCode = 0;
+		$sErrorMessage = '';
+		$sErrorMessageAdditional = '';
 
 		if ($oException instanceof \RainLoop\Exceptions\ClientException) {
 			$iErrorCode = $oException->getCode();
-			$sErrorMessage = null;
-
 			if ($iErrorCode === Notifications::ClientViewError) {
 				$sErrorMessage = $oException->getMessage();
 			}
-
 			$sErrorMessageAdditional = $oException->getAdditionalMessage();
-			if (empty($sErrorMessageAdditional)) {
-				$sErrorMessageAdditional = null;
-			}
 		} else {
 			$iErrorCode = Notifications::UnknownError;
 			$sErrorMessage = $oException->getCode().' - '.$oException->getMessage();
 		}
 
-		$oPrevious = $oException->getPrevious();
-		if ($oPrevious) {
-			$this->Logger()->WriteException($oPrevious);
-		} else {
-			$this->Logger()->WriteException($oException);
-		}
+		$this->Logger()->WriteException($oException->getPrevious() ?: $oException);
 
-		return $this->FalseResponse($sActionName, $iErrorCode, $sErrorMessage, $sErrorMessageAdditional);
-	}
-
-	/**
-	 * @param mixed $mResult = false
-	 */
-	private function mainDefaultResponse(string $sActionName, $mResult = false, array $aAdditionalParams = array()) : array
-	{
-		$sActionName = 'Do' === \substr($sActionName, 0, 2) ? \substr($sActionName, 2) : $sActionName;
-		$sActionName = \preg_replace('/[^a-zA-Z0-9_]+/', '', $sActionName);
-
-		$aResult = array(
-//			'Version' => APP_VERSION,
-			'Action' => $sActionName,
-			'Result' => $this->responseObject($mResult, $sActionName)
-		);
-
-		foreach ($aAdditionalParams as $sKey => $mValue) {
-			$aResult[$sKey] = $mValue;
-		}
-
-		return $aResult;
+		return $this->DefaultResponse(false, [
+			'ErrorCode' => $iErrorCode,
+			'ErrorMessage' => $sErrorMessage,
+			'ErrorMessageAdditional' => $sErrorMessageAdditional
+		]);
 	}
 
 	private function isFileHasThumbnail(string $sFileName) : bool
@@ -138,7 +104,7 @@ trait Response
 
 			if (\is_array($mResponse)) {
 				foreach ($mResponse as $iKey => $oItem) {
-					$mResponse[$iKey] = $this->responseObject($oItem, $sParent);
+					$mResponse[$iKey] = $this->responseObject($oItem, 'Array');
 				}
 			}
 
@@ -159,7 +125,7 @@ trait Response
 
 			// \MailSo\Mime\EmailCollection
 			foreach (['ReplyTo','From','To','Cc','Bcc','Sender','DeliveredTo'] as $prop) {
-				$mResult[$prop] = $this->responseObject($mResult[$prop], $sParent);
+				$mResult[$prop] = $this->responseObject($mResult[$prop], $prop);
 			}
 
 			$sSubject = $mResult['subject'];
@@ -172,9 +138,9 @@ trait Response
 				'FileName' => (\strlen($sSubject) ? \MailSo\Base\Utils::SecureFileName($sSubject) : 'message-'.$mResult['Uid']) . '.eml'
 			));
 
-			$mResult['Attachments'] = $this->responseObject($mResponse->Attachments, $sParent);
+			$mResult['Attachments'] = $this->responseObject($mResponse->Attachments, 'Attachments');
 
-			if ('Message' === $sParent) {
+			if (!$sParent) {
 				$mResult['DraftInfo'] = $mResponse->DraftInfo;
 				$mResult['InReplyTo'] = $mResponse->InReplyTo;
 				$mResult['UnsubsribeLinks'] = $mResponse->UnsubsribeLinks;
@@ -188,7 +154,6 @@ trait Response
 				$mResult['PgpEncrypted'] = $mResponse->pgpEncrypted;
 
 				$mResult['ReadReceipt'] = $mResponse->ReadReceipt;
-
 				if (\strlen($mResult['ReadReceipt']) && !\in_array('$forwarded', $mResult['Flags'])) {
 					// \in_array('$mdnsent', $mResult['Flags'])
 					if (\strlen($mResult['ReadReceipt'])) {
@@ -249,7 +214,7 @@ trait Response
 
 		if ($mResponse instanceof \MailSo\Base\Collection) {
 			$mResult = $mResponse->jsonSerialize();
-			$mResult['@Collection'] = $this->responseObject($mResult['@Collection'], $sParent);
+			$mResult['@Collection'] = $this->responseObject($mResult['@Collection'], 'Collection');
 			if ($mResponse instanceof \MailSo\Mail\EmailCollection) {
 				return \array_slice($mResult['@Collection'], 0, 100);
 			}

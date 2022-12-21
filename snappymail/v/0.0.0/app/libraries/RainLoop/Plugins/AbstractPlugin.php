@@ -25,25 +25,13 @@ abstract class AbstractPlugin
 	 */
 	private $oPluginConfig = null;
 
-	/**
-	 * @var bool
-	 */
-	private $bLangs = false;
+	private bool $bLangs = false;
 
-	/**
-	 * @var string
-	 */
-	private $sName;
+	private string $sName;
 
-	/**
-	 * @var string
-	 */
-	private $sPath = '';
+	private string $sPath = '';
 
-	/**
-	 * @var array
-	 */
-	private $aConfigMap = null;
+	private ?array $aConfigMap = null;
 
 	public function __construct()
 	{
@@ -63,8 +51,7 @@ abstract class AbstractPlugin
 
 	public function UseLangs(?bool $bLangs = null) : bool
 	{
-		if (null !== $bLangs)
-		{
+		if (null !== $bLangs) {
 			$this->bLangs = $bLangs;
 		}
 
@@ -113,8 +100,7 @@ abstract class AbstractPlugin
 
 	final public function ConfigMap(bool $flatten = false) : array
 	{
-		if (null === $this->aConfigMap)
-		{
+		if (null === $this->aConfigMap) {
 			$this->aConfigMap = $this->configMapping();
 		}
 
@@ -163,8 +149,7 @@ abstract class AbstractPlugin
 	final public function SetPluginConfig(\RainLoop\Config\Plugin $oPluginConfig) : self
 	{
 		$this->oPluginConfig = $oPluginConfig;
-		if ($oPluginConfig->IsInited() && !$oPluginConfig->Load())
-		{
+		if ($oPluginConfig->IsInited() && !$oPluginConfig->Load()) {
 			$oPluginConfig->Save();
 		}
 		return $this;
@@ -172,8 +157,7 @@ abstract class AbstractPlugin
 
 	final protected function addHook(string $sHookName, string $sFunctionName) : self
 	{
-		if ($this->oPluginManager)
-		{
+		if ($this->oPluginManager) {
 			$this->oPluginManager->AddHook($sHookName, array($this, $sFunctionName));
 		}
 
@@ -182,8 +166,7 @@ abstract class AbstractPlugin
 
 	final protected function addCss(string $sFile, bool $bAdminScope = false) : self
 	{
-		if ($this->oPluginManager)
-		{
+		if ($this->oPluginManager) {
 			$this->oPluginManager->AddCss($this->sPath.'/'.$sFile, $bAdminScope);
 		}
 
@@ -192,8 +175,7 @@ abstract class AbstractPlugin
 
 	final protected function addJs(string $sFile, bool $bAdminScope = false) : self
 	{
-		if ($this->oPluginManager)
-		{
+		if ($this->oPluginManager) {
 			$this->oPluginManager->AddJs($this->sPath.'/'.$sFile, $bAdminScope);
 		}
 
@@ -202,8 +184,7 @@ abstract class AbstractPlugin
 
 	final protected function addTemplate(string $sFile, bool $bAdminScope = false) : self
 	{
-		if ($this->oPluginManager)
-		{
+		if ($this->oPluginManager) {
 			$this->oPluginManager->AddTemplate($this->sPath.'/'.$sFile, $bAdminScope);
 		}
 
@@ -212,8 +193,7 @@ abstract class AbstractPlugin
 
 	final protected function replaceTemplate(string $sFile, bool $bAdminScope = false) : self
 	{
-		if ($this->oPluginManager)
-		{
+		if ($this->oPluginManager) {
 			$this->oPluginManager->AddTemplate($this->sPath.'/'.$sFile, $bAdminScope);
 		}
 
@@ -222,8 +202,7 @@ abstract class AbstractPlugin
 
 	final protected function addPartHook(string $sActionName, string $sFunctionName) : self
 	{
-		if ($this->oPluginManager)
-		{
+		if ($this->oPluginManager) {
 			$this->oPluginManager->AddAdditionalPartAction($sActionName, array($this, $sFunctionName));
 		}
 
@@ -232,8 +211,7 @@ abstract class AbstractPlugin
 
 	final protected function addJsonHook(string $sActionName, string $sFunctionName) : self
 	{
-		if ($this->oPluginManager)
-		{
+		if ($this->oPluginManager) {
 			$this->oPluginManager->AddAdditionalJsonAction($sActionName, array($this, $sFunctionName));
 		}
 

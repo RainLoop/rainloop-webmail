@@ -133,7 +133,7 @@ trait Themes
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->GetCapa(\RainLoop\Enumerations\Capa::USER_BACKGROUND)) {
-			return $this->FalseResponse(__FUNCTION__);
+			return $this->FalseResponse();
 		}
 
 		$sName = '';
@@ -200,13 +200,12 @@ trait Themes
 		if (UPLOAD_ERR_OK !== $iError) {
 			$iClientError = \RainLoop\Enumerations\UploadError::NORMAL;
 			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
-
 			if (!empty($sError)) {
-				return $this->FalseResponse(__FUNCTION__, $iClientError, $sError);
+				return $this->FalseResponse($iClientError, $sError);
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, !empty($sName) && !empty($sHash) ? array(
+		return $this->DefaultResponse(!empty($sName) && !empty($sHash) ? array(
 			'Name' => $sName,
 			'Hash' => $sHash
 		) : false);

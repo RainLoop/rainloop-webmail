@@ -6,10 +6,7 @@ use RainLoop\Enumerations\Capa;
 
 trait Filters
 {
-	/**
-	 * @var \RainLoop\Providers\Filters
-	 */
-	private $oFiltersProvider;
+	private ?\RainLoop\Providers\Filters $oFiltersProvider = null;
 
 	/**
 	 * @throws \MailSo\RuntimeException
@@ -18,12 +15,11 @@ trait Filters
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(Capa::SIEVE, $oAccount))
-		{
-			return $this->FalseResponse(__FUNCTION__);
+		if (!$this->GetCapa(Capa::SIEVE, $oAccount)) {
+			return $this->FalseResponse();
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $this->FiltersProvider()->Load($oAccount));
+		return $this->DefaultResponse($this->FiltersProvider()->Load($oAccount));
 	}
 
 	/**
@@ -34,7 +30,7 @@ trait Filters
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->GetCapa(Capa::SIEVE, $oAccount)) {
-			return $this->FalseResponse(__FUNCTION__);
+			return $this->FalseResponse();
 		}
 
 		$sName = $this->GetActionParam('name', '');
@@ -43,7 +39,7 @@ trait Filters
 //			$this->FiltersProvider()->ActivateScript($oAccount, $sName);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $this->FiltersProvider()->Save(
+		return $this->DefaultResponse($this->FiltersProvider()->Save(
 			$oAccount, $sName, $this->GetActionParam('body', '')
 		));
 	}
@@ -56,10 +52,10 @@ trait Filters
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->GetCapa(Capa::SIEVE, $oAccount)) {
-			return $this->FalseResponse(__FUNCTION__);
+			return $this->FalseResponse();
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $this->FiltersProvider()->ActivateScript(
+		return $this->DefaultResponse($this->FiltersProvider()->ActivateScript(
 			$oAccount, $this->GetActionParam('name', '')
 		));
 	}
@@ -72,10 +68,10 @@ trait Filters
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->GetCapa(Capa::SIEVE, $oAccount)) {
-			return $this->FalseResponse(__FUNCTION__);
+			return $this->FalseResponse();
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $this->FiltersProvider()->DeleteScript(
+		return $this->DefaultResponse($this->FiltersProvider()->DeleteScript(
 			$oAccount, $this->GetActionParam('name', '')
 		));
 	}

@@ -10,9 +10,8 @@ trait Contacts
 		$oAccount = $this->getAccountFromToken();
 
 		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-		if (!$oAddressBookProvider || !$oAddressBookProvider->IsActive())
-		{
-			return $this->FalseResponse(__FUNCTION__);
+		if (!$oAddressBookProvider || !$oAddressBookProvider->IsActive()) {
+			return $this->FalseResponse();
 		}
 
 		$sPassword = $this->GetActionParam('Password', '');
@@ -28,7 +27,7 @@ trait Contacts
 			'Url' => $this->GetActionParam('Url', '')
 		));
 
-		return $this->DefaultResponse(__FUNCTION__, $bResult);
+		return $this->DefaultResponse($bResult);
 	}
 
 	public function DoContactsSync() : array
@@ -44,7 +43,7 @@ trait Contacts
 		if (!$oAddressBookProvider->Sync()) {
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ContactsSyncError, null, 'AddressBookProvider->Sync() failed');
 		}
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->TrueResponse();
 	}
 
 	public function DoContacts() : array
@@ -61,13 +60,12 @@ trait Contacts
 		$mResult = array();
 
 		$oAbp = $this->AddressBookProvider($oAccount);
-		if ($oAbp->IsActive())
-		{
+		if ($oAbp->IsActive()) {
 			$iResultCount = 0;
 			$mResult = $oAbp->GetContacts($iOffset, $iLimit, $sSearch, $iResultCount);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, array(
+		return $this->DefaultResponse(array(
 			'Offset' => $iOffset,
 			'Limit' => $iLimit,
 			'Count' => $iResultCount,
@@ -84,12 +82,11 @@ trait Contacts
 		$aFilteredUids = \array_filter(\array_map('intval', $aUids));
 
 		$bResult = false;
-		if (\count($aFilteredUids) && $this->AddressBookProvider($oAccount)->IsActive())
-		{
+		if (\count($aFilteredUids) && $this->AddressBookProvider($oAccount)->IsActive()) {
 			$bResult = $this->AddressBookProvider($oAccount)->DeleteContacts($aFilteredUids);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $bResult);
+		return $this->DefaultResponse($bResult);
 	}
 
 	public function DoContactSave() : array
@@ -116,7 +113,7 @@ trait Contacts
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, array(
+		return $this->DefaultResponse(array(
 			'ResultID' => $bResult ? $oContact->id : '',
 			'Result' => $bResult
 		));
@@ -131,38 +128,28 @@ trait Contacts
 		$aFile = $this->GetActionParam('File', null);
 		$iError = $this->GetActionParam('Error', \RainLoop\Enumerations\UploadError::UNKNOWN);
 
-		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile))
-		{
+		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile)) {
 			$sSavedName = 'upload-post-'.\md5($aFile['name'].$aFile['tmp_name']);
-			if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name']))
-			{
+			if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name'])) {
 				$iError = \RainLoop\Enumerations\UploadError::ON_SAVING;
-			}
-			else
-			{
+			} else {
 				\ini_set('auto_detect_line_endings', true);
 				$mData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
-				if ($mData)
-				{
+				if ($mData) {
 					$sFileStart = \fread($mData, 20);
 					\rewind($mData);
 
-					if (false !== $sFileStart)
-					{
+					if (false !== $sFileStart) {
 						$sFileStart = \trim($sFileStart);
-						if (false !== \strpos($sFileStart, 'BEGIN:VCARD'))
-						{
+						if (false !== \strpos($sFileStart, 'BEGIN:VCARD')) {
 							$mResponse = $this->importContactsFromVcfFile($oAccount, $mData);
-						}
-						else if (false !== \strpos($sFileStart, ',') || false !== \strpos($sFileStart, ';'))
-						{
+						} else if (false !== \strpos($sFileStart, ',') || false !== \strpos($sFileStart, ';')) {
 							$mResponse = $this->importContactsFromCsvFile($oAccount, $mData, $sFileStart);
 						}
 					}
 				}
 
-				if (\is_resource($mData))
-				{
+				if (\is_resource($mData)) {
 					\fclose($mData);
 				}
 
@@ -173,18 +160,15 @@ trait Contacts
 			}
 		}
 
-		if (UPLOAD_ERR_OK !== $iError)
-		{
+		if (UPLOAD_ERR_OK !== $iError) {
 			$iClientError = \RainLoop\Enumerations\UploadError::NORMAL;
 			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
-
-			if (!empty($sError))
-			{
-				return $this->FalseResponse(__FUNCTION__, $iClientError, $sError);
+			if (!empty($sError)) {
+				return $this->FalseResponse($iClientError, $sError);
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $mResponse);
+		return $this->DefaultResponse($mResponse);
 	}
 
 	public function setContactsSyncData(\RainLoop\Model\Account $oAccount, array $aData) : bool

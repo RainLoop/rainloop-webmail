@@ -60,7 +60,7 @@ trait User
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $this->AppData(false));
+		return $this->DefaultResponse($this->AppData(false));
 	}
 
 	public function DoLogout() : array
@@ -68,7 +68,7 @@ trait User
 		$bMain = true; // empty($_COOKIE[self::AUTH_ADDITIONAL_TOKEN_KEY]);
 		$this->Logout($bMain);
 		$bMain && $this->ClearSignMeData();
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->TrueResponse();
 	}
 
 	public function DoAppDelayStart() : array
@@ -126,7 +126,7 @@ trait User
 
 		$this->Plugins()->RunHook('service.app-delay-start-end');
 
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->TrueResponse();
 	}
 
 	public function DoSettingsUpdate() : array
@@ -201,8 +201,7 @@ trait User
 		$this->setSettingsFromParams($oSettingsLocal, 'HideDeleted', 'bool');
 		$this->setSettingsFromParams($oSettingsLocal, 'UnhideKolabFolders', 'bool');
 
-		return $this->DefaultResponse(__FUNCTION__,
-			$this->SettingsProvider()->Save($oAccount, $oSettings) &&
+		return $this->DefaultResponse($this->SettingsProvider()->Save($oAccount, $oSettings) &&
 			$this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
 	}
 
@@ -211,7 +210,7 @@ trait User
 		$oAccount = $this->initMailClientConnection();
 
 		if (!$this->GetCapa(Capa::QUOTA)) {
-			return $this->DefaultResponse(__FUNCTION__, array(0, 0, 0, 0));
+			return $this->DefaultResponse(array(0, 0, 0, 0));
 		}
 
 		try
@@ -223,7 +222,7 @@ trait User
 			throw new ClientException(Notifications::MailServerError, $oException);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $aQuota);
+		return $this->DefaultResponse($aQuota);
 	}
 
 	public function DoSuggestions() : array
@@ -275,7 +274,7 @@ trait User
 			$aResult = \array_slice(\array_values($aResult), 0, $iLimit);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $aResult);
+		return $this->DefaultResponse($aResult);
 	}
 
 	public function DoClearUserBackground() : array
@@ -283,7 +282,7 @@ trait User
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->GetCapa(Capa::USER_BACKGROUND)) {
-			return $this->FalseResponse(__FUNCTION__);
+			return $this->FalseResponse();
 		}
 
 		$oSettings = $this->SettingsProvider()->Load($oAccount);
@@ -297,7 +296,7 @@ trait User
 			$oSettings->SetConf('UserBackgroundHash', '');
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $oAccount && $oSettings ?
+		return $this->DefaultResponse($oAccount && $oSettings ?
 			$this->SettingsProvider()->Save($oAccount, $oSettings) : false);
 	}
 

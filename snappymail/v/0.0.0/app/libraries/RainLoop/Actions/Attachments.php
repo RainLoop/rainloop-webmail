@@ -17,7 +17,7 @@ trait Attachments
 		$aHashes = $this->GetActionParam('Hashes', null);
 		$oFilesProvider = $this->FilesProvider();
 		if (empty($sAction) || !$this->GetCapa(Capa::ATTACHMENTS_ACTIONS) || !$oFilesProvider || !$oFilesProvider->IsActive()) {
-			return $this->FalseResponse(__FUNCTION__);
+			return $this->FalseResponse();
 		}
 
 		$oAccount = $this->initMailClientConnection();
@@ -42,7 +42,7 @@ trait Attachments
 		$mUIDs = 1 < \count($mUIDs);
 
 		if ($bError || !\count($aData)) {
-			return $this->FalseResponse(__FUNCTION__);
+			return $this->FalseResponse();
 		}
 
 		$mResult = false;
@@ -130,7 +130,7 @@ trait Attachments
 		}
 
 //		$this->requestSleep();
-		return $this->DefaultResponse(__FUNCTION__, $bError ? false : $mResult);
+		return $this->DefaultResponse($bError ? false : $mResult);
 	}
 
 	private function getMimeFileByHash(\RainLoop\Model\Account $oAccount, string $sHash) : array

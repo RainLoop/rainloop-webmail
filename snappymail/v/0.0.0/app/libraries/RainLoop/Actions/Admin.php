@@ -11,7 +11,7 @@ use RainLoop\Utils;
 
 trait Admin
 {
-	protected static $AUTH_ADMIN_TOKEN_KEY = 'smadmin';
+	protected static string $AUTH_ADMIN_TOKEN_KEY = 'smadmin';
 
 	public function IsAdminLoggined(bool $bThrowExceptionOnFalse = true) : bool
 	{
@@ -22,8 +22,7 @@ trait Admin
 			}
 		}
 
-		if ($bThrowExceptionOnFalse)
-		{
+		if ($bThrowExceptionOnFalse) {
 			throw new ClientException(Notifications::AuthError);
 		}
 

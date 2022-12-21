@@ -74,7 +74,7 @@ trait Pgp
 	{
 		$GPG = $this->GnuPG();
 		if (!$GPG) {
-			return $this->FalseResponse(__FUNCTION__);
+			return $this->FalseResponse();
 		}
 
 		$GPG->addDecryptKey(
@@ -113,19 +113,19 @@ trait Pgp
 //			$result['signatures'] = $oPart->SubParts[0];
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $result);
+		return $this->DefaultResponse($result);
 	}
 
 	public function DoGnupgGetKeys() : array
 	{
 		$GPG = $this->GnuPG();
-		return $this->DefaultResponse(__FUNCTION__, $GPG ? $GPG->keyInfo('') : false);
+		return $this->DefaultResponse($GPG ? $GPG->keyInfo('') : false);
 	}
 
 	public function DoGnupgExportKey() : array
 	{
 		$GPG = $this->GnuPG();
-		return $this->DefaultResponse(__FUNCTION__, $GPG ? $GPG->export(
+		return $this->DefaultResponse($GPG ? $GPG->export(
 			$this->GetActionParam('KeyId', ''),
 			$this->GetActionParam('Passphrase', '')
 		) : false);
@@ -143,7 +143,7 @@ trait Pgp
 				$this->GetActionParam('Passphrase', '')
 			);
 		}
-		return $this->DefaultResponse(__FUNCTION__, $fingerprint);
+		return $this->DefaultResponse($fingerprint);
 	}
 
 	public function DoGnupgDeleteKey() : array
@@ -151,7 +151,7 @@ trait Pgp
 		$GPG = $this->GnuPG();
 		$sKeyId = $this->GetActionParam('KeyId', '');
 		$bPrivate = !!$this->GetActionParam('isPrivate', 0);
-		return $this->DefaultResponse(__FUNCTION__, $GPG ? $GPG->deleteKey($sKeyId, $bPrivate) : false);
+		return $this->DefaultResponse($GPG ? $GPG->deleteKey($sKeyId, $bPrivate) : false);
 	}
 
 	public function DoGnupgImportKey() : array
@@ -182,7 +182,7 @@ trait Pgp
 		}
 
 		$GPG = $sKey ? $this->GnuPG() : null;
-		return $this->DefaultResponse(__FUNCTION__, $GPG ? $GPG->import($sKey) : false);
+		return $this->DefaultResponse($GPG ? $GPG->import($sKey) : false);
 	}
 
 	/**
@@ -219,7 +219,7 @@ trait Pgp
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $keys);
+		return $this->DefaultResponse($keys);
 	}
 
 	/**
@@ -256,7 +256,7 @@ trait Pgp
 		}
 
 //		$revocationCertificate = $this->GetActionParam('revocationCertificate', '');
-		return $this->DefaultResponse(__FUNCTION__, $result);
+		return $this->DefaultResponse($result);
 	}
 
 	/**
@@ -267,7 +267,7 @@ trait Pgp
 	{
 		$key = $this->GetActionParam('Key', '');
 		$keyId = $this->GetActionParam('KeyId', '');
-		return $this->DefaultResponse(__FUNCTION__, ($key && $keyId && $this->StorePGPKey($key, $keyId)));
+		return $this->DefaultResponse(($key && $keyId && $this->StorePGPKey($key, $keyId)));
 	}
 
 	private function StorePGPKey(string $key, string $keyId = '') : bool

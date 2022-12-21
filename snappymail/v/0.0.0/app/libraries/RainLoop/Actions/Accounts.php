@@ -15,10 +15,7 @@ use RainLoop\Utils;
 
 trait Accounts
 {
-	/**
-	 * @var RainLoop\Providers\Identities
-	 */
-	private $oIdentitiesProvider;
+	private ?\RainLoop\Providers\Identities $oIdentitiesProvider = null;
 
 	protected function GetMainEmail(Account $oAccount)
 	{
@@ -78,7 +75,7 @@ trait Accounts
 		$oMainAccount = $this->getMainAccountFromToken();
 
 		if (!$this->GetCapa(Capa::ADDITIONAL_ACCOUNTS)) {
-			return $this->FalseResponse(__FUNCTION__);
+			return $this->FalseResponse();
 		}
 
 		$aAccounts = $this->GetAccounts($oMainAccount);
@@ -107,7 +104,7 @@ trait Accounts
 			$this->SetAccounts($oMainAccount, $aAccounts);
 		}
 
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->TrueResponse();
 	}
 
 	protected function loadAdditionalAccountImapClient(string $sEmail): \MailSo\Imap\ImapClient
@@ -137,7 +134,7 @@ trait Accounts
 	{
 		$oImapClient = $this->loadAdditionalAccountImapClient($this->GetActionParam('email', ''));
 		$oInfo = $oImapClient->FolderStatus('INBOX');
-		return $this->DefaultResponse(__FUNCTION__, [
+		return $this->DefaultResponse([
 			'unreadEmails' => \max(0, $oInfo->UNSEEN)
 		]);
 	}
@@ -172,7 +169,7 @@ trait Accounts
 		$oMainAccount = $this->getMainAccountFromToken();
 
 		if (!$this->GetCapa(Capa::ADDITIONAL_ACCOUNTS)) {
-			return $this->FalseResponse(__FUNCTION__);
+			return $this->FalseResponse();
 		}
 
 		$sEmailToDelete = \trim($this->GetActionParam('EmailToDelete', ''));
@@ -191,10 +188,10 @@ trait Accounts
 			unset($aAccounts[$sEmailToDelete]);
 			$this->SetAccounts($oMainAccount, $aAccounts);
 
-			return $this->TrueResponse(__FUNCTION__, array('Reload' => $bReload));
+			return $this->TrueResponse(array('Reload' => $bReload));
 		}
 
-		return $this->FalseResponse(__FUNCTION__);
+		return $this->FalseResponse();
 	}
 
 	/**
@@ -227,9 +224,9 @@ trait Accounts
 			}
 //			$this->Plugins()->InitAppData($bAdmin, $aResult, $oAccount);
 
-			return $this->DefaultResponse(__FUNCTION__, $aResult);
+			return $this->DefaultResponse($aResult);
 		}
-		return $this->FalseResponse(__FUNCTION__);
+		return $this->FalseResponse();
 	}
 
 	/**
@@ -245,7 +242,7 @@ trait Accounts
 		}
 
 		$this->IdentitiesProvider()->UpdateIdentity($oAccount, $oIdentity);
-		return $this->DefaultResponse(__FUNCTION__, true);
+		return $this->TrueResponse();
 	}
 
 	/**
@@ -256,7 +253,7 @@ trait Accounts
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->GetCapa(Capa::IDENTITIES)) {
-			return $this->FalseResponse(__FUNCTION__);
+			return $this->FalseResponse();
 		}
 
 		$sId = \trim($this->GetActionParam('IdToDelete', ''));
@@ -265,7 +262,7 @@ trait Accounts
 		}
 
 		$this->IdentitiesProvider()->DeleteIdentity($oAccount, $sId);
-		return $this->DefaultResponse(__FUNCTION__, true);
+		return $this->TrueResponse();
 	}
 
 	/**
@@ -277,7 +274,7 @@ trait Accounts
 		$aIdentities = $this->GetActionParam('Identities', null);
 
 		if (!\is_array($aAccounts) && !\is_array($aIdentities)) {
-			return $this->FalseResponse(__FUNCTION__);
+			return $this->FalseResponse();
 		}
 
 		if (\is_array($aAccounts) && 1 < \count($aAccounts)) {
@@ -289,7 +286,7 @@ trait Accounts
 			$this->SetAccounts($oAccount, $aAccounts);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $this->LocalStorageProvider()->Put(
+		return $this->DefaultResponse($this->LocalStorageProvider()->Put(
 			$this->getAccountFromToken(),
 			StorageType::CONFIG,
 			'identities_order',
@@ -305,7 +302,7 @@ trait Accounts
 	public function DoAccountsAndIdentities(): array
 	{
 		// https://github.com/the-djmaze/snappymail/issues/571
-		return $this->DefaultResponse(__FUNCTION__, array(
+		return $this->DefaultResponse(array(
 			'Accounts' => \array_values(\array_map(function($value){
 					return [
 						'email' => \MailSo\Base\Utils::IdnToUtf8($value['email'] ?? $value[1]),

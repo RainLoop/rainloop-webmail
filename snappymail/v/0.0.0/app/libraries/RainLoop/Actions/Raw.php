@@ -83,8 +83,7 @@ trait Raw
 		$sHash = $sRawKey;
 		$sData = '';
 
-		if (!empty($sHash))
-		{
+		if (!empty($sHash)) {
 			$sData = $this->StorageProvider()->Get(null,
 				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
 				\RainLoop\KeyPathHelper::PublicFile($sHash)
@@ -96,8 +95,7 @@ trait Raw
 			\preg_match('/^data:([^:]+):/', $sData, $aMatch) && !empty($aMatch[1]))
 		{
 			$sContentType = \trim($aMatch[1]);
-			if (\in_array($sContentType, array('image/png', 'image/jpg', 'image/jpeg')))
-			{
+			if (\in_array($sContentType, array('image/png', 'image/jpg', 'image/jpeg'))) {
 				$this->cacheByKey($sRawKey);
 
 				\header('Content-Type: '.$sContentType);
@@ -123,7 +121,8 @@ trait Raw
 		$sRangeStart = $sRangeEnd = '';
 		$bIsRangeRequest = false;
 
-		if (!empty($sRange) && 'bytes=0-' !== \strtolower($sRange) && \preg_match('/^bytes=([0-9]+)-([0-9]*)/i', \trim($sRange), $aMatch))
+		if (!empty($sRange) && 'bytes=0-' !== \strtolower($sRange)
+		 && \preg_match('/^bytes=([0-9]+)-([0-9]*)/i', \trim($sRange), $aMatch))
 		{
 			$sRangeStart = $aMatch[1];
 			$sRangeEnd = $aMatch[2];
@@ -139,8 +138,7 @@ trait Raw
 		$sFileNameIn = isset($aValues['FileName']) ? (string) $aValues['FileName'] : '';
 		$sFileHashIn = isset($aValues['FileHash']) ? (string) $aValues['FileHash'] : '';
 
-		if (!empty($sFileHashIn))
-		{
+		if (!empty($sFileHashIn)) {
 			$this->verifyCacheByKey($sRawKey);
 
 			$oAccount = $this->getAccountFromToken();
@@ -185,8 +183,7 @@ trait Raw
 				$self, $oAccount, $sRawKey, $sContentTypeIn, $sFileNameIn, $bDownload, $bThumbnail,
 				$bIsRangeRequest, $sRangeStart, $sRangeEnd
 			) {
-				if ($oAccount && \is_resource($rResource))
-				{
+				if ($oAccount && \is_resource($rResource)) {
 					\MailSo\Base\Utils::ResetTimeLimit();
 
 					$self->cacheByKey($sRawKey);
@@ -207,24 +204,20 @@ trait Raw
 							?: 'application/octet-stream';
 					}
 
-					if (!$bDownload)
-					{
+					if (!$bDownload) {
 						$bDetectImageOrientation = $self->Config()->Get('labs', 'image_exif_auto_rotate', false)
 							// Mostly only JPEG has EXIF metadata
 							&& 'image/jpeg' == $sContentType;
 						try
 						{
-							if ($bThumbnail)
-							{
+							if ($bThumbnail) {
 								$oImage = static::loadImage($rResource, $bDetectImageOrientation, 48);
 								\header('Content-Disposition: inline; '.
 									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileName.'_thumb60x60.png')));
 								$oImage->show('png');
 //								$oImage->show('webp'); // Little Britain: "Safari says NO"
 								exit;
-							}
-							else if ($bDetectImageOrientation)
-							{
+							} else if ($bDetectImageOrientation) {
 								$oImage = static::loadImage($rResource, $bDetectImageOrientation);
 								\header('Content-Disposition: inline; '.
 									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileName)));
@@ -263,24 +256,20 @@ trait Raw
 
 							\MailSo\Base\Http::StatusHeader(206);
 
-							$iRangeStart = (int) $sRangeStart;
-							$iRangeEnd = (int) $sRangeEnd;
+							$iRangeStart = \max(0, \intval($sRangeStart));
+							$iRangeEnd = \max(0, \intval($sRangeEnd));
 
-							if ('' === $sRangeEnd) {
-								$sLoadedData = 0 < $iRangeStart ? \substr($sLoadedData, $iRangeStart) : $sLoadedData;
-							} else {
-								if ($iRangeStart < $iRangeEnd) {
-									$sLoadedData = \substr($sLoadedData, $iRangeStart, $iRangeEnd - $iRangeStart);
-								} else {
-									$sLoadedData = 0 < $iRangeStart ? \substr($sLoadedData, $iRangeStart) : $sLoadedData;
-								}
+							if ($iRangeEnd && $iRangeStart < $iRangeEnd) {
+								$sLoadedData = \substr($sLoadedData, $iRangeStart, $iRangeEnd - $iRangeStart);
+							} else if ($iRangeStart) {
+								$sLoadedData = \substr($sLoadedData, $iRangeStart);
 							}
 
 							$iContentLength = \strlen($sLoadedData);
 
 							if (0 < $iContentLength) {
 								\header('Content-Length: '.$iContentLength);
-								\header('Content-Range: bytes '.$sRangeStart.'-'.(0 < $iRangeEnd ? $iRangeEnd : $iFullContentLength - 1).'/'.$iFullContentLength);
+								\header('Content-Range: bytes '.$sRangeStart.'-'.($iRangeEnd ?: $iFullContentLength - 1).'/'.$iFullContentLength);
 							}
 						} else {
 							\header('Content-Length: '.\strlen($sLoadedData));

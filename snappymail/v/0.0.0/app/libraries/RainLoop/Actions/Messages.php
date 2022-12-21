@@ -25,8 +25,7 @@ trait Messages
 
 		$sRawKey = $this->GetActionParam('RawKey', '');
 		$aValues = \json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($sRawKey), true);
-		if ($aValues && 6 < \count($aValues))
-		{
+		if ($aValues && 6 < \count($aValues)) {
 			$this->verifyCacheByKey($sRawKey);
 
 //			$oParams->sHash = (string) $aValues['Hash'];
@@ -42,9 +41,7 @@ trait Messages
 			if ($oParams->bUseThreads && isset($aValues['ThreadUid'])) {
 				$oParams->iThreadUid = $aValues['ThreadUid'];
 			}
-		}
-		else
-		{
+		} else {
 			$oParams->sFolderName = $this->GetActionParam('Folder', '');
 			$oParams->iOffset = $this->GetActionParam('Offset', 0);
 			$oParams->iLimit = $this->GetActionParam('Limit', 10);
@@ -57,8 +54,7 @@ trait Messages
 			}
 		}
 
-		if (!\strlen($oParams->sFolderName))
-		{
+		if (!\strlen($oParams->sFolderName)) {
 			throw new ClientException(Notifications::CantGetMessageList);
 		}
 
@@ -85,12 +81,11 @@ trait Messages
 			throw new ClientException(Notifications::CantGetMessageList, $oException);
 		}
 
-		if ($oMessageList)
-		{
+		if ($oMessageList) {
 			$this->cacheByKey($sRawKey);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $oMessageList);
+		return $this->DefaultResponse($oMessageList);
 	}
 
 	public function DoSaveMessage() : array
@@ -98,8 +93,7 @@ trait Messages
 		$oAccount = $this->initMailClientConnection();
 
 		$sDraftFolder = $this->GetActionParam('SaveFolder', '');
-		if (!\strlen($sDraftFolder))
-		{
+		if (!\strlen($sDraftFolder)) {
 			throw new ClientException(Notifications::UnknownError);
 		}
 
@@ -108,15 +102,13 @@ trait Messages
 		$this->Plugins()->RunHook('filter.save-message', array($oMessage));
 
 		$mResult = false;
-		if ($oMessage)
-		{
+		if ($oMessage) {
 			$rMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
 
 			$iMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
 				$oMessage->ToStream(false), array($rMessageStream), 8192, true, true);
 
-			if (false !== $iMessageStreamSize)
-			{
+			if (false !== $iMessageStreamSize) {
 				$sMessageId = $oMessage->MessageId();
 
 				\rewind($rMessageStream);
@@ -126,8 +118,7 @@ trait Messages
 					$rMessageStream, $iMessageStreamSize, $sDraftFolder, array(MessageFlag::SEEN), $iNewUid
 				);
 
-				if (!empty($sMessageId) && (null === $iNewUid || 0 === $iNewUid))
-				{
+				if (!empty($sMessageId) && (null === $iNewUid || 0 === $iNewUid)) {
 					$iNewUid = $this->MailClient()->FindMessageUidByMessageId($sDraftFolder, $sMessageId);
 				}
 
@@ -135,13 +126,11 @@ trait Messages
 
 				$sMessageFolder = $this->GetActionParam('MessageFolder', '');
 				$iMessageUid = (int) $this->GetActionParam('MessageUid', 0);
-				if (\strlen($sMessageFolder) && 0 < $iMessageUid)
-				{
+				if (\strlen($sMessageFolder) && 0 < $iMessageUid) {
 					$this->MailClient()->MessageDelete($sMessageFolder, new SequenceSet($iMessageUid));
 				}
 
-				if (null !== $iNewUid && 0 < $iNewUid)
-				{
+				if (null !== $iNewUid && 0 < $iNewUid) {
 					$mResult = array(
 						'NewFolder' => $sDraftFolder,
 						'NewUid' => $iNewUid
@@ -150,7 +139,7 @@ trait Messages
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $mResult);
+		return $this->DefaultResponse($mResult);
 	}
 
 	public function DoSendMessage() : array
@@ -169,20 +158,17 @@ trait Messages
 		$mResult = false;
 		try
 		{
-			if ($oMessage)
-			{
+			if ($oMessage) {
 				$rMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
 
 				$iMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
 					$oMessage->ToStream(true), array($rMessageStream), 8192, true, true, true);
 
-				if (false !== $iMessageStreamSize)
-				{
+				if (false !== $iMessageStreamSize) {
 					$bDsn = !empty($this->GetActionParam('Dsn', 0));
 					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize, $bDsn, true);
 
-					if (\is_array($aDraftInfo) && 3 === \count($aDraftInfo))
-					{
+					if (\is_array($aDraftInfo) && 3 === \count($aDraftInfo)) {
 						$sDraftInfoType = $aDraftInfo[0];
 						$iDraftInfoUid = (int) $aDraftInfo[1];
 						$sDraftInfoFolder = $aDraftInfo[2];
@@ -206,14 +192,11 @@ trait Messages
 						}
 					}
 
-					if (\strlen($sSentFolder))
-					{
+					if (\strlen($sSentFolder)) {
 						try
 						{
-							if (!$oMessage->GetBcc())
-							{
-								if (\is_resource($rMessageStream))
-								{
+							if (!$oMessage->GetBcc()) {
+								if (\is_resource($rMessageStream)) {
 									\rewind($rMessageStream);
 								}
 
@@ -223,9 +206,7 @@ trait Messages
 								$this->MailClient()->MessageAppendStream(
 									$rMessageStream, $iMessageStreamSize, $sSentFolder, array(MessageFlag::SEEN)
 								);
-							}
-							else
-							{
+							} else {
 								$rAppendMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
 
 								$iAppendMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
@@ -238,8 +219,7 @@ trait Messages
 									$rAppendMessageStream, $iAppendMessageStreamSize, $sSentFolder, array(MessageFlag::SEEN)
 								);
 
-								if (\is_resource($rAppendMessageStream))
-								{
+								if (\is_resource($rAppendMessageStream)) {
 									fclose($rAppendMessageStream);
 								}
 							}
@@ -250,8 +230,7 @@ trait Messages
 						}
 					}
 
-					if (\is_resource($rMessageStream))
-					{
+					if (\is_resource($rMessageStream)) {
 						\fclose($rMessageStream);
 					}
 
@@ -259,8 +238,7 @@ trait Messages
 
 					$sDraftFolder = $this->GetActionParam('MessageFolder', '');
 					$iDraftUid = (int) $this->GetActionParam('MessageUid', 0);
-					if (\strlen($sDraftFolder) && 0 < $iDraftUid)
-					{
+					if (\strlen($sDraftFolder) && 0 < $iDraftUid) {
 						try
 						{
 							$this->MailClient()->MessageDelete($sDraftFolder, new SequenceSet($iDraftUid));
@@ -284,27 +262,22 @@ trait Messages
 			throw new ClientException(Notifications::CantSendMessage, $oException);
 		}
 
-		if (false === $mResult)
-		{
+		if (false === $mResult) {
 			throw new ClientException(Notifications::CantSendMessage);
 		}
 
 		try
 		{
-			if ($oMessage && $this->AddressBookProvider($oAccount)->IsActive())
-			{
+			if ($oMessage && $this->AddressBookProvider($oAccount)->IsActive()) {
 				$aArrayToFrec = array();
 				$oToCollection = $oMessage->GetTo();
-				if ($oToCollection)
-				{
-					foreach ($oToCollection as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
-					{
+				if ($oToCollection) {
+					foreach ($oToCollection as /* @var $oEmail \MailSo\Mime\Email */ $oEmail) {
 						$aArrayToFrec[$oEmail->GetEmail(true)] = $oEmail->ToString(false, true);
 					}
 				}
 
-				if (\count($aArrayToFrec))
-				{
+				if (\count($aArrayToFrec)) {
 					$oSettings = $this->SettingsProvider()->Load($oAccount);
 
 					$this->AddressBookProvider($oAccount)->IncFrec(
@@ -319,7 +292,7 @@ trait Messages
 			$this->Logger()->WriteException($oException);
 		}
 
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->TrueResponse();
 	}
 
 	public function DoSendReadReceiptMessage() : array
@@ -333,19 +306,16 @@ trait Messages
 		$mResult = false;
 		try
 		{
-			if ($oMessage)
-			{
+			if ($oMessage) {
 				$rMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
 
 				$iMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
 					$oMessage->ToStream(true), array($rMessageStream), 8192, true, true, true);
 
-				if (false !== $iMessageStreamSize)
-				{
+				if (false !== $iMessageStreamSize) {
 					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize, false, false);
 
-					if (\is_resource($rMessageStream))
-					{
+					if (\is_resource($rMessageStream)) {
 						\fclose($rMessageStream);
 					}
 
@@ -356,8 +326,7 @@ trait Messages
 
 					$this->Cacher($oAccount)->Set(\RainLoop\KeyPathHelper::ReadReceiptCache($oAccount->Email(), $sFolderFullName, $iUid), '1');
 
-					if (\strlen($sFolderFullName) && 0 < $iUid)
-					{
+					if (\strlen($sFolderFullName) && 0 < $iUid) {
 						try
 						{
 							$this->MailClient()->MessageSetFlag($sFolderFullName, new SequenceSet($iUid), MessageFlag::MDNSENT, true, true);
@@ -376,17 +345,16 @@ trait Messages
 			throw new ClientException(Notifications::CantSendMessage, $oException);
 		}
 
-		if (false === $mResult)
-		{
+		if (false === $mResult) {
 			throw new ClientException(Notifications::CantSendMessage);
 		}
 
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->TrueResponse();
 	}
 
 	public function DoMessageSetSeen() : array
 	{
-		return $this->messageSetFlag(MessageFlag::SEEN, __FUNCTION__);
+		return $this->messageSetFlag(MessageFlag::SEEN);
 	}
 
 	public function DoMessageSetSeenToAll() : array
@@ -409,17 +377,17 @@ trait Messages
 			throw new ClientException(Notifications::MailServerError, $oException);
 		}
 
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->TrueResponse();
 	}
 
 	public function DoMessageSetFlagged() : array
 	{
-		return $this->messageSetFlag(MessageFlag::FLAGGED, __FUNCTION__, true);
+		return $this->messageSetFlag(MessageFlag::FLAGGED, true);
 	}
 
 	public function DoMessageSetKeyword() : array
 	{
-		return $this->messageSetFlag($this->GetActionParam('Keyword', ''), __FUNCTION__, true);
+		return $this->messageSetFlag($this->GetActionParam('Keyword', ''), true);
 	}
 
 	/**
@@ -433,15 +401,12 @@ trait Messages
 		$iUid = 0;
 
 		$aValues = \json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($sRawKey), true);
-		if ($aValues && 2 <= \count($aValues))
-		{
+		if ($aValues && 2 <= \count($aValues)) {
 			$sFolder = (string) $aValues[0];
 			$iUid = (int) $aValues[1];
 
 			$this->verifyCacheByKey($sRawKey);
-		}
-		else
-		{
+		} else {
 			$sFolder = $this->GetActionParam('Folder', '');
 			$iUid = (int) $this->GetActionParam('Uid', 0);
 		}
@@ -457,14 +422,13 @@ trait Messages
 			throw new ClientException(Notifications::CantGetMessage, $oException);
 		}
 
-		if ($oMessage)
-		{
+		if ($oMessage) {
 			$this->Plugins()->RunHook('filter.result-message', array($oMessage));
 
 			$this->cacheByKey($sRawKey);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $oMessage);
+		return $this->DefaultResponse($oMessage);
 	}
 
 	/**
@@ -496,7 +460,7 @@ trait Messages
 			\SnappyMail\Log::warning('IMAP', "FolderHash({$sFolder}) Exception: {$oException->getMessage()}");
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $sHash ? array($sFolder, $sHash) : array($sFromFolder));
+		return $this->DefaultResponse($sHash ? array($sFolder, $sHash) : array($sFromFolder));
 	}
 
 	/**
@@ -511,8 +475,7 @@ trait Messages
 
 		$oUids = new SequenceSet(\explode(',', (string) $this->GetActionParam('Uids', '')));
 
-		if (!empty($this->GetActionParam('MarkAsRead', '0')))
-		{
+		if (!empty($this->GetActionParam('MarkAsRead', '0'))) {
 			try
 			{
 				$this->MailClient()->MessageSetFlag($sFromFolder, $oUids, MessageFlag::SEEN);
@@ -524,8 +487,7 @@ trait Messages
 		}
 
 		$sLearning = $this->GetActionParam('Learning', '');
-		if ($sLearning)
-		{
+		if ($sLearning) {
 			try
 			{
 				if ('SPAM' === $sLearning) {
@@ -561,7 +523,7 @@ trait Messages
 			\SnappyMail\Log::warning('IMAP', "FolderHash({$sFromFolder}) Exception: {$oException->getMessage()}");
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $sHash ? array($sFromFolder, $sHash) : array($sFromFolder));
+		return $this->DefaultResponse($sHash ? array($sFromFolder, $sHash) : array($sFromFolder));
 	}
 
 	/**
@@ -584,7 +546,7 @@ trait Messages
 			throw new ClientException(Notifications::CantCopyMessage, $oException);
 		}
 
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->TrueResponse();
 	}
 
 	public function DoMessageUploadAttachments() : array
@@ -654,7 +616,7 @@ trait Messages
 			throw new ClientException(Notifications::MailServerError, $oException);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $aAttachments);
+		return $this->DefaultResponse($aAttachments);
 	}
 
 	/**
@@ -770,7 +732,7 @@ trait Messages
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $result);
+		return $this->DefaultResponse($result);
 	}
 
 	/**
@@ -810,16 +772,12 @@ trait Messages
 			$bUsePhpMail = false;
 			$oAccount->SmtpConnectAndLoginHelper($this->Plugins(), $oSmtpClient, $this->Config(), $bUsePhpMail);
 
-			if ($bUsePhpMail)
-			{
-				if (\MailSo\Base\Utils::FunctionCallable('mail'))
-				{
+			if ($bUsePhpMail) {
+				if (\MailSo\Base\Utils::FunctionCallable('mail')) {
 					$aToCollection = $oMessage->GetTo();
-					if ($aToCollection && $oFrom)
-					{
+					if ($aToCollection && $oFrom) {
 						$sRawBody = \stream_get_contents($rMessageStream);
-						if (!empty($sRawBody))
-						{
+						if (!empty($sRawBody)) {
 							$sMailTo = \trim($aToCollection->ToString(true));
 							$sMailSubject = \trim($oMessage->GetSubject());
 							$sMailSubject = 0 === \strlen($sMailSubject) ? '' : \MailSo\Base\Utils::EncodeUnencodedValue(
@@ -829,8 +787,7 @@ trait Messages
 							list($sMailHeaders, $sMailBody) = \explode("\r\n\r\n", $sRawBody, 2);
 							unset($sRawBody);
 
-							if ($this->Config()->Get('labs', 'mail_func_clear_headers', true))
-							{
+							if ($this->Config()->Get('labs', 'mail_func_clear_headers', true)) {
 								$sMailHeaders = \MailSo\Base\Utils::RemoveHeaderFromHeaders($sMailHeaders, array(
 									MimeEnumHeader::TO_,
 									MimeEnumHeader::SUBJECT
@@ -845,20 +802,15 @@ trait Messages
 								\mail($sMailTo, $sMailSubject, $sMailBody, $sMailHeaders, '-f'.$oFrom->GetEmail()) :
 								\mail($sMailTo, $sMailSubject, $sMailBody, $sMailHeaders);
 
-							if (!$bR)
-							{
+							if (!$bR) {
 								throw new ClientException(Notifications::CantSendMessage);
 							}
 						}
 					}
-				}
-				else
-				{
+				} else {
 					throw new ClientException(Notifications::CantSendMessage);
 				}
-			}
-			else if ($oSmtpClient->IsConnected())
-			{
+			} else if ($oSmtpClient->IsConnected()) {
 				if ($iMessageStreamSize && $oSmtpClient->maxSize() && $iMessageStreamSize * 1.33 > $oSmtpClient->maxSize()) {
 					throw new ClientException(Notifications::ClientViewError, 'Message size '. ($iMessageStreamSize * 1.33) . ' bigger then max ' . $oSmtpClient->maxSize());
 				}
@@ -904,7 +856,7 @@ trait Messages
 		}
 	}
 
-	private function messageSetFlag(string $sMessageFlag, string $sResponseFunction, bool $bSkipUnsupportedFlag = false) : array
+	private function messageSetFlag(string $sMessageFlag, bool $bSkipUnsupportedFlag = false) : array
 	{
 		$this->initMailClientConnection();
 
@@ -923,19 +875,16 @@ trait Messages
 			throw new ClientException(Notifications::MailServerError, $oException);
 		}
 
-		return $this->TrueResponse($sResponseFunction);
+		return $this->TrueResponse();
 	}
 
 	private function deleteMessageAttachments(Account $oAccount) : void
 	{
 		$aAttachments = $this->GetActionParam('Attachments', null);
 
-		if (\is_array($aAttachments))
-		{
-			foreach (\array_keys($aAttachments) as $sTempName)
-			{
-				if ($this->FilesProvider()->FileExists($oAccount, $sTempName))
-				{
+		if (\is_array($aAttachments)) {
+			foreach (\array_keys($aAttachments) as $sTempName) {
+				if ($this->FilesProvider()->FileExists($oAccount, $sTempName)) {
 					$this->FilesProvider()->Clear($oAccount, $sTempName);
 				}
 			}
@@ -1080,8 +1029,7 @@ trait Messages
 		}
 
 		$aDraftInfo = $this->GetActionParam('DraftInfo', null);
-		if ($bWithDraftInfo && \is_array($aDraftInfo) && !empty($aDraftInfo[0]) && !empty($aDraftInfo[1]) && !empty($aDraftInfo[2]))
-		{
+		if ($bWithDraftInfo && \is_array($aDraftInfo) && !empty($aDraftInfo[0]) && !empty($aDraftInfo[1]) && !empty($aDraftInfo[2])) {
 			$oMessage->SetDraftInfo($aDraftInfo[0], $aDraftInfo[1], $aDraftInfo[2]);
 		}
 
@@ -1217,10 +1165,8 @@ trait Messages
 		unset($oPart);
 
 		$aAttachments = $this->GetActionParam('Attachments', null);
-		if (\is_array($aAttachments))
-		{
-			foreach ($aAttachments as $sTempName => $aData)
-			{
+		if (\is_array($aAttachments)) {
+			foreach ($aAttachments as $sTempName => $aData) {
 				$sFileName = (string) $aData['name'];
 				$bIsInline = (bool) $aData['inline'];
 				$sCID = (string) $aData['cid'];
@@ -1228,8 +1174,7 @@ trait Messages
 				$sMimeType = (string) $aData['type'];
 
 				$rResource = $this->FilesProvider()->GetFile($oAccount, $sTempName);
-				if (\is_resource($rResource))
-				{
+				if (\is_resource($rResource)) {
 					$iFileSize = $this->FilesProvider()->FileSize($oAccount, $sTempName);
 
 					$oMessage->Attachments()->append(
@@ -1242,8 +1187,7 @@ trait Messages
 			}
 		}
 
-		foreach ($aFoundDataURL as $sCidHash => $sDataUrlString)
-		{
+		foreach ($aFoundDataURL as $sCidHash => $sDataUrlString) {
 			$aMatch = array();
 			$sCID = '<'.$sCidHash.'>';
 			if (\preg_match('/^data:(image\/[a-zA-Z0-9]+);base64,(.+)$/i', $sDataUrlString, $aMatch) &&
@@ -1251,8 +1195,7 @@ trait Messages
 			{
 				$sRaw = \MailSo\Base\Utils::Base64Decode($aMatch[2]);
 				$iFileSize = \strlen($sRaw);
-				if (0 < $iFileSize)
-				{
+				if (0 < $iFileSize) {
 					$sFileName = \preg_replace('/[^a-z0-9]+/i', '.', $aMatch[1]);
 					$rResource = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString($sRaw);
 

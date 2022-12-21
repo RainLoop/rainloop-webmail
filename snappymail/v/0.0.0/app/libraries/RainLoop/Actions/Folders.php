@@ -38,7 +38,7 @@ trait Folders
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, true);
+		return $this->TrueResponse();
 	}
 
 	public function DoFolders() : array
@@ -79,7 +79,7 @@ trait Folders
 			);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $oFolderCollection);
+		return $this->DefaultResponse($oFolderCollection);
 	}
 
 	public function DoFolderCreate() : array
@@ -95,7 +95,7 @@ trait Folders
 			);
 
 //			FolderInformation(string $sFolderName, int $iPrevUidNext = 0, array $aUids = array())
-			return $this->DefaultResponse(__FUNCTION__, $oFolder);
+			return $this->DefaultResponse($oFolder);
 		}
 		catch (\Throwable $oException)
 		{
@@ -113,7 +113,7 @@ trait Folders
 				$sMetadataKey => $this->GetActionParam('Value') ?: null
 			]);
 		}
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->TrueResponse();
 	}
 
 	public function DoFolderSubscribe() : array
@@ -135,7 +135,7 @@ trait Folders
 			);
 		}
 
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->TrueResponse();
 	}
 
 	public function DoFolderCheckable() : array
@@ -143,18 +143,16 @@ trait Folders
 		$oAccount = $this->getAccountFromToken();
 
 		$sFolderFullName = $this->GetActionParam('Folder', '');
-		$bCheckable = '1' === (string) $this->GetActionParam('Checkable', '0');
 
 		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
-		$sCheckableFolder = $oSettingsLocal->GetConf('CheckableFolder', '[]');
-		$aCheckableFolder = \json_decode($sCheckableFolder);
+		$aCheckableFolder = \json_decode($oSettingsLocal->GetConf('CheckableFolder', '[]'));
 
 		if (!\is_array($aCheckableFolder)) {
 			$aCheckableFolder = array();
 		}
 
-		if ($bCheckable) {
+		if (!empty($this->GetActionParam('Checkable', '0'))) {
 			$aCheckableFolder[] = $sFolderFullName;
 		} else {
 			$aCheckableFolderNew = array();
@@ -170,8 +168,7 @@ trait Folders
 
 		$oSettingsLocal->SetConf('CheckableFolder', \json_encode($aCheckableFolder));
 
-		return $this->DefaultResponse(__FUNCTION__,
-			$this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
+		return $this->DefaultResponse($this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
 	}
 
 	/**
@@ -194,7 +191,7 @@ trait Folders
 			throw new ClientException(Notifications::CantRenameFolder, $oException);
 		}
 
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->TrueResponse();
 	}
 
 	/**
@@ -219,7 +216,7 @@ trait Folders
 		}
 
 //		FolderInformation(string $sFolderName, int $iPrevUidNext = 0, array $aUids = array())
-		return $this->DefaultResponse(__FUNCTION__, array(
+		return $this->DefaultResponse(array(
 			'Name' => $sName,
 			'FullName' => $sFullName,
 		));
@@ -245,7 +242,7 @@ trait Folders
 			throw new ClientException(Notifications::CantDeleteFolder, $oException);
 		}
 
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->TrueResponse();
 	}
 
 	/**
@@ -264,7 +261,7 @@ trait Folders
 			throw new ClientException(Notifications::MailServerError, $oException);
 		}
 
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->TrueResponse();
 	}
 
 	/**
@@ -276,12 +273,11 @@ trait Folders
 
 		try
 		{
-			$aInboxInformation = $this->MailClient()->FolderInformation(
+			return $this->DefaultResponse($this->MailClient()->FolderInformation(
 				$this->GetActionParam('Folder', ''),
 				(int) $this->GetActionParam('UidNext', 0),
 				new \MailSo\Imap\SequenceSet($this->GetActionParam('FlagsUids', []))
-			);
-			return $this->DefaultResponse(__FUNCTION__, $aInboxInformation);
+			));
 		}
 		catch (\Throwable $oException)
 		{
@@ -323,7 +319,7 @@ trait Folders
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $aResult);
+		return $this->DefaultResponse($aResult);
 	}
 
 	public function DoSystemFoldersUpdate() : array
@@ -338,7 +334,6 @@ trait Folders
 		$oSettingsLocal->SetConf('TrashFolder', $this->GetActionParam('Trash', ''));
 		$oSettingsLocal->SetConf('ArchiveFolder', $this->GetActionParam('Archive', ''));
 
-		return $this->DefaultResponse(__FUNCTION__,
-			$this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
+		return $this->DefaultResponse($this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
 	}
 }

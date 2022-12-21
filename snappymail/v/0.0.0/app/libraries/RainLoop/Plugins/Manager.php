@@ -101,10 +101,8 @@ class Manager
 		$aList = array();
 
 		$aGlob = \glob(APP_PLUGINS_PATH.'*');
-		if (\is_array($aGlob))
-		{
-			foreach ($aGlob as $sPathName)
-			{
+		if (\is_array($aGlob)) {
+			foreach ($aGlob as $sPathName) {
 				if (\is_dir($sPathName)) {
 					$sName = \basename($sPathName);
 				} else if ('.phar' === \substr($sPathName, -5)) {
@@ -122,9 +120,7 @@ class Manager
 					);
 				}
 			}
-		}
-		else
-		{
+		} else {
 			$this->oActions->Logger()->Write('Cannot get installed plugins from '.APP_PLUGINS_PATH,
 				\LOG_ERR);
 		}
@@ -222,13 +218,10 @@ class Manager
 
 	public function CompileTemplate(array &$aList, bool $bAdminScope = false) : void
 	{
-		if ($this->bIsEnabled)
-		{
+		if ($this->bIsEnabled) {
 			$aTemplates = $bAdminScope ? $this->aAdminTemplates : $this->aTemplates;
-			foreach ($aTemplates as $sFile)
-			{
-				if (\is_readable($sFile))
-				{
+			foreach ($aTemplates as $sFile) {
+				if (\is_readable($sFile)) {
 					$sTemplateName = \substr(\basename($sFile), 0, -5);
 					$aList[$sTemplateName] = $sFile;
 				}
@@ -238,21 +231,15 @@ class Manager
 
 	public function InitAppData(bool $bAdmin, array &$aAppData, ?\RainLoop\Model\Account $oAccount = null) : self
 	{
-		if ($this->bIsEnabled && isset($aAppData['Plugins']) && \is_array($aAppData['Plugins']))
-		{
+		if ($this->bIsEnabled && isset($aAppData['Plugins']) && \is_array($aAppData['Plugins'])) {
 			$bAuth = !empty($aAppData['Auth']);
-			foreach ($this->aPlugins as $oPlugin)
-			{
-				if ($oPlugin)
-				{
+			foreach ($this->aPlugins as $oPlugin) {
+				if ($oPlugin) {
 					$aConfig = array();
 					$aMap = $oPlugin->ConfigMap(true);
-					if (\is_array($aMap))
-					{
-						foreach ($aMap as /* @var $oPluginProperty \RainLoop\Plugins\Property */ $oPluginProperty)
-						{
-							if ($oPluginProperty && $oPluginProperty->AllowedInJs())
-							{
+					if (\is_array($aMap)) {
+						foreach ($aMap as /* @var $oPluginProperty \RainLoop\Plugins\Property */ $oPluginProperty) {
+							if ($oPluginProperty && $oPluginProperty->AllowedInJs()) {
 								$aConfig[$oPluginProperty->Name()] =
 									$oPlugin->Config()->Get('plugin',
 										$oPluginProperty->Name(),
@@ -263,8 +250,7 @@ class Manager
 
 					$oPlugin->FilterAppDataPluginSection($bAdmin, $bAuth, $aConfig);
 
-					if (\count($aConfig))
-					{
+					if (\count($aConfig)) {
 						$aAppData['Plugins'][$oPlugin->Name()] = $aConfig;
 					}
 				}
@@ -310,14 +296,10 @@ class Manager
 
 	public function AddTemplate(string $sFile, bool $bAdminScope = false) : self
 	{
-		if ($this->bIsEnabled)
-		{
-			if ($bAdminScope)
-			{
+		if ($this->bIsEnabled) {
+			if ($bAdminScope) {
 				$this->aAdminTemplates[$sFile] = $sFile;
-			}
-			else
-			{
+			} else {
 				$this->aTemplates[$sFile] = $sFile;
 			}
 		}
@@ -346,11 +328,9 @@ class Manager
 	 */
 	public function AddAdditionalPartAction(string $sActionName, $mCallbak) : self
 	{
-		if ($this->bIsEnabled && \is_callable($mCallbak))
-		{
+		if ($this->bIsEnabled && \is_callable($mCallbak)) {
 			$sActionName = \strtolower($sActionName);
-			if (!isset($this->aAdditionalParts[$sActionName]))
-			{
+			if (!isset($this->aAdditionalParts[$sActionName])) {
 				$this->aAdditionalParts[$sActionName] = array();
 			}
 
@@ -363,13 +343,10 @@ class Manager
 	public function RunAdditionalPart(string $sActionName, array $aParts = array()) : bool
 	{
 		$bResult = false;
-		if ($this->bIsEnabled)
-		{
+		if ($this->bIsEnabled) {
 			$sActionName = \strtolower($sActionName);
-			if (isset($this->aAdditionalParts[$sActionName]))
-			{
-				foreach ($this->aAdditionalParts[$sActionName] as $mCallbak)
-				{
+			if (isset($this->aAdditionalParts[$sActionName])) {
+				foreach ($this->aAdditionalParts[$sActionName] as $mCallbak) {
 					$bResult = !!$mCallbak(...$aParts) || $bResult;
 				}
 			}
@@ -405,20 +382,17 @@ class Manager
 	 */
 	public function JsonResponseHelper(string $sFunctionName, $mData) : array
 	{
-		return $this->oActions->DefaultResponse($sFunctionName, $mData);
+		return $this->oActions->DefaultResponse($mData, [], $sFunctionName);
 	}
 
 	public function GetUserPluginSettings(string $sPluginName) : array
 	{
 		$oAccount = $this->oActions->GetAccount();
-		if ($oAccount)
-		{
+		if ($oAccount) {
 			$oSettings = $this->oActions->SettingsProvider()->Load($oAccount);
-			if ($oSettings)
-			{
+			if ($oSettings) {
 				$aData = $oSettings->GetConf('Plugins', array());
-				if (isset($aData[$sPluginName]) && \is_array($aData[$sPluginName]))
-				{
+				if (isset($aData[$sPluginName]) && \is_array($aData[$sPluginName])) {
 					return $aData[$sPluginName];
 				}
 			}
@@ -430,25 +404,20 @@ class Manager
 	public function SaveUserPluginSettings(string $sPluginName, array $aSettings) : bool
 	{
 		$oAccount = $this->oActions->GetAccount();
-		if ($oAccount)
-		{
+		if ($oAccount) {
 			$oSettings = $this->oActions->SettingsProvider()->Load($oAccount);
-			if ($oSettings)
-			{
+			if ($oSettings) {
 				$aData = $oSettings->GetConf('Plugins', array());
-				if (!\is_array($aData))
-				{
+				if (!\is_array($aData)) {
 					$aData = array();
 				}
 
 				$aPluginSettings = array();
-				if (isset($aData[$sPluginName]) && \is_array($aData[$sPluginName]))
-				{
+				if (isset($aData[$sPluginName]) && \is_array($aData[$sPluginName])) {
 					$aPluginSettings = $aData[$sPluginName];
 				}
 
-				foreach ($aSettings as $sKey => $mValue)
-				{
+				foreach ($aSettings as $sKey => $mValue) {
 					$aPluginSettings[$sKey] = $mValue;
 				}
 
@@ -518,16 +487,14 @@ class Manager
 
 	public function WriteLog(string $sDesc, int $iType = \LOG_INFO) : void
 	{
-		if ($this->oLogger)
-		{
+		if ($this->oLogger) {
 			$this->oLogger->Write($sDesc, $iType, 'PLUGIN');
 		}
 	}
 
 	public function WriteException(string $sDesc, int $iType = \LOG_INFO) : void
 	{
-		if ($this->oLogger)
-		{
+		if ($this->oLogger) {
 			$this->oLogger->WriteException($sDesc, $iType, 'PLUGIN');
 		}
 	}

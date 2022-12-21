@@ -10,8 +10,7 @@ abstract class Service
 	public static function Handle() : bool
 	{
 		static $bOne = null;
-		if (null === $bOne)
-		{
+		if (null === $bOne) {
 			$bOne = static::RunResult();
 		}
 
@@ -23,8 +22,7 @@ abstract class Service
 		$oConfig = Api::Config();
 
 		$sServer = \trim($oConfig->Get('security', 'custom_server_signature', ''));
-		if (\strlen($sServer))
-		{
+		if (\strlen($sServer)) {
 			\header('Server: '.$sServer);
 		}
 
@@ -40,8 +38,7 @@ abstract class Service
 		\header('X-XSS-Protection: '.$sXssProtectionOptionsHeader);
 
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
-		if ($oConfig->Get('labs', 'force_https', false) && !$oHttp->IsSecure())
-		{
+		if ($oConfig->Get('labs', 'force_https', false) && !$oHttp->IsSecure()) {
 			\header('Location: https://'.$oHttp->GetHost(false, false).$oHttp->GetUrl());
 			exit;
 		}
@@ -67,13 +64,10 @@ abstract class Service
 
 		$bAdmin = false;
 		$sAdminPanelHost = $oConfig->Get('security', 'admin_panel_host', '');
-		if (empty($sAdminPanelHost))
-		{
+		if (empty($sAdminPanelHost)) {
 			$bAdmin = !empty($aPaths[0]) && ($oConfig->Get('security', 'admin_panel_key', '') ?: 'admin') === $aPaths[0];
 			$bAdmin && \array_shift($aPaths);
-		}
-		else if (empty($aPaths[0]) && \mb_strtolower($sAdminPanelHost) === \mb_strtolower($oHttp->GetHost()))
-		{
+		} else if (empty($aPaths[0]) && \mb_strtolower($sAdminPanelHost) === \mb_strtolower($oHttp->GetHost())) {
 			$bAdmin = true;
 		}
 
@@ -81,15 +75,13 @@ abstract class Service
 
 		$oActions->Plugins()->RunHook('filter.http-paths', array(&$aPaths));
 
-		if ($oHttp->IsPost())
-		{
+		if ($oHttp->IsPost()) {
 			$oHttp->ServerNoCache();
 		}
 
 		$oServiceActions = new ServiceActions($oHttp, $oActions);
 
-		if ($bAdmin && !$oConfig->Get('security', 'allow_admin_panel', true))
-		{
+		if ($bAdmin && !$oConfig->Get('security', 'allow_admin_panel', true)) {
 			\MailSo\Base\Http::StatusHeader(403);
 			echo $oServiceActions->ErrorTemplates('Access Denied.',
 				'Access to the SnappyMail Admin Panel is not allowed!');
@@ -99,8 +91,7 @@ abstract class Service
 
 		$bIndex = true;
 		$sResult = '';
-		if (\count($aPaths) && !empty($aPaths[0]) && 'index' !== \strtolower($aPaths[0]))
-		{
+		if (\count($aPaths) && !empty($aPaths[0]) && 'index' !== \strtolower($aPaths[0])) {
 			if ('mailto' !== \strtolower($aPaths[0]) && !\SnappyMail\HTTP\SecFetch::matchAnyRule($oConfig->Get('security', 'secfetch_allow', ''))) {
 				\MailSo\Base\Http::StatusHeader(403);
 				echo $oServiceActions->ErrorTemplates('Access Denied.',
@@ -116,20 +107,15 @@ abstract class Service
 			$sMethodName = 'Service'.\preg_replace('/@.+$/', '', $aPaths[0]);
 			$sMethodExtra = \strpos($aPaths[0], '@') ? \preg_replace('/^[^@]+@/', '', $aPaths[0]) : '';
 
-			if (\method_exists($oServiceActions, $sMethodName) &&
-				\is_callable(array($oServiceActions, $sMethodName)))
-			{
+			if (\method_exists($oServiceActions, $sMethodName) && \is_callable(array($oServiceActions, $sMethodName))) {
 				$oServiceActions->SetQuery($sQuery)->SetPaths($aPaths);
 				$sResult = $oServiceActions->{$sMethodName}($sMethodExtra);
-			}
-			else if (!$oActions->Plugins()->RunAdditionalPart($aPaths[0], $aPaths))
-			{
+			} else if (!$oActions->Plugins()->RunAdditionalPart($aPaths[0], $aPaths)) {
 				$bIndex = true;
 			}
 		}
 
-		if ($bIndex)
-		{
+		if ($bIndex) {
 			if (!$bAdmin) {
 				$login = $oConfig->Get('labs', 'custom_login_link', '');
 				if ($login && !$oActions->getAccountFromToken(false)) {
@@ -142,8 +128,7 @@ abstract class Service
 			\header('Content-Type: text/html; charset=utf-8');
 			$oHttp->ServerNoCache();
 
-			if (!\is_dir(APP_DATA_FOLDER_PATH) || !\is_writable(APP_DATA_FOLDER_PATH))
-			{
+			if (!\is_dir(APP_DATA_FOLDER_PATH) || !\is_writable(APP_DATA_FOLDER_PATH)) {
 				echo $oServiceActions->ErrorTemplates(
 					'Permission denied!',
 					'SnappyMail can not access the data folder "'.APP_DATA_FOLDER_PATH.'"'
@@ -175,8 +160,7 @@ abstract class Service
 			);
 
 			$sCacheFileName = '';
-			if ($oConfig->Get('labs', 'cache_system_data', true))
-			{
+			if ($oConfig->Get('labs', 'cache_system_data', true)) {
 				$sCacheFileName = 'TMPL:' . $sLanguage . \md5(
 					Utils::jsonEncode(array(
 						$oConfig->Get('cache', 'index', ''),
@@ -217,9 +201,7 @@ abstract class Service
 			$sScriptHash = 'sha256-'.\base64_encode(\hash('sha256', $script[1], true));
 			static::setCSP(null, $sScriptHash);
 */
-		}
-		else if (!\headers_sent())
-		{
+		} else if (!\headers_sent()) {
 			\header('X-XSS-Protection: 1; mode=block');
 		}
 
