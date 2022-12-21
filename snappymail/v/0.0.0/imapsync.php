@@ -100,16 +100,18 @@ function get_opt(string $short_options, array $long_options) {
 			}
 		}
 		// When empty, prompt on command line for value
-		if (($required || $optional) && isset($opts[$key]) && !\strlen($opts[$key])) {
+		if (($required && empty($opts[$key]))
+		 || ($optional && isset($opts[$key]) && !\strlen($opts[$key]))
+		) {
 			if (\is_callable('readline')) {
 				$opts[$key] = \readline("{$key}: ");
 			} else {
 				echo "{$key}: ";
 				$opts[$key] = \stream_get_line(STDIN, 1024, PHP_EOL);
 			}
-		}
-		if ($required && !isset($opts[$key])) {
-			exit("Missing required argument {$arg}");
+			if ($required && empty($opts[$key])) {
+				exit("Missing required argument {$arg}");
+			}
 		}
 	}
 	return $opts;
