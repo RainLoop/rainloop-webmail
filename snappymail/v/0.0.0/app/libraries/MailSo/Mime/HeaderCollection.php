@@ -196,78 +196,51 @@ class HeaderCollection extends \MailSo\Base\Collection
 		return $this;
 	}
 
-	public function DkimStatuses() : array
+	/**
+	 * https://www.rfc-editor.org/rfc/rfc8601
+	 * dkim=pass header.d=domain.tld header.s=s1 header.b=F2SfoZWw;
+	 * spf=pass (ORIGINATING: domain of "snappymail@domain.tld" designates 0.0.0.0 as permitted sender) smtp.mailfrom="snappymail@domain.tld";
+	 * dmarc=fail reason="SPF not aligned (relaxed), DKIM not aligned (relaxed)" header.from=domain.tld (policy=none)
+	 */
+	public function AuthStatuses() : array
 	{
-		$aResult = array();
-
+		$aResult = [
+			'dkim' => [],
+			'dmarc' => [],
+			'spf' => []
+		];
 		$aHeaders = $this->ValuesByName(Enumerations\Header::AUTHENTICATION_RESULTS);
 		if (\count($aHeaders)) {
-			foreach ($aHeaders as $sHeaderValue) {
-				$sStatus = '';
-				$sHeader = '';
-				$sDkimLine = '';
-
-				$aMatch = array();
-
-				$sHeaderValue = \preg_replace('/[\r\n\t\s]+/', ' ', $sHeaderValue);
-
-				if (\preg_match('/dkim=.+/i', $sHeaderValue, $aMatch) && !empty($aMatch[0])) {
-					$sDkimLine = $aMatch[0];
-
-					$aMatch = array();
-					if (\preg_match('/dkim=([a-zA-Z0-9]+)/i', $sDkimLine, $aMatch) && !empty($aMatch[1])) {
-						$sStatus = $aMatch[1];
-					}
-
-					$aMatch = array();
-					if (\preg_match('/header\.(d|i|from)=([^\s;]+)/i', $sDkimLine, $aMatch) && !empty($aMatch[2])) {
-						$sHeader = \trim($aMatch[2]);
-					}
-
-					if (!empty($sStatus) && !empty($sHeader)) {
-						$aResult[] = array($sStatus, $sHeader, $sDkimLine);
-					}
+			$aHeaders = \implode(';', $aHeaders);
+			$aHeaders = \preg_replace('/[\\r\\n\\t\\s]+/', ' ', $aHeaders);
+			$aHeaders = \explode(';', $aHeaders);
+			foreach ($aHeaders as $sLine) {
+				$aStatus = array();
+				$aHeader = array();
+				if (\preg_match("/(dkim|dmarc|spf)=([a-z0-9]+).*?(;|$)/Di", $sLine, $aStatus)
+				 && \preg_match('/(?:header\\.(?:d|i|from)|smtp.mailfrom)="?([^\\s;"]+)/i', $sLine, $aHeader)
+				) {
+					$sType = \strtolower($aStatus[1]);
+					$aResult[$sType][] = array(\strtolower($aStatus[2]), $aHeader[1], \trim($sLine));
 				}
 			}
-		} else {
+		}
+		if (!\count($aResult['dkim'])) {
 			// X-DKIM-Authentication-Results: signer="hostinger.com" status="pass"
 			$aHeaders = $this->ValuesByName(Enumerations\Header::X_DKIM_AUTHENTICATION_RESULTS);
 			foreach ($aHeaders as $sHeaderValue) {
-				$sStatus = '';
-				$sHeader = '';
-
-				$aMatch = array();
-
-				$sHeaderValue = \preg_replace('/[\r\n\t\s]+/', ' ', $sHeaderValue);
-
-				if (\preg_match('/status[\s]?=[\s]?"([a-zA-Z0-9]+)"/i', $sHeaderValue, $aMatch) && !empty($aMatch[1])) {
-					$sStatus = $aMatch[1];
-				}
-
-				if (\preg_match('/signer[\s]?=[\s]?"([^";]+)"/i', $sHeaderValue, $aMatch) && !empty($aMatch[1])) {
-					$sHeader = \trim($aMatch[1]);
-				}
-
-				if (!empty($sStatus) && !empty($sHeader)) {
-					$aResult[] = array($sStatus, $sHeader, $sHeaderValue);
+				$aStatus = array();
+				$aHeader = array();
+				$sHeaderValue = \preg_replace('/[\\r\\n\\t\\s]+/', ' ', $sHeaderValue);
+				if (\preg_match('/status[\\s]?=[\\s]?"([a-zA-Z0-9]+)"/i', $sHeaderValue, $aStatus) && !empty($aStatus[1])
+				 && \preg_match('/signer[\\s]?=[\\s]?"([^";]+)"/i', $sHeaderValue, $aHeader) && !empty($aHeader[1])
+				) {
+					$aResult['dkim'][] = array($aStatus[1], \trim($aHeader[1]), $sHeaderValue);
 				}
 			}
 		}
 
 		return $aResult;
-	}
-
-	public function PopulateEmailColectionByDkim(EmailCollection $oEmails) : void
-	{
-		$aDkimStatuses = $this->DkimStatuses();
-		foreach ($oEmails as $oEmail) {
-			$sEmail = $oEmail->GetEmail();
-			foreach ($aDkimStatuses as $aDkimData) {
-				if (isset($aDkimData[0], $aDkimData[1]) && $aDkimData[1] === \strstr($sEmail, $aDkimData[1])) {
-					$oEmail->SetDkimStatusAndValue($aDkimData[0], empty($aDkimData[2]) ? '' : $aDkimData[2]);
-				}
-			}
-		}
 	}
 
 	public function __toString() : string

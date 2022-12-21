@@ -63,6 +63,9 @@ class Message implements \JsonSerializable
 		$bHasVirus = null;
 
 	private array
+		$SPF = [],
+		$DKIM = [],
+		$DMARC = [],
 //		$aFlags = [],
 		$aFlagsLowerCase = [],
 		$UnsubsribeLinks = [],
@@ -138,9 +141,8 @@ class Message implements \JsonSerializable
 		$sCharset = $oBodyStructure ? Utils::NormalizeCharset($oBodyStructure->SearchCharset()) : '';
 
 		$sHeaders = $oFetchResponse->GetHeaderFieldsValue();
-		if (\strlen($sHeaders)) {
-			$oHeaders = new \MailSo\Mime\HeaderCollection($sHeaders, false, $sCharset);
-
+		$oHeaders = \strlen($sHeaders) ? new \MailSo\Mime\HeaderCollection($sHeaders, false, $sCharset) : null;
+		if ($oHeaders) {
 			$sContentTypeCharset = $oHeaders->ParameterValue(
 				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
 				\MailSo\Mime\Enumerations\Parameter::CHARSET
@@ -164,10 +166,6 @@ class Message implements \JsonSerializable
 			$oMessage->oTo = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::TO_, $bCharsetAutoDetect);
 			$oMessage->oCc = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::CC, $bCharsetAutoDetect);
 			$oMessage->oBcc = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::BCC, $bCharsetAutoDetect);
-
-			if ($oMessage->oFrom) {
-				$oHeaders->PopulateEmailColectionByDkim($oMessage->oFrom);
-			}
 
 			$oMessage->oSender = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::SENDER, $bCharsetAutoDetect);
 			$oMessage->oReplyTo = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::REPLY_TO, $bCharsetAutoDetect);
@@ -291,6 +289,21 @@ class Message implements \JsonSerializable
 				}
 			}
 
+			$aAuth = $oHeaders->AuthStatuses();
+			$oMessage->SPF = $aAuth['spf'];
+			$oMessage->DKIM = $aAuth['dkim'];
+			$oMessage->DMARC = $aAuth['dmarc'];
+			if ($aAuth['dkim'] && $oMessage->oFrom) {
+				foreach ($oMessage->oFrom as $oEmail) {
+					$sEmail = $oEmail->GetEmail();
+					foreach ($aAuth['dkim'] as $aDkimData) {
+						if (\strpos($sEmail, $aDkimData[1])) {
+							$oEmail->SetDkimStatus($aDkimData[0]);
+						}
+					}
+				}
+			}
+
 			$oMessage->sAutocrypt = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::AUTOCRYPT);
 		}
 		else if ($oFetchResponse->GetEnvelope())
@@ -331,7 +344,7 @@ class Message implements \JsonSerializable
 					// /?/Raw/&q[]=/0/View/&q[]=/...
 					'BodyPartId' => $oPart->SubParts()[0]->PartID(),
 					'SigPartId' => $oPgpSignaturePart->PartID(),
-					'MicAlg' => (string) $oHeaders->ParameterValue(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'micalg')
+					'MicAlg' => $oHeaders ? (string) $oHeaders->ParameterValue(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'micalg') : ''
 				];
 /*
 				// An empty section specification refers to the entire message, including the header.
@@ -477,6 +490,10 @@ class Message implements \JsonSerializable
 			'Autocrypt' => $this->sAutocrypt,
 
 			'Attachments' => $this->Attachments,
+
+			'spf' => $this->SPF,
+			'dkim' => $this->DKIM,
+			'dmarc' => $this->DMARC,
 
 			'Flags' => $aFlags,
 

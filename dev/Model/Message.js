@@ -5,7 +5,7 @@ import { i18n } from 'Common/Translator';
 
 import { doc, SettingsGet } from 'Common/Globals';
 import { encodeHtml, plainToHtml, htmlToPlain, cleanHtml } from 'Common/Html';
-import { arrayLength, forEachObjectEntry } from 'Common/Utils';
+import { isFunction, forEachObjectEntry } from 'Common/Utils';
 import { serverRequestRaw, proxy } from 'Common/Links';
 import { addObservablesTo, addComputablesTo } from 'External/ko';
 
@@ -66,7 +66,24 @@ export class MessageModel extends AbstractModel {
 	constructor() {
 		super();
 
-		this._reset();
+		this.folder = '';
+		this.uid = 0;
+		this.hash = '';
+		this.requestHash = '';
+		this.from = new EmailCollectionModel;
+		this.to = new EmailCollectionModel;
+		this.cc = new EmailCollectionModel;
+		this.bcc = new EmailCollectionModel;
+		this.replyTo = new EmailCollectionModel;
+		this.deliveredTo = new EmailCollectionModel;
+		this.body = null;
+		this.draftInfo = [];
+		this.dkim = [];
+		this.spf = [];
+		this.dmarc = [];
+		this.messageId = '';
+		this.inReplyTo = '';
+		this.references = '';
 
 		addObservablesTo(this, {
 			subject: '',
@@ -156,67 +173,6 @@ export class MessageModel extends AbstractModel {
 		toggleTag(this, keyword);
 	}
 
-	_reset() {
-		this.folder = '';
-		this.uid = 0;
-		this.hash = '';
-		this.requestHash = '';
-		this.emails = [];
-		this.from = new EmailCollectionModel;
-		this.to = new EmailCollectionModel;
-		this.cc = new EmailCollectionModel;
-		this.bcc = new EmailCollectionModel;
-		this.replyTo = new EmailCollectionModel;
-		this.deliveredTo = new EmailCollectionModel;
-		this.body = null;
-		this.draftInfo = [];
-		this.messageId = '';
-		this.inReplyTo = '';
-		this.references = '';
-	}
-
-	clear() {
-		this._reset();
-		this.subject('');
-		this.html('');
-		this.plain('');
-		this.size(0);
-		this.spamScore(0);
-		this.spamResult('');
-		this.isSpam(false);
-		this.hasVirus(null);
-		this.dateTimeStampInUTC(0);
-		this.priority(MessagePriority.Normal);
-
-		this.senderEmailsString('');
-		this.senderClearEmailsString('');
-
-		this.deleted(false);
-
-		this.selected(false);
-		this.checked(false);
-
-		this.isHtml(false);
-		this.hasImages(false);
-		this.hasExternals(false);
-		this.attachments(new AttachmentCollectionModel);
-
-		this.pgpSigned(null);
-		this.pgpVerified(null);
-
-		this.pgpEncrypted(null);
-		this.pgpDecrypted(false);
-
-		this.priority(MessagePriority.Normal);
-		this.readReceipt('');
-
-		this.threads([]);
-		this.unsubsribeLinks([]);
-
-		this.hasUnseenSubMessage(false);
-		this.hasFlaggedSubMessage(false);
-	}
-
 	spamStatus() {
 		let spam = this.spamResult();
 		return spam ? i18n(this.isSpam() ? 'GLOBAL/SPAM' : 'GLOBAL/NOT_SPAM') + ': ' + spam : '';
@@ -274,18 +230,6 @@ export class MessageModel extends AbstractModel {
 	 */
 	fromToLine(friendlyView, wrapWithLink) {
 		return this.from.toString(friendlyView, wrapWithLink);
-	}
-
-	/**
-	 * @returns {string}
-	 */
-	fromDkimData() {
-		let result = ['none', ''];
-		if (1 === arrayLength(this.from) && this.from[0]?.dkimStatus) {
-			result = [this.from[0].dkimStatus, this.from[0].dkimValue || ''];
-		}
-
-		return result;
 	}
 
 	/**
@@ -493,43 +437,14 @@ export class MessageModel extends AbstractModel {
 		let self = new MessageModel();
 
 		if (message) {
-			self.folder = message.folder;
-			self.uid = message.uid;
-			self.hash = message.hash;
-			self.requestHash = message.requestHash;
-			self.subject(message.subject());
-			self.plain(message.plain());
-			self.html(message.html());
-
-			self.size(message.size());
-			self.spamScore(message.spamScore());
-			self.spamResult(message.spamResult());
-			self.isSpam(message.isSpam());
-			self.hasVirus(message.hasVirus());
-			self.dateTimeStampInUTC(message.dateTimeStampInUTC());
-			self.priority(message.priority());
-
-			self.hasExternals(message.hasExternals());
-
-			self.emails = message.emails;
-
-			self.from = message.from;
-			self.to = message.to;
-			self.cc = message.cc;
-			self.bcc = message.bcc;
-			self.replyTo = message.replyTo;
-			self.deliveredTo = message.deliveredTo;
-			self.unsubsribeLinks(message.unsubsribeLinks);
-
-			self.flags(message.flags());
-
-			self.priority(message.priority());
-
-			self.selected(message.selected());
-			self.checked(message.checked());
-			self.attachments(message.attachments());
-
-			self.threads(message.threads());
+			// Clone message values
+			forEachObjectEntry(message, (key, value) => {
+				if (ko.isObservable(value)) {
+					ko.isComputed(value) || self[key](value());
+				} else if (!isFunction(value)) {
+					self[key] = value;
+				}
+			});
 		}
 
 		self.computeSenderEmail();

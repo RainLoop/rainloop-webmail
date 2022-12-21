@@ -23,8 +23,6 @@ class Email implements \JsonSerializable
 
 	private string $sDkimStatus = Enumerations\DkimStatus::NONE;
 
-	private string $sDkimValue = '';
-
 	/**
 	 * @throws \InvalidArgumentException
 	 */
@@ -165,16 +163,6 @@ class Email implements \JsonSerializable
 		return $this->sDisplayName;
 	}
 
-	public function GetDkimStatus() : string
-	{
-		return $this->sDkimStatus;
-	}
-
-	public function GetDkimValue() : string
-	{
-		return $this->sDkimValue;
-	}
-
 	public function GetAccountName() : string
 	{
 		return \MailSo\Base\Utils::GetAccountNameFromEmail($this->GetEmail(false));
@@ -185,17 +173,9 @@ class Email implements \JsonSerializable
 		return \MailSo\Base\Utils::GetDomainFromEmail($this->GetEmail($bIdn));
 	}
 
-	public function SetDkimStatusAndValue(string $sDkimStatus, string $sDkimValue = '')
+	public function SetDkimStatus(string $sDkimStatus)
 	{
 		$this->sDkimStatus = Enumerations\DkimStatus::normalizeValue($sDkimStatus);
-		$this->sDkimValue = $sDkimValue;
-	}
-
-	public function ToArray(bool $bIdn = false, bool $bDkim = true) : array
-	{
-		return $bDkim ?
-			array($this->sDisplayName, $this->GetEmail($bIdn), $this->sDkimStatus, $this->sDkimValue) :
-			array($this->sDisplayName, $this->GetEmail($bIdn));
 	}
 
 	public function ToString(bool $bConvertSpecialsName = false, bool $bIdn = false) : string
@@ -227,8 +207,7 @@ class Email implements \JsonSerializable
 			'@Object' => 'Object/Email',
 			'Name' => \MailSo\Base\Utils::Utf8Clear($this->GetDisplayName()),
 			'Email' => \MailSo\Base\Utils::Utf8Clear($this->GetEmail(true)),
-			'DkimStatus' => $this->GetDkimStatus(),
-			'DkimValue' => $this->GetDkimValue()
+			'DkimStatus' => $this->sDkimStatus
 		);
 	}
 }

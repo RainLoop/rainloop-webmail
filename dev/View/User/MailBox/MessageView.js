@@ -196,7 +196,9 @@ export class MailMessageView extends AbstractViewRight {
 					this.viewHash = message.hash;
 					// TODO: make first param a user setting #683
 					this.viewFromShort(message.fromToLine(false, true));
-					this.viewFromDkimData(message.fromDkimData());
+					let dkim = 1 === arrayLength(message.from) && message.dkim
+						&& message.dkim.find(dkim => message.from[0].email.includes(dkim[1]));
+					this.viewFromDkimData(dkim ? [dkim[0], dkim[2]] : ['none', '']);
 					this.viewToShort(message.toToLine(true, true));
 				} else {
 					MessagelistUserStore.selectedMessage(null);

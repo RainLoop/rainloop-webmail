@@ -259,14 +259,12 @@ export class EmailModel extends AbstractModel {
 	 * @param {string=} email = ''
 	 * @param {string=} name = ''
 	 * @param {string=} dkimStatus = 'none'
-	 * @param {string=} dkimValue = ''
 	 */
-	constructor(email = '', name = '', dkimStatus = 'none', dkimValue = '') {
+	constructor(email = '', name = '', dkimStatus = 'none') {
 		super();
 		this.email = email;
 		this.name = name;
 		this.dkimStatus = dkimStatus;
-		this.dkimValue = dkimValue;
 
 		this.clearDuplicateName();
 	}
@@ -290,7 +288,6 @@ export class EmailModel extends AbstractModel {
 		this.name = '';
 
 		this.dkimStatus = 'none';
-		this.dkimValue = '';
 	}
 
 	/**
