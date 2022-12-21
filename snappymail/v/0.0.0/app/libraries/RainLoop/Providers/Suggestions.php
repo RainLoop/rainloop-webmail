@@ -7,15 +7,14 @@ class Suggestions extends \RainLoop\Providers\AbstractProvider
 	/**
 	 * @var \RainLoop\Providers\Suggestions\ISuggestions[]
 	 */
-	private $aDrivers;
+	private ?array $aDrivers;
 
 	/**
 	 * @param \RainLoop\Providers\Suggestions\ISuggestions[]|null $aDriver = null
 	 */
 	public function __construct(?array $aDriver = null)
 	{
-		if (\is_array($aDriver))
-		{
+		if (\is_array($aDriver)) {
 			$aDriver = \array_filter($aDriver, function ($oDriver) {
 				return $oDriver instanceof \RainLoop\Providers\Suggestions\ISuggestions;
 			});
@@ -26,31 +25,30 @@ class Suggestions extends \RainLoop\Providers\AbstractProvider
 
 	public function Process(\RainLoop\Model\Account $oAccount, string $sQuery, int $iLimit = 20) : array
 	{
-		$aSuggestions = array();
-		if ($this->IsActive() && \is_array($this->aDrivers) && \strlen($sQuery))
-		{
-			foreach ($this->aDrivers as $oDriver)
-			{
-				$aSubs = null;
-				if ($oDriver)
-				{
+		$aResult = array();
+		if (\strlen($sQuery) && $this->IsActive()) {
+			foreach ($this->aDrivers as $oDriver) {
+				if ($oDriver) try {
 					$aSubs = $oDriver->Process($oAccount, $sQuery, $iLimit);
-					if (\is_array($aSubs) && \count($aSubs))
-					{
-						$aSuggestions = \array_merge($aSuggestions, $aSubs);
+					if ($aSubs) {
+						foreach ($aSubs as $aItem) {
+							// Unique email address
+							$sLine = \mb_strtolower($aItem[0]);
+							if (!isset($aResult[$sLine])) {
+								$aResult[$sLine] = $aItem;
+							}
+						}
+						if ($iLimit < \count($aResult)) {
+							break;
+						}
 					}
+				} catch (\Throwable $oException) {
+					$this->oLogger && $this->oLogger->WriteException($oException);
 				}
 			}
 		}
 
-		$aResult = \RainLoop\Utils::RemoveSuggestionDuplicates($aSuggestions);
-
-		if ($iLimit < \count($aResult))
-		{
-			$aResult = \array_slice($aResult, 0, $iLimit);
-		}
-
-		return $aResult;
+		return \array_slice($aResult, 0, $iLimit);
 	}
 
 	public function IsActive() : bool

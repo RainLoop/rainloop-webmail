@@ -251,22 +251,6 @@ class Utils
 		return self::WebVersionPath() . 'static/' . $path;
 	}
 
-	public static function RemoveSuggestionDuplicates(array $aSuggestions) : array
-	{
-		$aResult = array();
-
-		foreach ($aSuggestions as $aItem)
-		{
-			$sLine = \implode('~~', $aItem);
-			if (!isset($aResult[$sLine]))
-			{
-				$aResult[$sLine] = $aItem;
-			}
-		}
-
-		return array_values($aResult);
-	}
-
 	public static function inOpenBasedir(string $name) : string
 	{
 		static $open_basedir;

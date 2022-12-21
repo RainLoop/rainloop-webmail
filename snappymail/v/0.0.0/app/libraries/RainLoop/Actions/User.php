@@ -18,16 +18,12 @@ trait User
 	use Attachments;
 	use Pgp;
 
-	/**
-	 * @var \RainLoop\Providers\Suggestions
-	 */
-	private $oSuggestionsProvider = null;
+	private ?Suggestions $oSuggestionsProvider = null;
 
 	public function SuggestionsProvider(): Suggestions
 	{
 		if (null === $this->oSuggestionsProvider) {
-			$this->oSuggestionsProvider = new Suggestions(
-				$this->fabrica('suggestions'));
+			$this->oSuggestionsProvider = new Suggestions($this->fabrica('suggestions'));
 		}
 
 		return $this->oSuggestionsProvider;
@@ -51,16 +47,13 @@ trait User
 		$this->Plugins()->RunHook('login.success', array($oAccount));
 
 		$sLanguage = $this->GetActionParam('Language', '');
-		if ($oAccount && $sLanguage)
-		{
+		if ($oAccount && $sLanguage) {
 			$oSettings = $this->SettingsProvider()->Load($oAccount);
-			if ($oSettings)
-			{
+			if ($oSettings) {
 				$sLanguage = $this->ValidateLanguage($sLanguage);
 				$sCurrentLanguage = $oSettings->GetConf('Language', '');
 
-				if ($sCurrentLanguage !== $sLanguage)
-				{
+				if ($sCurrentLanguage !== $sLanguage) {
 					$oSettings->SetConf('Language', $sLanguage);
 					$this->SettingsProvider()->Save($oAccount, $oSettings);
 				}
@@ -98,20 +91,17 @@ trait User
 		$iMainCacheTime = !empty($aTimers[0]) && \is_numeric($aTimers[0]) ? (int) $aTimers[0] : 0;
 		$iFilesCacheTime = !empty($aTimers[1]) && \is_numeric($aTimers[1]) ? (int) $aTimers[1] : 0;
 
-		if (0 === $iMainCacheTime || $iMainCacheTime + $iOneDay1 < \time())
-		{
+		if (0 === $iMainCacheTime || $iMainCacheTime + $iOneDay1 < \time()) {
 			$bMainCache = true;
 			$iMainCacheTime = \time();
 		}
 
-		if (0 === $iFilesCacheTime || $iFilesCacheTime + $iOneDay2 < \time())
-		{
+		if (0 === $iFilesCacheTime || $iFilesCacheTime + $iOneDay2 < \time()) {
 			$bFilesCache = true;
 			$iFilesCacheTime = \time();
 		}
 
-		if ($bMainCache || $bFilesCache)
-		{
+		if ($bMainCache || $bFilesCache) {
 			if (!$this->StorageProvider()->Put(null,
 				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY, 'Cache/Timers',
 				\implode(',', array($iMainCacheTime, $iFilesCacheTime))))
@@ -120,8 +110,7 @@ trait User
 			}
 		}
 
-		if ($bMainCache)
-		{
+		if ($bMainCache) {
 			$this->Logger()->Write('Cacher GC: Begin');
 			$this->Cacher()->GC(48);
 			$this->Logger()->Write('Cacher GC: End');
@@ -129,9 +118,7 @@ trait User
 			$this->Logger()->Write('Storage GC: Begin');
 			$this->StorageProvider()->GC();
 			$this->Logger()->Write('Storage GC: End');
-		}
-		else if ($bFilesCache)
-		{
+		} else if ($bFilesCache) {
 			$this->Logger()->Write('Files GC: Begin');
 			$this->FilesProvider()->GC(48);
 			$this->Logger()->Write('Files GC: End');
@@ -152,29 +139,23 @@ trait User
 		$oSettings = $this->SettingsProvider()->Load($oAccount);
 		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
-		if ($oConfig->Get('webmail', 'allow_languages_on_settings', true))
-		{
+		if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
 			$this->setSettingsFromParams($oSettings, 'Language', 'string', function ($sLanguage) use ($self) {
 				return $self->ValidateLanguage($sLanguage);
 			});
-		}
-		else
-		{
+		} else {
 //			$oSettings->SetConf('Language', $this->ValidateLanguage($oConfig->Get('webmail', 'language', 'en')));
 		}
 		$this->setSettingsFromParams($oSettings, 'hourCycle', 'string');
 
-		if ($this->GetCapa(Capa::THEMES))
-		{
+		if ($this->GetCapa(Capa::THEMES)) {
 			$this->setSettingsFromParams($oSettingsLocal, 'Theme', 'string', function ($sTheme) use ($self) {
 				return $self->ValidateTheme($sTheme);
 			});
 			$this->setSettingsFromParams($oSettings, 'fontSansSerif', 'string');
 			$this->setSettingsFromParams($oSettings, 'fontSerif', 'string');
 			$this->setSettingsFromParams($oSettings, 'fontMono', 'string');
-		}
-		else
-		{
+		} else {
 //			$oSettingsLocal->SetConf('Theme', $this->ValidateTheme($oConfig->Get('webmail', 'theme', 'Default')));
 		}
 
@@ -229,8 +210,7 @@ trait User
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(Capa::QUOTA))
-		{
+		if (!$this->GetCapa(Capa::QUOTA)) {
 			return $this->DefaultResponse(__FUNCTION__, array(0, 0, 0, 0));
 		}
 
@@ -253,34 +233,25 @@ trait User
 		$sQuery = \trim($this->GetActionParam('Query', ''));
 		$iLimit = (int) $this->Config()->Get('contacts', 'suggestions_limit', 20);
 
-		$aResult = array();
-
 		$this->Plugins()->RunHook('json.suggestions-input-parameters', array(&$sQuery, &$iLimit, $oAccount));
 
-		$iLimit = (int) $iLimit;
-		if (5 > $iLimit)
-		{
-			$iLimit = 5;
-		}
+		$iLimit = \max(5, (int) $iLimit);
 
-		$this->Plugins()->RunHook('json.suggestions-pre', array(&$aResult, $sQuery, $oAccount, $iLimit));
+		$aResult = array();
 
-		if ($iLimit > \count($aResult) && \strlen($sQuery))
-		{
+		if (\strlen($sQuery)) {
 			try
 			{
 				// Address Book
 				$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-				if ($oAddressBookProvider && $oAddressBookProvider->IsActive())
-				{
+				if ($oAddressBookProvider && $oAddressBookProvider->IsActive()) {
 					$aSuggestions = $oAddressBookProvider->GetSuggestions($sQuery, $iLimit);
-					if (!\count($aResult))
-					{
-						$aResult = $aSuggestions;
-					}
-					else
-					{
-						$aResult = \array_merge($aResult, $aSuggestions);
+					foreach ($aSuggestions as $aItem) {
+						// Unique email address
+						$sLine = \mb_strtolower($aItem[0]);
+						if (!isset($aResult[$sLine])) {
+							$aResult[$sLine] = $aItem;
+						}
 					}
 				}
 			}
@@ -288,34 +259,20 @@ trait User
 			{
 				$this->Logger()->WriteException($oException);
 			}
-		}
 
-		if ($iLimit > \count($aResult) && \strlen($sQuery))
-		{
-			$oSuggestionsProvider = $this->SuggestionsProvider();
-			if ($oSuggestionsProvider && $oSuggestionsProvider->IsActive())
-			{
-				$aSuggestionsProviderResult = $oSuggestionsProvider->Process($oAccount, $sQuery, $iLimit);
-				if (\is_array($aSuggestionsProviderResult) && \count($aSuggestionsProviderResult))
-				{
-					$aResult = \array_merge($aResult, $aSuggestionsProviderResult);
+			if ($iLimit > \count($aResult)) {
+				$oSuggestionsProvider = $this->SuggestionsProvider();
+				if ($oSuggestionsProvider && $oSuggestionsProvider->IsActive()) {
+					$aSuggestions = $oSuggestionsProvider->Process($oAccount, $sQuery, $iLimit);
+					foreach ($aSuggestions as $sLine => $aItem) {
+						if (!isset($aResult[$sLine])) {
+							$aResult[$sLine] = $aItem;
+						}
+					}
 				}
 			}
 
-		}
-
-		$aResult = Utils::RemoveSuggestionDuplicates($aResult);
-		if ($iLimit < \count($aResult))
-		{
-			$aResult = \array_slice($aResult, 0, $iLimit);
-		}
-
-		$this->Plugins()->RunHook('json.suggestions-post', array(&$aResult, $sQuery, $oAccount, $iLimit));
-
-		$aResult = Utils::RemoveSuggestionDuplicates($aResult);
-		if ($iLimit < \count($aResult))
-		{
-			$aResult = \array_slice($aResult, 0, $iLimit);
+			$aResult = \array_slice(\array_values($aResult), 0, $iLimit);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $aResult);
@@ -325,14 +282,12 @@ trait User
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(Capa::USER_BACKGROUND))
-		{
+		if (!$this->GetCapa(Capa::USER_BACKGROUND)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
 		$oSettings = $this->SettingsProvider()->Load($oAccount);
-		if ($oAccount && $oSettings)
-		{
+		if ($oAccount && $oSettings) {
 			$this->StorageProvider()->Clear($oAccount,
 				\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 				'background'
@@ -348,8 +303,7 @@ trait User
 
 	private function setSettingsFromParams(\RainLoop\Settings $oSettings, string $sConfigName, string $sType = 'string', ?callable $cCallback = null) : void
 	{
-		if ($this->HasActionParam($sConfigName))
-		{
+		if ($this->HasActionParam($sConfigName)) {
 			$sValue = $this->GetActionParam($sConfigName, '');
 			switch ($sType)
 			{
