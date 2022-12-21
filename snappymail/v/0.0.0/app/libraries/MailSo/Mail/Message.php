@@ -212,7 +212,7 @@ class Message implements \JsonSerializable
 			// Unsubscribe links
 			$UnsubsribeLinks = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::LIST_UNSUBSCRIBE);
 			if ($UnsubsribeLinks) {
-				$UnsubsribeLinks = \array_map(
+				$oMessage->UnsubsribeLinks = \array_map(
 					function ($link) {
 						return trim($link, ' <>');
 					},
