@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "قم باضافة حساب",
 		"BUTTON_ADD_IDENTITY": "قم باضافة هوية",
 		"LOADING_PROCESS": "..جاري التحميل",
-		"DEFAULT_IDENTITY_LABEL": "الافتراضي"
+		"DEFAULT_IDENTITY_LABEL": "الافتراضي",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": " إستيراد مفتاح",

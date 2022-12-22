@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "Dodaj račun",
 		"BUTTON_ADD_IDENTITY": "Dodaj identiteto",
 		"LOADING_PROCESS": "Posodabljanje...",
-		"DEFAULT_IDENTITY_LABEL": "privzeto"
+		"DEFAULT_IDENTITY_LABEL": "privzeto",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Uvozi ključ",

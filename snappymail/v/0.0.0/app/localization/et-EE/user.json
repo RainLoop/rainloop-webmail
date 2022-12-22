@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "Lisa konto",
 		"BUTTON_ADD_IDENTITY": "Lisa identiteet",
 		"LOADING_PROCESS": "Värskendan...",
-		"DEFAULT_IDENTITY_LABEL": "vaikimisi"
+		"DEFAULT_IDENTITY_LABEL": "vaikimisi",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Impordi võti",

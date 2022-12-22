@@ -4,6 +4,13 @@
 		&nbsp;&nbsp;&nbsp;
 		<i class="icon-spinner" style="margin-top: 5px" data-bind="visible: loading"></i>
 	</div>
+	<div data-bind="component: {
+		name: 'Checkbox',
+		params: {
+			label: 'SETTINGS_ACCOUNTS/SHOW_UNREAD',
+			value: showUnread
+		}
+	}"></div>
 	<a class="btn" data-bind="click: addNewAccount">
 		<i class="icon-user-add"></i>
 		<span data-i18n="SETTINGS_ACCOUNTS/BUTTON_ADD_ACCOUNT"></span>

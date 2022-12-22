@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "계정 추가",
 		"BUTTON_ADD_IDENTITY": "신원 추가",
 		"LOADING_PROCESS": "업데이트 중...",
-		"DEFAULT_IDENTITY_LABEL": "default"
+		"DEFAULT_IDENTITY_LABEL": "default",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "키 가져오기",

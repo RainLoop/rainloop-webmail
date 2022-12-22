@@ -220,6 +220,7 @@ trait Accounts
 				$aResult['UseThreads'] = (bool) $oSettingsLocal->GetConf('UseThreads', $oConfig->Get('defaults', 'mail_use_threads', false));
 				$aResult['ReplySameFolder'] = (bool) $oSettingsLocal->GetConf('ReplySameFolder', $oConfig->Get('defaults', 'mail_reply_same_folder', false));
 				$aResult['HideDeleted'] = (bool) $oSettingsLocal->GetConf('HideDeleted', true);
+				$aResult['ShowUnreadCount'] = (bool) $oSettingsLocal->GetConf('ShowUnreadCount', false);
 				$aResult['UnhideKolabFolders'] = (bool) $oSettingsLocal->GetConf('UnhideKolabFolders', false);
 			}
 //			$this->Plugins()->InitAppData($bAdmin, $aResult, $oAccount);

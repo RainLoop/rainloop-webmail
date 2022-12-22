@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "Lägg till konto",
 		"BUTTON_ADD_IDENTITY": "Lägg till identitet",
 		"LOADING_PROCESS": "Uppdaterar kontolista",
-		"DEFAULT_IDENTITY_LABEL": "standard"
+		"DEFAULT_IDENTITY_LABEL": "standard",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importera nyckel",

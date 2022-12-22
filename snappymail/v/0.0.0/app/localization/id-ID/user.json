@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "Tambahkan akun",
 		"BUTTON_ADD_IDENTITY": "Tambahkan identitas",
 		"LOADING_PROCESS": "Memperbarui...",
-		"DEFAULT_IDENTITY_LABEL": "Bawaan"
+		"DEFAULT_IDENTITY_LABEL": "Bawaan",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Impor kunci",

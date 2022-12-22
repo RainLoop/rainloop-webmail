@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "Legg til konto",
 		"BUTTON_ADD_IDENTITY": "Legg til identitet",
 		"LOADING_PROCESS": "Oppdaterer …",
-		"DEFAULT_IDENTITY_LABEL": "Standard"
+		"DEFAULT_IDENTITY_LABEL": "Standard",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importer nøkkel",

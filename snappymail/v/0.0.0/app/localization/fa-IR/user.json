@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "اضافه کردن یک حساب کاربری",
 		"BUTTON_ADD_IDENTITY": "اضافه کردن یک شناسه",
 		"LOADING_PROCESS": "بروزرسانی...",
-		"DEFAULT_IDENTITY_LABEL": "پیش‌فرض"
+		"DEFAULT_IDENTITY_LABEL": "پیش‌فرض",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "وارد کردن کلید",

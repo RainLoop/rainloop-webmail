@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "Добавить ещё аккаунт",
 		"BUTTON_ADD_IDENTITY": "Добавить персону",
 		"LOADING_PROCESS": "Обновление списка аккаунтов",
-		"DEFAULT_IDENTITY_LABEL": "основной"
+		"DEFAULT_IDENTITY_LABEL": "основной",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Ипортировать ключ",

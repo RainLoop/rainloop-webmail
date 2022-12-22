@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "添加一个账户",
 		"BUTTON_ADD_IDENTITY": "添加一个身份",
 		"LOADING_PROCESS": "更新账户列表中",
-		"DEFAULT_IDENTITY_LABEL": "默认"
+		"DEFAULT_IDENTITY_LABEL": "默认",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "导入 密钥",

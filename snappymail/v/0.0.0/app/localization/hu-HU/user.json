@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "Fiók hozzáadás",
 		"BUTTON_ADD_IDENTITY": "Identitás hozzáadás",
 		"LOADING_PROCESS": "Fiók lista frissítés",
-		"DEFAULT_IDENTITY_LABEL": "default"
+		"DEFAULT_IDENTITY_LABEL": "default",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Kulcs importálás",

@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "Lisää Tili",
 		"BUTTON_ADD_IDENTITY": "Lisää identiteetti",
 		"LOADING_PROCESS": "Päivitetään...",
-		"DEFAULT_IDENTITY_LABEL": "oletus"
+		"DEFAULT_IDENTITY_LABEL": "oletus",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Tuo avain",

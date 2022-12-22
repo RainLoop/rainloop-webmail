@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "Pievienot kontu",
 		"BUTTON_ADD_IDENTITY": "Add an Identity",
 		"LOADING_PROCESS": "Atjauno kontu sarakstu",
-		"DEFAULT_IDENTITY_LABEL": "default"
+		"DEFAULT_IDENTITY_LABEL": "default",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Import Key",

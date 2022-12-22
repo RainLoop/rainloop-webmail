@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "Thêm một tài khoản",
 		"BUTTON_ADD_IDENTITY": "Thêm một tên gọi",
 		"LOADING_PROCESS": "Đang cập nhật...",
-		"DEFAULT_IDENTITY_LABEL": "mặc định"
+		"DEFAULT_IDENTITY_LABEL": "mặc định",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Nhập mật mã",

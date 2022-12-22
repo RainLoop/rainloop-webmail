@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "アカウントを追加",
 		"BUTTON_ADD_IDENTITY": "表示名を追加",
 		"LOADING_PROCESS": "更新中",
-		"DEFAULT_IDENTITY_LABEL": "デフォルト"
+		"DEFAULT_IDENTITY_LABEL": "デフォルト",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "キーをインポート",

@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "Account toevoegen",
 		"BUTTON_ADD_IDENTITY": "Identiteit toevoegen",
 		"LOADING_PROCESS": "Account lijst aan het bijwerken",
-		"DEFAULT_IDENTITY_LABEL": "standaard"
+		"DEFAULT_IDENTITY_LABEL": "standaard",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importeer sleutel",

@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "Добавяне на акаунт",
 		"BUTTON_ADD_IDENTITY": "Добавяне на идентичност",
 		"LOADING_PROCESS": "Обновяване на списъка с акаунти",
-		"DEFAULT_IDENTITY_LABEL": "по подразбиране"
+		"DEFAULT_IDENTITY_LABEL": "по подразбиране",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Внеси ключ",

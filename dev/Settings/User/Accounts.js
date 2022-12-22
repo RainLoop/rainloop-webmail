@@ -5,6 +5,7 @@ import { SettingsCapa, SettingsGet } from 'Common/Globals';
 
 import { AccountUserStore } from 'Stores/User/Account';
 import { IdentityUserStore } from 'Stores/User/Identity';
+import { SettingsUserStore } from 'Stores/User/Settings';
 import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -24,6 +25,9 @@ export class UserSettingsAccounts /*extends AbstractViewSettings*/ {
 
 		this.accountForDeletion = ko.observable(null).askDeleteHelper();
 		this.identityForDeletion = ko.observable(null).askDeleteHelper();
+
+		this.showUnread = SettingsUserStore.showUnreadCount;
+		SettingsUserStore.showUnreadCount.subscribe(value => Remote.saveSetting('ShowUnreadCount', value));
 
 //		this.additionalAccounts = koComputable(() => AccountUserStore.filter(account => account.isAdditional()));
 	}

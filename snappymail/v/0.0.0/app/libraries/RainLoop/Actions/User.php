@@ -200,6 +200,7 @@ trait User
 		$this->setSettingsFromParams($oSettingsLocal, 'HideUnsubscribed', 'bool');
 		$this->setSettingsFromParams($oSettingsLocal, 'HideDeleted', 'bool');
 		$this->setSettingsFromParams($oSettingsLocal, 'UnhideKolabFolders', 'bool');
+		$this->setSettingsFromParams($oSettingsLocal, 'ShowUnreadCount', 'bool');
 
 		return $this->DefaultResponse($this->SettingsProvider()->Save($oAccount, $oSettings) &&
 			$this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));

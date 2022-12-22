@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "Pridėti paskyrą",
 		"BUTTON_ADD_IDENTITY": "Pridėti tapatybę",
 		"LOADING_PROCESS": "Atnaujinamas paskyrų sąrašas",
-		"DEFAULT_IDENTITY_LABEL": "numatytasis"
+		"DEFAULT_IDENTITY_LABEL": "numatytasis",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importuoti raktą",

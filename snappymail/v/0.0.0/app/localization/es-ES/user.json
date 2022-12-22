@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "Añadir cuenta",
 		"BUTTON_ADD_IDENTITY": "Añadir identidad",
 		"LOADING_PROCESS": "Actualizando lista de cuentas",
-		"DEFAULT_IDENTITY_LABEL": "predeterminado"
+		"DEFAULT_IDENTITY_LABEL": "predeterminado",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importar llave",

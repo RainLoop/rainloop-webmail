@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "Přidat účet",
 		"BUTTON_ADD_IDENTITY": "Přidat alias",
 		"LOADING_PROCESS": "Aktualizace seznamu účtů",
-		"DEFAULT_IDENTITY_LABEL": "výchozí"
+		"DEFAULT_IDENTITY_LABEL": "výchozí",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importovat klíč",

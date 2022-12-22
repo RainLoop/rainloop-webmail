@@ -709,6 +709,7 @@ class Actions
 					'ContactsAutosave' => (bool) $oConfig->Get('defaults', 'contacts_autosave', true),
 					'HideUnsubscribed' => false,
 					'HideDeleted' => true,
+					'ShowUnreadCount' => false,
 					'UnhideKolabFolders' => false,
 					'UserBackgroundName' => '',
 					'UserBackgroundHash' => '',
@@ -766,6 +767,7 @@ class Actions
 					$aResult['UseThreads'] = (bool)$oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
 					$aResult['ReplySameFolder'] = (bool)$oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
 					$aResult['HideDeleted'] = (bool)$oSettingsLocal->GetConf('HideDeleted', $aResult['HideDeleted']);
+					$aResult['ShowUnreadCount'] = (bool)$oSettingsLocal->GetConf('ShowUnreadCount', $aResult['ShowUnreadCount']);
 					$aResult['UnhideKolabFolders'] = (bool)$oSettingsLocal->GetConf('UnhideKolabFolders', $aResult['UnhideKolabFolders']);
 				}
 

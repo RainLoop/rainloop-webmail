@@ -1,6 +1,7 @@
 import { AbstractModel } from 'Knoin/AbstractModel';
 import { addObservablesTo } from 'External/ko';
 import Remote from 'Remote/User/Fetch';
+import { SettingsUserStore } from 'Stores/User/Settings';
 
 export class AccountModel extends AbstractModel {
 	/**
@@ -23,7 +24,8 @@ export class AccountModel extends AbstractModel {
 		});
 
 		// Load at random between 3 and 30 seconds
-		isAdditional && setTimeout(()=>this.fetchUnread(), (Math.ceil(Math.random() * 10)) * 3000);
+		SettingsUserStore.showUnreadCount() && isAdditional
+		&& setTimeout(()=>this.fetchUnread(), (Math.ceil(Math.random() * 10)) * 3000);
 	}
 
 	/**

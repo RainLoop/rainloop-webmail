@@ -467,7 +467,8 @@
 		"BUTTON_ADD_ACCOUNT": "Gehitu kontu bat",
 		"BUTTON_ADD_IDENTITY": "Gehitu identitate bat",
 		"LOADING_PROCESS": "Eguneratzen...",
-		"DEFAULT_IDENTITY_LABEL": "lehenetsia"
+		"DEFAULT_IDENTITY_LABEL": "lehenetsia",
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Inportatu Gakoa",
