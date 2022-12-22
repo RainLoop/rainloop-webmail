@@ -5,7 +5,8 @@ import { Scope } from 'Common/Enums';
 
 import { ComposeType, FolderType, MessageSetAction } from 'Common/EnumsUser';
 
-import { leftPanelDisabled, toggleLeftPanel,
+import { doc,
+	leftPanelDisabled, toggleLeftPanel,
 	Settings, SettingsCapa,
 	addEventsListeners,
 	addShortcut, registerShortcut, formFieldFocused
@@ -31,6 +32,7 @@ import {
 import { AppUserStore } from 'Stores/User/App';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { FolderUserStore } from 'Stores/User/Folder';
+import { LanguageStore } from 'Stores/Language';
 import { MessageUserStore } from 'Stores/User/Message';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { ThemeStore } from 'Stores/Theme';
@@ -63,7 +65,10 @@ const
 			FolderUserStore.currentFolderFullName(),
 			MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails(),
 			bDelete
-		);
+		),
+
+	pad2 = v => 10 > v ? '0' + v : '' + v,
+	Ymd = dt => dt.getFullYear() + pad2(1 + dt.getMonth()) + pad2(dt.getDate());
 
 let
 	iGoToUpOrDownTimeout = 0,
@@ -140,6 +145,35 @@ export class MailMessageList extends AbstractViewRight {
 			mobileCheckedStateShow: () => ThemeStore.isMobile() ? MessagelistUserStore.hasChecked() : 1,
 
 			mobileCheckedStateHide: () => ThemeStore.isMobile() ? !MessagelistUserStore.hasChecked() : 1,
+
+			// Idea for https://github.com/the-djmaze/snappymail/issues/737
+			listByDay: () => {
+				let list = [], current, today = Ymd(new Date()), lang = doc.documentElement.lang;
+				MessagelistUserStore.forEach(msg => {
+					let date = (new Date(msg.dateTimeStampInUTC() * 1000)),
+						ymd = Ymd(date);
+					if (!current || ymd != current.ymd) {
+						if (today == ymd) {
+							date = new Intl.RelativeTimeFormat(lang, { numeric: "auto" }).format(0, 'day');
+						} else if (today - 1 == ymd) {
+							date = new Intl.RelativeTimeFormat(lang, { numeric: "auto" }).format(-1, 'day');
+//						} else if (today - 7 < ymd) {
+//							date = date.format('l');
+						} else {
+//							date = date.format('LL',0,LanguageStore.hourCycle());
+							date = date.format({dateStyle: 'full'},0,LanguageStore.hourCycle());
+						}
+						current = {
+							ymd: ymd,
+							day: date,
+							messages: []
+						};
+						list.push(current);
+					}
+					current.messages.push(msg);
+				});
+				return list;
+			},
 
 			sortText: () => {
 				let mode = FolderUserStore.sortMode(),

@@ -78,7 +78,7 @@ export const
 			time = 0 < timeStampInUTC ? Math.min(now, timeStampInUTC * 1000) : (0 === timeStampInUTC ? now : 0);
 
 		if (31536000000 < time) {
-			const m = new Date(time);
+			const m = new Date(time), h = LanguageStore.hourCycle();
 			switch (formatStr) {
 				case 'FROMNOW':
 					return m.fromNow();
@@ -88,17 +88,17 @@ export const
 					const mt = m.getTime(), date = new Date,
 						dt = date.setHours(0,0,0,0);
 					if (mt > dt)
-						return i18n('MESSAGE_LIST/TODAY_AT', {TIME: m.format('LT',0,LanguageStore.hourCycle())});
+						return i18n('MESSAGE_LIST/TODAY_AT', {TIME: m.format('LT',0,h)});
 					if (mt > dt - 86400000)
-						return i18n('MESSAGE_LIST/YESTERDAY_AT', {TIME: m.format('LT',0,LanguageStore.hourCycle())});
+						return i18n('MESSAGE_LIST/YESTERDAY_AT', {TIME: m.format('LT',0,h)});
 					if (date.getFullYear() === m.getFullYear())
 						return m.format('d M');
-					return m.format('LL',0,LanguageStore.hourCycle());
+					return m.format('LL',0,h);
 				}
 				case 'FULL':
-					return m.format('LLL',0,LanguageStore.hourCycle());
+					return m.format('LLL',0,h);
 				default:
-					return m.format(formatStr,0,LanguageStore.hourCycle());
+					return m.format(formatStr,0,h);
 			}
 		}
 
