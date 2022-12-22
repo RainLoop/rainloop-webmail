@@ -2,9 +2,6 @@
 
 namespace LessPHP;
 
-class stdClass extends \stdClass {};
-class Exception extends \Exception {};
-
 /**
  * lessphp v0.3.9-sm
  * http://leafo.net/lessphp
@@ -1480,7 +1477,7 @@ class lessc {
 	/* environment functions */
 
 	protected function makeOutputBlock($type, $selectors = null) {
-		$b = new stdclass;
+		$b = new \stdClass;
 		$b->lines = array();
 		$b->children = array();
 		$b->selectors = $selectors;
@@ -1491,7 +1488,7 @@ class lessc {
 
 	// the state of execution
 	protected function pushEnv($block = null) {
-		$e = new stdclass;
+		$e = new \stdClass;
 		$e->parent = $this->env;
 		$e->store = array();
 		$e->block = $block;
@@ -1595,7 +1592,7 @@ class lessc {
 		if ($this->sourceLoc >= 0) {
 			$this->sourceParser->throwError($msg, $this->sourceLoc);
 		}
-		throw new exception($msg);
+		throw new \Exception($msg);
 	}
 
 	static protected $cssColors = array(
@@ -1831,7 +1828,7 @@ class lessc_parser {
 
 		// TODO report where the block was opened
 		if (!is_null($this->env->parent))
-			throw new exception('parse error: unclosed block');
+			throw new \Exception('parse error: unclosed block');
 
 		return $this->env;
 	}
@@ -1962,7 +1959,7 @@ class lessc_parser {
 		if ($this->literal('}', false)) {
 			try {
 				$block = $this->pop();
-			} catch (exception $e) {
+			} catch (\Exception $e) {
 				$this->seek($s);
 				$this->throwError($e->getMessage());
 			}
@@ -2939,13 +2936,13 @@ class lessc_parser {
 
 		// TODO this depends on $this->count
 		if ($this->peek("(.*?)(\n|$)", $m, $count)) {
-			throw new exception("$msg: failed at `$m[1]` $loc");
+			throw new \Exception("$msg: failed at `$m[1]` $loc");
 		}
-		throw new exception("$msg: $loc");
+		throw new \Exception("$msg: $loc");
 	}
 
 	protected function pushBlock($selectors=null, $type=null) {
-		$b = new stdclass;
+		$b = new \stdClass;
 		$b->parent = $this->env;
 
 		$b->type = $type;

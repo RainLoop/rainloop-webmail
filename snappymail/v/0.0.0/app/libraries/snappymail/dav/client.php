@@ -66,7 +66,7 @@ class Client
 		if (!\preg_match('@^(https?:)?//@', $url)) {
 			// If the url starts with a slash, we must calculate the url based off
 			// the root of the base url.
-			if (0 === \strpos($url, '/')) {
+			if (\str_starts_with($url, '/')) {
 				$parts = \parse_url($this->baseUri);
 				$url = $parts['scheme'] . '://' . $parts['host'] . (isset($parts['port'])?':' . $parts['port']:'') . $url;
 			} else {
