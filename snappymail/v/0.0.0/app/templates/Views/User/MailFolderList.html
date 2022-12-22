@@ -20,7 +20,7 @@
 			</li>
 		</ul>
 		<hr>
-		<input type="search" style="width:100%" data-bind="textInput: foldersFilter, visible: foldersFilterVisible" data-i18n="[placeholder]GLOBAL/SEARCH">
+		<input type="search" data-bind="textInput: foldersFilter, visible: foldersFilterVisible" data-i18n="[placeholder]GLOBAL/SEARCH">
 		<ul class="b-folders-user" data-bind="template: { name: 'MailFolderListItem', foreach: folderListVisible }"></ul>
 		<div class="move-action-content-wrapper" data-bind="visible: moveAction"></div>
 	</div>
