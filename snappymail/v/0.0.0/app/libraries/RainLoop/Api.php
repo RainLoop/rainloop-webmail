@@ -18,8 +18,7 @@ abstract class Api
 	public static function Actions() : Actions
 	{
 		static $oActions = null;
-		if (null === $oActions)
-		{
+		if (null === $oActions) {
 			$oActions = new Actions();
 		}
 
@@ -121,19 +120,16 @@ abstract class Api
 
 	public static function ClearUserData(string $sEmail) : bool
 	{
-		if (\strlen($sEmail))
-		{
+		if (\strlen($sEmail)) {
 			$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail);
 
 			$oStorageProvider = static::Actions()->StorageProvider();
-			if ($oStorageProvider && $oStorageProvider->IsActive())
-			{
+			if ($oStorageProvider && $oStorageProvider->IsActive()) {
 				$oStorageProvider->DeleteStorage($sEmail);
 			}
 
 			$oAddressBookProvider = static::Actions()->AddressBookProvider();
-			if ($oAddressBookProvider)
-			{
+			if ($oAddressBookProvider) {
 				$oAddressBookProvider->DeleteAllContacts($sEmail);
 			}
 

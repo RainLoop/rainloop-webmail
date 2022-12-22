@@ -75,8 +75,7 @@ class Utils
 	public static function GetConnectionToken() : string
 	{
 		$sToken = static::GetCookie(self::CONNECTION_TOKEN);
-		if (!$sToken)
-		{
+		if (!$sToken) {
 			$sToken = \MailSo\Base\Utils::Sha1Rand(APP_SALT);
 			static::SetCookie(self::CONNECTION_TOKEN, $sToken, \time() + 3600 * 24 * 30);
 		}
@@ -92,8 +91,7 @@ class Utils
 	public static function UpdateConnectionToken() : void
 	{
 		$sToken = static::GetCookie(self::CONNECTION_TOKEN);
-		if ($sToken)
-		{
+		if ($sToken) {
 			static::SetCookie(self::CONNECTION_TOKEN, $sToken, \time() + 3600 * 24 * 30);
 		}
 	}
