@@ -71,10 +71,9 @@ class Message implements \JsonSerializable
 		$UnsubsribeLinks = [],
 		$aThreads = [];
 
-	private ?array
-		$DraftInfo = null,
-		$pgpSigned = null,
-		$pgpEncrypted = null;
+	private ?array $DraftInfo = null;
+	private ?array $pgpSigned = null;
+	private ?array $pgpEncrypted = null;
 
 	private ?\MailSo\Mime\EmailCollection
 		$oFrom = null,
